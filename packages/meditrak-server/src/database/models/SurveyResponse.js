@@ -52,13 +52,22 @@ class SurveyResponseType extends DatabaseType {
 }
 
 export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
-  notifiers = [onChangeMarkAnswersChanged];
-
   get DatabaseTypeClass() {
     return SurveyResponseType;
   }
 
   isDeletableViaApi = true;
+
+  updateById(id, fieldsToUpdate) {
+    // If the entity or date has changed, mark all answers as changed so they resync to DHIS2 with
+    // the new entity/date (no need to async/await, just set it going)
+    if (fieldsToUpdate.entity_id || fieldsToUpdate.data_time) {
+      this.otherModels.answer.markAsChanged({
+        survey_response_id: id,
+      });
+    }
+    return super.updateById(id, fieldsToUpdate);
+  }
 
   getOrgUnitEntityTypes = () => {
     const orgUnitEntityTypes = Object.values(this.otherModels.entity.orgUnitEntityTypes);
@@ -97,19 +106,3 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
     return result[0].count === '1';
   }
 }
-
-const onChangeMarkAnswersChanged = async (
-  { new_record: newRecord, old_record: oldRecord, record_id: surveyResponseId },
-  models,
-) => {
-  // No need to mark any answers changed if freshly creating or fully deleting
-  if (!newRecord || !oldRecord) return;
-
-  // If the entity or date has changed, mark all answers as changed so they resync to DHIS2 with
-  // the new entity/date (no need to async/await, just set it going)
-  if (newRecord.entity_id !== oldRecord.entity_id || newRecord.data_time !== oldRecord.data_time) {
-    models.answer.markAsChanged({
-      survey_response_id: surveyResponseId,
-    });
-  }
-};

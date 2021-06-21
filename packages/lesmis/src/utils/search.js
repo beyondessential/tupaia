@@ -20,6 +20,8 @@ export const getPlaceIcon = type => {
       return <Province />;
     case 'sub_district':
       return <District />;
+    case 'village':
+      return <District />;
     case 'school':
       return <School />;
     default:

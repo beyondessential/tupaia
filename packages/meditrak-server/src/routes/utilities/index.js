@@ -5,7 +5,13 @@
 
 export { constructAnswerValidator } from './constructAnswerValidator';
 export { constructNewRecordValidationRules } from './constructNewRecordValidationRules';
-export * from './excel';
+export {
+  extractTabNameFromQuery,
+  splitStringOn,
+  splitStringOnFirstOccurrence,
+  splitStringOnComma,
+  splitOnNewLinesOrCommas,
+} from './excel';
 export {
   fetchCountryIdsByPermissionGroupId,
   fetchCountryCodesByPermissionGroupId,
