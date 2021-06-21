@@ -45,24 +45,29 @@ const REPORT = {
     },
     transform: [
       {
-        '...': ['STRVEC_AE-IR09', 'STRVEC_AN-IR09', 'orgUnitName'],
+        transform: 'filter',
+        where:
+          "(exists($row['STRVEC_AE-IR02']) and exists($row['STRVEC_AE-IR09'])) or (exists($row['STRVEC_AN-IR02']) and exists($row['STRVEC_AN-IR09']))",
+      },
+      {
         transform: 'select',
         "'insecticide'":
           "exists($row['STRVEC_AE-IR02']) ? $row['STRVEC_AE-IR02'] : $row['STRVEC_AN-IR02']",
         "'mosquitoType'": "exists($row['STRVEC_AE-IR09']) ? 'Aedes IR' : 'Anopheles IR'",
+        "'mortalityRate'":
+          "exists($row['STRVEC_AE-IR09']) ? $row['STRVEC_AE-IR09'] : $row['STRVEC_AN-IR09']",
+        '...': ['orgUnitName'],
       },
       {
         transform: 'aggregate',
         insecticide: 'group',
         orgUnitName: 'group',
         mosquitoType: 'group',
-        'STRVEC_AE-IR09': 'avg',
-        'STRVEC_AN-IR09': 'avg',
+        mortalityRate: 'avg',
       },
       {
         transform: 'select',
-        '$row.orgUnitName':
-          "exists($row['STRVEC_AE-IR09']) ? $row['STRVEC_AE-IR09'] : $row['STRVEC_AN-IR09']",
+        '$row.orgUnitName': '$row.mortalityRate',
         '...': ['insecticide', 'mosquitoType'],
       },
       {
