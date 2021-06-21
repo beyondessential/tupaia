@@ -74,7 +74,7 @@ export interface MultiEntityContext extends CommonContext {
 
 export interface SingleEntityRequest<
   P = SingleEntityRequestParams,
-  ResBody = EntityResponse,
+  ResBody = EntityResponse | EntityResponse[],
   ReqBody = RequestBody,
   ReqQuery = EntityRequestQuery
 > extends Request<P, ResBody, ReqBody, ReqQuery> {
@@ -83,7 +83,7 @@ export interface SingleEntityRequest<
 
 export interface MultiEntityRequest<
   P = MultiEntityRequestParams,
-  ResBody = EntityResponse,
+  ResBody = EntityResponse | EntityResponse[],
   ReqBody = MultiEntityRequestBody,
   ReqQuery = EntityRequestQuery
 > extends Request<P, ResBody, ReqBody, ReqQuery> {
