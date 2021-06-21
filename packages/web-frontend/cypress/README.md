@@ -43,26 +43,42 @@ Then, run one of the following commands in a new terminal:
 
 ## Configuration
 
-Our e2e tests support Tupaia-specific configuration specified in [config.json](../config.json). Example:
+Our e2e tests support Tupaia-specific configuration specified in [config.json](config.json). Example:
 
-```json
+```jsonc
 {
   "dashboardReports": {
     "allowEmptyResponse": false, // Throw error for empty reports
     "snapshotTypes": ["responseBody", "html"],
     "urlFiles": ["cypress/config/dashboardReportUrls/default.json"],
-    "urls": ["/explore/explore/IHR%20Report?report=WHO_IHR_SPAR_WPRO"]
+    "urls": ["/explore/explore/IHR%20Report?report=WHO_IHR_SPAR_WPRO"],
+    "filter": {
+      // Single values can also be used instead of arrays, eg `"project": "covidau"`
+      "id": ["id1", "id2"],
+      "project": ["covidau", "strive"],
+      "orgUnit": ["TO", "PG"],
+      "dashboardGroup": ["dashboardGroup1", "dashboardGroup2"],
+      "dataBuilder": ["tableOfEvents", "sumAll"]
+    }
   },
   "mapOverlays": {
     "allowEmptyResponse": false,
     "snapshotTypes": ["responseBody"],
     "urlGenerationOptions": {
-      "projects": ["strive", "covidau"]
+      "project": ["strive", "covidau"]
     },
-    "urls": ["/covidau/AU?overlay=AU_FLUTRACKING_Fever_And_Cough"]
+    "urls": ["/covidau/AU?overlay=AU_FLUTRACKING_Fever_And_Cough"],
+    "filter": {
+      "id": "id",
+      "project": "covidau",
+      "orgUnit": "TO",
+      "measureBuilder": "valueForOrgGroup"
+    }
   }
 }
 ```
+
+### Dashboard report & map overlay configuration
 
 **Snapshot types**
 
@@ -94,7 +110,7 @@ Two formats are supported:
 
 Use any of the fields below to specify test urls. You can use multiple fields in the same test run - their results will be combined in the final url list:
 
-```json
+```jsonc
 {
   // Inline urls
   "urls": ["/covidau/AU/COVID-19?report=COVID_Compose_Daily_Deaths_Vs_Cases"],
@@ -107,8 +123,25 @@ Use any of the fields below to specify test urls. You can use multiple fields in
 
   // Dynamically generate urls
   "urlGenerationOptions": {
-    "all": true, // Will generate urls for all overlays. Other options are ignored
     "project": ["strive", "covidau"]
+  }
+}
+```
+
+**Filter**
+
+You can optionally specify a `filter` that will be applied to the tested visualisations. For example, to test all "Fanafana" project overlays that use the "valueForOrgGroup" data builder in Tonga:
+
+```json
+{
+  "mapOverlays": {
+    "urlGenerationOptions": {
+      "project": "fanafana"
+    },
+    "filter": {
+      "orgUnit": "TO",
+      "measureBuilder": "valueForOrgGroup"
+    }
   }
 }
 ```

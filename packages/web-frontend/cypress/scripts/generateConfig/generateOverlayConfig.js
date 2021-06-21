@@ -1,19 +1,46 @@
-import { uniq } from 'lodash';
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ */
 
-import { compareAsc, stringifyQuery } from '@tupaia/utils';
+import { groupBy } from 'lodash';
+
+import {
+  constructIsOneOfType,
+  hasContent,
+  isAString,
+  ObjectValidator,
+  stringifyQuery,
+} from '@tupaia/utils';
 import config from '../../config.json';
-import { readJsonFile } from './helpers';
+import { buildUrlsUsingConfig, sortUrls, validateFilter } from './helpers';
+import { MapOverlayFilter } from './VisualisationFilter';
+
+const objectUrlSchema = {
+  id: [hasContent, constructIsOneOfType(['string', 'array'])], // Array is for linked measures
+  project: [hasContent, isAString],
+  orgUnit: [hasContent, isAString],
+};
+const objectUrlValidator = new ObjectValidator(objectUrlSchema);
 
 const URL_GENERATION_FIELDS = {
   PROJECT: 'project',
 };
 
-const buildUrl = urlInput => {
-  if (typeof urlInput === 'string') {
-    return urlInput;
+const FILTER_FIELDS = [...Object.keys(objectUrlSchema), 'measureBuilder'];
+
+const removeRedundantObjectUrls = urls =>
+  // An overlay with the same id and orgUnit is the same across projects
+  Object.values(groupBy(urls, u => `${u.id}___${u.orgUnit}`))
+    .map(urlGroup => urlGroup[0])
+    .flat();
+
+const stringifyUrl = url => {
+  if (typeof url === 'string') {
+    return url;
   }
 
-  const { id, project, orgUnit } = urlInput;
+  const { id, project, orgUnit } = url;
   const path = [project, orgUnit].map(encodeURIComponent).join('/');
   const queryParams = { overlay: id };
 
@@ -28,7 +55,29 @@ const validateUrlGenerationOptions = options => {
   });
 };
 
-const generateUrlsUsingOptions = async (db, options) => {
+const objectifyUrl = url => {
+  if (typeof url === 'object') {
+    return url;
+  }
+
+  const [path, queryParams] = url.split('?');
+  const searchParams = new URLSearchParams(queryParams);
+  const [project, orgUnit] = path.split('/').filter(x => x !== '');
+
+  const objectUrl = {
+    id: searchParams.get('overlay'),
+    project,
+    orgUnit,
+  };
+
+  const constructError = (errorMessage, key) =>
+    new Error(`Invalid content for component "${key}" of url "${url}": ${errorMessage}`);
+  objectUrlValidator.validateSync(objectUrl, constructError);
+
+  return objectUrl;
+};
+
+const generateUrls = async (db, options) => {
   if (Object.keys(options).length === 0) {
     return [];
   }
@@ -72,14 +121,15 @@ const generateUrlsUsingOptions = async (db, options) => {
 
 export const generateOverlayConfig = async db => {
   const { mapOverlays: overlayConfig } = config;
+  const { filter = {}, urlFiles, urlGenerationOptions, ...otherFields } = overlayConfig;
+  validateFilter(filter, FILTER_FIELDS);
 
-  const { urlFiles = [], urlGenerationOptions = {}, urls = [], ...otherConfig } = overlayConfig;
-  const urlsFromFiles = urlFiles.map(readJsonFile).flat();
-  const generatedUrls = await generateUrlsUsingOptions(db, urlGenerationOptions);
-  const allUrls = [...urlsFromFiles, ...generatedUrls, ...urls];
+  const urls = await buildUrlsUsingConfig(db, overlayConfig, generateUrls);
+  const objectUrls = removeRedundantObjectUrls(urls.map(objectifyUrl));
+  const filteredObjectUrls = await new MapOverlayFilter(db, filter).apply(objectUrls);
 
   return {
-    ...otherConfig,
-    urls: uniq(allUrls.map(buildUrl)).sort(compareAsc),
+    ...otherFields,
+    urls: sortUrls(filteredObjectUrls.map(stringifyUrl)),
   };
 };

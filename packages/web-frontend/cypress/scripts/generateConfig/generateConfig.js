@@ -22,7 +22,7 @@ export const generateConfig = async () => {
   await generateTestUser(db);
 
   logger.success('* Generating dashboard report config...');
-  const dashboardReports = generateReportConfig();
+  const dashboardReports = await generateReportConfig(db);
   logger.info(`  Generated ${dashboardReports.urls.length} report urls`);
 
   logger.success('* Generating map overlay urls...');
