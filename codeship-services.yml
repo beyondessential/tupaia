@@ -59,6 +59,7 @@ tupaia:
     dockerfile: ./Dockerfile
     context: .
   encrypted_env_file: ./ci-env-vars.encrypted
+  encrypted_dockercfg_path: dockercfg.encrypted
   cached: true
   default_cache_branch: 'dev'
 
