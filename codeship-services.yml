@@ -90,18 +90,18 @@ tupaia-clone:
 #  encrypted_dockercfg_path: dockercfg.encrypted # TODO: do we need this?
 #  default_cache_branch: 'dev'
 
-e2e-tupaia-current:
-  build:
-    dockerfile: ./Dockerfile
-    context: .
-  encrypted_env_file: ./ci-env-vars.encrypted
-  volumes:
-    - /tmp/e2e/snapshots:/tmp/e2e/snapshots
-  depends_on:
-    - e2e-setup
-  cached: true
-  encrypted_dockercfg_path: dockercfg.encrypted # TODO: do we need this?
-  default_cache_branch: 'dev'
+#e2e-tupaia-current:
+#  build:
+#    dockerfile: ./Dockerfile
+#    context: .
+#  encrypted_env_file: ./ci-env-vars.encrypted
+#  volumes:
+#    - /tmp/e2e/snapshots:/tmp/e2e/snapshots
+#  depends_on:
+#    - e2e-setup
+#  cached: true
+#  encrypted_dockercfg_path: dockercfg.encrypted # TODO: do we need this?
+#  default_cache_branch: 'dev'
 
 #e2e-runner:
 #  build:
