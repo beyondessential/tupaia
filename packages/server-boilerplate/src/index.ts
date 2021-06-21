@@ -4,11 +4,12 @@
  *
  */
 
-export { ApiConnection, AuthHandler } from './connections';
+export { ApiConnection, OutboundConnection, AuthHandler } from './connections';
 export { Route } from './routes';
 export { handleWith } from './utils';
 export {
   ApiBuilder as MicroServiceApiBuilder,
+  RequestContext as MicroServiceRequestContext,
   buildBasicBearerAuthMiddleware,
 } from './microService';
 export {

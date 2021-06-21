@@ -10,13 +10,14 @@ import errorHandler from 'api-error-handler';
 
 import { Authenticator } from '@tupaia/auth';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
+import { EntityApi } from '@tupaia/entity-server';
 
 import { handleWith, handleError } from '../../utils';
 import { buildBasicBearerAuthMiddleware } from '../auth';
 import { TestRoute } from '../../routes';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
-import { EntityApi } from '../../apis';
 import { OutboundConnection } from '../../connections';
+import { RequestContext } from '../types';
 
 export class ApiBuilder {
   private readonly app: Express;
@@ -52,7 +53,7 @@ export class ApiBuilder {
       const microServiceAuthHandler = {
         getAuthHeader: async () => req.headers.authorization || '',
       };
-      const context = {
+      const context: RequestContext = {
         microServices: {
           entityApi: new EntityApi(new OutboundConnection(), microServiceAuthHandler),
         },

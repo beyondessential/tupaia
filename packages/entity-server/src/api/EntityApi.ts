@@ -4,13 +4,33 @@
  *
  */
 
-import {
-  EntityApiInterface,
-  EntityApiQueryOptions,
-  RelationshipsSubQueryOptions,
-} from '@tupaia/entity-server';
+import { OutboundConnection, AuthHandler } from '@tupaia/server-boilerplate';
 
-import { OutboundConnection, AuthHandler } from '../connections';
+import { PartialOrArray } from '../types';
+import { EntityFields } from '../models';
+import {
+  GroupByAncestorRelationshipsResponseBody,
+  GroupByDescendantRelationshipsResponseBody,
+} from '../routes/hierarchy/relationships';
+import {
+  FlattableEntityFieldName,
+  ExtendedEntityFieldName,
+  EntityResponseObject,
+  FlattenedEntity,
+} from '../routes/hierarchy/types';
+
+type EntityFilterObject = PartialOrArray<EntityFields>;
+
+type EntityApiQueryOptions = {
+  field?: FlattableEntityFieldName;
+  fields?: ExtendedEntityFieldName[];
+  filter?: EntityFilterObject;
+};
+type RelationshipsSubQueryOptions = Omit<EntityApiQueryOptions, 'fields'>;
+
+type EntityApiResponse<T extends ExtendedEntityFieldName[]> = Required<
+  Pick<EntityResponseObject, T[number]>
+>;
 
 const { ENTITY_API_URL = 'http://localhost:8050/v1' } = process.env;
 
@@ -49,7 +69,7 @@ type Prefix<T, P extends string> = {
   [field in keyof T & string as `${P}_${field}`]: T[field];
 };
 
-export class EntityApi implements EntityApiInterface {
+export class EntityApi {
   baseUrl = ENTITY_API_URL;
 
   private readonly outboundConnection: OutboundConnection;
@@ -105,8 +125,28 @@ export class EntityApi implements EntityApiInterface {
   public async getEntity(
     hierarchyName: string,
     entityCode: string,
-    queryOptions?: EntityApiQueryOptions,
-  ): ReturnType<EntityApiInterface['getEntity']> {
+    queryOptions?: {
+      field: FlattableEntityFieldName;
+      filter?: EntityFilterObject;
+    },
+  ): Promise<FlattenedEntity>;
+  public async getEntity<T extends ExtendedEntityFieldName[]>(
+    hierarchyName: string,
+    entityCode: string,
+    queryOptions?: {
+      fields: T;
+      filter?: EntityFilterObject;
+    },
+  ): Promise<EntityApiResponse<T>>;
+  public async getEntity<T extends ExtendedEntityFieldName[]>(
+    hierarchyName: string,
+    entityCode: string,
+    queryOptions?: {
+      field?: FlattableEntityFieldName;
+      fields?: T;
+      filter?: EntityFilterObject;
+    },
+  ): Promise<FlattenedEntity | Pick<EntityResponseObject, T[number]>> {
     return this.outboundConnection.get(
       await this.authHander.getAuthHeader(),
       this.baseUrl,
@@ -120,8 +160,28 @@ export class EntityApi implements EntityApiInterface {
   public async getEntities(
     hierarchyName: string,
     entityCodes: string[],
-    queryOptions?: EntityApiQueryOptions,
-  ): ReturnType<EntityApiInterface['getEntities']> {
+    queryOptions?: {
+      field: FlattableEntityFieldName;
+      filter?: EntityFilterObject;
+    },
+  ): Promise<FlattenedEntity[]>;
+  public async getEntities<T extends ExtendedEntityFieldName[]>(
+    hierarchyName: string,
+    entityCodes: string[],
+    queryOptions?: {
+      fields: T;
+      filter?: EntityFilterObject;
+    },
+  ): Promise<EntityApiResponse<T>[]>;
+  public async getEntities<T extends ExtendedEntityFieldName[]>(
+    hierarchyName: string,
+    entityCodes: string[],
+    queryOptions?: {
+      field?: FlattableEntityFieldName;
+      fields?: T;
+      filter?: EntityFilterObject;
+    },
+  ): Promise<FlattenedEntity[] | EntityApiResponse<T>[]> {
     return this.outboundConnection.get(
       await this.authHander.getAuthHeader(),
       this.baseUrl,
@@ -136,9 +196,31 @@ export class EntityApi implements EntityApiInterface {
   public async getDescendantsOfEntity(
     hierarchyName: string,
     entityCode: string,
-    queryOptions?: EntityApiQueryOptions,
-    includeRootEntity: boolean = false,
-  ): ReturnType<EntityApiInterface['getDescendantsOfEntity']> {
+    queryOptions?: {
+      field: FlattableEntityFieldName;
+      filter?: EntityFilterObject;
+    },
+    includeRootEntity?: boolean,
+  ): Promise<FlattenedEntity[]>;
+  public async getDescendantsOfEntity<T extends ExtendedEntityFieldName[]>(
+    hierarchyName: string,
+    entityCode: string,
+    queryOptions?: {
+      fields: T;
+      filter?: EntityFilterObject;
+    },
+    includeRootEntity?: boolean,
+  ): Promise<EntityApiResponse<T>[]>;
+  public async getDescendantsOfEntity<T extends ExtendedEntityFieldName[]>(
+    hierarchyName: string,
+    entityCode: string,
+    queryOptions?: {
+      field?: FlattableEntityFieldName;
+      fields?: T;
+      filter?: EntityFilterObject;
+    },
+    includeRootEntity = false,
+  ): Promise<FlattenedEntity[] | EntityApiResponse<T>[]> {
     return this.outboundConnection.get(
       await this.authHander.getAuthHeader(),
       this.baseUrl,
@@ -153,9 +235,31 @@ export class EntityApi implements EntityApiInterface {
   public async getDescendantsOfEntities(
     hierarchyName: string,
     entityCodes: string[],
-    queryOptions?: EntityApiQueryOptions,
-    includeRootEntity: boolean = false,
-  ): ReturnType<EntityApiInterface['getDescendantsOfEntities']> {
+    queryOptions?: {
+      field: FlattableEntityFieldName;
+      filter?: EntityFilterObject;
+    },
+    includeRootEntity?: boolean,
+  ): Promise<FlattenedEntity[]>;
+  public async getDescendantsOfEntities<T extends ExtendedEntityFieldName[]>(
+    hierarchyName: string,
+    entityCodes: string[],
+    queryOptions?: {
+      fields: T;
+      filter?: EntityFilterObject;
+    },
+    includeRootEntity?: boolean,
+  ): Promise<EntityApiResponse<T>[]>;
+  public async getDescendantsOfEntities<T extends ExtendedEntityFieldName[]>(
+    hierarchyName: string,
+    entityCodes: string[],
+    queryOptions?: {
+      field?: FlattableEntityFieldName;
+      fields?: T;
+      filter?: EntityFilterObject;
+    },
+    includeRootEntity = false,
+  ): Promise<FlattenedEntity[] | EntityApiResponse<T>[]> {
     return this.outboundConnection.get(
       await this.authHander.getAuthHeader(),
       this.baseUrl,
@@ -171,8 +275,28 @@ export class EntityApi implements EntityApiInterface {
   public async getRelativesOfEntity(
     hierarchyName: string,
     entityCode: string,
-    queryOptions?: EntityApiQueryOptions,
-  ): ReturnType<EntityApiInterface['getRelativesOfEntity']> {
+    queryOptions?: {
+      field: FlattableEntityFieldName;
+      filter?: EntityFilterObject;
+    },
+  ): Promise<FlattenedEntity[]>;
+  public async getRelativesOfEntity<T extends ExtendedEntityFieldName[]>(
+    hierarchyName: string,
+    entityCode: string,
+    queryOptions?: {
+      fields: T;
+      filter?: EntityFilterObject;
+    },
+  ): Promise<EntityApiResponse<T>[]>;
+  public async getRelativesOfEntity<T extends ExtendedEntityFieldName[]>(
+    hierarchyName: string,
+    entityCode: string,
+    queryOptions?: {
+      field?: FlattableEntityFieldName;
+      fields?: T;
+      filter?: EntityFilterObject;
+    },
+  ): Promise<FlattenedEntity[] | EntityApiResponse<T>[]> {
     return this.outboundConnection.get(
       await this.authHander.getAuthHeader(),
       this.baseUrl,
@@ -186,12 +310,32 @@ export class EntityApi implements EntityApiInterface {
   public async getRelativesOfEntities(
     hierarchyName: string,
     entityCodes: string[],
-    queryOptions?: EntityApiQueryOptions,
-  ): ReturnType<EntityApiInterface['getRelativesOfEntities']> {
+    queryOptions?: {
+      field: FlattableEntityFieldName;
+      filter?: EntityFilterObject;
+    },
+  ): Promise<FlattenedEntity[]>;
+  public async getRelativesOfEntities<T extends ExtendedEntityFieldName[]>(
+    hierarchyName: string,
+    entityCodes: string[],
+    queryOptions?: {
+      fields: T;
+      filter?: EntityFilterObject;
+    },
+  ): Promise<EntityApiResponse<T>[]>;
+  public async getRelativesOfEntities<T extends ExtendedEntityFieldName[]>(
+    hierarchyName: string,
+    entityCodes: string[],
+    queryOptions?: {
+      field?: FlattableEntityFieldName;
+      fields?: T;
+      filter?: EntityFilterObject;
+    },
+  ): Promise<FlattenedEntity[] | EntityApiResponse<T>[]> {
     return this.outboundConnection.get(
       await this.authHander.getAuthHeader(),
       this.baseUrl,
-      `hierarchy/${hierarchyName}/descendants`,
+      `hierarchy/${hierarchyName}/relatives`,
       {
         ...this.stringifyQueryParameters(queryOptions),
         entities: entityCodes.join(MULTIPLE_VALUES_DELIMITER),
@@ -205,7 +349,7 @@ export class EntityApi implements EntityApiInterface {
     queryOptions?: EntityApiQueryOptions,
     ancestorQueryOptions?: RelationshipsSubQueryOptions,
     descendantQueryOptions?: RelationshipsSubQueryOptions,
-  ): ReturnType<EntityApiInterface['getRelationshipsOfEntityByAncestor']> {
+  ): Promise<GroupByAncestorRelationshipsResponseBody> {
     return this.outboundConnection.get(
       await this.authHander.getAuthHeader(),
       this.baseUrl,
@@ -225,7 +369,7 @@ export class EntityApi implements EntityApiInterface {
     queryOptions?: EntityApiQueryOptions,
     ancestorQueryOptions?: RelationshipsSubQueryOptions,
     descendantQueryOptions?: RelationshipsSubQueryOptions,
-  ): ReturnType<EntityApiInterface['getRelationshipsOfEntityByDescendant']> {
+  ): Promise<GroupByDescendantRelationshipsResponseBody> {
     return this.outboundConnection.get(
       await this.authHander.getAuthHeader(),
       this.baseUrl,
@@ -245,7 +389,7 @@ export class EntityApi implements EntityApiInterface {
     queryOptions?: EntityApiQueryOptions,
     ancestorQueryOptions?: RelationshipsSubQueryOptions,
     descendantQueryOptions?: RelationshipsSubQueryOptions,
-  ): ReturnType<EntityApiInterface['getRelationshipsOfEntitiesByAncestor']> {
+  ): Promise<GroupByAncestorRelationshipsResponseBody> {
     return this.outboundConnection.get(
       await this.authHander.getAuthHeader(),
       this.baseUrl,
@@ -266,7 +410,7 @@ export class EntityApi implements EntityApiInterface {
     queryOptions?: EntityApiQueryOptions,
     ancestorQueryOptions?: RelationshipsSubQueryOptions,
     descendantQueryOptions?: RelationshipsSubQueryOptions,
-  ): ReturnType<EntityApiInterface['getRelationshipsOfEntitiesByDescendant']> {
+  ): Promise<GroupByDescendantRelationshipsResponseBody> {
     return this.outboundConnection.get(
       await this.authHander.getAuthHeader(),
       this.baseUrl,
