@@ -1,16 +1,16 @@
-- type: parallel
-  name: validate-and-test
-  steps:
-    - type: parallel
-      name: validate
-      steps:
-        - name: validate branch name
-          service: validation
-          command: './packages/devops/scripts/ci/validateBranchName.sh'
-        - name: validate tests
-          service: validation
-          command: './packages/devops/scripts/ci/validateTests.sh'
-          exclude: -e2e$
+#- type: parallel
+#  name: validate-and-test
+#  steps:
+#    - type: parallel
+#      name: validate
+#      steps:
+#        - name: validate branch name
+#          service: validation
+#          command: './packages/devops/scripts/ci/validateBranchName.sh'
+#        - name: validate tests
+#          service: validation
+#          command: './packages/devops/scripts/ci/validateTests.sh'
+#          exclude: -e2e$
 #    - type: serial
 #      name: test
 #      exclude: -e2e$
