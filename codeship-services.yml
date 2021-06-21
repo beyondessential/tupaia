@@ -79,19 +79,6 @@ tupaia:
 #  environment:
 #    POSTGRES_HOST_AUTH_METHOD: trust
 
-#tupaia-clone:
-#  build:
-#    dockerfile: tupaia-clone.Dockerfile
-#  encrypted_env_file: ./ci-env-vars.encrypted
-#  volumes:
-#    - /tmp/e2e/reference:/tmp/e2e/reference
-#
-#tupaia-build:
-#  build:
-#    dockerfile: tupaia-build.Dockerfile
-#  volumes:
-#    - /tmp/e2e/reference:/home/tupaia
-
 #e2e-setup:
 #  build:
 #    dockerfile: e2e-setup.Dockerfile
@@ -103,18 +90,14 @@ tupaia:
 #    - e2e-db-reference
 #    - e2e-db-current
 
-#e2e-tupaia-reference:
-#  build:
-#    dockerfile: ./Dockerfile
-#    context: /tmp/e2e/reference
-#  encrypted_env_file: ./ci-env-vars.encrypted
-#  volumes:
-#    - /tmp/e2e/snapshots:/tmp/e2e/snapshots
+e2e-tupaia-reference:
+  image: beyondessential/tupaia:latest-release
+  encrypted_env_file: ./ci-env-vars.encrypted
+  volumes:
+    - /tmp/e2e/snapshots:/tmp/e2e/snapshots
 #  depends_on:
 #    - e2e-setup
-#  cached: true
-#  encrypted_dockercfg_path: dockercfg.encrypted # TODO: do we need this?
-#  default_cache_branch: 'dev'
+  encrypted_dockercfg_path: dockercfg.encrypted # TODO: do we need this?
 
 #e2e-tupaia-current:
 #  build:

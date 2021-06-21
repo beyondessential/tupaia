@@ -137,8 +137,8 @@
 - type: push
   service: tupaia
   image_name: beyondessential/tupaia
-  image_tag: "latest-release" # TODO: {{ .Branch }}
-#  tag: ^master$
+  image_tag: "latest-release"
+  tag: ^master$
 
 
 #- type: serial
@@ -147,3 +147,10 @@
 #  steps:
 #    - name: clone-reference-repo
 #      command: 'sh /home/tupaia-clone.sh'
+
+- type: serial
+  name: e2e-run-ref
+  service: e2e-tupaia-reference
+  steps:
+    - name: e2e-run-ref
+      command: 'echo ref'
