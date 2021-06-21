@@ -25,4 +25,4 @@ psql -h e2e-db-reference -U postgres -c "CREATE ROLE tupaia_read WITH LOGIN ENCR
 psql -h e2e-db-current -U postgres   -c "CREATE ROLE tupaia_read WITH LOGIN ENCRYPTED PASSWORD 'tupaia_read';"
 
 # Run both imports at the same time
-/home/parallel_commands "psql -h e2e-db-reference -U postgres -f dump.sql" "psql -h e2e-db-current -U postgres -f dump.sql"
+/home/parallel_commands.sh "psql -h e2e-db-reference -U postgres -f dump.sql" "psql -h e2e-db-current -U postgres -f dump.sql"
