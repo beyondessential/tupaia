@@ -12,7 +12,15 @@ for PACKAGE in ${PACKAGES[@]}; do
 
     if [[ $PACKAGE == *server ]]; then
         echo "Starting ${PACKAGE}"
-        pm2 start --name $PACKAGE dist --wait-ready --listen-timeout 15000 --time
+
+        # Replace dash with underscore, uppercase all
+        SAFE_PACKAGE_NAME=$(echo "$PACKAGE" | sed -e "s/-/_/g" | tr 'a-z' 'A-Z')
+
+        SERVER_PORT_ENV_VAR_NAME="PORT_${SAFE_PACKAGE_NAME}"
+
+        SERVER_PORT="${!SERVER_PORT_ENV_VAR_NAME}"
+
+        pm2 start --name $PACKAGE PORT=$SERVER_PORT dist --wait-ready --listen-timeout 15000 --time
     fi
 done
 

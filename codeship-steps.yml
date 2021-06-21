@@ -129,16 +129,17 @@
 
 - type: serial
   name: build
+  tag: ^master$ # Only on master
   service: tupaia
   steps:
     - name: build
       command: 'echo "Build complete"' # TODO: why do we have to specify a command?
 
 - type: push
+  tag: ^master$ # Only on master
   service: tupaia
   image_name: beyondessential/tupaia
-  image_tag: "latest-release"
-  tag: ^master$
+  image_tag: "latest-release" # TODO: change this to "master", as we will have a newer release before the release is deployed
 
 - type: serial
   name: e2e-run-ref
