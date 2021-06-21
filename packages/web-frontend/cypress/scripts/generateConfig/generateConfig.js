@@ -26,7 +26,7 @@ export const generateConfig = async () => {
   logger.info(`  Generated ${dashboardReports.urls.length} report urls`);
 
   logger.success('* Generating map overlay urls...');
-  const mapOverlays = await generateOverlayConfig();
+  const mapOverlays = await generateOverlayConfig(db);
   logger.info(`  Generated ${mapOverlays.urls.length} overlay urls`);
 
   writeJsonFile(GENERATED_CONFIG_PATH, { ...config, dashboardReports, mapOverlays });

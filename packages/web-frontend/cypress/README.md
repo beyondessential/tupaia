@@ -43,7 +43,7 @@ Then, run one of the following commands in a new terminal:
 
 ## Configuration
 
-Our e2e tests support Tupaia-specific configuration specified in [config.json](../config.json):
+Our e2e tests support Tupaia-specific configuration specified in [config.json](../config.json). Example:
 
 ```json
 {
@@ -51,12 +51,15 @@ Our e2e tests support Tupaia-specific configuration specified in [config.json](.
     "allowEmptyResponse": false, // Throw error for empty reports
     "snapshotTypes": ["responseBody", "html"],
     "urlFiles": ["cypress/config/dashboardReportUrls/default.json"],
-    "urls": []
+    "urls": ["/explore/explore/IHR%20Report?report=WHO_IHR_SPAR_WPRO"]
   },
   "mapOverlays": {
     "allowEmptyResponse": false,
     "snapshotTypes": ["responseBody"],
-    "urls": []
+    "urlGenerationOptions": {
+      "projects": ["strive", "covidau"]
+    },
+    "urls": ["/covidau/AU?overlay=AU_FLUTRACKING_Fever_And_Cough"]
   }
 }
 ```
@@ -100,7 +103,13 @@ Use any of the fields bellow to specify test urls. You can use multiple fields i
   "urlFiles": [
     "cypress/config/dashboardReportUrls/default.json",
     "cypress/config/dashboardReportUrls/covidau.json"
-  ]
+  ],
+
+  // Dynamically generate urls
+  "urlGenerationOptions": {
+    "all": true, // Will generate urls for all overlays. Other options are ignored
+    "project": ["strive", "covidau"]
+  }
 }
 ```
 
