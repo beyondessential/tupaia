@@ -117,6 +117,22 @@ export class EntityApi implements EntityApiInterface {
     );
   }
 
+  public async getEntities(
+    hierarchyName: string,
+    entityCodes: string[],
+    queryOptions?: EntityApiQueryOptions,
+  ): ReturnType<EntityApiInterface['getEntities']> {
+    return this.outboundConnection.get(
+      await this.authHander.getAuthHeader(),
+      this.baseUrl,
+      `hierarchy/${hierarchyName}`,
+      {
+        ...this.stringifyQueryParameters(queryOptions),
+        entities: entityCodes.join(MULTIPLE_VALUES_DELIMITER),
+      },
+    );
+  }
+
   public async getDescendantsOfEntity(
     hierarchyName: string,
     entityCode: string,

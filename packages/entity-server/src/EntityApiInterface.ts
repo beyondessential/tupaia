@@ -3,16 +3,17 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { Request } from 'express';
+import { Route } from '@tupaia/server-boilerplate';
 
 import { PartialOrArray } from './types';
 import { EntityFields } from './models';
 import {
-  SingleEntityRequest,
-  DescendantsRequest,
-  MultiEntityDescendantsRequest,
-  RelativesRequest,
-  MultiEntityRelativesRequest,
+  SingleEntityRoute,
+  MultiEntityRoute,
+  EntityDescendantsRoute,
+  MultiEntityDescendantsRoute,
+  EntityRelativesRoute,
+  MultiEntityRelativesRoute,
 } from './routes';
 import {
   GroupByAncestorRelationshipsResponseBody,
@@ -21,7 +22,7 @@ import {
 import { FlattableEntityFieldName, ExtendedEntityFieldName } from './routes/hierarchy/types';
 
 type EntityFilterObject = PartialOrArray<EntityFields>;
-type ResBody<Type> = Type extends Request<any, infer sBody, any, any> ? sBody : never;
+type ResponseOf<R> = R extends Route<any, any> ? ReturnType<R['buildResponse']> : never;
 
 export type EntityApiQueryOptions = {
   field?: FlattableEntityFieldName;
@@ -35,29 +36,34 @@ export interface EntityApiInterface {
     hierarchyName: string,
     entityCode: string,
     queryOptions?: EntityApiQueryOptions,
-  ) => Promise<ResBody<SingleEntityRequest>>;
+  ) => ResponseOf<SingleEntityRoute>;
+  getEntities: (
+    hierarchyName: string,
+    entityCodes: string[],
+    queryOptions?: EntityApiQueryOptions,
+  ) => ResponseOf<MultiEntityRoute>;
   getDescendantsOfEntity: (
     hierarchyName: string,
     entityCode: string,
     queryOptions?: EntityApiQueryOptions,
     includeRootEntity?: boolean,
-  ) => Promise<ResBody<DescendantsRequest>>;
+  ) => ResponseOf<EntityDescendantsRoute>;
   getDescendantsOfEntities: (
     hierarchyName: string,
     entityCodes: string[],
     queryOptions?: EntityApiQueryOptions,
     includeRootEntity?: boolean,
-  ) => Promise<ResBody<MultiEntityDescendantsRequest>>;
+  ) => ResponseOf<MultiEntityDescendantsRoute>;
   getRelativesOfEntity: (
     hierarchyName: string,
     entityCode: string,
     queryOptions?: EntityApiQueryOptions,
-  ) => Promise<ResBody<RelativesRequest>>;
+  ) => ResponseOf<EntityRelativesRoute>;
   getRelativesOfEntities: (
     hierarchyName: string,
     entityCodes: string[],
     queryOptions?: EntityApiQueryOptions,
-  ) => Promise<ResBody<MultiEntityRelativesRequest>>;
+  ) => ResponseOf<MultiEntityRelativesRoute>;
   getRelationshipsOfEntityByAncestor: (
     hierarchyName: string,
     entityCode: string,
