@@ -126,8 +126,8 @@
 #      command: 'echo hi'
 
 - type: serial
-  name: e2e-test
-  service: e2e-tupaia-current
+  name: tupaia-clone
+  service: tupaia-clone
   steps:
-    - name: hi
-      command: 'echo hi'
+    - name: clone-reference-repo
+      command: 'sh /home/tupaia-clone.sh'

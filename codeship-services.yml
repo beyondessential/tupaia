@@ -47,29 +47,35 @@ deployment:
 # e2e services
 # ----------------------------------
 
-e2e-db-reference:
-  build:
-    dockerfile: postgres.Dockerfile
-  environment:
-    POSTGRES_HOST_AUTH_METHOD: trust
+#e2e-db-reference:
+#  build:
+#    dockerfile: postgres.Dockerfile
+#  environment:
+#    POSTGRES_HOST_AUTH_METHOD: trust
+#
+#e2e-db-current:
+#  build:
+#    dockerfile: postgres.Dockerfile
+#  environment:
+#    POSTGRES_HOST_AUTH_METHOD: trust
 
-e2e-db-current:
+tupaia-clone:
   build:
-    dockerfile: postgres.Dockerfile
-  environment:
-    POSTGRES_HOST_AUTH_METHOD: trust
-
-e2e-setup:
-  build:
-    dockerfile: e2e-setup.Dockerfile
-    encrypted_args_file: build_args.encrypted
+    dockerfile: tupaia-clone.Dockerfile
   encrypted_env_file: ./ci-env-vars.encrypted
   volumes:
     - /tmp/e2e/reference:/tmp/e2e/reference
-    - ./.ssh:/root/.ssh
-  depends_on:
-    - e2e-db-reference
-    - e2e-db-current
+
+#e2e-setup:
+#  build:
+#    dockerfile: e2e-setup.Dockerfile
+#    encrypted_args_file: build_args.encrypted
+#  encrypted_env_file: ./ci-env-vars.encrypted
+#  volumes:
+#    - /tmp/e2e/reference:/tmp/e2e/reference
+#  depends_on:
+#    - e2e-db-reference
+#    - e2e-db-current
 
 #e2e-tupaia-reference:
 #  build:
