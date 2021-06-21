@@ -92,7 +92,7 @@ e2e-setup:
     - e2e-db-current
 
 e2e-tupaia-reference:
-  image: beyondessential/tupaia:latest-release # change tag if you want to compare against a different reference branch
+  image: beyondessential/tupaia:latest-release # change tag to compare against a different reference branch
   encrypted_env_file: ./ci-env-vars.encrypted
   volumes:
     - /tmp/e2e/snapshots:/tmp/e2e/snapshots

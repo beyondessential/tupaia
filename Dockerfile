@@ -78,4 +78,4 @@ RUN sh scripts/bash/build.sh
 COPY ./init-services.sh ./
 RUN chmod +x ./init-services.sh
 
-CMD env && ./init-services.sh && pm2 -f log
+CMD ./init-services.sh && pm2 -f log

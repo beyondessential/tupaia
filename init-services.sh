@@ -20,7 +20,7 @@ for PACKAGE in ${PACKAGES[@]}; do
 
         SERVER_PORT="${!SERVER_PORT_ENV_VAR_NAME}"
 
-        pm2 start --name $PACKAGE PORT=$SERVER_PORT dist --wait-ready --listen-timeout 15000 --time
+        PORT=$SERVER_PORT pm2 start --name $PACKAGE dist --wait-ready --listen-timeout 15000 --time
     fi
 done
 
