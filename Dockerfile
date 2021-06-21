@@ -75,10 +75,7 @@ RUN chmod +x ./scripts/bash/build.sh
 RUN yarn build
 
 # add container start scripts
-#COPY ./init-services.sh ./
-#RUN chmod +x ./init-services.sh
+COPY ./init-services.sh ./
+RUN chmod +x ./init-services.sh
 
-#CMD env && ./init-services.sh \
-# && pm2 -f log
-
-CMD pm2 -f log
+CMD env && ./init-services.sh && pm2 -f log
