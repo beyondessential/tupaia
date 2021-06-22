@@ -6,5 +6,5 @@
 import { Row } from '../../types';
 
 export const buildDefault = () => {
-  return (rows: Row[]) => ({ data: rows });
+  return (rows: Row[]) => rows;
 };

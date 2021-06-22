@@ -17,14 +17,12 @@ const reportRequestKey = (reportCode, query = {}, body = {}) =>
 
 const REPORT_SERVER_RESPONSES = {
   [reportRequestKey('1', { organisationUnitCodes: 'TO', hierarchy: 'psss' })]: {
-    results: {
-      data: [
-        { period: '2018', organisationUnit: 'TO', dataElement: 'AGGR01', value: 1 },
-        { period: '2019', organisationUnit: 'TO', dataElement: 'AGGR02', value: 3 },
-        { period: '2020', organisationUnit: 'TO', dataElement: 'AGGR01', value: 4 },
-        { period: '2021', organisationUnit: 'TO', dataElement: 'AGGR02', value: 5 },
-      ],
-    },
+    results: [
+      { period: '2018', organisationUnit: 'TO', dataElement: 'AGGR01', value: 1 },
+      { period: '2019', organisationUnit: 'TO', dataElement: 'AGGR02', value: 3 },
+      { period: '2020', organisationUnit: 'TO', dataElement: 'AGGR01', value: 4 },
+      { period: '2021', organisationUnit: 'TO', dataElement: 'AGGR02', value: 5 },
+    ],
   },
   [reportRequestKey('1', {
     organisationUnitCodes: 'TO',
@@ -32,24 +30,20 @@ const REPORT_SERVER_RESPONSES = {
     startDate: '2020-01-01',
     endDate: '2021-01-01',
   })]: {
-    results: {
-      data: [
-        { period: '2020', organisationUnit: 'TO', dataElement: 'AGGR01', value: 4 },
-        { period: '2021', organisationUnit: 'TO', dataElement: 'AGGR02', value: 5 },
-      ],
-    },
+    results: [
+      { period: '2020', organisationUnit: 'TO', dataElement: 'AGGR01', value: 4 },
+      { period: '2021', organisationUnit: 'TO', dataElement: 'AGGR02', value: 5 },
+    ],
   },
   [reportRequestKey('2', {
     organisationUnitCodes: 'PG',
     hierarchy: 'strive',
     startDate: '2020-01-01',
   })]: {
-    results: {
-      data: [
-        { period: '2020', organisationUnit: 'PG', dataElement: 'PSSS01', value: 4 },
-        { period: '2021', organisationUnit: 'PG', dataElement: 'PSSS02', value: 5 },
-      ],
-    },
+    results: [
+      { period: '2020', organisationUnit: 'PG', dataElement: 'PSSS01', value: 4 },
+      { period: '2021', organisationUnit: 'PG', dataElement: 'PSSS02', value: 5 },
+    ],
   },
 };
 

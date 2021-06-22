@@ -37,9 +37,12 @@ export class ReportServerBuilder extends DataBuilder {
       requestQuery.endDate = this.query.endDate;
     }
 
-    const response = await this.reportConnection.fetchReport(this.config.reportCode, requestQuery);
+    const { results } = await this.reportConnection.fetchReport(
+      this.config.reportCode,
+      requestQuery,
+    );
 
-    return { ...response.results };
+    return Array.isArray(results) ? { data: results } : { ...results };
   }
 }
 
