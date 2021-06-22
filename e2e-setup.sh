@@ -24,6 +24,10 @@ psql -h e2e-db-current -U postgres   -c "CREATE ROLE tupaia WITH LOGIN ENCRYPTED
 psql -h e2e-db-reference -U postgres -c "CREATE ROLE tupaia_read WITH LOGIN ENCRYPTED PASSWORD 'tupaia_read';"
 psql -h e2e-db-current -U postgres   -c "CREATE ROLE tupaia_read WITH LOGIN ENCRYPTED PASSWORD 'tupaia_read';"
 
+psql -h e2e-db-reference -U postgres -c "CREATE database tupaia;"
+psql -h e2e-db-current -U postgres   -c "CREATE database tupaia;"
+
+
 # Install mvrefresh
 cd /home/data-api-scripts/pg-mv-fast-refresh
 export DB_MV_HOME=/home/data-api-scripts/pg-mv-fast-refresh
