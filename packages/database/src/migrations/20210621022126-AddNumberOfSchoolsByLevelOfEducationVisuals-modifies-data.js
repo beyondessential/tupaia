@@ -55,13 +55,22 @@ const REPORT_CONFIG = {
     {
       transform: 'select',
       "'name'":
-        "translate($row.dataElement, {nosch_type1_private: 'Pre-Schools', nosch_type1_public: 'Pre-Schools', nosch_type2_private: 'Pre-Schools', nosch_type2_public: 'Pre-Schools', nosch_type3_private: 'Pre-Schools', nosch_type3_public: 'Pre-Schools', nosch_type4_private: 'Primary Schools', nosch_type4_public: 'Primary Schools', nosch_type5_private: 'Primary Schools', nosch_type5_public: 'Primary Schools',nosch_type6_private: 'Secondary Schools', nosch_type6_public: 'Secondary Schools', nosch_type7_private: 'Secondary Schools', nosch_type7_public: 'Secondary Schools', nosch_type8_private: 'Secondary Schools', nosch_type8_public: 'Secondary Schools'})",
-      '...': ['value'],
+        "translate($row.dataElement, { nosch_type1_private: 'Nursery', nosch_type1_public: 'Nursery', nosch_type2_private: 'Kindergarten', nosch_type2_public: 'Kindergarten', nosch_type3_private: 'Nursery and kindergarten', nosch_type3_public: 'Nursery and kindergarten', nosch_type4_private: 'Incomplete primary', nosch_type4_public: 'Incomplete primary', nosch_type5_private: 'Complete primary', nosch_type5_public: 'Complete primary', nosch_type6_private: 'Lower secondary education', nosch_type6_public: 'Lower secondary education', nosch_type7_private: 'Upper secondary education', nosch_type7_public: 'Upper secondary education', nosch_type8_private: 'Complete secondary education', nosch_type8_public: 'Complete secondary education' })",
+      '...': ['value', 'dataElement'],
     },
+    'keyValueByDataElementName',
     {
       transform: 'aggregate',
       name: 'group',
       '...': 'sum',
+    },
+    {
+      transform: 'select',
+      "'Public'":
+        'sum([$row.nosch_type1_public, $row.nosch_type2_public, $row.nosch_type3_public, $row.nosch_type4_public, $row.nosch_type5_public, $row.nosch_type6_public, $row.nosch_type7_public, $row.nosch_type8_public])',
+      "'Private'":
+        'sum([$row.nosch_type1_private, $row.nosch_type2_private, $row.nosch_type3_private, $row.nosch_type4_private, $row.nosch_type5_private, $row.nosch_type6_private, $row.nosch_type7_private, $row.nosch_type8_private])',
+      '...': ['name'],
     },
   ],
 };
@@ -73,6 +82,19 @@ const FRONT_END_CONFIG = {
   xName: 'Level of Education',
   yName: 'Number of Schools',
   periodGranularity: 'one_year_at_a_time',
+  chartConfig: {
+    Public: {
+      color: '#EB7D3C',
+      stackId: '1',
+    },
+    Private: {
+      color: '#FDBF2D',
+      stackId: '1',
+    },
+  },
+  presentationOptions: {
+    hideAverage: true,
+  },
 };
 
 const addNewDashboardItemAndReport = async (
