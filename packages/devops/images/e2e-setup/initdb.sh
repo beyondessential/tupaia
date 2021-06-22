@@ -19,9 +19,21 @@ psql -h "$HOST" -U postgres -c "CREATE ROLE tupaia_read WITH LOGIN ENCRYPTED PAS
 
 # Install mvrefresh
 cd /home/data-api-scripts/pg-mv-fast-refresh
-export DB_MV_HOME=/home/data-api-scripts/pg-mv-fast-refresh
+DB_MV_HOME=/home/data-api-scripts/pg-mv-fast-refresh
 DB_URL=$HOST ./runCreateFastRefreshModule.sh
 
 cd /home/data-api-scripts
-export PGPASSWORD=$DB_PG_PASSWORD
+PGPASSWORD=$DB_PG_PASSWORD
 psql -h "$HOST" --set=db_user="$DB_USER" --set=mv_user="$DB_MV_USER" -d $DB_NAME -U $DB_PG_USER -f ./grantMvRefreshPermissions.sql
+
+psql -h "$HOST" -U $DB_PG_USER -c "alter role mvrefresh with superuser;"
+psql -h "$HOST" -U $DB_PG_USER -c "alter role mvrefresh with login;"
+
+psql -h "$HOST" -U $DB_PG_USER -c "alter role tupaia with superuser;"
+psql -h "$HOST" -U $DB_PG_USER -c "alter role tupaia_read with superuser;"
+
+# yarn workspace @tupaia/data-api build-analytics-table
+psql -h $HOST -d $DB_NAME -U $DB_USER -f createAnalyticsMaterializedView.sql
+
+PGPASSWORD=$DB_MV_PASSWORD
+psql -h $HOST -d $DB_NAME -U $DB_MV_USER -f createAnalyticsTableIndexes.sql
