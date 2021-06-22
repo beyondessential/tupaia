@@ -11,6 +11,7 @@ RUN apk --no-cache add \
 # install nginx
 COPY packages/devops/images/tupaia/nginx.conf /etc/nginx/
 RUN nginx -t
+RUN openrc
 RUN mkdir -p /run/openrc
 RUN touch /run/openrc/softlevel
 
