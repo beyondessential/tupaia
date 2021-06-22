@@ -78,8 +78,13 @@ COPY packages/web-frontend/package.json ./packages/web-frontend
 ## install monorepo dependencies, don't build anything
 RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
 
-## add packages and build monorepo
+## add packages
 COPY packages/. ./packages/
+
+# configure web-frontend
+COPY packages/devops/images/tupaia/web-frontend.env packages/web-frontend/.env
+
+# build monorepo
 RUN chmod +x ./scripts/bash/build.sh
 RUN sh scripts/bash/build.sh
 
