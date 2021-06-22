@@ -32,8 +32,3 @@ psql -h "$HOST" -U $DB_PG_USER -c "alter role mvrefresh with login;"
 psql -h "$HOST" -U $DB_PG_USER -c "alter role tupaia with superuser;"
 psql -h "$HOST" -U $DB_PG_USER -c "alter role tupaia_read with superuser;"
 
-# yarn workspace @tupaia/data-api build-analytics-table
-psql -h $HOST -d $DB_NAME -U $DB_USER -f createAnalyticsMaterializedView.sql
-
-PGPASSWORD=$DB_MV_PASSWORD
-psql -h $HOST -d $DB_NAME -U $DB_MV_USER -f createAnalyticsTableIndexes.sql

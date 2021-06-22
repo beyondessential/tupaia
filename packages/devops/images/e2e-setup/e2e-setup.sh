@@ -24,3 +24,7 @@ fi
 # Run both imports at the same time
 sh /home/parallel_commands.sh "psql -h e2e-db-reference -U postgres -f dump.sql" \
     "psql -h e2e-db-current -U postgres -f dump.sql"
+
+# Post db dump restore
+sh /home/parallel_commands.sh "./postrestore.sh e2e-db-reference" \
+    "./postrestore.sh e2e-db-current"
