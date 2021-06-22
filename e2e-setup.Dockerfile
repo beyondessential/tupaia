@@ -12,4 +12,6 @@ COPY ./scripts ./scripts
 COPY ./parallel_commands.sh /home/parallel_commands.sh
 RUN chmod +x /home/parallel_commands.sh
 
+COPY packages/data-api/scripts ./data-api-scripts
+
 CMD sh /home/e2e-setup.sh

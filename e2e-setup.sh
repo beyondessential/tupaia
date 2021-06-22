@@ -17,12 +17,16 @@ else
     sh ./scripts/bash/dumpDb.sh /root/.ssh/id_rsa_tupaia.pem
 fi
 
-# Set up db
+# Roles
 psql -h e2e-db-reference -U postgres -c "CREATE ROLE tupaia WITH LOGIN ENCRYPTED PASSWORD 'tupaia';"
 psql -h e2e-db-current -U postgres   -c "CREATE ROLE tupaia WITH LOGIN ENCRYPTED PASSWORD 'tupaia';"
 
 psql -h e2e-db-reference -U postgres -c "CREATE ROLE tupaia_read WITH LOGIN ENCRYPTED PASSWORD 'tupaia_read';"
 psql -h e2e-db-current -U postgres   -c "CREATE ROLE tupaia_read WITH LOGIN ENCRYPTED PASSWORD 'tupaia_read';"
+
+# Install mvrefresh
+DB_URL=e2e-db-reference scripts/installMvRefreshModule.sh
+DB_URL=e2e-db-current scripts/installMvRefreshModule.sh
 
 # Run both imports at the same time
 sh /home/parallel_commands.sh "psql -h e2e-db-reference -U postgres -f dump.sql" \

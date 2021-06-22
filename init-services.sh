@@ -26,6 +26,7 @@ done
 
 echo "Tupaia services started"
 
+openrc
 rc-service nginx start
 
 echo "Started"
