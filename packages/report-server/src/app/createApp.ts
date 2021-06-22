@@ -19,6 +19,6 @@ export function createApp() {
   return new MicroServiceApiBuilder(new TupaiaDatabase())
     .useBasicBearerAuth('report-server')
     .get<FetchReportRequest>('fetchReport/:reportCode', handleWith(FetchReportRoute))
-    .get<TestReportRequest>('testReport', handleWith(TestReportRoute))
+    .post<TestReportRequest>('testReport', handleWith(TestReportRoute))
     .build();
 }
