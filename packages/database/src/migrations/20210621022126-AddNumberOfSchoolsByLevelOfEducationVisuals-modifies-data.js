@@ -143,6 +143,11 @@ const addNewDashboardItemAndReport = async (
   });
 };
 
+const removeDashboardItemAndReport = async (db, code) => {
+  await db.runSql(`DELETE FROM dashboard_item WHERE code = '${code}';`); // delete cascades to dashboard_relation
+  await db.runSql(`DELETE FROM report WHERE code = '${code}';`);
+};
+
 exports.up = async function (db) {
   return addNewDashboardItemAndReport(db, {
     code: CODE,
@@ -155,13 +160,8 @@ exports.up = async function (db) {
   });
 };
 
-const removeNewDashboardItemAndReport = async (db, code) => {
-  await db.runSql(`DELETE FROM dashboard_item WHERE code = '${code}';`); // delete cascades to dashboard_relation
-  await db.runSql(`DELETE FROM report WHERE code = '${code}';`);
-};
-
 exports.down = function (db) {
-  return removeNewDashboardItemAndReport(db, CODE);
+  return removeDashboardItemAndReport(db, CODE);
 };
 
 exports._meta = {
