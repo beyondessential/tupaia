@@ -47,7 +47,7 @@ const stringifyUrl = url => {
   return stringifyQuery('', path, queryParams);
 };
 
-const objectifyUrl = url => {
+const parseUrl = url => {
   if (typeof url === 'object') {
     return url;
   }
@@ -78,7 +78,7 @@ export const generateReportConfig = async db => {
   validateFilter(filter, FILTER_FIELDS);
 
   const urls = await buildUrlsUsingConfig(db, reportConfig);
-  const objectUrls = urls.map(objectifyUrl);
+  const objectUrls = urls.map(parseUrl);
   const filteredObjectUrls = await new DashboardReportFilter(db, filter).apply(objectUrls);
 
   return {

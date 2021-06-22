@@ -60,7 +60,7 @@ const validateUrlGenerationOptions = options => {
   });
 };
 
-const objectifyUrl = url => {
+const parseUrl = url => {
   if (typeof url === 'object') {
     return url;
   }
@@ -146,7 +146,7 @@ export const generateOverlayConfig = async db => {
   validateFilter(filter, FILTER_FIELDS);
 
   const urls = await buildUrlsUsingConfig(db, overlayConfig, generateUrls);
-  const objectUrls = removeRedundantObjectUrls(urls.map(objectifyUrl));
+  const objectUrls = removeRedundantObjectUrls(urls.map(parseUrl));
   const filteredObjectUrls = await new MapOverlayFilter(db, filter).apply(objectUrls);
 
   return {
