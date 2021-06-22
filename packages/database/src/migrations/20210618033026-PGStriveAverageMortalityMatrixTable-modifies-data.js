@@ -96,7 +96,18 @@ const BASE_DASHBOARD_REPORT = {
 const VIEW_JSON = {
   name: 'Average Mosquito Mortality',
   type: 'matrix',
-  periodGranularity: 'one_month_at_a_time',
+  defaultTimePeriod: {
+    end: {
+      unit: 'month',
+      offset: 0,
+    },
+    start: {
+      unit: 'month',
+      modifier: 'start_of',
+      modifierUnit: 'year',
+    },
+  },
+  periodGranularity: 'month',
   presentationOptions: {
     type: 'condition',
     conditions: [
