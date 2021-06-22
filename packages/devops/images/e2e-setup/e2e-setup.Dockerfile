@@ -4,13 +4,9 @@ RUN apk add --no-cache git openssh postgresql-client bash
 
 WORKDIR /home
 
-COPY ./e2e-setup.sh ./
-RUN chmod +x ./e2e-setup.sh
+COPY packages/devops/images/e2e-setup/* ./
 
 COPY ./scripts ./scripts
-
-COPY ./parallel_commands.sh /home/parallel_commands.sh
-RUN chmod +x /home/parallel_commands.sh
 
 COPY packages/data-api/scripts ./data-api-scripts
 
