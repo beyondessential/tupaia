@@ -25,8 +25,8 @@ psql -h e2e-db-reference -U postgres -c "CREATE ROLE tupaia_read WITH LOGIN ENCR
 psql -h e2e-db-current -U postgres   -c "CREATE ROLE tupaia_read WITH LOGIN ENCRYPTED PASSWORD 'tupaia_read';"
 
 # Install mvrefresh
-DB_URL=e2e-db-reference scripts/installMvRefreshModule.sh
-DB_URL=e2e-db-current scripts/installMvRefreshModule.sh
+DB_URL=e2e-db-reference sh ./data-api-scripts/installMvRefreshModule.sh
+DB_URL=e2e-db-current sh ./data-api-scripts/installMvRefreshModule.sh
 
 # Run both imports at the same time
 sh /home/parallel_commands.sh "psql -h e2e-db-reference -U postgres -f dump.sql" \
