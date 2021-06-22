@@ -25,6 +25,17 @@ export const deleteObject = async (db, table, condition) => {
   `);
 };
 
+export const findSingleRecord = async (db, query) => {
+  const { rows: results } = await db.runSql(query);
+  if (results.length === 0) {
+    throw new Error(`No results for ${query}`);
+  }
+  if (results.length > 1) {
+    throw new Error(`Expected one result, got ${results.length} for ${query}`);
+  }
+  return results[0];
+};
+
 export const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
 export const arrayToDoubleQuotedDbString = array => array.map(item => `"${item}"`).join(', '); // For formatting Postgres text[]
 
@@ -210,7 +221,7 @@ async function addReportToGroupsOnTop(db, reportId, groupCodes) {
     UPDATE
       "dashboardGroup"
     SET
-      "dashboardReports" = '{"${reportId}"}' || "dashboardReports" 
+      "dashboardReports" = '{"${reportId}"}' || "dashboardReports"
     WHERE
       "code" IN (${arrayToDbString(groupCodes)});
   `);
