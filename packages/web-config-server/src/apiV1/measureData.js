@@ -226,7 +226,7 @@ export default class extends DataAggregatingRouteHandler {
       .filter(mo => !mo.disableRenameLegend)
       .map(mo => updateLegendFromDisplayedValueKey(mo, measureData));
 
-    const getOtherLinkMeasureKeys = mainMeasureOptionKey => {
+    const getOtherMeasureOptionKeys = mainMeasureOptionKey => {
       const otherLinkMeasureKeySet = new Set();
       measureData.forEach(data => {
         Object.keys(data).forEach(key => otherLinkMeasureKeySet.add(key));
@@ -240,7 +240,7 @@ export default class extends DataAggregatingRouteHandler {
     const { measureConfig, ...mainMeasureOption } = measureOptions[0];
     if (measureConfig) {
       const { [ADD_TO_ALL_KEY]: configForAllKeys, ...restOfConfig } = measureConfig;
-      getOtherLinkMeasureKeys(mainMeasureOption.key).forEach(key => {
+      getOtherMeasureOptionKeys(mainMeasureOption.key).forEach(key => {
         measureOptions.push({ ...configForAllKeys, key, name: key, ...restOfConfig[key] });
       });
       measureOptions[0] = mainMeasureOption;
