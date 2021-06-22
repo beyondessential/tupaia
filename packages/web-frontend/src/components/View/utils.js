@@ -40,7 +40,7 @@ const VIEW_TYPES = {
   ...SINGLE_VALUE_COMPONENTS,
 };
 
-export const getViewWrapper = ({ type, viewType }) => {
+export function getViewWrapper({ type, viewType }) {
   switch (type) {
     case 'chart':
       return ChartWrapper;
@@ -59,24 +59,24 @@ export const getViewWrapper = ({ type, viewType }) => {
       return ViewWrapper;
     }
   }
-};
+}
 
-export const getIsSingleValue = ({ viewType }) => {
+export function getIsSingleValue({ viewType }) {
   return Object.keys(SINGLE_VALUE_COMPONENTS).includes(viewType);
-};
+}
 
-export const getIsMatrix = viewContent => {
+export function getIsMatrix(viewContent) {
   return viewContent && viewContent.type === 'matrix';
-};
+}
 
-export const getIsDataDownload = viewContent => {
+export function getIsDataDownload(viewContent) {
   return viewContent && viewContent.viewType === 'dataDownload';
-};
+}
 
-export const checkIfApplyDotStyle = presentationOptions => {
+export function checkIfApplyDotStyle(presentationOptions) {
   return presentationOptions?.applyLocation?.columnIndexes;
-};
+}
 
-export const getIsUsingDots = presentationOptions => {
+export function getIsUsingDots(presentationOptions) {
   return Object.keys(presentationOptions).length > 0;
-};
+}
