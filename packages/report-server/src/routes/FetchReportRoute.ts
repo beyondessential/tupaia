@@ -27,11 +27,19 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     return report;
   }
 
-  async checkUserHasAccessToReport(report: ReportType, requestedOrgUnitCodes: string[]) {
-    const { models, accessPolicy } = this.req;
+  async checkUserHasAccessToReport(
+    report: ReportType,
+    requestedOrgUnitCodes: string[],
+    hierarchy: string,
+  ) {
+    const { accessPolicy, ctx } = this.req;
+    const { entityApi } = ctx.microServices;
     const permissionGroupName = await report.permissionGroupName();
 
-    const foundOrgUnits = await models.entity.find({ code: requestedOrgUnitCodes });
+    const foundOrgUnits = await entityApi.getEntities(hierarchy, requestedOrgUnitCodes, {
+      fields: ['code', 'country_code'],
+    });
+
     const foundOrgUnitCodes = foundOrgUnits.map(orgUnit => orgUnit.code);
 
     const missingOrgUnitCodes = requestedOrgUnitCodes.filter(
@@ -43,7 +51,7 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
 
     const countryCodes = new Set(foundOrgUnits.map(orgUnit => orgUnit.country_code));
     countryCodes.forEach(countryCode => {
-      if (!accessPolicy.allows(countryCode, permissionGroupName)) {
+      if (countryCode == null || !accessPolicy.allows(countryCode, permissionGroupName)) {
         throw new Error(`No ${permissionGroupName} access for user to ${countryCode}`);
       }
     });
@@ -51,17 +59,17 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
 
   async buildResponse() {
     const { query, ctx } = this.req;
-    const { organisationUnitCodes, ...restOfQuery } = query;
+    const { organisationUnitCodes, hierarchy = 'explore', ...restOfQuery } = query;
     if (!organisationUnitCodes || typeof organisationUnitCodes !== 'string') {
       throw new Error('Must provide organisationUnitCodes URL parameter');
     }
     const report = await this.findReport();
 
-    this.checkUserHasAccessToReport(report, organisationUnitCodes.split(','));
+    this.checkUserHasAccessToReport(report, organisationUnitCodes.split(','), hierarchy);
 
     const aggregator = createAggregator(Aggregator, ctx);
     return new ReportBuilder()
       .setConfig(report.config)
-      .build(aggregator, { organisationUnitCodes, ...restOfQuery });
+      .build(aggregator, { organisationUnitCodes, hierarchy, ...restOfQuery });
   }
 }
