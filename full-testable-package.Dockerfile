@@ -76,6 +76,7 @@ COPY packages/data-broker/. ./packages/data-broker
 COPY packages/database/. ./packages/database
 COPY packages/devops/. ./packages/devops
 COPY packages/dhis-api/. ./packages/dhis-api
+COPY packages/entity-server/. ./packages/entity-server
 COPY packages/indicators/. ./packages/indicators
 COPY packages/psss-server/. ./packages/psss-server
 COPY packages/report-server/. ./packages/report-server
