@@ -85,7 +85,7 @@ e2e-db-current:
 
 e2e-setup:
   build:
-    dockerfile: e2e-setup.Dockerfile
+    dockerfile: packages/devops/images/e2e-setup/e2e-setup.Dockerfile
   encrypted_env_file: ./ci-env-vars.encrypted
   depends_on:
     - e2e-db-reference
