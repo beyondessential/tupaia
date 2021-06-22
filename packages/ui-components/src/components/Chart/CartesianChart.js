@@ -150,8 +150,13 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
 
   const config = Object.keys(chartConfig).length > 0 ? chartConfig : { [DEFAULT_DATA_KEY]: {} };
 
-  const sortedChartConfig = Object.entries(config).sort((a, b) => {
-    return CHART_SORT_ORDER[b[1].chartType] - CHART_SORT_ORDER[a[1].chartType];
+  const sortedChartConfig = Object.entries(config).sort(([, a], [, b]) => {
+    // if custom sort order defined, use that
+    if (a.sortOrder !== undefined && b.sortOrder !== undefined) {
+      return a.sortOrder - b.sortOrder;
+    }
+    // make sure lines are in front of bars
+    return CHART_SORT_ORDER[b.chartType] - CHART_SORT_ORDER[a.chartType];
   });
 
   const Chart = CHART_TYPE_TO_CHART[chartType];
