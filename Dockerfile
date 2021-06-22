@@ -92,4 +92,8 @@ RUN sh scripts/bash/build.sh
 COPY ./init-services.sh ./
 RUN chmod +x ./init-services.sh
 
+# add other files
+#  - needed for db migrate
+COPY ./babel.config.json ./
+
 CMD ./init-services.sh && pm2 -f log
