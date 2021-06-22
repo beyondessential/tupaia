@@ -4,7 +4,16 @@ FROM node:12.18.3-alpine3.11
 RUN apk --no-cache add \
   bash \
   postgresql-client \
-  git
+  git \
+  nginx \
+  openrc
+
+# install nginx
+COPY packages/devops/images/tupaia/nginx.conf /etc/nginx/
+RUN nginx -t
+RUN mkdir -p /run/openrc
+RUN touch /run/openrc/softlevel
+
 
 # install pm2
 RUN npm i --global pm2

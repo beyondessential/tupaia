@@ -24,4 +24,8 @@ for PACKAGE in ${PACKAGES[@]}; do
     fi
 done
 
-echo "Services started"
+echo "Tupaia services started"
+
+rc-service nginx start
+
+echo "Started"
