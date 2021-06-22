@@ -105,7 +105,7 @@ export const TwoColumnPageView = ({ content }) => {
                   </CardHeader>
                   <CardBody>
                     {links.map(({ name, link }) => (
-                      <Link key={name} href={link}>
+                      <Link key={name} href={link} target="_blank">
                         <ArrowForwardIcon />
                         {name}
                       </Link>
