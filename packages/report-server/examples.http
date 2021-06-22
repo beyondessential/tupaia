@@ -1,13 +1,62 @@
-@hostname = localhost
-@port = 8030
-@host = {{hostname}}:{{port}}
-@version = v1
+@baseUrl = http://localhost:8030/v1
+# Uncomment below to fetch against the dev server, rather than localhost
+# @baseUrl = https://dev-report-api.tupaia.org/v1
 @contentType = application/json
-# In order to setup authorization, please set 'email' and 'password' in your restClient environement variables 
+# In order to setup authorization, please set 'email' and 'password' in your restClient environement variables
 # see: https://marketplace.visualstudio.com/items?itemName=humao.rest-client#environment-variables
 @authorization  = Basic {{email}}:{{password}}
 
 ### Fetch PSSS Weekly Report
-GET http://{{host}}/{{version}}/fetchReport/PSSS_Weekly_Report?organisationUnitCodes=TO&hierarchy=psss&period=2020 HTTP/1.1
+GET {{baseUrl}}/fetchReport/PSSS_Weekly_Report?organisationUnitCodes=TO&hierarchy=psss&period=2020 HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
+
+### Fetch Report With Test Config
+POST {{baseUrl}}/testFetchReport/xx?organisationUnitCodes=TO&hierarchy=psss&period=2020 HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+  "testConfig": {
+    "fetch": {
+      "dataElements": [
+        "BCD46",
+        "BCD47",
+        "BCD48",
+        "BCD48a",
+        "BCD48b",
+        "BCD49",
+        "BCD50",
+        "BCD50",
+        "BCD51",
+        "BCD52",
+        "BCD53",
+        "BCD54",
+        "BCD55"
+      ],
+      "aggregations": ["MOST_RECENT"]
+    },
+    "transform": [
+      "keyValueByDataElementName",
+      {
+          "transform": "select",
+          "'Doctors'": "$row.BCD46",
+          "'Midwives'": "$row.BCD47",
+          "'Nurses'": "sum([$row.BCD48, $row.BCD48a, $row.BCD48b])",
+          "'Aides'": "$row.BCD49",
+          "'Others'": "sum([$row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55])",
+          "...": ["period", "organisationUnit"]
+      },
+      {
+        "transform": "aggregate",
+        "organisationUnit": "group",
+        "period": "group",
+        "Doctors": "sum",
+        "Midwives": "sum",
+        "Nurses": "sum",
+        "Aides": "sum",
+        "Others": "sum"
+      }
+    ]
+  }
+}
