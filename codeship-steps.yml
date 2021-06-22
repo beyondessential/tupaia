@@ -152,5 +152,9 @@
   name: e2e-run-ref
   service: e2e-tupaia-reference
   steps:
-    - name: e2e-run-ref
-      command: 'echo ref'
+    - name: e2e-run-ref1
+      command: 'echo ref1'
+    - name: e2e-run-ref2
+      command: 'yarn migrate'
+    - name: e2e-run-ref3
+      command: 'echo ref3'
