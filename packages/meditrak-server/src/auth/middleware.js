@@ -22,7 +22,7 @@ async function authenticateUser(req) {
 
   // Use the user account provided in the auth header if present
   if (tokenUserID) {
-    return tokenUserID;
+    return { userId: tokenUserID };
   }
 
   // If no user specified otherwise, use the one linked to api client (if present)
@@ -30,12 +30,12 @@ async function authenticateUser(req) {
   // (whether there's a user attached or not)
   const apiClientUser = await getAPIClientUser(authHeader, req.models);
   if (apiClientUser) {
-    return apiClientUser.id;
+    return { apiClientUser: apiClientUser, userId: apiClientUser.id };
   }
 
   // Non-user requests are only allowed access to these routes
   if (preAuthenticationRoutes.includes(req.endpoint)) {
-    return null;
+    return {};
   }
 
   // There's no user account provided and it's not a pre-auth route
@@ -45,7 +45,10 @@ async function authenticateUser(req) {
 
 export const authenticationMiddleware = async (req, res, next) => {
   try {
-    const userId = await authenticateUser(req);
+    const { userId, apiClientUser } = await authenticateUser(req);
+    if (apiClientUser) {
+      req.apiClientUser = apiClientUser;
+    }
     if (userId) {
       req.userId = userId;
       const { authenticator } = req;

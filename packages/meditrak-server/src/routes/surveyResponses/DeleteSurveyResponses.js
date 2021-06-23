@@ -8,7 +8,7 @@ import {
   assertAllPermissions,
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertTupaiaAdminPanelAccess,
+  assertAdminPanelAccess,
 } from '../../permissions';
 import { assertSurveyResponsePermissions } from './assertSurveyResponsePermissions';
 import { AnalyticsRefresher } from '@tupaia/database';
@@ -29,7 +29,7 @@ export class DeleteSurveyResponses extends DeleteHandler {
     await this.assertPermissions(
       assertAnyPermissions([
         assertBESAdminAccess,
-        assertAllPermissions([assertTupaiaAdminPanelAccess, surveyResponsePermissionChecker]),
+        assertAllPermissions([assertAdminPanelAccess, surveyResponsePermissionChecker]),
       ]),
     );
   }

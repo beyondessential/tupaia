@@ -298,16 +298,17 @@ export const MapOverlayGroup = ({
   selectedOverlay,
   setSelectedOverlay,
   selectedPath,
-  setSelectedPath,
   path,
 }) => {
-  const [open, setOpen] = useState(false);
+  const activeClassName = getActiveClass(path, selectedPath);
+  const initialIsOpen = activeClassName === 'selected';
+  const [open, setOpen] = useState(initialIsOpen);
 
   const handleOpen = () => {
     setOpen(openState => openState !== true);
   };
 
-  // set the first overlay as active
+  // Set the first overlay as active by default
   useEffect(() => {
     if (!selectedOverlay && path.every(node => node === 0)) {
       options.forEach(option => {
@@ -316,13 +317,10 @@ export const MapOverlayGroup = ({
         } else {
           setOpen(true);
           setSelectedOverlay(options[0].code);
-          setSelectedPath([...path, 0]);
         }
       });
     }
-  }, [setSelectedOverlay, setSelectedPath, options, setOpen, path, selectedOverlay]);
-
-  const activeClassName = getActiveClass(path, selectedPath);
+  }, [setSelectedOverlay, options, setOpen, path, selectedOverlay]);
 
   return (
     <FormControl key={name} component="fieldset" className={[open && 'open', activeClassName]}>
@@ -348,7 +346,6 @@ export const MapOverlayGroup = ({
                 selectedOverlay={selectedOverlay}
                 setSelectedOverlay={setSelectedOverlay}
                 selectedPath={selectedPath}
-                setSelectedPath={setSelectedPath}
                 path={[...path, index]}
               />
             ) : (
@@ -358,9 +355,6 @@ export const MapOverlayGroup = ({
                 value={code}
                 label={label}
                 className={getActiveClass([...path, index], selectedPath)}
-                onChange={() => {
-                  setSelectedPath([...path, index]);
-                }}
               />
             ),
           )}
@@ -375,7 +369,6 @@ MapOverlayGroup.propTypes = {
   options: PropTypes.array.isRequired,
   selectedOverlay: PropTypes.string,
   setSelectedOverlay: PropTypes.func.isRequired,
-  setSelectedPath: PropTypes.func.isRequired,
   path: PropTypes.array.isRequired,
   selectedPath: PropTypes.array,
 };
