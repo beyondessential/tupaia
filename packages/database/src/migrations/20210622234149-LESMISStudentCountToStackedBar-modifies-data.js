@@ -97,18 +97,19 @@ const FRONT_END_CONFIG = {
   chartConfig: {
     GPI: {
       chartType: 'line',
+      color: '#ffeb3b',
       yAxisOrientation: 'right',
       yName: 'GPI',
     },
     Male: {
       chartType: 'bar',
-      color: '#E15241',
+      color: '#f44336',
       stackId: '1',
       yName: 'Number of Students',
     },
     Female: {
       chartType: 'bar',
-      color: '#4696EC',
+      color: '#2196f3',
       stackId: '1',
     },
   },
