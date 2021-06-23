@@ -6,6 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
+import { compareLegendOrder } from './compareLegendOrder';
 
 const LegendContainer = styled.div`
   display: flex;
@@ -43,12 +44,16 @@ const getDisplayValue = (chartConfig, value) => chartConfig[value]?.label || val
 
 export const getPieLegend = ({ chartConfig = {} }) => ({ payload }) => (
   <LegendContainer style={{ padding: 0, marginBottom: -10 }}>
-    {payload.map(({ color, value }) => (
-      <LegendItem key={value} disabled>
-        <Box style={{ background: color }} />
-        <Text>{getDisplayValue(chartConfig, value)}</Text>
-      </LegendItem>
-    ))}
+    {payload
+      .sort(({ value: valueA }, { value: valueB }) => {
+        return compareLegendOrder(chartConfig[valueA], chartConfig[valueB]);
+      })
+      .map(({ color, value }) => (
+        <LegendItem key={value} disabled>
+          <Box style={{ background: color }} />
+          <Text>{getDisplayValue(chartConfig, value)}</Text>
+        </LegendItem>
+      ))}
   </LegendContainer>
 );
 
