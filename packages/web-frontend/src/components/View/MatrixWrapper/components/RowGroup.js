@@ -79,6 +79,7 @@ export default class RowGroup extends Component {
           }}
         >
           <button
+            type="button"
             onClick={() => onToggleRowExpanded(rowId)}
             style={{ paddingLeft: depth * indentSize, ...styles.collapsibleHeader }}
           >
