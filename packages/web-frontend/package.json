@@ -11,8 +11,6 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
-    "start-new": "PORT=8088 react-scripts start",
-    "build-new": "react-scripts build",
     "analyze": "source-map-explorer build/static/js/main.*",
     "build": "mkdir -p builds && npm run build-desktop && npm run build-mobile",
     "build-desktop": "react-scripts build && rm -rf builds/desktop && mv build builds/desktop",
