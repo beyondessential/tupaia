@@ -48,6 +48,9 @@ const REPORT_CONFIG = {
     ],
     aggregations: [
       {
+        type: 'MOST_RECENT',
+      },
+      {
         type: 'SUM_PER_ORG_GROUP',
         config: {
           dataSourceEntityType: 'school',
