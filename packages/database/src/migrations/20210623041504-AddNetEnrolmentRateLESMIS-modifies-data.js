@@ -87,7 +87,6 @@ const FRONT_END_CONFIG = {
   type: 'chart',
   chartType: 'composed',
   xName: 'Level of Education',
-  yName: 'Rate (%)',
   periodGranularity: 'one_year_at_a_time',
   chartConfig: {
     GPI: {
@@ -100,7 +99,7 @@ const FRONT_END_CONFIG = {
     Male: {
       chartType: 'bar',
       color: '#f44336',
-      yName: 'Rate',
+      yName: 'Rate (%)',
       stackId: '1',
       legendOrder: '1',
     },
