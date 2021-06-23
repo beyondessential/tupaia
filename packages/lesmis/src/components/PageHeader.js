@@ -43,10 +43,11 @@ PageHeader.propTypes = {
       name: PropTypes.string,
       url: PropTypes.string,
     }),
-  ).isRequired,
+  ),
   center: PropTypes.bool,
 };
 
 PageHeader.defaultProps = {
   center: false,
+  breadcrumbs: [],
 };
