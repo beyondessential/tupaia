@@ -16,7 +16,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const CODE = 'LESMIS_gross_enrolment_rate';
+const CODE = 'LESMIS_net_enrolment_rate';
 
 const REPORT_CONFIG = {
   fetch: {
