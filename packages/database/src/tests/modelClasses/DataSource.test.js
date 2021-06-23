@@ -9,7 +9,9 @@ import { DataSourceModel, DataSourceType } from '../../modelClasses/DataSource';
 
 describe('DataSource', () => {
   describe('sanitizeConfig()', () => {
-    const database = {};
+    const database = {
+      fetchSchemaForTable: () => {},
+    };
 
     const createDataSource = ({ type = 'dataElement', serviceType = 'tupaia', config }) =>
       new DataSourceType(new DataSourceModel(database), {

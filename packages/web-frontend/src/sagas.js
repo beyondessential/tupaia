@@ -173,6 +173,7 @@ function* handleInvalidPermission({ projectCode }) {
 
     // handle 404s
     // Todo: handle 404s. Issue: https://github.com/beyondessential/tupaia-backlog/issues/1474
+    // eslint-disable-next-line no-console
     console.error('project does not exist - 404');
     return;
   }
@@ -192,6 +193,7 @@ function* handleUserPage(userPage, initialComponents) {
       yield put(setVerifyEmailToken(initialComponents[URL_COMPONENTS.VERIFY_EMAIL_TOKEN]));
       break;
     default:
+      // eslint-disable-next-line no-console
       console.error('Unhandled user page', userPage);
   }
 }
@@ -898,7 +900,6 @@ function* fetchMeasureInfo(measureId) {
 
     yield put(fetchMeasureInfoSuccess(measureInfo, countryCode));
   } catch (error) {
-    console.log('error', error);
     yield put(fetchMeasureInfoError(error));
   }
 }

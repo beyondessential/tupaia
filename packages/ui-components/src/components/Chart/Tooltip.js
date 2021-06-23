@@ -26,6 +26,11 @@ const Heading = styled(Typography)`
   font-size: 0.875rem;
   line-height: 1rem;
   margin-bottom: 0.5rem;
+  color: #2c3236;
+`;
+
+const Text = styled(Typography)`
+  color: #2c3236;
 `;
 
 const List = styled.ul`
@@ -101,12 +106,12 @@ const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }
   return (
     <TooltipContainer>
       {getIsTimeSeries([payload[0].payload]) && periodGranularity ? (
-        <div>
-          <p>{formatTimestampForChart(timestamp, periodGranularity)}</p>
-          {formatDataValueByType({ value, metadata }, valueTypeForLabel)}
-        </div>
+        <>
+          <Heading>{formatTimestampForChart(timestamp, periodGranularity)}</Heading>
+          <Text>{formatDataValueByType({ value, metadata }, valueTypeForLabel)}</Text>
+        </>
       ) : (
-        formatLabelledValue(name, value, valueTypeForLabel, metadata)
+        <Heading>{formatLabelledValue(name, value, valueTypeForLabel, metadata)}</Heading>
       )}
     </TooltipContainer>
   );
