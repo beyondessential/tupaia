@@ -16,7 +16,7 @@ export class DashboardItemModel extends DatabaseModel {
     return DashboardItemType;
   }
 
-  async fetchItemsInDashboard(dashboardId, permissionGroups, criteria) {
+  async fetchItemsInDashboard(dashboardId, entityTypes, permissionGroups, projectCodes, criteria) {
     return this.find(
       {
         ...criteria,
@@ -24,6 +24,14 @@ export class DashboardItemModel extends DatabaseModel {
         permission_groups: {
           comparator: '&&', // User has ANY of the permission groups
           comparisonValue: permissionGroups,
+        },
+        project_codes: {
+          comparator: '@>',
+          comparisonValue: projectCodes,
+        },
+        entity_types: {
+          comparator: '@>',
+          comparisonValue: entityTypes,
         },
       },
       {

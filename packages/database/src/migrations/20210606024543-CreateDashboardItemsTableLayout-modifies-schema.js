@@ -20,8 +20,7 @@ exports.up = async function (db) {
       id TEXT PRIMARY KEY,
       code TEXT NOT NULL UNIQUE,
       config JSONB NOT NULL DEFAULT '{}',
-      permission_groups TEXT[] NOT NULL CONSTRAINT permission_groups_not_empty CHECK (permission_groups <> '{}'),
-      report_code TEXT NOT NULL,
+      report_code TEXT,
       legacy BOOLEAN NOT NULL DEFAULT 'false'
     );
   `);
@@ -39,9 +38,7 @@ exports.up = async function (db) {
       id TEXT PRIMARY KEY,
       code TEXT NOT NULL UNIQUE,
       name TEXT NOT NULL,
-      entity_types entity_type[] NOT NULL CONSTRAINT entity_types_not_empty CHECK (entity_types <> '{}'),
       root_entity_code TEXT NOT NULL,
-      project_codes TEXT[] NOT NULL CONSTRAINT project_codes_not_empty CHECK (project_codes <> '{}'),
       sort_order INTEGER,
       FOREIGN KEY (root_entity_code) REFERENCES entity (code) ON UPDATE CASCADE ON DELETE RESTRICT
     );
@@ -51,6 +48,9 @@ exports.up = async function (db) {
       id TEXT PRIMARY KEY,
       dashboard_id TEXT NOT NULL,
       child_id TEXT NOT NULL,
+      entity_types entity_type[] NOT NULL CONSTRAINT entity_types_not_empty CHECK (entity_types <> '{}'),
+      project_codes TEXT[] NOT NULL CONSTRAINT project_codes_not_empty CHECK (project_codes <> '{}'),
+      permission_groups TEXT[] NOT NULL CONSTRAINT permission_groups_not_empty CHECK (permission_groups <> '{}'),
       sort_order INTEGER,
       FOREIGN KEY (dashboard_id) REFERENCES dashboard (id) ON UPDATE CASCADE ON DELETE RESTRICT,
       FOREIGN KEY (child_id) REFERENCES dashboard_item (id) ON UPDATE CASCADE ON DELETE CASCADE

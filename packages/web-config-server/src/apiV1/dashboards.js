@@ -16,36 +16,41 @@ export default class extends RouteHandler {
     const permissionGroups = await this.req.getUserGroups(entityCode);
     const hierarchyId = await this.fetchHierarchyId();
     // Fetch dashboards
-    const dashboards = await this.models.dashboard.getDashboards(
-      entity,
-      hierarchyId,
-      query.projectCode,
-    );
+    const dashboards = await this.models.dashboard.getDashboards(entity, hierarchyId);
     const sortedDashboards = orderBy(dashboards, ['sort_order', 'name']);
     // Fetch dashboard items
-    const dashboardsWithItems = await Promise.all(
-      Object.values(sortedDashboards).map(async dashboard => {
-        const dashboardItems = await this.models.dashboardItem.fetchItemsInDashboard(
-          dashboard.id,
-          permissionGroups,
-        );
-        const sortedDashboardItems = orderBy(dashboardItems, ['sort_order', 'code']);
-        return {
-          dashboardName: dashboard.name,
-          dashboardId: dashboard.id,
-          dashboardCode: dashboard.code,
-          entityType: entity.type,
-          entityCode,
-          entityName: entity.name,
-          items: Object.values(sortedDashboardItems).map(item => ({
-            code: item.code,
-            legacy: item.legacy,
-            reportCode: item.report_code,
-            ...item.config,
-          })),
-        };
-      }),
-    );
+    const dashboardsWithItems = (
+      await Promise.all(
+        Object.values(sortedDashboards).map(async dashboard => {
+          const dashboardItems = await this.models.dashboardItem.fetchItemsInDashboard(
+            dashboard.id,
+            [entity.type],
+            permissionGroups,
+            [query.projectCode],
+          );
+
+          if (dashboardItems.length === 0) {
+            return null;
+          }
+
+          return {
+            dashboardName: dashboard.name,
+            dashboardId: dashboard.id,
+            dashboardCode: dashboard.code,
+            entityType: entity.type,
+            entityCode,
+            entityName: entity.name,
+            items: Object.values(dashboardItems).map(item => ({
+              code: item.code,
+              legacy: item.legacy,
+              reportCode: item.report_code,
+              ...item.config,
+            })),
+          };
+        }),
+      )
+    ).filter(d => d !== null);
+
     return dashboardsWithItems;
   };
 }
