@@ -53,11 +53,10 @@ Our e2e tests support Tupaia-specific configuration specified in [config.json](c
     "urlFiles": ["cypress/config/dashboardReportUrls/default.json"],
     "urls": ["/explore/explore/IHR%20Report?report=WHO_IHR_SPAR_WPRO"],
     "filter": {
-      // Single values can also be used instead of arrays, eg `"project": "covidau"`
-      "id": ["id1", "id2"],
+      "id": ["report_id1", "report_id2"],
       "project": ["covidau", "strive"],
-      "orgUnit": ["TO", "PG"],
-      "dashboardGroup": ["dashboardGroup1", "dashboardGroup2"],
+      "orgUnit": "PG",
+      "dashboardGroup": "Dashboard Group1",
       "dataBuilder": ["tableOfEvents", "sumAll"]
     }
   },
@@ -65,9 +64,9 @@ Our e2e tests support Tupaia-specific configuration specified in [config.json](c
     "allowEmptyResponse": false,
     "snapshotTypes": ["responseBody"],
     "urlGenerationOptions": {
-      "id": "RH_Available_RHS3UNFPA536",
-      "country": ["TO", "VU"],
-      "project": ["unfpa"]
+      "id": "overlay_id",
+      "orgUnit": ["TO", "VU"],
+      "project": "unfpa"
     },
     "urls": ["/covidau/AU?overlay=AU_FLUTRACKING_Fever_And_Cough"],
     "filter": {
@@ -79,6 +78,8 @@ Our e2e tests support Tupaia-specific configuration specified in [config.json](c
   }
 }
 ```
+
+You can find more information about config fields in the section below. For the exact schema, check [configSchema.js](scripts/generateConfig/configSchema.js#L22).
 
 ### Dashboard report & map overlay configuration
 
@@ -135,7 +136,7 @@ Use any of the fields below to specify test urls. You can use multiple fields in
 
 #### Filter
 
-You can optionally specify a `filter` that will be applied to the tested visualisations. For example, to test all "Fanafana" project overlays that use the "valueForOrgGroup" data builder in Tonga:
+You can optionally specify a `filter` that will be applied to the tested visualisations. For example, to test all "Fanafana" project overlays that use the "valueForOrgGroup" data builder in Tonga and Vanuatu:
 
 ```json
 {
@@ -144,7 +145,7 @@ You can optionally specify a `filter` that will be applied to the tested visuali
       "project": "fanafana"
     },
     "filter": {
-      "orgUnit": "TO",
+      "orgUnit": ["TO", "VU"],
       "measureBuilder": "valueForOrgGroup"
     }
   }

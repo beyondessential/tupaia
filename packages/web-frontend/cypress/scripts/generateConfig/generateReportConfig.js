@@ -3,23 +3,28 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+/* eslint-disable no-template-curly-in-string */
+
 import moment from 'moment';
 
-import { hasContent, isAString, ObjectValidator, stringifyQuery } from '@tupaia/utils';
+import { stringifyQuery, yup } from '@tupaia/utils';
 import { convertDateRangeToUrlPeriodString } from '../../../src/historyNavigation/utils';
 import config from '../../config.json';
-import { buildUrlsUsingConfig, sortUrls, validateFilter } from './helpers';
+import { buildUrlSchema, buildUrlsUsingConfig, sortUrls } from './helpers';
 import { DashboardReportFilter } from './VisualisationFilter';
 
-const objectUrlSchema = {
-  id: [hasContent, isAString],
-  project: [hasContent, isAString],
-  orgUnit: [hasContent, isAString],
-  dashboardGroup: [hasContent, isAString],
-};
-const objectUrlValidator = new ObjectValidator(objectUrlSchema);
-
-const FILTER_FIELDS = [...Object.keys(objectUrlSchema), 'dataBuilder'];
+const urlSchema = buildUrlSchema({
+  regex: new RegExp('^/[^/]+/[^/]+/[^/]+?.*report=.+'),
+  regexDescription: '/:projectCode/:orgUnit/:dashboardName?report=:reportId',
+  shape: {
+    id: yup.string().required(),
+    project: yup.string().required(),
+    orgUnit: yup.string().required(),
+    dashboardGroup: yup.string().required(),
+    startDate: yup.string(),
+    endDate: yup.string(),
+  },
+});
 
 const buildReportPeriod = (startDate, endDate) => {
   if (!startDate || !endDate) {
@@ -36,18 +41,19 @@ const stringifyUrl = url => {
     return url;
   }
 
-  const constructError = (errorMessage, key) =>
-    new Error(`Invalid content for field "${key}" of object url with id "${id}": ${errorMessage}`);
-  objectUrlValidator.validateSync(url, constructError);
-
-  const { id, project, orgUnit, dashboardGroup, startDate, endDate } = url;
+  const { id, project, orgUnit, dashboardGroup, startDate, endDate, reportPeriod } = url;
   const path = [project, orgUnit, dashboardGroup].map(encodeURIComponent).join('/');
-  const queryParams = { report: id, reportPeriod: buildReportPeriod(startDate, endDate) };
+  const queryParams = {
+    report: id,
+    reportPeriod: reportPeriod || buildReportPeriod(startDate, endDate),
+  };
 
   return stringifyQuery('', path, queryParams);
 };
 
 const parseUrl = url => {
+  urlSchema.validateSync(url, { strict: true });
+
   if (typeof url === 'object') {
     return url;
   }
@@ -56,33 +62,26 @@ const parseUrl = url => {
   const searchParams = new URLSearchParams(queryParams);
   const [project, orgUnit, dashboardGroup] = path.split('/').filter(x => x !== '');
 
-  const objectUrl = {
+  return {
     id: searchParams.get('report'),
     project,
     orgUnit,
     dashboardGroup,
-    startDate: searchParams.get('startDate'),
-    endDate: searchParams.get('endDate'),
+    reportPeriod: searchParams.get('reportPeriod'),
   };
-
-  const constructError = (errorMessage, key) =>
-    new Error(`Invalid content for component "${key}" of url "${url}": ${errorMessage}`);
-  objectUrlValidator.validateSync(objectUrl, constructError);
-
-  return objectUrl;
 };
 
 export const generateReportConfig = async db => {
   const { dashboardReports: reportConfig } = config;
-  const { filter = {}, urlFiles, urlGenerationOptions, ...otherFields } = reportConfig;
-  validateFilter(filter, FILTER_FIELDS);
+  const { filter = {} } = reportConfig;
 
   const urls = await buildUrlsUsingConfig(db, reportConfig);
   const objectUrls = urls.map(parseUrl);
   const filteredObjectUrls = await new DashboardReportFilter(db, filter).apply(objectUrls);
 
   return {
-    ...otherFields,
+    allowEmptyResponse: reportConfig.allowEmptyResponse,
+    snapshotTypes: reportConfig.snapshotTypes,
     urls: sortUrls(filteredObjectUrls.map(stringifyUrl)),
   };
 };

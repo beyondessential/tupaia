@@ -5,37 +5,25 @@
 
 import { groupBy } from 'lodash';
 
-import {
-  constructIsOneOfType,
-  getUniqueEntries,
-  hasContent,
-  isAString,
-  mapKeys,
-  ObjectValidator,
-  stringifyQuery,
-  toArray,
-} from '@tupaia/utils';
+import { getUniqueEntries, mapKeys, stringifyQuery, toArray, yup, yupUtils } from '@tupaia/utils';
 import config from '../../config.json';
-import { buildUrlsUsingConfig, sortUrls, validateFilter } from './helpers';
+import { buildUrlSchema, buildUrlsUsingConfig, sortUrls } from './helpers';
 import { MapOverlayFilter } from './VisualisationFilter';
 
-const objectUrlSchema = {
-  id: [hasContent, constructIsOneOfType(['string', 'array'])], // Array is for linked measures
-  project: [hasContent, isAString],
-  orgUnit: [hasContent, isAString],
-};
-const objectUrlValidator = new ObjectValidator(objectUrlSchema);
+const { oneOrArrayOf } = yupUtils;
 
-const URL_GENERATION_FIELDS = {
-  ID: 'id',
-  PROJECT: 'project',
-  COUNTRY: 'country',
-};
-
-const FILTER_FIELDS = [...Object.keys(objectUrlSchema), 'measureBuilder'];
+const urlSchema = buildUrlSchema({
+  regex: new RegExp('^/[^/]+/[^/]+/[^/]+?.*overlay=.+'),
+  regexDescription: '/:projectCode/:orgUnit?overlay=:overlayId',
+  shape: {
+    id: oneOrArrayOf(yup.string().required()),
+    project: yup.string().required(),
+    orgUnit: yup.string().required(),
+  },
+});
 
 const removeRedundantObjectUrls = urls =>
-  // An overlay with the same id and orgUnit is the same across projects
+  // An overlay with the same id and orgUnit has the same data across projects
   Object.values(groupBy(urls, u => `${u.id}___${u.orgUnit}`))
     .map(urlGroup => urlGroup[0])
     .flat();
@@ -52,15 +40,9 @@ const stringifyUrl = url => {
   return stringifyQuery('', path, queryParams);
 };
 
-const validateUrlGenerationOptions = options => {
-  Object.keys(options).forEach(key => {
-    if (!Object.values(URL_GENERATION_FIELDS).includes(key)) {
-      throw new Error(`Key ${key} is not supported in "urlGenerationOptions"`);
-    }
-  });
-};
-
 const parseUrl = url => {
+  urlSchema.validateSync(url, { strict: true });
+
   if (typeof url === 'object') {
     return url;
   }
@@ -69,32 +51,25 @@ const parseUrl = url => {
   const searchParams = new URLSearchParams(queryParams);
   const [project, orgUnit] = path.split('/').filter(x => x !== '');
 
-  const objectUrl = {
+  return {
     id: searchParams.get('overlay'),
     project,
     orgUnit,
   };
-
-  const constructError = (errorMessage, key) =>
-    new Error(`Invalid content for component "${key}" of url "${url}": ${errorMessage}`);
-  objectUrlValidator.validateSync(objectUrl, constructError);
-
-  return objectUrl;
 };
 
 const generateUrls = async (db, options) => {
   if (Object.keys(options).length === 0) {
     return [];
   }
-  validateUrlGenerationOptions(options);
 
   const tableOverlayCountry = 'temp_overlay_country';
   const tableOverlayProject = 'temp_overlay_project';
 
   const generationToQueryField = {
-    [URL_GENERATION_FIELDS.ID]: 'id',
-    [URL_GENERATION_FIELDS.COUNTRY]: `${tableOverlayCountry}.orgUnit`,
-    [URL_GENERATION_FIELDS.PROJECT]: `${tableOverlayProject}.project`,
+    id: 'id',
+    orgUnit: `${tableOverlayCountry}.orgUnit`,
+    project: `${tableOverlayProject}.project`,
   };
   const where = mapKeys(options, generationToQueryField);
 
@@ -132,25 +107,27 @@ const generateUrls = async (db, options) => {
   return overlays
     .filter(o => !linkedOverlayIds.includes(o.id))
     .map(overlay => {
-      const { id, linkedMeasures } = overlay;
+      const { id, project, orgUnit, linkedMeasures } = overlay;
+
       return {
-        ...overlay,
         id: linkedMeasures ? [id, ...linkedMeasures] : id,
+        project,
+        orgUnit,
       };
     });
 };
 
 export const generateOverlayConfig = async db => {
   const { mapOverlays: overlayConfig } = config;
-  const { filter = {}, urlFiles, urlGenerationOptions, ...otherFields } = overlayConfig;
-  validateFilter(filter, FILTER_FIELDS);
+  const { filter = {} } = overlayConfig;
 
   const urls = await buildUrlsUsingConfig(db, overlayConfig, generateUrls);
   const objectUrls = removeRedundantObjectUrls(urls.map(parseUrl));
   const filteredObjectUrls = await new MapOverlayFilter(db, filter).apply(objectUrls);
 
   return {
-    ...otherFields,
+    allowEmptyResponse: overlayConfig.allowEmptyResponse,
+    snapshotTypes: overlayConfig.snapshotTypes,
     urls: sortUrls(filteredObjectUrls.map(stringifyUrl)),
   };
 };

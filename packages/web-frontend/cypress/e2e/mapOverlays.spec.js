@@ -3,28 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  constructEveryItemSync,
-  constructIsArrayOf,
-  constructIsEmptyOrSync,
-  constructIsOneOf,
-  hasContent,
-  isBoolean,
-  ObjectValidator,
-} from '@tupaia/utils';
-
-import config from '../config.json';
+import config from '../generatedConfig.json';
 import { SNAPSHOT_TYPES } from '../constants';
 import { preserveUserSession } from '../support';
-
-const overlayConfigSchema = {
-  allowEmptyResponse: [constructIsEmptyOrSync(isBoolean)],
-  urls: [hasContent, constructIsArrayOf('string')],
-  snapshotTypes: [
-    hasContent,
-    constructEveryItemSync(constructIsOneOf([SNAPSHOT_TYPES.RESPONSE_BODY])),
-  ],
-};
 
 const assertUrlResponseHasData = (url, response) => {
   const hasData = response.body?.measureData?.length > 0;
@@ -43,16 +24,7 @@ const urlToRouteRegex = url => {
   return new RegExp(`measureData?.*\\WmeasureId=${measureId}[&$]`);
 };
 
-const validateConfig = () => {
-  const constructError = (errorMessage, fieldKey) =>
-    new Error(
-      `Invalid content for field "mapOverlays.${fieldKey}" causing message "${errorMessage}"`,
-    );
-  new ObjectValidator(overlayConfigSchema).validateSync(config.mapOverlays, constructError);
-};
-
 describe('Map overlays', () => {
-  validateConfig(config);
   const { allowEmptyResponse, snapshotTypes, urls } = config.mapOverlays;
 
   before(() => {

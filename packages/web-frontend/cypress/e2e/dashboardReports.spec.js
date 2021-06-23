@@ -3,28 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  constructEveryItemSync,
-  constructIsArrayOf,
-  constructIsEmptyOrSync,
-  constructIsOneOf,
-  hasContent,
-  isBoolean,
-  ObjectValidator,
-} from '@tupaia/utils';
-
 import config from '../generatedConfig.json';
 import { SNAPSHOT_TYPES } from '../constants';
 import { preserveUserSession } from '../support';
-
-const reportConfigSchema = {
-  allowEmptyResponse: [constructIsEmptyOrSync(isBoolean)],
-  urls: [hasContent, constructIsArrayOf('string')],
-  snapshotTypes: [
-    hasContent,
-    constructEveryItemSync(constructIsOneOf([SNAPSHOT_TYPES.RESPONSE_BODY, SNAPSHOT_TYPES.HTML])),
-  ],
-};
 
 const checkHasMatrixData = body => {
   const { rows = [], columns = [] } = body;
@@ -58,16 +39,7 @@ const urlToRouteRegex = url => {
   return new RegExp(`view?.*\\WisExpanded=true&.*viewId=${viewId}[&$]`);
 };
 
-const validateConfig = () => {
-  const constructError = (errorMessage, fieldKey) =>
-    new Error(
-      `Invalid content for field "dashboardReports.${fieldKey}" causing message "${errorMessage}"`,
-    );
-  new ObjectValidator(reportConfigSchema).validateSync(config.dashboardReports, constructError);
-};
-
 describe('Dashboard reports', () => {
-  validateConfig(config);
   const { allowEmptyResponse, snapshotTypes, urls } = config.dashboardReports;
 
   before(() => {

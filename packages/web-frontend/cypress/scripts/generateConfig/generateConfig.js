@@ -9,15 +9,31 @@ import config from '../../config.json';
 import { generateOverlayConfig } from './generateOverlayConfig';
 import { generateReportConfig } from './generateReportConfig';
 import { generateTestUser } from './generateTestUser';
+import { configSchema } from './configSchema';
 import { writeJsonFile } from './helpers';
 
+const CONFIG_PATH = 'cypress/config.json';
 const GENERATED_CONFIG_PATH = 'cypress/generatedConfig.json';
+
+const validateConfig = () => {
+  try {
+    configSchema.validateSync(config, { strict: true });
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      throw new Error(`Validation of ${CONFIG_PATH} failed with "${error.message}"`);
+    }
+    throw error;
+  }
+};
 
 export const generateConfig = async () => {
   const logger = getLoggerInstance();
   const db = new TupaiaDatabase();
 
   logger.success('Start e2e test config generation');
+  validateConfig();
+  logger.success(`✔ Configuration is valid`);
+
   logger.success('* Generating test user...');
   await generateTestUser(db);
 
