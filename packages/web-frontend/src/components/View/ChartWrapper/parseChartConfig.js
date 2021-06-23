@@ -17,10 +17,7 @@ export const parseChartConfig = viewContent => {
 
   const chartConfigs = [baseConfig];
 
-  return chartConfigs
-    .map(sortChartConfigByLegendOrder)
-    .map(addDefaultColors)
-    .map(setOpacityValues)[0]; // must remove from array after mapping
+  return chartConfigs.map(addDefaultColors).map(setOpacityValues)[0]; // must remove from array after mapping
 };
 
 /**
@@ -67,24 +64,6 @@ const getDefaultPaletteName = (chartType, numberRequired) => {
   return numberRequired > Object.keys(COLOR_PALETTES.CHART_COLOR_PALETTE).length
     ? 'EXPANDED_CHART_COLOR_PALETTE'
     : 'CHART_COLOR_PALETTE';
-};
-
-// Bad practice to rely on object ordering: https://stackoverflow.com/questions/9179680/is-it-acceptable-style-for-node-js-libraries-to-rely-on-object-key-order
-const sortChartConfigByLegendOrder = chartConfig => {
-  return Object.entries(chartConfig)
-    .sort(([, cfg1], [, cfg2]) => {
-      if (Number.isNaN(cfg1.legendOrder) && Number.isNaN(cfg2.legendOrder)) return 0;
-      if (Number.isNaN(cfg1.legendOrder)) return -1;
-      if (Number.isNaN(cfg2.legendOrder)) return 1;
-      return cfg1.legendOrder - cfg2.legendOrder;
-    })
-    .reduce(
-      (newChartConfig, [key, val]) => ({
-        ...newChartConfig,
-        [key]: val,
-      }),
-      {},
-    );
 };
 
 const createDynamicConfig = (chartConfig, dynamicChartConfig, data) => {

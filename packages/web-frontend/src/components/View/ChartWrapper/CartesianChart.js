@@ -30,6 +30,7 @@ import { formatTimestampForChart, getIsTimeSeries } from './helpers';
 import ReferenceLabel from './ReferenceLabel';
 import CustomTooltip from './Tooltip';
 import VerticalTick from './VerticalTick';
+import { compareLegendOrder } from './compareLegendOrder';
 
 const { AREA, BAR, COMPOSED, LINE } = CHART_TYPES;
 const { PERCENTAGE, NUMBER } = VALUE_TYPES;
@@ -412,7 +413,11 @@ export class CartesianChart extends PureComponent {
         yAxisId={yAxisId}
         orientation={orientation}
         domain={this.calculateYAxisDomain(yAxisDomain)}
-        allowDataOverflow={axisValueType === PERCENTAGE || valueType === PERCENTAGE || this.containsClamp(yAxisDomain)}
+        allowDataOverflow={
+          axisValueType === PERCENTAGE ||
+          valueType === PERCENTAGE ||
+          this.containsClamp(yAxisDomain)
+        }
         // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
         label={this.renderYAxisLabel(yName || yAxisLabel, orientation)}
         tickFormatter={value =>
@@ -563,8 +568,14 @@ export class CartesianChart extends PureComponent {
     const { chartConfig = defaultChartConfig } = this.state;
     const { chartType: defaultChartType } = viewContent;
 
-    const sortedChartConfig = Object.entries(chartConfig).sort((a, b) => {
-      return CHART_SORT_ORDER[b[1].chartType] - CHART_SORT_ORDER[a[1].chartType];
+    const sortedChartConfig = Object.entries(chartConfig).sort(([, a], [, b]) => {
+      // make sure lines are in front of bars
+      const chartTypeOrderDifference =
+        CHART_SORT_ORDER[b.chartType] - CHART_SORT_ORDER[a.chartType];
+      if (chartTypeOrderDifference < 0 || chartTypeOrderDifference > 0) {
+        return chartTypeOrderDifference;
+      }
+      return compareLegendOrder(a, b);
     });
 
     return sortedChartConfig
