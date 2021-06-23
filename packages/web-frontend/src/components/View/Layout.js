@@ -6,36 +6,6 @@
 import styled from 'styled-components';
 import { isMobile } from '../../utils';
 
-export const FlexStart = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-`;
-
-export const FlexEnd = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-`;
-
-export const FlexSpaceBetween = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-export const FlexCenter = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const FlexRow = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-`;
-
 export const ChartContainer = styled.div(
   isMobile()
     ? {

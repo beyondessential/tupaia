@@ -89,6 +89,16 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
   const [chartConfig, setChartConfig] = useState(viewContent.chartConfig || {});
   const [activeDataKeys, setActiveDataKeys] = useState([]);
 
+  const {
+    chartType: defaultChartType,
+    data,
+    valueType,
+    labelType,
+    presentationOptions,
+    renderLegendForOneItem,
+    referenceAreas,
+  } = viewContent;
+
   const getIsActiveKey = legendDatakey =>
     activeDataKeys.length === 0 ||
     activeDataKeys.includes(legendDatakey) ||
@@ -141,16 +151,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
         )
       : data;
   };
-
-  const {
-    chartType: defaultChartType,
-    data,
-    valueType,
-    labelType,
-    presentationOptions,
-    renderLegendForOneItem,
-    referenceAreas,
-  } = viewContent;
 
   const hasDataSeries = chartConfig && Object.keys(chartConfig).length > 1;
   const aspect = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
@@ -223,7 +223,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
             });
           })}
         {ReferenceLines({ viewContent, isExporting, isEnlarged })}
-        {defaultChartType === BAR && data.length > 20 && !isExporting && isEnlarged && (
+        {chartType === BAR && data.length > 20 && !isExporting && isEnlarged && (
           <Brush dataKey="name" height={20} stroke={CHART_BLUES[0]} fill={CHART_BLUES[1]} />
         )}
       </ChartContainer>

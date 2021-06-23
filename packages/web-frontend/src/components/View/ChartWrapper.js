@@ -12,7 +12,8 @@ import BarChartIcon from '@material-ui/icons/BarChart';
 import GridOnIcon from '@material-ui/icons/GridOn';
 import { Chart, Table } from '@tupaia/ui-components/lib/chart';
 import { VIEW_CONTENT_SHAPE } from './propTypes';
-import { ChartContainer, ChartViewContainer, FlexEnd } from './Layout';
+import { ChartContainer, ChartViewContainer } from './Layout';
+import { FlexEnd } from '../Flexbox';
 
 const CustomChartContainer = styled(ChartContainer)`
   // recharts components doesn't pass nested styles so they need to be added on a wrapping component
