@@ -83,42 +83,42 @@ const FRONT_END_CONFIG = {
     Nursery: {
       color: '#A45628',
       stackId: '1',
-      sortOrder: 1,
+      legendOrder: 1,
     },
     Kindergarten: {
       color: '#BC632E',
       stackId: '1',
-      sortOrder: 2,
+      legendOrder: 2,
     },
     'Nursery and kindergarten': {
       color: '#D06E34',
       stackId: '1',
-      sortOrder: 3,
+      legendOrder: 3,
     },
     'Primary (Incomplete)': {
       color: '#E27839',
       stackId: '1',
-      sortOrder: 4,
+      legendOrder: 4,
     },
     'Primary (Complete)': {
       color: '#EC8C5E',
       stackId: '1',
-      sortOrder: 5,
+      legendOrder: 5,
     },
     LSE: {
       color: '#EFA78D',
       stackId: '1',
-      sortOrder: 6,
+      legendOrder: 6,
     },
     USE: {
       color: '#F3BDAB',
       stackId: '1',
-      sortOrder: 7,
+      legendOrder: 7,
     },
     'SE (Complete)': {
       color: '#F6D1C5',
       stackId: '1',
-      sortOrder: 8,
+      legendOrder: 8,
     },
   },
   presentationOptions: {
