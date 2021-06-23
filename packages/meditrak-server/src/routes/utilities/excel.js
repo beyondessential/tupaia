@@ -45,3 +45,15 @@ export const splitOnNewLinesOrCommas = string => {
   if (!string) return [];
   return string.includes('\n') ? splitStringOn(string, '\n') : splitStringOnComma(string);
 };
+
+export const columnIndexToCode = columnIndex => {
+  let columnNumber = columnIndex + 1;
+  let code = '';
+  while (columnNumber > 0) {
+    const thisLetterInteger = (columnNumber - 1) % 26;
+    const newLetter = String.fromCharCode('A'.charCodeAt() + thisLetterInteger);
+    code = `${newLetter}${code}`;
+    columnNumber = (columnNumber - thisLetterInteger - 1) / 26;
+  }
+  return code;
+};

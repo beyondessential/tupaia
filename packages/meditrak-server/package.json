@@ -34,7 +34,6 @@
     "async": "^2.6.2",
     "aws-sdk": "^2.451.0",
     "body-parser": "^1.18.3",
-    "cached": "^4.3.2",
     "case": "^1.6.1",
     "chai-as-promised": "^7.1.1",
     "chai-subset": "^1.6.0",
