@@ -27,8 +27,8 @@ import { ViewTitle } from './Typography';
 
 export class SingleValueWrapper extends PureComponent {
   render() {
-    const { name, valueType, value, total, value_metadata } = this.props.viewContent;
-    const metadata = value_metadata || this.props.viewContent[`${name}_metadata`];
+    const { name, valueType, value, total, value_metadata: valueMetadata } = this.props.viewContent;
+    const metadata = valueMetadata || this.props.viewContent[`${name}_metadata`];
     const { style } = this.props;
 
     return (

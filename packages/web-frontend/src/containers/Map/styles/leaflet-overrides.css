@@ -2,9 +2,11 @@
 .leaflet-container {
   background: black; /* Remove the grey tile background of not yet loaded tiles */
 }
-.leaflet-popup-tip, .leaflet-popup-content-wrapper, .leaflet-tooltip {
+.leaflet-popup-tip,
+.leaflet-popup-content-wrapper,
+.leaflet-tooltip {
   color: white;
-  background: rgb(43, 45, 56); 
+  background: rgb(43, 45, 56);
   border: 1px solid #555;
 }
 .leaflet-popup-content-wrapper {
@@ -14,7 +16,6 @@
   margin-top: -1px;
 }
 .leaflet-popup-tip {
-
 }
 /* Tooltip bordered arrow */
 .leaflet-tooltip-top:after,
@@ -25,7 +26,7 @@
   pointer-events: none;
   border: 6px solid transparent;
   background: transparent;
-  content: "";
+  content: '';
   z-index: 5;
 }
 .leaflet-tooltip-left:after,
@@ -36,12 +37,12 @@
 .leaflet-tooltip-right:after {
   left: 0;
   margin-left: -10px;
-  border-right-color: rgb(43, 45, 56); 
+  border-right-color: rgb(43, 45, 56);
 }
 .leaflet-tooltip-left:after {
   right: 0;
   margin-right: -10px;
-  border-left-color: rgb(43, 45, 56); 
+  border-left-color: rgb(43, 45, 56);
 }
 .leaflet-tooltip-left:before {
   border-left-color: #555;
