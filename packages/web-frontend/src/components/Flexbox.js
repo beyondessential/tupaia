@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
+import styled from 'styled-components';
+
 export const FlexStart = styled.div`
   display: flex;
   align-items: center;
