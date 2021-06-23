@@ -83,7 +83,7 @@ const REPORT_CONFIG = {
 };
 
 const FRONT_END_CONFIG = {
-  name: 'Gross Enrolment Rate - GER (by grade and gender, GPI)',
+  name: 'Gross Enrolment Rate - GER (by level of education and gender, GPI)',
   type: 'chart',
   chartType: 'composed',
   xName: 'Level of Education',
@@ -99,7 +99,7 @@ const FRONT_END_CONFIG = {
     Male: {
       chartType: 'bar',
       color: '#f44336',
-      yName: 'Rate',
+      yName: 'Rate (%)',
       stackId: '1',
       legendOrder: '1',
     },
