@@ -9,12 +9,16 @@ services:
       - ./ci-env-vars
 
   e2e-db-reference:
-    image: "mdillon/postgis:11-alpine"
+    build:
+      dockerfile: packages/devops/images/postgres/Dockerfile
+      context: .
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
 
   e2e-db-current:
-    image: "mdillon/postgis:11-alpine"
+    build:
+      dockerfile: packages/devops/images/postgres/Dockerfile
+      context: .
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
 
