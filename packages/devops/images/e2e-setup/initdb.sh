@@ -25,7 +25,7 @@ cd /home/data-api/scripts/pg-mv-fast-refresh
 DB_MV_HOME=/home/data-api/scripts/pg-mv-fast-refresh DB_URL=$HOST PGPASSWORD=$DB_PG_PASSWORD ./runCreateFastRefreshModule.sh
 
 PGPASSWORD=$DB_PG_PASSWORD
-psql -h "$HOST" --set=db_user="$DB_USER" --set=mv_user="$DB_MV_USER" -d $DB_NAME -U $DB_PG_USER -f data-api/scripts/grantMvRefreshPermissions.sql
+psql -h "$HOST" --set=db_user="$DB_USER" --set=mv_user="$DB_MV_USER" -d $DB_NAME -U $DB_PG_USER -f /home/data-api/scripts/grantMvRefreshPermissions.sql
 
 #psql -h "$HOST" -U $DB_PG_USER -c "alter role mvrefresh with superuser;"
 #psql -h "$HOST" -U $DB_PG_USER -c "alter role mvrefresh with login;"
