@@ -146,6 +146,9 @@ const makeDropdownOptions = entityType => [
     label: 'International reporting on SDGs',
     Component: DashboardReportTabView,
     Body: 'International reporting on SDGs',
+    ComponentProps: {
+      filterSubDashboards: subDashboardFilters.internationalSDGs,
+    },
   },
 ];
 
