@@ -8,6 +8,13 @@
 export const PROJECT_CODE = 'laos_schools';
 export const COUNTRY_CODE = 'LA';
 
+// Permissions
+export const LESMIS_PERMISSION_GROUPS = {
+  PUBLIC: 'LESMIS Public',
+  USER: 'LESMIS User',
+  ADMIN: 'LESMIS Admin',
+};
+
 // Date Constants
 export const SINGLE_YEAR_GRANULARITY = 'one_year_at_a_time';
 export const MIN_DATA_DATE = '20150101';
