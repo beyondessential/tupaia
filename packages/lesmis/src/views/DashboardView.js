@@ -497,9 +497,9 @@ export const DashboardView = React.memo(() => {
                     MenuProps: { disablePortal: true },
                   }}
                 />
-                {useYearSelector ? (
+                {useYearSelector && (
                   <YearSelector value={selectedYear} onChange={setSelectedYear} />
-                ) : null}
+                )}
               </TabBarSection>
             )}
             {...ComponentProps}
