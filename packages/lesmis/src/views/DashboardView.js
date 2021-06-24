@@ -19,9 +19,11 @@ import {
   TabBarSection,
   EntityVitalsItem,
   PartnerLogo,
+  YearSelector,
 } from '../components';
-import { useUrlParams, useUrlSearchParams } from '../utils';
+import { useUrlParams, useUrlSearchParams, useUrlSearchParam } from '../utils';
 import { useVitalsData, useEntityData } from '../api/queries';
+import { DEFAULT_DATA_YEAR } from '../constants';
 
 const StyledSelect = styled(Select)`
   margin: 0 1rem 0 0;
@@ -29,10 +31,10 @@ const StyledSelect = styled(Select)`
   text-transform: capitalize;
 `;
 
-const TabTemplate = ({ TabSelector, Body }) => (
+const TabTemplate = ({ TabBarLeftSection, Body }) => (
   <>
     <TabBar>
-      <TabBarSection>{TabSelector}</TabBarSection>
+      <TabBarLeftSection />
     </TabBar>
     <MuiBox p={5} minHeight={500}>
       {Body}
@@ -41,7 +43,7 @@ const TabTemplate = ({ TabSelector, Body }) => (
 );
 
 TabTemplate.propTypes = {
-  TabSelector: PropTypes.node.isRequired,
+  TabBarLeftSection: PropTypes.node.isRequired,
   Body: PropTypes.node.isRequired,
 };
 
@@ -59,11 +61,28 @@ const getProfileLabel = entityType => {
   }
 };
 
+const subDashboardFilters = {
+  essdpPlan: ({ dashboardCode }) => dashboardCode.startsWith('LESMIS_ESSDP_Plan'),
+  essdpEarlyChildhood: ({ dashboardCode }) =>
+    dashboardCode.startsWith('LESMIS_ESSDP_EarlyChildhood'),
+  essdpPrimary: ({ dashboardCode }) => dashboardCode.startsWith('LESMIS_ESSDP_Primary'),
+  essdpLowerSecondary: ({ dashboardCode }) =>
+    dashboardCode.startsWith('LESMIS_ESSDP_LowerSecondary'),
+  essdpUpperSecondary: ({ dashboardCode }) =>
+    dashboardCode.startsWith('LESMIS_ESSDP_UpperSecondary'),
+  internationalSDGs: ({ dashboardCode }) => dashboardCode.startsWith('LESMIS_International_SDGs'),
+};
+
 const makeDropdownOptions = entityType => [
   {
     value: 'profile',
     label: getProfileLabel(entityType),
     Component: DashboardReportTabView,
+    ComponentProps: {
+      filterSubDashboards: ({ dashboardCode }) =>
+        !Object.values(subDashboardFilters).find(filter => filter({ dashboardCode })), // those not included anywhere else
+    },
+    useYearSelector: true,
   },
   {
     value: 'indicators',
@@ -76,24 +95,45 @@ const makeDropdownOptions = entityType => [
     label: 'ESSDP Plan 2021-25 M&E Framework',
     Component: TabTemplate,
     Body: '9th Education Sector and Sports Development Plan 2021-25 M&E Framework',
+    ComponentProps: {
+      filterSubDashboards: subDashboardFilters.essdpPlan,
+    },
   },
   {
-    value: 'earlyChildhood',
+    value: 'essdpEarlyChildhood',
     label: 'ESSDP Early childhood education sub-sector',
     Component: TabTemplate,
     Body: 'ESSDP Early childhood education sub-sector',
+    ComponentProps: {
+      filterSubDashboards: subDashboardFilters.essdpEarlyChildhood,
+    },
   },
   {
-    value: 'primary',
+    value: 'essdpPrimary',
     label: 'ESSDP Primary sub-sector',
-    Component: TabTemplate,
+    Component: DashboardReportTabView,
     Body: 'ESSDP Primary sub-sector',
+    ComponentProps: {
+      filterSubDashboards: subDashboardFilters.essdpPrimary,
+    },
   },
   {
-    value: 'secondary',
+    value: 'essdpLowerSecondary',
     label: 'ESSDP Lower secondary sub-sector',
-    Component: TabTemplate,
+    Component: DashboardReportTabView,
     Body: 'ESSDP Lower secondary sub-sector',
+    ComponentProps: {
+      filterSubDashboards: subDashboardFilters.essdpLowerSecondary,
+    },
+  },
+  {
+    value: 'essdpUpperSecondary',
+    label: 'ESSDP Upper secondary sub-sector',
+    Component: TabTemplate,
+    Body: 'ESSDP Upper secondary sub-sector',
+    ComponentProps: {
+      filterSubDashboards: subDashboardFilters.essdpUpperSecondary,
+    },
   },
   {
     value: 'emergency',
@@ -102,10 +142,14 @@ const makeDropdownOptions = entityType => [
     Body: 'Emergency in Education/COVID-19',
   },
   {
-    value: 'international',
+    value: 'internationalSDGs',
     label: 'International reporting on SDGs',
-    Component: TabTemplate,
+    Component: DashboardReportTabView,
     Body: 'International reporting on SDGs',
+    ComponentProps: {
+      filterSubDashboards: subDashboardFilters.internationalSDGs,
+    },
+    useYearSelector: true,
   },
 ];
 
@@ -141,15 +185,6 @@ const PartnersContainer = styled(FlexRow)`
   padding-left: 25px;
 `;
 
-const ParentDistrict = styled(FlexRow)`
-  width: 60%;
-`;
-
-const ParentVillage = styled(FlexRow)`
-  padding-left: 30px;
-  width: 30%;
-`;
-
 const TitleContainer = styled.div`
   width: 100%;
 `;
@@ -171,11 +206,6 @@ const GreyTitle = styled(Typography)`
 const HorizontalDivider = styled(MuiDivider)`
   width: 90%;
   margin-top: 1rem;
-`;
-
-const VerticalDivider = styled(MuiDivider)`
-  margin-top: 2.5rem;
-  height: 7rem;
 `;
 
 const PhotoOrMap = ({ vitals }) => {
@@ -340,51 +370,6 @@ const DistrictView = ({ vitals }) => {
   );
 };
 
-const VillageView = ({ vitals }) => {
-  return (
-    <>
-      <VitalsSection>
-        <TitleContainer>
-          <RedTitle variant="h4">Village Profile:</RedTitle>
-        </TitleContainer>
-        <EntityVitalsItem
-          name="Village Code"
-          value={vitals.code}
-          icon="LocationPin"
-          isLoading={vitals.isLoading}
-        />
-        <EntityVitalsItem
-          name="Village Population"
-          value={vitals.Population}
-          icon="Group"
-          isLoading={vitals.isLoading}
-        />
-        <EntityVitalsItem
-          name="No. Schools"
-          value={vitals.NumberOfSchools}
-          icon="School"
-          isLoading={vitals.isLoading}
-        />
-        <EntityVitalsItem
-          name="No. Students"
-          value={vitals.NumberOfStudents}
-          icon="Study"
-          isLoading={vitals.isLoading}
-        />
-      </VitalsSection>
-      <PhotoOrMap vitals={vitals} />
-      <PartnersContainer>
-        <TitleContainer>
-          <GreyTitle>Development Partner Support</GreyTitle>
-        </TitleContainer>
-        {Object.entries(vitals).map(([key, value]) =>
-          value === true ? <PartnerLogo code={key} key={key} /> : null,
-        )}
-      </PartnersContainer>
-    </>
-  );
-};
-
 const SchoolView = ({ vitals }) => {
   return (
     <>
@@ -425,37 +410,24 @@ const SchoolView = ({ vitals }) => {
         />
         <HorizontalDivider />
         <FlexRow>
-          <ParentDistrict>
-            <TitleContainer>
-              <RedTitle variant="h4">District</RedTitle>
-            </TitleContainer>
-            <EntityVitalsItem
-              name="Name of District"
-              value={vitals.parentDistrict?.name}
-              isLoading={vitals.isLoading}
-            />
-            <EntityVitalsItem
-              name="District Population"
-              value={vitals.parentDistrict?.Population}
-              isLoading={vitals.isLoading}
-            />
-            <EntityVitalsItem
-              name="Priority District"
-              value={vitals.parentDistrict?.priorityDistrict ? 'Yes' : 'No'}
-              isLoading={vitals.isLoading}
-            />
-          </ParentDistrict>
-          <VerticalDivider orientation="vertical" />
-          <ParentVillage>
-            <TitleContainer>
-              <RedTitle variant="h4">Village</RedTitle>
-            </TitleContainer>
-            <EntityVitalsItem
-              name="Village Population"
-              value={vitals.parentVillage?.Population}
-              isLoading={vitals.isLoading}
-            />
-          </ParentVillage>
+          <TitleContainer>
+            <RedTitle variant="h4">District</RedTitle>
+          </TitleContainer>
+          <EntityVitalsItem
+            name="Name of District"
+            value={vitals.parentDistrict?.name}
+            isLoading={vitals.isLoading}
+          />
+          <EntityVitalsItem
+            name="District Population"
+            value={vitals.parentDistrict?.Population}
+            isLoading={vitals.isLoading}
+          />
+          <EntityVitalsItem
+            name="Priority District"
+            value={vitals.parentDistrict?.priorityDistrict ? 'Yes' : 'No'}
+            isLoading={vitals.isLoading}
+          />
         </FlexRow>
       </VitalsSection>
       <PhotoOrMap vitals={vitals} />
@@ -471,8 +443,6 @@ const VitalsView = React.memo(({ vitals }) => {
       return <ProvinceView vitals={vitals} />;
     case 'sub_district':
       return <DistrictView vitals={vitals} />;
-    case 'village':
-      return <VillageView vitals={vitals} />;
     case 'school':
       return <SchoolView vitals={vitals} />;
     default:
@@ -498,6 +468,7 @@ export const DashboardView = React.memo(() => {
   const { data: entityData } = useEntityData(entityCode);
   const dropdownOptions = makeDropdownOptions(entityData?.type);
   const [params, setParams] = useUrlSearchParams();
+  const [selectedYear, setSelectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
 
   const vitals = useVitalsData(entityCode);
   const selectedOption = useDefaultDashboardTab(params.dashboard, dropdownOptions);
@@ -513,23 +484,30 @@ export const DashboardView = React.memo(() => {
           <VitalsView vitals={vitals} />
         </Container>
       </Wrapper>
-      {dropdownOptions.map(({ value, Body, Component }) => (
+      {dropdownOptions.map(({ value, Body, Component, useYearSelector, ComponentProps }) => (
         <TabPanel key={value} isSelected={value === selectedOption} Panel={React.Fragment}>
           <Component
             entityCode={entityCode}
+            year={useYearSelector && selectedYear}
             Body={Body}
-            TabSelector={
-              <StyledSelect
-                id="dashboardtab"
-                options={dropdownOptions}
-                value={selectedOption}
-                onChange={handleChange}
-                showPlaceholder={false}
-                SelectProps={{
-                  MenuProps: { disablePortal: true },
-                }}
-              />
-            }
+            TabBarLeftSection={() => (
+              <TabBarSection>
+                <StyledSelect
+                  id="dashboardtab"
+                  options={dropdownOptions}
+                  value={selectedOption}
+                  onChange={handleChange}
+                  showPlaceholder={false}
+                  SelectProps={{
+                    MenuProps: { disablePortal: true },
+                  }}
+                />
+                {useYearSelector && (
+                  <YearSelector value={selectedYear} onChange={setSelectedYear} />
+                )}
+              </TabBarSection>
+            )}
+            {...ComponentProps}
           />
         </TabPanel>
       ))}
@@ -547,9 +525,6 @@ ProvinceView.propTypes = {
   vitals: PropTypes.object.isRequired,
 };
 DistrictView.propTypes = {
-  vitals: PropTypes.object.isRequired,
-};
-VillageView.propTypes = {
   vitals: PropTypes.object.isRequired,
 };
 SchoolView.propTypes = {

@@ -50,7 +50,6 @@ const TABLES_TO_CLEAR = [
   'refresh_token',
   'user_entity_permission',
   'permission_group',
-  'user_reward',
   'api_client',
   'user_account',
   'dashboardGroup',

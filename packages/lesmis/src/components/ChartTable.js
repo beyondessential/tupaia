@@ -12,6 +12,7 @@ import { FetchLoader } from './FetchLoader';
 const Wrapper = styled.div`
   flex: 1;
   display: flex;
+  overflow: auto;
 `;
 
 const ChartWrapper = styled(Wrapper)`

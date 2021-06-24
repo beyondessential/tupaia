@@ -121,7 +121,7 @@ export class ApiBuilder {
   }
 
   addRoute<T extends ExpressRequest<T> = Request>(
-    method: 'get' | 'post',
+    method: 'get' | 'post' | 'put',
     path: string,
     handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
   ) {
@@ -145,6 +145,13 @@ export class ApiBuilder {
     handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
   ) {
     return this.addRoute('post', path, handler);
+  }
+
+  put<T extends ExpressRequest<T> = Request>(
+    path: string,
+    handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+  ) {
+    return this.addRoute('put', path, handler);
   }
 
   build() {
