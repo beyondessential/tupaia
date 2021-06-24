@@ -149,6 +149,7 @@ const makeDropdownOptions = entityType => [
     ComponentProps: {
       filterSubDashboards: subDashboardFilters.internationalSDGs,
     },
+    useYearSelector: true,
   },
 ];
 
