@@ -16,7 +16,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const DASHBOARD_CODE = 'LESMIS_ESSDP_LowerSecondarySubSector';
+const DASHBOARD_CODE = 'LESMIS_ESSDP_LowerSecondarySubSector_Schools';
 const CODE = 'LESMIS_num_secondary_classrooms';
 
 const REPORT_CONFIG = {
@@ -24,7 +24,7 @@ const REPORT_CONFIG = {
     dataElements: ['noclassroom_public_se', 'noclassroom_private_se'],
     aggregations: [
       {
-        type: 'MOST_RECENT',
+        type: 'FINAL_EACH_YEAR',
         config: {
           dataSourceEntityType: 'sub_district',
         },
@@ -39,11 +39,17 @@ const REPORT_CONFIG = {
     ],
   },
   transform: [
+    'keyValueByDataElementName',
     {
       transform: 'select',
-      "'name'":
-        "translate($row.dataElement, { noclassroom_public_se: 'Secondary Education (Public)', noclassroom_private_se: 'Secondary Education (Private)' })",
-      '...': ['value'],
+      "'Secondary Education (Public)'": '$row.noclassroom_public_se',
+      "'Secondary Education (Private)'": '$row.noclassroom_private_se',
+      "'timestamp'": 'periodToTimestamp($row.period)',
+    },
+    {
+      transform: 'aggregate',
+      timestamp: 'group',
+      '...': 'last',
     },
   ],
 };
@@ -51,16 +57,17 @@ const REPORT_CONFIG = {
 const FRONT_END_CONFIG = {
   name: 'Number of Secondary Education Classrooms',
   type: 'chart',
-  chartType: 'bar',
+  chartType: 'line',
+  xName: 'Year',
   yName: 'Number of Classrooms',
-  periodGranularity: 'one_year_at_a_time',
+  periodGranularity: 'year',
   chartConfig: {
-    value: {
+    'Secondary Education (Public)': {
       color: '#EB7D3C',
     },
-  },
-  presentationOptions: {
-    hideAverage: true,
+    'Secondary Education (Private)': {
+      color: '#FDBF2D',
+    },
   },
 };
 
@@ -119,7 +126,7 @@ exports.up = async function (db) {
   await insertObject(db, 'dashboard', {
     id: generateId(),
     code: DASHBOARD_CODE,
-    name: 'ESSDP Lower Secondary Sub-Sector',
+    name: 'Schools',
     root_entity_code: 'LA',
   });
   await addNewDashboardItemAndReport(db, {
