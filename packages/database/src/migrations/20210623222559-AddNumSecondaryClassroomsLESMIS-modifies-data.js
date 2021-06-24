@@ -17,11 +17,11 @@ exports.setup = function (options, seedLink) {
 };
 
 const DASHBOARD_CODE = 'LESMIS_ESSDP_LowerSecondarySubSector_Schools';
-const CODE = 'LESMIS_num_secondary_classrooms';
+const CODE = 'LESMIS_num_lower_secondary_classrooms';
 
 const REPORT_CONFIG = {
   fetch: {
-    dataElements: ['noclassroom_public_se', 'noclassroom_private_se'],
+    dataElements: ['noclassroom_public_lse', 'noclassroom_private_lse'],
     aggregations: [
       {
         type: 'FINAL_EACH_YEAR',
@@ -42,8 +42,8 @@ const REPORT_CONFIG = {
     'keyValueByDataElementName',
     {
       transform: 'select',
-      "'Secondary Education (Public)'": '$row.noclassroom_public_se',
-      "'Secondary Education (Private)'": '$row.noclassroom_private_se',
+      "'Secondary Education (Public)'": '$row.noclassroom_public_lse',
+      "'Secondary Education (Private)'": '$row.noclassroom_private_lse',
       "'timestamp'": 'periodToTimestamp($row.period)',
     },
     {
@@ -55,17 +55,17 @@ const REPORT_CONFIG = {
 };
 
 const FRONT_END_CONFIG = {
-  name: 'Number of Secondary Education Classrooms',
+  name: 'Number of Lower Secondary Education Classrooms',
   type: 'chart',
   chartType: 'line',
   xName: 'Year',
   yName: 'Number of Classrooms',
   periodGranularity: 'year',
   chartConfig: {
-    'Secondary Education (Public)': {
+    'Lower Secondary Education (Public)': {
       color: '#EB7D3C',
     },
-    'Secondary Education (Private)': {
+    'Lower Secondary Education (Private)': {
       color: '#FDBF2D',
     },
   },
