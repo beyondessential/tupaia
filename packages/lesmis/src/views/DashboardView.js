@@ -20,7 +20,7 @@ import {
   EntityVitalsItem,
   PartnerLogo,
 } from '../components';
-import { useUrlParams } from '../utils';
+import { useUrlParams, useUrlSearchParams } from '../utils';
 import { useVitalsData, useEntityData } from '../api/queries';
 
 const StyledSelect = styled(Select)`
@@ -59,7 +59,7 @@ const getProfileLabel = entityType => {
   }
 };
 
-const makeTabOptions = entityType => [
+const makeDropdownOptions = entityType => [
   {
     value: 'profile',
     label: getProfileLabel(entityType),
@@ -141,15 +141,6 @@ const PartnersContainer = styled(FlexRow)`
   padding-left: 25px;
 `;
 
-const ParentDistrict = styled(FlexRow)`
-  width: 60%;
-`;
-
-const ParentVillage = styled(FlexRow)`
-  padding-left: 30px;
-  width: 30%;
-`;
-
 const TitleContainer = styled.div`
   width: 100%;
 `;
@@ -171,11 +162,6 @@ const GreyTitle = styled(Typography)`
 const HorizontalDivider = styled(MuiDivider)`
   width: 90%;
   margin-top: 1rem;
-`;
-
-const VerticalDivider = styled(MuiDivider)`
-  margin-top: 2.5rem;
-  height: 7rem;
 `;
 
 const PhotoOrMap = ({ vitals }) => {
@@ -340,51 +326,6 @@ const DistrictView = ({ vitals }) => {
   );
 };
 
-const VillageView = ({ vitals }) => {
-  return (
-    <>
-      <VitalsSection>
-        <TitleContainer>
-          <RedTitle variant="h4">Village Profile:</RedTitle>
-        </TitleContainer>
-        <EntityVitalsItem
-          name="Village Code"
-          value={vitals.code}
-          icon="LocationPin"
-          isLoading={vitals.isLoading}
-        />
-        <EntityVitalsItem
-          name="Village Population"
-          value={vitals.Population}
-          icon="Group"
-          isLoading={vitals.isLoading}
-        />
-        <EntityVitalsItem
-          name="No. Schools"
-          value={vitals.NumberOfSchools}
-          icon="School"
-          isLoading={vitals.isLoading}
-        />
-        <EntityVitalsItem
-          name="No. Students"
-          value={vitals.NumberOfStudents}
-          icon="Study"
-          isLoading={vitals.isLoading}
-        />
-      </VitalsSection>
-      <PhotoOrMap vitals={vitals} />
-      <PartnersContainer>
-        <TitleContainer>
-          <GreyTitle>Development Partner Support</GreyTitle>
-        </TitleContainer>
-        {Object.entries(vitals).map(([key, value]) =>
-          value === true ? <PartnerLogo code={key} key={key} /> : null,
-        )}
-      </PartnersContainer>
-    </>
-  );
-};
-
 const SchoolView = ({ vitals }) => {
   return (
     <>
@@ -425,37 +366,24 @@ const SchoolView = ({ vitals }) => {
         />
         <HorizontalDivider />
         <FlexRow>
-          <ParentDistrict>
-            <TitleContainer>
-              <RedTitle variant="h4">District</RedTitle>
-            </TitleContainer>
-            <EntityVitalsItem
-              name="Name of District"
-              value={vitals.parentDistrict?.name}
-              isLoading={vitals.isLoading}
-            />
-            <EntityVitalsItem
-              name="District Population"
-              value={vitals.parentDistrict?.Population}
-              isLoading={vitals.isLoading}
-            />
-            <EntityVitalsItem
-              name="Priority District"
-              value={vitals.parentDistrict?.priorityDistrict ? 'Yes' : 'No'}
-              isLoading={vitals.isLoading}
-            />
-          </ParentDistrict>
-          <VerticalDivider orientation="vertical" />
-          <ParentVillage>
-            <TitleContainer>
-              <RedTitle variant="h4">Village</RedTitle>
-            </TitleContainer>
-            <EntityVitalsItem
-              name="Village Population"
-              value={vitals.parentVillage?.Population}
-              isLoading={vitals.isLoading}
-            />
-          </ParentVillage>
+          <TitleContainer>
+            <RedTitle variant="h4">District</RedTitle>
+          </TitleContainer>
+          <EntityVitalsItem
+            name="Name of District"
+            value={vitals.parentDistrict?.name}
+            isLoading={vitals.isLoading}
+          />
+          <EntityVitalsItem
+            name="District Population"
+            value={vitals.parentDistrict?.Population}
+            isLoading={vitals.isLoading}
+          />
+          <EntityVitalsItem
+            name="Priority District"
+            value={vitals.parentDistrict?.priorityDistrict ? 'Yes' : 'No'}
+            isLoading={vitals.isLoading}
+          />
         </FlexRow>
       </VitalsSection>
       <PhotoOrMap vitals={vitals} />
@@ -463,7 +391,7 @@ const SchoolView = ({ vitals }) => {
   );
 };
 
-const VitalsView = ({ vitals }) => {
+const VitalsView = React.memo(({ vitals }) => {
   switch (vitals.type) {
     case 'country':
       return <CountryView vitals={vitals} />;
@@ -471,26 +399,37 @@ const VitalsView = ({ vitals }) => {
       return <ProvinceView vitals={vitals} />;
     case 'sub_district':
       return <DistrictView vitals={vitals} />;
-    case 'village':
-      return <VillageView vitals={vitals} />;
     case 'school':
       return <SchoolView vitals={vitals} />;
     default:
       return null;
   }
+});
+
+// Gets the best default dashboard possible, and check if the selected dashboard is valid
+const useDefaultDashboardTab = (selectedDashboard = null, options) => {
+  if (!options || options.length === 0) {
+    return null;
+  }
+
+  if (selectedDashboard && options.find(option => option.value === selectedDashboard)) {
+    return selectedDashboard;
+  }
+
+  return options[0].value;
 };
 
-export const DashboardView = () => {
+export const DashboardView = React.memo(() => {
   const { entityCode } = useUrlParams();
   const { data: entityData } = useEntityData(entityCode);
+  const dropdownOptions = makeDropdownOptions(entityData?.type);
+  const [params, setParams] = useUrlSearchParams();
+
   const vitals = useVitalsData(entityCode);
+  const selectedOption = useDefaultDashboardTab(params.dashboard, dropdownOptions);
 
-  const tabOptions = makeTabOptions(entityData?.type);
-
-  const [selectedTab, setSelectedTab] = useState(tabOptions[0].value);
-
-  const handleChangeTab = event => {
-    setSelectedTab(event.target.value);
+  const handleChange = event => {
+    setParams({ dashboard: event.target.value, subDashboard: null, year: null });
   };
 
   return (
@@ -500,17 +439,17 @@ export const DashboardView = () => {
           <VitalsView vitals={vitals} />
         </Container>
       </Wrapper>
-      {tabOptions.map(({ value, Body, Component }) => (
-        <TabPanel key={value} isSelected={value === selectedTab} Panel={React.Fragment}>
+      {dropdownOptions.map(({ value, Body, Component }) => (
+        <TabPanel key={value} isSelected={value === selectedOption} Panel={React.Fragment}>
           <Component
             entityCode={entityCode}
             Body={Body}
             TabSelector={
               <StyledSelect
                 id="dashboardtab"
-                options={tabOptions}
-                value={selectedTab}
-                onChange={handleChangeTab}
+                options={dropdownOptions}
+                value={selectedOption}
+                onChange={handleChange}
                 showPlaceholder={false}
                 SelectProps={{
                   MenuProps: { disablePortal: true },
@@ -522,7 +461,7 @@ export const DashboardView = () => {
       ))}
     </>
   );
-};
+});
 
 PhotoOrMap.propTypes = {
   vitals: PropTypes.object.isRequired,
@@ -534,9 +473,6 @@ ProvinceView.propTypes = {
   vitals: PropTypes.object.isRequired,
 };
 DistrictView.propTypes = {
-  vitals: PropTypes.object.isRequired,
-};
-VillageView.propTypes = {
   vitals: PropTypes.object.isRequired,
 };
 SchoolView.propTypes = {

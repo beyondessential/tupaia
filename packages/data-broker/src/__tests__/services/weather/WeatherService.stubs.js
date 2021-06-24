@@ -52,7 +52,7 @@ export const createMockEntity = async fieldValues => {
 
 export const createMockModelsStub = responseMap => {
   const mockModels = {
-    entity: new EntityModel({}), // no database
+    entity: new EntityModel({ fetchSchemaForTable: () => {} }), // no database
     dataSource: {
       getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
     },

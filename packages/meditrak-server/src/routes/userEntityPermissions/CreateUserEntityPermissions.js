@@ -7,7 +7,7 @@ import { CreateHandler } from '../CreateHandler';
 import {
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertTupaiaAdminPanelAccess,
+  assertAdminPanelAccess,
 } from '../../permissions';
 import { assertUserEntityPermissionUpsertPermissions } from './assertUserEntityPermissionPermissions';
 
@@ -20,7 +20,7 @@ export class CreateUserEntityPermissions extends CreateHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
-        [assertBESAdminAccess, assertTupaiaAdminPanelAccess],
+        [assertBESAdminAccess, assertAdminPanelAccess],
         'You need either BES Admin or Tupaia Admin Panel access to create user entity permissions',
       ),
     );

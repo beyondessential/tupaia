@@ -39,6 +39,7 @@
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "express": "^4.16.2",
+    "lodash.pick": "^4.4.0",
     "mathjs": "^7.3.0",
     "winston": "^3.2.1"
   }
