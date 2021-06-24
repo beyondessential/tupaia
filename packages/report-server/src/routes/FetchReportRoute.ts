@@ -65,7 +65,7 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     }
     const report = await this.findReport();
 
-    this.checkUserHasAccessToReport(report, organisationUnitCodes.split(','), hierarchy);
+    await this.checkUserHasAccessToReport(report, organisationUnitCodes.split(','), hierarchy);
 
     const aggregator = createAggregator(Aggregator, ctx);
     return new ReportBuilder()

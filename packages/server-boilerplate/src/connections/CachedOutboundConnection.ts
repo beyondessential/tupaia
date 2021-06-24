@@ -34,7 +34,7 @@ export class CachedOutboundConnection extends OutboundConnection {
     }
 
     const valuePromise = cacheFn();
-    this.cache.setItem(cacheKey, cacheFn, { ttl: this.ttl });
+    this.cache.setItem(cacheKey, valuePromise, { ttl: this.ttl });
     return valuePromise;
   }
 
