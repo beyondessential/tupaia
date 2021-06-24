@@ -17,16 +17,6 @@ export const VALUE_TYPES = {
   ONE_DECIMAL_PLACE: 'oneDecimalPlace',
 };
 
-/**
- *
- * @param {string|number} number number to truncate
- * @param {string|number} decimalPlace how many decimal places to truncate number to
- */
-const truncateDecimalToPlace = decimalPlace => number => {
-  const place = 10 ** decimalPlace;
-  return Math.floor(number * place) / place;
-};
-
 // Note: will display 0 if passed undefined
 const currency = value => numeral(value).format('$0.00a');
 
@@ -87,10 +77,10 @@ const number = (value, { presentationOptions }) => {
 };
 
 const defaultFormatter = input =>
-  Number.isNaN(Number(input)) ? input : truncateDecimalToPlace(2)(input);
+  Number.isNaN(Number(input)) ? input : numeral(input).format('0.00');
 
 const oneDecimalPlace = input =>
-  Number.isNaN(Number(input)) ? input : truncateDecimalToPlace(1)(input);
+  Number.isNaN(Number(input)) ? input : numeral(input).format('0.0');
 
 const VALUE_TYPE_TO_FORMATTER = {
   [VALUE_TYPES.TEXT]: text,
