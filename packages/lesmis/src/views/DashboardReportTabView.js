@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
@@ -13,16 +13,14 @@ import { useDashboardData, useUser } from '../api/queries';
 import {
   FetchLoader,
   TabsLoader,
-  TabBarSection,
   FlexCenter,
   Report,
   TabBar,
   Tabs,
   Tab,
   TabPanel,
-  YearSelector,
 } from '../components';
-import { DEFAULT_DATA_YEAR, NAVBAR_HEIGHT_INT } from '../constants';
+import { NAVBAR_HEIGHT_INT } from '../constants';
 import { useUrlSearchParam } from '../utils';
 
 const StickyTabBarContainer = styled.div`
@@ -120,12 +118,20 @@ const useStickyBar = () => {
   };
 };
 
-export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
-  const [selectedYear, setSelectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
+export const DashboardReportTabView = ({
+  entityCode,
+  TabBarLeftSection,
+  year,
+  filterSubDashboards,
+}) => {
   const [selectedDashboard, setSelectedDashboard] = useUrlSearchParam('subDashboard');
   const { data, isLoading, isError, error } = useDashboardData(entityCode);
   const { scrollToTop, topRef, isScrolledPastTop, onLoadTabBar } = useStickyBar();
-  const activeDashboard = useDefaultDashboardTab(selectedDashboard, data);
+  const subDashboards = useMemo(() => data && data.filter(filterSubDashboards), [
+    data,
+    filterSubDashboards,
+  ]);
+  const activeDashboard = useDefaultDashboardTab(selectedDashboard, subDashboards);
 
   const handleChangeDashboard = (event, newValue) => {
     setSelectedDashboard(newValue);
@@ -136,10 +142,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
     <>
       <StickyTabBarContainer ref={onLoadTabBar}>
         <TabBar>
-          <TabBarSection>
-            {TabSelector}
-            <YearSelector value={selectedYear} onChange={setSelectedYear} />
-          </TabBarSection>
+          <TabBarLeftSection />
           {isLoading ? (
             <TabsLoader />
           ) : (
@@ -150,7 +153,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
                 variant="scrollable"
                 scrollButtons="auto"
               >
-                {data.map(({ dashboardName: heading }) => (
+                {subDashboards.map(({ dashboardName: heading }) => (
                   <Tab key={heading} label={heading} value={heading} />
                 ))}
               </Tabs>
@@ -160,8 +163,8 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
       </StickyTabBarContainer>
       <DashboardSection ref={topRef}>
         <FetchLoader isLoading={isLoading} isError={isError} error={error}>
-          {data &&
-            data.map(dashboard => (
+          {subDashboards &&
+            subDashboards.map(dashboard => (
               <TabPanel
                 key={dashboard.dashboardName}
                 isSelected={dashboard.dashboardName === activeDashboard}
@@ -178,7 +181,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
                         dashboardCode={dashboard.dashboardCode}
                         dashboardName={dashboard.dashboardName}
                         reportCode={item.reportCode}
-                        year={selectedYear}
+                        year={year}
                         periodGranularity={item.periodGranularity}
                         viewConfig={item}
                       />
@@ -200,5 +203,11 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
 
 DashboardReportTabView.propTypes = {
   entityCode: PropTypes.string.isRequired,
-  TabSelector: PropTypes.node.isRequired,
+  TabBarLeftSection: PropTypes.node.isRequired,
+  year: PropTypes.string,
+  filterSubDashboards: PropTypes.func.isRequired,
+};
+
+DashboardReportTabView.defaultProps = {
+  year: null,
 };
