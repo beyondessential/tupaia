@@ -19,6 +19,7 @@ import { SingleDateWrapper } from './SingleDateWrapper';
 import { SingleDownloadLinkWrapper } from './SingleDownloadLinkWrapper';
 import { SingleTickWrapper } from './SingleTickWrapper';
 import { SingleValueWrapper } from './SingleValueWrapper';
+import { ViewTitle } from './Typography';
 
 const SINGLE_VALUE_COMPONENTS = {
   singleTick: SingleTickWrapper,
@@ -39,7 +40,7 @@ const VIEW_TYPES = {
   ...SINGLE_VALUE_COMPONENTS,
 };
 
-export const getViewWrapper = ({ type, viewType }) => {
+export function getViewWrapper({ type, viewType }) {
   switch (type) {
     case 'chart':
       return ChartWrapper;
@@ -51,32 +52,32 @@ export const getViewWrapper = ({ type, viewType }) => {
       if (!ViewWrapper) {
         return (
           <div style={VIEW_STYLES.newChartComing}>
-            <h2 style={VIEW_STYLES.title}>New dashboard element coming soon</h2>
+            <ViewTitle>New dashboard element coming soon</ViewTitle>
           </div>
         );
       }
       return ViewWrapper;
     }
   }
-};
+}
 
-export const getIsSingleValue = ({ viewType }) => {
+export function getIsSingleValue({ viewType }) {
   return Object.keys(SINGLE_VALUE_COMPONENTS).includes(viewType);
-};
+}
 
-export const getIsMatrix = viewContent => {
+export function getIsMatrix(viewContent) {
   return viewContent && viewContent.type === 'matrix';
-};
+}
 
-export const getIsDataDownload = viewContent => {
+export function getIsDataDownload(viewContent) {
   return viewContent && viewContent.viewType === 'dataDownload';
-};
+}
 
-export const checkIfApplyDotStyle = presentationOptions => {
+export function checkIfApplyDotStyle(presentationOptions) {
   return presentationOptions?.applyLocation?.columnIndexes;
-};
+}
 
-export const getIsUsingDots = presentationOptions => {
+export function getIsUsingDots(presentationOptions) {
   return Object.keys(presentationOptions).length > 0;
 };
 
