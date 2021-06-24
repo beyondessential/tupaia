@@ -30,7 +30,7 @@ export class ApiBuilder {
     this.models = new ModelRegistry(transactingConnection);
     this.app = express();
 
-    this.version = 'v1'; // Default version
+    this.version = 'v[0-9]'; // Default version
 
     /**
      * Add middleware
