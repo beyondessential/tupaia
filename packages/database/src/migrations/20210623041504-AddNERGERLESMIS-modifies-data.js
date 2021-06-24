@@ -222,7 +222,15 @@ exports.up = async function (db) {
 
 exports.down = async function (db) {
   for (const lesmisEntityLevel of LESMIS_ENTITY_LEVELS) {
-    await removeDashboardItemAndReport(db, CODE.replace('lesmis_entity_level', lesmisEntityLevel));
+    for (const acronym of ENROLMENT_RATE_ACRONYMS) {
+      await removeDashboardItemAndReport(
+        db,
+        CODE.replace('lesmis_entity_level', lesmisEntityLevel).replace(
+          'enrolment_rate_acronym',
+          acronym,
+        ),
+      );
+    }
   }
 };
 
