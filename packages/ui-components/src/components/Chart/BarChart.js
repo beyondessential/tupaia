@@ -5,7 +5,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Bar, LabelList } from 'recharts';
+import { Bar, Cell, LabelList } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
 import { BLUE, CHART_TYPES } from './constants';
 
@@ -37,6 +37,13 @@ export const BarChart = ({
       isAnimationActive={isEnlarged && !isExporting}
       barSize={getBarSize()}
     >
+      {data.map(entry => {
+        const customColor = chartConfig[dataKey]?.[entry.name]?.color;
+        if (customColor) {
+          return <Cell fill={customColor} />;
+        }
+        return <Cell />;
+      })}
       {isExporting && !stackId && (
         <LabelList
           dataKey={dataKey}

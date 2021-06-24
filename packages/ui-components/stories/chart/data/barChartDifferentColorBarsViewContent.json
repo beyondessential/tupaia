@@ -1,0 +1,33 @@
+{
+  "code": "LESMIS_num_secondary_classrooms",
+  "legacy": false,
+  "reportCode": "LESMIS_num_secondary_classrooms",
+  "name": "Number of Secondary Education Classrooms",
+  "type": "chart",
+  "yName": "Number of Classrooms",
+  "chartType": "bar",
+  "chartConfig": {
+    "value": {
+      "Secondary Education (Public)": {
+        "color": "#2196f3"
+      },
+      "Secondary Education (Private)": {
+        "color": "#EB7D3C"
+      }
+    }
+  },
+  "periodGranularity": "one_year_at_a_time",
+  "presentationOptions": {
+    "hideAverage": true
+  },
+  "data": [
+    {
+      "name": "Secondary Education (Public)",
+      "value": 17814
+    },
+    {
+      "name": "Secondary Education (Private)",
+      "value": 951
+    }
+  ]
+}

@@ -6,6 +6,7 @@
 import { Chart } from '../../src/components/Chart';
 import { DarkThemeTemplate, LightThemeChartTemplate } from './helpers';
 import viewContent from './data/barChartViewContent.json';
+import differentColorBarsViewContent from './data/barChartDifferentColorBarsViewContent.json';
 
 export default {
   title: 'Chart/BarChart',
@@ -29,3 +30,9 @@ DarkTheme.args = {
   isEnlarged: true,
 };
 DarkTheme.parameters = { theme: 'dark' };
+
+export const DifferentColorBars = LightThemeChartTemplate.bind({});
+DifferentColorBars.args = {
+  viewContent: differentColorBarsViewContent,
+  isEnlarged: true,
+};
