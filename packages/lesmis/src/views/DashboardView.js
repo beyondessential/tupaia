@@ -110,7 +110,7 @@ const makeDropdownOptions = entityType => [
   {
     value: 'essdpPrimary',
     label: 'ESSDP Primary sub-sector',
-    Component: TabTemplate,
+    Component: DashboardReportTabView,
     Body: 'ESSDP Primary sub-sector',
     ComponentProps: {
       filterSubDashboards: subDashboardFilters.essdpPrimary,
