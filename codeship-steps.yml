@@ -150,11 +150,11 @@
 
 - type: serial
   name: e2e-run-ref
-  service: e2e-tupaia-reference
+  service: e2e-tupaia-current
   steps:
-    - name: e2e-run-ref1
-      command: 'echo ref1'
-    - name: e2e-run-ref2
+    - name: e2e-run-cur1
+      command: 'echo cur1'
+    - name: e2e-run-cur2
       command: 'yarn migrate'
-    - name: e2e-run-ref3
-      command: 'echo ref3'
+    - name: e2e-run-cur3
+      command: 'echo cur3'
