@@ -15,7 +15,6 @@ import { ToggleButton } from './ToggleButton';
 import { DashboardReportModal } from './DashboardReportModal';
 import { ChartTable, TABS } from './ChartTable';
 import * as COLORS from '../constants';
-import { DEFAULT_DATE_RANGE } from '../constants';
 import { useDashboardReportData } from '../api/queries';
 import { yearToApiDates } from '../api/queries/utils';
 
@@ -81,7 +80,7 @@ export const Report = React.memo(
   }) => {
     const { code: itemCode, legacy } = viewConfig;
     const [selectedTab, setSelectedTab] = useState(TABS.CHART);
-    const { startDate, endDate } = year ? yearToApiDates(year) : DEFAULT_DATE_RANGE;
+    const { startDate, endDate } = yearToApiDates(year);
     const { data, isLoading, isError, error } = useDashboardReportData({
       entityCode,
       reportCode,
