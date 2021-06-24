@@ -5,12 +5,14 @@
 
 import { Writable, ObjectLikeKeys, Flatten } from '../../../types';
 import { EntityFilter, EntityFields } from '../../../models';
+import {
+  CLAUSE_DELIMITER,
+  FIELD_VALUE_DELIMITER,
+  NESTED_FIELD_DELIMITER,
+  MULTIPLE_VALUES_DELIMITER,
+} from '../../../constants';
 
-const CLAUSE_DELIMITER = ';';
-const FIELD_VALUE_DELIMITER = ':';
-const NESTED_FIELD_DELIMITER = '_';
 const JSONB_FIELD_DELIMITER = '->>';
-const MULTIPLE_VALUES_DELIMITER = ',';
 
 type NestedFilterQueryFields = Flatten<
   Pick<EntityFields, ObjectLikeKeys<EntityFields>>,

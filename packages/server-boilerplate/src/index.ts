@@ -19,4 +19,4 @@ export {
   SessionCookie,
 } from './orchestrator';
 export { QueryParameters } from './types';
-export { Model, DbConditional } from './models';
+export { Model, DbConditional, PartialOrArray } from './models';

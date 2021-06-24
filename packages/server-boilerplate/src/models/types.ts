@@ -11,13 +11,13 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   : never;
 
 // Extracts keys that have object-like values from type T
-export type ObjectLikeKeys<T> = {
+type ObjectLikeKeys<T> = {
   [K in keyof T]: T[K] extends Record<string, unknown> ? K : never;
 }[keyof T];
 
 // Flattens nested object to shallow object with keys joined by J
 // eg. Flatten<{ cat: { cute: true } }, '_is_'> => { cat_is_cute: true }
-export type Flatten<
+type Flatten<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   T extends Record<string, Record<string, any>>,
   J extends string = '.',
@@ -36,10 +36,6 @@ export type PartialOrArray<T> = {
 
 export type DbConditional<T> = PartialOrArray<Omit<T, ObjectLikeKeys<T>>> &
   PartialOrArray<Flatten<Pick<T, ObjectLikeKeys<T>>, '->>'>>;
-
-export type Joined<T, U extends string> = {
-  [field in keyof T as field extends string ? `${U}.${field}` : never]: T[field];
-};
 
 export type Model<BaseModel extends DatabaseModel, Fields, Type extends DatabaseType> = {
   find: (filter: DbConditional<Fields>) => Promise<Type[]>;

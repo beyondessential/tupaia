@@ -4,7 +4,7 @@
  *
  */
 
-export class EntityConnection {
+export class DataSourceEntityProvider {
   constructor(entityApi) {
     this.entityApi = entityApi;
   }

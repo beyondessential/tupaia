@@ -4,7 +4,7 @@
  */
 
 import { convertDateRangeToPeriodString } from '@tupaia/utils';
-import { EntityConnection } from '../../connections';
+import { DataSourceEntityProvider } from '../../connections';
 import { AGGREGATION_TYPES } from '../../aggregationTypes';
 import { getDateRangeForOffsetPeriod } from './aggregations/offsetPeriod';
 import { getDateRangeForSumPreviousPerPeriod } from './aggregations/sumPreviousPerPeriod';
@@ -54,7 +54,7 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
     return [organisationUnitCodes, aggregationList];
   }
 
-  const entityConnection = new EntityConnection(entityApi);
+  const entityProvider = new DataSourceEntityProvider(entityApi);
   const adjustedAggregationsAndDataSourceEntites = await Promise.all(
     aggregationList.map(async aggregation => {
       if (!shouldFetchDataSourceEntities(aggregation)) {
@@ -63,7 +63,7 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
 
       if (!shouldFetchRelationships(aggregation)) {
         const { dataSourceEntityType, dataSourceEntityFilter } = aggregation.config;
-        const dataSourceEntities = await entityConnection.getDataSourceEntities(
+        const dataSourceEntities = await entityProvider.getDataSourceEntities(
           hierarchy,
           organisationUnitCodes,
           dataSourceEntityType,
@@ -80,7 +80,7 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
       const [
         dataSourceEntities,
         relationships,
-      ] = await entityConnection.getDataSourceEntitiesAndRelationships(
+      ] = await entityProvider.getDataSourceEntitiesAndRelationships(
         hierarchy,
         organisationUnitCodes,
         aggregationEntityType,

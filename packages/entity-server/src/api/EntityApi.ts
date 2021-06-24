@@ -4,9 +4,15 @@
  *
  */
 
-import { OutboundConnection, AuthHandler } from '@tupaia/server-boilerplate';
+import { OutboundConnection, AuthHandler, PartialOrArray } from '@tupaia/server-boilerplate';
 
-import { PartialOrArray } from '../types';
+import {
+  CLAUSE_DELIMITER,
+  FIELD_VALUE_DELIMITER,
+  NESTED_FIELD_DELIMITER,
+  MULTIPLE_VALUES_DELIMITER,
+} from '../constants';
+
 import { EntityFields } from '../models';
 import {
   GroupByAncestorRelationshipsResponseBody,
@@ -33,11 +39,6 @@ type EntityApiResponse<T extends ExtendedEntityFieldName[]> = Required<
 >;
 
 const { ENTITY_API_URL = 'http://localhost:8050/v1' } = process.env;
-
-const CLAUSE_DELIMITER = ';';
-const FIELD_VALUE_DELIMITER = ':';
-const NESTED_FIELD_DELIMITER = '_';
-const MULTIPLE_VALUES_DELIMITER = ',';
 
 const recurseFilter = (
   filter: unknown,

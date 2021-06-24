@@ -9,7 +9,15 @@ import { Model } from '@tupaia/server-boilerplate';
 export type ReportFields = Readonly<{
   id: string;
   code: string;
-  config: Record<string, unknown>;
+  config: {
+    fetch: {
+      dataElements?: string[];
+      dataGroups?: string[];
+      aggregations?: (string | Record<string, unknown>)[];
+    };
+    transform: (string | Record<string, unknown>)[];
+    output?: Record<string, unknown>[];
+  };
   permission_group_id: string;
 }>;
 
