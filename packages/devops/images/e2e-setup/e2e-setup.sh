@@ -16,7 +16,7 @@ sh /home/parallel_commands.sh "./initdb.sh e2e-db-reference" \
 if [ -f db/dump.sql ]; then
     # Shortcut if db/ is mounted
     echo "dump.sql exists, skipping fetch"
-   # mv db/dump.sql ./
+    ln -s db/dump.sql ./dump.sql
 else
     sh ./scripts/bash/dumpDb.sh /root/.ssh/id_rsa_tupaia.pem
 fi

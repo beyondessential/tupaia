@@ -69,7 +69,8 @@ tupaia:
 
 e2e-db-reference:
   build:
-    dockerfile: postgres.Dockerfile
+    dockerfile: packages/devops/images/postgres/Dockerfile
+    context: .
   environment:
     POSTGRES_HOST_AUTH_METHOD: trust
   cached: true
@@ -77,7 +78,8 @@ e2e-db-reference:
 
 e2e-db-current:
   build:
-    dockerfile: postgres.Dockerfile
+    dockerfile: packages/devops/images/postgres/Dockerfile
+    context: .
   environment:
     POSTGRES_HOST_AUTH_METHOD: trust
   cached: true
@@ -85,7 +87,7 @@ e2e-db-current:
 
 e2e-setup:
   build:
-    dockerfile: packages/devops/images/e2e-setup/e2e-setup.Dockerfile
+    dockerfile: packages/devops/images/e2e-setup/Dockerfile
   encrypted_env_file: ./ci-env-vars.encrypted
   depends_on:
     - e2e-db-reference

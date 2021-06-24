@@ -1,6 +1,6 @@
 #!/bin/bash
 set -x
-#set -e # exit if any line fails
+set -e # exit if any line fails
 
 HOST=$1
 
@@ -10,7 +10,7 @@ then
       exit 1;
 fi
 
-# Db
+cd /home/data-api/scripts
 
 # yarn workspace @tupaia/data-api build-analytics-table
 psql -h $HOST -d $DB_NAME -U $DB_USER -f createAnalyticsMaterializedView.sql

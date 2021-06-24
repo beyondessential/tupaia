@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  tupaia:
+    build: .
+    ports:
+      - "3000:3000"
+      - "8000:8000"
+    env_file:
+      - ./ci-env-vars
+
+  e2e-db-reference:
+    image: "mdillon/postgis:11-alpine"
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+
+  e2e-db-current:
+    image: "mdillon/postgis:11-alpine"
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+
+  e2e-setup:
+    build:
+      dockerfile: packages/devops/images/e2e-setup/Dockerfile
+      context: .
+    env_file:
+      - ./ci-env-vars
+    links:
+      - e2e-db-reference
+      - e2e-db-current
+    command: tail -f /dev/null
+    volumes:
+      - ./db:/home/db

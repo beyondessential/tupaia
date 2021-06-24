@@ -1,0 +1,8 @@
+DB_NAME=tupaia
+DB_PASSWORD=97PWIRKcrql1
+DB_URL=e2e-db-reference
+DB_USER=tupaia
+DB_PG_USER=postgres
+DB_PG_PASSWORD=pBbpZ7xWYOp6Af1HyEOM1xxb
+DB_MV_USER=mvrefresh
+DB_MV_PASSWORD=WBULmAbc8XaufKTaZe5Gozln

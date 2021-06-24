@@ -1,8 +1,8 @@
-FROM mdillon/postgis:9.6-alpine
+FROM mdillon/postgis:11-alpine
 
 RUN apk add --no-cache bash
 
-COPY postgres_healthcheck /bin/
+COPY packages/devops/images/postgres/postgres_healthcheck /bin/
 
 RUN chmod +x /bin/postgres_healthcheck
 
