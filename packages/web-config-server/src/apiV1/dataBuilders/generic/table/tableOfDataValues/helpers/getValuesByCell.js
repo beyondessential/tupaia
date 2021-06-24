@@ -4,8 +4,10 @@
  */
 
 import groupBy from 'lodash.groupby';
+import isEqual from 'lodash.isequal';
 import zipObject from 'lodash.zipobject';
 
+import { DEFAULT_BINARY_OPTIONS_OBJECT } from '@tupaia/utils';
 import { addPrefixToCell } from '/apiV1/dataBuilders/generic/table/tableOfDataValues/TableConfig';
 import {
   countAnalyticsThatSatisfyConditions,
@@ -49,7 +51,9 @@ export const getValuesByCell = (config, results) => {
   return zipObject(
     Object.keys(groupedResults),
     Object.values(groupedResults).map(([{ value, metadata }]) =>
-      metadata && metadata.options ? metadata.options[value] : value,
+      metadata && metadata.options && !isEqual(metadata.options, DEFAULT_BINARY_OPTIONS_OBJECT) // If the metadata options is the default Yes/No, return default value 1/0 instead of translating value.
+        ? metadata.options[value]
+        : value,
     ),
   );
 };
