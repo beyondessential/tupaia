@@ -17,10 +17,62 @@ exports.setup = function (options, seedLink) {
 };
 
 /*
- * Data
+ * DATA
  */
 
-const BASE_FRONT_END_CONFIG = {
+// Generate an inclusive range
+const range = (start, end) => Array.from({ length: end - start + 1 }, (_, index) => index + start);
+
+const generateDistrictReportConfig = ({ educationLevel }) => {
+  return {
+    fetch: {
+      dataElements: [
+        `gir_district_${educationLevel}_m`,
+        `gir_district_${educationLevel}_f`,
+        `gir_district_${educationLevel}_t`,
+      ],
+    },
+    transform: [
+      {
+        transform: 'select',
+        "'name'": `translate($row.dataElement, { gir_district_${educationLevel}_m: 'Male', gir_district_${educationLevel}_f: 'Female', gir_district_${educationLevel}_t: 'Total' })`,
+        '...': ['value', 'dataElement'],
+      },
+      'keyValueByDataElementName',
+      {
+        transform: 'aggregate',
+        name: 'group',
+        '...': 'sum',
+      },
+      {
+        transform: 'select',
+        "'Gross Intake Ratio'": `sum([$row.gir_district_${educationLevel}_m, $row.gir_district_${educationLevel}_f, $row.gir_district_${educationLevel}_t])`,
+        '...': ['name'],
+      },
+    ],
+  };
+};
+
+const GIR_CONFIG_PRIMARY = {
+  grade: 'p5',
+  populationAge: '10',
+  ageRange: range(4, 15),
+  educationLevel: 'pe',
+};
+const GIR_CONFIG_LOWER_SECONDARY = {
+  grade: 's4',
+  populationAge: '14',
+  ageRange: range(11, 21),
+  educationLevel: 'lse',
+};
+const GIR_CONFIG_UPPER_SECONDARY = {
+  grade: 's7',
+  populationAge: '17',
+  ageRange: range(11, 21),
+  educationLevel: 'use',
+};
+
+const DISTRICT_BASE_FRONT_END_CONFIG = {
   type: 'chart',
   chartType: 'bar',
   xName: 'Gender',
@@ -36,168 +88,40 @@ const BASE_FRONT_END_CONFIG = {
   },
 };
 
-const PRIMARY = {
+const DISTRICT_LEVEL_PRIMARY = {
   code: 'LESMIS_gross_intake_ratio_primary',
   frontEndConfig: {
     name: 'Gross Intake Ratio to the Last Grade of Primary Education',
-    ...BASE_FRONT_END_CONFIG,
+    ...DISTRICT_BASE_FRONT_END_CONFIG,
   },
-  reportConfig: {
-    fetch: {
-      dataElements: [
-        'lesmis_student_p5_f',
-        'lesmis_student_rpt_p5_f',
-        'population_LA_age10_f',
-        'lesmis_student_p5_m',
-        'lesmis_student_rpt_p5_m',
-        'population_LA_age10_m',
-        'lesmis_student_p5_t',
-        'lesmis_student_rpt_p5_t',
-        'population_LA_age10_t',
-      ],
-    },
-    transform: [
-      {
-        transform: 'select',
-        "'name'":
-          "translate($row.dataElement, { lesmis_student_p5_f: 'Female', lesmis_student_rpt_p5_f: 'Female', population_LA_age10_f: 'Female', lesmis_student_p5_m: 'Male', lesmis_student_rpt_p5_m: 'Male', population_LA_age10_m: 'Male', lesmis_student_p5_t: 'Total', lesmis_student_rpt_p5_t: 'Total', population_LA_age10_t: 'Total' })",
-        '...': ['value', 'dataElement'],
-      },
-      'keyValueByDataElementName',
-      {
-        transform: 'aggregate',
-        name: 'group',
-        '...': 'sum',
-      },
-      {
-        transform: 'select',
-        "'totalStudents'":
-          'sum([$row.lesmis_student_p5_f, $row.lesmis_student_p5_m, $row.lesmis_student_p5_t])',
-        "'repeatStudents'":
-          'sum([$row.lesmis_student_rpt_p5_f, $row.lesmis_student_rpt_p5_m, $row.lesmis_student_rpt_p5_t])',
-        "'population'":
-          'sum([$row.population_LA_age10_f, $row.population_LA_age10_m, $row.population_LA_age10_t])',
-        '...': ['name'],
-      },
-      {
-        transform: 'select',
-        "'Gross Intake Ratio'": '($row.totalStudents - $row.repeatStudents) / $row.population',
-        '...': ['name'],
-      },
-    ],
-  },
+  reportConfig: generateDistrictReportConfig(GIR_CONFIG_PRIMARY),
 };
 
-const LOWER_SECONDARY = {
+const DISTRICT_LEVEL_LOWER_SECONDARY = {
   code: 'LESMIS_gross_intake_ratio_lower_secondary',
   frontEndConfig: {
     name: 'Gross Intake Ratio to the Last Grade of Lower Secondary Education',
-    ...BASE_FRONT_END_CONFIG,
+    ...DISTRICT_BASE_FRONT_END_CONFIG,
   },
-  reportConfig: {
-    fetch: {
-      dataElements: [
-        'lesmis_student_s4_f',
-        'lesmis_student_rpt_s4_f',
-        'population_LA_age14_f',
-        'lesmis_student_s4_m',
-        'lesmis_student_rpt_s4_m',
-        'population_LA_age14_m',
-        'lesmis_student_s4_t',
-        'lesmis_student_rpt_s4_t',
-        'population_LA_age14_t',
-      ],
-    },
-    transform: [
-      {
-        transform: 'select',
-        "'name'":
-          "translate($row.dataElement, { lesmis_student_s4_f: 'Female', lesmis_student_rpt_s4_f: 'Female', population_LA_age14_f: 'Female', lesmis_student_s4_m: 'Male', lesmis_student_rpt_s4_m: 'Male', population_LA_age14_m: 'Male', lesmis_student_s4_t: 'Total', lesmis_student_rpt_s4_t: 'Total', population_LA_age14_t: 'Total' })",
-        '...': ['value', 'dataElement'],
-      },
-      'keyValueByDataElementName',
-      {
-        transform: 'aggregate',
-        name: 'group',
-        '...': 'sum',
-      },
-      {
-        transform: 'select',
-        "'totalStudents'":
-          'sum([$row.lesmis_student_s4_f, $row.lesmis_student_s4_m, $row.lesmis_student_s4_t])',
-        "'repeatStudents'":
-          'sum([$row.lesmis_student_rpt_s4_f, $row.lesmis_student_rpt_s4_m, $row.lesmis_student_rpt_s4_t])',
-        "'population'":
-          'sum([$row.population_LA_age14_f, $row.population_LA_age14_m, $row.population_LA_age14_t])',
-        '...': ['name'],
-      },
-      {
-        transform: 'select',
-        "'Gross Intake Ratio'": '($row.totalStudents - $row.repeatStudents) / $row.population',
-        '...': ['name'],
-      },
-    ],
-  },
+  reportConfig: generateDistrictReportConfig(GIR_CONFIG_LOWER_SECONDARY),
 };
 
-const UPPER_SECONDARY = {
+const DISTRICT_LEVEL_UPPER_SECONDARY = {
   code: 'LESMIS_gross_intake_ratio_upper_secondary',
   frontEndConfig: {
     name: 'Gross Intake Ratio to the Last Grade of Upper Secondary Education',
-    ...BASE_FRONT_END_CONFIG,
+    ...DISTRICT_BASE_FRONT_END_CONFIG,
   },
-  reportConfig: {
-    fetch: {
-      dataElements: [
-        'lesmis_student_s7_f',
-        'lesmis_student_rpt_s7_f',
-        'population_LA_age17_f',
-        'lesmis_student_s7_m',
-        'lesmis_student_rpt_s7_m',
-        'population_LA_age17_m',
-        'lesmis_student_s7_t',
-        'lesmis_student_rpt_s7_t',
-        'population_LA_age17_t',
-      ],
-    },
-    transform: [
-      {
-        transform: 'select',
-        "'name'":
-          "translate($row.dataElement, { lesmis_student_s7_f: 'Female', lesmis_student_rpt_s7_f: 'Female', population_LA_age17_f: 'Female', lesmis_student_s7_m: 'Male', lesmis_student_rpt_s7_m: 'Male', population_LA_age17_m: 'Male', lesmis_student_s7_t: 'Total', lesmis_student_rpt_s7_t: 'Total', population_LA_age17_t: 'Total' })",
-        '...': ['value', 'dataElement'],
-      },
-      'keyValueByDataElementName',
-      {
-        transform: 'aggregate',
-        name: 'group',
-        '...': 'sum',
-      },
-      {
-        transform: 'select',
-        "'totalStudents'":
-          'sum([$row.lesmis_student_s7_f, $row.lesmis_student_s7_m, $row.lesmis_student_s7_t])',
-        "'repeatStudents'":
-          'sum([$row.lesmis_student_rpt_s7_f, $row.lesmis_student_rpt_s7_m, $row.lesmis_student_rpt_s7_t])',
-        "'population'":
-          'sum([$row.population_LA_age17_f, $row.population_LA_age17_m, $row.population_LA_age17_t])',
-        '...': ['name'],
-      },
-      {
-        transform: 'select',
-        "'Gross Intake Ratio'": '($row.totalStudents - $row.repeatStudents) / $row.population',
-        '...': ['name'],
-      },
-    ],
-  },
+  reportConfig: generateDistrictReportConfig(GIR_CONFIG_UPPER_SECONDARY),
 };
+
+const PROVINCE_LEVEL_PRIMARY = {};
+const PROVINCE_LEVEL_LOWER_SECONDARY = {};
+const PROVINCE_LEVEL_UPPER_SECONDARY = {};
 
 /*
  *  INDICATOR HELPER FUNCTIONS
  */
-
-// Generate an inclusive range
-const range = (start, end) => Array.from({ length: end - start + 1 }, (_, index) => index + start);
 
 // Creates an indicator object that sums between genders
 const sumGendersIndicator = baseCode => {
@@ -243,26 +167,69 @@ const sumAgesIndicator = (baseCode, ageRange, grade, gender) => {
   };
 };
 
-const addIndicatorsForAgeAndGrade = async (db, ageRange, grade) => {
-  await insertObject(db, 'indicator', sumAgesIndicator('lesmis_student', ageRange, grade, 'm'));
-  await insertObject(db, 'indicator', sumAgesIndicator('lesmis_student', ageRange, grade, 'f'));
-  await insertObject(db, 'indicator', sumAgesIndicator('lesmis_student_rpt', ageRange, grade, 'm'));
-  await insertObject(db, 'indicator', sumAgesIndicator('lesmis_student_rpt', ageRange, grade, 'f'));
+// Creates a GIR indicator
+const grossIntakeRatioIndicator = ({ grade, populationAge, educationLevel }, gender) => {
+  const indicatorCode = `gir_district_${educationLevel}_${gender}`;
+  const students = `lesmis_student_${grade}_${gender}`;
+  const repeats = `lesmis_student_rpt_${grade}_${gender}`;
+  const population = `population_LA_age${populationAge}_${gender}`;
+
+  return {
+    id: generateId(),
+    code: indicatorCode,
+    builder: 'analyticArithmetic',
+    config: {
+      formula: `(${students} - ${repeats}) / ${population}`,
+      aggregation: 'MOST_RECENT',
+      defaultValues: {
+        [students]: 0,
+        [repeats]: 0,
+        [population]: 0,
+      },
+    },
+  };
+};
+
+const addIndicatorsForAgeAndGrade = async (db, { ageRange, grade }) => {
+  for (const gender of ['m', 'f']) {
+    await insertObject(
+      db,
+      'indicator',
+      sumAgesIndicator('lesmis_student', ageRange, grade, gender),
+    );
+    await insertObject(
+      db,
+      'indicator',
+      sumAgesIndicator('lesmis_student_rpt', ageRange, grade, gender),
+    );
+  }
   await insertObject(db, 'indicator', sumGendersIndicator(`lesmis_student_${grade}`));
   await insertObject(db, 'indicator', sumGendersIndicator(`lesmis_student_rpt_${grade}`));
 };
 
-const removeIndicatorsForGrade = async (db, grade) => {
-  await deleteObject(db, 'indicator', { code: `lesmis_student_${grade}_m` });
-  await deleteObject(db, 'indicator', { code: `lesmis_student_${grade}_f` });
-  await deleteObject(db, 'indicator', { code: `lesmis_student_${grade}_t` });
-  await deleteObject(db, 'indicator', { code: `lesmis_student_rpt_${grade}_m` });
-  await deleteObject(db, 'indicator', { code: `lesmis_student_rpt_${grade}_f` });
-  await deleteObject(db, 'indicator', { code: `lesmis_student_rpt_${grade}_t` });
+const addAllGIRIndicators = async (db, config) => {
+  await addIndicatorsForAgeAndGrade(db, config);
+  await insertObject(
+    db,
+    'indicator',
+    sumGendersIndicator(`population_LA_age${config.populationAge}`),
+  );
+  for (const gender of ['m', 'f', 't']) {
+    await insertObject(db, 'indicator', grossIntakeRatioIndicator(config, gender));
+  }
+};
+
+const removeAllGIRIndicators = async (db, { grade, populationAge, educationLevel }) => {
+  for (const gender of ['m', 'f', 't']) {
+    await deleteObject(db, 'indicator', { code: `lesmis_student_${grade}_${gender}` });
+    await deleteObject(db, 'indicator', { code: `lesmis_student_rpt_${grade}_${gender}` });
+    await deleteObject(db, 'indicator', { code: `gir_district_${educationLevel}_${gender}` });
+  }
+  await deleteObject(db, 'indicator', { code: `population_LA_age${populationAge}_t` });
 };
 
 /*
- * Report/Dashboard Helper Functions
+ * REPORT/DASHBOARD HELPER FUNCTIONS
  */
 
 const addNewDashboardItemAndReport = async (
@@ -321,24 +288,25 @@ const removeDashboardItemAndReport = async (db, code) => {
  */
 
 exports.up = async function (db) {
-  await addIndicatorsForAgeAndGrade(db, range(4, 15), 'p5');
-  await addIndicatorsForAgeAndGrade(db, range(11, 21), 's4');
-  await addIndicatorsForAgeAndGrade(db, range(11, 21), 's7');
-  await insertObject(db, 'indicator', sumGendersIndicator('population_LA_age10'));
-  await insertObject(db, 'indicator', sumGendersIndicator('population_LA_age14'));
-  await insertObject(db, 'indicator', sumGendersIndicator('population_LA_age17'));
+  for (const config of [
+    GIR_CONFIG_PRIMARY,
+    GIR_CONFIG_LOWER_SECONDARY,
+    GIR_CONFIG_UPPER_SECONDARY,
+  ]) {
+    await addAllGIRIndicators(db, config);
+  }
 
   for (const { code, reportConfig, frontEndConfig } of [
-    PRIMARY,
-    LOWER_SECONDARY,
-    UPPER_SECONDARY,
+    DISTRICT_LEVEL_PRIMARY,
+    DISTRICT_LEVEL_LOWER_SECONDARY,
+    DISTRICT_LEVEL_UPPER_SECONDARY,
   ]) {
     await addNewDashboardItemAndReport(db, {
       code,
       reportConfig,
       frontEndConfig,
       permissionGroup: 'LESMIS Public',
-      dashboardCode: 'LA_Students',
+      dashboardCode: 'LESMIS_International_SDGs_Students',
       entityTypes: ['sub_district'],
       projectCodes: ['laos_schools'],
     });
@@ -346,14 +314,19 @@ exports.up = async function (db) {
 };
 
 exports.down = async function (db) {
-  await removeIndicatorsForGrade(db, 'p5');
-  await removeIndicatorsForGrade(db, 's4');
-  await removeIndicatorsForGrade(db, 's7');
-  await deleteObject(db, 'indicator', { code: 'population_LA_age10_t' });
-  await deleteObject(db, 'indicator', { code: 'population_LA_age14_t' });
-  await deleteObject(db, 'indicator', { code: 'population_LA_age17_t' });
+  for (const config of [
+    GIR_CONFIG_PRIMARY,
+    GIR_CONFIG_LOWER_SECONDARY,
+    GIR_CONFIG_UPPER_SECONDARY,
+  ]) {
+    await removeAllGIRIndicators(db, config);
+  }
 
-  for (const { code } of [PRIMARY, LOWER_SECONDARY, UPPER_SECONDARY]) {
+  for (const { code } of [
+    DISTRICT_LEVEL_PRIMARY,
+    DISTRICT_LEVEL_LOWER_SECONDARY,
+    DISTRICT_LEVEL_UPPER_SECONDARY,
+  ]) {
     await removeDashboardItemAndReport(db, code);
   }
 };
