@@ -6,8 +6,6 @@ WORKDIR /home
 
 COPY packages/devops/images/e2e-setup/* ./
 
-COPY packages/data-api ./data-api
-
 RUN mv data-api-env data-api/.env
 
 COPY ./scripts ./scripts
