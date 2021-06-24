@@ -6,4 +6,5 @@
 
 export { ApiConnection } from './ApiConnection';
 export { OutboundConnection } from './OutboundConnection';
+export { CachedOutboundConnection } from './CachedOutboundConnection';
 export { AuthHandler } from './types';

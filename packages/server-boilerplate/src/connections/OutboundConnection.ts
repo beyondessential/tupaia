@@ -5,21 +5,10 @@
  */
 import { fetchWithTimeout, verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
 import { QueryParameters } from '../types';
-import { RequestBody } from './types';
-
-interface FetchHeaders {
-  Authorization: string;
-  'Content-Type'?: string;
-}
-
-interface FetchConfig {
-  method: string;
-  headers: FetchHeaders;
-  body?: string;
-}
+import { RequestBody, FetchConfig } from './types';
 
 export class OutboundConnection {
-  get(
+  public async get(
     authHeader: string,
     baseUrl: string,
     endpoint: string,
@@ -28,7 +17,7 @@ export class OutboundConnection {
     return this.request(authHeader, 'GET', baseUrl, endpoint, queryParameters);
   }
 
-  post(
+  public async post(
     authHeader: string,
     baseUrl: string,
     endpoint: string,
@@ -38,7 +27,7 @@ export class OutboundConnection {
     return this.request(authHeader, 'POST', baseUrl, endpoint, queryParameters, body);
   }
 
-  put(
+  public async put(
     authHeader: string,
     baseUrl: string,
     endpoint: string,
@@ -48,11 +37,11 @@ export class OutboundConnection {
     return this.request(authHeader, 'PUT', baseUrl, endpoint, queryParameters, body);
   }
 
-  delete(authHeader: string, baseUrl: string, endpoint: string) {
+  public async delete(authHeader: string, baseUrl: string, endpoint: string) {
     return this.request(authHeader, 'DELETE', baseUrl, endpoint);
   }
 
-  async request(
+  private async request(
     authHeader: string,
     requestMethod: string,
     baseUrl: string,

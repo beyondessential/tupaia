@@ -9,3 +9,14 @@ export interface AuthHandler {
 }
 
 export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
+
+export interface FetchHeaders {
+  Authorization: string;
+  'Content-Type'?: string;
+}
+
+export interface FetchConfig {
+  method: string;
+  headers: FetchHeaders;
+  body?: string;
+}
