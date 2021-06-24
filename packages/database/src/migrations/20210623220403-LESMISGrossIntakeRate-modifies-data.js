@@ -306,7 +306,7 @@ exports.up = async function (db) {
       reportConfig,
       frontEndConfig,
       permissionGroup: 'LESMIS Public',
-      dashboardCode: 'LESMIS_International_SDGs_Students',
+      dashboardCode: 'LESMIS_International_SDGs_students',
       entityTypes: ['sub_district'],
       projectCodes: ['laos_schools'],
     });
