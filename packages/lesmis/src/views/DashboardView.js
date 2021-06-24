@@ -70,6 +70,7 @@ const subDashboardFilters = {
     dashboardCode.startsWith('LESMIS_ESSDP_LowerSecondary'),
   essdpUpperSecondary: ({ dashboardCode }) =>
     dashboardCode.startsWith('LESMIS_ESSDP_UpperSecondary'),
+  internationalSDGs: ({ dashboardCode }) => dashboardCode.startsWith('LESMIS_International_SDGs'),
 };
 
 const makeDropdownOptions = entityType => [
@@ -141,9 +142,9 @@ const makeDropdownOptions = entityType => [
     Body: 'Emergency in Education/COVID-19',
   },
   {
-    value: 'international',
+    value: 'internationalSDGs',
     label: 'International reporting on SDGs',
-    Component: TabTemplate,
+    Component: DashboardReportTabView,
     Body: 'International reporting on SDGs',
   },
 ];
