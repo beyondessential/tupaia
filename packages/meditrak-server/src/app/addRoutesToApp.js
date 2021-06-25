@@ -24,11 +24,13 @@ const {
   createIndicators,
   createPermissionGroups,
   createUserEntityPermissions,
+  createDashboardRelations,
   deleteAnswers,
   deleteDashboardGroups,
   deleteDashboardReports,
   deleteDashboards,
   deleteDashboardItems,
+  deleteDashboardRelations,
   deleteLegacyReports,
   deleteDataSources,
   deleteDisasters,
@@ -48,6 +50,7 @@ const {
   editDashboardReports,
   editDashboards,
   editDashboardItems,
+  editDashboardRelations,
   editLegacyReports,
   editDataSources,
   editDisasters,
@@ -74,6 +77,7 @@ const {
   getDashboardGroups,
   getDashboards,
   getDashboardItems,
+  getDashboardRelations,
   getLegacyReports,
   getDataSources,
   getEntities,
@@ -175,6 +179,8 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/dashboardGroups/:recordId?', getDashboardGroups);
   app.get('(/v[0-9]+)/dashboards/:recordId?', getDashboards);
   app.get('(/v[0-9]+)/dashboardItems/:recordId?', getDashboardItems);
+  app.get('(/v[0-9]+)/dashboardRelations/:recordId?', getDashboardRelations);
+  app.get('(/v[0-9]+)/dashboards/:parentRecordId/dashboardRelations', getDashboardRelations);
   app.get('(/v[0-9]+)/legacyReports/:recordId?', getLegacyReports);
   app.get('(/v[0-9]+)/indicators/:recordId?', getIndicators);
   app.get('(/v[0-9]+)/feedItems/:recordId?', getFeedItems);
@@ -245,6 +251,7 @@ export function addRoutesToApp(app) {
   app.post('(/v[0-9]+)/feedItems', createFeedItems);
   app.post('(/v[0-9]+)/indicators', createIndicators);
   app.post('(/v[0-9]+)/permissionGroups', createPermissionGroups);
+  app.post('(/v[0-9]+)?/dashboardRelation', createDashboardRelations);
 
   /**
    * PUT routes
@@ -267,6 +274,7 @@ export function addRoutesToApp(app) {
   app.put('(/v[0-9]+)/dashboardReports/:recordId', editDashboardReports);
   app.put('(/v[0-9]+)/dashboards/:recordId', editDashboards);
   app.put('(/v[0-9]+)/dashboardItems/:recordId', editDashboardItems);
+  app.put('(/v[0-9]+)/dashboardRelations/:recordId', editDashboardRelations);
   app.put('(/v[0-9]+)/legacyReports/:recordId', editLegacyReports);
   app.put('(/v[0-9]+)/mapOverlays/:recordId', editMapOverlays);
   app.put('(/v[0-9]+)/indicators/:recordId', editIndicators);
@@ -292,6 +300,7 @@ export function addRoutesToApp(app) {
   app.delete('(/v[0-9]+)/dashboardReports/:recordId', deleteDashboardReports);
   app.delete('(/v[0-9]+)/dashboards/:recordId', deleteDashboards);
   app.delete('(/v[0-9]+)/dashboardItems/:recordId', deleteDashboardItems);
+  app.delete('(/v[0-9]+)/dashboardRelations/:recordId', deleteDashboardRelations);
   app.delete('(/v[0-9]+)/legacyReports/:recordId', deleteLegacyReports);
   app.delete('(/v[0-9]+)/mapOverlays/:recordId', deleteMapOverlays);
   app.delete('(/v[0-9]+)/indicators/:recordId', deleteIndicators);

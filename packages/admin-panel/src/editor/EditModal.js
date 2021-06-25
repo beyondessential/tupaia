@@ -22,7 +22,7 @@ const getFieldSourceToEdit = field => {
     const sourceComponents = source.split('.');
     if (sourceComponents.length > 1) {
       const [resource] = sourceComponents;
-      return `${resource}_id`;
+      return `hahaha_id`;
     }
   }
   return source;

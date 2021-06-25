@@ -1,52 +1,22 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+/**
+ * Tupaia MediTrak
+ * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
-const FIELDS = [
+// export for use on users page
+export const DASHBOARD_RELATION_ENDPOINT = 'dashboardRelations';
+export const DASHBOARD_RELATION_COLUMNS = [
   {
-    Header: 'Code',
-    source: 'code',
-    type: 'tooltip',
-  },
-  {
-    Header: 'Name',
-    source: 'name',
-  },
-  {
-    Header: 'Organisation Unit Code',
-    source: 'root_entity_code',
+    Header: 'Dashboard Code',
+    source: 'dashboard.code',
     editConfig: {
-      optionsEndpoint: 'entities',
-      optionLabelKey: 'code',
-      optionValueKey: 'code',
-      sourceKey: 'root_entity_code',
+      optionsEndpoint: 'dashboards',
     },
   },
-  {
-    Header: 'Sort Order',
-    source: 'sort_order',
-  },
-];
-
-const COLUMNS = [
-  ...FIELDS,
-  {
-    Header: 'Edit',
-    type: 'edit',
-    source: 'id',
-    actionConfig: {
-      editEndpoint: 'dashboards',
-      fields: [...FIELDS],
-    },
-  },
-];
-
-const RELATION_FIELDS = [
   {
     Header: 'Dashboard Item Code',
     source: 'dashboard_item.code',
@@ -89,40 +59,50 @@ const RELATION_FIELDS = [
   },
 ];
 
-export const ANSWER_COLUMNS = [
-  ...RELATION_FIELDS,
+const FIELDS = [
+  ...DASHBOARD_RELATION_COLUMNS,
   {
     Header: 'Edit',
-    type: 'edit',
     source: 'id',
+    type: 'edit',
     actionConfig: {
-      editEndpoint: 'dashboardRelations',
-      fields: RELATION_FIELDS,
+      editEndpoint: DASHBOARD_RELATION_ENDPOINT,
+      fields: DASHBOARD_RELATION_COLUMNS,
+    },
+  },
+  {
+    Header: 'Delete',
+    source: 'id',
+    type: 'delete',
+    actionConfig: {
+      endpoint: DASHBOARD_RELATION_ENDPOINT,
     },
   },
 ];
 
-const EXPANSION_CONFIG = [
-  {
-    title: 'Dashboard Relations',
-    columns: ANSWER_COLUMNS,
-    endpoint: 'dashboards/{id}/dashboardRelations',
-  },
-];
+const EDIT_CONFIG = {
+  title: 'Edit Dashboard Relation',
+};
 
-export const DashboardsPage = ({ getHeaderEl }) => (
+const CREATE_CONFIG = {
+  title: 'Create a new relation between Dashboard and DashboardItem',
+  actionConfig: {
+    editEndpoint: DASHBOARD_RELATION_ENDPOINT,
+    fields: DASHBOARD_RELATION_COLUMNS,
+  },
+};
+
+export const DashboardRelationsPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Dashboards"
-    endpoint="dashboards"
-    columns={COLUMNS}
-    expansionTabs={EXPANSION_CONFIG}
-    editConfig={{
-      title: 'Edit Dashboard',
-    }}
+    title="Dashboard Relations"
+    endpoint={DASHBOARD_RELATION_ENDPOINT}
+    columns={FIELDS}
+    editConfig={EDIT_CONFIG}
+    createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
   />
 );
 
-DashboardsPage.propTypes = {
+DashboardRelationsPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
 };
