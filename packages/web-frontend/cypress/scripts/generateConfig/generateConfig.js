@@ -13,7 +13,7 @@ import { configSchema } from './configSchema';
 import { writeJsonFile } from './helpers';
 
 const CONFIG_PATH = 'cypress/config.json';
-const GENERATED_CONFIG_PATH = 'cypress/generatedConfig.json';
+const GENERATED_CONFIG_PATH = 'cypress/__generatedConfig.json';
 
 const validateConfig = () => {
   try {
