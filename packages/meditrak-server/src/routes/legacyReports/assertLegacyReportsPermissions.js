@@ -4,11 +4,8 @@
  */
 
 import { hasBESAdminAccess } from '../../permissions';
-import {
-  createDashboardItemsDBFilter,
-  hasDashboardItemGetPermissions,
-  hasDashboardItemEditPermissions,
-} from '../dashboardItems';
+import { hasDashboardItemGetPermissions, hasDashboardItemEditPermissions } from '../dashboardItems';
+import { createDashboardRelationsDBFilter } from '../dashboardRelations';
 import { mergeFilter } from '../utilities';
 
 export const assertLegacyReportGetPermissions = async (accessPolicy, models, legacyReportId) => {
@@ -48,9 +45,13 @@ export const createLegacyReportsDBFilter = async (accessPolicy, models, criteria
 
   const dbConditions = { ...criteria };
 
-  // Pull the list of dashboard items we have access to, then pull the associated legacy reports
-  const dashboardItemsConditions = createDashboardItemsDBFilter(accessPolicy);
-  const permittedDashboardItems = await models.dashboardItem.find(dashboardItemsConditions);
+  // Pull the list of dashboard items we have access to,
+  // then pull the dashboards we have permission to from that
+  const dashboardRelations = createDashboardRelationsDBFilter(accessPolicy);
+  const permittedDashboardRelations = await models.dashboardRelation.find(dashboardRelations);
+  const permittedDashboardItems = await models.dashboardItem.findManyById(
+    permittedDashboardRelations.map(dr => dr.child_id),
+  );
   const permittedLegacyReportCodes = permittedDashboardItems
     .filter(di => di.legacy && !!di.report_code)
     .map(di => di.report_code);
