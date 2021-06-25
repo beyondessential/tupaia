@@ -50,12 +50,7 @@ const RELATION_FIELDS = [
   {
     Header: 'Dashboard Item Code',
     source: 'dashboard_item.code',
-    editConfig: {
-      optionsEndpoint: 'dashboardItems',
-      optionLabelKey: 'code',
-      optionValueKey: 'code',
-      sourceKey: 'code',
-    },
+    editable: false,
   },
   {
     Header: 'Permission Groups',
@@ -71,6 +66,14 @@ const RELATION_FIELDS = [
   {
     Header: 'Entity Types',
     source: 'entity_types',
+    editConfig: {
+      type: 'autocomplete',
+      allowMultipleValues: true,
+      canCreateNewOptions: true,
+      optionLabelKey: 'entityTypes',
+      optionValueKey: 'entityTypes',
+      secondaryLabel: "Input the entity types you want. Eg: 'country', 'sub_district'",
+    },
   },
   {
     Header: 'Project Codes',
@@ -79,7 +82,7 @@ const RELATION_FIELDS = [
       optionsEndpoint: 'projects',
       optionLabelKey: 'code',
       optionValueKey: 'code',
-      sourceKey: 'projectCodes',
+      sourceKey: 'project_codes',
       allowMultipleValues: true,
     },
   },
