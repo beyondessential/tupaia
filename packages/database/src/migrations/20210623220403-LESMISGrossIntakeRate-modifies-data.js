@@ -27,15 +27,15 @@ const generateDistrictReportConfig = ({ educationLevel }) => {
   return {
     fetch: {
       dataElements: [
-        `gir_district_${educationLevel}_m`,
-        `gir_district_${educationLevel}_f`,
-        `gir_district_${educationLevel}_t`,
+        `lesmis_gir_district_${educationLevel}_m`,
+        `lesmis_gir_district_${educationLevel}_f`,
+        `lesmis_gir_district_${educationLevel}_t`,
       ],
     },
     transform: [
       {
         transform: 'select',
-        "'name'": `translate($row.dataElement, { gir_district_${educationLevel}_m: 'Male', gir_district_${educationLevel}_f: 'Female', gir_district_${educationLevel}_t: 'Total' })`,
+        "'name'": `translate($row.dataElement, { lesmis_gir_district_${educationLevel}_m: 'Male', lesmis_gir_district_${educationLevel}_f: 'Female', lesmis_gir_district_${educationLevel}_t: 'Total' })`,
         '...': ['value', 'dataElement'],
       },
       'keyValueByDataElementName',
@@ -46,8 +46,43 @@ const generateDistrictReportConfig = ({ educationLevel }) => {
       },
       {
         transform: 'select',
-        "'Gross Intake Ratio'": `sum([$row.gir_district_${educationLevel}_m, $row.gir_district_${educationLevel}_f, $row.gir_district_${educationLevel}_t])`,
+        "'Gross Intake Ratio'": `sum([$row.lesmis_gir_district_${educationLevel}_m, $row.lesmis_gir_district_${educationLevel}_f, $row.lesmis_gir_district_${educationLevel}_t])`,
         '...': ['name'],
+      },
+    ],
+  };
+};
+
+const generateProvinceReportConfig = ({ educationLevel }) => {
+  return {
+    fetch: {
+      dataElements: [
+        `lesmis_gir_district_${educationLevel}_m`,
+        `lesmis_gir_district_${educationLevel}_f`,
+        `lesmis_gir_district_${educationLevel}_t`,
+      ],
+      aggregations: [
+        {
+          type: 'MOST_RECENT',
+          config: {
+            dataSourceEntityType: 'sub_district',
+          },
+        },
+      ],
+    },
+    transform: [
+      'keyValueByDataElementName',
+      {
+        transform: 'select',
+        "'Male'": `$row.lesmis_gir_district_${educationLevel}_m`,
+        "'Female'": `$row.lesmis_gir_district_${educationLevel}_f`,
+        "'Total'": `$row.lesmis_gir_district_${educationLevel}_t`,
+        '...': ['organisationUnit'],
+      },
+      {
+        transform: 'aggregate',
+        organisationUnit: 'group',
+        '...': 'sum',
       },
     ],
   };
@@ -88,36 +123,86 @@ const DISTRICT_BASE_FRONT_END_CONFIG = {
   },
 };
 
+const PROVINCE_BASE_FRONT_END_CONFIG = {
+  type: 'chart',
+  chartType: 'bar',
+  xName: 'District',
+  yName: 'Gross Intake Ratio',
+  periodGranularity: 'one_year_at_a_time',
+  chartConfig: {
+    Male: {
+      color: '#f44336',
+      stackId: '1',
+      legendOrder: '1',
+    },
+    Female: {
+      color: '#2196f3',
+      stackId: '2',
+      legendOrder: '2',
+    },
+    Total: {
+      color: '#9c27b0',
+      stackId: '3',
+      legendOrder: '3',
+    },
+  },
+};
+
 const DISTRICT_LEVEL_PRIMARY = {
-  code: 'LESMIS_gross_intake_ratio_primary',
+  code: 'LESMIS_gross_intake_ratio_primary_district',
   frontEndConfig: {
     name: 'Gross Intake Ratio to the Last Grade of Primary Education',
     ...DISTRICT_BASE_FRONT_END_CONFIG,
   },
   reportConfig: generateDistrictReportConfig(GIR_CONFIG_PRIMARY),
+  entityTypes: ['sub_district'],
 };
-
 const DISTRICT_LEVEL_LOWER_SECONDARY = {
-  code: 'LESMIS_gross_intake_ratio_lower_secondary',
+  code: 'LESMIS_gross_intake_ratio_lower_secondary_district',
   frontEndConfig: {
     name: 'Gross Intake Ratio to the Last Grade of Lower Secondary Education',
     ...DISTRICT_BASE_FRONT_END_CONFIG,
   },
   reportConfig: generateDistrictReportConfig(GIR_CONFIG_LOWER_SECONDARY),
+  entityTypes: ['sub_district'],
 };
-
 const DISTRICT_LEVEL_UPPER_SECONDARY = {
-  code: 'LESMIS_gross_intake_ratio_upper_secondary',
+  code: 'LESMIS_gross_intake_ratio_upper_secondary_district',
   frontEndConfig: {
     name: 'Gross Intake Ratio to the Last Grade of Upper Secondary Education',
     ...DISTRICT_BASE_FRONT_END_CONFIG,
   },
   reportConfig: generateDistrictReportConfig(GIR_CONFIG_UPPER_SECONDARY),
+  entityTypes: ['sub_district'],
 };
 
-const PROVINCE_LEVEL_PRIMARY = {};
-const PROVINCE_LEVEL_LOWER_SECONDARY = {};
-const PROVINCE_LEVEL_UPPER_SECONDARY = {};
+const PROVINCE_LEVEL_PRIMARY = {
+  code: 'LESMIS_gross_intake_ratio_primary_province',
+  frontEndConfig: {
+    name: 'Gross Intake Ratio to the Last Grade of Primary Education',
+    ...PROVINCE_BASE_FRONT_END_CONFIG,
+  },
+  reportConfig: generateProvinceReportConfig(GIR_CONFIG_PRIMARY),
+  entityTypes: ['district'],
+};
+const PROVINCE_LEVEL_LOWER_SECONDARY = {
+  code: 'LESMIS_gross_intake_ratio_lower_secondary_province',
+  frontEndConfig: {
+    name: 'Gross Intake Ratio to the Last Grade of Primary Education',
+    ...PROVINCE_BASE_FRONT_END_CONFIG,
+  },
+  reportConfig: generateProvinceReportConfig(GIR_CONFIG_LOWER_SECONDARY),
+  entityTypes: ['district'],
+};
+const PROVINCE_LEVEL_UPPER_SECONDARY = {
+  code: 'LESMIS_gross_intake_ratio_upper_secondary_province',
+  frontEndConfig: {
+    name: 'Gross Intake Ratio to the Last Grade of Primary Education',
+    ...PROVINCE_BASE_FRONT_END_CONFIG,
+  },
+  reportConfig: generateProvinceReportConfig(GIR_CONFIG_UPPER_SECONDARY),
+  entityTypes: ['district'],
+};
 
 /*
  *  INDICATOR HELPER FUNCTIONS
@@ -169,7 +254,7 @@ const sumAgesIndicator = (baseCode, ageRange, grade, gender) => {
 
 // Creates a GIR indicator
 const grossIntakeRatioIndicator = ({ grade, populationAge, educationLevel }, gender) => {
-  const indicatorCode = `gir_district_${educationLevel}_${gender}`;
+  const indicatorCode = `lesmis_gir_district_${educationLevel}_${gender}`;
   const students = `lesmis_student_${grade}_${gender}`;
   const repeats = `lesmis_student_rpt_${grade}_${gender}`;
   const population = `population_LA_age${populationAge}_${gender}`;
@@ -223,7 +308,9 @@ const removeAllGIRIndicators = async (db, { grade, populationAge, educationLevel
   for (const gender of ['m', 'f', 't']) {
     await deleteObject(db, 'indicator', { code: `lesmis_student_${grade}_${gender}` });
     await deleteObject(db, 'indicator', { code: `lesmis_student_rpt_${grade}_${gender}` });
-    await deleteObject(db, 'indicator', { code: `gir_district_${educationLevel}_${gender}` });
+    await deleteObject(db, 'indicator', {
+      code: `lesmis_gir_district_${educationLevel}_${gender}`,
+    });
   }
   await deleteObject(db, 'indicator', { code: `population_LA_age${populationAge}_t` });
 };
@@ -296,10 +383,13 @@ exports.up = async function (db) {
     await addAllGIRIndicators(db, config);
   }
 
-  for (const { code, reportConfig, frontEndConfig } of [
+  for (const { code, reportConfig, frontEndConfig, entityTypes } of [
     DISTRICT_LEVEL_PRIMARY,
     DISTRICT_LEVEL_LOWER_SECONDARY,
     DISTRICT_LEVEL_UPPER_SECONDARY,
+    PROVINCE_LEVEL_PRIMARY,
+    PROVINCE_LEVEL_LOWER_SECONDARY,
+    PROVINCE_LEVEL_UPPER_SECONDARY,
   ]) {
     await addNewDashboardItemAndReport(db, {
       code,
@@ -307,7 +397,7 @@ exports.up = async function (db) {
       frontEndConfig,
       permissionGroup: 'LESMIS Public',
       dashboardCode: 'LESMIS_International_SDGs_students',
-      entityTypes: ['sub_district'],
+      entityTypes,
       projectCodes: ['laos_schools'],
     });
   }
@@ -326,6 +416,9 @@ exports.down = async function (db) {
     DISTRICT_LEVEL_PRIMARY,
     DISTRICT_LEVEL_LOWER_SECONDARY,
     DISTRICT_LEVEL_UPPER_SECONDARY,
+    PROVINCE_LEVEL_PRIMARY,
+    PROVINCE_LEVEL_LOWER_SECONDARY,
+    PROVINCE_LEVEL_UPPER_SECONDARY,
   ]) {
     await removeDashboardItemAndReport(db, code);
   }
