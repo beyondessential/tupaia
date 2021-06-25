@@ -3,13 +3,12 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { flatten } from 'lodash';
 import { hasBESAdminAccess } from '../../permissions';
 import {
-  createDashboardItemsDBFilter,
+  createDashboardRelationsDBFilter,
   hasDashboardRelationGetPermissions,
   hasDashboardRelationEditPermissions,
-} from '../dashboardItems';
+} from '../dashboardRelations';
 import { mergeFilter } from '../utilities';
 
 export const assertDashboardGetPermissions = async (accessPolicy, models, dashboardId) => {
@@ -67,12 +66,11 @@ export const createDashboardsDBFilter = async (accessPolicy, models, criteria) =
 
   // Pull the list of dashboard items we have access to, then pull the dashboards
   // we have permission to from that
-  const dashboardItemsConditions = createDashboardItemsDBFilter(accessPolicy);
-  const permittedDashboardItems = await models.dashboardItem.find(dashboardItemsConditions);
-  const permittedDashboardsByItemIds = await models.dashboard.findDashboardsByItemIds(
-    permittedDashboardItems.map(di => di.id),
-  );
-  const permittedDashboards = flatten(Object.values(permittedDashboardsByItemIds));
+  const dashboardRelations = createDashboardRelationsDBFilter(accessPolicy);
+  const permittedDashboardRelations = await models.dashboardRelation.find(dashboardRelations);
+  const permittedDashboards = await models.dashboard.find({
+    id: permittedDashboardRelations.map(dr => dr.dashboard_id),
+  });
   const permittedDashboardIds = [...new Set(permittedDashboards.map(d => d.id))];
 
   dbConditions['dashboard.id'] = mergeFilter(permittedDashboardIds, dbConditions['dashboard.id']);

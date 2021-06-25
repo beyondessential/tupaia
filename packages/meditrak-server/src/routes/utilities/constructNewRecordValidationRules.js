@@ -11,8 +11,9 @@ import {
   isPlainObject,
   constructIsEmptyOr,
   constructIsOneOf,
+  constructIsSubSetOf,
   isValidPassword,
-  takesDateForm,
+  isNumber,
   ValidationError,
 } from '@tupaia/utils';
 import { FEED_ITEM_TYPES } from '../../database/models/FeedItem';
@@ -94,6 +95,39 @@ export const constructForSingle = (models, recordType) => {
       return {
         code: [hasContent],
         builder: [hasContent],
+      };
+    case TYPES.DASHBOARD_RELATION:
+      return {
+        dashboard_id: [constructRecordExistsWithId(models.dashboard)],
+        child_id: [constructRecordExistsWithId(models.dashboardItem)],
+        entity_types: [constructIsSubSetOf(Object.values(models.entity.types))],
+        permission_groups: [
+          async permissionGroupNames => {
+            const permissionGroups = await models.permissionGroup.find({
+              name: permissionGroupNames,
+            });
+            if (permissionGroupNames.length !== permissionGroups.length) {
+              throw new Error('Some provided permission groups do not exist');
+            }
+
+            return true;
+          },
+        ],
+        project_codes: [
+          async projectCodes => {
+            console.log('projectCodes', projectCodes);
+            const projects = await models.project.find({
+              code: projectCodes,
+            });
+            console.log('projects', projects.length);
+            if (projectCodes.length !== projects.length) {
+              throw new Error('Some provided projects do not exist');
+            }
+
+            return true;
+          },
+        ],
+        sort_order: [constructIsEmptyOr(isNumber)],
       };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);

@@ -8,8 +8,9 @@ import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
   assertDashboardRelationGetPermissions,
   createDashboardRelationsDBFilter,
+  createDashboardRelationsViaParentDashboardDBFilter,
 } from './assertDashboardRelationsPermissions';
-import { assertDashboardGetPermission } from './assertDashboardsPermissions';
+import { assertDashboardGetPermissions } from '../dashboards';
 
 /**
  * Handles endpoints:
@@ -44,14 +45,19 @@ export class GETDashboardRelations extends GETHandler {
 
   async getPermissionsViaParentFilter(criteria, options) {
     // Check parent permissions
-    const surveyResponseChecker = accessPolicy =>
-      assertDashboardGetPermission(accessPolicy, this.models, this.parentRecordId);
+    const dashboardPermissionChecker = accessPolicy =>
+      assertDashboardGetPermissions(accessPolicy, this.models, this.parentRecordId);
 
     await this.assertPermissions(
-      assertAnyPermissions([assertBESAdminAccess, surveyResponseChecker]),
+      assertAnyPermissions([assertBESAdminAccess, dashboardPermissionChecker]),
     );
 
-    // Get answers from survey response
-    return createAnswerViaSurveyResponseDBFilter(criteria, options, this.parentRecordId);
+    // Get permitted dashboard relations
+    return createDashboardRelationsViaParentDashboardDBFilter(
+      this.accessPolicy,
+      criteria,
+      options,
+      this.parentRecordId,
+    );
   }
 }

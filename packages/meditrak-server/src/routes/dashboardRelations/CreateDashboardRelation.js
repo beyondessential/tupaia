@@ -4,7 +4,11 @@
  */
 
 import { CreateHandler } from '../CreateHandler';
-import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import {
+  assertAnyPermissions,
+  assertBESAdminAccess,
+  assertAdminPanelAccess,
+} from '../../permissions';
 import { assertDashboardRelationCreatePermissions } from './assertDashboardRelationsPermissions';
 
 /**
@@ -13,7 +17,18 @@ import { assertDashboardRelationCreatePermissions } from './assertDashboardRelat
  */
 
 export class CreateDashboardRelation extends CreateHandler {
+  async assertUserHasAccess() {
+    await this.assertPermissions(
+      assertAnyPermissions(
+        [assertBESAdminAccess, assertAdminPanelAccess],
+        'You need either BES Admin or Tupaia Admin Panel access to create user entity permissions',
+      ),
+    );
+  }
+
   async createRecord() {
+    console.log('this.newRecordData', this.newRecordData);
+
     // Check Permissions
     const dashboardRelationChecker = accessPolicy =>
       assertDashboardRelationCreatePermissions(accessPolicy, this.models, this.newRecordData);
