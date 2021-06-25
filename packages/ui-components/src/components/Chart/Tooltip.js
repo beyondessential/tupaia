@@ -121,10 +121,7 @@ export const Tooltip = props => {
   const { payload, active, presentationOptions } = props;
 
   const data = payload || []; // This is to handle when recharts overrides the payload as null
-  const filteredPayload = data.filter(({ value }) => value !== undefined);
-
-  // Todo: lookup
-  // const filteredPayload = data.filter(({ value }) => ![null, undefined].includes(value));
+  const filteredPayload = data.filter(({ value }) => ![null, undefined].includes(value));
 
   if (active && filteredPayload.length >= 1) {
     if (data.length === 1 && !presentationOptions) {

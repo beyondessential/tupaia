@@ -85,7 +85,7 @@ const getRealDataKeys = chartConfig =>
  * Cartesian Chart types using recharts
  * @see https://recharts.org
  */
-export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
+export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPosition }) => {
   const [chartConfig, setChartConfig] = useState(viewContent.chartConfig || {});
   const [activeDataKeys, setActiveDataKeys] = useState([]);
 
@@ -174,7 +174,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
         margin={
           isExporting
             ? { left: 20, right: 20, top: 20, bottom: 20 }
-            : { left: 0, right: 0, top: 0, bottom: 5 }
+            : { left: 0, right: 0, top: 0, bottom: 20 }
         }
       >
         {referenceAreas && referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />)}
@@ -195,13 +195,14 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
         />
         {(hasDataSeries || renderLegendForOneItem) && isEnlarged && (
           <Legend
-            verticalAlign="top"
-            align="left"
+            verticalAlign={legendPosition === 'bottom' ? 'bottom' : 'top'}
+            align={legendPosition === 'bottom' ? 'center' : 'left'}
             content={getCartesianLegend({
               chartConfig,
               getIsActiveKey,
               isExporting,
               onClick: onLegendClick,
+              legendPosition,
             })}
           />
         )}
@@ -235,10 +236,12 @@ CartesianChart.propTypes = {
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
+  legendPosition: PropTypes.string,
 };
 
 CartesianChart.defaultProps = {
   isEnlarged: false,
   isExporting: false,
   viewContent: null,
+  legendPosition: 'bottom',
 };
