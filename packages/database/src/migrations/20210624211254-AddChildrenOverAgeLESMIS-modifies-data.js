@@ -17,83 +17,76 @@ exports.setup = function (options, seedLink) {
 };
 
 const DASHBOARD_CODE = 'LESMIS_International_SDGs_students';
-const CODE = 'LESMIS_percent_children_over_age';
 
-const REPORT_CONFIG = {
-  fetch: {
-    dataElements: [
-      'oafg_district_pe_f',
-      'oafg_district_pe_m',
-      'oafg_district_pe_t',
-      'oafg_district_lse_f',
-      'oafg_district_lse_m',
-      'oafg_district_lse_t',
-    ],
-    aggregations: [
+const getReportConfig = educationLevelAcronym => `
+{
+  "fetch": {
+    "aggregations": [
       {
-        type: 'MOST_RECENT',
-        config: {
-          dataSourceEntityType: 'sub_district',
-        },
-      },
+        "type": "MOST_RECENT",
+        "config": {
+          "dataSourceEntityType": "sub_district"
+        }
+      }
     ],
+    "dataElements": [
+      "oafg_district_${educationLevelAcronym}_f",
+      "oafg_district_${educationLevelAcronym}_m",
+      "oafg_district_${educationLevelAcronym}_t"
+    ]
   },
-  transform: [
+  "transform": [
+    "keyValueByDataElementName",
     {
-      transform: 'select',
-      "'name'":
-        "translate($row.dataElement, { oafg_district_pe_f: 'Primary', oafg_district_pe_m: 'Primary', oafg_district_pe_t: 'Primary', oafg_district_lse_f: 'Lower Secondary', oafg_district_lse_m: 'Lower Secondary', oafg_district_lse_t: 'Lower Secondary' })",
-      '...': '*',
-    },
-    'keyValueByDataElementName',
-    {
-      transform: 'aggregate',
-      name: 'group',
-      '...': 'last',
+      "transform": "select",
+      "'timestamp'": "periodToTimestamp($row.period)",
+      "...": "*"
     },
     {
-      transform: 'select',
-      "'Female'": 'sum([$row.oafg_district_pe_f, $row.oafg_district_lse_f])',
-      "'Male'": 'sum([$row.oafg_district_pe_m, $row.oafg_district_lse_m])',
-      "'Total'": 'sum([$row.oafg_district_pe_t, $row.oafg_district_lse_t])',
-      '...': ['name'],
+      "transform": "aggregate",
+      "timestamp": "group",
+      "...": "last"
     },
     {
-      transform: 'sort',
-      by: '$row.name',
-      descending: true,
-    },
-  ],
-};
+      "transform": "select",
+      "'Female'": "$row.oafg_district_${educationLevelAcronym}_f/100",
+      "'Male'": "$row.oafg_district_${educationLevelAcronym}_m/100",
+      "'Total'": "$row.oafg_district_${educationLevelAcronym}_t/100",
+      "...": ["timestamp"]
+    }
+  ]
+}
+`;
 
-const FRONT_END_CONFIG = {
-  name: 'Percentage of children over-age for grade',
-  type: 'chart',
-  chartType: 'bar',
-  xName: 'Level of Education',
-  yName: '%',
-  periodGranularity: 'one_year_at_a_time',
-  chartConfig: {
-    Male: {
-      color: '#f44336',
-      stackId: '1',
-      legendOrder: '1',
+const getFrontEndConfig = educationLevel => `
+{
+  "name": "Percentage of children over-age for grade (${educationLevel})",
+  "type": "chart",
+  "chartType": "line",
+  "xName": "Year",
+  "yName": "%",
+  "periodGranularity": "one_year_at_a_time",
+  "valueType": "percentage",
+  "ticks": [0,0.25,0.5,0.75,1],
+  "chartConfig": {
+    "Male": {
+      "color": "#f44336",
+      "legendOrder": "1"
     },
-    Female: {
-      color: '#2196f3',
-      stackId: '2',
-      legendOrder: '2',
+    "Female": {
+      "color": "#2196f3",
+      "legendOrder": "2"
     },
-    Total: {
-      color: '#9c27b0',
-      stackId: '3',
-      legendOrder: '3',
-    },
+    "Total": {
+      "color": "#9c27b0",
+      "legendOrder": "3"
+    }
   },
-  presentationOptions: {
-    hideAverage: true,
-  },
-};
+  "presentationOptions": {
+    "hideAverage": true
+  }
+}
+`;
 
 const addNewDashboardItemAndReport = async (
   db,
@@ -146,6 +139,19 @@ const removeDashboardItemAndReport = async (db, code) => {
   await db.runSql(`DELETE FROM report WHERE code = '${code}';`);
 };
 
+const DASHBOARD_ITEMS = [
+  {
+    code: 'LESMIS_percent_children_over_age_pe',
+    educationLevel: 'Primary',
+    educationLevelAcronym: 'pe',
+  },
+  {
+    code: 'LESMIS_percent_children_over_age_lse',
+    educationLevel: 'LSE',
+    educationLevelAcronym: 'lse',
+  },
+];
+
 exports.up = async function (db) {
   await insertObject(db, 'dashboard', {
     id: generateId(),
@@ -153,19 +159,24 @@ exports.up = async function (db) {
     name: 'Students',
     root_entity_code: 'LA',
   });
-  await addNewDashboardItemAndReport(db, {
-    code: CODE,
-    reportConfig: REPORT_CONFIG,
-    frontEndConfig: FRONT_END_CONFIG,
-    permissionGroup: 'LESMIS Public',
-    dashboardCode: DASHBOARD_CODE,
-    entityTypes: ['sub_district'],
-    projectCodes: ['laos_schools'],
-  });
+
+  for (const { code, educationLevel, educationLevelAcronym } of DASHBOARD_ITEMS) {
+    await addNewDashboardItemAndReport(db, {
+      code,
+      reportConfig: getReportConfig(educationLevelAcronym),
+      frontEndConfig: getFrontEndConfig(educationLevel),
+      permissionGroup: 'LESMIS Public',
+      dashboardCode: DASHBOARD_CODE,
+      entityTypes: ['sub_district'],
+      projectCodes: ['laos_schools'],
+    });
+  }
 };
 
 exports.down = async function (db) {
-  await removeDashboardItemAndReport(db, CODE);
+  for (const { code } of DASHBOARD_ITEMS) {
+    await removeDashboardItemAndReport(db, code);
+  }
   await deleteObject(db, 'dashboard', { code: DASHBOARD_CODE });
 };
 

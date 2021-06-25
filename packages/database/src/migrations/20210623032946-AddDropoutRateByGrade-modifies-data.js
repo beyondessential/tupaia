@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject, generateId, findSingleRecord } from '../utilities';
+import { insertObject, generateId, findSingleRecord, arrayToDbString } from '../utilities';
 
 var dbm;
 var type;
@@ -21,6 +21,7 @@ const BASE_FRONT_END_CONFIG = {
   chartType: 'bar',
   yName: 'Dropout Rate',
   periodGranularity: 'one_year_at_a_time',
+  valueType: 'percentage',
   chartConfig: {
     Male: {
       color: '#f44336',
@@ -92,11 +93,11 @@ const PRIMARY = {
       {
         transform: 'select',
         "'Female'":
-          'sum([$row.dor_district_p1_f, $row.dor_district_p2_f, $row.dor_district_p3_f, $row.dor_district_p4_f, $row.dor_district_p5_f, $row.dor_district_pe_f])',
+          'sum([$row.dor_district_p1_f, $row.dor_district_p2_f, $row.dor_district_p3_f, $row.dor_district_p4_f, $row.dor_district_p5_f, $row.dor_district_pe_f]) / 100',
         "'Male'":
-          'sum([$row.dor_district_p1_m, $row.dor_district_p2_m, $row.dor_district_p3_m, $row.dor_district_p4_m, $row.dor_district_p5_m, $row.dor_district_pe_m])',
+          'sum([$row.dor_district_p1_m, $row.dor_district_p2_m, $row.dor_district_p3_m, $row.dor_district_p4_m, $row.dor_district_p5_m, $row.dor_district_pe_m]) / 100',
         "'Total'":
-          'sum([$row.dor_district_p1_t, $row.dor_district_p2_t, $row.dor_district_p3_t, $row.dor_district_p4_t, $row.dor_district_p5_t, $row.dor_district_pe_t])',
+          'sum([$row.dor_district_p1_t, $row.dor_district_p2_t, $row.dor_district_p3_t, $row.dor_district_p4_t, $row.dor_district_p5_t, $row.dor_district_pe_t]) / 100',
         '...': ['name'],
       },
       {
@@ -291,6 +292,12 @@ const removeDashboardItemAndReport = async (db, code) => {
   await db.runSql(`DELETE FROM report WHERE code = '${code}';`);
 };
 
+const OLD_DASHBOARD_ITEMS = [
+  'Laos_Schools_Dropout_Bar_Primary_District',
+  'Laos_Schools_Dropout_Bar_Lower_Secondary_District',
+  'Laos_Schools_Dropout_Bar_Upper_Secondary_District',
+];
+
 exports.up = async function (db) {
   for (const { code, reportConfig, frontEndConfig } of [
     PRIMARY,
@@ -302,11 +309,19 @@ exports.up = async function (db) {
       reportConfig,
       frontEndConfig,
       permissionGroup: 'LESMIS Public',
-      dashboardCode: 'LA_Students',
+      dashboardCode: 'LA_Student_Outcomes',
       entityTypes: ['sub_district'],
       projectCodes: ['laos_schools'],
     });
   }
+
+  // delete old dashboard items and legacy reports that were created for Laos Schools (cascades to relations)
+  await db.runSql(
+    `DELETE FROM dashboard_item WHERE code IN (${arrayToDbString(OLD_DASHBOARD_ITEMS)});`,
+  );
+  await db.runSql(
+    `DELETE FROM legacy_report WHERE code IN (${arrayToDbString(OLD_DASHBOARD_ITEMS)});`,
+  );
 };
 
 exports.down = async function (db) {
