@@ -27,8 +27,6 @@ export class CreateDashboardRelation extends CreateHandler {
   }
 
   async createRecord() {
-    console.log('this.newRecordData', this.newRecordData);
-
     // Check Permissions
     const dashboardRelationChecker = accessPolicy =>
       assertDashboardRelationCreatePermissions(accessPolicy, this.models, this.newRecordData);

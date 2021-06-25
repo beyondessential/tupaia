@@ -109,21 +109,17 @@ export const constructForSingle = (models, recordType) => {
             if (permissionGroupNames.length !== permissionGroups.length) {
               throw new Error('Some provided permission groups do not exist');
             }
-
             return true;
           },
         ],
         project_codes: [
           async projectCodes => {
-            console.log('projectCodes', projectCodes);
             const projects = await models.project.find({
               code: projectCodes,
             });
-            console.log('projects', projects.length);
             if (projectCodes.length !== projects.length) {
               throw new Error('Some provided projects do not exist');
             }
-
             return true;
           },
         ],
