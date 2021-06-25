@@ -27,15 +27,15 @@ const generateDistrictReportConfig = ({ educationLevel }) => {
   return {
     fetch: {
       dataElements: [
-        `lesmis_gir_district_${educationLevel}_m`,
-        `lesmis_gir_district_${educationLevel}_f`,
-        `lesmis_gir_district_${educationLevel}_t`,
+        `gir_district_${educationLevel}_m`,
+        `gir_district_${educationLevel}_f`,
+        `gir_district_${educationLevel}_t`,
       ],
     },
     transform: [
       {
         transform: 'select',
-        "'name'": `translate($row.dataElement, { lesmis_gir_district_${educationLevel}_m: 'Male', lesmis_gir_district_${educationLevel}_f: 'Female', lesmis_gir_district_${educationLevel}_t: 'Total' })`,
+        "'name'": `translate($row.dataElement, { gir_district_${educationLevel}_m: 'Male', gir_district_${educationLevel}_f: 'Female', gir_district_${educationLevel}_t: 'Total' })`,
         '...': ['value', 'dataElement'],
       },
       'keyValueByDataElementName',
@@ -46,7 +46,7 @@ const generateDistrictReportConfig = ({ educationLevel }) => {
       },
       {
         transform: 'select',
-        "'Gross Intake Ratio'": `sum([$row.lesmis_gir_district_${educationLevel}_m, $row.lesmis_gir_district_${educationLevel}_f, $row.lesmis_gir_district_${educationLevel}_t])`,
+        "'Gross Intake Ratio'": `sum([$row.gir_district_${educationLevel}_m, $row.gir_district_${educationLevel}_f, $row.gir_district_${educationLevel}_t])`,
         '...': ['name'],
       },
     ],
@@ -57,9 +57,9 @@ const generateProvinceReportConfig = ({ educationLevel }) => {
   return {
     fetch: {
       dataElements: [
-        `lesmis_gir_district_${educationLevel}_m`,
-        `lesmis_gir_district_${educationLevel}_f`,
-        `lesmis_gir_district_${educationLevel}_t`,
+        `gir_district_${educationLevel}_m`,
+        `gir_district_${educationLevel}_f`,
+        `gir_district_${educationLevel}_t`,
       ],
       aggregations: [
         {
@@ -74,14 +74,14 @@ const generateProvinceReportConfig = ({ educationLevel }) => {
       'keyValueByDataElementName',
       {
         transform: 'select',
-        "'Male'": `$row.lesmis_gir_district_${educationLevel}_m`,
-        "'Female'": `$row.lesmis_gir_district_${educationLevel}_f`,
-        "'Total'": `$row.lesmis_gir_district_${educationLevel}_t`,
-        '...': ['organisationUnit'],
+        "'Male'": `$row.gir_district_${educationLevel}_m`,
+        "'Female'": `$row.gir_district_${educationLevel}_f`,
+        "'Total'": `$row.gir_district_${educationLevel}_t`,
+        "'name'": '$row.organisationUnit',
       },
       {
         transform: 'aggregate',
-        organisationUnit: 'group',
+        name: 'group',
         '...': 'sum',
       },
     ],
@@ -254,7 +254,7 @@ const sumAgesIndicator = (baseCode, ageRange, grade, gender) => {
 
 // Creates a GIR indicator
 const grossIntakeRatioIndicator = ({ grade, populationAge, educationLevel }, gender) => {
-  const indicatorCode = `lesmis_gir_district_${educationLevel}_${gender}`;
+  const indicatorCode = `gir_district_${educationLevel}_${gender}`;
   const students = `lesmis_student_${grade}_${gender}`;
   const repeats = `lesmis_student_rpt_${grade}_${gender}`;
   const population = `population_LA_age${populationAge}_${gender}`;
@@ -309,7 +309,7 @@ const removeAllGIRIndicators = async (db, { grade, populationAge, educationLevel
     await deleteObject(db, 'indicator', { code: `lesmis_student_${grade}_${gender}` });
     await deleteObject(db, 'indicator', { code: `lesmis_student_rpt_${grade}_${gender}` });
     await deleteObject(db, 'indicator', {
-      code: `lesmis_gir_district_${educationLevel}_${gender}`,
+      code: `gir_district_${educationLevel}_${gender}`,
     });
   }
   await deleteObject(db, 'indicator', { code: `population_LA_age${populationAge}_t` });
