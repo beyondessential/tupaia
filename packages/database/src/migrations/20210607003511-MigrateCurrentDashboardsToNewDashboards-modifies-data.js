@@ -17,24 +17,24 @@ exports.setup = function (options, seedLink) {
 };
 
 const selectUniqueDashboardGroupNameAndOrgUnitCombo = async db => {
-  const dashboardGroups = await db.runSql(`
+  const { rows: dashboardGroups } = await db.runSql(`
     SELECT name, "organisationUnitCode"
     FROM "dashboardGroup"
     GROUP BY name, "organisationUnitCode";
   `);
 
-  return dashboardGroups.rows;
+  return dashboardGroups;
 };
 
 const selectDashboardGroupsByNameAndOrgUnitCode = async (db, name, organisationUnitCode) => {
-  const dashboardGroups = await db.runSql(`
+  const { rows: dashboardGroups } = await db.runSql(`
     SELECT *
     FROM "dashboardGroup"
     WHERE name = '${name}'
     AND "organisationUnitCode" = '${organisationUnitCode}';
   `);
 
-  return dashboardGroups.rows;
+  return dashboardGroups;
 };
 
 const getDashboardReportById = async (db, id) => {

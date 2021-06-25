@@ -48,7 +48,7 @@ export default class extends RouteHandler {
 
     return (
       await Promise.all(
-        Object.values(sortedDashboards).map(async dashboard => {
+        sortedDashboards.map(async dashboard => {
           const dashboardItems = await this.models.dashboardItem.fetchItemsInDashboard(
             dashboard.id,
             [entity.type],
@@ -71,7 +71,7 @@ export default class extends RouteHandler {
             entityType: entity.type,
             entityCode: entity.code,
             entityName: entity.name,
-            items: Object.values(filteredDashboardItems).map(item => ({
+            items: filteredDashboardItems.map(item => ({
               code: item.code,
               legacy: item.legacy,
               reportCode: item.report_code,
