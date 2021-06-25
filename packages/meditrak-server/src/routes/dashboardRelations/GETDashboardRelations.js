@@ -21,7 +21,7 @@ export class GETDashboardRelations extends GETHandler {
   permissionsFilteredInternally = true;
 
   customJoinConditions = {
-    dasboard: ['dashboard.id', 'dashboard_relation.dashboard_id'],
+    dashboard: ['dashboard.id', 'dashboard_relation.dashboard_id'],
     dashboard_item: ['dashboard_item.id', 'dashboard_relation.child_id'],
   };
 
