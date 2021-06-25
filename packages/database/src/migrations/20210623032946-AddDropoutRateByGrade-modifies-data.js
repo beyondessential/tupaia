@@ -21,6 +21,7 @@ const BASE_FRONT_END_CONFIG = {
   chartType: 'bar',
   yName: 'Dropout Rate',
   periodGranularity: 'one_year_at_a_time',
+  valueType: 'percentage',
   chartConfig: {
     Male: {
       color: '#f44336',
@@ -92,11 +93,11 @@ const PRIMARY = {
       {
         transform: 'select',
         "'Female'":
-          'sum([$row.dor_district_p1_f, $row.dor_district_p2_f, $row.dor_district_p3_f, $row.dor_district_p4_f, $row.dor_district_p5_f, $row.dor_district_pe_f])',
+          'sum([$row.dor_district_p1_f, $row.dor_district_p2_f, $row.dor_district_p3_f, $row.dor_district_p4_f, $row.dor_district_p5_f, $row.dor_district_pe_f]) / 100',
         "'Male'":
-          'sum([$row.dor_district_p1_m, $row.dor_district_p2_m, $row.dor_district_p3_m, $row.dor_district_p4_m, $row.dor_district_p5_m, $row.dor_district_pe_m])',
+          'sum([$row.dor_district_p1_m, $row.dor_district_p2_m, $row.dor_district_p3_m, $row.dor_district_p4_m, $row.dor_district_p5_m, $row.dor_district_pe_m]) / 100',
         "'Total'":
-          'sum([$row.dor_district_p1_t, $row.dor_district_p2_t, $row.dor_district_p3_t, $row.dor_district_p4_t, $row.dor_district_p5_t, $row.dor_district_pe_t])',
+          'sum([$row.dor_district_p1_t, $row.dor_district_p2_t, $row.dor_district_p3_t, $row.dor_district_p4_t, $row.dor_district_p5_t, $row.dor_district_pe_t]) / 100',
         '...': ['name'],
       },
       {

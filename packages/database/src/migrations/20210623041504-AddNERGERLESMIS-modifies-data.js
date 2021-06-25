@@ -61,11 +61,11 @@ const REPORT_CONFIG = {
     {
       transform: 'select',
       "'Male'":
-        'sum([$row.enrolment_rate_acronym_lesmis_entity_level_pe_m, $row.enrolment_rate_acronym_lesmis_entity_level_lse_m, $row.enrolment_rate_acronym_lesmis_entity_level_use_m])',
+        'sum([$row.enrolment_rate_acronym_lesmis_entity_level_pe_m, $row.enrolment_rate_acronym_lesmis_entity_level_lse_m, $row.enrolment_rate_acronym_lesmis_entity_level_use_m]) / 100',
       "'Female'":
-        'sum([$row.enrolment_rate_acronym_lesmis_entity_level_pe_f, $row.enrolment_rate_acronym_lesmis_entity_level_lse_f, $row.enrolment_rate_acronym_lesmis_entity_level_use_f])',
+        'sum([$row.enrolment_rate_acronym_lesmis_entity_level_pe_f, $row.enrolment_rate_acronym_lesmis_entity_level_lse_f, $row.enrolment_rate_acronym_lesmis_entity_level_use_f]) / 100',
       "'Total'":
-        'sum([$row.enrolment_rate_acronym_lesmis_entity_level_pe_t, $row.enrolment_rate_acronym_lesmis_entity_level_lse_t, $row.enrolment_rate_acronym_lesmis_entity_level_use_t])',
+        'sum([$row.enrolment_rate_acronym_lesmis_entity_level_pe_t, $row.enrolment_rate_acronym_lesmis_entity_level_lse_t, $row.enrolment_rate_acronym_lesmis_entity_level_use_t]) / 100',
       '...': ['name'],
     },
     {
@@ -110,18 +110,21 @@ const FRONT_END_CONFIG = {
       yName: 'Rate (%)',
       stackId: '1',
       legendOrder: '1',
+      valueType: 'percentage',
     },
     Female: {
       chartType: 'bar',
       color: '#2196f3',
       stackId: '2',
       legendOrder: '2',
+      valueType: 'percentage',
     },
     Total: {
       chartType: 'bar',
       color: '#9c27b0',
       stackId: '3',
       legendOrder: '3',
+      valueType: 'percentage',
     },
   },
 };

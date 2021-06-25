@@ -53,9 +53,9 @@ const REPORT_CONFIG = {
     },
     {
       transform: 'select',
-      "'Female'": 'sum([$row.oafg_district_pe_f, $row.oafg_district_lse_f])',
-      "'Male'": 'sum([$row.oafg_district_pe_m, $row.oafg_district_lse_m])',
-      "'Total'": 'sum([$row.oafg_district_pe_t, $row.oafg_district_lse_t])',
+      "'Female'": 'sum([$row.oafg_district_pe_f, $row.oafg_district_lse_f]) / 100',
+      "'Male'": 'sum([$row.oafg_district_pe_m, $row.oafg_district_lse_m]) / 100',
+      "'Total'": 'sum([$row.oafg_district_pe_t, $row.oafg_district_lse_t]) / 100',
       '...': ['name'],
     },
     {
@@ -73,6 +73,7 @@ const FRONT_END_CONFIG = {
   xName: 'Level of Education',
   yName: '%',
   periodGranularity: 'one_year_at_a_time',
+  valueType: 'percentage',
   chartConfig: {
     Male: {
       color: '#f44336',
