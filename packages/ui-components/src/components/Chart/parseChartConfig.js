@@ -8,6 +8,17 @@ import { isDataKey } from './utils';
 
 const ADD_TO_ALL_KEY = '$all';
 
+/**
+ *
+ * @param {number} numberOfLayers
+ * @param {number} index
+ * @param {boolean = false} ascending
+ * @returns {number} opacity value
+ */
+export const getLayeredOpacity = (numberOfLayers, index, ascending = false) => {
+  return ascending ? (index + 1) / numberOfLayers : 1 - index / numberOfLayers;
+};
+
 export const parseChartConfig = viewContent => {
   const { chartType, chartConfig, data, colorPalette: paletteName } = viewContent;
   const { [ADD_TO_ALL_KEY]: configForAllKeys, ...restOfConfig } = chartConfig;
@@ -16,7 +27,32 @@ export const parseChartConfig = viewContent => {
     ? createDynamicConfig(restOfConfig, configForAllKeys, data)
     : restOfConfig;
 
-  return addDefaultColorsToConfig(sortChartConfigByLegendOrder(baseConfig), paletteName, chartType);
+  const addDefaultColors = config => addDefaultColorsToConfig(config, paletteName, chartType);
+
+  const chartConfigs = [baseConfig];
+
+  return chartConfigs
+    .map(sortChartConfigByLegendOrder)
+    .map(addDefaultColors)
+    .map(setOpacityValues)[0]; // must remove from array after mapping
+};
+
+/**
+ * Sets numeric values for each chart config opacity
+ */
+const setOpacityValues = chartConfig => {
+  const newConfig = {};
+
+  Object.entries(chartConfig).forEach(([key, configItem], index, array) => {
+    const { opacity } = configItem;
+    if (!opacity || typeof opacity === 'number') {
+      newConfig[key] = configItem;
+      return;
+    }
+    const newOpacity = getLayeredOpacity(array.length, index, opacity === 'ascending');
+    newConfig[key] = { ...configItem, opacity: newOpacity };
+  });
+  return newConfig;
 };
 
 // Adds default colors for every element with no color defined

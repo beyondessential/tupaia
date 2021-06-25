@@ -64,11 +64,18 @@ const CHART_SORT_ORDER = {
   [BAR]: 1,
 };
 
+const CHART_TYPE_TO_CONTAINER = {
+  [AREA]: AreaChart,
+  [BAR]: BarChart,
+  [COMPOSED]: ComposedChart,
+  [LINE]: LineChart,
+};
+
 const CHART_TYPE_TO_CHART = {
-  [AREA]: { Container: AreaChart, Component: AreaChartComponent },
-  [BAR]: { Container: BarChart, Component: BarChartComponent },
-  [COMPOSED]: { Container: ComposedChart, Component: BarChartComponent },
-  [LINE]: { Container: LineChart, Component: LineChartComponent },
+  [AREA]: AreaChartComponent,
+  [BAR]: BarChartComponent,
+  [COMPOSED]: BarChartComponent,
+  [LINE]: LineChartComponent,
 };
 
 const getRealDataKeys = chartConfig =>
@@ -78,9 +85,19 @@ const getRealDataKeys = chartConfig =>
  * Cartesian Chart types using recharts
  * @see https://recharts.org
  */
-export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
+export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPosition }) => {
   const [chartConfig, setChartConfig] = useState(viewContent.chartConfig || {});
   const [activeDataKeys, setActiveDataKeys] = useState([]);
+
+  const {
+    chartType: defaultChartType,
+    data,
+    valueType,
+    labelType,
+    presentationOptions,
+    renderLegendForOneItem,
+    referenceAreas,
+  } = viewContent;
 
   const getIsActiveKey = legendDatakey =>
     activeDataKeys.length === 0 ||
@@ -91,7 +108,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
     const newChartConfig = { ...chartConfig };
 
     if (hasDisabledData && !chartConfig[LEGEND_ALL_DATA_KEY]) {
-      const allChartType = Object.values(chartConfig)[0].chartType || chartType || 'line';
+      const allChartType = Object.values(chartConfig)[0].chartType || defaultChartType || 'line';
       newChartConfig[LEGEND_ALL_DATA_KEY] = { ...LEGEND_ALL_DATA, chartType: allChartType };
       setChartConfig(newChartConfig);
     } else if (!hasDisabledData && chartConfig[LEGEND_ALL_DATA_KEY]) {
@@ -135,16 +152,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
       : data;
   };
 
-  const {
-    chartType,
-    data,
-    valueType,
-    labelType,
-    presentationOptions,
-    renderLegendForOneItem,
-    referenceAreas,
-  } = viewContent;
-
   const hasDataSeries = chartConfig && Object.keys(chartConfig).length > 1;
   const aspect = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
 
@@ -154,7 +161,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
     return CHART_SORT_ORDER[b[1].chartType] - CHART_SORT_ORDER[a[1].chartType];
   });
 
-  const Chart = CHART_TYPE_TO_CHART[chartType];
+  const ChartContainer = CHART_TYPE_TO_CONTAINER[defaultChartType];
 
   /**
    * Unfortunately, recharts does not work with wrapped components called as jsx for some reason,
@@ -162,7 +169,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
    */
   return (
     <ResponsiveContainer width="100%" height={isExporting ? 320 : undefined} aspect={aspect}>
-      <Chart.Container
+      <ChartContainer
         data={filterDisabledData(data)}
         margin={
           isExporting
@@ -182,41 +189,45 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
               periodGranularity={viewContent.periodGranularity}
               chartConfig={chartConfig}
               presentationOptions={presentationOptions}
-              chartType={chartType}
+              chartType={defaultChartType}
             />
           }
         />
         {(hasDataSeries || renderLegendForOneItem) && isEnlarged && (
           <Legend
-            verticalAlign="top"
-            align="left"
+            verticalAlign={legendPosition === 'bottom' ? 'bottom' : 'top'}
+            align={legendPosition === 'bottom' ? 'center' : 'left'}
             content={getCartesianLegend({
               chartConfig,
               getIsActiveKey,
               isExporting,
               onClick: onLegendClick,
+              legendPosition,
             })}
           />
         )}
         {sortedChartConfig
           .filter(([, { hideFromLegend }]) => !hideFromLegend)
-          .map(([dataKey]) => {
+          .map(([dataKey, { chartType = defaultChartType }]) => {
+            const Chart = CHART_TYPE_TO_CHART[chartType];
             const yAxisOrientation = get(chartConfig, [dataKey, 'yAxisOrientation']);
             const yAxisId = orientationToYAxisId(yAxisOrientation);
 
-            return Chart.Component({
+            return Chart({
               ...chartConfig[dataKey],
-              dataKey,
-              yAxisId,
               chartConfig,
+              dataKey,
+              isExporting,
+              isEnlarged,
+              yAxisId,
               data,
             });
           })}
         {ReferenceLines({ viewContent, isExporting, isEnlarged })}
-        {chartType === BAR && data.length > 20 && !isExporting && (
+        {defaultChartType === BAR && data.length > 20 && !isExporting && isEnlarged && (
           <Brush dataKey="name" height={20} stroke={CHART_BLUES[0]} fill={CHART_BLUES[1]} />
         )}
-      </Chart.Container>
+      </ChartContainer>
     </ResponsiveContainer>
   );
 };
@@ -225,10 +236,12 @@ CartesianChart.propTypes = {
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
+  legendPosition: PropTypes.string,
 };
 
 CartesianChart.defaultProps = {
   isEnlarged: false,
   isExporting: false,
   viewContent: null,
+  legendPosition: 'bottom',
 };

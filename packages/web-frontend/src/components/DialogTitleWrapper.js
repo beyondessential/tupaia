@@ -30,6 +30,7 @@ export const DialogTitleWrapper = props => {
     },
     dialogTitle: {
       textAlign: 'center',
+      paddingBottom: 0,
       color,
     },
   };

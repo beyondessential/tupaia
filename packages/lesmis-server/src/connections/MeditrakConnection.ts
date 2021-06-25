@@ -30,4 +30,24 @@ export class MeditrakConnection extends SessionHandlingApiConnection {
   registerUser(userData: RequestBody) {
     return this.post('user', {}, userData);
   }
+
+  async updateUserEntityPermissions(data: RequestBody) {
+    // @ts-ignore
+    const { userEntityPermissionId, permissionGroupName } = data;
+
+    // get permission_group byName
+    const permissionGroups = await this.get('permissionGroups', {
+      filter: JSON.stringify({
+        name: permissionGroupName,
+      }),
+    });
+
+    return this.put(
+      `userEntityPermissions/${userEntityPermissionId}`,
+      {},
+      {
+        permission_group_id: permissionGroups[0].id,
+      },
+    );
+  }
 }

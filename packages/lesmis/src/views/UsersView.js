@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import { Container } from '@material-ui/core';
 import { useUsers } from '../api/queries';
 import * as COLORS from '../constants';
-import { DataGrid, PageHeader, FetchLoader } from '../components';
+import { DataGrid, UserPermissionsCell, PageHeader, FetchLoader } from '../components';
 
 const Section = styled.section`
   display: flex;
@@ -36,6 +36,11 @@ const columns = [
   { accessor: 'mobileNumber', Header: 'Contact Number' },
   { accessor: 'employer', Header: 'Employer' },
   { accessor: 'position', Header: 'Position' },
+  {
+    accessor: 'permissionGroupName',
+    Header: 'Permissions',
+    Cell: UserPermissionsCell,
+  },
 ];
 
 export const UsersView = () => {

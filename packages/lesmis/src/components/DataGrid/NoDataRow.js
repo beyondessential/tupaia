@@ -30,9 +30,9 @@ const StyledNoDataRow = styled(StyledTableRow)`
   }
 `;
 
-export const NoDataRow = ({ colspan }) => (
+export const NoDataRow = ({ colSpan }) => (
   <StyledNoDataRow>
-    <TableCell colspan={colspan}>
+    <TableCell colSpan={colSpan}>
       <InfoIcon />
       <Typography variant="h4">No data</Typography>
     </TableCell>
@@ -40,5 +40,5 @@ export const NoDataRow = ({ colspan }) => (
 );
 
 NoDataRow.propTypes = {
-  colspan: PropTypes.number.isRequired,
+  colSpan: PropTypes.number.isRequired,
 };

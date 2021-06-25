@@ -57,6 +57,5 @@ export const TYPES = {
   SURVEY: 'survey',
   USER_ACCOUNT: 'user_account',
   USER_ENTITY_PERMISSION: 'user_entity_permission',
-  USER_REWARD: 'user_reward',
   USER_SESSION: 'userSession',
 };

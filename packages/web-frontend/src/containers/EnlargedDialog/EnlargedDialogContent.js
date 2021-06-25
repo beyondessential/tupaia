@@ -279,7 +279,7 @@ export class EnlargedDialogContent extends PureComponent {
 
     const contentStyle = {
       overflowY: isExporting ? 'visible' : 'auto',
-      padding: isMatrix ? 0 : 20,
+      padding: isMatrix ? 0 : '0 25px 20px',
     };
 
     const getBodyStyle = () => {
@@ -317,7 +317,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    height: 350,
+    height: 390,
   },
   matrixContent: {
     height: '80vh',

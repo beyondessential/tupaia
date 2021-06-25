@@ -173,6 +173,7 @@ function* handleInvalidPermission({ projectCode }) {
 
     // handle 404s
     // Todo: handle 404s. Issue: https://github.com/beyondessential/tupaia-backlog/issues/1474
+    // eslint-disable-next-line no-console
     console.error('project does not exist - 404');
     return;
   }
@@ -192,6 +193,7 @@ function* handleUserPage(userPage, initialComponents) {
       yield put(setVerifyEmailToken(initialComponents[URL_COMPONENTS.VERIFY_EMAIL_TOKEN]));
       break;
     default:
+      // eslint-disable-next-line no-console
       console.error('Unhandled user page', userPage);
   }
 }
@@ -898,7 +900,6 @@ function* fetchMeasureInfo(measureId) {
 
     yield put(fetchMeasureInfoSuccess(measureInfo, countryCode));
   } catch (error) {
-    console.log('error', error);
     yield put(fetchMeasureInfoError(error));
   }
 }
@@ -1055,6 +1056,7 @@ function* fetchEnlargedDialogData(action) {
     startDate,
     endDate,
     infoViewKey,
+    drillDownItemKey,
     // drillDown params
     parameterLink,
     parameterValue,
@@ -1077,16 +1079,16 @@ function* fetchEnlargedDialogData(action) {
   if (drillDownLevel > 0) {
     const { global } = yield select();
 
-    const drillDownConfigKey = `${infoViewKey}_${drillDownLevel}`;
-    const drillDownViewConfig = global.viewConfigs[drillDownConfigKey];
+    const drillDownViewConfig = global.viewConfigs[drillDownItemKey];
     const drillDownDates = getDefaultDrillDownDates(drillDownViewConfig, startDate, endDate);
 
     parameters = {
       ...parameters,
+      infoViewKey: drillDownItemKey,
+      itemCode: drillDownViewConfig.code,
       extraUrlParameters: { drillDownLevel, [parameterLink]: parameterValue },
       startDate: drillDownDates.startDate,
       endDate: drillDownDates.endDate,
-      infoViewKey: drillDownConfigKey,
     };
   }
 
@@ -1094,10 +1096,12 @@ function* fetchEnlargedDialogData(action) {
 
   const newState = yield select();
   const newInfoViewKey = selectCurrentInfoViewKey(newState);
-  const viewConfig = selectCurrentExpandedViewConfig(state);
 
   // If the expanded view has changed, don't update the enlargedDialog's viewContent
   if (viewData && newInfoViewKey === infoViewKey) {
+    const viewConfig = drillDownLevel
+    ? selectViewConfig(state, drillDownItemKey)
+    : selectCurrentExpandedViewConfig(state);
     yield put(updateEnlargedDialog(action.options, viewConfig, viewData));
   }
 }
