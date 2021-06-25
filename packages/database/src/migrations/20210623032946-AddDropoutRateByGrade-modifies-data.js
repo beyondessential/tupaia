@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject, generateId, findSingleRecord } from '../utilities';
+import { insertObject, generateId, findSingleRecord, arrayToDbString } from '../utilities';
 
 var dbm;
 var type;
@@ -292,6 +292,12 @@ const removeDashboardItemAndReport = async (db, code) => {
   await db.runSql(`DELETE FROM report WHERE code = '${code}';`);
 };
 
+const OLD_DASHBOARD_ITEMS = [
+  'Laos_Schools_Dropout_Bar_Primary_District',
+  'Laos_Schools_Dropout_Bar_Lower_Secondary_District',
+  'Laos_Schools_Dropout_Bar_Upper_Secondary_District',
+];
+
 exports.up = async function (db) {
   for (const { code, reportConfig, frontEndConfig } of [
     PRIMARY,
@@ -303,11 +309,19 @@ exports.up = async function (db) {
       reportConfig,
       frontEndConfig,
       permissionGroup: 'LESMIS Public',
-      dashboardCode: 'LA_Students',
+      dashboardCode: 'LA_Student_Outcomes',
       entityTypes: ['sub_district'],
       projectCodes: ['laos_schools'],
     });
   }
+
+  // delete old dashboard items and legacy reports that were created for Laos Schools (cascades to relations)
+  await db.runSql(
+    `DELETE FROM dashboard_item WHERE code IN (${arrayToDbString(OLD_DASHBOARD_ITEMS)});`,
+  );
+  await db.runSql(
+    `DELETE FROM legacy_report WHERE code IN (${arrayToDbString(OLD_DASHBOARD_ITEMS)});`,
+  );
 };
 
 exports.down = async function (db) {
