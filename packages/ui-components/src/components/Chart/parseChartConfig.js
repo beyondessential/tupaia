@@ -35,8 +35,6 @@ export const parseChartConfig = viewContent => {
     .map(sortChartConfigByLegendOrder)
     .map(addDefaultColors)
     .map(setOpacityValues)[0]; // must remove from array after mapping
-
-  // return addDefaultColorsToConfig(sortChartConfigByLegendOrder(baseConfig), paletteName, chartType);
 };
 
 /**

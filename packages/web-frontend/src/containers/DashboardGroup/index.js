@@ -42,27 +42,32 @@ export default class DashboardGroup extends Component {
 
     const { dashboardCode, entityCode: organisationUnitCode, project } = tab;
 
+    const drillDownItemCodes = tab.items
+      .filter(view => !!view.drillDown?.itemCode)
+      .map(view => view.drillDown?.itemCode);
     // Map views to DashboardItem containers
-    const infoViews = tab.items.map(view => {
-      const uniqueViewId = getUniqueViewId(organisationUnitCode, dashboardCode, view.code);
-      if (view.noDataFetch) {
-        return <StateDashboardItem viewContent={{ ...view }} key={uniqueViewId} />;
-      }
+    const infoViews = tab.items
+      .filter(view => !drillDownItemCodes.includes(view.code))
+      .map(view => {
+        const uniqueViewId = getUniqueViewId(organisationUnitCode, dashboardCode, view.code);
+        if (view.noDataFetch) {
+          return <StateDashboardItem viewContent={{ ...view }} key={uniqueViewId} />;
+        }
 
-      return (
-        <DashboardItem
-          viewConfig={{
-            ...view,
-            project,
-            dashboardCode,
-            organisationUnitCode,
-          }}
-          infoViewKey={uniqueViewId}
-          key={uniqueViewId}
-          isSidePanelExpanded={isSidePanelExpanded}
-        />
-      );
-    });
+        return (
+          <DashboardItem
+            viewConfig={{
+              ...view,
+              project,
+              dashboardCode,
+              organisationUnitCode,
+            }}
+            infoViewKey={uniqueViewId}
+            key={uniqueViewId}
+            isSidePanelExpanded={isSidePanelExpanded}
+          />
+        );
+      });
     return infoViews;
   }
 

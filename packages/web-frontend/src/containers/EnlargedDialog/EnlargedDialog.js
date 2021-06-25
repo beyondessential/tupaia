@@ -8,7 +8,6 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
-import shallowEqual from 'shallowequal';
 import styled from 'styled-components';
 import {
   fetchEnlargedDialogData,
@@ -18,7 +17,7 @@ import {
 import { ExportDialog } from '../../components/ExportDialog';
 import { getIsDataDownload, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
-import { isMobile, sleep, stringToFilename, getBrowserTimeZone } from '../../utils';
+import { isMobile, sleep, stringToFilename, getBrowserTimeZone, getUniqueViewId } from '../../utils';
 import {
   selectCurrentInfoViewKey,
   selectCurrentOrgUnit,
@@ -66,6 +65,27 @@ const getDatesForCurrentLevel = (
   return drillDownDatesByLevel?.[drillDownLevel] || {};
 };
 
+const compareDate = (date1, date2) => {
+  if (!date1 && !date2) {
+    return true; // both are undefined
+  }
+
+  if (date1 && date2) {
+    return date1.isSame(date2);
+  }
+
+  return false; // 1 is undefined and 1 is not
+}
+
+const hasDrillDownChanged = (options, cachedOptions) => 
+  options.infoViewKey !== cachedOptions.infoViewKey ||
+      options.drillDownItemKey !== cachedOptions.drillDownItemKey ||
+      !compareDate(options.startDate, cachedOptions.startDate) ||
+      !compareDate(options.endDate, cachedOptions.endDate) ||
+      options.drillDownLevel !== cachedOptions.drillDownLevel ||
+      options.parameterLink !== cachedOptions.parameterLink ||
+  options.parameterValue !== cachedOptions.parameterValue;
+      
 const EnlargedDialogComponent = ({
   onCloseOverlay,
   contentByLevel,
@@ -113,14 +133,17 @@ const EnlargedDialogComponent = ({
 
   // This useEffect only acts on the current drillDownLevel
   useEffect(() => {
-    const { drillDownLevel, parameterLinks, parameterValues } = drillDownState;
-    const cachedOptions = contentByLevel?.[drillDownLevel]?.options;
+    const { drillDownLevel, drillDownCode, parameterLinks, parameterValues } = drillDownState;
+    const cachedOptions = contentByLevel ?.[drillDownLevel] ?.options || {};
 
     const parameterLink = parameterLinks[drillDownLevel];
     const parameterValue = parameterValues[drillDownLevel];
-
+    const currentDrillDownItemKey = drillDownCode
+      ? getUniqueViewId(organisationUnitCode, dashboardCode, drillDownCode)
+      : null;
     const options = {
       infoViewKey,
+      drillDownItemKey: currentDrillDownItemKey,
       startDate,
       endDate,
       drillDownLevel,
@@ -129,18 +152,17 @@ const EnlargedDialogComponent = ({
     };
 
     // No need to refetch if nothing has changed for that drillDownLevel.
-    // Note: this means that all options are strings, numbers etc.
-    if (shallowEqual(options, cachedOptions)) return;
+    if (!hasDrillDownChanged(options, cachedOptions)) return;
 
     fetchViewData(options);
   }, [startDate, endDate, drillDownState]);
 
   const onDrillDown = chartItem => {
-    const { drillDown } = drillDownContent;
+    const { drillDown } = drillDownConfig;
     if (!drillDown) return;
     const newDrillDownLevel = drillDownState.drillDownLevel + 1;
 
-    const { parameterLink, keyLink } = drillDown;
+    const { parameterLink, keyLink, itemCode: drillDownCode } = drillDown;
     const {
       parameterLinks: oldParameterLinks,
       parameterValues: oldParameterValues,
@@ -150,15 +172,20 @@ const EnlargedDialogComponent = ({
 
     setDrillDownState({
       drillDownLevel: newDrillDownLevel,
+      drillDownCode,
       parameterLinks: oldParameterLinks,
       parameterValues: oldParameterValues,
     });
   };
 
   const onUnDrillDown = () => {
+    const { drillDownLevel } = drillDownState;
+    const drillDownCode = contentByLevel?.[drillDownLevel]?.viewConfig?.code;
+
     setDrillDownState({
       ...drillDownState,
       drillDownLevel: drillDownState.drillDownLevel - 1,
+      drillDownCode,
     });
   };
 
