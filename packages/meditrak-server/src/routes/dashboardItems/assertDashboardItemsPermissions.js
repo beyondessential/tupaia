@@ -2,52 +2,13 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
+import { mergeFilter } from '../utilities';
 import {
-  hasAccessToEntityForVisualisation,
-  hasTupaiaAdminAccessToEntityForVisualisation,
-} from '../utilities';
-
-const { RAW } = QUERY_CONJUNCTIONS;
-
-export const hasDashboardRelationGetPermissions = async (
-  accessPolicy,
-  models,
-  permissionGroups,
-  entityCode,
-) => {
-  const entity = await models.entity.findOne({ code: entityCode });
-  const permissionGroupAccessResults = await Promise.all(
-    permissionGroups.map(async pg =>
-      hasAccessToEntityForVisualisation(accessPolicy, models, entity, pg),
-    ),
-  );
-  return permissionGroupAccessResults.some(pg => pg === true);
-};
-
-export const hasDashboardRelationEditPermissions = async (
-  accessPolicy,
-  models,
-  permissionGroups,
-  entityCode,
-) => {
-  const entity = await models.entity.findOne({ code: entityCode });
-
-  // users should all the permission group access (that's why using every() here)
-  const permissionGroupAccessResults = await Promise.all(
-    permissionGroups.map(async pg =>
-      hasAccessToEntityForVisualisation(accessPolicy, models, entity, pg),
-    ),
-  );
-  const hasTupaiaAdminAccess = await hasTupaiaAdminAccessToEntityForVisualisation(
-    accessPolicy,
-    models,
-    entity,
-  );
-
-  return permissionGroupAccessResults.every(pg => pg === true) && hasTupaiaAdminAccess;
-};
+  hasDashboardRelationGetPermissions,
+  hasDashboardRelationEditPermissions,
+  createDashboardRelationsDBFilter,
+} from '../dashboardRelations';
 
 export const hasDashboardItemGetPermissions = async (accessPolicy, models, dashboardItemId) => {
   const dashboards = await models.dashboard.findDashboardsByItemId(dashboardItemId);
@@ -107,76 +68,30 @@ export const assertDashboardItemEditPermissions = async (accessPolicy, models, d
   }
 
   throw new Error(
-    'Requires access to the dashboard item in all of the dashboards this dashboard item is in',
+    `Requires access to the dashboard item in all of the dashboards this dashboard item is in, and have Tupaia Admin Panel access to connected dashboard's root_entity_code`,
   );
 };
 
-export const createDashboardItemsDBFilter = (accessPolicy, criteria) => {
+export const createDashboardItemsDBFilter = async (accessPolicy, models, criteria) => {
   if (hasBESAdminAccess(accessPolicy)) {
     return criteria;
   }
+
   const dbConditions = { ...criteria };
-  const allPermissionGroups = accessPolicy.getPermissionGroups();
-  const countryCodesByPermissionGroup = {};
 
-  // Generate lists of country codes we have access to per permission group
-  allPermissionGroups.forEach(pg => {
-    countryCodesByPermissionGroup[pg] = accessPolicy.getEntitiesAllowed(pg);
+  // Pull the list of dashboard items we have access to, then pull the dashboards
+  // we have permission to from that
+  const dashboardRelations = createDashboardRelationsDBFilter(accessPolicy);
+  const permittedDashboardRelations = await models.dashboardRelation.find(dashboardRelations);
+  const permittedDashboardItems = await models.dashboardItem.find({
+    id: permittedDashboardRelations.map(dr => dr.child_id),
   });
+  const permittedDashboardItemIds = [...new Set(permittedDashboardItems.map(d => d.id))];
 
-  dbConditions[RAW] = {
-    sql: `
-    (
-      (
-        -- look up the country code of the entity, and see whether it's in the user's list of countries
-        -- for the appropriate permission group
-        ARRAY(
-          SELECT DISTINCT entity.country_code
-          FROM entity
-          INNER JOIN dashboard 
-            ON entity.code = dashboard.root_entity_code
-          INNER JOIN dashboard_relation 
-            ON dashboard_relation.dashboard_id = dashboard.id 
-            AND dashboard_relation.child_id = "dashboard_item".id
-        )::TEXT[]
-        &&
-        ARRAY(
-          SELECT DISTINCT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->dr1.permission_group)::TEXT) 
-          FROM (SELECT unnest(permission_groups) AS permission_group 
-                FROM dashboard_relation 
-                WHERE child_id = "dashboard_item".id) dr1
-        )
-      -- for projects, pull the country codes from the child entities and check that there is overlap
-      -- with the user's list of countries for the appropriate permission group (i.e., they have
-      -- access to at least one country within the project)
-      OR (
-        ARRAY(
-          SELECT DISTINCT entity.country_code
-          FROM entity
-          INNER JOIN entity_relation
-            ON entity.id = entity_relation.child_id
-          INNER JOIN project
-            ON  entity_relation.parent_id = project.entity_id
-            AND entity_relation.entity_hierarchy_id = project.entity_hierarchy_id
-          INNER JOIN dashboard ON project.code = dashboard.root_entity_code
-          INNER JOIN dashboard_relation 
-            ON dashboard_relation.dashboard_id = dashboard.id 
-            AND dashboard_relation.child_id = "dashboard_item".id
-        )::TEXT[]
-        &&
-        ARRAY(
-          SELECT DISTINCT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->dr2.permission_group)::TEXT) 
-          FROM (SELECT unnest(permission_groups) AS permission_group 
-                FROM dashboard_relation WHERE child_id = "dashboard_item".id) dr2
-        )
-      )
-    )
-    AND EXISTS (SELECT child_id FROM dashboard_relation WHERE child_id = "dashboard_item".id)
-  )`,
-    parameters: [
-      JSON.stringify(countryCodesByPermissionGroup),
-      JSON.stringify(countryCodesByPermissionGroup),
-    ],
-  };
+  dbConditions['dashboard_item.id'] = mergeFilter(
+    permittedDashboardItemIds,
+    dbConditions['dashboard_item.id'],
+  );
+
   return dbConditions;
 };

@@ -178,6 +178,7 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/dashboardReports/:recordId?', getDashboardReports);
   app.get('(/v[0-9]+)/dashboardGroups/:recordId?', getDashboardGroups);
   app.get('(/v[0-9]+)/dashboards/:recordId?', getDashboards);
+  app.get('(/v[0-9]+)/dashboards/:parentRecordId/dashboardRelations', getDashboardRelations);
   app.get('(/v[0-9]+)/dashboardItems/:recordId?', getDashboardItems);
   app.get('(/v[0-9]+)/dashboardRelations/:recordId?', getDashboardRelations);
   app.get('(/v[0-9]+)/dashboards/:parentRecordId/dashboardRelations', getDashboardRelations);
@@ -251,7 +252,7 @@ export function addRoutesToApp(app) {
   app.post('(/v[0-9]+)/feedItems', createFeedItems);
   app.post('(/v[0-9]+)/indicators', createIndicators);
   app.post('(/v[0-9]+)/permissionGroups', createPermissionGroups);
-  app.post('(/v[0-9]+)?/dashboardRelation', createDashboardRelations);
+  app.post('(/v[0-9]+)?/dashboardRelations', createDashboardRelations);
 
   /**
    * PUT routes

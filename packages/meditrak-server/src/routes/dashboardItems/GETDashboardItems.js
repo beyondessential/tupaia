@@ -31,7 +31,11 @@ export class GETDashboardItems extends GETHandler {
   }
 
   async getPermissionsFilter(criteria, options) {
-    const dbConditions = createDashboardItemsDBFilter(this.accessPolicy, criteria);
+    const dbConditions = await createDashboardItemsDBFilter(
+      this.accessPolicy,
+      this.models,
+      criteria,
+    );
     return { dbConditions, dbOptions: options };
   }
 }

@@ -15,6 +15,9 @@ export const DASHBOARD_RELATION_COLUMNS = [
     source: 'dashboard.code',
     editConfig: {
       optionsEndpoint: 'dashboards',
+      optionLabelKey: 'dashboard.code',
+      optionValueKey: 'dashboard.id',
+      sourceKey: 'dashboard_id',
     },
   },
   {
@@ -22,9 +25,9 @@ export const DASHBOARD_RELATION_COLUMNS = [
     source: 'dashboard_item.code',
     editConfig: {
       optionsEndpoint: 'dashboardItems',
-      optionLabelKey: 'code',
-      optionValueKey: 'code',
-      sourceKey: 'code',
+      optionLabelKey: 'dashboard_item.code',
+      optionValueKey: 'dashboard_item.id',
+      sourceKey: 'child_id',
     },
   },
   {
@@ -41,6 +44,14 @@ export const DASHBOARD_RELATION_COLUMNS = [
   {
     Header: 'Entity Types',
     source: 'entity_types',
+    editConfig: {
+      type: 'autocomplete',
+      allowMultipleValues: true,
+      canCreateNewOptions: true,
+      optionLabelKey: 'entityTypes',
+      optionValueKey: 'entityTypes',
+      secondaryLabel: "Input the entity types you want. Eg: 'country', 'sub_district'",
+    },
   },
   {
     Header: 'Project Codes',
@@ -49,7 +60,7 @@ export const DASHBOARD_RELATION_COLUMNS = [
       optionsEndpoint: 'projects',
       optionLabelKey: 'code',
       optionValueKey: 'code',
-      sourceKey: 'projectCodes',
+      sourceKey: 'project_codes',
       allowMultipleValues: true,
     },
   },
