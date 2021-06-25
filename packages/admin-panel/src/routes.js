@@ -25,6 +25,7 @@ import {
   DashboardGroupsPage,
   DashboardsPage,
   DashboardItemsPage,
+  DashboardRelationsPage,
   LegacyReportsPage,
   DataElementsPage,
   DataGroupsPage,
@@ -93,6 +94,11 @@ export const ROUTES = [
         label: 'Dashboard Items',
         to: '/dashboardItems',
         component: DashboardItemsPage,
+      },
+      {
+        label: 'Dashboard Relations',
+        to: '/dashboardRelations',
+        component: DashboardRelationsPage,
       },
       {
         label: 'Legacy Reports',

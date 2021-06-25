@@ -35,6 +35,12 @@ import {
 import { DeleteDashboardGroups, EditDashboardGroups, GETDashboardGroups } from './dashboardGroups';
 import { DeleteDashboardItem, EditDashboardItem, GETDashboardItems } from './dashboardItems';
 import { DeleteDashboard, EditDashboard, GETDashboards } from './dashboards';
+import {
+  DeleteDashboardRelation,
+  EditDashboardRelation,
+  CreateDashboardRelation,
+  GETDashboardRelations,
+} from './dashboardRelations';
 import { DeleteLegacyReport, EditLegacyReport, GETLegacyReports } from './legacyReports';
 import { DeleteMapOverlays, EditMapOverlays, GETMapOverlays } from './mapOverlays';
 import { DeleteSurveyResponses, EditSurveyResponses, GETSurveyResponses } from './surveyResponses';
@@ -112,11 +118,13 @@ export default {
   createIndicators: useRouteHandler(BESAdminCreateHandler),
   createPermissionGroups: useRouteHandler(BESAdminCreateHandler),
   createUserEntityPermissions: useRouteHandler(CreateUserEntityPermissions),
+  createDashboardRelations: useRouteHandler(CreateDashboardRelation),
   deleteAnswers: useRouteHandler(DeleteAnswers),
   deleteDashboardGroups: useRouteHandler(DeleteDashboardGroups),
   deleteDashboardReports: useRouteHandler(DeleteDashboardReports),
   deleteDashboards: useRouteHandler(DeleteDashboard),
   deleteDashboardItems: useRouteHandler(DeleteDashboardItem),
+  deleteDashboardRelations: useRouteHandler(DeleteDashboardRelation),
   deleteLegacyReports: useRouteHandler(DeleteLegacyReport),
   deleteDataSources: useRouteHandler(BESAdminDeleteHandler),
   deleteDisasters: useRouteHandler(BESAdminDeleteHandler),
@@ -138,6 +146,7 @@ export default {
   editDashboardReports: useRouteHandler(EditDashboardReports),
   editDashboards: useRouteHandler(EditDashboard),
   editDashboardItems: useRouteHandler(EditDashboardItem),
+  editDashboardRelations: useRouteHandler(EditDashboardRelation),
   editLegacyReports: useRouteHandler(EditLegacyReport),
   editDataSources: useRouteHandler(BESAdminEditHandler),
   editDisasters: useRouteHandler(BESAdminEditHandler),
@@ -164,6 +173,7 @@ export default {
   getDashboardGroups: useRouteHandler(GETDashboardGroups),
   getDashboards: useRouteHandler(GETDashboards),
   getDashboardItems: useRouteHandler(GETDashboardItems),
+  getDashboardRelations: useRouteHandler(GETDashboardRelations),
   getLegacyReports: useRouteHandler(GETLegacyReports),
   getIndicators: useRouteHandler(BESAdminGETHandler),
   getDataSources: useRouteHandler(GETDataSources),
