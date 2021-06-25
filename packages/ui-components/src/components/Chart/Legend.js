@@ -6,20 +6,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const LegendContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  padding-bottom: 2rem;
+  justify-content: ${props => (props.position === 'bottom' ? 'center' : 'flex-start')};
+  padding: ${props => (props.position === 'bottom' ? '1rem 0 0 3.5rem' : '0 0 2rem 0')};
 `;
 
 const PieLegendContainer = styled(LegendContainer)`
-  padding-bottom: 0;
-
-  // preview styles
-  &.preview {
-    align-items: flex-start;
-  }
+  padding: 0;
 `;
 
 const getLegendTextColor = (theme, isExporting) => {
@@ -34,13 +31,10 @@ const getLegendTextColor = (theme, isExporting) => {
 };
 
 const LegendItem = styled(({ isExporting, ...props }) => <MuiButton {...props} />)`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
   text-align: left;
   font-size: 0.75rem;
-  padding-bottom: 0.3rem;
-  padding-top: 0.3rem;
+  padding-bottom: 0;
+  padding-top: 0;
   margin-right: 1.2rem;
 
   .MuiButton-label {
@@ -59,13 +53,15 @@ const LegendItem = styled(({ isExporting, ...props }) => <MuiButton {...props} /
     padding-bottom: 0.1rem;
     padding-top: 0.1rem;
     margin-right: 0;
-    width: 50%;
-
-    .MuiButton-label {
-      display: flex;
-      align-items: flex-start;
-    }
   }
+`;
+
+const TooltipContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-bottom: 0.3rem;
+  padding-top: 0.3rem;
 `;
 
 const Box = styled.span`
@@ -75,7 +71,7 @@ const Box = styled.span`
   margin-right: 0.625rem;
   border-radius: 3px;
 
-  // non enlarged styles
+  // preview styles
   &.preview {
     width: 0.8rem;
     min-width: 0.8rem;
@@ -90,8 +86,10 @@ const Text = styled.span`
 
 const getDisplayValue = (chartConfig, value) => chartConfig[value]?.label || value;
 
-export const getPieLegend = ({ chartConfig = {}, isEnlarged, isExporting }) => ({ payload }) => (
-  <PieLegendContainer className={isEnlarged ? 'enlarged' : 'preview'}>
+export const getPieLegend = ({ chartConfig = {}, isEnlarged, isExporting, legendPosition }) => ({
+  payload,
+}) => (
+  <PieLegendContainer position={legendPosition}>
     {payload.map(({ color, value }) => (
       <LegendItem
         key={value}
@@ -106,10 +104,14 @@ export const getPieLegend = ({ chartConfig = {}, isEnlarged, isExporting }) => (
   </PieLegendContainer>
 );
 
-export const getCartesianLegend = ({ chartConfig, onClick, getIsActiveKey, isExporting }) => ({
-  payload,
-}) => (
-  <LegendContainer>
+export const getCartesianLegend = ({
+  chartConfig,
+  onClick,
+  getIsActiveKey,
+  isExporting,
+  legendPosition,
+}) => ({ payload }) => (
+  <LegendContainer position={legendPosition}>
     {payload.map(({ color, value, dataKey }) => {
       return (
         <LegendItem
@@ -118,8 +120,12 @@ export const getCartesianLegend = ({ chartConfig, onClick, getIsActiveKey, isExp
           isExporting={isExporting}
           style={{ textDecoration: getIsActiveKey(value) ? '' : 'line-through' }}
         >
-          <Box style={{ background: color }} />
-          <Text>{getDisplayValue(chartConfig, value)}</Text>
+          <Tooltip title="Click to filter data" placement="top" arrow>
+            <TooltipContainer>
+              <Box style={{ background: color }} />
+              <Text>{getDisplayValue(chartConfig, value)}</Text>
+            </TooltipContainer>
+          </Tooltip>
         </LegendItem>
       );
     })}
