@@ -3,9 +3,23 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { groupBy } from 'lodash';
+
 import config from '../__generatedConfig.json';
 import { SNAPSHOT_TYPES } from '../constants';
 import { preserveUserSession } from '../support';
+
+const getResponseData = response => {
+  const { measureData, ...data } = response.body;
+
+  if (Array.isArray(measureData)) {
+    // Item order in `measureData` is neither guaranteed nor important.
+    // Group them by org unit for more robust data checking
+    data.e2e_groupedMeasureData = groupBy(measureData, 'organisationUnitCode');
+  }
+
+  return data;
+};
 
 const assertUrlResponseHasData = (url, response) => {
   const hasData = response.body?.measureData?.length > 0;
@@ -45,9 +59,9 @@ describe('Map overlays', () => {
         if (!allowEmptyResponse) {
           assertUrlResponseHasData(url, response);
         }
-        if (snapshotTypes.includes(SNAPSHOT_TYPES.RESPONSE_BODY)) {
-          cy.wrap(response.body).as('responseBody');
-          cy.get('@responseBody').snapshot({ name: SNAPSHOT_TYPES.RESPONSE_BODY });
+        if (snapshotTypes.includes(SNAPSHOT_TYPES.RESPONSE_DATA)) {
+          const responseData = getResponseData(response);
+          cy.wrap(responseData).snapshot({ name: SNAPSHOT_TYPES.RESPONSE_DATA });
         }
       });
     });

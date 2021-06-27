@@ -49,7 +49,7 @@ Our e2e tests support Tupaia-specific configuration specified in [config.json](c
 {
   "dashboardReports": {
     "allowEmptyResponse": false, // Throw error for empty reports
-    "snapshotTypes": ["responseBody", "html"],
+    "snapshotTypes": ["responseData", "html"],
     "urlFiles": ["cypress/config/dashboardReportUrls/default.json"],
     "urls": ["/explore/explore/IHR%20Report?report=WHO_IHR_SPAR_WPRO"],
     "filter": {
@@ -62,7 +62,7 @@ Our e2e tests support Tupaia-specific configuration specified in [config.json](c
   },
   "mapOverlays": {
     "allowEmptyResponse": false,
-    "snapshotTypes": ["responseBody"],
+    "snapshotTypes": ["responseData"],
     "urlGenerationOptions": {
       "id": "overlay_id",
       "orgUnit": ["TO", "VU"],
@@ -87,7 +87,7 @@ You can find more information about config fields in the section below. For the 
 
 | Type           | Description                                                                                         | Reports | Overlays |
 | -------------- | --------------------------------------------------------------------------------------------------- | ------- | -------- |
-| `responseBody` | The body of the request which provides the data for the item under test                             | ✔       | ✔        |
+| `responseData` | The body of the request which provides the data for the item under test                             | ✔       | ✔        |
 | `html`         | A snapshot of the DOM, sanitised to remove non-deterministic content (eg dynamically generated ids) | ✔       | ❌       |
 
 #### Urls

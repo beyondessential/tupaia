@@ -60,9 +60,8 @@ describe('Dashboard reports', () => {
         if (!allowEmptyResponse) {
           assertUrlResponseHasData(url, response);
         }
-        if (snapshotTypes.includes(SNAPSHOT_TYPES.RESPONSE_BODY)) {
-          cy.wrap(response.body).as('responseBody');
-          cy.get('@responseBody').snapshot({ name: SNAPSHOT_TYPES.RESPONSE_BODY });
+        if (snapshotTypes.includes(SNAPSHOT_TYPES.RESPONSE_DATA)) {
+          cy.wrap(response.body).snapshot({ name: SNAPSHOT_TYPES.RESPONSE_DATA });
         }
       });
 

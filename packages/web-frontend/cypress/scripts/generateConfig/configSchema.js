@@ -29,7 +29,7 @@ export const configSchema = shape({
       endDate: stringOrStrings,
       dataBuilder: stringOrStrings,
     }),
-    snapshotTypes: arrayOf([SNAPSHOT_TYPES.RESPONSE_BODY, SNAPSHOT_TYPES.HTML]).min(1).required(),
+    snapshotTypes: arrayOf([SNAPSHOT_TYPES.RESPONSE_DATA, SNAPSHOT_TYPES.HTML]).min(1).required(),
     urlFiles: strings,
     urls: stringsOrObjects,
   }),
@@ -41,7 +41,7 @@ export const configSchema = shape({
       orgUnit: stringOrStrings,
       measureBuilder: stringOrStrings,
     }),
-    snapshotTypes: arrayOf([SNAPSHOT_TYPES.RESPONSE_BODY]).min(1).required(),
+    snapshotTypes: arrayOf([SNAPSHOT_TYPES.RESPONSE_DATA]).min(1).required(),
     urlFiles: strings,
     urlGenerationOptions: shape({
       id: stringOrStrings,
