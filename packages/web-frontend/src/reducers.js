@@ -703,6 +703,7 @@ function enlargedDialog(
         isLoading: false,
         errorMessage: '',
         contentByLevel: null,
+        drillDownDatesByLevel: null,
       };
     case CLOSE_ENLARGED_DIALOG:
       return {
@@ -710,6 +711,7 @@ function enlargedDialog(
         isLoading: false,
         errorMessage: '',
         contentByLevel: null,
+        drillDownDatesByLevel: null,
       };
     case SET_ENLARGED_DIALOG_DATE_RANGE: {
       const { drillDownLevel, startDate, endDate } = action;
@@ -780,7 +782,15 @@ function extractViewsFromAllDashboards(dashboards) {
         dashboardGroup.dashboardCode,
         item.code,
       );
-      viewConfigs[uniqueViewId] = item;
+      const viewConfig = { ...item };
+      if (viewConfig?.drillDown?.itemCode) {
+        viewConfig.drillDownViewId = getUniqueViewId(
+          dashboardGroup.entityCode,
+          dashboardGroup.dashboardCode,
+          viewConfig?.drillDown?.itemCode,
+        );
+      }
+      viewConfigs[uniqueViewId] = viewConfig;
     }),
   );
   return viewConfigs;

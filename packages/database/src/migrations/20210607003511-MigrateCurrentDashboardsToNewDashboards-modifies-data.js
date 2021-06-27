@@ -17,24 +17,24 @@ exports.setup = function (options, seedLink) {
 };
 
 const selectUniqueDashboardGroupNameAndOrgUnitCombo = async db => {
-  const dashboardGroups = await db.runSql(`
+  const { rows: dashboardGroups } = await db.runSql(`
     SELECT name, "organisationUnitCode"
     FROM "dashboardGroup"
     GROUP BY name, "organisationUnitCode";
   `);
 
-  return dashboardGroups.rows;
+  return dashboardGroups;
 };
 
 const selectDashboardGroupsByNameAndOrgUnitCode = async (db, name, organisationUnitCode) => {
-  const dashboardGroups = await db.runSql(`
+  const { rows: dashboardGroups } = await db.runSql(`
     SELECT *
     FROM "dashboardGroup"
     WHERE name = '${name}'
     AND "organisationUnitCode" = '${organisationUnitCode}';
   `);
 
-  return dashboardGroups.rows;
+  return dashboardGroups;
 };
 
 const getDashboardReportById = async (db, id) => {
@@ -70,7 +70,14 @@ const getDashboardRelationByDashboardAndChildId = async (db, dashboardId, childI
   return dashboardRelations[0] || null;
 };
 
-const createDrillDownDashboardItems = async (db, drillDownDashboardReports) => {
+const createDrillDownDashboardItems = async (
+  db,
+  dashboardId,
+  drillDownDashboardReports,
+  entityTypes,
+  projectCodes,
+  userGroups,
+) => {
   for (let i = 0; i < drillDownDashboardReports.length; i++) {
     const drillDownDashboardReport = drillDownDashboardReports[i];
     const {
@@ -83,6 +90,14 @@ const createDrillDownDashboardItems = async (db, drillDownDashboardReports) => {
     const newDrillDownReportCode = `${drillDownCode}_DrillDown_${i + 1}`;
     const drillDownDashboardItem = await getDashboardItemByCode(db, newDrillDownReportCode);
     const legacyReport = await getLegacyReportByCode(db, newDrillDownReportCode);
+    const drillDownDashboardItemId = drillDownDashboardItem
+      ? drillDownDashboardItem.id
+      : generateId();
+    const drillDownDashboardRelation = await getDashboardRelationByDashboardAndChildId(
+      db,
+      dashboardId,
+      drillDownDashboardItemId,
+    );
 
     if (!drillDownDashboardItem) {
       if (drillDownDashboardReports[i + 1]) {
@@ -95,7 +110,7 @@ const createDrillDownDashboardItems = async (db, drillDownDashboardReports) => {
       }
 
       await insertObject(db, 'dashboard_item', {
-        id: generateId(),
+        id: drillDownDashboardItemId,
         code: newDrillDownReportCode,
         config: drillDownViewJson,
         report_code: newDrillDownReportCode,
@@ -110,6 +125,17 @@ const createDrillDownDashboardItems = async (db, drillDownDashboardReports) => {
         data_builder: drillDownDataBuilder,
         data_builder_config: drillDownDataBuilderConfig,
         data_services: drillDownDataServices,
+      });
+    }
+
+    if (!drillDownDashboardRelation) {
+      await insertObject(db, 'dashboard_relation', {
+        id: generateId(),
+        dashboard_id: dashboardId,
+        child_id: drillDownDashboardItemId,
+        permission_groups: `{${userGroups.toString()}}`,
+        entity_types: `{${entityTypes.toString()}}`,
+        project_codes: `{${projectCodes.toString()}}`,
       });
     }
   }
@@ -176,20 +202,6 @@ const migrateLinkedDashboardReports = async db => {
         .filter(d => d.drillDownLevel !== null)
         .sort((d1, d2) => d1.drillDownLevel - d2.drillDownLevel);
 
-      // Creating Drill Down Dashboard Items
-      if (drillDownDashboardReports.length > 0) {
-        if (!viewJson.drillDown) {
-          viewJson.drillDown = {};
-        }
-        viewJson.drillDown.itemCode = `${drillDownDashboardReports[0].id}_DrillDown_1`;
-
-        await createDrillDownDashboardItems(db, drillDownDashboardReports);
-      }
-
-      if (!dataBuilder) {
-        viewJson.noDataFetch = true;
-      }
-
       const entityTypes = [
         ...new Set(
           sortedDashboardGroups
@@ -222,6 +234,28 @@ const migrateLinkedDashboardReports = async db => {
             .map(d => d.userGroup),
         ),
       ];
+
+      // Creating Drill Down Dashboard Items
+      if (drillDownDashboardReports.length > 0) {
+        if (!viewJson.drillDown) {
+          viewJson.drillDown = {};
+        }
+        viewJson.drillDown.itemCode = `${drillDownDashboardReports[0].id}_DrillDown_1`;
+
+        await createDrillDownDashboardItems(
+          db,
+          dashboardId,
+          drillDownDashboardReports,
+          entityTypes,
+          projectCodes,
+          userGroups,
+        );
+      }
+
+      if (!dataBuilder) {
+        viewJson.noDataFetch = true;
+      }
+
       const dashboardItem = await getDashboardItemByCode(db, reportCode);
       const legacyReport = await getLegacyReportByCode(db, reportCode);
       const dashboardItemId = dashboardItem ? dashboardItem.id : generateId();

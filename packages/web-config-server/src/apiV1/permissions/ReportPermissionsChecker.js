@@ -35,7 +35,7 @@ export class ReportPermissionsChecker extends PermissionsChecker {
       const dashboardItem = await this.fetchAndCacheDashboardItem(itemCode);
       if (reportCode !== dashboardItem.report_code) {
         throw new PermissionsError(
-          `Report code '${reportCode}' does not match with report_code '${dashboardItem.report_code}' of dashboard_item`,
+          `Report code '${reportCode}' does not match with report_code '${dashboardItem.report_code}' of dashboard_item '${itemCode}'`,
         );
       }
 
