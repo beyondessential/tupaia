@@ -56,12 +56,12 @@ const calculateYAxisDomain = ({ min, max }) => {
 
 const containsClamp = ({ min, max }) => min.type === 'clamp' || max.type === 'clamp';
 
-const renderYAxisLabel = (label, orientation) => {
+const renderYAxisLabel = (label, orientation, fillColor) => {
   if (label)
     return {
       value: label,
       angle: -90,
-      fill: 'white',
+      fill: fillColor,
       style: { textAnchor: 'middle' },
       position: orientation === 'right' ? 'insideRight' : 'insideLeft',
     };
@@ -85,20 +85,20 @@ const YAxis = ({ config = {}, viewContent, isExporting }) => {
     <YAxisComponent
       key={yAxisId}
       ticks={ticks}
-      tickSize={10}
+      tickSize={6}
       yAxisId={yAxisId}
       orientation={orientation}
       domain={calculateYAxisDomain(yAxisDomain)}
       allowDataOverflow={valueType === PERCENTAGE || containsClamp(yAxisDomain)}
       // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
-      label={renderYAxisLabel(yName || yAxisLabel, orientation)}
+      label={renderYAxisLabel(yName || yAxisLabel, orientation, fillColor)}
       tickFormatter={value =>
         formatDataValueByType(
           {
             value,
             metadata: { presentationOptions },
           },
-          (valueType !== NUMBER ? valueType : 'default') || axisValueType,
+          valueType || axisValueType,
         )
       }
       interval={isExporting ? 0 : 'preserveStartEnd'}
