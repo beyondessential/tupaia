@@ -53,7 +53,7 @@ export const hasDashboardItemEditPermissions = async (accessPolicy, models, dash
 };
 
 export const assertDashboardItemGetPermissions = async (accessPolicy, models, dashboardItemId) => {
-  if (hasDashboardItemGetPermissions(accessPolicy, models, dashboardItemId)) {
+  if (await hasDashboardItemGetPermissions(accessPolicy, models, dashboardItemId)) {
     return true;
   }
 
@@ -63,7 +63,7 @@ export const assertDashboardItemGetPermissions = async (accessPolicy, models, da
 };
 
 export const assertDashboardItemEditPermissions = async (accessPolicy, models, dashboardItemId) => {
-  if (hasDashboardItemEditPermissions(accessPolicy, models, dashboardItemId)) {
+  if (await hasDashboardItemEditPermissions(accessPolicy, models, dashboardItemId)) {
     return true;
   }
 
@@ -79,10 +79,10 @@ export const createDashboardItemsDBFilter = async (accessPolicy, models, criteri
 
   const dbConditions = { ...criteria };
 
-  // Pull the list of dashboard items we have access to, then pull the dashboards
-  // we have permission to from that
-  const dashboardRelations = createDashboardRelationsDBFilter(accessPolicy);
-  const permittedDashboardRelations = await models.dashboardRelation.find(dashboardRelations);
+  // Pull the list of dashboard relations we have access to,
+  // then pull the corresponding dashboard items
+  const dashboardRelationsFilter = createDashboardRelationsDBFilter(accessPolicy);
+  const permittedDashboardRelations = await models.dashboardRelation.find(dashboardRelationsFilter);
   const permittedDashboardItems = await models.dashboardItem.find({
     id: permittedDashboardRelations.map(dr => dr.child_id),
   });

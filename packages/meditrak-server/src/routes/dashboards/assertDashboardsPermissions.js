@@ -64,10 +64,10 @@ export const createDashboardsDBFilter = async (accessPolicy, models, criteria) =
 
   const dbConditions = { ...criteria };
 
-  // Pull the list of dashboard items we have access to, then pull the dashboards
-  // we have permission to from that
-  const dashboardRelations = createDashboardRelationsDBFilter(accessPolicy);
-  const permittedDashboardRelations = await models.dashboardRelation.find(dashboardRelations);
+  // Pull the list of dashboard relations we have access to,
+  // then pull the corresponding dashboards
+  const dashboardRelationsFilter = createDashboardRelationsDBFilter(accessPolicy);
+  const permittedDashboardRelations = await models.dashboardRelation.find(dashboardRelationsFilter);
   const permittedDashboards = await models.dashboard.find({
     id: permittedDashboardRelations.map(dr => dr.dashboard_id),
   });

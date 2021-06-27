@@ -58,7 +58,7 @@ export const assertDashboardRelationGetPermissions = async (
   const dashboardRelation = await models.dashboardRelation.findById(dashboardRelationId);
   const dashboard = await models.dashboard.findById(dashboardRelation.dashboard_id);
 
-  // To edit a dashboard relation, the user has to have any permission groups (specified in relation) access to the
+  // To view a dashboard relation, the user has to have any permission groups (specified in relation) access to the
   // root entity code of the dashboard
   if (
     await hasDashboardRelationGetPermissions(
@@ -164,8 +164,8 @@ export const createDashboardRelationsDBFilter = (accessPolicy, criteria) => {
         ARRAY(
           SELECT DISTINCT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->dr2.permission_group)::TEXT) 
           FROM (SELECT unnest(permission_groups) AS permission_group 
-                FROM dashboard_relation 
-                WHERE id = "dashboard_relation".id) dr2
+                FROM dashboard_relation subdr1
+                WHERE subdr1.id = "dashboard_relation".id) dr2
         )
       -- for projects, pull the country codes from the child entities and check that there is overlap
       -- with the user's list of countries for the appropriate permission group (i.e., they have
@@ -189,7 +189,8 @@ export const createDashboardRelationsDBFilter = (accessPolicy, criteria) => {
         ARRAY(
           SELECT DISTINCT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->dr4.permission_group)::TEXT) 
           FROM (SELECT unnest(permission_groups) AS permission_group 
-                FROM dashboard_relation WHERE id = "dashboard_relation".id) dr4
+                FROM dashboard_relation subdr2
+                WHERE subdr2.id = "dashboard_relation".id) dr4
         )
       )
     )
@@ -244,8 +245,8 @@ export const createDashboardRelationsViaParentDashboardDBFilter = (
         (ARRAY(
           SELECT DISTINCT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->dr2.permission_group)::TEXT) 
           FROM (SELECT unnest(permission_groups) AS permission_group 
-                FROM dashboard_relation 
-                WHERE id = "dashboard_relation".id) dr2
+                FROM dashboard_relation subdr1
+                WHERE subdr1.id = "dashboard_relation".id) dr2
         ))
         -- for projects, pull the country codes from the child entities and check that there is overlap
         -- with the user's list of countries for the appropriate permission group (i.e., they have
@@ -265,7 +266,8 @@ export const createDashboardRelationsViaParentDashboardDBFilter = (
           ARRAY(
             SELECT DISTINCT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->dr4.permission_group)::TEXT) 
             FROM (SELECT unnest(permission_groups) AS permission_group 
-                  FROM dashboard_relation WHERE id = "dashboard_relation".id) dr4
+                  FROM dashboard_relation subdr2
+                  WHERE subdr2.id = "dashboard_relation".id) dr4
           )
         )
       )`,
