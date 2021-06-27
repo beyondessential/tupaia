@@ -1,6 +1,6 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
 import { expect } from 'chai';
@@ -12,7 +12,7 @@ import {
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 import { TestableApp, setupDashboardTestData } from '../testUtilities';
 
-describe.only('Permissions checker for GETDashboards', async () => {
+describe('Permissions checker for GETDashboards', async () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
