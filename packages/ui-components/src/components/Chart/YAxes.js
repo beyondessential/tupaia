@@ -85,20 +85,20 @@ const YAxis = ({ config = {}, viewContent, isExporting }) => {
     <YAxisComponent
       key={yAxisId}
       ticks={ticks}
-      tickSize={10}
+      tickSize={6}
       yAxisId={yAxisId}
       orientation={orientation}
       domain={calculateYAxisDomain(yAxisDomain)}
       allowDataOverflow={valueType === PERCENTAGE || containsClamp(yAxisDomain)}
       // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
-      label={renderYAxisLabel(yName || yAxisLabel, orientation)}
+      label={renderYAxisLabel(yName || yAxisLabel, orientation, fillColor)}
       tickFormatter={value =>
         formatDataValueByType(
           {
             value,
             metadata: { presentationOptions },
           },
-          (valueType !== NUMBER ? valueType : 'default') || axisValueType,
+          valueType || axisValueType,
         )
       }
       interval={isExporting ? 0 : 'preserveStartEnd'}
