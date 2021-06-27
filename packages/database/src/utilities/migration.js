@@ -18,7 +18,7 @@ export const insertObject = async (db, table, data, onError) =>
   db.insert(table, Object.keys(data), Object.values(data), onError);
 
 export const deleteObject = async (db, table, condition) => {
-  const where = Object.entries(condition)[0]
+  const where = Object.entries(condition)
     .map(([key, value]) => `${key} = '${value}'`)
     .join(' AND ');
   return db.runSql(`
@@ -41,7 +41,7 @@ export const findSingleRecordBySql = async (db, query) => {
 };
 
 export const findSingleRecord = async (db, table, condition) => {
-  const where = Object.entries(condition)[0]
+  const where = Object.entries(condition)
     .map(([key, value]) => `${key} = '${value}'`)
     .join(' AND ');
   const query = `
