@@ -132,7 +132,7 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
       tick={getXAxisTickMethod()}
       tickFormatter={formatXAxisTick}
       padding={getXAxisPadding()}
-      tickSize={10}
+      tickSize={6}
       {...(getIsTimeSeries(data) ? AXIS_TIME_PROPS : {})}
     />
   );
