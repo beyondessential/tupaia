@@ -56,12 +56,12 @@ const calculateYAxisDomain = ({ min, max }) => {
 
 const containsClamp = ({ min, max }) => min.type === 'clamp' || max.type === 'clamp';
 
-const renderYAxisLabel = (label, orientation) => {
+const renderYAxisLabel = (label, orientation, fillColor) => {
   if (label)
     return {
       value: label,
       angle: -90,
-      fill: 'white',
+      fill: fillColor,
       style: { textAnchor: 'middle' },
       position: orientation === 'right' ? 'insideRight' : 'insideLeft',
     };
