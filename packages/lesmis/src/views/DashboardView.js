@@ -102,7 +102,7 @@ const makeDropdownOptions = entityType => [
   {
     value: 'essdpEarlyChildhood',
     label: 'ESSDP Early childhood education sub-sector',
-    Component: TabTemplate,
+    Component: DashboardReportTabView,
     Body: 'ESSDP Early childhood education sub-sector',
     ComponentProps: {
       filterSubDashboards: subDashboardFilters.essdpEarlyChildhood,
@@ -129,7 +129,7 @@ const makeDropdownOptions = entityType => [
   {
     value: 'essdpUpperSecondary',
     label: 'ESSDP Upper secondary sub-sector',
-    Component: TabTemplate,
+    Component: DashboardReportTabView,
     Body: 'ESSDP Upper secondary sub-sector',
     ComponentProps: {
       filterSubDashboards: subDashboardFilters.essdpUpperSecondary,
