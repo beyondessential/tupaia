@@ -31,23 +31,28 @@ const generateDistrictReportConfig = ({ educationLevel }) => {
         `gir_district_${educationLevel}_f`,
         `gir_district_${educationLevel}_t`,
       ],
+      aggregations: [
+        {
+          type: 'FINAL_EACH_YEAR',
+          config: {
+            dataSourceEntityType: 'sub_district',
+          },
+        },
+      ],
     },
     transform: [
-      {
-        transform: 'select',
-        "'name'": `translate($row.dataElement, { gir_district_${educationLevel}_m: 'Male', gir_district_${educationLevel}_f: 'Female', gir_district_${educationLevel}_t: 'Total' })`,
-        '...': ['value', 'dataElement'],
-      },
       'keyValueByDataElementName',
       {
-        transform: 'aggregate',
-        name: 'group',
-        '...': 'sum',
+        transform: 'select',
+        "'Male'": `exists($row.gir_district_${educationLevel}_m) ? $row.gir_district_${educationLevel}_m/100 : undefined`,
+        "'Female'": `exists($row.gir_district_${educationLevel}_f) ? $row.gir_district_${educationLevel}_f/100 : undefined`,
+        "'Total'": `exists($row.gir_district_${educationLevel}_t) ? $row.gir_district_${educationLevel}_t/100 : undefined`,
+        "'timestamp'": 'periodToTimestamp($row.period)',
       },
       {
-        transform: 'select',
-        "'Gross Intake Ratio'": `sum([$row.gir_district_${educationLevel}_m, $row.gir_district_${educationLevel}_f, $row.gir_district_${educationLevel}_t])/100`,
-        '...': ['name'],
+        transform: 'aggregate',
+        timestamp: 'group',
+        '...': 'last',
       },
     ],
   };
@@ -109,18 +114,24 @@ const GIR_CONFIG_UPPER_SECONDARY = {
 
 const DISTRICT_BASE_FRONT_END_CONFIG = {
   type: 'chart',
-  chartType: 'bar',
-  xName: 'Gender',
+  chartType: 'line',
+  xName: 'Year',
   yName: 'Gross Intake Ratio',
-  periodGranularity: 'one_year_at_a_time',
+  periodGranularity: 'year',
   valueType: 'percentage',
   chartConfig: {
-    'Gross Intake Ratio': {
-      stackId: '1',
+    Male: {
+      color: '#f44336',
+      legendOrder: '1',
     },
-  },
-  presentationOptions: {
-    hideAverage: true,
+    Female: {
+      color: '#2196f3',
+      legendOrder: '2',
+    },
+    Total: {
+      color: '#9c27b0',
+      legendOrder: '3',
+    },
   },
 };
 
