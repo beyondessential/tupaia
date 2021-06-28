@@ -10,7 +10,7 @@ import { YAxis as YAxisComponent } from 'recharts';
 import { DARK_BLUE, VALUE_TYPES } from './constants';
 import { getContrastTextColor } from './utils';
 
-const { PERCENTAGE, NUMBER } = VALUE_TYPES;
+const { PERCENTAGE } = VALUE_TYPES;
 
 const Y_AXIS_IDS = {
   left: 0,

@@ -18,14 +18,18 @@ export const insertObject = async (db, table, data, onError) =>
   db.insert(table, Object.keys(data), Object.values(data), onError);
 
 export const deleteObject = async (db, table, condition) => {
-  const [key, value] = Object.entries(condition)[0];
+  const where = Object.entries(condition)
+    .map(([key, value]) => `${key} = '${value}'`)
+    .join(' AND ');
   return db.runSql(`
       DELETE FROM "${table}"
-      WHERE ${key} = '${value}'
+      WHERE ${where}
   `);
 };
 
-export const findSingleRecord = async (db, query) => {
+// query should be actual sql statement, e.g. `SELECT * FROM dashboard_item WHERE code = 'xxx';`
+// to use an object condition see 'findSingleRecord' below
+export const findSingleRecordBySql = async (db, query) => {
   const { rows: results } = await db.runSql(query);
   if (results.length === 0) {
     throw new Error(`No results for ${query}`);
@@ -34,6 +38,17 @@ export const findSingleRecord = async (db, query) => {
     throw new Error(`Expected one result, got ${results.length} for ${query}`);
   }
   return results[0];
+};
+
+export const findSingleRecord = async (db, table, condition) => {
+  const where = Object.entries(condition)
+    .map(([key, value]) => `${key} = '${value}'`)
+    .join(' AND ');
+  const query = `
+    SELECT * FROM "${table}"
+    WHERE ${where}
+  `;
+  return findSingleRecordBySql(db, query);
 };
 
 export const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');

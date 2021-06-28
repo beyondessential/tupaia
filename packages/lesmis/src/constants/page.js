@@ -36,7 +36,7 @@ export const CONTACT_PAGE = {
       </Typography>
       <Box mb={5}>
         <Typography variant="h2">Phone</Typography>
-        <Typography>+856 20 54 015 004</Typography>
+        <Typography>+856 20 55617710</Typography>
       </Box>
       <Box mb={5}>
         <Typography variant="h2">Website</Typography>

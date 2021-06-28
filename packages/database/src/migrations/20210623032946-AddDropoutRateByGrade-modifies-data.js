@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject, generateId, findSingleRecord, arrayToDbString } from '../utilities';
+import { insertObject, generateId, findSingleRecord, findSingleRecordBySql, arrayToDbString } from '../utilities';
 
 var dbm;
 var type;
@@ -248,7 +248,7 @@ const addNewDashboardItemAndReport = async (
   // insert report
   const reportId = generateId();
   const permissionGroupId = (
-    await findSingleRecord(db, `SELECT id FROM permission_group WHERE name = '${permissionGroup}';`)
+    await await findSingleRecord(db, 'permission_group', { name: permissionGroup })
   ).id;
   await insertObject(db, 'report', {
     id: reportId,
@@ -267,11 +267,9 @@ const addNewDashboardItemAndReport = async (
   });
 
   // insert relation record connecting dashboard item to dashboard
-  const dashboardId = (
-    await findSingleRecord(db, `SELECT id FROM dashboard WHERE code = '${dashboardCode}'`)
-  ).id;
+  const dashboardId = (await await findSingleRecord(db, 'dashboard', { code: dashboardCode })).id;
   const maxSortOrder = (
-    await findSingleRecord(
+    await findSingleRecordBySql(
       db,
       `SELECT max(sort_order) as max_sort_order FROM dashboard_relation WHERE dashboard_id = '${dashboardId}';`,
     )

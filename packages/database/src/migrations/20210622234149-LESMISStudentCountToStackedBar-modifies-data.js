@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject, generateId, findSingleRecord } from '../utilities';
+import { insertObject, generateId, findSingleRecord, findSingleRecordBySql } from '../utilities';
 
 var dbm;
 var type;
@@ -106,11 +106,13 @@ const FRONT_END_CONFIG = {
       color: '#f44336',
       stackId: '1',
       yName: 'Number of Students',
+      valueType: 'number',
     },
     Female: {
       chartType: 'bar',
       color: '#2196f3',
       stackId: '1',
+      valueType: 'number',
     },
   },
 };
@@ -122,7 +124,7 @@ const addNewDashboardItemAndReport = async (
   // insert report
   const reportId = generateId();
   const permissionGroupId = (
-    await findSingleRecord(db, `SELECT id FROM permission_group WHERE name = '${permissionGroup}';`)
+    await await findSingleRecord(db, 'permission_group', { name: permissionGroup })
   ).id;
   await insertObject(db, 'report', {
     id: reportId,
@@ -148,14 +150,10 @@ const addItemToDashboard = async (
   db,
   { code, dashboardCode, permissionGroup, entityTypes, projectCodes },
 ) => {
-  const dashboardItemId = (
-    await findSingleRecord(db, `SELECT id FROM dashboard_item WHERE code = '${code}'`)
-  ).id;
-  const dashboardId = (
-    await findSingleRecord(db, `SELECT id FROM dashboard WHERE code = '${dashboardCode}'`)
-  ).id;
+  const dashboardItemId = (await await findSingleRecord(db, 'dashboard_item', { code })).id;
+  const dashboardId = (await await findSingleRecord(db, 'dashboard', { code: dashboardCode })).id;
   const maxSortOrder = (
-    await findSingleRecord(
+    await findSingleRecordBySql(
       db,
       `SELECT max(sort_order) as max_sort_order FROM dashboard_relation WHERE dashboard_id = '${dashboardId}';`,
     )
