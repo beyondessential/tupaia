@@ -79,6 +79,7 @@ const FRONT_END_CONFIG = {
   xName: 'District',
   yName: 'Number of Schools',
   periodGranularity: 'one_year_at_a_time',
+  valueType: 'number',
   chartConfig: {
     Nursery: {
       color: '#A45628',

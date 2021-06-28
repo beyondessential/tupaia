@@ -82,6 +82,7 @@ const FRONT_END_CONFIG = {
   xName: 'Level of Education',
   yName: 'Number of Schools',
   periodGranularity: 'one_year_at_a_time',
+  valueType: 'number',
   chartConfig: {
     Public: {
       color: '#EB7D3C',

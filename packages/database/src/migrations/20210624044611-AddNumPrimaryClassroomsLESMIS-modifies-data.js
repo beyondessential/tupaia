@@ -68,6 +68,7 @@ const FRONT_END_CONFIG = {
   xName: 'Year',
   yName: 'Number of Classrooms',
   periodGranularity: 'year',
+  valueType: 'number',
   chartConfig: {
     'Primary Education Single Level (Public)': {
       color: '#e91e63',
