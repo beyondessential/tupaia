@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiDivider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
-import { EntityVitalsItem, PartnerLogo, FlexStart, MiniMap } from '../components';
+import { EntityVitalsItem, FlexStart, MiniMap } from '../components';
+import { PARTNERS_LOGOS } from '../constants';
 
 const VitalsSection = styled(FlexStart)`
   margin-right: 10px;
@@ -43,6 +44,33 @@ const HorizontalDivider = styled(MuiDivider)`
   margin-top: 1rem;
 `;
 
+const StyledLogo = styled.div`
+  margin: 5px;
+  width: 55px;
+  height: 55px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+  border: 1px solid ${props => props.theme.palette.grey['400']};
+  border-radius: 5px;
+`;
+
+// eslint-disable-next-line react/prop-types
+const PartnersSection = ({ vitals }) => {
+  const logosCodes = vitals.filter(vital => Object.keys(PARTNERS_LOGOS).includes(vital));
+  return (
+    <PartnersContainer>
+      <TitleContainer>
+        <GreyTitle>Development Partner Support</GreyTitle>
+      </TitleContainer>
+      {logosCodes.map(code => (
+        <StyledLogo key={code} code={PARTNERS_LOGOS[code]} />
+      ))}
+    </PartnersContainer>
+  );
+};
+
+// eslint-disable-next-line react/prop-types
 const PhotoOrMap = ({ vitals }) => {
   const [validImage, setValidImage] = useState(true);
   if (vitals.isLoading) return null;
@@ -53,10 +81,6 @@ const PhotoOrMap = ({ vitals }) => {
     );
 
   return <MiniMap entityCode={vitals.code} />;
-};
-
-PhotoOrMap.propTypes = {
-  vitals: PropTypes.object.isRequired,
 };
 
 export const CountryView = ({ vitals }) => {
@@ -80,14 +104,7 @@ export const CountryView = ({ vitals }) => {
         />
       </VitalsSection>
       <PhotoOrMap vitals={vitals} />
-      <PartnersContainer>
-        <TitleContainer>
-          <GreyTitle>Development Partner Support</GreyTitle>
-        </TitleContainer>
-        {Object.entries(vitals).map(([key, value]) =>
-          value === true ? <PartnerLogo code={key} key={key} /> : null,
-        )}
-      </PartnersContainer>
+      <PartnersSection vitals={vitals} />
     </>
   );
 };
@@ -125,14 +142,7 @@ export const ProvinceView = ({ vitals }) => {
         />
       </VitalsSection>
       <PhotoOrMap vitals={vitals} />
-      <PartnersContainer>
-        <TitleContainer>
-          <GreyTitle>Development Partner Support</GreyTitle>
-        </TitleContainer>
-        {Object.entries(vitals).map(([key, value]) =>
-          value === true ? <PartnerLogo code={key} key={key} /> : null,
-        )}
-      </PartnersContainer>
+      <PartnersSection vitals={vitals} />
     </>
   );
 };
@@ -197,14 +207,7 @@ export const DistrictView = ({ vitals }) => {
         </FlexStart>
       </VitalsSection>
       <PhotoOrMap vitals={vitals} />
-      <PartnersContainer>
-        <TitleContainer>
-          <GreyTitle>Development Partner Support</GreyTitle>
-        </TitleContainer>
-        {Object.entries(vitals).map(([key, value]) =>
-          value === true ? <PartnerLogo code={key} key={key} /> : null,
-        )}
-      </PartnersContainer>
+      <PartnersSection vitals={vitals} />
     </>
   );
 };
