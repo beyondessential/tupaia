@@ -207,117 +207,6 @@ const PROVINCE_LEVEL_UPPER_SECONDARY = {
 };
 
 /*
- *  INDICATOR HELPER FUNCTIONS
- */
-
-// Creates an indicator object that sums between genders
-const sumGendersIndicator = baseCode => {
-  const maleCode = `${baseCode}_m`;
-  const femaleCode = `${baseCode}_f`;
-  const totalCode = `${baseCode}_t`;
-
-  return {
-    id: generateId(),
-    code: totalCode,
-    builder: 'analyticArithmetic',
-    config: {
-      formula: `${maleCode} + ${femaleCode}`,
-      aggregation: 'MOST_RECENT',
-      defaultValues: {
-        [maleCode]: 0,
-        [femaleCode]: 0,
-      },
-    },
-  };
-};
-
-// Creates an indicator object that sums ages for a grade
-const sumAgesIndicator = (baseCode, ageRange, grade, gender) => {
-  const elementCodes = ageRange.map(age => `${baseCode}_age${age}_${grade}_${gender}`);
-  const totalCode = `${baseCode}_${grade}_${gender}`;
-
-  return {
-    id: generateId(),
-    code: totalCode,
-    builder: 'analyticArithmetic',
-    config: {
-      formula: elementCodes.join(' + '),
-      aggregation: [
-        { type: 'MOST_RECENT' },
-        {
-          type: 'SUM_PER_ORG_GROUP',
-          config: { dataSourceEntityType: 'school', aggregationEntityType: 'requested' },
-        },
-      ],
-      defaultValues: Object.fromEntries(elementCodes.map(code => [code, 0])),
-    },
-  };
-};
-
-// Creates a GIR indicator
-const grossIntakeRatioIndicator = ({ grade, populationAge, educationLevel }, gender) => {
-  const indicatorCode = `gir_district_${educationLevel}_${gender}`;
-  const students = `lesmis_student_${grade}_${gender}`;
-  const repeats = `lesmis_student_rpt_${grade}_${gender}`;
-  const population = `population_LA_age${populationAge}_${gender}`;
-
-  return {
-    id: generateId(),
-    code: indicatorCode,
-    builder: 'analyticArithmetic',
-    config: {
-      formula: `(${students} - ${repeats}) / ${population}`,
-      aggregation: 'MOST_RECENT',
-      defaultValues: {
-        [students]: 0,
-        [repeats]: 0,
-        [population]: 0,
-      },
-    },
-  };
-};
-
-const addIndicatorsForAgeAndGrade = async (db, { ageRange, grade }) => {
-  for (const gender of ['m', 'f']) {
-    await insertObject(
-      db,
-      'indicator',
-      sumAgesIndicator('lesmis_student', ageRange, grade, gender),
-    );
-    await insertObject(
-      db,
-      'indicator',
-      sumAgesIndicator('lesmis_student_rpt', ageRange, grade, gender),
-    );
-  }
-  await insertObject(db, 'indicator', sumGendersIndicator(`lesmis_student_${grade}`));
-  await insertObject(db, 'indicator', sumGendersIndicator(`lesmis_student_rpt_${grade}`));
-};
-
-const addAllGIRIndicators = async (db, config) => {
-  await addIndicatorsForAgeAndGrade(db, config);
-  await insertObject(
-    db,
-    'indicator',
-    sumGendersIndicator(`population_LA_age${config.populationAge}`),
-  );
-  for (const gender of ['m', 'f', 't']) {
-    await insertObject(db, 'indicator', grossIntakeRatioIndicator(config, gender));
-  }
-};
-
-const removeAllGIRIndicators = async (db, { grade, populationAge, educationLevel }) => {
-  for (const gender of ['m', 'f', 't']) {
-    await deleteObject(db, 'indicator', { code: `lesmis_student_${grade}_${gender}` });
-    await deleteObject(db, 'indicator', { code: `lesmis_student_rpt_${grade}_${gender}` });
-    await deleteObject(db, 'indicator', {
-      code: `gir_district_${educationLevel}_${gender}`,
-    });
-  }
-  await deleteObject(db, 'indicator', { code: `population_LA_age${populationAge}_t` });
-};
-
-/*
  * REPORT/DASHBOARD HELPER FUNCTIONS
  */
 
@@ -377,14 +266,6 @@ const removeDashboardItemAndReport = async (db, code) => {
  */
 
 exports.up = async function (db) {
-  for (const config of [
-    GIR_CONFIG_PRIMARY,
-    GIR_CONFIG_LOWER_SECONDARY,
-    GIR_CONFIG_UPPER_SECONDARY,
-  ]) {
-    await addAllGIRIndicators(db, config);
-  }
-
   for (const { code, reportConfig, frontEndConfig, entityTypes } of [
     DISTRICT_LEVEL_PRIMARY,
     DISTRICT_LEVEL_LOWER_SECONDARY,
@@ -406,14 +287,6 @@ exports.up = async function (db) {
 };
 
 exports.down = async function (db) {
-  for (const config of [
-    GIR_CONFIG_PRIMARY,
-    GIR_CONFIG_LOWER_SECONDARY,
-    GIR_CONFIG_UPPER_SECONDARY,
-  ]) {
-    await removeAllGIRIndicators(db, config);
-  }
-
   for (const { code } of [
     DISTRICT_LEVEL_PRIMARY,
     DISTRICT_LEVEL_LOWER_SECONDARY,
