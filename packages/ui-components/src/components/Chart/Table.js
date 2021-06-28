@@ -151,7 +151,7 @@ export const Table = ({ viewContent, className }) => {
                     ? 'No Data'
                     : formatDataValueByType(
                         { value },
-                        sanitizeValueType(columnConfig.valueType || valueType),
+                        sanitizeValueType(columnConfig?.valueType || valueType),
                       );
 
                 return <MuiTableCell key={columnKey}>{rowValue}</MuiTableCell>;
