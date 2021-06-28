@@ -46,7 +46,7 @@ const generateDistrictReportConfig = ({ educationLevel }) => {
       },
       {
         transform: 'select',
-        "'Gross Intake Ratio'": `sum([$row.gir_district_${educationLevel}_m, $row.gir_district_${educationLevel}_f, $row.gir_district_${educationLevel}_t])`,
+        "'Gross Intake Ratio'": `sum([$row.gir_district_${educationLevel}_m, $row.gir_district_${educationLevel}_f, $row.gir_district_${educationLevel}_t])/100`,
         '...': ['name'],
       },
     ],
@@ -74,9 +74,9 @@ const generateProvinceReportConfig = ({ educationLevel }) => {
       'keyValueByDataElementName',
       {
         transform: 'select',
-        "'Male'": `$row.gir_district_${educationLevel}_m`,
-        "'Female'": `$row.gir_district_${educationLevel}_f`,
-        "'Total'": `$row.gir_district_${educationLevel}_t`,
+        "'Male'": `exists($row.gir_district_${educationLevel}_m) ? $row.gir_district_${educationLevel}_m/100 : undefined`,
+        "'Female'": `exists($row.gir_district_${educationLevel}_f) ? $row.gir_district_${educationLevel}_f/100 : undefined`,
+        "'Total'": `exists($row.gir_district_${educationLevel}_t) ? $row.gir_district_${educationLevel}_t/100 : undefined`,
         "'name'": '$row.organisationUnit',
       },
       {
@@ -113,6 +113,7 @@ const DISTRICT_BASE_FRONT_END_CONFIG = {
   xName: 'Gender',
   yName: 'Gross Intake Ratio',
   periodGranularity: 'one_year_at_a_time',
+  valueType: 'percentage',
   chartConfig: {
     'Gross Intake Ratio': {
       stackId: '1',
@@ -129,6 +130,7 @@ const PROVINCE_BASE_FRONT_END_CONFIG = {
   xName: 'District',
   yName: 'Gross Intake Ratio',
   periodGranularity: 'one_year_at_a_time',
+  valueType: 'percentage',
   chartConfig: {
     Male: {
       color: '#f44336',
