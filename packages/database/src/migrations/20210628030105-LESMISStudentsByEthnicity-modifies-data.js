@@ -48,15 +48,13 @@ const REPORT_CONFIG = {
     ],
   },
   transform: [
-    'keyValueByDataElementName',
     {
       transform: 'select',
       "'name'":
         "translate($row.dataElement, { nostu_LaoThai_f: 'Lao-Thai', nostu_LaoThai_m: 'Lao-Thai', nostu_MonKhmer_f: 'Mon-Khmer', nostu_MonKhmer_m: 'Mon-Khmer', nostu_ChineseTibetan_f: 'Chinese-Tibetan', nostu_ChineseTibetan_m: 'Chinese-Tibetan', nostu_HmongMien_f: 'Hmong-Mien', nostu_HmongMien_m: 'Hmong-Mien', nostu_Foreigner_f: 'Foreigner', nostu_Foreigner_m: 'Foreigner', nostu_Other_f: 'Other', nostu_Other_m: 'Other' })",
-      "'Total'":
-        'sum([$row.nostu_LaoThai_f, $row.nostu_LaoThai_m, $row.nostu_MonKhmer_f, $row.nostu_MonKhmer_m, $row.nostu_ChineseTibetan_f, $row.nostu_ChineseTibetan_m, $row.nostu_ChineseTibetan_f, $row.nostu_ChineseTibetan_m, $row.nostu_HmongMien_f, $row.nostu_HmongMien_m, $row.nostu_Foreigner_f, $row.nostu_Foreigner_m, $row.nostu_Other_f, $row.nostu_Other_m])',
       '...': '*',
     },
+    'keyValueByDataElementName',
     {
       transform: 'aggregate',
       name: 'group',
@@ -64,24 +62,28 @@ const REPORT_CONFIG = {
     },
     {
       transform: 'select',
-      "'Lao-Thai_metadata'":
-        '{ numerator: sum([$row.nostu_LaoThai_f, $row.nostu_LaoThai_m]), denominator: $row.Total }',
-      "'Mon-Khmer_metadata'":
-        '{ numerator: sum([$row.nostu_MonKhmer_f, $row.nostu_MonKhmer_m]), denominator: $row.Total }',
-      "'Chinese-Tibetan_metadata'":
-        '{ numerator: sum([$row.nostu_ChineseTibetan_f, $row.nostu_ChineseTibetan_m]), denominator: $row.Total }',
-      "'Hmong-Mien_metadata'":
-        '{ numerator: sum([$row.nostu_HmongMien_f, $row.nostu_HmongMien_m]), denominator: $row.Total }',
-      "'Foreigner_metadata'":
-        '{ numerator: sum([$row.nostu_Foreigner_f, $row.nostu_Foreigner_m]), denominator: $row.Total }',
-      "'Other_metadata'":
-        '{ numerator: sum([$row.nostu_Other_f, $row.nostu_Other_m]), denominator: $row.Total }',
-      "'value'":
-        'sum([$row.nostu_LaoThai_f, $row.nostu_LaoThai_m, $row.nostu_MonKhmer_f, $row.nostu_MonKhmer_m, $row.nostu_ChineseTibetan_f, $row.nostu_ChineseTibetan_m, $row.nostu_ChineseTibetan_f, $row.nostu_ChineseTibetan_m, $row.nostu_HmongMien_f, $row.nostu_HmongMien_m, $row.nostu_Foreigner_f, $row.nostu_Foreigner_m, $row.nostu_Other_f, $row.nostu_Other_m])/$row.Total',
-      '...': ['name'],
+      "'Denominator'":
+        'sum([sum($all.nostu_LaoThai_f), sum($all.nostu_LaoThai_m), sum($all.nostu_MonKhmer_f), sum($all.nostu_MonKhmer_m), sum($all.nostu_ChineseTibetan_f), sum($all.nostu_ChineseTibetan_m), sum($all.nostu_ChineseTibetan_f), sum($all.nostu_ChineseTibetan_m), sum($all.nostu_HmongMien_f), sum($all.nostu_HmongMien_m), sum($all.nostu_Foreigner_f), sum($all.nostu_Foreigner_m), sum($all.nostu_Other_f), sum($all.nostu_Other_m)])',
+      "'Numerator'":
+        'sum([$row.nostu_LaoThai_f, $row.nostu_LaoThai_m, $row.nostu_MonKhmer_f, $row.nostu_MonKhmer_m, $row.nostu_ChineseTibetan_f, $row.nostu_ChineseTibetan_m, $row.nostu_ChineseTibetan_f, $row.nostu_ChineseTibetan_m, $row.nostu_HmongMien_f, $row.nostu_HmongMien_m, $row.nostu_Foreigner_f, $row.nostu_Foreigner_m, $row.nostu_Other_f, $row.nostu_Other_m])',
+      '...': '*',
     },
     {
       transform: 'select',
+      "'Lao-Thai_metadata'":
+        "eq($row.name, 'Lao-Thai') ? { numerator: $row.Numerator, denominator: $row.Denominator } : undefined",
+      "'Mon-Khmer_metadata'":
+        "eq($row.name, 'Mon-Khmer') ? { numerator: $row.Numerator, denominator: $row.Denominator } : undefined",
+      "'Chinese-Tibetan_metadata'":
+        "eq($row.name, 'Chinese-Tibetan') ? { numerator: $row.Numerator, denominator: $row.Denominator } : undefined",
+      "'Hmong-Mien_metadata'":
+        "eq($row.name, 'Hmong-Mien') ? { numerator: $row.Numerator, denominator: $row.Denominator } : undefined",
+      "'Foreigner_metadata'":
+        "eq($row.name, 'Foreigner') ? { numerator: $row.Numerator, denominator: $row.Denominator } : undefined",
+      "'Other_metadata'":
+        "eq($row.name, 'Other') ? { numerator: $row.Numerator, denominator: $row.Denominator } : undefined",
+      "'value'": '$row.Numerator/$row.Denominator',
+      '...': ['name'],
     },
   ],
 };
@@ -152,7 +154,6 @@ const removeDashboardItemAndReport = async (db, code) => {
 };
 
 exports.up = async function (db) {
-  console.log('Please do something');
   await addNewDashboardItemAndReport(db, {
     code: CODE,
     reportConfig: REPORT_CONFIG,
