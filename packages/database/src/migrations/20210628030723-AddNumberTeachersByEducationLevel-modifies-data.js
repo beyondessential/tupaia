@@ -75,6 +75,10 @@ const REPORT_CONFIG = {
       transform: 'sort',
       by: '$row.sort_order',
     },
+    {
+      transform: 'select',
+      '...': ['name', 'Male', 'Female', 'Total', 'GPI'],
+    },
   ],
 };
 
