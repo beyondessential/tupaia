@@ -4,186 +4,281 @@
  *
  */
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import MuiDivider from '@material-ui/core/Divider';
 import MuiBox from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
+import Skeleton from '@material-ui/lab/Skeleton';
 import { EntityVitalsItem, FlexStart, MiniMap } from '../components';
 import { PARTNERS_LOGOS } from '../constants';
 import { useVitalsData } from '../api/queries';
-import Skeleton from '@material-ui/lab/Skeleton';
+import { useUrlParams } from '../utils';
 
-/* eslint-disable react/prop-types */
+const PartnersContainer = styled.div`
+  background: white;
+  padding-top: 32px;
+  margin-right: -24px;
+  margin-left: -15px;
+  padding-left: 30px;
 
-const PartnersContainer = styled(FlexStart)`
-  width: 320px;
-  padding-left: 25px;
+  ${props => props.theme.breakpoints.down('sm')} {
+    background: none;
+    margin-right: 0;
+    margin-left: 0;
+    padding-left: 0;
+  }
+`;
+
+const PartnersTitle = styled(Typography)`
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 140%;
+`;
+
+const LogoWrapper = styled.div`
+  margin: 5px;
+  width: 55px;
+  height: 55px;
+  border: 1px solid ${props => props.theme.palette.grey['400']};
+  border-radius: 5px;
+  padding: 3px;
+`;
+
+const Logo = styled.div`
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+  width: 100%;
   height: 100%;
 `;
 
-const PartnersSection = ({ vitals }) => {
-  const sponsorsList = Object.entries(vitals).filter(
-    ([key, value]) => Object.keys(PARTNERS_LOGOS).includes(key) && value === true,
-  );
+const PartnersSection = ({ vitals, displayAll }) => {
+  const sponsorsList = displayAll
+    ? Object.entries(PARTNERS_LOGOS)
+    : Object.entries(vitals).filter(([key, value]) => {
+        return Object.keys(PARTNERS_LOGOS).includes(key) && value === true;
+      });
   return (
     <PartnersContainer>
-      <GreyTitle>Development Partner Support</GreyTitle>
-      {sponsorsList.map(code => (
-        <StyledLogo
-          key={code}
-          style={{ backgroundImage: `url('/images/partnerLogos/${PARTNERS_LOGOS[code]}')` }}
-        />
-      ))}
+      <PartnersTitle>Development Partner Support</PartnersTitle>
+      <FlexStart flexWrap="wrap" pt={1} mb={4}>
+        {sponsorsList.map(([code]) => (
+          <LogoWrapper key={code}>
+            <Logo
+              style={{ backgroundImage: `url('/images/partnerLogos/${PARTNERS_LOGOS[code]}')` }}
+            />
+          </LogoWrapper>
+        ))}
+      </FlexStart>
     </PartnersContainer>
   );
 };
 
-const PhotoOrMap = ({ vitals }) => {
-  const [validImage, setValidImage] = useState(true);
-  if (vitals.isLoading) return null;
-
-  if (vitals.Photo && validImage)
-    return (
-      <img src={vitals.Photo} alt="place" width="720px" onError={() => setValidImage(false)} />
-    );
-
-  return <MiniMap entityCode={vitals.code} />;
+PartnersSection.propTypes = {
+  vitals: PropTypes.object.isRequired,
+  displayAll: PropTypes.bool,
 };
 
-const VitalsSection = styled.div`
-  padding: 30px 30px 30px 0;
-  flex: 1;
-  min-width: 500px;
-`;
+PartnersSection.defaultProps = {
+  displayAll: false,
+};
 
-const Title = styled(Typography)`
-  font-weight: 500;
+const PhotoOrMap = ({ Photo, code }) => {
+  const [validImage, setValidImage] = useState(true);
+
+  if (Photo && validImage) {
+    return <img src={Photo} alt="place" width="720px" onError={() => setValidImage(false)} />;
+  }
+
+  return <MiniMap entityCode={code} />;
+};
+
+PhotoOrMap.propTypes = {
+  Photo: PropTypes.string,
+  code: PropTypes.string,
+};
+
+PhotoOrMap.defaultProps = {
+  Photo: null,
+  code: null,
+};
+
+const Heading = styled(Typography)`
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 140%;
   text-transform: capitalize;
   color: ${props => props.theme.palette.primary.main};
-  padding-top: 30px;
 `;
 
-const GreyTitle = styled(Typography)`
-  color: ${props => props.theme.palette.text.secondary};
+const SubHeading = styled(Heading)`
   font-weight: 500;
-  padding-top: 30px;
-  padding-bottom: 10px;
-  padding-left: 5px;
+  font-size: 16px;
 `;
 
 const HorizontalDivider = styled(MuiDivider)`
-  width: 90%;
-  margin-top: 1rem;
+  margin-right: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 `;
 
-const StyledLogo = styled.div`
-  margin: 5px;
-  width: 55px;
-  height: 55px;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: contain;
-  border: 1px solid ${props => props.theme.palette.grey['400']};
-  border-radius: 5px;
+const TwoColGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1.2fr 1.1fr;
+  column-gap: 15px;
+  row-gap: 30px;
+  padding-top: 1rem;
 `;
+
+const ThreeColGrid = styled(TwoColGrid)`
+  grid-template-columns: 1.2fr 1.1fr 1fr;
+`;
+
+const VitalsContainer = styled.div`
+  padding-top: 30px;
+  padding-bottom: 30px;
+`;
+
+/* eslint-disable react/prop-types */
 
 const CountryView = ({ vitals }) => (
   <>
-    <VitalsSection>
-      <Title variant="h4">Country Profile:</Title>
-      <FlexStart flexWrap="wrap">
+    <VitalsContainer>
+      <Heading variant="h4">Country Profile:</Heading>
+      <TwoColGrid>
         <EntityVitalsItem
           name="No. Schools"
-          value="13849" // TODO: Remove hardcoded values https://github.com/beyondessential/tupaia-backlog/issues/2765
+          value="13,849" // TODO: Remove hardcoded values https://github.com/beyondessential/tupaia-backlog/issues/2765
           icon="School"
         />
         <EntityVitalsItem
           name="No. Students"
-          value="1659117" // TODO: Remove hardcoded values https://github.com/beyondessential/tupaia-backlog/issues/2765
+          value="1,659,117" // TODO: Remove hardcoded values https://github.com/beyondessential/tupaia-backlog/issues/2765
           icon="Study"
         />
-      </FlexStart>
-    </VitalsSection>
-    <PhotoOrMap vitals={vitals} />
-    <PartnersSection vitals={vitals} />
+      </TwoColGrid>
+    </VitalsContainer>
+    <PhotoOrMap {...vitals} />
+    <PartnersSection vitals={vitals} displayAll />
   </>
 );
 
 const ProvinceView = ({ vitals }) => (
   <>
-    <VitalsSection>
-      <Title variant="h4">Province Profile:</Title>
-      <FlexStart flexWrap="wrap">
+    <VitalsContainer>
+      <Heading variant="h4">Province Profile:</Heading>
+      <ThreeColGrid>
         <EntityVitalsItem name="Province Code" value={vitals.code} icon="LocationPin" />
-        <EntityVitalsItem name="Province Population" value={vitals.Population} icon="Group" />
-        <EntityVitalsItem name="No. Schools" value={vitals.NumberOfSchools} icon="School" />
-        <EntityVitalsItem name="No. Students" value={vitals.NumberOfStudents} icon="Study" />
-      </FlexStart>
-    </VitalsSection>
-    <PhotoOrMap vitals={vitals} />
+        <EntityVitalsItem
+          name="Province Population"
+          value={vitals.Population?.toLocaleString()}
+          icon="Group"
+        />
+        <EntityVitalsItem
+          name="No. Schools"
+          value={vitals.NumberOfSchools?.toLocaleString()}
+          icon="School"
+        />
+        <EntityVitalsItem
+          name="No. Students"
+          value={vitals.NumberOfStudents?.toLocaleString()}
+          icon="Study"
+        />
+      </ThreeColGrid>
+    </VitalsContainer>
+    <PhotoOrMap {...vitals} />
     <PartnersSection vitals={vitals} />
   </>
 );
 
 const DistrictView = ({ vitals }) => (
   <>
-    <VitalsSection>
-      <Title variant="h4">District Profile:</Title>
-      <FlexStart flexWrap="wrap">
+    <VitalsContainer>
+      <Heading variant="h4">District Profile:</Heading>
+      <ThreeColGrid>
         <EntityVitalsItem name="District Code" value={vitals.code} icon="LocationPin" />
-        <EntityVitalsItem name="District Population" value={vitals.Population} icon="Group" />
+        <EntityVitalsItem
+          name="District Population"
+          value={vitals.Population?.toLocaleString()}
+          icon="Group"
+        />
         <EntityVitalsItem
           name="Priority District"
           value={vitals.priorityDistrict ? 'Yes' : 'No'}
           icon="Notepad"
         />
-        <EntityVitalsItem name="No. Schools" value={vitals.NumberOfSchools} icon="School" />
-        <EntityVitalsItem name="No. Students" value={vitals.NumberOfStudents} icon="Study" />
-      </FlexStart>
+        <EntityVitalsItem
+          name="No. Schools"
+          value={vitals.NumberOfSchools?.toLocaleString()}
+          icon="School"
+        />
+        <EntityVitalsItem
+          name="No. Students"
+          value={vitals.NumberOfStudents?.toLocaleString()}
+          icon="Study"
+        />
+      </ThreeColGrid>
       <HorizontalDivider />
-      <FlexStart>
-        <Title variant="h4">Province</Title>
-        <EntityVitalsItem name="Name of Province" value={vitals.parentProvince?.name} />
-        <EntityVitalsItem name="Province Code" value={vitals.parentProvince?.code} />
-        <EntityVitalsItem name="Province Population" value={vitals.parentProvince?.Population} />
-      </FlexStart>
-    </VitalsSection>
-    <PhotoOrMap vitals={vitals} />
+      <MuiBox mt={2}>
+        <SubHeading variant="h4">{vitals.parentProvince?.name} Province</SubHeading>
+        <FlexStart mt={1} mb={4}>
+          <EntityVitalsItem name="Province Code" value={vitals.parentProvince?.code} mr={4} />
+          <EntityVitalsItem
+            name="Province Population"
+            value={vitals.parentProvince?.Population?.toLocaleString()}
+          />
+        </FlexStart>
+      </MuiBox>
+    </VitalsContainer>
+    <PhotoOrMap {...vitals} />
     <PartnersSection vitals={vitals} />
   </>
 );
 
 const SchoolView = ({ vitals }) => (
   <>
-    <VitalsSection>
-      <Title variant="h4">School Profile:</Title>
-      <EntityVitalsItem name="School Code" value={vitals.code} icon="LocationPin" />
-      <EntityVitalsItem name="Number of Students" value={vitals.NumberOfStudents} icon="Study" />
-      <EntityVitalsItem name="Complete School" icon="Notepad" isLoading={vitals.isLoading} />
-      <EntityVitalsItem
-        name="Distance to Main Road"
-        value={`${vitals.DistanceToMainRoad || '-'} km`}
-        icon="Road"
-      />
-      <EntityVitalsItem
-        name="Location"
-        value={vitals.point?.map(x => x.toFixed(3)).join()}
-        icon="PushPin"
-      />
-      <EntityVitalsItem name="School Type" value={vitals.attributes?.type} icon="School" />
-      <HorizontalDivider />
-      <FlexStart>
-        <Title variant="h4">District</Title>
-        <EntityVitalsItem name="Name of District" value={vitals.parentDistrict?.name} />
-        <EntityVitalsItem name="District Population" value={vitals.parentDistrict?.Population} />
+    <VitalsContainer>
+      <Heading variant="h4">School Profile:</Heading>
+      <ThreeColGrid>
+        <EntityVitalsItem name="School Code" value={vitals.code} icon="LocationPin" />
         <EntityVitalsItem
-          name="Priority District"
-          value={vitals.parentDistrict?.priorityDistrict ? 'Yes' : 'No'}
+          name="Number of Students"
+          value={vitals.NumberOfStudents?.toLocaleString()}
+          icon="Study"
         />
-      </FlexStart>
-    </VitalsSection>
-    <PhotoOrMap vitals={vitals} />
+        <EntityVitalsItem name="Complete School" icon="Notepad" isLoading={vitals.isLoading} />
+        <EntityVitalsItem
+          name="Distance to Main Road"
+          value={vitals.DistanceToMainRoad ? `${vitals.DistanceToMainRoad} km` : '-'}
+          icon="Road"
+        />
+        <EntityVitalsItem
+          name="Location"
+          value={vitals.point?.map(x => x.toFixed(3)).join(', ')}
+          icon="PushPin"
+        />
+        <EntityVitalsItem name="School Type" value={vitals.attributes?.type} icon="School" />
+      </ThreeColGrid>
+      <HorizontalDivider />
+      <MuiBox mt={2}>
+        <SubHeading variant="h4">{vitals.parentDistrict?.name}</SubHeading>
+        <FlexStart mt={1} mb={4}>
+          <EntityVitalsItem
+            name="District Population"
+            value={vitals.parentDistrict?.Population?.toLocaleString()}
+            mr={4}
+          />
+          <EntityVitalsItem
+            name="Priority District"
+            value={vitals.parentDistrict?.priorityDistrict ? 'Yes' : 'No'}
+          />
+        </FlexStart>
+      </MuiBox>
+    </VitalsContainer>
+    <PhotoOrMap {...vitals} />
+    <PartnersSection vitals={vitals} />
   </>
 );
 
@@ -192,40 +287,45 @@ const Wrapper = styled.section`
 `;
 
 const Container = styled(MuiContainer)`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(580px, 2.5fr) 2fr 1fr;
+  column-gap: 15px;
+  row-gap: 15px;
+
+  ${props => props.theme.breakpoints.down('sm')} {
+    display: block;
+  }
 `;
 
-const Grid = styled.div`
+const LoadingGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 80px 80px 80px;
   column-gap: 10px;
   row-gap: 15px;
   padding-right: 1rem;
   padding-top: 0.6rem;
 `;
 
-const Loader = () => {
-  return (
-    <MuiBox display="flex" alignItems="flex-start">
-      <MuiBox pt={5}>
-        <Skeleton width={220} height={24} />
-        <Grid>
-          <EntityVitalsItem isLoading />
-          <EntityVitalsItem isLoading />
-          <EntityVitalsItem isLoading />
-          <EntityVitalsItem isLoading />
-          <EntityVitalsItem isLoading />
-          <EntityVitalsItem isLoading />
-        </Grid>
+const Loader = () => (
+  <Wrapper>
+    <MuiContainer maxWidth="xl">
+      <MuiBox display="flex" alignItems="flex-start" justifyContent="flex-start">
+        <MuiBox pt={5}>
+          <Skeleton width={220} height={24} />
+          <LoadingGrid>
+            <EntityVitalsItem isLoading />
+            <EntityVitalsItem isLoading />
+            <EntityVitalsItem isLoading />
+            <EntityVitalsItem isLoading />
+            <EntityVitalsItem isLoading />
+            <EntityVitalsItem isLoading />
+          </LoadingGrid>
+        </MuiBox>
+        <Skeleton width={400} height={350} variant="rect" />
       </MuiBox>
-      <Skeleton width={500} height={350} variant="rect" />
-      <MuiBox height={350} />
-    </MuiBox>
-  );
-};
+    </MuiContainer>
+  </Wrapper>
+);
 
 const VITALS_VIEWS = {
   country: CountryView,
@@ -234,15 +334,32 @@ const VITALS_VIEWS = {
   school: SchoolView,
 };
 
-export const VitalsView = ({ entityCode, entityType }) => {
+export const VitalsView = ({ entityType }) => {
+  const { entityCode } = useUrlParams();
   const { data, isLoading } = useVitalsData(entityCode);
   const View = VITALS_VIEWS[entityType];
+
+  if (!entityType || isLoading) {
+    return <Loader />;
+  }
+
+  if (!View) {
+    return null;
+  }
 
   return (
     <Wrapper>
       <Container maxWidth="xl">
-        {!entityType || isLoading ? <Loader /> : <View vitals={data} />}
+        <View vitals={data} />
       </Container>
     </Wrapper>
   );
+};
+
+VitalsView.propTypes = {
+  entityType: PropTypes.string,
+};
+
+VitalsView.defaultProps = {
+  entityType: null,
 };

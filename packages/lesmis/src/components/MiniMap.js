@@ -22,9 +22,9 @@ const TILE_SET_URL = TILE_SETS.find(t => t.key === 'satellite').url;
 // map, which is hopefully enough credit)
 const Map = styled(MapContainer)`
   z-index: 1;
-  width: 510px;
   min-height: 370px;
   height: auto;
+
   .leaflet-control-attribution {
     display: none;
   }
@@ -53,18 +53,19 @@ const PointMarker = ({ entityData }) =>
 /* eslint-enable react/prop-types */
 
 export const MiniMap = ({ entityCode }) => {
-  const { data: countryData, isLoading: isLoadingCountryData } = useEntityData(COUNTRY_CODE);
-  const { data: entityData, isLoading: isLoadingEntityData } = useEntityData(entityCode);
+  const { data: countryData } = useEntityData(COUNTRY_CODE);
+  const { data: entityData } = useEntityData(entityCode);
 
-  return isLoadingCountryData || isLoadingEntityData ? null : (
+  return (
     <Map bounds={entityData?.bounds} dragging={false} zoomControl={false}>
       <BaseTileLayer url={TILE_SET_URL} />
-      <CountryMask countryData={countryData} />
-      <RegionPolygon entityData={entityData} />
-      <PointMarker entityData={entityData} />
+      {countryData && <CountryMask countryData={countryData} />}
+      {entityData && <RegionPolygon entityData={entityData} />}
+      {entityData && <PointMarker entityData={entityData} />}
     </Map>
   );
 };
+
 MiniMap.propTypes = {
   entityCode: PropTypes.string.isRequired,
 };

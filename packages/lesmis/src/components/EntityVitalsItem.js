@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
-import MuiBox from '@material-ui/core/box';
+import MuiBox from '@material-ui/core/Box';
 import { ReactComponent as LocationPin } from './icons/location-pin.svg';
 import { ReactComponent as PushPin } from './icons/push-pin.svg';
 import { ReactComponent as School } from './icons/school-count.svg';
@@ -18,36 +18,10 @@ import { ReactComponent as Study } from './icons/study.svg';
 import { ReactComponent as Notepad } from './icons/notepad.svg';
 import { FlexStart } from './Layout';
 
-const Wrapper = styled.section`
-  padding-top: 0.5rem;
-  width: 140px;
-  margin-right: 1rem;
-`;
-
-const Container = styled(FlexStart)`
-  padding-top: 0.5rem;
-  height: 70px;
-`;
-
-const VitalName = styled(Typography)`
-  color: ${props => props.theme.palette.text.secondary};
-  font-size: 0.75rem;
-`;
-
-const VitalContent = styled(Typography)`
-  color: ${props => props.theme.palette.text.primary};
-  font-weight: 500;
-  hyphens: auto;
-  word-break: break-word;
-`;
-
-const GreenVital = styled(VitalContent)`
-  color: ${props => props.theme.palette.success.main};
-`;
-
 const IconContainer = styled.div`
-  width: 40px;
-  margin-right: 10px;
+  width: 38px;
+  height: 38px;
+  margin-right: 9px;
 `;
 
 const VitalsIcon = ({ icon }) => {
@@ -80,30 +54,46 @@ const VitalsIcon = ({ icon }) => {
   return null;
 };
 
-const VitalValue = ({ value }) => {
-  if (value === 'Yes') {
-    return <GreenVital>{value}</GreenVital>;
-  }
-  return <VitalContent>{value || '-'}</VitalContent>;
-};
+const VitalName = styled(Typography)`
+  color: ${props => props.theme.palette.text.secondary};
+  font-size: 0.75rem;
+  line-height: 140%;
+`;
 
-export const EntityVitalsItem = ({ name, value, icon, isLoading }) =>
+const VitalContent = styled(Typography)`
+  color: ${props => props.theme.palette.text.primary};
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  hyphens: auto;
+  word-break: break-word;
+`;
+
+const GreenVital = styled(VitalContent)`
+  color: ${props => props.theme.palette.success.main};
+`;
+
+export const EntityVitalsItem = ({ name, value, icon, isLoading, ...props }) =>
   isLoading ? (
-    <Container>
-      <Skeleton height="100%" width={40} animation="wave" />
-      <MuiBox pl={2} pr={5}>
+    <FlexStart>
+      <Skeleton height={50} width={40} animation="wave" />
+      <MuiBox pl={2} pr={3}>
         <Skeleton animation="wave" width={100} />
         <Skeleton animation="wave" width={50} />
       </MuiBox>
-    </Container>
+    </FlexStart>
   ) : (
-    <Container>
+    <FlexStart {...props}>
       <VitalsIcon icon={icon} />
-      <Wrapper>
+      <div>
         <VitalName>{name}</VitalName>
-        <VitalValue value={value} />
-      </Wrapper>
-    </Container>
+        {value === 'yes' ? (
+          <GreenVital>{value}</GreenVital>
+        ) : (
+          <VitalContent>{value || '-'}</VitalContent>
+        )}
+      </div>
+    </FlexStart>
   );
 
 EntityVitalsItem.propTypes = {
