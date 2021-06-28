@@ -51,7 +51,7 @@ export const getValuesByCell = (config, results) => {
   return zipObject(
     Object.keys(groupedResults),
     Object.values(groupedResults).map(([{ value, metadata }]) =>
-      metadata && metadata.options && !isEqual(metadata.options, DEFAULT_BINARY_OPTIONS_OBJECT) // If the metadata options is the default Yes/No, return default value 1/0 instead of translating value.
+      metadata && metadata.options && !isEqual(metadata.options, DEFAULT_BINARY_OPTIONS_OBJECT) // Metadata options are mainly used for translating data from DHIS2 that has category options. For internal data, it returns default Yes/No metadata options for binary data to support translating from 1/0 to Yes/No in a few other places. For matrices, particularly `tableOfDataValues` data builder, we want to use raw 1/0 values and don't want to apply this translation because we want to keep the values consistent. So this check is for disabling that special case.
         ? metadata.options[value]
         : value,
     ),
