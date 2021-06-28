@@ -21,15 +21,15 @@ export class DashboardItemModel extends DatabaseModel {
       {
         ...criteria,
         dashboard_id: dashboardId,
-        permission_groups: {
+        [`${TYPES.DASHBOARD_RELATION}.permission_groups`]: {
           comparator: '&&', // User has ANY of the permission groups
           comparisonValue: permissionGroups,
         },
-        project_codes: {
+        [`${TYPES.DASHBOARD_RELATION}.project_codes`]: {
           comparator: '@>',
           comparisonValue: projectCodes,
         },
-        entity_types: {
+        [`${TYPES.DASHBOARD_RELATION}.entity_types`]: {
           comparator: '@>',
           comparisonValue: entityTypes,
         },

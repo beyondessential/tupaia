@@ -28,7 +28,6 @@ export class ReportRoute extends Route {
       case 'dashboard': {
         if (legacy === 'true') {
           const legacyReport = await this.webConfigConnection.fetchDashboardReport(reportCode, {
-            // NOTE: Legacy items pass the dashboard_item.code not the legacy_report.code
             organisationUnitCode: entityCode,
             projectCode: LESMIS_PROJECT_NAME,
             ...this.req.query,

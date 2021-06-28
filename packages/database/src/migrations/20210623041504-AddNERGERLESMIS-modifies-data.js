@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject, generateId, findSingleRecord } from '../utilities';
+import { insertObject, generateId, findSingleRecord, findSingleRecordBySql } from '../utilities';
 
 var dbm;
 var type;
@@ -61,11 +61,11 @@ const REPORT_CONFIG = {
     {
       transform: 'select',
       "'Male'":
-        'sum([$row.enrolment_rate_acronym_lesmis_entity_level_pe_m, $row.enrolment_rate_acronym_lesmis_entity_level_lse_m, $row.enrolment_rate_acronym_lesmis_entity_level_use_m])',
+        'sum([$row.enrolment_rate_acronym_lesmis_entity_level_pe_m, $row.enrolment_rate_acronym_lesmis_entity_level_lse_m, $row.enrolment_rate_acronym_lesmis_entity_level_use_m]) / 100',
       "'Female'":
-        'sum([$row.enrolment_rate_acronym_lesmis_entity_level_pe_f, $row.enrolment_rate_acronym_lesmis_entity_level_lse_f, $row.enrolment_rate_acronym_lesmis_entity_level_use_f])',
+        'sum([$row.enrolment_rate_acronym_lesmis_entity_level_pe_f, $row.enrolment_rate_acronym_lesmis_entity_level_lse_f, $row.enrolment_rate_acronym_lesmis_entity_level_use_f]) / 100',
       "'Total'":
-        'sum([$row.enrolment_rate_acronym_lesmis_entity_level_pe_t, $row.enrolment_rate_acronym_lesmis_entity_level_lse_t, $row.enrolment_rate_acronym_lesmis_entity_level_use_t])',
+        'sum([$row.enrolment_rate_acronym_lesmis_entity_level_pe_t, $row.enrolment_rate_acronym_lesmis_entity_level_lse_t, $row.enrolment_rate_acronym_lesmis_entity_level_use_t]) / 100',
       '...': ['name'],
     },
     {
@@ -110,18 +110,21 @@ const FRONT_END_CONFIG = {
       yName: 'Rate (%)',
       stackId: '1',
       legendOrder: '1',
+      valueType: 'percentage',
     },
     Female: {
       chartType: 'bar',
       color: '#2196f3',
       stackId: '2',
       legendOrder: '2',
+      valueType: 'percentage',
     },
     Total: {
       chartType: 'bar',
       color: '#9c27b0',
       stackId: '3',
       legendOrder: '3',
+      valueType: 'percentage',
     },
   },
 };
@@ -133,7 +136,7 @@ const addNewDashboardItemAndReport = async (
   // insert report
   const reportId = generateId();
   const permissionGroupId = (
-    await findSingleRecord(db, `SELECT id FROM permission_group WHERE name = '${permissionGroup}';`)
+    await await findSingleRecord(db, 'permission_group', { name: permissionGroup })
   ).id;
   await insertObject(db, 'report', {
     id: reportId,
@@ -159,14 +162,10 @@ const addItemToDashboard = async (
   db,
   { code, dashboardCode, permissionGroup, entityTypes, projectCodes },
 ) => {
-  const dashboardItemId = (
-    await findSingleRecord(db, `SELECT id FROM dashboard_item WHERE code = '${code}'`)
-  ).id;
-  const dashboardId = (
-    await findSingleRecord(db, `SELECT id FROM dashboard WHERE code = '${dashboardCode}'`)
-  ).id;
+  const dashboardItemId = (await await findSingleRecord(db, 'dashboard_item', { code })).id;
+  const dashboardId = (await await findSingleRecord(db, 'dashboard', { code: dashboardCode })).id;
   const maxSortOrder = (
-    await findSingleRecord(
+    await findSingleRecordBySql(
       db,
       `SELECT max(sort_order) as max_sort_order FROM dashboard_relation WHERE dashboard_id = '${dashboardId}';`,
     )
