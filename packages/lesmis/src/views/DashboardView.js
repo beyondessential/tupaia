@@ -7,13 +7,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import MuiContainer from '@material-ui/core/Container';
 import { Select } from '@tupaia/ui-components';
-import { CountryView, ProvinceView, DistrictView, SchoolView } from './VitalsViews';
+import { VitalsView } from './VitalsViews';
 import { DashboardReportTabView } from './DashboardReportTabView';
 import { TabPanel, TabBar, TabBarSection, YearSelector } from '../components';
 import { useUrlParams, useUrlSearchParams, useUrlSearchParam } from '../utils';
-import { useVitalsData, useEntityData } from '../api/queries';
+import { useEntityData } from '../api/queries';
 import { DEFAULT_DATA_YEAR } from '../constants';
 
 const StyledSelect = styled(Select)`
@@ -143,18 +142,6 @@ const makeDropdownOptions = entityType => [
   },
 ];
 
-const Wrapper = styled.section`
-  background: #fbfbfb;
-`;
-
-const Container = styled(MuiContainer)`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: stretch;
-  padding-right: 0;
-`;
-
 // Gets the best default dashboard possible, and check if the selected dashboard is valid
 const useDefaultDashboardTab = (selectedDashboard = null, options) => {
   if (!options || options.length === 0) {
@@ -168,13 +155,6 @@ const useDefaultDashboardTab = (selectedDashboard = null, options) => {
   return options[0].value;
 };
 
-const VITALS_VIEWS = {
-  country: CountryView,
-  district: ProvinceView,
-  sub_district: DistrictView,
-  school: SchoolView,
-};
-
 export const DashboardView = React.memo(() => {
   const { entityCode } = useUrlParams();
   const { data: entityData } = useEntityData(entityCode);
@@ -182,22 +162,15 @@ export const DashboardView = React.memo(() => {
   const [params, setParams] = useUrlSearchParams();
   const [selectedYear, setSelectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
 
-  const vitals = useVitalsData(entityCode);
   const selectedOption = useDefaultDashboardTab(params.dashboard, dropdownOptions);
 
   const handleChange = event => {
     setParams({ dashboard: event.target.value, subDashboard: null, year: null });
   };
 
-  const VitalsView = VITALS_VIEWS[vitals.type];
-
   return (
     <>
-      <Wrapper>
-        <Container maxWidth={false}>
-          {vitals?.type ? <VitalsView vitals={vitals} /> : 'Loading vitals...'}
-        </Container>
-      </Wrapper>
+      <VitalsView entityCode={entityCode} entityType={entityData?.type} />
       {dropdownOptions.map(({ value, Body, Component, useYearSelector, ComponentProps }) => (
         <TabPanel key={value} isSelected={value === selectedOption} Panel={React.Fragment}>
           <Component

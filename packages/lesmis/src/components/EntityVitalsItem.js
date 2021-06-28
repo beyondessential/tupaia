@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
+import MuiBox from '@material-ui/core/box';
 import { ReactComponent as LocationPin } from './icons/location-pin.svg';
 import { ReactComponent as PushPin } from './icons/push-pin.svg';
 import { ReactComponent as School } from './icons/school-count.svg';
@@ -26,7 +27,6 @@ const Wrapper = styled.section`
 const Container = styled(FlexStart)`
   padding-top: 0.5rem;
   height: 70px;
-  align-items: flex-start;
 `;
 
 const VitalName = styled(Typography)`
@@ -80,34 +80,41 @@ const VitalsIcon = ({ icon }) => {
   return null;
 };
 
-const VitalValue = ({ value, isLoading }) => {
-  if (isLoading) {
-    return <Skeleton animation="wave" />;
-  }
+const VitalValue = ({ value }) => {
   if (value === 'Yes') {
     return <GreenVital>{value}</GreenVital>;
   }
   return <VitalContent>{value || '-'}</VitalContent>;
 };
 
-export const EntityVitalsItem = ({ name, value, icon, isLoading }) => (
-  <Container>
-    <VitalsIcon icon={icon} />
-    <Wrapper>
-      <VitalName>{name}</VitalName>
-      <VitalValue value={value} isLoading={isLoading} />
-    </Wrapper>
-  </Container>
-);
+export const EntityVitalsItem = ({ name, value, icon, isLoading }) =>
+  isLoading ? (
+    <Container>
+      <Skeleton height="100%" width={40} animation="wave" />
+      <MuiBox pl={2} pr={5}>
+        <Skeleton animation="wave" width={100} />
+        <Skeleton animation="wave" width={50} />
+      </MuiBox>
+    </Container>
+  ) : (
+    <Container>
+      <VitalsIcon icon={icon} />
+      <Wrapper>
+        <VitalName>{name}</VitalName>
+        <VitalValue value={value} />
+      </Wrapper>
+    </Container>
+  );
 
 EntityVitalsItem.propTypes = {
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   icon: PropTypes.string,
   isLoading: PropTypes.bool,
 };
 
 EntityVitalsItem.defaultProps = {
+  name: null,
   value: '-',
   icon: '',
   isLoading: false,

@@ -166,13 +166,13 @@ export const useVitalsData = entityCode => {
   );
 
   return {
-    ...entitiesQuery,
-    ...entityData,
-
-    ...schoolData,
-    ...districtData,
-    ...provinceData,
-
+    data: {
+      ...entitiesQuery,
+      ...entityData,
+      ...schoolData,
+      ...districtData,
+      ...provinceData,
+    },
     isLoading: schoolLoading || districtLoading || provinceLoading,
   };
 };

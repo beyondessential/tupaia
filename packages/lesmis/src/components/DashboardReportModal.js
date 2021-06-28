@@ -139,7 +139,7 @@ export const DashboardReportModal = ({
       >
         <DialogHeader handleClose={handleClose} title={dashboardName} />
         <Wrapper>
-          <Container maxWidth={false}>
+          <Container maxWidth="xl">
             <Header>
               <Box maxWidth={580}>
                 <Heading variant="h3">{name}</Heading>

@@ -108,7 +108,7 @@ export const HomeView = React.memo(() => {
   return (
     // The background image is applied here instead of the styled component as it creates a flicker when added there
     <Wrapper style={{ backgroundImage: "url('/images/home-cover.png')" }}>
-      <Container maxWidth={false}>
+      <Container maxWidth="xl">
         <Main>
           <Title variant="h1">
             Find a location <br />
@@ -131,7 +131,7 @@ export const HomeView = React.memo(() => {
             <InfoText>Website: www.moes.edu.la</InfoText>
           </InfoSection>
         </Info>
-        <Footer maxWidth={false}>
+        <Footer maxWidth="xl">
           <FooterInner>
             <Typography>
               Powered by{' '}

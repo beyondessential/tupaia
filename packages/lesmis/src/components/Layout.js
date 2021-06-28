@@ -42,7 +42,7 @@ const ToolbarWrapper = styled.section`
 
 export const Toolbar = ({ children }) => (
   <ToolbarWrapper>
-    <MuiContainer maxWidth={false}>{children}</MuiContainer>
+    <MuiContainer maxWidth="xl">{children}</MuiContainer>
   </ToolbarWrapper>
 );
 
