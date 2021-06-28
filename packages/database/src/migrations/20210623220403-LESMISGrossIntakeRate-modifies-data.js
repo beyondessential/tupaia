@@ -29,13 +29,13 @@ exports.setup = function (options, seedLink) {
 // Generate an inclusive range
 const range = (start, end) => Array.from({ length: end - start + 1 }, (_, index) => index + start);
 
-const generateDistrictReportConfig = ({ educationLevel }) => {
+const generateSummaryReportConfig = ({ entityLevel, educationLevel }) => {
   return {
     fetch: {
       dataElements: [
-        `gir_district_${educationLevel}_m`,
-        `gir_district_${educationLevel}_f`,
-        `gir_district_${educationLevel}_t`,
+        `gir_${entityLevel}_${educationLevel}_m`,
+        `gir_${entityLevel}_${educationLevel}_f`,
+        `gir_${entityLevel}_${educationLevel}_t`,
       ],
       aggregations: [
         {
@@ -50,9 +50,9 @@ const generateDistrictReportConfig = ({ educationLevel }) => {
       'keyValueByDataElementName',
       {
         transform: 'select',
-        "'Male'": `exists($row.gir_district_${educationLevel}_m) ? $row.gir_district_${educationLevel}_m/100 : undefined`,
-        "'Female'": `exists($row.gir_district_${educationLevel}_f) ? $row.gir_district_${educationLevel}_f/100 : undefined`,
-        "'Total'": `exists($row.gir_district_${educationLevel}_t) ? $row.gir_district_${educationLevel}_t/100 : undefined`,
+        "'Male'": `exists($row.gir_${entityLevel}_${educationLevel}_m) ? $row.gir_${entityLevel}_${educationLevel}_m/100 : undefined`,
+        "'Female'": `exists($row.gir_${entityLevel}_${educationLevel}_f) ? $row.gir_${entityLevel}_${educationLevel}_f/100 : undefined`,
+        "'Total'": `exists($row.gir_${entityLevel}_${educationLevel}_t) ? $row.gir_${entityLevel}_${educationLevel}_t/100 : undefined`,
         "'timestamp'": 'periodToTimestamp($row.period)',
       },
       {
@@ -118,7 +118,7 @@ const GIR_CONFIG_UPPER_SECONDARY = {
   educationLevel: 'use',
 };
 
-const DISTRICT_BASE_FRONT_END_CONFIG = {
+const SUMMARY_BASE_FRONT_END_CONFIG = {
   type: 'chart',
   chartType: 'line',
   xName: 'Year',
@@ -171,32 +171,113 @@ const DISTRICT_LEVEL_PRIMARY = {
   code: 'LESMIS_gross_intake_ratio_primary_district',
   frontEndConfig: {
     name: 'Gross Intake Ratio to the Last Grade of Primary Education',
-    ...DISTRICT_BASE_FRONT_END_CONFIG,
+    ...SUMMARY_BASE_FRONT_END_CONFIG,
   },
-  reportConfig: generateDistrictReportConfig(GIR_CONFIG_PRIMARY),
+  reportConfig: generateSummaryReportConfig({
+    entityLevel: 'district',
+    ...GIR_CONFIG_UPPER_SECONDARY,
+  }),
   entityTypes: ['sub_district'],
 };
 const DISTRICT_LEVEL_LOWER_SECONDARY = {
   code: 'LESMIS_gross_intake_ratio_lower_secondary_district',
   frontEndConfig: {
     name: 'Gross Intake Ratio to the Last Grade of Lower Secondary Education',
-    ...DISTRICT_BASE_FRONT_END_CONFIG,
+    ...SUMMARY_BASE_FRONT_END_CONFIG,
   },
-  reportConfig: generateDistrictReportConfig(GIR_CONFIG_LOWER_SECONDARY),
+  reportConfig: generateSummaryReportConfig({
+    entityLevel: 'district',
+    ...GIR_CONFIG_UPPER_SECONDARY,
+  }),
   entityTypes: ['sub_district'],
 };
 const DISTRICT_LEVEL_UPPER_SECONDARY = {
   code: 'LESMIS_gross_intake_ratio_upper_secondary_district',
   frontEndConfig: {
     name: 'Gross Intake Ratio to the Last Grade of Upper Secondary Education',
-    ...DISTRICT_BASE_FRONT_END_CONFIG,
+    ...SUMMARY_BASE_FRONT_END_CONFIG,
   },
-  reportConfig: generateDistrictReportConfig(GIR_CONFIG_UPPER_SECONDARY),
+  reportConfig: generateSummaryReportConfig({
+    entityLevel: 'district',
+    ...GIR_CONFIG_UPPER_SECONDARY,
+  }),
   entityTypes: ['sub_district'],
 };
-
 const PROVINCE_LEVEL_PRIMARY = {
   code: 'LESMIS_gross_intake_ratio_primary_province',
+  frontEndConfig: {
+    name: 'Gross Intake Ratio to the Last Grade of Primary Education',
+    ...SUMMARY_BASE_FRONT_END_CONFIG,
+  },
+  reportConfig: generateSummaryReportConfig({
+    entityLevel: 'province',
+    ...GIR_CONFIG_UPPER_SECONDARY,
+  }),
+  entityTypes: ['district'],
+};
+const PROVINCE_LEVEL_LOWER_SECONDARY = {
+  code: 'LESMIS_gross_intake_ratio_lower_secondary_province',
+  frontEndConfig: {
+    name: 'Gross Intake Ratio to the Last Grade of Lower Secondary Education',
+    ...SUMMARY_BASE_FRONT_END_CONFIG,
+  },
+  reportConfig: generateSummaryReportConfig({
+    entityLevel: 'province',
+    ...GIR_CONFIG_UPPER_SECONDARY,
+  }),
+  entityTypes: ['district'],
+};
+const PROVINCE_LEVEL_UPPER_SECONDARY = {
+  code: 'LESMIS_gross_intake_ratio_upper_secondary_province',
+  frontEndConfig: {
+    name: 'Gross Intake Ratio to the Last Grade of Upper Secondary Education',
+    ...SUMMARY_BASE_FRONT_END_CONFIG,
+  },
+  reportConfig: generateSummaryReportConfig({
+    entityLevel: 'province',
+    ...GIR_CONFIG_UPPER_SECONDARY,
+  }),
+  entityTypes: ['district'],
+};
+const COUNTRY_LEVEL_PRIMARY = {
+  code: 'LESMIS_gross_intake_ratio_primary_country',
+  frontEndConfig: {
+    name: 'Gross Intake Ratio to the Last Grade of Primary Education',
+    ...SUMMARY_BASE_FRONT_END_CONFIG,
+  },
+  reportConfig: generateSummaryReportConfig({
+    entityLevel: 'country',
+    ...GIR_CONFIG_UPPER_SECONDARY,
+  }),
+  entityTypes: ['country'],
+};
+const COUNTRY_LEVEL_LOWER_SECONDARY = {
+  code: 'LESMIS_gross_intake_ratio_lower_secondary_country',
+  frontEndConfig: {
+    name: 'Gross Intake Ratio to the Last Grade of Lower Secondary Education',
+    ...SUMMARY_BASE_FRONT_END_CONFIG,
+  },
+  reportConfig: generateSummaryReportConfig({
+    entityLevel: 'country',
+    ...GIR_CONFIG_UPPER_SECONDARY,
+  }),
+  entityTypes: ['country'],
+};
+const COUNTRY_LEVEL_UPPER_SECONDARY = {
+  code: 'LESMIS_gross_intake_ratio_upper_secondary_country',
+  frontEndConfig: {
+    name: 'Gross Intake Ratio to the Last Grade of Upper Secondary Education',
+    ...SUMMARY_BASE_FRONT_END_CONFIG,
+  },
+  reportConfig: generateSummaryReportConfig({
+    entityLevel: 'country',
+    ...GIR_CONFIG_UPPER_SECONDARY,
+  }),
+  entityTypes: ['country'],
+};
+
+const PROVINCE_LEVEL_PRIMARY_DISTRICT_SUMMARY = {
+  code: 'LESMIS_gross_intake_ratio_primary_province_summary',
   frontEndConfig: {
     name: 'Gross Intake Ratio to the Last Grade of Primary Education',
     ...PROVINCE_BASE_FRONT_END_CONFIG,
@@ -204,8 +285,8 @@ const PROVINCE_LEVEL_PRIMARY = {
   reportConfig: generateProvinceReportConfig(GIR_CONFIG_PRIMARY),
   entityTypes: ['district'],
 };
-const PROVINCE_LEVEL_LOWER_SECONDARY = {
-  code: 'LESMIS_gross_intake_ratio_lower_secondary_province',
+const PROVINCE_LEVEL_LOWER_SECONDARY_DISTRICT_SUMMARY = {
+  code: 'LESMIS_gross_intake_ratio_lower_secondary_province_summary',
   frontEndConfig: {
     name: 'Gross Intake Ratio to the Last Grade of Primary Education',
     ...PROVINCE_BASE_FRONT_END_CONFIG,
@@ -213,8 +294,8 @@ const PROVINCE_LEVEL_LOWER_SECONDARY = {
   reportConfig: generateProvinceReportConfig(GIR_CONFIG_LOWER_SECONDARY),
   entityTypes: ['district'],
 };
-const PROVINCE_LEVEL_UPPER_SECONDARY = {
-  code: 'LESMIS_gross_intake_ratio_upper_secondary_province',
+const PROVINCE_LEVEL_UPPER_SECONDARY_DISTRICT_SUMMARY = {
+  code: 'LESMIS_gross_intake_ratio_upper_secondary_province_summary',
   frontEndConfig: {
     name: 'Gross Intake Ratio to the Last Grade of Primary Education',
     ...PROVINCE_BASE_FRONT_END_CONFIG,
@@ -233,7 +314,9 @@ const addNewDashboardItemAndReport = async (
 ) => {
   // insert report
   const reportId = generateId();
-  const permissionGroupId = (await findSingleRecord(db, 'permission_group', { code })).id;
+  const permissionGroupId = (
+    await findSingleRecord(db, 'permission_group', { name: permissionGroup })
+  ).id;
   await insertObject(db, 'report', {
     id: reportId,
     code,
@@ -286,6 +369,12 @@ exports.up = async function (db) {
     PROVINCE_LEVEL_PRIMARY,
     PROVINCE_LEVEL_LOWER_SECONDARY,
     PROVINCE_LEVEL_UPPER_SECONDARY,
+    COUNTRY_LEVEL_PRIMARY,
+    COUNTRY_LEVEL_LOWER_SECONDARY,
+    COUNTRY_LEVEL_UPPER_SECONDARY,
+    PROVINCE_LEVEL_PRIMARY_DISTRICT_SUMMARY,
+    PROVINCE_LEVEL_LOWER_SECONDARY_DISTRICT_SUMMARY,
+    PROVINCE_LEVEL_UPPER_SECONDARY_DISTRICT_SUMMARY,
   ]) {
     await addNewDashboardItemAndReport(db, {
       code,
@@ -307,6 +396,12 @@ exports.down = async function (db) {
     PROVINCE_LEVEL_PRIMARY,
     PROVINCE_LEVEL_LOWER_SECONDARY,
     PROVINCE_LEVEL_UPPER_SECONDARY,
+    COUNTRY_LEVEL_PRIMARY,
+    COUNTRY_LEVEL_LOWER_SECONDARY,
+    COUNTRY_LEVEL_UPPER_SECONDARY,
+    PROVINCE_LEVEL_PRIMARY_DISTRICT_SUMMARY,
+    PROVINCE_LEVEL_LOWER_SECONDARY_DISTRICT_SUMMARY,
+    PROVINCE_LEVEL_UPPER_SECONDARY_DISTRICT_SUMMARY,
   ]) {
     await removeDashboardItemAndReport(db, code);
   }
