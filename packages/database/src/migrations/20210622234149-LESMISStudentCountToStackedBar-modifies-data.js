@@ -106,11 +106,13 @@ const FRONT_END_CONFIG = {
       color: '#f44336',
       stackId: '1',
       yName: 'Number of Students',
+      valueType: 'number',
     },
     Female: {
       chartType: 'bar',
       color: '#2196f3',
       stackId: '1',
+      valueType: 'number',
     },
   },
 };

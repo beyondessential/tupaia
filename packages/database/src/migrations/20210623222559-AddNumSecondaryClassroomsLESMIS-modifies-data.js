@@ -61,6 +61,7 @@ const FRONT_END_CONFIG = {
   xName: 'Year',
   yName: 'Number of Classrooms',
   periodGranularity: 'year',
+  valueType: 'number',
   chartConfig: {
     'Lower Secondary Education (Public)': {
       color: '#EB7D3C',
