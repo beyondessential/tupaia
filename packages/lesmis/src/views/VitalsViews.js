@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
@@ -33,7 +33,7 @@ const PartnersContainer = styled.div`
 
 const PartnersTitle = styled(Typography)`
   font-weight: 500;
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 140%;
 `;
 
@@ -85,11 +85,16 @@ PartnersSection.defaultProps = {
   displayAll: false,
 };
 
-const PhotoOrMap = ({ Photo, code }) => {
-  const [validImage, setValidImage] = useState(true);
+const SitePhoto = styled.div`
+  background-position: top left;
+  background-size: cover;
+  background-repeat: no-repeat;
+  max-width: 100%;
+`;
 
-  if (Photo && validImage) {
-    return <img src={Photo} alt="place" width="720px" onError={() => setValidImage(false)} />;
+const PhotoOrMap = ({ Photo, code }) => {
+  if (Photo) {
+    return <SitePhoto style={{ backgroundImage: `url('${Photo}')` }} />;
   }
 
   return <MiniMap entityCode={code} />;
@@ -144,142 +149,126 @@ const VitalsContainer = styled.div`
 /* eslint-disable react/prop-types */
 
 const CountryView = ({ vitals }) => (
-  <>
-    <VitalsContainer>
-      <Heading variant="h4">Country Profile:</Heading>
-      <TwoColGrid>
-        <EntityVitalsItem
-          name="No. Schools"
-          value="13,849" // TODO: Remove hardcoded values https://github.com/beyondessential/tupaia-backlog/issues/2765
-          icon="School"
-        />
-        <EntityVitalsItem
-          name="No. Students"
-          value="1,659,117" // TODO: Remove hardcoded values https://github.com/beyondessential/tupaia-backlog/issues/2765
-          icon="Study"
-        />
-      </TwoColGrid>
-    </VitalsContainer>
-    <PhotoOrMap {...vitals} />
-    <PartnersSection vitals={vitals} displayAll />
-  </>
+  <VitalsContainer>
+    <Heading variant="h4">Country Profile:</Heading>
+    <TwoColGrid>
+      <EntityVitalsItem
+        name="No. Schools"
+        value="13,849" // TODO: Remove hardcoded values https://github.com/beyondessential/tupaia-backlog/issues/2765
+        icon="School"
+      />
+      <EntityVitalsItem
+        name="No. Students"
+        value="1,659,117" // TODO: Remove hardcoded values https://github.com/beyondessential/tupaia-backlog/issues/2765
+        icon="Study"
+      />
+    </TwoColGrid>
+  </VitalsContainer>
 );
 
 const ProvinceView = ({ vitals }) => (
-  <>
-    <VitalsContainer>
-      <Heading variant="h4">Province Profile:</Heading>
-      <ThreeColGrid>
-        <EntityVitalsItem name="Province Code" value={vitals.code} icon="LocationPin" />
-        <EntityVitalsItem
-          name="Province Population"
-          value={vitals.Population?.toLocaleString()}
-          icon="Group"
-        />
-        <EntityVitalsItem
-          name="No. Schools"
-          value={vitals.NumberOfSchools?.toLocaleString()}
-          icon="School"
-        />
-        <EntityVitalsItem
-          name="No. Students"
-          value={vitals.NumberOfStudents?.toLocaleString()}
-          icon="Study"
-        />
-      </ThreeColGrid>
-    </VitalsContainer>
-    <PhotoOrMap {...vitals} />
-    <PartnersSection vitals={vitals} />
-  </>
+  <VitalsContainer>
+    <Heading variant="h4">Province Profile:</Heading>
+    <ThreeColGrid>
+      <EntityVitalsItem name="Province Code" value={vitals.code} icon="LocationPin" />
+      <EntityVitalsItem
+        name="Province Population"
+        value={vitals.Population?.toLocaleString()}
+        icon="Group"
+      />
+      <EntityVitalsItem
+        name="No. Schools"
+        value={vitals.NumberOfSchools?.toLocaleString()}
+        icon="School"
+      />
+      <EntityVitalsItem
+        name="No. Students"
+        value={vitals.NumberOfStudents?.toLocaleString()}
+        icon="Study"
+      />
+    </ThreeColGrid>
+  </VitalsContainer>
 );
 
 const DistrictView = ({ vitals }) => (
-  <>
-    <VitalsContainer>
-      <Heading variant="h4">District Profile:</Heading>
-      <ThreeColGrid>
-        <EntityVitalsItem name="District Code" value={vitals.code} icon="LocationPin" />
+  <VitalsContainer>
+    <Heading variant="h4">District Profile:</Heading>
+    <ThreeColGrid>
+      <EntityVitalsItem name="District Code" value={vitals.code} icon="LocationPin" />
+      <EntityVitalsItem
+        name="District Population"
+        value={vitals.Population?.toLocaleString()}
+        icon="Group"
+      />
+      <EntityVitalsItem
+        name="Priority District"
+        value={vitals.priorityDistrict ? 'Yes' : 'No'}
+        icon="Notepad"
+      />
+      <EntityVitalsItem
+        name="No. Schools"
+        value={vitals.NumberOfSchools?.toLocaleString()}
+        icon="School"
+      />
+      <EntityVitalsItem
+        name="No. Students"
+        value={vitals.NumberOfStudents?.toLocaleString()}
+        icon="Study"
+      />
+    </ThreeColGrid>
+    <HorizontalDivider />
+    <MuiBox mt={2}>
+      <SubHeading variant="h4">{vitals.parentProvince?.name} Province</SubHeading>
+      <FlexStart mt={1} mb={4}>
+        <EntityVitalsItem name="Province Code" value={vitals.parentProvince?.code} mr={4} />
         <EntityVitalsItem
-          name="District Population"
-          value={vitals.Population?.toLocaleString()}
-          icon="Group"
+          name="Province Population"
+          value={vitals.parentProvince?.Population?.toLocaleString()}
         />
-        <EntityVitalsItem
-          name="Priority District"
-          value={vitals.priorityDistrict ? 'Yes' : 'No'}
-          icon="Notepad"
-        />
-        <EntityVitalsItem
-          name="No. Schools"
-          value={vitals.NumberOfSchools?.toLocaleString()}
-          icon="School"
-        />
-        <EntityVitalsItem
-          name="No. Students"
-          value={vitals.NumberOfStudents?.toLocaleString()}
-          icon="Study"
-        />
-      </ThreeColGrid>
-      <HorizontalDivider />
-      <MuiBox mt={2}>
-        <SubHeading variant="h4">{vitals.parentProvince?.name} Province</SubHeading>
-        <FlexStart mt={1} mb={4}>
-          <EntityVitalsItem name="Province Code" value={vitals.parentProvince?.code} mr={4} />
-          <EntityVitalsItem
-            name="Province Population"
-            value={vitals.parentProvince?.Population?.toLocaleString()}
-          />
-        </FlexStart>
-      </MuiBox>
-    </VitalsContainer>
-    <PhotoOrMap {...vitals} />
-    <PartnersSection vitals={vitals} />
-  </>
+      </FlexStart>
+    </MuiBox>
+  </VitalsContainer>
 );
 
 const SchoolView = ({ vitals }) => (
-  <>
-    <VitalsContainer>
-      <Heading variant="h4">School Profile:</Heading>
-      <ThreeColGrid>
-        <EntityVitalsItem name="School Code" value={vitals.code} icon="LocationPin" />
+  <VitalsContainer>
+    <Heading variant="h4">School Profile:</Heading>
+    <ThreeColGrid>
+      <EntityVitalsItem name="School Code" value={vitals.code} icon="LocationPin" />
+      <EntityVitalsItem
+        name="Number of Students"
+        value={vitals.NumberOfStudents?.toLocaleString()}
+        icon="Study"
+      />
+      <EntityVitalsItem name="Complete School" icon="Notepad" isLoading={vitals.isLoading} />
+      <EntityVitalsItem
+        name="Distance to Main Road"
+        value={vitals.DistanceToMainRoad ? `${vitals.DistanceToMainRoad} km` : '-'}
+        icon="Road"
+      />
+      <EntityVitalsItem
+        name="Location"
+        value={vitals.point?.map(x => x.toFixed(3)).join(', ')}
+        icon="PushPin"
+      />
+      <EntityVitalsItem name="School Type" value={vitals.attributes?.type} icon="School" />
+    </ThreeColGrid>
+    <HorizontalDivider />
+    <MuiBox mt={2}>
+      <SubHeading variant="h4">{vitals.parentDistrict?.name}</SubHeading>
+      <FlexStart mt={1} mb={4}>
         <EntityVitalsItem
-          name="Number of Students"
-          value={vitals.NumberOfStudents?.toLocaleString()}
-          icon="Study"
-        />
-        <EntityVitalsItem name="Complete School" icon="Notepad" isLoading={vitals.isLoading} />
-        <EntityVitalsItem
-          name="Distance to Main Road"
-          value={vitals.DistanceToMainRoad ? `${vitals.DistanceToMainRoad} km` : '-'}
-          icon="Road"
+          name="District Population"
+          value={vitals.parentDistrict?.Population?.toLocaleString()}
+          mr={4}
         />
         <EntityVitalsItem
-          name="Location"
-          value={vitals.point?.map(x => x.toFixed(3)).join(', ')}
-          icon="PushPin"
+          name="Priority District"
+          value={vitals.parentDistrict?.priorityDistrict ? 'Yes' : 'No'}
         />
-        <EntityVitalsItem name="School Type" value={vitals.attributes?.type} icon="School" />
-      </ThreeColGrid>
-      <HorizontalDivider />
-      <MuiBox mt={2}>
-        <SubHeading variant="h4">{vitals.parentDistrict?.name}</SubHeading>
-        <FlexStart mt={1} mb={4}>
-          <EntityVitalsItem
-            name="District Population"
-            value={vitals.parentDistrict?.Population?.toLocaleString()}
-            mr={4}
-          />
-          <EntityVitalsItem
-            name="Priority District"
-            value={vitals.parentDistrict?.priorityDistrict ? 'Yes' : 'No'}
-          />
-        </FlexStart>
-      </MuiBox>
-    </VitalsContainer>
-    <PhotoOrMap {...vitals} />
-    <PartnersSection vitals={vitals} />
-  </>
+      </FlexStart>
+    </MuiBox>
+  </VitalsContainer>
 );
 
 const Wrapper = styled.section`
@@ -336,7 +325,7 @@ const VITALS_VIEWS = {
 
 export const VitalsView = ({ entityType }) => {
   const { entityCode } = useUrlParams();
-  const { data, isLoading } = useVitalsData(entityCode);
+  const { data: vitals, isLoading } = useVitalsData(entityCode);
   const View = VITALS_VIEWS[entityType];
 
   if (!entityType || isLoading) {
@@ -350,7 +339,9 @@ export const VitalsView = ({ entityType }) => {
   return (
     <Wrapper>
       <Container maxWidth="xl">
-        <View vitals={data} />
+        <View vitals={vitals} />
+        <PhotoOrMap {...vitals} />
+        <PartnersSection vitals={vitals} />
       </Container>
     </Wrapper>
   );
