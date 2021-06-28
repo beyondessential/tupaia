@@ -79,7 +79,7 @@ const REPORT_CONFIG = {
 };
 
 const FRONT_END_CONFIG = {
-  name: 'Number of Teachers: by Level of Education, Gender, Total, GPI',
+  name: 'Number of Teachers: by Level of Education, Gender, GPI',
   type: 'chart',
   chartType: 'composed',
   xName: 'Level of Education',
