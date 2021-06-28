@@ -21,20 +21,23 @@ const StyledSelect = styled(Select)`
   text-transform: capitalize;
 `;
 
-const TabTemplate = ({ TabBarLeftSection, Body }) => (
+/**
+ * Placeholder template until all the real templates are done
+ */
+const TabTemplate = ({ TabBarLeftSection, children }) => (
   <>
     <TabBar>
       <TabBarLeftSection />
     </TabBar>
     <MuiBox p={5} minHeight={500}>
-      {Body}
+      {children}
     </MuiBox>
   </>
 );
 
 TabTemplate.propTypes = {
   TabBarLeftSection: PropTypes.node.isRequired,
-  Body: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 const getProfileLabel = entityType => {
@@ -51,94 +54,115 @@ const getProfileLabel = entityType => {
   }
 };
 
-const subDashboardFilters = {
-  essdpPlan: ({ dashboardCode }) => dashboardCode.startsWith('LESMIS_ESSDP_Plan'),
-  essdpEarlyChildhood: ({ dashboardCode }) =>
-    dashboardCode.startsWith('LESMIS_ESSDP_EarlyChildhood'),
-  essdpPrimary: ({ dashboardCode }) => dashboardCode.startsWith('LESMIS_ESSDP_Primary'),
-  essdpLowerSecondary: ({ dashboardCode }) =>
-    dashboardCode.startsWith('LESMIS_ESSDP_LowerSecondary'),
-  essdpUpperSecondary: ({ dashboardCode }) =>
-    dashboardCode.startsWith('LESMIS_ESSDP_UpperSecondary'),
-  internationalSDGs: ({ dashboardCode }) => dashboardCode.startsWith('LESMIS_International_SDGs'),
+const DASHBOARD_CODES = {
+  essdpPlan: 'LESMIS_ESSDP_Plan',
+  essdpEarlyChildhood: 'LESMIS_ESSDP_EarlyChildhood',
+  essdpPrimary: 'LESMIS_ESSDP_Primary',
+  essdpLowerSecondary: 'LESMIS_ESSDP_LowerSecondary',
+  essdpUpperSecondary: 'LESMIS_ESSDP_UpperSecondary',
+  internationalSDGs: 'LESMIS_International_SDGs',
 };
 
 const makeDropdownOptions = entityType => [
   {
     value: 'profile',
     label: getProfileLabel(entityType),
-    Component: DashboardReportTabView,
-    ComponentProps: {
-      filterSubDashboards: ({ dashboardCode }) =>
-        !Object.values(subDashboardFilters).find(filter => filter({ dashboardCode })), // those not included anywhere else
-    },
-    useYearSelector: true,
+    TabComponent: props => (
+      <DashboardReportTabView
+        {...props}
+        useYearSelector
+        filterSubDashboards={
+          ({ dashboardCode }) =>
+            Object.values(DASHBOARD_CODES).filter(code => !dashboardCode.startsWith(code)) // those not included anywhere else
+        }
+      />
+    ),
   },
   {
     value: 'indicators',
     label: 'Free Indicator Selection',
-    Component: TabTemplate,
-    Body: 'Free Indicator Selection',
+    TabComponent: props => <TabTemplate {...props}>Free Indicator Selection</TabTemplate>,
   },
   {
     value: 'essdpPlan',
     label: 'ESSDP Plan 2021-25 M&E Framework',
-    Component: TabTemplate,
-    Body: '9th Education Sector and Sports Development Plan 2021-25 M&E Framework',
-    ComponentProps: {
-      filterSubDashboards: subDashboardFilters.essdpPlan,
-    },
+    TabComponent: props => (
+      <TabTemplate
+        {...props}
+        filterSubDashboards={({ dashboardCode }) =>
+          dashboardCode.startsWith(DASHBOARD_CODES.essdpPlan)
+        }
+      >
+        9th Education Sector and Sports Development Plan 2021-25 M&E Framework
+      </TabTemplate>
+    ),
   },
   {
     value: 'essdpEarlyChildhood',
     label: 'ESSDP Early childhood education sub-sector',
-    Component: TabTemplate,
-    Body: 'ESSDP Early childhood education sub-sector',
-    ComponentProps: {
-      filterSubDashboards: subDashboardFilters.essdpEarlyChildhood,
-    },
+    TabComponent: props => (
+      <DashboardReportTabView
+        {...props}
+        filterSubDashboards={({ dashboardCode }) =>
+          dashboardCode.startsWith(DASHBOARD_CODES.essdpEarlyChildhood)
+        }
+      />
+    ),
   },
   {
     value: 'essdpPrimary',
     label: 'ESSDP Primary sub-sector',
-    Component: DashboardReportTabView,
-    Body: 'ESSDP Primary sub-sector',
-    ComponentProps: {
-      filterSubDashboards: subDashboardFilters.essdpPrimary,
-    },
+    TabComponent: props => (
+      <DashboardReportTabView
+        {...props}
+        filterSubDashboards={({ dashboardCode }) =>
+          dashboardCode.startsWith(DASHBOARD_CODES.essdpPrimary)
+        }
+      />
+    ),
   },
   {
     value: 'essdpLowerSecondary',
     label: 'ESSDP Lower secondary sub-sector',
-    Component: DashboardReportTabView,
-    Body: 'ESSDP Lower secondary sub-sector',
-    ComponentProps: {
-      filterSubDashboards: subDashboardFilters.essdpLowerSecondary,
-    },
+    TabComponent: props => (
+      <DashboardReportTabView
+        {...props}
+        filterSubDashboards={({ dashboardCode }) =>
+          dashboardCode.startsWith(DASHBOARD_CODES.essdpLowerSecondary)
+        }
+      />
+    ),
   },
   {
     value: 'essdpUpperSecondary',
     label: 'ESSDP Upper secondary sub-sector',
-    Component: TabTemplate,
-    Body: 'ESSDP Upper secondary sub-sector',
-    ComponentProps: {
-      filterSubDashboards: subDashboardFilters.essdpUpperSecondary,
-    },
+    TabComponent: props => (
+      <TabTemplate
+        {...props}
+        filterSubDashboards={({ dashboardCode }) =>
+          dashboardCode.startsWith(DASHBOARD_CODES.essdpUpperSecondary)
+        }
+      >
+        ESSDP Upper secondary sub-sector
+      </TabTemplate>
+    ),
   },
   {
     value: 'emergency',
     label: 'Emergency in Education/COVID-19',
-    Component: TabTemplate,
-    Body: 'Emergency in Education/COVID-19',
+    TabComponent: props => <TabTemplate {...props}>Emergency in Education/COVID-19</TabTemplate>,
   },
   {
     value: 'internationalSDGs',
     label: 'International reporting on SDGs',
-    Component: DashboardReportTabView,
-    Body: 'International reporting on SDGs',
-    ComponentProps: {
-      filterSubDashboards: subDashboardFilters.internationalSDGs,
-    },
+    TabComponent: props => (
+      <DashboardReportTabView
+        {...props}
+        filterSubDashboards={({ dashboardCode }) =>
+          dashboardCode.startsWith(DASHBOARD_CODES.internationalSDGs)
+        }
+      />
+    ),
   },
 ];
 
@@ -171,12 +195,11 @@ export const DashboardView = React.memo(() => {
   return (
     <>
       <VitalsView entityCode={entityCode} entityType={entityData?.type} />
-      {dropdownOptions.map(({ value, Body, Component, useYearSelector, ComponentProps }) => (
+      {dropdownOptions.map(({ value, TabComponent, useYearSelector, ...componentProps }) => (
         <TabPanel key={value} isSelected={value === selectedOption} Panel={React.Fragment}>
-          <Component
+          <TabComponent
             entityCode={entityCode}
             year={useYearSelector && selectedYear}
-            Body={Body}
             TabBarLeftSection={() => (
               <TabBarSection>
                 <StyledSelect
@@ -194,7 +217,7 @@ export const DashboardView = React.memo(() => {
                 )}
               </TabBarSection>
             )}
-            {...ComponentProps}
+            {...componentProps}
           />
         </TabPanel>
       ))}
