@@ -14,7 +14,7 @@ import {
   FetchLoader,
   TabsLoader,
   FlexCenter,
-  Report,
+  DashboardReport,
   TabBar,
   Tabs,
   Tab,
@@ -174,7 +174,7 @@ export const DashboardReportTabView = ({
                   const dashboardItems = dashboard.items.filter(item => item.type === 'chart');
                   return dashboardItems.length > 0 ? (
                     dashboardItems.map(item => (
-                      <Report
+                      <DashboardReport
                         key={item.code}
                         name={item.name}
                         entityCode={entityCode}

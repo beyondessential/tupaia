@@ -22,7 +22,7 @@ export * from './NavBar';
 export * from './PageHeader';
 export * from './PartnerLogo';
 export * from './PartnerLogo';
-export * from './Report';
+export * from './DashboardReport';
 export * from './SearchBar';
 export * from './Tabs';
 export * from './ThemeTest';
