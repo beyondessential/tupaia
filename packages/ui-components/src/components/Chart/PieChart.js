@@ -140,7 +140,11 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
   const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
 
   return (
-    <ResponsiveContainer width="100%" aspect={responsiveStyle}>
+    <ResponsiveContainer
+      width="100%"
+      height={isExporting ? 320 : undefined}
+      aspect={responsiveStyle}
+    >
       <BasePieChart style={offsetStyle}>
         <Pie
           dataKey="value"
