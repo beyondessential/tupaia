@@ -163,6 +163,7 @@ const useDefaultDashboardTab = (selectedDashboard = null, options) => {
 };
 
 export const DashboardView = React.memo(() => {
+  const isFetching = useIsFetching('dashboardReport');
   const { entityCode } = useUrlParams();
   const { data: entityData } = useEntityData(entityCode);
   const dropdownOptions = makeDropdownOptions(entityData?.type);
@@ -172,7 +173,7 @@ export const DashboardView = React.memo(() => {
   const selectedOption = useDefaultDashboardTab(params.dashboard, dropdownOptions);
 
   const handleDashboardChange = event => {
-    setParams({ dashboard: event.target.value, subDashboard: null, year: null });
+    setParams({ dashboard: event.target.value, subDashboard: null });
   };
 
   return (
@@ -197,7 +198,11 @@ export const DashboardView = React.memo(() => {
                   }}
                 />
                 {useYearSelector && (
-                  <YearSelector value={selectedYear} onChange={setSelectedYear} />
+                  <YearSelector
+                    value={selectedYear}
+                    onChange={setSelectedYear}
+                    isLoading={!!isFetching}
+                  />
                 )}
               </TabBarSection>
             )}
