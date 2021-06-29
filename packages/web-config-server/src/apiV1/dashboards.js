@@ -31,11 +31,23 @@ export default class extends RouteHandler {
       entity,
       query.projectCode,
     );
-    const possibleDashboardRelations = await this.models.dashboardRelation.find({
+    const allDashboardRelationsAtLevel = await this.models.dashboardRelation.find({
       dashboard_id: dashboards.map(d => d.id),
+      entity_types: {
+        comparator: '@>',
+        comparisonValue: [entity.type],
+      },
+      project_codes: {
+        comparator: '@>',
+        comparisonValue: [query.projectCode],
+      },
     });
 
-    if (!dashboardsWithItems.length && possibleDashboardRelations.length) {
+    if (!dashboardsWithItems.length && !allDashboardRelationsAtLevel.length) {
+      return this.getStaticDashboard(entity, NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE);
+    }
+
+    if (!dashboardsWithItems.length && allDashboardRelationsAtLevel.length) {
       return this.getStaticDashboard(entity, NO_ACCESS_DASHBOARD_ITEM_CODE);
     }
 

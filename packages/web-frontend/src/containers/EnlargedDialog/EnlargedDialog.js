@@ -180,11 +180,17 @@ const EnlargedDialogComponent = ({
 
   const onUnDrillDown = () => {
     const { drillDownLevel } = drillDownState;
-    const drillDownCode = contentByLevel?.[drillDownLevel]?.viewConfig?.code;
+
+    if (!drillDownLevel) {
+      return;
+    }
+
+    const previousDrillDownLevel = drillDownLevel - 1;
+    const drillDownCode = contentByLevel?.[previousDrillDownLevel]?.viewConfig?.code;
 
     setDrillDownState({
       ...drillDownState,
-      drillDownLevel: drillDownState.drillDownLevel - 1,
+      drillDownLevel: previousDrillDownLevel,
       drillDownCode,
     });
   };
