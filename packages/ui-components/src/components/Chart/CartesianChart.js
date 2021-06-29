@@ -214,6 +214,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
             const yAxisId = orientationToYAxisId(yAxisOrientation);
 
             return Chart({
+              valueType,
               ...chartConfig[dataKey],
               chartConfig,
               dataKey,
