@@ -45,3 +45,21 @@ export const TILE_SETS = [
     url: `https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v10/tiles/256/{z}/{x}/{y}?access_token=${MAPBOX_TOKEN}`,
   },
 ];
+
+export const PARTNERS_LOGOS = {
+  AEAL: 'AEAL.jpg',
+  CRS: 'CRS.jpg',
+  DFAT: 'DFAT.png',
+  GIZ: 'GIZ.jpg',
+  HII: 'HII.png',
+  Plan: 'Plan.png',
+  RtR: 'RtR.jpg',
+  unesco: 'unesco.jpg',
+  UNICEF: 'UNICEF.png',
+  VHS: 'VHS.png',
+  WB: 'WB.jpg',
+  WC: 'WC.png',
+  WFP: 'WFP.jpeg',
+  WR: 'WR.png',
+  WV: 'WV.png',
+};

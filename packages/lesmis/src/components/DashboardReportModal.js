@@ -7,9 +7,6 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useTheme } from '@material-ui/core/styles';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import BarChartIcon from '@material-ui/icons/BarChart';
-import GridOnIcon from '@material-ui/icons/GridOn';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import {
   Box,
@@ -22,10 +19,9 @@ import {
 } from '@material-ui/core';
 import { DateRangePicker } from '@tupaia/ui-components';
 import * as COLORS from '../constants';
-import { FlexSpaceBetween, FlexEnd, FlexStart } from './Layout';
+import { FlexSpaceBetween, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
-import { ToggleButton } from './ToggleButton';
-import { Chart, TABS } from './ChartTable';
+import { Chart } from './Chart';
 import { useDashboardReportData } from '../api/queries';
 import { useUrlSearchParams } from '../utils';
 
@@ -85,11 +81,10 @@ export const DashboardReportModal = ({
   const [{ startDate, endDate, reportCode: selectedReportCode }, setParams] = useUrlSearchParams();
   const isOpen = reportCode === selectedReportCode;
   const [open, setOpen] = useState(isOpen);
-  const [selectedTab, setSelectedTab] = useState(TABS.CHART);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
+  const { data, isLoading, isError, error } = useDashboardReportData({
     entityCode,
     dashboardCode,
     reportCode,
@@ -128,12 +123,6 @@ export const DashboardReportModal = ({
     });
   };
 
-  const handleTabChange = (event, newValue) => {
-    if (newValue !== null) {
-      setSelectedTab(newValue);
-    }
-  };
-
   return (
     <>
       <MuiButton onClick={handleClickOpen} endIcon={<KeyboardArrowRightIcon />} color="primary">
@@ -150,7 +139,7 @@ export const DashboardReportModal = ({
       >
         <DialogHeader handleClose={handleClose} title={dashboardName} />
         <Wrapper>
-          <Container maxWidth={false}>
+          <Container maxWidth="xl">
             <Header>
               <Box maxWidth={580}>
                 <Heading variant="h3">{name}</Heading>
@@ -161,27 +150,17 @@ export const DashboardReportModal = ({
                   isLoading={isLoading}
                   startDate={startDate}
                   endDate={endDate}
-                  granularity={viewContent?.granularity}
+                  granularity={periodGranularity}
                   onSetDates={handleDatesChange}
                 />
               </FlexStart>
             </Header>
-            <FlexEnd>
-              <ToggleButtonGroup onChange={handleTabChange} value={selectedTab} exclusive>
-                <ToggleButton value={TABS.TABLE}>
-                  <GridOnIcon />
-                </ToggleButton>
-                <ToggleButton value={TABS.CHART}>
-                  <BarChartIcon />
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </FlexEnd>
             <Chart
-              viewContent={{ ...viewConfig, data: viewContent }}
+              viewContent={{ ...viewConfig, data, startDate, endDate }}
               isLoading={isLoading}
               isError={isError}
               error={error}
-              selectedTab={selectedTab}
+              isEnlarged
             />
           </Container>
         </Wrapper>
