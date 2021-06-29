@@ -62,7 +62,7 @@ export const DashboardReport = React.memo(
     return (
       <Container>
         <Chart
-          viewContent={{ ...viewConfig, data }}
+          viewContent={{ ...viewConfig, data, startDate, endDate }}
           isLoading={isLoading}
           isError={isError}
           error={error}

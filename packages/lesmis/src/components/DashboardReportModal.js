@@ -156,7 +156,7 @@ export const DashboardReportModal = ({
               </FlexStart>
             </Header>
             <Chart
-              viewContent={{ ...viewConfig, data: viewContent }}
+              viewContent={{ ...viewConfig, data: viewContent, startDate, endDate }}
               isLoading={isLoading}
               isError={isError}
               error={error}

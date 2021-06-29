@@ -7,6 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
+import { useIsFetching } from 'react-query';
 import { Select } from '@tupaia/ui-components';
 import { VitalsView } from './VitalsViews';
 import { DashboardReportTabView } from './DashboardReportTabView';
@@ -162,6 +163,7 @@ const useDefaultDashboardTab = (selectedDashboard = null, options) => {
 };
 
 export const DashboardView = React.memo(() => {
+  const isFetching = useIsFetching('dashboardReport');
   const { entityCode } = useUrlParams();
   const { data: entityData } = useEntityData(entityCode);
   const dropdownOptions = makeDropdownOptions(entityData?.type);
@@ -196,7 +198,11 @@ export const DashboardView = React.memo(() => {
                   }}
                 />
                 {useYearSelector && (
-                  <YearSelector value={selectedYear} onChange={setSelectedYear} />
+                  <YearSelector
+                    value={selectedYear}
+                    onChange={setSelectedYear}
+                    isLoading={!!isFetching}
+                  />
                 )}
               </TabBarSection>
             )}
