@@ -3,20 +3,15 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import Typography from '@material-ui/core/Typography';
-import BarChartIcon from '@material-ui/icons/BarChart';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import GridOnIcon from '@material-ui/icons/GridOn';
-import { FlexSpaceBetween } from './Layout';
-import { ToggleButton } from './ToggleButton';
 import { DashboardReportModal } from './DashboardReportModal';
-import { Chart, TABS } from './ChartTable';
+import { Chart } from './Chart';
 import * as COLORS from '../constants';
 import { useDashboardReportData } from '../api/queries';
 import { yearToApiDates } from '../api/queries/utils';
+import { FlexEnd } from './Layout';
 
 const Container = styled.div`
   width: 55rem;
@@ -26,34 +21,7 @@ const Container = styled.div`
   border-radius: 3px;
 `;
 
-const Header = styled(FlexSpaceBetween)`
-  padding: 1.25rem 1.875rem;
-  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
-`;
-
-const Title = styled(Typography)`
-  font-style: normal;
-  font-weight: 500;
-  font-size: 1.125rem;
-  line-height: 1.3rem;
-`;
-
-const Body = styled.div`
-  display: flex;
-  background: ${COLORS.GREY_F9};
-  min-height: 26rem;
-  max-height: 40rem;
-  padding-top: 1rem;
-
-  .MuiTable-root {
-    min-height: 100%;
-  }
-`;
-
-const Footer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+const Footer = styled(FlexEnd)`
   padding: 1.25rem 1.875rem;
   background: ${COLORS.GREY_F9};
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
@@ -79,7 +47,6 @@ export const DashboardReport = React.memo(
     viewConfig,
   }) => {
     const { code: itemCode, legacy } = viewConfig;
-    const [selectedTab, setSelectedTab] = useState(TABS.CHART);
     const { startDate, endDate } = yearToApiDates(year);
     const { data, isLoading, isError, error } = useDashboardReportData({
       entityCode,
@@ -92,41 +59,22 @@ export const DashboardReport = React.memo(
       endDate,
     });
 
-    const handleTabChange = (event, newValue) => {
-      if (newValue !== null) {
-        setSelectedTab(newValue);
-      }
-    };
-
     return (
       <Container>
-        <Header>
-          <Title>{name}</Title>
-          <ToggleButtonGroup onChange={handleTabChange} value={selectedTab} exclusive>
-            <ToggleButton value={TABS.TABLE}>
-              <GridOnIcon />
-            </ToggleButton>
-            <ToggleButton value={TABS.CHART}>
-              <BarChartIcon />
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </Header>
-        <Body>
-          <Chart
-            viewContent={{ ...viewConfig, data }}
-            isLoading={isLoading}
-            isError={isError}
-            error={error}
-            selectedTab={selectedTab}
-          />
-        </Body>
+        <Chart
+          viewContent={{ ...viewConfig, data, startDate, endDate }}
+          isLoading={isLoading}
+          isError={isError}
+          error={error}
+          name={name}
+        />
         <Footer>
           <DashboardReportModal
             buttonText="See More"
             name={name}
+            entityCode={entityCode}
             dashboardCode={dashboardCode}
             dashboardName={dashboardName}
-            entityCode={entityCode}
             reportCode={reportCode}
             periodGranularity={periodGranularity}
             viewConfig={viewConfig}
