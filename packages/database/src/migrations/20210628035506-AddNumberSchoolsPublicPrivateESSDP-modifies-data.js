@@ -96,6 +96,16 @@ const generateConfigForLevel = level => ({
       'keyValueByDataElementName',
       {
         transform: 'select',
+        "'timestamp'": 'periodToTimestamp($row.period)',
+        '...': '*',
+      },
+      {
+        transform: 'aggregate',
+        timestamp: 'group',
+        '...': 'last',
+      },
+      {
+        transform: 'select',
         "'Public'": `sum([${DATA_ELEMENTS_BY_LEVEL[level]
           .filter(de => de.includes('public'))
           .map(de => `$row.${de}`)
@@ -104,12 +114,7 @@ const generateConfigForLevel = level => ({
           .filter(de => de.includes('private'))
           .map(de => `$row.${de}`)
           .join(', ')}])`,
-        "'timestamp'": 'periodToTimestamp($row.period)',
-      },
-      {
-        transform: 'aggregate',
-        timestamp: 'group',
-        '...': 'last',
+        '...': ['timestamp'],
       },
     ],
   },
