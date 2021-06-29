@@ -13,7 +13,7 @@ import GridOnIcon from '@material-ui/icons/GridOn';
 import { FlexSpaceBetween } from './Layout';
 import { ToggleButton } from './ToggleButton';
 import { DashboardReportModal } from './DashboardReportModal';
-import { ChartTable, TABS } from './ChartTable';
+import { Chart, TABS } from './ChartTable';
 import * as COLORS from '../constants';
 import { useDashboardReportData } from '../api/queries';
 import { yearToApiDates } from '../api/queries/utils';
@@ -112,7 +112,7 @@ export const DashboardReport = React.memo(
           </ToggleButtonGroup>
         </Header>
         <Body>
-          <ChartTable
+          <Chart
             viewContent={{ ...viewConfig, data }}
             isLoading={isLoading}
             isError={isError}

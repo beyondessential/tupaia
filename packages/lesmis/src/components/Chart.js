@@ -31,7 +31,7 @@ export const TABS = {
   TABLE: 'table',
 };
 
-export const ChartTable = ({ isLoading, isError, error, viewContent, selectedTab }) => (
+export const Chart = ({ isLoading, isError, error, viewContent, selectedTab }) => (
   <FetchLoader isLoading={isLoading} isError={isError} error={error}>
     {selectedTab === TABS.CHART ? (
       <ChartWrapper>
@@ -45,7 +45,7 @@ export const ChartTable = ({ isLoading, isError, error, viewContent, selectedTab
   </FetchLoader>
 );
 
-ChartTable.propTypes = {
+Chart.propTypes = {
   viewContent: PropTypes.object,
   isLoading: PropTypes.bool,
   isError: PropTypes.bool,
@@ -53,7 +53,7 @@ ChartTable.propTypes = {
   selectedTab: PropTypes.string,
 };
 
-ChartTable.defaultProps = {
+Chart.defaultProps = {
   viewContent: null,
   isLoading: false,
   isError: false,

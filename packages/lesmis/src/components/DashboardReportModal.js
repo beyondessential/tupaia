@@ -25,7 +25,7 @@ import * as COLORS from '../constants';
 import { FlexSpaceBetween, FlexEnd, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
 import { ToggleButton } from './ToggleButton';
-import { ChartTable, TABS } from './ChartTable';
+import { Chart, TABS } from './ChartTable';
 import { useDashboardReportData } from '../api/queries';
 import { useUrlSearchParams } from '../utils';
 
@@ -176,7 +176,7 @@ export const DashboardReportModal = ({
                 </ToggleButton>
               </ToggleButtonGroup>
             </FlexEnd>
-            <ChartTable
+            <Chart
               viewContent={{ ...viewConfig, data: viewContent }}
               isLoading={isLoading}
               isError={isError}
