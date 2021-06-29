@@ -104,9 +104,10 @@ const createDrillDownDashboardItems = async (
         // there is another drill down level
         const nextDrillDownReportCode = `${drillDownCode}_DrillDown_${i + 2}`;
 
-        drillDownViewJson.drillDown = {
-          itemCode: nextDrillDownReportCode,
-        };
+        if (!drillDownViewJson.drillDown) {
+          drillDownViewJson.drillDown = {};
+        }
+        drillDownViewJson.drillDown.itemCode = nextDrillDownReportCode;
       }
 
       await insertObject(db, 'dashboard_item', {
