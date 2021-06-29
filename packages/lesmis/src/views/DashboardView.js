@@ -24,20 +24,20 @@ const StyledSelect = styled(Select)`
 /**
  * Placeholder template until all the real templates are done
  */
-const TabTemplate = ({ TabBarLeftSection, children }) => (
+const TabTemplate = ({ TabBarLeftSection, Body }) => (
   <>
     <TabBar>
       <TabBarLeftSection />
     </TabBar>
     <MuiBox p={5} minHeight={500}>
-      {children}
+      {Body}
     </MuiBox>
   </>
 );
 
 TabTemplate.propTypes = {
-  TabBarLeftSection: PropTypes.node.isRequired,
-  children: PropTypes.node.isRequired,
+  TabBarLeftSection: PropTypes.func.isRequired,
+  Body: PropTypes.string.isRequired,
 };
 
 const getProfileLabel = entityType => {
@@ -67,102 +67,83 @@ const makeDropdownOptions = entityType => [
   {
     value: 'profile',
     label: getProfileLabel(entityType),
-    TabComponent: props => (
-      <DashboardReportTabView
-        {...props}
-        useYearSelector
-        filterSubDashboards={
-          ({ dashboardCode }) =>
-            Object.values(DASHBOARD_CODES).filter(code => !dashboardCode.startsWith(code)) // those not included anywhere else
-        }
-      />
-    ),
+    TabComponent: DashboardReportTabView,
+    componentProps: {
+      filterSubDashboards: ({ dashboardCode }) =>
+        Object.values(DASHBOARD_CODES).filter(code => !dashboardCode.startsWith(code)), // those not included anywhere else
+      useYearSelector: true,
+    },
   },
   {
     value: 'indicators',
     label: 'Free Indicator Selection',
-    TabComponent: props => <TabTemplate {...props}>Free Indicator Selection</TabTemplate>,
+    TabComponent: TabTemplate,
+    componentProps: {
+      Body: 'Free Indicator Selection',
+    },
   },
   {
     value: 'essdpPlan',
     label: 'ESSDP Plan 2021-25 M&E Framework',
-    TabComponent: props => (
-      <TabTemplate
-        {...props}
-        filterSubDashboards={({ dashboardCode }) =>
-          dashboardCode.startsWith(DASHBOARD_CODES.essdpPlan)
-        }
-      >
-        9th Education Sector and Sports Development Plan 2021-25 M&E Framework
-      </TabTemplate>
-    ),
+    TabComponent: TabTemplate,
+    componentProps: {
+      Body: '9th Education Sector and Sports Development Plan 2021-25 M&E Framework',
+      filterSubDashboards: ({ dashboardCode }) =>
+        dashboardCode.startsWith(DASHBOARD_CODES.essdpPlan),
+    },
   },
   {
     value: 'essdpEarlyChildhood',
     label: 'ESSDP Early childhood education sub-sector',
-    TabComponent: props => (
-      <DashboardReportTabView
-        {...props}
-        filterSubDashboards={({ dashboardCode }) =>
-          dashboardCode.startsWith(DASHBOARD_CODES.essdpEarlyChildhood)
-        }
-      />
-    ),
+    TabComponent: DashboardReportTabView,
+    componentProps: {
+      filterSubDashboards: ({ dashboardCode }) =>
+        dashboardCode.startsWith(DASHBOARD_CODES.essdpEarlyChildhood),
+    },
   },
   {
     value: 'essdpPrimary',
     label: 'ESSDP Primary sub-sector',
-    TabComponent: props => (
-      <DashboardReportTabView
-        {...props}
-        filterSubDashboards={({ dashboardCode }) =>
-          dashboardCode.startsWith(DASHBOARD_CODES.essdpPrimary)
-        }
-      />
-    ),
+    TabComponent: DashboardReportTabView,
+    componentProps: {
+      filterSubDashboards: ({ dashboardCode }) =>
+        dashboardCode.startsWith(DASHBOARD_CODES.essdpPrimary),
+    },
   },
   {
     value: 'essdpLowerSecondary',
     label: 'ESSDP Lower secondary sub-sector',
-    TabComponent: props => (
-      <DashboardReportTabView
-        {...props}
-        filterSubDashboards={({ dashboardCode }) =>
-          dashboardCode.startsWith(DASHBOARD_CODES.essdpLowerSecondary)
-        }
-      />
-    ),
+    TabComponent: DashboardReportTabView,
+    componentProps: {
+      filterSubDashboards: ({ dashboardCode }) =>
+        dashboardCode.startsWith(DASHBOARD_CODES.essdpLowerSecondary),
+    },
   },
   {
     value: 'essdpUpperSecondary',
     label: 'ESSDP Upper secondary sub-sector',
-    TabComponent: props => (
-      <TabTemplate
-        {...props}
-        filterSubDashboards={({ dashboardCode }) =>
-          dashboardCode.startsWith(DASHBOARD_CODES.essdpUpperSecondary)
-        }
-      >
-        ESSDP Upper secondary sub-sector
-      </TabTemplate>
-    ),
+    TabComponent: DashboardReportTabView,
+    componentProps: {
+      filterSubDashboards: ({ dashboardCode }) =>
+        dashboardCode.startsWith(DASHBOARD_CODES.essdpUpperSecondary),
+    },
   },
   {
     value: 'emergency',
     label: 'Emergency in Education/COVID-19',
-    TabComponent: props => <TabTemplate {...props}>Emergency in Education/COVID-19</TabTemplate>,
+    TabComponent: TabTemplate,
+    componentProps: {
+      Body: 'Emergency in Education/COVID-19',
+    },
   },
   {
     value: 'internationalSDGs',
     label: 'International reporting on SDGs',
-    TabComponent: props => (
-      <DashboardReportTabView
-        {...props}
-        filterSubDashboards={({ dashboardCode }) =>
-          dashboardCode.startsWith(DASHBOARD_CODES.internationalSDGs)
-        }
-      />
-    ),
+    TabComponent: DashboardReportTabView,
+    componentProps: {
+      filterSubDashboards: ({ dashboardCode }) =>
+        dashboardCode.startsWith(DASHBOARD_CODES.internationalSDGs),
+    },
   },
 ];
 
@@ -195,9 +176,10 @@ export const DashboardView = React.memo(() => {
   return (
     <>
       <VitalsView entityCode={entityCode} entityType={entityData?.type} />
-      {dropdownOptions.map(({ value, TabComponent, useYearSelector, ...componentProps }) => (
+      {dropdownOptions.map(({ value, TabComponent, useYearSelector, componentProps }) => (
         <TabPanel key={value} isSelected={value === selectedOption} Panel={React.Fragment}>
           <TabComponent
+            {...componentProps}
             entityCode={entityCode}
             year={useYearSelector && selectedYear}
             TabBarLeftSection={() => (
@@ -217,7 +199,6 @@ export const DashboardView = React.memo(() => {
                 )}
               </TabBarSection>
             )}
-            {...componentProps}
           />
         </TabPanel>
       ))}
