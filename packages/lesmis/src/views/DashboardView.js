@@ -68,10 +68,10 @@ const makeDropdownOptions = entityType => [
     value: 'profile',
     label: getProfileLabel(entityType),
     TabComponent: DashboardReportTabView,
+    useYearSelector: true,
     componentProps: {
       filterSubDashboards: ({ dashboardCode }) =>
         Object.values(DASHBOARD_CODES).filter(code => !dashboardCode.startsWith(code)), // those not included anywhere else
-      useYearSelector: true,
     },
   },
   {
@@ -96,6 +96,7 @@ const makeDropdownOptions = entityType => [
     value: 'essdpEarlyChildhood',
     label: 'ESSDP Early childhood education sub-sector',
     TabComponent: DashboardReportTabView,
+    useYearSelector: true,
     componentProps: {
       filterSubDashboards: ({ dashboardCode }) =>
         dashboardCode.startsWith(DASHBOARD_CODES.essdpEarlyChildhood),
@@ -169,8 +170,8 @@ export const DashboardView = React.memo(() => {
 
   const selectedOption = useDefaultDashboardTab(params.dashboard, dropdownOptions);
 
-  const handleChange = event => {
-    setParams({ dashboard: event.target.value, subDashboard: null, year: null });
+  const handleDashboardChange = event => {
+    setParams({ dashboard: event.target.value, subDashboard: null });
   };
 
   return (
@@ -188,7 +189,7 @@ export const DashboardView = React.memo(() => {
                   id="dashboardtab"
                   options={dropdownOptions}
                   value={selectedOption}
-                  onChange={handleChange}
+                  onChange={handleDashboardChange}
                   showPlaceholder={false}
                   SelectProps={{
                     MenuProps: { disablePortal: true },
