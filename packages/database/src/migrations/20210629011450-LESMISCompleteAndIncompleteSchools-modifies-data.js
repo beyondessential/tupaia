@@ -64,6 +64,16 @@ const REPORT_CONFIG = {
         'sum([$row.nosch_type5_public, $row.nosch_type5_private, $row.nosch_type8_public, $row.nosch_type8_private])',
       "'Incomplete'":
         'sum([$row.nosch_type4_public, $row.nosch_type4_private, $row.nosch_type6_public, $row.nosch_type6_private, $row.nosch_type7_public, $row.nosch_type7_private])',
+      "'Total'":
+        'sum([$row.nosch_type5_public, $row.nosch_type5_private, $row.nosch_type8_public, $row.nosch_type8_private, $row.nosch_type4_public, $row.nosch_type4_private, $row.nosch_type6_public, $row.nosch_type6_private, $row.nosch_type7_public, $row.nosch_type7_private])',
+      '...': ['name'],
+    },
+    {
+      transform: 'select',
+      "'Complete'": '$row.Complete/$row.Total',
+      "'Complete_metadata'": '{ numerator: $row.Complete, denominator: $row.Total }',
+      "'Incomplete'": '$row.Incomplete/$row.Total',
+      "'Incomplete_metadata'": '{ numerator: $row.Incomplete, denominator: $row.Total }',
       '...': ['name'],
     },
   ],
@@ -74,9 +84,10 @@ const FRONT_END_CONFIG = {
   type: 'chart',
   chartType: 'bar',
   xName: 'Level of Education',
-  yName: 'Number of Schools',
+  yName: 'Schools (%)',
   periodGranularity: 'one_year_at_a_time',
-  valueType: 'number',
+  labelType: 'fractionAndPercentage',
+  valueType: 'percentage',
   chartConfig: {
     Complete: {
       color: '#FDBF2D',
