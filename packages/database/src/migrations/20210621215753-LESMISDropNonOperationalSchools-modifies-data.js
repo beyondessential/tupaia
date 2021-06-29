@@ -1,6 +1,7 @@
 'use strict';
 
 import { SCHOOL_CODES } from './migrationData/20210621215753-LESMISDropNonOperationalSchools';
+import { runFullAnalyticsRefresh } from '../utilities';
 
 var dbm;
 var type;
@@ -31,6 +32,8 @@ exports.up = async function (db) {
     DELETE FROM entity
     WHERE code IN ('${SCHOOL_CODES.join("','")}');
   `);
+
+  await runFullAnalyticsRefresh(db);
 };
 
 exports.down = function (db) {
