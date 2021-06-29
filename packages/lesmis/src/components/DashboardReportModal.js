@@ -84,7 +84,7 @@ export const DashboardReportModal = ({
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
+  const { data, isLoading, isError, error } = useDashboardReportData({
     entityCode,
     dashboardCode,
     reportCode,
@@ -150,13 +150,13 @@ export const DashboardReportModal = ({
                   isLoading={isLoading}
                   startDate={startDate}
                   endDate={endDate}
-                  granularity={viewContent?.granularity}
+                  granularity={periodGranularity}
                   onSetDates={handleDatesChange}
                 />
               </FlexStart>
             </Header>
             <Chart
-              viewContent={{ ...viewConfig, data: viewContent, startDate, endDate }}
+              viewContent={{ ...viewConfig, data, startDate, endDate }}
               isLoading={isLoading}
               isError={isError}
               error={error}

@@ -72,7 +72,7 @@ const makeDropdownOptions = entityType => [
     useYearSelector: true,
     componentProps: {
       filterSubDashboards: ({ dashboardCode }) =>
-        Object.values(DASHBOARD_CODES).filter(code => !dashboardCode.startsWith(code)), // those not included anywhere else
+        !Object.values(DASHBOARD_CODES).some(code => dashboardCode.startsWith(code)), // those not included anywhere else
     },
   },
   {
