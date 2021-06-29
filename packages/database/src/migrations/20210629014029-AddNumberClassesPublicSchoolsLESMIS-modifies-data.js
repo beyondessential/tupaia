@@ -121,6 +121,7 @@ const generateConfigForLevel = level => ({
           }),
           {},
         ),
+        '...': ['timestamp'],
       },
     ],
   },
