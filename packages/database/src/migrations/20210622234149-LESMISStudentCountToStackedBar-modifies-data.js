@@ -83,6 +83,8 @@ const REPORT_CONFIG = {
     {
       transform: 'select',
       "'GPI'": '$row.Female/$row.Male',
+      "'Male_metadata'": '{ total: $row.Male + $row.Female }',
+      "'Female_metadata'": '{ total: $row.Male + $row.Female }',
       '...': '*',
     },
   ],
@@ -103,6 +105,7 @@ const FRONT_END_CONFIG = {
     },
     Male: {
       chartType: 'bar',
+      labelType: 'fraction',
       color: '#f44336',
       stackId: '1',
       yName: 'Number of Students',
@@ -110,6 +113,7 @@ const FRONT_END_CONFIG = {
     },
     Female: {
       chartType: 'bar',
+      labelType: 'fraction',
       color: '#2196f3',
       stackId: '1',
       valueType: 'number',
