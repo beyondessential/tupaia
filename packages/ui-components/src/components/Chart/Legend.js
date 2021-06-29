@@ -97,8 +97,10 @@ export const getPieLegend = ({ chartConfig = {}, isEnlarged, isExporting, legend
         className={isEnlarged ? 'enlarged' : 'preview'}
         disabled
       >
-        <Box className={isEnlarged ? 'enlarged' : 'preview'} style={{ background: color }} />
-        <Text>{getDisplayValue(chartConfig, value)}</Text>
+        <TooltipContainer>
+          <Box className={isEnlarged ? 'enlarged' : 'preview'} style={{ background: color }} />
+          <Text>{getDisplayValue(chartConfig, value)}</Text>
+        </TooltipContainer>
       </LegendItem>
     ))}
   </PieLegendContainer>
