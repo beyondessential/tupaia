@@ -115,15 +115,15 @@ const generateConfigForLevel = level => ({
         "'Male'": `sum([${Object.keys(DATA_ELEMENT_TRANSLATIONS[level])
           .filter(de => de.endsWith('_m'))
           .map(de => `$row.${de}`)
-          .join(', ')}])`,
+          .join(', ')}]) / 100`,
         "'Female'": `sum([${Object.keys(DATA_ELEMENT_TRANSLATIONS[level])
           .filter(de => de.endsWith('_f'))
           .map(de => `$row.${de}`)
-          .join(', ')}])`,
+          .join(', ')}]) / 100`,
         "'Total'": `sum([${Object.keys(DATA_ELEMENT_TRANSLATIONS[level])
           .filter(de => de.endsWith('_f'))
           .map(de => `$row.${de}`)
-          .join(', ')}])`,
+          .join(', ')}]) / 100`,
         '...': ['name'],
       },
       {
