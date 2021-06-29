@@ -147,8 +147,9 @@ const VitalsContainer = styled.div`
 `;
 
 /* eslint-disable react/prop-types */
+// Vitals data is essentially unstructured so no point checking prop types
 
-const CountryView = ({ vitals }) => (
+const CountryView = () => (
   <VitalsContainer>
     <Heading variant="h4">Country Profile:</Heading>
     <TwoColGrid>
