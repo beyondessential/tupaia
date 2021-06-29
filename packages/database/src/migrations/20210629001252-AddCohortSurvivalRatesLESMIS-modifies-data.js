@@ -121,7 +121,7 @@ const generateConfigForLevel = level => ({
           .map(de => `$row.${de}`)
           .join(', ')}]) / 100`,
         "'Total'": `sum([${Object.keys(DATA_ELEMENT_TRANSLATIONS[level])
-          .filter(de => de.endsWith('_f'))
+          .filter(de => de.endsWith('_t'))
           .map(de => `$row.${de}`)
           .join(', ')}]) / 100`,
         '...': ['name'],
