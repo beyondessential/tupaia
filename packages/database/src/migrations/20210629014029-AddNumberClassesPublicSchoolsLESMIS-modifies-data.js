@@ -129,7 +129,7 @@ const generateConfigForLevel = level => ({
     type: 'chart',
     chartType: 'line',
     xName: 'Year',
-    yName: 'Number of Schools',
+    yName: 'Number of Classes',
     periodGranularity: 'year',
     valueType: 'number',
     chartConfig: Object.values(DATA_ELEMENT_TO_SERIES_BY_LEVEL[level]).reduce(
