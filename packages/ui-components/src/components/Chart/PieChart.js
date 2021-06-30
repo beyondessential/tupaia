@@ -136,15 +136,11 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
   // This makes the tooltips touch the bottom of the container
   // (and just looks a bit weird). So, bump it up by 20px.
   const offsetStyle = isEnlarged && !isMobile() && !isExporting ? { position: 'relative' } : null;
-
   const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
+  const height = isExporting || (isEnlarged && isMobile()) ? 320 : undefined;
 
   return (
-    <ResponsiveContainer
-      width="100%"
-      height={isExporting ? 320 : undefined}
-      aspect={responsiveStyle}
-    >
+    <ResponsiveContainer width="100%" height={height} aspect={responsiveStyle}>
       <BasePieChart style={offsetStyle}>
         <Pie
           dataKey="value"

@@ -163,12 +163,15 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
 
   const ChartContainer = CHART_TYPE_TO_CONTAINER[defaultChartType];
 
+  const hasLegend = hasDataSeries || renderLegendForOneItem;
+  const height = isExporting || (isEnlarged && hasLegend && isMobile()) ? 320 : undefined;
+
   /**
    * Unfortunately, recharts does not work with wrapped components called as jsx for some reason,
    * so they are called as functions below
    */
   return (
-    <ResponsiveContainer width="100%" height={isExporting ? 320 : undefined} aspect={aspect}>
+    <ResponsiveContainer width="100%" height={height} aspect={aspect}>
       <ChartContainer
         data={filterDisabledData(data)}
         margin={
@@ -193,7 +196,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
             />
           }
         />
-        {(hasDataSeries || renderLegendForOneItem) && isEnlarged && (
+        {hasLegend && isEnlarged && (
           <Legend
             verticalAlign={legendPosition === 'bottom' ? 'bottom' : 'top'}
             align={legendPosition === 'bottom' ? 'center' : 'left'}
