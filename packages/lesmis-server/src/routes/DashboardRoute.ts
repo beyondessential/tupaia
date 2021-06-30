@@ -20,9 +20,10 @@ export class DashboardRoute extends Route {
 
   async buildResponse() {
     const { entityCode } = this.req.params;
-    return this.webConfigConnection.fetchDashboard({
+    const response = await this.webConfigConnection.fetchDashboard({
       organisationUnitCode: entityCode,
       projectCode: LESMIS_PROJECT_NAME,
     });
+    return response.filter((dashboard: any) => dashboard.dashboardCode !== 'LA_COVID');
   }
 }
