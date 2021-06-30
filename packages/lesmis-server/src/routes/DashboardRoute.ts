@@ -24,6 +24,8 @@ export class DashboardRoute extends Route {
       organisationUnitCode: entityCode,
       projectCode: LESMIS_PROJECT_NAME,
     });
+    // Covid dashboard is not needed in lesmis but we want to keep it in tupaia
+    // see https://github.com/beyondessential/tupaia-backlog/issues/3077 for more information
     return response.filter((dashboard: any) => dashboard.dashboardCode !== 'LA_COVID');
   }
 }
