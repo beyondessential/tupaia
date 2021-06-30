@@ -69,10 +69,10 @@ const syndromeRadiusMapOverlay = (syndromeName, dateElement, syndromeCode, custo
     displayType: 'radius',
     measureLevel: 'Facility',
     defaultTimePeriod: {
-      unit: 'day',
+      unit: 'week',
       offset: 0,
     },
-    periodGranularity: 'one_day_at_a_time',
+    periodGranularity: 'one_week_at_a_time',
     customLabel,
     hideByDefault: {
       null: true,
@@ -101,23 +101,23 @@ const syndromeHeatMapOverlay = (syndromeName, dateElement, syndromeCode, customL
     displayType: 'shaded-spectrum',
     measureLevel: 'Facility',
     defaultTimePeriod: {
-      unit: 'day',
+      unit: 'week',
       offset: 0,
     },
     hideByDefault: { null: true },
-    periodGranularity: 'one_day_at_a_time',
+    periodGranularity: 'one_week_at_a_time',
     customLabel,
   },
 });
 
 const radiusMapOverlayGroup = {
   id: generateId(),
-  name: 'Syndromic Surveillance Case Numbers (Radius map)',
+  name: 'Syndromic Surveillance Weekly Case Numbers (Radius map)',
   code: 'FJ_PSSS_Syndromic_Surveillance_Radius_Map_Country',
 };
 const heatMapOverlayGroup = {
   id: generateId(),
-  name: 'Syndromic Surveillance Case Numbers (Heat map)',
+  name: 'Syndromic Surveillance Weekly Case Numbers (Heat map)',
   code: 'FJ_PSSS_Syndromic_Surveillance_Heat_Map_Country',
 };
 
