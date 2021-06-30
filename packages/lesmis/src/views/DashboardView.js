@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
+import { useIsFetching } from 'react-query';
 import MuiContainer from '@material-ui/core/Container';
 import MuiDivider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
@@ -463,6 +464,7 @@ const useDefaultDashboardTab = (selectedDashboard = null, options) => {
 };
 
 export const DashboardView = React.memo(() => {
+  const isFetching = useIsFetching('dashboardReport');
   const { entityCode } = useUrlParams();
   const { data: entityData } = useEntityData(entityCode);
   const dropdownOptions = makeDropdownOptions(entityData?.type);
@@ -473,7 +475,7 @@ export const DashboardView = React.memo(() => {
   const selectedOption = useDefaultDashboardTab(params.dashboard, dropdownOptions);
 
   const handleChange = event => {
-    setParams({ dashboard: event.target.value, subDashboard: null, year: null });
+    setParams({ dashboard: event.target.value, subDashboard: null });
   };
 
   return (
@@ -502,7 +504,11 @@ export const DashboardView = React.memo(() => {
                   }}
                 />
                 {useYearSelector && (
-                  <YearSelector value={selectedYear} onChange={setSelectedYear} />
+                  <YearSelector
+                    value={selectedYear}
+                    onChange={setSelectedYear}
+                    isLoading={!!isFetching}
+                  />
                 )}
               </TabBarSection>
             )}
