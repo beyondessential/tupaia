@@ -7,9 +7,18 @@
 @authorization  = Basic {{email}}:{{password}}
 
 ### Fetch PSSS Weekly Report
-GET {{baseUrl}}/fetchReport/PSSS_Weekly_Report?organisationUnitCodes=TO&hierarchy=psss&period=2020 HTTP/1.1
+GET {{baseUrl}}/fetchReport/AU_Flutracking_Postcode_Percent_Report?organisationUnitCodes=AU&hierarchy=covidau HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
+
+# STRIVE_FIS_Village_Percent_mRDT_Positive_Mixed_In_Week -map overlay id
+# "value": 0.5117647058823529 // format this into percent * 100
+# organisationUnitCode: "postcode_code"
+
+# FWV_PC_003	Total number of participants
+# FWV_PC_004 Number of participants with fever and cough
+# 1400: Strive Lab Confirmed Positive Results Bar Chart #2624
+# https://github.com/beyondessential/tupaia/pull/2624/files
 
 ### Fetch Report With Test Config
 POST {{baseUrl}}/testFetchReport/xx?organisationUnitCodes=TO&hierarchy=psss&period=2020 HTTP/1.1
@@ -20,43 +29,247 @@ Authorization: {{authorization}}
   "testConfig": {
     "fetch": {
       "dataElements": [
-        "BCD46",
-        "BCD47",
-        "BCD48",
-        "BCD48a",
-        "BCD48b",
-        "BCD49",
-        "BCD50",
-        "BCD50",
-        "BCD51",
-        "BCD52",
-        "BCD53",
-        "BCD54",
-        "BCD55"
+        "FWV_PC_004", 
+        "FWV_PC_003"
       ],
-      "aggregations": ["MOST_RECENT"]
+      "aggregations": ["RAW"]
     },
     "transform": [
-      "keyValueByDataElementName",
       {
-          "transform": "select",
-          "'Doctors'": "$row.BCD46",
-          "'Midwives'": "$row.BCD47",
-          "'Nurses'": "sum([$row.BCD48, $row.BCD48a, $row.BCD48b])",
-          "'Aides'": "$row.BCD49",
-          "'Others'": "sum([$row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55])",
-          "...": ["period", "organisationUnit"]
+        "transform": "select",
+        "'numerator'": "$row.FWV_PC_004",
+        "'denominator'": "$row.FWV_PC_003",
+        "'organisationUnitCode'": "$row.orgUnit"
       },
       {
         "transform": "aggregate",
-        "organisationUnit": "group",
-        "period": "group",
-        "Doctors": "sum",
-        "Midwives": "sum",
-        "Nurses": "sum",
-        "Aides": "sum",
-        "Others": "sum"
+        "numerator": "sum",
+        "denominator": "sum",
+        "organisationUnitCode": "group"
+      },
+      {
+        "transform": "select",
+        "'value'": "divide($row.numerator, $row.denominator)",
+        "...": ["organisationUnitCode"]
       }
     ]
-  }
+  },
+  "testData": [
+    {
+      "FWV_PC_004":0,
+      "FWV_PC_003":2,
+      "event":"60dbcb1b813f432699004d66",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_NT_0875",
+      "orgUnitName":"0875"
+    },
+    {
+      "FWV_PC_004":2,
+      "FWV_PC_003":186,
+      "event":"60dbcb1b813f432699004d45",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_NT_0870",
+      "orgUnitName":"0870"
+    },
+    {
+      "FWV_PC_004":0,
+      "FWV_PC_003":1,
+      "event":"60dbcb1b813f432699004cfd",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_NT_0846",
+      "orgUnitName":"0846"
+    },
+    {
+      "FWV_PC_004":0,
+      "FWV_PC_003":24,
+      "event":"60dbcb1b813f432699004c6a",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_NT_0822",
+      "orgUnitName":"0822"
+    },
+    {
+      "FWV_PC_004":0,
+      "FWV_PC_003":1,
+      "event":"60dbcb1b813f432699004ccb",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_NT_0837",
+      "orgUnitName":"0837"
+    },
+    {
+      "FWV_PC_004":1,
+      "FWV_PC_003":65,
+      "event":"60dbcb1b813f4326990065db",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_ACT_2903",
+      "orgUnitName":"2903"
+    },
+    {
+      "FWV_PC_004":0,
+      "FWV_PC_003":24,
+      "event":"60dbcb1b813f4326990057fa",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_NSW_2319",
+      "orgUnitName":"2319"
+    },
+    {
+      "FWV_PC_004":0,
+      "FWV_PC_003":5,
+      "event":"60dbcb1b813f4326990064ad",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_NSW_2835",
+      "orgUnitName":"2835"
+    },
+    {
+      "FWV_PC_004":0,
+      "FWV_PC_003":4,
+      "event":"60dbcb1b813f432699008277",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_QLD_4346",
+      "orgUnitName":"4346"
+    },
+    {
+      "FWV_PC_004":0,
+      "FWV_PC_003":16,
+      "event":"60dbcb1b813f432699005547",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_NSW_2220",
+      "orgUnitName":"2220"
+    },
+    {
+      "FWV_PC_003":3,
+      "FWV_PC_004":0,
+      "event":"60dbcb1b813f4326990064cd",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_NSW_2842",
+      "orgUnitName":"2842"
+    },
+    {
+      "FWV_PC_003":2,
+      "FWV_PC_004":0,
+      "event":"60dbcb1b813f4326990064c3",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_NSW_2840",
+      "orgUnitName":"2840"
+    },
+    {
+      "FWV_PC_003":324,
+      "FWV_PC_004":4,
+      "event":"60dbcb1b813f432699005f66",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_ACT_2615",
+      "orgUnitName":"2615"
+    },
+    {
+      "FWV_PC_004":0,
+      "FWV_PC_003":16,
+      "event":"60dbcb1b813f432699005d1b",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_NSW_2535",
+      "orgUnitName":"2535"
+    },
+    {
+      "FWV_PC_004":0,
+      "FWV_PC_003":1,
+      "event":"60dbcb1b813f432699007454",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_VIC_3584",
+      "orgUnitName":"3584"
+    },
+    {
+      "FWV_PC_003":7,
+      "FWV_PC_004":0,
+      "event":"60dbcb1b813f432699005b68",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_NSW_2463",
+      "orgUnitName":"2463"
+    },
+    {
+      "FWV_PC_003":11,
+      "FWV_PC_004":0,
+      "event":"60dbcb1b813f432699007ead",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_QLD_4112",
+      "orgUnitName":"4112"
+    },
+    {
+      "FWV_PC_004":0,
+      "FWV_PC_003":7,
+      "event":"60dbcb1b813f432699006304",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_NSW_2776",
+      "orgUnitName":"2776"
+    },
+    {
+      "FWV_PC_003":11,
+      "FWV_PC_004":0,
+      "event":"60dbcb1b813f432699005e62",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_NSW_2578",
+      "orgUnitName":"2578"
+    },
+    {
+      "FWV_PC_004":0,
+      "FWV_PC_003":49,
+      "event":"60dbcb1b813f432699006b4f",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_VIC_3141",
+      "orgUnitName":"3141"
+    },
+    {
+      "FWV_PC_003":30,
+      "FWV_PC_004":0,
+      "event":"60dbcb1b813f432699006649",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_VIC_3003",
+      "orgUnitName":"3003"
+    },
+    {
+      "FWV_PC_003":67,
+      "FWV_PC_004":0,
+      "event":"60dbcb1b813f432699004f1b",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_NSW_2042",
+      "orgUnitName":"2042"
+    },
+    {
+      "FWV_PC_003":26,
+      "FWV_PC_004":0,
+      "event":"60dbcb1b813f43269900802d",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_QLD_4169",
+      "orgUnitName":"4169"
+    },
+    {
+      "FWV_PC_003":13,
+      "FWV_PC_004":0,
+      "event":"60dbcb1b813f432699006767",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_VIC_3034",
+      "orgUnitName":"3034"
+    },
+    {
+      "FWV_PC_003":7,
+      "FWV_PC_004":0,
+      "event":"60dbcb1b813f432699007e7c",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_QLD_4107",
+      "orgUnitName":"4107"
+    },
+    {
+      "FWV_PC_004":0,
+      "FWV_PC_003":1,
+      "event":"60dbcb1b813f432699007b97",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_VIC_3951",
+      "orgUnitName":"3951"
+    },
+    {
+      "FWV_PC_003":1,
+      "FWV_PC_004":0,
+      "event":"60dbcb1b813f4326990068fb",
+      "eventDate":"2020-02-23T00:00:00",
+      "orgUnit":"AU_VIC_3075",
+      "orgUnitName":"3075"
+    }
+  ]
 }

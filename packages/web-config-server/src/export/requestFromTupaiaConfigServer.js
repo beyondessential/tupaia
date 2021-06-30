@@ -23,7 +23,10 @@ export const requestFromTupaiaConfigServer = async (
     const headers = {
       cookie: `${sessionCookieName}=${sessionCookie}`,
     };
-
+    console.log(
+      '@TODO DELETE',
+      `${BASE_URL}/${endpoint}${queryParametersToString(queryParameters)}`,
+    );
     const response = await fetchWithTimeout(
       `${BASE_URL}/${endpoint}${queryParametersToString(queryParameters)}`,
       { headers },
