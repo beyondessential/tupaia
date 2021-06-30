@@ -18,36 +18,30 @@ exports.setup = function (options, seedLink) {
 
 const syndromes = [
   {
-    dataElement: 'PSSS_AFR_Daily_Cases',
+    dataElement: 'PSSS_AFR_Cases',
     name: 'AFR',
     customLabel: 'AFR Case Numbers',
   },
   {
-    dataElement: 'PSSS_PF_Daily_Cases',
+    dataElement: 'PSSS_PF_Cases',
     name: 'PF',
     customLabel: 'PF Case Numbers',
   },
   {
-    dataElement: 'PSSS_ILI_Daily_Cases',
+    dataElement: 'PSSS_ILI_Cases',
     name: 'ILI',
     customLabel: 'ILI Case Numbers',
   },
   {
-    dataElement: 'PSSS_DLI_Daily_Cases',
+    dataElement: 'PSSS_DLI_Cases',
     name: 'DLI',
     customLabel: 'DLI Case Numbers',
   },
   {
-    dataElement: 'PSSS_DIA_Daily_Cases',
+    dataElement: 'PSSS_DIA_Cases',
     name: 'Diarrhoea',
     code: 'DIA',
     customLabel: 'Diarrhoea Case Numbers',
-  },
-  {
-    dataElement: 'PSSS_CON_Daily_Cases',
-    name: 'Conjunctivitis',
-    code: 'CON',
-    customLabel: 'Conjunctivitis Case Numbers',
   },
 ];
 
@@ -80,6 +74,9 @@ const syndromeRadiusMapOverlay = (syndromeName, dateElement, syndromeCode, custo
     },
     periodGranularity: 'one_day_at_a_time',
     customLabel,
+    hideByDefault: {
+      null: true,
+    },
   },
 });
 
