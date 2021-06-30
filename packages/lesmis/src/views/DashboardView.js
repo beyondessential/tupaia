@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
 import { useIsFetching } from 'react-query';
 import { Select } from '@tupaia/ui-components';
-import { VitalsView } from './VitalsViews';
+import { VitalsView } from './VitalsView';
 import { DashboardReportTabView } from './DashboardReportTabView';
 import { TabPanel, TabBar, TabBarSection, YearSelector } from '../components';
 import { useUrlParams, useUrlSearchParams, useUrlSearchParam } from '../utils';
