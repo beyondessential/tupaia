@@ -24,4 +24,5 @@ export * from './DashboardReport';
 export * from './SearchBar';
 export * from './Tabs';
 export * from './ThemeTest';
+export * from './VitalsLoader';
 export * from './YearSelector';

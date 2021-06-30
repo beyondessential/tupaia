@@ -10,105 +10,9 @@ import MuiContainer from '@material-ui/core/Container';
 import MuiDivider from '@material-ui/core/Divider';
 import MuiBox from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import Skeleton from '@material-ui/lab/Skeleton';
-import { EntityVitalsItem, FlexStart, MiniMap } from '../components';
-import { PARTNERS_LOGOS } from '../constants';
+import { EntityVitalsItem, FlexStart, MiniMap, VitalsLoader } from '../components';
 import { useVitalsData } from '../api/queries';
 import { useUrlParams } from '../utils';
-
-const PartnersContainer = styled.div`
-  background: white;
-  padding-top: 32px;
-  margin-right: -24px;
-  margin-left: -15px;
-  padding-left: 30px;
-
-  ${props => props.theme.breakpoints.down('sm')} {
-    background: none;
-    margin-right: 0;
-    margin-left: 0;
-    padding-left: 0;
-  }
-`;
-
-const PartnersTitle = styled(Typography)`
-  font-weight: 500;
-  font-size: 0.875rem;
-  line-height: 140%;
-`;
-
-const LogoWrapper = styled.div`
-  margin: 5px;
-  width: 55px;
-  height: 55px;
-  border: 1px solid ${props => props.theme.palette.grey['400']};
-  border-radius: 5px;
-  padding: 3px;
-`;
-
-const Logo = styled.div`
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: contain;
-  width: 100%;
-  height: 100%;
-`;
-
-const PartnersSection = ({ vitals, displayAll }) => {
-  const sponsorsList = displayAll
-    ? Object.entries(PARTNERS_LOGOS)
-    : Object.entries(vitals).filter(([key, value]) => {
-        return Object.keys(PARTNERS_LOGOS).includes(key) && value === true;
-      });
-  return (
-    <PartnersContainer>
-      <PartnersTitle>Development Partner Support</PartnersTitle>
-      <FlexStart flexWrap="wrap" pt={1} mb={4}>
-        {sponsorsList.map(([code]) => (
-          <LogoWrapper key={code}>
-            <Logo
-              style={{ backgroundImage: `url('/images/partnerLogos/${PARTNERS_LOGOS[code]}')` }}
-            />
-          </LogoWrapper>
-        ))}
-      </FlexStart>
-    </PartnersContainer>
-  );
-};
-
-PartnersSection.propTypes = {
-  vitals: PropTypes.object.isRequired,
-  displayAll: PropTypes.bool,
-};
-
-PartnersSection.defaultProps = {
-  displayAll: false,
-};
-
-const SitePhoto = styled.div`
-  background-position: top left;
-  background-size: cover;
-  background-repeat: no-repeat;
-  max-width: 100%;
-`;
-
-const PhotoOrMap = ({ Photo, code }) => {
-  if (Photo) {
-    return <SitePhoto style={{ backgroundImage: `url('${Photo}')` }} />;
-  }
-
-  return <MiniMap entityCode={code} />;
-};
-
-PhotoOrMap.propTypes = {
-  Photo: PropTypes.string,
-  code: PropTypes.string,
-};
-
-PhotoOrMap.defaultProps = {
-  Photo: null,
-  code: null,
-};
 
 const Heading = styled(Typography)`
   font-weight: 600;
@@ -241,7 +145,7 @@ const SchoolView = ({ vitals }) => (
         value={vitals.NumberOfStudents?.toLocaleString()}
         icon="Study"
       />
-      <EntityVitalsItem name="Complete School" icon="Notepad" isLoading={vitals.isLoading} />
+      <EntityVitalsItem name="Complete School" icon="Notepad" />
       <EntityVitalsItem
         name="Distance to Main Road"
         value={vitals.DistanceToMainRoad ? `${vitals.DistanceToMainRoad} km` : '-'}
@@ -287,35 +191,50 @@ const Container = styled(MuiContainer)`
   }
 `;
 
-const LoadingGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  column-gap: 10px;
-  row-gap: 15px;
-  padding-right: 1rem;
-  padding-top: 0.6rem;
+const PartnersContainer = styled.div`
+  background: white;
+  padding-top: 32px;
+  margin-right: -24px;
+  margin-left: -15px;
+  padding-left: 30px;
+
+  ${props => props.theme.breakpoints.down('sm')} {
+    background: none;
+    margin-right: 0;
+    margin-left: 0;
+    padding-left: 0;
+  }
 `;
 
-const Loader = () => (
-  <Wrapper>
-    <MuiContainer maxWidth="xl">
-      <MuiBox display="flex" alignItems="flex-start" justifyContent="flex-start">
-        <MuiBox pt={5}>
-          <Skeleton width={220} height={24} />
-          <LoadingGrid>
-            <EntityVitalsItem isLoading />
-            <EntityVitalsItem isLoading />
-            <EntityVitalsItem isLoading />
-            <EntityVitalsItem isLoading />
-            <EntityVitalsItem isLoading />
-            <EntityVitalsItem isLoading />
-          </LoadingGrid>
-        </MuiBox>
-        <Skeleton width={400} height={350} variant="rect" />
-      </MuiBox>
-    </MuiContainer>
-  </Wrapper>
-);
+const SitePhoto = styled.div`
+  background-position: top left;
+  background-size: cover;
+  background-repeat: no-repeat;
+  max-width: 100%;
+`;
+
+const PartnersTitle = styled(Typography)`
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 140%;
+`;
+
+const LogoWrapper = styled.div`
+  margin: 5px;
+  width: 55px;
+  height: 55px;
+  border: 1px solid ${props => props.theme.palette.grey['400']};
+  border-radius: 5px;
+  padding: 3px;
+`;
+
+const Logo = styled.div`
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+  width: 100%;
+  height: 100%;
+`;
 
 const VITALS_VIEWS = {
   country: CountryView,
@@ -327,11 +246,12 @@ const VITALS_VIEWS = {
 export const VitalsView = ({ entityType }) => {
   const { entityCode } = useUrlParams();
   const { data: vitals, isLoading } = useVitalsData(entityCode);
-  const View = VITALS_VIEWS[entityType];
 
   if (!entityType || isLoading) {
-    return <Loader />;
+    return <VitalsLoader />;
   }
+
+  const View = VITALS_VIEWS[entityType];
 
   if (!View) {
     return null;
@@ -341,8 +261,21 @@ export const VitalsView = ({ entityType }) => {
     <Wrapper>
       <Container maxWidth="xl">
         <View vitals={vitals} />
-        <PhotoOrMap {...vitals} />
-        <PartnersSection vitals={vitals} />
+        {vitals.Photo ? (
+          <SitePhoto style={{ backgroundImage: `url('${vitals.Photo}')` }} />
+        ) : (
+          <MiniMap entityCode={vitals.code} />
+        )}
+        <PartnersContainer>
+          <PartnersTitle>Development Partner Support</PartnersTitle>
+          <FlexStart flexWrap="wrap" pt={1} mb={4}>
+            {vitals?.partners?.map(image => (
+              <LogoWrapper key={image}>
+                <Logo style={{ backgroundImage: `url('${[image]}')` }} />
+              </LogoWrapper>
+            ))}
+          </FlexStart>
+        </PartnersContainer>
       </Container>
     </Wrapper>
   );

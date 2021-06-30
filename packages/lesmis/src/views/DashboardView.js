@@ -97,7 +97,6 @@ const makeDropdownOptions = entityType => [
     value: 'essdpEarlyChildhood',
     label: 'ESSDP Early childhood education sub-sector',
     TabComponent: DashboardReportTabView,
-    useYearSelector: true,
     componentProps: {
       filterSubDashboards: ({ dashboardCode }) =>
         dashboardCode.startsWith(DASHBOARD_CODES.essdpEarlyChildhood),
