@@ -48,8 +48,8 @@ const REPORT_CONFIG = {
     'keyValueByDataElementName',
     {
       transform: 'select',
-      "'Secondary Education (Public)'": '$row.noclassroom_public_lse',
-      "'Secondary Education (Private)'": '$row.noclassroom_private_lse',
+      "'Lower Secondary Education (Public)'": '$row.noclassroom_public_lse',
+      "'Lower Secondary Education (Private)'": '$row.noclassroom_private_lse',
       "'timestamp'": 'periodToTimestamp($row.period)',
     },
     {
