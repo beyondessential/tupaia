@@ -26,7 +26,7 @@ const Heading = styled(Typography)`
   font-size: 0.875rem;
   line-height: 1rem;
   margin-bottom: 0.5rem;
-  color: #2c3236;
+  color: ${({ theme }) => (theme.palette.type === 'light' ? '#2c3236' : 'white')};
 `;
 
 const Text = styled(Typography)`
