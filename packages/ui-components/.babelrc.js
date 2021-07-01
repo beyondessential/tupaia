@@ -18,5 +18,4 @@ module.exports = {
     ],
     '@babel/preset-react',
   ],
-  plugins: ['@babel/plugin-proposal-object-rest-spread'],
 };

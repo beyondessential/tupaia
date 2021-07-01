@@ -59,7 +59,7 @@ const useDefaultDashboardTab = (selectedDashboard = null, options) => {
     return null;
   }
 
-  const dashboardNames = options.map(d => d.dashboardName);
+  const dashboardNames = Object.keys(options);
 
   if (selectedDashboard) {
     if (dashboardNames.includes(selectedDashboard)) {
@@ -150,7 +150,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
                 variant="scrollable"
                 scrollButtons="auto"
               >
-                {data.map(({ dashboardName: heading }) => (
+                {Object.keys(data).map(heading => (
                   <Tab key={heading} label={heading} value={heading} />
                 ))}
               </Tabs>
@@ -161,34 +161,32 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
       <DashboardSection ref={topRef}>
         <FetchLoader isLoading={isLoading} isError={isError} error={error}>
           {data &&
-            data.map(dashboard => (
-              <TabPanel
-                key={dashboard.dashboardName}
-                isSelected={dashboard.dashboardName === activeDashboard}
-              >
-                {(() => {
+            Object.entries(data).map(([heading, dashboardGroup]) => (
+              <TabPanel key={heading} isSelected={heading === activeDashboard}>
+                {Object.entries(dashboardGroup).map(([groupName, groupValue]) => {
                   // Todo: support other report types (including "component" types)
-                  const dashboardItems = dashboard.items.filter(item => item.type === 'chart');
-                  return dashboardItems.length > 0 ? (
-                    dashboardItems.map(item => (
+                  const dashboardReports = groupValue.views.filter(
+                    report => report.type === 'chart',
+                  );
+                  return dashboardReports.length > 0 ? (
+                    dashboardReports.map(report => (
                       <Report
-                        key={item.code}
-                        name={item.name}
+                        key={report.viewId}
+                        name={report.name}
                         entityCode={entityCode}
-                        dashboardCode={dashboard.dashboardCode}
-                        dashboardName={dashboard.dashboardName}
-                        reportCode={item.reportCode}
+                        dashboardGroupName={heading}
+                        dashboardGroupId={groupValue.dashboardGroupId.toString()}
+                        reportId={report.viewId}
                         year={selectedYear}
-                        periodGranularity={item.periodGranularity}
-                        viewConfig={item}
+                        periodGranularity={report.periodGranularity}
                       />
                     ))
                   ) : (
-                    <SmallAlert key={dashboard.dashboardName} severity="info" variant="standard">
+                    <SmallAlert key={groupName} severity="info" variant="standard">
                       There are no reports available for this dashboard
                     </SmallAlert>
                   );
-                })()}
+                })}
               </TabPanel>
             ))}
         </FetchLoader>

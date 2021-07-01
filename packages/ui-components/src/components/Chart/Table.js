@@ -20,8 +20,6 @@ const TableContainer = styled(MuiTableContainer)`
   overflow: auto;
 `;
 
-const DARK_THEME_BORDER = 'rgb(82, 82, 88)';
-
 const StyledTable = styled(MuiTable)`
   table-layout: fixed;
   overflow: hidden;
@@ -29,9 +27,7 @@ const StyledTable = styled(MuiTable)`
   // table head
   thead {
     text-transform: capitalize;
-    border-bottom: 1px solid
-      ${({ theme }) =>
-        theme.palette.type === 'light' ? theme.palette.grey['400'] : DARK_THEME_BORDER};
+    border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
 
     tr {
       background: none;
@@ -39,6 +35,7 @@ const StyledTable = styled(MuiTable)`
 
     th {
       position: relative;
+      height: 6rem;
       text-align: center;
       border: none;
       font-weight: 400;
@@ -54,8 +51,7 @@ const StyledTable = styled(MuiTable)`
 
     tr {
       &:nth-of-type(odd) {
-        background: ${({ theme }) =>
-          theme.palette.type === 'light' ? theme.palette.grey['100'] : 'none'};
+        background: ${props => props.theme.palette.grey['100']};
       }
       &:last-child th,
       &:last-child td {
@@ -69,9 +65,7 @@ const StyledTable = styled(MuiTable)`
     padding-top: 1.125rem;
     padding-bottom: 1.125rem;
     color: ${props => props.theme.palette.text.primary};
-    border-right: 1px solid
-      ${({ theme }) =>
-        theme.palette.type === 'light' ? theme.palette.grey['400'] : DARK_THEME_BORDER};
+    border-right: 1px solid ${props => props.theme.palette.grey['400']};
 
     &:last-child {
       border-right: none;
@@ -110,7 +104,7 @@ const getColumns = rawData => {
 const sanitizeValueType = valueType =>
   valueType === 'fractionAndPercentage' ? 'percentage' : valueType;
 
-export const Table = ({ viewContent, className }) => {
+export const Table = ({ viewContent }) => {
   const { data, xName, periodGranularity, valueType } = viewContent;
   const columns = getColumns(data);
   const dataIsTimeSeries = getIsTimeSeries(data) && periodGranularity;
@@ -124,7 +118,7 @@ export const Table = ({ viewContent, className }) => {
   }
 
   return (
-    <TableContainer className={className}>
+    <TableContainer>
       <StyledTable style={{ minWidth: columns.length * 140 + 250 }}>
         <MuiTableHead>
           <MuiTableRow>
@@ -170,10 +164,8 @@ Table.propTypes = {
     chartType: PropTypes.string,
     data: PropTypes.array,
   }),
-  className: PropTypes.string,
 };
 
 Table.defaultProps = {
   viewContent: null,
-  className: null,
 };

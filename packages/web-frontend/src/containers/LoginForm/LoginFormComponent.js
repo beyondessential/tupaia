@@ -1,13 +1,16 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
+/**
+ * Tupaia Web
+ * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
+ * This source code is licensed under the AGPL-3.0 license
+ * found in the LICENSE file in the root directory of this source tree.
  */
 
+/**
+ * Component for Login Form
+ */
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { FlexSpaceBetween } from '../../components/Flexbox';
 
 import { Form } from '../Form';
 import { TextField } from '../Form/Fields';
@@ -19,6 +22,12 @@ import { EmailVerification, EMAIL_VERIFIED_STATUS } from '../EmailVerification';
 
 const PasswordField = styled(TextField)`
   margin-bottom: 16px;
+`;
+
+const FlexRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 export const LoginFormComponent = React.memo(
@@ -56,10 +65,10 @@ export const LoginFormComponent = React.memo(
             required
             onKeyPress={e => e.key === 'Enter' && submitForm(e)}
           />
-          <FlexSpaceBetween>
+          <FlexRow>
             <ForgotPassword handleClick={onClickResetPassword} />
             <SubmitButton handleClick={submitForm}>Sign in</SubmitButton>
-          </FlexSpaceBetween>
+          </FlexRow>
         </>
       ),
       [onClickResetPassword],

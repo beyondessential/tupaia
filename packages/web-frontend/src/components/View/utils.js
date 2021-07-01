@@ -19,7 +19,6 @@ import { SingleDateWrapper } from './SingleDateWrapper';
 import { SingleDownloadLinkWrapper } from './SingleDownloadLinkWrapper';
 import { SingleTickWrapper } from './SingleTickWrapper';
 import { SingleValueWrapper } from './SingleValueWrapper';
-import { ViewTitle } from './Typography';
 
 const SINGLE_VALUE_COMPONENTS = {
   singleTick: SingleTickWrapper,
@@ -40,60 +39,43 @@ const VIEW_TYPES = {
   ...SINGLE_VALUE_COMPONENTS,
 };
 
-export function getViewWrapper({ type, viewType }) {
+export const getViewWrapper = ({ type, viewType }) => {
   switch (type) {
     case 'chart':
       return ChartWrapper;
     case 'matrix':
       return MatrixWrapper;
-    case 'view':
-    default: {
+    default:
+    case 'view': {
       const ViewWrapper = VIEW_TYPES[viewType];
       if (!ViewWrapper) {
         return (
           <div style={VIEW_STYLES.newChartComing}>
-            <ViewTitle>New dashboard element coming soon</ViewTitle>
+            <h2 style={VIEW_STYLES.title}>New dashboard element coming soon</h2>
           </div>
         );
       }
       return ViewWrapper;
     }
   }
-}
-
-export function getIsSingleValue({ viewType }) {
-  return Object.keys(SINGLE_VALUE_COMPONENTS).includes(viewType);
-}
-
-export function getIsMatrix(viewContent) {
-  return viewContent && viewContent.type === 'matrix';
-}
-
-export function getIsDataDownload(viewContent) {
-  return viewContent && viewContent.viewType === 'dataDownload';
-}
-
-export function checkIfApplyDotStyle(presentationOptions) {
-  return presentationOptions?.applyLocation?.columnIndexes;
-}
-
-export function getIsUsingDots(presentationOptions) {
-  return Object.keys(presentationOptions).length > 0;
 };
 
-export const transformDataForViewType = viewContent => {
-  if (
-    getIsSingleValue(viewContent) &&
-    typeof viewContent.data === 'object' &&
-    typeof viewContent.data[0] === 'object'
-  ) {
-    const newViewContent = {
-      ...viewContent.data[0],
-      ...viewContent,
-    };
-    delete newViewContent.data;
-    return newViewContent;
-  }
+export const getIsSingleValue = ({ viewType }) => {
+  return Object.keys(SINGLE_VALUE_COMPONENTS).includes(viewType);
+};
 
-  return viewContent;
+export const getIsMatrix = viewContent => {
+  return viewContent && viewContent.type === 'matrix';
+};
+
+export const getIsDataDownload = viewContent => {
+  return viewContent && viewContent.viewType === 'dataDownload';
+};
+
+export const checkIfApplyDotStyle = presentationOptions => {
+  return presentationOptions?.applyLocation?.columnIndexes;
+};
+
+export const getIsUsingDots = presentationOptions => {
+  return Object.keys(presentationOptions).length > 0;
 };

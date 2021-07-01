@@ -2,7 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import queryString from 'query-string';
 import downloadJs from 'downloadjs';
 import domtoimage from 'dom-to-image';
 import { download } from './request';
@@ -24,41 +23,30 @@ export const exportToPng = (node, filename) => {
 
 export const exportToExcel = async ({
   projectCode,
-  dashboardCode,
-  organisationUnitCode,
   viewContent,
   startDate,
   endDate,
   timeZone,
   filename,
 }) => {
-  const { code: itemCode, legacy } = viewContent;
+  const { viewId, organisationUnitCode, dashboardGroupId } = viewContent;
   const dataElementHeader = viewContent?.exportConfig?.dataElementHeader;
   const file = `${filename}.xlsx`;
 
-  let newStartDate = startDate;
-  let newEndDate = endDate;
-  if (!startDate && !endDate) {
-    const { startDate: viewStartDate, endDate: viewEndDate } = viewContent;
-    newStartDate = viewStartDate;
-    newEndDate = viewEndDate;
-  }
-
   gaEvent('Export', file, 'Attempt');
 
-  const queryParameters = {
-    dashboardCode,
+  const queryString = new URLSearchParams({
+    dashboardGroupId,
     organisationUnitCode,
-    itemCode,
+    viewId,
     projectCode,
-    startDate: newStartDate,
-    endDate: newEndDate,
+    startDate,
+    endDate,
     timeZone,
     dataElementHeader,
-    legacy,
-  };
+  });
 
-  await download(`export/chart?${queryString.stringify(queryParameters)}`, null, null, file);
+  await download(`export/chart?${queryString}`, null, null, file);
   gaEvent('Export', file, 'Success');
   return true;
 };

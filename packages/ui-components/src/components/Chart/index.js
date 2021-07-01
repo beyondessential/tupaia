@@ -6,6 +6,3 @@
 export { Chart } from './Chart';
 export { Table } from './Table';
 export * from './periodGranularities';
-export * from './parseChartConfig';
-export * from './constants';
-export * from './utils';

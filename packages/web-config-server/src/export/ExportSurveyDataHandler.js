@@ -19,8 +19,8 @@ export class ExportSurveyDataHandler extends RouteHandler {
     await super.handleRequest();
     const {
       organisationUnitCode,
-      itemCode,
-      dashboardCode,
+      viewId,
+      dashboardGroupId,
       projectCode,
       surveyCodes,
       startDate,
@@ -30,25 +30,20 @@ export class ExportSurveyDataHandler extends RouteHandler {
 
     const sessionCookieName = USER_SESSION_CONFIG.cookieName;
     const sessionCookie = this.req.cookies[sessionCookieName];
-    const { report_code: reportCode, legacy, config } = await this.models.dashboardItem.findOne({
-      code: itemCode,
-    });
 
     // Get the data for the chart
     const queryParameters = {
-      itemCode,
+      viewId,
       organisationUnitCode,
-      dashboardCode,
+      dashboardGroupId,
       projectCode,
       surveyCodes,
       startDate,
       endDate,
-      legacy,
       isExpanded: true,
     };
-
     const data = await requestFromTupaiaConfigServer(
-      `report/${reportCode}`,
+      'view',
       queryParameters,
       sessionCookieName,
       sessionCookie,
@@ -57,9 +52,9 @@ export class ExportSurveyDataHandler extends RouteHandler {
     const sheetNames = [];
     const sheets = {};
     const { name: organisationUnitName } = await this.models.entity.findOne({
-      code: organisationUnitCode,
+      code: data.organisationUnitCode,
     });
-    const reportTitle = `${config.name}, ${organisationUnitName}`;
+    const reportTitle = `${data.name}, ${organisationUnitName}`;
 
     Object.entries(data.data).forEach(([surveyName, surveyData]) => {
       const header = surveyData.data.columns.length

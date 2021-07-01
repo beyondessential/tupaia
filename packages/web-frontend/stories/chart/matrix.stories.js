@@ -1,12 +1,11 @@
 /*
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
  */
 
 import React from 'react';
 import styled from 'styled-components';
-import { MatrixWrapper } from '../src/components/View/MatrixWrapper';
+import { MatrixWrapper } from '../../src/components/View/MatrixWrapper';
 
 const Container = styled.div`
   margin: 1rem auto;

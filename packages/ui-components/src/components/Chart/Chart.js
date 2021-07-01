@@ -65,7 +65,7 @@ const getViewContent = viewContent => {
     : { ...viewContent, data: massagedData };
 };
 
-export const Chart = ({ viewContent, isExporting, isEnlarged, onItemClick, legendPosition }) => {
+export const Chart = ({ viewContent, isExporting, isEnlarged, onItemClick }) => {
   const { chartType } = viewContent;
 
   if (!Object.values(CHART_TYPES).includes(chartType)) {
@@ -89,7 +89,6 @@ export const Chart = ({ viewContent, isExporting, isEnlarged, onItemClick, legen
       isExporting={isExporting}
       viewContent={viewContentConfig}
       onItemClick={onItemClick}
-      legendPosition={legendPosition}
     />
   );
 };
@@ -103,13 +102,11 @@ Chart.propTypes = {
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,
   onItemClick: PropTypes.func,
-  legendPosition: PropTypes.string,
 };
 
 Chart.defaultProps = {
   viewContent: null,
   isEnlarged: true,
   isExporting: false,
-  legendPosition: 'bottom',
   onItemClick: () => {},
 };

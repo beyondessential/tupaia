@@ -57,7 +57,7 @@ export const historyMiddleware = store => next => action => {
 
     // Actions that modify search params
     case OPEN_ENLARGED_DIALOG:
-      dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, action.itemCode);
+      dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, action.viewId);
       break;
     case SET_ENLARGED_DIALOG_DATE_RANGE:
       // Drill down dates are handled in normal redux state

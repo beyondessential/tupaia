@@ -14,13 +14,11 @@ export class ExportSurveyResponsesHandler extends RouteHandler {
       startDate,
       endDate,
       timeZone,
-      itemCode,
+      viewId,
       easyReadingMode,
     } = this.query;
     const meditrakServerEndpoint = 'export/surveyResponses';
-    const {
-      config: { name: reportName },
-    } = itemCode && (await this.models.dashboardItem.findOne({ code: itemCode }));
+    const { viewJson: { name: reportName } } = viewId && (await this.models.dashboardReport.findById(viewId));
 
     const queryParameters = {
       latest,
@@ -39,13 +37,18 @@ export class ExportSurveyResponsesHandler extends RouteHandler {
       queryParameters.entityCode = organisationUnitCode;
     }
 
-    const response = await fetchFromMeditrakServerUsingTokens(
-      this.models,
-      meditrakServerEndpoint,
-      null,
-      queryParameters,
-      this.req.session.userJson.userName,
-    );
+    let response;
+    try {
+      response = await fetchFromMeditrakServerUsingTokens(
+        this.models,
+        meditrakServerEndpoint,
+        null,
+        queryParameters,
+        this.req.session.userJson.userName,
+      );
+    } catch (error) {
+      throw error;
+    }
 
     pipeSurveyResponseToClient(response, this.res);
   }

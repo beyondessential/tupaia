@@ -6,11 +6,7 @@ export const countOperationalFacilities = async ({ query }, aggregator) => {
     query.organisationUnitCode,
   );
   return {
-    data: [
-      {
-        value: numberOperational,
-        total,
-      },
-    ],
+    value: numberOperational,
+    total,
   };
 };

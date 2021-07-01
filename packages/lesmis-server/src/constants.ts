@@ -5,7 +5,6 @@
  */
 
 export const LESMIS_PROJECT_NAME = 'laos_schools';
-export const LESMIS_HIERARCHY_NAME = 'laos_schools';
 export const LESMIS_COUNTRY_CODE = 'LA';
 export const LESMIS_PERMISSION_GROUPS = {
   PUBLIC: 'LESMIS Public',

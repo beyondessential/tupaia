@@ -21,7 +21,7 @@ export const isDataKey = key =>
 
 export const getContrastTextColor = () => {
   const theme = useTheme();
-  return theme.palette.type === 'light' ? theme.palette.text.secondary : 'white';
+  return theme.palette.contrastText || theme.palette.text.primary;
 };
 
 export const getIsChartData = ({ chartType, data }) => {

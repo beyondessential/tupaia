@@ -25,7 +25,7 @@ import DashboardGroup from '../DashboardGroup';
 import { getFacilityThumbnailUrl } from '../../utils';
 import { DropDownMenu } from '../../components/DropDownMenu';
 import {
-  selectCurrentDashboardName,
+  selectCurrentDashboardGroupCode,
   selectCurrentOrgUnit,
   selectCurrentOrgUnitBounds,
 } from '../../selectors';
@@ -176,23 +176,34 @@ export class Dashboard extends Component {
   }
 
   renderGroupsDropdown() {
-    const { onChangeDashboardGroup, currentDashboardName, dashboards, project } = this.props;
-    const dashboardNames = [];
+    const { onChangeDashboardGroup, currentDashboardGroupCode, sections, project } = this.props;
 
     // sort group names based on current project
-    dashboards.forEach(({ dashboardName, project: dashboardProject }) => {
-      if (dashboardProject === project) dashboardNames.unshift(dashboardName);
-      else dashboardNames.push(dashboardName);
+    const groupNames = Object.entries(sections).reduce((names, entry) => {
+      /**
+       * entry[1] is the dashboard User Group:
+       * { Public: {..., project: "" }}
+       *
+       * subSection (Object.values(entry[1])[0]):
+       * {..., project: "" }
+       */
+      const subSection = Object.values(entry[1])[0];
+      const groupName = entry[0];
+
+      if (subSection.project === project) names.unshift(groupName);
+      else names.push(groupName);
+
+      return names;
     }, []);
 
-    if (dashboardNames.length === 0) {
+    if (groupNames.length < 1) {
       return null;
     }
 
     return (
       <DropDownMenu
-        selectedOption={currentDashboardName}
-        options={dashboardNames}
+        selectedOption={currentDashboardGroupCode}
+        options={groupNames}
         onChange={onChangeDashboardGroup}
         menuListStyle={DASHBOARD_STYLES.groupsDropDownMenu}
       />
@@ -211,8 +222,7 @@ export class Dashboard extends Component {
   }
 
   render() {
-    const { onDashboardClicked, isLoading, dashboards, currentDashboardName } = this.props;
-    const currentGroupDashboard = dashboards.find(d => d.dashboardName === currentDashboardName);
+    const { onDashboardClicked, isLoading, sections, currentDashboardGroupCode } = this.props;
 
     return (
       <div
@@ -226,7 +236,7 @@ export class Dashboard extends Component {
         {this.renderHeader()}
         <div style={DASHBOARD_STYLES.content}>
           {this.renderGroupsDropdown()}
-          {this.renderGroup(currentGroupDashboard)}
+          {this.renderGroup(sections[currentDashboardGroupCode])}
         </div>
         {this.renderFloatingHeader()}
         {this.renderEnlargePopup()}
@@ -237,42 +247,28 @@ export class Dashboard extends Component {
 
 Dashboard.propTypes = {
   onChangeDashboardGroup: PropTypes.func.isRequired,
-  currentDashboardName: PropTypes.string,
+  currentDashboardGroupCode: PropTypes.string,
   currentOrganisationUnit: PropTypes.object,
   currentOrganisationUnitBounds: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
   onDashboardClicked: PropTypes.func.isRequired,
   mapIsAnimating: PropTypes.bool,
   isSidePanelExpanded: PropTypes.bool.isRequired,
   contractedWidth: PropTypes.number,
-  dashboards: PropTypes.array,
-  project: PropTypes.string,
-  isLoading: PropTypes.bool,
-};
-
-Dashboard.defaultProps = {
-  currentDashboardName: '',
-  currentOrganisationUnit: {},
-  currentOrganisationUnitBounds: [],
-  mapIsAnimating: false,
-  contractedWidth: 0,
-  dashboards: [],
-  project: '',
-  isLoading: false,
 };
 
 const mapStateToProps = state => {
   const { isAnimating } = state.map;
-  const { isLoadingOrganisationUnit, dashboards, isSidePanelExpanded, project } = state.global;
+  const { isLoadingOrganisationUnit, dashboardConfig, isSidePanelExpanded, project } = state.global;
   const { contractedWidth } = state.dashboard;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
   const currentOrganisationUnitBounds = selectCurrentOrgUnitBounds(state);
-  const currentDashboardName = selectCurrentDashboardName(state);
+  const currentDashboardGroupCode = selectCurrentDashboardGroupCode(state);
 
   return {
     currentOrganisationUnit,
     currentOrganisationUnitBounds,
-    dashboards,
-    currentDashboardName,
+    sections: dashboardConfig,
+    currentDashboardGroupCode,
     mapIsAnimating: isAnimating,
     isLoading: isLoadingOrganisationUnit,
     isSidePanelExpanded,

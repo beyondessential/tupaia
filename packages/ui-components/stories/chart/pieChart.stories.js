@@ -20,12 +20,12 @@ export default {
 export const LightTheme = LightThemeChartTemplate.bind({});
 LightTheme.args = {
   viewContent,
-  isEnlarged: false,
+  isEnlarged: true,
 };
 
 export const DarkTheme = DarkThemeTemplate.bind({});
 DarkTheme.args = {
   viewContent,
-  isEnlarged: false,
+  isEnlarged: true,
 };
 DarkTheme.parameters = { theme: 'dark' };

@@ -69,24 +69,20 @@ export const CHART_TYPES = {
 
 export const Report = React.memo(
   ({
-    reportCode,
+    reportId,
     name,
     entityCode,
-    dashboardCode,
-    dashboardName,
+    dashboardGroupId,
+    dashboardGroupName,
     periodGranularity,
     year,
-    viewConfig,
   }) => {
-    const { code: itemCode, legacy } = viewConfig;
     const [selectedTab, setSelectedTab] = useState(TABS.CHART);
     const { startDate, endDate } = yearToApiDates(year);
-    const { data, isLoading, isError, error } = useDashboardReportData({
+    const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
       entityCode,
-      reportCode,
-      dashboardCode,
-      itemCode,
-      legacy,
+      dashboardGroupId,
+      reportId,
       periodGranularity,
       startDate,
       endDate,
@@ -113,7 +109,7 @@ export const Report = React.memo(
         </Header>
         <Body>
           <ChartTable
-            viewContent={{ ...viewConfig, data }}
+            viewContent={viewContent}
             isLoading={isLoading}
             isError={isError}
             error={error}
@@ -124,12 +120,11 @@ export const Report = React.memo(
           <DashboardReportModal
             buttonText="See More"
             name={name}
-            dashboardCode={dashboardCode}
-            dashboardName={dashboardName}
+            dashboardGroupName={dashboardGroupName}
             entityCode={entityCode}
-            reportCode={reportCode}
+            dashboardGroupId={dashboardGroupId}
+            reportId={reportId}
             periodGranularity={periodGranularity}
-            viewConfig={viewConfig}
           />
         </Footer>
       </Container>
@@ -139,13 +134,12 @@ export const Report = React.memo(
 
 Report.propTypes = {
   name: PropTypes.string.isRequired,
-  reportCode: PropTypes.string.isRequired,
+  reportId: PropTypes.string.isRequired,
   entityCode: PropTypes.string.isRequired,
   year: PropTypes.string,
-  dashboardCode: PropTypes.string.isRequired,
-  dashboardName: PropTypes.string.isRequired,
+  dashboardGroupId: PropTypes.string.isRequired,
+  dashboardGroupName: PropTypes.string.isRequired,
   periodGranularity: PropTypes.string,
-  viewConfig: PropTypes.object.isRequired,
 };
 
 Report.defaultProps = {

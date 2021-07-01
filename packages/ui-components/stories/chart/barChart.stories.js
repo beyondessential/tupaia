@@ -21,7 +21,6 @@ export const LightTheme = LightThemeChartTemplate.bind({});
 LightTheme.args = {
   viewContent,
   isEnlarged: true,
-  legendPosition: 'top',
 };
 
 export const DarkTheme = DarkThemeTemplate.bind({});

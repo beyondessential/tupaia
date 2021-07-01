@@ -109,13 +109,14 @@ export const ProjectLandingPage = ({
   project,
   scrollToTop,
 }) => {
-  useEffect(() => scrollToTop(), []);
   if (!project.code) return <LoadingIndicator />;
 
   const components = {
     covidau: () => <FluTrackingAustralia />,
   };
   const ProjectContent = components[project.code];
+
+  useEffect(() => scrollToTop(), []);
 
   return (
     <>

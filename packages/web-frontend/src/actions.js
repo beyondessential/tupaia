@@ -666,14 +666,14 @@ export function fetchOrgUnitError(organisationUnitCode, errorMessage) {
 }
 
 /**
- * Changes the current dashboards. Change what is rendered in DataPanel.
+ * Changes the current dashboardConfig. Change what is rendered in DataPanel.
  *
- * @param {object} dashboards dashboards from saga on successful fetch
+ * @param {object} dashboardConfig dashboardConfig from saga on successful fetch
  */
-export function fetchDashboardsSuccess(dashboards) {
+export function fetchDashboardSuccess(dashboardConfig) {
   return {
     type: FETCH_DASHBOARD_CONFIG_SUCCESS,
-    dashboards,
+    dashboardConfig,
   };
 }
 
@@ -692,18 +692,23 @@ export function fetchDashboardError(errorMessage) {
 /**
  * Fetches data for a DashboardItem.
  *
- * @param {string} organisationUnitCode
- * @param {string} dashboardCode
- * @param {string} itemCode
  * @param {string} infoViewKey
+ * @param {string} organisationUnitCode
+ * @param {string} dashboardGroupId
+ * @param {string} viewId Typically view.viewId from dashboardConfig.tab.subtab
  */
 
-export function fetchDashboardItemData(organisationUnitCode, dashboardCode, itemCode, infoViewKey) {
+export function fetchDashboardItemData(
+  organisationUnitCode,
+  dashboardGroupId,
+  viewId,
+  infoViewKey,
+) {
   return {
     type: FETCH_INFO_VIEW_DATA,
     organisationUnitCode,
-    dashboardCode,
-    itemCode,
+    dashboardGroupId,
+    viewId,
     infoViewKey,
   };
 }
@@ -1042,10 +1047,10 @@ export function closeEnlargedDialog() {
   };
 }
 
-export function openEnlargedDialog(itemCode) {
+export function openEnlargedDialog(viewId) {
   return {
     type: OPEN_ENLARGED_DIALOG,
-    itemCode,
+    viewId,
   };
 }
 
@@ -1072,10 +1077,9 @@ export function fetchEnlargedDialogData(options) {
   };
 }
 
-export function updateEnlargedDialog(options, viewConfig, viewContent) {
+export function updateEnlargedDialog(options, viewContent) {
   return {
     type: UPDATE_ENLARGED_DIALOG,
-    viewConfig,
     viewContent,
     options,
   };

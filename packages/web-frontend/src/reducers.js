@@ -637,7 +637,7 @@ function global(
   state = {
     isSidePanelExpanded: false,
     overlay: null,
-    dashboards: [],
+    dashboardConfig: {},
     viewConfigs: {},
     isLoadingOrganisationUnit: false,
   },
@@ -670,9 +670,9 @@ function global(
     case CHANGE_ORG_UNIT_ERROR:
       return { ...state, isLoadingOrganisationUnit: false };
     case FETCH_DASHBOARD_CONFIG_SUCCESS: {
-      const { dashboards } = action;
-      const viewConfigs = extractViewsFromAllDashboards(dashboards);
-      return { ...state, dashboards, viewConfigs };
+      const { dashboardConfig } = action;
+      const viewConfigs = extractViewsFromAllDashboards(dashboardConfig);
+      return { ...state, dashboardConfig, viewConfigs };
     }
     case FETCH_DASHBOARD_CONFIG_ERROR:
       return state;
@@ -681,7 +681,7 @@ function global(
     case SET_OVERLAY_COMPONENT:
       return { ...state, overlay: action.component };
     case SET_PROJECT:
-      return { ...state, dashboards: [], viewConfigs: {} };
+      return { ...state, dashboardConfig: {}, viewConfigs: {} };
     default:
       return state;
   }
@@ -703,7 +703,6 @@ function enlargedDialog(
         isLoading: false,
         errorMessage: '',
         contentByLevel: null,
-        drillDownDatesByLevel: null,
       };
     case CLOSE_ENLARGED_DIALOG:
       return {
@@ -711,7 +710,6 @@ function enlargedDialog(
         isLoading: false,
         errorMessage: '',
         contentByLevel: null,
-        drillDownDatesByLevel: null,
       };
     case SET_ENLARGED_DIALOG_DATE_RANGE: {
       const { drillDownLevel, startDate, endDate } = action;
@@ -741,7 +739,6 @@ function enlargedDialog(
         contentByLevel: {
           ...(state.contentByLevel || {}),
           [action.options.drillDownLevel]: {
-            viewConfig: action.viewConfig,
             viewContent: action.viewContent,
             options: action.options,
           },
@@ -770,27 +767,21 @@ function routing(state = getInitialLocation(), action) {
 /**
  * Reach into the dashboard config, and pull out all views from every dashboard group/permission
  * level, then return them keyed by unique view id
- * @param {object}  dashboards The dashboard list returned by `/dashboards` endpoint
+ * @param {object}  dashboardConfig The dashboard config object returned by `/dashboard` endpoint
  * @return {object} viewConfigs     Config for every view, keyed by unique view id
  */
-function extractViewsFromAllDashboards(dashboards) {
+function extractViewsFromAllDashboards(dashboardConfig) {
   const viewConfigs = {};
-  dashboards.forEach(dashboardGroup =>
-    dashboardGroup.items.forEach(item => {
-      const uniqueViewId = getUniqueViewId(
-        dashboardGroup.entityCode,
-        dashboardGroup.dashboardCode,
-        item.code,
-      );
-      const viewConfig = { ...item };
-      if (viewConfig?.drillDown?.itemCode) {
-        viewConfig.drillDownViewId = getUniqueViewId(
-          dashboardGroup.entityCode,
-          dashboardGroup.dashboardCode,
-          viewConfig?.drillDown?.itemCode,
-        );
-      }
-      viewConfigs[uniqueViewId] = viewConfig;
+  Object.values(dashboardConfig).forEach(dashboardGroups =>
+    Object.values(dashboardGroups).forEach(({ dashboardGroupId, organisationUnitCode, views }) => {
+      views.forEach(view => {
+        const uniqueViewId = getUniqueViewId({
+          dashboardGroupId,
+          organisationUnitCode,
+          viewId: view.drillDownLevel ? `${view.viewId}_${view.drillDownLevel}` : view.viewId,
+        });
+        viewConfigs[uniqueViewId] = view;
+      });
     }),
   );
   return viewConfigs;

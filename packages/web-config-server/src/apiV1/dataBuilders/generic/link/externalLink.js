@@ -18,5 +18,5 @@ export const externalLink = ({ dataBuilderConfig, query }) => {
       urlWithSubtitutions.replace(new RegExp(`{${key}}`, 'g'), value),
     url,
   );
-  return { data: [{ value: downloadUrl }] };
+  return { value: downloadUrl };
 };

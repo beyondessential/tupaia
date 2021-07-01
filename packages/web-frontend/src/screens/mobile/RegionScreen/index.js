@@ -30,7 +30,7 @@ import { getMapUrl } from '../../../utils';
 import { getSingleFormattedValue } from '../../../utils/measures';
 import { ENTITY_TYPE } from '../../../constants';
 import {
-  selectCurrentDashboardName,
+  selectCurrentDashboardGroupCode,
   selectCurrentOrgUnit,
   selectOrgUnitChildren,
   selectCurrentMeasure,
@@ -101,7 +101,7 @@ class RegionScreen extends PureComponent {
 
   render() {
     const {
-      dashboards,
+      dashboardConfig,
       selectedFilter,
       measureFilters,
       onChangeMeasure,
@@ -114,7 +114,7 @@ class RegionScreen extends PureComponent {
       onChangeOrgUnit,
       isLoading,
       isMeasureLoading,
-      currentDashboardName,
+      currentDashboardGroupCode,
       onChangeDashboardGroup,
       title,
     } = this.props;
@@ -124,8 +124,8 @@ class RegionScreen extends PureComponent {
         {this.renderMap()}
         <Dashboard
           orgUnit={orgUnit}
-          dashboards={dashboards}
-          currentDashboardName={currentDashboardName}
+          dashboardConfig={dashboardConfig}
+          currentDashboardGroupCode={currentDashboardGroupCode}
           toggleFilter={onToggleDashboardSelectExpand}
           filterIsExpanded={dashboardFilterIsExpanded}
           handleFilterChange={onChangeDashboardGroup}
@@ -159,7 +159,7 @@ class RegionScreen extends PureComponent {
 }
 
 RegionScreen.propTypes = {
-  dashboards: PropTypes.array.isRequired,
+  dashboardConfig: PropTypes.object.isRequired,
   orgUnit: PropTypes.object.isRequired,
   mobileListItems: PropTypes.array,
   measureFilters: PropTypes.array,
@@ -170,11 +170,6 @@ RegionScreen.propTypes = {
   isLoading: PropTypes.bool,
   isMeasureLoading: PropTypes.bool,
   onChangeOrgUnit: PropTypes.func.isRequired,
-  onToggleDashboardSelectExpand: PropTypes.func.isRequired,
-  dashboardFilterIsExpanded: PropTypes.bool,
-  currentDashboardName: PropTypes.string,
-  onChangeDashboardGroup: PropTypes.func.isRequired,
-  title: PropTypes.string,
 };
 
 RegionScreen.defaultProps = {
@@ -184,9 +179,6 @@ RegionScreen.defaultProps = {
   selectedFilter: null,
   isLoading: false,
   isMeasureLoading: false,
-  dashboardFilterIsExpanded: false,
-  currentDashboardName: '',
-  title: '',
 };
 
 const styles = {
@@ -281,7 +273,7 @@ const getMeasureFiltersForHierarchy = measureHierarchy => {
 };
 
 const mapStateToProps = state => {
-  const { dashboards, isLoadingOrganisationUnit } = state.global;
+  const { dashboardConfig, isLoadingOrganisationUnit } = state.global;
   const { measureHierarchy, isExpanded } = state.measureBar;
   const { measureInfo, isMeasureLoading } = state.map;
   const { isGroupSelectExpanded } = state.dashboard;
@@ -305,8 +297,8 @@ const mapStateToProps = state => {
     : { label: '' };
 
   return {
-    dashboards,
-    currentDashboardName: selectCurrentDashboardName(state),
+    dashboardConfig,
+    currentDashboardGroupCode: selectCurrentDashboardGroupCode(state),
     orgUnit,
     mobileListItems,
     measureFilters,

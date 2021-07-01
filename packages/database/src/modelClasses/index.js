@@ -10,9 +10,6 @@ import { AnswerModel } from './Answer';
 import { APIClientModel } from './APIClient';
 import { CommentModel } from './Comment';
 import { CountryModel } from './Country';
-import { DashboardModel } from './Dashboard';
-import { DashboardItemModel } from './DashboardItem';
-import { DashboardRelationModel } from './DashboardRelation';
 import { DashboardGroupModel } from './DashboardGroup';
 import { DashboardReportModel } from './DashboardReport';
 import { DataElementDataGroupModel } from './DataElementDataGroup';
@@ -25,7 +22,6 @@ import { EntityRelationModel } from './EntityRelation';
 import { FacilityModel } from './Facility';
 import { GeographicalAreaModel } from './GeographicalArea';
 import { IndicatorModel } from './Indicator';
-import { LegacyReportModel } from './LegacyReport';
 import { MapOverlayGroupModel } from './MapOverlayGroup';
 import { MapOverlayGroupRelationModel } from './MapOverlayGroupRelation';
 import { MapOverlayModel } from './MapOverlay';
@@ -55,9 +51,6 @@ export const modelClasses = {
   ApiClient: APIClientModel,
   Comment: CommentModel,
   Country: CountryModel,
-  Dashboard: DashboardModel,
-  DashboardItem: DashboardItemModel,
-  DashboardRelation: DashboardRelationModel,
   DashboardGroup: DashboardGroupModel,
   DashboardReport: DashboardReportModel,
   DataElementDataGroup: DataElementDataGroupModel,
@@ -71,7 +64,6 @@ export const modelClasses = {
   Facility: FacilityModel,
   GeographicalArea: GeographicalAreaModel,
   Indicator: IndicatorModel,
-  LegacyReport: LegacyReportModel,
   MapOverlay: MapOverlayModel,
   MapOverlayGroup: MapOverlayGroupModel,
   MapOverlayGroupRelation: MapOverlayGroupRelationModel,

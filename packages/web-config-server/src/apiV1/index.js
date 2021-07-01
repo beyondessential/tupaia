@@ -18,13 +18,12 @@ import {
 import { login, oneTimeLogin, logout } from '/authSession';
 import { exportChartHandler, ExportSurveyResponsesHandler, ExportSurveyDataHandler } from '/export';
 import { getUser } from './getUser';
-import DashboardHandler from './dashboard';
+import ViewHandler from './view';
+import DashBoardHandler from './dashboard';
 import MeasuresHandler from './measures';
 import MeasuresDataHandler from './measureData';
 import OrgUnitSearchHandler from './organisationUnitSearch';
 import OrganisationUnitHandler from './organisationUnit';
-import DashboardsHandler from './dashboards';
-import { ReportHandler } from './report';
 import { disasters } from './disasters';
 
 import { getProjects } from './projects';
@@ -55,13 +54,12 @@ export const getRoutesForApiV1 = () => {
     handleWith(OrganisationUnitHandler),
   );
   api.get('/organisationUnitSearch', handleWith(OrgUnitSearchHandler));
-  api.get('/dashboard', handleWith(DashboardHandler)); // Legacy style dashboards
+  api.get('/dashboard', handleWith(DashBoardHandler));
+  api.get('/view', handleWith(ViewHandler));
   api.get('/measures', handleWith(MeasuresHandler));
   api.get('/measureData', handleWith(MeasuresDataHandler));
   api.get('/disasters', catchAsyncErrors(disasters));
   api.get('/projects', catchAsyncErrors(getProjects));
-  api.get('/dashboards', handleWith(DashboardsHandler)); // New style dashboards
-  api.get('/report/:reportCode', handleWith(ReportHandler));
 
   return api;
 };

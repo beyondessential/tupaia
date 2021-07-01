@@ -26,7 +26,6 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { VIEW_STYLES } from '../../styles';
 import { formatDataValue } from '../../utils';
-import { ViewTitle } from './Typography';
 
 export class MultiValueWrapper extends PureComponent {
   render() {
@@ -35,7 +34,7 @@ export class MultiValueWrapper extends PureComponent {
 
     return (
       <div style={{ ...VIEW_STYLES.viewContainer }}>
-        {isTitleVisible && <ViewTitle>{name}</ViewTitle>}
+        {isTitleVisible && <div style={VIEW_STYLES.title}>{name}</div>}
         {data.map((element, index) => (
           <div
             style={{

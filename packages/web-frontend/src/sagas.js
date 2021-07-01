@@ -34,7 +34,7 @@ import {
   fetchDashboardError,
   fetchDashboardItemDataError,
   fetchDashboardItemDataSuccess,
-  fetchDashboardsSuccess,
+  fetchDashboardSuccess,
   fetchEmailVerifyError,
   fetchMeasureInfoError,
   fetchMeasureInfoSuccess,
@@ -118,7 +118,6 @@ import {
   selectShouldUseDashboardData,
   selectCurrentPeriodGranularity,
   selectCurrentProjectCode,
-  selectCurrentExpandedViewConfig,
   selectCurrentExpandedViewContent,
   selectDefaultMeasureId,
   selectIsMeasureInHierarchy,
@@ -129,8 +128,9 @@ import {
   selectOrgUnitCountry,
   selectProjectByCode,
   selectCurrentProject,
-  selectCurrentDashboardNameFromLocation,
-  selectViewConfig,
+  selectCurrentDashboardGroupCodeFromLocation,
+  selectIsDashboardGroupCodeDefined,
+  selectCurrentDashboardGroupCode,
 } from './selectors';
 import {
   formatDateForApi,
@@ -173,7 +173,6 @@ function* handleInvalidPermission({ projectCode }) {
 
     // handle 404s
     // Todo: handle 404s. Issue: https://github.com/beyondessential/tupaia-backlog/issues/1474
-    // eslint-disable-next-line no-console
     console.error('project does not exist - 404');
     return;
   }
@@ -193,7 +192,6 @@ function* handleUserPage(userPage, initialComponents) {
       yield put(setVerifyEmailToken(initialComponents[URL_COMPONENTS.VERIFY_EMAIL_TOKEN]));
       break;
     default:
-      // eslint-disable-next-line no-console
       console.error('Unhandled user page', userPage);
   }
 }
@@ -687,83 +685,78 @@ function* watchOrgUnitChangeAndFetchIt() {
 }
 
 /**
- * fetchDashboards
+ * fetchDashboard
  *
  * Fetches a dashboard for the orgUnit given in action
  *
  */
-function* fetchDashboards(action) {
+function* fetchDashboard(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
   const projectCode = selectCurrentProjectCode(state);
   const project = selectCurrentProject(state);
-  const currentDashboardName = selectCurrentDashboardNameFromLocation(state);
-  const queryParameters = {
-    organisationUnitCode,
-    projectCode,
-  };
-  const requestResourceUrl = `dashboards?${queryString.stringify(queryParameters)}`;
+  const currentDashboardCode = selectCurrentDashboardGroupCodeFromLocation(state);
+  const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
 
   try {
-    const dashboards = yield call(request, requestResourceUrl, fetchDashboardError);
+    const dashboard = yield call(request, requestResourceUrl, fetchDashboardError);
 
     // If there is no dashboard code defined, assign the default if it is valid for the user
-    if (!currentDashboardName) {
-      const projectDefaultDashboardName = project.dashboardGroupName;
-      const dashboard = dashboards.find(d => d.dashboardName === projectDefaultDashboardName);
-      if (dashboard) {
+    if (!selectIsDashboardGroupCodeDefined(state)) {
+      const currentDashboardGroupCode = project.dashboardGroupName;
+
+      if (dashboard[currentDashboardGroupCode]) {
         yield put(setDashboardGroup(project.dashboardGroupName));
-      }
-    } else {
-      const dashboard = dashboards.find(d => d.dashboardName === currentDashboardName);
-      // Check if the user has permission to view the dashboard
-      if (!dashboard) {
-        yield call(handleInvalidPermission, { projectCode });
-        return;
       }
     }
 
-    yield put(fetchDashboardsSuccess(dashboards));
+    // Check if the user has permission to view the dashboard
+    if (currentDashboardCode && !(currentDashboardCode in dashboard)) {
+      yield call(handleInvalidPermission, { projectCode });
+      return;
+    }
+
+    yield put(fetchDashboardSuccess(dashboard));
   } catch (error) {
-    console.log('error', error);
     yield put(error.errorFunction(error));
   }
 }
 
 function* watchOrgUnitChangeAndFetchDashboard() {
-  yield takeLatest(CHANGE_ORG_UNIT_SUCCESS, fetchDashboards);
+  yield takeLatest(CHANGE_ORG_UNIT_SUCCESS, fetchDashboard);
 }
 
 function* fetchViewData(parameters, errorHandler) {
   const { infoViewKey } = parameters;
-  const state = yield select();
-  const viewConfig = selectViewConfig(state, infoViewKey);
+
   // If the view should be constrained to a date range and isn't, constrain it
+  const state = yield select();
   const { startDate, endDate } =
-    parameters.startDate || parameters.endDate ? parameters : getDefaultDates(viewConfig);
+    parameters.startDate || parameters.endDate
+      ? parameters
+      : getDefaultDates(state.global.viewConfigs[infoViewKey] || {});
 
   // Build the request url
   const {
     organisationUnitCode,
-    dashboardCode,
-    itemCode,
+    dashboardGroupId,
+    viewId,
     isExpanded,
     extraUrlParameters,
   } = parameters;
-  const { reportCode, legacy } = viewConfig;
+
   const urlParameters = {
     organisationUnitCode,
     projectCode: selectCurrentProjectCode(state),
-    legacy,
-    dashboardCode,
-    itemCode,
+    dashboardGroupId,
+    viewId,
     isExpanded,
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
     timeZone: getBrowserTimeZone(),
     ...extraUrlParameters,
   };
-  const requestResourceUrl = `report/${reportCode}?${queryString.stringify(urlParameters)}`;
+  const requestResourceUrl = `view?${queryString.stringify(urlParameters)}`;
 
   try {
     return yield call(request, requestResourceUrl, errorHandler);
@@ -900,6 +893,7 @@ function* fetchMeasureInfo(measureId) {
 
     yield put(fetchMeasureInfoSuccess(measureInfo, countryCode));
   } catch (error) {
+    console.log(error);
     yield put(fetchMeasureInfoError(error));
   }
 }
@@ -1046,9 +1040,8 @@ function* fetchEnlargedDialogData(action) {
 
   const state = yield select();
   if (selectShouldUseDashboardData(state, options)) {
-    const viewConfig = selectCurrentExpandedViewConfig(state);
     const viewData = selectCurrentExpandedViewContent(state);
-    yield put(updateEnlargedDialog(options, viewConfig, viewData));
+    yield put(updateEnlargedDialog(options, viewData));
     return;
   }
 
@@ -1056,21 +1049,20 @@ function* fetchEnlargedDialogData(action) {
     startDate,
     endDate,
     infoViewKey,
-    drillDownItemKey,
     // drillDown params
     parameterLink,
     parameterValue,
     drillDownLevel,
   } = options;
 
-  const { organisationUnitCode, dashboardCode, itemCode } = getInfoFromInfoViewKey(infoViewKey);
+  const { organisationUnitCode, dashboardGroupId, viewId } = getInfoFromInfoViewKey(infoViewKey);
 
   let parameters = {
     startDate,
     endDate,
-    itemCode,
+    viewId,
     organisationUnitCode,
-    dashboardCode,
+    dashboardGroupId,
     isExpanded: true,
     infoViewKey,
   };
@@ -1079,16 +1071,16 @@ function* fetchEnlargedDialogData(action) {
   if (drillDownLevel > 0) {
     const { global } = yield select();
 
-    const drillDownViewConfig = global.viewConfigs[drillDownItemKey];
+    const drillDownConfigKey = `${infoViewKey}_${drillDownLevel}`;
+    const drillDownViewConfig = global.viewConfigs[drillDownConfigKey];
     const drillDownDates = getDefaultDrillDownDates(drillDownViewConfig, startDate, endDate);
 
     parameters = {
       ...parameters,
-      infoViewKey: drillDownItemKey,
-      itemCode: drillDownViewConfig.code,
       extraUrlParameters: { drillDownLevel, [parameterLink]: parameterValue },
       startDate: drillDownDates.startDate,
       endDate: drillDownDates.endDate,
+      infoViewKey: drillDownConfigKey,
     };
   }
 
@@ -1099,10 +1091,7 @@ function* fetchEnlargedDialogData(action) {
 
   // If the expanded view has changed, don't update the enlargedDialog's viewContent
   if (viewData && newInfoViewKey === infoViewKey) {
-    const viewConfig = drillDownLevel
-    ? selectViewConfig(state, drillDownItemKey)
-    : selectCurrentExpandedViewConfig(state);
-    yield put(updateEnlargedDialog(action.options, viewConfig, viewData));
+    yield put(updateEnlargedDialog(action.options, viewData));
   }
 }
 

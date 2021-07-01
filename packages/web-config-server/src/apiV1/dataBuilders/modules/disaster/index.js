@@ -3,3 +3,4 @@ export { disasterAffectedOrganisationOperationalData } from './disasterAffectedO
 export { disasterSurveyResponseDownloads } from './disasterSurveyResponseDownloads';
 export { countDisasterAffectedFacilitiesByType } from './countDisasterAffectedFacilitiesByType';
 export { countDisasterAffectedFacilitiesByStatus } from './countDisasterAffectedFacilitiesByStatus';
+export { compareValuesByDisasterDate } from './compareValuesByDisasterDate';

@@ -10,12 +10,10 @@ export class RouteHandler {
   constructor(req, res) {
     this.req = req;
 
-    this.params = req.params;
     this.query = req.query;
     this.models = req.models;
     this.res = res;
     this.entity = null;
-    this.project = null;
   }
 
   // can be overridden by subclasses with specific permissions checks
@@ -28,11 +26,9 @@ export class RouteHandler {
     }
     this.permissionsChecker = new PermissionsChecker(
       this.models,
-      this.params,
       this.query,
       this.req.userHasAccess,
       this.entity,
-      this.project,
     );
     try {
       await this.permissionsChecker.checkPermissions();
@@ -43,14 +39,11 @@ export class RouteHandler {
 
   async handleRequest() {
     // Fetch permissions
-    const entityCode = this.query?.entityCode || this.query?.organisationUnitCode;
+    const { organisationUnitCode: entityCode } = this.query;
     this.entity = await this.models.entity.findOne({ code: entityCode });
     if (!this.entity) {
       throw new ValidationError(`Entity ${entityCode} could not be found`);
     }
-
-    this.project = await this.fetchAndCacheProject();
-
     await this.checkPermissions();
     // if a 'buildResponse' is defined by the subclass, run it and respond, otherwise assume the
     // subclass will override handleRequest directly and respond itself
@@ -61,18 +54,10 @@ export class RouteHandler {
   }
 
   // arrow functions to avoid binding issues by callers e.g. via this.routeHandler.fetchProject
-  fetchAndCacheProject = async () => {
-    if (!this.project) {
-      this.project = await this.models.project.findOne({
-        code: this.query.projectCode || 'explore',
-      });
-    }
+  fetchProject = async () =>
+    this.models.project.findOne({ code: this.query.projectCode || 'explore' });
 
-    return this.project;
-  };
+  fetchHierarchyId = async () => (await this.fetchProject()).entity_hierarchy_id;
 
-  fetchHierarchyId = async () => (await this.fetchAndCacheProject()).entity_hierarchy_id;
-
-  fetchTypesExcludedFromWebFrontend = project =>
-    project?.config?.frontendExcludedTypes ?? this.models.entity.typesExcludedFromWebFrontend;
+  fetchTypesExcludedFromWebFrontend = project => project?.config?.frontendExcludedTypes ?? this.models.entity.typesExcludedFromWebFrontend;
 }

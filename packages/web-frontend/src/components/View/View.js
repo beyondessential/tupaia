@@ -1,25 +1,39 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+/**
+ * Tupaia Web
+ * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
+ * This source code is licensed under the AGPL-3.0 license
+ * found in the LICENSE file in the root directory of this source tree.
  */
+
+/**
+ *
+ * Chart
+ *
+ * Renders specified chart or info and with given data
+ */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment';
-import { CHART_TYPES } from '@tupaia/ui-components/lib/chart';
+
 import { VIEW_STYLES } from '../../styles';
 import { OverlayView } from '../../utils';
 import { NoDataMessage } from './NoDataMessage';
 import { VIEW_CONTENT_SHAPE } from './propTypes';
 import { DashboardItemExpanderButton } from '../DashboardItemExpanderButton';
 import { DashboardItemInfoButton } from '../DashboardItemInfoButton';
-import { getViewWrapper, transformDataForViewType, getIsMatrix } from './utils';
+import { CHART_TYPES } from './ChartWrapper/chartTypes';
+import { getViewWrapper, getIsSingleValue, getIsMatrix } from './utils';
 import { Alert, AlertAction, AlertLink } from '../Alert';
-import { ViewTitle } from './Typography';
 
 const viewHasData = viewContent => {
-  const { chartType, data } = viewContent;
+  const { chartType, data, value } = viewContent;
+  // For any single value view, return true if there is a value in viewContent
+  if (getIsSingleValue(viewContent)) {
+    return value !== undefined && value !== null;
+  }
 
   // For any matrix, return true to display the placeholder
   if (getIsMatrix(viewContent)) {
@@ -163,11 +177,11 @@ export class View extends Component {
       const periodDependent = startDate && endDate;
       return (
         <div data-testid="view" style={viewContainerStyle}>
-          <div>
-            <ViewTitle>{viewContent.name}</ViewTitle>
+          <h2 style={VIEW_STYLES.title}>
+            {viewContent.name}
             <NoDataMessage viewContent={viewContent} />
             {periodDependent && expandButton}
-          </div>
+          </h2>
         </div>
       );
     }
@@ -195,19 +209,17 @@ export class View extends Component {
         </div>
       ) : null;
 
-    const title = this.getHasTitle() && <ViewTitle>{viewContent.name}</ViewTitle>;
+    const title = this.getHasTitle() && <div style={VIEW_STYLES.title}>{viewContent.name}</div>;
 
     const showPeriodRange = this.getHasPeriod() && (
       <div style={VIEW_STYLES.periodRange}>{formatPeriodRange(viewContent.period)}</div>
     );
 
-    const newViewContent = transformDataForViewType(viewContent);
-
     return (
       <div data-testid="view" style={getContainerStyle(viewContainerStyle, viewContent)}>
         <OverlayView>
           {title}
-          <ViewWrapper viewContent={newViewContent} />
+          <ViewWrapper viewContent={viewContent} />
           {showPeriodRange}
           {showDescription}
           {showInfoIcon}
@@ -219,6 +231,7 @@ export class View extends Component {
 }
 
 View.propTypes = {
+  viewConfig: PropTypes.shape({}).isRequired,
   isSidePanelExpanded: PropTypes.bool,
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
   onEnlarge: PropTypes.func,
