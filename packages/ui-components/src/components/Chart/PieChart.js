@@ -50,18 +50,30 @@ const Heading = styled(Typography)`
   color: #2c3236;
 `;
 
+const Item = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+`;
+
+const Box = styled.div`
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 5px;
+`;
+
 const Text = styled(Typography)`
-  list-style: none;
   font-size: 0.875rem;
   line-height: 1rem;
-  margin-bottom: 0.5rem;
+  color: #333;
 `;
 
 const makeCustomTooltip = ({ valueType, labelType }) => {
   const valueTypeForLabel = labelType || valueType;
 
   return props => {
-    const { active, payload, label, viewContent } = props;
+    const { active, payload } = props;
 
     if (!active || !payload || !payload.length) {
       return null;
@@ -74,9 +86,10 @@ const makeCustomTooltip = ({ valueType, labelType }) => {
     return (
       <TooltipContainer>
         <Heading>{name}</Heading>
-        <Text style={{ color: fill }}>
-          {formatDataValueByType({ value, metadata }, valueTypeForLabel)}
-        </Text>
+        <Item>
+          <Box style={{ background: fill }} />
+          <Text>{formatDataValueByType({ value, metadata }, valueTypeForLabel)}</Text>
+        </Item>
       </TooltipContainer>
     );
   };
