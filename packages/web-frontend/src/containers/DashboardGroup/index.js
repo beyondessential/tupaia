@@ -39,37 +39,35 @@ export default class DashboardGroup extends Component {
     const { tab, isSidePanelExpanded } = this.props;
 
     if (!tab) return null;
-    const subTabs = Object.values(tab);
-    if (subTabs.length < 1) return null;
-    // Get an array of all views
-    const allViews = subTabs.reduce((views, subTab) => {
-      const { dashboardGroupId, organisationUnitCode, project } = subTab;
-      return views.concat(
-        // Seed each view with dashboardGroupId from it's subTab
-        subTab.views.map(view => ({ ...view, dashboardGroupId, organisationUnitCode, project })),
-      );
-    }, []);
-    // Filter out views that have the same viewId (removes duplicates across subTabs)
-    // Note this is really inefficient, effectively a loop within a loop. O(n^2).
-    const uniqueViews = allViews
-      .filter(view => !view.drillDownLevel)
-      .filter((view, index, arr) => arr.indexOf(view) === index);
 
+    const { dashboardCode, entityCode: organisationUnitCode, project } = tab;
+
+    const drillDownItemCodes = tab.items
+      .filter(view => !!view.drillDown?.itemCode)
+      .map(view => view.drillDown?.itemCode);
     // Map views to DashboardItem containers
-    const infoViews = uniqueViews.map(view => {
-      const uniqueViewId = getUniqueViewId(view);
-      if (!view.requiresDataFetch) {
-        return <StateDashboardItem viewContent={{ ...view }} key={uniqueViewId} />;
-      }
-      return (
-        <DashboardItem
-          viewConfig={view}
-          infoViewKey={uniqueViewId}
-          key={uniqueViewId}
-          isSidePanelExpanded={isSidePanelExpanded}
-        />
-      );
-    });
+    const infoViews = tab.items
+      .filter(view => !drillDownItemCodes.includes(view.code))
+      .map(view => {
+        const uniqueViewId = getUniqueViewId(organisationUnitCode, dashboardCode, view.code);
+        if (view.noDataFetch) {
+          return <StateDashboardItem viewContent={{ ...view }} key={uniqueViewId} />;
+        }
+
+        return (
+          <DashboardItem
+            viewConfig={{
+              ...view,
+              project,
+              dashboardCode,
+              organisationUnitCode,
+            }}
+            infoViewKey={uniqueViewId}
+            key={uniqueViewId}
+            isSidePanelExpanded={isSidePanelExpanded}
+          />
+        );
+      });
     return infoViews;
   }
 

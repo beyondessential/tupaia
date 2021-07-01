@@ -37,7 +37,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from 'recharts';
-import { OFF_WHITE, CHART_BLUES, CHART_COLOR_PALETTE, VIEW_CONTENT_SHAPE } from './constants';
+import { OFF_WHITE, CHART_COLOR_PALETTE, VIEW_CONTENT_SHAPE } from './constants';
 import { getPieLegend } from './Legend';
 import { isMobile } from './utils';
 import { TooltipContainer } from './TooltipContainer';
@@ -47,20 +47,33 @@ const Heading = styled(Typography)`
   font-size: 0.875rem;
   line-height: 1rem;
   margin-bottom: 0.5rem;
+  color: #2c3236;
+`;
+
+const Item = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+`;
+
+const Box = styled.div`
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 5px;
 `;
 
 const Text = styled(Typography)`
-  list-style: none;
   font-size: 0.875rem;
   line-height: 1rem;
-  margin-bottom: 0.5rem;
+  color: #333;
 `;
 
 const makeCustomTooltip = ({ valueType, labelType }) => {
   const valueTypeForLabel = labelType || valueType;
 
   return props => {
-    const { active, payload, label, viewContent } = props;
+    const { active, payload } = props;
 
     if (!active || !payload || !payload.length) {
       return null;
@@ -73,9 +86,10 @@ const makeCustomTooltip = ({ valueType, labelType }) => {
     return (
       <TooltipContainer>
         <Heading>{name}</Heading>
-        <Text style={{ color: fill }}>
-          {formatDataValueByType({ value, metadata }, valueTypeForLabel)}
-        </Text>
+        <Item>
+          <Box style={{ background: fill }} />
+          <Text>{formatDataValueByType({ value, metadata }, valueTypeForLabel)}</Text>
+        </Item>
       </TooltipContainer>
     );
   };
@@ -85,7 +99,7 @@ const chartColorAtIndex = (colorArray, index) => {
   return colorArray[index % colorArray.length];
 };
 
-export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick }) => {
+export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, legendPosition }) => {
   const [activeIndex, setActiveIndex] = useState(-1);
 
   const handleMouseEnter = (event, index) => {
@@ -113,8 +127,10 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick }) 
         if (!label) label = name;
 
         const shouldShowValue = isMobile() && isEnlarged;
+        const metadata = item[`${name}_metadata`];
+
         const labelSuffix = shouldShowValue
-          ? ` (${formatDataValueByType({ value: item.value }, valueType)})`
+          ? ` (${formatDataValueByType({ value: item.value, metadata }, valueType)})`
           : '';
 
         return {
@@ -126,7 +142,7 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick }) 
       .sort((a, b) => b.value - a.value);
   };
 
-  const palette = isExporting || isEnlarged ? CHART_COLOR_PALETTE : CHART_BLUES;
+  const palette = CHART_COLOR_PALETTE;
   const chartColors = Object.values(palette);
   const validData = getValidData();
 
@@ -135,11 +151,11 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick }) 
   // This makes the tooltips touch the bottom of the container
   // (and just looks a bit weird). So, bump it up by 20px.
   const offsetStyle = isEnlarged && !isMobile() && !isExporting ? { position: 'relative' } : null;
-
   const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
+  const height = isExporting || (isEnlarged && isMobile()) ? 320 : undefined;
 
   return (
-    <ResponsiveContainer width="100%" aspect={responsiveStyle}>
+    <ResponsiveContainer width="100%" height={height} aspect={responsiveStyle}>
       <BasePieChart style={offsetStyle}>
         <Pie
           dataKey="value"
@@ -162,11 +178,16 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick }) 
         </Pie>
         <Tooltip content={makeCustomTooltip(viewContent)} />
         <Legend
-          content={getPieLegend({ chartConfig: viewContent.chartConfig })}
+          content={getPieLegend({
+            chartConfig: viewContent.chartConfig,
+            isEnlarged,
+            isExporting,
+            legendPosition,
+          })}
           onMouseOver={handleMouseEnter}
           onMouseOut={handleMouseOut}
-          verticalAlign="top"
-          align="left"
+          verticalAlign={legendPosition === 'bottom' ? 'bottom' : 'top'}
+          align={legendPosition === 'bottom' ? 'center' : 'left'}
         />
       </BasePieChart>
     </ResponsiveContainer>
@@ -178,10 +199,12 @@ PieChart.propTypes = {
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,
   onItemClick: PropTypes.func,
+  legendPosition: PropTypes.string,
 };
 
 PieChart.defaultProps = {
   isEnlarged: false,
   isExporting: false,
   onItemClick: () => {},
+  legendPosition: 'bottom',
 };

@@ -26,6 +26,11 @@ const Heading = styled(Typography)`
   font-size: 0.875rem;
   line-height: 1rem;
   margin-bottom: 0.5rem;
+  color: #2c3236;
+`;
+
+const Text = styled(Typography)`
+  color: #2c3236;
 `;
 
 const List = styled.ul`
@@ -34,10 +39,20 @@ const List = styled.ul`
 `;
 
 const ListItem = styled.li`
+  display: flex;
+  align-items: center;
   list-style: none;
   font-size: 0.875rem;
   line-height: 1rem;
   margin-bottom: 0.5rem;
+  color: #333;
+`;
+
+const Box = styled.div`
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 5px;
 `;
 
 const MultiValueTooltip = ({
@@ -69,7 +84,8 @@ const MultiValueTooltip = ({
     const metadata = data[`${dataKey}_metadata`] || data[`${data.name}_metadata`] || {};
 
     return (
-      <ListItem key={dataKey} style={{ color }}>
+      <ListItem key={dataKey}>
+        <Box style={{ background: color }} />
         {formatLabelledValue(label, value, valueTypeForLabel, {
           presentationOptions,
           ...metadata,
@@ -101,12 +117,12 @@ const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }
   return (
     <TooltipContainer>
       {getIsTimeSeries([payload[0].payload]) && periodGranularity ? (
-        <div>
-          <p>{formatTimestampForChart(timestamp, periodGranularity)}</p>
-          {formatDataValueByType({ value, metadata }, valueTypeForLabel)}
-        </div>
+        <>
+          <Heading>{formatTimestampForChart(timestamp, periodGranularity)}</Heading>
+          <Text>{formatDataValueByType({ value, metadata }, valueTypeForLabel)}</Text>
+        </>
       ) : (
-        formatLabelledValue(name, value, valueTypeForLabel, metadata)
+        <Heading>{formatLabelledValue(name, value, valueTypeForLabel, metadata)}</Heading>
       )}
     </TooltipContainer>
   );
@@ -115,8 +131,8 @@ const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }
 export const Tooltip = props => {
   const { payload, active, presentationOptions } = props;
 
-  const data = payload || []; // This is to hancle when recharts overrides the payload as null
-  const filteredPayload = data.filter(({ value }) => value !== undefined);
+  const data = payload || []; // This is to handle when recharts overrides the payload as null
+  const filteredPayload = data.filter(({ value }) => ![null, undefined].includes(value));
 
   if (active && filteredPayload.length >= 1) {
     if (data.length === 1 && !presentationOptions) {

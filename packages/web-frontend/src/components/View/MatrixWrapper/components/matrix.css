@@ -7,6 +7,6 @@
 .matrix-input::-webkit-search-decoration,
 .matrix-input::-webkit-search-cancel-button,
 .matrix-input::-webkit-search-results-button,
-.matrix-input::-webkit-search-results-decoration { 
-  display: none; 
+.matrix-input::-webkit-search-results-decoration {
+  display: none;
 }

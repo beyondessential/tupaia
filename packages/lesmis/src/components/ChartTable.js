@@ -10,11 +10,14 @@ import { Chart, Table } from '@tupaia/ui-components/lib/chart';
 import { FetchLoader } from './FetchLoader';
 
 const Wrapper = styled.div`
-  flex: 1;
   display: flex;
+  flex: 1;
+  overflow: auto;
 `;
 
-const ChartWrapper = styled(Wrapper)`
+const ChartWrapper = styled.div`
+  display: flex;
+  flex: 1;
   padding: 0.25rem 1.875rem 0;
 
   .MuiAlert-root {
@@ -32,7 +35,7 @@ export const ChartTable = ({ isLoading, isError, error, viewContent, selectedTab
   <FetchLoader isLoading={isLoading} isError={isError} error={error}>
     {selectedTab === TABS.CHART ? (
       <ChartWrapper>
-        <Chart viewContent={viewContent} />
+        <Chart viewContent={viewContent} legendPosition="top" />
       </ChartWrapper>
     ) : (
       <Wrapper>
