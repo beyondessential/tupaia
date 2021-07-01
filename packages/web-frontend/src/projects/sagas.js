@@ -11,6 +11,7 @@ export function* fetchProjectData() {
     const { projects } = yield call(request, 'projects', fetchProjectsError);
     yield put(setProjects(projects));
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error(error);
   }
 }
