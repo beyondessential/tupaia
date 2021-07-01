@@ -161,7 +161,7 @@ export const DashboardReportModal = ({
                   isLoading={isLoading}
                   startDate={startDate}
                   endDate={endDate}
-                  granularity={viewContent?.granularity}
+                  granularity={periodGranularity}
                   onSetDates={handleDatesChange}
                 />
               </FlexStart>
