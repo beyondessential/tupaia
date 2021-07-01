@@ -127,8 +127,10 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
         if (!label) label = name;
 
         const shouldShowValue = isMobile() && isEnlarged;
+        const metadata = item[`${name}_metadata`];
+
         const labelSuffix = shouldShowValue
-          ? ` (${formatDataValueByType({ value: item.value }, valueType)})`
+          ? ` (${formatDataValueByType({ value: item.value, metadata }, valueType)})`
           : '';
 
         return {
