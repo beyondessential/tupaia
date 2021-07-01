@@ -59,7 +59,7 @@ const Button = styled(MuiButton)`
 const Label = styled(Button)`
   padding-left: 1rem;
   padding-right: 1rem;
-  min-width: 11.25rem;
+  min-width: 8rem;
   pointer-events: none;
 `;
 
