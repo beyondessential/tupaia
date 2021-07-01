@@ -35,7 +35,7 @@ export class AreaTooltip extends Component {
   }
 
   render() {
-    const { permanent, onMouseOver, onMouseOut, text, sticky } = this.props;
+    const { permanent, onMouseOver, onMouseOut, sticky, children } = this.props;
 
     return (
       <Tooltip
@@ -53,7 +53,7 @@ export class AreaTooltip extends Component {
           this.ref = r;
         }}
       >
-        <span>{text}</span>
+        {children}
       </Tooltip>
     );
   }
@@ -62,9 +62,9 @@ export class AreaTooltip extends Component {
 AreaTooltip.propTypes = {
   permanent: PropTypes.bool,
   sticky: PropTypes.bool,
-  text: PropTypes.string.isRequired,
   onMouseOver: PropTypes.func,
   onMouseOut: PropTypes.func,
+  children: PropTypes.node.isRequired,
 };
 
 AreaTooltip.defaultProps = {

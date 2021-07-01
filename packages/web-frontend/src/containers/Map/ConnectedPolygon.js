@@ -62,29 +62,50 @@ class ConnectedPolygon extends Component {
   }
 
   getTooltip(name) {
-    const {
-      isChildArea,
-      hasMeasureData,
-      orgUnitMeasureData,
-      measureOptions,
-      permanentLabels,
-    } = this.props;
+    const { isChildArea, hasMeasureData, orgUnitMeasureData, measureOptions, permanentLabels } =
+      this.props;
     const hasMeasureValue = orgUnitMeasureData || orgUnitMeasureData === 0;
 
     // don't render tooltips if we have a measure loaded
     // and don't have a value to display in the tooltip (ie: radius overlay)
     if (hasMeasureData && !hasMeasureValue) return null;
 
-    const text = hasMeasureValue
+    const texts = [];
+    const areaText = hasMeasureValue
       ? `${name}: ${getSingleFormattedValue(orgUnitMeasureData, measureOptions)}`
       : name;
+    texts.push(
+      <div>
+        {areaText}
+        <br />
+      </div>,
+    );
 
+    if (measureOptions[0] && measureOptions[0].showMetadataOnTooltip) {
+      const { metadata } = orgUnitMeasureData;
+      const formattedMetadata = { ...metadata };
+      const { titles } = measureOptions[0].showMetadataOnTooltip;
+      if (titles && metadata) {
+        Object.entries(titles).forEach(([key, value]) => {
+          formattedMetadata[value] = metadata[key];
+          delete formattedMetadata[key];
+        });
+      }
+      const metadataTexts = Object.entries(formattedMetadata).map(([key, value]) => (
+        <div>
+          {`${key}: ${value}`}
+          <br />
+        </div>
+      ));
+      texts.push(...metadataTexts);
+    }
     return (
       <AreaTooltip
         permanent={permanentLabels && isChildArea && !hasMeasureValue}
         sticky={!permanentLabels}
-        text={text}
-      />
+      >
+        <div>{texts}</div>
+      </AreaTooltip>
     );
   }
 
