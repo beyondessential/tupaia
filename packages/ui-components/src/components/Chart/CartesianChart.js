@@ -81,6 +81,16 @@ const CHART_TYPE_TO_CHART = {
 const getRealDataKeys = chartConfig =>
   Object.keys(chartConfig).filter(key => key !== LEGEND_ALL_DATA_KEY);
 
+const getLegendAlignment = (legendPosition, isExporting) => {
+  if (isExporting) {
+    return { verticalAlign: 'top', align: 'center' };
+  }
+  if (legendPosition === 'bottom') {
+    return { verticalAlign: 'bottom', align: 'center' };
+  }
+  return { verticalAlign: 'top', align: 'left' };
+};
+
 /**
  * Cartesian Chart types using recharts
  * @see https://recharts.org
@@ -198,8 +208,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
         />
         {hasLegend && isEnlarged && (
           <Legend
-            verticalAlign={legendPosition === 'bottom' ? 'bottom' : 'top'}
-            align={legendPosition === 'bottom' ? 'center' : 'left'}
+            {...getLegendAlignment(legendPosition, isExporting)}
             content={getCartesianLegend({
               chartConfig,
               getIsActiveKey,
