@@ -21,20 +21,24 @@ const SLOW_NATIONAL_DASHBOARD_ITEMS = [
   'LESMIS_student_gender_stacked_gpi',
 ];
 
-const setEntityTypesForDashboardItems = (db, entityTypes, dashboardItems) =>
+const OLD_ENTITY_TYPES = '{country,district,sub_district}';
+const NEW_ENTITY_TYPES = '{district,sub_district}';
+
+const setEntityTypesForDashboardItems = (db, oldEntityTypes, newEntityTypes, dashboardItems) =>
   db.runSql(`
     UPDATE dashboard_relation
-    SET entity_types = '${entityTypes}'
+    SET entity_types = '${newEntityTypes}'
     WHERE child_id IN (
       SELECT id FROM dashboard_item
       WHERE code IN (${arrayToDbString(dashboardItems)})
-    );
+    ) AND entity_types = '${oldEntityTypes}';
 `);
 
 exports.up = function (db) {
   return setEntityTypesForDashboardItems(
     db,
-    '{district,sub_district}',
+    OLD_ENTITY_TYPES,
+    NEW_ENTITY_TYPES,
     SLOW_NATIONAL_DASHBOARD_ITEMS,
   );
 };
@@ -42,7 +46,8 @@ exports.up = function (db) {
 exports.down = function (db) {
   return setEntityTypesForDashboardItems(
     db,
-    '{country,district,sub_district}',
+    NEW_ENTITY_TYPES,
+    OLD_ENTITY_TYPES,
     SLOW_NATIONAL_DASHBOARD_ITEMS,
   );
 };
