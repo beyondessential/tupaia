@@ -175,7 +175,7 @@ const DISTRICT_LEVEL_PRIMARY = {
   },
   reportConfig: generateSummaryReportConfig({
     entityLevel: 'district',
-    ...GIR_CONFIG_UPPER_SECONDARY,
+    ...GIR_CONFIG_PRIMARY,
   }),
   entityTypes: ['sub_district'],
 };
@@ -187,7 +187,7 @@ const DISTRICT_LEVEL_LOWER_SECONDARY = {
   },
   reportConfig: generateSummaryReportConfig({
     entityLevel: 'district',
-    ...GIR_CONFIG_UPPER_SECONDARY,
+    ...GIR_CONFIG_LOWER_SECONDARY,
   }),
   entityTypes: ['sub_district'],
 };
@@ -211,7 +211,7 @@ const PROVINCE_LEVEL_PRIMARY = {
   },
   reportConfig: generateSummaryReportConfig({
     entityLevel: 'province',
-    ...GIR_CONFIG_UPPER_SECONDARY,
+    ...GIR_CONFIG_PRIMARY,
   }),
   entityTypes: ['district'],
 };
@@ -223,7 +223,7 @@ const PROVINCE_LEVEL_LOWER_SECONDARY = {
   },
   reportConfig: generateSummaryReportConfig({
     entityLevel: 'province',
-    ...GIR_CONFIG_UPPER_SECONDARY,
+    ...GIR_CONFIG_LOWER_SECONDARY,
   }),
   entityTypes: ['district'],
 };
@@ -247,7 +247,7 @@ const COUNTRY_LEVEL_PRIMARY = {
   },
   reportConfig: generateSummaryReportConfig({
     entityLevel: 'country',
-    ...GIR_CONFIG_UPPER_SECONDARY,
+    ...GIR_CONFIG_PRIMARY,
   }),
   entityTypes: ['country'],
 };
@@ -259,7 +259,7 @@ const COUNTRY_LEVEL_LOWER_SECONDARY = {
   },
   reportConfig: generateSummaryReportConfig({
     entityLevel: 'country',
-    ...GIR_CONFIG_UPPER_SECONDARY,
+    ...GIR_CONFIG_LOWER_SECONDARY,
   }),
   entityTypes: ['country'],
 };
