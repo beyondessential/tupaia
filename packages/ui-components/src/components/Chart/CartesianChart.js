@@ -81,6 +81,16 @@ const CHART_TYPE_TO_CHART = {
 const getRealDataKeys = chartConfig =>
   Object.keys(chartConfig).filter(key => key !== LEGEND_ALL_DATA_KEY);
 
+const getLegendAlignment = (legendPosition, isExporting) => {
+  if (isExporting) {
+    return { verticalAlign: 'top', align: 'center' };
+  }
+  if (legendPosition === 'bottom') {
+    return { verticalAlign: 'bottom', align: 'center' };
+  }
+  return { verticalAlign: 'top', align: 'left' };
+};
+
 /**
  * Cartesian Chart types using recharts
  * @see https://recharts.org
@@ -163,12 +173,15 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
 
   const ChartContainer = CHART_TYPE_TO_CONTAINER[defaultChartType];
 
+  const hasLegend = hasDataSeries || renderLegendForOneItem;
+  const height = isExporting || (isEnlarged && hasLegend && isMobile()) ? 320 : undefined;
+
   /**
    * Unfortunately, recharts does not work with wrapped components called as jsx for some reason,
    * so they are called as functions below
    */
   return (
-    <ResponsiveContainer width="100%" height={isExporting ? 320 : undefined} aspect={aspect}>
+    <ResponsiveContainer width="100%" height={height} aspect={aspect}>
       <ChartContainer
         data={filterDisabledData(data)}
         margin={
@@ -193,10 +206,9 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
             />
           }
         />
-        {(hasDataSeries || renderLegendForOneItem) && isEnlarged && (
+        {hasLegend && isEnlarged && (
           <Legend
-            verticalAlign={legendPosition === 'bottom' ? 'bottom' : 'top'}
-            align={legendPosition === 'bottom' ? 'center' : 'left'}
+            {...getLegendAlignment(legendPosition, isExporting)}
             content={getCartesianLegend({
               chartConfig,
               getIsActiveKey,
