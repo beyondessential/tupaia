@@ -181,7 +181,7 @@ export const DashboardReportTabView = ({
                         dashboardCode={dashboard.dashboardCode}
                         dashboardName={dashboard.dashboardName}
                         reportCode={item.reportCode}
-                        year={selectedYear}
+                        year={year}
                         periodGranularity={item.periodGranularity}
                         viewConfig={item}
                       />
