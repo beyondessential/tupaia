@@ -10,7 +10,7 @@ import { YAxis as YAxisComponent } from 'recharts';
 import { DARK_BLUE, VALUE_TYPES } from './constants';
 import { getContrastTextColor } from './utils';
 
-const { PERCENTAGE } = VALUE_TYPES;
+const { PERCENTAGE, NUMBER } = VALUE_TYPES;
 
 const Y_AXIS_IDS = {
   left: 0,
@@ -56,12 +56,12 @@ const calculateYAxisDomain = ({ min, max }) => {
 
 const containsClamp = ({ min, max }) => min.type === 'clamp' || max.type === 'clamp';
 
-const renderYAxisLabel = (label, orientation, fillColor) => {
+const renderYAxisLabel = (label, orientation) => {
   if (label)
     return {
       value: label,
       angle: -90,
-      fill: fillColor,
+      fill: 'white',
       style: { textAnchor: 'middle' },
       position: orientation === 'right' ? 'insideRight' : 'insideLeft',
     };
@@ -85,20 +85,20 @@ const YAxis = ({ config = {}, viewContent, isExporting }) => {
     <YAxisComponent
       key={yAxisId}
       ticks={ticks}
-      tickSize={6}
+      tickSize={10}
       yAxisId={yAxisId}
       orientation={orientation}
       domain={calculateYAxisDomain(yAxisDomain)}
       allowDataOverflow={valueType === PERCENTAGE || containsClamp(yAxisDomain)}
       // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
-      label={renderYAxisLabel(yName || yAxisLabel, orientation, fillColor)}
+      label={renderYAxisLabel(yName || yAxisLabel, orientation)}
       tickFormatter={value =>
         formatDataValueByType(
           {
             value,
             metadata: { presentationOptions },
           },
-          valueType || axisValueType,
+          (valueType !== NUMBER ? valueType : 'default') || axisValueType,
         )
       }
       interval={isExporting ? 0 : 'preserveStartEnd'}

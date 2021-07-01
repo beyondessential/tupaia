@@ -142,19 +142,15 @@ export const Table = ({ viewContent, className }) => {
                   ? formatTimestampForChart(row.timestamp, periodGranularity)
                   : row.name}
               </MuiTableCell>
-              {columns.map(columnKey => {
-                const value = row[columnKey];
-                const columnConfig = chartConfig[columnKey];
+              {columns.map(column => {
+                const value = row[column];
 
                 const rowValue =
                   value === undefined
                     ? 'No Data'
-                    : formatDataValueByType(
-                        { value },
-                        sanitizeValueType(columnConfig?.valueType || valueType),
-                      );
+                    : formatDataValueByType({ value }, sanitizeValueType(valueType));
 
-                return <MuiTableCell key={columnKey}>{rowValue}</MuiTableCell>;
+                return <MuiTableCell key={column}>{rowValue}</MuiTableCell>;
               })}
             </MuiTableRow>
           ))}
@@ -173,7 +169,6 @@ Table.propTypes = {
     labelType: PropTypes.string,
     chartType: PropTypes.string,
     data: PropTypes.array,
-    chartConfig: PropTypes.object,
   }),
   className: PropTypes.string,
 };

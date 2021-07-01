@@ -7,7 +7,6 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import { useIsFetching } from 'react-query';
 import MuiContainer from '@material-ui/core/Container';
 import MuiDivider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
@@ -20,11 +19,9 @@ import {
   TabBarSection,
   EntityVitalsItem,
   PartnerLogo,
-  YearSelector,
 } from '../components';
-import { useUrlParams, useUrlSearchParams, useUrlSearchParam } from '../utils';
+import { useUrlParams, useUrlSearchParams } from '../utils';
 import { useVitalsData, useEntityData } from '../api/queries';
-import { DEFAULT_DATA_YEAR } from '../constants';
 
 const StyledSelect = styled(Select)`
   margin: 0 1rem 0 0;
@@ -32,10 +29,10 @@ const StyledSelect = styled(Select)`
   text-transform: capitalize;
 `;
 
-const TabTemplate = ({ TabBarLeftSection, Body }) => (
+const TabTemplate = ({ TabSelector, Body }) => (
   <>
     <TabBar>
-      <TabBarLeftSection />
+      <TabBarSection>{TabSelector}</TabBarSection>
     </TabBar>
     <MuiBox p={5} minHeight={500}>
       {Body}
@@ -44,7 +41,7 @@ const TabTemplate = ({ TabBarLeftSection, Body }) => (
 );
 
 TabTemplate.propTypes = {
-  TabBarLeftSection: PropTypes.node.isRequired,
+  TabSelector: PropTypes.node.isRequired,
   Body: PropTypes.node.isRequired,
 };
 
@@ -62,28 +59,11 @@ const getProfileLabel = entityType => {
   }
 };
 
-const subDashboardFilters = {
-  essdpPlan: ({ dashboardCode }) => dashboardCode.startsWith('LESMIS_ESSDP_Plan'),
-  essdpEarlyChildhood: ({ dashboardCode }) =>
-    dashboardCode.startsWith('LESMIS_ESSDP_EarlyChildhood'),
-  essdpPrimary: ({ dashboardCode }) => dashboardCode.startsWith('LESMIS_ESSDP_Primary'),
-  essdpLowerSecondary: ({ dashboardCode }) =>
-    dashboardCode.startsWith('LESMIS_ESSDP_LowerSecondary'),
-  essdpUpperSecondary: ({ dashboardCode }) =>
-    dashboardCode.startsWith('LESMIS_ESSDP_UpperSecondary'),
-  internationalSDGs: ({ dashboardCode }) => dashboardCode.startsWith('LESMIS_International_SDGs'),
-};
-
 const makeDropdownOptions = entityType => [
   {
     value: 'profile',
     label: getProfileLabel(entityType),
     Component: DashboardReportTabView,
-    ComponentProps: {
-      filterSubDashboards: ({ dashboardCode }) =>
-        !Object.values(subDashboardFilters).find(filter => filter({ dashboardCode })), // those not included anywhere else
-    },
-    useYearSelector: true,
   },
   {
     value: 'indicators',
@@ -96,45 +76,24 @@ const makeDropdownOptions = entityType => [
     label: 'ESSDP Plan 2021-25 M&E Framework',
     Component: TabTemplate,
     Body: '9th Education Sector and Sports Development Plan 2021-25 M&E Framework',
-    ComponentProps: {
-      filterSubDashboards: subDashboardFilters.essdpPlan,
-    },
   },
   {
-    value: 'essdpEarlyChildhood',
+    value: 'earlyChildhood',
     label: 'ESSDP Early childhood education sub-sector',
-    Component: DashboardReportTabView,
+    Component: TabTemplate,
     Body: 'ESSDP Early childhood education sub-sector',
-    ComponentProps: {
-      filterSubDashboards: subDashboardFilters.essdpEarlyChildhood,
-    },
   },
   {
-    value: 'essdpPrimary',
+    value: 'primary',
     label: 'ESSDP Primary sub-sector',
-    Component: DashboardReportTabView,
+    Component: TabTemplate,
     Body: 'ESSDP Primary sub-sector',
-    ComponentProps: {
-      filterSubDashboards: subDashboardFilters.essdpPrimary,
-    },
   },
   {
-    value: 'essdpLowerSecondary',
+    value: 'secondary',
     label: 'ESSDP Lower secondary sub-sector',
-    Component: DashboardReportTabView,
+    Component: TabTemplate,
     Body: 'ESSDP Lower secondary sub-sector',
-    ComponentProps: {
-      filterSubDashboards: subDashboardFilters.essdpLowerSecondary,
-    },
-  },
-  {
-    value: 'essdpUpperSecondary',
-    label: 'ESSDP Upper secondary sub-sector',
-    Component: DashboardReportTabView,
-    Body: 'ESSDP Upper secondary sub-sector',
-    ComponentProps: {
-      filterSubDashboards: subDashboardFilters.essdpUpperSecondary,
-    },
   },
   {
     value: 'emergency',
@@ -143,13 +102,10 @@ const makeDropdownOptions = entityType => [
     Body: 'Emergency in Education/COVID-19',
   },
   {
-    value: 'internationalSDGs',
+    value: 'international',
     label: 'International reporting on SDGs',
-    Component: DashboardReportTabView,
+    Component: TabTemplate,
     Body: 'International reporting on SDGs',
-    ComponentProps: {
-      filterSubDashboards: subDashboardFilters.internationalSDGs,
-    },
   },
 ];
 
@@ -464,18 +420,16 @@ const useDefaultDashboardTab = (selectedDashboard = null, options) => {
 };
 
 export const DashboardView = React.memo(() => {
-  const isFetching = useIsFetching('dashboardReport');
   const { entityCode } = useUrlParams();
   const { data: entityData } = useEntityData(entityCode);
   const dropdownOptions = makeDropdownOptions(entityData?.type);
   const [params, setParams] = useUrlSearchParams();
-  const [selectedYear, setSelectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
 
   const vitals = useVitalsData(entityCode);
   const selectedOption = useDefaultDashboardTab(params.dashboard, dropdownOptions);
 
   const handleChange = event => {
-    setParams({ dashboard: event.target.value, subDashboard: null });
+    setParams({ dashboard: event.target.value, subDashboard: null, year: null });
   };
 
   return (
@@ -485,34 +439,23 @@ export const DashboardView = React.memo(() => {
           <VitalsView vitals={vitals} />
         </Container>
       </Wrapper>
-      {dropdownOptions.map(({ value, Body, Component, useYearSelector, ComponentProps }) => (
+      {dropdownOptions.map(({ value, Body, Component }) => (
         <TabPanel key={value} isSelected={value === selectedOption} Panel={React.Fragment}>
           <Component
             entityCode={entityCode}
-            year={useYearSelector && selectedYear}
             Body={Body}
-            TabBarLeftSection={() => (
-              <TabBarSection>
-                <StyledSelect
-                  id="dashboardtab"
-                  options={dropdownOptions}
-                  value={selectedOption}
-                  onChange={handleChange}
-                  showPlaceholder={false}
-                  SelectProps={{
-                    MenuProps: { disablePortal: true },
-                  }}
-                />
-                {useYearSelector && (
-                  <YearSelector
-                    value={selectedYear}
-                    onChange={setSelectedYear}
-                    isLoading={!!isFetching}
-                  />
-                )}
-              </TabBarSection>
-            )}
-            {...ComponentProps}
+            TabSelector={
+              <StyledSelect
+                id="dashboardtab"
+                options={dropdownOptions}
+                value={selectedOption}
+                onChange={handleChange}
+                showPlaceholder={false}
+                SelectProps={{
+                  MenuProps: { disablePortal: true },
+                }}
+              />
+            }
           />
         </TabPanel>
       ))}
