@@ -26,7 +26,7 @@ const Heading = styled(Typography)`
   font-size: 0.875rem;
   line-height: 1rem;
   margin-bottom: 0.5rem;
-  color: ${({ theme }) => (theme.palette.type === 'light' ? '#2c3236' : 'white')};
+  color: #2c3236;
 `;
 
 const Text = styled(Typography)`
@@ -39,10 +39,20 @@ const List = styled.ul`
 `;
 
 const ListItem = styled.li`
+  display: flex;
+  align-items: center;
   list-style: none;
   font-size: 0.875rem;
   line-height: 1rem;
   margin-bottom: 0.5rem;
+  color: #333;
+`;
+
+const Box = styled.div`
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 5px;
 `;
 
 const MultiValueTooltip = ({
@@ -78,7 +88,8 @@ const MultiValueTooltip = ({
     const metadata = data[`${dataKey}_metadata`] || data[`${data.name}_metadata`] || {};
 
     return (
-      <ListItem key={dataKey} style={{ color }}>
+      <ListItem key={dataKey}>
+        <Box style={{ background: color }} />
         {formatLabelledValue(label, value, valueTypeForLabel, {
           presentationOptions,
           ...metadata,

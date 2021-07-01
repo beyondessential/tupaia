@@ -153,7 +153,7 @@ export const DashboardReportTabView = ({
                 variant="scrollable"
                 scrollButtons="auto"
               >
-                {subDashboards.map(({ dashboardName: heading }) => (
+                {data.map(({ dashboardName: heading }) => (
                   <Tab key={heading} label={heading} value={heading} />
                 ))}
               </Tabs>
@@ -163,8 +163,8 @@ export const DashboardReportTabView = ({
       </StickyTabBarContainer>
       <DashboardSection ref={topRef}>
         <FetchLoader isLoading={isLoading} isError={isError} error={error}>
-          {subDashboards &&
-            subDashboards.map(dashboard => (
+          {data &&
+            data.map(dashboard => (
               <TabPanel
                 key={dashboard.dashboardName}
                 isSelected={dashboard.dashboardName === activeDashboard}
@@ -181,7 +181,7 @@ export const DashboardReportTabView = ({
                         dashboardCode={dashboard.dashboardCode}
                         dashboardName={dashboard.dashboardName}
                         reportCode={item.reportCode}
-                        year={year}
+                        year={selectedYear}
                         periodGranularity={item.periodGranularity}
                         viewConfig={item}
                       />

@@ -7,6 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
+import { isMobile } from './utils';
 
 const LegendContainer = styled.div`
   display: flex;
@@ -47,8 +48,8 @@ const LegendItem = styled(({ isExporting, ...props }) => <MuiButton {...props} /
     color: ${({ theme, isExporting }) => getLegendTextColor(theme, isExporting)};
   }
 
-  // preview styles
-  &.preview {
+  // small styles
+  &.small {
     font-size: 0.5rem;
     padding-bottom: 0.1rem;
     padding-top: 0.1rem;
@@ -71,8 +72,8 @@ const Box = styled.span`
   margin-right: 0.625rem;
   border-radius: 3px;
 
-  // preview styles
-  &.preview {
+  // small styles
+  &.small {
     width: 0.8rem;
     min-width: 0.8rem;
     height: 0.8rem;
@@ -94,11 +95,14 @@ export const getPieLegend = ({ chartConfig = {}, isEnlarged, isExporting, legend
       <LegendItem
         key={value}
         isExporting={isExporting}
-        className={isEnlarged ? 'enlarged' : 'preview'}
+        className={isEnlarged && !isMobile() ? 'enlarged' : 'small'}
         disabled
       >
         <TooltipContainer>
-          <Box className={isEnlarged ? 'enlarged' : 'preview'} style={{ background: color }} />
+          <Box
+            className={isEnlarged && !isMobile() ? 'enlarged' : 'small'}
+            style={{ background: color }}
+          />
           <Text>{getDisplayValue(chartConfig, value)}</Text>
         </TooltipContainer>
       </LegendItem>
@@ -120,11 +124,12 @@ export const getCartesianLegend = ({
           key={value}
           onClick={() => onClick(dataKey)}
           isExporting={isExporting}
+          className={isMobile() ? 'small' : 'enlarged'}
           style={{ textDecoration: getIsActiveKey(value) ? '' : 'line-through' }}
         >
           <Tooltip title="Click to filter data" placement="top" arrow>
             <TooltipContainer>
-              <Box style={{ background: color }} />
+              <Box className={isMobile() ? 'small' : 'enlarged'} style={{ background: color }} />
               <Text>{getDisplayValue(chartConfig, value)}</Text>
             </TooltipContainer>
           </Tooltip>

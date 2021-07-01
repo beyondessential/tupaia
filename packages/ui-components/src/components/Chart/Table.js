@@ -111,7 +111,7 @@ const sanitizeValueType = valueType =>
   valueType === 'fractionAndPercentage' ? 'percentage' : valueType;
 
 export const Table = ({ viewContent, className }) => {
-  const { data, xName, periodGranularity, valueType, chartConfig = {} } = viewContent;
+  const { data, xName, periodGranularity, valueType } = viewContent;
   const columns = getColumns(data);
   const dataIsTimeSeries = getIsTimeSeries(data) && periodGranularity;
 
