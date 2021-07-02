@@ -73,15 +73,17 @@ const Description = styled(Typography)`
 
 export const DashboardReportModal = ({
   name,
-  dashboardGroupName,
+  dashboardCode,
+  dashboardName,
   buttonText,
   entityCode,
-  dashboardGroupId,
-  reportId,
+  reportCode,
   periodGranularity,
+  viewConfig,
 }) => {
-  const [{ startDate, endDate, reportId: selectedReportId }, setParams] = useUrlSearchParams();
-  const isOpen = reportId === selectedReportId;
+  const { code: itemCode, legacy } = viewConfig;
+  const [{ startDate, endDate, reportCode: selectedReportCode }, setParams] = useUrlSearchParams();
+  const isOpen = reportCode === selectedReportCode;
   const [open, setOpen] = useState(isOpen);
   const [selectedTab, setSelectedTab] = useState(TABS.CHART);
   const theme = useTheme();
@@ -89,9 +91,11 @@ export const DashboardReportModal = ({
 
   const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
     entityCode,
-    dashboardGroupId,
-    reportId,
+    dashboardCode,
+    reportCode,
+    itemCode,
     periodGranularity,
+    legacy,
     startDate,
     endDate,
   });
@@ -107,11 +111,11 @@ export const DashboardReportModal = ({
     setOpen(true);
   };
 
-  // set reportId param after the modal render is rendered to improve the responsiveness
+  // set reportCode param after the modal render is rendered to improve the responsiveness
   // of the modal transition
   const onRendered = () => {
     setParams({
-      reportId,
+      reportCode,
     });
   };
 
@@ -120,7 +124,7 @@ export const DashboardReportModal = ({
     setParams({
       startDate: null,
       endDate: null,
-      reportId: null,
+      reportCode: null,
     });
   };
 
@@ -144,20 +148,20 @@ export const DashboardReportModal = ({
         TransitionComponent={Transition}
         style={{ left: fullScreen ? '0' : '6.25rem' }}
       >
-        <DialogHeader handleClose={handleClose} title={dashboardGroupName} />
+        <DialogHeader handleClose={handleClose} title={dashboardName} />
         <Wrapper>
           <Container maxWidth={false}>
             <Header>
               <Box maxWidth={580}>
                 <Heading variant="h3">{name}</Heading>
-                {viewContent?.description && <Description>{viewContent.description}</Description>}
+                {viewConfig?.description && <Description>{viewConfig.description}</Description>}
               </Box>
               <FlexStart>
                 <DateRangePicker
                   isLoading={isLoading}
                   startDate={startDate}
                   endDate={endDate}
-                  granularity={viewContent?.granularity}
+                  granularity={periodGranularity}
                   onSetDates={handleDatesChange}
                 />
               </FlexStart>
@@ -173,7 +177,7 @@ export const DashboardReportModal = ({
               </ToggleButtonGroup>
             </FlexEnd>
             <ChartTable
-              viewContent={viewContent}
+              viewContent={{ ...viewConfig, data: viewContent }}
               isLoading={isLoading}
               isError={isError}
               error={error}
@@ -189,11 +193,12 @@ export const DashboardReportModal = ({
 DashboardReportModal.propTypes = {
   name: PropTypes.string.isRequired,
   buttonText: PropTypes.string.isRequired,
-  reportId: PropTypes.string.isRequired,
+  reportCode: PropTypes.string.isRequired,
   entityCode: PropTypes.string.isRequired,
-  dashboardGroupId: PropTypes.string.isRequired,
+  dashboardCode: PropTypes.string.isRequired,
   periodGranularity: PropTypes.string,
-  dashboardGroupName: PropTypes.string.isRequired,
+  dashboardName: PropTypes.string.isRequired,
+  viewConfig: PropTypes.object.isRequired,
 };
 
 DashboardReportModal.defaultProps = {

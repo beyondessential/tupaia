@@ -17,7 +17,7 @@ export default class extends RouteHandler {
 
   async buildResponse() {
     const { includeCountryData } = this.query;
-    const project = await this.fetchProject();
+    const project = await this.fetchAndCacheProject();
 
     // If this is a project entity, get entitiesWithAccess and set them on the entity
     if (this.entity.isProject()) {
