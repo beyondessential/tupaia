@@ -51,11 +51,14 @@ const mapOverlaysMapping = [
 
 exports.up = async function (db) {
   for (const { id, numerator } of mapOverlaysMapping) {
-    const showMetadataOnTooltip = { titles: { numerator, denominator } };
+    const metadataOptions = {
+      metadataTitles: { numerator, denominator },
+      valueType: 'oneDecimalPlace',
+    };
     await db.runSql(`
       UPDATE "mapOverlay"
       SET "presentationOptions" = "presentationOptions" || '${JSON.stringify({
-        showMetadataOnTooltip,
+        metadataOptions,
       })}'::jsonb
       WHERE id = '${id}'
     `);

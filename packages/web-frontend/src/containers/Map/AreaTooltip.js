@@ -54,7 +54,7 @@ export class AreaTooltip extends Component {
           this.ref = r;
         }}
       >
-        <div style={{ display: 'block' }}>{textList}</div>
+        <div style={{ display: 'grid' }}>{textList}</div>
       </Tooltip>
     );
   }

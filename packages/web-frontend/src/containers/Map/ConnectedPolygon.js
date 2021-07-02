@@ -11,7 +11,7 @@ import { Polygon } from 'react-leaflet';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { getSingleFormattedValue } from '../../utils';
+import { getSingleFormattedValue, formatDataValue } from '../../utils';
 import { AreaTooltip } from './AreaTooltip';
 import { MAP_COLORS, BREWER_PALETTE } from '../../styles';
 import { setOrgUnit } from '../../actions';
@@ -81,16 +81,9 @@ class ConnectedPolygon extends Component {
       : name;
     texts.push(areaText);
 
-    if (
-      measureOptions[0] &&
-      measureOptions[0].showMetadataOnTooltip &&
-      orgUnitMeasureData.metadata
-    ) {
+    if (measureOptions[0] && measureOptions[0].metadataOptions && orgUnitMeasureData.metadata) {
       const { metadata } = orgUnitMeasureData;
-      const metadataTexts = this.renameMetadataKeys(
-        metadata,
-        measureOptions[0].showMetadataOnTooltip.titles,
-      );
+      const metadataTexts = this.formateMetadata(metadata, measureOptions);
       texts.push(...metadataTexts);
     }
     return (
@@ -102,15 +95,18 @@ class ConnectedPolygon extends Component {
     );
   }
 
-  renameMetadataKeys(metadata, titles) {
+  formateMetadata(metadata, measureOptions) {
     const formattedMetadata = { ...metadata };
-    if (titles) {
-      Object.entries(titles).forEach(([key, value]) => {
+    const { metadataTitles, valueType } = measureOptions[0].metadataOptions;
+    if (metadataTitles) {
+      Object.entries(metadataTitles).forEach(([key, value]) => {
         formattedMetadata[value] = metadata[key];
         delete formattedMetadata[key];
       });
     }
-    return Object.entries(formattedMetadata).map(([key, value]) => `${key}: ${value}`);
+    return Object.entries(formattedMetadata).map(
+      ([key, value]) => `${key}: ${formatDataValue(value, valueType)}`,
+    );
   }
 
   render() {

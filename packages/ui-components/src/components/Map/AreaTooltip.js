@@ -24,7 +24,7 @@ export const AreaTooltip = React.memo(({ permanent, onMouseOver, onMouseOut, tex
       onMouseOut={onMouseOut}
       onBlur={onMouseOut}
     >
-      <div style={{ display: 'block' }}>{textList}</div>
+      <div style={{ display: 'grid' }}>{textList}</div>
     </Tooltip>
   );
 });
