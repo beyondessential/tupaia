@@ -91,14 +91,11 @@ const getPieLegendDisplayValue = (chartConfig, value, item, isEnlarged, viewCont
     return chartConfig[value].label;
   }
 
-  const shouldShowValue = isMobile() && isEnlarged;
   const metadata = item[`${value}_metadata`];
+  const labelSuffix = formatDataValueByType({ value: item.value, metadata }, viewContent.valueType);
 
-  const labelSuffix = shouldShowValue
-    ? ` (${formatDataValueByType({ value: item.value, metadata }, viewContent.valueType)})`
-    : '';
-
-  return value + labelSuffix;
+  // on mobile the legend will show the actual formatDataValueByType after the label value
+  return isMobile() && isEnlarged ? `${value} ${labelSuffix}` : value;
 };
 
 export const getPieLegend = ({
