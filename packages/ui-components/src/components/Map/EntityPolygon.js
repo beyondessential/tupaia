@@ -32,7 +32,7 @@ export const EntityPolygon = ({ entity }) => {
 
   return (
     <BasicPolygon positions={region} interactive={false}>
-      <AreaTooltip text={name} />
+      <AreaTooltip texts={[name]} />
     </BasicPolygon>
   );
 };

@@ -23,7 +23,7 @@ export class EntityConnection extends ApiConnection {
   ) {
     return this.get(`hierarchy/${hierarchyName}/relatives`, {
       entities: entityCodes.join(','),
-      filter: `type:${dataSourceEntityType}`,
+      descendant_filter: `type:${dataSourceEntityType}`,
       field: 'code',
     });
   }

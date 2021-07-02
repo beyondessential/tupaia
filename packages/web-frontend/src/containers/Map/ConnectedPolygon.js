@@ -62,8 +62,13 @@ class ConnectedPolygon extends Component {
   }
 
   getTooltip(name) {
-    const { isChildArea, hasMeasureData, orgUnitMeasureData, measureOptions, permanentLabels } =
-      this.props;
+    const {
+      isChildArea,
+      hasMeasureData,
+      orgUnitMeasureData,
+      measureOptions,
+      permanentLabels,
+    } = this.props;
     const hasMeasureValue = orgUnitMeasureData || orgUnitMeasureData === 0;
 
     // don't render tooltips if we have a measure loaded
@@ -74,39 +79,38 @@ class ConnectedPolygon extends Component {
     const areaText = hasMeasureValue
       ? `${name}: ${getSingleFormattedValue(orgUnitMeasureData, measureOptions)}`
       : name;
-    texts.push(
-      <div>
-        {areaText}
-        <br />
-      </div>,
-    );
+    texts.push(areaText);
 
-    if (measureOptions[0] && measureOptions[0].showMetadataOnTooltip) {
+    if (
+      measureOptions[0] &&
+      measureOptions[0].showMetadataOnTooltip &&
+      orgUnitMeasureData.metadata
+    ) {
       const { metadata } = orgUnitMeasureData;
-      const formattedMetadata = { ...metadata };
-      const { titles } = measureOptions[0].showMetadataOnTooltip;
-      if (titles && metadata) {
-        Object.entries(titles).forEach(([key, value]) => {
-          formattedMetadata[value] = metadata[key];
-          delete formattedMetadata[key];
-        });
-      }
-      const metadataTexts = Object.entries(formattedMetadata).map(([key, value]) => (
-        <div>
-          {`${key}: ${value}`}
-          <br />
-        </div>
-      ));
+      const metadataTexts = this.renameMetadataKeys(
+        metadata,
+        measureOptions[0].showMetadataOnTooltip.titles,
+      );
       texts.push(...metadataTexts);
     }
     return (
       <AreaTooltip
         permanent={permanentLabels && isChildArea && !hasMeasureValue}
         sticky={!permanentLabels}
-      >
-        <div>{texts}</div>
-      </AreaTooltip>
+        texts={texts}
+      />
     );
+  }
+
+  renameMetadataKeys(metadata, titles) {
+    const formattedMetadata = { ...metadata };
+    if (titles) {
+      Object.entries(titles).forEach(([key, value]) => {
+        formattedMetadata[value] = metadata[key];
+        delete formattedMetadata[key];
+      });
+    }
+    return Object.entries(formattedMetadata).map(([key, value]) => `${key}: ${value}`);
   }
 
   render() {
@@ -187,6 +191,7 @@ ConnectedPolygon.propTypes = {
   orgUnitMeasureData: PropTypes.shape({
     value: PropTypes.any,
     originalValue: PropTypes.any,
+    metadata: PropTypes.any,
   }),
 };
 
