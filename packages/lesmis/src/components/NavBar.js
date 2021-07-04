@@ -57,7 +57,7 @@ export const NavBar = () => {
 
   return (
     <Container>
-      <MuiContainer maxWidth={false}>
+      <MuiContainer maxWidth="xl">
         <Inner>
           <Left>
             <MainMenu />
