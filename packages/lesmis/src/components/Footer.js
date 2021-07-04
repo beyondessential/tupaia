@@ -34,7 +34,7 @@ const date = new Date();
 
 export const Footer = () => (
   <Container>
-    <MuiContainer maxWidth={false}>
+    <MuiContainer maxWidth="xl">
       <span>&copy; {date.getFullYear()} Beyond Essential</span>
       <MuiLink href="https://tupaia.org">tupaia.org</MuiLink>
     </MuiContainer>
