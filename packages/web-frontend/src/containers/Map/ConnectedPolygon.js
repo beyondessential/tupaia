@@ -75,22 +75,19 @@ class ConnectedPolygon extends Component {
     // and don't have a value to display in the tooltip (ie: radius overlay)
     if (hasMeasureData && !hasMeasureValue) return null;
 
-    const texts = [];
     const areaText = hasMeasureValue
       ? `${name}: ${getSingleFormattedValue(orgUnitMeasureData, measureOptions)}`
       : name;
-    texts.push(areaText);
+    const metadataTexts =
+      measureOptions[0] && measureOptions[0].metadataOptions && orgUnitMeasureData.metadata
+        ? this.formateMetadata(orgUnitMeasureData.metadata, measureOptions)
+        : [];
 
-    if (measureOptions[0] && measureOptions[0].metadataOptions && orgUnitMeasureData.metadata) {
-      const { metadata } = orgUnitMeasureData;
-      const metadataTexts = this.formateMetadata(metadata, measureOptions);
-      texts.push(...metadataTexts);
-    }
     return (
       <AreaTooltip
         permanent={permanentLabels && isChildArea && !hasMeasureValue}
         sticky={!permanentLabels}
-        texts={texts}
+        texts={[areaText, ...metadataTexts]}
       />
     );
   }
