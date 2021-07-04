@@ -134,7 +134,7 @@ const makeDropdownOptions = entityType => [
     value: 'emergency',
     label: 'Emergency in Education Preparedness and Response',
     TabComponent: DashboardReportTabView,
-    ComponentProps: {
+    componentProps: {
       filterSubDashboards: ({ dashboardCode }) =>
         dashboardCode.startsWith(DASHBOARD_CODES.emergencyInEducation),
     },
