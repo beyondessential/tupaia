@@ -39,10 +39,20 @@ const List = styled.ul`
 `;
 
 const ListItem = styled.li`
+  display: flex;
+  align-items: center;
   list-style: none;
   font-size: 0.875rem;
   line-height: 1rem;
   margin-bottom: 0.5rem;
+  color: #333;
+`;
+
+const Box = styled.div`
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 5px;
 `;
 
 const MultiValueTooltip = ({
@@ -69,12 +79,17 @@ const MultiValueTooltip = ({
   const valueLabels = payload.map(({ dataKey, value, color }) => {
     const options = chartConfig && chartConfig[dataKey];
     const label = (options && options.label) || dataKey;
-    const valueTypeForLabel = labelType || valueType || get(chartConfig, [dataKey, 'valueType']);
+    const valueTypeForLabel =
+      labelType ||
+      valueType ||
+      get(chartConfig, [dataKey, 'labelType']) ||
+      get(chartConfig, [dataKey, 'valueType']);
 
     const metadata = data[`${dataKey}_metadata`] || data[`${data.name}_metadata`] || {};
 
     return (
-      <ListItem key={dataKey} style={{ color }}>
+      <ListItem key={dataKey}>
+        <Box style={{ background: color }} />
         {formatLabelledValue(label, value, valueTypeForLabel, {
           presentationOptions,
           ...metadata,
@@ -131,7 +146,11 @@ export const Tooltip = props => {
     return <MultiValueTooltip {...props} payload={filteredPayload} />;
   }
 
-  return <TooltipContainer>No Data</TooltipContainer>;
+  return (
+    <TooltipContainer>
+      <Text>No Data</Text>
+    </TooltipContainer>
+  );
 };
 
 Tooltip.propTypes = {

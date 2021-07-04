@@ -23,7 +23,7 @@ const CustomChartContainer = styled(ChartContainer)`
 `;
 
 const StyledTable = styled(Table)`
-  overflow: visible;
+  overflow: auto;
 `;
 
 const ToggleButton = styled(ToggleButtonComponent)`

@@ -50,18 +50,30 @@ const Heading = styled(Typography)`
   color: #2c3236;
 `;
 
+const Item = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+`;
+
+const Box = styled.div`
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 5px;
+`;
+
 const Text = styled(Typography)`
-  list-style: none;
   font-size: 0.875rem;
   line-height: 1rem;
-  margin-bottom: 0.5rem;
+  color: #333;
 `;
 
 const makeCustomTooltip = ({ valueType, labelType }) => {
   const valueTypeForLabel = labelType || valueType;
 
   return props => {
-    const { active, payload, label, viewContent } = props;
+    const { active, payload } = props;
 
     if (!active || !payload || !payload.length) {
       return null;
@@ -74,9 +86,10 @@ const makeCustomTooltip = ({ valueType, labelType }) => {
     return (
       <TooltipContainer>
         <Heading>{name}</Heading>
-        <Text style={{ color: fill }}>
-          {formatDataValueByType({ value, metadata }, valueTypeForLabel)}
-        </Text>
+        <Item>
+          <Box style={{ background: fill }} />
+          <Text>{formatDataValueByType({ value, metadata }, valueTypeForLabel)}</Text>
+        </Item>
       </TooltipContainer>
     );
   };
@@ -114,8 +127,10 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
         if (!label) label = name;
 
         const shouldShowValue = isMobile() && isEnlarged;
+        const metadata = item[`${name}_metadata`];
+
         const labelSuffix = shouldShowValue
-          ? ` (${formatDataValueByType({ value: item.value }, valueType)})`
+          ? ` (${formatDataValueByType({ value: item.value, metadata }, valueType)})`
           : '';
 
         return {
@@ -136,11 +151,11 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
   // This makes the tooltips touch the bottom of the container
   // (and just looks a bit weird). So, bump it up by 20px.
   const offsetStyle = isEnlarged && !isMobile() && !isExporting ? { position: 'relative' } : null;
-
   const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
+  const height = isExporting || (isEnlarged && isMobile()) ? 320 : undefined;
 
   return (
-    <ResponsiveContainer width="100%" aspect={responsiveStyle}>
+    <ResponsiveContainer width="100%" height={height} aspect={responsiveStyle}>
       <BasePieChart style={offsetStyle}>
         <Pie
           dataKey="value"

@@ -10,8 +10,11 @@ export class LatestDataValueBuilder extends DataBuilder {
   async build() {
     const { dataElementCodes } = this.config;
     const { results } = await this.fetchAnalytics(dataElementCodes);
-    const [ result ] = results;
-    return { value: result?.value ?? null };
+    if (!results || !results.length) {
+      return { data: [] };
+    }
+    const [result] = results;
+    return { data: [{ value: result?.value ?? null }] };
   }
 }
 
