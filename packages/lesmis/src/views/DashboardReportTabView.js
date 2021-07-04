@@ -153,8 +153,8 @@ export const DashboardReportTabView = ({
                 variant="scrollable"
                 scrollButtons="auto"
               >
-                {subDashboards.map(({ dashboardName: heading }) => (
-                  <Tab key={heading} label={heading} value={heading} />
+                {subDashboards.map(({ dashboardName: heading, dashboardId }) => (
+                  <Tab key={dashboardId} label={heading} value={heading} />
                 ))}
               </Tabs>
             </>
@@ -166,7 +166,7 @@ export const DashboardReportTabView = ({
           {subDashboards &&
             subDashboards.map(dashboard => (
               <TabPanel
-                key={dashboard.dashboardName}
+                key={dashboard.dashboardId}
                 isSelected={dashboard.dashboardName === activeDashboard}
               >
                 {(() => {
@@ -203,7 +203,7 @@ export const DashboardReportTabView = ({
 
 DashboardReportTabView.propTypes = {
   entityCode: PropTypes.string.isRequired,
-  TabBarLeftSection: PropTypes.node.isRequired,
+  TabBarLeftSection: PropTypes.func.isRequired,
   year: PropTypes.string,
   filterSubDashboards: PropTypes.func.isRequired,
 };
