@@ -1,6 +1,12 @@
 'use strict';
 
-import { generateId, insertObject, deleteObject } from '../utilities';
+import {
+  generateId,
+  insertObject,
+  deleteObject,
+  findSingleRecord,
+  findSingleRecordBySql,
+} from '../utilities';
 
 var dbm;
 var type;
@@ -39,6 +45,29 @@ const DASHBOARD_LIST = [
   },
 ];
 
+const addItemToDashboard = async (
+  db,
+  { code, dashboardCode, permissionGroup, entityTypes, projectCodes },
+) => {
+  const dashboardItemId = (await findSingleRecord(db, 'dashboard_item', { code })).id;
+  const dashboardId = (await findSingleRecord(db, 'dashboard', { code: dashboardCode })).id;
+  const maxSortOrder = (
+    await findSingleRecordBySql(
+      db,
+      `SELECT max(sort_order) as max_sort_order FROM dashboard_relation WHERE dashboard_id = '${dashboardId}';`,
+    )
+  ).max_sort_order;
+  await insertObject(db, 'dashboard_relation', {
+    id: generateId(),
+    dashboard_id: dashboardId,
+    child_id: dashboardItemId,
+    entity_types: `{${entityTypes.join(', ')}}`,
+    project_codes: `{${projectCodes.join(', ')}}`,
+    permission_groups: `{${permissionGroup}}`,
+    sort_order: maxSortOrder + 1,
+  });
+};
+
 exports.up = async function (db) {
   for (const { name, code, sort_order } of DASHBOARD_LIST) {
     await insertObject(db, 'dashboard', {
@@ -48,11 +77,20 @@ exports.up = async function (db) {
       root_entity_code: 'LA',
       sort_order,
     });
+    await addItemToDashboard(db, {
+      code: 'no_data_at_level',
+      dashboardCode: code,
+      permissionGroup: 'LESMIS Public',
+      entityTypes: ['country', 'district', 'sub_district'],
+      projectCodes: ['laos_schools'],
+    });
   }
 };
 
 exports.down = async function (db) {
   for (const { code } of DASHBOARD_LIST) {
+    const dashboardId = (await findSingleRecord(db, 'dashboard', { code })).id;
+    await deleteObject(db, 'dashboard_relation', { dashboard_id: dashboardId });
     await deleteObject(db, 'dashboard', { code });
   }
 };
