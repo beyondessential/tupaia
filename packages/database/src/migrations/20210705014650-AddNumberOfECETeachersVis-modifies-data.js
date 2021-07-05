@@ -124,33 +124,6 @@ const addNewDashboardItemAndReport = async (
   });
 };
 
-const addItemToDashboard = async (
-  db,
-  { code, dashboardCode, permissionGroup, entityTypes, projectCodes },
-) => {
-  const dashboardItemId = (
-    await findSingleRecord(db, `SELECT id FROM dashboard_item WHERE code = '${code}'`)
-  ).id;
-  const dashboardId = (
-    await findSingleRecord(db, `SELECT id FROM dashboard WHERE code = '${dashboardCode}'`)
-  ).id;
-  const maxSortOrder = (
-    await findSingleRecord(
-      db,
-      `SELECT max(sort_order) as max_sort_order FROM dashboard_relation WHERE dashboard_id = '${dashboardId}';`,
-    )
-  ).max_sort_order;
-  await insertObject(db, 'dashboard_relation', {
-    id: generateId(),
-    dashboard_id: dashboardId,
-    child_id: dashboardItemId,
-    entity_types: `{${entityTypes.join(', ')}}`,
-    project_codes: `{${projectCodes.join(', ')}}`,
-    permission_groups: `{${permissionGroup}}`,
-    sort_order: maxSortOrder + 1,
-  });
-};
-
 const removeDashboardItemAndReport = async (db, code) => {
   await db.runSql(`DELETE FROM dashboard_item WHERE code = '${code}';`); // delete cascades to dashboard_relation
   await db.runSql(`DELETE FROM report WHERE code = '${code}';`);
