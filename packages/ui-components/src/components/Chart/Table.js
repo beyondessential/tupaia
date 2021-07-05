@@ -93,16 +93,17 @@ const NoData = styled(SmallAlert)`
   margin-right: auto;
 `;
 
+const COLUMN_BLACKLIST = ['name', 'timestamp', 'dataElementCode'];
+
 const getColumns = rawData => {
   const columns = [];
   rawData.forEach(row => {
     Object.keys(row)
-      .filter(key => key !== 'name' && key !== 'timestamp')
+      .filter(key => !COLUMN_BLACKLIST.includes(key)) // Don't show columns that don't make sense
+      .filter(key => !columns.includes(key)) // de-dupe
+      .filter(key => typeof row[key] !== 'object') // filter out object values such as metadata
       .forEach(key => {
-        // add the key as a table column but filter out object values such as metadata
-        if (!columns.includes(key) && typeof row[key] !== 'object') {
-          columns.push(key);
-        }
+        columns.push(key); // Finally add column to table
       });
   });
 
