@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
@@ -13,16 +13,14 @@ import { useDashboardData, useUser } from '../api/queries';
 import {
   FetchLoader,
   TabsLoader,
-  TabBarSection,
   FlexCenter,
-  Report,
+  DashboardReport,
   TabBar,
   Tabs,
   Tab,
   TabPanel,
-  YearSelector,
 } from '../components';
-import { DEFAULT_DATA_YEAR, NAVBAR_HEIGHT_INT } from '../constants';
+import { NAVBAR_HEIGHT_INT } from '../constants';
 import { useUrlSearchParam } from '../utils';
 
 const StickyTabBarContainer = styled.div`
@@ -59,7 +57,7 @@ const useDefaultDashboardTab = (selectedDashboard = null, options) => {
     return null;
   }
 
-  const dashboardNames = Object.keys(options);
+  const dashboardNames = options.map(d => d.dashboardName);
 
   if (selectedDashboard) {
     if (dashboardNames.includes(selectedDashboard)) {
@@ -120,12 +118,20 @@ const useStickyBar = () => {
   };
 };
 
-export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
-  const [selectedYear, setSelectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
+export const DashboardReportTabView = ({
+  entityCode,
+  TabBarLeftSection,
+  year,
+  filterSubDashboards,
+}) => {
   const [selectedDashboard, setSelectedDashboard] = useUrlSearchParam('subDashboard');
   const { data, isLoading, isError, error } = useDashboardData(entityCode);
   const { scrollToTop, topRef, isScrolledPastTop, onLoadTabBar } = useStickyBar();
-  const activeDashboard = useDefaultDashboardTab(selectedDashboard, data);
+  const subDashboards = useMemo(() => data?.filter(filterSubDashboards), [
+    data,
+    filterSubDashboards,
+  ]);
+  const activeDashboard = useDefaultDashboardTab(selectedDashboard, subDashboards);
 
   const handleChangeDashboard = (event, newValue) => {
     setSelectedDashboard(newValue);
@@ -136,10 +142,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
     <>
       <StickyTabBarContainer ref={onLoadTabBar}>
         <TabBar>
-          <TabBarSection>
-            {TabSelector}
-            <YearSelector value={selectedYear} onChange={setSelectedYear} />
-          </TabBarSection>
+          <TabBarLeftSection />
           {isLoading ? (
             <TabsLoader />
           ) : (
@@ -150,8 +153,8 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
                 variant="scrollable"
                 scrollButtons="auto"
               >
-                {Object.keys(data).map(heading => (
-                  <Tab key={heading} label={heading} value={heading} />
+                {subDashboards.map(({ dashboardName: heading, dashboardId }) => (
+                  <Tab key={dashboardId} label={heading} value={heading} />
                 ))}
               </Tabs>
             </>
@@ -160,33 +163,35 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
       </StickyTabBarContainer>
       <DashboardSection ref={topRef}>
         <FetchLoader isLoading={isLoading} isError={isError} error={error}>
-          {data &&
-            Object.entries(data).map(([heading, dashboardGroup]) => (
-              <TabPanel key={heading} isSelected={heading === activeDashboard}>
-                {Object.entries(dashboardGroup).map(([groupName, groupValue]) => {
+          {subDashboards &&
+            subDashboards.map(dashboard => (
+              <TabPanel
+                key={dashboard.dashboardId}
+                isSelected={dashboard.dashboardName === activeDashboard}
+              >
+                {(() => {
                   // Todo: support other report types (including "component" types)
-                  const dashboardReports = groupValue.views.filter(
-                    report => report.type === 'chart',
-                  );
-                  return dashboardReports.length > 0 ? (
-                    dashboardReports.map(report => (
-                      <Report
-                        key={report.viewId}
-                        name={report.name}
+                  const dashboardItems = dashboard.items.filter(item => item.type === 'chart');
+                  return dashboardItems.length > 0 ? (
+                    dashboardItems.map(item => (
+                      <DashboardReport
+                        key={item.code}
+                        name={item.name}
                         entityCode={entityCode}
-                        dashboardGroupName={heading}
-                        dashboardGroupId={groupValue.dashboardGroupId.toString()}
-                        reportId={report.viewId}
-                        year={selectedYear}
-                        periodGranularity={report.periodGranularity}
+                        dashboardCode={dashboard.dashboardCode}
+                        dashboardName={dashboard.dashboardName}
+                        reportCode={item.reportCode}
+                        year={year}
+                        periodGranularity={item.periodGranularity}
+                        viewConfig={item}
                       />
                     ))
                   ) : (
-                    <SmallAlert key={groupName} severity="info" variant="standard">
+                    <SmallAlert key={dashboard.dashboardName} severity="info" variant="standard">
                       There are no reports available for this dashboard
                     </SmallAlert>
                   );
-                })}
+                })()}
               </TabPanel>
             ))}
         </FetchLoader>
@@ -198,5 +203,11 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
 
 DashboardReportTabView.propTypes = {
   entityCode: PropTypes.string.isRequired,
-  TabSelector: PropTypes.node.isRequired,
+  TabBarLeftSection: PropTypes.func.isRequired,
+  year: PropTypes.string,
+  filterSubDashboards: PropTypes.func.isRequired,
+};
+
+DashboardReportTabView.defaultProps = {
+  year: null,
 };

@@ -9,6 +9,26 @@ import { post } from '../api';
 import { useProjectEntitiesData } from './useEntitiesData';
 import { useEntityData } from './useEntityData';
 
+const PARTNERS_LOGOS = {
+  AEAL: 'AEAL.jpg',
+  CRS: 'CRS.jpg',
+  DFAT: 'DFAT.png',
+  GIZ: 'GIZ.jpg',
+  HII: 'HII.png',
+  Plan: 'Plan.png',
+  RtR: 'RtR.jpg',
+  unesco: 'unesco.jpg',
+  UNICEF: 'UNICEF.png',
+  VHS: 'VHS.png',
+  WB: 'WB.jpg',
+  WC: 'WC.png',
+  WFP: 'WFP.jpeg',
+  WR: 'WR.png',
+  WV: 'WV.png',
+};
+
+const PARTNERS_IMAGE_PATH = '/images/partnerLogos/';
+
 const endDateFormat = 'YYYY-MM-DD';
 
 const getParentOfType = (entities, rootEntityCode, type) => {
@@ -151,6 +171,17 @@ const useProvinceInformation = (entities, rootEntity) => {
   };
 };
 
+const getPartnersLogos = vitalsData => {
+  const partners =
+    vitalsData.type && vitalsData.type === 'country'
+      ? Object.entries(PARTNERS_LOGOS)
+      : Object.entries(vitalsData).filter(
+          ([key, value]) => Object.keys(PARTNERS_LOGOS).includes(key) && value === true,
+        );
+
+  return partners.map(([key]) => `${PARTNERS_IMAGE_PATH}${PARTNERS_LOGOS[key]}`);
+};
+
 export const useVitalsData = entityCode => {
   const { data: entities = [], ...entitiesQuery } = useProjectEntitiesData();
   const { data: entityData } = useEntityData(entityCode);
@@ -165,14 +196,18 @@ export const useVitalsData = entityCode => {
     entityData,
   );
 
-  return {
+  const vitalsData = {
     ...entitiesQuery,
     ...entityData,
-
     ...schoolData,
     ...districtData,
     ...provinceData,
+  };
 
+  const partners = getPartnersLogos(vitalsData);
+
+  return {
+    data: { ...vitalsData, partners },
     isLoading: schoolLoading || districtLoading || provinceLoading,
   };
 };

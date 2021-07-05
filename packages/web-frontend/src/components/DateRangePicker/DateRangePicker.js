@@ -26,18 +26,7 @@ import {
   roundStartEndDates,
   constrainDate,
 } from '../../utils/periodGranularities';
-
-const FlexRow = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-`;
-
-const FlexSpaceBetween = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
+import { FlexStart, FlexSpaceBetween } from '../Flexbox';
 
 const hoverBlue = '#2196f3';
 
@@ -188,7 +177,7 @@ export const DateRangePicker = ({
             <KeyboardArrowLeftIcon />
           </ArrowButton>
         )}
-        <FlexRow>
+        <FlexStart>
           <IconButton onClick={() => setIsOpen(true)} aria-label="open">
             {isLoading ? <CircularProgress size={21} /> : <DateRangeIcon />}
           </IconButton>
@@ -198,9 +187,9 @@ export const DateRangePicker = ({
               Reset to default
             </ResetLabel>
           </LabelContainer>
-        </FlexRow>
+        </FlexStart>
         {isSingleDate && (
-          <FlexRow>
+          <FlexStart>
             {align === 'left' && (
               <ArrowButton
                 type="button"
@@ -219,7 +208,7 @@ export const DateRangePicker = ({
             >
               <KeyboardArrowRightIcon />
             </ArrowButton>
-          </FlexRow>
+          </FlexStart>
         )}
       </FlexSpaceBetween>
       {/* Bug in Mui that doesn't unmount modal */}

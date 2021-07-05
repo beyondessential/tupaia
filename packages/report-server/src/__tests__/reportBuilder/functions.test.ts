@@ -37,5 +37,15 @@ describe('functions', () => {
       it('converts given period to target type', () =>
         expect(functions.convertToPeriod('20200101', 'WEEK')).toBe('2020W01'));
     });
+
+    describe('formatAsFractionAndPercentage', () => {
+      it('formats values as fraction and percentage', () =>
+        expect(functions.formatAsFractionAndPercentage(1, 10)).toBe('1/10 = 10%'));
+
+      it('throws error if denominator is 0', () =>
+        expect(() => {
+          functions.formatAsFractionAndPercentage(1, 0);
+        }).toThrow());
+    });
   });
 });
