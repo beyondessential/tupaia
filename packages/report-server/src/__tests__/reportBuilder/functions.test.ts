@@ -85,6 +85,16 @@ describe('functions', () => {
       it('converts given date string to period', () =>
         expect(functions.dateStringToPeriod('2020-02-15', 'WEEK')).toBe('2020W07'));
     });
+
+    describe('formatAsFractionAndPercentage', () => {
+      it('formats values as fraction and percentage', () =>
+        expect(functions.formatAsFractionAndPercentage(1, 10)).toBe('1/10 = 10%'));
+
+      it('throws error if denominator is 0', () =>
+        expect(() => {
+          functions.formatAsFractionAndPercentage(1, 0);
+        }).toThrow());
+    });
   });
 
   describe('math', () => {

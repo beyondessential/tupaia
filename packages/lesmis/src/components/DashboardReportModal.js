@@ -3,13 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useTheme } from '@material-ui/core/styles';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import BarChartIcon from '@material-ui/icons/BarChart';
-import GridOnIcon from '@material-ui/icons/GridOn';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import {
   Box,
@@ -22,10 +19,9 @@ import {
 } from '@material-ui/core';
 import { DateRangePicker } from '@tupaia/ui-components';
 import * as COLORS from '../constants';
-import { FlexSpaceBetween, FlexEnd, FlexStart } from './Layout';
+import { FlexSpaceBetween, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
-import { ToggleButton } from './ToggleButton';
-import { ChartTable, TABS } from './ChartTable';
+import { Chart } from './Chart';
 import { useDashboardReportData } from '../api/queries';
 import { useUrlSearchParams } from '../utils';
 
@@ -73,39 +69,36 @@ const Description = styled(Typography)`
 
 export const DashboardReportModal = ({
   name,
-  dashboardGroupName,
+  dashboardCode,
+  dashboardName,
   buttonText,
   entityCode,
-  dashboardGroupId,
-  reportId,
+  reportCode,
   periodGranularity,
+  viewConfig,
 }) => {
-  const [open, setOpen] = useState(false);
-  const [params, setParams] = useUrlSearchParams();
-  const [selectedTab, setSelectedTab] = useState(TABS.CHART);
+  const { code: itemCode, legacy } = viewConfig;
+  const [{ startDate, endDate, reportCode: selectedReportCode }, setParams] = useUrlSearchParams();
+  const isOpen = reportCode === selectedReportCode;
+  const [open, setOpen] = useState(isOpen);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
+  const { data, isLoading, isError, error } = useDashboardReportData({
     entityCode,
-    dashboardGroupId,
-    reportId,
+    dashboardCode,
+    reportCode,
+    itemCode,
     periodGranularity,
-    startDate: params.get('startDate'),
-    endDate: params.get('endDate'),
+    legacy,
+    startDate,
+    endDate,
   });
 
-  useEffect(() => {
+  const handleDatesChange = (newStartDate, newEndDate) => {
     setParams({
-      startDate: null,
-      endDate: null,
-    });
-  }, [open]);
-
-  const handleDatesChange = (startDate, endDate) => {
-    setParams({
-      startDate,
-      endDate,
+      startDate: newStartDate,
+      endDate: newEndDate,
     });
   };
 
@@ -113,14 +106,21 @@ export const DashboardReportModal = ({
     setOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  // set reportCode param after the modal render is rendered to improve the responsiveness
+  // of the modal transition
+  const onRendered = () => {
+    setParams({
+      reportCode,
+    });
   };
 
-  const handleTabChange = (event, newValue) => {
-    if (newValue !== null) {
-      setSelectedTab(newValue);
-    }
+  const handleClose = () => {
+    setOpen(false);
+    setParams({
+      startDate: null,
+      endDate: null,
+      reportCode: null,
+    });
   };
 
   return (
@@ -129,6 +129,7 @@ export const DashboardReportModal = ({
         {buttonText}
       </MuiButton>
       <MuiDialog
+        onRendered={onRendered}
         scroll="paper"
         fullScreen
         open={open}
@@ -136,40 +137,30 @@ export const DashboardReportModal = ({
         TransitionComponent={Transition}
         style={{ left: fullScreen ? '0' : '6.25rem' }}
       >
-        <DialogHeader handleClose={handleClose} title={dashboardGroupName} />
+        <DialogHeader handleClose={handleClose} title={dashboardName} />
         <Wrapper>
-          <Container maxWidth={false}>
+          <Container maxWidth="xl">
             <Header>
               <Box maxWidth={580}>
                 <Heading variant="h3">{name}</Heading>
-                {viewContent?.description && <Description>{viewContent.description}</Description>}
+                {viewConfig?.description && <Description>{viewConfig.description}</Description>}
               </Box>
               <FlexStart>
                 <DateRangePicker
                   isLoading={isLoading}
-                  startDate={viewContent?.startDate}
-                  endDate={viewContent?.endDate}
-                  granularity={viewContent?.granularity}
+                  startDate={startDate}
+                  endDate={endDate}
+                  granularity={periodGranularity}
                   onSetDates={handleDatesChange}
                 />
               </FlexStart>
             </Header>
-            <FlexEnd>
-              <ToggleButtonGroup onChange={handleTabChange} value={selectedTab} exclusive>
-                <ToggleButton value={TABS.TABLE}>
-                  <GridOnIcon />
-                </ToggleButton>
-                <ToggleButton value={TABS.CHART}>
-                  <BarChartIcon />
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </FlexEnd>
-            <ChartTable
-              viewContent={viewContent}
+            <Chart
+              viewContent={{ ...viewConfig, data, startDate, endDate }}
               isLoading={isLoading}
               isError={isError}
               error={error}
-              selectedTab={selectedTab}
+              isEnlarged
             />
           </Container>
         </Wrapper>
@@ -181,11 +172,12 @@ export const DashboardReportModal = ({
 DashboardReportModal.propTypes = {
   name: PropTypes.string.isRequired,
   buttonText: PropTypes.string.isRequired,
-  reportId: PropTypes.string.isRequired,
+  reportCode: PropTypes.string.isRequired,
   entityCode: PropTypes.string.isRequired,
-  dashboardGroupId: PropTypes.string.isRequired,
+  dashboardCode: PropTypes.string.isRequired,
   periodGranularity: PropTypes.string,
-  dashboardGroupName: PropTypes.string.isRequired,
+  dashboardName: PropTypes.string.isRequired,
+  viewConfig: PropTypes.object.isRequired,
 };
 
 DashboardReportModal.defaultProps = {

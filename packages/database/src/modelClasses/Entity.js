@@ -25,6 +25,7 @@ const VILLAGE = 'village';
 const WORLD = 'world';
 const PROJECT = 'project';
 const CITY = 'city';
+const POSTCODE = 'postcode';
 
 // Note: if a new type is not included in `ORG_UNIT_ENTITY_TYPES`,
 // a corresponding tracked entity type must be created in DHIS
@@ -46,6 +47,7 @@ const ENTITY_TYPES = {
   WORLD,
   PROJECT,
   CITY,
+  POSTCODE,
 };
 
 export const ORG_UNIT_ENTITY_TYPES = {
@@ -177,6 +179,20 @@ export class EntityType extends DatabaseType {
       entity_hierarchy_id: hierarchyId,
       ...criteria,
     });
+  }
+
+  async getRelatives(hierarchyId, criteria) {
+    // getAncestors() comes sorted closest -> furthest, we want furthest -> closest
+    const ancestors = (await this.getAncestors(hierarchyId, criteria)).slice().reverse();
+
+    const self = await this.model.find({
+      ...criteria,
+      id: this.id, // Find an entity that matches the criteria AND this entity
+    });
+
+    const descendants = await this.getDescendants(hierarchyId, criteria);
+
+    return [...ancestors, ...self, ...descendants];
   }
 
   async getAncestorOfType(hierarchyId, entityType) {

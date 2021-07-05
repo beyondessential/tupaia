@@ -9,6 +9,7 @@ import {
   dateStringToPeriod,
   periodToTimestamp,
   periodToDisplayString,
+  formatAsFractionAndPercentage,
 } from './utils';
 import { sum, divide } from './math';
 
@@ -26,4 +27,5 @@ export const functions = {
   periodToDisplayString,
   sum,
   divide,
+  formatAsFractionAndPercentage,
 };

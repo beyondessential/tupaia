@@ -11,16 +11,18 @@ import { getDefaultDates } from '../utils/periodGranularities';
 import { selectCurrentOrgUnitCode } from './orgUnitSelectors';
 import { selectLocation } from './utils';
 
-export const selectCurrentDashboardGroupCodeFromLocation = createSelector(
-  [selectLocation],
-  location => {
-    const dashboardSegment = getLocationComponentValue(location, URL_COMPONENTS.DASHBOARD);
-    return dashboardSegment && decodeURIComponent(dashboardSegment);
-  },
+export const selectCurrentDashboardNameFromLocation = createSelector([selectLocation], location => {
+  const dashboardSegment = getLocationComponentValue(location, URL_COMPONENTS.DASHBOARD);
+  return dashboardSegment && decodeURIComponent(dashboardSegment);
+});
+
+export const selectCurrentExpandedViewCode = createSelector([selectLocation], location =>
+  getLocationComponentValue(location, URL_COMPONENTS.REPORT),
 );
 
-export const selectCurrentExpandedViewId = createSelector([selectLocation], location =>
-  getLocationComponentValue(location, URL_COMPONENTS.REPORT),
+export const selectViewConfig = createSelector(
+  [state => state.global.viewConfigs, (_, uniqueViewId) => uniqueViewId],
+  (viewConfigs, uniqueViewId) => viewConfigs[uniqueViewId] || {},
 );
 
 export const selectCurrentExpandedDates = createSelector([selectLocation], location => {
@@ -28,50 +30,41 @@ export const selectCurrentExpandedDates = createSelector([selectLocation], locat
   return convertUrlPeriodStringToDateRange(periodString);
 });
 
-export const selectCurrentDashboardGroupCode = createSelector(
-  [state => state.global.dashboardConfig, selectCurrentDashboardGroupCodeFromLocation],
-  (dashboardConfig, currentDashboardGroupCode) => {
-    if (dashboardConfig[currentDashboardGroupCode]) {
-      return currentDashboardGroupCode;
+export const selectCurrentDashboardName = createSelector(
+  [state => state.global.dashboards, selectCurrentDashboardNameFromLocation],
+  (dashboards, currentDashboardName) => {
+    if (dashboards.find(d => d.dashboardName === currentDashboardName)) {
+      return currentDashboardName;
     }
-    const keys = Object.keys(dashboardConfig);
-    return keys[keys.length - 1];
+    return dashboards[0] ? dashboards[0].dashboardName : '';
   },
 );
 
-const selectCurrentDashboardGroupIdForExpandedReport = createSelector(
-  [
-    state => state.global.dashboardConfig,
-    selectCurrentDashboardGroupCode,
-    selectCurrentExpandedViewId,
-  ],
-  (dashboardConfig, currentDashboardGroupCode, currentViewId) => {
-    const dashboardGroup = dashboardConfig[currentDashboardGroupCode];
-    if (!dashboardGroup) return null;
-    const dashboardGroupIncludingReport = Object.values(dashboardGroup).find(({ views }) =>
-      views.some(({ viewId }) => viewId === currentViewId),
+export const selectCurrentDashboardCodeForExpandedReport = createSelector(
+  [state => state.global.dashboards, selectCurrentDashboardName, selectCurrentExpandedViewCode],
+  (dashboards, currentDashboardName, currentDashboardItemCode) => {
+    const dashboardIncludingReport = dashboards.find(
+      d =>
+        d.dashboardName === currentDashboardName &&
+        d.items.some(({ code }) => code === currentDashboardItemCode),
     );
-    return dashboardGroupIncludingReport ? dashboardGroupIncludingReport.dashboardGroupId : null;
+    return dashboardIncludingReport ? dashboardIncludingReport.dashboardCode : null;
   },
-);
-
-export const selectIsDashboardGroupCodeDefined = createSelector(
-  [selectCurrentDashboardGroupCodeFromLocation],
-  rawCurrentDashboardGroupCode => !!rawCurrentDashboardGroupCode,
 );
 
 export const selectCurrentInfoViewKey = createSelector(
   [
-    selectCurrentDashboardGroupIdForExpandedReport,
+    selectCurrentDashboardCodeForExpandedReport,
     selectCurrentOrgUnitCode,
-    selectCurrentExpandedViewId,
+    selectCurrentExpandedViewCode,
   ],
-  (dashboardGroupId, organisationUnitCode, viewId) =>
-    getUniqueViewId({
-      organisationUnitCode,
-      dashboardGroupId,
-      viewId,
-    }),
+  (dashboardCode, organisationUnitCode, viewCode) =>
+    getUniqueViewId(organisationUnitCode, dashboardCode, viewCode),
+);
+
+export const selectCurrentExpandedViewConfig = createSelector(
+  [selectCurrentInfoViewKey, state => state.global.viewConfigs],
+  (infoViewKey, viewConfigs) => viewConfigs[infoViewKey],
 );
 
 export const selectCurrentExpandedViewContent = createSelector(
@@ -83,12 +76,12 @@ export const selectCurrentExpandedViewContent = createSelector(
 
 export const selectIsEnlargedDialogVisible = createSelector(
   [
-    selectCurrentDashboardGroupIdForExpandedReport,
+    selectCurrentDashboardCodeForExpandedReport,
     selectCurrentOrgUnitCode,
-    selectCurrentExpandedViewId,
+    selectCurrentExpandedViewCode,
   ],
-  (dashboardGroupId, organisationUnitCode, viewId) =>
-    !!(dashboardGroupId && organisationUnitCode && viewId),
+  (dashboardCode, organisationUnitCode, viewCode) =>
+    !!(dashboardCode && organisationUnitCode && viewCode),
 );
 
 export const selectShouldUseDashboardData = createSelector(

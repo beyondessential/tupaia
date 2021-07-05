@@ -146,7 +146,7 @@ export const momentToDateString = (date, granularity, format) =>
     ? date.clone().startOf('W').format(format)
     : date.clone().format(format);
 
-const getOffsetDate = (offset, unit, modifier) => {
+const getOffsetDate = (offset, unit, modifier, modifierUnit = null) => {
   // We need a valid unit to proceed.
   if (!CONFIG[unit]) {
     return moment();
@@ -165,10 +165,14 @@ const getOffsetDate = (offset, unit, modifier) => {
   if (modifier) {
     switch (modifier) {
       case START_OF_PERIOD:
-        defaultDate = defaultDate.startOf(momentUnit);
+        defaultDate = modifierUnit
+          ? defaultDate.startOf(modifierUnit)
+          : defaultDate.startOf(momentUnit);
         break;
       case END_OF_PERIOD:
-        defaultDate = defaultDate.endOf(momentUnit);
+        defaultDate = modifierUnit
+          ? defaultDate.endOf(modifierUnit)
+          : defaultDate.endOf(momentUnit);
         break;
       default:
     }

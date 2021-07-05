@@ -67,7 +67,7 @@ const PinIcon = ({ color, scale }) => {
         d="M13.5 0.631592C6.04607 0.631592 0 6.64584 0 14.0605C0 24.1322 13.5 39 13.5 39C13.5 39 27 24.1322 27 14.0605C27 6.64584 20.9539 0.631592 13.5 0.631592Z"
         fill={color}
       />
-      <circle cx="13.5" cy="14.1316" r="6.39474" fill="black" fillOpacity="0.2" />
+      <circle cx="13.5" cy="14.1316" r="6" fill="white" fillOpacity="0.9" />
     </IconContainer>
   );
 };
