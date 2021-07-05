@@ -72,7 +72,7 @@ export const assertDashboardRelationGetPermissions = async (
   }
 
   throw new Error(
-    `Requires any of the permission groups (${dashboardRelation.permission_groups.toString()}) access to the dashboard root entity code '${
+    `Requires any of the permission groups (${dashboardRelation.permission_groups()}) access to the dashboard root entity code '${
       dashboard.root_entity_code
     }'`,
   );
@@ -97,7 +97,7 @@ export const assertDashboardRelationEditPermissions = async (
     ))
   ) {
     throw new Error(
-      `Requires all of the permission groups (${dashboardRelation.permission_groups.toString()}) access to the dashboard root entity code '${
+      `Requires all of the permission groups (${dashboardRelation.permission_groups()}) access to the dashboard root entity code '${
         dashboard.root_entity_code
       }', and have Tupaia Admin Panel access to '${dashboard.root_entity_code}'`,
     );
@@ -109,23 +109,18 @@ export const assertDashboardRelationEditPermissions = async (
 export const assertDashboardRelationCreatePermissions = async (
   accessPolicy,
   models,
-  { dashboard_id: dashboardId, child_id: childId },
+  { dashboard_id: dashboardId },
 ) => {
   const dashboard = await models.dashboard.findById(dashboardId);
   if (!dashboard) {
     throw new Error(`Cannot find dashboard with id ${dashboardId}`);
   }
 
-  const dashboardItem = await models.dashboardItem.findById(childId);
-  if (!dashboardItem) {
-    throw new Error(`Cannot find dashboard item with id ${childId}`);
-  }
-
   const entity = await models.entity.findOne({ code: dashboard.root_entity_code });
 
-  if (!(await await hasTupaiaAdminAccessToEntityForVisualisation(accessPolicy, models, entity))) {
+  if (!(await hasTupaiaAdminAccessToEntityForVisualisation(accessPolicy, models, entity))) {
     throw new Error(
-      `Requires Tupaia Admin Pane access to the dashboard root entity code '${dashboard.root_entity_code}'`,
+      `Requires Tupaia Admin Panel access to the dashboard root entity code '${dashboard.root_entity_code}'`,
     );
   }
 
@@ -224,7 +219,6 @@ export const createDashboardRelationsViaParentDashboardDBFilter = (
 
   const dbOptions = {
     ...options,
-    sort: ['dashboard_relation.sort_order'],
   };
   dbOptions.multiJoin = mergeMultiJoin(
     [

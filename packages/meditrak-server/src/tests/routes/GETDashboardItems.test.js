@@ -33,10 +33,9 @@ describe('Permissions checker for GETDashboardItems', async () => {
   let nationalDashboardItem2;
   let nationalDashboardItem3;
   let projectDashboardItem1;
-  let filterString;
 
   before(async () => {
-    // Still create these existing entities just in case test database for some reasons do not have these records.
+    // Still create these existing entities just in case test database for some reason does not have these records.
     await findOrCreateDummyRecord(models.entity, {
       code: 'KI_Phoenix Islands',
       type: 'district',
@@ -60,17 +59,6 @@ describe('Permissions checker for GETDashboardItems', async () => {
       nationalDashboardItem3,
       projectDashboardItem1,
     } = await setupDashboardTestData(models));
-
-    const dashboardItemIds = [
-      districtDashboardItem1.id,
-      nationalDashboardItem1.id,
-      nationalDashboardItem2.id,
-      nationalDashboardItem3.id,
-      projectDashboardItem1.id,
-    ];
-    filterString = `filter={"id":{"comparator":"in","comparisonValue":["${dashboardItemIds.join(
-      '","',
-    )}"]}}`;
   });
 
   afterEach(() => {
@@ -115,7 +103,7 @@ describe('Permissions checker for GETDashboardItems', async () => {
       expect(result).to.have.keys('error');
     });
 
-    it('Insufficient permissions: Should throw an error when requestinga  dashboard item connected to a NATIONAL dashboard that users do not have access to their relations', async () => {
+    it('Insufficient permissions: Should throw an error when requesting a dashboard item connected to a NATIONAL dashboard that users do not have access to their relations', async () => {
       // Remove the permission of LA to have insufficient permissions to access nationalDashboardItem3.
       const policy = {
         DL: ['Public'],
@@ -149,6 +137,21 @@ describe('Permissions checker for GETDashboardItems', async () => {
   });
 
   describe('GET /dashboardItems', async () => {
+    let filterString;
+
+    before(async () => {
+      const dashboardItemIds = [
+        districtDashboardItem1.id,
+        nationalDashboardItem1.id,
+        nationalDashboardItem2.id,
+        nationalDashboardItem3.id,
+        projectDashboardItem1.id,
+      ];
+      filterString = `filter={"id":{"comparator":"in","comparisonValue":["${dashboardItemIds.join(
+        '","',
+      )}"]}}`;
+    });
+
     it('Sufficient permissions: Should return all dashboard items that users have access to', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`dashboardItems?${filterString}`);

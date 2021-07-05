@@ -11,7 +11,7 @@ import {
 } from '../dashboardRelations';
 
 export const hasDashboardItemGetPermissions = async (accessPolicy, models, dashboardItemId) => {
-  const dashboards = await models.dashboard.findDashboardsByItemId(dashboardItemId);
+  const dashboards = await models.dashboard.findDashboardsWithRelationsByItemId(dashboardItemId);
 
   // To view a dashboard item, the user has to have access to the relation between the
   // dashboard item and ANY of the dashboards it is in
@@ -32,7 +32,7 @@ export const hasDashboardItemGetPermissions = async (accessPolicy, models, dashb
 };
 
 export const hasDashboardItemEditPermissions = async (accessPolicy, models, dashboardItemId) => {
-  const dashboards = await models.dashboard.findDashboardsByItemId([dashboardItemId]);
+  const dashboards = await models.dashboard.findDashboardsWithRelationsByItemId(dashboardItemId);
 
   // To edit a dashboard item, the user has to have access to the relation between the
   // dashboard item and ALL of the dashboards it is in
@@ -68,7 +68,7 @@ export const assertDashboardItemEditPermissions = async (accessPolicy, models, d
   }
 
   throw new Error(
-    `Requires access to the dashboard item in all of the dashboards this dashboard item is in, and have Tupaia Admin Panel access to connected dashboard's root_entity_code`,
+    `Requires access to the dashboard item in all of the dashboards this dashboard item is in, and Tupaia Admin Panel access to connected dashboard's root_entity_code`,
   );
 };
 
@@ -86,7 +86,7 @@ export const createDashboardItemsDBFilter = async (accessPolicy, models, criteri
   const permittedDashboardItems = await models.dashboardItem.find({
     id: permittedDashboardRelations.map(dr => dr.child_id),
   });
-  const permittedDashboardItemIds = [...new Set(permittedDashboardItems.map(d => d.id))];
+  const permittedDashboardItemIds = permittedDashboardItems.map(d => d.id);
 
   dbConditions['dashboard_item.id'] = mergeFilter(
     permittedDashboardItemIds,

@@ -5,47 +5,22 @@
 
 import { findOrCreateDummyRecord } from '@tupaia/database';
 
-export const setupDashboardTestData = async models => {
-  // Set up legacy reports
-  const districtLegacyReport1 = await findOrCreateDummyRecord(
-    models.legacyReport,
-    { code: 'district_legacy_report_1_test' },
+export const findOrCreateDashboard = async (models, code, rootEntityCode) => {
+  return findOrCreateDummyRecord(
+    models.dashboard,
+    { code },
     {
-      data_builder: 'sample',
-      data_builder_config: '{}',
-      data_services: '[]',
+      id: code,
+      name: code,
+      root_entity_code: rootEntityCode,
     },
   );
-  const nationalLegacyReport1 = await findOrCreateDummyRecord(
+};
+
+export const findOrCreateLegacyDashboardItem = async (models, code) => {
+  const legacyReport = await findOrCreateDummyRecord(
     models.legacyReport,
-    { code: 'national_legacy_report_1_test' },
-    {
-      data_builder: 'sample',
-      data_builder_config: '{}',
-      data_services: '[]',
-    },
-  );
-  const nationalLegacyReport2 = await findOrCreateDummyRecord(
-    models.legacyReport,
-    { code: 'national_legacy_report_2_test' },
-    {
-      data_builder: 'sample',
-      data_builder_config: '{}',
-      data_services: '[]',
-    },
-  );
-  const nationalLegacyReport3 = await findOrCreateDummyRecord(
-    models.legacyReport,
-    { code: 'national_legacy_report_3_test' },
-    {
-      data_builder: 'sample',
-      data_builder_config: '{}',
-      data_services: '[]',
-    },
-  );
-  const projectLegacyReport1 = await findOrCreateDummyRecord(
-    models.legacyReport,
-    { code: 'project_level_legacy_report_4_test' },
+    { code },
     {
       data_builder: 'sample',
       data_builder_config: '{}',
@@ -53,98 +28,63 @@ export const setupDashboardTestData = async models => {
     },
   );
 
-  // Set up dashboard items
-  const districtDashboardItem1 = await findOrCreateDummyRecord(
+  const dashboardItem = await findOrCreateDummyRecord(
     models.dashboardItem,
-    { id: 'district_dashboard_item_1_test' },
+    { id: code },
     {
-      code: 'district_dashboard_item_1_test',
+      code,
       config: '{}',
-      report_code: districtLegacyReport1.code,
+      report_code: code,
       legacy: true,
     },
   );
-  const nationalDashboardItem1 = await findOrCreateDummyRecord(
-    models.dashboardItem,
-    { id: 'national_dashboard_item_1_test' },
-    {
-      code: 'national_dashboard_item_1_test',
-      config: '{}',
-      report_code: nationalLegacyReport1.code,
-      legacy: true,
-    },
+
+  return [legacyReport, dashboardItem];
+};
+
+export const setupDashboardTestData = async models => {
+  // Set up legacy reports
+  const [districtLegacyReport1, districtDashboardItem1] = await findOrCreateLegacyDashboardItem(
+    models,
+    'district_report_1_test',
   );
-  const nationalDashboardItem2 = await findOrCreateDummyRecord(
-    models.dashboardItem,
-    { id: 'national_dashboard_item_2_test' },
-    {
-      code: 'national_dashboard_item_2_test',
-      config: '{}',
-      report_code: nationalLegacyReport2.code,
-      legacy: true,
-    },
+  const [nationalLegacyReport1, nationalDashboardItem1] = await findOrCreateLegacyDashboardItem(
+    models,
+    'national_report_1_test',
   );
-  const nationalDashboardItem3 = await findOrCreateDummyRecord(
-    models.dashboardItem,
-    { id: 'national_dashboard_item_3_test' },
-    {
-      code: 'national_dashboard_item_3_test',
-      config: '{}',
-      report_code: nationalLegacyReport3.code,
-      legacy: true,
-    },
+  const [nationalLegacyReport2, nationalDashboardItem2] = await findOrCreateLegacyDashboardItem(
+    models,
+    'national_report_2_test',
   );
-  const projectDashboardItem1 = await findOrCreateDummyRecord(
-    models.dashboardItem,
-    { id: 'project_level_dashboard_item_4_test' },
-    {
-      code: 'project_level_dashboard_item_4_test',
-      config: '{}',
-      report_code: projectLegacyReport1.code,
-      legacy: true,
-    },
+  const [nationalLegacyReport3, nationalDashboardItem3] = await findOrCreateLegacyDashboardItem(
+    models,
+    'national_report_3_test',
+  );
+  const [projectLegacyReport1, projectDashboardItem1] = await findOrCreateLegacyDashboardItem(
+    models,
+    'project_report_1_test',
   );
 
   // Set up the dashboards
-  const districtDashboard1 = await findOrCreateDummyRecord(
-    models.dashboard,
-    { code: 'report_district_dashboard_1_test' },
-    {
-      id: 'report_district_dashboard_1_test',
-      name: 'Test district dashboard 1',
-      root_entity_code: 'KI_Phoenix Islands',
-    },
+  const districtDashboard1 = await findOrCreateDashboard(
+    models,
+    'report_district_dashboard_1_test',
+    'KI_Phoenix Islands',
   );
-  const nationalDashboard1 = await findOrCreateDummyRecord(
-    models.dashboard,
-    {
-      code: 'report_national_dashboard_1_test',
-    },
-    {
-      id: 'report_national_dashboard_1_test',
-      name: 'Test national dashboard 1',
-      root_entity_code: 'KI',
-    },
+  const nationalDashboard1 = await findOrCreateDashboard(
+    models,
+    'report_national_dashboard_1_test',
+    'KI',
   );
-  const nationalDashboard2 = await findOrCreateDummyRecord(
-    models.dashboard,
-    {
-      code: 'report_national_dashboard_2_test',
-    },
-    {
-      id: 'report_national_dashboard_2_test',
-      name: 'Test national dashboard 2',
-      root_entity_code: 'LA',
-    },
+  const nationalDashboard2 = await findOrCreateDashboard(
+    models,
+    'report_national_dashboard_2_test',
+    'LA',
   );
-  const projectDashboard1 = await findOrCreateDummyRecord(
-    models.dashboard,
-    { code: 'report_project_level_dashboard_3_test' },
-    {
-      id: 'report_project_level_dashboard_3_test',
-      name: 'Test project level dashboard 3',
-      root_entity_code: 'test_project',
-    },
+  const projectDashboard1 = await findOrCreateDashboard(
+    models,
+    'report_project_level_dashboard_1_test',
+    'test_project',
   );
 
   // Set up dashboard relations

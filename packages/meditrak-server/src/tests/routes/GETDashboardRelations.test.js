@@ -33,7 +33,6 @@ describe('Permissions checker for GETDashboardRelations', async () => {
   let nationalDashboardRelation2;
   let nationalDashboardRelation3;
   let projectDashboardRelation1;
-  let filterString;
 
   before(async () => {
     // Still create these existing entities just in case test database for some reasons do not have these records.
@@ -60,17 +59,6 @@ describe('Permissions checker for GETDashboardRelations', async () => {
       nationalDashboardRelation3,
       projectDashboardRelation1,
     } = await setupDashboardTestData(models));
-
-    const dashboardRelations = [
-      districtDashboardRelation1.id,
-      nationalDashboardRelation1.id,
-      nationalDashboardRelation2.id,
-      nationalDashboardRelation3.id,
-      projectDashboardRelation1.id,
-    ];
-    filterString = `filter={"id":{"comparator":"in","comparisonValue":["${dashboardRelations.join(
-      '","',
-    )}"]}}`;
   });
 
   afterEach(() => {
@@ -149,6 +137,21 @@ describe('Permissions checker for GETDashboardRelations', async () => {
   });
 
   describe('GET /dashboardRelations', async () => {
+    let filterString;
+
+    before(() => {
+      const dashboardRelations = [
+        districtDashboardRelation1.id,
+        nationalDashboardRelation1.id,
+        nationalDashboardRelation2.id,
+        nationalDashboardRelation3.id,
+        projectDashboardRelation1.id,
+      ];
+      filterString = `filter={"id":{"comparator":"in","comparisonValue":["${dashboardRelations.join(
+        '","',
+      )}"]}}`;
+    });
+
     it('Sufficient permissions: Should return all dashboard relations that users have access to', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`dashboardRelations?${filterString}`);

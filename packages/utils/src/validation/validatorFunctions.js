@@ -160,7 +160,7 @@ export const constructIsSubSetOf = options => arrayValue => {
   const isSubSet = arrayValue.every(v => options.includes(v));
 
   if (!isSubSet) {
-    throw new Error(`Some values of '${arrayValue.toString}' is not included in '${options}'`);
+    throw new Error(`Some values of '${arrayValue.toString}' are not included in '${options}'`);
   }
 };
 

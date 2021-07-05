@@ -71,7 +71,7 @@ export const createDashboardsDBFilter = async (accessPolicy, models, criteria) =
   const permittedDashboards = await models.dashboard.find({
     id: permittedDashboardRelations.map(dr => dr.dashboard_id),
   });
-  const permittedDashboardIds = [...new Set(permittedDashboards.map(d => d.id))];
+  const permittedDashboardIds = permittedDashboards.map(d => d.id);
 
   dbConditions['dashboard.id'] = mergeFilter(permittedDashboardIds, dbConditions['dashboard.id']);
 

@@ -32,7 +32,6 @@ describe('Permissions checker for GETDashboards', async () => {
   let nationalDashboard1;
   let nationalDashboard2;
   let projectDashboard1;
-  let filterString;
 
   before(async () => {
     // Still create these existing entities just in case test database for some reasons do not have these records.
@@ -58,16 +57,6 @@ describe('Permissions checker for GETDashboards', async () => {
       nationalDashboard2,
       projectDashboard1,
     } = await setupDashboardTestData(models));
-
-    const dashboardIds = [
-      districtDashboard1.id,
-      nationalDashboard1.id,
-      nationalDashboard2.id,
-      projectDashboard1.id,
-    ];
-    filterString = `filter={"id":{"comparator":"in","comparisonValue":["${dashboardIds.join(
-      '","',
-    )}"]}}`;
   });
 
   afterEach(() => {
@@ -123,6 +112,19 @@ describe('Permissions checker for GETDashboards', async () => {
   });
 
   describe('GET /dashboards', async () => {
+    let filterString;
+    before(() => {
+      const dashboardIds = [
+        districtDashboard1.id,
+        nationalDashboard1.id,
+        nationalDashboard2.id,
+        projectDashboard1.id,
+      ];
+      filterString = `filter={"id":{"comparator":"in","comparisonValue":["${dashboardIds.join(
+        '","',
+      )}"]}}`;
+    });
+
     it('Sufficient permissions: Return only the list of dashboards we have permissions for', async () => {
       const policy = {
         DL: ['Public'],

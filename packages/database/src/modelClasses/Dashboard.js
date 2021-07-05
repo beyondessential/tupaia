@@ -32,10 +32,8 @@ export class DashboardModel extends DatabaseModel {
    * {
    *  'dashboardItem1': [{dashboardObject1}, {dashboardObject2}]
    * }
-   * @param {*} dashboardItemIds
-   * @returns
    */
-  async findDashboardsByItemIds(dashboardItemIds) {
+  async findDashboardsWithRelationsByItemIds(dashboardItemIds) {
     const dashboards = await this.database.find(
       this.databaseType,
       {
@@ -57,12 +55,8 @@ export class DashboardModel extends DatabaseModel {
 
           { projectCodes: `${TYPES.DASHBOARD_RELATION}.project_codes` },
         ],
-        multiJoin: [
-          {
-            joinWith: TYPES.DASHBOARD_RELATION,
-            joinCondition: [`${TYPES.DASHBOARD_RELATION}.dashboard_id`, `${TYPES.DASHBOARD}.id`],
-          },
-        ],
+        joinWith: TYPES.DASHBOARD_RELATION,
+        joinCondition: [`${TYPES.DASHBOARD_RELATION}.dashboard_id`, `${TYPES.DASHBOARD}.id`],
         sort: [`${TYPES.DASHBOARD_RELATION}.sort_order`],
       },
     );
@@ -84,8 +78,8 @@ export class DashboardModel extends DatabaseModel {
    * @param {*} dashboardItemId
    * @returns
    */
-  async findDashboardsByItemId(dashboardItemId) {
-    const dashboardsByItemIds = await this.findDashboardsByItemIds([dashboardItemId]);
+  async findDashboardsWithRelationsByItemId(dashboardItemId) {
+    const dashboardsByItemIds = await this.findDashboardsWithRelationsByItemIds([dashboardItemId]);
     return dashboardsByItemIds[dashboardItemId];
   }
 }
