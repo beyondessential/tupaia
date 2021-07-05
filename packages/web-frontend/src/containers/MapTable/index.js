@@ -1,1 +1,1 @@
-export * from './MapTable';
+export * from './MapTableModal';

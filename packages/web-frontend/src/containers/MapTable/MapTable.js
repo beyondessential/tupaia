@@ -9,13 +9,7 @@ import MuiTableBody from '@material-ui/core/TableBody';
 import { StyledTable } from './StyledTable';
 
 const TableContainer = styled(MuiTableContainer)`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 1000px;
-  background: black;
-  overflow: auto;
-  pointer-events: none;
+  //background: black;
 `;
 
 const COLUMN_BLACKLIST = ['submissionDate', 'dataElementCode'];
