@@ -7,8 +7,6 @@ import { getUserFromAuthHeader } from './getUserFromAuthHeader';
 import { getAccessPolicyForUser } from './getAccessPolicyForUser';
 import { PUBLIC_USER_NAME } from './publicAccess';
 
-const allowedUnauthRoutes = ['/login', '/version'];
-
 // auth is a middleware that runs on every request
 const auth = () => async (req, res, next) => {
   const { authenticator } = req;
@@ -22,9 +20,9 @@ const auth = () => async (req, res, next) => {
       return;
     }
 
-    // if logged in or logging in continue
+    // if logged in
     const userId = req.session?.userJson?.userId;
-    if (!!userId || checkAllowedUnauthRoutes(req)) {
+    if (userId) {
       req.accessPolicy = req.accessPolicy || (await getAccessPolicyForUser(authenticator, userId));
       next();
       return;
@@ -45,9 +43,6 @@ const auth = () => async (req, res, next) => {
   }
   next();
 };
-
-const checkAllowedUnauthRoutes = req =>
-  allowedUnauthRoutes.some(allowedRoute => req.originalUrl.endsWith(allowedRoute));
 
 export const setSession = (req, userInfo) => {
   req.accessPolicy = null; // reset access policy cache so it is rebuilt
