@@ -105,6 +105,9 @@ const getColumns = rawData => {
   return columns;
 };
 
+// Determine whether to show the first table column
+const validFirstColumn = row => row?.timestamp || row?.name;
+
 // For the rowData, ignore labelType and use percentage instead of fractionAndPercentage as
 // we don't want to show multiple values a table cell
 const sanitizeValueType = valueType =>
@@ -128,20 +131,23 @@ export const Table = ({ viewContent, className }) => {
       <StyledTable style={{ minWidth: columns.length * 140 + 250 }}>
         <MuiTableHead>
           <MuiTableRow>
-            <MuiTableCell width={250}>{xName || null}</MuiTableCell>
+            {validFirstColumn(data[0]) && <MuiTableCell width={250}>{xName || null}</MuiTableCell>}
             {columns.map(column => (
               <MuiTableCell key={column}>{column}</MuiTableCell>
             ))}
           </MuiTableRow>
         </MuiTableHead>
         <MuiTableBody>
-          {data.map(row => (
-            <MuiTableRow key={row.timestamp || row.name}>
-              <MuiTableCell component="th" scope="row">
-                {dataIsTimeSeries
-                  ? formatTimestampForChart(row.timestamp, periodGranularity)
-                  : row.name}
-              </MuiTableCell>
+          {data.map((row, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <MuiTableRow key={index}>
+              {validFirstColumn(row) && (
+                <MuiTableCell component="th" scope="row">
+                  {dataIsTimeSeries
+                    ? formatTimestampForChart(row.timestamp, periodGranularity)
+                    : row.name}
+                </MuiTableCell>
+              )}
               {columns.map(columnKey => {
                 const value = row[columnKey];
                 const columnConfig = chartConfig[columnKey];
