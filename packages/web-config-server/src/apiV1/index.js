@@ -3,7 +3,6 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import apicache from 'apicache';
 import { Router } from 'express';
 
 import {
@@ -49,11 +48,7 @@ export const getRoutesForApiV1 = () => {
   api.get('/export/chart', catchAsyncErrors(exportChartHandler));
   api.get('/export/surveyResponses', handleWith(ExportSurveyResponsesHandler));
   api.get('/export/surveyDataDownload', handleWith(ExportSurveyDataHandler));
-  api.get(
-    '/organisationUnit',
-    apicache.middleware(process.env.ORGANISATION_UNIT_CACHE_PERIOD),
-    handleWith(OrganisationUnitHandler),
-  );
+  api.get('/organisationUnit', handleWith(OrganisationUnitHandler));
   api.get('/organisationUnitSearch', handleWith(OrgUnitSearchHandler));
   api.get('/dashboard', handleWith(DashboardHandler)); // Legacy style dashboards
   api.get('/measures', handleWith(MeasuresHandler));
