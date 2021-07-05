@@ -10,8 +10,10 @@ import LastUpdated from './LastUpdated';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { CONTROL_BAR_WIDTH, TUPAIA_ORANGE, MAP_OVERLAY_SELECTOR } from '../../styles';
 import { GRANULARITY_CONFIG } from '../../utils/periodGranularities';
+import { MapTable } from '../MapTable';
 
 const Container = styled.div`
+  position: relative;
   width: ${CONTROL_BAR_WIDTH}px;
   cursor: auto;
   min-height: 0; /* firefox vertical scroll */
@@ -140,6 +142,7 @@ export const Control = ({
 
   return (
     <Container>
+      <MapTable />
       <Header>
         <LayersIcon />
         Map overlays
