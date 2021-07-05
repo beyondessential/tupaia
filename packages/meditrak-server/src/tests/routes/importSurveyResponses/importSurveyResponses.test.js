@@ -8,5 +8,6 @@ import { testFunctionality } from './testFunctionality';
 
 describe('importSurveyResponses(): POST import/surveyResponses', () => {
   describe('Test permissions when importing survey responses', testPermissions);
+
   describe('Test functionality of importing survey responses', testFunctionality);
 });
