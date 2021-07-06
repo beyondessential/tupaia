@@ -136,7 +136,7 @@ export class EntityApi {
     });
   }
 
-  getEntities(
+  public async getEntities(
     hierarchyName: string,
     entityCodes: string[],
     queryOptions?: {
@@ -144,7 +144,7 @@ export class EntityApi {
       filter?: EntityFilterObject;
     },
   ): Promise<FlattenedEntity[]>;
-  getEntities<T extends ExtendedEntityFieldName[]>(
+  public async getEntities<T extends ExtendedEntityFieldName[]>(
     hierarchyName: string,
     entityCodes: string[],
     queryOptions?: {
@@ -167,7 +167,7 @@ export class EntityApi {
     });
   }
 
-  getDescendantsOfEntity(
+  public async getDescendantsOfEntity(
     hierarchyName: string,
     entityCode: string,
     queryOptions?: {
@@ -176,7 +176,7 @@ export class EntityApi {
     },
     includeRootEntity?: boolean,
   ): Promise<FlattenedEntity[]>;
-  getDescendantsOfEntity<T extends ExtendedEntityFieldName[]>(
+  public async getDescendantsOfEntity<T extends ExtendedEntityFieldName[]>(
     hierarchyName: string,
     entityCode: string,
     queryOptions?: {
@@ -205,7 +205,7 @@ export class EntityApi {
     );
   }
 
-  getDescendantsOfEntities(
+  public async getDescendantsOfEntities(
     hierarchyName: string,
     entityCodes: string[],
     queryOptions?: {
@@ -214,7 +214,7 @@ export class EntityApi {
     },
     includeRootEntity?: boolean,
   ): Promise<FlattenedEntity[]>;
-  getDescendantsOfEntities<T extends ExtendedEntityFieldName[]>(
+  public async getDescendantsOfEntities<T extends ExtendedEntityFieldName[]>(
     hierarchyName: string,
     entityCodes: string[],
     queryOptions?: {
@@ -240,7 +240,7 @@ export class EntityApi {
     });
   }
 
-  getRelativesOfEntity(
+  public async getRelativesOfEntity(
     hierarchyName: string,
     entityCode: string,
     queryOptions?: {
@@ -248,7 +248,7 @@ export class EntityApi {
       filter?: EntityFilterObject;
     },
   ): Promise<FlattenedEntity[]>;
-  getRelativesOfEntity<T extends ExtendedEntityFieldName[]>(
+  public async getRelativesOfEntity<T extends ExtendedEntityFieldName[]>(
     hierarchyName: string,
     entityCode: string,
     queryOptions?: {
@@ -270,7 +270,7 @@ export class EntityApi {
     });
   }
 
-  getRelativesOfEntities(
+  public async getRelativesOfEntities(
     hierarchyName: string,
     entityCodes: string[],
     queryOptions?: {
@@ -278,7 +278,7 @@ export class EntityApi {
       filter?: EntityFilterObject;
     },
   ): Promise<FlattenedEntity[]>;
-  getRelativesOfEntities<T extends ExtendedEntityFieldName[]>(
+  public async getRelativesOfEntities<T extends ExtendedEntityFieldName[]>(
     hierarchyName: string,
     entityCodes: string[],
     queryOptions?: {
@@ -301,7 +301,7 @@ export class EntityApi {
     });
   }
 
-  getRelationshipsOfEntity(
+  public async getRelationshipsOfEntity(
     hierarchyName: string,
     entityCode: string,
     groupBy: 'ancestor',
@@ -309,7 +309,7 @@ export class EntityApi {
     ancestorQueryOptions?: RelationshipsSubQueryOptions,
     descendantQueryOptions?: RelationshipsSubQueryOptions,
   ): Promise<GroupByAncestorRelationshipsResponseBody>;
-  getRelationshipsOfEntity(
+  public async getRelationshipsOfEntity(
     hierarchyName: string,
     entityCode: string,
     groupBy: 'descendant',
@@ -337,7 +337,7 @@ export class EntityApi {
     );
   }
 
-  getRelationshipsOfEntities(
+  public async getRelationshipsOfEntities(
     hierarchyName: string,
     entityCodes: string[],
     groupBy: 'ancestor',
@@ -346,7 +346,7 @@ export class EntityApi {
     descendantQueryOptions?: RelationshipsSubQueryOptions,
   ): Promise<GroupByAncestorRelationshipsResponseBody>;
 
-  getRelationshipsOfEntities(
+  public async getRelationshipsOfEntities(
     hierarchyName: string,
     entityCodes: string[],
     groupBy: 'descendant',

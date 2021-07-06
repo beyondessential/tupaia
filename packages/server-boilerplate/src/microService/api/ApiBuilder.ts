@@ -10,13 +10,12 @@ import errorHandler from 'api-error-handler';
 
 import { Authenticator } from '@tupaia/auth';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
-import { EntityApi } from '@tupaia/entity-server';
 
 import { handleWith, handleError } from '../../utils';
 import { buildBasicBearerAuthMiddleware } from '../auth';
 import { TestRoute } from '../../routes';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
-import { CachedOutboundConnection } from '../../connections';
+import { RequestConnection, EntityApi } from '../../connections';
 import { RequestContext } from '../types';
 
 export class ApiBuilder {
@@ -44,9 +43,6 @@ export class ApiBuilder {
     this.app.use(bodyParser.json({ limit: '50mb' }));
     this.app.use(errorHandler());
 
-    // micro-service connections
-    const cachedEntityServerConnection = new CachedOutboundConnection();
-
     /**
      * Add singletons to be attached to req for every route
      */
@@ -58,7 +54,7 @@ export class ApiBuilder {
       };
       const context: RequestContext = {
         microServices: {
-          entityApi: new EntityApi(cachedEntityServerConnection, microServiceAuthHandler),
+          entityApi: new EntityApi(new RequestConnection(microServiceAuthHandler)),
         },
       }; // context is shared between request and response
       req.ctx = context;
