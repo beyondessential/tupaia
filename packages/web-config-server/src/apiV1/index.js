@@ -18,7 +18,6 @@ import {
 import { login, oneTimeLogin, logout } from '/authSession';
 import { exportChartHandler, ExportSurveyResponsesHandler, ExportSurveyDataHandler } from '/export';
 import { getUser } from './getUser';
-import DashboardHandler from './dashboard';
 import MeasuresHandler from './measures';
 import MeasuresDataHandler from './measureData';
 import OrgUnitSearchHandler from './organisationUnitSearch';
@@ -55,7 +54,6 @@ export const getRoutesForApiV1 = () => {
     handleWith(OrganisationUnitHandler),
   );
   api.get('/organisationUnitSearch', handleWith(OrgUnitSearchHandler));
-  api.get('/dashboard', handleWith(DashboardHandler)); // Legacy style dashboards
   api.get('/measures', handleWith(MeasuresHandler));
   api.get('/measureData', handleWith(MeasuresDataHandler));
   api.get('/disasters', catchAsyncErrors(disasters));

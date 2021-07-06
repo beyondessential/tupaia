@@ -7,8 +7,8 @@ import moment from 'moment';
 import { AnalyticsRefresher } from '..';
 
 const COMPARISON = `LIKE '%_test%'`;
-const getDeleteStatement = (table, mainCondition = `id ${COMPARISON}`, extraConditions = []) => {
-  const conditions = [mainCondition, ...extraConditions];
+const getDeleteStatement = (table, extraConditions = []) => {
+  const conditions = [`id ${COMPARISON}`, ...extraConditions];
   return `DELETE FROM "${table}" WHERE ${conditions.join(' OR ')};`;
 };
 
@@ -56,16 +56,10 @@ const TABLES_TO_CLEAR = [
   'permission_group',
   'api_client',
   'user_account',
-  'dashboardGroup',
-  'dashboardReport',
   'mapOverlay',
 ];
 
 export async function clearTestData(db, testStartTime = moment().format('YYYY-MM-DD HH:mm:ss')) {
-  const mainConditions = {
-    dashboardGroup: `code ${COMPARISON}`, // id of dashboard group is still Integer, so have the mainCondition test on code rather than id
-  };
-
   const extraConditions = {
     api_request_log: [`request_time >= '${testStartTime}'`],
     api_client: [`id ${COMPARISON}`, `user_account_id ${COMPARISON}`],
@@ -82,8 +76,7 @@ export async function clearTestData(db, testStartTime = moment().format('YYYY-MM
     meditrak_sync_queue: [`record_id ${COMPARISON}`],
   };
   const sql = TABLES_TO_CLEAR.reduce(
-    (acc, table) =>
-      `${acc}\n${getDeleteStatement(table, mainConditions[table], extraConditions[table])}`,
+    (acc, table) => `${acc}\n${getDeleteStatement(table, extraConditions[table])}`,
     '',
   );
   await db.executeSql(sql);

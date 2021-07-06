@@ -27,12 +27,6 @@ import { DeleteOptionSets, EditOptionSets, GETOptionSets, importOptionSets } fro
 import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
 import { DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
 import { GETProjects } from './GETProjects';
-import {
-  DeleteDashboardReports,
-  EditDashboardReports,
-  GETDashboardReports,
-} from './dashboardReports';
-import { DeleteDashboardGroups, EditDashboardGroups, GETDashboardGroups } from './dashboardGroups';
 import { DeleteDashboardItem, EditDashboardItem, GETDashboardItems } from './dashboardItems';
 import { DeleteDashboard, EditDashboard, GETDashboards } from './dashboards';
 import {
@@ -120,8 +114,6 @@ export default {
   createUserEntityPermissions: useRouteHandler(CreateUserEntityPermissions),
   createDashboardRelations: useRouteHandler(CreateDashboardRelation),
   deleteAnswers: useRouteHandler(DeleteAnswers),
-  deleteDashboardGroups: useRouteHandler(DeleteDashboardGroups),
-  deleteDashboardReports: useRouteHandler(DeleteDashboardReports),
   deleteDashboards: useRouteHandler(DeleteDashboard),
   deleteDashboardItems: useRouteHandler(DeleteDashboardItem),
   deleteDashboardRelations: useRouteHandler(DeleteDashboardRelation),
@@ -142,8 +134,6 @@ export default {
   registerUserAccount: useRouteHandler(RegisterUserAccounts),
   editAccessRequests: useRouteHandler(EditAccessRequests),
   editAnswers: useRouteHandler(EditAnswers),
-  editDashboardGroups: useRouteHandler(EditDashboardGroups),
-  editDashboardReports: useRouteHandler(EditDashboardReports),
   editDashboards: useRouteHandler(EditDashboard),
   editDashboardItems: useRouteHandler(EditDashboardItem),
   editDashboardRelations: useRouteHandler(EditDashboardRelation),
@@ -169,8 +159,6 @@ export default {
   getCountries: useRouteHandler(GETCountries),
   getClinics: useRouteHandler(GETClinics),
   getDisasters: useRouteHandler(GETDisasters),
-  getDashboardReports: useRouteHandler(GETDashboardReports),
-  getDashboardGroups: useRouteHandler(GETDashboardGroups),
   getDashboards: useRouteHandler(GETDashboards),
   getDashboardItems: useRouteHandler(GETDashboardItems),
   getDashboardRelations: useRouteHandler(GETDashboardRelations),

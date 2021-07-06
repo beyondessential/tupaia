@@ -19,10 +19,8 @@ import {
   UsersPage,
   DisasterResponsePage,
   AccessRequestsPage,
-  DashboardReportsPage,
   MapOverlaysPage,
   IndicatorsPage,
-  DashboardGroupsPage,
   DashboardsPage,
   DashboardItemsPage,
   DashboardRelationsPage,
@@ -72,18 +70,13 @@ export const ROUTES = [
   },
   {
     label: 'Visualisations',
-    to: '/dashboard-reports',
+    to: '/dashboard-items',
     icon: <InsertChart />,
     tabs: [
       {
-        label: 'Dashboard Reports',
+        label: 'Dashboard Items',
         to: '',
-        component: DashboardReportsPage,
-      },
-      {
-        label: 'Dashboard Groups',
-        to: '/dashboard-groups',
-        component: DashboardGroupsPage,
+        component: DashboardItemsPage,
       },
       {
         label: 'Dashboards',
@@ -91,18 +84,13 @@ export const ROUTES = [
         component: DashboardsPage,
       },
       {
-        label: 'Dashboard Items',
-        to: '/dashboardItems',
-        component: DashboardItemsPage,
-      },
-      {
         label: 'Dashboard Relations',
-        to: '/dashboardRelations',
+        to: '/dashboard-relations',
         component: DashboardRelationsPage,
       },
       {
         label: 'Legacy Reports',
-        to: '/legacyReports',
+        to: '/legacy-reports',
         component: LegacyReportsPage,
       },
       {
