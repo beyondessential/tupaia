@@ -9,7 +9,15 @@ import { Line, LabelList } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
 import { BLUE, DARK_BLUE } from './constants';
 
-export const LineChart = ({ color, dataKey, yAxisId, valueType, isEnlarged, isExporting }) => {
+export const LineChart = ({
+  color,
+  dataKey,
+  yAxisId,
+  valueType,
+  isEnlarged,
+  isExporting,
+  opacity,
+}) => {
   const defaultColor = isExporting ? DARK_BLUE : BLUE;
 
   return (
@@ -20,6 +28,7 @@ export const LineChart = ({ color, dataKey, yAxisId, valueType, isEnlarged, isEx
       yAxisId={yAxisId}
       stroke={color || defaultColor}
       strokeWidth={isEnlarged ? 3 : 1}
+      strokeOpacity={opacity}
       fill={color || defaultColor}
       isAnimationActive={isEnlarged && !isExporting}
     >
@@ -38,6 +47,7 @@ export const LineChart = ({ color, dataKey, yAxisId, valueType, isEnlarged, isEx
 
 LineChart.propTypes = {
   dataKey: PropTypes.string.isRequired,
+  opacity: PropTypes.string,
   yAxisId: PropTypes.string.isRequired,
   valueType: PropTypes.string.isRequired,
   color: PropTypes.string,
@@ -49,4 +59,5 @@ LineChart.defaultProps = {
   color: BLUE,
   isExporting: false,
   isEnlarged: false,
+  opacity: null,
 };

@@ -41,9 +41,14 @@ const DarkContainer = styled(LightContainer)`
 `;
 
 export const DarkThemeTemplate = args => (
-  <DarkContainer>
-    <ChartContainer>
-      <Chart {...args} />
-    </ChartContainer>
-  </DarkContainer>
+  <>
+    <DarkContainer>
+      <ChartContainer>
+        <Chart {...args} />
+      </ChartContainer>
+    </DarkContainer>
+    <DarkContainer>
+      <Table {...args} />
+    </DarkContainer>
+  </>
 );

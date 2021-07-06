@@ -127,9 +127,7 @@ export const MainMenu = () => {
             </ListItemIcon>
             <ListItemText primary="Contact us" />
           </ListItemLink>
-
-          <Subheader component="div">Online Questionaries</Subheader>
-
+          <Subheader component="div">Online Questionnaires</Subheader>
           <ListItemLink to="/fundamental-quality-standards">
             <ListItemIcon>
               <Assignment />
@@ -137,9 +135,7 @@ export const MainMenu = () => {
             <ListItemText primary="Fundamental Quality Standards" />
           </ListItemLink>
         </StyledList>
-
         <StyledDivider />
-
         <StyledList component="nav" aria-label="secondary mailbox folders">
           <ListItem>
             <TupaiaText>
