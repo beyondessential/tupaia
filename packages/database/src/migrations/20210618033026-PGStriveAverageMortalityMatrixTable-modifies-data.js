@@ -1,6 +1,6 @@
 'use strict';
 
-import { generateId, insertObject, arrayToDbString } from '../utilities';
+import { generateId, insertObject, codeToId } from '../utilities';
 
 var dbm;
 var type;
@@ -80,20 +80,9 @@ const REPORT = {
   },
 };
 
-const DASHBOARD_GROUP_CODES = ['PG_Strive_PNG_Country'];
-
-const BASE_DASHBOARD_REPORT = {
-  id: 'PG_Strive_Mosquito_Mortality',
-  dataBuilder: 'reportServer',
-  dataServices: [
-    {
-      isDataRegional: true,
-    },
-  ],
-  dataBuilderConfig: { reportCode: REPORT.code },
-};
-
-const VIEW_JSON = {
+const DASHBOARD_CODE = 'PG_STRIVE_PNG';
+const BASE_DASHBOARD_ITEM_CODE = 'PG_Strive_Mosquito_Mortality';
+const CONFIG = {
   name: 'Average Mosquito Mortality',
   type: 'matrix',
   defaultTimePeriod: {
@@ -146,32 +135,35 @@ const VIEW_JSON = {
 };
 
 exports.up = async function (db) {
+  const dashboardId = await codeToId(db, 'dashboard', DASHBOARD_CODE);
+  const dashboardItemId = generateId();
   const permissionGroupId = await permissionGroupNameToId(db, 'STRIVE User');
   await insertObject(db, 'report', { ...REPORT, permission_group_id: permissionGroupId });
-  await insertObject(db, 'dashboardReport', {
-    ...BASE_DASHBOARD_REPORT,
-    viewJson: VIEW_JSON,
+  await insertObject(db, 'dashboard_item', {
+    id: dashboardItemId,
+    code: BASE_DASHBOARD_ITEM_CODE,
+    report_code: REPORT.code,
+    legacy: false,
+    config: CONFIG,
   });
-  await db.runSql(`
-    UPDATE
-      "dashboardGroup"
-    SET
-      "dashboardReports" = "dashboardReports" || '{ ${BASE_DASHBOARD_REPORT.id} }'
-    WHERE
-      "code" in (${arrayToDbString(DASHBOARD_GROUP_CODES)});
-  `);
+  await insertObject(db, 'dashboard_relation', {
+    id: generateId(),
+    dashboard_id: dashboardId,
+    child_id: dashboardItemId,
+    entity_types: '{country}',
+    project_codes: '{strive}',
+    permission_groups: '{STRIVE User}',
+    sort_order: 19,
+  });
 };
 
 exports.down = async function (db) {
+  const dashboardId = await codeToId(db, 'dashboard', DASHBOARD_CODE);
+  const dashboardItemId = await codeToId(db, 'dashboard_item', BASE_DASHBOARD_ITEM_CODE);
   await db.runSql(`
    DELETE FROM "report" WHERE code = '${REPORT.code}';
-   DELETE FROM "dashboardReport" WHERE id = '${BASE_DASHBOARD_REPORT.id}';
-   UPDATE
-     "dashboardGroup"
-   SET
-     "dashboardReports" = array_remove("dashboardReports", '${BASE_DASHBOARD_REPORT.id}')
-   WHERE
-   "code" in (${arrayToDbString(DASHBOARD_GROUP_CODES)});
+   DELETE FROM "dashboard_item" WHERE code = '${BASE_DASHBOARD_ITEM_CODE}';
+   DELETE FROM "dashboard_relation" WHERE dashboard_id = '${dashboardId}' and child_id = '${dashboardItemId}';
   `);
 };
 
