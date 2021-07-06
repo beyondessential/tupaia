@@ -146,7 +146,11 @@ export const Tooltip = props => {
     return <MultiValueTooltip {...props} payload={filteredPayload} />;
   }
 
-  return <TooltipContainer>No Data</TooltipContainer>;
+  return (
+    <TooltipContainer>
+      <Text>No Data</Text>
+    </TooltipContainer>
+  );
 };
 
 Tooltip.propTypes = {

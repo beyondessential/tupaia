@@ -14,7 +14,7 @@ import {
   FetchLoader,
   TabsLoader,
   FlexCenter,
-  Report,
+  DashboardReport,
   TabBar,
   Tabs,
   Tab,
@@ -153,8 +153,8 @@ export const DashboardReportTabView = ({
                 variant="scrollable"
                 scrollButtons="auto"
               >
-                {data.map(({ dashboardName: heading }) => (
-                  <Tab key={heading} label={heading} value={heading} />
+                {subDashboards.map(({ dashboardName: heading, dashboardId }) => (
+                  <Tab key={dashboardId} label={heading} value={heading} />
                 ))}
               </Tabs>
             </>
@@ -163,10 +163,10 @@ export const DashboardReportTabView = ({
       </StickyTabBarContainer>
       <DashboardSection ref={topRef}>
         <FetchLoader isLoading={isLoading} isError={isError} error={error}>
-          {data &&
-            data.map(dashboard => (
+          {subDashboards &&
+            subDashboards.map(dashboard => (
               <TabPanel
-                key={dashboard.dashboardName}
+                key={dashboard.dashboardId}
                 isSelected={dashboard.dashboardName === activeDashboard}
               >
                 {(() => {
@@ -174,7 +174,7 @@ export const DashboardReportTabView = ({
                   const dashboardItems = dashboard.items.filter(item => item.type === 'chart');
                   return dashboardItems.length > 0 ? (
                     dashboardItems.map(item => (
-                      <Report
+                      <DashboardReport
                         key={item.code}
                         name={item.name}
                         entityCode={entityCode}
@@ -203,7 +203,7 @@ export const DashboardReportTabView = ({
 
 DashboardReportTabView.propTypes = {
   entityCode: PropTypes.string.isRequired,
-  TabBarLeftSection: PropTypes.node.isRequired,
+  TabBarLeftSection: PropTypes.func.isRequired,
   year: PropTypes.string,
   filterSubDashboards: PropTypes.func.isRequired,
 };
