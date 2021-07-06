@@ -1,12 +1,7 @@
-/**
- * Tupaia Web
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
- * This source code is licensed under the AGPL-3.0 license
- * found in the LICENSE file in the root directory of this source tree.
- */
-
-/**
- * Component for Login Form
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ *
  */
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -16,6 +11,7 @@ import { Form } from '../Form';
 import { TextField } from '../Form/Fields';
 import { WHITE } from '../../styles';
 import { isMobile } from '../../utils';
+import { FlexSpaceBetween } from '../../components/Flexbox';
 
 const CheckEmailMessage = styled.p`
   text-align: center;
@@ -36,10 +32,7 @@ const Container = styled.div`
   }
 `;
 
-const FlexRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+const FormActions = styled(FlexSpaceBetween)`
   margin-top: 16px;
 
   > button {
@@ -74,12 +67,12 @@ export const RequestResetPasswordFormComponent = ({
             ) : (
               <TextField fullWidth label="E-mail" name="email" required />
             )}
-            <FlexRow>
+            <FormActions>
               <Button disabled={hasResetPasswordCompleted} variant="outlined" onClick={submitForm}>
                 Reset Password
               </Button>
               <Button onClick={onClickCancel}>Back</Button>
-            </FlexRow>
+            </FormActions>
           </>
         )}
       />
