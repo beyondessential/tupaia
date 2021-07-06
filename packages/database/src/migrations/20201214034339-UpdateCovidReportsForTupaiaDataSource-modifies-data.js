@@ -19,36 +19,36 @@ const entityAggregation = entityType =>
 
 exports.up = async function (db) {
   await db.runSql(`
-    update "dashboardReport" 
-    set "dataBuilderConfig" = "dataBuilderConfig" || '${entityAggregation('district')}' 
-    where "id" IN ('COVID_Total_Cases_By_State', 'COVID_AU_Total_Cases_Each_State_Per_Day', 
+    update legacy_report 
+    set data_builder_config = data_builder_config || '${entityAggregation('district')}' 
+    where code IN ('COVID_Total_Cases_By_State', 'COVID_AU_Total_Cases_Each_State_Per_Day', 
                   'COVID_New_Cases_By_State', 'COVID_New_Cases_By_Day', 'COVID_Tests_Per_Capita');
   `);
 
   await db.runSql(`
-    update "dashboardReport" 
-    set "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{dataBuilders, cases, dataBuilderConfig}', "dataBuilderConfig"->'dataBuilders'->'cases'->'dataBuilderConfig' || '${entityAggregation(
+    update legacy_report 
+    set data_builder_config = jsonb_set(data_builder_config, '{dataBuilders, cases, dataBuilderConfig}', data_builder_config->'dataBuilders'->'cases'->'dataBuilderConfig' || '${entityAggregation(
       'district',
     )}', true)
-    where "id" IN ('COVID_Compose_Daily_Deaths_Vs_Cases');
+    where code IN ('COVID_Compose_Daily_Deaths_Vs_Cases');
   
-    update "dashboardReport" 
-    set "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{dataBuilders, deaths, dataBuilderConfig}', "dataBuilderConfig"->'dataBuilders'->'deaths'->'dataBuilderConfig' || '${entityAggregation(
+    update legacy_report 
+    set data_builder_config = jsonb_set(data_builder_config, '{dataBuilders, deaths, dataBuilderConfig}', data_builder_config->'dataBuilders'->'deaths'->'dataBuilderConfig' || '${entityAggregation(
       'district',
     )}', true)
-    where "id" IN ('COVID_Compose_Daily_Deaths_Vs_Cases');
+    where code IN ('COVID_Compose_Daily_Deaths_Vs_Cases');
 
-    update "dashboardReport" 
-    set "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{dataBuilders, cases, dataBuilderConfig}', "dataBuilderConfig"->'dataBuilders'->'cases'->'dataBuilderConfig' || '${entityAggregation(
+    update legacy_report
+    set data_builder_config = jsonb_set(data_builder_config, '{dataBuilders, cases, dataBuilderConfig}', data_builder_config->'dataBuilders'->'cases'->'dataBuilderConfig' || '${entityAggregation(
       'district',
     )}', true)
-    where "id" IN ('COVID_Compose_Cumulative_Deaths_Vs_Cases');
+    where code IN ('COVID_Compose_Cumulative_Deaths_Vs_Cases');
   
-    update "dashboardReport" 
-    set "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{dataBuilders, deaths, dataBuilderConfig}', "dataBuilderConfig"->'dataBuilders'->'deaths'->'dataBuilderConfig' || '${entityAggregation(
+    update legacy_report 
+    set data_builder_config = jsonb_set(data_builder_config, '{dataBuilders, deaths, dataBuilderConfig}', data_builder_config->'dataBuilders'->'deaths'->'dataBuilderConfig' || '${entityAggregation(
       'district',
     )}', true)
-    where "id" IN ('COVID_Compose_Cumulative_Deaths_Vs_Cases');
+    where code IN ('COVID_Compose_Cumulative_Deaths_Vs_Cases');
 
     update "mapOverlay" 
     set "measureBuilderConfig" = jsonb_set("measureBuilderConfig", '{measureBuilders, numerator, measureBuilderConfig}', "measureBuilderConfig"->'measureBuilders'->'numerator'->'measureBuilderConfig' || '${entityAggregation(

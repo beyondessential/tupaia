@@ -6,9 +6,9 @@ var seed;
 
 const updateDashboardConfig = (db, dashboardId, dataBuilderConfig) => {
   return db.runSql(`
-    UPDATE "dashboardReport" 
-    SET "dataBuilderConfig" = '${JSON.stringify(dataBuilderConfig)}'
-    where id = '${dashboardId}';
+    UPDATE legacy_report 
+    SET data_builder_config = '${JSON.stringify(dataBuilderConfig)}'
+    where code = '${dashboardId}';
   `);
 };
 

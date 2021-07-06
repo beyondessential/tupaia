@@ -1,22 +1,22 @@
 'use strict';
 
+import { generateId, insertObject } from '../utilities';
+
 var dbm;
 var type;
 var seed;
 
-import { generateId, insertObject } from '../utilities';
-
 const updateDashboard = async (db, dashboardId, dataBuilder, dataBuilderConfig) => {
   await db.runSql(`
-    UPDATE "dashboardReport" 
-    SET "dataBuilder" = '${dataBuilder}'
-    where id = '${dashboardId}';
+    UPDATE legacy_report 
+    SET data_builder = '${dataBuilder}'
+    where code = '${dashboardId}';
   `);
 
   await db.runSql(`
-    UPDATE "dashboardReport" 
-    SET "dataBuilderConfig" = '${JSON.stringify(dataBuilderConfig)}'
-    where id = '${dashboardId}';
+    UPDATE legacy_report 
+    SET data_builder_config = '${JSON.stringify(dataBuilderConfig)}'
+    where code = '${dashboardId}';
   `);
 };
 
