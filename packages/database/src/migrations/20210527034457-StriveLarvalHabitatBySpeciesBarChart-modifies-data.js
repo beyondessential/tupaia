@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject, generateId } from '../utilities';
+import { insertObject, generateId, codeToId } from '../utilities';
 
 var dbm;
 var type;
@@ -16,8 +16,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const DASHBOARD_GROUP_CODE = 'PG_Strive_PNG_Country';
-
+const DASHBOARD_GROUP_CODE = 'PG_STRIVE_PNG';
 const SPECIES = [
   'Ae. aegypti',
   'Ae. albopictus',
@@ -52,19 +51,12 @@ const COLOURS = [
   '#b89fbd',
 ];
 
-const BASE_DASHBOARD_REPORT = {
-  id: 'PG_Strive_Habitat_By_Species',
-  dataBuilder: 'reportServer',
-  dataServices: [
-    {
-      isDataRegional: true,
-    },
-  ],
-};
-
-const DATA_BUILDER_CONFIG = {
-  reportCode: 'PG_STRIVE_Habitat_By_Species',
-};
+const BASE_DASHBOARD_REPORT = id => ({
+  id,
+  code: 'PG_Strive_Habitat_By_Species',
+  report_code: 'PG_STRIVE_Habitat_By_Species',
+  legacy: false,
+});
 
 const getChartConfig = () => {
   const chartConfig = {};
@@ -74,39 +66,36 @@ const getChartConfig = () => {
   return chartConfig;
 };
 
-const VIEW_JSON = {
+const CONFIG = {
   name: 'Larval Habitat by Species',
   type: 'chart',
   chartType: 'bar',
   chartConfig: getChartConfig(),
 };
 
-exports.up = async function (db) {
-  await insertObject(db, 'dashboardReport', {
-    ...BASE_DASHBOARD_REPORT,
-    dataBuilderConfig: DATA_BUILDER_CONFIG,
-    viewJson: VIEW_JSON,
-  });
+const DASHBOARD_ITEM_ID = generateId();
 
-  return db.runSql(`
-    UPDATE
-      "dashboardGroup"
-    SET
-      "dashboardReports" = "dashboardReports" || '{ ${BASE_DASHBOARD_REPORT.id} }'
-    WHERE
-      "code" = '${DASHBOARD_GROUP_CODE}';
-  `);
+exports.up = async function (db) {
+  await insertObject(db, 'dashboard_item', {
+    ...BASE_DASHBOARD_REPORT(DASHBOARD_ITEM_ID),
+    config: CONFIG,
+  });
+  const dashboardId = await codeToId(db, 'dashboard', DASHBOARD_GROUP_CODE);
+  await insertObject(db, 'dashboard_relation', {
+    id: generateId(),
+    dashboard_id: dashboardId,
+    child_id: DASHBOARD_ITEM_ID,
+    entity_types: '{country}',
+    project_codes: '{strive}',
+    permission_groups: '{STRIVE User}',
+    sort_order: 18,
+  });
 };
 
 exports.down = async function (db) {
   return db.runSql(`
-  DELETE FROM "dashboardReport" WHERE id = '${BASE_DASHBOARD_REPORT.id}';
-  UPDATE
-    "dashboardGroup"
-  SET
-    "dashboardReports" = array_remove("dashboardReports", '${BASE_DASHBOARD_REPORT.id}')
-  WHERE
-    "code" = '${DASHBOARD_GROUP_CODE}';
+  DELETE FROM "dashboard_item" WHERE id = '${DASHBOARD_ITEM_ID}';
+  DELETE FROM "dashboard_relation" WHERE code = '${DASHBOARD_GROUP_CODE}';
 `);
 };
 
