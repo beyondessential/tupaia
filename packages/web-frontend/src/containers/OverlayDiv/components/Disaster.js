@@ -8,47 +8,29 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
+import MuiButton from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 import moment from 'moment';
-
 import { viewDisaster } from '../../../disaster/actions';
 import { setOverlayComponent } from '../../../actions';
-import { BUTTON_COLORS, BLUE, WHITE } from '../../../styles';
-
-const styles = {
-  disasterButton: {
-    width: '75%',
-    background: BUTTON_COLORS.primary,
-    marginTop: 25,
-    color: WHITE,
-    fontSize: 18,
-  },
-};
+import { BUTTON_COLORS, BLUE } from '../../../styles';
 
 const Container = styled.div`
+  padding: 2.5rem 3.5rem;
   text-align: left;
+  max-width: 700px;
 `;
 
-const Header = styled.div`
-  color: ${WHITE};
+const Heading = styled(Typography)`
   font-size: 30px;
   font-weight: 700;
-  margin-bottom: 30px;
-  text-transform: uppercase;
-  text-align: center;
+  margin-bottom: 2rem;
 `;
 
-const SubHeader = styled.span`
+const SubHeading = styled.span`
   font-size: 18px;
   font-weight: 400;
-`;
-
-const TopSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 25px;
 `;
 
 const InfoList = styled.div`
@@ -68,10 +50,6 @@ const InfoListValue = styled.div`
   font-weight: 300;
 `;
 
-const BottomSection = styled.section`
-  margin: 0 15px;
-`;
-
 const Description = styled.div`
   margin: 25px 0;
   font-weight: 300;
@@ -79,6 +57,12 @@ const Description = styled.div`
 
 const Resources = styled.ul`
   padding: 0 0 0 25px;
+`;
+
+const Button = styled(MuiButton)`
+  background: ${BUTTON_COLORS.primary};
+  margin-bottom: 25px;
+  font-size: 18px;
 `;
 
 const ResourceLink = styled.a`
@@ -139,46 +123,43 @@ class Disaster extends Component {
 
     return (
       <Container>
-        <TopSection>
-          <Header>{name}</Header>
-          <InfoList>
-            <div>
-              <InfoListKey>type:</InfoListKey>
-              <InfoListValue>{type}</InfoListValue>
-            </div>
-            <div>
-              <InfoListKey>status:</InfoListKey>
-              <InfoListValue>{status}</InfoListValue>
-            </div>
-            <div>
-              <InfoListKey>location:</InfoListKey>
-              <InfoListValue>{location}</InfoListValue>
-            </div>
-            <div>
-              <InfoListKey>start:</InfoListKey>
-              <InfoListValue>{start}</InfoListValue>
-            </div>
-            <div>
-              <InfoListKey>end:</InfoListKey>
-              <InfoListValue>{end}</InfoListValue>
-            </div>
-          </InfoList>
-          <Button
-            variant="contained"
-            style={styles.disasterButton}
-            onClick={() => zoomToDisaster(selectedDisaster)}
-          >
-            View Disaster
-          </Button>
-        </TopSection>
-        <hr />
-        <BottomSection>
-          <Description>{description}</Description>
+        <Heading variant="h2">{name}</Heading>
+        <InfoList>
           <div>
-            <SubHeader>Resources</SubHeader>
-            {renderResourceList([tupaiaResource])}
+            <InfoListKey>type:</InfoListKey>
+            <InfoListValue>{type}</InfoListValue>
           </div>
-        </BottomSection>
+          <div>
+            <InfoListKey>status:</InfoListKey>
+            <InfoListValue>{status}</InfoListValue>
+          </div>
+          <div>
+            <InfoListKey>location:</InfoListKey>
+            <InfoListValue>{location}</InfoListValue>
+          </div>
+          <div>
+            <InfoListKey>start:</InfoListKey>
+            <InfoListValue>{start}</InfoListValue>
+          </div>
+          <div>
+            <InfoListKey>end:</InfoListKey>
+            <InfoListValue>{end}</InfoListValue>
+          </div>
+        </InfoList>
+        <Description>{description}</Description>
+
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          onClick={() => zoomToDisaster(selectedDisaster)}
+        >
+          View Disaster
+        </Button>
+        <div>
+          <SubHeading>Resources</SubHeading>
+          {renderResourceList([tupaiaResource])}
+        </div>
       </Container>
     );
   }

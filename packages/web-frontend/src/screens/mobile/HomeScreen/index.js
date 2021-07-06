@@ -7,7 +7,6 @@
 
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-
 import { connect } from 'react-redux';
 
 import { ExpandableList } from '../../../components/mobile/ExpandableList';
@@ -16,7 +15,7 @@ import { Dashboard } from '../../../components/mobile/Dashboard';
 import { setOrgUnit, toggleDashboardSelectExpand, setDashboardGroup } from '../../../actions';
 import { WHITE } from '../../../styles';
 import {
-  selectCurrentDashboardGroupCode,
+  selectCurrentDashboardName,
   selectOrgUnitChildren,
   selectCurrentOrgUnit,
   selectCurrentProjectCode,
@@ -32,8 +31,8 @@ class HomeScreen extends PureComponent {
       organisationUnits,
       onChangeOrgUnit,
       currentOrganisationUnit,
-      dashboardConfig,
-      currentDashboardGroupCode,
+      dashboards,
+      currentDashboardName,
       onToggleDashboardSelectExpand,
       dashboardFilterIsExpanded,
       onChangeDashboardGroup,
@@ -43,8 +42,8 @@ class HomeScreen extends PureComponent {
       <div>
         <Dashboard
           orgUnit={currentOrganisationUnit}
-          dashboardConfig={dashboardConfig}
-          currentDashboardGroupCode={currentDashboardGroupCode}
+          dashboards={dashboards}
+          currentDashboardName={currentDashboardName}
           toggleFilter={onToggleDashboardSelectExpand}
           filterIsExpanded={dashboardFilterIsExpanded}
           handleFilterChange={name => onChangeDashboardGroup(name)}
@@ -80,24 +79,35 @@ const sortOrgUnitsAlphabeticallyByName = orgUnits => {
 
 HomeScreen.propTypes = {
   onChangeOrgUnit: PropTypes.func.isRequired,
+  organisationUnits: PropTypes.array,
+  currentOrganisationUnit: PropTypes.object,
+  dashboards: PropTypes.array,
+  currentDashboardName: PropTypes.string,
+  dashboardFilterIsExpanded: PropTypes.bool,
+  onToggleDashboardSelectExpand: PropTypes.func.isRequired,
+  onChangeDashboardGroup: PropTypes.func.isRequired,
 };
 
 HomeScreen.defaultProps = {
   organisationUnits: [],
+  currentOrganisationUnit: {},
+  dashboards: [],
+  currentDashboardName: '',
+  dashboardFilterIsExpanded: false,
 };
 
 const mapStateToProps = state => {
   const { isGroupSelectExpanded } = state.dashboard;
 
-  const { dashboardConfig } = state.global;
+  const { dashboards } = state.global;
   const organisationUnits = selectOrgUnitChildren(state, selectCurrentProjectCode(state));
 
   return {
     organisationUnits,
     currentOrganisationUnit: selectCurrentOrgUnit(state),
     dashboardFilterIsExpanded: isGroupSelectExpanded,
-    dashboardConfig,
-    currentDashboardGroupCode: selectCurrentDashboardGroupCode(state),
+    dashboards,
+    currentDashboardName: selectCurrentDashboardName(state),
   };
 };
 
