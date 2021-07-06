@@ -23,6 +23,7 @@ const auth = () => async (req, res, next) => {
     // if logged in
     const userId = req.session?.userJson?.userId;
     if (userId) {
+      req.userJson = req.session.userJson;
       req.accessPolicy = req.accessPolicy || (await getAccessPolicyForUser(authenticator, userId));
       next();
       return;
@@ -36,7 +37,7 @@ const auth = () => async (req, res, next) => {
     }
 
     // no previous login, authenticate as public user
-    setSession(req, { userName: PUBLIC_USER_NAME }); // store new session as public user
+    req.userJson = { userName: PUBLIC_USER_NAME };
     req.accessPolicy = await getAccessPolicyForUser(authenticator, PUBLIC_USER_NAME);
   } catch (error) {
     next(new UnauthenticatedError(error.message));
