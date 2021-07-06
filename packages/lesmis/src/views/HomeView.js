@@ -37,7 +37,7 @@ const Container = styled(MuiContainer)`
 const Main = styled.div`
   position: relative;
   padding-top: 3rem; // fallback for older browsers
-  padding-top: 18vh;
+  padding-top: 17vh;
   left: 0;
 
   @media screen and (max-width: 600px) {
@@ -59,6 +59,7 @@ const YellowTitle = styled.span`
 `;
 
 const Info = styled(FlexStart)`
+  align-items: flex-start;
   color: white;
 
   @media screen and (max-width: 600px) {
@@ -68,9 +69,9 @@ const Info = styled(FlexStart)`
 `;
 
 const InfoSection = styled.div`
-  margin-right: 3rem;
-  max-width: 18.5rem;
-  padding-bottom: 3rem;
+  margin-right: 4rem;
+  max-width: 20rem;
+  padding-bottom: 2.5rem;
 `;
 
 const InfoHeading = styled(Typography)`
@@ -78,11 +79,11 @@ const InfoHeading = styled(Typography)`
   font-weight: 600;
   font-size: 1.125rem;
   line-height: 1.4;
-  margin-bottom: 0.6s5rem;
+  margin-bottom: 0.65rem;
 `;
 
 const InfoText = styled(Typography)`
-  font-size: 1ren;
+  font-size: 1rem;
   line-height: 1.5;
 `;
 
@@ -98,6 +99,10 @@ const FooterInner = styled(FlexEnd)`
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 1rem;
   padding-bottom: 1rem;
+
+  .MuiTypography-root {
+    font-size: 0.85rem;
+  }
 `;
 
 const INFO_LINK = 'https://info.tupaia.org';
@@ -108,7 +113,7 @@ export const HomeView = React.memo(() => {
   return (
     // The background image is applied here instead of the styled component as it creates a flicker when added there
     <Wrapper style={{ backgroundImage: "url('/images/home-cover.png')" }}>
-      <Container maxWidth={false}>
+      <Container maxWidth="xl">
         <Main>
           <Title variant="h1">
             Find a location <br />
@@ -121,17 +126,18 @@ export const HomeView = React.memo(() => {
           <InfoSection>
             <InfoHeading variant="h5">About LESMIS</InfoHeading>
             <InfoText>
-              A system to improve data quality, management and utilisation for the Ministry of
-              Education and Sports
+              The Lao PDR Education and Sports Management Information System (LESMIS) is a
+              GIS-enabled data aggregation, analysis and visualization platform for improved data
+              management and utilization for monitoring and planning.
             </InfoText>
           </InfoSection>
           <InfoSection>
             <InfoHeading variant="h5">Contact us</InfoHeading>
-            <InfoText>Ph: +856 20 54 015 004</InfoText>
+            <InfoText>Ph: +856 20 55617710</InfoText>
             <InfoText>Website: www.moes.edu.la</InfoText>
           </InfoSection>
         </Info>
-        <Footer maxWidth={false}>
+        <Footer maxWidth="xl">
           <FooterInner>
             <Typography>
               Powered by{' '}

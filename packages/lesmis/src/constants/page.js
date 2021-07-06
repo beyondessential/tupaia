@@ -18,8 +18,9 @@ export const ABOUT_PAGE = {
         About LESMIS
       </Typography>
       <Typography>
-        LESMIS is a system to improve data quality, management and utilisation for the Ministry of
-        Education and Sports.
+        The Lao PDR Education and Sports Management Information System (LESMIS) is a GIS-enabled
+        data aggregation, analysis and visualization platform for improved data management and
+        utilization for monitoring and planning.
       </Typography>
     </>
   ),
@@ -35,7 +36,7 @@ export const CONTACT_PAGE = {
       </Typography>
       <Box mb={5}>
         <Typography variant="h2">Phone</Typography>
-        <Typography>+856 20 54 015 004</Typography>
+        <Typography>+856 20 55617710</Typography>
       </Box>
       <Box mb={5}>
         <Typography variant="h2">Website</Typography>

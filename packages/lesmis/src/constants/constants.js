@@ -8,11 +8,18 @@
 export const PROJECT_CODE = 'laos_schools';
 export const COUNTRY_CODE = 'LA';
 
+// Permissions
+export const LESMIS_PERMISSION_GROUPS = {
+  PUBLIC: 'LESMIS Public',
+  USER: 'LESMIS User',
+  ADMIN: 'LESMIS Admin',
+};
+
 // Date Constants
 export const SINGLE_YEAR_GRANULARITY = 'one_year_at_a_time';
 export const MIN_DATA_DATE = '20150101';
 export const MIN_DATA_YEAR = '2015';
-export const DEFAULT_DATA_YEAR = '2020';
+export const DEFAULT_DATA_YEAR = `${new Date().getFullYear()}`;
 
 // Layout Constants
 export const NAVBAR_HEIGHT_INT = 70;

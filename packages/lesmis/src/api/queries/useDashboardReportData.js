@@ -8,22 +8,26 @@ import { get } from '../api';
 
 export const useDashboardReportData = ({
   entityCode,
-  dashboardGroupId,
-  reportId,
+  reportCode,
+  itemCode,
+  dashboardCode,
+  legacy,
   startDate,
   endDate,
 }) => {
   const params = {
-    dashboardGroupId,
     startDate,
     endDate,
+    itemCode,
+    dashboardCode,
+    legacy,
     type: 'dashboard',
   };
 
   return useQuery(
-    ['dashboardReport', entityCode, reportId, params],
+    ['dashboardReport', entityCode, reportCode, params],
     () =>
-      get(`report/${entityCode}/${reportId}`, {
+      get(`report/${entityCode}/${reportCode}`, {
         params,
       }),
     { staleTime: 60 * 60 * 1000, refetchOnWindowFocus: false, keepPreviousData: true },

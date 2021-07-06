@@ -12,6 +12,7 @@ import { BLUE } from '../../styles';
 import { VIEW_CONTENT_SHAPE } from './propTypes';
 
 const NoDataMessageText = styled.p`
+  text-align: center;
   color: ${BLUE};
   margin-top: 10px;
   font-size: 16px;
