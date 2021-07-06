@@ -16,6 +16,7 @@ import { formatDataValueByType } from '@tupaia/utils';
 import { formatTimestampForChart, getIsTimeSeries, getIsChartData, getNoDataString } from './utils';
 import { SmallAlert } from '../Alert';
 import { DEFAULT_DATA_KEY } from './constants';
+import { parseChartConfig } from './parseChartConfig';
 
 const TableContainer = styled(MuiTableContainer)`
   overflow: auto;
@@ -102,8 +103,23 @@ const validFirstColumn = row => row?.timestamp || row?.name;
 const sanitizeValueType = valueType =>
   valueType === 'fractionAndPercentage' ? 'percentage' : valueType;
 
+/**
+ * Get columns to render in table
+ * Use the keys in chartConfig to determine which columns to render, and if chartConfig doesn't exist
+ * use value as the only column
+ */
+const getColumns = viewContent => {
+  if (!viewContent.chartConfig) {
+    return [DEFAULT_DATA_KEY];
+  }
+  const chartConfig = parseChartConfig(viewContent);
+  return Object.keys(chartConfig).length > 0 ? Object.keys(chartConfig) : [DEFAULT_DATA_KEY];
+};
+
 export const Table = ({ viewContent, className }) => {
   const { data, xName, periodGranularity, valueType, chartConfig = {} } = viewContent;
+  const columns = getColumns(viewContent);
+  const dataIsTimeSeries = getIsTimeSeries(data) && periodGranularity;
 
   if (!getIsChartData(viewContent)) {
     return (
@@ -112,12 +128,6 @@ export const Table = ({ viewContent, className }) => {
       </NoData>
     );
   }
-
-  // Use the keys in chartConfig to determine which columns to render, and if chartConfig doesn't exist
-  // use value as the only column
-  const columns =
-    Object.keys(chartConfig).length > 0 ? Object.keys(chartConfig) : [DEFAULT_DATA_KEY];
-  const dataIsTimeSeries = getIsTimeSeries(data) && periodGranularity;
 
   return (
     <TableContainer className={className}>
