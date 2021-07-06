@@ -16,7 +16,6 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const DASHBOARD_GROUP_CODE = 'PG_STRIVE_PNG';
 const SPECIES = [
   'Ae. aegypti',
   'Ae. albopictus',
@@ -51,13 +50,6 @@ const COLOURS = [
   '#b89fbd',
 ];
 
-const BASE_DASHBOARD_REPORT = id => ({
-  id,
-  code: 'PG_Strive_Habitat_By_Species',
-  report_code: 'PG_STRIVE_Habitat_By_Species',
-  legacy: false,
-});
-
 const getChartConfig = () => {
   const chartConfig = {};
   SPECIES.forEach((species, index) => {
@@ -73,18 +65,24 @@ const CONFIG = {
   chartConfig: getChartConfig(),
 };
 
-const DASHBOARD_ITEM_ID = generateId();
+const DASHBOARD_ITEM_CODE = 'PG_Strive_Habitat_By_Species';
+const DASHBOARD_CODE = 'PG_STRIVE_PNG';
 
 exports.up = async function (db) {
+  const dashboardItemId = generateId();
+  const dashboardId = await codeToId(db, 'dashboard', DASHBOARD_CODE);
+
   await insertObject(db, 'dashboard_item', {
-    ...BASE_DASHBOARD_REPORT(DASHBOARD_ITEM_ID),
+    id: dashboardItemId,
+    code: DASHBOARD_ITEM_CODE,
+    report_code: 'PG_STRIVE_Habitat_By_Species',
+    legacy: false,
     config: CONFIG,
   });
-  const dashboardId = await codeToId(db, 'dashboard', DASHBOARD_GROUP_CODE);
   await insertObject(db, 'dashboard_relation', {
     id: generateId(),
     dashboard_id: dashboardId,
-    child_id: DASHBOARD_ITEM_ID,
+    child_id: dashboardItemId,
     entity_types: '{country}',
     project_codes: '{strive}',
     permission_groups: '{STRIVE User}',
@@ -93,10 +91,12 @@ exports.up = async function (db) {
 };
 
 exports.down = async function (db) {
+  const dashboardItemId = await codeToId(db, 'dashboard_item', DASHBOARD_ITEM_CODE);
+  const dashboardId = await codeToId(db, 'dashboard', DASHBOARD_CODE);
   return db.runSql(`
-  DELETE FROM "dashboard_item" WHERE id = '${DASHBOARD_ITEM_ID}';
-  DELETE FROM "dashboard_relation" WHERE code = '${DASHBOARD_GROUP_CODE}';
-`);
+    DELETE FROM "dashboard_item" WHERE code = '${DASHBOARD_ITEM_CODE}';
+    DELETE FROM "dashboard_relation" WHERE dashboard_id = '${dashboardId}' and child_id = '${dashboardItemId}';
+  `);
 };
 
 exports._meta = {
