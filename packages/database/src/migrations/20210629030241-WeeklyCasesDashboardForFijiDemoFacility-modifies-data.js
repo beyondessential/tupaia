@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject } from '../utilities';
+import { codeToId, generateId, insertObject } from '../utilities';
 
 var dbm;
 var type;
@@ -16,96 +16,60 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const DISEASE_DATA_ELEMENTS = {
-  AFR: {
-    dataElement: 'PSSS_AFR_Cases',
-    name: 'Acute Fever and Rash',
-    color: '#F0965BFF', // orange
-  },
-  DIA: {
-    dataElement: 'PSSS_DIA_Cases',
-    name: 'Diarrhoea',
-    color: '#81DEE4FF', // aqua
-  },
-  ILI: {
-    dataElement: 'PSSS_ILI_Cases',
-    name: 'Influenza Like Illness',
-    color: '#4DA347FF', // green
-  },
-  PF: {
-    dataElement: 'PSSS_PF_Cases',
-    name: 'Prolonged Fever',
-    color: '#1C49A7FF', // blue
-  },
-  DLI: {
-    dataElement: 'PSSS_DLI_Cases',
-    name: 'Dengue Like Illness',
-    color: '#8455F6', // purple
-  },
-};
+const syndromes = ['AFR', 'DIA', 'ILI', 'PF', 'DLI', 'CON'];
 
-const getDashboardReportId = diseaseCode =>
-  `PSSS_FJ_${diseaseCode}_Weekly_Case_Trend_Graph_Facility`;
-
-const dashboardGroupCode = 'FJ_PSSS_Syndromic_Surveillance_National_Data_Facility_Public';
-
-const getDashboardReport = (id, diseaseName, dataElementCode, color) => ({
-  id,
-  dataBuilder: 'analyticsPerPeriod',
-  dataBuilderConfig: {
-    dataElementCode,
-    aggregations: [
-      {
-        type: 'FINAL_EACH_WEEK_FILL_EMPTY_WEEKS',
-        config: {
-          fillEmptyPeriodsWith: null,
-        },
-      },
-    ],
-    entityAggregation: {
-      dataSourceEntityType: 'facility',
-    },
-  },
-  viewJson: {
-    name: `${diseaseName} Weekly Case Number Trend Graph`,
-    type: 'chart',
-    chartType: 'line',
-    chartConfig: {
-      value: {
-        color,
-      },
-    },
-    defaultTimePeriod: {
-      end: {
-        unit: 'week',
-        offset: 0,
-      },
-      start: {
-        unit: 'week',
-        offset: -52,
-      },
-    },
-    presentationOptions: {
-      periodTickFormat: '[W]w',
-    },
-    periodGranularity: 'week',
-  },
-});
+const getOriginalId = syndrome => `PSSS_PW_${syndrome}_Weekly_Case_Trend_Graph_Facility`;
+const getNewId = syndrome => `PSSS_${syndrome}_Weekly_Case_Trend_Graph_Facility`;
 
 exports.up = async function (db) {
-  const dashboardReportIds = [];
-  for (const [diseaseCode, { dataElement, name, color }] of Object.entries(DISEASE_DATA_ELEMENTS)) {
-    const dashboardReportId = getDashboardReportId(diseaseCode);
-    dashboardReportIds.push(dashboardReportId);
+  const dashboardItemsIds = [];
+  for (const syndrome of syndromes) {
+    const originalId = getOriginalId(syndrome);
+    const newId = getNewId(syndrome);
+    await db.runSql(`
+      UPDATE "dashboardReport" 
+      SET "id" = '${newId}'
+      WHERE "id" = '${originalId}';
 
-    const dashboardReport = getDashboardReport(dashboardReportId, name, dataElement, color);
-    await insertObject(db, 'dashboardReport', dashboardReport);
+      UPDATE "dashboard_item" 
+      SET 
+      "code" = '${newId}',
+      "report_code" = '${newId}'
+      WHERE 
+      "code" = '${originalId}';
+
+      UPDATE "legacy_report" 
+      SET 
+      "code" = '${newId}'
+      WHERE 
+      "code" = '${originalId}';
+    `);
+    // We don't need to add `CON` weekly case to FIJI
+    if (syndrome !== 'CON') {
+      dashboardItemsIds.push(newId);
+    }
   }
 
-  const newDashboardReportIdsArray = `{${dashboardReportIds.join(',')}}`;
-  await db.runSql(
-    `UPDATE "dashboardGroup" SET "dashboardReports" = "dashboardReports" || '${newDashboardReportIdsArray}' WHERE code = '${dashboardGroupCode}';`,
-  );
+  const dashboardId = generateId();
+  await insertObject(db, 'dashboard', {
+    id: dashboardId,
+    code: 'FJ_Syndromic_Surveillance_Facility',
+    name: 'Syndromic Surveillance',
+    root_entity_code: 'FJ',
+  });
+
+  for (const [index, dashboardItemCode] of dashboardItemsIds.entries()) {
+    const dashboardItemId = await codeToId(db, 'dashboard_item', dashboardItemCode);
+    await insertObject(db, 'dashboard_relation', {
+      id: generateId(),
+      dashboard_id: dashboardId,
+      child_id: dashboardItemId,
+      entity_types: '{facility}',
+      project_codes: '{psss}',
+      permission_groups: '{Public}',
+      sort_order: index,
+    });
+  }
 };
 
 exports.down = function (db) {};
