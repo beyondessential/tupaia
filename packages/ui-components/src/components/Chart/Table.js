@@ -15,6 +15,7 @@ import MuiTableRow from '@material-ui/core/TableRow';
 import { formatDataValueByType } from '@tupaia/utils';
 import { formatTimestampForChart, getIsTimeSeries, getIsChartData, getNoDataString } from './utils';
 import { SmallAlert } from '../Alert';
+import { DEFAULT_DATA_KEY } from './constants';
 
 const TableContainer = styled(MuiTableContainer)`
   overflow: auto;
@@ -93,23 +94,6 @@ const NoData = styled(SmallAlert)`
   margin-right: auto;
 `;
 
-const COLUMN_BLACKLIST = ['name', 'timestamp', 'dataElementCode'];
-
-const getColumns = rawData => {
-  const columns = [];
-  rawData.forEach(row => {
-    Object.keys(row)
-      .filter(key => !COLUMN_BLACKLIST.includes(key)) // Don't show columns that don't make sense
-      .filter(key => !columns.includes(key)) // de-dupe
-      .filter(key => typeof row[key] !== 'object') // filter out object values such as metadata
-      .forEach(key => {
-        columns.push(key); // Finally add column to table
-      });
-  });
-
-  return columns;
-};
-
 // Determine whether to show the first table column
 const validFirstColumn = row => row?.timestamp || row?.name;
 
@@ -120,8 +104,6 @@ const sanitizeValueType = valueType =>
 
 export const Table = ({ viewContent, className }) => {
   const { data, xName, periodGranularity, valueType, chartConfig = {} } = viewContent;
-  const columns = getColumns(data);
-  const dataIsTimeSeries = getIsTimeSeries(data) && periodGranularity;
 
   if (!getIsChartData(viewContent)) {
     return (
@@ -130,6 +112,12 @@ export const Table = ({ viewContent, className }) => {
       </NoData>
     );
   }
+
+  // Use the keys in chartConfig to determine which columns to render, and if chartConfig doesn't exist
+  // use value as the only column
+  const columns =
+    Object.keys(chartConfig).length > 0 ? Object.keys(chartConfig) : [DEFAULT_DATA_KEY];
+  const dataIsTimeSeries = getIsTimeSeries(data) && periodGranularity;
 
   return (
     <TableContainer className={className}>
