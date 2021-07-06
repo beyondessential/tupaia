@@ -74,10 +74,9 @@ const Toggle = ({ value, onChange }) => (
 );
 
 // eslint-disable-next-line react/prop-types
-const ChartTable = ({ viewContent, isLoading, isFetching, isError, error, selectedTab }) => {
-  const showIsLoading = isLoading || (!getIsChartData(viewContent) && isFetching);
+const ChartTable = ({ viewContent, isLoading, isError, error, selectedTab }) => {
   return (
-    <FetchLoader isLoading={showIsLoading} isError={isError} error={error}>
+    <FetchLoader isLoading={isLoading} isError={isError} error={error}>
       {selectedTab === TABS.CHART ? (
         <ChartWrapper>
           <ChartComponent viewContent={viewContent} legendPosition="top" />
@@ -100,6 +99,11 @@ export const Chart = ({ name, viewContent, isLoading, isFetching, isError, error
     }
   };
 
+  // loading whole chart (i.e. show full loading spinner) if first load, or fetching in background
+  // from a no data state
+  const isLoadingWholeChart = isLoading || (!getIsChartData(viewContent) && isFetching);
+  const isFetchingInBackground = isFetching && !isLoadingWholeChart;
+
   return isEnlarged ? (
     <>
       <FlexEnd>
@@ -118,17 +122,14 @@ export const Chart = ({ name, viewContent, isLoading, isFetching, isError, error
       <Header>
         <FlexStart>
           <Title>{name}</Title>
-          {isFetching && !isLoading && getIsChartData(viewContent) && (
-            <CircularProgress size={30} />
-          )}
+          {isFetchingInBackground && <CircularProgress size={30} />}
         </FlexStart>
         <Toggle onChange={handleTabChange} value={selectedTab} exclusive />
       </Header>
       <Body>
         <ChartTable
           viewContent={viewContent}
-          isLoading={isLoading}
-          isFetching={isFetching}
+          isLoading={isLoadingWholeChart}
           isError={isError}
           error={error}
           selectedTab={selectedTab}
