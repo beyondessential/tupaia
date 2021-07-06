@@ -22,6 +22,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { VIEW_STYLES } from '../../styles';
+import { ViewTitle } from './Typography';
 
 const formatDate = value => {
   const date = new Date(value);
@@ -34,7 +35,7 @@ export class SingleDateWrapper extends PureComponent {
     const { name, value } = this.props.viewContent;
     return (
       <div style={VIEW_STYLES.viewContainer}>
-        <div style={VIEW_STYLES.title}>{name}</div>
+        <ViewTitle>{name}</ViewTitle>
         <div style={VIEW_STYLES.date}>{formatDate(value)}</div>
       </div>
     );

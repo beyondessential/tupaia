@@ -68,7 +68,6 @@ RootScreen.propTypes = {
 };
 
 RootScreen.defaultProps = {
-  currentOrganisationUnitType: '',
   enlargedDialogIsVisible: false,
 };
 
