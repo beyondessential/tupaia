@@ -74,10 +74,21 @@ export const testOutdatedStatusUpdate = app => {
       id: Object.keys(expectedByResponseId),
     });
 
-    Object.entries(expectedByResponseId).forEach(([responseId, expected]) => {
+    for (const [responseId, expected] of Object.entries(expectedByResponseId)) {
       const response = responses.find(r => r.id === responseId);
-      expect(response).to.have.property('outdated', expected);
-    });
+      const survey = await models.survey.findById(response.survey_id);
+      const entity = await models.entity.findById(response.entity_id);
+      const responseDescriptionFields = {
+        survey_code: survey.code,
+        entity_code: entity.code,
+        data_time: response.data_time,
+      };
+      const message = `Failed assertion for survey response ${JSON.stringify(
+        responseDescriptionFields,
+      )}`;
+
+      expect(response).to.have.property('outdated', expected, message);
+    }
   };
 
   before(async () => {
@@ -229,6 +240,9 @@ export const testOutdatedStatusUpdate = app => {
         });
 
         await updateResponse(responseIdA, { end_time: datetime('2021-06-03') });
+        // Although end time of responseA is now most recent that responseB,
+        // its data time is not updated so it will still be earlier
+        // That shouldn't matter since all data times inside the same period are equal
         await assertOutdatedStatuses({
           [responseIdA]: false,
           [responseIdB]: true,
@@ -253,7 +267,7 @@ export const testOutdatedStatusUpdate = app => {
       });
     });
 
-    it('updating a response to have the same end time as existing results in the one with the most recent id to be "not outdated"', async () => {
+    it('updating a response to have the same end time with another response results in the one with the most recent id to be "not outdated"', async () => {
       const [responseIdA, responseIdB] = await submitResponses([
         { survey_id: monthlySurveyId, entity_code: 'TO', timestamp: datetime('2021-06-01') },
         { survey_id: monthlySurveyId, entity_code: 'TO', timestamp: datetime('2021-06-02') },
@@ -322,7 +336,7 @@ export const testOutdatedStatusUpdate = app => {
           [responseIdB]: false,
         });
 
-        await updateResponse(responseIdB, { end_time: datetime('2021-07-31') });
+        await updateResponse(responseIdB, { data_time: datetime('2021-07-31') });
         await assertOutdatedStatuses({
           [responseIdA]: false,
           [responseIdB]: false,
