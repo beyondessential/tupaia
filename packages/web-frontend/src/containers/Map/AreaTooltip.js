@@ -19,8 +19,9 @@ import styled from 'styled-components';
 import { Tooltip } from 'react-leaflet';
 import { getSingleFormattedValue } from '../../utils';
 
-const Heading = styled.strong`
+const Heading = styled.span`
   text-align: center;
+  font-weight: ${props => (props.hasMeasureValue ? 'bold' : 'normal')};
 `;
 
 export class AreaTooltip extends Component {
@@ -49,7 +50,11 @@ export class AreaTooltip extends Component {
       orgUnitMeasureData,
     } = this.props;
 
-    const textList = [<Heading key={0}>{orgUnitName}</Heading>];
+    const textList = [
+      <Heading key={0} hasMeasureValue={hasMeasureValue}>
+        {orgUnitName}
+      </Heading>,
+    ];
     const renderTextList = data => {
       Object.keys(data).forEach(key => {
         textList.push(<span key={key}>{`${key}: ${data[key]}`}</span>);
