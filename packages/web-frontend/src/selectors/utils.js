@@ -11,12 +11,6 @@
 export const safeGet = (cache, args) => (cache.keySelector(...args) ? cache(...args) : undefined);
 
 export const getOrgUnitFromCountry = (country, code) => {
-  const foo = country && code ? country[code] : undefined;
-  if (foo === undefined) {
-    // When the currentCountry is not a country but a project such as unfpa, the country[code] lookup doesn't work
-    console.log('country', country);
-    console.log('code', code);
-  }
   return country && code ? country[code] : undefined;
 };
 

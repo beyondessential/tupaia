@@ -20,8 +20,6 @@ export const MapTableModalComponent = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  console.log('measureData', measureData);
-
   if (!currentMeasure || !measureData || !measureOptions || measureData.length === 0) {
     return null;
   }
