@@ -176,7 +176,9 @@ export class OutdatedStatusUpdater {
 
   processResponsesForSurvey = async (changedResponses, survey) => {
     if (!survey?.['period_granularity']) {
-      // We are only interested in responses of periodic surveys
+      // Survey responses for non periodic surveys are always "not outdated"
+      const updateIds = changedResponses.filter(sr => sr.outdated).map(sr => sr.id);
+      await this.setOutdatedStatus(updateIds, false);
       return;
     }
 
@@ -248,5 +250,5 @@ export class OutdatedStatusUpdater {
     this.models.surveyResponse.findOne(where, { sort: ['end_time DESC'], limit: 1 });
 
   setOutdatedStatus = async (responseIds, outdated) =>
-    this.models.surveyResponse.update({ id: responseIds }, { outdated });
+    this.models.surveyResponse.update({ id: getUniqueEntries(responseIds) }, { outdated });
 }
