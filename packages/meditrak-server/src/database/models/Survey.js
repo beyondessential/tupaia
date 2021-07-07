@@ -82,7 +82,15 @@ const onChangeUpdateDataGroup = async (
   switch (changeType) {
     case 'update': {
       const { code, data_source_id: dataSourceId } = newRecord;
-      return models.dataSource.updateById(dataSourceId, { code });
+      await models.dataSource.updateById(dataSourceId, { code });
+
+      if (newRecord.period_granularity !== oldRecord.period_granularity) {
+        // the `outdated` status of survey responses must be re-calculated, since it depends on
+        // the period granularity of the survey they belong to
+        // no need to await for the operation, just get it going
+        models.surveyResponse.markAsChanged({ survey_id: newRecord.id });
+      }
+      return true;
     }
     case 'delete': {
       const { data_source_id: dataSourceId } = oldRecord;
