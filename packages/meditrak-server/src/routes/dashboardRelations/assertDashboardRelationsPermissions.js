@@ -72,7 +72,7 @@ export const assertDashboardRelationGetPermissions = async (
   }
 
   throw new Error(
-    `Requires any of the permission groups (${dashboardRelation.permission_groups()}) access to the dashboard root entity code '${
+    `Requires any of the permission groups (${dashboardRelation.permission_groups.toString()}) access to the dashboard root entity code '${
       dashboard.root_entity_code
     }'`,
   );
@@ -97,7 +97,7 @@ export const assertDashboardRelationEditPermissions = async (
     ))
   ) {
     throw new Error(
-      `Requires all of the permission groups (${dashboardRelation.permission_groups()}) access to the dashboard root entity code '${
+      `Requires all of the permission groups (${dashboardRelation.permission_groups.toString()}) access to the dashboard root entity code '${
         dashboard.root_entity_code
       }', and have Tupaia Admin Panel access to '${dashboard.root_entity_code}'`,
     );
