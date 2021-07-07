@@ -344,6 +344,24 @@ export const testOutdatedStatusUpdate = app => {
       });
     });
 
+    it('moving an outdated response to a non periodic survey makes it "not outdated"', async () => {
+      const [responseIdA, , responseIdC] = await submitResponses([
+        { survey_id: monthlySurveyId, entity_code: 'TO', timestamp: datetime('2021-06-01') },
+        { survey_id: monthlySurveyId, entity_code: 'TO', timestamp: datetime('2021-06-02') },
+        { survey_id: nonPeriodicSurveyId, entity_code: 'TO', timestamp: datetime('2021-06-02') },
+      ]);
+      await assertOutdatedStatuses({
+        [responseIdA]: true,
+        [responseIdC]: false,
+      });
+
+      await updateResponse(responseIdA, { survey_id: nonPeriodicSurveyId });
+      await assertOutdatedStatuses({
+        [responseIdA]: false,
+        [responseIdC]: false,
+      });
+    });
+
     it('updating an unrelated field does not result in outdated status updates', async () => {
       const [responseIdA, responseIdB] = await submitResponses([
         { survey_id: monthlySurveyId, entity_code: 'TO', timestamp: datetime('2021-06-01') },
