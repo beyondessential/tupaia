@@ -68,7 +68,7 @@ export const assertDashboardItemEditPermissions = async (accessPolicy, models, d
   }
 
   throw new Error(
-    `Requires access to the dashboard item in all of the dashboards this dashboard item is in, and Tupaia Admin Panel access to connected dashboard's root_entity_code`,
+    `Requires access to the dashboard item in all of the dashboards this dashboard item is in, and Tupaia Admin Panel access to the connected dashboard's root_entity_code`,
   );
 };
 

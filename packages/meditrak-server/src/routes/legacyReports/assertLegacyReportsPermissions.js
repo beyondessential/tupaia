@@ -31,7 +31,9 @@ export const assertLegacyReportEditPermissions = async (accessPolicy, models, le
   // then user has access to edit that dashboard
   for (const dashboardItem of dashboardItems) {
     if (!(await hasDashboardItemEditPermissions(accessPolicy, models, dashboardItem.id))) {
-      throw new Error(`Requires access to all of the dashboard items using this report`);
+      throw new Error(
+        `Requires access to all of the dashboard items using this report, and Tupaia Admin Panel access to the connected dashboard's root_entity_code of the dashboard item)`,
+      );
     }
   }
 
