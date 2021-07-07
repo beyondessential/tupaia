@@ -48,48 +48,48 @@ export const testOutdatedStatusUpdate = app => {
 
   const datetime = date => `${date}T12:00:00`;
 
-  const submitResponses = async responses => {
-    const apiResponse = await app.post('surveyResponse', {
-      body: responses.map(data => {
+  const submitResponses = async surveyResponses => {
+    const response = await app.post('surveyResponse', {
+      body: surveyResponses.map(data => {
         const questionCode = SURVEYS[data.survey_id].questions[0].code;
         return { answers: { [questionCode]: 1 }, ...data };
       }),
     });
 
-    expect(apiResponse.statusCode).to.equal(200);
-    return apiResponse.body.results.map(result => result.surveyResponseId);
+    expect(response.statusCode).to.equal(200);
+    return response.body.results.map(result => result.surveyResponseId);
   };
 
-  const updateResponse = async (responseId, data) => {
-    const apiResponse = await app.put(`surveyResponses/${responseId}`, { body: data });
-    expect(apiResponse.statusCode).to.equal(200);
+  const updateResponse = async (surveyResponseId, data) => {
+    const response = await app.put(`surveyResponses/${surveyResponseId}`, { body: data });
+    expect(response.statusCode).to.equal(200);
   };
 
-  const deleteResponse = async responseId => {
-    const apiResponse = await app.delete(`surveyResponses/${responseId}`);
-    expect(apiResponse.statusCode).to.equal(200);
+  const deleteResponse = async surveyResponseId => {
+    const response = await app.delete(`surveyResponses/${surveyResponseId}`);
+    expect(response.statusCode).to.equal(200);
   };
 
   const assertOutdatedStatuses = async expectedByResponseId => {
     await models.database.waitForAllChangeHandlers();
-    const responses = await models.surveyResponse.find({
+    const surveyResponses = await models.surveyResponse.find({
       id: Object.keys(expectedByResponseId),
     });
 
-    for (const [responseId, expected] of Object.entries(expectedByResponseId)) {
-      const response = responses.find(r => r.id === responseId);
-      const survey = await models.survey.findById(response.survey_id);
-      const entity = await models.entity.findById(response.entity_id);
+    for (const [surveyResponseId, expected] of Object.entries(expectedByResponseId)) {
+      const surveyResponse = surveyResponses.find(r => r.id === surveyResponseId);
+      const survey = await models.survey.findById(surveyResponse.survey_id);
+      const entity = await models.entity.findById(surveyResponse.entity_id);
       const responseDescriptionFields = {
         survey_code: survey.code,
         entity_code: entity.code,
-        data_time: response.data_time,
+        data_time: surveyResponse.data_time,
       };
       const message = `Failed assertion for survey response ${JSON.stringify(
         responseDescriptionFields,
       )}`;
 
-      expect(response).to.have.property('outdated', expected, message);
+      expect(surveyResponse).to.have.property('outdated', expected, message);
     }
   };
 
