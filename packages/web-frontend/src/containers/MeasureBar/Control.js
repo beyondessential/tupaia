@@ -30,8 +30,8 @@ const Header = styled.div`
   text-transform: uppercase;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-  padding: 10px 15px 8px;
   padding: 2px 15px 0;
+  height: 40px;
   font-size: 0.75rem;
   align-items: center;
 

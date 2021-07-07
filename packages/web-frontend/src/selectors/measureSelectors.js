@@ -153,6 +153,9 @@ export const selectRenderedMeasuresWithDisplayInfo = createSelector(
   ],
   (country, allMeasuresWithMeasureInfo, displaylevelAncestor, measureOptions = []) => {
     const displayOnLevel = measureOptions.map(option => option.displayOnLevel).find(level => level);
+
+    console.log('allMeasuresWithMeasureInfo', allMeasuresWithMeasureInfo);
+    console.log('displayOnLevel', displayOnLevel);
     if (!displayOnLevel) {
       return allMeasuresWithMeasureInfo;
     }

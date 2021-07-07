@@ -12,15 +12,29 @@ const IconButton = styled(MuiIconButton)`
   padding: 10px 8px 10px 12px;
 `;
 
-export const MapTableModalComponent = ({ currentMeasure }) => {
+export const MapTableModalComponent = ({
+  currentCountry,
+  currentMeasure,
+  measureOptions,
+  measureData,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  console.log('measureData', measureData);
+
+  if (!currentMeasure || !measureData || !measureOptions || measureData.length === 0) {
+    return null;
+  }
 
   return (
     <>
       <Dialog onClose={() => setIsOpen(false)} open={isOpen} maxWidth="lg">
-        <DialogHeader onClose={() => setIsOpen(false)} title={currentMeasure.name} />
+        <DialogHeader
+          onClose={() => setIsOpen(false)}
+          title={`${currentMeasure.name}, ${currentCountry}`}
+        />
         <DialogContent>
-          <MapTable />
+          <MapTable measureOptions={measureOptions} measureData={measureData} />
         </DialogContent>
       </Dialog>
       <IconButton onClick={() => setIsOpen(true)}>
@@ -31,10 +45,15 @@ export const MapTableModalComponent = ({ currentMeasure }) => {
 };
 
 const mapStateToProps = state => {
+  const { measureOptions, currentCountry } = state.map.measureInfo;
   const currentMeasure = selectCurrentMeasure(state);
+  const measureData = selectRenderedMeasuresWithDisplayInfo(state);
 
   return {
     currentMeasure,
+    measureOptions,
+    measureData,
+    currentCountry,
   };
 };
 

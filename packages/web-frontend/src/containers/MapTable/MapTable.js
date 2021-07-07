@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
 import MuiTableContainer from '@material-ui/core/TableContainer';
 import MuiTableHead from '@material-ui/core/TableHead';
@@ -7,10 +6,18 @@ import MuiTableRow from '@material-ui/core/TableRow';
 import MuiTableCell from '@material-ui/core/TableCell';
 import MuiTableBody from '@material-ui/core/TableBody';
 import { StyledTable } from './StyledTable';
-import { selectRenderedMeasuresWithDisplayInfo } from '../../selectors';
+import { FlexCenter } from '../../components/Flexbox';
 
 const TableContainer = styled(MuiTableContainer)`
   //background: black;
+`;
+
+const Box = styled.span`
+  display: block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.6em;
+  border-radius: 3px;
 `;
 
 const getValue = (row, key, valueMapping) => {
@@ -26,14 +33,19 @@ const getValue = (row, key, valueMapping) => {
     return 'No Data';
   }
 
+  // if (row.color) {
+  //   return (
+  //     <FlexCenter>
+  //       <Box style={{ background: row.color }} />
+  //       {formattedValue.name}
+  //     </FlexCenter>
+  //   );
+  // }
+
   return formattedValue.name;
 };
 
-export const MapTableComponent = ({ measureOptions, measureData }) => {
-  if (!measureData) {
-    return null;
-  }
-
+export const MapTable = ({ measureOptions, measureData }) => {
   return (
     <TableContainer>
       <StyledTable>
@@ -66,16 +78,3 @@ export const MapTableComponent = ({ measureOptions, measureData }) => {
     </TableContainer>
   );
 };
-
-const mapStateToProps = state => {
-  const { measureOptions } = state.map.measureInfo;
-
-  const measureData = selectRenderedMeasuresWithDisplayInfo(state);
-
-  return {
-    measureOptions,
-    measureData,
-  };
-};
-
-export const MapTable = connect(mapStateToProps)(MapTableComponent);
