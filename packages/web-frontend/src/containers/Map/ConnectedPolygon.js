@@ -11,7 +11,6 @@ import { Polygon } from 'react-leaflet';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { getSingleFormattedValue, formatDataValue } from '../../utils';
 import { AreaTooltip } from './AreaTooltip';
 import { MAP_COLORS, BREWER_PALETTE } from '../../styles';
 import { setOrgUnit } from '../../actions';
@@ -61,48 +60,32 @@ class ConnectedPolygon extends Component {
     return false;
   }
 
-  getTooltip(name) {
+  getTooltip() {
     const {
       isChildArea,
+      area,
       hasMeasureData,
       orgUnitMeasureData,
+      rawOrgUnitMeasureData,
       measureOptions,
       permanentLabels,
     } = this.props;
-    const hasMeasureValue = orgUnitMeasureData || orgUnitMeasureData === 0;
+    const hasMeasureValue = !!(orgUnitMeasureData || orgUnitMeasureData === 0);
 
     // don't render tooltips if we have a measure loaded
     // and don't have a value to display in the tooltip (ie: radius overlay)
     if (hasMeasureData && !hasMeasureValue) return null;
 
-    const areaText = hasMeasureValue
-      ? `${name}: ${getSingleFormattedValue(orgUnitMeasureData, measureOptions)}`
-      : name;
-    const metadataTexts =
-      measureOptions[0] && measureOptions[0].metadataOptions && orgUnitMeasureData.metadata
-        ? this.formateMetadata(orgUnitMeasureData.metadata, measureOptions)
-        : [];
-
     return (
       <AreaTooltip
         permanent={permanentLabels && isChildArea && !hasMeasureValue}
         sticky={!permanentLabels}
-        texts={[areaText, ...metadataTexts]}
+        hasMeasureValue={hasMeasureValue}
+        measureOptions={measureOptions}
+        orgUnitMeasureData={orgUnitMeasureData}
+        rawOrgUnitMeasureData={rawOrgUnitMeasureData}
+        orgUnitName={area.name}
       />
-    );
-  }
-
-  formateMetadata(metadata, measureOptions) {
-    const formattedMetadata = { ...metadata };
-    const { metadataTitles, valueType } = measureOptions[0].metadataOptions;
-    if (metadataTitles) {
-      Object.entries(metadataTitles).forEach(([key, value]) => {
-        formattedMetadata[value] = metadata[key];
-        delete formattedMetadata[key];
-      });
-    }
-    return Object.entries(formattedMetadata).map(
-      ([key, value]) => `${key}: ${formatDataValue(value, valueType)}`,
     );
   }
 
@@ -120,7 +103,7 @@ class ConnectedPolygon extends Component {
     if (isHidden) return null;
 
     const { organisationUnitCode } = area;
-    const tooltip = this.getTooltip(area.name);
+    const tooltip = this.getTooltip();
 
     if (!coordinates) return null;
 
@@ -185,7 +168,9 @@ ConnectedPolygon.propTypes = {
     value: PropTypes.any,
     originalValue: PropTypes.any,
     metadata: PropTypes.any,
+    submissionDate: PropTypes.any,
   }),
+  rawOrgUnitMeasureData: PropTypes.object,
 };
 
 ConnectedPolygon.defaultProps = {
@@ -202,6 +187,7 @@ ConnectedPolygon.defaultProps = {
   shade: undefined,
   isHidden: false,
   orgUnitMeasureData: undefined,
+  rawOrgUnitMeasureData: undefined,
 };
 
 const mapStateToProps = (state, givenProps) => {
@@ -213,6 +199,7 @@ const mapStateToProps = (state, givenProps) => {
   let shade;
   let isHidden;
   let orgUnitMeasureData;
+  let rawOrgUnitMeasureData;
   let hasShadedChildren = false;
   if (selectHasPolygonMeasure(state)) {
     const measureOrgUnits = selectAllMeasuresWithDisplayInfo(state);
@@ -226,6 +213,9 @@ const mapStateToProps = (state, givenProps) => {
 
     if (measureOrgUnitCodes.includes(organisationUnitCode)) {
       orgUnitMeasureData = measureOrgUnits.find(
+        orgUnit => orgUnit.organisationUnitCode === organisationUnitCode,
+      );
+      rawOrgUnitMeasureData = measureData.find(
         orgUnit => orgUnit.organisationUnitCode === organisationUnitCode,
       );
       if (orgUnitMeasureData) {
@@ -244,6 +234,7 @@ const mapStateToProps = (state, givenProps) => {
     coordinates,
     hasShadedChildren,
     orgUnitMeasureData,
+    rawOrgUnitMeasureData,
     shade,
     isHidden,
     measureOptions,
