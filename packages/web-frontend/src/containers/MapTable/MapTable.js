@@ -6,6 +6,7 @@ import MuiTableRow from '@material-ui/core/TableRow';
 import MuiTableCell from '@material-ui/core/TableCell';
 import MuiTableBody from '@material-ui/core/TableBody';
 import { StyledTable } from './StyledTable';
+import { getFormattedInfo } from '../../utils/measures';
 import { FlexCenter } from '../../components/Flexbox';
 
 const TableContainer = styled(MuiTableContainer)`
@@ -20,29 +21,9 @@ const Box = styled.span`
   border-radius: 3px;
 `;
 
-const getValue = (row, key, valueMapping) => {
-  const value = row[key];
-
-  if (value === undefined) {
-    return 'No Data';
-  }
-
-  const formattedValue = valueMapping[value];
-
-  if (formattedValue === undefined) {
-    return 'No Data';
-  }
-
-  // if (row.color) {
-  //   return (
-  //     <FlexCenter>
-  //       <Box style={{ background: row.color }} />
-  //       {formattedValue.name}
-  //     </FlexCenter>
-  //   );
-  // }
-
-  return formattedValue.name;
+const getValue = (data, measureOption) => {
+  const { formattedValue } = getFormattedInfo(data, measureOption);
+  return formattedValue;
 };
 
 export const MapTable = ({ measureOptions, measureData }) => {
@@ -59,17 +40,21 @@ export const MapTable = ({ measureOptions, measureData }) => {
           </MuiTableRow>
         </MuiTableHead>
         <MuiTableBody>
-          {measureData.map((row, index) => (
+          {measureData.map((data, index) => (
             // eslint-disable-next-line react/no-array-index-key
             <MuiTableRow key={index}>
               <MuiTableCell component="th" scope="row">
-                {row.name}
+                {data.name}
               </MuiTableCell>
-              {measureOptions.map(({ key, valueMapping }) => {
-                return <MuiTableCell key={key}>{getValue(row, key, valueMapping)}</MuiTableCell>;
+              {measureOptions.map(measureOption => {
+                return (
+                  <MuiTableCell key={measureOption.key}>
+                    {getValue(data, measureOption)}
+                  </MuiTableCell>
+                );
               })}
               <MuiTableCell scope="row">
-                {row.submissionDate ? row.submissionDate : 'No Data'}
+                {data.submissionDate ? data.submissionDate : 'No Data'}
               </MuiTableCell>
             </MuiTableRow>
           ))}
