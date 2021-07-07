@@ -7,18 +7,9 @@ import MuiTableCell from '@material-ui/core/TableCell';
 import MuiTableBody from '@material-ui/core/TableBody';
 import { StyledTable } from './StyledTable';
 import { getFormattedInfo } from '../../utils/measures';
-import { FlexCenter } from '../../components/Flexbox';
 
 const TableContainer = styled(MuiTableContainer)`
   //background: black;
-`;
-
-const Box = styled.span`
-  display: block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.6em;
-  border-radius: 3px;
 `;
 
 const getValue = (data, measureOption) => {
@@ -27,6 +18,8 @@ const getValue = (data, measureOption) => {
 };
 
 export const MapTable = ({ measureOptions, measureData }) => {
+  console.log(JSON.stringify(measureOptions));
+  console.log(JSON.stringify(measureData));
   return (
     <TableContainer>
       <StyledTable>
