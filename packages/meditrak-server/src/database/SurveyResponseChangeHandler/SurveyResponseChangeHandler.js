@@ -62,13 +62,15 @@ export class SurveyResponseChangeHandler {
 
   updateOutdatedStatus = async () => {
     // remove timeout so any jobs added now get scheduled anew
-    const existingResolve = this.scheduledUpdatePromiseResolve;
     this.scheduledUpdateTimeout = null;
     this.scheduledUpdatePromise = null;
 
     await this.outdatedStatusUpdater.processChangedResponses(this.outdatedStatusUpdateCandidates);
     this.outdatedStatusUpdateCandidates = [];
+    this.resolveScheduledUpdatePromise();
+  };
 
-    existingResolve();
+  resolveScheduledUpdatePromise = () => {
+    this.scheduledUpdatePromiseResolve();
   };
 }
