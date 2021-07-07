@@ -42,7 +42,7 @@ export const hasDashboardItemEditPermissions = async (accessPolicy, models, dash
         accessPolicy,
         models,
         dashboard.permissionGroups,
-        dashboard.root_entity_code,
+        dashboard.rootEntityCode,
       ))
     ) {
       return false;
