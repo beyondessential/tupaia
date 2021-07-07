@@ -9,6 +9,7 @@ import keyBy from 'lodash.keyby';
 import orderBy from 'lodash.orderby';
 import moment from 'moment';
 
+import { isMarkedChange } from '@tupaia/database';
 import { getUniqueEntries, getUniqueObjects, haveSameFields, max, min } from '@tupaia/utils';
 import { PERIOD_GRANULARITIES, PERIOD_GRANULARITY_TO_MOMENT_UNIT } from '../models/Survey';
 
@@ -145,6 +146,11 @@ export class OutdatedStatusUpdater {
             // a new one may need to be selected
             records.push(oldRecord);
           }
+        } else if (isMarkedChange(changeDetails)) {
+          // Record was manually marked as changed, which may indicate that a client may want us to
+          // re-calculate its `outdated` status. In this case the old record is identical to the
+          // new, so no need to process it
+          records.push(newRecord);
         }
         return records;
       }
