@@ -9664,11 +9664,6 @@ api-error-handler@^1.0.0:
   dependencies:
     statuses "^1.2.0"
 
-apicache@^0.8.7:
-  version "0.8.7"
-  resolved "https://registry.yarnpkg.com/apicache/-/apicache-0.8.7.tgz#c8e3dc7c5e9c4a9b8bcb5957c71c5716908f87eb"
-  integrity sha512-mmM0i/78l1EiEXa6VHXeJ11t0Zd4NpRbNBB6KAFCNPnIjBl3DVlJC7OlrcDe89pqEqEQNeGCQX6wRO1/m9Lhrg==
-
 app-root-dir@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/app-root-dir/-/app-root-dir-1.0.2.tgz#38187ec2dea7577fff033ffcb12172692ff6e118"
