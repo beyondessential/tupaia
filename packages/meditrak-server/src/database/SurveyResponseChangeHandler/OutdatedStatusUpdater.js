@@ -98,11 +98,10 @@ const getIdOfMostRecentResponse = surveyResponses => {
   )[0].id;
 };
 
-const groupResponsesForSurveyByDimensionCombo = (surveyResponses, survey) =>
-  Object.values(groupBy(surveyResponses, sr => JSON.stringify(getDimensionCombo(sr, survey))));
-
 const getDimensionCombo = (surveyResponse, survey) => {
-  const { startDate, endDate } = getPeriodRange(survey.period_granularity, surveyResponse.end_time);
+  const { period_granularity: periodGranularity } = survey;
+  const { data_time: dataTime } = surveyResponse;
+  const { startDate, endDate } = getPeriodRange(periodGranularity, dataTime);
 
   return {
     surveyId: survey.id,
@@ -111,6 +110,9 @@ const getDimensionCombo = (surveyResponse, survey) => {
     endDate,
   };
 };
+
+const groupResponsesForSurveyByDimensionCombo = (surveyResponses, survey) =>
+  Object.values(groupBy(surveyResponses, sr => JSON.stringify(getDimensionCombo(sr, survey))));
 
 export class OutdatedStatusUpdater {
   constructor(models) {
@@ -133,7 +135,8 @@ export class OutdatedStatusUpdater {
         }
 
         const records = [];
-        if (!haveSameFields([newRecord, oldRecord], ['end_time', 'survey_id', 'entity_id'])) {
+        const fieldsOfInterest = ['data_time', 'end_time', 'survey_id', 'entity_id', 'id'];
+        if (!haveSameFields([newRecord, oldRecord], fieldsOfInterest)) {
           // Updated record may have moved in a new dimension combo and thus may outdate
           // an existing response
           records.push(newRecord);
@@ -234,7 +237,7 @@ export class OutdatedStatusUpdater {
     return this.models.surveyResponse.find({
       survey_id: surveyIds,
       entity_id: entityIds,
-      end_time: {
+      data_time: {
         comparator: 'between',
         comparisonValue: [minStartDate, maxEndDate],
       },
