@@ -7,44 +7,43 @@ import MuiTableRow from '@material-ui/core/TableRow';
 import MuiTableCell from '@material-ui/core/TableCell';
 import MuiTableBody from '@material-ui/core/TableBody';
 import { StyledTable } from './StyledTable';
+import { selectRenderedMeasuresWithDisplayInfo } from '../../selectors';
 
 const TableContainer = styled(MuiTableContainer)`
   //background: black;
 `;
 
-const COLUMN_BLACKLIST = ['submissionDate', 'dataElementCode'];
+const getValue = (row, key, valueMapping) => {
+  const value = row[key];
 
-const getColumns = data => {
-  const columns = [];
-  data.forEach(row => {
-    Object.keys(row)
-      .filter(key => !COLUMN_BLACKLIST.includes(key)) // Don't show columns that don't make sense
-      .filter(key => !columns.includes(key)) // de-dupe
-      .filter(key => typeof row[key] !== 'object') // filter out object values such as metadata
-      .forEach(key => {
-        columns.push(key); // Finally add column to table
-      });
-  });
+  if (value === undefined) {
+    return 'No Data';
+  }
 
-  return columns;
+  const formattedValue = valueMapping[value];
+
+  if (formattedValue === undefined) {
+    return 'No Data';
+  }
+
+  return formattedValue.name;
 };
 
-export const MapTableComponent = ({ measureData }) => {
+export const MapTableComponent = ({ measureOptions, measureData }) => {
   if (!measureData) {
     return null;
   }
-  const columns = getColumns(measureData);
-  const xName = 'submissionDate';
 
   return (
     <TableContainer>
       <StyledTable>
         <MuiTableHead>
           <MuiTableRow>
-            <MuiTableCell width={250}>{xName || null}</MuiTableCell>
-            {columns.map(column => (
-              <MuiTableCell key={column}>{column}</MuiTableCell>
+            <MuiTableCell>Name</MuiTableCell>
+            {measureOptions.map(({ key, name }) => (
+              <MuiTableCell key={key}>{name}</MuiTableCell>
             ))}
+            <MuiTableCell>Submission Date</MuiTableCell>
           </MuiTableRow>
         </MuiTableHead>
         <MuiTableBody>
@@ -52,13 +51,14 @@ export const MapTableComponent = ({ measureData }) => {
             // eslint-disable-next-line react/no-array-index-key
             <MuiTableRow key={index}>
               <MuiTableCell component="th" scope="row">
-                {row.submissionDate}
+                {row.name}
               </MuiTableCell>
-              {columns.map(columnKey => {
-                const value = row[columnKey];
-                const rowValue = value === undefined ? 'No Data' : value;
-                return <MuiTableCell key={columnKey}>{rowValue}</MuiTableCell>;
+              {measureOptions.map(({ key, valueMapping }) => {
+                return <MuiTableCell key={key}>{getValue(row, key, valueMapping)}</MuiTableCell>;
               })}
+              <MuiTableCell scope="row">
+                {row.submissionDate ? row.submissionDate : 'No Data'}
+              </MuiTableCell>
             </MuiTableRow>
           ))}
         </MuiTableBody>
@@ -68,11 +68,12 @@ export const MapTableComponent = ({ measureData }) => {
 };
 
 const mapStateToProps = state => {
-  const { measureInfo } = state.map;
-  const { measureData } = measureInfo;
-  console.log('measure data', JSON.stringify(measureData));
+  const { measureOptions } = state.map.measureInfo;
+
+  const measureData = selectRenderedMeasuresWithDisplayInfo(state);
 
   return {
+    measureOptions,
     measureData,
   };
 };

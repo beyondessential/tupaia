@@ -6,6 +6,9 @@ const DARK_THEME_BORDER = 'rgb(82, 82, 88)';
 export const StyledTable = styled(MuiTable)`
   table-layout: fixed;
   overflow: hidden;
+  border-bottom: 1px solid
+    ${({ theme }) =>
+      theme.palette.type === 'light' ? theme.palette.grey['400'] : DARK_THEME_BORDER};
 
   // table head
   thead {
@@ -65,5 +68,9 @@ export const StyledTable = styled(MuiTable)`
 
   td {
     text-align: center;
+  }
+
+  td:first-child {
+    text-align: left;
   }
 `;
