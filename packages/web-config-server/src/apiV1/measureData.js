@@ -11,6 +11,8 @@ import { response } from 'express';
 
 const ADD_TO_ALL_KEY = '$all';
 
+const ADD_TO_ALL_KEY = '$all';
+
 // NOTE: does not allow for actual number value measure, will be added when
 // all binary are added as optionSet
 const binaryOptionSet = [
@@ -204,7 +206,6 @@ export default class extends DataAggregatingRouteHandler {
     const responseData = await Promise.all(
       overlays.map(o => this.fetchMeasureData(o, shouldFetchSiblings)),
     );
-    console.log(responseData);
     const { period, measureData } = buildMeasureData(overlays, responseData);
     const measureOptions = await this.fetchMeasureOptions(overlays, measureData);
 

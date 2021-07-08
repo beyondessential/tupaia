@@ -18,16 +18,16 @@ class DashboardView extends Component {
   shouldComponentUpdate(nextProps) {
     const {
       orgUnit,
-      currentDashboardGroupCode,
+      currentDashboardName,
       filterIsExpanded,
-      dashboardConfig,
+      dashboards,
       isDashboardExpanded,
     } = this.props;
     if (
       orgUnit !== nextProps.orgUnit ||
-      currentDashboardGroupCode !== nextProps.currentDashboardGroupCode ||
+      currentDashboardName !== nextProps.currentDashboardName ||
       filterIsExpanded !== nextProps.filterIsExpanded ||
-      dashboardConfig !== nextProps.dashboardConfig ||
+      dashboards !== nextProps.dashboards ||
       isDashboardExpanded !== nextProps.isDashboardExpanded
     ) {
       return true;
@@ -37,24 +37,24 @@ class DashboardView extends Component {
 
   render() {
     const {
-      dashboardConfig,
+      dashboards,
       orgUnit,
       toggleFilter,
       filterIsExpanded,
-      currentDashboardGroupCode,
+      currentDashboardName,
       handleFilterChange,
       isDashboardExpanded,
       setDashboardExpanded,
     } = this.props;
     const dashboardTitle = `${orgUnit.name} Dashboard`;
-    const filterItems = Object.keys(dashboardConfig).map(dashboardGroupCode => {
+    const filterItems = dashboards.map(({ dashboardName }) => {
       return {
-        label: dashboardGroupCode,
-        id: dashboardGroupCode,
-        value: dashboardGroupCode,
+        label: dashboardName,
+        id: dashboardName,
+        value: dashboardName,
       };
     });
-    const currentFilter = filterItems.find(item => item.id === currentDashboardGroupCode) || {
+    const currentFilter = filterItems.find(item => item.id === currentDashboardName) || {
       label: 'General',
       id: 'General',
     };
@@ -66,7 +66,7 @@ class DashboardView extends Component {
           items={[
             <DashboardGroup
               key={currentFilter.label}
-              tab={dashboardConfig[currentFilter.label]}
+              tab={dashboards.find(d => d.dashboardName === currentFilter.label)}
               compressed
             />,
           ]}
@@ -97,12 +97,22 @@ const styles = {
 };
 
 DashboardView.propTypes = {
-  dashboardConfig: PropTypes.object,
+  dashboards: PropTypes.array,
   filterIsExpanded: PropTypes.bool,
+  isDashboardExpanded: PropTypes.bool,
+  setDashboardExpanded: PropTypes.func.isRequired,
+  handleFilterChange: PropTypes.func.isRequired,
+  toggleFilter: PropTypes.func.isRequired,
+  orgUnit: PropTypes.object,
+  currentDashboardName: PropTypes.string,
 };
 
 DashboardView.defaultProps = {
   filterIsExpanded: false,
+  dashboards: [],
+  isDashboardExpanded: false,
+  orgUnit: {},
+  currentDashboardName: '',
 };
 
 const mapStateToProps = state => {

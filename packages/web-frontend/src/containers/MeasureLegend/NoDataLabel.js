@@ -20,7 +20,7 @@ const NoDataLabel = ({ noDataColour, valueMapping, dataKey }) => {
 
 NoDataLabel.propTypes = {
   noDataColour: PropTypes.string.isRequired,
-  valueMapping: PropTypes.arrayOf(PropTypes.object).isRequired,
+  valueMapping: PropTypes.object.isRequired,
   dataKey: PropTypes.string.isRequired,
 };
 
