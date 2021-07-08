@@ -5,7 +5,6 @@
  */
 
 export { ApiConnection } from './ApiConnection';
-export { OutboundConnection } from './OutboundConnection';
-export { RequestConnection } from './RequestConnection';
+export { ApiConnectionBuilder } from './ApiConnectionBuilder';
 export { AuthHandler } from './types';
 export { EntityApi } from './EntityApi';

@@ -15,7 +15,7 @@ import { handleWith, handleError } from '../../utils';
 import { buildBasicBearerAuthMiddleware } from '../auth';
 import { TestRoute } from '../../routes';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
-import { RequestConnection, EntityApi } from '../../connections';
+import { ApiConnectionBuilder, EntityApi } from '../../connections';
 import { RequestContext } from '../types';
 
 export class ApiBuilder {
@@ -52,9 +52,14 @@ export class ApiBuilder {
       const microServiceAuthHandler = {
         getAuthHeader: async () => req.headers.authorization || '',
       };
+
+      const entityApi = new ApiConnectionBuilder()
+        .handleAuthWith(microServiceAuthHandler)
+        .buildAs(EntityApi);
+
       const context: RequestContext = {
         microServices: {
-          entityApi: new EntityApi(new RequestConnection(microServiceAuthHandler)),
+          entityApi,
         },
       }; // context is shared between request and response
       req.ctx = context;

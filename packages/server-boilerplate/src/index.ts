@@ -4,7 +4,7 @@
  *
  */
 
-export { ApiConnection, OutboundConnection, AuthHandler } from './connections';
+export { ApiConnection, AuthHandler } from './connections';
 export { Route } from './routes';
 export { handleWith } from './utils';
 export {

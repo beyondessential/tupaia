@@ -16,7 +16,8 @@ import type {
   FlattenedEntity,
 } from '@tupaia/entity-server';
 
-import { RequestConnection } from './RequestConnection';
+import { ApiConnection } from './ApiConnection';
+import { MicroserviceApi } from './types';
 
 const { ENTITY_API_URL = 'http://localhost:8050/v1' } = process.env;
 
@@ -55,12 +56,12 @@ type Prefix<T, P extends string> = {
   [field in keyof T & string as `${P}_${field}`]: T[field];
 };
 
-export class EntityApi {
-  baseUrl = ENTITY_API_URL;
+export class EntityApi implements MicroserviceApi {
+  public baseUrl = ENTITY_API_URL;
 
-  private readonly connection: RequestConnection;
+  private readonly connection: ApiConnection;
 
-  constructor(connection: RequestConnection) {
+  constructor(connection: ApiConnection) {
     this.connection = connection;
   }
 
@@ -131,7 +132,7 @@ export class EntityApi {
       filter?: EntityFilterObject;
     },
   ) {
-    return this.connection.get(this.baseUrl, `hierarchy/${hierarchyName}/${entityCode}`, {
+    return this.connection.get(`hierarchy/${hierarchyName}/${entityCode}`, {
       ...this.stringifyQueryParameters(queryOptions),
     });
   }
@@ -161,7 +162,7 @@ export class EntityApi {
       filter?: EntityFilterObject;
     },
   ) {
-    return this.connection.get(this.baseUrl, `hierarchy/${hierarchyName}`, {
+    return this.connection.get(`hierarchy/${hierarchyName}`, {
       ...this.stringifyQueryParameters(queryOptions),
       entities: entityCodes.join(MULTIPLE_VALUES_DELIMITER),
     });
@@ -195,14 +196,10 @@ export class EntityApi {
     },
     includeRootEntity = false,
   ) {
-    return this.connection.get(
-      this.baseUrl,
-      `hierarchy/${hierarchyName}/${entityCode}/descendants`,
-      {
-        ...this.stringifyQueryParameters(queryOptions),
-        includeRootEntity: `${includeRootEntity}`,
-      },
-    );
+    return this.connection.get(`hierarchy/${hierarchyName}/${entityCode}/descendants`, {
+      ...this.stringifyQueryParameters(queryOptions),
+      includeRootEntity: `${includeRootEntity}`,
+    });
   }
 
   public async getDescendantsOfEntities(
@@ -233,7 +230,7 @@ export class EntityApi {
     },
     includeRootEntity = false,
   ) {
-    return this.connection.get(this.baseUrl, `hierarchy/${hierarchyName}/descendants`, {
+    return this.connection.get(`hierarchy/${hierarchyName}/descendants`, {
       ...this.stringifyQueryParameters(queryOptions),
       entities: entityCodes.join(MULTIPLE_VALUES_DELIMITER),
       includeRootEntity: `${includeRootEntity}`,
@@ -265,7 +262,7 @@ export class EntityApi {
       filter?: EntityFilterObject;
     },
   ) {
-    return this.connection.get(this.baseUrl, `hierarchy/${hierarchyName}/${entityCode}/relatives`, {
+    return this.connection.get(`hierarchy/${hierarchyName}/${entityCode}/relatives`, {
       ...this.stringifyQueryParameters(queryOptions),
     });
   }
@@ -295,7 +292,7 @@ export class EntityApi {
       filter?: EntityFilterObject;
     },
   ) {
-    return this.connection.get(this.baseUrl, `hierarchy/${hierarchyName}/relatives`, {
+    return this.connection.get(`hierarchy/${hierarchyName}/relatives`, {
       ...this.stringifyQueryParameters(queryOptions),
       entities: entityCodes.join(MULTIPLE_VALUES_DELIMITER),
     });
@@ -325,16 +322,12 @@ export class EntityApi {
     ancestorQueryOptions?: RelationshipsSubQueryOptions,
     descendantQueryOptions?: RelationshipsSubQueryOptions,
   ) {
-    return this.connection.get(
-      this.baseUrl,
-      `hierarchy/${hierarchyName}/${entityCode}/relationships`,
-      {
-        ...this.stringifyQueryParameters(queryOptions),
-        ...this.stringifyRelationshipsSubQueryParameters(ancestorQueryOptions, 'ancestor'),
-        ...this.stringifyRelationshipsSubQueryParameters(descendantQueryOptions, 'descendant'),
-        groupBy,
-      },
-    );
+    return this.connection.get(`hierarchy/${hierarchyName}/${entityCode}/relationships`, {
+      ...this.stringifyQueryParameters(queryOptions),
+      ...this.stringifyRelationshipsSubQueryParameters(ancestorQueryOptions, 'ancestor'),
+      ...this.stringifyRelationshipsSubQueryParameters(descendantQueryOptions, 'descendant'),
+      groupBy,
+    });
   }
 
   public async getRelationshipsOfEntities(
@@ -362,7 +355,7 @@ export class EntityApi {
     ancestorQueryOptions?: RelationshipsSubQueryOptions,
     descendantQueryOptions?: RelationshipsSubQueryOptions,
   ) {
-    return this.connection.get(this.baseUrl, `hierarchy/${hierarchyName}/relationships`, {
+    return this.connection.get(`hierarchy/${hierarchyName}/relationships`, {
       ...this.stringifyQueryParameters(queryOptions),
       ...this.stringifyRelationshipsSubQueryParameters(ancestorQueryOptions, 'ancestor'),
       ...this.stringifyRelationshipsSubQueryParameters(descendantQueryOptions, 'descendant'),
