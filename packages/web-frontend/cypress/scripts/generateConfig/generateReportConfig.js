@@ -15,7 +15,7 @@ import { DashboardReportFilter } from './VisualisationFilter';
 
 const urlSchema = buildUrlSchema({
   regex: new RegExp('^/[^/]+/[^/]+/[^/]+?.*report=.+'),
-  regexDescription: '/:projectCode/:orgUnit/:dashboardName?report=:reportId',
+  regexDescription: '/:projectCode/:orgUnit/:dashboardName?report=:reportCode',
   shape: {
     code: yup.string().required(),
     project: yup.string().required(),
@@ -63,7 +63,7 @@ const parseUrl = url => {
   const [project, orgUnit, dashboardGroup] = path.split('/').filter(x => x !== '');
 
   return {
-    id: searchParams.get('report'),
+    code: searchParams.get('report'),
     project,
     orgUnit,
     dashboardGroup,

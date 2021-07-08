@@ -21,7 +21,7 @@ export const configSchema = shape({
   dashboardReports: shape({
     allowEmptyResponse: yup.boolean(),
     filter: shape({
-      id: stringOrStrings,
+      code: stringOrStrings,
       project: stringOrStrings,
       orgUnit: stringOrStrings,
       dashboardGroup: stringOrStrings,
