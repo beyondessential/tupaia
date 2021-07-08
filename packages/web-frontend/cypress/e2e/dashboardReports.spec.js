@@ -31,12 +31,12 @@ const assertUrlResponseHasData = (url, response) => {
 
 const urlToRouteRegex = url => {
   const queryParams = url.split('?').slice(1).join('');
-  const viewId = new URLSearchParams(queryParams).get('report');
-  if (!viewId) {
+  const itemCode = new URLSearchParams(queryParams).get('report');
+  if (!itemCode) {
     throw new Error(`'${url}' is not a valid report url: it must contain a 'report' query param`);
   }
 
-  return new RegExp(`view?.*\\WisExpanded=true&.*viewId=${viewId}[&$]`);
+  return new RegExp(`report.*\\WisExpanded=true&.*itemCode=${itemCode}[&$]`);
 };
 
 describe('Dashboard reports', () => {

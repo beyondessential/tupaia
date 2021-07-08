@@ -17,7 +17,7 @@ const urlSchema = buildUrlSchema({
   regex: new RegExp('^/[^/]+/[^/]+/[^/]+?.*report=.+'),
   regexDescription: '/:projectCode/:orgUnit/:dashboardName?report=:reportId',
   shape: {
-    id: yup.string().required(),
+    code: yup.string().required(),
     project: yup.string().required(),
     orgUnit: yup.string().required(),
     dashboardGroup: yup.string().required(),
@@ -41,10 +41,10 @@ const stringifyUrl = url => {
     return url;
   }
 
-  const { id, project, orgUnit, dashboardGroup, startDate, endDate, reportPeriod } = url;
+  const { code, project, orgUnit, dashboardGroup, startDate, endDate, reportPeriod } = url;
   const path = [project, orgUnit, dashboardGroup].map(encodeURIComponent).join('/');
   const queryParams = {
-    report: id,
+    report: code,
     reportPeriod: reportPeriod || buildReportPeriod(startDate, endDate),
   };
 
