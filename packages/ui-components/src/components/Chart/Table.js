@@ -1,92 +1,27 @@
 /*
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
  */
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useTable, useSortBy } from 'react-table';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiTableContainer from '@material-ui/core/TableContainer';
-import MuiTable from '@material-ui/core/Table';
-import MuiTableBody from '@material-ui/core/TableBody';
-import MuiTableCell from '@material-ui/core/TableCell';
-import MuiTableHead from '@material-ui/core/TableHead';
-import MuiTableRow from '@material-ui/core/TableRow';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import { formatDataValueByType } from '@tupaia/utils';
 import { formatTimestampForChart, getIsTimeSeries, getIsChartData, getNoDataString } from './utils';
 import { SmallAlert } from '../Alert';
 import { DEFAULT_DATA_KEY } from './constants';
 import { parseChartConfig } from './parseChartConfig';
+import { StyledTable } from './StyledTable';
+import { FlexStart } from '../Layout';
 
 const TableContainer = styled(MuiTableContainer)`
   overflow: auto;
-`;
-
-const DARK_THEME_BORDER = 'rgb(82, 82, 88)';
-
-const StyledTable = styled(MuiTable)`
-  table-layout: fixed;
-  overflow: hidden;
-
-  // table head
-  thead {
-    text-transform: capitalize;
-    border-bottom: 1px solid
-      ${({ theme }) =>
-        theme.palette.type === 'light' ? theme.palette.grey['400'] : DARK_THEME_BORDER};
-
-    tr {
-      background: none;
-    }
-
-    th {
-      position: relative;
-      text-align: center;
-      border: none;
-      font-weight: 400;
-      vertical-align: bottom;
-    }
-
-    th:first-child {
-      text-align: left;
-    }
-  }
-
-  // table body
-  tbody {
-    th {
-      font-weight: 500;
-    }
-
-    tr {
-      &:nth-of-type(odd) {
-        background: ${({ theme }) =>
-          theme.palette.type === 'light' ? theme.palette.grey['100'] : 'none'};
-      }
-      &:last-child th,
-      &:last-child td {
-        border-bottom: none;
-      }
-    }
-  }
-
-  th,
-  td {
-    padding-top: 1.125rem;
-    padding-bottom: 1.125rem;
-    color: ${props => props.theme.palette.text.primary};
-    border-right: 1px solid
-      ${({ theme }) =>
-        theme.palette.type === 'light' ? theme.palette.grey['400'] : DARK_THEME_BORDER};
-
-    &:last-child {
-      border-right: none;
-    }
-  }
-
-  td {
-    text-align: center;
-  }
 `;
 
 const NoData = styled(SmallAlert)`
@@ -95,8 +30,38 @@ const NoData = styled(SmallAlert)`
   margin-right: auto;
 `;
 
-// Determine whether to show the first table column
-const validFirstColumn = row => row?.timestamp || row?.name;
+const DEFAULT_COLUMN = { accessor: DEFAULT_DATA_KEY, Header: 'Value' };
+
+const getDefaultColumns = viewContent => {
+  const { data, xName, periodGranularity } = viewContent;
+  const isNamedData = data[0]?.name;
+  const isTimeSeriesData = getIsTimeSeries(data) && periodGranularity;
+
+  if (isNamedData) {
+    return [
+      {
+        accessor: row =>
+          row?.value === undefined
+            ? 'No Data'
+            : formatDataValueByType({ value: row.value }, sanitizeValueType(viewContent.valueType)),
+        Header: xName || 'Description',
+      },
+      DEFAULT_COLUMN,
+    ];
+  }
+
+  if (isTimeSeriesData) {
+    return [
+      {
+        accessor: row => formatTimestampForChart(row.timestamp, periodGranularity),
+        Header: xName || 'Date',
+      },
+      DEFAULT_COLUMN,
+    ];
+  }
+
+  return [DEFAULT_COLUMN];
+};
 
 // For the rowData, ignore labelType and use percentage instead of fractionAndPercentage as
 // we don't want to show multiple values a table cell
@@ -108,18 +73,56 @@ const sanitizeValueType = valueType =>
  * Use the keys in chartConfig to determine which columns to render, and if chartConfig doesn't exist
  * use value as the only column
  */
-const getColumns = viewContent => {
+const processColumns = viewContent => {
+  const defaultColumns = getDefaultColumns(viewContent);
+
   if (!viewContent.chartConfig) {
-    return [DEFAULT_DATA_KEY];
+    return defaultColumns;
   }
   const chartConfig = parseChartConfig(viewContent);
-  return Object.keys(chartConfig).length > 0 ? Object.keys(chartConfig) : [DEFAULT_DATA_KEY];
+
+  if (Object.keys(chartConfig).length === 0) {
+    return defaultColumns;
+  }
+
+  const columns = Object.keys(chartConfig).map(columnKey => {
+    return {
+      accessor: row => {
+        const rowValue = row[columnKey];
+        const columnConfig = chartConfig[columnKey];
+
+        return rowValue === undefined
+          ? 'No Data'
+          : formatDataValueByType(
+              { value: rowValue },
+              sanitizeValueType(columnConfig?.valueType || viewContent.valueType),
+            );
+      },
+      Header: columnKey,
+    };
+  });
+
+  return [defaultColumns, ...columns];
+};
+
+const processData = viewContent => {
+  return viewContent.data;
 };
 
 export const Table = ({ viewContent, className }) => {
-  const { data, xName, periodGranularity, valueType, chartConfig = {} } = viewContent;
-  const columns = getColumns(viewContent);
-  const dataIsTimeSeries = getIsTimeSeries(data) && periodGranularity;
+  const columns = useMemo(() => processColumns(viewContent), []);
+  const data = useMemo(() => processData(viewContent), []);
+
+  console.log('columns', columns);
+  console.log('data', data);
+
+  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
+    {
+      columns,
+      data,
+    },
+    useSortBy,
+  );
 
   if (!getIsChartData(viewContent)) {
     return (
@@ -131,43 +134,36 @@ export const Table = ({ viewContent, className }) => {
 
   return (
     <TableContainer className={className}>
-      <StyledTable style={{ minWidth: columns.length * 140 + 250 }}>
-        <MuiTableHead>
-          <MuiTableRow>
-            {validFirstColumn(data[0]) && <MuiTableCell width={250}>{xName || null}</MuiTableCell>}
-            {columns.map(column => (
-              <MuiTableCell key={column}>{column}</MuiTableCell>
-            ))}
-          </MuiTableRow>
-        </MuiTableHead>
-        <MuiTableBody>
-          {data.map((row, index) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <MuiTableRow key={index}>
-              {validFirstColumn(row) && (
-                <MuiTableCell component="th" scope="row">
-                  {dataIsTimeSeries
-                    ? formatTimestampForChart(row.timestamp, periodGranularity)
-                    : row.name}
-                </MuiTableCell>
-              )}
-              {columns.map(columnKey => {
-                const value = row[columnKey];
-                const columnConfig = chartConfig[columnKey];
-
-                const rowValue =
-                  value === undefined
-                    ? 'No Data'
-                    : formatDataValueByType(
-                        { value },
-                        sanitizeValueType(columnConfig?.valueType || valueType),
-                      );
-
-                return <MuiTableCell key={columnKey}>{rowValue}</MuiTableCell>;
-              })}
-            </MuiTableRow>
+      <StyledTable {...getTableProps()} style={{ minWidth: columns.length * 140 + 250 }}>
+        <TableHead>
+          {headerGroups.map(headerGroup => (
+            <TableRow {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map(column => (
+                <TableCell {...column.getHeaderProps(column.getSortByToggleProps())}>
+                  <FlexStart>
+                    {column.render('Header')}
+                    <TableSortLabel
+                      active={column.isSorted}
+                      direction={column.isSortedDesc ? 'asc' : 'desc'}
+                    />
+                  </FlexStart>
+                </TableCell>
+              ))}
+            </TableRow>
           ))}
-        </MuiTableBody>
+        </TableHead>
+        <TableBody {...getTableBodyProps()}>
+          {rows.map(row => {
+            prepareRow(row);
+            return (
+              <TableRow {...row.getRowProps()}>
+                {row.cells.map(cell => {
+                  return <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>;
+                })}
+              </TableRow>
+            );
+          })}
+        </TableBody>
       </StyledTable>
     </TableContainer>
   );

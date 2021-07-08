@@ -1,3 +1,7 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
 import React, { useMemo } from 'react';
 import { useTable, useSortBy } from 'react-table';
 import TableContainer from '@material-ui/core/TableContainer';
