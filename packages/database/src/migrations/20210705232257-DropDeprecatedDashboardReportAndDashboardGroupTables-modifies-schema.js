@@ -16,8 +16,8 @@ exports.setup = function (options, seedLink) {
 
 exports.up = function (db) {
   return db.runSql(`
-    DROP TABLE "dashboardReport";
-    DROP TABLE "dashboardGroup";
+    DROP TABLE IF EXISTS "dashboardReport";
+    DROP TABLE IF EXISTS "dashboardGroup";
   `);
 };
 
