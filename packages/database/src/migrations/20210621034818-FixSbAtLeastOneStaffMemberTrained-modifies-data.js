@@ -14,27 +14,27 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const dashboardIds = [
+const dashboardItems = [
   'UNFPA_Country_Facilities_offering_services_At_Least_1_Matrix_SB',
   'UNFPA_Country_Facilities_offering_services_At_Least_1_Matrix_VU',
 ];
 
 exports.up = async function (db) {
-  for (const dashboardId of dashboardIds) {
+  for (const dashboardItemCode of dashboardItems) {
     await db.runSql(`
-      update "dashboardReport" dr
-      set "dataBuilderConfig" = regexp_replace(dr."dataBuilderConfig"::text, 'RHS1UNFPA03','RHS4UNFPA807','g')::jsonb
-      where id = '${dashboardId}'
+      update "legacy_report" dr
+      set "data_builder_config" = regexp_replace(dr."data_builder_config"::text, 'RHS1UNFPA03','RHS4UNFPA807','g')::jsonb
+      where code = '${dashboardItemCode}'
   `);
   }
 };
 
 exports.down = async function (db) {
-  for (const dashboardId of dashboardIds) {
+  for (const dashboardItemCode of dashboardItems) {
     await db.runSql(`
-      update "dashboardReport" dr
-      set "dataBuilderConfig" = regexp_replace(dr."dataBuilderConfig"::text, 'RHS4UNFPA807','RHS1UNFPA03','g')::jsonb
-      where id = '${dashboardId}'
+      update "legacy_report" dr
+      set "data_builder_config" = regexp_replace(dr."data_builder_config"::text, 'RHS4UNFPA807','RHS1UNFPA03','g')::jsonb
+      where code = '${dashboardItemCode}'
     `);
   }
 };
