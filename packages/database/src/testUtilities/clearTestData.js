@@ -7,8 +7,8 @@ import moment from 'moment';
 import { AnalyticsRefresher } from '..';
 
 const COMPARISON = `LIKE '%_test%'`;
-const getDeleteStatement = (table, mainCondition = `id ${COMPARISON}`, extraConditions = []) => {
-  const conditions = [mainCondition, ...extraConditions];
+const getDeleteStatement = (table, extraConditions = []) => {
+  const conditions = [`id ${COMPARISON}`, ...extraConditions];
   return `DELETE FROM "${table}" WHERE ${conditions.join(' OR ')};`;
 };
 
@@ -29,6 +29,10 @@ const TABLES_TO_CLEAR = [
   'data_element_data_group',
   'data_source',
   'clinic',
+  'dashboard_relation',
+  'dashboard',
+  'dashboard_item',
+  'legacy_report',
   'ancestor_descendant_relation',
   'entity_relation',
   'project',
@@ -52,16 +56,10 @@ const TABLES_TO_CLEAR = [
   'permission_group',
   'api_client',
   'user_account',
-  'dashboardGroup',
-  'dashboardReport',
   'mapOverlay',
 ];
 
 export async function clearTestData(db, testStartTime = moment().format('YYYY-MM-DD HH:mm:ss')) {
-  const mainConditions = {
-    dashboardGroup: `code ${COMPARISON}`, // id of dashboard group is still Integer, so have the mainCondition test on code rather than id
-  };
-
   const extraConditions = {
     api_request_log: [`request_time >= '${testStartTime}'`],
     api_client: [`id ${COMPARISON}`, `user_account_id ${COMPARISON}`],
@@ -72,13 +70,13 @@ export async function clearTestData(db, testStartTime = moment().format('YYYY-MM
     user_entity_permission: [`permission_group_id ${COMPARISON}`],
     user_account: [`email = 'test.user@tupaia.org'`, `first_name = 'Automated test'`],
     clinic: [`country_id ${COMPARISON}`],
+    dashboard_relation: [`child_id ${COMPARISON}`, `dashboard_id ${COMPARISON}`],
     entity: [`code LIKE 'test%'`, `code ${COMPARISON}`, `parent_id ${COMPARISON}`],
     entity_relation: [`child_id ${COMPARISON}`, `parent_id ${COMPARISON}`],
     meditrak_sync_queue: [`record_id ${COMPARISON}`],
   };
   const sql = TABLES_TO_CLEAR.reduce(
-    (acc, table) =>
-      `${acc}\n${getDeleteStatement(table, mainConditions[table], extraConditions[table])}`,
+    (acc, table) => `${acc}\n${getDeleteStatement(table, extraConditions[table])}`,
     '',
   );
   await db.executeSql(sql);

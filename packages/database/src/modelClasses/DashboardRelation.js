@@ -9,6 +9,23 @@ import { TYPES } from '../types';
 
 class DashboardRelationType extends DatabaseType {
   static databaseType = TYPES.DASHBOARD_RELATION;
+
+  static joins = [
+    {
+      fields: {
+        code: 'dashboard_code',
+      },
+      joinWith: TYPES.DASHBOARD,
+      joinCondition: ['dashboard.id', 'dashboard_relation.dashboard_id'],
+    },
+    {
+      fields: {
+        code: 'dashboard_item_code',
+      },
+      joinWith: TYPES.DASHBOARD_ITEM,
+      joinCondition: ['dashboard_item.id', 'dashboard_relation.child_id'],
+    },
+  ];
 }
 
 export class DashboardRelationModel extends DatabaseModel {
