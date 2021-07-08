@@ -148,6 +148,22 @@ export const constructIsOneOfType = types => {
   };
 };
 
+export const constructIsSubSetOf = options => arrayValue => {
+  if (!Array.isArray(arrayValue)) {
+    throw new Error('constructIsSubSetOf expects an array of values');
+  }
+
+  if (!Array.isArray(options)) {
+    throw new Error('constructIsSubSetOf expects an array of options');
+  }
+
+  const isSubSet = arrayValue.every(v => options.includes(v));
+
+  if (!isSubSet) {
+    throw new Error(`Some values of '${arrayValue.toString}' are not included in '${options}'`);
+  }
+};
+
 export const constructIsArrayOf = type => value => {
   isArray(value);
   Object.values(value).forEach(item => {
