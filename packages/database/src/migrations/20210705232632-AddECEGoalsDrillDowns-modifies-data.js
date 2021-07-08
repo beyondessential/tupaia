@@ -22,12 +22,8 @@ const generateReport = (dataElement, target) => ({
     aggregations: [
       {
         type: 'MOST_RECENT',
-      },
-      {
-        type: 'SUM_PER_ORG_GROUP',
         config: {
           dataSourceEntityType: 'sub_district',
-          aggregationEntityType: 'requested',
         },
       },
     ],
