@@ -53,7 +53,7 @@ Our e2e tests support Tupaia-specific configuration specified in [config.json](c
     "urlFiles": ["cypress/config/dashboardReportUrls/default.json"],
     "urls": ["/explore/explore/IHR%20Report?report=WHO_IHR_SPAR_WPRO"],
     "filter": {
-      "id": ["report_id1", "report_id2"],
+      "code": ["report_code1", "report_code2"],
       "project": ["covidau", "strive"],
       "orgUnit": "PG",
       "dashboardGroup": "Dashboard Group1",
@@ -104,7 +104,7 @@ Two formats are supported:
 
   ```json
   {
-    "id": "COVID_Compose_Daily_Deaths_Vs_Cases",
+    "code": "COVID_Compose_Daily_Deaths_Vs_Cases",
     "project": "covidau",
     "orgUnit": "AU",
     "dashboardGroup": "COVID-19"

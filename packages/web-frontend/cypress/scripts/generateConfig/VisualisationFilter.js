@@ -3,15 +3,40 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import assert from 'assert';
 import { camel } from 'case';
 import { keyBy, upperFirst, mapKeys } from 'lodash';
 
 import { getUniqueEntries, hasIntersection, toArray } from '@tupaia/utils';
 
 class VisualisationFilter {
+  static key = null;
+
+  static builderKey = null;
+
+  static name = 'visualisation';
+
   constructor(db, filter) {
     this.db = db;
     this.filter = filter;
+    this.validate();
+  }
+
+  validate() {
+    assert.notStrictEqual(this.key, null);
+    assert.notStrictEqual(this.builderKey, null);
+  }
+
+  get key() {
+    return this.constructor.key;
+  }
+
+  get builderKey() {
+    return this.constructor.builderKey;
+  }
+
+  get name() {
+    return this.constructor.name;
   }
 
   /**
@@ -22,51 +47,32 @@ class VisualisationFilter {
     throw new Error('Any subclass of VisualisationFilter must implement the "fetchRecords" method');
   };
 
-  /**
-   * @abstract
-   */
-  getKey = () => {
-    throw new Error('Any subclass of VisualisationFilter must implement the "getKey" method');
-  };
-
-  /**
-   * @abstract
-   */
-  getBuilderKey = () => {
-    throw new Error(
-      'Any subclass of VisualisationFilter must implement the "getBuilderKey" method',
-    );
-  };
-
-  /**
-   * @protected
-   */
-  getName = () => 'visualisation';
-
   apply = async objectUrls => {
     if (Object.keys(this.filter).length === 0) {
       return objectUrls;
     }
 
-    const visualKey = this.getKey();
     const records = await this.fetchRecords(objectUrls);
     // Camel case all the record keys
-    const transformedRecords = records.map(r => mapKeys(r, (_, key) => camel(key)));
-    const recordsByKey = keyBy(transformedRecords, visualKey);
+    const transformedRecords = records.map(r => mapKeys(r, (_, propertyKey) => camel(propertyKey)));
+    const recordsByKey = keyBy(transformedRecords, this.key);
 
     const filterUrl = url =>
-      Object.entries(this.filter).some(([key, targetValue]) => {
-        const record = recordsByKey[url[visualKey]];
+      Object.entries(this.filter).some(([filterKey, targetValue]) => {
+        const record = recordsByKey[url[this.key]];
         if (!record) {
           throw new Error(
-            `${upperFirst(this.getName())} with code "${url.code}" was not found in the database`,
+            `${upperFirst(this.name)} with ${this.key} "${url[this.key]}" was not found in the database`,
           );
         }
 
-        const isBuilderFilter = key === this.getBuilderKey();
-        const value = isBuilderFilter
-          ? this.getBuildersInRecord(recordsByKey[url[visualKey]])
-          : url[key];
+        // skip all the records that do not have the filter key
+        if (record[filterKey] === undefined || record[filterKey] === null) {
+          return false;
+        }
+
+        const isBuilderFilter = filterKey === this.builderKey;
+        const value = isBuilderFilter ? this.getBuildersInRecord(record) : url[filterKey];
         return hasIntersection(toArray(targetValue), toArray(value));
       });
 
@@ -74,15 +80,20 @@ class VisualisationFilter {
   };
 
   getBuildersInRecord = record => {
-    const builderKey = this.getBuilderKey();
-    const nestedBuilders = Object.values(record[`${builderKey}Config`][`${builderKey}s`] || {}).map(
-      nestedConfig => nestedConfig[builderKey],
-    );
-    return getUniqueEntries([record[builderKey], ...nestedBuilders]);
+    const nestedBuilders = Object.values(
+      record[`${this.builderKey}Config`][`${this.builderKey}s`] || {},
+    ).map(nestedConfig => nestedConfig[this.builderKey]);
+    return getUniqueEntries([record[this.builderKey], ...nestedBuilders]);
   };
 }
 
 export class DashboardReportFilter extends VisualisationFilter {
+  static key = 'code';
+
+  static builderKey = 'dataBuilder';
+
+  static name = 'dashboard report';
+
   fetchRecords = async objectUrls => {
     const dashboardItems = await this.db.find('dashboard_item', {
       code: objectUrls.map(u => u.code),
@@ -91,9 +102,9 @@ export class DashboardReportFilter extends VisualisationFilter {
     const legacyReports = await this.db.find('legacy_report', {
       code: legacyDashboardItems.map(di => di.report_code),
     });
-    const legacyReportById = keyBy(legacyReports, 'code');
+    const legacyReportByCode = keyBy(legacyReports, 'code');
     return dashboardItems.map(di => {
-      const legacyReport = di.legacy ? legacyReportById[di.report_code] : {};
+      const legacyReport = di.legacy ? legacyReportByCode[di.report_code] : null;
 
       if (legacyReport) {
         return {
@@ -106,23 +117,17 @@ export class DashboardReportFilter extends VisualisationFilter {
       return di;
     });
   };
-
-  getKey = () => 'code';
-
-  getBuilderKey = () => 'dataBuilder';
-
-  getName = () => 'dashboard report';
 }
 
 export class MapOverlayFilter extends VisualisationFilter {
+  static key = 'id';
+
+  static builderKey = 'measureBuilder';
+
+  static name = 'map overlay';
+
   fetchRecords = async objectUrls =>
     this.db.find('mapOverlay', {
       id: objectUrls.map(u => u.id).flat(),
     });
-
-  getKey = () => 'id';
-
-  getBuilderKey = () => 'measureBuilder';
-
-  getName = () => 'map overlay';
 }
