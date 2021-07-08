@@ -20,21 +20,21 @@ const dashboardItems = [
 ];
 
 exports.up = async function (db) {
-  for (const dashboardItemId of dashboardItems) {
+  for (const dashboardItemCode of dashboardItems) {
     await db.runSql(`
       update "legacy_report" dr
       set "data_builder_config" = regexp_replace(dr."data_builder_config"::text, 'RHS1UNFPA03','RHS4UNFPA807','g')::jsonb
-      where id = '${dashboardItemId}'
+      where code = '${dashboardItemCode}'
   `);
   }
 };
 
 exports.down = async function (db) {
-  for (const dashboardItemId of dashboardItems) {
+  for (const dashboardItemCode of dashboardItems) {
     await db.runSql(`
       update "legacy_report" dr
       set "data_builder_config" = regexp_replace(dr."data_builder_config"::text, 'RHS4UNFPA807','RHS1UNFPA03','g')::jsonb
-      where id = '${dashboardItemId}'
+      where code = '${dashboardItemCode}'
     `);
   }
 };
