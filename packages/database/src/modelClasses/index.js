@@ -13,8 +13,6 @@ import { CountryModel } from './Country';
 import { DashboardModel } from './Dashboard';
 import { DashboardItemModel } from './DashboardItem';
 import { DashboardRelationModel } from './DashboardRelation';
-import { DashboardGroupModel } from './DashboardGroup';
-import { DashboardReportModel } from './DashboardReport';
 import { DataElementDataGroupModel } from './DataElementDataGroup';
 import { DataSourceModel } from './DataSource';
 import { DisasterModel } from './Disaster';
@@ -58,8 +56,6 @@ export const modelClasses = {
   Dashboard: DashboardModel,
   DashboardItem: DashboardItemModel,
   DashboardRelation: DashboardRelationModel,
-  DashboardGroup: DashboardGroupModel,
-  DashboardReport: DashboardReportModel,
   DataElementDataGroup: DataElementDataGroupModel,
   DataSource: DataSourceModel,
   DataServiceEntity: DataServiceEntityModel,
