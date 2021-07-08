@@ -1,57 +1,86 @@
-import React from 'react';
-import styled from 'styled-components';
-import MuiTableContainer from '@material-ui/core/TableContainer';
-import MuiTableHead from '@material-ui/core/TableHead';
-import MuiTableRow from '@material-ui/core/TableRow';
-import MuiTableCell from '@material-ui/core/TableCell';
-import MuiTableBody from '@material-ui/core/TableBody';
+import React, { useMemo } from 'react';
+import { useTable, useSortBy } from 'react-table';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
+import TableBody from '@material-ui/core/TableBody';
 import { StyledTable } from './StyledTable';
 import { getFormattedInfo } from '../../utils/measures';
+import { FlexStart } from '../../components/Flexbox';
 
-const TableContainer = styled(MuiTableContainer)`
-  //background: black;
-`;
+const processColumns = measureOptions => {
+  const columns = measureOptions.map(column => {
+    return { accessor: column.key, Header: column.name };
+  });
 
-const getValue = (data, measureOption) => {
-  const { formattedValue } = getFormattedInfo(data, measureOption);
-  return formattedValue;
+  return [
+    { accessor: 'name', Header: 'Name' },
+    ...columns,
+    { accessor: 'submissionDate', Header: 'Submission Date' },
+  ];
+};
+
+const processData = (measureOptions, measureData) => {
+  return measureData.map(row => {
+    const columns = measureOptions.reduce((cols, measureOption) => {
+      const value = getFormattedInfo(row, measureOption).formattedValue;
+      return { ...cols, [measureOption.key]: value };
+    }, {});
+
+    return {
+      name: row.name,
+      ...columns,
+      submissionDate: row.submissionDate ?? 'No data',
+    };
+  });
 };
 
 export const MapTable = ({ measureOptions, measureData }) => {
-  console.log(JSON.stringify(measureOptions));
-  console.log(JSON.stringify(measureData));
+  const columns = useMemo(() => processColumns(measureOptions), []);
+  const data = useMemo(() => processData(measureOptions, measureData), []);
+
+  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
+    {
+      columns,
+      data,
+    },
+    useSortBy,
+  );
+
   return (
     <TableContainer>
-      <StyledTable>
-        <MuiTableHead>
-          <MuiTableRow>
-            <MuiTableCell>Name</MuiTableCell>
-            {measureOptions.map(({ key, name }) => (
-              <MuiTableCell key={key}>{name}</MuiTableCell>
-            ))}
-            <MuiTableCell>Submission Date</MuiTableCell>
-          </MuiTableRow>
-        </MuiTableHead>
-        <MuiTableBody>
-          {measureData.map((data, index) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <MuiTableRow key={index}>
-              <MuiTableCell component="th" scope="row">
-                {data.name}
-              </MuiTableCell>
-              {measureOptions.map(measureOption => {
-                return (
-                  <MuiTableCell key={measureOption.key}>
-                    {getValue(data, measureOption)}
-                  </MuiTableCell>
-                );
-              })}
-              <MuiTableCell scope="row">
-                {data.submissionDate ? data.submissionDate : 'No Data'}
-              </MuiTableCell>
-            </MuiTableRow>
+      <StyledTable {...getTableProps()}>
+        <TableHead>
+          {headerGroups.map(headerGroup => (
+            <TableRow {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map(column => (
+                <TableCell {...column.getHeaderProps(column.getSortByToggleProps())}>
+                  <FlexStart>
+                    {column.render('Header')}
+                    <TableSortLabel
+                      active={column.isSorted}
+                      direction={column.isSortedDesc ? 'asc' : 'desc'}
+                    />
+                  </FlexStart>
+                </TableCell>
+              ))}
+            </TableRow>
           ))}
-        </MuiTableBody>
+        </TableHead>
+        <TableBody {...getTableBodyProps()}>
+          {rows.map(row => {
+            prepareRow(row);
+            return (
+              <TableRow {...row.getRowProps()}>
+                {row.cells.map(cell => {
+                  return <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>;
+                })}
+              </TableRow>
+            );
+          })}
+        </TableBody>
       </StyledTable>
     </TableContainer>
   );

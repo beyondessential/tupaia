@@ -28,10 +28,6 @@ export const StyledTable = styled(MuiTable)`
       font-weight: 400;
       vertical-align: bottom;
     }
-
-    th:first-child {
-      text-align: left;
-    }
   }
 
   // table body
@@ -67,10 +63,6 @@ export const StyledTable = styled(MuiTable)`
   }
 
   td {
-    text-align: center;
-  }
-
-  td:first-child {
     text-align: left;
   }
 `;
