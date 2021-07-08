@@ -24,7 +24,6 @@ export const StyledTable = styled(MuiTable)`
 
     th {
       position: relative;
-      //text-align: center;
       border: none;
       font-weight: 400;
       vertical-align: bottom;
@@ -65,9 +64,5 @@ export const StyledTable = styled(MuiTable)`
     &:last-child {
       border-right: none;
     }
-  }
-
-  td {
-    //text-align: center;
   }
 `;

@@ -56,12 +56,6 @@ const LEGEND_ALL_DATA = {
   stackId: 1,
 };
 
-// Used to layer line charts on top of bar charts for composed charts.
-const CHART_SORT_ORDER = {
-  [LINE]: 0,
-  [BAR]: 1,
-};
-
 const CHART_TYPE_TO_CONTAINER = {
   [AREA]: AreaChart,
   [BAR]: BarChart,
