@@ -50,38 +50,42 @@ export class AreaTooltip extends Component {
       orgUnitMeasureData,
     } = this.props;
 
-    const textList = [
+    const defaultTextList = [
       <Heading key={0} hasMeasureValue={hasMeasureValue}>
         {orgUnitName}
       </Heading>,
     ];
-    const renderTextList = data => {
+
+    const renderTextList = (data, textList = []) => {
       Object.keys(data).forEach(key => {
         textList.push(<span key={key}>{`${key}: ${data[key]}`}</span>);
       });
+      return textList;
     };
 
     if (hasMeasureValue) {
       const legacy = !measureOptions[0].notLegacy;
-      const formattedMeasureData = legacy
+      const { formattedMeasureData, onlyOneValue } = legacy
         ? this.buildLegacyFormattedMeasureData(orgUnitMeasureData, measureOptions)
         : this.buildFormattedMeasureData(rawOrgUnitMeasureData, measureOptions);
 
-      renderTextList(formattedMeasureData);
+      if (onlyOneValue) {
+        return renderTextList({ [orgUnitName]: formattedMeasureData });
+      }
+
+      renderTextList(formattedMeasureData, defaultTextList);
     }
 
-    return textList;
+    return defaultTextList;
   }
 
   buildLegacyFormattedMeasureData(orgUnitMeasureData, measureOptions) {
-    const formattedMeasureData = {};
+    const formattedValue = getSingleFormattedValue(orgUnitMeasureData, measureOptions);
 
-    formattedMeasureData[measureOptions[0].name] = getSingleFormattedValue(
-      orgUnitMeasureData,
-      measureOptions,
-    );
-
-    return formattedMeasureData;
+    return {
+      formattedMeasureData: formattedValue,
+      onlyOneValue: true,
+    };
   }
 
   buildFormattedMeasureData(rawOrgUnitMeasureData, measureOptions) {
@@ -100,7 +104,13 @@ export class AreaTooltip extends Component {
       });
     }
 
-    return formattedMeasureData;
+    if (Object.values(formattedMeasureData).length === 1) {
+      return {
+        formattedMeasureData: Object.values(formattedMeasureData)[0],
+        onlyOneValue: true,
+      };
+    }
+    return { formattedMeasureData };
   }
 
   render() {
