@@ -116,7 +116,7 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
   };
 
   const getValidData = () => {
-    const { data, valueType } = viewContent;
+    const { data } = viewContent;
 
     return data
       .filter(element => element.value > 0)
@@ -126,15 +126,8 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
         let label = getPresentationOption(name, 'label');
         if (!label) label = name;
 
-        const shouldShowValue = isMobile() && isEnlarged;
-        const metadata = item[`${name}_metadata`];
-
-        const labelSuffix = shouldShowValue
-          ? ` (${formatDataValueByType({ value: item.value, metadata }, valueType)})`
-          : '';
-
         return {
-          name: label + labelSuffix,
+          name: label,
           ...otherKeyValues,
           originalItem: item,
         };
@@ -142,8 +135,7 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
       .sort((a, b) => b.value - a.value);
   };
 
-  const palette = CHART_COLOR_PALETTE;
-  const chartColors = Object.values(palette);
+  const chartColors = Object.values(CHART_COLOR_PALETTE);
   const validData = getValidData();
 
   // Due to the way the container margins stack, the pie chart renders
@@ -183,6 +175,7 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
             isEnlarged,
             isExporting,
             legendPosition,
+            viewContent,
           })}
           onMouseOver={handleMouseEnter}
           onMouseOut={handleMouseOut}

@@ -210,16 +210,11 @@ export function populateEntityBounds(db) {
 
 /* eslint-disable no-unused-vars */
 
-// Get a dashboard report by id
-async function getDashboardReportById(db, id) {
-  const { rows: dashboardReports } = await db.runSql(`
-      SELECT * FROM "dashboardReport"
-      WHERE id = '${id}';
-  `);
-  return dashboardReports[0] || null;
-}
-
-// Add a dashboard report to a dashboard group
+/**
+ * @deprecated
+ * Tables "dashboardReport" and "dashboardGroup" have been dropped.
+ * Please use "dashboard", "dashboard_relation" and "dashboard_item"
+ */
 export function addReportToGroups(db, reportId, groupCodes) {
   return db.runSql(`
     UPDATE
@@ -231,18 +226,11 @@ export function addReportToGroups(db, reportId, groupCodes) {
   `);
 }
 
-async function addReportToGroupsOnTop(db, reportId, groupCodes) {
-  return db.runSql(`
-    UPDATE
-      "dashboardGroup"
-    SET
-      "dashboardReports" = '{"${reportId}"}' || "dashboardReports"
-    WHERE
-      "code" IN (${arrayToDbString(groupCodes)});
-  `);
-}
-
-// Remove a dashboard report from a dashboard group
+/**
+ * @deprecated
+ * Tables "dashboardReport" and "dashboardGroup" have been dropped.
+ * Please use "dashboard", "dashboard_relation" and "dashboard_item"
+ */
 export function removeReportFromGroups(db, reportId, groupCodes) {
   return db.runSql(`
     UPDATE
@@ -254,7 +242,11 @@ export function removeReportFromGroups(db, reportId, groupCodes) {
   `);
 }
 
-// Delete a report
+/**
+ * @deprecated
+ * Tables "dashboardReport" and "dashboardGroup" have been dropped.
+ * Please use "dashboard", "dashboard_relation" and "dashboard_item"
+ */
 export function deleteReport(db, reportId) {
   return db.runSql(`
     DELETE FROM
@@ -263,32 +255,6 @@ export function deleteReport(db, reportId) {
       "id" = '${reportId}';
   `);
 }
-
-// Update data builder configuration for a report
-async function updateBuilderConfigByReportId(db, newConfig, reportId) {
-  return updateValues(db, 'dashboardReport', { dataBuilderConfig: newConfig }, { id: reportId });
-}
-
-// Update viewJson in dashboard report
-async function updateViewJsonByReportId(db, newJson, reportId) {
-  return updateValues(db, 'dashboardReport', { viewJson: newJson }, { id: reportId });
-}
-
-const convertToTableOfDataValuesSql = table => {
-  return `
-  UPDATE
-      "dashboardReport"
-  SET
-    "dataBuilder" = 'tableOfDataValues',
-    "dataBuilderConfig" = '${JSON.stringify({
-      rows: table.category ? { category: table.category, rows: table.rows } : table.rows,
-      columns: table.columns,
-      cells: table.cells,
-    })}'
-  WHERE
-    id = '${table.id}';
-  `;
-};
 
 export const buildSingleColumnTableCells = ({
   prefix = '',
