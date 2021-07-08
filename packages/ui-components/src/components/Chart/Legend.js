@@ -116,25 +116,28 @@ export const getCartesianLegend = ({
   getIsActiveKey,
   isExporting,
   legendPosition,
-}) => ({ payload }) => (
-  <LegendContainer position={legendPosition}>
-    {payload.map(({ color, value, dataKey }) => {
-      return (
-        <LegendItem
-          key={value}
-          onClick={() => onClick(dataKey)}
-          isExporting={isExporting}
-          className={isMobile() ? 'small' : 'enlarged'}
-          style={{ textDecoration: getIsActiveKey(value) ? '' : 'line-through' }}
-        >
-          <Tooltip title="Click to filter data" placement="top" arrow>
-            <TooltipContainer>
-              <Box className={isMobile() ? 'small' : 'enlarged'} style={{ background: color }} />
-              <Text>{getDisplayValue(chartConfig, value)}</Text>
-            </TooltipContainer>
-          </Tooltip>
-        </LegendItem>
-      );
-    })}
-  </LegendContainer>
-);
+}) => ({ payload }) => {
+  // console.log('payload', payload);
+  return (
+    <LegendContainer position={legendPosition}>
+      {payload.map(({ color, value, dataKey }) => {
+        return (
+          <LegendItem
+            key={value}
+            onClick={() => onClick(dataKey)}
+            isExporting={isExporting}
+            className={isMobile() ? 'small' : 'enlarged'}
+            style={{ textDecoration: getIsActiveKey(value) ? '' : 'line-through' }}
+          >
+            <Tooltip title="Click to filter data" placement="top" arrow>
+              <TooltipContainer>
+                <Box className={isMobile() ? 'small' : 'enlarged'} style={{ background: color }} />
+                <Text>{getDisplayValue(chartConfig, value)}</Text>
+              </TooltipContainer>
+            </Tooltip>
+          </LegendItem>
+        );
+      })}
+    </LegendContainer>
+  );
+};

@@ -19,6 +19,7 @@ import { DEFAULT_DATA_KEY } from './constants';
 import { parseChartConfig } from './parseChartConfig';
 import { StyledTable } from './StyledTable';
 import { FlexStart } from '../Layout';
+import { CHART_TYPES } from './constants';
 
 const TableContainer = styled(MuiTableContainer)`
   overflow: auto;
@@ -30,43 +31,38 @@ const NoData = styled(SmallAlert)`
   margin-right: auto;
 `;
 
-const DEFAULT_COLUMN = { accessor: DEFAULT_DATA_KEY, Header: 'Value' };
-
-const getDefaultColumns = viewContent => {
-  const { data, xName, periodGranularity } = viewContent;
-  const isNamedData = data[0]?.name;
-  const isTimeSeriesData = getIsTimeSeries(data) && periodGranularity;
-
-  if (isNamedData) {
-    return [
-      {
-        accessor: row =>
-          row?.value === undefined
-            ? 'No Data'
-            : formatDataValueByType({ value: row.value }, sanitizeValueType(viewContent.valueType)),
-        Header: xName || 'Description',
-      },
-      DEFAULT_COLUMN,
-    ];
-  }
-
-  if (isTimeSeriesData) {
-    return [
-      {
-        accessor: row => formatTimestampForChart(row.timestamp, periodGranularity),
-        Header: xName || 'Date',
-      },
-      DEFAULT_COLUMN,
-    ];
-  }
-
-  return [DEFAULT_COLUMN];
-};
-
 // For the rowData, ignore labelType and use percentage instead of fractionAndPercentage as
 // we don't want to show multiple values a table cell
 const sanitizeValueType = valueType =>
   valueType === 'fractionAndPercentage' ? 'percentage' : valueType;
+
+const getFormattedValue = (value, valueType) =>
+  value === undefined ? 'No Data' : formatDataValueByType({ value }, sanitizeValueType(valueType));
+
+/**
+ * First column is either name or period granularity if they exist in the data
+ */
+const getFirstColumn = viewContent => {
+  const { data, xName, periodGranularity } = viewContent;
+  const hasNamedData = data[0]?.name;
+  const hasTimeSeriesData = getIsTimeSeries(data) && periodGranularity;
+
+  if (hasNamedData) {
+    return {
+      Header: xName || '',
+      accessor: 'name',
+    };
+  }
+
+  if (hasTimeSeriesData) {
+    return {
+      Header: xName || 'Date',
+      accessor: row => formatTimestampForChart(row.timestamp, periodGranularity),
+    };
+  }
+
+  return null;
+};
 
 /**
  * Get columns to render in table
@@ -74,47 +70,47 @@ const sanitizeValueType = valueType =>
  * use value as the only column
  */
 const processColumns = viewContent => {
-  const defaultColumns = getDefaultColumns(viewContent);
+  const baseColumns = getFirstColumn(viewContent) ? [getFirstColumn(viewContent)] : [];
 
-  if (!viewContent.chartConfig) {
-    return defaultColumns;
-  }
   const chartConfig = parseChartConfig(viewContent);
 
+  // console.log('viewContent', viewContent);
+  // console.log('chartConfig', chartConfig);
+
   if (Object.keys(chartConfig).length === 0) {
-    return defaultColumns;
+    const valueColumn = {
+      Header: 'Value',
+      accessor: row => getFormattedValue(row[DEFAULT_DATA_KEY], viewContent.valueType),
+    };
+
+    return [...baseColumns, valueColumn];
   }
 
-  const columns = Object.keys(chartConfig).map(columnKey => {
+  const configColumns = Object.keys(chartConfig).map(columnKey => {
     return {
+      Header: columnKey,
       accessor: row => {
         const rowValue = row[columnKey];
         const columnConfig = chartConfig[columnKey];
-
-        return rowValue === undefined
-          ? 'No Data'
-          : formatDataValueByType(
-              { value: rowValue },
-              sanitizeValueType(columnConfig?.valueType || viewContent.valueType),
-            );
+        const valueType = columnConfig?.valueType || viewContent.valueType;
+        return getFormattedValue(rowValue, valueType);
       },
-      Header: columnKey,
     };
   });
 
-  return [defaultColumns, ...columns];
+  return [...baseColumns, ...configColumns];
 };
 
-const processData = viewContent => {
-  return viewContent.data;
+const processData = ({ data, chartType }) => {
+  if (chartType === CHART_TYPES.PIE) {
+    return data.sort((a, b) => b.value - a.value);
+  }
+  return data;
 };
 
 export const Table = ({ viewContent, className }) => {
   const columns = useMemo(() => processColumns(viewContent), []);
   const data = useMemo(() => processData(viewContent), []);
-
-  console.log('columns', columns);
-  console.log('data', data);
 
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
     {
@@ -157,9 +153,9 @@ export const Table = ({ viewContent, className }) => {
             prepareRow(row);
             return (
               <TableRow {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>;
-                })}
+                {row.cells.map(cell => (
+                  <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                ))}
               </TableRow>
             );
           })}

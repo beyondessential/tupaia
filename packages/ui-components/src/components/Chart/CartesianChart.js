@@ -160,18 +160,11 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
       : data;
   };
 
-  const hasDataSeries = chartConfig && Object.keys(chartConfig).length > 1;
-  const aspect = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
-
-  const config = Object.keys(chartConfig).length > 0 ? chartConfig : { [DEFAULT_DATA_KEY]: {} };
-
-  const sortedChartConfig = Object.entries(config).sort((a, b) => {
-    return CHART_SORT_ORDER[b[1].chartType] - CHART_SORT_ORDER[a[1].chartType];
-  });
-
   const ChartContainer = CHART_TYPE_TO_CONTAINER[defaultChartType];
-
+  const hasDataSeries = chartConfig && Object.keys(chartConfig).length > 1;
+  const chartDataConfig = hasDataSeries ? chartConfig : { [DEFAULT_DATA_KEY]: {} };
   const hasLegend = hasDataSeries || renderLegendForOneItem;
+  const aspect = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
   const height = isExporting || (isEnlarged && hasLegend && isMobile()) ? 320 : undefined;
 
   /**
@@ -216,7 +209,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
             })}
           />
         )}
-        {sortedChartConfig
+        {Object.entries(chartDataConfig)
           .filter(([, { hideFromLegend }]) => !hideFromLegend)
           .map(([dataKey, { chartType = defaultChartType }]) => {
             const Chart = CHART_TYPE_TO_CHART[chartType];
