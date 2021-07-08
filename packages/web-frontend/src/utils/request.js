@@ -83,13 +83,7 @@ async function performDeduplicatedRequest(url, options) {
     return existingTask;
   }
 
-  // It's a new request, let's create it.
-  const hasQueryAlready = url.includes('?');
-  const randomCacheBreaker = `${hasQueryAlready ? '&' : '?'}cacheBreaker=${Math.random()
-    .toString(36)
-    .substring(7)}`;
-
-  const task = performJSONRequest(url + randomCacheBreaker, options);
+  const task = performJSONRequest(url, options);
   inFlightRequests[url] = task;
 
   try {
