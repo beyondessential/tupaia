@@ -40,7 +40,7 @@ export const MarkerLayer = ({ measureData, serieses }) => {
             positions={measure.region}
             {...measure}
           >
-            <AreaTooltip texts={[getTooltipText(measure, serieses)]} />
+            <AreaTooltip text={getTooltipText(measure, serieses)} />
           </ShadedPolygon>
         ) : (
           <MeasureMarker key={measure.code} {...measure}>
