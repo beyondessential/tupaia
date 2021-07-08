@@ -67,10 +67,8 @@ export class ReportHandler extends DataAggregatingRouteHandler {
       requestQuery.endDate = this.endDate;
     }
 
-    const response = await reportConnection.fetchReport(reportCode, requestQuery);
-    return {
-      data: response.results,
-    };
+    const { results } = await reportConnection.fetchReport(reportCode, requestQuery);
+    return Array.isArray(results) ? { data: results } : { ...results };
   }
 
   async buildLegacyReportData(reportCode) {
