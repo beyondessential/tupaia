@@ -1,34 +1,64 @@
-import { uniq } from 'lodash';
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ */
 
-import { compareAsc, stringifyQuery } from '@tupaia/utils';
+import { groupBy } from 'lodash';
+
+import { getUniqueEntries, mapKeys, stringifyQuery, toArray, yup, yupUtils } from '@tupaia/utils';
 import config from '../../config.json';
-import { readJsonFile } from './helpers';
+import { buildUrlSchema, buildUrlsUsingConfig, sortUrls } from './helpers';
+import { MapOverlayFilter } from './VisualisationFilter';
 
-const URL_GENERATION_FIELDS = {
-  PROJECT: 'project',
-};
+const { oneOrArrayOf } = yupUtils;
 
-const buildUrl = urlInput => {
-  if (typeof urlInput === 'string') {
-    return urlInput;
+const urlSchema = buildUrlSchema({
+  regex: new RegExp('^/[^/]+/[^/]+/[^/]+?.*overlay=.+'),
+  regexDescription: '/:projectCode/:orgUnit?overlay=:overlayId',
+  shape: {
+    id: oneOrArrayOf(yup.string().required()),
+    project: yup.string().required(),
+    orgUnit: yup.string().required(),
+  },
+});
+
+const removeRedundantObjectUrls = urls =>
+  // An overlay with the same id and orgUnit has the same data across projects
+  Object.values(groupBy(urls, u => `${u.id}___${u.orgUnit}`))
+    .map(urlGroup => urlGroup[0])
+    .flat();
+
+const stringifyUrl = url => {
+  if (typeof url === 'string') {
+    return url;
   }
 
-  const { id, project, orgUnit } = urlInput;
+  const { id, project, orgUnit } = url;
   const path = [project, orgUnit].map(encodeURIComponent).join('/');
-  const queryParams = { overlay: id };
+  const queryParams = { overlay: toArray(id).join(',') };
 
   return stringifyQuery('', path, queryParams);
 };
 
-const validateUrlGenerationOptions = options => {
-  Object.keys(options).forEach(key => {
-    if (!Object.values(URL_GENERATION_FIELDS).includes(key)) {
-      throw new Error(`Key ${key} is not supported in "urlGenerationOptions"`);
-    }
-  });
+const parseUrl = url => {
+  urlSchema.validateSync(url, { strict: true });
+
+  if (typeof url === 'object') {
+    return url;
+  }
+
+  const [path, queryParams] = url.split('?');
+  const searchParams = new URLSearchParams(queryParams);
+  const [project, orgUnit] = path.split('/').filter(x => x !== '');
+
+  return {
+    id: searchParams.get('overlay'),
+    project,
+    orgUnit,
+  };
 };
 
-const generateUrlsUsingOptions = async (db, options) => {
+const generateUrls = async (db, options) => {
   if (Object.keys(options).length === 0) {
     return [];
   }
@@ -36,11 +66,12 @@ const generateUrlsUsingOptions = async (db, options) => {
   const tableOverlayCountry = 'temp_overlay_country';
   const tableOverlayProject = 'temp_overlay_project';
 
-  validateUrlGenerationOptions(options);
-  const where = {};
-  if (URL_GENERATION_FIELDS.PROJECT in options) {
-    where[`${tableOverlayProject}.project`] = options.project;
-  }
+  const generationToQueryField = {
+    id: 'id',
+    orgUnit: `${tableOverlayCountry}.orgUnit`,
+    project: `${tableOverlayProject}.project`,
+  };
+  const where = mapKeys(options, generationToQueryField);
 
   await db.executeSql(`
     DROP TABLE IF EXISTS ${tableOverlayCountry};
@@ -67,19 +98,36 @@ const generateUrlsUsingOptions = async (db, options) => {
     ],
   };
 
-  return db.find('mapOverlay', where, queryOptions);
+  const overlays = await db.find('mapOverlay', where, queryOptions);
+  const linkedOverlays = await db.find('mapOverlay', {
+    id: getUniqueEntries(overlays.map(o => o.linkedMeasures).flat()),
+  });
+  const linkedOverlayIds = linkedOverlays.map(({ id }) => id);
+
+  return overlays
+    .filter(o => !linkedOverlayIds.includes(o.id))
+    .map(overlay => {
+      const { id, project, orgUnit, linkedMeasures } = overlay;
+
+      return {
+        id: linkedMeasures ? [id, ...linkedMeasures] : id,
+        project,
+        orgUnit,
+      };
+    });
 };
 
 export const generateOverlayConfig = async db => {
   const { mapOverlays: overlayConfig } = config;
+  const { filter = {} } = overlayConfig;
 
-  const { urlFiles = [], urlGenerationOptions = {}, urls = [], ...otherConfig } = overlayConfig;
-  const urlsFromFiles = urlFiles.map(readJsonFile).flat();
-  const generatedUrls = await generateUrlsUsingOptions(db, urlGenerationOptions);
-  const allUrls = [...urlsFromFiles, ...generatedUrls, ...urls];
+  const urls = await buildUrlsUsingConfig(db, overlayConfig, generateUrls);
+  const objectUrls = removeRedundantObjectUrls(urls.map(parseUrl));
+  const filteredObjectUrls = await new MapOverlayFilter(db, filter).apply(objectUrls);
 
   return {
-    ...otherConfig,
-    urls: uniq(allUrls.map(buildUrl)).sort(compareAsc),
+    allowEmptyResponse: overlayConfig.allowEmptyResponse,
+    snapshotTypes: overlayConfig.snapshotTypes,
+    urls: sortUrls(filteredObjectUrls.map(stringifyUrl)),
   };
 };

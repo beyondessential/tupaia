@@ -3,22 +3,28 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { uniq } from 'lodash';
+/* eslint-disable no-template-curly-in-string */
+
 import moment from 'moment';
 
-import { compareAsc, hasContent, isAString, ObjectValidator, stringifyQuery } from '@tupaia/utils';
+import { stringifyQuery, yup } from '@tupaia/utils';
 import { convertDateRangeToUrlPeriodString } from '../../../src/historyNavigation/utils';
 import config from '../../config.json';
-import { readJsonFile } from './helpers';
+import { buildUrlSchema, buildUrlsUsingConfig, sortUrls } from './helpers';
+import { DashboardReportFilter } from './VisualisationFilter';
 
-const objectUrlSchema = {
-  id: [hasContent, isAString],
-  project: [hasContent, isAString],
-  orgUnit: [hasContent, isAString],
-  dashboardGroup: [hasContent, isAString],
-};
-
-const objectUrlValidator = new ObjectValidator(objectUrlSchema);
+const urlSchema = buildUrlSchema({
+  regex: new RegExp('^/[^/]+/[^/]+/[^/]+?.*report=.+'),
+  regexDescription: '/:projectCode/:orgUnit/:dashboardName?report=:reportCode',
+  shape: {
+    code: yup.string().required(),
+    project: yup.string().required(),
+    orgUnit: yup.string().required(),
+    dashboardGroup: yup.string().required(),
+    startDate: yup.string(),
+    endDate: yup.string(),
+  },
+});
 
 const buildReportPeriod = (startDate, endDate) => {
   if (!startDate || !endDate) {
@@ -30,31 +36,52 @@ const buildReportPeriod = (startDate, endDate) => {
   });
 };
 
-const buildUrl = urlInput => {
-  if (typeof urlInput === 'string') {
-    return urlInput;
+const stringifyUrl = url => {
+  if (typeof url === 'string') {
+    return url;
   }
 
-  const constructError = (errorMessage, key) =>
-    new Error(`Invalid content for field "${key}" of object url with id "${id}": ${errorMessage}`);
-  objectUrlValidator.validateSync(urlInput, constructError);
-
-  const { id, project, orgUnit, dashboardGroup, startDate, endDate } = urlInput;
+  const { code, project, orgUnit, dashboardGroup, startDate, endDate, reportPeriod } = url;
   const path = [project, orgUnit, dashboardGroup].map(encodeURIComponent).join('/');
-  const queryParams = { report: id, reportPeriod: buildReportPeriod(startDate, endDate) };
+  const queryParams = {
+    report: code,
+    reportPeriod: reportPeriod || buildReportPeriod(startDate, endDate),
+  };
 
   return stringifyQuery('', path, queryParams);
 };
 
-export const generateReportConfig = () => {
-  const { dashboardReports: reportConfig } = config;
+const parseUrl = url => {
+  urlSchema.validateSync(url, { strict: true });
 
-  const { urlFiles = [], urls = [], ...otherConfig } = reportConfig;
-  const urlsFromFiles = urlFiles.map(readJsonFile).flat();
-  const allUrls = [...urlsFromFiles, ...urls];
+  if (typeof url === 'object') {
+    return url;
+  }
+
+  const [path, queryParams] = url.split('?');
+  const searchParams = new URLSearchParams(queryParams);
+  const [project, orgUnit, dashboardGroup] = path.split('/').filter(x => x !== '');
 
   return {
-    ...otherConfig,
-    urls: uniq(allUrls.map(buildUrl)).sort(compareAsc),
+    code: searchParams.get('report'),
+    project,
+    orgUnit,
+    dashboardGroup,
+    reportPeriod: searchParams.get('reportPeriod'),
+  };
+};
+
+export const generateReportConfig = async db => {
+  const { dashboardReports: reportConfig } = config;
+  const { filter = {} } = reportConfig;
+
+  const urls = await buildUrlsUsingConfig(db, reportConfig);
+  const objectUrls = urls.map(parseUrl);
+  const filteredObjectUrls = await new DashboardReportFilter(db, filter).apply(objectUrls);
+
+  return {
+    allowEmptyResponse: reportConfig.allowEmptyResponse,
+    snapshotTypes: reportConfig.snapshotTypes,
+    urls: sortUrls(filteredObjectUrls.map(stringifyUrl)),
   };
 };

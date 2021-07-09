@@ -43,35 +43,54 @@ Then, run one of the following commands in a new terminal:
 
 ## Configuration
 
-Our e2e tests support Tupaia-specific configuration specified in [config.json](../config.json). Example:
+Our e2e tests support Tupaia-specific configuration specified in [config.json](config.json). Example:
 
-```json
+```jsonc
 {
   "dashboardReports": {
     "allowEmptyResponse": false, // Throw error for empty reports
-    "snapshotTypes": ["responseBody", "html"],
+    "snapshotTypes": ["responseData", "html"],
     "urlFiles": ["cypress/config/dashboardReportUrls/default.json"],
-    "urls": ["/explore/explore/IHR%20Report?report=WHO_IHR_SPAR_WPRO"]
+    "urls": ["/explore/explore/IHR%20Report?report=WHO_IHR_SPAR_WPRO"],
+    "filter": {
+      "code": ["report_code1", "report_code2"],
+      "project": ["covidau", "strive"],
+      "orgUnit": "PG",
+      "dashboardGroup": "Dashboard Group1",
+      "dataBuilder": ["tableOfEvents", "sumAll"]
+    }
   },
   "mapOverlays": {
     "allowEmptyResponse": false,
-    "snapshotTypes": ["responseBody"],
+    "snapshotTypes": ["responseData"],
     "urlGenerationOptions": {
-      "projects": ["strive", "covidau"]
+      "id": "overlay_id",
+      "orgUnit": ["TO", "VU"],
+      "project": "unfpa"
     },
-    "urls": ["/covidau/AU?overlay=AU_FLUTRACKING_Fever_And_Cough"]
+    "urls": ["/covidau/AU?overlay=AU_FLUTRACKING_Fever_And_Cough"],
+    "filter": {
+      "id": "id",
+      "project": "covidau",
+      "orgUnit": "TO",
+      "measureBuilder": "valueForOrgGroup"
+    }
   }
 }
 ```
 
-**Snapshot types**
+You can find more information about config fields in the section below. For the exact schema, check [configSchema.js](scripts/generateConfig/configSchema.js#L22).
+
+### Dashboard report & map overlay configuration
+
+#### Snapshot types
 
 | Type           | Description                                                                                         | Reports | Overlays |
 | -------------- | --------------------------------------------------------------------------------------------------- | ------- | -------- |
-| `responseBody` | The body of the request which provides the data for the item under test                             | ✔       | ✔        |
+| `responseData` | The body of the request which provides the data for the item under test                             | ✔       | ✔        |
 | `html`         | A snapshot of the DOM, sanitised to remove non-deterministic content (eg dynamically generated ids) | ✔       | ❌       |
 
-**Urls**
+#### Urls
 
 Some of our tests use urls to adjust the scope of the testable items.
 
@@ -85,7 +104,7 @@ Two formats are supported:
 
   ```json
   {
-    "id": "COVID_Compose_Daily_Deaths_Vs_Cases",
+    "code": "COVID_Compose_Daily_Deaths_Vs_Cases",
     "project": "covidau",
     "orgUnit": "AU",
     "dashboardGroup": "COVID-19"
@@ -94,7 +113,7 @@ Two formats are supported:
 
 Use any of the fields below to specify test urls. You can use multiple fields in the same test run - their results will be combined in the final url list:
 
-```json
+```jsonc
 {
   // Inline urls
   "urls": ["/covidau/AU/COVID-19?report=COVID_Compose_Daily_Deaths_Vs_Cases"],
@@ -105,10 +124,30 @@ Use any of the fields below to specify test urls. You can use multiple fields in
     "cypress/config/dashboardReportUrls/covidau.json"
   ],
 
-  // Dynamically generate urls
+  // Dynamically generate urls. Note: this is only available for `mapOverlays`
+  //
+  // If the same overlay id is selected for the same country across projects, only the first
+  // project will be used, since the overlay will be the same in all these cases
   "urlGenerationOptions": {
-    "all": true, // Will generate urls for all overlays. Other options are ignored
     "project": ["strive", "covidau"]
+  }
+}
+```
+
+#### Filter
+
+You can optionally specify a `filter` that will be applied to the tested visualisations. For example, to test all "Fanafana" project overlays that use the "valueForOrgGroup" data builder in Tonga and Vanuatu:
+
+```json
+{
+  "mapOverlays": {
+    "urlGenerationOptions": {
+      "project": "fanafana"
+    },
+    "filter": {
+      "orgUnit": ["TO", "VU"],
+      "measureBuilder": "valueForOrgGroup"
+    }
   }
 }
 ```

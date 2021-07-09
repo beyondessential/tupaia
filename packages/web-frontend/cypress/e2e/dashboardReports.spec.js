@@ -3,28 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  constructEveryItemSync,
-  constructIsArrayOf,
-  constructIsEmptyOrSync,
-  constructIsOneOf,
-  hasContent,
-  isBoolean,
-  ObjectValidator,
-} from '@tupaia/utils';
-
-import config from '../generatedConfig.json';
+import config from '../__generatedConfig.json';
 import { SNAPSHOT_TYPES } from '../constants';
 import { preserveUserSession } from '../support';
-
-const reportConfigSchema = {
-  allowEmptyResponse: [constructIsEmptyOrSync(isBoolean)],
-  urls: [hasContent, constructIsArrayOf('string')],
-  snapshotTypes: [
-    hasContent,
-    constructEveryItemSync(constructIsOneOf([SNAPSHOT_TYPES.RESPONSE_BODY, SNAPSHOT_TYPES.HTML])),
-  ],
-};
 
 const checkHasMatrixData = body => {
   const { rows = [], columns = [] } = body;
@@ -50,24 +31,15 @@ const assertUrlResponseHasData = (url, response) => {
 
 const urlToRouteRegex = url => {
   const queryParams = url.split('?').slice(1).join('');
-  const viewId = new URLSearchParams(queryParams).get('report');
-  if (!viewId) {
+  const itemCode = new URLSearchParams(queryParams).get('report');
+  if (!itemCode) {
     throw new Error(`'${url}' is not a valid report url: it must contain a 'report' query param`);
   }
 
-  return new RegExp(`view?.*\\WisExpanded=true&.*viewId=${viewId}[&$]`);
-};
-
-const validateConfig = () => {
-  const constructError = (errorMessage, fieldKey) =>
-    new Error(
-      `Invalid content for field "dashboardReports.${fieldKey}" causing message "${errorMessage}"`,
-    );
-  new ObjectValidator(reportConfigSchema).validateSync(config.dashboardReports, constructError);
+  return new RegExp(`report.*\\WisExpanded=true&.*itemCode=${itemCode}[&$]`);
 };
 
 describe('Dashboard reports', () => {
-  validateConfig(config);
   const { allowEmptyResponse, snapshotTypes, urls } = config.dashboardReports;
 
   before(() => {
@@ -88,9 +60,8 @@ describe('Dashboard reports', () => {
         if (!allowEmptyResponse) {
           assertUrlResponseHasData(url, response);
         }
-        if (snapshotTypes.includes(SNAPSHOT_TYPES.RESPONSE_BODY)) {
-          cy.wrap(response.body).as('responseBody');
-          cy.get('@responseBody').snapshot({ name: SNAPSHOT_TYPES.RESPONSE_BODY });
+        if (snapshotTypes.includes(SNAPSHOT_TYPES.RESPONSE_DATA)) {
+          cy.wrap(response.body).snapshot({ name: SNAPSHOT_TYPES.RESPONSE_DATA });
         }
       });
 

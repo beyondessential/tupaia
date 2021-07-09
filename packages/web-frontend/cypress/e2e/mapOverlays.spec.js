@@ -3,27 +3,22 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  constructEveryItemSync,
-  constructIsArrayOf,
-  constructIsEmptyOrSync,
-  constructIsOneOf,
-  hasContent,
-  isBoolean,
-  ObjectValidator,
-} from '@tupaia/utils';
+import { groupBy } from 'lodash';
 
-import config from '../config.json';
+import config from '../__generatedConfig.json';
 import { SNAPSHOT_TYPES } from '../constants';
 import { preserveUserSession } from '../support';
 
-const overlayConfigSchema = {
-  allowEmptyResponse: [constructIsEmptyOrSync(isBoolean)],
-  urls: [hasContent, constructIsArrayOf('string')],
-  snapshotTypes: [
-    hasContent,
-    constructEveryItemSync(constructIsOneOf([SNAPSHOT_TYPES.RESPONSE_BODY])),
-  ],
+const getResponseData = response => {
+  const { measureData, ...data } = response.body;
+
+  if (Array.isArray(measureData)) {
+    // Item order in `measureData` is neither guaranteed nor important.
+    // Group them by org unit for more robust data checking
+    data.e2e_groupedMeasureData = groupBy(measureData, 'organisationUnitCode');
+  }
+
+  return data;
 };
 
 const assertUrlResponseHasData = (url, response) => {
@@ -43,16 +38,7 @@ const urlToRouteRegex = url => {
   return new RegExp(`measureData?.*\\WmeasureId=${measureId}[&$]`);
 };
 
-const validateConfig = () => {
-  const constructError = (errorMessage, fieldKey) =>
-    new Error(
-      `Invalid content for field "mapOverlays.${fieldKey}" causing message "${errorMessage}"`,
-    );
-  new ObjectValidator(overlayConfigSchema).validateSync(config.mapOverlays, constructError);
-};
-
 describe('Map overlays', () => {
-  validateConfig(config);
   const { allowEmptyResponse, snapshotTypes, urls } = config.mapOverlays;
 
   before(() => {
@@ -73,9 +59,9 @@ describe('Map overlays', () => {
         if (!allowEmptyResponse) {
           assertUrlResponseHasData(url, response);
         }
-        if (snapshotTypes.includes(SNAPSHOT_TYPES.RESPONSE_BODY)) {
-          cy.wrap(response.body).as('responseBody');
-          cy.get('@responseBody').snapshot({ name: SNAPSHOT_TYPES.RESPONSE_BODY });
+        if (snapshotTypes.includes(SNAPSHOT_TYPES.RESPONSE_DATA)) {
+          const responseData = getResponseData(response);
+          cy.wrap(responseData).snapshot({ name: SNAPSHOT_TYPES.RESPONSE_DATA });
         }
       });
     });

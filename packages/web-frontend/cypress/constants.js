@@ -6,7 +6,7 @@
 export const PUBLIC_USER = 'public';
 
 export const SNAPSHOT_TYPES = {
-  RESPONSE_BODY: 'responseBody',
+  RESPONSE_DATA: 'responseData',
   HTML: 'html',
 };
 
