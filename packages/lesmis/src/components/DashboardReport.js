@@ -48,7 +48,7 @@ export const DashboardReport = React.memo(
   }) => {
     const { code: itemCode, legacy } = viewConfig;
     const { startDate, endDate } = yearToApiDates(year);
-    const { data, isLoading, isError, error } = useDashboardReportData({
+    const { data, isLoading, isFetching, isError, error } = useDashboardReportData({
       entityCode,
       reportCode,
       dashboardCode,
@@ -64,6 +64,7 @@ export const DashboardReport = React.memo(
         <Chart
           viewContent={{ ...viewConfig, data, startDate, endDate }}
           isLoading={isLoading}
+          isFetching={isFetching}
           isError={isError}
           error={error}
           name={name}

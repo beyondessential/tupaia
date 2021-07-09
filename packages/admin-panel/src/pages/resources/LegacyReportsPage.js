@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -9,34 +9,24 @@ import { ResourcePage } from './ResourcePage';
 
 const FIELDS = [
   {
-    Header: 'ID',
-    source: 'id',
+    Header: 'Code',
+    source: 'code',
     type: 'tooltip',
   },
   {
-    Header: 'Drill Down Level',
-    source: 'drillDownLevel',
-  },
-  {
     Header: 'Data Builder',
-    source: 'dataBuilder',
+    source: 'data_builder',
     type: 'tooltip',
   },
   {
     Header: 'Data Builder Config',
-    source: 'dataBuilderConfig',
-    type: 'jsonTooltip',
-    editConfig: { type: 'jsonEditor' },
-  },
-  {
-    Header: 'View JSON',
-    source: 'viewJson',
+    source: 'data_builder_config',
     type: 'jsonTooltip',
     editConfig: { type: 'jsonEditor' },
   },
   {
     Header: 'Data Services',
-    source: 'dataServices',
+    source: 'data_services',
     type: 'jsonTooltip',
     editConfig: { type: 'jsonEditor' },
   },
@@ -49,24 +39,24 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'dashboardReports',
+      editEndpoint: 'legacyReports',
       fields: [...FIELDS],
     },
   },
 ];
 
-export const DashboardReportsPage = ({ getHeaderEl }) => (
+export const LegacyReportsPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Dashboard Reports"
-    endpoint="dashboardReports"
+    title="Legacy Reports"
+    endpoint="legacyReports"
     columns={COLUMNS}
     editConfig={{
-      title: 'Edit Dashboard Report',
+      title: 'Edit Legacy Report',
     }}
     getHeaderEl={getHeaderEl}
   />
 );
 
-DashboardReportsPage.propTypes = {
+LegacyReportsPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
 };
