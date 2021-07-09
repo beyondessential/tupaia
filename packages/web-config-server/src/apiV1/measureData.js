@@ -7,9 +7,6 @@ import { getDateRange, getAggregatePeriod } from './utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { MapOverlayPermissionsChecker } from './permissions';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
-import { response } from 'express';
-
-const ADD_TO_ALL_KEY = '$all';
 
 const ADD_TO_ALL_KEY = '$all';
 
