@@ -32,6 +32,10 @@ const firstExistingValue = (...argumentList) => {
   return undefined; // Should make sure that at least 1 value exists
 };
 
+const translate = (value, translations) => {
+  return translations[value];
+};
+
 /**
  * List of built in functions in math.js
  * This list is here because when extracting variables for an expression by traversing the node tree,
@@ -139,6 +143,7 @@ export class ExpressionParser {
     return {
       avg: average,
       firstExistingValue,
+      translate,
     };
   }
 }

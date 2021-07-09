@@ -9,21 +9,43 @@ import styled from 'styled-components';
 import { useTable, useFilters, useSortBy, usePagination } from 'react-table';
 import { Table, TableHead, TableRow, TableBody, TableSortLabel } from '@material-ui/core';
 import { TableCell, StyledTableRow } from '@tupaia/ui-components';
+import TableContainer from '@material-ui/core/TableContainer';
 import { DefaultColumnFilter } from './DefaultColumnFilter';
 import { Paginator } from './Paginator';
 import { NoDataRow } from './NoDataRow';
+import { FlexStart } from '../Layout';
 
 const StyledTable = styled(Table)`
   background: white;
   border: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
-const StyledTableCell = styled(TableCell)`
+const FilterTableCell = styled(TableCell)`
   padding: 1.125rem 0.625rem 1.125rem 0;
   background: ${props => props.theme.palette.grey['200']};
 `;
 
-const filterTypes = () => ({
+const sortTypes = {
+  alphanumeric: (row1, row2, columnName) => {
+    const rowOneColumn = row1.values[columnName];
+    const rowTwoColumn = row2.values[columnName];
+
+    if (!rowOneColumn) {
+      return -1;
+    }
+
+    if (!rowTwoColumn) {
+      return 1;
+    }
+
+    if (isNaN(rowOneColumn)) {
+      return rowOneColumn.toUpperCase() > rowTwoColumn.toUpperCase() ? 1 : -1;
+    }
+    return Number(rowOneColumn) > Number(rowTwoColumn) ? 1 : -1;
+  },
+};
+
+const filterTypes = {
   text: (rows, id, filterValue) => {
     return rows.filter(row => {
       const cellValue = row.values[id];
@@ -32,7 +54,7 @@ const filterTypes = () => ({
         : true;
     });
   },
-});
+};
 
 export const DataGrid = ({ data, columns }) => {
   const defaultColumn = React.useMemo(
@@ -58,10 +80,16 @@ export const DataGrid = ({ data, columns }) => {
   } = useTable(
     {
       defaultColumn,
+      sortTypes,
       filterTypes,
       columns,
       data,
       initialState: { pageSize: 20 },
+      disableMultiSort: true,
+      // This will stop the pagination resetting when data gets updated after mutations
+      autoResetPage: false,
+      autoResetSortBy: false,
+      autoResetFilters: false,
     },
     useFilters,
     useSortBy,
@@ -69,18 +97,20 @@ export const DataGrid = ({ data, columns }) => {
   );
 
   return (
-    <>
+    <TableContainer>
       <StyledTable {...getTableProps()}>
         <TableHead>
           {headerGroups.map(headerGroup => (
             <TableRow {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
                 <TableCell {...column.getHeaderProps(column.getSortByToggleProps())}>
-                  {column.render('Header')}
-                  <TableSortLabel
-                    active={column.isSorted}
-                    direction={column.isSortedDesc ? 'asc' : 'desc'}
-                  />
+                  <FlexStart>
+                    {column.render('Header')}
+                    <TableSortLabel
+                      active={column.isSorted}
+                      direction={column.isSortedDesc ? 'asc' : 'desc'}
+                    />
+                  </FlexStart>
                 </TableCell>
               ))}
             </TableRow>
@@ -88,16 +118,16 @@ export const DataGrid = ({ data, columns }) => {
           {headerGroups.map(headerGroup => (
             <TableRow {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
-                <StyledTableCell {...column.getHeaderProps()}>
+                <FilterTableCell {...column.getHeaderProps()}>
                   {column.canFilter ? column.render('Filter') : null}
-                </StyledTableCell>
+                </FilterTableCell>
               ))}
             </TableRow>
           ))}
         </TableHead>
         <TableBody {...getTableBodyProps()}>
           {page.length === 0 ? (
-            <NoDataRow colspan={columns.length} />
+            <NoDataRow colSpan={columns.length} />
           ) : (
             page.map(row => {
               prepareRow(row);
@@ -122,7 +152,7 @@ export const DataGrid = ({ data, columns }) => {
         setPageSize={setPageSize}
         totalCount={rows.length}
       />
-    </>
+    </TableContainer>
   );
 };
 

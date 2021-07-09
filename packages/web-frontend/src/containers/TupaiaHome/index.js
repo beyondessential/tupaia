@@ -33,7 +33,12 @@ const styles = {
 export const TupaiaHomeComponent = ({ goHome }) => {
   return (
     <div style={styles.logo}>
-      <img src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" style={styles.logoImage} onClick={goHome} />
+      <img
+        src={TUPAIA_LIGHT_LOGO_SRC}
+        alt="Tupaia logo"
+        style={styles.logoImage}
+        onClick={goHome}
+      />
     </div>
   );
 };
