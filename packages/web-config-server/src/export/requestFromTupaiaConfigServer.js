@@ -23,6 +23,7 @@ export const requestFromTupaiaConfigServer = async (
     const headers = {
       cookie: `${sessionCookieName}=${sessionCookie}`,
     };
+
     const response = await fetchWithTimeout(
       `${BASE_URL}/${endpoint}${queryParametersToString(queryParameters)}`,
       { headers },
