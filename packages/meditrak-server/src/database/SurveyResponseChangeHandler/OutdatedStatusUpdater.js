@@ -14,19 +14,20 @@ import { getUniqueEntries, getUniqueObjects, haveSameFields, max, min } from '@t
 import { PERIOD_GRANULARITIES, PERIOD_GRANULARITY_TO_MOMENT_UNIT } from '../models/Survey';
 
 /**
- * Survey response use the `outdated` field to indicate whether their values should be used
- * for analytics building. Whether a survey response is outdated or not depends on its properties
- * and on the `period_granularity` of its parent survey.
+ * Survey responses use an `outdated` flag to indicate whether their values should be used
+ * for analytics building. This flag mainly depends on the survey response data time and on the
+ * `period_granularity` of its parent survey.
  *
  * * For surveys with no `period_granularity`: no responses are outdated, or in
  * other words they all contribute towards analytics building
  *
  * * For  surveys with a `period_granularity` ("periodic"): only one response per
- * survey/entity/period combination (eg Basic Clinic Survey/Tonga/July 2021) will contribute
- * towards analytics building; the rest should be marked as outdated. This one response is selected
- * on the basis of most recent submission time
+ * survey/entity/period combination will contribute towards analytics building;
+ * the rest should be marked as outdated. This one response is selected on the basis of most
+ * recent submission time
  *
- * Here, we refer to the survey/entity/period combo as "response dimension combo"
+ * Here, we refer to the survey/entity/period combo as "response dimension combo".
+ * Example: Basic Clinic Survey/Tonga/July 2021
  *
  * @typedef { surveyId, entityId, startDate, endDate } ResponseDimensionCombo
  */
