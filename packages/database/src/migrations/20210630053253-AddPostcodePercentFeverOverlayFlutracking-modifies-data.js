@@ -38,6 +38,16 @@ const MAP_OVERLAY = {
     type: 'shaded-spectrum',
     hideFromMenu: false,
     hideFromLegend: false,
+    “scaleBounds”: {
+      “left”: {
+       “max”: 0,
+       “min”: 0
+      },
+      “right”: {
+       “max”: 1,
+       “min”: 1
+      }
+     }
   },
   countryCodes: '{"AU"}',
   projectCodes: '{covidau}',

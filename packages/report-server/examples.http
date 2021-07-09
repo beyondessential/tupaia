@@ -19,6 +19,8 @@ Authorization: {{authorization}}
 # FWV_PC_004 Number of participants with fever and cough
 # 1400: Strive Lab Confirmed Positive Results Bar Chart #2624
 # https://github.com/beyondessential/tupaia/pull/2624/files
+# 2911&2346 create overlays with report servers #2681
+# https://github.com/beyondessential/tupaia/pull/2681/files
 
 ### Fetch Report With Test Config
 POST {{baseUrl}}/testFetchReport/xx?organisationUnitCodes=TO&hierarchy=psss&period=2020 HTTP/1.1
