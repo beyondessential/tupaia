@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.3
--- Dumped by pg_dump version 11.3
+-- Dumped from database version 12.6 (Ubuntu 12.6-0ubuntu0.20.04.1)
+-- Dumped by pg_dump version 12.6 (Ubuntu 12.6-0ubuntu0.20.04.1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -17,6 +17,27 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- Name: mvrefresh; Type: SCHEMA; Schema: -; Owner: -
+--
+
+CREATE SCHEMA mvrefresh;
+
+
+--
+-- Name: dblink; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS dblink WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION dblink; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION dblink IS 'connect to other PostgreSQL databases from within a database';
+
+
+--
 -- Name: postgis; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -28,6 +49,187 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 --
 
 COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
+
+
+--
+-- Name: postgres_fdw; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS postgres_fdw WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION postgres_fdw; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION postgres_fdw IS 'foreign-data wrapper for remote PostgreSQL servers';
+
+
+--
+-- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
+
+
+--
+-- Name: mv$allconstants; Type: TYPE; Schema: mvrefresh; Owner: -
+--
+
+CREATE TYPE mvrefresh."mv$allconstants" AS (
+	pgmv_select_role text,
+	inner_token text,
+	from_token text,
+	join_token text,
+	left_token text,
+	on_token text,
+	outer_token text,
+	right_token text,
+	where_token text,
+	no_inner_token text,
+	comma_inner_token text,
+	comma_left_token text,
+	comma_right_token text,
+	array_lower_value smallint,
+	base_two smallint,
+	bitand_command text,
+	bitmap_not_set smallint,
+	bitmap_offset smallint,
+	equals_command text,
+	first_pgmview_bit smallint,
+	less_than_equal text,
+	max_bitmap_size bigint,
+	max_pgmviews_rows smallint,
+	max_pgmviews_per_row smallint,
+	max_pgmviews_per_table smallint,
+	mv_max_base_table_len smallint,
+	subtract_command text,
+	two_to_the_power_of text,
+	empty_string text,
+	new_line text,
+	carriage_return text,
+	space_character text,
+	single_quote_character text,
+	open_bracket text,
+	close_bracket text,
+	comma_character text,
+	dot_character text,
+	underscore_character text,
+	left_brace_character text,
+	right_brace_character text,
+	regex_multiple_spaces text,
+	substitution_character_one text,
+	tab_character text,
+	typecast_as_bigint text,
+	double_space_characters text,
+	quote_comma_characters text,
+	date_time_mask text,
+	add_column text,
+	alter_table text,
+	and_command text,
+	as_command text,
+	constraint_command text,
+	create_index text,
+	create_table text,
+	delete_command text,
+	delete_from text,
+	drop_column text,
+	drop_table text,
+	drop_index text,
+	equals_null text,
+	from_command text,
+	grant_select_on text,
+	in_rowid_list text,
+	in_select_command text,
+	insert_command text,
+	insert_into text,
+	not_null text,
+	on_command text,
+	or_command text,
+	order_by_command text,
+	select_command text,
+	select_true_from text,
+	set_command text,
+	to_command text,
+	truncate_table text,
+	unique_command text,
+	update_command text,
+	where_command text,
+	where_no_data text,
+	left_outer_join text,
+	right_outer_join text,
+	bitmap_column text,
+	bitmap_column_format text,
+	dmltype_column text,
+	dmltype_column_format text,
+	all_bitmap_value text,
+	mv_log_table_prefix text,
+	mv_index_suffix text,
+	"mv_m_row$_column" text,
+	"mv_m_row$_default_value" text,
+	"mv_m_row$_column_format" text,
+	"mv_m_row$_not_null_format" text,
+	"mv_m_row$_source_column" text,
+	"mv_m_row$_source_column_format" text,
+	"mv_sequence$_column" text,
+	mv_timestamp_column text,
+	mv_timestamp_column_format text,
+	mv_trigger_prefix text,
+	"sequence$_pk_column_format" text,
+	and_table_name_equals text,
+	"from_pg$mview_logs" text,
+	"mv_log$_insert_columns" text,
+	"mv_log$_select_m_row$" text,
+	"mv_log$_where_bitmap$" text,
+	"mv_log$_select_m_rows_order_by" text,
+	"mv_log$_decrement_bitmap" text,
+	"mv_log$_where_bitmap_zero" text,
+	pg_mview_bitmap text,
+	where_owner_equals text,
+	delete_dml_type text,
+	inner_dml_type text,
+	insert_dml_type text,
+	from_dml_type text,
+	left_dml_type text,
+	join_dml_type text,
+	on_dml_type text,
+	outer_dml_type text,
+	right_dml_type text,
+	select_dml_type text,
+	update_dml_type text,
+	where_dml_type text,
+	"and_m_row$_equals" text,
+	"where_m_row$_equals" text,
+	and_sequence_equals text,
+	"select_m_row$_source_column" text,
+	"add_m_row$_column_to_table" text,
+	"drop_m_row$_column_from_table" text,
+	trigger_after_dml text,
+	trigger_create text,
+	trigger_drop text,
+	trigger_for_each_row text,
+	mv_log_columns text,
+	help_text text
+);
+
+
+--
+-- Name: mv$bitvalue; Type: TYPE; Schema: mvrefresh; Owner: -
+--
+
+CREATE TYPE mvrefresh."mv$bitvalue" AS (
+	bit_value smallint,
+	bit_row smallint,
+	row_bit smallint,
+	bit_map bigint
+);
 
 
 --
@@ -84,7 +286,22 @@ CREATE TYPE public.entity_type AS ENUM (
     'sub_catchment',
     'field_station',
     'city',
-    'individual'
+    'individual',
+    'sub_facility',
+    'postcode'
+);
+
+
+--
+-- Name: period_granularity; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.period_granularity AS ENUM (
+    'yearly',
+    'quarterly',
+    'monthly',
+    'weekly',
+    'daily'
 );
 
 
@@ -109,6 +326,5625 @@ CREATE TYPE public.verified_email AS ENUM (
     'new_user',
     'verified'
 );
+
+
+--
+-- Name: mv$addindextomv$table(mvrefresh."mv$allconstants", text, text, text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$addindextomv$table"(pconst mvrefresh."mv$allconstants", powner text, "ppgmv$name" text, pindexname text, pindexcols text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$addIndexToMv$Table
+Author:       Rohan Port
+Date:         15/06/2021
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    This function creates an index on the materialized view table
+
+Arguments:      IN      pConst              The memory structure containing all constants
+                IN      pOwner              The owner of the object
+                IN      pPgMv$Name          The name of the materialized view table
+                IN      pIndexName          The name of the index to create
+                IN      pIndexCols          The columns of the index to create
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2021 Beyond Essential Systems Pty Ltd
+***********************************************************************************************************************************/
+DECLARE
+
+    tSqlStatement   TEXT;
+
+BEGIN
+
+    tSqlStatement   :=  pConst.CREATE_INDEX || pIndexName           ||
+                        pConst.ON_COMMAND   || pOwner               || pConst.DOT_CHARACTER     || pPgMv$Name ||
+                                               pConst.OPEN_BRACKET  || pIndexCols               || pConst.CLOSE_BRACKET;
+
+    EXECUTE tSqlStatement;
+
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$addIndexToMv$Table';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$addindextomvlog$table(mvrefresh."mv$allconstants", text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$addindextomvlog$table"(pconst mvrefresh."mv$allconstants", powner text, "ppglog$name" text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$addIndexToMvLog$Table
+Author:       Mike Revitt
+Date:         07/06/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+05/11/2019  | M Revitt      | mv$clearPgMvLogTableBits is now a complex function so move it into the conplex script
+07/06/2019  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    This function creates an index on the materilized view log table to speed up bit manipulation
+
+Arguments:      IN      pConst              The memory structure containing all constants
+                IN      pOwner              The owner of the object
+                IN      pPgLog$Name         The name of the materialized view log table
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tIndexName      TEXT;
+    tSqlStatement   TEXT;
+
+BEGIN
+    tIndexName      :=  pPgLog$Name || pConst.UNDERSCORE_CHARACTER  || pConst.BITMAP_COLUMN     || pConst.MV_INDEX_SUFFIX;
+
+    tSqlStatement   :=  pConst.CREATE_INDEX || tIndexName           ||
+                        pConst.ON_COMMAND   || pOwner               || pConst.DOT_CHARACTER     || pPgLog$Name ||
+                                               pConst.OPEN_BRACKET  || pConst.BITMAP_COLUMN     || pConst.CLOSE_BRACKET;
+
+    EXECUTE tSqlStatement;
+
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$addIndexToMvLog$Table';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$addrow$tomv$table(mvrefresh."mv$allconstants", text, text, text[], text[], text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$addrow$tomv$table"(pconst mvrefresh."mv$allconstants", powner text, pviewname text, paliasarray text[], prowidarray text[], INOUT pviewcolumns text, INOUT pselectcolumns text) RETURNS record
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$addRow$ToMv$Table
+Author:       Mike Revitt
+Date:         15/01/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+15/01/2019  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    For every table that is used to construct this materialized view, add a MV_M_ROW$_COLUMN to the base table.
+
+Arguments:      IN      pConst              The memory structure containing all constants
+                IN      pOwner              The owner of the object
+                IN      pViewName           The name of the materialized view table
+                IN      pAliasArray         An array containing the table aliases that make up the materialized view
+                IN      pRowidArray         An array containing the MV_M_ROW$_COLUMN column name for the base table
+                INOUT   pViewColumns        This is the list of view columns to which the MV_M_ROW$_COLUMNs will be added
+                INOUT   pSelectColumns      The columns from the SQL Statement that created the materialised view
+Returns:                RECORD              The 2 INOUT variables constitute a RECORD
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tAddColumn      TEXT;
+    tCreateIndex    TEXT;
+    tIndexName      TEXT;
+    tSqlStatement   TEXT;
+    tRowidColumn    TEXT;
+    iTableArryPos   INT     := 0;
+
+BEGIN
+
+    tAddColumn      := pConst.ALTER_TABLE || pOwner || pConst.DOT_CHARACTER || pViewName || pConst.NEW_LINE || pConst.ADD_COLUMN;
+    tCreateIndex    := pConst.CREATE_INDEX;
+
+    FOR i IN array_lower( pAliasArray, 1 ) .. array_upper( pAliasArray, 1 )
+    LOOP
+        tIndexName      := pViewName    || pConst.UNDERSCORE_CHARACTER  || pRowidArray[i]       || pConst.MV_INDEX_SUFFIX;
+        tSqlStatement   := tAddColumn   || pRowidArray[i]               || pConst.MV_M_ROW$_COLUMN_FORMAT;
+
+        EXECUTE tSqlStatement;
+
+        tSqlStatement   :=  tCreateIndex    || tIndexName               || pConst.ON_COMMAND    ||
+                                               pOwner                   || pConst.DOT_CHARACTER || pViewName ||
+                                               pConst.OPEN_BRACKET      || pRowidArray[i]       || pConst.CLOSE_BRACKET;
+        EXECUTE tSqlStatement;
+
+        pViewColumns    :=  pViewColumns    || pConst.COMMA_CHARACTER   || pRowidArray[i];
+        pSelectColumns  :=  pSelectColumns  || pConst.COMMA_CHARACTER   || pAliasArray[i]       || pConst.MV_M_ROW$_COLUMN;
+        iTableArryPos   := iTableArryPos + 1;
+    END LOOP;
+
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$addRow$ToMv$Table';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_X$;
+
+
+--
+-- Name: mv$addrow$tosourcetable(mvrefresh."mv$allconstants", text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$addrow$tosourcetable"(pconst mvrefresh."mv$allconstants", powner text, ptablename text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$addRow$ToSourceTable
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    PostGre does not have a ROWID pseudo column and so a ROWID column has to be added to the source table, ideally this
+                should be a hidden column, but I can't find any way of doing this
+
+Arguments:      IN      pConst              The memory structure containing all constants
+                IN      pOwner              The owner of the object
+                IN      pTableName          The name of the materialized view source table
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tSqlStatement TEXT;
+
+BEGIN
+
+    tSqlStatement := pConst.ALTER_TABLE || pOwner || pConst.DOT_CHARACTER || pTableName || pConst.ADD_M_ROW$_COLUMN_TO_TABLE;
+
+    EXECUTE tSqlStatement;
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$addRow$ToSourceTable';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_X$;
+
+
+--
+-- Name: mv$buildallconstants(); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$buildallconstants"() RETURNS mvrefresh."mv$allconstants"
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$buildAllConstants
+Author:       Mike Revitt
+Date:         26/04/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+26/04/2019  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Populates all of the constant variables to be used by the program
+
+Arguments:      IN      NONE
+Returns:                mv$allConstants     The type that contains all of the CONSTANTS
+
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    rMvConstants    mv$allConstants;
+
+BEGIN
+
+    rMvConstants := mv$buildTriggerConstants();
+
+-- Database Role used to access materialized views
+------------------------------------------------------------------------------------------------------------------------------------
+    rMvConstants.PGMV_SELECT_ROLE               := 'pgmv$_view';
+
+-- Characters used FOR string delimination
+------------------------------------------------------------------------------------------------------------------------------------
+    rMvConstants.INNER_TOKEN                    := CHR(1);
+    rMvConstants.FROM_TOKEN                     := CHR(2);
+    rMvConstants.JOIN_TOKEN                     := CHR(3);
+    rMvConstants.LEFT_TOKEN                     := CHR(4);
+    rMvConstants.ON_TOKEN                       := CHR(5);
+    rMvConstants.OUTER_TOKEN                    := CHR(6);
+    rMvConstants.RIGHT_TOKEN                    := CHR(7);
+    rMvConstants.WHERE_TOKEN                    := CHR(8);
+    rMvConstants.NO_INNER_TOKEN                 := CHR(17);
+    rMvConstants.COMMA_INNER_TOKEN              := CHR(44)  || rMvConstants.INNER_TOKEN;
+    rMvConstants.COMMA_LEFT_TOKEN               := CHR(44)  || rMvConstants.LEFT_TOKEN;
+    rMvConstants.COMMA_RIGHT_TOKEN              := CHR(44)  || rMvConstants.RIGHT_TOKEN;
+
+-- Maths Commands
+------------------------------------------------------------------------------------------------------------------------------------
+    rMvConstants.BASE_TWO                       := 2;
+    rMvConstants.BITAND_COMMAND                 := ' & ';
+    rMvConstants.BITMAP_OFFSET                  := 1;   -- The tables start at 1, but the bits start at 0.
+    rMvConstants.EQUALS_COMMAND                 := ' = ';
+    rMvConstants.FIRST_PGMVIEW_BIT              := 0;
+    rMvConstants.LESS_THAN_EQUAL                := ' <= ';
+    rMvConstants.MAX_PGMVIEWS_ROWS              := 5;
+    rMvConstants.MAX_PGMVIEWS_PER_ROW           := 61;
+    rMvConstants.MAX_PGMVIEWS_PER_TABLE         := rMvConstants.MAX_PGMVIEWS_PER_ROW * rMvConstants.MAX_PGMVIEWS_ROWS;
+    rMvConstants.MAX_BITMAP_SIZE                := POWER( 2, rMvConstants.MAX_PGMVIEWS_PER_ROW + 1 ) - 1;
+                                                -- 9223372036854775807; -- (2^63 - 1) the maximum value for a 64-bit signed integer
+    rMvConstants.MV_MAX_BASE_TABLE_LEN          := 22;
+    rMvConstants.SUBTRACT_COMMAND               := ' - ';
+    rMvConstants.TWO_TO_THE_POWER_OF            := ' POWER( 2, ';
+
+-- Characters used in string constructs
+------------------------------------------------------------------------------------------------------------------------------------
+    rMvConstants.EMPTY_STRING                   := '';
+    rMvConstants.TAB_CHARACTER                  := CHR(9);
+    rMvConstants.NEW_LINE                       := CHR(10);
+    rMvConstants.CARRIAGE_RETURN                := CHR(13);
+    rMvConstants.SPACE_CHARACTER                := CHR(32);
+    rMvConstants.UNDERSCORE_CHARACTER           := CHR(95);
+    rMvConstants.LEFT_BRACE_CHARACTER           := CHR(123);
+    rMvConstants.RIGHT_BRACE_CHARACTER          := CHR(125);
+    rMvConstants.REGEX_MULTIPLE_SPACES          := '\s+';
+    rMvConstants.SUBSTITUTION_CHARACTER_ONE     := '$1';
+    rMvConstants.TYPECAST_AS_BIGINT             := '::BIGINT';
+    rMvConstants.DOUBLE_SPACE_CHARACTERS        :=  rMvConstants.SPACE_CHARACTER || rMvConstants.SPACE_CHARACTER;
+
+-- Date Fuctions
+------------------------------------------------------------------------------------------------------------------------------------
+    rMvConstants.DATE_TIME_MASK                 := '''DD-MON-YYYY HH24:MI:SS''';
+
+-- SQL Statement commands
+------------------------------------------------------------------------------------------------------------------------------------
+    rMvConstants.ADD_COLUMN                     := ' ADD COLUMN ';
+    rMvConstants.ALTER_TABLE                    := 'ALTER TABLE ';
+    rMvConstants.AND_COMMAND                    := ' AND ';
+    rMvConstants.AS_COMMAND                     := ' AS ';
+    rMvConstants.CONSTRAINT_COMMAND             := ' CONTRAINT ';
+    rMvConstants.CREATE_INDEX                   := 'CREATE INDEX ';
+    rMvConstants.CREATE_TABLE                   := 'CREATE TABLE ';
+    rMvConstants.DELETE_COMMAND                 := 'DELETE ';
+    rMvConstants.DELETE_FROM                    := 'DELETE FROM ';
+    rMvConstants.DROP_COLUMN                    := ' DROP COLUMN ';
+    rMvConstants.DROP_TABLE                     := 'DROP TABLE ';
+    rMvConstants.DROP_INDEX                     := 'DROP INDEX ';
+    rMvConstants.EQUALS_NULL                      := ' = NULL ';
+    rMvConstants.FROM_COMMAND                   := ' FROM ';
+    rMvConstants.GRANT_SELECT_ON                := 'GRANT SELECT ON ';
+    rMvConstants.IN_ROWID_LIST                  := ' IN ( SELECT UNNEST($1))';
+    rMvConstants.IN_SELECT_COMMAND              := ' IN ( SELECT ';
+    rMvConstants.INSERT_COMMAND                 := 'INSERT ';
+    rMvConstants.INSERT_INTO                    := 'INSERT INTO ';
+    rMvConstants.NOT_NULL                       := ' NOT NULL ';
+    rMvConstants.ON_COMMAND                     := ' ON ';
+    rMvConstants.OR_COMMAND                     := ' OR ';
+    rMvConstants.ORDER_BY_COMMAND               := ' ORDER BY ';
+    rMvConstants.SELECT_TRUE_FROM               := 'SELECT TRUE FROM ';
+    rMvConstants.SET_COMMAND                    := ' SET ';
+    rMvConstants.TO_COMMAND                     := ' TO ';
+    rMvConstants.TRUNCATE_TABLE                 := 'TRUNCATE TABLE ';
+    rMvConstants.UNIQUE_COMMAND                 := ' UNIQUE ';
+    rMvConstants.UPDATE_COMMAND                 := 'UPDATE ';
+    rMvConstants.WHERE_COMMAND                  := ' WHERE ';
+    rMvConstants.WHERE_NO_DATA                  := ' WHERE 1 = 2 ';
+	rMvConstants.LEFT_OUTER_JOIN				:= 'LOJ';
+	rMvConstants.RIGHT_OUTER_JOIN				:= 'ROJ';	
+
+-- Table and column name definitions
+------------------------------------------------------------------------------------------------------------------------------------
+    rMvConstants.BITMAP_COLUMN_FORMAT           := ' BIGINT[] NOT NULL DEFAULT ARRAY[0] ';
+    rMvConstants.DMLTYPE_COLUMN_FORMAT          := ' CHAR(7) NOT NULL ';
+    rMvConstants.MV_INDEX_SUFFIX                := '_key';
+    rMvConstants.MV_LOG_TABLE_PREFIX            := 'log$_';
+    rMvConstants.MV_M_ROW$_COLUMN_FORMAT        := ' UUID ';
+    rMvConstants.MV_M_ROW$_NOT_NULL_FORMAT      := rMvConstants.MV_M_ROW$_COLUMN_FORMAT || rMvConstants.NOT_NULL;
+    rMvConstants.MV_M_ROW$_DEFAULT_VALUE        := ' DEFAULT uuid_generate_v4()';
+    rMvConstants.MV_M_ROW$_SOURCE_COLUMN        := rMvConstants.MV_M_ROW$_COLUMN || rMvConstants.SPACE_CHARACTER;
+    rMvConstants.MV_M_ROW$_SOURCE_COLUMN_FORMAT := ' INTEGER ';
+    rMvConstants.MV_TIMESTAMP_COLUMN            := 'snaptime$';
+    rMvConstants.MV_TIMESTAMP_COLUMN_FORMAT     := ' DATE NOT NULL DEFAULT CLOCK_TIMESTAMP() ';
+    rMvConstants.MV_TRIGGER_PREFIX              := 'trig$_';
+    rMvConstants.MV_SEQUENCE$_COLUMN            := 'sequence$';
+    rMvConstants.SEQUENCE$_PK_COLUMN_FORMAT     := ' BIGSERIAL NOT NULL PRIMARY KEY';
+
+-- Materialied View Log Table commands
+------------------------------------------------------------------------------------------------------------------------------------
+    rMvConstants.MV_LOG$_SELECT_M_ROW$          :=  rMvConstants.SELECT_COMMAND             ||
+                                                        rMvConstants.MV_M_ROW$_COLUMN       || rMvConstants.COMMA_CHARACTER ||
+                                                        rMvConstants.MV_SEQUENCE$_COLUMN    || rMvConstants.COMMA_CHARACTER ||
+                                                        rMvConstants.DMLTYPE_COLUMN         ||
+                                                    rMvConstants.FROM_COMMAND;
+    rMvConstants.MV_LOG$_WHERE_BITMAP$          :=  rMvConstants.WHERE_COMMAND              ||
+                                                    rMvConstants.BITMAP_COLUMN              || rMvConstants.BITAND_COMMAND  ||
+                                                    rMvConstants.TWO_TO_THE_POWER_OF        ||
+                                                    rMvConstants.SUBSTITUTION_CHARACTER_ONE || rMvConstants.CLOSE_BRACKET   ||
+                                                    rMvConstants.TYPECAST_AS_BIGINT         || rMvConstants.EQUALS_COMMAND  ||
+                                                    rMvConstants.TWO_TO_THE_POWER_OF        ||
+                                                    rMvConstants.SUBSTITUTION_CHARACTER_ONE || rMvConstants.CLOSE_BRACKET   ||
+                                                    rMvConstants.TYPECAST_AS_BIGINT;
+    rMvConstants.MV_LOG$_SELECT_M_ROWS_ORDER_BY :=  rMvConstants.ORDER_BY_COMMAND           || rMvConstants.MV_SEQUENCE$_COLUMN;
+    rMvConstants.MV_LOG$_WHERE_BITMAP_ZERO      :=  rMvConstants.WHERE_COMMAND              ||
+                                                    rMvConstants.BITMAP_NOT_SET             || rMvConstants.EQUALS_COMMAND  ||
+                                                                                               rMvConstants.ALL_BITMAP_VALUE;
+                                                                                               
+-- SQL String Passing commands
+------------------------------------------------------------------------------------------------------------------------------------
+    rMvConstants.INNER_DML_TYPE                 := 'INNER';
+    rMvConstants.INSERT_DML_TYPE                := 'INSERT';
+    rMvConstants.FROM_DML_TYPE                  := 'FROM';
+    rMvConstants.LEFT_DML_TYPE                  := 'LEFT';
+    rMvConstants.JOIN_DML_TYPE                  := 'JOIN';
+    rMvConstants.ON_DML_TYPE                    := 'ON';
+    rMvConstants.OUTER_DML_TYPE                 := 'OUTER';
+    rMvConstants.RIGHT_DML_TYPE                 := 'RIGHT';
+    rMvConstants.SELECT_DML_TYPE                := 'SELECT';
+    rMvConstants.UPDATE_DML_TYPE                := 'UPDATE';
+    rMvConstants.WHERE_DML_TYPE                 := 'WHERE';
+
+-- Row Identification manipulation
+------------------------------------------------------------------------------------------------------------------------------------
+    rMvConstants.AND_M_ROW$_EQUALS              :=  rMvConstants.AND_COMMAND             ||
+                                                    rMvConstants.MV_M_ROW$_COLUMN        || rMvConstants.EQUALS_COMMAND;
+    rMvConstants.AND_SEQUENCE_EQUALS            :=  rMvConstants.AND_COMMAND             ||
+                                                    rMvConstants.MV_SEQUENCE$_COLUMN     || rMvConstants.EQUALS_COMMAND;
+    rMvConstants.SELECT_M_ROW$_SOURCE_COLUMN    :=  rMvConstants.SELECT_COMMAND          || rMvConstants.MV_M_ROW$_SOURCE_COLUMN ||
+                                                    rMvConstants.FROM_COMMAND;
+    rMvConstants.WHERE_M_ROW$_EQUALS            :=  rMvConstants.WHERE_COMMAND           ||
+                                                    rMvConstants.MV_M_ROW$_COLUMN        || rMvConstants.EQUALS_COMMAND;
+
+-- Commands to modify source table
+------------------------------------------------------------------------------------------------------------------------------------
+    rMvConstants.ADD_M_ROW$_COLUMN_TO_TABLE     :=  rMvConstants.ADD_COLUMN              ||
+                                                    rMvConstants.MV_M_ROW$_COLUMN        || rMvConstants.MV_M_ROW$_NOT_NULL_FORMAT||
+                                                    rMvConstants.MV_M_ROW$_DEFAULT_VALUE || rMvConstants.UNIQUE_COMMAND;
+    rMvConstants.DROP_M_ROW$_COLUMN_FROM_TABLE  :=  rMvConstants.DROP_COLUMN             || rMvConstants.MV_M_ROW$_COLUMN;
+
+-- Materialied View Trigger commands
+------------------------------------------------------------------------------------------------------------------------------------
+    rMvConstants.TRIGGER_AFTER_DML              := ' AFTER DELETE OR INSERT OR UPDATE ON ';
+    rMvConstants.TRIGGER_CREATE                 := 'CREATE TRIGGER ';
+    rMvConstants.TRIGGER_DROP                   := 'DROP TRIGGER ';
+    rMvConstants.TRIGGER_FOR_EACH_ROW           := ' FOR EACH ROW EXECUTE PROCEDURE mv$insertMaterializedViewLogRow();';
+
+-- Structure of the Materialized View Log
+------------------------------------------------------------------------------------------------------------------------------------
+    rMvConstants.MV_LOG_COLUMNS     :=
+        rMvConstants.OPEN_BRACKET   ||
+            rMvConstants.MV_SEQUENCE$_COLUMN    || rMvConstants.SEQUENCE$_PK_COLUMN_FORMAT  || rMvConstants.COMMA_CHARACTER ||
+            rMvConstants.MV_M_ROW$_COLUMN       || rMvConstants.MV_M_ROW$_NOT_NULL_FORMAT   || rMvConstants.COMMA_CHARACTER ||
+            rMvConstants.BITMAP_COLUMN          || rMvConstants.BITMAP_COLUMN_FORMAT        || rMvConstants.COMMA_CHARACTER ||
+            rMvConstants.MV_TIMESTAMP_COLUMN    || rMvConstants.MV_TIMESTAMP_COLUMN_FORMAT  || rMvConstants.COMMA_CHARACTER ||
+            rMvConstants.DMLTYPE_COLUMN         || rMvConstants.DMLTYPE_COLUMN_FORMAT       ||
+        rMvConstants.CLOSE_BRACKET;
+
+    rMvConstants.HELP_TEXT              := '
++--------------------------------------------------------------------------------------------------------------------------------+
+| The program is devided into two sections                                                                                       |
+| o  Functions that are designed to be used internally to facilitate the running of the program                                  |
+| o  Functions that are designed to be called to manage the Materilaised views and within this category there are three further  |
+|    sections                                                                                                                    |
+|       o   Functions that are used for the management of Materialized View Objects                                              |
+|       o   Functions that refresh the materialized views                                                                        |
+|       o   Functions that provide help                                                                                          |
+|                                                                                                                                |
+| o  Management Functions, of which there are four commands;                                                                     |
+|       o   mv$createMaterializedView                                                                                            |
+|           Creates a materialized view, as a base table, and then populates the data dictionary table before calling the full   |
+|           refresh routine to populate it.                                                                                      |
+|                                                                                                                                |
+|           This function performs the following steps                                                                           |
+|           1)  A base table is created based on the select statement provided                                                   |
+|           2)  The MV_M_ROW$_COLUMN column is added to the base table                                                           |
+|           3)  A record of the materialized view is entered into the data dictionary table                                      |
+|           4)  If a materialized view with fast refresh is requested a materialized view log table must have been pre-created   |
+|                                                                                                                                |
+|           o Arguments:                                                                                                         |
+|               IN      pViewName           The name of the materialized view to be created                                      |
+|               IN      pSelectStatement    The SQL query that will be used to create the view                                   |
+|               IN      pOwner              Optional, where the view is to be created, defaults to current user                  |
+|               IN      pNamedColumns       Optional, allows the view to be created with different column names to the base table|
+|                                           This list is positional so must match the position and number of columns in the      |
+|                                           select statment                                                                      |
+|               IN      pStorageClause      Optional, storage clause for the materialized view                                   |
+|               IN      pFastRefresh        Defaults to FALSE, but if set to yes then materialized view fast refresh is supported|
+|                                                                                                                                |
+|       o   mv$createMaterializedViewlog                                                                                         |
+|           Creates a materialized view log against the base table, which is mandatory for fast refresh materialized views,      |
+|           sets up the row tracking on the base table, adds a database trigger to the base table and populates the data         |
+|           dictionary tables                                                                                                    |
+|                                                                                                                                |
+|           This function performs the following steps                                                                           |
+|           1)  The MV_M_ROW$_COLUMN column is added to the base table                                                           |
+|           2)  A log table is created to hold a record of all changes to the base table                                         |
+|           3)  Creates a trigger on the base table to populate the log table                                                    |
+|           4)  A record of the materialized view log is entered into the data dictionary table                                  |
+|                                                                                                                                |
+|           o Arguments:                                                                                                         |
+|               IN      pTableName          The name of the base table upon which the materialized view is created               |
+|               IN      pOwner              Optional, the owner of the base table, defaults to current user                      |
+|               IN      pStorageClause      Optional, storage clause for the materialized view log                               |
+|                                                                                                                                |
+|       o   mv$removeMaterializedView                                                                                            |
+|           Removes a materialized view, clears down the entries in the Materialized View Log adn then removes the entry from    |
+|           the data dictionary table                                                                                            |
+|                                                                                                                                |
+|           This function performs the following steps                                                                           |
+|           1)  Clears the MV Bit from all base tables logs used by thie materialized view                                       |
+|           2)  Drops the materialized view                                                                                      |
+|           4)  Removes the record of the materialized view from the data dictionary table                                       |
+|                                                                                                                                |
+|           o Arguments:                                                                                                         |
+|               IN      pTableName          The name of the base table upon which the materialized view is created               |
+|               IN      pOwner              Optional, the owner of the base table, defaults to current user                      |
+|                                                                                                                                |
+|       o   mv$removeMaterializedViewLog                                                                                         |
+|           Removes a materialized view log from the base table.                                                                 |
+|                                                                                                                                |
+|           This function has the following pre-requisites                                                                       |
+|           1)  All Materialized Views, with an interest in the log, must have been previously removed                           |
+|                                                                                                                                |
+|           This function performs the following steps                                                                           |
+|           1)  Drops the trigger from the base table                                                                            |
+|           2)  Drops the Materialized View Log table                                                                            |
+|           3)  Removes the MV_M_ROW$_COLUMN column from the base table                                                          |
+|           4)  Removes the record of the materialized view from the data dictionary table                                       |
+|                                                                                                                                |
+|           o Arguments:                                                                                                         |
+|               IN      pTableName          The name of the base table upon which the materialized view is created               |
+|               IN      pOwner              Optional, the owner of the base table, defaults to current user                      |
+|                                                                                                                                |
+| o  Refresh Function                                                                                                            |
+|       o   mv$refreshMaterializedView                                                                                           |
+|           Loops through each of the base tables, upon which this materialised view is based, and updates the materialized      |
+|           view for each table in turn                                                                                          |
+|                                                                                                                                |
+|           o Arguments:                                                                                                         |
+|               IN      pViewName           The name of the base table upon which the materialized view is created               |
+|               IN      pOwner              Optional, the owner of the base table, defaults to current user                      |
+|               IN      pFastRefresh        Defaults to FALSE, but if set to yes then materialized view fast refresh is performed|
+|                                                                                                                                |
+| o  Help Message                                                                                                                |
+|       o   mv$help                                                                                                              |
+|           displays this message                                                                                                |
+|                                                                                                                                |
+|           o Arguments:                                                                                                         |
+|               IN      none                                                                                                     |
+|                                                                                                                                |
+|           select mv$help;                                                                                                      |
++--------------------------------------------------------------------------------------------------------------------------------+
+';
+    RETURN( rMvConstants );
+END;
+$_X$;
+
+
+--
+-- Name: mv$buildtriggerconstants(); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$buildtriggerconstants"() RETURNS mvrefresh."mv$allconstants"
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$buildTriggerConstants
+Author:       Mike Revitt
+Date:         07/05/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+07/05/2019  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Populates all of the constant variables to be used by the program
+
+Arguments:      IN      NONE
+Returns:                mv$allConstants     The type that contains all of the CONSTANTS
+
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    rMvConstants    mv$allConstants;
+
+BEGIN
+
+-- Characters used in string constructs
+------------------------------------------------------------------------------------------------------------------------------------
+    rMvConstants.SINGLE_QUOTE_CHARACTER         := CHR(39);
+    rMvConstants.OPEN_BRACKET                   := CHR(40);
+    rMvConstants.CLOSE_BRACKET                  := CHR(41);
+    rMvConstants.COMMA_CHARACTER                := CHR(44);
+    rMvConstants.DOT_CHARACTER                  := CHR(46);
+    rMvConstants.QUOTE_COMMA_CHARACTERS         := rMvConstants.SINGLE_QUOTE_CHARACTER || rMvConstants.COMMA_CHARACTER;
+
+-- Maths Commands
+------------------------------------------------------------------------------------------------------------------------------------
+    rMvConstants.ARRAY_LOWER_VALUE              := 1;   -- This is the default starting value for a Postgres Array
+    rMvConstants.BITMAP_NOT_SET                 := 0;
+
+-- SQL String Passing commands
+------------------------------------------------------------------------------------------------------------------------------------
+    rMvConstants.DELETE_DML_TYPE                := 'DELETE';
+
+-- Table and column name definitions
+------------------------------------------------------------------------------------------------------------------------------------
+    rMvConstants.BITMAP_COLUMN                  := 'bitmap$';
+    rMvConstants.ALL_BITMAP_VALUE               := 'ALL( ' || rMvConstants.BITMAP_COLUMN || ' )';
+    rMvConstants.DMLTYPE_COLUMN                 := 'dmltype$';
+    rMvConstants.PG_MVIEW_BITMAP                := 'pg_mview_bitmap';
+    rMvConstants.MV_M_ROW$_COLUMN               := 'm_row$';
+
+-- SQL Statement commands
+------------------------------------------------------------------------------------------------------------------------------------
+    rMvConstants.INSERT_INTO                    := 'INSERT INTO ';
+    rMvConstants.SELECT_COMMAND                 := 'SELECT ';
+
+-- Materialied View Log Table commands
+------------------------------------------------------------------------------------------------------------------------------------
+    rMvConstants.MV_LOG$_INSERT_COLUMNS         :=  rMvConstants.OPEN_BRACKET               ||
+                                                        rMvConstants.MV_M_ROW$_COLUMN       || rMvConstants.COMMA_CHARACTER ||
+                                                        rMvConstants.BITMAP_COLUMN          || rMvConstants.COMMA_CHARACTER ||
+                                                        rMvConstants.DMLTYPE_COLUMN         ||
+                                                    rMvConstants.CLOSE_BRACKET;
+                                                    
+    rMvConstants.AND_TABLE_NAME_EQUALS          := ' AND table_name = ''';
+    rMvConstants.FROM_PG$MVIEW_LOGS             := ' FROM pg$mview_logs ';
+    rMvConstants.WHERE_OWNER_EQUALS             := ' WHERE owner = ''';
+    
+    RETURN( rMvConstants );
+END;
+$_X$;
+
+
+--
+-- Name: mv$checkifouterjoinedtable(mvrefresh."mv$allconstants", text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$checkifouterjoinedtable"(pconst mvrefresh."mv$allconstants", ptablename text, poutertable text) RETURNS boolean
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$checkIfOuterJoinedTable
+Author:       Mike Revitt
+Date:         04/04/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+03/03/2020	| D Day			| Defect fix Replaced IN pOuterTableArray parameter with pOuterTable and TEXT[] array variable as TEXT. 
+			|				| This was not considering if the table name check has a corresponding inner and outer join condition
+			|				| related to the same table name. By passing only the outer table value this will confirm if it's and
+			|				| outer join table or not.
+18/06/2019  | M Revitt      | Added an Exception Handler
+05/06/2019  | M Revitt      | Change ARRAY_UPPER and ARRYA_LOWER to FOREACH ... IN ARRAY
+04/04/2019  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Some actions against outer joined tables need to be performed differently, so this function checks to see if the
+                table is outer joined
+
+Arguments:      IN      pConst              The memory structure containing all constants
+                IN      pTableName          The name of the table to check
+                IN      pOuterTable		    The outer join table value for the same pTableName value position
+Returns:                BOOLEAN             TRUE if we can find the record, otherwise FALSE
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    bResult     BOOLEAN := FALSE;
+
+BEGIN
+
+    IF pTableName = pOuterTable
+    THEN
+            bResult := TRUE;
+    END IF;
+
+    RETURN( bResult );
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$checkIfOuterJoinedTable';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$checkparenttochildouterjoinalias(mvrefresh."mv$allconstants", text, text, text[], text[], text[]); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$checkparenttochildouterjoinalias"(pconst mvrefresh."mv$allconstants", palias text, pouterjointype text, pouterleftaliasarray text[], pouterrightaliasarray text[], pouterjointypearray text[], OUT pchildaliasarray text[]) RETURNS text[]
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$checkParentToChildOuterJoinAlias
+Author:       David Day
+Date:         18/07/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+18/07/2019  | D Day      	| Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description: 	Function to check either left or right outer join parent to child column joining aliases to be used to build
+				the dynamic UPDATE statement for outer join table DELETE changes.
+
+Arguments:      IN      pConst	
+
+Arguments:      IN      pAlias           
+                IN      pOuterJoinType        
+				IN		pOuterLeftAliasArray	
+                IN      pOuterRightAliasArray  
+                IN      pOuterJoinTypeArray
+                OUT     pChildAliasArray		
+
+Returns:                OUT array value for parameter pChildAliasArray
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+	
+	
+	rMvOuterJoinDetails     RECORD;
+	iLoopCounter            INTEGER DEFAULT 0;
+	
+BEGIN
+
+	pChildAliasArray := '{}';
+
+	FOR rMvOuterJoinDetails IN (SELECT inline.oj_left_alias
+								,	   inline.oj_right_alias
+								,      inline.oj_type
+								FROM (
+									SELECT 	UNNEST(pOuterLeftAliasArray) AS oj_left_alias
+									,		UNNEST(pOuterRightAliasArray) AS oj_right_alias
+									, 		UNNEST(pOuterJoinTypeArray) AS oj_type) inline
+								WHERE inline.oj_type = pOuterJoinType) 
+	LOOP
+		
+		iLoopCounter := iLoopCounter + 1;
+		
+		IF iLoopCounter = 1 THEN
+			pChildAliasArray := '{}';
+		END IF;
+	
+		IF pAlias = rMvOuterJoinDetails.oj_left_alias AND pOuterJoinType = pConst.LEFT_OUTER_JOIN THEN
+		
+			pChildAliasArray[iLoopCounter] := rMvOuterJoinDetails.oj_right_alias;
+			
+		ELSIF pAlias = rMvOuterJoinDetails.oj_right_alias AND pOuterJoinType = pConst.RIGHT_OUTER_JOIN THEN
+		
+			pChildAliasArray[iLoopCounter] := rMvOuterJoinDetails.oj_left_alias;
+		
+		END IF;
+		
+	END LOOP;
+	
+	RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$checkParentToChildOuterJoinAlias';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$clearallpgmvlogtablebits(mvrefresh."mv$allconstants", text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$clearallpgmvlogtablebits"(pconst mvrefresh."mv$allconstants", powner text, pviewname text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$clearAllPgMvLogTableBits
+Author:       Mike Revitt
+Date:         04/06/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+17/09/2019  | D Day         | Bug fix - Added logic to ignore table name if it already exists when clearing the bits in the mview logs
+			|				| mview logs
+04/06/2019  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Performs a full refresh of the materialized view, which consists of truncating the table and then re-populating it.
+
+                This activity also requires that every row in the materialized view log is updated to remove the interest from this
+                materialized view, then as with the fast refresh once all the rows have been processed the materialized view log is
+                cleaned up, in that all rows with a bitmap of zero are deleted as they are then no longer required.
+
+Note:           This function requires the SEARCH_PATH to be set to the current value so that the select statement can find the
+                source tables.
+                The default for PostGres functions is to not use the search path when executing with the privileges of the creator
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pViewName           The name of the materialized view
+Returns:                VOID
+
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    cResult         		CHAR(1);
+    aViewLog        		pg$mview_logs;
+    aPgMview        		pg$mviews;
+	
+	tTableName				TEXT;
+	tDistinctTableArray		TEXT[];
+	
+	iTableAlreadyExistsCnt 	INTEGER DEFAULT 0;
+
+BEGIN
+    aPgMview := mv$getPgMviewTableData( pConst, pOwner, pViewName );
+
+    FOR i IN ARRAY_LOWER( aPgMview.table_array, 1 ) .. ARRAY_UPPER( aPgMview.table_array, 1 )
+    LOOP
+        aViewLog := mv$getPgMviewLogTableData( pConst, aPgMview.table_array[i] );
+		
+		tTableName := aPgMview.table_array[i];		
+		tDistinctTableArray[i] := tTableName;
+		
+		SELECT count(1) INTO STRICT iTableAlreadyExistsCnt 
+		FROM (SELECT unnest(tDistinctTableArray) as table_name) inline
+		WHERE inline.table_name = tTableName;
+		
+		IF iTableAlreadyExistsCnt = 1
+		THEN
+
+			cResult :=  mv$clearPgMvLogTableBits
+						(
+							pConst,
+							aViewLog.owner,
+							aViewLog.pglog$_name,
+							aPgMview.bit_array[i],
+							pConst.MAX_BITMAP_SIZE
+						);
+
+			cResult := mv$clearSpentPgMviewLogs( pConst, aViewLog.owner, aViewLog.pglog$_name );
+			
+		END IF;
+
+    END LOOP;
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$clearAllPgMvLogTableBits';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_X$;
+
+
+--
+-- Name: mv$clearpgmviewlogbit(mvrefresh."mv$allconstants", text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$clearpgmviewlogbit"(pconst mvrefresh."mv$allconstants", powner text, pviewname text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$clearPgMviewLogBit
+Author:       Mike Revitt
+Date:         04/06/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+30/11/2019  | M Revitt      | Use mv$bitValue to accomodate > 62 MV's per base Table
+17/09/2019  | D Day         | Bug fix - Added logic to ignore table name if it already exists to stop pg$mview_logs table
+			|				| pg_mview_bitmap column not being updated multiple times.
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Determins which which bit has been assigned to the base table and then adds that to the PgMview bitmap in the
+                materialized view log data dictionary table to record all of the materialized views that are using the rows created
+                in this table.
+
+Notes:          This is how we determine which materialized views require an update when the fast refresh function is called
+
+Arguments:      IN      pTableName          The name of the materialized view source table
+Returns:                VOID
+
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    cResult     			CHAR(1);
+    tBitValue   			mv$bitValue;
+    aViewLog    			pg$mview_logs;
+    aPgMview    			pg$mviews;
+	
+	tTableName				TEXT;
+	tDistinctTableArray		TEXT[];
+	
+	iTableAlreadyExistsCnt 	INTEGER DEFAULT 0;
+
+BEGIN
+    aPgMview    := mv$getPgMviewTableData( pConst, pOwner, pViewName );
+
+    FOR i IN ARRAY_LOWER( aPgMview.log_array, 1 ) .. ARRAY_UPPER( aPgMview.log_array, 1 )
+    LOOP
+        aViewLog := mv$getPgMviewLogTableData( pConst, aPgMview.table_array[i] );
+		
+		tTableName := aPgMview.log_array[i];		
+		tDistinctTableArray[i] := tTableName;
+		
+		SELECT  count(1)
+        INTO    STRICT iTableAlreadyExistsCnt
+		FROM (  SELECT unnest(tDistinctTableArray) as table_name ) inline
+		WHERE   inline.table_name = tTableName;
+		
+		IF iTableAlreadyExistsCnt = 1
+		THEN
+		
+			tBitValue := mv$getBitValue( pConst, aPgMview.bit_array[i] );
+
+			UPDATE  pg$mview_logs
+			SET     pg_mview_bitmap[tBitValue.BIT_ROW]  = pg_mview_bitmap[tBitValue.BIT_ROW] - tBitValue.BIT_MAP
+			WHERE   owner                               = aViewLog.owner
+			AND     table_name                          = aViewLog.table_name;
+		
+		END IF;
+    END LOOP;
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$clearPgMviewLogBit';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$clearpgmvlogtablebits(mvrefresh."mv$allconstants", text, text, smallint, bigint); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$clearpgmvlogtablebits"(pconst mvrefresh."mv$allconstants", powner text, "ppglog$name" text, pbit smallint, pmaxsequence bigint) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$clearPgMvLogTableBits
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+29/05/2020  | D Day			| Defect fix - Removed dblink action and call to function mv$clearPgMvLogTableBitsAction as this
+			|				| was causing missing when an error occurred during the transaction process steps.
+18/03/202   | D Day         | Defect fix - To reduce the impact of deadlocks caused by multiple mview refreshes trying to update them
+			|				| the same mview log BITMAP$ column row. The UPDATE statement has been moved to a separate transaction 
+			|				| using dblink extension. PG_BACKGROUND extension would have been the preferred option - this is not 
+			|				| yet available in AWS RDS Postgres.
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Bitmaps are how we manage multiple registrations against the same base table, every time the recorded row has been
+                applied to the materialized view we remove the bit that signifies the interest from the materialized view log
+
+Notes:          Array Processing command
+
+                UPDATE  cdl_data.log$_t1
+                SET     bitmap$[0] = bitmap$[0] - 1
+                WHERE   sequence$
+                IN(     SELECT  sequence$
+                        FROM    cdl_data.log$_t1
+                        WHERE   bitmap$[0] & 1   = 1
+                        AND     sequence$       <= 9223372036854775807
+                   );
+
+Arguments:      IN      pConst              The memory structure containing all constants
+                IN      pOwner              The owner of the object
+                IN      pPgLog$Name         The name of the materialized view log table
+                IN      pBit                The bit to be cleared from the row
+                IN      pMaxSequence        The maximum value bitmap being used
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tSqlStatement   TEXT;
+    tBitValue       mv$bitValue;
+    
+BEGIN
+
+    tBitValue       := mv$getBitValue( pConst, pBit );
+    tSqlStatement   := pConst.UPDATE_COMMAND        || pOwner || pConst.DOT_CHARACTER   || pPgLog$Name  ||
+                       pConst.SET_COMMAND           || pConst.BITMAP_COLUMN             || '[' || tBitValue.BIT_ROW || ']' ||
+                       pConst.EQUALS_COMMAND        || pConst.BITMAP_COLUMN             || '[' || tBitValue.BIT_ROW || ']' ||
+                                                       pConst.SUBTRACT_COMMAND          ||        tBitValue.BIT_MAP ||
+                       pConst.WHERE_COMMAND         || pConst.MV_SEQUENCE$_COLUMN       ||
+                       pConst.IN_SELECT_COMMAND     || pConst.MV_SEQUENCE$_COLUMN       ||
+                       pConst.FROM_COMMAND          || pOwner || pConst.DOT_CHARACTER   || pPgLog$Name  ||
+                       pConst.WHERE_COMMAND         || pConst.BITMAP_COLUMN             || '[' || tBitValue.BIT_ROW || ']' ||
+                       pConst.BITAND_COMMAND        || tBitValue.BIT_MAP                ||
+                                                       pConst.EQUALS_COMMAND            || tBitValue.BIT_MAP            ||
+                       pConst.AND_COMMAND           || pConst.MV_SEQUENCE$_COLUMN       || pConst.LESS_THAN_EQUAL       ||
+                       pMaxSequence                 || pConst.CLOSE_BRACKET;
+		
+	EXECUTE tSqlStatement;
+
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$clearPgMvLogTableBits';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_X$;
+
+
+--
+-- Name: mv$clearspentpgmviewlogs(mvrefresh."mv$allconstants", text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$clearspentpgmviewlogs"(pconst mvrefresh."mv$allconstants", powner text, "ppglog$name" text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$clearSpentPgMviewLogs
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Bitmaps are how we manage multiple registrations against the same base table, once all interested materialized
+                views have removed their interest in the materialized log row the bitmap will be set to 0 and can be deleted
+
+Arguments:      IN      pConst              The memory structure containing all constants
+                IN      pOwner              The owner of the object
+                IN      pPgLog$Name         The name of the materialized view log table
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tSqlStatement   TEXT;
+
+BEGIN
+
+    tSqlStatement := pConst.DELETE_FROM || pOwner || pConst.DOT_CHARACTER || pPgLog$Name || pConst.MV_LOG$_WHERE_BITMAP_ZERO;
+
+    EXECUTE tSqlStatement;
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$clearSpentPgMviewLogs';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_X$;
+
+
+--
+-- Name: mv$creatematerializedview(text, text, text, text, text, boolean); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$creatematerializedview"(pviewname text, pselectstatement text, powner text DEFAULT USER, pnamedcolumns text DEFAULT NULL::text, pstorageclause text DEFAULT NULL::text, pfastrefresh boolean DEFAULT false) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$createMaterializedView
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+12/11/2018  | M Revitt      | Initial version
+23/07/2019  | D Day			| Added function mv$insertPgMviewOuterJoinDetails to handle Outer Join table DELETE
+			|				| changes.
+28/04/2020	| D Day			| Added tTableNames input value parameter to mv$insertPgMviewOuterJoinDetails function call
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Creates a materialized view, as a base table, and then populates the data dictionary table before calling the full
+                refresh routine to populate it.
+
+            This function performs the following steps
+            1)  A base table is created based on the select statement provided
+            2)  The MV_M_ROW$_COLUMN column is added to the base table
+            3)  A record of the materialized view is entered into the data dictionary table
+
+Notes:          If a materialized view with fast refresh is requested then a materialized view log table must have been pre-created
+
+Arguments:      IN      pViewName           The name of the materialized view to be created
+                IN      pSelectStatement    The SQL query that will be used to create the view
+                IN      pOwner              Optional, where the view is to be created, defaults to current user
+                IN      pNamedColumns       Optional, allows the view to be created with different column names to the base table
+                                            This list is positional so must match the position and number of columns in the
+                                            select statment
+                IN      pStorageClause      Optional, storage clause for the materialized view
+                IN      pFastRefresh        Defaults to FALSE, but if set to yes then materialized view fast refresh is supported
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+    cResult             	CHAR(1)     := NULL;
+
+    rConst              	mv$allConstants;
+
+    tSelectColumns      	TEXT        := NULL;
+    tTableNames         	TEXT        := NULL;
+    tViewColumns        	TEXT        := NULL;
+    tWhereClause        	TEXT        := NULL;
+    tRowidArray         	TEXT[];
+    tTableArray         	TEXT[];
+    tAliasArray         	TEXT[];
+    tOuterTableArray    	TEXT[];
+    tInnerAliasArray    	TEXT[];
+    tInnerRowidArray    	TEXT[];
+	tOuterLeftAliasArray 	TEXT[];
+	tOuterRightAliasArray 	TEXT[];
+	tLeftOuterJoinArray 	TEXT[];
+	tRightOuterJoinArray 	TEXT[];
+
+BEGIN
+
+    rConst      := mv$buildAllConstants();
+
+    SELECT
+            pTableNames,
+            pSelectColumns,
+            pWhereClause
+    FROM
+            mv$deconstructSqlStatement( rConst, pSelectStatement )
+    INTO
+            tTableNames,
+            tSelectColumns,
+            tWhereClause;
+
+    SELECT
+            pTableArray,
+            pAliasArray,
+            pRowidArray,
+            pOuterTableArray,
+            pInnerAliasArray,
+            pInnerRowidArray,
+			pOuterLeftAliasArray,
+			pOuterRightAliasArray,
+			pLeftOuterJoinArray,
+			pRightOuterJoinArray
+
+    FROM
+            mv$extractCompoundViewTables( rConst, tTableNames )
+    INTO
+            tTableArray,
+            tAliasArray,
+            tRowidArray,
+            tOuterTableArray,
+            tInnerAliasArray,
+            tInnerRowidArray,
+			tOuterLeftAliasArray,
+			tOuterRightAliasArray,
+			tLeftOuterJoinArray,
+			tRightOuterJoinArray;
+
+    tViewColumns    :=  mv$createPgMv$Table
+                        (
+                            rConst,
+                            pOwner,
+                            pViewName,
+                            pNamedColumns,
+                            tSelectColumns,
+                            tTableNames,
+                            pStorageClause
+                        );
+
+    SELECT
+            pViewColumns,
+            pSelectColumns
+    FROM
+            mv$addRow$ToMv$Table
+            (
+                rConst,
+                pOwner,
+                pViewName,
+                tAliasArray,
+                tRowidArray,
+                tViewColumns,
+                tSelectColumns
+            )
+    INTO
+        tViewColumns,
+        tSelectColumns;
+	
+    cResult :=  mv$insertPgMview
+                (
+                    rConst,
+                    pOwner,
+                    pViewName,
+                    tViewColumns,
+                    tSelectColumns,
+                    tTableNames,
+                    tWhereClause,
+                    tTableArray,
+                    tAliasArray,
+                    tRowidArray,
+                    tOuterTableArray,
+                    tInnerAliasArray,
+                    tInnerRowidArray,
+                    pFastRefresh
+                );
+				
+	cResult := mv$insertPgMviewOuterJoinDetails
+			(	rConst,
+                pOwner,
+                pViewName,
+                tSelectColumns,
+				tTableNames,
+                tAliasArray,
+                tRowidArray,
+                tOuterTableArray,
+				tOuterLeftAliasArray,
+				tOuterRightAliasArray,
+				tLeftOuterJoinArray,
+				tRightOuterJoinArray
+			 );
+
+    cResult := mv$refreshMaterializedView( pViewName, pOwner, FALSE );
+    RETURN;
+END;
+$_X$;
+
+
+--
+-- Name: mv$creatematerializedviewlog(text, text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$creatematerializedviewlog"(ptablename text, powner text DEFAULT USER, pstorageclause text DEFAULT NULL::text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$createMaterializedViewlog
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+12/11/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Creates a materialized view log against the base table, which is mandatory for fast refresh materialized views,
+                sets up the row tracking on the base table, adds a database trigger to the base table and populates the data
+                dictionary tables
+
+                This function performs the following steps
+                1)  The MV_M_ROW$_COLUMN column is added to the base table
+                2)  A log table is created to hold a record of all changes to the base table
+                3)  Creates a trigger on the base table to populate the log table
+                4)  A record of the materialized view log is entered into the data dictionary table
+
+Notes:          This is mandatory for a Fast Refresh Materialized View
+
+Arguments:      IN      pTableName          The name of the base table upon which the materialized view is created
+                IN      pOwner              Optional, the owner of the base table, defaults to current user
+                IN      pStorageClause      Optional, storage clause for the materialized view log
+Returns:                VOID
+
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    rConst          mv$allConstants;
+
+    tSqlStatement   TEXT    := NULL;
+    tLog$Name       TEXT    := NULL;
+    tTriggerName    TEXT    := NULL;
+    cResult         CHAR(1) := NULL;
+
+BEGIN
+
+    rConst          := mv$buildAllConstants();
+    tLog$Name       := rConst.MV_LOG_TABLE_PREFIX   || SUBSTRING( pTableName, 1, rConst.MV_MAX_BASE_TABLE_LEN );
+    tTriggerName    := rConst.MV_TRIGGER_PREFIX     || SUBSTRING( pTableName, 1, rConst.MV_MAX_BASE_TABLE_LEN );
+
+    cResult :=  mv$addRow$ToSourceTable(    rConst, pOwner, pTableName );
+    cResult :=  mv$createMvLog$Table(       rConst, pOwner, tLog$Name,  pStorageClause );
+    cResult :=  mv$addIndexToMvLog$Table(   rConst, pOwner, tLog$Name                  );
+    cResult :=  mv$createMvLogTrigger(      rConst, pOwner, pTableName, tTriggerName   );
+    cResult :=  mv$insertPgMviewLogs
+                (
+                    rConst,
+                    pOwner,
+                    tLog$Name,
+                    pTableName,
+                    tTriggerName
+                );
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$createMaterializedViewlog';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+
+END;
+$_X$;
+
+
+--
+-- Name: mv$createmvlog$table(mvrefresh."mv$allconstants", text, text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$createmvlog$table"(pconst mvrefresh."mv$allconstants", powner text, "ppglog$name" text, pstorageclause text DEFAULT NULL::text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$createMvLog$Table
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    This function creates the materilized view log table against the source table for the materialized view
+
+Arguments:      IN      pConst              The memory structure containing all constants
+                IN      pOwner              The owner of the object
+                IN      pPgLog$Name         The name of the materialized view log table
+                IN      pStorageClause      Optional, storage clause for the materialized view log
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tSqlStatement TEXT;
+
+BEGIN
+    tSqlStatement := pConst.CREATE_TABLE || pOwner || pConst.DOT_CHARACTER || pPgLog$Name || pConst.MV_LOG_COLUMNS;
+
+    IF pStorageClause IS NOT NULL
+    THEN
+        tSqlStatement := tSqlStatement || pStorageClause;
+    END IF;
+
+    EXECUTE tSqlStatement;
+
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$createMvLog$Table';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$createmvlogtrigger(mvrefresh."mv$allconstants", text, text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$createmvlogtrigger"(pconst mvrefresh."mv$allconstants", powner text, ptablename text, pmvtriggername text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$createMvLogTrigger
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    After the materialized view log table has been created a trigger is required on the source table to populate the
+                materialized view log
+
+Arguments:      IN      pConst              The memory structure containing all constants
+                IN      pOwner              The owner of the object
+                IN      pTableName          The name of the materialized view source table
+                IN      pMvTriggerName      The name of the materialized view source trigger
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tSqlStatement TEXT;
+
+BEGIN
+
+    tSqlStatement :=    pConst.TRIGGER_CREATE          || pMvTriggerName   ||
+                        pConst.TRIGGER_AFTER_DML       || pOwner           || pConst.DOT_CHARACTER  || pTableName ||
+                        pConst.TRIGGER_FOR_EACH_ROW;
+
+    EXECUTE tSqlStatement;
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$createMvLogTrigger';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$createpgmv$table(mvrefresh."mv$allconstants", text, text, text, text, text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$createpgmv$table"(pconst mvrefresh."mv$allconstants", powner text, pviewname text, pviewcolumns text, pselectcolumns text, ptablenames text, pstorageclause text) RETURNS text
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$createPgMv$Table
+Author:       Mike Revitt
+Date:         16/01/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+16/01/2019  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Creates the base table upon which the Materialized View will be based from the provided SQL statment
+
+Note:           This function requires the SEARCH_PATH to be set to the current value so that the select statement can find the
+                source tables.
+                The default for PostGres functions is to not use the search path when executing with the privileges of the creator
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pViewName           The name of the materialized view base table
+                IN      pViewColumns        Allow the view to be created with different names to the base table
+                                            This list is positional so must match the position and number of columns in the
+                                            select statment
+                IN      pSelectColumns      The column list from the SQL query that will be used to create the view
+                IN      pTableNames         The string between the FROM and WHERE clauses in the SQL query
+                IN      pStorageClause      Optional, storage clause for the materialized view
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    cResult         CHAR(1);
+    tDefinedColumns TEXT    := NULL;
+    tSqlStatement   TEXT    := NULL;
+    tStorageClause  TEXT    := NULL;
+    tViewColumns    TEXT    := NULL;
+
+BEGIN
+
+    IF pViewColumns IS NOT NULL
+    THEN
+        tDefinedColumns :=  pConst.OPEN_BRACKET ||
+                                REPLACE( REPLACE( pViewColumns,
+                                pConst.OPEN_BRACKET  , NULL ),
+                                pConst.CLOSE_BRACKET , NULL ) ||
+                            pConst.CLOSE_BRACKET;
+    ELSE
+        tDefinedColumns :=  pConst.SPACE_CHARACTER;
+    END IF;
+
+    IF pStorageClause IS NOT NULL
+    THEN
+        tStorageClause := pStorageClause;
+    ELSE
+        tStorageClause := pConst.SPACE_CHARACTER;
+    END IF;
+
+    tSqlStatement   :=  pConst.CREATE_TABLE     || pOwner          || pConst.DOT_CHARACTER || pViewName || tDefinedColumns  ||
+                        pConst.AS_COMMAND       ||
+                        pConst.SELECT_COMMAND   || pSelectColumns  ||
+                        pConst.FROM_COMMAND     || pTableNames     ||
+                        pConst.WHERE_NO_DATA    || tStorageClause;
+
+    EXECUTE tSqlStatement;
+
+    cResult         :=  mv$grantSelectPrivileges( pConst, pOwner, pViewName );
+    tViewColumns    :=  mv$getPgMviewViewColumns( pConst, pOwner, pViewName );
+
+    RETURN tViewColumns;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$createPgMv$Table';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$createrow$column(mvrefresh."mv$allconstants", text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$createrow$column"(pconst mvrefresh."mv$allconstants", ptablealias text) RETURNS text
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$createRow$Column
+Author:       Mike Revitt
+Date:         15/01/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+18/06/2019  | M Revitt      | Add and Exception Handler
+15/01/2019  | M Revitt      | Initial version
+11/07/2019  | D Day         | Defect fix - changed code to use base table alias instead of base table name for the m_row$ column name
+            |               | used to refresh the materialized view as this was not working when query joined against the same table
+            |               | more than once.
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    For every table that is used to construct this materialized view, add a MV_M_ROW$_COLUMN to the base table.
+
+Arguments:      IN      pConst              The memory structure containing all constants
+                IN      pTableName          The name of the materialized view source table
+Returns:                TEXT                The name for the MV_M_ROW$_COLUMN added
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tAddColumn      TEXT;
+    tCreateIndex    TEXT;
+    tIndexName      TEXT;
+    tSqlStatement   TEXT;
+    tRowidColumn    TEXT;
+    iTableArryPos   INT     := 0;
+	tTableAlias		TEXT;
+
+BEGIN
+
+	tTableAlias := LOWER(TRIM(replace(pTableAlias,'.','')));
+
+    tRowidColumn := SUBSTRING( tTableAlias, 1, pConst.MV_MAX_BASE_TABLE_LEN ) || pConst.UNDERSCORE_CHARACTER ||
+                                                                                 pConst.MV_M_ROW$_COLUMN;
+
+    RETURN( tRowidColumn );
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$createRow$Column';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  pTableName;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_X$;
+
+
+--
+-- Name: mv$deconstructsqlstatement(mvrefresh."mv$allconstants", text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$deconstructsqlstatement"(pconst mvrefresh."mv$allconstants", psqlstatement text, OUT ptablenames text, OUT pselectcolumns text, OUT pwhereclause text) RETURNS record
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$deconstructSqlStatement
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+18/06/2019  | M Revitt      | Add an exception handler
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    One of the most difficult tasks with the materialized view fast refresh process is programatically determining
+                the columns, base tables and select criteria that have been used to construct the view.
+
+                This function deconstructs the SQL statement that was used to create the materialized view and stores the
+                information in the data dictionary tables for future use
+
+Notes:          The technique used here is to search for each of the key words in a SQL statement, FROM, WHERE and replace them
+                whith an unprintable character which can be searched for later.
+
+                To locate the keywords they are searched for with acceptable command delimination characters either side of the
+                key word, the delimiators currently used are
+                o   SPACE
+                o   NEW LINE
+                o   CARRIAGE RETURN
+
+                The SELECT keyword is assumed to be the leading key word and is simply removed from the string with the use of a
+                SUBSTRING command
+
+                Once all of the replacements have been completed it becomes a simple task to extract the necessary information later
+                when required
+
+Arguments:      IN      pConst              The memory structure containing all constants
+                IN      pSqlStatement       The SQL Statement used to create the materialized view
+                    OUT pTableNames         The name of the materialized view source tables
+                                                all text between the FROM and WHERE clauses
+                    OUT pSelectColumns      The list of columns in the SQL Statement used to create the materialized view
+                                                all text between the SELECT and FROM clauses
+                    OUT pWhereClause        The where clause from the SQL Statement used to create the materialized view
+                                                all text after the WHERE clause
+Returns:                RECORD              The three out parameters
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tSqlStatement   TEXT := pSqlStatement;
+
+BEGIN
+    tSqlStatement := SUBSTRING( tSqlStatement,  POSITION( pConst.SELECT_DML_TYPE IN tSqlStatement ) +
+                                                LENGTH(   pConst.SELECT_DML_TYPE ));
+
+    tSqlStatement := TRIM( LEADING pConst.SPACE_CHARACTER FROM tSqlStatement );
+
+    tSqlStatement := mv$replaceCommandWithToken( pConst, tSqlStatement,    pConst.FROM_DML_TYPE,    pConst.FROM_TOKEN  );
+    tSqlStatement := mv$replaceCommandWithToken( pConst, tSqlStatement,    pConst.WHERE_DML_TYPE,   pConst.WHERE_TOKEN );
+
+    tSqlStatement := tSqlStatement || pConst.WHERE_TOKEN; -- Append a Where Token incase Where does not appear in the string
+
+    pTableNames   := TRIM(  SUBSTRING( tSqlStatement,
+                            POSITION(  pConst.FROM_TOKEN  IN tSqlStatement )  + LENGTH(   pConst.FROM_TOKEN  ),
+                            POSITION(  pConst.WHERE_TOKEN IN tSqlStatement )  - LENGTH(   pConst.WHERE_TOKEN )
+                                                                              - POSITION( pConst.FROM_TOKEN IN tSqlStatement )));
+
+    pSelectColumns := TRIM( SUBSTRING( tSqlStatement,
+                            1,
+                            POSITION(  pConst.FROM_TOKEN  IN tSqlStatement )  - LENGTH( pConst.FROM_TOKEN )));
+
+    pWhereClause   := TRIM( SUBSTRING( tSqlStatement,
+                            POSITION(  pConst.WHERE_TOKEN IN tSqlStatement )  + LENGTH( pConst.WHERE_TOKEN )));
+
+    IF  LENGTH(   pWhereClause )                        > 0
+    AND POSITION( pConst.WHERE_TOKEN IN pWhereClause )  > 0     -- We have to get rid of the appended token
+    THEN
+        pWhereClause   := TRIM( SUBSTRING( pWhereClause,
+                                1,
+                                POSITION( pConst.WHERE_TOKEN IN pWhereClause ) - LENGTH( pConst.WHERE_TOKEN )));
+    END IF;
+
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$deconstructSqlStatement';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$deletematerializedviewrows(mvrefresh."mv$allconstants", text, text, text, uuid[]); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$deletematerializedviewrows"(pconst mvrefresh."mv$allconstants", powner text, pviewname text, prowidcolumn text, prowids uuid[]) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$deleteMaterializedViewRows
+Author:       Mike Revitt
+Date:         12/011/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+07/05/2019  | M Revitt      | Convert to array processing
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Gets called to remove the row from the Materialized View when a delete is detected
+
+Note:           This function was modified to array processing to address some performance concerns found during testing
+
+Arguments:      IN      pConst              The memory structure containing all constants
+                IN      pOwner              The owner of the object
+                IN      pViewName           The name of the underlying table for the materialized view
+                IN      pRowidColumn        The MV_M_ROW$_COLUMN for this table in the base table
+                IN      pRowIDs             An array holding the unique identifiers to locate the modified row
+Returns:                VOID
+
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tSqlStatement   TEXT;
+
+BEGIN
+
+    tSqlStatement :=    pConst.DELETE_FROM || pOwner  || pConst.DOT_CHARACTER   || pViewName        ||
+                        pConst.WHERE_COMMAND          || pRowidColumn           || pConst.IN_ROWID_LIST;
+
+    EXECUTE tSqlStatement
+    USING   pRowIDs;
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$deleteMaterializedViewRows';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_X$;
+
+
+--
+-- Name: mv$deletepgmview(text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$deletepgmview"(powner text, pviewname text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$deletePgMview
+Author:       Mike Revitt
+Date:         04/06/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+04/06/2019  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Every time a new materialized view is created, a record of that view is also created in the data dictionary table
+                pg$mviews.
+
+                This function removes that row when a materialized view is removed.
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pViewName           The name of the materialized view
+Returns:                VOID
+
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+BEGIN
+
+    DELETE
+    FROM    pg$mviews
+    WHERE
+            owner       = pOwner
+    AND     view_name   = pViewName;
+
+    RETURN;
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$deletePgMview';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$deletepgmviewlog(text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$deletepgmviewlog"(powner text, ptablename text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$deletePgMviewLog
+Author:       Mike Revitt
+Date:         04/06/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+04/06/2019  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Every time a new materialized view log is created, a record of that log is also created in the data dictionary table
+                pg$mview_logs.
+
+                This function removes that row when a materialized view log is removed.
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pTableName          The name of the materialized view log
+Returns:                VOID
+
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+BEGIN
+
+    DELETE
+    FROM    pg$mview_logs
+    WHERE
+            owner       = pOwner
+    AND     table_name  = pTableName;
+
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$deletePgMviewLog';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$deletepgmviewojdetails(text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$deletepgmviewojdetails"(powner text, pviewname text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$deletePgMviewOjDetails
+Author:       David Day
+Date:         01/07/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+01/07/2019  | D Day	    	| Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Every time a new materialized view is created, a record of the outer join table(s) details is also created in the data dictionary table
+                pg$mviews_oj_details which is used as part of the outer join source table(s) DELETE process.
+
+                This function removes that row(s) when a materialized view is removed.
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pViewName           The name of the materialized view
+Returns:                VOID
+
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+BEGIN
+
+    DELETE
+    FROM    pg$mviews_oj_details
+    WHERE
+            owner       = pOwner
+    AND     view_name   = pViewName;
+
+    RETURN;
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$deletePgMviewOjDetails';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$droptable(mvrefresh."mv$allconstants", text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$droptable"(pconst mvrefresh."mv$allconstants", powner text, ptablename text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$dropTable
+Author:       Mike Revitt
+Date:         04/06/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+04/06/2019  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Generic function to drop any tables in a Postgres database, used in this context to remove the Materialized View
+                and Materialized View Log tables
+
+Arguments:      IN      pConst              The memory structure containing all constants
+                IN      pOwner              The owner of the object
+                IN      pTableName          The name of the table to be dropped
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tSqlStatement   TEXT    := NULL;
+
+BEGIN
+
+    tSqlStatement   :=  pConst.DROP_TABLE || pOwner || pConst.DOT_CHARACTER || pTableName;
+
+    EXECUTE tSqlStatement;
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$dropTable';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$droptrigger(mvrefresh."mv$allconstants", text, text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$droptrigger"(pconst mvrefresh."mv$allconstants", powner text, ptriggername text, ptablename text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$dropTrigger
+Author:       Mike Revitt
+Date:         04/06/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Generic function to drop any trigger in a Postgres database, used in this context to remove the trigger from the
+                Materialized View Log tables
+
+Arguments:      IN      pConst              The memory structure containing all constants
+                IN      pOwner              The owner of the object
+                IN      pTriggerName        The name of the materialized view source trigger
+                IN      pTableName          The name of the materialized view source table
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tSqlStatement TEXT;
+
+BEGIN
+
+    tSqlStatement := pConst.TRIGGER_DROP || pTriggerName || pConst.ON_COMMAND || pOwner || pConst.DOT_CHARACTER || pTableName;
+
+    EXECUTE tSqlStatement;
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$dropTrigger';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$executemvfastrefresh(mvrefresh."mv$allconstants", text, text, text, text, text, boolean, text, text, uuid[]); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$executemvfastrefresh"(pconst mvrefresh."mv$allconstants", pdmltype text, powner text, pviewname text, prowidcolumn text, ptablealias text, poutertable boolean, pinneralias text, pinnerrowid text, prowidarray uuid[]) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$executeMVFastRefresh
+Author:       Mike Revitt
+Date:         08/05/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+01/07/2019	| David Day		| Added function mv$updateOuterJoinColumnsNull to handle outer join deletes.            |               |
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Selects all of the data from the materialized view log, in the order it was created, and applies the changes to
+                the materialized view table and once the change has been applied the bit value for the materialized view is
+                removed from the PgMview log row.
+
+                Once all rows have been processed the materialized view log is cleaned up, in that all rows with a bitmap of zero
+                are deleted as they are then no longer required
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pViewName           The name of the materialized view
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    cResult CHAR(1)     := NULL;
+
+BEGIN
+
+    CASE pDmlType
+    WHEN pConst.DELETE_DML_TYPE
+    THEN
+	    IF TRUE = pOuterTable
+        THEN	
+		
+			cResult :=  mv$updateOuterJoinColumnsNull
+							(
+								pConst,
+								pOwner,
+								pViewName,
+								pTableAlias,
+								pRowidColumn,
+								pRowIDArray
+							);
+		
+		ELSE
+			cResult := mv$deleteMaterializedViewRows( pConst, pOwner, pViewName, pRowidColumn, pRowIDArray );
+		END IF;
+			
+    WHEN pConst.INSERT_DML_TYPE
+    THEN
+        IF TRUE = pOuterTable
+        THEN
+            cResult :=  mv$insertOuterJoinRows
+                        (
+                            pConst,
+                            pOwner,
+                            pViewName,
+                            pTableAlias,
+                            pInnerAlias,
+                            pInnerRowid,
+                            pRowIDArray
+                        );
+        ELSE
+            cResult := mv$deleteMaterializedViewRows( pConst, pOwner, pViewName, pRowidColumn, pRowIDArray );
+            cResult := mv$insertMaterializedViewRows( pConst, pOwner, pViewName, pTableAlias,  pRowIDArray );
+        END IF;
+
+    WHEN pConst.UPDATE_DML_TYPE
+    THEN
+        cResult := mv$deleteMaterializedViewRows( pConst, pOwner, pViewName, pRowidColumn, pRowIDArray );
+        cResult := mv$updateMaterializedViewRows( pConst, pOwner, pViewName, pTableAlias,  pRowIDArray );
+    ELSE
+        RAISE EXCEPTION 'DML Type % is unknown', pDmlType;
+    END CASE;
+
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$executeMVFastRefresh';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$extractcompoundviewtables(mvrefresh."mv$allconstants", text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$extractcompoundviewtables"(pconst mvrefresh."mv$allconstants", ptablenames text, OUT ptablearray text[], OUT paliasarray text[], OUT prowidarray text[], OUT poutertablearray text[], OUT pinneraliasarray text[], OUT pinnerrowidarray text[], OUT pouterleftaliasarray text[], OUT pouterrightaliasarray text[], OUT pleftouterjoinarray text[], OUT prightouterjoinarray text[]) RETURNS record
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$extractCompoundViewTables
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+12/02/2020	| D Day 		| Defect fix - changed logic to populate OUT parameters pInnerAliasArray and pInnerRowidArray correctly 
+			|				| with the parent alias and rowid for the corresponding LEFT and RIGHT outer table joining conditions. This
+			|				| is then populated in the data dictionary table pg$mviews columns inner_alias_array and inner_rowid_array
+			|				| and used during the INSERT DML changes registered in the outer join mlog table(s). If there is a matching
+			|               | rowid populated for the parent on the same row(s) based on the rowid array for the child table the record
+			|				| will be DELETED and INSERTED back into the mview table. If there is no parent rowid then this will be treated
+			|				| as a new INSERTED row(s).
+23/07/2019	| D Day			| Defect fix - added logic to get the LEFT and RIGHT outer join columns joining condition aliases to
+			|				| build dynamic UPDATE statement for outer join DELETE changes.
+11/07/2019  | D Day         | Defect fix - changed mv$createRow$Column input parameter to use alias array instead of table array
+            |               | as this will be used as part of the m_row$ column name used to refresh the materialized view.
+18/06/2019  | M Revitt      | Fix a logic bomb with the contruct of the inner table and outer table arrays
+            |               | Add an exception handler
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    One of the most difficult tasks with the materialized view fast refresh process is programatically determining
+                the columns, base tables and select criteria that have been used to construct the view.
+
+                This function deconstructs the FROM clause that was used to create the materialized view and determines
+                o   All of the outer joined tables
+                o   All of the inner joined tables
+                o   All inner joined table aliases
+                o   All
+                primary table and a complete list of all tables involved in the query
+
+Notes:          The technique used here is to search for each of the key words in FROM clause, COMMA, RIGHT, ON, JOIN and replace
+                them with an unprintable character which can be search for later.
+
+                To locate the keywords they are searched for with acceptable command delimination characters either side of the
+                key word, SPACE, NEW LINE, CARRIAGE RETURN
+
+                Once all of the replacements have been completed it becomes a simple task to extract the necessary information
+
+PostGres Notes:
+            Qualified joins
+                T1 { [INNER] | { LEFT | RIGHT | FULL } [OUTER] } JOIN T2 ON boolean_expression
+                T1 { [INNER] | { LEFT | RIGHT | FULL } [OUTER] } JOIN T2 USING ( join column list )
+                T1 NATURAL { [INNER] | { LEFT | RIGHT | FULL } [OUTER] } JOIN T2
+                The words INNER and OUTER are optional in all forms.
+                INNER is the default; LEFT, RIGHT, and FULL imply an outer join.
+
+                The join condition is specified in the ON or USING clause, or implicitly by the word NATURAL. The join condition
+                determines which rows from the two source tables are considered to “match”, as explained in detail below.
+
+                The possible types of qualified join are:
+
+            INNER JOIN
+                For each row R1 of T1, the joined table has a row for each row in T2 that satisfies the join condition with R1.
+
+            LEFT OUTER JOIN
+                First, an inner join is performed. Then, for each row in T1 that does not satisfy the join condition with any row
+                in T2, a joined row is added with null values in columns of T2. Thus, the joined table always has at least one row
+                for each row in T1.
+
+            RIGHT OUTER JOIN
+                First, an inner join is performed. Then, for each row in T2 that does not satisfy the join condition with any row
+                in T1, a joined row is added with null values in columns of T1. This is the converse of a left join: the
+                result table will always have a row for each row in T2.
+
+            FULL OUTER JOIN
+                First, an inner join is performed. Then, for each row in T1 that does not satisfy the join condition with any row
+                in T2, a joined row is added with null values in columns of T2. Also, for each row of T2 that does not satisfy the
+                join condition with any row in T1, a joined row with null values in the columns of T1 is added.
+
+            ON CLAUSE
+                The ON clause is the most general kind of join condition: it takes a Boolean value expression of the same kind as
+                is used in a WHERE clause. A pair of rows from T1 and T2 match if the ON expression evaluates to true.
+
+            USING CLAUSE
+                The USING clause is a shorthand that allows you to take advantage of the specific situation where both sides of the
+                join use the same name for the joining column(s). It takes a comma-separated list of the shared column names and
+                forms a join condition that includes an equality comparison for each one. For example, joining T1 and T2 with USING
+                (a, b) produces the join condition ON T1.a = T2.a AND T1.b = T2.b.
+
+                Furthermore, the output of JOIN USING suppresses redundant columns: there is no need to print both of the matched
+                columns, since they must have equal values. While JOIN ON produces all columns from T1 followed by all columns
+                from T2, JOIN USING produces one output column for each of the listed column pairs (in the listed order), followed
+                by any remaining columns from T1, followed by any remaining columns from T2.
+
+                Finally, NATURAL is a shorthand form of USING: it forms a USING list consisting of all column names that appear in
+                both input tables. As with USING, these columns appear only once in the output table. If there are no common
+                column names, NATURAL JOIN behaves like JOIN ... ON TRUE, producing a cross-product join.
+
+Arguments:      IN      pConst              	The memory structure containing all constants
+                IN      pTableNames       		The materialized view query SQL statement taken from the position of the FROM clause including all source tables and joins to be
+												used for the OUT parameters logic
+                OUT 	pTableArray				An array containing the source tables 
+				OUT		pAliasArray				An array containing the table aliases			
+				OUT		pRowidArray				An array containing the m_row$ column names
+				OUT		pOuterTableArray		An array containing the outer join source tables
+				OUT		pInnerAliasArray		An array containing the inner join table aliases
+				OUT		pInnerRowidArray		An array containing the inner table m_row$ column aliases
+				OUT		pOuterLeftAliasArray	An array containing the left outer join column name joining condition aliases  
+				OUT		pOuterRightAliasArray	An array containing the right outer join column name joining condition aliases  
+				OUT		pLeftOuterJoinArray		An array confirming whether the source table is from a left outer join condition
+				OUT		pRightOuterJoinArray	An array confirming whether the source table is from a right outer join condition
+					
+Returns:                RECORD              The ten out parameters
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tOuterTable     TEXT    := NULL;
+    tInnerAlias     TEXT    := pConst.NO_INNER_TOKEN;
+    tInnerRowid     TEXT    := pConst.NO_INNER_TOKEN;
+    tTableName      TEXT;
+    tTableNames     TEXT;
+    tTableAlias     TEXT;
+    iTableArryPos   INTEGER := pConst.ARRAY_LOWER_VALUE;
+	
+	tOuterLeftAlias TEXT;
+	tOuterRightAlias TEXT;
+	tLeftOuterJoin TEXT;
+	tRightOuterJoin TEXT;
+
+BEGIN
+--  Replacing a single space with a double space is only required on the first pass to ensure that there is padding around all
+--  special commands so we can find then in the future replace statments
+    tTableNames :=  REPLACE(                            pTableNames, pConst.SPACE_CHARACTER,  pConst.DOUBLE_SPACE_CHARACTERS );
+    tTableNames :=  mv$replaceCommandWithToken( pConst, tTableNames, pConst.JOIN_DML_TYPE,    pConst.JOIN_TOKEN );
+    tTableNames :=  mv$replaceCommandWithToken( pConst, tTableNames, pConst.ON_DML_TYPE,      pConst.ON_TOKEN );
+    tTableNames :=  mv$replaceCommandWithToken( pConst, tTableNames, pConst.OUTER_DML_TYPE,   pConst.OUTER_TOKEN );
+    tTableNames :=  mv$replaceCommandWithToken( pConst, tTableNames, pConst.INNER_DML_TYPE,   pConst.COMMA_CHARACTER );
+    tTableNames :=  mv$replaceCommandWithToken( pConst, tTableNames, pConst.LEFT_DML_TYPE,    pConst.COMMA_LEFT_TOKEN );
+    tTableNames :=  mv$replaceCommandWithToken( pConst, tTableNames, pConst.RIGHT_DML_TYPE,   pConst.COMMA_RIGHT_TOKEN );
+    tTableNames :=  REPLACE( REPLACE(                   tTableNames, pConst.NEW_LINE,         pConst.EMPTY_STRING ),
+                                                                     pConst.CARRIAGE_RETURN,  pConst.EMPTY_STRING );
+
+    tTableNames :=  tTableNames || pConst.COMMA_CHARACTER; -- A trailling comma is required so we can detect the final table
+
+    WHILE POSITION( pConst.COMMA_CHARACTER IN tTableNames ) > 0
+    LOOP
+		
+		tOuterLeftAlias := NULL;
+		tOuterRightAlias := NULL;
+		tLeftOuterJoin := NULL;
+		tRightOuterJoin := NULL;
+        tOuterTable := NULL;
+        tInnerAlias := NULL;
+        tInnerRowid := NULL;
+
+        tTableName := LTRIM( SPLIT_PART( tTableNames, pConst.COMMA_CHARACTER, 1 ));
+
+        IF POSITION( pConst.RIGHT_TOKEN IN tTableName ) > 0
+        THEN
+            tOuterTable := pAliasArray[iTableArryPos - 1];  -- There has to be a table preceeding a right outer join
+			
+			tOuterLeftAlias := TRIM(SUBSTRING(tTableName,POSITION( pConst.ON_TOKEN IN tTableName)+2,(mv$regExpInstr(tTableName,'\.',1,1))-(POSITION( pConst.ON_TOKEN IN tTableName)+2)));
+			tOuterRightAlias := TRIM(SUBSTRING(tTableName,POSITION( TRIM(pConst.EQUALS_COMMAND) IN tTableName)+1,(mv$regExpInstr(tTableName,'\.',1,2))-(POSITION( TRIM(pConst.EQUALS_COMMAND) IN tTableName)+1)));
+			tRightOuterJoin := pConst.RIGHT_OUTER_JOIN;
+			
+			tInnerAlias := tOuterRightAlias;
+			tInnerRowid := TRIM(REPLACE(REPLACE(tOuterRightAlias,'.','')||pConst.UNDERSCORE_CHARACTER||pConst.MV_M_ROW$_SOURCE_COLUMN,'"',''));
+			
+
+        ELSIF POSITION( pConst.LEFT_TOKEN IN tTableName ) > 0   -- There has to be a table preceeding a left outer join
+        THEN
+            tOuterTable := TRIM( SUBSTRING( tTableName,
+                                            POSITION( pConst.JOIN_TOKEN   IN tTableName ) + LENGTH( pConst.JOIN_TOKEN),
+                                            POSITION( pConst.ON_TOKEN     IN tTableName ) - LENGTH( pConst.ON_TOKEN)
+                                            - POSITION( pConst.JOIN_TOKEN IN tTableName )));	
+			
+			tOuterLeftAlias := TRIM(SUBSTRING(tTableName,POSITION( pConst.ON_TOKEN IN tTableName)+2,(mv$regExpInstr(tTableName,'\.',1,1))-(POSITION( pConst.ON_TOKEN IN tTableName)+2)));	
+			tOuterRightAlias := TRIM(SUBSTRING(tTableName,POSITION( TRIM(pConst.EQUALS_COMMAND) IN tTableName)+1,(mv$regExpInstr(tTableName,'\.',1,2))-(POSITION( TRIM(pConst.EQUALS_COMMAND) IN tTableName)+1)));
+			tLeftOuterJoin := pConst.LEFT_OUTER_JOIN;
+			
+            tInnerAlias := tOuterLeftAlias;
+			tInnerRowid := TRIM(REPLACE(REPLACE(tOuterLeftAlias,'.','')||pConst.UNDERSCORE_CHARACTER||pConst.MV_M_ROW$_SOURCE_COLUMN,'"',''));
+			
+        END IF;
+
+        -- The LEFT, RIGHT and JOIN tokens are only required for outer join pattern matching
+        tTableName  := REPLACE( tTableName, pConst.JOIN_TOKEN,  pConst.EMPTY_STRING );
+        tTableName  := REPLACE( tTableName, pConst.LEFT_TOKEN,  pConst.EMPTY_STRING );
+        tTableName  := REPLACE( tTableName, pConst.RIGHT_TOKEN, pConst.EMPTY_STRING );
+        tTableName  := REPLACE( tTableName, pConst.OUTER_TOKEN, pConst.EMPTY_STRING );
+        tTableName  := LTRIM(   tTableName );
+
+        pTableArray[iTableArryPos]  := (REGEXP_SPLIT_TO_ARRAY( tTableName,  pConst.REGEX_MULTIPLE_SPACES ))[1];
+        tTableAlias                 := (REGEXP_SPLIT_TO_ARRAY( tTableName,  pConst.REGEX_MULTIPLE_SPACES ))[2];
+        pAliasArray[iTableArryPos]  :=  COALESCE( NULLIF( NULLIF( tTableAlias, pConst.EMPTY_STRING), pConst.ON_TOKEN),
+                                                                  pTableArray[iTableArryPos] ) || pConst.DOT_CHARACTER;
+		pRowidArray[iTableArryPos]  :=  mv$createRow$Column( pConst, pAliasArray[iTableArryPos] );
+
+        pOuterTableArray[iTableArryPos]  :=(REGEXP_SPLIT_TO_ARRAY( tOuterTable, pConst.REGEX_MULTIPLE_SPACES ))[1];
+
+        tTableNames     := TRIM( SUBSTRING( tTableNames,
+                                 POSITION( pConst.COMMA_CHARACTER IN tTableNames ) + LENGTH( pConst.COMMA_CHARACTER )));
+								 
+		pInnerAliasArray[iTableArryPos] 		:= tInnerAlias;
+		pInnerRowidArray[iTableArryPos]			:= tInnerRowid;
+		
+		pOuterLeftAliasArray[iTableArryPos] 	:= tOuterLeftAlias;
+		pOuterRightAliasArray[iTableArryPos] 	:= tOuterRightAlias;
+		pLeftOuterJoinArray[iTableArryPos] 		:= tLeftOuterJoin;
+		pRightOuterJoinArray[iTableArryPos] 	:= tRightOuterJoin;
+		
+        iTableArryPos   := iTableArryPos + 1;
+
+    END LOOP;
+
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$extractCompoundViewTables';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tTableNames;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_X$;
+
+
+--
+-- Name: mv$findfirstfreebit(mvrefresh."mv$allconstants", bigint[]); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$findfirstfreebit"(pconst mvrefresh."mv$allconstants", pbitmap bigint[]) RETURNS mvrefresh."mv$bitvalue"
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$findFirstFreeBit
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+30/10/2019  | M Revitt      | Changed return value to mv$bitValue and pBitMap to BIGINT[] to accomodate more than 62 MV's per table
+08/10/2019  | D DAY			| Change returns type from INTEGER to SMALLINT to match the bit data type.
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    When a new materialized view is registered against a base table, it is assigned a unique bit against which all
+                interest is registered.
+
+                The bit that is assigned is the lowest value bit that has not yet been assigned, as long as that balue is lower
+                then the maximum number of pg$mviews per table
+
+Arguments:      IN      pBitMap[]           The bit map value constructed from assigned bits
+Returns:                mv$bitValue         A record containing the next free bit, the array row it is in and it's map
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    iBit                SMALLINT    := pConst.FIRST_PGMVIEW_BIT;
+    iRowBit             SMALLINT    := pConst.FIRST_PGMVIEW_BIT;
+    iBitRow             SMALLINT    := pConst.ARRAY_LOWER_VALUE;
+    iBitValue           mv$bitValue;
+
+BEGIN
+
+    WHILE ( pBitMap[iBitRow] & POWER( pConst.BASE_TWO, iRowBit )::BIGINT ) <> pConst.BITMAP_NOT_SET
+    AND     pConst.MAX_PGMVIEWS_PER_TABLE   >= iBit
+    LOOP
+        IF pConst.FIRST_PGMVIEW_BIT < iRowBit -- Only increment the row if this is not the first loop
+        THEN
+            iBitRow := iBitRow + 1;
+        END IF;
+        
+        iRowBit := pConst.FIRST_PGMVIEW_BIT;
+        
+        WHILE ( pBitMap[iBitRow] & POWER( pConst.BASE_TWO, iRowBit )::BIGINT ) <> pConst.BITMAP_NOT_SET
+        AND     pConst.MAX_PGMVIEWS_PER_ROW >= iRowBit
+        LOOP
+            iRowBit := iRowBit + 1;
+            iBit    := iBit    + 1;
+        END LOOP;
+        
+        IF pConst.MAX_PGMVIEWS_PER_ROW < iRowBit
+        THEN
+            iBitRow := iBitRow + 1;
+            iRowBit := pConst.FIRST_PGMVIEW_BIT;
+            
+            IF pBitMap[iBitRow] IS NULL
+            THEN
+                pBitMap[iBitRow] := pConst.BITMAP_NOT_SET;
+            END IF;
+        END IF;
+    END LOOP;
+    
+    IF pConst.MAX_PGMVIEWS_PER_TABLE < iBit
+    THEN
+        RAISE EXCEPTION 'Maximum number of pg$mviews (%s) for table exceeded', pConst.MAX_PGMVIEWS_PER_TABLE;
+    ELSE
+        iBitValue.BIT_VALUE := iBit;
+        iBitValue.BIT_ROW   := iBitRow;
+        iBitValue.ROW_BIT   := iRowBit;
+        iBitValue.BIT_MAP   := POWER(  pConst.BASE_TWO, iBitValue.ROW_BIT );
+
+        RETURN( iBitValue );
+    END IF;
+    
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$findFirstFreeBit';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$getbitvalue(mvrefresh."mv$allconstants", smallint); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$getbitvalue"(pconst mvrefresh."mv$allconstants", pbit smallint) RETURNS mvrefresh."mv$bitvalue"
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$getBitValue
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+15/01/2020  | M Revitt      | Need to decrement the Bit Value to allow for the bitmap offset, tables start at 1 bits at 0
+30/10/2019  | M Revitt      | Modified to populate the BitValue record type to accomodate > 63 MV's per Table
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Converts a bit into it's binary value.
+
+Arguments:      IN      pBit                The bit
+Returns:                mv$bitValue         The record containing all the pertinant bit information
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    iBitValue   mv$bitValue;
+    
+BEGIN
+
+    iBitValue.BIT_VALUE := pBit;
+    iBitValue.BIT_ROW   := FLOOR( iBitValue.BIT_VALUE / ( pConst.BITMAP_OFFSET + pConst.MAX_PGMVIEWS_PER_ROW )) + pConst.ARRAY_LOWER_VALUE;
+    iBitValue.ROW_BIT   := MOD(   iBitValue.BIT_VALUE,  ( pConst.BITMAP_OFFSET + pConst.MAX_PGMVIEWS_PER_ROW ));
+    iBitValue.BIT_MAP   := POWER( pConst.BASE_TWO, iBitValue.ROW_BIT );
+    
+    RETURN( iBitValue );
+    
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$getBitValue';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: pg$mview_logs; Type: TABLE; Schema: mvrefresh; Owner: -
+--
+
+CREATE TABLE mvrefresh."pg$mview_logs" (
+    owner text NOT NULL,
+    "pglog$_name" text NOT NULL,
+    table_name text NOT NULL,
+    trigger_name text NOT NULL,
+    pg_mview_bitmap bigint[] DEFAULT ARRAY[0] NOT NULL
+);
+
+
+--
+-- Name: mv$getpgmviewlogtabledata(mvrefresh."mv$allconstants", text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$getpgmviewlogtabledata"(pconst mvrefresh."mv$allconstants", ptablename text) RETURNS mvrefresh."pg$mview_logs"
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$getPgMviewLogTableData
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Returns all of the data stored in the data dictionary about this materialized view log.
+
+Note:           This function is used when the table owner is not know
+                This function also requires the SEARCH_PATH to be set to the current value so that the select statement can find
+                the source tables.
+                The default for PostGres functions is to not use the search path when executing with the privileges of the creator
+
+
+Arguments:      IN      pPgLog$Name         The name of the materialized view log table
+Returns:                RECORD              The row of data from the data dictionary relating to this materialized view log
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tOwner      TEXT    := NULL;
+
+BEGIN
+
+    tOwner  := mv$getSourceTableSchema( pConst, pTableName );
+
+    RETURN( mv$getPgMviewLogTableData( pConst, tOwner, pTableName ));
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$getPgMviewLogTableData';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$getpgmviewlogtabledata(mvrefresh."mv$allconstants", text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$getpgmviewlogtabledata"(pconst mvrefresh."mv$allconstants", powner text, ptablename text) RETURNS mvrefresh."pg$mview_logs"
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$getPgMviewLogTableData
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Returns all of the data stored in the data dictionary about this materialized view log.
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pPgLog$Name         The name of the materialized view log table
+Returns:                RECORD              The row of data from the data dictionary relating to this materialized view log
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    aPgMviewLog            pg$mview_logs;
+
+    cgetPgMviewLogTableData    CURSOR
+    FOR
+    SELECT
+            *
+    FROM    pg$mview_logs
+    WHERE   owner       = pOwner
+    AND     table_name  = pTableName;
+
+BEGIN
+    OPEN    cgetPgMviewLogTableData;
+    FETCH   cgetPgMviewLogTableData
+    INTO    aPgMviewLog;
+    CLOSE   cgetPgMviewLogTableData;
+
+    IF aPgMviewLog.table_name IS NULL
+    THEN
+        RAISE EXCEPTION 'Materialised View ''%'' does not have a PgMview Log', pOwner || pConst.DOT_CHARACTER || pTableName;
+    ELSE
+        RETURN( aPgMviewLog );
+    END IF;
+    
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$getPgMviewLogTableData';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: pg$mviews_oj_details; Type: TABLE; Schema: mvrefresh; Owner: -
+--
+
+CREATE TABLE mvrefresh."pg$mviews_oj_details" (
+    owner text NOT NULL,
+    view_name text NOT NULL,
+    table_alias text NOT NULL,
+    rowid_column_name text NOT NULL,
+    source_table_name text NOT NULL,
+    column_name_array text[],
+    update_sql text,
+    join_replacement_from_sql text
+);
+
+
+--
+-- Name: mv$getpgmviewojdetailstabledata(mvrefresh."mv$allconstants", text, text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$getpgmviewojdetailstabledata"(pconst mvrefresh."mv$allconstants", powner text, pviewname text, ptablealias text) RETURNS mvrefresh."pg$mviews_oj_details"
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$getPgMviewOjDetailsTableData
+Author:       David Day
+Date:         28/04/2020
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+28/04/2020  | D Day      	| Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Returns all of the data stored in the data dictionary about this materialized view outer join table alias details.
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pViewName           The name of the materialized view
+				IN		pTableAlias			The outer join table alias of the materialized view
+Returns:                RECORD              The row of data from the data dictionary relating to this materialized view
+
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+    aPgMviewOjDetails           pg$mviews_oj_details;
+	
+	iAliasExists				INTEGER := 0;
+
+    cgetPgMviewOjDetailTableData   CURSOR
+    FOR
+    SELECT
+            *
+    FROM    pg$mviews_oj_details
+    WHERE   owner       = pOwner
+    AND     view_name   = pViewName
+	AND 	table_alias = pTableAlias;
+BEGIN
+
+    OPEN    cgetPgMviewOjDetailTableData;
+    FETCH   cgetPgMviewOjDetailTableData
+    INTO    aPgMviewOjDetails;
+    CLOSE   cgetPgMviewOjDetailTableData;
+	
+	SELECT count( aPgMviewOjDetails.table_alias ) INTO iAliasExists;
+
+	IF iAliasExists = 0
+    THEN
+        RAISE EXCEPTION 'Materialised View ''%'' does not have a alias % table', pOwner || pConst.DOT_CHARACTER || pViewName, pTableAlias;
+    ELSE
+        RETURN( aPgMviewOjDetails );
+    END IF;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$getPgMviewOjDetailsTableData';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: pg$mviews; Type: TABLE; Schema: mvrefresh; Owner: -
+--
+
+CREATE TABLE mvrefresh."pg$mviews" (
+    owner text NOT NULL,
+    view_name text NOT NULL,
+    pgmv_columns text NOT NULL,
+    select_columns text NOT NULL,
+    table_names text NOT NULL,
+    where_clause text,
+    table_array text[],
+    alias_array text[],
+    rowid_array text[],
+    log_array text[],
+    bit_array smallint[],
+    outer_table_array text[],
+    inner_alias_array text[],
+    inner_rowid_array text[]
+);
+
+
+--
+-- Name: mv$getpgmviewtabledata(mvrefresh."mv$allconstants", text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$getpgmviewtabledata"(pconst mvrefresh."mv$allconstants", powner text, pviewname text) RETURNS mvrefresh."pg$mviews"
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$getPgMviewTableData
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+24/07/2019  | D Day         | Added COALESCE function to replace null with 0 as this was not raising expection if materialized view
+			|				| does not exist.
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Returns all of the data stored in the data dictionary about this materialized view.
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pViewName           The name of the materialized view
+Returns:                RECORD              The row of data from the data dictionary relating to this materialized view
+
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+    aPgMview           pg$mviews;
+
+    cgetPgMviewTableData   CURSOR
+    FOR
+    SELECT
+            *
+    FROM    pg$mviews
+    WHERE   owner       = pOwner
+    AND     view_name   = pViewName;
+BEGIN
+    OPEN    cgetPgMviewTableData;
+    FETCH   cgetPgMviewTableData
+    INTO    aPgMview;
+    CLOSE   cgetPgMviewTableData;
+
+    IF 0 = COALESCE( CARDINALITY( aPgMview.table_array ), 0 )
+    THEN
+        RAISE EXCEPTION 'Materialised View ''%'' does not have a base table', pOwner || pConst.DOT_CHARACTER || pViewName;
+    ELSE
+        RETURN( aPgMview );
+    END IF;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$getPgMviewTableData';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$getpgmviewviewcolumns(mvrefresh."mv$allconstants", text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$getpgmviewviewcolumns"(pconst mvrefresh."mv$allconstants", powner text, pviewname text) RETURNS text
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$getPgMviewViewColumns
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    The easiest way to get the names of the columns that have been created, it is possible that the select statement
+                used aliases, is to extract them from the data dictionary table after creation. Which is what I am doing here.
+
+Notes:          Because the final column is always the ROWID column, we add that manually at the end
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pViewName           The name of the materialized view
+Returns:                TEXT                A comma delimited string of the column names in the materialized view
+
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tColumnNames            TEXT    := '';  -- Has to be initialised to work in loop
+    rPgMviewColumnNames     RECORD;
+
+BEGIN
+
+    FOR rPgMviewColumnNames
+    IN
+        SELECT
+                column_name
+        FROM    information_schema.columns
+        WHERE   table_schema    = LOWER( pOwner )
+        AND     table_name      = LOWER( pViewName )
+    LOOP
+        tColumnNames := tColumnNames || rPgMviewColumnNames.column_name || pConst.COMMA_CHARACTER;
+    END LOOP;
+
+    IF tColumnNames IS NULL
+    THEN
+        RAISE EXCEPTION 'Materialised View ''%'' does not have any columns', pOwner || pConst.DOT_CHARACTER || pViewName;
+    ELSE
+        tColumnNames   := LEFT( tColumnNames,  LENGTH( tColumnNames  ) - 1 );  -- Remove trailing comma
+        RETURN( tColumnNames );
+    END IF;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$getPgMviewViewColumns';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$getsourcetableschema(mvrefresh."mv$allconstants", text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$getsourcetableschema"(pconst mvrefresh."mv$allconstants", ptablename text) RETURNS text
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$getSourceTableSchema
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+21/02/2019  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Looks down the search path to determine which schema is being used to locate the table.
+
+Note:           This function also requires the SEARCH_PATH to be set to the current value so that the select statement can find
+                the source tables.
+                The default for PostGres functions is to not use the search path when executing with the privileges of the creator
+
+Arguments:      IN      pTableName          The name of the table we are trying to locate
+Returns:                TEXT                The name of the schema where the table was located
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tOwner      TEXT    := NULL;
+    tTableList  TEXT;
+    tSearchPath TEXT[];
+
+    cGetOwner   CURSOR( cTableName TEXT, cSchemaName TEXT )
+    FOR
+        SELECT
+                table_schema
+        FROM
+                information_schema.tables
+        WHERE
+                table_name      = cTableName
+        AND     table_schema    = cSchemaName;
+BEGIN
+
+    tTableList  :=  CURRENT_SCHEMAS( FALSE );
+    tTableList  :=  REPLACE( REPLACE( REPLACE( tTableList,
+                    pConst.LEFT_BRACE_CHARACTER,      pConst.EMPTY_STRING),
+                    pConst.RIGHT_BRACE_CHARACTER,     pConst.EMPTY_STRING),
+                    pConst.COMMA_CHARACTER,           pConst.SPACE_CHARACTER);
+    tSearchPath :=  REGEXP_SPLIT_TO_ARRAY( tTableList,  pConst.REGEX_MULTIPLE_SPACES);
+
+    FOR i IN array_lower( tSearchPath, 1 ) .. array_upper( tSearchPath, 1 )
+    LOOP
+        IF  tOwner IS NULL
+        THEN
+            OPEN    cGetOwner( pTableName, tSearchPath[i] );
+            FETCH   cGetOwner
+            INTO    tOwner;
+            CLOSE   cGetOwner;
+        END IF;
+    END LOOP;
+
+    IF tOwner IS NULL
+    THEN
+        RAISE INFO      'Exception in function mv$getSourceTableSchema';
+        RAISE EXCEPTION 'Table ''%'' can not be located in the search path', pTableName;
+    ELSE
+        RETURN( tOwner );
+    END IF;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$getSourceTableSchema';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$grantselectprivileges(mvrefresh."mv$allconstants", text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$grantselectprivileges"(pconst mvrefresh."mv$allconstants", powner text, pobjectname text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$grantSelectPrivileges
+Author:       Mike Revitt
+Date:         21/02/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Whilst objects are created into the named schema, the ownership remains with the package owner, mike_pgmview, so in
+                order to allow other users to access these materialized views it is necessary to grant select privileges to the
+                default role 'PGMV_ROLE_NAME'
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pObjectName         The name of the object to receive select privileges
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tSqlStatement TEXT;
+
+BEGIN
+
+    tSqlStatement :=    pConst.GRANT_SELECT_ON    || pOwner   || pConst.DOT_CHARACTER   || pObjectName  ||
+                        pConst.TO_COMMAND                     || pConst.PGMV_SELECT_ROLE;
+
+    EXECUTE tSqlStatement;
+
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$grantSelectPrivileges';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$help(); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$help"() RETURNS text
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$help
+Author:       Mike Revitt
+Date:         18/06/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Displays the help message
+
+Arguments:      IN      None
+Returns:                TEXT    The help message
+
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    rConst          mv$allConstants;
+
+BEGIN
+
+    rConst := mv$buildAllConstants();
+    RETURN rConst.HELP_TEXT;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$help';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+
+END;
+$_$;
+
+
+--
+-- Name: mv$insertmaterializedviewlogrow(); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$insertmaterializedviewlogrow"() RETURNS trigger
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$insertMaterializedViewLogRow
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+23/03/2020	| D Day			| Removed exception block from trigger as they can be particularly troublesome because they burn extra 7
+			|				| transaction IDs. If there is a trigger on a table with an exception block, the sub transaction 
+			|				| consumes a transaction ID for each row being inserted causing the situation much sooner. 
+12/11/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    This is the function that is called by the trigger on the base table.
+
+Notes:          If the trigger is activated via a delete command then we have to get the original value of the MV_M_ROW$_COLUMN,
+                otherwise we must use the new value
+
+                If no materialized view has registered an interest in this table, no rows will be created
+
+Arguments:      NONE
+Returns:                TRIGGER     PostGre required return array for all functions called from a trigger
+
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tSqlStatement       TEXT;
+    uRow$               UUID;
+    aMikePgMviewLogs    pg$mview_logs;
+    rConst              mv$allConstants;
+
+BEGIN
+
+    rConst              := mv$buildTriggerConstants();
+    aMikePgMviewLogs    := mv$getPgMviewLogTableData( rConst, TG_TABLE_SCHEMA::TEXT, TG_TABLE_NAME::TEXT );
+
+    IF rConst.BITMAP_NOT_SET < ANY( aMikePgMviewLogs.pg_mview_bitmap )
+    THEN
+        IF TG_OP = rConst.DELETE_DML_TYPE
+        THEN
+            uRow$ := OLD.m_row$;
+        ELSE
+            uRow$ := NEW.m_row$;
+        END IF;
+        
+        tSqlStatement := rConst.INSERT_INTO             ||  aMikePgMviewLogs.pglog$_name    || rConst.MV_LOG$_INSERT_COLUMNS    ||
+                         rConst.SELECT_COMMAND          ||
+                         rConst.SINGLE_QUOTE_CHARACTER  ||  uRow$                           || rConst.QUOTE_COMMA_CHARACTERS    ||
+                                                            rConst.PG_MVIEW_BITMAP          || rConst.COMMA_CHARACTER           ||
+                         rConst.SINGLE_QUOTE_CHARACTER  ||  TG_OP                           || rConst.SINGLE_QUOTE_CHARACTER    ||
+                         rConst.FROM_PG$MVIEW_LOGS      ||
+                         rConst.WHERE_OWNER_EQUALS      ||  TG_TABLE_SCHEMA                 || rConst.SINGLE_QUOTE_CHARACTER    ||
+                         rConst.AND_TABLE_NAME_EQUALS   ||  TG_TABLE_NAME                   || rConst.SINGLE_QUOTE_CHARACTER;
+
+        EXECUTE tSqlStatement;
+    END IF;
+    RETURN  NULL;
+	
+END;
+$_X$;
+
+
+--
+-- Name: mv$insertmaterializedviewrows(mvrefresh."mv$allconstants", text, text, text, uuid[]); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$insertmaterializedviewrows"(pconst mvrefresh."mv$allconstants", powner text, pviewname text, ptablealias text DEFAULT NULL::text, prowids uuid[] DEFAULT NULL::uuid[]) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$insertMaterializedViewRows
+Author:       Mike Revitt
+Date:         12/011/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Gets called to insert a new row into the Materialized View when an insert is detected
+
+Note:           This function requires the SEARCH_PATH to be set to the current value so that the select statement can find the
+                source tables.
+                The default for PostGres functions is to not use the search path when executing with the privileges of the creator
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pViewName           The name of the materialized view
+                IN      pTableAlias         The alias for the base table in the original select statement
+                IN      pRowID              The unique identifier to locate the new row
+Returns:                VOID
+
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tSqlStatement   TEXT;
+    aPgMview        pg$mviews;
+
+BEGIN
+
+    aPgMview := mv$getPgMviewTableData( pConst, pOwner, pViewName );
+
+    tSqlStatement := pConst.INSERT_INTO    || pOwner || pConst.DOT_CHARACTER    || aPgMview.view_name   ||
+                     pConst.OPEN_BRACKET   || aPgMview.pgmv_columns             || pConst.CLOSE_BRACKET ||
+                     pConst.SELECT_COMMAND || aPgMview.select_columns           ||
+                     pConst.FROM_COMMAND   || aPgMview.table_names;
+
+    IF aPgMview.where_clause != pConst.EMPTY_STRING
+    THEN
+        tSqlStatement := tSqlStatement || pConst.WHERE_COMMAND || aPgMview.where_clause ;
+    END IF;
+
+    IF pRowIDs IS NOT NULL -- Because this fires for a Full Refresh as well as a Fast Refresh
+    THEN
+        IF aPgMview.where_clause != pConst.EMPTY_STRING
+        THEN
+            tSqlStatement := tSqlStatement  || pConst.AND_COMMAND;
+        ELSE
+            tSqlStatement := tSqlStatement  || pConst.WHERE_COMMAND;
+        END IF;
+
+        tSqlStatement :=  tSqlStatement || pTableAlias || pConst.MV_M_ROW$_SOURCE_COLUMN || pConst.IN_ROWID_LIST;
+    END IF;
+
+    EXECUTE tSqlStatement
+    USING   pRowIDs;
+
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$insertMaterializedViewRows';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_X$;
+
+
+--
+-- Name: mv$insertouterjoinrows(mvrefresh."mv$allconstants", text, text, text, text, text, uuid[]); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$insertouterjoinrows"(pconst mvrefresh."mv$allconstants", powner text, pviewname text, ptablealias text, pinneralias text, pinnerrowid text, prowids uuid[]) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$insertOuterJoinRows
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+28/04/2020	| D Day			| Added join_replacement_from_sql value from pg$mview_oj_details data dictionary table to use in DELETE 
+			|				| and INSERT statements to help performance.
+14/02/2020	| D Day			| Added dot character inbetween pInnerAlias and pConst.MV_M_ROW$_SOURCE_COLUMN as the inner alias array
+			|				| values no longer include the dot.
+19/06/2019  | M Revitt      | Fixed issue with Delete statment that added superious WHERE Clause when there was not WHERE statment
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    When inserting data into a complex materialized view, it is possible that a previous insert has already inserted
+                the row that we are about to insert if that row is the subject of an outer join or is a parent of multiple new rows
+
+                When applying updates to the materialized view it is possible that the row being updated has subsiquently been
+                deleted, so before we can apply an update we have to ensure that the base row still exists.
+
+                So to remove the possibility of duplicate rows we have to look to see if this situation has occured
+
+Arguments:      IN      pMikepg$mviews      The record of data for the materialized view
+                IN      pSourceTableAlias   The alias for the source table in the view create command
+                IN      pRowID              The rowid we are looking for
+Returns:                NULL
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tFromClause     	TEXT;
+    tSqlStatement   	TEXT;
+    aPgMview        	pg$mviews;
+	aPgMviewOjDetails	pg$mviews_oj_details;
+
+BEGIN
+
+    aPgMview    		 := mv$getPgMviewTableData( pConst, pOwner, pViewName );
+    aPgMviewOjDetails    := mv$getPgMviewOjDetailsTableData( pConst, pOwner, pViewName, pTableAlias);
+	
+	tFromClause := pConst.FROM_COMMAND  || aPgMviewOjDetails.join_replacement_from_sql     || pConst.WHERE_COMMAND;
+
+    IF LENGTH( aPgMview.where_clause ) > 0
+    THEN
+        tFromClause := tFromClause      || aPgMview.where_clause    || pConst.AND_COMMAND;
+    END IF;
+
+    tFromClause := tFromClause  || pTableAlias   || pConst.MV_M_ROW$_SOURCE_COLUMN   || pConst.IN_ROWID_LIST;
+
+    tSqlStatement   :=  pConst.DELETE_FROM       		||
+                        aPgMview.owner           		|| pConst.DOT_CHARACTER    || aPgMview.view_name			||
+                        pConst.WHERE_COMMAND     		|| pInnerRowid             ||
+                        pConst.IN_SELECT_COMMAND 		|| pInnerAlias             || pConst.DOT_CHARACTER    		|| 
+						pConst.MV_M_ROW$_SOURCE_COLUMN	|| tFromClause     		   || pConst.CLOSE_BRACKET;
+
+
+    EXECUTE tSqlStatement
+    USING   pRowIDs;
+	
+    tSqlStatement :=    pConst.INSERT_INTO       ||
+                        aPgMview.owner           || pConst.DOT_CHARACTER    || aPgMview.view_name   ||
+                        pConst.OPEN_BRACKET      || aPgMview.pgmv_columns   || pConst.CLOSE_BRACKET ||
+                        pConst.SELECT_COMMAND    || aPgMview.select_columns ||
+                        tFromClause;
+
+    EXECUTE tSqlStatement
+    USING   pRowIDs;
+
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$insertOuterJoinRows';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_X$;
+
+
+--
+-- Name: mv$insertpgmview(mvrefresh."mv$allconstants", text, text, text, text, text, text, text[], text[], text[], text[], text[], text[], boolean); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$insertpgmview"(pconst mvrefresh."mv$allconstants", powner text, pviewname text, pviewcolumns text, pselectcolumns text, ptablenames text, pwhereclause text, ptablearray text[], paliasarray text[], prowidarray text[], poutertablearray text[], pinneraliasarray text[], pinnerrowidarray text[], pfastrefresh boolean) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$insertPgMview
+Author:       Mike Revitt
+Date:         12/011/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+17/09/2019  | D Day         | Bug fix - Added logic to ignore log table name if it already exists as this was causing the bit value being set incorrectly
+			|				| in the data dictionary table bit_array column in pg$mviews table.
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Every time a new materialized view is created, a record of that view is also created in the data dictionary table
+                pg$mviews.
+
+                This table holds all of the pertinent information about the materialized view which is later used in the management
+                of that view.
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pViewName           The name of the materialized view
+                IN      pViewColumns        The comma delimited list of columns in the base pgmv$ table
+                IN      pSelectColumns      The comma delimited list of columns from the select statement
+                IN      pTableNames         The comma delimited list of tables from the select statement
+                IN      pWhereClause        The where clause from the select statement, this may be an empty string
+                IN      pOuterTableArray    An array that holds the list of outer joined tables in a multi table materialized view
+                IN      pTableArray         An array that holds the list of tables that make up the pgmv$ table
+                IN      pAliasArray         An array that holds the list of table alias that make up the pgmv$ table
+                IN      pRowidArray         An array that holds the list of rowid columns in the pgmv$ table
+                IN      pFastRefresh        TRUE or FALSE, does this materialized view support fast refreshes
+Returns:                VOID
+
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    aPgMviewLogData pg$mview_logs;
+	
+	aPgMviewLogOriginalData pg$mview_logs;
+
+    iBit            		SMALLINT    := NULL;
+    tLogArray       		TEXT[];
+    iBitArray       		INTEGER[];
+	
+	tTableName				TEXT;
+	
+	tDistinctTableArray 	TEXT[];
+	
+	iOrigBitValue			SMALLINT;
+	tOrigLogTableNameValue	TEXT;
+	
+	iTableAlreadyExistsCnt	INTEGER DEFAULT 0;
+	iLoopCounter			INTEGER DEFAULT 0; 
+	
+	rOrigMviewLogInfo 		RECORD;
+
+BEGIN
+
+    IF TRUE = pFastRefresh
+    THEN
+
+        FOR i IN array_lower( pTableArray, 1 ) .. array_upper( pTableArray, 1 )
+        LOOP
+			
+            aPgMviewLogData     :=  mv$getPgMviewLogTableData( pConst, pTableArray[i] );
+						
+			tTableName := pTableArray[i];		
+			tDistinctTableArray[i] := tTableName;
+			
+			SELECT count(1) INTO STRICT iTableAlreadyExistsCnt 
+			FROM (SELECT unnest(tDistinctTableArray) AS table_name) inline
+			WHERE inline.table_name = tTableName;
+			
+			IF iTableAlreadyExistsCnt = 1 
+			THEN
+
+            	iBit                :=  mv$setPgMviewLogBit
+            	                        (
+           	                             pConst,
+            	                            aPgMviewLogData.owner,
+           	                             	aPgMviewLogData.pglog$_name,
+            	                            aPgMviewLogData.pg_mview_bitmap
+                                   	 	);
+										
+            	tLogArray[i]        :=  aPgMviewLogData.pglog$_name;
+            	iBitArray[i]        :=  iBit;
+			
+			ELSE
+							
+				SELECT DISTINCT inline.bitvalue,
+				inline.LogTableNameValue
+				INTO iOrigBitValue, tOrigLogTableNameValue
+				FROM (SELECT unnest(iBitArray) bitValue,
+					  		 unnest(tLogArray) AS LogTableNameValue) inline
+				WHERE inline.LogTableNameValue = aPgMviewLogData.pglog$_name;
+				
+            	tLogArray[i]        := tOrigLogTableNameValue;
+				iBitArray[i]        := iOrigBitValue;
+			
+			END IF;
+			
+        END LOOP;
+    END IF;
+
+    INSERT
+    INTO    pg$mviews
+    (
+            owner,
+            view_name,
+            pgmv_columns,
+            select_columns,
+            table_names,
+            where_clause,
+            table_array,
+            alias_array,
+            rowid_array,
+            log_array,
+            bit_array,
+            outer_table_array,
+            inner_alias_array,
+            inner_rowid_array
+    )
+    VALUES
+    (
+            pOwner,
+            pViewName,
+            pViewColumns,
+            pSelectColumns,
+            pTableNames,
+            pWhereClause,
+            pTableArray,
+            pAliasArray,
+            pRowidArray,
+            tLogArray,
+            iBitArray,
+            pOuterTableArray,
+            pInnerAliasArray,
+            pInnerRowidArray
+    );
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$insertPgMview';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+
+END;
+$_X$;
+
+
+--
+-- Name: mv$insertpgmviewlogs(mvrefresh."mv$allconstants", text, text, text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$insertpgmviewlogs"(pconst mvrefresh."mv$allconstants", powner text, "ppglog$name" text, ptablename text, ptriggername text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$insertPgMviewLogs
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    inserts the row into the materialized view log data dictionary table
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pPgLog$Name         The name of the materialized view log table
+                IN      pTableName          The name of the materialized view source table
+                IN      pMvSequenceName     The name of the materialized view sequence
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+BEGIN
+
+    INSERT  INTO
+            pg$mview_logs
+            (
+                owner,  pglog$_name, table_name, trigger_name
+            )
+    VALUES  (
+                pOwner, pPgLog$Name, pTableName, pTriggerName
+            );
+
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$insertPgMviewLogs';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_X$;
+
+
+--
+-- Name: mv$insertpgmviewouterjoindetails(mvrefresh."mv$allconstants", text, text, text, text, text[], text[], text[], text[], text[], text[], text[]); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$insertpgmviewouterjoindetails"(pconst mvrefresh."mv$allconstants", powner text, pviewname text, pselectcolumns text, ptablenames text, paliasarray text[], prowidarray text[], poutertablearray text[], pouterleftaliasarray text[], pouterrightaliasarray text[], pleftouterjoinarray text[], prightouterjoinarray text[]) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$insertPgMviewOuterJoinDetails
+Author:       David Day
+Date:         25/06/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+01/07/2019  | D Day      	| Initial version
+28/04/2020	| D Day			| Added mv$OuterJoinToInnerJoinReplacement function call to replace alias matching outer join conditions
+			|				| with inner join conditions and new IN parameter pTableNames.
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Dynamically builds UPDATE statement(s) for any outer join table to nullify all the alias outer join column(s)
+				including rowid held in the materialized view table when an DELETE is done against the 
+				source table. This logic support outer join table parent to child join relationships so that all child table columns
+				and linking rowids are included in the UPDATE statement.
+				
+				This function inserts data into the data dictionary table pgmview_oj_details 
+
+Arguments:      IN      pConst	
+
+Arguments:      IN      pOwner                  The owner of the object
+                IN      pViewName               The name of the materialized view
+				IN		pSelectColumns		    The column list from the SQL query that will be used to build the UPDATE statement
+				IN      pTableNames				The table name join conditions from the SQL query will be used to replace alias table outer joins with inner joins
+                IN      pAliasArray             An array that holds the list of table aliases
+                IN      pRowidArray    		    An array that holds the list of rowid columns
+                IN      pOuterTableArray        An array that holds the list of outer joined tables in a multi table materialized view
+                IN      pouterLeftAliasArray    An array that holds the list of outer joined tables left aliases
+                IN      pOuterRightAliasArray   An array that holds the list of outer joined tables right aliases
+                IN      pLeftOuterJoinArray     An array that holds the the position list of whether it was a left outer join
+                IN      pRightOuterJoinArray    An array that holds the the position list of whether it was a right outer join
+
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+	
+	iColumnNameAliasCnt				INTEGER DEFAULT 0;	
+	
+	tRegexp_rowid					TEXT;
+	tSelectColumns					TEXT;
+	tColumnNameAlias				TEXT;
+	tRegExpColumnNameAlias			TEXT;
+	tColumnNameArray 				TEXT[];	
+	tColumnNameSql 					TEXT;
+	tMvColumnName					TEXT;
+	tTableName						TEXT;
+	tMvRowidColumnName				TEXT;
+	iMvColumnNameExists				INTEGER DEFAULT 0;	
+	iMvColumnNameLoopCnt			INTEGER DEFAULT 0;
+	
+	tUpdateSetSql					TEXT;
+	tSqlStatement					TEXT;
+	tWhereClause					TEXT;
+
+    rPgMviewColumnNames     		RECORD;
+	rMvOuterJoinDetails				RECORD;
+	rAliasJoinLinks					RECORD;
+	rBuildAliasArray				RECORD;
+	rMainAliasArray					RECORD;
+	rLeftOuterJoinAliasArray		RECORD;
+	rRightJoinAliasArray			RECORD;
+	rRightOuterJoinAliasArray		RECORD;
+	rLeftJoinAliasArray				RECORD;
+	
+	iWhileCounter					INTEGER DEFAULT 0;
+	iAliasJoinLinksCounter			INTEGER DEFAULT 0;	
+	iMainLoopCounter				INTEGER DEFAULT 0;
+	iWhileLoopCounter			    INTEGER DEFAULT 0;
+	iLoopCounter					INTEGER DEFAULT 0;
+	iRightLoopCounter				INTEGER DEFAULT 0;
+	iLeftAliasLoopCounter			INTEGER DEFAULT 0;
+	iRightAliasLoopCounter			INTEGER DEFAULT 0;
+	iLeftLoopCounter				INTEGER DEFAULT 0;
+	iColumnNameAliasLoopCnt			INTEGER DEFAULT 0;
+	
+	tOuterJoinAlias					TEXT;	
+	tAlias							TEXT;	
+	
+	tParentToChildAliasArray		TEXT[];	
+	tAliasArray						TEXT[];
+	tMainAliasArray					TEXT[];
+	tRightJoinAliasArray			TEXT[];
+	tBuildAliasArray				TEXT[];
+	tLeftJoinAliasArray				TEXT[];
+	
+	tRightJoinAliasExists			TEXT DEFAULT 'N';	
+	tLeftJoinAliasExists			TEXT DEFAULT 'N';
+	
+	tIsTrueOrFalse					TEXT;
+	
+	tClauseJoinReplacement			TEXT;		
+	
+BEGIN
+
+	FOR rMvOuterJoinDetails IN (SELECT inline.oj_table AS table_name
+								,      inline.oj_table_alias AS table_name_alias
+								,	   inline.oj_rowid AS rowid_column_name
+								,      inline.oj_outer_left_alias AS outer_left_alias
+								,      inline.oj_outer_right_alias AS outer_right_alias
+								,      inline.oj_left_outer_join AS left_outer_join
+								,      inline.oj_right_outer_join AS right_outer_join
+								FROM (
+									SELECT 	UNNEST(pOuterTableArray) AS oj_table
+									, 		UNNEST(pAliasArray) AS oj_table_alias
+									, 		UNNEST(pRowidArray) AS oj_rowid
+								    ,       UNNEST(pOuterLeftAliasArray) AS oj_outer_left_alias
+									,		UNNEST(pOuterRightAliasArray) AS oj_outer_right_alias
+									,		UNNEST(pLeftOuterJoinArray) AS oj_left_outer_join
+									,		UNNEST(pRightOuterJoinArray) AS oj_right_outer_join) inline
+								WHERE inline.oj_table IS NOT NULL) 
+	LOOP
+	
+		iMainLoopCounter := iMainLoopCounter +1;		
+		tOuterJoinAlias := TRIM(REPLACE(rMvOuterJoinDetails.table_name_alias,'.',''));
+		iWhileLoopCounter := 0;
+		iWhileCounter := 0;	
+		tParentToChildAliasArray[iMainLoopCounter] := tOuterJoinAlias;
+		tAliasArray[iMainLoopCounter] := tOuterJoinAlias;
+										
+		WHILE iWhileCounter = 0 LOOP
+		
+			IF rMvOuterJoinDetails.left_outer_join = pConst.LEFT_OUTER_JOIN THEN			
+			
+				iWhileLoopCounter := iWhileLoopCounter +1;
+				tMainAliasArray := '{}';
+				
+				IF tAliasArray <> '{}' THEN
+			
+					tMainAliasArray[iWhileLoopCounter] := tAliasArray;
+	
+					FOR rMainAliasArray IN (SELECT UNNEST(tMainAliasArray) AS left_alias) LOOP
+					
+						tOuterJoinAlias := TRIM(REPLACE(rMainAliasArray.left_alias,'{',''));
+						tOuterJoinAlias := TRIM(REPLACE(tOuterJoinAlias,'}',''));
+						iLeftAliasLoopCounter := 0;
+					
+						FOR rLeftOuterJoinAliasArray IN (SELECT UNNEST(pOuterLeftAliasArray) as left_alias) LOOP
+				
+							IF rLeftOuterJoinAliasArray.left_alias = tOuterJoinAlias THEN
+								iLeftAliasLoopCounter := iLeftAliasLoopCounter +1;
+							END IF;
+			
+						END LOOP;
+						
+						IF iLeftAliasLoopCounter > 0 THEN 
+								
+							SELECT 	pChildAliasArray 
+							FROM 	mv$checkParentToChildOuterJoinAlias(
+																pConst
+														,		tOuterJoinAlias
+														,		rMvOuterJoinDetails.left_outer_join
+														,		pOuterLeftAliasArray
+														,		pOuterRightAliasArray
+														,		pLeftOuterJoinArray) 
+							INTO	tRightJoinAliasArray;
+
+							IF tRightJoinAliasArray = '{}' THEN
+								tRightJoinAliasExists := 'N';
+								--RAISE INFO 'No Left Aliases Match Right Aliases';
+							ELSE
+								iRightLoopCounter := 0;
+
+								FOR rRightJoinAliasArray IN (SELECT UNNEST(tRightJoinAliasArray) as right_join_alias) LOOP
+									
+									iRightLoopCounter := iRightLoopCounter +1;
+									iMainLoopCounter := iMainLoopCounter +1;
+									tParentToChildAliasArray[iMainLoopCounter] := rRightJoinAliasArray.right_join_alias;
+									tRightJoinAliasExists := 'Y';
+									tBuildAliasArray[iRightLoopCounter] := rRightJoinAliasArray.right_join_alias;
+
+								END LOOP;
+							END IF;
+
+							IF (tRightJoinAliasArray <> '{}' OR tRightJoinAliasExists = 'Y') THEN
+
+								tAliasArray := '{}';
+
+								FOR rBuildAliasArray IN (SELECT UNNEST(tBuildAliasArray) AS right_join_alias) LOOP
+
+									iLoopCounter = iLoopCounter +1;
+									iLeftAliasLoopCounter := 0;
+
+									FOR rLeftOuterJoinAliasArray IN (SELECT UNNEST(pOuterLeftAliasArray) AS left_alias) LOOP
+
+										IF rMainAliasArray.left_alias = rBuildAliasArray.right_join_alias THEN
+											iLeftAliasLoopCounter := iLeftAliasLoopCounter +1;
+										END IF;
+
+									END LOOP;
+
+									IF iLeftAliasLoopCounter > 0 THEN
+										tAliasArray[iLoopCounter] := rBuildAliasArray.right_join_alias;
+									END IF;
+
+								END LOOP;
+
+							ELSE
+
+								tRightJoinAliasExists = 'N';
+								tRightJoinAliasArray = '{}';
+								tAliasArray = '{}';
+
+							END IF;
+
+						ELSE
+						
+							tRightJoinAliasExists = 'N';
+							tRightJoinAliasArray = '{}';
+							tAliasArray = '{}';					
+						
+						END IF;
+						
+					END LOOP;
+				
+				ELSE
+					iWhileCounter := 1;	
+				END IF;
+				
+			ELSIF rMvOuterJoinDetails.right_outer_join = pConst.RIGHT_OUTER_JOIN THEN
+			
+				iWhileLoopCounter := iWhileLoopCounter +1;
+				tMainAliasArray := '{}';
+				
+				IF tAliasArray <> '{}' THEN
+			
+					tMainAliasArray[iWhileLoopCounter] := tAliasArray;
+	
+					FOR rMainAliasArray IN (SELECT UNNEST(tMainAliasArray) AS right_alias) LOOP
+					
+						tOuterJoinAlias := TRIM(REPLACE(rMainAliasArray.right_alias,'{',''));
+						tOuterJoinAlias := TRIM(REPLACE(tOuterJoinAlias,'}',''));
+						iRightAliasLoopCounter := 0;
+					
+						FOR rRightOuterJoinAliasArray IN (SELECT UNNEST(pOuterRightAliasArray) as right_alias) LOOP
+				
+							IF rRightOuterJoinAliasArray.right_alias = tOuterJoinAlias THEN
+								iRightAliasLoopCounter := iRightAliasLoopCounter +1;
+							END IF;
+			
+						END LOOP;
+						
+						IF iRightAliasLoopCounter > 0 THEN 
+								
+							SELECT 	pChildAliasArray 
+							FROM 	mv$checkParentToChildOuterJoinAlias(
+																pConst
+														,		tOuterJoinAlias
+														,		rMvOuterJoinDetails.right_outer_join
+														,		pOuterLeftAliasArray
+														,		pOuterRightAliasArray
+														,		pRightOuterJoinArray) 
+							INTO	tLeftJoinAliasArray;
+
+							IF tLeftJoinAliasArray = '{}' THEN
+								tLeftJoinAliasExists := 'N';
+								--RAISE INFO 'No Right Aliases Match Left Aliases';
+							ELSE
+								iLeftLoopCounter := 0;
+
+								FOR rLeftJoinAliasArray IN (SELECT UNNEST(tLeftJoinAliasArray) as left_join_alias) LOOP
+									
+									iLeftLoopCounter := iLeftLoopCounter +1;
+									iMainLoopCounter := iMainLoopCounter +1;
+									tParentToChildAliasArray[iMainLoopCounter] := rLeftJoinAliasArray.left_join_alias;
+									tLeftJoinAliasExists := 'Y';
+									tBuildAliasArray[iLeftLoopCounter] := rLeftJoinAliasArray.left_join_alias;
+
+								END LOOP;
+							END IF;
+
+							IF (tLeftJoinAliasArray <> '{}' OR tLeftJoinAliasExists = 'Y') THEN
+
+								tAliasArray := '{}';
+
+								FOR rBuildAliasArray IN (SELECT UNNEST(tBuildAliasArray) AS left_join_alias) LOOP
+
+									iLoopCounter = iLoopCounter +1;
+									iRightAliasLoopCounter := 0;
+
+									FOR rRightOuterJoinAliasArray IN (SELECT UNNEST(pOuterRightAliasArray) AS right_alias) LOOP
+
+										IF rMainAliasArray.right_alias = rBuildAliasArray.left_join_alias THEN
+											iRightAliasLoopCounter := iRightAliasLoopCounter +1;
+										END IF;
+
+									END LOOP;
+
+									IF iRightAliasLoopCounter > 0 THEN
+										tAliasArray[iLoopCounter] := rBuildAliasArray.left_join_alias;
+									END IF;
+
+								END LOOP;
+
+							ELSE
+
+								tLeftJoinAliasExists = 'N';
+								tLeftJoinAliasArray = '{}';
+								tAliasArray = '{}';
+
+							END IF;
+
+						ELSE
+						
+							tLeftJoinAliasExists = 'N';
+							tLeftJoinAliasArray = '{}';
+							tAliasArray = '{}';					
+						
+						END IF;
+						
+					END LOOP;
+				
+				ELSE
+					iWhileCounter := 1;	
+				END IF;
+			
+			END IF;
+			
+		END LOOP;
+		
+		-- Key values for the main UPDATE statement breakdown
+		tMvRowidColumnName 		:= rMvOuterJoinDetails.rowid_column_name;
+		tWhereClause 			:= pConst.WHERE_COMMAND || tMvRowidColumnName  || pConst.IN_ROWID_LIST;
+		tColumnNameAlias 		:= rMvOuterJoinDetails.table_name_alias;
+		tTableName 				:= rMvOuterJoinDetails.table_name;
+		tColumnNameArray	 	:= '{}';
+		tUpdateSetSql 		 	:= ' ';
+		iMvColumnNameLoopCnt 	:= 0;
+		iAliasJoinLinksCounter 	:= 0;
+		iColumnNameAliasLoopCnt := 0;
+		
+		-- Building the UPDATE statement including any child relationship columns and m_row$ based on these aliases
+		FOR rAliasJoinLinks IN (SELECT UNNEST(tParentToChildAliasArray) AS alias) LOOP
+		
+			iAliasJoinLinksCounter 	:= iAliasJoinLinksCounter +1;
+			tAlias 					:= rAliasJoinLinks.alias||'.';
+			tSelectColumns 			:= SUBSTRING(pSelectColumns,1,mv$regExpInstr(pSelectColumns,'[,]+[[:alnum:]]+[.]+'||'m_row\$'||''));
+			tRegExpColumnNameAlias 	:= REPLACE(tAlias,'.','\.');
+			iColumnNameAliasCnt 	:= mv$regExpCount(tSelectColumns, '[A-Za-z0-9]+('||tRegExpColumnNameAlias||')', 1);
+			iColumnNameAliasCnt 	:= mv$regExpCount(tSelectColumns, '('||tRegExpColumnNameAlias||')', 1) - iColumnNameAliasCnt;
+		
+			IF iColumnNameAliasCnt > 0 THEN
+		
+				FOR i IN 1..iColumnNameAliasCnt 
+				LOOP
+				
+					tColumnNameSql := SUBSTRING(tSelectColumns,mv$regExpInstr(tSelectColumns,
+							 tRegExpColumnNameAlias,
+							 1,
+							 i)-1);
+					tColumnNameSql := mv$regExpReplace(tColumnNameSql,'(^[[:space:]]+)',null);
+					tColumnNameSql := mv$regExpSubstr(tColumnNameSql,'(.*'||tRegExpColumnNameAlias||'+[[:alnum:]]+(.*?[^,|$]))',1,1,'i');
+					tMvColumnName  := TRIM(REPLACE(mv$regExpSubstr(tColumnNameSql, '\S+$'),',',''));
+					tMvColumnName  := LOWER(TRIM(REPLACE(tMvColumnName,tAlias,'')));
+					
+					FOR rPgMviewColumnNames IN (SELECT column_name
+												FROM   information_schema.columns
+												WHERE  table_schema    = LOWER( pOwner )
+												AND    table_name      = LOWER( pViewName ) )
+					LOOP
+					
+						IF rPgMviewColumnNames.column_name = tMvColumnName THEN
+										
+							iMvColumnNameLoopCnt := iMvColumnNameLoopCnt + 1;	
+
+							-- Check for duplicates
+							SELECT tMvColumnName = ANY (tColumnNameArray) INTO tIsTrueOrFalse;	
+							
+							IF tIsTrueOrFalse = 'false' THEN
+
+								iColumnNameAliasLoopCnt := iColumnNameAliasLoopCnt + 1;	
+								
+								tColumnNameArray[iColumnNameAliasLoopCnt] := tMvColumnName;
+								
+								IF iMvColumnNameLoopCnt = 1 THEN 	
+									tUpdateSetSql := pConst.SET_COMMAND || tMvColumnName || pConst.EQUALS_NULL || pConst.COMMA_CHARACTER;
+								ELSE	
+									tUpdateSetSql := tUpdateSetSql || tMvColumnName || pConst.EQUALS_NULL || pConst.COMMA_CHARACTER ;
+								END IF;
+								
+							END IF;
+						
+							EXIT WHEN iMvColumnNameLoopCnt > 0;
+							
+						END IF;
+
+					END LOOP;
+					
+				END LOOP;
+				
+				iColumnNameAliasLoopCnt := iColumnNameAliasLoopCnt + 1;
+				tColumnNameArray[iColumnNameAliasLoopCnt] := rAliasJoinLinks.alias|| pConst.UNDERSCORE_CHARACTER || pConst.MV_M_ROW$_COLUMN;
+				tUpdateSetSql := tUpdateSetSql || rAliasJoinLinks.alias|| pConst.UNDERSCORE_CHARACTER || pConst.MV_M_ROW$_COLUMN || pConst.EQUALS_NULL || pConst.COMMA_CHARACTER;
+				
+			ELSE
+				IF iAliasJoinLinksCounter = 1 THEN
+					iColumnNameAliasLoopCnt := iColumnNameAliasLoopCnt + 1;
+					tColumnNameArray[iColumnNameAliasLoopCnt] := rAliasJoinLinks.alias|| pConst.UNDERSCORE_CHARACTER || pConst.MV_M_ROW$_COLUMN;
+					tUpdateSetSql := pConst.SET_COMMAND || rAliasJoinLinks.alias|| pConst.UNDERSCORE_CHARACTER || pConst.MV_M_ROW$_COLUMN || pConst.EQUALS_NULL || pConst.COMMA_CHARACTER;			
+				ELSE
+					iColumnNameAliasLoopCnt := iColumnNameAliasLoopCnt + 1;
+					tColumnNameArray[iColumnNameAliasLoopCnt] := rAliasJoinLinks.alias|| pConst.UNDERSCORE_CHARACTER || pConst.MV_M_ROW$_COLUMN;
+					tUpdateSetSql := tUpdateSetSql || rAliasJoinLinks.alias || pConst.UNDERSCORE_CHARACTER || pConst.MV_M_ROW$_COLUMN || pConst.EQUALS_NULL || pConst.COMMA_CHARACTER;		
+				END IF;
+					
+			END IF;
+		
+		END LOOP;
+		
+		tUpdateSetSql := SUBSTRING(tUpdateSetSql,1,length(tUpdateSetSql)-1);
+		
+		tSqlStatement := pConst.UPDATE_COMMAND ||
+						 pOwner		|| pConst.DOT_CHARACTER		|| pViewName	|| pConst.NEW_LINE		||
+						 tUpdateSetSql || pConst.NEW_LINE ||
+						 tWhereClause;
+						 
+		tClauseJoinReplacement := mv$OuterJoinToInnerJoinReplacement(pConst, pTableNames, tColumnNameAlias);
+		
+		INSERT INTO pg$mviews_oj_details
+		(	owner
+		,	view_name
+		,	table_alias
+		,   rowid_column_name
+		,   source_table_name
+		,   column_name_array
+		,   update_sql
+		,   join_replacement_from_sql)
+		VALUES
+		(	pOwner
+		,	pViewName
+		,   tColumnNameAlias
+		,   tMvRowidColumnName
+		,   tTableName
+		,   tColumnNameArray
+		,	tSqlStatement
+		,   tClauseJoinReplacement);
+		
+		iMainLoopCounter := 0;
+		tParentToChildAliasArray := '{}';
+		tAliasArray  := '{}';
+		tMainAliasArray := '{}';
+		iWhileCounter := 0;
+		iWhileLoopCounter := 0;
+		iLoopCounter := 0;
+		
+		
+	END LOOP;
+
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$insertPgMviewOuterJoinDetails';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_X$;
+
+
+--
+-- Name: mv$outerjointoinnerjoinreplacement(mvrefresh."mv$allconstants", text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$outerjointoinnerjoinreplacement"(pconst mvrefresh."mv$allconstants", ptablenames text, ptablealias text) RETURNS text
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$outerJoinToInnerJoinReplacement
+Author:       David Day
+Date:         28/04/2020
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+28/04/2020  | D Day      	| Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Function to replace the alias driven outer join conditions to inner join in the from tables join sql
+				regular expression pattern.
+
+Arguments:      IN      pTableNames             
+                IN      pTableAlias              
+Returns:                TEXT
+
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE	
+	
+	iLeftJoinCnt 			INTEGER := 0;	
+	iRightJoinCnt 			INTEGER := 0;	
+	
+	iLoopLeftJoinCnt		INTEGER := 0;
+	iLoopRightJoinCnt		INTEGER := 0;
+	
+	iLeftJoinLoopAliasCnt 	INTEGER := 0;
+	iRightJoinLoopAliasCnt 	INTEGER := 0;
+	
+	tTablesSQL 				TEXT := pTableNames;
+	  
+	tSQL					TEXT;
+	tLeftJoinLine			TEXT;
+	tRightJoinLine			TEXT;
+	tOrigLeftJoinLine 		TEXT;
+	tOrigRightJoinLine 		TEXT;
+	
+	tLeftMatched			CHAR := 'N';
+	
+	tTableAlias 			TEXT := REPLACE(pTableAlias,'.','\.');
+	
+	ls_table_name			TEXT;
+	ls_column_name			TEXT;
+	
+	iStartPosition			INTEGER := 0;
+	iEndPosition			INTEGER := 0;
+	
+	iLoopColNullableNoCnt	INTEGER := 0;
+	
+	iTabColExist			INTEGER := 0;
+	iColNullableNo			INTEGER := 0;
+	
+	iLoopColNullableNo		INTEGER := 0;
+	
+	tLeftAliasColumnName	TEXT;
+	tLeftAliasTableName		TEXT;
+	tRightAliasColumnName	TEXT;
+	tRightAliasTableName	TEXT;
+	
+	tTablesMarkerSQL		TEXT;
+
+BEGIN
+
+tTablesSQL := regexp_replace(tTablesSQL,'left join','LEFT JOIN','gi');
+tTablesSQL := regexp_replace(tTablesSQL,'left outer join','LEFT JOIN','gi');
+tTablesSQL := regexp_replace(tTablesSQL,'right join','RIGHT JOIN','gi');
+tTablesSQL := regexp_replace(tTablesSQL,'right outer join','RIGHT JOIN','gi');
+	  
+SELECT count(1) INTO iLeftJoinCnt FROM regexp_matches(tTablesSQL,'LEFT JOIN','g');
+SELECT count(1) INTO iRightJoinCnt FROM regexp_matches(tTablesSQL,'RIGHT JOIN','g');
+
+tTablesSQL :=
+		TRIM (
+		   mv$regexpreplace(
+			  tTablesSQL,
+			  '([' || CHR (11) || CHR (13) || CHR (9) || ']+)',
+			  ' '));
+
+tTablesMarkerSQL :=	mv$regexpreplace(tTablesSQL, 'LEFT JOIN',pConst.COMMA_LEFT_TOKEN);
+tTablesMarkerSQL :=	mv$regexpreplace(tTablesMarkerSQL, 'RIGHT JOIN',pConst.COMMA_RIGHT_TOKEN);
+tTablesMarkerSQL :=	mv$regexpreplace(tTablesMarkerSQL, 'INNER JOIN',pConst.COMMA_INNER_TOKEN);
+tTablesMarkerSQL :=	mv$regexpreplace(tTablesMarkerSQL, 'JOIN',pConst.COMMA_INNER_TOKEN);
+
+tTablesMarkerSQL := tTablesMarkerSQL||pConst.COMMA_INNER_TOKEN;
+			  
+tSQL := tTablesSQL;
+
+IF iLeftJoinCnt > 0 THEN
+	  
+	FOR i IN 1..iLeftJoinCnt
+	LOOP
+	
+	tLeftJoinLine :=  'LEFT JOIN'||substr(substr(tTablesMarkerSQL,mv$regexpinstr(tTablesMarkerSQL, 
+	'('|| pConst.COMMA_LEFT_TOKEN ||'+)',
+		1,
+		i,
+		1,
+		'i')),1,
+			   mv$regexpinstr(substr(tTablesMarkerSQL,mv$regexpinstr(tTablesMarkerSQL,
+	'('|| pConst.COMMA_LEFT_TOKEN ||'+)',
+					   1,
+		i,
+		1,
+		'i')),'('||pConst.COMMA_LEFT_TOKEN||'|'||pConst.COMMA_INNER_TOKEN||'|'||pConst.COMMA_RIGHT_TOKEN||')',
+		1,
+		1,
+		1,
+		'i')-3);
+		
+		tOrigLeftJoinLine := tLeftJoinLine;
+		
+		SELECT count(1) INTO iLeftJoinLoopAliasCnt FROM regexp_matches(tLeftJoinLine,'[[:space:]]+'||tTableAlias,'g');
+
+		IF iLeftJoinLoopAliasCnt > 0 THEN
+		
+			iLoopLeftJoinCnt := iLoopLeftJoinCnt +1;
+			
+			iStartPosition :=  mv$regexpinstr(tLeftJoinLine,'[[:space:]]+'||tTableAlias,
+				1,
+				1,
+				1,
+				'i');
+				
+			iEndPosition := mv$regexpinstr(tLeftJoinLine,'[[:space:]]+'||tTableAlias||'+[a-zA-Z0-9_]+',
+				1,
+				1,
+				1,
+				'i');		
+				
+			tLeftAliasColumnName := substr(tLeftJoinLine,iStartPosition, iEndPosition - iStartPosition);
+			
+			ls_column_name := TRIM(
+				 mv$regexpreplace(
+					tLeftAliasColumnName,
+					'([' || CHR (10) || CHR (11) || CHR (13) || CHR(9) || ']+)',
+					''));
+					
+			IF iLoopLeftJoinCnt = 1 THEN
+			
+				iStartPosition := mv$regexpinstr(tLeftJoinLine,
+					'LEFT+[[:space:]]+JOIN+[[:space:]]+',
+					1,
+					1,
+					1,
+					'i');
+					
+				iEndPosition := mv$regexpinstr(tLeftJoinLine,
+					'LEFT+[[:space:]]+JOIN+[[:space:]]+[a-zA-Z0-9_]+',
+					1,
+					1,
+					1,
+					'i');
+					
+				tLeftAliasTableName := substr(tLeftJoinLine,iStartPosition, iEndPosition - iStartPosition);
+				
+				ls_table_name := TRIM(
+					 mv$regexpreplace(
+						tLeftAliasTableName,
+						'([' || CHR (10) || CHR (11) || CHR (13) || CHR(9) || ']+)',
+						''));
+						
+			END IF;
+			
+			SELECT count(1) INTO iTabColExist
+			FROM information_schema.columns 
+			WHERE table_name=LOWER(ls_table_name)
+			AND column_name=LOWER(ls_column_name);
+			
+			IF iTabColExist = 1 THEN
+			
+				SELECT count(1) INTO iColNullableNo
+				FROM information_schema.columns 
+				WHERE table_name=LOWER(ls_table_name) 
+				AND column_name=LOWER(ls_column_name)
+				AND is_nullable = 'NO';
+				
+				IF iColNullableNo = 1 THEN
+				
+					tLeftMatched := 'Y';
+				
+					iLoopColNullableNoCnt := iLoopColNullableNoCnt +1;
+				
+					IF iLoopColNullableNoCnt = 1 THEN
+					
+						tLeftJoinLine := replace(tLeftJoinLine,'LEFT JOIN','INNER JOIN');
+						tSQL := replace(tTablesSQL,tOrigLeftJoinLine,tLeftJoinLine);
+
+					ELSE 
+					
+						tLeftJoinLine := replace(tLeftJoinLine,'LEFT JOIN','INNER JOIN');
+						tSQL := replace(tSQL,tOrigLeftJoinLine,tLeftJoinLine);
+
+					END IF;
+					
+				END IF;
+
+			ELSE
+			
+				RAISE EXCEPTION 'The value of the argument to confirm alias table name and column name exist in the data dictionary cannot be found from left join line '' % ''. Function does not handle string format.',tLeftJoinLine;
+		
+			END IF;
+
+		END IF;
+
+	END LOOP;
+
+ELSIF iRightJoinCnt > 0 THEN
+
+	iLoopColNullableNoCnt := 0;
+
+	FOR i IN 1..iRightJoinCnt
+	LOOP
+	
+		tRightJoinLine := 'RIGHT JOIN'||substr(substr(tTablesMarkerSQL,mv$regexpinstr(tTablesMarkerSQL, 
+	'('|| pConst.COMMA_RIGHT_TOKEN ||'+)',
+		1,
+		i,
+		1,
+		'i')),1,
+			   mv$regexpinstr(substr(tTablesMarkerSQL,mv$regexpinstr(tTablesMarkerSQL,
+	'('|| pConst.COMMA_RIGHT_TOKEN ||'+)',
+					   1,
+		i,
+		1,
+		'i')),'('||pConst.COMMA_LEFT_TOKEN||'|'||pConst.COMMA_INNER_TOKEN||'|'||pConst.COMMA_RIGHT_TOKEN||')',
+		1,
+		1,
+		1,
+		'i')-3);
+			
+		tOrigRightJoinLine := tRightJoinLine;
+			
+		SELECT count(1) INTO iRightJoinLoopAliasCnt 
+		FROM regexp_matches(tRightJoinLine,'[[:space:]]+'||tTableAlias,'g');
+
+		IF iRightJoinLoopAliasCnt > 0 THEN
+		
+			iLoopRightJoinCnt := iLoopRightJoinCnt +1;
+			
+			iStartPosition :=  mv$regexpinstr(tRightJoinLine,'[[:space:]]+'||tTableAlias,
+				1,
+				1,
+				1,
+				'i');
+				
+			iEndPosition := mv$regexpinstr(tRightJoinLine,'[[:space:]]+'||tTableAlias||'+[a-zA-Z0-9_]+',
+				1,
+				1,
+				1,
+				'i');		
+				
+			tRightAliasColumnName := substr(tRightJoinLine,iStartPosition, iEndPosition - iStartPosition);
+			
+			ls_column_name := LOWER(TRIM(
+				 mv$regexpreplace(
+					tRightAliasColumnName,
+					'([' || CHR (10) || CHR (11) || CHR (13) || CHR(9) || ']+)',
+					'')));
+		
+			IF iLoopRightJoinCnt = 1 THEN
+			
+				iStartPosition := mv$regexpinstr(tRightJoinLine,
+					'RIGHT+[[:space:]]+JOIN+[[:space:]]+',
+					1,
+					1,
+					1,
+					'i');
+					
+				iEndPosition := mv$regexpinstr(tRightJoinLine,
+					'RIGHT+[[:space:]]+JOIN+[[:space:]]+[a-zA-Z0-9_]+',
+					1,
+					1,
+					1,
+					'i');
+					
+				tRightAliasTableName := substr(tRightJoinLine,iStartPosition, iEndPosition - iStartPosition);
+				
+				ls_table_name := LOWER(TRIM(
+					 mv$regexpreplace(
+						tRightAliasTableName,
+						'([' || CHR (10) || CHR (11) || CHR (13) || CHR(9) || ']+)',
+						'')));
+				
+			END IF;
+			
+			SELECT count(1) INTO iTabColExist
+			FROM information_schema.columns 
+			WHERE table_name=LOWER(ls_table_name)
+			AND column_name=LOWER(ls_column_name);
+				
+			IF iTabColExist = 1 THEN
+			
+				SELECT count(1) INTO iColNullableNo
+				FROM information_schema.columns 
+				WHERE table_name=LOWER(ls_table_name)
+				AND column_name=LOWER(ls_column_name)
+				AND is_nullable = 'NO';
+								
+				IF iColNullableNo = 1 THEN
+				
+					iLoopColNullableNoCnt := iLoopColNullableNoCnt +1;
+				
+					IF iLoopColNullableNoCnt = 1 AND tLeftMatched = 'N' THEN
+					
+						tRightJoinLine := replace(tRightJoinLine,'RIGHT JOIN','INNER JOIN');
+						tSQL := replace(tTablesSQL,tOrigRightJoinLine,tRightJoinLine);
+
+					ELSE 
+					
+						tRightJoinLine := replace(tRightJoinLine,'RIGHT JOIN','INNER JOIN');
+						tSQL := replace(tSQL,tOrigRightJoinLine,tRightJoinLine);
+
+					END IF;
+					
+				END IF;
+
+			ELSE
+			
+				RAISE EXCEPTION 'The value of the argument to confirm alias table name and column name exist in the data dictionary cannot be found from right join line '' % ''. Function does not handle string format.',tRightJoinLine;
+		
+			END IF;
+
+		END IF;
+
+	END LOOP;
+
+END IF;
+
+RETURN tSQL;
+
+END;
+$_$;
+
+
+--
+-- Name: mv$refreshmaterializedview(text, text, boolean); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$refreshmaterializedview"(pviewname text, powner text DEFAULT USER, pfastrefresh boolean DEFAULT false) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$refreshMaterializedView
+Author:       Mike Revitt
+Date:         12/011/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Loops through each of the base tables, upon which this materialised view is based, and updates the materialized
+                view for each table in turn
+
+Notes:          This function must come after the creation of the 2 functions it calls
+                o   mv$refreshMaterializedViewFast;
+                o   mv$refreshMaterializedViewFull;
+
+Arguments:      IN      pViewName           The name of the materialized view
+                IN      pOwner              Optional, the owner of the materialized view, defaults to user
+                IN      pFastRefresh        Defaults to FALSE, but if set to yes then materialized view fast refresh is performed
+Returns:                VOID
+
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    cResult     CHAR(1) := NULL;
+
+    rConst      mv$allConstants;
+
+BEGIN
+
+    rConst  := mv$buildAllConstants();
+
+    IF TRUE = pFastRefresh
+    THEN
+        cResult :=  mv$refreshMaterializedViewFast( rConst, pOwner, pViewName );
+    ELSE
+        cResult :=  mv$refreshMaterializedViewFull( rConst, pOwner, pViewName );
+    END IF;
+
+    RETURN;
+END;
+$_$;
+
+
+--
+-- Name: mv$refreshmaterializedviewfast(mvrefresh."mv$allconstants", text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$refreshmaterializedviewfast"(pconst mvrefresh."mv$allconstants", powner text, pviewname text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$refreshMaterializedViewFast
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+03/03/2020  | D Day         | Defect fix to resolve outer join check function mv$checkIfOuterJoinedTable to handle if the table_array
+			|				| value had both an inner join and outer join condition inside the main sql query. Amended to only pass in
+			|				| in the outer_table_array loop value not the full array.
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Determins what type of refresh is required and then calls the appropriate refresh function
+
+Notes:          This function must come after the creation of the 2 functions
+                it calls
+                o   mv$refreshMaterializedViewFast( pOwner, pViewName );
+                o   mv$refreshMaterializedViewFull( pOwner, pViewName );
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pViewName           The name of the materialized view
+Returns:                VOID
+
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    cResult         CHAR(1);
+    aPgMview        pg$mviews;
+    bOuterJoined    BOOLEAN;
+
+BEGIN
+    aPgMview   := mv$getPgMviewTableData( pConst, pOwner, pViewName );
+
+    FOR i IN ARRAY_LOWER( aPgMview.table_array, 1 ) .. ARRAY_UPPER( aPgMview.table_array, 1 )
+    LOOP
+        bOuterJoined := mv$checkIfOuterJoinedTable( pConst, aPgMview.table_array[i], aPgMview.outer_table_array[i] );
+        cResult :=  mv$refreshMaterializedViewFast
+                    (
+                        pConst,
+                        pOwner,
+                        pViewName,
+                        aPgMview.alias_array[i],
+                        aPgMview.table_array[i],
+                        aPgMview.rowid_array[i],
+                        aPgMview.bit_array[i],
+                        bOuterJoined,
+                        aPgMview.inner_alias_array[i],
+                        aPgMview.inner_rowid_array[i]
+                    );
+    END LOOP;
+
+    RETURN;
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$refreshMaterializedViewFast';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$refreshmaterializedviewfast(mvrefresh."mv$allconstants", text, text, text, text, text, smallint, boolean, text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$refreshmaterializedviewfast"(pconst mvrefresh."mv$allconstants", powner text, pviewname text, ptablealias text, ptablename text, prowidcolumn text, ppgmviewbit smallint, poutertable boolean, pinneralias text, pinnerrowid text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$refreshMaterializedViewFast
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Selects all of the data from the materialized view log, in the order it was created, and applies the changes to
+                the materialized view table and once the change has been applied the bit value for the materialized view is
+                removed from the PgMview log row.
+				
+				This is used as part of the initial materialized view creation were all details are loaded into table
+				pg$mviews_oj_details which is later used by the refresh procesa.
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pViewName           The name of the materialized view
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+    tDmlType        TEXT        := NULL;
+    tLastType       TEXT        := NULL;
+    tSqlStatement   TEXT        := NULL;
+    cResult         CHAR(1)     := NULL;
+    iArraySeq       INTEGER     := pConst.ARRAY_LOWER_VALUE;
+    biSequence      BIGINT      := 0;
+    biMaxSequence   BIGINT      := 0;
+    uRowID          UUID;
+    uRowIDArray     UUID[];
+
+    aViewLog        pg$mview_logs;
+    tBitValue       mv$bitValue;
+
+BEGIN
+
+    aViewLog    := mv$getPgMviewLogTableData( pConst, pTableName );
+    tBitValue   := mv$getBitValue( pConst, pPgMviewBit );
+
+    tSqlStatement    := pConst.MV_LOG$_SELECT_M_ROW$    || aViewLog.owner || pConst.DOT_CHARACTER   || aViewLog.pglog$_name     ||
+                        pConst.WHERE_COMMAND            || pConst.BITMAP_COLUMN              || '[' || tBitValue.BIT_ROW || ']' ||
+                        pConst.BITAND_COMMAND           || tBitValue.BIT_MAP                 ||
+                        pConst.EQUALS_COMMAND           || tBitValue.BIT_MAP                 ||
+                        pConst.MV_LOG$_SELECT_M_ROWS_ORDER_BY;
+ 
+ -- SELECT m_row$,sequence$,dmltype$ FROM cdl_data.log$_t1 WHERE bitmap$ &  POWER( 2, $1)::BIGINT =  POWER( 2, $2)::BIGINT ORDER BY sequence$
+ 
+    FOR     uRowID, biSequence, tDmlType
+    IN
+    EXECUTE tSqlStatement
+    LOOP
+        biMaxSequence := biSequence;
+
+        IF tLastType =  tDmlType
+        OR tLastType IS NULL
+        THEN
+            tLastType               := tDmlType;
+            iArraySeq               := iArraySeq + 1;
+            uRowIDArray[iArraySeq]  := uRowID;
+        ELSE
+            cResult :=  mv$executeMVFastRefresh
+                        (
+                            pConst,
+                            tLastType,
+                            pOwner,
+                            pViewName,
+                            pRowidColumn,
+                            pTableAlias,
+                            pOuterTable,
+                            pInnerAlias,
+                            pInnerRowid,
+                            uRowIDArray
+                        );
+
+            tLastType               := tDmlType;
+            iArraySeq               := 1;
+            uRowIDArray[iArraySeq]  := uRowID;
+        END IF;
+    END LOOP;
+
+    IF biMaxSequence > 0
+    THEN
+        cResult :=  mv$executeMVFastRefresh
+                    (
+                        pConst,
+                        tLastType,
+                        pOwner,
+                        pViewName,
+                        pRowidColumn,
+                        pTableAlias,
+                        pOuterTable,
+                        pInnerAlias,
+                        pInnerRowid,
+                        uRowIDArray
+                    );
+
+        cResult :=  mv$clearPgMvLogTableBits
+                    (
+                        pConst,
+                        aViewLog.owner,
+                        aViewLog.pglog$_name,
+                        pPgMviewBit,
+                        biMaxSequence
+                    );
+
+        cResult := mv$clearSpentPgMviewLogs( pConst, aViewLog.owner, aViewLog.pglog$_name );
+    END IF;
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$refreshMaterializedViewFast';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_X$;
+
+
+--
+-- Name: mv$refreshmaterializedviewfull(mvrefresh."mv$allconstants", text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$refreshmaterializedviewfull"(pconst mvrefresh."mv$allconstants", powner text, pviewname text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$refreshMaterializedViewFull
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Performs a full refresh of the materialized view, which consists of truncating the table and then re-populating it.
+
+                This activity also requires that every row in the materialized view log is updated to remove the interest from this
+                materialized view, then as with the fast refresh once all the rows have been processed the materialized view log is
+                cleaned up, in that all rows with a bitmap of zero are deleted as they are then no longer required.
+
+Note:           This function requires the SEARCH_PATH to be set to the current value so that the select statement can find the
+                source tables.
+                The default for PostGres functions is to not use the search path when executing with the privileges of the creator
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pViewName           The name of the materialized view
+Returns:                VOID
+
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    cResult     CHAR(1);
+    aPgMview    pg$mviews;
+
+BEGIN
+
+    aPgMview    := mv$getPgMviewTableData(        pConst, pOwner, pViewName );
+    cResult     := mv$truncateMaterializedView(   pConst, pOwner, aPgMview.view_name );
+    cResult     := mv$insertMaterializedViewRows( pConst, pOwner, pViewName );
+    cResult     := mv$clearAllPgMvLogTableBits(   pConst, pOwner, pViewName );
+
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$refreshMaterializedViewFull';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$regexpcount(text, character varying, numeric, character varying); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$regexpcount"(p_src_string text, p_regexp_pat character varying, p_position numeric DEFAULT 1, p_match_param character varying DEFAULT 'c'::character varying) RETURNS integer
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$regExpCount
+Author:       David Day
+Date:         03/07/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+03/07/2019  | D Day      	| Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Function to use regular expression pattern to count the total amount of occurrences of the input parameter p_src_string
+
+Arguments:      IN      p_src_string             
+                IN      p_regexp_pat           	  
+                IN      p_position         		  
+                IN      p_match_param			              
+Returns:                INTEGER
+
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+
+DECLARE
+    v_res_count INTEGER;
+    v_position INTEGER := floor(p_position);
+    v_match_param VARCHAR := trim(p_match_param);
+    v_src_string TEXT := substr(p_src_string, v_position);
+BEGIN
+    IF (coalesce(p_src_string, '') = '' OR coalesce(p_regexp_pat, '') = '' OR p_position IS NULL)
+    THEN
+        RETURN NULL;
+    ELSIF (v_position <= 0) THEN
+        RAISE EXCEPTION 'The value of the argument for parameter in position "3" (start position) should be greater than or equal to 1';
+    ELSIF (coalesce(v_match_param, '') = '') THEN
+        v_match_param := 'c';
+    ELSIF (v_match_param !~ 'i|c|n|m|x') THEN
+        RAISE EXCEPTION 'The value of the argument for parameter in position "4" (match_parameter) must be one of the following: "i", "c", "n", "m", "x"';
+    END IF;
+
+    v_match_param := concat('g', v_match_param);
+    v_match_param := regexp_replace(v_match_param, 'm|x', '', 'g');
+    v_match_param := CASE
+                       WHEN v_match_param !~ 'n' THEN concat(v_match_param, 'p')
+                       ELSE regexp_replace(v_match_param, 'n', '', 'g')
+                    END;
+
+    SELECT COUNT(regexpval)::INTEGER
+      INTO v_res_count
+      FROM (SELECT ROW_NUMBER() OVER (ORDER BY 1) AS rownum,
+                   regexpval
+              FROM (SELECT unnest(regexp_matches(v_src_string,
+                                                 p_regexp_pat,
+                                                 v_match_param)) AS regexpval
+                   ) AS regexpvals
+             WHERE char_length(regexpval) > 0
+           ) AS rankexpvals;
+
+    RETURN v_res_count;
+END;
+$_$;
+
+
+--
+-- Name: mv$regexpinstr(text, character varying, numeric, numeric, numeric, character varying); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$regexpinstr"(p_src_string text, p_regexp_pat character varying, p_position numeric DEFAULT 1, p_occurrence numeric DEFAULT 1, p_retopt numeric DEFAULT 0, p_match_param character varying DEFAULT 'c'::character varying) RETURNS integer
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$regExpInstr
+Author:       David Day
+Date:         03/07/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+03/07/2019  | D Day      	| Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:  Function to use regular expression pattern to evaluate strings using characters as defined by the input character set.
+			  It returns an integer indicating the beginning or ending position of the matched string depending on the value of the
+			  p_retopt argument. If no match is found it returns 0.
+
+Arguments:      IN      p_src_string             
+                IN      p_regexp_pat           	  
+                IN      p_position   
+				IN		p_occurrence
+				IN      p_retopt
+                IN      p_match_param			              
+Returns:                INTEGER
+
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+    v_resposition INTEGER;
+    v_regexpres_row RECORD;
+    v_match_count INTEGER := 0;
+    v_retopt INTEGER := floor(p_retopt);
+    v_position INTEGER := floor(p_position);
+    v_occurrence INTEGER := floor(p_occurrence);
+    v_match_param VARCHAR := trim(p_match_param);
+    v_src_string TEXT := substr(p_src_string, v_position);
+    v_srcstr_len INTEGER := char_length(v_src_string);
+BEGIN
+    IF (coalesce(p_src_string, '') = '' OR coalesce(p_regexp_pat, '') = '' OR
+        p_position IS NULL OR p_occurrence IS NULL OR p_retopt IS NULL)
+    THEN
+        RETURN NULL;
+    ELSIF (v_position <= 0) THEN
+        RAISE EXCEPTION 'The value of the argument for parameter in position "3" (start position) should be greater than or equal to 1';
+    ELSIF (v_occurrence <= 0) THEN
+        RAISE EXCEPTION 'The value of the argument parameter in position "4" (occurrence of match) should be greater than or equal to 1';
+    ELSIF (v_retopt NOT IN (0, 1)) THEN
+        RAISE EXCEPTION 'The value of the argument for parameter in position "5" (return-option) should be either 0 or 1';
+    ELSIF (coalesce(v_match_param, '') = '') THEN
+        v_match_param := 'c';
+    ELSIF (v_match_param !~ 'i|c|n|m|x') THEN
+        RAISE EXCEPTION 'The value of the argument for parameter in position "6" (match_parameter) must be one of the following: "i", "c", "n", "m", "x"';
+    END IF;
+
+    v_match_param := concat('g', v_match_param);
+    v_match_param := regexp_replace(v_match_param, 'm|x', '', 'g');
+    v_match_param := CASE
+                       WHEN v_match_param !~ 'n' THEN concat(v_match_param, 'p')
+                       ELSE regexp_replace(v_match_param, 'n', '', 'g')
+                    END;
+
+    FOR v_regexpres_row IN
+    (SELECT rownum,
+            regexpval,
+            char_length(regexpval) AS value_len
+       FROM (SELECT ROW_NUMBER() OVER (ORDER BY 1) AS rownum,
+                    regexpval
+               FROM (SELECT unnest(regexp_matches(v_src_string,
+                                                  p_regexp_pat,
+                                                  v_match_param)) AS regexpval
+                    ) AS regexpvals
+              WHERE char_length(regexpval) > 0
+            ) AS rankexpvals
+      ORDER BY rownum ASC)
+    LOOP
+        v_src_string := substr(v_src_string, strpos(v_src_string, v_regexpres_row.regexpval) + v_regexpres_row.value_len);
+        v_resposition := v_srcstr_len - char_length(v_src_string) - v_regexpres_row.value_len + 1;
+
+        IF (v_position > 1) THEN
+            v_resposition := v_resposition + v_position - 1;
+        END IF;
+
+        IF (v_retopt = 1) THEN
+            v_resposition := v_resposition + v_regexpres_row.value_len;
+        END IF;
+
+        v_match_count := v_regexpres_row.rownum;
+        EXIT WHEN v_match_count = v_occurrence;
+    END LOOP;
+
+    RETURN CASE
+              WHEN v_match_count != v_occurrence THEN 0
+              ELSE v_resposition
+           END;
+END;
+$_$;
+
+
+--
+-- Name: mv$regexpreplace(text, character varying, text, integer, integer, character varying); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$regexpreplace"(p_srcstring text, p_regexppat character varying, p_replacestring text DEFAULT ''::text, p_position integer DEFAULT 1, p_occurrence integer DEFAULT 0, p_matchparam character varying DEFAULT 'c'::character varying) RETURNS text
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$regExpReplace
+Author:       David Day
+Date:         03/07/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+03/07/2019  | D Day      	| Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Function to use regular expression pattern to replace value(s) from the input parameter p_src_string
+
+Arguments:      IN      p_srcstring             
+                IN      p_regexppat
+				IN		p_replacestring text
+                IN      p_position
+				IN 		p_occurrence
+                IN      p_matchparam			              
+Returns:                TEXT
+
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+    v_resstring TEXT;
+    v_regexpval TEXT;
+    v_resposition INTEGER;
+    v_regexpres_row RECORD;
+    v_match_count INTEGER := 0;
+    v_matchparam VARCHAR := trim(p_matchparam);
+    v_srcstring TEXT := substr(p_srcstring, p_position);
+    v_srcstrlen INTEGER := char_length(v_srcstring);
+	
+BEGIN
+    -- Possible combinations of the input parameters (processing some of them)
+    IF (char_length(v_srcstring) = 0 AND char_length(p_regexppat) = 0 AND p_position = 1 AND p_occurrence IN (0, 1)) THEN
+        RETURN p_replacestring;
+    ELSIF (char_length(v_srcstring) != 0 AND char_length(p_regexppat) = 0) THEN
+        RETURN p_srcstring;
+    END IF;
+
+    -- Block of input parameters validation checks
+    IF (coalesce(p_srcstring, '') = '' OR coalesce(p_regexppat, '') = '' OR p_position IS NULL OR p_occurrence IS NULL) THEN
+        RETURN NULL;
+    ELSIF (p_position <= 0) THEN
+        RAISE EXCEPTION 'The value for parameter in position "4" (start position) should be greater than or equal to 1';
+    ELSIF (p_occurrence < 0) THEN
+        RAISE EXCEPTION 'The value for parameter in position "5" (occurrence of match) should be greater than or equal to 0';
+    ELSIF (coalesce(v_matchparam, '') = '') THEN
+        v_matchparam := 'c';
+    ELSIF (v_matchparam !~ 'i|c|n|m|x') THEN
+        RAISE EXCEPTION 'The value of the argument for parameter in position "6" (match_parameter) must be one of the following: "i", "c", "n", "m", "x"';
+    END IF;
+																											  
+-- Translate regexp flags (match_parameter) between matching engines
+    v_matchparam := concat('g', v_matchparam);
+    v_matchparam := regexp_replace(v_matchparam, 'm|x', '', 'g');
+    v_matchparam := CASE
+                       WHEN v_matchparam !~ 'n' THEN concat(v_matchparam, 'p')
+                       ELSE regexp_replace(v_matchparam, 'n', '', 'g')
+                    END;
+
+    -- Replace all occurrences of match if particular one isn't specified
+    IF (p_occurrence = 0) THEN
+        v_resstring := regexp_replace(v_srcstring,
+                                      p_regexppat,
+                                      coalesce(p_replacestring, ''),
+                                      v_matchparam);
+
+        v_resstring := concat(substr(p_srcstring, 1, p_position - 1), v_resstring);
+    -- Replace the particular occurrence of regexp match (specified as "p_occurrence" param)
+    ELSE
+        FOR v_regexpres_row IN
+        (SELECT rownum,
+                regexpval,
+                char_length(regexpval) AS value_len
+           FROM (SELECT ROW_NUMBER() OVER (ORDER BY 1) AS rownum,
+                        regexpval
+                   FROM (SELECT unnest(regexp_matches(v_srcstring,
+                                                      p_regexppat,
+                                                      v_matchparam)) AS regexpval
+                        ) AS regexpvals
+                  WHERE char_length(regexpval) > 0
+                ) AS rankexpvals
+          ORDER BY rownum ASC)
+        LOOP
+            v_regexpval := v_regexpres_row.regexpval;
+            v_srcstring := substr(v_srcstring, strpos(v_srcstring, v_regexpval) + v_regexpres_row.value_len);
+            v_resposition := v_srcstrlen - char_length(v_srcstring) - v_regexpres_row.value_len + 1;
+
+            IF (p_position > 1) THEN
+                v_resposition := v_resposition + p_position - 1;
+            END IF;
+
+            v_match_count := v_regexpres_row.rownum;
+            EXIT WHEN v_match_count = p_occurrence;
+        END LOOP;
+
+        IF (v_match_count = p_occurrence) THEN
+            v_resstring := concat(substr(p_srcstring, 0, v_resposition),
+                           p_replacestring,
+                           substr(p_srcstring, v_resposition + char_length(v_regexpval)));
+        END IF;
+    END IF;
+
+    RETURN coalesce(v_resstring, p_srcstring);
+END;
+																		   
+$_$;
+
+
+--
+-- Name: mv$regexpsubstr(text, character varying, numeric, numeric, character varying); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$regexpsubstr"(p_src_string text, p_regexp_pat character varying, p_position numeric DEFAULT 1, p_occurrence numeric DEFAULT 1, p_match_param character varying DEFAULT 'c'::character varying) RETURNS text
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$regExpReplace
+Author:       David Day
+Date:         03/07/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+03/07/2019  | D Day      	| Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Function to search a string value and return the substring of itself based on the input
+				regular expression pattern.
+
+Arguments:      IN      p_srcstring             
+                IN      p_regexp_pat
+                IN      p_position
+				IN 		p_occurrence
+                IN      p_match_param			              
+Returns:                TEXT
+
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+    v_res_string TEXT;
+    v_regexp_val TEXT;
+    v_regexpres_row RECORD;
+    v_match_count INTEGER := 0;
+    v_position INTEGER := floor(p_position);
+    v_occurrence INTEGER := floor(p_occurrence);
+    v_match_param VARCHAR := trim(p_match_param);
+    v_src_string TEXT := substr(p_src_string, v_position);
+BEGIN
+    IF (coalesce(p_src_string, '') = '' OR coalesce(p_regexp_pat, '') = '' OR
+        p_position IS NULL OR p_occurrence IS NULL)
+    THEN
+        RETURN NULL;
+    ELSIF (v_position <= 0) THEN
+        RAISE EXCEPTION 'The value for parameter in position "3" (start position) should be greater than or equal to 1';
+    ELSIF (v_occurrence < 0) THEN
+        RAISE EXCEPTION 'The value for parameter in position "4" (occurrence of match) should be greater than or equal to 1';
+    ELSIF (coalesce(v_match_param, '') = '') THEN
+        v_match_param := 'c';
+    ELSIF (v_match_param !~ 'i|c|n|m|x') THEN
+        RAISE EXCEPTION 'The value of the argument for parameter in position "5" (match_parameter) must be one of the following: "i", "c", "n", "m", "x"';
+    END IF;
+
+    v_match_param := concat('g', v_match_param);
+    v_match_param := regexp_replace(v_match_param, 'm|x', '', 'g');
+    v_match_param := CASE
+                       WHEN v_match_param !~ 'n' THEN concat(v_match_param, 'p')
+                       ELSE regexp_replace(v_match_param, 'n', '', 'g')
+                    END;
+
+    FOR v_regexpres_row IN
+    (SELECT rownum,
+            regexpval,
+            char_length(regexpval) AS value_len
+       FROM (SELECT ROW_NUMBER() OVER (ORDER BY 1) AS rownum,
+                    regexpval
+               FROM (SELECT unnest(regexp_matches(v_src_string,
+                                                  p_regexp_pat,
+                                                  v_match_param)) AS regexpval
+                    ) AS regexpvals
+              WHERE char_length(regexpval) > 0
+            ) AS rankexpvals
+      ORDER BY rownum ASC)
+    LOOP
+        v_match_count := v_regexpres_row.rownum;
+        v_regexp_val := v_regexpres_row.regexpval;
+        v_src_string := substr(v_src_string, strpos(v_src_string, v_regexp_val) + v_regexpres_row.value_len);
+
+        IF (v_match_count = v_occurrence) THEN
+            v_res_string := v_regexp_val;
+            EXIT;
+        END IF;
+    END LOOP;
+
+    RETURN v_res_string;
+END;
+
+$_$;
+
+
+--
+-- Name: mv$removeindexfrommv$table(mvrefresh."mv$allconstants", text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$removeindexfrommv$table"(pconst mvrefresh."mv$allconstants", pindexname text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$removeIndexFromMv$Table
+Author:       Rohan Port
+Date:         15/06/2021
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    This function removes an index from the materialized view table
+
+Arguments:      IN      pConst              The memory structure containing all constants
+                IN      pIndexName          The name of the index to remove
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2021 Beyond Essential Systems Pty Ltd
+***********************************************************************************************************************************/
+DECLARE
+
+    tSqlStatement   TEXT;
+
+BEGIN
+
+    tSqlStatement   :=  pConst.DROP_INDEX   || pIndexName;
+
+    EXECUTE tSqlStatement;
+
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$removeIndexFromMv$Table';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$removematerializedview(text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$removematerializedview"(pviewname text, powner text DEFAULT USER) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$removeMaterializedView
+Author:       Mike Revitt
+Date:         12/011/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+11/03/2018  | M Revitt      | Initial version
+01/07/2019	| David Day		| Added function mv$deletePgMviewOjDetails to delete data from data dictionary table pgmview_oj_details. 
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Removes a materialized view, clears down the entries in the Materialized View Log adn then removes the entry from
+                the data dictionary table
+
+                This function performs the following steps
+                1)  Clears the MV Bit from all base tables logs used by thie materialized view
+                2)  Drops the materialized view
+                3)  Removes the MV_M_ROW$_COLUMN column from the base table
+                4)  Removes the record of the materialized view from the data dictionary table
+
+Arguments:      IN      pViewName           The name of the materialized view
+                IN      pOwner              Optional, the owner of the materialized view, defaults to user
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    aPgMview    pg$mviews;
+    rConst      mv$allConstants;
+
+    cResult     CHAR(1);
+
+BEGIN
+
+    rConst      := mv$buildAllConstants();
+    aPgMview    := mv$getPgMviewTableData(      rConst, pOwner, pViewName           );
+    cResult     := mv$clearAllPgMvLogTableBits( rConst, pOwner, pViewName           );
+    cResult     := mv$clearPgMviewLogBit(       rConst, pOwner, pViewName           );
+    cResult     := mv$dropTable(                rConst, pOwner, aPgMview.view_name  );
+    cResult     := mv$deletePgMview(               pOwner, pViewName           );
+	cResult		:= mv$deletePgMviewOjDetails(      pOwner, pViewName           );
+
+    RETURN;
+END;
+$_X$;
+
+
+--
+-- Name: mv$removematerializedviewlog(text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$removematerializedviewlog"(ptablename text, powner text DEFAULT USER) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$removeMaterializedViewLog
+Author:       Mike Revitt
+Date:         12/011/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+15/01/2020  | M Revitt      | Changed bitmap check to look at all values in the bitmap array
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Removes a materialized view log from the base table.
+
+            This function has the following pre-requisites
+            1)  All Materialized Views, with an interest in the log, must have been previously removed
+
+            This function performs the following steps
+            1)  Drops the trigger from the base table
+            2)  Drops the Materialized View Log table
+            3)  Removes the MV_M_ROW$_COLUMN column from the base table
+            4)  Removes the record of the materialized view from the data dictionary table
+
+Arguments:      IN      pTableName          The name of the base table containing the materialized view log
+                IN      pOwner              Optional, the owner of the materialized view, defaults to user
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    rConst          mv$allConstants;
+    aViewLog        pg$mview_logs;
+
+    tSqlStatement       TEXT;
+    tLog$Name           TEXT        := NULL;
+    tMvTriggerName      TEXT        := NULL;
+    cResult             CHAR(1)     := NULL;
+
+BEGIN
+
+    rConst   := mv$buildAllConstants();
+    aViewLog := mv$getPgMviewLogTableData( rConst, pTableName );
+
+    IF rConst.BITMAP_NOT_SET = ALL( aViewLog.pg_mview_bitmap )
+    THEN
+        cResult  := mv$dropTrigger(                 rConst, pOwner, aViewLog.trigger_name, pTableName   );
+        cResult  := mv$dropTable(                   rConst, pOwner, aViewLog.pglog$_name                );
+        cResult  := mv$removeRow$FromSourceTable(   rConst, pOwner, pTableName                          );
+        cResult  := mv$deletePgMviewLog(                    pOwner, pTableName                          );
+    ELSE
+        RAISE EXCEPTION 'The Materialized View Log on Table % is still in use', pTableName;
+    END IF;
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$removeMaterializedViewLog';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+
+END;
+$_X$;
+
+
+--
+-- Name: mv$removerow$fromsourcetable(mvrefresh."mv$allconstants", text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$removerow$fromsourcetable"(pconst mvrefresh."mv$allconstants", powner text, ptablename text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$removeRow$FromSourceTable
+Author:       Mike Revitt
+Date:         04/06/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+04/06/2019  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    PostGre does not have a ROWID pseudo column and so a ROWID column has to be added to the source table, ideally this
+                should be a hidden column, but I can't find any way of doing this
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pTableName          The name of the materialized view source table
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tSqlStatement TEXT;
+
+BEGIN
+
+    tSqlStatement := pConst.ALTER_TABLE || pOwner || pConst.DOT_CHARACTER || pTableName || pConst.DROP_M_ROW$_COLUMN_FROM_TABLE;
+
+    EXECUTE tSqlStatement;
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$removeRow$FromSourceTable';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_X$;
+
+
+--
+-- Name: mv$replacecommandwithtoken(mvrefresh."mv$allconstants", text, text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$replacecommandwithtoken"(pconst mvrefresh."mv$allconstants", psearchstring text, psearchvalue text, ptokan text) RETURNS text
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$replaceCommandWithToken
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+
+10/09/2019  | D Day         | Change code to handle tab characters
+15/01/2019  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    A huge amount of coding in this program is to locate specific key words within text strings. This is largely a
+                repetative process which I have now moved to a common function
+
+
+Arguments:      IN      pSearchString       The string to be searched
+                IN      pSearchValue        The value to look for in the string
+                IN      pTokan              The value to replace the search value with within the string
+Returns:                TEXT                The tokanised string
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tTokanisedString    TEXT;
+
+BEGIN
+
+ tTokanisedString :=
+        REPLACE( REPLACE( REPLACE( REPLACE( REPLACE( REPLACE( REPLACE( REPLACE( REPLACE( REPLACE( REPLACE( REPLACE( REPLACE(
+														REPLACE( REPLACE( REPLACE(
+        pSearchString,
+        pConst.SPACE_CHARACTER || pSearchValue  || pConst.SPACE_CHARACTER,   pTokan ),
+        pConst.SPACE_CHARACTER || pSearchValue  || pConst.NEW_LINE,          pTokan ),
+        pConst.SPACE_CHARACTER || pSearchValue  || pConst.CARRIAGE_RETURN,   pTokan ),
+        pConst.SPACE_CHARACTER || pSearchValue  || pConst.TAB_CHARACTER,   	 pTokan ),
+        pConst.NEW_LINE        || pSearchValue  || pConst.SPACE_CHARACTER,   pTokan ),
+        pConst.NEW_LINE        || pSearchValue  || pConst.NEW_LINE,          pTokan ),
+        pConst.NEW_LINE        || pSearchValue  || pConst.CARRIAGE_RETURN,   pTokan ),
+        pConst.NEW_LINE 	   || pSearchValue  || pConst.TAB_CHARACTER,   	 pTokan ),
+        pConst.CARRIAGE_RETURN || pSearchValue  || pConst.SPACE_CHARACTER,   pTokan ),
+        pConst.CARRIAGE_RETURN || pSearchValue  || pConst.NEW_LINE,          pTokan ),
+        pConst.CARRIAGE_RETURN || pSearchValue  || pConst.CARRIAGE_RETURN,   pTokan ),
+        pConst.CARRIAGE_RETURN || pSearchValue  || pConst.TAB_CHARACTER,   	 pTokan ),
+		pConst.TAB_CHARACTER   || pSearchValue  || pConst.SPACE_CHARACTER,   pTokan ),
+		pConst.TAB_CHARACTER   || pSearchValue  || pConst.NEW_LINE,          pTokan ),
+		pConst.TAB_CHARACTER   || pSearchValue  || pConst.CARRIAGE_RETURN,   pTokan ),
+		pConst.TAB_CHARACTER   || pSearchValue  || pConst.TAB_CHARACTER,   	 pTokan );
+
+    RETURN( tTokanisedString );
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$replaceCommandWithToken';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$setpgmviewlogbit(mvrefresh."mv$allconstants", text, text, bigint[]); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$setpgmviewlogbit"(pconst mvrefresh."mv$allconstants", powner text, "ppglog$name" text, pbitmap bigint[]) RETURNS smallint
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$setPgMviewLogBit
+Author:       Mike Revitt
+Date:         12/01/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+08/10/2019  | D Day         | Changed returns type from INTEGER to SMALLINT to match the bit data type.
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Determins which which bit has been assigned to the base table and then adds that to the PgMview bitmap in the
+                materialized view log data dictionary table to record all of the materialized views that are using the rows created
+                in this table.
+
+Notes:          This is how we determine which materialized views require an update when the fast refresh function is called
+
+Arguments:      IN      pTableName          The name of the materialized view source table
+Returns:                VOID
+
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tBitValue   mv$bitValue;
+
+BEGIN
+
+    tBitValue   := mv$findFirstFreeBit( pConst, pBitmap );
+
+    UPDATE  pg$mview_logs
+    SET     pg_mview_bitmap[tBitValue.BIT_ROW] = COALESCE( pg_mview_bitmap[tBitValue.BIT_ROW], pConst.BITMAP_NOT_SET ) + tBitValue.BIT_MAP
+    WHERE   owner           = pOwner
+    AND     pglog$_name     = pPgLog$Name;
+
+    RETURN( tBitValue.BIT_VALUE );
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$setPgMviewLogBit';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_X$;
+
+
+--
+-- Name: mv$truncatematerializedview(mvrefresh."mv$allconstants", text, text); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$truncatematerializedview"(pconst mvrefresh."mv$allconstants", powner text, pviewname text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$truncateMaterializedView
+Author:       Mike Revitt
+Date:         12/11/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    When performing a full refresh, we first have to truncate the materialized view
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pViewName          The name of the materialized view base table
+Returns:                VOID
+
+************************************************************************************************************************************
+Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tSqlStatement TEXT;
+
+BEGIN
+    tSqlStatement := pConst.TRUNCATE_TABLE || pOwner || pConst.DOT_CHARACTER || pViewName;
+
+    EXECUTE tSqlStatement;
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$truncateMaterializedView';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: mv$updatematerializedviewrows(mvrefresh."mv$allconstants", text, text, text, uuid[]); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$updatematerializedviewrows"(pconst mvrefresh."mv$allconstants", powner text, pviewname text, ptablealias text, prowids uuid[]) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_X$
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$updateMaterializedViewRows
+Author:       Mike Revitt
+Date:         12/011/2018
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+11/03/2018  | M Revitt      | Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Gets called to insert a new row into the Materialized View when an insert is detected
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pViewName           The name of the materialized view
+                IN      pTableAlias         The alias for the base table in the original select statement
+                IN      pRowID              The unique identifier to locate the new row
+Returns:                VOID
+
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    cResult         CHAR(1)     := NULL;
+    tSqlStatement   TEXT;
+    aPgMview        pg$mviews;
+    bBaseRowExists  BOOLEAN := FALSE;
+
+BEGIN
+
+    aPgMview := mv$getPgMviewTableData( pConst, pOwner, pViewName );
+
+    tSqlStatement := pConst.INSERT_INTO    || pOwner || pConst.DOT_CHARACTER    || aPgMview.view_name   ||
+                     pConst.OPEN_BRACKET   || aPgMview.pgmv_columns             || pConst.CLOSE_BRACKET ||
+                     pConst.SELECT_COMMAND || aPgMview.select_columns           ||
+                     pConst.FROM_COMMAND   || aPgMview.table_names              ||
+                     pConst.WHERE_COMMAND;
+
+    IF aPgMview.where_clause != pConst.EMPTY_STRING
+    THEN
+        tSqlStatement := tSqlStatement || aPgMview.where_clause || pConst.AND_COMMAND;
+    END IF;
+
+    tSqlStatement :=  tSqlStatement || pTableAlias  || pConst.MV_M_ROW$_SOURCE_COLUMN || pConst.IN_ROWID_LIST;
+
+    EXECUTE tSqlStatement
+    USING   pRowIDs;
+
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$updateMaterializedViewRows';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_X$;
+
+
+--
+-- Name: mv$updateouterjoincolumnsnull(mvrefresh."mv$allconstants", text, text, text, text, uuid[]); Type: FUNCTION; Schema: mvrefresh; Owner: -
+--
+
+CREATE FUNCTION mvrefresh."mv$updateouterjoincolumnsnull"(pconst mvrefresh."mv$allconstants", powner text, pviewname text, ptablealias text, prowidcolumn text, prowids uuid[]) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+
+/* ---------------------------------------------------------------------------------------------------------------------------------
+Routine Name: mv$updateOuterJoinColumnsNull
+Author:       David Day
+Date:         25/06/2019
+------------------------------------------------------------------------------------------------------------------------------------
+Revision History    Push Down List
+------------------------------------------------------------------------------------------------------------------------------------
+Date        | Name          | Description
+------------+---------------+-------------------------------------------------------------------------------------------------------
+            |               |
+25/06/2019  | D Day      	| Initial version
+------------+---------------+-------------------------------------------------------------------------------------------------------
+Description:    Executes UPDATE statement to nullify outer join columns held in the materialized view table when a DELETE has been
+				done against the source table.
+				
+				A decision was made that an UPDATE would be the more per-formant way of deleting the data rather than to get
+				the inner join rowids to allow the rows to be deleted and inserted back if the inner join conditions still match.
+				
+				Due to the overhead of getting the inner join rowids from the materialized view to allow this to happen in this scenario.
+
+Arguments:      IN      pConst	
+
+Arguments:      IN      pOwner              The owner of the object
+                IN      pViewName           The name of the materialized view
+                IN      pTableAlias         The alias for the outer join table
+                IN      pRowidColumn    	The name of the outer join rowid column
+                IN      pRowID              The unique identifier to locate the row			
+
+Returns:                VOID
+************************************************************************************************************************************
+Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+***********************************************************************************************************************************/
+DECLARE
+
+    tSqlStatement   				TEXT;
+
+BEGIN	
+
+	SELECT update_sql INTO tSqlStatement
+	FROM pg$mviews_oj_details
+	WHERE owner = pOwner
+	AND view_name = pViewName
+	AND table_alias = ptablealias
+	AND rowid_column_name = pRowidColumn;
+	
+	EXECUTE tSqlStatement
+	USING   pRowIDs;
+
+    RETURN;
+
+    EXCEPTION
+    WHEN OTHERS
+    THEN
+        RAISE INFO      'Exception in function mv$updateOuterJoinColumnsNull';
+        RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
+        RAISE INFO      'Error Context:% %',CHR(10),  tSqlStatement;
+        RAISE EXCEPTION '%',                SQLSTATE;
+END;
+$_$;
+
+
+--
+-- Name: create_user_and_role(text, text); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.create_user_and_role(pis_password text, pis_moduleowner text) RETURNS void
+    LANGUAGE plpgsql
+    AS $_X$
+DECLARE
+
+ls_password TEXT := pis_password;
+
+ls_moduleowner TEXT := pis_moduleowner;
+
+ls_sql TEXT;
+
+BEGIN
+ IF NOT EXISTS (
+      SELECT
+      FROM   pg_user
+      WHERE  usename = pis_moduleowner) THEN
+	  
+	  ls_sql := 'CREATE USER '||ls_moduleowner||' WITH
+					LOGIN
+					NOSUPERUSER
+					NOCREATEDB
+					NOCREATEROLE
+					INHERIT
+					NOREPLICATION
+					CONNECTION LIMIT -1
+					PASSWORD '''||pis_password||''';';
+				
+	  EXECUTE ls_sql;
+	  
+   END IF;
+   
+   IF NOT EXISTS (
+      SELECT
+      FROM   pg_roles
+      WHERE  rolname = 'pgmv$_role') THEN
+	  
+	  ls_sql := 'CREATE ROLE pgmv$_role WITH
+				  NOLOGIN
+				  NOSUPERUSER
+				  INHERIT
+				  NOCREATEDB
+				  NOCREATEROLE
+				  NOREPLICATION;';
+				
+	  EXECUTE ls_sql;
+	  
+   END IF;
+   
+   IF NOT EXISTS (
+      SELECT
+      FROM   pg_roles
+      WHERE  rolname = 'rds_superuser') THEN
+	  
+	  ls_sql := 'ALTER USER '||pis_moduleowner||' with superuser;';
+				
+	  EXECUTE ls_sql;
+	  
+   ELSE
+	
+	  ls_sql := 'GRANT rds_superuser TO '||pis_moduleowner||';';
+	  
+	  EXECUTE ls_sql;
+	  
+   END IF;
+
+END;
+$_X$;
 
 
 --
@@ -279,9 +6115,28 @@ CREATE FUNCTION public.update_change_time() RETURNS trigger
     $$;
 
 
-SET default_tablespace = '';
+--
+-- Name: pgmv$_instance; Type: SERVER; Schema: -; Owner: -
+--
 
-SET default_with_oids = false;
+CREATE SERVER "pgmv$_instance" FOREIGN DATA WRAPPER postgres_fdw OPTIONS (
+    connect_timeout '2',
+    dbname 'tupaia',
+    host 'localhost',
+    keepalives_count '5',
+    port '5432'
+);
+
+
+--
+-- Name: USER MAPPING mvrefresh SERVER pgmv$_instance; Type: USER MAPPING; Schema: -; Owner: -
+--
+
+CREATE USER MAPPING FOR mvrefresh SERVER "pgmv$_instance" OPTIONS (
+    password 'WBULmAbc8XaufKTaZe5Gozln',
+    "user" 'mvrefresh'
+);
+
 
 --
 -- Name: access_request; Type: TABLE; Schema: public; Owner: -
@@ -299,6 +6154,32 @@ CREATE TABLE public.access_request (
     processed_by text,
     note text,
     processed_date timestamp with time zone
+);
+
+
+--
+-- Name: analytics; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.analytics (
+    entity_code character varying(64),
+    entity_name character varying(128),
+    data_element_code text,
+    data_group_code text,
+    event_id text,
+    value text,
+    type text,
+    day_period timestamp without time zone,
+    week_period timestamp without time zone,
+    month_period timestamp without time zone,
+    year_period timestamp without time zone,
+    date timestamp without time zone,
+    "survey_response_m_row$" uuid,
+    "answer_m_row$" uuid,
+    "entity_m_row$" uuid,
+    "survey_m_row$" uuid,
+    "question_m_row$" uuid,
+    "data_source_m_row$" uuid
 );
 
 
@@ -324,7 +6205,8 @@ CREATE TABLE public.answer (
     type text NOT NULL,
     survey_response_id text NOT NULL,
     question_id text NOT NULL,
-    text text
+    text text,
+    "m_row$" uuid DEFAULT public.uuid_generate_v4() NOT NULL
 );
 
 
@@ -410,51 +6292,46 @@ CREATE TABLE public.country (
 
 
 --
--- Name: dashboardGroup; Type: TABLE; Schema: public; Owner: -
+-- Name: dashboard; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public."dashboardGroup" (
-    id integer NOT NULL,
-    "organisationLevel" text NOT NULL,
-    "userGroup" text NOT NULL,
-    "organisationUnitCode" text NOT NULL,
-    "dashboardReports" text[] DEFAULT '{}'::text[] NOT NULL,
+CREATE TABLE public.dashboard (
+    id text NOT NULL,
+    code text NOT NULL,
     name text NOT NULL,
-    code text,
-    "projectCodes" text[] DEFAULT '{}'::text[]
+    root_entity_code text NOT NULL,
+    sort_order integer
 );
 
 
 --
--- Name: dashboardGroup_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: dashboard_item; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public."dashboardGroup_id_seq"
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: dashboardGroup_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public."dashboardGroup_id_seq" OWNED BY public."dashboardGroup".id;
-
-
---
--- Name: dashboardReport; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public."dashboardReport" (
+CREATE TABLE public.dashboard_item (
     id text NOT NULL,
-    "drillDownLevel" integer,
-    "dataBuilder" text,
-    "dataBuilderConfig" jsonb,
-    "viewJson" jsonb,
-    "dataServices" jsonb DEFAULT '[{"isDataRegional": true}]'::jsonb
+    code text NOT NULL,
+    config jsonb DEFAULT '{}'::jsonb NOT NULL,
+    report_code text,
+    legacy boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: dashboard_relation; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.dashboard_relation (
+    id text NOT NULL,
+    dashboard_id text NOT NULL,
+    child_id text NOT NULL,
+    entity_types public.entity_type[] NOT NULL,
+    project_codes text[] NOT NULL,
+    permission_groups text[] NOT NULL,
+    sort_order integer,
+    CONSTRAINT entity_types_not_empty CHECK ((entity_types <> '{}'::public.entity_type[])),
+    CONSTRAINT permission_groups_not_empty CHECK ((permission_groups <> '{}'::text[])),
+    CONSTRAINT project_codes_not_empty CHECK ((project_codes <> '{}'::text[]))
 );
 
 
@@ -470,6 +6347,17 @@ CREATE TABLE public.data_element_data_group (
 
 
 --
+-- Name: data_service_entity; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.data_service_entity (
+    id text NOT NULL,
+    entity_code text NOT NULL,
+    config jsonb NOT NULL
+);
+
+
+--
 -- Name: data_source; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -478,7 +6366,8 @@ CREATE TABLE public.data_source (
     code text NOT NULL,
     type public.data_source_type NOT NULL,
     service_type public.service_type NOT NULL,
-    config jsonb DEFAULT '{}'::jsonb NOT NULL
+    config jsonb DEFAULT '{}'::jsonb NOT NULL,
+    "m_row$" uuid DEFAULT public.uuid_generate_v4() NOT NULL
 );
 
 
@@ -560,7 +6449,8 @@ CREATE TABLE public.entity (
     country_code character varying(6),
     bounds public.geography(Polygon,4326),
     metadata jsonb,
-    attributes jsonb DEFAULT '{}'::jsonb
+    attributes jsonb DEFAULT '{}'::jsonb,
+    "m_row$" uuid DEFAULT public.uuid_generate_v4() NOT NULL
 );
 
 
@@ -642,6 +6532,225 @@ CREATE TABLE public.indicator (
     builder text NOT NULL,
     config jsonb DEFAULT '{}'::jsonb NOT NULL
 );
+
+
+--
+-- Name: legacy_report; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.legacy_report (
+    id text NOT NULL,
+    code text NOT NULL,
+    data_builder text,
+    data_builder_config jsonb,
+    data_services jsonb DEFAULT '[{"isDataRegional": true}]'::jsonb
+);
+
+
+--
+-- Name: lesmis_session; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.lesmis_session (
+    id text NOT NULL,
+    email text NOT NULL,
+    access_policy jsonb NOT NULL,
+    access_token text NOT NULL,
+    access_token_expiry bigint NOT NULL,
+    refresh_token text NOT NULL
+);
+
+
+--
+-- Name: log$_answer; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."log$_answer" (
+    "sequence$" bigint NOT NULL,
+    "m_row$" uuid NOT NULL,
+    "bitmap$" bigint[] DEFAULT ARRAY[0] NOT NULL,
+    "snaptime$" date DEFAULT clock_timestamp() NOT NULL,
+    "dmltype$" character(7) NOT NULL
+);
+
+
+--
+-- Name: log$_answer_sequence$_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public."log$_answer_sequence$_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: log$_answer_sequence$_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public."log$_answer_sequence$_seq" OWNED BY public."log$_answer"."sequence$";
+
+
+--
+-- Name: log$_data_source; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."log$_data_source" (
+    "sequence$" bigint NOT NULL,
+    "m_row$" uuid NOT NULL,
+    "bitmap$" bigint[] DEFAULT ARRAY[0] NOT NULL,
+    "snaptime$" date DEFAULT clock_timestamp() NOT NULL,
+    "dmltype$" character(7) NOT NULL
+);
+
+
+--
+-- Name: log$_data_source_sequence$_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public."log$_data_source_sequence$_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: log$_data_source_sequence$_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public."log$_data_source_sequence$_seq" OWNED BY public."log$_data_source"."sequence$";
+
+
+--
+-- Name: log$_entity; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."log$_entity" (
+    "sequence$" bigint NOT NULL,
+    "m_row$" uuid NOT NULL,
+    "bitmap$" bigint[] DEFAULT ARRAY[0] NOT NULL,
+    "snaptime$" date DEFAULT clock_timestamp() NOT NULL,
+    "dmltype$" character(7) NOT NULL
+);
+
+
+--
+-- Name: log$_entity_sequence$_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public."log$_entity_sequence$_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: log$_entity_sequence$_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public."log$_entity_sequence$_seq" OWNED BY public."log$_entity"."sequence$";
+
+
+--
+-- Name: log$_question; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."log$_question" (
+    "sequence$" bigint NOT NULL,
+    "m_row$" uuid NOT NULL,
+    "bitmap$" bigint[] DEFAULT ARRAY[0] NOT NULL,
+    "snaptime$" date DEFAULT clock_timestamp() NOT NULL,
+    "dmltype$" character(7) NOT NULL
+);
+
+
+--
+-- Name: log$_question_sequence$_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public."log$_question_sequence$_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: log$_question_sequence$_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public."log$_question_sequence$_seq" OWNED BY public."log$_question"."sequence$";
+
+
+--
+-- Name: log$_survey; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."log$_survey" (
+    "sequence$" bigint NOT NULL,
+    "m_row$" uuid NOT NULL,
+    "bitmap$" bigint[] DEFAULT ARRAY[0] NOT NULL,
+    "snaptime$" date DEFAULT clock_timestamp() NOT NULL,
+    "dmltype$" character(7) NOT NULL
+);
+
+
+--
+-- Name: log$_survey_response; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."log$_survey_response" (
+    "sequence$" bigint NOT NULL,
+    "m_row$" uuid NOT NULL,
+    "bitmap$" bigint[] DEFAULT ARRAY[0] NOT NULL,
+    "snaptime$" date DEFAULT clock_timestamp() NOT NULL,
+    "dmltype$" character(7) NOT NULL
+);
+
+
+--
+-- Name: log$_survey_response_sequence$_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public."log$_survey_response_sequence$_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: log$_survey_response_sequence$_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public."log$_survey_response_sequence$_seq" OWNED BY public."log$_survey_response"."sequence$";
+
+
+--
+-- Name: log$_survey_sequence$_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public."log$_survey_sequence$_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: log$_survey_sequence$_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public."log$_survey_sequence$_seq" OWNED BY public."log$_survey"."sequence$";
 
 
 --
@@ -893,7 +7002,8 @@ CREATE TABLE public.question (
     option_set_id character varying,
     hook text,
     data_source_id text,
-    CONSTRAINT data_source_id_not_null_on_conditions CHECK (((type = ANY (ARRAY['Instruction'::text, 'PrimaryEntity'::text, 'SubmissionDate'::text])) OR (data_source_id IS NOT NULL)))
+    "m_row$" uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    CONSTRAINT data_source_id_not_null_on_conditions CHECK (((type = ANY (ARRAY['DateOfData'::text, 'Instruction'::text, 'PrimaryEntity'::text, 'SubmissionDate'::text])) OR (data_source_id IS NOT NULL)))
 );
 
 
@@ -947,7 +7057,9 @@ CREATE TABLE public.survey (
     can_repeat boolean DEFAULT false,
     survey_group_id text,
     integration_metadata jsonb DEFAULT '{}'::jsonb,
-    data_source_id text NOT NULL
+    data_source_id text NOT NULL,
+    "m_row$" uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    period_granularity public.period_granularity
 );
 
 
@@ -973,9 +7085,11 @@ CREATE TABLE public.survey_response (
     start_time timestamp with time zone NOT NULL,
     end_time timestamp with time zone NOT NULL,
     metadata text,
-    submission_time timestamp with time zone,
     timezone text DEFAULT 'Pacific/Auckland'::text,
-    entity_id text NOT NULL
+    entity_id text NOT NULL,
+    data_time timestamp without time zone,
+    "m_row$" uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    outdated boolean DEFAULT false
 );
 
 
@@ -1029,7 +7143,8 @@ CREATE TABLE public."userSession" (
     "userName" text NOT NULL,
     "accessToken" text,
     "refreshToken" text NOT NULL,
-    "accessPolicy" jsonb
+    "accessPolicy" jsonb,
+    access_token_expiry bigint DEFAULT 0 NOT NULL
 );
 
 
@@ -1067,25 +7182,45 @@ CREATE TABLE public.user_entity_permission (
 
 
 --
--- Name: user_reward; Type: TABLE; Schema: public; Owner: -
+-- Name: log$_answer sequence$; Type: DEFAULT; Schema: public; Owner: -
 --
 
-CREATE TABLE public.user_reward (
-    id text NOT NULL,
-    user_id text,
-    coconuts bigint DEFAULT 0 NOT NULL,
-    pigs bigint DEFAULT 0 NOT NULL,
-    type character varying,
-    record_id character varying,
-    creation_date timestamp without time zone DEFAULT now()
-);
+ALTER TABLE ONLY public."log$_answer" ALTER COLUMN "sequence$" SET DEFAULT nextval('public."log$_answer_sequence$_seq"'::regclass);
 
 
 --
--- Name: dashboardGroup id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: log$_data_source sequence$; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public."dashboardGroup" ALTER COLUMN id SET DEFAULT nextval('public."dashboardGroup_id_seq"'::regclass);
+ALTER TABLE ONLY public."log$_data_source" ALTER COLUMN "sequence$" SET DEFAULT nextval('public."log$_data_source_sequence$_seq"'::regclass);
+
+
+--
+-- Name: log$_entity sequence$; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."log$_entity" ALTER COLUMN "sequence$" SET DEFAULT nextval('public."log$_entity_sequence$_seq"'::regclass);
+
+
+--
+-- Name: log$_question sequence$; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."log$_question" ALTER COLUMN "sequence$" SET DEFAULT nextval('public."log$_question_sequence$_seq"'::regclass);
+
+
+--
+-- Name: log$_survey sequence$; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."log$_survey" ALTER COLUMN "sequence$" SET DEFAULT nextval('public."log$_survey_sequence$_seq"'::regclass);
+
+
+--
+-- Name: log$_survey_response sequence$; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."log$_survey_response" ALTER COLUMN "sequence$" SET DEFAULT nextval('public."log$_survey_response_sequence$_seq"'::regclass);
 
 
 --
@@ -1093,6 +7228,30 @@ ALTER TABLE ONLY public."dashboardGroup" ALTER COLUMN id SET DEFAULT nextval('pu
 --
 
 ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.migrations_id_seq'::regclass);
+
+
+--
+-- Name: pg$mview_logs pk_pg$mview_logs; Type: CONSTRAINT; Schema: mvrefresh; Owner: -
+--
+
+ALTER TABLE ONLY mvrefresh."pg$mview_logs"
+    ADD CONSTRAINT "pk_pg$mview_logs" PRIMARY KEY (owner, table_name);
+
+
+--
+-- Name: pg$mviews pk_pg$mviews; Type: CONSTRAINT; Schema: mvrefresh; Owner: -
+--
+
+ALTER TABLE ONLY mvrefresh."pg$mviews"
+    ADD CONSTRAINT "pk_pg$mviews" PRIMARY KEY (owner, view_name);
+
+
+--
+-- Name: pg$mviews_oj_details pk_pg$mviews_oj_details; Type: CONSTRAINT; Schema: mvrefresh; Owner: -
+--
+
+ALTER TABLE ONLY mvrefresh."pg$mviews_oj_details"
+    ADD CONSTRAINT "pk_pg$mviews_oj_details" PRIMARY KEY (owner, view_name, table_alias);
 
 
 --
@@ -1109,6 +7268,14 @@ ALTER TABLE ONLY public.access_request
 
 ALTER TABLE ONLY public.ancestor_descendant_relation
     ADD CONSTRAINT ancestor_descendant_relation_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: answer answer_m_row$_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.answer
+    ADD CONSTRAINT "answer_m_row$_key" UNIQUE ("m_row$");
 
 
 --
@@ -1200,19 +7367,43 @@ ALTER TABLE ONLY public.country
 
 
 --
--- Name: dashboardGroup dashboardGroup_code_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: dashboard dashboard_code_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public."dashboardGroup"
-    ADD CONSTRAINT "dashboardGroup_code_key" UNIQUE (code);
+ALTER TABLE ONLY public.dashboard
+    ADD CONSTRAINT dashboard_code_key UNIQUE (code);
 
 
 --
--- Name: dashboardGroup dashboardGroup_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: dashboard_item dashboard_item_code_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public."dashboardGroup"
-    ADD CONSTRAINT "dashboardGroup_pkey" PRIMARY KEY (id);
+ALTER TABLE ONLY public.dashboard_item
+    ADD CONSTRAINT dashboard_item_code_key UNIQUE (code);
+
+
+--
+-- Name: dashboard_item dashboard_item_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dashboard_item
+    ADD CONSTRAINT dashboard_item_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: dashboard dashboard_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dashboard
+    ADD CONSTRAINT dashboard_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: dashboard_relation dashboard_relation_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dashboard_relation
+    ADD CONSTRAINT dashboard_relation_pkey PRIMARY KEY (id);
 
 
 --
@@ -1232,11 +7423,35 @@ ALTER TABLE ONLY public.data_element_data_group
 
 
 --
+-- Name: data_service_entity data_service_entity_entity_code_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_service_entity
+    ADD CONSTRAINT data_service_entity_entity_code_key UNIQUE (entity_code);
+
+
+--
+-- Name: data_service_entity data_service_entity_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_service_entity
+    ADD CONSTRAINT data_service_entity_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: data_source data_source_code_type_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.data_source
     ADD CONSTRAINT data_source_code_type_key UNIQUE (code, type);
+
+
+--
+-- Name: data_source data_source_m_row$_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_source
+    ADD CONSTRAINT "data_source_m_row$_key" UNIQUE ("m_row$");
 
 
 --
@@ -1328,6 +7543,14 @@ ALTER TABLE ONLY public.entity_hierarchy
 
 
 --
+-- Name: entity entity_m_row$_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.entity
+    ADD CONSTRAINT "entity_m_row$_key" UNIQUE ("m_row$");
+
+
+--
 -- Name: entity entity_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1389,6 +7612,78 @@ ALTER TABLE ONLY public.indicator
 
 ALTER TABLE ONLY public.meditrak_device
     ADD CONSTRAINT install_id_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: legacy_report legacy_report_code_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.legacy_report
+    ADD CONSTRAINT legacy_report_code_key UNIQUE (code);
+
+
+--
+-- Name: legacy_report legacy_report_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.legacy_report
+    ADD CONSTRAINT legacy_report_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: lesmis_session lesmis_session_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.lesmis_session
+    ADD CONSTRAINT lesmis_session_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: log$_answer log$_answer_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."log$_answer"
+    ADD CONSTRAINT "log$_answer_pkey" PRIMARY KEY ("sequence$");
+
+
+--
+-- Name: log$_data_source log$_data_source_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."log$_data_source"
+    ADD CONSTRAINT "log$_data_source_pkey" PRIMARY KEY ("sequence$");
+
+
+--
+-- Name: log$_entity log$_entity_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."log$_entity"
+    ADD CONSTRAINT "log$_entity_pkey" PRIMARY KEY ("sequence$");
+
+
+--
+-- Name: log$_question log$_question_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."log$_question"
+    ADD CONSTRAINT "log$_question_pkey" PRIMARY KEY ("sequence$");
+
+
+--
+-- Name: log$_survey log$_survey_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."log$_survey"
+    ADD CONSTRAINT "log$_survey_pkey" PRIMARY KEY ("sequence$");
+
+
+--
+-- Name: log$_survey_response log$_survey_response_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."log$_survey_response"
+    ADD CONSTRAINT "log$_survey_response_pkey" PRIMARY KEY ("sequence$");
 
 
 --
@@ -1568,6 +7863,14 @@ ALTER TABLE ONLY public.question
 
 
 --
+-- Name: question question_m_row$_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.question
+    ADD CONSTRAINT "question_m_row$_key" UNIQUE ("m_row$");
+
+
+--
 -- Name: question question_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1648,6 +7951,14 @@ ALTER TABLE ONLY public.survey_group
 
 
 --
+-- Name: survey survey_m_row$_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.survey
+    ADD CONSTRAINT "survey_m_row$_key" UNIQUE ("m_row$");
+
+
+--
 -- Name: survey survey_name_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1669,6 +7980,14 @@ ALTER TABLE ONLY public.survey
 
 ALTER TABLE ONLY public.survey_response_comment
     ADD CONSTRAINT survey_response_comment_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: survey_response survey_response_m_row$_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.survey_response
+    ADD CONSTRAINT "survey_response_m_row$_key" UNIQUE ("m_row$");
 
 
 --
@@ -1736,19 +8055,59 @@ ALTER TABLE ONLY public.user_entity_permission
 
 
 --
--- Name: user_reward user_reward_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: analytics_answer_m_row$_key; Type: INDEX; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_reward
-    ADD CONSTRAINT user_reward_pkey PRIMARY KEY (id);
+CREATE INDEX "analytics_answer_m_row$_key" ON public.analytics USING btree ("answer_m_row$");
 
 
 --
--- Name: user_reward user_reward_type_record_id_unique; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: analytics_data_element_entity_date_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_reward
-    ADD CONSTRAINT user_reward_type_record_id_unique UNIQUE (type, record_id);
+CREATE INDEX analytics_data_element_entity_date_idx ON public.analytics USING btree (data_element_code, entity_code, date DESC);
+
+
+--
+-- Name: analytics_data_group_entity_event_date_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX analytics_data_group_entity_event_date_idx ON public.analytics USING btree (data_group_code, entity_code, event_id, date DESC);
+
+
+--
+-- Name: analytics_data_source_m_row$_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "analytics_data_source_m_row$_key" ON public.analytics USING btree ("data_source_m_row$");
+
+
+--
+-- Name: analytics_entity_m_row$_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "analytics_entity_m_row$_key" ON public.analytics USING btree ("entity_m_row$");
+
+
+--
+-- Name: analytics_question_m_row$_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "analytics_question_m_row$_key" ON public.analytics USING btree ("question_m_row$");
+
+
+--
+-- Name: analytics_survey_m_row$_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "analytics_survey_m_row$_key" ON public.analytics USING btree ("survey_m_row$");
+
+
+--
+-- Name: analytics_survey_response_m_row$_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "analytics_survey_response_m_row$_key" ON public.analytics USING btree ("survey_response_m_row$");
 
 
 --
@@ -1868,6 +8227,48 @@ CREATE INDEX geographical_area_parent_id_idx ON public.geographical_area USING b
 --
 
 CREATE INDEX idx_entity_country_code ON public.entity USING btree (country_code);
+
+
+--
+-- Name: log$_answer_bitmap$_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "log$_answer_bitmap$_key" ON public."log$_answer" USING btree ("bitmap$");
+
+
+--
+-- Name: log$_data_source_bitmap$_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "log$_data_source_bitmap$_key" ON public."log$_data_source" USING btree ("bitmap$");
+
+
+--
+-- Name: log$_entity_bitmap$_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "log$_entity_bitmap$_key" ON public."log$_entity" USING btree ("bitmap$");
+
+
+--
+-- Name: log$_question_bitmap$_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "log$_question_bitmap$_key" ON public."log$_question" USING btree ("bitmap$");
+
+
+--
+-- Name: log$_survey_bitmap$_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "log$_survey_bitmap$_key" ON public."log$_survey" USING btree ("bitmap$");
+
+
+--
+-- Name: log$_survey_response_bitmap$_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "log$_survey_response_bitmap$_key" ON public."log$_survey_response" USING btree ("bitmap$");
 
 
 --
@@ -2084,308 +8485,364 @@ CREATE INDEX user_entity_permission_user_id_idx ON public.user_entity_permission
 -- Name: access_request access_request_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER access_request_trigger AFTER INSERT OR DELETE OR UPDATE ON public.access_request FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER access_request_trigger AFTER INSERT OR DELETE OR UPDATE ON public.access_request FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: ancestor_descendant_relation ancestor_descendant_relation_immutable_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER ancestor_descendant_relation_immutable_trigger AFTER UPDATE ON public.ancestor_descendant_relation FOR EACH ROW EXECUTE PROCEDURE public.immutable_table();
+CREATE TRIGGER ancestor_descendant_relation_immutable_trigger AFTER UPDATE ON public.ancestor_descendant_relation FOR EACH ROW EXECUTE FUNCTION public.immutable_table();
 
 
 --
 -- Name: answer answer_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER answer_trigger AFTER INSERT OR DELETE OR UPDATE ON public.answer FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER answer_trigger AFTER INSERT OR DELETE OR UPDATE ON public.answer FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: api_client api_client_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER api_client_trigger AFTER INSERT OR DELETE OR UPDATE ON public.api_client FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER api_client_trigger AFTER INSERT OR DELETE OR UPDATE ON public.api_client FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: clinic clinic_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER clinic_trigger AFTER INSERT OR DELETE OR UPDATE ON public.clinic FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER clinic_trigger AFTER INSERT OR DELETE OR UPDATE ON public.clinic FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: comment comment_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.comment FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.comment FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: country country_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER country_trigger AFTER INSERT OR DELETE OR UPDATE ON public.country FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER country_trigger AFTER INSERT OR DELETE OR UPDATE ON public.country FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
--- Name: dashboardGroup dashboardgroup_trigger; Type: TRIGGER; Schema: public; Owner: -
+-- Name: dashboard_item dashboard_item_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER dashboardgroup_trigger AFTER INSERT OR DELETE OR UPDATE ON public."dashboardGroup" FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER dashboard_item_trigger AFTER INSERT OR DELETE OR UPDATE ON public.dashboard_item FOR EACH ROW EXECUTE FUNCTION public.notification();
+
+
+--
+-- Name: dashboard_relation dashboard_relation_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER dashboard_relation_trigger AFTER INSERT OR DELETE OR UPDATE ON public.dashboard_relation FOR EACH ROW EXECUTE FUNCTION public.notification();
+
+
+--
+-- Name: dashboard dashboard_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER dashboard_trigger AFTER INSERT OR DELETE OR UPDATE ON public.dashboard FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: data_element_data_group data_element_data_group_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER data_element_data_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_element_data_group FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER data_element_data_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_element_data_group FOR EACH ROW EXECUTE FUNCTION public.notification();
+
+
+--
+-- Name: data_service_entity data_service_entity_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER data_service_entity_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_service_entity FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: data_source data_source_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER data_source_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_source FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER data_source_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_source FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: dhis_sync_queue dhis_sync_queue_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER dhis_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.dhis_sync_queue FOR EACH ROW EXECUTE PROCEDURE public.update_change_time();
+CREATE TRIGGER dhis_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.dhis_sync_queue FOR EACH ROW EXECUTE FUNCTION public.update_change_time();
 
 
 --
 -- Name: disaster disaster_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER disaster_trigger AFTER INSERT OR DELETE OR UPDATE ON public.disaster FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER disaster_trigger AFTER INSERT OR DELETE OR UPDATE ON public.disaster FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: disasterEvent disasterevent_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER disasterevent_trigger AFTER INSERT OR DELETE OR UPDATE ON public."disasterEvent" FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER disasterevent_trigger AFTER INSERT OR DELETE OR UPDATE ON public."disasterEvent" FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: entity_hierarchy entity_hierarchy_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER entity_hierarchy_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity_hierarchy FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER entity_hierarchy_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity_hierarchy FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: entity_relation entity_relation_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER entity_relation_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity_relation FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER entity_relation_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity_relation FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: entity entity_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER entity_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER entity_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: geographical_area geographical_area_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER geographical_area_trigger AFTER INSERT OR DELETE OR UPDATE ON public.geographical_area FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER geographical_area_trigger AFTER INSERT OR DELETE OR UPDATE ON public.geographical_area FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: indicator indicator_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER indicator_trigger AFTER INSERT OR DELETE OR UPDATE ON public.indicator FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER indicator_trigger AFTER INSERT OR DELETE OR UPDATE ON public.indicator FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: meditrak_device install_id_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER install_id_trigger AFTER INSERT OR DELETE OR UPDATE ON public.meditrak_device FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER install_id_trigger AFTER INSERT OR DELETE OR UPDATE ON public.meditrak_device FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: map_overlay_group_relation map_overlay_group_relation_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER map_overlay_group_relation_trigger AFTER INSERT OR DELETE OR UPDATE ON public.map_overlay_group_relation FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER map_overlay_group_relation_trigger AFTER INSERT OR DELETE OR UPDATE ON public.map_overlay_group_relation FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: map_overlay_group map_overlay_group_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER map_overlay_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.map_overlay_group FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER map_overlay_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.map_overlay_group FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: mapOverlay mapoverlay_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER mapoverlay_trigger AFTER INSERT OR DELETE OR UPDATE ON public."mapOverlay" FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER mapoverlay_trigger AFTER INSERT OR DELETE OR UPDATE ON public."mapOverlay" FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: meditrak_device meditrak_device_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER meditrak_device_trigger AFTER INSERT OR DELETE OR UPDATE ON public.meditrak_device FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER meditrak_device_trigger AFTER INSERT OR DELETE OR UPDATE ON public.meditrak_device FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: meditrak_sync_queue meditrak_sync_queue_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER meditrak_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.meditrak_sync_queue FOR EACH ROW EXECUTE PROCEDURE public.update_change_time();
+CREATE TRIGGER meditrak_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.meditrak_sync_queue FOR EACH ROW EXECUTE FUNCTION public.update_change_time();
 
 
 --
 -- Name: ms1_sync_log ms1_sync_log_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER ms1_sync_log_trigger AFTER INSERT OR DELETE OR UPDATE ON public.ms1_sync_log FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER ms1_sync_log_trigger AFTER INSERT OR DELETE OR UPDATE ON public.ms1_sync_log FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: ms1_sync_queue ms1_sync_queue_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER ms1_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.ms1_sync_queue FOR EACH ROW EXECUTE PROCEDURE public.update_change_time();
+CREATE TRIGGER ms1_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.ms1_sync_queue FOR EACH ROW EXECUTE FUNCTION public.update_change_time();
 
 
 --
 -- Name: one_time_login one_time_login_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER one_time_login_trigger AFTER INSERT OR DELETE OR UPDATE ON public.one_time_login FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER one_time_login_trigger AFTER INSERT OR DELETE OR UPDATE ON public.one_time_login FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: option_set option_set_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER option_set_trigger AFTER INSERT OR DELETE OR UPDATE ON public.option_set FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER option_set_trigger AFTER INSERT OR DELETE OR UPDATE ON public.option_set FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: option option_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER option_trigger AFTER INSERT OR DELETE OR UPDATE ON public.option FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER option_trigger AFTER INSERT OR DELETE OR UPDATE ON public.option FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: permission_group permission_group_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER permission_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.permission_group FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER permission_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.permission_group FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: project project_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER project_trigger AFTER INSERT OR DELETE OR UPDATE ON public.project FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER project_trigger AFTER INSERT OR DELETE OR UPDATE ON public.project FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: question question_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER question_trigger AFTER INSERT OR DELETE OR UPDATE ON public.question FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER question_trigger AFTER INSERT OR DELETE OR UPDATE ON public.question FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: refresh_token refresh_token_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER refresh_token_trigger AFTER INSERT OR DELETE OR UPDATE ON public.refresh_token FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER refresh_token_trigger AFTER INSERT OR DELETE OR UPDATE ON public.refresh_token FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: report report_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER report_trigger AFTER INSERT OR DELETE OR UPDATE ON public.report FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER report_trigger AFTER INSERT OR DELETE OR UPDATE ON public.report FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: setting setting_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER setting_trigger AFTER INSERT OR DELETE OR UPDATE ON public.setting FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER setting_trigger AFTER INSERT OR DELETE OR UPDATE ON public.setting FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: survey_group survey_group_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER survey_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_group FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER survey_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_group FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: survey_response_comment survey_response_comment_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER survey_response_comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_response_comment FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER survey_response_comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_response_comment FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: survey_response survey_response_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER survey_response_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_response FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER survey_response_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_response FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: survey_screen_component survey_screen_component_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER survey_screen_component_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_screen_component FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER survey_screen_component_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_screen_component FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: survey_screen survey_screen_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER survey_screen_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_screen FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER survey_screen_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_screen FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: survey survey_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER survey_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER survey_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey FOR EACH ROW EXECUTE FUNCTION public.notification();
+
+
+--
+-- Name: answer trig$_answer; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER "trig$_answer" AFTER INSERT OR DELETE OR UPDATE ON public.answer FOR EACH ROW EXECUTE FUNCTION mvrefresh."mv$insertmaterializedviewlogrow"();
+
+
+--
+-- Name: data_source trig$_data_source; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER "trig$_data_source" AFTER INSERT OR DELETE OR UPDATE ON public.data_source FOR EACH ROW EXECUTE FUNCTION mvrefresh."mv$insertmaterializedviewlogrow"();
+
+
+--
+-- Name: entity trig$_entity; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER "trig$_entity" AFTER INSERT OR DELETE OR UPDATE ON public.entity FOR EACH ROW EXECUTE FUNCTION mvrefresh."mv$insertmaterializedviewlogrow"();
+
+
+--
+-- Name: question trig$_question; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER "trig$_question" AFTER INSERT OR DELETE OR UPDATE ON public.question FOR EACH ROW EXECUTE FUNCTION mvrefresh."mv$insertmaterializedviewlogrow"();
+
+
+--
+-- Name: survey trig$_survey; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER "trig$_survey" AFTER INSERT OR DELETE OR UPDATE ON public.survey FOR EACH ROW EXECUTE FUNCTION mvrefresh."mv$insertmaterializedviewlogrow"();
+
+
+--
+-- Name: survey_response trig$_survey_response; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER "trig$_survey_response" AFTER INSERT OR DELETE OR UPDATE ON public.survey_response FOR EACH ROW EXECUTE FUNCTION mvrefresh."mv$insertmaterializedviewlogrow"();
 
 
 --
 -- Name: user_account user_account_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER user_account_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_account FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER user_account_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_account FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: user_entity_permission user_entity_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER user_entity_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_entity_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
-
-
---
--- Name: user_reward user_reward_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER user_reward_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_reward FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER user_entity_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_entity_permission FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
@@ -2506,6 +8963,30 @@ ALTER TABLE ONLY public.clinic
 
 ALTER TABLE ONLY public.comment
     ADD CONSTRAINT comment_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id);
+
+
+--
+-- Name: dashboard_relation dashboard_relation_child_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dashboard_relation
+    ADD CONSTRAINT dashboard_relation_child_id_fkey FOREIGN KEY (child_id) REFERENCES public.dashboard_item(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: dashboard_relation dashboard_relation_dashboard_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dashboard_relation
+    ADD CONSTRAINT dashboard_relation_dashboard_id_fkey FOREIGN KEY (dashboard_id) REFERENCES public.dashboard(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: dashboard dashboard_root_entity_code_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dashboard
+    ADD CONSTRAINT dashboard_root_entity_code_fkey FOREIGN KEY (root_entity_code) REFERENCES public.entity(code) ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 --
@@ -2821,19 +9302,12 @@ ALTER TABLE ONLY public.user_entity_permission
 
 
 --
--- Name: user_reward user_reward_user_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: SCHEMA mvrefresh; Type: ACL; Schema: -; Owner: -
 --
 
-ALTER TABLE ONLY public.user_reward
-    ADD CONSTRAINT user_reward_user_id_fk FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: schema_change_trigger; Type: EVENT TRIGGER; Schema: -; Owner: -
---
-
-CREATE EVENT TRIGGER schema_change_trigger ON ddl_command_end
-   EXECUTE PROCEDURE public.schema_change_notification();
+GRANT USAGE ON SCHEMA mvrefresh TO "pgmv$_role";
+GRANT USAGE ON SCHEMA mvrefresh TO "pgmv$_usage";
+GRANT ALL ON SCHEMA mvrefresh TO tupaia;
 
 
 --
@@ -2842,6 +9316,511 @@ CREATE EVENT TRIGGER schema_change_trigger ON ddl_command_end
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
 GRANT ALL ON SCHEMA public TO tupaia;
+GRANT USAGE ON SCHEMA public TO tupaia_read;
+GRANT ALL ON SCHEMA public TO mvrefresh;
+
+
+--
+-- Name: FUNCTION "mv$creatematerializedview"(pviewname text, pselectstatement text, powner text, pnamedcolumns text, pstorageclause text, pfastrefresh boolean); Type: ACL; Schema: mvrefresh; Owner: -
+--
+
+GRANT ALL ON FUNCTION mvrefresh."mv$creatematerializedview"(pviewname text, pselectstatement text, powner text, pnamedcolumns text, pstorageclause text, pfastrefresh boolean) TO "pgmv$_execute";
+
+
+--
+-- Name: FUNCTION "mv$creatematerializedviewlog"(ptablename text, powner text, pstorageclause text); Type: ACL; Schema: mvrefresh; Owner: -
+--
+
+GRANT ALL ON FUNCTION mvrefresh."mv$creatematerializedviewlog"(ptablename text, powner text, pstorageclause text) TO "pgmv$_execute";
+
+
+--
+-- Name: TABLE "pg$mview_logs"; Type: ACL; Schema: mvrefresh; Owner: -
+--
+
+GRANT SELECT ON TABLE mvrefresh."pg$mview_logs" TO "pgmv$_role";
+GRANT SELECT ON TABLE mvrefresh."pg$mview_logs" TO "pgmv$_view";
+
+
+--
+-- Name: TABLE "pg$mviews_oj_details"; Type: ACL; Schema: mvrefresh; Owner: -
+--
+
+GRANT SELECT ON TABLE mvrefresh."pg$mviews_oj_details" TO "pgmv$_role";
+GRANT SELECT ON TABLE mvrefresh."pg$mviews_oj_details" TO "pgmv$_view";
+
+
+--
+-- Name: TABLE "pg$mviews"; Type: ACL; Schema: mvrefresh; Owner: -
+--
+
+GRANT SELECT ON TABLE mvrefresh."pg$mviews" TO "pgmv$_role";
+GRANT SELECT ON TABLE mvrefresh."pg$mviews" TO "pgmv$_view";
+
+
+--
+-- Name: FUNCTION "mv$help"(); Type: ACL; Schema: mvrefresh; Owner: -
+--
+
+GRANT ALL ON FUNCTION mvrefresh."mv$help"() TO "pgmv$_execute";
+
+
+--
+-- Name: FUNCTION "mv$refreshmaterializedview"(pviewname text, powner text, pfastrefresh boolean); Type: ACL; Schema: mvrefresh; Owner: -
+--
+
+GRANT ALL ON FUNCTION mvrefresh."mv$refreshmaterializedview"(pviewname text, powner text, pfastrefresh boolean) TO "pgmv$_execute";
+
+
+--
+-- Name: FUNCTION "mv$removematerializedview"(pviewname text, powner text); Type: ACL; Schema: mvrefresh; Owner: -
+--
+
+GRANT ALL ON FUNCTION mvrefresh."mv$removematerializedview"(pviewname text, powner text) TO "pgmv$_execute";
+
+
+--
+-- Name: FUNCTION "mv$removematerializedviewlog"(ptablename text, powner text); Type: ACL; Schema: mvrefresh; Owner: -
+--
+
+GRANT ALL ON FUNCTION mvrefresh."mv$removematerializedviewlog"(ptablename text, powner text) TO "pgmv$_execute";
+
+
+--
+-- Name: FOREIGN SERVER "pgmv$_instance"; Type: ACL; Schema: -; Owner: -
+--
+
+GRANT ALL ON FOREIGN SERVER "pgmv$_instance" TO mvrefresh;
+GRANT ALL ON FOREIGN SERVER "pgmv$_instance" TO tupaia;
+
+
+--
+-- Name: TABLE access_request; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.access_request TO tupaia_read;
+
+
+--
+-- Name: TABLE analytics; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.analytics TO "pgmv$_view";
+
+
+--
+-- Name: TABLE ancestor_descendant_relation; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.ancestor_descendant_relation TO tupaia_read;
+
+
+--
+-- Name: TABLE answer; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.answer TO tupaia_read;
+
+
+--
+-- Name: TABLE api_client; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.api_client TO tupaia_read;
+
+
+--
+-- Name: TABLE api_request_log; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.api_request_log TO tupaia_read;
+
+
+--
+-- Name: TABLE clinic; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.clinic TO tupaia_read;
+
+
+--
+-- Name: TABLE comment; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.comment TO tupaia_read;
+
+
+--
+-- Name: TABLE country; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.country TO tupaia_read;
+
+
+--
+-- Name: TABLE dashboard; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dashboard TO tupaia_read;
+
+
+--
+-- Name: TABLE dashboard_item; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dashboard_item TO tupaia_read;
+
+
+--
+-- Name: TABLE dashboard_relation; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dashboard_relation TO tupaia_read;
+
+
+--
+-- Name: TABLE data_element_data_group; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.data_element_data_group TO tupaia_read;
+
+
+--
+-- Name: TABLE data_service_entity; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.data_service_entity TO tupaia_read;
+
+
+--
+-- Name: TABLE data_source; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.data_source TO tupaia_read;
+
+
+--
+-- Name: TABLE dhis_sync_log; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dhis_sync_log TO tupaia_read;
+
+
+--
+-- Name: TABLE dhis_sync_queue; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dhis_sync_queue TO tupaia_read;
+
+
+--
+-- Name: TABLE disaster; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.disaster TO tupaia_read;
+
+
+--
+-- Name: TABLE "disasterEvent"; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public."disasterEvent" TO tupaia_read;
+
+
+--
+-- Name: TABLE entity; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.entity TO tupaia_read;
+
+
+--
+-- Name: TABLE entity_hierarchy; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.entity_hierarchy TO tupaia_read;
+
+
+--
+-- Name: TABLE entity_relation; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.entity_relation TO tupaia_read;
+
+
+--
+-- Name: TABLE error_log; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.error_log TO tupaia_read;
+
+
+--
+-- Name: TABLE feed_item; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.feed_item TO tupaia_read;
+
+
+--
+-- Name: TABLE geographical_area; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.geographical_area TO tupaia_read;
+
+
+--
+-- Name: TABLE geography_columns; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.geography_columns TO tupaia_read;
+
+
+--
+-- Name: TABLE geometry_columns; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.geometry_columns TO tupaia_read;
+
+
+--
+-- Name: TABLE indicator; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.indicator TO tupaia_read;
+
+
+--
+-- Name: TABLE legacy_report; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.legacy_report TO tupaia_read;
+
+
+--
+-- Name: TABLE lesmis_session; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.lesmis_session TO tupaia_read;
+
+
+--
+-- Name: TABLE "mapOverlay"; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public."mapOverlay" TO tupaia_read;
+
+
+--
+-- Name: TABLE map_overlay_group; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.map_overlay_group TO tupaia_read;
+
+
+--
+-- Name: TABLE map_overlay_group_relation; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.map_overlay_group_relation TO tupaia_read;
+
+
+--
+-- Name: TABLE meditrak_device; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.meditrak_device TO tupaia_read;
+
+
+--
+-- Name: TABLE meditrak_sync_queue; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.meditrak_sync_queue TO tupaia_read;
+
+
+--
+-- Name: TABLE ms1_sync_log; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.ms1_sync_log TO tupaia_read;
+
+
+--
+-- Name: TABLE ms1_sync_queue; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.ms1_sync_queue TO tupaia_read;
+
+
+--
+-- Name: TABLE one_time_login; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.one_time_login TO tupaia_read;
+
+
+--
+-- Name: TABLE option; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.option TO tupaia_read;
+
+
+--
+-- Name: TABLE option_set; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.option_set TO tupaia_read;
+
+
+--
+-- Name: TABLE permission_group; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.permission_group TO tupaia_read;
+
+
+--
+-- Name: TABLE project; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.project TO tupaia_read;
+
+
+--
+-- Name: TABLE psss_session; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.psss_session TO tupaia_read;
+
+
+--
+-- Name: TABLE question; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.question TO tupaia_read;
+
+
+--
+-- Name: TABLE raster_columns; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.raster_columns TO tupaia_read;
+
+
+--
+-- Name: TABLE raster_overviews; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.raster_overviews TO tupaia_read;
+
+
+--
+-- Name: TABLE refresh_token; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.refresh_token TO tupaia_read;
+
+
+--
+-- Name: TABLE report; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.report TO tupaia_read;
+
+
+--
+-- Name: TABLE setting; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.setting TO tupaia_read;
+
+
+--
+-- Name: TABLE spatial_ref_sys; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.spatial_ref_sys TO tupaia_read;
+
+
+--
+-- Name: TABLE survey; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey TO tupaia_read;
+
+
+--
+-- Name: TABLE survey_group; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey_group TO tupaia_read;
+
+
+--
+-- Name: TABLE survey_response; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey_response TO tupaia_read;
+
+
+--
+-- Name: TABLE survey_response_comment; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey_response_comment TO tupaia_read;
+
+
+--
+-- Name: TABLE survey_screen; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey_screen TO tupaia_read;
+
+
+--
+-- Name: TABLE survey_screen_component; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey_screen_component TO tupaia_read;
+
+
+--
+-- Name: TABLE "userSession"; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public."userSession" TO tupaia_read;
+
+
+--
+-- Name: TABLE user_account; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.user_account TO tupaia_read;
+
+
+--
+-- Name: TABLE user_entity_permission; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.user_entity_permission TO tupaia_read;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: -
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE tupaia IN SCHEMA public REVOKE ALL ON TABLES  FROM tupaia;
+ALTER DEFAULT PRIVILEGES FOR ROLE tupaia IN SCHEMA public GRANT SELECT ON TABLES  TO tupaia_read;
+
+
+--
+-- Name: schema_change_trigger; Type: EVENT TRIGGER; Schema: -; Owner: -
+--
+
+CREATE EVENT TRIGGER schema_change_trigger ON ddl_command_end
+   EXECUTE FUNCTION public.schema_change_notification();
 
 
 --
@@ -2852,8 +9831,8 @@ GRANT ALL ON SCHEMA public TO tupaia;
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.3
--- Dumped by pg_dump version 11.3
+-- Dumped from database version 12.6 (Ubuntu 12.6-0ubuntu0.20.04.1)
+-- Dumped by pg_dump version 12.6 (Ubuntu 12.6-0ubuntu0.20.04.1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -2872,7 +9851,7 @@ DROP SEQUENCE public.migrations_id_seq;
 DROP TABLE public.migrations;
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+SET default_table_access_method = heap;
 
 --
 -- Name: migrations; Type: TABLE; Schema: public; Owner: -
@@ -3975,13 +10954,227 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 1060	/20210216073210-AddFetpDashboardGradByDistrict-modifies-data	2021-02-25 23:10:53.005
 1061	/20210217053158-ChangeElementsServiceTypeToTupaia-modifies-data	2021-02-25 23:10:53.098
 1062	/20210224014424-AddConfigToProjects-modifies-schema	2021-02-25 23:10:53.351
-1063	/20201203010928-StockStatusForNonMsupplyContriesInFacilityLevel-modifies-data	2021-03-04 15:09:15.631
-1064	/20210211051517-RenameArithmeticIndicators-modifies-data	2021-03-04 15:09:15.832
-1065	/20210216015237-AddWeatherSourceToDashboardTitle-modifies-data	2021-03-04 15:09:16.349
-1066	/20210223002537-AddReferenceToMapOverlays-modifies-data	2021-03-04 15:09:16.567
-1067	/20210225033329-RemoveLaosOxygenConcentratorsProject-modifies-data	2021-03-04 15:09:35.867
-1068	/20210301123426-AddFetpDashboardsToSolomonIs-modifies-data	2021-03-04 15:09:35.974
-1069	/20210303020040-removeStriveMapOverlaysFromExplore-modifies-data	2021-03-04 15:09:36.101
+1063	/20201203010928-StockStatusForNonMsupplyContriesInFacilityLevel-modifies-data	2021-03-04 23:27:55.547
+1064	/20210211051517-RenameArithmeticIndicators-modifies-data	2021-03-04 23:27:55.651
+1065	/20210216015237-AddWeatherSourceToDashboardTitle-modifies-data	2021-03-04 23:27:56.037
+1066	/20210223002537-AddReferenceToMapOverlays-modifies-data	2021-03-04 23:27:56.374
+1067	/20210225033329-RemoveLaosOxygenConcentratorsProject-modifies-data	2021-03-04 23:28:06.076
+1068	/20210301123426-AddFetpDashboardsToSolomonIs-modifies-data	2021-03-04 23:28:06.27
+1069	/20210303020040-removeStriveMapOverlaysFromExplore-modifies-data	2021-03-04 23:28:06.321
+1070	/20210129024523-AddAyfsToStaffTrainedVisuals-modifies-data	2021-03-11 21:42:33.922
+1071	/20210202190359-ConvertRHS2UNFPA240ToBinaryQuestion-modifies-data	2021-03-11 21:42:39.357
+1072	/20210210011723-UpdateMedicinesAndConsumablesOverlaysFiji-modifies-data	2021-03-11 21:42:41.332
+1073	/20210214234630-AddDataDownloadNationalFETP-modifies-data	2021-03-11 21:42:41.566
+1074	/20210224210744-AddLesmisSessionTable-modifies-schema	2021-03-11 21:42:41.63
+1075	/20210302015338-FlipLegendColorFetpMapOverlay-modifies-data	2021-03-11 21:42:41.879
+1076	/20210304060352-UpdatePSSSWeeklyCasesIndicatorsSupportDailyData-modifies-data	2021-03-11 21:42:41.999
+1077	/20210311002222-AddDefaultValueForDailyCasesInPSSSWeeklyIndicators-modifies-data	2021-03-11 21:42:42.18
+1078	/20210121045801-AddTableDataServiceEntity-modifies-schema	2021-03-16 02:28:29.871
+1079	/20210201051217-SyncLaosEocEntitiesWithLaosSchools-modifies-data	2021-03-16 02:28:30.449
+1080	/20210205000427-AddLaosEocPocDashboard-modifies-data	2021-03-16 02:28:30.703
+1081	/20210205040848-AddLaosEocPocMapOverlayDengueCasesByWeek-modifies-data	2021-03-16 02:28:30.96
+1082	/20210208023411-RefactorLaosEocPocDataBuilder-modifies-data	2021-03-16 02:28:31.098
+1083	/20210211041322-AddSubFacilityEntityType-modifies-schema	2021-03-16 02:28:33.266
+1084	/20210212033659-AddMissingLaosGeographicalAreas-modifies-data	2021-03-16 02:28:35.158
+1085	/20210215023211-FixLaosEntityHierarchy-modifies-data	2021-03-16 02:28:35.346
+1086	/20210222124639-UpdateLaosEntitiesPushMetadata-modifies-data	2021-03-16 02:28:41.483
+1087	/20210222204800-UpdateEntityDhisIdToTrackEntityInstanceId-modifies-data	2021-03-16 02:28:45.189
+1088	/20210316013933-DeleteFijiEntities-modifies-data	2021-03-16 03:31:53.903
+1089	/20210305010124-AddMissingCasesToSyncQueue-modifies-data	2021-03-18 22:18:05.679
+1090	/20210309020032-MalariaMapOverlaysLaosEOC-modifies-data	2021-03-18 22:18:05.957
+1091	/20210309230008-MalariaDataSourceLaosEOC-modifies-data	2021-03-18 22:18:06.121
+1092	/20210310053755-DengueMapOverlaysLaosEOC-modifies-data	2021-03-18 22:18:06.329
+1093	/20210310053808-DengueDataSourceLaosEOC-modifies-data	2021-03-18 22:18:06.461
+1094	/20210311045832-AddLaosEOCMapOverlayGroup-modifies-data	2021-03-18 22:18:06.492
+1095	/20210312023820-AddMalariaCommoditiesIndicatorDataSources-modifies-data	2021-03-18 22:18:06.596
+1096	/20210312023908-AddLaosEOCMalariaDashboardGroups-modifies-data	2021-03-18 22:18:06.644
+1097	/20210312031441-AddLaosEOCMalariaCommoditiesTrafficLightTableDistrictLevel-modifies-data	2021-03-18 22:18:06.699
+1098	/20210312044245-AddLaosEOCMalariaCommoditiesTrafficLightTableFacilityLevel-modifies-data	2021-03-18 22:18:06.758
+1099	/20210312113926-AddLaosEOCMalariaStockAvailabilityByFacilityOverlay-modifies-data	2021-03-18 22:18:07.016
+1100	/20210312214059-UpdateLaosSchoolsFunctioningTVSateliteOverlayConfig-modifies-data	2021-03-18 22:18:07.119
+1101	/20210312385124-AddLaosEocMapOverlayMeaslesVaccineStockByFacility-modifies-data	2021-03-18 22:18:07.187
+1102	/20210314024746-AddLaosEOCMalariaCriticalItemAvailabilityOverTimeDashboard-modifies-data	2021-03-18 22:18:07.239
+1103	/20210314054551-AddLaosEOCMalariaCriticalItemAvailabilitySingleViewDashboard-modifies-data	2021-03-18 22:18:07.299
+1104	/20210315001552-AddDataSourceMeaslesDeathCasesLaosEOC-modifies-data	2021-03-18 22:18:07.401
+1105	/20210315001650-AddMapOverlayMeaslesDeathCasesLaosEOC-modifies-data	2021-03-18 22:18:07.521
+1106	/20210315092702-UpdateLaosEOCMapOverlayMeasureBuilder-modifies-data	2021-03-18 22:18:07.814
+1107	/20210317015957-HideNoDataInBubbleMapLaoEoc-modifies-data	2021-03-18 22:18:07.921
+1108	/20210317052741-MoveLonelyMapOverlay-modifies-data	2021-03-18 22:18:07.976
+1109	/20210317053313-UpdateLaosEOCMalariaStockAvailabilityByFacilityOverlay-modifies-data	2021-03-18 22:18:08.123
+1110	/20210317054627-AddDateSelectorForMeaslesVaccineStockAvailabilityByFacilityOverlay-modifies-data	2021-03-18 22:18:08.206
+1111	/20210323045613-LaosEocRemoveUnpermittedFacilities-modifies-data	2021-03-23 23:36:29.462
+1112	/20201201055113-AddCustomExportsDashboardGovernmentSurveysWishFiji-modifies-data	2021-04-01 00:46:42.177
+1113	/20201208073839-WishFijiGovSurveysAssociateToCatchments-modifies-data	2021-04-01 00:46:42.535
+1114	/20210112015125-AddHeatmapContactsConfirmedSuspectedCasesSCovidSamoa-modifies-data	2021-04-01 00:46:42.702
+1115	/20210219055420-SamoaHeatmapHomeVillageOfConfirmedCases-modifies-data	2021-04-01 00:46:42.899
+1116	/20210220030550-AddTongaHPUProvincialLevelDashboardGroup-modifies-data	2021-04-01 00:46:43.087
+1117	/20210220141021-AddTongaHPURateOfAtRiskNCDRiskFactorsInScreenedPopulationDashboard-modifies-data	2021-04-01 00:46:43.422
+1118	/20210324041508-AddSupplyChainFijiProject-modifies-data	2021-04-01 00:46:43.798
+1119	/20210324075314-AddEhealthNauruProject-modifies-data	2021-04-01 00:46:44.118
+1120	/20210325001804-AddCovidVaccineTrackingDashboardGroups-modifies-data	2021-04-01 00:46:44.194
+1121	/20210325014751-ChangeSupplyChainProjectBackgroundImage-modifies-data	2021-04-01 00:46:44.241
+1122	/20210325030144-VaccineDoseTakenByDayVaccineTracking-modifies-data	2021-04-01 00:46:44.699
+1123	/20210325041744-AddCovidVaccinatedBySex-modifies-data	2021-04-01 00:46:44.838
+1124	/20210325123857-ExcludeIndividualsFromCovidSamoaFront-modifies-data	2021-04-01 00:46:44.901
+1125	/20210328230816-AddCovidVaccinatedBySexDistrict-modifies-data	2021-04-01 00:46:44.988
+1126	/20210329001149-AddCovidVaxTrackingHomeVillageDose2-modifies-data	2021-04-01 00:46:45.082
+1127	/20210329022054-AddCovidVaxTrackingVillageDose1-modifies-data	2021-04-01 00:46:45.167
+1128	/20210329224807-AddCovidVaccineTotalDashboards-modifies-data	2021-04-01 00:46:45.454
+1129	/20210204040357-AddDataTimeToSurveyResponses-modifies-schema	2021-04-09 00:39:10.714
+1130	/20210204201652-CalculateDataTime-modifies-data	2021-04-09 00:39:22.656
+1131	/20210225030219-DeleteSubmissionTimeFromSurveyResponses-modifies-schema	2021-04-09 00:39:22.727
+1132	/20210319015928-UpdateDataSourceConstraintsOnQuestions-modifies-schema	2021-04-09 00:39:22.823
+1133	/20210317035935-AddConfigForCategoryHeadingLaosEoc-modifies-data	2021-04-15 23:20:40.678
+1134	/20210329230317-UpdateLaosSchoolsToPublic-modifies-data	2021-04-15 23:20:40.854
+1135	/20210303025836-AddFETPGradAreaOfExpertiseOverlays-modifies-data	2021-04-23 01:17:33.337
+1136	/20210310032310-UpdateLaosEOCWeatherDashboards-modifies-data	2021-04-23 01:17:33.465
+1137	/20210318031303-UseTupaiaServiceInStrive-modifies-data	2021-04-23 01:17:51.541
+1138	/20210322030033-FixStriveAfterTupaiaServiceConversion-modifies-data	2021-04-23 01:17:53.814
+1139	/20210323030105-LaosEocShadowedTileSets-modifies-data	2021-04-23 01:17:53.86
+1140	/20210412055533-LaosEocEntitycleanUp-modifies-data	2021-04-23 01:17:54.228
+1141	/20210415033728-AddParentToFijiDataCollection-modifies-data	2021-04-23 01:17:54.412
+1142	/20210416015517-FixStriveWtfOverlays-modifies-data	2021-04-23 01:17:54.664
+1143	/20210413234307-AddExploreOverlayToCovidSamoaProjecctt-modifies-data	2021-04-29 22:32:02.804
+1144	/20210415073206-ConvertSingleColumnTableTO-CHDashboardReportsToTableOfDataValuesCH11-CH4-modifies-data	2021-04-29 22:32:02.936
+1145	/20210415073207-AddDashboardGroupCommunityHealthCountryFanafana-modifies-data	2021-04-29 22:32:03.071
+1146	/20210428030104-DeleteSamoaCovidDashboardGroupFromExplore-modifies-data	2021-04-29 22:32:03.097
+1147	/20210412210749-AddLesmisEntityVitalsReports-modifies-data	2021-05-06 22:31:11.829
+1148	/20210414015925-UpdateLaosEOCIndicatorDataSources-modifies-data	2021-05-06 22:31:11.991
+1149	/20210420001619-RemoveMugilFromStrive-modifies-data	2021-05-06 22:31:12.512
+1150	/20210430035254-ChangeLaosSchoolsPermissionToLESMISPublic-modifies-data	2021-05-06 22:31:12.682
+1151	/20210502231014-RemoveHealthFacilitiesLaosSchoolsHierarchy-modifies-data	2021-05-06 22:31:12.731
+1152	/20210503020203-RenameDashboardHeadings-modifies-data	2021-05-06 22:31:13.149
+1153	/20210503020225-LESMISReportsNewPermissionGroup-modifies-data	2021-05-06 22:31:13.278
+1154	/20210413033910-UpdateSTRIVEK13MapOverlay-modifies-data	2021-05-14 00:20:03.739
+1155	/20210422030246-CreateUnknownEntitiesForSamoa-modifies-data	2021-05-14 00:20:04.022
+1156	/20210505101731-AddSamoaCovidPercentageDashboards-modifies-data	2021-05-14 00:20:04.117
+1157	/20210506052033-AddSamoaCovidPercentageVaccinatedMeasures-modifies-data	2021-05-14 00:20:04.203
+1158	/20210507014219-PutWaiviviaToTheRightPlace-modifies-data	2021-05-14 00:20:04.303
+1159	/20210512224458-LaEocLaRemoveDeletedFacility-modifies-data	2021-05-14 05:33:47.267
+1160	/20210407005547-AddParentRelationForSubFacility-modifies-data	2021-05-21 04:35:07.41
+1161	/20210407020951-ChangeDataSourceEntityTypeOfLaosEocMapOverlays-modifies-data	2021-05-21 04:35:07.529
+1162	/20210408055640-ChangeDataSourceEntityTypeOfLaosEocDashboardReports-modifies-data	2021-05-21 04:35:07.632
+1163	/20210426232045-AddStriveFacilityEpiCurveDashboard-modifies-data	2021-05-21 04:35:07.675
+1164	/20210503035005-TotalPassagerByAgeAndGenderGraphChart-modifies-data	2021-05-21 04:35:07.759
+1165	/20210505230824-ConvidSamoaNumOfPassengersDashboard-modifies-data	2021-05-21 04:35:07.795
+1166	/20210520020331-AddAccessTokenExpiryFieldToTupaiaUserSessionTable-modifies-schema	2021-05-27 22:25:41.851
+1167	/20210521022725-DataSourceCodeCleanUpLaosEoc-modifies-data	2021-05-27 22:25:42.131
+1168	/20210312284218-AddLaosEocMeaslesMapOverlayGroup-modifies-data	2021-06-03 23:21:04.999
+1169	/20210316215800-AddLaosEocMeaslesCommoditiesDataSources-modifies-data	2021-06-03 23:21:05.057
+1170	/20210316222124-AddLoasEocMeaslesDashboardGroups-modifies-data	2021-06-03 23:21:05.108
+1171	/20210316222937-AddLaosEocMeaslesCammoditiesTrafficLightDashboards-modifies-data	2021-06-03 23:21:05.191
+1172	/20210409060829-AddPsssTupaiaPermission-modifies-data	2021-06-03 23:21:05.223
+1173	/20210409063837-AddPsssNumOfSentinelSitesDashboard-modifies-data	2021-06-03 23:21:05.436
+1174	/20210413001758-AddPsssVisCountryLevelDashboard2y-modifies-data	2021-06-03 23:21:05.672
+1175	/20210413043020-AddPsssCountryTrendDashboards-modifies-data	2021-06-03 23:21:05.871
+1176	/20210414064856-AddSyndromicSurveillanceNationalDashboardGroup-modifies-data	2021-06-03 23:21:05.901
+1177	/20210414064857-DailyCasesTrendGraphPalauCountryLevel-modifies-data	2021-06-03 23:21:05.964
+1178	/20210415051039-UpdateLaosEocMeaslesCommoditiesTableCategoryHeadings-modifies-data	2021-06-03 23:21:06.07
+1179	/20210415110921-UpdatePSSSWeeklyIndicatorsSupportSiteData-modifies-data	2021-06-03 23:21:06.138
+1180	/20210416052750-DailyCasesTrendGrahphPalauFacilityLevel-modifies-data	2021-06-03 23:21:06.239
+1181	/20210419221219-AddLaEocMeaslesCriticleItemAvailReport-modifies-data	2021-06-03 23:21:06.302
+1182	/20210419221250-AddLaEocMeaslesCriticalItemsAvailCurrentReport-modifies-data	2021-06-03 23:21:06.382
+1183	/20210419225536-UpdatePSSSTotalSitesReportToUseSiteData-modifies-data	2021-06-03 23:21:06.558
+1184	/20210420031825-WeeklyCasesTrendGraphForPalauCountry-modifies-data	2021-06-03 23:21:06.641
+1185	/20210420031826-WeeklyCasesTrendGraphForPalauFacility-modifies-data	2021-06-03 23:21:06.718
+1186	/20210421001607-PsssPalauSyndromBubbleMapOverlay-modifies-data	2021-06-03 23:21:06.88
+1187	/20210422032557-AddPsssConTotalCasesIndicator-modifies-data	2021-06-03 23:21:06.919
+1188	/20210426204745-AddLaEocDengueCaseBarDistrict-modifies-data	2021-06-03 23:21:06.951
+1189	/20210503024117-AddLaEocMapOverlayDengueCasesByWeekDistrict-modifies-data	2021-06-03 23:21:06.991
+1190	/20210503055037-AddLaEocMapOverlayMalariaCasesByWeek-modifies-data	2021-06-03 23:21:07.036
+1191	/20210503082425-AddLaEocMalariaCasesBarChart-modifies-data	2021-06-03 23:21:07.077
+1192	/20210504040112-AddPsssCountryTrendDashboardsPastYears-modifies-data	2021-06-03 23:21:07.178
+1193	/20210510061852-AddPSSSActiveAlertsReport-modifies-data	2021-06-03 23:21:07.22
+1194	/20210511024953-LaEocUpdateCamoditityTablePresentationOptions-modifies-data	2021-06-03 23:21:07.295
+1195	/20210511050324-AddPSSSArchivedAlertsReport-modifies-data	2021-06-03 23:21:07.356
+1196	/20210512004319-AddPSSSConfirmedDataPerSyndromeReport-modifies-data	2021-06-03 23:21:07.417
+1197	/20210512114642-UpdatePSSSTotalSitesReportedIndicator-modifies-data	2021-06-03 23:21:07.451
+1198	/20210512115557-AddPSSSWeeklyDataPerSyndromeReports-modifies-data	2021-06-03 23:21:07.519
+1199	/20210512234422-LaEocAddMalariaProvinceDashboardGroup-modifies-data	2021-06-03 23:21:07.542
+1200	/20210513065305-AddPSSSConfirmedWeeklyDataPerSyndromeReports-modifies-data	2021-06-03 23:21:07.608
+1201	/20210519235606-LaEocAddDengueCommoditiesTrafficLight-modifies-data	2021-06-03 23:21:07.677
+1202	/20210520024548-LaEocAddSubDistrictDataSources-modifies-data	2021-06-03 23:21:07.776
+1203	/20210520051328-LaEocUpdateDengueWeeklyByDistrictConfig-modifies-data	2021-06-03 23:21:07.792
+1204	/20210525072702-UpdatePSSSSyndromeThresholdCrossedIndicators-modifies-data	2021-06-03 23:21:07.852
+1205	/20210604004448-CovidSamoaVaccineDeleteResponses-modifies-data	2021-06-04 03:33:38.122
+1206	/20210602041852-Rename-lesmis-permission-groups-modifies-data	2021-06-11 00:51:27.905
+1207	/20210607063222-RewritePSSSIndicatorsToUseRelativesEntityAggregation-modifies-data	2021-06-11 00:51:28.032
+1208	/20210601081726-AddStriveObservedReplicateMortalityBarChart-modifies-data	2021-06-18 04:28:11.431
+1209	/20210602005249-AddStriveVectorOverlayGroup-modifies-data	2021-06-18 04:28:11.473
+1210	/20210602005250-AddStriveResistanceOverlay-modifies-data	2021-06-18 04:28:11.528
+1211	/20210602030419-AddFijiCOVIDVaccinatedMapOverlayGroup-modifies-data	2021-06-18 04:28:11.576
+1212	/20210602030420-AddFijiCOVIDVaccinatedByFacilityOverlays-modifies-data	2021-06-18 04:28:11.638
+1213	/20210602065620-AddFijiCOVIDVaccinatedRegionOverlays-modifies-data	2021-06-18 04:28:11.702
+1214	/20210603022946-AddFijiSupplyChainHeirarchySubDistricts-modifies-data	2021-06-18 04:28:11.715
+1215	/20210603023401-AddFijiCOVIDVaccinePercentageOfPopulationVaccinatedMapOverlays-modifies-data	2021-06-18 04:28:11.786
+1216	/20210603032718-ReorderFijiCovidVaccineMapOverlays-modifies-data	2021-06-18 04:28:11.834
+1217	/20210603034000-AddFijiCovid19SubDivisions-modifies-data	2021-06-18 04:28:12.156
+1218	/20210603064215-migrateFijiFacilitiesToNewSubDivisions-modifies-data	2021-06-18 04:28:12.503
+1219	/20210603231415-FixCOVIDVaccineFijiEntityDataSourceTypes-modifies-data	2021-06-18 04:28:12.628
+1220	/20210603231515-FixCOVIDVaccineNauruEntityDataSourceTypes-modifies-data	2021-06-18 04:28:12.716
+1221	/20210604004937-AddNewNationalLevelCovidTrackingByGenderDashboard-modifies-data	2021-06-18 04:28:12.772
+1222	/20210604010622-AddTotalNumberOfPeopleReceive1stDoseCovidVaccineView-modifies-data	2021-06-18 04:28:12.868
+1223	/20210604010722-AddTotalNumberOfPeopleReceive2ndDoseCovidVaccineView-modifies-data	2021-06-18 04:28:12.918
+1224	/20210604015355-DeleteDuplicatedCovid19FijiDashboardGroup-modifies-data	2021-06-18 04:28:12.931
+1225	/20210610005659-DeleteCovid19FJFacilityOverlays-modifies-data	2021-06-18 04:28:12.956
+1226	/20210610013423-RemoveCovid19ByGenderReportFromDashboardGroup-modifies-data	2021-06-18 04:28:12.983
+1227	/20210611132837-RemoveFijiVillagesFromCanonicalHierarchies-modifies-data	2021-06-18 04:28:13.044
+1228	/20210614003043-RemoveUserRewardsTable-modifies-schema	2021-06-18 04:28:13.064
+1229	/20210615034653-AddCovidFijiSubDivisonDashboardGroup-modifies-data	2021-06-18 04:28:13.106
+1230	/20210615042534-AddFijiCovidPercentageEligiableDashboards-modifies-data	2021-06-18 04:28:13.173
+1231	/20210615060723-CreateSubDistrictFijiVaccinationDoseDashboardReports-modifies-data	2021-06-18 04:28:13.225
+1232	/20210615064531-ReorderCovidFJSubDistrictDashboardReports-modifies-data	2021-06-18 04:28:13.242
+1233	/20210615072057-UpdateUnfpaNonCanonicalRelations-modifies-data	2021-06-18 04:28:13.379
+1234	/20210616011417-CovidFijiMoveRotumaFacilities-modifies-data	2021-06-18 04:28:13.941
+1235	/20210616234103-UpdateCovid19FijiToPublic-modifies-data	2021-06-18 04:28:13.976
+1236	/20210607020237-AddIndicatorsForAuFlutracking-modifies-data	2021-06-24 22:28:40.269
+1237	/20210610060144-AddFluTrackerLGAPercentNonFirstNationsILI-modifies-data	2021-06-24 22:28:40.343
+1238	/20210615035418-DropVillagesFromLESMIS-modifies-data	2021-06-24 22:28:46.319
+1239	/20210524111255-StriveAdultTrappingReportConfig-modifies-data	2021-07-02 04:41:59.652
+1240	/20210524113244-StriveAdultTrappingDashboardReport-modifies-data	2021-07-02 04:41:59.724
+1241	/20210607052816-CreatePostCodeEntityType-modifies-schema	2021-07-02 04:42:00.625
+1242	/20210607053528-AddPostcodeLevelDataInAU-modifies-data	2021-07-02 04:42:00.654
+1243	/20210610104054-MosquitoSpeciesMapOverlay-modifies-data	2021-07-02 04:42:00.696
+1244	/20210610111044-AddReportForMosquitoSpecieesMapOverlay-modifies-data	2021-07-02 04:42:00.749
+1245	/20210621215753-LESMISDropNonOperationalSchools-modifies-data	2021-07-02 04:44:57.427
+1246	/20210622010643-UnfpaMonthly3MethodsBug-modifies-data	2021-07-02 04:44:58.058
+1247	/20210629081741-UpdateFanafanaolaProjectDefaultDashboard-modifies-data	2021-07-02 04:44:58.077
+1248	/20210629111111-01-CreateDashboardItemsTableLayout-modifies-schema	2021-07-02 04:44:58.155
+1249	/20210629111111-02-MigrateCurrentDashboardsToNewDashboards-modifies-data	2021-07-02 04:45:01.322
+1250	/20210629111111-03-FixCustomLegacyReports-modifies-data	2021-07-02 04:45:01.45
+1251	/20210629111111-04-AddNumberOfSchoolsByLevelOfEducationVisuals-modifies-data	2021-07-02 04:45:01.538
+1252	/20210629111111-05-AddNumSchoolsByDistrictLESMIS-modifies-data	2021-07-02 04:45:01.623
+1253	/20210629111111-06-LESMISStudentCountToStackedBar-modifies-data	2021-07-02 04:45:01.729
+1254	/20210629111111-07-AddDropoutRateByGrade-modifies-data	2021-07-02 04:45:01.89
+1255	/20210629111111-08-AddNERGERLESMIS-modifies-data	2021-07-02 04:45:02.077
+1256	/20210629111111-09-AddNumSecondaryClassroomsLESMIS-modifies-data	2021-07-02 04:45:02.167
+1257	/20210629111111-10-AddNumPrimaryClassroomsLESMIS-modifies-data	2021-07-02 04:45:02.25
+1258	/20210629111111-11-AddChildrenOverAgeLESMIS-modifies-data	2021-07-02 04:45:02.359
+1259	/20210629111111-12-LESMISDropObsoleteDashboardItem-modifies-data	2021-07-02 04:45:02.38
+1260	/20210629111111-13-LESMISStudentsByEthnicity-modifies-data	2021-07-02 04:45:02.456
+1261	/20210629111111-14-AddNumberSchoolsPublicPrivateESSDP-modifies-data	2021-07-02 04:45:02.587
+1262	/20210629111111-15-AddNumberTeachersByEducationLevel-modifies-data	2021-07-02 04:45:02.676
+1263	/20210629111111-16-LESMISGrossIntakeRate-modifies-data	2021-07-02 04:45:02.85
+1264	/20210629111111-17-LESMISAgeOfGrade1Entrance-modifies-data	2021-07-02 04:45:02.93
+1265	/20210629111111-18-AddRepetitionRateLESMIS-modifies-data	2021-07-02 04:45:03.07
+1266	/20210629111111-19-AddCohortSurvivalRatesLESMIS-modifies-data	2021-07-02 04:45:03.205
+1267	/20210629111111-20-LESMISCompleteAndIncompleteSchools-modifies-data	2021-07-02 04:45:03.281
+1268	/20210629111111-21-AddNumberClassesPublicSchoolsLESMIS-modifies-data	2021-07-02 04:45:03.415
+1269	/20210629111111-22-FixTypoInTitles-modifies-data	2021-07-02 04:45:03.437
+1270	/20210629111111-23-LESMISHeadingsOrderChange-modifies-data	2021-07-02 04:45:03.505
+1271	/20210629111111-24-ImproveYAxisLabels-modifies-data	2021-07-02 04:45:03.525
+1272	/20210629111111-25-DeleteSlowCountryLevelVisuals-modifies-data	2021-07-02 04:45:03.541
+1273	/20210629111111-26-FixTitlesGIRVisuals-modifies-data	2021-07-02 04:45:03.584
+1274	/20210629111111-27-CorrectDropoutRatePercentageCalculation-modifies-data	2021-07-02 04:45:03.654
+1275	/20210527034457-StriveLarvalHabitatBySpeciesBarChart-modifies-data	2021-07-08 15:07:09.958
+1276	/20210527034536-ReportConfigLarvalHabitatBySpecies-modifies-data	2021-07-08 15:07:10.725
+1277	/20210601015828-AddStriveLabConfirmedPostiveResultsStackedBarChart-modifies-data	2021-07-08 15:07:11.124
+1278	/20210618033026-PGStriveAverageMortalityMatrixTable-modifies-data	2021-07-08 15:07:11.423
+1279	/20210621034818-FixSbAtLeastOneStaffMemberTrained-modifies-data	2021-07-08 15:07:11.769
+1280	/20210629000039-CapitcaliseAnswersForSTRVECLHS36-modifies-data	2021-07-08 15:07:45.921
+1281	/20210705014650-AddNumberOfECETeachersVis-modifies-data	2021-07-08 15:07:46.165
+1282	/20210705232257-DropDeprecatedDashboardReportAndDashboardGroupTables-modifies-schema	2021-07-08 15:07:46.348
+1283	/20210627235940-AddSurveyPeriodGranularity-modifies-schema	2021-07-09 21:20:31.609
 \.
 
 
@@ -3989,7 +11182,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 1069, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 1283, true);
 
 
 --
