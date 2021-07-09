@@ -1,16 +1,21 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import { Dialog, DialogHeader, DialogContent } from '@tupaia/ui-components';
+import { Table } from '@tupaia/ui-components/lib/map';
 import MuiIconButton from '@material-ui/core/IconButton';
-import { MapTable } from './MapTable';
 import {
   selectCurrentMeasure,
-  selectOrgUnit,
   selectOrgUnitCountry,
   selectRenderedMeasuresWithDisplayInfo,
 } from '../../selectors';
+import { MeasureOptionsGroupPropType } from '../../components/Marker/propTypes';
 
 const IconButton = styled(MuiIconButton)`
   margin: 0 0 0 1rem;
@@ -37,7 +42,7 @@ export const MapTableModalComponent = ({
           title={`${currentMeasure.name}, ${currentCountry?.name}`}
         />
         <DialogContent>
-          <MapTable measureOptions={measureOptions} measureData={measureData} />
+          <Table serieses={measureOptions} measureData={measureData} />
         </DialogContent>
       </Dialog>
       <IconButton onClick={() => setIsOpen(true)}>
@@ -45,6 +50,24 @@ export const MapTableModalComponent = ({
       </IconButton>
     </>
   );
+};
+
+MapTableModalComponent.propTypes = {
+  measureOptions: MeasureOptionsGroupPropType,
+  measureData: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string,
+    }),
+  ),
+  currentCountry: PropTypes.string,
+  currentMeasure: PropTypes.string,
+};
+
+MapTableModalComponent.defaultProps = {
+  measureOptions: null,
+  measureData: null,
+  currentCountry: null,
+  currentMeasure: null,
 };
 
 const mapStateToProps = state => {

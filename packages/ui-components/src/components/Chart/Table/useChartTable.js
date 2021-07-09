@@ -2,7 +2,8 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
+import styled from 'styled-components';
 import { useTable, useSortBy } from 'react-table';
 import { formatDataValueByType } from '@tupaia/utils';
 import { formatTimestampForChart, getIsTimeSeries } from '../utils';
@@ -17,30 +18,17 @@ const sanitizeValueType = valueType =>
 const getFormattedValue = (value, valueType) =>
   value === undefined ? 'No Data' : formatDataValueByType({ value }, sanitizeValueType(valueType));
 
-/**
- * First column is either name or period granularity if they exist in the data
- */
-const getFirstColumn = viewContent => {
-  const { data, xName, periodGranularity } = viewContent;
-  const hasNamedData = data[0]?.name;
-  const hasTimeSeriesData = getIsTimeSeries(data) && periodGranularity;
+const FirstColumnCell = styled.span`
+  font-weight: 500;
+  text-align: left;
+`;
 
-  if (hasNamedData) {
-    return {
-      Header: xName || '',
-      accessor: 'name',
-    };
-  }
-
-  if (hasTimeSeriesData) {
-    return {
-      Header: xName || 'Date',
-      accessor: row => formatTimestampForChart(row.timestamp, periodGranularity),
-    };
-  }
-
-  return null;
-};
+const makeFirstColumn = (header, accessor) => ({
+  Header: header,
+  accessor,
+  // eslint-disable-next-line react/prop-types
+  Cell: ({ value }) => <FirstColumnCell>{String(value)}</FirstColumnCell>,
+});
 
 /**
  * Get columns to render in table
@@ -48,7 +36,20 @@ const getFirstColumn = viewContent => {
  * use value as the only column
  */
 const processColumns = viewContent => {
-  const baseColumns = getFirstColumn(viewContent) ? [getFirstColumn(viewContent)] : [];
+  const { data, xName, periodGranularity } = viewContent;
+  const hasNamedData = data[0]?.name;
+  const hasTimeSeriesData = getIsTimeSeries(data) && periodGranularity;
+  let firstColumn = null;
+
+  if (hasNamedData) {
+    firstColumn = makeFirstColumn(xName || 'Name', '');
+  }
+
+  if (hasTimeSeriesData) {
+    firstColumn = makeFirstColumn(xName || 'Date', row =>
+      formatTimestampForChart(row.timestamp, periodGranularity),
+    );
+  }
 
   const chartConfig = parseChartConfig(viewContent);
 
@@ -58,7 +59,7 @@ const processColumns = viewContent => {
       accessor: row => getFormattedValue(row[DEFAULT_DATA_KEY], viewContent.valueType),
     };
 
-    return [...baseColumns, valueColumn];
+    return firstColumn ? [firstColumn, valueColumn] : [valueColumn];
   }
 
   const configColumns = Object.keys(chartConfig).map(columnKey => {
@@ -73,7 +74,7 @@ const processColumns = viewContent => {
     };
   });
 
-  return [...baseColumns, ...configColumns];
+  return firstColumn ? [firstColumn, ...configColumns] : configColumns;
 };
 
 const processData = ({ data, chartType }) => {

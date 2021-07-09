@@ -10,7 +10,7 @@ import LastUpdated from './LastUpdated';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { CONTROL_BAR_WIDTH, TUPAIA_ORANGE, MAP_OVERLAY_SELECTOR } from '../../styles';
 import { GRANULARITY_CONFIG } from '../../utils/periodGranularities';
-import { MapTableModal } from '../MapTable/MapTableModal';
+import { MapTableModal } from '../MapTableModal';
 
 const Container = styled.div`
   width: ${CONTROL_BAR_WIDTH}px;

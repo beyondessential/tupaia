@@ -28,18 +28,10 @@ export const StyledTable = styled(MuiTable)`
       font-weight: 400;
       vertical-align: bottom;
     }
-
-    th:first-child {
-      text-align: left;
-    }
   }
 
   // table body
   tbody {
-    th {
-      font-weight: 500;
-    }
-
     tr {
       &:nth-of-type(odd) {
         background: ${({ theme }) =>

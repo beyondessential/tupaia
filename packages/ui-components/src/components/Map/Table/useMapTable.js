@@ -2,19 +2,30 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
+import styled from 'styled-components';
 import { useTable, useSortBy } from 'react-table';
 import { getFormattedInfo } from '../utils';
 
+const FirstColumnCell = styled.span`
+  font-weight: 500;
+  text-align: left;
+`;
+
 const processColumns = measureOptions => {
-  const columns = measureOptions.map(column => {
+  const configColumns = measureOptions.map(column => {
     return { accessor: column.key, Header: column.name };
   });
 
   return [
-    { accessor: 'name', Header: 'Name' },
-    ...columns,
-    { accessor: 'submissionDate', Header: 'Submission Date' },
+    {
+      Header: 'Name',
+      accessor: 'name',
+      // eslint-disable-next-line react/prop-types
+      Cell: ({ value }) => <FirstColumnCell>{String(value)}</FirstColumnCell>,
+    },
+    ...configColumns,
+    { Header: 'Submission Date', accessor: 'submissionDate' },
   ];
 };
 

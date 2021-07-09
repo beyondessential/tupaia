@@ -14,7 +14,7 @@ import { StyledTable } from './StyledTable';
 import { FlexStart } from '../../Layout';
 import { useMapTable } from './useMapTable';
 
-export const MapTable = ({ serieses, measureData, className }) => {
+export const Table = ({ serieses, measureData, className }) => {
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows, columns } = useMapTable(
     serieses,
     measureData,
@@ -56,7 +56,7 @@ export const MapTable = ({ serieses, measureData, className }) => {
   );
 };
 
-MapTable.propTypes = {
+Table.propTypes = {
   measureData: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string,
@@ -71,7 +71,7 @@ MapTable.propTypes = {
   className: PropTypes.string,
 };
 
-MapTable.defaultProps = {
+Table.defaultProps = {
   measureData: [],
   serieses: [],
   className: null,
