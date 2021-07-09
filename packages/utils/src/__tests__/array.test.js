@@ -37,8 +37,14 @@ describe('hasIntersection', () => {
   describe('return `true` if at least one item is shared between the inputs', () => {
     const testData = [
       ['one element arrays', [1], [1]],
-      ['arrays with exactly one shared element (i)', [1], [1, 2]],
-      ['arrays with exactly one shared element (ii)', [1, 2], [1, 3]],
+      ['arrays with exactly one shared element (first element) (i)', [1], [1, 2]],
+      ['arrays with exactly one shared element (first element) (ii)', [1, 2], [1, 3]],
+      [
+        'arrays with exactly one shared element (not first element, same array position)',
+        [2, 1],
+        [3, 1],
+      ],
+      ['arrays with exactly one shared element (different array position)', [2, 1], [3, 4, 1, 5]],
       ['arrays with multiple shared elements', [1, 2], [1, 2, 3]],
     ];
 
@@ -55,7 +61,7 @@ describe('hasIntersection', () => {
       ['no common element (i)', [1], [3, 4]],
       ['no common element (ii)', [1, 2], [3, 4]],
       ['arrays with loosely but not strictly shared element (primitive)', [1], ['1']],
-      ['arrays with loosely but not strictly shared element (object)t', [{ a: 1 }], [{ a: 1 }]],
+      ['arrays with loosely but not strictly shared element (object)', [{ a: 1 }], [{ a: 1 }]],
     ];
 
     it.each(testData)('%s', (_, input1, input2) => {

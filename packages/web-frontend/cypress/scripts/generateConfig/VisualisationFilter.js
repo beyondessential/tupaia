@@ -62,7 +62,9 @@ class VisualisationFilter {
         const record = recordsByKey[url[this.key]];
         if (!record) {
           throw new Error(
-            `${upperFirst(this.name)} with ${this.key} "${url[this.key]}" was not found in the database`,
+            `${upperFirst(this.name)} with ${this.key} "${
+              url[this.key]
+            }" was not found in the database`,
           );
         }
 
@@ -103,6 +105,7 @@ export class DashboardReportFilter extends VisualisationFilter {
       code: legacyDashboardItems.map(di => di.report_code),
     });
     const legacyReportByCode = keyBy(legacyReports, 'code');
+
     return dashboardItems.map(di => {
       const legacyReport = di.legacy ? legacyReportByCode[di.report_code] : null;
 
