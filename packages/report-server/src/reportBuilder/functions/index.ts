@@ -27,5 +27,5 @@ export const functions = {
   periodToDisplayString,
   sum,
   divide,
-  formatAsFractionAndPercentage
+  formatAsFractionAndPercentage,
 };
