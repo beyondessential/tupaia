@@ -72,7 +72,6 @@ export const testOutdatedStatusUpdate = () => {
       };
       const message = `Failed assertion for survey response ${JSON.stringify(srDescriptionFields)}`;
 
-      // const message = `Outdated status for responses of survey response\n${} is different than expected`;
       expect(surveyResponse).to.have.property('outdated', expectedOutdatedStatuses[i], message);
     }
   };
