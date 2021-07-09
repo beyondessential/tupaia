@@ -536,5 +536,5 @@ describe('surveyResponse endpoint', () => {
     });
   });
 
-  describe('Outdated status update', () => testOutdatedStatusUpdate(app));
+  describe.only('Outdated status update', () => testOutdatedStatusUpdate(app));
 });

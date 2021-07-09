@@ -56,18 +56,18 @@ export const testOutdatedStatusUpdate = app => {
       }),
     });
 
-    expect(response.statusCode).to.equal(200);
+    expect(response.statusCode).to.equal(200, response.error);
     return response.body.results.map(result => result.surveyResponseId);
   };
 
   const updateResponse = async (surveyResponseId, data) => {
     const response = await app.put(`surveyResponses/${surveyResponseId}`, { body: data });
-    expect(response.statusCode).to.equal(200);
+    expect(response.statusCode).to.equal(200, response.error);
   };
 
   const deleteResponse = async surveyResponseId => {
     const response = await app.delete(`surveyResponses/${surveyResponseId}`);
-    expect(response.statusCode).to.equal(200);
+    expect(response.statusCode).to.equal(200, response.error);
   };
 
   const assertOutdatedStatuses = async expectedByResponseId => {
