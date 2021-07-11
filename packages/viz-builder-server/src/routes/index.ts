@@ -3,3 +3,6 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  *
  */
+
+export { FetchDataSourcesRoute } from './FetchDataSourcesRoute';
+export { FetchPermissionGroupsRoute } from './FetchPermissionGroupsRoute';
