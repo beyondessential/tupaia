@@ -35,6 +35,7 @@ exports.up = async function (db) {
 
   for (const facility of facilities) {
     const { parent_id: ancestorId, id: descendantId } = facility;
+    // console.log(facility);
     await insertObject(db, 'ancestor_descendant_relation', {
       id: generateId(),
       entity_hierarchy_id: entityHierarchyId,

@@ -212,6 +212,17 @@ export class TupaiaDatabase {
       const { recordType: subRecordType, where: subWhere, ...subOptions } = options.subQuery;
       options.innerQuery = this.find(subRecordType, subWhere, subOptions);
     }
+    const test = this.query(
+      {
+        recordType,
+        queryMethod:
+          queryMethod || (options.distinct ? QUERY_METHODS.DISTINCT : QUERY_METHODS.SELECT),
+      },
+      where,
+      options,
+    );
+    console.log(789);
+
     return this.query(
       {
         recordType,

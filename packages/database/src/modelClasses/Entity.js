@@ -175,6 +175,7 @@ export class EntityType extends DatabaseType {
   }
 
   async getDescendants(hierarchyId, criteria) {
+    console.log(12);
     return this.model.getRelationsOfEntity(ENTITY_RELATION_TYPE.DESCENDANTS, this.id, {
       entity_hierarchy_id: hierarchyId,
       ...criteria,
@@ -203,6 +204,8 @@ export class EntityType extends DatabaseType {
 
   async getDescendantsOfType(hierarchyId, entityType) {
     if (this.type === entityType) return [this];
+    console.log(hierarchyId);
+    console.log(entityType);
     return this.getDescendants(hierarchyId, { type: entityType });
   }
 
@@ -428,6 +431,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   async getRelationsOfEntity(ancestorsOrDescendants, entityId, criteria) {
+    console.log(123);
     const cacheKey = this.getCacheKey(this.getRelationsOfEntity.name, arguments);
     const [joinTablesOn, filterByEntityId] =
       ancestorsOrDescendants === ENTITY_RELATION_TYPE.ANCESTORS
@@ -445,6 +449,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           sort: ['generational_distance ASC'],
         },
       );
+      // console.log(relations);
       return Promise.all(relations.map(async r => r.getData()));
     });
     return Promise.all(relationData.map(async r => this.generateInstance(r)));
