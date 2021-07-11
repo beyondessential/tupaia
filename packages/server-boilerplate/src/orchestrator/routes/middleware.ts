@@ -26,3 +26,7 @@ export const attachSession = async (req: Request, res: Response, next: NextFunct
     next(error);
   }
 };
+
+export const attachEmptySession = async (req: Request, res: Response, next: NextFunction) => {
+  next();
+};

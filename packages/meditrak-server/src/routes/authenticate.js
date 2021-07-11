@@ -12,6 +12,7 @@ import { allowNoPermissions } from '../permissions';
 const GRANT_TYPES = {
   PASSWORD: 'password',
   REFRESH_TOKEN: 'refresh_token',
+  ACCESS_TOKEN: 'access_token',
   ONE_TIME_LOGIN: 'one_time_login',
 };
 
@@ -42,6 +43,19 @@ const extractPermissionGroupsIfLegacy = async (models, accessPolicy) => {
   return permissionGroupsByCountryId;
 };
 
+const getUserDetails = (user, accessPolicy) => ({
+  id: user.id,
+  name: user.fullName,
+  firstName: user.first_name,
+  lastName: user.last_name,
+  position: user.position,
+  employer: user.employer,
+  email: user.email,
+  profileImage: user.profile_image,
+  verifiedEmail: user.verified_email,
+  accessPolicy,
+});
+
 const getAuthorizationObject = async ({
   accessPolicy,
   refreshToken,
@@ -61,18 +75,7 @@ const getAuthorizationObject = async ({
   const accessToken = constructAccessToken(tokenClaims);
 
   // Assemble and return authorization object
-  const userDetails = {
-    id: user.id,
-    name: user.fullName,
-    firstName: user.first_name,
-    lastName: user.last_name,
-    position: user.position,
-    employer: user.employer,
-    email: user.email,
-    profileImage: user.profile_image,
-    verifiedEmail: user.verified_email,
-    accessPolicy,
-  };
+  const userDetails = getUserDetails(user, accessPolicy);
   if (permissionGroups) {
     userDetails.permissionGroups = permissionGroups;
   }
@@ -116,6 +119,8 @@ const checkUserAuthentication = async req => {
   switch (query.grantType) {
     case GRANT_TYPES.REFRESH_TOKEN:
       return authenticator.authenticateRefreshToken(body);
+    case GRANT_TYPES.ACCESS_TOKEN:
+      return authenticator.authenticateAccessToken(body.accessToken);
     case GRANT_TYPES.ONE_TIME_LOGIN:
       return authenticator.authenticateOneTimeLogin(body);
     case GRANT_TYPES.PASSWORD:
@@ -155,7 +160,17 @@ const checkApiClientAuthentication = async req => {
 export async function authenticate(req, res) {
   await req.assertPermissions(allowNoPermissions);
 
-  const { refreshToken, user, accessPolicy } = await checkUserAuthentication(req);
+  const authenticationResult = await checkUserAuthentication(req);
+
+  // if authenticating an access token, we just need to validate it,
+  // no need to process any further to create another access token
+  if (req.query.grantType === GRANT_TYPES.ACCESS_TOKEN) {
+    const { user, accessPolicy } = authenticationResult;
+    respond(res, { user: getUserDetails(user, accessPolicy) });
+    return;
+  }
+
+  const { refreshToken, user, accessPolicy } = authenticationResult;
   const { user: apiClientUser } = await checkApiClientAuthentication(req);
 
   const permissionGroupsByCountryId = await extractPermissionGroupsIfLegacy(

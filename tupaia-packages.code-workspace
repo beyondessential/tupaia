@@ -93,6 +93,10 @@
       "path": "packages/utils"
     },
     {
+      "name": "viz-builder-server",
+      "path": "packages/viz-builder-server"
+    },
+    {
       "name": "weather-api",
       "path": "packages/weather-api"
     },

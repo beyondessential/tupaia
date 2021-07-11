@@ -57,6 +57,23 @@ export class AuthConnection extends ApiConnection {
     return this.parseAuthResponse(response);
   }
 
+  async authenticateAccessToken(accessToken: string) {
+    const response = await this.post(
+      'auth',
+      {
+        grantType: 'access_token',
+      },
+      {
+        accessToken,
+      },
+    );
+
+    // response for access token authentication is slightly different
+    const { user } = response;
+    const { accessPolicy } = user;
+    return { accessPolicy, user };
+  }
+
   parseAuthResponse(response: AuthResponse) {
     const { accessToken, refreshToken, user } = response;
     if (!accessToken || !refreshToken || !user) {

@@ -5,4 +5,4 @@
 
 export { LoginRoute, LoginRequest } from './LoginRoute';
 export { LogoutRoute } from './LogoutRoute';
-export { attachSession } from './middleware';
+export { attachSession, attachEmptySession } from './middleware';

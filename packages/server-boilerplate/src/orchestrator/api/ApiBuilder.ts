@@ -27,21 +27,24 @@ import { SessionModel } from '../models';
 type Middleware = (req: Request, res: Response, next: NextFunction) => void;
 
 export class ApiBuilder {
-  private readonly app: Express;
-
   private readonly database: TupaiaDatabase;
 
   private attachSession: Middleware;
 
   private attachVerifyLogin?: (req: LoginRequest, res: Response, next: NextFunction) => void;
 
-  private verifyAuthMiddleware?: Middleware;
+  protected readonly app: Express;
+
+  protected verifyAuthMiddleware?: Middleware;
 
   constructor(transactingConnection: TupaiaDatabase) {
     this.database = transactingConnection;
     this.app = express();
-    this.attachSession = defaultAttachSession;
+    this.attachSession = this.defaultAttachSession;
+    this.addDefaultMiddleware();
+  }
 
+  addDefaultMiddleware() {
     /**
      * Add middleware
      */
@@ -53,7 +56,7 @@ export class ApiBuilder {
     );
     this.app.use(bodyParser.json({ limit: '50mb' }));
     this.app.use(errorHandler());
-    this.app.use(sessionCookie());
+    this.useSessionCookie();
 
     /**
      * Add singletons to be attached to req for every route
@@ -65,11 +68,14 @@ export class ApiBuilder {
 
       next();
     });
+  }
 
-    /**
-     * Test Route
-     */
-    this.app.get('/v1/test', handleWith(TestRoute));
+  get defaultAttachSession() {
+    return defaultAttachSession;
+  }
+
+  useSessionCookie() {
+    this.app.use(sessionCookie());
   }
 
   useAttachSession(attachSession: Middleware) {
@@ -154,13 +160,22 @@ export class ApiBuilder {
     return this.addRoute('put', path, handler);
   }
 
-  build() {
+  addLoginAndLogoutRoutes() {
     if (this.attachVerifyLogin) {
       this.app.post('/v1/login', this.attachVerifyLogin, handleWith(LoginRoute));
     } else {
       this.app.post('/v1/login', handleWith(LoginRoute));
     }
     this.app.post('/v1/logout', handleWith(LogoutRoute));
+  }
+
+  build() {
+    this.addLoginAndLogoutRoutes();
+
+    /**
+     * Test Route
+     */
+    this.get('/v1/test', handleWith(TestRoute));
 
     this.app.use(handleError);
     return this.app;

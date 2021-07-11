@@ -4,3 +4,4 @@
  */
 
 export { ApiBuilder } from './ApiBuilder';
+export { NonSessionApiBuilder } from './NonSessionApiBuilder';

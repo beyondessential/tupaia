@@ -22,6 +22,7 @@ This opens all packages as roots in the workspace, and means linting etc. will w
 - [meditrak-server](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-server/README.md)
 - [psss](https://github.com/beyondessential/tupaia/blob/dev/packages/psss/README.md)
 - [psss-server](https://github.com/beyondessential/tupaia/blob/dev/packages/psss-server/README.md)
+- [viz-builder-server](https://github.com/beyondessential/tupaia/blob/dev/packages/viz-builder-server/README.md)
 - [web-config-server](https://github.com/beyondessential/tupaia/blob/dev/packages/web-config-server/README.md)
 - [web-frontend](https://github.com/beyondessential/tupaia/blob/dev/packages/web-frontend/README.md)
 

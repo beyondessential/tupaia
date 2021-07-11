@@ -13,6 +13,7 @@ export {
 } from './microService';
 export {
   ApiBuilder as OrchestratorApiBuilder,
+  NonSessionApiBuilder as NonSessionOrchestratorApiBuilder,
   SessionModel,
   SessionType,
   SessionCookie,
