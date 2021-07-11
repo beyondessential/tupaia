@@ -16,6 +16,7 @@ import {
   selectRenderedMeasuresWithDisplayInfo,
 } from '../../selectors';
 import { MeasureOptionsGroupPropType } from '../../components/Marker/propTypes';
+import { Tooltip } from '../../components/Tooltip';
 
 const IconButton = styled(MuiIconButton)`
   margin: 0 0 0 1rem;
@@ -45,9 +46,11 @@ export const MapTableModalComponent = ({
           <Table serieses={measureOptions} measureData={measureData} />
         </DialogContent>
       </Dialog>
-      <IconButton onClick={() => setIsOpen(true)}>
-        <AssignmentIcon />
-      </IconButton>
+      <Tooltip arrow interactive placement="top" title="Generate Report">
+        <IconButton onClick={() => setIsOpen(true)}>
+          <AssignmentIcon />
+        </IconButton>
+      </Tooltip>
     </>
   );
 };

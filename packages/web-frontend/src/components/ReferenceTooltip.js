@@ -6,11 +6,11 @@
  */
 
 import React from 'react';
-
-import { Typography, Tooltip, withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 import styled from 'styled-components';
+import Typography from '@material-ui/core/Typography';
+import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
+import { Tooltip } from './Tooltip';
 import { BLUE } from '../styles';
 
 const DEFAULT = 'default';
@@ -23,7 +23,7 @@ export const TOOLTIP_ICON_STYLE_OPTIONS = {
 };
 
 const IconButton = styled(InfoRoundedIcon)`
-  fontsize: 16px;
+  font-size: 16px;
   color: grey;
   transition: color 0.2s ease;
   &:hover {
@@ -40,20 +40,12 @@ const styles = {
   },
   typography: { backgroundColor: 'black' },
 };
-const StyledToolTip = withStyles(theme => ({
-  arrow: {
-    color: theme.palette.common.black,
-  },
-  tooltip: {
-    backgroundColor: theme.palette.common.black,
-  },
-}))(Tooltip);
 
 export const ReferenceTooltip = props => {
   const { reference, iconStyleOption } = props;
 
   return (
-    <StyledToolTip
+    <Tooltip
       arrow
       interactive
       placement="top"
@@ -74,7 +66,7 @@ export const ReferenceTooltip = props => {
             : styles.iconButton[DEFAULT]
         }
       />
-    </StyledToolTip>
+    </Tooltip>
   );
 };
 
