@@ -156,7 +156,7 @@ export class OutdatedStatusUpdater {
         return records;
       }
       case 'delete':
-        // If the deleted record was the most recent response in its survey/entity/period combination,
+        // If the deleted record was the most recent response in its dimension combo,
         // a new one must be selected
         return oldRecord.outdated ? [] : [oldRecord];
       default:

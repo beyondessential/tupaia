@@ -193,12 +193,14 @@ export async function importSurveys(req, res) {
         // Work out what fields of the survey should be updated based on query params
         const fieldsToForceUpdate = {};
         if (req.query.countryIds) {
+          // Set the countries this survey is available in
           fieldsToForceUpdate.country_ids = getArrayQueryParameter(req.query.countryIds);
         }
         if (surveyGroup) {
           fieldsToForceUpdate.survey_group_id = surveyGroup.id;
         }
         if (req.query.permissionGroup) {
+          // A non-default permission group was provided
           fieldsToForceUpdate.permission_group_id = permissionGroup.id;
         }
         if (req.query.surveyCode) {
