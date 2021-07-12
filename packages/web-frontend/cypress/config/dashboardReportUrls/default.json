@@ -1,0 +1,756 @@
+[
+  {
+    "code": "3",
+    "project": "explore",
+    "orgUnit": "KI",
+    "dashboardGroup": "General"
+  },
+  {
+    "code": "4",
+    "project": "olangch_palau",
+    "orgUnit": "PW_CommunityCHC",
+    "dashboardGroup": "Supply Chain"
+  },
+  {
+    "code": "8",
+    "project": "explore",
+    "orgUnit": "KI",
+    "dashboardGroup": "General"
+  },
+  {
+    "code": "8",
+    "project": "supplychain_fiji",
+    "orgUnit": "FJ",
+    "dashboardGroup": "General"
+  },
+  {
+    "code": "9",
+    "project": "olangch_palau",
+    "orgUnit": "PW_CommunityCHC",
+    "dashboardGroup": "Supply Chain"
+  },
+  {
+    "code": "10",
+    "project": "supplychain_fiji",
+    "orgUnit": "FJ",
+    "dashboardGroup": "General"
+  },
+  {
+    "code": "11",
+    "project": "olangch_palau",
+    "orgUnit": "PW_CommunityCHC",
+    "dashboardGroup": "Supply Chain"
+  },
+  {
+    "code": "11",
+    "project": "supplychain_fiji",
+    "orgUnit": "FJ_013",
+    "dashboardGroup": "General"
+  },
+  {
+    "code": "12",
+    "project": "supplychain_fiji",
+    "orgUnit": "FJ",
+    "dashboardGroup": "General"
+  },
+  {
+    "code": "13",
+    "project": "supplychain_fiji",
+    "orgUnit": "FJ",
+    "dashboardGroup": "General"
+  },
+  {
+    "code": "14",
+    "project": "explore",
+    "orgUnit": "KI",
+    "dashboardGroup": "General"
+  },
+  {
+    "code": "15",
+    "project": "explore",
+    "orgUnit": "KI",
+    "dashboardGroup": "General"
+  },
+  {
+    "code": "16",
+    "project": "olangch_palau",
+    "orgUnit": "PW_CommunityCHC",
+    "dashboardGroup": "Supply Chain"
+  },
+  {
+    "code": "18",
+    "project": "supplychain_fiji",
+    "orgUnit": "FJ_013",
+    "dashboardGroup": "General"
+  },
+  {
+    "code": "19",
+    "project": "explore",
+    "orgUnit": "KI",
+    "dashboardGroup": "General"
+  },
+  {
+    "code": "19",
+    "project": "supplychain_fiji",
+    "orgUnit": "FJ",
+    "dashboardGroup": "General"
+  },
+  {
+    "code": "20",
+    "project": "explore",
+    "orgUnit": "KI",
+    "dashboardGroup": "General"
+  },
+  {
+    "code": "21",
+    "project": "supplychain_fiji",
+    "orgUnit": "FJ_013",
+    "dashboardGroup": "General"
+  },
+  {
+    "code": "22",
+    "project": "supplychain_fiji",
+    "orgUnit": "FJ_013",
+    "dashboardGroup": "General"
+  },
+  {
+    "code": "24",
+    "project": "supplychain_fiji",
+    "orgUnit": "FJ",
+    "dashboardGroup": "Clinical"
+  },
+  {
+    "code": "26",
+    "project": "olangch_palau",
+    "orgUnit": "PW",
+    "dashboardGroup": "General"
+  },
+  {
+    "code": "27",
+    "project": "supplychain_fiji",
+    "orgUnit": "FJ",
+    "dashboardGroup": "Clinical"
+  },
+  {
+    "code": "28",
+    "project": "explore",
+    "orgUnit": "explore",
+    "dashboardGroup": "General"
+  },
+  {
+    "code": "29",
+    "project": "explore",
+    "orgUnit": "explore",
+    "dashboardGroup": "General"
+  },
+  {
+    "code": "36",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "PEHS"
+  },
+  {
+    "code": "39",
+    "project": "fanafana",
+    "orgUnit": "TO_Neikihp",
+    "dashboardGroup": "PEHS"
+  },
+  {
+    "code": "40",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "PEHS"
+  },
+  {
+    "code": "COVID_Compose_Daily_Deaths_Vs_Cases",
+    "project": "covidau",
+    "orgUnit": "AU",
+    "dashboardGroup": "COVID-19"
+  },
+  {
+    "code": "COVID_New_Cases_By_State",
+    "project": "covidau",
+    "orgUnit": "AU",
+    "dashboardGroup": "COVID-19",
+    "startDate": "2021-05-30",
+    "endDate": "2021-05-30"
+  },
+  {
+    "code": "COVID_Total_Cases_By_State",
+    "project": "covidau",
+    "orgUnit": "AU",
+    "dashboardGroup": "COVID-19"
+  },
+  {
+    "code": "FETP_PG_graduate_by_district",
+    "project": "fetp",
+    "orgUnit": "PG",
+    "dashboardGroup": "FETP"
+  },
+  {
+    "code": "FETP_PG_graduate_details",
+    "project": "fetp",
+    "orgUnit": "FETP-DYO3",
+    "dashboardGroup": "FETP"
+  },
+  {
+    "code": "FETP_PG_graduate_number_of_outbreaks",
+    "project": "fetp",
+    "orgUnit": "FETP-DYO3",
+    "dashboardGroup": "FETP"
+  },
+  {
+    "code": "Imms_FridgeBreaches",
+    "project": "imms",
+    "orgUnit": "VU",
+    "dashboardGroup": "Immunisation",
+    "startDate": "2020-04-01",
+    "endDate": "2020-04-30"
+  },
+  {
+    "code": "Imms_FridgeDailyTemperatures",
+    "project": "imms",
+    "orgUnit": "VU_1660",
+    "dashboardGroup": "Immunisation"
+  },
+  {
+    "code": "Imms_FridgeVaccineCount",
+    "project": "imms",
+    "orgUnit": "VU",
+    "dashboardGroup": "Immunisation"
+  },
+  {
+    "code": "Imms_Stockouts",
+    "project": "imms",
+    "orgUnit": "VU",
+    "dashboardGroup": "Immunisation"
+  },
+  {
+    "code": "LA_EOC_Total_Dengue_Cases_by_Week",
+    "project": "laos_eoc",
+    "orgUnit": "LA_Bokeo",
+    "dashboardGroup": "Dengue"
+  },
+  {
+    "code": "LA_Laos_Schools_Resources_Percentage_Primary",
+    "project": "laos_schools",
+    "orgUnit": "LA",
+    "dashboardGroup": "COVID"
+  },
+  {
+    "code": "LA_Laos_Schools_Service_Availability_Percentage_Secondary",
+    "project": "laos_schools",
+    "orgUnit": "LA",
+    "dashboardGroup": "ICT Facilities"
+  },
+  {
+    "code": "Laos_EOC_Malaria_Critical_Item_Availability",
+    "project": "laos_eoc",
+    "orgUnit": "LA-BK AH Bokeo (Military)",
+    "dashboardGroup": "Malaria"
+  },
+  {
+    "code": "Laos_EOC_Malaria_Critical_Item_Availability_Single_Value",
+    "project": "laos_eoc",
+    "orgUnit": "LA-BK AH Bokeo (Military)",
+    "dashboardGroup": "Malaria",
+    "startDate": "2020-06-01",
+    "endDate": "2020-06-30"
+  },
+  {
+    "code": "Laos_EOC_Malaria_Stock_Availability_Facility",
+    "project": "laos_eoc",
+    "orgUnit": "LA-BK AH Bokeo (Military)",
+    "dashboardGroup": "Malaria"
+  },
+  {
+    "code": "Laos_Schools_Age_Of_Computers_By_School_Type",
+    "project": "laos_schools",
+    "orgUnit": "LA",
+    "dashboardGroup": "ICT Facilities"
+  },
+  {
+    "code": "Laos_Schools_COVID_19_Bar_Graph",
+    "project": "laos_schools",
+    "orgUnit": "LA",
+    "dashboardGroup": "COVID"
+  },
+  {
+    "code": "Laos_Schools_Drinking_Water_Source_By_School_Type",
+    "project": "laos_schools",
+    "orgUnit": "LA",
+    "dashboardGroup": "WASH"
+  },
+  {
+    "code": "Laos_Schools_ICT_Facilities_Bar_Graph",
+    "project": "laos_schools",
+    "orgUnit": "LA",
+    "dashboardGroup": "ICT Facilities"
+  },
+  {
+    "code": "Laos_Schools_Language_Of_Students",
+    "project": "laos_schools",
+    "orgUnit": "LA",
+    "dashboardGroup": "MoES View"
+  },
+  {
+    "code": "LESMIS_student_gender_stacked_gpi",
+    "project": "laos_schools",
+    "orgUnit": "LA",
+    "dashboardGroup": "Student Enrolment"
+  },
+  {
+    "code": "Laos_Schools_Number_Of_Primary_Schools_Supported_Development_Partners",
+    "project": "laos_schools",
+    "orgUnit": "LA",
+    "dashboardGroup": "Development Partners and Finance"
+  },
+  {
+    "code": "Laos_Schools_Number_Of_Students_Matrix",
+    "project": "laos_schools",
+    "orgUnit": "LA",
+    "dashboardGroup": "Student Outcomes"
+  },
+  {
+    "code": "Laos_Schools_Students_Following_MoES_By_School_Type",
+    "project": "laos_schools",
+    "orgUnit": "LA",
+    "dashboardGroup": "COVID"
+  },
+  {
+    "code": "Laos_Schools_WASH_Bar_Graph",
+    "project": "laos_schools",
+    "orgUnit": "LA",
+    "dashboardGroup": "WASH"
+  },
+  {
+    "code": "Laos_Schools_Water_Supply_Source_By_School_Type",
+    "project": "laos_schools",
+    "orgUnit": "LA",
+    "dashboardGroup": "WASH"
+  },
+  {
+    "code": "PG_FETP_graduates_by_sex",
+    "project": "fetp",
+    "orgUnit": "PG",
+    "dashboardGroup": "FETP"
+  },
+  {
+    "code": "PG_Strive_PNG_Facility_EpiCurve",
+    "project": "strive",
+    "orgUnit": "PG_SANDUAN01",
+    "dashboardGroup": "STRIVE PNG"
+  },
+  {
+    "code": "PG_Strive_PNG_Febrile_Cases_By_Sex",
+    "project": "strive",
+    "orgUnit": "PG_MADANG01",
+    "dashboardGroup": "STRIVE PNG",
+    "startDate": "2021-05-10",
+    "endDate": "2021-05-16"
+  },
+  {
+    "code": "PG_Strive_PNG_Febrile_Cases_By_Week",
+    "project": "strive",
+    "orgUnit": "PG_MADANG01",
+    "dashboardGroup": "STRIVE PNG"
+  },
+  {
+    "code": "PG_Strive_PNG_K13_PCR_Results",
+    "project": "strive",
+    "orgUnit": "PG",
+    "dashboardGroup": "STRIVE PNG"
+  },
+  {
+    "code": "PG_Strive_PNG_Positive_RDT_By_Result_Over_Time",
+    "project": "strive",
+    "orgUnit": "PG",
+    "dashboardGroup": "STRIVE PNG"
+  },
+  {
+    "code": "PG_Strive_PNG_RDT_Tests_Total_And_Percent_Positive",
+    "project": "strive",
+    "orgUnit": "PG_MADANG01",
+    "dashboardGroup": "STRIVE PNG"
+  },
+  {
+    "code": "PG_Strive_PNG_Weekly_Febrile_Cases_By_Village",
+    "project": "strive",
+    "orgUnit": "PG_MADANG01",
+    "dashboardGroup": "STRIVE PNG",
+    "startDate": "2021-05-03",
+    "endDate": "2021-05-09"
+  },
+  {
+    "code": "PG_Strive_PNG_Weekly_Febrile_Illness_RDT_Positive_By_Facility_National",
+    "project": "strive",
+    "orgUnit": "PG",
+    "dashboardGroup": "STRIVE PNG",
+    "startDate": "2021-05-24",
+    "endDate": "2021-05-30"
+  },
+  {
+    "code": "PG_Strive_PNG_Weekly_mRDT_Positive",
+    "project": "strive",
+    "orgUnit": "PG",
+    "dashboardGroup": "STRIVE PNG",
+    "startDate": "2021-05-24",
+    "endDate": "2021-05-30"
+  },
+  {
+    "code": "PG_Strive_PNG_Weekly_Number_of_Febrile_Cases",
+    "project": "strive",
+    "orgUnit": "PG",
+    "dashboardGroup": "STRIVE PNG"
+  },
+  {
+    "code": "PG_Strive_PNG_Weekly_Percentage_of_Positive_Consultations",
+    "project": "strive",
+    "orgUnit": "PG_MADANG01",
+    "dashboardGroup": "STRIVE PNG",
+    "startDate": "2021-05-03",
+    "endDate": "2021-05-09"
+  },
+  {
+    "code": "PG_Strive_PNG_Weekly_Reported_Cases",
+    "project": "strive",
+    "orgUnit": "PG",
+    "dashboardGroup": "STRIVE PNG",
+    "startDate": "2021-05-24",
+    "endDate": "2021-05-30"
+  },
+  {
+    "code": "RH_Products_Stock_Availability_HFRSA_And_Spot_Check_Survey_Data_Line_Graph",
+    "project": "unfpa",
+    "orgUnit": "WS",
+    "dashboardGroup": "UNFPA"
+  },
+  {
+    "code": "RH_Products_Stock_Availability_HFRSA_And_Spot_Check_Survey_Data_With_Percentage",
+    "project": "unfpa",
+    "orgUnit": "WS",
+    "dashboardGroup": "UNFPA",
+    "startDate": "2020-01-01",
+    "endDate": "2020-12-31"
+  },
+  {
+    "code": "Samoa_Covid_Number_Of_Passengers_By_Flight",
+    "project": "covid_samoa",
+    "orgUnit": "WS",
+    "dashboardGroup": "COVID-19 Samoa"
+  },
+  {
+    "code": "Samoa_Covid_Quarantine_Site_By_Flight",
+    "project": "covid_samoa",
+    "orgUnit": "WS",
+    "dashboardGroup": "COVID-19 Samoa"
+  },
+  {
+    "code": "SchDP_Partner_Assistance_Types",
+    "project": "laos_schools",
+    "orgUnit": "LA",
+    "dashboardGroup": "Development Partners and Finance"
+  },
+  {
+    "code": "SCRF_RDT_Positive_Results",
+    "project": "strive",
+    "orgUnit": "PG",
+    "dashboardGroup": "STRIVE PNG"
+  },
+  {
+    "code": "TO_CD_Isolation_Admissions_Initial_Diagnosis_Stacked_Bar",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Communicable Diseases"
+  },
+  {
+    "code": "TO_CD_Lab_Confirmed_STIs_Stacked_Bar",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Communicable Diseases"
+  },
+  {
+    "code": "TO_CD_STI_Num_Of_Patients_Tested",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Communicable Diseases",
+    "startDate": "2020-01-01",
+    "endDate": "2020-12-31"
+  },
+  {
+    "code": "TO_CD_Validation_CD1",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Communicable Diseases Validation",
+    "startDate": "2021-01-01",
+    "endDate": "2021-12-31"
+  },
+  {
+    "code": "TO_CH_Complications_eGFR",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Community Health"
+  },
+  {
+    "code": "TO_CH_DM_HTN_Incidence",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Community Health"
+  },
+  {
+    "code": "TO_CH_DM_HTN_Newly_Diagnosed",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Community Health",
+    "startDate": "2020-01-01",
+    "endDate": "2020-12-31"
+  },
+  {
+    "code": "TO_CH_DM_Medication",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Community Health"
+  },
+  {
+    "code": "TO_CH_NCD_Cases",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Community Health",
+    "startDate": "2020-01-01",
+    "endDate": "2020-12-31"
+  },
+  {
+    "code": "TO_COVID_Percent_IPC_Commodity_Availability",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "COVID-19"
+  },
+  {
+    "code": "TO_HPU_Activity_Sessions_By_Setting",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Health Promotion Unit",
+    "startDate": "2020-01-01",
+    "endDate": "2020-12-31"
+  },
+  {
+    "code": "TO_HPU_Activity_Sessions_By_Setting_By_District",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Health Promotion Unit",
+    "startDate": "2019-01-01",
+    "endDate": "2019-12-31"
+  },
+  {
+    "code": "TO_HPU_IEC_Requests_Fulfilled_By_Theme",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Health Promotion Unit"
+  },
+  {
+    "code": "TO_HPU_New_Quitline_Calls",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Health Promotion Unit",
+    "startDate": "2020-01-01",
+    "endDate": "2020-12-31"
+  },
+  {
+    "code": "TO_HPU_Rate_Of_Tobacco_Non_Compliance_Country",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Health Promotion Unit"
+  },
+  {
+    "code": "TO_HPU_Validation_HP_01",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Health Promotion Unit",
+    "startDate": "2021-03-01",
+    "endDate": "2021-03-31"
+  },
+  {
+    "code": "TO_PEHS",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "PEHS"
+  },
+  {
+    "code": "TO_PEHS_Facility",
+    "project": "fanafana",
+    "orgUnit": "TO_Neikihp",
+    "dashboardGroup": "PEHS"
+  },
+  {
+    "code": "TO_RH_Descriptive_FP01_02",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Reproductive Health"
+  },
+  {
+    "code": "TO_RH_Descriptive_FP01_03",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Reproductive Health",
+    "startDate": "2021-03-01",
+    "endDate": "2021-03-31"
+  },
+  {
+    "code": "TO_RH_Descriptive_IMMS01_03",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Reproductive Health",
+    "startDate": "2020-01-01",
+    "endDate": "2020-12-31"
+  },
+  {
+    "code": "TO_RH_Descriptive_MCH05_01",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Reproductive Health"
+  },
+  {
+    "code": "TO_RH_Validation_FP",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Reproductive Health Validation",
+    "startDate": "2021-04-01",
+    "endDate": "2021-04-30"
+  },
+  {
+    "code": "TO_RH_Validation_MCH01",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Reproductive Health Validation",
+    "startDate": "2021-04-01",
+    "endDate": "2021-04-30"
+  },
+  {
+    "code": "TO_RH_Validation_MCH01_Total",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Reproductive Health Validation"
+  },
+  {
+    "code": "TO_Total_Screened_For_NCD_Risk_Factors",
+    "project": "fanafana",
+    "orgUnit": "TO",
+    "dashboardGroup": "Community Health",
+    "startDate": "2020-01-01",
+    "endDate": "2020-12-31"
+  },
+  {
+    "code": "Total_Number_Of_People_1st_Dose_Covid_Vaccine_By_Village",
+    "project": "covid_samoa",
+    "orgUnit": "WS_Savaii",
+    "dashboardGroup": "COVID-19 Samoa"
+  },
+  {
+    "code": "UNFPA_Monthly_3_Methods_of_Contraception",
+    "project": "unfpa",
+    "orgUnit": "WS",
+    "dashboardGroup": "UNFPA"
+  },
+  {
+    "code": "UNFPA_Monthly_3_Methods_of_Contraception_Regional",
+    "project": "unfpa",
+    "orgUnit": "unfpa",
+    "dashboardGroup": "UNFPA"
+  },
+  {
+    "code": "UNFPA_Priority_Medicines_MOS_Project",
+    "project": "unfpa",
+    "orgUnit": "unfpa",
+    "dashboardGroup": "UNFPA",
+    "startDate": "2021-04-01",
+    "endDate": "2021-04-30"
+  },
+  {
+    "code": "UNFPA_Priority_Medicines_SOH_Project",
+    "project": "unfpa",
+    "orgUnit": "unfpa",
+    "dashboardGroup": "UNFPA",
+    "startDate": "2021-02-01",
+    "endDate": "2021-02-28"
+  },
+  {
+    "code": "UNFPA_Region_Facilities_offering_services_At_Least_1_Matrix",
+    "project": "unfpa",
+    "orgUnit": "unfpa",
+    "dashboardGroup": "UNFPA"
+  },
+  {
+    "code": "UNFPA_RH_Contraceptives_Offered",
+    "project": "unfpa",
+    "orgUnit": "WS_002",
+    "dashboardGroup": "UNFPA"
+  },
+  {
+    "code": "UNFPA_RH_Number_Of_Women_Provided_SRH_Services_Matrix",
+    "project": "unfpa",
+    "orgUnit": "WS_002",
+    "dashboardGroup": "UNFPA",
+    "startDate": "2018-01-01",
+    "endDate": "2018-12-31"
+  },
+  {
+    "code": "UNFPA_RH_Services_Offered",
+    "project": "unfpa",
+    "orgUnit": "WS_002",
+    "dashboardGroup": "UNFPA"
+  },
+  {
+    "code": "UNFPA_RH_Stock_Cards",
+    "project": "unfpa",
+    "orgUnit": "WS",
+    "dashboardGroup": "UNFPA"
+  },
+  {
+    "code": "UNFPA_Stock_MOS_By_percent_Countries",
+    "project": "unfpa",
+    "orgUnit": "unfpa",
+    "dashboardGroup": "UNFPA"
+  },
+  {
+    "code": "WHO_IHR_SPAR_WPRO",
+    "project": "explore",
+    "orgUnit": "explore",
+    "dashboardGroup": "IHR Report"
+  },
+  {
+    "code": "WS_Covid_Samoa_Country_COVID-19_Num_Of_1st_Vaccine_Dose_Taken",
+    "project": "covid_samoa",
+    "orgUnit": "WS",
+    "dashboardGroup": "COVID-19 Samoa"
+  },
+  {
+    "code": "WS_Covid_Samoa_Country_COVID-19_Num_Of_2nd_Vaccine_Dose_Taken",
+    "project": "covid_samoa",
+    "orgUnit": "WS",
+    "dashboardGroup": "COVID-19 Samoa"
+  },
+  {
+    "code": "WS_Covid_Samoa_COVID-19_Percent_Of_Population_1st_Vaccine_Dose_Taken",
+    "project": "covid_samoa",
+    "orgUnit": "WS_002_Faiaai",
+    "dashboardGroup": "COVID-19 Samoa"
+  },
+  {
+    "code": "WS_Covid_Samoa_COVID-19_Percent_Of_Population_1st_Vaccine_Dose_Taken",
+    "project": "covid_samoa",
+    "orgUnit": "WS",
+    "dashboardGroup": "COVID-19 Samoa"
+  },
+  {
+    "code": "WS_Covid_Samoa_District_COVID-19_Num_Of_1st_Vaccine_Dose_Taken",
+    "project": "covid_samoa",
+    "orgUnit": "WS_Savaii",
+    "dashboardGroup": "COVID-19 Samoa"
+  },
+  {
+    "code": "WS_Covid_Samoa_Village_COVID-19_Num_Of_1st_Vaccine_Dose_Taken",
+    "project": "covid_samoa",
+    "orgUnit": "WS_002_Faiaai",
+    "dashboardGroup": "COVID-19 Samoa"
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "dashboardReports": {
+    "allowEmptyResponse": false,
+    "snapshotTypes": ["responseData", "html"],
+    "urlFiles": ["cypress/config/dashboardReportUrls/default.json"],
+    "urls": []
+  },
+  "mapOverlays": {
+    "allowEmptyResponse": false,
+    "snapshotTypes": ["responseData"],
+    "urls": []
+  }
+}
