@@ -10,9 +10,7 @@ import { getUniqueViewId, getViewIdFromInfoViewKey } from '../../utils/getUnique
 describe('getUniqueViewId', () => {
   describe('getUniqueViewId()', () => {
     it('should generate id with valid input', () => {
-      expect(
-        getUniqueViewId({ organisationUnitCode: 'code_1', dashboardGroupId: 21, viewId: 'hello' }),
-      ).toEqual('code_1___21___hello');
+      expect(getUniqueViewId('code_1', 21, 'hello')).toEqual('code_1___21___hello');
     });
   });
 

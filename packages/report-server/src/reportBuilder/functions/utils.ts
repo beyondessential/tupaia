@@ -8,6 +8,7 @@ import {
   dateStringToPeriod as baseDateStringToPeriod,
   periodToTimestamp as basePeriodToTimestamp,
   periodToDisplayString as basePeriodToDisplayString,
+  formatDataValueByType as baseFormatDataValueByType,
 } from '@tupaia/utils';
 
 export const convertToPeriod = (period: string, targetType: string): string => {
@@ -27,4 +28,19 @@ export const dateStringToPeriod = (period: string, targetType: string): string =
     return period;
   }
   return baseDateStringToPeriod(period, targetType);
+};
+
+export const formatAsFractionAndPercentage = (numerator: number, denominator: number) => {
+  if (typeof numerator !== 'number' || typeof denominator !== 'number') {
+    throw new Error(
+      `Function 'formatAsFractionAndPercentage' expect ${numerator} and ${denominator} as number`,
+    );
+  }
+  if (denominator === 0) {
+    throw new Error('One of the denominators is 0');
+  }
+  return baseFormatDataValueByType(
+    { value: numerator / denominator, metadata: { numerator, denominator } },
+    'fractionAndPercentage',
+  );
 };

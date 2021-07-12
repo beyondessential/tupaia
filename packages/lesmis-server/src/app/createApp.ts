@@ -15,6 +15,7 @@ import {
   ReportRoute,
   UserRoute,
   UsersRoute,
+  UpdateUserEntityPermissionRoute,
 } from '../routes';
 import { attachSession } from '../session';
 import { hasLesmisAccess } from '../utils';
@@ -36,5 +37,6 @@ export function createApp() {
     .get('/v1/report/:entityCode/:reportCode', handleWith(ReportRoute))
     .post('/v1/register', handleWith(RegisterRoute))
     .post('/v1/report/:entityCode/:reportCode', handleWith(ReportRoute))
+    .put('/v1/userEntityPermission', handleWith(UpdateUserEntityPermissionRoute))
     .build();
 }

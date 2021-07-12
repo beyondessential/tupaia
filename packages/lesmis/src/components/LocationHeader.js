@@ -98,7 +98,7 @@ export const LocationHeader = () => {
 
   return (
     <Wrapper>
-      <Container maxWidth={false}>
+      <Container maxWidth="xl">
         <div>
           <Heading variant="h2">{entityData?.name}</Heading>
           <Contacts>
