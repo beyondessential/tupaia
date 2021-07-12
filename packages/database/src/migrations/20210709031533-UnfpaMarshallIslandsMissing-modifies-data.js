@@ -1,6 +1,6 @@
 'use strict';
 
-import { codeToId, insertObject, generateId } from '../utilities';
+import { generateId, insertObject } from '../utilities';
 
 var dbm;
 var type;
@@ -16,57 +16,63 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const entityHierarchyName = 'unfpa';
-const projectEntityName = 'UNFPA';
-const countryEntityName = 'Marshall Islands';
+const hierarchyName = 'unfpa';
 
-export const nameToId = async (db, table, name) => {
-  const record = await db.runSql(`SELECT id FROM "${table}" WHERE name = '${name}'`);
-  return record.rows[0] && record.rows[0].id;
+// country_code : entity_type
+const entityRelationshipsToAdd = [
+  {
+    countryCode: 'MH',
+    entityType: 'facility',
+  },
+];
+
+const insertEntityRelations = async (db, hierarchyId, countryCode, entityType) => {
+  const entities = (
+    await db.runSql(`
+    select id, parent_id from "entity" where country_code = '${countryCode}' and type = '${entityType}';   
+  `)
+  ).rows;
+
+  return entities.map(entity =>
+    insertObject(db, 'entity_relation', {
+      id: generateId(),
+      parent_id: entity.parent_id,
+      child_id: entity.id,
+      entity_hierarchy_id: hierarchyId,
+    }),
+  );
 };
 
 exports.up = async function (db) {
-  const projectEntityId = await nameToId(db, 'entity', projectEntityName);
-  const countryEntityId = await nameToId(db, 'entity', countryEntityName);
-  const entityHierarchyId = await nameToId(db, 'entity_hierarchy', entityHierarchyName);
-  const facilities = (
+  const hierarchyId = (
     await db.runSql(`
-    SELECT * from entity 
-    WHERE country_code = 'MH' AND "type" = 'facility'; 
- `)
-  ).rows;
+      select id from entity_hierarchy where "name" = '${hierarchyName}';
+    `)
+  ).rows[0].id;
 
-  for (const facility of facilities) {
-    const { parent_id: ancestorId, id: descendantId } = facility;
-    // console.log(facility);
-    await insertObject(db, 'ancestor_descendant_relation', {
-      id: generateId(),
-      entity_hierarchy_id: entityHierarchyId,
-      ancestor_id: ancestorId,
-      descendant_id: descendantId,
-      generational_distance: 1,
-    });
-    // Country
-    await insertObject(db, 'ancestor_descendant_relation', {
-      id: generateId(),
-      entity_hierarchy_id: entityHierarchyId,
-      ancestor_id: countryEntityId,
-      descendant_id: descendantId,
-      generational_distance: 2,
-    });
-    // Project
-    await insertObject(db, 'ancestor_descendant_relation', {
-      id: generateId(),
-      entity_hierarchy_id: entityHierarchyId,
-      ancestor_id: projectEntityId,
-      descendant_id: descendantId,
-      generational_distance: 3,
-    });
-  }
+  await Promise.all(
+    entityRelationshipsToAdd.map(er =>
+      insertEntityRelations(db, hierarchyId, er.countryCode, er.entityType),
+    ),
+  );
 };
 
-exports.down = function (db) {
-  return null;
+exports.down = async function (db) {
+  const hierarchyId = (
+    await db.runSql(`
+    select id from entity_hierarchy where "name" = '${hierarchyName}';
+  `)
+  ).rows[0].id;
+
+  await Promise.all(
+    entityRelationshipsToAdd.map(er =>
+      db.runSql(`
+      delete from entity_relation 
+      where entity_hierarchy_id = '${hierarchyId}' 
+        and child_id in (select id from "entity" where country_code = '${er.countryCode}' and type = '${er.entityType}');
+    `),
+    ),
+  );
 };
 
 exports._meta = {
