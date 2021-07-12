@@ -11,7 +11,7 @@ import MuiLink from '@material-ui/core/Link';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import Typography from '@material-ui/core/Typography';
 import MuiContainer from '@material-ui/core/Container';
-import { Breadcrumbs, Toolbar } from '../components';
+import { PageHeader } from '../components';
 import * as COLORS from '../constants';
 import { contentPageTheme } from '../theme';
 
@@ -27,39 +27,11 @@ const TemplateBody = styled.section`
   min-height: 70vh;
 `;
 
-const TitleContainer = styled.section`
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-  text-align: center;
-  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
-`;
-
-const Title = styled(Typography)`
-  font-weight: 600;
-  font-size: 1.75rem;
-  line-height: 2.6rem;
-`;
-
-/* eslint-disable react/prop-types */
-const PageHeader = ({ title, url }) => {
-  const breadcrumbs = [{ name: title, url }];
-  return (
-    <>
-      <Toolbar>
-        <Breadcrumbs breadcrumbs={breadcrumbs} />
-      </Toolbar>
-      <TitleContainer>
-        <Title variant="h1">{title}</Title>
-      </TitleContainer>
-    </>
-  );
-};
-
 export const PageView = ({ content }) => {
   const { title, body, url } = content;
   return (
     <>
-      <PageHeader title={title} url={url} />
+      <PageHeader title={title} breadcrumbs={[{ name: title, url }]} center />
       <MuiThemeProvider theme={contentPageTheme}>
         <TemplateBody>
           <Container>{body}</Container>
@@ -120,7 +92,7 @@ export const TwoColumnPageView = ({ content }) => {
   const { title, body, url, linkSections } = content;
   return (
     <>
-      <PageHeader title={title} url={url} />
+      <PageHeader title={title} breadcrumbs={[{ name: title, url }]} />
       <MuiThemeProvider theme={contentPageTheme}>
         <TemplateBody>
           <TwoColumnContainer>
@@ -133,7 +105,7 @@ export const TwoColumnPageView = ({ content }) => {
                   </CardHeader>
                   <CardBody>
                     {links.map(({ name, link }) => (
-                      <Link key={name} href={link}>
+                      <Link key={name} href={link} target="_blank">
                         <ArrowForwardIcon />
                         {name}
                       </Link>

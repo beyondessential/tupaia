@@ -16,11 +16,14 @@ import { CreateUserAccounts } from './CreateUserAccounts';
 import { sendVerifyEmail } from '../verifyEmail';
 import { allowNoPermissions } from '../../permissions';
 
+const BASE_PERMISSION_GROUPS = {
+  'lesmis-server@tupaia.org': { permissionGroupName: 'LESMIS Public', countryName: 'Laos' },
+};
+
 /**
  * Handles POST endpoint for registering user:
  * - /user
  */
-
 export class RegisterUserAccounts extends CreateUserAccounts {
   async assertUserHasAccess() {
     await this.assertPermissions(allowNoPermissions); // new registrations can be created by anyone
@@ -77,7 +80,7 @@ export class RegisterUserAccounts extends CreateUserAccounts {
       password,
     } = this.newRecordData;
 
-    const { userId } = await this.createUserRecord({
+    let userData = {
       firstName,
       lastName,
       emailAddress,
@@ -85,7 +88,16 @@ export class RegisterUserAccounts extends CreateUserAccounts {
       position,
       contactNumber,
       password,
-    });
+    };
+
+    // Get one of the non-default base permission groups if it exists
+    const email = this.req?.apiClientUser?.email;
+    if (email in BASE_PERMISSION_GROUPS) {
+      const { permissionGroupName, countryName } = BASE_PERMISSION_GROUPS[email];
+      userData = { ...userData, permissionGroupName, countryName };
+    }
+
+    const { userId } = await this.createUserRecord(userData);
 
     sendVerifyEmail(this.req, userId);
 

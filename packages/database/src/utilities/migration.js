@@ -18,11 +18,37 @@ export const insertObject = async (db, table, data, onError) =>
   db.insert(table, Object.keys(data), Object.values(data), onError);
 
 export const deleteObject = async (db, table, condition) => {
-  const [key, value] = Object.entries(condition)[0];
+  const where = Object.entries(condition)
+    .map(([key, value]) => `${key} = '${value}'`)
+    .join(' AND ');
   return db.runSql(`
       DELETE FROM "${table}"
-      WHERE ${key} = '${value}'
+      WHERE ${where}
   `);
+};
+
+// query should be actual sql statement, e.g. `SELECT * FROM dashboard_item WHERE code = 'xxx';`
+// to use an object condition see 'findSingleRecord' below
+export const findSingleRecordBySql = async (db, query) => {
+  const { rows: results } = await db.runSql(query);
+  if (results.length === 0) {
+    throw new Error(`No results for ${query}`);
+  }
+  if (results.length > 1) {
+    throw new Error(`Expected one result, got ${results.length} for ${query}`);
+  }
+  return results[0];
+};
+
+export const findSingleRecord = async (db, table, condition) => {
+  const where = Object.entries(condition)
+    .map(([key, value]) => `${key} = '${value}'`)
+    .join(' AND ');
+  const query = `
+    SELECT * FROM "${table}"
+    WHERE ${where}
+  `;
+  return findSingleRecordBySql(db, query);
 };
 
 export const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
@@ -184,16 +210,11 @@ export function populateEntityBounds(db) {
 
 /* eslint-disable no-unused-vars */
 
-// Get a dashboard report by id
-async function getDashboardReportById(db, id) {
-  const { rows: dashboardReports } = await db.runSql(`
-      SELECT * FROM "dashboardReport"
-      WHERE id = '${id}';
-  `);
-  return dashboardReports[0] || null;
-}
-
-// Add a dashboard report to a dashboard group
+/**
+ * @deprecated
+ * Tables "dashboardReport" and "dashboardGroup" have been dropped.
+ * Please use "dashboard", "dashboard_relation" and "dashboard_item"
+ */
 export function addReportToGroups(db, reportId, groupCodes) {
   return db.runSql(`
     UPDATE
@@ -205,18 +226,11 @@ export function addReportToGroups(db, reportId, groupCodes) {
   `);
 }
 
-async function addReportToGroupsOnTop(db, reportId, groupCodes) {
-  return db.runSql(`
-    UPDATE
-      "dashboardGroup"
-    SET
-      "dashboardReports" = '{"${reportId}"}' || "dashboardReports" 
-    WHERE
-      "code" IN (${arrayToDbString(groupCodes)});
-  `);
-}
-
-// Remove a dashboard report from a dashboard group
+/**
+ * @deprecated
+ * Tables "dashboardReport" and "dashboardGroup" have been dropped.
+ * Please use "dashboard", "dashboard_relation" and "dashboard_item"
+ */
 export function removeReportFromGroups(db, reportId, groupCodes) {
   return db.runSql(`
     UPDATE
@@ -228,7 +242,11 @@ export function removeReportFromGroups(db, reportId, groupCodes) {
   `);
 }
 
-// Delete a report
+/**
+ * @deprecated
+ * Tables "dashboardReport" and "dashboardGroup" have been dropped.
+ * Please use "dashboard", "dashboard_relation" and "dashboard_item"
+ */
 export function deleteReport(db, reportId) {
   return db.runSql(`
     DELETE FROM
@@ -237,32 +255,6 @@ export function deleteReport(db, reportId) {
       "id" = '${reportId}';
   `);
 }
-
-// Update data builder configuration for a report
-async function updateBuilderConfigByReportId(db, newConfig, reportId) {
-  return updateValues(db, 'dashboardReport', { dataBuilderConfig: newConfig }, { id: reportId });
-}
-
-// Update viewJson in dashboard report
-async function updateViewJsonByReportId(db, newJson, reportId) {
-  return updateValues(db, 'dashboardReport', { viewJson: newJson }, { id: reportId });
-}
-
-const convertToTableOfDataValuesSql = table => {
-  return `
-  UPDATE
-      "dashboardReport"
-  SET
-    "dataBuilder" = 'tableOfDataValues',
-    "dataBuilderConfig" = '${JSON.stringify({
-      rows: table.category ? { category: table.category, rows: table.rows } : table.rows,
-      columns: table.columns,
-      cells: table.cells,
-    })}'
-  WHERE
-    id = '${table.id}';
-  `;
-};
 
 export const buildSingleColumnTableCells = ({
   prefix = '',

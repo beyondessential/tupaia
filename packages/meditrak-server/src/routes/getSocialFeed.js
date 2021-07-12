@@ -94,8 +94,7 @@ const getLeaderboardFeedItem = async models => {
     creation_date: new Date(),
     template_variables: {
       title: 'Tupaia Leaderboard',
-      // Enable this to display pigs in leaderboard once pig ledger is accurate.
-      hasPigs: false,
+      hasPigs: false, // this can be set to true if the meditrak-app table is fixed
       leaderboard,
     },
   };

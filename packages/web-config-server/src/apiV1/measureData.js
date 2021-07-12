@@ -8,6 +8,8 @@ import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { MapOverlayPermissionsChecker } from './permissions';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
 
+const ADD_TO_ALL_KEY = '$all';
+
 // NOTE: does not allow for actual number value measure, will be added when
 // all binary are added as optionSet
 const binaryOptionSet = [
@@ -34,14 +36,58 @@ const accessDeniedForMeasure = {
   },
 };
 
-const buildMeasureData = (overlays, measureDataResponsesByMeasureId) => {
+/* Data arrives as an array of responses (one for each measure) containing an array of org
+ * units. We need to rearrange it so that it's a 1D array of objects with the values
+ * assigned to the appropriate keys, and replace the keys with the ids of the overlay
+ * they came from (this is to avoid duplicate 'value' keys which causes a bug)
+ *
+ * measureDataResponsesByMeasureId: {
+ *   measure_id_1: {
+ *     data: [
+ *       { organisationUnitCode: 'OrgA', measureZ: 0 },
+ *       { organisationUnitCode: 'OrgB', measureZ: 1 },
+ *     ],
+ *     period: {
+ *       latestAvailable: '20200301',
+ *       earliestAvailable: '20190501',
+ *       requested: '201901;201902;201903...',
+ *     }
+ *   }
+ *   measure_id_2: {
+ *     data: [
+ *       { organisationUnitCode: 'OrgA', measureY: 100 },
+ *       { organisationUnitCode: 'OrgB', measureY: -100 },
+ *     ],
+ *     period: {
+ *       latestAvailable: '20200401',
+ *       earliestAvailable: '20190501',
+ *       requested: '201901;201902;201903...',
+ *     }
+ *   }
+ * }
+ *
+ * measureData: [
+ *  { organisationUnitCode: 'OrgA', measure_id_2: 100, measure_id_1: 0 },
+ *  { organisationUnitCode: 'OrgB', measure_id_2: -100, measure_id_1: 1 },
+ * ]
+ * period: {
+ *   latestAvailable: '20200401',
+ *   earliestAvailable: '20190501',
+ *   requested: '201901;201902;201903...',
+ * }
+ */
+const buildMeasureData = (overlays, resultData) => {
+  const measureDataResponsesByMeasureId = resultData.reduce((dataResponse, current) => ({
+    ...dataResponse,
+    ...current,
+  }));
   const measureDataResponses = overlays.map(({ id, dataElementCode }) => {
-    const { data: measureDataResponse } = measureDataResponsesByMeasureId[id];
-    measureDataResponse.forEach(obj => {
-      obj[id] = obj[dataElementCode];
-      delete obj[dataElementCode];
+    const { data } = measureDataResponsesByMeasureId[id];
+
+    return data.map(obj => {
+      const { [dataElementCode]: value, ...restData } = obj;
+      return { [id]: value, ...restData };
     });
-    return measureDataResponse;
   });
 
   /**
@@ -73,7 +119,7 @@ const buildMeasureData = (overlays, measureDataResponsesByMeasureId) => {
   });
 
   return {
-    data: Object.values(measureDataByOrgUnit),
+    measureData: Object.values(measureDataByOrgUnit),
     period: getAggregatePeriod(
       Object.values(measureDataResponsesByMeasureId).map(({ period }) => period),
     ),
@@ -152,69 +198,13 @@ export default class extends DataAggregatingRouteHandler {
         }
       }),
     );
-
-    // start fetching options
-    const optionsTasks = overlays.map(o => this.fetchMeasureOptions(o, this.query));
     // start fetching actual data
     const shouldFetchSiblings = this.query.shouldShowAllParentCountryResults === 'true';
-    const dataTasks = overlays.map(o => this.fetchMeasureData(o, shouldFetchSiblings));
-
-    // wait for fetches to complete
-    const measureOptions = await Promise.all(optionsTasks);
-    const measureDataResponsesByMeasureId = (
-      await Promise.all(dataTasks)
-    ).reduce((dataResponse, current) => ({ ...dataResponse, ...current }));
-
-    /* Data arrives as an array of responses (one for each measure) containing an array of org
-     * units. We need to rearrange it so that it's a 1D array of objects with the values
-     * assigned to the appropriate keys, and replace the keys with the ids of the overlay
-     * they came from (this is to avoid duplicate 'value' keys which causes a bug)
-     *
-     * measureDataResponsesByMeasureId: {
-     *   measure_id_1: {
-     *     data: [
-     *       { organisationUnitCode: 'OrgA', measureZ: 0 },
-     *       { organisationUnitCode: 'OrgB', measureZ: 1 },
-     *     ],
-     *     period: {
-     *       latestAvailable: '20200301',
-     *       earliestAvailable: '20190501',
-     *       requested: '201901;201902;201903...',
-     *     }
-     *   }
-     *   measure_id_2: {
-     *     data: [
-     *       { organisationUnitCode: 'OrgA', measureY: 100 },
-     *       { organisationUnitCode: 'OrgB', measureY: -100 },
-     *     ],
-     *     period: {
-     *       latestAvailable: '20200401',
-     *       earliestAvailable: '20190501',
-     *       requested: '201901;201902;201903...',
-     *     }
-     *   }
-     * }
-     *
-     * measureData: [
-     *  { organisationUnitCode: 'OrgA', measure_id_2: 100, measure_id_1: 0 },
-     *  { organisationUnitCode: 'OrgB', measure_id_2: -100, measure_id_1: 1 },
-     * ]
-     * period: {
-     *   latestAvailable: '20200401',
-     *   earliestAvailable: '20190501',
-     *   requested: '201901;201902;201903...',
-     * }
-     */
-
-    const { period, data: measureData } = buildMeasureData(
-      overlays,
-      measureDataResponsesByMeasureId,
+    const responseData = await Promise.all(
+      overlays.map(o => this.fetchMeasureData(o, shouldFetchSiblings)),
     );
-
-    measureOptions
-      .filter(mo => mo.displayedValueKey)
-      .filter(mo => !mo.disableRenameLegend)
-      .map(mo => updateLegendFromDisplayedValueKey(mo, measureData));
+    const { period, measureData } = buildMeasureData(overlays, responseData);
+    const measureOptions = await this.fetchMeasureOptions(overlays, measureData);
 
     return {
       measureId: overlays
@@ -229,7 +219,36 @@ export default class extends DataAggregatingRouteHandler {
     };
   };
 
-  async fetchMeasureOptions(mapOverlay) {
+  async fetchMeasureOptions(mapOverlays, measureData) {
+    const measureOptions = await Promise.all(mapOverlays.map(o => this.fetchMeasureOption(o)));
+    measureOptions
+      .filter(mo => mo.displayedValueKey)
+      .filter(mo => !mo.disableRenameLegend)
+      .map(mo => updateLegendFromDisplayedValueKey(mo, measureData));
+
+    const getOtherMeasureOptionKeys = mainMeasureOptionKey => {
+      const otherLinkMeasureKeySet = new Set();
+      measureData.forEach(data => {
+        Object.keys(data).forEach(key => otherLinkMeasureKeySet.add(key));
+      });
+      otherLinkMeasureKeySet.delete('organisationUnitCode');
+      otherLinkMeasureKeySet.delete(mainMeasureOptionKey);
+      return Array.from(otherLinkMeasureKeySet);
+    };
+
+    // Config 'measureConfig' only works for report server builder
+    const { measureConfig, ...mainMeasureOption } = measureOptions[0];
+    if (measureConfig) {
+      const { [ADD_TO_ALL_KEY]: configForAllKeys, ...restOfConfig } = measureConfig;
+      getOtherMeasureOptionKeys(mainMeasureOption.key).forEach(key => {
+        measureOptions.push({ ...configForAllKeys, key, name: key, ...restOfConfig[key] });
+      });
+      measureOptions[0] = mainMeasureOption;
+    }
+    return measureOptions;
+  }
+
+  async fetchMeasureOption(mapOverlay) {
     const {
       id,
       groupName,
@@ -337,6 +356,7 @@ export default class extends DataAggregatingRouteHandler {
       { ...this.query, dataElementCode },
       { ...measureBuilderConfig, dataServices },
       entity,
+      this.req,
     );
   }
 }

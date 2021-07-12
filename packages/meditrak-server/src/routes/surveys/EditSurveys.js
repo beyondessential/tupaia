@@ -16,6 +16,6 @@ export class EditSurveys extends EditHandler {
   }
 
   async editRecord() {
-    editSurvey(this.models, this.recordId, this.updatedFields);
+    return editSurvey(this.models, this.recordId, this.updatedFields);
   }
 }

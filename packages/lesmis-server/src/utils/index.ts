@@ -4,4 +4,4 @@
  *
  */
 
-export * from './verifyLoginAccess';
+export * from './accessPolicy';
