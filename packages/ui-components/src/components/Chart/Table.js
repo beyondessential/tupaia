@@ -41,23 +41,14 @@ const StyledTable = styled(MuiTable)`
 
     th {
       position: relative;
-      text-align: center;
       border: none;
       font-weight: 400;
       vertical-align: bottom;
-    }
-
-    th:first-child {
-      text-align: left;
     }
   }
 
   // table body
   tbody {
-    th {
-      font-weight: 500;
-    }
-
     tr {
       &:nth-of-type(odd) {
         background: ${({ theme }) =>
@@ -82,10 +73,6 @@ const StyledTable = styled(MuiTable)`
     &:last-child {
       border-right: none;
     }
-  }
-
-  td {
-    text-align: center;
   }
 `;
 
