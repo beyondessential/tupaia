@@ -17,7 +17,8 @@ exports.setup = function (options, seedLink) {
 };
 
 const entityHierarchyName = 'unfpa';
-const ancestorEntityName = 'UNFPA';
+const projectEntityName = 'UNFPA';
+const countryEntityName = 'Marshall Islands';
 
 export const nameToId = async (db, table, name) => {
   const record = await db.runSql(`SELECT id FROM "${table}" WHERE name = '${name}'`);
@@ -25,6 +26,8 @@ export const nameToId = async (db, table, name) => {
 };
 
 exports.up = async function (db) {
+  const projectEntityId = await nameToId(db, 'entity', projectEntityName);
+  const countryEntityId = await nameToId(db, 'entity', countryEntityName);
   const entityHierarchyId = await nameToId(db, 'entity_hierarchy', entityHierarchyName);
   const facilities = (
     await db.runSql(`
@@ -40,6 +43,22 @@ exports.up = async function (db) {
       id: generateId(),
       entity_hierarchy_id: entityHierarchyId,
       ancestor_id: ancestorId,
+      descendant_id: descendantId,
+      generational_distance: 1,
+    });
+    // Country
+    await insertObject(db, 'ancestor_descendant_relation', {
+      id: generateId(),
+      entity_hierarchy_id: entityHierarchyId,
+      ancestor_id: countryEntityId,
+      descendant_id: descendantId,
+      generational_distance: 2,
+    });
+    // Project
+    await insertObject(db, 'ancestor_descendant_relation', {
+      id: generateId(),
+      entity_hierarchy_id: entityHierarchyId,
+      ancestor_id: projectEntityId,
       descendant_id: descendantId,
       generational_distance: 3,
     });

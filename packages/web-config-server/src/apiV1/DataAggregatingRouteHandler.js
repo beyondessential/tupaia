@@ -45,7 +45,7 @@ export class DataAggregatingRouteHandler extends RouteHandler {
       entityType,
       restOfOptions,
     );
-    // console.log(allDataSourceEntities);
+
     const permittedEntities = await this.filterOutNonPermittedEntities(allDataSourceEntities);
 
     if (dataSourceEntityFilter) {
@@ -79,17 +79,15 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     if (entity.type === entityType) {
       return [entity];
     }
-    console.log(1);
+
     // check both directions for related entities of the correct type, starting with ancestors
     // as it's a narrower/faster path to follow than spreading out to descendants
     const ancestor = await entity.getAncestorOfType(hierarchyId, entityType);
-
     return ancestor ? [ancestor] : entity.getDescendantsOfType(hierarchyId, entityType);
   };
 
   filterOutNonPermittedEntities = async entities => {
     const countryCodes = [...new Set(entities.map(e => e.country_code))];
-    console.log(countryCodes);
     const countryAccessList = await Promise.all(
       countryCodes.map(countryCode => this.permissionsChecker.checkHasEntityAccess(countryCode)),
     );

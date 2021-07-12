@@ -159,10 +159,8 @@ export class DatabaseModel {
   }
 
   async find(dbConditions, customQueryOptions = {}) {
-    console.log(456);
     const queryOptions = await this.getQueryOptions(customQueryOptions);
     const dbResults = await this.database.find(this.databaseType, dbConditions, queryOptions);
-    // console.log(000);
     return Promise.all(dbResults.map(result => this.generateInstance(result)));
   }
 
