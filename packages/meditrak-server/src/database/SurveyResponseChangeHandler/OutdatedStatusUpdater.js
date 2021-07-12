@@ -170,9 +170,8 @@ export class OutdatedStatusUpdater {
    * dimension combos get a correct `outdated` status
    */
   processChangedResponses = async changedResponses => {
-    const surveyResponses = changedResponses;
-    const surveysById = await this.fetchSurveysById(surveyResponses);
-    const responsesBySurveyId = groupBy(surveyResponses, 'survey_id');
+    const surveysById = await this.fetchSurveysById(changedResponses);
+    const responsesBySurveyId = groupBy(changedResponses, 'survey_id');
 
     return Promise.all(
       Object.entries(responsesBySurveyId).map(([surveyId, responses]) =>
