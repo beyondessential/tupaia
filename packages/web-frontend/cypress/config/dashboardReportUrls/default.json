@@ -520,7 +520,7 @@
     "dashboardGroup": "MoES View"
   },
   {
-    "code": "Laos_Schools_Male_Female",
+    "code": "LESMIS_student_gender_stacked_gpi",
     "project": "laos_schools",
     "orgUnit": "LA",
     "dashboardGroup": "Student Enrolment"
