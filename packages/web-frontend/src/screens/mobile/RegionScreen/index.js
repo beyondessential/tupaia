@@ -121,7 +121,6 @@ class RegionScreen extends PureComponent {
 
     return (
       <div>
-        {this.renderMap()}
         <Dashboard
           orgUnit={orgUnit}
           dashboards={dashboards}
