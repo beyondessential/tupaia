@@ -200,7 +200,7 @@ export const InputField = ({
       inputComponent = (
         <TextField
           label={label}
-          value={value || ''}
+          value={value === undefined || value === null ? '' : value} // we still want to show 0 value
           onChange={event => onChange(inputKey, event.target.value)}
           disabled={disabled}
           helperText={secondaryLabel}
