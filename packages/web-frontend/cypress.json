@@ -4,7 +4,6 @@
   "integrationFolder": "cypress/e2e",
   "projectId": "pty5cc",
   "requestTimeout": 10000,
-  "tupaia_requireNonEmptyVisualisations": false,
   "useRelativeSnapshots": true,
   "viewportHeight": 900,
   "viewportWidth": 1400
