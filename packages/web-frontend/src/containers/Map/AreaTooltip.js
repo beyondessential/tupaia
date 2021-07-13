@@ -42,13 +42,7 @@ export class AreaTooltip extends Component {
   }
 
   getTextList() {
-    const {
-      orgUnitName,
-      hasMeasureValue,
-      measureOptions,
-      rawOrgUnitMeasureData,
-      orgUnitMeasureData,
-    } = this.props;
+    const { orgUnitName, hasMeasureValue, measureOptions, orgUnitMeasureData } = this.props;
 
     const defaultTextList = [
       <Heading key={0} hasMeasureValue={hasMeasureValue}>
@@ -64,10 +58,10 @@ export class AreaTooltip extends Component {
     };
 
     if (hasMeasureValue) {
-      const legacy = !measureOptions[0].notLegacy;
+      const legacy = measureOptions.length === 1;
       const { formattedMeasureData, onlyOneValue } = legacy
         ? this.buildLegacyFormattedMeasureData(orgUnitMeasureData, measureOptions)
-        : this.buildFormattedMeasureData(rawOrgUnitMeasureData, measureOptions);
+        : this.buildFormattedMeasureData(orgUnitMeasureData, measureOptions);
 
       if (onlyOneValue) {
         return renderTextList({ [orgUnitName]: formattedMeasureData });
@@ -88,18 +82,18 @@ export class AreaTooltip extends Component {
     };
   }
 
-  buildFormattedMeasureData(rawOrgUnitMeasureData, measureOptions) {
+  buildFormattedMeasureData(orgUnitMeasureData, measureOptions) {
     const formattedMeasureData = {};
 
-    if (rawOrgUnitMeasureData) {
+    if (orgUnitMeasureData) {
       formattedMeasureData[measureOptions[0].name] = getSingleFormattedValue(
-        rawOrgUnitMeasureData,
+        orgUnitMeasureData,
         measureOptions,
       );
 
-      Object.keys(rawOrgUnitMeasureData).forEach(key => {
-        if (key !== measureOptions[0].key && key !== 'organisationUnitCode') {
-          formattedMeasureData[key] = rawOrgUnitMeasureData[key];
+      measureOptions.forEach(({ key }) => {
+        if (key !== measureOptions[0].key) {
+          formattedMeasureData[key] = orgUnitMeasureData[key];
         }
       });
     }
@@ -148,7 +142,6 @@ AreaTooltip.propTypes = {
   hasMeasureValue: PropTypes.bool,
   measureOptions: PropTypes.arrayOf(PropTypes.object),
   orgUnitMeasureData: PropTypes.object,
-  rawOrgUnitMeasureData: PropTypes.object,
   orgUnitName: PropTypes.string,
 };
 
@@ -160,6 +153,5 @@ AreaTooltip.defaultProps = {
   hasMeasureValue: false,
   measureOptions: [],
   orgUnitMeasureData: undefined,
-  rawOrgUnitMeasureData: undefined,
   orgUnitName: undefined,
 };

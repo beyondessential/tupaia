@@ -13,6 +13,7 @@ import {
   MEASURE_TYPE_COLOR,
   MEASURE_TYPE_ICON,
   MEASURE_TYPE_RADIUS,
+  MEASURE_TYPE_NULL,
   MEASURE_TYPE_SHADED_SPECTRUM,
   MEASURE_TYPE_SPECTRUM,
 } from '../../utils/measures';
@@ -48,6 +49,7 @@ const getLegend = measureType => {
     case MEASURE_TYPE_SPECTRUM:
       return SpectrumLegend;
     case MEASURE_TYPE_RADIUS:
+    case MEASURE_TYPE_NULL:
       return NullLegend;
     default:
       return MarkerLegend;

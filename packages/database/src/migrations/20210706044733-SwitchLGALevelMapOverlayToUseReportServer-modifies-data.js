@@ -171,8 +171,8 @@ const getReport = ({
         {
           transform: 'select',
           "'value'": `divide($row.${numeratorDataElementCode},$row.${denominatorDataElementCode})`,
-          [numTitle]: `round($row.${numeratorDataElementCode})`,
-          [denTitle]: `round($row.${denominatorDataElementCode})`,
+          [numTitle]: `round($row.${numeratorDataElementCode} * 100) / 100`,
+          [denTitle]: `round($row.${denominatorDataElementCode}  * 100) / 100`,
           "'organisationUnitCode'": '$row.organisationUnit',
         },
       ],
@@ -208,9 +208,17 @@ exports.up = async function (db) {
 
   await db.runSql(`
     UPDATE "mapOverlay"
-    SET "presentationOptions" = "presentationOptions" || '{"notLegacy": true}'::jsonb
+    SET "presentationOptions" = "presentationOptions" || '{"measureConfig": {"$all":{ "type": "null"}}}'::jsonb
     WHERE id in (${arrayToDbString(mapOverlays.map(m => m.id))})
   `);
+
+  await db.runSql(`
+    UPDATE "mapOverlay"
+    SET "presentationOptions" = "presentationOptions" || '{"info":{"reference":{"text":"Response number is decimal because postcode and its data can be divided into multiple LGAs"}}}'::jsonb
+    WHERE id in (${arrayToDbString(
+      mapOverlays.filter(({ id }) => id.includes('LGA')).map(m => m.id),
+    )})
+`);
 };
 
 exports.down = function (db) {

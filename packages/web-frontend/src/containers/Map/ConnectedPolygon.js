@@ -66,7 +66,6 @@ class ConnectedPolygon extends Component {
       area,
       hasMeasureData,
       orgUnitMeasureData,
-      rawOrgUnitMeasureData,
       measureOptions,
       permanentLabels,
     } = this.props;
@@ -83,7 +82,6 @@ class ConnectedPolygon extends Component {
         hasMeasureValue={hasMeasureValue}
         measureOptions={measureOptions}
         orgUnitMeasureData={orgUnitMeasureData}
-        rawOrgUnitMeasureData={rawOrgUnitMeasureData}
         orgUnitName={area.name}
       />
     );
@@ -170,7 +168,6 @@ ConnectedPolygon.propTypes = {
     metadata: PropTypes.any,
     submissionDate: PropTypes.any,
   }),
-  rawOrgUnitMeasureData: PropTypes.object,
 };
 
 ConnectedPolygon.defaultProps = {
@@ -187,7 +184,6 @@ ConnectedPolygon.defaultProps = {
   shade: undefined,
   isHidden: false,
   orgUnitMeasureData: undefined,
-  rawOrgUnitMeasureData: undefined,
 };
 
 const mapStateToProps = (state, givenProps) => {
@@ -199,7 +195,6 @@ const mapStateToProps = (state, givenProps) => {
   let shade;
   let isHidden;
   let orgUnitMeasureData;
-  let rawOrgUnitMeasureData;
   let hasShadedChildren = false;
   if (selectHasPolygonMeasure(state)) {
     const measureOrgUnits = selectAllMeasuresWithDisplayInfo(state);
@@ -213,9 +208,6 @@ const mapStateToProps = (state, givenProps) => {
 
     if (measureOrgUnitCodes.includes(organisationUnitCode)) {
       orgUnitMeasureData = measureOrgUnits.find(
-        orgUnit => orgUnit.organisationUnitCode === organisationUnitCode,
-      );
-      rawOrgUnitMeasureData = measureData.find(
         orgUnit => orgUnit.organisationUnitCode === organisationUnitCode,
       );
       if (orgUnitMeasureData) {
@@ -234,7 +226,6 @@ const mapStateToProps = (state, givenProps) => {
     coordinates,
     hasShadedChildren,
     orgUnitMeasureData,
-    rawOrgUnitMeasureData,
     shade,
     isHidden,
     measureOptions,

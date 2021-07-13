@@ -21,6 +21,7 @@ import { SCALE_TYPES } from '../constants';
 export const MEASURE_TYPE_ICON = 'icon';
 export const MEASURE_TYPE_COLOR = 'color';
 export const MEASURE_TYPE_RADIUS = 'radius';
+export const MEASURE_TYPE_NULL = 'null';
 export const MEASURE_TYPE_SPECTRUM = 'spectrum';
 export const MEASURE_TYPE_SHADING = 'shading';
 export const MEASURE_TYPE_SHADED_SPECTRUM = 'shaded-spectrum';
