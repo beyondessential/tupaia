@@ -45,7 +45,7 @@ const Spinner = styled.div`
 
 const NoResultsText = styled.div`
   background-color: ${WHITE};
-  padding: ${MOBILE_MARGIN_SIZE};
+  padding: ${MOBILE_MARGIN_SIZE}px;
 `;
 
 const EntitySearchComponent = ({
@@ -170,6 +170,8 @@ const mapStateToProps = state => {
   const { measureInfo, isMeasureLoading } = state.map;
   const currentMeasure = selectCurrentMeasure(state);
   const orgUnit = selectCurrentOrgUnit(state);
+
+  console.log('orgUnit', orgUnit);
 
   const mobileListItems = getListItemsFromOrganisationUnitChildren(
     selectOrgUnitChildren(state, orgUnit.organisationUnitCode),

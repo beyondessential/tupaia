@@ -18,6 +18,13 @@ const Title = styled.div`
   font-weight: 500;
 `;
 
+const FlexBetween = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+`;
+
 const Toggle = styled.div`
   text-align: right;
 `;
@@ -28,9 +35,6 @@ const List = styled.div`
 
 const Container = styled.div`
   padding: 20px ${MOBILE_MARGIN_SIZE}px 0;
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-template-rows: auto auto;
   overflow: hidden;
   justify-content: space-between;
   background: ${p => p.background};
@@ -45,9 +49,12 @@ const materialStyles = {
 };
 
 export class ExpandableList extends PureComponent {
-  state = {
-    isListExpanded: this.props.expandedByDefault,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      isListExpanded: this.props.expandedByDefault,
+    };
+  }
 
   onExpandCollapseClick = () => {
     const { handleExpandCollapseClick, isExpanded } = this.props;
@@ -76,14 +83,16 @@ export class ExpandableList extends PureComponent {
 
     return (
       <Container background={theme.background} color={theme.color}>
-        <Title>{title}</Title>
-        <Toggle onClick={this.onExpandCollapseClick}>
-          {isExpanded ? (
-            <Collapse style={materialStyles.expandCollapseIcon} color={theme.color} />
-          ) : (
-            <Expand style={materialStyles.expandCollapseIcon} color={theme.color} />
-          )}
-        </Toggle>
+        <FlexBetween>
+          <Title>{title}</Title>
+          <Toggle onClick={this.onExpandCollapseClick}>
+            {isExpanded ? (
+              <Collapse style={materialStyles.expandCollapseIcon} color={theme.color} />
+            ) : (
+              <Expand style={materialStyles.expandCollapseIcon} color={theme.color} />
+            )}
+          </Toggle>
+        </FlexBetween>
         {isExpanded && (
           <List>
             {filters && filters.length > 1 ? (
