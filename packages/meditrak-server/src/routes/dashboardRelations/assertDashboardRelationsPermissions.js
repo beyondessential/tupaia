@@ -204,10 +204,6 @@ export const createDashboardRelationsViaParentDashboardDBFilter = (
   options,
   dashboardId,
 ) => {
-  if (hasBESAdminAccess(accessPolicy)) {
-    return { dbConditions: criteria, dbOptions: options };
-  }
-
   const dbConditions = { ...criteria };
   const allPermissionGroups = accessPolicy.getPermissionGroups();
   const countryCodesByPermissionGroup = {};
