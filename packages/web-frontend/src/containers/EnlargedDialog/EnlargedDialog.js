@@ -17,7 +17,13 @@ import {
 import { ExportDialog } from '../../components/ExportDialog';
 import { getIsDataDownload, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
-import { isMobile, sleep, stringToFilename, getBrowserTimeZone, getUniqueViewId } from '../../utils';
+import {
+  isMobile,
+  sleep,
+  stringToFilename,
+  getBrowserTimeZone,
+  getUniqueViewId,
+} from '../../utils';
 import {
   selectCurrentInfoViewKey,
   selectCurrentOrgUnit,
@@ -75,17 +81,17 @@ const compareDate = (date1, date2) => {
   }
 
   return false; // 1 is undefined and 1 is not
-}
+};
 
-const hasDrillDownChanged = (options, cachedOptions) => 
+const hasDrillDownChanged = (options, cachedOptions) =>
   options.infoViewKey !== cachedOptions.infoViewKey ||
-      options.drillDownItemKey !== cachedOptions.drillDownItemKey ||
-      !compareDate(options.startDate, cachedOptions.startDate) ||
-      !compareDate(options.endDate, cachedOptions.endDate) ||
-      options.drillDownLevel !== cachedOptions.drillDownLevel ||
-      options.parameterLink !== cachedOptions.parameterLink ||
+  options.drillDownItemKey !== cachedOptions.drillDownItemKey ||
+  !compareDate(options.startDate, cachedOptions.startDate) ||
+  !compareDate(options.endDate, cachedOptions.endDate) ||
+  options.drillDownLevel !== cachedOptions.drillDownLevel ||
+  options.parameterLink !== cachedOptions.parameterLink ||
   options.parameterValue !== cachedOptions.parameterValue;
-      
+
 const EnlargedDialogComponent = ({
   onCloseOverlay,
   contentByLevel,
@@ -134,7 +140,7 @@ const EnlargedDialogComponent = ({
   // This useEffect only acts on the current drillDownLevel
   useEffect(() => {
     const { drillDownLevel, drillDownCode, parameterLinks, parameterValues } = drillDownState;
-    const cachedOptions = contentByLevel ?.[drillDownLevel] ?.options || {};
+    const cachedOptions = contentByLevel?.[drillDownLevel]?.options || {};
 
     const parameterLink = parameterLinks[drillDownLevel];
     const parameterValue = parameterValues[drillDownLevel];

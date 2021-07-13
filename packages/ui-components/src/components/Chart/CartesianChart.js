@@ -18,7 +18,7 @@ import {
   Brush,
 } from 'recharts';
 
-import { CHART_BLUES, CHART_TYPES, VIEW_CONTENT_SHAPE } from './constants';
+import { CHART_BLUES, CHART_TYPES, VIEW_CONTENT_SHAPE, DEFAULT_DATA_KEY } from './constants';
 import { Tooltip as CustomTooltip } from './Tooltip';
 import { BarChart as BarChartComponent } from './BarChart';
 import { LineChart as LineChartComponent } from './LineChart';
@@ -48,20 +48,12 @@ const DEFAULT_Y_AXIS = {
 
 const orientationToYAxisId = orientation => Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
 
-const DEFAULT_DATA_KEY = 'value';
-
 const LEGEND_ALL_DATA_KEY = 'LEGEND_ALL_DATA_KEY';
 
 const LEGEND_ALL_DATA = {
   color: '#FFFFFF',
   label: 'All',
   stackId: 1,
-};
-
-// Used to layer line charts on top of bar charts for composed charts.
-const CHART_SORT_ORDER = {
-  [LINE]: 0,
-  [BAR]: 1,
 };
 
 const CHART_TYPE_TO_CONTAINER = {
@@ -162,18 +154,11 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
       : data;
   };
 
-  const hasDataSeries = chartConfig && Object.keys(chartConfig).length > 1;
-  const aspect = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
-
-  const config = Object.keys(chartConfig).length > 0 ? chartConfig : { [DEFAULT_DATA_KEY]: {} };
-
-  const sortedChartConfig = Object.entries(config).sort((a, b) => {
-    return CHART_SORT_ORDER[b[1].chartType] - CHART_SORT_ORDER[a[1].chartType];
-  });
-
   const ChartContainer = CHART_TYPE_TO_CONTAINER[defaultChartType];
-
+  const hasDataSeries = chartConfig && Object.keys(chartConfig).length > 1;
+  const chartDataConfig = hasDataSeries ? chartConfig : { [DEFAULT_DATA_KEY]: {} };
   const hasLegend = hasDataSeries || renderLegendForOneItem;
+  const aspect = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
   const height = isExporting || (isEnlarged && hasLegend && isMobile()) ? 320 : undefined;
 
   /**
@@ -218,7 +203,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
             })}
           />
         )}
-        {sortedChartConfig
+        {Object.entries(chartDataConfig)
           .filter(([, { hideFromLegend }]) => !hideFromLegend)
           .map(([dataKey, { chartType = defaultChartType }]) => {
             const Chart = CHART_TYPE_TO_CHART[chartType];
