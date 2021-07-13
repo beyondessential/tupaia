@@ -7,10 +7,16 @@ import fs from 'fs';
 import { uniq } from 'lodash';
 
 import { compareAsc, yup, yupUtils } from '@tupaia/utils';
+import { E2E_CONFIG_PATH } from '../../constants';
 
 export const readJsonFile = path => JSON.parse(fs.readFileSync(path, { encoding: 'utf-8' }));
 
 export const writeJsonFile = (path, json) => fs.writeFileSync(path, JSON.stringify(json, null, 2));
+
+export const saveE2eConfig = configJson =>
+  writeJsonFile(E2E_CONFIG_PATH, JSON.stringify(configJson, null, 2));
+
+export const getE2eConfig = () => readJsonFile(E2E_CONFIG_PATH);
 
 export const buildUrlsUsingConfig = async (db, config, generateUrls) => {
   const { urlFiles = [], urls = [], urlGenerationOptions = {} } = config;

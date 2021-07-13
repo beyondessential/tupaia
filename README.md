@@ -1,7 +1,7 @@
 # Tupaia
 
 [![Codeship Status for beyondessential/tupaia#dev](https://app.codeship.com/projects/70159bc0-0dac-0138-fdcb-260b82737f4e/status?branch=dev)](https://app.codeship.com/projects/379708)
- 
+
 > This is a [mono-repo](https://github.com/babel/babel/blob/master/doc/design/monorepo.md)
 
 It is set up using `yarn workspaces`, meaning any command you would normally run inside a package can
@@ -53,7 +53,7 @@ Most packages will require a .env file. `.env.example` files indicate the requir
 
 ### Local database
 
-🔑 **BES internal:** [Tupaia monorepo setup](https://docs.beyondessential.com.au/books/software-development/page/tupaia-monorepo-setup#bkmrk-step-4.-install-post) - steps 4 and 5
+🔑 **BES internal:** [Tupaia monorepo setup](https://beyond-essential.slab.com/posts/tupaia-monorepo-setup-v5egpdpq) - steps 4 and 5
 
 ### Dependencies
 
@@ -76,7 +76,7 @@ so if you've updated the environment variables here, you probably also need to p
 
 - ssh into the aws instance (cannot be run locally at this stage)
 - update the .env file (if it hasn't been updated automatically by the CI/CD process)
-- run `ENVIRONMENT=dev yarn update-paramater-store-env-vars` (setting environment to either dev or production)
+- run `ENVIRONMENT=dev yarn update-paramater-store-env-vars` (setting environment to either production/dev/e2e)
 
 ## Tests
 

@@ -1,4 +1,6 @@
 {
+  "baseUrl": "https://e2e.tupaia.org",
+  "compareUrl": "",
   "dashboardReports": {
     "allowEmptyResponse": false,
     "snapshotTypes": ["responseData", "html"],

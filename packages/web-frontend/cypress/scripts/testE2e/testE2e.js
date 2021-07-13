@@ -5,41 +5,109 @@
 
 import { execSync } from 'child_process';
 import {} from 'dotenv/config';
+import fs from 'fs';
 
 import { getArgs, getLoggerInstance } from '@tupaia/utils';
+import { E2E_CONFIG_PATH } from '../../constants';
+import { generateConfig } from '../generateConfig/generateConfig';
 
 const scriptConfig = {
   options: {
     ciBuildId: {
       type: 'string',
       description:
-        'Used to associate multiple CI machines to one test run, see https://docs.cypress.io/guides/guides/parallelization#Linking-CI-machines-for-parallelization-or-grouping',
+        'Used in CI/CD builds to associate multiple CI machines with one test run, see https://docs.cypress.io/guides/guides/parallelization#Linking-CI-machines-for-parallelization-or-grouping',
     },
   },
 };
 
-const runPackageScript = script =>
-  execSync(`yarn workspace @tupaia/web-frontend ${script}`, { stdio: 'inherit' });
+const printResults = ({ baseUrl, compareUrl }, { baseError, compareError }) => {
+  const logger = getLoggerInstance();
 
-const buildRunTestsCommand = args => {
-  const { ciBuildId } = args;
+  logger.info();
 
-  const record = !!process.env.CYPRESS_RECORD_KEY;
+  const printUrlResult = (error, url, description) => {
+    if (error) {
+      logger.error(`❌ ${description} url: ${url}`);
+    } else {
+      logger.success(`✔ ${description} url: ${url}`);
+    }
+  };
+
+  printUrlResult(baseError, baseUrl, 'base');
+  printUrlResult(compareError, compareUrl, 'compare');
+
+  if (baseError || compareError) {
+    logger.error(`❌ E2e tests failed`);
+    if (baseError) {
+      logger.error(
+        [
+          '',
+          'Note: since the tests for the base url failed, some base snapshots may be missing.',
+          'If this is the case, the test cases that depend on those snapshots may be false positives: tests always pass when snapshots are empty',
+          'Please check the detailed cypress logs to decide whether this is the case',
+        ].join('\n'),
+      );
+    }
+    process.exit(1);
+  } else {
+    logger.success(`✔ E2e tests passed!`);
+  }
+};
+
+const runTestsAgainstUrl = (url, options = {}) => {
+  const { ciBuildId = '', record = false } = options;
+
   let command = `cypress:run --record ${record}`;
   if (ciBuildId) {
     command = `${command} --parallel --ci-build-id ${ciBuildId}`;
   }
 
-  return command;
+  execSync(`CYPRESS_BASE_URL=${url} yarn workspace @tupaia/web-frontend ${command}`, {
+    stdio: 'inherit',
+  });
+};
+
+const checkUrlExists = url => {
+  try {
+    execSync(`curl --output /dev/null --silent --head --fail ${url}`);
+  } catch (error) {
+    throw new Error(`No deployment exists for ${url}, cancelling e2e tests`);
+  }
 };
 
 export const testE2e = async () => {
-  const args = getArgs(scriptConfig);
+  const { ciBuildId } = getArgs(scriptConfig);
 
   const logger = getLoggerInstance();
   logger.success('Running e2e tests for web-frontend');
 
-  runPackageScript('cypress:config');
-  const runTestsCommand = buildRunTestsCommand(args);
-  runPackageScript(runTestsCommand);
+  await generateConfig();
+  const { baseUrl, compareUrl } = JSON.parse(
+    fs.readFileSync(E2E_CONFIG_PATH, { encoding: 'utf-8' }),
+  );
+  // Check both urls before running the tests, in case one of them is invalid
+  checkUrlExists(baseUrl);
+  checkUrlExists(compareUrl);
+
+  let baseError;
+  try {
+    logger.info(`\nStarting base snapshot capture against ${baseUrl}...`);
+    runTestsAgainstUrl(baseUrl);
+  } catch (error) {
+    logger.error(error.message);
+    baseError = error;
+  }
+
+  let compareError;
+  try {
+    logger.info(`\nStarting compare snapshot capture against ${compareUrl}...`);
+    const record = !!process.env.CYPRESS_RECORD_KEY;
+    runTestsAgainstUrl(compareUrl, { ciBuildId, record });
+  } catch (error) {
+    logger.error(error.message);
+    compareError = error;
+  }
+
+  printResults({ baseUrl, compareUrl }, { baseError, compareError });
 };
