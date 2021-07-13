@@ -5,8 +5,25 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Tooltip as TooltipComponent } from '@tupaia/ui-components';
 import { ResourcePage } from './ResourcePage';
 import { PERMISSIONS_ENDPOINT, PERMISSIONS_COLUMNS } from './PermissionsPage';
+import { VerifiedFilter } from '../../table/columnTypes/columnFilters';
+
+// eslint-disable-next-line react/prop-types
+const VerifiedCell = ({ value }) => {
+  if (value === 'verified') {
+    return 'Yes';
+  }
+  if (value === 'new_user') {
+    return 'No';
+  }
+  return (
+    <TooltipComponent title="Historical user which does not need verification">
+      <div>Not Applicable</div>
+    </TooltipComponent>
+  );
+};
 
 const FIELDS = [
   {
@@ -58,6 +75,12 @@ const COLUMNS = [
     width: 150,
   },
   ...FIELDS,
+  {
+    Header: 'Verified',
+    source: 'verified_email',
+    Cell: VerifiedCell,
+    Filter: VerifiedFilter,
+  },
   {
     Header: 'Edit',
     source: 'id',

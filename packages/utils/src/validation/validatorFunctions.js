@@ -60,6 +60,12 @@ export const isNumber = value => {
   }
 };
 
+export const isBoolean = value => {
+  if (typeof value !== 'boolean') {
+    throw new ValidationError(`Should contain a boolean instead of ${stringifyValue(value)}`);
+  }
+};
+
 export const isAString = value => {
   if (typeof value !== 'string') {
     throw new ValidationError(`Should contain a string instead of ${value}`);
@@ -256,6 +262,15 @@ export const constructEveryItem = validatorFunction => async value => {
   }
 
   await Promise.all(value.map(validatorFunction));
+  return true;
+};
+
+export const constructEveryItemSync = validatorFunction => value => {
+  if (!Array.isArray(value)) {
+    throw new Error('Must be an array');
+  }
+
+  value.forEach(validatorFunction);
   return true;
 };
 
