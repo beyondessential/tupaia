@@ -18,7 +18,7 @@ import {
   Brush,
 } from 'recharts';
 
-import { CHART_BLUES, CHART_TYPES, VIEW_CONTENT_SHAPE } from './constants';
+import { CHART_BLUES, CHART_TYPES, VIEW_CONTENT_SHAPE, DEFAULT_DATA_KEY } from './constants';
 import { Tooltip as CustomTooltip } from './Tooltip';
 import { BarChart as BarChartComponent } from './BarChart';
 import { LineChart as LineChartComponent } from './LineChart';
@@ -47,8 +47,6 @@ const DEFAULT_Y_AXIS = {
 };
 
 const orientationToYAxisId = orientation => Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
-
-const DEFAULT_DATA_KEY = 'value';
 
 const LEGEND_ALL_DATA_KEY = 'LEGEND_ALL_DATA_KEY';
 
