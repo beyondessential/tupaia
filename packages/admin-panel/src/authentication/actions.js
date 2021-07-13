@@ -60,12 +60,12 @@ export const loginError = errorMessage => ({
 });
 
 export const logout = () => async (dispatch, getState, { api }) => {
-  await api.logout();
-
   dispatch({
     // Set state to logging out
     type: LOGOUT,
   });
+
+  await api.logout();
 };
 
 // Profile
