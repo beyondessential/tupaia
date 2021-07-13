@@ -93,7 +93,7 @@ const EntitySearchComponent = ({
   );
 };
 
-const mapDispatchToPs = dispatch => ({
+const mapDispatchToProps = dispatch => ({
   onChangeMeasure: measureId => dispatch(setMeasure(measureId)),
   onClearMeasure: () => dispatch(clearMeasure()),
   onToggleMeasureExpand: () => dispatch(toggleMeasureExpand()),
@@ -101,7 +101,7 @@ const mapDispatchToPs = dispatch => ({
   onChangeOrgUnit: organisationUnitCode => dispatch(setOrgUnit(organisationUnitCode, false)),
 });
 
-const mergePs = (stateProps, dispatchProps, ownProps) => {
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { onChangeMeasure, onClearMeasure } = dispatchProps;
 
   return {
@@ -164,7 +164,7 @@ const getListItemsFromOrganisationUnitChildren = (
   }));
 };
 
-const mapStateToPs = state => {
+const mapStateToProps = state => {
   const { dashboards, isLoadingOrganisationUnit } = state.global;
   const { measureHierarchy, isExpanded } = state.measureBar;
   const { measureInfo, isMeasureLoading } = state.map;
@@ -178,8 +178,8 @@ const mapStateToPs = state => {
   );
 
   const title = mobileListItems.some(i => i && i.type === ENTITY_TYPE.FACILITY)
-    ? 'Facilities'
-    : 'Districts';
+    ? 'Browse Facilities'
+    : 'Browse Districts';
 
   const measureFilters = getMeasureFiltersForHierarchy(measureHierarchy);
 
@@ -228,4 +228,8 @@ EntitySearchComponent.defaultProps = {
   title: '',
 };
 
-export const EntitySearch = connect(mapStateToPs, mapDispatchToPs, mergePs)(EntitySearchComponent);
+export const EntityNav = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps,
+)(EntitySearchComponent);

@@ -16,7 +16,6 @@ import { toggleDashboardSelectExpand, setDashboardGroup } from '../../../actions
 import { DARK_BLUE } from '../../../styles';
 import { getMapUrl } from '../../../utils';
 import { selectCurrentDashboardName, selectCurrentOrgUnit } from '../../../selectors';
-import { EntitySearch } from '../../../containers/mobile/EntitySearch';
 
 const MAP_WIDTH = 420;
 const MAP_HEIGHT = 250;
@@ -123,7 +122,6 @@ class RegionScreen extends PureComponent {
           filterIsExpanded={dashboardFilterIsExpanded}
           handleFilterChange={onChangeDashboardGroup}
         />
-        <EntitySearch />
         <BackButton orgUnit={orgUnit} />
       </div>
     );
