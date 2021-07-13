@@ -5,19 +5,11 @@
 
 import { Route } from '@tupaia/server-boilerplate';
 import { formatEntitiesForResponse } from './format';
-import {
-  MultiEntityRequest,
-  MultiEntityRequestParams,
-  RequestBody,
-  MultiEntityRequestQuery,
-  EntityResponse,
-} from './types';
+import { MultiEntityRequest, MultiEntityRequestParams, EntityResponse } from './types';
 
 export type MultiEntityRelativesRequest = MultiEntityRequest<
   MultiEntityRequestParams,
-  EntityResponse[],
-  RequestBody,
-  MultiEntityRequestQuery
+  EntityResponse[]
 >;
 export class MultiEntityRelativesRoute extends Route<MultiEntityRelativesRequest> {
   async buildResponse() {
