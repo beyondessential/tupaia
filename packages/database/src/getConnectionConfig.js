@@ -7,15 +7,16 @@ import { requireEnv } from '@tupaia/utils';
 
 const getServerConfig = () => ({
   host: requireEnv('DB_URL'),
+  port: requireEnv('DB_PORT'),
   user: requireEnv('DB_USER'),
   password: requireEnv('DB_PASSWORD'),
   database: requireEnv('DB_NAME'),
   ssl:
     process.env.DB_ENABLE_SSL === 'true'
       ? {
-          // Test server cannot turn on ssl, so sets the env to disable it
-          rejectUnauthorized: false,
-        }
+        // Test server cannot turn on ssl, so sets the env to disable it
+        rejectUnauthorized: false,
+      }
       : null,
 });
 
