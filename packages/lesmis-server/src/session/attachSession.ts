@@ -19,6 +19,7 @@ export const attachSession = async (req: Request, res: Response, next: NextFunct
 
     const session: SessionType = await req.sessionModel.findById(sessionId);
     if (!session) {
+      res.clearCookie('sessionCookie'); // Remove the session cookie from the front end
       throw new UnauthenticatedError('Session not found in database');
     }
 
