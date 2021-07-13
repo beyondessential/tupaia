@@ -19,15 +19,11 @@ import {
   toggleDashboardSelectExpand,
   toggleMeasureExpand,
 } from '../../actions';
-import {
-  selectCurrentDashboardName,
-  selectCurrentMeasure,
-  selectCurrentOrgUnit,
-  selectOrgUnitChildren,
-} from '../../selectors';
+import { selectCurrentMeasure, selectCurrentOrgUnit, selectOrgUnitChildren } from '../../selectors';
 import { getSingleFormattedValue } from '../../utils';
 import { ENTITY_TYPE } from '../../constants';
 import { filterShape } from '../../components/mobile/FilterSelect';
+import BackButton from '../../components/mobile/BackButton';
 
 const Spinner = styled.div`
   background: rgba(0, 0, 0, 0.5);
@@ -49,15 +45,16 @@ const NoResultsText = styled.div`
 `;
 
 const EntitySearchComponent = ({
-  selectedFilter,
-  measureFilters,
-  onChangeMeasure,
-  mobileListItems,
-  onToggleMeasureExpand,
-  measureFilterIsExpanded,
-  onChangeOrgUnit,
   isLoading,
   isMeasureLoading,
+  measureFilters,
+  measureFilterIsExpanded,
+  mobileListItems,
+  onChangeMeasure,
+  onChangeOrgUnit,
+  onToggleMeasureExpand,
+  orgUnit,
+  selectedFilter,
   title,
 }) => {
   if (isLoading) {
@@ -68,29 +65,58 @@ const EntitySearchComponent = ({
     );
   }
 
+  const showBackButton = orgUnit.type !== 'Project';
+
   return (
     <div>
-      <ExpandableList
-        items={mobileListItems.map(item => (
-          <SelectListItem onSelect={onChangeOrgUnit} {...item} />
-        ))}
-        expandedByDefault
-        title={title}
-        filterTitle="Measures"
-        filters={measureFilters}
-        currentFilter={selectedFilter}
-        onFilterChange={onChangeMeasure}
-        filterIsExpanded={measureFilterIsExpanded}
-        onFilterOpen={onToggleMeasureExpand}
-        onFilterClose={onToggleMeasureExpand}
-        showLoadingIcon={isMeasureLoading}
-        theme={{ background: WHITE, color: '#000' }}
-      />
-      {mobileListItems.length === 0 && !isLoading && (
-        <NoResultsText>No clinics found in this region.</NoResultsText>
-      )}
+      <div>
+        <ExpandableList
+          items={mobileListItems.map(item => (
+            <SelectListItem onSelect={onChangeOrgUnit} {...item} />
+          ))}
+          expandedByDefault
+          title={title}
+          filterTitle="Measures"
+          filters={measureFilters}
+          currentFilter={selectedFilter}
+          onFilterChange={onChangeMeasure}
+          filterIsExpanded={measureFilterIsExpanded}
+          onFilterOpen={onToggleMeasureExpand}
+          onFilterClose={onToggleMeasureExpand}
+          showLoadingIcon={isMeasureLoading}
+          theme={{ background: WHITE, color: '#000' }}
+        />
+        {mobileListItems.length === 0 && !isLoading && (
+          <NoResultsText>No clinics found in this region.</NoResultsText>
+        )}
+      </div>
+      {showBackButton && <BackButton orgUnit={orgUnit} />}
     </div>
   );
+};
+
+EntitySearchComponent.propTypes = {
+  isLoading: PropTypes.bool,
+  isMeasureLoading: PropTypes.bool,
+  measureFilters: PropTypes.array,
+  measureFilterIsExpanded: PropTypes.bool,
+  mobileListItems: PropTypes.array,
+  orgUnit: PropTypes.object.isRequired,
+  onToggleMeasureExpand: PropTypes.func.isRequired,
+  onChangeMeasure: PropTypes.func.isRequired,
+  onChangeOrgUnit: PropTypes.func.isRequired,
+  selectedFilter: filterShape,
+  title: PropTypes.string,
+};
+
+EntitySearchComponent.defaultProps = {
+  mobileListItems: [],
+  measureFilters: [],
+  measureFilterIsExpanded: false,
+  selectedFilter: null,
+  isLoading: false,
+  isMeasureLoading: false,
+  title: '',
 };
 
 const mapDispatchToProps = dispatch => ({
@@ -165,13 +191,11 @@ const getListItemsFromOrganisationUnitChildren = (
 };
 
 const mapStateToProps = state => {
-  const { dashboards, isLoadingOrganisationUnit } = state.global;
+  const { isLoadingOrganisationUnit } = state.global;
   const { measureHierarchy, isExpanded } = state.measureBar;
   const { measureInfo, isMeasureLoading } = state.map;
   const currentMeasure = selectCurrentMeasure(state);
   const orgUnit = selectCurrentOrgUnit(state);
-
-  console.log('orgUnit', orgUnit);
 
   const mobileListItems = getListItemsFromOrganisationUnitChildren(
     selectOrgUnitChildren(state, orgUnit.organisationUnitCode),
@@ -190,8 +214,6 @@ const mapStateToProps = state => {
     : { label: '' };
 
   return {
-    dashboards,
-    currentDashboardName: selectCurrentDashboardName(state),
     orgUnit,
     mobileListItems,
     measureFilters,
@@ -201,33 +223,6 @@ const mapStateToProps = state => {
     isMeasureLoading,
     title,
   };
-};
-
-EntitySearchComponent.propTypes = {
-  dashboards: PropTypes.array.isRequired,
-  orgUnit: PropTypes.object.isRequired,
-  mobileListItems: PropTypes.array,
-  measureFilters: PropTypes.array,
-  selectedFilter: filterShape,
-  measureFilterIsExpanded: PropTypes.bool,
-  onToggleMeasureExpand: PropTypes.func.isRequired,
-  onChangeMeasure: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool,
-  isMeasureLoading: PropTypes.bool,
-  onChangeOrgUnit: PropTypes.func.isRequired,
-  currentDashboardName: PropTypes.string,
-  title: PropTypes.string,
-};
-
-EntitySearchComponent.defaultProps = {
-  mobileListItems: [],
-  measureFilters: [],
-  measureFilterIsExpanded: false,
-  selectedFilter: null,
-  isLoading: false,
-  isMeasureLoading: false,
-  currentDashboardName: '',
-  title: '',
 };
 
 export const EntityNav = connect(
