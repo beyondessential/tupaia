@@ -4,3 +4,4 @@
  */
 
 export { ApiBuilder } from './ApiBuilder';
+export { sessionCookie } from './sessionCookie';
