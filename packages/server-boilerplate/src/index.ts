@@ -16,6 +16,5 @@ export {
   SessionModel,
   SessionType,
   SessionCookie,
-  sessionCookie,
 } from './orchestrator';
 export { QueryParameters } from './types';

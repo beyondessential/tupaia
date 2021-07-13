@@ -57,8 +57,6 @@ import {
   GETUserEntityPermissions,
 } from './userEntityPermissions';
 import { EditAccessRequests, GETAccessRequests } from './accessRequests';
-import { UserLogin } from './UserLogin';
-import { UserLogout } from './UserLogout';
 import { importEntities } from './importEntities';
 import { importStriveLabResults } from './importStriveLabResults';
 import { importSurveys } from './importSurveys';
@@ -182,8 +180,6 @@ export default {
   getUserAccounts: useRouteHandler(GETUserAccounts),
   getUserEntityPermissions: useRouteHandler(GETUserEntityPermissions),
   getAccessRequests: useRouteHandler(GETAccessRequests),
-  userLogout: useRouteHandler(UserLogout),
-  userLogin: useRouteHandler(UserLogin),
   importEntities: catchAsyncErrors(importEntities),
   importStriveLabResults: catchAsyncErrors(importStriveLabResults),
   importSurveys: catchAsyncErrors(importSurveys),

@@ -90,8 +90,6 @@ const {
   getAccessRequests,
   getUserAccounts,
   getUserEntityPermissions,
-  userLogin,
-  userLogout,
   importEntities,
   importStriveLabResults,
   importSurveys,
@@ -213,8 +211,6 @@ export function addRoutesToApp(app) {
   app.post('(/v[0-9]+)?/auth', authenticate);
   app.post('(/v[0-9]+)?/auth/resetPassword', requestPasswordReset);
   app.post('(/v[0-9]+)?/auth/resendEmail', requestResendEmail);
-  app.post('(/v[0-9]+)?/login', userLogin);
-  app.post('(/v[0-9]+)?/logout', userLogout);
   app.post('(/v[0-9]+)?/changes', postChanges);
   app.post('(/v[0-9]+)/import/entities', upload.single('entities'), importEntities);
   app.post('(/v[0-9]+)/auth/verifyEmail', verifyEmail);
