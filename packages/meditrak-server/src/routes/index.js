@@ -27,12 +27,15 @@ import { DeleteOptionSets, EditOptionSets, GETOptionSets, importOptionSets } fro
 import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
 import { DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
 import { GETProjects } from './GETProjects';
+import { DeleteDashboardItem, EditDashboardItem, GETDashboardItems } from './dashboardItems';
+import { DeleteDashboard, EditDashboard, GETDashboards } from './dashboards';
 import {
-  DeleteDashboardReports,
-  EditDashboardReports,
-  GETDashboardReports,
-} from './dashboardReports';
-import { DeleteDashboardGroups, EditDashboardGroups, GETDashboardGroups } from './dashboardGroups';
+  DeleteDashboardRelation,
+  EditDashboardRelation,
+  CreateDashboardRelation,
+  GETDashboardRelations,
+} from './dashboardRelations';
+import { DeleteLegacyReport, EditLegacyReport, GETLegacyReports } from './legacyReports';
 import { DeleteMapOverlays, EditMapOverlays, GETMapOverlays } from './mapOverlays';
 import { DeleteSurveyResponses, EditSurveyResponses, GETSurveyResponses } from './surveyResponses';
 import {
@@ -109,9 +112,12 @@ export default {
   createIndicators: useRouteHandler(BESAdminCreateHandler),
   createPermissionGroups: useRouteHandler(BESAdminCreateHandler),
   createUserEntityPermissions: useRouteHandler(CreateUserEntityPermissions),
+  createDashboardRelations: useRouteHandler(CreateDashboardRelation),
   deleteAnswers: useRouteHandler(DeleteAnswers),
-  deleteDashboardGroups: useRouteHandler(DeleteDashboardGroups),
-  deleteDashboardReports: useRouteHandler(DeleteDashboardReports),
+  deleteDashboards: useRouteHandler(DeleteDashboard),
+  deleteDashboardItems: useRouteHandler(DeleteDashboardItem),
+  deleteDashboardRelations: useRouteHandler(DeleteDashboardRelation),
+  deleteLegacyReports: useRouteHandler(DeleteLegacyReport),
   deleteDataSources: useRouteHandler(BESAdminDeleteHandler),
   deleteDisasters: useRouteHandler(BESAdminDeleteHandler),
   deleteFeedItems: useRouteHandler(BESAdminDeleteHandler),
@@ -128,8 +134,10 @@ export default {
   registerUserAccount: useRouteHandler(RegisterUserAccounts),
   editAccessRequests: useRouteHandler(EditAccessRequests),
   editAnswers: useRouteHandler(EditAnswers),
-  editDashboardGroups: useRouteHandler(EditDashboardGroups),
-  editDashboardReports: useRouteHandler(EditDashboardReports),
+  editDashboards: useRouteHandler(EditDashboard),
+  editDashboardItems: useRouteHandler(EditDashboardItem),
+  editDashboardRelations: useRouteHandler(EditDashboardRelation),
+  editLegacyReports: useRouteHandler(EditLegacyReport),
   editDataSources: useRouteHandler(BESAdminEditHandler),
   editDisasters: useRouteHandler(BESAdminEditHandler),
   editFeedItems: useRouteHandler(BESAdminEditHandler),
@@ -151,8 +159,10 @@ export default {
   getCountries: useRouteHandler(GETCountries),
   getClinics: useRouteHandler(GETClinics),
   getDisasters: useRouteHandler(GETDisasters),
-  getDashboardReports: useRouteHandler(GETDashboardReports),
-  getDashboardGroups: useRouteHandler(GETDashboardGroups),
+  getDashboards: useRouteHandler(GETDashboards),
+  getDashboardItems: useRouteHandler(GETDashboardItems),
+  getDashboardRelations: useRouteHandler(GETDashboardRelations),
+  getLegacyReports: useRouteHandler(GETLegacyReports),
   getIndicators: useRouteHandler(BESAdminGETHandler),
   getDataSources: useRouteHandler(GETDataSources),
   getEntities: useRouteHandler(GETEntities),

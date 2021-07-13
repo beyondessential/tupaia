@@ -9,16 +9,18 @@ import PropTypes from 'prop-types';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import GridOnIcon from '@material-ui/icons/GridOn';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
-import { Chart as ChartComponent, Table } from '@tupaia/ui-components/lib/chart';
+import { Chart as ChartComponent, Table, getIsChartData } from '@tupaia/ui-components/lib/chart';
 import { FetchLoader } from './FetchLoader';
-import { FlexEnd, FlexSpaceBetween } from './Layout';
+import { FlexEnd, FlexStart, FlexSpaceBetween } from './Layout';
 import { ToggleButton } from './ToggleButton';
 import * as COLORS from '../constants';
 
 const Wrapper = styled.div`
   flex: 1;
   display: flex;
+  overflow: auto;
 `;
 
 const ChartWrapper = styled(Wrapper)`
@@ -52,6 +54,7 @@ const Title = styled(Typography)`
   font-weight: 500;
   font-size: 1.125rem;
   line-height: 1.3rem;
+  margin-right: 1rem;
 `;
 
 export const TABS = {
@@ -72,21 +75,23 @@ const Toggle = ({ value, onChange }) => (
 );
 
 // eslint-disable-next-line react/prop-types
-const ChartTable = ({ viewContent, isLoading, isError, error, selectedTab }) => (
-  <FetchLoader isLoading={isLoading} isError={isError} error={error}>
-    {selectedTab === TABS.CHART ? (
-      <ChartWrapper>
-        <ChartComponent viewContent={viewContent} legendPosition="top" />
-      </ChartWrapper>
-    ) : (
-      <Wrapper>
-        <Table viewContent={viewContent} />
-      </Wrapper>
-    )}
-  </FetchLoader>
-);
+const ChartTable = ({ viewContent, isLoading, isError, error, selectedTab }) => {
+  return (
+    <FetchLoader isLoading={isLoading} isError={isError} error={error}>
+      {selectedTab === TABS.CHART ? (
+        <ChartWrapper>
+          <ChartComponent viewContent={viewContent} legendPosition="top" />
+        </ChartWrapper>
+      ) : (
+        <Wrapper>
+          <Table viewContent={viewContent} />
+        </Wrapper>
+      )}
+    </FetchLoader>
+  );
+};
 
-export const Chart = ({ name, viewContent, isLoading, isError, error, isEnlarged }) => {
+export const Chart = ({ name, viewContent, isLoading, isFetching, isError, error, isEnlarged }) => {
   const [selectedTab, setSelectedTab] = useState(TABS.CHART);
 
   const handleTabChange = (event, newValue) => {
@@ -94,6 +99,11 @@ export const Chart = ({ name, viewContent, isLoading, isError, error, isEnlarged
       setSelectedTab(newValue);
     }
   };
+
+  // loading whole chart (i.e. show full loading spinner) if first load, or fetching in background
+  // from a no data state
+  const isLoadingWholeChart = isLoading || (!getIsChartData(viewContent) && isFetching);
+  const isFetchingInBackground = isFetching && !isLoadingWholeChart;
 
   return isEnlarged ? (
     <>
@@ -111,13 +121,16 @@ export const Chart = ({ name, viewContent, isLoading, isError, error, isEnlarged
   ) : (
     <>
       <Header>
-        <Title>{name}</Title>
+        <FlexStart>
+          <Title>{name}</Title>
+          {isFetchingInBackground && <CircularProgress size={30} />}
+        </FlexStart>
         <Toggle onChange={handleTabChange} value={selectedTab} exclusive />
       </Header>
       <Body>
         <ChartTable
           viewContent={viewContent}
-          isLoading={isLoading}
+          isLoading={isLoadingWholeChart}
           isError={isError}
           error={error}
           selectedTab={selectedTab}
@@ -130,6 +143,7 @@ export const Chart = ({ name, viewContent, isLoading, isError, error, isEnlarged
 Chart.propTypes = {
   viewContent: PropTypes.object,
   isLoading: PropTypes.bool,
+  isFetching: PropTypes.bool,
   isEnlarged: PropTypes.bool,
   isError: PropTypes.bool,
   error: PropTypes.string,
@@ -139,6 +153,7 @@ Chart.propTypes = {
 Chart.defaultProps = {
   viewContent: null,
   isLoading: false,
+  isFetching: false,
   isEnlarged: false,
   isError: false,
   error: null,

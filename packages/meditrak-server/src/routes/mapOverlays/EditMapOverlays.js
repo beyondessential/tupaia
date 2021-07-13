@@ -19,7 +19,7 @@ export class EditMapOverlays extends EditHandler {
   }
 
   async validate() {
-    // dashboardReport, mapOverlay and dashboardGroup use different id formats and are the only endpoints
+    // mapOverlay uses different id formats and is the only endpoint
     // which need to overwrite the validation functionality
     // TODO remove when this task is done https://github.com/beyondessential/tupaia-backlog/issues/723
     return true;

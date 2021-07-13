@@ -26,7 +26,7 @@ export class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <FlexCenter>
+        <FlexCenter p={5}>
           <SmallAlert severity="error" variant="standard">
             Something went wrong.
           </SmallAlert>

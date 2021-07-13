@@ -60,6 +60,12 @@ export const isNumber = value => {
   }
 };
 
+export const isBoolean = value => {
+  if (typeof value !== 'boolean') {
+    throw new ValidationError(`Should contain a boolean instead of ${stringifyValue(value)}`);
+  }
+};
+
 export const isAString = value => {
   if (typeof value !== 'string') {
     throw new ValidationError(`Should contain a string instead of ${value}`);
@@ -146,6 +152,22 @@ export const constructIsOneOfType = types => {
       throw new Error(`Must be one of ${types.join(' | ')}`);
     }
   };
+};
+
+export const constructIsSubSetOf = options => arrayValue => {
+  if (!Array.isArray(arrayValue)) {
+    throw new Error('constructIsSubSetOf expects an array of values');
+  }
+
+  if (!Array.isArray(options)) {
+    throw new Error('constructIsSubSetOf expects an array of options');
+  }
+
+  const isSubSet = arrayValue.every(v => options.includes(v));
+
+  if (!isSubSet) {
+    throw new Error(`Some values of '${arrayValue.toString}' are not included in '${options}'`);
+  }
 };
 
 export const constructIsArrayOf = type => value => {
@@ -240,6 +262,15 @@ export const constructEveryItem = validatorFunction => async value => {
   }
 
   await Promise.all(value.map(validatorFunction));
+  return true;
+};
+
+export const constructEveryItemSync = validatorFunction => value => {
+  if (!Array.isArray(value)) {
+    throw new Error('Must be an array');
+  }
+
+  value.forEach(validatorFunction);
   return true;
 };
 
