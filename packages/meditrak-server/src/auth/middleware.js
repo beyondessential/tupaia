@@ -2,6 +2,7 @@ import { UnauthenticatedError } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { getTokenClaimsFromBearerAuth } from '@tupaia/auth';
 import { getAPIClientUser } from './clientAuth';
+import { AdminPanelSession } from '../database/models';
 
 async function authenticateUser(req) {
   const authHeader = req.headers.authorization || req.headers.Authorization;
@@ -23,6 +24,17 @@ async function authenticateUser(req) {
   // Use the user account provided in the auth header if present
   if (tokenUserID) {
     return { userId: tokenUserID };
+  }
+
+  if (req.sessionCookie?.id) {
+    const sessionId = req.sessionCookie?.id;
+    const sessionModel = new AdminPanelSession(req.database);
+    const session = await sessionModel.findById(sessionId);
+
+    if (session) {
+      const user = await req.models.user.findOne({ email: session.email });
+      return { userId: user.id };
+    }
   }
 
   // If no user specified otherwise, use the one linked to api client (if present)

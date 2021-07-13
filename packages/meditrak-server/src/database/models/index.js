@@ -29,3 +29,4 @@ export { SurveyResponseModel as SurveyResponse } from './SurveyResponse';
 export { SurveyScreenComponentModel as SurveyScreenComponent } from './SurveyScreenComponent';
 export { SurveyScreenModel as SurveyScreen } from './SurveyScreen';
 export { UserEntityPermissionModel as UserEntityPermission } from './UserEntityPermission';
+export { AdminPanelSessionModel as AdminPanelSession } from './AdminPanelSession';
