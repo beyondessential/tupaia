@@ -24,7 +24,7 @@ export class EntityConnection extends ApiConnection {
     return this.post(
       `hierarchy/${hierarchyName}/relatives`,
       {
-        descendant_filter: `type:${dataSourceEntityType}`,
+        filter: `type:${dataSourceEntityType}`,
         field: 'code',
       },
       { entities: entityCodes },
