@@ -28,3 +28,5 @@ export const CHART_TYPES = {
   LINE,
   PIE,
 };
+
+export const DEFAULT_DATA_KEY = 'value';

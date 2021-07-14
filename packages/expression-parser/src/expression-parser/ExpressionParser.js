@@ -42,7 +42,7 @@ const translate = (value, translations) => {
  * the built in functions are also considered as Symbol Node (which is similar to variables).
  * So we want to exclude them when getting the variables.
  */
-const BUILT_IN_FUNCTIONS = ['equalText'];
+const BUILT_IN_FUNCTIONS = ['equalText', 'round'];
 
 export class ExpressionParser {
   constructor() {
