@@ -12,7 +12,7 @@ Our e2e tests support Tupaia-specific configuration specified in [config.json](c
 
 ```jsonc
 {
-  "baseUrl": "https://e2e.tupaia.org",
+  "baselineUrl": "https://e2e.tupaia.org",
   "compareUrl": "https://compare-e2e.tupaia.org",
   "dashboardReports": {
     "allowEmptyResponse": false, // Throw error for empty reports

@@ -21,7 +21,7 @@ const scriptConfig = {
   },
 };
 
-const printResults = ({ baseUrl, compareUrl }, { baseError, compareError }) => {
+const printResults = ({ baselineUrl, compareUrl }, { baseError, compareError }) => {
   const logger = getLoggerInstance();
 
   logger.info();
@@ -34,7 +34,7 @@ const printResults = ({ baseUrl, compareUrl }, { baseError, compareError }) => {
     }
   };
 
-  printResult(`Base url: ${baseUrl}`, baseError);
+  printResult(`Baseline url: ${baselineUrl}`, baseError);
   printResult(`Compare url: ${compareUrl}`, compareError);
 
   if (baseError || compareError) {
@@ -43,7 +43,7 @@ const printResults = ({ baseUrl, compareUrl }, { baseError, compareError }) => {
       logger.error(
         [
           '',
-          'Note: since the tests for the base url failed, some base snapshots may be missing.',
+          'Note: since the tests for the baseline url failed, some base snapshots may be missing.',
           'If this is true the test cases that depend on those snapshots may be false positive: tests always pass when snapshots are empty',
           'Please check the detailed cypress logs to determine whether this is the case',
         ].join('\n'),
@@ -83,17 +83,17 @@ export const testE2e = async () => {
   logger.success('Running e2e tests for web-frontend');
 
   await generateConfig();
-  const { baseUrl, compareUrl } = JSON.parse(
+  const { baselineUrl, compareUrl } = JSON.parse(
     fs.readFileSync(E2E_CONFIG_PATH, { encoding: 'utf-8' }),
   );
   // Check both urls before running the tests, in case one of them is invalid
-  checkUrlExists(baseUrl);
+  checkUrlExists(baselineUrl);
   checkUrlExists(compareUrl);
 
   let baseError;
   try {
-    logger.info(`\nStarting base snapshot capture against ${baseUrl}...`);
-    runTestsAgainstUrl(baseUrl);
+    logger.info(`\nStarting base snapshot capture against ${baselineUrl}...`);
+    runTestsAgainstUrl(baselineUrl);
   } catch (error) {
     logger.error(error.message);
     baseError = error;
@@ -109,5 +109,5 @@ export const testE2e = async () => {
     compareError = error;
   }
 
-  printResults({ baseUrl, compareUrl }, { baseError, compareError });
+  printResults({ baselineUrl, compareUrl }, { baseError, compareError });
 };
