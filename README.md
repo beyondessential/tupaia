@@ -16,6 +16,7 @@ This opens all packages as roots in the workspace, and means linting etc. will w
 ### Main packages
 
 - [admin-panel](https://github.com/beyondessential/tupaia/blob/dev/packages/admin-panel/README.md)
+- [admin-panel-server](https://github.com/beyondessential/tupaia/blob/dev/packages/admin-panel-server/README.md)
 - [lesmis](https://github.com/beyondessential/tupaia/blob/dev/packages/lesmis/README.md)
 - [lesmis-server](https://github.com/beyondessential/tupaia/blob/dev/packages/lesmis-server/README.md)
 - [meditrak-app](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-app/README.md)
