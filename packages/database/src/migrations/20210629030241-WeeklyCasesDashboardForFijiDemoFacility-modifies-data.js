@@ -27,10 +27,6 @@ exports.up = async function (db) {
     const originalId = getOriginalId(syndrome);
     const newId = getNewId(syndrome);
     await db.runSql(`
-      UPDATE "dashboardReport" 
-      SET "id" = '${newId}'
-      WHERE "id" = '${originalId}';
-
       UPDATE "dashboard_item" 
       SET 
       "code" = '${newId}',
