@@ -13,7 +13,6 @@ import {
   MEASURE_TYPE_COLOR,
   MEASURE_TYPE_ICON,
   MEASURE_TYPE_RADIUS,
-  MEASURE_TYPE_NULL,
   MEASURE_TYPE_SHADED_SPECTRUM,
   MEASURE_TYPE_SPECTRUM,
 } from '../../utils/measures';
@@ -49,7 +48,6 @@ const getLegend = measureType => {
     case MEASURE_TYPE_SPECTRUM:
       return SpectrumLegend;
     case MEASURE_TYPE_RADIUS:
-    case MEASURE_TYPE_NULL:
       return NullLegend;
     default:
       return MarkerLegend;
@@ -57,7 +55,9 @@ const getLegend = measureType => {
 };
 
 const MultiLegend = React.memo(({ measureOptions, isMeasureLoading }) => {
-  const displayedLegends = measureOptions.filter(({ type }) => type !== MEASURE_TYPE_RADIUS);
+  const displayedLegends = measureOptions.filter(
+    ({ type, hideFromLegend }) => type !== MEASURE_TYPE_RADIUS && !hideFromLegend,
+  );
 
   // returning <LegendOuterFrame /> keeps the map control on the right hand side
   if (isMeasureLoading || displayedLegends.length === 0) {

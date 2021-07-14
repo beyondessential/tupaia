@@ -21,7 +21,6 @@ import { SCALE_TYPES } from '../constants';
 export const MEASURE_TYPE_ICON = 'icon';
 export const MEASURE_TYPE_COLOR = 'color';
 export const MEASURE_TYPE_RADIUS = 'radius';
-export const MEASURE_TYPE_NULL = 'null';
 export const MEASURE_TYPE_SPECTRUM = 'spectrum';
 export const MEASURE_TYPE_SHADING = 'shading';
 export const MEASURE_TYPE_SHADED_SPECTRUM = 'shaded-spectrum';
@@ -321,58 +320,63 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
       displayInfo.radius = radius;
     }
   });
-  measureOptions.forEach(
-    ({
-      key,
-      type,
-      valueMapping,
-      noDataColour,
-      scaleType,
-      scaleColorScheme,
-      min,
-      max,
-      hideByDefault,
-    }) => {
-      const valueInfo = getValueInfo(measureData[key], valueMapping, {
-        ...hideByDefault,
-        ...hiddenMeasures[key],
-      });
-      switch (type) {
-        case MEASURE_TYPE_ICON:
-          displayInfo.icon = valueInfo.icon;
-          displayInfo.color = displayInfo.color || valueInfo.color;
-          break;
-        case MEASURE_TYPE_RADIUS:
-          displayInfo.radius = valueInfo.value || 0;
-          displayInfo.color = displayInfo.color || valueInfo.color;
-          break;
-        case MEASURE_TYPE_SPECTRUM:
-        case MEASURE_TYPE_SHADED_SPECTRUM:
-          displayInfo.originalValue =
-            valueInfo.value === null || valueInfo.value === undefined ? 'No data' : valueInfo.value;
-          displayInfo.color = resolveSpectrumColour(
-            scaleType,
-            scaleColorScheme,
-            valueInfo.value || (valueInfo.value === 0 ? 0 : null),
-            min,
-            max,
-            noDataColour,
-          );
-          displayInfo.icon = valueInfo.icon || displayInfo.icon || SPECTRUM_ICON;
-          break;
-        case MEASURE_TYPE_SHADING:
-          displayInfo.color = MAP_COLORS[valueInfo.color] || valueInfo.color || MAP_COLORS.NO_DATA;
-          break;
-        case MEASURE_TYPE_COLOR:
-        default:
-          displayInfo.color = valueInfo.color;
-          break;
-      }
-      if (valueInfo.isHidden) {
-        displayInfo.isHidden = true;
-      }
-    },
-  );
+  measureOptions
+    .filter(({ hideFromMeasure }) => !hideFromMeasure)
+    .forEach(
+      ({
+        key,
+        type,
+        valueMapping,
+        noDataColour,
+        scaleType,
+        scaleColorScheme,
+        min,
+        max,
+        hideByDefault,
+      }) => {
+        const valueInfo = getValueInfo(measureData[key], valueMapping, {
+          ...hideByDefault,
+          ...hiddenMeasures[key],
+        });
+        switch (type) {
+          case MEASURE_TYPE_ICON:
+            displayInfo.icon = valueInfo.icon;
+            displayInfo.color = displayInfo.color || valueInfo.color;
+            break;
+          case MEASURE_TYPE_RADIUS:
+            displayInfo.radius = valueInfo.value || 0;
+            displayInfo.color = displayInfo.color || valueInfo.color;
+            break;
+          case MEASURE_TYPE_SPECTRUM:
+          case MEASURE_TYPE_SHADED_SPECTRUM:
+            displayInfo.originalValue =
+              valueInfo.value === null || valueInfo.value === undefined
+                ? 'No data'
+                : valueInfo.value;
+            displayInfo.color = resolveSpectrumColour(
+              scaleType,
+              scaleColorScheme,
+              valueInfo.value || (valueInfo.value === 0 ? 0 : null),
+              min,
+              max,
+              noDataColour,
+            );
+            displayInfo.icon = valueInfo.icon || displayInfo.icon || SPECTRUM_ICON;
+            break;
+          case MEASURE_TYPE_SHADING:
+            displayInfo.color =
+              MAP_COLORS[valueInfo.color] || valueInfo.color || MAP_COLORS.NO_DATA;
+            break;
+          case MEASURE_TYPE_COLOR:
+          default:
+            displayInfo.color = valueInfo.color;
+            break;
+        }
+        if (valueInfo.isHidden) {
+          displayInfo.isHidden = true;
+        }
+      },
+    );
 
   if (!displayInfo.icon && typeof displayInfo.radius === 'undefined') {
     displayInfo.icon = DEFAULT_ICON;

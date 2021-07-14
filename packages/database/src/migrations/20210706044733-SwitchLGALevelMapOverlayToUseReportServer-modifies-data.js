@@ -147,7 +147,14 @@ const getReport = ({
     code,
     config: {
       fetch: {
-        aggregations: ['MOST_RECENT'],
+        aggregations: [
+          {
+            type: 'MOST_RECENT',
+            config: {
+              dataSourceEntityType: code.includes('LGA') ? 'sub_district' : 'district',
+            },
+          },
+        ],
         dataElements: [numeratorDataElementCode, denominatorDataElementCode],
       },
       transform: [
@@ -206,15 +213,24 @@ exports.up = async function (db) {
     );
   }
 
+  const measureConfig = { $all: { hideFromMeasure: 'true', hideFromLegend: 'true' } };
   await db.runSql(`
     UPDATE "mapOverlay"
-    SET "presentationOptions" = "presentationOptions" || '{"measureConfig": {"$all":{ "type": "null"}}}'::jsonb
+    SET "presentationOptions" = "presentationOptions" || '${JSON.stringify({
+      measureConfig,
+    })}'::jsonb
     WHERE id in (${arrayToDbString(mapOverlays.map(m => m.id))})
   `);
 
+  const info = {
+    reference: {
+      text:
+        'The raw numbers displayed can have decimal places because postcodes do not all fit within single LGAs in Australia and we use ratio tables to convert postcode data to LGAs.',
+    },
+  };
   await db.runSql(`
     UPDATE "mapOverlay"
-    SET "presentationOptions" = "presentationOptions" || '{"info":{"reference":{"text":"The raw numbers displayed can have decimal places because postcodes do not all fit within single LGAs in Australia and we use ratio tables to convert postcode data to LGAs."}}}'::jsonb
+    SET "presentationOptions" = "presentationOptions" || '${JSON.stringify({ info })}'::jsonb
     WHERE id in (${arrayToDbString(
       mapOverlays.filter(({ id }) => id.includes('LGA')).map(m => m.id),
     )})
