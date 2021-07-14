@@ -120,7 +120,6 @@ SearchOverlay.propTypes = {
 const mapStateToProps = state => {
   const { isLoadingSearchResults, searchString, searchResults } = state.searchBar;
   const { isOverlayOpen } = state.global;
-
   return {
     isLoading: isLoadingSearchResults,
     searchString,
