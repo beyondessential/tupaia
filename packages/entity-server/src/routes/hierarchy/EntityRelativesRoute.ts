@@ -9,7 +9,7 @@ import {
   SingleEntityRequest,
   SingleEntityRequestParams,
   RequestBody,
-  SingleEntityRequestQuery,
+  EntityRequestQuery,
   EntityResponse,
 } from './types';
 
@@ -17,7 +17,7 @@ export type RelativesRequest = SingleEntityRequest<
   SingleEntityRequestParams,
   EntityResponse[],
   RequestBody,
-  SingleEntityRequestQuery
+  EntityRequestQuery
 >;
 export class EntityRelativesRoute extends Route<RelativesRequest> {
   async buildResponse() {

@@ -8,7 +8,8 @@ import {
   SingleEntityRequestParams,
   MultiEntityRequestParams,
   RequestBody,
-  SingleEntityRequestQuery,
+  MultiEntityRequestBody,
+  EntityRequestQuery,
   SingleEntityContext,
   MultiEntityContext,
   FlattableEntityFields,
@@ -20,7 +21,7 @@ export type Prefix<T, P extends string> = {
   [field in keyof T & string as `${P}_${field}`]: T[field];
 };
 
-export type RelationshipsSubQuery = Omit<SingleEntityRequestQuery, 'fields'>;
+export type RelationshipsSubQuery = Omit<EntityRequestQuery, 'fields'>;
 export type RelationshipsQuery = RelationshipsSubQuery & {
   groupBy?: 'ancestor' | 'descendant';
 } & Partial<Prefix<RelationshipsSubQuery, 'ancestor'>> &
@@ -66,8 +67,8 @@ export interface MultiEntityRelationshipsRequest
   extends Request<
     MultiEntityRequestParams,
     RelationshipsResponseBody,
-    RequestBody,
-    RelationshipsQuery & { entities?: string }
+    MultiEntityRequestBody,
+    RelationshipsQuery
   > {
   ctx: MultiEntityRelationshipsContext;
 }
