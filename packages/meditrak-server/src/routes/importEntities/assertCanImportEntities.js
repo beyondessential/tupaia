@@ -6,9 +6,9 @@ import { getCountryCode } from '@tupaia/utils';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 
 export const assertCanImportEntities = async (accessPolicy, entitiesByCountryName) => {
-  const countryCodes = Object.entries(entitiesByCountryName).map(([countryName, entities]) => {
-    return getCountryCode(countryName, entities);
-  });
+  const countryCodes = Object.keys(entitiesByCountryName).map(countryName =>
+    getCountryCode(countryName),
+  );
 
   for (let i = 0; i < countryCodes.length; i++) {
     const countryCode = countryCodes[i];

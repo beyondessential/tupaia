@@ -34,7 +34,7 @@ export async function updateCountryEntities(
   entityObjects,
   pushToDhis = true,
 ) {
-  const countryCode = getCountryCode(countryName, entityObjects);
+  const countryCode = getCountryCode(countryName);
   const country = await transactingModels.country.findOrCreate(
     { name: countryName },
     { code: countryCode },
