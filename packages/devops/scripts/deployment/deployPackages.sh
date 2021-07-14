@@ -32,7 +32,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     if [[ "$BRANCH" == *-e2e ]]; then
         # Update e2e environment variables
         if [[ $PACKAGE == "meditrak-server" || $PACKAGE == "web-config-server" ]]; then
-            sed -i -e "s/^AGGREGATION_URL_PREFIX=dev-$/AGGREGATION_URL_PREFIX=e2e-/g" .env
+            sed -i -E 's/^AGGREGATION_URL_PREFIX="?dev-"?$/AGGREGATION_URL_PREFIX=e2e-/g' .env
         fi
     fi
 
