@@ -17,7 +17,7 @@ else
     ENVIRONMENT="dev"
 fi
 
-PACKAGES=("meditrak-server" "web-config-server" "psss-server" "lesmis-server" "report-server" "entity-server" "web-frontend" "admin-panel" "psss" "lesmis")
+PACKAGES=("meditrak-server" "web-config-server" "psss-server" "lesmis-server" "admin-panel-server" "report-server" "entity-server" "web-frontend" "admin-panel" "psss" "lesmis")
 # For each package, get the latest and deploy it
 for PACKAGE in ${PACKAGES[@]}; do
     # reset cwd back to `/tupaia`
