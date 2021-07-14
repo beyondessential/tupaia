@@ -15,6 +15,7 @@ import { TabPanel, TabBar, TabBarSection, YearSelector } from '../components';
 import { useUrlParams, useUrlSearchParams, useUrlSearchParam } from '../utils';
 import { useEntityData } from '../api/queries';
 import { DEFAULT_DATA_YEAR } from '../constants';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 
 const StyledSelect = styled(Select)`
   margin: 0 1rem 0 0;
@@ -176,7 +177,7 @@ export const DashboardView = React.memo(() => {
   };
 
   return (
-    <>
+    <ErrorBoundary>
       <VitalsView entityCode={entityCode} entityType={entityData?.type} />
       {dropdownOptions.map(({ value, TabComponent, useYearSelector, componentProps }) => (
         <TabPanel key={value} isSelected={value === selectedOption} Panel={React.Fragment}>
@@ -208,6 +209,6 @@ export const DashboardView = React.memo(() => {
           />
         </TabPanel>
       ))}
-    </>
+    </ErrorBoundary>
   );
 });
