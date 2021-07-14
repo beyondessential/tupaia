@@ -4,12 +4,11 @@
  * This source code is licensed under the AGPL-3.0 license
  * found in the LICENSE file in the root directory of this source tree.
  */
-
 import React from 'react';
 import PropTypes from 'prop-types';
-import CircularProgress from 'material-ui/CircularProgress';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
-
+import CircularProgress from 'material-ui/CircularProgress';
 import List from '../../../components/mobile/List';
 import Overlay from '../../../components/mobile/Overlay';
 import {
@@ -19,33 +18,31 @@ import {
   setOverlayComponent,
 } from '../../../actions';
 import { DARK_BLUE, WHITE } from '../../../styles';
+import { EntityNav } from '../EntityNav';
 
-const SearchOverlay = ({
-  isLoading,
-  searchString,
-  searchResponse,
-  onToggleSearchExpand,
-  onChangeSearch,
-  onChangeOrgUnit,
-}) => (
-  <Overlay
-    titleElement={renderTitleElement(searchString, isLoading, onChangeSearch)}
-    onClose={onToggleSearchExpand}
-  >
-    <List
-      title={getSearchResponseMessage(searchString, searchResponse, isLoading)}
-      items={searchResponse.map(({ displayName, organisationUnitCode }) => ({
-        title: displayName,
-        key: organisationUnitCode,
-        data: organisationUnitCode,
-      }))}
-      onSelectItem={organisationUnitCode => {
-        onToggleSearchExpand();
-        onChangeOrgUnit(organisationUnitCode);
-      }}
-    />
-  </Overlay>
-);
+const SearchInput = styled.input`
+  display: block;
+  outline: 0;
+  border: 0;
+  background-color: ${DARK_BLUE};
+  color: ${WHITE};
+  padding: 12px;
+  flex-grow: 1;
+  box-sizing: border-box;
+  border-radius: 2px;
+`;
+
+const SearchLoader = styled(CircularProgress)`
+  position: absolute;
+  top: 14px;
+  right: 45px;
+`;
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-grow: 1;
+`;
 
 const getSearchResponseMessage = (searchString, searchResponse, searchIsLoading) => {
   const resultCount = searchResponse.length;
@@ -66,44 +63,49 @@ const getSearchResponseMessage = (searchString, searchResponse, searchIsLoading)
 };
 
 const renderTitleElement = (searchString, isLoading, onChangeSearch) => (
-  <div style={styles.searchOverlayTitle}>
-    <input
+  <Container>
+    <SearchInput
       type="text"
       autoCorrect="off"
       spellCheck="false"
       autoComplete="off"
       placeholder="Location name..."
       autoFocus // eslint-disable-line jsx-a11y/no-autofocus
-      style={styles.searchInput}
       value={searchString}
       onChange={event => onChangeSearch(event.target.value)}
     />
-    {isLoading && <CircularProgress style={styles.searchInputLoader} color={WHITE} size={25} />}
-  </div>
+    {isLoading && <SearchLoader color={WHITE} size={25} />}
+  </Container>
 );
 
-const styles = {
-  searchInput: {
-    display: 'block',
-    outline: 0,
-    border: 0,
-    backgroundColor: DARK_BLUE,
-    color: WHITE,
-    padding: 12,
-    flexGrow: 1,
-    boxSizing: 'border-box',
-    borderRadius: 2,
-  },
-  searchInputLoader: {
-    position: 'absolute',
-    top: 14,
-    right: 45,
-  },
-  searchOverlayTitle: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    display: 'flex',
-  },
+const SearchOverlay = ({
+  isLoading,
+  searchString,
+  searchResponse,
+  onToggleSearchExpand,
+  onChangeSearch,
+  onChangeOrgUnit,
+}) => {
+  return (
+    <Overlay
+      titleElement={renderTitleElement(searchString, isLoading, onChangeSearch)}
+      onClose={onToggleSearchExpand}
+    >
+      {!searchString && <EntityNav />}
+      <List
+        title={getSearchResponseMessage(searchString, searchResponse, isLoading)}
+        items={searchResponse.map(({ displayName, organisationUnitCode }) => ({
+          title: displayName,
+          key: organisationUnitCode,
+          data: organisationUnitCode,
+        }))}
+        onSelectItem={organisationUnitCode => {
+          onToggleSearchExpand();
+          onChangeOrgUnit(organisationUnitCode);
+        }}
+      />
+    </Overlay>
+  );
 };
 
 SearchOverlay.propTypes = {
@@ -117,9 +119,7 @@ SearchOverlay.propTypes = {
 
 const mapStateToProps = state => {
   const { isLoadingSearchResults, searchString, searchResults } = state.searchBar;
-
   const { isOverlayOpen } = state.global;
-
   return {
     isLoading: isLoadingSearchResults,
     searchString,
