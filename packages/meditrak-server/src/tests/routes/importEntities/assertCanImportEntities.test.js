@@ -27,7 +27,7 @@ describe('assertCanImportEntities(): Permissions checker for Importing Entities'
   });
 
   it('Sufficient permissions: Should allow importing entities within multiple country if users have access to all the countries that the entities are within', async () => {
-    const countryNames = ['Kiribai', 'Solomon Islands'];
+    const countryNames = ['Kiribati', 'Solomon Islands'];
 
     const result = await assertCanImportEntities(accessPolicy, countryNames);
     expect(result).to.true;
