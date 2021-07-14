@@ -26,16 +26,16 @@ const printResults = ({ baseUrl, compareUrl }, { baseError, compareError }) => {
 
   logger.info();
 
-  const printUrlResult = (error, url, description) => {
+  const printResult = (description, error) => {
     if (error) {
-      logger.error(`❌ ${description} url: ${url}`);
+      logger.error(`❌ ${description}`);
     } else {
-      logger.success(`✔ ${description} url: ${url}`);
+      logger.success(`✔ ${description}`);
     }
   };
 
-  printUrlResult(baseError, baseUrl, 'base');
-  printUrlResult(compareError, compareUrl, 'compare');
+  printResult(`Base url: ${baseUrl}`, baseError);
+  printResult(`Compare url: ${compareUrl}`, compareError);
 
   if (baseError || compareError) {
     logger.error(`❌ E2e tests failed`);
