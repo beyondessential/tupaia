@@ -44,8 +44,8 @@ const printResults = ({ baseUrl, compareUrl }, { baseError, compareError }) => {
         [
           '',
           'Note: since the tests for the base url failed, some base snapshots may be missing.',
-          'If this is the case, the test cases that depend on those snapshots may be false positives: tests always pass when snapshots are empty',
-          'Please check the detailed cypress logs to decide whether this is the case',
+          'If this is true the test cases that depend on those snapshots may be false positive: tests always pass when snapshots are empty',
+          'Please check the detailed cypress logs to determine whether this is the case',
         ].join('\n'),
       );
     }
