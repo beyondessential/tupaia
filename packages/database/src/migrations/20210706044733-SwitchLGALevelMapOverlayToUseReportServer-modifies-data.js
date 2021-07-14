@@ -214,7 +214,7 @@ exports.up = async function (db) {
 
   await db.runSql(`
     UPDATE "mapOverlay"
-    SET "presentationOptions" = "presentationOptions" || '{"info":{"reference":{"text":"Response number is decimal because postcode and its data can be divided into multiple LGAs"}}}'::jsonb
+    SET "presentationOptions" = "presentationOptions" || '{"info":{"reference":{"text":"The raw numbers displayed can have decimal places because postcodes do not all fit within single LGAs in Australia and we use ratio tables to convert postcode data to LGAs."}}}'::jsonb
     WHERE id in (${arrayToDbString(
       mapOverlays.filter(({ id }) => id.includes('LGA')).map(m => m.id),
     )})
