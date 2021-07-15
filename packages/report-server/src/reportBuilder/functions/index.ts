@@ -11,12 +11,11 @@ import {
   periodToDisplayString,
   formatAsFractionAndPercentage,
 } from './utils';
-import { sum } from './math';
+import { sum, divide } from './math';
 
 export const functions = {
   value,
   last,
-  sum,
   eq,
   notEq,
   gt,
@@ -26,5 +25,7 @@ export const functions = {
   dateStringToPeriod,
   periodToTimestamp,
   periodToDisplayString,
+  sum,
+  divide,
   formatAsFractionAndPercentage,
 };

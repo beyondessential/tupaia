@@ -10,19 +10,19 @@ import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { countDistinct, toArray } from '@tupaia/utils';
 import { createService } from './services';
 
-let database;
+let modelRegistry;
 
-const getDatabaseInstance = () => {
-  if (!database) {
-    database = new TupaiaDatabase();
+const getModelRegistry = () => {
+  if (!modelRegistry) {
+    modelRegistry = new ModelRegistry(new TupaiaDatabase());
   }
-  return database;
+  return modelRegistry;
 };
 
 export class DataBroker {
   constructor(context = {}) {
     this.context = context;
-    this.models = new ModelRegistry(getDatabaseInstance());
+    this.models = getModelRegistry();
     this.resultMergers = {
       [this.getDataSourceTypes().DATA_ELEMENT]: this.mergeAnalytics,
       [this.getDataSourceTypes().DATA_GROUP]: this.mergeEvents,

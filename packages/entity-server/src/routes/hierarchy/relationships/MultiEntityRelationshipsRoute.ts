@@ -4,28 +4,11 @@
  */
 
 import { Route } from '@tupaia/server-boilerplate';
-import { MultiEntityRelationshipsRequest, RelationshipsResponseBody } from './types';
+import { MultiEntityRelationshipsRequest } from './types';
 import { ResponseBuilder } from './ResponseBuilder';
 
 export class MultiEntityRelationshipsRoute extends Route<MultiEntityRelationshipsRequest> {
   async buildResponse() {
-    const { entities } = this.req.ctx;
-
-    const allResponses: RelationshipsResponseBody = {};
-    await Promise.all(
-      entities.map(async entity => {
-        const singleCtx = { ...this.req.ctx, entity };
-        const response = await new ResponseBuilder(
-          this.req.models,
-          singleCtx,
-          this.req.query.groupBy,
-        ).build();
-        Object.entries(response).forEach(([key, value]) => {
-          allResponses[key] = value;
-        });
-      }),
-    );
-
-    return allResponses;
+    return new ResponseBuilder(this.req.models, this.req.ctx, this.req.query.groupBy).build();
   }
 }
