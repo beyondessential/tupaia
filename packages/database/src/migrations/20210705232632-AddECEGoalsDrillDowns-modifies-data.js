@@ -1,6 +1,12 @@
 'use strict';
 
-import { insertObject, generateId, findSingleRecord, findSingleRecordBySql } from '../utilities';
+import {
+  insertObject,
+  deleteObject,
+  generateId,
+  findSingleRecord,
+  findSingleRecordBySql,
+} from '../utilities';
 
 var dbm;
 var type;
@@ -16,9 +22,19 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
+const generateIndicator = (code, dataElement, target) => ({
+  id: generateId(),
+  code,
+  builder: 'analyticArithmetic',
+  config: {
+    formula: `${target}`,
+    aggregation: { [dataElement]: 'MOST_RECENT' },
+  },
+});
+
 const generateReport = (dataElement, target) => ({
   fetch: {
-    dataElements: [dataElement],
+    dataElements: target ? [dataElement, target] : [dataElement],
     aggregations: [
       {
         type: 'MOST_RECENT',
@@ -33,7 +49,7 @@ const generateReport = (dataElement, target) => ({
     {
       transform: 'select',
       "'Current'": `$row.${dataElement}/100`,
-      "'Target'": `${target || undefined}`,
+      "'Target'": target ? `$row.${target}` : 'undefined',
       "'timestamp'": 'periodToTimestamp($row.period)',
     },
     {
@@ -63,7 +79,8 @@ const FRONT_END_CONFIG = {
 
 const CONFIG_0_2_REPORT = {
   code: 'LESMIS_enrolment_ece_0_2_target',
-  reportConfig: generateReport('er_district_ece_0_2_t', '0.07'),
+  indicator: generateIndicator('er_target_ece_0_2_t', 'er_district_ece_0_2_t', '0.07'),
+  reportConfig: generateReport('er_district_ece_0_2_t', 'er_target_ece_0_2_t'),
   frontEndConfig: { ...FRONT_END_CONFIG, name: 'Enrolment rate of 0-2 year old students in ECE' },
 };
 
@@ -79,7 +96,8 @@ const CONFIG_3_4_REPORT = {
 
 const CONFIG_5_REPORT = {
   code: 'LESMIS_enrolment_ece_5_target',
-  reportConfig: generateReport('er_district_ece_5_t', '0.86'),
+  indicator: generateIndicator('er_target_ece_5_t', 'er_district_ece_5_t', '0.86'),
+  reportConfig: generateReport('er_district_ece_5_t', 'er_target_ece_5_t'),
   frontEndConfig: { ...FRONT_END_CONFIG, name: 'Enrolment rate of 5 year old students in ECE' },
 };
 
@@ -115,11 +133,14 @@ const removeDashboardItemAndReport = async (db, code) => {
 };
 
 exports.up = async function (db) {
-  for (const { code, reportConfig, frontEndConfig } of [
+  for (const { code, indicator, reportConfig, frontEndConfig } of [
     CONFIG_0_2_REPORT,
     CONFIG_3_4_REPORT,
     CONFIG_5_REPORT,
   ]) {
+    if (indicator) {
+      await insertObject(db, 'indicator', indicator);
+    }
     await addNewDashboardItemAndReport(db, {
       code,
       reportConfig,
@@ -130,7 +151,10 @@ exports.up = async function (db) {
 };
 
 exports.down = async function (db) {
-  for (const { code } of [CONFIG_0_2_REPORT, CONFIG_3_4_REPORT, CONFIG_5_REPORT]) {
+  for (const { code, indicator } of [CONFIG_0_2_REPORT, CONFIG_3_4_REPORT, CONFIG_5_REPORT]) {
+    if (indicator) {
+      await deleteObject(db, 'indicator', { code: indicator.code });
+    }
     await removeDashboardItemAndReport(db, code);
   }
 };
