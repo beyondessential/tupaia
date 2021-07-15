@@ -48,14 +48,19 @@ const generateReport = (dataElement, target) => ({
     'keyValueByDataElementName',
     {
       transform: 'select',
-      "'Current'": `$row.${dataElement}/100`,
-      "'Target'": target ? `$row.${target}` : 'undefined',
       "'timestamp'": 'periodToTimestamp($row.period)',
+      '...': '*',
     },
     {
       transform: 'aggregate',
       timestamp: 'group',
       '...': 'last',
+    },
+    {
+      transform: 'select',
+      "'Current'": `$row.${dataElement}/100`,
+      "'Target'": target ? `$row.${target}` : 'undefined',
+      '...': ['timestamp'],
     },
   ],
 });
