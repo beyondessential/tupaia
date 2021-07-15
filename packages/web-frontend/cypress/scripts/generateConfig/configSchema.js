@@ -26,7 +26,7 @@ export const configSchema = shape({
       code: stringOrStrings,
       project: stringOrStrings,
       orgUnit: stringOrStrings,
-      dashboardGroup: stringOrStrings,
+      dashboard: stringOrStrings,
       startDate: stringOrStrings,
       endDate: stringOrStrings,
       dataBuilder: stringOrStrings,

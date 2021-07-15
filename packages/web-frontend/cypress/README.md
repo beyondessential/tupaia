@@ -23,7 +23,7 @@ Our e2e tests support Tupaia-specific configuration specified in [config.json](c
       "code": ["report_code1", "report_code2"],
       "project": ["covidau", "strive"],
       "orgUnit": "PG",
-      "dashboardGroup": "Dashboard Group1",
+      "dashboard": "Dashboard1",
       "dataBuilder": ["tableOfEvents", "sumAll"]
     }
   },
@@ -81,7 +81,7 @@ Two formats are supported:
     "code": "COVID_Compose_Daily_Deaths_Vs_Cases",
     "project": "covidau",
     "orgUnit": "AU",
-    "dashboardGroup": "COVID-19",
+    "dashboard": "COVID-19",
     "startDate": "2020-01-01",
     "endDate": "2020-12-31"
   }
