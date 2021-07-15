@@ -142,6 +142,7 @@ const REPORT_CONFIG = {
   },
   transform: [
     'keyValueByDataElementName',
+    'mostRecentValuePerOrgUnit',
     {
       transform: 'select',
       "'HLO1'": `{
@@ -176,23 +177,14 @@ const REPORT_CONFIG = {
         label: 'Strategy 5: Encourage individuals, organizations, local and international investors to invest in ECE development.',
         parent: 'IO1_1',
       }`,
-      "'ECETarget3_4'": `{
-        label: 'Enrolment rate of 3-4 years old children: gender, GPI, total (No 2025 target)*',
-        parent: 'IO1_1',
-      }`,
-      '...': '*',
-    },
-    {
-      transform: 'aggregate',
-      HLO1: 'group',
-      '...': 'last',
-    },
-    {
-      transform: 'select',
       "'ECETarget0_2'": `{
         label:
           'TARGET: Enrolment rate of 0-2 years old children: gender, GPI, total – 2025 target of 7%',
         statistic: $row.er_summary_ece_0_2_t,
+        parent: 'IO1_1',
+      }`,
+      "'ECETarget3_4'": `{
+        label: 'Enrolment rate of 3-4 years old children: gender, GPI, total (No 2025 target)*',
         parent: 'IO1_1',
       }`,
       "'ECETarget5'": `{
@@ -201,7 +193,6 @@ const REPORT_CONFIG = {
         statistic: $row.er_summary_ece_5_t,
         parent: 'IO1_1',
       }`,
-      '...': '*',
     },
   ],
 };
