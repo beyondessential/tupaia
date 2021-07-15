@@ -1,5 +1,4 @@
 [
-  
   {
     "code": "3",
     "project": "explore",
@@ -146,19 +145,19 @@
   },
   {
     "code": "36",
-    "project": "fanafana",
+    "project": "explore",
     "orgUnit": "TO",
     "dashboardGroup": "PEHS"
   },
   {
     "code": "39",
-    "project": "fanafana",
+    "project": "explore",
     "orgUnit": "TO_Neikihp",
     "dashboardGroup": "PEHS"
   },
   {
     "code": "40",
-    "project": "fanafana",
+    "project": "explore",
     "orgUnit": "TO",
     "dashboardGroup": "PEHS"
   },
@@ -372,7 +371,7 @@
     "startDate": "2021-01-01",
     "endDate": "2021-12-31"
   },
-      {
+  {
     "code": "LESMIS_teachers_education_level_district",
     "project": "laos_schools",
     "orgUnit": "LA_Phouvong District",
@@ -797,13 +796,13 @@
   },
   {
     "code": "TO_PEHS",
-    "project": "fanafana",
+    "project": "explore",
     "orgUnit": "TO",
     "dashboardGroup": "PEHS"
   },
   {
     "code": "TO_PEHS_Facility",
-    "project": "fanafana",
+    "project": "explore",
     "orgUnit": "TO_Neikihp",
     "dashboardGroup": "PEHS"
   },
