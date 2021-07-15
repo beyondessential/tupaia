@@ -26,6 +26,18 @@ export const countDistinct = (array, mapperInput) => {
   return new Set(array.map(mapItem)).size;
 };
 
+export const hasIntersection = (input1, input2) => {
+  const set1 = new Set(input1);
+  const set2 = new Set(input2);
+
+  for (const v of set1) {
+    if (set2.has(v)) {
+      return true;
+    }
+  }
+  return false;
+};
+
 export const min = array =>
   Array.isArray(array) && array.length > 0
     ? array.reduce((result, value) => (compareAsc(value, result) <= 0 ? value : result), array[0])

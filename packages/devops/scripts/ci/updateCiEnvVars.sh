@@ -24,7 +24,7 @@ echo "Checking out previous ci-env-vars"
 git reset -q HEAD ci-env-vars.encrypted
 git checkout $COMPARE_BRANCH -- ci-env-vars.encrypted
 git reset -q HEAD ci-env-vars.encrypted
-echo "Decryting old ci-env-vars"
+echo "Decrypting old ci-env-vars"
 jet decrypt ci-env-vars.encrypted old.env
 echo "Creating new ci-env-vars"
 for PACKAGE in "meditrak-server" "admin-panel" "web-frontend" "web-config-server" "devops" "data-api" "database"; do

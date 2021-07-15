@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { countDistinct, min, max, removeAt, toArray } from '../array';
+import { countDistinct, min, max, removeAt, toArray, hasIntersection } from '../array';
 
 describe('countDistinct', () => {
   const testData = [
@@ -30,6 +30,44 @@ describe('countDistinct', () => {
 
   it.each(testData)('%s', (_, [array, mapper], expected) => {
     expect(countDistinct(array, mapper)).toBe(expected);
+  });
+});
+
+describe('hasIntersection', () => {
+  describe('return `true` if at least one item is shared between the inputs', () => {
+    const testData = [
+      ['one element arrays', [1], [1]],
+      ['arrays with exactly one shared element (first element) (i)', [1], [1, 2]],
+      ['arrays with exactly one shared element (first element) (ii)', [1, 2], [1, 3]],
+      [
+        'arrays with exactly one shared element (not first element, same array position)',
+        [2, 1],
+        [3, 1],
+      ],
+      ['arrays with exactly one shared element (different array position)', [2, 1], [3, 4, 1, 5]],
+      ['arrays with multiple shared elements', [1, 2], [1, 2, 3]],
+    ];
+
+    it.each(testData)('%s', (_, input1, input2) => {
+      expect(hasIntersection(input1, input2)).toBe(true);
+      expect(hasIntersection(input2, input1)).toBe(true);
+    });
+  });
+
+  describe('return `false` if no item is shared between the inputs', () => {
+    const testData = [
+      ['both arrays are empty', [], []],
+      ['one array is empty, the other not', [], [1]],
+      ['no common element (i)', [1], [3, 4]],
+      ['no common element (ii)', [1, 2], [3, 4]],
+      ['arrays with loosely but not strictly shared element (primitive)', [1], ['1']],
+      ['arrays with loosely but not strictly shared element (object)', [{ a: 1 }], [{ a: 1 }]],
+    ];
+
+    it.each(testData)('%s', (_, input1, input2) => {
+      expect(hasIntersection(input1, input2)).toBe(false);
+      expect(hasIntersection(input2, input1)).toBe(false);
+    });
   });
 });
 

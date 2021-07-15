@@ -40,7 +40,7 @@ const grantPermissionsToTestUser = async (db, { user, entities }) => {
   );
 };
 
-export const createTestUsers = async db => {
+export const generateTestUsers = async db => {
   await upsertTestUserRecord(db, TEST_USER_1);
   await upsertTestUserRecord(db, TEST_USER_2);
   await grantPermissionsToTestUser(db, { user: TEST_USER_1, entities: "'TO'" });
