@@ -12,10 +12,10 @@ declare
       survey_response.id as event_id,
       answer.text as value,
       question.type as type,
-      date_trunc(''day'', survey_response.data_time) as "day_period",
-      date_trunc(''week'', survey_response.data_time) as "week_period",
-      date_trunc(''month'', survey_response.data_time) as "month_period",
-      date_trunc(''year'', survey_response.data_time) as "year_period",
+      to_char(survey_response.data_time, ''YYYYMMDD'') as "day_period",
+      concat(extract (year from survey_response.data_time), ''W'', extract (week from survey_response.data_time)) as "week_period",
+      to_char(survey_response.data_time, ''YYYYMM'') as "month_period",
+      to_char(survey_response.data_time, ''YYYY'') as "year_period",
       survey_response.data_time as "date"
     FROM
       survey_response

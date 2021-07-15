@@ -86,7 +86,6 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
     }
     // if mapping from one set of entities to another, include the mapped codes as "aggregation_entity_code"
     const entityMap = aggregation.config.orgUnitMap;
-    console.log(entityMap);
     const columns = ['code', 'aggregation_entity_code'];
     const rows = Object.entries(entityMap).map(([key, value]) => [key, value.code]);
     return `
@@ -99,14 +98,14 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
     return [
       `entity_code AS "entityCode"`,
       'data_element_code AS "dataElementCode"',
-      'date',
+      'period',
       'value',
       'type',
     ].join(', ');
   }
 
   getAggregationSelect(aggregation) {
-    const { aggregationFunction } = aggregation.switches;
+    const { aggregationFunction, groupByPeriodField = 'period' } = aggregation.switches;
     const fields = [];
     fields.push(`${this.getEntityCodeField(aggregation)} as entity_code`);
     fields.push(`data_element_code`);
@@ -117,6 +116,7 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
     fields.push('MAX(month_period) as month_period');
     fields.push('MAX(year_period) as year_period');
     fields.push('MAX(date) as date');
+    fields.push(`MAX(${groupByPeriodField}) as period`);
 
     return `SELECT ${fields.join(', ')}`;
   }
@@ -174,7 +174,7 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
       .map(aggregation => this.getEntityCommonTableExpression(aggregation))
       .join('\n')}`;
 
-    const baseAnalytics = `(SELECT * from analytics
+    const baseAnalytics = `(SELECT *, day_period as period from analytics
       ${this.getBaseInnerJoins()}
       ${this.getBaseWhereClause()}) as base_analytics`;
 

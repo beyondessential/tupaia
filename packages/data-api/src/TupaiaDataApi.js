@@ -54,10 +54,10 @@ export class TupaiaDataApi {
     await validateAnalyticsOptions(optionsInput);
     const options = sanitiseFetchDataOptions(optionsInput);
     const results = await new AnalyticsFetchQuery(this.database, options).fetch();
-    return results.map(({ entityCode, dataElementCode, date, type, value }) => ({
+    return results.map(({ entityCode, dataElementCode, period, type, value }) => ({
       organisationUnit: entityCode,
       dataElement: dataElementCode,
-      date: momentToDateString(moment(date)),
+      period,
       value: sanitizeDataValue(value, type),
     }));
   }
