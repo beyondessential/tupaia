@@ -3,10 +3,9 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { reformatDateStringWithoutTz } from './stripTimezoneFromDate';
-
 export * from './array';
 export { AsyncTaskQueue } from './AsyncTaskQueue';
+export { DEFAULT_BINARY_OPTIONS, DEFAULT_BINARY_OPTIONS_OBJECT } from './constant';
 export * from './compare';
 export * from './createBasicHeader';
 export * from './cypress';
@@ -24,7 +23,6 @@ export { requireEnv } from './requireEnv';
 export { getUniqueEntries } from './getUniqueEntries';
 export { getLoggerInstance } from './getLoggerInstance';
 export { getTokenExpiry } from './getTokenExpiry';
-export { RemoteGitRepo } from './RemoteGitRepo';
 export * from './object';
 export * from './request';
 export { replaceValues } from './replaceValues';
