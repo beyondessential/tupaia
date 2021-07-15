@@ -35,7 +35,7 @@ const urlToRouteRegex = url => {
     throw new Error(`'${url}' is not a valid report url: it must contain a 'report' query param`);
   }
 
-  return new RegExp(`measureData?.*\\WmeasureId=${measureId}[&$]`);
+  return new RegExp(`measureData\\?(.*&|)measureId=${measureId}(&|$)`);
 };
 
 describe('Map overlays', () => {
