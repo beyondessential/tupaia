@@ -13,6 +13,10 @@
       "path": "packages/admin-panel"
     },
     {
+      "name": "admin-panel-server",
+      "path": "packages/admin-panel-server"
+    },
+    {
       "name": "aggregator",
       "path": "packages/aggregator"
     },

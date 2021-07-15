@@ -22,6 +22,8 @@ COPY scripts/. ./scripts
 ## directories, so that code changes don't invalidate the container cache before we've yarn installed
 RUN mkdir -p ./packages/access-policy
 COPY packages/access-policy/. ./packages/access-policy
+RUN mkdir -p ./packages/admin-panel-server
+COPY packages/admin-panel-server/package.json ./packages/admin-panel-server
 RUN mkdir -p ./packages/aggregator
 COPY packages/aggregator/package.json ./packages/aggregator
 RUN mkdir -p ./packages/auth

@@ -14,12 +14,8 @@ import { UnauthenticatedError } from '@tupaia/utils';
 
 import { handleWith, handleError } from '../../utils';
 import { TestRoute } from '../../routes';
-import {
-  LoginRoute,
-  LoginRequest,
-  LogoutRoute,
-  attachSession as defaultAttachSession,
-} from '../routes';
+import { LoginRoute, LoginRequest, LogoutRoute } from '../routes';
+import { attachSession as defaultAttachSession } from '../session';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
 import { sessionCookie } from './sessionCookie';
 import { SessionModel } from '../models';
