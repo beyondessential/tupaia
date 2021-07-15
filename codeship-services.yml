@@ -34,7 +34,7 @@ e2e:
   encrypted_env_file: ./ci-env-vars.encrypted
   cached: true
   encrypted_dockercfg_path: dockercfg.encrypted
-  default_cache_branch: 'dev'
+  default_cache_branch: 'master'
   volumes:
     # see https://docs.cloudbees.com/docs/cloudbees-codeship/latest/pro-continuous-integration/browser-testing#_chrome_crashing
     - /dev/shm:/dev/shm
