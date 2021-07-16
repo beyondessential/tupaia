@@ -32,23 +32,6 @@ def get_latest_snapshot_id(account_ids, restore_code):
     print('Found snapshot with id ' + snapshot_id)
     return snapshot_id
 
-def get_tag(instance, tag_name):
-    try:
-        tag_value = [
-            t.get('Value') for t in instance['Tags']
-            if t['Key'] == tag_name][0]
-    except IndexError:
-        tag_value = ''
-    return tag_value
-
-def get_instances(filters):
-    reservations = ec.describe_instances(
-        Filters=filters
-    ).get(
-        'Reservations', []
-    )
-    return reservations[0]['Instances']
-
 
 async def restore_instance(account_ids, instance):
     print('Restoring instance {}'.format(instance['InstanceId']))
