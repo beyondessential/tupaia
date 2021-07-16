@@ -5,17 +5,11 @@
 
 import { TupaiaService } from '../../../services/tupaia/TupaiaService';
 import { createModelsStub, createTupaiaDataApiStub } from './TupaiaService.stubs';
-import {
-  ANALYTICS,
-  FETCH_ANALYTICS_RESULTS,
-  DATA_SOURCES,
-  EVENTS,
-  DATA_ELEMENTS,
-} from './TupaiaService.fixtures';
+import { ANALYTICS, DATA_SOURCES, EVENTS, DATA_ELEMENTS } from './TupaiaService.fixtures';
 
 const models = createModelsStub();
 const tupaiaDataApi = createTupaiaDataApiStub({
-  fetchAnalyticsResponse: FETCH_ANALYTICS_RESULTS,
+  fetchAnalyticsResponse: ANALYTICS,
   fetchEventsResponse: EVENTS,
 });
 const tupaiaService = new TupaiaService(models, tupaiaDataApi);
