@@ -350,16 +350,14 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
         case MEASURE_TYPE_SHADED_SPECTRUM:
           displayInfo.originalValue =
             valueInfo.value === null || valueInfo.value === undefined ? 'No data' : valueInfo.value;
-          displayInfo.color =
-            displayInfo.color ||
-            resolveSpectrumColour(
-              scaleType,
-              scaleColorScheme,
-              valueInfo.value || (valueInfo.value === 0 ? 0 : null),
-              min,
-              max,
-              noDataColour,
-            );
+          displayInfo.color = resolveSpectrumColour(
+            scaleType,
+            scaleColorScheme,
+            valueInfo.value || (valueInfo.value === 0 ? 0 : null),
+            min,
+            max,
+            noDataColour,
+          );
           displayInfo.icon = valueInfo.icon || displayInfo.icon || SPECTRUM_ICON;
           break;
         case MEASURE_TYPE_SHADING:
