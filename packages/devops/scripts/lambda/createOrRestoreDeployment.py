@@ -4,6 +4,7 @@ import datetime
 import re
 import asyncio
 import functools
+from utilities import *
 
 ec2 = boto3.resource('ec2')
 ec = boto3.client('ec2')
@@ -107,21 +108,26 @@ async def restore_instance(account_ids, instance):
     await wait_for_instance(instance_object.id, 'running')
     print('Instance successfully restored')
 
-def build_record_set_change(domain, subdomain, stage, ip_address):
+def build_record_set_change(domain, subdomain, stage, gateway):
     if (subdomain == ''):
         url = stage + '.' + domain + '.'
     else:
         url = stage + '-' + subdomain + '.' + domain + '.'
+
+    # prefix with dualstack, see
+    # https://aws.amazon.com/premiumsupport/knowledge-center/alias-resource-record-set-route53-cli/
+    dns_name = 'dualstack.' + gateway['DNSName']
 
     return {
         'Action': 'UPSERT',
         'ResourceRecordSet': {
             'Name': url,
             'Type': 'A',
-            'TTL': 300,
-            'ResourceRecords': [
-                { 'Value': ip_address }
-            ]
+            'AliasTarget': {
+                'HostedZoneId': gateway['CanonicalHostedZoneId'],
+                'DNSName': dns_name,
+                'EvaluateTargetHealth': False
+            }
         }
     }
 
@@ -187,10 +193,22 @@ def create_instance(account_ids, restore_code, stage, instance_type):
     ec.associate_address(AllocationId=elastic_ip['AllocationId'],InstanceId=new_instance_object['InstanceId'])
     public_ip_address = elastic_ip['PublicIp']
 
-    # Set up subdomains on hosted zone and point them at this instance's ip
+    # Fetch *.tupaia.org certificate
+    ssl_certificate = get_cert('TupaiaWildcard')
+
+    # Create a gateway for this instance
+    print('Creating gateway')
+    gateway_elb = create_gateway(
+        tupaia_instance_name=stage,
+        tupaia_instance_id=new_instance.id,
+        ssl_certificate_arn=ssl_certificate['CertificateArn']
+    )
+    print('Created gateway')
+
+    # Set up subdomains on hosted zone and point them at the gateway
     subdomains = subdomains_string.split(',')
-    print('Creating subdomains pointing to {}'.format(public_ip_address))
-    record_set_changes = [build_record_set_change(domain, subdomain, stage, public_ip_address) for subdomain in subdomains]
+    print('Creating subdomains forwarding to gateway')
+    record_set_changes = [build_record_set_change(domain, subdomain, stage, gateway_elb) for subdomain in subdomains]
     print('Generated {} record set changes'.format(len(record_set_changes)))
     hosted_zone_id = route53.list_hosted_zones_by_name(DNSName=domain)['HostedZones'][0]['Id']
     route53.change_resource_record_sets(
@@ -203,6 +221,40 @@ def create_instance(account_ids, restore_code, stage, instance_type):
     print('Submitted changes to hosted zone')
 
     return new_instance_object
+
+
+def create_gateway(tupaia_instance_name, tupaia_instance_id, ssl_certificate_arn):
+    # 1. Create ELB
+    prod_gateway_elb = get_gateway_elb('production')
+    new_gateway_elb = create_gateway_elb(
+        tupaia_instance_name=tupaia_instance_name,
+        config=prod_gateway_elb,
+        gateway_name='gateway-elb-' + tupaia_instance_id,
+    )
+    new_gateway_elb_arn = new_gateway_elb['LoadBalancerArn']
+
+    # 2. Create Target Group
+    prod_gateway_target_group = get_gateway_target_group('production')
+    new_gateway_target_group_arn = create_gateway_target_group(
+        tupaia_instance_name=tupaia_instance_name,
+        config=prod_gateway_target_group,
+        target_group_name='gateway-tg-' + tupaia_instance_id,
+    )
+
+    # 3. Link target group <-> instance
+    register_gateway_target(
+        target_group_arn=new_gateway_target_group_arn,
+        tupaia_instance_id=tupaia_instance_id
+    )
+
+    # 4. Link ELB <-> target group
+    create_gateway_listeners(
+        elb_arn=new_gateway_elb_arn,
+        target_group_arn=new_gateway_target_group_arn,
+        certificate_arn=ssl_certificate_arn
+    )
+
+    return new_gateway_elb
 
 
 def lambda_handler(event, context):
