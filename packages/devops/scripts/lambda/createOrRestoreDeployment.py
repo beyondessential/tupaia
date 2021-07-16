@@ -98,6 +98,9 @@ async def restore_instance(account_ids, instance):
     await wait_for_volume(new_volume_id, 'in_use')
     print('Attached restored volume to instance')
 
+    # Ensure EBS volumes are deleted on termination of instance
+    ec.modify_instance_attribute(InstanceId=instance['InstanceId'], BlockDeviceMappings=[{'DeviceName': dev_to_attach['DeviceName'], 'Ebs': { 'VolumeId': new_volume_id, 'DeleteOnTermination': True }}])
+
     # Start instance with new volume
     instance_object.start()
     print('Restarting instance')
