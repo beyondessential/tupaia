@@ -91,28 +91,6 @@ async def restore_instance(account_ids, instance):
     await wait_for_instance(instance_object.id, 'running')
     print('Instance successfully restored')
 
-def build_record_set_change(domain, subdomain, stage, gateway):
-    if (subdomain == ''):
-        url = stage + '.' + domain + '.'
-    else:
-        url = stage + '-' + subdomain + '.' + domain + '.'
-
-    # prefix with dualstack, see
-    # https://aws.amazon.com/premiumsupport/knowledge-center/alias-resource-record-set-route53-cli/
-    dns_name = 'dualstack.' + gateway['DNSName']
-
-    return {
-        'Action': 'UPSERT',
-        'ResourceRecordSet': {
-            'Name': url,
-            'Type': 'A',
-            'AliasTarget': {
-                'HostedZoneId': gateway['CanonicalHostedZoneId'],
-                'DNSName': dns_name,
-                'EvaluateTargetHealth': False
-            }
-        }
-    }
 
 def create_instance(account_ids, restore_code, stage, instance_type):
     print('Creating new ' + instance_type + ' instance for branch ' + stage + ' of ' + restore_code)
