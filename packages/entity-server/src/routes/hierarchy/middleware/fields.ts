@@ -4,11 +4,11 @@
  */
 
 import { EntityFields } from '../../../models';
-import { ExtendedEntityFields, FlattableEntityFields } from '../types';
+import { ExtendedEntityFieldName, FlattableEntityFieldName } from '../types';
 import { extendedFieldFunctions, isExtendedField } from '../extendedFieldFunctions';
 
-const flattableFields: (keyof FlattableEntityFields)[] = ['id', 'code', 'name'];
-const isFlattableField = (field: string): field is keyof FlattableEntityFields =>
+const flattableFields: FlattableEntityFieldName[] = ['id', 'code', 'name'];
+const isFlattableField = (field: string): field is FlattableEntityFieldName =>
   (flattableFields as string[]).includes(field);
 
 export const extractFieldFromQuery = (queryField?: string) => {
@@ -36,13 +36,13 @@ const validFields: (keyof EntityFields)[] = [
 ];
 const isEntityField = (field: string): field is keyof EntityFields =>
   (validFields as string[]).includes(field);
-const validateField = (field: string): field is keyof ExtendedEntityFields =>
+const validateField = (field: string): field is ExtendedEntityFieldName =>
   isEntityField(field) || isExtendedField(field);
 
 const allFields = [
   ...validFields,
   ...Object.keys(extendedFieldFunctions),
-] as (keyof ExtendedEntityFields)[];
+] as ExtendedEntityFieldName[];
 
 export const extractFieldsFromQuery = (queryFields?: string) => {
   if (!queryFields) {
@@ -50,7 +50,7 @@ export const extractFieldsFromQuery = (queryFields?: string) => {
   }
 
   const requestedFields = queryFields.split(',');
-  const fields = new Set<keyof ExtendedEntityFields>();
+  const fields = new Set<ExtendedEntityFieldName>();
   requestedFields.forEach(requestedField => {
     if (validateField(requestedField)) {
       fields.add(requestedField);

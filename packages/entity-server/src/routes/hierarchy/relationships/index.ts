@@ -5,4 +5,9 @@
 
 export { EntityRelationshipsRoute } from './EntityRelationshipsRoute';
 export { MultiEntityRelationshipsRoute } from './MultiEntityRelationshipsRoute';
-export { RelationshipsRequest, MultiEntityRelationshipsRequest } from './types';
+export {
+  RelationshipsRequest,
+  MultiEntityRelationshipsRequest,
+  GroupByAncestorRelationshipsResponseBody,
+  GroupByDescendantRelationshipsResponseBody,
+} from './types';

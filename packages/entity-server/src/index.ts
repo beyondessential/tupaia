@@ -3,32 +3,36 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import '@babel/polyfill';
+import { PartialOrArray } from '@tupaia/server-boilerplate';
 
-import * as dotenv from 'dotenv';
+import { EntityFields } from './models';
+import {
+  FlattableEntityFieldName,
+  ExtendedEntityFieldName,
+  EntityResponseObject,
+} from './routes/hierarchy/types';
 
-import http from 'http';
+export type EntityFilterObject = PartialOrArray<EntityFields>;
 
-import { createApp } from './app';
-import winston from './log';
+export type EntityApiQueryOptions = {
+  field?: FlattableEntityFieldName;
+  fields?: ExtendedEntityFieldName[];
+  filter?: EntityFilterObject;
+};
+export type RelationshipsSubQueryOptions = Omit<EntityApiQueryOptions, 'fields'>;
 
-dotenv.config(); // Load the environment variables into process.env
+export type EntityApiResponse<T extends ExtendedEntityFieldName[]> = Required<
+  Pick<EntityResponseObject, T[number]>
+>;
 
-/**
- * Set up app with routes etc.
- */
-const app = createApp();
+export {
+  GroupByAncestorRelationshipsResponseBody,
+  GroupByDescendantRelationshipsResponseBody,
+} from './routes/hierarchy/relationships';
 
-/**
- * Start the server
- */
-const port = process.env.PORT || 8050;
-http.createServer(app).listen(port);
-winston.info(`Running on port ${port}`);
-
-/**
- * Notify PM2 that we are ready
- * */
-if (process.send) {
-  process.send('ready');
-}
+export {
+  FlattableEntityFieldName,
+  ExtendedEntityFieldName,
+  EntityResponseObject,
+  FlattenedEntity,
+} from './routes/hierarchy/types';

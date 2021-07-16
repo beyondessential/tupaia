@@ -5,8 +5,9 @@
 
 export {
   SingleEntityRequest,
-  MultiEntityRequest,
   SingleEntityRoute,
+  MultiEntityRequest,
+  MultiEntityRoute,
   EntityDescendantsRoute,
   DescendantsRequest,
   MultiEntityDescendantsRoute,

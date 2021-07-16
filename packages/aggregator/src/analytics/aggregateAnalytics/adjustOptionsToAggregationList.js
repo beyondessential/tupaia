@@ -4,7 +4,7 @@
  */
 
 import { convertDateRangeToPeriodString } from '@tupaia/utils';
-import { EntityConnection } from '../../connections';
+import { DataSourceEntityProvider } from '../../connections';
 import { AGGREGATION_TYPES } from '../../aggregationTypes';
 import { getDateRangeForOffsetPeriod } from './aggregations/offsetPeriod';
 import { getDateRangeForSumPreviousPerPeriod } from './aggregations/sumPreviousPerPeriod';
@@ -48,13 +48,13 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
   aggregationList,
 ) => {
   const { hierarchy, organisationUnitCodes } = fetchOptions;
-  const { session } = context;
-  // TODO: Remove this check for session when implementing https://github.com/beyondessential/tupaia-backlog/issues/2697
-  if (!aggregationList.some(shouldFetchDataSourceEntities) || !session) {
+  const entityApi = context?.microServices?.entityApi;
+  // TODO: Remove this check for entityApi when implementing https://github.com/beyondessential/tupaia-backlog/issues/2697
+  if (!aggregationList.some(shouldFetchDataSourceEntities) || !entityApi) {
     return [organisationUnitCodes, aggregationList];
   }
 
-  const entityConnection = new EntityConnection(session);
+  const entityProvider = new DataSourceEntityProvider(entityApi);
   const adjustedAggregationsAndDataSourceEntites = await Promise.all(
     aggregationList.map(async aggregation => {
       if (!shouldFetchDataSourceEntities(aggregation)) {
@@ -63,7 +63,7 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
 
       if (!shouldFetchRelationships(aggregation)) {
         const { dataSourceEntityType, dataSourceEntityFilter } = aggregation.config;
-        const dataSourceEntities = await entityConnection.getDataSourceEntities(
+        const dataSourceEntities = await entityProvider.getDataSourceEntities(
           hierarchy,
           organisationUnitCodes,
           dataSourceEntityType,
@@ -80,7 +80,7 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
       const [
         dataSourceEntities,
         relationships,
-      ] = await entityConnection.getDataSourceEntitiesAndRelationships(
+      ] = await entityProvider.getDataSourceEntitiesAndRelationships(
         hierarchy,
         organisationUnitCodes,
         aggregationEntityType,

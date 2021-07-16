@@ -7,8 +7,9 @@ import {
   AncestorDescendantRelationModel as BaseAncestorDescendantRelationModel,
   AncestorDescendantRelationType as BaseAncestorDescendantRelationType,
 } from '@tupaia/database';
+import { Model, DbConditional } from '@tupaia/server-boilerplate';
 import { EntityFields } from './Entity';
-import { Model, Joined, DbConditional } from './types';
+import { Joined } from './types';
 
 export type AncestorDescendantRelationFields = Readonly<{
   id: string;

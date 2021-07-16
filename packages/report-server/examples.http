@@ -12,7 +12,7 @@ content-type: {{contentType}}
 Authorization: {{authorization}}
 
 ### Fetch Report With Test Config
-POST {{baseUrl}}/testFetchReport/xx?organisationUnitCodes=TO&hierarchy=psss&period=2020 HTTP/1.1
+POST {{baseUrl}}/testReport?organisationUnitCodes=TO&hierarchy=psss&period=2020 HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
 

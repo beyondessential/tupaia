@@ -7,8 +7,8 @@ import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
 import { EntityType } from '../../../models';
 import { EntityServerModelRegistry } from '../../../types';
 import {
-  ExtendedEntityFields,
-  FlattableEntityFields,
+  ExtendedEntityFieldName,
+  FlattableEntityFieldName,
   EntityResponseObject,
   FlattenedEntity,
 } from '../types';
@@ -20,22 +20,22 @@ type FormatContext = { hierarchyId: string; allowedCountries: string[] };
 export async function formatEntityForResponse(
   ctx: FormatContext,
   entity: EntityType,
-  field: keyof FlattableEntityFields,
+  field: FlattableEntityFieldName,
 ): Promise<FlattenedEntity>;
 export async function formatEntityForResponse(
   ctx: FormatContext,
   entity: EntityType,
-  fields: (keyof ExtendedEntityFields)[],
+  fields: ExtendedEntityFieldName[],
 ): Promise<EntityResponseObject>;
 export async function formatEntityForResponse(
   ctx: FormatContext,
   entity: EntityType,
-  fieldOrFields: keyof FlattableEntityFields | (keyof ExtendedEntityFields)[],
+  fieldOrFields: FlattableEntityFieldName | ExtendedEntityFieldName[],
 ): Promise<FlattenedEntity | EntityResponseObject>;
 export async function formatEntityForResponse(
   ctx: FormatContext,
   entity: EntityType,
-  fieldOrFields: keyof FlattableEntityFields | (keyof ExtendedEntityFields)[],
+  fieldOrFields: FlattableEntityFieldName | ExtendedEntityFieldName[],
 ) {
   if (!Array.isArray(fieldOrFields)) {
     const field = fieldOrFields;
@@ -58,25 +58,25 @@ export async function formatEntitiesForResponse(
   models: EntityServerModelRegistry,
   ctx: FormatContext,
   entities: EntityType[],
-  field: keyof FlattableEntityFields,
+  field: FlattableEntityFieldName,
 ): Promise<FlattenedEntity[]>;
 export async function formatEntitiesForResponse(
   models: EntityServerModelRegistry,
   ctx: FormatContext,
   entities: EntityType[],
-  fields: (keyof ExtendedEntityFields)[],
+  fields: ExtendedEntityFieldName[],
 ): Promise<EntityResponseObject[]>;
 export async function formatEntitiesForResponse(
   models: EntityServerModelRegistry,
   ctx: FormatContext,
   entities: EntityType[],
-  fieldOrFields: keyof FlattableEntityFields | (keyof ExtendedEntityFields)[],
+  fieldOrFields: FlattableEntityFieldName | ExtendedEntityFieldName[],
 ): Promise<FlattenedEntity[] | EntityResponseObject[]>;
 export async function formatEntitiesForResponse(
   models: EntityServerModelRegistry,
   ctx: FormatContext,
   entities: EntityType[],
-  fieldOrFields: keyof FlattableEntityFields | (keyof ExtendedEntityFields)[],
+  fieldOrFields: FlattableEntityFieldName | ExtendedEntityFieldName[],
 ) {
   if (!Array.isArray(fieldOrFields)) {
     const field = fieldOrFields;

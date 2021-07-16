@@ -3,4 +3,4 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-export { DataSourceEntityProvider } from './DataSourceEntityProvider';
+export { Model, DbConditional, PartialOrArray } from './types';
