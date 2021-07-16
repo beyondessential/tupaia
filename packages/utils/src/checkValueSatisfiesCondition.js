@@ -6,6 +6,7 @@ const OPERATOR_TO_VALUE_CHECK = {
   '<=': (value, target) => value <= target,
   '>': (value, target) => value > target,
   '<': (value, target) => value < target,
+  '<>': (value, target) => value !== target,
   range: (value, target) => target[0] <= value && value <= target[1],
   rangeExclusive: (value, target) => target[0] < value && value < target[1],
   regex: (value, target) => !!value.match(target),
@@ -30,6 +31,9 @@ export const checkValueSatisfiesCondition = (value, condition) => {
   if (!isPlainObject(condition)) {
     return (condition === ANY_VALUE_CONDITION && value !== '') || value === condition;
   }
+
+  // Handle empty condition Object {}
+  if (Object.keys(condition).length < 1) return true;
 
   const { operator, value: targetValue } = condition;
 
