@@ -180,3 +180,35 @@ def register_gateway_target(target_group_arn, tupaia_instance_id):
             },
         ]
     )
+
+
+def build_record_set_change(domain, subdomain, stage, gateway):
+    return build_record_set('UPSERT', domain, subdomain, stage, gateway)
+
+
+def build_record_set_deletion(domain, subdomain, stage, gateway):
+    return build_record_set('DELETE', domain, subdomain, stage, gateway)
+
+
+def build_record_set(action, domain, subdomain, stage, gateway):
+    if (subdomain == ''):
+        url = stage + '.' + domain + '.'
+    else:
+        url = stage + '-' + subdomain + '.' + domain + '.'
+
+    # prefix with dualstack, see
+    # https://aws.amazon.com/premiumsupport/knowledge-center/alias-resource-record-set-route53-cli/
+    dns_name = 'dualstack.' + gateway['DNSName']
+
+    return {
+        'Action': action,
+        'ResourceRecordSet': {
+            'Name': url,
+            'Type': 'A',
+            'AliasTarget': {
+                'HostedZoneId': gateway['CanonicalHostedZoneId'],
+                'DNSName': dns_name,
+                'EvaluateTargetHealth': False
+            }
+        }
+    }
