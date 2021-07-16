@@ -29,17 +29,24 @@ class SurveyEditor {
     const {
       'data_source.service_type': serviceType,
       'data_source.config': config,
-      ...updatedSurveyFields
+      ...surveyFields
     } = updatedFields;
+    const { period_granularity: periodGranularity } = surveyFields;
 
     return {
       [RESOURCE_TYPES.DATA_GROUP]: {
-        code: updatedSurveyFields.code,
+        code: surveyFields.code,
         service_type: serviceType,
         config,
       },
-      [RESOURCE_TYPES.DATA_ELEMENT]: { service_type: serviceType, config },
-      [RESOURCE_TYPES.SURVEY]: updatedSurveyFields,
+      [RESOURCE_TYPES.DATA_ELEMENT]: {
+        service_type: serviceType,
+        config,
+      },
+      [RESOURCE_TYPES.SURVEY]: {
+        ...surveyFields,
+        period_granularity: periodGranularity === '' ? null : periodGranularity,
+      },
     };
   };
 

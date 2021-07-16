@@ -8,6 +8,7 @@ import {
   flattenToObject,
   getKeysSortedByValues,
   getUniqueObjects,
+  haveSameFields,
   mapKeys,
   mapValues,
   reduceToDictionary,
@@ -495,6 +496,66 @@ describe('object', () => {
 
     it.each(testData)('%s', (_, objects, expected) => {
       expect(getUniqueObjects(objects)).toStrictEqual(expected);
+    });
+  });
+
+  describe('have same fields', () => {
+    describe('returns `true` if all objects have the same values for all the specified fields', () => {
+      const testData = [
+        ['objects with same values, empty fields', [{ a: 1 }, { a: 1 }], []],
+        ['objects with same values for a field', [{ a: 1 }, { a: 1 }], ['a']],
+        [
+          'objects with same values for fields (multiple)',
+          [
+            { a: 1, b: 2, c: 3 },
+            { a: 1, b: 2, c: 3 },
+            { a: 1, b: 2, c: 3 },
+          ],
+          ['a', 'b', 'c'],
+        ],
+        ['objects with different values, empty fields', [{ a: 1 }, { a: 2 }], []],
+        ['objects with different values, non existing field', [{ a: 1 }, { a: 2 }], ['b']],
+        [
+          'objects with different values for a non specified field',
+          [
+            { a: 1, b: 2 },
+            { a: 1, b: 'different' },
+          ],
+          ['a'],
+        ],
+      ];
+
+      it.each(testData)('%s', (_, objectCollection, fields) => {
+        expect(haveSameFields(objectCollection, fields)).toBe(true);
+      });
+    });
+
+    describe('returns `false` if an object has a different value for any of the specified fields', () => {
+      const testData = [
+        ['objects with different values for a field', [{ a: 1 }, { a: 2 }], ['a']],
+        [
+          'multiple objects with just one different value',
+          [
+            { a: 1, b: 2, c: 3 },
+            { a: 1, b: 2, c: 3 },
+            { a: 1, b: 2, c: 'different' },
+          ],
+          ['a', 'b', 'c'],
+        ],
+        [
+          'multiple objects with just one strictly different value',
+          [
+            { a: 1, b: 2, c: 3 },
+            { a: 1, b: 2, c: 3 },
+            { a: 1, b: 2, c: '3' },
+          ],
+          ['a', 'b', 'c'],
+        ],
+      ];
+
+      it.each(testData)('%s', (_, objectCollection, fields) => {
+        expect(haveSameFields(objectCollection, fields)).toBe(false);
+      });
     });
   });
 });

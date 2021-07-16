@@ -73,8 +73,12 @@ describe('hasIntersection', () => {
 
 describe('min', () => {
   const testData = [
-    ['returns the minimum among the provided values (i)', [2, 3, 10], 2],
-    ['returns the minimum among the provided values (ii)', [-2, 1, 3, 10], -2],
+    ['returns the min among the provided numbers', [2, 1, -2, -10, 3], -10],
+    [
+      'returns the min (lexicographically) among the provided strings',
+      ['beta', 'bet', 'ALPHA', 'alpha', 'alphabet', 'BETA'],
+      'alpha',
+    ],
     ['returns `undefined` for undefined input', undefined, undefined],
     ['returns `undefined` for null input', null, undefined],
     ['returns `undefined` for empty array', [], undefined],
@@ -87,8 +91,12 @@ describe('min', () => {
 
 describe('max', () => {
   const testData = [
-    ['returns the maximum among the provided values (i)', [2, 3, 10], 10],
-    ['returns the maximum among the provided values (ii)', [-20, 1, 3, 10], 10],
+    ['returns the max among the provided numbers', [2, 1, -2, -10, 3], 3],
+    [
+      'returns the max (lexicographically) among the provided strings',
+      ['beta', 'bet', 'ALPHA', 'alpha', 'alphabet', 'BETA'],
+      'BETA',
+    ],
     ['returns `undefined` for undefined input', undefined, undefined],
     ['returns `undefined` for null input', null, undefined],
     ['returns `undefined` for empty array', [], undefined],

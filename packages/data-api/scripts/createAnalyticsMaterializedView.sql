@@ -29,7 +29,7 @@ declare
       question ON question.id = answer.question_id
     INNER JOIN
       data_source ON data_source.id = question.data_source_id
-    WHERE data_source.service_type = ''tupaia''';
+    WHERE data_source.service_type = ''tupaia'' AND survey_response.outdated IS FALSE';
 
 begin
   RAISE NOTICE 'Creating Materialized View Logs...';

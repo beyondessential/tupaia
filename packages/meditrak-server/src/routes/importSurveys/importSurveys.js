@@ -197,7 +197,6 @@ export async function importSurveys(req, res) {
           fieldsToForceUpdate.country_ids = getArrayQueryParameter(req.query.countryIds);
         }
         if (surveyGroup) {
-          // Set the survey group this survey is attached to
           fieldsToForceUpdate.survey_group_id = surveyGroup.id;
         }
         if (req.query.permissionGroup) {
@@ -205,8 +204,10 @@ export async function importSurveys(req, res) {
           fieldsToForceUpdate.permission_group_id = permissionGroup.id;
         }
         if (req.query.surveyCode) {
-          // Set or update the code for this survey
           fieldsToForceUpdate.code = req.query.surveyCode;
+        }
+        if (req.query.periodGranularity) {
+          fieldsToForceUpdate.period_granularity = req.query.periodGranularity;
         }
         // Update the survey based on the fields to force update
         if (Object.keys(fieldsToForceUpdate).length > 0) {

@@ -15,7 +15,7 @@ import {
   AnalyticsRefresher,
 } from '@tupaia/database';
 
-import { createMeditrakSyncQueue } from './database';
+import { createMeditrakSyncQueue, SurveyResponseChangeHandler } from './database';
 import * as modelClasses from './database/models';
 import { startSyncWithDhis } from './dhis';
 import { startSyncWithMs1 } from './ms1';
@@ -42,6 +42,10 @@ entityHierarchyCacher.listenForChanges();
 // Add listener to refresh analytics table
 const analyticsRefresher = new AnalyticsRefresher(database, models);
 analyticsRefresher.listenForChanges();
+
+// Add listener to handle survey response changes
+const surveyResponseChangeHandler = new SurveyResponseChangeHandler(models);
+surveyResponseChangeHandler.listenForChanges();
 
 /**
  * Set up actual app with routes etc.

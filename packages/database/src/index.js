@@ -9,6 +9,7 @@ export { EntityHierarchyCacher } from './cachers';
 export {
   generateId,
   getHighestPossibleIdForGivenTime,
+  isMarkedChange,
   runDatabaseFunctionInBatches,
 } from './utilities';
 export { TupaiaDatabase, QUERY_CONJUNCTIONS, JOIN_TYPES } from './TupaiaDatabase';

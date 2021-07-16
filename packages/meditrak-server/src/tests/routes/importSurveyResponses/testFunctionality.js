@@ -17,8 +17,7 @@ import {
   upsertEntity,
   upsertQuestion,
 } from '../../testUtilities';
-
-const TEST_DATA_FOLDER = 'src/tests/testData';
+import { importFile } from './helpers';
 
 function expectError(response, match) {
   const { body, statusCode } = response;
@@ -31,13 +30,6 @@ export const testFunctionality = async () => {
   const app = new TestableApp();
   const { models } = app;
   const syncQueue = setupDummySyncQueue(models);
-
-  const importFile = (filename, surveyNames = []) =>
-    app
-      .post(
-        `import/surveyResponses?${surveyNames.map(s => `surveyNames=${s}`).join('&')}&timeZone=UTC`,
-      )
-      .attach('surveyResponses', `${TEST_DATA_FOLDER}/surveyResponses/${filename}`);
 
   const deletedSurveyResponseId = '1125f5e462d7a74a5a2_test';
   const changeAnswersResponseId = '69e05722883b0cb7f6d_test';
@@ -234,13 +226,16 @@ export const testFunctionality = async () => {
         ].map(createSurveyResponse),
       );
 
-      await importFile('setup.xlsx');
+      await importFile(app, 'setup.xlsx');
 
       numberAnswersToBeDeleted =
         (await models.answer.count({ survey_response_id: deletedSurveyResponseId })) + 1; // We test deleting a whole response, plus one individually deleted answer
       await models.database.waitForAllChangeHandlers();
       await syncQueue.clear();
-      const response = await importFile('valid.xlsx', ['Test Survey', 'Facility Fundamentals']);
+      const response = await importFile(app, 'valid.xlsx', [
+        'Test Survey',
+        'Facility Fundamentals',
+      ]);
       expect(response.statusCode).to.equal(200);
     });
 
@@ -329,27 +324,27 @@ export const testFunctionality = async () => {
 
   describe('Invalid survey response formats causes error messages', () => {
     it('should respond with an error if there is a duplicate question id', async () => {
-      const response = await importFile('duplicateQuestionId.xlsx');
+      const response = await importFile(app, 'duplicateQuestionId.xlsx');
       expectError(response, /not unique/);
     });
 
     it('should respond with an error if there is an invalid binary answer', async () => {
-      const response = await importFile('invalidBinaryAnswer.xlsx');
+      const response = await importFile(app, 'invalidBinaryAnswer.xlsx');
       expectError(response, /not an accepted value/);
     });
 
     it('should respond with an error if there is an invalid number answer', async () => {
-      const response = await importFile('invalidNumberAnswer.xlsx');
+      const response = await importFile(app, 'invalidNumberAnswer.xlsx');
       expectError(response, /Should contain a number/);
     });
 
     it('should respond with an error if there is an invalid radio answer', async () => {
-      const response = await importFile('invalidRadioAnswer.xlsx');
+      const response = await importFile(app, 'invalidRadioAnswer.xlsx');
       expectError(response, /not an accepted value/);
     });
 
     it('should respond with an error if the header row is missing', async () => {
-      const response = await importFile('missingHeaderRow.xlsx');
+      const response = await importFile(app, 'missingHeaderRow.xlsx');
       expectError(
         response,
         /Each tab of the import file must have at least one previously submitted survey as the first entry/,
@@ -357,17 +352,17 @@ export const testFunctionality = async () => {
     });
 
     it('should respond with an error if the id column is missing', async () => {
-      const response = await importFile('missingIdColumn.xlsx');
+      const response = await importFile(app, 'missingIdColumn.xlsx');
       expectError(response, /Missing Id column/);
     });
 
     it('should respond with an error if a question id is missing', async () => {
-      const response = await importFile('missingQuestionId.xlsx');
+      const response = await importFile(app, 'missingQuestionId.xlsx');
       expectError(response, /Should not be empty/);
     });
 
     it('should respond with an error if a response id is missing', async () => {
-      const response = await importFile('missingResponseId.xlsx');
+      const response = await importFile(app, 'missingResponseId.xlsx');
       expectError(
         response,
         /Each tab of the import file must have at least one previously submitted survey as the first entry/,
@@ -375,12 +370,12 @@ export const testFunctionality = async () => {
     });
 
     it('should respond with an error if the type column is missing', async () => {
-      const response = await importFile('missingTypeColumn.xlsx');
+      const response = await importFile(app, 'missingTypeColumn.xlsx');
       expectError(response, /Missing Type column/);
     });
 
     it('should respond with an error if a question id does not match an existing question', async () => {
-      const response = await importFile('nonExistentQuestionId.xlsx');
+      const response = await importFile(app, 'nonExistentQuestionId.xlsx');
       expectError(response, /No question with id/);
     });
   });

@@ -44,6 +44,12 @@ const dateOfData = {
   },
 };
 
+const outdated = {
+  Header: 'Outdated',
+  source: 'outdated',
+  type: 'boolean',
+};
+
 const entityName = {
   Header: 'Entity',
   source: 'entity.name',
@@ -57,6 +63,7 @@ export const SURVEY_RESPONSE_COLUMNS = [
   assessorName,
   date,
   dateOfData,
+  outdated,
   {
     Header: 'Export',
     source: 'id',
