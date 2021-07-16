@@ -24,6 +24,7 @@ export const MEASURE_TYPE_RADIUS = 'radius';
 export const MEASURE_TYPE_SPECTRUM = 'spectrum';
 export const MEASURE_TYPE_SHADING = 'shading';
 export const MEASURE_TYPE_SHADED_SPECTRUM = 'shaded-spectrum';
+export const MEASURE_TYPE_POPUP_ONLY = 'popup-only';
 
 export const MEASURE_VALUE_OTHER = 'other';
 export const MEASURE_VALUE_NULL = 'null';
@@ -361,6 +362,8 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
           break;
         case MEASURE_TYPE_SHADING:
           displayInfo.color = MAP_COLORS[valueInfo.color] || valueInfo.color || MAP_COLORS.NO_DATA;
+          break;
+        case MEASURE_TYPE_POPUP_ONLY:
           break;
         case MEASURE_TYPE_COLOR:
         default:
