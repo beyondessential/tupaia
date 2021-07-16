@@ -9,7 +9,7 @@ import {
   SingleEntityRequest,
   SingleEntityRequestParams,
   RequestBody,
-  SingleEntityRequestQuery,
+  EntityRequestQuery,
   EntityResponse,
 } from './types';
 
@@ -17,7 +17,7 @@ export type DescendantsRequest = SingleEntityRequest<
   SingleEntityRequestParams,
   EntityResponse[],
   RequestBody,
-  SingleEntityRequestQuery & { includeRootEntity?: boolean }
+  EntityRequestQuery & { includeRootEntity?: boolean }
 >;
 export class EntityDescendantsRoute extends Route<DescendantsRequest> {
   async buildResponse() {
