@@ -11,6 +11,11 @@ class RefreshDatabaseScript extends Script {
   config = {
     command: '* <dumpPath>',
     options: {
+      database: {
+        alias: 'd',
+        type: 'string',
+        description: 'Database name (default: tupaia)',
+      },
       migrate: {
         alias: 'm',
         type: 'boolean',
@@ -31,11 +36,12 @@ class RefreshDatabaseScript extends Script {
     this.logInfo('Refreshing the tupaia database...');
 
     this.verifyPsql();
-    this.execDbCommand('DROP DATABASE IF EXISTS tupaia');
-    this.execDbCommand('CREATE DATABASE tupaia WITH OWNER tupaia');
-    this.execDbCommand('CREATE EXTENSION postgis', { db: 'tupaia' });
+    const dbName = this.args.database || 'tupaia';
+    this.execDbCommand(`DROP DATABASE IF EXISTS ${dbName}`);
+    this.execDbCommand(`CREATE DATABASE ${dbName} WITH OWNER tupaia`);
+    this.execDbCommand('CREATE EXTENSION postgis', { db: dbName });
     this.execDbCommand('ALTER USER tupaia WITH SUPERUSER');
-    this.exec(`psql -U tupaia -f "${this.args.dumpPath}"`); // Relative to the repo root
+    this.exec(`psql -U tupaia -d ${dbName} -f "${this.args.dumpPath}"`); // Relative to the repo root
     this.execDbCommand('ALTER USER tupaia WITH NOSUPERUSER', { user: 'tupaia' });
   }
 
