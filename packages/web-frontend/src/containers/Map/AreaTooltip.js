@@ -14,8 +14,15 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 
 import { Tooltip } from 'react-leaflet';
+import { getSingleFormattedValue } from '../../utils';
+
+const Heading = styled.span`
+  text-align: center;
+  font-weight: ${props => (props.hasMeasureValue ? 'bold' : 'normal')};
+`;
 
 export class AreaTooltip extends Component {
   constructor(props) {
@@ -34,8 +41,76 @@ export class AreaTooltip extends Component {
     }
   }
 
+  getTextList() {
+    const { orgUnitName, hasMeasureValue, measureOptions, orgUnitMeasureData } = this.props;
+
+    const defaultTextList = [
+      <Heading key={0} hasMeasureValue={hasMeasureValue}>
+        {orgUnitName}
+      </Heading>,
+    ];
+
+    const renderTextList = (data, textList = []) => {
+      Object.keys(data).forEach(key => {
+        textList.push(<span key={key}>{`${key}: ${data[key]}`}</span>);
+      });
+      return textList;
+    };
+
+    if (hasMeasureValue) {
+      const legacy = measureOptions.length === 1;
+      const { formattedMeasureData, onlyOneValue } = legacy
+        ? this.buildLegacyFormattedMeasureData(orgUnitMeasureData, measureOptions)
+        : this.buildFormattedMeasureData(orgUnitMeasureData, measureOptions);
+
+      if (onlyOneValue) {
+        return renderTextList({ [orgUnitName]: formattedMeasureData });
+      }
+
+      renderTextList(formattedMeasureData, defaultTextList);
+    }
+
+    return defaultTextList;
+  }
+
+  buildLegacyFormattedMeasureData(orgUnitMeasureData, measureOptions) {
+    const formattedValue = getSingleFormattedValue(orgUnitMeasureData, measureOptions);
+
+    return {
+      formattedMeasureData: formattedValue,
+      onlyOneValue: true,
+    };
+  }
+
+  buildFormattedMeasureData(orgUnitMeasureData, measureOptions) {
+    const formattedMeasureData = {};
+
+    if (orgUnitMeasureData) {
+      formattedMeasureData[measureOptions[0].name] = getSingleFormattedValue(
+        orgUnitMeasureData,
+        measureOptions,
+      );
+
+      measureOptions.forEach(({ key }) => {
+        if (key !== measureOptions[0].key) {
+          formattedMeasureData[key] = orgUnitMeasureData[key];
+        }
+      });
+    }
+
+    if (Object.values(formattedMeasureData).length === 1) {
+      return {
+        formattedMeasureData: Object.values(formattedMeasureData)[0],
+        onlyOneValue: true,
+      };
+    }
+    return { formattedMeasureData };
+  }
+
   render() {
-    const { permanent, onMouseOver, onMouseOut, text, sticky } = this.props;
+    const { permanent, onMouseOver, onMouseOut, sticky } = this.props;
+
+    const textList = this.getTextList();
 
     return (
       <Tooltip
@@ -53,7 +128,7 @@ export class AreaTooltip extends Component {
           this.ref = r;
         }}
       >
-        <span>{text}</span>
+        <div style={{ display: 'grid' }}>{textList}</div>
       </Tooltip>
     );
   }
@@ -62,9 +137,12 @@ export class AreaTooltip extends Component {
 AreaTooltip.propTypes = {
   permanent: PropTypes.bool,
   sticky: PropTypes.bool,
-  text: PropTypes.string.isRequired,
   onMouseOver: PropTypes.func,
   onMouseOut: PropTypes.func,
+  hasMeasureValue: PropTypes.bool,
+  measureOptions: PropTypes.arrayOf(PropTypes.object),
+  orgUnitMeasureData: PropTypes.object,
+  orgUnitName: PropTypes.string,
 };
 
 AreaTooltip.defaultProps = {
@@ -72,4 +150,8 @@ AreaTooltip.defaultProps = {
   sticky: false,
   onMouseOver: undefined,
   onMouseOut: undefined,
+  hasMeasureValue: false,
+  measureOptions: [],
+  orgUnitMeasureData: undefined,
+  orgUnitName: undefined,
 };

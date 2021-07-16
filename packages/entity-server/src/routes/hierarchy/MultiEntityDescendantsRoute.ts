@@ -8,16 +8,16 @@ import { formatEntitiesForResponse } from './format';
 import {
   MultiEntityRequest,
   MultiEntityRequestParams,
-  RequestBody,
-  MultiEntityRequestQuery,
+  MultiEntityRequestBody,
+  EntityRequestQuery,
   EntityResponse,
 } from './types';
 
 export type MultiEntityDescendantsRequest = MultiEntityRequest<
   MultiEntityRequestParams,
   EntityResponse[],
-  RequestBody,
-  MultiEntityRequestQuery & { includeRootEntity?: boolean }
+  MultiEntityRequestBody,
+  EntityRequestQuery & { includeRootEntity?: boolean }
 >;
 export class MultiEntityDescendantsRoute extends Route<MultiEntityDescendantsRequest> {
   async buildResponse() {
