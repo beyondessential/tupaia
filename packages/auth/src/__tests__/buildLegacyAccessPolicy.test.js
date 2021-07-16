@@ -133,78 +133,78 @@ describe('buildLegacyAccessPolicy', () => {
       const user = await upsertDummyRecord(models.user);
 
       // Create a facility nested deep within a new country
-      const canada = await findOrCreateDummyRecord(
+      const greece = await findOrCreateDummyRecord(
         models.entity,
         {
-          code: 'CA',
+          code: 'GR',
         },
         {
-          name: 'Canada',
+          name: 'Greece',
           type: 'country',
         },
       );
 
-      const ontario = await findOrCreateDummyRecord(
+      const attica = await findOrCreateDummyRecord(
         models.entity,
         {
-          code: 'CA_OT',
+          code: 'GR_AT',
         },
         {
-          name: 'Ontario',
-          country_code: canada.code,
-          parent_id: canada.id,
+          name: 'Attica',
+          country_code: greece.code,
+          parent_id: greece.id,
           type: 'district',
         },
       );
 
-      const ottawa = await findOrCreateDummyRecord(
+      const piraeus = await findOrCreateDummyRecord(
         models.entity,
         {
-          code: 'CA_OT_OT',
+          code: 'GR_AT_PI',
         },
         {
-          name: 'Ottawa',
-          country_code: canada.code,
-          parent_id: ontario.id,
+          name: 'Piraeus',
+          country_code: greece.code,
+          parent_id: attica.id,
           type: 'district',
         },
       );
 
-      const toronto = await findOrCreateDummyRecord(
+      const athens = await findOrCreateDummyRecord(
         models.entity,
         {
-          name: 'Toronto',
+          code: 'GR_AT_AT',
         },
         {
-          code: 'CA_OT_TO',
-          country_code: canada.code,
-          parent_id: ontario.id,
+          name: 'Athens',
+          country_code: greece.code,
+          parent_id: attica.id,
           type: 'district',
         },
       );
 
-      const mountSinai = await findOrCreateDummyRecord(
+      const leto = await findOrCreateDummyRecord(
         models.entity,
         {
-          code: 'CA_OT_TO_MS',
+          code: 'GR_AT_AT_Leto',
         },
         {
-          name: 'Mount Sinaia Hospital',
-          country_code: canada.code,
-          parent_id: toronto.id,
+          name: 'Leto Hospital',
+          country_code: greece.code,
+          parent_id: athens.id,
           type: 'facility',
         },
       );
 
       await upsertDummyRecord(models.userEntityPermission, {
         user_id: user.id,
-        entity_id: mountSinai.id,
+        entity_id: leto.id,
         permission_group_id: publicPermission.id,
       });
 
       await upsertDummyRecord(models.userEntityPermission, {
         user_id: user.id,
-        entity_id: ottawa.id,
+        entity_id: piraeus.id,
         permission_group_id: publicPermission.id,
       });
 
@@ -212,10 +212,10 @@ describe('buildLegacyAccessPolicy', () => {
     });
 
     const testData = [
-      ['should not have Mount Sinai admin permissions', [['CA_OT_TO_MS'], 'Public'], false],
-      ['should not have Ottawa admin permissions', [['CA_OT_OT'], 'Public'], false],
-      ['should not have Toronto permissions', [['CA_OT_TO'], 'Public'], false],
-      ['should not have Canada country level permissions', [['CA'], 'Public'], false],
+      ['should not have Leto admin permissions', [['GR_AT_AT_Leto'], 'Public'], false],
+      ['should not have Athens admin permissions', [['GR_AT_AT'], 'Public'], false],
+      ['should not have Piraeus permissions', [['GR_AT_PI'], 'Public'], false],
+      ['should not have Greece country level permissions', [['CA'], 'Public'], false],
     ];
 
     it.each(testData)('%s', (_, [organisationUnitPath, userGroup], expected) => {
