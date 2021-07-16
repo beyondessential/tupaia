@@ -18,6 +18,11 @@ exports.setup = function (options, seedLink) {
 
 const reportCode = 'AU_FLUTRACKING_First_Nation_With_ILI';
 
+const permissionGroupNameToId = async (db, name) => {
+  const record = await db.runSql(`SELECT id FROM permission_group WHERE name = '${name}'`);
+  return record.rows[0] && record.rows[0].id;
+};
+
 exports.up = async function (db) {
   const dashboardItemId = generateId();
   const dashboardRelationId = generateId();
@@ -48,7 +53,7 @@ exports.up = async function (db) {
         },
       ],
     },
-    permission_group_id: '59085f2dfc6a0715dae508e1',
+    permission_group_id: await permissionGroupNameToId(db, 'Public'),
   });
 
   await insertObject(db, 'dashboard_item', {
