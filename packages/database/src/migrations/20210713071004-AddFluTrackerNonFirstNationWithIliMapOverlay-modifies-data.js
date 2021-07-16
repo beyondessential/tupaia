@@ -83,11 +83,11 @@ const MAP_OVERLAY = {
     },
     measureConfig: {
       Participants: {
-        type: 'shaded-spectrum',
+        type: 'popup-only',
         hideFromLegend: true,
       },
       'Participants with influenza like illness (ILI)': {
-        type: 'shaded-spectrum',
+        type: 'popup-only',
         hideFromLegend: true,
       },
     },
