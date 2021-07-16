@@ -7,6 +7,7 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
+
 import { Authenticator } from '@tupaia/auth';
 
 import { addRoutesToApp } from './addRoutesToApp';

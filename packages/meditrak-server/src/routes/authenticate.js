@@ -5,7 +5,7 @@
 
 import winston from 'winston';
 
-import { constructAccessToken, getUserAndPassFromBasicAuth } from '@tupaia/auth';
+import { getAuthorizationObject, getUserAndPassFromBasicAuth } from '@tupaia/auth';
 import { respond, reduceToDictionary } from '@tupaia/utils';
 import { allowNoPermissions } from '../permissions';
 
@@ -40,50 +40,6 @@ const extractPermissionGroupsIfLegacy = async (models, accessPolicy) => {
     }),
   );
   return permissionGroupsByCountryId;
-};
-
-const getAuthorizationObject = async ({
-  accessPolicy,
-  refreshToken,
-  user,
-  apiClientUser,
-  permissionGroups,
-}) => {
-  const tokenClaims = {
-    userId: user.id,
-    refreshToken,
-  };
-
-  if (apiClientUser) {
-    tokenClaims.apiClientUserId = apiClientUser.id;
-  }
-  // Generate JWT
-  const accessToken = constructAccessToken(tokenClaims);
-
-  // Assemble and return authorization object
-  const userDetails = {
-    id: user.id,
-    name: user.fullName,
-    firstName: user.first_name,
-    lastName: user.last_name,
-    position: user.position,
-    employer: user.employer,
-    email: user.email,
-    profileImage: user.profile_image,
-    verifiedEmail: user.verified_email,
-    accessPolicy,
-  };
-  if (permissionGroups) {
-    userDetails.permissionGroups = permissionGroups;
-  }
-  if (apiClientUser) {
-    userDetails.apiClient = apiClientUser.email;
-  }
-  return {
-    accessToken,
-    refreshToken,
-    user: userDetails,
-  };
 };
 
 /**
