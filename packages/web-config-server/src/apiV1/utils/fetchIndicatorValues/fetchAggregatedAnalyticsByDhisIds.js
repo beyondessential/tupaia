@@ -94,15 +94,17 @@ const performEntityAggregation = async (models, analytics, entityAggregation, hi
 };
 
 const getQueryInput = (query, dataElementIds, organisationUnitIds) => {
+  const dataPeriodType = query.dataPeriodType || query.periodType;
   const period =
     query.period ||
-    (convertDateRangeToPeriodQueryString(query.startDate, query.endDate) ?? getDefaultPeriod());
+    (convertDateRangeToPeriodQueryString(query.startDate, query.endDate, dataPeriodType) ?? getDefaultPeriod());
 
   return {
     dataElementIds,
     organisationUnitIds,
     outputIdScheme: 'uid',
     inputIdScheme: 'uid',
+    dataPeriodType,
     period,
     startDate: query.startDate,
     endDate: query.endDate,

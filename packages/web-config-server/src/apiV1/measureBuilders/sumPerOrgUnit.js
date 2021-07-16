@@ -8,6 +8,7 @@ import {
   fetchAggregatedAnalyticsByDhisIds,
   checkAllDataElementsAreDhisIndicators,
 } from '/apiV1/utils';
+import { parsePeriodType } from '@tupaia/utils';
 
 export class SumPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   getBaseBuilderClass = () => SumBuilder;
@@ -29,13 +30,14 @@ export class SumPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
     // Will have to implement this properly with #tupaia-backlog/issues/2412
     // After that remove this file and anything related to it
     if (allDataElementsAreDhisIndicators) {
-      const { entityAggregation } = this.config;
+      const { entityAggregation, periodType } = this.config;
+      const parsedPeriodType = periodType ? parsePeriodType(periodType) : null;
       const hierarchyId = await this.fetchEntityHierarchyId();
       const result = await fetchAggregatedAnalyticsByDhisIds(
         this.models,
         this.dhisApi,
         dataElementCodes,
-        this.query,
+        { ...this.query, periodType: parsedPeriodType },
         entityAggregation,
         hierarchyId
       );
