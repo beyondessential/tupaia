@@ -15,6 +15,7 @@ import {
   MEASURE_TYPE_RADIUS,
   MEASURE_TYPE_SHADED_SPECTRUM,
   MEASURE_TYPE_SPECTRUM,
+  MEASURE_TYPE_POPUP_ONLY,
 } from '../../utils/measures';
 import { MarkerLegend } from './MarkerLegend';
 import { SpectrumLegend } from './SpectrumLegend';
@@ -56,7 +57,8 @@ const getLegend = measureType => {
 
 const MultiLegend = React.memo(({ measureOptions, isMeasureLoading }) => {
   const displayedLegends = measureOptions.filter(
-    ({ type, hideFromLegend }) => type !== MEASURE_TYPE_RADIUS && !hideFromLegend,
+    ({ type, hideFromLegend }) =>
+      ![MEASURE_TYPE_RADIUS, MEASURE_TYPE_POPUP_ONLY].includes(type) && !hideFromLegend,
   );
 
   // returning <LegendOuterFrame /> keeps the map control on the right hand side

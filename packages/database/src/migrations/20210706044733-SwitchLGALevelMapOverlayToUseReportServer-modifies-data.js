@@ -213,7 +213,7 @@ exports.up = async function (db) {
     );
   }
 
-  const measureConfig = { $all: { hideFromMeasure: 'true', hideFromLegend: 'true' } };
+  const measureConfig = { $all: { type: 'popup-only' } };
   await db.runSql(`
     UPDATE "mapOverlay"
     SET "presentationOptions" = "presentationOptions" || '${JSON.stringify({
