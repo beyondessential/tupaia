@@ -2,8 +2,29 @@ import boto3
 import string
 import random
 
+ec2 = boto3.resource('ec2')
+ec = boto3.client('ec2')
 elbv2 = boto3.client('elbv2')
 acm = boto3.client('acm')
+
+
+def get_tag(instance, tag_name):
+    try:
+        tag_value = [
+            t.get('Value') for t in instance['Tags']
+            if t['Key'] == tag_name][0]
+    except IndexError:
+        tag_value = ''
+    return tag_value
+
+
+def get_instances(filters):
+    reservations = ec.describe_instances(
+        Filters=filters
+    ).get(
+        'Reservations', []
+    )
+    return reservations[0]['Instances']
 
 
 def random_string(length):
