@@ -9,6 +9,26 @@ import { post } from '../api';
 import { useProjectEntitiesData } from './useEntitiesData';
 import { useEntityData } from './useEntityData';
 
+const PARTNERS_LOGOS = {
+  AEAL: 'AEAL.jpg',
+  CRS: 'CRS.jpg',
+  DFAT: 'DFAT.png',
+  GIZ: 'GIZ.jpg',
+  HII: 'HII.png',
+  Plan: 'Plan.png',
+  RtR: 'RtR.jpg',
+  unesco: 'unesco.jpg',
+  UNICEF: 'UNICEF.png',
+  VHS: 'VHS.png',
+  WB: 'WB.jpg',
+  WC: 'WC.png',
+  WFP: 'WFP.jpeg',
+  WR: 'WR.png',
+  WV: 'WV.png',
+};
+
+const PARTNERS_IMAGE_PATH = '/images/partnerLogos/';
+
 const endDateFormat = 'YYYY-MM-DD';
 
 const getParentOfType = (entities, rootEntityCode, type) => {
@@ -58,14 +78,6 @@ const useSchoolReport = entity =>
     entity?.type === 'school',
   );
 
-const useVillageReport = entity =>
-  useReport(
-    entity,
-    'LESMIS_village_vitals',
-    { params: { endDate: utcMoment().format(endDateFormat) } },
-    entity?.type === 'village',
-  );
-
 const useDistrictReport = entity =>
   useReport(
     entity,
@@ -105,35 +117,16 @@ const useMultiDistrictReport = (entities, rootEntity) => {
 };
 
 const useSchoolInformation = (entities, rootEntity) => {
-  const parentVillage = getParentOfType(entities, rootEntity?.code, 'village');
   const parentDistrict = getParentOfType(entities, rootEntity?.code, 'sub_district');
   const { data: schoolData, isLoading: schoolLoading } = useSchoolReport(rootEntity);
-  const { data: villageData, isLoading: villageLoading } = useVillageReport(parentVillage);
   const { data: districtData, isLoading: districtLoading } = useDistrictReport(parentDistrict);
 
   return {
     data: {
       ...schoolData?.results[0],
-      parentVillage: { ...villageData?.results[0], ...parentVillage },
       parentDistrict: { ...districtData?.results[0], ...parentDistrict },
     },
-    isLoading: schoolLoading || villageLoading || districtLoading,
-  };
-};
-
-const useVillageInformation = (entities, rootEntity) => {
-  const { data: villageData, isLoading: villageLoading } = useVillageReport(rootEntity);
-  const { data: subSchoolsData, isLoading: subSchoolsLoading } = useMultiSchoolReport(
-    entities,
-    rootEntity,
-  );
-
-  return {
-    data: {
-      ...villageData?.results[0],
-      ...subSchoolsData?.results[0],
-    },
-    isLoading: villageLoading || subSchoolsLoading,
+    isLoading: schoolLoading || districtLoading,
   };
 };
 
@@ -178,15 +171,22 @@ const useProvinceInformation = (entities, rootEntity) => {
   };
 };
 
+const getPartnersLogos = vitalsData => {
+  const partners =
+    vitalsData.type && vitalsData.type === 'country'
+      ? Object.entries(PARTNERS_LOGOS)
+      : Object.entries(vitalsData).filter(
+          ([key, value]) => Object.keys(PARTNERS_LOGOS).includes(key) && value === true,
+        );
+
+  return partners.map(([key]) => `${PARTNERS_IMAGE_PATH}${PARTNERS_LOGOS[key]}`);
+};
+
 export const useVitalsData = entityCode => {
   const { data: entities = [], ...entitiesQuery } = useProjectEntitiesData();
   const { data: entityData } = useEntityData(entityCode);
 
   const { data: schoolData, isLoading: schoolLoading } = useSchoolInformation(entities, entityData);
-  const { data: villageData, isLoading: villageLoading } = useVillageInformation(
-    entities,
-    entityData,
-  );
   const { data: districtData, isLoading: districtLoading } = useDistrictInformation(
     entities,
     entityData,
@@ -196,15 +196,18 @@ export const useVitalsData = entityCode => {
     entityData,
   );
 
-  return {
+  const vitalsData = {
     ...entitiesQuery,
     ...entityData,
-
     ...schoolData,
-    ...villageData,
     ...districtData,
     ...provinceData,
+  };
 
-    isLoading: schoolLoading || villageLoading || districtLoading || provinceLoading,
+  const partners = getPartnersLogos(vitalsData);
+
+  return {
+    data: { ...vitalsData, partners },
+    isLoading: schoolLoading || districtLoading || provinceLoading,
   };
 };

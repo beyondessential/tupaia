@@ -69,6 +69,7 @@ import { Matrix } from './components';
 import { formatDataValue } from '../../../utils';
 import { getLimits } from '../../../utils/periodGranularities';
 import { checkIfApplyDotStyle, getIsUsingDots } from '../utils';
+import { ChartContainer, ChartViewContainer } from '../Layout';
 
 const buildMatrixDataFromViewContent = viewContent => {
   if (!viewContent.columns) {
@@ -318,8 +319,8 @@ export class MatrixWrapper extends Component {
       );
     }
     return (
-      <div style={VIEW_STYLES.chartViewContainer}>
-        <div style={VIEW_STYLES.chartContainer}>
+      <ChartViewContainer>
+        <ChartContainer>
           {isMobile() ? (
             <>
               <img
@@ -343,8 +344,8 @@ export class MatrixWrapper extends Component {
               />
             </div>
           )}
-        </div>
-      </div>
+        </ChartContainer>
+      </ChartViewContainer>
     );
   }
 }

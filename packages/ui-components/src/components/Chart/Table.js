@@ -15,10 +15,14 @@ import MuiTableRow from '@material-ui/core/TableRow';
 import { formatDataValueByType } from '@tupaia/utils';
 import { formatTimestampForChart, getIsTimeSeries, getIsChartData, getNoDataString } from './utils';
 import { SmallAlert } from '../Alert';
+import { DEFAULT_DATA_KEY } from './constants';
+import { parseChartConfig } from './parseChartConfig';
 
 const TableContainer = styled(MuiTableContainer)`
   overflow: auto;
 `;
+
+const DARK_THEME_BORDER = 'rgb(82, 82, 88)';
 
 const StyledTable = styled(MuiTable)`
   table-layout: fixed;
@@ -27,7 +31,9 @@ const StyledTable = styled(MuiTable)`
   // table head
   thead {
     text-transform: capitalize;
-    border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+    border-bottom: 1px solid
+      ${({ theme }) =>
+        theme.palette.type === 'light' ? theme.palette.grey['400'] : DARK_THEME_BORDER};
 
     tr {
       background: none;
@@ -35,8 +41,6 @@ const StyledTable = styled(MuiTable)`
 
     th {
       position: relative;
-      height: 6rem;
-      text-align: center;
       border: none;
       font-weight: 400;
       vertical-align: bottom;
@@ -45,13 +49,10 @@ const StyledTable = styled(MuiTable)`
 
   // table body
   tbody {
-    th {
-      font-weight: 500;
-    }
-
     tr {
       &:nth-of-type(odd) {
-        background: ${props => props.theme.palette.grey['100']};
+        background: ${({ theme }) =>
+          theme.palette.type === 'light' ? theme.palette.grey['100'] : 'none'};
       }
       &:last-child th,
       &:last-child td {
@@ -65,15 +66,13 @@ const StyledTable = styled(MuiTable)`
     padding-top: 1.125rem;
     padding-bottom: 1.125rem;
     color: ${props => props.theme.palette.text.primary};
-    border-right: 1px solid ${props => props.theme.palette.grey['400']};
+    border-right: 1px solid
+      ${({ theme }) =>
+        theme.palette.type === 'light' ? theme.palette.grey['400'] : DARK_THEME_BORDER};
 
     &:last-child {
       border-right: none;
     }
-  }
-
-  td {
-    text-align: center;
   }
 `;
 
@@ -83,30 +82,30 @@ const NoData = styled(SmallAlert)`
   margin-right: auto;
 `;
 
-const getColumns = rawData => {
-  const columns = [];
-  rawData.forEach(row => {
-    Object.keys(row)
-      .filter(key => key !== 'name' && key !== 'timestamp')
-      .forEach(key => {
-        // add the key as a table column but filter out object values such as metadata
-        if (!columns.includes(key) && typeof row[key] !== 'object') {
-          columns.push(key);
-        }
-      });
-  });
-
-  return columns;
-};
+// Determine whether to show the first table column
+const validFirstColumn = row => row?.timestamp || row?.name;
 
 // For the rowData, ignore labelType and use percentage instead of fractionAndPercentage as
 // we don't want to show multiple values a table cell
 const sanitizeValueType = valueType =>
   valueType === 'fractionAndPercentage' ? 'percentage' : valueType;
 
-export const Table = ({ viewContent }) => {
-  const { data, xName, periodGranularity, valueType } = viewContent;
-  const columns = getColumns(data);
+/**
+ * Get columns to render in table
+ * Use the keys in chartConfig to determine which columns to render, and if chartConfig doesn't exist
+ * use value as the only column
+ */
+const getColumns = viewContent => {
+  if (!viewContent.chartConfig) {
+    return [DEFAULT_DATA_KEY];
+  }
+  const chartConfig = parseChartConfig(viewContent);
+  return Object.keys(chartConfig).length > 0 ? Object.keys(chartConfig) : [DEFAULT_DATA_KEY];
+};
+
+export const Table = ({ viewContent, className }) => {
+  const { data, xName, periodGranularity, valueType, chartConfig = {} } = viewContent;
+  const columns = getColumns(viewContent);
   const dataIsTimeSeries = getIsTimeSeries(data) && periodGranularity;
 
   if (!getIsChartData(viewContent)) {
@@ -118,33 +117,40 @@ export const Table = ({ viewContent }) => {
   }
 
   return (
-    <TableContainer>
+    <TableContainer className={className}>
       <StyledTable style={{ minWidth: columns.length * 140 + 250 }}>
         <MuiTableHead>
           <MuiTableRow>
-            <MuiTableCell width={250}>{xName || null}</MuiTableCell>
+            {validFirstColumn(data[0]) && <MuiTableCell width={250}>{xName || null}</MuiTableCell>}
             {columns.map(column => (
               <MuiTableCell key={column}>{column}</MuiTableCell>
             ))}
           </MuiTableRow>
         </MuiTableHead>
         <MuiTableBody>
-          {data.map(row => (
-            <MuiTableRow key={row.timestamp || row.name}>
-              <MuiTableCell component="th" scope="row">
-                {dataIsTimeSeries
-                  ? formatTimestampForChart(row.timestamp, periodGranularity)
-                  : row.name}
-              </MuiTableCell>
-              {columns.map(column => {
-                const value = row[column];
+          {data.map((row, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <MuiTableRow key={index}>
+              {validFirstColumn(row) && (
+                <MuiTableCell component="th" scope="row">
+                  {dataIsTimeSeries
+                    ? formatTimestampForChart(row.timestamp, periodGranularity)
+                    : row.name}
+                </MuiTableCell>
+              )}
+              {columns.map(columnKey => {
+                const value = row[columnKey];
+                const columnConfig = chartConfig[columnKey];
 
                 const rowValue =
                   value === undefined
                     ? 'No Data'
-                    : formatDataValueByType({ value }, sanitizeValueType(valueType));
+                    : formatDataValueByType(
+                        { value },
+                        sanitizeValueType(columnConfig?.valueType || valueType),
+                      );
 
-                return <MuiTableCell key={column}>{rowValue}</MuiTableCell>;
+                return <MuiTableCell key={columnKey}>{rowValue}</MuiTableCell>;
               })}
             </MuiTableRow>
           ))}
@@ -163,9 +169,12 @@ Table.propTypes = {
     labelType: PropTypes.string,
     chartType: PropTypes.string,
     data: PropTypes.array,
+    chartConfig: PropTypes.object,
   }),
+  className: PropTypes.string,
 };
 
 Table.defaultProps = {
   viewContent: null,
+  className: null,
 };

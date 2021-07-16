@@ -123,7 +123,6 @@ export const FETCH_DISASTERS_ERROR = 'FETCH_DISASTERS_ERROR';
 export const SELECT_DISASTER = 'SELECT_DISASTER';
 export const VIEW_DISASTER = 'VIEW_DISASTER';
 export const TOGGLE_DASHBOARD_SELECT_EXPAND = 'TOGGLE_DASHBOARD_SELECT_EXPAND';
-export const SET_MOBILE_DASHBOARD_EXPAND = 'SET_MOBILE_DASHBOARD_EXPAND';
 export const SET_PROJECT_DATA = 'SET_PROJECT_DATA';
 export const SET_PROJECT = 'SET_PROJECT';
 export const FETCH_PROJECTS_ERROR = 'FETCH_PROJECTS_ERROR';
@@ -666,14 +665,14 @@ export function fetchOrgUnitError(organisationUnitCode, errorMessage) {
 }
 
 /**
- * Changes the current dashboardConfig. Change what is rendered in DataPanel.
+ * Changes the current dashboards. Change what is rendered in DataPanel.
  *
- * @param {object} dashboardConfig dashboardConfig from saga on successful fetch
+ * @param {object} dashboards dashboards from saga on successful fetch
  */
-export function fetchDashboardSuccess(dashboardConfig) {
+export function fetchDashboardsSuccess(dashboards) {
   return {
     type: FETCH_DASHBOARD_CONFIG_SUCCESS,
-    dashboardConfig,
+    dashboards,
   };
 }
 
@@ -692,23 +691,18 @@ export function fetchDashboardError(errorMessage) {
 /**
  * Fetches data for a DashboardItem.
  *
- * @param {string} infoViewKey
  * @param {string} organisationUnitCode
- * @param {string} dashboardGroupId
- * @param {string} viewId Typically view.viewId from dashboardConfig.tab.subtab
+ * @param {string} dashboardCode
+ * @param {string} itemCode
+ * @param {string} infoViewKey
  */
 
-export function fetchDashboardItemData(
-  organisationUnitCode,
-  dashboardGroupId,
-  viewId,
-  infoViewKey,
-) {
+export function fetchDashboardItemData(organisationUnitCode, dashboardCode, itemCode, infoViewKey) {
   return {
     type: FETCH_INFO_VIEW_DATA,
     organisationUnitCode,
-    dashboardGroupId,
-    viewId,
+    dashboardCode,
+    itemCode,
     infoViewKey,
   };
 }
@@ -909,13 +903,6 @@ export function toggleDashboardSelectExpand() {
   };
 }
 
-export function setMobileDashboardExpanded(shouldExpand) {
-  return {
-    type: SET_MOBILE_DASHBOARD_EXPAND,
-    shouldExpand,
-  };
-}
-
 /**
  * Toggles the expanded state.
  */
@@ -1047,10 +1034,10 @@ export function closeEnlargedDialog() {
   };
 }
 
-export function openEnlargedDialog(viewId) {
+export function openEnlargedDialog(itemCode) {
   return {
     type: OPEN_ENLARGED_DIALOG,
-    viewId,
+    itemCode,
   };
 }
 
@@ -1077,9 +1064,10 @@ export function fetchEnlargedDialogData(options) {
   };
 }
 
-export function updateEnlargedDialog(options, viewContent) {
+export function updateEnlargedDialog(options, viewConfig, viewContent) {
   return {
     type: UPDATE_ENLARGED_DIALOG,
+    viewConfig,
     viewContent,
     options,
   };

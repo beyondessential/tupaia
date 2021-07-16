@@ -9,6 +9,10 @@ import { ResponseBuilder } from './ResponseBuilder';
 
 export class EntityRelationshipsRoute extends Route<RelationshipsRequest> {
   async buildResponse() {
-    return new ResponseBuilder(this.req.models, this.req.ctx, this.req.query.groupBy).build();
+    return new ResponseBuilder(
+      this.req.models,
+      { ...this.req.ctx, entities: [this.req.ctx.entity] },
+      this.req.query.groupBy,
+    ).build();
   }
 }

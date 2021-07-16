@@ -26,7 +26,7 @@ export async function importEntities(req, res) {
     }
 
     const importEntitiesPermissionsChecker = async accessPolicy =>
-      assertCanImportEntities(accessPolicy, entitiesByCountryName);
+      assertCanImportEntities(accessPolicy, Object.keys(entitiesByCountryName));
 
     await req.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, importEntitiesPermissionsChecker]),
@@ -37,7 +37,12 @@ export async function importEntities(req, res) {
         const [countryName, entities] = countryEntries;
 
         // Create the entities, along with matching country, geographical_area, and clinic records
-        const country = await updateCountryEntities(transactingModels, countryName, entities, pushToDhis);
+        const country = await updateCountryEntities(
+          transactingModels,
+          countryName,
+          entities,
+          pushToDhis,
+        );
 
         // Go through country and all district/subdistricts, and if any are missing coordinates,
         // attempt to fetch them and populate the database

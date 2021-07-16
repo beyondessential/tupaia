@@ -25,6 +25,7 @@ const VILLAGE = 'village';
 const WORLD = 'world';
 const PROJECT = 'project';
 const CITY = 'city';
+const POSTCODE = 'postcode';
 
 // Note: if a new type is not included in `ORG_UNIT_ENTITY_TYPES`,
 // a corresponding tracked entity type must be created in DHIS
@@ -46,6 +47,7 @@ const ENTITY_TYPES = {
   WORLD,
   PROJECT,
   CITY,
+  POSTCODE,
 };
 
 export const ORG_UNIT_ENTITY_TYPES = {
@@ -166,31 +168,15 @@ export class EntityType extends DatabaseType {
   }
 
   async getAncestors(hierarchyId, criteria) {
-    return this.model.getRelationsOfEntity(ENTITY_RELATION_TYPE.ANCESTORS, this.id, {
-      entity_hierarchy_id: hierarchyId,
-      ...criteria,
-    });
+    return this.model.getAncestorsOfEntities(hierarchyId, [this.id], criteria);
   }
 
   async getDescendants(hierarchyId, criteria) {
-    return this.model.getRelationsOfEntity(ENTITY_RELATION_TYPE.DESCENDANTS, this.id, {
-      entity_hierarchy_id: hierarchyId,
-      ...criteria,
-    });
+    return this.model.getDescendantsOfEntities(hierarchyId, [this.id], criteria);
   }
 
   async getRelatives(hierarchyId, criteria) {
-    // getAncestors() comes sorted closest -> furthest, we want furthest -> closest
-    const ancestors = (await this.getAncestors(hierarchyId, criteria)).slice().reverse();
-
-    const self = await this.model.find({
-      ...criteria,
-      id: this.id, // Find an entity that matches the criteria AND this entity
-    });
-
-    const descendants = await this.getDescendants(hierarchyId, criteria);
-
-    return [...ancestors, ...self, ...descendants];
+    return this.model.getRelativesOfEntities(hierarchyId, [this.id], criteria);
   }
 
   async getAncestorOfType(hierarchyId, entityType) {
@@ -277,12 +263,12 @@ export class EntityType extends DatabaseType {
   async getChildrenViaHierarchy(hierarchyId) {
     return this.database.executeSql(
       `
-        SELECT entity.*
-        FROM entity
-        INNER JOIN entity_relation on entity.id = entity_relation.child_id
-        WHERE entity_relation.parent_id = ?
-        AND entity_relation.entity_hierarchy_id = ?;
-      `,
+          SELECT entity.*
+          FROM entity
+          INNER JOIN entity_relation on entity.id = entity_relation.child_id
+          WHERE entity_relation.parent_id = ?
+          AND entity_relation.entity_hierarchy_id = ?;
+        `,
       [this.id, hierarchyId],
     );
   }
@@ -334,12 +320,12 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   async updatePointCoordinatesFormatted(code, point) {
     return this.database.executeSql(
       `
-        UPDATE "entity"
-        SET
-          point = ST_GeomFromGeoJSON(?),
-          bounds = ST_Expand(ST_Envelope(ST_GeomFromGeoJSON(?)::geometry), 1)
-        WHERE code = ?;
-      `,
+          UPDATE "entity"
+          SET
+            point = ST_GeomFromGeoJSON(?),
+            bounds = ST_Expand(ST_Envelope(ST_GeomFromGeoJSON(?)::geometry), 1)
+          WHERE code = ?;
+        `,
       [point, point, code],
     );
   }
@@ -347,10 +333,10 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   async updateBoundsCoordinates(code, bounds) {
     return this.database.executeSql(
       `
-        UPDATE "entity"
-        SET "bounds" = ?
-        WHERE "code" = ?;
-      `,
+          UPDATE "entity"
+          SET "bounds" = ?
+          WHERE "code" = ?;
+        `,
       [bounds, code],
     );
   }
@@ -369,10 +355,10 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
     return this.database.executeSql(
       `
-        UPDATE "entity"
-        SET "region" = ST_GeomFromGeoJSON(?) ${boundsString}
-        WHERE "code" = ?;
-      `,
+          UPDATE "entity"
+          SET "region" = ST_GeomFromGeoJSON(?) ${boundsString}
+          WHERE "code" = ?;
+        `,
       shouldSetBounds ? [geojson, geojson, code] : [geojson, code],
     );
   }
@@ -394,22 +380,22 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
         descendantCodes,
         batchOfDescendantCodes => [
           `
-          SELECT descendant.code as descendant_code, ancestor.code as ancestor_code, ancestor.name as ancestor_name
-          FROM
-            ancestor_descendant_relation
-          JOIN
-            entity as ancestor on ancestor.id = ancestor_descendant_relation.ancestor_id
-          JOIN
-            entity as descendant ON descendant.id = ancestor_descendant_relation.descendant_id
-          WHERE
-            descendant.code IN (${batchOfDescendantCodes.map(() => '?').join(',')})
-          AND
-            ancestor_descendant_relation.entity_hierarchy_id = ?
-          AND
-            ancestor.type = ?
-          ORDER BY
-            generational_distance ASC
-        `,
+            SELECT descendant.code as descendant_code, ancestor.code as ancestor_code, ancestor.name as ancestor_name
+            FROM
+              ancestor_descendant_relation
+            JOIN
+              entity as ancestor on ancestor.id = ancestor_descendant_relation.ancestor_id
+            JOIN
+              entity as descendant ON descendant.id = ancestor_descendant_relation.descendant_id
+            WHERE
+              descendant.code IN (${batchOfDescendantCodes.map(() => '?').join(',')})
+            AND
+              ancestor_descendant_relation.entity_hierarchy_id = ?
+            AND
+              ancestor.type = ?
+            ORDER BY
+              generational_distance ASC
+          `,
           [...batchOfDescendantCodes, hierarchyId, ancestorType],
         ],
         maxBoundParameters,
@@ -425,8 +411,8 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     });
   }
 
-  async getRelationsOfEntity(ancestorsOrDescendants, entityId, criteria) {
-    const cacheKey = this.getCacheKey(this.getRelationsOfEntity.name, arguments);
+  async getRelationsOfEntities(ancestorsOrDescendants, entityIds, criteria) {
+    const cacheKey = this.getCacheKey(this.getRelationsOfEntities.name, arguments);
     const [joinTablesOn, filterByEntityId] =
       ancestorsOrDescendants === ENTITY_RELATION_TYPE.ANCESTORS
         ? ['ancestor_id', 'descendant_id']
@@ -435,7 +421,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       const relations = await this.find(
         {
           ...criteria,
-          [filterByEntityId]: entityId,
+          [filterByEntityId]: entityIds,
         },
         {
           joinWith: TYPES.ANCESTOR_DESCENDANT_RELATION,
@@ -446,6 +432,36 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       return Promise.all(relations.map(async r => r.getData()));
     });
     return Promise.all(relationData.map(async r => this.generateInstance(r)));
+  }
+
+  async getAncestorsOfEntities(hierarchyId, entityIds, criteria) {
+    return this.getRelationsOfEntities(ENTITY_RELATION_TYPE.ANCESTORS, entityIds, {
+      entity_hierarchy_id: hierarchyId,
+      ...criteria,
+    });
+  }
+
+  async getDescendantsOfEntities(hierarchyId, entityIds, criteria) {
+    return this.getRelationsOfEntities(ENTITY_RELATION_TYPE.DESCENDANTS, entityIds, {
+      entity_hierarchy_id: hierarchyId,
+      ...criteria,
+    });
+  }
+
+  async getRelativesOfEntities(hierarchyId, entityIds, criteria) {
+    // getAncestors() comes sorted closest -> furthest, we want furthest -> closest
+    const ancestors = (await this.getAncestorsOfEntities(hierarchyId, entityIds, criteria))
+      .slice()
+      .reverse();
+
+    const self = await this.find({
+      ...criteria,
+      id: entityIds, // Find an entity that matches the criteria AND themselves
+    });
+
+    const descendants = await this.getDescendantsOfEntities(hierarchyId, entityIds, criteria);
+
+    return [...ancestors, ...self, ...descendants];
   }
 
   getDhisLevel(type) {

@@ -54,8 +54,7 @@ export class DashboardItem extends Component {
   componentWillReceiveProps(nextProps) {
     if (
       nextProps.infoViewKey !== this.props.infoViewKey ||
-      this.props.organisationUnit !== nextProps.organisationUnit ||
-      this.props.disasters !== nextProps.disasters
+      this.props.organisationUnit !== nextProps.organisationUnit
     ) {
       this.updateCharts(nextProps);
     }
@@ -63,32 +62,29 @@ export class DashboardItem extends Component {
 
   updateCharts() {
     const { viewContent, viewConfig, fetchContent, infoViewKey } = this.props;
-    const { viewId, dashboardGroupId, organisationUnitCode } = viewConfig;
+    const { code, dashboardCode, organisationUnitCode } = viewConfig;
 
-    if (!viewContent) {
-      fetchContent(organisationUnitCode, dashboardGroupId, viewId, infoViewKey);
-    } else if (isEmpty(viewContent.data)) {
-      fetchContent(organisationUnitCode, dashboardGroupId, viewId, infoViewKey);
+    if ((!viewContent || isEmpty(viewContent.data)) && !viewConfig.placeholder) {
+      fetchContent(organisationUnitCode, dashboardCode, code, infoViewKey);
     }
   }
 
   render() {
     const {
+      viewConfig,
       viewContent,
       isSidePanelExpanded,
       onEnlarge,
-      viewConfig,
       infoViewKey,
       organisationUnitName,
     } = this.props;
-
-    const { viewId, dashboardGroupId, organisationUnitCode } = viewConfig;
+    const newViewContent =
+      viewContent === null && !viewConfig.placeholder ? null : { ...viewConfig, ...viewContent };
 
     return (
       <View
-        retry={() => this.updateCharts(organisationUnitCode, dashboardGroupId, viewId, infoViewKey)}
-        viewContent={viewContent}
-        viewConfig={viewConfig}
+        retry={() => this.updateCharts()}
+        viewContent={newViewContent}
         organisationUnitName={organisationUnitName}
         onEnlarge={() => onEnlarge(getViewIdFromInfoViewKey(infoViewKey))}
         isSidePanelExpanded={isSidePanelExpanded}
@@ -98,8 +94,8 @@ export class DashboardItem extends Component {
 }
 
 DashboardItem.propTypes = {
-  viewContent: PropTypes.shape({}),
-  viewConfig: PropTypes.shape({}).isRequired,
+  viewContent: PropTypes.object,
+  viewConfig: PropTypes.object.isRequired,
   fetchContent: PropTypes.func.isRequired,
   infoViewKey: PropTypes.string.isRequired,
   organisationUnitName: PropTypes.string,
@@ -128,8 +124,8 @@ const mapStateToProps = (state, { infoViewKey }) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  fetchContent: (organisationUnitCode, dashboardGroupId, viewId, infoViewKey) =>
-    dispatch(fetchDashboardItemData(organisationUnitCode, dashboardGroupId, viewId, infoViewKey)),
+  fetchContent: (organisationUnitCode, dashboardCode, itemCode, infoViewKey) =>
+    dispatch(fetchDashboardItemData(organisationUnitCode, dashboardCode, itemCode, infoViewKey)),
   onEnlarge: viewId => dispatch(openEnlargedDialog(viewId)),
   dispatch, // Necessary for merge props.
 });
