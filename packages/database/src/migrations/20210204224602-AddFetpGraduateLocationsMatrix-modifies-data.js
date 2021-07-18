@@ -1,6 +1,6 @@
 'use strict';
 
-import { arrayToDbString, insertObject } from '../utilities';
+import { arrayToDbString, codeToId, generateId, insertObject } from '../utilities';
 
 var dbm;
 var type;
@@ -17,7 +17,7 @@ exports.setup = function (options, seedLink) {
 };
 
 const reportConfig = {
-  id: 'FETP_PG_graduate_locations',
+  code: 'FETP_PG_graduate_locations',
   dataBuilder: 'tableOfCalculatedValues',
   dataValues: [
     'HEO = Health Extension Officer',
@@ -34,7 +34,7 @@ const reportConfig = {
     National: {
       organisationUnit: {
         parent: {
-          code: 'PG_National Capital District', // 'National Capital District'
+          type: 'country',
         },
       },
     },
@@ -42,10 +42,6 @@ const reportConfig = {
       organisationUnit: {
         parent: {
           type: 'district',
-          code: {
-            operator: '<>',
-            value: 'PG_National Capital District', // 'National Capital District'
-          },
         },
       },
     },
@@ -53,10 +49,6 @@ const reportConfig = {
       organisationUnit: {
         parent: {
           type: 'sub_district',
-          code: {
-            operator: '<>',
-            value: 'PG_National Capital District_NCD', // 'National Capital District (sub_district)'
-          },
         },
       },
     },
@@ -85,7 +77,7 @@ const reportConfig = {
     };
   },
 };
-const dashboardGroups = ['PG_FETP_Country_Public'];
+const dashboardCode = ['PG_FETP'];
 
 const buildReport = report => {
   const dataBuilderConfig = {
@@ -100,7 +92,7 @@ const buildReport = report => {
     },
   };
   return {
-    id: report.id,
+    code: report.code,
     dataBuilder: report.dataBuilder,
     dataBuilderConfig,
     viewJson: report.viewJson,
@@ -110,22 +102,40 @@ const buildReport = report => {
 const report = buildReport(reportConfig);
 
 exports.up = async function (db) {
-  await insertObject(db, 'dashboardReport', report);
-
-  return db.runSql(`
-    update "dashboardGroup" 
-    set "dashboardReports" = "dashboardReports" || '{${report.id}}' 
-    where code in (${arrayToDbString(dashboardGroups)});
-  `);
+  const dashboardItemId = generateId();
+  const dashboardId = await codeToId(db, 'dashboard', dashboardCode);
+  await insertObject(db, 'legacy_report', {
+    id: generateId(),
+    code: report.code,
+    data_builder: report.dataBuilder,
+    data_builder_config: report.dataBuilderConfig,
+    data_services: report.dataServices,
+  });
+  await insertObject(db, 'dashboard_item', {
+    id: dashboardItemId,
+    code: report.code,
+    report_code: report.code,
+    legacy: true,
+    config: report.viewJson,
+  });
+  await insertObject(db, 'dashboard_relation', {
+    id: generateId(),
+    dashboard_id: dashboardId,
+    child_id: dashboardItemId,
+    entity_types: '{country}',
+    project_codes: '{fetp}',
+    permission_groups: '{Public}',
+    sort_order: 2,
+  });
 };
 
-exports.down = function (db) {
+exports.down = async function (db) {
+  const dashboardItemId = await codeToId(db, 'dashboard_item', report.code);
+  const dashboardId = await codeToId(db, 'dashboard', dashboardCode);
   return db.runSql(`
-    update "dashboardGroup" 
-    set "dashboardReports" = array_remove("dashboardReports", '${report.id}')
-    where code in (${arrayToDbString(dashboardGroups)});
-
-    delete from "dashboardReport" where id = '${report.id}';
+    delete from "legacy_report" where code = '${report.code}';
+    delete from "dashboard_item" where code = '${report.code}';
+    delete from "dashboard_relation" where dashboard_id = '${dashboardId}' and child_id = '${dashboardItemId}';
   `);
 };
 
