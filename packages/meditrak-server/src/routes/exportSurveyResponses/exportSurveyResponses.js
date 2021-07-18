@@ -140,8 +140,8 @@ export async function exportSurveyResponses(req, res) {
           answers.forEach(({ 'question.id': questionId, text }) => {
             answersByQuestionId[questionId] = text;
           });
-          surveyResponseAnswers.push(answersByQuestionId);
         }
+        surveyResponseAnswers.push(answersByQuestionId);
       };
 
       if (surveyResponse) {
