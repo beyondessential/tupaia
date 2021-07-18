@@ -19,6 +19,10 @@ const AGGREGATION_SWITCHES = {
     groupByPeriodField: 'week_period',
     aggregationFunction: VALUE_AGGREGATION_FUNCTIONS.MOST_RECENT,
   },
+  SUM_EACH_WEEK: {
+    groupByPeriodField: 'week_period',
+    aggregationFunction: VALUE_AGGREGATION_FUNCTIONS.SUM,
+  },
   FINAL_EACH_MONTH: {
     groupByPeriodField: 'month_period',
     aggregationFunction: VALUE_AGGREGATION_FUNCTIONS.MOST_RECENT,
@@ -41,7 +45,6 @@ const AGGREGATION_SWITCHES = {
   SUM_PER_PERIOD_PER_ORG_GROUP: {
     aggregationFunction: VALUE_AGGREGATION_FUNCTIONS.SUM,
     aggregateEntities: true,
-    groupByPeriodField: 'day_period', // can assume first internal aggregation period type is daily
   },
 };
 
