@@ -65,16 +65,16 @@
       "path": "packages/meditrak-app"
     },
     {
+      "name": "meditrak-server",
+      "path": "packages/meditrak-server"
+    },
+    {
       "name": "psss",
       "path": "packages/psss"
     },
     {
       "name": "psss-server",
       "path": "packages/psss-server"
-    },
-    {
-      "name": "meditrak-server",
-      "path": "packages/meditrak-server"
     },
     {
       "name": "report-server",
