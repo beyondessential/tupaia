@@ -14,13 +14,22 @@ elbv2 = boto3.client('elbv2')
 
 
 def delete_gateway(tupaia_instance_name):
-    # 1. Delete ELB
     gateway_elb = get_gateway_elb(tupaia_instance_name)
+
+    # (order matters)
+    # 1. Delete listeners
+    listeners = get_gateway_listeners(tupaia_instance_name)
+    for listener in listeners:
+        elbv2.delete_listener(
+            ListenerArn=listener['ListenerArn']
+        )
+
+    # 2. Delete ELB
     elbv2.delete_load_balancer(
         LoadBalancerArn=gateway_elb['LoadBalancerArn']
     )
 
-    # 2. Delete Target Group
+    # 3. Delete Target Group
     gateway_target_group = get_gateway_target_group(tupaia_instance_name)
     elbv2.delete_target_group(
         TargetGroupArn=gateway_target_group['TargetGroupArn']

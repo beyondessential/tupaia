@@ -72,6 +72,14 @@ def get_gateway_target_group(tupaia_instance_name):
     return list(filter(lambda x: x['TargetGroupArn'] == matching_arn, target_groups['TargetGroups']))[0]
 
 
+def get_gateway_listeners(tupaia_instance_name):
+    elb = get_gateway_elb(tupaia_instance_name)
+    return elbv2.describe_listeners(
+        LoadBalancerArn=elb['LoadBalancerArn'],
+        PageSize=100
+    )['Listeners']
+
+
 def create_gateway_elb(tupaia_instance_name, config, gateway_name):
     response = elbv2.create_load_balancer(
         Name=gateway_name,
@@ -117,7 +125,7 @@ def create_gateway_target_group(tupaia_instance_name, config, target_group_name)
                 'Value': 'Tupaia-Gateway'
             },
             {
-                'Key': 'tupaia_instance_name',
+                'Key': 'TupaiaInstanceName',
                 'Value': tupaia_instance_name
             },
         ]
