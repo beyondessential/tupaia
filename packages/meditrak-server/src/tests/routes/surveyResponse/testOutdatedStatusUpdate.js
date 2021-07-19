@@ -7,8 +7,7 @@
 
 import { expect } from 'chai';
 
-import { buildAndInsertSurveys, generateTestId } from '@tupaia/database';
-import { SurveyResponseChangeHandler } from '../../../database/SurveyResponseChangeHandler/SurveyResponseChangeHandler';
+import { buildAndInsertSurveys, generateTestId, SurveyResponseOutdater } from '@tupaia/database';
 
 const REFRESH_DEBOUNCE_TIME = 50; // short debounce time so tests run more quickly
 
@@ -41,10 +40,7 @@ const SURVEYS = {
 
 export const testOutdatedStatusUpdate = app => {
   const { models } = app;
-  const surveyResponseChangeHandler = new SurveyResponseChangeHandler(
-    models,
-    REFRESH_DEBOUNCE_TIME,
-  );
+  const responseOutdater = new SurveyResponseOutdater(models, REFRESH_DEBOUNCE_TIME);
 
   const datetime = date => `${date}T12:00:00`;
 
@@ -98,11 +94,11 @@ export const testOutdatedStatusUpdate = app => {
   });
 
   beforeEach(async () => {
-    surveyResponseChangeHandler.listenForChanges();
+    responseOutdater.listenForChanges();
   });
 
   afterEach(async () => {
-    surveyResponseChangeHandler.stopListeningForChanges();
+    responseOutdater.stopListeningForChanges();
     const surveyIds = Object.values(SURVEYS).map(s => s.id);
     await models.surveyResponse.delete({ survey_id: surveyIds });
   });

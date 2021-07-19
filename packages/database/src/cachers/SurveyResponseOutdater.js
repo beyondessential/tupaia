@@ -7,7 +7,7 @@ import { OutdatedStatusUpdater } from './OutdatedStatusUpdater';
 
 const UPDATE_DEBOUNCE_TIME = 250; // wait 250ms after changes before updating, to avoid double-up
 
-export class SurveyResponseChangeHandler {
+export class SurveyResponseOutdater {
   constructor(models, updateDebounceTime = UPDATE_DEBOUNCE_TIME) {
     this.models = models;
     this.updateDebounceTime = updateDebounceTime;

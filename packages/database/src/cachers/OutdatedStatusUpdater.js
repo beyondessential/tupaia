@@ -9,9 +9,9 @@ import keyBy from 'lodash.keyby';
 import orderBy from 'lodash.orderby';
 import moment from 'moment';
 
-import { isMarkedChange } from '@tupaia/database';
 import { getUniqueEntries, getUniqueObjects, haveSameFields, max, min } from '@tupaia/utils';
-import { PERIOD_GRANULARITIES, PERIOD_GRANULARITY_TO_MOMENT_UNIT } from '../models/Survey';
+import { PERIOD_GRANULARITIES, PERIOD_GRANULARITY_TO_MOMENT_UNIT } from '../modelClasses/Survey';
+import { isMarkedChange } from '../utilities';
 
 /**
  * Survey responses use an `outdated` flag to indicate whether their values should be used

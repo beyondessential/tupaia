@@ -4,3 +4,4 @@
  */
 
 export { EntityHierarchyCacher } from './EntityHierarchyCacher';
+export { SurveyResponseOutdater } from './SurveyResponseOutdater';
