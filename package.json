@@ -20,7 +20,6 @@
   "scripts": {
     "build-admin-panel": "yarn workspace @tupaia/admin-panel build",
     "build-internal-dependencies": "./scripts/bash/buildInternalDependencies.sh",
-    "build-internal-dependencies:dev": "./scripts/bash/buildInternalDependencies.sh --withTypes",
     "build-web-frontend": "yarn workspace @tupaia/web-frontend build",
     "dump-database": "./scripts/bash/dumpDb.sh",
     "migrate": "yarn workspace @tupaia/database migrate",

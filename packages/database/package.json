@@ -11,8 +11,7 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "babel src --out-dir dist --source-maps --ignore \"**/migrations\",\"src/tests/**\" --config-file \"../../babel.config.json\"",
-    "build:ts": "tsc",
+    "build": "babel src --out-dir dist --source-maps --ignore \"**/migrations\",\"src/tests/**\" --config-file \"../../babel.config.json\" && tsc",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
     "migrate": "babel-node ./src/migrate.js up --migrations-dir ./src/migrations -v --config-file \"../../babel.config.json\"",
