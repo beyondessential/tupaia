@@ -195,9 +195,7 @@ export class OutdatedStatusUpdater {
       survey,
     );
 
-    const idsByNewStatus = await this.getResponseIdsForOutdatedStatusUpdate(
-      responsesGroupedByCombo,
-    );
+    const idsByNewStatus = this.getResponseIdsForOutdatedStatusUpdate(responsesGroupedByCombo);
     await this.setOutdatedStatus(idsByNewStatus.true, true);
     await this.setOutdatedStatus(idsByNewStatus.false, false);
   };
@@ -206,26 +204,24 @@ export class OutdatedStatusUpdater {
    * Returns a list of survey responses that should get their `outdated` status updated,
    * keyed by the new (correct) status.
    */
-  getResponseIdsForOutdatedStatusUpdate = async responsesGroupedByCombo => {
+  getResponseIdsForOutdatedStatusUpdate = responsesGroupedByCombo => {
     const idsByNewStatus = {
       true: [],
       false: [],
     };
 
-    await Promise.all(
-      responsesGroupedByCombo.map(async responseGroup => {
-        const idOfMostRecent = getIdOfMostRecentResponse(responseGroup);
+    responsesGroupedByCombo.forEach(responseGroup => {
+      const idOfMostRecent = getIdOfMostRecentResponse(responseGroup);
 
-        responseGroup.forEach(({ id, outdated: currentOutdated }) => {
-          // Only one response (the most recent) per group should be "not outdated"
-          const outdated = id !== idOfMostRecent;
-          if (outdated !== currentOutdated) {
-            // Only include records with changed status to avoid unnecessary updates
-            idsByNewStatus[outdated].push(id);
-          }
-        });
-      }),
-    );
+      responseGroup.forEach(({ id, outdated: currentOutdated }) => {
+        // Only one response (the most recent) per group should be "not outdated"
+        const outdated = id !== idOfMostRecent;
+        if (outdated !== currentOutdated) {
+          // Only include records with changed status to avoid unnecessary updates
+          idsByNewStatus[outdated].push(id);
+        }
+      });
+    });
 
     return idsByNewStatus;
   };
