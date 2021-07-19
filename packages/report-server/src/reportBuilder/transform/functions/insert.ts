@@ -17,7 +17,7 @@ type InsertParams = {
 };
 
 const insert = (rows: Row[], params: InsertParams): Row[] => {
-  const returnArray = rows;
+  const returnArray = [...rows];
   const parser = new TransformParser(rows, functions);
   const rowsToInsert = returnArray.map(row => {
     const insertNewRow = params.where(parser);
