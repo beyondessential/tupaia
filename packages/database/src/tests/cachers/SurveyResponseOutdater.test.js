@@ -6,10 +6,10 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import { buildAndInsertSurveys, buildAndInsertSurveyResponses } from '@tupaia/database';
 import { sleep } from '@tupaia/utils';
-import { SurveyResponseChangeHandler } from '../../database';
-import { getModels } from '../testUtilities';
+import { SurveyResponseOutdater } from '../../cachers/SurveyResponseOutdater';
+import { getTestModels } from '../../testUtilities/getTestDatabase';
+import { buildAndInsertSurveys, buildAndInsertSurveyResponses } from '../../testUtilities';
 
 const SURVEY = {
   code: 'Test_ChangeHandler',
@@ -17,21 +17,21 @@ const SURVEY = {
 };
 
 describe('SurveyResponseChangeHandler', () => {
-  const models = getModels();
+  const models = getTestModels();
 
   before(async () => {
     await buildAndInsertSurveys(models, [SURVEY]);
   });
 
   it('batches multiple changes', async () => {
-    const changeHandler = new SurveyResponseChangeHandler(models, 250);
+    const outdater = new SurveyResponseOutdater(models, 250);
 
     try {
-      changeHandler.updateOutdatedStatus = sinon.stub().callsFake(async () => {
-        changeHandler.resolveScheduledUpdatePromise();
+      outdater.updateOutdatedStatus = sinon.stub().callsFake(async () => {
+        outdater.resolveScheduledUpdatePromise();
       });
 
-      changeHandler.listenForChanges();
+      outdater.listenForChanges();
 
       // make a bunch of different changes, with small delays between each to model real life
       const sleepTime = 100;
@@ -58,9 +58,9 @@ describe('SurveyResponseChangeHandler', () => {
       await sleep(sleepTime);
 
       await models.database.waitForAllChangeHandlers();
-      expect(changeHandler.updateOutdatedStatus).to.have.callCount(1);
+      expect(outdater.updateOutdatedStatus).to.have.callCount(1);
     } finally {
-      changeHandler.stopListeningForChanges();
+      outdater.stopListeningForChanges();
     }
   });
 });

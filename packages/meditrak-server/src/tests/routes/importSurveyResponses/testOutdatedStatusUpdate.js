@@ -7,8 +7,7 @@
 
 import { expect } from 'chai';
 
-import { buildAndInsertSurveys, generateTestId } from '@tupaia/database';
-import { SurveyResponseChangeHandler } from '../../../database/SurveyResponseChangeHandler/SurveyResponseChangeHandler';
+import { buildAndInsertSurveys, generateTestId, SurveyResponseOutdater } from '@tupaia/database';
 import { TestableApp } from '../../testUtilities';
 import { importFile } from './helpers';
 
@@ -43,10 +42,7 @@ const SURVEYS = {
 export const testOutdatedStatusUpdate = () => {
   const app = new TestableApp();
   const { models } = app;
-  const surveyResponseChangeHandler = new SurveyResponseChangeHandler(
-    models,
-    REFRESH_DEBOUNCE_TIME,
-  );
+  const surveyResponseOutdater = new SurveyResponseOutdater(models, REFRESH_DEBOUNCE_TIME);
 
   /**
    * Asserts that newly imported responses for a survey have the expected `outdated` statuses.
@@ -83,11 +79,11 @@ export const testOutdatedStatusUpdate = () => {
 
   beforeEach(async () => {
     await models.surveyResponse.delete({ survey_id: Object.values(SURVEYS).map(s => s.id) });
-    surveyResponseChangeHandler.listenForChanges();
+    surveyResponseOutdater.listenForChanges();
   });
 
   afterEach(async () => {
-    surveyResponseChangeHandler.stopListeningForChanges();
+    surveyResponseOutdater.stopListeningForChanges();
   });
 
   after(() => {
