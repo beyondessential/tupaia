@@ -50,61 +50,43 @@ export class AreaTooltip extends Component {
       </Heading>,
     ];
 
-    const renderTextList = (data, textList = []) => {
-      Object.keys(data).forEach(key => {
-        textList.push(<span key={key}>{`${key}: ${data[key]}`}</span>);
-      });
-      return textList;
-    };
-
-    if (hasMeasureValue) {
-      const legacy = measureOptions.length === 1;
-      const { formattedMeasureData, onlyOneValue } = legacy
-        ? this.buildLegacyFormattedMeasureData(orgUnitMeasureData, measureOptions)
-        : this.buildFormattedMeasureData(orgUnitMeasureData, measureOptions);
-
-      if (onlyOneValue) {
-        return renderTextList({ [orgUnitName]: formattedMeasureData });
-      }
-
-      renderTextList(formattedMeasureData, defaultTextList);
+    if (!hasMeasureValue) {
+      return defaultTextList;
     }
 
-    return defaultTextList;
-  }
+    const toTextList = data =>
+      Object.keys(data).map(key => <span key={key}>{`${key}: ${data[key]}`}</span>);
 
-  buildLegacyFormattedMeasureData(orgUnitMeasureData, measureOptions) {
-    const formattedValue = getSingleFormattedValue(orgUnitMeasureData, measureOptions);
-
-    return {
-      formattedMeasureData: formattedValue,
-      onlyOneValue: true,
-    };
+    return defaultTextList.concat(
+      toTextList(this.buildFormattedMeasureData(orgUnitMeasureData, measureOptions)),
+    );
   }
 
   buildFormattedMeasureData(orgUnitMeasureData, measureOptions) {
+    const getMetadata = (data, key) => {
+      if (data.metadata) {
+        return data.metadata;
+      }
+      const metadataKeys = Object.keys(data).filter(k => k.includes(`${key}_metadata`));
+      return Object.fromEntries(metadataKeys.map(k => [k.replace(`${key}_metadata`, ''), data[k]]));
+    };
+
     const formattedMeasureData = {};
 
     if (orgUnitMeasureData) {
-      formattedMeasureData[measureOptions[0].name] = getSingleFormattedValue(
-        orgUnitMeasureData,
-        measureOptions,
-      );
-
-      measureOptions.forEach(({ key }) => {
-        if (key !== measureOptions[0].key) {
-          formattedMeasureData[key] = orgUnitMeasureData[key];
-        }
+      measureOptions.forEach(({ key, name, ...otherConfigs }) => {
+        const metadata = getMetadata(orgUnitMeasureData, key);
+        formattedMeasureData[name || key] = getSingleFormattedValue(orgUnitMeasureData, [
+          {
+            key,
+            metadata,
+            ...otherConfigs,
+          },
+        ]);
       });
     }
 
-    if (Object.values(formattedMeasureData).length === 1) {
-      return {
-        formattedMeasureData: Object.values(formattedMeasureData)[0],
-        onlyOneValue: true,
-      };
-    }
-    return { formattedMeasureData };
+    return formattedMeasureData;
   }
 
   render() {
