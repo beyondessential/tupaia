@@ -61,7 +61,7 @@ def lambda_handler(event, context):
     public_ip_address = instance['PublicIpAddress']
 
     # Get gateway
-    gateway_elb = get_gateway_elb(event['InstanceName'])
+    gateway_elb = get_gateway_elb(stage)
 
     # Delete subdomains from hosted zone
     hosted_zone_id = route53.list_hosted_zones_by_name(DNSName=domain)['HostedZones'][0]['Id']
@@ -86,7 +86,7 @@ def lambda_handler(event, context):
     ec.release_address(AllocationId=elastic_ip['AllocationId'])
 
     # Delete gateway
-    delete_gateway(event['InstanceName'])
+    delete_gateway(stage)
 
     # Terminate ec2 instance (taking with it ebs)
     ec.terminate_instances(InstanceIds=[instance['InstanceId']])
