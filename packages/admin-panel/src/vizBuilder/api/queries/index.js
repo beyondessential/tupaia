@@ -4,3 +4,4 @@
  *
  */
 export * from './useGetViz';
+export * from './useUser';

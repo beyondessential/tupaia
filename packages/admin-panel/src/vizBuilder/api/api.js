@@ -22,7 +22,7 @@ axios.defaults.withCredentials = true;
  */
 const request = async (endpoint, options) => {
   try {
-    const response = await axios(`${baseUrl}/v1/${endpoint}`, {
+    const response = await axios(`${baseUrl}/${endpoint}`, {
       timeout,
       ...options,
     });

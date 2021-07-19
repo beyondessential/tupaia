@@ -6,13 +6,13 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { Express } from 'express';
 import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
-
 import { TupaiaDatabase } from '@tupaia/database';
 import { OrchestratorApiBuilder, attachSession, handleWith } from '@tupaia/server-boilerplate';
 
 import { AdminPanelSessionModel } from '../models';
 import { hasTupaiaAdminPanelAccess } from '../utils';
 import { attachAuthorizationHeader } from '../middleware';
+import { UserRoute } from '../routes';
 
 const useForwardUnhandledRequestsToMeditrak = (app: Express) => {
   const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
@@ -47,6 +47,7 @@ export function createApp() {
   const app = new OrchestratorApiBuilder(new TupaiaDatabase())
     .useSessionModel(AdminPanelSessionModel)
     .verifyLogin(hasTupaiaAdminPanelAccess)
+    .get('/v1/user', handleWith(UserRoute))
     .build();
 
   useForwardUnhandledRequestsToMeditrak(app);
