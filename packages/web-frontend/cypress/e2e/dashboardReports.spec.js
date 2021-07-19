@@ -3,12 +3,27 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { urls as reportUrls } from '../config/dashboardReports.json';
+import {
+  constructEveryItemSync,
+  constructIsArrayOf,
+  constructIsEmptyOrSync,
+  constructIsOneOf,
+  hasContent,
+  isBoolean,
+  ObjectValidator,
+} from '@tupaia/utils';
+
+import config from '../generatedConfig.json';
+import { SNAPSHOT_TYPES } from '../constants';
 import { preserveUserSession } from '../support';
 
-const SNAPSHOT_TYPES = {
-  RESPONSE_BODY: 'responseBody',
-  HTML: 'html',
+const reportConfigSchema = {
+  allowEmptyResponse: [constructIsEmptyOrSync(isBoolean)],
+  urls: [hasContent, constructIsArrayOf('string')],
+  snapshotTypes: [
+    hasContent,
+    constructEveryItemSync(constructIsOneOf([SNAPSHOT_TYPES.RESPONSE_BODY, SNAPSHOT_TYPES.HTML])),
+  ],
 };
 
 const checkHasMatrixData = body => {
@@ -43,15 +58,17 @@ const urlToRouteRegex = url => {
   return new RegExp(`view?.*\\WisExpanded=true&.*viewId=${viewId}[&$]`);
 };
 
+const validateConfig = () => {
+  const constructError = (errorMessage, fieldKey) =>
+    new Error(
+      `Invalid content for field "dashboardReports.${fieldKey}" causing message "${errorMessage}"`,
+    );
+  new ObjectValidator(reportConfigSchema).validateSync(config.dashboardReports, constructError);
+};
+
 describe('Dashboard reports', () => {
-  if (reportUrls.length === 0) {
-    throw new Error('Dashboard report url list is empty');
-  }
-  const { dashboardReports: config = {} } = Cypress.config('tupaia');
-  const { allowEmptyResponse, snapshotTypes } = config;
-  if (!Array.isArray(snapshotTypes) || snapshotTypes.length === 0) {
-    throw new Error(`No snapshot types specified`);
-  }
+  validateConfig(config);
+  const { allowEmptyResponse, snapshotTypes, urls } = config.dashboardReports;
 
   before(() => {
     cy.login();
@@ -61,7 +78,7 @@ describe('Dashboard reports', () => {
     preserveUserSession();
   });
 
-  reportUrls.forEach(url => {
+  urls.forEach(url => {
     it(url, () => {
       cy.server();
       cy.route(urlToRouteRegex(url)).as('report');
