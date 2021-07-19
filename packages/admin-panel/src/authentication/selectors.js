@@ -16,3 +16,6 @@ export const getIsUserAuthenticated = state => !!getAuthenticationState(state).u
 
 // User details
 export const getUser = state => getAuthenticationState(state).user || {}; // If null, return empty object
+
+// BES ADmin
+export const getIsBESAdmin = state => getAuthenticationState(state).isBESAdmin;

@@ -53,7 +53,7 @@ export const App = () => {
   }
 
   if (!isBESAdmin) {
-    // return <Redirect to="/" />;
+    return <Redirect to="/" />;
   }
 
   return (

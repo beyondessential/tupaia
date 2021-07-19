@@ -11,7 +11,7 @@ import { BES_ADMIN_PERMISSION_GROUP } from '../constants';
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
 
 const isBESAdmin = (policy: Record<string, string[]>) => {
-  return new AccessPolicy(policy).allows(BES_ADMIN_PERMISSION_GROUP);
+  return new AccessPolicy(policy).allowsSome(null, BES_ADMIN_PERMISSION_GROUP);
 };
 
 export class MeditrakConnection extends SessionHandlingApiConnection {
@@ -19,7 +19,6 @@ export class MeditrakConnection extends SessionHandlingApiConnection {
 
   async getUser() {
     // if user is not logged in, return null rather than fetching the api client user details
-    console.log('session', this.hasSession);
     if (!this.hasSession) {
       return {};
     }

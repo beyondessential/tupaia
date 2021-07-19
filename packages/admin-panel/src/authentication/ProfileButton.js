@@ -7,42 +7,42 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { ProfileButton as BaseProfileButton, ProfileButtonItem } from '@tupaia/ui-components';
 import { logout } from './actions';
-import { getUser } from './selectors';
+import { getUser, getIsBESAdmin } from './selectors';
 
-const ProfileLinksComponent = ({ onLogout }) => (
-  <>
-    <ProfileButtonItem to="/profile">Edit Profile</ProfileButtonItem>
-    <ProfileButtonItem to="/viz-builder">Visualisation builder</ProfileButtonItem>
-    <ProfileButtonItem button onClick={onLogout}>
-      Logout
-    </ProfileButtonItem>
-  </>
-);
-
-ProfileLinksComponent.propTypes = {
-  onLogout: PropTypes.func.isRequired,
+const ProfileButtonComponent = ({ user, onLogout, isBESAdmin }) => {
+  const ProfileLinks = () => (
+    <>
+      <ProfileButtonItem to="/profile">Edit Profile</ProfileButtonItem>
+      {isBESAdmin && <ProfileButtonItem to="/viz-builder">Visualisation builder</ProfileButtonItem>}
+      <ProfileButtonItem button onClick={onLogout}>
+        Logout
+      </ProfileButtonItem>
+    </>
+  );
+  return <BaseProfileButton user={user} MenuOptions={ProfileLinks} />;
 };
 
-const ProfileLinks = connect(null, dispatch => ({
-  onLogout: () => dispatch(logout()),
-}))(ProfileLinksComponent);
-
-const ProfileButtonComponent = ({ user }) => (
-  <BaseProfileButton user={user} MenuOptions={ProfileLinks} />
-);
-
 ProfileButtonComponent.propTypes = {
+  onLogout: PropTypes.func.isRequired,
   user: PropTypes.shape({
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     firstName: PropTypes.string,
     profileImage: PropTypes.string,
   }).isRequired,
+  isBESAdmin: PropTypes.bool,
+};
+
+ProfileButtonComponent.defaultProps = {
+  isBESAdmin: false,
 };
 
 export const ProfileButton = connect(
   state => ({
     user: getUser(state),
+    isBESAdmin: getIsBESAdmin(state),
   }),
-  null,
+  dispatch => ({
+    onLogout: () => dispatch(logout()),
+  }),
 )(ProfileButtonComponent);
