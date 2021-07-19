@@ -6,22 +6,21 @@
 import { TransformParser } from '../parser';
 import { functions } from '../../functions';
 import { buildWhere } from './where';
-import { buildPosition } from './position'
+import { buildPositioner } from './position'
 import { Row } from '../../types';
 
 type InsertParams = {
   insert: { [key: string]: string };
-  '...'?: '*' | string[];
   where: (parser: TransformParser) => boolean;
-  position: (index: number, insertCount: number) => number;
+  positioner: (index: number, insertCount: number) => number;
 };
 
 const insert = (rows: Row[], params: InsertParams): Row[] => {
   const returnArray = [...rows];
   const parser = new TransformParser(rows, functions);
   const rowsToInsert = returnArray.map(row => {
-    const insertNewRow = params.where(parser);
-    if (!insertNewRow) {
+    const shouldInsertNewRow = params.where(parser);
+    if (!shouldInsertNewRow) {
       parser.next();
       return undefined;
     }
@@ -36,7 +35,7 @@ const insert = (rows: Row[], params: InsertParams): Row[] => {
   let insertCount = 0;
   rowsToInsert.forEach((newRow, index) => {
     if (newRow !== undefined) {
-      returnArray.splice(params.position(index, insertCount), 0, newRow);
+      returnArray.splice(params.positioner(index, insertCount), 0, newRow);
       insertCount++;
     }
   });
@@ -61,7 +60,7 @@ const buildParams = (params: unknown): InsertParams => {
   return {
     insert: restOfParams as { [key: string]: string },
     where: buildWhere(params),
-    position: buildPosition(params),
+    positioner: buildPositioner(params),
   };
 };
 

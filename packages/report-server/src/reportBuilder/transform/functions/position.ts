@@ -14,7 +14,7 @@ const positionAliases = {
   start: (index: number, insertCount: number) => insertCount,
 }
 
-export const buildPosition = (params: unknown) => {
+export const buildPositioner = (params: unknown) => {
   if (typeof params !== 'object' || params === null) {
     throw new Error(`Expected params object but got ${params}`);
   }
