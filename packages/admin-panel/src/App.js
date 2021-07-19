@@ -1,12 +1,12 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { TabsToolbar } from '@tupaia/ui-components';
 import { Navbar, Footer } from './widgets';
+import { App as VizBuilder } from './vizBuilder';
 import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
 import { PrivateRoute } from './authentication';
@@ -42,6 +42,9 @@ export const App = () => {
                 </Switch>
               </Route>
             ))}
+            <Route path="/viz-builder" exact>
+              <VizBuilder />
+            </Route>
             <Redirect to="surveys" />
           </Switch>
         </PrivateRoute>

@@ -1,33 +1,30 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-
 import React from 'react';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { render as renderReactApp } from 'react-dom';
-import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
-import { ThemeProvider } from 'styled-components';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/lib/integration/react';
 import 'react-table/react-table.css';
-
-import { theme } from './theme';
-import { store, persistor } from './store';
 import { App } from './App';
+import { App as VizBuilder } from './vizBuilder';
+import { AdminPanelProviders, VizBuilderProviders } from './utilities';
 
 renderReactApp(
-  <Provider store={store}>
-    <PersistGate persistor={persistor} loading={null}>
-      <StylesProvider injectFirst>
-        <MuiThemeProvider theme={theme}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <App />
-          </ThemeProvider>
-        </MuiThemeProvider>
-      </StylesProvider>
-    </PersistGate>
-  </Provider>,
+  <Router>
+    <Switch>
+      <Route path="/viz-builder" exact>
+        <VizBuilderProviders>
+          <VizBuilder />
+        </VizBuilderProviders>
+      </Route>
+      <Route path="/">
+        <AdminPanelProviders>
+          <App />
+        </AdminPanelProviders>
+      </Route>
+      <Redirect to="/login" />
+    </Switch>
+  </Router>,
   document.getElementById('root'),
 );

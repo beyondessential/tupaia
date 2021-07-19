@@ -12,6 +12,7 @@ import { getUser } from './selectors';
 const ProfileLinksComponent = ({ onLogout }) => (
   <>
     <ProfileButtonItem to="/profile">Edit Profile</ProfileButtonItem>
+    <ProfileButtonItem to="/viz-builder">Visualisation builder</ProfileButtonItem>
     <ProfileButtonItem button onClick={onLogout}>
       Logout
     </ProfileButtonItem>

@@ -15,3 +15,6 @@ When creating a new user, you have the option to create them as an api client. W
 5. View the response body, find the `secretKey` field, and keep it safe!
 
 This secret key is used as the password in Basic Auth headers sent by api clients. Their permissions are verified based on the user the api client is attached to.
+
+### Viz Builder
+- Self contained so that it can easily be extracted
