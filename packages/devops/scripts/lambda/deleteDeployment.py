@@ -76,7 +76,7 @@ def lambda_handler(event, context):
     hosted_zone_id = route53.list_hosted_zones_by_name(DNSName=domain)['HostedZones'][0]['Id']
     all_record_sets = route53.list_resource_record_sets(HostedZoneId=hosted_zone_id)['ResourceRecordSets']
     all_record_set_names = [record_set['Name'] for record_set in all_record_sets]
-    record_set_deletions = [build_record_set_deletion(domain, subdomain, stage, gateway_elb) for subdomain in subdomains]
+    record_set_deletions = [build_record_set_deletion(domain, subdomain, stage, gateway_elb, public_ip_address) for subdomain in subdomains]
     # Filter out deletions for record sets that don't actually exist
     valid_record_set_deletions = [deletion for deletion in record_set_deletions if deletion['ResourceRecordSet']['Name'] in all_record_set_names]
     print('Generated {} record set changes'.format(len(record_set_deletions)))

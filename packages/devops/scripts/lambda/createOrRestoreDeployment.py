@@ -169,7 +169,7 @@ def create_instance(account_ids, restore_code, stage, instance_type):
     # Set up subdomains on hosted zone and point them at the gateway
     subdomains = subdomains_string.split(',')
     print('Creating subdomains forwarding to gateway')
-    record_set_changes = [build_record_set_change(domain, subdomain, stage, gateway_elb) for subdomain in subdomains]
+    record_set_changes = [build_record_set_change(domain, subdomain, stage, gateway_elb, public_ip_address) for subdomain in subdomains]
     print('Generated {} record set changes'.format(len(record_set_changes)))
     hosted_zone_id = route53.list_hosted_zones_by_name(DNSName=domain)['HostedZones'][0]['Id']
     route53.change_resource_record_sets(
