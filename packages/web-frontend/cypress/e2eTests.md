@@ -18,10 +18,10 @@
 3. The tests depend on `.json` configuration files that must be placed under `cypress/config`. To generate the default config:
 
    ```bash
-   yarn workspace @tupaia/web-frontend cypress:generate-config
+   yarn workspace @tupaia/web-frontend cypress:config
    ```
 
-   You can also use custom config by manually populating those files. See the [config docs](config/e2eTestsConfig.md) for more details
+   You can also use custom config by manually populating those files. See the [config docs](config/config.md) for more details
 
 ## Running the tests locally
 
