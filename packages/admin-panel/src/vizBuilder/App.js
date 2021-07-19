@@ -6,7 +6,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
-import { Tabs, Toolbar, JsonEditor, FlexSpaceBetween } from './components';
+import { Tabs, Toolbar, JsonEditor, Navbar, Footer } from './components';
 import { useUser } from './api/queries';
 import { FullPageLoader } from './components/FullPageLoader';
 
@@ -58,6 +58,7 @@ export const App = () => {
 
   return (
     <Main>
+      <Navbar />
       <Toolbar />
       <Container>
         <LeftCol>
@@ -65,6 +66,7 @@ export const App = () => {
         </LeftCol>
         <RightCol />
       </Container>
+      <Footer />
     </Main>
   );
 };
