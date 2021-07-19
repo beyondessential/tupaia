@@ -15,6 +15,7 @@ import { TabPanel, TabBar, TabBarSection, YearSelector } from '../components';
 import { useUrlParams, useUrlSearchParams, useUrlSearchParam } from '../utils';
 import { useEntityData } from '../api/queries';
 import { DEFAULT_DATA_YEAR } from '../constants';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 
 const StyledSelect = styled(Select)`
   margin: 0 1rem 0 0;
@@ -62,6 +63,7 @@ const DASHBOARD_CODES = {
   essdpLowerSecondary: 'LESMIS_ESSDP_LowerSecondary',
   essdpUpperSecondary: 'LESMIS_ESSDP_UpperSecondary',
   internationalSDGs: 'LESMIS_International_SDGs',
+  emergencyInEducation: 'LESMIS_EmergencyInEducation',
 };
 
 const makeDropdownOptions = entityType => [
@@ -131,10 +133,11 @@ const makeDropdownOptions = entityType => [
   },
   {
     value: 'emergency',
-    label: 'Emergency in Education/COVID-19',
-    TabComponent: TabTemplate,
+    label: 'Emergency in Education Preparedness and Response',
+    TabComponent: DashboardReportTabView,
     componentProps: {
-      Body: 'Emergency in Education/COVID-19',
+      filterSubDashboards: ({ dashboardCode }) =>
+        dashboardCode.startsWith(DASHBOARD_CODES.emergencyInEducation),
     },
   },
   {
@@ -176,7 +179,7 @@ export const DashboardView = React.memo(() => {
   };
 
   return (
-    <>
+    <ErrorBoundary>
       <VitalsView entityCode={entityCode} entityType={entityData?.type} />
       {dropdownOptions.map(({ value, TabComponent, useYearSelector, componentProps }) => (
         <TabPanel key={value} isSelected={value === selectedOption} Panel={React.Fragment}>
@@ -208,6 +211,6 @@ export const DashboardView = React.memo(() => {
           />
         </TabPanel>
       ))}
-    </>
+    </ErrorBoundary>
   );
 });

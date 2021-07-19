@@ -9,9 +9,6 @@ pm2 delete all
 # Set the path of environment variables from parameter store
 if [[ $BRANCH == "master" ]]; then
     ENVIRONMENT="production"
-elif [[ "$BRANCH" == *e2e ]]; then
-    # The branch ends in "-e2e", use the e2e specific environment variables
-    ENVIRONMENT="e2e"
 else
     # Any other branch uses the default dev environment variables
     ENVIRONMENT="dev"
@@ -32,6 +29,13 @@ for PACKAGE in ${PACKAGES[@]}; do
     # name (e.g. [branch-name]-api.tupaia.org -> specific-branch-api.tupaia.org)
     sed -i -e "s/\[branch-name\]/${BRANCH}/g" .env
 
+    if [[ "$BRANCH" == *-e2e ]]; then
+        # Update e2e environment variables
+        if [[ $PACKAGE == "meditrak-server" || $PACKAGE == "web-config-server" ]]; then
+            sed -i -E 's/^AGGREGATION_URL_PREFIX="?dev-"?$/AGGREGATION_URL_PREFIX=e2e-/g' .env
+        fi
+    fi
+
     # If it's a server, start it running on pm2, otherwise build it
     echo "Preparing to start or build ${PACKAGE}"
     if [[ $PACKAGE == *server ]]; then
@@ -48,7 +52,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     if [[ $PACKAGE == 'meditrak-server' ]]; then
         # reset cwd back to `/tupaia`
         cd ${HOME_DIRECTORY}
-        
+
         # now that meditrak-server is up and listening for changes, we can run any migrations
         # if run earlier when meditrak-server isn't listening, changes will be missed from the
         # sync queues

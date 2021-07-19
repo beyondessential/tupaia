@@ -6,21 +6,20 @@
 import { TupaiaDatabase } from '@tupaia/database';
 import { getLoggerInstance } from '@tupaia/utils';
 import config from '../../config.json';
+import { E2E_CONFIG_PATH } from '../../constants';
 import { generateOverlayConfig } from './generateOverlayConfig';
 import { generateReportConfig } from './generateReportConfig';
-import { generateTestUser } from './generateTestUser';
 import { configSchema } from './configSchema';
 import { writeJsonFile } from './helpers';
 
-const CONFIG_PATH = 'cypress/config.json';
-const GENERATED_CONFIG_PATH = 'cypress/__generatedConfig.json';
+const INPUT_CONFIG_PATH = 'cypress/config.json';
 
 const validateConfig = () => {
   try {
     configSchema.validateSync(config, { strict: true });
   } catch (error) {
     if (error.name === 'ValidationError') {
-      throw new Error(`Validation of ${CONFIG_PATH} failed with "${error.message}"`);
+      throw new Error(`Validation of ${INPUT_CONFIG_PATH} failed with "${error.message}"`);
     }
     throw error;
   }
@@ -34,9 +33,6 @@ export const generateConfig = async () => {
   validateConfig();
   logger.success(`✔ Configuration is valid`);
 
-  logger.success('* Generating test user...');
-  await generateTestUser(db);
-
   logger.success('* Generating dashboard report config...');
   const dashboardReports = await generateReportConfig(db);
   logger.info(`  Generated ${dashboardReports.urls.length} report urls`);
@@ -45,5 +41,5 @@ export const generateConfig = async () => {
   const mapOverlays = await generateOverlayConfig(db);
   logger.info(`  Generated ${mapOverlays.urls.length} overlay urls`);
 
-  writeJsonFile(GENERATED_CONFIG_PATH, { ...config, dashboardReports, mapOverlays });
+  writeJsonFile(E2E_CONFIG_PATH, { ...config, dashboardReports, mapOverlays });
 };

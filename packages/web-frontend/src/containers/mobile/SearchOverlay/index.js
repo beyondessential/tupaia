@@ -116,14 +116,14 @@ SearchOverlay.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const { isLoading, searchString, searchResponse } = state.searchBar;
+  const { isLoadingSearchResults, searchString, searchResults } = state.searchBar;
 
   const { isOverlayOpen } = state.global;
 
   return {
-    isLoading,
+    isLoading: isLoadingSearchResults,
     searchString,
-    searchResponse: searchResponse || [],
+    searchResponse: searchResults || [],
     isOverlayOpen,
   };
 };
