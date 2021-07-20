@@ -60,13 +60,6 @@
         "browser": true
       }
     },
-    // Overrides per rule/env
-    {
-      "files": "packages/database/src/testUtilities/**",
-      "env": {
-        "jest": true
-      }
-    },
     // Overrides per file pattern
     {
       "files": ["**/cypress/**", "packages/utils/src/cypress.js"],
@@ -104,9 +97,15 @@
       }
     },
     {
-      "files": ["**/webpack.config.js", "**/webpack.config*[!babel].js"],
+      "files": "jest.config.js",
       "rules": {
-        "prefer-object-spread": "off"
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    },
+    {
+      "files": "jest.setup.js",
+      "env": {
+        "jest": true
       }
     },
     // Root folder overrides
