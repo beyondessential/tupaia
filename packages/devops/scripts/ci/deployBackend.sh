@@ -1,4 +1,6 @@
 #!/bin/bash
+set -x
+
 PACKAGE=$1
 DIR=$(dirname "$0")
 DEPLOYMENT_SSH_URL=$(${DIR}/determineDeploymentUrl.sh)
