@@ -5,11 +5,12 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+const { exec } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const { promisify } = require('util');
 
 const { getLoggerInstance } = require('@tupaia/utils');
-const { executeCommand } = require('./utilities');
 
 /**
  * @typedef {Array<{ fileName, text }>} ExclusiveTest
@@ -19,6 +20,11 @@ const PACKAGE_ROOT = path.resolve(`${__dirname}/../../packages`);
 const TEST_PATHS_RELATIVE_TO_PACKAGE = ['src/tests', 'src/__tests__', 'tests', '__tests__'];
 const MOCHA_TEST_BLOCKS = ['it', 'describe', 'context', 'specify'];
 const STD_ERROR_CODE = 1;
+
+const executeCommand = async command => {
+  const { stdout } = await promisify(exec)(command);
+  return stdout;
+};
 
 const findTestDirs = () => {
   const packageNames = fs.readdirSync(`${PACKAGE_ROOT}`);

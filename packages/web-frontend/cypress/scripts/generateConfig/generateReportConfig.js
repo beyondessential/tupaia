@@ -20,7 +20,7 @@ const urlSchema = buildUrlSchema({
     code: yup.string().required(),
     project: yup.string().required(),
     orgUnit: yup.string().required(),
-    dashboardGroup: yup.string().required(),
+    dashboard: yup.string().required(),
     startDate: yup.string(),
     endDate: yup.string(),
   },
@@ -41,8 +41,8 @@ const stringifyUrl = url => {
     return url;
   }
 
-  const { code, project, orgUnit, dashboardGroup, startDate, endDate, reportPeriod } = url;
-  const path = [project, orgUnit, dashboardGroup].map(encodeURIComponent).join('/');
+  const { code, project, orgUnit, dashboard, startDate, endDate, reportPeriod } = url;
+  const path = [project, orgUnit, dashboard].map(encodeURIComponent).join('/');
   const queryParams = {
     report: code,
     reportPeriod: reportPeriod || buildReportPeriod(startDate, endDate),
@@ -60,13 +60,13 @@ const parseUrl = url => {
 
   const [path, queryParams] = url.split('?');
   const searchParams = new URLSearchParams(queryParams);
-  const [project, orgUnit, dashboardGroup] = path.split('/').filter(x => x !== '');
+  const [project, orgUnit, dashboard] = path.split('/').filter(x => x !== '');
 
   return {
     code: searchParams.get('report'),
     project,
     orgUnit,
-    dashboardGroup,
+    dashboard,
     reportPeriod: searchParams.get('reportPeriod'),
   };
 };

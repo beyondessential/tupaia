@@ -94,7 +94,6 @@ import {
   UPDATE_ENLARGED_DIALOG_ERROR,
   SET_PASSWORD_RESET_TOKEN,
   TOGGLE_DASHBOARD_SELECT_EXPAND,
-  SET_MOBILE_DASHBOARD_EXPAND,
   REQUEST_PROJECT_ACCESS,
   SET_PROJECT_ADDITIONAL_ACCESS,
   SET_PROJECT,
@@ -501,8 +500,6 @@ function dashboard(
       };
     case TOGGLE_DASHBOARD_SELECT_EXPAND:
       return { ...state, isGroupSelectExpanded: !state.isGroupSelectExpanded };
-    case SET_MOBILE_DASHBOARD_EXPAND:
-      return { ...state, isMobileDashboardExpanded: action.shouldExpand };
     case SET_PROJECT:
       return { ...state, viewResponses: {} };
     default:

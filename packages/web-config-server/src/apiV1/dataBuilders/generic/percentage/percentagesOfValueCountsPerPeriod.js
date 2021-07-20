@@ -16,7 +16,7 @@ const filterFacility = async (models, filterCriteria, analytics) => {
   const facilities = await models.facility.find({
     type: {
       comparator: filterCriteria.comparator,
-      comparisonValue: '1',
+      comparisonValue: '1%',
     },
     code: {
       comparator: 'IN',

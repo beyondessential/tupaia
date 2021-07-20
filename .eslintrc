@@ -16,7 +16,8 @@
           "**/packages/psss/src/api/FakeApi.js",
           "**/packages/psss/src/utils/test-utils.js",
           "**/packages/ui-components/helpers/testingRenderer.js",
-          "**/packages/utils/src/script.js",
+          "**/packages/utils/src/runScript.js",
+          "**/packages/utils/src/Script.js",
           "**/packages/web-frontend/config/**",
           "**/packages/web-frontend/scripts/**"
         ],
@@ -59,13 +60,6 @@
         "browser": true
       }
     },
-    // Overrides per rule/env
-    {
-      "files": "packages/database/src/testUtilities/**",
-      "env": {
-        "jest": true
-      }
-    },
     // Overrides per file pattern
     {
       "files": ["**/cypress/**", "packages/utils/src/cypress.js"],
@@ -103,9 +97,15 @@
       }
     },
     {
-      "files": ["**/webpack.config.js", "**/webpack.config*[!babel].js"],
+      "files": "jest.config.js",
       "rules": {
-        "prefer-object-spread": "off"
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    },
+    {
+      "files": "jest.setup.js",
+      "env": {
+        "jest": true
       }
     },
     // Root folder overrides
@@ -178,7 +178,7 @@
         "react/state-in-constructor": "warn",
         "react/static-property-placement": "warn",
         "prefer-destructuring": "warn",
-        "prettier/prettier": "warn",
+        "prettier/prettier": "warn"
       }
     }
   ]

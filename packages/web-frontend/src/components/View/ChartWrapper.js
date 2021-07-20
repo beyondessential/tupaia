@@ -24,6 +24,7 @@ const CustomChartContainer = styled(ChartContainer)`
 
 const StyledTable = styled(Table)`
   overflow: auto;
+  border-bottom: 1px solid rgb(82, 82, 88);
 `;
 
 const ToggleButton = styled(ToggleButtonComponent)`

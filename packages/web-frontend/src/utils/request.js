@@ -118,9 +118,9 @@ export default async function request(
   requestContext = {},
   shouldRetryOnFail = true,
 ) {
-  const baseUrl = process.env.REACT_APP_CONFIG_SERVER_BASE_URL || 'http://localhost:8080/api/v1/';
+  const url = getAbsoluteApiRequestUri(resourceUrl);
   try {
-    return await performDeduplicatedRequest(baseUrl + resourceUrl, {
+    return await performDeduplicatedRequest(url, {
       ...options,
       credentials: 'include',
     });
@@ -137,9 +137,9 @@ export default async function request(
 }
 
 export const download = async (resourceUrl, errorFunction, options, fileName) => {
-  const baseUrl = process.env.REACT_APP_CONFIG_SERVER_BASE_URL || 'http://localhost:8080/api/v1/';
+  const url = getAbsoluteApiRequestUri(resourceUrl);
   try {
-    const response = await fetchWithTimeout(baseUrl + resourceUrl, {
+    const response = await fetchWithTimeout(url, {
       ...options,
       credentials: 'include',
     });
@@ -163,3 +163,8 @@ export const download = async (resourceUrl, errorFunction, options, fileName) =>
     );
   }
 };
+
+export const getAbsoluteApiRequestUri = (resourceUrl) => {
+  const baseUrl = process.env.REACT_APP_CONFIG_SERVER_BASE_URL || 'http://localhost:8080/api/v1/';
+  return baseUrl + resourceUrl;
+}

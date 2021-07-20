@@ -6,7 +6,6 @@
 import { TupaiaDataApi } from '@tupaia/data-api';
 import { IndicatorApi } from '@tupaia/indicators';
 
-import { DataBroker } from '../../DataBroker';
 import { createService } from '../../services/createService';
 import { DhisService } from '../../services/dhis';
 import { IndicatorService } from '../../services/indicator';
@@ -42,7 +41,12 @@ describe('createService()', () => {
   });
 
   it('indicator service', () => {
-    const service = createService(models, 'indicator', new DataBroker({ test: true }));
+    const dataBroker = {
+      context: {
+        test: true,
+      },
+    };
+    const service = createService(models, 'indicator', dataBroker);
 
     expect(service).toBeInstanceOf(IndicatorService);
     expect(service).toHaveProperty('models', models);
