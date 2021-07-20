@@ -22,8 +22,11 @@ type RowLookup = {
  */
 type Lookups = {
   row: Row;
+  previous: Row;
   all: RowLookup;
   allPrevious: RowLookup;
+  index: number;
+  table: Row[];
   where: (check: (row: Row) => boolean) => RowLookup;
 };
 
@@ -38,7 +41,7 @@ export class TransformParser extends ExpressionParser {
     super();
 
     this.rows = rows;
-    this.lookups = { row: {}, all: {}, allPrevious: {}, where: this.whereFunction };
+    this.lookups = { row: {}, previous: {}, all: {}, allPrevious: {}, index: this.currentRow, table: this.rows, where: this.whereFunction };
 
     if (rows.length > 0) {
       this.lookups.row = this.rows[this.currentRow];
@@ -62,8 +65,12 @@ export class TransformParser extends ExpressionParser {
       return;
     }
 
+    this.lookups.previous = this.rows[this.currentRow - 1];
     this.lookups.row = this.rows[this.currentRow];
+    this.lookups.index = this.currentRow;
+    this.set('$previous', this.lookups.previous);
     this.set('$row', this.lookups.row);
+    this.set('$index', this.lookups.index);
     addRowToLookup(this.lookups.row, this.lookups.allPrevious);
   }
 
