@@ -46,8 +46,7 @@ const REPORT = {
       {
         transform: 'select',
         "'organisationUnitCode'": '$row.organisationUnit',
-        "'% of participants with influenza like illness (ILI)'":
-          'divide($row.FWV_LGA_004b, $row.FWV_LGA_003b)',
+        "'value'": 'divide($row.FWV_LGA_004b, $row.FWV_LGA_003b)',
         "'Participants'": '$row.FWV_LGA_003b',
         "'Participants with influenza like illness (ILI)'": '$row.FWV_LGA_004b',
       },
@@ -59,7 +58,7 @@ const MAP_OVERLAY = {
   id: REPORT_CODE,
   name: '% of non-First Nation participants with influenza like illness (ILI)',
   userGroup: 'Public',
-  dataElementCode: '% of participants with influenza like illness (ILI)',
+  dataElementCode: 'value',
   isDataRegional: true,
   measureBuilder: 'useReportServer',
   measureBuilderConfig: {
@@ -82,11 +81,7 @@ const MAP_OVERLAY = {
       },
     },
     measureConfig: {
-      Participants: {
-        type: 'popup-only',
-        hideFromLegend: true,
-      },
-      'Participants with influenza like illness (ILI)': {
+      $all: {
         type: 'popup-only',
         hideFromLegend: true,
       },
