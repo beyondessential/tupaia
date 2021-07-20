@@ -4,42 +4,32 @@
  */
 
 import { Route } from '@tupaia/server-boilerplate';
-import { EntityType } from '../../models';
 import { formatEntitiesForResponse } from './format';
 import {
   MultiEntityRequest,
   MultiEntityRequestParams,
-  RequestBody,
-  MultiEntityRequestQuery,
+  MultiEntityRequestBody,
+  EntityRequestQuery,
   EntityResponse,
 } from './types';
 
 export type MultiEntityDescendantsRequest = MultiEntityRequest<
   MultiEntityRequestParams,
   EntityResponse[],
-  RequestBody,
-  MultiEntityRequestQuery & { includeRootEntity?: boolean }
+  MultiEntityRequestBody,
+  EntityRequestQuery & { includeRootEntity?: boolean }
 >;
 export class MultiEntityDescendantsRoute extends Route<MultiEntityDescendantsRequest> {
   async buildResponse() {
     const { hierarchyId, entities, fields, field, filter } = this.req.ctx;
     const { includeRootEntity = false } = this.req.query;
-    const responseEntities: EntityType[] = [];
-    await Promise.all(
-      entities.map(async entity => {
-        const descendants = await entity.getDescendants(hierarchyId, {
-          ...filter,
-        });
-        const entitiesToUse = includeRootEntity ? [entity].concat(descendants) : descendants;
-        responseEntities.push(...entitiesToUse);
-      }),
+    const descendants = await this.req.models.entity.getDescendantsOfEntities(
+      hierarchyId,
+      entities.map(entity => entity.id),
+      { ...filter },
     );
+    const entitiesToUse = includeRootEntity ? entities.concat(descendants) : descendants;
 
-    return formatEntitiesForResponse(
-      this.req.models,
-      this.req.ctx,
-      responseEntities,
-      field || fields,
-    );
+    return formatEntitiesForResponse(this.req.models, this.req.ctx, entitiesToUse, field || fields);
   }
 }

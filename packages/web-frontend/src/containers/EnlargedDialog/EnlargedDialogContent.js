@@ -26,6 +26,7 @@ import { transformDataForViewType } from '../../components/View/utils';
 const StyledAlert = styled(Alert)`
   display: inline-flex;
   min-width: 240px;
+  margin-top: 3rem;
 `;
 
 const ExportDateText = styled.div`

@@ -97,9 +97,12 @@ export class DashboardReportFilter extends VisualisationFilter {
   static name = 'dashboard report';
 
   fetchRecords = async objectUrls => {
-    const dashboardItems = await this.db.find('dashboard_item', {
-      code: objectUrls.map(u => u.code),
-    });
+    const objectUrlsByCode = keyBy(objectUrls, 'code');
+
+    const dashboardItems = await this.db
+      .find('dashboard_item', { code: objectUrls.map(u => u.code) })
+      .map(di => ({ ...di, dashboard: objectUrlsByCode[di.code].dashboard }));
+
     const legacyDashboardItems = dashboardItems.filter(di => di.legacy);
     const legacyReports = await this.db.find('legacy_report', {
       code: legacyDashboardItems.map(di => di.report_code),
