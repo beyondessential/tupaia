@@ -42,26 +42,28 @@ type SimpleFieldKeys<T> = {
 }[keyof T];
 
 export type FlattableEntityFields = Pick<EntityFields, SimpleFieldKeys<EntityFields>>;
+export type FlattableEntityFieldName = keyof FlattableEntityFields;
 
 type ExcludeCommonFields<T, U> = Omit<T, Extract<keyof T, keyof U>>;
 
 export type ExtendedEntityFields = ExcludeCommonFields<EntityFields, ExtendedFieldFunctions> &
   ExtendedFieldFunctions;
+export type ExtendedEntityFieldName = keyof ExtendedEntityFields;
 
 export type EntityResponseObject = {
-  [field in keyof ExtendedEntityFields]?: ExtendedEntityFields[field];
+  [field in ExtendedEntityFieldName]?: ExtendedEntityFields[field];
 };
 
-export type FlattenedEntity = FlattableEntityFields[keyof FlattableEntityFields];
+export type FlattenedEntity = FlattableEntityFields[FlattableEntityFieldName];
 
 export type EntityResponse = EntityResponseObject | FlattenedEntity;
 
 export type CommonContext = {
   hierarchyId: string;
   allowedCountries: string[];
-  fields: (keyof ExtendedEntityFields)[];
+  fields: ExtendedEntityFieldName[];
   filter: EntityFilter;
-  field?: keyof FlattableEntityFields;
+  field?: FlattableEntityFieldName;
 };
 
 export interface SingleEntityContext extends CommonContext {
