@@ -5,7 +5,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-const Script = require('./Script');
+require('dotenv/config');
+
+const fs = require('fs');
+const path = require('path');
+
+const { requireEnv, Script } = require('@tupaia/utils');
 
 class RefreshDatabaseScript extends Script {
   config = {
@@ -15,6 +20,11 @@ class RefreshDatabaseScript extends Script {
         alias: 'm',
         type: 'boolean',
         description: 'Run migrations after DB has been refreshed',
+      },
+      root: {
+        alias: 'r',
+        type: 'string',
+        description: 'Root for provided paths (relative to packages/database)',
       },
     },
     version: '1.0.0',
@@ -28,16 +38,27 @@ class RefreshDatabaseScript extends Script {
   }
 
   refreshDatabase() {
-    this.logInfo('Refreshing the tupaia database...');
+    const dbName = requireEnv('DB_NAME');
+    const dbUser = requireEnv('DB_USER');
+
+    this.logInfo(`Refreshing the ${dbName} database (owner: ${dbUser})...`);
+
+    const dumpPath = this.resolvePath(this.args.dumpPath);
+    if (!fs.existsSync(dumpPath)) {
+      throw new Error(`Dump file path "${dumpPath}" does not exist"`);
+    }
 
     this.verifyPsql();
-    this.execDbCommand('DROP DATABASE IF EXISTS tupaia');
-    this.execDbCommand('CREATE DATABASE tupaia WITH OWNER tupaia');
-    this.execDbCommand('CREATE EXTENSION postgis', { db: 'tupaia' });
-    this.execDbCommand('ALTER USER tupaia WITH SUPERUSER');
-    this.exec(`psql -U tupaia -f "${this.args.dumpPath}"`); // Relative to the repo root
-    this.execDbCommand('ALTER USER tupaia WITH NOSUPERUSER', { user: 'tupaia' });
+    this.execDbCommand(`DROP DATABASE IF EXISTS ${dbName}`);
+    this.execDbCommand(`CREATE DATABASE ${dbName} WITH OWNER ${dbUser}`);
+    this.execDbCommand('CREATE EXTENSION postgis', { db: dbName });
+    this.execDbCommand(`ALTER USER ${dbUser} WITH SUPERUSER`);
+    this.exec(`psql -U ${dbUser} -d ${dbName} -f "${dumpPath}"`);
+    this.execDbCommand(`ALTER USER ${dbUser} WITH NOSUPERUSER', { user: dbUser }`);
   }
+
+  resolvePath = relativePath =>
+    path.resolve([this.args.root, relativePath].filter(x => !!x).join('/'));
 
   execDbCommand = (dbCommand, { user, db } = {}) => {
     const parts = ['psql'];
