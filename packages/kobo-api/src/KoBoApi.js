@@ -7,6 +7,11 @@ import { fetchWithTimeout, stringifyQuery } from '@tupaia/utils';
 const MAX_FETCH_WAIT_TIME = 15 * 1000; // 15 seconds
 
 export class KoBoApi {
+  constructor() {
+    this.baseUrl = process.env.KOBO_URL;
+    this.apiKey = process.env.KOBO_API_KEY;
+  }
+
   async fetchKoBoSurveys(koboSurveyCodes, optionsInput) {
     // await validateEventOptions(optionsInput); // TODO: Write validator
     let mongoQuery = {};
@@ -24,15 +29,11 @@ export class KoBoApi {
   async fetchFromKoBo(endpoint, params) {
     const queryParams = { ...params };
 
-    // TODO: Make base url configurable, also point it to actual kobo instance
-    const url = stringifyQuery('https://kf.kobotoolbox.org', endpoint, queryParams);
+    const url = stringifyQuery(this.baseUrl, endpoint, queryParams);
 
-    // TODO: Add a real authenticator
     const result = await fetchWithTimeout(
       url,
-      // NOTE: For testing I just copy-pasted the auth token in here
-      // Definitely don't push that to git though
-      { headers: { Authorization: `Token <TOKEN>` } },
+      { headers: { Authorization: `Token ${this.apiKey}` } },
       MAX_FETCH_WAIT_TIME,
     );
 
