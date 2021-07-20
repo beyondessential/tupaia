@@ -18,13 +18,15 @@ const stringOrStrings = oneOrArrayOf(yup.string());
 const stringsOrObjects = yup.array().of(oneOfType([yup.string(), yup.object()]));
 
 export const configSchema = shape({
+  baselineUrl: yup.string().required().min(1),
+  compareUrl: yup.string().required().min(1),
   dashboardReports: shape({
     allowEmptyResponse: yup.boolean(),
     filter: shape({
       code: stringOrStrings,
       project: stringOrStrings,
       orgUnit: stringOrStrings,
-      dashboardGroup: stringOrStrings,
+      dashboard: stringOrStrings,
       startDate: stringOrStrings,
       endDate: stringOrStrings,
       dataBuilder: stringOrStrings,

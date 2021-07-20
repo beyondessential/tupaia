@@ -2,44 +2,9 @@
 
 [Cypress](https://www.cypress.io/) is used as the end-to-end test framework. This is the root folder of the test code and its configuration.
 
-## Installation
-
-1. If you haven't already, follow the instructions in [Tupaia Monorepo setup](https://docs.beyondessential.com.au/books/software-development/page/tupaia-monorepo-setup) to setup this project.
-
-   ⚠️: In **Step 2. Install node dependencies** you need to run the commands under a Windows terminal, see the note in that section.
-
-2. Make sure that you have a valid `.env` file under `packages/web-frontend` - see [.env.example](../.env.example) for the required variables. Then, add/update the following:
-
-   ```bash
-   CYPRESS_BASE_URL=http://localhost:8088
-   REACT_APP_CONFIG_SERVER_BASE_URL=http://localhost:8000/api/v1/
-   ```
-
-3. The tests depend on `.json` configuration files that must be placed under `cypress/config`. To generate the default config:
-
-   ```bash
-   yarn workspace @tupaia/web-frontend cypress:config
-   ```
-
-   You can also use custom config by manually populating those files. See the [config docs](config/README.md) for more details
-
-4. Finally, we need to install some [Cypress dependencies](https://docs.cypress.io/guides/getting-started/installing-cypress#Linux) - see that link
-
 ## Running the tests locally
 
-First, we need to start tupaia.org locally:
-
-```bash
-# In one terminal
-yarn workspace @tupaia/web-config-server start
-# In another terminal
-yarn workspace @tupaia/web-frontend start
-```
-
-Then, run one of the following commands in a new terminal:
-
-- UI mode: `yarn workspace @tupaia/web-frontend cypress:open`
-- Terminal mode: `yarn workspace @tupaia/web-frontend cypress:run`
+See https://beyond-essential.slab.com/posts/e-2-e-test-guide-cnj4rgdb#running-the-tests
 
 ## Configuration
 
@@ -47,6 +12,8 @@ Our e2e tests support Tupaia-specific configuration specified in [config.json](c
 
 ```jsonc
 {
+  "baselineUrl": "https://e2e.tupaia.org",
+  "compareUrl": "https://compare-e2e.tupaia.org",
   "dashboardReports": {
     "allowEmptyResponse": false, // Throw error for empty reports
     "snapshotTypes": ["responseData", "html"],
@@ -56,7 +23,7 @@ Our e2e tests support Tupaia-specific configuration specified in [config.json](c
       "code": ["report_code1", "report_code2"],
       "project": ["covidau", "strive"],
       "orgUnit": "PG",
-      "dashboardGroup": "Dashboard Group1",
+      "dashboard": "Dashboard1",
       "dataBuilder": ["tableOfEvents", "sumAll"]
     }
   },
@@ -98,16 +65,32 @@ Two formats are supported:
 
 - String:
 
-  `/covidau/AU/COVID-19?report=COVID_Compose_Daily_Deaths_Vs_Cases`
+  ```
+  # Dashboard report
+  /covidau/AU/COVID-19?report=COVID_Compose_Daily_Deaths_Vs_Cases&reportPeriod=1st_Jan_2020-31st_Dec_2020
+
+  # Map overlay
+  /covidau/AU/COVID-19?overlay=AU_FLUTRACKING_Participants_Per_100k
+  ```
 
 - Object:
 
-  ```json
+  ```jsonc
+  // dashboard report
   {
     "code": "COVID_Compose_Daily_Deaths_Vs_Cases",
     "project": "covidau",
     "orgUnit": "AU",
-    "dashboardGroup": "COVID-19"
+    "dashboard": "COVID-19",
+    "startDate": "2020-01-01",
+    "endDate": "2020-12-31"
+  }
+
+  // map overlay
+  {
+    "id": "AU_FLUTRACKING_Participants_Per_100k",
+    "project": "covidau",
+    "orgUnit": "AU",
   }
   ```
 
@@ -124,8 +107,9 @@ Use any of the fields below to specify test urls. You can use multiple fields in
     "cypress/config/dashboardReportUrls/covidau.json"
   ],
 
-  // Dynamically generate urls. Note: this is only available for `mapOverlays`
+  // ⚠️ This field is not currently available in CI/CD test runs
   //
+  // Dynamically generate urls (available for `mapOverlays`)
   // If the same overlay id is selected for the same country across projects, only the first
   // project will be used, since the overlay will be the same in all these cases
   "urlGenerationOptions": {
@@ -135,6 +119,8 @@ Use any of the fields below to specify test urls. You can use multiple fields in
 ```
 
 #### Filter
+
+⚠️ This field is **not** currently available in CI/CD test runs
 
 You can optionally specify a `filter` that will be applied to the tested visualisations. For example, to test all "Fanafana" project overlays that use the "valueForOrgGroup" data builder in Tonga and Vanuatu:
 
@@ -154,6 +140,5 @@ You can optionally specify a `filter` that will be applied to the tested visuali
 
 ## Limitations
 
-### Dashboard reports
-
-- Drill down levels are not tested
+- **Dashboard reports:** drill down levels are not tested
+- **Map overlays:** only the response data are tested, the UI components are not tested
