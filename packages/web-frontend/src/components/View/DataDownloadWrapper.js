@@ -31,6 +31,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 
 import { VIEW_STYLES, OFF_WHITE } from '../../styles';
 import { VIEW_CONTENT_SHAPE } from '.';
+import { getAbsoluteApiRequestUri } from '../../utils/request';
 
 export class DataDownloadWrapper extends PureComponent {
   constructor(props) {
@@ -45,7 +46,7 @@ export class DataDownloadWrapper extends PureComponent {
     const selectedSurveyCodes = Object.entries(this.state.selectedSurveys)
       .filter(([, isSelected]) => isSelected)
       .map(([surveyCode]) => surveyCode);
-    return `${viewContent.downloadUrl}&surveyCodes=${selectedSurveyCodes}`;
+    return getAbsoluteApiRequestUri(`${viewContent.downloadUrl}&surveyCodes=${selectedSurveyCodes}`);
   };
 
   toggleSelection = surveyCode =>
