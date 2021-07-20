@@ -23,7 +23,7 @@ export class EntityConnection extends ApiConnection {
   ) {
     return this.get(`hierarchy/${hierarchyName}/relatives`, {
       entities: entityCodes.join(','),
-      descendant_filter: `type:${dataSourceEntityType}`,
+      descendant_filter: `type==${dataSourceEntityType}`,
       field: 'code',
     });
   }
@@ -37,14 +37,14 @@ export class EntityConnection extends ApiConnection {
   ) {
     const query = {
       entities: entityCodes.join(','),
-      descendant_filter: `type:${dataSourceEntityType}`,
+      descendant_filter: `type==${dataSourceEntityType}`,
       field: 'code',
       groupBy: 'descendant',
     };
 
     // Omitting ancestor_type returns descendants to requested entities map
     if (aggregationEntityType !== 'requested') {
-      query.ancestor_filter = `type:${aggregationEntityType}`;
+      query.ancestor_filter = `type==${aggregationEntityType}`;
     }
 
     const response = await this.get(`hierarchy/${hierarchyName}/relationships`, query);
