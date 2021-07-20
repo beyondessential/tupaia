@@ -7,7 +7,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 
 import { sleep } from '@tupaia/utils';
-import { SurveyResponseOutdater } from '../../cachers/SurveyResponseOutdater';
+import { SurveyResponseOutdater } from '../../changeHandlers/SurveyResponseOutdater';
 import { getTestModels } from '../../testUtilities/getTestDatabase';
 import { buildAndInsertSurveys, buildAndInsertSurveyResponses } from '../../testUtilities';
 
