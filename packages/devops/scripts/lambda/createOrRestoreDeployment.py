@@ -189,8 +189,8 @@ def create_gateway(tupaia_instance_name, tupaia_instance_id, ssl_certificate_arn
     prod_gateway_elb = get_gateway_elb('production')
     new_gateway_elb = create_gateway_elb(
         tupaia_instance_name=tupaia_instance_name,
+        tupaia_instance_id=tupaia_instance_id,
         config=prod_gateway_elb,
-        gateway_name='gateway-elb-' + tupaia_instance_id,
     )
     new_gateway_elb_arn = new_gateway_elb['LoadBalancerArn']
 
@@ -198,8 +198,8 @@ def create_gateway(tupaia_instance_name, tupaia_instance_id, ssl_certificate_arn
     prod_gateway_target_group = get_gateway_target_group('production')
     new_gateway_target_group_arn = create_gateway_target_group(
         tupaia_instance_name=tupaia_instance_name,
+        tupaia_instance_id=tupaia_instance_id,
         config=prod_gateway_target_group,
-        target_group_name='gateway-tg-' + tupaia_instance_id,
     )
 
     # 3. Link target group <-> instance
