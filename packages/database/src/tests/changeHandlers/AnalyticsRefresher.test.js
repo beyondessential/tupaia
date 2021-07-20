@@ -13,7 +13,7 @@ import {
   clearTestData,
   upsertDummyRecord,
 } from '../../testUtilities';
-import { AnalyticsRefresher } from '../../analytics/AnalyticsRefresher';
+import { AnalyticsRefresher } from '../../changeHandlers/AnalyticsRefresher';
 
 import { TEST_DATA, ANALYTICS, ANSWER001_TEST_ANALYTIC } from './AnalyticsRefresher.fixtures';
 

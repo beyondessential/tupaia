@@ -4,8 +4,8 @@
  */
 
 export * from './modelClasses';
-export { AnalyticsRefresher, MaterializedViewLogDatabaseModel } from './analytics';
-export * from './cachers';
+export { MaterializedViewLogDatabaseModel } from './analytics';
+export * from './changeHandlers';
 export {
   generateId,
   getHighestPossibleIdForGivenTime,
