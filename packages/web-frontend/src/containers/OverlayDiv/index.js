@@ -31,8 +31,8 @@ const Wrapper = styled.div`
 
 const CloseIcon = styled(MuiCloseIcon)`
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: 10px;
+  right: 10px;
   cursor: pointer;
 `;
 
