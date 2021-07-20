@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { SINGLE_ANALYTIC, MULTIPLE_ANALYTICS } from './transform.fixtures';
+import { SINGLE_ANALYTIC, MULTIPLE_ANALYTICS, AGGREGATEABLE_ANALYTICS } from './transform.fixtures';
 import { buildTransform } from '../../../reportBuilder/transform';
 
 describe('insert', () => {
@@ -51,6 +51,43 @@ describe('insert', () => {
   });
 
   // SPECIFIC TO INSERT
+  it('can insert a single row at start', () => {
+    const transform = buildTransform([
+      {
+        transform: 'insert',
+        position: 'before',
+        where: 'eq($index, 0)',
+        "'number'": '1',
+        "'string'": "'Hi'",
+        "'boolean'": 'false',
+      },
+    ]);
+    expect(transform(MULTIPLE_ANALYTICS)).toEqual([
+      { number: 1, string: 'Hi', boolean: false },
+      { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
+      { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
+      { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
+    ]);
+  });
+
+  it('can insert a single row at end', () => {
+    const transform = buildTransform([
+      {
+        transform: 'insert',
+        where: 'eq($index, length($table) - 1)',
+        "'number'": '1',
+        "'string'": "'Hi'",
+        "'boolean'": 'false',
+      },
+    ]);
+    expect(transform(MULTIPLE_ANALYTICS)).toEqual([
+      { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
+      { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
+      { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
+      { number: 1, string: 'Hi', boolean: false },
+    ]);
+  });
+
   it('can insert multiple rows', () => {
     const transform = buildTransform([
       {
@@ -120,5 +157,59 @@ describe('insert', () => {
       { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
       { dataElementValue: 5 },
     ]);
+  });
+
+  // USE CASES
+  it('can sum all values into a new totals row', () => {
+    const transform = buildTransform([
+      {
+        transform: 'insert',
+        where: 'eq($index, length($table) - 1)',
+        "'Total'": 'sum($all.value)',
+      },
+    ]);
+    expect(transform(MULTIPLE_ANALYTICS)).toEqual([
+      { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
+      { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
+      { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
+      { Total: 11 }
+    ]);
+  });
+
+  it('compare adjacent rows to insert between', () => {
+    const transform = buildTransform([
+      {
+        transform: 'insert',
+        position: 'before',
+        where: 'and(exists($previous.organisationUnit), not(eq($previous.organisationUnit, $row.organisationUnit)))',
+        "'Total_BCD1'": "sum($where(f($otherRow) = eq($otherRow.organisationUnit, $previous.organisationUnit)).BCD1)",
+        "'Total_BCD2'": "sum($where(f($otherRow) = eq($otherRow.organisationUnit, $previous.organisationUnit)).BCD2)",
+      },
+      {
+        transform: 'insert',
+        where: 'eq($index, length($table) - 1)',
+        "'Total_BCD1'": 'sum($all.BCD1) - sum($all.Total_BCD1)',
+        "'Total_BCD2'": 'sum($all.BCD2) - sum($all.Total_BCD2)',
+      },
+    ]);
+    expect(transform(AGGREGATEABLE_ANALYTICS)).toEqual([
+      { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
+      { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
+      { period: '20200103', organisationUnit: 'TO', BCD1: 5 },
+      { period: '20200101', organisationUnit: 'TO', BCD2: 11 },
+      { period: '20200102', organisationUnit: 'TO', BCD2: 1 },
+      { period: '20200103', organisationUnit: 'TO', BCD2: 0 },
+
+      { Total_BCD1: 11, Total_BCD2: 12 },
+
+      { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
+      { period: '20200102', organisationUnit: 'PG', BCD1: 8 },
+      { period: '20200103', organisationUnit: 'PG', BCD1: 2 },
+      { period: '20200101', organisationUnit: 'PG', BCD2: 13 },
+      { period: '20200102', organisationUnit: 'PG', BCD2: 99 },
+      { period: '20200103', organisationUnit: 'PG', BCD2: -1 },
+      
+      { Total_BCD1: 17, Total_BCD2: 111 },
+    ])
   });
 });
