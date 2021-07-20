@@ -300,8 +300,9 @@ export const VIEW_STYLES = {
         padding: '15px 15px 15px 10px',
         minHeight: 0,
         transition: 'min-height 0.3s',
-        width: `calc(100% - ${DASHBOARD_VIEW_MARGIN * 2}px)`,
-        margin: `0 ${DASHBOARD_VIEW_MARGIN}px ${DASHBOARD_VIEW_MARGIN}px ${DASHBOARD_VIEW_MARGIN}px`,
+        width: '100%',
+        maxWidth: '100%',
+        marginBottom: DASHBOARD_VIEW_MARGIN,
         backgroundColor: '#272832',
         boxSizing: 'border-box',
         flex: '1 0 auto', // fill left over space
@@ -355,8 +356,6 @@ export const VIEW_STYLES = {
     flexGrow: 4,
     flexShrink: 0.5,
     flexBasis: '50%',
-    minWidth: `calc(100% - ${DASHBOARD_VIEW_MARGIN * 2}px)`,
-    maxWidth: `calc(100% - ${DASHBOARD_VIEW_MARGIN * 2}px)`,
   },
   loadingContainer: {
     flexDirection: 'column',

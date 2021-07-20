@@ -4,19 +4,20 @@
  */
 import { ImportValidationError } from './errors';
 
-export const getCountryCode = (countryName, entityObjects = []) => {
-  if (countryName === 'Demo Land') {
-    return 'DL';
-  }
+// We sometimes use non-official names for countries. The most obvious example is Demo Land, but
+// also Laos instead of Laos People's Democratic Republic, etc.
+const UNOFFICIAL_NAME_TO_CODE = {
+  'demo land': 'DL',
+  laos: 'LA',
+  "côte d'ivoire": 'CI',
+  'federated states of micronesia': 'FM',
+  'pitcairn islands': 'PI',
+};
 
+export const getCountryCode = countryName => {
   const { getCode: getCountryIsoCode } = require('countrynames');
-  // Use the country ISO code if there's a direct match,
-  //otherwise base on the two letter facility code prefix
   const countryCode =
-    getCountryIsoCode(countryName) || entityObjects.length
-      ? entityObjects[0].code.substring(0, 2)
-      : null;
-
+    UNOFFICIAL_NAME_TO_CODE[countryName.toLowerCase()] || getCountryIsoCode(countryName);
   if (!countryCode) throw new ImportValidationError(`${countryName} is not a recognised country`);
   return countryCode;
 };
