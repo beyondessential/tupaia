@@ -81,6 +81,14 @@ export class ApiBuilder {
     return this;
   }
 
+  post<T extends ExpressRequest<T> = Request>(
+    path: string,
+    handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+  ) {
+    this.app.post(this.formatPath(path), handler);
+    return this;
+  }
+
   build() {
     /**
      * Test Route
