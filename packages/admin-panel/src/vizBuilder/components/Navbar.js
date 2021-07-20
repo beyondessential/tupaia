@@ -3,25 +3,20 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import styled from 'styled-components';
 import {
   HomeButton,
   NavBar as BaseNavBar,
   ProfileButton as BaseProfileButton,
   ProfileButtonItem,
 } from '@tupaia/ui-components';
-import { useUser } from '../api/queries';
-
-const StyledProfileButton = styled(BaseProfileButton)`
-  margin-top: 13px;
-  margin-bottom: 13px;
-`;
+import MuiBox from '@material-ui/core/Box';
+import { useUser } from '../api';
 
 const ProfileButton = () => {
   const { data, isLoading } = useUser();
 
-  if (isLoading) {
-    return null;
+  if (isLoading || !data) {
+    return <MuiBox height={60} />;
   }
 
   const user = { ...data, name: `${data.firstName} ${data.lastName}` };
@@ -30,17 +25,14 @@ const ProfileButton = () => {
     <>
       <ProfileButtonItem to="/profile">Edit Profile</ProfileButtonItem>
       <ProfileButtonItem to="/viz-builder">Visualisation builder</ProfileButtonItem>
-      <ProfileButtonItem
-        button
-        onClick={() => {
-          console.log('logout ');
-        }}
-      >
-        Logout
-      </ProfileButtonItem>
+      <ProfileButtonItem to="/logout">Logout</ProfileButtonItem>
     </>
   );
-  return <StyledProfileButton user={user} MenuOptions={ProfileLinks} />;
+  return (
+    <MuiBox height={60} display="flex" alignItems="center">
+      <BaseProfileButton user={user} MenuOptions={ProfileLinks} />
+    </MuiBox>
+  );
 };
 
 export const Navbar = () => (

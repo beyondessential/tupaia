@@ -61,6 +61,8 @@ const requestAnAccountUrl = 'https://info.tupaia.org/contact';
 
 const LoginPageComponent = ({ isLoggedIn }) => {
   if (isLoggedIn) {
+    console.log('LoginPageComponent isLoggedIn', isLoggedIn);
+
     return <Redirect to="/" />;
   }
 

@@ -10,6 +10,7 @@ import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
 import { PrivateRoute } from './authentication';
 import { LoginPage } from './pages/LoginPage';
+import { LogoutPage } from './pages/LogoutPage';
 
 export const App = () => {
   const headerEl = React.useRef(null);
@@ -22,6 +23,9 @@ export const App = () => {
     <Switch>
       <Route path="/login" exact>
         <LoginPage />
+      </Route>
+      <Route path="/logout" exact>
+        <LogoutPage />
       </Route>
       <PrivateRoute path="/">
         <Navbar links={ROUTES} />
