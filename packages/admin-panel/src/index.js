@@ -10,7 +10,7 @@ import AdminPanel from './App';
 import { AdminPanelProviders, VizBuilderProviders } from './utilities';
 import { Footer, Navbar } from './widgets';
 
-const VizBuilder = lazy(() => import('./vizBuilder'));
+const VizBuilder = lazy(() => import('./VizBuilderApp'));
 
 renderReactApp(
   <Router>
