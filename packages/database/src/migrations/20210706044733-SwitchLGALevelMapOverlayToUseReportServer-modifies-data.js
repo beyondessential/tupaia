@@ -81,56 +81,56 @@ const mapOverlays = [
   // District Level
   {
     id: 'AU_FLUTRACKING_Fever_And_Cough',
-    numeratorDataElementCode: 'FWV_004',
-    denominatorDataElementCode: 'FWV_003',
+    numeratorDataElementCode: 'FWV_PC_004',
+    denominatorDataElementCode: 'FWV_PC_003',
     numeratorTitle: 'Fever and cough',
   },
   {
     id: 'AU_FLUTRACKING_Fever_And_Cough_Causing_Absence',
-    numeratorDataElementCode: 'FWV_005',
-    denominatorDataElementCode: 'FWV_003',
+    numeratorDataElementCode: 'FWV_PC_005',
+    denominatorDataElementCode: 'FWV_PC_003',
     numeratorTitle: 'Fever and cough causing absence from normal activities',
   },
   {
     id: 'AU_FLUTRACKING_Vaccination_Rate_Flu',
-    numeratorDataElementCode: 'FWV_006',
-    denominatorDataElementCode: 'FWV_003',
+    numeratorDataElementCode: 'FWV_PC_006',
+    denominatorDataElementCode: 'FWV_PC_003',
     numeratorTitle: 'Flu vaccinated',
   },
   {
     id: 'AU_FLUTRACKING_Vaccinated_With_Fever_And_Cough',
-    numeratorDataElementCode: 'FWV_007',
-    denominatorDataElementCode: 'FWV_003',
+    numeratorDataElementCode: 'FWV_PC_007',
+    denominatorDataElementCode: 'FWV_PC_003',
     numeratorTitle: 'Flu vaccinated with fever and cough',
   },
   {
     id: 'AU_FLUTRACKING_Sought_Medical_Advice',
-    numeratorDataElementCode: 'FWV_008',
-    denominatorDataElementCode: 'FWV_004',
+    numeratorDataElementCode: 'FWV_PC_008',
+    denominatorDataElementCode: 'FWV_PC_004',
     numeratorTitle: 'Participants who sought medical advice for fever and cough',
   },
   {
     id: 'AU_FLUTRACKING_Tested_For_Flu',
-    numeratorDataElementCode: 'FWV_009',
-    denominatorDataElementCode: 'FWV_004',
+    numeratorDataElementCode: 'FWV_PC_009',
+    denominatorDataElementCode: 'FWV_PC_004',
     numeratorTitle: 'Participants with symptoms tested for flu',
   },
   {
     id: 'AU_FLUTRACKING_Tested_For_Covid',
-    numeratorDataElementCode: 'FWV_010',
-    denominatorDataElementCode: 'FWV_004',
+    numeratorDataElementCode: 'FWV_PC_010',
+    denominatorDataElementCode: 'FWV_PC_004',
     numeratorTitle: 'Participants with symptoms tested for covid',
   },
   {
     id: 'AU_FLUTRACKING_Tested_Positive_For_Flu',
-    numeratorDataElementCode: 'FWV_011',
-    denominatorDataElementCode: 'FWV_004',
+    numeratorDataElementCode: 'FWV_PC_011',
+    denominatorDataElementCode: 'FWV_PC_004',
     numeratorTitle: 'Participants with symptoms tested positive for flu',
   },
   {
     id: 'AU_FLUTRACKING_Tested_Positive_For_Covid',
-    numeratorDataElementCode: 'FWV_012',
-    denominatorDataElementCode: 'FWV_004',
+    numeratorDataElementCode: 'FWV_PC_012',
+    denominatorDataElementCode: 'FWV_PC_004',
     numeratorTitle: 'Participants with symptoms tested positive for covid',
   },
 ];
@@ -143,15 +143,17 @@ const getReport = ({
 }) => {
   const numTitle = `'${numeratorTitle}'`;
   const denTitle = `'${denominatorTitle}'`;
+  const isLGA = code.includes('LGA');
   return {
     code,
     config: {
       fetch: {
         aggregations: [
           {
-            type: 'MOST_RECENT',
+            type: isLGA ? 'MOST_RECENT' : 'SUM_PER_ORG_GROUP',
             config: {
-              dataSourceEntityType: code.includes('LGA') ? 'sub_district' : 'district',
+              dataSourceEntityType: isLGA ? 'sub_district' : 'postcode',
+              ...(!isLGA && { aggregationEntityType: 'district' }),
             },
           },
         ],
