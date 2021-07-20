@@ -44,32 +44,3 @@ export const runScript = (script, cleanup) => {
       }
     });
 };
-
-/**
- * @typedef {Object} ScriptConfig
- * @property {string} [command] Use '*' or '$0' to refer to the default command
- *   This field is useful for
- *   1. Defining subcommands, eg 'push <branch_name>'
- *   2. Defining positional arguments in the default command, eg '* <path>'
- * @property {Object} [options]
- * @property {string} [usage]
- * @property {string} [version]
- *
- * @see https://github.com/yargs/yargs/blob/master/docs/api.md
- */
-
-/**
- * @param {ScriptConfig} scriptConfig
- */
-export const getArgs = scriptConfig => {
-  const allowedYargsKeys = ['command', 'options', 'usage', 'version'];
-
-  const yargs = require('yargs');
-  yargs.strict();
-  Object.entries(scriptConfig).forEach(([key, value]) => {
-    if (allowedYargsKeys.includes(key)) {
-      yargs[key](value);
-    }
-  });
-  return yargs.argv;
-};
