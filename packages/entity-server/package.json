@@ -20,6 +20,7 @@
     "lint:fix": "yarn lint --fix",
     "prestart": "npm run -s build",
     "start": "node dist/main.js",
+    "start-post-build": "node dist/main.js",
     "start-dev": "../../scripts/bash/backendStartDev.sh 9996 -ts",
     "start-verbose": "LOG_LEVEL=debug npm run start-dev",
     "test": "jest",

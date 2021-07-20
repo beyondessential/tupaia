@@ -16,6 +16,7 @@
     "lint:fix": "yarn lint --fix",
     "prestart": "npm run -s build",
     "start": "node dist",
+    "start-post-build": "node dist",
     "start-dev": "../../scripts/bash/backendStartDev.sh 9999",
     "start-verbose": "LOG_LEVEL=debug npm run start-dev",
     "test": "mocha",

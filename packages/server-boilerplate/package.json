@@ -17,11 +17,7 @@
     "build": "babel src --out-dir dist --source-maps --ignore \"src/__tests__/**\" --extensions .ts --config-file \"../../.babelrc-ts.js\"",
     "lint": "tsc; eslint . --ext .ts",
     "lint:all": "yarn run lint \"src/**/*.{ts,jsx}\"",
-    "lint:fix": "yarn lint --fix",
-    "prestart": "npm run -s build",
-    "start": "node dist",
-    "start-dev": "LOG_LEVEL=debug ../../scripts/bash/backendStartDev.sh 9998 -ts",
-    "start-verbose": "LOG_LEVEL=debug npm run start-dev"
+    "lint:fix": "yarn lint --fix"
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
