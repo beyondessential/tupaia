@@ -6,9 +6,9 @@ import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { render as renderReactApp } from 'react-dom';
 import 'react-table/react-table.css';
-import { App } from './App';
-// import { App as VizBuilder } from './vizBuilder';
+import AdminPanel from './App';
 import { AdminPanelProviders, VizBuilderProviders } from './utilities';
+import { Footer, Navbar } from './widgets';
 
 const VizBuilder = lazy(() => import('./vizBuilder'));
 
@@ -18,12 +18,12 @@ renderReactApp(
       <Switch>
         <Route path="/viz-builder" exact>
           <VizBuilderProviders>
-            <VizBuilder />
+            <VizBuilder Navbar={Navbar} Footer={Footer} />
           </VizBuilderProviders>
         </Route>
         <Route path="/">
           <AdminPanelProviders>
-            <App />
+            <AdminPanel />
           </AdminPanelProviders>
         </Route>
         <Redirect to="/login" />

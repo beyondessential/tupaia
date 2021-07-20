@@ -3,13 +3,17 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { getIsUserAuthenticated } from '../authentication';
+import { getIsUserAuthenticated, logout } from '../authentication';
 
-const LogoutPageComponent = ({ isLoggedIn }) => {
+const LogoutPageComponent = ({ onLogout, isLoggedIn }) => {
+  useEffect(() => {
+    onLogout();
+  }, []);
+
   if (!isLoggedIn) {
     return <Redirect to="/login" />;
   }
@@ -19,6 +23,7 @@ const LogoutPageComponent = ({ isLoggedIn }) => {
 
 LogoutPageComponent.propTypes = {
   isLoggedIn: PropTypes.bool,
+  onLogout: PropTypes.func.isRequired,
 };
 
 LogoutPageComponent.defaultProps = {
@@ -29,5 +34,7 @@ export const LogoutPage = connect(
   state => ({
     isLoggedIn: getIsUserAuthenticated(state),
   }),
-  null,
+  dispatch => ({
+    onLogout: () => dispatch(logout()),
+  }),
 )(LogoutPageComponent);

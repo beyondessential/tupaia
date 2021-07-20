@@ -3,16 +3,18 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Route, Switch, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { TabsToolbar } from '@tupaia/ui-components';
 import { Navbar, Footer } from './widgets';
 import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
-import { PrivateRoute } from './authentication';
+import { getUser, getIsBESAdmin, PrivateRoute } from './authentication';
 import { LoginPage } from './pages/LoginPage';
 import { LogoutPage } from './pages/LogoutPage';
 
-export const App = () => {
+export const App = ({ user, isBESAdmin }) => {
   const headerEl = React.useRef(null);
 
   const getHeaderEl = () => {
@@ -28,7 +30,7 @@ export const App = () => {
         <LogoutPage />
       </Route>
       <PrivateRoute path="/">
-        <Navbar links={ROUTES} />
+        <Navbar links={ROUTES} user={user} isBESAdmin={isBESAdmin} />
         <div ref={headerEl} />
         <Switch>
           {[...ROUTES, ...PROFILE_ROUTES].map(route => (
@@ -52,3 +54,25 @@ export const App = () => {
     </Switch>
   );
 };
+
+App.propTypes = {
+  user: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    firstName: PropTypes.string,
+    profileImage: PropTypes.string,
+  }).isRequired,
+  isBESAdmin: PropTypes.bool,
+};
+
+App.defaultProps = {
+  isBESAdmin: false,
+};
+
+export default connect(
+  state => ({
+    user: getUser(state),
+    isBESAdmin: getIsBESAdmin(state),
+  }),
+  null,
+)(App);

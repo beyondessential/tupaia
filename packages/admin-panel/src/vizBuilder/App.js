@@ -3,10 +3,11 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
-import { Tabs, Toolbar, JsonEditor, Navbar, Footer } from './components';
+import { Tabs, Toolbar } from './components';
 import { useUser } from './api/queries';
 import { FullPageLoader } from './components/FullPageLoader';
 
@@ -27,7 +28,6 @@ const LeftCol = styled.section`
   position: relative;
   width: 400px;
   z-index: 1;
-  //border: 1px dotted black;
 
   &:before {
     position: absolute;
@@ -46,8 +46,8 @@ const RightCol = styled.section`
   border: 1px dotted black;
 `;
 
-export const App = () => {
-  const { isLoading: isUserLoading, isBESAdmin } = useUser();
+export const App = ({ Navbar, Footer }) => {
+  const { data, isLoading: isUserLoading, isBESAdmin } = useUser();
   if (isUserLoading) {
     return <FullPageLoader />;
   }
@@ -56,9 +56,11 @@ export const App = () => {
     return <Redirect to="/" />;
   }
 
+  const user = { ...data, name: `${data.firstName} ${data.lastName}` };
+
   return (
     <Main>
-      <Navbar />
+      {Navbar && <Navbar user={user} isBESAdmin={isBESAdmin} />}
       <Toolbar />
       <Container>
         <LeftCol>
@@ -66,7 +68,17 @@ export const App = () => {
         </LeftCol>
         <RightCol />
       </Container>
-      <Footer />
+      {Footer && <Footer />}
     </Main>
   );
+};
+
+App.propTypes = {
+  Navbar: PropTypes.node,
+  Footer: PropTypes.node,
+};
+
+App.defaultProps = {
+  Navbar: null,
+  Footer: null,
 };
