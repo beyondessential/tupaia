@@ -20,6 +20,7 @@ import * as COLORS from '../constants';
 const Wrapper = styled.div`
   flex: 1;
   display: flex;
+  overflow: auto;
 `;
 
 const ChartWrapper = styled(Wrapper)`
