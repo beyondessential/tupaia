@@ -25,66 +25,112 @@ exports.setup = function (options, seedLink) {
 const denominatorTitle = 'Respondents';
 const mapOverlays = [
   {
-    ids: ['AU_FLUTRACKING_LGA_Fever_And_Cough', 'AU_FLUTRACKING_Fever_And_Cough'],
+    id: 'AU_FLUTRACKING_LGA_Fever_And_Cough',
     numeratorDataElementCode: 'FWV_LGA_004',
     denominatorDataElementCode: 'FWV_LGA_003',
     numeratorTitle: 'Fever and cough',
   },
   {
-    ids: [
-      'AU_FLUTRACKING_LGA_Fever_And_Cough_Causing_Absence',
-      'AU_FLUTRACKING_Fever_And_Cough_Causing_Absence',
-    ],
+    id: 'AU_FLUTRACKING_LGA_Fever_And_Cough_Causing_Absence',
     numeratorDataElementCode: 'FWV_LGA_005',
     denominatorDataElementCode: 'FWV_LGA_003',
     numeratorTitle: 'Fever and cough causing absence from normal activities',
   },
   {
-    ids: ['AU_FLUTRACKING_LGA_Vaccination_Rate_Flu', 'AU_FLUTRACKING_Vaccination_Rate_Flu'],
+    id: 'AU_FLUTRACKING_LGA_Vaccination_Rate_Flu',
     numeratorDataElementCode: 'FWV_LGA_006',
     denominatorDataElementCode: 'FWV_LGA_003',
     numeratorTitle: 'Flu vaccinated',
   },
   {
-    ids: [
-      'AU_FLUTRACKING_LGA_Vaccinated_With_Fever_And_Cough',
-      'AU_FLUTRACKING_Vaccinated_With_Fever_And_Cough',
-    ],
+    id: 'AU_FLUTRACKING_LGA_Vaccinated_With_Fever_And_Cough',
     numeratorDataElementCode: 'FWV_LGA_007',
     denominatorDataElementCode: 'FWV_LGA_003',
     numeratorTitle: 'Flu vaccinated with fever and cough',
   },
   {
-    ids: ['AU_FLUTRACKING_LGA_Sought_Medical_Advice', 'AU_FLUTRACKING_Sought_Medical_Advice'],
+    id: 'AU_FLUTRACKING_LGA_Sought_Medical_Advice',
     numeratorDataElementCode: 'FWV_LGA_008',
     denominatorDataElementCode: 'FWV_LGA_004',
     numeratorTitle: 'Participants who sought medical advice for fever and cough',
   },
   {
-    ids: ['AU_FLUTRACKING_LGA_Tested_For_Flu', 'AU_FLUTRACKING_Tested_For_Flu'],
+    id: 'AU_FLUTRACKING_LGA_Tested_For_Flu',
     numeratorDataElementCode: 'FWV_LGA_009',
     denominatorDataElementCode: 'FWV_LGA_004',
     numeratorTitle: 'Participants with symptoms tested for flu',
   },
   {
-    ids: ['AU_FLUTRACKING_LGA_Tested_For_Covid', 'AU_FLUTRACKING_Tested_For_Covid'],
+    id: 'AU_FLUTRACKING_LGA_Tested_For_Covid',
     numeratorDataElementCode: 'FWV_LGA_010',
     denominatorDataElementCode: 'FWV_LGA_004',
     numeratorTitle: 'Participants with symptoms tested for covid',
   },
   {
-    ids: ['AU_FLUTRACKING_LGA_Tested_Positive_For_Flu', 'AU_FLUTRACKING_Tested_Positive_For_Flu'],
+    id: 'AU_FLUTRACKING_LGA_Tested_Positive_For_Flu',
     numeratorDataElementCode: 'FWV_LGA_011',
     denominatorDataElementCode: 'FWV_LGA_004',
     numeratorTitle: 'Participants with symptoms tested positive for flu',
   },
   {
-    ids: [
-      'AU_FLUTRACKING_LGA_Tested_Positive_For_Covid',
-      'AU_FLUTRACKING_Tested_Positive_For_Covid',
-    ],
+    id: 'AU_FLUTRACKING_LGA_Tested_Positive_For_Covid',
     numeratorDataElementCode: 'FWV_LGA_012',
     denominatorDataElementCode: 'FWV_LGA_004',
+    numeratorTitle: 'Participants with symptoms tested positive for covid',
+  },
+  // District Level
+  {
+    id: 'AU_FLUTRACKING_Fever_And_Cough',
+    numeratorDataElementCode: 'FWV_004',
+    denominatorDataElementCode: 'FWV_003',
+    numeratorTitle: 'Fever and cough',
+  },
+  {
+    id: 'AU_FLUTRACKING_Fever_And_Cough_Causing_Absence',
+    numeratorDataElementCode: 'FWV_005',
+    denominatorDataElementCode: 'FWV_003',
+    numeratorTitle: 'Fever and cough causing absence from normal activities',
+  },
+  {
+    id: 'AU_FLUTRACKING_Vaccination_Rate_Flu',
+    numeratorDataElementCode: 'FWV_006',
+    denominatorDataElementCode: 'FWV_003',
+    numeratorTitle: 'Flu vaccinated',
+  },
+  {
+    id: 'AU_FLUTRACKING_Vaccinated_With_Fever_And_Cough',
+    numeratorDataElementCode: 'FWV_007',
+    denominatorDataElementCode: 'FWV_003',
+    numeratorTitle: 'Flu vaccinated with fever and cough',
+  },
+  {
+    id: 'AU_FLUTRACKING_Sought_Medical_Advice',
+    numeratorDataElementCode: 'FWV_008',
+    denominatorDataElementCode: 'FWV_004',
+    numeratorTitle: 'Participants who sought medical advice for fever and cough',
+  },
+  {
+    id: 'AU_FLUTRACKING_Tested_For_Flu',
+    numeratorDataElementCode: 'FWV_009',
+    denominatorDataElementCode: 'FWV_004',
+    numeratorTitle: 'Participants with symptoms tested for flu',
+  },
+  {
+    id: 'AU_FLUTRACKING_Tested_For_Covid',
+    numeratorDataElementCode: 'FWV_010',
+    denominatorDataElementCode: 'FWV_004',
+    numeratorTitle: 'Participants with symptoms tested for covid',
+  },
+  {
+    id: 'AU_FLUTRACKING_Tested_Positive_For_Flu',
+    numeratorDataElementCode: 'FWV_011',
+    denominatorDataElementCode: 'FWV_004',
+    numeratorTitle: 'Participants with symptoms tested positive for flu',
+  },
+  {
+    id: 'AU_FLUTRACKING_Tested_Positive_For_Covid',
+    numeratorDataElementCode: 'FWV_012',
+    denominatorDataElementCode: 'FWV_004',
     numeratorTitle: 'Participants with symptoms tested positive for covid',
   },
 ];
@@ -105,8 +151,7 @@ const getReport = ({
           {
             type: 'MOST_RECENT',
             config: {
-              dataSourceEntityType: 'sub_district',
-              ...(!code.includes('LGA') && { aggregationEntityType: 'district' }),
+              dataSourceEntityType: code.includes('LGA') ? 'sub_district' : 'district',
             },
           },
         ],
@@ -144,33 +189,28 @@ const getReport = ({
 
 exports.up = async function (db) {
   const permissionGroupId = (await findSingleRecord(db, 'permission_group', { name: 'Public' })).id;
-  for (const {
-    ids,
-    numeratorDataElementCode,
-    denominatorDataElementCode,
-    numeratorTitle,
-  } of mapOverlays) {
-    for (const id of ids) {
-      await insertObject(db, 'report', {
-        ...getReport({
-          code: id,
-          numeratorDataElementCode,
-          denominatorDataElementCode,
-          numeratorTitle,
-        }),
-        id: generateId(),
-        permission_group_id: permissionGroupId,
-      });
-      await updateValues(
-        db,
-        'mapOverlay',
-        {
-          measureBuilder: 'useReportServer',
-          measureBuilderConfig: { reportCode: id, dataSourceType: 'custom' },
-        },
-        { id },
-      );
-    }
+  for (const mapOverlay of mapOverlays) {
+    const { id, numeratorDataElementCode, denominatorDataElementCode, numeratorTitle } = mapOverlay;
+    await insertObject(db, 'report', {
+      ...getReport({
+        code: id,
+        numeratorDataElementCode,
+        denominatorDataElementCode,
+        numeratorTitle,
+      }),
+      id: generateId(),
+      permission_group_id: permissionGroupId,
+    });
+
+    await updateValues(
+      db,
+      'mapOverlay',
+      {
+        measureBuilder: 'useReportServer',
+        measureBuilderConfig: { reportCode: id, dataSourceType: 'custom' },
+      },
+      { id },
+    );
   }
 
   const measureConfig = { $all: { type: 'popup-only' } };
@@ -179,7 +219,7 @@ exports.up = async function (db) {
     SET "presentationOptions" = "presentationOptions" || '${JSON.stringify({
       measureConfig,
     })}'::jsonb
-    WHERE id in (${arrayToDbString(mapOverlays.flatMap(m => m.ids))})
+    WHERE id in (${arrayToDbString(mapOverlays.map(m => m.id))})
   `);
 
   const info = {
@@ -192,7 +232,7 @@ exports.up = async function (db) {
     UPDATE "mapOverlay"
     SET "presentationOptions" = "presentationOptions" || '${JSON.stringify({ info })}'::jsonb
     WHERE id in (${arrayToDbString(
-      mapOverlays.flatMap(({ ids }) => ids).filter(id => id.includes('LGA')),
+      mapOverlays.filter(({ id }) => id.includes('LGA')).map(m => m.id),
     )})
 `);
 };
