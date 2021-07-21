@@ -35,7 +35,7 @@ const REPORT = {
         },
       ],
       dataElements: ['FWV_PC_004', 'FWV_PC_003'],
-      dataGroups: ['FP'],
+      dataGroups: ['FPWV'],
     },
     transform: [
       {
@@ -53,6 +53,13 @@ const REPORT = {
       {
         transform: 'select',
         "'value'": 'divide($row.numerator, $row.denominator)',
+        "'Total respondents'": '$row.denominator',
+        "'Respondents reporting fever & cough'": '$row.numerator',
+        '...': ['organisationUnitCode'],
+      },
+      {
+        transform: 'filter',
+        where: "$row.value > '0.01'",
         '...': ['organisationUnitCode'],
       },
     ],
@@ -60,7 +67,7 @@ const REPORT = {
 };
 
 exports.up = async function (db) {
-  const permissionGroupId = await permissionGroupNameToId(db, 'Admin');
+  const permissionGroupId = await permissionGroupNameToId(db, 'Public');
   await insertObject(db, 'report', { ...REPORT, permission_group_id: permissionGroupId });
 };
 

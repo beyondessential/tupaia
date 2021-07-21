@@ -19,7 +19,7 @@ exports.setup = function (options, seedLink) {
 const MAP_OVERLAY = {
   id: 'AU_Flutracking_Postcode_Fever_Percent',
   name: '% fever and cough by postcode',
-  userGroup: 'Admin',
+  userGroup: 'Public',
   dataElementCode: 'value',
   isDataRegional: true,
   measureBuilder: 'useReportServer',
@@ -28,24 +28,33 @@ const MAP_OVERLAY = {
     reportCode: 'AU_Flutracking_Postcode_Percent_Report',
   },
   presentationOptions: {
-    values: [{ color: 'grey', value: null }],
-    // displayType: 'icon',
-    // "measureLevel": "Postcode",
-    hideFromPopup: false,
-    scaleType: 'performance',
+    hideByDefault: {
+      null: true,
+    },
+    icon: 'circle',
+    displayType: 'shaded-spectrum',
+    measureLevel: 'Postcode',
     valueType: 'percentage',
+    scaleType: 'performance',
     scaleColorScheme: 'default',
-    type: 'shaded-spectrum',
+    hideFromPopup: false,
     hideFromMenu: false,
     hideFromLegend: false,
+    linkedMeasures: null,
+    periodGranularity: 'one_week_at_a_time',
     scaleBounds: {
-      left: {
-        max: 0,
-        min: 0,
-      },
       right: {
-        max: 1,
-        min: 1,
+        max: 0.05,
+      },
+      left: {
+        max: 0.01,
+      },
+    },
+    measureConfig: {
+      $all: {
+        type: 'popup-only',
+        hideFromLegend: true,
+        measureLevel: 'Postcode',
       },
     },
   },
