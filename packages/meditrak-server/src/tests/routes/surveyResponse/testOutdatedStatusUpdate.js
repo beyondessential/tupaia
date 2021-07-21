@@ -7,7 +7,12 @@
 
 import { expect } from 'chai';
 
-import { buildAndInsertSurveys, generateTestId, SurveyResponseOutdater } from '@tupaia/database';
+import {
+  buildAndInsertSurveys,
+  findOrCreateDummyRecord,
+  generateTestId,
+  SurveyResponseOutdater,
+} from '@tupaia/database';
 
 const REFRESH_DEBOUNCE_TIME = 50; // short debounce time so tests run more quickly
 
@@ -90,6 +95,7 @@ export const testOutdatedStatusUpdate = app => {
   };
 
   before(async () => {
+    await findOrCreateDummyRecord(models.entity, { code: 'TO', name: 'Tonga' });
     await buildAndInsertSurveys(models, Object.values(SURVEYS));
   });
 
