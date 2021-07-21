@@ -68,7 +68,7 @@ export class TransformParser extends ExpressionParser {
     }
 
     this.lookups.previous = this.rows[this.currentRow - 1];
-    this.lookups.next = this.rows[this.currentRow + 1];
+    this.lookups.next = this.rows[this.currentRow + 1] || {};
     this.lookups.row = this.rows[this.currentRow];
     this.lookups.index = this.currentRow + 1;
     this.set('$previous', this.lookups.previous);
