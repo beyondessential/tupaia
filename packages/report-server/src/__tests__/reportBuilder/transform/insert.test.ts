@@ -56,7 +56,7 @@ describe('insert', () => {
       {
         transform: 'insert',
         position: 'before',
-        where: 'eq($index, 0)',
+        where: 'eq($index, 1)',
         "'number'": '1',
         "'string'": "'Hi'",
         "'boolean'": 'false',
@@ -74,7 +74,7 @@ describe('insert', () => {
     const transform = buildTransform([
       {
         transform: 'insert',
-        where: 'eq($index, length($table) - 1)',
+        where: 'eq($index, length($table))',
         "'number'": '1',
         "'string'": "'Hi'",
         "'boolean'": 'false',
@@ -164,7 +164,7 @@ describe('insert', () => {
     const transform = buildTransform([
       {
         transform: 'insert',
-        where: 'eq($index, length($table) - 1)',
+        where: 'eq($index, length($table))',
         "'Total'": 'sum($all.value)',
       },
     ]);
@@ -180,17 +180,16 @@ describe('insert', () => {
     const transform = buildTransform([
       {
         transform: 'insert',
-        position: 'before',
-        where: 'and(exists($previous.organisationUnit), not(eq($previous.organisationUnit, $row.organisationUnit)))',
-        "'Total_BCD1'": "sum($where(f($otherRow) = eq($otherRow.organisationUnit, $previous.organisationUnit)).BCD1)",
-        "'Total_BCD2'": "sum($where(f($otherRow) = eq($otherRow.organisationUnit, $previous.organisationUnit)).BCD2)",
+        where: 'and(exists($next.organisationUnit), not(eq($row.organisationUnit, $next.organisationUnit)))',
+        "'Total_BCD1'": "sum($allPrevious.BCD1)",
+        "'Total_BCD2'": "sum($allPrevious.BCD2)",
       },
       {
         transform: 'insert',
-        where: 'eq($index, length($table) - 1)',
-        "'Total_BCD1'": 'sum($all.BCD1) - sum($all.Total_BCD1)',
-        "'Total_BCD2'": 'sum($all.BCD2) - sum($all.Total_BCD2)',
-      },
+        where: 'eq($index, length($table))',
+        "'Total_BCD1'": "sum($all.BCD1) - sum($allPrevious.Total_BCD1)",
+        "'Total_BCD2'": "sum($all.BCD2) - sum($allPrevious.Total_BCD2)",
+      }
     ]);
     expect(transform(AGGREGATEABLE_ANALYTICS)).toEqual([
       { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
