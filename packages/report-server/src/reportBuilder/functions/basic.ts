@@ -41,6 +41,6 @@ export const notExists = (val: FieldValue): boolean => {
   return val === undefined;
 };
 
-export const length = (val: FieldValue[]): number => {
+export const length = (val: any[]): number => {
   return val.length;
 };
