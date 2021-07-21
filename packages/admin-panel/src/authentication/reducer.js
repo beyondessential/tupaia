@@ -21,8 +21,6 @@ const defaultState = {
   emailAddress: '',
   password: '',
   user: null,
-  accessToken: null,
-  refreshToken: null,
   isLoggingIn: false,
   rememberMe: false,
   errorMessage: null,

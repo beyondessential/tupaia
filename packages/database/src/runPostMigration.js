@@ -17,6 +17,7 @@ const EXCLUDED_TABLES_FROM_TRIGGER_CREATION = [
   'ancestor_descendant_relation',
   'psss_session',
   'lesmis_session',
+  'admin_panel_session',
   'analytics',
 ];
 
