@@ -46,7 +46,7 @@ export class TransformParser extends ExpressionParser {
 
     if (rows.length > 0) {
       this.lookups.row = this.rows[this.currentRow];
-      this.lookups.next = this.rows[this.currentRow + 1];
+      this.lookups.next = this.rows[this.currentRow + 1] || {};
       this.rows.forEach(row => addRowToLookup(row, this.lookups.all));
       addRowToLookup(this.lookups.row, this.lookups.allPrevious);
 
