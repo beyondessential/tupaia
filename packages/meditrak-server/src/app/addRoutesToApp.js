@@ -4,14 +4,12 @@
  */
 
 import multer from 'multer';
+
 import { InternalServerError, UnsupportedApiVersionError } from '@tupaia/utils';
 
 import { logApiRequest } from './logApiRequest';
-
 import { authenticationMiddleware } from '../auth';
-
 import { ensurePermissionCheck } from '../permissions';
-
 import routes from '../routes';
 
 const {
