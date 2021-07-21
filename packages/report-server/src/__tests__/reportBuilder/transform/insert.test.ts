@@ -180,16 +180,10 @@ describe('insert', () => {
     const transform = buildTransform([
       {
         transform: 'insert',
-        where: 'and(exists($next.organisationUnit), not(eq($row.organisationUnit, $next.organisationUnit)))',
-        "'Total_BCD1'": "sum($allPrevious.BCD1)",
-        "'Total_BCD2'": "sum($allPrevious.BCD2)",
+        where: 'not(eq($row.organisationUnit, $next.organisationUnit))',
+        "'Total_BCD1'": "sum($where(f($otherRow) = equalText($otherRow.organisationUnit, $row.organisationUnit)).BCD1)",
+        "'Total_BCD2'": "sum($where(f($otherRow) = equalText($otherRow.organisationUnit, $row.organisationUnit)).BCD2)",
       },
-      {
-        transform: 'insert',
-        where: 'eq($index, length($table))',
-        "'Total_BCD1'": "sum($all.BCD1) - sum($allPrevious.Total_BCD1)",
-        "'Total_BCD2'": "sum($all.BCD2) - sum($allPrevious.Total_BCD2)",
-      }
     ]);
     expect(transform(AGGREGATEABLE_ANALYTICS)).toEqual([
       { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
