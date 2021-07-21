@@ -1,6 +1,7 @@
 #!/bin/bash
 DIR=$(dirname "$0")
 DEPLOYMENT_SSH_URL=$(${DIR}/determineDeploymentSshUrl.sh)
+DEPLOYMENT_URL=$DEPLOYMENT_SSH_URL # ssh url will resolve to tupaia web frontend desktop over HTTP
 if curl --output /dev/null --silent --head --fail $DEPLOYMENT_URL; then
     echo "Deployment for ${CI_BRANCH} exists, updating with latest changes"
     /bin/bash -c "ssh-keyscan -H ${DEPLOYMENT_SSH_URL} >> /root/.ssh/known_hosts"
