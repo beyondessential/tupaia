@@ -8,14 +8,11 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import CircularProgress from 'material-ui/CircularProgress';
-
 import BackButton from '../../../components/mobile/BackButton';
 import { ExpandableList } from '../../../components/mobile/ExpandableList';
 import { SelectListItem } from '../../../components/mobile/SelectListItem';
 import { Dashboard } from '../../../components/mobile/Dashboard';
-import StaticMap from '../../../components/StaticMap';
 import { filterShape } from '../../../components/mobile/FilterSelect';
 import {
   setOrgUnit,
@@ -26,7 +23,6 @@ import {
   clearMeasure,
 } from '../../../actions';
 import { DARK_BLUE, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
-import { getMapUrl } from '../../../utils';
 import { getSingleFormattedValue } from '../../../utils/measures';
 import { ENTITY_TYPE } from '../../../constants';
 import {
@@ -59,30 +55,6 @@ class RegionScreen extends PureComponent {
     this.setState({
       dashboardOpen: !open,
     });
-  }
-
-  renderMap() {
-    const { orgUnit } = this.props;
-    if (!orgUnit || !orgUnit.location || !orgUnit.location.bounds) {
-      return '';
-    }
-
-    const url = getMapUrl(orgUnit);
-
-    return (
-      <div style={styles.mapWrapper}>
-        <a style={styles.mapLink} href={url} target="_blank" rel="noreferrer noopener">
-          <StaticMap
-            polygonBounds={orgUnit.location.bounds}
-            alt={`Map of ${orgUnit.name}`}
-            width={MAP_WIDTH}
-            height={MAP_HEIGHT}
-            style={styles.map}
-            showAttribution={false}
-          />
-        </a>
-      </div>
-    );
   }
 
   renderLoading() {
@@ -121,7 +93,6 @@ class RegionScreen extends PureComponent {
 
     return (
       <div>
-        {this.renderMap()}
         <Dashboard
           orgUnit={orgUnit}
           dashboards={dashboards}
