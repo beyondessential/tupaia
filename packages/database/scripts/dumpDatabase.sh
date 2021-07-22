@@ -6,7 +6,7 @@ set -e
 USAGE="Usage: dumpDb identity_file [-s --server =dev] [-t --target =.]"
 DUMP_FILE_NAME="dump.sql"
 
-server="dev"
+server="dev-ssh"
 target_dir="."
 identity_file="$1"
 
