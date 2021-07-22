@@ -18,7 +18,7 @@
 - Close and reopen terminal session
 - `nvm install 12.18.3`
 
-# ssl
+# ssl (only needed for wordpress sites)
 
 ### Install certbot-auto
 
