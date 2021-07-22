@@ -63,6 +63,11 @@ describe('functions', () => {
       it('returns false when not undefined value is passed', () =>
         expect(functions.notExists(0)).toBe(false));
     });
+
+    describe('length', () => {
+      it('returns the length of an input array', () =>
+         expect(functions.length([1, 2, 3])).toBe(3));
+    });
   });
 
   describe('utils', () => {
