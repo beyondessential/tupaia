@@ -6,7 +6,7 @@ set -e
 USAGE="Usage: dumpDb identity_file [-s --server =dev] [-t --target =.]"
 DUMP_FILE_NAME="dump.sql"
 
-server="dev-ssh"
+server="dev"
 target_dir="."
 identity_file="$1"
 
@@ -40,7 +40,7 @@ while [ "$2" != "" ]; do
     esac
 done
 
-domain=$server.tupaia.org
+domain=$server-ssh.tupaia.org
 host="ubuntu@$domain"
 dump_file_path="/var/lib/postgresql/$DUMP_FILE_NAME"
 
