@@ -12,11 +12,11 @@ import { getTestModels } from '../../testUtilities/getTestDatabase';
 import { buildAndInsertSurveys, buildAndInsertSurveyResponses } from '../../testUtilities';
 
 const SURVEY = {
-  code: 'Test_ChangeHandler',
-  questions: [{ code: 'Test_ChangeHandler1', type: 'Number' }],
+  code: 'Test_Outdater',
+  questions: [{ code: 'Test_Outdater1', type: 'Number' }],
 };
 
-describe('SurveyResponseChangeHandler', () => {
+describe('SurveyResponseOutdater', () => {
   const models = getTestModels();
 
   before(async () => {
@@ -41,8 +41,8 @@ describe('SurveyResponseChangeHandler', () => {
       for (let i = 0; i < 3; i++) {
         const [{ surveyResponse }] = await buildAndInsertSurveyResponses(models, [
           {
-            surveyCode: 'Test_ChangeHandler',
-            answers: { Test_ChangeHandler1: 1 },
+            surveyCode: 'Test_Outdater',
+            answers: { Test_Outdater1: 1 },
           },
         ]);
         surveyResponseIds.push(surveyResponse.id);
