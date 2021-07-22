@@ -40,7 +40,7 @@ while [ "$2" != "" ]; do
     esac
 done
 
-domain=$server.tupaia.org
+domain=$server-ssh.tupaia.org
 host="ubuntu@$domain"
 dump_file_path="/var/lib/postgresql/$DUMP_FILE_NAME"
 
