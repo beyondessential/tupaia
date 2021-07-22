@@ -7,7 +7,7 @@
 @authorization  = Basic {{email}}:{{password}}
 
 ### Fetch Dashboard Preview Data
-GET {{baseUrl}}/fetchReportPreviewData?entityCode=TO
+POST {{baseUrl}}/fetchReportPreviewData?entityCode=TO
 content-type: {{contentType}}
 Authorization: {{authorization}}
 

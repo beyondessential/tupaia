@@ -53,7 +53,7 @@ export function createApp() {
     .useSessionModel(AdminPanelSessionModel)
     .verifyLogin(hasTupaiaAdminPanelAccess)
     .get('/v1/hierarchy/:hierarchyName/:entityCode', handleWith(FetchHierarchyEntitiesRoute))
-    .get('/v1/fetchReportPreviewData', handleWith(FetchReportPreviewData))
+    .post('/v1/fetchReportPreviewData', handleWith(FetchReportPreviewData))
     .post('/v1/saveDashboardVisualisation', handleWith(SaveDashboardVisualisation))
     .build();
 

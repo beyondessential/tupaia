@@ -31,8 +31,8 @@ export class FetchReportPreviewData extends Route {
 
     return this.reportConnection.testReport(
       {
-        organisationUnitCodes: entityCode,
-        hierarchy: hierarchy,
+        organisationUnitCodes: entityCode as string,
+        hierarchy: hierarchy as string,
       },
       { testConfig: reportConfig },
     );
