@@ -73,6 +73,14 @@ describe('DataBroker', () => {
 
   describe('pull()', () => {
     describe('input validation', () => {
+      beforeAll(() => {
+        jest.spyOn(global.console, 'warn').mockImplementation();
+      });
+
+      afterAll(() => {
+        global.console.warn.restore();
+      });
+
       const testData = [
         ['empty object', {}, 'Please provide at least one existing data source code'],
         [
@@ -111,9 +119,10 @@ describe('DataBroker', () => {
         expect(new DataBroker().pull(dataSourceSpec)).toBeRejectedWith(expectedError),
       );
 
-      it('does not throw if at least one code exists', () => {
-        expect(new DataBroker().pull({ code: ['TEST_01', 'NON_EXISTING'] })).toResolve();
-      });
+      it('does not throw if at least one code exists', async () =>
+        expect(
+          new DataBroker().pull({ code: ['TEST_01', 'NON_EXISTING'], type: 'dataElement' }),
+        ).toResolve());
     });
 
     describe('analytics', () => {

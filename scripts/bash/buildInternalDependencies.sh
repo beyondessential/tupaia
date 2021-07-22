@@ -17,10 +17,6 @@ while [ "$1" != "" ]; do
         shift
         watch=true
         ;;
-    --withTypes)
-        shift
-        with_types=true
-        ;;
     -p | --packagePath)
         shift
         package_path=$1
@@ -43,20 +39,11 @@ done
 build_commands=()
 delete_command="rm -rf"
 
-
-
 # Build dependencies
 for PACKAGE in $(${DIR}/getInternalDependencies.sh ${package_path}); do
     delete_command="${delete_command} packages/${PACKAGE}/${OUT_DIR}"
     build_commands+=("\"yarn workspace @tupaia/${PACKAGE} build $build_args\"")
 done
-
-# Build types
-if [ $with_types == "true" ]; then
-    for PACKAGE in $(${DIR}/getTypedInternalDependencies.sh); do
-        build_commands+=("\"yarn workspace @tupaia/${PACKAGE} build:ts $build_ts_args\"")
-    done
-fi
 
 if [[ $watch == "true" ]]; then
     echo "Concurrently building and watching all internal dependencies"
