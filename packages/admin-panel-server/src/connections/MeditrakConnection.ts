@@ -13,4 +13,8 @@ export class MeditrakConnection extends ApiConnection {
   async fetchResources(endpoint: string, queryParams: QueryParameters) {
     return this.get(endpoint, queryParams);
   }
+
+  async createResource(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
+    return this.post(endpoint, queryParameters, body);
+  }
 }

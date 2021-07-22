@@ -19,20 +19,30 @@ const getFilterFromReq = (req: ReportsRequest): FetchReportQuery => {
 
 class FetchReportRouteHandler {
   fetchReport = async (req: ReportsRequest, res: Response): Promise<void> => {
-    const { params, models, accessPolicy, body } = req;
+    const { params, query, models, accessPolicy, body } = req;
     const filter = getFilterFromReq(req);
     const aggregator = createAggregator(Aggregator, {
       session: { getAuthHeader: () => req.headers.authorization },
     });
     const reportBuilder = new ReportBuilder();
     if (body.testConfig) {
+      const { permissionGroup: permissionGroupName } = query;
+      if (permissionGroupName) {
+        await checkUserHasAccessToReport(
+          models,
+          accessPolicy,
+          permissionGroupName,
+          filter.organisationUnitCodes.split(','),
+        );
+      }
       reportBuilder.setConfig(body.testConfig);
     } else {
       const report = await fetchReportObjectFromDb(models, params.reportCode);
+      const permissionGroup = await models.permissionGroup.findById(report.permission_group_id);
       await checkUserHasAccessToReport(
         models,
         accessPolicy,
-        report,
+        permissionGroup.name,
         filter.organisationUnitCodes.split(','),
       );
       reportBuilder.setConfig(report.config);
@@ -59,11 +69,9 @@ const fetchReportObjectFromDb = async (models, reportCode: string) => {
 const checkUserHasAccessToReport = async (
   models,
   accessPolicy,
-  report,
+  permissionGroupName,
   requestedOrgUnitCodes: string[],
 ) => {
-  const permissionGroup = await models.permissionGroup.findById(report.permission_group_id);
-
   const foundOrgUnits = await models.entity.find({ code: requestedOrgUnitCodes });
   const foundOrgUnitCodes = foundOrgUnits.map(orgUnit => orgUnit.code);
 
@@ -76,8 +84,8 @@ const checkUserHasAccessToReport = async (
 
   const countryCodes = new Set(foundOrgUnits.map(orgUnit => orgUnit.country_code));
   countryCodes.forEach(countryCode => {
-    if (!accessPolicy.allows(countryCode, permissionGroup.name)) {
-      throw new Error(`No ${permissionGroup.name} access for user to ${countryCode}`);
+    if (!accessPolicy.allows(countryCode, permissionGroupName)) {
+      throw new Error(`No ${permissionGroupName} access for user to ${countryCode}`);
     }
   });
 };

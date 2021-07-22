@@ -36,6 +36,7 @@ import {
   GETDashboardRelations,
 } from './dashboardRelations';
 import { DeleteLegacyReport, EditLegacyReport, GETLegacyReports } from './legacyReports';
+import { CreateDashboardVisualisation } from './CreateDashboardVisualisation';
 import { DeleteMapOverlays, EditMapOverlays, GETMapOverlays } from './mapOverlays';
 import { DeleteSurveyResponses, EditSurveyResponses, GETSurveyResponses } from './surveyResponses';
 import {
@@ -112,6 +113,7 @@ export default {
   createPermissionGroups: useRouteHandler(BESAdminCreateHandler),
   createUserEntityPermissions: useRouteHandler(CreateUserEntityPermissions),
   createDashboardRelations: useRouteHandler(CreateDashboardRelation),
+  createDashboardVisualisations: useRouteHandler(CreateDashboardVisualisation),
   deleteAnswers: useRouteHandler(DeleteAnswers),
   deleteDashboards: useRouteHandler(DeleteDashboard),
   deleteDashboardItems: useRouteHandler(DeleteDashboardItem),

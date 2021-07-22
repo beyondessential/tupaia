@@ -15,4 +15,8 @@ export class ReportConnection extends ApiConnection {
   async fetchReport(reportCode: string, query: QueryParameters, body: RequestBody) {
     return this.post(`fetchReport/${reportCode}`, query, body);
   }
+
+  async testReport(query: QueryParameters, body: RequestBody) {
+    return this.post(`testFetchReport`, query, body);
+  }
 }

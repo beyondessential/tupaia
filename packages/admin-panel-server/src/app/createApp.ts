@@ -13,7 +13,11 @@ import { OrchestratorApiBuilder, attachSession, handleWith } from '@tupaia/serve
 import { AdminPanelSessionModel } from '../models';
 import { hasTupaiaAdminPanelAccess } from '../utils';
 import { attachAuthorizationHeader } from '../middleware';
-import { FetchHierarchyEntitiesRoute } from '../routes';
+import {
+  FetchHierarchyEntitiesRoute,
+  FetchReportPreviewData,
+  SaveDashboardVisualisation,
+} from '../routes';
 
 const useForwardUnhandledRequestsToMeditrak = (app: Express) => {
   const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
@@ -49,6 +53,8 @@ export function createApp() {
     .useSessionModel(AdminPanelSessionModel)
     .verifyLogin(hasTupaiaAdminPanelAccess)
     .get('/v1/hierarchy/:hierarchyName/:entityCode', handleWith(FetchHierarchyEntitiesRoute))
+    .get('/v1/fetchReportPreviewData', handleWith(FetchReportPreviewData))
+    .post('/v1/saveDashboardVisualisation', handleWith(SaveDashboardVisualisation))
     .build();
 
   useForwardUnhandledRequestsToMeditrak(app);
