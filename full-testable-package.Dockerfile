@@ -69,6 +69,9 @@ COPY packages/web-frontend/package.json ./packages/web-frontend
 ## within internal dependencies invalidating it
 RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
 
+# Copy TS config used in internal dependencies
+COPY tsconfig-js.json ./
+
 ## add content of all internal dependency packages ready for internal dependencies to be built
 COPY packages/access-policy/. ./packages/access-policy
 COPY packages/aggregator/. ./packages/aggregator
