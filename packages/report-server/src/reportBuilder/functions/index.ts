@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { value, last, eq, notEq, exists, notExists, gt } from './basic';
+import { value, last, eq, notEq, exists, notExists, gt, length } from './basic';
 import {
   convertToPeriod,
   dateStringToPeriod,
@@ -21,6 +21,7 @@ export const functions = {
   gt,
   exists,
   notExists,
+  length,
   convertToPeriod,
   dateStringToPeriod,
   periodToTimestamp,
