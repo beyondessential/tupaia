@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { getTestDatabase } from '@tupaia/database';
+import { dateStringToPeriod } from '@tupaia/utils';
 
 import { TupaiaDataApi } from '../TupaiaDataApi';
 import {
@@ -24,7 +25,7 @@ const getAnalyticsFromResponses = (responses, dataElementsToInclude) => {
           dataElement: questionCode,
           organisationUnit: r.entityCode,
           value: isNaN(answer) ? answer : parseFloat(answer),
-          date: r.data_time.substring(0, 10), // just the YYYY-MM-DD bit
+          period: dateStringToPeriod(r.data_time),
         });
       });
   });
