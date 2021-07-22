@@ -63,6 +63,7 @@ const DASHBOARD_CODES = {
   essdpLowerSecondary: 'LESMIS_ESSDP_LowerSecondary',
   essdpUpperSecondary: 'LESMIS_ESSDP_UpperSecondary',
   internationalSDGs: 'LESMIS_International_SDGs',
+  emergencyInEducation: 'LESMIS_EmergencyInEducation',
 };
 
 const makeDropdownOptions = entityType => [
@@ -132,10 +133,11 @@ const makeDropdownOptions = entityType => [
   },
   {
     value: 'emergency',
-    label: 'Emergency in Education/COVID-19',
-    TabComponent: TabTemplate,
+    label: 'Emergency in Education Preparedness and Response',
+    TabComponent: DashboardReportTabView,
     componentProps: {
-      Body: 'Emergency in Education/COVID-19',
+      filterSubDashboards: ({ dashboardCode }) =>
+        dashboardCode.startsWith(DASHBOARD_CODES.emergencyInEducation),
     },
   },
   {

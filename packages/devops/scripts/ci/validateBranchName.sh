@@ -4,8 +4,7 @@ DIR=$(dirname "$0")
 . ${DIR}/utils.sh
 
 INVALID_CHARS=('/' '\' '.' '&' '?')
-RESERVED_NAMES=(e2e)
-SUBDOMAIN_SUFFIXES=(admin aggregation api config export lesmis lesmis-api mobile psss psss-api report report-api entity entity-api tonga-aggregation www)
+SUBDOMAIN_SUFFIXES=(admin admin-api aggregation api config export lesmis lesmis-api mobile psss psss-api report report-api entity entity-api tonga-aggregation www)
 
 # Branch names are used in AWS EC2 deployments. They are combined with standard suffixes
 # to create deployment urls, eg {{branchName}}-tonga-aggregation.tupaia.org
@@ -21,17 +20,6 @@ function get_branch_name() {
     fi
 
     echo $branch_name
-}
-
-function check_name_is_not_reserved() {
-    local branch_name=$1
-
-    for reserved_name in ${RESERVED_NAMES[@]}; do
-        if [[ "$branch_name" == "$reserved_name" ]]; then
-            log_error "❌ Reserved branch name: '$branch_name'"
-            exit 1
-        fi
-    done
 }
 
 function validate_name_ending() {
