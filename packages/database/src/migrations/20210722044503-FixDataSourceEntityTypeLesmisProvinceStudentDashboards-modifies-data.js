@@ -16,25 +16,41 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const dashboards = [
+const PROVINCE_REPORTS = [
   'LESMIS_gross_intake_ratio_primary_province',
   'LESMIS_gross_intake_ratio_lower_secondary_province',
   'LESMIS_gross_intake_ratio_upper_secondary_province',
 ];
 
-exports.up = function (db) {
-  return db.runSql(`
+const COUNTRY_REPORTS = [
+  'LESMIS_gross_intake_ratio_primary_country',
+  'LESMIS_gross_intake_ratio_lower_secondary_country',
+  'LESMIS_gross_intake_ratio_upper_secondary_country',
+];
+
+exports.up = async function (db) {
+  await db.runSql(`
     UPDATE report
     SET config = jsonb_set(config, '{fetch,aggregations,0,config,dataSourceEntityType}','"district"', false)
-    WHERE code IN (${arrayToDbString(dashboards)})
+    WHERE code IN (${arrayToDbString(PROVINCE_REPORTS)});
+  `);
+  await db.runSql(`
+    UPDATE report
+    SET config = jsonb_set(config, '{fetch,aggregations,0,config,dataSourceEntityType}','"country"', false)
+    WHERE code IN (${arrayToDbString(COUNTRY_REPORTS)});
   `);
 };
 
-exports.down = function (db) {
-  return db.runSql(`
+exports.down = async function (db) {
+  await db.runSql(`
     UPDATE report
     SET config = jsonb_set(config, '{fetch,aggregations,0,config,dataSourceEntityType}','"sub_district"', false)
-    WHERE code IN (${arrayToDbString(dashboards)})
+    WHERE code IN (${arrayToDbString(PROVINCE_REPORTS)});
+  `);
+  await db.runSql(`
+    UPDATE report
+    SET config = jsonb_set(config, '{fetch,aggregations,0,config,dataSourceEntityType}','"sub_district"', false)
+    WHERE code IN (${arrayToDbString(COUNTRY_REPORTS)});
   `);
 };
 
