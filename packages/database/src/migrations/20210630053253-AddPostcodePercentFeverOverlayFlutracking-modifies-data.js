@@ -46,9 +46,6 @@ const MAP_OVERLAY = {
       right: {
         max: 0.05,
       },
-      left: {
-        max: 0.01,
-      },
     },
     measureConfig: {
       $all: {

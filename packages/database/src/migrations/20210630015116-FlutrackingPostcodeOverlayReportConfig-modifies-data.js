@@ -59,7 +59,7 @@ const REPORT = {
       },
       {
         transform: 'filter',
-        where: "$row.value > '0.01'",
+        where: "$row.value > '0'",
         '...': ['organisationUnitCode'],
       },
     ],
