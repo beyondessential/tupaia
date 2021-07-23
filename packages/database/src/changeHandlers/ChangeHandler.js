@@ -20,9 +20,10 @@ export class ChangeHandler {
 
   /**
    * A map of change handlers by record type. Each handler will be used to process queued changes
-   * of that record type
+   * of that type
    *
    * @protected
+   * @type {Record<string, Function>}
    */
   changeHandlers = {};
 
@@ -35,7 +36,7 @@ export class ChangeHandler {
   debounceTime = 1000; // ms
 
   /**
-   * @type {Record<string, Function>} Changes by record type
+   * @type {Record<string, Array>} Changes by record type
    */
   changeQueue = {};
 
@@ -63,8 +64,8 @@ export class ChangeHandler {
       const changePusher = this.changePushers[recordType] || (changeDetails => [changeDetails]);
 
       const pushAndSchedule = async changeDetails => {
-        const newChanges = changePusher(changeDetails);
-        this.changeQueue[recordType].push(...newChanges);
+        this.changeQueue[recordType].push(...changePusher(changeDetails));
+        // Changes are scheduled to be handled as a batch at a later stage
         return this.scheduleChangeQueueHandler(recordType);
       };
       return this.models[recordType].addChangeHandler(pushAndSchedule);
@@ -80,7 +81,7 @@ export class ChangeHandler {
     // wait for any active refresh to finish before scheduling a new one
     await this.activePromise;
 
-    // clear any previous scheduled rebuild, so that we debounce all changes in the same time period
+    // clear any previous scheduled handler, so that we debounce all changes in the same time period
     if (this.scheduledTimeout) {
       clearTimeout(this.scheduledTimeout);
     }
@@ -91,7 +92,7 @@ export class ChangeHandler {
       });
     }
 
-    // schedule the rebuild to happen after an adequate period of debouncing
+    // schedule the handler to execute after an adequate period of debouncing
     this.scheduledTimeout = setTimeout(() => {
       this.activePromise = this.handleChangeQueue(recordType);
     }, this.debounceTime);
@@ -105,7 +106,7 @@ export class ChangeHandler {
     this.scheduledPromise = null;
 
     const changeQueueHandler = this.changeHandlers[recordType];
-    assert.ok(changeQueueHandler); // Change handler for the record type should be defined
+    assert.ok(changeQueueHandler);
 
     await changeQueueHandler(this.changeQueue[recordType]);
     this.changeQueue[recordType] = [];
