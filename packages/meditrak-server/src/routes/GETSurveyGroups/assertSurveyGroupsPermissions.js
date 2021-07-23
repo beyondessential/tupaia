@@ -4,7 +4,8 @@
  */
 
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { groupBy, flattenDeep } from 'lodash';
+import flattenDeep from 'lodash.flattendeep';
+import groupBy from 'lodash.groupby';
 import { hasBESAdminAccess } from '../../permissions';
 import { fetchCountryIdsByPermissionGroupId } from '../utilities';
 

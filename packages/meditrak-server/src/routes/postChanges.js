@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { cloneDeep } from 'lodash';
+import cloneDeep from 'lodash.clonedeep';
 import { AnalyticsRefresher } from '@tupaia/database';
 import {
   respond,

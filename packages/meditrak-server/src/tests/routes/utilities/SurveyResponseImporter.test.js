@@ -4,7 +4,6 @@
  */
 
 import { expect } from 'chai';
-import { flatten } from 'lodash';
 import sinon from 'sinon';
 
 import { generateTestId } from '@tupaia/database';
@@ -41,7 +40,7 @@ const RESULTS_BY_SURVEY_ID = {
     { surveyResponseId: generateTestId(), answerIds: [generateTestId()] },
   ],
 };
-const ALL_RESULTS = flatten(Object.values(RESULTS_BY_SURVEY_ID));
+const ALL_RESULTS = Object.values(RESULTS_BY_SURVEY_ID).flat();
 const TIMESTAMP = 1570000000;
 const USER_ID = 'userId';
 

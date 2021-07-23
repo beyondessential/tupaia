@@ -3,7 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { flattenDeep, groupBy, keyBy } from 'lodash';
+import flattenDeep from 'lodash.flattendeep';
+import groupBy from 'lodash.groupby';
+import keyBy from 'lodash.keyby';
 import { getUniqueEntries, reduceToDictionary } from '@tupaia/utils';
 
 export const assertCanImportSurveyResponses = async (

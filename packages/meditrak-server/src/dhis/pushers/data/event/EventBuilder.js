@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { get } from 'lodash';
+import get from 'lodash.get';
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 
 import { enrollTrackedEntityInProgramIfNotEnrolled } from '../../../api';

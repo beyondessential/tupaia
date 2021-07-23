@@ -4,7 +4,7 @@
  */
 
 import fs from 'fs';
-import { groupBy } from 'lodash';
+import groupBy from 'lodash.groupby';
 import path from 'path';
 import xlsx from 'xlsx';
 

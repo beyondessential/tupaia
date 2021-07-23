@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { flattenDeep } from 'lodash';
+import flattenDeep from 'lodash.flattendeep';
 
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 

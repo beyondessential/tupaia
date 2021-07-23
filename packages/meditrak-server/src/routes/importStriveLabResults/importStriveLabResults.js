@@ -3,12 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { keyBy } from 'lodash';
 import xlsx from 'xlsx';
 
 import { mapKeys, respond, WorkBookParser, UploadError } from '@tupaia/utils';
 import { SurveyResponseImporter } from '../utilities';
-import SURVEYS from './surveys';
+import SURVEYS from './surveys.json';
 import { assertCanImportSurveyResponses } from '../importSurveyResponses/assertCanImportSurveyResponses';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
@@ -79,7 +78,9 @@ export const importStriveLabResults = async (req, res) => {
     await assertCanImportSurveyResponses(accessPolicy, models, entitiesGroupedBySurveyName);
   };
 
-  await req.assertPermissions(assertAnyPermissions([assertBESAdminAccess, importSurveyResponsePermissionsChecker]));
+  await req.assertPermissions(
+    assertAnyPermissions([assertBESAdminAccess, importSurveyResponsePermissionsChecker]),
+  );
 
   const importer = createImporter(models);
   const results = await importer.import(inputsPerSurvey, userId);

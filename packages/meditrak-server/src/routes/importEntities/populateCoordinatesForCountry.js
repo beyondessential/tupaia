@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { get } from 'lodash';
+import get from 'lodash.get';
 import winston from 'winston';
 import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'fs';
 import { fetchWithTimeout, HttpError } from '@tupaia/utils';

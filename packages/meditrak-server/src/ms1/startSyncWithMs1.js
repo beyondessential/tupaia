@@ -2,7 +2,7 @@
  * Tupaia MediTrak
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import { get } from 'lodash';
+import get from 'lodash.get';
 import { HttpError } from '@tupaia/utils';
 
 import { ExternalApiSyncQueue } from '../externalApiSync';
