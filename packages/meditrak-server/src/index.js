@@ -41,7 +41,7 @@ const entityHierarchyCacher = new EntityHierarchyCacher(models);
 entityHierarchyCacher.listenForChanges();
 
 // Add listener to refresh analytics table
-const analyticsRefresher = new AnalyticsRefresher(database, models);
+const analyticsRefresher = new AnalyticsRefresher(models);
 analyticsRefresher.listenForChanges();
 
 // Add listener to handle survey response changes

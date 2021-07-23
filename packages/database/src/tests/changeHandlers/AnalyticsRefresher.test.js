@@ -7,7 +7,6 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import { sleep } from '@tupaia/utils';
 import {
-  getTestDatabase,
   getTestModels,
   populateTestData,
   clearTestData,
@@ -35,9 +34,9 @@ const matchingFields = [
 const REFRESH_DEBOUNCE_TIME = 100; // short debounce time so tests run more quickly
 
 describe('AnalyticsRefresher', () => {
-  const database = getTestDatabase();
   const models = getTestModels();
-  const analyticsRefresher = new AnalyticsRefresher(database, models, REFRESH_DEBOUNCE_TIME);
+  const analyticsRefresher = new AnalyticsRefresher(models);
+  analyticsRefresher.setDebounceTime(REFRESH_DEBOUNCE_TIME);
 
   const assertAnalyticsMatch = async expectedAnalytics => {
     await models.database.waitForAllChangeHandlers();
@@ -77,7 +76,7 @@ describe('AnalyticsRefresher', () => {
 
   beforeEach(async () => {
     await populateTestData(models, TEST_DATA);
-    await AnalyticsRefresher.executeRefresh(database);
+    await AnalyticsRefresher.refreshAnalytics(models.database);
     analyticsRefresher.listenForChanges();
   });
 
@@ -195,41 +194,41 @@ describe('AnalyticsRefresher', () => {
   });
 
   it('debounces analytics table refreshes that are started at the same time', async () => {
-    sinon.stub(AnalyticsRefresher, 'executeRefresh');
+    sinon.stub(AnalyticsRefresher, 'refreshAnalytics');
 
     // call several times in a row
-    analyticsRefresher.scheduleAnalyticsRefresh();
-    analyticsRefresher.scheduleAnalyticsRefresh();
-    analyticsRefresher.scheduleAnalyticsRefresh();
-    await analyticsRefresher.scheduleAnalyticsRefresh(); // await final call
+    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
+    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
+    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
+    await analyticsRefresher.scheduleChangeQueueHandler('surveyResponse'); // await final call
 
-    expect(AnalyticsRefresher.executeRefresh).to.have.been.calledOnce; // should have debounced
+    expect(AnalyticsRefresher.refreshAnalytics).to.have.been.calledOnce; // should have debounced
 
-    AnalyticsRefresher.executeRefresh.restore();
+    AnalyticsRefresher.refreshAnalytics.restore();
   });
 
   it('debounces analytics table refreshes that are started within a second of another one each other', async () => {
-    sinon.stub(AnalyticsRefresher, 'executeRefresh');
+    sinon.stub(AnalyticsRefresher, 'refreshAnalytics');
 
     // call several times with half the debounce time between each
-    analyticsRefresher.scheduleAnalyticsRefresh();
+    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
     await sleep(REFRESH_DEBOUNCE_TIME / 2);
-    analyticsRefresher.scheduleAnalyticsRefresh();
+    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
     await sleep(REFRESH_DEBOUNCE_TIME / 2);
-    analyticsRefresher.scheduleAnalyticsRefresh();
+    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
     await sleep(REFRESH_DEBOUNCE_TIME / 2);
-    await analyticsRefresher.scheduleAnalyticsRefresh(); // await final call
+    await analyticsRefresher.scheduleChangeQueueHandler('surveyResponse'); // await final call
 
-    expect(AnalyticsRefresher.executeRefresh).to.have.been.calledOnce; // should have debounced
+    expect(AnalyticsRefresher.refreshAnalytics).to.have.been.calledOnce; // should have debounced
 
-    AnalyticsRefresher.executeRefresh.restore();
+    AnalyticsRefresher.refreshAnalytics.restore();
   });
 
   it('only runs one refresh at a time', async () => {
     let resolveOnRefreshStart;
     let isRefreshRunning = false;
     let refreshNumber = 0;
-    sinon.stub(AnalyticsRefresher, 'executeRefresh').callsFake(async () => {
+    sinon.stub(AnalyticsRefresher, 'refreshAnalytics').callsFake(async () => {
       if (resolveOnRefreshStart) {
         resolveOnRefreshStart();
       }
@@ -243,7 +242,7 @@ describe('AnalyticsRefresher', () => {
     });
 
     // start a refresh
-    analyticsRefresher.scheduleAnalyticsRefresh();
+    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
     const refreshOneStarted = new Promise(resolve => {
       resolveOnRefreshStart = resolve;
     });
@@ -252,7 +251,7 @@ describe('AnalyticsRefresher', () => {
     await refreshOneStarted;
     expect(isRefreshRunning).to.equal(true);
     expect(refreshNumber).to.equal(1);
-    analyticsRefresher.scheduleAnalyticsRefresh();
+    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
     const refreshTwoStarted = new Promise(resolve => {
       resolveOnRefreshStart = resolve;
     });
@@ -268,10 +267,10 @@ describe('AnalyticsRefresher', () => {
     await refreshTwoStarted;
     expect(isRefreshRunning).to.equal(true);
     expect(refreshNumber).to.equal(2);
-    analyticsRefresher.scheduleAnalyticsRefresh();
-    analyticsRefresher.scheduleAnalyticsRefresh();
-    analyticsRefresher.scheduleAnalyticsRefresh();
-    const finalRefreshPromise = analyticsRefresher.scheduleAnalyticsRefresh();
+    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
+    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
+    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
+    const finalRefreshPromise = analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
 
     // wait for longer than the debounce time, so the just scheduled refresh would want to start,
     // but should still be running the second refresh
@@ -283,8 +282,8 @@ describe('AnalyticsRefresher', () => {
     await finalRefreshPromise;
     expect(isRefreshRunning).to.equal(false);
     expect(refreshNumber).to.equal(3);
-    expect(AnalyticsRefresher.executeRefresh).to.have.been.calledThrice;
+    expect(AnalyticsRefresher.refreshAnalytics).to.have.been.calledThrice;
 
-    AnalyticsRefresher.executeRefresh.restore();
+    AnalyticsRefresher.refreshAnalytics.restore();
   });
 });
