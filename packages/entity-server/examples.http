@@ -18,6 +18,15 @@ GET http://{{host}}/{{version}}/hierarchy/explore/TO HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
+### Fetch multiple entities
+POST http://{{host}}/{{version}}/hierarchy/explore HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "entities" : ["TO","PG"]
+}
+
 ### Fetch descendants of an entity
 GET http://{{host}}/{{version}}/hierarchy/explore/TO/descendants?field=code&includeRootEntity=true HTTP/1.1
 content-type: {{contentType}}
