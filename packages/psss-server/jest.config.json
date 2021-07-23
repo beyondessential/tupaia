@@ -1,7 +1,0 @@
-{
-  "clearMocks": true,
-  "collectCoverageFrom": ["<rootDir>/src/**/*.ts"],
-  "coveragePathIgnorePatterns": ["__tests__"],
-  "setupFilesAfterEnv": ["../../jest.setup.js"],
-  "testMatch": ["<rootDir>/src/__tests__/**/*.test.ts"]
-}
