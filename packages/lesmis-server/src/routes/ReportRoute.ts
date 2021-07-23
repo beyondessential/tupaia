@@ -54,6 +54,7 @@ export class ReportRoute extends Route {
           organisationUnitCodes: entityCode,
           hierarchy: LESMIS_HIERARCHY_NAME,
           ...this.req.query,
+          ...this.req.body,
         });
     }
   }
