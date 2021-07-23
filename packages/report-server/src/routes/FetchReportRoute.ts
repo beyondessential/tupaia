@@ -11,9 +11,14 @@ import { Route } from '@tupaia/server-boilerplate';
 import { Aggregator } from '../aggregator';
 import { ReportBuilder, BuiltReport } from '../reportBuilder';
 import { ReportType } from '../models';
-import { ReportRouteQuery } from './types';
+import { ReportRouteQuery, ReportRouteBody } from './types';
 
-export type FetchReportRequest = Request<{ reportCode: string }, BuiltReport, {}, ReportRouteQuery>;
+export type FetchReportRequest = Request<
+  { reportCode: string },
+  BuiltReport,
+  ReportRouteBody | Record<string, never>,
+  ReportRouteQuery
+>;
 
 export class FetchReportRoute extends Route<FetchReportRequest> {
   async findReport() {
@@ -50,20 +55,24 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
   }
 
   async buildResponse() {
-    const { query } = this.req;
-    const { organisationUnitCodes, ...restOfQuery } = query;
-    if (!organisationUnitCodes || typeof organisationUnitCodes !== 'string') {
+    const { query, body } = this.req;
+    const { organisationUnitCodes, ...restOfParams } = { ...query, ...body };
+    if (!organisationUnitCodes) {
       throw new Error('Must provide organisationUnitCodes URL parameter');
     }
     const report = await this.findReport();
 
-    this.checkUserHasAccessToReport(report, organisationUnitCodes.split(','));
+    const organisationUnitCodesArray = Array.isArray(organisationUnitCodes)
+      ? organisationUnitCodes
+      : organisationUnitCodes.split(',');
+
+    this.checkUserHasAccessToReport(report, organisationUnitCodesArray);
 
     const aggregator = createAggregator(Aggregator, {
       session: { getAuthHeader: () => this.req.headers.authorization },
     });
     return new ReportBuilder()
       .setConfig(report.config)
-      .build(aggregator, { organisationUnitCodes, ...restOfQuery });
+      .build(aggregator, { organisationUnitCodes: organisationUnitCodesArray, ...restOfParams });
   }
 }

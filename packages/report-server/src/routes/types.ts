@@ -10,3 +10,11 @@ export type ReportRouteQuery = {
   startDate?: string;
   endDate?: string;
 };
+
+export type ReportRouteBody = {
+  organisationUnitCodes?: string[];
+  hierarchy?: string;
+  period?: string;
+  startDate?: string;
+  endDate?: string;
+};
