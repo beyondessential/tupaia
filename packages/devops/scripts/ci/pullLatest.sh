@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 DIR=$(dirname "$0")
 DEPLOYMENT_SSH_URL=$(${DIR}/determineDeploymentSshUrl.sh)
 DEPLOYMENT_URL=$DEPLOYMENT_SSH_URL # ssh url will resolve to tupaia web frontend desktop over HTTP
