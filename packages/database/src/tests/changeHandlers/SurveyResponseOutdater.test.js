@@ -24,13 +24,15 @@ describe('SurveyResponseOutdater', () => {
   });
 
   it('batches multiple changes', async () => {
-    const outdater = new SurveyResponseOutdater(models, 250);
+    const outdater = new SurveyResponseOutdater(models);
+    const surveyResponseChangeHandler = sinon.stub().callsFake(async () => {
+      outdater.scheduledPromiseResolve();
+    });
+    outdater.changeHandlers = {
+      surveyResponse: surveyResponseChangeHandler,
+    };
 
     try {
-      outdater.updateOutdatedStatus = sinon.stub().callsFake(async () => {
-        outdater.resolveScheduledUpdatePromise();
-      });
-
       outdater.listenForChanges();
 
       // make a bunch of different changes, with small delays between each to model real life
@@ -58,7 +60,7 @@ describe('SurveyResponseOutdater', () => {
       await sleep(sleepTime);
 
       await models.database.waitForAllChangeHandlers();
-      expect(outdater.updateOutdatedStatus).to.have.callCount(1);
+      expect(surveyResponseChangeHandler).to.have.callCount(1);
     } finally {
       outdater.stopListeningForChanges();
     }
