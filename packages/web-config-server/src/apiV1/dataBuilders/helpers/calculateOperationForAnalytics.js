@@ -242,10 +242,10 @@ const getValueFromEntity = async (entity, config) => {
   }
 };
 
-const staticValueOrNoData = (analytics, config) => {
+const staticValueOrNoData = async (analytics, config) => {
   const { value, noDataValue = NO_DATA_AVAILABLE, dataElement, filter } = config;
   if (!dataElement) return value;
-  const analyticsCount = countDataValues(analytics, [dataElement], filter);
+  const analyticsCount = await countDataValues(analytics, [dataElement], filter);
   return analyticsCount > 0 ? value : noDataValue;
 };
 
