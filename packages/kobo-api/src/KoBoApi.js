@@ -18,12 +18,17 @@ export class KoBoApi {
     if (optionsInput.submission_time) {
       mongoQuery = { ...mongoQuery, _submission_time: { $gt: optionsInput.submission_time } };
     }
-    const results = await this.fetchFromKoBo(`api/v2/assets/${koboSurveyCodes[0]}/data.json`, {
+    const response = await this.fetchFromKoBo(`api/v2/assets/${koboSurveyCodes[0]}/data.json`, {
       query: JSON.stringify(mongoQuery),
     });
 
-    // TODO: Format these results
-    return results;
+    return response.results.map(({ _id: event, _submission_time: eventDate, ...restOfFields }) => ({
+      event,
+      eventDate,
+      orgUnit: 'LA', // TODO: Lookup orgUnit from entityQuestion
+      orgUnitName: 'Laos',
+      dataValues: { ...restOfFields }, // TODO: Return specific pieces of data
+    }));
   }
 
   async fetchFromKoBo(endpoint, params) {
@@ -31,16 +36,18 @@ export class KoBoApi {
 
     const url = stringifyQuery(this.baseUrl, endpoint, queryParams);
 
-    const result = await fetchWithTimeout(
+    const response = await fetchWithTimeout(
       url,
       { headers: { Authorization: `Token ${this.apiKey}` } },
       MAX_FETCH_WAIT_TIME,
     );
 
-    if (result.status !== 200) {
-      const bodyText = await result.text();
-      throw new Error(`Error response from KoBo API. Status: ${result.status}, body: ${bodyText}`);
+    if (response.status !== 200) {
+      const bodyText = await response.text();
+      throw new Error(
+        `Error response from KoBo API. Status: ${response.status}, body: ${bodyText}`,
+      );
     }
-    return result;
+    return response.json();
   }
 }

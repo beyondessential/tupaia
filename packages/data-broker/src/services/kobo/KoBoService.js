@@ -31,11 +31,7 @@ export class KoBoService extends Service {
     const koboSurveyCodes = dataSources.map(({ config }) => config.koboSurveyCode);
 
     // TODO: Throw error on entity filter
-
-    return {
-      results: await this.api.fetchKoBoSurveys(koboSurveyCodes, options),
-      metadata: { dataElementCodeToName: {} },
-    };
+    return this.api.fetchKoBoSurveys(koboSurveyCodes, options);
   }
 
   async pullMetadata() {
