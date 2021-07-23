@@ -25,6 +25,9 @@ COPY packages/utils/package.json ./packages/utils
 
 RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
 
+# Copy TS config used in internal dependencies
+COPY tsconfig-js.json ./
+
 COPY packages/access-policy/. ./packages/access-policy
 COPY packages/auth/. ./packages/auth
 COPY packages/database/. ./packages/database

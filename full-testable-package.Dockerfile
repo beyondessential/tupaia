@@ -22,6 +22,8 @@ COPY scripts/. ./scripts
 ## directories, so that code changes don't invalidate the container cache before we've yarn installed
 RUN mkdir -p ./packages/access-policy
 COPY packages/access-policy/. ./packages/access-policy
+RUN mkdir -p ./packages/admin-panel-server
+COPY packages/admin-panel-server/package.json ./packages/admin-panel-server
 RUN mkdir -p ./packages/aggregator
 COPY packages/aggregator/package.json ./packages/aggregator
 RUN mkdir -p ./packages/auth
@@ -66,6 +68,9 @@ COPY packages/web-frontend/package.json ./packages/web-frontend
 ## run yarn without building internal dependencies, so we can cache that layer without code changes
 ## within internal dependencies invalidating it
 RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
+
+# Copy TS config used in internal dependencies
+COPY tsconfig-js.json ./
 
 ## add content of all internal dependency packages ready for internal dependencies to be built
 COPY packages/access-policy/. ./packages/access-policy

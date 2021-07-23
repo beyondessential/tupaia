@@ -20,9 +20,11 @@ export const stringifyQuery = (baseUrl, endpoint, queryParams) => {
     .map(([key, value]) => buildParameterString(key, value))
     .join('&');
 
+  const urlAndEndpoint = baseUrl ? `${baseUrl}/${endpoint}` : endpoint;
+
   return queryParamsString
-    ? `${baseUrl}/${endpoint}?${queryParamsString}`
-    : `${baseUrl}/${endpoint}`;
+    ? `${urlAndEndpoint}?${queryParamsString}`
+    : `${urlAndEndpoint}`;
 };
 
 /**
