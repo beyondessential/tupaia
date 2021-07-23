@@ -14,8 +14,6 @@ import {
   SurveyResponseOutdater,
 } from '@tupaia/database';
 
-const REFRESH_DEBOUNCE_TIME = 50; // short debounce time so tests run more quickly
-
 const buildSurvey = (id, periodGranularity) => {
   const code = `Test_${periodGranularity || 'no_granularity'}`;
 
@@ -45,7 +43,8 @@ const SURVEYS = {
 
 export const testOutdatedStatusUpdate = app => {
   const { models } = app;
-  const responseOutdater = new SurveyResponseOutdater(models, REFRESH_DEBOUNCE_TIME);
+  const responseOutdater = new SurveyResponseOutdater(models);
+  responseOutdater.setDebounceTime(50);
 
   const datetime = date => `${date}T12:00:00`;
 

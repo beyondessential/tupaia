@@ -11,8 +11,6 @@ import { buildAndInsertSurveys, generateTestId, SurveyResponseOutdater } from '@
 import { TestableApp } from '../../testUtilities';
 import { importFile } from './helpers';
 
-const REFRESH_DEBOUNCE_TIME = 50; // short debounce time so tests run more quickly
-
 const SURVEYS = {
   // Survey details match the import spreadsheet
   Test_Yearly: {
@@ -42,7 +40,8 @@ const SURVEYS = {
 export const testOutdatedStatusUpdate = () => {
   const app = new TestableApp();
   const { models } = app;
-  const surveyResponseOutdater = new SurveyResponseOutdater(models, REFRESH_DEBOUNCE_TIME);
+  const surveyResponseOutdater = new SurveyResponseOutdater(models);
+  surveyResponseOutdater.setDebounceTime(50); // short debounce time so tests run more quickly
 
   /**
    * Asserts that newly imported responses for a survey have the expected `outdated` statuses.
