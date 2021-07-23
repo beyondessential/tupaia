@@ -49,24 +49,31 @@ const StyledToolTip = withStyles(theme => ({
   },
 }))(Tooltip);
 
+const getContent = reference => {
+  const { text, name, link } = reference;
+  if (text) {
+    return (
+      <Typography variant="caption" style={styles.typography}>
+        <span>{text} </span>
+      </Typography>
+    );
+  }
+  return (
+    <Typography variant="caption" style={styles.typography}>
+      <span>Source: </span>
+      <a style={styles.link} href={link} target="_blank" rel="noopener noreferrer">
+        {name}
+      </a>
+    </Typography>
+  );
+};
+
 export const ReferenceTooltip = props => {
   const { reference, iconStyleOption } = props;
+  const content = getContent(reference);
 
   return (
-    <StyledToolTip
-      arrow
-      interactive
-      placement="top"
-      enterTouchDelay="50"
-      title={
-        <Typography variant="caption" style={styles.typography}>
-          <span>Source: </span>
-          <a style={styles.link} href={reference.link} target="_blank" rel="noopener noreferrer">
-            {reference.name}
-          </a>
-        </Typography>
-      }
-    >
+    <StyledToolTip arrow interactive placement="top" enterTouchDelay="50" title={content}>
       <IconButton
         style={
           iconStyleOption && styles.iconButton[iconStyleOption]
