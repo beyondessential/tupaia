@@ -10,6 +10,7 @@ export { handleWith, handleError } from './utils';
 export {
   ApiBuilder as MicroServiceApiBuilder,
   buildBasicBearerAuthMiddleware,
+  RequestContext as MicroServiceRequestContext,
 } from './microService';
 export {
   ApiBuilder as OrchestratorApiBuilder,
