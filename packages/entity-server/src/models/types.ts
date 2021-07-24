@@ -6,7 +6,7 @@
 import { DatabaseModel, DatabaseType } from '@tupaia/database';
 import { ObjectLikeKeys, Flatten } from '../types';
 
-type FilterComparators = '!=' | 'ilike';
+type FilterComparators = '!=' | 'ilike' | '=';
 
 type AdvancedFilterValue<T> = {
   comparator: FilterComparators;
@@ -42,7 +42,7 @@ export enum QueryConjunctions {
  * }
  */
 type ConjunctionCriteria<T> = {
-  [field in QueryConjunctions]?: NormalCriteria<T>;
+  [field in QueryConjunctions]?: FilterCriteria<T>;
 }
 
 type FilterCriteria<T> = NormalCriteria<T> & ConjunctionCriteria<T>;

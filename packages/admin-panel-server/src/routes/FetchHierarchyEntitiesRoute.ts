@@ -5,7 +5,9 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { Route } from '@tupaia/server-boilerplate';
+
+import { QueryParameters, Route } from '@tupaia/server-boilerplate';
+
 import { EntityConnection } from '../connections';
 
 export class FetchHierarchyEntitiesRoute extends Route {
@@ -20,8 +22,8 @@ export class FetchHierarchyEntitiesRoute extends Route {
   async buildResponse() {
     const { hierarchyName, entityCode } = this.req.params;
     const { fields, search } = this.req.query;
-    const queryParams = {
-      fields,
+    const queryParams: QueryParameters = {
+      fields: fields as string,
     };
     if (search) {
       queryParams.filter = `name=@${search}`;

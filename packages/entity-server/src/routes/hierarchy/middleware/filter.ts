@@ -53,13 +53,15 @@ const toJsonBKey = <T extends keyof NestedFilterQueryFields>(nestedField: T): Js
 
 // Inspired by Google Analytics filter: https://developers.google.com/analytics/devguides/reporting/core/v3/reference?hl=en#filters
 const operatorToSqlComparator = {
-  '==': null, // Exact match
-  '!=': '!=', // Does not match
-  '=@': 'ilike', // Contains sub string
+  '==': '=' as const, // Exact match
+  '!=': '!=' as const, // Does not match
+  '=@': 'ilike' as const, // Contains sub string
 };
-const filterOperators = Object.keys(operatorToSqlComparator);
+type Operator = keyof typeof operatorToSqlComparator;
 
-const formatComparisonValue = (value: string | string[], operator: string) => {
+const filterOperators = Object.keys(operatorToSqlComparator) as Operator[];
+
+const formatComparisonValue = (value: string | string[], operator: Operator) => {
   if (operator === '=@' && typeof value === 'string') {
     return `%${value}%`;
   }
@@ -67,7 +69,12 @@ const formatComparisonValue = (value: string | string[], operator: string) => {
   return value;
 };
 
-const convertValueToAdvancedCriteria = (operator: string, value: string | string[]) => {
+const convertValueToAdvancedCriteria = (operator: Operator, value: string | string[]) => {
+  // For equal operator, we do not need to specify comparison object.
+  if (operator === '==') {
+    return value;
+  }
+
   const comparator = operatorToSqlComparator[operator];
 
   return {
@@ -111,7 +118,12 @@ export const extractFilterFromQuery = (
   queryFilter?: string,
 ): EntityFilter => {
   if (!queryFilter) {
-    return { country_code: allowedCountries };
+    // default filter to only get entities in allowed countries.
+    return {
+      [QueryConjunctions.AND]: {
+        country_code: allowedCountries,
+      },
+    };
   }
 
   const filterClauses = queryFilter.split(CLAUSE_DELIMITER).map(toFilterClause);
