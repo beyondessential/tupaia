@@ -297,7 +297,7 @@
     "code": "Laos_Schools_Number_Of_Primary_Schools_Supported_Development_Partners",
     "project": "laos_schools",
     "orgUnit": "LA",
-    "dashboard": "Development Partners and Finance"
+    "dashboard": "Development Priorities & Finance"
   },
   {
     "code": "Laos_Schools_Number_Of_Students_Matrix",
@@ -399,7 +399,7 @@
     "code": "LESMIS_num_lower_secondary_classrooms",
     "project": "laos_schools",
     "orgUnit": "LA_Phouvong District",
-    "dashboard": "Student Outcomes",
+    "dashboard": "Schools",
     "startDate": "2021-01-01",
     "endDate": "2021-12-31"
   },
@@ -407,7 +407,7 @@
     "code": "LESMIS_num_lower_secondary_classrooms",
     "project": "laos_schools",
     "orgUnit": "LA_Attapue",
-    "dashboard": "Student Outcomes",
+    "dashboard": "Schools",
     "startDate": "2021-01-01",
     "endDate": "2021-12-31"
   },
@@ -415,7 +415,7 @@
     "code": "LESMIS_num_lower_secondary_classrooms",
     "project": "laos_schools",
     "orgUnit": "LA",
-    "dashboard": "Student Outcomes",
+    "dashboard": "Schools",
     "startDate": "2021-01-01",
     "endDate": "2021-12-31"
   },
@@ -549,12 +549,6 @@
     "endDate": "2021-12-31"
   },
   {
-    "code": "LESMIS_student_gender_stacked_gpi",
-    "project": "laos_schools",
-    "orgUnit": "LA",
-    "dashboard": "Student Enrolment"
-  },
-  {
     "code": "PG_FETP_graduates_by_sex",
     "project": "fetp",
     "orgUnit": "PG",
@@ -674,7 +668,7 @@
     "code": "SchDP_Partner_Assistance_Types",
     "project": "laos_schools",
     "orgUnit": "LA",
-    "dashboard": "Development Partners and Finance"
+    "dashboard": "Development Priorities & Finance"
   },
   {
     "code": "SCRF_RDT_Positive_Results",
