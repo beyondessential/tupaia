@@ -54,7 +54,7 @@ class RefreshDatabaseScript extends Script {
     this.execDbCommand('CREATE EXTENSION postgis', { db: dbName });
     this.execDbCommand(`ALTER USER ${dbUser} WITH SUPERUSER`);
     this.exec(`psql -U ${dbUser} -d ${dbName} -f "${dumpPath}"`);
-    this.execDbCommand(`ALTER USER ${dbUser} WITH NOSUPERUSER', { user: dbUser }`);
+    this.execDbCommand(`ALTER USER ${dbUser} WITH NOSUPERUSER`, { user: dbUser });
   }
 
   resolvePath = relativePath =>
