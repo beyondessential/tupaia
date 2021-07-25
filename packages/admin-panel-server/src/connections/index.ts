@@ -6,4 +6,3 @@
 export { ReportConnection } from './ReportConnection';
 export { EntityConnection } from './EntityConnection';
 export { MeditrakConnection } from './MeditrakConnection';
-export { SessionHandlingApiConnection } from './SessionHandlingApiConnection';

@@ -12,8 +12,6 @@ export class UserRoute extends Route {
 
   constructor(req: Request, res: Response, next: NextFunction) {
     super(req, res, next);
-    console.log('user route');
-
     this.meditrakConnection = new MeditrakConnection(req.session);
   }
 
