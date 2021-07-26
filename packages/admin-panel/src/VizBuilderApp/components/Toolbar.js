@@ -8,8 +8,7 @@ import styled from 'styled-components';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import { Button } from '@tupaia/ui-components';
-import { FlexStart, FlexEnd } from './Flexbox';
+import { Button, FlexStart, FlexEnd } from '@tupaia/ui-components';
 
 const Wrapper = styled.div`
   width: 100%;

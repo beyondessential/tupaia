@@ -7,9 +7,9 @@ import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
+import { FullPageLoader } from '@tupaia/ui-components';
 import { Tabs, Toolbar } from './components';
 import { useUser } from './api/queries';
-import { FullPageLoader } from './components/FullPageLoader';
 
 const Main = styled.main`
   display: flex;
