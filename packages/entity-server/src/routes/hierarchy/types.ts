@@ -17,10 +17,10 @@ export interface MultiEntityRequestParams {
   hierarchyName: string;
 }
 
-export type RequestBody = Record<string, unknown>;
+export type RequestBody = Record<string, never>;
 
 export type MultiEntityRequestBody = RequestBody & {
-  entities?: string[];
+  entities: string[] | undefined;
 };
 
 export interface EntityRequestQuery {
@@ -83,7 +83,7 @@ export interface SingleEntityRequest<
 
 export interface MultiEntityRequest<
   P = MultiEntityRequestParams,
-  ResBody = EntityResponse,
+  ResBody = EntityResponse[],
   ReqBody = MultiEntityRequestBody,
   ReqQuery = EntityRequestQuery
 > extends Request<P, ResBody, ReqBody, ReqQuery> {
