@@ -36,6 +36,4 @@ const composedEnhancers = compose(applyMiddleware(...middleware), ...enhancers);
 
 export const store = createStore(persistedRootReducer, initialState, composedEnhancers);
 
-api.injectReduxStore(store);
-
 export const persistor = persistStore(store);
