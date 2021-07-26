@@ -73,7 +73,7 @@ const CONFIG_3_4_REPORT = {
   frontEndConfig: {
     ...FRONT_END_CONFIG,
     name: 'Enrolment rate of 3-4 year old students in ECE',
-    chartConfig: { Current: { color: '#f44336' } }, // Remove target from legend
+    chartConfig: { Current: { color: '#f44336' } }, // Remove target from legend, no 2025 target for 3 - 4
   },
 };
 
