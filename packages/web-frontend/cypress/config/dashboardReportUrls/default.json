@@ -297,7 +297,7 @@
     "code": "Laos_Schools_Number_Of_Primary_Schools_Supported_Development_Partners",
     "project": "laos_schools",
     "orgUnit": "LA",
-    "dashboard": "Development Partners and Finance"
+    "dashboard": "Development Priorities & Finance"
   },
   {
     "code": "Laos_Schools_Number_Of_Students_Matrix",
@@ -324,23 +324,31 @@
     "dashboard": "WASH"
   },
   {
-    "code": "LESMIS_repetition_rate_primary_district",
+    "code": "LESMIS_age_of_grade1_entrance",
     "project": "laos_schools",
     "orgUnit": "LA_Phouvong District",
-    "dashboard": "Student Outcomes",
+    "dashboard": "Student Enrolment",
     "startDate": "2021-01-01",
     "endDate": "2021-12-31"
   },
   {
-    "code": "LESMIS_repetition_rate_lowerSecondary_district",
+    "code": "LESMIS_age_of_grade1_entrance",
     "project": "laos_schools",
-    "orgUnit": "LA_Phouvong District",
-    "dashboard": "Student Outcomes",
+    "orgUnit": "LA_Attapue",
+    "dashboard": "Student Enrolment",
     "startDate": "2021-01-01",
     "endDate": "2021-12-31"
   },
   {
-    "code": "LESMIS_repetition_rate_upperSecondary_district",
+    "code": "LESMIS_age_of_grade1_entrance",
+    "project": "laos_schools",
+    "orgUnit": "LA_sch_11705031",
+    "dashboard": "Students",
+    "startDate": "2021-01-01",
+    "endDate": "2021-12-31"
+  },
+  {
+    "code": "LESMIS_cohort_survival_rate_lowerSecondary_district",
     "project": "laos_schools",
     "orgUnit": "LA_Phouvong District",
     "dashboard": "Student Outcomes",
@@ -356,14 +364,6 @@
     "endDate": "2021-12-31"
   },
   {
-    "code": "LESMIS_cohort_survival_rate_lowerSecondary_district",
-    "project": "laos_schools",
-    "orgUnit": "LA_Phouvong District",
-    "dashboard": "Student Outcomes",
-    "startDate": "2021-01-01",
-    "endDate": "2021-12-31"
-  },
-  {
     "code": "LESMIS_cohort_survival_rate_upperSecondary_district",
     "project": "laos_schools",
     "orgUnit": "LA_Phouvong District",
@@ -372,50 +372,35 @@
     "endDate": "2021-12-31"
   },
   {
-    "code": "LESMIS_teachers_education_level_district",
-    "project": "laos_schools",
-    "orgUnit": "LA_Phouvong District",
-    "dashboard": "Staff",
-    "startDate": "2021-01-01",
-    "endDate": "2021-12-31"
-  },
-  {
-    "code": "LESMIS_teachers_education_level_district",
-    "project": "laos_schools",
-    "orgUnit": "LA_Attapue",
-    "dashboard": "Staff",
-    "startDate": "2021-01-01",
-    "endDate": "2021-12-31"
-  },
-  {
-    "code": "LESMIS_teachers_education_level_district",
+    "code": "LESMIS_complete_and_incomplete_schools",
     "project": "laos_schools",
     "orgUnit": "LA",
-    "dashboard": "Staff",
+    "dashboard": "Schools",
     "startDate": "2021-01-01",
     "endDate": "2021-12-31"
   },
   {
-    "code": "LESMIS_num_lower_secondary_classrooms",
-    "project": "laos_schools",
-    "orgUnit": "LA_Phouvong District",
-    "dashboard": "Student Outcomes",
-    "startDate": "2021-01-01",
-    "endDate": "2021-12-31"
-  },
-  {
-    "code": "LESMIS_num_lower_secondary_classrooms",
+    "code": "LESMIS_complete_and_incomplete_schools",
     "project": "laos_schools",
     "orgUnit": "LA_Attapue",
-    "dashboard": "Student Outcomes",
+    "dashboard": "Schools",
     "startDate": "2021-01-01",
     "endDate": "2021-12-31"
   },
   {
-    "code": "LESMIS_num_lower_secondary_classrooms",
+    "code": "LESMIS_complete_and_incomplete_schools",
+    "project": "laos_schools",
+    "orgUnit": "LA_Phouvong District",
+    "dashboard": "Schools",
+    "dashboardID": "LA_Schools",
+    "startDate": "2021-01-01",
+    "endDate": "2021-12-31"
+  },
+  {
+    "code": "LESMIS_ger_country",
     "project": "laos_schools",
     "orgUnit": "LA",
-    "dashboard": "Student Outcomes",
+    "dashboard": "Student Enrolment",
     "startDate": "2021-01-01",
     "endDate": "2021-12-31"
   },
@@ -436,7 +421,7 @@
     "endDate": "2021-12-31"
   },
   {
-    "code": "LESMIS_ger_country",
+    "code": "LESMIS_ner_country",
     "project": "laos_schools",
     "orgUnit": "LA",
     "dashboard": "Student Enrolment",
@@ -460,34 +445,50 @@
     "endDate": "2021-12-31"
   },
   {
-    "code": "LESMIS_ner_country",
+    "code": "LESMIS_num_lower_secondary_classrooms",
     "project": "laos_schools",
     "orgUnit": "LA",
-    "dashboard": "Student Enrolment",
+    "dashboard": "Schools",
     "startDate": "2021-01-01",
     "endDate": "2021-12-31"
   },
   {
-    "code": "LESMIS_student_gender_stacked_gpi",
-    "project": "laos_schools",
-    "orgUnit": "LA_Phouvong District",
-    "dashboard": "Student Enrolment",
-    "startDate": "2021-01-01",
-    "endDate": "2021-12-31"
-  },
-  {
-    "code": "LESMIS_student_gender_stacked_gpi",
+    "code": "LESMIS_num_lower_secondary_classrooms",
     "project": "laos_schools",
     "orgUnit": "LA_Attapue",
-    "dashboard": "Student Enrolment",
+    "dashboard": "Schools",
     "startDate": "2021-01-01",
     "endDate": "2021-12-31"
   },
   {
-    "code": "LESMIS_student_gender_stacked_gpi",
+    "code": "LESMIS_num_lower_secondary_classrooms",
     "project": "laos_schools",
-    "orgUnit": "LA_sch_11705031",
-    "dashboard": "Students",
+    "orgUnit": "LA_Phouvong District",
+    "dashboard": "Schools",
+    "startDate": "2021-01-01",
+    "endDate": "2021-12-31"
+  },
+  {
+    "code": "LESMIS_repetition_rate_lowerSecondary_district",
+    "project": "laos_schools",
+    "orgUnit": "LA_Phouvong District",
+    "dashboard": "Student Outcomes",
+    "startDate": "2021-01-01",
+    "endDate": "2021-12-31"
+  },
+  {
+    "code": "LESMIS_repetition_rate_primary_district",
+    "project": "laos_schools",
+    "orgUnit": "LA_Phouvong District",
+    "dashboard": "Student Outcomes",
+    "startDate": "2021-01-01",
+    "endDate": "2021-12-31"
+  },
+  {
+    "code": "LESMIS_repetition_rate_upperSecondary_district",
+    "project": "laos_schools",
+    "orgUnit": "LA_Phouvong District",
+    "dashboard": "Student Outcomes",
     "startDate": "2021-01-01",
     "endDate": "2021-12-31"
   },
@@ -500,7 +501,15 @@
     "endDate": "2021-12-31"
   },
   {
-    "code": "LESMIS_age_of_grade1_entrance",
+    "code": "LESMIS_student_gender_stacked_gpi",
+    "project": "laos_schools",
+    "orgUnit": "LA_Attapue",
+    "dashboard": "Student Enrolment",
+    "startDate": "2021-01-01",
+    "endDate": "2021-12-31"
+  },
+  {
+    "code": "LESMIS_student_gender_stacked_gpi",
     "project": "laos_schools",
     "orgUnit": "LA_Phouvong District",
     "dashboard": "Student Enrolment",
@@ -508,15 +517,7 @@
     "endDate": "2021-12-31"
   },
   {
-    "code": "LESMIS_age_of_grade1_entrance",
-    "project": "laos_schools",
-    "orgUnit": "LA_Attapue",
-    "dashboard": "Student%20Enrolment",
-    "startDate": "2021-01-01",
-    "endDate": "2021-12-31"
-  },
-  {
-    "code": "LESMIS_age_of_grade1_entrance",
+    "code": "LESMIS_student_gender_stacked_gpi",
     "project": "laos_schools",
     "orgUnit": "LA_sch_11705031",
     "dashboard": "Students",
@@ -524,35 +525,28 @@
     "endDate": "2021-12-31"
   },
   {
-    "code": "LESMIS_complete_and_incomplete_schools",
+    "code": "LESMIS_teachers_education_level_district",
     "project": "laos_schools",
-    "orgUnit": "LA_Phouvong District",
-    "dashboard": "Schools",
-    "dashboardID": "LA_Schools",
+    "orgUnit": "LA",
+    "dashboard": "Staff",
     "startDate": "2021-01-01",
     "endDate": "2021-12-31"
   },
   {
-    "code": "LESMIS_complete_and_incomplete_schools",
+    "code": "LESMIS_teachers_education_level_district",
     "project": "laos_schools",
     "orgUnit": "LA_Attapue",
-    "dashboard": "Schools",
+    "dashboard": "Staff",
     "startDate": "2021-01-01",
     "endDate": "2021-12-31"
   },
   {
-    "code": "LESMIS_complete_and_incomplete_schools",
+    "code": "LESMIS_teachers_education_level_district",
     "project": "laos_schools",
-    "orgUnit": "LA",
-    "dashboard": "Schools",
+    "orgUnit": "LA_Phouvong District",
+    "dashboard": "Staff",
     "startDate": "2021-01-01",
     "endDate": "2021-12-31"
-  },
-  {
-    "code": "LESMIS_student_gender_stacked_gpi",
-    "project": "laos_schools",
-    "orgUnit": "LA",
-    "dashboard": "Student Enrolment"
   },
   {
     "code": "PG_FETP_graduates_by_sex",
@@ -674,7 +668,7 @@
     "code": "SchDP_Partner_Assistance_Types",
     "project": "laos_schools",
     "orgUnit": "LA",
-    "dashboard": "Development Partners and Finance"
+    "dashboard": "Development Priorities & Finance"
   },
   {
     "code": "SCRF_RDT_Positive_Results",
