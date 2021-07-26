@@ -46,7 +46,7 @@ const getFieldsParam = (fields?: (keyof Entity)[]) => fields && fields.join(',')
 const getFilterParam = (filter?: EntityOptions['filter']) =>
   filter &&
   Object.entries(filter)
-    .map(([key, value]) => `${key}:${value}`)
+    .map(([key, value]) => `${key}==${value}`)
     .join(';');
 
 const getEntityParams = (options: EntityOptions) => {
