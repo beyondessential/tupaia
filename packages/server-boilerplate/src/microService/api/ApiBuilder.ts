@@ -67,25 +67,25 @@ export class ApiBuilder {
 
   use<T extends ExpressRequest<T> = Request>(
     path: string,
-    middleware: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+    ...middlewares: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
-    this.app.use(this.formatPath(path), middleware);
+    this.app.use(this.formatPath(path), ...middlewares);
     return this;
   }
 
   get<T extends ExpressRequest<T> = Request>(
     path: string,
-    handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+    ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
-    this.app.get(this.formatPath(path), handler);
+    this.app.get(this.formatPath(path), ...handlers);
     return this;
   }
 
   post<T extends ExpressRequest<T> = Request>(
     path: string,
-    handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+    ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
-    this.app.post(this.formatPath(path), handler);
+    this.app.post(this.formatPath(path), ...handlers);
     return this;
   }
 

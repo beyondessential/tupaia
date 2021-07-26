@@ -236,13 +236,15 @@ export default class extends DataAggregatingRouteHandler {
       return Array.from(otherLinkMeasureKeySet);
     };
 
-    // Config 'measureConfig' only works for report server builder
+    // Config 'measureConfig' only works for report-server
     const { measureConfig, ...mainMeasureOption } = measureOptions[0];
     if (measureConfig) {
       const { [ADD_TO_ALL_KEY]: configForAllKeys, ...restOfConfig } = measureConfig;
-      getOtherMeasureOptionKeys(mainMeasureOption.key).forEach(key => {
-        measureOptions.push({ ...configForAllKeys, key, name: key, ...restOfConfig[key] });
-      });
+      getOtherMeasureOptionKeys(mainMeasureOption.key)
+        .filter(key => !key.includes('_metadata'))
+        .forEach(key => {
+          measureOptions.push({ ...configForAllKeys, key, name: key, ...restOfConfig[key] });
+        });
       measureOptions[0] = mainMeasureOption;
     }
     return measureOptions;

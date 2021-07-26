@@ -5,6 +5,7 @@
 
 export { SingleEntityRequest, MultiEntityRequest } from './types';
 export { SingleEntityRoute } from './SingleEntityRoute';
+export { MultiEntityRoute } from './MultiEntityRoute';
 export { EntityDescendantsRoute, DescendantsRequest } from './EntityDescendantsRoute';
 export {
   MultiEntityDescendantsRoute,

@@ -11,7 +11,6 @@ import { Polygon } from 'react-leaflet';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { getSingleFormattedValue } from '../../utils';
 import { AreaTooltip } from './AreaTooltip';
 import { MAP_COLORS, BREWER_PALETTE } from '../../styles';
 import { setOrgUnit } from '../../actions';
@@ -61,29 +60,29 @@ class ConnectedPolygon extends Component {
     return false;
   }
 
-  getTooltip(name) {
+  getTooltip() {
     const {
       isChildArea,
+      area,
       hasMeasureData,
       orgUnitMeasureData,
       measureOptions,
       permanentLabels,
     } = this.props;
-    const hasMeasureValue = orgUnitMeasureData || orgUnitMeasureData === 0;
+    const hasMeasureValue = !!(orgUnitMeasureData || orgUnitMeasureData === 0);
 
     // don't render tooltips if we have a measure loaded
     // and don't have a value to display in the tooltip (ie: radius overlay)
     if (hasMeasureData && !hasMeasureValue) return null;
 
-    const text = hasMeasureValue
-      ? `${name}: ${getSingleFormattedValue(orgUnitMeasureData, measureOptions)}`
-      : name;
-
     return (
       <AreaTooltip
         permanent={permanentLabels && isChildArea && !hasMeasureValue}
         sticky={!permanentLabels}
-        text={text}
+        hasMeasureValue={hasMeasureValue}
+        measureOptions={measureOptions}
+        orgUnitMeasureData={orgUnitMeasureData}
+        orgUnitName={area.name}
       />
     );
   }
@@ -102,7 +101,7 @@ class ConnectedPolygon extends Component {
     if (isHidden) return null;
 
     const { organisationUnitCode } = area;
-    const tooltip = this.getTooltip(area.name);
+    const tooltip = this.getTooltip();
 
     if (!coordinates) return null;
 
@@ -166,6 +165,8 @@ ConnectedPolygon.propTypes = {
   orgUnitMeasureData: PropTypes.shape({
     value: PropTypes.any,
     originalValue: PropTypes.any,
+    metadata: PropTypes.any,
+    submissionDate: PropTypes.any,
   }),
 };
 

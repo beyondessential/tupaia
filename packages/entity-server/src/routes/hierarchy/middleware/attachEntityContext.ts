@@ -2,10 +2,9 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import { NextFunction, Response } from 'express';
+import { Request, NextFunction, Response } from 'express';
 import { PermissionsError } from '@tupaia/utils';
-import { EntityType } from '../../../models';
-import { SingleEntityRequest, MultiEntityRequest } from '../types';
+import { EntityType, EntityFilter } from '../../../models';
 import { extractFilterFromQuery } from './filter';
 
 const notNull = <T>(value: T): value is Exclude<T, null> => value !== null;
@@ -19,7 +18,7 @@ const userCanAccessEntity = (entity: EntityType, allowedCountries: string[]) =>
   (notNull(entity.country_code) && allowedCountries.includes(entity.country_code));
 
 const validateEntitiesAndBuildContext = async (
-  req: SingleEntityRequest | MultiEntityRequest,
+  req: Request<any, any, any, { filter?: string }>,
   entityCodes: string[],
 ) => {
   const entities = await req.models.entity.find({ code: entityCodes });
@@ -51,7 +50,9 @@ const validateEntitiesAndBuildContext = async (
 };
 
 export const attachSingleEntityContext = async (
-  req: SingleEntityRequest,
+  req: Request<{ entityCode: string }, any, any, { filter?: string }> & {
+    ctx: { entities: EntityType[]; allowedCountries: string[]; filter: EntityFilter };
+  },
   res: Response,
   next: NextFunction,
 ) => {
@@ -71,7 +72,9 @@ export const attachSingleEntityContext = async (
 };
 
 export const attachMultiEntityContext = async (
-  req: MultiEntityRequest,
+  req: Request<any, any, { entities: string[] | undefined }, { filter?: string }> & {
+    ctx: { entities: EntityType[]; allowedCountries: string[]; filter: EntityFilter };
+  },
   res: Response,
   next: NextFunction,
 ) => {
