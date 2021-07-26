@@ -16,29 +16,32 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-const duplicateCountryEntityIds = [
-  "'60da867061f76a20cf01e23f'", // duplicate Fiji
-  "'60eb91df61f76a7f770790a3'", // duplicate Papua New Guinea
-  "'60949c6061f76a622c020231'", // duplicate Samoa
-];
+const duplicateEntityIdByCountry = {
+  FJ: "'60da867061f76a20cf01e23f'", // duplicate Fiji
+  PG: "'60eb91df61f76a7f770790a3'", // duplicate Papua New Guinea
+  WS: "'60949c6061f76a622c020231'", // duplicate Samoa
+};
 
-const realCountryEntityIds = [
-  "'5d51f501f013d6320f3cf633'", // real Fiji
-  "'5d3f8844f327a531bfd8ad77'", // real Papua New Guinea
-  "'5df1b88c61f76a485cd1ca09'", // real Samoa
-];
+const realEntityIdByCountry = {
+  FJ: "'5d51f501f013d6320f3cf633'", // real Fiji
+  PG: "'5d3f8844f327a531bfd8ad77'", // real Papua New Guinea
+  WS: "'5df1b88c61f76a485cd1ca09'", // real Samoa
+};
 
-const findMatchingCountries = (duplicateId, realId) => {
+const duplicateCountryEntityIds = Object.values(duplicateEntityIdByCountry);
+const realCountryEntityIds = Object.values(realEntityIdByCountry);
+
+const checkForCountryMatch = (duplicateId, realId) => {
   // checks if both are Fiji entities
-  if (duplicateId === "'60da867061f76a20cf01e23f'" && realId === "'5d51f501f013d6320f3cf633'") {
+  if (duplicateId === duplicateEntityIdByCountry.FJ && realId === realEntityIdByCountry.FJ) {
     return true;
   }
   // checks if both are Papua New Guinea entities
-  if (duplicateId === "'60eb91df61f76a7f770790a3'" && realId === "'5d3f8844f327a531bfd8ad77'") {
+  if (duplicateId === duplicateEntityIdByCountry.PG && realId === realEntityIdByCountry.PG) {
     return true;
   }
   // checks if both are Samoa entities
-  if (duplicateId === "'60949c6061f76a622c020231'" && realId === "'5df1b88c61f76a485cd1ca09'") {
+  if (duplicateId === duplicateEntityIdByCountry.WS && realId === realEntityIdByCountry.WS) {
     return true;
   }
   return false;
@@ -49,7 +52,7 @@ const findDeletes = (duplicateCountryUserPermissions, realCountryUserPermissions
     realCountryUserPermissions.find(realCountryUserPermission => {
       if (
         duplicateCountryUserPermission.user_id === realCountryUserPermission.user_id &&
-        findMatchingCountries(
+        checkForCountryMatch(
           `'${duplicateCountryUserPermission.entity_id}'`,
           `'${realCountryUserPermission.entity_id}'`,
         ) &&
@@ -86,50 +89,19 @@ exports.up = async function (db) {
     WHERE id IN (${arrayToDbString(permissionIdsToDelete)});
   `);
 
-  // updates remaining Fiji permissions
-  await db.runSql(`
-  UPDATE user_entity_permission
-    SET entity_id = '5d51f501f013d6320f3cf633'
-      WHERE entity_id = '60da867061f76a20cf01e23f';
-  `);
+  // updates remaining entity permissions and access requests so duplicate entity can be deleted
+  for (const countryCode of Object.keys(realEntityIdByCountry)) {
+    await db.runSql(`
+      UPDATE user_entity_permission
+        SET entity_id = ${realEntityIdByCountry[countryCode]}
+          WHERE entity_id = ${duplicateEntityIdByCountry[countryCode]};
 
-  // updates remaining Papua New Guinea permissions
-  await db.runSql(`
-  UPDATE user_entity_permission
-    SET entity_id = '5d3f8844f327a531bfd8ad77'
-      WHERE entity_id = '60eb91df61f76a7f770790a3';
-  `);
-
-  // updates remaining Samoa permissions
-  await db.runSql(`
-  UPDATE user_entity_permission
-    SET entity_id = '5df1b88c61f76a485cd1ca09'
-      WHERE entity_id = '60949c6061f76a622c020231';
-  `);
-
-  // updates access_requests for Fiji so the duplicate entity can be deleted
-  await db.runSql(`
-  UPDATE access_request
-    SET entity_id = '5d51f501f013d6320f3cf633',
-    note = concat(note, ' - this request was modified by DeleteDuplicateCountriesFromEntityTable')
-      WHERE entity_id = '60da867061f76a20cf01e23f';
-  `);
-
-  // updates access_requests for Papua New Guinea so the duplicate entity can be deleted
-  await db.runSql(`
-  UPDATE access_request
-    SET entity_id = '5d3f8844f327a531bfd8ad77',
-    note = concat(note, ' - this request was modified by DeleteDuplicateCountriesFromEntityTable')
-      WHERE entity_id = '60eb91df61f76a7f770790a3';
-  `);
-
-  // updates access_requests for Samoa so the duplicate entity can be deleted
-  await db.runSql(`
-  UPDATE access_request
-    SET entity_id = '5df1b88c61f76a485cd1ca09',
-    note = concat(note, ' - this request was modified by DeleteDuplicateCountriesFromEntityTable')
-      WHERE entity_id = '60949c6061f76a622c020231';
-  `);
+      UPDATE access_request
+        SET entity_id = ${realEntityIdByCountry[countryCode]},
+        note = concat(note, ' - this request was modified by DeleteDuplicateCountriesFromEntityTable')
+          WHERE entity_id = ${duplicateEntityIdByCountry[countryCode]};
+      `);
+  }
 
   // finally delete the duplicate entities
   await db.runSql(`
