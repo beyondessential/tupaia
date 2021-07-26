@@ -4,4 +4,5 @@
  *
  */
 
+export * from './UserRoute';
 export { FetchHierarchyEntitiesRoute } from './FetchHierarchyEntitiesRoute';
