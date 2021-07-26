@@ -6,7 +6,6 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { Express } from 'express';
 import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
-
 import { TupaiaDatabase } from '@tupaia/database';
 import { OrchestratorApiBuilder, attachSession, handleWith } from '@tupaia/server-boilerplate';
 
@@ -14,6 +13,7 @@ import { AdminPanelSessionModel } from '../models';
 import { hasTupaiaAdminPanelAccess } from '../utils';
 import { attachAuthorizationHeader } from '../middleware';
 import {
+  UserRoute,
   FetchHierarchyEntitiesRoute,
   FetchReportPreviewData,
   SaveDashboardVisualisation,
@@ -52,6 +52,7 @@ export function createApp() {
   const app = new OrchestratorApiBuilder(new TupaiaDatabase())
     .useSessionModel(AdminPanelSessionModel)
     .verifyLogin(hasTupaiaAdminPanelAccess)
+    .get('/v1/user', handleWith(UserRoute))
     .get('/v1/hierarchy/:hierarchyName/:entityCode', handleWith(FetchHierarchyEntitiesRoute))
     .post('/v1/fetchReportPreviewData', handleWith(FetchReportPreviewData))
     .post('/v1/saveDashboardVisualisation', handleWith(SaveDashboardVisualisation))
