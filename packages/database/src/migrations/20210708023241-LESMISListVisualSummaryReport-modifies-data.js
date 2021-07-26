@@ -251,9 +251,23 @@ const REPORT_CONFIG = {
 const FRONT_END_CONFIG = {
   name: 'ESSDP List Summary',
   type: 'list',
-  valueType: 'trafficLight',
+  valueType: 'color',
+  listConfig: {
+    Green: {
+      color: '#4caf50',
+      value: 1,
+    },
+    Yellow: {
+      color: '#ffeb3b',
+      value: 0,
+    },
+    Red: {
+      color: '#f44336',
+      value: -1,
+    },
+  },
   drillDown: {
-    entryCodeMap: {
+    itemCodeByEntry: {
       ECETarget0_2: 'LESMIS_enrolment_ece_0_2_target',
       ECETarget3_4: 'LESMIS_enrolment_ece_3_4_target',
       ECETarget5: 'LESMIS_enrolment_ece_5_target',
