@@ -253,17 +253,17 @@ const FRONT_END_CONFIG = {
   type: 'list',
   valueType: 'color',
   listConfig: {
-    Green: {
+    1: {
+      label: 'Green',
       color: '#4caf50',
-      value: 1,
     },
-    Yellow: {
+    0: {
+      label: 'Yellow',
       color: '#ffeb3b',
-      value: 0,
     },
-    Red: {
+    '-1': {
+      label: 'Red',
       color: '#f44336',
-      value: -1,
     },
   },
   drillDown: {
