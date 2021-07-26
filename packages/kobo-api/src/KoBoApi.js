@@ -22,13 +22,7 @@ export class KoBoApi {
       query: JSON.stringify(mongoQuery),
     });
 
-    return response.results.map(({ _id: event, _submission_time: eventDate, ...restOfFields }) => ({
-      event,
-      eventDate,
-      orgUnit: 'LA', // TODO: Lookup orgUnit from entityQuestion
-      orgUnitName: 'Laos',
-      dataValues: { ...restOfFields }, // TODO: Return specific pieces of data
-    }));
+    return response?.results;
   }
 
   async fetchFromKoBo(endpoint, params) {

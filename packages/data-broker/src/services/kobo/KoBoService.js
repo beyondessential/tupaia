@@ -4,12 +4,14 @@
  */
 
 import { Service } from '../Service';
+import { KoBoTranslator } from './KoBoTranslator';
 
 export class KoBoService extends Service {
   constructor(models, api) {
     super(models);
 
     this.api = api;
+    this.translator = new KoBoTranslator(this.models);
   }
 
   async push() {
@@ -29,9 +31,11 @@ export class KoBoService extends Service {
 
   async pullEvents(dataSources, options) {
     const koboSurveyCodes = dataSources.map(({ config }) => config.koboSurveyCode);
+    const koboEntityQuestion = dataSources.map(({ config }) => config.entityQuestionCode);
 
     // TODO: Throw error on entity filter
-    return this.api.fetchKoBoSurveys(koboSurveyCodes, options);
+    const koboResults = await this.api.fetchKoBoSurveys(koboSurveyCodes, options);
+    return this.translator.translateKoBoResults(koboResults, koboEntityQuestion[0]);
   }
 
   async pullMetadata() {
