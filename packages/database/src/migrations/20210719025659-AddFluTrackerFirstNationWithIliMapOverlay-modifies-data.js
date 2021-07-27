@@ -18,6 +18,8 @@ exports.setup = function (options, seedLink) {
 
 const REPORT_CODE = 'AU_FLUTRACKING_Percentage_First_Nations_ILI';
 
+const PERMISSION_GROUP = 'Donor';
+
 const REPORT = {
   id: generateId(),
   code: REPORT_CODE,
@@ -28,13 +30,13 @@ const REPORT = {
         {
           type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
           config: {
-            dataSourceEntityType: 'sub_district',
+            dataSourceEntityType: 'postcode',
             aggregationEntityType: 'district',
           },
         },
         'MOST_RECENT',
       ],
-      dataElements: ['FWV_LGA_004a', 'FWV_LGA_003a'],
+      dataElements: ['FWV_PC_004a', 'FWV_PC_003a'],
     },
     transform: [
       'keyValueByDataElementName',
@@ -46,9 +48,9 @@ const REPORT = {
       {
         transform: 'select',
         "'organisationUnitCode'": '$row.organisationUnit',
-        "'value'": 'divide($row.FWV_LGA_004a, $row.FWV_LGA_003a)',
-        "'Participants'": '$row.FWV_LGA_003a',
-        "'First nation participants with influenza like illness (ILI)'": '$row.FWV_LGA_004a',
+        "'value'": 'divide($row.FWV_PC_004a, $row.FWV_PC_003a)',
+        "'Participants'": '$row.FWV_PC_003a',
+        "'First nation participants with influenza like illness (ILI)'": '$row.FWV_PC_004a',
       },
     ],
   },
@@ -57,7 +59,7 @@ const REPORT = {
 const MAP_OVERLAY = {
   id: REPORT_CODE,
   name: '% of First Nation participants with influenza like illness (ILI)',
-  userGroup: 'Public',
+  userGroup: PERMISSION_GROUP,
   dataElementCode: 'value',
   isDataRegional: true,
   measureBuilder: 'useReportServer',
@@ -86,6 +88,7 @@ const MAP_OVERLAY = {
         hideFromLegend: true,
       },
     },
+    periodGranularity: 'one_week_at_a_time',
   },
   countryCodes: '{"AU"}',
   projectCodes: '{covidau,explore}',
@@ -117,7 +120,7 @@ const permissionGroupNameToId = async (db, name) => {
 };
 
 exports.up = async function (db) {
-  const permissionGroupId = await permissionGroupNameToId(db, 'STRIVE User');
+  const permissionGroupId = await permissionGroupNameToId(db, PERMISSION_GROUP);
   await insertObject(db, 'report', { ...REPORT, permission_group_id: permissionGroupId });
   await insertObject(db, 'mapOverlay', MAP_OVERLAY);
   const mapOverlayGroupId = await getMapOverlayGroupId(db, MAP_OVERLAY_GROUP_CODE);
