@@ -11,6 +11,7 @@ export class KoBoTranslator {
   }
 
   async fetchEntityInfoFromKoBoAnswer(koboEntityCode) {
+    // TODO: Maybe swap this with a pure `LA_sch_${koboEntityCode}`
     const entityMapping = await this.models.dataServiceEntity.findOne({
       'config->>koboId': koboEntityCode,
     });
@@ -28,8 +29,6 @@ export class KoBoTranslator {
     for (const [key, value] of Object.entries(dataValues)) {
       if (dataSourceByKoBoCode[key]) {
         translatedValues[dataSourceByKoBoCode[key].config.internalQuestionCode] = value;
-      } else {
-        translatedValues[key] = value; // Should we keep these or drop them?
       }
     }
     return translatedValues;
@@ -51,12 +50,12 @@ export class KoBoTranslator {
       eventDate,
       orgUnit,
       orgUnitName,
-      dataValues,
+      dataValues: { dataValues },
     };
   }
 
   async translateKoBoResults(results, entityQuestion) {
-    // TODO: Swap this to fetch all at once
+    // TODO: Should maybe swap this to fetch all at once
     return Promise.all(
       results.map(result => this.translateSingleKoBoResult(result, entityQuestion)),
     );
