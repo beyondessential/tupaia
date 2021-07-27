@@ -11,11 +11,7 @@ export class KoBoTranslator {
   }
 
   async fetchEntityInfoFromKoBoAnswer(koboEntityCode) {
-    // TODO: Maybe swap this with a pure `LA_sch_${koboEntityCode}`
-    const entityMapping = await this.models.dataServiceEntity.findOne({
-      'config->>koboId': koboEntityCode,
-    });
-    const entity = await this.models.entity.findOne({ code: entityMapping.entity_code });
+    const entity = await this.models.entity.findOne({ code: `LA_sch_${koboEntityCode}` });
     return { orgUnit: entity.code, orgUnitName: entity.name };
   }
 
