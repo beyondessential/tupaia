@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject, generateId, codeToId } from '../utilities';
+import { insertObject, generateId, codeToId, deleteObject } from '../utilities';
 
 var dbm;
 var type;
@@ -17,6 +17,7 @@ exports.setup = function (options, seedLink) {
 };
 
 const reportCode = 'AU_FLUTRACKING_First_Nation_With_ILI';
+const dataElementCode = 'FluTracker_Percent_First_Nations_ILI';
 
 const permissionGroupNameToId = async (db, name) => {
   const record = await db.runSql(`SELECT id FROM permission_group WHERE name = '${name}'`);
@@ -32,7 +33,7 @@ exports.up = async function (db) {
     config: {
       fetch: {
         aggregations: ['RAW'],
-        dataElements: ['FluTracker_LGA_Percent_First_Nations_ILI'],
+        dataElements: [dataElementCode],
       },
       transform: [
         'convertPeriodToWeek',
@@ -58,7 +59,7 @@ exports.up = async function (db) {
 
   await insertObject(db, 'dashboard_item', {
     id: dashboardItemId,
-    code: 'AU_FLUTRACKING_First_Nation_With_ILI',
+    code: reportCode,
     config: {
       name: 'Influenza-Like Illness (ILI) activity among First Nation participants',
       type: 'chart',
@@ -84,6 +85,10 @@ exports.up = async function (db) {
     permission_groups: '{Public}',
     sort_order: 11,
   });
+
+  const previousIndicator = 'FluTracker_LGA_Percent_First_Nations_ILI';
+  await deleteObject(db, 'indicator', { code: previousIndicator });
+  await deleteObject(db, 'data_source', { code: previousIndicator });
 };
 
 exports.down = async function (db) {
