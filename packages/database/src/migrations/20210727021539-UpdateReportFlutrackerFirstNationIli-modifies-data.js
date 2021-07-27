@@ -18,7 +18,7 @@ exports.setup = function (options, seedLink) {
 
 const INDICATOR = {
   id: generateId(),
-  code: 'FluTracker_Postcode_Percent_First_Nations_ILI',
+  code: 'FluTracker_Percent_First_Nations_ILI',
   builder: 'analyticArithmetic',
   config: {
     formula:
