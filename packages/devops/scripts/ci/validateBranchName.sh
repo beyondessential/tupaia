@@ -60,7 +60,6 @@ function validate_name_chars() {
 }
 
 branch_name=$(get_branch_name)
-check_name_is_not_reserved $branch_name
 validate_name_ending $branch_name
 validate_name_length $branch_name
 validate_name_chars $branch_name
