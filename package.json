@@ -21,7 +21,7 @@
     "build-admin-panel": "yarn workspace @tupaia/admin-panel build",
     "build-internal-dependencies": "./scripts/bash/buildInternalDependencies.sh",
     "build-web-frontend": "yarn workspace @tupaia/web-frontend build",
-    "dump-database": "yarn workspace @tupaia/database dump-database",
+    "dump-database": "yarn workspace @tupaia/database dump-database --target ../../",
     "migrate": "yarn workspace @tupaia/database migrate",
     "migrate-create": "yarn workspace @tupaia/database migrate-create",
     "migrate-down": "yarn workspace @tupaia/database migrate-down",
