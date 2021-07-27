@@ -122,7 +122,7 @@ const groupResponsesForSurveyByDimensionCombo = (surveyResponses, survey) =>
  * This method can be used to filter out changed records that are not worth
  * considering, without having to look into the DB for more information
  */
-const pushSurveyResponseChanges = changeDetails => {
+const translateSurveyResponseChanges = changeDetails => {
   const { type, new_record: newRecord, old_record: oldRecord } = changeDetails;
 
   switch (type) {
@@ -166,8 +166,8 @@ export class SurveyResponseOutdater extends ChangeHandler {
   constructor(models) {
     super(models);
 
-    this.changePushers = {
-      surveyResponse: pushSurveyResponseChanges,
+    this.changeTranslators = {
+      surveyResponse: translateSurveyResponseChanges,
     };
     this.changeHandlers = {
       surveyResponse: this.outdateSurveyResponses,
