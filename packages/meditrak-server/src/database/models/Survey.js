@@ -68,7 +68,7 @@ const onChangeUpdateDataGroup = async (
       const { code, data_source_id: dataSourceId } = newRecord;
       await models.dataSource.updateById(dataSourceId, { code });
 
-      if (newRecord.period_granularity !== oldRecord.period_granularity) {
+      if (oldRecord && newRecord.period_granularity !== oldRecord.period_granularity) {
         // the `outdated` status of survey responses must be re-calculated, since it depends on
         // the period granularity of the survey they belong to
         // no need to await for the operation, just get it going
