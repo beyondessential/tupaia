@@ -54,7 +54,7 @@ exports.up = async function (db) {
         },
       ],
     },
-    permission_group_id: await permissionGroupNameToId(db, 'Public'),
+    permission_group_id: await permissionGroupNameToId(db, 'Donor'),
   });
 
   await insertObject(db, 'dashboard_item', {
@@ -82,7 +82,7 @@ exports.up = async function (db) {
     child_id: dashboardItemId,
     entity_types: '{country}',
     project_codes: '{covidau}',
-    permission_groups: '{Public}',
+    permission_groups: '{Donor}',
     sort_order: 11,
   });
 
