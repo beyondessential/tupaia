@@ -44,7 +44,7 @@ const SURVEYS = {
 export const testOutdatedStatusUpdate = app => {
   const { models } = app;
   const responseOutdater = new SurveyResponseOutdater(models);
-  responseOutdater.setDebounceTime(50);
+  responseOutdater.setDebounceTime(50); // short debounce time so tests run more quickly
 
   const datetime = date => `${date}T12:00:00`;
 
