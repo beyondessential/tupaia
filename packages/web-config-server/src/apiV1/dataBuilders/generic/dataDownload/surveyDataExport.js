@@ -30,7 +30,7 @@ class SurveyDataExportBuilder extends DataBuilder {
         name,
         value: codes || code,
       })),
-      downloadUrl: buildExportUrl(this.req, 'surveyDataDownload', {
+      downloadUrl: buildExportUrl('surveyDataDownload', {
         ...this.query,
       }),
     };

@@ -49,7 +49,10 @@ const parseUrl = url => {
 
   const [path, queryParams] = url.split('?');
   const searchParams = new URLSearchParams(queryParams);
-  const [project, orgUnit] = path.split('/').filter(x => x !== '');
+  const [project, orgUnit] = path
+    .split('/')
+    .filter(x => x !== '')
+    .map(decodeURIComponent);
 
   return {
     id: searchParams.get('overlay'),

@@ -4,6 +4,7 @@ import datetime
 import re
 import asyncio
 import functools
+from utilities import *
 
 ec2 = boto3.resource('ec2')
 ec = boto3.client('ec2')
@@ -30,23 +31,6 @@ def get_latest_snapshot_id(account_ids, restore_code):
     snapshot_id = sorted(snapshot_response['Snapshots'], key=lambda k: k['StartTime'], reverse=True)[0]['SnapshotId']
     print('Found snapshot with id ' + snapshot_id)
     return snapshot_id
-
-def get_tag(instance, tag_name):
-    try:
-        tag_value = [
-            t.get('Value') for t in instance['Tags']
-            if t['Key'] == tag_name][0]
-    except IndexError:
-        tag_value = ''
-    return tag_value
-
-def get_instances(filters):
-    reservations = ec.describe_instances(
-        Filters=filters
-    ).get(
-        'Reservations', []
-    )
-    return reservations[0]['Instances']
 
 
 async def restore_instance(account_ids, instance):
@@ -98,29 +82,15 @@ async def restore_instance(account_ids, instance):
     await wait_for_volume(new_volume_id, 'in_use')
     print('Attached restored volume to instance')
 
+    # Ensure EBS volumes are deleted on termination of instance
+    ec.modify_instance_attribute(InstanceId=instance['InstanceId'], BlockDeviceMappings=[{'DeviceName': dev_to_attach['DeviceName'], 'Ebs': { 'VolumeId': new_volume_id, 'DeleteOnTermination': True }}])
+
     # Start instance with new volume
     instance_object.start()
     print('Restarting instance')
     await wait_for_instance(instance_object.id, 'running')
     print('Instance successfully restored')
 
-def build_record_set_change(domain, subdomain, stage, ip_address):
-    if (subdomain == ''):
-        url = stage + '.' + domain + '.'
-    else:
-        url = stage + '-' + subdomain + '.' + domain + '.'
-
-    return {
-        'Action': 'UPSERT',
-        'ResourceRecordSet': {
-            'Name': url,
-            'Type': 'A',
-            'TTL': 300,
-            'ResourceRecords': [
-                { 'Value': ip_address }
-            ]
-        }
-    }
 
 def create_instance(account_ids, restore_code, stage, instance_type):
     print('Creating new ' + instance_type + ' instance for branch ' + stage + ' of ' + restore_code)
@@ -184,10 +154,22 @@ def create_instance(account_ids, restore_code, stage, instance_type):
     ec.associate_address(AllocationId=elastic_ip['AllocationId'],InstanceId=new_instance_object['InstanceId'])
     public_ip_address = elastic_ip['PublicIp']
 
-    # Set up subdomains on hosted zone and point them at this instance's ip
+    # Fetch *.tupaia.org certificate
+    ssl_certificate = get_cert('TupaiaWildcard')
+
+    # Create a gateway for this instance
+    print('Creating gateway')
+    gateway_elb = create_gateway(
+        tupaia_instance_name=stage,
+        tupaia_instance_id=new_instance.id,
+        ssl_certificate_arn=ssl_certificate['CertificateArn']
+    )
+    print('Created gateway')
+
+    # Set up subdomains on hosted zone and point them at the gateway
     subdomains = subdomains_string.split(',')
-    print('Creating subdomains pointing to {}'.format(public_ip_address))
-    record_set_changes = [build_record_set_change(domain, subdomain, stage, public_ip_address) for subdomain in subdomains]
+    print('Creating subdomains forwarding to gateway')
+    record_set_changes = [build_record_set_change(domain, subdomain, stage, gateway_elb, public_ip_address) for subdomain in subdomains]
     print('Generated {} record set changes'.format(len(record_set_changes)))
     hosted_zone_id = route53.list_hosted_zones_by_name(DNSName=domain)['HostedZones'][0]['Id']
     route53.change_resource_record_sets(
@@ -200,6 +182,40 @@ def create_instance(account_ids, restore_code, stage, instance_type):
     print('Submitted changes to hosted zone')
 
     return new_instance_object
+
+
+def create_gateway(tupaia_instance_name, tupaia_instance_id, ssl_certificate_arn):
+    # 1. Create ELB
+    prod_gateway_elb = get_gateway_elb('production')
+    new_gateway_elb = create_gateway_elb(
+        tupaia_instance_name=tupaia_instance_name,
+        tupaia_instance_id=tupaia_instance_id,
+        config=prod_gateway_elb,
+    )
+    new_gateway_elb_arn = new_gateway_elb['LoadBalancerArn']
+
+    # 2. Create Target Group
+    prod_gateway_target_group = get_gateway_target_group('production')
+    new_gateway_target_group_arn = create_gateway_target_group(
+        tupaia_instance_name=tupaia_instance_name,
+        tupaia_instance_id=tupaia_instance_id,
+        config=prod_gateway_target_group,
+    )
+
+    # 3. Link target group <-> instance
+    register_gateway_target(
+        target_group_arn=new_gateway_target_group_arn,
+        tupaia_instance_id=tupaia_instance_id
+    )
+
+    # 4. Link ELB <-> target group
+    create_gateway_listeners(
+        elb_arn=new_gateway_elb_arn,
+        target_group_arn=new_gateway_target_group_arn,
+        certificate_arn=ssl_certificate_arn
+    )
+
+    return new_gateway_elb
 
 
 def lambda_handler(event, context):

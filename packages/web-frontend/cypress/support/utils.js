@@ -32,10 +32,7 @@ const stripHtmlAttributes = (html, attrs) => {
  */
 export const serializeReactToHTML = jQueryEl => {
   const html = jQueryEl[0].outerHTML;
-  const sanitizedHtml = stripHtmlAttributes(html, HTML_ATTRS_TO_STRIP_FROM_SNAPSHOTS).replace(
-    /(&amp;|)cacheBreaker=[0-9a-z]+/g,
-    '',
-  );
+  const sanitizedHtml = stripHtmlAttributes(html, HTML_ATTRS_TO_STRIP_FROM_SNAPSHOTS);
   const options = {
     wrap_line_length: 80,
     indent_inner_html: true,

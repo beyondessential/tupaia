@@ -23,10 +23,14 @@ import { ProjectCard } from './ProjectCard';
 const EXPLORE_CODE = 'explore';
 
 const Container = styled.div`
-  margin: 24px 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
+  margin: 24px 0;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const ExploreButton = styled(Button)`
