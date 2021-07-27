@@ -31,18 +31,3 @@ const app = createApp(database, models);
 const port = process.env.PORT || 8030;
 http.createServer(app).listen(port);
 winston.info(`Running on port ${port}`);
-
-/**
- * Notify PM2 that we are ready
- * */
-if (process.send) {
-  (async () => {
-    try {
-      await database.waitForChangeChannel();
-      winston.info('Successfully connected to pubsub service');
-      process.send('ready');
-    } catch (error) {
-      winston.error(error.message);
-    }
-  })();
-}

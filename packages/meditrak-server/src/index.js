@@ -44,20 +44,6 @@ const analyticsRefresher = new AnalyticsRefresher(database, models);
 analyticsRefresher.listenForChanges();
 
 /**
- * Set up actual app with routes etc.
- */
-const app = createApp(database, models);
-
-/**
- * Start the server
- */
-const port = 8090;
-http.createServer(app).listen(port);
-winston.info(`Running on port ${port}`);
-const aggregationDescription = process.env.AGGREGATION_URL_PREFIX || 'production';
-winston.info(`Connected to ${aggregationDescription} aggregation`);
-
-/**
  * Regularly sync data to the aggregation servers
  */
 startSyncWithDhis(models);
@@ -72,17 +58,25 @@ startSyncWithMs1(models);
  */
 startFeedScraper(models);
 
-/**
- * Notify PM2 that we are ready
- */
-if (process.send) {
-  (async () => {
-    try {
-      await database.waitForChangeChannel();
-      winston.info('Successfully connected to pubsub service');
-      process.send('ready');
-    } catch (error) {
-      winston.error(error.message);
-    }
-  })();
-}
+(async () => {
+  try {
+    await database.waitForChangeChannel();
+    winston.info('Successfully connected to pubsub service');
+
+    /**
+     * Set up actual app with routes etc.
+     */
+    const app = createApp(database, models);
+
+    /**
+     * Start the server
+     */
+    const port = 8090;
+    http.createServer(app).listen(port);
+    winston.info(`Running on port ${port}`);
+    const aggregationDescription = process.env.AGGREGATION_URL_PREFIX || 'production';
+    winston.info(`Connected to ${aggregationDescription} aggregation`);
+  } catch (error) {
+    winston.error(error.message);
+  }
+})();

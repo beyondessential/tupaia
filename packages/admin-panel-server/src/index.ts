@@ -22,10 +22,3 @@ const app = createApp();
 const port = process.env.PORT || 8070;
 http.createServer(app).listen(port);
 winston.info(`Running on port ${port}`);
-
-/**
- * Notify PM2 that we are ready
- * */
-if (process.send) {
-  process.send('ready');
-}

@@ -42,7 +42,7 @@ for PACKAGE in ${PACKAGES[@]}; do
         # It's a server, start the pm2 process
         echo "Starting ${PACKAGE}"
         yarn build
-        pm2 start --name $PACKAGE 'SKIP_PREBUILD=true yarn start' --wait-ready --listen-timeout 15000 --time
+        pm2 start --name $PACKAGE 'SKIP_PREBUILD=true yarn start' --listen-timeout 15000 --time
     else
         # It's a static package, build it
         echo "Building ${PACKAGE}"

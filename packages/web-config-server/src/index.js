@@ -14,10 +14,6 @@ async function start() {
     winston.info('Server started', { port: app.server.address().port });
     const aggregationDescription = process.env.AGGREGATION_URL_PREFIX || 'production';
     winston.info(`Connected to ${aggregationDescription} aggregation`);
-
-    if (process.send) {
-      process.send('ready'); // Notify PM2 that we are ready
-    }
   }
 }
 
