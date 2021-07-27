@@ -53,6 +53,7 @@ export const TYPES = {
   SURVEY_SCREEN_COMPONENT: 'survey_screen_component',
   SURVEY_SCREEN: 'survey_screen',
   SURVEY: 'survey',
+  SYNC_CURSOR: 'sync_cursor',
   USER_ACCOUNT: 'user_account',
   USER_ENTITY_PERMISSION: 'user_entity_permission',
   USER_SESSION: 'userSession',

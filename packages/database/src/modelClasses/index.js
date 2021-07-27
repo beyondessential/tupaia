@@ -39,6 +39,7 @@ import { SurveyResponseModel } from './SurveyResponse';
 import { SurveyResponseCommentModel } from './SurveyResponseComment';
 import { SurveyScreenComponentModel } from './SurveyScreenComponent';
 import { SurveyScreenModel } from './SurveyScreen';
+import { SyncCursorModel } from './SyncCursor';
 import { UserEntityPermissionModel } from './UserEntityPermission';
 import { UserModel } from './User';
 import { UserSessionModel } from './UserSession';
@@ -83,6 +84,7 @@ export const modelClasses = {
   SurveyResponseComment: SurveyResponseCommentModel,
   SurveyScreen: SurveyScreenModel,
   SurveyScreenComponent: SurveyScreenComponentModel,
+  SyncCursor: SyncCursorModel,
   User: UserModel,
   UserEntityPermission: UserEntityPermissionModel,
   UserSession: UserSessionModel,
