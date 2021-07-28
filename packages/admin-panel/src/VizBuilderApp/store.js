@@ -109,4 +109,6 @@ const useStore = () => {
   return useContext(store);
 };
 
+// Note: the store can be degged in dev tools using a chrome plugin.
+// https://chrome.google.com/webstore/detail/react-context-devtool/oddhnidmicpefilikhgeagedibnefkcf?hl=en
 export { useStore, StoreProvider };
