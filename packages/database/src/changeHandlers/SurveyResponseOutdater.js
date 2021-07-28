@@ -187,6 +187,9 @@ export class SurveyResponseOutdater extends ChangeHandler {
     );
   };
 
+  getChangeDebuggingInfo = changedResponses =>
+    `Could not outdate survey responses with ids ${changedResponses.map(sr => sr.id)}`;
+
   handleResponsesForSurvey = async (changedResponses, survey) => {
     if (!survey?.['period_granularity']) {
       // Survey responses for non periodic surveys are always "not outdated"
