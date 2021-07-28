@@ -6,11 +6,11 @@
  */
 
 import React from 'react';
+
+import { Typography, Tooltip, withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import Typography from '@material-ui/core/Typography';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
-import { Tooltip } from './Tooltip';
+import styled from 'styled-components';
 import { BLUE } from '../styles';
 
 const DEFAULT = 'default';
@@ -23,7 +23,7 @@ export const TOOLTIP_ICON_STYLE_OPTIONS = {
 };
 
 const IconButton = styled(InfoRoundedIcon)`
-  font-size: 16px;
+  fontsize: 16px;
   color: grey;
   transition: color 0.2s ease;
   &:hover {
@@ -40,25 +40,40 @@ const styles = {
   },
   typography: { backgroundColor: 'black' },
 };
+const StyledToolTip = withStyles(theme => ({
+  arrow: {
+    color: theme.palette.common.black,
+  },
+  tooltip: {
+    backgroundColor: theme.palette.common.black,
+  },
+}))(Tooltip);
+
+const getContent = reference => {
+  const { text, name, link } = reference;
+  if (text) {
+    return (
+      <Typography variant="caption" style={styles.typography}>
+        <span>{text} </span>
+      </Typography>
+    );
+  }
+  return (
+    <Typography variant="caption" style={styles.typography}>
+      <span>Source: </span>
+      <a style={styles.link} href={link} target="_blank" rel="noopener noreferrer">
+        {name}
+      </a>
+    </Typography>
+  );
+};
 
 export const ReferenceTooltip = props => {
   const { reference, iconStyleOption } = props;
+  const content = getContent(reference);
 
   return (
-    <Tooltip
-      arrow
-      interactive
-      placement="top"
-      enterTouchDelay="50"
-      title={
-        <Typography variant="caption" style={styles.typography}>
-          <span>Source: </span>
-          <a style={styles.link} href={reference.link} target="_blank" rel="noopener noreferrer">
-            {reference.name}
-          </a>
-        </Typography>
-      }
-    >
+    <StyledToolTip arrow interactive placement="top" enterTouchDelay="50" title={content}>
       <IconButton
         style={
           iconStyleOption && styles.iconButton[iconStyleOption]
@@ -66,7 +81,7 @@ export const ReferenceTooltip = props => {
             : styles.iconButton[DEFAULT]
         }
       />
-    </Tooltip>
+    </StyledToolTip>
   );
 };
 

@@ -18,6 +18,15 @@ GET http://{{host}}/{{version}}/hierarchy/explore/TO HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
+### Fetch multiple entities
+POST http://{{host}}/{{version}}/hierarchy/explore HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "entities" : ["TO","PG"]
+}
+
 ### Fetch descendants of an entity
 GET http://{{host}}/{{version}}/hierarchy/explore/TO/descendants?field=code&includeRootEntity=true HTTP/1.1
 content-type: {{contentType}}
@@ -29,9 +38,13 @@ content-type: {{contentType}}
 Authorization: {{authorization}}
 
 ### Fetch descendants of multiple entities
-GET http://{{host}}/{{version}}/hierarchy/explore/descendants?entities=TO,PG&field=code&includeRootEntity=true HTTP/1.1
+POST http://{{host}}/{{version}}/hierarchy/explore/descendants?field=code&includeRootEntity=true HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
+
+{
+    "entities" : ["TO","PG"]
+}
 
 ### Fetch relatives of an entity
 GET http://{{host}}/{{version}}/hierarchy/explore/TO_Tongatapu_Mua/relatives?field=code HTTP/1.1
@@ -44,9 +57,13 @@ content-type: {{contentType}}
 Authorization: {{authorization}}
 
 ### Fetch relatives of multiple entities
-GET http://{{host}}/{{version}}/hierarchy/explore/relatives?entities=TO_Tongatapu_Haatafu,PG_Sau_ASP&field=code HTTP/1.1
+POST http://{{host}}/{{version}}/hierarchy/explore/relatives?field=code HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
+
+{
+    "entities": ["TO_Tongatapu_Haatafu","PG_Sau_ASP"]
+}
 
 ### Fetch relationships among relatives of an entity
 GET http://{{host}}/{{version}}/hierarchy/explore/TO/relationships?descendant_filter=type:village&ancestor_field=code&descendant_field=name&groupBy=ancestor HTTP/1.1
@@ -59,6 +76,10 @@ content-type: {{contentType}}
 Authorization: {{authorization}}
 
 ### Fetch relationships among relatives of multiple entities
-GET http://{{host}}/{{version}}/hierarchy/explore/relationships?entities=TO_Tongatapu_Haatafu,PG_Sau_ASP&descendant_filter=type:district&ancestor_filter=type:country&ancestor_field=code&descendant_field=name&groupBy=descendant HTTP/1.1
+POST http://{{host}}/{{version}}/hierarchy/explore/relationships?descendant_filter=type:district&ancestor_filter=type:country&ancestor_field=code&descendant_field=name&groupBy=descendant HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
+
+{
+    "entities":["TO_Tongatapu_Haatafu","PG_Sau_ASP"]
+}

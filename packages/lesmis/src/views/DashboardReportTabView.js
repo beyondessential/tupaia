@@ -153,7 +153,7 @@ export const DashboardReportTabView = ({
                 variant="scrollable"
                 scrollButtons="auto"
               >
-                {subDashboards.map(({ dashboardName: heading, dashboardId }) => (
+                {subDashboards?.map(({ dashboardName: heading, dashboardId }) => (
                   <Tab key={dashboardId} label={heading} value={heading} />
                 ))}
               </Tabs>
@@ -163,37 +163,36 @@ export const DashboardReportTabView = ({
       </StickyTabBarContainer>
       <DashboardSection ref={topRef}>
         <FetchLoader isLoading={isLoading} isError={isError} error={error}>
-          {subDashboards &&
-            subDashboards.map(dashboard => (
-              <TabPanel
-                key={dashboard.dashboardId}
-                isSelected={dashboard.dashboardName === activeDashboard}
-              >
-                {(() => {
-                  // Todo: support other report types (including "component" types)
-                  const dashboardItems = dashboard.items.filter(item => item.type === 'chart');
-                  return dashboardItems.length > 0 ? (
-                    dashboardItems.map(item => (
-                      <DashboardReport
-                        key={item.code}
-                        name={item.name}
-                        entityCode={entityCode}
-                        dashboardCode={dashboard.dashboardCode}
-                        dashboardName={dashboard.dashboardName}
-                        reportCode={item.reportCode}
-                        year={year}
-                        periodGranularity={item.periodGranularity}
-                        viewConfig={item}
-                      />
-                    ))
-                  ) : (
-                    <SmallAlert key={dashboard.dashboardName} severity="info" variant="standard">
-                      There are no reports available for this dashboard
-                    </SmallAlert>
-                  );
-                })()}
-              </TabPanel>
-            ))}
+          {subDashboards?.map(dashboard => (
+            <TabPanel
+              key={dashboard.dashboardId}
+              isSelected={dashboard.dashboardName === activeDashboard}
+            >
+              {(() => {
+                // Todo: support other report types (including "component" types)
+                const dashboardItems = dashboard.items.filter(item => item.type === 'chart');
+                return dashboardItems.length > 0 ? (
+                  dashboardItems.map(item => (
+                    <DashboardReport
+                      key={item.code}
+                      name={item.name}
+                      entityCode={entityCode}
+                      dashboardCode={dashboard.dashboardCode}
+                      dashboardName={dashboard.dashboardName}
+                      reportCode={item.reportCode}
+                      year={year}
+                      periodGranularity={item.periodGranularity}
+                      viewConfig={item}
+                    />
+                  ))
+                ) : (
+                  <SmallAlert key={dashboard.dashboardName} severity="info" variant="standard">
+                    There are no reports available for this dashboard
+                  </SmallAlert>
+                );
+              })()}
+            </TabPanel>
+          ))}
         </FetchLoader>
       </DashboardSection>
       {isScrolledPastTop && <ScrollToTopButton onClick={scrollToTop} />}
