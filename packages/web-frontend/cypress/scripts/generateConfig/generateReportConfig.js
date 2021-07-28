@@ -60,7 +60,10 @@ const parseUrl = url => {
 
   const [path, queryParams] = url.split('?');
   const searchParams = new URLSearchParams(queryParams);
-  const [project, orgUnit, dashboard] = path.split('/').filter(x => x !== '');
+  const [project, orgUnit, dashboard] = path
+    .split('/')
+    .filter(x => x !== '')
+    .map(decodeURIComponent);
 
   return {
     code: searchParams.get('report'),
