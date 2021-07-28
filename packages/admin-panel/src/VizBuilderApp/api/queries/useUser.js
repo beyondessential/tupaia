@@ -4,14 +4,11 @@
  */
 import { useQuery } from 'react-query';
 import { get } from '../api';
+import { DEFAULT_REACT_QUERY_OPTIONS } from '../constants';
 
-export const useUser = options => {
+export const useUser = () => {
   const query = useQuery('user', () => get('user'), {
-    retry: 0,
-    // should be refetched in the background every hour
-    staleTime: 1000 * 60 * 60 * 1,
-    refetchOnWindowFocus: false,
-    ...options,
+    ...DEFAULT_REACT_QUERY_OPTIONS,
   });
 
   const user = query.data;

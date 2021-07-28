@@ -16,7 +16,7 @@ renderReactApp(
   <Router>
     <Suspense fallback={<div>loading...</div>}>
       <Switch>
-        <Route path="/viz-builder" exact>
+        <Route path="/viz-builder">
           <VizBuilderProviders>
             <VizBuilder Navbar={Navbar} Footer={Footer} />
           </VizBuilderProviders>
@@ -32,3 +32,7 @@ renderReactApp(
   </Router>,
   document.getElementById('root'),
 );
+
+if (module.hot) {
+  module.hot.accept();
+}
