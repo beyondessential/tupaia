@@ -42,7 +42,7 @@ const processColumns = viewContent => {
   let firstColumn = null;
 
   if (hasNamedData) {
-    firstColumn = makeFirstColumn(xName || 'Name', '');
+    firstColumn = makeFirstColumn(xName || 'Name', 'name');
   }
 
   if (hasTimeSeriesData) {

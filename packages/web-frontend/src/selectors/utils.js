@@ -10,8 +10,7 @@
  */
 export const safeGet = (cache, args) => (cache.keySelector(...args) ? cache(...args) : undefined);
 
-export const getOrgUnitFromCountry = (country, code) => {
-  return country && code ? country[code] : undefined;
-};
+export const getOrgUnitFromCountry = (country, code) =>
+  country && code ? country[code] : undefined;
 
 export const selectLocation = state => state.routing;

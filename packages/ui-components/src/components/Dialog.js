@@ -11,7 +11,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import styled from 'styled-components';
 import { IconButton } from './IconButton';
 
-// todo: add colors to theme
 const DARK_THEME_BORDER = 'rgb(82, 82, 88)';
 const BACKDROP_COLOUR = 'rgba(65, 77, 85, 0.3)';
 const DARK_BACKGROUND = '#262834';

@@ -46,9 +46,9 @@ export const Table = ({
             prepareRow(row);
             return (
               <TableRow {...row.getRowProps()}>
-                {row.cells.map(({ getCellProps, render }) => {
-                  return <TableCell {...getCellProps()}>{render('Cell')}</TableCell>;
-                })}
+                {row.cells.map(({ getCellProps, render }) => (
+                  <TableCell {...getCellProps()}>{render('Cell')}</TableCell>
+                ))}
               </TableRow>
             );
           })}

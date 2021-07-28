@@ -169,7 +169,7 @@ export const selectRenderedMeasuresWithDisplayInfo = createSelector(
     state => state.map.measureInfo.measureOptions,
     state => selectCountriesAsOrgUnits(state),
   ],
-  (country, allMeasuresWithMeasureInfo, displaylevelAncestor, measureOptions = [], countries) => {
+  (country, allMeasuresWithMeasureInfo, displaylevelAncestor, measureOptions = []) => {
     const displayOnLevel = measureOptions.map(option => option.displayOnLevel).find(level => level);
 
     if (!displayOnLevel) {
