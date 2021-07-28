@@ -47,6 +47,24 @@ const newMapOverlayOrders = [
   {
     groupCode: 'STRIVE_Febrile_illness_surveilance_Village',
     groupNewName: 'STRIVE Febrile Illness Village Level Data',
+    overlays: [
+      {
+        overlayId: 'STRIVE_FIS_Village_Number_Reported_Cases_In_Week',
+        overlayNewName: 'Febrile illness cases (STRIVE cases)',
+      },
+      {
+        overlayId: 'STRIVE_FIS_Village_Percent_mRDT_Positive_Mixed_In_Week',
+      },
+      {
+        overlayId: 'STRIVE_FIS_Village_Percent_mRDT_Positive_In_Week',
+      },
+      {
+        overlayId: 'STRIVE_FIS_Village_Percent_mRDT_Positive_Non_PF_In_Week',
+      },
+      {
+        overlayId: 'STRIVE_FIS_Village_Percent_mRDT_Positive_PF_In_Week',
+      },
+    ],
   },
   {
     groupCode: 'STRIVE_Molecular_Data',
@@ -94,33 +112,37 @@ exports.up = async function (db) {
     }),
   );
 
-  // Rename map overlays
-  const overlaysMapping = newMapOverlayOrders[0].overlays;
-  const overlayGroupCode = newMapOverlayOrders[0].groupCode;
-  const renamingOverlaysMapping = overlaysMapping.filter(mo => !!mo.overlayNewName);
   await Promise.all(
-    renamingOverlaysMapping.map(async ({ overlayId, overlayNewName }) => {
-      await db.runSql(`
-            UPDATE "mapOverlay"
-            SET name = '${overlayNewName}'
-            WHERE id = '${overlayId}';
-        `);
-    }),
-  );
+    newMapOverlayOrders
+      .filter(({ overlays }) => !!overlays)
+      .map(async ({ groupCode, overlays }) => {
+        // Rename map overlays
+        const renamingOverlaysMapping = overlays.filter(mo => !!mo.overlayNewName);
+        await Promise.all(
+          renamingOverlaysMapping.map(async ({ overlayId, overlayNewName }) => {
+            await db.runSql(`
+              UPDATE "mapOverlay"
+              SET name = '${overlayNewName}'
+              WHERE id = '${overlayId}';
+          `);
+          }),
+        );
 
-  // Order map overlays
-  await Promise.all(
-    overlaysMapping.map(async ({ overlayId }, sortOrder) => {
-      await db.runSql(`
+        // Order map overlays
+        await Promise.all(
+          overlays.map(async ({ overlayId }, sortOrder) => {
+            await db.runSql(`
             UPDATE map_overlay_group_relation
             SET sort_order = '${sortOrder}',
             map_overlay_group_id = (
               SELECT mog.id FROM map_overlay_group mog
-              WHERE mog.code = '${overlayGroupCode}'
+              WHERE mog.code = '${groupCode}'
             )
             WHERE child_id = '${overlayId}';
         `);
-    }),
+          }),
+        );
+      }),
   );
 
   // Drop a map overlay group
@@ -133,12 +155,6 @@ exports.up = async function (db) {
 
         DELETE FROM map_overlay_group
         WHERE code = '${mapOverlayGroupToDrop}';
-  `);
-
-  await db.runSql(`
-      UPDATE "mapOverlay"
-      SET name = 'Febrile illness cases (STRIVE cases)'
-      WHERE id = 'STRIVE_FIS_Village_Number_Reported_Cases_In_Week';
   `);
 };
 
