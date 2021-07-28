@@ -36,7 +36,11 @@ exports.up = async function (db) {
 
   await db.runSql(`
     UPDATE report
-    SET config = jsonb_set(config, '{transform}',(config->'transform') - 1, false)
+    SET config = jsonb_set(config, '{transform,1}','${JSON.stringify({
+      transform: 'aggregate',
+      organisationUnit: 'group',
+      '...': 'last',
+    })}', false)
     WHERE code IN (${arrayToDbString(Object.keys(VITALS_REPORTS))});
   `);
 };
