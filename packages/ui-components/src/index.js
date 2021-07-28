@@ -13,6 +13,8 @@ export * from './components/CircleMeter';
 export * from './components/ConfirmDeleteModal';
 export * from './components/DateRangePicker';
 export * from './components/Dialog';
+export * from './components/ErrorBoundary';
+export * from './components/FetchLoader';
 export * from './components/FullPageLoader';
 export * from './components/HomeButton';
 export * from './components/Icons';
