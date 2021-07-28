@@ -57,11 +57,6 @@ const REPORT = {
         "'Respondents reporting fever & cough'": '$row.numerator',
         '...': ['organisationUnitCode'],
       },
-      {
-        transform: 'filter',
-        where: "$row.value > '0'",
-        '...': ['organisationUnitCode'],
-      },
     ],
   },
 };
