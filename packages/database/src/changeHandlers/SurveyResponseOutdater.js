@@ -169,9 +169,6 @@ export class SurveyResponseOutdater extends ChangeHandler {
     this.changeTranslators = {
       surveyResponse: translateSurveyResponseChanges,
     };
-    this.changeHandlers = {
-      surveyResponse: this.outdateSurveyResponses,
-    };
   }
 
   /**
@@ -179,7 +176,7 @@ export class SurveyResponseOutdater extends ChangeHandler {
    * This method processes the changed records and ensures that all responses in the affected
    * dimension combos get a correct `outdated` status
    */
-  outdateSurveyResponses = async changedResponses => {
+  handleChanges = async changedResponses => {
     const surveysById = await this.fetchSurveysById(changedResponses);
     const responsesBySurveyId = groupBy(changedResponses, 'survey_id');
 
