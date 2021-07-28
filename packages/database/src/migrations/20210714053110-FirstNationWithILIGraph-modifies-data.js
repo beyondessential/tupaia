@@ -18,6 +18,7 @@ exports.setup = function (options, seedLink) {
 
 const reportCode = 'AU_FLUTRACKING_First_Nation_With_ILI';
 const dataElementCode = 'FluTracker_Percent_First_Nations_ILI';
+const dashboardCode = 'AU_FluTracking';
 
 const permissionGroupNameToId = async (db, name) => {
   const record = await db.runSql(`SELECT id FROM permission_group WHERE name = '${name}'`);
@@ -27,6 +28,8 @@ const permissionGroupNameToId = async (db, name) => {
 exports.up = async function (db) {
   const dashboardItemId = generateId();
   const dashboardRelationId = generateId();
+  const dashboardId = generateId();
+
   await insertObject(db, 'report', {
     id: generateId(),
     code: reportCode,
@@ -76,14 +79,20 @@ exports.up = async function (db) {
     legacy: false,
   });
 
+  await insertObject(db, 'dashboard', {
+    id: dashboardId,
+    code: dashboardCode,
+    name: 'FluTracking',
+    root_entity_code: 'AU',
+  });
+
   await insertObject(db, 'dashboard_relation', {
     id: dashboardRelationId,
-    dashboard_id: await codeToId(db, 'dashboard', 'AU_COVID-19'),
+    dashboard_id: dashboardId,
     child_id: dashboardItemId,
     entity_types: '{country}',
     project_codes: '{covidau}',
     permission_groups: '{Donor}',
-    sort_order: 11,
   });
 
   const previousIndicator = 'FluTracker_LGA_Percent_First_Nations_ILI';
