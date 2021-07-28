@@ -3,6 +3,10 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import winston from 'winston';
+
+const MAX_RETRY_ATTEMPTS = 3;
+
 export class ChangeHandler {
   /**
    * A map of change translators by record type. Each translator can alter the change details that
@@ -48,6 +52,13 @@ export class ChangeHandler {
    */
   handleChanges = async () => {
     throw new Error('Any subclass of ChangeHandler must implement the "handleChanges" method');
+  };
+
+  /**
+   * @protected
+   */
+  getChangeDebuggingInfo = changes => {
+    return `Change count: ${changes.length}`;
   };
 
   listenForChanges() {
@@ -99,16 +110,37 @@ export class ChangeHandler {
     this.scheduledTimeout = null;
     this.scheduledPromise = null;
 
-    const queuedChanges = this.changeQueue;
+    const currentQueue = this.changeQueue;
     this.changeQueue = [];
 
-    try {
-      await this.handleChanges(queuedChanges);
-    } catch (error) {
-      this.changeQueue = queuedChanges.concat(this.changeQueue);
-      throw error;
+    let success;
+    for (let i = 0; i < MAX_RETRY_ATTEMPTS; i++) {
+      success = true;
+
+      try {
+        await this.handleChanges(currentQueue);
+      } catch (error) {
+        success = false;
+      }
+
+      if (success) {
+        break;
+      }
     }
 
+    if (!success) {
+      this.logFailedChanges(currentQueue);
+    }
     this.scheduledPromiseResolve();
+  };
+
+  logFailedChanges = failedChanges => {
+    winston.error(
+      [
+        `Failed to handle change batch after trying ${MAX_RETRY_ATTEMPTS} times`,
+        'Debugging info: ',
+        this.getChangeDebuggingInfo(failedChanges),
+      ].join('\n'),
+    );
   };
 }
