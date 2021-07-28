@@ -8,7 +8,7 @@ import { Prompt } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import { FlexColumn } from '@tupaia/ui-components';
-import { Toolbar, Panel } from '../components';
+import { Toolbar, Panel, PreviewSection, PreviewOptions } from '../components';
 
 const Container = styled(MuiContainer)`
   flex: 1;
@@ -21,7 +21,7 @@ const RightCol = styled(FlexColumn)`
   flex: 1;
 `;
 
-// Todo: add https://github.com/jacobbuck/react-beforeunload#readme
+// Todo: add warning on page unload https://github.com/jacobbuck/react-beforeunload#readme
 export const Main = () => {
   const [enabled, setEnabled] = useState(false);
   return (
@@ -30,8 +30,8 @@ export const Main = () => {
       <Container maxWidth="xl">
         <Panel setEnabled={setEnabled} />
         <RightCol>
-          {/*<PreviewOptions />*/}
-          {/*<PreviewSection enabled={enabled} setEnabled={setEnabled} />*/}
+          <PreviewOptions />
+          <PreviewSection enabled={enabled} setEnabled={setEnabled} />
         </RightCol>
       </Container>
       <Prompt message="Are you sure you want to exit the Viz Builder? Your options will not be saved so make sure you have exported your configuration." />
