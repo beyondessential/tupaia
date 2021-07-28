@@ -6,15 +6,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiTableContainer from '@material-ui/core/TableContainer';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import { DataTable } from '@tupaia/ui-components';
 import { getIsChartData, getNoDataString } from '../utils';
 import { SmallAlert } from '../../Alert';
-import { StyledTable } from './StyledTable';
-import { FlexStart } from '../../Layout';
 import { useChartTable } from './useChartTable';
 
 const TableContainer = styled(MuiTableContainer)`
@@ -47,36 +41,14 @@ export const Table = ({ viewContent, className }) => {
 
   return (
     <TableContainer className={className}>
-      <StyledTable {...getTableProps()} style={{ minWidth: columns.length * 140 + 250 }}>
-        <TableHead>
-          {headerGroups.map(({ getHeaderGroupProps, headers }) => (
-            <TableRow {...getHeaderGroupProps()}>
-              {headers.map(
-                ({ getHeaderProps, getSortByToggleProps, isSorted, isSortedDesc, render }) => (
-                  <TableCell {...getHeaderProps(getSortByToggleProps())}>
-                    <FlexStart>
-                      {render('Header')}
-                      <TableSortLabel active={isSorted} direction={isSortedDesc ? 'asc' : 'desc'} />
-                    </FlexStart>
-                  </TableCell>
-                ),
-              )}
-            </TableRow>
-          ))}
-        </TableHead>
-        <TableBody {...getTableBodyProps()}>
-          {rows.map(row => {
-            prepareRow(row);
-            return (
-              <TableRow {...row.getRowProps()}>
-                {row.cells.map(({ getCellProps, render }) => (
-                  <TableCell {...getCellProps()}>{render('Cell')}</TableCell>
-                ))}
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </StyledTable>
+      <DataTable
+        rows={rows}
+        columns={columns}
+        getTableProps={getTableProps}
+        getTableBodyProps={getTableBodyProps}
+        headerGroups={headerGroups}
+        prepareRow={prepareRow}
+      />
     </TableContainer>
   );
 };
