@@ -49,8 +49,8 @@ const REPORT = {
         transform: 'select',
         "'organisationUnitCode'": '$row.organisationUnit',
         "'value'": 'divide($row.FWV_PC_004b, $row.FWV_PC_003b)',
-        "'Participants'": '$row.FWV_PC_003b',
-        "'non-First nation participants with influenza like illness (ILI)'": '$row.FWV_PC_004b',
+        "'non-First Nations participants'": '$row.FWV_PC_003b',
+        "'non-First Nations participants with influenza like illness (ILI)'": '$row.FWV_PC_004b',
       },
     ],
   },
@@ -59,7 +59,7 @@ const REPORT = {
 
 const MAP_OVERLAY = {
   id: REPORT_CODE,
-  name: '% of non-First Nation participants with influenza like illness (ILI)',
+  name: '% of non-First Nations participants with influenza like illness (ILI)',
   userGroup: PERMISSION_GROUP,
   dataElementCode: 'value',
   isDataRegional: true,
