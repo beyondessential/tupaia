@@ -66,7 +66,7 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
       ? organisationUnitCodes
       : organisationUnitCodes.split(',');
 
-    this.checkUserHasAccessToReport(report, organisationUnitCodesArray);
+    await this.checkUserHasAccessToReport(report, organisationUnitCodesArray);
 
     const aggregator = createAggregator(Aggregator, {
       session: { getAuthHeader: () => this.req.headers.authorization },
