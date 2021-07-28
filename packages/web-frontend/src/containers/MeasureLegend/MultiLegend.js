@@ -58,7 +58,7 @@ const getLegend = measureType => {
 const MultiLegend = React.memo(({ measureOptions, isMeasureLoading }) => {
   const displayedLegends = measureOptions.filter(
     ({ type, hideFromLegend }) =>
-      ![MEASURE_TYPE_RADIUS, MEASURE_TYPE_POPUP_ONLY].includes(type) && !hideFromLegend,
+      ![MEASURE_TYPE_RADIUS, MEASURE_TYPE_POPUP_ONLY].includes(type) && hideFromLegend !== true,
   );
 
   // returning <LegendOuterFrame /> keeps the map control on the right hand side
