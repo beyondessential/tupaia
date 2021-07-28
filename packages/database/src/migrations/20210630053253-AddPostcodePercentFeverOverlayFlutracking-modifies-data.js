@@ -32,7 +32,7 @@ const MAP_OVERLAY = {
       null: true,
     },
     icon: 'circle',
-    displayType: 'shaded-spectrum',
+    displayType: 'spectrum',
     measureLevel: 'Postcode',
     valueType: 'percentage',
     scaleType: 'performance',
