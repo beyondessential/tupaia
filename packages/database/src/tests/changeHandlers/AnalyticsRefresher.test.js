@@ -4,8 +4,6 @@
  */
 
 import { expect } from 'chai';
-import sinon from 'sinon';
-import { sleep } from '@tupaia/utils';
 import {
   getTestModels,
   populateTestData,
@@ -191,99 +189,5 @@ describe('AnalyticsRefresher', () => {
       return analytic;
     });
     await assertAnalyticsMatch(updatedAnalytics);
-  });
-
-  it('debounces analytics table refreshes that are started at the same time', async () => {
-    sinon.stub(AnalyticsRefresher, 'refreshAnalytics');
-
-    // call several times in a row
-    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
-    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
-    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
-    await analyticsRefresher.scheduleChangeQueueHandler('surveyResponse'); // await final call
-
-    expect(AnalyticsRefresher.refreshAnalytics).to.have.been.calledOnce; // should have debounced
-
-    AnalyticsRefresher.refreshAnalytics.restore();
-  });
-
-  it('debounces analytics table refreshes that are started within a second of another one each other', async () => {
-    sinon.stub(AnalyticsRefresher, 'refreshAnalytics');
-
-    // call several times with half the debounce time between each
-    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
-    await sleep(REFRESH_DEBOUNCE_TIME / 2);
-    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
-    await sleep(REFRESH_DEBOUNCE_TIME / 2);
-    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
-    await sleep(REFRESH_DEBOUNCE_TIME / 2);
-    await analyticsRefresher.scheduleChangeQueueHandler('surveyResponse'); // await final call
-
-    expect(AnalyticsRefresher.refreshAnalytics).to.have.been.calledOnce; // should have debounced
-
-    AnalyticsRefresher.refreshAnalytics.restore();
-  });
-
-  it('only runs one refresh at a time', async () => {
-    let resolveOnRefreshStart;
-    let isRefreshRunning = false;
-    let refreshNumber = 0;
-    sinon.stub(AnalyticsRefresher, 'refreshAnalytics').callsFake(async () => {
-      if (resolveOnRefreshStart) {
-        resolveOnRefreshStart();
-      }
-      expect(isRefreshRunning).to.equal(false); // assert against concurrent refreshes
-      isRefreshRunning = true;
-      refreshNumber++;
-      // sleep for longer than the debounce time so that we're still refreshing when the next one
-      // should be triggered
-      await sleep(REFRESH_DEBOUNCE_TIME + 200);
-      isRefreshRunning = false;
-    });
-
-    // start a refresh
-    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
-    const refreshOneStarted = new Promise(resolve => {
-      resolveOnRefreshStart = resolve;
-    });
-
-    // after refresh one has started but not yet completed, schedule another analytics refresh
-    await refreshOneStarted;
-    expect(isRefreshRunning).to.equal(true);
-    expect(refreshNumber).to.equal(1);
-    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
-    const refreshTwoStarted = new Promise(resolve => {
-      resolveOnRefreshStart = resolve;
-    });
-
-    // wait for longer than the debounce time, so the just scheduled refresh would want to start,
-    // but should still be running the first refresh
-    await sleep(REFRESH_DEBOUNCE_TIME + 10);
-    expect(isRefreshRunning).to.equal(true);
-    expect(refreshNumber).to.equal(1);
-
-    // after refresh two has started but not yet completed, schedule another few analytics refresh
-    // these should debounce and result in one more refresh
-    await refreshTwoStarted;
-    expect(isRefreshRunning).to.equal(true);
-    expect(refreshNumber).to.equal(2);
-    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
-    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
-    analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
-    const finalRefreshPromise = analyticsRefresher.scheduleChangeQueueHandler('surveyResponse');
-
-    // wait for longer than the debounce time, so the just scheduled refresh would want to start,
-    // but should still be running the second refresh
-    await sleep(REFRESH_DEBOUNCE_TIME + 10);
-    expect(isRefreshRunning).to.equal(true);
-    expect(refreshNumber).to.equal(2);
-
-    // wait for final refresh to complete, then check a total of three were called
-    await finalRefreshPromise;
-    expect(isRefreshRunning).to.equal(false);
-    expect(refreshNumber).to.equal(3);
-    expect(AnalyticsRefresher.refreshAnalytics).to.have.been.calledThrice;
-
-    AnalyticsRefresher.refreshAnalytics.restore();
   });
 });

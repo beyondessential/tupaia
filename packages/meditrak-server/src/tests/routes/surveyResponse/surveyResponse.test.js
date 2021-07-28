@@ -11,7 +11,6 @@ import {
   upsertFacility,
   upsertQuestion,
 } from '../../testUtilities';
-import { testOutdatedStatusUpdate } from './testOutdatedStatusUpdate';
 
 const getRandomSurveyResponse = async models => {
   const surveyResponses = await models.surveyResponse.all();
@@ -535,6 +534,4 @@ describe('surveyResponse endpoint', () => {
       expectError(response, /Dates should be in ISO 8601 format/);
     });
   });
-
-  describe('Outdated status update', () => testOutdatedStatusUpdate(app));
 });
