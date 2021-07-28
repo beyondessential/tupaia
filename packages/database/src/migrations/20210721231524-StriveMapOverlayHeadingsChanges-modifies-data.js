@@ -134,6 +134,12 @@ exports.up = async function (db) {
         DELETE FROM map_overlay_group
         WHERE code = '${mapOverlayGroupToDrop}';
   `);
+
+  await db.runSql(`
+      UPDATE "mapOverlay"
+      SET name = 'Febrile illness cases (STRIVE cases)'
+      WHERE id = 'STRIVE_FIS_Village_Number_Reported_Cases_In_Week';
+  `);
 };
 
 exports.down = function (db) {
