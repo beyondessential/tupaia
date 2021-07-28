@@ -47,7 +47,7 @@ export class ReportConnection extends ApiConnection {
     super({ getAuthHeader });
   }
 
-  async fetchReport(reportCode, query, body) {
-    return this.post(`fetchReport/${reportCode}`, query, body);
+  async fetchReport(reportCode, query) {
+    return this.get(`fetchReport/${reportCode}`, query);
   }
 }
