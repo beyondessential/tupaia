@@ -4,7 +4,7 @@
  */
 
 import { EntityModel as BaseEntityModel, EntityType as BaseEntityType } from '@tupaia/database';
-import { Model, DbConditional } from './types';
+import { Model, DbConditional } from '@tupaia/server-boilerplate';
 
 export type EntityFields = Readonly<{
   id: string;

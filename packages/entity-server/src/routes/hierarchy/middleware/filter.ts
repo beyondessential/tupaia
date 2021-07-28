@@ -3,8 +3,10 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { QueryConjunctions } from '@tupaia/server-boilerplate';
+
 import { Writable, ObjectLikeKeys, Flatten } from '../../../types';
-import { EntityFilter, EntityFields, QueryConjunctions } from '../../../models';
+import { EntityFilter, EntityFields } from '../../../models';
 
 const CLAUSE_DELIMITER = ';';
 const NESTED_FIELD_DELIMITER = '_';
