@@ -84,6 +84,7 @@ COPY packages/database/. ./packages/database
 COPY packages/devops/. ./packages/devops
 COPY packages/dhis-api/. ./packages/dhis-api
 COPY packages/indicators/. ./packages/indicators
+COPY packages/kobo-api/. ./packages/kobo-api
 COPY packages/psss-server/. ./packages/psss-server
 COPY packages/report-server/. ./packages/report-server
 COPY packages/server-boilerplate/. ./packages/server-boilerplate
