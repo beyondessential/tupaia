@@ -22,6 +22,7 @@ const VITALS_REPORTS = {
   LESMIS_village_vitals: 'village',
   LESMIS_multi_school_vitals: 'school',
 };
+// @TODO DELETE TEST
 
 exports.up = async function (db) {
   await Promise.all(
