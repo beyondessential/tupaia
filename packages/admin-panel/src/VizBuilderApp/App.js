@@ -10,6 +10,7 @@ import { FullPageLoader } from '@tupaia/ui-components';
 // import { Main } from './views/Main';
 // import { CreateNew } from './views/CreateNew';
 import { useUser } from './api/queries';
+import { StoreProvider } from './store';
 
 const Container = styled.main`
   display: flex;
@@ -32,16 +33,18 @@ export const App = ({ Navbar, Footer }) => {
   const user = { ...data, name: `${data.firstName} ${data.lastName}` };
 
   return (
-    <Container>
-      {Navbar && <Navbar user={user} isBESAdmin={isBESAdmin} />}
-      <Switch>
-        <Route path="/viz-builder/new" exact>
-          {/*<CreateNew />*/}
-        </Route>
-        <Route path="/">{/*<Main />*/}</Route>
-      </Switch>
-      {Footer && <Footer />}
-    </Container>
+    <StoreProvider>
+      <Container>
+        {Navbar && <Navbar user={user} isBESAdmin={isBESAdmin} />}
+        <Switch>
+          <Route path="/viz-builder/new" exact>
+            {/*<CreateNew />*/}
+          </Route>
+          <Route path="/">{/*<Main />*/}</Route>
+        </Switch>
+        {Footer && <Footer />}
+      </Container>
+    </StoreProvider>
   );
 };
 
