@@ -13,7 +13,7 @@ import TableBody from '@material-ui/core/TableBody';
 import { StyledTable } from './StyledTable';
 import { FlexStart } from '../Layout';
 
-export const Table = ({
+export const DataTable = ({
   rows,
   columns,
   getTableProps,
@@ -58,7 +58,7 @@ export const Table = ({
   );
 };
 
-Table.propTypes = {
+DataTable.propTypes = {
   rows: PropTypes.array.isRequired,
   columns: PropTypes.array.isRequired,
   getTableProps: PropTypes.func.isRequired,
@@ -68,6 +68,6 @@ Table.propTypes = {
   className: PropTypes.string,
 };
 
-Table.defaultProps = {
+DataTable.defaultProps = {
   className: null,
 };

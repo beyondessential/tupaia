@@ -53,14 +53,10 @@ const processColumns = viewContent => {
 
   const chartConfig = parseChartConfig(viewContent);
 
-  const defaultColumns = [
-    {
-      Header: 'Value',
-      accessor: row => getFormattedValue(row[DEFAULT_DATA_KEY], viewContent.valueType),
-    },
-  ];
+  const chartDataConfig =
+    Object.keys(chartConfig).length > 0 ? chartConfig : { [DEFAULT_DATA_KEY]: {} };
 
-  const customColumns = Object.keys(chartConfig).map(columnKey => {
+  const configColumns = Object.keys(chartDataConfig).map(columnKey => {
     return {
       Header: columnKey,
       accessor: row => {
@@ -71,8 +67,6 @@ const processColumns = viewContent => {
       },
     };
   });
-
-  const configColumns = Object.keys(chartConfig).length > 0 ? customColumns : defaultColumns;
 
   return firstColumn ? [firstColumn, ...configColumns] : configColumns;
 };
