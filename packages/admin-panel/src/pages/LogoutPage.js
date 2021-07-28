@@ -12,7 +12,7 @@ import { getIsUserAuthenticated, logout } from '../authentication';
 const LogoutPageComponent = ({ onLogout, isLoggedIn }) => {
   useEffect(() => {
     onLogout();
-  }, []);
+  }, [onLogout]);
 
   if (!isLoggedIn) {
     return <Redirect to="/login" />;
