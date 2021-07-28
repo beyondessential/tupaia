@@ -31,7 +31,7 @@ const newMapOverlayOrders = [
         overlayNewName: '% mRDT Positive: Positive Non-Pf',
       },
       {
-        overlayId: 'STRIVE_CRF_Positive_Non_Pf_Percentage',
+        overlayId: 'STRIVE_CRF_Positive_Mixed_Percentage',
         overlayNewName: '% mRDT Positive: Positive Mixed',
       },
       {
