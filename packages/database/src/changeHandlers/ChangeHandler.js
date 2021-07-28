@@ -33,8 +33,6 @@ export class ChangeHandler {
 
   scheduledPromiseResolve = null;
 
-  scheduledPromiseReject = null;
-
   activePromise = null;
 
   changeHandlerCancellers = [];
@@ -91,9 +89,8 @@ export class ChangeHandler {
     }
 
     if (!this.scheduledPromise) {
-      this.scheduledPromise = new Promise((resolve, reject) => {
+      this.scheduledPromise = new Promise(resolve => {
         this.scheduledPromiseResolve = resolve;
-        this.scheduledPromiseReject = reject;
       });
     }
 
@@ -138,7 +135,7 @@ export class ChangeHandler {
     winston.error(
       [
         `Failed to handle change batch after trying ${MAX_RETRY_ATTEMPTS} times`,
-        'Debugging info: ',
+        'Debugging info:',
         this.getChangeDebuggingInfo(failedChanges),
       ].join('\n'),
     );
