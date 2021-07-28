@@ -15,8 +15,8 @@ export class KoBoApi {
   async fetchKoBoSurveys(koboSurveyCodes, optionsInput) {
     // await validateEventOptions(optionsInput); // TODO: Write validator
     let mongoQuery = {};
-    if (optionsInput.submission_time) {
-      mongoQuery = { ...mongoQuery, _submission_time: { $gt: optionsInput.submission_time } };
+    if (optionsInput.startSubmissionTime) {
+      mongoQuery = { ...mongoQuery, _submission_time: { $gt: optionsInput.startSubmissionTime } };
     }
     const response = await this.fetchFromKoBo(`api/v2/assets/${koboSurveyCodes[0]}/data.json`, {
       query: JSON.stringify(mongoQuery),
