@@ -5,117 +5,109 @@
 
 import { execSync } from 'child_process';
 import {} from 'dotenv/config';
-import GithubApi from 'github-api';
+import fs from 'fs';
 
-import { getArgs, getLoggerInstance, RemoteGitRepo, requireEnv } from '@tupaia/utils';
-import { SNAPSHOTS } from '../../constants';
-import { pullSnapshots } from './pullSnapshots';
-import { pushSnapshots } from './pushSnapshots';
-import { Snapshots } from './Snapshots';
+import { getArgs, getLoggerInstance } from '@tupaia/utils';
+import { E2E_CONFIG_PATH } from '../../constants';
+import { generateConfig } from '../generateConfig/generateConfig';
 
 const scriptConfig = {
   options: {
     ciBuildId: {
       type: 'string',
       description:
-        'Used to associate multiple CI machines to one test run, see https://docs.cypress.io/guides/guides/parallelization#Linking-CI-machines-for-parallelization-or-grouping',
-    },
-    push: {
-      type: 'boolean',
-      default: true,
-      description:
-        'Push snapshots that were captured during the test run, if different than the existing ones',
+        'Used in CI/CD builds to associate multiple CI machines with one test run, see https://docs.cypress.io/guides/guides/parallelization#Linking-CI-machines-for-parallelization-or-grouping',
     },
   },
 };
 
-const runPackageScript = script =>
-  execSync(`yarn workspace @tupaia/web-frontend ${script}`, { stdio: 'inherit' });
-
-const pushSnapshotsIfDiffThanExisting = async (repo, branch, existingSnapshots) => {
+const printResults = ({ baselineUrl, compareUrl }, { baseError, compareError }) => {
   const logger = getLoggerInstance();
 
-  const allSnapshots = Snapshots.import(SNAPSHOTS.path);
-  const newSnapshots = allSnapshots.extractSnapshotsByKey(SNAPSHOTS.newKey, {
-    renameKey: SNAPSHOTS.key,
-  });
+  logger.info();
 
-  if (newSnapshots.isEmpty()) {
-    logger.info('New snapshots are empty. Probably something went very wrong, skipping push');
-  } else if (newSnapshots.equals(existingSnapshots)) {
-    logger.info('No changes in snapshots, skipping push');
-  } else {
-    logger.success(`Pushing new snapshots to ${SNAPSHOTS.repoUrl}...`);
-    const { pullRequestUrl } = await pushSnapshots(repo, branch, newSnapshots);
-    logger.info(`PR created: ${pullRequestUrl}`);
-  }
-};
-
-const runTestsAndCatchErrors = ciBuildId => {
-  const record = !!process.env.CYPRESS_RECORD_KEY;
-
-  let cypressError;
-  try {
-    let command = `cypress:run --record ${record}`;
-    if (ciBuildId) {
-      command = `${command} --parallel --ci-build-id ${ciBuildId}`;
+  const printResult = (description, error) => {
+    if (error) {
+      logger.error(`❌ ${description}`);
+    } else {
+      logger.success(`✔ ${description}`);
     }
-    runPackageScript(command);
-  } catch (error) {
-    // Note: ideally we would only catch test assertion errors,
-    // and still throw runtime/syntax errors etc.
-    // Unfortunately we haven't found an easy way to distinguish between the two in this occasion
-    cypressError = error;
+  };
+
+  printResult(`Baseline url: ${baselineUrl}`, baseError);
+  printResult(`Compare url: ${compareUrl}`, compareError);
+
+  if (baseError || compareError) {
+    logger.error(`❌ E2e tests failed`);
+    if (baseError) {
+      logger.error(
+        [
+          '',
+          'Note: since the tests for the baseline url failed, some base snapshots may be missing.',
+          'If this is true the test cases that depend on those snapshots may be false positive: tests always pass when snapshots are empty',
+          'Please check the detailed cypress logs to determine whether this is the case',
+        ].join('\n'),
+      );
+    }
+    process.exit(1);
+  } else {
+    logger.success(`✔ E2e tests passed!`);
+  }
+};
+
+const runTestsAgainstUrl = (url, options = {}) => {
+  const { ciBuildId = '', record = false } = options;
+
+  let command = `cypress:run --record ${record}`;
+  if (ciBuildId) {
+    command = `${command} --parallel --ci-build-id ${ciBuildId}`;
   }
 
-  return cypressError;
+  execSync(`CYPRESS_BASE_URL=${url} yarn workspace @tupaia/web-frontend ${command}`, {
+    stdio: 'inherit',
+  });
 };
 
-const getCurrentLocalBranch = () =>
-  execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf-8', stdio: 'pipe' }).split('\n')[0];
-
-export const getSnapshotBranch = () => {
-  const branch = process.env.CI_BRANCH || getCurrentLocalBranch();
-  return branch.replace(/-e2e$/, '');
+const checkUrlExists = url => {
+  try {
+    execSync(`curl --output /dev/null --silent --head --fail ${url}`);
+  } catch (error) {
+    throw new Error(`No deployment exists for ${url}, cancelling e2e tests`);
+  }
 };
 
-export const getSnapshotRepo = () => {
-  const gitHub = new GithubApi({ token: requireEnv('GITHUB_ACCESS_TOKEN') });
-  return RemoteGitRepo.connect(gitHub, SNAPSHOTS.repoUrl);
-};
-
-/**
- * Runs e2e tests using the following steps:
- * 1. Pull snapshots from the snapshot repo
- * 2. Generate config
- * 3. Run tests using the pulled snapshots
- * 4. Push snapshots that were captured during tests, if they are non empty and different
- * than the ones pulled from the repo
- */
 export const testE2e = async () => {
-  const args = getArgs(scriptConfig);
+  const { ciBuildId } = getArgs(scriptConfig);
+
   const logger = getLoggerInstance();
   logger.success('Running e2e tests for web-frontend');
 
-  const repo = getSnapshotRepo();
-  const branch = getSnapshotBranch();
+  await generateConfig();
+  const { baselineUrl, compareUrl } = JSON.parse(
+    fs.readFileSync(E2E_CONFIG_PATH, { encoding: 'utf-8' }),
+  );
+  // Check both urls before running the tests, in case one of them is invalid
+  checkUrlExists(baselineUrl);
+  checkUrlExists(compareUrl);
 
-  const { repoUrl } = SNAPSHOTS;
-  logger.success(`Pulling snapshots from ${repoUrl}...`);
-  const existingSnapshots = await pullSnapshots(repo, branch);
-  // Store snapshots so that they can be used during tests
-  existingSnapshots.export(SNAPSHOTS.path);
-
-  runPackageScript('cypress:generate-config');
-
-  // Hold error throwing so that snapshots can be pushed
-  const testError = runTestsAndCatchErrors(args.ciBuildId);
-
-  if (args.push) {
-    await pushSnapshotsIfDiffThanExisting(repo, branch, existingSnapshots);
+  let baseError;
+  try {
+    logger.info(`\nStarting base snapshot capture against ${baselineUrl}...`);
+    runTestsAgainstUrl(baselineUrl);
+  } catch (error) {
+    logger.error(error.message);
+    baseError = error;
   }
 
-  if (testError) {
-    throw testError;
+  let compareError;
+  try {
+    logger.info(`\nStarting compare snapshot capture against ${compareUrl}...`);
+    const record = !!process.env.CYPRESS_RECORD_KEY;
+    runTestsAgainstUrl(compareUrl, { ciBuildId, record });
+  } catch (error) {
+    logger.error(error.message);
+    compareError = error;
   }
+
+  printResults({ baselineUrl, compareUrl }, { baseError, compareError });
 };

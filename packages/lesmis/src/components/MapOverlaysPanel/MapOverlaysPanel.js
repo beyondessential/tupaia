@@ -13,6 +13,7 @@ import { MapOverlayGroup } from './MapOverlayGroup';
 import { MapOverlaysLoader } from './MapOverlaysLoader';
 import { FlexStart } from '../Layout';
 import { MapOverlaysPanelContainer as Container } from './MapOverlaysPanelContainer';
+import { ErrorBoundary } from '../ErrorBoundary';
 
 const Header = styled.div`
   padding: 1.25rem 1.875rem 2rem;
@@ -69,35 +70,37 @@ export const MapOverlaysPanel = ({
   ]);
 
   return (
-    <Container>
-      <Header>
-        <Typography variant="h5" gutterBottom>
-          Select Period:
-        </Typography>
-        <FlexStart>
-          {YearSelector}
-          {/* Todo: add better loader @see https://github.com/beyondessential/tupaia-backlog/issues/2681 */}
-          <Box>{isLoadingData && <CircularProgress size={30} />}</Box>
-        </FlexStart>
-      </Header>
-      <Body>
-        {isLoadingOverlays ? (
-          <MapOverlaysLoader />
-        ) : (
-          overlays.map(({ name, children }, index) => (
-            <MapOverlayGroup
-              key={name}
-              name={name}
-              options={children}
-              selectedOverlay={selectedOverlay}
-              setSelectedOverlay={setSelectedOverlay}
-              selectedPath={selectedPath}
-              path={[index]}
-            />
-          ))
-        )}
-      </Body>
-    </Container>
+    <ErrorBoundary>
+      <Container>
+        <Header>
+          <Typography variant="h5" gutterBottom>
+            Select Period:
+          </Typography>
+          <FlexStart>
+            {YearSelector}
+            {/* Todo: add better loader @see https://github.com/beyondessential/tupaia-backlog/issues/2681 */}
+            <Box>{isLoadingData && <CircularProgress size={30} />}</Box>
+          </FlexStart>
+        </Header>
+        <Body>
+          {isLoadingOverlays ? (
+            <MapOverlaysLoader />
+          ) : (
+            overlays.map(({ name, children }, index) => (
+              <MapOverlayGroup
+                key={name}
+                name={name}
+                options={children}
+                selectedOverlay={selectedOverlay}
+                setSelectedOverlay={setSelectedOverlay}
+                selectedPath={selectedPath}
+                path={[index]}
+              />
+            ))
+          )}
+        </Body>
+      </Container>
+    </ErrorBoundary>
   );
 };
 

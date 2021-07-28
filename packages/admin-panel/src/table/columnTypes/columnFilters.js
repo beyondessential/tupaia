@@ -10,15 +10,27 @@ import PropTypes from 'prop-types';
  * https://github.com/tannerlinsley/react-table/tree/v6/examples/custom-filtering
  */
 
-const options = [
-  { label: 'Show All', value: '' },
-  { label: 'Yes', value: true },
-  { label: 'No', value: false },
-];
-
 export const BooleanSelectFilter = ({ filter, onChange }) => (
   <Select
-    options={options}
+    options={[
+      { label: 'Show All', value: '' },
+      { label: 'Yes', value: true },
+      { label: 'No', value: false },
+    ]}
+    onChange={event => onChange(event.target.value)}
+    value={filter ? filter.value : ''}
+  />
+);
+
+// eslint-disable-next-line react/prop-types
+export const VerifiedFilter = ({ filter, onChange }) => (
+  <Select
+    options={[
+      { label: 'Show All', value: '' },
+      { label: 'Yes', value: 'verified' },
+      { label: 'No', value: 'new_user' },
+      { label: 'Not Applicable', value: 'unverified' },
+    ]}
     onChange={event => onChange(event.target.value)}
     value={filter ? filter.value : ''}
   />
@@ -32,6 +44,17 @@ BooleanSelectFilter.propTypes = {
 };
 
 BooleanSelectFilter.defaultProps = {
+  filter: null,
+  onChange: null,
+};
+VerifiedFilter.propTypes = {
+  filter: PropTypes.PropTypes.shape({
+    value: PropTypes.string,
+  }),
+  onChange: PropTypes.func,
+};
+
+VerifiedFilter.defaultProps = {
   filter: null,
   onChange: null,
 };

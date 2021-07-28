@@ -6,7 +6,7 @@
 import groupBy from 'lodash.groupby';
 
 import moment from 'moment';
-import { getSortByKey, momentToDateString } from '@tupaia/utils';
+import { getSortByKey, momentToDateString, DEFAULT_BINARY_OPTIONS } from '@tupaia/utils';
 import { SqlQuery } from './SqlQuery';
 import { AnalyticsFetchQuery } from './AnalyticsFetchQuery';
 import { EventsFetchQuery } from './EventsFetchQuery';
@@ -15,7 +15,6 @@ import { validateEventOptions, validateAnalyticsOptions } from './validation';
 import { sanitiseFetchDataOptions } from './sanitiseFetchDataOptions';
 
 const EVENT_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
-const DEFAULT_BINARY_OPTIONS = ['Yes', 'No'];
 
 const buildEventDataValues = resultsForEvent =>
   resultsForEvent.reduce(
