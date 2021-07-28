@@ -44,7 +44,7 @@ const getParentOfType = (entities, rootEntityCode, type) => {
   }
   return getParentOfType(entities, entity.parentCode, type);
 };
-const getDecendantCodesOfType = (entities, rootEntityCode, type) => {
+const getDescendantCodesOfType = (entities, rootEntityCode, type) => {
   const entity = entities?.find(e => e.code === rootEntityCode);
   if (!entity) {
     return [];
@@ -55,7 +55,7 @@ const getDecendantCodesOfType = (entities, rootEntityCode, type) => {
   if (!entity.childCodes || entity.type === 'country') {
     return [];
   }
-  return entity.childCodes.map(c => getDecendantCodesOfType(entities, c, type)).flat();
+  return entity.childCodes.map(c => getDescendantCodesOfType(entities, c, type)).flat();
 };
 
 const useReport = (entity, reportName, options, enabled) =>
@@ -87,32 +87,30 @@ const useDistrictReport = entity =>
   );
 
 const useMultiSchoolReport = (entities, rootEntity) => {
-  const decendants = getDecendantCodesOfType(entities, rootEntity?.code, 'school');
+  const descendants = getDescendantCodesOfType(entities, rootEntity?.code, 'school');
   return useReport(
     rootEntity,
     'LESMIS_multi_school_vitals',
     {
-      data: {
+      params: {
         endDate: utcMoment().format(endDateFormat),
-        organisationUnitCodes: decendants.join(),
       },
     },
-    decendants.length > 0,
+    descendants.length > 0,
   );
 };
 
 const useMultiDistrictReport = (entities, rootEntity) => {
-  const decendants = getDecendantCodesOfType(entities, rootEntity?.code, 'sub_district');
+  const descendants = getDescendantCodesOfType(entities, rootEntity?.code, 'sub_district');
   return useReport(
     rootEntity,
     'LESMIS_sub_district_vitals',
     {
-      data: {
+      params: {
         endDate: utcMoment().format(endDateFormat),
-        organisationUnitCodes: decendants.join(),
       },
     },
-    decendants.length > 0,
+    descendants.length > 0,
   );
 };
 
