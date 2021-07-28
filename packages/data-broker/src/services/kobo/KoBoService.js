@@ -12,6 +12,11 @@ export class KoBoService extends Service {
 
     this.api = api;
     this.translator = new KoBoTranslator(this.models);
+    this.pullers = {
+      [this.dataSourceTypes.DATA_ELEMENT]: this.pullAnalytics,
+      [this.dataSourceTypes.DATA_GROUP]: this.pullEvents,
+      [this.dataSourceTypes.SYNC_GROUP]: this.pullSyncGroup,
+    };
   }
 
   async push() {
@@ -23,17 +28,22 @@ export class KoBoService extends Service {
   }
 
   async pull(dataSources, type, options) {
-    if (type === this.dataSourceTypes.DATA_ELEMENT) {
-      throw new Error('Analytic pulling is not supported in KoBoService');
-    }
-    return this.pullEvents(dataSources, options);
+    const puller = this.pullers[type];
+    return puller(dataSources, options);
   }
 
-  async pullEvents(dataSources, options) {
+  async pullAnalytics() {
+    throw new Error('pullAnalytics is not supported in KoBoService');
+  }
+
+  async pullEvents() {
+    throw new Error('pullEvents is not supported in KoBoService');
+  }
+
+  async pullSyncGroup(dataSources, options) {
     const koboSurveyCodes = dataSources.map(({ config }) => config.koboSurveyCode);
     const koboEntityQuestion = dataSources.map(({ config }) => config.entityQuestionCode);
 
-    // TODO: Throw error on entity filter
     const koboResults = await this.api.fetchKoBoSurveys(koboSurveyCodes, options);
     return this.translator.translateKoBoResults(koboResults, koboEntityQuestion[0]);
   }

@@ -26,6 +26,12 @@ export class DataBroker {
     this.resultMergers = {
       [this.getDataSourceTypes().DATA_ELEMENT]: this.mergeAnalytics,
       [this.getDataSourceTypes().DATA_GROUP]: this.mergeEvents,
+      [this.getDataSourceTypes().SYNC_GROUP]: this.mergeSyncGroups,
+    };
+    this.fetchers = {
+      [this.getDataSourceTypes().DATA_ELEMENT]: this.fetchDataSourceTable,
+      [this.getDataSourceTypes().DATA_GROUP]: this.fetchDataSourceTable,
+      [this.getDataSourceTypes().SYNC_GROUP]: this.fetchSyncGroupTable,
     };
   }
 
@@ -37,12 +43,23 @@ export class DataBroker {
     return this.models.dataSource.getTypes();
   }
 
+  async fetchDataSourceTable(dataSourceSpec) {
+    await this.models.dataSource.find(dataSourceSpec);
+  }
+
+  async fetchSyncGroupTable(dataSourceSpec) {
+    // Add 'type' field to output to keep object layout consistent between tables
+    const syncGroups = await this.models.dataServiceSyncGroup.find({ code: dataSourceSpec.code });
+    return syncGroups.map(sg => ({ ...sg, type: this.getDataSourceTypes().SYNC_GROUP }));
+  }
+
   async fetchDataSources(dataSourceSpec) {
     const { code, type } = dataSourceSpec;
     if (!code || (Array.isArray(code) && code.length === 0)) {
       throw new Error('Please provide at least one existing data source code');
     }
-    const dataSources = await this.models.dataSource.find(dataSourceSpec);
+    const fetcher = this.fetchers[type];
+    const dataSources = await fetcher(dataSourceSpec);
     const typeDescription = `${lower(type)}s`;
     if (dataSources.length === 0) {
       throw new Error(`None of the following ${typeDescription} exist: ${code}`);
@@ -115,6 +132,8 @@ export class DataBroker {
   });
 
   mergeEvents = (target = [], source) => target.concat(source);
+
+  mergeSyncGroups = (target = [], source) => target.concat(source);
 
   async pullMetadata(dataSourceSpec, options) {
     const dataSources = await this.fetchDataSources(dataSourceSpec);
