@@ -5,10 +5,11 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
+import winston from 'winston';
 
 import { sleep } from '@tupaia/utils';
 import { ChangeHandler } from '../../changeHandlers/ChangeHandler';
-import { getTestModels, upsertDummyRecord } from '../../testUtilities';
+import { generateTestId, getTestModels, upsertDummyRecord } from '../../testUtilities';
 
 const DEBOUNCE_TIME = 100; // short debounce time so tests run more quickly
 
@@ -24,6 +25,8 @@ describe('ChangeHandler', () => {
         user: sinon.stub().callsFake(changeDetails => [changeDetails.new_record?.id]),
       };
     }
+
+    getChangeDebuggingInfo = changes => `Failed ids: ${changes}`;
 
     handleChanges = sinon.stub().resolves();
 
@@ -178,5 +181,70 @@ describe('ChangeHandler', () => {
     expect(isQueueHandlerRunning).to.equal(false);
     expect(queueHandlingCount).to.equal(3);
     expect(changeHandler.handleChanges).to.have.been.calledThrice;
+  });
+
+  describe('failure handling', () => {
+    const rejectedId = generateTestId();
+    const acceptedId = generateTestId();
+    let processedIds = [];
+
+    before(() => {
+      sinon.stub(winston, 'error');
+    });
+
+    beforeEach(() => {
+      processedIds = [];
+      changeHandler.handleChanges = sinon.stub().callsFake(changeIds => {
+        if (changeIds.includes(rejectedId)) {
+          throw new Error(`Rejected id found: ${rejectedId}`);
+        }
+        processedIds.push(...changeIds);
+      });
+      winston.error.resetHistory();
+    });
+
+    after(() => {
+      winston.error.restore();
+    });
+
+    it('retries to handle a batch up to 3 times, then stops trying and logs an error', async () => {
+      await upsertDummyRecord(models.project, { id: rejectedId });
+      await models.database.waitForAllChangeHandlers();
+
+      expect(changeHandler.handleChanges).to.have.callCount(3);
+      expect(changeHandler.changeQueue).to.have.length(0);
+      expect(winston.error).to.have.been.calledOnceWith(
+        sinon.match(new RegExp(`Failed ids: ${rejectedId}`)),
+      );
+      expect(processedIds).to.deep.equal([]);
+    });
+
+    it('the whole batch fails if an error occurs', async () => {
+      await upsertDummyRecord(models.project, { id: rejectedId });
+      await upsertDummyRecord(models.project, { id: acceptedId });
+      await models.database.waitForAllChangeHandlers();
+
+      expect(changeHandler.handleChanges).to.have.callCount(3); // 3 retry attempts
+      expect(changeHandler.changeQueue).to.have.length(0);
+      expect(winston.error).to.have.been.calledOnceWith(
+        sinon.match(new RegExp(`Failed ids: ${[rejectedId, acceptedId]}`)),
+      );
+      expect(processedIds).to.deep.equal([]);
+    });
+
+    it('valid future changes can still be queued and handled successfully', async () => {
+      await upsertDummyRecord(models.project, { id: rejectedId });
+      await sleep(2 * DEBOUNCE_TIME);
+      await upsertDummyRecord(models.project, { id: acceptedId });
+      await models.database.waitForAllChangeHandlers();
+
+      // 3 failed attempts for the rejected project + 1 successful for the accepted project
+      expect(changeHandler.handleChanges).to.have.callCount(4);
+      expect(changeHandler.changeQueue).to.have.length(0);
+      expect(winston.error).to.have.been.calledOnceWith(
+        sinon.match(new RegExp(`Failed ids: ${rejectedId}`)),
+      );
+      expect(processedIds).to.deep.equal([acceptedId]);
+    });
   });
 });
