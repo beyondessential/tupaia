@@ -40,8 +40,9 @@ export class ReportRoute extends Route {
             organisationUnitCodes: entityCode,
             projectCodes: LESMIS_PROJECT_NAME,
             hierarchy: LESMIS_HIERARCHY_NAME,
+            ...this.req.query,
           },
-          this.req.query,
+          {},
         );
         return report.results;
       }
@@ -58,10 +59,10 @@ export class ReportRoute extends Route {
           {
             // Report server can accept arrays so the parameters are plural
             organisationUnitCodes: entityCode,
-            projectCodes: LESMIS_PROJECT_NAME,
+            hierarchy: LESMIS_HIERARCHY_NAME,
             ...this.req.query,
           },
-          this.req.body,
+          {},
         );
     }
   }
