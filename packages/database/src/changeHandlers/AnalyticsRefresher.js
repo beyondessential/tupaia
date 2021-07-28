@@ -12,9 +12,9 @@ export class AnalyticsRefresher extends ChangeHandler {
   constructor(models) {
     super(models);
 
-    this.changeHandlers = {
-      answer: this.refreshAnalytics,
-      surveyResponse: this.refreshAnalytics,
+    this.changeTranslators = {
+      answer: () => [],
+      surveyResponse: () => [],
     };
   }
 
@@ -29,5 +29,5 @@ export class AnalyticsRefresher extends ChangeHandler {
     }
   };
 
-  refreshAnalytics = async () => AnalyticsRefresher.refreshAnalytics(this.models.database);
+  handleChanges = () => AnalyticsRefresher.refreshAnalytics(this.models.database);
 }
