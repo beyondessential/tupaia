@@ -29,14 +29,14 @@ const insertToTablesParams = [
     path: ['dataClasses'],
     newValue: {
       'GBV Services': {
-        numerator: { dataValues: [gbvServicesCode], valueOfInterest: 'Yes' },
+        numerator: { dataValues: [gbvServicesCode], valueOfInterest: 1 },
         denominator: {
           dataValues: [gbvServicesCode],
           valueOfInterest: '*',
         },
       },
       'AYF Services': {
-        numerator: { dataValues: [ayfServicesCode], valueOfInterest: 'Yes' },
+        numerator: { dataValues: [ayfServicesCode], valueOfInterest: 1 },
         denominator: {
           dataValues: [ayfServicesCode],
           valueOfInterest: '*',
