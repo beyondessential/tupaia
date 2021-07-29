@@ -9,4 +9,3 @@ export {
 } from './AncestorDescendantRelation';
 export { EntityModel, EntityType, EntityFields, EntityFilter } from './Entity';
 export { EntityHierarchyModel, EntityHierarchyType } from './EntityHierarchy';
-export { QueryConjunctions } from './types';

@@ -82,22 +82,65 @@ const assertParamsAreDefined = (params, methodName) => {
   });
 };
 
-export async function updateValues(db, table, newValues, condition) {
-  assertParamsAreDefined({ db, table, newValues, condition }, 'updateValues');
+const getQueryString = (arr, separator) => arr.map(item => `"${item}" = ?`).join(separator);
 
+const getWhereQuery = (condition, newValues = {}) => {
   const isStringCondition = typeof condition === 'string';
-  const getQueryString = (arr, separator) => arr.map(item => `"${item}" = ?`).join(separator);
-
-  const setQuery = getQueryString(Object.keys(newValues), ', ');
   const whereQuery = isStringCondition
     ? condition
     : getQueryString(Object.keys(condition), ' AND ');
+  const params = Object.values(newValues).concat(isStringCondition ? [] : Object.values(condition));
 
-  return db.runSql(
-    `UPDATE "${table}" SET ${setQuery} WHERE ${whereQuery}`,
-    Object.values(newValues).concat(isStringCondition ? [] : Object.values(condition)),
-  );
+  return { whereQuery, params };
+};
+
+export async function updateValues(db, table, newValues, condition) {
+  assertParamsAreDefined({ db, table, newValues, condition }, 'updateValues');
+  const { whereQuery, params } = getWhereQuery(condition, newValues);
+  const setQuery = getQueryString(Object.keys(newValues), ', ');
+
+  return db.runSql(`UPDATE "${table}" SET ${setQuery} WHERE ${whereQuery}`, params);
 }
+
+export const insertJsonEntry = async (db, table, column, path, value, condition) => {
+  assertParamsAreDefined({ db, table, column, path, value, condition }, 'insertJsonEntry');
+  const getValueString = arr => {
+    if (Array.isArray(arr)) {
+      const arrayString = arr
+        .map(item => (typeof item === 'string' ? `"${item}"` : item))
+        .join(',');
+      return `[${arrayString}]`;
+    }
+    // Object
+    return JSON.stringify(arr);
+  };
+
+  const { whereQuery, params } = getWhereQuery(condition);
+  await db.runSql(
+    `UPDATE "${table}" tb
+     SET "${column}" = 
+          JSONB_SET(tb."${column}",'{${path.toString()}}', 
+                    tb."${column}"::jsonb #> '{${path.toString()}}' || '${getValueString(value)}'
+                    )
+     WHERE ${whereQuery};`,
+    params,
+  );
+};
+
+export const removeJsonEntry = async (db, table, column, path, key, condition) => {
+  assertParamsAreDefined({ db, table, column, path, key, condition }, 'removeJsonEntry');
+  const { whereQuery, params } = getWhereQuery(condition);
+  return db.runSql(
+    `UPDATE "${table}" tb
+     SET "${column}" = 
+          REPLACE(tb."${column}"::text,
+                  tb."${column}"::jsonb #>> '{${path.toString()}}',  
+                  tb."${column}"::jsonb #> '{${path.toString()}}' #- '{${key}}' #>> '{}'
+                  ) :: jsonb 
+     WHERE ${whereQuery};`,
+    params,
+  );
+};
 
 export async function removeArrayValue(db, table, column, value, condition) {
   assertParamsAreDefined({ db, table, column, value, condition }, 'removeArrayValue');
