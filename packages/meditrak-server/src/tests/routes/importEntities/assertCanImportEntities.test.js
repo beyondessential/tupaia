@@ -6,7 +6,7 @@
 import { expect } from 'chai';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
-import { assertCanImportEntities } from '../../../routes/importEntities/assertCanImportEntities';
+import { assertCanImportEntities } from '../../../apiV2/importEntities/assertCanImportEntities';
 
 const DEFAULT_POLICY = {
   DL: ['Public'],

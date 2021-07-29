@@ -12,7 +12,7 @@ import {
 } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
 import { getModels } from '../../testUtilities';
-import { assertCanExportSurveys } from '../../../routes/exportSurveys/assertCanExportSurveys';
+import { assertCanExportSurveys } from '../../../apiV2/exportSurveys/assertCanExportSurveys';
 
 const DEFAULT_POLICY = {
   DL: ['Public'],

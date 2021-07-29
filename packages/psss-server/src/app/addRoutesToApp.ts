@@ -20,8 +20,8 @@ import {
   DeleteWeeklyReportRoute,
   ProcessAlertActionRoute,
   DeleteAlertRoute,
-} from '../routes';
-import { Route } from '../routes/Route';
+} from '../apiV2';
+import { Route } from '../apiV2/Route';
 
 const handleWith = (RouteClass: typeof Route) => (
   req: PsssRequest,

@@ -5,7 +5,7 @@
 
 import { expect } from 'chai';
 
-import { mergeMultiJoin } from '../../../routes/utilities/mergeMultiJoin';
+import { mergeMultiJoin } from '../../../apiV2/utilities/mergeMultiJoin';
 
 describe('mergeMultiJoin', () => {
   it('returns the base multiJoin when no second multiJoin is provided', () => {
