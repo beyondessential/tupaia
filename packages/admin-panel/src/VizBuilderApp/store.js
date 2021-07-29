@@ -12,6 +12,7 @@ const initialState = {
   permissionGroup: null,
   data: {
     dataElements: [],
+    dataGroups: [],
     aggregations: [],
     transform: [],
   },
@@ -21,6 +22,7 @@ const initialState = {
 const SET_VALUE = 'SET_VALUE';
 const SET_PROJECT = 'SET_PROJECT';
 const SET_DATA_CONFIG = 'SET_DATA_CONFIG';
+const SET_FETCH_CONFIG = 'SET_FETCH_CONFIG';
 const SET_PRESENTATION_CONFIG = 'SET_PRESENTATION_CONFIG';
 
 function appReducer(state, action) {
@@ -54,6 +56,13 @@ function appReducer(state, action) {
         data: { ...state.data, [key]: value },
       };
     }
+    case SET_FETCH_CONFIG: {
+      const { value } = action;
+      return {
+        ...state,
+        data: { ...state.data, ...value },
+      };
+    }
     case SET_PRESENTATION_CONFIG: {
       const { value } = action;
       return {
@@ -79,11 +88,13 @@ const useAppState = () => {
     (key, value) => dispatch({ type: SET_DATA_CONFIG, key, value }),
     [],
   );
+  const setFetchConfig = useCallback(value => dispatch({ type: SET_FETCH_CONFIG, value }), []);
 
   return [
     state,
     {
       setDataConfig,
+      setFetchConfig,
       setProject,
       setPresentation,
       setValue,
