@@ -15,22 +15,7 @@ export class KoBoTranslator {
     return { orgUnit: entity.code, orgUnitName: entity.name };
   }
 
-  async translateKoBoDataValues(dataValues) {
-    const dataSources = await this.models.dataSource.find({
-      code: Object.keys(dataValues),
-      service_type: 'kobo',
-    });
-    const dataSourceByKoBoCode = keyBy(dataSources, 'code');
-    const translatedValues = {};
-    for (const [key, value] of Object.entries(dataValues)) {
-      if (dataSourceByKoBoCode[key]) {
-        translatedValues[dataSourceByKoBoCode[key].config.internalQuestionCode] = value;
-      }
-    }
-    return translatedValues;
-  }
-
-  async translateSingleKoBoResult(result, entityQuestion) {
+  async translateSingleKoBoResult(result, questionCodeMapping, entityQuestion) {
     const {
       _id: event,
       _submission_time: eventDate,
@@ -39,21 +24,29 @@ export class KoBoTranslator {
     } = result;
 
     const { orgUnit, orgUnitName } = await this.fetchEntityInfoFromKoBoAnswer(koboEntityCode);
-    const dataValues = await this.translateKoBoDataValues(restOfFields);
+    // Map kobo questions to tupaia question codes
+    const dataValues = {};
+    for (const [tupaia, kobo] of Object.entries(questionCodeMapping)) {
+      if (restOfFields[kobo]) {
+        dataValues[tupaia] = restOfFields[kobo];
+      }
+    }
 
     return {
       event,
       eventDate,
       orgUnit,
       orgUnitName,
-      dataValues: { dataValues },
+      dataValues,
     };
   }
 
-  async translateKoBoResults(results, entityQuestion) {
+  async translateKoBoResults(results, questionCodeMapping, entityQuestion) {
     // TODO: Should maybe swap this to fetch all at once
     return Promise.all(
-      results.map(result => this.translateSingleKoBoResult(result, entityQuestion)),
+      results.map(result =>
+        this.translateSingleKoBoResult(result, questionCodeMapping, entityQuestion),
+      ),
     );
   }
 }

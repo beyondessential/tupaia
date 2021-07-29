@@ -43,9 +43,14 @@ export class KoBoService extends Service {
   pullSyncGroup = async (dataSources, options) => {
     const koboSurveyCodes = dataSources.map(({ config }) => config.koboSurveyCode);
     const koboEntityQuestion = dataSources.map(({ config }) => config.entityQuestionCode);
+    const questionCodeMapping = dataSources.map(({ config }) => config.questionCodeMapping);
 
     const koboResults = await this.api.fetchKoBoSurveys(koboSurveyCodes, options);
-    return this.translator.translateKoBoResults(koboResults, koboEntityQuestion[0]);
+    return this.translator.translateKoBoResults(
+      koboResults,
+      questionCodeMapping[0],
+      koboEntityQuestion[0],
+    );
   };
 
   async pullMetadata() {
