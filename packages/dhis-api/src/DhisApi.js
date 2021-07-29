@@ -238,11 +238,11 @@ export class DhisApi {
     endDate,
     eventId,
     trackedEntityInstance,
-    dataValueFormat = 'array', // ('array'|'object')
+    dataValueFormat = 'object', // ('array'|'object')
   }) {
-    if (!eventId && !trackedEntityInstance && !programCode) {
+    if (!eventId && !trackedEntityInstance && !programId && !programCode) {
       throw this.constructError(
-        'At least one of the following must be provided: eventId, trackedEntityInstance, programCode',
+        'At least one of the following must be provided: eventId, programId, trackedEntityInstance, programCode',
       );
     }
 
@@ -285,7 +285,7 @@ export class DhisApi {
     if (dataValueFormat === 'object') {
       events = events.map(event => ({
         ...event,
-        dataValues: keyBy(event.dataValues, 'dataElement'),
+        dataValues: reduceToDictionary(event.dataValues, 'dataElement', 'value'),
       }));
     }
     events.sort(getSortByKey('eventDate'));

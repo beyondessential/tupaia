@@ -39,7 +39,7 @@ export class EventsPuller {
       endDate,
       eventId,
       trackedEntityInstance,
-      dataValueFormat,
+      dataValueFormat: 'object',
     });
 
     return this.translator.translateInboundEvents(events, programCode);
@@ -80,7 +80,7 @@ export class EventsPuller {
     const { code: programCode } = dataSource;
 
     // TODO remove `useDeprecatedApi` option as soon as `pullEventsForApi_Deprecated()` is deleted
-    const { useDeprecatedApi = true } = options;
+    const { useDeprecatedApi = false } = options;
     const pullEventsForApi = useDeprecatedApi
       ? this.pullEventsForApi_Deprecated
       : this.pullEventsForApi;
