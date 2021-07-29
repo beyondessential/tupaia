@@ -11,10 +11,10 @@ const EVENTS = [
   {
     orgUnit: 'TO_Tongatapu',
     orgUnitName: 'Tongatapu',
-    dataValues: [{ dataElement: 'A', value: '1' }],
+    dataValues: { A: '1' },
   },
-  { orgUnit: 'TO_Niuas', orgUnitName: 'Niuas', dataValues: [{ dataElement: 'A', value: '2' }] },
-  { orgUnit: 'TO_Niuas', orgUnitName: 'Niuas', dataValues: [{ dataElement: 'A', value: '3' }] },
+  { orgUnit: 'TO_Niuas', orgUnitName: 'Niuas', dataValues: { A: '2' } },
+  { orgUnit: 'TO_Niuas', orgUnitName: 'Niuas', dataValues: { A: '3' } },
 ];
 
 const PARENT_ORG_UNIT = {
@@ -36,10 +36,10 @@ const PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES = {
   getDescendantsOfType: (_, type) =>
     type === 'district'
       ? [
-        { code: 'NZ_WELLINGTON_CITY', name: 'Wellington' },
-        { code: 'NZ_WELLINGTON_OTHER', name: 'Other' }, // same name
-        { code: 'NZ_AUCKLAND_OTHER', name: 'Other' },   // same name
-      ]
+          { code: 'NZ_WELLINGTON_CITY', name: 'Wellington' },
+          { code: 'NZ_WELLINGTON_OTHER', name: 'Other' }, // same name
+          { code: 'NZ_AUCKLAND_OTHER', name: 'Other' }, // same name
+        ]
       : [],
 };
 
@@ -49,17 +49,17 @@ const PARENT_ORG_UNIT_WITH_CHILDREN = {
   getDescendantsOfType: (_, type) =>
     type === 'district'
       ? [
-        {
-          code: 'MLB',
-          name: 'Melbourne',
-          getDescendantsOfType: () => [{ code: 'MLB_C', name: 'Collingwood' } ]
-        },
-        {
-          code: 'SYD',
-          name: 'Sydney',
-          getDescendantsOfType: () => [{ code: 'SYD_U', name: 'Ultimo' } ]
-        },
-      ]
+          {
+            code: 'MLB',
+            name: 'Melbourne',
+            getDescendantsOfType: () => [{ code: 'MLB_C', name: 'Collingwood' }],
+          },
+          {
+            code: 'SYD',
+            name: 'Sydney',
+            getDescendantsOfType: () => [{ code: 'SYD_U', name: 'Ultimo' }],
+          },
+        ]
       : [],
 };
 
@@ -69,17 +69,17 @@ const PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES_WITH_CHILDREN = {
   getDescendantsOfType: (_, type) =>
     type === 'district'
       ? [
-        {
-          code: 'MLB',
-          name: 'Other', // duplicate
-          getDescendantsOfType: () => [{ code: 'MLB_C', name: 'Collingwood' } ]
-        },
-        {
-          code: 'SYD',
-          name: 'Other', // duplicate
-          getDescendantsOfType: () => [{ code: 'SYD_U', name: 'Ultimo' } ]
-        },
-      ]
+          {
+            code: 'MLB',
+            name: 'Other', // duplicate
+            getDescendantsOfType: () => [{ code: 'MLB_C', name: 'Collingwood' }],
+          },
+          {
+            code: 'SYD',
+            name: 'Other', // duplicate
+            getDescendantsOfType: () => [{ code: 'SYD_U', name: 'Ultimo' }],
+          },
+        ]
       : [],
 };
 
@@ -89,40 +89,44 @@ const PARENT_ORG_UNIT_WITH_CHILDREN_WITH_NON_UNIQUE_NAMES = {
   getDescendantsOfType: (_, type) =>
     type === 'district'
       ? [
-        {
-          code: 'MLB',
-          name: 'Melbourne',
-          getDescendantsOfType: () => [{ code: 'MLB_C', name: 'Collingwood' }, { code: 'MLB_O', name: 'Other' } ] // "Other" duplicate
-        },
-        {
-          code: 'SYD',
-          name: 'Sydney',
-          getDescendantsOfType: () => [{ code: 'SYD_U', name: 'Ultimo' }, { code: 'SYD_O', name: 'Other' } ] // "Other" duplicate
-        },
-      ]
+          {
+            code: 'MLB',
+            name: 'Melbourne',
+            getDescendantsOfType: () => [
+              { code: 'MLB_C', name: 'Collingwood' },
+              { code: 'MLB_O', name: 'Other' },
+            ], // "Other" duplicate
+          },
+          {
+            code: 'SYD',
+            name: 'Sydney',
+            getDescendantsOfType: () => [
+              { code: 'SYD_U', name: 'Ultimo' },
+              { code: 'SYD_O', name: 'Other' },
+            ], // "Other" duplicate
+          },
+        ]
       : [],
 };
 
 const models = {
   entity: {
-    findOne: sinon
-      .stub()
-      .callsFake(({ code }) => {
-        switch (code) {
-          case PARENT_ORG_UNIT.code:
-            return PARENT_ORG_UNIT;
-          case PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES.code:
-            return PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES;
-          case PARENT_ORG_UNIT_WITH_CHILDREN.code:
-            return PARENT_ORG_UNIT_WITH_CHILDREN;
-          case PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES_WITH_CHILDREN.code:
-            return PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES_WITH_CHILDREN;
-          case PARENT_ORG_UNIT_WITH_CHILDREN_WITH_NON_UNIQUE_NAMES.code:
-            return PARENT_ORG_UNIT_WITH_CHILDREN_WITH_NON_UNIQUE_NAMES;
-          default:
-            return null;
-        }
-      }),
+    findOne: sinon.stub().callsFake(({ code }) => {
+      switch (code) {
+        case PARENT_ORG_UNIT.code:
+          return PARENT_ORG_UNIT;
+        case PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES.code:
+          return PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES;
+        case PARENT_ORG_UNIT_WITH_CHILDREN.code:
+          return PARENT_ORG_UNIT_WITH_CHILDREN;
+        case PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES_WITH_CHILDREN.code:
+          return PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES_WITH_CHILDREN;
+        case PARENT_ORG_UNIT_WITH_CHILDREN_WITH_NON_UNIQUE_NAMES.code:
+          return PARENT_ORG_UNIT_WITH_CHILDREN_WITH_NON_UNIQUE_NAMES;
+        default:
+          return null;
+      }
+    }),
   },
 };
 
@@ -178,32 +182,45 @@ describe('groupEvents()', () => {
           {
             orgUnit: 'TO_Tongatapu',
             orgUnitName: 'Tongatapu',
-            dataValues: [{ dataElement: 'A', value: '1' }],
+            dataValues: { A: '1' },
           },
         ],
         Niuas: [
           {
             orgUnit: 'TO_Niuas',
             orgUnitName: 'Niuas',
-            dataValues: [{ dataElement: 'A', value: '2' }],
+            dataValues: { A: '2' },
           },
           {
             orgUnit: 'TO_Niuas',
             orgUnitName: 'Niuas',
-            dataValues: [{ dataElement: 'A', value: '3' }],
+            dataValues: { A: '3' },
           },
         ],
         Haapai: [],
       }));
 
     it('can handle non-unique org unit names', () => {
-      const EVENTS = [
-        { orgUnit: 'NZ_WELLINGTON_CITY', orgUnitName: 'Wellington', dataValues: [{ dataElement: 'A', value: '1' }] },
-        { orgUnit: 'NZ_WELLINGTON_OTHER', orgUnitName: 'Other', dataValues: [{ dataElement: 'A', value: '2' }] }, // same org unit name
-        { orgUnit: 'NZ_AUCKLAND_OTHER', orgUnitName: 'Other', dataValues: [{ dataElement: 'A', value: '3' }] },   // same org unit name
-      ]
+      const events = [
+        {
+          orgUnit: 'NZ_WELLINGTON_CITY',
+          orgUnitName: 'Wellington',
+          dataValues: { A: '1' },
+        },
+        {
+          orgUnit: 'NZ_WELLINGTON_OTHER',
+          orgUnitName: 'Other',
+          dataValues: { A: '2' },
+        }, // same org unit name
+        {
+          orgUnit: 'NZ_AUCKLAND_OTHER',
+          orgUnitName: 'Other',
+          dataValues: { A: '3' },
+        }, // same org unit name
+      ];
+
       return expect(
-        groupEvents(models, EVENTS, {
+        groupEvents(models, events, {
           type: 'allOrgUnitNames',
           options: { parentCode: 'NZ', type: 'district' },
         }),
@@ -212,117 +229,156 @@ describe('groupEvents()', () => {
           {
             orgUnit: 'NZ_WELLINGTON_CITY',
             orgUnitName: 'Wellington',
-            dataValues: [{ dataElement: 'A', value: '1' }],
+            dataValues: { A: '1' },
           },
         ],
-        "Other (NZ_WELLINGTON_OTHER)": [
+        'Other (NZ_WELLINGTON_OTHER)': [
           {
             orgUnit: 'NZ_WELLINGTON_OTHER',
             orgUnitName: 'Other',
-            dataValues: [{ dataElement: 'A', value: '2' }],
+            dataValues: { A: '2' },
           },
         ],
-        "Other (NZ_AUCKLAND_OTHER)": [
+        'Other (NZ_AUCKLAND_OTHER)': [
           {
             orgUnit: 'NZ_AUCKLAND_OTHER',
             orgUnitName: 'Other',
-            dataValues: [{ dataElement: 'A', value: '3' }],
+            dataValues: { A: '3' },
           },
         ],
-      })
+      });
     });
   });
 
   describe('type: allOrgUnitParentNames', () => {
     it('groups', () => {
-      const EVENTS = [
-        { orgUnit: 'MLB_C', orgUnitName: 'Collingwood', dataValues: [{ dataElement: 'A', value: '1' }] },
-        { orgUnit: 'SYD_U', orgUnitName: 'Ultimo', dataValues: [{ dataElement: 'A', value: '2' }] },
-        { orgUnit: 'SYD_U', orgUnitName: 'Ultimo', dataValues: [{ dataElement: 'A', value: '3' }] },
-      ]
-      return expect(
-        groupEvents(models, EVENTS, {
+      const events = [
+        {
+          orgUnit: 'MLB_C',
+          orgUnitName: 'Collingwood',
+          dataValues: { A: '1' },
+        },
+        { orgUnit: 'SYD_U', orgUnitName: 'Ultimo', dataValues: { A: '2' } },
+        { orgUnit: 'SYD_U', orgUnitName: 'Ultimo', dataValues: { A: '3' } },
+      ];
+
+      expect(
+        groupEvents(models, events, {
           type: 'allOrgUnitParentNames',
           options: { parentCode: 'AU1', type: 'district' },
         }),
       ).to.eventually.deep.equal({
         Melbourne: [
-          { orgUnit: 'MLB_C', orgUnitName: 'Collingwood', dataValues: [{ dataElement: 'A', value: '1' }] }
+          {
+            orgUnit: 'MLB_C',
+            orgUnitName: 'Collingwood',
+            dataValues: { A: '1' },
+          },
         ],
         Sydney: [
-          { orgUnit: 'SYD_U', orgUnitName: 'Ultimo', dataValues: [{ dataElement: 'A', value: '2' }] },
-          { orgUnit: 'SYD_U', orgUnitName: 'Ultimo', dataValues: [{ dataElement: 'A', value: '3' }] },
+          {
+            orgUnit: 'SYD_U',
+            orgUnitName: 'Ultimo',
+            dataValues: { A: '2' },
+          },
+          {
+            orgUnit: 'SYD_U',
+            orgUnitName: 'Ultimo',
+            dataValues: { A: '3' },
+          },
         ],
-      })
+      });
     });
 
     it('can handle non-unique org unit names', () => {
-      const EVENTS = [
-        { orgUnit: 'MLB_C', orgUnitName: 'Collingwood', dataValues: [{ dataElement: 'A', value: '1' }] },
-        { orgUnit: 'SYD_U', orgUnitName: 'Ultimo', dataValues: [{ dataElement: 'A', value: '2' }] },
-      ]
-      return expect(
-        groupEvents(models, EVENTS, {
+      const events = [
+        {
+          orgUnit: 'MLB_C',
+          orgUnitName: 'Collingwood',
+          dataValues: { A: '1' },
+        },
+        { orgUnit: 'SYD_U', orgUnitName: 'Ultimo', dataValues: { A: '2' } },
+      ];
+
+      expect(
+        groupEvents(models, events, {
           type: 'allOrgUnitParentNames',
           options: { parentCode: 'AU2', type: 'district' },
         }),
       ).to.eventually.deep.equal({
-        "Other (MLB)": [
-          { orgUnit: 'MLB_C', orgUnitName: 'Collingwood', dataValues: [{ dataElement: 'A', value: '1' }] },
+        'Other (MLB)': [
+          {
+            orgUnit: 'MLB_C',
+            orgUnitName: 'Collingwood',
+            dataValues: { A: '1' },
+          },
         ],
-        "Other (SYD)": [
-          { orgUnit: 'SYD_U', orgUnitName: 'Ultimo', dataValues: [{ dataElement: 'A', value: '2' }] },
+        'Other (SYD)': [
+          {
+            orgUnit: 'SYD_U',
+            orgUnitName: 'Ultimo',
+            dataValues: { A: '2' },
+          },
         ],
-      })
+      });
     });
 
     it('can handle non-unique child org unit names', () => {
-      const EVENTS = [
-        { orgUnit: 'MLB_C', orgUnitName: 'Collingwood', dataValues: [{ dataElement: 'A', value: '1' }] },
-        { orgUnit: 'SYD_U', orgUnitName: 'Ultimo', dataValues: [{ dataElement: 'A', value: '2' }] },
-        { orgUnit: 'MLB_O', orgUnitName: 'Other', dataValues: [{ dataElement: 'A', value: '3' }] }, // same child org unit name
-        { orgUnit: 'SYD_O', orgUnitName: 'Other', dataValues: [{ dataElement: 'A', value: '4' }] }, // same child org unit name
-      ]
-      return expect(
-        groupEvents(models, EVENTS, {
+      const events = [
+        {
+          orgUnit: 'MLB_C',
+          orgUnitName: 'Collingwood',
+          dataValues: { A: '1' },
+        },
+        { orgUnit: 'SYD_U', orgUnitName: 'Ultimo', dataValues: { A: '2' } },
+        { orgUnit: 'MLB_O', orgUnitName: 'Other', dataValues: { A: '3' } }, // same child org unit name
+        { orgUnit: 'SYD_O', orgUnitName: 'Other', dataValues: { A: '4' } }, // same child org unit name
+      ];
+
+      expect(
+        groupEvents(models, events, {
           type: 'allOrgUnitParentNames',
           options: { parentCode: 'AU3', type: 'district' },
         }),
       ).to.eventually.deep.equal({
         Melbourne: [
-          { orgUnit: 'MLB_C', orgUnitName: 'Collingwood', dataValues: [{ dataElement: 'A', value: '1' }] },
-          { orgUnit: 'MLB_O', orgUnitName: 'Other', dataValues: [{ dataElement: 'A', value: '3' }] },
+          {
+            orgUnit: 'MLB_C',
+            orgUnitName: 'Collingwood',
+            dataValues: { A: '1' },
+          },
+          {
+            orgUnit: 'MLB_O',
+            orgUnitName: 'Other',
+            dataValues: { A: '3' },
+          },
         ],
         Sydney: [
-          { orgUnit: 'SYD_U', orgUnitName: 'Ultimo', dataValues: [{ dataElement: 'A', value: '2' }] },
-          { orgUnit: 'SYD_O', orgUnitName: 'Other', dataValues: [{ dataElement: 'A', value: '4' }] },
+          {
+            orgUnit: 'SYD_U',
+            orgUnitName: 'Ultimo',
+            dataValues: { A: '2' },
+          },
+          {
+            orgUnit: 'SYD_O',
+            orgUnitName: 'Other',
+            dataValues: { A: '4' },
+          },
         ],
-      })
+      });
     });
   });
 
   describe('type: dataValues', () => {
-    const EVENTS_2 = [
-      {
-        dataValues: [
-          { dataElement: 'A', value: '10' },
-          { dataElement: 'B', value: '20' },
-        ],
-      },
-      {
-        dataValues: [
-          { dataElement: 'A', value: '10' },
-          { dataElement: 'B', value: '21' },
-        ],
-      },
-      {
-        dataValues: [{ dataElement: 'C', value: '30' }],
-      },
+    const events = [
+      { dataValues: { A: '10', B: '20' } },
+      { dataValues: { A: '10', B: '21' } },
+      { dataValues: { C: '30' } },
     ];
 
     it('groups', () =>
       expect(
-        groupEvents(models, EVENTS_2, {
+        groupEvents(models, events, {
           type: 'dataValues',
           options: {
             GROUPING_1: {
@@ -336,31 +392,20 @@ describe('groupEvents()', () => {
       ).to.eventually.deep.equal({
         GROUPING_1: [
           {
-            dataValues: [
-              { dataElement: 'A', value: '10' },
-              { dataElement: 'B', value: '20' },
-            ],
+            dataValues: { A: '10', B: '20' },
           },
-          {
-            dataValues: [
-              { dataElement: 'A', value: '10' },
-              { dataElement: 'B', value: '21' },
-            ],
-          },
+          { dataValues: { A: '10', B: '21' } },
         ],
         GROUPING_2: [
           {
-            dataValues: [
-              { dataElement: 'A', value: '10' },
-              { dataElement: 'B', value: '21' },
-            ],
+            dataValues: { A: '10', B: '21' },
           },
         ],
       }));
 
     it('uses a union type condition check', () =>
       expect(
-        groupEvents(models, EVENTS_2, {
+        groupEvents(models, events, {
           type: 'dataValues',
           options: {
             GROUPING_1: {
@@ -371,10 +416,7 @@ describe('groupEvents()', () => {
       ).to.eventually.deep.equal({
         GROUPING_1: [
           {
-            dataValues: [
-              { dataElement: 'A', value: '10' },
-              { dataElement: 'B', value: '21' },
-            ],
+            dataValues: { A: '10', B: '21' },
           },
         ],
       }));

@@ -5,20 +5,14 @@ import {
   countAnalyticsThatSatisfyConditions,
 } from '/apiV1/dataBuilders/helpers';
 
-const buildEvent = dataValueMap => ({
-  dataValues: Object.entries(dataValueMap).reduce((results, [dataElement, value]) => {
-    return { ...results, [dataElement]: { value } };
-  }, {}),
-});
-
 describe('checkAgainstConditions', () => {
   describe('countEventsThatSatisfyConditions()', () => {
     const events = [
-      buildEvent({ temperature: '2', result: 'Positive' }),
-      buildEvent({ temperature: '5', result: 'Positive' }),
-      buildEvent({ temperature: '7', result: 'Positive Mixed' }),
-      buildEvent({ temperature: '2', result: 'Negative' }),
-      buildEvent({ temperature: '', result: '' }),
+      { dataValues: { temperature: '2', result: 'Positive' } },
+      { dataValues: { temperature: '5', result: 'Positive' } },
+      { dataValues: { temperature: '7', result: 'Positive Mixed' } },
+      { dataValues: { temperature: '2', result: 'Negative' } },
+      { dataValues: { temperature: '', result: '' } },
     ];
     const assertCountOfEventsForConditions = (conditions, expectedResult) =>
       expect(countEventsThatSatisfyConditions(events, conditions)).to.equal(expectedResult);

@@ -39,8 +39,7 @@ export class CountEventsBuilder extends DataBuilder {
 
   async fetchResults() {
     const dataElementCodes = this.getDataElementCodes();
-    const events = await this.fetchEvents({ dataElementCodes });
-    return events;
+    return this.fetchEvents({ dataElementCodes });
   }
 
   getDataElementCodes() {

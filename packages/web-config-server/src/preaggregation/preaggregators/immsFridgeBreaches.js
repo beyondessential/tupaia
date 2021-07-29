@@ -180,7 +180,7 @@ class FridgeBreachAggregator {
     const { eventDate, dataValues } = event;
 
     const readings = { eventDate };
-    dataValues.forEach(({ dataElement: dataElementCode, value }) => {
+    Object.entries(dataValues).forEach(([dataElementCode, value]) => {
       if (!Object.values(FRIDGE_BREACH_ELEMENT_CODES).includes(dataElementCode)) {
         return;
       }
