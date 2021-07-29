@@ -53,6 +53,8 @@ const setupEmailResponse = async (req, res) => {
     return;
   }
 
+  // respond with a timeout message
+  req.flagPermissionsChecked(); // any permissions error will be emailed; bypass permissions assertion
   respond(res, {
     message:
       'Import is taking a while, and will continue in the background. You will be emailed when the import process completes.',

@@ -48,26 +48,31 @@ def get_cert(type_tag):
 
 def get_gateway_elb(tupaia_instance_name):
     elbs = elbv2.describe_load_balancers(PageSize=400)
-    tag_descriptions = elbv2.describe_tags(
-        ResourceArns=list(map(lambda x: x['LoadBalancerArn'], elbs['LoadBalancers']))
-    )
-    matching_arns = list(filter(lambda x: tags_contains(x['Tags'], 'Type', 'Tupaia-Gateway') and tags_contains(x['Tags'], 'TupaiaInstanceName', tupaia_instance_name), tag_descriptions['TagDescriptions']))
-    if len(matching_arns) == 0:
-        raise Exception('No gateway elb found tagged with tupaia instance name: ' + tupaia_instance_name)
-    matching_arn = matching_arns[0]['ResourceArn']
-    return list(filter(lambda x: x['LoadBalancerArn'] == matching_arn, elbs['LoadBalancers']))[0]
+    for elb in elbs['LoadBalancers']:
+        tag_descriptions = elbv2.describe_tags(
+            ResourceArns=[elb['LoadBalancerArn']]
+        )
+        matching_arns = list(filter(lambda x: tags_contains(x['Tags'], 'Type', 'Tupaia-Gateway') and tags_contains(x['Tags'], 'TupaiaInstanceName', tupaia_instance_name), tag_descriptions['TagDescriptions']))
+        if len(matching_arns) > 1:
+            raise Exception('Multiple gateway elbs found tagged with tupaia instance name: ' + tupaia_instance_name)
+        if len(matching_arns) == 1:
+            return elb
+    raise Exception('No gateway elb found tagged with tupaia instance name: ' + tupaia_instance_name)
 
 
 def get_gateway_target_group(tupaia_instance_name):
     target_groups = elbv2.describe_target_groups(PageSize=400)
-    tag_descriptions = elbv2.describe_tags(
-        ResourceArns=list(map(lambda x: x['TargetGroupArn'], target_groups['TargetGroups']))
-    )
-    matching_arns = list(filter(lambda x: tags_contains(x['Tags'], 'Type', 'Tupaia-Gateway') and tags_contains(x['Tags'], 'TupaiaInstanceName', tupaia_instance_name), tag_descriptions['TagDescriptions']))
-    if len(matching_arns) == 0:
-        raise Exception('No gateway target group found tagged with tupaia instance name: ' + tupaia_instance_name)
-    matching_arn = matching_arns[0]['ResourceArn']
-    return list(filter(lambda x: x['TargetGroupArn'] == matching_arn, target_groups['TargetGroups']))[0]
+    for target_group in target_groups['TargetGroups']:
+        tag_descriptions = elbv2.describe_tags(
+            ResourceArns=[target_group['TargetGroupArn']]
+        )
+        matching_arns = list(filter(lambda x: tags_contains(x['Tags'], 'Type', 'Tupaia-Gateway') and tags_contains(x['Tags'], 'TupaiaInstanceName', tupaia_instance_name), tag_descriptions['TagDescriptions']))
+        if len(matching_arns) > 1:
+            raise Exception('Multiple target groups found tagged with tupaia instance name: ' + tupaia_instance_name)
+        if len(matching_arns) == 1:
+            return target_group
+
+    raise Exception('No gateway target group found tagged with tupaia instance name: ' + tupaia_instance_name)
 
 
 def get_gateway_listeners(tupaia_instance_name):

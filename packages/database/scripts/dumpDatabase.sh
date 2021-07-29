@@ -3,44 +3,57 @@
 # Exit when any command fails
 set -e
 
-USAGE="Usage: dumpDb identity_file [-s --server =dev] [-t --target =.]"
+function print_help() {
+    cat <<EOF
+dumpDatabase.sh <identity_file>
+
+Options:
+  -h, --help     Show help                                                       [boolean]
+  -s, --server   Stage name of the EC2 instance that will be used (default: dev) [string]
+  -t, --target   Directory to store the dump under                               [string]
+EOF
+}
+
 DUMP_FILE_NAME="dump.sql"
 
+identity_file=""
 server="dev"
 target_dir="."
-identity_file="$1"
 
-if [ "$identity_file" == "" ]; then
-    echo "No identity file provided"
-    echo $USAGE
-    exit 1
-fi
-
-while [ "$2" != "" ]; do
-    case $2 in
+while [ "$1" != "" ]; do
+    case $1 in
     -s | --server)
         shift
-        server=$2
+        server=$1
         shift
         ;;
     -t | --target)
         shift
-        target_dir=$2
+        target_dir=$1
         shift
         ;;
     -h | --help)
-        echo "Will download a dump of the latest Tupaia database into the specified target path"
-        echo $USAGE
+        print_help
         exit
         ;;
     *)
-        echo $USAGE
-        exit 1
+        if [ "$identity_file" == "" ]; then
+            identity_file=$1
+            shift
+        else
+            print_help
+            exit 1
+        fi
         ;;
     esac
 done
 
-domain=$server.tupaia.org
+if [ "$identity_file" == "" ]; then
+    print_help
+    exit 1
+fi
+
+domain=$server-ssh.tupaia.org
 host="ubuntu@$domain"
 dump_file_path="/var/lib/postgresql/$DUMP_FILE_NAME"
 
