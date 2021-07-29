@@ -60,7 +60,7 @@ function appReducer(state, action) {
       const { value } = action;
       return {
         ...state,
-        data: { ...state.data, ...value },
+        data: { aggregations: state.data.aggregations, transform: state.data.transform, ...value },
       };
     }
     case SET_PRESENTATION_CONFIG: {
