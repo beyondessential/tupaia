@@ -24,7 +24,7 @@ export class EntityConnection extends ApiConnection {
     return this.post(
       `hierarchy/${hierarchyName}/relatives`,
       {
-        filter: `type:${dataSourceEntityType}`,
+        filter: `type==${dataSourceEntityType}`,
         field: 'code',
       },
       { entities: entityCodes },
@@ -39,14 +39,14 @@ export class EntityConnection extends ApiConnection {
     dataSourceEntityFilter = {}, // TODO: Add support for dataSourceEntityFilter https://github.com/beyondessential/tupaia-backlog/issues/2660
   ) {
     const query = {
-      descendant_filter: `type:${dataSourceEntityType}`,
+      descendant_filter: `type==${dataSourceEntityType}`,
       field: 'code',
       groupBy: 'descendant',
     };
 
     // Omitting ancestor_type returns descendants to requested entities map
     if (aggregationEntityType !== 'requested') {
-      query.ancestor_filter = `type:${aggregationEntityType}`;
+      query.ancestor_filter = `type==${aggregationEntityType}`;
     }
 
     const response = await this.post(`hierarchy/${hierarchyName}/relationships`, query, {
