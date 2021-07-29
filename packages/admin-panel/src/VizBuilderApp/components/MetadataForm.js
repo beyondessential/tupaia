@@ -7,11 +7,11 @@ import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { Autocomplete, TextField } from '@tupaia/ui-components';
 import { usePermissionGroups, useProjects } from '../api/queries';
-import { useStore } from '../store';
+import { useVizBuilderConfig } from '../vizBuilderConfigStore';
 
 export const MetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   const { handleSubmit, register, errors } = useForm();
-  const [state, { setValue, setProject }] = useStore();
+  const [state, { setValue, setProject }] = useVizBuilderConfig();
   const { data: projects = [], isLoading: isLoadingProjects } = useProjects();
   const {
     data: permissionGroups = [],

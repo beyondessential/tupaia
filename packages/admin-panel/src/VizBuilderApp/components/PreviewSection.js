@@ -10,7 +10,7 @@ import MuiTabs from '@material-ui/core/Tabs';
 import { Chart, Table } from '@tupaia/ui-components/lib/chart';
 import { FlexSpaceBetween, FetchLoader } from '@tupaia/ui-components';
 import { TabPanel } from './TabPanel';
-import { useStore } from '../store';
+import { useVizBuilderConfig } from '../vizBuilderConfigStore';
 import { useReportPreview } from '../api';
 import { JsonEditor } from './JsonEditor';
 import { IdleMessage } from './IdleMessage';
@@ -87,7 +87,7 @@ const EditorContainer = styled.div`
 `;
 
 export const PreviewSection = ({ enabled, setEnabled }) => {
-  const [state, { setPresentation }] = useStore();
+  const [state, { setPresentation }] = useVizBuilderConfig();
   const { data = [], isIdle, isLoading, isFetching, isError, error } = useReportPreview(
     state,
     enabled,

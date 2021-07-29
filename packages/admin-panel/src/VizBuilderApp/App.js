@@ -10,7 +10,7 @@ import { FullPageLoader } from '@tupaia/ui-components';
 import { Main } from './views/Main';
 import { CreateNew } from './views/CreateNew';
 import { useUser } from './api/queries';
-import { StoreProvider } from './store';
+import { VizBuilderConfigProvider as StateProvider } from './vizBuilderConfigStore';
 
 const Container = styled.main`
   display: flex;
@@ -33,7 +33,7 @@ export const App = ({ Navbar, Footer }) => {
   const user = { ...data, name: `${data.firstName} ${data.lastName}` };
 
   return (
-    <StoreProvider>
+    <StateProvider>
       <Container>
         {Navbar && <Navbar user={user} isBESAdmin={isBESAdmin} />}
         <Switch>
@@ -46,7 +46,7 @@ export const App = ({ Navbar, Footer }) => {
         </Switch>
         {Footer && <Footer />}
       </Container>
-    </StoreProvider>
+    </StateProvider>
   );
 };
 

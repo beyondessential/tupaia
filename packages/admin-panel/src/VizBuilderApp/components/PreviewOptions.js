@@ -9,7 +9,7 @@ import debounce from 'lodash.debounce';
 import MuiPaper from '@material-ui/core/Paper';
 import { Autocomplete as AutocompleteComponent, FlexStart } from '@tupaia/ui-components';
 import { useLocations } from '../api/queries';
-import { useStore } from '../store';
+import { useVizBuilderConfig } from '../vizBuilderConfigStore';
 
 const Container = styled(FlexStart)`
   padding-top: 24px;
@@ -48,7 +48,7 @@ const PaperComponent = styled(MuiPaper)`
 
 const LocationField = () => {
   const [search, setSearch] = useState('');
-  const [{ project, location }, { setValue }] = useStore();
+  const [{ project, location }, { setValue }] = useVizBuilderConfig();
 
   // Show the default options in the dropdown when an item is selected.
   // Otherwise it shows no options
