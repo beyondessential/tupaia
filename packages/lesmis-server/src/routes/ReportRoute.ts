@@ -34,15 +34,11 @@ export class ReportRoute extends Route {
           });
           return legacyReport.data;
         }
-        const report = await this.reportConnection.fetchReport(
-          reportCode,
-          {
-            organisationUnitCodes: entityCode,
-            projectCodes: LESMIS_PROJECT_NAME,
-            hierarchy: LESMIS_HIERARCHY_NAME,
-          },
-          this.req.query,
-        );
+        const report = await this.reportConnection.fetchReport(reportCode, {
+          organisationUnitCodes: entityCode,
+          hierarchy: LESMIS_HIERARCHY_NAME,
+          ...this.req.query,
+        });
         return report.results;
       }
       case 'mapOverlay':
@@ -53,16 +49,12 @@ export class ReportRoute extends Route {
           ...this.req.query,
         });
       default:
-        return this.reportConnection.fetchReport(
-          reportCode,
-          {
-            // Report server can accept arrays so the parameters are plural
-            organisationUnitCodes: entityCode,
-            projectCodes: LESMIS_PROJECT_NAME,
-            ...this.req.query,
-          },
-          this.req.body,
-        );
+        return this.reportConnection.fetchReport(reportCode, {
+          // Report server can accept arrays so the parameters are plural
+          organisationUnitCodes: entityCode,
+          hierarchy: LESMIS_HIERARCHY_NAME,
+          ...this.req.query,
+        });
     }
   }
 }
