@@ -44,7 +44,7 @@ export class DataBroker {
   }
 
   fetchDataSourceTable = async dataSourceSpec => {
-    await this.models.dataSource.find(dataSourceSpec);
+    return this.models.dataSource.find(dataSourceSpec);
   };
 
   fetchSyncGroupTable = async dataSourceSpec => {
