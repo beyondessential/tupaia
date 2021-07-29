@@ -32,21 +32,21 @@ export class KoBoService extends Service {
     return puller(dataSources, options);
   }
 
-  async pullAnalytics() {
+  pullAnalytics = () => {
     throw new Error('pullAnalytics is not supported in KoBoService');
-  }
+  };
 
-  async pullEvents() {
+  pullEvents = () => {
     throw new Error('pullEvents is not supported in KoBoService');
-  }
+  };
 
-  async pullSyncGroup(dataSources, options) {
+  pullSyncGroup = async (dataSources, options) => {
     const koboSurveyCodes = dataSources.map(({ config }) => config.koboSurveyCode);
     const koboEntityQuestion = dataSources.map(({ config }) => config.entityQuestionCode);
 
     const koboResults = await this.api.fetchKoBoSurveys(koboSurveyCodes, options);
     return this.translator.translateKoBoResults(koboResults, koboEntityQuestion[0]);
-  }
+  };
 
   async pullMetadata() {
     throw new Error('pullMetadata is not supported in KoBoService');

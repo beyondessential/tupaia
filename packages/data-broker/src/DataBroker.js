@@ -43,15 +43,15 @@ export class DataBroker {
     return this.models.dataSource.getTypes();
   }
 
-  async fetchDataSourceTable(dataSourceSpec) {
+  fetchDataSourceTable = async dataSourceSpec => {
     await this.models.dataSource.find(dataSourceSpec);
-  }
+  };
 
-  async fetchSyncGroupTable(dataSourceSpec) {
+  fetchSyncGroupTable = async dataSourceSpec => {
     // Add 'type' field to output to keep object layout consistent between tables
     const syncGroups = await this.models.dataServiceSyncGroup.find({ code: dataSourceSpec.code });
     return syncGroups.map(sg => ({ ...sg, type: this.getDataSourceTypes().SYNC_GROUP }));
-  }
+  };
 
   async fetchDataSources(dataSourceSpec) {
     const { code, type } = dataSourceSpec;
