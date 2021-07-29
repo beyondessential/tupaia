@@ -12,13 +12,14 @@ export class KoBoApi {
     this.apiKey = process.env.KOBO_API_KEY;
   }
 
-  async fetchKoBoSurveys(koboSurveyCodes, optionsInput) {
+  async fetchKoBoSurvey(koboSurveyCode, optionsInput) {
     // await validateEventOptions(optionsInput); // TODO: Write validator
     let mongoQuery = {};
     if (optionsInput.startSubmissionTime) {
       mongoQuery = { ...mongoQuery, _submission_time: { $gt: optionsInput.startSubmissionTime } };
     }
-    const response = await this.fetchFromKoBo(`api/v2/assets/${koboSurveyCodes[0]}/data.json`, {
+
+    const response = await this.fetchFromKoBo(`api/v2/assets/${koboSurveyCode}/data.json`, {
       query: JSON.stringify(mongoQuery),
     });
 

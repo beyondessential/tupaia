@@ -15,7 +15,7 @@ export class KoBoService extends Service {
     this.pullers = {
       [this.dataSourceTypes.DATA_ELEMENT]: this.pullAnalytics,
       [this.dataSourceTypes.DATA_GROUP]: this.pullEvents,
-      [this.dataSourceTypes.SYNC_GROUP]: this.pullSyncGroup,
+      [this.dataSourceTypes.SYNC_GROUP]: this.pullSyncGroups,
     };
   }
 
@@ -40,17 +40,18 @@ export class KoBoService extends Service {
     throw new Error('pullEvents is not supported in KoBoService');
   };
 
-  pullSyncGroup = async (dataSources, options) => {
-    const koboSurveyCodes = dataSources.map(({ config }) => config.koboSurveyCode);
-    const koboEntityQuestion = dataSources.map(({ config }) => config.entityQuestionCode);
-    const questionCodeMapping = dataSources.map(({ config }) => config.questionCodeMapping);
+  pullSyncGroups = async (dataSources, options) => {
+    const resultsByDataSource = {};
+    for (const source of dataSources) {
+      const results = await this.api.fetchKoBoSurvey(source.config?.koboSurveyCode, options);
+      resultsByDataSource[source.code] = await this.translator.translateKoBoResults(
+        results,
+        source.config?.questionCodeMapping,
+        source.config?.entityQuestionCode,
+      );
+    }
 
-    const koboResults = await this.api.fetchKoBoSurveys(koboSurveyCodes, options);
-    return this.translator.translateKoBoResults(
-      koboResults,
-      questionCodeMapping[0],
-      koboEntityQuestion[0],
-    );
+    return resultsByDataSource;
   };
 
   async pullMetadata() {
