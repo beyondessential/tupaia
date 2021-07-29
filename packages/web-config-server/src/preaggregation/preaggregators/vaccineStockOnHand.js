@@ -31,6 +31,7 @@ const fetchFridgeData = async aggregator => {
     organisationUnitCodes: [WORLD],
     startDate: utcMoment().subtract(LOOKBACK_DAYS, 'days').format(),
     endDate: utcMoment().format(),
+    useDeprecatedApi: true,
   };
 
   const breachEvents = await aggregator.fetchEvents(FRIDGE_BREACH_PROGRAM_CODE, fetchConfig);

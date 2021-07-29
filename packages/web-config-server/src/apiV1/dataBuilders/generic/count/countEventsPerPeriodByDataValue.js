@@ -64,7 +64,7 @@ class DataByValueBuilder extends DataBuilder {
 export class CountEventsPerPeriodByDataValueBuilder extends DataPerPeriodBuilder {
   async fetchResults() {
     const dataElementCodes = [this.config.dataElement];
-    return this.fetchEvents({ useDeprecatedApi: false, dataElementCodes });
+    return this.fetchEvents({ dataElementCodes });
   }
 
   groupResultsByPeriod = groupEventsByPeriod;

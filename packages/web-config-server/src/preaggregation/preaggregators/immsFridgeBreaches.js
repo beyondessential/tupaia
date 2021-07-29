@@ -293,7 +293,7 @@ class AggregatedEventPusher {
 }
 
 const getEvents = async (aggregator, programCode) =>
-  aggregator.fetchEvents(programCode, { organisationUnitCode: WORLD });
+  aggregator.fetchEvents(programCode, { organisationUnitCode: WORLD, useDeprecatedApi: true });
 
 export const immsFridgeBreaches = async (aggregator, dhisApi) => {
   winston.info(`Starting to aggregate ${AGGREGATION_NAME}`);

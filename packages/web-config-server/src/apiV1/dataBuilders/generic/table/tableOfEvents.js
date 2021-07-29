@@ -88,7 +88,7 @@ class TableOfEventsBuilder extends DataBuilder {
   }
 
   async buildRows() {
-    const eventsWithMetadata = await this.fetchEvents();
+    const eventsWithMetadata = await this.fetchEvents({ useDeprecatedApi: true });
 
     const buildRow = async event => {
       const baseRow = this.buildBaseRow(event);
