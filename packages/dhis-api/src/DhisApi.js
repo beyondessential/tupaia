@@ -240,9 +240,9 @@ export class DhisApi {
     trackedEntityInstance,
     dataValueFormat = 'object', // ('array'|'object')
   }) {
-    if (!eventId && !trackedEntityInstance && !programId && !programCode) {
+    if (!eventId && !trackedEntityInstance && !programCode) {
       throw this.constructError(
-        'At least one of the following must be provided: eventId, programId, trackedEntityInstance, programCode',
+        'At least one of the following must be provided: eventId, trackedEntityInstance, programCode',
       );
     }
 

@@ -16,7 +16,8 @@ export class SelectUniqueValueFromEventsBuilder extends DataBuilder {
 
   async fetchResults() {
     const dataElementCodes = this.getDataElementCodes();
-    return this.fetchEvents({ dataElementCodes });
+    const events = await this.fetchEvents({ useDeprecatedApi: false, dataElementCodes });
+    return events;
   }
 
   getDataElementCodes() {

@@ -10,7 +10,6 @@ import { addMetadataToEvents } from '/apiV1/dataBuilders/helpers/eventMetadata';
 import { EVENTS, ORG_UNITS } from './eventMetadata.fixtures';
 
 export const testAddMetadataToEvents = () => {
-  // const models = getTestModels();
   const models = {
     entity: {
       find: sinon
