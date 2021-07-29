@@ -8,7 +8,7 @@ import { Prompt } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import { FlexColumn } from '@tupaia/ui-components';
-import { Toolbar } from '../components';
+import { Toolbar, Panel } from '../components';
 
 const Container = styled(MuiContainer)`
   flex: 1;
@@ -28,7 +28,7 @@ export const Main = () => {
     <>
       <Toolbar />
       <Container maxWidth="xl">
-        {/*<Panel setEnabled={setEnabled} />*/}
+        <Panel setEnabled={setEnabled} />
         <RightCol>
           {/*<PreviewOptions />*/}
           {/*<PreviewSection enabled={enabled} setEnabled={setEnabled} />*/}
