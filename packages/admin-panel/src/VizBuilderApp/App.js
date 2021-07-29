@@ -7,8 +7,8 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
-// import { Main } from './views/Main';
-// import { CreateNew } from './views/CreateNew';
+import { Main } from './views/Main';
+import { CreateNew } from './views/CreateNew';
 import { useUser } from './api/queries';
 import { StoreProvider } from './store';
 
@@ -38,9 +38,11 @@ export const App = ({ Navbar, Footer }) => {
         {Navbar && <Navbar user={user} isBESAdmin={isBESAdmin} />}
         <Switch>
           <Route path="/viz-builder/new" exact>
-            {/*<CreateNew />*/}
+            <CreateNew />
           </Route>
-          <Route path="/">{/*<Main />*/}</Route>
+          <Route path="/">
+            <Main />
+          </Route>
         </Switch>
         {Footer && <Footer />}
       </Container>

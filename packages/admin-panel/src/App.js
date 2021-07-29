@@ -35,7 +35,7 @@ export const App = ({ user, isBESAdmin }) => {
         <Switch>
           {[...ROUTES, ...PROFILE_ROUTES].map(route => (
             <Route key={route.to} path={route.to}>
-              <TabsToolbar links={route.tabs} />
+              <TabsToolbar links={route.tabs} maxWidth="xl" />
               <Switch>
                 {route.tabs.map(tab => (
                   <Route key={`${route.to}-${tab.to}`} path={`${route.to}${tab.to}`} exact>
