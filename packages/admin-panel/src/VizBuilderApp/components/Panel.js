@@ -70,12 +70,17 @@ const PanelTabPanel = styled.div`
 
 export const Panel = ({ setEnabled }) => {
   const [tab, setTab] = useState(0);
-  const [{ data: dataConfig }, { setDataConfig }] = useStore();
+  const [{ data: dataConfig }, { setDataConfig, setFetchConfig }] = useStore();
 
-  const { dataElements, aggregations, transform } = dataConfig;
+  const { dataElements, dataGroups, aggregations, transform } = dataConfig;
 
   const handleChange = (event, newValue) => {
     setTab(newValue);
+  };
+
+  const fetchValue = {
+    dataElements,
+    dataGroups,
   };
 
   return (
@@ -95,7 +100,7 @@ export const Panel = ({ setEnabled }) => {
         <PlayButton setEnabled={setEnabled} />
       </PanelNav>
       <TabPanel isSelected={tab === 0} Panel={PanelTabPanel}>
-        <JsonEditor value={dataElements} onChange={value => setDataConfig('dataElements', value)} />
+        <JsonEditor value={fetchValue} onChange={value => setFetchConfig(value)} />
       </TabPanel>
       <TabPanel isSelected={tab === 1} Panel={PanelTabPanel}>
         <JsonEditor value={aggregations} onChange={value => setDataConfig('aggregations', value)} />
