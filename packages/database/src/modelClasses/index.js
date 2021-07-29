@@ -15,6 +15,7 @@ import { DashboardItemModel } from './DashboardItem';
 import { DashboardRelationModel } from './DashboardRelation';
 import { DataElementDataGroupModel } from './DataElementDataGroup';
 import { DataSourceModel } from './DataSource';
+import { DataServiceSyncGroupModel } from './DataServiceSyncGroup';
 import { DisasterModel } from './Disaster';
 import { DisasterEventModel } from './DisasterEvent';
 import { EntityModel } from './Entity';
@@ -60,6 +61,7 @@ export const modelClasses = {
   DataElementDataGroup: DataElementDataGroupModel,
   DataSource: DataSourceModel,
   DataServiceEntity: DataServiceEntityModel,
+  DataServiceSyncGroup: DataServiceSyncGroupModel,
   Disaster: DisasterModel,
   DisasterEvent: DisasterEventModel,
   Entity: EntityModel,
