@@ -10,13 +10,14 @@ const DARK_THEME_BORDER = 'rgb(82, 82, 88)';
 export const StyledTable = styled(MuiTable)`
   table-layout: fixed;
   overflow: hidden;
+  border: 1px solid ${({ theme }) => (theme.palette.type === 'light' ? 'none' : DARK_THEME_BORDER)};
 
   // table head
   thead {
     text-transform: capitalize;
     border-bottom: 1px solid
-      ${({ theme }) =>
-        theme.palette.type === 'light' ? theme.palette.grey['400'] : DARK_THEME_BORDER};
+      ${({ theme }) => (theme.palette.type === 'light' ? theme.palette.grey['400'] : 'none')};
+    background: ${({ theme }) => (theme.palette.type === 'light' ? 'none' : '#3e3f4a')};
 
     tr {
       background: none;
@@ -25,7 +26,7 @@ export const StyledTable = styled(MuiTable)`
     th {
       position: relative;
       border: none;
-      font-weight: 400;
+      font-weight: ${({ theme }) => (theme.palette.type === 'light' ? 400 : 500)};
       vertical-align: bottom;
     }
   }
