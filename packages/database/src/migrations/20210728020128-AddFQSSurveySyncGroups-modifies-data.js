@@ -25,22 +25,30 @@ const KOBO_SURVEYS = [
     code: 'FQS1',
     entityQuestionCode: 'FQS1Primary_location/FQS1PrimarySchool',
     questionCodeMapping: FQS1_CODE_MAPPING,
+    internalSurveyCode: 'LESMIS_FQS1',
   },
   {
     code: 'FQS2',
     entityQuestionCode: 'FQS2Primary_location/FQS2PrimarySchool',
     questionCodeMapping: FQS2_CODE_MAPPING,
+    internalSurveyCode: 'LESMIS_FQS2',
   },
 ];
 
 exports.up = async function (db) {
-  for (const { code, entityQuestionCode, questionCodeMapping } of KOBO_SURVEYS) {
+  for (const {
+    code,
+    entityQuestionCode,
+    questionCodeMapping,
+    internalSurveyCode,
+  } of KOBO_SURVEYS) {
     await insertObject(db, 'data_service_sync_group', {
       id: generateId(),
       code,
       service_type: 'kobo',
       config: {
         // koboSurveyCode: 'xyz',
+        internalSurveyCode,
         entityQuestionCode,
         questionCodeMapping,
       },
