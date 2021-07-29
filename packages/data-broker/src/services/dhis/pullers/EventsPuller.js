@@ -27,19 +27,18 @@ export class EventsPuller {
       endDate,
       eventId,
       trackedEntityInstance,
-      dataValueFormat,
     } = options;
 
     const events = await api.getEvents({
       programCode,
       dataElementIdScheme: 'code',
       organisationUnitCode: organisationUnitCodes[0],
+      dataValueFormat: 'object',
       orgUnitIdScheme,
       startDate,
       endDate,
       eventId,
       trackedEntityInstance,
-      dataValueFormat: 'object',
     });
 
     return this.translator.translateInboundEvents(events, programCode);
