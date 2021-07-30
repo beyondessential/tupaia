@@ -4,7 +4,7 @@ import { generateId, insertObject, deleteObject } from '../utilities';
 import {
   FQS1_CODE_MAPPING,
   FQS2_CODE_MAPPING,
-} from './migrationData/20210726233011-AddFQSQuestionMappings';
+} from './migrationData/20210728020128-AddFQSSurveySyncGroups;
 
 var dbm;
 var type;
