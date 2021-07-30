@@ -48,6 +48,7 @@ export const DashboardReport = React.memo(
   }) => {
     const { code: itemCode, legacy } = viewConfig;
     const { startDate, endDate } = yearToApiDates(year);
+
     const { data, isLoading, isFetching, isError, error } = useDashboardReportData({
       entityCode,
       reportCode,

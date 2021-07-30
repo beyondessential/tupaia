@@ -163,15 +163,18 @@ export const DashboardReportTabView = ({
       </StickyTabBarContainer>
       <DashboardSection ref={topRef}>
         <FetchLoader isLoading={isLoading} isError={isError} error={error}>
-          {subDashboards?.map(dashboard => (
-            <TabPanel
-              key={dashboard.dashboardId}
-              isSelected={dashboard.dashboardName === activeDashboard}
-            >
-              {(() => {
-                // Todo: support other report types (including "component" types)
-                const dashboardItems = dashboard.items.filter(item => item.type === 'chart');
-                return dashboardItems.length > 0 ? (
+          {subDashboards?.map(dashboard => {
+            // Todo: support other report types (including "component" types)
+            const dashboardItems = dashboard.items.filter(
+              ({ type }) => type === 'chart' || type === 'list',
+            );
+
+            return (
+              <TabPanel
+                key={dashboard.dashboardId}
+                isSelected={dashboard.dashboardName === activeDashboard}
+              >
+                {dashboardItems.length > 0 ? (
                   dashboardItems.map(item => (
                     <DashboardReport
                       key={item.code}
@@ -189,10 +192,10 @@ export const DashboardReportTabView = ({
                   <SmallAlert key={dashboard.dashboardName} severity="info" variant="standard">
                     There are no reports available for this dashboard
                   </SmallAlert>
-                );
-              })()}
-            </TabPanel>
-          ))}
+                )}
+              </TabPanel>
+            );
+          })}
         </FetchLoader>
       </DashboardSection>
       {isScrolledPastTop && <ScrollToTopButton onClick={scrollToTop} />}

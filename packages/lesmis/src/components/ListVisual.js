@@ -160,6 +160,10 @@ const Footer = styled(FlexSpaceBetween)`
   background: #f9f9f9;
 `;
 
+// link: http://localhost:3003/LA_Phouvong%20District/dashboard?dashboard=essdpEarlyChildhood
+// dashboard_id: 60de99ce61f76a1b830009bb
+// dashboard_item_id: 61037abcee442913e3000037
+
 export const ListVisual = () => {
   return (
     <Container>
