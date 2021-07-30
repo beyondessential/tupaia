@@ -10,7 +10,9 @@ export const ProfileButton = ({ user, isBESAdmin }) => {
   const ProfileLinks = () => (
     <>
       <ProfileButtonItem to="/profile">Edit Profile</ProfileButtonItem>
-      {isBESAdmin && <ProfileButtonItem to="/viz-builder">Visualisation builder</ProfileButtonItem>}
+      {isBESAdmin && (
+        <ProfileButtonItem to="/viz-builder/new">Visualisation builder</ProfileButtonItem>
+      )}
       <ProfileButtonItem to="logout">Logout</ProfileButtonItem>
     </>
   );

@@ -4,7 +4,12 @@
  */
 import React, { useReducer, createContext, useContext, useCallback } from 'react';
 
-const initialState = {
+/**
+ * This store is designed to hold the state for the vizBuilderConfig
+ * All other app state should be managed elsewhere. Try to keep the app state as low as
+ * possible in the component tree.
+ */
+const initialConfigState = {
   name: null,
   summary: null,
   project: null,
@@ -25,7 +30,7 @@ const SET_DATA_CONFIG = 'SET_DATA_CONFIG';
 const SET_FETCH_CONFIG = 'SET_FETCH_CONFIG';
 const SET_PRESENTATION_CONFIG = 'SET_PRESENTATION_CONFIG';
 
-function appReducer(state, action) {
+function configReducer(state, action) {
   const { type } = action;
 
   switch (type) {
@@ -75,8 +80,8 @@ function appReducer(state, action) {
   }
 }
 
-const useAppState = () => {
-  const [state, dispatch] = useReducer(appReducer, initialState);
+const useConfigStore = () => {
+  const [state, dispatch] = useReducer(configReducer, initialConfigState);
 
   const setValue = useCallback((key, value) => dispatch({ type: SET_VALUE, key, value }), []);
   const setProject = useCallback(value => dispatch({ type: SET_PROJECT, value }), []);
@@ -102,24 +107,24 @@ const useAppState = () => {
   ];
 };
 
-const store = createContext(initialState);
-const { Provider } = store;
+const vizBuilderConfigStore = createContext(initialConfigState);
+const { Provider } = vizBuilderConfigStore;
 
 // eslint-disable-next-line react/prop-types
-const StoreProvider = ({ children }) => {
-  const obj = useAppState();
+const VizBuilderConfigProvider = ({ children }) => {
+  const store = useConfigStore();
 
   return (
-    <Provider value={obj} displayName="VizBuilder">
+    <Provider value={store} displayName="VizBuilder">
       {children}
     </Provider>
   );
 };
 
-const useStore = () => {
-  return useContext(store);
+const useVizBuilderConfig = () => {
+  return useContext(vizBuilderConfigStore);
 };
 
-// Note: the store can be degged in dev tools using a chrome plugin.
+// Note: the store can be debugged in dev tools using a chrome plugin.
 // https://chrome.google.com/webstore/detail/react-context-devtool/oddhnidmicpefilikhgeagedibnefkcf?hl=en
-export { useStore, StoreProvider };
+export { useVizBuilderConfig, VizBuilderConfigProvider };
