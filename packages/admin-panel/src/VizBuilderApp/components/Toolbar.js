@@ -13,7 +13,7 @@ import { FlexStart, FlexEnd } from '@tupaia/ui-components';
 import { SaveButton } from './SaveButton';
 import { ReactComponent as DocumentIcon } from './DocumentIcon.svg';
 import { EditModal } from './EditModal';
-import { useStore } from '../store';
+import { useVizBuilderConfig } from '../vizBuilderConfigStore';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -53,7 +53,7 @@ const Description = styled(Typography)`
 `;
 
 export const Toolbar = () => {
-  const [{ name, permissionGroup, summary, project }] = useStore();
+  const [{ name, permissionGroup, summary, project }] = useVizBuilderConfig();
 
   return (
     <Wrapper>

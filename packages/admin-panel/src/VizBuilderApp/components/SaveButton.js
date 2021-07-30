@@ -5,10 +5,10 @@
 
 import React from 'react';
 import { Button } from '@tupaia/ui-components';
-import { useStore } from '../store';
+import { useVizBuilderConfig } from '../vizBuilderConfigStore';
 
 export const SaveButton = () => {
-  const [config] = useStore();
+  const [config] = useVizBuilderConfig();
 
   const handleSave = () => {
     alert(JSON.stringify(config, null, 2));
