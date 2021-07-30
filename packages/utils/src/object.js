@@ -201,8 +201,9 @@ export const stripFields = (object = {}, fieldsToExclude = []) =>
 
 /**
  * Note: this generally only guarantees insertion order for properties in the new object.
- * Traversal order is not guaranteed before ES6
- * @see https://2ality.com/2015/10/property-traversal-order-es6.html
+ * Traversal order is not specified and thus not guaranteed in older ES versions.
+ * If order and cross-version support is critical, please use an Array instead
+ * @see https://github.com/tc39/proposal-for-in-order
  */
 export const sortFields = object => {
   const sortedEntries = Object.entries(object).sort(([keyA], [keyB]) => compareAsc(keyA, keyB));
