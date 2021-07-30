@@ -200,10 +200,11 @@ export const stripFields = (object = {}, fieldsToExclude = []) =>
   Object.fromEntries(Object.entries(object).filter(([key]) => !fieldsToExclude.includes(key)));
 
 /**
- * Note: this only guarantees insertion order for properties in the new object.
- * Enumeration order is not guaranteed before ES2015
+ * Note: this generally only guarantees insertion order for properties in the new object.
+ * Traversal order is not guaranteed before ES6
+ * @see https://2ality.com/2015/10/property-traversal-order-es6.html
  */
-const sortFields = object => {
+export const sortFields = object => {
   const sortedEntries = Object.entries(object).sort(([keyA], [keyB]) => compareAsc(keyA, keyB));
   return Object.fromEntries(sortedEntries);
 };
