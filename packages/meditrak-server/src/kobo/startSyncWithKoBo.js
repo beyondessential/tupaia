@@ -6,6 +6,7 @@
 import keyBy from 'lodash.keyby';
 import { DataBroker } from '@tupaia/data-broker';
 import { generateId } from '@tupaia/database';
+import { reformatDateStringWithoutTz } from '@tupaia/utils';
 
 // TODO:
 // - REST endpoint: Manual
@@ -34,7 +35,7 @@ async function pullLatest(models, dataBroker) {
       type: dataBroker.getDataSourceTypes().SYNC_GROUP,
     },
     {
-      startSubmissionTime: syncCursor.sync_time,
+      startSubmissionTime: reformatDateStringWithoutTz(syncCursor.sync_time),
     },
   );
 
