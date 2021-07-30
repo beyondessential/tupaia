@@ -3,7 +3,18 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { catchAsyncErrors } from './middleware';
+import express from 'express';
+import multer from 'multer';
+
+import {
+  authenticationMiddleware,
+  catchAsyncErrors,
+  handleError,
+  logApiRequest,
+} from './middleware';
+
+import { allowNoPermissions, ensurePermissionCheck } from '../permissions';
+
 import { authenticate } from './authenticate';
 import { countChanges } from './countChanges';
 import { exportSurveyResponses } from './exportSurveyResponses';
@@ -74,7 +85,6 @@ import { getCountryAccessList } from './getCountryAccessList';
 import { surveyResponse } from './surveyResponse';
 import { importDisaster } from './importDisaster';
 import { verifyEmail, requestResendEmail } from './verifyEmail';
-import { allowNoPermissions } from '../permissions';
 
 const useRouteHandler = HandlerClass =>
   catchAsyncErrors(async (res, req) => {
@@ -82,110 +92,183 @@ const useRouteHandler = HandlerClass =>
     await handler.handle();
   });
 
-/**
- * Quick and dirty permission wrappers, run a basic check before an endpoint
- */
+// quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
   req.assertPermissions(allowNoPermissions);
   catchAsyncErrors(routeHandler)(req, res, next);
 };
 
-export default {
-  authenticate: catchAsyncErrors(authenticate),
-  countChanges: catchAsyncErrors(countChanges),
-  createCountries: useRouteHandler(BESAdminCreateHandler),
-  createDataSources: useRouteHandler(BESAdminCreateHandler),
-  createDisasters: useRouteHandler(BESAdminCreateHandler),
-  createFeedItems: useRouteHandler(BESAdminCreateHandler),
-  createIndicators: useRouteHandler(BESAdminCreateHandler),
-  createPermissionGroups: useRouteHandler(BESAdminCreateHandler),
-  createUserEntityPermissions: useRouteHandler(CreateUserEntityPermissions),
-  createDashboardRelations: useRouteHandler(CreateDashboardRelation),
-  deleteAnswers: useRouteHandler(DeleteAnswers),
-  deleteDashboards: useRouteHandler(DeleteDashboard),
-  deleteDashboardItems: useRouteHandler(DeleteDashboardItem),
-  deleteDashboardRelations: useRouteHandler(DeleteDashboardRelation),
-  deleteLegacyReports: useRouteHandler(DeleteLegacyReport),
-  deleteDataSources: useRouteHandler(BESAdminDeleteHandler),
-  deleteDisasters: useRouteHandler(BESAdminDeleteHandler),
-  deleteFeedItems: useRouteHandler(BESAdminDeleteHandler),
-  deleteIndicators: useRouteHandler(BESAdminDeleteHandler),
-  deleteOptions: useRouteHandler(DeleteOptions),
-  deleteOptionSets: useRouteHandler(DeleteOptionSets),
-  deleteQuestions: useRouteHandler(DeleteQuestions),
-  deleteSurveys: useRouteHandler(DeleteSurveys),
-  deleteMapOverlays: useRouteHandler(DeleteMapOverlays),
-  deleteSurveyResponses: useRouteHandler(DeleteSurveyResponses),
-  deleteSurveyScreenComponents: useRouteHandler(DeleteSurveyScreenComponents),
-  deleteUserEntityPermissions: useRouteHandler(DeleteUserEntityPermissions),
-  createUserAccount: useRouteHandler(CreateUserAccounts),
-  registerUserAccount: useRouteHandler(RegisterUserAccounts),
-  editAccessRequests: useRouteHandler(EditAccessRequests),
-  editAnswers: useRouteHandler(EditAnswers),
-  editDashboards: useRouteHandler(EditDashboard),
-  editDashboardItems: useRouteHandler(EditDashboardItem),
-  editDashboardRelations: useRouteHandler(EditDashboardRelation),
-  editLegacyReports: useRouteHandler(EditLegacyReport),
-  editDataSources: useRouteHandler(BESAdminEditHandler),
-  editDisasters: useRouteHandler(BESAdminEditHandler),
-  editFeedItems: useRouteHandler(BESAdminEditHandler),
-  editIndicators: useRouteHandler(BESAdminEditHandler),
-  editOptions: useRouteHandler(EditOptions),
-  editOptionSets: useRouteHandler(EditOptionSets),
-  editQuestions: useRouteHandler(EditQuestions),
-  editSurveys: useRouteHandler(EditSurveys),
-  editMapOverlays: useRouteHandler(EditMapOverlays),
-  editProjects: useRouteHandler(BESAdminEditHandler),
-  editSurveyResponses: useRouteHandler(EditSurveyResponses),
-  editSurveyScreenComponents: useRouteHandler(EditSurveyScreenComponents),
-  editUserAccounts: useRouteHandler(EditUserAccounts),
-  editUserEntityPermissions: useRouteHandler(EditUserEntityPermissions),
-  exportSurveyResponses: catchAsyncErrors(exportSurveyResponses),
-  exportSurveys: catchAsyncErrors(exportSurveys),
-  getChanges: catchAsyncErrors(getChanges),
-  getAnswers: useRouteHandler(GETAnswers),
-  getCountries: useRouteHandler(GETCountries),
-  getClinics: useRouteHandler(GETClinics),
-  getDisasters: useRouteHandler(GETDisasters),
-  getDashboards: useRouteHandler(GETDashboards),
-  getDashboardItems: useRouteHandler(GETDashboardItems),
-  getDashboardRelations: useRouteHandler(GETDashboardRelations),
-  getLegacyReports: useRouteHandler(GETLegacyReports),
-  getIndicators: useRouteHandler(BESAdminGETHandler),
-  getDataSources: useRouteHandler(GETDataSources),
-  getEntities: useRouteHandler(GETEntities),
-  getGeographicalAreas: useRouteHandler(GETGeographicalAreas),
-  getFeedItems: useRouteHandler(GETFeedItems),
-  getMapOverlays: useRouteHandler(GETMapOverlays),
-  getSurveys: useRouteHandler(GETSurveys),
-  getSurveyGroups: useRouteHandler(GETSurveyGroups),
-  getSurveyResponses: useRouteHandler(GETSurveyResponses),
-  getSurveyScreenComponents: useRouteHandler(GETSurveyScreenComponents),
-  getQuestions: useRouteHandler(GETQuestions),
-  getPermissionGroups: useRouteHandler(GETPermissionGroups),
-  getOptions: useRouteHandler(GETOptions),
-  getOptionSets: useRouteHandler(GETOptionSets),
-  getProjects: useRouteHandler(GETProjects),
-  getUserAccounts: useRouteHandler(GETUserAccounts),
-  getUserEntityPermissions: useRouteHandler(GETUserEntityPermissions),
-  getAccessRequests: useRouteHandler(GETAccessRequests),
-  importEntities: catchAsyncErrors(importEntities),
-  importStriveLabResults: catchAsyncErrors(importStriveLabResults),
-  importSurveys: catchAsyncErrors(importSurveys),
-  importUsers: catchAsyncErrors(importUsers),
-  importOptionSets: catchAsyncErrors(importOptionSets),
-  postChanges: catchAsyncErrors(postChanges),
-  importSurveyResponses: catchAsyncErrors(importSurveyResponses),
-  changePassword: catchAsyncErrors(changePassword),
-  editUser: catchAsyncErrors(editUser),
-  requestCountryAccess: allowAnyone(requestCountryAccess),
-  getSocialFeed: catchAsyncErrors(getSocialFeed),
-  getUserRewards: allowAnyone(getUserRewards),
-  getUser: useRouteHandler(GETUserForMe),
-  requestPasswordReset: catchAsyncErrors(requestPasswordReset),
-  getCountryAccessList: allowAnyone(getCountryAccessList),
-  surveyResponse: catchAsyncErrors(surveyResponse),
-  importDisaster: catchAsyncErrors(importDisaster),
-  verifyEmail: catchAsyncErrors(verifyEmail),
-  requestResendEmail: catchAsyncErrors(requestResendEmail),
-};
+// create upload handler
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: './uploads/',
+    filename: (req, file, callback) => {
+      callback(null, `${Date.now()}_${file.originalname}`);
+    },
+  }),
+});
+
+/**
+ * Set up apiV2 routes
+ */
+const apiV2 = express.Router();
+
+apiV2.use(authenticationMiddleware); // authenticate user
+
+apiV2.use(logApiRequest); // log every request to the api_request_log table
+
+apiV2.use(ensurePermissionCheck); // ensure permissions checking is handled by each endpoint
+
+/**
+ * Legacy routes to be eventually removed
+ */
+apiV2.post(
+  '/user/:userId/requestCountryAccess', // TODO not used from app version 1.7.93. Once usage stops, remove
+  allowAnyone(requestCountryAccess),
+);
+
+/**
+ * GET routes
+ */
+apiV2.get('/changes/count', catchAsyncErrors(countChanges));
+apiV2.get('/export/surveyResponses', catchAsyncErrors(exportSurveyResponses));
+apiV2.get('/export/surveyResponses/:surveyResponseId', catchAsyncErrors(exportSurveyResponses));
+apiV2.get('/export/surveys', catchAsyncErrors(exportSurveys));
+apiV2.get('/export/surveys/:surveyId', catchAsyncErrors(exportSurveys));
+apiV2.get('/changes', catchAsyncErrors(getChanges));
+apiV2.get('/socialFeed', catchAsyncErrors(getSocialFeed));
+apiV2.get('/me', useRouteHandler(GETUserForMe));
+apiV2.get('/me/rewards', allowAnyone(getUserRewards));
+apiV2.get('/me/countries', allowAnyone(getCountryAccessList));
+apiV2.get('/answers/:recordId?', useRouteHandler(GETAnswers));
+apiV2.get('/disasters/:recordId?', useRouteHandler(GETDisasters));
+apiV2.get('/dashboards/:recordId?', useRouteHandler(GETDashboards));
+apiV2.get('/dashboards/:parentRecordId/dashboardRelations', useRouteHandler(GETDashboardRelations));
+apiV2.get('/dashboardItems/:recordId?', useRouteHandler(GETDashboardItems));
+apiV2.get('/dashboardRelations/:recordId?', useRouteHandler(GETDashboardRelations));
+apiV2.get('/legacyReports/:recordId?', useRouteHandler(GETLegacyReports));
+apiV2.get('/indicators/:recordId?', useRouteHandler(BESAdminGETHandler));
+apiV2.get('/feedItems/:recordId?', useRouteHandler(GETFeedItems));
+apiV2.get('/mapOverlays/:recordId?', useRouteHandler(GETMapOverlays));
+apiV2.get('/surveys/:recordId?', useRouteHandler(GETSurveys));
+apiV2.get('/countries/:parentRecordId/surveys', useRouteHandler(GETSurveys));
+apiV2.get('/countries/:parentRecordId/entities', useRouteHandler(GETEntities));
+apiV2.get('/surveyGroups/:recordId?', useRouteHandler(GETSurveyGroups));
+apiV2.get('/surveyResponses/:parentRecordId/answers', useRouteHandler(GETAnswers));
+apiV2.get('/surveyResponses/:recordId?', useRouteHandler(GETSurveyResponses));
+apiV2.get('/surveyScreenComponents/:recordId?', useRouteHandler(GETSurveyScreenComponents));
+apiV2.get(
+  '/surveys/:parentRecordId/surveyScreenComponents',
+  useRouteHandler(GETSurveyScreenComponents),
+);
+apiV2.get('/questions/:recordId?', useRouteHandler(GETQuestions));
+apiV2.get('/permissionGroups/:recordId?', useRouteHandler(GETPermissionGroups));
+apiV2.get('/options/:recordId?', useRouteHandler(GETOptions));
+apiV2.get('/optionSets/:recordId?', useRouteHandler(GETOptionSets));
+apiV2.get('/optionSets/:parentRecordId/options', useRouteHandler(GETOptions));
+apiV2.get('/projects/:recordId?', useRouteHandler(GETProjects));
+apiV2.get('/users/:recordId?', useRouteHandler(GETUserAccounts));
+apiV2.get('/userEntityPermissions/:recordId?', useRouteHandler(GETUserEntityPermissions));
+apiV2.get(
+  '/users/:parentRecordId/userEntityPermissions/:recordId?',
+  useRouteHandler(GETUserEntityPermissions),
+);
+apiV2.get('/accessRequests/:recordId?', useRouteHandler(GETAccessRequests));
+apiV2.get('/dataSources/:recordId?', useRouteHandler(GETDataSources));
+apiV2.get('/dataSources/:parentRecordId/dataSources', useRouteHandler(GETDataSources));
+apiV2.get('/entities/:recordId?', useRouteHandler(GETEntities));
+apiV2.get('/entities/:parentRecordId/surveyResponses', useRouteHandler(GETSurveyResponses));
+apiV2.get('/countries/:recordId?', useRouteHandler(GETCountries));
+apiV2.get('/clinics/:recordId?', useRouteHandler(GETClinics));
+apiV2.get('/facilities/:recordId?', useRouteHandler(GETClinics));
+apiV2.get('/geographicalAreas/:recordId?', useRouteHandler(GETGeographicalAreas));
+
+/**
+ * POST routes
+ */
+apiV2.post('/import/entities', upload.single('entities'), catchAsyncErrors(importEntities));
+apiV2.post(
+  '/import/striveLabResults',
+  upload.single('striveLabResults'),
+  catchAsyncErrors(importStriveLabResults),
+);
+apiV2.post('/import/surveys', upload.single('surveys'), catchAsyncErrors(importSurveys));
+apiV2.post(
+  '/import/surveyResponses',
+  upload.single('surveyResponses'),
+  catchAsyncErrors(importSurveyResponses),
+);
+apiV2.post('/import/disasters', upload.single('disasters'), catchAsyncErrors(importDisaster));
+apiV2.post('/import/users', upload.single('users'), catchAsyncErrors(importUsers));
+apiV2.post('/import/optionSets', upload.single('optionSets'), catchAsyncErrors(importOptionSets));
+apiV2.post('/auth', catchAsyncErrors(authenticate));
+apiV2.post('/auth/resetPassword', catchAsyncErrors(requestPasswordReset));
+apiV2.post('/auth/resendEmail', catchAsyncErrors(requestResendEmail));
+apiV2.post('/auth/verifyEmail', catchAsyncErrors(verifyEmail));
+apiV2.post('/changes', catchAsyncErrors(postChanges));
+apiV2.post('/user', useRouteHandler(RegisterUserAccounts)); // used for user registration on tupaia.org etc.
+apiV2.post('/users', useRouteHandler(CreateUserAccounts)); // used by admin panel to directly create users
+apiV2.post('/userEntityPermissions', useRouteHandler(CreateUserEntityPermissions));
+apiV2.post('/me/requestCountryAccess', allowAnyone(requestCountryAccess));
+apiV2.post('/me/changePassword', catchAsyncErrors(changePassword));
+apiV2.post('/surveyResponse', catchAsyncErrors(surveyResponse)); // used by mSupply to directly submit data
+apiV2.post('/surveyResponses', catchAsyncErrors(surveyResponse));
+apiV2.post('/countries', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/dataSources', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/disasters', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/feedItems', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/indicators', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/permissionGroups', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/dashboardRelations', useRouteHandler(CreateDashboardRelation));
+
+/**
+ * PUT routes
+ */
+apiV2.put('/users/:recordId', useRouteHandler(EditUserAccounts));
+apiV2.put('/userEntityPermissions/:recordId', useRouteHandler(EditUserEntityPermissions));
+apiV2.put('/accessRequests/:recordId', useRouteHandler(EditAccessRequests));
+apiV2.put('/surveys/:recordId', useRouteHandler(EditSurveys));
+apiV2.put('/surveyResponses/:recordId', useRouteHandler(EditSurveyResponses));
+apiV2.put('/surveyScreenComponents/:recordId', useRouteHandler(EditSurveyScreenComponents));
+apiV2.put('/answers/:recordId', useRouteHandler(EditAnswers));
+apiV2.put('/surveyResponses/:parentRecordId/answers/:recordId', useRouteHandler(EditAnswers));
+apiV2.put('/dataSources/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/disasters/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/feedItems/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/options/:recordId', useRouteHandler(EditOptions));
+apiV2.put('/optionSets/:recordId', useRouteHandler(EditOptionSets));
+apiV2.put('/questions/:recordId', useRouteHandler(EditQuestions));
+apiV2.put('/dashboards/:recordId', useRouteHandler(EditDashboard));
+apiV2.put('/dashboardItems/:recordId', useRouteHandler(EditDashboardItem));
+apiV2.put('/dashboardRelations/:recordId', useRouteHandler(EditDashboardRelation));
+apiV2.put('/legacyReports/:recordId', useRouteHandler(EditLegacyReport));
+apiV2.put('/mapOverlays/:recordId', useRouteHandler(EditMapOverlays));
+apiV2.put('/indicators/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/projects/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/me', catchAsyncErrors(editUser));
+
+/**
+ * DELETE routes
+ */
+apiV2.delete('/userEntityPermissions/:recordId', useRouteHandler(DeleteUserEntityPermissions));
+apiV2.delete('/surveys/:recordId', useRouteHandler(DeleteSurveys));
+apiV2.delete('/surveyResponses/:recordId', useRouteHandler(DeleteSurveyResponses));
+apiV2.delete('/surveyScreenComponents/:recordId', useRouteHandler(DeleteSurveyScreenComponents));
+apiV2.delete('/answers/:recordId', useRouteHandler(DeleteAnswers));
+apiV2.delete('/surveyResponses/:parentRecordId/answers/:recordId', useRouteHandler(DeleteAnswers));
+apiV2.delete('/dataSources/:recordId', useRouteHandler(BESAdminDeleteHandler));
+apiV2.delete('/disasters/:recordId', useRouteHandler(BESAdminDeleteHandler));
+apiV2.delete('/feedItems/:recordId', useRouteHandler(BESAdminDeleteHandler));
+apiV2.delete('/options/:recordId', useRouteHandler(DeleteOptions));
+apiV2.delete('/optionSets/:recordId', useRouteHandler(DeleteOptionSets));
+apiV2.delete('/questions/:recordId', useRouteHandler(DeleteQuestions));
+apiV2.delete('/dashboards/:recordId', useRouteHandler(DeleteDashboard));
+apiV2.delete('/dashboardItems/:recordId', useRouteHandler(DeleteDashboardItem));
+apiV2.delete('/dashboardRelations/:recordId', useRouteHandler(DeleteDashboardRelation));
+apiV2.delete('/legacyReports/:recordId', useRouteHandler(DeleteLegacyReport));
+apiV2.delete('/mapOverlays/:recordId', useRouteHandler(DeleteMapOverlays));
+apiV2.delete('/indicators/:recordId', useRouteHandler(BESAdminDeleteHandler));
+
+apiV2.use(handleError); // error handler must come last
+
+export { apiV2 };

@@ -10,7 +10,7 @@ import errorHandler from 'api-error-handler';
 
 import { Authenticator } from '@tupaia/auth';
 
-import { apiV2 } from './apiV2/constructApiV2';
+import { apiV2 } from './apiV2';
 
 /**
  * Set up express server with middleware,
