@@ -1,8 +1,7 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-
 import { extractRefreshTokenFromReq } from '@tupaia/auth';
 
 export const logApiRequest = async (req, res, next) => {
@@ -16,6 +15,5 @@ export const logApiRequest = async (req, res, next) => {
   });
   req.apiRequestLogId = apiRequestLogId;
   req.refreshToken = refreshToken;
-
   next();
 };

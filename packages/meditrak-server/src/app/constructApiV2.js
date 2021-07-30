@@ -6,10 +6,12 @@
 import express from 'express';
 import multer from 'multer';
 
-import { InternalServerError, UnsupportedApiVersionError } from '@tupaia/utils';
-
-import { logApiRequest } from './logApiRequest';
-import { authenticationMiddleware } from '../auth';
+import {
+  authenticationMiddleware,
+  extractApiVersion,
+  handleError,
+  logApiRequest,
+} from '../apiV2/middleware';
 import { ensurePermissionCheck } from '../permissions';
 import routes from '../apiV2';
 
@@ -112,8 +114,6 @@ const {
   importDisaster,
   verifyEmail,
 } = routes;
-
-const MINIMUM_API_VERSION = 2;
 
 export const apiV2 = express.Router();
 
@@ -286,35 +286,3 @@ apiV2.delete('/indicators/:recordId', deleteIndicators);
  * Handle errors
  */
 apiV2.use(handleError);
-
-const extractApiVersion = (req, res, next) => {
-  if (!req.path.startsWith('/v')) {
-    // A version of the apiV2 that should be on v2 but missing the version section of the url
-    req.version = 2;
-    req.endpoint = req.path;
-  } else {
-    const secondSlashIndex = req.path.indexOf('/', 2);
-    req.version = parseFloat(req.path.substring(2, secondSlashIndex));
-    req.endpoint = req.path.substring(secondSlashIndex);
-  }
-  if (!req.version || req.version < MINIMUM_API_VERSION) {
-    throw new UnsupportedApiVersionError();
-  }
-  next();
-};
-
-const handleError = (err, req, res, next) => {
-  const { database, apiRequestLogId } = req;
-  let error = err;
-  if (!error.respond) {
-    error = new InternalServerError(err);
-  }
-  if (database) {
-    database.create('error_log', {
-      message: error.message,
-      type: error.constructor.name,
-      api_request_log_id: apiRequestLogId,
-    });
-  }
-  error.respond(res);
-};

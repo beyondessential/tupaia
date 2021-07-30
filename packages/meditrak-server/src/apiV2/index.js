@@ -3,6 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
+import { catchAsyncErrors } from './middleware';
 import { authenticate } from './authenticate';
 import { countChanges } from './countChanges';
 import { exportSurveyResponses } from './exportSurveyResponses';
@@ -74,18 +75,6 @@ import { surveyResponse } from './surveyResponse';
 import { importDisaster } from './importDisaster';
 import { verifyEmail, requestResendEmail } from './verifyEmail';
 import { allowNoPermissions } from '../permissions';
-/**
- * All routes will be wrapped with an error catcher that simply passes the error to the next()
- * function, causing error handling middleware to be fired. Otherwise, async errors will be
- * swallowed.
- */
-const catchAsyncErrors = routeHandler => (res, req, next) => {
-  const returnValue = routeHandler(res, req, next);
-  if (returnValue && returnValue.catch) {
-    // Return value is a Promise, add an error handler
-    returnValue.catch(error => next(error));
-  }
-};
 
 const useRouteHandler = HandlerClass =>
   catchAsyncErrors(async (res, req) => {
