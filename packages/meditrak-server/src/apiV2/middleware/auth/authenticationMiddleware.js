@@ -34,7 +34,7 @@ async function authenticateUser(req) {
   }
 
   // Non-user requests are only allowed access to these routes
-  if (preAuthenticationRoutes.includes(req.endpoint)) {
+  if (preAuthenticationRoutes.includes(req.path)) {
     return {};
   }
 

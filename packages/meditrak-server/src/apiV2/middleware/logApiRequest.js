@@ -7,8 +7,8 @@ import { extractRefreshTokenFromReq } from '@tupaia/auth';
 export const logApiRequest = async (req, res, next) => {
   const refreshToken = await extractRefreshTokenFromReq(req);
   const { id: apiRequestLogId } = await req.models.apiRequestLog.create({
-    version: req.version,
-    endpoint: req.endpoint,
+    version: 2, // only version that can get through current route handling
+    endpoint: req.path,
     user_id: req.userId,
     query: req.query,
     refresh_token: refreshToken,

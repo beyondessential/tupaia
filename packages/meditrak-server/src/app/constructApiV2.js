@@ -6,12 +6,7 @@
 import express from 'express';
 import multer from 'multer';
 
-import {
-  authenticationMiddleware,
-  extractApiVersion,
-  handleError,
-  logApiRequest,
-} from '../apiV2/middleware';
+import { authenticationMiddleware, handleError, logApiRequest } from '../apiV2/middleware';
 import { ensurePermissionCheck } from '../permissions';
 import routes from '../apiV2';
 
@@ -128,8 +123,6 @@ const upload = multer({
     },
   }),
 });
-
-apiV2.use(extractApiVersion);
 
 /**
  * Attach authentication to each endpoint
