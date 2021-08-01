@@ -81,7 +81,7 @@ export const findOrCreateDummyRecord = async (model, findCriteria, data) => {
 };
 
 export const findOrCreateRecords = async (models, recordsByType) => {
-  const data = [];
+  const data = {};
 
   for (const [type, records] of Object.entries(recordsByType)) {
     const pluralType = pluralize(type);
@@ -100,7 +100,7 @@ export const findOrCreateRecords = async (models, recordsByType) => {
  * sensible defaults, using the logic in upsertDummyRecord
  */
 export const populateTestData = async (models, recordsByType) => {
-  const data = [];
+  const data = {};
 
   // process sequentially, as some inserts may depend on earlier foreign keys being inserted
   for (const [type, records] of Object.entries(recordsByType)) {
