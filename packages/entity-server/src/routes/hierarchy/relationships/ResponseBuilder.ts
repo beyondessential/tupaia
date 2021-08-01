@@ -4,8 +4,10 @@
  */
 
 import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
+import { QueryConjunctions } from '@tupaia/server-boilerplate';
+
 import { EntityServerModelRegistry } from '../../../types';
-import { EntityType } from '../../../models';
+import { EntityFilter, EntityType, DefaultFilter } from '../../../models';
 import { formatEntitiesForResponse } from '../format';
 import { MultiEntityRelationshipsContext } from './types';
 
@@ -123,14 +125,23 @@ export class ResponseBuilder {
     return formattedEntitiesByCode;
   }
 
+  isDefaultFilter = (filter: EntityFilter) => {
+    const keys = Object.keys(filter);
+    const key = keys[0];
+
+    return (
+      keys.length === 1 &&
+      key === QueryConjunctions.AND &&
+      filter[QueryConjunctions.AND]?.country_code !== undefined
+    );
+  };
+
   private shouldPerformFastResponse() {
     const { field: ancestorField, filter: ancestorFilter } = this.ctx.ancestor;
     const { field: descendantField } = this.ctx.descendant;
-    const { country_code, ...restOfAncestorFilter } = ancestorFilter;
+
     return (
-      ancestorField === 'code' &&
-      descendantField === 'code' &&
-      Object.keys(restOfAncestorFilter).length === 0
+      ancestorField === 'code' && descendantField === 'code' && this.isDefaultFilter(ancestorFilter)
     );
   }
 
