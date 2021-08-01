@@ -20,13 +20,12 @@ describe('ChangeHandler', () => {
     constructor(modelsInstance) {
       super(modelsInstance);
 
-      this.changeTranslators = {
-        project: sinon.stub().callsFake(changeDetails => [changeDetails.new_record?.id]),
-        user: sinon.stub().callsFake(changeDetails => [changeDetails.new_record?.id]),
-      };
+      this.resetMocks();
     }
 
-    getChangeDebuggingInfo = changes => `Failed ids: ${changes}`;
+    getChangeDebuggingInfo = changes => {
+      return `Failed ids: ${changes}`;
+    };
 
     handleChanges = sinon.stub().resolves();
 
