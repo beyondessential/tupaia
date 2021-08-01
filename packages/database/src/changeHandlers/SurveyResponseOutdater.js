@@ -122,7 +122,7 @@ const groupResponsesForSurveyByDimensionCombo = (surveyResponses, survey) =>
  * This method can be used to filter out changed records that are not worth
  * considering, without having to look into the DB for more information
  */
-const pushSurveyResponseChanges = changeDetails => {
+const translateSurveyResponseChanges = changeDetails => {
   const { type, new_record: newRecord, old_record: oldRecord } = changeDetails;
 
   switch (type) {
@@ -166,11 +166,8 @@ export class SurveyResponseOutdater extends ChangeHandler {
   constructor(models) {
     super(models);
 
-    this.changePushers = {
-      surveyResponse: pushSurveyResponseChanges,
-    };
-    this.changeHandlers = {
-      surveyResponse: this.outdateSurveyResponses,
+    this.changeTranslators = {
+      surveyResponse: translateSurveyResponseChanges,
     };
   }
 
@@ -179,7 +176,7 @@ export class SurveyResponseOutdater extends ChangeHandler {
    * This method processes the changed records and ensures that all responses in the affected
    * dimension combos get a correct `outdated` status
    */
-  outdateSurveyResponses = async changedResponses => {
+  handleChanges = async changedResponses => {
     const surveysById = await this.fetchSurveysById(changedResponses);
     const responsesBySurveyId = groupBy(changedResponses, 'survey_id');
 
@@ -189,6 +186,9 @@ export class SurveyResponseOutdater extends ChangeHandler {
       ),
     );
   };
+
+  getChangeDebuggingInfo = changedResponses =>
+    `Could not outdate survey responses with ids ${changedResponses.map(sr => sr.id)}`;
 
   handleResponsesForSurvey = async (changedResponses, survey) => {
     if (!survey?.['period_granularity']) {
