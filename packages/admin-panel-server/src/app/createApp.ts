@@ -8,7 +8,7 @@ import { Express } from 'express';
 import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
 
 import { TupaiaDatabase } from '@tupaia/database';
-import { OrchestratorApiBuilder, attachSession, handleWith } from '@tupaia/server-boilerplate';
+import { OrchestratorApiBuilder, attachSession, handleError } from '@tupaia/server-boilerplate';
 
 import { AdminPanelSessionModel } from '../models';
 import { hasTupaiaAdminPanelAccess } from '../utils';
@@ -37,7 +37,7 @@ const useForwardUnhandledRequestsToMeditrak = (app: Express) => {
   };
 
   //Forward any unhandled request to meditrak-server
-  app.use(attachSession, attachAuthorizationHeader, createProxyMiddleware(options));
+  app.use(attachSession, attachAuthorizationHeader, createProxyMiddleware(options), handleError);
 };
 
 /**
