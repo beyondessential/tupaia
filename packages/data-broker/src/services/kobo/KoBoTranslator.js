@@ -15,7 +15,7 @@ export class KoBoTranslator {
     return { orgUnit: entity.code, orgUnitName: entity.name };
   }
 
-  async translateSingleKoBoResult(result, questionCodeMapping, entityQuestion) {
+  async translateSingleKoBoResult(result, questionMapping, entityQuestion) {
     const {
       _id: event,
       _submission_time: eventDate,
@@ -26,9 +26,13 @@ export class KoBoTranslator {
     const { orgUnit, orgUnitName } = await this.fetchEntityInfoFromKoBoAnswer(koboEntityCode);
     // Map kobo questions to tupaia question codes
     const dataValues = {};
-    for (const [tupaia, kobo] of Object.entries(questionCodeMapping)) {
-      if (restOfFields[kobo] !== undefined) {
-        dataValues[tupaia] = restOfFields[kobo];
+    for (const [tupaia, { koboQuestionCode, answerMap }] of Object.entries(questionMapping)) {
+      if (restOfFields[koboQuestionCode] !== undefined) {
+        let koboValue = restOfFields[koboQuestionCode];
+        if (answerMap) {
+          koboValue = answerMap[koboValue] || koboValue;
+        }
+        dataValues[tupaia] = koboValue;
       }
     }
 
@@ -41,11 +45,10 @@ export class KoBoTranslator {
     };
   }
 
-  async translateKoBoResults(results, questionCodeMapping, entityQuestion) {
-    // TODO: Should maybe swap this to fetch all at once
+  async translateKoBoResults(results, questionMapping, entityQuestion) {
     return Promise.all(
       results.map(result =>
-        this.translateSingleKoBoResult(result, questionCodeMapping, entityQuestion),
+        this.translateSingleKoBoResult(result, questionMapping, entityQuestion),
       ),
     );
   }

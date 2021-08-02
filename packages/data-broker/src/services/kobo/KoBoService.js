@@ -48,7 +48,7 @@ export class KoBoService extends Service {
         source.config?.internalSurveyCode
       ] = await this.translator.translateKoBoResults(
         results,
-        source.config?.questionCodeMapping,
+        source.config?.questionMapping,
         source.config?.entityQuestionCode,
       );
     }
