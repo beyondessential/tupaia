@@ -37,6 +37,17 @@ import {
 } from './dashboardRelations';
 import { DeleteLegacyReport, EditLegacyReport, GETLegacyReports } from './legacyReports';
 import { DeleteMapOverlays, EditMapOverlays, GETMapOverlays } from './mapOverlays';
+import {
+  DeleteMapOverlayGroups,
+  EditMapOverlayGroups,
+  GETMapOverlayGroups,
+} from './mapOverlayGroups';
+import {
+  DeleteMapOverlayGroupRelations,
+  EditMapOverlayGroupRelations,
+  GETMapOverlayGroupRelations,
+  CreateMapOverlayGroupRelation,
+} from './mapOverlayGroupRelations';
 import { DeleteSurveyResponses, EditSurveyResponses, GETSurveyResponses } from './surveyResponses';
 import {
   DeleteSurveyScreenComponents,
@@ -112,6 +123,7 @@ export default {
   createPermissionGroups: useRouteHandler(BESAdminCreateHandler),
   createUserEntityPermissions: useRouteHandler(CreateUserEntityPermissions),
   createDashboardRelations: useRouteHandler(CreateDashboardRelation),
+  createMapOverlayGroupRelations: useRouteHandler(CreateMapOverlayGroupRelation),
   deleteAnswers: useRouteHandler(DeleteAnswers),
   deleteDashboards: useRouteHandler(DeleteDashboard),
   deleteDashboardItems: useRouteHandler(DeleteDashboardItem),
@@ -126,6 +138,8 @@ export default {
   deleteQuestions: useRouteHandler(DeleteQuestions),
   deleteSurveys: useRouteHandler(DeleteSurveys),
   deleteMapOverlays: useRouteHandler(DeleteMapOverlays),
+  deleteMapOverlayGroups: useRouteHandler(DeleteMapOverlayGroups),
+  deleteMapOverlayGroupRelations: useRouteHandler(DeleteMapOverlayGroupRelations),
   deleteSurveyResponses: useRouteHandler(DeleteSurveyResponses),
   deleteSurveyScreenComponents: useRouteHandler(DeleteSurveyScreenComponents),
   deleteUserEntityPermissions: useRouteHandler(DeleteUserEntityPermissions),
@@ -146,6 +160,8 @@ export default {
   editQuestions: useRouteHandler(EditQuestions),
   editSurveys: useRouteHandler(EditSurveys),
   editMapOverlays: useRouteHandler(EditMapOverlays),
+  editMapOverlayGroups: useRouteHandler(EditMapOverlayGroups),
+  editMapOverlayGroupRelations: useRouteHandler(EditMapOverlayGroupRelations),
   editProjects: useRouteHandler(BESAdminEditHandler),
   editSurveyResponses: useRouteHandler(EditSurveyResponses),
   editSurveyScreenComponents: useRouteHandler(EditSurveyScreenComponents),
@@ -168,6 +184,8 @@ export default {
   getGeographicalAreas: useRouteHandler(GETGeographicalAreas),
   getFeedItems: useRouteHandler(GETFeedItems),
   getMapOverlays: useRouteHandler(GETMapOverlays),
+  getMapOverlayGroups: useRouteHandler(GETMapOverlayGroups),
+  getMapOverlayGroupRelations: useRouteHandler(GETMapOverlayGroupRelations),
   getSurveys: useRouteHandler(GETSurveys),
   getSurveyGroups: useRouteHandler(GETSurveyGroups),
   getSurveyResponses: useRouteHandler(GETSurveyResponses),

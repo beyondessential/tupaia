@@ -6,6 +6,7 @@
 import { TYPES } from '@tupaia/database';
 import {
   constructRecordExistsWithId,
+  constructRecordExistsWithField,
   hasContent,
   isEmail,
   isPlainObject,
@@ -122,6 +123,24 @@ export const constructForSingle = (models, recordType) => {
             }
             return true;
           },
+        ],
+        sort_order: [constructIsEmptyOr(isNumber)],
+      };
+    case TYPES.MAP_OVERLAY_GROUP_RELATION:
+      return {
+        map_overlay_group_id: [constructRecordExistsWithId(models.mapOverlayGroup)],
+        child_id: [
+          async (value, { child_type: childType }) => {
+            if (childType === models.mapOverlayGroupRelation.RelationChildTypes.MAP_OVERLAY) {
+              // Map Overlay Id is not in UID form so this is a work around.
+              await constructRecordExistsWithField(models.mapOverlay, 'id')(value);
+            } else {
+              await constructRecordExistsWithId(models.mapOverlayGroup)(value);
+            }
+          },
+        ],
+        child_type: [
+          constructIsOneOf(Object.values(models.mapOverlayGroupRelation.RelationChildTypes)),
         ],
         sort_order: [constructIsEmptyOr(isNumber)],
       };

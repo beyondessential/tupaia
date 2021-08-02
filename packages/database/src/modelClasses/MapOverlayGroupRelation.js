@@ -7,6 +7,13 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
+const MAP_OVERLAY = 'mapOverlay';
+const MAP_OVERLAY_GROUP = 'mapOverlayGroup';
+const RELATION_CHILD_TYPES = {
+  MAP_OVERLAY,
+  MAP_OVERLAY_GROUP,
+};
+
 class MapOverlayGroupRelationType extends DatabaseType {
   static databaseType = TYPES.MAP_OVERLAY_GROUP_RELATION;
 
@@ -18,6 +25,10 @@ class MapOverlayGroupRelationType extends DatabaseType {
 export class MapOverlayGroupRelationModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return MapOverlayGroupRelationType;
+  }
+
+  get RelationChildTypes() {
+    return RELATION_CHILD_TYPES;
   }
 
   async findTopLevelMapOverlayGroupRelations() {

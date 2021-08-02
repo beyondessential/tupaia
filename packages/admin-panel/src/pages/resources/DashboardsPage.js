@@ -92,7 +92,7 @@ const RELATION_FIELDS = [
   },
 ];
 
-export const ANSWER_COLUMNS = [
+export const RELATION_COLUMNS = [
   ...RELATION_FIELDS,
   {
     Header: 'Edit',
@@ -108,7 +108,7 @@ export const ANSWER_COLUMNS = [
 const EXPANSION_CONFIG = [
   {
     title: 'Dashboard Relations',
-    columns: ANSWER_COLUMNS,
+    columns: RELATION_COLUMNS,
     endpoint: 'dashboards/{id}/dashboardRelations',
   },
 ];

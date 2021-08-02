@@ -23,6 +23,7 @@ const {
   createPermissionGroups,
   createUserEntityPermissions,
   createDashboardRelations,
+  createMapOverlayGroupRelations,
   deleteAnswers,
   deleteDashboards,
   deleteDashboardItems,
@@ -37,6 +38,8 @@ const {
   deleteQuestions,
   deleteSurveys,
   deleteMapOverlays,
+  deleteMapOverlayGroups,
+  deleteMapOverlayGroupRelations,
   deleteSurveyResponses,
   deleteSurveyScreenComponents,
   deleteUserEntityPermissions,
@@ -55,6 +58,8 @@ const {
   editQuestions,
   editSurveys,
   editMapOverlays,
+  editMapOverlayGroups,
+  editMapOverlayGroupRelations,
   editProjects,
   editSurveyResponses,
   editSurveyScreenComponents,
@@ -77,6 +82,8 @@ const {
   getFeedItems,
   getIndicators,
   getMapOverlays,
+  getMapOverlayGroups,
+  getMapOverlayGroupRelations,
   getSurveys,
   getSurveyGroups,
   getSurveyResponses,
@@ -175,6 +182,12 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/indicators/:recordId?', getIndicators);
   app.get('(/v[0-9]+)/feedItems/:recordId?', getFeedItems);
   app.get('(/v[0-9]+)/mapOverlays/:recordId?', getMapOverlays);
+  app.get('(/v[0-9]+)/mapOverlayGroups/:recordId?', getMapOverlayGroups);
+  app.get(
+    '(/v[0-9]+)/mapOverlayGroups/:parentRecordId/mapOverlayGroupRelations',
+    getMapOverlayGroupRelations,
+  );
+  app.get('(/v[0-9]+)/mapOverlayGroupRelations/:recordId?', getMapOverlayGroupRelations);
   app.get('(/v[0-9]+)/surveys/:recordId?', getSurveys);
   app.get('(/v[0-9]+)/countries/:parentRecordId/surveys', getSurveys);
   app.get('(/v[0-9]+)/countries/:parentRecordId/entities', getEntities);
@@ -242,6 +255,7 @@ export function addRoutesToApp(app) {
   app.post('(/v[0-9]+)/indicators', createIndicators);
   app.post('(/v[0-9]+)/permissionGroups', createPermissionGroups);
   app.post('(/v[0-9]+)?/dashboardRelations', createDashboardRelations);
+  app.post('(/v[0-9]+)?/mapOverlayGroupRelations', createMapOverlayGroupRelations);
 
   /**
    * PUT routes
@@ -265,6 +279,8 @@ export function addRoutesToApp(app) {
   app.put('(/v[0-9]+)/dashboardRelations/:recordId', editDashboardRelations);
   app.put('(/v[0-9]+)/legacyReports/:recordId', editLegacyReports);
   app.put('(/v[0-9]+)/mapOverlays/:recordId', editMapOverlays);
+  app.put('(/v[0-9]+)/mapOverlayGroups/:recordId', editMapOverlayGroups);
+  app.put('(/v[0-9]+)/mapOverlayGroupRelations/:recordId', editMapOverlayGroupRelations);
   app.put('(/v[0-9]+)/indicators/:recordId', editIndicators);
   app.put('(/v[0-9]+)/projects/:recordId', editProjects);
   app.put('(/v[0-9]+)/me', editUser);
@@ -289,6 +305,8 @@ export function addRoutesToApp(app) {
   app.delete('(/v[0-9]+)/dashboardRelations/:recordId', deleteDashboardRelations);
   app.delete('(/v[0-9]+)/legacyReports/:recordId', deleteLegacyReports);
   app.delete('(/v[0-9]+)/mapOverlays/:recordId', deleteMapOverlays);
+  app.delete('(/v[0-9]+)/mapOverlayGroups/:recordId', deleteMapOverlayGroups);
+  app.delete('(/v[0-9]+)/mapOverlayGroupRelations/:recordId', deleteMapOverlayGroupRelations);
   app.delete('(/v[0-9]+)/indicators/:recordId', deleteIndicators);
 
   /**

@@ -17,6 +17,8 @@ export { DisasterResponsePage } from './DisasterResponsePage';
 export { DataGroupsPage, DataElementsPage } from './DataSourcesPage';
 export { AccessRequestsPage } from './AccessRequestsPage';
 export { MapOverlaysPage } from './MapOverlaysPage';
+export { MapOverlayGroupsPage } from './MapOverlayGroupsPage';
+export { MapOverlayGroupRelationsPage } from './MapOverlayGroupRelationsPage';
 export { IndicatorsPage } from './IndicatorsPage';
 export { DashboardsPage } from './DashboardsPage';
 export { DashboardItemsPage } from './DashboardItemsPage';
