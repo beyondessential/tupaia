@@ -117,6 +117,12 @@ export class ChangeHandler {
       try {
         await this.handleChanges(currentQueue);
       } catch (error) {
+        winston.warn(
+          [
+            `Attempt #${i + 1} to handle change batch failed with error message:`,
+            error.message,
+          ].join('\n'),
+        );
         success = false;
       }
 
