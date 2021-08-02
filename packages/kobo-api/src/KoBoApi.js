@@ -12,7 +12,7 @@ export class KoBoApi {
     this.apiKey = process.env.KOBO_API_KEY;
   }
 
-  async fetchKoBoSurvey(koboSurveyCode, optionsInput) {
+  async fetchKoBoSubmissions(koboSurveyCode, optionsInput) {
     // await validateEventOptions(optionsInput); // TODO: Write validator
     let mongoQuery = {};
     if (optionsInput.startSubmissionTime) {

@@ -29,9 +29,9 @@ export class DataBroker {
       [this.getDataSourceTypes().SYNC_GROUP]: this.mergeSyncGroups,
     };
     this.fetchers = {
-      [this.getDataSourceTypes().DATA_ELEMENT]: this.fetchDataSourceTable,
-      [this.getDataSourceTypes().DATA_GROUP]: this.fetchDataSourceTable,
-      [this.getDataSourceTypes().SYNC_GROUP]: this.fetchSyncGroupTable,
+      [this.getDataSourceTypes().DATA_ELEMENT]: this.fetchFromDataSourceTable,
+      [this.getDataSourceTypes().DATA_GROUP]: this.fetchFromDataSourceTable,
+      [this.getDataSourceTypes().SYNC_GROUP]: this.fetchFromSyncGroupTable,
     };
   }
 
@@ -43,11 +43,11 @@ export class DataBroker {
     return this.models.dataSource.getTypes();
   }
 
-  fetchDataSourceTable = async dataSourceSpec => {
+  fetchFromDataSourceTable = async dataSourceSpec => {
     return this.models.dataSource.find(dataSourceSpec);
   };
 
-  fetchSyncGroupTable = async dataSourceSpec => {
+  fetchFromSyncGroupTable = async dataSourceSpec => {
     // Add 'type' field to output to keep object layout consistent between tables
     const syncGroups = await this.models.dataServiceSyncGroup.find({ code: dataSourceSpec.code });
     return syncGroups.map(sg => ({ ...sg, type: this.getDataSourceTypes().SYNC_GROUP }));

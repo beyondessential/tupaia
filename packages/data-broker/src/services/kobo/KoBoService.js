@@ -43,7 +43,7 @@ export class KoBoService extends Service {
   pullSyncGroups = async (dataSources, options) => {
     const resultsByDataSource = {};
     for (const source of dataSources) {
-      const results = await this.api.fetchKoBoSurvey(source.config?.koboSurveyCode, options);
+      const results = await this.api.fetchKoBoSubmissions(source.config?.koboSurveyCode, options);
       resultsByDataSource[source.code] = await this.translator.translateKoBoResults(
         results,
         source.config?.questionCodeMapping,
