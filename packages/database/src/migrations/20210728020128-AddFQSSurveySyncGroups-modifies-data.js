@@ -26,12 +26,14 @@ const KOBO_SURVEYS = [
     entityQuestionCode: 'FQS1Primary_location/FQS1PrimarySchool',
     questionCodeMapping: FQS1_CODE_MAPPING,
     internalSurveyCode: 'LESMIS_FQS1',
+    koboSurveyCode: 'aae6Nbi2TVrNcwNwi4zYbm',
   },
   {
     code: 'FQS2',
     entityQuestionCode: 'FQS2Primary_location/FQS2PrimarySchool',
     questionCodeMapping: FQS2_CODE_MAPPING,
     internalSurveyCode: 'LESMIS_FQS2',
+    koboSurveyCode: 'ahEoK9WiEA4iVm4GnepcNt',
   },
 ];
 
@@ -41,13 +43,14 @@ exports.up = async function (db) {
     entityQuestionCode,
     questionCodeMapping,
     internalSurveyCode,
+    koboSurveyCode
   } of KOBO_SURVEYS) {
     await insertObject(db, 'data_service_sync_group', {
       id: generateId(),
       code,
       service_type: 'kobo',
       config: {
-        // koboSurveyCode: 'xyz',
+        koboSurveyCode,
         internalSurveyCode,
         entityQuestionCode,
         questionCodeMapping,

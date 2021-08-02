@@ -27,7 +27,7 @@ export class KoBoTranslator {
     // Map kobo questions to tupaia question codes
     const dataValues = {};
     for (const [tupaia, kobo] of Object.entries(questionCodeMapping)) {
-      if (restOfFields[kobo]) {
+      if (restOfFields[kobo] !== undefined) {
         dataValues[tupaia] = restOfFields[kobo];
       }
     }
