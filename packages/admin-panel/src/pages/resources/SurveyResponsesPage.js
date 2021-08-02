@@ -173,6 +173,7 @@ export const SurveyResponsesPage = ({ getHeaderEl }) => (
     title="Survey Responses"
     endpoint="surveyResponses"
     columns={COLUMNS}
+    defaultFilters={[{ id: 'outdated', value: false }]}
     defaultSorting={[{ id: 'data_time', desc: true }]}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
