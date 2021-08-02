@@ -1,0 +1,20 @@
+{
+  "code": "LESMIS_ESSDP_ECE_SubSector_List",
+  "legacy": false,
+  "reportCode": "LESMIS_ESSDP_ECE_SubSector_List",
+  "name": "ESSDP List Summary",
+  "type": "list",
+  "drillDown": {
+    "itemCodeByEntry": {
+      "ECETarget5": "LESMIS_enrolment_ece_5_target",
+      "ECETarget0_2": "LESMIS_enrolment_ece_0_2_target",
+      "ECETarget3_4": "LESMIS_enrolment_ece_3_4_target"
+    }
+  },
+  "valueType": "color",
+  "listConfig": {
+    "0": { "color": "#ffc701", "border":"#ffe600", "label": "Yellow" },
+    "1": { "color": "#02B851", "border": "#99EABC", "label": "Green" },
+    "-1": { "color": "#D13333", "border": "#FF9393", "label": "Red" }
+  }
+}

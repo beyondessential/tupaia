@@ -35,6 +35,7 @@ module.exports = async ({ config }) => {
   config.resolve.alias = {
     ...config.resolve.alias,
     yargs: path.resolve(__dirname, 'yargsMock.js'),
+    child_process: path.resolve(__dirname, 'yargsMock.js'),
   };
 
   return config;
