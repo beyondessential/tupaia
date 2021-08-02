@@ -4,7 +4,7 @@ import { generateId, insertObject, deleteObject } from '../utilities';
 import {
   FQS1_CODE_MAPPING,
   FQS2_CODE_MAPPING,
-} from './migrationData/20210728020128-AddFQSSurveySyncGroups;
+} from './migrationData/20210728020128-AddFQSSurveySyncGroups';
 
 var dbm;
 var type;
@@ -23,38 +23,45 @@ exports.setup = function (options, seedLink) {
 const KOBO_SURVEYS = [
   {
     code: 'FQS1',
-    entityQuestionCode: 'FQS1Primary_location/FQS1PrimarySchool',
-    questionCodeMapping: FQS1_CODE_MAPPING,
-    internalSurveyCode: 'LESMIS_FQS1',
-    koboSurveyCode: 'aae6Nbi2TVrNcwNwi4zYbm',
+    config: {
+      entityQuestionCode: 'FQS1Primary_location/FQS1PrimarySchool',
+      questionCodeMapping: FQS1_CODE_MAPPING,
+      internalSurveyCode: 'LESMIS_FQS1',
+      koboSurveyCode: 'aae6Nbi2TVrNcwNwi4zYbm',
+      answerMap: {
+        default: {
+          0: 'Major Issue',
+          50: 'Minor Issue',
+          100: 'Achieved',
+        },
+      },
+    },
   },
   {
     code: 'FQS2',
-    entityQuestionCode: 'FQS2Primary_location/FQS2PrimarySchool',
-    questionCodeMapping: FQS2_CODE_MAPPING,
-    internalSurveyCode: 'LESMIS_FQS2',
-    koboSurveyCode: 'ahEoK9WiEA4iVm4GnepcNt',
+    config: {
+      entityQuestionCode: 'FQS2Primary_location/FQS2PrimarySchool',
+      questionCodeMapping: FQS2_CODE_MAPPING,
+      internalSurveyCode: 'LESMIS_FQS2',
+      koboSurveyCode: 'ahEoK9WiEA4iVm4GnepcNt',
+      answerMap: {
+        default: {
+          0: 1,
+          50: 2,
+          100: 3,
+        },
+      },
+    },
   },
 ];
 
 exports.up = async function (db) {
-  for (const {
-    code,
-    entityQuestionCode,
-    questionCodeMapping,
-    internalSurveyCode,
-    koboSurveyCode
-  } of KOBO_SURVEYS) {
+  for (const { code, config } of KOBO_SURVEYS) {
     await insertObject(db, 'data_service_sync_group', {
       id: generateId(),
       code,
       service_type: 'kobo',
-      config: {
-        koboSurveyCode,
-        internalSurveyCode,
-        entityQuestionCode,
-        questionCodeMapping,
-      },
+      config,
     });
   }
 };
