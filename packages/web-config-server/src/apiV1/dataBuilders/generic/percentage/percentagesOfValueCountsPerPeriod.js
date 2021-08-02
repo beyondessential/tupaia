@@ -94,13 +94,13 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
 
       // Only one data class is supported for country data classes
       const [baseDataClass] = Object.values(this.config.dataClasses);
-      const dataClasses = Object.fromEntries(
+      const dataClassesWithAnalytics = Object.fromEntries(
         Object.entries(dataByCountryCode).map(([code, analyticsForCountry]) => [
           countryCodeToName[code],
           { ...baseDataClass, analytics: analyticsForCountry },
         ]),
       );
-      return sortFields(dataClasses);
+      return sortFields(dataClassesWithAnalytics);
     }
 
     const hasMultipleClasses = Object.keys(this.config.dataClasses).length > 1;
