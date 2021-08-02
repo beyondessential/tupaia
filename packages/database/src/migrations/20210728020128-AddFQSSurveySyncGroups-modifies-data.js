@@ -25,32 +25,18 @@ const KOBO_SURVEYS = [
     code: 'FQS1',
     config: {
       entityQuestionCode: 'FQS1Primary_location/FQS1PrimarySchool',
-      questionCodeMapping: FQS1_CODE_MAPPING,
+      questionMapping: FQS1_CODE_MAPPING,
       internalSurveyCode: 'LESMIS_FQS1',
       koboSurveyCode: 'aae6Nbi2TVrNcwNwi4zYbm',
-      answerMap: {
-        default: {
-          0: 'Major Issue',
-          50: 'Minor Issue',
-          100: 'Achieved',
-        },
-      },
     },
   },
   {
     code: 'FQS2',
     config: {
       entityQuestionCode: 'FQS2Primary_location/FQS2PrimarySchool',
-      questionCodeMapping: FQS2_CODE_MAPPING,
+      questionMapping: FQS2_CODE_MAPPING,
       internalSurveyCode: 'LESMIS_FQS2',
       koboSurveyCode: 'ahEoK9WiEA4iVm4GnepcNt',
-      answerMap: {
-        default: {
-          0: 1,
-          50: 2,
-          100: 3,
-        },
-      },
     },
   },
 ];
