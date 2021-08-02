@@ -8,17 +8,17 @@ import { DataBroker } from '@tupaia/data-broker';
 import { generateId } from '@tupaia/database';
 import { reformatDateStringWithoutTz } from '@tupaia/utils';
 
-// TODO:
-// - REST endpoint: Manual
-
-const PERIOD_BETWEEN_SYNCS = 1 * 60 * 1000; // 1 minutes between syncs
+const PERIOD_BETWEEN_SYNCS = 10 * 60 * 1000; // 10 minutes between syncs
 const SERVICE_NAME = 'KoBo';
 
 export async function startSyncWithKoBo(models) {
-  // TODO: Allow disabling of KoBo sync
-  // TODO: Can KoBo and DHIS share a dataBroker?
-  const dataBroker = new DataBroker();
-  setInterval(() => syncWithKoBo(models, dataBroker), PERIOD_BETWEEN_SYNCS);
+  if (process.env.KOBO_SYNC_DISABLE) {
+    // eslint-disable-next-line no-console
+    console.log('KoBo sync is disabled');
+  } else {
+    const dataBroker = new DataBroker();
+    setInterval(() => syncWithKoBo(models, dataBroker), PERIOD_BETWEEN_SYNCS);
+  }
 }
 
 async function syncWithKoBo(models, dataBroker) {
