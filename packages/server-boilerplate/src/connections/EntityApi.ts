@@ -5,33 +5,78 @@
  */
 
 import type {
-  EntityApiQueryOptions,
-  EntityApiResponse,
-  EntityFilterObject,
-  RelationshipsSubQueryOptions,
+  EntityFields,
   GroupByAncestorRelationshipsResponseBody,
   GroupByDescendantRelationshipsResponseBody,
   FlattableEntityFieldName,
   ExtendedEntityFieldName,
   FlattenedEntity,
+  EntityResponseObject,
 } from '@tupaia/entity-server/src/type-exports';
+
+import { FilterCriteria, AdvancedFilterValue } from '../models';
 
 import { ApiConnection } from './ApiConnection';
 import { MicroserviceApi } from './types';
 
 const { ENTITY_API_URL = 'http://localhost:8050/v1' } = process.env;
 
-export const CLAUSE_DELIMITER = ';';
-export const FIELD_VALUE_DELIMITER = ':';
-export const NESTED_FIELD_DELIMITER = '_';
-export const MULTIPLE_VALUES_DELIMITER = ',';
+const CLAUSE_DELIMITER = ';';
+const NESTED_FIELD_DELIMITER = '_';
+const MULTIPLE_VALUES_DELIMITER = ',';
+
+// Inspired by Google Analytics filter: https://developers.google.com/analytics/devguides/reporting/core/v3/reference?hl=en#filters
+const comparatorToOperator = {
+  '=': '==' as const, // Exact match
+  '!=': '!=' as const, // Does not match
+  ilike: '=@' as const, // Contains sub string
+};
+
+type ValueOf<T> = T extends Record<string, any> ? T[keyof T] : never;
+
+type NonNullableFields<T> = {
+  [field in keyof T]: NonNullable<T[field]>;
+};
+
+type EntityApiFilter = FilterCriteria<NonNullableFields<EntityFields>>;
+
+type EntityApiQueryOptions = {
+  field?: FlattableEntityFieldName;
+  fields?: ExtendedEntityFieldName[];
+  filter?: EntityApiFilter;
+};
+
+type RelationshipsSubQueryOptions = Omit<EntityApiQueryOptions, 'fields'>;
+
+type EntityApiResponse<T extends ExtendedEntityFieldName[]> = Required<
+  Pick<EntityResponseObject, T[number]>
+>;
+
+const isAdvancedFilter = (
+  filter: EntityApiFilter | ValueOf<EntityApiFilter>,
+): filter is AdvancedFilterValue<any> =>
+  typeof filter === 'object' &&
+  filter !== null &&
+  Object.keys(filter).length === 2 &&
+  'comparator' in filter &&
+  'comparisonValue' in filter;
 
 const recurseFilter = (
-  filter: unknown,
-  filterArray: [string[], string[]][] = [],
+  filter: EntityApiFilter | ValueOf<EntityApiFilter>,
+  filterArray: [string[], ValueOf<typeof comparatorToOperator>, string[]][] = [],
   nestedKeys: string[] = [],
 ) => {
-  if (typeof filter === 'object' && filter !== null) {
+  if (isAdvancedFilter(filter)) {
+    const value = filter.comparisonValue;
+
+    filterArray.push([
+      nestedKeys,
+      comparatorToOperator[filter.comparator],
+      Array.isArray(value) ? value : [value],
+    ]);
+  }
+
+  if (typeof filter === 'object') {
     Object.entries(filter).forEach(([subKey, value]) =>
       recurseFilter(value, filterArray, nestedKeys.concat(subKey)),
     );
@@ -39,12 +84,12 @@ const recurseFilter = (
   }
 
   if (Array.isArray(filter)) {
-    filterArray.push([nestedKeys, filter]);
+    filterArray.push([nestedKeys, '==', filter]);
     return filterArray;
   }
 
   if (typeof filter === 'string') {
-    filterArray.push([nestedKeys, [filter]]);
+    filterArray.push([nestedKeys, '==', [filter]]);
     return filterArray;
   }
 
@@ -65,16 +110,16 @@ export class EntityApi implements MicroserviceApi {
     this.connection = connection;
   }
 
-  private stringifyFields(fields?: EntityApiQueryOptions['fields']) {
+  private stringifyFields(fields?: ExtendedEntityFieldName[]) {
     return fields ? fields.join(',') : undefined;
   }
 
-  private stringifyFilter(filter?: EntityApiQueryOptions['filter']) {
+  private stringifyFilter(filter?: EntityApiFilter) {
     return filter
       ? recurseFilter(filter)
           .map(
-            ([keys, values]) =>
-              `${keys.join(NESTED_FIELD_DELIMITER)}${FIELD_VALUE_DELIMITER}${values.join(
+            ([keys, operator, values]) =>
+              `${keys.join(NESTED_FIELD_DELIMITER)}${operator}${values.join(
                 MULTIPLE_VALUES_DELIMITER,
               )}`,
           )
@@ -112,7 +157,7 @@ export class EntityApi implements MicroserviceApi {
     entityCode: string,
     queryOptions?: {
       field: FlattableEntityFieldName;
-      filter?: EntityFilterObject;
+      filter?: EntityApiFilter;
     },
   ): Promise<FlattenedEntity>;
   public async getEntity<T extends ExtendedEntityFieldName[]>(
@@ -120,7 +165,7 @@ export class EntityApi implements MicroserviceApi {
     entityCode: string,
     queryOptions?: {
       fields: T;
-      filter?: EntityFilterObject;
+      filter?: EntityApiFilter;
     },
   ): Promise<EntityApiResponse<T>>;
   public async getEntity<T extends ExtendedEntityFieldName[]>(
@@ -129,7 +174,7 @@ export class EntityApi implements MicroserviceApi {
     queryOptions?: {
       field?: FlattableEntityFieldName;
       fields?: T;
-      filter?: EntityFilterObject;
+      filter?: EntityApiFilter;
     },
   ) {
     return this.connection.get(`hierarchy/${hierarchyName}/${entityCode}`, {
@@ -142,7 +187,7 @@ export class EntityApi implements MicroserviceApi {
     entityCodes: string[],
     queryOptions?: {
       field: FlattableEntityFieldName;
-      filter?: EntityFilterObject;
+      filter?: EntityApiFilter;
     },
   ): Promise<FlattenedEntity[]>;
   public async getEntities<T extends ExtendedEntityFieldName[]>(
@@ -150,7 +195,7 @@ export class EntityApi implements MicroserviceApi {
     entityCodes: string[],
     queryOptions?: {
       fields: T;
-      filter?: EntityFilterObject;
+      filter?: EntityApiFilter;
     },
   ): Promise<EntityApiResponse<T>[]>;
   public async getEntities<T extends ExtendedEntityFieldName[]>(
@@ -159,7 +204,7 @@ export class EntityApi implements MicroserviceApi {
     queryOptions?: {
       field?: FlattableEntityFieldName;
       fields?: T;
-      filter?: EntityFilterObject;
+      filter?: EntityApiFilter;
     },
   ) {
     return this.connection.get(`hierarchy/${hierarchyName}`, {
@@ -173,7 +218,7 @@ export class EntityApi implements MicroserviceApi {
     entityCode: string,
     queryOptions?: {
       field: FlattableEntityFieldName;
-      filter?: EntityFilterObject;
+      filter?: EntityApiFilter;
     },
     includeRootEntity?: boolean,
   ): Promise<FlattenedEntity[]>;
@@ -182,7 +227,7 @@ export class EntityApi implements MicroserviceApi {
     entityCode: string,
     queryOptions?: {
       fields: T;
-      filter?: EntityFilterObject;
+      filter?: EntityApiFilter;
     },
     includeRootEntity?: boolean,
   ): Promise<EntityApiResponse<T>[]>;
@@ -192,7 +237,7 @@ export class EntityApi implements MicroserviceApi {
     queryOptions?: {
       field?: FlattableEntityFieldName;
       fields?: T;
-      filter?: EntityFilterObject;
+      filter?: EntityApiFilter;
     },
     includeRootEntity = false,
   ) {
@@ -207,7 +252,7 @@ export class EntityApi implements MicroserviceApi {
     entityCodes: string[],
     queryOptions?: {
       field: FlattableEntityFieldName;
-      filter?: EntityFilterObject;
+      filter?: EntityApiFilter;
     },
     includeRootEntity?: boolean,
   ): Promise<FlattenedEntity[]>;
@@ -216,7 +261,7 @@ export class EntityApi implements MicroserviceApi {
     entityCodes: string[],
     queryOptions?: {
       fields: T;
-      filter?: EntityFilterObject;
+      filter?: EntityApiFilter;
     },
     includeRootEntity?: boolean,
   ): Promise<EntityApiResponse<T>[]>;
@@ -226,7 +271,7 @@ export class EntityApi implements MicroserviceApi {
     queryOptions?: {
       field?: FlattableEntityFieldName;
       fields?: T;
-      filter?: EntityFilterObject;
+      filter?: EntityApiFilter;
     },
     includeRootEntity = false,
   ) {
@@ -242,7 +287,7 @@ export class EntityApi implements MicroserviceApi {
     entityCode: string,
     queryOptions?: {
       field: FlattableEntityFieldName;
-      filter?: EntityFilterObject;
+      filter?: EntityApiFilter;
     },
   ): Promise<FlattenedEntity[]>;
   public async getRelativesOfEntity<T extends ExtendedEntityFieldName[]>(
@@ -250,7 +295,7 @@ export class EntityApi implements MicroserviceApi {
     entityCode: string,
     queryOptions?: {
       fields: T;
-      filter?: EntityFilterObject;
+      filter?: EntityApiFilter;
     },
   ): Promise<EntityApiResponse<T>[]>;
   public async getRelativesOfEntity<T extends ExtendedEntityFieldName[]>(
@@ -259,7 +304,7 @@ export class EntityApi implements MicroserviceApi {
     queryOptions?: {
       field?: FlattableEntityFieldName;
       fields?: T;
-      filter?: EntityFilterObject;
+      filter?: EntityApiFilter;
     },
   ) {
     return this.connection.get(`hierarchy/${hierarchyName}/${entityCode}/relatives`, {
@@ -272,7 +317,7 @@ export class EntityApi implements MicroserviceApi {
     entityCodes: string[],
     queryOptions?: {
       field: FlattableEntityFieldName;
-      filter?: EntityFilterObject;
+      filter?: EntityApiFilter;
     },
   ): Promise<FlattenedEntity[]>;
   public async getRelativesOfEntities<T extends ExtendedEntityFieldName[]>(
@@ -280,7 +325,7 @@ export class EntityApi implements MicroserviceApi {
     entityCodes: string[],
     queryOptions?: {
       fields: T;
-      filter?: EntityFilterObject;
+      filter?: EntityApiFilter;
     },
   ): Promise<EntityApiResponse<T>[]>;
   public async getRelativesOfEntities<T extends ExtendedEntityFieldName[]>(
@@ -289,7 +334,7 @@ export class EntityApi implements MicroserviceApi {
     queryOptions?: {
       field?: FlattableEntityFieldName;
       fields?: T;
-      filter?: EntityFilterObject;
+      filter?: EntityApiFilter;
     },
   ) {
     return this.connection.get(`hierarchy/${hierarchyName}/relatives`, {

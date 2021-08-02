@@ -19,4 +19,11 @@ export {
   attachSession,
 } from './orchestrator';
 export { QueryParameters } from './types';
-export { Model, DbConditional, Joined, PartialOrArray, QueryConjunctions } from './models';
+export {
+  Model,
+  DbFilter,
+  FilterCriteria,
+  Joined,
+  PartialOrArray,
+  QueryConjunctions,
+} from './models';

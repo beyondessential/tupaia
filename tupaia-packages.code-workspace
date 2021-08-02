@@ -138,6 +138,7 @@
       "geojson",
       "groupby",
       "heatmap",
+      "ilike",
       "imms",
       "isequal",
       "jsonb",
