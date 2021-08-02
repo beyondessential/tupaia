@@ -29,7 +29,6 @@ import {
 import { assertCanImportSurveyResponses } from './assertCanImportSurveyResponses';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { SurveyResponseUpdatePersistor } from './SurveyResponseUpdatePersistor';
-import { setupEmailResponseTimeout } from './setupEmailResponseTimeout';
 import { getFailureMessage } from './getFailureMessage';
 
 /**
@@ -37,7 +36,6 @@ import { getFailureMessage } from './getFailureMessage';
  * updating or creating each answer as appropriate
  */
 export async function importSurveyResponses(req, res) {
-  setupEmailResponseTimeout(req, res); // if the import takes too long, the results will be emailed
   try {
     if (!req.file) {
       throw new UploadError();
