@@ -17,7 +17,7 @@ import {
 } from '@tupaia/utils';
 import { constructAnswerValidator } from './utilities/constructAnswerValidator';
 import { findQuestionsInSurvey } from '../dataAccessors';
-import { assertCanSubmitSurveyResponses } from './importSurveyResponses/assertCanImportSurveyResponses';
+import { assertCanSubmitSurveyResponses } from './import/importSurveyResponses/assertCanImportSurveyResponses';
 import { assertAnyPermissions, assertBESAdminAccess } from '../permissions';
 
 const createSurveyResponseValidator = models =>

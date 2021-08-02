@@ -4,22 +4,20 @@
  */
 
 import express from 'express';
-import multer from 'multer';
 
 import {
   authenticationMiddleware,
   catchAsyncErrors,
-  emailAfterTimeout,
   handleError,
   logApiRequest,
 } from './middleware';
 
 import { allowNoPermissions, ensurePermissionCheck } from '../permissions';
 
+import { exportRoutes } from './export';
+import { importRoutes } from './import';
 import { authenticate } from './authenticate';
 import { countChanges } from './countChanges';
-import { exportSurveyResponses } from './exportSurveyResponses';
-import { exportSurveys } from './exportSurveys';
 import { getChanges } from './getChanges';
 import { BESAdminCreateHandler } from './CreateHandler';
 import { BESAdminDeleteHandler } from './DeleteHandler';
@@ -36,7 +34,7 @@ import { GETSurveyGroups } from './GETSurveyGroups';
 import { DeleteQuestions, EditQuestions, GETQuestions } from './questions';
 import { GETPermissionGroups } from './GETPermissionGroups';
 import { DeleteOptions, EditOptions, GETOptions } from './options';
-import { DeleteOptionSets, EditOptionSets, GETOptionSets, importOptionSets } from './optionSets';
+import { DeleteOptionSets, EditOptionSets, GETOptionSets } from './optionSets';
 import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
 import { DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
 import { GETProjects } from './GETProjects';
@@ -70,12 +68,7 @@ import {
   GETUserEntityPermissions,
 } from './userEntityPermissions';
 import { EditAccessRequests, GETAccessRequests } from './accessRequests';
-import { importEntities } from './importEntities';
-import { importStriveLabResults } from './importStriveLabResults';
-import { importSurveys } from './importSurveys';
-import { importUsers } from './importUsers';
 import { postChanges } from './postChanges';
-import { importSurveyResponses, constructEmailFromResponse } from './importSurveyResponses';
 import { changePassword } from './changePassword';
 import { editUser } from './editUser';
 import { requestCountryAccess } from './requestCountryAccess';
@@ -84,7 +77,6 @@ import { getUserRewards } from './getUserRewards';
 import { requestPasswordReset } from './requestPasswordReset';
 import { getCountryAccessList } from './getCountryAccessList';
 import { surveyResponse } from './surveyResponse';
-import { importDisaster } from './importDisaster';
 import { verifyEmail, requestResendEmail } from './verifyEmail';
 
 const useRouteHandler = HandlerClass =>
@@ -98,16 +90,6 @@ const allowAnyone = routeHandler => (req, res, next) => {
   req.assertPermissions(allowNoPermissions);
   catchAsyncErrors(routeHandler)(req, res, next);
 };
-
-// create upload handler
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: './uploads/',
-    filename: (req, file, callback) => {
-      callback(null, `${Date.now()}_${file.originalname}`);
-    },
-  }),
-});
 
 /**
  * Set up apiV2 routes
@@ -129,13 +111,15 @@ apiV2.post(
 );
 
 /**
+ * /export and /import routes
+ */
+apiV2.use('/export', exportRoutes);
+apiV2.use('/import', importRoutes);
+
+/**
  * GET routes
  */
 apiV2.get('/changes/count', catchAsyncErrors(countChanges));
-apiV2.get('/export/surveyResponses', catchAsyncErrors(exportSurveyResponses));
-apiV2.get('/export/surveyResponses/:surveyResponseId', catchAsyncErrors(exportSurveyResponses));
-apiV2.get('/export/surveys', catchAsyncErrors(exportSurveys));
-apiV2.get('/export/surveys/:surveyId', catchAsyncErrors(exportSurveys));
 apiV2.get('/changes', catchAsyncErrors(getChanges));
 apiV2.get('/socialFeed', catchAsyncErrors(getSocialFeed));
 apiV2.get('/me', useRouteHandler(GETUserForMe));
@@ -187,22 +171,6 @@ apiV2.get('/geographicalAreas/:recordId?', useRouteHandler(GETGeographicalAreas)
 /**
  * POST routes
  */
-apiV2.post('/import/entities', upload.single('entities'), catchAsyncErrors(importEntities));
-apiV2.post(
-  '/import/striveLabResults',
-  upload.single('striveLabResults'),
-  catchAsyncErrors(importStriveLabResults),
-);
-apiV2.post('/import/surveys', upload.single('surveys'), catchAsyncErrors(importSurveys));
-apiV2.post(
-  '/import/surveyResponses',
-  emailAfterTimeout(constructEmailFromResponse),
-  upload.single('surveyResponses'),
-  catchAsyncErrors(importSurveyResponses),
-);
-apiV2.post('/import/disasters', upload.single('disasters'), catchAsyncErrors(importDisaster));
-apiV2.post('/import/users', upload.single('users'), catchAsyncErrors(importUsers));
-apiV2.post('/import/optionSets', upload.single('optionSets'), catchAsyncErrors(importOptionSets));
 apiV2.post('/auth', catchAsyncErrors(authenticate));
 apiV2.post('/auth/resetPassword', catchAsyncErrors(requestPasswordReset));
 apiV2.post('/auth/resendEmail', catchAsyncErrors(requestResendEmail));
