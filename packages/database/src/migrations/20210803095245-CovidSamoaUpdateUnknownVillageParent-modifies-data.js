@@ -23,11 +23,13 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = async function (db) {
+  const unknownVillageId = await codeToId(db, 'entity', 'WS_Unknown_Village');
   const unknownDistrictId = await codeToId(db, 'entity', 'WS_sdUnknown');
-  // const covidSamoaId = (await findSingleRecord(db, 'entity_hierarchy', { name: 'covid_samoa' })).id;
+  const covidSamoaId = (await findSingleRecord(db, 'entity_hierarchy', { name: 'covid_samoa' })).id;
 
   await db.runSql(`
     update "entity" set parent_id = '${unknownDistrictId}' where code = 'WS_Unknown_Village';
+    update "entity_relation" set set parent_id = '${unknownDistrictId}' where child_id = '${unknownVillageId}' and entity_hierarchy_id = '${covidSamoaId}';
   `);
 
   return null;
