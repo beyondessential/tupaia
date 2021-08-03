@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { assertCanAddDataElementInGroup } from '../database';
+import { validateSurveyFields } from './validateSurveyFields';
 
 const RESOURCE_TYPES = {
   DATA_GROUP: 'dataGroup',
@@ -98,6 +99,14 @@ class SurveyEditor {
       // eslint-disable-next-line no-param-reassign
       model[fieldName] = fieldValue;
     });
+
+    if (model.databaseType === 'survey') {
+      await validateSurveyFields(this.models, {
+        code: model.code,
+        periodGranularity: model.period_granularity,
+      });
+    }
+
     if (isDataSource) {
       this.updateDataSourceConfig(model, updatedFields);
     }

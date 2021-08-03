@@ -13,7 +13,11 @@ import {
   ValidationError,
   ObjectValidator,
 } from '@tupaia/utils';
-import { deleteScreensForSurvey, deleteOrphanQuestions } from '../../dataAccessors';
+import {
+  deleteScreensForSurvey,
+  deleteOrphanQuestions,
+  validateSurveyFields,
+} from '../../dataAccessors';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../database/models/Answer';
 import {
   splitStringOnComma,
@@ -40,17 +44,6 @@ import { assertCanImportSurveys } from './assertCanImportSurveys';
 const QUESTION_TYPE_LIST = Object.values(ANSWER_TYPES);
 const DEFAULT_SERVICE_TYPE = 'tupaia';
 const VIS_CRITERIA_CONJUNCTION = '_conjunction';
-
-const validateSurveyServiceType = async (models, surveyCode, serviceType) => {
-  const existingDataGroup = await models.dataSource.findOne({ code: surveyCode });
-  if (existingDataGroup !== null) {
-    if (serviceType !== existingDataGroup.service_type) {
-      throw new ImportValidationError(
-        `Data service must match. The existing survey has Data service: ${existingDataGroup.service_type}. Attempted to import with Data service: ${serviceType}.`,
-      );
-    }
-  }
-};
 
 const validateQuestionExistence = rows => {
   const isQuestionRow = ({ type }) => QUESTION_TYPE_LIST.includes(type);
@@ -159,7 +152,15 @@ export async function importSurveys(req, res) {
 
         const { serviceType = DEFAULT_SERVICE_TYPE } = req.query;
 
-        await validateSurveyServiceType(transactingModels, surveyCode, serviceType);
+        try {
+          await validateSurveyFields(transactingModels, {
+            code: surveyCode,
+            serviceType: req.query.serviceType,
+            periodGranularity: req.query.periodGranularity,
+          });
+        } catch (error) {
+          throw new ImportValidationError(error.message);
+        }
 
         const dataGroup = await updateOrCreateDataGroup(transactingModels, {
           surveyCode,
