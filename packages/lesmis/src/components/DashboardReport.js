@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { DashboardReportModal } from './DashboardReportModal';
 import { Chart } from './Chart';
+import { ListVisual } from './ListVisual';
 import * as COLORS from '../constants';
 import { useDashboardReportData } from '../api/queries';
 import { yearToApiDates } from '../api/queries/utils';
@@ -26,14 +27,6 @@ const Footer = styled(FlexEnd)`
   background: ${COLORS.GREY_F9};
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
 `;
-
-export const CHART_TYPES = {
-  AREA: 'area',
-  BAR: 'bar',
-  COMPOSED: 'composed',
-  LINE: 'line',
-  PIE: 'pie',
-};
 
 export const DashboardReport = React.memo(
   ({
@@ -60,9 +53,11 @@ export const DashboardReport = React.memo(
       endDate,
     });
 
+    const VisualComponent = viewConfig.type === 'list' ? ListVisual : Chart;
+
     return (
       <Container>
-        <Chart
+        <VisualComponent
           viewContent={{ ...viewConfig, data, startDate, endDate }}
           isLoading={isLoading}
           isFetching={isFetching}
