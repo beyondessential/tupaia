@@ -6,5 +6,5 @@
 
 export * from './UserRoute';
 export { FetchHierarchyEntitiesRoute } from './FetchHierarchyEntitiesRoute';
-export { FetchReportPreviewData } from './FetchReportPreviewData';
-export { SaveDashboardVisualisation } from './SaveDashboardVisualisation';
+export { FetchReportPreviewDataRoute } from './FetchReportPreviewDataRoute';
+export { SaveDashboardVisualisationRoute } from './SaveDashboardVisualisationRoute';

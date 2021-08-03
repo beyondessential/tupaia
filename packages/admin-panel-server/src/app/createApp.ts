@@ -6,17 +6,23 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { Express } from 'express';
 import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
+
 import { TupaiaDatabase } from '@tupaia/database';
-import { OrchestratorApiBuilder, attachSession, handleError } from '@tupaia/server-boilerplate';
+import {
+  OrchestratorApiBuilder,
+  attachSession,
+  handleWith,
+  handleError,
+} from '@tupaia/server-boilerplate';
 
 import { AdminPanelSessionModel } from '../models';
 import { hasTupaiaAdminPanelAccess } from '../utils';
-import { attachAuthorizationHeader } from '../middleware';
+import { attachAuthorizationHeader, verifyBESAdminAccess } from '../middleware';
 import {
   UserRoute,
   FetchHierarchyEntitiesRoute,
-  FetchReportPreviewData,
-  SaveDashboardVisualisation,
+  FetchReportPreviewDataRoute,
+  SaveDashboardVisualisationRoute,
 } from '../routes';
 
 const useForwardUnhandledRequestsToMeditrak = (app: Express) => {
@@ -52,10 +58,22 @@ export function createApp() {
   const app = new OrchestratorApiBuilder(new TupaiaDatabase())
     .useSessionModel(AdminPanelSessionModel)
     .verifyLogin(hasTupaiaAdminPanelAccess)
-    .get('/v1/user', handleWith(UserRoute))
-    .get('/v1/hierarchy/:hierarchyName/:entityCode', handleWith(FetchHierarchyEntitiesRoute))
-    .post('/v1/fetchReportPreviewData', handleWith(FetchReportPreviewData))
-    .post('/v1/saveDashboardVisualisation', handleWith(SaveDashboardVisualisation))
+    .get('/v1/user', verifyBESAdminAccess, handleWith(UserRoute))
+    .get(
+      '/v1/hierarchy/:hierarchyName/:entityCode',
+      verifyBESAdminAccess,
+      handleWith(FetchHierarchyEntitiesRoute),
+    )
+    .post(
+      '/v1/fetchReportPreviewData',
+      verifyBESAdminAccess,
+      handleWith(FetchReportPreviewDataRoute),
+    )
+    .post(
+      '/v1/saveDashboardVisualisation',
+      verifyBESAdminAccess,
+      handleWith(SaveDashboardVisualisationRoute),
+    )
     .build();
 
   useForwardUnhandledRequestsToMeditrak(app);

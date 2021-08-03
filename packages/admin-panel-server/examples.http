@@ -57,7 +57,7 @@ Authorization: {{authorization}}
 }
 
 ### Save dashboard visualisation (report + dashboard_item)
-POST {{baseUrl}}//saveDashboardVisualisation
+POST {{baseUrl}}/saveDashboardVisualisation
 content-type: {{contentType}}
 Authorization: {{authorization}}
 

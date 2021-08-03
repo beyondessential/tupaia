@@ -9,9 +9,14 @@ import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 
 import { ReportConnection } from '../connections';
-import { DraftReportExtractor } from '../viz-builder';
+import { DashboardVisualisationExtractor } from '../viz-builder';
+import {
+  DraftDashboardItemValidator,
+  DraftReportValidator,
+} from '../viz-builder/extractors/validators';
+import { PreviewMode } from '../viz-builder/types';
 
-export class FetchReportPreviewData extends Route {
+export class FetchReportPreviewDataRoute extends Route {
   private readonly reportConnection: ReportConnection;
 
   constructor(req: Request, res: Response, next: NextFunction) {
@@ -21,14 +26,18 @@ export class FetchReportPreviewData extends Route {
   }
 
   async buildResponse() {
-    const { entityCode, hierarchy } = this.req.query;
+    const { entityCode, hierarchy, previewMode } = this.req.query;
     const { previewConfig } = this.req.body;
     if (!previewConfig) {
       throw new Error('Preview config is empty');
     }
 
-    const { config: reportConfig } = new DraftReportExtractor(previewConfig).extract();
-
+    const { config: reportConfig } = new DashboardVisualisationExtractor(
+      previewConfig,
+      new DraftDashboardItemValidator(),
+      new DraftReportValidator(),
+    ).getReport(previewMode as PreviewMode);
+  
     return this.reportConnection.testReport(
       {
         organisationUnitCodes: entityCode as string,

@@ -11,9 +11,13 @@ import { mapKeys } from 'lodash';
 import { Route } from '@tupaia/server-boilerplate';
 
 import { MeditrakConnection } from '../connections';
-import { DraftReportExtractor, DraftDashboardItemExtractor } from '../viz-builder';
+import { DashboardVisualisationExtractor } from '../viz-builder';
+import {
+  DraftDashboardItemValidator,
+  DraftReportValidator,
+} from '../viz-builder/extractors/validators';
 
-export class SaveDashboardVisualisation extends Route {
+export class SaveDashboardVisualisationRoute extends Route {
   private readonly meditrakConnection: MeditrakConnection;
 
   constructor(req: Request, res: Response, next: NextFunction) {
@@ -28,8 +32,13 @@ export class SaveDashboardVisualisation extends Route {
       throw new Error('Visualisation is empty');
     }
 
-    const report = new DraftReportExtractor(visualisation).extract();
-    const dashboardItem = new DraftDashboardItemExtractor(visualisation).extract();
+    const extractor = new DashboardVisualisationExtractor(
+      visualisation,
+      new DraftDashboardItemValidator(),
+      new DraftReportValidator(),
+    );
+    const report = extractor.getReport();
+    const dashboardItem = extractor.getDashboardItem();
 
     // snake case the property names because meditrak-server POST endpoints
     // should ideally receive the data in the right format to insert
