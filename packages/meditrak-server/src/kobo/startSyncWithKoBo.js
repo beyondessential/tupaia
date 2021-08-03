@@ -39,6 +39,11 @@ async function pullLatest(models, dataBroker) {
     },
   );
 
+  const apiUser = await models.apiClient.findOne({ username: process.env.KOBO_API_USERNAME });
+  if (!apiUser) {
+    throw new Error('Cannot find API client user for KoBo');
+  }
+
   // Create new survey_responses
   let newSyncTime = syncCursor.sync_time;
   await models.wrapInTransaction(async transactingModels => {
@@ -54,7 +59,7 @@ async function pullLatest(models, dataBroker) {
         const surveyResponse = await transactingModels.surveyResponse.create({
           id: generateId(),
           survey_id: survey.id,
-          // user_id: '', // TODO: Pull this from an API user
+          user_id: apiUser.user_account_id,
           assessor_name: 'KoBo Integration',
           entity_id: entity.id,
           start_time: responseData.eventDate,
