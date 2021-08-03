@@ -11,6 +11,8 @@ const VALUE_AGGREGATION_FUNCTIONS = {
   MOST_RECENT: 'most_recent(value, date)',
 };
 
+const COMMONLY_SUPPORTED_CONFIG_KEYS = ['dataSourceEntityType', 'dataSourceEntityFilter'];
+
 const AGGREGATION_SWITCHES = {
   FINAL_EACH_DAY: {
     groupByPeriodField: 'day_period',
@@ -38,15 +40,29 @@ const AGGREGATION_SWITCHES = {
   MOST_RECENT_PER_ORG_GROUP: {
     aggregationFunction: VALUE_AGGREGATION_FUNCTIONS.MOST_RECENT,
     aggregateEntities: true,
+    supportedConfigKeys: ['aggregationEntityType', 'orgUnitMap'],
   },
   SUM_PER_ORG_GROUP: {
     aggregationFunction: VALUE_AGGREGATION_FUNCTIONS.SUM,
     aggregateEntities: true,
+    supportedConfigKeys: ['aggregationEntityType', 'orgUnitMap'],
   },
   SUM_PER_PERIOD_PER_ORG_GROUP: {
     aggregationFunction: VALUE_AGGREGATION_FUNCTIONS.SUM,
     aggregateEntities: true,
+    supportedConfigKeys: ['aggregationEntityType', 'orgUnitMap'],
   },
+};
+
+const supportsConfig = (aggregationSwitch, config) => {
+  if (!config) {
+    return true;
+  }
+
+  const switchSupportedKeys = aggregationSwitch.supportedConfigKeys || [];
+  return Object.keys(config).every(
+    key => COMMONLY_SUPPORTED_CONFIG_KEYS.includes(key) || switchSupportedKeys.includes(key),
+  );
 };
 
 export class AnalyticsFetchQuery extends DataFetchQuery {
@@ -58,11 +74,12 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
     if (options.canProcessAggregations) {
       for (let i = 0; i < options.aggregations.length; i++) {
         const aggregation = options.aggregations[i];
-        if (!AGGREGATION_SWITCHES[aggregation?.type]) {
+        const aggregationSwitch = AGGREGATION_SWITCHES[aggregation?.type];
+        if (!aggregationSwitch || !supportsConfig(aggregationSwitch, aggregation?.config)) {
           break; // We only support chaining aggregations up to the last supported type
         }
         const dbAggregation = { type: aggregation?.type };
-        dbAggregation.switches = AGGREGATION_SWITCHES[aggregation?.type]; // add internal switches
+        dbAggregation.switch = AGGREGATION_SWITCHES[aggregation?.type]; // add internal switch
         dbAggregation.config = aggregation?.config; // add external config, supplied by client
         dbAggregation.stackId = i + 1;
         this.aggregations.push(dbAggregation);
@@ -88,18 +105,18 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
 
   validate() {
     this.aggregations.forEach(aggregation => {
-      if (aggregation.switches?.aggregateEntities && !aggregation.config?.orgUnitMap) {
+      if (aggregation.switch.aggregateEntities && !aggregation.config?.orgUnitMap) {
         throw new Error('When using entity aggregation you must provide an org unit map');
       }
     });
   }
 
   getEntityCodeField(aggregation) {
-    return aggregation.switches?.aggregateEntities ? 'aggregation_entity_code' : 'entity_code';
+    return aggregation.switch.aggregateEntities ? 'aggregation_entity_code' : 'entity_code';
   }
 
   getEntityCommonTableExpression(aggregation) {
-    if (!aggregation.switches.aggregateEntities) {
+    if (!aggregation.switch.aggregateEntities) {
       return '';
     }
     // if mapping from one set of entities to another, include the mapped codes as "aggregation_entity_code"
@@ -123,7 +140,7 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
   }
 
   getAggregationSelect(aggregation) {
-    const { aggregationFunction, groupByPeriodField = 'period' } = aggregation.switches;
+    const { aggregationFunction, groupByPeriodField = 'period' } = aggregation.switch;
     const fields = [];
     fields.push(`${this.getEntityCodeField(aggregation)} as entity_code`);
     fields.push(`data_element_code`);
@@ -171,7 +188,7 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
   }
 
   getAggregationJoin(aggregation) {
-    if (!aggregation.switches.aggregateEntities) {
+    if (!aggregation.switch.aggregateEntities) {
       return '';
     }
     const previousTableName =
@@ -182,7 +199,7 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
 
   getAggregationGroupByClause(aggregation) {
     const groupByFields = [this.getEntityCodeField(aggregation), 'data_element_code'];
-    const { groupByPeriodField } = aggregation.switches;
+    const { groupByPeriodField } = aggregation.switch;
     if (groupByPeriodField) groupByFields.push(groupByPeriodField);
     return `GROUP BY ${groupByFields.join(', ')}`;
   }
