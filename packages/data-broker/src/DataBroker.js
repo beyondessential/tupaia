@@ -86,15 +86,20 @@ export class DataBroker {
     }
 
     const dataSourcesByService = groupBy(dataSources, 'service_type');
+    const dataSourceFetches = Object.values(dataSourcesByService);
     const nestedResults = await Promise.all(
-      Object.values(dataSourcesByService).map(dataSourcesForService =>
-        this.pullForServiceAndType(dataSourcesForService, options),
+      dataSourceFetches.map(dataSourceForFetch =>
+        this.pullForServiceAndType(dataSourceForFetch, {
+          ...options,
+          canProcessAggregations: dataSourceFetches.length === 1,
+        }),
       ),
     );
     const mergeResults = this.resultMergers[dataSources[0].type];
 
-    return nestedResults.reduce((results, resultsForService) =>
-      mergeResults(results, resultsForService),
+    return nestedResults.reduce(
+      (results, resultsForService) => mergeResults(results, resultsForService),
+      undefined,
     );
   }
 
@@ -104,7 +109,7 @@ export class DataBroker {
     return service.pull(dataSources, type, options);
   };
 
-  mergeAnalytics = (target = { results: [], metadata: {} }, source) => ({
+  mergeAnalytics = (target = { results: [], metadata: {}, aggregationsProcessed: [] }, source) => ({
     results: target.results.concat(source.results),
     metadata: {
       dataElementCodeToName: {
@@ -112,6 +117,7 @@ export class DataBroker {
         ...source.metadata.dataElementCodeToName,
       },
     },
+    aggregationsProcessed: target.aggregationsProcessed.concat(source.aggregationsProcessed || []),
   });
 
   mergeEvents = (target = [], source) => target.concat(source);

@@ -4,6 +4,7 @@
  */
 
 import { DataFetchQuery } from './DataFetchQuery';
+import { SqlQuery } from './SqlQuery';
 
 const VALUE_AGGREGATION_FUNCTIONS = {
   SUM: 'sum(value::numeric)::text',
@@ -53,22 +54,36 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
     super(database, options);
 
     this.aggregations = [];
-    const originalAggregations = [...options.aggregations];
-    for (let i = 0; i < originalAggregations.length; i++) {
-      const aggregation = originalAggregations[i];
-      if (!AGGREGATION_SWITCHES[aggregation?.type]) {
-        break; // We only support chaining aggregations if all aggregations are supported type
+    this.originalAggregationsProcessed = [];
+    if (options.canProcessAggregations) {
+      for (let i = 0; i < options.aggregations.length; i++) {
+        const aggregation = options.aggregations[i];
+        if (!AGGREGATION_SWITCHES[aggregation?.type]) {
+          break; // We only support chaining aggregations up to the last supported type
+        }
+        const dbAggregation = { type: aggregation?.type };
+        dbAggregation.switches = AGGREGATION_SWITCHES[aggregation?.type]; // add internal switches
+        dbAggregation.config = aggregation?.config; // add external config, supplied by client
+        dbAggregation.stackId = i + 1;
+        this.aggregations.push(dbAggregation);
+        this.originalAggregationsProcessed.push(aggregation);
       }
-      const dbAggregation = { type: aggregation?.type };
-      dbAggregation.switches = AGGREGATION_SWITCHES[aggregation?.type]; // add internal switches
-      dbAggregation.config = aggregation?.config; // add external config, supplied by client
-      dbAggregation.stackId = i + 1;
-      this.aggregations.push(dbAggregation);
-      options.aggregations.shift();
     }
+
     this.isAggregating = this.aggregations.length > 0;
 
     this.validate();
+  }
+
+  async fetch() {
+    this.build();
+
+    const sqlQuery = new SqlQuery(this.query, this.paramsArray);
+
+    return {
+      analytics: await sqlQuery.executeOnDatabase(this.database),
+      aggregationsProcessed: this.originalAggregationsProcessed,
+    };
   }
 
   validate() {

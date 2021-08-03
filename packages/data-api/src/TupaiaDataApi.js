@@ -53,13 +53,19 @@ export class TupaiaDataApi {
   async fetchAnalytics(optionsInput) {
     await validateAnalyticsOptions(optionsInput);
     const options = sanitiseFetchDataOptions(optionsInput);
-    const results = await new AnalyticsFetchQuery(this.database, options).fetch();
-    return results.map(({ entityCode, dataElementCode, period, type, value }) => ({
-      organisationUnit: entityCode,
-      dataElement: dataElementCode,
-      period,
-      value: sanitizeDataValue(value, type),
-    }));
+    const { analytics, aggregationsProcessed } = await new AnalyticsFetchQuery(
+      this.database,
+      options,
+    ).fetch();
+    return {
+      analytics: analytics.map(({ entityCode, dataElementCode, period, type, value }) => ({
+        organisationUnit: entityCode,
+        dataElement: dataElementCode,
+        period,
+        value: sanitizeDataValue(value, type),
+      })),
+      aggregationsProcessed,
+    };
   }
 
   async fetchDataElements(dataElementCodes, options = {}) {
