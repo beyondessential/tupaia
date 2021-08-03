@@ -54,7 +54,14 @@ class TableOfEventsBuilder extends DataBuilder {
 
   getDataElementCodes() {
     const { dataElementCodes, columns } = this.config;
-    return dataElementCodes ?? Object.keys(columns).filter(key => !isMetadataKey(key));
+
+    if (dataElementCodes) {
+      return dataElementCodes;
+    }
+    return Object.entries(columns)
+      .filter(([key]) => !isMetadataKey(key))
+      .map(([key, config]) => [key, ...(config?.additionalData || [])])
+      .flat();
   }
 
   async fetchEvents() {
@@ -73,6 +80,7 @@ class TableOfEventsBuilder extends DataBuilder {
     const events = await super.fetchEvents({
       organisationUnitCode: getOrganisationUnitCode(),
       dataElementCodes: this.getDataElementCodes(),
+      useDeprecatedApi: true,
     });
 
     const { metadata } = this.getKeysBySourceType();
@@ -80,7 +88,7 @@ class TableOfEventsBuilder extends DataBuilder {
   }
 
   async buildRows() {
-    const eventsWithMetadata = await this.fetchEvents({ useDeprecatedApi: true });
+    const eventsWithMetadata = await this.fetchEvents();
 
     const buildRow = async event => {
       const baseRow = this.buildBaseRow(event);
