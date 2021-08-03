@@ -13,7 +13,7 @@ export class KoBoTranslator {
   async fetchEntityInfoFromKoBoAnswer(koboEntityCode) {
     const entity = await this.models.entity.findOne({ code: `LA_sch_${koboEntityCode}` });
     if (!entity) {
-      throw new Error(`Cannot translate KoBo entity ${koboEntityCode} to tupaia entity`);
+      return { orgUnit: koboEntityCode, orgUnitName: koboEntityCode };
     }
     return { orgUnit: entity.code, orgUnitName: entity.name };
   }

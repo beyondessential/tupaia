@@ -4,3 +4,4 @@
  */
 
 export { startSyncWithKoBo } from './startSyncWithKoBo';
+export { manualKoBoSync } from './manualKoBoSync';

@@ -4,6 +4,7 @@
  */
 
 import keyBy from 'lodash.keyby';
+import winston from 'winston';
 import { DataBroker } from '@tupaia/data-broker';
 import { generateId } from '@tupaia/database';
 import { reformatDateStringWithoutTz } from '@tupaia/utils';
@@ -21,7 +22,7 @@ export async function startSyncWithKoBo(models) {
   }
 }
 
-async function syncWithKoBo(models, dataBroker) {
+export async function syncWithKoBo(models, dataBroker) {
   await pullLatest(models, dataBroker);
 }
 
@@ -55,6 +56,10 @@ async function pullLatest(models, dataBroker) {
           newSyncTime = responseData.eventDate;
         }
         const entity = await transactingModels.entity.findOne({ code: responseData.orgUnit });
+        if (!entity) {
+          winston.warn(`Skipping KoBo sync for unknown entity ${responseData.orgUnit}`);
+          continue;
+        }
 
         const surveyResponse = await transactingModels.surveyResponse.create({
           id: generateId(),
