@@ -29,6 +29,9 @@ const validateEntitiesAndBuildContext = async (
   const { hierarchyId } = req.ctx;
   // Root type shouldn't be locked into being a project entity, see: https://github.com/beyondessential/tupaia-backlog/issues/2570
   const rootEntity = await entities[0].getAncestorOfType(hierarchyId, 'project'); // Assuming all requested entities are in same hierarchy
+  if (!rootEntity) {
+    throw new Error(`Cannot find root entity for requested entities: ${entityCodes}}`);
+  }
 
   const allowedCountries = (await rootEntity.getChildren(req.ctx.hierarchyId))
     .map(child => child.country_code)
