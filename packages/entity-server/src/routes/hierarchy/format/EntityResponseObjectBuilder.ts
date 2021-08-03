@@ -4,12 +4,12 @@
  */
 
 import { Writable } from '../../../types';
-import { EntityResponseObject, ExtendedEntityFields } from '../types';
+import { EntityResponseObject, ExtendedEntityFieldName } from '../types';
 
 export class EntityResponseObjectBuilder {
   private readonly responseObject: Writable<EntityResponseObject> = {};
 
-  set<T extends keyof ExtendedEntityFields>(field: T, value: EntityResponseObject[T]) {
+  set<T extends ExtendedEntityFieldName>(field: T, value: EntityResponseObject[T]) {
     this.responseObject[field] = value;
   }
 
