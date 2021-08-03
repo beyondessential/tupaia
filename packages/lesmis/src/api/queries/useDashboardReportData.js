@@ -24,12 +24,6 @@ export const useDashboardReportData = ({
     type: 'dashboard',
   };
 
-  if (reportCode === 'LESMIS_ESSDP_ECE_SubSector_List') {
-    // console.log('entityCode', entityCode);
-    // console.log('reportCode', reportCode);
-    // console.log('params', params);
-  }
-
   return useQuery(
     ['dashboardReport', entityCode, reportCode, params],
     () =>

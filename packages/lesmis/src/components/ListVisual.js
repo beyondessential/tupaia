@@ -6,7 +6,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
+import { DashboardReportModal } from './DashboardReportModal';
 import { FlexStart, FlexSpaceBetween } from './Layout';
+import { useDashboardData } from '../api/queries';
+import { useUrlParams } from '../utils';
 
 const Container = styled.div`
   border: 1px solid ${props => props.theme.palette.grey['400']};
@@ -89,6 +92,38 @@ const StandardRow = ({ label, children }) => (
   </Row>
 );
 
+const DrillDownRow = ({
+  label,
+  drillDownCode,
+  drillDowns,
+  entityCode,
+  dashboardCode,
+  dashboardName,
+  children,
+}) => {
+  const config = drillDowns.find(d => d.code === drillDownCode);
+  console.log('config', config);
+
+  return (
+    <Row>
+      <Cell>
+        <Text>{label}</Text>
+        <DashboardReportModal
+          buttonText="drilldown"
+          name={config.name}
+          entityCode={entityCode}
+          dashboardCode={dashboardCode}
+          dashboardName={dashboardName}
+          reportCode={config.reportCode}
+          periodGranularity={config.periodGranularity}
+          viewConfig={config}
+        />
+      </Cell>
+      {children}
+    </Row>
+  );
+};
+
 const CircleComponent = ({ displayConfig }) => {
   if (!displayConfig) {
     return <CircleCell>-</CircleCell>;
@@ -107,6 +142,7 @@ const ROW_TYPE_COMPONENTS = {
   header: HeaderRow,
   subheader: SubHeaderRow,
   standard: StandardRow,
+  drilldown: DrillDownRow,
 };
 
 const VALUE_TYPE_COMPONENTS = {
@@ -124,6 +160,7 @@ const processData = (config, data) => {
   return data.map(item => {
     let rowType = 'standard';
     let displayConfig = null;
+    let drillDownCode = null;
 
     if (!item.parent) {
       rowType = 'header';
@@ -134,30 +171,51 @@ const processData = (config, data) => {
       rowType = 'subheader';
     }
 
+    if (config?.drillDown?.itemCodeByEntry[item.code] !== undefined) {
+      drillDownCode = config?.drillDown?.itemCodeByEntry[item.code];
+      rowType = 'drilldown';
+    }
+
     if (item.statistic !== undefined) {
       displayConfig = config.listConfig[item.statistic];
     }
 
-    return { ...item, rowType, valueType: config.valueType, displayConfig };
+    return { ...item, rowType, valueType: config.valueType, displayConfig, drillDownCode };
   });
 };
 
-export const ListVisual = ({ viewContent, isLoading }) => {
+export const ListVisual = ({
+  viewContent,
+  isLoading,
+  drillDowns,
+  entityCode,
+  dashboardCode,
+  dashboardName,
+}) => {
   if (isLoading) {
     return null;
   }
 
   const { data, ...config } = viewContent;
 
-  const list = processData(config, data);
+  const list = processData(config, data, drillDowns);
+
   return (
     <Container>
-      {list.map(({ rowType, valueType, label, displayConfig }, index) => {
+      {list.map(({ rowType, valueType, label, displayConfig, drillDownCode }, index) => {
         const RowComponent = ROW_TYPE_COMPONENTS[rowType];
         const ValueComponent = VALUE_TYPE_COMPONENTS[valueType];
         return (
           // eslint-disable-next-line react/no-array-index-key
-          <RowComponent key={index} label={label}>
+          <RowComponent
+            key={index}
+            label={label}
+            drillDownCode={drillDownCode}
+            drillDowns={drillDowns}
+            entityCode={entityCode}
+            dashboardCode={dashboardCode}
+            dashboardName={dashboardName}
+          >
             <ValueComponent displayConfig={displayConfig} />
           </RowComponent>
         );

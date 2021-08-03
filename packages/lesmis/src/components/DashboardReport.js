@@ -38,6 +38,7 @@ export const DashboardReport = React.memo(
     periodGranularity,
     year,
     viewConfig,
+    drillDowns,
   }) => {
     const { code: itemCode, legacy } = viewConfig;
     const { startDate, endDate } = yearToApiDates(year);
@@ -64,6 +65,10 @@ export const DashboardReport = React.memo(
           isError={isError}
           error={error}
           name={name}
+          drillDowns={drillDowns}
+          entityCode={entityCode}
+          dashboardCode={dashboardCode}
+          dashboardName={dashboardName}
         />
         <Footer>
           <DashboardReportModal

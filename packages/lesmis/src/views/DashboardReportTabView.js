@@ -164,9 +164,25 @@ export const DashboardReportTabView = ({
       <DashboardSection ref={topRef}>
         <FetchLoader isLoading={isLoading} isError={isError} error={error}>
           {subDashboards?.map(dashboard => {
+            const drillDownItemCodes = dashboard.items
+              .filter(d => !!d.drillDown)
+              .reduce((codes, d) => {
+                const entry = d.drillDown?.itemCodeByEntry;
+
+                if (entry) {
+                  const values = Object.values(d.drillDown.itemCodeByEntry);
+                  return [...codes, ...values];
+                }
+                return codes;
+              }, []);
+
             // Todo: support other report types (including "component" types)
-            const dashboardItems = dashboard.items.filter(
-              ({ type }) => type === 'chart' || type === 'list',
+            const dashboardItems = dashboard.items
+              .filter(({ type }) => type === 'chart' || type === 'list')
+              .filter(view => !drillDownItemCodes.includes(view.code));
+
+            const drillDowns = dashboard.items.filter(view =>
+              drillDownItemCodes.includes(view.code),
             );
 
             return (
@@ -179,6 +195,7 @@ export const DashboardReportTabView = ({
                     <DashboardReport
                       key={item.code}
                       name={item.name}
+                      drillDowns={drillDowns}
                       entityCode={entityCode}
                       dashboardCode={dashboard.dashboardCode}
                       dashboardName={dashboard.dashboardName}

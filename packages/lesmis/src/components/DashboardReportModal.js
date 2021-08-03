@@ -146,13 +146,13 @@ export const DashboardReportModal = ({
                 {viewConfig?.description && <Description>{viewConfig.description}</Description>}
               </Box>
               <FlexStart>
-                <DateRangePicker
-                  isLoading={isLoading}
-                  startDate={startDate}
-                  endDate={endDate}
-                  granularity={periodGranularity}
-                  onSetDates={handleDatesChange}
-                />
+                {/*<DateRangePicker*/}
+                {/*  isLoading={isLoading}*/}
+                {/*  startDate={startDate}*/}
+                {/*  endDate={endDate}*/}
+                {/*  granularity={periodGranularity}*/}
+                {/*  onSetDates={handleDatesChange}*/}
+                {/*/>*/}
               </FlexStart>
             </Header>
             <Chart
