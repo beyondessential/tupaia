@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { getAttachmentForEmail } from '../../utilities';
+
 const constructMessage = responseBody => {
   const { error } = responseBody;
 
@@ -20,7 +22,7 @@ const constructAttachments = async responseBody => {
   if (!filePath) {
     throw new Error('No export file provided to email responder');
   }
-  return [{ path: filePath }];
+  return getAttachmentForEmail(filePath);
 };
 
 export const constructExportEmail = async responseBody => ({
