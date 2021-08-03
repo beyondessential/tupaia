@@ -58,7 +58,7 @@ export function createApp() {
   const app = new OrchestratorApiBuilder(new TupaiaDatabase())
     .useSessionModel(AdminPanelSessionModel)
     .verifyLogin(hasTupaiaAdminPanelAccess)
-    .get('/v1/user', verifyBESAdminAccess, handleWith(UserRoute))
+    .get('/v1/user', handleWith(UserRoute))
     .get(
       '/v1/hierarchy/:hierarchyName/:entityCode',
       verifyBESAdminAccess,
