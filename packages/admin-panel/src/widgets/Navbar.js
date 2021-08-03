@@ -26,6 +26,7 @@ export const Navbar = ({ links, user, isBESAdmin }) => (
     links={links}
     Profile={() => <ProfileButton user={user} isBESAdmin={isBESAdmin} />}
     isTabActive={isTabActive}
+    maxWidth="xl"
   />
 );
 

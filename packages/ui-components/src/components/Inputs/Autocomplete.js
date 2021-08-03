@@ -56,14 +56,20 @@ export const Autocomplete = ({
   onInputChange,
   inputValue,
   muiProps,
+  className,
+  inputRef,
+  name,
+  defaultValue,
 }) => (
   <StyledAutocomplete
     id={id}
+    className={className}
     options={options}
     value={value}
     disabled={disabled}
     onChange={onChange}
     loading={loading}
+    defaultValue={defaultValue}
     disableClearable={loading}
     onInputChange={onInputChange}
     inputValue={inputValue}
@@ -75,10 +81,12 @@ export const Autocomplete = ({
       <TextField
         {...params}
         label={label}
+        name={name}
         placeholder={placeholder}
         error={error}
         required={required}
         helperText={helperText}
+        inputRef={inputRef}
         InputProps={{
           ...params.InputProps,
           endAdornment: (
@@ -111,6 +119,10 @@ Autocomplete.propTypes = {
   placeholder: PropTypes.string,
   onInputChange: PropTypes.func,
   muiProps: PropTypes.object,
+  className: PropTypes.string,
+  inputRef: PropTypes.func,
+  name: PropTypes.string,
+  defaultValue: PropTypes.any,
 };
 
 Autocomplete.defaultProps = {
@@ -129,4 +141,8 @@ Autocomplete.defaultProps = {
   onChange: undefined,
   onInputChange: undefined,
   muiProps: undefined,
+  className: null,
+  inputRef: null,
+  name: null,
+  defaultValue: null,
 };

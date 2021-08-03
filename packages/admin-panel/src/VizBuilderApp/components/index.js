@@ -4,5 +4,10 @@
  */
 
 export * from './JsonEditor';
-export * from './Tabs';
+export * from './MetadataForm';
 export * from './Toolbar';
+export * from './Panel';
+export * from './PreviewSection';
+export * from './PreviewOptions';
+export * from './PlayButton';
+export * from './SaveButton';

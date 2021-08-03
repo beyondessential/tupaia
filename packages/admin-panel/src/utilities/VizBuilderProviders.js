@@ -6,6 +6,7 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { theme } from '../theme';
@@ -18,6 +19,7 @@ export const VizBuilderProviders = ({ children }) => (
       <ThemeProvider theme={theme}>
         <QueryClientProvider client={queryClient}>
           <CssBaseline />
+          <ReactQueryDevtools />
           {children}
         </QueryClientProvider>
       </ThemeProvider>

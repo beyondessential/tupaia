@@ -8,12 +8,18 @@ import styled from 'styled-components';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import { Button, FlexStart, FlexEnd } from '@tupaia/ui-components';
+import MuiBox from '@material-ui/core/Box';
+import { FlexStart, FlexEnd } from '@tupaia/ui-components';
+import { SaveButton } from './SaveButton';
+import { ReactComponent as DocumentIcon } from './DocumentIcon.svg';
+import { EditModal } from './EditModal';
+import { useVizBuilderConfig } from '../vizBuilderConfigStore';
 
 const Wrapper = styled.div`
   width: 100%;
   height: 100px;
   background: white;
+  border-bottom: 1px solid ${({ theme }) => theme.palette.grey['400']};
 `;
 
 const Container = styled(MuiContainer)`
@@ -24,29 +30,50 @@ const Container = styled(MuiContainer)`
   padding-bottom: 15px;
 `;
 
-const StyledImg = styled.img`
-  height: 70px;
-  width: auto;
-  margin-right: 10px;
+const SubTitle = styled(Typography)`
+  font-size: 12px;
+  line-height: 140%;
+  font-weight: 400;
+  color: ${props => props.theme.palette.text.secondary};
+  margin-bottom: 0.3rem;
+`;
+
+const Title = styled(Typography)`
+  font-size: 18px;
+  line-height: 140%;
+  font-weight: 400;
+  margin-bottom: 0.1rem;
+`;
+
+const Description = styled(Typography)`
+  font-size: 14px;
+  line-height: 140%;
+  font-weight: 400;
+  color: ${props => props.theme.palette.text.secondary};
 `;
 
 export const Toolbar = () => {
+  const [{ name, permissionGroup, summary, project }] = useVizBuilderConfig();
+
   return (
     <Wrapper>
-      <Container>
+      <Container maxWidth="xl">
         <FlexStart>
-          <StyledImg src="/document-icon.svg" alt="document-icon" />
-          <div>
-            <Typography variant="h6">Project: COVID-19 Samoa • Immunization Module</Typography>
-            <Typography variant="h6">PSSS Weekly Influence-like Illness Cases</Typography>
-            <Typography variant="h6">Add summary content</Typography>
-          </div>
+          <DocumentIcon />
+          <MuiBox ml={2}>
+            <SubTitle variant="h4">
+              Project: {project} • {permissionGroup}
+            </SubTitle>
+            <Title variant="h2">{name}</Title>
+            <Description>{summary || 'Add summary content'}</Description>
+          </MuiBox>
         </FlexStart>
         <FlexEnd>
           <IconButton>
             <GetAppIcon />
           </IconButton>
-          <Button>Save</Button>
+          <EditModal />
+          <SaveButton />
         </FlexEnd>
       </Container>
     </Wrapper>
