@@ -11,7 +11,7 @@ export const attachSession = async (req: Request, res: Response, next: NextFunct
   try {
     const sessionId = req.sessionCookie?.id;
     if (!sessionId) {
-      throw new UnauthenticatedError('User not authenticated');
+      throw new UnauthenticatedError('Session not found or has expired. Please log in again.');
     }
 
     const session: SessionType = await req.sessionModel.findById(sessionId);

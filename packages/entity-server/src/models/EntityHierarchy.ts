@@ -7,7 +7,7 @@ import {
   EntityHierarchyModel as BaseEntityHierarchyModel,
   EntityHierarchyType as BaseEntityHierarchyType,
 } from '@tupaia/database';
-import { Model } from './types';
+import { Model } from '@tupaia/server-boilerplate';
 
 export type EntityHierarchyFields = Readonly<{
   name: string;
