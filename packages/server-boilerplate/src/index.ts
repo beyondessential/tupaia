@@ -10,6 +10,7 @@ export { handleWith, handleError } from './utils';
 export {
   ApiBuilder as MicroServiceApiBuilder,
   buildBasicBearerAuthMiddleware,
+  RequestContext as MicroServiceRequestContext,
 } from './microService';
 export {
   ApiBuilder as OrchestratorApiBuilder,
@@ -19,4 +20,11 @@ export {
   attachSession,
 } from './orchestrator';
 export { QueryParameters, RequestBody } from './types';
-export { Model, DbConditional, Joined, QueryConjunctions } from './models';
+export {
+  Model,
+  DbFilter,
+  FilterCriteria,
+  Joined,
+  PartialOrArray,
+  QueryConjunctions,
+} from './models';

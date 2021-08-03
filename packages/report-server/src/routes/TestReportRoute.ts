@@ -35,9 +35,7 @@ export class TestReportRoute extends Route<TestReportRequest> {
       ? organisationUnitCodes
       : organisationUnitCodes.split(',');
 
-    const aggregator = createAggregator(Aggregator, {
-      session: { getAuthHeader: () => this.req.headers.authorization },
-    });
+    const aggregator = createAggregator(Aggregator, this.req.ctx);
     const reportBuilder = new ReportBuilder();
     reportBuilder.setConfig(body.testConfig);
     if (body.testData) {
