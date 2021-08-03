@@ -12,7 +12,7 @@ import {
   EntityRequestQuery,
   SingleEntityContext,
   MultiEntityContext,
-  FlattableEntityFields,
+  FlattableEntityFieldName,
   FlattenedEntity,
   EntityResponse,
 } from '../types';
@@ -29,19 +29,21 @@ export type RelationshipsQuery = RelationshipsSubQuery & {
 
 type DescendantSubContext = {
   filter: EntityFilter;
-  field: keyof FlattableEntityFields;
+  field: FlattableEntityFieldName;
   type: string;
 };
 
 type AncestorSubContext = {
   filter: EntityFilter;
-  field: keyof FlattableEntityFields;
+  field: FlattableEntityFieldName;
   type?: string;
 };
 
+export type GroupByDescendantRelationshipsResponseBody = Record<FlattenedEntity, EntityResponse>;
+export type GroupByAncestorRelationshipsResponseBody = Record<FlattenedEntity, EntityResponse[]>;
 export type RelationshipsResponseBody =
-  | Record<FlattenedEntity, EntityResponse> // groupBy: descendant
-  | Record<FlattenedEntity, EntityResponse[]>; // groupBy: ancestor
+  | GroupByDescendantRelationshipsResponseBody
+  | GroupByAncestorRelationshipsResponseBody;
 
 export type RelationshipsContext = Omit<SingleEntityContext, 'fields'> & {
   ancestor: AncestorSubContext;
