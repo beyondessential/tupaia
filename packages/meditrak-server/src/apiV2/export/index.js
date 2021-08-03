@@ -4,13 +4,18 @@
  */
 
 import express from 'express';
-import { catchAsyncErrors } from '../middleware';
+import { catchAsyncErrors, emailAfterTimeout } from '../middleware';
+import { constructExportEmail } from './constructExportEmail';
 import { exportSurveyResponses } from './exportSurveyResponses';
 import { exportSurveys } from './exportSurveys';
 
 const exportRoutes = express.Router();
 
-exportRoutes.get('/surveyResponses', catchAsyncErrors(exportSurveyResponses));
+exportRoutes.get(
+  '/surveyResponses',
+  emailAfterTimeout(constructExportEmail),
+  catchAsyncErrors(exportSurveyResponses),
+);
 exportRoutes.get('/surveyResponses/:surveyResponseId', catchAsyncErrors(exportSurveyResponses));
 exportRoutes.get('/surveys', catchAsyncErrors(exportSurveys));
 exportRoutes.get('/surveys/:surveyId', catchAsyncErrors(exportSurveys));
