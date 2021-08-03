@@ -4,6 +4,7 @@
  */
 
 import { DataBroker } from '@tupaia/data-broker';
+import { respond } from '@tupaia/utils';
 import { syncWithKoBo } from './startSyncWithKoBo';
 
 export async function manualKoBoSync(req, res, next) {
@@ -12,5 +13,5 @@ export async function manualKoBoSync(req, res, next) {
   const dataBroker = new DataBroker();
   await syncWithKoBo(models, dataBroker);
 
-  next();
+  respond(res, { message: 'KoBo sync triggered' });
 }

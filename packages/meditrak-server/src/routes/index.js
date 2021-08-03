@@ -200,5 +200,5 @@ export default {
   importDisaster: catchAsyncErrors(importDisaster),
   verifyEmail: catchAsyncErrors(verifyEmail),
   requestResendEmail: catchAsyncErrors(requestResendEmail),
-  requestManualKoBoSync: catchAsyncErrors(manualKoBoSync),
+  requestManualKoBoSync: allowAnyone(manualKoBoSync),
 };
