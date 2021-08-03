@@ -4,9 +4,8 @@
  *
  */
 import { fetchWithTimeout, verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
-import { QueryParameters } from '../types';
+import { QueryParameters, RequestBody } from '../types';
 
-type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 interface FetchHeaders {
   Authorization: string;
   'Content-Type'?: string;

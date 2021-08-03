@@ -23,6 +23,7 @@ const {
   createPermissionGroups,
   createUserEntityPermissions,
   createDashboardRelations,
+  createDashboardVisualisations,
   deleteAnswers,
   deleteDashboards,
   deleteDashboardItems,
@@ -242,6 +243,7 @@ export function addRoutesToApp(app) {
   app.post('(/v[0-9]+)/indicators', createIndicators);
   app.post('(/v[0-9]+)/permissionGroups', createPermissionGroups);
   app.post('(/v[0-9]+)?/dashboardRelations', createDashboardRelations);
+  app.post('(/v[0-9]+)?/dashboardVisualisations', createDashboardVisualisations);
 
   /**
    * PUT routes

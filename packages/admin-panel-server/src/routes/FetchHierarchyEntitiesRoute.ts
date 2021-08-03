@@ -5,7 +5,9 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
+
 import { QueryParameters, Route } from '@tupaia/server-boilerplate';
+
 import { EntityConnection } from '../connections';
 
 export class FetchHierarchyEntitiesRoute extends Route {

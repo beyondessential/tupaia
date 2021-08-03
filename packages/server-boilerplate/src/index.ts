@@ -18,5 +18,5 @@ export {
   SessionCookie,
   attachSession,
 } from './orchestrator';
-export { QueryParameters } from './types';
+export { QueryParameters, RequestBody } from './types';
 export { Model, DbConditional, Joined, QueryConjunctions } from './models';

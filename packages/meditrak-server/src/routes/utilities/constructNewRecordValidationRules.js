@@ -8,6 +8,7 @@ import {
   constructRecordExistsWithId,
   hasContent,
   isEmail,
+  isBoolean,
   isPlainObject,
   constructIsEmptyOr,
   constructIsOneOf,
@@ -96,6 +97,12 @@ export const constructForSingle = (models, recordType) => {
         code: [hasContent],
         builder: [hasContent],
       };
+    case TYPES.REPORT:
+      return {
+        code: [hasContent],
+        config: [hasContent],
+        permission_group: [hasContent],
+      };
     case TYPES.DASHBOARD_RELATION:
       return {
         dashboard_id: [constructRecordExistsWithId(models.dashboard)],
@@ -124,6 +131,13 @@ export const constructForSingle = (models, recordType) => {
           },
         ],
         sort_order: [constructIsEmptyOr(isNumber)],
+      };
+    case TYPES.DASHBOARD_ITEM:
+      return {
+        code: [hasContent],
+        config: [hasContent],
+        report_code: [hasContent],
+        legacy: [hasContent, isBoolean],
       };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);
