@@ -13,10 +13,18 @@ export function respond(res, responseBody, statusCode) {
   // than respond directly to the original http query
   const { overrideRespond } = res;
   if (overrideRespond) {
-    return overrideRespond(responseBody, statusCode);
+    return overrideRespond(responseBody);
   }
   return res
     .status(statusCode || 200)
     .type('json')
     .send(JSON.stringify(responseBody));
+}
+
+export function respondWithDownload(res, filePath) {
+  const { overrideRespond } = res;
+  if (overrideRespond) {
+    return overrideRespond({ filePath });
+  }
+  return res.download(filePath);
 }

@@ -13,6 +13,7 @@ import {
   DatabaseError,
   addExportedDateAndOriginAtTheSheetBottom,
   getExportDatesString,
+  respondWithDownload,
 } from '@tupaia/utils';
 import { TYPES } from '@tupaia/database';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../../database/models/Answer';
@@ -281,5 +282,5 @@ export async function exportSurveyResponses(req, res) {
   const filePath = `${FILE_LOCATION}/${FILE_PREFIX}_${Date.now()}.xlsx`;
 
   xlsx.writeFile(workbook, filePath);
-  res.download(filePath);
+  respondWithDownload(res, filePath);
 }

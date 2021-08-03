@@ -3,6 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+import { respondWithDownload } from '@tupaia/utils';
 import { SurveyExporter } from './SurveyExporter';
 
 /**
@@ -17,5 +18,5 @@ export async function exportSurveys(req, res) {
   const { surveyCode } = req.query;
   const exporter = new SurveyExporter(models, assertPermissions);
   const filePath = await exporter.exportToFile(surveyId, surveyCode);
-  res.download(filePath);
+  respondWithDownload(res, filePath);
 }
