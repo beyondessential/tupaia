@@ -13,10 +13,11 @@ const EXCLUDED_TABLES_FROM_TRIGGER_CREATION = [
   'feed_item',
   'userSession',
   'spatial_ref_sys', // Reference table provided by postgis
-  'dashboardReport',
+  'legacy_report',
   'ancestor_descendant_relation',
   'psss_session',
   'lesmis_session',
+  'admin_panel_session',
   'analytics',
 ];
 

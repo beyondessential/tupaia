@@ -6,10 +6,9 @@
 import { saveAs } from 'file-saver';
 
 import { verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
-import { AccessPolicy } from '@tupaia/access-policy';
-import { getAccessToken, getRefreshToken, loginSuccess, loginError } from '../authentication';
 
-const AUTH_API_ENDPOINT = 'auth';
+import { logout } from '../authentication';
+
 const FETCH_TIMEOUT = 45 * 1000; // 45 seconds in milliseconds
 
 export class TupaiaApi {
@@ -25,63 +24,18 @@ export class TupaiaApi {
     this.store.dispatch(action);
   }
 
-  getBearerAuthHeader() {
-    return `Bearer ${this.getAccessToken()}`;
-  }
-
-  getAccessToken() {
-    return getAccessToken(this.store.getState());
-  }
-
-  getRefreshToken() {
-    return getRefreshToken(this.store.getState());
-  }
-
-  async reauthenticate(loginCredentials) {
+  async login(loginCredentials) {
     const { body: authenticationDetails } = await this.post(
-      AUTH_API_ENDPOINT,
+      'login',
       null,
       loginCredentials,
       process.env.REACT_APP_CLIENT_BASIC_AUTH_HEADER,
-      false,
     );
-    const { accessToken, refreshToken, user } = authenticationDetails;
-    if (!accessToken || !refreshToken || !user) {
-      throw new Error('Invalid response from auth server');
-    }
-    const hasAdminPanelAccess = new AccessPolicy(user.accessPolicy).allowsSome(
-      null,
-      'Tupaia Admin Panel',
-    );
-    if (!hasAdminPanelAccess) {
-      throw new Error('Your permissions for Tupaia do not allow you to view the admin panel');
-    }
     return authenticationDetails;
   }
 
-  async refreshAccessToken() {
-    if (!this.getRefreshToken()) return;
-    let response = { body: {} };
-    try {
-      response = await this.post(
-        AUTH_API_ENDPOINT,
-        {
-          grantType: 'refresh_token',
-        },
-        {
-          refreshToken: this.getRefreshToken(),
-        },
-        process.env.REACT_APP_CLIENT_BASIC_AUTH_HEADER,
-        false,
-      );
-      if (!response.body.accessToken) {
-        throw new Error('Failed to renew authentication session');
-      }
-    } catch (error) {
-      this.dispatch(loginError(error.message)); // Log the user out if refresh failed
-      return; // Silently swallow network errors etc, they will be picked up by the outer request
-    }
-    this.dispatch(loginSuccess(response.body));
+  async logout() {
+    await this.post('logout');
   }
 
   get(endpoint, queryParameters) {
@@ -125,20 +79,21 @@ export class TupaiaApi {
     };
   }
 
-  async request(endpoint, queryParameters, fetchConfig, shouldReauthenticateIfUnauthorized = true) {
+  async checkIfAuthorized(response) {
+    // Unauthorized
+    if (response.status === 401) {
+      const data = await response.json();
+      this.dispatch(logout(data.error)); // log out if user is unauthorized
+      throw new Error(data.error);
+    }
+  }
+
+  async request(endpoint, queryParameters, fetchConfig) {
     const queryUrl = stringifyQuery(process.env.REACT_APP_API_URL, endpoint, queryParameters);
     const response = await Promise.race([fetch(queryUrl, fetchConfig), createTimeoutPromise()]);
-    // If server responded with 401, i.e. not authenticated, refresh token and try once more
-    if (
-      shouldReauthenticateIfUnauthorized &&
-      response.status === 401 &&
-      this.getRefreshToken() !== null
-    ) {
-      await this.refreshAccessToken();
-      const newFetchConfig = fetchConfig;
-      newFetchConfig.headers.Authorization = this.getBearerAuthHeader();
-      return this.request(endpoint, queryParameters, newFetchConfig, false);
-    }
+
+    await this.checkIfAuthorized(response);
+
     await verifyResponseStatus(response);
     return response;
   }
@@ -147,8 +102,9 @@ export class TupaiaApi {
     const fetchConfig = {
       method: requestMethod || 'GET',
       headers: {
-        Authorization: authHeader || this.getBearerAuthHeader(),
+        Authorization: authHeader,
       },
+      credentials: 'include', // need to be set for cookies to save
     };
     if (isJson) {
       fetchConfig.headers['Content-Type'] = 'application/json';

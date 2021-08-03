@@ -5,25 +5,19 @@
 
 import '@babel/polyfill';
 
-import {} from 'dotenv/config'; // Load the environment variables into process.env
+import * as dotenv from 'dotenv';
 
 import http from 'http';
-import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
-// import { Analytic, Builder, FetchOptions, IndicatorType, ModelRegistry } from './types';
 import { createApp } from './app';
 
 import winston from './log';
 
-/**
- * Set up database
- */
-const database = new TupaiaDatabase();
-const models = new ModelRegistry(database);
+dotenv.config(); // Load the environment variables into process.env
 
 /**
- * Set up actual app with routes etc.
+ * Set up app with routes etc.
  */
-const app = createApp(database, models);
+const app = createApp();
 
 /**
  * Start the server
@@ -36,13 +30,5 @@ winston.info(`Running on port ${port}`);
  * Notify PM2 that we are ready
  * */
 if (process.send) {
-  (async () => {
-    try {
-      await database.waitForChangeChannel();
-      winston.info('Successfully connected to pubsub service');
-      process.send('ready');
-    } catch (error) {
-      winston.error(error.message);
-    }
-  })();
+  process.send('ready');
 }

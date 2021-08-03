@@ -3,11 +3,12 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { QueryConjunctions } from '@tupaia/server-boilerplate';
+
 import { Writable, ObjectLikeKeys, Flatten } from '../../../types';
 import { EntityFilter, EntityFields } from '../../../models';
 
 const CLAUSE_DELIMITER = ';';
-const FIELD_VALUE_DELIMITER = ':';
 const NESTED_FIELD_DELIMITER = '_';
 const JSONB_FIELD_DELIMITER = '->>';
 const MULTIPLE_VALUES_DELIMITER = ',';
@@ -52,10 +53,52 @@ const toJsonBKey = <T extends keyof NestedFilterQueryFields>(nestedField: T): Js
   return [field, value].join(JSONB_FIELD_DELIMITER) as JsonBKey<T>;
 };
 
+// Inspired by Google Analytics filter: https://developers.google.com/analytics/devguides/reporting/core/v3/reference?hl=en#filters
+const operatorToSqlComparator = {
+  '==': '=' as const, // Exact match
+  '!=': '!=' as const, // Does not match
+  '=@': 'ilike' as const, // Contains sub string
+};
+type Operator = keyof typeof operatorToSqlComparator;
+
+const filterOperators = Object.keys(operatorToSqlComparator) as Operator[];
+
+const formatComparisonValue = (value: string | string[], operator: Operator) => {
+  if (operator === '=@' && typeof value === 'string') {
+    return `%${value}%`;
+  }
+
+  return value;
+};
+
+const convertValueToAdvancedCriteria = (operator: Operator, value: string | string[]) => {
+  // For equal operator, we do not need to specify comparison object.
+  if (operator === '==') {
+    return value;
+  }
+
+  const comparator = operatorToSqlComparator[operator];
+
+  return {
+    comparator,
+    comparisonValue: formatComparisonValue(value, operator),
+  };
+};
+
 const toFilterClause = (queryClause: string) => {
-  const clauseParts = queryClause.split(FIELD_VALUE_DELIMITER);
+  const operator = filterOperators.find(o => queryClause.includes(o));
+
+  if (!operator) {
+    throw new Error(
+      `Invalid query clause: '${queryClause}'. Cannot find valid operator. Available operators are: ${filterOperators.toString()}`,
+    );
+  }
+
+  const clauseParts = queryClause.split(operator);
   if (clauseParts.length !== 2) {
-    throw new Error(`Filter clause must be of format: <field>${FIELD_VALUE_DELIMITER}<value>`);
+    throw new Error(
+      `Invalid query clause: '${queryClause}'. Filter clause must be of format: <field><operator><value>`,
+    );
   }
 
   const [field, value] = clauseParts;
@@ -64,42 +107,42 @@ const toFilterClause = (queryClause: string) => {
   }
 
   const formattedField = isNestedField(field) ? toJsonBKey(field) : field;
-  return [formattedField, value] as [typeof formattedField, typeof value];
+
+  return [formattedField, operator, value] as [
+    typeof formattedField,
+    typeof operator,
+    typeof value,
+  ];
 };
 
-const buildCountryCodeFilter = (allowedCountries: string[], value?: string | string[]) => {
-  if (!value) {
-    return allowedCountries;
-  }
-
-  const filteredAllowedCountries = Array.isArray(value)
-    ? allowedCountries.filter(country => value.includes(country))
-    : allowedCountries.filter(country => value === country);
-
-  if (filteredAllowedCountries.length < 1) {
-    throw new Error('No access to any countries due to user permissions and country_code filter');
-  }
-
-  return filteredAllowedCountries;
-};
-
-export const extractFilterFromQuery = (allowedCountries: string[], queryFilter?: string) => {
+export const extractFilterFromQuery = (
+  allowedCountries: string[],
+  queryFilter?: string,
+): EntityFilter => {
   if (!queryFilter) {
-    return { country_code: allowedCountries };
+    // default filter to only get entities in allowed countries.
+    return {
+      [QueryConjunctions.AND]: {
+        country_code: allowedCountries,
+      },
+    };
   }
 
   const filterClauses = queryFilter.split(CLAUSE_DELIMITER).map(toFilterClause);
   const filter: Writable<NotNullValues<EntityFilter>> = {};
 
-  filterClauses.forEach(([field, value]) => {
+  filterClauses.forEach(([field, operator, value]) => {
     const parsedValue = value.includes(MULTIPLE_VALUES_DELIMITER)
       ? value.split(MULTIPLE_VALUES_DELIMITER)
       : value;
 
-    filter[field] = parsedValue;
+    filter[field] = convertValueToAdvancedCriteria(operator, parsedValue);
   });
 
-  filter.country_code = buildCountryCodeFilter(allowedCountries, filter.country_code);
+  // To always force returning only entities in allowed countries, even if there is country_code filter in the query params.
+  filter[QueryConjunctions.AND] = {
+    country_code: allowedCountries,
+  };
 
-  return filter as EntityFilter;
+  return filter;
 };

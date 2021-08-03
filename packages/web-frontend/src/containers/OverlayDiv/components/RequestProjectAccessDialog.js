@@ -221,7 +221,8 @@ export const RequestProjectAccessComponent = React.memo(
           <div>
             <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" />
             <TagLine>
-              Data aggregation, analysis, and visualisation for the most remote settings in the world
+              Data aggregation, analysis, and visualisation for the most remote settings in the
+              world
             </TagLine>
           </div>
           <ExploreButton onClick={onBackToProjects} variant="outlined">

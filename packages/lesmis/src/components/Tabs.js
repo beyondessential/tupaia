@@ -26,15 +26,14 @@ const TabBarInnerContainer = styled(MuiContainer)`
   justify-content: flex-start;
 `;
 
-export const TabBar = ({ children, ...props }) => {
-  return (
-    <TabBarOuterContainer {...props}>
-      <TabBarInnerContainer>{children}</TabBarInnerContainer>
-    </TabBarOuterContainer>
-  );
-};
+export const TabBar = ({ children, ...props }) => (
+  <TabBarOuterContainer {...props}>
+    <TabBarInnerContainer>{children}</TabBarInnerContainer>
+  </TabBarOuterContainer>
+);
+
 TabBar.propTypes = {
-  children: PropTypes.arrayOf(PropTypes.element).isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 export const TabBarSection = styled(FlexStart)`

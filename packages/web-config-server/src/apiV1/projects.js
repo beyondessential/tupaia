@@ -59,7 +59,7 @@ async function buildProjectDataForFrontend(project, req) {
   const homeEntityCode = getHomeEntityCode(project, entitiesWithAccess);
 
   // Only want to check pending if no access
-  const { userId } = req.session.userJson;
+  const { userId } = req.userJson;
   const hasPendingAccess = hasAccess
     ? false
     : await fetchHasPendingProjectAccess(projectId, userId, req);

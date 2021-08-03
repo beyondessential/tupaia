@@ -24,7 +24,7 @@ export class Aggregator extends BaseAggregator {
   async fetchAnalytics(
     dataElementCodes: string[],
     aggregationList: (string | AggregationObject)[] | undefined,
-    organisationUnitCodes: string,
+    organisationUnitCodes: string[],
     hierarchy: string | undefined,
     periodParams: PeriodParams,
   ) {
@@ -36,7 +36,7 @@ export class Aggregator extends BaseAggregator {
     return super.fetchAnalytics(
       dataElementCodes,
       {
-        organisationUnitCodes: organisationUnitCodes.split(','),
+        organisationUnitCodes,
         hierarchy,
         period,
         startDate,
@@ -50,7 +50,7 @@ export class Aggregator extends BaseAggregator {
   async fetchEvents(
     programCode: string,
     aggregationList: (string | AggregationObject)[] | undefined,
-    organisationUnitCodes: string,
+    organisationUnitCodes: string[],
     hierarchy: string | undefined,
     periodParams: PeriodParams,
     dataElementCodes?: string[],
@@ -62,7 +62,7 @@ export class Aggregator extends BaseAggregator {
     return super.fetchEvents(
       programCode,
       {
-        organisationUnitCodes: organisationUnitCodes.split(','),
+        organisationUnitCodes,
         hierarchy,
         dataElementCodes,
         period,

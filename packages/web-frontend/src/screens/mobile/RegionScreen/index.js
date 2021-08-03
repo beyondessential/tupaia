@@ -8,14 +8,11 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import CircularProgress from 'material-ui/CircularProgress';
-
 import BackButton from '../../../components/mobile/BackButton';
 import { ExpandableList } from '../../../components/mobile/ExpandableList';
 import { SelectListItem } from '../../../components/mobile/SelectListItem';
 import { Dashboard } from '../../../components/mobile/Dashboard';
-import StaticMap from '../../../components/StaticMap';
 import { filterShape } from '../../../components/mobile/FilterSelect';
 import {
   setOrgUnit,
@@ -26,11 +23,10 @@ import {
   clearMeasure,
 } from '../../../actions';
 import { DARK_BLUE, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
-import { getMapUrl } from '../../../utils';
 import { getSingleFormattedValue } from '../../../utils/measures';
 import { ENTITY_TYPE } from '../../../constants';
 import {
-  selectCurrentDashboardGroupCode,
+  selectCurrentDashboardName,
   selectCurrentOrgUnit,
   selectOrgUnitChildren,
   selectCurrentMeasure,
@@ -61,30 +57,6 @@ class RegionScreen extends PureComponent {
     });
   }
 
-  renderMap() {
-    const { orgUnit } = this.props;
-    if (!orgUnit || !orgUnit.location || !orgUnit.location.bounds) {
-      return '';
-    }
-
-    const url = getMapUrl(orgUnit);
-
-    return (
-      <div style={styles.mapWrapper}>
-        <a style={styles.mapLink} href={url} target="_blank" rel="noreferrer noopener">
-          <StaticMap
-            polygonBounds={orgUnit.location.bounds}
-            alt={`Map of ${orgUnit.name}`}
-            width={MAP_WIDTH}
-            height={MAP_HEIGHT}
-            style={styles.map}
-            showAttribution={false}
-          />
-        </a>
-      </div>
-    );
-  }
-
   renderLoading() {
     const { isLoading } = this.props;
 
@@ -101,7 +73,7 @@ class RegionScreen extends PureComponent {
 
   render() {
     const {
-      dashboardConfig,
+      dashboards,
       selectedFilter,
       measureFilters,
       onChangeMeasure,
@@ -114,18 +86,17 @@ class RegionScreen extends PureComponent {
       onChangeOrgUnit,
       isLoading,
       isMeasureLoading,
-      currentDashboardGroupCode,
+      currentDashboardName,
       onChangeDashboardGroup,
       title,
     } = this.props;
 
     return (
       <div>
-        {this.renderMap()}
         <Dashboard
           orgUnit={orgUnit}
-          dashboardConfig={dashboardConfig}
-          currentDashboardGroupCode={currentDashboardGroupCode}
+          dashboards={dashboards}
+          currentDashboardName={currentDashboardName}
           toggleFilter={onToggleDashboardSelectExpand}
           filterIsExpanded={dashboardFilterIsExpanded}
           handleFilterChange={onChangeDashboardGroup}
@@ -159,7 +130,7 @@ class RegionScreen extends PureComponent {
 }
 
 RegionScreen.propTypes = {
-  dashboardConfig: PropTypes.object.isRequired,
+  dashboards: PropTypes.array.isRequired,
   orgUnit: PropTypes.object.isRequired,
   mobileListItems: PropTypes.array,
   measureFilters: PropTypes.array,
@@ -170,6 +141,11 @@ RegionScreen.propTypes = {
   isLoading: PropTypes.bool,
   isMeasureLoading: PropTypes.bool,
   onChangeOrgUnit: PropTypes.func.isRequired,
+  onToggleDashboardSelectExpand: PropTypes.func.isRequired,
+  dashboardFilterIsExpanded: PropTypes.bool,
+  currentDashboardName: PropTypes.string,
+  onChangeDashboardGroup: PropTypes.func.isRequired,
+  title: PropTypes.string,
 };
 
 RegionScreen.defaultProps = {
@@ -179,6 +155,9 @@ RegionScreen.defaultProps = {
   selectedFilter: null,
   isLoading: false,
   isMeasureLoading: false,
+  dashboardFilterIsExpanded: false,
+  currentDashboardName: '',
+  title: '',
 };
 
 const styles = {
@@ -273,7 +252,7 @@ const getMeasureFiltersForHierarchy = measureHierarchy => {
 };
 
 const mapStateToProps = state => {
-  const { dashboardConfig, isLoadingOrganisationUnit } = state.global;
+  const { dashboards, isLoadingOrganisationUnit } = state.global;
   const { measureHierarchy, isExpanded } = state.measureBar;
   const { measureInfo, isMeasureLoading } = state.map;
   const { isGroupSelectExpanded } = state.dashboard;
@@ -297,8 +276,8 @@ const mapStateToProps = state => {
     : { label: '' };
 
   return {
-    dashboardConfig,
-    currentDashboardGroupCode: selectCurrentDashboardGroupCode(state),
+    dashboards,
+    currentDashboardName: selectCurrentDashboardName(state),
     orgUnit,
     mobileListItems,
     measureFilters,

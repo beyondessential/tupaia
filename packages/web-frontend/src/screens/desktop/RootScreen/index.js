@@ -11,10 +11,10 @@
  * Bare bones container that renders the map fixed in the background and controls vertical ratios
  * of Dashboard and MapDiv based on expanded state of Dashboard (through redux store)
  */
-
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import React from 'react';
+
 import { selectIsEnlargedDialogVisible } from '../../../selectors';
 import { LoadingScreen } from '../../LoadingScreen';
 import Map from '../../../containers/Map';
@@ -41,8 +41,8 @@ export const RootScreen = ({ enlargedDialogIsVisible, isLoading }) => {
         <OverlayDiv />
         <SessionExpiredDialog />
         {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
+        <LoadingScreen isLoading={isLoading} />
       </OverlayContainer>
-      <LoadingScreen isLoading={isLoading} />
       <Map />
     </div>
   );

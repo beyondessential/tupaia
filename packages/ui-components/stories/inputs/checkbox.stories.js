@@ -28,7 +28,18 @@ export const checkboxField = () => (
 export const labels = () => (
   <Container>
     <Checkbox label="Remember me" color="primary" />
-    <Checkbox label="Remember me" color="primary" defaultChecked />
+    <Checkbox label="Terms and Conditions" color="primary" defaultChecked />
+    <Checkbox
+      label="Terms and Conditions"
+      color="primary"
+      helperText="Please read the terms and conditions carefully"
+    />
+    <Checkbox
+      label="Terms and Conditions"
+      color="primary"
+      error
+      helperText="Please tick Terms and Conditions"
+    />
   </Container>
 );
 

@@ -3,26 +3,43 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { writeFileSync } from 'fs';
-
 import { TupaiaDatabase } from '@tupaia/database';
 import { getLoggerInstance } from '@tupaia/utils';
-import { createTestUser } from './createTestUser';
+import config from '../../config.json';
+import { E2E_CONFIG_PATH } from '../../constants';
+import { generateOverlayConfig } from './generateOverlayConfig';
 import { generateReportConfig } from './generateReportConfig';
+import { configSchema } from './configSchema';
+import { writeJsonFile } from './helpers';
 
-const REPORT_CONFIG_PATH = 'cypress/config/dashboardReports.json';
+const INPUT_CONFIG_PATH = 'cypress/config.json';
+
+const validateConfig = () => {
+  try {
+    configSchema.validateSync(config, { strict: true });
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      throw new Error(`Validation of ${INPUT_CONFIG_PATH} failed with "${error.message}"`);
+    }
+    throw error;
+  }
+};
 
 export const generateConfig = async () => {
   const logger = getLoggerInstance();
   const db = new TupaiaDatabase();
 
   logger.success('Start e2e test config generation');
-  logger.success('Creating test user...');
-  await createTestUser(db);
-  logger.success(`✔ Test user`);
+  validateConfig();
+  logger.success(`✔ Configuration is valid`);
 
-  logger.success('Generating dashboard report config...');
-  const reportConfig = await generateReportConfig(db);
-  writeFileSync(REPORT_CONFIG_PATH, JSON.stringify(reportConfig, null, 2));
-  logger.success(`✔ Dashboard reports`);
+  logger.success('* Generating dashboard report config...');
+  const dashboardReports = await generateReportConfig(db);
+  logger.info(`  Generated ${dashboardReports.urls.length} report urls`);
+
+  logger.success('* Generating map overlay urls...');
+  const mapOverlays = await generateOverlayConfig(db);
+  logger.info(`  Generated ${mapOverlays.urls.length} overlay urls`);
+
+  writeJsonFile(E2E_CONFIG_PATH, { ...config, dashboardReports, mapOverlays });
 };
