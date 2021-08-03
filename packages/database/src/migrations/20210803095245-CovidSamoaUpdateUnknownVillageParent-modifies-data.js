@@ -29,7 +29,7 @@ exports.up = async function (db) {
 
   await db.runSql(`
     update "entity" set parent_id = '${unknownDistrictId}' where code = 'WS_Unknown_Village';
-    update "entity_relation" set set parent_id = '${unknownDistrictId}' where child_id = '${unknownVillageId}' and entity_hierarchy_id = '${covidSamoaId}';
+    update "entity_relation" set parent_id = '${unknownDistrictId}' where child_id = '${unknownVillageId}' and entity_hierarchy_id = '${covidSamoaId}';
   `);
 
   return null;
