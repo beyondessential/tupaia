@@ -244,7 +244,6 @@ const VITALS_VIEWS = {
 };
 
 export const VitalsView = ({ entityType }) => {
-  return <VitalsLoader />;
   const { entityCode } = useUrlParams();
   const { data: vitals, isLoading } = useVitalsData(entityCode);
 
