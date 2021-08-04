@@ -11,11 +11,10 @@ const { REPORT_API_URL = 'http://localhost:8030/v2' } = process.env;
 type ReportObject = {
   results: Record<string, unknown>[];
 };
-type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 export class ReportConnection extends SessionHandlingApiConnection {
   baseUrl = REPORT_API_URL;
 
-  async fetchReport(reportCode: string, query: QueryParameters, body: RequestBody) {
-    return this.post(`fetchReport/${reportCode}`, query, body);
+  async fetchReport(reportCode: string, query: QueryParameters): Promise<ReportObject> {
+    return this.get(`fetchReport/${reportCode}`, query);
   }
 }

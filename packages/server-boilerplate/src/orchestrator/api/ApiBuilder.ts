@@ -14,12 +14,8 @@ import { UnauthenticatedError } from '@tupaia/utils';
 
 import { handleWith, handleError } from '../../utils';
 import { TestRoute } from '../../routes';
-import {
-  LoginRoute,
-  LoginRequest,
-  LogoutRoute,
-  attachSession as defaultAttachSession,
-} from '../routes';
+import { LoginRoute, LoginRequest, LogoutRoute } from '../routes';
+import { attachSession as defaultAttachSession } from '../session';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
 import { sessionCookie } from './sessionCookie';
 import { SessionModel } from '../models';
@@ -123,35 +119,35 @@ export class ApiBuilder {
   addRoute<T extends ExpressRequest<T> = Request>(
     method: 'get' | 'post' | 'put',
     path: string,
-    handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+    ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
     if (this.verifyAuthMiddleware) {
-      this.app[method](path, this.attachSession, this.verifyAuthMiddleware, handler);
+      this.app[method](path, this.attachSession, this.verifyAuthMiddleware, ...handlers);
     } else {
-      this.app[method](path, this.attachSession, handler);
+      this.app[method](path, this.attachSession, ...handlers);
     }
     return this;
   }
 
   get<T extends ExpressRequest<T> = Request>(
     path: string,
-    handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+    ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
-    return this.addRoute('get', path, handler);
+    return this.addRoute('get', path, ...handlers);
   }
 
   post<T extends ExpressRequest<T> = Request>(
     path: string,
-    handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+    ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
-    return this.addRoute('post', path, handler);
+    return this.addRoute('post', path, ...handlers);
   }
 
   put<T extends ExpressRequest<T> = Request>(
     path: string,
-    handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+    ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
-    return this.addRoute('put', path, handler);
+    return this.addRoute('put', path, ...handlers);
   }
 
   build() {

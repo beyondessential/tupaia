@@ -8,10 +8,11 @@ import {
   SingleEntityRequestParams,
   MultiEntityRequestParams,
   RequestBody,
-  SingleEntityRequestQuery,
+  MultiEntityRequestBody,
+  EntityRequestQuery,
   SingleEntityContext,
   MultiEntityContext,
-  FlattableEntityFields,
+  FlattableEntityFieldName,
   FlattenedEntity,
   EntityResponse,
 } from '../types';
@@ -20,7 +21,7 @@ export type Prefix<T, P extends string> = {
   [field in keyof T & string as `${P}_${field}`]: T[field];
 };
 
-export type RelationshipsSubQuery = Omit<SingleEntityRequestQuery, 'fields'>;
+export type RelationshipsSubQuery = Omit<EntityRequestQuery, 'fields'>;
 export type RelationshipsQuery = RelationshipsSubQuery & {
   groupBy?: 'ancestor' | 'descendant';
 } & Partial<Prefix<RelationshipsSubQuery, 'ancestor'>> &
@@ -28,19 +29,21 @@ export type RelationshipsQuery = RelationshipsSubQuery & {
 
 type DescendantSubContext = {
   filter: EntityFilter;
-  field: keyof FlattableEntityFields;
+  field: FlattableEntityFieldName;
   type: string;
 };
 
 type AncestorSubContext = {
   filter: EntityFilter;
-  field: keyof FlattableEntityFields;
+  field: FlattableEntityFieldName;
   type?: string;
 };
 
+export type GroupByDescendantRelationshipsResponseBody = Record<FlattenedEntity, EntityResponse>;
+export type GroupByAncestorRelationshipsResponseBody = Record<FlattenedEntity, EntityResponse[]>;
 export type RelationshipsResponseBody =
-  | Record<FlattenedEntity, EntityResponse> // groupBy: descendant
-  | Record<FlattenedEntity, EntityResponse[]>; // groupBy: ancestor
+  | GroupByDescendantRelationshipsResponseBody
+  | GroupByAncestorRelationshipsResponseBody;
 
 export type RelationshipsContext = Omit<SingleEntityContext, 'fields'> & {
   ancestor: AncestorSubContext;
@@ -66,8 +69,8 @@ export interface MultiEntityRelationshipsRequest
   extends Request<
     MultiEntityRequestParams,
     RelationshipsResponseBody,
-    RequestBody,
-    RelationshipsQuery & { entities?: string }
+    MultiEntityRequestBody,
+    RelationshipsQuery
   > {
   ctx: MultiEntityRelationshipsContext;
 }

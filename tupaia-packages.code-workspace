@@ -13,6 +13,10 @@
       "path": "packages/admin-panel"
     },
     {
+      "name": "admin-panel-server",
+      "path": "packages/admin-panel-server"
+    },
+    {
       "name": "aggregator",
       "path": "packages/aggregator"
     },
@@ -65,16 +69,16 @@
       "path": "packages/meditrak-app"
     },
     {
+      "name": "meditrak-server",
+      "path": "packages/meditrak-server"
+    },
+    {
       "name": "psss",
       "path": "packages/psss"
     },
     {
       "name": "psss-server",
       "path": "packages/psss-server"
-    },
-    {
-      "name": "meditrak-server",
-      "path": "packages/meditrak-server"
     },
     {
       "name": "report-server",
@@ -108,12 +112,13 @@
   "settings": {
     "cSpell.language": "en-GB",
     "cSpell.words": [
+      "Clazz",
       "Codeship",
       "DHIS",
       "Flattable",
-      "jsonb",
       "Lesmis",
       "MediTrak",
+      "Microservice",
       "PSSS",
       "Tongatapu",
       "Tupaia",
@@ -133,9 +138,12 @@
       "geojson",
       "groupby",
       "heatmap",
+      "ilike",
       "imms",
       "isequal",
+      "jsonb",
       "keyby",
+      "middlewares",
       "migrator",
       "oucode",
       "parameterise",

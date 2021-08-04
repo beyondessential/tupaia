@@ -4,6 +4,8 @@
 #   dependencies for the package in question
 # - 'testing' service is the same as the validation service, but additionally depends on the db
 #   service (see below)
+# - 'cypress' service includes a base cypress container, plus code and node_module dependencies
+#   required by e2e tests in web-frontend
 # - the db service provides a postgres db with postgis (and takes a little while to run, thus the
 #   splitting of the above services so validation isn't slower than it should be)
 # - the deployment service just uses the base alpine image + ssh to log into
@@ -26,8 +28,19 @@ testing:
   encrypted_dockercfg_path: dockercfg.encrypted
   default_cache_branch: 'dev'
 
+e2e:
+  build:
+    dockerfile: e2e.Dockerfile
+  encrypted_env_file: ./ci-env-vars.encrypted
+  cached: true
+  encrypted_dockercfg_path: dockercfg.encrypted
+  default_cache_branch: 'e2e'
+  volumes:
+    # see https://docs.cloudbees.com/docs/cloudbees-codeship/latest/pro-continuous-integration/browser-testing#_chrome_crashing
+    - /dev/shm:/dev/shm
+
 db:
-  image: mdillon/postgis:9.6-alpine
+  image: mdillon/postgis:10-alpine
   cached: true
   encrypted_dockercfg_path: dockercfg.encrypted
 

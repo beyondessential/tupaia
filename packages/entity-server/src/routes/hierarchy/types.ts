@@ -17,16 +17,16 @@ export interface MultiEntityRequestParams {
   hierarchyName: string;
 }
 
-export type RequestBody = Record<string, unknown>;
+export type RequestBody = Record<string, never>;
 
-export interface SingleEntityRequestQuery {
+export type MultiEntityRequestBody = RequestBody & {
+  entities: string[] | undefined;
+};
+
+export interface EntityRequestQuery {
   fields?: string;
   field?: string;
   filter?: string;
-}
-
-export interface MultiEntityRequestQuery extends SingleEntityRequestQuery {
-  entities?: string;
 }
 
 export type ExtendedFieldFunctions = Readonly<
@@ -42,26 +42,28 @@ type SimpleFieldKeys<T> = {
 }[keyof T];
 
 export type FlattableEntityFields = Pick<EntityFields, SimpleFieldKeys<EntityFields>>;
+export type FlattableEntityFieldName = keyof FlattableEntityFields;
 
 type ExcludeCommonFields<T, U> = Omit<T, Extract<keyof T, keyof U>>;
 
 export type ExtendedEntityFields = ExcludeCommonFields<EntityFields, ExtendedFieldFunctions> &
   ExtendedFieldFunctions;
+export type ExtendedEntityFieldName = keyof ExtendedEntityFields;
 
 export type EntityResponseObject = {
-  [field in keyof ExtendedEntityFields]?: ExtendedEntityFields[field];
+  [field in ExtendedEntityFieldName]?: ExtendedEntityFields[field];
 };
 
-export type FlattenedEntity = FlattableEntityFields[keyof FlattableEntityFields];
+export type FlattenedEntity = FlattableEntityFields[FlattableEntityFieldName];
 
 export type EntityResponse = EntityResponseObject | FlattenedEntity;
 
 export type CommonContext = {
   hierarchyId: string;
   allowedCountries: string[];
-  fields: (keyof ExtendedEntityFields)[];
+  fields: ExtendedEntityFieldName[];
   filter: EntityFilter;
-  field?: keyof FlattableEntityFields;
+  field?: FlattableEntityFieldName;
 };
 
 export interface SingleEntityContext extends CommonContext {
@@ -76,16 +78,16 @@ export interface SingleEntityRequest<
   P = SingleEntityRequestParams,
   ResBody = EntityResponse,
   ReqBody = RequestBody,
-  ReqQuery = SingleEntityRequestQuery
+  ReqQuery = EntityRequestQuery
 > extends Request<P, ResBody, ReqBody, ReqQuery> {
   ctx: SingleEntityContext;
 }
 
 export interface MultiEntityRequest<
   P = MultiEntityRequestParams,
-  ResBody = EntityResponse,
-  ReqBody = RequestBody,
-  ReqQuery = MultiEntityRequestQuery
+  ResBody = EntityResponse[],
+  ReqBody = MultiEntityRequestBody,
+  ReqQuery = EntityRequestQuery
 > extends Request<P, ResBody, ReqBody, ReqQuery> {
   ctx: MultiEntityContext;
 }

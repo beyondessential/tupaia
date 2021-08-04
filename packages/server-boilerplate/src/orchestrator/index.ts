@@ -6,3 +6,4 @@
 export { ApiBuilder } from './api';
 export { SessionModel, SessionType } from './models';
 export { SessionCookie } from './types';
+export { attachSession } from './session';

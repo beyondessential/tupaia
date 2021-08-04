@@ -36,7 +36,7 @@ export const login = (emailAddress, password) => async (dispatch, getState, { ap
     type: LOGIN_REQUEST,
   });
   try {
-    const userDetails = await api.reauthenticate({
+    const userDetails = await api.login({
       emailAddress,
       password,
       deviceName,
@@ -47,11 +47,9 @@ export const login = (emailAddress, password) => async (dispatch, getState, { ap
   }
 };
 
-export const loginSuccess = ({ accessToken, refreshToken, user }) => dispatch => {
+export const loginSuccess = ({ user }) => dispatch => {
   dispatch({
     type: LOGIN_SUCCESS,
-    accessToken,
-    refreshToken,
     user,
   });
 };
@@ -61,9 +59,15 @@ export const loginError = errorMessage => ({
   errorMessage,
 });
 
-export const logout = () => ({
-  type: LOGOUT,
-});
+export const logout = (errorMessage = null) => async (dispatch, getState, { api }) => {
+  dispatch({
+    // Set state to logging out
+    type: LOGOUT,
+    errorMessage,
+  });
+
+  await api.logout();
+};
 
 // Profile
 export const updateProfile = payload => async (dispatch, getState, { api }) => {
