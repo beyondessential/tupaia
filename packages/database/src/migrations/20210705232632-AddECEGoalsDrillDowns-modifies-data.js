@@ -108,7 +108,7 @@ const CONFIG_5_REPORT = {
 
 const addNewDashboardItemAndReport = async (
   db,
-  { code, frontEndConfig, reportConfig, permissionGroup },
+  { code, frontEndConfig, reportConfig, permissionGroup, dashboardCode, entityTypes, projectCodes },
 ) => {
   // insert report
   const reportId = generateId();
@@ -129,6 +129,24 @@ const addNewDashboardItemAndReport = async (
     code,
     config: frontEndConfig,
     report_code: code,
+  });
+
+  // insert relation record connecting dashboard item to dashboard
+  const dashboardId = (await findSingleRecord(db, 'dashboard', { code: dashboardCode })).id;
+  const maxSortOrder = (
+    await findSingleRecordBySql(
+      db,
+      `SELECT max(sort_order) as max_sort_order FROM dashboard_relation WHERE dashboard_id = '${dashboardId}';`,
+    )
+  ).max_sort_order;
+  await insertObject(db, 'dashboard_relation', {
+    id: generateId(),
+    dashboard_id: dashboardId,
+    child_id: dashboardItemId,
+    entity_types: `{${entityTypes.join(', ')}}`,
+    project_codes: `{${projectCodes.join(', ')}}`,
+    permission_groups: `{${permissionGroup}}`,
+    sort_order: maxSortOrder + 1,
   });
 };
 
@@ -151,6 +169,9 @@ exports.up = async function (db) {
       reportConfig,
       frontEndConfig,
       permissionGroup: 'LESMIS Public',
+      dashboardCode: 'LESMIS_ESSDP_EarlyChildhoodSubSector_Schools',
+      entityTypes: ['sub_district'],
+      projectCodes: ['laos_schools'],
     });
   }
 };
