@@ -13,7 +13,11 @@ import {
   ValidationError,
   ObjectValidator,
 } from '@tupaia/utils';
-import { deleteScreensForSurvey, deleteOrphanQuestions } from '../../dataAccessors';
+import {
+  deleteScreensForSurvey,
+  deleteOrphanQuestions,
+  validateSurveyFields,
+} from '../../dataAccessors';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../database/models/Answer';
 import {
   splitStringOnComma,
@@ -160,6 +164,16 @@ export async function importSurveys(req, res) {
         const { serviceType = DEFAULT_SERVICE_TYPE } = req.query;
 
         await validateSurveyServiceType(transactingModels, surveyCode, serviceType);
+
+        try {
+          await validateSurveyFields(transactingModels, {
+            code: surveyCode,
+            serviceType,
+            periodGranularity: req.query.periodGranularity,
+          });
+        } catch (error) {
+          throw new ImportValidationError(error.message);
+        }
 
         const dataGroup = await updateOrCreateDataGroup(transactingModels, {
           surveyCode,
