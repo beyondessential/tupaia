@@ -17,16 +17,17 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = function (db) {
-  return insertObject(db, 'sync_cursor', {
+  return insertObject(db, 'sync_service', {
     id: generateId(),
-    service_name: 'KoBo',
+    service_code: 'laos_moes_kobo',
+    service_type: 'kobo',
     sync_time: new Date(0),
     config: { koboSurveys: ['FQS1', 'FQS2'] },
   });
 };
 
 exports.down = function (db) {
-  return deleteObject(db, 'sync_cursor', { service_name: 'KoBo' });
+  return deleteObject(db, 'sync_service', { service_code: 'laos_moes_kobo' });
 };
 
 exports._meta = {
