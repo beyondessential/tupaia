@@ -8,15 +8,18 @@ import styled from 'styled-components';
 import { FlexSpaceBetween } from '../Layout';
 import { Circle } from './Circle';
 import { HeaderRow, SubHeaderRow, StandardRow, DrillDownRow } from './Rows';
+import { FetchLoader } from '../FetchLoader';
 
 const Container = styled.div`
-  border: 1px solid ${props => props.theme.palette.grey['400']};
   border-radius: 3px;
+  overflow: hidden;
+  min-height: 400px;
+  height: ${props => (props.isLoading ? '400px' : 'auto')};
+  background: #f9f9f9;
 `;
 
 const Footer = styled(FlexSpaceBetween)`
   padding: 2rem 1rem;
-  background: #f9f9f9;
 `;
 
 const ROW_TYPE_COMPONENTS = {
@@ -53,7 +56,7 @@ const getDisplayConfig = ({ valueType, listConfig }, statistic) => {
 const processData = (config, data) => {
   let parentCode = null;
 
-  return data.map(item => {
+  return data?.map(item => {
     let rowType = 'standard';
     let displayConfig = null;
     let drillDownCode = null;
@@ -83,42 +86,40 @@ const processData = (config, data) => {
 export const ListVisual = ({
   viewContent,
   isLoading,
+  isError,
+  error,
   drillDowns,
   entityCode,
   dashboardCode,
   dashboardName,
 }) => {
-  if (isLoading) {
-    return null;
-  }
-
   const { data, ...config } = viewContent;
 
   const list = processData(config, data, drillDowns);
 
   return (
-    <Container>
-      {list.map(({ rowType, valueType, label, displayConfig, drillDownCode }, index) => {
-        const RowComponent = ROW_TYPE_COMPONENTS[rowType];
-        const ValueComponent = VALUE_TYPE_COMPONENTS[valueType];
-        return (
-          <RowComponent
-            // eslint-disable-next-line react/no-array-index-key
-            key={index}
-            label={label}
-            drillDownCode={drillDownCode}
-            drillDowns={drillDowns}
-            entityCode={entityCode}
-            dashboardCode={dashboardCode}
-            dashboardName={dashboardName}
-          >
-            <ValueComponent displayConfig={displayConfig} />
-          </RowComponent>
-        );
-      })}
-      <Footer>
-        <div>Export</div>
-      </Footer>
+    <Container isLoading={isLoading}>
+      <FetchLoader isLoading={isLoading} isError={isError} error={error}>
+        {list?.map(({ rowType, valueType, label, displayConfig, drillDownCode }, index) => {
+          const RowComponent = ROW_TYPE_COMPONENTS[rowType];
+          const ValueComponent = VALUE_TYPE_COMPONENTS[valueType];
+          return (
+            <RowComponent
+              // eslint-disable-next-line react/no-array-index-key
+              key={index}
+              label={label}
+              drillDownCode={drillDownCode}
+              drillDowns={drillDowns}
+              entityCode={entityCode}
+              dashboardCode={dashboardCode}
+              dashboardName={dashboardName}
+            >
+              <ValueComponent displayConfig={displayConfig} />
+            </RowComponent>
+          );
+        })}
+        <Footer />
+      </FetchLoader>
     </Container>
   );
 };

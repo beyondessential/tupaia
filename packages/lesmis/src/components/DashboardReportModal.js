@@ -176,7 +176,7 @@ export const DashboardReportModal = ({
 
 DashboardReportModal.propTypes = {
   name: PropTypes.string.isRequired,
-  ButtonComponent: PropTypes.node,
+  ButtonComponent: PropTypes.any,
   reportCode: PropTypes.string.isRequired,
   entityCode: PropTypes.string.isRequired,
   dashboardCode: PropTypes.string.isRequired,

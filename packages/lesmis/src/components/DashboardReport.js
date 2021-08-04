@@ -70,17 +70,19 @@ export const DashboardReport = React.memo(
           dashboardCode={dashboardCode}
           dashboardName={dashboardName}
         />
-        <Footer>
-          <DashboardReportModal
-            name={name}
-            entityCode={entityCode}
-            dashboardCode={dashboardCode}
-            dashboardName={dashboardName}
-            reportCode={reportCode}
-            periodGranularity={periodGranularity}
-            viewConfig={viewConfig}
-          />
-        </Footer>
+        {viewConfig.type !== 'list' && (
+          <Footer>
+            <DashboardReportModal
+              name={name}
+              entityCode={entityCode}
+              dashboardCode={dashboardCode}
+              dashboardName={dashboardName}
+              reportCode={reportCode}
+              periodGranularity={periodGranularity}
+              viewConfig={viewConfig}
+            />
+          </Footer>
+        )}
       </Container>
     );
   },
