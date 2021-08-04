@@ -163,56 +163,29 @@ export const DashboardReportTabView = ({
       </StickyTabBarContainer>
       <DashboardSection ref={topRef}>
         <FetchLoader isLoading={isLoading} isError={isError} error={error}>
-          {subDashboards?.map(dashboard => {
-            const drillDownItemCodes = dashboard.items
-              .filter(d => !!d.drillDown)
-              .reduce((codes, d) => {
-                const entry = d.drillDown?.itemCodeByEntry;
-
-                if (entry) {
-                  const values = Object.values(d.drillDown.itemCodeByEntry);
-                  return [...codes, ...values];
-                }
-                return codes;
-              }, []);
-
-            // Todo: support other report types (including "component" types)
-            const dashboardItems = dashboard.items
-              .filter(({ type }) => type === 'chart' || type === 'list')
-              .filter(view => !drillDownItemCodes.includes(view.code));
-
-            const drillDowns = dashboard.items.filter(view =>
-              drillDownItemCodes.includes(view.code),
-            );
-
-            return (
-              <TabPanel
-                key={dashboard.dashboardId}
-                isSelected={dashboard.dashboardName === activeDashboard}
-              >
-                {dashboardItems.length > 0 ? (
-                  dashboardItems.map(item => (
-                    <DashboardReport
-                      key={item.code}
-                      name={item.name}
-                      drillDowns={drillDowns}
-                      entityCode={entityCode}
-                      dashboardCode={dashboard.dashboardCode}
-                      dashboardName={dashboard.dashboardName}
-                      reportCode={item.reportCode}
-                      year={year}
-                      periodGranularity={item.periodGranularity}
-                      viewConfig={item}
-                    />
-                  ))
-                ) : (
-                  <SmallAlert key={dashboard.dashboardName} severity="info" variant="standard">
-                    There are no reports available for this dashboard
-                  </SmallAlert>
-                )}
-              </TabPanel>
-            );
-          })}
+          {subDashboards?.map(dashboard => (
+            <TabPanel
+              key={dashboard.dashboardId}
+              isSelected={dashboard.dashboardName === activeDashboard}
+            >
+              {dashboard.items.length > 0 ? (
+                dashboard.items.map(item => (
+                  <DashboardReport
+                    key={item.code}
+                    drillDowns={dashboard.drillDowns}
+                    entityCode={entityCode}
+                    dashboard={dashboard}
+                    year={year}
+                    viewConfig={item}
+                  />
+                ))
+              ) : (
+                <SmallAlert key={dashboard.dashboardName} severity="info" variant="standard">
+                  There are no reports available for this dashboard
+                </SmallAlert>
+              )}
+            </TabPanel>
+          ))}
         </FetchLoader>
       </DashboardSection>
       {isScrolledPastTop && <ScrollToTopButton onClick={scrollToTop} />}

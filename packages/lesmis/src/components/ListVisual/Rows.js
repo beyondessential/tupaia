@@ -4,19 +4,21 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import MuiButton from '@material-ui/core/Button';
 import { DashboardReportModal } from '../DashboardReportModal';
 import { FlexSpaceBetween } from '../Layout';
+import * as COLORS from '../../constants';
 
 const Heading = styled(Typography)`
-  font-size: 18px;
-  line-height: 24px;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
 `;
 
 const Text = styled(Typography)`
-  font-size: 14px;
-  line-height: 18px;
+  font-size: 0.875rem;
+  line-height: 1.125rem;
 `;
 
 const SubHeading = styled(Text)`
@@ -24,11 +26,20 @@ const SubHeading = styled(Text)`
 `;
 
 const Row = styled(FlexSpaceBetween)`
-  background: #f9f9f9;
+  background: ${COLORS.GREY_F9};
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
   width: 100%;
   padding: 0;
   text-align: left;
+
+  &:hover.MuiButton-root {
+    background-color: initial;
+
+    .MuiTypography-root {
+      text-decoration: underline;
+      color: ${props => props.theme.palette.primary.main};
+    }
+  }
 
   &:nth-child(even) {
     background: #f1f1f1;
@@ -75,15 +86,7 @@ export const StandardRow = ({ label, children }) => (
   </Row>
 );
 
-export const DrillDownRow = ({
-  label,
-  drillDownCode,
-  drillDowns,
-  entityCode,
-  dashboardCode,
-  dashboardName,
-  children,
-}) => {
+export const DrillDownRow = ({ label, drillDowns, drillDownCode, dashboard, children }) => {
   const config = drillDowns.find(d => d.code === drillDownCode);
 
   const Component = props => (
@@ -99,12 +102,21 @@ export const DrillDownRow = ({
     <DashboardReportModal
       ButtonComponent={Component}
       name={config.name}
-      entityCode={entityCode}
-      dashboardCode={dashboardCode}
-      dashboardName={dashboardName}
+      dashboard={dashboard}
       reportCode={config.reportCode}
       periodGranularity={config.periodGranularity}
       viewConfig={config}
     />
   );
+};
+
+DrillDownRow.propTypes = {
+  label: PropTypes.string.isRequired,
+  dashboard: PropTypes.shape({
+    dashboardCode: PropTypes.string.isRequired,
+    dashboardName: PropTypes.string.isRequired,
+  }).isRequired,
+  drillDowns: PropTypes.array.isRequired,
+  drillDownCode: PropTypes.string.isRequired,
+  children: PropTypes.any.isRequired,
 };

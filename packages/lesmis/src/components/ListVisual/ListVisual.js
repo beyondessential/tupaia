@@ -83,16 +83,7 @@ const processData = (config, data) => {
   });
 };
 
-export const ListVisual = ({
-  viewContent,
-  isLoading,
-  isError,
-  error,
-  drillDowns,
-  entityCode,
-  dashboardCode,
-  dashboardName,
-}) => {
+export const ListVisual = ({ viewContent, isLoading, dashboard, isError, error, drillDowns }) => {
   const { data, ...config } = viewContent;
 
   const list = processData(config, data, drillDowns);
@@ -109,10 +100,8 @@ export const ListVisual = ({
               key={index}
               label={label}
               drillDownCode={drillDownCode}
+              dashboard={dashboard}
               drillDowns={drillDowns}
-              entityCode={entityCode}
-              dashboardCode={dashboardCode}
-              dashboardName={dashboardName}
             >
               <ValueComponent displayConfig={displayConfig} />
             </RowComponent>
@@ -126,20 +115,24 @@ export const ListVisual = ({
 
 ListVisual.propTypes = {
   viewContent: PropTypes.object,
+  dashboard: PropTypes.shape({
+    dashboardCode: PropTypes.string.isRequired,
+    dashboardName: PropTypes.string.isRequired,
+  }).isRequired,
+  drillDowns: PropTypes.array,
   isLoading: PropTypes.bool,
   isFetching: PropTypes.bool,
   isEnlarged: PropTypes.bool,
   isError: PropTypes.bool,
   error: PropTypes.string,
-  name: PropTypes.string,
 };
 
 ListVisual.defaultProps = {
   viewContent: null,
+  drillDowns: null,
   isLoading: false,
   isFetching: false,
   isEnlarged: false,
   isError: false,
   error: null,
-  name: null,
 };

@@ -23,7 +23,7 @@ import { FlexSpaceBetween, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
 import { Chart } from './Chart';
 import { useDashboardReportData } from '../api/queries';
-import { useUrlSearchParams } from '../utils';
+import { useUrlParams, useUrlSearchParams } from '../utils';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -76,16 +76,17 @@ const DefaultOpenButton = ({ handleClickOpen }) => (
 
 export const DashboardReportModal = ({
   name,
-  dashboardCode,
-  dashboardName,
+  dashboard,
   ButtonComponent,
-  entityCode,
   reportCode,
   periodGranularity,
   viewConfig,
 }) => {
   const { code: itemCode, legacy } = viewConfig;
+  const { dashboardCode, dashboardName } = dashboard;
+  const { entityCode } = useUrlParams();
   const [{ startDate, endDate, reportCode: selectedReportCode }, setParams] = useUrlSearchParams();
+
   const isOpen = reportCode === selectedReportCode;
   const [open, setOpen] = useState(isOpen);
   const theme = useTheme();
@@ -151,13 +152,13 @@ export const DashboardReportModal = ({
                 {viewConfig?.description && <Description>{viewConfig.description}</Description>}
               </Box>
               <FlexStart>
-                {/*<DateRangePicker*/}
-                {/*  isLoading={isLoading}*/}
-                {/*  startDate={startDate}*/}
-                {/*  endDate={endDate}*/}
-                {/*  granularity={periodGranularity}*/}
-                {/*  onSetDates={handleDatesChange}*/}
-                {/*/>*/}
+                <DateRangePicker
+                  isLoading={isLoading}
+                  startDate={startDate}
+                  endDate={endDate}
+                  granularity={periodGranularity}
+                  onSetDates={handleDatesChange}
+                />
               </FlexStart>
             </Header>
             <Chart
@@ -178,10 +179,11 @@ DashboardReportModal.propTypes = {
   name: PropTypes.string.isRequired,
   ButtonComponent: PropTypes.any,
   reportCode: PropTypes.string.isRequired,
-  entityCode: PropTypes.string.isRequired,
-  dashboardCode: PropTypes.string.isRequired,
   periodGranularity: PropTypes.string,
-  dashboardName: PropTypes.string.isRequired,
+  dashboard: PropTypes.shape({
+    dashboardCode: PropTypes.string.isRequired,
+    dashboardName: PropTypes.string.isRequired,
+  }).isRequired,
   viewConfig: PropTypes.object.isRequired,
 };
 
