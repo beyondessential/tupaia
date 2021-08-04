@@ -243,7 +243,7 @@ export function addRoutesToApp(app) {
   app.post('(/v[0-9]+)/indicators', createIndicators);
   app.post('(/v[0-9]+)/permissionGroups', createPermissionGroups);
   app.post('(/v[0-9]+)?/dashboardRelations', createDashboardRelations);
-  app.post('(/v[0-9]+)?/koboSync', requestManualKoBoSync);
+  app.post('(/v[0-9]+)?/syncFromService', requestManualKoBoSync);
 
   /**
    * PUT routes

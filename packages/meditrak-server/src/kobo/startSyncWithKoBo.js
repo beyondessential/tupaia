@@ -22,11 +22,7 @@ export async function startSyncWithKoBo(models) {
   }
 }
 
-export async function syncWithKoBo(models, dataBroker) {
-  await pullLatest(models, dataBroker);
-}
-
-async function pullLatest(models, dataBroker) {
+export async function syncWithKoBo(models, dataBroker, serviceCode) {
   const syncCursor = await models.syncCursor.findOne({ service_name: SERVICE_NAME });
 
   // Pull data from KoBo
