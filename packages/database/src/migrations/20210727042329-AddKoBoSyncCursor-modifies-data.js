@@ -19,7 +19,7 @@ exports.setup = function (options, seedLink) {
 exports.up = function (db) {
   return insertObject(db, 'sync_service', {
     id: generateId(),
-    service_code: 'laos_moes_kobo',
+    code: 'laos_moes_kobo',
     service_type: 'kobo',
     sync_time: new Date(0),
     config: { koboSurveys: ['FQS1', 'FQS2'] },
@@ -27,7 +27,7 @@ exports.up = function (db) {
 };
 
 exports.down = function (db) {
-  return deleteObject(db, 'sync_service', { service_code: 'laos_moes_kobo' });
+  return deleteObject(db, 'sync_service', { code: 'laos_moes_kobo' });
 };
 
 exports._meta = {
