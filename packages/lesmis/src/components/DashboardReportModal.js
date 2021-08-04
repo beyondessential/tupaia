@@ -67,11 +67,18 @@ const Description = styled(Typography)`
   margin-top: 0.625rem;
 `;
 
+// eslint-disable-next-line react/prop-types
+const DefaultOpenButton = ({ handleClickOpen }) => (
+  <MuiButton onClick={handleClickOpen} endIcon={<KeyboardArrowRightIcon />} color="primary">
+    See More
+  </MuiButton>
+);
+
 export const DashboardReportModal = ({
   name,
   dashboardCode,
   dashboardName,
-  buttonText,
+  ButtonComponent,
   entityCode,
   reportCode,
   periodGranularity,
@@ -125,9 +132,7 @@ export const DashboardReportModal = ({
 
   return (
     <>
-      <MuiButton onClick={handleClickOpen} endIcon={<KeyboardArrowRightIcon />} color="primary">
-        {buttonText}
-      </MuiButton>
+      <ButtonComponent onClick={handleClickOpen} />
       <MuiDialog
         onRendered={onRendered}
         scroll="paper"
@@ -171,7 +176,7 @@ export const DashboardReportModal = ({
 
 DashboardReportModal.propTypes = {
   name: PropTypes.string.isRequired,
-  buttonText: PropTypes.string.isRequired,
+  ButtonComponent: PropTypes.node,
   reportCode: PropTypes.string.isRequired,
   entityCode: PropTypes.string.isRequired,
   dashboardCode: PropTypes.string.isRequired,
@@ -182,4 +187,5 @@ DashboardReportModal.propTypes = {
 
 DashboardReportModal.defaultProps = {
   periodGranularity: null,
+  ButtonComponent: DefaultOpenButton,
 };

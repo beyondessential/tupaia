@@ -72,7 +72,6 @@ export const DashboardReport = React.memo(
         />
         <Footer>
           <DashboardReportModal
-            buttonText="See More"
             name={name}
             entityCode={entityCode}
             dashboardCode={dashboardCode}

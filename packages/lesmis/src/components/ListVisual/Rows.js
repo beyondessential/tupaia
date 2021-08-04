@@ -5,6 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
+import MuiButton from '@material-ui/core/Button';
 import { DashboardReportModal } from '../DashboardReportModal';
 import { FlexSpaceBetween } from '../Layout';
 
@@ -25,6 +26,9 @@ const SubHeading = styled(Text)`
 const Row = styled(FlexSpaceBetween)`
   background: #f9f9f9;
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+  width: 100%;
+  padding: 0;
+  text-align: left;
 
   &:nth-child(even) {
     background: #f1f1f1;
@@ -82,22 +86,25 @@ export const DrillDownRow = ({
 }) => {
   const config = drillDowns.find(d => d.code === drillDownCode);
 
-  return (
-    <Row>
+  const Component = props => (
+    <Row component={MuiButton} {...props}>
       <Cell>
         <Text>{label}</Text>
-        <DashboardReportModal
-          buttonText="drilldown"
-          name={config.name}
-          entityCode={entityCode}
-          dashboardCode={dashboardCode}
-          dashboardName={dashboardName}
-          reportCode={config.reportCode}
-          periodGranularity={config.periodGranularity}
-          viewConfig={config}
-        />
       </Cell>
       {children}
     </Row>
+  );
+
+  return (
+    <DashboardReportModal
+      ButtonComponent={Component}
+      name={config.name}
+      entityCode={entityCode}
+      dashboardCode={dashboardCode}
+      dashboardName={dashboardName}
+      reportCode={config.reportCode}
+      periodGranularity={config.periodGranularity}
+      viewConfig={config}
+    />
   );
 };
