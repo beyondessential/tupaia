@@ -3,20 +3,28 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-export const validateSurveyFields = async (models, surveyFields) => {
-  const { code, serviceType, periodGranularity } = surveyFields;
+import assert from 'assert';
 
-  const existingDataGroup = await models.dataSource.findOne({ code, type: 'dataGroup' });
-  if (serviceType && existingDataGroup && serviceType !== existingDataGroup.service_type) {
-    throw new Error(
-      `Data service must match. The existing survey has Data service: ${existingDataGroup.service_type}. Attempted to import with Data service: ${serviceType}.`,
-    );
+const findSurveyServiceType = async (models, code) => {
+  assert.ok(code);
+
+  const survey = await models.survey.findOne({ code });
+  if (!survey) {
+    throw new Error(`Cannot find service type for survey ${code} - survey was not found in the db`);
   }
 
-  // If a data group exists, use its service type; if not, use the supplied field
-  // selected service type
-  const dataGroupServiceType = existingDataGroup?.['service_type'] || serviceType;
-  if (periodGranularity && dataGroupServiceType === 'dhis') {
-    throw new Error('Reporting period is not available for dhis surveys');
+  const dataGroup = await survey.dataGroup();
+  assert.ok(dataGroup); // Each survey has a data group
+  return dataGroup.service_type;
+};
+
+export const validateSurveyFields = async (models, surveyFields) => {
+  const { code, periodGranularity } = surveyFields;
+
+  if (periodGranularity) {
+    const serviceType = surveyFields.serviceType || (await findSurveyServiceType(models, code));
+    if (serviceType === 'dhis') {
+      throw new Error('Reporting period is not available for dhis surveys');
+    }
   }
 };

@@ -89,21 +89,22 @@ class SurveyEditor {
     const updatedFields = this.updatedFieldsByResource[resourceType];
     const isDataSource = model.databaseType === this.models.dataSource.databaseType;
 
-    Object.entries(updatedFields).forEach(([fieldName, fieldValue]) => {
-      if (isDataSource && (fieldName === 'config' || fieldValue === undefined)) {
-        // Handle config last since its value depends on other fields
-        // For the same reason, do not set model fields to `undefined`
-        // so that the actual record values can be used for config calculation
-        return;
-      }
-      // eslint-disable-next-line no-param-reassign
-      model[fieldName] = fieldValue;
-    });
+    Object.entries(updatedFields)
+      .filter(([, fieldValue]) => fieldValue !== undefined)
+      .forEach(([fieldName, fieldValue]) => {
+        if (isDataSource && fieldName === 'config') {
+          // Handle config last since its value depends on other fields
+          return;
+        }
+        // eslint-disable-next-line no-param-reassign
+        model[fieldName] = fieldValue;
+      });
 
     if (model.databaseType === 'survey') {
       await validateSurveyFields(this.models, {
         code: model.code,
         periodGranularity: model.period_granularity,
+        serviceType: this.updatedFieldsByResource[RESOURCE_TYPES.DATA_GROUP].service_type,
       });
     }
 
