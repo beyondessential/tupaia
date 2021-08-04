@@ -1,6 +1,9 @@
 #!/bin/bash
 source .env
 
+# Set default port in case it wasn't in .env
+: "${DB_PORT:=5432}"
+
 export PGPASSWORD=$DB_PG_PASSWORD
 MV_REFRESH_EXISTS=`psql -X -A -p $DB_PORT -h $DB_URL -d $DB_NAME -U $DB_PG_USER -t -c "SELECT schema_name FROM information_schema.schemata WHERE schema_name = '$DB_MV_USER'"`
 
