@@ -16,10 +16,11 @@ exports.setup = function (options, seedLink) {
 
 exports.up = function (db) {
   return db.runSql(`
-    CREATE TABLE sync_cursor (
+    CREATE TABLE sync_service (
       id TEXT PRIMARY KEY,
-      service_name TEXT NOT NULL UNIQUE,
-      sync_time TIMESTAMP NOT NULL,
+      service_code TEXT NOT NULL UNIQUE,
+      service_type service_type NOT NULL,
+      sync_cursor TEXT NOT NULL,
       config JSONB NOT NULL
     );
   `);
@@ -27,7 +28,7 @@ exports.up = function (db) {
 
 exports.down = function (db) {
   return db.runSql(`
-    DROP TABLE sync_cursor;
+    DROP TABLE sync_service;
   `);
 };
 
