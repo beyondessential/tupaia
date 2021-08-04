@@ -50,5 +50,9 @@ export const ColorCircle = ({ displayConfig }) => {
 ColorCircle.propTypes = {
   displayConfig: PropTypes.shape({
     color: PropTypes.string.isRequired,
-  }).isRequired,
+  }),
+};
+
+ColorCircle.defaultProps = {
+  displayConfig: null,
 };

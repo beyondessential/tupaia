@@ -6,9 +6,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { ListVisual } from '@tupaia/ui-components';
 import { DashboardReportModal } from './DashboardReportModal';
 import { Chart } from './Chart';
-import { ListVisual } from './ListVisual';
 import * as COLORS from '../constants';
 import { useDashboardReportData } from '../api/queries';
 import { yearToApiDates } from '../api/queries/utils';
@@ -55,6 +55,7 @@ export const DashboardReport = React.memo(
             error={error}
             drillDowns={drillDowns}
             dashboard={dashboard}
+            DrillDownComponent={DashboardReportModal}
           />
         </Container>
       );

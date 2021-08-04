@@ -26,7 +26,6 @@ const ROW_TYPE_COMPONENTS = {
   header: HeaderRow,
   subheader: SubHeaderRow,
   standard: StandardRow,
-  drilldown: DrillDownRow,
 };
 
 const VALUE_TYPE_COMPONENTS = {
@@ -53,7 +52,7 @@ const getDisplayConfig = ({ valueType, listConfig }, statistic) => {
   }
 };
 
-const processData = (config, data) => {
+const processData = (config, data, drillDowns) => {
   let parentCode = null;
 
   return data?.map(item => {
@@ -72,7 +71,11 @@ const processData = (config, data) => {
 
     if (config?.drillDown?.itemCodeByEntry[item.code] !== undefined) {
       drillDownCode = config?.drillDown?.itemCodeByEntry[item.code];
-      rowType = 'drilldown';
+
+      // check that the drill down config exists before trying to render a drilldown row
+      if (drillDowns.find(d => d.code === drillDownCode)) {
+        rowType = 'drilldown';
+      }
     }
 
     if (item.statistic !== undefined) {
@@ -83,7 +86,15 @@ const processData = (config, data) => {
   });
 };
 
-export const ListVisual = ({ viewContent, isLoading, dashboard, isError, error, drillDowns }) => {
+export const ListVisual = ({
+  viewContent,
+  isLoading,
+  dashboard,
+  isError,
+  error,
+  drillDowns,
+  DrillDownComponent,
+}) => {
   const { data, ...config } = viewContent;
 
   const list = processData(config, data, drillDowns);
@@ -92,16 +103,31 @@ export const ListVisual = ({ viewContent, isLoading, dashboard, isError, error, 
     <Container isLoading={isLoading}>
       <FetchLoader isLoading={isLoading} isError={isError} error={error}>
         {list?.map(({ rowType, valueType, label, displayConfig, drillDownCode }, index) => {
-          const RowComponent = ROW_TYPE_COMPONENTS[rowType];
           const ValueComponent = VALUE_TYPE_COMPONENTS[valueType];
+
+          if (rowType === 'drilldown') {
+            return (
+              <DrillDownRow
+                // eslint-disable-next-line react/no-array-index-key
+                key={index}
+                label={label}
+                drillDownCode={drillDownCode}
+                dashboard={dashboard}
+                drillDowns={drillDowns}
+                DrillDownComponent={DrillDownComponent}
+              >
+                <ValueComponent displayConfig={displayConfig} />
+              </DrillDownRow>
+            );
+          }
+
+          const RowComponent = ROW_TYPE_COMPONENTS[rowType];
+
           return (
             <RowComponent
               // eslint-disable-next-line react/no-array-index-key
               key={index}
               label={label}
-              drillDownCode={drillDownCode}
-              dashboard={dashboard}
-              drillDowns={drillDowns}
             >
               <ValueComponent displayConfig={displayConfig} />
             </RowComponent>
@@ -122,17 +148,16 @@ ListVisual.propTypes = {
   drillDowns: PropTypes.array,
   isLoading: PropTypes.bool,
   isFetching: PropTypes.bool,
-  isEnlarged: PropTypes.bool,
   isError: PropTypes.bool,
   error: PropTypes.string,
+  DrillDownComponent: PropTypes.any.isRequired,
 };
 
 ListVisual.defaultProps = {
   viewContent: null,
-  drillDowns: null,
+  drillDowns: [],
   isLoading: false,
   isFetching: false,
-  isEnlarged: false,
   isError: false,
   error: null,
 };

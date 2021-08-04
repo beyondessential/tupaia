@@ -7,9 +7,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import MuiButton from '@material-ui/core/Button';
-import { DashboardReportModal } from '../DashboardReportModal';
 import { FlexSpaceBetween } from '../Layout';
-import * as COLORS from '../../constants';
 
 const Heading = styled(Typography)`
   font-size: 1.125rem;
@@ -26,7 +24,7 @@ const SubHeading = styled(Text)`
 `;
 
 const Row = styled(FlexSpaceBetween)`
-  background: ${COLORS.GREY_F9};
+  background: #f9f9f9;
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
   width: 100%;
   padding: 0;
@@ -86,10 +84,17 @@ export const StandardRow = ({ label, children }) => (
   </Row>
 );
 
-export const DrillDownRow = ({ label, drillDowns, drillDownCode, dashboard, children }) => {
+export const DrillDownRow = ({
+  label,
+  drillDowns,
+  drillDownCode,
+  dashboard,
+  children,
+  DrillDownComponent,
+}) => {
   const config = drillDowns.find(d => d.code === drillDownCode);
 
-  const Component = props => (
+  const ButtonComponent = props => (
     <Row component={MuiButton} {...props}>
       <Cell>
         <Text>{label}</Text>
@@ -99,8 +104,8 @@ export const DrillDownRow = ({ label, drillDowns, drillDownCode, dashboard, chil
   );
 
   return (
-    <DashboardReportModal
-      ButtonComponent={Component}
+    <DrillDownComponent
+      ButtonComponent={ButtonComponent}
       name={config.name}
       dashboard={dashboard}
       reportCode={config.reportCode}
@@ -119,4 +124,5 @@ DrillDownRow.propTypes = {
   drillDowns: PropTypes.array.isRequired,
   drillDownCode: PropTypes.string.isRequired,
   children: PropTypes.any.isRequired,
+  DrillDownComponent: PropTypes.any.isRequired,
 };

@@ -6,6 +6,19 @@
 import { useQuery } from 'react-query';
 import { get } from '../api';
 
+const getDrillDownCodes = dashboardItems =>
+  dashboardItems
+    .filter(d => !!d.drillDown)
+    .reduce((codes, d) => {
+      const entry = d.drillDown?.itemCodeByEntry;
+
+      if (entry) {
+        const values = Object.values(d.drillDown.itemCodeByEntry);
+        return [...codes, ...values];
+      }
+      return codes;
+    }, []);
+
 export const useDashboardData = entityCode => {
   const query = useQuery(['dashboard', entityCode], () => get(`dashboard/${entityCode}`), {
     staleTime: 60 * 60 * 1000,
@@ -13,23 +26,13 @@ export const useDashboardData = entityCode => {
   });
 
   const data = query.data?.map(dashboard => {
-    const drillDownItemCodes = dashboard.items
-      .filter(d => !!d.drillDown)
-      .reduce((codes, d) => {
-        const entry = d.drillDown?.itemCodeByEntry;
+    const drillDownItemCodes = getDrillDownCodes(dashboard.items);
 
-        if (entry) {
-          const values = Object.values(d.drillDown.itemCodeByEntry);
-          return [...codes, ...values];
-        }
-        return codes;
-      }, []);
-
-    // Todo: support other report types (including "component" types)
     const dashboardItems = dashboard.items
-      .filter(({ type }) => type === 'chart' || type === 'list')
-      .filter(view => !drillDownItemCodes.includes(view.code));
+      .filter(({ type }) => type === 'chart' || type === 'list') // Only show supported chart types
+      .filter(view => !drillDownItemCodes.includes(view.code)); // Remove the drilldowns from the main dashboard items list
 
+    // Save the drill down configs so they can be used to display the nested reports
     const drillDowns = dashboard.items.filter(view => drillDownItemCodes.includes(view.code));
 
     return { ...dashboard, items: dashboardItems, drillDowns };
