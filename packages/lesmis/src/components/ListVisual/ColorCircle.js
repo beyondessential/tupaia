@@ -5,6 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { lighten } from '@material-ui/core/styles';
+import { Tooltip } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
 
 const CircleCell = styled.div`
@@ -24,19 +25,24 @@ const CircleComponent = styled.div`
 `;
 
 export const ColorCircle = ({ displayConfig }) => {
+  // If there's no display config, return a grey circle to represent no data
   if (!displayConfig) {
     return (
       <CircleCell>
-        <CircleComponent color="#a1aaaf" />
+        <Tooltip title="No data">
+          <CircleComponent color="#a1aaaf" />
+        </Tooltip>
       </CircleCell>
     );
   }
 
-  const { color } = displayConfig;
+  const { color, label } = displayConfig;
 
   return (
     <CircleCell>
-      <CircleComponent color={color} />
+      <Tooltip title={label}>
+        <CircleComponent color={color} />
+      </Tooltip>
     </CircleCell>
   );
 };
