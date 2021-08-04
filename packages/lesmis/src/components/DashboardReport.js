@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { DashboardReportModal } from './DashboardReportModal';
 import { Chart } from './Chart';
-import { ListVisual } from './ListVisual';
+import { ListVisual } from './ListVisual/ListVisual';
 import * as COLORS from '../constants';
 import { useDashboardReportData } from '../api/queries';
 import { yearToApiDates } from '../api/queries/utils';
