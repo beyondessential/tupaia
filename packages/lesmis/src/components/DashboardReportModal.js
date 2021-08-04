@@ -68,8 +68,8 @@ const Description = styled(Typography)`
 `;
 
 // eslint-disable-next-line react/prop-types
-const DefaultOpenButton = ({ handleClickOpen }) => (
-  <MuiButton onClick={handleClickOpen} endIcon={<KeyboardArrowRightIcon />} color="primary">
+const DefaultOpenButton = ({ onClick }) => (
+  <MuiButton onClick={onClick} endIcon={<KeyboardArrowRightIcon />} color="primary">
     See More
   </MuiButton>
 );
