@@ -74,106 +74,104 @@ const DefaultOpenButton = ({ handleClickOpen }) => (
   </MuiButton>
 );
 
-export const DashboardReportModal = ({
-  name,
-  dashboard,
-  ButtonComponent,
-  reportCode,
-  periodGranularity,
-  viewConfig,
-}) => {
-  const { code: itemCode, legacy } = viewConfig;
-  const { dashboardCode, dashboardName } = dashboard;
-  const { entityCode } = useUrlParams();
-  const [{ startDate, endDate, reportCode: selectedReportCode }, setParams] = useUrlSearchParams();
+export const DashboardReportModal = React.memo(
+  ({ name, dashboard, ButtonComponent, reportCode, periodGranularity, viewConfig }) => {
+    const { code: itemCode, legacy } = viewConfig;
+    const { dashboardCode, dashboardName } = dashboard;
+    const { entityCode } = useUrlParams();
+    const [
+      { startDate, endDate, reportCode: selectedReportCode },
+      setParams,
+    ] = useUrlSearchParams();
 
-  const isOpen = reportCode === selectedReportCode;
-  const [open, setOpen] = useState(isOpen);
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+    const isOpen = reportCode === selectedReportCode;
+    const [open, setOpen] = useState(isOpen);
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const { data, isLoading, isError, error } = useDashboardReportData({
-    entityCode,
-    dashboardCode,
-    reportCode,
-    itemCode,
-    periodGranularity,
-    legacy,
-    startDate,
-    endDate,
-  });
-
-  const handleDatesChange = (newStartDate, newEndDate) => {
-    setParams({
-      startDate: newStartDate,
-      endDate: newEndDate,
-    });
-  };
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  // set reportCode param after the modal render is rendered to improve the responsiveness
-  // of the modal transition
-  const onRendered = () => {
-    setParams({
+    const { data, isLoading, isError, error } = useDashboardReportData({
+      entityCode,
+      dashboardCode,
       reportCode,
+      itemCode,
+      periodGranularity,
+      legacy,
+      startDate,
+      endDate,
     });
-  };
 
-  const handleClose = () => {
-    setOpen(false);
-    setParams({
-      startDate: null,
-      endDate: null,
-      reportCode: null,
-    });
-  };
+    const handleDatesChange = (newStartDate, newEndDate) => {
+      setParams({
+        startDate: newStartDate,
+        endDate: newEndDate,
+      });
+    };
 
-  return (
-    <>
-      <ButtonComponent onClick={handleClickOpen} />
-      <MuiDialog
-        onRendered={onRendered}
-        scroll="paper"
-        fullScreen
-        open={open}
-        onClose={handleClose}
-        TransitionComponent={Transition}
-        style={{ left: fullScreen ? '0' : '6.25rem' }}
-      >
-        <DialogHeader handleClose={handleClose} title={dashboardName} />
-        <Wrapper>
-          <Container maxWidth="xl">
-            <Header>
-              <Box maxWidth={580}>
-                <Heading variant="h3">{name}</Heading>
-                {viewConfig?.description && <Description>{viewConfig.description}</Description>}
-              </Box>
-              <FlexStart>
-                <DateRangePicker
-                  isLoading={isLoading}
-                  startDate={startDate}
-                  endDate={endDate}
-                  granularity={periodGranularity}
-                  onSetDates={handleDatesChange}
-                />
-              </FlexStart>
-            </Header>
-            <Chart
-              viewContent={{ ...viewConfig, data, startDate, endDate }}
-              isLoading={isLoading}
-              isError={isError}
-              error={error}
-              isEnlarged
-            />
-          </Container>
-        </Wrapper>
-      </MuiDialog>
-    </>
-  );
-};
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+
+    // set reportCode param after the modal render is rendered to improve the responsiveness
+    // of the modal transition
+    const onRendered = () => {
+      setParams({
+        reportCode,
+      });
+    };
+
+    const handleClose = () => {
+      setOpen(false);
+      setParams({
+        startDate: null,
+        endDate: null,
+        reportCode: null,
+      });
+    };
+
+    return (
+      <>
+        <ButtonComponent onClick={handleClickOpen} />
+        <MuiDialog
+          onRendered={onRendered}
+          scroll="paper"
+          fullScreen
+          open={open}
+          onClose={handleClose}
+          TransitionComponent={Transition}
+          style={{ left: fullScreen ? '0' : '6.25rem' }}
+        >
+          <DialogHeader handleClose={handleClose} title={dashboardName} />
+          <Wrapper>
+            <Container maxWidth="xl">
+              <Header>
+                <Box maxWidth={580}>
+                  <Heading variant="h3">{name}</Heading>
+                  {viewConfig?.description && <Description>{viewConfig.description}</Description>}
+                </Box>
+                <FlexStart>
+                  <DateRangePicker
+                    isLoading={isLoading}
+                    startDate={startDate}
+                    endDate={endDate}
+                    granularity={periodGranularity}
+                    onSetDates={handleDatesChange}
+                  />
+                </FlexStart>
+              </Header>
+              <Chart
+                viewContent={{ ...viewConfig, data, startDate, endDate }}
+                isLoading={isLoading}
+                isError={isError}
+                error={error}
+                isEnlarged
+              />
+            </Container>
+          </Wrapper>
+        </MuiDialog>
+      </>
+    );
+  },
+);
 
 DashboardReportModal.propTypes = {
   name: PropTypes.string.isRequired,

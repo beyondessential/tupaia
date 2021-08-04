@@ -35,6 +35,7 @@ const Template = args => {
 };
 
 // eslint-disable-next-line react/prop-types
+// Example drilldown component, this wont actually render a drilldown modal
 const DrillDownComponent = ({ ButtonComponent, viewConfig }) => {
   const handleClick = () => {
     alert(JSON.stringify(viewConfig, 1));

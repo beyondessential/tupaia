@@ -86,58 +86,52 @@ const processData = (config, data, drillDowns) => {
   });
 };
 
-export const ListVisual = ({
-  viewContent,
-  isLoading,
-  dashboard,
-  isError,
-  error,
-  drillDowns,
-  DrillDownComponent,
-}) => {
-  const { data, ...config } = viewContent;
+export const ListVisual = React.memo(
+  ({ viewContent, isLoading, dashboard, isError, error, drillDowns, DrillDownComponent }) => {
+    const { data, ...config } = viewContent;
 
-  const list = processData(config, data, drillDowns);
+    const list = processData(config, data, drillDowns);
 
-  return (
-    <Container isLoading={isLoading}>
-      <FetchLoader isLoading={isLoading} isError={isError} error={error}>
-        {list?.map(({ rowType, valueType, label, displayConfig, drillDownCode }, index) => {
-          const ValueComponent = VALUE_TYPE_COMPONENTS[valueType];
+    return (
+      <Container isLoading={isLoading}>
+        <FetchLoader isLoading={isLoading} isError={isError} error={error}>
+          {list?.map(({ rowType, valueType, label, displayConfig, drillDownCode }, index) => {
+            const ValueComponent = VALUE_TYPE_COMPONENTS[valueType];
 
-          if (rowType === 'drilldown') {
+            if (rowType === 'drilldown') {
+              return (
+                <DrillDownRow
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={index}
+                  label={label}
+                  drillDownCode={drillDownCode}
+                  dashboard={dashboard}
+                  drillDowns={drillDowns}
+                  DrillDownComponent={DrillDownComponent}
+                >
+                  <ValueComponent displayConfig={displayConfig} />
+                </DrillDownRow>
+              );
+            }
+
+            const RowComponent = ROW_TYPE_COMPONENTS[rowType];
+
             return (
-              <DrillDownRow
+              <RowComponent
                 // eslint-disable-next-line react/no-array-index-key
                 key={index}
                 label={label}
-                drillDownCode={drillDownCode}
-                dashboard={dashboard}
-                drillDowns={drillDowns}
-                DrillDownComponent={DrillDownComponent}
               >
                 <ValueComponent displayConfig={displayConfig} />
-              </DrillDownRow>
+              </RowComponent>
             );
-          }
-
-          const RowComponent = ROW_TYPE_COMPONENTS[rowType];
-
-          return (
-            <RowComponent
-              // eslint-disable-next-line react/no-array-index-key
-              key={index}
-              label={label}
-            >
-              <ValueComponent displayConfig={displayConfig} />
-            </RowComponent>
-          );
-        })}
-        <Footer />
-      </FetchLoader>
-    </Container>
-  );
-};
+          })}
+          <Footer />
+        </FetchLoader>
+      </Container>
+    );
+  },
+);
 
 ListVisual.propTypes = {
   viewContent: PropTypes.object,

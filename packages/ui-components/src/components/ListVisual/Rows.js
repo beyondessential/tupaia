@@ -84,36 +84,31 @@ export const StandardRow = ({ label, children }) => (
   </Row>
 );
 
-export const DrillDownRow = ({
-  label,
-  drillDowns,
-  drillDownCode,
-  dashboard,
-  children,
-  DrillDownComponent,
-}) => {
-  const config = drillDowns.find(d => d.code === drillDownCode);
+export const DrillDownRow = React.memo(
+  ({ label, drillDowns, drillDownCode, dashboard, children, DrillDownComponent }) => {
+    const config = drillDowns.find(d => d.code === drillDownCode);
 
-  const ButtonComponent = props => (
-    <Row component={MuiButton} {...props}>
-      <Cell>
-        <Text>{label}</Text>
-      </Cell>
-      {children}
-    </Row>
-  );
+    const ButtonComponent = props => (
+      <Row component={MuiButton} {...props}>
+        <Cell>
+          <Text>{label}</Text>
+        </Cell>
+        {children}
+      </Row>
+    );
 
-  return (
-    <DrillDownComponent
-      ButtonComponent={ButtonComponent}
-      name={config.name}
-      dashboard={dashboard}
-      reportCode={config.reportCode}
-      periodGranularity={config.periodGranularity}
-      viewConfig={config}
-    />
-  );
-};
+    return (
+      <DrillDownComponent
+        ButtonComponent={ButtonComponent}
+        name={config.name}
+        dashboard={dashboard}
+        reportCode={config.reportCode}
+        periodGranularity={config.periodGranularity}
+        viewConfig={config}
+      />
+    );
+  },
+);
 
 DrillDownRow.propTypes = {
   label: PropTypes.string.isRequired,
