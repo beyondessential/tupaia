@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { getAttachmentForEmail } from '../../utilities';
+import { uploadFile } from '../../s3';
 
-const constructMessage = responseBody => {
-  const { error } = responseBody;
+const constructMessage = async responseBody => {
+  const { error, filePath } = responseBody;
 
   if (error) {
     return `Unfortunately, your export failed.
@@ -14,19 +14,18 @@ const constructMessage = responseBody => {
 ${error}`;
   }
 
-  return 'Please find your requested export attached.';
-};
-
-const constructAttachments = async responseBody => {
-  const { filePath } = responseBody;
   if (!filePath) {
-    throw new Error('No export file provided to email responder');
+    throw new Error('No filePath in export response body');
   }
-  return getAttachmentForEmail(filePath);
+
+  const downloadLink = await uploadFile(filePath);
+
+  return `Please click this one-time link to download your requested export: ${downloadLink}
+
+Note that after clicking it once, you won't be able to download the file again.`;
 };
 
 export const constructExportEmail = async responseBody => ({
   subject: 'Your export from Tupaia',
-  message: constructMessage(responseBody),
-  attachments: await constructAttachments(responseBody),
+  message: await constructMessage(responseBody),
 });
