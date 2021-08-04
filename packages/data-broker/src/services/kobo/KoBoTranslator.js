@@ -31,11 +31,9 @@ export class KoBoTranslator {
     const dataValues = {};
     for (const [tupaia, { koboQuestionCode, answerMap }] of Object.entries(questionMapping)) {
       if (restOfFields[koboQuestionCode] !== undefined) {
-        let koboValue = restOfFields[koboQuestionCode];
-        if (answerMap) {
-          koboValue = answerMap[koboValue] || koboValue;
-        }
-        dataValues[tupaia] = koboValue;
+        const koboValue = restOfFields[koboQuestionCode];
+        dataValues[tupaia] =
+          answerMap?.[koboValue] !== undefined ? answerMap[koboValue] : koboValue;
       }
     }
 
