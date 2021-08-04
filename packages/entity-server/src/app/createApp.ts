@@ -7,8 +7,9 @@ import { MicroServiceApiBuilder, handleWith } from '@tupaia/server-boilerplate';
 import { TupaiaDatabase } from '@tupaia/database';
 import {
   SingleEntityRequest,
-  MultiEntityRequest,
   SingleEntityRoute,
+  MultiEntityRequest,
+  MultiEntityRoute,
   DescendantsRequest,
   EntityDescendantsRoute,
   MultiEntityDescendantsRequest,
@@ -33,45 +34,63 @@ import { attachRelationshipsContext } from '../routes/hierarchy/relationships/mi
  * Set up express server with middleware,
  */
 export function createApp() {
-  return new MicroServiceApiBuilder(new TupaiaDatabase())
-    .useBasicBearerAuth('entity-server')
-    .use<SingleEntityRequest | MultiEntityRequest>('hierarchy/:hierarchyName', attachCommonContext)
-    .use<MultiEntityRequest>('hierarchy/:hierarchyName/descendants', attachMultiEntityContext)
-    .use<MultiEntityRequest>('hierarchy/:hierarchyName/relatives', attachMultiEntityContext)
-    .use<MultiEntityRequest>('hierarchy/:hierarchyName/relationships', attachMultiEntityContext)
-    .post<MultiEntityDescendantsRequest>(
-      'hierarchy/:hierarchyName/descendants',
-      handleWith(MultiEntityDescendantsRoute),
-    )
-    .post<MultiEntityRelativesRequest>(
-      'hierarchy/:hierarchyName/relatives',
-      handleWith(MultiEntityRelativesRoute),
-    )
-    .use<MultiEntityRelationshipsRequest>(
-      'hierarchy/:hierarchyName/relationships',
-      attachRelationshipsContext,
-    )
-    .post<MultiEntityRelationshipsRequest>(
-      'hierarchy/:hierarchyName/relationships',
-      handleWith(MultiEntityRelationshipsRoute),
-    )
-    .use<SingleEntityRequest>('hierarchy/:hierarchyName/:entityCode', attachSingleEntityContext)
-    .get<SingleEntityRequest>('hierarchy/:hierarchyName/:entityCode', handleWith(SingleEntityRoute))
-    .get<DescendantsRequest>(
-      'hierarchy/:hierarchyName/:entityCode/descendants',
-      handleWith(EntityDescendantsRoute),
-    )
-    .get<RelativesRequest>(
-      'hierarchy/:hierarchyName/:entityCode/relatives',
-      handleWith(EntityRelativesRoute),
-    )
-    .use<RelationshipsRequest>(
-      'hierarchy/:hierarchyName/:entityCode/relationships',
-      attachRelationshipsContext,
-    )
-    .get<RelationshipsRequest>(
-      'hierarchy/:hierarchyName/:entityCode/relationships',
-      handleWith(EntityRelationshipsRoute),
-    )
-    .build();
+  return (
+    new MicroServiceApiBuilder(new TupaiaDatabase())
+      .useBasicBearerAuth('entity-server')
+
+      // MultiEntity routes
+      .post<MultiEntityRequest>(
+        'hierarchy/:hierarchyName$',
+        attachCommonContext,
+        attachMultiEntityContext,
+        handleWith(MultiEntityRoute),
+      )
+      .post<MultiEntityDescendantsRequest>(
+        'hierarchy/:hierarchyName/descendants',
+        attachCommonContext,
+        attachMultiEntityContext,
+        handleWith(MultiEntityDescendantsRoute),
+      )
+      .post<MultiEntityRelativesRequest>(
+        'hierarchy/:hierarchyName/relatives',
+        attachCommonContext,
+        attachMultiEntityContext,
+        handleWith(MultiEntityRelativesRoute),
+      )
+      .post<MultiEntityRelationshipsRequest>(
+        'hierarchy/:hierarchyName/relationships',
+        attachCommonContext,
+        attachMultiEntityContext,
+        attachRelationshipsContext,
+        handleWith(MultiEntityRelationshipsRoute),
+      )
+
+      // SingleEntity routes
+      .get<SingleEntityRequest>(
+        'hierarchy/:hierarchyName/:entityCode',
+        attachCommonContext,
+        attachSingleEntityContext,
+        handleWith(SingleEntityRoute),
+      )
+      .get<DescendantsRequest>(
+        'hierarchy/:hierarchyName/:entityCode/descendants',
+        attachCommonContext,
+        attachSingleEntityContext,
+        handleWith(EntityDescendantsRoute),
+      )
+      .get<RelativesRequest>(
+        'hierarchy/:hierarchyName/:entityCode/relatives',
+        attachCommonContext,
+        attachSingleEntityContext,
+        handleWith(EntityRelativesRoute),
+      )
+      .get<RelationshipsRequest>(
+        'hierarchy/:hierarchyName/:entityCode/relationships',
+        attachCommonContext,
+        attachSingleEntityContext,
+        attachRelationshipsContext,
+        handleWith(EntityRelationshipsRoute),
+      )
+      .build()
+  );
 }

@@ -4,7 +4,7 @@ DIR=$(dirname "$0")
 . ${DIR}/utils.sh
 
 INVALID_CHARS=('/' '\' '.' '&' '?')
-SUBDOMAIN_SUFFIXES=(admin admin-api aggregation api config export lesmis lesmis-api mobile psss psss-api report report-api entity entity-api tonga-aggregation www)
+SUBDOMAIN_SUFFIXES=(admin admin-api aggregation api config export lesmis lesmis-api mobile psss psss-api report report-api ssh entity entity-api tonga-aggregation www)
 
 # Branch names are used in AWS EC2 deployments. They are combined with standard suffixes
 # to create deployment urls, eg {{branchName}}-tonga-aggregation.tupaia.org
@@ -60,7 +60,6 @@ function validate_name_chars() {
 }
 
 branch_name=$(get_branch_name)
-check_name_is_not_reserved $branch_name
 validate_name_ending $branch_name
 validate_name_length $branch_name
 validate_name_chars $branch_name

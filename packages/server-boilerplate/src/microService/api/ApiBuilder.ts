@@ -15,6 +15,8 @@ import { handleWith, handleError } from '../../utils';
 import { buildBasicBearerAuthMiddleware } from '../auth';
 import { TestRoute } from '../../routes';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
+import { ApiConnectionBuilder, EntityApi } from '../../connections';
+import { RequestContext } from '../types';
 
 export class ApiBuilder {
   private readonly app: Express;
@@ -27,7 +29,7 @@ export class ApiBuilder {
     this.models = new ModelRegistry(transactingConnection);
     this.app = express();
 
-    this.version = 'v1'; // Default version
+    this.version = 'v[0-9]'; // Default version
 
     /**
      * Add middleware
@@ -47,7 +49,19 @@ export class ApiBuilder {
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       req.models = this.models;
 
-      const context = {}; // context is shared between request and response
+      const microServiceAuthHandler = {
+        getAuthHeader: async () => req.headers.authorization || '',
+      };
+
+      const entityApi = new ApiConnectionBuilder()
+        .handleAuthWith(microServiceAuthHandler)
+        .buildAs(EntityApi);
+
+      const context: RequestContext = {
+        microServices: {
+          entityApi,
+        },
+      }; // context is shared between request and response
       req.ctx = context;
       res.ctx = context;
 
@@ -67,25 +81,25 @@ export class ApiBuilder {
 
   use<T extends ExpressRequest<T> = Request>(
     path: string,
-    middleware: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+    ...middlewares: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
-    this.app.use(this.formatPath(path), middleware);
+    this.app.use(this.formatPath(path), ...middlewares);
     return this;
   }
 
   get<T extends ExpressRequest<T> = Request>(
     path: string,
-    handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+    ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
-    this.app.get(this.formatPath(path), handler);
+    this.app.get(this.formatPath(path), ...handlers);
     return this;
   }
 
   post<T extends ExpressRequest<T> = Request>(
     path: string,
-    handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+    ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
-    this.app.post(this.formatPath(path), handler);
+    this.app.post(this.formatPath(path), ...handlers);
     return this;
   }
 
