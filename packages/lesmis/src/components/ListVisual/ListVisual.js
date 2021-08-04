@@ -6,7 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FlexSpaceBetween } from '../Layout';
-import { Circle } from './Circle';
+import { ColorCircle } from './ColorCircle';
 import { HeaderRow, SubHeaderRow, StandardRow, DrillDownRow } from './Rows';
 import { FetchLoader } from '../FetchLoader';
 
@@ -30,7 +30,7 @@ const ROW_TYPE_COMPONENTS = {
 };
 
 const VALUE_TYPE_COMPONENTS = {
-  color: Circle,
+  color: ColorCircle,
 };
 
 const DEFAULT_LIST_CONFIGS = {

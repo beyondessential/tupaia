@@ -2,10 +2,10 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-
 import React from 'react';
 import styled from 'styled-components';
 import { lighten } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 
 const CircleCell = styled.div`
   display: flex;
@@ -23,7 +23,7 @@ const CircleComponent = styled.div`
   border: 5px solid ${props => lighten(props.color, 0.6)};
 `;
 
-export const Circle = ({ displayConfig }) => {
+export const ColorCircle = ({ displayConfig }) => {
   if (!displayConfig) {
     return (
       <CircleCell>
@@ -39,4 +39,10 @@ export const Circle = ({ displayConfig }) => {
       <CircleComponent color={color} />
     </CircleCell>
   );
+};
+
+ColorCircle.propTypes = {
+  displayConfig: PropTypes.shape({
+    color: PropTypes.string.isRequired,
+  }).isRequired,
 };
