@@ -50,7 +50,7 @@ export const ExportModal = React.memo(({ title, exportEndpoint, fileName, values
     try {
       const endpoint = `export/${exportEndpoint}`;
       const queryParameters = {
-        respondWithEmailTimeout: 2 * 1000, // if an import doesn't finish in 10 seconds, email results
+        respondWithEmailTimeout: 10 * 1000, // if an import doesn't finish in 10 seconds, email results
         ...values,
       };
       const { body: response } = await api.download(endpoint, queryParameters, fileName);
