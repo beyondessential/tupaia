@@ -18,7 +18,7 @@ exports.up = function (db) {
   return db.runSql(`
     CREATE TABLE sync_service (
       id TEXT PRIMARY KEY,
-      service_code TEXT NOT NULL UNIQUE,
+      code TEXT NOT NULL UNIQUE,
       service_type service_type NOT NULL,
       sync_cursor TEXT NOT NULL,
       config JSONB NOT NULL
