@@ -170,7 +170,7 @@ const REPORT_CONFIG = {
     },
     {
       transform: 'select',
-      '...': ['label', 'statistic', 'parent'],
+      '...': ['label', 'statistic', 'parent', 'code'],
     },
     {
       transform: 'insert',
@@ -252,20 +252,6 @@ const FRONT_END_CONFIG = {
   name: 'ESSDP List Summary',
   type: 'list',
   valueType: 'color',
-  listConfig: {
-    1: {
-      label: 'Green',
-      color: '#4caf50',
-    },
-    0: {
-      label: 'Yellow',
-      color: '#ffeb3b',
-    },
-    '-1': {
-      label: 'Red',
-      color: '#f44336',
-    },
-  },
   drillDown: {
     itemCodeByEntry: {
       ECETarget0_2: 'LESMIS_enrolment_ece_0_2_target',
