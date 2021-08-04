@@ -7,12 +7,12 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class SyncCursorType extends DatabaseType {
+class SyncServiceType extends DatabaseType {
   static databaseType = TYPES.SYNC_CURSOR;
 }
 
-export class SyncCursorModel extends DatabaseModel {
+export class SyncServiceModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return SyncCursorType;
+    return SyncServiceType;
   }
 }
