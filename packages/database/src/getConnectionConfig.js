@@ -3,11 +3,11 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { requireEnv } from '@tupaia/utils';
+import { requireEnv, getEnvVarOrDefault } from '@tupaia/utils';
 
 const getServerConfig = () => ({
   host: requireEnv('DB_URL'),
-  port: requireEnv('DB_PORT'),
+  port: getEnvVarOrDefault('DB_PORT', 5432),
   user: requireEnv('DB_USER'),
   password: requireEnv('DB_PASSWORD'),
   database: requireEnv('DB_NAME'),
