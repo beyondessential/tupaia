@@ -170,7 +170,7 @@ const REPORT_CONFIG = {
     },
     {
       transform: 'select',
-      '...': ['label', 'statistic', 'parent'],
+      '...': ['label', 'statistic', 'parent', 'code'],
     },
     {
       transform: 'insert',
