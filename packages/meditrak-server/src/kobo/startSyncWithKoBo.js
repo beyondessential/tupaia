@@ -7,10 +7,9 @@ import keyBy from 'lodash.keyby';
 import winston from 'winston';
 import { DataBroker } from '@tupaia/data-broker';
 import { generateId } from '@tupaia/database';
-import { reformatDateStringWithoutTz } from '@tupaia/utils';
 
 const PERIOD_BETWEEN_SYNCS = 10 * 60 * 1000; // 10 minutes between syncs
-const SERVICE_NAME = 'KoBo';
+const SERVICE_TYPE = 'kobo';
 
 export async function startSyncWithKoBo(models) {
   if (process.env.KOBO_SYNC_DISABLE) {
@@ -18,21 +17,31 @@ export async function startSyncWithKoBo(models) {
     console.log('KoBo sync is disabled');
   } else {
     const dataBroker = new DataBroker();
-    setInterval(() => syncWithKoBo(models, dataBroker), PERIOD_BETWEEN_SYNCS);
+    const koboSyncServices = await models.syncService.find({ service_type: SERVICE_TYPE });
+    koboSyncServices.forEach(service =>
+      setInterval(() => syncWithKoBo(models, dataBroker, service.code), PERIOD_BETWEEN_SYNCS),
+    );
   }
 }
 
 export async function syncWithKoBo(models, dataBroker, serviceCode) {
-  const syncCursor = await models.syncCursor.findOne({ service_name: SERVICE_NAME });
+  const syncService = await models.syncService.findOne({
+    service_type: SERVICE_TYPE,
+    code: serviceCode,
+  });
+
+  if (!syncService) {
+    throw new Error(`No KoBo sync service with the code ${serviceCode} exists`);
+  }
 
   // Pull data from KoBo
   const koboData = await dataBroker.pull(
     {
-      code: syncCursor.config.koboSurveys,
+      code: syncService.config.koboSurveys,
       type: dataBroker.getDataSourceTypes().SYNC_GROUP,
     },
     {
-      startSubmissionTime: reformatDateStringWithoutTz(syncCursor.sync_time),
+      startSubmissionTime: syncService.sync_cursor,
     },
   );
 
@@ -42,7 +51,7 @@ export async function syncWithKoBo(models, dataBroker, serviceCode) {
   }
 
   // Create new survey_responses
-  let newSyncTime = syncCursor.sync_time;
+  let newSyncTime = syncService.sync_cursor;
   await models.wrapInTransaction(async transactingModels => {
     for (const [surveyCode, responses] of Object.entries(koboData)) {
       const survey = await transactingModels.survey.findOne({ code: surveyCode });
@@ -87,5 +96,5 @@ export async function syncWithKoBo(models, dataBroker, serviceCode) {
   });
 
   // Update sync cursor
-  await models.syncCursor.update({ id: syncCursor.id }, { sync_time: newSyncTime });
+  await models.syncService.update({ id: syncService.id }, { sync_cursor: newSyncTime });
 }
