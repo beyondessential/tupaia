@@ -14,11 +14,10 @@ import { exportSurveys } from './exportSurveys';
 const exportRoutes = express.Router();
 
 exportRoutes.get('/download/:fileName', useRouteHandler(DownloadHandler));
-exportRoutes.get(
-  '/surveyResponses',
-  emailAfterTimeout(constructExportEmail),
-  catchAsyncErrors(exportSurveyResponses),
-);
+
+exportRoutes.use(emailAfterTimeout(constructExportEmail));
+
+exportRoutes.get('/surveyResponses', catchAsyncErrors(exportSurveyResponses));
 exportRoutes.get('/surveyResponses/:surveyResponseId', catchAsyncErrors(exportSurveyResponses));
 exportRoutes.get('/surveys', catchAsyncErrors(exportSurveys));
 exportRoutes.get('/surveys/:surveyId', catchAsyncErrors(exportSurveys));
