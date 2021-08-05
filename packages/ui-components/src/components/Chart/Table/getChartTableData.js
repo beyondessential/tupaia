@@ -78,14 +78,11 @@ const processData = ({ data, chartType }) => {
   return data;
 };
 
-export const useChartTable = viewContent => {
+export const getChartTableData = viewContent => {
   const columns = useMemo(() => processColumns(viewContent), []);
   const data = useMemo(() => processData(viewContent), []);
-  return useTable(
-    {
-      columns,
-      data,
-    },
-    useSortBy,
-  );
+  return {
+    columns,
+    data,
+  };
 };
