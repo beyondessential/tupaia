@@ -4,7 +4,6 @@
  */
 
 import fs from 'fs';
-import path from 'path';
 
 /**
  * Helper function to call the response res with some json
@@ -29,9 +28,9 @@ export function respondWithDownload(res, filePath, deleteAfterDownload = false) 
   if (overrideRespond) {
     return overrideRespond({ filePath });
   }
-  return res.download(filePath, path.basename(filePath), () => {
+  return res.download(filePath, () => {
     if (deleteAfterDownload) {
-      fs.unlinkSync(filePath); // delete file from disk after download
+      fs.unlink(filePath); // delete file from disk after download
     }
   });
 }

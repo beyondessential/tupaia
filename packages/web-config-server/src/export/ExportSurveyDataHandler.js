@@ -101,6 +101,8 @@ export class ExportSurveyDataHandler extends RouteHandler {
 
     const filePath = `${EXPORT_DIRECTORY}/${EXPORT_FILE_TITLE}_${Date.now()}.xlsx`;
     xlsx.writeFile(workbook, filePath);
-    this.res.download(filePath);
+    this.res.download(filePath, () => {
+      fs.unlink(filePath); // delete export file after download
+    });
   }
 }
