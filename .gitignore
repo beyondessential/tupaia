@@ -23,4 +23,3 @@ dump.sql
 dockercfg
 packages/.vscode/settings.json
 **/testRequests/*.http
-
