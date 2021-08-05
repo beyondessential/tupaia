@@ -21,7 +21,7 @@ exports.up = function (db) {
     id: generateId(),
     code: 'laos_moes_kobo',
     service_type: 'kobo',
-    sync_cursor: new Date(0),
+    sync_cursor: new Date(0).toISOString(),
     config: { koboSurveys: ['FQS1', 'FQS2'] },
   });
 };

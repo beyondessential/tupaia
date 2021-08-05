@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import { fetchWithTimeout, stringifyQuery } from '@tupaia/utils';
+import { fetchWithTimeout, stringifyQuery, takesDateForm } from '@tupaia/utils';
 
 const MAX_FETCH_WAIT_TIME = 15 * 1000; // 15 seconds
 
@@ -13,9 +13,9 @@ export class KoBoApi {
   }
 
   async fetchKoBoSubmissions(koboSurveyCode, optionsInput) {
-    // await validateEventOptions(optionsInput); // TODO: Write validator
     let mongoQuery = {};
     if (optionsInput.startSubmissionTime) {
+      takesDateForm(optionsInput.startSubmissionTime);
       mongoQuery = { ...mongoQuery, _submission_time: { $gt: optionsInput.startSubmissionTime } };
     }
 
