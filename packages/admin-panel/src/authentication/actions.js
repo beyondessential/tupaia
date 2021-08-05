@@ -59,10 +59,11 @@ export const loginError = errorMessage => ({
   errorMessage,
 });
 
-export const logout = () => async (dispatch, getState, { api }) => {
+export const logout = (errorMessage = null) => async (dispatch, getState, { api }) => {
   dispatch({
     // Set state to logging out
     type: LOGOUT,
+    errorMessage,
   });
 
   await api.logout();

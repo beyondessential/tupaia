@@ -1,2 +1,2 @@
 export { importSurveyResponses } from './importSurveyResponses';
-export { constructEmailFromResponse } from './constructEmailFromResponse';
+export { constructImportEmail } from './constructImportEmail';

@@ -40,7 +40,7 @@ e2e:
     - /dev/shm:/dev/shm
 
 db:
-  image: mdillon/postgis:9.6-alpine
+  image: mdillon/postgis:10-alpine
   cached: true
   encrypted_dockercfg_path: dockercfg.encrypted
 
