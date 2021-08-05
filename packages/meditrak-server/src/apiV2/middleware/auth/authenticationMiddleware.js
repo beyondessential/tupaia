@@ -30,11 +30,11 @@ async function authenticateUser(req) {
   // (whether there's a user attached or not)
   const apiClientUser = await getAPIClientUser(authHeader, req.models);
   if (apiClientUser) {
-    return { apiClientUser: apiClientUser, userId: apiClientUser.id };
+    return { apiClientUser, userId: apiClientUser.id };
   }
 
   // Non-user requests are only allowed access to these routes
-  if (preAuthenticationRoutes.includes(req.endpoint)) {
+  if (preAuthenticationRoutes.includes(req.path)) {
     return {};
   }
 

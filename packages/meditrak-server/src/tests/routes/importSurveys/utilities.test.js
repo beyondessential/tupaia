@@ -9,7 +9,7 @@ import sinon from 'sinon';
 import {
   findOrCreateSurveyCode,
   MAX_SURVEY_CODE_GENERATION_ATTEMPTS,
-} from '../../../routes/importSurveys/utilities';
+} from '../../../apiV2/importSurveys/utilities';
 
 describe('import surveys utilities', () => {
   describe('findOrCreateSurveyCode', () => {

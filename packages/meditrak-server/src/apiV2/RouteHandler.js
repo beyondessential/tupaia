@@ -8,10 +8,10 @@ export class RouteHandler {
     this.req = req;
     this.res = res;
 
-    const { accessPolicy, database, endpoint, models, params, query } = req;
+    const { accessPolicy, database, path, models, params, query } = req;
     this.accessPolicyInstance = accessPolicy; // use a different name so getter can add a side effect
     this.database = database;
-    this.endpoint = endpoint;
+    this.path = path;
     this.models = models;
     this.params = params;
     this.query = query;

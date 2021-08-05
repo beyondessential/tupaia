@@ -20,7 +20,7 @@ import * as modelClasses from './database/models';
 import { startSyncWithDhis } from './dhis';
 import { startSyncWithMs1 } from './ms1';
 import { startFeedScraper } from './social';
-import { createApp } from './app';
+import { createApp } from './createApp';
 
 import winston from './log';
 

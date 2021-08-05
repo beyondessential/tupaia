@@ -10,7 +10,7 @@ import errorHandler from 'api-error-handler';
 
 import { Authenticator } from '@tupaia/auth';
 
-import { addRoutesToApp } from './addRoutesToApp';
+import { apiV2 } from './apiV2';
 
 /**
  * Set up express server with middleware,
@@ -39,7 +39,7 @@ export function createApp(database, models) {
   /**
    * Add all routes to the app
    */
-  addRoutesToApp(app);
+  app.use('/v2', apiV2);
 
   return app;
 }

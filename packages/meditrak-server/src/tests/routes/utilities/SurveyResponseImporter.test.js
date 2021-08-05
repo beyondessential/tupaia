@@ -8,8 +8,8 @@ import { flatten } from 'lodash';
 import sinon from 'sinon';
 
 import { generateTestId } from '@tupaia/database';
-import { SurveyResponseImporter } from '../../../routes/utilities';
-import * as SurveyResponse from '../../../routes/surveyResponse';
+import { SurveyResponseImporter } from '../../../apiV2/utilities';
+import * as SurveyResponse from '../../../apiV2/surveyResponse';
 
 const ENTITY_IDS = {
   1989: generateTestId(),

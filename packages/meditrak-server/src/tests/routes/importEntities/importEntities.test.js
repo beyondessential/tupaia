@@ -10,8 +10,8 @@ import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
-import * as PopulateCoordinatesForCountry from '../../../routes/importEntities/populateCoordinatesForCountry';
-import * as UpdateCountryEntities from '../../../routes/importEntities/updateCountryEntities';
+import * as PopulateCoordinatesForCountry from '../../../apiV2/importEntities/populateCoordinatesForCountry';
+import * as UpdateCountryEntities from '../../../apiV2/importEntities/updateCountryEntities';
 import { expectPermissionError, TestableApp } from '../../testUtilities';
 
 const DEFAULT_POLICY = {

@@ -17,7 +17,7 @@ export async function editUser(req, res, next) {
     req.params = {
       recordId: userId,
     };
-    req.endpoint = '/users';
+    req.path = '/users';
     const editUserAccountHandlerClass = new EditUserAccounts(req, res);
     await editUserAccountHandlerClass.handle();
   } catch (error) {

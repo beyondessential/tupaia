@@ -5,7 +5,7 @@
 
 import { expect } from 'chai';
 
-import { getChangesFilter } from '../../../routes/utilities/getChangesFilter';
+import { getChangesFilter } from '../../../apiV2/utilities/getChangesFilter';
 
 const models = {
   getMinAppVersionByType: () => ({
