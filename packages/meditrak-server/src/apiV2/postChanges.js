@@ -20,7 +20,7 @@ import {
   isNumber,
 } from '@tupaia/utils';
 import { updateOrCreateSurveyResponse, addSurveyImage } from '../dataAccessors';
-import { assertCanSubmitSurveyResponses } from './importSurveyResponses/assertCanImportSurveyResponses';
+import { assertCanSubmitSurveyResponses } from './import/importSurveyResponses/assertCanImportSurveyResponses';
 import { assertAnyPermissions, assertBESAdminAccess } from '../permissions';
 import {
   translateObjectFields,
