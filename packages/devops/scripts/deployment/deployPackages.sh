@@ -29,7 +29,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     # name (e.g. [branch-name]-api.tupaia.org -> specific-branch-api.tupaia.org)
     sed -i -e "s/\[branch-name\]/${BRANCH}/g" .env
 
-    if [[ "$BRANCH" == *-e2e ]]; then
+    if [[ "$BRANCH" == *-e2e || "$BRANCH" == e2e ]]; then
         # Update e2e environment variables
         if [[ $PACKAGE == "meditrak-server" || $PACKAGE == "web-config-server" ]]; then
             sed -i -E 's/^AGGREGATION_URL_PREFIX="?dev-"?$/AGGREGATION_URL_PREFIX=e2e-/g' .env

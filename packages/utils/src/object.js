@@ -200,10 +200,12 @@ export const stripFields = (object = {}, fieldsToExclude = []) =>
   Object.fromEntries(Object.entries(object).filter(([key]) => !fieldsToExclude.includes(key)));
 
 /**
- * Note: this only guarantees insertion order for properties in the new object.
- * Enumeration order is not guaranteed before ES2015
+ * Note: this generally only guarantees insertion order for properties in the new object.
+ * Traversal order is not specified and thus not guaranteed in older ES versions.
+ * If order and cross-version support is critical, please use an Array instead
+ * @see https://github.com/tc39/proposal-for-in-order
  */
-const sortFields = object => {
+export const sortFields = object => {
   const sortedEntries = Object.entries(object).sort(([keyA], [keyB]) => compareAsc(keyA, keyB));
   return Object.fromEntries(sortedEntries);
 };

@@ -62,7 +62,7 @@ export class Route {
   async getSession() {
     const sessionId = this.sessionCookie?.id;
     if (!sessionId) {
-      throw new UnauthenticatedError('User not authenticated');
+      throw new UnauthenticatedError('Session not found or has expired. Please log in again.');
     }
 
     const session: PsssSessionType = await this.sessionModel.findById(sessionId);

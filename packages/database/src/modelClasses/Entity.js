@@ -22,6 +22,7 @@ const SUB_DISTRICT = 'sub_district';
 const CATCHMENT = 'catchment';
 const SUB_CATCHMENT = 'sub_catchment';
 const VILLAGE = 'village';
+const HOUSEHOLD = 'household';
 const WORLD = 'world';
 const PROJECT = 'project';
 const CITY = 'city';
@@ -44,6 +45,7 @@ const ENTITY_TYPES = {
   CATCHMENT,
   SUB_CATCHMENT,
   VILLAGE,
+  HOUSEHOLD,
   WORLD,
   PROJECT,
   CITY,

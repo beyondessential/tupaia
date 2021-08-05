@@ -653,6 +653,12 @@
     "endDate": "2020-12-31"
   },
   {
+    "code": "Samoa_Covid_Demo_Health_Cons_Per_Flight",
+    "project": "covid_samoa",
+    "orgUnit": "WS",
+    "dashboard": "COVID-19 Samoa"
+  },
+  {
     "code": "Samoa_Covid_Number_Of_Passengers_By_Flight",
     "project": "covid_samoa",
     "orgUnit": "WS",
@@ -789,6 +795,14 @@
     "endDate": "2021-03-31"
   },
   {
+    "code": "TO_HPU_Validation_HP_03",
+    "project": "fanafana",
+    "orgUnit": "TO_VHP",
+    "dashboard": "Health Promotion Unit Validation",
+    "startDate": "2020-08-01",
+    "endDate": "2020-08-31"
+  },
+  {
     "code": "TO_PEHS",
     "project": "explore",
     "orgUnit": "TO",
@@ -849,6 +863,14 @@
     "project": "fanafana",
     "orgUnit": "TO",
     "dashboard": "Reproductive Health Validation"
+  },
+  {
+    "code": "TO_RH_Validation_MCH06",
+    "project": "fanafana",
+    "orgUnit": "TO_KlongaHC",
+    "dashboard": "Reproductive Health Validation",
+    "startDate": "2021-03-01",
+    "endDate": "2021-03-31"
   },
   {
     "code": "TO_Total_Screened_For_NCD_Risk_Factors",
