@@ -5,12 +5,15 @@
 
 import express from 'express';
 import { catchAsyncErrors, emailAfterTimeout } from '../middleware';
+import { useRouteHandler } from '../RouteHandler';
 import { constructExportEmail } from './constructExportEmail';
+import { DownloadHandler } from './download';
 import { exportSurveyResponses } from './exportSurveyResponses';
 import { exportSurveys } from './exportSurveys';
 
 const exportRoutes = express.Router();
 
+exportRoutes.get('/download/:path(*)', useRouteHandler(DownloadHandler));
 exportRoutes.get(
   '/surveyResponses',
   emailAfterTimeout(constructExportEmail),
