@@ -25,6 +25,7 @@ export * from './components/LoadingContainer';
 export * from './components/NavBar';
 export * from './components/PasswordStrengthBar';
 export * from './components/ProfileButton';
+export * from './components/DataTable';
 export * from './components/Table';
 export * from './components/Tabs';
 export * from './components/Toolbar';
