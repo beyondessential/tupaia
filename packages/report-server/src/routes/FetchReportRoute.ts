@@ -32,11 +32,21 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     return report;
   }
 
-  async checkUserHasAccessToReport(report: ReportType, requestedOrgUnitCodes: string[]) {
-    const { models, accessPolicy } = this.req;
+  async checkUserHasAccessToReport(
+    report: ReportType,
+    hierarchy = 'explore',
+    requestedOrgUnitCodes: string[],
+  ) {
+    const { accessPolicy, ctx } = this.req;
     const permissionGroupName = await report.permissionGroupName();
 
-    const foundOrgUnits = await models.entity.find({ code: requestedOrgUnitCodes });
+    const foundOrgUnits = await ctx.microServices.entityApi.getEntities(
+      hierarchy,
+      requestedOrgUnitCodes,
+      {
+        fields: ['code', 'country_code'],
+      },
+    );
     const foundOrgUnitCodes = foundOrgUnits.map(orgUnit => orgUnit.code);
 
     const missingOrgUnitCodes = requestedOrgUnitCodes.filter(
@@ -48,7 +58,7 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
 
     const countryCodes = new Set(foundOrgUnits.map(orgUnit => orgUnit.country_code));
     countryCodes.forEach(countryCode => {
-      if (!accessPolicy.allows(countryCode, permissionGroupName)) {
+      if (countryCode === null || !accessPolicy.allows(countryCode, permissionGroupName)) {
         throw new Error(`No ${permissionGroupName} access for user to ${countryCode}`);
       }
     });
@@ -56,7 +66,7 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
 
   async buildResponse() {
     const { query, body } = this.req;
-    const { organisationUnitCodes, ...restOfParams } = { ...query, ...body };
+    const { organisationUnitCodes, hierarchy, ...restOfParams } = { ...query, ...body };
     if (!organisationUnitCodes) {
       throw new Error('Must provide organisationUnitCodes URL parameter');
     }
@@ -66,13 +76,13 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
       ? organisationUnitCodes
       : organisationUnitCodes.split(',');
 
-    await this.checkUserHasAccessToReport(report, organisationUnitCodesArray);
+    await this.checkUserHasAccessToReport(report, hierarchy, organisationUnitCodesArray);
 
-    const aggregator = createAggregator(Aggregator, {
-      session: { getAuthHeader: () => this.req.headers.authorization },
+    const aggregator = createAggregator(Aggregator, this.req.ctx);
+    return new ReportBuilder().setConfig(report.config).build(aggregator, {
+      organisationUnitCodes: organisationUnitCodesArray,
+      hierarchy,
+      ...restOfParams,
     });
-    return new ReportBuilder()
-      .setConfig(report.config)
-      .build(aggregator, { organisationUnitCodes: organisationUnitCodesArray, ...restOfParams });
   }
 }

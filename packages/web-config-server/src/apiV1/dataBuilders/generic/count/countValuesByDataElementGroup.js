@@ -3,6 +3,7 @@
  * * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
+import { getSortByKey } from '@tupaia/utils';
 import { getDataElementsInGroupSet } from '/apiV1/utils';
 
 export const countValuesByDataElementGroup = async (
@@ -27,11 +28,12 @@ export const countValuesByDataElementGroup = async (
     dataElementGroupCounts[dataElementGroupId] += value; // Because a "1" represents true, this will count one for each true data element in the case of binary
   });
 
-  // Sort results by data element group name
-  return {
-    data: Object.entries(dataElementGroupCounts).map(([dataElementGroupId, count]) => ({
+  const data = Object.entries(dataElementGroupCounts)
+    .map(([dataElementGroupId, count]) => ({
       name: dataElementGroups[dataElementGroupId].name,
       value: count,
-    })),
-  };
+    }))
+    .sort(getSortByKey('name'));
+
+  return { data };
 };

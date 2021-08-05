@@ -10,6 +10,49 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   ? I
   : never;
 
+type FilterComparators = '!=' | 'ilike' | '=';
+
+export type AdvancedFilterValue<T> = {
+  comparator: FilterComparators;
+  comparisonValue: T | T[];
+};
+
+/**
+ * Example:
+ * {
+ *    type: 'facility',
+ *    name: {
+ *        comparator: 'ilike',
+ *        comparisonValue: '%Pallet%'
+ *    }
+ * }
+ */
+export type FilterCriteria<T> = {
+  [field in keyof T]?: T[field] extends Record<string, unknown>
+    ? PartialOrArray<T[field]>
+    : T[field] | T[field][] | AdvancedFilterValue<T[field]>;
+};
+
+export enum QueryConjunctions {
+  AND = '_and_',
+  OR = '_or_',
+  RAW = '_raw_',
+}
+
+/**
+ * Example:
+ * {
+ *    _and_: {
+ *        country_code: ['TO', 'KI']
+ *    }
+ * }
+ */
+type ConjunctionCriteria<T> = {
+  [field in QueryConjunctions]?: DbFilterCriteria<T>;
+};
+
+type DbFilterCriteria<T> = FilterCriteria<T> & ConjunctionCriteria<T>;
+
 // Extracts keys that have object-like values from type T
 export type ObjectLikeKeys<T> = {
   [K in keyof T]: T[K] extends Record<string, unknown> ? K : never;
@@ -34,14 +77,14 @@ export type PartialOrArray<T> = {
     : T[field] | T[field][];
 };
 
-export type DbConditional<T> = PartialOrArray<Omit<T, ObjectLikeKeys<T>>> &
-  PartialOrArray<Flatten<Pick<T, ObjectLikeKeys<T>>, '->>'>>;
+export type DbFilter<T> = DbFilterCriteria<Omit<T, ObjectLikeKeys<T>>> &
+  DbFilterCriteria<Flatten<Pick<T, ObjectLikeKeys<T>>, '->>'>>;
 
 export type Joined<T, U extends string> = {
   [field in keyof T as field extends string ? `${U}.${field}` : never]: T[field];
 };
 
 export type Model<BaseModel extends DatabaseModel, Fields, Type extends DatabaseType> = {
-  find: (filter: DbConditional<Fields>) => Promise<Type[]>;
-  findOne: (filter: DbConditional<Fields>) => Promise<Type>;
+  find: (filter: DbFilter<Fields>) => Promise<Type[]>;
+  findOne: (filter: DbFilter<Fields>) => Promise<Type>;
 } & BaseModel;

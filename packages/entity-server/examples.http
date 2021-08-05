@@ -32,8 +32,18 @@ GET http://{{host}}/{{version}}/hierarchy/explore/TO/descendants?field=code&incl
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
-### Fetch filtered descendants of an entity
-GET http://{{host}}/{{version}}/hierarchy/explore/TO/descendants?fields=type,code&filter=type:district,facility HTTP/1.1
+### Fetch filtered descendants of an entity that are district or facility type
+GET http://{{host}}/{{version}}/hierarchy/explore/TO/descendants?fields=type,code&filter=type==district,facility HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch filtered descendants of an entity that are not village type
+GET http://{{host}}/{{version}}/hierarchy/explore/TO/descendants?fields=type,code&filter=type!=village HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch filtered descendants of an entity that have names contain string 'Pa'
+GET http://{{host}}/{{version}}/hierarchy/explore/TO/descendants?fields=type,code&filter=name=@Pa HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
@@ -51,8 +61,18 @@ GET http://{{host}}/{{version}}/hierarchy/explore/TO_Tongatapu_Mua/relatives?fie
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
-### Fetch filtered relatives of an entity
-GET http://{{host}}/{{version}}/hierarchy/explore/TO_HvlMCH/relatives?fields=type,code&filter=type:district,facility HTTP/1.1
+### Fetch filtered relatives of an entity that are district or facility type
+GET http://{{host}}/{{version}}/hierarchy/explore/TO_HvlMCH/relatives?fields=type,code&filter=type==district,facility HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch filtered relatives of an entity that are not village type
+GET http://{{host}}/{{version}}/hierarchy/explore/TO_HvlMCH/relatives?fields=type,code&filter=type!=village HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch filtered relatives of an entity that have names contain string 'Pa'
+GET http://{{host}}/{{version}}/hierarchy/explore/TO_HvlMCH/relatives?fields=type,code&filter=type=@Pa HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
@@ -66,17 +86,22 @@ Authorization: {{authorization}}
 }
 
 ### Fetch relationships among relatives of an entity
-GET http://{{host}}/{{version}}/hierarchy/explore/TO/relationships?descendant_filter=type:village&ancestor_field=code&descendant_field=name&groupBy=ancestor HTTP/1.1
+GET http://{{host}}/{{version}}/hierarchy/explore/TO/relationships?descendant_filter=type==village&ancestor_field=code&descendant_field=name&groupBy=ancestor HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
-### Fetch filtered relationships among relatives of an entity
-GET http://{{host}}/{{version}}/hierarchy/laos_schools/LA_Park ou District/relationships?ancestor_filter=type:district&descendant_filter=type:school;attributes_type:Secondary&groupBy=descendant HTTP/1.1
+### Fetch filtered relationships (that ancestors are district and descendants are school) among relatives of an entity
+GET http://{{host}}/{{version}}/hierarchy/laos_schools/LA_Park ou District/relationships?ancestor_filter=type==district&descendant_filter=type==school;attributes_type==Secondary&groupBy=descendant HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch filtered relationships (that ancestors are not village and descendants are not Secondary school) among relatives of an entity
+GET http://{{host}}/{{version}}/hierarchy/laos_schools/LA_Park ou District/relationships?ancestor_filter=type!=village&descendant_filter=type==school;attributes_type!=Secondary&groupBy=descendant HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
 ### Fetch relationships among relatives of multiple entities
-POST http://{{host}}/{{version}}/hierarchy/explore/relationships?descendant_filter=type:district&ancestor_filter=type:country&ancestor_field=code&descendant_field=name&groupBy=descendant HTTP/1.1
+POST http://{{host}}/{{version}}/hierarchy/explore/relationships?descendant_filter=type==district&ancestor_filter=type==country&ancestor_field=code&descendant_field=name&groupBy=descendant HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
 

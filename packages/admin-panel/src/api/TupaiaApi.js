@@ -7,6 +7,8 @@ import { saveAs } from 'file-saver';
 
 import { verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
 
+import { logout } from '../authentication';
+
 const FETCH_TIMEOUT = 45 * 1000; // 45 seconds in milliseconds
 
 export class TupaiaApi {
@@ -77,9 +79,21 @@ export class TupaiaApi {
     };
   }
 
+  async checkIfAuthorized(response) {
+    // Unauthorized
+    if (response.status === 401) {
+      const data = await response.json();
+      this.dispatch(logout(data.error)); // log out if user is unauthorized
+      throw new Error(data.error);
+    }
+  }
+
   async request(endpoint, queryParameters, fetchConfig) {
     const queryUrl = stringifyQuery(process.env.REACT_APP_API_URL, endpoint, queryParameters);
     const response = await Promise.race([fetch(queryUrl, fetchConfig), createTimeoutPromise()]);
+
+    await this.checkIfAuthorized(response);
+
     await verifyResponseStatus(response);
     return response;
   }

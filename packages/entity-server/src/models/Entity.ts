@@ -4,7 +4,7 @@
  */
 
 import { EntityModel as BaseEntityModel, EntityType as BaseEntityType } from '@tupaia/database';
-import { Model, DbConditional } from '@tupaia/server-boilerplate';
+import { Model, DbFilter } from '@tupaia/server-boilerplate';
 
 export type EntityFields = Readonly<{
   id: string;
@@ -21,13 +21,13 @@ export type EntityFields = Readonly<{
   };
 }>;
 
-export type EntityFilter = DbConditional<EntityFields>;
+export type EntityFilter = DbFilter<EntityFields>;
 
 export interface EntityType extends EntityFields, Omit<BaseEntityType, 'id'> {
   getChildren: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityType[]>;
   getParent: (hierarchyId: string) => Promise<EntityType | undefined>;
   getDescendants: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityType[]>;
-  getAncestorOfType: (hierarchyId: string, type: string) => Promise<EntityType>;
+  getAncestorOfType: (hierarchyId: string, type: string) => Promise<EntityType | undefined>;
   getRelatives: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityType[]>;
 }
 
