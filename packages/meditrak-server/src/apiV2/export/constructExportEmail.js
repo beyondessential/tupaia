@@ -22,7 +22,7 @@ ${error}`;
 
   return `Please click this one-time link to download your requested export: ${downloadLink}
 
-Note that after clicking it once, you won't be able to download the file again.`;
+Note that you need to be logged in to the admin panel for it to work, and after clicking it once, you won't be able to download the file again.`;
 };
 
 export const constructExportEmail = responseBody => ({

@@ -3,6 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import fs from 'fs';
+import path from 'path';
+
 /**
  * Helper function to call the response res with some json
  */
@@ -21,10 +24,14 @@ export function respond(res, responseBody, statusCode) {
     .send(JSON.stringify(responseBody));
 }
 
-export function respondWithDownload(res, filePath) {
+export function respondWithDownload(res, filePath, deleteAfterDownload = false) {
   const { overrideRespond } = res;
   if (overrideRespond) {
     return overrideRespond({ filePath });
   }
-  return res.download(filePath);
+  return res.download(filePath, path.basename(filePath), () => {
+    if (deleteAfterDownload) {
+      fs.unlinkSync(filePath); // delete file from disk after download
+    }
+  });
 }

@@ -13,7 +13,7 @@ import { exportSurveys } from './exportSurveys';
 
 const exportRoutes = express.Router();
 
-exportRoutes.get('/download/:path(*)', useRouteHandler(DownloadHandler));
+exportRoutes.get('/download/:filePath(*)', useRouteHandler(DownloadHandler));
 exportRoutes.get(
   '/surveyResponses',
   emailAfterTimeout(constructExportEmail),

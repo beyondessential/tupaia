@@ -6,7 +6,7 @@
 
 export { ApiConnection, AuthHandler } from './connections';
 export { Route } from './routes';
-export { handleWith } from './utils';
+export { handleError, handleWith } from './utils';
 export {
   ApiBuilder as MicroServiceApiBuilder,
   buildBasicBearerAuthMiddleware,
