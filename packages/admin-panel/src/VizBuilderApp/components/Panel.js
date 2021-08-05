@@ -70,7 +70,12 @@ const PanelTabPanel = styled.div`
 
 export const Panel = ({ setEnabled }) => {
   const [tab, setTab] = useState(0);
-  const [{ data: dataConfig }, { setDataConfig, setFetchConfig }] = useVizBuilderConfig();
+  const [
+    {
+      visualisation: { data: dataConfig },
+    },
+    { setDataConfig, setFetchConfig },
+  ] = useVizBuilderConfig();
 
   const { dataElements, dataGroups, aggregations, transform } = dataConfig;
 

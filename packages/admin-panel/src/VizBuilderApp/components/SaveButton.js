@@ -3,15 +3,24 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { Button } from '@tupaia/ui-components';
-import { useVizBuilderConfig } from '../vizBuilderConfigStore';
+
+import { SaveVisualisationModal } from './Modal';
 
 export const SaveButton = () => {
-  const [config] = useVizBuilderConfig();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleCloseModal = useCallback(() => {
+    setIsModalOpen(false);
+  }, [setIsModalOpen]);
 
-  const handleSave = () => {
-    alert(JSON.stringify(config, null, 2));
+  const handleSave = async () => {
+    setIsModalOpen(true);
   };
-  return <Button onClick={handleSave}>Save</Button>;
+  return (
+    <div>
+      <Button onClick={handleSave}>Save</Button>
+      <SaveVisualisationModal isOpen={isModalOpen} onClose={handleCloseModal} />
+    </div>
+  );
 };

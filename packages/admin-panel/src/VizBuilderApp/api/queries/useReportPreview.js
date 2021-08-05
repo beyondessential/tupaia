@@ -6,16 +6,16 @@ import { useQuery } from 'react-query';
 import { post } from '../api';
 import { DEFAULT_REACT_QUERY_OPTIONS } from '../constants';
 
-export const useReportPreview = (config, enabled, setEnabled) =>
+export const useReportPreview = (visualisation, project, location, enabled, setEnabled) =>
   useQuery(
-    ['fetchReportPreviewData', config],
+    ['fetchReportPreviewData', visualisation],
     async () => {
       const response = await post('fetchReportPreviewData', {
         params: {
-          entityCode: config.location,
-          hierarchy: config.project,
+          entityCode: location,
+          hierarchy: project,
         },
-        data: { previewConfig: config },
+        data: { previewConfig: visualisation },
       });
 
       return response.results;

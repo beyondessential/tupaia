@@ -33,6 +33,7 @@ export enum PreviewMode {
 }
 
 export type DashboardVisualisationObject = {
+  id?: string;
   code: string;
   name: string;
   permissionGroup: string;

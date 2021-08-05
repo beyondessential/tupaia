@@ -87,9 +87,11 @@ const EditorContainer = styled.div`
 `;
 
 export const PreviewSection = ({ enabled, setEnabled }) => {
-  const [state, { setPresentation }] = useVizBuilderConfig();
+  const [{ project, location, visualisation }, { setPresentation }] = useVizBuilderConfig();
   const { data = [], isIdle, isLoading, isFetching, isError, error } = useReportPreview(
-    state,
+    visualisation,
+    project,
+    location,
     enabled,
     setEnabled,
   );
@@ -99,7 +101,7 @@ export const PreviewSection = ({ enabled, setEnabled }) => {
     setTab(newValue);
   };
 
-  const viewContent = { data, ...state.presentation };
+  const viewContent = { data, ...visualisation.presentation };
 
   return (
     <>
@@ -136,7 +138,7 @@ export const PreviewSection = ({ enabled, setEnabled }) => {
             )}
           </ChartContainer>
           <EditorContainer>
-            <JsonEditor value={state.presentation} onChange={setPresentation} />
+            <JsonEditor value={visualisation.presentation} onChange={setPresentation} />
           </EditorContainer>
         </Container>
       </TabPanel>

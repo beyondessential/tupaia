@@ -9,7 +9,7 @@ import { DEFAULT_REACT_QUERY_OPTIONS } from '../constants';
 export const useLocations = (project, search) =>
   useQuery(
     ['hierarchy', project, search],
-    () => get(`hierarchy/${project}/${project}`, { params: { search, fields: 'code' } }),
+    () => get(`hierarchy/${project}/${project}`, { params: { search, fields: 'name,code' } }),
     {
       ...DEFAULT_REACT_QUERY_OPTIONS,
     },

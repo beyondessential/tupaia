@@ -18,5 +18,6 @@ export const useSaveVisualisation = config =>
       onSuccess: () => {
         console.log('save success');
       },
+      throwOnError: true,
     },
   );
