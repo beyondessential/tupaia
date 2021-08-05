@@ -11,7 +11,13 @@ export class KoBoTranslator {
   }
 
   async fetchEntityInfoFromKoBoAnswer(koboEntityCode) {
-    const entity = await this.models.entity.findOne({ code: `LA_sch_${koboEntityCode}` });
+    const entityMapping = await this.models.dataServiceEntity.findOne({
+      'config->>kobo_id': koboEntityCode,
+    });
+    if (!entityMapping) {
+      return { orgUnit: koboEntityCode, orgUnitName: koboEntityCode };
+    }
+    const entity = await this.models.entity.findOne({ code: entityMapping.entity_code });
     if (!entity) {
       return { orgUnit: koboEntityCode, orgUnitName: koboEntityCode };
     }
