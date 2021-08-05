@@ -8,7 +8,7 @@ import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
 class SyncServiceType extends DatabaseType {
-  static databaseType = TYPES.SYNC_CURSOR;
+  static databaseType = TYPES.SYNC_SERVICE;
 }
 
 export class SyncServiceModel extends DatabaseModel {
