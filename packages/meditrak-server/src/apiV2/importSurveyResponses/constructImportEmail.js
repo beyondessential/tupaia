@@ -31,6 +31,6 @@ ${error}`;
   return 'Your survey responses have been successfully imported.';
 };
 
-export const constructEmailFromResponse = responseBody => {
+export const constructImportEmail = responseBody => {
   return { subject: 'Tupaia Survey Response Import', message: constructMessage(responseBody) };
 };

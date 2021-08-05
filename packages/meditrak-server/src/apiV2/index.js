@@ -75,7 +75,7 @@ import { importStriveLabResults } from './importStriveLabResults';
 import { importSurveys } from './importSurveys';
 import { importUsers } from './importUsers';
 import { postChanges } from './postChanges';
-import { importSurveyResponses, constructEmailFromResponse } from './importSurveyResponses';
+import { importSurveyResponses, constructImportEmail } from './importSurveyResponses';
 import { changePassword } from './changePassword';
 import { editUser } from './editUser';
 import { requestCountryAccess } from './requestCountryAccess';
@@ -196,7 +196,7 @@ apiV2.post(
 apiV2.post('/import/surveys', upload.single('surveys'), catchAsyncErrors(importSurveys));
 apiV2.post(
   '/import/surveyResponses',
-  emailAfterTimeout(constructEmailFromResponse),
+  emailAfterTimeout(constructImportEmail),
   upload.single('surveyResponses'),
   catchAsyncErrors(importSurveyResponses),
 );
