@@ -1,0 +1,88 @@
+[
+  {
+    "id": "COVID_AU_HOSPITALS_AND_TESTING_SITES",
+    "project": "explore",
+    "orgUnit": "AU"
+  },
+
+  {
+    "id": "COVID_Amount_Of_Hand_Sanitizer_Available",
+    "project": "explore",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "COVID_Facility_Commodities_Water",
+    "project": "explore",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "COVID_Facility_Commodities_Soap",
+    "project": "explore",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "95",
+    "project": "explore",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "13",
+    "project": "explore",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "24",
+    "project": "explore",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "85",
+    "project": "explore",
+    "orgUnit": "SB"
+  },
+  {
+    "id": "173,89",
+    "project": "explore",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "193,199",
+    "project": "explore",
+    "orgUnit": "PG"
+  },
+  {
+    "id": "192,198",
+    "project": "explore",
+    "orgUnit": "PG"
+  },
+  {
+    "id": "CD_Measles_Male_Cases",
+    "project": "fanafana",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "TONGA_NUMBER_OF_HOUSEHOLDS",
+    "project": "explore",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "COVID_AU_State_Total_Number_Confirmed_Cases",
+    "project": "covidau",
+    "orgUnit": "AU"
+  },
+  {
+    "id": "UNFPA_RH_Condoms_male",
+    "project": "unfpa",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "STRIVE_CRF_Positive,STRIVE_CRF_mRDT_Tests_Radius",
+    "project": "strive",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "STRIVE_CRF_Febrile_Cases_Radius",
+    "project": "strive",
+    "orgUnit": "TO"
+  }
+]
