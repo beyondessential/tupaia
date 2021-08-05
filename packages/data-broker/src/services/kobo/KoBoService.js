@@ -12,6 +12,11 @@ export class KoBoService extends Service {
 
     this.api = api;
     this.translator = new KoBoTranslator(this.models);
+    this.pullers = {
+      [this.dataSourceTypes.DATA_ELEMENT]: this.pullAnalytics,
+      [this.dataSourceTypes.DATA_GROUP]: this.pullEvents,
+      [this.dataSourceTypes.SYNC_GROUP]: this.pullSyncGroups,
+    };
   }
 
   async push() {
@@ -23,20 +28,33 @@ export class KoBoService extends Service {
   }
 
   async pull(dataSources, type, options) {
-    if (type === this.dataSourceTypes.DATA_ELEMENT) {
-      throw new Error('Analytic pulling is not supported in KoBoService');
+    const puller = this.pullers[type];
+    return puller(dataSources, options);
+  }
+
+  pullAnalytics = () => {
+    throw new Error('pullAnalytics is not supported in KoBoService');
+  };
+
+  pullEvents = () => {
+    throw new Error('pullEvents is not supported in KoBoService');
+  };
+
+  pullSyncGroups = async (dataSources, options) => {
+    const resultsByInternalCode = {};
+    for (const source of dataSources) {
+      const results = await this.api.fetchKoBoSubmissions(source.config?.koboSurveyCode, options);
+      resultsByInternalCode[
+        source.config?.internalSurveyCode
+      ] = await this.translator.translateKoBoResults(
+        results,
+        source.config?.questionMapping,
+        source.config?.entityQuestionCode,
+      );
     }
-    return this.pullEvents(dataSources, options);
-  }
 
-  async pullEvents(dataSources, options) {
-    const koboSurveyCodes = dataSources.map(({ config }) => config.koboSurveyCode);
-    const koboEntityQuestion = dataSources.map(({ config }) => config.entityQuestionCode);
-
-    // TODO: Throw error on entity filter
-    const koboResults = await this.api.fetchKoBoSurveys(koboSurveyCodes, options);
-    return this.translator.translateKoBoResults(koboResults, koboEntityQuestion[0]);
-  }
+    return resultsByInternalCode;
+  };
 
   async pullMetadata() {
     throw new Error('pullMetadata is not supported in KoBoService');

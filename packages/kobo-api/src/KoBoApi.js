@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import { fetchWithTimeout, stringifyQuery } from '@tupaia/utils';
+import { fetchWithTimeout, stringifyQuery, takesDateForm } from '@tupaia/utils';
 
 const MAX_FETCH_WAIT_TIME = 15 * 1000; // 15 seconds
 
@@ -12,13 +12,14 @@ export class KoBoApi {
     this.apiKey = process.env.KOBO_API_KEY;
   }
 
-  async fetchKoBoSurveys(koboSurveyCodes, optionsInput) {
-    // await validateEventOptions(optionsInput); // TODO: Write validator
+  async fetchKoBoSubmissions(koboSurveyCode, optionsInput) {
     let mongoQuery = {};
     if (optionsInput.startSubmissionTime) {
+      takesDateForm(optionsInput.startSubmissionTime);
       mongoQuery = { ...mongoQuery, _submission_time: { $gt: optionsInput.startSubmissionTime } };
     }
-    const response = await this.fetchFromKoBo(`api/v2/assets/${koboSurveyCodes[0]}/data.json`, {
+
+    const response = await this.fetchFromKoBo(`api/v2/assets/${koboSurveyCode}/data.json`, {
       query: JSON.stringify(mongoQuery),
     });
 

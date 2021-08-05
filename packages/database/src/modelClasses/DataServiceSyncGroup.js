@@ -7,12 +7,12 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class SyncServiceType extends DatabaseType {
-  static databaseType = TYPES.SYNC_SERVICE;
+class DataServiceSyncGroupType extends DatabaseType {
+  static databaseType = TYPES.DATA_SERVICE_SYNC_GROUP;
 }
 
-export class SyncServiceModel extends DatabaseModel {
+export class DataServiceSyncGroupModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return SyncServiceType;
+    return DataServiceSyncGroupType;
   }
 }

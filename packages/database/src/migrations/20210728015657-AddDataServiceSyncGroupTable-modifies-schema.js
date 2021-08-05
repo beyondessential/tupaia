@@ -1,7 +1,5 @@
 'use strict';
 
-import { generateId, insertObject, deleteObject } from '../utilities';
-
 var dbm;
 var type;
 var seed;
@@ -17,17 +15,20 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = function (db) {
-  return insertObject(db, 'sync_service', {
-    id: generateId(),
-    code: 'laos_moes_kobo',
-    service_type: 'kobo',
-    sync_cursor: new Date(0).toISOString(),
-    config: { koboSurveys: ['FQS1', 'FQS2'] },
-  });
+  return db.runSql(`
+    CREATE TABLE data_service_sync_group (
+      id TEXT PRIMARY KEY UNIQUE,
+      code TEXT NOT NULL UNIQUE,
+      service_type service_type NOT NULL,
+      config JSONB NOT NULL
+    );
+  `);
 };
 
 exports.down = function (db) {
-  return deleteObject(db, 'sync_service', { code: 'laos_moes_kobo' });
+  return db.runSql(`
+    DROP TABLE data_service_sync_group;
+  `);
 };
 
 exports._meta = {
