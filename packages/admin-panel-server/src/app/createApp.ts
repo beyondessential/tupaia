@@ -37,9 +37,7 @@ const useForwardUnhandledRequestsToMeditrak = (app: Express) => {
   };
 
   //Forward any unhandled request to meditrak-server
-  app.use(attachSession, attachAuthorizationHeader, createProxyMiddleware(options));
-
-  app.use(handleError);
+  app.use(attachSession, attachAuthorizationHeader, createProxyMiddleware(options), handleError);
 };
 
 /**

@@ -5,8 +5,10 @@
  */
 import { fetchWithTimeout, verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
 import { QueryParameters } from '../types';
+import { AuthHandler } from './types';
 
 type RequestBody = Record<string, unknown> | Record<string, unknown>[];
+
 interface FetchHeaders {
   Authorization: string;
   'Content-Type'?: string;
@@ -18,37 +20,32 @@ interface FetchConfig {
   body?: string;
 }
 
-export interface AuthHandler {
-  email?: string;
-  getAuthHeader: () => Promise<string>;
-}
-
 export class ApiConnection {
-  authHandler: AuthHandler;
+  public authHandler: AuthHandler;
 
-  baseUrl!: string;
+  public baseUrl!: string;
 
   constructor(authHandler: AuthHandler) {
     this.authHandler = authHandler;
   }
 
-  get(endpoint: string, queryParameters: QueryParameters = {}) {
+  async get(endpoint: string, queryParameters: QueryParameters = {}) {
     return this.request('GET', endpoint, queryParameters);
   }
 
-  post(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
+  async post(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
     return this.request('POST', endpoint, queryParameters, body);
   }
 
-  put(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
+  async put(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
     return this.request('PUT', endpoint, queryParameters, body);
   }
 
-  delete(endpoint: string) {
+  async delete(endpoint: string) {
     return this.request('DELETE', endpoint);
   }
 
-  async request(
+  private async request(
     requestMethod: string,
     endpoint: string,
     queryParameters: QueryParameters = {},
