@@ -10,22 +10,27 @@ import React, { useReducer, createContext, useContext, useCallback } from 'react
  * possible in the component tree.
  */
 const initialConfigState = {
-  name: null,
-  summary: null,
   project: null,
   location: null,
-  permissionGroup: null,
-  data: {
-    dataElements: [],
-    dataGroups: [],
-    aggregations: [],
-    transform: [],
+  testData: null,
+  visualisation: {
+    id: null,
+    name: null,
+    code: null,
+    permissionGroup: null,
+    data: {
+      dataElements: [],
+      dataGroups: [],
+      aggregations: [],
+      transform: [],
+    },
+    presentation: {},
   },
-  presentation: {},
 };
 
-const SET_VALUE = 'SET_VALUE';
 const SET_PROJECT = 'SET_PROJECT';
+const SET_LOCATION = 'SET_LOCATION';
+const SET_VISUALISATION_VALUE = 'SET_VISUALISATION_VALUE';
 const SET_DATA_CONFIG = 'SET_DATA_CONFIG';
 const SET_FETCH_CONFIG = 'SET_FETCH_CONFIG';
 const SET_PRESENTATION_CONFIG = 'SET_PRESENTATION_CONFIG';
@@ -34,11 +39,16 @@ function configReducer(state, action) {
   const { type } = action;
 
   switch (type) {
-    case SET_VALUE: {
-      const { key, value } = action;
+    case SET_LOCATION: {
+      const { value } = action;
+
+      if (value === state.location) {
+        return state;
+      }
+
       return {
         ...state,
-        [key]: value,
+        location: value,
       };
     }
     case SET_PROJECT: {
@@ -51,28 +61,50 @@ function configReducer(state, action) {
       return {
         ...state,
         project: value,
-        location: null,
+      };
+    }
+    case SET_VISUALISATION_VALUE: {
+      const { key, value } = action;
+      return {
+        ...state,
+        visualisation: {
+          ...state.visualisation,
+          [key]: value,
+        },
       };
     }
     case SET_DATA_CONFIG: {
       const { key, value } = action;
       return {
         ...state,
-        data: { ...state.data, [key]: value },
+        visualisation: {
+          ...state.visualisation,
+          data: { ...state.visualisation.data, [key]: value },
+        },
       };
     }
     case SET_FETCH_CONFIG: {
       const { value } = action;
       return {
         ...state,
-        data: { aggregations: state.data.aggregations, transform: state.data.transform, ...value },
+        visualisation: {
+          ...state.visualisation,
+          data: {
+            aggregations: state.visualisation.data.aggregations,
+            transform: state.visualisation.data.transform,
+            ...value,
+          },
+        },
       };
     }
     case SET_PRESENTATION_CONFIG: {
       const { value } = action;
       return {
         ...state,
-        presentation: value,
+        visualisation: {
+          ...state.visualisation,
+          presentation: value,
+        },
       };
     }
     default:
@@ -83,8 +115,12 @@ function configReducer(state, action) {
 const useConfigStore = () => {
   const [state, dispatch] = useReducer(configReducer, initialConfigState);
 
-  const setValue = useCallback((key, value) => dispatch({ type: SET_VALUE, key, value }), []);
+  const setLocation = useCallback(value => dispatch({ type: SET_LOCATION, value }), []);
   const setProject = useCallback(value => dispatch({ type: SET_PROJECT, value }), []);
+  const setVisualisationValue = useCallback(
+    (key, value) => dispatch({ type: SET_VISUALISATION_VALUE, key, value }),
+    [],
+  );
   const setPresentation = useCallback(
     value => dispatch({ type: SET_PRESENTATION_CONFIG, value }),
     [],
@@ -98,11 +134,12 @@ const useConfigStore = () => {
   return [
     state,
     {
+      setLocation,
+      setProject,
+      setVisualisationValue,
       setDataConfig,
       setFetchConfig,
-      setProject,
       setPresentation,
-      setValue,
     },
   ];
 };

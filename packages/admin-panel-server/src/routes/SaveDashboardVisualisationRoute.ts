@@ -29,7 +29,7 @@ export class SaveDashboardVisualisationRoute extends Route {
   async buildResponse() {
     const { visualisation } = this.req.body;
     if (!visualisation) {
-      throw new Error('Visualisation is empty');
+      throw new Error('Visualisation cannot be empty.');
     }
 
     const extractor = new DashboardVisualisationExtractor(
@@ -46,7 +46,16 @@ export class SaveDashboardVisualisationRoute extends Route {
       report: mapKeys(report, (_, propertyKey: string) => snake(propertyKey)),
       dashboardItem: mapKeys(dashboardItem, (_, propertyKey: string) => snake(propertyKey)),
     };
+  
+    let result;
 
-    return this.meditrakConnection.createResource('dashboardVisualisations', {}, body);
+    // Update visualisation if id exists
+    if (visualisation.id) {
+      result = await this.meditrakConnection.updateResource(`dashboardVisualisations/${visualisation.id}`, {}, body);
+    } else {
+      result = await this.meditrakConnection.createResource('dashboardVisualisations', {}, body);
+    }
+   
+    return { id: visualisation.id || result.dashboardItem?.id, message: 'Visualisation saved successfully' };
   }
 }

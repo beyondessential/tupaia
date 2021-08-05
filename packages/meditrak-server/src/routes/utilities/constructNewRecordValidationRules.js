@@ -6,6 +6,8 @@
 import { TYPES } from '@tupaia/database';
 import {
   constructRecordExistsWithId,
+  constructRecordExistsWithCode,
+  constructRecordNotExistsWithField,
   hasContent,
   isEmail,
   isBoolean,
@@ -99,7 +101,7 @@ export const constructForSingle = (models, recordType) => {
       };
     case TYPES.REPORT:
       return {
-        code: [hasContent],
+        code: [constructRecordNotExistsWithField(models.report, 'code')],
         config: [hasContent],
         permission_group: [hasContent],
       };
@@ -134,7 +136,7 @@ export const constructForSingle = (models, recordType) => {
       };
     case TYPES.DASHBOARD_ITEM:
       return {
-        code: [hasContent],
+        code: [constructRecordNotExistsWithField(models.dashboardItem, 'code')],
         config: [hasContent],
         report_code: [hasContent],
         legacy: [hasContent, isBoolean],

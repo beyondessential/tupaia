@@ -36,7 +36,10 @@ import {
   GETDashboardRelations,
 } from './dashboardRelations';
 import { DeleteLegacyReport, EditLegacyReport, GETLegacyReports } from './legacyReports';
-import { CreateDashboardVisualisation } from './CreateDashboardVisualisation';
+import {
+  CreateDashboardVisualisation,
+  EditDashboardVisualisation,
+} from './dashboardVisualisations';
 import { DeleteMapOverlays, EditMapOverlays, GETMapOverlays } from './mapOverlays';
 import { DeleteSurveyResponses, EditSurveyResponses, GETSurveyResponses } from './surveyResponses';
 import {
@@ -138,6 +141,7 @@ export default {
   editDashboards: useRouteHandler(EditDashboard),
   editDashboardItems: useRouteHandler(EditDashboardItem),
   editDashboardRelations: useRouteHandler(EditDashboardRelation),
+  editDashboardVisualisations: useRouteHandler(EditDashboardVisualisation),
   editLegacyReports: useRouteHandler(EditLegacyReport),
   editDataSources: useRouteHandler(BESAdminEditHandler),
   editDisasters: useRouteHandler(BESAdminEditHandler),

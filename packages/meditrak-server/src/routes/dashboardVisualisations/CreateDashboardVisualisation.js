@@ -5,9 +5,9 @@
 
 import { ObjectValidator } from '@tupaia/utils';
 
-import { CreateHandler } from './CreateHandler';
-import { assertBESAdminAccess } from '../permissions';
-import { constructNewRecordValidationRules } from './utilities';
+import { CreateHandler } from '../CreateHandler';
+import { assertBESAdminAccess } from '../../permissions';
+import { constructNewRecordValidationRules } from '../utilities';
 
 /**
  * Handles POST endpoints:
@@ -42,9 +42,12 @@ export class CreateDashboardVisualisation extends CreateHandler {
     return this.models.wrapInTransaction(async transactingModels => {
       const { report: reportObject, dashboardItem: dashboardItemObject } = this.newRecordData;
       await this.createReport(transactingModels, reportObject);
-      await this.createDashboardItem(transactingModels, dashboardItemObject);
+      const dashboardItem = await this.createDashboardItem(transactingModels, dashboardItemObject);
 
-      return { report: reportObject, dashboardItem: dashboardItemObject };
+      return {
+        report: reportObject,
+        dashboardItem: { ...dashboardItemObject, id: dashboardItem.id },
+      };
     });
   }
 

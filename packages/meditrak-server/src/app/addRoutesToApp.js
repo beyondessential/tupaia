@@ -46,6 +46,7 @@ const {
   editDashboards,
   editDashboardItems,
   editDashboardRelations,
+  editDashboardVisualisations,
   editLegacyReports,
   editDataSources,
   editDisasters,
@@ -265,6 +266,7 @@ export function addRoutesToApp(app) {
   app.put('(/v[0-9]+)/dashboards/:recordId', editDashboards);
   app.put('(/v[0-9]+)/dashboardItems/:recordId', editDashboardItems);
   app.put('(/v[0-9]+)/dashboardRelations/:recordId', editDashboardRelations);
+  app.put('(/v[0-9]+)/dashboardVisualisations/:recordId', editDashboardVisualisations);
   app.put('(/v[0-9]+)/legacyReports/:recordId', editLegacyReports);
   app.put('(/v[0-9]+)/mapOverlays/:recordId', editMapOverlays);
   app.put('(/v[0-9]+)/indicators/:recordId', editIndicators);

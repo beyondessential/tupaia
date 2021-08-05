@@ -24,12 +24,19 @@ export class DashboardVisualisationExtractor {
   }
 
   extractDashboardItem() {
-    const { code, name, presentation } = this.visualisation;
+    const { id, code, name, presentation } = this.visualisation;
     return {
+      id,
       code,
+      //TODO: for prototype, the whole presentation object will be the json edit box
+      // But in the future, it will be broken down into different structure.
+      // config: {
+      //   type: presentation.type,
+      //   ...presentation.config,
+      //   name,
+      // },
       config: {
-        type: presentation.type,
-        ...presentation.config,
+        ...presentation,
         name,
       },
       reportCode: code,
@@ -45,7 +52,7 @@ export class DashboardVisualisationExtractor {
     return this.extractDashboardItem();
   }
 
-  extractReport(previewMode: PreviewMode) {
+  extractReport(previewMode?: PreviewMode) {
     const { code, permissionGroup, data, presentation } = this.visualisation;
     const { dataElements, dataGroups, aggregations } = data;
 
@@ -76,7 +83,7 @@ export class DashboardVisualisationExtractor {
     };
   }
 
-  getReport(previewMode: PreviewMode) {
+  getReport(previewMode?: PreviewMode) {
     if (!this.reportValidator) {
       throw new Error('No validator provided for extracting report');
     }

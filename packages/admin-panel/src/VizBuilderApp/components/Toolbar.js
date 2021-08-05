@@ -9,10 +9,12 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MuiBox from '@material-ui/core/Box';
+
 import { FlexStart, FlexEnd } from '@tupaia/ui-components';
+
 import { SaveButton } from './SaveButton';
 import { ReactComponent as DocumentIcon } from './DocumentIcon.svg';
-import { EditModal } from './EditModal';
+import { EditModal } from './Modal';
 import { useVizBuilderConfig } from '../vizBuilderConfigStore';
 
 const Wrapper = styled.div`
@@ -45,15 +47,15 @@ const Title = styled(Typography)`
   margin-bottom: 0.1rem;
 `;
 
-const Description = styled(Typography)`
-  font-size: 14px;
-  line-height: 140%;
-  font-weight: 400;
-  color: ${props => props.theme.palette.text.secondary};
-`;
+// const Description = styled(Typography)`
+//   font-size: 14px;
+//   line-height: 140%;
+//   font-weight: 400;
+//   color: ${props => props.theme.palette.text.secondary};
+// `;
 
 export const Toolbar = () => {
-  const [{ name, permissionGroup, summary, project }] = useVizBuilderConfig();
+  const [{ project, visualisation }] = useVizBuilderConfig();
 
   return (
     <Wrapper>
@@ -62,10 +64,9 @@ export const Toolbar = () => {
           <DocumentIcon />
           <MuiBox ml={2}>
             <SubTitle variant="h4">
-              Project: {project} • {permissionGroup}
+              Project: {project} • {visualisation.permissionGroup}
             </SubTitle>
-            <Title variant="h2">{name}</Title>
-            <Description>{summary || 'Add summary content'}</Description>
+            <Title variant="h2">{visualisation.name}</Title>
           </MuiBox>
         </FlexStart>
         <FlexEnd>

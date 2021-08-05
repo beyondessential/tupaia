@@ -3,8 +3,10 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import camelcaseKeys from 'camelcase-keys';
+
 import { AccessPolicy } from '@tupaia/access-policy';
-import { QueryParameters, ApiConnection } from '@tupaia/server-boilerplate';
+import { QueryParameters, RequestBody, ApiConnection } from '@tupaia/server-boilerplate';
+
 import { BES_ADMIN_PERMISSION_GROUP } from '../constants';
 
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
@@ -27,5 +29,9 @@ export class MeditrakConnection extends ApiConnection {
 
   async createResource(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
     return this.post(endpoint, queryParameters, body);
+  }
+
+  async updateResource(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
+    return this.put(endpoint, queryParameters, body);
   }
 }

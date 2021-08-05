@@ -6,27 +6,25 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { Autocomplete, TextField } from '@tupaia/ui-components';
-import { usePermissionGroups, useProjects } from '../api/queries';
+import { usePermissionGroups } from '../api/queries';
 import { useVizBuilderConfig } from '../vizBuilderConfigStore';
 
 export const MetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   const { handleSubmit, register, errors } = useForm();
-  const [state, { setValue, setProject }] = useVizBuilderConfig();
-  const { data: projects = [], isLoading: isLoadingProjects } = useProjects();
+  const [{ visualisation }, { setVisualisationValue }] = useVizBuilderConfig();
   const {
     data: permissionGroups = [],
     isLoading: isLoadingPermissionGroups,
   } = usePermissionGroups();
 
   // Save the default values here so that they are frozen from the store when the component first mounts
-  const [defaults] = useState(state);
-  const { name, permissionGroup, project, summary } = defaults;
+  const [defaults] = useState(visualisation);
+  const { name, code, permissionGroup } = defaults;
 
   const doSubmit = data => {
-    setValue('name', data.name);
-    setValue('summary', data.summary);
-    setValue('permissionGroup', data.permissionGroup);
-    setProject(data.project);
+    setVisualisationValue('name', data.name);
+    setVisualisationValue('code', data.code);
+    setVisualisationValue('permissionGroup', data.permissionGroup);
     onSubmit();
   };
 
@@ -34,20 +32,6 @@ export const MetadataForm = ({ Header, Body, Footer, onSubmit }) => {
     <form onSubmit={handleSubmit(doSubmit)} noValidate>
       <Header />
       <Body>
-        <Autocomplete
-          id="project"
-          name="project"
-          label="Project"
-          placeholder="Select Project"
-          defaultValue={project}
-          options={projects.map(p => p.code)}
-          disabled={isLoadingProjects}
-          error={!!errors.project}
-          helperText={errors.project && errors.project.message}
-          inputRef={register({
-            required: 'Required',
-          })}
-        />
         <Autocomplete
           id="permissionGroup"
           name="permissionGroup"
@@ -73,12 +57,14 @@ export const MetadataForm = ({ Header, Body, Footer, onSubmit }) => {
           })}
         />
         <TextField
-          name="textArea"
-          label="Summary"
-          defaultValue={summary}
-          multiline
-          rows="4"
-          inputRef={register()}
+          name="code"
+          label="Code"
+          defaultValue={code}
+          error={!!errors.code}
+          helperText={errors.code && errors.code.message}
+          inputRef={register({
+            required: 'Required',
+          })}
         />
       </Body>
       <Footer />

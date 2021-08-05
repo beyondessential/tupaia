@@ -5,7 +5,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button, Dialog, DialogFooter, DialogHeader } from '@tupaia/ui-components';
-import { MetadataForm } from './MetadataForm';
+import { MetadataForm } from '../MetadataForm';
 
 export const Body = styled.div`
   padding: 30px 20px;
