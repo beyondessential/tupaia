@@ -13,7 +13,7 @@ import { importEntities } from './importEntities';
 import { importStriveLabResults } from './importStriveLabResults';
 import { importSurveys } from './importSurveys';
 import { importUsers } from './importUsers';
-import { importSurveyResponses, constructEmailFromResponse } from './importSurveyResponses';
+import { importSurveyResponses, constructImportEmail } from './importSurveyResponses';
 import { importDisaster } from './importDisaster';
 
 // create upload handler
@@ -37,7 +37,7 @@ importRoutes.post(
 importRoutes.post('/surveys', upload.single('surveys'), catchAsyncErrors(importSurveys));
 importRoutes.post(
   '/surveyResponses',
-  emailAfterTimeout(constructEmailFromResponse),
+  emailAfterTimeout(constructImportEmail),
   upload.single('surveyResponses'),
   catchAsyncErrors(importSurveyResponses),
 );
