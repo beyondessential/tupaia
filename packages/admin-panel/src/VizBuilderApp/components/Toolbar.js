@@ -47,13 +47,6 @@ const Title = styled(Typography)`
   margin-bottom: 0.1rem;
 `;
 
-// const Description = styled(Typography)`
-//   font-size: 14px;
-//   line-height: 140%;
-//   font-weight: 400;
-//   color: ${props => props.theme.palette.text.secondary};
-// `;
-
 export const Toolbar = () => {
   const [{ project, visualisation }] = useVizBuilderConfig();
 

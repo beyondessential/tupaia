@@ -6,7 +6,6 @@
 import { TYPES } from '@tupaia/database';
 import {
   constructRecordExistsWithId,
-  constructRecordExistsWithCode,
   constructRecordNotExistsWithField,
   hasContent,
   isEmail,
