@@ -12,6 +12,18 @@ import { logout } from '../authentication';
 const FETCH_TIMEOUT = 45 * 1000; // 45 seconds in milliseconds
 
 export class TupaiaApi {
+  constructor() {
+    this.store = null; // Redux store for keeping state, will be injected after creation
+  }
+
+  injectReduxStore(store) {
+    this.store = store;
+  }
+
+  dispatch(action) {
+    this.store.dispatch(action);
+  }
+
   async login(loginCredentials) {
     const { body: authenticationDetails } = await this.post(
       'login',
