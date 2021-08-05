@@ -7,7 +7,6 @@ import xlsx from 'xlsx';
 import moment from 'moment';
 import keyBy from 'lodash.keyby';
 import groupBy from 'lodash.groupby';
-import fs from 'fs';
 import { truncateString } from 'sussol-utilities';
 import {
   DatabaseError,
@@ -20,8 +19,8 @@ import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../../database/m
 import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../../../dataAccessors';
 import { allowNoPermissions, hasBESAdminAccess } from '../../../permissions';
 import { SurveyResponseVariablesExtractor } from '../../utilities';
+import { getExportPathForUser } from '../getExportPathForUser';
 
-const FILE_LOCATION = 'exports';
 const FILE_PREFIX = 'survey_response_export';
 export const EXPORT_DATE_FORMAT = 'D-M-YYYY h:mma';
 export const API_DATE_FORMAT = 'YYYY-MM-DD';
@@ -54,7 +53,7 @@ const getBaseExport = infoColumnHeaders => [
  * @param {func}    res - function to call with response, takes (Error error, Object result)
  */
 export async function exportSurveyResponses(req, res) {
-  const { models, accessPolicy } = req;
+  const { models, accessPolicy, userId } = req;
   const { surveyResponseId } = req.params;
   const {
     surveyCodes,
@@ -272,14 +271,7 @@ export async function exportSurveyResponses(req, res) {
     throw new DatabaseError('exporting survey responses', error);
   }
 
-  // Make the export directory if it doesn't already exist
-  try {
-    fs.statSync(FILE_LOCATION);
-  } catch (e) {
-    fs.mkdirSync(FILE_LOCATION);
-  }
-
-  const filePath = `${FILE_LOCATION}/${FILE_PREFIX}_${Date.now()}.xlsx`;
+  const filePath = `${getExportPathForUser(userId)}/${FILE_PREFIX}_${Date.now()}.xlsx`;
 
   xlsx.writeFile(workbook, filePath);
   respondWithDownload(res, filePath);

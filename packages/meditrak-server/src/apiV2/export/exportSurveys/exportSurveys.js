@@ -13,10 +13,10 @@ import { SurveyExporter } from './SurveyExporter';
  * @param {func}    res - function to call with response, takes (Error error, Object result)
  */
 export async function exportSurveys(req, res) {
-  const { models, assertPermissions } = req;
+  const { models, userId, assertPermissions } = req;
   const { surveyId } = req.params;
   const { surveyCode } = req.query;
-  const exporter = new SurveyExporter(models, assertPermissions);
+  const exporter = new SurveyExporter(models, userId, assertPermissions);
   const filePath = await exporter.exportToFile(surveyId, surveyCode);
   respondWithDownload(res, filePath, true);
 }
