@@ -55,6 +55,7 @@ export const TYPES = {
   SURVEY_SCREEN: 'survey_screen',
   SURVEY: 'survey',
   SYNC_SERVICE: 'sync_service',
+  SYNC_SERVICE_LOG: 'sync_service_log',
   USER_ACCOUNT: 'user_account',
   USER_ENTITY_PERMISSION: 'user_entity_permission',
   USER_SESSION: 'userSession',
