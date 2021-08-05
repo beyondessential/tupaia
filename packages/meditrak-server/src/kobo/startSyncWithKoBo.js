@@ -70,7 +70,7 @@ export async function syncWithKoBo(models, dataBroker, serviceCode) {
           id: generateId(),
           survey_id: survey.id,
           user_id: apiUser.user_account_id,
-          assessor_name: 'KoBo Integration',
+          assessor_name: responseData.koboUser || 'KoBo Integration',
           entity_id: entity.id,
           start_time: responseData.eventDate,
           end_time: responseData.eventDate,

@@ -28,6 +28,7 @@ export class KoBoTranslator {
     const {
       _id: event,
       _submission_time: eventDate,
+      _submitted_by: koboUser,
       [entityQuestion]: koboEntityCode,
       ...restOfFields
     } = result;
@@ -46,6 +47,7 @@ export class KoBoTranslator {
     return {
       event,
       eventDate,
+      koboUser,
       orgUnit,
       orgUnitName,
       dataValues,
