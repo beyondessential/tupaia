@@ -61,7 +61,9 @@ export async function syncWithKoBo(models, dataBroker, serviceCode) {
         }
         const entity = await transactingModels.entity.findOne({ code: responseData.orgUnit });
         if (!entity) {
-          await syncService.log(`Skipping KoBo sync for unknown entity ${responseData.orgUnit}`);
+          await syncService.log(
+            `Skipping KoBo sync for record id ${responseData.event}: unknown entity ${responseData.orgUnit}`,
+          );
           continue;
         }
 
