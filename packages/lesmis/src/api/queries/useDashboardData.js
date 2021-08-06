@@ -28,9 +28,10 @@ export const useDashboardData = entityCode => {
   const data = query.data?.map(dashboard => {
     const drillDownItemCodes = getDrillDownCodes(dashboard.items);
 
-    const dashboardItems = dashboard.items
-      .filter(({ type }) => type === 'chart' || type === 'list') // Only show supported chart types
-      .filter(view => !drillDownItemCodes.includes(view.code)); // Remove the drilldowns from the main dashboard items list
+    const dashboardItems = dashboard.items.filter(
+      ({ type }) => type === 'chart' || type === 'list',
+    ); // Only show supported chart types
+    // .filter(view => !drillDownItemCodes.includes(view.code)); // Remove the drilldowns from the main dashboard items list
 
     // Save the drill down configs so they can be used to display the nested reports
     const drillDowns = dashboard.items.filter(view => drillDownItemCodes.includes(view.code));

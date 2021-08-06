@@ -174,7 +174,7 @@ export const DashboardReportTabView = ({
                     key={item.code}
                     drillDowns={dashboard.drillDowns}
                     entityCode={entityCode}
-                    dashboard={dashboard}
+                    dashboardCode={dashboard.dashboardCode}
                     year={year}
                     viewConfig={item}
                   />

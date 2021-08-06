@@ -4,10 +4,8 @@
  *
  */
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useTheme } from '@material-ui/core/styles';
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import {
   Box,
   useMediaQuery,
@@ -15,14 +13,13 @@ import {
   Typography,
   Dialog as MuiDialog,
   Container as MuiContainer,
-  Button as MuiButton,
 } from '@material-ui/core';
 import { DateRangePicker } from '@tupaia/ui-components';
 import * as COLORS from '../constants';
 import { FlexSpaceBetween, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
 import { Chart } from './Chart';
-import { useDashboardReportData } from '../api/queries';
+import { useDashboardReportDataWithConfig } from '../api/queries';
 import { useUrlParams, useUrlSearchParams } from '../utils';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -67,125 +64,88 @@ const Description = styled(Typography)`
   margin-top: 0.625rem;
 `;
 
-// eslint-disable-next-line react/prop-types
-const DefaultOpenButton = ({ onClick }) => (
-  <MuiButton onClick={onClick} endIcon={<KeyboardArrowRightIcon />} color="primary">
-    See More
-  </MuiButton>
-);
+export const DashboardReportModal = () => {
+  const { entityCode } = useUrlParams();
+  const [{ startDate, endDate, reportCode }, setParams] = useUrlSearchParams();
 
-export const DashboardReportModal = React.memo(
-  ({ name, dashboard, ButtonComponent, reportCode, periodGranularity, viewConfig }) => {
-    const { code: itemCode, legacy } = viewConfig;
-    const { dashboardCode, dashboardName } = dashboard;
-    const { entityCode } = useUrlParams();
-    const [
-      { startDate, endDate, reportCode: selectedReportCode },
-      setParams,
-    ] = useUrlSearchParams();
+  const { data, isLoading, isError, error } = useDashboardReportDataWithConfig({
+    entityCode,
+    reportCode,
+    startDate,
+    endDate,
+  });
 
-    const isOpen = reportCode === selectedReportCode;
-    const [open, setOpen] = useState(isOpen);
-    const theme = useTheme();
-    const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const { data, isLoading, isError, error } = useDashboardReportData({
-      entityCode,
-      dashboardCode,
-      reportCode,
-      itemCode,
-      periodGranularity,
-      legacy,
-      startDate,
-      endDate,
+  const handleDatesChange = (newStartDate, newEndDate) => {
+    setParams({
+      startDate: newStartDate,
+      endDate: newEndDate,
     });
+  };
 
-    const handleDatesChange = (newStartDate, newEndDate) => {
-      setParams({
-        startDate: newStartDate,
-        endDate: newEndDate,
-      });
-    };
+  // set reportCode param after the modal render is rendered to improve the responsiveness
+  // of the modal transition
+  const onRendered = () => {
+    setParams({
+      reportCode,
+    });
+  };
 
-    const handleClickOpen = () => {
-      setOpen(true);
-    };
+  const handleClose = () => {
+    setParams({
+      startDate: null,
+      endDate: null,
+      reportCode: null,
+    });
+  };
 
-    // set reportCode param after the modal render is rendered to improve the responsiveness
-    // of the modal transition
-    const onRendered = () => {
-      setParams({
-        reportCode,
-      });
-    };
+  const { reportData, dashboardItemConfig: config } = data;
+  const isOpen = !!reportCode;
 
-    const handleClose = () => {
-      setOpen(false);
-      setParams({
-        startDate: null,
-        endDate: null,
-        reportCode: null,
-      });
-    };
-
-    return (
-      <>
-        <ButtonComponent onClick={handleClickOpen} />
-        <MuiDialog
-          onRendered={onRendered}
-          scroll="paper"
-          fullScreen
-          open={open}
-          onClose={handleClose}
-          TransitionComponent={Transition}
-          style={{ left: fullScreen ? '0' : '6.25rem' }}
-        >
-          <DialogHeader handleClose={handleClose} title={dashboardName} />
-          <Wrapper>
-            <Container maxWidth="xl">
-              <Header>
-                <Box maxWidth={580}>
-                  <Heading variant="h3">{name}</Heading>
-                  {viewConfig?.description && <Description>{viewConfig.description}</Description>}
-                </Box>
-                <FlexStart>
-                  <DateRangePicker
-                    isLoading={isLoading}
-                    startDate={startDate}
-                    endDate={endDate}
-                    granularity={periodGranularity}
-                    onSetDates={handleDatesChange}
-                  />
-                </FlexStart>
-              </Header>
-              <Chart
-                viewContent={{ ...viewConfig, data, startDate, endDate }}
-                isLoading={isLoading}
-                isError={isError}
-                error={error}
-                isEnlarged
-              />
-            </Container>
-          </Wrapper>
-        </MuiDialog>
-      </>
-    );
-  },
-);
-
-DashboardReportModal.propTypes = {
-  name: PropTypes.string.isRequired,
-  ButtonComponent: PropTypes.any,
-  reportCode: PropTypes.string.isRequired,
-  periodGranularity: PropTypes.string,
-  dashboard: PropTypes.shape({
-    dashboardCode: PropTypes.string.isRequired,
-    dashboardName: PropTypes.string.isRequired,
-  }).isRequired,
-  viewConfig: PropTypes.object.isRequired,
-};
-
-DashboardReportModal.defaultProps = {
-  periodGranularity: null,
-  ButtonComponent: DefaultOpenButton,
+  return (
+    <>
+      <MuiDialog
+        onRendered={onRendered}
+        scroll="paper"
+        fullScreen
+        open={isOpen}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+        style={{ left: fullScreen ? '0' : '6.25rem' }}
+      >
+        <DialogHeader
+          handleClose={handleClose}
+          title={config?.dashboardName ? config?.dashboardName : 'Loading...'}
+        />
+        <Wrapper>
+          <Container maxWidth="xl">
+            <Header>
+              <Box maxWidth={580}>
+                <Heading variant="h3">{config?.name}</Heading>
+                {config?.description && <Description>{config.description}</Description>}
+              </Box>
+              <FlexStart>
+                <DateRangePicker
+                  isLoading={isLoading}
+                  startDate={startDate}
+                  endDate={endDate}
+                  granularity={config?.periodGranularity}
+                  onSetDates={handleDatesChange}
+                />
+              </FlexStart>
+            </Header>
+            <Chart
+              viewContent={{ data: reportData, ...config, startDate, endDate }}
+              isLoading={isLoading}
+              isError={isError}
+              error={error}
+              isEnlarged
+            />
+          </Container>
+        </Wrapper>
+      </MuiDialog>
+    </>
+  );
 };
