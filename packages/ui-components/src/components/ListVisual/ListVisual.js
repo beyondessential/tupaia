@@ -26,6 +26,7 @@ const ROW_TYPE_COMPONENTS = {
   header: HeaderRow,
   subheader: SubHeaderRow,
   standard: StandardRow,
+  drilldown: DrillDownRow,
 };
 
 const VALUE_TYPE_COMPONENTS = {
@@ -58,7 +59,7 @@ const processData = (config, data, drillDowns) => {
   return data?.map(item => {
     let rowType = 'standard';
     let displayConfig = null;
-    let drillDownCode = null;
+    let drillDownReportCode = null;
 
     if (!item.parent) {
       rowType = 'header';
@@ -70,11 +71,12 @@ const processData = (config, data, drillDowns) => {
     }
 
     if (config?.drillDown?.itemCodeByEntry[item.code] !== undefined) {
-      drillDownCode = config?.drillDown?.itemCodeByEntry[item.code];
+      drillDownReportCode = config?.drillDown?.itemCodeByEntry[item.code];
 
       // check that the drill down config exists before trying to render a drilldown row
-      if (drillDowns.find(d => d.code === drillDownCode)) {
+      if (drillDowns.find(d => d.code === drillDownReportCode)) {
         rowType = 'drilldown';
+        drillDownReportCode = drillDowns.find(d => d.code === drillDownReportCode).reportCode;
       }
     }
 
@@ -82,12 +84,12 @@ const processData = (config, data, drillDowns) => {
       displayConfig = getDisplayConfig(config, item.statistic);
     }
 
-    return { ...item, rowType, valueType: config.valueType, displayConfig, drillDownCode };
+    return { ...item, rowType, valueType: config.valueType, displayConfig, drillDownReportCode };
   });
 };
 
 export const ListVisual = React.memo(
-  ({ viewContent, isLoading, dashboard, isError, error, drillDowns, DrillDownComponent }) => {
+  ({ viewContent, isLoading, isError, error, drillDowns, entityCode }) => {
     const { data, ...config } = viewContent;
 
     const list = processData(config, data, drillDowns);
@@ -95,25 +97,8 @@ export const ListVisual = React.memo(
     return (
       <Container isLoading={isLoading}>
         <FetchLoader isLoading={isLoading} isError={isError} error={error}>
-          {list?.map(({ rowType, valueType, label, displayConfig, drillDownCode }, index) => {
+          {list?.map(({ rowType, valueType, label, displayConfig, drillDownReportCode }, index) => {
             const ValueComponent = VALUE_TYPE_COMPONENTS[valueType];
-
-            if (rowType === 'drilldown') {
-              return (
-                <DrillDownRow
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={index}
-                  label={label}
-                  drillDownCode={drillDownCode}
-                  dashboard={dashboard}
-                  drillDowns={drillDowns}
-                  DrillDownComponent={DrillDownComponent}
-                >
-                  <ValueComponent displayConfig={displayConfig} />
-                </DrillDownRow>
-              );
-            }
-
             const RowComponent = ROW_TYPE_COMPONENTS[rowType];
 
             return (
@@ -121,6 +106,8 @@ export const ListVisual = React.memo(
                 // eslint-disable-next-line react/no-array-index-key
                 key={index}
                 label={label}
+                entityCode={entityCode}
+                reportCode={drillDownReportCode}
               >
                 <ValueComponent displayConfig={displayConfig} />
               </RowComponent>
@@ -135,16 +122,11 @@ export const ListVisual = React.memo(
 
 ListVisual.propTypes = {
   viewContent: PropTypes.object,
-  dashboard: PropTypes.shape({
-    dashboardCode: PropTypes.string.isRequired,
-    dashboardName: PropTypes.string.isRequired,
-  }).isRequired,
   drillDowns: PropTypes.array,
   isLoading: PropTypes.bool,
   isFetching: PropTypes.bool,
   isError: PropTypes.bool,
   error: PropTypes.string,
-  DrillDownComponent: PropTypes.any.isRequired,
 };
 
 ListVisual.defaultProps = {

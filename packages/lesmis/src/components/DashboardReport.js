@@ -6,9 +6,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-// import { ListVisual } from '@tupaia/ui-components';
+import { ListVisual } from '@tupaia/ui-components';
 import Button from '@material-ui/core/Button';
-import { ListVisual } from './ListVisual';
 import { Chart } from './Chart';
 import * as COLORS from '../constants';
 import { useDashboardReportData } from '../api/queries';

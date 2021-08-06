@@ -5,8 +5,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
-import MuiButton from '@material-ui/core/Button';
 import { FlexSpaceBetween } from '../Layout';
 
 const Heading = styled(Typography)`
@@ -29,15 +29,6 @@ const Row = styled(FlexSpaceBetween)`
   width: 100%;
   padding: 0;
   text-align: left;
-
-  &:hover.MuiButton-root {
-    background-color: initial;
-
-    .MuiTypography-root {
-      text-decoration: underline;
-      color: ${props => props.theme.palette.primary.main};
-    }
-  }
 
   &:nth-child(even) {
     background: #f1f1f1;
@@ -84,40 +75,37 @@ export const StandardRow = ({ label, children }) => (
   </Row>
 );
 
-export const DrillDownRow = React.memo(
-  ({ label, drillDowns, drillDownCode, dashboard, children, DrillDownComponent }) => {
-    const config = drillDowns.find(d => d.code === drillDownCode);
+const LinkRow = styled(Row)`
+  text-decoration: none;
+  color: initial;
 
-    const ButtonComponent = props => (
-      <Row component={MuiButton} {...props}>
-        <Cell>
-          <Text>{label}</Text>
-        </Cell>
-        {children}
-      </Row>
-    );
+  &:hover .MuiTypography-root {
+    text-decoration: underline;
+    color: ${props => props.theme.palette.primary.main};
+  }
+`;
 
-    return (
-      <DrillDownComponent
-        ButtonComponent={ButtonComponent}
-        name={config.name}
-        dashboard={dashboard}
-        reportCode={config.reportCode}
-        periodGranularity={config.periodGranularity}
-        viewConfig={config}
-      />
-    );
-  },
-);
+export const DrillDownRow = ({ label, entityCode, reportCode, children }) => {
+  const { search } = useLocation();
+  return (
+    <LinkRow
+      component={RouterLink}
+      to={{
+        pathname: `/${entityCode}/dashboard`,
+        search: `${search}&reportCode=${reportCode}`,
+      }}
+    >
+      <Cell>
+        <Text>{label}</Text>
+      </Cell>
+      {children}
+    </LinkRow>
+  );
+};
 
 DrillDownRow.propTypes = {
   label: PropTypes.string.isRequired,
-  dashboard: PropTypes.shape({
-    dashboardCode: PropTypes.string.isRequired,
-    dashboardName: PropTypes.string.isRequired,
-  }).isRequired,
-  drillDowns: PropTypes.array.isRequired,
-  drillDownCode: PropTypes.string.isRequired,
+  entityCode: PropTypes.string.isRequired,
+  reportCode: PropTypes.string.isRequired,
   children: PropTypes.any.isRequired,
-  DrillDownComponent: PropTypes.any.isRequired,
 };
