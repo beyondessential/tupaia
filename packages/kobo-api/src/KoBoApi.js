@@ -5,6 +5,7 @@
 import { fetchWithTimeout, stringifyQuery, takesDateForm } from '@tupaia/utils';
 
 const MAX_FETCH_WAIT_TIME = 15 * 1000; // 15 seconds
+const MAX_FETCH_ENTRIES = 50;
 
 export class KoBoApi {
   constructor() {
@@ -19,11 +20,20 @@ export class KoBoApi {
       mongoQuery = { ...mongoQuery, _submission_time: { $gt: optionsInput.startSubmissionTime } };
     }
 
-    const response = await this.fetchFromKoBo(`api/v2/assets/${koboSurveyCode}/data.json`, {
-      query: JSON.stringify(mongoQuery),
-    });
+    let response;
+    let start = 0;
+    const results = [];
+    do {
+      response = await this.fetchFromKoBo(`api/v2/assets/${koboSurveyCode}/data.json`, {
+        start,
+        limit: MAX_FETCH_ENTRIES,
+        query: JSON.stringify(mongoQuery),
+      });
+      start += MAX_FETCH_ENTRIES;
+      results.push(...response.results);
+    } while (response.next !== null);
 
-    return response?.results;
+    return results;
   }
 
   async fetchFromKoBo(endpoint, params) {
