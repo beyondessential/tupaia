@@ -10,7 +10,7 @@ export const useUrlSearchParams = () => {
   const location = useLocation();
   const urlParams = new URLSearchParams(location.search);
 
-  const setParams = newParams => {
+  const setParams = (newParams, pushToHistory = true) => {
     Object.entries(newParams).forEach(([key, param]) => {
       if (param === null || param === undefined) {
         urlParams.delete(key);
@@ -20,7 +20,11 @@ export const useUrlSearchParams = () => {
     });
 
     if (location.search !== urlParams.toString()) {
-      history.push({ ...location, search: urlParams.toString() });
+      if (pushToHistory) {
+        history.push({ ...location, search: urlParams.toString() });
+      } else {
+        history.replace({ ...location, search: urlParams.toString() });
+      }
     }
   };
 

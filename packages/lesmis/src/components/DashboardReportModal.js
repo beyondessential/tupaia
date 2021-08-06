@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useTheme } from '@material-ui/core/styles';
 import {
@@ -65,9 +65,10 @@ const Description = styled(Typography)`
 `;
 
 export const DashboardReportModal = () => {
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { entityCode } = useUrlParams();
   const [{ startDate, endDate, reportCode }, setParams] = useUrlSearchParams();
-
   const { data, isLoading, isError, error } = useDashboardReportDataWithConfig({
     entityCode,
     reportCode,
@@ -75,22 +76,14 @@ export const DashboardReportModal = () => {
     endDate,
   });
 
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
   const handleDatesChange = (newStartDate, newEndDate) => {
-    setParams({
-      startDate: newStartDate,
-      endDate: newEndDate,
-    });
-  };
-
-  // set reportCode param after the modal render is rendered to improve the responsiveness
-  // of the modal transition
-  const onRendered = () => {
-    setParams({
-      reportCode,
-    });
+    setParams(
+      {
+        startDate: newStartDate,
+        endDate: newEndDate,
+      },
+      false,
+    );
   };
 
   const handleClose = () => {
@@ -107,7 +100,6 @@ export const DashboardReportModal = () => {
   return (
     <>
       <MuiDialog
-        onRendered={onRendered}
         scroll="paper"
         fullScreen
         open={isOpen}

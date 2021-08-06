@@ -9,7 +9,6 @@ import PropTypes from 'prop-types';
 // import { ListVisual } from '@tupaia/ui-components';
 import Button from '@material-ui/core/Button';
 import { ListVisual } from './ListVisual';
-import { DashboardReportModal } from './DashboardReportModal';
 import { Chart } from './Chart';
 import * as COLORS from '../constants';
 import { useDashboardReportData } from '../api/queries';
@@ -81,8 +80,8 @@ export const DashboardReport = React.memo(
             endIcon={<KeyboardArrowRightIcon />}
             color="primary"
             to={{
-              pathname: `${entityCode}/dashboard`,
-              search: `?dashboard=${dashboardCode}&reportCode=${reportCode}`,
+              pathname: `/${entityCode}/dashboard`,
+              search: `?reportCode=${reportCode}`,
             }}
           >
             See More

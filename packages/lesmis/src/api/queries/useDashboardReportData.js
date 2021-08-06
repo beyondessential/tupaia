@@ -43,7 +43,7 @@ export const useDashboardReportDataWithConfig = ({
     dash.items.find(item => item.reportCode === reportCode),
   );
 
-  const dashboardItem = dashboard?.items.find(item => item => item.reportCode === reportCode);
+  const dashboardItem = dashboard?.items.find(item => item.reportCode === reportCode);
 
   return {
     ...query,
