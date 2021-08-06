@@ -5,11 +5,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
-import MuiButton from '@material-ui/core/Button';
 import { FlexSpaceBetween } from '../Layout';
-import MuiLink from '@material-ui/core/Link';
 
 const Heading = styled(Typography)`
   font-size: 1.125rem;
@@ -31,15 +29,6 @@ const Row = styled(FlexSpaceBetween)`
   width: 100%;
   padding: 0;
   text-align: left;
-
-  &:hover.MuiButton-root {
-    background-color: initial;
-
-    .MuiTypography-root {
-      text-decoration: underline;
-      color: ${props => props.theme.palette.primary.main};
-    }
-  }
 
   &:nth-child(even) {
     background: #f1f1f1;
@@ -86,32 +75,37 @@ export const StandardRow = ({ label, children }) => (
   </Row>
 );
 
-export const DrillDownRow = React.memo(
-  ({ label, drillDowns, drillDownCode, dashboard, children }) => {
-    const config = drillDowns.find(d => d.code === drillDownCode);
+const LinkRow = styled(Row)`
+  text-decoration: none;
+  color: initial;
 
-    return (
-      <Row
-        component={RouterLink}
-        to="/LA_Huoixai%20District/dashboard?dashboard=essdpEarlyChildhood&reportCode=LESMIS_enrolment_ece_5_target&startDate=2015-01-01&endDate=2021-08-06"
-      >
-        <Cell>
-          <Text>{label}</Text>
-        </Cell>
-        {children}
-      </Row>
-    );
-  },
-);
+  &:hover .MuiTypography-root {
+    text-decoration: underline;
+    color: ${props => props.theme.palette.primary.main};
+  }
+`;
+
+export const DrillDownRow = ({ label, entityCode, reportCode, children }) => {
+  const { search } = useLocation();
+  return (
+    <LinkRow
+      component={RouterLink}
+      to={{
+        pathname: `/${entityCode}/dashboard`,
+        search: `${search}&reportCode=${reportCode}`,
+      }}
+    >
+      <Cell>
+        <Text>{label}</Text>
+      </Cell>
+      {children}
+    </LinkRow>
+  );
+};
 
 DrillDownRow.propTypes = {
   label: PropTypes.string.isRequired,
-  dashboard: PropTypes.shape({
-    dashboardCode: PropTypes.string.isRequired,
-    dashboardName: PropTypes.string.isRequired,
-  }).isRequired,
-  drillDowns: PropTypes.array.isRequired,
-  drillDownCode: PropTypes.string.isRequired,
+  entityCode: PropTypes.string.isRequired,
+  reportCode: PropTypes.string.isRequired,
   children: PropTypes.any.isRequired,
-  DrillDownComponent: PropTypes.any.isRequired,
 };

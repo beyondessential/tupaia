@@ -15,7 +15,7 @@ import { useDashboardReportData } from '../api/queries';
 import { yearToApiDates } from '../api/queries/utils';
 import { FlexEnd } from './Layout';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 
 const Container = styled.div`
   width: 55rem;
@@ -31,72 +31,62 @@ const Footer = styled(FlexEnd)`
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
-export const DashboardReport = React.memo(
-  ({ entityCode, dashboardCode, year, viewConfig, drillDowns }) => {
-    const { code: itemCode, legacy, periodGranularity, reportCode, name, type } = viewConfig;
-    const { startDate, endDate } = yearToApiDates(year);
+export const DashboardReport = React.memo(({ entityCode, year, viewConfig, drillDowns }) => {
+  const { search } = useLocation();
+  const { reportCode, name, type } = viewConfig;
+  const { startDate, endDate } = yearToApiDates(year);
 
-    const { data, isLoading, isFetching, isError, error } = useDashboardReportData({
-      entityCode,
-      reportCode,
-      dashboardCode,
-      itemCode,
-      legacy,
-      periodGranularity,
-      startDate,
-      endDate,
-    });
+  const { data, isLoading, isFetching, isError, error } = useDashboardReportData({
+    entityCode,
+    reportCode,
+    startDate,
+    endDate,
+  });
 
-    if (type === 'list') {
-      return (
-        <Container>
-          List Visual
-          {/*<ListVisual*/}
-          {/*  viewContent={{ ...viewConfig, data, startDate, endDate }}*/}
-          {/*  isLoading={isLoading}*/}
-          {/*  isError={isError}*/}
-          {/*  error={error}*/}
-          {/*  drillDowns={drillDowns}*/}
-          {/*  dashboard={dashboard}*/}
-          {/*  DrillDownComponent={DashboardReportModal}*/}
-          {/*/>*/}
-        </Container>
-      );
-    }
-
+  if (type === 'list') {
     return (
       <Container>
-        <Chart
+        <ListVisual
+          entityCode={entityCode}
           viewContent={{ ...viewConfig, data, startDate, endDate }}
           isLoading={isLoading}
-          isFetching={isFetching}
           isError={isError}
           error={error}
-          name={name}
+          drillDowns={drillDowns}
         />
-        <Footer>
-          <Button
-            component={RouterLink}
-            endIcon={<KeyboardArrowRightIcon />}
-            color="primary"
-            to={{
-              pathname: `/${entityCode}/dashboard`,
-              search: `?reportCode=${reportCode}`,
-            }}
-          >
-            See More
-          </Button>
-        </Footer>
       </Container>
     );
-  },
-);
+  }
+
+  return (
+    <Container>
+      <Chart
+        viewContent={{ ...viewConfig, data, startDate, endDate }}
+        isLoading={isLoading}
+        isFetching={isFetching}
+        isError={isError}
+        error={error}
+        name={name}
+      />
+      <Footer>
+        <Button
+          component={RouterLink}
+          endIcon={<KeyboardArrowRightIcon />}
+          color="primary"
+          to={{
+            pathname: `/${entityCode}/dashboard`,
+            search: `${search}&reportCode=${reportCode}`,
+          }}
+        >
+          See More
+        </Button>
+      </Footer>
+    </Container>
+  );
+});
 
 const VIEW_CONFIG_SHAPE = PropTypes.shape({
   code: PropTypes.string.isRequired,
-  legacy: PropTypes.bool.isRequired,
-  periodGranularity: PropTypes.string,
-  name: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   reportCode: PropTypes.string.isRequired,
 });
@@ -105,7 +95,6 @@ DashboardReport.propTypes = {
   entityCode: PropTypes.string.isRequired,
   drillDowns: PropTypes.array,
   year: PropTypes.string,
-  dashboardCode: PropTypes.string.isRequired,
   viewConfig: VIEW_CONFIG_SHAPE.isRequired,
 };
 

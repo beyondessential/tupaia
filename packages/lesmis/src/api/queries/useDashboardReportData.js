@@ -36,7 +36,7 @@ export const useDashboardReportDataWithConfig = ({
 }) => {
   const query = combineQueries({
     reportData: useDashboardReportData({ entityCode, reportCode, startDate, endDate }),
-    dashboard: useDashboardData(entityCode),
+    dashboard: useDashboardData({ entityCode }),
   });
 
   const dashboard = query.data?.dashboard?.find(dash =>

@@ -125,7 +125,10 @@ export const DashboardReportTabView = ({
   filterSubDashboards,
 }) => {
   const [selectedDashboard, setSelectedDashboard] = useUrlSearchParam('subDashboard');
-  const { data, isLoading, isError, error } = useDashboardData(entityCode);
+  const { data, isLoading, isError, error } = useDashboardData({
+    entityCode,
+    includeDrillDowns: false,
+  });
   const { scrollToTop, topRef, isScrolledPastTop, onLoadTabBar } = useStickyBar();
   const subDashboards = useMemo(() => data?.filter(filterSubDashboards), [
     data,
@@ -174,7 +177,6 @@ export const DashboardReportTabView = ({
                     key={item.code}
                     drillDowns={dashboard.drillDowns}
                     entityCode={entityCode}
-                    dashboardCode={dashboard.dashboardCode}
                     year={year}
                     viewConfig={item}
                   />

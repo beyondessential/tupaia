@@ -19,7 +19,7 @@ const getDrillDownCodes = dashboardItems =>
       return codes;
     }, []);
 
-export const useDashboardData = entityCode => {
+export const useDashboardData = ({ entityCode, includeDrillDowns = true }) => {
   const query = useQuery(['dashboard', entityCode], () => get(`dashboard/${entityCode}`), {
     staleTime: 60 * 60 * 1000,
     refetchOnWindowFocus: false,
@@ -28,10 +28,12 @@ export const useDashboardData = entityCode => {
   const data = query.data?.map(dashboard => {
     const drillDownItemCodes = getDrillDownCodes(dashboard.items);
 
-    const dashboardItems = dashboard.items.filter(
-      ({ type }) => type === 'chart' || type === 'list',
-    ); // Only show supported chart types
-    // .filter(view => !drillDownItemCodes.includes(view.code)); // Remove the drilldowns from the main dashboard items list
+    let dashboardItems = dashboard.items.filter(({ type }) => type === 'chart' || type === 'list'); // Only show supported chart types
+
+    if (!includeDrillDowns) {
+      // Remove the drill downs from the main dashboard items list
+      dashboardItems = dashboardItems.filter(view => !drillDownItemCodes.includes(view.code));
+    }
 
     // Save the drill down configs so they can be used to display the nested reports
     const drillDowns = dashboard.items.filter(view => drillDownItemCodes.includes(view.code));
