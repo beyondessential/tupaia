@@ -170,16 +170,20 @@ export async function exportSurveyResponses(req, res) {
             comparisonValue: new Date(moment(endDate).endOf('day')),
           };
         }
-        const entityIdsGroup = entities.map(entity => entity.id);
-        surveyResponseFindConditions.entity_id = entityIdsGroup;
 
-        const surveyResponses = await models.surveyResponse.find(
+        // to support a large number of entities (e.g. all schools in Laos), 'findManyByColumn' will
+        // break the query into batches, using a subset of entities each time
+        const allEntityIds = entities.map(entity => entity.id);
+        const surveyResponses = await models.surveyResponse.findManyByColumn(
+          'entity_id',
+          allEntityIds,
           surveyResponseFindConditions,
           sortAndLimitSurveyResponses,
         );
-        const entitiesById = keyBy(entities, 'id');
-        // Fetch all answers of all survey responses for further use in 'processSurveyResponse()'.
         const surveyResponseIds = surveyResponses.map(response => response.id);
+        const entitiesById = keyBy(entities, 'id');
+
+        // Fetch all answers of all survey responses for further use in 'processSurveyResponse()'.
         const answers = await findAnswersInSurveyResponse(
           models,
           surveyResponseIds,
