@@ -6,15 +6,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { ListVisual } from '@tupaia/ui-components';
+// import { ListVisual } from '@tupaia/ui-components';
+import { ListVisual } from './ListVisual';
 import Button from '@material-ui/core/Button';
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { Chart } from './Chart';
 import * as COLORS from '../constants';
 import { useDashboardReportData } from '../api/queries';
 import { yearToApiDates } from '../api/queries/utils';
 import { FlexEnd } from './Layout';
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
 
 const Container = styled.div`
   width: 55rem;
@@ -42,30 +43,18 @@ export const DashboardReport = React.memo(({ entityCode, year, viewConfig, drill
     endDate,
   });
 
-  if (type === 'list') {
-    return (
-      <Container>
-        <ListVisual
-          entityCode={entityCode}
-          viewContent={{ ...viewConfig, data, startDate, endDate }}
-          isLoading={isLoading}
-          isError={isError}
-          error={error}
-          drillDowns={drillDowns}
-        />
-      </Container>
-    );
-  }
+  const Visual = type === 'list' ? ListVisual : Chart;
 
   return (
     <Container>
-      <Chart
+      <Visual
         viewContent={{ ...viewConfig, data, startDate, endDate }}
         isLoading={isLoading}
         isFetching={isFetching}
         isError={isError}
         error={error}
         name={name}
+        drillDowns={drillDowns}
       />
       <Footer>
         <Button
@@ -85,6 +74,7 @@ export const DashboardReport = React.memo(({ entityCode, year, viewConfig, drill
 });
 
 const VIEW_CONFIG_SHAPE = PropTypes.shape({
+  name: PropTypes.string.isRequired,
   code: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   reportCode: PropTypes.string.isRequired,

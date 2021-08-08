@@ -5,6 +5,7 @@
  */
 import { useQuery } from 'react-query';
 import { get } from '../api';
+import { QUERY_OPTIONS } from './constants';
 
 const getDrillDownCodes = dashboardItems =>
   dashboardItems
@@ -20,10 +21,11 @@ const getDrillDownCodes = dashboardItems =>
     }, []);
 
 export const useDashboardData = ({ entityCode, includeDrillDowns = true }) => {
-  const query = useQuery(['dashboard', entityCode], () => get(`dashboard/${entityCode}`), {
-    staleTime: 60 * 60 * 1000,
-    refetchOnWindowFocus: false,
-  });
+  const query = useQuery(
+    ['dashboard', entityCode],
+    () => get(`dashboard/${entityCode}`),
+    QUERY_OPTIONS,
+  );
 
   const data = query.data?.map(dashboard => {
     const drillDownItemCodes = getDrillDownCodes(dashboard.items);

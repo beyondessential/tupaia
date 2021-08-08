@@ -21,6 +21,7 @@ import { DialogHeader } from './FullScreenDialog';
 import { Chart } from './Chart';
 import { useDashboardReportDataWithConfig } from '../api/queries';
 import { useUrlParams, useUrlSearchParams } from '../utils';
+import { ListVisual } from './ListVisual';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -95,6 +96,7 @@ export const DashboardReportModal = () => {
   };
 
   const { reportData, dashboardItemConfig: config } = data;
+  const Visual = config?.type === 'list' ? ListVisual : Chart;
   const isOpen = !!reportCode;
 
   return (
@@ -128,7 +130,7 @@ export const DashboardReportModal = () => {
                 />
               </FlexStart>
             </Header>
-            <Chart
+            <Visual
               viewContent={{ data: reportData, ...config, startDate, endDate }}
               isLoading={isLoading}
               isError={isError}
