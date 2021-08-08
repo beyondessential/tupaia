@@ -5,40 +5,15 @@
 
 import { KoBoTranslator } from '../../../services/kobo/KoBoTranslator';
 import { createModelsStub } from './KoBoService.stubs';
+import {
+  MOCK_KOBO_RESULT,
+  MOCK_QUESTION_MAP,
+  MOCK_QUESTION_ANSWER_MAP,
+} from './KoBoService.fixtures';
 
 describe('KoBoTranslator', () => {
   const mockModels = createModelsStub();
   const translator = new KoBoTranslator(mockModels);
-  const mockKoBoResult = {
-    _id: 1234,
-    _submission_time: '1954-04-11T01:23:45',
-    _submitted_by: 'Kermit',
-    entity: 'KoBoA',
-    who: 'them',
-    what: 'that',
-    where: 'there',
-    when: 'then',
-    why: 'because',
-  };
-  const mockAnswerMap = {
-    that: 'those',
-    there: 'here',
-    then: 'now',
-  };
-  const mockQuestionMap = {
-    person: { koboQuestionCode: 'who' },
-    thing: { koboQuestionCode: 'what' },
-    place: { koboQuestionCode: 'where' },
-    time: { koboQuestionCode: 'when' },
-    reason: { koboQuestionCode: 'why' },
-  };
-  const mockQuestionAndAnswerMap = {
-    person: { koboQuestionCode: 'who', answerMap: mockAnswerMap },
-    thing: { koboQuestionCode: 'what', answerMap: mockAnswerMap },
-    place: { koboQuestionCode: 'where', answerMap: mockAnswerMap },
-    time: { koboQuestionCode: 'when', answerMap: mockAnswerMap },
-    reason: { koboQuestionCode: 'why', answerMap: mockAnswerMap },
-  };
 
   describe('fetchEntityInfoFromKoBoAnswer', () => {
     it('Finds a tupaia entity from a kobo entity code', async () => {
@@ -69,7 +44,7 @@ describe('KoBoTranslator', () => {
   describe('translateSingleKoBoResult', () => {
     it('Map KoBo metadata fields to event info fields', async () => {
       const translatedResult = await translator.translateSingleKoBoResult(
-        mockKoBoResult,
+        MOCK_KOBO_RESULT,
         {},
         'entity',
       );
@@ -85,8 +60,8 @@ describe('KoBoTranslator', () => {
 
     it('Map question codes into new data values', async () => {
       const translatedResult = await translator.translateSingleKoBoResult(
-        mockKoBoResult,
-        mockQuestionMap,
+        MOCK_KOBO_RESULT,
+        MOCK_QUESTION_MAP,
         'entity',
       );
       expect(translatedResult.dataValues).toStrictEqual({
@@ -100,8 +75,8 @@ describe('KoBoTranslator', () => {
 
     it('Map answer into new values', async () => {
       const translatedResult = await translator.translateSingleKoBoResult(
-        mockKoBoResult,
-        mockQuestionAndAnswerMap,
+        MOCK_KOBO_RESULT,
+        MOCK_QUESTION_ANSWER_MAP,
         'entity',
       );
       expect(translatedResult.dataValues).toStrictEqual({
