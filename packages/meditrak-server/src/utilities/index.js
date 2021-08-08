@@ -4,6 +4,5 @@
  */
 
 export { getApiUrl } from './getApiUrl';
-export { getAttachmentForEmail } from './getAttachmentForEmail';
 export { resourceToRecordType } from './resourceToRecordType';
 export { sendEmail } from './sendEmail';
