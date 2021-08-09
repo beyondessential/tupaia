@@ -4,10 +4,16 @@
  */
 
 export class SqlQuery {
-  static parameteriseArray = arr => `(${arr.map(() => '?').join(',')})`;
+  static array = arr => `(${arr.map(() => '?').join(',')})`;
 
-  static parameteriseValues = rows =>
+  static values = rows =>
     `VALUES (${rows.map(values => values.map(() => `?`).join(',')).join('), (')})`;
+
+  static innerJoin = (codes, columnName) => `
+    INNER JOIN (
+      ${SqlQuery.values(codes.map(c => [c]))}
+    ) ${columnName}s(code) ON ${columnName}s.code = analytics.${columnName}
+  `;
 
   constructor(baseQuery, baseParameters = []) {
     this.query = baseQuery;

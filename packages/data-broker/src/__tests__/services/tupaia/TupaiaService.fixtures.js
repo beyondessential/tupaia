@@ -23,21 +23,6 @@ export const DATA_ELEMENTS = {
   },
 };
 
-export const FETCH_ANALYTICS_RESULTS = [
-  {
-    date: '2020-02-06',
-    organisationUnit: 'TO_Nukuhc',
-    dataElement: 'POP01',
-    value: 1,
-  },
-  {
-    date: '2020-02-06',
-    organisationUnit: 'Nukunuku',
-    dataElement: 'POP02',
-    value: 2,
-  },
-];
-
 export const ANALYTICS = [
   {
     period: '20200206',

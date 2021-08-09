@@ -32,9 +32,14 @@ export class Aggregator {
     return this.dataBroker.getDataSourceTypes();
   }
 
-  processAnalytics = (analytics, aggregationOptions, requestedPeriod) => {
+  processAnalytics = (analytics, aggregationOptions, aggregationsProcessed, requestedPeriod) => {
     const { aggregations = [], filter } = aggregationOptions;
-    const aggregatedAnalytics = this.aggregateAnalytics(analytics, aggregations, requestedPeriod);
+    const remainingAggregations = aggregations.slice(aggregationsProcessed.length);
+    const aggregatedAnalytics = this.aggregateAnalytics(
+      analytics,
+      remainingAggregations,
+      requestedPeriod,
+    );
     return filterAnalytics(aggregatedAnalytics, filter);
   };
 
@@ -67,10 +72,18 @@ export class Aggregator {
       };
     }
 
-    const { results, metadata } = await this.dataBroker.pull(dataSourceSpec, adjustedFetchOptions);
+    const { results, metadata, aggregationsProcessed } = await this.dataBroker.pull(
+      dataSourceSpec,
+      adjustedFetchOptions,
+    );
 
     return {
-      results: this.processAnalytics(results, adjustedAggregationOptions, fetchOptions.period),
+      results: this.processAnalytics(
+        results,
+        adjustedAggregationOptions,
+        aggregationsProcessed,
+        fetchOptions.period,
+      ),
       metadata,
       period: periodFromAnalytics(results, fetchOptions),
     };
