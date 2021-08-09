@@ -1,6 +1,6 @@
 'use strict';
 
-import { arrayToDbString } from '../utilities';
+import { arrayToDbString, insertJsonEntry } from '../utilities';
 
 var dbm;
 var type;
@@ -30,6 +30,22 @@ exports.up = async function (db) {
     set data_builder_config = regexp_replace(dr."data_builder_config"::text, '\\"SUM_PREVIOUS_EACH_DAY\\"','${regexReplaceValue}','g')::jsonb
     where code in (${arrayToDbString(legacyReportCodes)});
   `);
+
+  await insertJsonEntry(
+    db,
+    'mapOverlay',
+    'measureBuilderConfig',
+    ['measureBuilders', 'denominator', 'measureBuilderConfig'],
+    {
+      aggregations: [
+        'MOST_RECENT',
+        {
+          type: 'SUM_PREVIOUS_EACH_DAY',
+        },
+      ],
+    },
+    { id: 'AU_FLUTRACKING_Participants_Per_100k' },
+  );
 };
 
 exports.down = function (db) {};
