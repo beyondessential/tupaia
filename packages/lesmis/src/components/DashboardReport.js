@@ -6,8 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-// import { ListVisual } from '@tupaia/ui-components';
-import { ListVisual } from './ListVisual';
+import { ListVisual } from '@tupaia/ui-components';
 import Button from '@material-ui/core/Button';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
@@ -43,7 +42,7 @@ export const DashboardReport = React.memo(
       endDate,
     });
 
-    const { reportData, dashboardItemConfig: config, dashboardItemConfigs } = data;
+    const { reportData, dashboardItemConfig: config, reportCodes } = data;
     const Visual = config?.type === 'list' ? ListVisual : Chart;
     const Wrapper = isEnlarged ? React.Fragment : Container;
 
@@ -57,7 +56,7 @@ export const DashboardReport = React.memo(
           error={error}
           name={name}
           entityCode={entityCode}
-          dashboardItemConfigs={dashboardItemConfigs}
+          reportCodes={reportCodes}
           isEnlarged={isEnlarged}
         />
         {!isEnlarged && (

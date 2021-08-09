@@ -5,7 +5,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { FlexSpaceBetween } from '../Layout';
 import { ColorCircle } from './ColorCircle';
 import { HeaderRow, SubHeaderRow, StandardRow, DrillDownRow } from './Rows';
 import { FetchLoader } from '../FetchLoader';
@@ -14,12 +13,10 @@ const Container = styled.div`
   border-radius: 3px;
   overflow: hidden;
   min-height: 400px;
+  border: 1px solid ${props => (props.isEnlarged ? props.theme.palette.grey['400'] : 'none')};
+  border-collapse: collapse;
   height: ${props => (props.isLoading ? '400px' : 'auto')};
   background: #f9f9f9;
-`;
-
-const Footer = styled(FlexSpaceBetween)`
-  padding: 2rem 1rem;
 `;
 
 const ROW_TYPE_COMPONENTS = {
@@ -53,7 +50,7 @@ const getDisplayConfig = ({ valueType, listConfig }, statistic) => {
   }
 };
 
-const processData = (config, data, drillDowns) => {
+const processData = (config, data, reportCodes) => {
   let parentCode = null;
 
   return data?.map(item => {
@@ -71,12 +68,12 @@ const processData = (config, data, drillDowns) => {
     }
 
     if (config?.drillDown?.itemCodeByEntry[item.code] !== undefined) {
-      drillDownReportCode = config?.drillDown?.itemCodeByEntry[item.code];
+      const drillDownCode = config?.drillDown?.itemCodeByEntry[item.code];
 
       // check that the drill down config exists before trying to render a drilldown row
-      if (drillDowns.find(d => d.code === drillDownReportCode)) {
+      if (reportCodes[drillDownCode] !== undefined) {
         rowType = 'drilldown';
-        drillDownReportCode = drillDowns.find(d => d.code === drillDownReportCode).reportCode;
+        drillDownReportCode = reportCodes[drillDownCode];
       }
     }
 
@@ -89,13 +86,13 @@ const processData = (config, data, drillDowns) => {
 };
 
 export const ListVisual = React.memo(
-  ({ viewContent, isLoading, isError, error, drillDowns, entityCode }) => {
+  ({ viewContent, isLoading, isError, error, entityCode, reportCodes, isEnlarged }) => {
     const { data, ...config } = viewContent;
 
-    const list = processData(config, data, drillDowns);
+    const list = processData(config, data, reportCodes);
 
     return (
-      <Container isLoading={isLoading}>
+      <Container isLoading={isLoading} isEnlarged={isEnlarged}>
         <FetchLoader isLoading={isLoading} isError={isError} error={error}>
           {list?.map(({ rowType, valueType, label, displayConfig, drillDownReportCode }, index) => {
             const ValueComponent = VALUE_TYPE_COMPONENTS[valueType];
@@ -113,7 +110,6 @@ export const ListVisual = React.memo(
               </RowComponent>
             );
           })}
-          <Footer />
         </FetchLoader>
       </Container>
     );
@@ -121,19 +117,22 @@ export const ListVisual = React.memo(
 );
 
 ListVisual.propTypes = {
+  entityCode: PropTypes.string.isRequired,
   viewContent: PropTypes.object,
-  drillDowns: PropTypes.array,
+  reportCodes: PropTypes.object,
   isLoading: PropTypes.bool,
   isFetching: PropTypes.bool,
   isError: PropTypes.bool,
+  isEnlarged: PropTypes.bool,
   error: PropTypes.string,
 };
 
 ListVisual.defaultProps = {
   viewContent: null,
-  drillDowns: [],
+  reportCodes: null,
   isLoading: false,
   isFetching: false,
   isError: false,
+  isEnlarged: false,
   error: null,
 };

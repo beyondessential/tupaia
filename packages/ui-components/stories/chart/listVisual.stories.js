@@ -6,10 +6,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { ListVisual } from '../../src';
 import viewContent from './data/listVisualViewContent.json';
+import { RouterProvider } from '../../helpers/RouterProvider';
 
 export default {
   title: 'Chart/ListVisual',
   component: ListVisual,
+  decorators: [story => <RouterProvider>{story()}</RouterProvider>],
 };
 
 const Container = styled.div`
@@ -19,55 +21,24 @@ const Container = styled.div`
   padding: 3rem;
 `;
 
-const ChartContainer = styled.div`
-  border: 1px solid #dedee0;
-  border-radius: 3px;
-`;
-
 const Template = args => {
   return (
     <Container>
-      <ChartContainer>
-        <ListVisual {...args} />
-      </ChartContainer>
+      <ListVisual {...args} />
     </Container>
   );
 };
 
-// eslint-disable-next-line react/prop-types
-// Example drilldown component, this wont actually render a drilldown modal
-const DrillDownComponent = ({ ButtonComponent, viewConfig }) => {
-  const handleClick = () => {
-    alert(JSON.stringify(viewConfig, 1));
-  };
-  return <ButtonComponent onClick={handleClick} />;
+const reportCodes = {
+  LESMIS_enrolment_ece_0_2_target: 'LESMIS_enrolment_ece_0_2_target',
+  LESMIS_enrolment_ece_3_4_target: 'LESMIS_enrolment_ece_3_4_target',
+  LESMIS_enrolment_ece_5_target: 'LESMIS_enrolment_ece_5_target',
 };
-
-const drillDowns = [
-  {
-    code: 'LESMIS_enrolment_ece_0_2_target',
-    reportCode: 'LESMIS_enrolment_ece_0_2_target',
-    name: 'Enrolment rate of 0-2 year old students in ECE',
-  },
-  {
-    code: 'LESMIS_enrolment_ece_3_4_target',
-    reportCode: 'LESMIS_enrolment_ece_3_4_target',
-    name: 'Enrolment rate of 3-4 year old students in ECE',
-  },
-  {
-    code: 'LESMIS_enrolment_ece_5_target',
-    reportCode: 'LESMIS_enrolment_ece_5_target',
-    name: 'Enrolment rate of 5 year old students in ECE',
-  },
-];
 
 export const LightTheme = Template.bind({});
 LightTheme.args = {
   viewContent,
-  DrillDownComponent,
-  drillDowns,
-  dashboard: {
-    dashboardCode: 'LESMIS_ESSDP_EarlyChildhoodSubSector_Schools',
-    dashboardName: 'Schools',
-  },
+  reportCodes,
+  entityCode: 'LA',
+  isEnlarged: true,
 };

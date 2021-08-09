@@ -7,6 +7,11 @@ import { useQuery } from 'react-query';
 import { get } from '../api';
 import { QUERY_OPTIONS } from './constants';
 
+/**
+ * Gets a list of all the drilldown codes for a list of dashboard items
+ * @param dashboardItems
+ * @returns {*}
+ */
 const getDrillDownCodes = dashboardItems =>
   dashboardItems
     .filter(d => !!d.drillDown)

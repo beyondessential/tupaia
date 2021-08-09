@@ -18,10 +18,8 @@ import { DateRangePicker } from '@tupaia/ui-components';
 import * as COLORS from '../constants';
 import { FlexSpaceBetween, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
-import { Chart } from './Chart';
 import { useDashboardReportDataWithConfig } from '../api/queries';
 import { useUrlParams, useUrlSearchParams } from '../utils';
-import { ListVisual } from './ListVisual';
 import { DashboardReport } from './DashboardReport';
 
 const Transition = React.forwardRef(function Transition(props, ref) {

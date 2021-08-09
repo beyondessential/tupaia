@@ -30,6 +30,10 @@ const Row = styled(FlexSpaceBetween)`
   padding: 0;
   text-align: left;
 
+  &:last-child {
+    border-bottom: none;
+  }
+
   &:nth-child(even) {
     background: #f1f1f1;
   }

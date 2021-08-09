@@ -50,7 +50,7 @@ const getDisplayConfig = ({ valueType, listConfig }, statistic) => {
   }
 };
 
-const processData = (config, data, dashboardItemConfigs) => {
+const processData = (config, data, reportCodes) => {
   let parentCode = null;
 
   return data?.map(item => {
@@ -71,9 +71,9 @@ const processData = (config, data, dashboardItemConfigs) => {
       const drillDownCode = config?.drillDown?.itemCodeByEntry[item.code];
 
       // check that the drill down config exists before trying to render a drilldown row
-      if (dashboardItemConfigs[drillDownCode] !== undefined) {
+      if (reportCodes[drillDownCode] !== undefined) {
         rowType = 'drilldown';
-        drillDownReportCode = dashboardItemConfigs[drillDownCode].reportCode;
+        drillDownReportCode = reportCodes[drillDownCode];
       }
     }
 
@@ -86,10 +86,10 @@ const processData = (config, data, dashboardItemConfigs) => {
 };
 
 export const ListVisual = React.memo(
-  ({ viewContent, isLoading, isError, error, entityCode, dashboardItemConfigs, isEnlarged }) => {
+  ({ viewContent, isLoading, isError, error, entityCode, reportCodes, isEnlarged }) => {
     const { data, ...config } = viewContent;
 
-    const list = processData(config, data, dashboardItemConfigs);
+    const list = processData(config, data, reportCodes);
 
     return (
       <Container isLoading={isLoading} isEnlarged={isEnlarged}>
@@ -119,7 +119,7 @@ export const ListVisual = React.memo(
 ListVisual.propTypes = {
   entityCode: PropTypes.string.isRequired,
   viewContent: PropTypes.object,
-  dashboardItemConfigs: PropTypes.object,
+  reportCodes: PropTypes.object,
   isLoading: PropTypes.bool,
   isFetching: PropTypes.bool,
   isError: PropTypes.bool,
@@ -129,7 +129,7 @@ ListVisual.propTypes = {
 
 ListVisual.defaultProps = {
   viewContent: null,
-  dashboardItemConfigs: null,
+  reportCodes: null,
   isLoading: false,
   isFetching: false,
   isError: false,
