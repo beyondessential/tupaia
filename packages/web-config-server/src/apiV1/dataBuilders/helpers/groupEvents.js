@@ -48,7 +48,7 @@ const mapOrgUnitCodeToUniqueOrgUnitName = (allOrgUnits, eventsByOrgUnitCode) => 
 };
 
 const groupByAllOrgUnitNames = async (models, events, options, hierarchyId) => {
-  const orgUnits = await getOrgUnits(models, { ...options, hierarchyId } );
+  const orgUnits = await getOrgUnits(models, { ...options, hierarchyId });
 
   const eventsByOrgUnitCode = orgUnits.reduce(
     (results, { code }) => ({ ...results, [code]: [] }),
@@ -67,7 +67,7 @@ const groupByAllOrgUnitNames = async (models, events, options, hierarchyId) => {
 
 const groupByAllOrgUnitParentNames = async (models, events, options, hierarchyId) => {
   const { aggregationLevel } = options;
-  const orgUnits = await getOrgUnits(models, { ...options, hierarchyId } );
+  const orgUnits = await getOrgUnits(models, { ...options, hierarchyId });
 
   const eventsByOrgUnitCode = orgUnits.reduce(
     (results, { code }) => ({ ...results, [code]: [] }),
@@ -105,7 +105,7 @@ const groupByAllOrgUnitParentNames = async (models, events, options, hierarchyId
   return mapOrgUnitCodeToUniqueOrgUnitName(orgUnits, eventsByOrgUnitCode);
 };
 
-const groupByDataValues = (_, events, options, hierarchyId) => {
+const groupByDataValues = (_, events, options) => {
   const groupedEvents = {};
   for (const groupingName of Object.keys(options)) {
     groupedEvents[groupingName] = getEventsThatSatisfyConditions(events, options[groupingName]);
@@ -134,7 +134,7 @@ export const groupEvents = async (models, events, groupBySpecs = {}) => {
     throw new Error(`'${type}' is not a supported groupBy type`);
   }
 
-  return groupByMethod(models, events, options, hierarchyId );
+  return groupByMethod(models, events, options, hierarchyId);
 };
 
 /**
