@@ -16,7 +16,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const newConfig = { sumTillLatest: true };
+const newConfig = { sumTillLatestData: true };
 const legacyReportCodes = [
   'COVID_AU_Total_Cases_Each_State_Per_Day',
   'COVID_Compose_Cumulative_Deaths_Vs_Cases',
