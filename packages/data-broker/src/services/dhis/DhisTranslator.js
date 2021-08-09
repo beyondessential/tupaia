@@ -6,7 +6,7 @@
 import keyBy from 'lodash.keyby';
 
 import { translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
-import { reduceToDictionary } from '@tupaia/utils';
+import { mapKeys, reduceToDictionary } from '@tupaia/utils';
 import { InboundAnalyticsTranslator } from './InboundAnalyticsTranslator';
 import { parseValueForDhis } from './parseValueForDhis';
 
@@ -38,13 +38,6 @@ export class DhisTranslator {
       throw new Error(`Could not parse ${dataElementCode}: ${error.message}`);
     }
   };
-
-  /**
-   * If a group of data elements is not defined for a program, we cannot create
-   * a `dataElementToSourceCode` mapping . In this case use the existing data value code
-   */
-  eventDataElementToSourceCode = (dataElement, dataElementToSourceCode) =>
-    dataElementToSourceCode[dataElement] || dataElement;
 
   fetchOutboundDataElementsByCode = async (api, dataSources) => {
     const dataElementCodes = [...new Set(dataSources.map(d => d.dataElementCode))];
@@ -140,34 +133,6 @@ export class DhisTranslator {
     return this.inboundAnalyticsTranslator.translate(response, dataSources);
   };
 
-  translateInboundEventDataValues = (dataValues, dataElementToSourceCode) => {
-    const translateEventDataValues = Array.isArray(dataValues)
-      ? this.translateInboundArrayEventDataValues
-      : this.translateInboundObjectEventDataValues;
-    return translateEventDataValues(dataValues, dataElementToSourceCode);
-  };
-
-  translateInboundArrayEventDataValues = (dataValues, dataElementToSourceCode) =>
-    dataValues.map(dataValue => this.translateInboundDataValue(dataValue, dataElementToSourceCode));
-
-  translateInboundObjectEventDataValues = (dataValues, dataElementToSourceCode) =>
-    Object.entries(dataValues).reduce((dataValueMap, [dataElement, dataValue]) => {
-      const dataSourceCode = this.eventDataElementToSourceCode(
-        dataElement,
-        dataElementToSourceCode,
-      );
-      const translatedDataValue = this.translateInboundDataValue(
-        dataValue,
-        dataElementToSourceCode,
-      );
-      return { ...dataValueMap, [dataSourceCode]: translatedDataValue };
-    }, {});
-
-  translateInboundDataValue = ({ dataElement, ...restOfDataValue }, dataElementToSourceCode) => ({
-    ...restOfDataValue,
-    dataElement: this.eventDataElementToSourceCode(dataElement, dataElementToSourceCode),
-  });
-
   async translateInboundEvents(events, dataGroupCode) {
     const dataElementsInGroup = await this.models.dataSource.getDataElementsInGroup(dataGroupCode);
     const dataElementToSourceCode = reduceToDictionary(
@@ -178,7 +143,7 @@ export class DhisTranslator {
 
     return events.map(({ dataValues, ...restOfEvent }) => ({
       ...restOfEvent,
-      dataValues: this.translateInboundEventDataValues(dataValues, dataElementToSourceCode),
+      dataValues: mapKeys(dataValues, dataElementToSourceCode, { defaultToExistingKeys: true }),
     }));
   }
 

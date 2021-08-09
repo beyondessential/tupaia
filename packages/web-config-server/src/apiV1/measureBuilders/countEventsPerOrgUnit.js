@@ -12,7 +12,7 @@ export class CountEventsPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   async fetchResultsAndPeriod() {
     const dataElementCodes = Object.keys(this.config.dataValues);
     return {
-      results: await this.fetchEvents({ dataElementCodes, useDeprecatedApi: false }),
+      results: await this.fetchEvents({ dataElementCodes }),
       period: null,
     };
   }

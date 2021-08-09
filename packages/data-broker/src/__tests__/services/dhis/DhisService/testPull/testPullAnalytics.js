@@ -12,7 +12,6 @@ import {
   createDataSourceModelsStub,
   stubDhisApi,
 } from '../DhisService.stubs';
-import { testPullAnalyticsFromEvents_Deprecated } from './testPullAnalyticsFromEvents_Deprecated';
 
 const dhisService = new DhisService(createModelsStub());
 const analyticsPuller = new AnalyticsPuller(
@@ -34,16 +33,11 @@ export const testPullAnalytics = () => {
   describe('data source selection', () => {
     const analyticsSpy = jest.spyOn(analyticsPuller, 'pullAnalyticsForApi');
     const analyticsFromEventsSpy = jest.spyOn(analyticsPuller, 'pullAnalyticsFromEventsForApi');
-    const analyticsFromEvents_DeprecatedSpy = jest.spyOn(
-      analyticsPuller,
-      'pullAnalyticsFromEventsForApi_Deprecated',
-    );
 
     it('pulls aggregate data by default', async () => {
       await dhisService.pull([DATA_SOURCES.POP01], 'dataElement', {});
       expect(analyticsSpy).toHaveBeenCalledTimes(1);
       expect(analyticsFromEventsSpy).not.toHaveBeenCalled();
-      expect(analyticsFromEvents_DeprecatedSpy).not.toHaveBeenCalled();
     });
 
     it('pulls event data if `programCodes` are provided', async () => {
@@ -51,16 +45,7 @@ export const testPullAnalytics = () => {
         programCodes: ['POP01'],
       });
       expect(analyticsSpy).not.toHaveBeenCalled();
-      expect(analyticsFromEvents_DeprecatedSpy).toHaveBeenCalledTimes(1);
-      expect(analyticsFromEventsSpy).not.toHaveBeenCalled();
-    });
-
-    it('invokes the deprecated analytics from events api by default', async () => {
-      await dhisService.pull([DATA_SOURCES.POP01], 'dataElement', {
-        programCodes: ['POP01'],
-      });
-      expect(analyticsFromEventsSpy).not.toHaveBeenCalled();
-      expect(analyticsFromEvents_DeprecatedSpy).toHaveBeenCalledTimes(1);
+      expect(analyticsFromEventsSpy).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -183,7 +168,6 @@ export const testPullAnalytics = () => {
   describe('from event data', () => {
     const basicOptions = {
       programCodes: ['POP01'],
-      useDeprecatedApi: false,
     };
 
     let buildAnalyticsMock;
@@ -198,24 +182,18 @@ export const testPullAnalytics = () => {
         options = {},
         invocationArgs,
       }) => {
-        await dhisService.pull(dataSources, 'dataElement', {
-          ...options,
-          useDeprecatedApi: false,
-        });
+        await dhisService.pull(dataSources, 'dataElement', options);
         expect(dhisApi.getEventAnalytics).toHaveBeenCalledOnceWith(invocationArgs);
       };
 
       it('no program', async () => {
-        await dhisService.pull([DATA_SOURCES.POP01, DATA_SOURCES.POP02], 'dataElement', {
-          useDeprecatedApi: false,
-        });
+        await dhisService.pull([DATA_SOURCES.POP01, DATA_SOURCES.POP02], 'dataElement');
         expect(dhisApi.getEventAnalytics).not.toHaveBeenCalled();
       });
 
       it('single program', async () => {
         await dhisService.pull([DATA_SOURCES.POP01, DATA_SOURCES.POP02], 'dataElement', {
           programCodes: ['POP01'],
-          useDeprecatedApi: false,
         });
         expect(dhisApi.getEventAnalytics).toHaveBeenCalledWith(
           expect.objectContaining({ programCode: 'POP01' }),
@@ -225,7 +203,6 @@ export const testPullAnalytics = () => {
       it('multiple programs', async () => {
         await dhisService.pull([DATA_SOURCES.POP01, DATA_SOURCES.POP02], 'dataElement', {
           programCodes: ['POP01', 'DIFF_GROUP'],
-          useDeprecatedApi: false,
         });
         expect(dhisApi.getEventAnalytics).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -243,7 +220,6 @@ export const testPullAnalytics = () => {
       it('program with org unit code', async () => {
         await dhisService.pull([DATA_SOURCES.POP01], 'dataElement', {
           programCodes: ['POP01'],
-          useDeprecatedApi: false,
           organisationUnitCode: 'TO',
         });
         expect(dhisApi.getEventAnalytics).toHaveBeenCalledWith(
@@ -254,7 +230,6 @@ export const testPullAnalytics = () => {
       it('program with org unit codes', async () => {
         await dhisService.pull([DATA_SOURCES.POP01], 'dataElement', {
           programCodes: ['POP01'],
-          useDeprecatedApi: false,
           organisationUnitCodes: ['TO', 'XY'],
         });
         expect(dhisApi.getEventAnalytics).toHaveBeenCalledWith(
@@ -321,10 +296,7 @@ export const testPullAnalytics = () => {
           };
           const dataElementCodes = ['POP01'];
 
-          await dhisService.pull([DATA_SOURCES.POP01], 'dataElement', {
-            useDeprecatedApi: false,
-            programCodes: [],
-          });
+          await dhisService.pull([DATA_SOURCES.POP01], 'dataElement', { programCodes: [] });
           expect(buildAnalyticsMock).toHaveBeenCalledOnceWith(
             expect.objectContaining(emptyEventAnalytics),
             dataElementCodes,
@@ -395,6 +367,4 @@ export const testPullAnalytics = () => {
       });
     });
   });
-
-  describe('from event data - deprecated API', testPullAnalyticsFromEvents_Deprecated);
 };
