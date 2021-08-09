@@ -14,8 +14,8 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { Chart } from './Chart';
 import * as COLORS from '../constants';
 import { useDashboardReportDataWithConfig } from '../api/queries';
-import { yearToApiDates } from '../api/queries/utils';
 import { FlexEnd } from './Layout';
+import { useUrlParams } from '../utils';
 
 const Container = styled.div`
   width: 55rem;
@@ -31,63 +31,67 @@ const Footer = styled(FlexEnd)`
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
-export const DashboardReport = React.memo(({ entityCode, year, viewConfig }) => {
-  const { search } = useLocation();
-  const { reportCode, name, type } = viewConfig;
-  const { startDate, endDate } = yearToApiDates(year);
+export const DashboardReport = React.memo(
+  ({ name, reportCode, startDate, endDate, isEnlarged }) => {
+    const { search } = useLocation();
+    const { entityCode } = useUrlParams();
 
-  const { data, isLoading, isFetching, isError, error } = useDashboardReportDataWithConfig({
-    entityCode,
-    reportCode,
-    startDate,
-    endDate,
-  });
+    const { data, isLoading, isFetching, isError, error } = useDashboardReportDataWithConfig({
+      entityCode,
+      reportCode,
+      startDate,
+      endDate,
+    });
 
-  const { reportData, dashboardItemConfig: config, dashboardItemConfigs } = data;
-  const Visual = type === 'list' ? ListVisual : Chart;
+    const { reportData, dashboardItemConfig: config, dashboardItemConfigs } = data;
+    const Visual = config?.type === 'list' ? ListVisual : Chart;
+    const Wrapper = isEnlarged ? React.Fragment : Container;
 
-  return (
-    <Container>
-      <Visual
-        viewContent={{ ...config, data: reportData, startDate, endDate }}
-        isLoading={isLoading}
-        isFetching={isFetching}
-        isError={isError}
-        error={error}
-        name={name}
-        entityCode={entityCode}
-        dashboardItemConfigs={dashboardItemConfigs}
-      />
-      <Footer>
-        <Button
-          component={RouterLink}
-          endIcon={<KeyboardArrowRightIcon />}
-          color="primary"
-          to={{
-            pathname: `/${entityCode}/dashboard`,
-            search: `${search}&reportCode=${reportCode}`,
-          }}
-        >
-          See More
-        </Button>
-      </Footer>
-    </Container>
-  );
-});
-
-const VIEW_CONFIG_SHAPE = PropTypes.shape({
-  name: PropTypes.string.isRequired,
-  code: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
-  reportCode: PropTypes.string.isRequired,
-});
+    return (
+      <Wrapper>
+        <Visual
+          viewContent={{ ...config, data: reportData, startDate, endDate }}
+          isLoading={isLoading}
+          isFetching={isFetching}
+          isError={isError}
+          error={error}
+          name={name}
+          entityCode={entityCode}
+          dashboardItemConfigs={dashboardItemConfigs}
+          isEnlarged={isEnlarged}
+        />
+        {!isEnlarged && (
+          <Footer>
+            <Button
+              component={RouterLink}
+              endIcon={<KeyboardArrowRightIcon />}
+              color="primary"
+              to={{
+                pathname: `/${entityCode}/dashboard`,
+                search: `${search}&reportCode=${reportCode}`,
+              }}
+            >
+              See More
+            </Button>
+          </Footer>
+        )}
+      </Wrapper>
+    );
+  },
+);
 
 DashboardReport.propTypes = {
-  entityCode: PropTypes.string.isRequired,
-  year: PropTypes.string,
-  viewConfig: VIEW_CONFIG_SHAPE.isRequired,
+  startDate: PropTypes.string,
+  endDate: PropTypes.string,
+  name: PropTypes.string,
+  reportCode: PropTypes.string,
+  isEnlarged: PropTypes.bool,
 };
 
 DashboardReport.defaultProps = {
-  year: null,
+  startDate: null,
+  endDate: null,
+  reportCode: null,
+  name: null,
+  isEnlarged: false,
 };

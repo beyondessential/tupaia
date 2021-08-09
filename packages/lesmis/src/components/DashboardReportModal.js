@@ -22,6 +22,7 @@ import { Chart } from './Chart';
 import { useDashboardReportDataWithConfig } from '../api/queries';
 import { useUrlParams, useUrlSearchParams } from '../utils';
 import { ListVisual } from './ListVisual';
+import { DashboardReport } from './DashboardReport';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -70,7 +71,7 @@ export const DashboardReportModal = () => {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { entityCode } = useUrlParams();
   const [{ startDate, endDate, reportCode }, setParams] = useUrlSearchParams();
-  const { data, isLoading, isError, error } = useDashboardReportDataWithConfig({
+  const { data, isLoading } = useDashboardReportDataWithConfig({
     entityCode,
     reportCode,
     startDate,
@@ -95,8 +96,7 @@ export const DashboardReportModal = () => {
     });
   };
 
-  const { reportData, dashboardItemConfig: config, dashboardItemConfigs } = data;
-  const Visual = config?.type === 'list' ? ListVisual : Chart;
+  const { dashboardItemConfig: config } = data;
   const isOpen = !!reportCode;
 
   return (
@@ -130,13 +130,11 @@ export const DashboardReportModal = () => {
                 />
               </FlexStart>
             </Header>
-            <Visual
-              viewContent={{ data: reportData, ...config, startDate, endDate }}
-              isLoading={isLoading}
-              isError={isError}
-              error={error}
-              dashboardItemConfigs={dashboardItemConfigs}
-              entityCode={entityCode}
+            <DashboardReport
+              name={config?.name}
+              reportCode={reportCode}
+              startDate={startDate}
+              endDate={endDate}
               isEnlarged
             />
           </Container>

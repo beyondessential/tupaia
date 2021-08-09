@@ -22,6 +22,7 @@ import {
 } from '../components';
 import { NAVBAR_HEIGHT_INT } from '../constants';
 import { useUrlSearchParam } from '../utils';
+import { yearToApiDates } from '../api/queries/utils';
 
 const StickyTabBarContainer = styled.div`
   position: sticky;
@@ -141,6 +142,8 @@ export const DashboardReportTabView = ({
     scrollToTop();
   };
 
+  const { startDate, endDate } = yearToApiDates(year);
+
   return (
     <>
       <StickyTabBarContainer ref={onLoadTabBar}>
@@ -175,9 +178,10 @@ export const DashboardReportTabView = ({
                 dashboard.items.map(item => (
                   <DashboardReport
                     key={item.code}
-                    entityCode={entityCode}
-                    year={year}
-                    viewConfig={item}
+                    reportCode={item.reportCode}
+                    name={item.name}
+                    startData={startDate}
+                    endDate={endDate}
                   />
                 ))
               ) : (
