@@ -95,7 +95,7 @@ export const DashboardReportModal = () => {
     });
   };
 
-  const { reportData, dashboardItemConfig: config } = data;
+  const { reportData, dashboardItemConfig: config, dashboardItemConfigs } = data;
   const Visual = config?.type === 'list' ? ListVisual : Chart;
   const isOpen = !!reportCode;
 
@@ -135,6 +135,8 @@ export const DashboardReportModal = () => {
               isLoading={isLoading}
               isError={isError}
               error={error}
+              dashboardItemConfigs={dashboardItemConfigs}
+              entityCode={entityCode}
               isEnlarged
             />
           </Container>

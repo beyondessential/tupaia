@@ -4,6 +4,7 @@
  *
  */
 import { useQuery } from 'react-query';
+import keyBy from 'lodash.keyby';
 import { get } from '../api';
 import { useDashboardData } from './useDashboardData';
 import { combineQueries } from './utils';
@@ -36,20 +37,28 @@ export const useDashboardReportDataWithConfig = ({
 }) => {
   const query = combineQueries({
     reportData: useDashboardReportData({ entityCode, reportCode, startDate, endDate }),
-    dashboard: useDashboardData({ entityCode }),
+    dashboards: useDashboardData({ entityCode }),
   });
 
-  const dashboard = query.data?.dashboard?.find(dash =>
+  const dashboard = query.data?.dashboards?.find(dash =>
     dash.items.find(item => item.reportCode === reportCode),
   );
 
   const dashboardItem = dashboard?.items.find(item => item.reportCode === reportCode);
 
+  const dashboardItemConfigsList = query.data?.dashboards?.reduce((configs, d) => {
+    const items = d.items.map(item => item);
+    return [...configs, ...items];
+  }, []);
+
+  const dashboardItemConfigs = keyBy(dashboardItemConfigsList, 'code');
+
   return {
     ...query,
     data: {
-      ...query.data,
+      reportData: query.data?.reportData,
       dashboardItemConfig: { ...dashboardItem, dashboardName: dashboard?.dashboardName },
+      dashboardItemConfigs,
     },
   };
 };

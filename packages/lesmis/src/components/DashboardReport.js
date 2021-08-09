@@ -13,7 +13,7 @@ import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { Chart } from './Chart';
 import * as COLORS from '../constants';
-import { useDashboardReportData } from '../api/queries';
+import { useDashboardReportDataWithConfig } from '../api/queries';
 import { yearToApiDates } from '../api/queries/utils';
 import { FlexEnd } from './Layout';
 
@@ -31,30 +31,32 @@ const Footer = styled(FlexEnd)`
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
-export const DashboardReport = React.memo(({ entityCode, year, viewConfig, drillDowns }) => {
+export const DashboardReport = React.memo(({ entityCode, year, viewConfig }) => {
   const { search } = useLocation();
   const { reportCode, name, type } = viewConfig;
   const { startDate, endDate } = yearToApiDates(year);
 
-  const { data, isLoading, isFetching, isError, error } = useDashboardReportData({
+  const { data, isLoading, isFetching, isError, error } = useDashboardReportDataWithConfig({
     entityCode,
     reportCode,
     startDate,
     endDate,
   });
 
+  const { reportData, dashboardItemConfig: config, dashboardItemConfigs } = data;
   const Visual = type === 'list' ? ListVisual : Chart;
 
   return (
     <Container>
       <Visual
-        viewContent={{ ...viewConfig, data, startDate, endDate }}
+        viewContent={{ ...config, data: reportData, startDate, endDate }}
         isLoading={isLoading}
         isFetching={isFetching}
         isError={isError}
         error={error}
         name={name}
-        drillDowns={drillDowns}
+        entityCode={entityCode}
+        dashboardItemConfigs={dashboardItemConfigs}
       />
       <Footer>
         <Button
@@ -82,12 +84,10 @@ const VIEW_CONFIG_SHAPE = PropTypes.shape({
 
 DashboardReport.propTypes = {
   entityCode: PropTypes.string.isRequired,
-  drillDowns: PropTypes.array,
   year: PropTypes.string,
   viewConfig: VIEW_CONFIG_SHAPE.isRequired,
 };
 
 DashboardReport.defaultProps = {
   year: null,
-  drillDowns: [],
 };

@@ -50,7 +50,7 @@ const getDisplayConfig = ({ valueType, listConfig }, statistic) => {
   }
 };
 
-const processData = (config, data, drillDowns) => {
+const processData = (config, data, dashboardItemConfigs) => {
   let parentCode = null;
 
   return data?.map(item => {
@@ -68,12 +68,12 @@ const processData = (config, data, drillDowns) => {
     }
 
     if (config?.drillDown?.itemCodeByEntry[item.code] !== undefined) {
-      drillDownReportCode = config?.drillDown?.itemCodeByEntry[item.code];
+      const drillDownCode = config?.drillDown?.itemCodeByEntry[item.code];
 
       // check that the drill down config exists before trying to render a drilldown row
-      if (drillDowns.find(d => d.code === drillDownReportCode)) {
+      if (dashboardItemConfigs[drillDownCode] !== undefined) {
         rowType = 'drilldown';
-        drillDownReportCode = drillDowns.find(d => d.code === drillDownReportCode).reportCode;
+        drillDownReportCode = dashboardItemConfigs[drillDownCode].reportCode;
       }
     }
 
@@ -86,10 +86,10 @@ const processData = (config, data, drillDowns) => {
 };
 
 export const ListVisual = React.memo(
-  ({ viewContent, isLoading, isError, error, drillDowns, entityCode, isEnlarged }) => {
+  ({ viewContent, isLoading, isError, error, entityCode, dashboardItemConfigs, isEnlarged }) => {
     const { data, ...config } = viewContent;
 
-    const list = processData(config, data, drillDowns);
+    const list = processData(config, data, dashboardItemConfigs);
 
     return (
       <Container isLoading={isLoading} isEnlarged={isEnlarged}>
@@ -119,7 +119,7 @@ export const ListVisual = React.memo(
 ListVisual.propTypes = {
   entityCode: PropTypes.string.isRequired,
   viewContent: PropTypes.object,
-  drillDowns: PropTypes.array,
+  dashboardItemConfigs: PropTypes.object,
   isLoading: PropTypes.bool,
   isFetching: PropTypes.bool,
   isError: PropTypes.bool,
@@ -129,7 +129,7 @@ ListVisual.propTypes = {
 
 ListVisual.defaultProps = {
   viewContent: null,
-  drillDowns: [],
+  dashboardItemConfigs: null,
   isLoading: false,
   isFetching: false,
   isError: false,

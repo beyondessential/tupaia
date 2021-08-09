@@ -37,10 +37,7 @@ export const useDashboardData = ({ entityCode, includeDrillDowns = true }) => {
       dashboardItems = dashboardItems.filter(view => !drillDownItemCodes.includes(view.code));
     }
 
-    // Save the drill down configs so they can be used to display the nested reports
-    const drillDowns = dashboard.items.filter(view => drillDownItemCodes.includes(view.code));
-
-    return { ...dashboard, items: dashboardItems, drillDowns };
+    return { ...dashboard, items: dashboardItems };
   });
 
   return { ...query, data };
