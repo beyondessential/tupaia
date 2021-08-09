@@ -2,13 +2,13 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiTab from '@material-ui/core/Tab';
 import MuiTabs from '@material-ui/core/Tabs';
 import { Chart, Table } from '@tupaia/ui-components/lib/chart';
-import { FlexSpaceBetween, FetchLoader } from '@tupaia/ui-components';
+import { FlexSpaceBetween, FetchLoader, DataTable } from '@tupaia/ui-components';
 import { TabPanel } from './TabPanel';
 import { useVizBuilderConfig } from '../vizBuilderConfigStore';
 import { useReportPreview } from '../api';
@@ -41,7 +41,7 @@ const PanelTabPanel = styled.div`
   border-top: none;
 `;
 
-const StyledTable = styled(Table)`
+const StyledTable = styled(DataTable)`
   table {
     border-top: 1px solid ${({ theme }) => theme.palette.grey['400']};
     border-bottom: 1px solid ${({ theme }) => theme.palette.grey['400']};
@@ -86,9 +86,19 @@ const EditorContainer = styled.div`
   }
 `;
 
+const getColumns = data => {
+  const columnKeys = [...new Set(data.map(d => Object.keys(d)).flat())];
+  return columnKeys.map(columnKey => {
+    return {
+      Header: columnKey,
+      accessor: row => row[columnKey],
+    };
+  });
+};
+
 export const PreviewSection = ({ enabled, setEnabled }) => {
   const [{ project, location, visualisation }, { setPresentation }] = useVizBuilderConfig();
-  const { data = [], isIdle, isLoading, isFetching, isError, error } = useReportPreview(
+  const { data: reportData = [], isIdle, isLoading, isFetching, isError, error } = useReportPreview(
     visualisation,
     project,
     location,
@@ -100,6 +110,9 @@ export const PreviewSection = ({ enabled, setEnabled }) => {
   const handleChange = (event, newValue) => {
     setTab(newValue);
   };
+
+  const columns = useMemo(() => getColumns(reportData), [reportData]);
+  const data = useMemo(() => reportData, [reportData]);
 
   const viewContent = { data, ...visualisation.presentation };
 
@@ -121,7 +134,7 @@ export const PreviewSection = ({ enabled, setEnabled }) => {
             <IdleMessage />
           ) : (
             <FetchLoader isLoading={isLoading || isFetching} isError={isError} error={error}>
-              <StyledTable viewContent={viewContent} />
+              <StyledTable columns={columns} data={data} />
             </FetchLoader>
           )}
         </TableContainer>
