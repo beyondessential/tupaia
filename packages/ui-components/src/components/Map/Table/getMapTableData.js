@@ -4,7 +4,6 @@
  */
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { useTable, useSortBy } from 'react-table';
 import { getFormattedInfo } from '../utils';
 
 const FirstColumnCell = styled.span`
@@ -44,15 +43,11 @@ const processData = (serieses, measureData) => {
   });
 };
 
-export const useMapTable = (serieses, measureData) => {
+export const getMapTableData = (serieses, measureData) => {
   const columns = useMemo(() => processColumns(serieses), [serieses]);
   const data = useMemo(() => processData(serieses, measureData), [serieses, measureData]);
-
-  return useTable(
-    {
-      columns,
-      data,
-    },
-    useSortBy,
-  );
+  return {
+    columns,
+    data,
+  };
 };
