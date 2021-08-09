@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { DataFetchQuery } from './DataFetchQuery';
 import { SqlQuery } from './SqlQuery';
 
 const VALUE_AGGREGATION_FUNCTIONS = {
@@ -65,9 +64,15 @@ const supportsConfig = (aggregationSwitch, config) => {
   );
 };
 
-export class AnalyticsFetchQuery extends DataFetchQuery {
+export class AnalyticsFetchQuery {
   constructor(database, options) {
-    super(database, options);
+    this.database = database;
+
+    const { dataElementCodes, organisationUnitCodes, startDate, endDate } = options;
+    this.dataElementCodes = dataElementCodes;
+    this.entityCodes = organisationUnitCodes;
+    this.startDate = startDate;
+    this.endDate = endDate;
 
     this.aggregations = [];
     this.originalAggregationsProcessed = [];
@@ -93,9 +98,9 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
   }
 
   async fetch() {
-    this.build();
+    const { query, params } = this.buildQueryAndParams();
 
-    const sqlQuery = new SqlQuery(this.query, this.paramsArray);
+    const sqlQuery = new SqlQuery(query, params);
 
     return {
       analytics: await sqlQuery.executeOnDatabase(this.database),
@@ -115,18 +120,21 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
     return aggregation.switch.aggregateEntities ? 'aggregation_entity_code' : 'entity_code';
   }
 
-  getEntityCommonTableExpression(aggregation) {
+  getCtesAndParams(aggregation) {
     if (!aggregation.switch.aggregateEntities) {
-      return '';
+      return { cte: '', params: [] };
     }
+
     // if mapping from one set of entities to another, include the mapped codes as "aggregation_entity_code"
     const entityMap = aggregation.config.orgUnitMap;
     const columns = ['code', 'aggregation_entity_code'];
     const rows = Object.entries(entityMap).map(([key, value]) => [key, value.code]);
-    return `
+    const cte = `
       WITH entity_relations_a${aggregation.stackId} (${columns.join(', ')})
-      AS (${this.parameteriseValues(rows)})
+      AS (${SqlQuery.values(rows)})
     `;
+
+    return { cte, params: rows.flat() };
   }
 
   getAliasedColumns() {
@@ -156,14 +164,6 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
     return `SELECT ${fields.join(', ')}`;
   }
 
-  getBaseInnerJoins() {
-    const joins = [
-      this.createInnerJoin(this.entityCodes, 'entity_code'),
-      this.createInnerJoin(this.dataElementCodes, 'data_element_code'),
-    ];
-    return joins.join('\n');
-  }
-
   getPeriodConditionsAndParams() {
     const periodConditions = [];
     const periodParams = [];
@@ -178,13 +178,14 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
     return { periodConditions, periodParams };
   }
 
-  getBaseWhereClause() {
+  getBaseWhereClauseAndParams() {
     const { periodConditions, periodParams } = this.getPeriodConditionsAndParams();
 
-    if (periodConditions.length === 0) return '';
+    if (periodConditions.length === 0) {
+      return { clause: '', params: [] };
+    }
 
-    this.paramsArray.push(...periodParams);
-    return `WHERE ${periodConditions.join(' AND ')}`;
+    return { clause: `WHERE ${periodConditions.join(' AND ')}`, params: periodParams };
   }
 
   getAggregationJoin(aggregation) {
@@ -204,14 +205,21 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
     return `GROUP BY ${groupByFields.join(', ')}`;
   }
 
-  build() {
-    const commonTableExpressions = `${this.aggregations
-      .map(aggregation => this.getEntityCommonTableExpression(aggregation))
-      .join('\n')}`;
+  buildQueryAndParams() {
+    const { ctes: ctesClause, params: ctesParams } = this.aggregations.reduce(
+      ({ ctes, params }, aggregation) => {
+        const { cte, params: cteParams } = this.getCtesAndParams(aggregation);
+        return { ctes: `${ctes}\n${cte}`, params: params.concat(cteParams) };
+      },
+      { ctes: '', params: [] },
+    );
 
+    const { clause: whereClause, params: whereParams } = this.getBaseWhereClauseAndParams();
     const baseAnalytics = `(SELECT *, day_period as period from analytics
-      ${this.getBaseInnerJoins()}
-      ${this.getBaseWhereClause()}) as base_analytics`;
+      ${SqlQuery.innerJoin(this.entityCodes, 'entity_code')}
+      ${SqlQuery.innerJoin(this.dataElementCodes, 'data_element_code')}
+      ${whereClause}) as base_analytics`;
+    const baseAnalyticsParams = this.entityCodes.concat(this.dataElementCodes).concat(whereParams);
 
     const wrapAnalyticsInAggregation = (analytics, aggregation) =>
       `(${this.getAggregationSelect(aggregation)} 
@@ -220,11 +228,14 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
       ${this.getAggregationJoin(aggregation)}
       ${this.getAggregationGroupByClause(aggregation)}) as a${aggregation.stackId}`;
 
-    this.query = `
-      ${commonTableExpressions}
+    const query = `
+      ${ctesClause}
       SELECT ${this.getAliasedColumns()}
       FROM ${this.aggregations.reduce(wrapAnalyticsInAggregation, baseAnalytics)}
       ORDER BY date;
      `;
+    const params = ctesParams.concat(baseAnalyticsParams);
+
+    return { query, params };
   }
 }

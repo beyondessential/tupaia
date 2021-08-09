@@ -77,7 +77,7 @@ export class TupaiaDataApi {
       `
        SELECT code, name, options, option_set_id, type
        FROM question
-       WHERE code IN ${SqlQuery.parameteriseArray(dataElementCodes)};
+       WHERE code IN ${SqlQuery.array(dataElementCodes)};
      `,
       dataElementCodes,
     );
@@ -119,7 +119,7 @@ export class TupaiaDataApi {
          JOIN survey_screen on survey_screen.id = survey_screen_component.screen_id
          JOIN survey on survey_screen.survey_id = survey.id
          WHERE survey.code = '${dataGroupCode}'
-         AND question.code IN ${SqlQuery.parameteriseArray(dataElementCodes)}
+         AND question.code IN ${SqlQuery.array(dataElementCodes)}
          ORDER BY survey_screen.screen_number, survey_screen_component.component_number;
        `,
         dataElementCodes,
@@ -180,7 +180,7 @@ export class TupaiaDataApi {
       `
        SELECT option.value, option.label, option.option_set_id
        FROM option
-       WHERE option.option_set_id IN ${SqlQuery.parameteriseArray(optionSetIds)}
+       WHERE option.option_set_id IN ${SqlQuery.array(optionSetIds)}
        `,
       optionSetIds,
     ).executeOnDatabase(this.database);
