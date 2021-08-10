@@ -6,7 +6,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiTableContainer from '@material-ui/core/TableContainer';
-import { DataTable } from '@tupaia/ui-components';
+// import { DataTable } from '@tupaia/ui-components';
+import { DataTable } from '../../DataTable';
 import { getIsChartData, getNoDataString } from '../utils';
 import { SmallAlert } from '../../Alert';
 import { getChartTableData } from './getChartTableData';
@@ -21,7 +22,7 @@ const NoData = styled(SmallAlert)`
   margin-right: auto;
 `;
 
-export const Table = ({ viewContent, className }) => {
+export const Table = React.forwardRef(({ viewContent, className }, ref) => {
   const { columns, data } = getChartTableData(viewContent);
 
   if (!getIsChartData(viewContent)) {
@@ -34,10 +35,10 @@ export const Table = ({ viewContent, className }) => {
 
   return (
     <TableContainer className={className}>
-      <DataTable columns={columns} data={data} />
+      <DataTable columns={columns} data={data} ref={ref} />
     </TableContainer>
   );
-};
+});
 
 Table.propTypes = {
   viewContent: PropTypes.shape({

@@ -5,6 +5,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import { Button } from '../../src';
 import { Chart, Table } from '../../src/components/Chart';
 
 const LightContainer = styled.div`
@@ -22,18 +23,27 @@ const ChartContainer = styled.div`
   height: 500px;
 `;
 
-export const LightThemeChartTemplate = args => (
-  <>
-    <LightContainer>
-      <ChartContainer>
-        <Chart {...args} />
-      </ChartContainer>
-    </LightContainer>
-    <LightContainer>
-      <Table {...args} />
-    </LightContainer>
-  </>
-);
+export const LightThemeChartTemplate = args => {
+  const tableRef = React.useRef(null);
+
+  const handleExport = () => {
+    tableRef.current.exportData('testing');
+  };
+
+  return (
+    <>
+      <LightContainer>
+        <Button onClick={handleExport}>Export</Button>
+        <ChartContainer>
+          <Chart {...args} />
+        </ChartContainer>
+      </LightContainer>
+      <LightContainer>
+        <Table {...args} ref={tableRef} />
+      </LightContainer>
+    </>
+  );
+};
 
 const DarkContainer = styled(LightContainer)`
   background: #262834;
