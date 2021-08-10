@@ -15,6 +15,7 @@ export const RESPONSE_BY_SOURCE_TYPE = {
       { dataElement: 'POP01', period: '20200214', value: 2 },
     ],
     metadata: {},
+    aggregationsProcessed: [],
   },
   dataGroup: [{ event: 'testEvent', dataValues: [] }],
 };
