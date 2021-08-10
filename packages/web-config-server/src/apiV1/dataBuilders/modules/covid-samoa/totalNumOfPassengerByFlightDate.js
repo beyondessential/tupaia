@@ -12,7 +12,7 @@ export class TotalNumOfPassengerByFlightDate extends DataBuilder {
     const { startDate, endDate } = this.query; // Selected period is not for event's response time, but to filter data element 'FLIGHT_DATE'.
     this.query.startDate = undefined; // Set to undefined to fetch all result.
     this.query.endDate = undefined;
-    const events = await this.fetchEvents({ useDeprecatedApi: false, dataElementCodes });
+    const events = await this.fetchEvents({ dataElementCodes });
     const flights = Flight.fromEvents(events);
     const flightsWithinPeriod = Flight.filterFlightByPeriod(flights, startDate, endDate);
 

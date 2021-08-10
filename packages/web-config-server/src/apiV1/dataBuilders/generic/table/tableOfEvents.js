@@ -19,17 +19,6 @@ import {
 const DATE_FORMAT = 'DD-MM-YYYY';
 const TOTAL_KEY = 'Total';
 
-// TODO event.dataValues can be (Record<string, Object> (legacy) | Record<string, string> (modern))
-// Simplify this method after https://github.com/beyondessential/tupaia-backlog/issues/451
-// is implemented
-const getEventValuesByElement = event => {
-  const entries = Object.entries(event.dataValues).map(([dataElement, dataValue]) => [
-    dataElement,
-    dataValue.value ?? dataValue,
-  ]);
-  return Object.fromEntries(entries);
-};
-
 class TableOfEventsBuilder extends DataBuilder {
   /**
    * @type {Object<string, {id, name, options: (Object|undefined)}>}
@@ -63,8 +52,19 @@ class TableOfEventsBuilder extends DataBuilder {
     return groupBy(allKeys, key => (isMetadataKey(key) ? 'metadata' : 'dataElement'));
   }
 
+  getDataElementCodes() {
+    const { dataElementCodes, columns } = this.config;
+
+    if (dataElementCodes) {
+      return dataElementCodes;
+    }
+    return Object.entries(columns)
+      .filter(([key]) => !isMetadataKey(key))
+      .map(([key, config]) => [key, ...(config?.additionalData || [])])
+      .flat();
+  }
+
   async fetchEvents() {
-    const { dataElementCodes } = this.config;
     const { organisationUnitCode, trackedEntityInstance } = this.query;
 
     const getOrganisationUnitCode = () => {
@@ -79,8 +79,8 @@ class TableOfEventsBuilder extends DataBuilder {
 
     const events = await super.fetchEvents({
       organisationUnitCode: getOrganisationUnitCode(),
-      dataValueFormat: 'object',
-      dataElementCodes,
+      dataElementCodes: this.getDataElementCodes(),
+      useDeprecatedApi: true,
     });
 
     const { metadata } = this.getKeysBySourceType();
@@ -138,7 +138,7 @@ class TableOfEventsBuilder extends DataBuilder {
 
   buildCellValues = async (event, primaryKey, additionalKeys) => {
     const keys = [primaryKey].concat(additionalKeys);
-    const values = pick(getEventValuesByElement(event), keys);
+    const values = pick(event.dataValues, keys);
     const { transformation } = this.config.columns[primaryKey];
 
     return transformation ? transformObject(this.models, transformation, values) : values;
