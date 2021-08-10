@@ -5,9 +5,9 @@ const FQS1_ANSWER_MAP = {
 };
 
 const FQS2_ANSWER_MAP = {
-  0: 1,
+  0: 3,
   50: 2,
-  100: 3,
+  100: 1,
 };
 
 export const FQS1_CODE_MAPPING = {
