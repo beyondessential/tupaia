@@ -16,7 +16,7 @@ export class ValueAndPercentageByDataValueByFlightDate extends DataBuilder {
   async build() {
     const dataElementCodes = this.getDataElementCodes();
 
-    const events = await this.fetchEvents({ useDeprecatedApi: false, dataElementCodes });
+    const events = await this.fetchEvents({ dataElementCodes });
 
     const flights = Flight.fromEvents(events);
 
