@@ -15,9 +15,7 @@ const mockFind = (array, criteria) =>
     return true;
   });
 
-const mockFindOne = (array, criteria) => {
-  return mockFind(array, criteria)[0] || undefined;
-};
+const mockFindOne = (array, criteria) => mockFind(array, criteria)[0] || undefined;
 
 export const createModelsStub = () => ({
   dataServiceEntity: {
@@ -38,7 +36,5 @@ export const createModelsStub = () => ({
 });
 
 export const createKoBoApiStub = () => ({
-  fetchKoBoSubmissions: () => {
-    return [MOCK_KOBO_RESULT];
-  },
+  fetchKoBoSubmissions: () => [MOCK_KOBO_RESULT],
 });
