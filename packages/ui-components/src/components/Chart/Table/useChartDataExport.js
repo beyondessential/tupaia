@@ -8,5 +8,5 @@ import { getChartTableData } from './getChartTableData';
 
 export const useChartDataExport = viewContent => {
   const { columns, data } = getChartTableData(viewContent);
-  useDataTableExport(columns, data);
+  useDataTableExport(columns, data, viewContent.name);
 };

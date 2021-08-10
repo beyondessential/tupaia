@@ -112,6 +112,7 @@ const EnlargedDialogComponent = ({
   const exportRef = useRef(null);
   const [exportDialogIsOpen, setExportDialogIsOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const { doExport } = useChartDataExport();
 
   const [exportStatus, setExportStatus] = useState(STATUS.IDLE);
   const [drillDownState, setDrillDownState] = useState({
@@ -130,8 +131,6 @@ const EnlargedDialogComponent = ({
     baseViewContent === undefined ? null : { ...baseViewConfig, ...baseViewContent };
   const newDrillDownContent =
     drillDownContent === undefined ? null : { ...drillDownConfig, ...drillDownContent };
-
-  useChartDataExport(newViewContent);
 
   const { startDate, endDate } = getDatesForCurrentLevel(
     drillDownState.drillDownLevel,
@@ -239,6 +238,7 @@ const EnlargedDialogComponent = ({
         await exportToPng(node, filename);
       } else if (format === 'excel') {
         console.log('excel export');
+        doExport(newViewContent);
       }
 
       setIsExporting(false);

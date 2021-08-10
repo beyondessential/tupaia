@@ -8,5 +8,5 @@ import { getMapTableData } from './getMapTableData';
 
 export const useMapDataExport = viewContent => {
   const { columns, data } = getMapTableData(viewContent);
-  useDataTableExport(columns, data);
+  useDataTableExport(columns, data, viewContent.name);
 };
