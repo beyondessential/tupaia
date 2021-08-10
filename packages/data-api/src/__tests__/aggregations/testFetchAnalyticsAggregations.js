@@ -39,6 +39,32 @@ export const testFetchAnalyticsAggregations = assertCorrectResponse => () => {
         startDate: '2019-01-01',
         endDate: '2022-01-01',
         aggregations: [{ type: 'SUM' }],
+        canProcessAggregations: true,
+      },
+      [
+        KITTY_RESPONSE_WELLINGTON_MORNING_20210104W1,
+        KITTY_RESPONSE_WELLINGTON_MIDDAY_20210104W1,
+        KITTY_RESPONSE_WELLINGTON_NIGHT_20210104W1,
+        KITTY_RESPONSE_WELLINGTON_MORNING_20210105W1,
+        KITTY_RESPONSE_WELLINGTON_NIGHT_20210105W1,
+        KITTY_RESPONSE_WELLINGTON_MORNING_20210113W2,
+        KITTY_RESPONSE_WELLINGTON_MORNING_20210115W2,
+        KITTY_RESPONSE_WELLINGTON_MORNING_20210205W5,
+        KITTY_RESPONSE_WELLINGTON_MORNING_20210219W7,
+        KITTY_RESPONSE_AUCKLAND_MORNING_20210608W23,
+      ],
+    );
+  });
+
+  it('should not perform any aggregation if an unsupported aggregation config is supplied', async () => {
+    await assertCorrectResponse(
+      {
+        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+        dataElementCodes: ['KITTY_1', 'KITTY_2'],
+        startDate: '2019-01-01',
+        endDate: '2022-01-01',
+        aggregations: [{ type: 'FINAL_EACH_WEEK', config: { fillEmptyPeriodsWith: 'previous' } }],
+        canProcessAggregations: true,
       },
       [
         KITTY_RESPONSE_WELLINGTON_MORNING_20210104W1,
@@ -63,6 +89,32 @@ export const testFetchAnalyticsAggregations = assertCorrectResponse => () => {
         startDate: '2019-01-01',
         endDate: '2022-01-01',
         aggregations: [{ type: 'OFFSET_PERIOD' }, { type: 'FINAL_EACH_YEAR' }],
+        canProcessAggregations: true,
+      },
+      [
+        KITTY_RESPONSE_WELLINGTON_MORNING_20210104W1,
+        KITTY_RESPONSE_WELLINGTON_MIDDAY_20210104W1,
+        KITTY_RESPONSE_WELLINGTON_NIGHT_20210104W1,
+        KITTY_RESPONSE_WELLINGTON_MORNING_20210105W1,
+        KITTY_RESPONSE_WELLINGTON_NIGHT_20210105W1,
+        KITTY_RESPONSE_WELLINGTON_MORNING_20210113W2,
+        KITTY_RESPONSE_WELLINGTON_MORNING_20210115W2,
+        KITTY_RESPONSE_WELLINGTON_MORNING_20210205W5,
+        KITTY_RESPONSE_WELLINGTON_MORNING_20210219W7,
+        KITTY_RESPONSE_AUCKLAND_MORNING_20210608W23,
+      ],
+    );
+  });
+
+  it('should not perform any aggregation if canProcessAggregations is set to false', async () => {
+    await assertCorrectResponse(
+      {
+        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+        dataElementCodes: ['KITTY_1', 'KITTY_2'],
+        startDate: '2019-01-01',
+        endDate: '2022-01-01',
+        aggregations: [{ type: 'FINAL_EACH_YEAR' }],
+        canProcessAggregations: false,
       },
       [
         KITTY_RESPONSE_WELLINGTON_MORNING_20210104W1,
@@ -80,11 +132,13 @@ export const testFetchAnalyticsAggregations = assertCorrectResponse => () => {
   });
 
   it('should return correct results when no start date or end date are specified', async () => {
+    const aggregations = [{ type: 'FINAL_EACH_MONTH' }];
     await assertCorrectResponse(
       {
         organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
         dataElementCodes: ['KITTY_1', 'KITTY_2'],
-        aggregations: [{ type: 'FINAL_EACH_MONTH' }],
+        aggregations,
+        canProcessAggregations: true,
       },
       [
         KITTY_RESPONSE_WELLINGTON_MORNING_20210115W2,
@@ -93,31 +147,39 @@ export const testFetchAnalyticsAggregations = assertCorrectResponse => () => {
         KITTY_RESPONSE_WELLINGTON_MORNING_20220608W23,
         KITTY_RESPONSE_AUCKLAND_MORNING_20220608W23,
       ],
+      aggregations,
+      'MONTH',
     );
   });
 
   it('should return correct results when requested period does not land on period type boundary', async () => {
+    const aggregations = [{ type: 'FINAL_EACH_WEEK' }];
     await assertCorrectResponse(
       {
         organisationUnitCodes: ['NZ_WG'],
         dataElementCodes: ['KITTY_1', 'KITTY_2'],
         startDate: '2021-01-01',
         endDate: '2021-01-04',
-        aggregations: [{ type: 'FINAL_EACH_WEEK' }],
+        aggregations,
+        canProcessAggregations: true,
       },
       [KITTY_RESPONSE_WELLINGTON_NIGHT_20210104W1],
+      aggregations,
+      'WEEK',
     );
   });
 
   describe('FINAL_EACH_DAY', () => {
     it('should return correct results across a number of data_elements, entities, and periods', async () => {
+      const aggregations = [{ type: 'FINAL_EACH_DAY' }];
       await assertCorrectResponse(
         {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['BCD1TEST', 'BCD325TEST', 'CROP_1', 'CROP_2', 'KITTY_1', 'KITTY_2'],
           startDate: '2019-01-01',
           endDate: '2022-01-01',
-          aggregations: [{ type: 'FINAL_EACH_DAY' }],
+          aggregations,
+          canProcessAggregations: true,
         },
         [
           CROP_RESPONSE_AUCKLAND_2019,
@@ -133,19 +195,22 @@ export const testFetchAnalyticsAggregations = assertCorrectResponse => () => {
           KITTY_RESPONSE_WELLINGTON_MORNING_20210219W7,
           KITTY_RESPONSE_AUCKLAND_MORNING_20210608W23,
         ],
+        aggregations,
       );
     });
   });
 
   describe('FINAL_EACH_WEEK', () => {
     it('should return correct results across a number of data_elements, entities, and periods', async () => {
+      const aggregations = [{ type: 'FINAL_EACH_WEEK' }];
       await assertCorrectResponse(
         {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['BCD1TEST', 'BCD325TEST', 'CROP_1', 'CROP_2', 'KITTY_1', 'KITTY_2'],
           startDate: '2019-01-01',
           endDate: '2022-01-01',
-          aggregations: [{ type: 'FINAL_EACH_WEEK' }],
+          aggregations,
+          canProcessAggregations: true,
         },
         [
           CROP_RESPONSE_AUCKLAND_2019,
@@ -159,19 +224,23 @@ export const testFetchAnalyticsAggregations = assertCorrectResponse => () => {
           KITTY_RESPONSE_WELLINGTON_MORNING_20210219W7,
           KITTY_RESPONSE_AUCKLAND_MORNING_20210608W23,
         ],
+        aggregations,
+        'WEEK',
       );
     });
   });
 
   describe('FINAL_EACH_MONTH', () => {
     it('should return correct results across a number of data_elements, entities, and periods', async () => {
+      const aggregations = [{ type: 'FINAL_EACH_MONTH' }];
       await assertCorrectResponse(
         {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['BCD1TEST', 'BCD325TEST', 'CROP_1', 'CROP_2', 'KITTY_1', 'KITTY_2'],
           startDate: '2019-01-01',
           endDate: '2022-01-01',
-          aggregations: [{ type: 'FINAL_EACH_MONTH' }],
+          aggregations,
+          canProcessAggregations: true,
         },
         [
           CROP_RESPONSE_AUCKLAND_2019,
@@ -183,19 +252,23 @@ export const testFetchAnalyticsAggregations = assertCorrectResponse => () => {
           KITTY_RESPONSE_WELLINGTON_MORNING_20210219W7,
           KITTY_RESPONSE_AUCKLAND_MORNING_20210608W23,
         ],
+        aggregations,
+        'MONTH',
       );
     });
   });
 
   describe('FINAL_EACH_YEAR', () => {
     it('should return correct results across a number of data_elements, entities, and periods', async () => {
+      const aggregations = [{ type: 'FINAL_EACH_YEAR' }];
       await assertCorrectResponse(
         {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['BCD1TEST', 'BCD325TEST', 'CROP_1', 'CROP_2', 'KITTY_1', 'KITTY_2'],
           startDate: '2019-01-01',
           endDate: '2022-01-01',
-          aggregations: [{ type: 'FINAL_EACH_YEAR' }],
+          aggregations,
+          canProcessAggregations: true,
         },
         [
           CROP_RESPONSE_AUCKLAND_2019,
@@ -206,6 +279,8 @@ export const testFetchAnalyticsAggregations = assertCorrectResponse => () => {
           KITTY_RESPONSE_WELLINGTON_MORNING_20210219W7,
           KITTY_RESPONSE_AUCKLAND_MORNING_20210608W23,
         ],
+        aggregations,
+        'YEAR',
       );
     });
   });
@@ -218,13 +293,15 @@ export const testFetchAnalyticsAggregations = assertCorrectResponse => () => {
           CROP_1: CROP_RESPONSE_AUCKLAND_2019.answers.CROP_1,
         },
       };
+      const aggregations = [{ type: 'MOST_RECENT', config: { orgUnitMap: {} } }];
       await assertCorrectResponse(
         {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['BCD1TEST', 'BCD325TEST', 'CROP_1', 'CROP_2', 'KITTY_1', 'KITTY_2'],
           startDate: '2019-01-01',
           endDate: '2022-01-01',
-          aggregations: [{ type: 'MOST_RECENT', config: { orgUnitMap: {} } }],
+          aggregations,
+          canProcessAggregations: true,
         },
         [
           CROP_RESPONSE_WELLINGTON_2019,
@@ -235,6 +312,7 @@ export const testFetchAnalyticsAggregations = assertCorrectResponse => () => {
           KITTY_RESPONSE_WELLINGTON_MORNING_20210219W7,
           KITTY_RESPONSE_AUCKLAND_MORNING_20210608W23,
         ],
+        aggregations,
       );
     });
   });
@@ -249,13 +327,15 @@ export const testFetchAnalyticsAggregations = assertCorrectResponse => () => {
           CROP_1: CROP_RESPONSE_WELLINGTON_2019.answers.CROP_1,
         },
       };
+      const aggregations = [
+        { type: 'MOST_RECENT_PER_ORG_GROUP', config: { orgUnitMap: CITY_TO_COUNTRY_MAP } },
+      ];
       await assertCorrectResponse(
         {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['BCD1TEST', 'BCD325TEST', 'CROP_1', 'CROP_2', 'KITTY_1', 'KITTY_2'],
-          aggregations: [
-            { type: 'MOST_RECENT_PER_ORG_GROUP', config: { orgUnitMap: CITY_TO_COUNTRY_MAP } },
-          ],
+          aggregations,
+          canProcessAggregations: true,
         },
         [
           setResponseEntityCode(BCD_RESPONSE_WELLINGTON, 'NZ'),
@@ -263,52 +343,56 @@ export const testFetchAnalyticsAggregations = assertCorrectResponse => () => {
           setResponseEntityCode(CROP_RESPONSE_AUCKLAND_2020, 'NZ'),
           setResponseEntityCode(KITTY_RESPONSE_AUCKLAND_MORNING_20220608W23, 'NZ'),
         ],
+        aggregations,
       );
     });
+  });
 
-    describe('SUM_PER_ORG_GROUP', () => {
-      it('should return correct results across a number of data_elements, entities, and periods', async () => {
-        const cropResponses = [
-          CROP_RESPONSE_AUCKLAND_2019,
-          CROP_RESPONSE_AUCKLAND_2020,
-          CROP_RESPONSE_WELLINGTON_2019,
-        ];
-        const sumAnswers = answerCode =>
-          cropResponses.reduce(
-            (sum, { answers }) => sum + (answers[answerCode] ? parseFloat(answers[answerCode]) : 0),
-            0,
-          );
-
-        const crop1SummedResponse = {
-          ...CROP_RESPONSE_AUCKLAND_2019, // doesn't matter which, just using as a base
-          data_time: CROP_RESPONSE_WELLINGTON_2019.data_time, // most recent data time for a CROP_1 answer
-          answers: {
-            CROP_1: sumAnswers('CROP_1'),
-          },
-        };
-
-        const crop2SummedResponse = {
-          ...CROP_RESPONSE_AUCKLAND_2019, // doesn't matter which, just using as a base
-          data_time: CROP_RESPONSE_AUCKLAND_2020.data_time, // most recent data time for a CROP_2 answer
-          answers: {
-            CROP_2: sumAnswers('CROP_2'),
-          },
-        };
-
-        await assertCorrectResponse(
-          {
-            organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-            dataElementCodes: ['CROP_1', 'CROP_2'],
-            aggregations: [
-              { type: 'SUM_PER_ORG_GROUP', config: { orgUnitMap: CITY_TO_COUNTRY_MAP } },
-            ],
-          },
-          [
-            setResponseEntityCode(crop1SummedResponse, 'NZ'),
-            setResponseEntityCode(crop2SummedResponse, 'NZ'),
-          ],
+  describe('SUM_PER_ORG_GROUP', () => {
+    it('should return correct results across a number of data_elements, entities, and periods', async () => {
+      const cropResponses = [
+        CROP_RESPONSE_AUCKLAND_2019,
+        CROP_RESPONSE_AUCKLAND_2020,
+        CROP_RESPONSE_WELLINGTON_2019,
+      ];
+      const sumAnswers = answerCode =>
+        cropResponses.reduce(
+          (sum, { answers }) => sum + (answers[answerCode] ? parseFloat(answers[answerCode]) : 0),
+          0,
         );
-      });
+
+      const crop1SummedResponse = {
+        ...CROP_RESPONSE_AUCKLAND_2019, // doesn't matter which, just using as a base
+        data_time: CROP_RESPONSE_WELLINGTON_2019.data_time, // most recent data time for a CROP_1 answer
+        answers: {
+          CROP_1: sumAnswers('CROP_1'),
+        },
+      };
+
+      const crop2SummedResponse = {
+        ...CROP_RESPONSE_AUCKLAND_2019, // doesn't matter which, just using as a base
+        data_time: CROP_RESPONSE_AUCKLAND_2020.data_time, // most recent data time for a CROP_2 answer
+        answers: {
+          CROP_2: sumAnswers('CROP_2'),
+        },
+      };
+
+      const aggregations = [
+        { type: 'SUM_PER_ORG_GROUP', config: { orgUnitMap: CITY_TO_COUNTRY_MAP } },
+      ];
+      await assertCorrectResponse(
+        {
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['CROP_1', 'CROP_2'],
+          aggregations,
+          canProcessAggregations: true,
+        },
+        [
+          setResponseEntityCode(crop1SummedResponse, 'NZ'),
+          setResponseEntityCode(crop2SummedResponse, 'NZ'),
+        ],
+        aggregations,
+      );
     });
   });
 
@@ -370,13 +454,15 @@ export const testFetchAnalyticsAggregations = assertCorrectResponse => () => {
         KITTY_RESPONSE_AUCKLAND_MORNING_20220608W23,
       ]);
 
+      const aggregations = [
+        { type: 'SUM_PER_PERIOD_PER_ORG_GROUP', config: { orgUnitMap: CITY_TO_COUNTRY_MAP } },
+      ];
       await assertCorrectResponse(
         {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['KITTY_1', 'KITTY_2'],
-          aggregations: [
-            { type: 'SUM_PER_PERIOD_PER_ORG_GROUP', config: { orgUnitMap: CITY_TO_COUNTRY_MAP } },
-          ],
+          aggregations,
+          canProcessAggregations: true,
         },
         [
           kitty20210104SummedResponse,
@@ -389,7 +475,107 @@ export const testFetchAnalyticsAggregations = assertCorrectResponse => () => {
           kitty20220606SummedResponse,
           kitty20220608SummedResponse,
         ],
+        aggregations,
       );
+    });
+  });
+
+  describe('chained aggregations', () => {
+    it('should only perform chain up to last supported aggregation', async () => {
+      const aggregations = [
+        { type: 'FINAL_EACH_WEEK' },
+        { type: 'SUM' },
+        { type: 'FINAL_EACH_DAY' },
+      ];
+      await assertCorrectResponse(
+        {
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['KITTY_1', 'KITTY_2'],
+          startDate: '2019-01-01',
+          endDate: '2022-01-01',
+          aggregations,
+          canProcessAggregations: true,
+        },
+        [
+          KITTY_RESPONSE_WELLINGTON_NIGHT_20210105W1,
+          KITTY_RESPONSE_WELLINGTON_MORNING_20210115W2,
+          KITTY_RESPONSE_WELLINGTON_MORNING_20210205W5,
+          KITTY_RESPONSE_WELLINGTON_MORNING_20210219W7,
+          KITTY_RESPONSE_AUCKLAND_MORNING_20210608W23,
+        ],
+        aggregations.slice(0, 1), // Just first aggregation
+        'WEEK',
+      );
+    });
+
+    describe('FINAL_EACH_WEEK -> SUM_PER_PERIOD_PER_ORG_GROUP', () => {
+      it('should return correct results across a number of data_elements, entities, and periods', async () => {
+        const sumAnswers = (answerCode, responses) =>
+          Number(
+            responses
+              .reduce(
+                (sum, { answers }) =>
+                  sum + (answers[answerCode] ? parseFloat(answers[answerCode]) : 0),
+                0,
+              )
+              .toFixed(1),
+          ); // round off floating point math issues
+
+        const makeSummedResponse = responsesFromSameDate => {
+          const summedResponse = {
+            ...responsesFromSameDate[0],
+            answers: {
+              KITTY_1: sumAnswers('KITTY_1', responsesFromSameDate),
+              KITTY_2: sumAnswers('KITTY_2', responsesFromSameDate),
+            },
+          };
+          return setResponseEntityCode(summedResponse, 'NZ');
+        };
+
+        const kitty20210105SummedResponse = makeSummedResponse([
+          KITTY_RESPONSE_WELLINGTON_NIGHT_20210105W1,
+        ]);
+
+        const kitty20210115SummedResponse = makeSummedResponse([
+          KITTY_RESPONSE_WELLINGTON_MORNING_20210115W2,
+        ]);
+        const kitty20210205SummedResponse = makeSummedResponse([
+          KITTY_RESPONSE_WELLINGTON_MORNING_20210205W5,
+        ]);
+        const kitty20210608SummedResponse = makeSummedResponse([
+          KITTY_RESPONSE_AUCKLAND_MORNING_20210608W23,
+        ]);
+        const kitty20210219SummedResponse = makeSummedResponse([
+          KITTY_RESPONSE_WELLINGTON_MORNING_20210219W7,
+        ]);
+        const kitty20220608SummedResponse = makeSummedResponse([
+          KITTY_RESPONSE_WELLINGTON_MORNING_20220608W23,
+          KITTY_RESPONSE_AUCKLAND_MORNING_20220608W23,
+        ]);
+
+        const aggregations = [
+          { type: 'FINAL_EACH_WEEK' },
+          { type: 'SUM_PER_PERIOD_PER_ORG_GROUP', config: { orgUnitMap: CITY_TO_COUNTRY_MAP } },
+        ];
+        await assertCorrectResponse(
+          {
+            organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+            dataElementCodes: ['KITTY_1', 'KITTY_2'],
+            aggregations,
+            canProcessAggregations: true,
+          },
+          [
+            kitty20210105SummedResponse,
+            kitty20210115SummedResponse,
+            kitty20210205SummedResponse,
+            kitty20210219SummedResponse,
+            kitty20210608SummedResponse,
+            kitty20220608SummedResponse,
+          ],
+          aggregations,
+          'WEEK',
+        );
+      });
     });
   });
 };

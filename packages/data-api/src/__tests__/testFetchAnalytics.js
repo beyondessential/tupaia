@@ -15,7 +15,7 @@ import {
 } from './TupaiaDataApi.fixtures';
 import { testFetchAnalyticsAggregations } from './aggregations';
 
-const getAnalyticsFromResponses = (responses, dataElementsToInclude) => {
+const getAnalyticsFromResponses = (responses, dataElementsToInclude, periodType) => {
   const analytics = [];
   responses.forEach(r => {
     Object.entries(r.answers)
@@ -25,7 +25,7 @@ const getAnalyticsFromResponses = (responses, dataElementsToInclude) => {
           dataElement: questionCode,
           organisationUnit: r.entityCode,
           value: isNaN(answer) ? answer : parseFloat(answer),
-          period: dateStringToPeriod(r.data_time),
+          period: dateStringToPeriod(r.data_time, periodType),
         });
       });
   });
@@ -35,10 +35,18 @@ const getAnalyticsFromResponses = (responses, dataElementsToInclude) => {
 export const testFetchAnalytics = () => {
   const api = new TupaiaDataApi(getTestDatabase());
 
-  const assertCorrectResponse = async (options, responses) =>
-    expect(api.fetchAnalytics(options)).resolves.toIncludeSameMembers(
-      getAnalyticsFromResponses(responses, options.dataElementCodes),
+  const assertCorrectResponse = async (
+    options,
+    responses,
+    expectedAggregationsProcessed = [],
+    expectedPeriodType = 'DAY',
+  ) => {
+    const { analytics, aggregationsProcessed } = await api.fetchAnalytics(options);
+    expect(analytics).toIncludeSameMembers(
+      getAnalyticsFromResponses(responses, options.dataElementCodes, expectedPeriodType),
     );
+    expect(aggregationsProcessed).toEqual(expectedAggregationsProcessed);
+  };
 
   it('throws an error with invalid parameters', async () => {
     const testData = [
@@ -67,6 +75,7 @@ export const testFetchAnalytics = () => {
         {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
+          canProcessAggregations: true,
         },
         [BCD_RESPONSE_AUCKLAND, BCD_RESPONSE_WELLINGTON],
       ],
@@ -74,6 +83,7 @@ export const testFetchAnalytics = () => {
         {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['CROP_1', 'CROP_2'],
+          canProcessAggregations: true,
         },
         [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_AUCKLAND_2020, CROP_RESPONSE_WELLINGTON_2019],
       ],
@@ -90,6 +100,7 @@ export const testFetchAnalytics = () => {
         {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['BCD1TEST'],
+          canProcessAggregations: true,
         },
         [BCD_RESPONSE_AUCKLAND, BCD_RESPONSE_WELLINGTON],
       ],
@@ -97,6 +108,7 @@ export const testFetchAnalytics = () => {
         {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['CROP_2'],
+          canProcessAggregations: true,
         },
         [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_AUCKLAND_2020, CROP_RESPONSE_WELLINGTON_2019],
       ],
@@ -113,6 +125,7 @@ export const testFetchAnalytics = () => {
         {
           organisationUnitCodes: ['NZ_AK'],
           dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
+          canProcessAggregations: true,
         },
         [BCD_RESPONSE_AUCKLAND],
       ],
@@ -120,6 +133,7 @@ export const testFetchAnalytics = () => {
         {
           organisationUnitCodes: ['NZ_WG'],
           dataElementCodes: ['CROP_1', 'CROP_2'],
+          canProcessAggregations: true,
         },
         [CROP_RESPONSE_WELLINGTON_2019],
       ],
@@ -138,6 +152,7 @@ export const testFetchAnalytics = () => {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['CROP_1', 'CROP_2'],
           startDate: '2020-01-01',
+          canProcessAggregations: true,
         },
         [CROP_RESPONSE_AUCKLAND_2020],
       ],
@@ -147,6 +162,7 @@ export const testFetchAnalytics = () => {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['CROP_1', 'CROP_2'],
           endDate: '2019-12-31',
+          canProcessAggregations: true,
         },
         [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_WELLINGTON_2019],
       ],
@@ -157,6 +173,7 @@ export const testFetchAnalytics = () => {
           dataElementCodes: ['CROP_1', 'CROP_2'],
           startDate: '2019-12-01',
           endDate: '2019-12-31',
+          canProcessAggregations: true,
         },
         [CROP_RESPONSE_WELLINGTON_2019],
       ],
@@ -167,6 +184,7 @@ export const testFetchAnalytics = () => {
           dataElementCodes: ['CROP_1', 'CROP_2'],
           startDate: '2019-11-21',
           endDate: '2019-12-31',
+          canProcessAggregations: true,
         },
         [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_WELLINGTON_2019],
       ],
@@ -177,6 +195,7 @@ export const testFetchAnalytics = () => {
           dataElementCodes: ['CROP_1', 'CROP_2'],
           startDate: '2019-12-01',
           endDate: '2020-11-21',
+          canProcessAggregations: true,
         },
         [CROP_RESPONSE_WELLINGTON_2019, CROP_RESPONSE_AUCKLAND_2020],
       ],
@@ -194,6 +213,7 @@ export const testFetchAnalytics = () => {
         dataElementCodes: ['CROP_1'],
         startDate: '2019-01-01',
         endDate: '2020-01-01',
+        canProcessAggregations: true,
       },
       [CROP_RESPONSE_AUCKLAND_2019],
     );

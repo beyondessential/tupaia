@@ -23,20 +23,23 @@ export const DATA_ELEMENTS = {
   },
 };
 
-export const ANALYTICS = [
-  {
-    period: '20200206',
-    organisationUnit: 'TO_Nukuhc',
-    dataElement: 'POP01',
-    value: 1,
-  },
-  {
-    period: '20200206',
-    organisationUnit: 'Nukunuku',
-    dataElement: 'POP02',
-    value: 2,
-  },
-];
+export const ANALYTICS = {
+  analytics: [
+    {
+      period: '20200206',
+      organisationUnit: 'TO_Nukuhc',
+      dataElement: 'POP01',
+      value: 1,
+    },
+    {
+      period: '20200206',
+      organisationUnit: 'Nukunuku',
+      dataElement: 'POP02',
+      value: 2,
+    },
+  ],
+  aggregationsProcessed: [{ type: 'FINAL_EACH_DAY' }],
+};
 
 export const EVENTS = [
   {
