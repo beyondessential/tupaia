@@ -5,8 +5,8 @@
 
 import { MOCK_DB_DATA, MOCK_KOBO_RESULT } from './KoBoService.fixtures';
 
-const mockFind = (array, criteria) => {
-  return array.filter(currentObject => {
+const mockFind = (array, criteria) =>
+  array.filter(currentObject => {
     for (const [key, value] of Object.entries(criteria)) {
       if (currentObject[key] !== value) {
         return false;
@@ -14,7 +14,6 @@ const mockFind = (array, criteria) => {
     }
     return true;
   });
-};
 
 const mockFindOne = (array, criteria) => {
   return mockFind(array, criteria)[0] || undefined;
