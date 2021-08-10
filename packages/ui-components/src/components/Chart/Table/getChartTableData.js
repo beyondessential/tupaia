@@ -4,7 +4,6 @@
  */
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { useTable, useSortBy } from 'react-table';
 import { formatDataValueByType } from '@tupaia/utils';
 import { formatTimestampForChart, getIsTimeSeries } from '../utils';
 import { parseChartConfig } from '../parseChartConfig';

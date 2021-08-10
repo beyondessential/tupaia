@@ -7,11 +7,11 @@ import PropTypes from 'prop-types';
 import { DataTable } from '@tupaia/ui-components';
 import { getMapTableData } from './getMapTableData';
 
-export const Table = React.forwardRef(({ serieses, measureData, className }, ref) => {
+export const Table = ({ serieses, measureData, className }) => {
   const { columns, data } = getMapTableData(serieses, measureData);
 
-  return <DataTable className={className} columns={columns} data={data} ref={ref} />;
-});
+  return <DataTable className={className} columns={columns} data={data} />;
+};
 
 Table.propTypes = {
   measureData: PropTypes.arrayOf(

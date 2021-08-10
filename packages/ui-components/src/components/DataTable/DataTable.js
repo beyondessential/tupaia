@@ -13,9 +13,8 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import TableBody from '@material-ui/core/TableBody';
 import { StyledTable } from './StyledTable';
 import { FlexStart } from '../Layout';
-import { useDataTableExport } from './useDataTableExport';
 
-export const DataTable = React.forwardRef(({ columns, data, className }, ref) => {
+export const DataTable = ({ columns, data, className }) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -30,8 +29,6 @@ export const DataTable = React.forwardRef(({ columns, data, className }, ref) =>
     },
     useSortBy,
   );
-
-  useDataTableExport(ref, rows, columnsData);
 
   return (
     <TableContainer className={className}>
@@ -67,7 +64,7 @@ export const DataTable = React.forwardRef(({ columns, data, className }, ref) =>
       </StyledTable>
     </TableContainer>
   );
-});
+};
 
 DataTable.propTypes = {
   columns: PropTypes.array.isRequired,

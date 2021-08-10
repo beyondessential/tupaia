@@ -9,13 +9,14 @@ import PropTypes from 'prop-types';
 import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import { useChartDataExport } from '@tupaia/ui-components/lib/chart';
 import {
   fetchEnlargedDialogData,
   setEnlargedDashboardDateRange,
   closeEnlargedDialog,
 } from '../../actions';
 import { ExportDialog } from '../../components/ExportDialog';
-import { getIsDataDownload, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
+import { getIsDataDownload, getIsMatrix } from '../../components/View';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
 import {
   isMobile,
@@ -130,6 +131,8 @@ const EnlargedDialogComponent = ({
   const newDrillDownContent =
     drillDownContent === undefined ? null : { ...drillDownConfig, ...drillDownContent };
 
+  useChartDataExport(newViewContent);
+
   const { startDate, endDate } = getDatesForCurrentLevel(
     drillDownState.drillDownLevel,
     startDateForTopLevel,
@@ -210,7 +213,7 @@ const EnlargedDialogComponent = ({
     return styles.container;
   };
 
-  const exportFormats = isMatrix ? ['xlsx'] : ['png'];
+  const exportFormats = isMatrix ? ['xlsx'] : ['png', 'excel'];
 
   const onExport = async format => {
     setExportStatus(STATUS.LOADING);
@@ -231,15 +234,18 @@ const EnlargedDialogComponent = ({
           timeZone: getBrowserTimeZone(),
           filename,
         });
-      } else {
+      } else if (format === 'png') {
         const node = exportRef.current;
         await exportToPng(node, filename);
+      } else if (format === 'excel') {
+        console.log('excel export');
       }
 
       setIsExporting(false);
       await sleep(1000); // allow some time for the chart transition to finish before hiding the loader
       setExportStatus(STATUS.SUCCESS);
-    } catch (e) {
+    } catch (error) {
+      console.log('error', error);
       setIsExporting(false);
       setExportStatus(STATUS.ERROR);
     }

@@ -9,8 +9,6 @@ import PropTypes from 'prop-types';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButtonComponent from '@material-ui/lab/ToggleButton';
 import BarChartIcon from '@material-ui/icons/BarChart';
-import Button from '@material-ui/core/IconButton';
-import ExportIcon from '@material-ui/icons/GetApp';
 import GridOnIcon from '@material-ui/icons/GridOn';
 import { Chart, Table } from '@tupaia/ui-components/lib/chart';
 import { VIEW_CONTENT_SHAPE } from './propTypes';
@@ -55,17 +53,11 @@ export const TABS = {
 
 export const ChartWrapper = ({ viewContent, isEnlarged, isExporting, onItemClick }) => {
   const [selectedTab, setSelectedTab] = useState(TABS.CHART);
-  const tableRef = React.useRef(null);
 
   const handleTabChange = (event, newValue) => {
     if (newValue !== null) {
       setSelectedTab(newValue);
     }
-  };
-
-  const handleExport = () => {
-    console.log('exporting...', tableRef);
-    tableRef.current.exportData();
   };
 
   if (!isEnlarged || isExporting) {
@@ -84,9 +76,6 @@ export const ChartWrapper = ({ viewContent, isEnlarged, isExporting, onItemClick
   return (
     <ChartViewContainer>
       <FlexEnd>
-        <Button onClick={handleExport}>
-          <ExportIcon />
-        </Button>
         <ToggleButtonGroup onChange={handleTabChange} value={selectedTab} exclusive>
           <ToggleButton value={TABS.TABLE}>
             <GridOnIcon />
@@ -106,7 +95,7 @@ export const ChartWrapper = ({ viewContent, isEnlarged, isExporting, onItemClick
           />
         </CustomChartContainer>
       ) : (
-        <StyledTable viewContent={viewContent} ref={tableRef} />
+        <StyledTable viewContent={viewContent} />
       )}
     </ChartViewContainer>
   );

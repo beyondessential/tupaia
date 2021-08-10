@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, FlexEnd } from '../../src';
-import { Chart, Table } from '../../src/components/Chart';
+import { Chart, Table, useChartDataExport } from '../../src/components/Chart';
 
 const LightContainer = styled.div`
   width: 750px;
@@ -24,11 +24,10 @@ const ChartContainer = styled.div`
 `;
 
 export const LightThemeChartTemplate = args => {
-  const tableRef = React.useRef(null);
   const { viewContent } = args;
 
   const handleExport = () => {
-    tableRef.current.exportData(viewContent.name);
+    useChartDataExport(viewContent);
   };
 
   return (
@@ -42,7 +41,7 @@ export const LightThemeChartTemplate = args => {
         </ChartContainer>
       </LightContainer>
       <LightContainer>
-        <Table {...args} ref={tableRef} />
+        <Table {...args} />
       </LightContainer>
     </>
   );
@@ -54,12 +53,10 @@ const DarkContainer = styled(LightContainer)`
 `;
 
 export const DarkThemeTemplate = args => {
-  const tableRef = React.useRef(null);
-
   const { viewContent } = args;
 
   const handleExport = () => {
-    tableRef.current.exportData(viewContent.name);
+    useChartDataExport(viewContent);
   };
 
   return (
@@ -73,7 +70,7 @@ export const DarkThemeTemplate = args => {
         </ChartContainer>
       </DarkContainer>
       <DarkContainer>
-        <Table {...args} ref={tableRef} />
+        <Table {...args} />
       </DarkContainer>
     </>
   );
