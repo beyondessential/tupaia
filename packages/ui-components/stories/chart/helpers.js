@@ -5,7 +5,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Button } from '../../src';
+import { Button, FlexEnd } from '../../src';
 import { Chart, Table } from '../../src/components/Chart';
 
 const LightContainer = styled.div`
@@ -13,7 +13,7 @@ const LightContainer = styled.div`
   background: #f9f9f9;
   border-radius: 3px;
   border: 1px solid #dedee0;
-  max-height: 510px;
+  max-height: 580px;
   overflow: auto;
   margin-bottom: 2rem;
 `;
@@ -25,15 +25,18 @@ const ChartContainer = styled.div`
 
 export const LightThemeChartTemplate = args => {
   const tableRef = React.useRef(null);
+  const { viewContent } = args;
 
   const handleExport = () => {
-    tableRef.current.exportData('testing');
+    tableRef.current.exportData(viewContent.name);
   };
 
   return (
     <>
       <LightContainer>
-        <Button onClick={handleExport}>Export</Button>
+        <FlexEnd p={2}>
+          <Button onClick={handleExport}>Export</Button>
+        </FlexEnd>
         <ChartContainer>
           <Chart {...args} />
         </ChartContainer>
@@ -50,15 +53,28 @@ const DarkContainer = styled(LightContainer)`
   border: 1px solid #262834;
 `;
 
-export const DarkThemeTemplate = args => (
-  <>
-    <DarkContainer>
-      <ChartContainer>
-        <Chart {...args} />
-      </ChartContainer>
-    </DarkContainer>
-    <DarkContainer>
-      <Table {...args} />
-    </DarkContainer>
-  </>
-);
+export const DarkThemeTemplate = args => {
+  const tableRef = React.useRef(null);
+
+  const { viewContent } = args;
+
+  const handleExport = () => {
+    tableRef.current.exportData(viewContent.name);
+  };
+
+  return (
+    <>
+      <DarkContainer>
+        <FlexEnd p={2}>
+          <Button onClick={handleExport}>Export</Button>
+        </FlexEnd>
+        <ChartContainer>
+          <Chart {...args} />
+        </ChartContainer>
+      </DarkContainer>
+      <DarkContainer>
+        <Table {...args} ref={tableRef} />
+      </DarkContainer>
+    </>
+  );
+};
