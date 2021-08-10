@@ -35,6 +35,10 @@ const makeFirstColumn = (header, accessor) => ({
  * use value as the only column
  */
 const processColumns = viewContent => {
+  if (!viewContent) {
+    return [];
+  }
+
   const { data, xName, periodGranularity } = viewContent;
   const hasNamedData = data[0]?.name;
   const hasTimeSeriesData = getIsTimeSeries(data) && periodGranularity;
@@ -70,7 +74,13 @@ const processColumns = viewContent => {
   return firstColumn ? [firstColumn, ...configColumns] : configColumns;
 };
 
-const processData = ({ data, chartType }) => {
+const processData = viewContent => {
+  if (!viewContent) {
+    return [];
+  }
+
+  const { data, chartType } = viewContent;
+
   if (chartType === CHART_TYPES.PIE) {
     return data.sort((a, b) => b.value - a.value);
   }

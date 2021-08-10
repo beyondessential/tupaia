@@ -112,7 +112,6 @@ const EnlargedDialogComponent = ({
   const exportRef = useRef(null);
   const [exportDialogIsOpen, setExportDialogIsOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-  const { doExport } = useChartDataExport();
 
   const [exportStatus, setExportStatus] = useState(STATUS.IDLE);
   const [drillDownState, setDrillDownState] = useState({
@@ -212,7 +211,9 @@ const EnlargedDialogComponent = ({
     return styles.container;
   };
 
-  const exportFormats = isMatrix ? ['xlsx'] : ['png', 'excel'];
+  const exportFormats = isMatrix ? ['xlsx'] : ['png', 'xlsx'];
+
+  const { doExport } = useChartDataExport(newViewContent);
 
   const onExport = async format => {
     setExportStatus(STATUS.LOADING);
@@ -221,7 +222,7 @@ const EnlargedDialogComponent = ({
     const filename = stringToFilename(`export-${organisationUnitName}-${newViewContent.name}`);
 
     try {
-      if (format === 'xlsx') {
+      if (isMatrix && format === 'xlsx') {
         await exportToExcel({
           projectCode,
           dashboardCode,
@@ -236,16 +237,14 @@ const EnlargedDialogComponent = ({
       } else if (format === 'png') {
         const node = exportRef.current;
         await exportToPng(node, filename);
-      } else if (format === 'excel') {
-        console.log('excel export');
-        doExport(newViewContent);
+      } else if (format === 'xlsx') {
+        doExport();
       }
 
       setIsExporting(false);
       await sleep(1000); // allow some time for the chart transition to finish before hiding the loader
       setExportStatus(STATUS.SUCCESS);
     } catch (error) {
-      console.log('error', error);
       setIsExporting(false);
       setExportStatus(STATUS.ERROR);
     }

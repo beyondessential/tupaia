@@ -25,9 +25,10 @@ const ChartContainer = styled.div`
 
 export const LightThemeChartTemplate = args => {
   const { viewContent } = args;
+  const { doExport } = useChartDataExport(viewContent);
 
   const handleExport = () => {
-    useChartDataExport(viewContent);
+    doExport();
   };
 
   return (
