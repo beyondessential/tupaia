@@ -1,6 +1,6 @@
 'use strict';
 
-import { arrayToDbString, insertJsonEntry } from '../utilities';
+import { arrayToDbString, insertJsonEntry, updateJsonEntry } from '../utilities';
 
 var dbm;
 var type;
@@ -38,12 +38,20 @@ exports.up = async function (db) {
     ['measureBuilders', 'denominator', 'measureBuilderConfig'],
     {
       aggregations: [
-        'MOST_RECENT',
         {
           type: 'SUM_PREVIOUS_EACH_DAY',
         },
       ],
     },
+    { id: 'AU_FLUTRACKING_Participants_Per_100k' },
+  );
+
+  await updateJsonEntry(
+    db,
+    'mapOverlay',
+    'measureBuilderConfig',
+    ['measureBuilders', 'denominator'],
+    { measureBuilder: 'valueForOrgGroup' },
     { id: 'AU_FLUTRACKING_Participants_Per_100k' },
   );
 };
