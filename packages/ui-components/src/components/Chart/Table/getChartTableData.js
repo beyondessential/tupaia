@@ -35,7 +35,7 @@ const makeFirstColumn = (header, accessor) => ({
  * use value as the only column
  */
 const processColumns = viewContent => {
-  if (!viewContent) {
+  if (!viewContent?.data) {
     return [];
   }
 
@@ -75,7 +75,7 @@ const processColumns = viewContent => {
 };
 
 const processData = viewContent => {
-  if (!viewContent) {
+  if (!viewContent?.data) {
     return [];
   }
 
@@ -88,7 +88,7 @@ const processData = viewContent => {
 };
 
 export const getChartTableData = viewContent => {
-  const comparisonItem = viewContent?.data[0];
+  const comparisonItem = viewContent?.data && viewContent?.data[0];
   const columns = useMemo(() => processColumns(viewContent), [comparisonItem]);
   const data = useMemo(() => processData(viewContent), [comparisonItem]);
   return {

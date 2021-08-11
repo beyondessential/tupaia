@@ -17,7 +17,9 @@ import {
   Container as MuiContainer,
   Button as MuiButton,
 } from '@material-ui/core';
-import { DateRangePicker } from '@tupaia/ui-components';
+import { GetApp } from '@material-ui/icons';
+import { useChartDataExport } from '@tupaia/ui-components/lib/chart';
+import { DateRangePicker, WhiteButton } from '@tupaia/ui-components';
 import * as COLORS from '../constants';
 import { FlexSpaceBetween, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
@@ -52,6 +54,10 @@ const Header = styled(FlexSpaceBetween)`
   .MuiTextField-root {
     margin-right: 0;
   }
+`;
+
+const ExportButton = styled(WhiteButton)`
+  margin-right: 1rem;
 `;
 
 const Heading = styled(Typography)`
@@ -123,6 +129,9 @@ export const DashboardReportModal = ({
     });
   };
 
+  const viewContent = { ...viewConfig, data, startDate, endDate };
+  const { doExport } = useChartDataExport(viewContent);
+
   return (
     <>
       <MuiButton onClick={handleClickOpen} endIcon={<KeyboardArrowRightIcon />} color="primary">
@@ -146,6 +155,9 @@ export const DashboardReportModal = ({
                 {viewConfig?.description && <Description>{viewConfig.description}</Description>}
               </Box>
               <FlexStart>
+                <ExportButton onClick={doExport} startIcon={<GetApp />}>
+                  Export
+                </ExportButton>
                 <DateRangePicker
                   isLoading={isLoading}
                   startDate={startDate}
@@ -156,7 +168,7 @@ export const DashboardReportModal = ({
               </FlexStart>
             </Header>
             <Chart
-              viewContent={{ ...viewConfig, data, startDate, endDate }}
+              viewContent={viewContent}
               isLoading={isLoading}
               isError={isError}
               error={error}
