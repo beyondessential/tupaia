@@ -5,8 +5,10 @@
 
 import fs from 'fs';
 import { uniq } from 'lodash';
+import moment from 'moment';
 
 import { compareAsc, yup, yupUtils } from '@tupaia/utils';
+import { convertDateRangeToUrlPeriodString } from '../../../src/historyNavigation/utils';
 
 export const readJsonFile = path => JSON.parse(fs.readFileSync(path, { encoding: 'utf-8' }));
 
@@ -38,3 +40,13 @@ export const buildUrlSchema = ({ regex, regexDescription, shape }) =>
         `invalid url\n${JSON.stringify(value, undefined, 2)}\ncausing message "${error.message}"`,
     ),
   });
+
+export const buildVizPeriod = (startDate, endDate) => {
+  if (!startDate || !endDate) {
+    return undefined;
+  }
+  return convertDateRangeToUrlPeriodString({
+    startDate: moment(startDate),
+    endDate: moment(endDate),
+  });
+};
