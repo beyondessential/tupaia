@@ -3,7 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import moment from 'moment';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
 import { groupEventsByPeriod } from '@tupaia/dhis-api';
@@ -64,7 +63,7 @@ class DataByValueBuilder extends DataBuilder {
 export class CountEventsPerPeriodByDataValueBuilder extends DataPerPeriodBuilder {
   async fetchResults() {
     const dataElementCodes = [this.config.dataElement];
-    return this.fetchEvents({ useDeprecatedApi: false, dataElementCodes });
+    return this.fetchEvents({ dataElementCodes });
   }
 
   groupResultsByPeriod = groupEventsByPeriod;
