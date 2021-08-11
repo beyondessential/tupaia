@@ -36,6 +36,8 @@ import { isMarkedChange } from '../utilities';
 const DATE_FORMAT = 'YYYY-MM-DD';
 const DATETIME_FORMAT = `${DATE_FORMAT} HH:mm:ss`;
 
+const MAX_DEBUGGING_INFO_ITEMS = 1000;
+
 /**
  * Cache of period ranges keyed by requested period granularity first, then date
  *
@@ -188,7 +190,9 @@ export class SurveyResponseOutdater extends ChangeHandler {
   };
 
   getChangeDebuggingInfo = changedResponses =>
-    `Could not outdate survey responses with ids ${changedResponses.map(sr => sr.id)}`;
+    changedResponses.length > MAX_DEBUGGING_INFO_ITEMS
+      ? `Could not outdate ${changedResponses.length} survey responses`
+      : `Could not outdate survey responses with ids ${changedResponses.map(sr => sr.id)}`;
 
   handleResponsesForSurvey = async (changedResponses, survey) => {
     if (!survey?.['period_granularity']) {

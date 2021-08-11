@@ -19,12 +19,12 @@ class SurveyType extends DatabaseType {
   async questions() {
     const questions = await this.database.executeSql(
       `
-      SELECT q.* FROM question q
-      JOIN survey_screen_component ssc ON ssc.question_id  = q.id
-      JOIN survey_screen ss ON ss.id = ssc.screen_id
-      JOIN survey s ON s.id = ss.survey_id
-      WHERE s.code = ?
-    `,
+       SELECT q.* FROM question q
+       JOIN survey_screen_component ssc ON ssc.question_id  = q.id
+       JOIN survey_screen ss ON ss.id = ssc.screen_id
+       JOIN survey s ON s.id = ss.survey_id
+       WHERE s.code = ?
+     `,
       [this.code],
     );
 
@@ -43,6 +43,9 @@ class SurveyType extends DatabaseType {
     const countries = await this.getCountries();
     return countries.map(c => c.code);
   }
+
+  hasResponses = async () =>
+    !!(await this.otherModels.surveyResponse.findOne({ survey_id: this.id }));
 }
 
 export class SurveyModel extends MaterializedViewLogDatabaseModel {
@@ -66,15 +69,7 @@ const onChangeUpdateDataGroup = async (
   switch (changeType) {
     case 'update': {
       const { code, data_source_id: dataSourceId } = newRecord;
-      await models.dataSource.updateById(dataSourceId, { code });
-
-      if (oldRecord && newRecord.period_granularity !== oldRecord.period_granularity) {
-        // the `outdated` status of survey responses must be re-calculated, since it depends on
-        // the period granularity of the survey they belong to
-        // no need to await for the operation, just get it going
-        models.surveyResponse.markAsChanged({ survey_id: newRecord.id });
-      }
-      return true;
+      return models.dataSource.updateById(dataSourceId, { code });
     }
     case 'delete': {
       const { data_source_id: dataSourceId } = oldRecord;
