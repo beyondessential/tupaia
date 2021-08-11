@@ -4,9 +4,8 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
+import { Link as RouterLink } from 'react-router-dom';
 import { FlexSpaceBetween } from '../Layout';
 
 const Heading = styled(Typography)`
@@ -79,37 +78,22 @@ export const StandardRow = ({ label, children }) => (
   </Row>
 );
 
-const LinkRow = styled(Row)`
+export const LinkRow = styled(RouterLink)`
+  display: flex;
   text-decoration: none;
-  color: initial;
+  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+  color: inherit;
 
-  &:hover .MuiTypography-root {
-    text-decoration: underline;
-    color: ${props => props.theme.palette.primary.main};
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    cursor: pointer;
+
+    .MuiTypography-root {
+      text-decoration: underline;
+      color: ${props => props.theme.palette.primary.main};
+    }
   }
 `;
-
-export const DrillDownRow = ({ label, entityCode, reportCode, children }) => {
-  const { search } = useLocation();
-  return (
-    <LinkRow
-      component={RouterLink}
-      to={{
-        pathname: `/${entityCode}/dashboard`,
-        search: `${search}&reportCode=${reportCode}`,
-      }}
-    >
-      <Cell>
-        <Text>{label}</Text>
-      </Cell>
-      {children}
-    </LinkRow>
-  );
-};
-
-DrillDownRow.propTypes = {
-  label: PropTypes.string.isRequired,
-  entityCode: PropTypes.string.isRequired,
-  reportCode: PropTypes.string.isRequired,
-  children: PropTypes.any.isRequired,
-};

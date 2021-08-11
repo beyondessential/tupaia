@@ -5,8 +5,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { useLocation } from 'react-router-dom';
 import { ColorCircle } from './ColorCircle';
-import { HeaderRow, SubHeaderRow, StandardRow, DrillDownRow } from './Rows';
+import { HeaderRow, SubHeaderRow, StandardRow, LinkRow } from './Rows';
 import { FetchLoader } from '../FetchLoader';
 
 const Container = styled.div`
@@ -23,7 +24,6 @@ const ROW_TYPE_COMPONENTS = {
   header: HeaderRow,
   subheader: SubHeaderRow,
   standard: StandardRow,
-  drilldown: DrillDownRow,
 };
 
 const VALUE_TYPE_COMPONENTS = {
@@ -72,7 +72,6 @@ const processData = (config, data, reportCodes) => {
 
       // check that the drill down config exists before trying to render a drilldown row
       if (reportCodes[drillDownCode] !== undefined) {
-        rowType = 'drilldown';
         drillDownReportCode = reportCodes[drillDownCode];
       }
     }
@@ -85,8 +84,23 @@ const processData = (config, data, reportCodes) => {
   });
 };
 
+// eslint-disable-next-line react/prop-types
+const DrillDownLink = ({ pathname, reportCode, children }) => {
+  const { search } = useLocation();
+  return (
+    <LinkRow
+      to={{
+        pathname,
+        search: `${search}&reportCode=${reportCode}`,
+      }}
+    >
+      {children}
+    </LinkRow>
+  );
+};
+
 export const ListVisual = React.memo(
-  ({ viewContent, isLoading, isError, error, entityCode, reportCodes, isEnlarged }) => {
+  ({ viewContent, isLoading, isError, error, drilldownPathname, reportCodes, isEnlarged }) => {
     const { data, ...config } = viewContent;
 
     const list = processData(config, data, reportCodes);
@@ -98,16 +112,22 @@ export const ListVisual = React.memo(
             const ValueComponent = VALUE_TYPE_COMPONENTS[valueType];
             const RowComponent = ROW_TYPE_COMPONENTS[rowType];
 
-            return (
-              <RowComponent
-                // eslint-disable-next-line react/no-array-index-key
-                key={index}
-                label={label}
-                entityCode={entityCode}
-                reportCode={drillDownReportCode}
-              >
+            const Row = () => (
+              <RowComponent label={label}>
                 <ValueComponent displayConfig={displayConfig} />
               </RowComponent>
+            );
+
+            return drillDownReportCode ? (
+              <DrillDownLink
+                key={index}
+                pathname={drilldownPathname}
+                reportCode={drillDownReportCode}
+              >
+                <Row />
+              </DrillDownLink>
+            ) : (
+              <Row key={index} />
             );
           })}
         </FetchLoader>
@@ -117,7 +137,7 @@ export const ListVisual = React.memo(
 );
 
 ListVisual.propTypes = {
-  entityCode: PropTypes.string.isRequired,
+  drilldownPathname: PropTypes.string,
   viewContent: PropTypes.object,
   reportCodes: PropTypes.object,
   isLoading: PropTypes.bool,
@@ -128,6 +148,7 @@ ListVisual.propTypes = {
 };
 
 ListVisual.defaultProps = {
+  drilldownPathname: null,
   viewContent: null,
   reportCodes: null,
   isLoading: false,

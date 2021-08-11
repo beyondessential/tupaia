@@ -45,6 +45,7 @@ export const DashboardReport = React.memo(
     const { reportData, dashboardItemConfig: config, reportCodes } = data;
     const Visual = config?.type === 'list' ? ListVisual : Chart;
     const Wrapper = isEnlarged ? React.Fragment : Container;
+    const drillDownPathname = `/${entityCode}/dashboard`;
 
     return (
       <Wrapper>
@@ -55,7 +56,7 @@ export const DashboardReport = React.memo(
           isError={isError}
           error={error}
           name={name}
-          entityCode={entityCode}
+          drilldownPathname={drillDownPathname}
           reportCodes={reportCodes}
           isEnlarged={isEnlarged}
         />
@@ -66,7 +67,7 @@ export const DashboardReport = React.memo(
               endIcon={<KeyboardArrowRightIcon />}
               color="primary"
               to={{
-                pathname: `/${entityCode}/dashboard`,
+                pathname: drillDownPathname,
                 search: `${search}&reportCode=${reportCode}`,
               }}
             >

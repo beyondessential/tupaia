@@ -39,6 +39,6 @@ export const LightTheme = Template.bind({});
 LightTheme.args = {
   viewContent,
   reportCodes,
-  entityCode: 'LA',
+  drilldownPathname: `/LA_Huoixai%20District/dashboard`,
   isEnlarged: true,
 };
