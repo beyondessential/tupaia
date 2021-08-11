@@ -44,8 +44,8 @@ const processData = (serieses, measureData) => {
 };
 
 export const getMapTableData = (serieses, measureData) => {
-  const columns = useMemo(() => processColumns(serieses), [serieses]);
-  const data = useMemo(() => processData(serieses, measureData), [serieses, measureData]);
+  const columns = useMemo(() => processColumns(serieses), [serieses[0]]);
+  const data = useMemo(() => processData(serieses, measureData), [serieses[0], measureData[0]]);
   return {
     columns,
     data,

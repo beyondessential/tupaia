@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import React, { useState, useEffect, useRef } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useChartDataExport } from '@tupaia/ui-components/lib/chart';

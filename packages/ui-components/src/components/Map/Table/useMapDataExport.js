@@ -6,7 +6,7 @@
 import { useDataTableExport } from '@tupaia/ui-components';
 import { getMapTableData } from './getMapTableData';
 
-export const useMapDataExport = viewContent => {
-  const { columns, data } = getMapTableData(viewContent);
-  return useDataTableExport(columns, data, viewContent.name);
+export const useMapDataExport = (serieses, measureData, title) => {
+  const { columns, data } = getMapTableData(serieses, measureData);
+  return useDataTableExport(columns, data, title);
 };
