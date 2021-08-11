@@ -88,9 +88,8 @@ const processData = viewContent => {
 };
 
 export const getChartTableData = viewContent => {
-  const comparisonItem = viewContent?.data && viewContent?.data[0];
-  const columns = useMemo(() => processColumns(viewContent), [comparisonItem]);
-  const data = useMemo(() => processData(viewContent), [comparisonItem]);
+  const columns = useMemo(() => processColumns(viewContent), [JSON.stringify(viewContent)]);
+  const data = useMemo(() => processData(viewContent), [JSON.stringify(viewContent)]);
   return {
     columns,
     data,

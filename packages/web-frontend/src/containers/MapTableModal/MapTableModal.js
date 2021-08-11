@@ -32,7 +32,7 @@ export const MapTableModalComponent = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const title = `${currentMeasure?.name}, ${currentCountry?.name}`;
-  const { doExport } = useMapDataExport(measureOptions || [], measureData || [], title);
+  const { doExport } = useMapDataExport(measureOptions, measureData, title);
 
   if (!currentMeasure || !measureData || !measureOptions || measureData.length === 0) {
     return null;
@@ -67,7 +67,7 @@ MapTableModalComponent.propTypes = {
     }),
   ),
   currentCountry: PropTypes.string,
-  currentMeasure: PropTypes.string,
+  currentMeasure: PropTypes.object,
 };
 
 MapTableModalComponent.defaultProps = {
