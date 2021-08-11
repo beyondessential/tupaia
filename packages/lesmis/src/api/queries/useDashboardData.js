@@ -16,11 +16,11 @@ const getDrillDownCodes = dashboardItems =>
   dashboardItems
     .filter(d => !!d.drillDown)
     .reduce((codes, d) => {
-      const entry = d.drillDown?.itemCodeByEntry;
+      const itemCodeByEntry = d.drillDown?.itemCodeByEntry;
 
-      if (entry) {
-        const values = Object.values(d.drillDown.itemCodeByEntry);
-        return [...codes, ...values];
+      if (itemCodeByEntry) {
+        const additionalCodes = Object.values(d.drillDown.itemCodeByEntry);
+        return [...codes, ...additionalCodes];
       }
       return codes;
     }, []);
