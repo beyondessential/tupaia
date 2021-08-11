@@ -26,5 +26,13 @@ export const validateSurveyFields = async (models, surveyFields) => {
     if (serviceType === 'dhis') {
       throw new Error('Reporting period is not available for dhis surveys');
     }
+
+    const survey = await models.survey.findOne({ code });
+    const hasResponses = survey && (await survey.hasResponses());
+    if (hasResponses && survey.period_granularity !== periodGranularity) {
+      throw new Error(
+        `Cannot change the reporting period for "${survey.name}" while there are still records in the survey_response table`,
+      );
+    }
   }
 };
