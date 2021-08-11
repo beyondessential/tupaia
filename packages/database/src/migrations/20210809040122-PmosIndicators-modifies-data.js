@@ -48,19 +48,19 @@ const MAPPINGS = [
   [
     'Aedes',
     [
-      'Ae_Aegypti',
-      'Ae_Albopictus',
-      'Ae_Cooki',
-      'Ae_Hensilli',
-      'Ae_Marshallensis',
-      'Ae_Polynesiensis',
-      'Ae_Rotumae',
-      'Ae_Scutellaris',
-      'Ae_Vigilax',
+      'PMOS_Ae_Aegypti',
+      'PMOS_Ae_Albopictus',
+      'PMOS_Ae_Cooki',
+      'PMOS_Ae_Hensilli',
+      'PMOS_Ae_Marshallensis',
+      'PMOS_Ae_Polynesiensis',
+      'PMOS_Ae_Rotumae',
+      'PMOS_Ae_Scutellaris',
+      'PMOS_Ae_Vigilax',
     ],
   ],
-  ['Culex', ['Cx_Annulirostris', 'Cx_Quinquefasciatus', 'Cx_Sitiens']],
-  ['Mansonia', ['Mn_Uniformis']],
+  ['Culex', ['PMOS_Cx_Annulirostris', 'PMOS_Cx_Quinquefasciatus', 'PMOS_Cx_Sitiens']],
+  ['Mansonia', ['PMOS_Mn_Uniformis']],
 ];
 
 exports.up = async function (db) {
