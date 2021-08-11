@@ -183,7 +183,7 @@ describe('object', () => {
     });
   });
 
-  describe.only('orderBy', () => {
+  describe('orderBy', () => {
     const one = { name: 'one', value: 1, stringValue: '1', id: '000a' };
     const two = { name: 'two', value: 2, stringValue: '2', id: '000b' };
     const five = { name: 'five', value: 5, stringValue: '5', id: '000c' };
