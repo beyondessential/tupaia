@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { ApiConnection, AuthHandler, SessionType } from '@tupaia/server-boilerplate';
+import { ApiConnection, AuthHandler, SessionType } from '@tupaia/api-client';
 import { createBasicHeader } from '@tupaia/utils';
 
 const { MICROSERVICE_CLIENT_USERNAME, MICROSERVICE_CLIENT_SECRET } = process.env;

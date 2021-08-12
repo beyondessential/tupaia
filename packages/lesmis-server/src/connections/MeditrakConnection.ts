@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { QueryParameters } from '@tupaia/server-boilerplate';
+import { QueryParameters } from '@tupaia/api-client';
 import camelcaseKeys from 'camelcase-keys';
 import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
 import { isLesmisAdmin } from '../utils';

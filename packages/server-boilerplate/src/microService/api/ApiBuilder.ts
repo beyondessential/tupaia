@@ -15,7 +15,7 @@ import { handleWith, handleError } from '../../utils';
 import { buildBasicBearerAuthMiddleware } from '../auth';
 import { TestRoute } from '../../routes';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
-import { ApiConnectionBuilder, EntityApi } from '../../connections';
+import { ApiConnectionBuilder, EntityApi } from '@tupaia/api-client';
 import { RequestContext } from '../types';
 
 export class ApiBuilder {

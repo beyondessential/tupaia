@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { ApiConnection } from '@tupaia/server-boilerplate';
+import { ApiConnection } from '@tupaia/api-client';
 import { createBasicHeader } from '@tupaia/utils';
 import { refreshAndSaveAccessToken } from '/appServer/requestHelpers/refreshAndSaveAccessToken';
 

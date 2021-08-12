@@ -18,5 +18,6 @@
     "directory": "packages/api-client"
   },
   "dependencies": {
+    "@tupaia/utils": "1.0.0"
   }
 }
