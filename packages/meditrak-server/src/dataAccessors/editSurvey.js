@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { assertCanAddDataElementInGroup } from '../database';
+import { validateSurveyFields } from './validateSurveyFields';
 
 const RESOURCE_TYPES = {
   DATA_GROUP: 'dataGroup',
@@ -29,17 +30,24 @@ class SurveyEditor {
     const {
       'data_source.service_type': serviceType,
       'data_source.config': config,
-      ...updatedSurveyFields
+      ...surveyFields
     } = updatedFields;
+    const { period_granularity: periodGranularity } = surveyFields;
 
     return {
       [RESOURCE_TYPES.DATA_GROUP]: {
-        code: updatedSurveyFields.code,
+        code: surveyFields.code,
         service_type: serviceType,
         config,
       },
-      [RESOURCE_TYPES.DATA_ELEMENT]: { service_type: serviceType, config },
-      [RESOURCE_TYPES.SURVEY]: updatedSurveyFields,
+      [RESOURCE_TYPES.DATA_ELEMENT]: {
+        service_type: serviceType,
+        config,
+      },
+      [RESOURCE_TYPES.SURVEY]: {
+        ...surveyFields,
+        period_granularity: periodGranularity === '' ? null : periodGranularity,
+      },
     };
   };
 
@@ -81,16 +89,25 @@ class SurveyEditor {
     const updatedFields = this.updatedFieldsByResource[resourceType];
     const isDataSource = model.databaseType === this.models.dataSource.databaseType;
 
-    Object.entries(updatedFields).forEach(([fieldName, fieldValue]) => {
-      if (isDataSource && (fieldName === 'config' || fieldValue === undefined)) {
-        // Handle config last since its value depends on other fields
-        // For the same reason, do not set model fields to `undefined`
-        // so that the actual record values can be used for config calculation
-        return;
-      }
-      // eslint-disable-next-line no-param-reassign
-      model[fieldName] = fieldValue;
-    });
+    Object.entries(updatedFields)
+      .filter(([, fieldValue]) => fieldValue !== undefined)
+      .forEach(([fieldName, fieldValue]) => {
+        if (isDataSource && fieldName === 'config') {
+          // Handle config last since its value depends on other fields
+          return;
+        }
+        // eslint-disable-next-line no-param-reassign
+        model[fieldName] = fieldValue;
+      });
+
+    if (model.databaseType === 'survey') {
+      await validateSurveyFields(this.models, {
+        code: model.code,
+        periodGranularity: model.period_granularity,
+        serviceType: this.updatedFieldsByResource[RESOURCE_TYPES.DATA_GROUP].service_type,
+      });
+    }
+
     if (isDataSource) {
       this.updateDataSourceConfig(model, updatedFields);
     }
