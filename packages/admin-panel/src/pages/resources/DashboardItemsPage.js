@@ -32,54 +32,62 @@ const FIELDS = [
   },
 ];
 
-const EXTRA_EDIT_FIELDS = [
-  // ID field for constructing viz-builder path only, not for showing or editing
-  {
-    Header: 'ID',
-    source: 'id',
-    show: false,
-  },
-  {
-    Header: 'Edit in Visualisation Builder',
-    type: 'link',
-    editConfig: {
+export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin }) => {
+  const extraEditFields = [
+    // ID field for constructing viz-builder path only, not for showing or editing
+    {
+      Header: 'ID',
+      source: 'id',
+      show: false,
+    },
+    {
+      Header: 'Edit using Visualisation Builder',
       type: 'link',
-      linkOptions: {
-        path: '/viz-builder/:id',
-        parameters: { id: 'id' },
-      },
-      visibilityCriteria: {
-        legacy: false,
+      show: isBESAdmin,
+      editConfig: {
+        type: 'link',
+        linkOptions: {
+          path: '/viz-builder/:id',
+          parameters: { id: 'id' },
+        },
+        visibilityCriteria: {
+          legacy: false,
+        },
       },
     },
-  },
-];
+  ];
 
-const COLUMNS = [
-  ...FIELDS,
-  {
-    Header: 'Edit',
-    type: 'edit',
-    source: 'id',
-    actionConfig: {
-      editEndpoint: 'dashboardItems',
-      fields: [...FIELDS, ...EXTRA_EDIT_FIELDS],
+  const columns = [
+    ...FIELDS,
+    {
+      Header: 'Edit',
+      type: 'edit',
+      source: 'id',
+      actionConfig: {
+        editEndpoint: 'dashboardItems',
+        fields: [...FIELDS, ...extraEditFields],
+      },
     },
-  },
-];
+  ];
 
-export const DashboardItemsPage = ({ getHeaderEl }) => (
-  <ResourcePage
-    title="Dashboard Items"
-    endpoint="dashboardItems"
-    columns={COLUMNS}
-    editConfig={{
-      title: 'Edit Dashboard Item',
-    }}
-    getHeaderEl={getHeaderEl}
-  />
-);
+  return (
+    <ResourcePage
+      title="Dashboard Items"
+      endpoint="dashboardItems"
+      columns={columns}
+      editConfig={{
+        title: 'Edit Dashboard Item',
+      }}
+      getHeaderEl={getHeaderEl}
+    />
+  );
+};
 
 DashboardItemsPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
+  isBESAdmin: PropTypes.func,
+};
+
+DashboardItemsPage.defaultProps = {
+  isBESAdmin: false,
 };
