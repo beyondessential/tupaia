@@ -49,7 +49,6 @@ export class EventCheckConditionsBuilder extends Builder {
     return aggregator.fetchEvents(this.config.programCode, {
       ...fetchOptions,
       dataElementCodes,
-      useDeprecatedApi: false,
     });
   };
 

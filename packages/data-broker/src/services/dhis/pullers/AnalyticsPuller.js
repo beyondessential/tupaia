@@ -9,7 +9,6 @@ import keyBy from 'lodash.keyby';
 import {
   buildAnalyticsFromDhisAnalytics,
   buildAnalyticsFromDhisEventAnalytics,
-  buildAnalyticsFromEvents,
 } from '../buildAnalytics';
 
 export class AnalyticsPuller {
@@ -123,55 +122,6 @@ export class AnalyticsPuller {
     return buildAnalyticsFromDhisAnalytics(translatedData);
   };
 
-  // This method is to support a deprecated way of getting analytics by fetching events then converting it.
-  // See main method pullAnalyticsFromEventsForApi_Deprecated
-  fetchEventsForPrograms = async (api, programCodes, query) => {
-    const events = [];
-    await Promise.all(
-      programCodes.map(async programCode => {
-        const newEvents = await api.getEvents({ ...query, programCode });
-        events.push(...newEvents);
-      }),
-    );
-
-    return events;
-  };
-
-  /**
-   * This is a deprecated method which invokes a slow DHIS2 api ('/events').
-   * It is invoked using the `options.useDeprecatedApi` flag
-   *
-   * TODO Delete this method as soon as all its past consumers have migrated over to
-   * the new (non-deprecated) method
-   */
-  pullAnalyticsFromEventsForApi_Deprecated = async (api, dataSources, options) => {
-    const {
-      organisationUnitCodes = [],
-      startDate,
-      endDate,
-      programCodes,
-      eventId,
-      trackedEntityInstance,
-    } = options;
-
-    const query = {
-      organisationUnitCode: organisationUnitCodes[0],
-      dataElementIdScheme: 'code',
-      startDate,
-      endDate,
-      programCodes,
-      eventId,
-      trackedEntityInstance,
-    };
-    const events = await this.fetchEventsForPrograms(api, programCodes, query);
-    const translatedEvents = await this.translator.translateInboundEvents(events, programCodes[0]);
-    const dataElements = await this.dataElementsMetadataPuller.pull(api, dataSources, {
-      additionalFields: ['valueType'],
-    });
-
-    return buildAnalyticsFromEvents(translatedEvents, dataElements);
-  };
-
   fetchEventAnalyticsForPrograms = async (api, programCodes, query) => {
     const allHeaders = [];
     let metaData = { items: {}, dimensions: {} };
@@ -240,13 +190,8 @@ export class AnalyticsPuller {
     } = options;
 
     if (programCodes) {
-      // TODO remove `useDeprecatedApi` option as soon as `pullAnalyticsFromEventsForApi_Deprecated()` is deleted
-      const { useDeprecatedApi = true } = options;
-      return useDeprecatedApi
-        ? this.pullAnalyticsFromEventsForApi_Deprecated
-        : this.pullAnalyticsFromEventsForApi;
+      return this.pullAnalyticsFromEventsForApi;
     }
-
     return dhisDataType === this.dataSourceModel.getDhisDataTypes().INDICATOR
       ? this.pullAggregatedAnalyticsForApi
       : this.pullAnalyticsForApi;
