@@ -55,7 +55,7 @@ const VitalsContainer = styled.div`
 
 const CountryView = () => (
   <VitalsContainer>
-    <Heading variant="h4">Country Profile:</Heading>
+    <Heading variant="h4">Country Details</Heading>
     <TwoColGrid>
       <EntityVitalsItem
         name="No. Schools"
@@ -73,7 +73,7 @@ const CountryView = () => (
 
 const ProvinceView = ({ vitals }) => (
   <VitalsContainer>
-    <Heading variant="h4">Province Profile:</Heading>
+    <Heading variant="h4">Province Details</Heading>
     <ThreeColGrid>
       <EntityVitalsItem name="Province Code" value={vitals.code} icon="LocationPin" />
       <EntityVitalsItem
@@ -97,7 +97,7 @@ const ProvinceView = ({ vitals }) => (
 
 const DistrictView = ({ vitals }) => (
   <VitalsContainer>
-    <Heading variant="h4">District Profile:</Heading>
+    <Heading variant="h4">District Details</Heading>
     <ThreeColGrid>
       <EntityVitalsItem name="District Code" value={vitals.code} icon="LocationPin" />
       <EntityVitalsItem
@@ -123,7 +123,7 @@ const DistrictView = ({ vitals }) => (
     </ThreeColGrid>
     <HorizontalDivider />
     <MuiBox mt={2}>
-      <SubHeading variant="h4">{vitals.parentProvince?.name} Province</SubHeading>
+      <SubHeading variant="h4">Province Details</SubHeading>
       <FlexStart mt={1} mb={4}>
         <EntityVitalsItem name="Province Code" value={vitals.parentProvince?.code} mr={4} />
         <EntityVitalsItem
@@ -137,7 +137,7 @@ const DistrictView = ({ vitals }) => (
 
 const SchoolView = ({ vitals }) => (
   <VitalsContainer>
-    <Heading variant="h4">School Profile:</Heading>
+    <Heading variant="h4">School Details</Heading>
     <ThreeColGrid>
       <EntityVitalsItem name="School Code" value={vitals.code} icon="LocationPin" />
       <EntityVitalsItem
@@ -160,7 +160,7 @@ const SchoolView = ({ vitals }) => (
     </ThreeColGrid>
     <HorizontalDivider />
     <MuiBox mt={2}>
-      <SubHeading variant="h4">{vitals.parentDistrict?.name}</SubHeading>
+      <SubHeading variant="h4">District Details</SubHeading>
       <FlexStart mt={1} mb={4}>
         <EntityVitalsItem
           name="District Population"
