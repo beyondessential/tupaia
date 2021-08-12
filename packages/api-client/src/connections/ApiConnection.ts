@@ -20,6 +20,9 @@ interface FetchConfig {
   body?: string;
 }
 
+/**
+ * TODO: make internal, do not export from package
+ */
 export class ApiConnection {
   public authHandler: AuthHandler;
 

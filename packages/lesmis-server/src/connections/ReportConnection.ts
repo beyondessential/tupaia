@@ -11,6 +11,10 @@ const { REPORT_API_URL = 'http://localhost:8030/v2' } = process.env;
 type ReportObject = {
   results: Record<string, unknown>[];
 };
+
+/**
+ * @deprecated use @tupaia/api-client
+ */
 export class ReportConnection extends SessionHandlingApiConnection {
   baseUrl = REPORT_API_URL;
 

@@ -53,6 +53,7 @@ export class ApiBuilder {
         getAuthHeader: async () => req.headers.authorization || '',
       };
 
+      // TODO: use @tupaia/api-client
       const entityApi = new ApiConnectionBuilder()
         .handleAuthWith(microServiceAuthHandler)
         .buildAs(EntityApi);
