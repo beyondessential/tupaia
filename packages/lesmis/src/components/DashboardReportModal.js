@@ -15,7 +15,7 @@ import {
   Container as MuiContainer,
 } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { DateRangePicker } from '@tupaia/ui-components';
+import { DateRangePicker, WhiteButton } from '@tupaia/ui-components';
 import * as COLORS from '../constants';
 import { FlexColumn, FlexSpaceBetween, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
@@ -90,7 +90,7 @@ const EXPORT_OPTIONS = [
 
 export const DashboardReportModal = () => {
   const theme = useTheme();
-  const [selectedExportId, setSelectedExportId] = useState(EXPORT_OPTIONS[0].id);
+  const [selectedExportId, setSelectedExportId] = useState(EXPORT_OPTIONS[1].id);
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { entityCode } = useUrlParams();
   const [{ startDate, endDate, reportCode }, setParams] = useUrlSearchParams();
@@ -169,6 +169,7 @@ export const DashboardReportModal = () => {
                   selectedId={selectedExportId}
                   setSelectedId={setSelectedExportId}
                   onClick={handleClickExport}
+                  ButtonComponent={WhiteButton}
                 />
                 <DateRangePicker
                   isLoading={isLoading}

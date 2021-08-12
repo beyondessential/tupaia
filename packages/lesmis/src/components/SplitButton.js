@@ -3,9 +3,10 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React, { useState, useRef } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
+import { Button } from '@tupaia/ui-components';
 import MuiButtonGroup from '@material-ui/core/ButtonGroup';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
@@ -19,28 +20,7 @@ const ButtonGroup = styled(MuiButtonGroup)`
   margin-right: 1rem;
 `;
 
-const WhiteButton = styled(Button)`
-  background: white;
-  padding: 0.7rem;
-  min-width: 10rem;
-  font-size: 1rem;
-  min-height: 3.1rem;
-  line-height: 1.2rem;
-  font-weight: 400;
-  color: ${props => props.theme.palette.text.secondary};
-  border: 1px solid ${props => props.theme.palette.grey['400']};
-
-  &:hover {
-    border: 1px solid ${props => props.theme.palette.grey['400']};
-  }
-`;
-
-const DropdownButton = styled(WhiteButton)`
-  min-width: auto;
-`;
-
-// eslint-disable-next-line react/prop-types
-export const SplitButton = ({ options, selectedId, setSelectedId, onClick }) => {
+export const SplitButton = ({ options, selectedId, setSelectedId, onClick, ButtonComponent }) => {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
 
@@ -71,10 +51,10 @@ export const SplitButton = ({ options, selectedId, setSelectedId, onClick }) => 
     <Grid container direction="column" alignItems="center">
       <Grid item xs={12}>
         <ButtonGroup ref={anchorRef}>
-          <WhiteButton onClick={handleClick}>{selectedOption.label}</WhiteButton>
-          <DropdownButton color="primary" size="small" onClick={handleToggle}>
+          <ButtonComponent onClick={handleClick}>{selectedOption.label}</ButtonComponent>
+          <ButtonComponent style={{ minWidth: 'auto' }} onClick={handleToggle}>
             <KeyboardArrowDown />
-          </DropdownButton>
+          </ButtonComponent>
         </ButtonGroup>
         <Popper open={open} anchorEl={anchorRef.current} transition disablePortal>
           {({ TransitionProps }) => (
@@ -100,4 +80,24 @@ export const SplitButton = ({ options, selectedId, setSelectedId, onClick }) => 
       </Grid>
     </Grid>
   );
+};
+
+SplitButton.propTypes = {
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      label: PropTypes.string,
+    }),
+  ).isRequired,
+  selectedId: PropTypes.string,
+  setSelectedId: PropTypes.func,
+  onClick: PropTypes.func,
+  ButtonComponent: PropTypes.node,
+};
+
+SplitButton.defaultProps = {
+  selectedId: null,
+  setSelectedId: null,
+  onClick: () => {},
+  ButtonComponent: Button,
 };
