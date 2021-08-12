@@ -6,13 +6,7 @@
 import { when } from 'jest-when';
 
 import { createDhisApi } from './helpers';
-import {
-  DATA_ELEMENTS,
-  ORGANISATION_UNITS,
-  PROGRAM,
-  QUERY,
-  ANALYTICS_RESULTS,
-} from './testGetEventAnalytics.fixtures';
+import { DATA_ELEMENTS, PROGRAM } from './testGetEventAnalytics.fixtures';
 
 const createFetchStub = () => {
   const fetchStub = jest.fn();
@@ -39,7 +33,9 @@ const createFetchStub = () => {
         code: 'TO',
       },
     })
-    .mockResolvedValue({ organisationUnits: [{ id: 'to_dhisId' }] });
+    .mockResolvedValue({ organisationUnits: [{ id: 'to_dhisId' }] })
+    .calledWith('events/dhis_event_id1')
+    .mockResolvedValue({ dataValues: {} });
 
   return fetchStub;
 };

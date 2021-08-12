@@ -238,7 +238,7 @@ export class DhisApi {
     endDate,
     eventId,
     trackedEntityInstance,
-    dataValueFormat = 'array', // ('array'|'object')
+    dataValueFormat = 'object', // ('array'|'object')
   }) {
     if (!eventId && !trackedEntityInstance && !programCode) {
       throw this.constructError(
@@ -285,7 +285,7 @@ export class DhisApi {
     if (dataValueFormat === 'object') {
       events = events.map(event => ({
         ...event,
-        dataValues: keyBy(event.dataValues, 'dataElement'),
+        dataValues: reduceToDictionary(event.dataValues, 'dataElement', 'value'),
       }));
     }
     events.sort(getSortByKey('eventDate'));
