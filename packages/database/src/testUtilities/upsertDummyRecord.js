@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import pluralize from 'pluralize';
+
 import { TYPES } from '../types';
 import { generateTestId } from './generateTestId';
 import { generateValueOfType } from './generateValueOfType';
@@ -79,11 +81,17 @@ export const findOrCreateDummyRecord = async (model, findCriteria, data) => {
 };
 
 export const findOrCreateRecords = async (models, recordsByType) => {
+  const data = {};
+
   for (const [type, records] of Object.entries(recordsByType)) {
+    const pluralType = pluralize(type);
+    data[pluralType] = [];
     for (const record of records) {
-      await findOrCreateDummyRecord(models[type], record);
+      data[pluralType].push(await findOrCreateDummyRecord(models[type], record));
     }
   }
+
+  return data;
 };
 
 /**
@@ -92,10 +100,16 @@ export const findOrCreateRecords = async (models, recordsByType) => {
  * sensible defaults, using the logic in upsertDummyRecord
  */
 export const populateTestData = async (models, recordsByType) => {
+  const data = {};
+
   // process sequentially, as some inserts may depend on earlier foreign keys being inserted
   for (const [type, records] of Object.entries(recordsByType)) {
+    const pluralType = pluralize(type);
+    data[pluralType] = [];
     for (const record of records) {
-      await upsertDummyRecord(models[type], record);
+      data[pluralType].push(await upsertDummyRecord(models[type], record));
     }
   }
+
+  return data;
 };

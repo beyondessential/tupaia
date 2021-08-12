@@ -214,3 +214,22 @@ export const getUniqueObjects = objects => {
   const jsonStrings = objects.map(o => JSON.stringify(sortFields(o)));
   return getUniqueEntries(jsonStrings).map(JSON.parse);
 };
+
+/**
+ * @param {ObjectCollection} objectCollection
+ */
+export const haveSameFields = (objectCollection, fields) => {
+  const objects = collectionToArray(objectCollection);
+
+  return fields.every(field => {
+    for (let i = 0; i < objects.length; i++) {
+      for (let j = i; j < objects.length; j++) {
+        if (objects[i][field] !== objects[j][field]) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  });
+};
