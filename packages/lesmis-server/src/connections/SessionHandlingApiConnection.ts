@@ -4,6 +4,7 @@
  */
 
 import { ApiConnection, AuthHandler, SessionType } from '@tupaia/api-client';
+import { SessionType } from '@tupaia/server-boilerplate';
 import { createBasicHeader } from '@tupaia/utils';
 
 const { MICROSERVICE_CLIENT_USERNAME, MICROSERVICE_CLIENT_SECRET } = process.env;
