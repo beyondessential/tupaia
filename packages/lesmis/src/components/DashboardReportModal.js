@@ -15,14 +15,13 @@ import {
   Container as MuiContainer,
 } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { DateRangePicker, WhiteButton } from '@tupaia/ui-components';
+import { DateRangePicker, WhiteButton, SplitButton } from '@tupaia/ui-components';
 import * as COLORS from '../constants';
 import { FlexColumn, FlexSpaceBetween, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
 import { useDashboardReportDataWithConfig } from '../api/queries';
 import { useUrlParams, useUrlSearchParams, useExportToPNG } from '../utils';
 import { DashboardReport } from './DashboardReport';
-import { SplitButton } from './SplitButton';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -55,7 +54,7 @@ const Header = styled(FlexSpaceBetween)`
 `;
 
 const Toolbar = styled(FlexStart)`
-  display: ${props => (props.exporting ? 'none' : 'flex')};
+  display: ${props => (props.$isExporting ? 'none' : 'flex')};
 `;
 
 const Heading = styled(Typography)`
@@ -72,7 +71,7 @@ const Description = styled(Typography)`
 `;
 
 const ExportLoader = styled(FlexColumn)`
-  display: ${props => (props.exporting ? 'flex' : 'none')};
+  display: ${props => (props.$isExporting ? 'flex' : 'none')};
   align-items: center;
   position: absolute;
   top: 0;
@@ -150,7 +149,7 @@ export const DashboardReportModal = () => {
           handleClose={handleClose}
           title={config?.dashboardName ? config?.dashboardName : 'Loading...'}
         />
-        <ExportLoader exporting={isExportLoading}>
+        <ExportLoader $isExporting={isExportLoading}>
           <CircularProgress size={50} />
           <Box mt={3}>
             <Typography>Exporting...</Typography>
@@ -163,7 +162,7 @@ export const DashboardReportModal = () => {
                 <Heading variant="h3">{title}</Heading>
                 {config?.description && <Description>{config.description}</Description>}
               </Box>
-              <Toolbar exporting={isExporting}>
+              <Toolbar $isExporting={isExporting}>
                 <SplitButton
                   options={EXPORT_OPTIONS}
                   selectedId={selectedExportId}

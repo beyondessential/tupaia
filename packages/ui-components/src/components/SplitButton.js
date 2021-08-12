@@ -6,7 +6,6 @@ import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Grid from '@material-ui/core/Grid';
-import { Button } from '@tupaia/ui-components';
 import MuiButtonGroup from '@material-ui/core/ButtonGroup';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
@@ -15,6 +14,7 @@ import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
+import { Button } from './Button';
 
 const ButtonGroup = styled(MuiButtonGroup)`
   margin-right: 1rem;

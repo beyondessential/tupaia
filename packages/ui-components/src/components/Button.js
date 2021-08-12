@@ -122,7 +122,7 @@ export const SuccessButton = styled(Button)`
  */
 export const WhiteButton = styled(MuiButton)`
   background: white;
-  padding: 0.7rem 1rem;
+  padding: 0.7rem;
   font-size: 1rem;
   min-height: 3.1rem;
   line-height: 1.2rem;
