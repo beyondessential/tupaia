@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useTheme } from '@material-ui/core/styles';
 import {
@@ -13,10 +13,15 @@ import {
   Typography,
   Dialog as MuiDialog,
   Container as MuiContainer,
+  IconButton,
 } from '@material-ui/core';
+import GetApp from '@material-ui/icons/GetApp';
+import downloadJs from 'downloadjs';
+import domtoimage from 'dom-to-image';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { DateRangePicker } from '@tupaia/ui-components';
 import * as COLORS from '../constants';
-import { FlexSpaceBetween, FlexStart } from './Layout';
+import { FlexColumn, FlexSpaceBetween, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
 import { useDashboardReportDataWithConfig } from '../api/queries';
 import { useUrlParams, useUrlSearchParams } from '../utils';
@@ -27,6 +32,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const Wrapper = styled.div`
+  position: relative;
   height: 100%;
   background: ${COLORS.GREY_F9};
   min-height: 720px;
@@ -51,6 +57,10 @@ const Header = styled(FlexSpaceBetween)`
   }
 `;
 
+const Toolbar = styled(FlexStart)`
+  display: ${props => (props.isExporting ? 'none' : 'flex')};
+`;
+
 const Heading = styled(Typography)`
   font-size: 1.25rem;
   line-height: 1.4rem;
@@ -64,8 +74,33 @@ const Description = styled(Typography)`
   margin-top: 0.625rem;
 `;
 
+const ExportLoader = styled(FlexColumn)`
+  display: ${props => (props.isExporting ? 'flex' : 'none')};
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  z-index: 1;
+`;
+
+const exportToPng = (node, filename) => {
+  return new Promise(resolve => {
+    const file = `${filename}.png`;
+
+    domtoimage.toPng(node).then(async dataUrl => {
+      downloadJs(dataUrl, file);
+      resolve();
+    });
+  });
+};
+
 export const DashboardReportModal = () => {
   const theme = useTheme();
+  const [isExporting, setIsExporting] = useState(false);
+  const exportRef = useRef(null);
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { entityCode } = useUrlParams();
   const [{ startDate, endDate, reportCode }, setParams] = useUrlSearchParams();
@@ -94,8 +129,19 @@ export const DashboardReportModal = () => {
     });
   };
 
+  const exportChart = async () => {
+    setIsExporting(true);
+    const filename = 'export-chart';
+    const node = exportRef.current;
+    await exportToPng(node, filename);
+    setIsExporting(false);
+  };
+
   const { dashboardItemConfig: config } = data;
   const isOpen = !!reportCode;
+  const title = isExporting
+    ? `${entityCode}, ${config?.dashboardName}, ${config?.name}`
+    : config?.name;
 
   return (
     <>
@@ -111,14 +157,21 @@ export const DashboardReportModal = () => {
           handleClose={handleClose}
           title={config?.dashboardName ? config?.dashboardName : 'Loading...'}
         />
-        <Wrapper>
+        <ExportLoader isExporting={isExporting}>
+          <CircularProgress />
+          <span>Exporting</span>
+        </ExportLoader>
+        <Wrapper ref={exportRef}>
           <Container maxWidth="xl">
             <Header>
               <Box maxWidth={580}>
-                <Heading variant="h3">{config?.name}</Heading>
+                <Heading variant="h3">{title}</Heading>
                 {config?.description && <Description>{config.description}</Description>}
               </Box>
-              <FlexStart>
+              <Toolbar isExporting={isExporting}>
+                <IconButton onClick={exportChart}>
+                  <GetApp />
+                </IconButton>
                 <DateRangePicker
                   isLoading={isLoading}
                   startDate={startDate}
@@ -126,11 +179,12 @@ export const DashboardReportModal = () => {
                   granularity={config?.periodGranularity}
                   onSetDates={handleDatesChange}
                 />
-              </FlexStart>
+              </Toolbar>
             </Header>
             <DashboardReport
               name={config?.name}
               reportCode={reportCode}
+              isExporting={isExporting}
               startDate={startDate}
               endDate={endDate}
               isEnlarged
