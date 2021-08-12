@@ -7,4 +7,3 @@ export type AccessPolicyObject = Record<string, string[]>;
 
 export type EmptyObject = Record<string, never>;
 
-export type QueryParameters = Record<string, string>;

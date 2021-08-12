@@ -14,7 +14,7 @@ import type {
   EntityResponseObject,
 } from '@tupaia/entity-server/src/type-exports';
 
-import { FilterCriteria, AdvancedFilterValue } from '../models';
+import { FilterCriteria, AdvancedFilterValue } from '@tupaia/server-boilerplate/src/type-exports';
 
 import { ApiConnection } from './ApiConnection';
 import { MicroserviceApi } from './types';
