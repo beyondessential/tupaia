@@ -43,6 +43,8 @@ const processDefaultValue = defaultValue => {
 
 const generateDummyRecord = async (model, overrides = {}) => {
   const schema = await model.fetchSchema();
+  // This is a field managed by our analytics materialized view, see also MaterializedViewLogDatabaseModel
+  delete schema.m_row$;
   const dummyRecord = {};
   Object.entries(schema).forEach(([fieldName, columnInfo]) => {
     const getValue = () => {
