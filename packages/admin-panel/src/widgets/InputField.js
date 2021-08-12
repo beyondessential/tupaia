@@ -4,9 +4,18 @@
  */
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { TextField, DatePicker, DateTimePicker, RadioGroup, Select } from '@tupaia/ui-components';
+
+import {
+  TextField,
+  DatePicker,
+  DateTimePicker,
+  RadioGroup,
+  Select,
+  Button,
+} from '@tupaia/ui-components';
 import { stripTimezoneFromDate } from '@tupaia/utils';
 import { Autocomplete } from '../autocomplete';
 import { JsonInputField } from './JsonInputField';
@@ -40,6 +49,7 @@ export const InputField = ({
   getJsonFieldSchema,
   parentRecord,
   variant,
+  linkOptions,
 }) => {
   const inputType = getInputType({ options, optionsEndpoint, type });
   let inputComponent;
@@ -196,6 +206,24 @@ export const InputField = ({
         />
       );
       break;
+    case 'link': {
+      const { path, parameters = {} } = linkOptions;
+      let link = path;
+      Object.entries(parameters).forEach(([paramKey, recordProperty]) => {
+        const linkParam = recordData[recordProperty];
+        if (linkParam) {
+          link = link.replace(`:${paramKey}`, linkParam);
+        }
+      });
+      inputComponent = (
+        <Link to={link}>
+          <Button variant="contained" color="primary">
+            {label}
+          </Button>
+        </Link>
+      );
+      break;
+    }
     default:
       inputComponent = (
         <TextField

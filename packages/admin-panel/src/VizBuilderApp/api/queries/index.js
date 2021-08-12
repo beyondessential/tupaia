@@ -7,3 +7,4 @@ export * from './usePermissionGroups';
 export * from './useProjects';
 export * from './useReportPreview';
 export * from './useUser';
+export * from './useDashboardVisualisation';

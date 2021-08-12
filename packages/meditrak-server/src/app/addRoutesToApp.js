@@ -72,6 +72,7 @@ const {
   getDashboards,
   getDashboardItems,
   getDashboardRelations,
+  getDashboardVisualisations,
   getLegacyReports,
   getDataSources,
   getEntities,
@@ -173,6 +174,7 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/dashboards/:parentRecordId/dashboardRelations', getDashboardRelations);
   app.get('(/v[0-9]+)/dashboardItems/:recordId?', getDashboardItems);
   app.get('(/v[0-9]+)/dashboardRelations/:recordId?', getDashboardRelations);
+  app.get('(/v[0-9]+)/dashboardVisualisations/:recordId?', getDashboardVisualisations);
   app.get('(/v[0-9]+)/legacyReports/:recordId?', getLegacyReports);
   app.get('(/v[0-9]+)/indicators/:recordId?', getIndicators);
   app.get('(/v[0-9]+)/feedItems/:recordId?', getFeedItems);

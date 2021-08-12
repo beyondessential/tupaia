@@ -9,11 +9,11 @@ import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 
 import { ReportConnection } from '../connections';
-import { DashboardVisualisationExtractor } from '../viz-builder';
 import {
+  DashboardVisualisationExtractor,
   DraftDashboardItemValidator,
   DraftReportValidator,
-} from '../viz-builder/extractors/validators';
+} from '../viz-builder';
 import { PreviewMode } from '../viz-builder/types';
 
 export class FetchReportPreviewDataRoute extends Route {
@@ -28,8 +28,17 @@ export class FetchReportPreviewDataRoute extends Route {
   async buildResponse() {
     const { entityCode, hierarchy, previewMode } = this.req.query;
     const { previewConfig } = this.req.body;
+
     if (!previewConfig) {
-      throw new Error('Preview config is empty');
+      throw new Error('Requires preview config to fetch preview data');
+    }
+
+    if (!hierarchy) {
+      throw new Error('Requires hierarchy to fetch preview data');
+    }
+
+    if (!entityCode) {
+      throw new Error('Requires entity to fetch preview data');
     }
 
     const { config: reportConfig } = new DashboardVisualisationExtractor(
@@ -37,7 +46,7 @@ export class FetchReportPreviewDataRoute extends Route {
       new DraftDashboardItemValidator(),
       new DraftReportValidator(),
     ).getReport(previewMode as PreviewMode);
-  
+
     return this.reportConnection.testReport(
       {
         organisationUnitCodes: entityCode as string,

@@ -32,6 +32,29 @@ const FIELDS = [
   },
 ];
 
+const EXTRA_EDIT_FIELDS = [
+  // ID field for constructing viz-builder path only, not for showing or editing
+  {
+    Header: 'ID',
+    source: 'id',
+    show: false,
+  },
+  {
+    Header: 'Edit in Visualisation Builder',
+    type: 'link',
+    editConfig: {
+      type: 'link',
+      linkOptions: {
+        path: '/viz-builder/:id',
+        parameters: { id: 'id' },
+      },
+      visibilityCriteria: {
+        legacy: false,
+      },
+    },
+  },
+];
+
 const COLUMNS = [
   ...FIELDS,
   {
@@ -40,7 +63,7 @@ const COLUMNS = [
     source: 'id',
     actionConfig: {
       editEndpoint: 'dashboardItems',
-      fields: [...FIELDS],
+      fields: [...FIELDS, ...EXTRA_EDIT_FIELDS],
     },
   },
 ];

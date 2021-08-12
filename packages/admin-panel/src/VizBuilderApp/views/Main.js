@@ -3,11 +3,16 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Prompt } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
-import { FlexColumn } from '@tupaia/ui-components';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { FlexColumn, SmallAlert } from '@tupaia/ui-components';
+
+import { useVizBuilderConfig } from '../vizBuilderConfigStore';
+import { useDashboardVisualisation } from '../api';
 import { Toolbar, Panel, PreviewSection, PreviewOptions } from '../components';
 
 const Container = styled(MuiContainer)`
@@ -21,9 +26,50 @@ const RightCol = styled(FlexColumn)`
   flex: 1;
 `;
 
+const StyledAlert = styled(SmallAlert)`
+  margin-top: 30px;
+  margin: auto;
+`;
+
+const Progress = styled(CircularProgress)`
+  margin-top: 30px;
+  margin: auto;
+`;
+
 // Todo: add warning on page unload https://github.com/jacobbuck/react-beforeunload#readme
-export const Main = () => {
+export const Main = ({ match }) => {
+  const { visualisationId } = match.params;
+
+  // do not fetch existing viz if no visualisationId is provided in the params
+  const fetchExistingVizEnabled = visualisationId !== undefined;
+
+  const [_, { setVisualisation }] = useVizBuilderConfig();
   const [enabled, setEnabled] = useState(false);
+  const [visualisationLoaded, setVisualisationLoaded] = useState(false);
+  const { data = {}, error } = useDashboardVisualisation(visualisationId, fetchExistingVizEnabled);
+  const { visualisation } = data;
+
+  useEffect(() => {
+    if (visualisation) {
+      setVisualisation(visualisation);
+      setVisualisationLoaded(true);
+    }
+  }, [visualisation]);
+
+  // Show error if failed to load an existing visualisation
+  if (visualisationId && error) {
+    return (
+      <StyledAlert severity="error" variant="standard">
+        {error.message}
+      </StyledAlert>
+    );
+  }
+
+  // Wait until visualisation is loaded to populated the field correctly if we are viewing an existing viz
+  if (visualisationId && !visualisationLoaded) {
+    return <Progress size={100} />;
+  }
+
   return (
     <>
       <Toolbar />
@@ -37,4 +83,8 @@ export const Main = () => {
       <Prompt message="Are you sure you want to exit the Viz Builder? Your options will not be saved so make sure you have exported your configuration." />
     </>
   );
+};
+
+Main.propTypes = {
+  match: PropTypes.shape({ params: PropTypes.object }).isRequired,
 };

@@ -47,14 +47,27 @@ export interface VisualisationValidator {
 }
 
 export type DashboardItem = {
+  id?: string;
   code: string;
   config: Record<string, unknown>;
   reportCode: string;
   legacy: boolean;
 };
 
+type FetchConfig = {
+  dataElements: string[];
+  dataGroups: string[];
+  aggregations: Aggregation[];
+};
+
+type ReportConfig = {
+  fetch: FetchConfig;
+  transform: Transform[];
+  output: Record<string, unknown>;
+};
+
 export type Report = {
   code: string;
   permissionGroup: string;
-  config: Record<string, unknown>;
+  config: ReportConfig;
 };

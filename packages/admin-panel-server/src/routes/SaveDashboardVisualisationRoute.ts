@@ -11,11 +11,11 @@ import { mapKeys } from 'lodash';
 import { Route } from '@tupaia/server-boilerplate';
 
 import { MeditrakConnection } from '../connections';
-import { DashboardVisualisationExtractor } from '../viz-builder';
 import {
+  DashboardVisualisationExtractor,
   DraftDashboardItemValidator,
   DraftReportValidator,
-} from '../viz-builder/extractors/validators';
+} from '../viz-builder';
 
 export class SaveDashboardVisualisationRoute extends Route {
   private readonly meditrakConnection: MeditrakConnection;
@@ -28,6 +28,8 @@ export class SaveDashboardVisualisationRoute extends Route {
 
   async buildResponse() {
     const { visualisation } = this.req.body;
+    const { dashboardVisualisationId } = this.req.params;
+
     if (!visualisation) {
       throw new Error('Visualisation cannot be empty.');
     }
@@ -50,12 +52,12 @@ export class SaveDashboardVisualisationRoute extends Route {
     let result;
 
     // Update visualisation if id exists
-    if (visualisation.id) {
-      result = await this.meditrakConnection.updateResource(`dashboardVisualisations/${visualisation.id}`, {}, body);
+    if (dashboardVisualisationId) {
+      result = await this.meditrakConnection.updateResource(`dashboardVisualisations/${dashboardVisualisationId}`, {}, body);
     } else {
       result = await this.meditrakConnection.createResource('dashboardVisualisations', {}, body);
     }
    
-    return { id: visualisation.id || result.dashboardItem?.id, message: 'Visualisation saved successfully' };
+    return { id: dashboardVisualisationId || result.dashboardItem?.id, message: 'Visualisation saved successfully' };
   }
 }
