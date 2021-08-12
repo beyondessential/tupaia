@@ -124,9 +124,9 @@ export const DashboardReportModal = () => {
     });
   };
 
-  const handleClickExport = exportId => {
+  const handleClickExport = async exportId => {
     if (exportId === 'png') {
-      exportToPNG();
+      await exportToPNG();
     }
   };
 
