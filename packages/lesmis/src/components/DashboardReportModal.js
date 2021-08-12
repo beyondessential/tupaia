@@ -5,6 +5,7 @@
  */
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
+import { sleep, stringToFilename } from '@tupaia/utils';
 import { useTheme } from '@material-ui/core/styles';
 import {
   Box,
@@ -13,9 +14,7 @@ import {
   Typography,
   Dialog as MuiDialog,
   Container as MuiContainer,
-  IconButton,
 } from '@material-ui/core';
-import GetApp from '@material-ui/icons/GetApp';
 import downloadJs from 'downloadjs';
 import domtoimage from 'dom-to-image';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -26,6 +25,7 @@ import { DialogHeader } from './FullScreenDialog';
 import { useDashboardReportDataWithConfig } from '../api/queries';
 import { useUrlParams, useUrlSearchParams } from '../utils';
 import { DashboardReport } from './DashboardReport';
+import { SplitButton } from './SplitButton';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -58,7 +58,7 @@ const Header = styled(FlexSpaceBetween)`
 `;
 
 const Toolbar = styled(FlexStart)`
-  display: ${props => (props.isExporting ? 'none' : 'flex')};
+  display: ${props => (props.exporting ? 'none' : 'flex')};
 `;
 
 const Heading = styled(Typography)`
@@ -75,7 +75,7 @@ const Description = styled(Typography)`
 `;
 
 const ExportLoader = styled(FlexColumn)`
-  display: ${props => (props.isExporting ? 'flex' : 'none')};
+  display: ${props => (props.exporting ? 'flex' : 'none')};
   align-items: center;
   position: absolute;
   top: 0;
@@ -85,6 +85,11 @@ const ExportLoader = styled(FlexColumn)`
   background: white;
   z-index: 1;
 `;
+
+const EXPORT_OPTIONS = [
+  { id: 'xlsx', label: 'Export to XLSX' },
+  { id: 'png', label: 'Export to PNG' },
+];
 
 const exportToPng = (node, filename) => {
   return new Promise(resolve => {
@@ -97,10 +102,50 @@ const exportToPng = (node, filename) => {
   });
 };
 
+const useChartExports = filename => {
+  const exportRef = useRef(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isExportLoading, setIsExportLoading] = useState(false);
+  const sanitisedFileName = stringToFilename(filename);
+
+  const exportChartToPNG = async () => {
+    setIsExporting(true);
+
+    const node = exportRef.current;
+    await exportToPng(node, sanitisedFileName);
+    setIsExporting(false);
+  };
+
+  const handleClickExport = async exportId => {
+    setIsExporting(true);
+    setIsExportLoading(true);
+
+    switch (exportId) {
+      case 'png':
+        await exportChartToPNG();
+        break;
+      case 'xlsx':
+        console.log('xlsx export...');
+        break;
+      default:
+      // do nothing
+    }
+
+    setIsExporting(false);
+
+    // Allow some time for the chart to resize
+    await sleep(1000);
+    setIsExportLoading(false);
+  };
+
+  return { isExporting, isExportLoading, exportRef, handleClickExport };
+};
+
 export const DashboardReportModal = () => {
   const theme = useTheme();
-  const [isExporting, setIsExporting] = useState(false);
-  const exportRef = useRef(null);
+
+  const [selectedExportId, setSelectedExportId] = useState(EXPORT_OPTIONS[0].id);
+
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { entityCode } = useUrlParams();
   const [{ startDate, endDate, reportCode }, setParams] = useUrlSearchParams();
@@ -110,6 +155,14 @@ export const DashboardReportModal = () => {
     startDate,
     endDate,
   });
+
+  const { dashboardItemConfig: config } = data;
+
+  const exportFilename = `export-${config?.name}-${new Date().toDateString()}`;
+
+  const { isExporting, isExportLoading, exportRef, handleClickExport } = useChartExports(
+    exportFilename,
+  );
 
   const handleDatesChange = (newStartDate, newEndDate) => {
     setParams(
@@ -129,15 +182,6 @@ export const DashboardReportModal = () => {
     });
   };
 
-  const exportChart = async () => {
-    setIsExporting(true);
-    const filename = 'export-chart';
-    const node = exportRef.current;
-    await exportToPng(node, filename);
-    setIsExporting(false);
-  };
-
-  const { dashboardItemConfig: config } = data;
   const isOpen = !!reportCode;
   const title = isExporting
     ? `${entityCode}, ${config?.dashboardName}, ${config?.name}`
@@ -157,9 +201,11 @@ export const DashboardReportModal = () => {
           handleClose={handleClose}
           title={config?.dashboardName ? config?.dashboardName : 'Loading...'}
         />
-        <ExportLoader isExporting={isExporting}>
-          <CircularProgress />
-          <span>Exporting</span>
+        <ExportLoader exporting={isExportLoading}>
+          <CircularProgress size={50} />
+          <Box mt={3}>
+            <Typography>Exporting...</Typography>
+          </Box>
         </ExportLoader>
         <Wrapper ref={exportRef}>
           <Container maxWidth="xl">
@@ -168,10 +214,13 @@ export const DashboardReportModal = () => {
                 <Heading variant="h3">{title}</Heading>
                 {config?.description && <Description>{config.description}</Description>}
               </Box>
-              <Toolbar isExporting={isExporting}>
-                <IconButton onClick={exportChart}>
-                  <GetApp />
-                </IconButton>
+              <Toolbar exporting={isExporting}>
+                <SplitButton
+                  options={EXPORT_OPTIONS}
+                  selectedId={selectedExportId}
+                  setSelectedId={setSelectedExportId}
+                  onClick={handleClickExport}
+                />
                 <DateRangePicker
                   isLoading={isLoading}
                   startDate={startDate}
