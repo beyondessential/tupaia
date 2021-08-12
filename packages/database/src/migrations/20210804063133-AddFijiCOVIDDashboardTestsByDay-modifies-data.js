@@ -30,7 +30,7 @@ const generateConfig = () => ({
         {
           type: 'RAW',
           config: {
-            dataSourceEntityType: 'sub_district',
+            dataSourceEntityType: 'facility',
           },
         },
       ],
