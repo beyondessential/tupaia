@@ -7,6 +7,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import styled from 'styled-components';
 
 import {
   TextField,
@@ -17,9 +18,22 @@ import {
   Button,
 } from '@tupaia/ui-components';
 import { stripTimezoneFromDate } from '@tupaia/utils';
+
 import { Autocomplete } from '../autocomplete';
 import { JsonInputField } from './JsonInputField';
 import { JsonEditor } from './JsonEditor';
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+
+  &:focus,
+  &:hover,
+  &:visited,
+  &:link,
+  &:active {
+    text-decoration: none;
+  }
+`;
 
 const getInputType = ({ options, optionsEndpoint, type }) => {
   if (options) {
@@ -216,11 +230,9 @@ export const InputField = ({
         }
       });
       inputComponent = (
-        <Link to={link}>
-          <Button variant="contained" color="primary">
-            {label}
-          </Button>
-        </Link>
+        <StyledLink to={link}>
+          <Button color="primary">{label}</Button>
+        </StyledLink>
       );
       break;
     }
