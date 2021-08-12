@@ -44,10 +44,11 @@ const generateConfig = () => ({
         transform: 'aggregate',
       },
       {
-        '...': ['value'],
         "'name'": "periodToDisplayString($row.period, 'DAY')",
         transform: 'select',
         "'timestamp'": 'periodToTimestamp($row.period)',
+        "'Tests'": '$row.value',
+        '...': [],
       },
     ],
   },
