@@ -3,9 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { sleep, stringToFilename } from '@tupaia/utils';
 import { useTheme } from '@material-ui/core/styles';
 import {
   Box,
@@ -15,15 +14,13 @@ import {
   Dialog as MuiDialog,
   Container as MuiContainer,
 } from '@material-ui/core';
-import downloadJs from 'downloadjs';
-import domtoimage from 'dom-to-image';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { DateRangePicker } from '@tupaia/ui-components';
 import * as COLORS from '../constants';
 import { FlexColumn, FlexSpaceBetween, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
 import { useDashboardReportDataWithConfig } from '../api/queries';
-import { useUrlParams, useUrlSearchParams } from '../utils';
+import { useUrlParams, useUrlSearchParams, useExportToPNG } from '../utils';
 import { DashboardReport } from './DashboardReport';
 import { SplitButton } from './SplitButton';
 
@@ -91,61 +88,9 @@ const EXPORT_OPTIONS = [
   { id: 'png', label: 'Export to PNG' },
 ];
 
-const exportToPng = (node, filename) => {
-  return new Promise(resolve => {
-    const file = `${filename}.png`;
-
-    domtoimage.toPng(node).then(async dataUrl => {
-      downloadJs(dataUrl, file);
-      resolve();
-    });
-  });
-};
-
-const useChartExports = filename => {
-  const exportRef = useRef(null);
-  const [isExporting, setIsExporting] = useState(false);
-  const [isExportLoading, setIsExportLoading] = useState(false);
-  const sanitisedFileName = stringToFilename(filename);
-
-  const exportChartToPNG = async () => {
-    setIsExporting(true);
-
-    const node = exportRef.current;
-    await exportToPng(node, sanitisedFileName);
-    setIsExporting(false);
-  };
-
-  const handleClickExport = async exportId => {
-    setIsExporting(true);
-    setIsExportLoading(true);
-
-    switch (exportId) {
-      case 'png':
-        await exportChartToPNG();
-        break;
-      case 'xlsx':
-        console.log('xlsx export...');
-        break;
-      default:
-      // do nothing
-    }
-
-    setIsExporting(false);
-
-    // Allow some time for the chart to resize
-    await sleep(1000);
-    setIsExportLoading(false);
-  };
-
-  return { isExporting, isExportLoading, exportRef, handleClickExport };
-};
-
 export const DashboardReportModal = () => {
   const theme = useTheme();
-
   const [selectedExportId, setSelectedExportId] = useState(EXPORT_OPTIONS[0].id);
-
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { entityCode } = useUrlParams();
   const [{ startDate, endDate, reportCode }, setParams] = useUrlSearchParams();
@@ -160,9 +105,7 @@ export const DashboardReportModal = () => {
 
   const exportFilename = `export-${config?.name}-${new Date().toDateString()}`;
 
-  const { isExporting, isExportLoading, exportRef, handleClickExport } = useChartExports(
-    exportFilename,
-  );
+  const { isExporting, isExportLoading, exportRef, exportToPNG } = useExportToPNG(exportFilename);
 
   const handleDatesChange = (newStartDate, newEndDate) => {
     setParams(
@@ -180,6 +123,12 @@ export const DashboardReportModal = () => {
       endDate: null,
       reportCode: null,
     });
+  };
+
+  const handleClickExport = exportId => {
+    if (exportId === 'png') {
+      exportToPNG();
+    }
   };
 
   const isOpen = !!reportCode;
