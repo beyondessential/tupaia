@@ -9,10 +9,11 @@ import {} from 'dotenv/config'; // Load the environment variables into process.e
 
 import http from 'http';
 import {
-  TupaiaDatabase,
-  ModelRegistry,
-  EntityHierarchyCacher,
   AnalyticsRefresher,
+  EntityHierarchyCacher,
+  ModelRegistry,
+  SurveyResponseOutdater,
+  TupaiaDatabase,
 } from '@tupaia/database';
 
 import { createMeditrakSyncQueue } from './database';
@@ -40,8 +41,12 @@ const entityHierarchyCacher = new EntityHierarchyCacher(models);
 entityHierarchyCacher.listenForChanges();
 
 // Add listener to refresh analytics table
-const analyticsRefresher = new AnalyticsRefresher(database, models);
+const analyticsRefresher = new AnalyticsRefresher(models);
 analyticsRefresher.listenForChanges();
+
+// Add listener to handle survey response changes
+const surveyResponseOutdater = new SurveyResponseOutdater(models);
+surveyResponseOutdater.listenForChanges();
 
 /**
  * Set up actual app with routes etc.

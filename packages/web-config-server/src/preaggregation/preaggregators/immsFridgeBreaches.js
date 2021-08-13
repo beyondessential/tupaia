@@ -180,7 +180,7 @@ class FridgeBreachAggregator {
     const { eventDate, dataValues } = event;
 
     const readings = { eventDate };
-    dataValues.forEach(({ dataElement: dataElementCode, value }) => {
+    Object.entries(dataValues).forEach(([dataElementCode, value]) => {
       if (!Object.values(FRIDGE_BREACH_ELEMENT_CODES).includes(dataElementCode)) {
         return;
       }
@@ -293,7 +293,7 @@ class AggregatedEventPusher {
 }
 
 const getEvents = async (aggregator, programCode) =>
-  aggregator.fetchEvents(programCode, { organisationUnitCode: WORLD });
+  aggregator.fetchEvents(programCode, { organisationUnitCode: WORLD, useDeprecatedApi: true });
 
 export const immsFridgeBreaches = async (aggregator, dhisApi) => {
   winston.info(`Starting to aggregate ${AGGREGATION_NAME}`);
