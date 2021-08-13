@@ -131,7 +131,7 @@ const CODE = 'LESMIS_ESSDP_ECE_SubSector_List';
 const REPORT_CONFIG = {
   fetch: {
     dataElements: ['er_summary_ece_0_2_t', 'er_summary_ece_5_t'],
-    aggregations: ['FINAL_EACH_YEAR'],
+    aggregations: ['MOST_RECENT'],
   },
   transform: [
     'keyValueByDataElementName',
