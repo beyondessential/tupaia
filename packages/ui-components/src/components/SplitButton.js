@@ -6,7 +6,6 @@ import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Grid from '@material-ui/core/Grid';
-import { Button } from '@tupaia/ui-components';
 import MuiButtonGroup from '@material-ui/core/ButtonGroup';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
@@ -15,6 +14,16 @@ import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
+import { Button } from './Button';
+
+const DefaultButton = styled(Button)`
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+
+  &.MuiButtonBase-root {
+    margin: 0;
+  }
+`;
 
 const ButtonGroup = styled(MuiButtonGroup)`
   margin-right: 1rem;
@@ -48,38 +57,42 @@ export const SplitButton = ({ options, selectedId, setSelectedId, onClick, Butto
   };
 
   return (
-    <Grid container direction="column" alignItems="center">
-      <Grid item xs={12}>
-        <ButtonGroup ref={anchorRef}>
-          <ButtonComponent onClick={handleClick} style={{ minWidth: '10rem' }}>
-            {selectedOption.label}
-          </ButtonComponent>
-          <ButtonComponent style={{ minWidth: 'auto' }} onClick={handleToggle}>
-            <KeyboardArrowDown />
-          </ButtonComponent>
-        </ButtonGroup>
-        <Popper open={open} anchorEl={anchorRef.current} transition disablePortal>
-          {({ TransitionProps }) => (
-            <Grow {...TransitionProps}>
-              <Paper>
-                <ClickAwayListener onClickAway={handleClose}>
-                  <MenuList id="split-button-menu">
-                    {options.map(({ id, label }) => (
-                      <MenuItem
-                        key={id}
-                        selected={id === selectedId}
-                        onClick={event => handleMenuItemClick(event, id)}
-                      >
-                        {label}
-                      </MenuItem>
-                    ))}
-                  </MenuList>
-                </ClickAwayListener>
-              </Paper>
-            </Grow>
-          )}
-        </Popper>
-      </Grid>
+    <Grid item xs={12}>
+      <ButtonGroup ref={anchorRef}>
+        <ButtonComponent onClick={handleClick} style={{ minWidth: '10rem' }}>
+          {selectedOption.label}
+        </ButtonComponent>
+        <ButtonComponent style={{ minWidth: 'auto' }} onClick={handleToggle}>
+          <KeyboardArrowDown />
+        </ButtonComponent>
+      </ButtonGroup>
+      <Popper
+        open={open}
+        anchorEl={anchorRef.current}
+        placement="bottom-end"
+        transition
+        disablePortal
+      >
+        {({ TransitionProps }) => (
+          <Grow {...TransitionProps}>
+            <Paper>
+              <ClickAwayListener onClickAway={handleClose}>
+                <MenuList id="split-button-menu">
+                  {options.map(({ id, label }) => (
+                    <MenuItem
+                      key={id}
+                      selected={id === selectedId}
+                      onClick={event => handleMenuItemClick(event, id)}
+                    >
+                      {label}
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
     </Grid>
   );
 };
@@ -94,10 +107,11 @@ SplitButton.propTypes = {
   selectedId: PropTypes.string,
   setSelectedId: PropTypes.func,
   onClick: PropTypes.func,
-  ButtonComponent: PropTypes.any.isRequired,
+  ButtonComponent: PropTypes.any,
 };
 
 SplitButton.defaultProps = {
+  ButtonComponent: DefaultButton,
   selectedId: null,
   setSelectedId: null,
   onClick: () => {},

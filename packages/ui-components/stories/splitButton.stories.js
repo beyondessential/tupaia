@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { SplitButton, Button } from '../src';
+import { SplitButton } from '../src';
 
 export default {
   title: 'SplitButton',
@@ -15,11 +15,12 @@ const options = [
   { id: 'png', label: 'Export to PNG' },
 ];
 
-const Template = args => {
+export const simple = () => {
   const [selectedId, setSelectedId] = React.useState(options[0].id);
+  const selectedOption = options.find(o => o.id === selectedId);
 
   const handleClick = () => {
-    console.info(`You clicked ${options[selectedId]}`);
+    console.info(`You clicked ${selectedOption.label}`);
   };
 
   return (
@@ -27,13 +28,7 @@ const Template = args => {
       selectedId={selectedId}
       setSelectedId={setSelectedId}
       onClick={handleClick}
-      {...args}
+      options={options}
     />
   );
-};
-
-export const primary = Template.bind({});
-primary.args = {
-  options,
-  ButtonComponent: Button,
 };
