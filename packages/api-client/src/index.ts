@@ -1,3 +1,3 @@
 export * from './connections';
 
-export { QueryParameters } from './types';
+export { TupaiaApiClient } from './TupaiaApiClient';

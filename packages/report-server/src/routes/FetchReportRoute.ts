@@ -40,7 +40,7 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     const { accessPolicy, ctx } = this.req;
     const permissionGroupName = await report.permissionGroupName();
 
-    const foundOrgUnits = await ctx.microServices.entityApi.getEntities(
+    const foundOrgUnits = await ctx.services.entity.getEntities(
       hierarchy,
       requestedOrgUnitCodes,
       {

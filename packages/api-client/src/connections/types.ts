@@ -7,9 +7,4 @@ export interface MicroserviceApi {
   baseUrl: string;
 }
 
-export interface AuthHandler {
-  email?: string;
-  getAuthHeader: () => Promise<string>;
-}
-
 export type RequestBody = Record<string, unknown> | Record<string, unknown>[];

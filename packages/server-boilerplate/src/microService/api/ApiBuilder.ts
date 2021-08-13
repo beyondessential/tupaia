@@ -15,8 +15,8 @@ import { handleWith, handleError } from '../../utils';
 import { buildBasicBearerAuthMiddleware } from '../auth';
 import { TestRoute } from '../../routes';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
-import { ApiConnectionBuilder, EntityApi } from '@tupaia/api-client';
 import { RequestContext } from '../types';
+import { TupaiaApiClient } from '@tupaia/api-client';
 
 export class ApiBuilder {
   private readonly app: Express;
@@ -53,16 +53,11 @@ export class ApiBuilder {
         getAuthHeader: async () => req.headers.authorization || '',
       };
 
-      // TODO: use @tupaia/api-client
-      const entityApi = new ApiConnectionBuilder()
-        .handleAuthWith(microServiceAuthHandler)
-        .buildAs(EntityApi);
-
       const context: RequestContext = {
-        microServices: {
-          entityApi,
-        },
-      }; // context is shared between request and response
+        services: new TupaiaApiClient(microServiceAuthHandler),
+      };
+
+      // context is shared between request and response
       req.ctx = context;
       res.ctx = context;
 

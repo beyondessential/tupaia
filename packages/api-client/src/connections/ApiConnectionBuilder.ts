@@ -3,7 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import { MicroserviceApi, AuthHandler } from './types';
+import { MicroserviceApi } from './types';
+import { AuthHandler } from '../types';
 import { ApiConnection } from './ApiConnection';
 
 /**
