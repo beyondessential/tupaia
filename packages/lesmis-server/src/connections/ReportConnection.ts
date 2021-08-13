@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { QueryParameters } from '@tupaia/api-client';
+import { QueryParameters } from '@beyondessential/tupaia-api-client';
 import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
 
 const { REPORT_API_URL = 'http://localhost:8030/v2' } = process.env;
@@ -13,7 +13,7 @@ type ReportObject = {
 };
 
 /**
- * @deprecated use @tupaia/api-client
+ * @deprecated use @beyondessential/tupaia-api-client
  */
 export class ReportConnection extends SessionHandlingApiConnection {
   baseUrl = REPORT_API_URL;

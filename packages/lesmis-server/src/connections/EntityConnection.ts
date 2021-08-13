@@ -4,14 +4,14 @@
  *
  */
 import camelcaseKeys from 'camelcase-keys';
-import { QueryParameters } from '@tupaia/api-client';
+import { QueryParameters } from '@beyondessential/tupaia-api-client';
 import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
 import { LESMIS_PROJECT_NAME } from '../constants';
 
 const { ENTITY_API_URL = 'http://localhost:8050/v1' } = process.env;
 
 /**
- * @deprecated use @tupaia/api-client
+ * @deprecated use @beyondessential/tupaia-api-client
  */
 export class EntityConnection extends SessionHandlingApiConnection {
   baseUrl = ENTITY_API_URL;

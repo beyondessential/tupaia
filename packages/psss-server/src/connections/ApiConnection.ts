@@ -12,7 +12,7 @@ interface AuthHandler {
 }
 
 /**
- * @deprecated use @tupaia/api-client
+ * @deprecated use @beyondessential/tupaia-api-client
  */
 export class ApiConnection {
   authHandler: AuthHandler;

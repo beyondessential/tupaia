@@ -18,7 +18,7 @@ const basicAuthHandler = {
 };
 
 /**
- * @deprecated use @tupaia/api-client
+ * @deprecated use @beyondessential/tupaia-api-client
  */
 export class AuthConnection extends ApiConnection {
   baseUrl = MEDITRAK_API_URL; // auth server is actually just meditrak server

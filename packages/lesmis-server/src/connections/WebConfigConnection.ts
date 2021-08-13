@@ -3,13 +3,13 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { QueryParameters } from '@tupaia/api-client';
+import { QueryParameters } from '@beyondessential/tupaia-api-client';
 import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
 
 const { WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1' } = process.env;
 
 /**
- * @deprecated use @tupaia/api-client
+ * @deprecated use @beyondessential/tupaia-api-client
  */
 export class WebConfigConnection extends SessionHandlingApiConnection {
   baseUrl = WEB_CONFIG_API_URL;

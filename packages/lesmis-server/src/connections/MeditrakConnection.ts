@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { QueryParameters } from '@tupaia/api-client';
+import { QueryParameters } from '@beyondessential/tupaia-api-client';
 import camelcaseKeys from 'camelcase-keys';
 import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
 import { isLesmisAdmin } from '../utils';
@@ -12,7 +12,7 @@ const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
 type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 
 /**
- * @deprecated use @tupaia/api-client
+ * @deprecated use @beyondessential/tupaia-api-client
  */
 export class MeditrakConnection extends SessionHandlingApiConnection {
   baseUrl = MEDITRAK_API_URL;

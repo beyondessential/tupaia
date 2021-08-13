@@ -3,7 +3,7 @@
  */
 export { TupaiaApiClient } from './TupaiaApiClient';
 
-export { AuthHandler } from './connections';
+export { AuthHandler } from './types';
 
 /*
  * Apis

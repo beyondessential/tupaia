@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { ApiConnection } from '@tupaia/api-client';
+import { ApiConnection } from '@beyondessential/tupaia-api-client';
 import { createBasicHeader } from '@tupaia/utils';
 import { refreshAndSaveAccessToken } from '/appServer/requestHelpers/refreshAndSaveAccessToken';
 
@@ -18,7 +18,7 @@ const PUBLIC_USER_AUTH_HEADER = createBasicHeader(
 const { REPORT_API_URL = 'http://localhost:8030/v1' } = process.env;
 
 /**
- * @deprecated use @tupaia/api-client
+ * @deprecated use @beyondessential/tupaia-api-client
  */
 export class ReportConnection extends ApiConnection {
   baseUrl = REPORT_API_URL;
