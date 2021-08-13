@@ -18,6 +18,7 @@ import { FilterCriteria, AdvancedFilterValue } from '@tupaia/server-boilerplate/
 
 import { ApiConnection } from './ApiConnection';
 import { Api } from './Api';
+import { PSSS_ENTITY } from '@tupaia/psss-server/constants';
 
 const { ENTITY_API_URL = 'http://localhost:8050/v1' } = process.env;
 
