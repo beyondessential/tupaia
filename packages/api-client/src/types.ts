@@ -13,3 +13,9 @@ export interface AuthHandler {
   email?: string;
   getAuthHeader: () => Promise<string>;
 }
+
+/*
+ * API Types
+ * Use with `import type {}` for type definitions
+ */
+export type { EntityApi } from './connections';
