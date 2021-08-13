@@ -142,6 +142,15 @@ export const removeJsonEntry = async (db, table, column, path, key, condition) =
   );
 };
 
+export const updateJsonEntry = async (db, table, column, path, value, condition) => {
+  assertParamsAreDefined({ db, table, column, path, value, condition }, 'updateJsonEntry');
+  Object.keys(value).map(async key => {
+    await removeJsonEntry(db, table, column, path, key, condition);
+  });
+
+  await insertJsonEntry(db, table, column, path, value, condition);
+};
+
 export async function removeArrayValue(db, table, column, value, condition) {
   assertParamsAreDefined({ db, table, column, value, condition }, 'removeArrayValue');
 

@@ -15,7 +15,6 @@ import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 import some from 'lodash.some';
 import keyBy from 'lodash.keyby';
-import isPlainObject from 'lodash.isplainobject';
 import { divideValues, fractionAndPercentage } from './divideValues';
 import { subtractValues } from './subtractValues';
 
@@ -118,13 +117,16 @@ const buildOrgUnitParentMapForAnalytics = async (analytics, models) => {
   });
   return orgUnitParentMap;
 };
-  
+
 const sumLatestDataValuePerOrgUnit = (analytics, dataValues) => {
-  const analyticsByOrgUnit =
-    groupBy(analytics.filter(({ dataElement }) => dataValues.includes(dataElement)), 'organisationUnit');
+  const analyticsByOrgUnit = groupBy(
+    analytics.filter(({ dataElement }) => dataValues.includes(dataElement)),
+    'organisationUnit',
+  );
 
   const latestAnalyticByOrgUnit = Object.values(analyticsByOrgUnit).map(
-    analyticsForOrgUnit => analyticsForOrgUnit.sort(({ period: p1 }, { period: p2 }) => comparePeriods(p2, p1))[0]
+    analyticsForOrgUnit =>
+      analyticsForOrgUnit.sort(({ period: p1 }, { period: p2 }) => comparePeriods(p2, p1))[0],
   );
 
   // Sum starts as undefined so that if there's no data values then we can distinguish between No data and 0

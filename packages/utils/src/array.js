@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { compareAsc } from './compare';
+
 /**
  * @param {any[]} array
  * @param {(Function|string)} [mapperInput]
@@ -38,12 +40,12 @@ export const hasIntersection = (input1, input2) => {
 
 export const min = array =>
   Array.isArray(array) && array.length > 0
-    ? array.reduce((result, value) => Math.min(value, result), Number.POSITIVE_INFINITY)
+    ? array.reduce((result, value) => (compareAsc(value, result) <= 0 ? value : result), array[0])
     : undefined;
 
 export const max = array =>
   Array.isArray(array) && array.length > 0
-    ? array.reduce((result, value) => Math.max(value, result), Number.NEGATIVE_INFINITY)
+    ? array.reduce((result, value) => (compareAsc(value, result) >= 0 ? value : result), array[0])
     : undefined;
 
 export const toArray = input => (Array.isArray(input) ? input : [input]);
