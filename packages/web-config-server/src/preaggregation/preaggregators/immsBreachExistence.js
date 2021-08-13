@@ -31,6 +31,7 @@ const immsBreachExistenceWithinPeriod = async (
     organisationUnitCode: orgUnitGroupCode,
     startDate: utcMoment().subtract(numberOfDays, 'days').format(),
     endDate: utcMoment().format(),
+    useDeprecatedApi: true,
   };
 
   const breachEvents = await aggregator.fetchEvents(FRIDGE_BREACH_PROGRAM_CODE, periodFetchConfig);

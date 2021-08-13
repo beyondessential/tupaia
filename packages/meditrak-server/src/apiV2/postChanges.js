@@ -72,7 +72,7 @@ export async function postChanges(req, res) {
       const { waitForAnalyticsRebuild } = rest;
       if (waitForAnalyticsRebuild) {
         const { database } = models;
-        await AnalyticsRefresher.executeRefresh(database);
+        await AnalyticsRefresher.refreshAnalytics(database);
       }
     }
   }

@@ -24,12 +24,15 @@ export const useDashboardReportData = ({
     type: 'dashboard',
   };
 
+  // only make a request if there is a valid start and end date
+  const enabled = startDate !== undefined && endDate !== undefined;
+
   return useQuery(
     ['dashboardReport', entityCode, reportCode, params],
     () =>
       get(`report/${entityCode}/${reportCode}`, {
         params,
       }),
-    { staleTime: 60 * 60 * 1000, refetchOnWindowFocus: false, keepPreviousData: true },
+    { staleTime: 60 * 60 * 1000, refetchOnWindowFocus: false, keepPreviousData: true, enabled },
   );
 };

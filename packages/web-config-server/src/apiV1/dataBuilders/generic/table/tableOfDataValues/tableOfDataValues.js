@@ -346,8 +346,8 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   };
 
   buildOrgsFromResults() {
-    const orgUnitsWithData = reduceToSet(this.results, 'organisationUnit');
-    this.tableConfig.columns = Array.from(orgUnitsWithData);
+    const orgUnitCodes = reduceToSet(this.results, 'organisationUnit');
+    this.tableConfig.columns = Array.from(orgUnitCodes).sort();
   }
 
   buildOrgsFromResultsWithCategories() {
