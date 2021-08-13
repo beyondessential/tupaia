@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import { MicroserviceApi } from './types';
+import { Api } from './Api';
 import { AuthHandler } from '../types';
 import { ApiConnection } from './ApiConnection';
 
@@ -18,7 +18,7 @@ export class ApiConnectionBuilder {
     return this;
   }
 
-  public buildAs<Wrapper extends MicroserviceApi>(
+  public buildAs<Wrapper extends Api>(
     WrapperClazz: new (apiConnection: ApiConnection) => Wrapper,
   ) {
     if (!this.authHandler) {

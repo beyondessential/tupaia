@@ -17,7 +17,7 @@ import type {
 import { FilterCriteria, AdvancedFilterValue } from '@tupaia/server-boilerplate/src/type-exports';
 
 import { ApiConnection } from './ApiConnection';
-import { MicroserviceApi } from './types';
+import { Api } from './Api';
 
 const { ENTITY_API_URL = 'http://localhost:8050/v1' } = process.env;
 
@@ -104,7 +104,7 @@ type Prefix<T, P extends string> = {
 /**
  * TODO: make internal, do not export from package
  */
-export class EntityApi implements MicroserviceApi {
+export class EntityApi implements Api {
   public baseUrl = ENTITY_API_URL;
 
   private readonly connection: ApiConnection;
