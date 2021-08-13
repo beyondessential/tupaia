@@ -28,21 +28,14 @@ const generateIndicator = (code, dataElement, target) => ({
   builder: 'analyticArithmetic',
   config: {
     formula: `${target}`,
-    aggregation: { [dataElement]: 'MOST_RECENT' },
+    aggregation: { [dataElement]: 'FINAL_EACH_YEAR' },
   },
 });
 
 const generateReport = (dataElement, target) => ({
   fetch: {
     dataElements: target ? [dataElement, target] : [dataElement],
-    aggregations: [
-      {
-        type: 'MOST_RECENT',
-        config: {
-          dataSourceEntityType: 'sub_district',
-        },
-      },
-    ],
+    aggregations: ['FINAL_EACH_YEAR'],
   },
   transform: [
     'keyValueByDataElementName',
