@@ -7,5 +7,5 @@ import path from 'path';
 
 export const createDownloadLink = filePath => {
   const fileName = path.basename(filePath);
-  return `http://localhost:8070/v1/export/download/${fileName}`;
+  return `${process.env.ADMIN_PANEL_SERVER_URL}/v1/export/download/${fileName}`;
 };
