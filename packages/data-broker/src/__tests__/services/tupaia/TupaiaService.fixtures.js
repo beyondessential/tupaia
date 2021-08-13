@@ -38,7 +38,7 @@ export const ANALYTICS = {
       value: 2,
     },
   ],
-  aggregationsProcessed: [{ type: 'FINAL_EACH_DAY' }],
+  aggregationsProcessed: 1,
 };
 
 export const EVENTS = [

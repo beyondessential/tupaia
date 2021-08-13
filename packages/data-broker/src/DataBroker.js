@@ -106,10 +106,7 @@ export class DataBroker {
     const dataSourceFetches = Object.values(dataSourcesByService);
     const nestedResults = await Promise.all(
       dataSourceFetches.map(dataSourceForFetch =>
-        this.pullForServiceAndType(dataSourceForFetch, {
-          ...options,
-          canProcessAggregations: dataSourceFetches.length === 1,
-        }),
+        this.pullForServiceAndType(dataSourceForFetch, options),
       ),
     );
     const mergeResults = this.resultMergers[dataSources[0].type];
@@ -126,16 +123,38 @@ export class DataBroker {
     return service.pull(dataSources, type, options);
   };
 
-  mergeAnalytics = (target = { results: [], metadata: {}, aggregationsProcessed: [] }, source) => ({
-    results: target.results.concat(source.results),
-    metadata: {
-      dataElementCodeToName: {
-        ...target.metadata.dataElementCodeToName,
-        ...source.metadata.dataElementCodeToName,
+  mergeAnalytics = (target = { results: [], metadata: {} }, source) => {
+    const sourceAggregationsProcessed = source.aggregationsProcessed || 0;
+    const targetResults = target.results;
+    const targetResultIndex = targetResults.findIndex(
+      ({ aggregationsProcessed }) => aggregationsProcessed === sourceAggregationsProcessed,
+    );
+    const targetResult = targetResultIndex >= 0 ? targetResults[targetResultIndex] : undefined;
+
+    const newResults = targetResult
+      ? targetResults
+          .slice(0, targetResultIndex)
+          .concat([
+            {
+              ...targetResult,
+              analytics: targetResult.analytics.concat(source.results),
+            },
+          ])
+          .concat(targetResults.slice(targetResultIndex + 1, targetResults.length - 1))
+      : targetResults.concat([
+          { analytics: source.results, aggregationsProcessed: sourceAggregationsProcessed },
+        ]);
+
+    return {
+      results: newResults,
+      metadata: {
+        dataElementCodeToName: {
+          ...target.metadata.dataElementCodeToName,
+          ...source.metadata.dataElementCodeToName,
+        },
       },
-    },
-    aggregationsProcessed: target.aggregationsProcessed.concat(source.aggregationsProcessed || []),
-  });
+    };
+  };
 
   mergeEvents = (target = [], source) => target.concat(source);
 

@@ -11,7 +11,6 @@ import {
   constructIsEmptyOr,
   takesDateForm,
   takesIdForm,
-  isBoolean,
 } from '@tupaia/utils';
 
 const COMMON_OPTIONS = {
@@ -22,7 +21,6 @@ const COMMON_OPTIONS = {
 
 const ANALYTIC_OPTIONS = {
   dataElementCodes: [hasContent, constructEveryItem(isAString)],
-  canProcessAggregations: [hasContent, isBoolean],
 };
 
 const EVENT_OPTIONS = {
