@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiTab from '@material-ui/core/Tab';
@@ -45,6 +45,10 @@ const StyledTable = styled(DataTable)`
   table {
     border-top: 1px solid ${({ theme }) => theme.palette.grey['400']};
     border-bottom: 1px solid ${({ theme }) => theme.palette.grey['400']};
+
+    thead {
+      text-transform: none;
+    }
   }
 `;
 
@@ -88,16 +92,24 @@ const EditorContainer = styled.div`
 
 const getColumns = data => {
   const columnKeys = [...new Set(data.map(d => Object.keys(d)).flat())];
-  return columnKeys.map(columnKey => {
+  const indexColumn = {
+    Header: '#',
+    id: 'index',
+    accessor: (_row, i) => i + 1,
+  };
+  const columns = columnKeys.map(columnKey => {
     return {
       Header: columnKey,
       accessor: row => row[columnKey],
     };
   });
+
+  return [indexColumn, ...columns];
 };
 
 export const PreviewSection = ({ enabled, setEnabled }) => {
   const [{ project, location, visualisation }, { setPresentation }] = useVizBuilderConfig();
+  const [viewContent, setViewContent] = useState(null);
   const { data: reportData = [], isIdle, isLoading, isFetching, isError, error } = useReportPreview(
     visualisation,
     project,
@@ -114,7 +126,11 @@ export const PreviewSection = ({ enabled, setEnabled }) => {
   const columns = useMemo(() => getColumns(reportData), [reportData]);
   const data = useMemo(() => reportData, [reportData]);
 
-  const viewContent = { data, ...visualisation.presentation };
+  // only update Chart Preview when play button is clicked
+  useEffect(() => {
+    const newViewContent = { data, ...visualisation.presentation };
+    setViewContent(newViewContent);
+  }, [enabled]);
 
   return (
     <>
@@ -133,7 +149,13 @@ export const PreviewSection = ({ enabled, setEnabled }) => {
           {isIdle ? (
             <IdleMessage />
           ) : (
-            <FetchLoader isLoading={isLoading || isFetching} isError={isError} error={error}>
+            <FetchLoader
+              isLoading={isLoading || isFetching}
+              isError={isError}
+              error={error}
+              isNoData={!reportData.length}
+              noDataMessage="No Data Found"
+            >
               <StyledTable columns={columns} data={data} />
             </FetchLoader>
           )}
