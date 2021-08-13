@@ -36,13 +36,13 @@
     "jss": "10.0.0"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.0.0",
     "@mapbox/polyline": "^0.2.0",
     "@material-ui/core": "^4.9.11",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/styles": "^4.9.10",
     "@tupaia/ui-components": "1.0",
+    "core-js": "^3.16.1",
     "dom-to-image": "2.6.0",
     "dotenv": "^8.2.0",
     "downloadjs": "1.4.7",
@@ -73,6 +73,7 @@
     "redux": "^3.6.0",
     "redux-devtools-extension": "^2.13.2",
     "redux-saga": "^1.0.0-beta.2",
+    "regenerator-runtime": "^0.13.9",
     "reselect": "^4.0.0",
     "sanitize-filename": "^1.6.3",
     "shallowequal": "^1.0.2",
@@ -96,16 +97,9 @@
     "react-error-overlay": "^1.0.7",
     "react-scripts": "^4.0.3"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ]
 }
