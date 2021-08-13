@@ -7,9 +7,6 @@ import { Api } from './Api';
 import { AuthHandler } from '../types';
 import { ApiConnection } from './ApiConnection';
 
-/**
- * TODO: make internal, do not export from package
- */
 export class ApiConnectionBuilder {
   private authHandler?: AuthHandler;
 

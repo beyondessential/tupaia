@@ -101,9 +101,6 @@ type Prefix<T, P extends string> = {
   [field in keyof T & string as `${P}_${field}`]: T[field];
 };
 
-/**
- * TODO: make internal, do not export from package
- */
 export class EntityApi implements Api {
   public baseUrl = ENTITY_API_URL;
 
