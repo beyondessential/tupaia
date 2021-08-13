@@ -3,21 +3,23 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import { fetchWithTimeout, verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
+import nodeFetch from 'node-fetch';
 import { QueryParameters, AuthHandler } from '../types';
+import type { RequestInit, HeadersInit, Response } from 'node-fetch';
+import { stringify } from 'qs';
 
 type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 
-interface FetchHeaders {
+type FetchHeaders = HeadersInit & {
   Authorization: string;
   'Content-Type'?: string;
 }
 
-interface FetchConfig {
-  method: string;
+type FetchConfig = RequestInit & {
   headers: FetchHeaders;
-  body?: string;
 }
+
+const DEFAULT_MAX_WAIT_TIME = 45 * 1000; // 45 seconds in milliseconds
 
 /**
  * TODO: make internal, do not export from package
@@ -53,7 +55,7 @@ export class ApiConnection {
     queryParameters: QueryParameters = {},
     body?: RequestBody,
   ) {
-    const queryUrl = stringifyQuery(this.baseUrl, endpoint, queryParameters);
+    const queryUrl = this.stringifyQuery(this.baseUrl, endpoint, queryParameters);
     const fetchConfig: FetchConfig = {
       method: requestMethod || 'GET',
       headers: {
@@ -65,8 +67,38 @@ export class ApiConnection {
       fetchConfig.body = JSON.stringify(body);
     }
 
-    const response = await fetchWithTimeout(queryUrl, fetchConfig);
-    await verifyResponseStatus(response);
+    const response = await this.fetchWithTimeout(queryUrl, fetchConfig);
+    await this.verifyResponse(response);
     return response.json();
   }
+
+  private async fetchWithTimeout(url: string, config: RequestInit, timeout: number = DEFAULT_MAX_WAIT_TIME): Promise<Response> {
+    return nodeFetch(url, {...config, timeout } );
+  }
+
+  private async verifyResponse(response: Response): Promise<void> {
+    if (!response.ok) {
+      const responseJson = await response.json();
+      if (
+        response.status &&
+        (response.status < 200 || response.status >= 300) &&
+        !responseJson.error
+      ) {
+        throw new Error(`API error ${response.status}: ${responseJson.message}`)
+      }
+      if (responseJson.error) {
+        throw new Error(`API error ${response.status}: ${responseJson.error}`)
+      }
+    }
+  };
+
+  private stringifyQuery(baseUrl: string = '', endpoint: string, queryParams: QueryParameters): string {
+    const urlAndEndpoint = baseUrl ? `${baseUrl}/${endpoint}` : endpoint;
+
+    const queryString = stringify(queryParams);
+
+    return queryString
+      ? `${urlAndEndpoint}?${queryString}`
+      : `${urlAndEndpoint}`;
+  };
 }
