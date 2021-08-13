@@ -4,7 +4,7 @@
  */
 
 import { Express, Request, Response, NextFunction } from 'express';
-import { InternalServerError, RespondingError } from '@tupaia/utils';
+import { serverErrorHandler } from '@tupaia/utils';
 import { PsssRequest } from '../types';
 import {
   LoginRoute,
@@ -33,7 +33,7 @@ const handleWith = (RouteClass: typeof Route) => (
 };
 
 const handleError = (
-  err: RespondingError | Error,
+  err: Error,
   req: Request,
   res: Response,
   next: NextFunction,
@@ -44,8 +44,7 @@ const handleError = (
     return;
   }
 
-  const error = 'respond' in err ? err : new InternalServerError(err);
-  error.respond(res);
+  serverErrorHandler(err, res);
 };
 
 const useSites = (req: Request, res: Response, next: NextFunction) => {

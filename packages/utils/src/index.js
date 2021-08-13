@@ -11,6 +11,7 @@ export * from './createBasicHeader';
 export * from './cypress';
 export { getTimezoneNameFromTimestamp, utcMoment } from './datetime';
 export { getDhisConfig } from './dhis';
+export * from './errorHandler';
 export * from './errors';
 export { Multilock } from './Multilock';
 export * from './period';
