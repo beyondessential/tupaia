@@ -28,7 +28,7 @@ describe('DataBroker', () => {
     other: createServiceStub(DATA_BY_SERVICE.other),
   };
   const createServiceMock = stubCreateService(SERVICES);
-  const options = { ignoreErrors: true, organisationUnitCode: 'TO', canProcessAggregations: true };
+  const options = { ignoreErrors: true, organisationUnitCode: 'TO' };
 
   it('getDataSourceTypes()', () => {
     expect(new DataBroker().getDataSourceTypes()).toStrictEqual(mockModels.dataSource.getTypes());
@@ -140,9 +140,8 @@ describe('DataBroker', () => {
         expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
         assertServicePulledDataElementsOnce(SERVICES.test, [DATA_ELEMENTS.TEST_01]);
         expect(data).toStrictEqual({
-          results: [{ value: 1 }],
+          results: [{ analytics: [{ value: 1 }], aggregationsProcessed: 0 }],
           metadata: { dataElementCodeToName: { TEST_01: 'Test element 1' } },
-          aggregationsProcessed: [],
         });
       });
 
@@ -159,11 +158,10 @@ describe('DataBroker', () => {
           DATA_ELEMENTS.TEST_02,
         ]);
         expect(data).toStrictEqual({
-          results: [{ value: 1 }, { value: 2 }],
+          results: [{ analytics: [{ value: 1 }, { value: 2 }], aggregationsProcessed: 0 }],
           metadata: {
             dataElementCodeToName: { TEST_01: 'Test element 1', TEST_02: 'Test element 2' },
           },
-          aggregationsProcessed: [],
         });
       });
 
@@ -180,14 +178,13 @@ describe('DataBroker', () => {
         assertServicePulledDataElementsOnce(
           SERVICES.test,
           [DATA_ELEMENTS.TEST_01, DATA_ELEMENTS.TEST_02],
-          { ...options, canProcessAggregations: false },
+          options,
         );
-        assertServicePulledDataElementsOnce(SERVICES.other, [DATA_ELEMENTS.OTHER_01], {
-          ...options,
-          canProcessAggregations: false,
-        });
+        assertServicePulledDataElementsOnce(SERVICES.other, [DATA_ELEMENTS.OTHER_01], options);
         expect(data).toStrictEqual({
-          results: [{ value: 1 }, { value: 2 }, { value: 3 }],
+          results: [
+            { analytics: [{ value: 1 }, { value: 2 }, { value: 3 }], aggregationsProcessed: 0 },
+          ],
           metadata: {
             dataElementCodeToName: {
               TEST_01: 'Test element 1',
@@ -195,7 +192,6 @@ describe('DataBroker', () => {
               OTHER_01: 'Other element 1',
             },
           },
-          aggregationsProcessed: [],
         });
       });
     });
@@ -238,14 +234,12 @@ describe('DataBroker', () => {
         expect(createServiceMock).toHaveBeenCalledTimes(2);
         expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'test', dataBroker);
         expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'other', dataBroker);
-        assertServicePulledEventsOnce(SERVICES.test, [DATA_GROUPS.TEST_01, DATA_GROUPS.TEST_02], {
-          ...options,
-          canProcessAggregations: false,
-        });
-        assertServicePulledEventsOnce(SERVICES.other, [DATA_GROUPS.OTHER_01], {
-          ...options,
-          canProcessAggregations: false,
-        });
+        assertServicePulledEventsOnce(
+          SERVICES.test,
+          [DATA_GROUPS.TEST_01, DATA_GROUPS.TEST_02],
+          options,
+        );
+        assertServicePulledEventsOnce(SERVICES.other, [DATA_GROUPS.OTHER_01], options);
         expect(data).toStrictEqual([
           { dataValues: { TEST_01: 10 } },
           { dataValues: { TEST_02: 20 } },

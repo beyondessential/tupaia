@@ -10,11 +10,7 @@ const VALUE_AGGREGATION_FUNCTIONS = {
   MOST_RECENT: 'most_recent(value, date)',
 };
 
-const COMMONLY_SUPPORTED_CONFIG_KEYS = [
-  'dataSourceEntityType',
-  'dataSourceEntityFilter',
-  'orgUnitMap',
-];
+const COMMONLY_SUPPORTED_CONFIG_KEYS = ['dataSourceEntityType', 'dataSourceEntityFilter'];
 
 const AGGREGATION_SWITCHES = {
   FINAL_EACH_DAY: {
@@ -80,8 +76,7 @@ export class AnalyticsFetchQuery {
     this.endDate = endDate;
 
     this.aggregations = [];
-    this.originalAggregationsProcessed = [];
-    if (options.aggregations && options.canProcessAggregations) {
+    if (options.aggregations) {
       for (let i = 0; i < options.aggregations.length; i++) {
         const aggregation = options.aggregations[i];
         const aggregationSwitch = AGGREGATION_SWITCHES[aggregation?.type];
@@ -93,7 +88,6 @@ export class AnalyticsFetchQuery {
         dbAggregation.config = aggregation?.config; // add external config, supplied by client
         dbAggregation.stackId = i + 1;
         this.aggregations.push(dbAggregation);
-        this.originalAggregationsProcessed.push(aggregation);
       }
     }
 
@@ -109,7 +103,7 @@ export class AnalyticsFetchQuery {
 
     return {
       analytics: await sqlQuery.executeOnDatabase(this.database),
-      aggregationsProcessed: this.originalAggregationsProcessed,
+      aggregationsProcessed: this.aggregations.length,
     };
   }
 

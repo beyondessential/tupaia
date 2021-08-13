@@ -11,11 +11,15 @@ export const DATA_SOURCE_TYPES = {
 export const RESPONSE_BY_SOURCE_TYPE = {
   dataElement: {
     results: [
-      { dataElement: 'POP01', period: '20200214', value: 1 },
-      { dataElement: 'POP01', period: '20200214', value: 2 },
+      {
+        analytics: [
+          { dataElement: 'POP01', period: '20200214', value: 1 },
+          { dataElement: 'POP01', period: '20200214', value: 2 },
+        ],
+        aggregationsProcessed: 0,
+      },
     ],
     metadata: {},
-    aggregationsProcessed: [],
   },
   dataGroup: [{ event: 'testEvent', dataValues: [] }],
 };
