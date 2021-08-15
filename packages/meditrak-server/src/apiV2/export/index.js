@@ -4,11 +4,18 @@
  */
 
 import express from 'express';
-import { catchAsyncErrors } from '../middleware';
+import { catchAsyncErrors, emailAfterTimeout } from '../middleware';
+import { useRouteHandler } from '../RouteHandler';
+import { constructExportEmail } from './constructExportEmail';
+import { DownloadHandler } from './download';
 import { exportSurveyResponses } from './exportSurveyResponses';
 import { exportSurveys } from './exportSurveys';
 
 const exportRoutes = express.Router();
+
+exportRoutes.get('/download/:fileName', useRouteHandler(DownloadHandler));
+
+exportRoutes.use(emailAfterTimeout(constructExportEmail));
 
 exportRoutes.get('/surveyResponses', catchAsyncErrors(exportSurveyResponses));
 exportRoutes.get('/surveyResponses/:surveyResponseId', catchAsyncErrors(exportSurveyResponses));

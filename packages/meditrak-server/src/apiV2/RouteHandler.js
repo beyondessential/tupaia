@@ -3,6 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { catchAsyncErrors } from './middleware';
+
+export const useRouteHandler = HandlerClass =>
+  catchAsyncErrors(async (res, req) => {
+    const handler = new HandlerClass(res, req);
+    await handler.handle();
+  });
+
 export class RouteHandler {
   constructor(req, res) {
     this.req = req;

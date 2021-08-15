@@ -11,12 +11,14 @@ import { RowBuilder } from './RowBuilder';
 import { SurveyMetadataConfigCellBuilder } from './cellBuilders';
 import { assertCanExportSurveys } from './assertCanExportSurveys';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
+import { getExportPathForUser } from '../getExportPathForUser';
 
-const FILE_TITLE = 'exports/survey_export';
+const FILE_PREFIX = 'survey_export';
 
 export class SurveyExporter {
-  constructor(models, assertPermissions) {
+  constructor(models, userId, assertPermissions) {
     this.models = models;
+    this.userId = userId;
     this.assertPermissions = assertPermissions;
     this.surveyMetadataConfigCellBuilder = new SurveyMetadataConfigCellBuilder(models);
   }
@@ -83,7 +85,7 @@ export class SurveyExporter {
       throw new DatabaseError('exporting survey', error);
     }
 
-    const filePath = `${FILE_TITLE}_${Date.now()}.xlsx`;
+    const filePath = `${getExportPathForUser(this.userId)}/${FILE_PREFIX}_${Date.now()}.xlsx`;
     xlsx.writeFile(workbook, filePath, { bookSST: true });
     return filePath;
   }

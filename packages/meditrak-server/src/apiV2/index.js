@@ -13,6 +13,7 @@ import {
 } from './middleware';
 
 import { allowNoPermissions, ensurePermissionCheck } from '../permissions';
+import { useRouteHandler } from './RouteHandler';
 
 import { exportRoutes } from './export';
 import { importRoutes } from './import';
@@ -78,12 +79,6 @@ import { requestPasswordReset } from './requestPasswordReset';
 import { getCountryAccessList } from './getCountryAccessList';
 import { surveyResponse } from './surveyResponse';
 import { verifyEmail, requestResendEmail } from './verifyEmail';
-
-const useRouteHandler = HandlerClass =>
-  catchAsyncErrors(async (res, req) => {
-    const handler = new HandlerClass(res, req);
-    await handler.handle();
-  });
 
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {

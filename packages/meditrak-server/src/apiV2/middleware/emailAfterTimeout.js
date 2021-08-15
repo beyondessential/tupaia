@@ -6,12 +6,12 @@
 import { respond } from '@tupaia/utils';
 import { sendEmail } from '../../utilities';
 
-const sendResponseAsEmail = (user, subject, message) => {
+const sendResponseAsEmail = (user, subject, message, attachments) => {
   const text = `Hi ${user.first_name},
 
 ${message}
   `;
-  sendEmail(user.email, subject, text);
+  sendEmail(user.email, subject, text, attachments);
 };
 
 const setupEmailResponse = async (req, res, constructEmailFromResponse) => {
@@ -32,8 +32,8 @@ const setupEmailResponse = async (req, res, constructEmailFromResponse) => {
   // override the respond function so that when the endpoint handler finishes (or throws an error),
   // the response is sent via email
   res.overrideRespond = responseBody => {
-    const { subject, message } = constructEmailFromResponse(responseBody);
-    sendResponseAsEmail(user, subject, message);
+    const { subject, message, attachments } = constructEmailFromResponse(responseBody);
+    sendResponseAsEmail(user, subject, message, attachments);
   };
 };
 
