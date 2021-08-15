@@ -8,5 +8,5 @@ export {
   EXPORT_DATE_FORMAT,
   INFO_COLUMN_HEADERS,
   INFO_ROW_HEADERS,
-} from './exportResponsesToFiles';
+} from './exportResponsesToFile';
 export { exportSurveyResponses } from './exportSurveyResponses';

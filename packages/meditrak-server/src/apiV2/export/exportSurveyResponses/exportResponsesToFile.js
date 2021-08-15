@@ -6,19 +6,22 @@
 import xlsx from 'xlsx';
 import moment from 'moment';
 import keyBy from 'lodash.keyby';
-import { truncateString } from 'sussol-utilities';
+import chunk from 'lodash.chunk';
 import {
   addExportedDateAndOriginAtTheSheetBottom,
   getExportDatesString,
   getUniqueEntries,
+  truncateString,
 } from '@tupaia/utils';
 import { TYPES } from '@tupaia/database';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../../database/models/Answer';
 import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../../../dataAccessors';
 import { hasBESAdminAccess } from '../../../permissions';
 import { getExportPathForUser } from '../getExportPathForUser';
+import { zipMultipleFiles } from '../zipMultipleFiles';
 
 const FILE_PREFIX = 'survey_response_export';
+const MAX_RESPONSES_PER_FILE = 10000; // exporting too many responses in one file ends up out of memory
 export const EXPORT_DATE_FORMAT = 'D-M-YYYY h:mma';
 export const API_DATE_FORMAT = 'YYYY-MM-DD';
 const INFO_COLUMNS = {
@@ -38,9 +41,9 @@ const getBlankWorkbook = () => ({ SheetNames: [], Sheets: {} });
 
 /**
  * Exports excel documents containing the relevant survey responses, splitting into multiple files
- * if too large
+ * and zipping if too large
  */
-export async function exportResponsesToFiles(
+export async function exportResponsesToFile(
   models,
   userId,
   accessPolicy,
@@ -57,12 +60,26 @@ export async function exportResponsesToFiles(
     timeZone,
   },
 ) {
-  const workbook = getBlankWorkbook();
+  const exportDate = Date.now();
+  const files = [];
+  let currentWorkbook = getBlankWorkbook();
 
   const addDataToSheet = (surveyName, exportData) => {
-    const sheetName = truncateString(surveyName, 31);
-    workbook.Sheets[sheetName] = xlsx.utils.aoa_to_sheet(exportData);
-    workbook.SheetNames.push(sheetName);
+    const sheetName = surveyName.substring(0, 31); // stay within excel limit on sheet name length
+    currentWorkbook.Sheets[sheetName] = xlsx.utils.aoa_to_sheet(exportData);
+    currentWorkbook.SheetNames.push(sheetName);
+  };
+
+  const saveCurrentWorkbook = () => {
+    const fileNumber = files.length + 1;
+    const filePath = `${getExportPathForUser(
+      userId,
+    )}/${FILE_PREFIX}_${exportDate}_${fileNumber}.xlsx`;
+
+    xlsx.writeFile(currentWorkbook, filePath);
+    files.push(filePath);
+    currentWorkbook = getBlankWorkbook(); // reset current workbook
+    return filePath;
   };
 
   const infoColumns = easyReadingMode
@@ -237,18 +254,13 @@ export async function exportResponsesToFiles(
   };
 
   const exportResponses = async (surveyResponses, entitiesById, survey, questions) => {
-    try {
-      const exportData = await getExportDataForResponses(
-        surveyResponses,
-        entitiesById,
-        survey,
-        questions,
-      );
-      addDataToSheet(survey.name, exportData);
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
+    const exportData = await getExportDataForResponses(
+      surveyResponses,
+      entitiesById,
+      survey,
+      questions,
+    );
+    addDataToSheet(survey.name, exportData);
   };
 
   for (let surveyIndex = 0; surveyIndex < surveys.length; surveyIndex++) {
@@ -268,11 +280,18 @@ export async function exportResponsesToFiles(
     } else {
       const surveyResponses = await findResponsesForSurvey(currentSurvey);
       const entitiesById = keyBy(entities, 'id');
-      await exportResponses(surveyResponses, entitiesById, currentSurvey, questions);
+      if (surveyResponses.length > MAX_RESPONSES_PER_FILE) {
+        for (const batchOfResponses of chunk(surveyResponses, MAX_RESPONSES_PER_FILE)) {
+          await exportResponses(batchOfResponses, entitiesById, currentSurvey, questions);
+          saveCurrentWorkbook();
+        }
+      } else {
+        await exportResponses(surveyResponses, entitiesById, currentSurvey, questions);
+      }
     }
   }
 
-  const filePath = `${getExportPathForUser(userId)}/${FILE_PREFIX}_${Date.now()}.xlsx`;
-  xlsx.writeFile(workbook, filePath);
-  return filePath;
+  return files.length > 0
+    ? zipMultipleFiles(getExportPathForUser(userId), files)
+    : saveCurrentWorkbook();
 }

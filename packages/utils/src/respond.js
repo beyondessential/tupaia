@@ -23,14 +23,14 @@ export function respond(res, responseBody, statusCode) {
     .send(JSON.stringify(responseBody));
 }
 
-export function respondWithDownload(res, filePath, deleteAfterDownload = false) {
+export function respondWithDownload(res, filePath, deleteAfterDownload = true) {
   const { overrideRespond } = res;
   if (overrideRespond) {
     return overrideRespond({ filePath });
   }
   return res.download(filePath, () => {
     if (deleteAfterDownload) {
-      fs.unlink(filePath); // delete file from disk after download
+      fs.unlinkSync(filePath); // delete file from disk after download
     }
   });
 }

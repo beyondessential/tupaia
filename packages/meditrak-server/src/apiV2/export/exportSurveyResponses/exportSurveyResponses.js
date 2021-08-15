@@ -6,7 +6,7 @@
 import { respondWithDownload } from '@tupaia/utils';
 import { allowNoPermissions } from '../../../permissions';
 import { SurveyResponseVariablesExtractor } from '../../utilities';
-import { exportResponsesToFiles } from './exportResponsesToFiles';
+import { exportResponsesToFile } from './exportResponsesToFile';
 
 /**
  * Responds to GET requests to the /export/surveyResponses endpoint, exporting an excel document
@@ -47,7 +47,7 @@ export async function exportSurveyResponses(req, res) {
   surveyId = variables.surveyId || surveyId;
 
   const surveys = await variablesExtractor.getSurveys(surveyId, surveyCodes, countryId);
-  const filePath = await exportResponsesToFiles(models, userId, accessPolicy, {
+  const filePath = await exportResponsesToFile(models, userId, accessPolicy, {
     country,
     easyReadingMode,
     endDate,
