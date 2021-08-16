@@ -49,6 +49,7 @@ export const SplitButton = ({ options, selectedId, setSelectedId, onClick, Butto
   };
 
   const handleClose = event => {
+    // if the user clicks away, but their click still lands on some part of the component, keep open
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }

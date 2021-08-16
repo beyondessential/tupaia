@@ -89,7 +89,7 @@ const EXPORT_OPTIONS = [
 
 export const DashboardReportModal = () => {
   const theme = useTheme();
-  const [selectedExportId, setSelectedExportId] = useState(EXPORT_OPTIONS[1].id);
+  const [exportFormatId, setExportFormatId] = useState(EXPORT_OPTIONS[1].id);
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { entityCode } = useUrlParams();
   const [{ startDate, endDate, reportCode }, setParams] = useUrlSearchParams();
@@ -165,8 +165,8 @@ export const DashboardReportModal = () => {
               <Toolbar $isExporting={isExporting}>
                 <SplitButton
                   options={EXPORT_OPTIONS}
-                  selectedId={selectedExportId}
-                  setSelectedId={setSelectedExportId}
+                  selectedId={exportFormatId}
+                  setSelectedId={setExportFormatId}
                   onClick={handleClickExport}
                   ButtonComponent={WhiteButton}
                 />
