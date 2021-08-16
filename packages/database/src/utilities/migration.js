@@ -102,7 +102,7 @@ export async function updateValues(db, table, newValues, condition) {
   return db.runSql(`UPDATE "${table}" SET ${setQuery} WHERE ${whereQuery}`, params);
 }
 
-const getValueString = values => {
+const getJsonColumnValueString = values => {
   if (Array.isArray(values)) {
     const arrayString = values
       .map(item => (typeof item === 'string' ? `"${item}"` : item))
@@ -114,7 +114,7 @@ const getValueString = values => {
     return JSON.stringify(values);
   }
 
-  throw new Error('Function insertJsonEntry: we should either insert object or array');
+  throw new Error('Function getJsonColumnValueString: we should either insert object or array');
 };
 
 const insertOrUpdateRootJsonEntry = async (db, table, column, value, condition) => {
@@ -124,7 +124,7 @@ const insertOrUpdateRootJsonEntry = async (db, table, column, value, condition) 
   await db.runSql(
     `UPDATE "${table}" tb
      SET "${column}" = 
-          tb."${column}" || '${getValueString(value)}'                  
+          tb."${column}" || '${getJsonColumnValueString(value)}'                  
      WHERE ${whereQuery};`,
     params,
   );
@@ -141,7 +141,9 @@ export const insertJsonEntry = async (db, table, column, path, value, condition)
     `UPDATE "${table}" tb
      SET "${column}" = 
           JSONB_SET(tb."${column}",'{${path.toString()}}', 
-                    tb."${column}"::jsonb #> '{${path.toString()}}' || '${getValueString(value)}'
+                    tb."${column}"::jsonb #> '{${path.toString()}}' || '${getJsonColumnValueString(
+      value,
+    )}'
                     )
      WHERE ${whereQuery};`,
     params,
