@@ -103,7 +103,7 @@ export class AnalyticsFetchQuery {
 
     return {
       analytics: await sqlQuery.executeOnDatabase(this.database),
-      aggregationsProcessed: this.aggregations.length,
+      numAggregationsProcessed: this.aggregations.length,
     };
   }
 
@@ -148,17 +148,19 @@ export class AnalyticsFetchQuery {
 
   getAggregationSelect(aggregation) {
     const { aggregationFunction, groupByPeriodField = 'period' } = aggregation.switch;
-    const fields = [];
-    fields.push(`${this.getEntityCodeField(aggregation)} as entity_code`);
-    fields.push(`data_element_code`);
-    fields.push(`${aggregationFunction} as value`);
-    fields.push('MAX(type) as type');
-    fields.push('MAX(day_period) as day_period');
-    fields.push('MAX(week_period) as week_period');
-    fields.push('MAX(month_period) as month_period');
-    fields.push('MAX(year_period) as year_period');
-    fields.push('MAX(date) as date');
-    fields.push(`MAX(${groupByPeriodField}) as period`);
+
+    const fields = [
+      `${this.getEntityCodeField(aggregation)} as entity_code`,
+      'data_element_code',
+      `${aggregationFunction} as value`,
+      'MAX(type) as type',
+      'MAX(day_period) as day_period',
+      'MAX(week_period) as week_period',
+      'MAX(month_period) as month_period',
+      'MAX(year_period) as year_period',
+      'MAX(date) as date',
+      `MAX(${groupByPeriodField}) as period`,
+    ];
 
     return `SELECT ${fields.join(', ')}`;
   }
@@ -215,8 +217,8 @@ export class AnalyticsFetchQuery {
 
     const { clause: whereClause, params: whereParams } = this.getBaseWhereClauseAndParams();
     const baseAnalytics = `(SELECT *, day_period as period from analytics
-      ${SqlQuery.innerJoin(this.entityCodes, 'entity_code')}
-      ${SqlQuery.innerJoin(this.dataElementCodes, 'data_element_code')}
+      ${SqlQuery.innerJoin('analytics', 'entity_code', this.entityCodes)}
+      ${SqlQuery.innerJoin('analytics', 'data_element_code', this.dataElementCodes)}
       ${whereClause}) as base_analytics`;
     const baseAnalyticsParams = this.entityCodes.concat(this.dataElementCodes).concat(whereParams);
 

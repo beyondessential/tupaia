@@ -52,10 +52,10 @@ export class EventsFetchQuery {
 
   getInnerJoinsAndParams() {
     let params = this.entityCodes;
-    const joins = [SqlQuery.innerJoin(this.entityCodes, 'entity_code')];
+    const joins = [SqlQuery.innerJoin('analytics', 'entity_code', this.entityCodes)];
     if (this.hasDataElements) {
       params = params.concat(this.dataElementCodes);
-      joins.push(SqlQuery.innerJoin(this.dataElementCodes, 'data_element_code'));
+      joins.push(SqlQuery.innerJoin('analytics', 'data_element_code', this.dataElementCodes));
     }
     return { joins: joins.join('\n'), params };
   }

@@ -38,14 +38,14 @@ export const testFetchAnalytics = () => {
   const assertCorrectResponse = async (
     options,
     responses,
-    expectedAggregationsProcessed = 0,
+    expectedNumAggregationsProcessed = 0,
     expectedPeriodType = 'DAY',
   ) => {
-    const { analytics, aggregationsProcessed } = await api.fetchAnalytics(options);
+    const { analytics, numAggregationsProcessed } = await api.fetchAnalytics(options);
     expect(analytics).toIncludeSameMembers(
       getAnalyticsFromResponses(responses, options.dataElementCodes, expectedPeriodType),
     );
-    expect(aggregationsProcessed).toEqual(expectedAggregationsProcessed);
+    expect(numAggregationsProcessed).toEqual(expectedNumAggregationsProcessed);
   };
 
   it('throws an error with invalid parameters', async () => {

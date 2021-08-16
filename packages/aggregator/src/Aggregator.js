@@ -34,8 +34,8 @@ export class Aggregator {
 
   processAnalytics = (results, aggregationOptions, requestedPeriod) => {
     const { aggregations = [], filter } = aggregationOptions;
-    const aggregatedAnalytics = results.reduce((array, { analytics, aggregationsProcessed }) => {
-      const remainingAggregations = aggregations.slice(aggregationsProcessed);
+    const aggregatedAnalytics = results.reduce((array, { analytics, numAggregationsProcessed }) => {
+      const remainingAggregations = aggregations.slice(numAggregationsProcessed);
       return array.concat(
         this.aggregateAnalytics(analytics, remainingAggregations, requestedPeriod),
       );

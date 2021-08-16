@@ -38,7 +38,7 @@ export const ANALYTICS = {
       value: 2,
     },
   ],
-  aggregationsProcessed: 1,
+  numAggregationsProcessed: 1,
 };
 
 export const EVENTS = [
