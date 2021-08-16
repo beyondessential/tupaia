@@ -63,6 +63,7 @@ const parseUrl = url => {
     id: searchParams.get('overlay'),
     project,
     orgUnit,
+    overlayPeriod: searchParams.get('overlayPeriod'),
   };
 };
 
