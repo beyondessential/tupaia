@@ -5,4 +5,4 @@
 
 export { CreateDashboardVisualisation } from './CreateDashboardVisualisation';
 export { EditDashboardVisualisation } from './EditDashboardVisualisation';
-export { GETDashboardVisualisation } from './GETDashboardVisualisation';
+export { GETDashboardVisualisations } from './GETDashboardVisualisations';

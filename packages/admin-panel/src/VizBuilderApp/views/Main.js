@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Prompt } from 'react-router-dom';
+import { Prompt, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
@@ -27,18 +27,16 @@ const RightCol = styled(FlexColumn)`
 `;
 
 const StyledAlert = styled(SmallAlert)`
-  margin-top: 30px;
   margin: auto;
 `;
 
 const Progress = styled(CircularProgress)`
-  margin-top: 30px;
   margin: auto;
 `;
 
 // Todo: add warning on page unload https://github.com/jacobbuck/react-beforeunload#readme
-export const Main = ({ match }) => {
-  const { visualisationId } = match.params;
+export const Main = () => {
+  const { visualisationId } = useParams();
 
   // do not fetch existing viz if no visualisationId is provided in the params
   const fetchExistingVizEnabled = visualisationId !== undefined;
@@ -83,8 +81,4 @@ export const Main = ({ match }) => {
       <Prompt message="Are you sure you want to exit the Viz Builder? Your options will not be saved so make sure you have exported your configuration." />
     </>
   );
-};
-
-Main.propTypes = {
-  match: PropTypes.shape({ params: PropTypes.object }).isRequired,
 };
