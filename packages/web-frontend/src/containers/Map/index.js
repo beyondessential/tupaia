@@ -15,7 +15,8 @@
 
 import { connect } from 'react-redux';
 
-import { CustomMap } from './CustomMap';
+// import { CustomMap } from './CustomMap';
+import { NewMap as CustomMap } from './NewMap';
 import {
   selectOrgUnit,
   selectCurrentOrgUnit,
@@ -23,6 +24,7 @@ import {
   selectOrgUnitChildren,
   selectHasPolygonMeasure,
   selectAllMeasuresWithDisplayInfo,
+  selectRenderedMeasuresWithDisplayInfo,
 } from '../../selectors';
 
 import { selectActiveTileSet } from '../../selectors/projectSelectors';
@@ -33,6 +35,15 @@ import {
   closeDropdownOverlays,
   setMapIsAnimating,
 } from '../../actions';
+import { createSelector } from 'reselect';
+
+const selectMeasureDataWithCoordinates = createSelector([measureData => measureData], measureData =>
+  measureData.map(({ location, ...otherData }) => ({
+    ...otherData,
+    coordinates: location && location.point,
+    region: location && location.region,
+  })),
+);
 
 const mapStateToProps = state => {
   const { isAnimating, shouldSnapToPosition, position, measureInfo } = state.map;
@@ -59,11 +70,17 @@ const mapStateToProps = state => {
     if (hasShadedGrandchildren) displayedChildren = grandchildren;
   }
 
+  const measureData = selectMeasureDataWithCoordinates(
+    selectRenderedMeasuresWithDisplayInfo(state),
+  );
+
+  console.log('zoom', state);
   return {
     position,
     currentOrganisationUnit,
     currentParent,
     displayedChildren,
+    measureData,
     currentOrganisationUnitSiblings: selectOrgUnitSiblings(
       state,
       currentOrganisationUnit.organisationUnitCode,
