@@ -5,17 +5,14 @@
 
 import xlsx from 'xlsx';
 import { stringToFilename } from '@tupaia/utils';
-import { useSortBy, useTable } from 'react-table';
+import { useTable } from 'react-table';
 import moment from 'moment';
 
 export const useDataTableExport = (columnsData, data, title) => {
-  const { rows, columns } = useTable(
-    {
-      columns: columnsData,
-      data,
-    },
-    useSortBy,
-  );
+  const { rows, columns } = useTable({
+    columns: columnsData,
+    data,
+  });
 
   const doExport = () => {
     // Get data from react table properties
