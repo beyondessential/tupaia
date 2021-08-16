@@ -2,7 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import sanitize from 'sanitize-filename';
 
 export function singularise(word) {
   // Check if the word ends as a plural
@@ -32,11 +31,4 @@ export const getArticle = word => {
     return '';
   }
   return word.match(/^[aeiou]/i) ? 'an' : 'a';
-};
-
-const truncate = (string, length) => (string.length <= length ? string : string.slice(0, length));
-
-export const stringToFilename = string => {
-  const sanitized = sanitize(string).replace(/\s+/g, '-').toLowerCase().toLowerCase();
-  return truncate(sanitized, 255);
 };
