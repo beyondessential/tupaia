@@ -25,7 +25,9 @@ describe('sumPreviousPerPeriod()', () => {
       ['BCD1', 'TO', '20200102', 3],
       ['BCD1', 'TO', '20200103', 6],
     ]);
-    expect(sumPreviousPerPeriod(analytics, {}, DAY)).toIncludeSameMembers(expected);
+    expect(sumPreviousPerPeriod(analytics, { sumTillLatestData: true }, DAY)).toIncludeSameMembers(
+      expected,
+    );
   });
 
   it('combines by org unit and data element', () => {
@@ -51,7 +53,9 @@ describe('sumPreviousPerPeriod()', () => {
       ['BCD1', 'PG', '20200102', 10],
       ['BCD2', 'PG', '20200102', 12],
     ]);
-    expect(sumPreviousPerPeriod(analytics, {}, DAY)).toIncludeSameMembers(expected);
+    expect(sumPreviousPerPeriod(analytics, { sumTillLatestData: true }, DAY)).toIncludeSameMembers(
+      expected,
+    );
   });
 
   it('sums with missing analytics', () => {
@@ -65,13 +69,17 @@ describe('sumPreviousPerPeriod()', () => {
       ['BCD1', 'TO', '20200102', 1],
       ['BCD1', 'TO', '20200103', 4],
     ]);
-    expect(sumPreviousPerPeriod(analytics, {}, DAY)).toIncludeSameMembers(expected);
+    expect(sumPreviousPerPeriod(analytics, { sumTillLatestData: true }, DAY)).toIncludeSameMembers(
+      expected,
+    );
   });
 
   it('sums with no analytics', () => {
     const analytics = [];
     const expected = [];
-    expect(sumPreviousPerPeriod(analytics, {}, DAY)).toIncludeSameMembers(expected);
+    expect(sumPreviousPerPeriod(analytics, { sumTillLatestData: true }, DAY)).toIncludeSameMembers(
+      expected,
+    );
   });
 
   it('only returns results within requestedPeriod if oldest request period > oldest data', () => {
@@ -80,7 +88,7 @@ describe('sumPreviousPerPeriod()', () => {
       ['BCD1', 'TO', '20200102', 2],
       ['BCD1', 'TO', '20200103', 3],
     ]);
-    const config = { requestedPeriod: '20200102;20200103;20200104' };
+    const config = { requestedPeriod: '20200102;20200103;20200104', sumTillLatestData: true };
     const expected = arrayToAnalytics([
       ['BCD1', 'TO', '20200102', 3],
       ['BCD1', 'TO', '20200103', 6],
@@ -94,7 +102,7 @@ describe('sumPreviousPerPeriod()', () => {
       ['BCD1', 'TO', '20200102', 2],
       ['BCD1', 'TO', '20200103', 3],
     ]);
-    const config = { requestedPeriod: '20191231;20200101;20200102' };
+    const config = { requestedPeriod: '20191231;20200101;20200102', sumTillLatestData: true };
     const expected = arrayToAnalytics([
       ['BCD1', 'TO', '20200101', 1],
       ['BCD1', 'TO', '20200102', 3],
@@ -108,10 +116,24 @@ describe('sumPreviousPerPeriod()', () => {
       // [ 'BCD1', 'TO',  '20200102',  2 ],
       ['BCD1', 'TO', '20200103', 3],
     ]);
-    const config = { requestedPeriod: '20200102;20200103' };
+    const config = { requestedPeriod: '20200102;20200103', sumTillLatestData: true };
     const expected = arrayToAnalytics([
       ['BCD1', 'TO', '20200102', 1],
       ['BCD1', 'TO', '20200103', 4],
+    ]);
+    expect(sumPreviousPerPeriod(analytics, config, DAY)).toIncludeSameMembers(expected);
+  });
+
+  it('sum till latest period when sumTillLatestData is disable', () => {
+    const analytics = arrayToAnalytics([
+      ['BCD1', 'TO', '20200101', 1],
+      ['BCD1', 'TO', '20200102', 2],
+      ['BCD1', 'TO', '20200103', 3],
+    ]);
+    const config = { requestedPeriod: '20200105;20200106', sumTillLatestData: false };
+    const expected = arrayToAnalytics([
+      ['BCD1', 'TO', '20200105', 6],
+      ['BCD1', 'TO', '20200106', 6],
     ]);
     expect(sumPreviousPerPeriod(analytics, config, DAY)).toIncludeSameMembers(expected);
   });
@@ -131,7 +153,7 @@ describe('sumPreviousPerPeriod()', () => {
       ['BCD1', 'PG', '2020', 7],
       ['BCD2', 'TO', '2020', 8],
     ]);
-    const config = { requestedPeriod: '2019;2020;2021;2022' };
+    const config = { requestedPeriod: '2019;2020;2021;2022', sumTillLatestData: true };
     const expected = arrayToAnalytics([
       ['BCD1', 'TO', '2019', 9],
       ['BCD2', 'TO', '2019', 2],

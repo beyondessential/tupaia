@@ -37,6 +37,29 @@ export function getSortByKey(key, options) {
   return getSortByExtractedValue(o => o[key], options);
 }
 
+export const orderBy = (array, valueMappers, orders = []) => {
+  const comparators = valueMappers.map((valueMapper, i) => {
+    const mapValue =
+      typeof valueMapper === 'string' ? obj => obj?.[valueMapper] : obj => valueMapper(obj);
+    const order = typeof orders[i] === 'string' ? orders[i].toLowerCase() : 'asc';
+    const compare = order === 'desc' ? compareDesc : compareAsc;
+
+    return (a, b) => compare(mapValue(a), mapValue(b));
+  });
+
+  return array.sort((a, b) => {
+    for (const comparator of comparators) {
+      const result = comparator(a, b);
+      if (result !== 0) {
+        return result;
+      }
+    }
+
+    // No comparator was able to evaluate the items as not equal
+    return 0;
+  });
+};
+
 /**
  * Returns a callback which compares two objects using the provided `function` .
  * Can be used in `Array.prototype.sort` for an array of objects
@@ -213,4 +236,23 @@ export const sortFields = object => {
 export const getUniqueObjects = objects => {
   const jsonStrings = objects.map(o => JSON.stringify(sortFields(o)));
   return getUniqueEntries(jsonStrings).map(JSON.parse);
+};
+
+/**
+ * @param {ObjectCollection} objectCollection
+ */
+export const haveSameFields = (objectCollection, fields) => {
+  const objects = collectionToArray(objectCollection);
+
+  return fields.every(field => {
+    for (let i = 0; i < objects.length; i++) {
+      for (let j = i; j < objects.length; j++) {
+        if (objects[i][field] !== objects[j][field]) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  });
 };
