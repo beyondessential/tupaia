@@ -4,7 +4,7 @@
  */
 
 import xlsx from 'xlsx';
-import { toFileName } from '@tupaia/utils';
+import { toFilename } from '@tupaia/utils';
 import { useTable } from 'react-table';
 import moment from 'moment';
 
@@ -41,7 +41,7 @@ export const useDataTableExport = (columnsData, data, title) => {
     const workbook = { SheetNames: [sheetName], Sheets: { [sheetName]: sheet } };
 
     // Make filename
-    const fileName = title ? toFileName(`export-${title}-${date}.xlsx`) : `export-${date}.xlsx`;
+    const fileName = title ? toFilename(`export-${title}-${date}.xlsx`) : `export-${date}.xlsx`;
 
     // Write file. This will trigger the file download in the browser
     return xlsx.writeFile(workbook, fileName);
