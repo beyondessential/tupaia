@@ -3,11 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import { serverErrorHandler } from '@tupaia/utils';
+import { InternalServerError, RespondingError } from '@tupaia/utils';
 import { Request, Response, NextFunction } from 'express';
 
 export const handleError = (
-  err: Error,
+  err: RespondingError | Error,
   req: Request,
   res: Response,
   next: NextFunction,
@@ -18,5 +18,6 @@ export const handleError = (
     return;
   }
 
-  serverErrorHandler(err, res);
+  const error = 'respond' in err ? err : new InternalServerError(err);
+  error.respond(res);
 };

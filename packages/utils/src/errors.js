@@ -4,6 +4,7 @@
  */
 
 import winston from 'winston';
+import { respond } from './respond';
 
 /**
  * Logged errors print out to the server's logs so that we have a record of all errors. In future
@@ -22,6 +23,8 @@ export class RespondingError {
     this.message = message;
     this.statusCode = statusCode;
     this.extraFields = extraFields;
+    this.respond = res => respond(res, { error: this.message, ...extraFields }, statusCode);
+    logError(this);
   }
 }
 
