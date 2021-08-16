@@ -39,7 +39,7 @@ export const App = ({ user, isBESAdmin }) => {
               <Switch>
                 {route.tabs.map(tab => (
                   <Route key={`${route.to}-${tab.to}`} path={`${route.to}${tab.to}`} exact>
-                    <tab.component getHeaderEl={getHeaderEl} />
+                    <tab.component getHeaderEl={getHeaderEl} isBESAdmin={isBESAdmin} />
                   </Route>
                 ))}
                 <Redirect to={route.to} />

@@ -23,6 +23,7 @@ import {
   FetchHierarchyEntitiesRoute,
   FetchReportPreviewDataRoute,
   SaveDashboardVisualisationRoute,
+  FetchDashboardVisualisationRoute,
 } from '../routes';
 
 const useForwardUnhandledRequestsToMeditrak = (app: Express) => {
@@ -70,9 +71,19 @@ export function createApp() {
       handleWith(FetchReportPreviewDataRoute),
     )
     .post(
-      '/v1/saveDashboardVisualisation',
+      '/v1/dashboardVisualisation',
       verifyBESAdminAccess,
       handleWith(SaveDashboardVisualisationRoute),
+    )
+    .put(
+      '/v1/dashboardVisualisation/:dashboardVisualisationId',
+      verifyBESAdminAccess,
+      handleWith(SaveDashboardVisualisationRoute),
+    )
+    .get(
+      '/v1/dashboardVisualisation/:dashboardVisualisationId',
+      verifyBESAdminAccess,
+      handleWith(FetchDashboardVisualisationRoute),
     )
     .build();
 

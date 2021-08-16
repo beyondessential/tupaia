@@ -4,20 +4,22 @@
  *
  */
 import { useMutation } from 'react-query';
-import { post } from '../api';
+import { post, put } from '../api';
 
-// Todo: Finish Save Button @see https://linear.app/tupaia/issue/MEL-20/save-button
 export const useSaveVisualisation = config =>
   useMutation(
-    ['saveDashboardVisualisation', config],
-    () =>
-      post('saveDashboardVisualisation', {
+    ['dashboardVisualisation', config],
+    () => {
+      if (config.id) {
+        return put(`dashboardVisualisation/${config.id}`, {
+          data: { visualisation: config },
+        });
+      }
+      return post('dashboardVisualisation', {
         data: { visualisation: config },
-      }),
+      });
+    },
     {
-      onSuccess: () => {
-        console.log('save success');
-      },
       throwOnError: true,
     },
   );

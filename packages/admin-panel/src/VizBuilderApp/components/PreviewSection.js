@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiTab from '@material-ui/core/Tab';
 import MuiTabs from '@material-ui/core/Tabs';
-import { Chart, Table } from '@tupaia/ui-components/lib/chart';
+import { Chart } from '@tupaia/ui-components/lib/chart';
 import { FlexSpaceBetween, FetchLoader, DataTable } from '@tupaia/ui-components';
 import { TabPanel } from './TabPanel';
 import { useVizBuilderConfig } from '../vizBuilderConfigStore';

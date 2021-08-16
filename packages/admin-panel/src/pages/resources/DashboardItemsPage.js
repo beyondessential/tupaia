@@ -32,31 +32,62 @@ const FIELDS = [
   },
 ];
 
-const COLUMNS = [
-  ...FIELDS,
-  {
-    Header: 'Edit',
-    type: 'edit',
-    source: 'id',
-    actionConfig: {
-      editEndpoint: 'dashboardItems',
-      fields: [...FIELDS],
+export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin }) => {
+  const extraEditFields = [
+    // ID field for constructing viz-builder path only, not for showing or editing
+    {
+      Header: 'ID',
+      source: 'id',
+      show: false,
     },
-  },
-];
+    {
+      Header: 'Edit using Visualisation Builder',
+      type: 'link',
+      show: isBESAdmin,
+      editConfig: {
+        type: 'link',
+        linkOptions: {
+          path: '/viz-builder/:id',
+          parameters: { id: 'id' },
+        },
+        visibilityCriteria: {
+          legacy: false,
+        },
+      },
+    },
+  ];
 
-export const DashboardItemsPage = ({ getHeaderEl }) => (
-  <ResourcePage
-    title="Dashboard Items"
-    endpoint="dashboardItems"
-    columns={COLUMNS}
-    editConfig={{
-      title: 'Edit Dashboard Item',
-    }}
-    getHeaderEl={getHeaderEl}
-  />
-);
+  const columns = [
+    ...FIELDS,
+    {
+      Header: 'Edit',
+      type: 'edit',
+      source: 'id',
+      actionConfig: {
+        editEndpoint: 'dashboardItems',
+        fields: [...FIELDS, ...extraEditFields],
+      },
+    },
+  ];
+
+  return (
+    <ResourcePage
+      title="Dashboard Items"
+      endpoint="dashboardItems"
+      columns={columns}
+      editConfig={{
+        title: 'Edit Dashboard Item',
+      }}
+      getHeaderEl={getHeaderEl}
+    />
+  );
+};
 
 DashboardItemsPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
+  isBESAdmin: PropTypes.func,
+};
+
+DashboardItemsPage.defaultProps = {
+  isBESAdmin: false,
 };

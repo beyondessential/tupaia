@@ -19,7 +19,7 @@ export const ProfileButton = ({ user, isBESAdmin }) => {
       {inVizBuilder && (
         <ProfileButtonItem to="/dashboard-items">Exit Visualisation Builder</ProfileButtonItem>
       )}
-      <ProfileButtonItem to="logout">Logout</ProfileButtonItem>
+      <ProfileButtonItem to="/logout">Logout</ProfileButtonItem>
     </>
   );
   return <BaseProfileButton user={user} MenuOptions={ProfileLinks} />;

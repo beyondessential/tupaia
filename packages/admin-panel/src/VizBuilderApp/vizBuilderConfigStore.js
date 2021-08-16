@@ -30,6 +30,7 @@ const initialConfigState = {
 
 const SET_PROJECT = 'SET_PROJECT';
 const SET_LOCATION = 'SET_LOCATION';
+const SET_VISUALISATION = 'SET_VISUALISATION';
 const SET_VISUALISATION_VALUE = 'SET_VISUALISATION_VALUE';
 const SET_DATA_CONFIG = 'SET_DATA_CONFIG';
 const SET_FETCH_CONFIG = 'SET_FETCH_CONFIG';
@@ -61,6 +62,14 @@ function configReducer(state, action) {
       return {
         ...state,
         project: value,
+      };
+    }
+    case SET_VISUALISATION: {
+      const { value } = action;
+
+      return {
+        ...state,
+        visualisation: value,
       };
     }
     case SET_VISUALISATION_VALUE: {
@@ -117,6 +126,7 @@ const useConfigStore = () => {
 
   const setLocation = useCallback(value => dispatch({ type: SET_LOCATION, value }), []);
   const setProject = useCallback(value => dispatch({ type: SET_PROJECT, value }), []);
+  const setVisualisation = useCallback(value => dispatch({ type: SET_VISUALISATION, value }), []);
   const setVisualisationValue = useCallback(
     (key, value) => dispatch({ type: SET_VISUALISATION_VALUE, key, value }),
     [],
@@ -136,6 +146,7 @@ const useConfigStore = () => {
     {
       setLocation,
       setProject,
+      setVisualisation,
       setVisualisationValue,
       setDataConfig,
       setFetchConfig,

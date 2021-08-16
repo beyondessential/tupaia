@@ -37,6 +37,7 @@ import {
 } from './dashboardRelations';
 import { DeleteLegacyReport, EditLegacyReport, GETLegacyReports } from './legacyReports';
 import {
+  GETDashboardVisualisations,
   CreateDashboardVisualisation,
   EditDashboardVisualisation,
 } from './dashboardVisualisations';
@@ -167,6 +168,7 @@ export default {
   getDashboards: useRouteHandler(GETDashboards),
   getDashboardItems: useRouteHandler(GETDashboardItems),
   getDashboardRelations: useRouteHandler(GETDashboardRelations),
+  getDashboardVisualisations: useRouteHandler(GETDashboardVisualisations),
   getLegacyReports: useRouteHandler(GETLegacyReports),
   getIndicators: useRouteHandler(BESAdminGETHandler),
   getDataSources: useRouteHandler(GETDataSources),
