@@ -126,12 +126,8 @@ describe('DataBroker', () => {
     });
 
     describe('analytics', () => {
-      const assertServicePulledDataElementsOnce = (
-        service,
-        dataElements,
-        optionsOverride = options,
-      ) =>
-        expect(service.pull).toHaveBeenCalledOnceWith(dataElements, 'dataElement', optionsOverride);
+      const assertServicePulledDataElementsOnce = (service, dataElements) =>
+        expect(service.pull).toHaveBeenCalledOnceWith(dataElements, 'dataElement', options);
 
       it('single code', async () => {
         const dataBroker = new DataBroker();
@@ -140,7 +136,7 @@ describe('DataBroker', () => {
         expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
         assertServicePulledDataElementsOnce(SERVICES.test, [DATA_ELEMENTS.TEST_01]);
         expect(data).toStrictEqual({
-          results: [{ analytics: [{ value: 1 }], aggregationsProcessed: 0 }],
+          results: [{ analytics: [{ value: 1 }], numAggregationsProcessed: 0 }],
           metadata: { dataElementCodeToName: { TEST_01: 'Test element 1' } },
         });
       });
@@ -158,7 +154,7 @@ describe('DataBroker', () => {
           DATA_ELEMENTS.TEST_02,
         ]);
         expect(data).toStrictEqual({
-          results: [{ analytics: [{ value: 1 }, { value: 2 }], aggregationsProcessed: 0 }],
+          results: [{ analytics: [{ value: 1 }, { value: 2 }], numAggregationsProcessed: 0 }],
           metadata: {
             dataElementCodeToName: { TEST_01: 'Test element 1', TEST_02: 'Test element 2' },
           },
@@ -175,15 +171,14 @@ describe('DataBroker', () => {
         expect(createServiceMock).toHaveBeenCalledTimes(2);
         expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'test', dataBroker);
         expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'other', dataBroker);
-        assertServicePulledDataElementsOnce(
-          SERVICES.test,
-          [DATA_ELEMENTS.TEST_01, DATA_ELEMENTS.TEST_02],
-          options,
-        );
-        assertServicePulledDataElementsOnce(SERVICES.other, [DATA_ELEMENTS.OTHER_01], options);
+        assertServicePulledDataElementsOnce(SERVICES.test, [
+          DATA_ELEMENTS.TEST_01,
+          DATA_ELEMENTS.TEST_02,
+        ]);
+        assertServicePulledDataElementsOnce(SERVICES.other, [DATA_ELEMENTS.OTHER_01]);
         expect(data).toStrictEqual({
           results: [
-            { analytics: [{ value: 1 }, { value: 2 }, { value: 3 }], aggregationsProcessed: 0 },
+            { analytics: [{ value: 1 }, { value: 2 }, { value: 3 }], numAggregationsProcessed: 0 },
           ],
           metadata: {
             dataElementCodeToName: {
@@ -197,8 +192,8 @@ describe('DataBroker', () => {
     });
 
     describe('events', () => {
-      const assertServicePulledEventsOnce = (service, dataElements, optionsOverride = options) =>
-        expect(service.pull).toHaveBeenCalledOnceWith(dataElements, 'dataGroup', optionsOverride);
+      const assertServicePulledEventsOnce = (service, dataElements) =>
+        expect(service.pull).toHaveBeenCalledOnceWith(dataElements, 'dataGroup', options);
 
       it('single code', async () => {
         const dataBroker = new DataBroker();
@@ -234,12 +229,8 @@ describe('DataBroker', () => {
         expect(createServiceMock).toHaveBeenCalledTimes(2);
         expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'test', dataBroker);
         expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'other', dataBroker);
-        assertServicePulledEventsOnce(
-          SERVICES.test,
-          [DATA_GROUPS.TEST_01, DATA_GROUPS.TEST_02],
-          options,
-        );
-        assertServicePulledEventsOnce(SERVICES.other, [DATA_GROUPS.OTHER_01], options);
+        assertServicePulledEventsOnce(SERVICES.test, [DATA_GROUPS.TEST_01, DATA_GROUPS.TEST_02]);
+        assertServicePulledEventsOnce(SERVICES.other, [DATA_GROUPS.OTHER_01]);
         expect(data).toStrictEqual([
           { dataValues: { TEST_01: 10 } },
           { dataValues: { TEST_02: 20 } },

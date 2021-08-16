@@ -53,7 +53,7 @@ export class TupaiaDataApi {
   async fetchAnalytics(optionsInput) {
     await validateAnalyticsOptions(optionsInput);
     const options = sanitiseFetchDataOptions(optionsInput);
-    const { analytics, aggregationsProcessed } = await new AnalyticsFetchQuery(
+    const { analytics, numAggregationsProcessed } = await new AnalyticsFetchQuery(
       this.database,
       options,
     ).fetch();
@@ -64,7 +64,7 @@ export class TupaiaDataApi {
         period,
         value: sanitizeDataValue(value, type),
       })),
-      aggregationsProcessed,
+      numAggregationsProcessed,
     };
   }
 

@@ -107,26 +107,33 @@ export class DataBroker {
   };
 
   mergeAnalytics = (target = { results: [], metadata: {} }, source) => {
-    const sourceAggregationsProcessed = source.aggregationsProcessed || 0;
+    const sourceNumAggregationsProcessed = source.numAggregationsProcessed || 0;
     const targetResults = target.results;
-    const targetResultIndex = targetResults.findIndex(
-      ({ aggregationsProcessed }) => aggregationsProcessed === sourceAggregationsProcessed,
-    );
-    const targetResult = targetResultIndex >= 0 ? targetResults[targetResultIndex] : undefined;
 
-    const newResults = targetResult
-      ? targetResults
-          .slice(0, targetResultIndex)
-          .concat([
-            {
-              ...targetResult,
-              analytics: targetResult.analytics.concat(source.results),
-            },
-          ])
-          .concat(targetResults.slice(targetResultIndex + 1, targetResults.length - 1))
-      : targetResults.concat([
-          { analytics: source.results, aggregationsProcessed: sourceAggregationsProcessed },
-        ]);
+    // Result analytics can be combined if they've processed aggregations to the same level
+    const matchingResultIndex = targetResults.findIndex(
+      ({ numAggregationsProcessed }) => numAggregationsProcessed === sourceNumAggregationsProcessed,
+    );
+
+    let newResults;
+    if (matchingResultIndex >= 0) {
+      // Found a matching result, combine the matching result analytics and the new analytics
+      const matchingResult = targetResults[matchingResultIndex];
+      newResults = targetResults
+        .slice(0, matchingResultIndex)
+        .concat([
+          {
+            ...matchingResult,
+            analytics: matchingResult.analytics.concat(source.results),
+          },
+        ])
+        .concat(targetResults.slice(matchingResultIndex + 1, targetResults.length - 1));
+    } else {
+      // No matching result, just append this result to previous results
+      newResults = targetResults.concat([
+        { analytics: source.results, numAggregationsProcessed: sourceNumAggregationsProcessed },
+      ]);
+    }
 
     return {
       results: newResults,

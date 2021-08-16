@@ -16,7 +16,7 @@ export const RESPONSE_BY_SOURCE_TYPE = {
           { dataElement: 'POP01', period: '20200214', value: 1 },
           { dataElement: 'POP01', period: '20200214', value: 2 },
         ],
-        aggregationsProcessed: 0,
+        numAggregationsProcessed: 0,
       },
     ],
     metadata: {},

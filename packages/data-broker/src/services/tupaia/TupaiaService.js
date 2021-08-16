@@ -39,7 +39,7 @@ export class TupaiaService extends Service {
 
   async pullAnalytics(dataSources, options) {
     const dataElementCodes = dataSources.map(({ code }) => code);
-    const { analytics, aggregationsProcessed } = await this.api.fetchAnalytics({
+    const { analytics, numAggregationsProcessed } = await this.api.fetchAnalytics({
       ...translateOptionsForApi(options),
       dataElementCodes,
     });
@@ -50,7 +50,7 @@ export class TupaiaService extends Service {
       metadata: {
         dataElementCodeToName: reduceToDictionary(dataElements, 'code', 'name'),
       },
-      aggregationsProcessed,
+      numAggregationsProcessed,
     };
   }
 

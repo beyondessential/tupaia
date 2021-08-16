@@ -80,14 +80,14 @@ describe('TupaiaService', () => {
       });
 
       describe('data pulling', () => {
-        it('returns a { results, metadata, aggregationsProcessed } response', async () => {
+        it('returns a { results, metadata, numAggregationsProcessed } response', async () => {
           const response = await tupaiaService.pull(
             [DATA_SOURCES.POP01, DATA_SOURCES.POP02],
             'dataElement',
           );
           expect(response).toHaveProperty('results');
           expect(response).toHaveProperty('metadata');
-          expect(response).toHaveProperty('aggregationsProcessed');
+          expect(response).toHaveProperty('numAggregationsProcessed');
         });
 
         it('returns the analytics API response in the `results` field', () =>
@@ -105,10 +105,13 @@ describe('TupaiaService', () => {
             },
           }));
 
-        it('returns the analytics API aggregations processed in the `aggregationsProcessed` field', () =>
+        it('returns the analytics API aggregations processed in the `numAggregationsProcessed` field', () =>
           expect(
             tupaiaService.pull([DATA_SOURCES.POP01, DATA_SOURCES.POP02], 'dataElement'),
-          ).resolves.toHaveProperty('aggregationsProcessed', ANALYTICS.aggregationsProcessed));
+          ).resolves.toHaveProperty(
+            'numAggregationsProcessed',
+            ANALYTICS.numAggregationsProcessed,
+          ));
       });
     });
 

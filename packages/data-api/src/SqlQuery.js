@@ -9,10 +9,10 @@ export class SqlQuery {
   static values = rows =>
     `VALUES (${rows.map(values => values.map(() => `?`).join(',')).join('), (')})`;
 
-  static innerJoin = (codes, columnName) => `
+  static innerJoin = (baseTable, columnName, values) => `
     INNER JOIN (
-      ${SqlQuery.values(codes.map(c => [c]))}
-    ) ${columnName}s(code) ON ${columnName}s.code = analytics.${columnName}
+      ${SqlQuery.values(values.map(c => [c]))}
+    ) ${columnName}s(code) ON ${columnName}s.code = ${baseTable}.${columnName}
   `;
 
   constructor(baseQuery, baseParameters = []) {

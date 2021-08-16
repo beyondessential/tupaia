@@ -79,7 +79,7 @@ export const testFetchAnalyticsAggregations = assertCorrectResponse => () => {
     );
   });
 
-  it('should not perform any aggregation if the supported aggregation is not the first aggregation', async () => {
+  it('should not perform any aggregation if the first aggregation is not supported', async () => {
     await assertCorrectResponse(
       {
         organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
