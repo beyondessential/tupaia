@@ -32,9 +32,9 @@ const generateIndicator = (code, dataElement, target) => ({
   },
 });
 
-const generateReport = (dataElement, target) => ({
+const generateReport = dataElements => ({
   fetch: {
-    dataElements: target ? [dataElement, target] : [dataElement],
+    dataElements: Object.values(dataElements),
     aggregations: ['FINAL_EACH_YEAR'],
   },
   transform: [
@@ -51,8 +51,11 @@ const generateReport = (dataElement, target) => ({
     },
     {
       transform: 'select',
-      "'Current'": `$row.${dataElement}/100`,
-      "'Target'": target ? `$row.${target}` : 'undefined',
+      "'Male'": `$row.${dataElements.male}/100`,
+      "'Female'": `$row.${dataElements.female}/100`,
+      "'GPI'": `$row.${dataElements.female}/$row.${dataElements.male}`,
+      "'Total'": `$row.${dataElements.total}/100`,
+      "'Target'": dataElements.target ? `$row.${dataElements.target}` : 'undefined',
       '...': ['timestamp'],
     },
   ],
@@ -60,42 +63,108 @@ const generateReport = (dataElement, target) => ({
 
 const FRONT_END_CONFIG = {
   type: 'chart',
-  chartType: 'line',
+  chartType: 'composed',
   xName: 'Year',
-  yName: 'Rate',
   periodGranularity: 'year',
-  valueType: 'percentage',
   chartConfig: {
-    Current: {
+    Male: {
+      chartType: 'line',
       color: '#f44336',
+      valueType: 'percentage',
+      yName: 'Rate (%)',
+    },
+    Female: {
+      chartType: 'line',
+      color: '#2196f3',
+      valueType: 'percentage',
+    },
+    Total: {
+      chartType: 'line',
+      color: '#9c27b0',
+      valueType: 'percentage',
+    },
+    GPI: {
+      chartType: 'line',
+      color: '#ffeb3b',
+      yAxisOrientation: 'right',
+      yName: 'GPI',
     },
     Target: {
+      chartType: 'line',
       color: '#4caf50',
+      valueType: 'percentage',
     },
   },
 };
 
+const FRONT_END_CONFIG_NO_TARGET = {
+  type: 'chart',
+  chartType: 'composed',
+  xName: 'Year',
+  periodGranularity: 'year',
+  chartConfig: {
+    Male: {
+      chartType: 'line',
+      color: '#f44336',
+      valueType: 'percentage',
+      yName: 'Rate (%)',
+    },
+    Female: {
+      chartType: 'line',
+      color: '#2196f3',
+      valueType: 'percentage',
+    },
+    Total: {
+      chartType: 'line',
+      color: '#9c27b0',
+      valueType: 'percentage',
+    },
+    GPI: {
+      chartType: 'line',
+      color: '#ffeb3b',
+      yAxisOrientation: 'right',
+      yName: 'GPI',
+    },
+  },
+};
+
+const CONFIG_0_2_DATA_ELEMENTS = {
+  male: 'er_district_ece_0_2_m',
+  female: 'er_district_ece_0_2_f',
+  total: 'er_district_ece_0_2_t',
+  target: 'er_target_ece_0_2_t',
+};
 const CONFIG_0_2_REPORT = {
   code: 'LESMIS_enrolment_ece_0_2_target',
   indicator: generateIndicator('er_target_ece_0_2_t', 'er_district_ece_0_2_t', '0.07'),
-  reportConfig: generateReport('er_district_ece_0_2_t', 'er_target_ece_0_2_t'),
+  reportConfig: generateReport(CONFIG_0_2_DATA_ELEMENTS),
   frontEndConfig: { ...FRONT_END_CONFIG, name: 'Enrolment rate of 0-2 year old students in ECE' },
 };
 
+const CONFIG_3_4_DATA_ELEMENTS = {
+  male: 'er_district_ece_3_4_m',
+  female: 'er_district_ece_3_4_f',
+  total: 'er_district_ece_3_4_t',
+};
 const CONFIG_3_4_REPORT = {
   code: 'LESMIS_enrolment_ece_3_4_target',
-  reportConfig: generateReport('er_district_ece_3_4_t'),
+  reportConfig: generateReport(CONFIG_3_4_DATA_ELEMENTS),
   frontEndConfig: {
-    ...FRONT_END_CONFIG,
+    ...FRONT_END_CONFIG_NO_TARGET,
     name: 'Enrolment rate of 3-4 year old students in ECE',
-    chartConfig: { Current: { color: '#f44336' } }, // Remove target from legend, no 2025 target for 3 - 4
   },
 };
 
+const CONFIG_5_DATA_ELEMENTS = {
+  male: 'er_district_ece_5_m',
+  female: 'er_district_ece_5_f',
+  total: 'er_district_ece_5_t',
+  target: 'er_target_ece_5_t',
+};
 const CONFIG_5_REPORT = {
   code: 'LESMIS_enrolment_ece_5_target',
   indicator: generateIndicator('er_target_ece_5_t', 'er_district_ece_5_t', '0.86'),
-  reportConfig: generateReport('er_district_ece_5_t', 'er_target_ece_5_t'),
+  reportConfig: generateReport(CONFIG_5_DATA_ELEMENTS),
   frontEndConfig: { ...FRONT_END_CONFIG, name: 'Enrolment rate of 5 year old students in ECE' },
 };
 
