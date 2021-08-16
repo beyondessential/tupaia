@@ -10,29 +10,31 @@ import { respond } from './respond';
  * Logged errors print out to the server's logs so that we have a record of all errors. In future
  * this may change to saving the error info to the database, notifying the admin, or similar
  */
-export const logError = error => {
-  winston.error(error.message);
+class LoggedError extends Error {
+  constructor(message) {
+    super(message);
+    this.message = message;
+    winston.error(this.message);
+  }
 }
 
 /**
  * Responding errors are able to respond to the client's request, informing them of the error with
  * the appropriate http status code
  */
-export class RespondingError {
+export class RespondingError extends LoggedError {
   constructor(message, statusCode, extraFields = {}) {
-    this.message = message;
+    super(message);
     this.statusCode = statusCode;
     this.extraFields = extraFields;
     this.respond = res => respond(res, { error: this.message, ...extraFields }, statusCode);
-    logError(this);
   }
 }
 
-export class HttpError {
+export class HttpError extends LoggedError {
   constructor(response) {
-    this.message = `Attempt to post data returned ${response.status}: ${response.statusText}`;
+    super(`Attempt to post data returned ${response.status}: ${response.statusText}`);
     this.status = response.status;
-    logError(this);
   }
 }
 
