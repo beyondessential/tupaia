@@ -41,7 +41,10 @@ const getBlankWorkbook = () => ({ SheetNames: [], Sheets: {} });
 
 /**
  * Exports excel documents containing the relevant survey responses, splitting into multiple files
- * and zipping if too large
+ * and zipping if too large.
+ *
+ * Note that this is a large function that is broken up into many internal helper functions, a bit
+ * like a class. The main body of the function is right at the bottom.
  */
 export async function exportResponsesToFile(
   models,
@@ -263,30 +266,33 @@ export async function exportResponsesToFile(
     addDataToSheet(survey.name, exportData);
   };
 
-  for (let surveyIndex = 0; surveyIndex < surveys.length; surveyIndex++) {
-    const currentSurvey = surveys[surveyIndex];
-    if (!checkAccessToSurvey(currentSurvey)) {
-      const exportData = [[`You do not have export access to ${currentSurvey.name}`]];
-      addDataToSheet(currentSurvey.name, exportData);
-      continue;
-    }
+  /** Main body of the function below this point, everything above is helper functions */
 
+  const accessBySurveyIndex = await Promise.all(surveys.map(checkAccessToSurvey));
+  const surveysWithoutAccess = surveys.filter((s, i) => !accessBySurveyIndex[i]);
+  surveysWithoutAccess.forEach(survey => {
+    const exportData = [[`You do not have export access to ${survey.name}`]];
+    addDataToSheet(survey.name, exportData);
+  });
+
+  const surveysWithAccess = surveys.filter((s, i) => accessBySurveyIndex[i]);
+  for (const survey of surveysWithAccess) {
     // Get the current set of questions, in the order they appear in the survey
-    const questions = await findQuestionsInSurvey(models, currentSurvey.id);
+    const questions = await findQuestionsInSurvey(models, survey.id);
 
     if (surveyResponse) {
       const entity = await models.entity.findById(surveyResponse.entity_id);
-      await exportResponses([surveyResponse], { [entity.id]: entity }, currentSurvey, questions);
+      await exportResponses([surveyResponse], { [entity.id]: entity }, survey, questions);
     } else {
-      const surveyResponses = await findResponsesForSurvey(currentSurvey);
+      const surveyResponses = await findResponsesForSurvey(survey);
       const entitiesById = keyBy(entities, 'id');
       if (surveyResponses.length > MAX_RESPONSES_PER_FILE) {
         for (const batchOfResponses of chunk(surveyResponses, MAX_RESPONSES_PER_FILE)) {
-          await exportResponses(batchOfResponses, entitiesById, currentSurvey, questions);
+          await exportResponses(batchOfResponses, entitiesById, survey, questions);
           saveCurrentWorkbook();
         }
       } else {
-        await exportResponses(surveyResponses, entitiesById, currentSurvey, questions);
+        await exportResponses(surveyResponses, entitiesById, survey, questions);
       }
     }
   }
