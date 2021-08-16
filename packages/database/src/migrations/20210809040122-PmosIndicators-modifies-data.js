@@ -44,7 +44,7 @@ const MAPPINGS = [
   ['Cx_Quinquefasciatus', ['PMOS_AM47', 'PMOS_AM48']],
   ['Cx_Sitiens', ['PMOS_AM49', 'PMOS_AM50']],
   ['Mn_Uniformis', ['PMOS_AM51', 'PMOS_AM52']],
-  ['Anopheles', ['An_Farauti', 'An_Koliensis', 'An_Punctulatus']],
+  ['Anopheles', ['PMOS_An_Farauti', 'PMOS_An_Koliensis', 'PMOS_An_Punctulatus']],
   [
     'Aedes',
     [
