@@ -7,7 +7,7 @@ import { groupBy } from 'lodash';
 
 import { getUniqueEntries, mapKeys, stringifyQuery, toArray, yup, yupUtils } from '@tupaia/utils';
 import config from '../../config.json';
-import { buildUrlSchema, buildUrlsUsingConfig, sortUrls } from './helpers';
+import { buildUrlSchema, buildUrlsUsingConfig, buildVizPeriod, sortUrls } from './helpers';
 import { MapOverlayFilter } from './VisualisationFilter';
 
 const { oneOrArrayOf } = yupUtils;
@@ -19,6 +19,8 @@ const urlSchema = buildUrlSchema({
     id: oneOrArrayOf(yup.string().required()),
     project: yup.string().required(),
     orgUnit: yup.string().required(),
+    startDate: yup.string(),
+    endDate: yup.string(),
   },
 });
 
@@ -33,9 +35,12 @@ const stringifyUrl = url => {
     return url;
   }
 
-  const { id, project, orgUnit } = url;
+  const { id, project, orgUnit, startDate, endDate, overlayPeriod } = url;
   const path = [project, orgUnit].map(encodeURIComponent).join('/');
-  const queryParams = { overlay: toArray(id).join(',') };
+  const queryParams = {
+    overlay: toArray(id).join(','),
+    overlayPeriod: overlayPeriod || buildVizPeriod(startDate, endDate),
+  };
 
   return stringifyQuery('', path, queryParams);
 };
@@ -58,6 +63,7 @@ const parseUrl = url => {
     id: searchParams.get('overlay'),
     project,
     orgUnit,
+    overlayPeriod: searchParams.get('overlayPeriod'),
   };
 };
 

@@ -13,7 +13,11 @@ import {
   ValidationError,
   ObjectValidator,
 } from '@tupaia/utils';
-import { deleteScreensForSurvey, deleteOrphanQuestions } from '../../dataAccessors';
+import {
+  deleteScreensForSurvey,
+  deleteOrphanQuestions,
+  validateSurveyFields,
+} from '../../dataAccessors';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../database/models/Answer';
 import {
   splitStringOnComma,
@@ -161,6 +165,16 @@ export async function importSurveys(req, res) {
 
         await validateSurveyServiceType(transactingModels, surveyCode, serviceType);
 
+        try {
+          await validateSurveyFields(transactingModels, {
+            code: surveyCode,
+            serviceType,
+            periodGranularity: req.query.periodGranularity,
+          });
+        } catch (error) {
+          throw new ImportValidationError(error.message);
+        }
+
         const dataGroup = await updateOrCreateDataGroup(transactingModels, {
           surveyCode,
           serviceType,
@@ -197,7 +211,6 @@ export async function importSurveys(req, res) {
           fieldsToForceUpdate.country_ids = getArrayQueryParameter(req.query.countryIds);
         }
         if (surveyGroup) {
-          // Set the survey group this survey is attached to
           fieldsToForceUpdate.survey_group_id = surveyGroup.id;
         }
         if (req.query.permissionGroup) {
@@ -205,8 +218,10 @@ export async function importSurveys(req, res) {
           fieldsToForceUpdate.permission_group_id = permissionGroup.id;
         }
         if (req.query.surveyCode) {
-          // Set or update the code for this survey
           fieldsToForceUpdate.code = req.query.surveyCode;
+        }
+        if (req.query.periodGranularity) {
+          fieldsToForceUpdate.period_granularity = req.query.periodGranularity;
         }
         // Update the survey based on the fields to force update
         if (Object.keys(fieldsToForceUpdate).length > 0) {

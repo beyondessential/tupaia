@@ -7,13 +7,15 @@ import {
   filterValues,
   flattenToObject,
   getKeysSortedByValues,
+  getSortByKey,
   getUniqueObjects,
+  haveSameFields,
   mapKeys,
   mapValues,
-  reduceToDictionary,
+  orderBy,
   reduceToArrayDictionary,
+  reduceToDictionary,
   reduceToSet,
-  getSortByKey,
   stripFields,
 } from '../object';
 
@@ -179,6 +181,49 @@ describe('object', () => {
     it('should default to ASC direction for `null` options', () => {
       const sortByValue = getSortByKey('value', null);
       assertSortingCorrectness(sortByValue, [two, one], [one, two]);
+    });
+  });
+
+  describe('orderBy', () => {
+    const one = { name: 'one', value: 1, stringValue: '1', id: '000a' };
+    const two = { name: 'two', value: 2, stringValue: '2', id: '000b' };
+    const five = { name: 'five', value: 5, stringValue: '5', id: '000c' };
+    const twenty = { name: 'twenty', value: 20, stringValue: '20', id: '000d' };
+    const hundredA = { name: 'hundred', value: 100, stringValue: '100', id: '000e' };
+    const hundredB = { name: 'hundred', value: 100, stringKey: '100', id: '000f' };
+
+    const testData = [
+      ['empty array', [[], [x => x]], []],
+      ['accepts functions as value mappers', [[two, one], [x => x.id]], [one, two]],
+      ['accepts strings as value mappers', [[two, one], ['value']], [one, two]],
+      [
+        'retains the existing order for items that are evaluated as equal',
+        [[hundredB, one, hundredA], [x => x.value]],
+        [one, hundredB, hundredA],
+      ],
+      [
+        'allows orders to be specified for each mapper',
+        [
+          [hundredB, five, hundredA, two],
+          ['name', 'id'],
+          ['asc', 'desc'],
+        ],
+        [five, hundredB, hundredA, two],
+      ],
+      [
+        'uses "asc" order by default',
+        [[hundredB, five, hundredA, two], ['name', 'id'], ['asc']],
+        [five, hundredA, hundredB, two],
+      ],
+      [
+        "uses natural order ('1' before '20' before '100')",
+        [[one, hundredA, twenty], ['stringValue']],
+        [one, twenty, hundredA],
+      ],
+    ];
+
+    it.each(testData)('%s', (_, [array, valueMappers, orders], expected) => {
+      expect(orderBy(array, valueMappers, orders)).toStrictEqual(expected);
     });
   });
 
@@ -495,6 +540,66 @@ describe('object', () => {
 
     it.each(testData)('%s', (_, objects, expected) => {
       expect(getUniqueObjects(objects)).toStrictEqual(expected);
+    });
+  });
+
+  describe('have same fields', () => {
+    describe('returns `true` if all objects have the same values for all the specified fields', () => {
+      const testData = [
+        ['objects with same values, empty fields', [{ a: 1 }, { a: 1 }], []],
+        ['objects with same values for a field', [{ a: 1 }, { a: 1 }], ['a']],
+        [
+          'objects with same values for fields (multiple)',
+          [
+            { a: 1, b: 2, c: 3 },
+            { a: 1, b: 2, c: 3 },
+            { a: 1, b: 2, c: 3 },
+          ],
+          ['a', 'b', 'c'],
+        ],
+        ['objects with different values, empty fields', [{ a: 1 }, { a: 2 }], []],
+        ['objects with different values, non existing field', [{ a: 1 }, { a: 2 }], ['b']],
+        [
+          'objects with different values for a non specified field',
+          [
+            { a: 1, b: 2 },
+            { a: 1, b: 'different' },
+          ],
+          ['a'],
+        ],
+      ];
+
+      it.each(testData)('%s', (_, objectCollection, fields) => {
+        expect(haveSameFields(objectCollection, fields)).toBe(true);
+      });
+    });
+
+    describe('returns `false` if an object has a different value for any of the specified fields', () => {
+      const testData = [
+        ['objects with different values for a field', [{ a: 1 }, { a: 2 }], ['a']],
+        [
+          'multiple objects with just one different value',
+          [
+            { a: 1, b: 2, c: 3 },
+            { a: 1, b: 2, c: 3 },
+            { a: 1, b: 2, c: 'different' },
+          ],
+          ['a', 'b', 'c'],
+        ],
+        [
+          'multiple objects with just one strictly different value',
+          [
+            { a: 1, b: 2, c: 3 },
+            { a: 1, b: 2, c: 3 },
+            { a: 1, b: 2, c: '3' },
+          ],
+          ['a', 'b', 'c'],
+        ],
+      ];
+
+      it.each(testData)('%s', (_, objectCollection, fields) => {
+        expect(haveSameFields(objectCollection, fields)).toBe(false);
+      });
     });
   });
 });

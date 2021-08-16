@@ -9,9 +9,11 @@ import { TYPES } from '../types';
 
 const DATA_ELEMENT = 'dataElement';
 const DATA_GROUP = 'dataGroup';
+const SYNC_GROUP = 'syncGroup';
 const DATA_SOURCE_TYPES = {
   DATA_ELEMENT,
   DATA_GROUP,
+  SYNC_GROUP,
 };
 
 const SERVICE_TYPES = {
