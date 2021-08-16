@@ -245,6 +245,7 @@ const FRONT_END_CONFIG = {
   name: 'ESSDP List Summary',
   type: 'list',
   valueType: 'color',
+  periodGranularity: 'year',
   drillDown: {
     itemCodeByEntry: {
       ECETarget0_2: 'LESMIS_enrolment_ece_0_2_target',
