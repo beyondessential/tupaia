@@ -125,6 +125,7 @@ const DistrictView = ({ vitals }) => (
     <MuiBox mt={2}>
       <SubHeading variant="h4">Province Details</SubHeading>
       <FlexStart mt={1} mb={4}>
+        <EntityVitalsItem name="Name of Province" value={vitals.parentProvince?.name} mr={4} />
         <EntityVitalsItem name="Province Code" value={vitals.parentProvince?.code} mr={4} />
         <EntityVitalsItem
           name="Province Population"
@@ -162,6 +163,7 @@ const SchoolView = ({ vitals }) => (
     <MuiBox mt={2}>
       <SubHeading variant="h4">District Details</SubHeading>
       <FlexStart mt={1} mb={4}>
+        <EntityVitalsItem name="Name of District" value={vitals.parentDistrict?.name} mr={4} />
         <EntityVitalsItem
           name="District Population"
           value={vitals.parentDistrict?.Population?.toLocaleString()}
