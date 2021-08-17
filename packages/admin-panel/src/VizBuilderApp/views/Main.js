@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Prompt, useParams } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import { useBeforeunload } from 'react-beforeunload';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -53,6 +53,10 @@ export const Main = () => {
       setVisualisationLoaded(true);
     }
   }, [visualisation]);
+
+  useBeforeunload(event => {
+    event.preventDefault();
+  });
 
   // Show error if failed to load an existing visualisation
   if (visualisationId && error) {

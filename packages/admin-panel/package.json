@@ -55,6 +55,7 @@
     "query-string": "^5.1.1",
     "react": "^16.13.1",
     "react-autobind": "^1.0.6",
+    "react-beforeunload": "^2.5.1",
     "react-datepicker": "^1.6.0",
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.8.3",
