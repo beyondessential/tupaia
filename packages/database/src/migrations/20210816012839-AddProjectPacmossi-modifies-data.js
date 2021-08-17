@@ -77,7 +77,7 @@ exports.up = async function (db) {
     sort_order: 16,
     image_url: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/PacMOSSI_Background.JPG',
     default_measure: '126,171',
-    user_groups: `{${userGroups[0]}}`,
+    user_groups: `{${userGroups[0]}, ${userGroups[1]}}`,
     logo_url: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/PacMossi_Logo.jpg',
     entity_id: await codeToId(db, 'entity', projectCode),
     entity_hierarchy_id: await hierarchyNameToId(db, projectCode),
