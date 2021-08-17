@@ -19,6 +19,7 @@ import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../../../dat
 import { hasBESAdminAccess } from '../../../permissions';
 import { getExportPathForUser } from '../getExportPathForUser';
 import { zipMultipleFiles } from '../zipMultipleFiles';
+import groupBy from 'lodash.groupby';
 
 const FILE_PREFIX = 'survey_response_export';
 const MAX_RESPONSES_PER_FILE = 10000; // exporting too many responses in one file ends up out of memory
@@ -64,6 +65,12 @@ export async function exportResponsesToFile(
   },
 ) {
   const exportDate = Date.now();
+  const entitiesById = keyBy(entities, 'id');
+  const infoColumns = easyReadingMode
+    ? getEasyReadingInfoColumns(startDate, endDate)
+    : INFO_COLUMNS;
+  const infoColumnKeys = Object.keys(infoColumns);
+  const infoColumnHeaders = Object.values(infoColumns);
   const files = [];
   let currentWorkbook = getBlankWorkbook();
 
@@ -84,12 +91,6 @@ export async function exportResponsesToFile(
     currentWorkbook = getBlankWorkbook(); // reset current workbook
     return filePath;
   };
-
-  const infoColumns = easyReadingMode
-    ? getEasyReadingInfoColumns(startDate, endDate)
-    : INFO_COLUMNS;
-  const infoColumnKeys = Object.keys(infoColumns);
-  const infoColumnHeaders = Object.values(infoColumns);
 
   // get a deep cloned base export to add data to, e.g. something like:
   // [
@@ -125,27 +126,37 @@ export async function exportResponsesToFile(
     return accessPolicy.allows(country.code, permissionGroup.name);
   };
 
-  const findResponsesForSurvey = async survey => {
-    const surveyResponseFindConditions = {
-      survey_id: survey.id,
-    };
+  const getDataTimeCondition = () => {
     if (startDate && endDate) {
-      surveyResponseFindConditions.data_time = {
+      return {
         comparisonType: 'whereBetween',
         args: [
           [new Date(moment(startDate).startOf('day')), new Date(moment(endDate).endOf('day'))],
         ],
       };
-    } else if (startDate) {
-      surveyResponseFindConditions.data_time = {
+    }
+    if (startDate) {
+      return {
         comparator: '>=',
         comparisonValue: new Date(moment(startDate).startOf('day')),
       };
-    } else if (endDate) {
-      surveyResponseFindConditions.data_time = {
+    }
+    if (endDate) {
+      return {
         comparator: '<=',
         comparisonValue: new Date(moment(endDate).endOf('day')),
       };
+    }
+    return null;
+  };
+
+  const findResponsesForSurvey = async survey => {
+    const surveyResponseFindConditions = {
+      survey_id: survey.id,
+    };
+    const dataTimeCondition = getDataTimeCondition();
+    if (dataTimeCondition) {
+      surveyResponseFindConditions.data_time = dataTimeCondition;
     }
 
     const allEntityIds = entities.map(entity => entity.id);
@@ -162,7 +173,7 @@ export async function exportResponsesToFile(
     );
   };
 
-  const getMetadataCellsForResponse = (response, entitiesById) => {
+  const getMetadataCellsForResponse = response => {
     const entity = entitiesById[response.entity_id];
 
     const idCell = easyReadingMode ? undefined : response.id;
@@ -172,7 +183,7 @@ export async function exportResponsesToFile(
     return [idCell, entityCodeCell, responseNameCell, dateCell];
   };
 
-  const getExportDataForResponses = async (surveyResponses, entitiesById, survey, questions) => {
+  const getExportDataForResponses = async (surveyResponses, survey, questions) => {
     const exportData = getBaseExport();
 
     // If there is no data, add a message at the top
@@ -180,12 +191,12 @@ export async function exportResponsesToFile(
       exportData.unshift([
         `No survey responses for ${survey.name} ${getExportDatesString(startDate, endDate)}`,
       ]);
-      return exportData; // todo write to file
+      return exportData;
     }
 
     // Set up metadata cells at the top of each survey response column
     surveyResponses.forEach((response, responseIndex) => {
-      const metadataCells = getMetadataCellsForResponse(response, entitiesById);
+      const metadataCells = getMetadataCellsForResponse(response);
       const exportColumn = infoColumnKeys.length + responseIndex;
       metadataCells.forEach((content, index) => {
         exportData[index][exportColumn] = content;
@@ -205,9 +216,7 @@ export async function exportResponsesToFile(
     const allQuestionIds = getUniqueEntries(answers.map(a => a['question.id']).flat());
     const validQuestionIds = questions.map(q => q.id);
     const outdatedQuestionIds = allQuestionIds.filter(id => !validQuestionIds.includes(id));
-    const outdatedQuestions = await Promise.all(
-      outdatedQuestionIds.map(async questionId => models.question.findById(questionId)),
-    );
+    const outdatedQuestions = await models.question.find({ id: outdatedQuestionIds });
     const allQuestions = [...questions, ...outdatedQuestions];
 
     // Add title
@@ -233,13 +242,11 @@ export async function exportResponsesToFile(
     });
 
     // Add the answers on the right columns to the exportData
-    const questionIdToIndex = questionsForExport.reduce(
-      (dict, question, index) => ({ ...dict, [question.id]: index }),
-      {},
+    const questionIdToIndex = Object.fromEntries(
+      questionsForExport.map((question, index) => [question.id, index]),
     );
-    const responseIdToIndex = surveyResponses.reduce(
-      (dict, response, index) => ({ ...dict, [response.id]: index }),
-      {},
+    const responseIdToIndex = Object.fromEntries(
+      surveyResponses.map((response, index) => [response.id, index]),
     );
     answers.forEach(answer => {
       const surveyResponseIndex = responseIdToIndex[answer['survey_response.id']];
@@ -256,43 +263,39 @@ export async function exportResponsesToFile(
     return exportData;
   };
 
-  const exportResponses = async (surveyResponses, entitiesById, survey, questions) => {
-    const exportData = await getExportDataForResponses(
-      surveyResponses,
-      entitiesById,
-      survey,
-      questions,
-    );
+  const addResponsesToSheet = async (surveyResponses, survey, questions) => {
+    const exportData = await getExportDataForResponses(surveyResponses, survey, questions);
     addDataToSheet(survey.name, exportData);
   };
 
   /** Main body of the function below this point, everything above is helper functions */
 
-  const accessBySurveyIndex = await Promise.all(surveys.map(checkAccessToSurvey));
-  const surveysWithoutAccess = surveys.filter((s, i) => !accessBySurveyIndex[i]);
-  surveysWithoutAccess.forEach(survey => {
+  const surveysWithAccessStatus = await Promise.all(
+    surveys.map(async s => ({ ...s, accessible: await checkAccessToSurvey(s) })),
+  );
+  const surveysByAccessStatus = groupBy(surveysWithAccessStatus, 'accessible');
+  surveysByAccessStatus[false]?.forEach(survey => {
     const exportData = [[`You do not have export access to ${survey.name}`]];
     addDataToSheet(survey.name, exportData);
   });
 
-  const surveysWithAccess = surveys.filter((s, i) => accessBySurveyIndex[i]);
-  for (const survey of surveysWithAccess) {
+  for (const survey of surveysByAccessStatus[true] || []) {
     // Get the current set of questions, in the order they appear in the survey
     const questions = await findQuestionsInSurvey(models, survey.id);
 
     if (surveyResponse) {
       const entity = await models.entity.findById(surveyResponse.entity_id);
-      await exportResponses([surveyResponse], { [entity.id]: entity }, survey, questions);
+      await addResponsesToSheet([surveyResponse], { [entity.id]: entity }, survey, questions);
     } else {
       const surveyResponses = await findResponsesForSurvey(survey);
-      const entitiesById = keyBy(entities, 'id');
-      if (surveyResponses.length > MAX_RESPONSES_PER_FILE) {
-        for (const batchOfResponses of chunk(surveyResponses, MAX_RESPONSES_PER_FILE)) {
-          await exportResponses(batchOfResponses, entitiesById, survey, questions);
+      const responseBatches = chunk(surveyResponses, MAX_RESPONSES_PER_FILE);
+      if (responseBatches.length > 1) {
+        for (const batchOfResponses of responseBatches) {
+          await addResponsesToSheet(batchOfResponses, survey, questions);
           saveCurrentWorkbook();
         }
       } else {
-        await exportResponses(surveyResponses, entitiesById, survey, questions);
+        await addResponsesToSheet(surveyResponses, survey, questions);
       }
     }
   }
