@@ -1,6 +1,6 @@
 {
   "name": "@beyondessential/tupaia-api-client",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "API client for connecting to Tupaia APIs",
   "main": "dist/index.js",
   "types": "./dist/**/**.d.ts",
