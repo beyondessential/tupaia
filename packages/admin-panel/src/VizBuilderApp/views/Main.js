@@ -82,7 +82,6 @@ export const Main = () => {
           <PreviewSection enabled={enabled} setEnabled={setEnabled} />
         </RightCol>
       </Container>
-      <Prompt message="Are you sure you want to exit the Viz Builder? Your options will not be saved so make sure you have exported your configuration." />
     </>
   );
 };
