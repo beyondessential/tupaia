@@ -29,12 +29,11 @@ const FQS1_DATA_MAP = [
   },
   {
     dataElement: 'lesmis_fqs1_water',
-    label: 'School has water for the use the whole year through',
+    label: 'School has water for use the whole year',
   },
   {
     dataElement: 'lesmis_fqs1_latrine',
-    label:
-      'School has latrine for the normal use; at least 2 latrines - 1 for girls and 1 for boys',
+    label: 'School has at least 2 latrines for normal use - 1 for girls and 1 for boys',
   },
   { dataElement: 'lesmis_fqs1_board', label: 'One (1) usable board per classroom' },
   { dataElement: 'lesmis_fqs1_map', label: 'One (1) Lao country map per classroom' },
@@ -44,7 +43,7 @@ const FQS1_DATA_MAP = [
   },
   {
     dataElement: 'lesmis_fqs1_chair',
-    label: 'Classroom has chairs for study for each student (100%)',
+    label: 'Classroom has chairs for each student to use for study (100%)',
   },
   {
     dataElement: 'lesmis_fqs1_t_tablechair',
@@ -62,7 +61,7 @@ const FQS1_DATA_MAP = [
   {
     dataElement: 'lesmis_fqs1_t_qual',
     label:
-      'All teacher have qualifications in area of teacher education - graduated middle level diploma in area of teacher education or above',
+      'All teachers have qualifications in area of teacher education - graduated middle level diploma in area of teacher education or above',
   },
   {
     dataElement: 'lesmis_fqs1_stuteachratio',
@@ -112,92 +111,92 @@ const FQS1_DATA_MAP = [
 const FQS2_DATA_MAP = [
   {
     dataElement: 'lesmis_fqs2_01',
-    label: 'SCHOOL OFFERS CLASSES ON EVERY DAY OF THE OFFICIAL SCHOOL YEAR (165 DAYS AS NORM)',
+    label: 'School offers classes every day of the official school year (165 days as norm)',
   },
-  { dataElement: 'lesmis_fqs2_02', label: 'SCHOOLS HAS NO UNAUTHORIZED TEACHER ABSENTEEISM' },
+  { dataElement: 'lesmis_fqs2_02', label: 'School has no unauthorized teacher absenteeism' },
   {
     dataElement: 'lesmis_fqs2_03',
-    label: 'TEACHERS ONLY IN EXCEPTIONAL CASES COME LATE FOR CLASS OR FINISH CLASS EARLY',
+    label: 'Teachers only in exceptional cases come late for class or finish class early',
   },
   {
     dataElement: 'lesmis_fqs2_04',
-    label: 'SCHOOL KEEPS AN ACCURATE AND UP TO DATE SCHOOL FINANCIAL RECORD AND ASSETS REGISTER',
+    label: 'School keeps an accurate and up to date school financial record and assets register',
   },
   {
     dataElement: 'lesmis_fqs2_05',
     label:
-      'SCHOOL HAS A CURRENT, COSTED SCHOOL DEVELOPMENT PLAN THAT IS DEVELOPED WITH ALL STAFF AND THE COMMUNITY AND USED TO MONITOR PROGRESS TOWARDS OBJECTIVES',
+      'School has a current, costed school development plan that is developed with all staff and the community and used to monitor progress towards objectives',
   },
   {
     dataElement: 'lesmis_fqs2_06',
     label:
-      'CLASSROOMS AND SCHOOL GROUNDS ARE CLEAN, GARDENS AND TREES MAINTAINED, AND WELLS ARE PROTECTED FOR SAFETY',
+      'Classrooms and school grounds are clean, gardens and trees maintained, and wells are protected for safety',
   },
   {
     dataElement: 'lesmis_fqs2_07',
-    label: 'WATER FACILITIES AND TOILETS ARE WORKING, CLEAN AND HAVE SOAP FOR HANDWASHING',
+    label: 'Water facilities and toilets are working, clean and have soap for handwashing',
   },
   {
     dataElement: 'lesmis_fqs2_08',
     label:
-      'ALL SCHOOL-AGED CHILDREN ARE ENROLLED AND PARTICIPATING, INCLUDING CHILDREN WITH DISABILITIES',
+      'All school-aged children are enrolled and participating, including children with disabilities',
   },
-  { dataElement: 'lesmis_fqs2_09', label: 'TEACHERS OF ALL GRADES PREPARE THEIR LESSONS' },
+  { dataElement: 'lesmis_fqs2_09', label: 'Teachers of all grades prepare their lessons' },
   {
     dataElement: 'lesmis_fqs2_10',
-    label: 'TEACHERS COVER THE FULL CURRICULUM OVER THE SCHOOL YEAR',
+    label: 'Teachers cover the full curriculum over the school year',
   },
   {
     dataElement: 'lesmis_fqs2_11',
-    label: 'TEACHERS HAVE GOOD KNOWLEDGE IN LAO LANGUAGE AND MATHEMATICS',
+    label: 'Teachers have good knowledge in Lao language and mathematics',
   },
-  { dataElement: 'lesmis_fqs2_12', label: 'TEACHERS HAVE GOOD PEDAGOGICAL SKILLS' },
+  { dataElement: 'lesmis_fqs2_12', label: 'Teachers have good pedagogical skills' },
   {
     dataElement: 'lesmis_fqs2_13',
     label:
-      'TEACHERS CORRECT STUDENTS WORK AND GIVE FEEDBACK ON THEIR STRENGTHS AND AREAS FOR IMPROVEMENT',
+      'Teachers correct students work and give feedback on their strengths and areas for improvement',
   },
   {
     dataElement: 'lesmis_fqs2_14',
-    label: 'TEACHERS GIVE EXTRA SUPPORT TO STUDENTS WHO ARE NOT PROGRESSING WELL',
+    label: 'Teachers give extra support to students who are not progressing well',
   },
   {
     dataElement: 'lesmis_fqs2_15',
-    label: 'PARENTS RECEIVE REPORTS ON STUDENT PROGRESS ONCE EVERY MONTH',
+    label: 'Parents receive reports on student progress once every month',
   },
   {
     dataElement: 'lesmis_fqs2_16',
-    label: 'TEACHERS MEET WITH PARENTS OF SLOW LEARNERS TO DISCUSS ACTIONS TO SUPPORT STUDENTS',
+    label: 'Teachers meet with parents of slow learners to discuss actions to support students',
   },
   {
     dataElement: 'lesmis_fqs2_17',
     label:
-      'TEACHERS HAVE A PROGRESS DISCUSSION WITH THEIR PRINCIPAL OR DEPUTY PRINCIPAL AT LEAST ONCE PER SEMESTER AND RECEIVE FEEDBACK TO IMPROVE THEIR PERFORMANCE',
+      'Teachers have a progress discussion with their principal or deputy principal at least once per semester and receive feedback to improve their performance',
   },
   {
     dataElement: 'lesmis_fqs2_18',
     label:
-      'TEACHERS COLLABORATE TO IMPROVE THEIR TEACHING (E.G. JOINT LESSON PLANNING, OBSERVING EACH OTHER, TEAM TEACHING, ETC.) AT LEAST ONCE A MONTH',
+      'Teachers collaborate to improve their teaching (e.g. joint lesson planning, observing each other, team teaching, etc.) at least once a month',
   },
-  { dataElement: 'lesmis_fqs2_19', label: 'STUDENTS ARE POLITE AND WELL BEHAVED' },
+  { dataElement: 'lesmis_fqs2_19', label: 'Students are polite and well behaved' },
   {
     dataElement: 'lesmis_fqs2_20',
     label:
-      'TEACHERS COLLABORATE AND SHARE KNOWLEDGE/GOOD PRACTICES (E.G. EFFECTIVE LESSON PLANS, MATERIALS) WITH OTHER CLUSTER SCHOOLS AT LEAST TWICE PER SEMESTER',
+      'Teachers collaborate and share knowledge/good practices (e.g. effective lesson plans, materials) with other cluster schools at least twice per semester',
   },
   {
     dataElement: 'lesmis_fqs2_21',
     label:
-      'THE SCHOOL PRINCIPAL COLLABORATES WITH COLLEAGUES IN OTHER CLUSTER SCHOOLS TO IMPROVE TEACHING AND LEARNING AT LEAST ONCE PER SEMESTER',
+      'The school principal collaborates with colleagues in other cluster schools to improve teaching and learning at least once per semester',
   },
   {
     dataElement: 'lesmis_fqs2_22',
     label:
-      'PRINCIPAL ATTENDS VEDC MEETINGS TO DISCUSS PROGRESS IN SCHOOL DEVELOPMENT PLAN (AT LEAST 4 PER TIMES PER YEAR)',
+      'Principal attends VEDC meetings to discuss progress in school development plan (at least 4 per times per year)',
   },
   {
     dataElement: 'lesmis_fqs2_23',
-    label: 'VEDC SUPPORTS THE IMPLEMENTATION OF THE SCHOOL DEVELOPMENT PLAN',
+    label: 'VEDC supports the implementation of the school development plan',
   },
 ];
 
