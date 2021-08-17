@@ -20,6 +20,7 @@ import { createMeditrakSyncQueue } from './database';
 import * as modelClasses from './database/models';
 import { startSyncWithDhis } from './dhis';
 import { startSyncWithMs1 } from './ms1';
+import { startSyncWithKoBo } from './kobo';
 import { startFeedScraper } from './social';
 import { createApp } from './app';
 
@@ -71,6 +72,11 @@ startSyncWithDhis(models);
  * Regularly sync data to MS1
  */
 startSyncWithMs1(models);
+
+/**
+ * Regularly sync data from KoBoToolbox
+ */
+startSyncWithKoBo(models);
 
 /**
  * Regularly sync actions that have happened on meditrak with the social feed.
