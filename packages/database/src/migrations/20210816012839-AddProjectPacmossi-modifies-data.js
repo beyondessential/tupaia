@@ -16,7 +16,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const countryCodes = ['FJ', 'KI', 'NR', 'NU', 'PG', 'SB', 'TV', 'VU'];
+const countryCodes = ['FJ', 'KI', 'NR', 'NU', 'PG', 'SB', 'TV', 'TO', 'VU'];
 
 const projectCode = 'pacmossi';
 const projectName = 'PacMOSSI';
