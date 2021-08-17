@@ -69,7 +69,6 @@ export class Aggregator extends BaseAggregator {
         startDate,
         endDate,
         dataServices: [{ isDataRegional: true }],
-        useDeprecatedApi: false,
       },
       { aggregations },
     );

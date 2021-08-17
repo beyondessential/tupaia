@@ -16,12 +16,14 @@ const DISTRICT = 'district';
 const FACILITY = 'facility';
 const SUB_FACILITY = 'sub_facility';
 const FIELD_STATION = 'field_station';
+const LARVAL_HABITAT = 'larval_habitat';
 const INDIVIDUAL = 'individual';
 const SCHOOL = 'school';
 const SUB_DISTRICT = 'sub_district';
 const CATCHMENT = 'catchment';
 const SUB_CATCHMENT = 'sub_catchment';
 const VILLAGE = 'village';
+const HOUSEHOLD = 'household';
 const WORLD = 'world';
 const PROJECT = 'project';
 const CITY = 'city';
@@ -38,12 +40,14 @@ const ENTITY_TYPES = {
   FACILITY,
   SUB_FACILITY,
   FIELD_STATION,
+  LARVAL_HABITAT,
   INDIVIDUAL,
   SCHOOL,
   SUB_DISTRICT,
   CATCHMENT,
   SUB_CATCHMENT,
   VILLAGE,
+  HOUSEHOLD,
   WORLD,
   PROJECT,
   CITY,

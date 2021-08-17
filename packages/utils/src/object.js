@@ -37,6 +37,29 @@ export function getSortByKey(key, options) {
   return getSortByExtractedValue(o => o[key], options);
 }
 
+export const orderBy = (array, valueMappers, orders = []) => {
+  const comparators = valueMappers.map((valueMapper, i) => {
+    const mapValue =
+      typeof valueMapper === 'string' ? obj => obj?.[valueMapper] : obj => valueMapper(obj);
+    const order = typeof orders[i] === 'string' ? orders[i].toLowerCase() : 'asc';
+    const compare = order === 'desc' ? compareDesc : compareAsc;
+
+    return (a, b) => compare(mapValue(a), mapValue(b));
+  });
+
+  return array.sort((a, b) => {
+    for (const comparator of comparators) {
+      const result = comparator(a, b);
+      if (result !== 0) {
+        return result;
+      }
+    }
+
+    // No comparator was able to evaluate the items as not equal
+    return 0;
+  });
+};
+
 /**
  * Returns a callback which compares two objects using the provided `function` .
  * Can be used in `Array.prototype.sort` for an array of objects
@@ -200,10 +223,12 @@ export const stripFields = (object = {}, fieldsToExclude = []) =>
   Object.fromEntries(Object.entries(object).filter(([key]) => !fieldsToExclude.includes(key)));
 
 /**
- * Note: this only guarantees insertion order for properties in the new object.
- * Enumeration order is not guaranteed before ES2015
+ * Note: this generally only guarantees insertion order for properties in the new object.
+ * Traversal order is not specified and thus not guaranteed in older ES versions.
+ * If order and cross-version support is critical, please use an Array instead
+ * @see https://github.com/tc39/proposal-for-in-order
  */
-const sortFields = object => {
+export const sortFields = object => {
   const sortedEntries = Object.entries(object).sort(([keyA], [keyB]) => compareAsc(keyA, keyB));
   return Object.fromEntries(sortedEntries);
 };
@@ -211,4 +236,23 @@ const sortFields = object => {
 export const getUniqueObjects = objects => {
   const jsonStrings = objects.map(o => JSON.stringify(sortFields(o)));
   return getUniqueEntries(jsonStrings).map(JSON.parse);
+};
+
+/**
+ * @param {ObjectCollection} objectCollection
+ */
+export const haveSameFields = (objectCollection, fields) => {
+  const objects = collectionToArray(objectCollection);
+
+  return fields.every(field => {
+    for (let i = 0; i < objects.length; i++) {
+      for (let j = i; j < objects.length; j++) {
+        if (objects[i][field] !== objects[j][field]) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  });
 };

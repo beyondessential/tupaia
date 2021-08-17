@@ -22,7 +22,7 @@ export const testPullEvents_Deprecated = () => {
       options = {},
       invocationArgs,
     }) => {
-      await dhisService.pull(dataSources, 'dataGroup', options);
+      await dhisService.pull(dataSources, 'dataGroup', { useDeprecatedApi: true, ...options });
       expect(dhisApi.getEvents).toHaveBeenCalledOnceWith(invocationArgs);
     };
 
@@ -37,6 +37,13 @@ export const testPullEvents_Deprecated = () => {
         dataSources: [DATA_SOURCES.POP01_GROUP],
         options: { dataElementIdScheme: 'id' },
         invocationArgs: expect.objectContaining({ dataElementIdScheme: 'code' }),
+      }));
+
+    it('forces `dataValueFormat` option to `object`', async () =>
+      assertEventsApiWasInvokedCorrectly({
+        dataSources: [DATA_SOURCES.POP01_GROUP],
+        options: { dataValueFormat: 'array' },
+        invocationArgs: expect.objectContaining({ dataValueFormat: 'object' }),
       }));
 
     it('`organisationUnitCodes` can be empty', async () => {
@@ -62,7 +69,6 @@ export const testPullEvents_Deprecated = () => {
         endDate: '20200904',
         eventId: '123456',
         trackedEntityInstance: '654321',
-        dataValueFormat: 'object',
       };
 
       return assertEventsApiWasInvokedCorrectly({
@@ -81,19 +87,19 @@ export const testPullEvents_Deprecated = () => {
       getEventsResponse,
     }) => {
       dhisApi = stubDhisApi({ getEventsResponse });
-      return expect(dhisService.pull(dataSources, 'dataGroup', options)).resolves.toStrictEqual(
-        expectedResults,
-      );
+      return expect(
+        dhisService.pull(dataSources, 'dataGroup', { useDeprecatedApi: true, ...options }),
+      ).resolves.toStrictEqual(expectedResults);
     };
 
     it('basic event data group', async () => {
       const getEventsResponse = [
         {
           otherField: 'otherValue',
-          dataValues: [
-            { dataElement: 'POP01', value: 1 },
-            { dataElement: 'POP02', value: 2 },
-          ],
+          dataValues: {
+            POP01: 1,
+            POP02: 2,
+          },
         },
       ];
 
@@ -104,54 +110,26 @@ export const testPullEvents_Deprecated = () => {
       });
     });
 
-    it('array data values with different dhis codes', async () => {
-      const getEventsResponse = [
-        {
-          otherField: 'otherValue',
-          dataValues: [
-            { dataElement: 'POP01', value: 1 },
-            { dataElement: 'DIF01_DHIS', value: 3 },
-          ],
-        },
-      ];
-
-      return assertPullResultsAreCorrect({
-        dataSources: [DATA_SOURCES.DIFF_GROUP],
-        options: { dataValueFormat: 'array' },
-        getEventsResponse,
-        expectedResults: [
-          {
-            otherField: 'otherValue',
-            dataValues: [
-              { dataElement: 'POP01', value: 1 },
-              { dataElement: 'DIF01', value: 3 },
-            ],
-          },
-        ],
-      });
-    });
-
-    it('object data values with different dhis codes', async () => {
+    it('data values with different dhis codes', async () => {
       const getEventsResponse = [
         {
           otherField: 'otherValue',
           dataValues: {
-            POP01: { dataElement: 'POP01', value: 1 },
-            DIF01_DHIS: { dataElement: 'DIF01_DHIS', value: 3 },
+            POP01: 1,
+            DIF01_DHIS: 3,
           },
         },
       ];
 
       return assertPullResultsAreCorrect({
         dataSources: [DATA_SOURCES.DIFF_GROUP],
-        options: { dataValueFormat: 'object' },
         getEventsResponse,
         expectedResults: [
           {
             otherField: 'otherValue',
             dataValues: {
-              POP01: { dataElement: 'POP01', value: 1 },
-              DIF01: { dataElement: 'DIF01', value: 3 },
+              POP01: 1,
+              DIF01: 3,
             },
           },
         ],
