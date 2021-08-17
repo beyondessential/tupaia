@@ -44,15 +44,15 @@ const REPORT_CONFIG = entityLevel => ({
   transform: [
     {
       transform: 'select',
-      "'Total'":
-        'translate($row.dataElement, { nosch_ece: $row.value, nosch_pe: $row.value, nosch_se: $row.value })',
-      "'level'":
-        "translate($row.dataElement, { nosch_ece: 'ece', nosch_pe: 'pe', nosch_se: 'se' })",
+      "'PreSchoolTotal'": "eq($row.dataElement, 'nosch_ece') ? $row.value : undefined",
+      "'PrimaryTotal'": "eq($row.dataElement, 'nosch_pe') ? $row.value : undefined",
+      "'SecondaryTotal'": "eq($row.dataElement, 'nosch_se') ? $row.value : undefined",
       '...': '*',
     },
     {
       transform: 'select',
-      where: '!exists($row.Total)',
+      where:
+        'all(notExists($row.PreSchoolTotal), notExists($row.PrimaryTotal), notExists($row.SecondaryTotal))',
       // Since our data element names are so standarized we can split
       // instead of using a giant translate
       "'level'": "$row.dataElement.split('_')[3]",
@@ -61,7 +61,8 @@ const REPORT_CONFIG = entityLevel => ({
     },
     {
       transform: 'select',
-      where: '!exists($row.Total)',
+      where:
+        'all(notExists($row.PreSchoolTotal), notExists($row.PrimaryTotal), notExists($row.SecondaryTotal))',
       "'PreSchool'": "eq($row.level, 'ece') ? $row.value : undefined",
       "'Primary'": "eq($row.level, 'pe') ? $row.value : undefined",
       "'Secondary'": "eq($row.level, 'se') ? $row.value : undefined",
@@ -74,13 +75,22 @@ const REPORT_CONFIG = entityLevel => ({
     },
     {
       transform: 'select',
-      "'PreSchool'": '$row.PreSchool / $row.Total',
-      "'PreSchool_metadata'": '{ numerator: $row.PreSchool, denominator: $row.Total }',
-      "'Primary'": '$row.Primary / $row.Total',
-      "'Primary_metadata'": '{ numerator: $row.Primary, denominator: $row.Total }',
-      "'Secondary'": '$row.Secondary / $row.Total',
-      "'Secondary_metadata'": '{ numerator: $row.Secondary, denominator: $row.Total }',
+      where:
+        'all(notExists($row.PreSchoolTotal), notExists($row.PrimaryTotal), notExists($row.SecondaryTotal))',
+      "'PreSchool'": '$row.PreSchool / sum($all.PreSchoolTotal)',
+      "'PreSchool_metadata'":
+        '{ numerator: $row.PreSchool, denominator: sum($all.PreSchoolTotal) }',
+      "'Primary'": '$row.Primary / sum($all.PrimaryTotal)',
+      "'Primary_metadata'": '{ numerator: $row.Primary, denominator: sum($all.PrimaryTotal) }',
+      "'Secondary'": '$row.Secondary / sum($all.SecondaryTotal)',
+      "'Secondary_metadata'":
+        '{ numerator: $row.Secondary, denominator: sum($all.SecondaryTotal) }',
       '...': ['name'],
+    },
+    {
+      transform: 'filter',
+      where:
+        'all(notExists($row.PreSchoolTotal), notExists($row.PrimaryTotal), notExists($row.SecondaryTotal))',
     },
   ],
 });
@@ -125,6 +135,7 @@ const DASHBOARD_ITEMS = [
   DASHBOARD_CONFIG('district'),
 ];
 
+// Same util functions as always
 const addNewDashboardItemAndReport = async (
   db,
   { code, frontEndConfig, reportConfig, permissionGroup, dashboardCode, entityTypes, projectCodes },
