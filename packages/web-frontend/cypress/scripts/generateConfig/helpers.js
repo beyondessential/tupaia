@@ -3,14 +3,11 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import fs from 'fs';
 import { uniq } from 'lodash';
+import moment from 'moment';
 
-import { compareAsc, yup, yupUtils } from '@tupaia/utils';
-
-export const readJsonFile = path => JSON.parse(fs.readFileSync(path, { encoding: 'utf-8' }));
-
-export const writeJsonFile = (path, json) => fs.writeFileSync(path, JSON.stringify(json, null, 2));
+import { compareAsc, readJsonFile, yup, yupUtils } from '@tupaia/utils';
+import { convertDateRangeToUrlPeriodString } from '../../../src/historyNavigation/utils';
 
 export const buildUrlsUsingConfig = async (db, config, generateUrls) => {
   const { urlFiles = [], urls = [], urlGenerationOptions = {} } = config;
@@ -38,3 +35,13 @@ export const buildUrlSchema = ({ regex, regexDescription, shape }) =>
         `invalid url\n${JSON.stringify(value, undefined, 2)}\ncausing message "${error.message}"`,
     ),
   });
+
+export const buildVizPeriod = (startDate, endDate) => {
+  if (!startDate || !endDate) {
+    return undefined;
+  }
+  return convertDateRangeToUrlPeriodString({
+    startDate: moment(startDate),
+    endDate: moment(endDate),
+  });
+};

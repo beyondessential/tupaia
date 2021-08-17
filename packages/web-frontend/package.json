@@ -16,6 +16,7 @@
     "build-desktop": "react-scripts build && rm -rf builds/desktop && mv build builds/desktop",
     "build-mobile": "REACT_APP_APP_TYPE=mobile react-scripts build && rm -rf builds/mobile && mv build builds/mobile",
     "cypress:config": "yarn run:babel cypress/scripts/generateConfig",
+    "cypress:format-config": "yarn run:babel cypress/scripts/formatConfig",
     "cypress:open": "cross-env NODE_ENV=test yarn cypress open",
     "cypress:run": "cross-env NODE_ENV=test yarn cypress run",
     "lint": "eslint --ignore-path ../../.gitignore .",
@@ -28,9 +29,7 @@
     "start-server": "yarn workspace @tupaia/web-config-server start",
     "storybook": "start-storybook -s ./public -p 6006",
     "test": "node scripts/test.js --env=jsdom",
-    "test-e2e": "yarn run:babel cypress/scripts/testE2e",
-    "test:cypress:open": "start-server-and-test start-fullstack 8088 cypress:open",
-    "test:cypress:run": "start-server-and-test start-fullstack 8088 cypress:run"
+    "test-e2e": "yarn run:babel cypress/scripts/testE2e"
   },
   "resolutions": {
     "jss": "10.0.0"

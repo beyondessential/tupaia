@@ -6,10 +6,12 @@
 import { TupaiaDataApi } from '@tupaia/data-api';
 import { IndicatorApi } from '@tupaia/indicators';
 import { WeatherApi } from '@tupaia/weather-api';
+import { KoBoApi } from '@tupaia/kobo-api';
 import { TupaiaService } from './tupaia';
 import { DhisService } from './dhis';
 import { IndicatorService } from './indicator';
 import { WeatherService } from './weather/WeatherService';
+import { KoBoService } from './kobo/KoBoService';
 
 export const createService = (models, type, dataBroker) => {
   switch (type) {
@@ -21,6 +23,8 @@ export const createService = (models, type, dataBroker) => {
       return new IndicatorService(models, new IndicatorApi(models, dataBroker));
     case 'weather':
       return new WeatherService(models, new WeatherApi());
+    case 'kobo':
+      return new KoBoService(models, new KoBoApi());
     default:
       throw new Error(`Invalid service type: ${type}`);
   }

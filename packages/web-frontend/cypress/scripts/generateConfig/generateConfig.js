@@ -4,13 +4,12 @@
  */
 
 import { TupaiaDatabase } from '@tupaia/database';
-import { getLoggerInstance } from '@tupaia/utils';
+import { getLoggerInstance, writeJsonFile } from '@tupaia/utils';
 import config from '../../config.json';
 import { E2E_CONFIG_PATH } from '../../constants';
 import { generateOverlayConfig } from './generateOverlayConfig';
 import { generateReportConfig } from './generateReportConfig';
 import { configSchema } from './configSchema';
-import { writeJsonFile } from './helpers';
 
 const INPUT_CONFIG_PATH = 'cypress/config.json';
 
