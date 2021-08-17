@@ -273,13 +273,16 @@ export async function exportResponsesToFile(
   const surveysWithAccessStatus = await Promise.all(
     surveys.map(async s => ({ ...s, accessible: await checkAccessToSurvey(s) })),
   );
-  const surveysByAccessStatus = groupBy(surveysWithAccessStatus, 'accessible');
-  surveysByAccessStatus[false]?.forEach(survey => {
+  const { true: surveysWithAccess = [], false: surveysWithoutAccess = [] } = groupBy(
+    surveysWithAccessStatus,
+    'accessible',
+  );
+  surveysWithoutAccess.forEach(survey => {
     const exportData = [[`You do not have export access to ${survey.name}`]];
     addDataToSheet(survey.name, exportData);
   });
 
-  for (const survey of surveysByAccessStatus[true] || []) {
+  for (const survey of surveysWithAccess) {
     // Get the current set of questions, in the order they appear in the survey
     const questions = await findQuestionsInSurvey(models, survey.id);
 
