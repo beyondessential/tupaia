@@ -15,6 +15,7 @@ import { DashboardItemModel } from './DashboardItem';
 import { DashboardRelationModel } from './DashboardRelation';
 import { DataElementDataGroupModel } from './DataElementDataGroup';
 import { DataSourceModel } from './DataSource';
+import { DataServiceSyncGroupModel } from './DataServiceSyncGroup';
 import { DisasterModel } from './Disaster';
 import { DisasterEventModel } from './DisasterEvent';
 import { EntityModel } from './Entity';
@@ -39,6 +40,8 @@ import { SurveyResponseModel } from './SurveyResponse';
 import { SurveyResponseCommentModel } from './SurveyResponseComment';
 import { SurveyScreenComponentModel } from './SurveyScreenComponent';
 import { SurveyScreenModel } from './SurveyScreen';
+import { SyncServiceModel } from './SyncService';
+import { SyncServiceLogModel } from './SyncServiceLog';
 import { UserEntityPermissionModel } from './UserEntityPermission';
 import { UserModel } from './User';
 import { UserSessionModel } from './UserSession';
@@ -59,6 +62,7 @@ export const modelClasses = {
   DataElementDataGroup: DataElementDataGroupModel,
   DataSource: DataSourceModel,
   DataServiceEntity: DataServiceEntityModel,
+  DataServiceSyncGroup: DataServiceSyncGroupModel,
   Disaster: DisasterModel,
   DisasterEvent: DisasterEventModel,
   Entity: EntityModel,
@@ -83,6 +87,8 @@ export const modelClasses = {
   SurveyResponseComment: SurveyResponseCommentModel,
   SurveyScreen: SurveyScreenModel,
   SurveyScreenComponent: SurveyScreenComponentModel,
+  SyncService: SyncServiceModel,
+  SyncServiceLog: SyncServiceLogModel,
   User: UserModel,
   UserEntityPermission: UserEntityPermissionModel,
   UserSession: UserSessionModel,
