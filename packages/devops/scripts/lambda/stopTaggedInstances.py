@@ -1,0 +1,32 @@
+import boto3
+import asyncio
+import functools
+import time
+from utilities import *
+
+ec2 = boto3.resource('ec2')
+ec = boto3.client('ec2')
+iam = boto3.client('iam')
+route53 = boto3.client('route53')
+loop = asyncio.get_event_loop()
+
+async def wait_for_instance(instance_id, to_be):
+    volume_available_waiter = ec.get_waiter('instance_' + to_be)
+    await loop.run_in_executor(None, functools.partial(volume_available_waiter.wait, InstanceIds=[instance_id]))
+
+def lambda_handler(event, context):
+    hour = time.strftime("%H:00")
+    instances = find_instances([
+        { 'Name': 'tag:StopAtUTC', 'Values': [hour] },
+        { 'Name': 'instance-state-name', 'Values': ['running'] }
+    ])
+
+    if len(instances) > 0:
+        tasks = sum(
+        [
+            [asyncio.ensure_future(stop_instance(instance)) for instance in instances]
+        ], [])
+        loop.run_until_complete(asyncio.wait(tasks))
+        print('All previously running instances stopped')
+    else:
+      print('No running instances required stopping')
