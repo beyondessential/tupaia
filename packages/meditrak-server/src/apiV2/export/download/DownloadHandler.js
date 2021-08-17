@@ -21,6 +21,6 @@ export class DownloadHandler extends RouteHandler {
     if (!fs.existsSync(filePath)) {
       throw new ValidationError('This link has expired, or the file has already been downloaded');
     }
-    respondWithDownload(this.res, filePath, true);
+    respondWithDownload(this.res, filePath);
   }
 }

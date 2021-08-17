@@ -18,5 +18,5 @@ export async function exportSurveys(req, res) {
   const { surveyCode } = req.query;
   const exporter = new SurveyExporter(models, userId, assertPermissions);
   const filePath = await exporter.exportToFile(surveyId, surveyCode);
-  respondWithDownload(res, filePath, true);
+  respondWithDownload(res, filePath);
 }
