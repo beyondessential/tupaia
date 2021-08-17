@@ -36,6 +36,7 @@ def tags_contains(tags, key, value):
     tag_matching_key = tags_matching_key[0]
     return tag_matching_key['Value'] == value
 
+
 def get_cert(type_tag):
     certs = acm.list_certificates(MaxItems=400)
     for cert in certs['CertificateSummaryList']:
@@ -60,9 +61,11 @@ def find_instances(filters):
               for r in reservations
           ], [])
 
+
 async def wait_for_instance(instance_id, to_be):
     volume_available_waiter = ec.get_waiter('instance_' + to_be)
     await loop.run_in_executor(None, functools.partial(volume_available_waiter.wait, InstanceIds=[instance_id]))
+
 
 async def stop_instance(instance):
     instance_object = ec2.Instance(instance['InstanceId'])
@@ -70,6 +73,7 @@ async def stop_instance(instance):
     print('Stopping instance ' + instance_object.id)
     await wait_for_instance(instance_object.id, 'stopped')
     print('Stopped instance with id ' + instance_object.id)
+
 
 async def start_instance(instance):
     instance_object = ec2.Instance(instance['InstanceId'])

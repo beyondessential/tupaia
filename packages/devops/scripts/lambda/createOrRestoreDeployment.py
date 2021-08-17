@@ -14,6 +14,7 @@ async def wait_for_volume(volume_id, to_be):
     volume_available_waiter = ec.get_waiter('volume_' + to_be)
     await loop.run_in_executor(None, functools.partial(volume_available_waiter.wait, VolumeIds=[volume_id]))
 
+
 def get_latest_snapshot_id(account_ids, restore_code):
     filters = [
         {'Name': 'tag:RestoreCode', 'Values': [restore_code]},
@@ -71,6 +72,7 @@ async def restore_instance(account_ids, instance):
 
     # Ensure EBS volumes are deleted on termination of instance
     ec.modify_instance_attribute(InstanceId=instance['InstanceId'], BlockDeviceMappings=[{'DeviceName': dev_to_attach['DeviceName'], 'Ebs': { 'VolumeId': new_volume_id, 'DeleteOnTermination': True }}])
+
 
 def create_instance(restore_code, stage, instance_type):
     print('Creating new ' + instance_type + ' instance for branch ' + stage + ' of ' + restore_code)

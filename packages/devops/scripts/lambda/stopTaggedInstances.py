@@ -1,6 +1,5 @@
 import boto3
 import asyncio
-import functools
 import time
 from utilities import *
 
@@ -10,9 +9,6 @@ iam = boto3.client('iam')
 route53 = boto3.client('route53')
 loop = asyncio.get_event_loop()
 
-async def wait_for_instance(instance_id, to_be):
-    volume_available_waiter = ec.get_waiter('instance_' + to_be)
-    await loop.run_in_executor(None, functools.partial(volume_available_waiter.wait, InstanceIds=[instance_id]))
 
 def lambda_handler(event, context):
     hour = time.strftime("%H:00")
