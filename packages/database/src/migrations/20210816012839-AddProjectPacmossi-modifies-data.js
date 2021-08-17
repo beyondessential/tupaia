@@ -94,7 +94,6 @@ exports.down = async function (db) {
       );
     }
   }
-
   await db.runSql(`DELETE FROM project WHERE code = '${projectCode}'`);
   await db.runSql(`DELETE FROM entity_relation WHERE entity_hierarchy_id = '${hierarchyId}'`);
   await db.runSql(`DELETE FROM entity_hierarchy WHERE name = '${projectCode}'`);
