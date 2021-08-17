@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { matrix } from 'mathjs';
+
 import { functions } from '../../reportBuilder/functions';
 
 describe('functions', () => {
@@ -119,6 +121,12 @@ describe('functions', () => {
         expect(functions.sum([undefined, undefined, undefined], undefined, undefined)).toBe(
           undefined,
         ));
+
+      it('throws an error if input is a mathjs matrix', () =>
+        expect(() => functions.sum(matrix([1, 2, 3]))).toThrow('sum received invalid input type'));
+
+      it('throws an error if input is non-numeric', () =>
+        expect(() => functions.sum([1, 2, 3], 'cat')).toThrow('sum received invalid input type'));
     });
 
     describe('divide', () => {
@@ -130,6 +138,16 @@ describe('functions', () => {
       it('can divide an array', () => expect(functions.divide([12, 2, 3])).toBe(2));
 
       it('can combine numbers and arrays', () => expect(functions.divide([100, 2], 10, 1)).toBe(5));
+
+      it('throws an error if input is a mathjs matrix', () =>
+        expect(() => functions.divide(matrix([1, 2, 3]))).toThrow(
+          'divide received invalid input type',
+        ));
+
+      it('throws an error if input is non-numeric', () =>
+        expect(() => functions.divide([1, 2, 3], 'cat')).toThrow(
+          'divide received invalid input type',
+        ));
     });
   });
 });
