@@ -7,14 +7,15 @@ import {
   filterValues,
   flattenToObject,
   getKeysSortedByValues,
+  getSortByKey,
   getUniqueObjects,
   haveSameFields,
   mapKeys,
   mapValues,
-  reduceToDictionary,
+  orderBy,
   reduceToArrayDictionary,
+  reduceToDictionary,
   reduceToSet,
-  getSortByKey,
   stripFields,
 } from '../object';
 
@@ -180,6 +181,49 @@ describe('object', () => {
     it('should default to ASC direction for `null` options', () => {
       const sortByValue = getSortByKey('value', null);
       assertSortingCorrectness(sortByValue, [two, one], [one, two]);
+    });
+  });
+
+  describe('orderBy', () => {
+    const one = { name: 'one', value: 1, stringValue: '1', id: '000a' };
+    const two = { name: 'two', value: 2, stringValue: '2', id: '000b' };
+    const five = { name: 'five', value: 5, stringValue: '5', id: '000c' };
+    const twenty = { name: 'twenty', value: 20, stringValue: '20', id: '000d' };
+    const hundredA = { name: 'hundred', value: 100, stringValue: '100', id: '000e' };
+    const hundredB = { name: 'hundred', value: 100, stringKey: '100', id: '000f' };
+
+    const testData = [
+      ['empty array', [[], [x => x]], []],
+      ['accepts functions as value mappers', [[two, one], [x => x.id]], [one, two]],
+      ['accepts strings as value mappers', [[two, one], ['value']], [one, two]],
+      [
+        'retains the existing order for items that are evaluated as equal',
+        [[hundredB, one, hundredA], [x => x.value]],
+        [one, hundredB, hundredA],
+      ],
+      [
+        'allows orders to be specified for each mapper',
+        [
+          [hundredB, five, hundredA, two],
+          ['name', 'id'],
+          ['asc', 'desc'],
+        ],
+        [five, hundredB, hundredA, two],
+      ],
+      [
+        'uses "asc" order by default',
+        [[hundredB, five, hundredA, two], ['name', 'id'], ['asc']],
+        [five, hundredA, hundredB, two],
+      ],
+      [
+        "uses natural order ('1' before '20' before '100')",
+        [[one, hundredA, twenty], ['stringValue']],
+        [one, twenty, hundredA],
+      ],
+    ];
+
+    it.each(testData)('%s', (_, [array, valueMappers, orders], expected) => {
+      expect(orderBy(array, valueMappers, orders)).toStrictEqual(expected);
     });
   });
 
