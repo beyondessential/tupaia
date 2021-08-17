@@ -113,6 +113,7 @@ const {
   surveyResponse,
   importDisaster,
   verifyEmail,
+  requestManualKoBoSync,
 } = routes;
 
 const MINIMUM_API_VERSION = 2;
@@ -247,6 +248,7 @@ export function addRoutesToApp(app) {
   app.post('(/v[0-9]+)/permissionGroups', createPermissionGroups);
   app.post('(/v[0-9]+)?/dashboardRelations', createDashboardRelations);
   app.post('(/v[0-9]+)?/dashboardVisualisations', createDashboardVisualisations);
+  app.post('(/v[0-9]+)?/syncFromService', requestManualKoBoSync);
 
   /**
    * PUT routes

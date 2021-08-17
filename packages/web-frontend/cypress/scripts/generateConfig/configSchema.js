@@ -41,6 +41,8 @@ export const configSchema = shape({
       id: stringOrStrings,
       project: stringOrStrings,
       orgUnit: stringOrStrings,
+      startDate: stringOrStrings,
+      endDate: stringOrStrings,
       measureBuilder: stringOrStrings,
     }),
     snapshotTypes: arrayOf([SNAPSHOT_TYPES.RESPONSE_DATA]).min(1).required(),
