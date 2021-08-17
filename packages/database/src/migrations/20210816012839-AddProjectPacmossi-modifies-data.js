@@ -1,6 +1,6 @@
 'use strict';
 
-import { codeToId, insertObject, generateId } from '../utilities';
+import { codeToId, insertObject, generateId, findSingleRecord, deleteObject } from '../utilities';
 
 var dbm;
 var type;
@@ -25,6 +25,8 @@ const projectDescription = 'Pacific Mosquito Surveillance Strengthening for Impa
 const userGroups = ['PacMOSSI', 'PacMOSSI Senior'];
 
 const dashboardName = 'Vector Surveillance';
+const projectDashboardItemCode = 'project_details';
+const projectDashboardCode = `${projectCode}_${projectName}`;
 
 const getCountryDashboardCode = (countryCode, userGroup) =>
   `${countryCode}_PacMOSSI_Country_${userGroup.split(' ').join('_')}`;
@@ -54,6 +56,23 @@ const addCountryToProject = async (db, countryCode) => {
   );
 };
 
+const addItemToDashboard = async (
+  db,
+  { code, dashboardCode, permissionGroup, entityTypes, projectCodes },
+) => {
+  const dashboardItemId = (await findSingleRecord(db, 'dashboard_item', { code })).id;
+  const dashboardId = (await findSingleRecord(db, 'dashboard', { code: dashboardCode })).id;
+  await insertObject(db, 'dashboard_relation', {
+    id: generateId(),
+    dashboard_id: dashboardId,
+    child_id: dashboardItemId,
+    entity_types: `{${entityTypes.join(', ')}}`,
+    project_codes: `{${projectCodes.join(', ')}}`,
+    permission_groups: `{${permissionGroup}}`,
+    sort_order: 1,
+  });
+};
+
 exports.up = async function (db) {
   await insertObject(db, 'entity', {
     id: generateId(),
@@ -69,6 +88,22 @@ exports.up = async function (db) {
   });
 
   await Promise.all(countryCodes.map(countryCode => addCountryToProject(db, countryCode)));
+
+  await insertObject(db, 'dashboard', {
+    id: generateId(),
+    code: projectDashboardCode,
+    name: dashboardName,
+    root_entity_code: projectCode,
+    sort_order: 1,
+  });
+
+  await addItemToDashboard(db, {
+    code: projectDashboardItemCode,
+    dashboardCode: projectDashboardCode,
+    permissionGroup: `${userGroups[0]}, ${userGroups[1]}`,
+    entityTypes: ['project'],
+    projectCodes: [`${projectCode}`],
+  });
 
   await insertObject(db, 'project', {
     id: generateId(),
@@ -94,6 +129,10 @@ exports.down = async function (db) {
       );
     }
   }
+  const dashboardId = (await findSingleRecord(db, 'dashboard', { code: projectDashboardCode })).id;
+  await deleteObject(db, 'dashboard_relation', { dashboard_id: dashboardId });
+  await deleteObject(db, 'dashboard', { code: projectDashboardCode });
+
   await db.runSql(`DELETE FROM project WHERE code = '${projectCode}'`);
   await db.runSql(`DELETE FROM entity_relation WHERE entity_hierarchy_id = '${hierarchyId}'`);
   await db.runSql(`DELETE FROM entity_hierarchy WHERE name = '${projectCode}'`);
