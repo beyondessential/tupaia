@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { keyBy } from 'lodash';
+import { keyBy, groupBy } from 'lodash';
 
 import { hasBESAdminAccess } from '../../permissions';
 import { mergeFilter } from '../utilities';
@@ -23,46 +23,43 @@ export const hasMapOverlayGroupGetPermissions = async (accessPolicy, models, map
     map_overlay_group_id: mapOverlayGroupId,
   });
 
-  if (!childMapOverlayRelations.length) {
+  if (childMapOverlayRelations.length === 0) {
     return true;
   }
 
-  const mapOverlayRelations = childMapOverlayRelations.filter(
-    r => r.child_type === models.mapOverlayGroupRelation.RelationChildTypes.MAP_OVERLAY,
-  );
-  const mapOverlayGroupRelations = childMapOverlayRelations.filter(
-    r => r.child_type === models.mapOverlayGroupRelation.RelationChildTypes.MAP_OVERLAY_GROUP,
-  );
+  const childMapOverlayRelationsByType = groupBy(childMapOverlayRelations, 'child_type');
+  const mapOverlayRelations =
+    childMapOverlayRelationsByType[models.mapOverlayGroupRelation.RelationChildTypes.MAP_OVERLAY];
+  const mapOverlayGroupRelations =
+    childMapOverlayRelationsByType[
+      models.mapOverlayGroupRelation.RelationChildTypes.MAP_OVERLAY_GROUP
+    ];
 
-  if (mapOverlayRelations.length) {
-    for (const mapOverlayRelation of mapOverlayRelations) {
-      const result = await hasMapOverlayGetPermissions(
-        accessPolicy,
-        models,
-        mapOverlayRelation.child_id,
-      );
-      if (result.result) {
-        return result;
-      }
+  for (const mapOverlayRelation of mapOverlayRelations) {
+    const result = await hasMapOverlayGetPermissions(
+      accessPolicy,
+      models,
+      mapOverlayRelation.child_id,
+    );
+    if (result.result) {
+      return result;
     }
   }
 
-  if (mapOverlayGroupRelations.length) {
-    for (const mapOverlayRelation of mapOverlayRelations) {
-      const result = await hasMapOverlayGroupGetPermissions(
-        accessPolicy,
-        models,
-        mapOverlayRelation.child_id,
-      );
-      if (result.result) {
-        return result;
-      }
+  for (const mapOverlayGroupRelation of mapOverlayGroupRelations) {
+    const result = await hasMapOverlayGroupGetPermissions(
+      accessPolicy,
+      models,
+      mapOverlayGroupRelation.child_id,
+    );
+    if (result.result) {
+      return result;
     }
   }
 
   return {
     result: false,
-    errorMessage: `Requires access to all the child items of map overlay group with id "${mapOverlayGroupId}"`,
+    errorMessage: `Requires access to at least one child item of map overlay group with id "${mapOverlayGroupId}"`,
   };
 };
 
@@ -83,40 +80,37 @@ export const hasMapOverlayGroupEditPermissions = async (
     map_overlay_group_id: mapOverlayGroupId,
   });
 
-  if (!childMapOverlayRelations.length) {
+  if (childMapOverlayRelations.length === 0) {
     return true;
   }
 
-  const mapOverlayRelations = childMapOverlayRelations.filter(
-    r => r.child_type === models.mapOverlayGroupRelation.RelationChildTypes.MAP_OVERLAY,
-  );
-  const mapOverlayGroupRelations = childMapOverlayRelations.filter(
-    r => r.child_type === models.mapOverlayGroupRelation.RelationChildTypes.MAP_OVERLAY_GROUP,
-  );
+  const childMapOverlayRelationsByType = groupBy(childMapOverlayRelations, 'child_type');
+  const mapOverlayRelations =
+    childMapOverlayRelationsByType[models.mapOverlayGroupRelation.RelationChildTypes.MAP_OVERLAY];
+  const mapOverlayGroupRelations =
+    childMapOverlayRelationsByType[
+      models.mapOverlayGroupRelation.RelationChildTypes.MAP_OVERLAY_GROUP
+    ];
 
-  if (mapOverlayRelations.length) {
-    for (const mapOverlayRelation of mapOverlayRelations) {
-      const result = await hasMapOverlayEditPermissions(
-        accessPolicy,
-        models,
-        mapOverlayRelation.child_id,
-      );
-      if (!result.result) {
-        return result;
-      }
+  for (const mapOverlayRelation of mapOverlayRelations) {
+    const result = await hasMapOverlayEditPermissions(
+      accessPolicy,
+      models,
+      mapOverlayRelation.child_id,
+    );
+    if (!result.result) {
+      return result;
     }
   }
 
-  if (mapOverlayGroupRelations.length) {
-    for (const mapOverlayRelation of mapOverlayRelations) {
-      const result = await hasMapOverlayGroupEditPermissions(
-        accessPolicy,
-        models,
-        mapOverlayRelation.child_id,
-      );
-      if (!result.result) {
-        return result;
-      }
+  for (const mapOverlayGroupRelation of mapOverlayGroupRelations) {
+    const result = await hasMapOverlayGroupEditPermissions(
+      accessPolicy,
+      models,
+      mapOverlayGroupRelation.child_id,
+    );
+    if (!result.result) {
+      return result;
     }
   }
 
@@ -148,6 +142,11 @@ export const assertMapOverlayGroupsEditPermissions = async (accessPolicy, models
   throw new Error(result.errorMessage);
 };
 
+/**
+ * We can have multi level map overlay groups. So to find all the permitted map overlay groups,
+ * we have to traverse from the bottom map overlay group relations (that have map overlays as childrens) until
+ * we hit the root map overlay group (top) to also include any nested map overlay groups.
+ */
 const findPermittedMapOverlayGroupIds = (
   relationByChildId,
   permittedMapOverlayGroupRelations,

@@ -22,7 +22,7 @@ export class CreateMapOverlayGroupRelation extends CreateHandler {
     await this.assertPermissions(
       assertAnyPermissions(
         [assertBESAdminAccess, assertAdminPanelAccess],
-        'You need either BES Admin or Tupaia Admin Panel access to create user entity permissions',
+        'You need either BES Admin or Tupaia Admin Panel access to create a map overlay group relation',
       ),
     );
   }

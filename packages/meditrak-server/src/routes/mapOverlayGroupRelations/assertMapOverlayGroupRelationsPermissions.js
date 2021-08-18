@@ -84,12 +84,12 @@ export const hasMapOverlayGroupRelationEditPermissions = async (
 export const assertMapOverlayGroupRelationsGetPermissions = async (
   accessPolicy,
   models,
-  mapOverlayGroupId,
+  mapOverlayGroupRelationId,
 ) => {
   const result = await hasMapOverlayGroupRelationGetPermissions(
     accessPolicy,
     models,
-    mapOverlayGroupId,
+    mapOverlayGroupRelationId,
   );
   if (result.result) {
     return true;
@@ -124,7 +124,7 @@ export const createMapOverlayGroupRelationDBFilter = async (accessPolicy, models
 
   // Pull the list of map overlays we have access to,
   // then pull the corresponding map overlay groups
-  const mapOverlayGroupsFilter = createMapOverlayGroupDBFilter(accessPolicy, models);
+  const mapOverlayGroupsFilter = await createMapOverlayGroupDBFilter(accessPolicy, models);
   const permittedMapOverlayGroups = await models.mapOverlayGroup.find(mapOverlayGroupsFilter);
 
   dbConditions['map_overlay_group_relation.map_overlay_group_id'] = mergeFilter(

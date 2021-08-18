@@ -17,17 +17,17 @@ import {
 export class GETMapOverlayGroups extends GETHandler {
   permissionsFilteredInternally = true;
 
-  async findSingleRecord(mapOverlayId, options) {
-    const mapOverlay = await super.findSingleRecord(mapOverlayId, options);
+  async findSingleRecord(mapOverlayGroupId, options) {
+    const mapOverlayGroup = await super.findSingleRecord(mapOverlayGroupId, options);
 
     const mapOverlayGroupChecker = accessPolicy =>
-      assertMapOverlayGroupsGetPermissions(accessPolicy, this.models, mapOverlayId);
+      assertMapOverlayGroupsGetPermissions(accessPolicy, this.models, mapOverlayGroupId);
 
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, mapOverlayGroupChecker]),
     );
 
-    return mapOverlay;
+    return mapOverlayGroup;
   }
 
   async getPermissionsFilter(criteria, options) {

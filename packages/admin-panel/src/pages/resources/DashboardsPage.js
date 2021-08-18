@@ -92,7 +92,7 @@ const RELATION_FIELDS = [
   },
 ];
 
-export const RELATION_COLUMNS = [
+const RELATION_COLUMNS = [
   ...RELATION_FIELDS,
   {
     Header: 'Edit',

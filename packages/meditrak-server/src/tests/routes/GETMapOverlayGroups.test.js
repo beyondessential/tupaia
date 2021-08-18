@@ -8,7 +8,7 @@ import { addBaselineTestCountries, buildAndInsertProjectsAndHierarchies } from '
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 import { TestableApp, setupMapOverlayTestData } from '../testUtilities';
 
-describe('Permissions checker for GETMapOverlays', async () => {
+describe('Permissions checker for GETMapOverlayGroups', async () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -23,9 +23,9 @@ describe('Permissions checker for GETMapOverlays', async () => {
 
   const app = new TestableApp();
   const { models } = app;
-  let nationalMapOverlay1;
-  let nationalMapOverlay2;
-  let projectLevelMapOverlay1;
+  let nationalMapOverlayGroup1;
+  let nationalMapOverlayGroup2;
+  let projectLevelMapOverlayGroup1;
   let filterString;
 
   before(async () => {
@@ -42,9 +42,9 @@ describe('Permissions checker for GETMapOverlays', async () => {
 
     // Set up the map overlays
     ({
-      nationalMapOverlay1,
-      nationalMapOverlay2,
-      projectLevelMapOverlay1,
+      nationalMapOverlayGroup1,
+      nationalMapOverlayGroup2,
+      projectLevelMapOverlayGroup1,
     } = await setupMapOverlayTestData(models));
   });
 
@@ -52,51 +52,50 @@ describe('Permissions checker for GETMapOverlays', async () => {
     app.revokeAccess();
   });
 
-  describe('GET /mapOverlays/:id', async () => {
-    it('Sufficient permissions: Should return a requested map overlay that users have access to their countries', async () => {
+  describe('GET /mapOverlayGroups/:id', async () => {
+    it('Sufficient permissions: Should return a requested map overlay group that users have access to any of its child map overlays', async () => {
       await app.grantAccess(DEFAULT_POLICY);
-      const { body: result } = await app.get(`mapOverlays/${nationalMapOverlay1.id}`);
+      const { body: result } = await app.get(`mapOverlayGroups/${nationalMapOverlayGroup1.id}`);
 
-      expect(result.id).to.equal(nationalMapOverlay1.id);
+      expect(result.id).to.equal(nationalMapOverlayGroup1.id);
     });
 
-    it('Sufficient permissions: Should return a requested project level map overlay that users have access to any of their child countries', async () => {
+    it('Sufficient permissions: Should return a requested project level map overlay group that users have access to any of its child map overlays', async () => {
       await app.grantAccess(DEFAULT_POLICY);
-      const { body: result } = await app.get(`mapOverlays/${projectLevelMapOverlay1.id}`);
+      const { body: result } = await app.get(`mapOverlayGroups/${projectLevelMapOverlayGroup1.id}`);
 
-      expect(result.id).to.equal(projectLevelMapOverlay1.id);
+      expect(result.id).to.equal(projectLevelMapOverlayGroup1.id);
     });
 
-    it('Insufficient permissions: Should throw an error if requesting map overlay that users do not have access to their countries', async () => {
+    it('Insufficient permissions: Should throw an error if requesting map overlay group that users do not have access to any of its child map overlays', async () => {
       const policy = {
         DL: ['Public'],
       };
       app.grantAccess(policy);
-      const { body: result } = await app.get(`mapOverlays/${nationalMapOverlay1.id}`);
+      const { body: result } = await app.get(`mapOverlayGroups/${nationalMapOverlayGroup1.id}`);
 
       expect(result).to.have.keys('error');
     });
 
-    it('Insufficient permissions: Should throw an error if requesting project level map overlays that users do not have access to any of their child countries', async () => {
+    it('Insufficient permissions: Should throw an error if requesting project level map overlays that users do not have access to any of its child map overlays', async () => {
       const policy = {
         DL: ['Public'],
       };
       app.grantAccess(policy);
-      const { body: result } = await app.get(`mapOverlays/${projectLevelMapOverlay1.id}`);
+      const { body: result } = await app.get(`mapOverlayGroups/${projectLevelMapOverlayGroup1.id}`);
 
       expect(result).to.have.keys('error');
     });
   });
 
-  describe('GET /mapOverlays', async () => {
-    before(() => {
-      const mapOverlayIds = [
-        nationalMapOverlay1.id,
-        nationalMapOverlay2.id,
-        projectLevelMapOverlay1.id,
+  describe('GET /mapOverlayGroups', async () => {
+    before(async () => {
+      const mapOverlayGroupIds = [
+        nationalMapOverlayGroup1.id,
+        nationalMapOverlayGroup2.id,
+        projectLevelMapOverlayGroup1.id,
       ];
-
-      filterString = `filter={"id":{"comparator":"in","comparisonValue":["${mapOverlayIds.join(
+      filterString = `filter={"id":{"comparator":"in","comparisonValue":["${mapOverlayGroupIds.join(
         '","',
       )}"]}}`;
     });
@@ -111,31 +110,31 @@ describe('Permissions checker for GETMapOverlays', async () => {
         TO: ['Admin'],
       };
       app.grantAccess(policy);
-      const { body: results } = await app.get(`mapOverlays?${filterString}`);
+      const { body: results } = await app.get(`mapOverlayGroups?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([
-        nationalMapOverlay1.id,
-        projectLevelMapOverlay1.id,
+        nationalMapOverlayGroup1.id,
+        projectLevelMapOverlayGroup1.id,
       ]);
     });
 
-    it('Sufficient permissions: Should return the full list of map overlays if we have BES admin access', async () => {
+    it('Sufficient permissions: Should return the full list of map overlay groups if we have BES admin access', async () => {
       app.grantAccess(BES_ADMIN_POLICY);
-      const { body: results } = await app.get(`mapOverlays?${filterString}`);
+      const { body: results } = await app.get(`mapOverlayGroups?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([
-        nationalMapOverlay1.id,
-        nationalMapOverlay2.id,
-        projectLevelMapOverlay1.id,
+        nationalMapOverlayGroup1.id,
+        nationalMapOverlayGroup2.id,
+        projectLevelMapOverlayGroup1.id,
       ]);
     });
 
-    it('Insufficient permissions: Should return an empty array if users do not have access to any of the countries of the map overlays', async () => {
+    it('Insufficient permissions: Should return an empty array if users do not have access to any of the map overlays used in map overlay groups', async () => {
       const policy = {
         DL: ['Public'],
       };
       app.grantAccess(policy);
-      const { body: results } = await app.get(`mapOverlays?${filterString}`);
+      const { body: results } = await app.get(`mapOverlayGroups?${filterString}`);
 
       expect(results).to.be.empty;
     });

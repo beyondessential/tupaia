@@ -16,7 +16,7 @@ export const hasMapOverlayGetPermissions = async (accessPolicy, models, mapOverl
   if (!mapOverlay) {
     return {
       result: false,
-      errorMessage: `No map overlay exists with id ${mapOverlayId}`,
+      errorMessage: `No map overlay exists with id "${mapOverlayId}"`,
     };
   }
 
@@ -62,7 +62,7 @@ export const hasMapOverlayEditPermissions = async (accessPolicy, models, mapOver
     if (!(await hasTupaiaAdminAccessToEntityForVisualisation(accessPolicy, models, entities[i]))) {
       return {
         result: false,
-        errorMessage: `Requires Tupaia Admin Panel access to all countries for the map overlay ${mapOverlayId}`,
+        errorMessage: `Requires Tupaia Admin Panel access to all countries (${mapOverlay.countryCodes}) for the map overlay "${mapOverlayId}"`,
       };
     }
     if (
@@ -81,7 +81,7 @@ export const hasMapOverlayEditPermissions = async (accessPolicy, models, mapOver
   if (!hasUserGroupAccess) {
     return {
       result: false,
-      errorMessage: `Cannot edit map overlay ${mapOverlayId} as you do not have user group access to in at least one country`,
+      errorMessage: `Cannot edit map overlay "${mapOverlayId}" as you do not have user group access to any of its countries (${mapOverlay.countryCodes})`,
     };
   }
 

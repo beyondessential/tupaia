@@ -16,6 +16,7 @@ import { assertMapOverlayGroupsGetPermissions } from '../mapOverlayGroups';
  * Handles endpoints:
  * - /mapOverlayGroupRelations
  * - /mapOverlayGroupRelations/:mapOverlayGroupRelationId
+ * - /mapOverlayGroups/:parentRecordId/mapOverlayGroupRelations
  */
 export class GETMapOverlayGroupRelations extends GETHandler {
   permissionsFilteredInternally = true;
@@ -24,15 +25,22 @@ export class GETMapOverlayGroupRelations extends GETHandler {
     map_overlay_group: ['map_overlay_group.id', 'map_overlay_group_relation.map_overlay_group_id'],
   };
 
-  async findSingleRecord(mapOverlayId, options) {
-    const mapOverlay = await super.findSingleRecord(mapOverlayId, options);
+  async findSingleRecord(mapOverlayGroupRelationId, options) {
+    const mapOverlayGroupRelation = await super.findSingleRecord(
+      mapOverlayGroupRelationId,
+      options,
+    );
 
     const mapOverlayChecker = accessPolicy =>
-      assertMapOverlayGroupRelationsGetPermissions(accessPolicy, this.models, mapOverlayId);
+      assertMapOverlayGroupRelationsGetPermissions(
+        accessPolicy,
+        this.models,
+        mapOverlayGroupRelationId,
+      );
 
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, mapOverlayChecker]));
 
-    return mapOverlay;
+    return mapOverlayGroupRelation;
   }
 
   async getPermissionsFilter(criteria, options) {
