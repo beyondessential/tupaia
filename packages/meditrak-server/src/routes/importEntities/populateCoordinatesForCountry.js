@@ -93,9 +93,10 @@ async function addCoordinatesToEntity(
       }
       writeFileSync(filePath, JSON.stringify(geojson));
     } catch (error) {
-      throw new Error(
-        `Failed to write geojson file for ${name}, ${countryName}. Download manually and save as ${filePath}, or resolve the error: ${error.message}`,
-      );
+      // Previously we would throw the below error here:
+      // `Failed to write geojson file for ${name}, ${countryName}. Download manually and save as ${filePath}, or resolve the error: ${error.message}`,
+      // We now just return because this validation was preventing importing children of "Unknown Districts" etc
+      return;
     }
   }
 
@@ -103,7 +104,7 @@ async function addCoordinatesToEntity(
   // faster if repeated, and b) it allows us to manually tweak the geojson, get it from a
   // different source, or compress it by reducing the number of nodes
   const geojson = JSON.parse(readFileSync(filePath));
-  return transactingModels.entity.updateRegionCoordinates(code, geojson);
+  await transactingModels.entity.updateRegionCoordinates(code, geojson);
 }
 
 // Go through country and all district/subdistricts, and if any are missing coordinates,
