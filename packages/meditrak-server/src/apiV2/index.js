@@ -79,6 +79,7 @@ import { requestPasswordReset } from './requestPasswordReset';
 import { getCountryAccessList } from './getCountryAccessList';
 import { surveyResponse } from './surveyResponse';
 import { verifyEmail, requestResendEmail } from './verifyEmail';
+import { manualKoBoSync } from '../kobo';
 
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
@@ -185,6 +186,7 @@ apiV2.post('/feedItems', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/indicators', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/permissionGroups', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dashboardRelations', useRouteHandler(CreateDashboardRelation));
+apiV2.post('/syncFromService', allowAnyone(manualKoBoSync));
 
 /**
  * PUT routes
