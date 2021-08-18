@@ -84,10 +84,9 @@ const generateConfig = () => ({
       },
       {
         transform: 'select',
-        "'Tests per 100k'": '$row.Tests / ($row.Population * 100000)',
+        "'Tests per 100k'": '$row.Tests / ($row.Population / 100000)',
         "'name'": "periodToDisplayString($row.period, 'DAY')",
         "'timestamp'": 'periodToTimestamp($row.period)',
-        '...': [],
       },
     ],
   },
