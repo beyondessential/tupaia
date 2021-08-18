@@ -98,6 +98,16 @@ const toggleEntityTriggers = async (db, enable) => {
   await db.runSql(`ALTER TABLE entity ${action} TRIGGER entity_trigger`);
 };
 
+const refreshProjectSortOrder = async db => {
+  const { rows: projects } = await db.runSql(`
+    SELECT * FROM project WHERE sort_order IS NOT NULL
+    ORDER BY sort_order ASC`);
+
+  for (const [i, project] of projects.entries()) {
+    await db.runSql(`UPDATE PROJECT SET sort_order = ${i} WHERE id = '${project.id}'`);
+  }
+};
+
 exports.up = async function (db) {
   await deleteDashboards(db, IMMS_DASHBOARDS);
   const { rows: immsDashboardItems } = await db.runSql(
@@ -114,6 +124,7 @@ exports.up = async function (db) {
   await deleteMapOverlaysByIds(db, immsMapOverlayIds);
 
   await deleteProjectAndHierarchy(db, 'imms');
+  await refreshProjectSortOrder(db);
 };
 
 exports.down = function (db) {
