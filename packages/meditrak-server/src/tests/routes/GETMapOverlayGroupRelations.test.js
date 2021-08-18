@@ -120,7 +120,6 @@ describe('Permissions checker for GETMapOverlayGroupRelations', async () => {
       app.grantAccess(policy);
       const { body: results } = await app.get(`mapOverlayGroupRelations?${filterString}`);
 
-      // console.log('results', results);
       expect(results.map(r => r.id)).to.deep.equal([
         nationalMapOverlayGroupRelation1.id,
         projectLevelMapOverlayGroupRelation1.id,
