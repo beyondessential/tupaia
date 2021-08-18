@@ -34,10 +34,7 @@ const getCountryDashboardCode = countryCode =>
 
 const hierarchyNameToId = async (db, name) => {
   const record = await db.runSql(`SELECT id FROM entity_hierarchy WHERE name = '${name}'`);
-  if (record.rows.length > 0) {
-    return record.rows[0].id;
-  }
-  throw new Error('Entity hierarchy not found');
+  return record?.rows[0].id;
 };
 
 const addCountryToProject = async (db, countryCode, entityHierarchyId) => {
@@ -86,6 +83,7 @@ exports.up = async function (db) {
   await insertObject(db, 'entity_hierarchy', {
     id: entityHierarchyId,
     name: projectCode,
+    canonical_types: '{country,district,field_station,larval_habitat}',
   });
 
   await Promise.all(
