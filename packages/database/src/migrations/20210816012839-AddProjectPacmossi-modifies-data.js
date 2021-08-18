@@ -22,14 +22,14 @@ const projectCode = 'pacmossi';
 const projectName = 'PacMOSSI';
 const projectDescription = 'Pacific Mosquito Surveillance Strengthening for Impact';
 
-const userGroups = ['PacMOSSI', 'PacMOSSI Senior'];
+const permissionGroups = ['PacMOSSI', 'PacMOSSI Senior'];
 
 const dashboardName = 'Vector Surveillance';
+
 const projectDashboardItemCode = 'project_details';
 const projectDashboardCode = `${projectCode}_${projectName}`;
 
-const getCountryDashboardCode = (countryCode, userGroup) =>
-  `${countryCode}_PacMOSSI_Country_${userGroup.split(' ').join('_')}`;
+const getCountryDashboardCode = countryCode => `${countryCode}_${projectName}`;
 
 const hierarchyNameToId = async (db, name) => {
   const record = await db.runSql(`SELECT id FROM entity_hierarchy WHERE name = '${name}'`);
@@ -43,17 +43,13 @@ const addCountryToProject = async (db, countryCode) => {
     child_id: await codeToId(db, 'entity', countryCode),
     entity_hierarchy_id: await hierarchyNameToId(db, projectCode),
   });
-  await Promise.all(
-    userGroups.map(userGroup =>
-      insertObject(db, 'dashboard', {
-        id: generateId(),
-        code: getCountryDashboardCode(countryCode, userGroup),
-        name: dashboardName,
-        root_entity_code: countryCode,
-        sort_order: 1,
-      }),
-    ),
-  );
+  await insertObject(db, 'dashboard', {
+    id: generateId(),
+    code: getCountryDashboardCode(countryCode),
+    name: dashboardName,
+    root_entity_code: countryCode,
+    sort_order: 1,
+  });
 };
 
 const addItemToDashboard = async (
@@ -89,6 +85,7 @@ exports.up = async function (db) {
 
   await Promise.all(countryCodes.map(countryCode => addCountryToProject(db, countryCode)));
 
+  // insert project dashboard
   await insertObject(db, 'dashboard', {
     id: generateId(),
     code: projectDashboardCode,
@@ -97,10 +94,11 @@ exports.up = async function (db) {
     sort_order: 1,
   });
 
+  // add project details dashboard item and relations
   await addItemToDashboard(db, {
     code: projectDashboardItemCode,
     dashboardCode: projectDashboardCode,
-    permissionGroup: `${userGroups[0]}, ${userGroups[1]}`,
+    permissionGroup: `${permissionGroups[0]}`,
     entityTypes: ['project'],
     projectCodes: [`${projectCode}`],
   });
@@ -112,7 +110,7 @@ exports.up = async function (db) {
     sort_order: 16,
     image_url: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/PacMOSSI_Background.JPG',
     default_measure: '126,171',
-    user_groups: `{${userGroups[0]}, ${userGroups[1]}}`,
+    user_groups: `{${permissionGroups[0]}, ${permissionGroups[1]}}`,
     logo_url: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/PacMossi_Logo.jpg',
     entity_id: await codeToId(db, 'entity', projectCode),
     entity_hierarchy_id: await hierarchyNameToId(db, projectCode),
@@ -123,14 +121,13 @@ exports.down = async function (db) {
   const hierarchyId = await hierarchyNameToId(db, projectCode);
 
   for (const countryCode of countryCodes) {
-    for (const userGroup of userGroups) {
-      await db.runSql(
-        `DELETE FROM "dashboard" WHERE code = '${getCountryDashboardCode(countryCode, userGroup)}'`,
-      );
-    }
+    await deleteObject(db, 'dashboard', { code: getCountryDashboardCode(countryCode) });
   }
-  const dashboardId = (await findSingleRecord(db, 'dashboard', { code: projectDashboardCode })).id;
-  await deleteObject(db, 'dashboard_relation', { dashboard_id: dashboardId });
+
+  const projectDashboardId = (
+    await findSingleRecord(db, 'dashboard', { code: projectDashboardCode })
+  ).id;
+  await deleteObject(db, 'dashboard_relation', { dashboard_id: projectDashboardId });
   await deleteObject(db, 'dashboard', { code: projectDashboardCode });
 
   await db.runSql(`DELETE FROM project WHERE code = '${projectCode}'`);
