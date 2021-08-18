@@ -13,7 +13,7 @@ export class DatabaseModel {
 
     // schema promise will resolve with information about the columns on the table in the database,
     // e.g.: { id: { type: 'text', maxLength: null, nullable: false, defaultValue: null } }
-    this.schemaPromise = this.database.fetchSchemaForTable(this.DatabaseTypeClass.databaseType);
+    this.schemaPromise = this.startSchemaFetch();
 
     this.cache = {};
     this.cachedFunctionInvalidationCancellers = {};
@@ -37,7 +37,7 @@ export class DatabaseModel {
 
       // invalidate cached schema for this model on any change to db schema
       this.database.addSchemaChangeHandler(() => {
-        this.schema = null;
+        this.schemaPromise = this.startSchemaFetch();
         this.fieldNames = null;
       });
     }
@@ -47,6 +47,8 @@ export class DatabaseModel {
   get cacheDependencies() {
     return [];
   }
+
+  startSchemaFetch = () => this.database.fetchSchemaForTable(this.DatabaseTypeClass.databaseType);
 
   // functionArguments should receive the 'arguments' object
   getCacheKey = (functionName, functionArguments) =>

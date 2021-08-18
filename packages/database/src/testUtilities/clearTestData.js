@@ -80,5 +80,5 @@ export async function clearTestData(db, testStartTime = moment().format('YYYY-MM
     '',
   );
   await db.executeSql(sql);
-  await AnalyticsRefresher.executeRefresh(db);
+  await AnalyticsRefresher.refreshAnalytics(db);
 }
