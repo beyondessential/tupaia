@@ -112,7 +112,7 @@ exports.up = async function (db) {
     id: generateId(),
     code: projectCode,
     description: projectDescription,
-    sort_order: 16,
+    sort_order: 15,
     image_url: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/PacMOSSI_Background.JPG',
     default_measure: '126,171',
     user_groups: `{${permissionGroups[0]}, ${permissionGroups[1]}}`,
