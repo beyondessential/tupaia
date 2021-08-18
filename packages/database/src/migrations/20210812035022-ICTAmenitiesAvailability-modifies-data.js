@@ -103,7 +103,8 @@ const FRONT_END_CONFIG = {
   xName: 'Amenity',
   yName: 'Availability',
   periodGranularity: 'one_year_at_a_time',
-  valueType: 'fractionAndPercentage',
+  labelType: 'fractionAndPercentage',
+  valueType: 'percentage',
   chartConfig: {
     PreSchool: {
       color: '#f44336', // Blue
