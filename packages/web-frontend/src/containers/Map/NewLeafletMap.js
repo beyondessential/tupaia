@@ -1,6 +1,8 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+/**
+ * Tupaia Web
+ * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
+ * This source code is licensed under the AGPL-3.0 license
+ * found in the LICENSE file in the root directory of this source tree.
  */
 
 /**
@@ -18,9 +20,11 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-// import { Map } from 'react-leaflet';
-import { MapContainer as Map } from './MapContainer';
+
+import { Map } from 'react-leaflet';
+
 import './styles/leaflet-overrides.css';
+
 import { DEFAULT_BOUNDS } from '../../defaults';
 import { arePositionsEqual, areBoundsEqual, areBoundsValid } from '../../utils/geometry';
 
@@ -166,9 +170,10 @@ export class LeafletMap extends Component {
     return false;
   };
 
-  captureMap = mapEl => {
-    if (mapEl) {
-      this.map = mapEl;
+  captureMap = ref => {
+    if (ref) {
+      this.map = ref.leafletElement;
+
       const center = this.map.getCenter();
       this.zoom = this.map.getZoom();
       this.lat = center.lat;
@@ -205,8 +210,7 @@ export class LeafletMap extends Component {
         onMovestart={() => {
           this.moving = true;
         }}
-        // ref={this.captureMap}
-        onCreated={this.captureMap}
+        ref={this.captureMap}
         onClick={onClick}
         // these must be frozen to initial values as updates to them will
         // snap the map into place instead of animating it nicely

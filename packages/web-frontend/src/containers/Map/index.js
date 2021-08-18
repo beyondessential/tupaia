@@ -74,7 +74,6 @@ const mapStateToProps = state => {
     selectRenderedMeasuresWithDisplayInfo(state),
   );
 
-  console.log('zoom', state);
   return {
     position,
     currentOrganisationUnit,
