@@ -29,19 +29,20 @@ const dashboardName = 'Vector Surveillance';
 const projectDashboardItemCode = 'project_details';
 const projectDashboardCode = `${projectCode}_${projectName}`;
 
-const getCountryDashboardCode = countryCode => `${countryCode}_${projectName}`;
+const getCountryDashboardCode = countryCode =>
+  `${countryCode}_${projectName}_${dashboardName.split(' ').join('_')}`;
 
 const hierarchyNameToId = async (db, name) => {
   const record = await db.runSql(`SELECT id FROM entity_hierarchy WHERE name = '${name}'`);
   return record.rows[0] && record.rows[0].id;
 };
 
-const addCountryToProject = async (db, countryCode) => {
+const addCountryToProject = async (db, countryCode, entityHierarchyId) => {
   await insertObject(db, 'entity_relation', {
     id: generateId(),
     parent_id: await codeToId(db, 'entity', projectCode),
     child_id: await codeToId(db, 'entity', countryCode),
-    entity_hierarchy_id: await hierarchyNameToId(db, projectCode),
+    entity_hierarchy_id: entityHierarchyId,
   });
   await insertObject(db, 'dashboard', {
     id: generateId(),
@@ -78,12 +79,15 @@ exports.up = async function (db) {
     type: 'project',
   });
 
+  const entityHierarchyId = generateId();
   await insertObject(db, 'entity_hierarchy', {
-    id: generateId(),
+    id: entityHierarchyId,
     name: projectCode,
   });
 
-  await Promise.all(countryCodes.map(countryCode => addCountryToProject(db, countryCode)));
+  await Promise.all(
+    countryCodes.map(countryCode => addCountryToProject(db, countryCode, entityHierarchyId)),
+  );
 
   // insert project dashboard
   await insertObject(db, 'dashboard', {
@@ -113,7 +117,7 @@ exports.up = async function (db) {
     user_groups: `{${permissionGroups[0]}, ${permissionGroups[1]}}`,
     logo_url: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/PacMossi_Logo.jpg',
     entity_id: await codeToId(db, 'entity', projectCode),
-    entity_hierarchy_id: await hierarchyNameToId(db, projectCode),
+    entity_hierarchy_id: entityHierarchyId,
   });
 };
 
