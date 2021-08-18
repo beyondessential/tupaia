@@ -68,7 +68,6 @@ const generateConfig = () => ({
         "'Cases'": '$row.COVID_FJ_Positive_Tests_By_Sub_District',
         "'name'": "periodToDisplayString($row.period, 'DAY')",
         "'timestamp'": 'periodToTimestamp($row.period)',
-        '...': [],
       },
     ],
   },
