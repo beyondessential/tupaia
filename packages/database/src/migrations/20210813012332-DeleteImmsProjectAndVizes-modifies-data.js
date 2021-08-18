@@ -80,6 +80,11 @@ const deleteProjectAndHierarchy = async (db, code) => {
   await db.runSql(`DELETE FROM access_request WHERE project_id = '${projectId}'`);
   await db.runSql(`DELETE FROM project WHERE code = '${code}'`);
 
+  await db.runSql(
+    `UPDATE dashboard_relation SET "project_codes" = array_remove("project_codes", 'imms')`,
+  );
+  await db.runSql(`UPDATE "mapOverlay" SET "projectCodes" = array_remove("projectCodes", 'imms')`);
+
   await toggleEntityTriggers(db, false);
   await db.runSql(
     `DELETE FROM ancestor_descendant_relation WHERE entity_hierarchy_id = '${entityHierarchyId}'`,
