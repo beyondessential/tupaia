@@ -19,11 +19,12 @@ import { AdminPanelSessionModel } from '../models';
 import { hasTupaiaAdminPanelAccess } from '../utils';
 import { attachAuthorizationHeader, verifyBESAdminAccess } from '../middleware';
 import {
-  UserRoute,
+  ExportDashboardVisualisationRoute,
+  FetchDashboardVisualisationRoute,
   FetchHierarchyEntitiesRoute,
   FetchReportPreviewDataRoute,
   SaveDashboardVisualisationRoute,
-  FetchDashboardVisualisationRoute,
+  UserRoute,
 } from '../routes';
 
 const useForwardUnhandledRequestsToMeditrak = (app: Express) => {
@@ -48,7 +49,7 @@ const useForwardUnhandledRequestsToMeditrak = (app: Express) => {
     },
   };
 
-  //Forward any unhandled request to meditrak-server
+  // Forward any unhandled request to meditrak-server
   app.use(attachSession, attachAuthorizationHeader, createProxyMiddleware(options), handleError);
 };
 
@@ -84,6 +85,11 @@ export function createApp() {
       '/v1/dashboardVisualisation/:dashboardVisualisationId',
       verifyBESAdminAccess,
       handleWith(FetchDashboardVisualisationRoute),
+    )
+    .post(
+      '/v1/export/dashboardVisualisation',
+      verifyBESAdminAccess,
+      handleWith(ExportDashboardVisualisationRoute),
     )
     .build();
 

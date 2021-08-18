@@ -5,13 +5,12 @@
 import React from 'react';
 import MuiContainer from '@material-ui/core/Container';
 import styled from 'styled-components';
-import GetAppIcon from '@material-ui/icons/GetApp';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
 import MuiBox from '@material-ui/core/Box';
 
 import { FlexStart, FlexEnd } from '@tupaia/ui-components';
 
+import { ExportButton } from './ExportButton';
 import { SaveButton } from './SaveButton';
 import { ReactComponent as DocumentIcon } from './DocumentIcon.svg';
 import { EditModal } from './Modal';
@@ -63,9 +62,7 @@ export const Toolbar = () => {
           </MuiBox>
         </FlexStart>
         <FlexEnd>
-          <IconButton>
-            <GetAppIcon />
-          </IconButton>
+          <ExportButton />
           <EditModal />
           <SaveButton />
         </FlexEnd>
