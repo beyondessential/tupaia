@@ -28,9 +28,10 @@ const generateConfig = () => ({
     fetch: {
       aggregations: [
         {
-          type: 'RAW',
+          type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
           config: {
             dataSourceEntityType: 'facility',
+            aggregationEntityType: 'requested',
           },
         },
       ],
@@ -38,17 +39,10 @@ const generateConfig = () => ({
     },
     transform: [
       {
-        '...': 'drop',
-        value: 'sum',
-        period: 'group',
-        transform: 'aggregate',
-      },
-      {
         "'name'": "periodToDisplayString($row.period, 'DAY')",
         transform: 'select',
         "'timestamp'": 'periodToTimestamp($row.period)',
         "'Tests'": '$row.value',
-        '...': [],
       },
     ],
   },
@@ -57,6 +51,7 @@ const generateConfig = () => ({
     type: 'chart',
     chartType: 'bar',
     valueType: 'number',
+    chartConfig: { Tests: {} },
     periodGranularity: 'day',
     presentationOptions: {
       hideAverage: true,
