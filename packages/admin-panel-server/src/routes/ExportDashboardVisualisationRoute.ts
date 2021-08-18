@@ -7,7 +7,7 @@
 import { Route } from '@tupaia/server-boilerplate';
 
 export class ExportDashboardVisualisationRoute extends Route {
-  protected isDownload = true;
+  protected readonly type = 'download';
 
   async buildResponse() {
     const { visualisation } = this.req.body;

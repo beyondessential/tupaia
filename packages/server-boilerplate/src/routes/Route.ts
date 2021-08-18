@@ -24,6 +24,8 @@ type DownloadResBody = {
   type?: string;
 };
 
+type RouteType = 'default' | 'download';
+
 export class Route<
   Req extends ExpressRequest<Req> = Request,
   Res extends ExpressResponse<Req> = Response<ResBody<Req>>
@@ -35,9 +37,9 @@ export class Route<
   readonly next: NextFunction;
 
   /**
-   * Override in child classes to indicate that this is a download route
+   * Override in child classes to specify the route type
    */
-  protected isDownload = false;
+  protected type: RouteType = 'default';
 
   constructor(req: Req, res: Res, next: NextFunction) {
     this.req = req;
@@ -55,7 +57,7 @@ export class Route<
     // swallowed.
     try {
       const response = await this.buildResponse();
-      if (this.isDownload) {
+      if (this.type === 'download') {
         this.download(response);
       } else {
         this.respond(response, 200);
