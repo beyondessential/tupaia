@@ -1,18 +1,14 @@
-/**
- * Tupaia Web
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
- * This source code is licensed under the AGPL-3.0 license
- * found in the LICENSE file in the root directory of this source tree.
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ *
  */
 
 import React from 'react';
-
 import { connect } from 'react-redux';
 import { LayerGroup } from 'react-leaflet';
-
+import { IconMarker, DEFAULT_DISASTER_COLOR } from '@tupaia/ui-components/lib/map';
 import { selectDisaster } from '../../disaster/actions';
-import { IconMarker } from '../../components/Marker';
-import { DEFAULT_DISASTER_COLOR } from '../../components/Marker/markerColors';
 import { selectCurrentProjectCode } from '../../selectors';
 
 const DisasterMarker = ({ onSelect, ...data }) => (

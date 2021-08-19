@@ -15,7 +15,6 @@ import {
   selectOrgUnitCountry,
   selectRenderedMeasuresWithDisplayInfo,
 } from '../../selectors';
-import { MeasureOptionsGroupPropType } from '../../components/Marker/propTypes';
 import { Tooltip } from '../../components/Tooltip';
 
 const IconButton = styled(MuiIconButton)`
@@ -56,7 +55,13 @@ export const MapTableModalComponent = ({
 };
 
 MapTableModalComponent.propTypes = {
-  measureOptions: MeasureOptionsGroupPropType,
+  measureOptions: PropTypes.shape({
+    coordinates: PropTypes.arrayOf(PropTypes.number),
+    value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    photoUrl: PropTypes.string,
+    organisationUnitCode: PropTypes.string,
+    name: PropTypes.string,
+  }),
   measureData: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string,

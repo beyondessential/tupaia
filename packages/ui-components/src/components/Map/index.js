@@ -10,6 +10,7 @@ export {
   MapContainer as LeafletMapContainer,
 } from 'react-leaflet';
 export * from './AreaTooltip';
+export * from './constants';
 export * from './EntityPolygon';
 export * from './InversePolygonMask';
 export * from './Legend';

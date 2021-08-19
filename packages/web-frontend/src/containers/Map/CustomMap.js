@@ -12,10 +12,10 @@ import { LayerGroup, Pane } from 'react-leaflet';
 
 import { LeafletMap } from './NewLeafletMap';
 
-import MarkerLayer from './MarkerLayer';
+// import MarkerLayer from './MarkerLayer';
 import DisasterLayer from './DisasterLayer';
 import { DemoLand } from './DemoLand';
-import { TileLayer } from './TileLayer';
+// import { TileLayer } from './TileLayer';
 
 import { checkBoundsDifference, organisationUnitIsArea } from '../../utils';
 import ConnectedPolygon from './ConnectedPolygon';
@@ -145,7 +145,7 @@ export class CustomMap extends Component {
         rightPadding={sidePanelWidth}
         onPositionChanged={this.onPositionChanged}
       >
-        <TileLayer tileSetUrl={tileSetUrl} />
+        {/*<TileLayer tileSetUrl={tileSetUrl} />*/}
         <MapPane name="demo-land" above="tilePane" aboveAmount={0}>
           <DemoLand />
         </MapPane>
@@ -156,7 +156,7 @@ export class CustomMap extends Component {
           {this.renderPolygons()}
         </MapPane>
         <MapPane name="org-markers" above="markerPane">
-          <MarkerLayer />
+          {/*<MarkerLayer />*/}
         </MapPane>
         <MapPane name="disaster-markers" above="org-markers">
           <DisasterLayer />

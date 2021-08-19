@@ -10,9 +10,8 @@ import {
   NO_COLOR,
   BREWER_AUTO,
   UNKNOWN_COLOR,
-  resolveSpectrumColour,
-} from '../components/Marker/markerColors';
-import { SPECTRUM_ICON, DEFAULT_ICON, UNKNOWN_ICON } from '../components/Marker/markerIcons';
+  UNKNOWN_ICON,
+} from '@tupaia/ui-components/lib/map';
 import { VALUE_TYPES } from '../components/View/constants';
 import { MAP_COLORS } from '../styles';
 import { formatDataValue } from './formatters';
@@ -35,7 +34,7 @@ export const SPECTRUM_MEASURE_TYPES = [MEASURE_TYPE_SPECTRUM, MEASURE_TYPE_SHADE
 const SPECTRUM_SCALE_DEFAULT = { left: {}, right: {} };
 const PERCENTAGE_SPECTRUM_SCALE_DEFAULT = { left: { max: 0 }, right: { min: 1 } };
 
-export function autoAssignColors(values) {
+function autoAssignColors(values) {
   if (!values) return [];
 
   let autoIndex = 0;
@@ -60,7 +59,7 @@ export function autoAssignColors(values) {
   }));
 }
 
-export function createValueMapping(valueObjects, type) {
+function createValueMapping(valueObjects, type) {
   const mapping = {};
 
   valueObjects.forEach(valueObject => {
@@ -235,7 +234,7 @@ export function processMeasureInfo(response) {
   };
 }
 
-export function getValueInfo(value, valueMapping, hiddenValues = {}) {
+function getValueInfo(value, valueMapping, hiddenValues = {}) {
   if (!value && typeof value !== 'number' && valueMapping.null) {
     // use 'no data' value
     const nullValue = hiddenValues.null || hiddenValues[valueMapping.null.value];
