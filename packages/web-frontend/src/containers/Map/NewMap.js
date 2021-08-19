@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { TileLayer, MarkerLayer } from '@tupaia/ui-components/lib/map';
-import { LeafletMap } from './LeafletMap';
+import { LeafletMap } from './NewLeafletMap';
 import { checkBoundsDifference } from '../../utils';
 
 const CHANGE_TO_PARENT_PERCENTAGE = 0.6;

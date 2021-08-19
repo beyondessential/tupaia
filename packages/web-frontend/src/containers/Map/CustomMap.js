@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 
 import { LayerGroup, Pane } from 'react-leaflet';
 
-import { LeafletMap } from './LeafletMap';
+import { LeafletMap } from './NewLeafletMap';
 
 import MarkerLayer from './MarkerLayer';
 import DisasterLayer from './DisasterLayer';

@@ -30,6 +30,32 @@ export const MapContainer = ({
 }) => {
   const [map, setMap] = useState(null);
 
+  map?.whenReady(() => {
+    if (props.movestart) {
+      map.on('movestart', event => {
+        props.movestart(event);
+      });
+    }
+
+    if (props.moveend) {
+      map.on('moveend', event => {
+        props.moveend(event);
+      });
+    }
+
+    if (props.zoomstart) {
+      map.on('zoomstart', event => {
+        props.zoomstart(event);
+      });
+    }
+
+    if (props.zoomend) {
+      map.on('zoomend', event => {
+        props.zoomend(event);
+      });
+    }
+  });
+
   useEffect(() => {
     if (map && bounds) {
       map.fitBounds(bounds);

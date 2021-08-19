@@ -20,11 +20,8 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
-import { Map } from 'react-leaflet';
-
+import { MapContainer as Map } from './MapContainer';
 import './styles/leaflet-overrides.css';
-
 import { DEFAULT_BOUNDS } from '../../defaults';
 import { arePositionsEqual, areBoundsEqual, areBoundsValid } from '../../utils/geometry';
 
@@ -170,10 +167,9 @@ export class LeafletMap extends Component {
     return false;
   };
 
-  captureMap = ref => {
-    if (ref) {
-      this.map = ref.leafletElement;
-
+  captureMap = mapEl => {
+    if (mapEl) {
+      this.map = mapEl;
       const center = this.map.getCenter();
       this.zoom = this.map.getZoom();
       this.lat = center.lat;
@@ -202,15 +198,15 @@ export class LeafletMap extends Component {
       <Map
         style={{ height: window.innerHeight, width: '100%' }}
         zoomControl={false}
-        onZoomend={this.onZoomEnd}
-        onZoomstart={() => {
+        zoomend={this.onZoomEnd}
+        zoomstart={() => {
           this.zooming = true;
         }}
-        onMoveend={this.onMoveEnd}
-        onMovestart={() => {
+        moveend={this.onMoveEnd}
+        movestart={() => {
           this.moving = true;
         }}
-        ref={this.captureMap}
+        onCreated={this.captureMap}
         onClick={onClick}
         // these must be frozen to initial values as updates to them will
         // snap the map into place instead of animating it nicely
