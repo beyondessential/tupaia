@@ -1,31 +1,5 @@
 [
   {
-    "id": "COVID_AU_HOSPITALS_AND_TESTING_SITES",
-    "project": "explore",
-    "orgUnit": "AU"
-  },
-
-  {
-    "id": "COVID_Amount_Of_Hand_Sanitizer_Available",
-    "project": "explore",
-    "orgUnit": "TO"
-  },
-  {
-    "id": "COVID_Facility_Commodities_Water",
-    "project": "explore",
-    "orgUnit": "TO"
-  },
-  {
-    "id": "COVID_Facility_Commodities_Soap",
-    "project": "explore",
-    "orgUnit": "TO"
-  },
-  {
-    "id": "95",
-    "project": "explore",
-    "orgUnit": "TO"
-  },
-  {
     "id": "13",
     "project": "explore",
     "orgUnit": "TO"
@@ -41,17 +15,22 @@
     "orgUnit": "SB"
   },
   {
+    "id": "95",
+    "project": "explore",
+    "orgUnit": "TO"
+  },
+  {
     "id": "173,89",
     "project": "explore",
     "orgUnit": "TO"
   },
   {
-    "id": "193,199",
+    "id": "192,198",
     "project": "explore",
     "orgUnit": "PG"
   },
   {
-    "id": "192,198",
+    "id": "193,199",
     "project": "explore",
     "orgUnit": "PG"
   },
@@ -61,9 +40,14 @@
     "orgUnit": "TO"
   },
   {
-    "id": "TONGA_NUMBER_OF_HOUSEHOLDS",
+    "id": "COVID_Amount_Of_Hand_Sanitizer_Available",
     "project": "explore",
     "orgUnit": "TO"
+  },
+  {
+    "id": "COVID_AU_HOSPITALS_AND_TESTING_SITES",
+    "project": "explore",
+    "orgUnit": "AU"
   },
   {
     "id": "COVID_AU_State_Total_Number_Confirmed_Cases",
@@ -71,8 +55,18 @@
     "orgUnit": "AU"
   },
   {
-    "id": "UNFPA_RH_Condoms_male",
-    "project": "unfpa",
+    "id": "COVID_Facility_Commodities_Soap",
+    "project": "explore",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "COVID_Facility_Commodities_Water",
+    "project": "explore",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "STRIVE_CRF_Febrile_Cases_Radius",
+    "project": "strive",
     "orgUnit": "TO"
   },
   {
@@ -81,8 +75,13 @@
     "orgUnit": "TO"
   },
   {
-    "id": "STRIVE_CRF_Febrile_Cases_Radius",
-    "project": "strive",
+    "id": "TONGA_NUMBER_OF_HOUSEHOLDS",
+    "project": "explore",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "UNFPA_RH_Condoms_male",
+    "project": "unfpa",
     "orgUnit": "TO"
   }
 ]
