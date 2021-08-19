@@ -6,17 +6,15 @@
 
 
 import { AuthHandler } from './types';
-import { ApiConnectionBuilder, EntityApi } from './connections';
+import { ApiConnection, EntityApi } from './connections';
+import { ENDPOINT_BASE_URLS, EndpointBaseUrlSet } from './constants';
 
 export class TupaiaApiClient {
 
   public readonly entity: EntityApi;
 
-  constructor(authHandler: AuthHandler) {
-    this.entity = new ApiConnectionBuilder()
-      .handleAuthWith(authHandler)
-      .buildAs(EntityApi);
+  constructor(authHandler: AuthHandler, baseUrls: EndpointBaseUrlSet = ENDPOINT_BASE_URLS) {
+    this.entity = new EntityApi(new ApiConnection(authHandler, baseUrls.entity));
   }
 
 }
-

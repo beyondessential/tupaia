@@ -23,14 +23,18 @@ const DEFAULT_MAX_WAIT_TIME = 45 * 1000; // 45 seconds in milliseconds
 
 /**
  * TODO: make internal, do not export from package
+ *
+ *
+ * TODO: restore other ApiConnection, let other packages use that. This one is different.
  */
 export class ApiConnection {
-  public authHandler: AuthHandler;
+  private readonly authHandler: AuthHandler;
 
-  public baseUrl!: string;
+  private readonly baseUrl: string;
 
-  constructor(authHandler: AuthHandler) {
+  constructor(authHandler: AuthHandler, baseUrl: string) {
     this.authHandler = authHandler;
+    this.baseUrl = baseUrl;
   }
 
   async get(endpoint: string, queryParameters: QueryParameters = {}) {
@@ -59,7 +63,7 @@ export class ApiConnection {
     const fetchConfig: FetchConfig = {
       method: requestMethod || 'GET',
       headers: {
-        Authorization: await this.authHandler.getAuthHeader(),
+        Authorization: this.authHandler.getAuthHeader(),
         'Content-Type': 'application/json',
       },
     };

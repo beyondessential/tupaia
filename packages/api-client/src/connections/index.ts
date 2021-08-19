@@ -5,5 +5,4 @@
  */
 
 export { ApiConnection } from './ApiConnection';
-export { ApiConnectionBuilder } from './ApiConnectionBuilder';
 export { EntityApi } from './EntityApi';

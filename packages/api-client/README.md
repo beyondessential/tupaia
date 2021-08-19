@@ -2,16 +2,20 @@
 
 Client for connecting to Tupaia APIs
 
+Follows [SemVer](https://semver.org/) 
+
 ### Install
 
-- external: `yarn add @beyondessential/tupaia-api-client`
-- internal: add the dependency to your package.json
+- `yarn add @beyondessential/tupaia-api-client`
 
 ### Usage
 
-1. Create a new AuthHandler
-1. Pass the AuthHandler to the constructor of TupaiaApiClient
+```
+const auth = new BasicAuthHandler(username, password);
+const tupaia = new TupaiaApiClient(auth);
+tupaia.entity.getEntity('...')
+```
 
-### Publishing
+## Publishing
 
-- `yarn publish --access public`
+- `yarn publish:run`

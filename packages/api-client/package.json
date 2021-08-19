@@ -1,6 +1,6 @@
 {
   "name": "@beyondessential/tupaia-api-client",
-  "version": "1.0.4",
+  "version": "1.0.12",
   "description": "API client for connecting to Tupaia APIs",
   "main": "dist/index.js",
   "types": "./dist/**/**.d.ts",
@@ -12,7 +12,10 @@
     "build:typedefs": "tsc",
     "test": "jest --runInBand",
     "test:coverage": "yarn test --coverage",
-    "prepublish": "yarn lint; yarn build:typedefs; yarn build"
+    "publish:run": "yarn publish --no-git-tag-version",
+    "prepublish:strict": "yarn lint && yarn build:typedefs && yarn build",
+    "prepublish:loose": "yarn lint; yarn build:typedefs; yarn build",
+    "prepublish": "printf \"\n\nNOTE: Running loose mode, change to strict when issues fixed\n\n\"; yarn prepublish:loose"
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "repository": {

@@ -11,11 +11,5 @@ export type QueryParameters = Record<string, string>;
 
 export interface AuthHandler {
   email?: string;
-  getAuthHeader: () => Promise<string>;
+  getAuthHeader: () => string;
 }
-
-/*
- * API Types
- * Use with `import type {}` for type definitions
- */
-export type { EntityApi } from './connections';
