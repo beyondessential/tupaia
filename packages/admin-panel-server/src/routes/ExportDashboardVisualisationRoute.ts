@@ -14,7 +14,7 @@ export class ExportDashboardVisualisationRoute extends Route {
     const fileBaseName = visualisation.code || 'new_dashboard_visualisation';
 
     return {
-      contents: [visualisation],
+      contents: visualisation,
       filePath: `${fileBaseName}.json`,
       type: '.json',
     };
