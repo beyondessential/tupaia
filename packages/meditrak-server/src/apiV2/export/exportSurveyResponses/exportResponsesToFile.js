@@ -7,6 +7,7 @@ import xlsx from 'xlsx';
 import moment from 'moment';
 import keyBy from 'lodash.keyby';
 import chunk from 'lodash.chunk';
+import groupBy from 'lodash.groupby';
 import {
   addExportedDateAndOriginAtTheSheetBottom,
   getExportDatesString,
@@ -19,7 +20,6 @@ import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../../../dat
 import { hasBESAdminAccess } from '../../../permissions';
 import { getExportPathForUser } from '../getExportPathForUser';
 import { zipMultipleFiles } from '../zipMultipleFiles';
-import groupBy from 'lodash.groupby';
 
 const FILE_PREFIX = 'survey_response_export';
 const MAX_RESPONSES_PER_FILE = 10000; // exporting too many responses in one file ends up out of memory
@@ -287,8 +287,7 @@ export async function exportResponsesToFile(
     const questions = await findQuestionsInSurvey(models, survey.id);
 
     if (surveyResponse) {
-      const entity = await models.entity.findById(surveyResponse.entity_id);
-      await addResponsesToSheet([surveyResponse], { [entity.id]: entity }, survey, questions);
+      await addResponsesToSheet([surveyResponse], survey, questions);
     } else {
       const surveyResponses = await findResponsesForSurvey(survey);
       const responseBatches = chunk(surveyResponses, MAX_RESPONSES_PER_FILE);

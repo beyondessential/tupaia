@@ -64,7 +64,8 @@ export class SurveyResponseVariablesExtractor {
     const surveyResponse = await this.models.surveyResponse.findById(surveyResponseId);
     const surveyId = surveyResponse.survey_id;
     const country = await surveyResponse.country();
-    return { surveyResponse, surveyId, country };
+    const entities = await this.models.entity.find({ id: surveyResponse.entity_id });
+    return { surveyResponse, surveyId, country, entities };
   }
 
   async getSurveys(surveyId, surveyCodes, countryId) {

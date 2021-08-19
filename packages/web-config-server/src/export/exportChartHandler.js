@@ -79,6 +79,6 @@ export const exportChartHandler = async (req, res) => {
 
   xlsx.writeFile(workbook, filePath);
   res.download(filePath, () => {
-    fs.unlink(filePath); // delete export file after downloaded
+    fs.unlinkSync(filePath); // delete export file after downloaded
   });
 };
