@@ -192,7 +192,7 @@ const FQS2_DATA_MAP = [
   {
     dataElement: 'lesmis_fqs2_22',
     label:
-      'Principal attends VEDC meetings to discuss progress in school development plan (at least 4 per times per year)',
+      'Principal attends VEDC meetings to discuss progress in school development plan (at least 4 times per year)',
   },
   {
     dataElement: 'lesmis_fqs2_23',
