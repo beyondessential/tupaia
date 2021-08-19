@@ -1,4 +1,3 @@
-import isPlainObject from 'lodash.isplainobject';
 import { checkValueSatisfiesCondition } from '@tupaia/utils';
 
 /**
@@ -8,14 +7,11 @@ import { checkValueSatisfiesCondition } from '@tupaia/utils';
  */
 export const getEventsThatSatisfyConditions = (events, conditions) => {
   const { dataValues: valueConditions = {} } = conditions || {};
-  const eventHasTargetValues = ({ dataValues }) =>
-    Object.entries(valueConditions).every(([dataElement, condition]) => {
-      const dataValue = Array.isArray(dataValues)
-        ? dataValues.find(dv => dv.dataElement === dataElement)
-        : dataValues[dataElement];
-      const value = isPlainObject(dataValue) ? dataValue.value : dataValue;
-      return checkValueSatisfiesCondition(value, condition);
-    });
+
+  const eventHasTargetValues = event =>
+    Object.entries(valueConditions).every(([dataElement, condition]) =>
+      checkValueSatisfiesCondition(event.dataValues[dataElement], condition),
+    );
 
   return events.filter(eventHasTargetValues);
 };

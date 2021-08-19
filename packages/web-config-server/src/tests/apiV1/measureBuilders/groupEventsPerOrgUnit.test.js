@@ -102,7 +102,6 @@ const createAggregator = () => {
       endDate: undefined,
       trackedEntityInstance: undefined,
       eventId: undefined,
-      useDeprecatedApi: false,
     })
     .resolves(events);
 

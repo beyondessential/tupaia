@@ -9,8 +9,13 @@ import { convertToPeriod, EARLIEST_DATA_DATE_STRING, getPeriodsInRange } from '@
 import { getContinuousPeriodsForAnalytics } from './utils';
 
 export const sumPreviousPerPeriod = (analytics, aggregationConfig, aggregationPeriod) => {
-  const { requestedPeriod } = aggregationConfig;
-  const periods = calculatePeriodsFromAnalytics(analytics, aggregationPeriod, requestedPeriod);
+  const { requestedPeriod, sumTillLatestData } = aggregationConfig;
+  const periods = calculatePeriodsFromAnalytics(
+    analytics,
+    aggregationPeriod,
+    requestedPeriod,
+    sumTillLatestData,
+  );
   const analyticsByPeriod = groupBy(analytics, analytic =>
     convertToPeriod(analytic.period, aggregationPeriod),
   );
@@ -67,7 +72,12 @@ const sumByAnalytic = (previousAnalytics, currentAnalytics, period) => {
   return returnAnalytics;
 };
 
-const calculatePeriodsFromAnalytics = (analytics, aggregationPeriod, requestedPeriod) => {
+const calculatePeriodsFromAnalytics = (
+  analytics,
+  aggregationPeriod,
+  requestedPeriod,
+  sumTillLatestData = false,
+) => {
   const periodsInAnalytics = getContinuousPeriodsForAnalytics(analytics, aggregationPeriod);
   if (!requestedPeriod) {
     return periodsInAnalytics;
@@ -77,7 +87,7 @@ const calculatePeriodsFromAnalytics = (analytics, aggregationPeriod, requestedPe
     .map(period => convertToPeriod(period, aggregationPeriod));
 
   const endPeriod = Math.min(
-    Math.max(...periodsInAnalytics),
+    sumTillLatestData ? Math.max(...periodsInAnalytics) : Infinity,
     Math.max(...requestedPeriodArray),
   ).toString();
 

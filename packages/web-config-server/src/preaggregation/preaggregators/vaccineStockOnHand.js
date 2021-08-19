@@ -31,6 +31,7 @@ const fetchFridgeData = async aggregator => {
     organisationUnitCodes: [WORLD],
     startDate: utcMoment().subtract(LOOKBACK_DAYS, 'days').format(),
     endDate: utcMoment().format(),
+    useDeprecatedApi: true,
   };
 
   const breachEvents = await aggregator.fetchEvents(FRIDGE_BREACH_PROGRAM_CODE, fetchConfig);
@@ -79,13 +80,13 @@ const buildDataValues = (metadata, data) => {
 
     const existingEvent = dataValuesByOrgUnit[event.orgUnit];
     if (!existingEvent || existingEvent.period < event.eventDate) {
-      const newData = event.dataValues
-        .filter(value => metadataForOrgUnit[value.dataElement])
-        .map(value => ({
-          code: metadataForOrgUnit[value.dataElement],
+      const newData = Object.keys(event.dataValues)
+        .filter(dataElement => metadataForOrgUnit[dataElement])
+        .map(dataElement => ({
+          code: metadataForOrgUnit[dataElement],
           period: momentToPeriod(utcMoment(event.eventDate), DAY),
           orgUnit: event.orgUnit,
-          value: value.value,
+          value: event.dataValues[dataElement],
         }));
 
       dataValuesByOrgUnit[event.orgUnit] = { period: event.eventDate, data: newData };

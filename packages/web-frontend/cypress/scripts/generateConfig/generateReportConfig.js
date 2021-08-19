@@ -5,12 +5,9 @@
 
 /* eslint-disable no-template-curly-in-string */
 
-import moment from 'moment';
-
 import { stringifyQuery, yup } from '@tupaia/utils';
-import { convertDateRangeToUrlPeriodString } from '../../../src/historyNavigation/utils';
 import config from '../../config.json';
-import { buildUrlSchema, buildUrlsUsingConfig, sortUrls } from './helpers';
+import { buildUrlSchema, buildUrlsUsingConfig, buildVizPeriod, sortUrls } from './helpers';
 import { DashboardReportFilter } from './VisualisationFilter';
 
 const urlSchema = buildUrlSchema({
@@ -26,16 +23,6 @@ const urlSchema = buildUrlSchema({
   },
 });
 
-const buildReportPeriod = (startDate, endDate) => {
-  if (!startDate || !endDate) {
-    return undefined;
-  }
-  return convertDateRangeToUrlPeriodString({
-    startDate: moment(startDate),
-    endDate: moment(endDate),
-  });
-};
-
 const stringifyUrl = url => {
   if (typeof url === 'string') {
     return url;
@@ -45,7 +32,7 @@ const stringifyUrl = url => {
   const path = [project, orgUnit, dashboard].map(encodeURIComponent).join('/');
   const queryParams = {
     report: code,
-    reportPeriod: reportPeriod || buildReportPeriod(startDate, endDate),
+    reportPeriod: reportPeriod || buildVizPeriod(startDate, endDate),
   };
 
   return stringifyQuery('', path, queryParams);

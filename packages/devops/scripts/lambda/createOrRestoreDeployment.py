@@ -1,6 +1,4 @@
 import boto3
-import collections
-import datetime
 import re
 import asyncio
 import functools
@@ -16,9 +14,6 @@ async def wait_for_volume(volume_id, to_be):
     volume_available_waiter = ec.get_waiter('volume_' + to_be)
     await loop.run_in_executor(None, functools.partial(volume_available_waiter.wait, VolumeIds=[volume_id]))
 
-async def wait_for_instance(instance_id, to_be):
-    volume_available_waiter = ec.get_waiter('instance_' + to_be)
-    await loop.run_in_executor(None, functools.partial(volume_available_waiter.wait, InstanceIds=[instance_id]))
 
 def get_latest_snapshot_id(account_ids, restore_code):
     filters = [
@@ -52,13 +47,6 @@ async def restore_instance(account_ids, instance):
         dev_to_attach = dev
     print('Will attach to ' + dev_to_attach['DeviceName'])
 
-    # Stop the instance being restored
-    instance_object = ec2.Instance(instance['InstanceId'])
-    instance_object.stop()
-    print('Stopping instance ' + instance_object.id)
-    await wait_for_instance(instance_object.id, 'stopped')
-    print('Stopped instance with id ' + instance_object.id)
-
     # Detach the old volume
     old_vol_id = dev_to_attach['Ebs']['VolumeId']
     old_volume = ec2.Volume(old_vol_id)
@@ -85,14 +73,8 @@ async def restore_instance(account_ids, instance):
     # Ensure EBS volumes are deleted on termination of instance
     ec.modify_instance_attribute(InstanceId=instance['InstanceId'], BlockDeviceMappings=[{'DeviceName': dev_to_attach['DeviceName'], 'Ebs': { 'VolumeId': new_volume_id, 'DeleteOnTermination': True }}])
 
-    # Start instance with new volume
-    instance_object.start()
-    print('Restarting instance')
-    await wait_for_instance(instance_object.id, 'running')
-    print('Instance successfully restored')
 
-
-def create_instance(account_ids, restore_code, stage, instance_type):
+def create_instance(restore_code, stage, instance_type):
     print('Creating new ' + instance_type + ' instance for branch ' + stage + ' of ' + restore_code)
 
     # Get the (production) instance to base this new instance on
@@ -132,7 +114,9 @@ def create_instance(account_ids, restore_code, stage, instance_type):
         { 'Key': 'Stage', 'Value': stage },
         { 'Key': 'RestoreFrom', 'Value': restore_code },
         { 'Key': 'DomainName', 'Value': domain },
-        { 'Key': 'Subdomains', 'Value': subdomains_string }
+        { 'Key': 'Subdomains', 'Value': subdomains_string },
+        { 'Key': 'StopAtUTC', 'Value': '09:00'}, # 9am UTC is 7pm AEST
+        { 'Key': 'StartAtUTC', 'Value': '20:00'} # 8pm UTC is 6am AEST
       ]}]
     }
     # Get details of IAM profile (e.g. role allowing access to lambda) if applicable
@@ -228,7 +212,7 @@ def lambda_handler(event, context):
 
     filters = [
         { 'Name': 'tag-key', 'Values': ['RestoreFrom'] },
-        { 'Name': 'instance-state-name', 'Values': ['running'] }
+        { 'Name': 'instance-state-name', 'Values': ['stopped'] }
     ]
     if 'RestoreFrom' in event:
       print('Restoring instances generated from ' + event['RestoreFrom'])
@@ -236,29 +220,24 @@ def lambda_handler(event, context):
     if 'Branch' in event:
       print('Restoring the ' + event['Branch'] + ' branch')
       filters.append({'Name': 'tag:Stage', 'Values': [event['Branch']]})
-    reservations = ec.describe_instances(
-        Filters=filters
-    ).get(
-        'Reservations', []
-    )
-    instances = sum(
-          [
-              [i for i in r['Instances']]
-              for r in reservations
-          ], [])
 
-    # If there isn't an existing ec2 instance matching the restore code and branch, create it
-    if len(instances) == 0 and 'RestoreFrom' in event and 'Branch' in event:
+    instances = find_instances(filters)
+
+    # If there are existing ec2 instance(s) to restore, restore them
+    if len(instances) > 0:
+      tasks = sum(
+      [
+          [asyncio.ensure_future(restore_instance(account_ids, instance)) for instance in instances]
+      ], [])
+      loop.run_until_complete(asyncio.wait(tasks))
+      print('Finished restoring all instances')
+
+    # If there are no matching instances and this is for a specific branch, create a new instance
+    elif 'RestoreFrom' in event and 'Branch' in event:
       if 'InstanceType' not in event:
           raise Exception('You must include the key "InstanceType" in the lambda config. We recommend "t3a.medium" unless you need more speed.')
-      new_instance = create_instance(account_ids, event['RestoreFrom'], event['Branch'], event['InstanceType'])
-      instances = [new_instance]
-      print('Finished creating new instance')
-
-    tasks = sum(
-    [
-        [asyncio.ensure_future(restore_instance(account_ids, instance)) for instance in instances]
-    ], [])
-
-    loop.run_until_complete(asyncio.wait(tasks))
-    print('Finished restoring all instances')
+      new_instance = create_instance(event['RestoreFrom'], event['Branch'], event['InstanceType'])
+      loop.run_until_complete(stop_instance(new_instance))
+      loop.run_until_complete(restore_instance(account_ids, new_instance))
+      loop.run_until_complete(start_instance(new_instance))
+      print('Instance successfully created')
