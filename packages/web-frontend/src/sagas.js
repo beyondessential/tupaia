@@ -884,12 +884,18 @@ function* fetchMeasureInfo(measureId) {
       ? measureParams
       : getDefaultDates(measureParams);
 
+  // This param should default to false, used when large quantity
+  // of entities is detrimental to performance. Consequence is more fetching.
+  const fetchOnlyDisplayLevel = measureParams.fetchOnlyDisplayLevel === 'true' || false;
+  const shouldShowAllParentCountryResults =
+    !fetchOnlyDisplayLevel && !isMobile() && countryCode !== activeProjectCode;
+
   const urlParameters = {
     measureId,
     organisationUnitCode,
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
-    shouldShowAllParentCountryResults: !isMobile() && countryCode !== activeProjectCode,
+    shouldShowAllParentCountryResults,
     projectCode: activeProjectCode,
   };
   const requestResourceUrl = `measureData?${queryString.stringify(urlParameters)}`;
