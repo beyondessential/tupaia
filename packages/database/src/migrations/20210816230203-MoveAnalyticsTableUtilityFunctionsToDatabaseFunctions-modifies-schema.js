@@ -238,6 +238,10 @@ exports.up = async function (db) {
       
       end $$ LANGUAGE plpgsql;
   `);
+
+  // Force rebuild the analytics table so it uses the period formats
+  await db.runSql('SELECT build_analytics_table(true);');
+  await db.runSql('SELECT create_analytics_table_indexes();');
   return null;
 };
 
