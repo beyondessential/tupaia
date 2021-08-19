@@ -22,14 +22,17 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const INDICATOR = {
-  code: 'COVID_FJ_Num_Tests_By_Sub_District',
+const INDICATOR_1 = {
+  code: 'COVID_FJ_7_Day_Rolling_Pos_Tests',
   builder: 'analyticArithmetic',
   config: {
-    formula: 'COVIDTest_FJNumTest',
-    parameters: new Array(7).map(([_, i]) => ({
+    formula: new Array(7)
+      .fill(0)
+      .map((_, i) => `PositiveTests${i + 1}Day${i === 0 ? '' : 's'}Ago`)
+      .join(' + '),
+    parameters: new Array(7).fill(0).map((_, i) => ({
       // Note: from 0 to 6 days ago
-      code: `PositiveTests${i}Day${i === 1 ? '' : 's'}Ago`,
+      code: `PositiveTests${i + 1}Day${i === 0 ? '' : 's'}Ago`,
       config: {
         formula: 'COVIDTest_FJPosTest',
         aggregation: [
@@ -37,7 +40,7 @@ const INDICATOR = {
           {
             type: 'OFFSET_PERIOD',
             config: {
-              offset: i,
+              offset: i + 1,
               periodType: 'day',
             },
           },
@@ -45,32 +48,73 @@ const INDICATOR = {
       },
       builder: 'analyticArithmetic',
     })),
-    aggregation: {
-      COVIDTest_FJNumTest: {
-        type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
-        config: {
-          dataSourceEntityType: 'facility',
-          aggregationEntityType: 'sub_district',
-        },
+    aggregation: 'FINAL_EACH_DAY',
+    defaultValues: new Array(7)
+      .fill(0)
+      .map((_, i) => `PositiveTests${i + 1}Day${i === 0 ? '' : 's'}Ago`)
+      .reduce((acc, code) => ({ ...acc, [code]: 0 }), {}),
+  },
+};
+
+const INDICATOR_2 = {
+  code: 'COVID_FJ_7_Day_Rolling_Num_Tests',
+  builder: 'analyticArithmetic',
+  config: {
+    formula: new Array(7)
+      .fill(0)
+      .map((_, i) => `NumTests${i + 1}Day${i === 0 ? '' : 's'}Ago`)
+      .join(' + '),
+    parameters: new Array(7).fill(0).map((_, i) => ({
+      // Note: from 0 to 6 days ago
+      code: `NumTests${i + 1}Day${i === 0 ? '' : 's'}Ago`,
+      config: {
+        formula: 'COVIDTest_FJNumTest',
+        aggregation: [
+          'FINAL_EACH_DAY',
+          {
+            type: 'OFFSET_PERIOD',
+            config: {
+              offset: i + 1,
+              periodType: 'day',
+            },
+          },
+        ],
       },
-    },
+      builder: 'analyticArithmetic',
+    })),
+    aggregation: 'FINAL_EACH_DAY',
+    defaultValues: new Array(7)
+      .fill(0)
+      .map((_, i) => `NumTests${i + 1}Day${i === 0 ? '' : 's'}Ago`)
+      .reduce((acc, code) => ({ ...acc, [code]: 0 }), {}),
   },
 };
 
 exports.up = async function (db) {
   // const indicator = generateIndicator();
-  await insertObject(db, 'indicator', { ...INDICATOR, id: generateId() });
+  await insertObject(db, 'indicator', { ...INDICATOR_1, id: generateId() });
   await insertObject(db, 'data_source', {
     id: generateId(),
-    code: INDICATOR.code,
+    code: INDICATOR_1.code,
+    type: 'dataElement',
+    service_type: 'indicator',
+  });
+
+  await insertObject(db, 'indicator', { ...INDICATOR_2, id: generateId() });
+  await insertObject(db, 'data_source', {
+    id: generateId(),
+    code: INDICATOR_2.code,
     type: 'dataElement',
     service_type: 'indicator',
   });
 };
 
 exports.down = async function (db) {
-  await deleteObject(db, 'indicator', { code: INDICATOR.code });
-  await deleteObject(db, 'data_source', { code: INDICATOR.code });
+  await deleteObject(db, 'indicator', { code: INDICATOR_1.code });
+  await deleteObject(db, 'data_source', { code: INDICATOR_1.code });
+
+  await deleteObject(db, 'indicator', { code: INDICATOR_2.code });
+  await deleteObject(db, 'data_source', { code: INDICATOR_2.code });
 };
 
 exports._meta = {
