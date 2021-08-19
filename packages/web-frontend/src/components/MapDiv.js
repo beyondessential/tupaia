@@ -14,9 +14,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { MapControl } from '../containers/MapControl';
-import MeasureLegend from '../containers/MeasureLegend';
 import MeasureBar from '../containers/MeasureBar';
 import { CONTROL_BAR_PADDING } from '../styles';
+import { Legend } from '../containers/MeasureLegend/Legend';
 
 const FlexDiv = styled.div`
   flex: 1;
@@ -80,7 +80,7 @@ export const MapDiv = () => (
         <MeasureBar />
       </TopRow>
       <BottomRow>
-        <MeasureLegend />
+        <Legend />
       </BottomRow>
     </LeftCol>
     <MapControl />

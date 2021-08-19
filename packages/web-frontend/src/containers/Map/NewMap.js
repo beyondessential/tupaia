@@ -47,6 +47,11 @@ export const NewMap = ({
     changePosition(center, zoom);
   };
 
+  // Could this move to the MarkerLayer?
+  const processedData = measureData
+    .filter(data => data.coordinates && data.coordinates.length === 2)
+    .filter(data => !data.isHidden);
+
   return (
     <LeafletMap
       onClick={closeDropdownOverlays}
@@ -56,7 +61,7 @@ export const NewMap = ({
       onPositionChanged={onPositionChanged}
     >
       <TileLayer tileSetUrl={tileSetUrl} />
-      <MarkerLayer measureData={measureData || null} serieses={measureOptions || null} />
+      <MarkerLayer measureData={processedData || null} serieses={measureOptions || null} />
     </LeafletMap>
   );
 };
