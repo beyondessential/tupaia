@@ -23,8 +23,12 @@ export class MeditrakConnection extends ApiConnection {
     return { ...camelcaseKeys(user), isBESAdmin: isBESAdmin(user.accessPolicy) };
   }
 
-  async fetchResources(endpoint: string, queryParams?: QueryParameters) {
-    return this.get(endpoint, queryParams);
+  async fetchResources(endpoint: string, rawQueryParams?: Record<string, unknown>) {
+    const queryParams = { ...rawQueryParams };
+    if (queryParams.filter) {
+      queryParams.filter = JSON.stringify(queryParams.filter);
+    }
+    return this.get(endpoint, queryParams as Record<string, string>);
   }
 
   async createResource(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {

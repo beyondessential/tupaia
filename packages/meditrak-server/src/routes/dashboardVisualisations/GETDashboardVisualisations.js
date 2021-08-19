@@ -3,13 +3,44 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { camel } from 'case';
-import { mapKeys } from 'lodash';
+import keyBy from 'lodash.keyby';
 
 import { TYPES } from '@tupaia/database';
+import { camelKeys } from '@tupaia/utils';
 
 import { GETHandler } from '../GETHandler';
 import { assertBESAdminAccess } from '../../permissions';
+
+const parseCriteria = criteria => {
+  const { 'dashboard_visualisation.id': id, 'dashboard_visualisation.code': code } = criteria;
+  if (!id && !code) {
+    throw new Error('Must specify at least one visualisation id or code');
+  }
+
+  return {
+    'dashboard_item.id': id,
+    'dashboard_item.code': code,
+    legacy: false,
+  };
+};
+
+const buildVisualisationObject = (dashboardItemObject, reportsByCode, permissionGroupsById) => {
+  const { model, ...dashboardItem } = dashboardItemObject;
+  const report = reportsByCode[dashboardItem.code];
+  if (!report) {
+    throw new Error(`Cannot find a report for visualisation "${dashboardItem.report_code}"`);
+  }
+  const permissionGroup = permissionGroupsById[report.id]?.name || null;
+
+  return {
+    dashboardItem: camelKeys(dashboardItem),
+    report: {
+      code: report.code,
+      config: report.config,
+      permissionGroup,
+    },
+  };
+};
 
 /**
  * Handles endpoints:
@@ -44,12 +75,38 @@ export class GETDashboardVisualisations extends GETHandler {
     if (!report) {
       throw new Error(`Cannot find report "${dashboardItem.report_code}" of the visualisation`);
     }
-  
+
     const permissionGroup = await this.models.permissionGroup.findById(report.permission_group_id);
 
     return {
-      dashboardItem: mapKeys(dashboardItem, (_, propertyKey) => camel(propertyKey)),
-      report: { code: report.code, config: report.config, permissionGroup: permissionGroup.name },
+      dashboardItem: camelKeys(dashboardItem),
+      report: {
+        code: report.code,
+        config: report.config,
+        permissionGroup: permissionGroup.name,
+      },
     };
+  }
+
+  async findRecords(inputCriteria) {
+    const criteria = parseCriteria(inputCriteria);
+
+    const dashboardItems = await this.models.dashboardItem.find(criteria);
+    const reports = await this.models.report.find({ code: dashboardItems.map(di => di.code) });
+    const reportsByCode = keyBy(reports, 'code');
+    const permissionGroups = await this.models.permissionGroup.find({
+      id: reports.map(r => r.permission_group_id),
+    });
+    const permissionGroupsById = keyBy(permissionGroups, 'id');
+
+    return dashboardItems.map(dashboardItem =>
+      buildVisualisationObject(dashboardItem, reportsByCode, permissionGroupsById),
+    );
+  }
+
+  async countRecords(inputCriteria) {
+    return this.database.count(TYPES.DASHBOARD_ITEM, parseCriteria(inputCriteria), {
+      report: ['dashboard_item.code', 'report.code'],
+    });
   }
 }

@@ -4,4 +4,5 @@
  */
 
 export { attachAuthorizationHeader } from './attachAuthorizationHeader';
+export { upload } from './upload';
 export { verifyBESAdminAccess } from './verifyBESAdminAccess';

@@ -32,6 +32,14 @@ const FIELDS = [
   },
 ];
 
+const IMPORT_CONFIG = {
+  title: 'Import Dashboard Visualisation',
+  subtitle: 'Please upload a .json file with the visualisation to be imported:',
+  actionConfig: {
+    importEndpoint: 'dashboardVisualisations',
+  },
+};
+
 export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin }) => {
   const extraEditFields = [
     // ID field for constructing viz-builder path only, not for showing or editing
@@ -75,6 +83,7 @@ export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin }) => {
       title="Dashboard Items"
       endpoint="dashboardItems"
       columns={columns}
+      importConfig={IMPORT_CONFIG}
       editConfig={{
         title: 'Edit Dashboard Item',
       }}

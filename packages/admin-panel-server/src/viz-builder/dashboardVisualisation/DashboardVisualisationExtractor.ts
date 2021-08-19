@@ -3,8 +3,18 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { DashboardVisualisationObject, VisualisationValidator, PreviewMode } from '../types';
-import { omitBy, isNil } from 'lodash';
+import { isNil, omitBy } from 'lodash';
+
+import { snakeKeys } from '@tupaia/utils';
+import {
+  DashboardItem,
+  DashboardVisualisationObject,
+  DashboardVisualisationResource,
+  PreviewMode,
+  Report,
+  CamelKeysToSnake,
+  VisualisationValidator,
+} from '../types';
 
 export class DashboardVisualisationExtractor {
   private readonly visualisation: DashboardVisualisationObject;
@@ -23,12 +33,20 @@ export class DashboardVisualisationExtractor {
     this.reportValidator = reportValidator;
   }
 
-  extractDashboardItem() {
+  public extractDashboardVisualisationResource = (): DashboardVisualisationResource => {
+    // Resources (like the ones passed to meditrak-server for upsert) use snake_case keys
+    const dashboardItem = snakeKeys(this.getDashboardItem()) as CamelKeysToSnake<DashboardItem>;
+    const report = snakeKeys(this.getReport()) as CamelKeysToSnake<Report>;
+
+    return { dashboardItem, report };
+  };
+
+  extractDashboardItem(): DashboardItem {
     const { id, code, name, presentation } = this.visualisation;
     return {
       id,
       code,
-      //TODO: for prototype, the whole presentation object will be the json edit box
+      // TODO: for prototype, the whole presentation object will be the json edit box
       // But in the future, it will be broken down into different structure.
       // config: {
       //   type: presentation.type,
@@ -52,7 +70,7 @@ export class DashboardVisualisationExtractor {
     return this.extractDashboardItem();
   }
 
-  extractReport(previewMode?: PreviewMode) {
+  extractReport(previewMode?: PreviewMode): Report {
     const { code, permissionGroup, data, presentation } = this.visualisation;
     const { dataElements, dataGroups, aggregations } = data;
 
