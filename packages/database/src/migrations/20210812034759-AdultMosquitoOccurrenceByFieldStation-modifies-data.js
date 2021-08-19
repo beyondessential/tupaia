@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject, generateId } from '../utilities';
+import { insertObject, generateId, codeToId } from '../utilities';
 
 var dbm;
 var type;
@@ -15,67 +15,83 @@ exports.setup = function (options, seedLink) {
   type = dbm.dataType;
   seed = seedLink;
 };
+const SPECIES = ['Aedes', 'Anopheles'];
 
-const REPORT_CODE = 'PMOS_Distribution_Of_Aedes';
+const getReportCode = species => `PMOS_Distribution_Of_${species}`;
+const COUNTRY_CODES = ['FJ', 'KI', 'NR', 'NU', 'PG', 'SB', 'TV', 'TO', 'VU'];
+const PERMISSION_GROUP = 'PacMOSSI';
+const PROJECT_CODE = 'pacmossi';
+const MAP_OVERLAY_GROUP_CODE = 'Mosquito_occurrence_by_genus';
 
-const PERMISSION_GROUP = 'wish';
-
-const REPORT = {
-  id: generateId(),
-  code: REPORT_CODE,
-  config: {
-    fetch: {
+const getReport = species => {
+  const popupItem = `'Total ${species} Mosquitoes found:'`;
+  return {
+    id: generateId(),
+    code: getReportCode(species),
+    config: {
       fetch: {
         aggregations: [
           {
             type: 'SUM_PER_ORG_GROUP',
             config: {
               dataSourceEntityType: 'field_station',
-              aggregationEntityType: 'country',
             },
           },
         ],
-        dataElements: ['PMOS_Aedes'],
+        dataElements: [`PMOS_${species}`],
       },
-      transform: [],
+      transform: [
+        {
+          transform: 'select',
+          [popupItem]: '$row.value',
+          "'value'": "($row.value >0) ? 'Detected': 'Not Detected'", // null > 0 = false, interesting.
+          "'organisationUnitCode'": '$row.organisationUnit',
+        },
+      ],
     },
-  },
+  };
 };
 
-const MAP_OVERLAY = {
-  id: REPORT_CODE,
-  name: 'Distribution of Aedes',
+const getMapOverlay = species => ({
+  id: getReportCode(species),
+  name: `Distribution of ${species} (field station)`,
   userGroup: PERMISSION_GROUP,
   dataElementCode: 'value',
   isDataRegional: true,
   measureBuilder: 'useReportServer',
   measureBuilderConfig: {
     dataSourceType: 'custom',
-    reportCode: REPORT_CODE,
+    reportCode: getReportCode(species),
   },
   presentationOptions: {
     values: [
       {
         icon: 'circle',
         name: 'Detected',
-        value: '>0',
+        value: 'Detected',
+        color: 'Red',
         hideFromLegend: false,
+        hideFromPopup: true,
       },
       {
         icon: 'circle',
         name: 'Not Detected',
-        value: '0',
+        value: 'Not Detected',
+        color: 'Blue',
         hideFromLegend: false,
+        hideFromPopup: true,
       },
       {
         icon: 'circle',
-        name: 'No Data',
+        name: 'No data',
+        color: 'Grey',
         value: 'null',
         hideFromLegend: false,
+        hideFromPopup: true,
       },
     ],
     displayType: 'icon',
-    measureLevel: 'Facility',
+    measureLevel: 'FieldStation',
     hideFromPopup: true,
     measureConfig: {
       $all: {
@@ -95,32 +111,12 @@ const MAP_OVERLAY = {
             hideFromLegend: true,
           },
         ],
-        measureLevel: 'Facility',
+        measureLevel: 'FieldStation',
       },
     },
   },
-  countryCodes: '{"SB"}',
-  projectCodes: '{wish}',
-};
-
-const MAP_OVERLAY_GROUP_CODE = 'COVID19_Samoa';
-
-const getMapOverlayGroupId = async function (db, code) {
-  const results = await db.runSql(`select "id" from "map_overlay_group" where "code" = '${code}';`);
-
-  if (results.rows.length > 0) {
-    return results.rows[0].id;
-  }
-
-  throw new Error('MapOverlayGroup not found');
-};
-
-const mapOverlayGroupRelation = groupId => ({
-  id: generateId(),
-  map_overlay_group_id: groupId,
-  child_id: MAP_OVERLAY.id,
-  child_type: 'mapOverlay',
-  sort_order: 0,
+  countryCodes: `{${COUNTRY_CODES.map(code => `"${code}"`).join(',')}}`,
+  projectCodes: `{${PROJECT_CODE}}`,
 });
 
 const permissionGroupNameToId = async (db, name) => {
@@ -129,18 +125,59 @@ const permissionGroupNameToId = async (db, name) => {
 };
 
 exports.up = async function (db) {
+  const mapOverlayGroupId = generateId();
   const permissionGroupId = await permissionGroupNameToId(db, PERMISSION_GROUP);
-  await insertObject(db, 'report', { ...REPORT, permission_group_id: permissionGroupId });
-  await insertObject(db, 'mapOverlay', MAP_OVERLAY);
-  const mapOverlayGroupId = await getMapOverlayGroupId(db, MAP_OVERLAY_GROUP_CODE);
-  await insertObject(db, 'map_overlay_group_relation', mapOverlayGroupRelation(mapOverlayGroupId));
+
+  // Map overlay group
+  await insertObject(db, 'map_overlay_group', {
+    id: mapOverlayGroupId,
+    name: 'Mosquito occurrence by genus',
+    code: MAP_OVERLAY_GROUP_CODE,
+  });
+  const rootMapOverlayGroupId = await codeToId(db, 'map_overlay_group', 'Root');
+  await insertObject(db, 'map_overlay_group_relation', {
+    id: generateId(),
+    map_overlay_group_id: rootMapOverlayGroupId,
+    child_id: mapOverlayGroupId,
+    child_type: 'mapOverlayGroup',
+    sort_order: 0,
+  });
+
+  Promise.all(
+    SPECIES.map(async species => {
+      // report
+      await insertObject(db, 'report', {
+        ...getReport(species),
+        permission_group_id: permissionGroupId,
+      });
+
+      // Map overlay
+      const mapOverlay = getMapOverlay(species);
+      await insertObject(db, 'mapOverlay', mapOverlay);
+      await insertObject(db, 'map_overlay_group_relation', {
+        id: generateId(),
+        map_overlay_group_id: mapOverlayGroupId,
+        child_id: mapOverlay.id,
+        child_type: 'mapOverlay',
+        sort_order: 0,
+      });
+    }),
+  );
 };
 
 exports.down = function (db) {
+  Promise.all(
+    SPECIES.map(async species => {
+      const mapOverlayId = getReportCode(species);
+      return db.runSql(`
+        DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${mapOverlayId}';
+        DELETE FROM "mapOverlay" WHERE "id" = '${mapOverlayId}';
+        DELETE FROM "report" WHERE code = '${getReportCode(species)}';
+      `);
+    }),
+  );
   return db.runSql(`
-    DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${MAP_OVERLAY.id}';
-    DELETE FROM "mapOverlay" WHERE "id" = '${MAP_OVERLAY.id}';
-    DELETE FROM "report" WHERE code = '${REPORT.code}';
+    DELETE FROM "map_overlay_group" WHERE "code" = '${MAP_OVERLAY_GROUP_CODE}';
   `);
 };
 
