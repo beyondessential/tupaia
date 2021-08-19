@@ -8,24 +8,32 @@ import { toFilename } from '@tupaia/utils';
 import { useTable } from 'react-table';
 import moment from 'moment';
 
-export const useDataTableExport = (columnsData, data, title) => {
-  const { rows, columns } = useTable({
-    columns: columnsData,
+export const useDataTableExport = (columns, data, title) => {
+  const { data: tableData, columns: tableColumns } = useTable({
+    columns,
     data,
   });
 
   const doExport = () => {
     // Get data from react table properties
-    const body = rows.map(row => row.values);
-    const header = columns.map(col => col.id);
+    const header = [tableColumns.map(col => col.Header)];
+    const body =
+      tableData.length > 0
+        ? tableData.map(row => tableColumns.map(col => row[col.id]))
+        : [['There is no available data for the selected time period.']];
 
     // Make xlsx worksheet
     // @see https://github.com/SheetJS/sheetjs
     const sheet = xlsx.utils.aoa_to_sheet([[title]]);
-    xlsx.utils.sheet_add_json(sheet, body, {
-      header,
+    sheet['!cols'] = [{ wch: 20 }];
+
+    // add header
+    xlsx.utils.sheet_add_aoa(sheet, header, {
       origin: 'A3',
     });
+
+    // add body
+    xlsx.utils.sheet_add_aoa(sheet, body, { origin: -1 });
 
     const date = moment().format('Do MMM YY');
     xlsx.utils.sheet_add_aoa(

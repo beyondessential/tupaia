@@ -212,8 +212,9 @@ const EnlargedDialogComponent = ({
   };
 
   const exportFormats = isMatrix ? ['xlsx'] : ['png', 'xlsx'];
+  const exportTitle = `${newViewContent?.name}, ${organisationUnitName}`;
 
-  const { doExport } = useChartDataExport(newViewContent);
+  const { doExport } = useChartDataExport(newViewContent, exportTitle);
 
   const onExport = async format => {
     setExportStatus(STATUS.LOADING);

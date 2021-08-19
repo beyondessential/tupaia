@@ -24,8 +24,8 @@ import * as COLORS from '../constants';
 import { FlexSpaceBetween, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
 import { Chart } from './Chart';
-import { useDashboardReportData } from '../api/queries';
-import { useUrlSearchParams } from '../utils';
+import { useDashboardReportData, useEntityData } from '../api/queries';
+import { useUrlParams, useUrlSearchParams } from '../utils';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -90,6 +90,8 @@ export const DashboardReportModal = ({
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const { data: entityData } = useEntityData(entityCode);
+
   const { data, isLoading, isError, error } = useDashboardReportData({
     entityCode,
     dashboardCode,
@@ -130,7 +132,9 @@ export const DashboardReportModal = ({
   };
 
   const viewContent = { ...viewConfig, data, startDate, endDate };
-  const { doExport } = useChartDataExport(viewContent);
+  const exportTitle = `${viewContent?.name}, ${entityData?.name}`;
+
+  const { doExport } = useChartDataExport(viewContent, exportTitle);
 
   return (
     <>
