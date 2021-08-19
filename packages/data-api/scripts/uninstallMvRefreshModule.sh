@@ -15,4 +15,5 @@ else
     export DB_MV_HOME="$PWD"
     (. dropFastRefreshModule.sh)
     cd ../..
+    git submodule deinit --all
 fi
