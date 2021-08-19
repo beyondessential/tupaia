@@ -1,6 +1,6 @@
 'use strict';
 
-import samoaHouseholds from './migrationData/20210803014704-CovidSamoaAddSubDistrictEntities/Entities - households.json';
+import samoaHouseholds from './migrationData/20210803014704-CovidSamoaAddSubDistrictEntities/Entities - households 20210812.json';
 
 var dbm;
 var type;
