@@ -88,9 +88,11 @@ Two formats are supported:
 
   // map overlay
   {
-    "id": "AU_FLUTRACKING_Participants_Per_100k",
-    "project": "covidau",
-    "orgUnit": "AU",
+    "id": "PSSS_FJ_AFR_Syndrome_Bubble_Radius_Weekly",
+    "project": "psss",
+    "orgUnit": "FJ",
+    "startDate": "2021-02-01",
+    "endDate": "2021-02-07"
   }
   ```
 
