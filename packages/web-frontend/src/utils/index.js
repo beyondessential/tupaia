@@ -18,7 +18,6 @@ export { getMapUrl } from './getMapUrl';
 export { OverlayContainer, OverlayView } from './overlayContainer';
 export {
   processMeasureInfo,
-  getMeasureDisplayInfo,
   getSingleFormattedValue,
   flattenNumericalMeasureData,
   flattenMeasureHierarchy,

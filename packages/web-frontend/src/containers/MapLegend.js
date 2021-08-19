@@ -2,14 +2,13 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-
-import { Legend as MapLegend } from '@tupaia/ui-components/lib/map';
 import React from 'react';
+import { Legend } from '@tupaia/ui-components/lib/map';
 import { connect } from 'react-redux';
 
 export const LegendComponent = ({ setValueHidden, hiddenValues, serieses }) => {
   return (
-    <MapLegend
+    <Legend
       setValueHidden={setValueHidden}
       hiddenValues={hiddenValues}
       serieses={serieses || null}
@@ -32,4 +31,4 @@ const mapDispatchToProps = () => dispatch => ({
   },
 });
 
-export const Legend = connect(mapStateToProps, mapDispatchToProps)(LegendComponent);
+export const MapLegend = connect(mapStateToProps, mapDispatchToProps)(LegendComponent);
