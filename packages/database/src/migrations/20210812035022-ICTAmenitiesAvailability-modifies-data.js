@@ -124,16 +124,16 @@ const FRONT_END_CONFIG = {
   },
 };
 
-const DASHBOARD_CONFIG = entityLevel => ({
+const getDashboardConfig = entityLevel => ({
   code: `LESMIS_ICT_amentities_${entityLevel}`,
   reportConfig: REPORT_CONFIG(entityLevel),
   entityTypes: [ENTITY_LEVEL_MAP[entityLevel]],
 });
 
 const DASHBOARD_ITEMS = [
-  DASHBOARD_CONFIG('country'),
-  DASHBOARD_CONFIG('province'),
-  DASHBOARD_CONFIG('district'),
+  getDashboardConfig('country'),
+  getDashboardConfig('province'),
+  getDashboardConfig('district'),
 ];
 
 // Same util functions as always
