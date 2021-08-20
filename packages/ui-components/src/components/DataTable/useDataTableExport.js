@@ -9,7 +9,7 @@ import { useTable } from 'react-table';
 import moment from 'moment';
 
 export const useDataTableExport = (columns, data, title) => {
-  const { data: tableData, columns: tableColumns } = useTable({
+  const { rows: tableData, columns: tableColumns } = useTable({
     columns,
     data,
   });
@@ -19,7 +19,7 @@ export const useDataTableExport = (columns, data, title) => {
     const header = [tableColumns.map(col => col.Header)];
     const body =
       tableData.length > 0
-        ? tableData.map(row => tableColumns.map(col => row[col.id]))
+        ? tableData.map(row => tableColumns.map(col => row.values[col.id]))
         : [['There is no available data for the selected time period.']];
 
     // Make xlsx worksheet
