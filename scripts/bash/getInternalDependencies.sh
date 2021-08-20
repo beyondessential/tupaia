@@ -15,7 +15,7 @@ if [ -z ${package_path} ]; then
 fi
 
 # we are getting internal dependencies for a specific package.json
-internal_dependencies=($(grep -o '@tupaia/[^"]*": "[0-9\.]*"' "${PWD}/${package_path}/package.json" | cut -d / -f 2 | cut -d \" -f 1))
+internal_dependencies=($(sed -n '/"dependencies": {/,/}/p' ${PWD}/${package_path}/package.json | grep -o '@tupaia/[^"]*": "[0-9\.]*"' | cut -d / -f 2 | cut -d \" -f 1))
 if [ ${#internal_dependencies[@]} -eq 0 ]; then
   exit 0 # no internal dependencies of this package, early return
 fi
