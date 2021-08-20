@@ -95,22 +95,7 @@ const getMapOverlay = species => ({
     hideFromPopup: true,
     measureConfig: {
       $all: {
-        type: 'icon',
-        values: [
-          {
-            icon: 'circle',
-            value: 'other',
-            hideFromLegend: true,
-          },
-          {
-            icon: 'circle',
-            name: 'No data',
-            color: 'Grey',
-            value: 'null',
-            hideFromPopup: true,
-            hideFromLegend: true,
-          },
-        ],
+        type: 'popup-only',
         measureLevel: 'FieldStation',
       },
     },
