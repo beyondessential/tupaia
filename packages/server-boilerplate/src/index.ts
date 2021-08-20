@@ -4,6 +4,7 @@
  *
  */
 
+export { ApiConnection, AuthHandler } from './connections';
 export { Route } from './routes';
 export { handleWith, handleError } from './utils';
 export {
@@ -18,7 +19,7 @@ export {
   SessionCookie,
   attachSession,
 } from './orchestrator';
-
+export { QueryParameters } from './types';
 export {
   Model,
   DbFilter,
