@@ -140,5 +140,5 @@ export async function getOrCreateParentEntity(
   // no explicit parent code provided, use either subdistrict or district as parent entity
   if (subDistrict) return { parentGeographicalArea: subDistrict, parentEntity: subDistrictEntity };
   if (district) return { parentGeographicalArea: district, parentEntity: districtEntity };
-  throw new Error('No parent entity defined');
+  return null;
 }

@@ -147,7 +147,7 @@ export async function updateCountryEntities(
       { code },
       {
         name,
-        parent_id: parentEntity.id,
+        parent_id: parentEntity?.id,
         type: entityType,
         country_code: country.code,
         image_url: imageUrl,
