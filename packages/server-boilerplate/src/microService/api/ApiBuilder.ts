@@ -17,6 +17,7 @@ import { TestRoute } from '../../routes';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
 import { RequestContext } from '../types';
 import { TupaiaApiClient } from '@beyondessential/tupaia-api-client';
+import type { EndpointBaseUrlSet } from '@tupaia/api-client';
 
 export class ApiBuilder {
   private readonly app: Express;
@@ -53,8 +54,14 @@ export class ApiBuilder {
         getAuthHeader: async () => req.headers.authorization || '',
       };
 
+      const baseUrls: EndpointBaseUrlSet = {
+        entity: process.env.ENTITY_API_URL,
+        meditrak: process.env.MEDITRAK_API_URL,
+        report: process.env.REPORT_API_URL,
+      }
+
       const context: RequestContext = {
-        services: new TupaiaApiClient(microServiceAuthHandler),
+        services: new TupaiaApiClient(microServiceAuthHandler, baseUrls),
       };
 
       // context is shared between request and response

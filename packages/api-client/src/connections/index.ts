@@ -6,3 +6,4 @@
 
 export { ApiConnection } from './ApiConnection';
 export { EntityApi } from './EntityApi';
+export { MeditrakApi } from './MeditrakApi';

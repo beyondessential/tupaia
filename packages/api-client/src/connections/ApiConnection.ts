@@ -37,15 +37,15 @@ export class ApiConnection {
     this.baseUrl = baseUrl;
   }
 
-  async get(endpoint: string, queryParameters: QueryParameters = {}) {
+  async get(endpoint: string, queryParameters?: QueryParameters | null) {
     return this.request('GET', endpoint, queryParameters);
   }
 
-  async post(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
+  async post(endpoint: string, queryParameters?: QueryParameters | null, body?: RequestBody | null) {
     return this.request('POST', endpoint, queryParameters, body);
   }
 
-  async put(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
+  async put(endpoint: string, queryParameters?: QueryParameters | null, body?: RequestBody | null) {
     return this.request('PUT', endpoint, queryParameters, body);
   }
 

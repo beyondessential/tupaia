@@ -3,8 +3,10 @@
 
   "compilerOptions": {
     "outDir": "dist",
-    "strict": true
+    "strict": true,
+    "declaration": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true
   },
-
-  "exclude": ["node_modules", "dist"],
+  "exclude": ["**/*.d.ts", "dist", "node_modules"]
 }
