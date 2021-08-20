@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { AnalyticsRefresher } from '@tupaia/database';
 import { DeleteHandler } from '../DeleteHandler';
 import {
   assertAllPermissions,
@@ -11,7 +12,6 @@ import {
   assertAdminPanelAccess,
 } from '../../permissions';
 import { assertSurveyResponsePermissions } from './assertSurveyResponsePermissions';
-import { AnalyticsRefresher } from '@tupaia/database';
 
 /**
  * Handles DELETE endpoints:
@@ -39,7 +39,7 @@ export class DeleteSurveyResponses extends DeleteHandler {
 
     if (this.req.query.waitForAnalyticsRebuild === 'true') {
       const { database } = this.models;
-      await AnalyticsRefresher.executeRefresh(database);
+      await AnalyticsRefresher.refreshAnalytics(database);
     }
   }
 }

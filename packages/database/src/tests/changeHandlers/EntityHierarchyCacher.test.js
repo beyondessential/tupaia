@@ -12,7 +12,7 @@ import {
   clearTestData,
   upsertDummyRecord,
 } from '../../testUtilities';
-import { EntityHierarchyCacher } from '../../cachers/EntityHierarchyCacher';
+import { EntityHierarchyCacher } from '../../changeHandlers/EntityHierarchyCacher';
 
 import {
   TEST_DATA,
