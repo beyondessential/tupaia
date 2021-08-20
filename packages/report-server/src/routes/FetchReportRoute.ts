@@ -7,6 +7,7 @@ import { Request } from 'express';
 
 import { createAggregator } from '@tupaia/aggregator';
 import { Route } from '@tupaia/server-boilerplate';
+import type { EntityResponseObject } from '@tupaia/entity-server/src/type-exports';
 
 import { Aggregator } from '../aggregator';
 import { ReportBuilder, BuiltReport } from '../reportBuilder';
@@ -32,36 +33,62 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     return report;
   }
 
-  async checkUserHasAccessToReport(
-    report: ReportType,
+  async getFoundOrgUnits(
     hierarchy = 'explore',
     requestedOrgUnitCodes: string[],
-  ) {
-    const { accessPolicy, ctx } = this.req;
-    const permissionGroupName = await report.permissionGroupName();
-
-    const foundOrgUnits = await ctx.microServices.entityApi.getEntities(
+  ): Promise<Pick<EntityResponseObject, 'code' | 'country_code'>[]> {
+    const { ctx } = this.req;
+    const entities = await ctx.microServices.entityApi.getEntities(
       hierarchy,
       requestedOrgUnitCodes,
       {
         fields: ['code', 'country_code'],
       },
     );
+    // If entity is a project
+    if (entities.length === 1 && entities[0].country_code === null) {
+      const countryEntities = await ctx.microServices.entityApi.getDescendantsOfEntities(
+        hierarchy,
+        requestedOrgUnitCodes,
+        {
+          fields: ['code', 'country_code'],
+          filter: { type: 'country' },
+        },
+        true,
+      );
+
+      return countryEntities;
+    }
+    return entities;
+  }
+
+  async getAccessibleEntities(
+    report: ReportType,
+    hierarchy = 'explore',
+    requestedOrgUnitCodes: string | string[],
+  ) {
+    const { accessPolicy } = this.req;
+    const permissionGroupName = await report.permissionGroupName();
+
+    const requestedOrgUnitCodesArray = Array.isArray(requestedOrgUnitCodes)
+      ? requestedOrgUnitCodes
+      : requestedOrgUnitCodes.split(',');
+    const foundOrgUnits = await this.getFoundOrgUnits(hierarchy, requestedOrgUnitCodesArray);
     const foundOrgUnitCodes = foundOrgUnits.map(orgUnit => orgUnit.code);
 
-    const missingOrgUnitCodes = requestedOrgUnitCodes.filter(
+    const missingOrgUnitCodes = requestedOrgUnitCodesArray.filter(
       orgUnitCode => !foundOrgUnitCodes.includes(orgUnitCode),
     );
     if (missingOrgUnitCodes.length > 0) {
       throw new Error(`No entities found with codes ${missingOrgUnitCodes}`);
     }
 
-    const countryCodes = new Set(foundOrgUnits.map(orgUnit => orgUnit.country_code));
-    countryCodes.forEach(countryCode => {
-      if (countryCode === null || !accessPolicy.allows(countryCode, permissionGroupName)) {
-        throw new Error(`No ${permissionGroupName} access for user to ${countryCode}`);
-      }
-    });
+    return foundOrgUnits
+      .filter(
+        ({ country_code: countryCode }) =>
+          countryCode !== null && accessPolicy.allows(countryCode, permissionGroupName),
+      )
+      .map(orgUnit => orgUnit.code);
   }
 
   async buildResponse() {
@@ -72,15 +99,15 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     }
     const report = await this.findReport();
 
-    const organisationUnitCodesArray = Array.isArray(organisationUnitCodes)
-      ? organisationUnitCodes
-      : organisationUnitCodes.split(',');
-
-    await this.checkUserHasAccessToReport(report, hierarchy, organisationUnitCodesArray);
+    const accessibleOrgUnitCodes = await this.getAccessibleEntities(
+      report,
+      hierarchy,
+      organisationUnitCodes,
+    );
 
     const aggregator = createAggregator(Aggregator, this.req.ctx);
     return new ReportBuilder().setConfig(report.config).build(aggregator, {
-      organisationUnitCodes: organisationUnitCodesArray,
+      organisationUnitCodes: accessibleOrgUnitCodes,
       hierarchy,
       ...restOfParams,
     });
