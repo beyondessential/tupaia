@@ -23,9 +23,6 @@ const DEFAULT_MAX_WAIT_TIME = 45 * 1000; // 45 seconds in milliseconds
 
 /**
  * TODO: make internal, do not export from package
- *
- *
- * TODO: restore other ApiConnection, let other packages use that. This one is different.
  */
 export class ApiConnection {
   private readonly authHandler: AuthHandler;

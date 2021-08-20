@@ -18,6 +18,7 @@ jest.mock('@tupaia/database', () => ({
   ModelRegistry: jest.fn().mockImplementation(() => mockModels),
 }));
 
+// TODO: fix this mock
 jest.mock('@tupaia/server-boilerplate', () => ({
   ApiConnection: jest.fn().mockImplementation(() => {}),
 }));

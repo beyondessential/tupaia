@@ -4,7 +4,7 @@
  *
  */
 import camelcaseKeys from 'camelcase-keys';
-import { QueryParameters } from '@beyondessential/tupaia-api-client';
+import { QueryParameters } from '@tupaia/server-boilerplate';
 import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
 import { LESMIS_PROJECT_NAME } from '../constants';
 

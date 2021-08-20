@@ -7,3 +7,7 @@ export type AccessPolicyObject = Record<string, string[]>;
 
 export type EmptyObject = Record<string, never>;
 
+/**
+ * @deprecated use @beyondessential/tupaia-api-client
+ */
+export type QueryParameters = Record<string, string>;
