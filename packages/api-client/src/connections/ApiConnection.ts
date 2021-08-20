@@ -21,9 +21,6 @@ type FetchConfig = RequestInit & {
 
 const DEFAULT_MAX_WAIT_TIME = 45 * 1000; // 45 seconds in milliseconds
 
-/**
- * TODO: make internal, do not export from package
- */
 export class ApiConnection {
   private readonly authHandler: AuthHandler;
 
@@ -53,10 +50,10 @@ export class ApiConnection {
   private async request(
     requestMethod: string,
     endpoint: string,
-    queryParameters: QueryParameters = {},
-    body?: RequestBody,
+    queryParameters?: QueryParameters | null,
+    body?: RequestBody | null,
   ) {
-    const queryUrl = this.stringifyQuery(this.baseUrl, endpoint, queryParameters);
+    const queryUrl = this.stringifyQuery(this.baseUrl, endpoint, queryParameters ? queryParameters : {});
     const fetchConfig: FetchConfig = {
       method: requestMethod || 'GET',
       headers: {

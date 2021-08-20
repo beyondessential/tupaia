@@ -99,9 +99,6 @@ type Prefix<T, P extends string> = {
   [field in keyof T & string as `${P}_${field}`]: T[field];
 };
 
-/**
- * TODO: these are actually services, so this would be EntityService, should sit in /services
- */
 export class EntityApi extends BaseApi {
 
   private stringifyFields(fields?: ExtendedEntityFieldName[]) {

@@ -6,7 +6,7 @@
 
 import { AccessPolicyObject } from '../../types';
 import { Credentials } from '../types';
-import { ApiConnection } from '@beyondessential/tupaia-api-client';
+import { ApiConnection } from '../../connections';
 
 const {
   MEDITRAK_API_CLIENT_NAME,
