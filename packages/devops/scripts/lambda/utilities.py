@@ -1,9 +1,13 @@
 import boto3
+import asyncio
+import functools
 
 ec2 = boto3.resource('ec2')
 ec = boto3.client('ec2')
 elbv2 = boto3.client('elbv2')
 acm = boto3.client('acm')
+
+loop = asyncio.get_event_loop()
 
 
 def get_tag(instance, tag_name):
@@ -41,6 +45,42 @@ def get_cert(type_tag):
             return cert
     raise Exception('No certificate found with type tag: ' + type_tag)
 
+# --------------
+# EC2
+# --------------
+
+def find_instances(filters):
+    reservations = ec.describe_instances(
+        Filters=filters
+    ).get(
+        'Reservations', []
+    )
+    return sum(
+          [
+              [i for i in r['Instances']]
+              for r in reservations
+          ], [])
+
+
+async def wait_for_instance(instance_id, to_be):
+    volume_available_waiter = ec.get_waiter('instance_' + to_be)
+    await loop.run_in_executor(None, functools.partial(volume_available_waiter.wait, InstanceIds=[instance_id]))
+
+
+async def stop_instance(instance):
+    instance_object = ec2.Instance(instance['InstanceId'])
+    instance_object.stop()
+    print('Stopping instance ' + instance_object.id)
+    await wait_for_instance(instance_object.id, 'stopped')
+    print('Stopped instance with id ' + instance_object.id)
+
+
+async def start_instance(instance):
+    instance_object = ec2.Instance(instance['InstanceId'])
+    instance_object.start()
+    print('Starting instance ' + instance_object.id)
+    await wait_for_instance(instance_object.id, 'running')
+    print('Started instance with id ' + instance_object.id)
 
 # --------------
 # Gateway
