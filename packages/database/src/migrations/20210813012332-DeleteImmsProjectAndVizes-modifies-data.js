@@ -17,7 +17,6 @@ exports.setup = function (options, seedLink) {
 };
 
 const IMMS_DASHBOARDS = ['imms_Immunization_Module', 'SB_Immunisation', 'VU_Immunisation'];
-const IMMS_MAP_OVERLAY_GROUPS = ['Cold_ChainImmunisation'];
 
 const deleteDashboards = async (db, codes) => {
   const codeList = arrayToDbString(codes);
@@ -44,22 +43,6 @@ const deleteDashboardItemsByIds = async (db, ids) => {
     WHERE lr.code = di.code AND di.id IN (${idList});
 `);
   await db.runSql(`DELETE FROM dashboard_item WHERE id IN (${idList})`);
-};
-
-const deleteMapOverlayGroups = async (db, codes) => {
-  const codeList = arrayToDbString(codes);
-
-  await db.runSql(`
-    DELETE FROM map_overlay_group_relation mogr
-    USING map_overlay_group mog
-    WHERE mogr.map_overlay_group_id = mog.id AND mog.code IN (${codeList});
-  `);
-  await db.runSql(`
-    DELETE FROM map_overlay_group_relation mogr
-    USING map_overlay_group mog
-    WHERE mogr.child_id = mog.id AND mog.code IN (${codeList});
-`);
-  await db.runSql(`DELETE FROM map_overlay_group WHERE code IN (${codeList})`);
 };
 
 const deleteMapOverlaysByIds = async (db, ids) => {
@@ -121,7 +104,6 @@ exports.up = async function (db) {
   const immsDashboardItemIds = immsDashboardItems.map(di => di.id);
   await deleteDashboardItemsByIds(db, immsDashboardItemIds);
 
-  await deleteMapOverlayGroups(db, IMMS_MAP_OVERLAY_GROUPS);
   const { rows: immsMapOverlays } = await db.runSql(`
       SELECT * FROM "mapOverlay"
       WHERE "projectCodes" IN ('{imms,explore}')`);
