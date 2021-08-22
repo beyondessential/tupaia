@@ -26,7 +26,7 @@ const parseCriteria = criteria => {
 
 const buildVisualisationObject = (dashboardItemObject, reportsByCode, permissionGroupsById) => {
   const { model, ...dashboardItem } = dashboardItemObject;
-  const report = reportsByCode[dashboardItem.code];
+  const report = reportsByCode[dashboardItem.report_code];
   if (!report) {
     throw new Error(`Cannot find a report for visualisation "${dashboardItem.report_code}"`);
   }
@@ -92,7 +92,9 @@ export class GETDashboardVisualisations extends GETHandler {
     const criteria = parseCriteria(inputCriteria);
 
     const dashboardItems = await this.models.dashboardItem.find(criteria);
-    const reports = await this.models.report.find({ code: dashboardItems.map(di => di.code) });
+    const reports = await this.models.report.find({
+      code: dashboardItems.map(di => di.report_code),
+    });
     const reportsByCode = keyBy(reports, 'code');
     const permissionGroups = await this.models.permissionGroup.find({
       id: reports.map(r => r.permission_group_id),
@@ -106,7 +108,8 @@ export class GETDashboardVisualisations extends GETHandler {
 
   async countRecords(inputCriteria) {
     return this.database.count(TYPES.DASHBOARD_ITEM, parseCriteria(inputCriteria), {
-      report: ['dashboard_item.code', 'report.code'],
+      joinWith: 'report',
+      joinCondition: ['dashboard_item.report_code', 'report.code'],
     });
   }
 }
