@@ -72,21 +72,16 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
         return [aggregation, dataSourceEntities];
       }
 
-      const {
-        aggregationEntityType,
-        dataSourceEntityType,
-        dataSourceEntityFilter,
-      } = aggregation.config;
-      const [
-        dataSourceEntities,
-        relationships,
-      ] = await entityProvider.getDataSourceEntitiesAndRelationships(
-        hierarchy,
-        organisationUnitCodes,
-        aggregationEntityType,
-        dataSourceEntityType,
-        dataSourceEntityFilter,
-      );
+      const { aggregationEntityType, dataSourceEntityType, dataSourceEntityFilter } =
+        aggregation.config;
+      const [dataSourceEntities, relationships] =
+        await entityProvider.getDataSourceEntitiesAndRelationships(
+          hierarchy,
+          organisationUnitCodes,
+          aggregationEntityType,
+          dataSourceEntityType,
+          dataSourceEntityFilter,
+        );
 
       return [
         {
