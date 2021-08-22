@@ -125,7 +125,7 @@ const FRONT_END_CONFIG = {
 };
 
 const getDashboardConfig = entityLevel => ({
-  code: `LESMIS_ICT_amentities_${entityLevel}`,
+  code: `LESMIS_ICT_amenities_${entityLevel}`,
   reportConfig: REPORT_CONFIG(entityLevel),
   entityTypes: [ENTITY_LEVEL_MAP[entityLevel]],
 });
