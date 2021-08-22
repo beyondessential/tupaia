@@ -17,3 +17,11 @@ export const requireEnv = variable => {
   }
   return value;
 };
+
+export const getEnvVarOrDefault = (variable, defaultValue) => {
+  const value = process.env[variable];
+  if (value === undefined) {
+    return defaultValue;
+  }
+  return value;
+};

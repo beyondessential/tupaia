@@ -7,7 +7,7 @@ import {
   AncestorDescendantRelationModel as BaseAncestorDescendantRelationModel,
   AncestorDescendantRelationType as BaseAncestorDescendantRelationType,
 } from '@tupaia/database';
-import { Model, DbConditional, Joined } from '@tupaia/server-boilerplate';
+import { Model, DbFilter, Joined } from '@tupaia/server-boilerplate';
 import { EntityFields } from './Entity';
 
 export type AncestorDescendantRelationFields = Readonly<{
@@ -30,6 +30,6 @@ export interface AncestorDescendantRelationModel
   > {
   getImmediateRelations: (
     hierarchyId: string,
-    criteria?: DbConditional<AncestorDescendantRelationFields>,
+    criteria?: DbFilter<AncestorDescendantRelationFields>,
   ) => Promise<AncestorDescendantRelationType[]>;
 }

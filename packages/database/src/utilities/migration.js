@@ -102,25 +102,48 @@ export async function updateValues(db, table, newValues, condition) {
   return db.runSql(`UPDATE "${table}" SET ${setQuery} WHERE ${whereQuery}`, params);
 }
 
+const getJsonColumnValueString = values => {
+  if (Array.isArray(values)) {
+    const arrayString = values
+      .map(item => (typeof item === 'string' ? `"${item}"` : item))
+      .join(',');
+    return `[${arrayString}]`;
+  }
+
+  if (typeof values === 'object') {
+    return JSON.stringify(values);
+  }
+
+  throw new Error('Function getJsonColumnValueString: we should either insert object or array');
+};
+
+const insertOrUpdateRootJsonEntry = async (db, table, column, value, condition) => {
+  assertParamsAreDefined({ db, table, column, value, condition }, 'insertOrUpdateRootJsonEntry');
+  const { whereQuery, params } = getWhereQuery(condition);
+
+  await db.runSql(
+    `UPDATE "${table}" tb
+     SET "${column}" = 
+          tb."${column}" || '${getJsonColumnValueString(value)}'                  
+     WHERE ${whereQuery};`,
+    params,
+  );
+};
+
 export const insertJsonEntry = async (db, table, column, path, value, condition) => {
   assertParamsAreDefined({ db, table, column, path, value, condition }, 'insertJsonEntry');
-  const getValueString = arr => {
-    if (Array.isArray(arr)) {
-      const arrayString = arr
-        .map(item => (typeof item === 'string' ? `"${item}"` : item))
-        .join(',');
-      return `[${arrayString}]`;
-    }
-    // Object
-    return JSON.stringify(arr);
-  };
+  if (path.length === 0) {
+    return insertOrUpdateRootJsonEntry(db, table, column, value, condition);
+  }
 
   const { whereQuery, params } = getWhereQuery(condition);
   await db.runSql(
     `UPDATE "${table}" tb
      SET "${column}" = 
           JSONB_SET(tb."${column}",'{${path.toString()}}', 
-                    tb."${column}"::jsonb #> '{${path.toString()}}' || '${getValueString(value)}'
+                    tb."${column}"::jsonb #> '{${path.toString()}}' || '${getJsonColumnValueString(
+      value,
+    )}'
                     )
      WHERE ${whereQuery};`,
     params,
@@ -140,6 +163,15 @@ export const removeJsonEntry = async (db, table, column, path, key, condition) =
      WHERE ${whereQuery};`,
     params,
   );
+};
+
+export const updateJsonEntry = async (db, table, column, path, value, condition) => {
+  assertParamsAreDefined({ db, table, column, path, value, condition }, 'updateJsonEntry');
+  Object.keys(value).map(async key => {
+    await removeJsonEntry(db, table, column, path, key, condition);
+  });
+
+  await insertJsonEntry(db, table, column, path, value, condition);
 };
 
 export async function removeArrayValue(db, table, column, value, condition) {

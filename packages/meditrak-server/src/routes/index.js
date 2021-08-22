@@ -74,6 +74,7 @@ import { surveyResponse } from './surveyResponse';
 import { importDisaster } from './importDisaster';
 import { verifyEmail, requestResendEmail } from './verifyEmail';
 import { allowNoPermissions } from '../permissions';
+import { manualKoBoSync } from '../kobo';
 /**
  * All routes will be wrapped with an error catcher that simply passes the error to the next()
  * function, causing error handling middleware to be fired. Otherwise, async errors will be
@@ -199,4 +200,5 @@ export default {
   importDisaster: catchAsyncErrors(importDisaster),
   verifyEmail: catchAsyncErrors(verifyEmail),
   requestResendEmail: catchAsyncErrors(requestResendEmail),
+  requestManualKoBoSync: allowAnyone(manualKoBoSync),
 };

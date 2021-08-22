@@ -12,5 +12,5 @@ export const setupTest = async (models, { dbRecords = {}, surveys = [], surveyRe
   await findOrCreateRecords(models, dbRecords);
   await buildAndInsertSurveys(models, surveys);
   await buildAndInsertSurveyResponses(models, surveyResponses);
-  await AnalyticsRefresher.executeRefresh(models.database);
+  await AnalyticsRefresher.refreshAnalytics(models.database);
 };
