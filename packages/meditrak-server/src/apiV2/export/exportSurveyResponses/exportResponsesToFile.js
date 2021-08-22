@@ -186,14 +186,6 @@ export async function exportResponsesToFile(
   const getExportDataForResponses = async (surveyResponses, survey, questions) => {
     const exportData = getBaseExport();
 
-    // If there is no data, add a message at the top
-    if (surveyResponses.length === 0) {
-      exportData.unshift([
-        `No survey responses for ${survey.name} ${getExportDatesString(startDate, endDate)}`,
-      ]);
-      return exportData;
-    }
-
     // Set up metadata cells at the top of each survey response column
     surveyResponses.forEach((response, responseIndex) => {
       const metadataCells = getMetadataCellsForResponse(response);
@@ -255,6 +247,13 @@ export async function exportResponsesToFile(
       const exportColumn = infoColumnKeys.length + surveyResponseIndex;
       exportData[exportRow][exportColumn] = answer?.text || '';
     });
+
+    // If there is no data, add a message at the top
+    if (answers.length === 0) {
+      exportData.unshift([
+        `No data for ${survey.name} ${getExportDatesString(startDate, endDate)}`,
+      ]);
+    }
 
     if (easyReadingMode) {
       return addExportedDateAndOriginAtTheSheetBottom(exportData, timeZone);
