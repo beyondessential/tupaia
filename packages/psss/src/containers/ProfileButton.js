@@ -10,8 +10,8 @@ import { getCurrentUser, logout } from '../store';
 
 const ProfileLinksComponent = ({ onLogout }) => (
   <>
-    {/* Removed for MVP @see https://github.com/beyondessential/tupaia-backlog/issues/1117*/}
-    {/*<ProfileButtonItem to="/profile">Edit Profile</ProfileButtonItem>*/}
+    {/* Removed for MVP @see https://github.com/beyondessential/tupaia-backlog/issues/1117 */}
+    {/* <ProfileButtonItem to="/profile">Edit Profile</ProfileButtonItem> */}
     <ProfileButtonItem button onClick={onLogout}>
       Logout
     </ProfileButtonItem>

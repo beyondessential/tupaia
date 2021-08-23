@@ -6,9 +6,10 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import MuiContainer from '@material-ui/core/Container';
 import { ComingSoon, Main } from '../../components';
-import { OutbreaksTable, OutbreaksPanel } from '../../containers';
+import { OutbreaksTable /* OutbreaksPanel */ } from '../../containers';
 
 export const OutbreaksTabView = () => {
+  // eslint-disable-next-line no-unused-vars
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const { countryCode } = useParams();
 
@@ -18,8 +19,8 @@ export const OutbreaksTabView = () => {
       <MuiContainer style={{ position: 'relative ' }}>
         <Main>
           <OutbreaksTable handlePanelOpen={() => setIsPanelOpen(true)} countryCode={countryCode} />
-          {/*Removed for MVP release*/}
-          {/*<OutbreaksPanel isOpen={isPanelOpen} handleClose={() => setIsPanelOpen(false)} />*/}
+          {/* Removed for MVP release */}
+          {/* <OutbreaksPanel isOpen={isPanelOpen} handleClose={() => setIsPanelOpen(false)} /> */}
         </Main>
       </MuiContainer>
     </div>

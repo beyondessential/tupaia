@@ -11,7 +11,6 @@ import {
   ArchivedAlertMenuCell,
   CountryNameCell,
   WeekAndDateCell,
-  StartDateCell,
 } from '../../components';
 import { useAlerts } from '../../api';
 import { getCountryCodes } from '../../store';
@@ -70,12 +69,20 @@ const createColumns = isSingleCountry => [
     title: '',
     key: 'id',
     sortable: false,
-    CellComponent: ArchivedAlertMenuCell,
+    CellComponent: AchivedAlertMenuCellWrapper,
     width: '70px',
   },
 ];
 
 export const ArchiveTableContext = createContext(null);
+
+const AchivedAlertMenuCellWrapper = ({ id }) => (
+  <ArchivedAlertMenuCell id={id} ArchiveTableContext={ArchiveTableContext} />
+);
+
+AchivedAlertMenuCellWrapper.propTypes = {
+  id: PropTypes.string.isRequired,
+};
 
 export const ArchiveTableComponent = React.memo(({ countryCodes, period }) => {
   const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);
