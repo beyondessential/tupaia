@@ -159,60 +159,58 @@ export const DashboardReportModal = () => {
     : config?.name;
 
   return (
-    <>
-      <MuiDialog
-        scroll="paper"
-        fullScreen
-        open={isOpen}
-        onClose={handleClose}
-        TransitionComponent={Transition}
-        style={{ left: fullScreen ? '0' : '6.25rem' }}
-      >
-        <DialogHeader
-          handleClose={handleClose}
-          title={config?.dashboardName ? config?.dashboardName : 'Loading...'}
-        />
-        <ExportLoader $isExporting={isExportLoading}>
-          <CircularProgress size={50} />
-          <Box mt={3}>
-            <Typography>Exporting...</Typography>
-          </Box>
-        </ExportLoader>
-        <Wrapper ref={exportRef}>
-          <Container maxWidth="xl">
-            <Header>
-              <Box maxWidth={580}>
-                <Heading variant="h3">{title}</Heading>
-                {config?.description && <Description>{config.description}</Description>}
-              </Box>
-              <Toolbar $isExporting={isExporting}>
-                <SplitButton
-                  options={EXPORT_OPTIONS}
-                  selectedId={exportFormatId}
-                  setSelectedId={setExportFormatId}
-                  onClick={handleClickExport}
-                  ButtonComponent={WhiteButton}
-                />
-                <DateRangePicker
-                  isLoading={isLoading}
-                  startDate={startDate}
-                  endDate={endDate}
-                  granularity={config?.periodGranularity}
-                  onSetDates={handleDatesChange}
-                />
-              </Toolbar>
-            </Header>
-            <DashboardReport
-              name={config?.name}
-              reportCode={reportCode}
-              isExporting={isExporting}
-              startDate={startDate}
-              endDate={endDate}
-              isEnlarged
-            />
-          </Container>
-        </Wrapper>
-      </MuiDialog>
-    </>
+    <MuiDialog
+      scroll="paper"
+      fullScreen
+      open={isOpen}
+      onClose={handleClose}
+      TransitionComponent={Transition}
+      style={{ left: fullScreen ? '0' : '6.25rem' }}
+    >
+      <DialogHeader
+        handleClose={handleClose}
+        title={config?.dashboardName ? config?.dashboardName : 'Loading...'}
+      />
+      <ExportLoader $isExporting={isExportLoading}>
+        <CircularProgress size={50} />
+        <Box mt={3}>
+          <Typography>Exporting...</Typography>
+        </Box>
+      </ExportLoader>
+      <Wrapper ref={exportRef}>
+        <Container maxWidth="xl">
+          <Header>
+            <Box maxWidth={580}>
+              <Heading variant="h3">{title}</Heading>
+              {config?.description && <Description>{config.description}</Description>}
+            </Box>
+            <Toolbar $isExporting={isExporting}>
+              <SplitButton
+                options={EXPORT_OPTIONS}
+                selectedId={exportFormatId}
+                setSelectedId={setExportFormatId}
+                onClick={handleClickExport}
+                ButtonComponent={WhiteButton}
+              />
+              <DateRangePicker
+                isLoading={isLoading}
+                startDate={startDate}
+                endDate={endDate}
+                granularity={config?.periodGranularity}
+                onSetDates={handleDatesChange}
+              />
+            </Toolbar>
+          </Header>
+          <DashboardReport
+            name={config?.name}
+            reportCode={reportCode}
+            isExporting={isExporting}
+            startDate={startDate}
+            endDate={endDate}
+            isEnlarged
+          />
+        </Container>
+      </Wrapper>
+    </MuiDialog>
   );
 };
