@@ -14,7 +14,7 @@ import Help from '@material-ui/icons/Help';
 import CheckBox from '@material-ui/icons/CheckBox';
 
 // from https://thenounproject.com/ochavisual/collection/ocha-humanitarian-icons/
-import Cyclone from './images/cyclone.svg';
+import { ReactComponent as Cyclone } from './images/cyclone.svg';
 import Earthquake from './images/earthquake.svg';
 import Tsunami from './images/tsunami.svg';
 import Volcano from './images/volcano.svg';

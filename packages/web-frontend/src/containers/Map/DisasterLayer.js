@@ -5,34 +5,45 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { LayerGroup, IconMarker, DEFAULT_DISASTER_COLOR } from '@tupaia/ui-components/lib/map';
 import { selectDisaster } from '../../disaster/actions';
 import { selectCurrentProjectCode } from '../../selectors';
 
-// eslint-disable-next-line react/prop-types
-const DisasterMarker = ({ onSelect, ...data }) => (
-  <IconMarker
-    coordinates={data.coordinates}
-    icon={data.type}
-    color={DEFAULT_DISASTER_COLOR}
-    scale={2}
-    markerRef={() => null}
-    handleClick={onSelect}
-  />
-);
-
-function DisasterLayer(props) {
-  const { isInDisasterMode, disasters, onSelectDisaster } = props;
-
+const DisasterLayer = ({ isInDisasterMode, disasters, onSelectDisaster }) => {
   if (!isInDisasterMode) return null;
 
-  const markers = disasters.map(d => (
-    <DisasterMarker key={d.id} onSelect={() => onSelectDisaster(d)} {...d} />
-  ));
+  return (
+    <LayerGroup>
+      {disasters.map(data => (
+        <IconMarker
+          key={data.id}
+          coordinates={data.coordinates}
+          icon={data.type}
+          color={DEFAULT_DISASTER_COLOR}
+          scale={2}
+          markerRef={() => null}
+          handleClick={() => {
+            onSelectDisaster(data);
+          }}
+        />
+      ))}
+    </LayerGroup>
+  );
+};
 
-  return <LayerGroup>{markers}</LayerGroup>;
-}
+DisasterLayer.propTypes = {
+  isInDisasterMode: PropTypes.bool,
+  disasters: PropTypes.array,
+  onSelectDisaster: PropTypes.func,
+};
+
+DisasterLayer.defaultProps = {
+  isInDisasterMode: false,
+  disasters: [],
+  onSelectDisaster: () => {},
+};
 
 const mapStateToProps = state => ({
   disasters: Object.values(state.disaster.disasters || {}),
