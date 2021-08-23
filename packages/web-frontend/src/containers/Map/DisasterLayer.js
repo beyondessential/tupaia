@@ -11,7 +11,7 @@ import { LayerGroup, IconMarker, DEFAULT_DISASTER_COLOR } from '@tupaia/ui-compo
 import { selectDisaster } from '../../disaster/actions';
 import { selectCurrentProjectCode } from '../../selectors';
 
-const DisasterLayer = ({ isInDisasterMode, disasters, onSelectDisaster }) => {
+const DisasterLayerComponent = ({ isInDisasterMode, disasters, onSelectDisaster }) => {
   if (!isInDisasterMode) return null;
 
   return (
@@ -33,13 +33,13 @@ const DisasterLayer = ({ isInDisasterMode, disasters, onSelectDisaster }) => {
   );
 };
 
-DisasterLayer.propTypes = {
+DisasterLayerComponent.propTypes = {
   isInDisasterMode: PropTypes.bool,
   disasters: PropTypes.array,
   onSelectDisaster: PropTypes.func,
 };
 
-DisasterLayer.defaultProps = {
+DisasterLayerComponent.defaultProps = {
   isInDisasterMode: false,
   disasters: [],
   onSelectDisaster: () => {},
@@ -54,4 +54,4 @@ const mapDispatchToProps = dispatch => ({
   onSelectDisaster: d => dispatch(selectDisaster(d)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DisasterLayer);
+export const DisasterLayer = connect(mapStateToProps, mapDispatchToProps)(DisasterLayerComponent);

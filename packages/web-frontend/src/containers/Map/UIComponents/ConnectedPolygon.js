@@ -63,94 +63,98 @@ const getProps = (organisationUnitCode, organisationUnitChildren, measureOrgUnit
   return { shade, isHidden, hasShadedChildren, hasChildren };
 };
 
-export const ConnectedPolygon = ({
-  isChildArea,
-  hasMeasureData,
-  orgUnitMeasureData,
-  measureOptions,
-  permanentLabels,
-  onChangeOrgUnit,
-  area,
-  isActive,
-  measureOrgUnits,
-  organisationUnitChildren,
-}) => {
-  const { organisationUnitCode } = area;
-
-  const { shade, isHidden, hasChildren, hasShadedChildren } = getProps(
-    organisationUnitCode,
-    organisationUnitChildren,
+export const ConnectedPolygon = React.memo(
+  ({
+    isChildArea,
+    hasMeasureData,
+    orgUnitMeasureData,
+    measureOptions,
+    permanentLabels,
+    onChangeOrgUnit,
+    area,
+    isActive,
     measureOrgUnits,
-  );
+    organisationUnitChildren,
+  }) => {
+    const { organisationUnitCode } = area;
 
-  if (isHidden) return null;
+    console.log('render...');
 
-  const coordinates = area.location?.region;
-
-  if (!coordinates) return null;
-
-  if (isActive) {
-    return (
-      <ActivePolygon
-        shade={shade}
-        hasChildren={hasChildren}
-        hasShadedChildren={hasShadedChildren}
-        coordinates={coordinates}
-        // Randomize key to ensure polygon appears at top. This is still imporatant even
-        // though the polygon is in a LayerGroup due to issues with react-leaflet that
-        // maintainer says are out of scope for the module.
-        key={`currentOrgUnitPolygon${Math.random()}`}
-      />
+    const { shade, isHidden, hasChildren, hasShadedChildren } = getProps(
+      organisationUnitCode,
+      organisationUnitChildren,
+      measureOrgUnits,
     );
-  }
 
-  const defaultProps = {
-    positions: coordinates,
-    eventHandlers: {
-      click: () => {
-        return onChangeOrgUnit(organisationUnitCode);
+    if (isHidden) return null;
+
+    const coordinates = area.location?.region;
+
+    if (!coordinates) return null;
+
+    if (isActive) {
+      return (
+        <ActivePolygon
+          shade={shade}
+          hasChildren={hasChildren}
+          hasShadedChildren={hasShadedChildren}
+          coordinates={coordinates}
+          // Randomize key to ensure polygon appears at top. This is still imporatant even
+          // though the polygon is in a LayerGroup due to issues with react-leaflet that
+          // maintainer says are out of scope for the module.
+          key={`currentOrgUnitPolygon${Math.random()}`}
+        />
+      );
+    }
+
+    const defaultProps = {
+      positions: coordinates,
+      eventHandlers: {
+        click: () => {
+          return onChangeOrgUnit(organisationUnitCode);
+        },
       },
-    },
-  };
+    };
 
-  const Tooltip = () => {
-    const hasMeasureValue = !!(orgUnitMeasureData || orgUnitMeasureData === 0);
-    // don't render tooltips if we have a measure loaded
-    // and don't have a value to display in the tooltip (ie: radius overlay)
-    if (hasMeasureData && !hasMeasureValue) return null;
+    const Tooltip = () => {
+      const hasMeasureValue = !!(orgUnitMeasureData || orgUnitMeasureData === 0);
+      // don't render tooltips if we have a measure loaded
+      // and don't have a value to display in the tooltip (ie: radius overlay)
+      if (hasMeasureData && !hasMeasureValue) return null;
+
+      return (
+        <AreaTooltip
+          // permanent={permanentLabels && isChildArea && !hasMeasureValue}
+          sticky={!permanentLabels}
+          hasMeasureValue={hasMeasureValue}
+          measureOptions={measureOptions}
+          orgUnitMeasureData={orgUnitMeasureData}
+          orgUnitName={area.name}
+          interactive={false}
+        />
+      );
+    };
+
+    if (shade) {
+      // To match with the color in markerIcon.js which uses BREWER_PALETTE
+      const color = BREWER_PALETTE[shade] || shade;
+
+      // Work around: color should go through the styled components
+      // but there is a rendering bug between Styled Components + Leaflet
+      return (
+        <ShadedPolygon {...defaultProps} color={color}>
+          <Tooltip />
+        </ShadedPolygon>
+      );
+    }
 
     return (
-      <AreaTooltip
-        // permanent={permanentLabels && isChildArea && !hasMeasureValue}
-        sticky={!permanentLabels}
-        hasMeasureValue={hasMeasureValue}
-        measureOptions={measureOptions}
-        orgUnitMeasureData={orgUnitMeasureData}
-        orgUnitName={area.name}
-        interactive={false}
-      />
-    );
-  };
-
-  if (shade) {
-    // To match with the color in markerIcon.js which uses BREWER_PALETTE
-    const color = BREWER_PALETTE[shade] || shade;
-
-    // Work around: color should go through the styled components
-    // but there is a rendering bug between Styled Components + Leaflet
-    return (
-      <ShadedPolygon {...defaultProps} color={color}>
+      <BasicPolygon {...defaultProps}>
         <Tooltip />
-      </ShadedPolygon>
+      </BasicPolygon>
     );
-  }
-
-  return (
-    <BasicPolygon {...defaultProps}>
-      <Tooltip />
-    </BasicPolygon>
-  );
-};
+  },
+);
 
 ConnectedPolygon.propTypes = {
   area: PropTypes.shape({

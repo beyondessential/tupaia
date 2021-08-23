@@ -12,6 +12,7 @@ export {
   GeoJSON,
   Polygon,
   Tooltip,
+  Pane,
 } from 'react-leaflet';
 export * from './AreaTooltip';
 export * from './constants';
