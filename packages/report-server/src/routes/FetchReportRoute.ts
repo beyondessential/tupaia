@@ -7,7 +7,6 @@ import { Request } from 'express';
 
 import { createAggregator } from '@tupaia/aggregator';
 import { Route } from '@tupaia/server-boilerplate';
-import type { EntityResponseObject } from '@tupaia/entity-server/src/type-exports';
 
 import { Aggregator } from '../aggregator';
 import { ReportBuilder, BuiltReport } from '../reportBuilder';
@@ -33,28 +32,32 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     return report;
   }
 
-  async getFoundOrgUnits(
+  async getRequestedOrgUnitObjects(
     hierarchy = 'explore',
     requestedOrgUnitCodes: string[],
-  ): Promise<Pick<EntityResponseObject, 'code' | 'country_code'>[]> {
+  ): Promise<{ code: string; country_code: string | null; type: string | null }[]> {
     const { ctx } = this.req;
     const entities = await ctx.microServices.entityApi.getEntities(
       hierarchy,
       requestedOrgUnitCodes,
       {
-        fields: ['code', 'country_code'],
+        fields: ['code', 'country_code', 'type'],
       },
     );
+    if (entities.length === 0) {
+      throw new Error(`No entities found with codes ${requestedOrgUnitCodes}`);
+    }
+
     // If entity is a project
-    if (entities.length === 1 && entities[0].country_code === null) {
+    if (entities.length === 1 && entities[0].type === 'project') {
       const countryEntities = await ctx.microServices.entityApi.getDescendantsOfEntities(
         hierarchy,
         requestedOrgUnitCodes,
         {
-          fields: ['code', 'country_code'],
+          fields: ['code', 'country_code', 'type'],
           filter: { type: 'country' },
         },
-        true,
+        false,
       );
 
       return countryEntities;
@@ -62,7 +65,7 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     return entities;
   }
 
-  async getAccessibleEntities(
+  async getAccessibleOrgUnitCodes(
     report: ReportType,
     hierarchy = 'explore',
     requestedOrgUnitCodes: string | string[],
@@ -73,22 +76,19 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     const requestedOrgUnitCodesArray = Array.isArray(requestedOrgUnitCodes)
       ? requestedOrgUnitCodes
       : requestedOrgUnitCodes.split(',');
-    const foundOrgUnits = await this.getFoundOrgUnits(hierarchy, requestedOrgUnitCodesArray);
-    const foundOrgUnitCodes = foundOrgUnits.map(orgUnit => orgUnit.code);
-
-    const missingOrgUnitCodes = requestedOrgUnitCodesArray.filter(
-      orgUnitCode => !foundOrgUnitCodes.includes(orgUnitCode),
+    const foundOrgUnits = await this.getRequestedOrgUnitObjects(
+      hierarchy,
+      requestedOrgUnitCodesArray,
     );
-    if (missingOrgUnitCodes.length > 0) {
-      throw new Error(`No entities found with codes ${missingOrgUnitCodes}`);
-    }
 
-    return foundOrgUnits
-      .filter(
-        ({ country_code: countryCode }) =>
-          countryCode !== null && accessPolicy.allows(countryCode, permissionGroupName),
-      )
-      .map(orgUnit => orgUnit.code);
+    const accessibleOrgUnits = foundOrgUnits.filter(
+      ({ country_code: countryCode }) =>
+        countryCode !== null && accessPolicy.allows(countryCode, permissionGroupName),
+    );
+    if (accessibleOrgUnits.length === 0) {
+      throw new Error(`No permissions to any one of entities ${foundOrgUnits}`);
+    }
+    return accessibleOrgUnits.map(orgUnit => orgUnit.code);
   }
 
   async buildResponse() {
@@ -99,7 +99,7 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     }
     const report = await this.findReport();
 
-    const accessibleOrgUnitCodes = await this.getAccessibleEntities(
+    const accessibleOrgUnitCodes = await this.getAccessibleOrgUnitCodes(
       report,
       hierarchy,
       organisationUnitCodes,
