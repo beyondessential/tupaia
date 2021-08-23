@@ -46,14 +46,13 @@ exports.up = async function (db) {
           '($row.period).substring(0, 4)': '$row.value',
         },
         {
-          transform: 'aggregate',
-          name: 'group',
           '...': 'last',
+          name: 'group',
+          transform: 'aggregate',
         },
         {
-          transform: 'select',
-          "'timestamp'": "periodToTimestamp(('2020').concat($row.name))",
-          '...': '*',
+          transform: 'sort',
+          by: '$row.name',
         },
       ],
     },
@@ -71,9 +70,7 @@ exports.up = async function (db) {
       chartConfig: {
         $all: {},
       },
-      presentationOptions: {
-        periodTickFormat: '[W]w',
-      },
+      xName: 'Date', // For showing correct first column name in table flapper
     },
     report_code: reportCode,
     legacy: false,
