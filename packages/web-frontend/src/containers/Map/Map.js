@@ -59,7 +59,9 @@ class MapComponent extends Component {
 
     if (nextProps.tileSetUrl !== tileSetUrl) return true;
 
-    return JSON.stringify(nextProps.position) !== JSON.stringify(position);
+    if (JSON.stringify(nextProps.position) !== JSON.stringify(position)) return true;
+
+    return false;
   }
 
   onPositionChanged = (center, bounds, zoom) => {
@@ -154,9 +156,12 @@ class MapComponent extends Component {
 MapComponent.propTypes = {
   onCloseDropdownOverlays: PropTypes.func.isRequired,
   onChangePosition: PropTypes.func.isRequired,
+  currentParent: PropTypes.object.isRequired,
   currentOrganisationUnit: PropTypes.object.isRequired,
+  currentOrganisationUnitSiblings: PropTypes.array.isRequired,
   displayedChildren: PropTypes.arrayOf(PropTypes.object),
   getChildren: PropTypes.func.isRequired,
+  measureData: PropTypes.array.isRequired,
   measureInfo: PropTypes.object.isRequired,
   position: PropTypes.shape({
     center: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),

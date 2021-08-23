@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import { InteractivePolygon } from './UIComponents/InteractivePolygon';
@@ -15,16 +15,27 @@ import {
 } from '../../selectors';
 import { setOrgUnit } from '../../actions';
 
-const Polygon = React.memo(
-  ({
-    measureData,
-    measureOrgUnits,
-    measureInfo,
-    measureId,
-    setOrgUnit,
-    permanentLabels,
-    ...props
-  }) => {
+class Polygon extends Component {
+  shouldComponentUpdate(nextProps) {
+    const { measureId, coordinates, orgUnitMeasureData, isHidden } = this.props;
+    if (nextProps.measureId !== measureId) return true;
+    if (nextProps.coordinates !== coordinates) return true;
+    if (nextProps.orgUnitMeasureData !== orgUnitMeasureData) return true;
+    if (isHidden !== nextProps.isHidden) return true;
+
+    return false;
+  }
+
+  render() {
+    const {
+      measureData,
+      measureOrgUnits,
+      measureInfo,
+      measureId,
+      setOrgUnit,
+      permanentLabels,
+      ...props
+    } = this.props;
     const { measureOptions } = measureInfo;
 
     return (
@@ -38,8 +49,8 @@ const Polygon = React.memo(
         {...props}
       />
     );
-  },
-);
+  }
+}
 
 const selectMeasureDataWithCoordinates = createSelector([measureData => measureData], measureData =>
   measureData.map(({ location, ...otherData }) => ({
