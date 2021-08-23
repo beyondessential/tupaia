@@ -8,4 +8,4 @@ source .env
 
 cd scripts
 export PGPASSWORD=$DB_PASSWORD
-psql -p $DB_PORT -h $DB_URL -d $DB_NAME -U $DB_USER -c "SELECT mv\$refreshMaterializedView('analytics', 'public', true);"
+psql -p $DB_PORT -h $DB_URL -d $DB_NAME -U $DB_USER -tc "SELECT mv\$refreshMaterializedView('analytics', 'public', true);"
