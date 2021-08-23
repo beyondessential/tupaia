@@ -66,6 +66,9 @@ export const setupMapOverlayTestData = async models => {
     'test_project',
   );
 
+  // Create root map overlay group
+  await findOrCreateMapOverlayGroup(models, models.mapOverlayGroup.RootMapOverlayGroupCode);
+
   // Set up the map overlay groups
   const nationalMapOverlayGroup1 = await findOrCreateMapOverlayGroup(
     models,
