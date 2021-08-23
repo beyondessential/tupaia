@@ -122,6 +122,6 @@ const createTimeoutPromise = () =>
   new Promise((resolve, reject) => {
     const id = setTimeout(() => {
       clearTimeout(id);
-      reject({ message: 'Network request timed out' });
+      reject(new Error('Network request timed out'));
     }, FETCH_TIMEOUT);
   });
