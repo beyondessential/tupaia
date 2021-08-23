@@ -33,17 +33,14 @@ export const MarkerLayer = ({ measureData, serieses }) => {
 
   return (
     <LayerGroup>
-      {measureData.map(measure =>
+      {measureData.map((measure, index) =>
         measure.region ? (
-          <ShadedPolygon
-            key={`${measure.code}-${measure.color}`}
-            positions={measure.region}
-            {...measure}
-          >
+          // eslint-disable-next-line react/no-array-index-key
+          <ShadedPolygon key={index} positions={measure.region} {...measure}>
             <AreaTooltip text={getTooltipText(measure, serieses)} />
           </ShadedPolygon>
         ) : (
-          <MeasureMarker key={measure.code} {...measure}>
+          <MeasureMarker key={index} {...measure}>
             <MeasurePopup markerData={measure} serieses={serieses} />
           </MeasureMarker>
         ),

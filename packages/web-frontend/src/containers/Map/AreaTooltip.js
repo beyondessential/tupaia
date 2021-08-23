@@ -15,8 +15,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-
-import { Tooltip } from 'react-leaflet';
+import { Tooltip } from '@tupaia/ui-components/lib/map';
 import { getSingleFormattedValue } from '../../utils';
 
 const Heading = styled.span`

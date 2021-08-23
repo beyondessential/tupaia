@@ -6,8 +6,7 @@
  */
 
 import React from 'react';
-
-import { LayerGroup, GeoJSON } from 'react-leaflet';
+import { LayerGroup, GeoJSON } from '@tupaia/ui-components/lib/map';
 
 import { DEMOLAND_COLORS } from '../../styles';
 import { demoLandLand, demoLandRoads, demoLandRivers } from './GeoJSONS';

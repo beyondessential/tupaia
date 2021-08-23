@@ -8,6 +8,10 @@ export {
   TileLayer as BaseTileLayer,
   ZoomControl,
   MapContainer as LeafletMapContainer,
+  LayerGroup,
+  GeoJSON,
+  Polygon,
+  Tooltip,
 } from 'react-leaflet';
 export * from './AreaTooltip';
 export * from './constants';

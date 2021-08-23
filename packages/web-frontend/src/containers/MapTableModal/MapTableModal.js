@@ -55,13 +55,15 @@ export const MapTableModalComponent = ({
 };
 
 MapTableModalComponent.propTypes = {
-  measureOptions: PropTypes.shape({
-    coordinates: PropTypes.arrayOf(PropTypes.number),
-    value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    photoUrl: PropTypes.string,
-    organisationUnitCode: PropTypes.string,
-    name: PropTypes.string,
-  }),
+  measureOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      coordinates: PropTypes.arrayOf(PropTypes.number),
+      value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+      photoUrl: PropTypes.string,
+      organisationUnitCode: PropTypes.string,
+      name: PropTypes.string,
+    }),
+  ),
   measureData: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string,
