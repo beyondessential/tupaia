@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
@@ -22,64 +22,90 @@ import {
   selectOrgUnitSiblings,
   selectRenderedMeasuresWithDisplayInfo,
 } from '../../selectors';
-import {
-  changePosition,
-  closeDropdownOverlays,
-  setMapIsAnimating,
-  setOrgUnit,
-} from '../../actions';
+import { changePosition, closeDropdownOverlays, setOrgUnit } from '../../actions';
 
 const CHANGE_TO_PARENT_PERCENTAGE = 0.6;
 
 /**
  * Map
- *
- * Includes basic map setup/rendering,
- * controlled through props that are connected to the redux store. Rendering includes heatmaps
- * markers, polygons.
+ * Includes basic map setup/rendering, controlled through props that are connected to the redux store.
+ * Rendering includes heatmaps markers, polygons.
  */
-const MapComponent = React.memo(
-  ({
-    changePosition,
-    closeDropdownOverlays,
-    currentParent,
-    currentOrganisationUnitSiblings,
-    currentOrganisationUnit,
-    displayedChildren,
-    getChildren,
-    measureData,
-    measureInfo,
-    position,
-    setOrgUnit,
-    shouldSnapToPosition,
-    sidePanelWidth,
-    tileSetUrl,
-  }) => {
-    const { measureOptions } = measureInfo;
+class MapComponent extends Component {
+  componentWillMount() {
+    window.addEventListener('resize', () => this.forceUpdate());
+  }
 
-    const checkZoomOutToParentOrgUnit = bounds => {
-      // Maybe we need to zoom out to a parent!
-      // First, check if there's a valid parent to zoom out to
-      if (currentParent) {
-        if (currentParent.location && currentParent.location.bounds) {
-          // Now check if we're at a reasonable zoom level to switch to that parent
-          const difference = checkBoundsDifference(currentParent.location.bounds, bounds);
-          if (difference > CHANGE_TO_PARENT_PERCENTAGE) {
-            setOrgUnit(currentParent.organisationUnitCode, false);
-          }
+  shouldComponentUpdate(nextProps) {
+    const {
+      currentOrganisationUnit,
+      displayedChildren,
+      measureInfo,
+      position,
+      tileSetUrl,
+    } = this.props;
+    // Only updates/re-renders when the measure has changed or the orgUnit has changed.
+    // These are the only cases where polygons or area tooltips should rerender.
+    if (nextProps.measureInfo.measureId !== measureInfo.measureId) return true;
+
+    if (nextProps.displayedChildren !== displayedChildren) return true;
+
+    if (
+      (nextProps.currentOrganisationUnit || {}).organisationUnitCode !==
+      (currentOrganisationUnit || {}).organisationUnitCode
+    ) {
+      return true;
+    }
+
+    if (nextProps.tileSetUrl !== tileSetUrl) return true;
+
+    return JSON.stringify(nextProps.position) !== JSON.stringify(position);
+  }
+
+  onPositionChanged = (center, bounds, zoom) => {
+    const { position, onChangePosition } = this.props;
+
+    // only check when zooming _out_
+    if (zoom < position.zoom) {
+      this.checkZoomOutToParentOrgUnit(bounds);
+    }
+
+    // Notify redux that we've moved
+    onChangePosition(center, zoom);
+  };
+
+  checkZoomOutToParentOrgUnit(bounds) {
+    const { currentParent, onChangeOrgUnit } = this.props;
+
+    // Maybe we need to zoom out to a parent!
+    // First, check if there's a valid parent to zoom out to
+    if (currentParent) {
+      if (currentParent.location && currentParent.location.bounds) {
+        // Now check if we're at a reasonable zoom level to switch to that parent
+        const difference = checkBoundsDifference(currentParent.location.bounds, bounds);
+        if (difference > CHANGE_TO_PARENT_PERCENTAGE) {
+          onChangeOrgUnit(currentParent.organisationUnitCode, false);
         }
       }
-    };
+    }
+  }
 
-    const onPositionChanged = (center, bounds, zoom) => {
-      // only check when zooming _out_
-      if (zoom < position.zoom) {
-        checkZoomOutToParentOrgUnit(bounds);
-      }
+  render() {
+    const {
+      onCloseDropdownOverlays,
+      currentOrganisationUnitSiblings,
+      currentOrganisationUnit,
+      displayedChildren,
+      getChildren,
+      measureData,
+      measureInfo,
+      position,
+      shouldSnapToPosition,
+      sidePanelWidth,
+      tileSetUrl,
+    } = this.props;
 
-      // Notify redux that we've moved
-      changePosition(center, zoom);
-    };
+    const { measureOptions } = measureInfo;
 
     // Could this move to the MarkerLayer?
     const processedData = measureData
@@ -88,11 +114,11 @@ const MapComponent = React.memo(
 
     return (
       <LeafletMap
-        onClick={closeDropdownOverlays}
+        onClick={onCloseDropdownOverlays}
         position={position}
         shouldSnapToPosition={shouldSnapToPosition}
         rightPadding={sidePanelWidth}
-        onPositionChanged={onPositionChanged}
+        onPositionChanged={this.onPositionChanged}
       >
         <TileLayer tileSetUrl={tileSetUrl} />
         <DemoLand />
@@ -122,13 +148,13 @@ const MapComponent = React.memo(
         <DisasterLayer />
       </LeafletMap>
     );
-  },
-);
+  }
+}
 
 MapComponent.propTypes = {
+  onCloseDropdownOverlays: PropTypes.func.isRequired,
+  onChangePosition: PropTypes.func.isRequired,
   currentOrganisationUnit: PropTypes.object.isRequired,
-  closeDropdownOverlays: PropTypes.func.isRequired,
-  changePosition: PropTypes.func.isRequired,
   displayedChildren: PropTypes.arrayOf(PropTypes.object),
   getChildren: PropTypes.func.isRequired,
   measureInfo: PropTypes.object.isRequired,
@@ -137,7 +163,7 @@ MapComponent.propTypes = {
     bounds: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     zoom: PropTypes.number,
   }).isRequired,
-  setOrgUnit: PropTypes.func.isRequired,
+  onChangeOrgUnit: PropTypes.func.isRequired,
   shouldSnapToPosition: PropTypes.bool.isRequired,
   sidePanelWidth: PropTypes.number.isRequired,
   tileSetUrl: PropTypes.string.isRequired,
@@ -209,12 +235,11 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  setOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
+  onChangeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
     dispatch(setOrgUnit(organisationUnitCode, shouldChangeMapBounds));
   },
-  changePosition: (center, zoom) => dispatch(changePosition(center, zoom)),
-  closeDropdownOverlays: () => dispatch(closeDropdownOverlays()),
-  setMapIsAnimating: isAnimating => dispatch(setMapIsAnimating(isAnimating)),
+  onChangePosition: (center, zoom) => dispatch(changePosition(center, zoom)),
+  onCloseDropdownOverlays: () => dispatch(closeDropdownOverlays()),
 });
 
 export const Map = connect(mapStateToProps, mapDispatchToProps)(MapComponent);
