@@ -27,7 +27,7 @@ const generateIndicator = (code, dataElement, target) => ({
   code,
   builder: 'analyticArithmetic',
   config: {
-    formula: `${dataElement} >= ${target} ? 1 : ${dataElement} >= firstExistingValue(value1YearAgo, value2YearsAgo, value3YearsAgo, value4YearsAgo, value5YearsAgo, Infinity) ? 0 : -1`,
+    formula: `${dataElement} >= (${target} * 100) ? 1 : ${dataElement} >= firstExistingValue(value1YearAgo, value2YearsAgo, value3YearsAgo, value4YearsAgo, value5YearsAgo, Infinity) ? 0 : -1`,
     parameters: [
       {
         builder: 'analyticArithmetic',
@@ -115,7 +115,7 @@ const generateIndicator = (code, dataElement, target) => ({
         },
       },
     ],
-    aggregation: 'MOST_RECENT',
+    aggregation: 'FINAL_EACH_YEAR',
     defaultValues: {
       value1YearAgo: 'undefined',
       value2YearsAgo: 'undefined',
@@ -131,14 +131,7 @@ const CODE = 'LESMIS_ESSDP_ECE_SubSector_List';
 const REPORT_CONFIG = {
   fetch: {
     dataElements: ['er_summary_ece_0_2_t', 'er_summary_ece_5_t'],
-    aggregations: [
-      {
-        type: 'MOST_RECENT',
-        config: {
-          dataSourceEntityType: 'sub_district',
-        },
-      },
-    ],
+    aggregations: ['MOST_RECENT'],
   },
   transform: [
     'keyValueByDataElementName',
@@ -252,6 +245,7 @@ const FRONT_END_CONFIG = {
   name: 'ESSDP List Summary',
   type: 'list',
   valueType: 'color',
+  periodGranularity: 'year',
   drillDown: {
     itemCodeByEntry: {
       ECETarget0_2: 'LESMIS_enrolment_ece_0_2_target',
