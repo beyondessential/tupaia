@@ -21,25 +21,9 @@ import {
   COLUMNS_RESIZE,
   SORTING_CHANGE,
   DATA_CHANGE_REQUEST,
+  DEFAULT_TABLE_STATE,
 } from './constants';
 import { getFetchId } from './selectors';
-
-// Default State
-export const DEFAULT_TABLE_STATE = {
-  confirmActionMessage: null,
-  pendingActionCreator: () => {},
-  numberOfPages: 0,
-  data: [],
-  errorMessage: '',
-  fetchId: null,
-  pageIndex: 0,
-  pageSize: 20,
-  filters: [],
-  sorting: [],
-  expansions: {},
-  expansionTabStates: {},
-  resizedColumns: [],
-};
 
 const handleErrorMessage = (payload, currentState) => {
   const currentFetchId = getFetchId(currentState);
