@@ -9,13 +9,13 @@ import styled from 'styled-components';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
 import MuiBox from '@material-ui/core/Box';
-import { ReactComponent as LocationPin } from './icons/location-pin.svg';
-import { ReactComponent as PushPin } from './icons/push-pin.svg';
-import { ReactComponent as School } from './icons/school-count.svg';
-import { ReactComponent as Group } from './icons/group.svg';
-import { ReactComponent as Road } from './icons/road.svg';
-import { ReactComponent as Study } from './icons/study.svg';
-import { ReactComponent as Notepad } from './icons/notepad.svg';
+import LocationPin from './icons/location-pin.svg';
+import PushPin from './icons/push-pin.svg';
+import School from './icons/school-count.svg';
+import Group from './icons/group.svg';
+import Road from './icons/road.svg';
+import Study from './icons/study.svg';
+import Notepad from './icons/notepad.svg';
 import { FlexStart } from './Layout';
 
 const IconContainer = styled.div`
