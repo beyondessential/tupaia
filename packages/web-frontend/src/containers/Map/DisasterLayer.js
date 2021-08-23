@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  *
  */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -11,7 +10,7 @@ import { LayerGroup, IconMarker, DEFAULT_DISASTER_COLOR } from '@tupaia/ui-compo
 import { selectDisaster } from '../../disaster/actions';
 import { selectCurrentProjectCode } from '../../selectors';
 
-const DisasterLayerComponent = ({ isInDisasterMode, disasters, onSelectDisaster }) => {
+const Layer = ({ isInDisasterMode, disasters, onSelectDisaster }) => {
   if (!isInDisasterMode) return null;
 
   return (
@@ -33,13 +32,13 @@ const DisasterLayerComponent = ({ isInDisasterMode, disasters, onSelectDisaster 
   );
 };
 
-DisasterLayerComponent.propTypes = {
+Layer.propTypes = {
   isInDisasterMode: PropTypes.bool,
   disasters: PropTypes.array,
   onSelectDisaster: PropTypes.func,
 };
 
-DisasterLayerComponent.defaultProps = {
+Layer.defaultProps = {
   isInDisasterMode: false,
   disasters: [],
   onSelectDisaster: () => {},
@@ -54,4 +53,4 @@ const mapDispatchToProps = dispatch => ({
   onSelectDisaster: d => dispatch(selectDisaster(d)),
 });
 
-export const DisasterLayer = connect(mapStateToProps, mapDispatchToProps)(DisasterLayerComponent);
+export const DisasterLayer = connect(mapStateToProps, mapDispatchToProps)(Layer);

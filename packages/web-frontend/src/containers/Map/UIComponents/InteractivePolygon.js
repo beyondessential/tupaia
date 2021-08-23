@@ -63,7 +63,7 @@ const getProps = (organisationUnitCode, organisationUnitChildren, measureOrgUnit
   return { shade, isHidden, hasShadedChildren, hasChildren };
 };
 
-export const ConnectedPolygon = React.memo(
+export const InteractivePolygon = React.memo(
   ({
     isChildArea,
     hasMeasureData,
@@ -77,8 +77,6 @@ export const ConnectedPolygon = React.memo(
     organisationUnitChildren,
   }) => {
     const { organisationUnitCode } = area;
-
-    console.log('render...');
 
     const { shade, isHidden, hasChildren, hasShadedChildren } = getProps(
       organisationUnitCode,
@@ -156,7 +154,7 @@ export const ConnectedPolygon = React.memo(
   },
 );
 
-ConnectedPolygon.propTypes = {
+InteractivePolygon.propTypes = {
   area: PropTypes.shape({
     name: PropTypes.string,
     type: PropTypes.string,
@@ -181,7 +179,7 @@ ConnectedPolygon.propTypes = {
   }),
 };
 
-ConnectedPolygon.defaultProps = {
+InteractivePolygon.defaultProps = {
   measureId: '',
   isActive: false,
   permanentLabels: true,

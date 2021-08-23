@@ -4,16 +4,41 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
 import { TileLayer, MarkerLayer } from '@tupaia/ui-components/lib/map';
 import { LeafletMap } from './LeafletMap';
 import { checkBoundsDifference, organisationUnitIsArea } from '../../utils';
-import { PolygonWrapper as PolygonComponent } from './UIComponents/PolygonWrapper';
 import { DemoLand } from './DemoLand';
+import { ConnectedPolygon } from './ConnectedPolygon';
 import { DisasterLayer } from './DisasterLayer';
+import {
+  selectActiveTileSet,
+  selectAllMeasuresWithDisplayInfo,
+  selectCurrentOrgUnit,
+  selectHasPolygonMeasure,
+  selectOrgUnit,
+  selectOrgUnitChildren,
+  selectOrgUnitSiblings,
+  selectRenderedMeasuresWithDisplayInfo,
+} from '../../selectors';
+import {
+  changePosition,
+  closeDropdownOverlays,
+  setMapIsAnimating,
+  setOrgUnit,
+} from '../../actions';
 
 const CHANGE_TO_PARENT_PERCENTAGE = 0.6;
 
-export const Map = React.memo(
+/**
+ * Map
+ *
+ * Includes basic map setup/rendering,
+ * controlled through props that are connected to the redux store. Rendering includes heatmaps
+ * markers, polygons.
+ */
+const MapComponent = React.memo(
   ({
     changePosition,
     closeDropdownOverlays,
@@ -72,7 +97,7 @@ export const Map = React.memo(
         <TileLayer tileSetUrl={tileSetUrl} />
         <DemoLand />
         {(displayedChildren || []).map(area => (
-          <PolygonComponent
+          <ConnectedPolygon
             area={area}
             key={area.organisationUnitCode}
             organisationUnitChildren={getChildren(area.organisationUnitCode)}
@@ -80,14 +105,14 @@ export const Map = React.memo(
           />
         ))}
         {(currentOrganisationUnitSiblings || []).map(area => (
-          <PolygonComponent
+          <ConnectedPolygon
             area={area}
             key={area.organisationUnitCode}
             organisationUnitChildren={getChildren(area.organisationUnitCode)}
           />
         ))}
         {currentOrganisationUnit && organisationUnitIsArea(currentOrganisationUnit) && (
-          <PolygonComponent
+          <ConnectedPolygon
             area={currentOrganisationUnit}
             organisationUnitChildren={getChildren(currentOrganisationUnit.organisationUnitCode)}
             isActive
@@ -100,16 +125,13 @@ export const Map = React.memo(
   },
 );
 
-Map.propTypes = {
+MapComponent.propTypes = {
   currentOrganisationUnit: PropTypes.object.isRequired,
   closeDropdownOverlays: PropTypes.func.isRequired,
   changePosition: PropTypes.func.isRequired,
   displayedChildren: PropTypes.arrayOf(PropTypes.object),
   getChildren: PropTypes.func.isRequired,
-  measureId: PropTypes.string.isRequired,
   measureInfo: PropTypes.object.isRequired,
-  onChangeOrgUnit: PropTypes.func.isRequired,
-  permanentLabels: PropTypes.bool,
   position: PropTypes.shape({
     center: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     bounds: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
@@ -121,7 +143,78 @@ Map.propTypes = {
   tileSetUrl: PropTypes.string.isRequired,
 };
 
-Map.defaultProps = {
+MapComponent.defaultProps = {
   displayedChildren: [],
-  permanentLabels: true,
 };
+
+const selectMeasureDataWithCoordinates = createSelector([measureData => measureData], measureData =>
+  measureData.map(({ location, ...otherData }) => ({
+    ...otherData,
+    coordinates: location && location.point,
+    region: location && location.region,
+  })),
+);
+
+const mapStateToProps = state => {
+  const { isAnimating, shouldSnapToPosition, position, measureInfo } = state.map;
+  const { isSidePanelExpanded } = state.global;
+  const { contractedWidth, expandedWidth } = state.dashboard;
+  const currentOrganisationUnit = selectCurrentOrgUnit(state);
+  const currentParent = selectOrgUnit(state, currentOrganisationUnit.parent);
+  const currentChildren =
+    selectOrgUnitChildren(state, currentOrganisationUnit.organisationUnitCode) || [];
+
+  // If the org unit's grandchildren are polygons and have a measure, display grandchildren
+  // rather than children
+  let displayedChildren = currentChildren;
+  let measureOrgUnits = [];
+
+  if (selectHasPolygonMeasure(state)) {
+    measureOrgUnits = selectAllMeasuresWithDisplayInfo(state);
+    const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
+    const grandchildren = currentChildren
+      .map(area => selectOrgUnitChildren(state, area.organisationUnitCode))
+      .reduce((acc, val) => acc.concat(val), []); // equivelent to .flat(), for IE
+
+    const hasShadedGrandchildren =
+      grandchildren &&
+      grandchildren.some(child => measureOrgUnitCodes.includes(child.organisationUnitCode));
+    if (hasShadedGrandchildren) displayedChildren = grandchildren;
+  }
+
+  const measureData = selectMeasureDataWithCoordinates(
+    selectRenderedMeasuresWithDisplayInfo(state),
+  );
+
+  const getChildren = organisationUnitCode => selectOrgUnitChildren(state, organisationUnitCode);
+
+  return {
+    position,
+    currentOrganisationUnit,
+    currentParent,
+    displayedChildren,
+    measureData,
+    currentOrganisationUnitSiblings: selectOrgUnitSiblings(
+      state,
+      currentOrganisationUnit.organisationUnitCode,
+    ),
+    measureInfo,
+    getChildren,
+    measureOrgUnits,
+    tileSetUrl: selectActiveTileSet(state).url,
+    isAnimating,
+    shouldSnapToPosition,
+    sidePanelWidth: isSidePanelExpanded ? expandedWidth : contractedWidth,
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  setOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
+    dispatch(setOrgUnit(organisationUnitCode, shouldChangeMapBounds));
+  },
+  changePosition: (center, zoom) => dispatch(changePosition(center, zoom)),
+  closeDropdownOverlays: () => dispatch(closeDropdownOverlays()),
+  setMapIsAnimating: isAnimating => dispatch(setMapIsAnimating(isAnimating)),
+});
+
+export const Map = connect(mapStateToProps, mapDispatchToProps)(MapComponent);
