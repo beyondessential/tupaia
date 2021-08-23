@@ -16,13 +16,15 @@ import {
 } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { DateRangePicker, WhiteButton, SplitButton } from '@tupaia/ui-components';
+import { useChartDataExport } from '@tupaia/ui-components/lib/chart';
 import * as COLORS from '../constants';
 import { FlexColumn, FlexSpaceBetween, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
-import { useDashboardReportDataWithConfig } from '../api/queries';
+import { useDashboardReportDataWithConfig, useEntityData } from '../api/queries';
 import { useUrlParams, useUrlSearchParams, useExportToPNG } from '../utils';
 import { DashboardReport } from './DashboardReport';
 
+// Transition component for modal animation
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -93,6 +95,7 @@ export const DashboardReportModal = () => {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { entityCode } = useUrlParams();
   const [{ startDate, endDate, reportCode }, setParams] = useUrlSearchParams();
+  const { data: entityData } = useEntityData(entityCode);
   const { data, isLoading } = useDashboardReportDataWithConfig({
     entityCode,
     reportCode,
@@ -100,12 +103,33 @@ export const DashboardReportModal = () => {
     endDate,
   });
 
-  const { dashboardItemConfig: config } = data;
+  const { dashboardItemConfig: config, reportData } = data;
 
-  const exportFilename = `export-${config?.name}-${new Date().toDateString()}`;
+  // Set up PNG export
+  const pngExportFilename = `export-${config?.name}-${new Date().toDateString()}`;
+  const { isExporting, isExportLoading, exportRef, exportToPNG } = useExportToPNG(
+    pngExportFilename,
+  );
 
-  const { isExporting, isExportLoading, exportRef, exportToPNG } = useExportToPNG(exportFilename);
+  // Set up Excel export
+  const viewContent = { ...config, data: reportData, startDate, endDate };
+  const excelExportTitle = `${viewContent?.name}, ${entityData?.name}`;
+  const { doExport } = useChartDataExport(viewContent, excelExportTitle);
 
+  /**
+   * Export click handler
+   */
+  const handleClickExport = async exportId => {
+    if (exportId === 'png') {
+      await exportToPNG();
+    } else {
+      await doExport();
+    }
+  };
+
+  /**
+   * Date change handler
+   */
   const handleDatesChange = (newStartDate, newEndDate) => {
     setParams(
       {
@@ -116,6 +140,9 @@ export const DashboardReportModal = () => {
     );
   };
 
+  /**
+   * Close click handler
+   */
   const handleClose = () => {
     setParams({
       startDate: null,
@@ -124,13 +151,9 @@ export const DashboardReportModal = () => {
     });
   };
 
-  const handleClickExport = async exportId => {
-    if (exportId === 'png') {
-      await exportToPNG();
-    }
-  };
-
+  // Display the modal  if there is a report code in the url
   const isOpen = !!reportCode;
+
   const title = isExporting
     ? `${entityCode}, ${config?.dashboardName}, ${config?.name}`
     : config?.name;
