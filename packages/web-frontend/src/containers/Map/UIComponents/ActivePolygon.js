@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import { MAP_COLORS } from '../../../styles';
 
 const { POLYGON_HIGHLIGHT } = MAP_COLORS;
+
 const StyledPolygon = styled(Polygon)`
   stroke: ${props => props.shade || POLYGON_HIGHLIGHT};
   opacity: 1;

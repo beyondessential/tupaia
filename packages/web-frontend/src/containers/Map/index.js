@@ -14,9 +14,8 @@
  */
 
 import { connect } from 'react-redux';
-
-// import { CustomMap } from './CustomMap';
-import { Map as CustomMap } from './NewMap';
+import { createSelector } from 'reselect';
+import { Map } from './Map';
 import {
   selectOrgUnit,
   selectCurrentOrgUnit,
@@ -28,16 +27,13 @@ import {
   selectCurrentMeasureId,
   selectAreRegionLabelsPermanent,
 } from '../../selectors';
-
 import { selectActiveTileSet } from '../../selectors/projectSelectors';
-
 import {
   setOrgUnit,
   changePosition,
   closeDropdownOverlays,
   setMapIsAnimating,
 } from '../../actions';
-import { createSelector } from 'reselect';
 
 const selectMeasureDataWithCoordinates = createSelector([measureData => measureData], measureData =>
   measureData.map(({ location, ...otherData }) => ({
@@ -117,4 +113,4 @@ const mapDispatchToProps = dispatch => ({
   setMapIsAnimating: isAnimating => dispatch(setMapIsAnimating(isAnimating)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CustomMap);
+export default connect(mapStateToProps, mapDispatchToProps)(Map);

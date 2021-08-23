@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { TileLayer, MarkerLayer } from '@tupaia/ui-components/lib/map';
-import { LeafletMap } from './NewLeafletMap';
+import { LeafletMap } from './LeafletMap';
 import { checkBoundsDifference, organisationUnitIsArea } from '../../utils';
 import { ConnectedPolygon } from './UIComponents/ConnectedPolygon';
 import { DemoLand } from './DemoLand';

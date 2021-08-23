@@ -7,7 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Polygon } from '@tupaia/ui-components/lib/map';
 import styled from 'styled-components';
-import { AreaTooltip } from '../AreaTooltip';
+import { AreaTooltip } from './AreaTooltip';
 import { MAP_COLORS, BREWER_PALETTE } from '../../../styles';
 import ActivePolygon from './ActivePolygon';
 
