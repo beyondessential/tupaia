@@ -6,11 +6,11 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { LayerGroup } from 'react-leaflet';
-import { IconMarker, DEFAULT_DISASTER_COLOR } from '@tupaia/ui-components/lib/map';
+import { LayerGroup, IconMarker, DEFAULT_DISASTER_COLOR } from '@tupaia/ui-components/lib/map';
 import { selectDisaster } from '../../disaster/actions';
 import { selectCurrentProjectCode } from '../../selectors';
 
+// eslint-disable-next-line react/prop-types
 const DisasterMarker = ({ onSelect, ...data }) => (
   <IconMarker
     coordinates={data.coordinates}

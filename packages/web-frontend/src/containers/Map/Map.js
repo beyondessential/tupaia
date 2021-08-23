@@ -6,12 +6,13 @@ import React from 'react';
 import { TileLayer, MarkerLayer } from '@tupaia/ui-components/lib/map';
 import { LeafletMap } from './NewLeafletMap';
 import { checkBoundsDifference, organisationUnitIsArea } from '../../utils';
-import ConnectedPolygon from './PolygonLayer/ConnectedPolygon';
+import { ConnectedPolygon } from './UIComponents/ConnectedPolygon';
 import { DemoLand } from './DemoLand';
+import DisasterLayer from './DisasterLayer';
 
 const CHANGE_TO_PARENT_PERCENTAGE = 0.6;
 
-export const NewMap = ({
+export const Map = ({
   tileSetUrl,
   closeDropdownOverlays,
   sidePanelWidth,
@@ -25,10 +26,13 @@ export const NewMap = ({
   currentParent,
   currentOrganisationUnitSiblings,
   currentOrganisationUnit,
+  measureId,
+  permanentLabels,
+  measureOrgUnits,
+  getChildren,
+  onChangeOrgUnit,
 }) => {
-  const { serieses, measureOptions } = measureInfo;
-
-  console.log('measureData', measureData);
+  const { measureOptions } = measureInfo;
 
   const checkZoomOutToParentOrgUnit = bounds => {
     // Maybe we need to zoom out to a parent!
@@ -59,33 +63,18 @@ export const NewMap = ({
     .filter(data => data.coordinates && data.coordinates.length === 2)
     .filter(data => !data.isHidden);
 
-  const renderPolygons = () => {
-    const areaPolygons = (displayedChildren || []).map(area => (
-      <ConnectedPolygon area={area} key={area.organisationUnitCode} isChildArea />
-    ));
-
-    const siblingPolygons = (currentOrganisationUnitSiblings || []).map(area => (
-      <ConnectedPolygon area={area} key={area.organisationUnitCode} />
-    ));
-
-    return [...areaPolygons, ...siblingPolygons];
-  };
-
-  const renderActivePolygons = () => {
-    // Render the currentOrgUnit polygon perimeter if it is an area (i.e. not a facility)
-    if (currentOrganisationUnit && organisationUnitIsArea(currentOrganisationUnit)) {
-      return (
-        <ConnectedPolygon
-          area={currentOrganisationUnit}
-          isActive
-          // Randomize key to ensure polygon appears at top. This is still imporatant even
-          // though the polygon is in a LayerGroup due to issues with react-leaflet that
-          // maintainer says are out of scope for the module.
-          key={`currentOrgUnitPolygon${Math.random()}`}
-        />
-      );
-    }
-    return null;
+  const PolygonComponent = props => {
+    return (
+      <ConnectedPolygon
+        hasMeasureData={measureData && measureData.length > 0}
+        measureOptions={measureOptions}
+        measureId={measureId}
+        measureOrgUnits={measureOrgUnits}
+        permanentLabels={permanentLabels}
+        onChangeOrgUnit={onChangeOrgUnit}
+        {...props}
+      />
+    );
   };
 
   return (
@@ -98,8 +87,29 @@ export const NewMap = ({
     >
       <TileLayer tileSetUrl={tileSetUrl} />
       <DemoLand />
-      {renderPolygons()}
-      {renderActivePolygons()}
+      <DisasterLayer />
+      {(displayedChildren || []).map(area => (
+        <PolygonComponent
+          area={area}
+          key={area.organisationUnitCode}
+          organisationUnitChildren={getChildren(area.organisationUnitCode)}
+          isChildArea
+        />
+      ))}
+      {(currentOrganisationUnitSiblings || []).map(area => (
+        <PolygonComponent
+          area={area}
+          key={area.organisationUnitCode}
+          organisationUnitChildren={getChildren(area.organisationUnitCode)}
+        />
+      ))}
+      {currentOrganisationUnit && organisationUnitIsArea(currentOrganisationUnit) && (
+        <PolygonComponent
+          area={currentOrganisationUnit}
+          organisationUnitChildren={getChildren(currentOrganisationUnit.organisationUnitCode)}
+          isActive
+        />
+      )}
       <MarkerLayer measureData={processedData || null} serieses={measureOptions || null} />
     </LeafletMap>
   );

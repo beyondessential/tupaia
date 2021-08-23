@@ -40,6 +40,7 @@ export const MarkerLayer = ({ measureData, serieses }) => {
             <AreaTooltip text={getTooltipText(measure, serieses)} />
           </ShadedPolygon>
         ) : (
+          // eslint-disable-next-line react/no-array-index-key
           <MeasureMarker key={index} {...measure}>
             <MeasurePopup markerData={measure} serieses={serieses} />
           </MeasureMarker>

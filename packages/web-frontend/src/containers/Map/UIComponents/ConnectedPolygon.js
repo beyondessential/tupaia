@@ -6,20 +6,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Polygon } from '@tupaia/ui-components/lib/map';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { AreaTooltip } from '../AreaTooltip';
 import { MAP_COLORS, BREWER_PALETTE } from '../../../styles';
-import { setOrgUnit } from '../../../actions';
-import {
-  selectOrgUnit,
-  selectHasPolygonMeasure,
-  selectAllMeasuresWithDisplayInfo,
-  selectCurrentMeasureId,
-  selectOrgUnitChildren,
-  selectAreRegionLabelsPermanent,
-} from '../../../selectors';
-import ActivePolygon from '../ActivePolygon';
+import ActivePolygon from './ActivePolygon';
 
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
 
@@ -42,7 +32,38 @@ export const ShadedPolygon = styled(Polygon)`
   }
 `;
 
-const ConnectedPolygon = ({
+const getProps = (organisationUnitCode, organisationUnitChildren, measureOrgUnits) => {
+  let shade;
+  let isHidden;
+  let orgUnitMeasureData;
+  let hasShadedChildren = false;
+
+  if (measureOrgUnits.length > 0) {
+    const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
+
+    hasShadedChildren =
+      organisationUnitChildren &&
+      organisationUnitChildren.some(child =>
+        measureOrgUnitCodes.includes(child.organisationUnitCode),
+      );
+
+    if (measureOrgUnitCodes.includes(organisationUnitCode)) {
+      orgUnitMeasureData = measureOrgUnits.find(
+        orgUnit => orgUnit.organisationUnitCode === organisationUnitCode,
+      );
+      if (orgUnitMeasureData) {
+        shade = orgUnitMeasureData.color;
+        isHidden = orgUnitMeasureData.isHidden;
+      }
+    }
+  }
+
+  const hasChildren = organisationUnitChildren && organisationUnitChildren.length > 0;
+
+  return { shade, isHidden, hasShadedChildren, hasChildren };
+};
+
+export const ConnectedPolygon = ({
   isChildArea,
   hasMeasureData,
   orgUnitMeasureData,
@@ -51,15 +72,20 @@ const ConnectedPolygon = ({
   onChangeOrgUnit,
   area,
   isActive,
-  coordinates,
-  shade,
-  isHidden,
-  hasChildren,
-  hasShadedChildren,
+  measureOrgUnits,
+  organisationUnitChildren,
 }) => {
+  const { organisationUnitCode } = area;
+
+  const { shade, isHidden, hasChildren, hasShadedChildren } = getProps(
+    organisationUnitCode,
+    organisationUnitChildren,
+    measureOrgUnits,
+  );
+
   if (isHidden) return null;
 
-  const { organisationUnitCode } = area;
+  const coordinates = area.location?.region;
 
   if (!coordinates) return null;
 
@@ -82,7 +108,6 @@ const ConnectedPolygon = ({
     positions: coordinates,
     eventHandlers: {
       click: () => {
-        console.log('click');
         return onChangeOrgUnit(organisationUnitCode);
       },
     },
@@ -90,19 +115,19 @@ const ConnectedPolygon = ({
 
   const Tooltip = () => {
     const hasMeasureValue = !!(orgUnitMeasureData || orgUnitMeasureData === 0);
-    return null;
     // don't render tooltips if we have a measure loaded
     // and don't have a value to display in the tooltip (ie: radius overlay)
     if (hasMeasureData && !hasMeasureValue) return null;
 
     return (
       <AreaTooltip
-        permanent={permanentLabels && isChildArea && !hasMeasureValue}
+        // permanent={permanentLabels && isChildArea && !hasMeasureValue}
         sticky={!permanentLabels}
         hasMeasureValue={hasMeasureValue}
         measureOptions={measureOptions}
         orgUnitMeasureData={orgUnitMeasureData}
         orgUnitName={area.name}
+        interactive={false}
       />
     );
   };
@@ -138,9 +163,6 @@ ConnectedPolygon.propTypes = {
   permanentLabels: PropTypes.bool,
   isChildArea: PropTypes.bool,
   onChangeOrgUnit: PropTypes.func,
-  coordinates: PropTypes.arrayOf(
-    PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number))),
-  ),
   hasMeasureData: PropTypes.bool,
   measureOptions: PropTypes.arrayOf(PropTypes.object),
   hasChildren: PropTypes.bool,
@@ -161,7 +183,6 @@ ConnectedPolygon.defaultProps = {
   permanentLabels: true,
   isChildArea: false,
   onChangeOrgUnit: () => {},
-  coordinates: undefined,
   hasMeasureData: false,
   measureOptions: [],
   hasChildren: false,
@@ -170,60 +191,3 @@ ConnectedPolygon.defaultProps = {
   isHidden: false,
   orgUnitMeasureData: undefined,
 };
-
-const mapStateToProps = (state, givenProps) => {
-  const { organisationUnitCode } = givenProps.area;
-  const { measureData, measureOptions } = state.map.measureInfo;
-  const measureId = selectCurrentMeasureId(state);
-  const organisationUnitChildren = selectOrgUnitChildren(state, organisationUnitCode);
-
-  let shade;
-  let isHidden;
-  let orgUnitMeasureData;
-  let hasShadedChildren = false;
-  if (selectHasPolygonMeasure(state)) {
-    const measureOrgUnits = selectAllMeasuresWithDisplayInfo(state);
-    const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
-
-    hasShadedChildren =
-      organisationUnitChildren &&
-      organisationUnitChildren.some(child =>
-        measureOrgUnitCodes.includes(child.organisationUnitCode),
-      );
-
-    if (measureOrgUnitCodes.includes(organisationUnitCode)) {
-      orgUnitMeasureData = measureOrgUnits.find(
-        orgUnit => orgUnit.organisationUnitCode === organisationUnitCode,
-      );
-      if (orgUnitMeasureData) {
-        shade = orgUnitMeasureData.color;
-        isHidden = orgUnitMeasureData.isHidden;
-      }
-    }
-  }
-
-  const orgUnit = selectOrgUnit(state, organisationUnitCode);
-  const coordinates = orgUnit ? orgUnit.location.region : undefined;
-
-  return {
-    permanentLabels: selectAreRegionLabelsPermanent(state),
-    measureId,
-    coordinates,
-    hasShadedChildren,
-    orgUnitMeasureData,
-    shade,
-    isHidden,
-    measureOptions,
-    hasChildren: organisationUnitChildren && organisationUnitChildren.length > 0,
-    hasMeasureData: measureData && measureData.length > 0,
-  };
-};
-
-const mapDispatchToProps = dispatch => ({
-  onChangeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
-    console.log('dispatch org unit change...');
-    dispatch(setOrgUnit(organisationUnitCode, shouldChangeMapBounds));
-  },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ConnectedPolygon);

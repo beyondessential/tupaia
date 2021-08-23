@@ -20,7 +20,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { MapContainer as Map } from './MapContainer';
+import { MapContainer as Map } from './UIComponents/MapContainer';
 import './styles/leaflet-overrides.css';
 import { DEFAULT_BOUNDS } from '../../defaults';
 import { arePositionsEqual, areBoundsEqual, areBoundsValid } from '../../utils/geometry';

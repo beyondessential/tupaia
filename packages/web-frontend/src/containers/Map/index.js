@@ -16,7 +16,7 @@
 import { connect } from 'react-redux';
 
 // import { CustomMap } from './CustomMap';
-import { NewMap as CustomMap } from './NewMap';
+import { Map as CustomMap } from './NewMap';
 import {
   selectOrgUnit,
   selectCurrentOrgUnit,
@@ -25,6 +25,8 @@ import {
   selectHasPolygonMeasure,
   selectAllMeasuresWithDisplayInfo,
   selectRenderedMeasuresWithDisplayInfo,
+  selectCurrentMeasureId,
+  selectAreRegionLabelsPermanent,
 } from '../../selectors';
 
 import { selectActiveTileSet } from '../../selectors/projectSelectors';
@@ -57,8 +59,10 @@ const mapStateToProps = state => {
   // If the org unit's grandchildren are polygons and have a measure, display grandchildren
   // rather than children
   let displayedChildren = currentChildren;
+  let measureOrgUnits = [];
+
   if (selectHasPolygonMeasure(state)) {
-    const measureOrgUnits = selectAllMeasuresWithDisplayInfo(state);
+    measureOrgUnits = selectAllMeasuresWithDisplayInfo(state);
     const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
     const grandchildren = currentChildren
       .map(area => selectOrgUnitChildren(state, area.organisationUnitCode))
@@ -74,6 +78,11 @@ const mapStateToProps = state => {
     selectRenderedMeasuresWithDisplayInfo(state),
   );
 
+  const measureId = selectCurrentMeasureId(state);
+  const permanentLabels = selectAreRegionLabelsPermanent(state);
+
+  const getChildren = organisationUnitCode => selectOrgUnitChildren(state, organisationUnitCode);
+
   return {
     position,
     currentOrganisationUnit,
@@ -85,6 +94,10 @@ const mapStateToProps = state => {
       currentOrganisationUnit.organisationUnitCode,
     ),
     measureInfo,
+    getChildren,
+    measureId,
+    permanentLabels,
+    measureOrgUnits,
     tileSetUrl: selectActiveTileSet(state).url,
     isAnimating,
     shouldSnapToPosition,
@@ -94,6 +107,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   setOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
+    dispatch(setOrgUnit(organisationUnitCode, shouldChangeMapBounds));
+  },
+  onChangeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
     dispatch(setOrgUnit(organisationUnitCode, shouldChangeMapBounds));
   },
   changePosition: (center, zoom) => dispatch(changePosition(center, zoom)),
