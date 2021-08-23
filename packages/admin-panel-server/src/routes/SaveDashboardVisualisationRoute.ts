@@ -5,8 +5,6 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { snake } from 'case';
-import { mapKeys } from 'lodash';
 
 import { Route } from '@tupaia/server-boilerplate';
 
@@ -39,25 +37,24 @@ export class SaveDashboardVisualisationRoute extends Route {
       new DraftDashboardItemValidator(),
       new DraftReportValidator(),
     );
-    const report = extractor.getReport();
-    const dashboardItem = extractor.getDashboardItem();
+    const body = extractor.extractDashboardVisualisationResource();
 
-    // snake case the property names because meditrak-server POST endpoints
-    // should ideally receive the data in the right format to insert
-    const body = {
-      report: mapKeys(report, (_, propertyKey: string) => snake(propertyKey)),
-      dashboardItem: mapKeys(dashboardItem, (_, propertyKey: string) => snake(propertyKey)),
-    };
-  
     let result;
 
     // Update visualisation if id exists
     if (dashboardVisualisationId) {
-      result = await this.meditrakConnection.updateResource(`dashboardVisualisations/${dashboardVisualisationId}`, {}, body);
+      result = await this.meditrakConnection.updateResource(
+        `dashboardVisualisations/${dashboardVisualisationId}`,
+        {},
+        body,
+      );
     } else {
       result = await this.meditrakConnection.createResource('dashboardVisualisations', {}, body);
     }
-   
-    return { id: dashboardVisualisationId || result.dashboardItem?.id, message: 'Visualisation saved successfully' };
+
+    return {
+      id: dashboardVisualisationId || result.dashboardItem?.id,
+      message: 'Visualisation saved successfully',
+    };
   }
 }

@@ -71,3 +71,16 @@ export type Report = {
   permissionGroup: string;
   config: ReportConfig;
 };
+
+type CamelToSnake<T extends string> = T extends `${infer Char}${infer Rest}`
+  ? `${Char extends Uppercase<Char> ? '_' : ''}${Lowercase<Char>}${CamelToSnake<Rest>}`
+  : '';
+
+export type CamelKeysToSnake<T extends Record<string, unknown>> = {
+  [K in keyof T as CamelToSnake<Extract<K, string>>]: T[K];
+};
+
+export type DashboardVisualisationResource = {
+  dashboardItem: CamelKeysToSnake<DashboardItem>;
+  report: CamelKeysToSnake<Report>;
+};

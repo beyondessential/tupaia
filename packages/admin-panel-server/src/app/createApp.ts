@@ -17,12 +17,13 @@ import {
 
 import { AdminPanelSessionModel } from '../models';
 import { hasTupaiaAdminPanelAccess } from '../utils';
-import { attachAuthorizationHeader, verifyBESAdminAccess } from '../middleware';
+import { attachAuthorizationHeader, upload, verifyBESAdminAccess } from '../middleware';
 import {
   ExportDashboardVisualisationRoute,
   FetchDashboardVisualisationRoute,
   FetchHierarchyEntitiesRoute,
   FetchReportPreviewDataRoute,
+  ImportDashboardVisualisationRoute,
   SaveDashboardVisualisationRoute,
   UserRoute,
 } from '../routes';
@@ -90,6 +91,12 @@ export function createApp() {
       '/v1/export/dashboardVisualisation',
       verifyBESAdminAccess,
       handleWith(ExportDashboardVisualisationRoute),
+    )
+    .post(
+      '/v1/import/dashboardVisualisations',
+      verifyBESAdminAccess,
+      upload.single('dashboardVisualisations'),
+      handleWith(ImportDashboardVisualisationRoute),
     )
     .build();
 

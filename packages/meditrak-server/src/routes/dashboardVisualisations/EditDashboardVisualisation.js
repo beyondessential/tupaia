@@ -46,7 +46,10 @@ export class EditDashboardVisualisation extends EditHandler {
 
     return this.models.wrapInTransaction(async transactingModels => {
       const { report: reportObject, dashboardItem: dashboardItemObject } = this.updatedFields;
-      const dashboardItem = await transactingModels.dashboardItem.findById(dashboardItemObject.id);
+      if (dashboardItemObject.id && dashboardItemObject.id !== this.recordId) {
+        throw new Error(`dashboardItem.id is different from resource id: ${this.recordId}`);
+      }
+      const dashboardItem = await transactingModels.dashboardItem.findById(this.recordId);
       await this.updateReport(transactingModels, dashboardItem.report_code, reportObject);
       await this.updateDashboardItem(transactingModels, dashboardItem.code, dashboardItemObject);
 
