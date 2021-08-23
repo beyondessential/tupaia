@@ -4,6 +4,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useTable, useSortBy } from 'react-table';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
@@ -13,18 +14,25 @@ import TableBody from '@material-ui/core/TableBody';
 import { StyledTable } from './StyledTable';
 import { FlexStart } from '../Layout';
 
-export const DataTable = ({
-  rows,
-  columns,
-  getTableProps,
-  getTableBodyProps,
-  headerGroups,
-  prepareRow,
-  className,
-}) => {
+export const DataTable = ({ columns, data, className }) => {
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    prepareRow,
+    rows,
+    columns: columnsData,
+  } = useTable(
+    {
+      columns,
+      data,
+    },
+    useSortBy,
+  );
+
   return (
     <TableContainer className={className}>
-      <StyledTable {...getTableProps()} style={{ minWidth: columns.length * 140 + 250 }}>
+      <StyledTable {...getTableProps()} style={{ minWidth: columnsData.length * 140 + 250 }}>
         <TableHead>
           {headerGroups.map(({ getHeaderGroupProps, headers }) => (
             <TableRow {...getHeaderGroupProps()}>
@@ -59,12 +67,8 @@ export const DataTable = ({
 };
 
 DataTable.propTypes = {
-  rows: PropTypes.array.isRequired,
   columns: PropTypes.array.isRequired,
-  getTableProps: PropTypes.func.isRequired,
-  getTableBodyProps: PropTypes.func.isRequired,
-  headerGroups: PropTypes.array.isRequired,
-  prepareRow: PropTypes.func.isRequired,
+  data: PropTypes.array.isRequired,
   className: PropTypes.string,
 };
 

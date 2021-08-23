@@ -5,17 +5,11 @@
 
 import { TupaiaService } from '../../../services/tupaia/TupaiaService';
 import { createModelsStub, createTupaiaDataApiStub } from './TupaiaService.stubs';
-import {
-  ANALYTICS,
-  FETCH_ANALYTICS_RESULTS,
-  DATA_SOURCES,
-  EVENTS,
-  DATA_ELEMENTS,
-} from './TupaiaService.fixtures';
+import { ANALYTICS, DATA_SOURCES, EVENTS, DATA_ELEMENTS } from './TupaiaService.fixtures';
 
 const models = createModelsStub();
 const tupaiaDataApi = createTupaiaDataApiStub({
-  fetchAnalyticsResponse: FETCH_ANALYTICS_RESULTS,
+  fetchAnalyticsResponse: ANALYTICS,
   fetchEventsResponse: EVENTS,
 });
 const tupaiaService = new TupaiaService(models, tupaiaDataApi);
@@ -86,19 +80,20 @@ describe('TupaiaService', () => {
       });
 
       describe('data pulling', () => {
-        it('returns a { results, metadata } response', async () => {
+        it('returns a { results, metadata, numAggregationsProcessed } response', async () => {
           const response = await tupaiaService.pull(
             [DATA_SOURCES.POP01, DATA_SOURCES.POP02],
             'dataElement',
           );
           expect(response).toHaveProperty('results');
           expect(response).toHaveProperty('metadata');
+          expect(response).toHaveProperty('numAggregationsProcessed');
         });
 
         it('returns the analytics API response in the `results` field', () =>
           expect(
             tupaiaService.pull([DATA_SOURCES.POP01, DATA_SOURCES.POP02], 'dataElement'),
-          ).resolves.toHaveProperty('results', ANALYTICS));
+          ).resolves.toHaveProperty('results', ANALYTICS.analytics));
 
         it('correctly builds the `metadata` field', () =>
           expect(
@@ -109,6 +104,14 @@ describe('TupaiaService', () => {
               POP02: 'Population 2',
             },
           }));
+
+        it('returns the analytics API aggregations processed in the `numAggregationsProcessed` field', () =>
+          expect(
+            tupaiaService.pull([DATA_SOURCES.POP01, DATA_SOURCES.POP02], 'dataElement'),
+          ).resolves.toHaveProperty(
+            'numAggregationsProcessed',
+            ANALYTICS.numAggregationsProcessed,
+          ));
       });
     });
 
