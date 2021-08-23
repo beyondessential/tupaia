@@ -94,7 +94,7 @@ async function addCoordinatesToEntity(
       writeFileSync(filePath, JSON.stringify(geojson));
     } catch (error) {
       throw new Error(
-        `Failed to write geojson file for ${name}, ${countryName}. Download manually and save as ${filePath}, or resolve the error: ${error.message}`,
+        `Failed to automatically fetch geoJSON for ${name}, ${countryName}. Please add manually in the "geojson" import column and turn off "Automatically fetch GeoJSON".`,
       );
     }
   }
