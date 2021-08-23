@@ -4,6 +4,7 @@
  *
  */
 import axios from 'axios';
+import { saveAs } from 'file-saver';
 import FetchError from './fetchError';
 
 const baseUrl = process.env.REACT_APP_API_URL;
@@ -51,3 +52,9 @@ export const post = (endpoint, options) => request(endpoint, { method: 'post', .
 export const put = (endpoint, options) => request(endpoint, { method: 'put', ...options });
 
 export const remove = endpoint => request(endpoint, { method: 'delete' });
+
+export const download = async (endpoint, options, fileName) => {
+  const method = options?.data ? 'post' : 'get';
+  const response = await request(endpoint, { method, ...options, responseType: 'blob' });
+  saveAs(response, fileName);
+};
