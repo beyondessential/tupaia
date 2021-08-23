@@ -13,7 +13,6 @@ import {
   CardTab,
   CardTabPanels,
   WarningCloud,
-  Virus,
   LinkButton,
 } from '@tupaia/ui-components';
 import { getAlertsMessages, getActivityFeed } from '../../api';
@@ -167,6 +166,7 @@ export const AlertsPanel = React.memo(() => {
         isOpen={isArchiveAlertModalOpen}
         onClose={handleCloseArchiveAlertModal}
         alertId={alertId}
+        AlertsPanelContext={AlertsPanelContext}
       />
     </Drawer>
   );

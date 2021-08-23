@@ -152,7 +152,7 @@ DropdownMenu.propTypes = {
   options: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string.isRequired,
-      label: PropTypes.any.isRequired,
+      label: PropTypes.string.isRequired,
     }),
   ).isRequired,
   onChange: PropTypes.func.isRequired,

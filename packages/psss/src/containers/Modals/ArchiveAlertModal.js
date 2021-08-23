@@ -20,7 +20,6 @@ import {
   ConfirmModal,
 } from '@tupaia/ui-components';
 
-import { AlertsPanelContext } from '../Panels';
 import { useArchiveAlert } from '../../api/queries';
 
 const TickIcon = styled(CheckCircle)`
@@ -41,7 +40,7 @@ const STATUS = {
   SUCCESS: 'success',
 };
 
-export const ArchiveAlertModal = ({ isOpen, onClose, alertId }) => {
+export const ArchiveAlertModal = ({ isOpen, onClose, alertId, AlertsPanelContext }) => {
   const [status, setStatus] = useState(STATUS.INITIAL);
   const { setIsOpen } = useContext(AlertsPanelContext);
   const [archiveAlert, { error }] = useArchiveAlert(alertId);
@@ -107,4 +106,5 @@ ArchiveAlertModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   alertId: PropTypes.string.isRequired,
+  AlertsPanelContext: PropTypes.node.isRequired,
 };

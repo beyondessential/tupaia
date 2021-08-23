@@ -37,5 +37,5 @@ export const PersistGateProvider = ({ children, store }) => {
 
 PersistGateProvider.propTypes = {
   store: PropTypes.object.isRequired,
-  children: PropTypes.any.isRequired,
+  children: PropTypes.node.isRequired,
 };
