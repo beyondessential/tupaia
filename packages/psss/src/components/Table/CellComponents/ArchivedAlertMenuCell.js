@@ -1,6 +1,6 @@
 import React, { useCallback, useContext } from 'react';
 import { ActionsMenu } from '@tupaia/ui-components';
-import { ArchiveTableContext } from '../../../containers/Tables/ArchiveTable';
+import { ArchiveTableContext } from '../../../containers/Tables';
 import * as COLORS from '../../../constants/colors';
 
 export const ArchivedAlertMenuCell = React.memo(({ id }) => {
