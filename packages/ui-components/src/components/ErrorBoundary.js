@@ -18,7 +18,11 @@ export class ErrorBoundary extends React.Component {
   }
 
   render() {
-    if (this.state.hasError) {
+    // eslint-disable-next-line react/prop-types
+    const { children } = this.props;
+    const { hasError } = this.state;
+
+    if (hasError) {
       return (
         <FlexCenter p={5}>
           <SmallAlert severity="error" variant="standard">
@@ -28,6 +32,6 @@ export class ErrorBoundary extends React.Component {
       );
     }
 
-    return this.props.children;
+    return children;
   }
 }

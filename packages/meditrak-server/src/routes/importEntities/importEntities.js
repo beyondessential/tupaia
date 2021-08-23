@@ -15,9 +15,13 @@ import { assertCanImportEntities } from './assertCanImportEntities';
  */
 export async function importEntities(req, res) {
   try {
-    const { models } = req;
+    const { models, query } = req;
+
     let entitiesByCountryName;
-    const pushToDhis = req?.query?.pushToDhis ? req?.query?.pushToDhis === 'true' : true;
+    const pushToDhis = query?.pushToDhis ? query?.pushToDhis === 'true' : true;
+    const automaticallyFetchGeojson = query?.automaticallyFetchGeojson
+      ? query?.automaticallyFetchGeojson === 'true'
+      : true;
 
     try {
       entitiesByCountryName = extractEntitiesByCountryName(req.file.path);
@@ -44,9 +48,11 @@ export async function importEntities(req, res) {
           pushToDhis,
         );
 
-        // Go through country and all district/subdistricts, and if any are missing coordinates,
-        // attempt to fetch them and populate the database
-        await populateCoordinatesForCountry(transactingModels, country.code);
+        if (automaticallyFetchGeojson) {
+          // Go through country and all district/subdistricts, and if any are missing coordinates,
+          // attempt to fetch them and populate the database
+          await populateCoordinatesForCountry(transactingModels, country.code);
+        }
       }
     });
     respond(res, { message: 'Imported entities' });

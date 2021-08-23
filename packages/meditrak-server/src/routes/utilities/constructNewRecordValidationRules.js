@@ -104,6 +104,13 @@ export const constructForSingle = (models, recordType) => {
         config: [hasContent],
         permission_group: [hasContent],
       };
+    case TYPES.DASHBOARD:
+      return {
+        code: [hasContent],
+        name: [hasContent],
+        root_entity_code: [hasContent],
+        sort_order: [constructIsEmptyOr(isNumber)],
+      };
     case TYPES.DASHBOARD_RELATION:
       return {
         dashboard_id: [constructRecordExistsWithId(models.dashboard)],

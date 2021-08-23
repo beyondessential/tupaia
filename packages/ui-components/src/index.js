@@ -21,6 +21,7 @@ export * from './components/Icons';
 export * from './components/IconButton';
 export * from './components/Inputs';
 export * from './components/Layout';
+export * from './components/ListVisual';
 export * from './components/LoadingContainer';
 export * from './components/NavBar';
 export * from './components/PasswordStrengthBar';

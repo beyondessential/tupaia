@@ -215,8 +215,8 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
     [
       ['AnnualBirths', 'GR', '2019', 3],
       ['AnnualBirths', 'IT', '2019', 30],
-      ['AnnualBirths', 'GR', '2020', 7 + 14],
       ['AnnualBirths', 'IT', '2020', 70],
+      ['AnnualBirths', 'GR', '2020', 7 + 14],
     ],
   ],
   [

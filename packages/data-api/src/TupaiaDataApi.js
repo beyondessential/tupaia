@@ -53,13 +53,19 @@ export class TupaiaDataApi {
   async fetchAnalytics(optionsInput) {
     await validateAnalyticsOptions(optionsInput);
     const options = sanitiseFetchDataOptions(optionsInput);
-    const results = await new AnalyticsFetchQuery(this.database, options).fetch();
-    return results.map(({ entityCode, dataElementCode, date, type, value }) => ({
-      organisationUnit: entityCode,
-      dataElement: dataElementCode,
-      date: momentToDateString(moment(date)),
-      value: sanitizeDataValue(value, type),
-    }));
+    const { analytics, numAggregationsProcessed } = await new AnalyticsFetchQuery(
+      this.database,
+      options,
+    ).fetch();
+    return {
+      analytics: analytics.map(({ entityCode, dataElementCode, period, type, value }) => ({
+        organisationUnit: entityCode,
+        dataElement: dataElementCode,
+        period,
+        value: sanitizeDataValue(value, type),
+      })),
+      numAggregationsProcessed,
+    };
   }
 
   async fetchDataElements(dataElementCodes, options = {}) {
@@ -71,7 +77,7 @@ export class TupaiaDataApi {
       `
        SELECT code, name, options, option_set_id, type
        FROM question
-       WHERE code IN ${SqlQuery.parameteriseArray(dataElementCodes)};
+       WHERE code IN ${SqlQuery.array(dataElementCodes)};
      `,
       dataElementCodes,
     );
@@ -113,7 +119,7 @@ export class TupaiaDataApi {
          JOIN survey_screen on survey_screen.id = survey_screen_component.screen_id
          JOIN survey on survey_screen.survey_id = survey.id
          WHERE survey.code = '${dataGroupCode}'
-         AND question.code IN ${SqlQuery.parameteriseArray(dataElementCodes)}
+         AND question.code IN ${SqlQuery.array(dataElementCodes)}
          ORDER BY survey_screen.screen_number, survey_screen_component.component_number;
        `,
         dataElementCodes,
@@ -174,7 +180,7 @@ export class TupaiaDataApi {
       `
        SELECT option.value, option.label, option.option_set_id
        FROM option
-       WHERE option.option_set_id IN ${SqlQuery.parameteriseArray(optionSetIds)}
+       WHERE option.option_set_id IN ${SqlQuery.array(optionSetIds)}
        `,
       optionSetIds,
     ).executeOnDatabase(this.database);
