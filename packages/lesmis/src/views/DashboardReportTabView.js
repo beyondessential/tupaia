@@ -22,6 +22,7 @@ import {
 } from '../components';
 import { NAVBAR_HEIGHT_INT } from '../constants';
 import { useUrlSearchParam } from '../utils';
+import { yearToApiDates } from '../api/queries/utils';
 
 const StickyTabBarContainer = styled.div`
   position: sticky;
@@ -125,7 +126,10 @@ export const DashboardReportTabView = ({
   filterSubDashboards,
 }) => {
   const [selectedDashboard, setSelectedDashboard] = useUrlSearchParam('subDashboard');
-  const { data, isLoading, isError, error } = useDashboardData(entityCode);
+  const { data, isLoading, isError, error } = useDashboardData({
+    entityCode,
+    includeDrillDowns: false,
+  });
   const { scrollToTop, topRef, isScrolledPastTop, onLoadTabBar } = useStickyBar();
   const subDashboards = useMemo(() => data?.filter(filterSubDashboards), [
     data,
@@ -137,6 +141,8 @@ export const DashboardReportTabView = ({
     setSelectedDashboard(newValue);
     scrollToTop();
   };
+
+  const { startDate, endDate } = yearToApiDates(year);
 
   return (
     <>
@@ -168,29 +174,21 @@ export const DashboardReportTabView = ({
               key={dashboard.dashboardId}
               isSelected={dashboard.dashboardName === activeDashboard}
             >
-              {(() => {
-                // Todo: support other report types (including "component" types)
-                const dashboardItems = dashboard.items.filter(item => item.type === 'chart');
-                return dashboardItems.length > 0 ? (
-                  dashboardItems.map(item => (
-                    <DashboardReport
-                      key={item.code}
-                      name={item.name}
-                      entityCode={entityCode}
-                      dashboardCode={dashboard.dashboardCode}
-                      dashboardName={dashboard.dashboardName}
-                      reportCode={item.reportCode}
-                      year={year}
-                      periodGranularity={item.periodGranularity}
-                      viewConfig={item}
-                    />
-                  ))
-                ) : (
-                  <SmallAlert key={dashboard.dashboardName} severity="info" variant="standard">
-                    There are no reports available for this dashboard
-                  </SmallAlert>
-                );
-              })()}
+              {dashboard.items.length > 0 ? (
+                dashboard.items.map(item => (
+                  <DashboardReport
+                    key={item.code}
+                    reportCode={item.reportCode}
+                    name={item.name}
+                    startData={startDate}
+                    endDate={endDate}
+                  />
+                ))
+              ) : (
+                <SmallAlert key={dashboard.dashboardName} severity="info" variant="standard">
+                  There are no reports available for this dashboard
+                </SmallAlert>
+              )}
             </TabPanel>
           ))}
         </FetchLoader>

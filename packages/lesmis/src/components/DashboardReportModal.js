@@ -3,11 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import styled from 'styled-components';
 import { useTheme } from '@material-ui/core/styles';
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import {
   Box,
   useMediaQuery,
@@ -15,15 +13,14 @@ import {
   Typography,
   Dialog as MuiDialog,
   Container as MuiContainer,
-  Button as MuiButton,
 } from '@material-ui/core';
 import { DateRangePicker } from '@tupaia/ui-components';
 import * as COLORS from '../constants';
 import { FlexSpaceBetween, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
-import { Chart } from './Chart';
-import { useDashboardReportData } from '../api/queries';
-import { useUrlSearchParams } from '../utils';
+import { useDashboardReportDataWithConfig } from '../api/queries';
+import { useUrlParams, useUrlSearchParams } from '../utils';
+import { DashboardReport } from './DashboardReport';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -67,55 +64,29 @@ const Description = styled(Typography)`
   margin-top: 0.625rem;
 `;
 
-export const DashboardReportModal = ({
-  name,
-  dashboardCode,
-  dashboardName,
-  buttonText,
-  entityCode,
-  reportCode,
-  periodGranularity,
-  viewConfig,
-}) => {
-  const { code: itemCode, legacy } = viewConfig;
-  const [{ startDate, endDate, reportCode: selectedReportCode }, setParams] = useUrlSearchParams();
-  const isOpen = reportCode === selectedReportCode;
-  const [open, setOpen] = useState(isOpen);
+export const DashboardReportModal = () => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
-  const { data, isLoading, isError, error } = useDashboardReportData({
+  const { entityCode } = useUrlParams();
+  const [{ startDate, endDate, reportCode }, setParams] = useUrlSearchParams();
+  const { data, isLoading } = useDashboardReportDataWithConfig({
     entityCode,
-    dashboardCode,
     reportCode,
-    itemCode,
-    periodGranularity,
-    legacy,
     startDate,
     endDate,
   });
 
   const handleDatesChange = (newStartDate, newEndDate) => {
-    setParams({
-      startDate: newStartDate,
-      endDate: newEndDate,
-    });
-  };
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  // set reportCode param after the modal render is rendered to improve the responsiveness
-  // of the modal transition
-  const onRendered = () => {
-    setParams({
-      reportCode,
-    });
+    setParams(
+      {
+        startDate: newStartDate,
+        endDate: newEndDate,
+      },
+      false,
+    );
   };
 
   const handleClose = () => {
-    setOpen(false);
     setParams({
       startDate: null,
       endDate: null,
@@ -123,43 +94,45 @@ export const DashboardReportModal = ({
     });
   };
 
+  const { dashboardItemConfig: config } = data;
+  const isOpen = !!reportCode;
+
   return (
     <>
-      <MuiButton onClick={handleClickOpen} endIcon={<KeyboardArrowRightIcon />} color="primary">
-        {buttonText}
-      </MuiButton>
       <MuiDialog
-        onRendered={onRendered}
         scroll="paper"
         fullScreen
-        open={open}
+        open={isOpen}
         onClose={handleClose}
         TransitionComponent={Transition}
         style={{ left: fullScreen ? '0' : '6.25rem' }}
       >
-        <DialogHeader handleClose={handleClose} title={dashboardName} />
+        <DialogHeader
+          handleClose={handleClose}
+          title={config?.dashboardName ? config?.dashboardName : 'Loading...'}
+        />
         <Wrapper>
           <Container maxWidth="xl">
             <Header>
               <Box maxWidth={580}>
-                <Heading variant="h3">{name}</Heading>
-                {viewConfig?.description && <Description>{viewConfig.description}</Description>}
+                <Heading variant="h3">{config?.name}</Heading>
+                {config?.description && <Description>{config.description}</Description>}
               </Box>
               <FlexStart>
                 <DateRangePicker
                   isLoading={isLoading}
                   startDate={startDate}
                   endDate={endDate}
-                  granularity={periodGranularity}
+                  granularity={config?.periodGranularity}
                   onSetDates={handleDatesChange}
                 />
               </FlexStart>
             </Header>
-            <Chart
-              viewContent={{ ...viewConfig, data, startDate, endDate }}
-              isLoading={isLoading}
-              isError={isError}
-              error={error}
+            <DashboardReport
+              name={config?.name}
+              reportCode={reportCode}
+              startDate={startDate}
+              endDate={endDate}
               isEnlarged
             />
           </Container>
@@ -167,19 +140,4 @@ export const DashboardReportModal = ({
       </MuiDialog>
     </>
   );
-};
-
-DashboardReportModal.propTypes = {
-  name: PropTypes.string.isRequired,
-  buttonText: PropTypes.string.isRequired,
-  reportCode: PropTypes.string.isRequired,
-  entityCode: PropTypes.string.isRequired,
-  dashboardCode: PropTypes.string.isRequired,
-  periodGranularity: PropTypes.string,
-  dashboardName: PropTypes.string.isRequired,
-  viewConfig: PropTypes.object.isRequired,
-};
-
-DashboardReportModal.defaultProps = {
-  periodGranularity: null,
 };
