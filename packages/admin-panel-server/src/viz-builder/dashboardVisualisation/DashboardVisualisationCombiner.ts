@@ -34,7 +34,7 @@ export class DashboardVisualisationCombiner {
     const { config: reportConfig } = this.report;
     const { output } = reportConfig;
     const { config: dashboardItemConfig } = this.dashboardItem;
-    const { type, ...config } = dashboardItemConfig;
+    const { type, name, ...config } = dashboardItemConfig;
 
     return {
       type,
