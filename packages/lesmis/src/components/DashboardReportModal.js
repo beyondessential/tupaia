@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  *
  */
 import React, { useState } from 'react';
@@ -13,8 +13,8 @@ import {
   Typography,
   Dialog as MuiDialog,
   Container as MuiContainer,
+  CircularProgress,
 } from '@material-ui/core';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { DateRangePicker, WhiteButton, SplitButton } from '@tupaia/ui-components';
 import { useChartDataExport } from '@tupaia/ui-components/lib/chart';
 import * as COLORS from '../constants';
