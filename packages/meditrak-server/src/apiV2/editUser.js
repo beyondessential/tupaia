@@ -14,11 +14,16 @@ export async function editUser(req, res, next) {
   }
 
   try {
-    req.params = {
-      recordId: userId,
-    };
-    req.path = '/users';
-    const editUserAccountHandlerClass = new EditUserAccounts(req, res);
+    const editUserAccountHandlerClass = new EditUserAccounts(
+      {
+        ...req,
+        path: '/users',
+        params: {
+          recordId: userId,
+        },
+      },
+      res,
+    );
     await editUserAccountHandlerClass.handle();
   } catch (error) {
     next(error);
