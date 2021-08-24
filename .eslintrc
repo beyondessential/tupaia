@@ -25,7 +25,8 @@
       }
     ],
     "jsx-a11y/href-no-hash": "off",
-    "react/destructuring-assignment": "off"
+    "react/destructuring-assignment": "off",
+    "react/no-unescaped-entities": "off"
   },
   "overrides": [
     // TypeScript packages

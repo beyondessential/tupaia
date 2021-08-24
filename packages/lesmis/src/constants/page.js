@@ -112,7 +112,7 @@ export const FQS_PAGE = {
             practices” that could be shared with other cluster schools.
           </ListItem>
           <ListItem component="li">
-            those standards that need improvement -&gt priorities for improvement to be included in
+            those standards that need improvement -> priorities for improvement to be included in
             the school development plan.
           </ListItem>
         </List>
