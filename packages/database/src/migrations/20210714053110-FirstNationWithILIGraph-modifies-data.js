@@ -39,7 +39,6 @@ exports.up = async function (db) {
         dataElements: [dataElementCode],
       },
       transform: [
-        'convertPeriodToWeek',
         {
           transform: 'select',
           "'name'": '($row.period).substring(4, 7)',

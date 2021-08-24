@@ -24,9 +24,9 @@ const INDICATOR = {
     formula:
       "firstExistingValue(FluTracking_NationalFNILI == -1 ? 'undefined': FluTracking_NationalFNILI / 100, ((FWV_PC_003a == 0 or FWV_PC_004a == -1 or FWV_PC_003a == -1) ? 'undefined': FWV_PC_004a / FWV_PC_003a))",
     aggregation: {
-      FluTracking_NationalFNILI: 'FINAL_EACH_DAY',
+      FluTracking_NationalFNILI: 'FINAL_EACH_WEEK',
       FWV_PC_003a: [
-        'FINAL_EACH_DAY',
+        'FINAL_EACH_WEEK',
         {
           type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
           config: {
@@ -36,7 +36,7 @@ const INDICATOR = {
         },
       ],
       FWV_PC_004a: [
-        'FINAL_EACH_DAY',
+        'FINAL_EACH_WEEK',
         {
           type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
           config: {
