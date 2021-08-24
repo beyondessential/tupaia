@@ -40,7 +40,7 @@ import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
 import { DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
 import { GETProjects } from './GETProjects';
 import { DeleteDashboardItem, EditDashboardItem, GETDashboardItems } from './dashboardItems';
-import { DeleteDashboard, EditDashboard, GETDashboards } from './dashboards';
+import { CreateDashboard, DeleteDashboard, EditDashboard, GETDashboards } from './dashboards';
 import {
   DeleteDashboardRelation,
   EditDashboardRelation,
@@ -181,6 +181,7 @@ apiV2.post('/surveyResponse', catchAsyncErrors(surveyResponse)); // used by mSup
 apiV2.post('/surveyResponses', catchAsyncErrors(surveyResponse));
 apiV2.post('/countries', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataSources', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/dashboards', useRouteHandler(CreateDashboard));
 apiV2.post('/disasters', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/feedItems', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/indicators', useRouteHandler(BESAdminCreateHandler));
