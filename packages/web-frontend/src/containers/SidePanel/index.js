@@ -11,9 +11,9 @@ import Dashboard from '../Dashboard';
 import ExpandButton from '../ExpandButton';
 import {
   TRANS_BLACK,
-  DASHBOARD_TRANSITION_TIME,
   CONTROL_BAR_WIDTH,
   CONTROL_BAR_PADDING,
+  MAP_CONTROLS_WIDTH,
 } from '../../styles';
 import { changeSidePanelContractedWidth, changeSidePanelExpandedWidth } from '../../actions';
 
@@ -34,7 +34,7 @@ const Panel = styled.div`
   pointer-events: auto;
   height: 100%;
   cursor: auto;
-  transition: ${DASHBOARD_TRANSITION_TIME};
+  transition: width 0.5s ease;
 `;
 
 const SidePanel = ({
@@ -49,7 +49,8 @@ const SidePanel = ({
     dashboardDefaultWidth = Math.min(dashboardDefaultWidth, MAX_DEFAULT_WIDTH);
     dashboardDefaultWidth = Math.max(dashboardDefaultWidth, MIN_DEFAULT_WIDTH);
 
-    let dashboardExpandedWidth = window.innerWidth - CONTROL_BAR_WIDTH - CONTROL_BAR_PADDING * 2;
+    let dashboardExpandedWidth =
+      window.innerWidth - CONTROL_BAR_WIDTH - MAP_CONTROLS_WIDTH - CONTROL_BAR_PADDING * 2;
     dashboardExpandedWidth = Math.min(dashboardExpandedWidth, MAX_EXPANDED_WIDTH);
 
     onChangeDefaultWidth(dashboardDefaultWidth);

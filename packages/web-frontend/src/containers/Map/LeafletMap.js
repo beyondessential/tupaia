@@ -31,8 +31,9 @@ const Map = styled(MapContainer)`
   .leaflet-control-zoom {
     z-index: 1;
     border: none;
-    top: -35px;
-    right: 356px;
+    top: -50px;
+    right: 350px;
+    transition: right 0.5s ease;
 
     a {
       background: ${TRANS_BLACK_LESS};

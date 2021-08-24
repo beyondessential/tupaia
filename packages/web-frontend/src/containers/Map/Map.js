@@ -26,6 +26,19 @@ import { changePosition, closeDropdownOverlays, setOrgUnit } from '../../actions
 
 const CHANGE_TO_PARENT_PERCENTAGE = 0.6;
 
+const CustomZoomControl = ({ sidePanelWidth }) => {
+  const zoomRef = React.useRef();
+
+  React.useEffect(() => {
+    const el = zoomRef.current.getContainer();
+    const width = sidePanelWidth;
+    el.style.right = `${width + 3}px`;
+    console.log('el', el);
+  });
+
+  return <ZoomControl position="bottomright" ref={zoomRef} />;
+};
+
 /**
  * Map
  * Includes basic map setup/rendering, controlled through props that are connected to the redux store.
@@ -108,7 +121,6 @@ class MapComponent extends Component {
       shouldSnapToPosition,
       sidePanelWidth,
       tileSetUrl,
-      isSidePanelExpanded,
     } = this.props;
 
     const { measureOptions } = measureInfo;
@@ -118,6 +130,7 @@ class MapComponent extends Component {
       .filter(data => data.coordinates && data.coordinates.length === 2)
       .filter(data => !data.isHidden);
 
+    console.log('side panel width', sidePanelWidth);
     return (
       <LeafletMap
         onClick={onCloseDropdownOverlays}
@@ -127,7 +140,7 @@ class MapComponent extends Component {
         onPositionChanged={this.onPositionChanged}
       >
         <TileLayer tileSetUrl={tileSetUrl} />
-        {!isSidePanelExpanded && <ZoomControl position="bottomright" />}
+        <CustomZoomControl sidePanelWidth={sidePanelWidth} />
         <DemoLand />
         {(displayedChildren || []).map(area => (
           <ConnectedPolygon
