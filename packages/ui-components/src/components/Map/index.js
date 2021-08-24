@@ -18,6 +18,7 @@ export * from './AreaTooltip';
 export * from './constants';
 export * from './EntityPolygon';
 export * from './InversePolygonMask';
+export * from './InteractivePolygon';
 export * from './Legend';
 export * from './MapContainer';
 export * from './MarkerLayer';

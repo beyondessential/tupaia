@@ -2,10 +2,11 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { InteractivePolygon } from './UIComponents/InteractivePolygon';
+import { InteractivePolygon } from '@tupaia/ui-components/lib/map';
 import {
   selectHasPolygonMeasure,
   selectAllMeasuresWithDisplayInfo,
@@ -15,27 +16,16 @@ import {
 } from '../../selectors';
 import { setOrgUnit } from '../../actions';
 
-class Polygon extends Component {
-  shouldComponentUpdate(nextProps) {
-    const { measureId, coordinates, orgUnitMeasureData, isHidden } = this.props;
-    if (nextProps.measureId !== measureId) return true;
-    if (nextProps.coordinates !== coordinates) return true;
-    if (nextProps.orgUnitMeasureData !== orgUnitMeasureData) return true;
-    if (isHidden !== nextProps.isHidden) return true;
-
-    return false;
-  }
-
-  render() {
-    const {
-      measureData,
-      measureOrgUnits,
-      measureInfo,
-      measureId,
-      setOrgUnit,
-      permanentLabels,
-      ...props
-    } = this.props;
+const Polygon = React.memo(
+  ({
+    measureData,
+    measureOrgUnits,
+    measureInfo,
+    measureId,
+    onChangeOrgUnit,
+    permanentLabels,
+    ...props
+  }) => {
     const { measureOptions } = measureInfo;
 
     return (
@@ -45,12 +35,27 @@ class Polygon extends Component {
         measureId={measureId}
         measureOrgUnits={measureOrgUnits}
         permanentLabels={permanentLabels}
-        onChangeOrgUnit={setOrgUnit}
+        onChangeOrgUnit={onChangeOrgUnit}
         {...props}
       />
     );
-  }
-}
+  },
+);
+
+Polygon.propTypes = {
+  measureData: PropTypes.array.isRequired,
+  measureOrgUnits: PropTypes.array.isRequired,
+  measureInfo: PropTypes.object.isRequired,
+  measureId: PropTypes.string,
+  onChangeOrgUnit: PropTypes.func,
+  permanentLabels: PropTypes.bool,
+};
+
+Polygon.defaultProps = {
+  permanentLabels: true,
+  measureId: null,
+  onChangeOrgUnit: () => {},
+};
 
 const selectMeasureDataWithCoordinates = createSelector([measureData => measureData], measureData =>
   measureData.map(({ location, ...otherData }) => ({

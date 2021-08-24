@@ -21,7 +21,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { MapContainer } from './UIComponents/MapContainer';
+import { MapContainer } from '@tupaia/ui-components/lib/map';
 import './styles/leaflet-overrides.css';
 import { DEFAULT_BOUNDS } from '../../defaults';
 import { arePositionsEqual, areBoundsEqual, areBoundsValid } from '../../utils/geometry';

@@ -1,7 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
+ *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
@@ -21,10 +20,37 @@ export const MapContainer = ({
   className,
   defaultBounds,
   onLocationChange,
+  onCreated,
   children,
   ...props
 }) => {
   const [map, setMap] = useState(null);
+
+  map?.whenReady(() => {
+    if (props.movestart) {
+      map.on('movestart', event => {
+        props.movestart(event);
+      });
+    }
+
+    if (props.moveend) {
+      map.on('moveend', event => {
+        props.moveend(event);
+      });
+    }
+
+    if (props.zoomstart) {
+      map.on('zoomstart', event => {
+        props.zoomstart(event);
+      });
+    }
+
+    if (props.zoomend) {
+      map.on('zoomend', event => {
+        props.zoomend(event);
+      });
+    }
+  });
 
   useEffect(() => {
     if (map && bounds) {
@@ -37,12 +63,21 @@ export const MapContainer = ({
     }
   }, [bounds, map]);
 
+  const handleCreated = mapEl => {
+    setMap(mapEl);
+
+    // pass the map up to the parent
+    if (onCreated) {
+      onCreated(mapEl);
+    }
+  };
+
   return (
     <StyledMapContainer
       className={className}
       bounds={defaultBounds}
       scrollWheelZoom={false}
-      whenCreated={setMap}
+      whenCreated={handleCreated}
       zoomControl={false}
       // React Leaflet MapContainer supports all leaflet props for constructing a map. @see leaflet docs for more info
       {...props}
@@ -58,11 +93,13 @@ MapContainer.propTypes = {
   children: PropTypes.node.isRequired,
   defaultBounds: PropTypes.array,
   onLocationChange: PropTypes.func,
+  onCreated: PropTypes.func,
 };
 
 MapContainer.defaultProps = {
   bounds: null,
   className: null,
   onLocationChange: null,
+  onCreated: null,
   defaultBounds: DEFAULT_BOUNDS,
 };
