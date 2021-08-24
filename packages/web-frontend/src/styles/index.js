@@ -44,7 +44,7 @@ export const LIGHT_GREY = '#EFEFF0';
 export const ERROR = red[500];
 export const FORM_BLUE = '#34abd0';
 
-export const DASHBOARD_TRANSITION_TIME = '1s';
+export const DASHBOARD_TRANSITION_TIME = '0.5s';
 export const MOBILE_MARGIN_SIZE = 16;
 export const MOBILE_HEADER_HEIGHT = 55;
 const MATERIAL_UI_POPOVER_INDEX = 1300; // Taken from material-ui source code

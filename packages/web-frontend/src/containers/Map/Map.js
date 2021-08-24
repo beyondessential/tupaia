@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { TileLayer, MarkerLayer } from '@tupaia/ui-components/lib/map';
+import { TileLayer, MarkerLayer, ZoomControl } from '@tupaia/ui-components/lib/map';
 import { LeafletMap } from './LeafletMap';
 import { checkBoundsDifference, organisationUnitIsArea } from '../../utils';
 import { DemoLand } from './DemoLand';
@@ -43,6 +43,7 @@ class MapComponent extends Component {
       measureInfo,
       position,
       tileSetUrl,
+      sidePanelWidth,
     } = this.props;
     // Only updates/re-renders when the measure has changed or the orgUnit has changed.
     // These are the only cases where polygons or area tooltips should rerender.
@@ -58,6 +59,8 @@ class MapComponent extends Component {
     }
 
     if (nextProps.tileSetUrl !== tileSetUrl) return true;
+
+    if (nextProps.sidePanelWidth !== sidePanelWidth) return true;
 
     if (JSON.stringify(nextProps.position) !== JSON.stringify(position)) return true;
 
@@ -105,6 +108,7 @@ class MapComponent extends Component {
       shouldSnapToPosition,
       sidePanelWidth,
       tileSetUrl,
+      isSidePanelExpanded,
     } = this.props;
 
     const { measureOptions } = measureInfo;
@@ -123,6 +127,7 @@ class MapComponent extends Component {
         onPositionChanged={this.onPositionChanged}
       >
         <TileLayer tileSetUrl={tileSetUrl} />
+        {!isSidePanelExpanded && <ZoomControl position="bottomright" />}
         <DemoLand />
         {(displayedChildren || []).map(area => (
           <ConnectedPolygon
@@ -156,11 +161,12 @@ class MapComponent extends Component {
 MapComponent.propTypes = {
   onCloseDropdownOverlays: PropTypes.func.isRequired,
   onChangePosition: PropTypes.func.isRequired,
-  currentParent: PropTypes.object.isRequired,
+  currentParent: PropTypes.object,
   currentOrganisationUnit: PropTypes.object.isRequired,
   currentOrganisationUnitSiblings: PropTypes.array.isRequired,
   displayedChildren: PropTypes.arrayOf(PropTypes.object),
   getChildren: PropTypes.func.isRequired,
+  isSidePanelExpanded: PropTypes.bool,
   measureData: PropTypes.array.isRequired,
   measureInfo: PropTypes.object.isRequired,
   position: PropTypes.shape({
@@ -176,6 +182,8 @@ MapComponent.propTypes = {
 
 MapComponent.defaultProps = {
   displayedChildren: [],
+  isSidePanelExpanded: false,
+  currentParent: null,
 };
 
 const selectMeasureDataWithCoordinates = createSelector([measureData => measureData], measureData =>
@@ -236,6 +244,7 @@ const mapStateToProps = state => {
     isAnimating,
     shouldSnapToPosition,
     sidePanelWidth: isSidePanelExpanded ? expandedWidth : contractedWidth,
+    isSidePanelExpanded,
   };
 };
 

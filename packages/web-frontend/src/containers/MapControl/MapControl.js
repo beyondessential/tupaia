@@ -8,12 +8,11 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import { ZoomControl } from './components/ZoomControl';
-import { changeTileSet, changeZoom } from '../../actions';
+import { changeTileSet } from '../../actions';
 import { TileButton } from './components/TileButton';
 import { TileControl } from './components/TileControl';
 import { tileSetShape } from './contants';
-import { selectTileSets, selectActiveTileSet } from '../../selectors/projectSelectors';
+import { selectTileSets, selectActiveTileSet } from '../../selectors';
 import { createScaleKeyFrameAnimation } from '../../utils/keyFrames';
 
 const Container = styled.div`
@@ -69,19 +68,12 @@ const TileList = styled.div`
   }
 `;
 
-export const MapControlComponent = ({
-  tileSets,
-  activeTileSet,
-  onChange,
-  onZoomInClick,
-  onZoomOutClick,
-}) => {
+export const MapControlComponent = ({ tileSets, activeTileSet, onChange }) => {
   const [open, setOpen] = React.useState(false);
   return (
     <ClickAwayListener onClickAway={() => setOpen(false)}>
       <Container>
         <Controls>
-          <ZoomControl onZoomInClick={onZoomInClick} onZoomOutClick={onZoomOutClick} />
           <TileControl
             isActive={open}
             tileSet={activeTileSet}
@@ -107,8 +99,6 @@ MapControlComponent.propTypes = {
   activeTileSet: PropTypes.shape(tileSetShape).isRequired,
   tileSets: PropTypes.arrayOf(PropTypes.shape(tileSetShape)).isRequired,
   onChange: PropTypes.func.isRequired,
-  onZoomInClick: PropTypes.func.isRequired,
-  onZoomOutClick: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -118,8 +108,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   onChange: setKey => dispatch(changeTileSet(setKey)),
-  onZoomInClick: () => dispatch(changeZoom(1)),
-  onZoomOutClick: () => dispatch(changeZoom(-1)),
 });
 
 export const MapControl = connect(mapStateToProps, mapDispatchToProps)(MapControlComponent);

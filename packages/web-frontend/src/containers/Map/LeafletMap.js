@@ -20,10 +20,33 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { MapContainer as Map } from './UIComponents/MapContainer';
+import styled from 'styled-components';
+import { MapContainer } from './UIComponents/MapContainer';
 import './styles/leaflet-overrides.css';
 import { DEFAULT_BOUNDS } from '../../defaults';
 import { arePositionsEqual, areBoundsEqual, areBoundsValid } from '../../utils/geometry';
+import { TRANS_BLACK, TRANS_BLACK_LESS } from '../../styles';
+
+const Map = styled(MapContainer)`
+  .leaflet-control-zoom {
+    z-index: 1;
+    border: none;
+    top: -35px;
+    right: 356px;
+
+    a {
+      background: ${TRANS_BLACK_LESS};
+      box-shadow: none;
+      border: none;
+      color: white;
+
+      &:hover {
+        background: ${TRANS_BLACK};
+        box-shadow: none;
+      }
+    }
+  }
+`;
 
 export class LeafletMap extends Component {
   constructor(props) {
@@ -96,7 +119,9 @@ export class LeafletMap extends Component {
   };
 
   onPositionChanged = () => {
-    if (this.isAnimating()) return;
+    if (this.isAnimating()) {
+      return;
+    }
 
     const { lat, lng } = this.adjustPointToRemoveMargin(
       {
@@ -123,15 +148,13 @@ export class LeafletMap extends Component {
   adjustPointToAccountForMargin = (point, zoom) => {
     const { rightPadding = 0 } = this.props;
     const projectedPoint = this.map.project(point, zoom).add([rightPadding / 2, 0]);
-    const adjustedPoint = this.map.unproject(projectedPoint, zoom);
-    return adjustedPoint;
+    return this.map.unproject(projectedPoint, zoom);
   };
 
   adjustPointToRemoveMargin = (point, zoom) => {
     const { rightPadding = 0 } = this.props;
     const projectedPoint = this.map.project(point, zoom).add([-rightPadding / 2, 0]);
-    const adjustedPoint = this.map.unproject(projectedPoint, zoom);
-    return adjustedPoint;
+    return this.map.unproject(projectedPoint, zoom);
   };
 
   flyToPoint = (center, zoom) => {
