@@ -28,7 +28,7 @@ import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
 import { DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
 import { GETProjects } from './GETProjects';
 import { DeleteDashboardItem, EditDashboardItem, GETDashboardItems } from './dashboardItems';
-import { DeleteDashboard, EditDashboard, GETDashboards } from './dashboards';
+import { CreateDashboard, DeleteDashboard, EditDashboard, GETDashboards } from './dashboards';
 import {
   DeleteDashboardRelation,
   EditDashboardRelation,
@@ -74,6 +74,7 @@ import { surveyResponse } from './surveyResponse';
 import { importDisaster } from './importDisaster';
 import { verifyEmail, requestResendEmail } from './verifyEmail';
 import { allowNoPermissions } from '../permissions';
+import { manualKoBoSync } from '../kobo';
 /**
  * All routes will be wrapped with an error catcher that simply passes the error to the next()
  * function, causing error handling middleware to be fired. Otherwise, async errors will be
@@ -106,6 +107,7 @@ export default {
   countChanges: catchAsyncErrors(countChanges),
   createCountries: useRouteHandler(BESAdminCreateHandler),
   createDataSources: useRouteHandler(BESAdminCreateHandler),
+  createDashboards: useRouteHandler(CreateDashboard),
   createDisasters: useRouteHandler(BESAdminCreateHandler),
   createFeedItems: useRouteHandler(BESAdminCreateHandler),
   createIndicators: useRouteHandler(BESAdminCreateHandler),
@@ -199,4 +201,5 @@ export default {
   importDisaster: catchAsyncErrors(importDisaster),
   verifyEmail: catchAsyncErrors(verifyEmail),
   requestResendEmail: catchAsyncErrors(requestResendEmail),
+  requestManualKoBoSync: allowAnyone(manualKoBoSync),
 };

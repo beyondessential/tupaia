@@ -3,6 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+import { strictJsonParseValue } from '@tupaia/utils';
+
 import {
   AutocompleteConfigCellBuilder,
   CodeGeneratorConfigCellBuilder,
@@ -51,7 +53,7 @@ export class RowBuilder {
     const processedOptions = [];
     options.forEach((option, optionIndex) => {
       try {
-        const { value, label, color } = JSON.parse(option);
+        const { value, label, color } = strictJsonParseValue(option);
 
         // Do not export any options for Binary questions because they have fixed options (Yes/No)
         if (restOfRowData.type !== 'Binary') {
