@@ -44,6 +44,7 @@ const REPORT_CONFIG = {
       transform: 'insert',
       where: 'eq($index, length($table))',
       "'label'": `'${amenity.description}'`,
+      "'code'": `'${amenity.name}'`,
       // Will either equal the one instance of this data, or undefined (no data)
       "'statistic'": `sum($all.${amenity.name})`,
     })),
