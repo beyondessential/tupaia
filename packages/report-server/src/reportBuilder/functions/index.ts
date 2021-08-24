@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { value, last, eq, notEq, exists, notExists, gt, length } from './basic';
+import { value, last, eq, notEq, exists, notExists, gt, length, any, all } from './basic';
 import {
   convertToPeriod,
   dateStringToPeriod,
@@ -29,4 +29,6 @@ export const functions = {
   sum,
   divide,
   formatAsFractionAndPercentage,
+  any,
+  all,
 };

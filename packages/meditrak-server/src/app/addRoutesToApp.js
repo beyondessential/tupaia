@@ -17,6 +17,7 @@ const {
   countChanges,
   createCountries,
   createDataSources,
+  createDashboards,
   createDisasters,
   createFeedItems,
   createIndicators,
@@ -238,6 +239,7 @@ export function addRoutesToApp(app) {
   app.post('(/v[0-9]+)/surveyResponses', surveyResponse);
   app.post('(/v[0-9]+)/countries', createCountries);
   app.post('(/v[0-9]+)/dataSources', createDataSources);
+  app.post('(/v[0-9]+)/dashboards', createDashboards);
   app.post('(/v[0-9]+)/disasters', createDisasters);
   app.post('(/v[0-9]+)/feedItems', createFeedItems);
   app.post('(/v[0-9]+)/indicators', createIndicators);
