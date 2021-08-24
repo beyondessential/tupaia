@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import { ReferenceTooltip } from '@tupaia/ui-components';
 import { tileSetShape } from './constants';
 
 const StyledButton = styled(Button)`
@@ -64,6 +65,8 @@ const Thumbnail = styled.div`
 
 const TileLabel = styled(Typography)`
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   position: absolute;
   font-weight: normal;
   font-size: 1rem;
@@ -80,7 +83,12 @@ const TileLabel = styled(Typography)`
 export const TileButton = React.memo(({ tileSet, isActive, onChange }) => (
   <StyledButton onClick={() => onChange(tileSet.key)} className={isActive ? 'active' : ''}>
     <Thumbnail style={{ backgroundImage: `url(${tileSet.thumbnail})` }} />
-    <TileLabel>{tileSet.label}</TileLabel>
+    <TileLabel>
+      {tileSet.label}
+      {tileSet.reference && (
+        <ReferenceTooltip reference={tileSet.reference} iconStyleOption="tileSet" />
+      )}
+    </TileLabel>
   </StyledButton>
 ));
 

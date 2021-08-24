@@ -24,5 +24,5 @@ export const ZoomControl = ({ sidePanelWidth }) => {
 };
 
 ZoomControl.propTypes = {
-  sidePanelWidth: PropTypes.string.isRequired,
+  sidePanelWidth: PropTypes.number.isRequired,
 };
