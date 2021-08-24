@@ -21,6 +21,7 @@ import {
 } from '@tupaia/ui-components';
 
 import { useArchiveAlert } from '../../api/queries';
+import { AlertsPanelContext } from '../../context';
 
 const TickIcon = styled(CheckCircle)`
   font-size: 2.5rem;
@@ -40,7 +41,7 @@ const STATUS = {
   SUCCESS: 'success',
 };
 
-export const ArchiveAlertModal = ({ isOpen, onClose, alertId, AlertsPanelContext }) => {
+export const ArchiveAlertModal = ({ isOpen, onClose, alertId }) => {
   const [status, setStatus] = useState(STATUS.INITIAL);
   const { setIsOpen } = useContext(AlertsPanelContext);
   const [archiveAlert, { error }] = useArchiveAlert(alertId);

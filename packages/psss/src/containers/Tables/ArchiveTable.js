@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { createContext, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Table, useTableSorting } from '@tupaia/ui-components';
@@ -15,6 +15,7 @@ import {
 import { useAlerts } from '../../api';
 import { getCountryCodes } from '../../store';
 import { RestoreArchivedAlertModal, DeleteAlertModal } from '../Modals';
+import { ArchiveTableContext } from '../../context';
 
 const createColumns = isSingleCountry => [
   ...(isSingleCountry
@@ -69,20 +70,10 @@ const createColumns = isSingleCountry => [
     title: '',
     key: 'id',
     sortable: false,
-    CellComponent: AchivedAlertMenuCellWrapper,
+    CellComponent: ArchivedAlertMenuCell,
     width: '70px',
   },
 ];
-
-export const ArchiveTableContext = createContext(null);
-
-const AchivedAlertMenuCellWrapper = ({ id }) => (
-  <ArchivedAlertMenuCell id={id} ArchiveTableContext={ArchiveTableContext} />
-);
-
-AchivedAlertMenuCellWrapper.propTypes = {
-  id: PropTypes.string.isRequired,
-};
 
 export const ArchiveTableComponent = React.memo(({ countryCodes, period }) => {
   const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);
