@@ -1,3 +1,8 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ */
+
 export const DATA_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
 export type EndpointBaseUrlSet = {
