@@ -36,5 +36,4 @@ export const ArchivedAlertMenuCell = React.memo(({ id }) => {
 
 ArchivedAlertMenuCell.propTypes = {
   id: PropTypes.string.isRequired,
-  ArchiveTableContext: PropTypes.node.isRequired,
 };

@@ -107,5 +107,4 @@ ArchiveAlertModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   alertId: PropTypes.string.isRequired,
-  AlertsPanelContext: PropTypes.node.isRequired,
 };
