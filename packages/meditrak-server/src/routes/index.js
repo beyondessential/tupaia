@@ -28,7 +28,7 @@ import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
 import { DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
 import { GETProjects } from './GETProjects';
 import { DeleteDashboardItem, EditDashboardItem, GETDashboardItems } from './dashboardItems';
-import { DeleteDashboard, EditDashboard, GETDashboards } from './dashboards';
+import { CreateDashboard, DeleteDashboard, EditDashboard, GETDashboards } from './dashboards';
 import {
   DeleteDashboardRelation,
   EditDashboardRelation,
@@ -107,6 +107,7 @@ export default {
   countChanges: catchAsyncErrors(countChanges),
   createCountries: useRouteHandler(BESAdminCreateHandler),
   createDataSources: useRouteHandler(BESAdminCreateHandler),
+  createDashboards: useRouteHandler(CreateDashboard),
   createDisasters: useRouteHandler(BESAdminCreateHandler),
   createFeedItems: useRouteHandler(BESAdminCreateHandler),
   createIndicators: useRouteHandler(BESAdminCreateHandler),

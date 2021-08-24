@@ -15,6 +15,7 @@ else
     export DB_MV_HOME="$PWD"
     (. runCreateFastRefreshModule.sh)
     cd ../..
+    git submodule deinit --all
 fi
 
 export PGPASSWORD=$DB_PG_PASSWORD
