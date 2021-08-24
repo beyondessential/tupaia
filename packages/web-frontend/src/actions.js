@@ -44,7 +44,6 @@ export const CHANGE_BOUNDS = 'CHANGE_BOUNDS';
 export const CHANGE_SEARCH = 'CHANGE_SEARCH';
 export const FETCH_MORE_SEARCH_RESULTS = 'FETCH_MORE_SEARCH_RESULTS';
 export const CHANGE_TILE_SET = 'CHANGE_TILE_SET';
-export const CHANGE_ZOOM = 'CHANGE_ZOOM';
 export const CLEAR_MEASURE = 'CLEAR_MEASURE';
 export const HIDE_MAP_MEASURE = 'HIDE_MAP_MEASURE';
 export const UNHIDE_MAP_MEASURE = 'UNHIDE_MAP_MEASURE';
@@ -559,18 +558,6 @@ export function updateCurrentMeasureConfigOnceHierarchyLoads(periodString) {
   return {
     type: UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
     periodString,
-  };
-}
-
-/**
- * Changes current zoomLevel, reflected in map. Adds value to zoomLevel min-max 1-15.
- *
- * @param {number} value
- */
-export function changeZoom(value) {
-  return {
-    type: CHANGE_ZOOM,
-    value,
   };
 }
 

@@ -6,12 +6,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { TileLayer, MarkerLayer, ZoomControl } from '@tupaia/ui-components/lib/map';
+import { TileLayer, MarkerLayer } from '@tupaia/ui-components/lib/map';
 import { LeafletMap } from './LeafletMap';
 import { checkBoundsDifference, organisationUnitIsArea } from '../../utils';
 import { DemoLand } from './DemoLand';
 import { ConnectedPolygon } from './ConnectedPolygon';
 import { DisasterLayer } from './DisasterLayer';
+import { ZoomControl } from './ZoomControl';
 import {
   selectActiveTileSet,
   selectAllMeasuresWithDisplayInfo,
@@ -25,19 +26,6 @@ import {
 import { changePosition, closeDropdownOverlays, setOrgUnit } from '../../actions';
 
 const CHANGE_TO_PARENT_PERCENTAGE = 0.6;
-
-const CustomZoomControl = ({ sidePanelWidth }) => {
-  const zoomRef = React.useRef();
-
-  React.useEffect(() => {
-    const el = zoomRef.current.getContainer();
-    const width = sidePanelWidth;
-    el.style.right = `${width + 3}px`;
-    console.log('el', el);
-  });
-
-  return <ZoomControl position="bottomright" ref={zoomRef} />;
-};
 
 /**
  * Map
@@ -130,7 +118,6 @@ class MapComponent extends Component {
       .filter(data => data.coordinates && data.coordinates.length === 2)
       .filter(data => !data.isHidden);
 
-    console.log('side panel width', sidePanelWidth);
     return (
       <LeafletMap
         onClick={onCloseDropdownOverlays}
@@ -140,7 +127,7 @@ class MapComponent extends Component {
         onPositionChanged={this.onPositionChanged}
       >
         <TileLayer tileSetUrl={tileSetUrl} />
-        <CustomZoomControl sidePanelWidth={sidePanelWidth} />
+        <ZoomControl sidePanelWidth={sidePanelWidth} />
         <DemoLand />
         {(displayedChildren || []).map(area => (
           <ConnectedPolygon
@@ -179,7 +166,6 @@ MapComponent.propTypes = {
   currentOrganisationUnitSiblings: PropTypes.array.isRequired,
   displayedChildren: PropTypes.arrayOf(PropTypes.object),
   getChildren: PropTypes.func.isRequired,
-  isSidePanelExpanded: PropTypes.bool,
   measureData: PropTypes.array.isRequired,
   measureInfo: PropTypes.object.isRequired,
   position: PropTypes.shape({
@@ -195,7 +181,6 @@ MapComponent.propTypes = {
 
 MapComponent.defaultProps = {
   displayedChildren: [],
-  isSidePanelExpanded: false,
   currentParent: null,
 };
 
@@ -257,7 +242,6 @@ const mapStateToProps = state => {
     isAnimating,
     shouldSnapToPosition,
     sidePanelWidth: isSidePanelExpanded ? expandedWidth : contractedWidth,
-    isSidePanelExpanded,
   };
 };
 
