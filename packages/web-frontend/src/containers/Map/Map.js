@@ -118,7 +118,9 @@ class MapComponent extends Component {
     return (
       <LeafletMap
         onClick={onCloseDropdownOverlays}
-        position={position}
+        bounds={position.bounds}
+        zoom={position.zoom}
+        center={position.center}
         shouldSnapToPosition={shouldSnapToPosition}
         rightPadding={sidePanelWidth}
         onPositionChanged={this.onPositionChanged}

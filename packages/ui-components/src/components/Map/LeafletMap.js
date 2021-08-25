@@ -20,7 +20,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { MapContainer as LeafletMapContainer } from 'react-leaflet';
-// import './leaflet-overrides.css';
+import { LeafletStyles } from './LeafletStyles';
 // import { DEFAULT_BOUNDS } from '../../defaults';
 // import { arePositionsEqual, areBoundsEqual, areBoundsValid } from '../../utils/geometry';
 // import { TRANS_BLACK, TRANS_BLACK_LESS } from '../../styles';
@@ -58,6 +58,32 @@ function areBoundsValid(b) {
 }
 
 const Map = styled(LeafletMapContainer)`
+  ${LeafletStyles};
+
+  .leaflet-control-zoom {
+    z-index: 1;
+    border: none;
+    top: -50px;
+    right: 350px;
+    transition: right 0.5s ease;
+
+    a {
+      background: ${TRANS_BLACK_LESS};
+      box-shadow: none;
+      border: none;
+      color: white;
+
+      &:hover {
+        background: ${TRANS_BLACK};
+        box-shadow: none;
+      }
+    }
+  }
+`;
+
+const Map = styled(LeafletMapContainer)`
+  ${LeafletStyles};
+
   .leaflet-control-zoom {
     z-index: 1;
     border: none;
@@ -277,7 +303,7 @@ export class LeafletMap extends Component {
     return (
       <Map
         {...this.props} // pass props down to react-leaflet
-        style={{ height: '100vh', width: '100%' }}
+        style={{ height: '100vh', width: '100%' }} // Todo: move this into styled component? or needs to be passed in?
         zoomControl={false}
         whenCreated={this.captureMap}
         onClick={onClick}
@@ -295,22 +321,16 @@ export class LeafletMap extends Component {
 }
 
 LeafletMap.propTypes = {
-  // presentational
-  rightPadding: PropTypes.number,
-
-  // view bounds
-  shouldSnapToPosition: PropTypes.bool.isRequired,
+  children: PropTypes.node.isRequired,
+  onClick: PropTypes.func,
+  onPositionChanged: PropTypes.func,
   position: PropTypes.shape({
     zoom: PropTypes.number,
     center: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     bounds: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   }).isRequired,
-
-  // handlers
-  onClick: PropTypes.func,
-  onPositionChanged: PropTypes.func,
-
-  children: PropTypes.node.isRequired,
+  rightPadding: PropTypes.number,
+  shouldSnapToPosition: PropTypes.bool.isRequired,
 };
 
 LeafletMap.defaultProps = {
