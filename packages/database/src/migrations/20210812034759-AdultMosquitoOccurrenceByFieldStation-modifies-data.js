@@ -17,7 +17,7 @@ exports.setup = function (options, seedLink) {
 };
 const SPECIES = ['Aedes', 'Anopheles'];
 
-const getReportCode = species => `PMOS_Distribution_Of_${species}`;
+const getReportCode = species => `PMOS_Distribution_Of_${species}_Field_Station`;
 const COUNTRY_CODES = ['FJ', 'KI', 'NR', 'NU', 'PG', 'SB', 'TV', 'TO', 'VU'];
 const PERMISSION_GROUP = 'PacMOSSI';
 const PROJECT_CODE = 'pacmossi';
@@ -129,7 +129,7 @@ exports.up = async function (db) {
   });
 
   Promise.all(
-    SPECIES.map(async species => {
+    SPECIES.map(async (species, index) => {
       // report
       await insertObject(db, 'report', {
         ...getReport(species),
@@ -144,7 +144,7 @@ exports.up = async function (db) {
         map_overlay_group_id: mapOverlayGroupId,
         child_id: mapOverlay.id,
         child_type: 'mapOverlay',
-        sort_order: 0,
+        sort_order: index,
       });
     }),
   );
