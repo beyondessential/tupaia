@@ -93,7 +93,7 @@ export const InteractivePolygon = React.memo(
           hasChildren={hasChildren}
           hasShadedChildren={hasShadedChildren}
           coordinates={coordinates}
-          // Randomize key to ensure polygon appears at top. This is still imporatant even
+          // Randomize key to ensure polygon appears at top. This is still important even
           // though the polygon is in a LayerGroup due to issues with react-leaflet that
           // maintainer says are out of scope for the module.
           key={`currentOrgUnitPolygon${Math.random()}`}

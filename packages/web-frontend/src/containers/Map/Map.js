@@ -5,6 +5,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 import { createSelector } from 'reselect';
 import { TileLayer, MarkerLayer, LeafletMap } from '@tupaia/ui-components/lib/map';
 import { checkBoundsDifference, organisationUnitIsArea } from '../../utils';
@@ -23,8 +24,32 @@ import {
   selectRenderedMeasuresWithDisplayInfo,
 } from '../../selectors';
 import { changePosition, closeDropdownOverlays, setOrgUnit } from '../../actions';
+import { DEFAULT_BOUNDS } from '../../defaults';
+import { TRANS_BLACK, TRANS_BLACK_LESS } from '../../styles';
 
 const CHANGE_TO_PARENT_PERCENTAGE = 0.6;
+
+const StyledMap = styled(LeafletMap)`
+  .leaflet-control-zoom {
+    z-index: 1;
+    border: none;
+    top: -50px;
+    right: 350px;
+    transition: right 0.5s ease;
+
+    a {
+      background: ${TRANS_BLACK_LESS};
+      box-shadow: none;
+      border: none;
+      color: white;
+
+      &:hover {
+        background: ${TRANS_BLACK};
+        box-shadow: none;
+      }
+    }
+  }
+`;
 
 /**
  * Map
@@ -121,9 +146,10 @@ class MapComponent extends Component {
     );
 
     return (
-      <LeafletMap
+      <StyledMap
         onClick={onCloseDropdownOverlays}
         bounds={position.bounds}
+        defaultBounds={DEFAULT_BOUNDS}
         zoom={position.zoom}
         center={position.center}
         shouldSnapToPosition={shouldSnapToPosition}
@@ -157,7 +183,7 @@ class MapComponent extends Component {
         )}
         <MarkerLayer measureData={processedData} serieses={measureOptions || null} />
         <DisasterLayer />
-      </LeafletMap>
+      </StyledMap>
     );
   }
 }

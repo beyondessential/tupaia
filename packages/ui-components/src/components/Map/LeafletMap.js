@@ -21,20 +21,10 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { MapContainer as LeafletMapContainer } from 'react-leaflet';
 import { LeafletStyles } from './LeafletStyles';
-// import { DEFAULT_BOUNDS } from '../../defaults';
-// import { arePositionsEqual, areBoundsEqual, areBoundsValid } from '../../utils/geometry';
-// import { TRANS_BLACK, TRANS_BLACK_LESS } from '../../styles';
 
-export const TRANS_BLACK = 'rgba(43, 45, 56, 0.94)';
-export const TRANS_BLACK_LESS = 'rgba(43, 45, 56, 0.8)';
-
-const DEFAULT_BOUNDS = [
-  // Note: There's a little bit of a hack going on here, the bounds[0] for explore are actually [6.5, 110]
-  // However in order to trigger the map to re-render we set them slightly adjusted as [6.5001, 110]
-  // See: https://github.com/beyondessential/tupaia-backlog/issues/540#issuecomment-631314721
-  [6.5001, 110],
-  [-40, 204.5],
-];
+const Map = styled(LeafletMapContainer)`
+  ${LeafletStyles};
+`;
 
 function arePositionsEqual(a, b) {
   if (a && b) {
@@ -56,31 +46,6 @@ function areBoundsEqual(a, b) {
 function areBoundsValid(b) {
   return Array.isArray(b) && b.length === 2;
 }
-
-const Map = styled(LeafletMapContainer)`
-  ${LeafletStyles};
-
-  .leaflet-control-zoom {
-    z-index: 1;
-    border: none;
-    top: -50px;
-    right: 350px;
-    transition: right 0.5s ease;
-
-    a {
-      background: ${TRANS_BLACK_LESS};
-      box-shadow: none;
-      border: none;
-      color: white;
-
-      &:hover {
-        background: ${TRANS_BLACK};
-        box-shadow: none;
-      }
-    }
-  }
-`;
-
 export class LeafletMap extends Component {
   constructor(props) {
     super(props);
@@ -113,9 +78,9 @@ export class LeafletMap extends Component {
     // initial state of the element -- we keep sending these to leaflet so
     // that it doesn't snap to new coordinates (allowing us to animate them
     // instead)
-    const { center, bounds, zoom } = this.props;
+    const { center, bounds, zoom, defaultBounds } = this.props;
     this.initialCenter = center;
-    this.initialBounds = areBoundsValid(bounds) ? bounds : DEFAULT_BOUNDS;
+    this.initialBounds = areBoundsValid(bounds) ? bounds : defaultBounds;
     this.initialZoom = zoom || 0;
   }
 
@@ -296,6 +261,7 @@ export class LeafletMap extends Component {
 
 LeafletMap.propTypes = {
   bounds: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  defaultBounds: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
   center: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   children: PropTypes.node.isRequired,
   onClick: PropTypes.func,
