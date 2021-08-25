@@ -21,7 +21,7 @@ const generateReport = elements => ({
     dataElements: [elements.public, elements.private],
     aggregations: [
       {
-        type: 'MOST_RECENT',
+        type: 'FINAL_EACH_YEAR',
       },
     ],
   },
@@ -32,7 +32,7 @@ const generateReport = elements => ({
       // Some of these were undefined for 0 at district level, so added a default value just in case
       "'Public'": `exists($row.${elements.public}) ? $row.${elements.public} : 0`,
       "'Private'": `exists($row.${elements.private}) ? $row.${elements.private} : 0`,
-      "'timestamp'": 'periodToTimestamp',
+      "'timestamp'": 'periodToTimestamp($row.period)',
     },
     {
       transform: 'aggregate',
