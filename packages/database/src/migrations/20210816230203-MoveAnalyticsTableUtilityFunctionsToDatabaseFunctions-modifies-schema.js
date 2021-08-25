@@ -90,7 +90,7 @@ exports.up = async function (db) {
           answer.text as value,
           question.type as type,
           to_char(survey_response.data_time, ''YYYYMMDD'') as "day_period",
-          concat(extract (year from survey_response.data_time), ''W'', to_char(extract (week from survey_response.data_time), ''FM09'')) as "week_period",
+          concat(extract (isoyear from survey_response.data_time), ''W'', to_char(extract (week from survey_response.data_time), ''FM09'')) as "week_period",
           to_char(survey_response.data_time, ''YYYYMM'') as "month_period",
           to_char(survey_response.data_time, ''YYYY'') as "year_period",
           survey_response.data_time as "date"
