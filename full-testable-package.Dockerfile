@@ -15,6 +15,7 @@ COPY package.json ./
 COPY yarn.lock ./
 COPY babel.config.json ./
 COPY .babelrc-ts.js ./
+COPY tsconfig-js.json ./
 RUN mkdir ./scripts
 COPY scripts/. ./scripts
 
@@ -74,9 +75,6 @@ COPY packages/web-frontend/package.json ./packages/web-frontend
 ## run yarn without building internal dependencies, so we can cache that layer without code changes
 ## within internal dependencies invalidating it
 RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
-
-# Copy TS config used in internal dependencies
-COPY tsconfig-js.json ./
 
 ## add content of all internal dependency packages ready for internal dependencies to be built
 COPY packages/access-policy/. ./packages/access-policy
