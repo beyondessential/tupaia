@@ -22,7 +22,7 @@ import { startSyncWithDhis } from './dhis';
 import { startSyncWithMs1 } from './ms1';
 import { startSyncWithKoBo } from './kobo';
 import { startFeedScraper } from './social';
-import { createApp } from './app';
+import { createApp } from './createApp';
 
 import winston from './log';
 

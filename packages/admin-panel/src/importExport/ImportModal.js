@@ -23,7 +23,7 @@ import { DATA_CHANGE_REQUEST, DATA_CHANGE_SUCCESS, DATA_CHANGE_ERROR } from '../
 const STATUS = {
   IDLE: 'idle',
   LOADING: 'loading',
-  SUCCESS: 'success',
+  TIMEOUT: 'timeout',
   ERROR: 'error',
 };
 
@@ -41,7 +41,6 @@ export const ImportModalComponent = React.memo(
   }) => {
     const [status, setStatus] = useState(STATUS.IDLE);
     const [errorMessage, setErrorMessage] = useState(null);
-    const [successMessage, setSuccessMessage] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [values, setValues] = useState({});
     const [file, setFile] = useState(null);
@@ -59,7 +58,6 @@ export const ImportModalComponent = React.memo(
     const handleDismiss = () => {
       setStatus(STATUS.IDLE);
       setErrorMessage(null);
-      setSuccessMessage(null);
       // Deselect file when dismissing an error, this avoids an error when editing selected files
       // @see https://github.com/beyondessential/tupaia-backlog/issues/1211
       setFile(null);
@@ -69,7 +67,6 @@ export const ImportModalComponent = React.memo(
     const handleClose = () => {
       setStatus(STATUS.IDLE);
       setErrorMessage(null);
-      setSuccessMessage(null);
       setIsOpen(false);
       setValues({});
       setFile(null);
@@ -90,9 +87,8 @@ export const ImportModalComponent = React.memo(
           ...values,
           ...actionConfig.extraQueryParameters,
         });
-        if (response.message) {
-          setSuccessMessage(response.message);
-          setStatus(STATUS.SUCCESS);
+        if (response.emailTimeoutHit) {
+          setStatus(STATUS.TIMEOUT);
         } else {
           handleClose();
         }
@@ -122,7 +118,7 @@ export const ImportModalComponent = React.memo(
 
     const renderButtons = useCallback(() => {
       switch (status) {
-        case STATUS.SUCCESS:
+        case STATUS.TIMEOUT:
           return <Button onClick={handleClose}>Done</Button>;
         case STATUS.ERROR:
           return (
@@ -161,8 +157,11 @@ export const ImportModalComponent = React.memo(
               errorMessage={fileErrorMessage}
               isLoading={status === STATUS.LOADING}
             >
-              {status === STATUS.SUCCESS ? (
-                <p>{successMessage}</p>
+              {status === STATUS.TIMEOUT ? (
+                <p>
+                  Import is taking a while, and will continue in the background. You will be emailed
+                  when the import process completes.
+                </p>
               ) : (
                 <>
                   <p>{subtitle}</p>
