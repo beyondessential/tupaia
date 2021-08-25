@@ -66,7 +66,7 @@ root, and it will install dependencies everywhere.
 We use codeship for the admin-panel, meditrak-server, web-config-server, and web-frontend packages.
 
 For codeship to use our environment variables, we store them encrypted and committed to the repo as
-ci-env-vars.encrypted inside each package. In order to update an environment variable:
+ci-env-vars.encrypted. In order to update an environment variable:
 
 - modify your local .env file
 - download the codeship encryption key (either from LastPass or codeship itself) and save as codeship.aes in the root directory
