@@ -51,7 +51,8 @@ front-end-deployment:
   build:
     dockerfile: front-end-deployment.Dockerfile
   cached: true
-  encrypted_dockercfg_path: ./lastpass-env-vars.encrypted # lastpass credentials to fetch env vars
+  encrypted_env_file: ./lastpass-env-vars.encrypted # lastpass credentials to fetch env vars
+  encrypted_dockercfg_path: dockercfg.encrypted
   default_cache_branch: 'dev'
 
 deployment:
