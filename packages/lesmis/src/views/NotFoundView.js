@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import NotFoundIcon from '../components/icons/404.svg';
 import { PageHeader } from '../components';
 import * as COLORS from '../constants';
+import { getSvgIconImage } from '../utils';
 
 const Section = styled.section`
   background: ${COLORS.GREY_F9};
@@ -32,7 +33,7 @@ export const NotFoundView = () => (
       center
     />
     <Section>
-      <NotFoundIcon />
+      {getSvgIconImage(NotFoundIcon)}
       <Text variant="h4">The page you are looking for does not exist</Text>
       <Button component="a" href="/">
         Go back to home page

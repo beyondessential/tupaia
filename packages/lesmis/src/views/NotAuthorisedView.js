@@ -12,6 +12,7 @@ import NotAuthorisedIcon from '../components/icons/403.svg';
 import { PageHeader } from '../components';
 import * as COLORS from '../constants';
 import { useUser } from '../api/queries';
+import { getSvgIconImage } from '../utils';
 
 const Section = styled.section`
   background: ${COLORS.GREY_F9};
@@ -43,7 +44,7 @@ export const NotAuthorisedView = () => {
         center
       />
       <Section>
-        <NotAuthorisedIcon />
+        {getSvgIconImage(NotAuthorisedIcon)}
         <Heading variant="h4">You are not authorised to view this page</Heading>
         <Text>If you would like access please contact an administrator.</Text>
         {isLoggedIn && (

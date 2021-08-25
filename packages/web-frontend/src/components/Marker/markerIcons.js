@@ -1,3 +1,9 @@
+/* eslint-disable import/no-webpack-loader-syntax */
+/* eslint-disable import/no-unresolved */
+/**
+ * Disable eslint for no webpack-loader-syntax + unresolved to work around
+ * the issue that react-scripts 4.0.x doesn't load svg as ReactComponent properly.
+ */
 /**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
@@ -17,11 +23,12 @@ import Help from '@material-ui/icons/Help';
 import CheckBox from '@material-ui/icons/CheckBox';
 
 // from https://thenounproject.com/ochavisual/collection/ocha-humanitarian-icons/
-import Cyclone from '../../images/cyclone.svg';
-import Earthquake from '../../images/earthquake.svg';
-import Tsunami from '../../images/tsunami.svg';
-import Volcano from '../../images/volcano.svg';
-import Flood from '../../images/flood.svg';
+
+import Cyclone from '!!react-svg-loader!../../images/cyclone.svg';
+import Earthquake from '!!react-svg-loader!../../images/earthquake.svg';
+import Tsunami from '!!react-svg-loader!../../images/tsunami.svg';
+import Volcano from '!!react-svg-loader!../../images/volcano.svg';
+import Flood from '!!react-svg-loader!../../images/flood.svg';
 
 import { BREWER_PALETTE, WHITE } from '../../styles';
 

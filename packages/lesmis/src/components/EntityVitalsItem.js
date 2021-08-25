@@ -17,6 +17,7 @@ import Road from './icons/road.svg';
 import Study from './icons/study.svg';
 import Notepad from './icons/notepad.svg';
 import { FlexStart } from './Layout';
+import { getSvgIconImage } from '../utils';
 
 const IconContainer = styled.div`
   width: 38px;
@@ -31,19 +32,19 @@ const VitalsIcon = ({ icon }) => {
         {(() => {
           switch (icon) {
             case 'LocationPin':
-              return <LocationPin />;
+              return getSvgIconImage(LocationPin);
             case 'Group':
-              return <Group />;
+              return getSvgIconImage(Group);
             case 'School':
-              return <School />;
+              return getSvgIconImage(School);
             case 'Study':
-              return <Study />;
+              return getSvgIconImage(Study);
             case 'Road':
-              return <Road />;
+              return getSvgIconImage(Road);
             case 'PushPin':
-              return <PushPin />;
+              return getSvgIconImage(PushPin);
             case 'Notepad':
-              return <Notepad />;
+              return getSvgIconImage(Notepad);
             default:
               return null;
           }
