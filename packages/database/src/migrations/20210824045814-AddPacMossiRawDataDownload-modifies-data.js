@@ -29,7 +29,7 @@ const DASHBOARD_NAME = 'PacMOSSI Raw Data Downloads';
 const DASHBOARD_ITEM_NAME = 'Download Vector Surveillance Survey Data';
 
 const getCountryDashboardCode = countryCode =>
-  `${countryCode}_${PROJECT_NAME}_${DASHBOARD_NAME.split(' ').join('_')}`;
+  `${countryCode}_${DASHBOARD_NAME.split(' ').join('_')}`;
 
 const getCountryDashboardItemCode = countryCode =>
   `${countryCode}_${PROJECT_NAME}_${DASHBOARD_ITEM_NAME.split(' ').join('_')}`;
@@ -146,7 +146,9 @@ const addDashboardItemToCountry = async (db, countryCode) => {
 };
 
 exports.up = async function (db) {
-  await Promise.all(COUNTRY_CODES.map(countryCode => addDashboardItemToCountry(db, countryCode)));
+  await Promise.all(
+    COUNTRY_CODES.map(async countryCode => addDashboardItemToCountry(db, countryCode)),
+  );
 };
 
 exports.down = async function (db) {
