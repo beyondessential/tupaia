@@ -59,14 +59,13 @@ const parseProps = (organisationUnitCode, organisationUnitChildren, measureOrgUn
     }
   }
 
-  return { shade, isHidden, hasShadedChildren };
+  return { shade, isHidden, hasShadedChildren, orgUnitMeasureData };
 };
 
 export const InteractivePolygon = React.memo(
   ({
     isChildArea,
     hasMeasureData,
-    orgUnitMeasureData,
     measureOptions,
     permanentLabels,
     onChangeOrgUnit,
@@ -79,7 +78,7 @@ export const InteractivePolygon = React.memo(
     const coordinates = area.location?.region;
     const hasChildren = organisationUnitChildren && organisationUnitChildren.length > 0;
 
-    const { shade, isHidden, hasShadedChildren } = parseProps(
+    const { shade, isHidden, hasShadedChildren, orgUnitMeasureData } = parseProps(
       organisationUnitCode,
       organisationUnitChildren,
       measureOrgUnits,
@@ -154,12 +153,6 @@ InteractivePolygon.propTypes = {
   measureOptions: PropTypes.arrayOf(PropTypes.object),
   measureOrgUnits: PropTypes.arrayOf(PropTypes.object),
   organisationUnitChildren: PropTypes.arrayOf(PropTypes.object),
-  orgUnitMeasureData: PropTypes.shape({
-    value: PropTypes.any,
-    originalValue: PropTypes.any,
-    metadata: PropTypes.any,
-    submissionDate: PropTypes.any,
-  }),
 };
 
 InteractivePolygon.defaultProps = {
@@ -171,5 +164,4 @@ InteractivePolygon.defaultProps = {
   measureOptions: [],
   organisationUnitChildren: [],
   measureOrgUnits: [],
-  orgUnitMeasureData: undefined,
 };

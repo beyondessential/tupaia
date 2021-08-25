@@ -67,7 +67,7 @@ export const ReferenceTooltip = props => {
   const content = getContent(reference);
 
   return (
-    <StyledToolTip arrow interactive placement="top" enterTouchDelay="50" title={content}>
+    <StyledToolTip arrow interactive placement="top" enterTouchDelay={50} title={content}>
       <IconButton
         style={
           iconStyleOption && styles.iconButton[iconStyleOption]

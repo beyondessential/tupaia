@@ -115,6 +115,11 @@ class MapComponent extends Component {
 
     const { measureOptions } = measureInfo;
 
+    // Only show data with valid coordinates. Note: this also removes region data
+    const processedData = measureData.filter(
+      ({ coordinates }) => coordinates && coordinates.length === 2,
+    );
+
     return (
       <LeafletMap
         onClick={onCloseDropdownOverlays}
@@ -150,7 +155,7 @@ class MapComponent extends Component {
             isActive
           />
         )}
-        <MarkerLayer measureData={measureData || null} serieses={measureOptions || null} />
+        <MarkerLayer measureData={processedData} serieses={measureOptions || null} />
         <DisasterLayer />
       </LeafletMap>
     );
@@ -165,7 +170,7 @@ MapComponent.propTypes = {
   currentOrganisationUnitSiblings: PropTypes.array.isRequired,
   displayedChildren: PropTypes.arrayOf(PropTypes.object),
   getChildren: PropTypes.func.isRequired,
-  measureData: PropTypes.array.isRequired,
+  measureData: PropTypes.array,
   measureInfo: PropTypes.object.isRequired,
   position: PropTypes.shape({
     center: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
@@ -180,6 +185,7 @@ MapComponent.propTypes = {
 
 MapComponent.defaultProps = {
   displayedChildren: [],
+  measureData: [],
   currentParent: null,
 };
 
