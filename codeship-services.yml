@@ -61,8 +61,6 @@ deployment:
   build:
     dockerfile: deploy-only.Dockerfile
   encrypted_env_file: ./ci-env-vars.encrypted
-  depends_on:
-    - tupaia
   volumes:
     - ./.ssh:/root/.ssh # persist `id_rsa` file to subsequent steps
     - ./tupaia_builds:/root/tupaia_builds # retrieve files to enable push
