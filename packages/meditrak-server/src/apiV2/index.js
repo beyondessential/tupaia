@@ -147,6 +147,7 @@ apiV2.get(
   '/mapOverlayGroups/:parentRecordId/mapOverlayGroupRelations',
   useRouteHandler(GETMapOverlayGroupRelations),
 );
+apiV2.get('/mapOverlayGroupRelations/:recordId?', useRouteHandler(GETMapOverlayGroupRelations));
 apiV2.get('/surveys/:recordId?', useRouteHandler(GETSurveys));
 apiV2.get('/countries/:parentRecordId/surveys', useRouteHandler(GETSurveys));
 apiV2.get('/countries/:parentRecordId/entities', useRouteHandler(GETEntities));
