@@ -67,7 +67,7 @@ exports.up = async function (db) {
       chartType: 'line',
       valueType: 'percentage',
       chartConfig: {
-        $all: {},
+        $all: { connectNulls: true },
       },
       xName: 'Date', // For showing correct first column name in table flapper
     },
