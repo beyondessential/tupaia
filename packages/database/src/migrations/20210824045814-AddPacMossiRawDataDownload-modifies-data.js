@@ -24,7 +24,6 @@ exports.setup = function (options, seedLink) {
 };
 
 const PROJECT_NAME = 'PacMOSSI';
-// const REPORT_ID = 'PacMOSSI_Raw_Data_Downloads';
 const COUNTRY_CODES = ['FJ', 'KI', 'NR', 'NU', 'PG', 'SB', 'TV', 'TO', 'VU'];
 const DASHBOARD_NAME = 'PacMOSSI Raw Data Downloads';
 const DASHBOARD_ITEM_NAME = 'Download Vector Surveillance Survey Data';
@@ -73,27 +72,27 @@ const REPORT_CONFIG = {
         },
         PFSM: {
           entityAggregation: {
-            dataSourceEntityType: 'country',
+            dataSourceEntityType: 'field_station',
           },
         },
         PAMC: {
           entityAggregation: {
-            dataSourceEntityType: 'country',
+            dataSourceEntityType: 'field_station',
           },
         },
         PLS: {
           entityAggregation: {
-            dataSourceEntityType: 'country',
+            dataSourceEntityType: 'larval_habitat',
           },
         },
         PIR: {
           entityAggregation: {
-            dataSourceEntityType: 'country',
+            dataSourceEntityType: 'field_station',
           },
         },
         PMS: {
           entityAggregation: {
-            dataSourceEntityType: 'country',
+            dataSourceEntityType: 'district',
           },
         },
       },
@@ -101,7 +100,6 @@ const REPORT_CONFIG = {
   },
 };
 
-// @TODO get country name from country code
 const FRONTEND_CONFIG = {
   name: 'Download Vector Surveillance Survey Data',
   type: 'view',
@@ -109,25 +107,7 @@ const FRONTEND_CONFIG = {
   periodGranularity: 'year',
 };
 
-// const addItemToDashboard = async (
-//   db,
-//   { code, dashboardCode, permissionGroup, entityTypes, projectCodes },
-// ) => {
-//   const dashboardItemId = (await findSingleRecord(db, 'dashboard_item', { code })).id;
-//   const dashboardId = (await findSingleRecord(db, 'dashboard', { code: dashboardCode })).id;
-//   await insertObject(db, 'dashboard_relation', {
-//     id: generateId(),
-//     dashboard_id: dashboardId,
-//     child_id: dashboardItemId,
-//     entity_types: `{${entityTypes.join(', ')}}`,
-//     project_codes: `{${projectCodes.join(', ')}}`,
-//     permission_groups: `{${permissionGroup}}`,
-//     sort_order: 1,
-//   });
-// };
-
 const addDashboardItemToCountry = async (db, countryCode) => {
-  // insert legacy report
   await insertObject(db, 'legacy_report', {
     id: generateId(),
     code: getCountryDashboardItemCode(countryCode),
@@ -136,7 +116,6 @@ const addDashboardItemToCountry = async (db, countryCode) => {
     data_services: [{ isDataRegional: true }],
   });
 
-  // insert dashboard
   const dashboardId = generateId();
   await insertObject(db, 'dashboard', {
     id: dashboardId,
@@ -146,7 +125,6 @@ const addDashboardItemToCountry = async (db, countryCode) => {
     sort_order: 2,
   });
 
-  // insert dashboard item
   const dashboardItemId = generateId();
   await insertObject(db, 'dashboard_item', {
     id: dashboardItemId,
@@ -155,16 +133,6 @@ const addDashboardItemToCountry = async (db, countryCode) => {
     report_code: getCountryDashboardItemCode(countryCode),
     legacy: true,
   });
-
-  // insert relations for dashboard item
-  // await addItemToDashboard(db, {
-  //   code: getCountryDashboardItemCode(countryCode),
-  //   dashboardCode: getCountryDashboardCode(countryCode),
-  //   frontEndConfig: getFrontEndConfig(countryCode),
-  //   permissionGroup: 'PacMOSSI Senior',
-  //   entityTypes: ['country'],
-  //   projectCodes: ['pacmossi'],
-  // });
 
   await insertObject(db, 'dashboard_relation', {
     id: generateId(),
@@ -189,10 +157,11 @@ exports.down = async function (db) {
       getCountryDashboardItemCode(countryCode),
     );
     const dashboardId = await codeToId(db, 'dashboard', getCountryDashboardCode(countryCode));
-    return db.runSql(`
+    await db.runSql(`
+      delete from "dashboard_relation" where dashboard_id = '${dashboardId}' and child_id = '${dashboardItemId}';
       delete from "legacy_report" where code = '${getCountryDashboardItemCode(countryCode)}';
       delete from "dashboard_item" where code = '${getCountryDashboardItemCode(countryCode)}';
-      delete from "dashboard_relation" where dashboard_id = '${dashboardId}' and child_id = '${dashboardItemId}';
+      delete from "dashboard" where code = '${getCountryDashboardCode(countryCode)}';
     `);
   }
 };
