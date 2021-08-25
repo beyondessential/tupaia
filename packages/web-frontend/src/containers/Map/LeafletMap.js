@@ -120,9 +120,7 @@ export class LeafletMap extends Component {
   };
 
   onPositionChanged = () => {
-    if (this.isAnimating()) {
-      return;
-    }
+    if (this.isAnimating()) return;
 
     const { lat, lng } = this.adjustPointToRemoveMargin(
       {
@@ -220,7 +218,7 @@ export class LeafletMap extends Component {
 
     return (
       <Map
-        style={{ height: window.innerHeight, width: '100%' }}
+        style={{ height: '100vh', width: '100%' }}
         zoomControl={false}
         zoomend={this.onZoomEnd}
         zoomstart={() => {
