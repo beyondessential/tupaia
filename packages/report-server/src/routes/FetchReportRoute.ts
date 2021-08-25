@@ -41,13 +41,9 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     const report = await this.findReport();
     const permissionGroupName = await report.permissionGroupName();
 
-    const requestedOrgUnitCodesArray = Array.isArray(organisationUnitCodes)
-      ? organisationUnitCodes
-      : organisationUnitCodes.split(',');
-
     const foundOrgUnits = await getRequestedOrgUnitObjects(
       hierarchy,
-      requestedOrgUnitCodesArray,
+      organisationUnitCodes,
       this.req.ctx.microServices.entityApi,
     );
 

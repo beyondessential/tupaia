@@ -23,21 +23,23 @@ export const getAccessibleOrgUnitCodes = async (
 
 export const getRequestedOrgUnitObjects = async (
   hierarchy: string,
-  requestedOrgUnitCodes: string[],
+  orgUnitCodes: string | string[],
   entityApi: EntityApi,
 ) => {
-  const entities = await entityApi.getEntities(hierarchy, requestedOrgUnitCodes, {
+  const orgUnitCodesInArray = Array.isArray(orgUnitCodes) ? orgUnitCodes : orgUnitCodes.split(',');
+
+  const entities = await entityApi.getEntities(hierarchy, orgUnitCodesInArray, {
     fields: ['code', 'country_code', 'type'],
   });
   if (entities.length === 0) {
-    throw new Error(`No entities found with codes ${requestedOrgUnitCodes}`);
+    throw new Error(`No entities found with codes ${orgUnitCodesInArray}`);
   }
 
   // If entity is a project
   if (entities.length === 1 && entities[0].type === 'project') {
     const countryEntities = await entityApi.getDescendantsOfEntities(
       hierarchy,
-      requestedOrgUnitCodes,
+      orgUnitCodesInArray,
       {
         fields: ['code', 'country_code', 'type'],
         filter: { type: 'country' },
