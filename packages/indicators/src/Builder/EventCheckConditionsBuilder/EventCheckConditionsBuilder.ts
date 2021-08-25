@@ -6,7 +6,7 @@
 import { utcMoment, PERIOD_TYPES, momentToPeriod } from '@tupaia/utils';
 
 import { Builder } from '../Builder';
-import { FetchOptions, Event, DataValues } from '../../types';
+import { FetchOptions, Event } from '../../types';
 import { getExpressionParserInstance } from '../../getExpressionParserInstance';
 import { EventCheckConditionsConfig, DefaultValue, configValidators } from './config';
 import { validateConfig, evaluateFormulaToNumber, replaceDataValuesWithDefaults } from '../helpers';
