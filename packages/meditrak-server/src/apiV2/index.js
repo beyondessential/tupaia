@@ -142,10 +142,10 @@ apiV2.get('/legacyReports/:recordId?', useRouteHandler(GETLegacyReports));
 apiV2.get('/indicators/:recordId?', useRouteHandler(BESAdminGETHandler));
 apiV2.get('/feedItems/:recordId?', useRouteHandler(GETFeedItems));
 apiV2.get('/mapOverlays/:recordId?', useRouteHandler(GETMapOverlays));
-apiV2.get('/mapOverlayGroups/:recordId?', GETMapOverlayGroups);
+apiV2.get('/mapOverlayGroups/:recordId?', useRouteHandler(GETMapOverlayGroups));
 apiV2.get(
   '/mapOverlayGroups/:parentRecordId/mapOverlayGroupRelations',
-  GETMapOverlayGroupRelations,
+  useRouteHandler(GETMapOverlayGroupRelations),
 );
 apiV2.get('/surveys/:recordId?', useRouteHandler(GETSurveys));
 apiV2.get('/countries/:parentRecordId/surveys', useRouteHandler(GETSurveys));
@@ -203,7 +203,7 @@ apiV2.post('/feedItems', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/indicators', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/permissionGroups', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dashboardRelations', useRouteHandler(CreateDashboardRelation));
-apiV2.post('/mapOverlayGroupRelations', CreateMapOverlayGroupRelation);
+apiV2.post('/mapOverlayGroupRelations', useRouteHandler(CreateMapOverlayGroupRelation));
 apiV2.post('/syncFromService', allowAnyone(manualKoBoSync));
 
 /**
@@ -228,8 +228,8 @@ apiV2.put('/dashboardItems/:recordId', useRouteHandler(EditDashboardItem));
 apiV2.put('/dashboardRelations/:recordId', useRouteHandler(EditDashboardRelation));
 apiV2.put('/legacyReports/:recordId', useRouteHandler(EditLegacyReport));
 apiV2.put('/mapOverlays/:recordId', useRouteHandler(EditMapOverlays));
-apiV2.put('/mapOverlayGroups/:recordId', EditMapOverlayGroups);
-apiV2.put('/mapOverlayGroupRelations/:recordId', EditMapOverlayGroupRelations);
+apiV2.put('/mapOverlayGroups/:recordId', useRouteHandler(EditMapOverlayGroups));
+apiV2.put('/mapOverlayGroupRelations/:recordId', useRouteHandler(EditMapOverlayGroupRelations));
 apiV2.put('/indicators/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/projects/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/me', catchAsyncErrors(editUser));
@@ -254,8 +254,11 @@ apiV2.delete('/dashboardItems/:recordId', useRouteHandler(DeleteDashboardItem));
 apiV2.delete('/dashboardRelations/:recordId', useRouteHandler(DeleteDashboardRelation));
 apiV2.delete('/legacyReports/:recordId', useRouteHandler(DeleteLegacyReport));
 apiV2.delete('/mapOverlays/:recordId', useRouteHandler(DeleteMapOverlays));
-apiV2.delete('/mapOverlayGroups/:recordId', DeleteMapOverlayGroups);
-apiV2.delete('/mapOverlayGroupRelations/:recordId', DeleteMapOverlayGroupRelations);
+apiV2.delete('/mapOverlayGroups/:recordId', useRouteHandler(DeleteMapOverlayGroups));
+apiV2.delete(
+  '/mapOverlayGroupRelations/:recordId',
+  useRouteHandler(DeleteMapOverlayGroupRelations),
+);
 apiV2.delete('/indicators/:recordId', useRouteHandler(BESAdminDeleteHandler));
 
 apiV2.use(handleError); // error handler must come last
