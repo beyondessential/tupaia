@@ -1,13 +1,6 @@
 'use strict';
 
-import {
-  codeToId,
-  arrayToDbString,
-  insertObject,
-  generateId,
-  findSingleRecord,
-  deleteObject,
-} from '../utilities';
+import { codeToId, insertObject, generateId, findSingleRecordBySql } from '../utilities';
 
 var dbm;
 var type;
@@ -134,6 +127,13 @@ const addDashboardItemToCountry = async (db, countryCode) => {
     legacy: true,
   });
 
+  const maxSortOrder = (
+    await findSingleRecordBySql(
+      db,
+      `SELECT max(sort_order) as max_sort_order FROM dashboard_relation WHERE dashboard_id = '${dashboardId}';`,
+    )
+  ).max_sort_order;
+
   await insertObject(db, 'dashboard_relation', {
     id: generateId(),
     dashboard_id: dashboardId,
@@ -141,7 +141,7 @@ const addDashboardItemToCountry = async (db, countryCode) => {
     entity_types: '{country}',
     project_codes: '{pacmossi}',
     permission_groups: '{PacMOSSI Senior}',
-    sort_order: 2,
+    sort_order: maxSortOrder + 1,
   });
 };
 
