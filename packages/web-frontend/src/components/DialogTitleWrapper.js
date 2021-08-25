@@ -8,7 +8,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { ReferenceTooltip } from '@tupaia/ui-components/lib/map';
+import { ReferenceTooltip } from '@tupaia/ui-components';
 import { WHITE } from '../styles';
 
 const renderReferenceTooltip = reference => {

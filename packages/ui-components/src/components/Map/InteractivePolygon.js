@@ -17,6 +17,7 @@ const BasicPolygon = styled(Polygon)`
   fill: ${POLYGON_BLUE};
   fill-opacity: 0.04;
   stroke-width: 1;
+
   :hover {
     fill-opacity: 0.5;
     stroke: ${POLYGON_HIGHLIGHT};
@@ -25,14 +26,14 @@ const BasicPolygon = styled(Polygon)`
 `;
 
 export const ShadedPolygon = styled(Polygon)`
-  weight: 1;
   fill-opacity: 0.5;
-  :hover {
+
+  &:hover {
     fill-opacity: 0.8;
   }
 `;
 
-const getProps = (organisationUnitCode, organisationUnitChildren, measureOrgUnits) => {
+const parseProps = (organisationUnitCode, organisationUnitChildren, measureOrgUnits) => {
   let shade;
   let isHidden;
   let orgUnitMeasureData;
@@ -58,9 +59,7 @@ const getProps = (organisationUnitCode, organisationUnitChildren, measureOrgUnit
     }
   }
 
-  const hasChildren = organisationUnitChildren && organisationUnitChildren.length > 0;
-
-  return { shade, isHidden, hasShadedChildren, hasChildren };
+  return { shade, isHidden, hasShadedChildren };
 };
 
 export const InteractivePolygon = React.memo(
@@ -77,18 +76,16 @@ export const InteractivePolygon = React.memo(
     organisationUnitChildren,
   }) => {
     const { organisationUnitCode } = area;
+    const coordinates = area.location?.region;
+    const hasChildren = organisationUnitChildren && organisationUnitChildren.length > 0;
 
-    const { shade, isHidden, hasChildren, hasShadedChildren } = getProps(
+    const { shade, isHidden, hasShadedChildren } = parseProps(
       organisationUnitCode,
       organisationUnitChildren,
       measureOrgUnits,
     );
 
-    if (isHidden) return null;
-
-    const coordinates = area.location?.region;
-
-    if (!coordinates) return null;
+    if (isHidden || !coordinates) return null;
 
     if (isActive) {
       return (
@@ -105,51 +102,39 @@ export const InteractivePolygon = React.memo(
       );
     }
 
-    const defaultProps = {
-      positions: coordinates,
-      eventHandlers: {
-        click: () => {
-          return onChangeOrgUnit(organisationUnitCode);
-        },
-      },
-    };
-
-    const Tooltip = () => {
-      const hasMeasureValue = !!(orgUnitMeasureData || orgUnitMeasureData === 0);
-      // don't render tooltips if we have a measure loaded
-      // and don't have a value to display in the tooltip (ie: radius overlay)
-      if (hasMeasureData && !hasMeasureValue) return null;
-
-      return (
-        <AreaTooltip
-          // permanent={permanentLabels && isChildArea && !hasMeasureValue}
-          sticky={!permanentLabels}
-          hasMeasureValue={hasMeasureValue}
-          measureOptions={measureOptions}
-          orgUnitMeasureData={orgUnitMeasureData}
-          orgUnitName={area.name}
-          interactive={false}
-        />
-      );
-    };
+    let PolygonComponent = BasicPolygon;
+    let color;
 
     if (shade) {
+      PolygonComponent = ShadedPolygon;
       // To match with the color in markerIcon.js which uses BREWER_PALETTE
-      const color = BREWER_PALETTE[shade] || shade;
-
-      // Work around: color should go through the styled components
-      // but there is a rendering bug between Styled Components + Leaflet
-      return (
-        <ShadedPolygon {...defaultProps} color={color}>
-          <Tooltip />
-        </ShadedPolygon>
-      );
+      color = BREWER_PALETTE[shade] || shade;
     }
 
+    const hasMeasureValue = !!(orgUnitMeasureData || orgUnitMeasureData === 0);
+    const hideTooltip = hasMeasureData && !hasMeasureValue;
+
     return (
-      <BasicPolygon {...defaultProps}>
-        <Tooltip />
-      </BasicPolygon>
+      <PolygonComponent
+        positions={coordinates}
+        color={color}
+        eventHandlers={{
+          click: () => {
+            return onChangeOrgUnit(organisationUnitCode);
+          },
+        }}
+      >
+        {!hideTooltip && (
+          <AreaTooltip
+            permanent={permanentLabels && isChildArea && !hasMeasureValue}
+            sticky={!permanentLabels}
+            hasMeasureValue={hasMeasureValue}
+            measureOptions={measureOptions}
+            orgUnitMeasureData={orgUnitMeasureData}
+            orgUnitName={area.name}
+          />
+        )}
+      </PolygonComponent>
     );
   },
 );
@@ -158,19 +143,17 @@ InteractivePolygon.propTypes = {
   area: PropTypes.shape({
     name: PropTypes.string,
     type: PropTypes.string,
+    location: PropTypes.string,
     organisationUnitCode: PropTypes.string,
   }).isRequired,
-  measureId: PropTypes.string,
   isActive: PropTypes.bool,
   permanentLabels: PropTypes.bool,
   isChildArea: PropTypes.bool,
   onChangeOrgUnit: PropTypes.func,
   hasMeasureData: PropTypes.bool,
   measureOptions: PropTypes.arrayOf(PropTypes.object),
-  hasChildren: PropTypes.bool,
-  hasShadedChildren: PropTypes.bool,
-  shade: PropTypes.string,
-  isHidden: PropTypes.bool,
+  measureOrgUnits: PropTypes.arrayOf(PropTypes.object),
+  organisationUnitChildren: PropTypes.arrayOf(PropTypes.object),
   orgUnitMeasureData: PropTypes.shape({
     value: PropTypes.any,
     originalValue: PropTypes.any,
@@ -180,16 +163,13 @@ InteractivePolygon.propTypes = {
 };
 
 InteractivePolygon.defaultProps = {
-  measureId: '',
   isActive: false,
   permanentLabels: true,
   isChildArea: false,
   onChangeOrgUnit: () => {},
   hasMeasureData: false,
   measureOptions: [],
-  hasChildren: false,
-  hasShadedChildren: false,
-  shade: undefined,
-  isHidden: false,
+  organisationUnitChildren: [],
+  measureOrgUnits: [],
   orgUnitMeasureData: undefined,
 };

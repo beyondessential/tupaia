@@ -87,7 +87,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  setOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
+  onChangeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
     dispatch(setOrgUnit(organisationUnitCode, shouldChangeMapBounds));
   },
 });
