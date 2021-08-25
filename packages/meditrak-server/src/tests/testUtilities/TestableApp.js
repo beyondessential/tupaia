@@ -11,7 +11,7 @@ import { Authenticator } from '@tupaia/auth';
 import { generateTestId } from '@tupaia/database';
 
 import { BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
-import { createApp } from '../../app';
+import { createApp } from '../../createApp';
 import { getModels } from './database';
 
 const DEFAULT_API_VERSION = 2;
