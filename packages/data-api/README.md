@@ -26,7 +26,7 @@ Now that mvrefresh is installed, we can build the analytics table. Run:
 
 `yarn workspace @tupaia/data-api build-analytics-table`
 
-This process may take some time (~20 minutes on feature instances). First the script must build the 'log$\_ tables', which track changes in the source tables that the analytics table relies on (answer, survey_response, etc.) Then the table itself must be build, and finally it must be indexed.
+This process may take some time (~20 minutes on feature instances). First the script must build the 'log$\_' tables, which track changes in the source tables that the analytics table relies on (answer, survey_response, etc.) Then the table itself must be built, and finally it must be indexed.
 
 Once this process is complete, you can check the analytics table is present in your 'public' schema in the database.
 
