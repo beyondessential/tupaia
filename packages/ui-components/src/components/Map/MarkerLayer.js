@@ -12,7 +12,6 @@ import { AreaTooltip } from './AreaTooltip';
 import { getSingleFormattedValue, MEASURE_TYPE_RADIUS } from './utils';
 
 const ShadedPolygon = styled(Polygon)`
-  weight: 1;
   fill-opacity: 0.5;
   :hover {
     fill-opacity: 0.8;
@@ -23,17 +22,28 @@ const ShadedPolygon = styled(Polygon)`
 const getTooltipText = ({ name, ...markerData }, serieses) =>
   `${name}: ${getSingleFormattedValue(markerData, serieses)}`;
 
-export const MarkerLayer = ({ measureData, serieses }) => {
-  if (!measureData || !serieses) return null;
+// Filter hidden and invalid values and sort measure data
+const processData = (measureData, serieses) => {
+  const data = measureData
+    .filter(({ coordinates, region }) => region || (coordinates && coordinates.length === 2))
+    .filter(({ isHidden }) => !isHidden);
 
   // for radius overlay sort desc radius to place smaller circles over larger circles
   if (serieses.some(l => l.type === MEASURE_TYPE_RADIUS)) {
-    measureData.sort((a, b) => Number(b.radius) - Number(a.radius));
+    data.sort((a, b) => Number(b.radius) - Number(a.radius));
   }
+
+  return data;
+};
+
+export const MarkerLayer = ({ measureData, serieses }) => {
+  if (!measureData || !serieses) return null;
+
+  const data = processData(measureData, serieses);
 
   return (
     <LayerGroup>
-      {measureData.map((measure, index) =>
+      {data.map((measure, index) =>
         measure.region ? (
           // eslint-disable-next-line react/no-array-index-key
           <ShadedPolygon key={index} positions={measure.region} {...measure}>

@@ -42,6 +42,7 @@ class MapComponent extends Component {
       currentOrganisationUnit,
       displayedChildren,
       measureInfo,
+      measureData,
       position,
       tileSetUrl,
       sidePanelWidth,
@@ -64,6 +65,8 @@ class MapComponent extends Component {
     if (nextProps.sidePanelWidth !== sidePanelWidth) return true;
 
     if (JSON.stringify(nextProps.position) !== JSON.stringify(position)) return true;
+
+    if (JSON.stringify(nextProps.measureData) !== JSON.stringify(measureData)) return true;
 
     return false;
   }
@@ -113,11 +116,6 @@ class MapComponent extends Component {
 
     const { measureOptions } = measureInfo;
 
-    // Could this move to the MarkerLayer?
-    const processedData = measureData
-      .filter(data => data.coordinates && data.coordinates.length === 2)
-      .filter(data => !data.isHidden);
-
     return (
       <LeafletMap
         onClick={onCloseDropdownOverlays}
@@ -151,7 +149,7 @@ class MapComponent extends Component {
             isActive
           />
         )}
-        <MarkerLayer measureData={processedData || null} serieses={measureOptions || null} />
+        <MarkerLayer measureData={measureData || null} serieses={measureOptions || null} />
         <DisasterLayer />
       </LeafletMap>
     );

@@ -143,7 +143,7 @@ InteractivePolygon.propTypes = {
   area: PropTypes.shape({
     name: PropTypes.string,
     type: PropTypes.string,
-    location: PropTypes.string,
+    location: PropTypes.object,
     organisationUnitCode: PropTypes.string,
   }).isRequired,
   isActive: PropTypes.bool,
