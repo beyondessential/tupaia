@@ -36,7 +36,7 @@ const generateReport = elements => ({
     },
     {
       transform: 'aggregate',
-      timestampe: 'group',
+      timestamp: 'group',
       '...': 'max',
     },
   ],
