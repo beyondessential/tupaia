@@ -19,6 +19,7 @@ export * from './EntityPolygon';
 export * from './InversePolygonMask';
 export * from './InteractivePolygon';
 export * from './Legend';
+export * from './LeafletMap';
 export * from './MapContainer';
 export * from './MarkerLayer';
 export * from './Markers';
