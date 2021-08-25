@@ -8,8 +8,8 @@
 #   required by e2e tests in web-frontend
 # - the 'db' service provides a postgres db with postgis (and takes a little while to run, thus the
 #   splitting of the above services so validation isn't slower than it should be)
-# - the 'front-end-deployment' service is similar to the validation service, but only adds the code
-#   required to build and deploy the front end packages
+# - the 'builder' service uses the same image as the 'testing' service, but skips the dependency on
+#   the db, and makes the built files available to the later deployment step
 # - the deployment service just uses the base alpine image + ssh to log into an ec2 instance and
 #   deploy the latest version of the code for each package, including pulling and running the latest
 #   docker image containing the built front ends
@@ -47,21 +47,25 @@ db:
   cached: true
   encrypted_dockercfg_path: dockercfg.encrypted
 
-front-end-deployment:
+builder:
   build:
-    dockerfile: front-end-deployment.Dockerfile
+    dockerfile: full-testable-package.Dockerfile
   cached: true
   encrypted_env_file: ./lastpass-env-vars.encrypted # lastpass credentials to fetch env vars
   encrypted_dockercfg_path: dockercfg.encrypted
   default_cache_branch: 'dev'
+  volumes:
+    - ./tupaia_builds:/root/tupaia_builds # make built files available to deployment service
 
 deployment:
   build:
     dockerfile: deploy-only.Dockerfile
   encrypted_env_file: ./ci-env-vars.encrypted
+  depends_on:
+    - tupaia
   volumes:
-    # mapping to `.ssh` directory ensures that `id_rsa` file persists to subsequent steps
-    - ./.ssh:/root/.ssh
+    - ./.ssh:/root/.ssh # persist `id_rsa` file to subsequent steps
+    - ./tupaia_builds:/root/tupaia_builds # retrieve files to enable push
   cached: true
   encrypted_dockercfg_path: dockercfg.encrypted
   default_cache_branch: 'dev'
