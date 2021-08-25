@@ -16,7 +16,9 @@ export const getAccessibleOrgUnitCodes = async (
       countryCode !== null && accessPolicy.allows(countryCode, permissionGroupName),
   );
   if (accessibleOrgUnits.length === 0) {
-    throw new Error(`No permissions to any one of entities ${foundOrgUnits}`);
+    throw new Error(
+      `No permissions to any one of entities ${foundOrgUnits.map(o => o.country_code)}`,
+    );
   }
   return accessibleOrgUnits.map(orgUnit => orgUnit.code);
 };
@@ -35,7 +37,6 @@ export const getRequestedOrgUnitObjects = async (
     throw new Error(`No entities found with codes ${orgUnitCodesInArray}`);
   }
 
-  // If entity is a project
   if (entities.length === 1 && entities[0].type === 'project') {
     const countryEntities = await entityApi.getDescendantsOfEntities(
       hierarchy,
