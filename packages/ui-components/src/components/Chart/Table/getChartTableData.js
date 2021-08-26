@@ -4,7 +4,6 @@
  */
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { useTable, useSortBy } from 'react-table';
 import { formatDataValueByType } from '@tupaia/utils';
 import { formatTimestampForChart, getIsTimeSeries } from '../utils';
 import { parseChartConfig } from '../parseChartConfig';
@@ -36,6 +35,10 @@ const makeFirstColumn = (header, accessor) => ({
  * use value as the only column
  */
 const processColumns = viewContent => {
+  if (!viewContent?.data) {
+    return [];
+  }
+
   const { data, xName, periodGranularity } = viewContent;
   const hasNamedData = data[0]?.name;
   const hasTimeSeriesData = getIsTimeSeries(data) && periodGranularity;
@@ -71,7 +74,13 @@ const processColumns = viewContent => {
   return firstColumn ? [firstColumn, ...configColumns] : configColumns;
 };
 
-const processData = ({ data, chartType }) => {
+const processData = viewContent => {
+  if (!viewContent?.data) {
+    return [];
+  }
+
+  const { data, chartType } = viewContent;
+
   if (chartType === CHART_TYPES.PIE) {
     return data.sort((a, b) => b.value - a.value);
   }
@@ -79,8 +88,8 @@ const processData = ({ data, chartType }) => {
 };
 
 export const getChartTableData = viewContent => {
-  const columns = useMemo(() => processColumns(viewContent), []);
-  const data = useMemo(() => processData(viewContent), []);
+  const columns = useMemo(() => processColumns(viewContent), [JSON.stringify(viewContent)]);
+  const data = useMemo(() => processData(viewContent), [JSON.stringify(viewContent)]);
   return {
     columns,
     data,

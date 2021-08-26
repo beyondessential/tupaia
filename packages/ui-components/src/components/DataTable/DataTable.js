@@ -70,7 +70,6 @@ export const DataTable = ({ columns, data, className }) => {
 DataTable.propTypes = {
   columns: PropTypes.array.isRequired,
   data: PropTypes.array.isRequired,
-  prepareRow: PropTypes.func.isRequired,
   className: PropTypes.string,
 };
 
