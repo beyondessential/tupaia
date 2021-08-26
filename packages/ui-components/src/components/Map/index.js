@@ -3,12 +3,23 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-export { Polygon as BasePolygon, TileLayer as BaseTileLayer, ZoomControl } from 'react-leaflet';
+export {
+  Polygon as BasePolygon,
+  TileLayer as BaseTileLayer,
+  ZoomControl,
+  MapContainer as LeafletMapContainer,
+  LayerGroup,
+  GeoJSON,
+  Polygon,
+  Tooltip,
+} from 'react-leaflet';
 export * from './AreaTooltip';
+export * from './constants';
 export * from './EntityPolygon';
 export * from './InversePolygonMask';
+export * from './InteractivePolygon';
 export * from './Legend';
-export * from './MapContainer';
+export * from './LeafletMap';
 export * from './MarkerLayer';
 export * from './Markers';
 export * from './PolygonLayer';
