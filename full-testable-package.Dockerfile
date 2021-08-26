@@ -3,6 +3,7 @@ FROM node:12.18.3-alpine3.11
 # install features not available in base alpine distro
 RUN apk --no-cache add \
   bash \
+  lastpass-cli \
   postgresql-client \
   git
 
