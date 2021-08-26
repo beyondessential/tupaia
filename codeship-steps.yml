@@ -66,30 +66,78 @@
       command: './packages/devops/scripts/ci/pullLatest.sh'
 
 - type: serial
-  name: deploy-backends
-  service: deployment
+  name: build-and-deploy-backends
   exclude: -e2e$
   steps:
     - type: serial
-      name: restart-backends
+      name: web-config-server
       steps:
+        - name: build-web-config-server
+          service: builder
+          command: './packages/devops/scripts/ci/buildBackend.sh web-config-server'
         - name: deploy-web-config-server
+          service: deployment
           command: './packages/devops/scripts/ci/deployBackend.sh web-config-server'
+    - type: serial
+      name: lesmis-server
+      steps:
+        - name: build-lesmis-server
+          service: builder
+          command: './packages/devops/scripts/ci/buildBackend.sh lesmis-server'
         - name: deploy-lesmis-server
+          service: deployment
           command: './packages/devops/scripts/ci/deployBackend.sh lesmis-server'
+    - type: serial
+      name: meditrak-server
+      steps:
+        - name: build-meditrak-server
+          service: builder
+          command: './packages/devops/scripts/ci/buildBackend.sh meditrak-server'
         - name: deploy-meditrak-server
+          service: deployment
           command: './packages/devops/scripts/ci/deployBackend.sh meditrak-server'
+    - type: serial
+      name: psss-server
+      steps:
+        - name: build-psss-server
+          service: builder
+          command: './packages/devops/scripts/ci/buildBackend.sh psss-server'
         - name: deploy-psss-server
+          service: deployment
           command: './packages/devops/scripts/ci/deployBackend.sh psss-server'
+    - type: serial
+      name: admin-panel-server
+      steps:
+        - name: build-admin-panel-server
+          service: builder
+          command: './packages/devops/scripts/ci/buildBackend.sh admin-panel-server'
         - name: deploy-admin-panel-server
+          service: deployment
           command: './packages/devops/scripts/ci/deployBackend.sh admin-panel-server'
+    - type: serial
+      name: report-server
+      steps:
+        - name: build-report-server
+          service: builder
+          command: './packages/devops/scripts/ci/buildBackend.sh report-server'
         - name: deploy-report-server
+          service: deployment
           command: './packages/devops/scripts/ci/deployBackend.sh report-server'
+    - type: serial
+      name: entity-server
+      steps:
+        - name: build-entity-server
+          service: builder
+          command: './packages/devops/scripts/ci/buildBackend.sh entity-server'
         - name: deploy-entity-server
+          service: deployment
           command: './packages/devops/scripts/ci/deployBackend.sh entity-server'
-    # run migrations immediately after backend deployment has finished so there is minimal time for code/db mismatch
-    - name: run db migrations
-      command: './packages/devops/scripts/ci/runMigrations.sh'
+
+# run migrations immediately after backend deployment has finished so there is minimal time for code/db mismatch
+- name: run db migrations
+  service: deployment
+  exclude: -e2e$
+  command: './packages/devops/scripts/ci/runMigrations.sh'
 
 - type: serial
   name: build-and-deploy-frontends

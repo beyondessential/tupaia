@@ -3,10 +3,10 @@ set -x
 
 PACKAGE=$1
 DIR=$(dirname "$0")
-DEPLOYMENT_SSH_URL=$(${DIR}/determineDeploymentSshUrl.sh)
 if [ -f "/root/tupaia_builds/deployment_exists" ]; then
     echo "Deployment for ${CI_BRANCH} exists, updating with latest build"
+    DEPLOYMENT_SSH_URL=$(${DIR}/determineDeploymentSshUrl.sh)
     scp -o StrictHostKeyChecking=no -r /root/tupaia_builds/${PACKAGE}/served_build ubuntu@$DEPLOYMENT_SSH_URL:/home/ubuntu/tupaia/packages/${PACKAGE}
 else
-    echo "No deployment exists for ${CI_BRANCH}, cancelling update"
+    echo "No deployment exists for ${CI_BRANCH}, skipping redeploy"
 fi

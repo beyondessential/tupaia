@@ -15,7 +15,7 @@ if [ -f "/root/tupaia_builds/deployment_exists" ]; then
     echo "Building"
     CI=false yarn workspace @tupaia/${PACKAGE} build # set CI to false to ignore warnings https://github.com/facebook/create-react-app/issues/3657
     mkdir -p /root/tupaia_builds/${PACKAGE}
-    mv ./packages/${PACKAGE}/served_build /root/tupaia_builds/${PACKAGE}
+    mv ./packages/${PACKAGE}/dist /root/tupaia_builds/${PACKAGE}
 
 else
     echo "No deployment exists for ${CI_BRANCH}, skipping build"
