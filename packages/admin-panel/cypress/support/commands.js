@@ -18,7 +18,7 @@ Cypress.Commands.add('selectIntoTextBox', (labelText, inputText) => {
 });
 
 Cypress.Commands.add('selectDropDownValue', (labelText, currentValue, valueToBeSelected) => {
-  cy.contains(lableText).parent().contains(currentValue).click();
+  cy.contains(labelText).parent().contains(currentValue).click();
   cy.contains(valueToBeSelected).click();
 });
 
