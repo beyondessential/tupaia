@@ -5,7 +5,7 @@
 import nodemailer from 'nodemailer';
 import { getIsProductionEnvironment } from '../devops';
 
-export const sendEmail = (to, subject, text) => {
+export const sendEmail = async (to, subject, text, attachments) => {
   const { SMTP_HOST, SMTP_USER, SMTP_PASSWORD, SITE_EMAIL_ADDRESS } = process.env;
 
   const transporter = nodemailer.createTransport({
@@ -27,6 +27,7 @@ export const sendEmail = (to, subject, text) => {
     from: SITE_EMAIL_ADDRESS,
     to,
     subject,
+    attachments,
     text: `${text}
 
 Cheers,

@@ -24,6 +24,6 @@ export const truncate = (str, num, ellipsis = false) => {
 };
 
 export const stringToFilename = string => {
-  const sanitized = sanitize(string).replace(/\s+/g, '-').toLowerCase().toLowerCase();
+  const sanitized = sanitize(string).replace(/\s+/g, '-').toLowerCase();
   return truncate(sanitized, 255);
 };

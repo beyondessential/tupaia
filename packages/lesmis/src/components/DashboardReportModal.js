@@ -1,9 +1,9 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  *
  */
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useTheme } from '@material-ui/core/styles';
 import {
@@ -13,20 +13,24 @@ import {
   Typography,
   Dialog as MuiDialog,
   Container as MuiContainer,
+  CircularProgress,
 } from '@material-ui/core';
-import { DateRangePicker } from '@tupaia/ui-components';
+import { DateRangePicker, WhiteButton, SplitButton } from '@tupaia/ui-components';
+import { useChartDataExport } from '@tupaia/ui-components/lib/chart';
 import * as COLORS from '../constants';
-import { FlexSpaceBetween, FlexStart } from './Layout';
+import { FlexColumn, FlexSpaceBetween, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
-import { useDashboardReportDataWithConfig } from '../api/queries';
-import { useUrlParams, useUrlSearchParams } from '../utils';
+import { useDashboardReportDataWithConfig, useEntityData } from '../api/queries';
+import { useUrlParams, useUrlSearchParams, useExportToPNG } from '../utils';
 import { DashboardReport } from './DashboardReport';
 
+// Transition component for modal animation
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
 
 const Wrapper = styled.div`
+  position: relative;
   height: 100%;
   background: ${COLORS.GREY_F9};
   min-height: 720px;
@@ -51,6 +55,10 @@ const Header = styled(FlexSpaceBetween)`
   }
 `;
 
+const Toolbar = styled(FlexStart)`
+  display: ${props => (props.$isExporting ? 'none' : 'flex')};
+`;
+
 const Heading = styled(Typography)`
   font-size: 1.25rem;
   line-height: 1.4rem;
@@ -64,11 +72,30 @@ const Description = styled(Typography)`
   margin-top: 0.625rem;
 `;
 
+const ExportLoader = styled(FlexColumn)`
+  display: ${props => (props.$isExporting ? 'flex' : 'none')};
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  z-index: 1;
+`;
+
+const EXPORT_OPTIONS = [
+  { id: 'xlsx', label: 'Export to XLSX' },
+  { id: 'png', label: 'Export to PNG' },
+];
+
 export const DashboardReportModal = () => {
   const theme = useTheme();
+  const [exportFormatId, setExportFormatId] = useState(EXPORT_OPTIONS[1].id);
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { entityCode } = useUrlParams();
   const [{ startDate, endDate, reportCode }, setParams] = useUrlSearchParams();
+  const { data: entityData } = useEntityData(entityCode);
   const { data, isLoading } = useDashboardReportDataWithConfig({
     entityCode,
     reportCode,
@@ -76,6 +103,33 @@ export const DashboardReportModal = () => {
     endDate,
   });
 
+  const { dashboardItemConfig: config, reportData } = data;
+
+  // Set up PNG export
+  const pngExportFilename = `export-${config?.name}-${new Date().toDateString()}`;
+  const { isExporting, isExportLoading, exportRef, exportToPNG } = useExportToPNG(
+    pngExportFilename,
+  );
+
+  // Set up Excel export
+  const viewContent = { ...config, data: reportData, startDate, endDate };
+  const excelExportTitle = `${viewContent?.name}, ${entityData?.name}`;
+  const { doExport } = useChartDataExport(viewContent, excelExportTitle);
+
+  /**
+   * Export click handler
+   */
+  const handleClickExport = async exportId => {
+    if (exportId === 'png') {
+      await exportToPNG();
+    } else {
+      await doExport();
+    }
+  };
+
+  /**
+   * Date change handler
+   */
   const handleDatesChange = (newStartDate, newEndDate) => {
     setParams(
       {
@@ -86,6 +140,9 @@ export const DashboardReportModal = () => {
     );
   };
 
+  /**
+   * Close click handler
+   */
   const handleClose = () => {
     setParams({
       startDate: null,
@@ -94,50 +151,66 @@ export const DashboardReportModal = () => {
     });
   };
 
-  const { dashboardItemConfig: config } = data;
+  // Display the modal  if there is a report code in the url
   const isOpen = !!reportCode;
 
+  const title = isExporting
+    ? `${entityCode}, ${config?.dashboardName}, ${config?.name}`
+    : config?.name;
+
   return (
-    <>
-      <MuiDialog
-        scroll="paper"
-        fullScreen
-        open={isOpen}
-        onClose={handleClose}
-        TransitionComponent={Transition}
-        style={{ left: fullScreen ? '0' : '6.25rem' }}
-      >
-        <DialogHeader
-          handleClose={handleClose}
-          title={config?.dashboardName ? config?.dashboardName : 'Loading...'}
-        />
-        <Wrapper>
-          <Container maxWidth="xl">
-            <Header>
-              <Box maxWidth={580}>
-                <Heading variant="h3">{config?.name}</Heading>
-                {config?.description && <Description>{config.description}</Description>}
-              </Box>
-              <FlexStart>
-                <DateRangePicker
-                  isLoading={isLoading}
-                  startDate={startDate}
-                  endDate={endDate}
-                  granularity={config?.periodGranularity}
-                  onSetDates={handleDatesChange}
-                />
-              </FlexStart>
-            </Header>
-            <DashboardReport
-              name={config?.name}
-              reportCode={reportCode}
-              startDate={startDate}
-              endDate={endDate}
-              isEnlarged
-            />
-          </Container>
-        </Wrapper>
-      </MuiDialog>
-    </>
+    <MuiDialog
+      scroll="paper"
+      fullScreen
+      open={isOpen}
+      onClose={handleClose}
+      TransitionComponent={Transition}
+      style={{ left: fullScreen ? '0' : '6.25rem' }}
+    >
+      <DialogHeader
+        handleClose={handleClose}
+        title={config?.dashboardName ? config?.dashboardName : 'Loading...'}
+      />
+      <ExportLoader $isExporting={isExportLoading}>
+        <CircularProgress size={50} />
+        <Box mt={3}>
+          <Typography>Exporting...</Typography>
+        </Box>
+      </ExportLoader>
+      <Wrapper ref={exportRef}>
+        <Container maxWidth="xl">
+          <Header>
+            <Box maxWidth={580}>
+              <Heading variant="h3">{title}</Heading>
+              {config?.description && <Description>{config.description}</Description>}
+            </Box>
+            <Toolbar $isExporting={isExporting}>
+              <SplitButton
+                options={EXPORT_OPTIONS}
+                selectedId={exportFormatId}
+                setSelectedId={setExportFormatId}
+                onClick={handleClickExport}
+                ButtonComponent={WhiteButton}
+              />
+              <DateRangePicker
+                isLoading={isLoading}
+                startDate={startDate}
+                endDate={endDate}
+                granularity={config?.periodGranularity}
+                onSetDates={handleDatesChange}
+              />
+            </Toolbar>
+          </Header>
+          <DashboardReport
+            name={config?.name}
+            reportCode={reportCode}
+            isExporting={isExporting}
+            startDate={startDate}
+            endDate={endDate}
+            isEnlarged
+          />
+        </Container>
+      </Wrapper>
+    </MuiDialog>
   );
 };
