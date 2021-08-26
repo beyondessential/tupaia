@@ -11,7 +11,7 @@ import {
   BaseTileLayer,
   IconMarker,
   InversePolygonMask,
-  MapContainer,
+  LeafletMapContainer,
 } from '@tupaia/ui-components/lib/map';
 import { TILE_SETS, RED, COUNTRY_CODE } from '../constants';
 import { useEntityData } from '../api';
@@ -20,7 +20,7 @@ const TILE_SET_URL = TILE_SETS.find(t => t.key === 'satellite').url;
 
 // style the map to have dimensions, plus remove the Leaflet attribution (it's shown on the main
 // map, which is hopefully enough credit)
-const Map = styled(MapContainer)`
+const Map = styled(LeafletMapContainer)`
   z-index: 1;
   min-height: 370px;
   height: auto;

@@ -3,11 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import Leaflet from 'leaflet';
 import {
-  MapContainer,
+  LeafletMap,
   TileLayer,
   MarkerLayer,
   EntityPolygon,
@@ -34,7 +33,7 @@ const Main = styled.div`
   height: 100%;
 `;
 
-const Map = styled(MapContainer)`
+const Map = styled(LeafletMap)`
   flex: 1;
   height: 100%;
   z-index: 1;
@@ -105,12 +104,6 @@ export const MapView = () => {
     setSelectedOverlay,
   } = useMapOverlayReportData({ entityCode, year: selectedYear });
 
-  const handleLocationChange = useCallback((map, bounds) => {
-    const mapBoxBounds = Leaflet.latLngBounds(bounds);
-    const maxBounds = mapBoxBounds.pad(2);
-    map.setMaxBounds(maxBounds);
-  }, []);
-
   const activeTileSet = TILE_SETS.find(tileSet => tileSet.key === activeTileSetKey);
 
   return (
@@ -124,11 +117,7 @@ export const MapView = () => {
         YearSelector={<YearSelector value={selectedYear} onChange={setSelectedYear} />}
       />
       <Main>
-        <Map
-          bounds={entityData ? entityData.bounds : null}
-          onLocationChange={handleLocationChange}
-          dragging
-        >
+        <Map bounds={entityData ? entityData.bounds : null} shouldSnapToPosition dragging>
           <TileLayer tileSetUrl={activeTileSet.url} />
           <ZoomControl position="bottomright" />
           <MarkerLayer
