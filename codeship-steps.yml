@@ -89,7 +89,7 @@
 
 - name: check-for-deployment
   service: deployment
-  command: './packages/devops/scripts/ci/checkForExistingDeployment.sh'
+  command: './packages/devops/scripts/ci/checkDeploymentExists.sh'
 
 - type: parallel
   name: build-and-deploy-frontends
