@@ -9,7 +9,7 @@ import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
 const { WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1' } = process.env;
 
 /**
- * @deprecated use @beyondessential/tupaia-api-client
+ * @deprecated use @tupaia/api-client
  */
 export class WebConfigConnection extends SessionHandlingApiConnection {
   baseUrl = WEB_CONFIG_API_URL;

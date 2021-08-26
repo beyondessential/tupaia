@@ -21,7 +21,7 @@ interface FetchConfig {
 }
 
 /**
- * @deprecated use @beyondessential/tupaia-api-client
+ * @deprecated use @tupaia/api-client
  */
 export class ApiConnection {
   public authHandler: AuthHandler;

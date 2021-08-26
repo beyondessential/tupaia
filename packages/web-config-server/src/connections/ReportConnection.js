@@ -18,7 +18,7 @@ const PUBLIC_USER_AUTH_HEADER = createBasicHeader(
 const { REPORT_API_URL = 'http://localhost:8030/v1' } = process.env;
 
 /**
- * @deprecated use @beyondessential/tupaia-api-client
+ * @deprecated use @tupaia/api-client
  */
 export class ReportConnection extends ApiConnection {
   baseUrl = REPORT_API_URL;

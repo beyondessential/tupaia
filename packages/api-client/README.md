@@ -6,7 +6,7 @@ Follows [SemVer](https://semver.org/)
 
 ### Install
 
-- `yarn add @beyondessential/tupaia-api-client`
+- `yarn add @tupaia/api-client`
 
 ### Usage
 

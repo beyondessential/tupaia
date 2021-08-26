@@ -16,8 +16,8 @@ import { buildBasicBearerAuthMiddleware } from '../auth';
 import { TestRoute } from '../../routes';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
 import { RequestContext } from '../types';
-import { TupaiaApiClient } from '@beyondessential/tupaia-api-client';
-import type { EndpointBaseUrlSet } from '@beyondessential/tupaia-api-client';
+import { TupaiaApiClient } from '@tupaia/api-client';
+import type { EndpointBaseUrlSet } from '@tupaia/api-client';
 
 export class ApiBuilder {
   private readonly app: Express;

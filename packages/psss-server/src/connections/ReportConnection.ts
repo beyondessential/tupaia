@@ -24,7 +24,7 @@ type ReportObject = {
 };
 
 /**
- * @deprecated use @beyondessential/tupaia-api-client
+ * @deprecated use @tupaia/api-client
  */
 export class ReportConnection extends ApiConnection {
   baseUrl = REPORT_API_URL;

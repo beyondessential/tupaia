@@ -12,7 +12,7 @@ const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
 type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 
 /**
- * @deprecated use @beyondessential/tupaia-api-client
+ * @deprecated use @tupaia/api-client
  */
 export class MeditrakConnection extends SessionHandlingApiConnection {
   baseUrl = MEDITRAK_API_URL;

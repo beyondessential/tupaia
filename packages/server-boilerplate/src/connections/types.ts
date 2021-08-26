@@ -4,14 +4,14 @@
  */
 
 /**
- * @deprecated use @beyondessential/tupaia-api-client
+ * @deprecated use @tupaia/api-client
  */
 export interface MicroserviceApi {
   baseUrl: string;
 }
 
 /**
- * @deprecated use @beyondessential/tupaia-api-client
+ * @deprecated use @tupaia/api-client
  */
 export interface AuthHandler {
   email?: string;
@@ -19,6 +19,6 @@ export interface AuthHandler {
 }
 
 /**
- * @deprecated use @beyondessential/tupaia-api-client
+ * @deprecated use @tupaia/api-client
  */
 export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
