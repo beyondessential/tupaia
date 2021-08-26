@@ -14,7 +14,7 @@ if [ -f "/root/tupaia_builds/deployment_exists" ]; then
     lpass show --notes ${PACKAGE}.dev.env > ./packages/${PACKAGE}/.env
 
     echo "Building"
-    yarn workspace @tupaia/${PACKAGE} build
+    CI=false yarn workspace @tupaia/${PACKAGE} build # set CI to false to ignore warnings https://github.com/facebook/create-react-app/issues/3657
     mv ./packages/${PACKAGE}/served_build/* ./tupaia_builds/${PACKAGE}
 else
     echo "No deployment exists for ${CI_BRANCH}, cancelling update"
