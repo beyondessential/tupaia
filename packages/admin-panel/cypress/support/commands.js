@@ -14,7 +14,7 @@ Cypress.Commands.add('login', ({ email, password }) => {
 });
 
 Cypress.Commands.add('selectIntoTextBox', (labelText, inputText) => {
-  cy.findByLabelText(lableText).type(inputText).type('{downarrow}').type('{enter}');
+  cy.findByLabelText(labelText).type(inputText).type('{downarrow}').type('{enter}');
 });
 
 Cypress.Commands.add('selectDropDownValue', (labelText, currentValue, valueToBeSelected) => {

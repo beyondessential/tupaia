@@ -2,8 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-
-import { requireCyEnv } from '@tupaia/utils';
+import { loginAsSuperUser } from '../support';
 
 describe('login as a super user user', () => {
   before(() => {
