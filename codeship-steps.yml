@@ -91,7 +91,7 @@
   service: deployment
   command: './packages/devops/scripts/ci/checkDeploymentExists.sh'
 
-- type: parallel
+- type: serial
   name: build-and-deploy-frontends
   exclude: -e2e$
   steps:
