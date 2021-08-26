@@ -6,8 +6,9 @@
 
 export * from './UserRoute';
 export { ExportDashboardVisualisationRoute } from './ExportDashboardVisualisationRoute';
-export { ImportDashboardVisualisationRoute } from './ImportDashboardVisualisationRoute';
+export { FetchDashboardVisualisationRoute } from './FetchDashboardVisualisationRoute';
 export { FetchHierarchyEntitiesRoute } from './FetchHierarchyEntitiesRoute';
 export { FetchReportPreviewDataRoute } from './FetchReportPreviewDataRoute';
+export { ImportDashboardVisualisationRoute } from './ImportDashboardVisualisationRoute';
 export { SaveDashboardVisualisationRoute } from './SaveDashboardVisualisationRoute';
-export { FetchDashboardVisualisationRoute } from './FetchDashboardVisualisationRoute';
+export { UploadTestDataRoute } from './UploadTestDataRoute';

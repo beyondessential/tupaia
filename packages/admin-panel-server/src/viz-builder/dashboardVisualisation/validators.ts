@@ -7,68 +7,57 @@ import { yup } from '@tupaia/utils';
 
 import { VisualisationValidator, DashboardVisualisationObject } from '../types';
 
-export class DraftReportValidator implements VisualisationValidator {
-  validationSchema: yup.ObjectSchema;
+const dataSourceSchema = (sourceType: 'dataElement' | 'dataGroup') => {
+  const otherSourceKey = sourceType === 'dataElement' ? 'dataGroups' : 'dataElements';
 
-  constructor() {
-    this.validationSchema = yup.object().shape({
-      code: yup.string().required('Requires "code" for the visualisation'),
-      data: yup.object().shape(
-        {
-          dataElements: yup
-            .array()
-            .of(yup.string())
-            .when('dataGroups', {
-              // dataGroups is required if there are no dataElements
-              is: (dataGroups: string[]) => !dataGroups || dataGroups.length === 0,
-              then: yup
-                .array()
-                .of(yup.string())
-                .required('Requires "dataGroups" or "dataElements"')
-                .min(1),
-              otherwise: yup.array().of(yup.string()),
-            }),
-          dataGroups: yup
-            .array()
-            .of(yup.string())
-            .when('dataElements', {
-              // dataElements is required if there are no dataGroups
-              is: (dataElements: string[]) => !dataElements || dataElements.length === 0,
-              then: yup
-                .array()
-                .of(yup.string())
-                .required('Requires "dataGroups" or "dataElements"')
-                .min(1),
-              otherwise: yup.array().of(yup.string()),
-            }),
-          aggregations: yup.array(),
-          transform: yup.array(),
-        },
-        ['dataElements', 'dataGroups'],
-      ),
+  return yup
+    .array()
+    .of(yup.string())
+    .when(['$testData', otherSourceKey], {
+      is: ($testData: unknown, otherDataSource: string[]) =>
+        !$testData && (!otherDataSource || otherDataSource.length === 0),
+      then: yup.array().of(yup.string()).required('Requires "dataGroups" or "dataElements"').min(1),
+      otherwise: yup.array().of(yup.string()),
     });
-  }
+};
+
+const draftReportSchema = yup.object().shape({
+  code: yup.string().required('Requires "code" for the visualisation'),
+  data: yup.object().shape(
+    {
+      dataElements: dataSourceSchema('dataElement'),
+      dataGroups: dataSourceSchema('dataGroup'),
+      aggregations: yup.array(),
+      transform: yup.array(),
+    },
+    ['dataElements', 'dataGroups'],
+  ),
+});
+
+const draftDashboardItemSchema = yup.object().shape({
+  code: yup.string().required('Requires "code" for the visualisation'),
+  presentation: yup.object().shape({
+    type: yup.string().required('Requires "type" in chart config'),
+    config: yup.object(),
+    output: yup.object(),
+  }),
+});
+
+export class DraftReportValidator implements VisualisationValidator {
+  // eslint-disable-next-line react/static-property-placement
+  private context: Record<string, unknown> = {};
+
+  setContext = (context: Record<string, unknown>) => {
+    this.context = context;
+  };
 
   validate(visualisation: DashboardVisualisationObject) {
-    this.validationSchema.validateSync(visualisation);
+    draftReportSchema.validateSync(visualisation, { context: this.context });
   }
 }
 
 export class DraftDashboardItemValidator implements VisualisationValidator {
-  validationSchema: yup.ObjectSchema;
-
-  constructor() {
-    this.validationSchema = yup.object().shape({
-      code: yup.string().required('Requires "code" for the visualisation'),
-      presentation: yup.object().shape({
-        type: yup.string().required('Requires "type" in chart config'),
-        config: yup.object(),
-        output: yup.object(),
-      }),
-    });
-  }
-
   validate(visualisation: DashboardVisualisationObject) {
-    this.validationSchema.validateSync(visualisation);
+    draftDashboardItemSchema.validateSync(visualisation);
   }
 }

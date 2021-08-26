@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Prompt, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useBeforeunload } from 'react-beforeunload';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
@@ -14,6 +14,7 @@ import { FlexColumn, SmallAlert } from '@tupaia/ui-components';
 import { useVizBuilderConfig } from '../vizBuilderConfigStore';
 import { useDashboardVisualisation } from '../api';
 import { Toolbar, Panel, PreviewSection, PreviewOptions } from '../components';
+import { PreviewDataProvider } from '../context';
 
 const Container = styled(MuiContainer)`
   flex: 1;
@@ -42,7 +43,6 @@ export const Main = () => {
   const fetchExistingVizEnabled = visualisationId !== undefined;
 
   const [_, { setVisualisation }] = useVizBuilderConfig();
-  const [enabled, setEnabled] = useState(false);
   const [visualisationLoaded, setVisualisationLoaded] = useState(false);
   const { data = {}, error } = useDashboardVisualisation(visualisationId, fetchExistingVizEnabled);
   const { visualisation } = data;
@@ -76,11 +76,13 @@ export const Main = () => {
     <>
       <Toolbar />
       <Container maxWidth="xl">
-        <Panel setEnabled={setEnabled} />
-        <RightCol>
-          <PreviewOptions />
-          <PreviewSection enabled={enabled} setEnabled={setEnabled} />
-        </RightCol>
+        <PreviewDataProvider>
+          <Panel />
+          <RightCol>
+            <PreviewOptions />
+            <PreviewSection />
+          </RightCol>
+        </PreviewDataProvider>
       </Container>
     </>
   );
