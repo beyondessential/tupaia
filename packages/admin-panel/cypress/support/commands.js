@@ -13,16 +13,12 @@ Cypress.Commands.add('login', ({ email, password }) => {
   cy.findByText('Login to your account').click();
 });
 
-/*
- *   ----------------SURVEY COMMANDS ----------------------
- */
-
 Cypress.Commands.add('selectIntoTextBox', (labelText, inputText) => {
-  cy.findByLabelText(labelText).type(inputText).type('{downarrow}').type('{enter}');
+  cy.findByLabelText(lableText).type(inputText).type('{downarrow}').type('{enter}');
 });
 
 Cypress.Commands.add('selectDropDownValue', (labelText, currentValue, valueToBeSelected) => {
-  cy.contains(labelText).parent().contains(currentValue).click();
+  cy.contains(lableText).parent().contains(currentValue).click();
   cy.contains(valueToBeSelected).click();
 });
 
