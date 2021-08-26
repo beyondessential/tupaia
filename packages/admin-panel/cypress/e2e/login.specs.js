@@ -7,10 +7,7 @@ import { requireCyEnv } from '@tupaia/utils';
 
 describe('login as a super user user', () => {
   before(() => {
-    cy.login({
-      email: requireCyEnv('CYPRESS_TEST_USER_EMAIL'),
-      password: requireCyEnv('CYPRESS_TEST_USER_PASSWORD'),
-    });
+    loginAsSuperUser()
   });
 
   it('Loads the surveys page after login', () => {
