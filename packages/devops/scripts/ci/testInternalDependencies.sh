@@ -6,14 +6,7 @@ for PACKAGE in $(${DIR}/../../../../scripts/bash/getInternalDependencies.sh); do
         continue
     fi
     echo Testing ${PACKAGE}
-    if [ "$PACKAGE" = "api-client" ]; then
-      if ! yarn workspace @beyondessential/tupaia-api-client test; then
-          exit 1 # the tests for this internal depencency failed
-      fi
-    else
-      if ! yarn workspace @tupaia/${PACKAGE} test; then
-          exit 1 # the tests for this internal depencency failed
-      fi
+    if ! yarn workspace @tupaia/${PACKAGE} test; then
+        exit 1 # the tests for this internal depencency failed
     fi
-
 done
