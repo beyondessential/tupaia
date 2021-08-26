@@ -47,6 +47,10 @@
             - name: test-web-frontend
               command: './packages/devops/scripts/ci/testFrontend.sh web-frontend'
 
+- name: check-for-deployment
+  service: deployment
+  command: './packages/devops/scripts/ci/checkDeploymentExists.sh'
+
 - type: serial
   name: pull latest into ec2
   service: deployment
@@ -86,10 +90,6 @@
     # run migrations immediately after backend deployment has finished so there is minimal time for code/db mismatch
     - name: run db migrations
       command: './packages/devops/scripts/ci/runMigrations.sh'
-
-- name: check-for-deployment
-  service: deployment
-  command: './packages/devops/scripts/ci/checkDeploymentExists.sh'
 
 - type: serial
   name: build-and-deploy-frontends
