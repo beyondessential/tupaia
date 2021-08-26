@@ -24,6 +24,7 @@ const STATUS = {
   IDLE: 'idle',
   LOADING: 'loading',
   TIMEOUT: 'timeout',
+  SUCCESS: 'success',
   ERROR: 'error',
 };
 
@@ -40,6 +41,7 @@ export const ImportModalComponent = React.memo(
     changeError,
   }) => {
     const [status, setStatus] = useState(STATUS.IDLE);
+    const [finishedMessage, setFinishedMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [values, setValues] = useState({});
@@ -89,8 +91,12 @@ export const ImportModalComponent = React.memo(
         });
         if (response.emailTimeoutHit) {
           setStatus(STATUS.TIMEOUT);
+          setFinishedMessage(
+            'Import is taking a while, and will continue in the background. You will be emailed when the import process completes.',
+          );
         } else {
-          handleClose();
+          setStatus(STATUS.SUCCESS);
+          setFinishedMessage('Your import has been successfully processed.');
         }
         changeSuccess();
       } catch (error) {
@@ -119,6 +125,7 @@ export const ImportModalComponent = React.memo(
     const renderButtons = useCallback(() => {
       switch (status) {
         case STATUS.TIMEOUT:
+        case STATUS.SUCCESS:
           return <Button onClick={handleClose}>Done</Button>;
         case STATUS.ERROR:
           return (
@@ -157,11 +164,8 @@ export const ImportModalComponent = React.memo(
               errorMessage={fileErrorMessage}
               isLoading={status === STATUS.LOADING}
             >
-              {status === STATUS.TIMEOUT ? (
-                <p>
-                  Import is taking a while, and will continue in the background. You will be emailed
-                  when the import process completes.
-                </p>
+              {finishedMessage ? (
+                <p>{finishedMessage}</p>
               ) : (
                 <>
                   <p>{subtitle}</p>
