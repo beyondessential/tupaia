@@ -7,7 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
-const FIELDS = [
+const EDIT_FIELDS = [
   {
     Header: 'Code',
     source: 'code',
@@ -21,6 +21,15 @@ const FIELDS = [
   },
 ];
 
+const FIELDS = [
+  {
+    Header: 'ID',
+    source: 'id',
+    type: 'tooltip',
+  },
+  ...EDIT_FIELDS,
+];
+
 const COLUMNS = [
   ...FIELDS,
   {
@@ -29,7 +38,7 @@ const COLUMNS = [
     source: 'id',
     actionConfig: {
       editEndpoint: 'mapOverlayGroups',
-      fields: [...FIELDS],
+      fields: EDIT_FIELDS,
     },
   },
 ];

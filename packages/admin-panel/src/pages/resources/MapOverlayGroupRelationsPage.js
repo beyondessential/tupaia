@@ -29,6 +29,7 @@ const FIELDS = [
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'mapOverlay.id',
       optionValueKey: 'mapOverlay.id',
+      canCreateNewOptions: true,
       sourceKey: 'child_id',
     },
   },
