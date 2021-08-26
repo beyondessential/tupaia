@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.3
--- Dumped by pg_dump version 11.3
+-- Dumped from database version 10.17 (Ubuntu 10.17-1.pgdg18.04+1)
+-- Dumped by pg_dump version 10.17 (Ubuntu 10.17-1.pgdg18.04+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -15,6 +15,20 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
 
 --
 -- Name: postgis; Type: EXTENSION; Schema: -; Owner: -
@@ -84,7 +98,24 @@ CREATE TYPE public.entity_type AS ENUM (
     'sub_catchment',
     'field_station',
     'city',
-    'individual'
+    'individual',
+    'sub_facility',
+    'postcode',
+    'household',
+    'larval_habitat'
+);
+
+
+--
+-- Name: period_granularity; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.period_granularity AS ENUM (
+    'yearly',
+    'quarterly',
+    'monthly',
+    'weekly',
+    'daily'
 );
 
 
@@ -96,7 +127,18 @@ CREATE TYPE public.service_type AS ENUM (
     'dhis',
     'tupaia',
     'indicator',
-    'weather'
+    'weather',
+    'kobo'
+);
+
+
+--
+-- Name: value_and_date; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.value_and_date AS (
+	value text,
+	date timestamp without time zone
 );
 
 
@@ -109,6 +151,328 @@ CREATE TYPE public.verified_email AS ENUM (
     'new_user',
     'verified'
 );
+
+
+--
+-- Name: build_analytics_table(boolean); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.build_analytics_table(force boolean DEFAULT false) RETURNS void
+    LANGUAGE plpgsql
+    AS $_X$
+    declare
+      tStartTime TIMESTAMP;
+      source_table TEXT;
+      source_tables_array TEXT[] := array['answer', 'survey_response', 'entity', 'survey', 'question', 'data_source'];
+      pSqlStatement TEXT := '
+        SELECT
+          entity.code as entity_code,
+          entity.name as entity_name,
+          question.code as data_element_code,
+          survey.code as data_group_code,
+          survey_response.id as event_id,
+          answer.text as value,
+          question.type as type,
+          to_char(survey_response.data_time, ''YYYYMMDD'') as "day_period",
+          concat(extract (year from survey_response.data_time), ''W'', to_char(extract (week from survey_response.data_time), ''FM09'')) as "week_period",
+          to_char(survey_response.data_time, ''YYYYMM'') as "month_period",
+          to_char(survey_response.data_time, ''YYYY'') as "year_period",
+          survey_response.data_time as "date"
+        FROM
+          survey_response
+        INNER JOIN
+          answer ON answer.survey_response_id = survey_response.id
+        INNER JOIN
+          entity ON entity.id = survey_response.entity_id
+        INNER JOIN
+          survey ON survey.id = survey_response.survey_id
+        INNER JOIN
+          question ON question.id = answer.question_id
+        INNER JOIN
+          data_source ON data_source.id = question.data_source_id
+        WHERE data_source.service_type = ''tupaia'' AND survey_response.outdated IS FALSE';
+    
+    begin
+      RAISE NOTICE 'Creating Materialized View Logs...';
+    
+      FOREACH source_table IN ARRAY source_tables_array LOOP
+        IF (SELECT NOT EXISTS (
+          SELECT FROM pg_tables
+          WHERE schemaname = 'public'
+          AND tablename   = 'log$_' || source_table
+        ))
+        THEN
+          EXECUTE 'ALTER TABLE ' || source_table || ' DISABLE TRIGGER ' || source_table || '_trigger';
+          tStartTime := clock_timestamp();
+          PERFORM mv$createMaterializedViewlog(source_table, 'public');
+          RAISE NOTICE 'Created Materialized View Log for % table, took %', source_table, clock_timestamp() - tStartTime;
+          EXECUTE 'ALTER TABLE ' || source_table || ' ENABLE TRIGGER ' || source_table || '_trigger';
+        ELSE
+          RAISE NOTICE 'Materialized View Log for % table already exists, skipping', source_table;
+        END IF;
+      END LOOP;
+    
+    
+      RAISE NOTICE 'Creating analytics materialized view...';
+      IF (SELECT NOT EXISTS (
+        SELECT FROM pg_tables
+        WHERE schemaname = 'public'
+        AND tablename   = 'analytics'
+      ))
+      THEN
+        tStartTime := clock_timestamp();
+        PERFORM mv$createMaterializedView(
+            pViewName           => 'analytics',
+            pSelectStatement    =>  pSqlStatement,
+            pOwner              => 'public',
+            pFastRefresh        =>  TRUE
+        );
+        RAISE NOTICE 'Created analytics table, took %', clock_timestamp() - tStartTime;
+      ELSE
+        IF (force)
+        THEN
+        RAISE NOTICE 'Force rebuilding analytics table';
+          tStartTime := clock_timestamp();
+          PERFORM mv$createMaterializedView(
+              pViewName           => 'analytics_tmp',
+              pSelectStatement    =>  pSqlStatement,
+              pOwner              => 'public',
+              pFastRefresh        =>  TRUE
+          );
+          RAISE NOTICE 'Created analytics table, took %', clock_timestamp() - tStartTime;
+          PERFORM mv$removeMaterializedView('analytics', 'public');
+          PERFORM mv$renameMaterializedView('analytics_tmp', 'analytics', 'public');
+        ELSE
+          RAISE NOTICE 'Analytics Materialized View already exists, skipping';
+        END IF;
+      END IF;
+    end $_X$;
+
+
+--
+-- Name: create_analytics_table_indexes(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.create_analytics_table_indexes() RETURNS void
+    LANGUAGE plpgsql
+    AS $_$ 
+      declare
+        tStartTime TIMESTAMP;
+        tAnalyticsIndexName TEXT := 'analytics_data_element_entity_date_idx';
+        tEventsIndexName TEXT := 'analytics_data_group_entity_event_date_idx';
+      
+      begin
+        RAISE NOTICE 'Creating analytics table indexes...';
+        
+        IF (SELECT count(*) = 0
+          FROM pg_class c
+          WHERE c.relname = tAnalyticsIndexName 
+          AND c.relkind = 'i')
+        THEN
+          tStartTime := clock_timestamp();
+          PERFORM mv$addIndexToMv$Table(mv$buildAllConstants(), 'public', 'analytics', tAnalyticsIndexName, 'data_element_code, entity_code, date desc');
+          RAISE NOTICE 'Created analytics index, took %', clock_timestamp() - tStartTime;
+        ELSE
+          RAISE NOTICE 'Analytics index already exists, skipping';
+        END IF;
+      
+        IF (SELECT count(*) = 0
+          FROM pg_class c
+          WHERE c.relname = tEventsIndexName 
+          AND c.relkind = 'i')
+        THEN
+          tStartTime := clock_timestamp();
+          PERFORM mv$addIndexToMv$Table(mv$buildAllConstants(), 'public', 'analytics', tEventsIndexName, 'data_group_code, entity_code, event_id, date desc');
+          RAISE NOTICE 'Created events index, took %', clock_timestamp() - tStartTime;
+        ELSE
+          RAISE NOTICE 'Events index already exists, skipping';
+        END IF;
+      
+      end $_$;
+
+
+--
+-- Name: create_user_and_role(text, text); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.create_user_and_role(pis_password text, pis_moduleowner text) RETURNS void
+    LANGUAGE plpgsql
+    AS $_X$
+DECLARE
+
+ls_password TEXT := pis_password;
+
+ls_moduleowner TEXT := pis_moduleowner;
+
+ls_sql TEXT;
+
+BEGIN
+ IF NOT EXISTS (
+      SELECT
+      FROM   pg_user
+      WHERE  usename = pis_moduleowner) THEN
+	  
+	  ls_sql := 'CREATE USER '||ls_moduleowner||' WITH
+					LOGIN
+					NOSUPERUSER
+					NOCREATEDB
+					NOCREATEROLE
+					INHERIT
+					NOREPLICATION
+					CONNECTION LIMIT -1
+					PASSWORD '''||pis_password||''';';
+				
+	  EXECUTE ls_sql;
+	  
+   END IF;
+   
+   IF NOT EXISTS (
+      SELECT
+      FROM   pg_roles
+      WHERE  rolname = 'pgmv$_role') THEN
+	  
+	  ls_sql := 'CREATE ROLE pgmv$_role WITH
+				  NOLOGIN
+				  NOSUPERUSER
+				  INHERIT
+				  NOCREATEDB
+				  NOCREATEROLE
+				  NOREPLICATION;';
+				
+	  EXECUTE ls_sql;
+	  
+   END IF;
+   
+   IF NOT EXISTS (
+      SELECT
+      FROM   pg_roles
+      WHERE  rolname = 'rds_superuser') THEN
+	  
+	  ls_sql := 'ALTER USER '||pis_moduleowner||' with superuser;';
+				
+	  EXECUTE ls_sql;
+	  
+   ELSE
+	
+	  ls_sql := 'GRANT rds_superuser TO '||pis_moduleowner||';';
+	  
+	  EXECUTE ls_sql;
+	  
+   END IF;
+
+END;
+$_X$;
+
+
+--
+-- Name: drop_analytics_log_tables(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.drop_analytics_log_tables() RETURNS void
+    LANGUAGE plpgsql
+    AS $_X$
+    declare
+      tStartTime TIMESTAMP;
+      source_table TEXT;
+      source_tables_array TEXT[] := array['answer', 'survey_response', 'entity', 'survey', 'question', 'data_source'];
+    
+    begin
+      IF (SELECT EXISTS (
+        SELECT FROM pg_tables
+        WHERE schemaname = 'public'
+        AND tablename   = 'analytics'
+      ))
+      THEN
+        RAISE NOTICE 'Must drop analytics table before dropping log tables. Run drop_analytics_table()';
+      ELSE
+        RAISE NOTICE 'Dropping Materialized View Logs...';
+        FOREACH source_table IN ARRAY source_tables_array LOOP
+          IF (SELECT EXISTS (
+            SELECT FROM pg_tables
+            WHERE schemaname = 'public'
+            AND tablename   = 'log$_' || source_table
+          ))
+          THEN
+            EXECUTE 'ALTER TABLE ' || source_table || ' DISABLE TRIGGER ' || source_table || '_trigger';
+            tStartTime := clock_timestamp();
+            PERFORM mv$removeMaterializedViewLog(source_table, 'public');
+            RAISE NOTICE 'Dropped Materialized View Log for % table, took %', source_table, clock_timestamp() - tStartTime;
+            EXECUTE 'ALTER TABLE ' || source_table || ' ENABLE TRIGGER ' || source_table || '_trigger';
+          ELSE
+            RAISE NOTICE 'Materialized View Log for % table does not exist, skipping', source_table;
+          END IF;
+        END LOOP;
+      END IF;
+    end $_X$;
+
+
+--
+-- Name: drop_analytics_table(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.drop_analytics_table() RETURNS void
+    LANGUAGE plpgsql
+    AS $_$
+    declare
+      tStartTime TIMESTAMP;
+    
+    begin
+      RAISE NOTICE 'Dropping analytics materialized view...';
+      IF (SELECT EXISTS (
+        SELECT FROM pg_tables
+        WHERE schemaname = 'public'
+        AND tablename   = 'analytics'
+      ))
+      THEN
+        tStartTime := clock_timestamp();
+        PERFORM mv$removeMaterializedView('analytics', 'public');
+        RAISE NOTICE 'Dropped analytics table, took %', clock_timestamp() - tStartTime;
+      ELSE
+        RAISE NOTICE 'Analytics Materialized View does not exist, skipping';
+      END IF;
+    end $_$;
+
+
+--
+-- Name: drop_analytics_table_indexes(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.drop_analytics_table_indexes() RETURNS void
+    LANGUAGE plpgsql
+    AS $_$
+      declare
+        tStartTime TIMESTAMP;
+        tAnalyticsIndexName TEXT := 'analytics_data_element_entity_date_idx';
+        tEventsIndexName TEXT := 'analytics_data_group_entity_event_date_idx';
+      
+      begin
+        RAISE NOTICE 'Dropping analytics table indexes...';
+      
+        IF (SELECT count(*) > 0
+          FROM pg_class c
+          WHERE c.relname = tAnalyticsIndexName 
+          AND c.relkind = 'i')
+        THEN
+          tStartTime := clock_timestamp();
+          PERFORM mv$removeIndexFromMv$Table(mv$buildAllConstants(), tAnalyticsIndexName);
+          RAISE NOTICE 'Dropped analytics index, took %', clock_timestamp() - tStartTime;
+        ELSE
+          RAISE NOTICE 'Analytics index doesn''t exist, skipping';
+        END IF;
+      
+        IF (SELECT count(*) > 0
+          FROM pg_class c
+          WHERE c.relname = tEventsIndexName 
+          AND c.relkind = 'i')
+        THEN
+          tStartTime := clock_timestamp();
+          PERFORM mv$removeIndexFromMv$Table(mv$buildAllConstants(), tEventsIndexName);
+          RAISE NOTICE 'Dropped events index, took %', clock_timestamp() - tStartTime;
+        ELSE
+          RAISE NOTICE 'Events index doesn''t exist, skipping';
+        END IF;
+      
+      end $_$;
 
 
 --
@@ -150,6 +514,32 @@ CREATE FUNCTION public.immutable_table() RETURNS trigger
         END IF;
       END
     $$;
+
+
+--
+-- Name: most_recent_final_fn(public.value_and_date); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.most_recent_final_fn(public.value_and_date) RETURNS text
+    LANGUAGE sql
+    AS $_$
+      SELECT $1.value;
+  $_$;
+
+
+--
+-- Name: most_recent_fn(public.value_and_date, text, timestamp without time zone); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.most_recent_fn(public.value_and_date, text, timestamp without time zone) RETURNS public.value_and_date
+    LANGUAGE sql
+    AS $_$
+    SELECT 
+      case
+        when $3 > $1.date then ($2, $3)::value_and_date 
+        else $1
+      end
+  $_$;
 
 
 --
@@ -279,6 +669,18 @@ CREATE FUNCTION public.update_change_time() RETURNS trigger
     $$;
 
 
+--
+-- Name: most_recent(text, timestamp without time zone); Type: AGGREGATE; Schema: public; Owner: -
+--
+
+CREATE AGGREGATE public.most_recent(text, timestamp without time zone) (
+    SFUNC = public.most_recent_fn,
+    STYPE = public.value_and_date,
+    INITCOND = '(NULL,-infinity)',
+    FINALFUNC = public.most_recent_final_fn
+);
+
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;
@@ -299,6 +701,20 @@ CREATE TABLE public.access_request (
     processed_by text,
     note text,
     processed_date timestamp with time zone
+);
+
+
+--
+-- Name: admin_panel_session; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.admin_panel_session (
+    id text NOT NULL,
+    email text NOT NULL,
+    access_policy jsonb NOT NULL,
+    access_token text NOT NULL,
+    access_token_expiry bigint NOT NULL,
+    refresh_token text NOT NULL
 );
 
 
@@ -410,51 +826,46 @@ CREATE TABLE public.country (
 
 
 --
--- Name: dashboardGroup; Type: TABLE; Schema: public; Owner: -
+-- Name: dashboard; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public."dashboardGroup" (
-    id integer NOT NULL,
-    "organisationLevel" text NOT NULL,
-    "userGroup" text NOT NULL,
-    "organisationUnitCode" text NOT NULL,
-    "dashboardReports" text[] DEFAULT '{}'::text[] NOT NULL,
+CREATE TABLE public.dashboard (
+    id text NOT NULL,
+    code text NOT NULL,
     name text NOT NULL,
-    code text,
-    "projectCodes" text[] DEFAULT '{}'::text[]
+    root_entity_code text NOT NULL,
+    sort_order integer
 );
 
 
 --
--- Name: dashboardGroup_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: dashboard_item; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public."dashboardGroup_id_seq"
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: dashboardGroup_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public."dashboardGroup_id_seq" OWNED BY public."dashboardGroup".id;
-
-
---
--- Name: dashboardReport; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public."dashboardReport" (
+CREATE TABLE public.dashboard_item (
     id text NOT NULL,
-    "drillDownLevel" integer,
-    "dataBuilder" text,
-    "dataBuilderConfig" jsonb,
-    "viewJson" jsonb,
-    "dataServices" jsonb DEFAULT '[{"isDataRegional": true}]'::jsonb
+    code text NOT NULL,
+    config jsonb DEFAULT '{}'::jsonb NOT NULL,
+    report_code text,
+    legacy boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: dashboard_relation; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.dashboard_relation (
+    id text NOT NULL,
+    dashboard_id text NOT NULL,
+    child_id text NOT NULL,
+    entity_types public.entity_type[] NOT NULL,
+    project_codes text[] NOT NULL,
+    permission_groups text[] NOT NULL,
+    sort_order integer,
+    CONSTRAINT entity_types_not_empty CHECK ((entity_types <> '{}'::public.entity_type[])),
+    CONSTRAINT permission_groups_not_empty CHECK ((permission_groups <> '{}'::text[])),
+    CONSTRAINT project_codes_not_empty CHECK ((project_codes <> '{}'::text[]))
 );
 
 
@@ -466,6 +877,29 @@ CREATE TABLE public.data_element_data_group (
     id text NOT NULL,
     data_element_id text NOT NULL,
     data_group_id text NOT NULL
+);
+
+
+--
+-- Name: data_service_entity; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.data_service_entity (
+    id text NOT NULL,
+    entity_code text NOT NULL,
+    config jsonb NOT NULL
+);
+
+
+--
+-- Name: data_service_sync_group; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.data_service_sync_group (
+    id text NOT NULL,
+    code text NOT NULL,
+    service_type public.service_type NOT NULL,
+    config jsonb NOT NULL
 );
 
 
@@ -641,6 +1075,33 @@ CREATE TABLE public.indicator (
     code text NOT NULL,
     builder text NOT NULL,
     config jsonb DEFAULT '{}'::jsonb NOT NULL
+);
+
+
+--
+-- Name: legacy_report; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.legacy_report (
+    id text NOT NULL,
+    code text NOT NULL,
+    data_builder text,
+    data_builder_config jsonb,
+    data_services jsonb DEFAULT '[{"isDataRegional": true}]'::jsonb
+);
+
+
+--
+-- Name: lesmis_session; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.lesmis_session (
+    id text NOT NULL,
+    email text NOT NULL,
+    access_policy jsonb NOT NULL,
+    access_token text NOT NULL,
+    access_token_expiry bigint NOT NULL,
+    refresh_token text NOT NULL
 );
 
 
@@ -893,7 +1354,7 @@ CREATE TABLE public.question (
     option_set_id character varying,
     hook text,
     data_source_id text,
-    CONSTRAINT data_source_id_not_null_on_conditions CHECK (((type = ANY (ARRAY['Instruction'::text, 'PrimaryEntity'::text, 'SubmissionDate'::text])) OR (data_source_id IS NOT NULL)))
+    CONSTRAINT data_source_id_not_null_on_conditions CHECK (((type = ANY (ARRAY['DateOfData'::text, 'Instruction'::text, 'PrimaryEntity'::text, 'SubmissionDate'::text])) OR (data_source_id IS NOT NULL)))
 );
 
 
@@ -947,7 +1408,8 @@ CREATE TABLE public.survey (
     can_repeat boolean DEFAULT false,
     survey_group_id text,
     integration_metadata jsonb DEFAULT '{}'::jsonb,
-    data_source_id text NOT NULL
+    data_source_id text NOT NULL,
+    period_granularity public.period_granularity
 );
 
 
@@ -973,9 +1435,10 @@ CREATE TABLE public.survey_response (
     start_time timestamp with time zone NOT NULL,
     end_time timestamp with time zone NOT NULL,
     metadata text,
-    submission_time timestamp with time zone,
     timezone text DEFAULT 'Pacific/Auckland'::text,
-    entity_id text NOT NULL
+    entity_id text NOT NULL,
+    data_time timestamp without time zone,
+    outdated boolean DEFAULT false
 );
 
 
@@ -1021,6 +1484,32 @@ CREATE TABLE public.survey_screen_component (
 
 
 --
+-- Name: sync_service; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.sync_service (
+    id text NOT NULL,
+    code text NOT NULL,
+    service_type public.service_type NOT NULL,
+    sync_cursor text NOT NULL,
+    config jsonb NOT NULL
+);
+
+
+--
+-- Name: sync_service_log; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.sync_service_log (
+    id text NOT NULL,
+    service_code text NOT NULL,
+    service_type public.service_type NOT NULL,
+    log_message text NOT NULL,
+    "timestamp" timestamp without time zone DEFAULT timezone('UTC'::text, now())
+);
+
+
+--
 -- Name: userSession; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1029,7 +1518,8 @@ CREATE TABLE public."userSession" (
     "userName" text NOT NULL,
     "accessToken" text,
     "refreshToken" text NOT NULL,
-    "accessPolicy" jsonb
+    "accessPolicy" jsonb,
+    access_token_expiry bigint DEFAULT 0 NOT NULL
 );
 
 
@@ -1067,28 +1557,6 @@ CREATE TABLE public.user_entity_permission (
 
 
 --
--- Name: user_reward; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.user_reward (
-    id text NOT NULL,
-    user_id text,
-    coconuts bigint DEFAULT 0 NOT NULL,
-    pigs bigint DEFAULT 0 NOT NULL,
-    type character varying,
-    record_id character varying,
-    creation_date timestamp without time zone DEFAULT now()
-);
-
-
---
--- Name: dashboardGroup id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."dashboardGroup" ALTER COLUMN id SET DEFAULT nextval('public."dashboardGroup_id_seq"'::regclass);
-
-
---
 -- Name: migrations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1101,6 +1569,14 @@ ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.m
 
 ALTER TABLE ONLY public.access_request
     ADD CONSTRAINT access_request_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: admin_panel_session admin_panel_session_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.admin_panel_session
+    ADD CONSTRAINT admin_panel_session_pkey PRIMARY KEY (id);
 
 
 --
@@ -1200,19 +1676,43 @@ ALTER TABLE ONLY public.country
 
 
 --
--- Name: dashboardGroup dashboardGroup_code_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: dashboard dashboard_code_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public."dashboardGroup"
-    ADD CONSTRAINT "dashboardGroup_code_key" UNIQUE (code);
+ALTER TABLE ONLY public.dashboard
+    ADD CONSTRAINT dashboard_code_key UNIQUE (code);
 
 
 --
--- Name: dashboardGroup dashboardGroup_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: dashboard_item dashboard_item_code_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public."dashboardGroup"
-    ADD CONSTRAINT "dashboardGroup_pkey" PRIMARY KEY (id);
+ALTER TABLE ONLY public.dashboard_item
+    ADD CONSTRAINT dashboard_item_code_key UNIQUE (code);
+
+
+--
+-- Name: dashboard_item dashboard_item_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dashboard_item
+    ADD CONSTRAINT dashboard_item_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: dashboard dashboard_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dashboard
+    ADD CONSTRAINT dashboard_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: dashboard_relation dashboard_relation_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dashboard_relation
+    ADD CONSTRAINT dashboard_relation_pkey PRIMARY KEY (id);
 
 
 --
@@ -1229,6 +1729,38 @@ ALTER TABLE ONLY public.data_element_data_group
 
 ALTER TABLE ONLY public.data_element_data_group
     ADD CONSTRAINT data_element_data_group_unique UNIQUE (data_element_id, data_group_id);
+
+
+--
+-- Name: data_service_entity data_service_entity_entity_code_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_service_entity
+    ADD CONSTRAINT data_service_entity_entity_code_key UNIQUE (entity_code);
+
+
+--
+-- Name: data_service_entity data_service_entity_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_service_entity
+    ADD CONSTRAINT data_service_entity_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: data_service_sync_group data_service_sync_group_code_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_service_sync_group
+    ADD CONSTRAINT data_service_sync_group_code_key UNIQUE (code);
+
+
+--
+-- Name: data_service_sync_group data_service_sync_group_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_service_sync_group
+    ADD CONSTRAINT data_service_sync_group_pkey PRIMARY KEY (id);
 
 
 --
@@ -1389,6 +1921,30 @@ ALTER TABLE ONLY public.indicator
 
 ALTER TABLE ONLY public.meditrak_device
     ADD CONSTRAINT install_id_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: legacy_report legacy_report_code_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.legacy_report
+    ADD CONSTRAINT legacy_report_code_key UNIQUE (code);
+
+
+--
+-- Name: legacy_report legacy_report_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.legacy_report
+    ADD CONSTRAINT legacy_report_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: lesmis_session lesmis_session_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.lesmis_session
+    ADD CONSTRAINT lesmis_session_pkey PRIMARY KEY (id);
 
 
 --
@@ -1696,6 +2252,30 @@ ALTER TABLE ONLY public.survey_screen
 
 
 --
+-- Name: sync_service sync_service_code_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sync_service
+    ADD CONSTRAINT sync_service_code_key UNIQUE (code);
+
+
+--
+-- Name: sync_service_log sync_service_log_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sync_service_log
+    ADD CONSTRAINT sync_service_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sync_service sync_service_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sync_service
+    ADD CONSTRAINT sync_service_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: userSession userSession_id_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1733,22 +2313,6 @@ ALTER TABLE ONLY public.user_account
 
 ALTER TABLE ONLY public.user_entity_permission
     ADD CONSTRAINT user_entity_permission_pkey PRIMARY KEY (id);
-
-
---
--- Name: user_reward user_reward_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_reward
-    ADD CONSTRAINT user_reward_pkey PRIMARY KEY (id);
-
-
---
--- Name: user_reward user_reward_type_record_id_unique; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_reward
-    ADD CONSTRAINT user_reward_type_record_id_unique UNIQUE (type, record_id);
 
 
 --
@@ -2130,10 +2694,24 @@ CREATE TRIGGER country_trigger AFTER INSERT OR DELETE OR UPDATE ON public.countr
 
 
 --
--- Name: dashboardGroup dashboardgroup_trigger; Type: TRIGGER; Schema: public; Owner: -
+-- Name: dashboard_item dashboard_item_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER dashboardgroup_trigger AFTER INSERT OR DELETE OR UPDATE ON public."dashboardGroup" FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER dashboard_item_trigger AFTER INSERT OR DELETE OR UPDATE ON public.dashboard_item FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: dashboard_relation dashboard_relation_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER dashboard_relation_trigger AFTER INSERT OR DELETE OR UPDATE ON public.dashboard_relation FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: dashboard dashboard_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER dashboard_trigger AFTER INSERT OR DELETE OR UPDATE ON public.dashboard FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -2141,6 +2719,20 @@ CREATE TRIGGER dashboardgroup_trigger AFTER INSERT OR DELETE OR UPDATE ON public
 --
 
 CREATE TRIGGER data_element_data_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_element_data_group FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: data_service_entity data_service_entity_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER data_service_entity_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_service_entity FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: data_service_sync_group data_service_sync_group_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER data_service_sync_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_service_sync_group FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -2368,6 +2960,20 @@ CREATE TRIGGER survey_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey 
 
 
 --
+-- Name: sync_service_log sync_service_log_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER sync_service_log_trigger AFTER INSERT OR DELETE OR UPDATE ON public.sync_service_log FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: sync_service sync_service_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER sync_service_trigger AFTER INSERT OR DELETE OR UPDATE ON public.sync_service FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
 -- Name: user_account user_account_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -2379,13 +2985,6 @@ CREATE TRIGGER user_account_trigger AFTER INSERT OR DELETE OR UPDATE ON public.u
 --
 
 CREATE TRIGGER user_entity_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_entity_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
-
-
---
--- Name: user_reward user_reward_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER user_reward_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_reward FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -2506,6 +3105,30 @@ ALTER TABLE ONLY public.clinic
 
 ALTER TABLE ONLY public.comment
     ADD CONSTRAINT comment_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id);
+
+
+--
+-- Name: dashboard_relation dashboard_relation_child_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dashboard_relation
+    ADD CONSTRAINT dashboard_relation_child_id_fkey FOREIGN KEY (child_id) REFERENCES public.dashboard_item(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: dashboard_relation dashboard_relation_dashboard_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dashboard_relation
+    ADD CONSTRAINT dashboard_relation_dashboard_id_fkey FOREIGN KEY (dashboard_id) REFERENCES public.dashboard(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: dashboard dashboard_root_entity_code_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dashboard
+    ADD CONSTRAINT dashboard_root_entity_code_fkey FOREIGN KEY (root_entity_code) REFERENCES public.entity(code) ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 --
@@ -2821,11 +3444,11 @@ ALTER TABLE ONLY public.user_entity_permission
 
 
 --
--- Name: user_reward user_reward_user_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: -
 --
 
-ALTER TABLE ONLY public.user_reward
-    ADD CONSTRAINT user_reward_user_id_fk FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+GRANT ALL ON SCHEMA public TO tupaia;
 
 
 --
@@ -2837,14 +3460,6 @@ CREATE EVENT TRIGGER schema_change_trigger ON ddl_command_end
 
 
 --
--- Name: SCHEMA public; Type: ACL; Schema: -; Owner: -
---
-
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
-GRANT ALL ON SCHEMA public TO tupaia;
-
-
---
 -- PostgreSQL database dump complete
 --
 
@@ -2852,8 +3467,8 @@ GRANT ALL ON SCHEMA public TO tupaia;
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.3
--- Dumped by pg_dump version 11.3
+-- Dumped from database version 10.17 (Ubuntu 10.17-1.pgdg18.04+1)
+-- Dumped by pg_dump version 10.17 (Ubuntu 10.17-1.pgdg18.04+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -3975,13 +4590,285 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 1060	/20210216073210-AddFetpDashboardGradByDistrict-modifies-data	2021-02-25 23:10:53.005
 1061	/20210217053158-ChangeElementsServiceTypeToTupaia-modifies-data	2021-02-25 23:10:53.098
 1062	/20210224014424-AddConfigToProjects-modifies-schema	2021-02-25 23:10:53.351
-1063	/20201203010928-StockStatusForNonMsupplyContriesInFacilityLevel-modifies-data	2021-03-04 15:09:15.631
-1064	/20210211051517-RenameArithmeticIndicators-modifies-data	2021-03-04 15:09:15.832
-1065	/20210216015237-AddWeatherSourceToDashboardTitle-modifies-data	2021-03-04 15:09:16.349
-1066	/20210223002537-AddReferenceToMapOverlays-modifies-data	2021-03-04 15:09:16.567
-1067	/20210225033329-RemoveLaosOxygenConcentratorsProject-modifies-data	2021-03-04 15:09:35.867
-1068	/20210301123426-AddFetpDashboardsToSolomonIs-modifies-data	2021-03-04 15:09:35.974
-1069	/20210303020040-removeStriveMapOverlaysFromExplore-modifies-data	2021-03-04 15:09:36.101
+1063	/20201203010928-StockStatusForNonMsupplyContriesInFacilityLevel-modifies-data	2021-03-04 23:27:55.547
+1064	/20210211051517-RenameArithmeticIndicators-modifies-data	2021-03-04 23:27:55.651
+1065	/20210216015237-AddWeatherSourceToDashboardTitle-modifies-data	2021-03-04 23:27:56.037
+1066	/20210223002537-AddReferenceToMapOverlays-modifies-data	2021-03-04 23:27:56.374
+1067	/20210225033329-RemoveLaosOxygenConcentratorsProject-modifies-data	2021-03-04 23:28:06.076
+1068	/20210301123426-AddFetpDashboardsToSolomonIs-modifies-data	2021-03-04 23:28:06.27
+1069	/20210303020040-removeStriveMapOverlaysFromExplore-modifies-data	2021-03-04 23:28:06.321
+1070	/20210129024523-AddAyfsToStaffTrainedVisuals-modifies-data	2021-03-11 21:42:33.922
+1071	/20210202190359-ConvertRHS2UNFPA240ToBinaryQuestion-modifies-data	2021-03-11 21:42:39.357
+1072	/20210210011723-UpdateMedicinesAndConsumablesOverlaysFiji-modifies-data	2021-03-11 21:42:41.332
+1073	/20210214234630-AddDataDownloadNationalFETP-modifies-data	2021-03-11 21:42:41.566
+1074	/20210224210744-AddLesmisSessionTable-modifies-schema	2021-03-11 21:42:41.63
+1075	/20210302015338-FlipLegendColorFetpMapOverlay-modifies-data	2021-03-11 21:42:41.879
+1076	/20210304060352-UpdatePSSSWeeklyCasesIndicatorsSupportDailyData-modifies-data	2021-03-11 21:42:41.999
+1077	/20210311002222-AddDefaultValueForDailyCasesInPSSSWeeklyIndicators-modifies-data	2021-03-11 21:42:42.18
+1078	/20210121045801-AddTableDataServiceEntity-modifies-schema	2021-03-16 02:28:29.871
+1079	/20210201051217-SyncLaosEocEntitiesWithLaosSchools-modifies-data	2021-03-16 02:28:30.449
+1080	/20210205000427-AddLaosEocPocDashboard-modifies-data	2021-03-16 02:28:30.703
+1081	/20210205040848-AddLaosEocPocMapOverlayDengueCasesByWeek-modifies-data	2021-03-16 02:28:30.96
+1082	/20210208023411-RefactorLaosEocPocDataBuilder-modifies-data	2021-03-16 02:28:31.098
+1083	/20210211041322-AddSubFacilityEntityType-modifies-schema	2021-03-16 02:28:33.266
+1084	/20210212033659-AddMissingLaosGeographicalAreas-modifies-data	2021-03-16 02:28:35.158
+1085	/20210215023211-FixLaosEntityHierarchy-modifies-data	2021-03-16 02:28:35.346
+1086	/20210222124639-UpdateLaosEntitiesPushMetadata-modifies-data	2021-03-16 02:28:41.483
+1087	/20210222204800-UpdateEntityDhisIdToTrackEntityInstanceId-modifies-data	2021-03-16 02:28:45.189
+1088	/20210316013933-DeleteFijiEntities-modifies-data	2021-03-16 03:31:53.903
+1089	/20210305010124-AddMissingCasesToSyncQueue-modifies-data	2021-03-18 22:18:05.679
+1090	/20210309020032-MalariaMapOverlaysLaosEOC-modifies-data	2021-03-18 22:18:05.957
+1091	/20210309230008-MalariaDataSourceLaosEOC-modifies-data	2021-03-18 22:18:06.121
+1092	/20210310053755-DengueMapOverlaysLaosEOC-modifies-data	2021-03-18 22:18:06.329
+1093	/20210310053808-DengueDataSourceLaosEOC-modifies-data	2021-03-18 22:18:06.461
+1094	/20210311045832-AddLaosEOCMapOverlayGroup-modifies-data	2021-03-18 22:18:06.492
+1095	/20210312023820-AddMalariaCommoditiesIndicatorDataSources-modifies-data	2021-03-18 22:18:06.596
+1096	/20210312023908-AddLaosEOCMalariaDashboardGroups-modifies-data	2021-03-18 22:18:06.644
+1097	/20210312031441-AddLaosEOCMalariaCommoditiesTrafficLightTableDistrictLevel-modifies-data	2021-03-18 22:18:06.699
+1098	/20210312044245-AddLaosEOCMalariaCommoditiesTrafficLightTableFacilityLevel-modifies-data	2021-03-18 22:18:06.758
+1099	/20210312113926-AddLaosEOCMalariaStockAvailabilityByFacilityOverlay-modifies-data	2021-03-18 22:18:07.016
+1100	/20210312214059-UpdateLaosSchoolsFunctioningTVSateliteOverlayConfig-modifies-data	2021-03-18 22:18:07.119
+1101	/20210312385124-AddLaosEocMapOverlayMeaslesVaccineStockByFacility-modifies-data	2021-03-18 22:18:07.187
+1102	/20210314024746-AddLaosEOCMalariaCriticalItemAvailabilityOverTimeDashboard-modifies-data	2021-03-18 22:18:07.239
+1103	/20210314054551-AddLaosEOCMalariaCriticalItemAvailabilitySingleViewDashboard-modifies-data	2021-03-18 22:18:07.299
+1104	/20210315001552-AddDataSourceMeaslesDeathCasesLaosEOC-modifies-data	2021-03-18 22:18:07.401
+1105	/20210315001650-AddMapOverlayMeaslesDeathCasesLaosEOC-modifies-data	2021-03-18 22:18:07.521
+1106	/20210315092702-UpdateLaosEOCMapOverlayMeasureBuilder-modifies-data	2021-03-18 22:18:07.814
+1107	/20210317015957-HideNoDataInBubbleMapLaoEoc-modifies-data	2021-03-18 22:18:07.921
+1108	/20210317052741-MoveLonelyMapOverlay-modifies-data	2021-03-18 22:18:07.976
+1109	/20210317053313-UpdateLaosEOCMalariaStockAvailabilityByFacilityOverlay-modifies-data	2021-03-18 22:18:08.123
+1110	/20210317054627-AddDateSelectorForMeaslesVaccineStockAvailabilityByFacilityOverlay-modifies-data	2021-03-18 22:18:08.206
+1111	/20210323045613-LaosEocRemoveUnpermittedFacilities-modifies-data	2021-03-23 23:36:29.462
+1112	/20201201055113-AddCustomExportsDashboardGovernmentSurveysWishFiji-modifies-data	2021-04-01 00:46:42.177
+1113	/20201208073839-WishFijiGovSurveysAssociateToCatchments-modifies-data	2021-04-01 00:46:42.535
+1114	/20210112015125-AddHeatmapContactsConfirmedSuspectedCasesSCovidSamoa-modifies-data	2021-04-01 00:46:42.702
+1115	/20210219055420-SamoaHeatmapHomeVillageOfConfirmedCases-modifies-data	2021-04-01 00:46:42.899
+1116	/20210220030550-AddTongaHPUProvincialLevelDashboardGroup-modifies-data	2021-04-01 00:46:43.087
+1117	/20210220141021-AddTongaHPURateOfAtRiskNCDRiskFactorsInScreenedPopulationDashboard-modifies-data	2021-04-01 00:46:43.422
+1118	/20210324041508-AddSupplyChainFijiProject-modifies-data	2021-04-01 00:46:43.798
+1119	/20210324075314-AddEhealthNauruProject-modifies-data	2021-04-01 00:46:44.118
+1120	/20210325001804-AddCovidVaccineTrackingDashboardGroups-modifies-data	2021-04-01 00:46:44.194
+1121	/20210325014751-ChangeSupplyChainProjectBackgroundImage-modifies-data	2021-04-01 00:46:44.241
+1122	/20210325030144-VaccineDoseTakenByDayVaccineTracking-modifies-data	2021-04-01 00:46:44.699
+1123	/20210325041744-AddCovidVaccinatedBySex-modifies-data	2021-04-01 00:46:44.838
+1124	/20210325123857-ExcludeIndividualsFromCovidSamoaFront-modifies-data	2021-04-01 00:46:44.901
+1125	/20210328230816-AddCovidVaccinatedBySexDistrict-modifies-data	2021-04-01 00:46:44.988
+1126	/20210329001149-AddCovidVaxTrackingHomeVillageDose2-modifies-data	2021-04-01 00:46:45.082
+1127	/20210329022054-AddCovidVaxTrackingVillageDose1-modifies-data	2021-04-01 00:46:45.167
+1128	/20210329224807-AddCovidVaccineTotalDashboards-modifies-data	2021-04-01 00:46:45.454
+1129	/20210204040357-AddDataTimeToSurveyResponses-modifies-schema	2021-04-09 00:39:10.714
+1130	/20210204201652-CalculateDataTime-modifies-data	2021-04-09 00:39:22.656
+1131	/20210225030219-DeleteSubmissionTimeFromSurveyResponses-modifies-schema	2021-04-09 00:39:22.727
+1132	/20210319015928-UpdateDataSourceConstraintsOnQuestions-modifies-schema	2021-04-09 00:39:22.823
+1133	/20210317035935-AddConfigForCategoryHeadingLaosEoc-modifies-data	2021-04-15 23:20:40.678
+1134	/20210329230317-UpdateLaosSchoolsToPublic-modifies-data	2021-04-15 23:20:40.854
+1135	/20210303025836-AddFETPGradAreaOfExpertiseOverlays-modifies-data	2021-04-23 01:17:33.337
+1136	/20210310032310-UpdateLaosEOCWeatherDashboards-modifies-data	2021-04-23 01:17:33.465
+1137	/20210318031303-UseTupaiaServiceInStrive-modifies-data	2021-04-23 01:17:51.541
+1138	/20210322030033-FixStriveAfterTupaiaServiceConversion-modifies-data	2021-04-23 01:17:53.814
+1139	/20210323030105-LaosEocShadowedTileSets-modifies-data	2021-04-23 01:17:53.86
+1140	/20210412055533-LaosEocEntitycleanUp-modifies-data	2021-04-23 01:17:54.228
+1141	/20210415033728-AddParentToFijiDataCollection-modifies-data	2021-04-23 01:17:54.412
+1142	/20210416015517-FixStriveWtfOverlays-modifies-data	2021-04-23 01:17:54.664
+1143	/20210413234307-AddExploreOverlayToCovidSamoaProjecctt-modifies-data	2021-04-29 22:32:02.804
+1144	/20210415073206-ConvertSingleColumnTableTO-CHDashboardReportsToTableOfDataValuesCH11-CH4-modifies-data	2021-04-29 22:32:02.936
+1145	/20210415073207-AddDashboardGroupCommunityHealthCountryFanafana-modifies-data	2021-04-29 22:32:03.071
+1146	/20210428030104-DeleteSamoaCovidDashboardGroupFromExplore-modifies-data	2021-04-29 22:32:03.097
+1147	/20210412210749-AddLesmisEntityVitalsReports-modifies-data	2021-05-06 22:31:11.829
+1148	/20210414015925-UpdateLaosEOCIndicatorDataSources-modifies-data	2021-05-06 22:31:11.991
+1149	/20210420001619-RemoveMugilFromStrive-modifies-data	2021-05-06 22:31:12.512
+1150	/20210430035254-ChangeLaosSchoolsPermissionToLESMISPublic-modifies-data	2021-05-06 22:31:12.682
+1151	/20210502231014-RemoveHealthFacilitiesLaosSchoolsHierarchy-modifies-data	2021-05-06 22:31:12.731
+1152	/20210503020203-RenameDashboardHeadings-modifies-data	2021-05-06 22:31:13.149
+1153	/20210503020225-LESMISReportsNewPermissionGroup-modifies-data	2021-05-06 22:31:13.278
+1154	/20210413033910-UpdateSTRIVEK13MapOverlay-modifies-data	2021-05-14 00:20:03.739
+1155	/20210422030246-CreateUnknownEntitiesForSamoa-modifies-data	2021-05-14 00:20:04.022
+1156	/20210505101731-AddSamoaCovidPercentageDashboards-modifies-data	2021-05-14 00:20:04.117
+1157	/20210506052033-AddSamoaCovidPercentageVaccinatedMeasures-modifies-data	2021-05-14 00:20:04.203
+1158	/20210507014219-PutWaiviviaToTheRightPlace-modifies-data	2021-05-14 00:20:04.303
+1159	/20210512224458-LaEocLaRemoveDeletedFacility-modifies-data	2021-05-14 05:33:47.267
+1160	/20210407005547-AddParentRelationForSubFacility-modifies-data	2021-05-21 04:35:07.41
+1161	/20210407020951-ChangeDataSourceEntityTypeOfLaosEocMapOverlays-modifies-data	2021-05-21 04:35:07.529
+1162	/20210408055640-ChangeDataSourceEntityTypeOfLaosEocDashboardReports-modifies-data	2021-05-21 04:35:07.632
+1163	/20210426232045-AddStriveFacilityEpiCurveDashboard-modifies-data	2021-05-21 04:35:07.675
+1164	/20210503035005-TotalPassagerByAgeAndGenderGraphChart-modifies-data	2021-05-21 04:35:07.759
+1165	/20210505230824-ConvidSamoaNumOfPassengersDashboard-modifies-data	2021-05-21 04:35:07.795
+1166	/20210520020331-AddAccessTokenExpiryFieldToTupaiaUserSessionTable-modifies-schema	2021-05-27 22:25:41.851
+1167	/20210521022725-DataSourceCodeCleanUpLaosEoc-modifies-data	2021-05-27 22:25:42.131
+1168	/20210312284218-AddLaosEocMeaslesMapOverlayGroup-modifies-data	2021-06-03 23:21:04.999
+1169	/20210316215800-AddLaosEocMeaslesCommoditiesDataSources-modifies-data	2021-06-03 23:21:05.057
+1170	/20210316222124-AddLoasEocMeaslesDashboardGroups-modifies-data	2021-06-03 23:21:05.108
+1171	/20210316222937-AddLaosEocMeaslesCammoditiesTrafficLightDashboards-modifies-data	2021-06-03 23:21:05.191
+1172	/20210409060829-AddPsssTupaiaPermission-modifies-data	2021-06-03 23:21:05.223
+1173	/20210409063837-AddPsssNumOfSentinelSitesDashboard-modifies-data	2021-06-03 23:21:05.436
+1174	/20210413001758-AddPsssVisCountryLevelDashboard2y-modifies-data	2021-06-03 23:21:05.672
+1175	/20210413043020-AddPsssCountryTrendDashboards-modifies-data	2021-06-03 23:21:05.871
+1176	/20210414064856-AddSyndromicSurveillanceNationalDashboardGroup-modifies-data	2021-06-03 23:21:05.901
+1177	/20210414064857-DailyCasesTrendGraphPalauCountryLevel-modifies-data	2021-06-03 23:21:05.964
+1178	/20210415051039-UpdateLaosEocMeaslesCommoditiesTableCategoryHeadings-modifies-data	2021-06-03 23:21:06.07
+1179	/20210415110921-UpdatePSSSWeeklyIndicatorsSupportSiteData-modifies-data	2021-06-03 23:21:06.138
+1180	/20210416052750-DailyCasesTrendGrahphPalauFacilityLevel-modifies-data	2021-06-03 23:21:06.239
+1181	/20210419221219-AddLaEocMeaslesCriticleItemAvailReport-modifies-data	2021-06-03 23:21:06.302
+1182	/20210419221250-AddLaEocMeaslesCriticalItemsAvailCurrentReport-modifies-data	2021-06-03 23:21:06.382
+1183	/20210419225536-UpdatePSSSTotalSitesReportToUseSiteData-modifies-data	2021-06-03 23:21:06.558
+1184	/20210420031825-WeeklyCasesTrendGraphForPalauCountry-modifies-data	2021-06-03 23:21:06.641
+1185	/20210420031826-WeeklyCasesTrendGraphForPalauFacility-modifies-data	2021-06-03 23:21:06.718
+1186	/20210421001607-PsssPalauSyndromBubbleMapOverlay-modifies-data	2021-06-03 23:21:06.88
+1187	/20210422032557-AddPsssConTotalCasesIndicator-modifies-data	2021-06-03 23:21:06.919
+1188	/20210426204745-AddLaEocDengueCaseBarDistrict-modifies-data	2021-06-03 23:21:06.951
+1189	/20210503024117-AddLaEocMapOverlayDengueCasesByWeekDistrict-modifies-data	2021-06-03 23:21:06.991
+1190	/20210503055037-AddLaEocMapOverlayMalariaCasesByWeek-modifies-data	2021-06-03 23:21:07.036
+1191	/20210503082425-AddLaEocMalariaCasesBarChart-modifies-data	2021-06-03 23:21:07.077
+1192	/20210504040112-AddPsssCountryTrendDashboardsPastYears-modifies-data	2021-06-03 23:21:07.178
+1193	/20210510061852-AddPSSSActiveAlertsReport-modifies-data	2021-06-03 23:21:07.22
+1194	/20210511024953-LaEocUpdateCamoditityTablePresentationOptions-modifies-data	2021-06-03 23:21:07.295
+1195	/20210511050324-AddPSSSArchivedAlertsReport-modifies-data	2021-06-03 23:21:07.356
+1196	/20210512004319-AddPSSSConfirmedDataPerSyndromeReport-modifies-data	2021-06-03 23:21:07.417
+1197	/20210512114642-UpdatePSSSTotalSitesReportedIndicator-modifies-data	2021-06-03 23:21:07.451
+1198	/20210512115557-AddPSSSWeeklyDataPerSyndromeReports-modifies-data	2021-06-03 23:21:07.519
+1199	/20210512234422-LaEocAddMalariaProvinceDashboardGroup-modifies-data	2021-06-03 23:21:07.542
+1200	/20210513065305-AddPSSSConfirmedWeeklyDataPerSyndromeReports-modifies-data	2021-06-03 23:21:07.608
+1201	/20210519235606-LaEocAddDengueCommoditiesTrafficLight-modifies-data	2021-06-03 23:21:07.677
+1202	/20210520024548-LaEocAddSubDistrictDataSources-modifies-data	2021-06-03 23:21:07.776
+1203	/20210520051328-LaEocUpdateDengueWeeklyByDistrictConfig-modifies-data	2021-06-03 23:21:07.792
+1204	/20210525072702-UpdatePSSSSyndromeThresholdCrossedIndicators-modifies-data	2021-06-03 23:21:07.852
+1205	/20210604004448-CovidSamoaVaccineDeleteResponses-modifies-data	2021-06-04 03:33:38.122
+1206	/20210602041852-Rename-lesmis-permission-groups-modifies-data	2021-06-11 00:51:27.905
+1207	/20210607063222-RewritePSSSIndicatorsToUseRelativesEntityAggregation-modifies-data	2021-06-11 00:51:28.032
+1208	/20210601081726-AddStriveObservedReplicateMortalityBarChart-modifies-data	2021-06-18 04:28:11.431
+1209	/20210602005249-AddStriveVectorOverlayGroup-modifies-data	2021-06-18 04:28:11.473
+1210	/20210602005250-AddStriveResistanceOverlay-modifies-data	2021-06-18 04:28:11.528
+1211	/20210602030419-AddFijiCOVIDVaccinatedMapOverlayGroup-modifies-data	2021-06-18 04:28:11.576
+1212	/20210602030420-AddFijiCOVIDVaccinatedByFacilityOverlays-modifies-data	2021-06-18 04:28:11.638
+1213	/20210602065620-AddFijiCOVIDVaccinatedRegionOverlays-modifies-data	2021-06-18 04:28:11.702
+1214	/20210603022946-AddFijiSupplyChainHeirarchySubDistricts-modifies-data	2021-06-18 04:28:11.715
+1215	/20210603023401-AddFijiCOVIDVaccinePercentageOfPopulationVaccinatedMapOverlays-modifies-data	2021-06-18 04:28:11.786
+1216	/20210603032718-ReorderFijiCovidVaccineMapOverlays-modifies-data	2021-06-18 04:28:11.834
+1217	/20210603034000-AddFijiCovid19SubDivisions-modifies-data	2021-06-18 04:28:12.156
+1218	/20210603064215-migrateFijiFacilitiesToNewSubDivisions-modifies-data	2021-06-18 04:28:12.503
+1219	/20210603231415-FixCOVIDVaccineFijiEntityDataSourceTypes-modifies-data	2021-06-18 04:28:12.628
+1220	/20210603231515-FixCOVIDVaccineNauruEntityDataSourceTypes-modifies-data	2021-06-18 04:28:12.716
+1221	/20210604004937-AddNewNationalLevelCovidTrackingByGenderDashboard-modifies-data	2021-06-18 04:28:12.772
+1222	/20210604010622-AddTotalNumberOfPeopleReceive1stDoseCovidVaccineView-modifies-data	2021-06-18 04:28:12.868
+1223	/20210604010722-AddTotalNumberOfPeopleReceive2ndDoseCovidVaccineView-modifies-data	2021-06-18 04:28:12.918
+1224	/20210604015355-DeleteDuplicatedCovid19FijiDashboardGroup-modifies-data	2021-06-18 04:28:12.931
+1225	/20210610005659-DeleteCovid19FJFacilityOverlays-modifies-data	2021-06-18 04:28:12.956
+1226	/20210610013423-RemoveCovid19ByGenderReportFromDashboardGroup-modifies-data	2021-06-18 04:28:12.983
+1227	/20210611132837-RemoveFijiVillagesFromCanonicalHierarchies-modifies-data	2021-06-18 04:28:13.044
+1228	/20210614003043-RemoveUserRewardsTable-modifies-schema	2021-06-18 04:28:13.064
+1229	/20210615034653-AddCovidFijiSubDivisonDashboardGroup-modifies-data	2021-06-18 04:28:13.106
+1230	/20210615042534-AddFijiCovidPercentageEligiableDashboards-modifies-data	2021-06-18 04:28:13.173
+1231	/20210615060723-CreateSubDistrictFijiVaccinationDoseDashboardReports-modifies-data	2021-06-18 04:28:13.225
+1232	/20210615064531-ReorderCovidFJSubDistrictDashboardReports-modifies-data	2021-06-18 04:28:13.242
+1233	/20210615072057-UpdateUnfpaNonCanonicalRelations-modifies-data	2021-06-18 04:28:13.379
+1234	/20210616011417-CovidFijiMoveRotumaFacilities-modifies-data	2021-06-18 04:28:13.941
+1235	/20210616234103-UpdateCovid19FijiToPublic-modifies-data	2021-06-18 04:28:13.976
+1236	/20210607020237-AddIndicatorsForAuFlutracking-modifies-data	2021-06-24 22:28:40.269
+1237	/20210610060144-AddFluTrackerLGAPercentNonFirstNationsILI-modifies-data	2021-06-24 22:28:40.343
+1238	/20210615035418-DropVillagesFromLESMIS-modifies-data	2021-06-24 22:28:46.319
+1239	/20210524111255-StriveAdultTrappingReportConfig-modifies-data	2021-07-02 04:41:59.652
+1240	/20210524113244-StriveAdultTrappingDashboardReport-modifies-data	2021-07-02 04:41:59.724
+1241	/20210607052816-CreatePostCodeEntityType-modifies-schema	2021-07-02 04:42:00.625
+1242	/20210607053528-AddPostcodeLevelDataInAU-modifies-data	2021-07-02 04:42:00.654
+1243	/20210610104054-MosquitoSpeciesMapOverlay-modifies-data	2021-07-02 04:42:00.696
+1244	/20210610111044-AddReportForMosquitoSpecieesMapOverlay-modifies-data	2021-07-02 04:42:00.749
+1245	/20210621215753-LESMISDropNonOperationalSchools-modifies-data	2021-07-02 04:44:57.427
+1246	/20210622010643-UnfpaMonthly3MethodsBug-modifies-data	2021-07-02 04:44:58.058
+1247	/20210629081741-UpdateFanafanaolaProjectDefaultDashboard-modifies-data	2021-07-02 04:44:58.077
+1248	/20210629111111-01-CreateDashboardItemsTableLayout-modifies-schema	2021-07-02 04:44:58.155
+1249	/20210629111111-02-MigrateCurrentDashboardsToNewDashboards-modifies-data	2021-07-02 04:45:01.322
+1250	/20210629111111-03-FixCustomLegacyReports-modifies-data	2021-07-02 04:45:01.45
+1251	/20210629111111-04-AddNumberOfSchoolsByLevelOfEducationVisuals-modifies-data	2021-07-02 04:45:01.538
+1252	/20210629111111-05-AddNumSchoolsByDistrictLESMIS-modifies-data	2021-07-02 04:45:01.623
+1253	/20210629111111-06-LESMISStudentCountToStackedBar-modifies-data	2021-07-02 04:45:01.729
+1254	/20210629111111-07-AddDropoutRateByGrade-modifies-data	2021-07-02 04:45:01.89
+1255	/20210629111111-08-AddNERGERLESMIS-modifies-data	2021-07-02 04:45:02.077
+1256	/20210629111111-09-AddNumSecondaryClassroomsLESMIS-modifies-data	2021-07-02 04:45:02.167
+1257	/20210629111111-10-AddNumPrimaryClassroomsLESMIS-modifies-data	2021-07-02 04:45:02.25
+1258	/20210629111111-11-AddChildrenOverAgeLESMIS-modifies-data	2021-07-02 04:45:02.359
+1259	/20210629111111-12-LESMISDropObsoleteDashboardItem-modifies-data	2021-07-02 04:45:02.38
+1260	/20210629111111-13-LESMISStudentsByEthnicity-modifies-data	2021-07-02 04:45:02.456
+1261	/20210629111111-14-AddNumberSchoolsPublicPrivateESSDP-modifies-data	2021-07-02 04:45:02.587
+1262	/20210629111111-15-AddNumberTeachersByEducationLevel-modifies-data	2021-07-02 04:45:02.676
+1263	/20210629111111-16-LESMISGrossIntakeRate-modifies-data	2021-07-02 04:45:02.85
+1264	/20210629111111-17-LESMISAgeOfGrade1Entrance-modifies-data	2021-07-02 04:45:02.93
+1265	/20210629111111-18-AddRepetitionRateLESMIS-modifies-data	2021-07-02 04:45:03.07
+1266	/20210629111111-19-AddCohortSurvivalRatesLESMIS-modifies-data	2021-07-02 04:45:03.205
+1267	/20210629111111-20-LESMISCompleteAndIncompleteSchools-modifies-data	2021-07-02 04:45:03.281
+1268	/20210629111111-21-AddNumberClassesPublicSchoolsLESMIS-modifies-data	2021-07-02 04:45:03.415
+1269	/20210629111111-22-FixTypoInTitles-modifies-data	2021-07-02 04:45:03.437
+1270	/20210629111111-23-LESMISHeadingsOrderChange-modifies-data	2021-07-02 04:45:03.505
+1271	/20210629111111-24-ImproveYAxisLabels-modifies-data	2021-07-02 04:45:03.525
+1272	/20210629111111-25-DeleteSlowCountryLevelVisuals-modifies-data	2021-07-02 04:45:03.541
+1273	/20210629111111-26-FixTitlesGIRVisuals-modifies-data	2021-07-02 04:45:03.584
+1274	/20210629111111-27-CorrectDropoutRatePercentageCalculation-modifies-data	2021-07-02 04:45:03.654
+1275	/20210527034457-StriveLarvalHabitatBySpeciesBarChart-modifies-data	2021-07-08 22:26:33.282
+1276	/20210527034536-ReportConfigLarvalHabitatBySpecies-modifies-data	2021-07-08 22:26:33.391
+1277	/20210601015828-AddStriveLabConfirmedPostiveResultsStackedBarChart-modifies-data	2021-07-08 22:26:33.533
+1278	/20210618033026-PGStriveAverageMortalityMatrixTable-modifies-data	2021-07-08 22:26:33.624
+1279	/20210621034818-FixSbAtLeastOneStaffMemberTrained-modifies-data	2021-07-08 22:26:33.714
+1280	/20210629000039-CapitcaliseAnswersForSTRVECLHS36-modifies-data	2021-07-08 22:26:34.013
+1281	/20210705014650-AddNumberOfECETeachersVis-modifies-data	2021-07-08 22:26:34.092
+1282	/20210705232257-DropDeprecatedDashboardReportAndDashboardGroupTables-modifies-schema	2021-07-08 22:26:34.111
+1283	/20201213231508-UseTupaiaAsServiceCovidauFluTracker-modifies-data	2021-07-15 23:16:15.28
+1284	/20201214034339-UpdateCovidReportsForTupaiaDataSource-modifies-data	2021-07-15 23:16:16.335
+1285	/20201214060202-DeleteCovidauDhisSyncData-modifies-data	2021-07-15 23:17:09.734
+1286	/20210608060150-MigrateCovidAUAndFluTrackingDashboardsToUseCorrectAggregation-modifies-data	2021-07-15 23:17:10.016
+1287	/20210610002626-RewriteTotalTestsPerCapitaToUseIndicator-modifies-data	2021-07-15 23:17:10.165
+1288	/20210610012019-MigrateCovidAUMapOverlayToUseCorrectAggregation-modifies-data	2021-07-15 23:17:10.319
+1289	/20210705111800-LESMISAddEmergencyInEducationDashboard-modifies-data	2021-07-15 23:17:10.473
+1290	/20210709031533-UnfpaMarshallIslandsMissing-modifies-data	2021-07-15 23:17:10.55
+1291	/20210712021147-FixUnfpaDashboardMissingFiji-modifies-data	2021-07-15 23:17:10.593
+1292	/20210713012631-AddPostcodeTypeToExplore-modifies-data	2021-07-15 23:17:10.654
+1293	/20210713232632-ExcludePostcodesFromExploreSearch-modifies-data	2021-07-15 23:17:10.677
+1294	/20210204224602-AddFetpGraduateLocationsMatrix-modifies-data	2021-07-23 02:08:13.283
+1295	/20210228111231-AddFetpGradLocationsMatrixDistrict-modifies-data	2021-07-23 02:08:13.381
+1296	/20210706044733-SwitchLGALevelMapOverlayToUseReportServer-modifies-data	2021-07-23 02:08:13.593
+1297	/20210712082624-AddAdminPanelSessionTable-modifies-schema	2021-07-23 02:08:13.624
+1298	/20210719023634-CorrectNumberTeachersByEducationLevel-modifies-data	2021-07-23 02:08:13.672
+1299	/20210719092820-UpdatePermissionGroupHierarchy-modifies-data	2021-07-23 02:08:13.768
+1300	/20210722044503-FixDataSourceEntityTypeLesmisProvinceStudentDashboards-modifies-data	2021-07-23 02:08:13.813
+1301	/20210629030241-WeeklyCasesDashboardForFijiDemoFacility-modifies-data	2021-07-30 00:15:24.222
+1302	/20210629030806-MapoverlaysForPsssFijiFacilityDemo-modifies-data	2021-07-30 00:15:24.464
+1303	/20210713071004-AddFluTrackerNonFirstNationWithIliMapOverlay-modifies-data	2021-07-30 00:15:24.562
+1304	/20210714013524-DeleteDuplicateCountriesFromEntityTable-modifies-data	2021-07-30 00:15:25.118
+1305	/20210719025659-AddFluTrackerFirstNationWithIliMapOverlay-modifies-data	2021-07-30 00:15:25.278
+1306	/20210719233312-CovidauMapoverlaysWeeklySelector-modifies-data	2021-07-30 00:15:25.38
+1307	/20210723000500-TwoAdditionServicesToDashboardUnfpa-modifies-data	2021-07-30 00:15:25.537
+1308	/20210723034733-SwitchLesmisVitalsToUseEntityAggregation-modifies-data	2021-07-30 00:15:25.587
+1309	/20210803014704-CovidSamoaAddSubDistrictEntities-modifies-data	2021-08-05 00:55:51.788
+1310	/20210803033646-CovidSamoaSubDistrictRelations-modifies-data	2021-08-05 00:55:51.969
+1311	/20210803035205-CovidSamoaAddVillageEntityRelations-modifies-data	2021-08-05 00:55:52.396
+1312	/20210803060714-CreateHouseholdEntityType-modifies-schema	2021-08-05 00:55:53.707
+1313	/20210803070618-AddCovidSamoaHouseholdVaccinationStatusMapOverlays-modifies-data	2021-08-05 00:55:53.881
+1314	/20210803075429-CovidSamoaAddHouseholds-modifies-data	2021-08-05 00:57:06.078
+1315	/20210803083523-AddCovidSamoaSubDistrictVaccinationTrackingMapOverlays-modifies-data	2021-08-05 00:57:06.515
+1316	/20210803095245-CovidSamoaUpdateUnknownVillageParent-modifies-data	2021-08-05 00:57:06.612
+1317	/20210803103637-CovidSamoaRemoveFacilityMapOverlays-modifies-data	2021-08-05 00:57:06.642
+1318	/20210804020340-CovidSamoaRemoveHousholdOverlay-modifies-data	2021-08-05 00:57:06.667
+1319	/20210715093133-AddMostRecentAggregationFunction-modifies-schema	2021-08-06 00:34:42.658
+1320	/20210721231524-StriveMapOverlayHeadingsChanges-modifies-data	2021-08-06 00:34:42.971
+1321	/20210627235940-AddSurveyPeriodGranularity-modifies-schema	2021-08-12 22:18:40.978
+1322	/20210630015116-FlutrackingPostcodeOverlayReportConfig-modifies-data	2021-08-12 22:18:41.909
+1323	/20210630053253-AddPostcodePercentFeverOverlayFlutracking-modifies-data	2021-08-12 22:18:42.03
+1324	/20210728004659-RenameAnswerForOneOptionFromQuestion-modifies-data	2021-08-12 22:18:42.143
+1325	/20210809024412-AddConfigForSumTillLatest-modifies-data	2021-08-12 22:18:42.346
+1326	/20210809034325-CreateLarvaeHabitatsEntityType-modifies-schema	2021-08-12 22:18:43.051
+1327	/20210720001222-AddKoBoToDataServiceTypes-modifies-schema	2021-08-18 15:13:37.517
+1328	/20210727041905-AddSyncCursorTable-modifies-schema	2021-08-18 15:13:37.866
+1329	/20210727042329-AddKoBoSyncCursor-modifies-data	2021-08-18 15:13:37.934
+1330	/20210728015657-AddDataServiceSyncGroupTable-modifies-schema	2021-08-18 15:13:37.985
+1331	/20210728020128-AddFQSSurveySyncGroups-modifies-data	2021-08-18 15:13:38.474
+1332	/20210804234015-AddKoBoDataSourceEntities-modifies-data	2021-08-18 15:13:41.866
+1333	/20210805212932-AddSyncServiceLogTable-modifies-schema	2021-08-18 15:13:55.61
+1334	/20210809040122-PmosIndicators-modifies-data	2021-08-18 15:13:55.837
+1335	/20210813034157-SOL149DeleteFacility-modifies-data	2021-08-18 15:14:06.622
+1336	/20210816014247-AddConnectNullsToViewConfig-modifies-data	2021-08-18 15:14:06.91
+1337	/20210816014347-AddConnectNullsToViewConfigAtOtherLevels-modifies-data	2021-08-18 15:14:07.017
+1338	/20210811234228-AddLESMISTargetDistricts-modifies-data	2021-08-19 17:36:54.96
+1339	/20210816012839-AddProjectPacmossi-modifies-data	2021-08-19 17:36:55.208
+1340	/20210816230203-MoveAnalyticsTableUtilityFunctionsToDatabaseFunctions-modifies-schema	2021-08-19 17:44:12.462
+1341	/20210819000200-AddGeneralDashboardsToNauruEHealth-modifies-data	2021-08-19 17:44:13.128
 \.
 
 
@@ -3989,7 +4876,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 1069, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 1341, true);
 
 
 --

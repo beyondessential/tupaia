@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-
+import sanitize from 'sanitize-filename';
 import fs from 'fs';
 import path from 'path';
 
@@ -30,4 +30,10 @@ export const getNestedFiles = (dirPath, options = {}) => {
   return options.extensions
     ? files.filter(filePath => options.extensions.some(ext => path.extname(filePath) === ext))
     : options;
+};
+
+export const toFilename = string => {
+  const maxLength = 255;
+  const sanitized = sanitize(string).replace(/\s+/g, '-').toLowerCase();
+  return sanitized.length <= maxLength ? sanitized : sanitized.slice(0, maxLength);
 };

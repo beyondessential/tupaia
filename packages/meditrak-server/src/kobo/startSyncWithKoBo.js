@@ -11,7 +11,7 @@ const PERIOD_BETWEEN_SYNCS = 10 * 60 * 1000; // 10 minutes between syncs
 const SERVICE_TYPE = 'kobo';
 
 export async function startSyncWithKoBo(models) {
-  if (process.env.KOBO_SYNC_DISABLE) {
+  if (process.env.KOBO_SYNC_DISABLE === 'true') {
     // eslint-disable-next-line no-console
     console.log('KoBo sync is disabled');
   } else {

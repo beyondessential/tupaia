@@ -200,32 +200,6 @@
     "dashboard": "FETP"
   },
   {
-    "code": "Imms_FridgeBreaches",
-    "project": "imms",
-    "orgUnit": "VU",
-    "dashboard": "Immunisation",
-    "startDate": "2020-04-01",
-    "endDate": "2020-04-30"
-  },
-  {
-    "code": "Imms_FridgeDailyTemperatures",
-    "project": "imms",
-    "orgUnit": "VU_1660",
-    "dashboard": "Immunisation"
-  },
-  {
-    "code": "Imms_FridgeVaccineCount",
-    "project": "imms",
-    "orgUnit": "VU",
-    "dashboard": "Immunisation"
-  },
-  {
-    "code": "Imms_Stockouts",
-    "project": "imms",
-    "orgUnit": "VU",
-    "dashboard": "Immunisation"
-  },
-  {
     "code": "LA_EOC_Total_Dengue_Cases_by_Week",
     "project": "laos_eoc",
     "orgUnit": "LA_Bokeo",
