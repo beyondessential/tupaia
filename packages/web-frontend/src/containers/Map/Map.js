@@ -24,12 +24,14 @@ import {
   selectRenderedMeasuresWithDisplayInfo,
 } from '../../selectors';
 import { changePosition, closeDropdownOverlays, setOrgUnit } from '../../actions';
-import { DEFAULT_BOUNDS } from '../../defaults';
 import { TRANS_BLACK, TRANS_BLACK_LESS } from '../../styles';
 
 const CHANGE_TO_PARENT_PERCENTAGE = 0.6;
 
 const StyledMap = styled(LeafletMap)`
+  height: 100vh;
+  width: 100%;
+
   .leaflet-control-zoom {
     z-index: 1;
     border: none;
@@ -149,7 +151,6 @@ class MapComponent extends Component {
       <StyledMap
         onClick={onCloseDropdownOverlays}
         bounds={position.bounds}
-        defaultBounds={DEFAULT_BOUNDS}
         zoom={position.zoom}
         center={position.center}
         shouldSnapToPosition={shouldSnapToPosition}

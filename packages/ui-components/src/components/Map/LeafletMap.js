@@ -21,6 +21,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { MapContainer as LeafletMapContainer } from 'react-leaflet';
 import { LeafletStyles } from './LeafletStyles';
+import { DEFAULT_BOUNDS } from './constants';
 
 const Map = styled(LeafletMapContainer)`
   ${LeafletStyles};
@@ -78,9 +79,9 @@ export class LeafletMap extends Component {
     // initial state of the element -- we keep sending these to leaflet so
     // that it doesn't snap to new coordinates (allowing us to animate them
     // instead)
-    const { center, bounds, zoom, defaultBounds } = this.props;
+    const { center, bounds, zoom } = this.props;
     this.initialCenter = center;
-    this.initialBounds = areBoundsValid(bounds) ? bounds : defaultBounds;
+    this.initialBounds = areBoundsValid(bounds) ? bounds : DEFAULT_BOUNDS;
     this.initialZoom = zoom || 0;
   }
 
@@ -90,8 +91,11 @@ export class LeafletMap extends Component {
 
   componentDidUpdate = prevProps => {
     const { center, bounds, zoom } = this.props;
+    console.log('component updated');
     if (this.map && this.requiresMoveAnimation(prevProps)) {
+      console.log('requires a move');
       if (bounds) {
+        console.log('bounds...');
         this.flyToBounds(bounds);
       } else if (center) {
         this.flyToPoint(center, zoom);
@@ -239,7 +243,6 @@ export class LeafletMap extends Component {
     return (
       <Map
         {...this.props} // pass props down to react-leaflet
-        style={{ height: '100vh', width: '100%' }} // Todo: move this into styled component? or needs to be passed in?
         zoomControl={false}
         whenCreated={map => {
           this.captureMap(map);
@@ -261,21 +264,21 @@ export class LeafletMap extends Component {
 
 LeafletMap.propTypes = {
   bounds: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  defaultBounds: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
   center: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   children: PropTypes.node.isRequired,
   onClick: PropTypes.func,
   onPositionChanged: PropTypes.func,
   rightPadding: PropTypes.number,
-  shouldSnapToPosition: PropTypes.bool.isRequired,
+  shouldSnapToPosition: PropTypes.bool,
   zoom: PropTypes.number,
 };
 
 LeafletMap.defaultProps = {
   bounds: null,
   center: null,
-  onClick: undefined,
-  onPositionChanged: undefined,
+  onClick: () => {},
+  onPositionChanged: () => {},
   rightPadding: 0,
   zoom: null,
+  shouldSnapToPosition: false,
 };
