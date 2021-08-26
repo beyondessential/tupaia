@@ -5,11 +5,13 @@
 
 import '@babel/polyfill';
 
-import {} from 'dotenv/config'; // Load the environment variables into process.env
+import * as dotenv from 'dotenv';
 import http from 'http';
 
 import { createApp } from './app';
 import winston from './log';
+
+dotenv.config(); // Load the environment variables into process.env
 
 /**
  * Set up app with routes etc.
