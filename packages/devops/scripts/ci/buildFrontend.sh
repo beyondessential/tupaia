@@ -4,7 +4,7 @@ set -x
 PACKAGE=$1
 DIR=$(dirname "$0")
 DEPLOYMENT_SSH_URL=$(${DIR}/determineDeploymentSshUrl.sh)
-if [ -f "${DIR}/tamanu_builds/deployment_exists" ]; then
+if [ -f "./tamanu_builds/deployment_exists" ]; then
     echo "Deployment for ${CI_BRANCH} exists, building ${PACKAGE}"
 
     echo "Pulling environment variables"
