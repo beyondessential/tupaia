@@ -11,8 +11,7 @@
 # - the 'builder' service uses the same image as the 'testing' service, but skips the dependency on
 #   the db, and makes the built files available to the later deployment step
 # - the deployment service just uses the base alpine image + ssh to log into an ec2 instance and
-#   deploy the latest version of the code for each package, including pulling and running the latest
-#   docker image containing the built front ends
+#   deploy the latest version of the code for each package
 
 validation:
   build:
