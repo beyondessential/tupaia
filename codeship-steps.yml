@@ -52,7 +52,7 @@
   command: './packages/devops/scripts/ci/checkDeploymentExists.sh'
 
 - type: serial
-  name: pull latest into ec2
+  name: set up ssh key
   service: deployment
   exclude: -e2e$
   steps:
@@ -62,8 +62,6 @@
       command: /bin/bash -c "echo -e $PRIVATE_SSH_KEY | sed -e 's/^"//' -e 's/"$//' >> /root/.ssh/id_rsa"
     - name: chmod id_rsa
       command: chmod 600 /root/.ssh/id_rsa
-    - name: pull latest and install dependencies
-      command: './packages/devops/scripts/ci/pullLatest.sh'
 
 - type: serial
   name: build-and-deploy-backends
