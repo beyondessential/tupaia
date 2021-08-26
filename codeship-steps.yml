@@ -72,7 +72,7 @@
       steps:
         - name: build-web-config-server
           service: builder
-          command: './packages/devops/scripts/ci/buildBackend.sh web-config-server'
+          command: './packages/devops/scripts/ci/buildPackage.sh web-config-server'
         - name: deploy-web-config-server
           service: deployment
           command: './packages/devops/scripts/ci/deployBackend.sh web-config-server'
@@ -81,7 +81,7 @@
       steps:
         - name: build-lesmis-server
           service: builder
-          command: './packages/devops/scripts/ci/buildBackend.sh lesmis-server'
+          command: './packages/devops/scripts/ci/buildPackage.sh lesmis-server'
         - name: deploy-lesmis-server
           service: deployment
           command: './packages/devops/scripts/ci/deployBackend.sh lesmis-server'
@@ -90,7 +90,7 @@
       steps:
         - name: build-meditrak-server
           service: builder
-          command: './packages/devops/scripts/ci/buildBackend.sh meditrak-server'
+          command: './packages/devops/scripts/ci/buildPackage.sh meditrak-server'
         - name: deploy-meditrak-server
           service: deployment
           command: './packages/devops/scripts/ci/deployBackend.sh meditrak-server'
@@ -99,7 +99,7 @@
       steps:
         - name: build-psss-server
           service: builder
-          command: './packages/devops/scripts/ci/buildBackend.sh psss-server'
+          command: './packages/devops/scripts/ci/buildPackage.sh psss-server'
         - name: deploy-psss-server
           service: deployment
           command: './packages/devops/scripts/ci/deployBackend.sh psss-server'
@@ -108,7 +108,7 @@
       steps:
         - name: build-admin-panel-server
           service: builder
-          command: './packages/devops/scripts/ci/buildBackend.sh admin-panel-server'
+          command: './packages/devops/scripts/ci/buildPackage.sh admin-panel-server'
         - name: deploy-admin-panel-server
           service: deployment
           command: './packages/devops/scripts/ci/deployBackend.sh admin-panel-server'
@@ -117,7 +117,7 @@
       steps:
         - name: build-report-server
           service: builder
-          command: './packages/devops/scripts/ci/buildBackend.sh report-server'
+          command: './packages/devops/scripts/ci/buildPackage.sh report-server'
         - name: deploy-report-server
           service: deployment
           command: './packages/devops/scripts/ci/deployBackend.sh report-server'
@@ -126,7 +126,7 @@
       steps:
         - name: build-entity-server
           service: builder
-          command: './packages/devops/scripts/ci/buildBackend.sh entity-server'
+          command: './packages/devops/scripts/ci/buildPackage.sh entity-server'
         - name: deploy-entity-server
           service: deployment
           command: './packages/devops/scripts/ci/deployBackend.sh entity-server'
@@ -146,7 +146,7 @@
       steps:
         - name: build-web-frontend
           service: builder
-          command: './packages/devops/scripts/ci/buildFrontend.sh web-frontend'
+          command: './packages/devops/scripts/ci/buildPackage.sh web-frontend'
         - name: deploy-web-frontend
           service: deployment
           command: './packages/devops/scripts/ci/deployFrontend.sh web-frontend'
@@ -155,7 +155,7 @@
       steps:
         - name: build-admin-panel
           service: builder
-          command: './packages/devops/scripts/ci/buildFrontend.sh admin-panel'
+          command: './packages/devops/scripts/ci/buildPackage.sh admin-panel'
         - name: deploy-admin-panel
           service: deployment
           command: './packages/devops/scripts/ci/deployFrontend.sh admin-panel'
@@ -164,7 +164,7 @@
       steps:
         - name: build-psss
           service: builder
-          command: './packages/devops/scripts/ci/buildFrontend.sh psss'
+          command: './packages/devops/scripts/ci/buildPackage.sh psss'
         - name: deploy-psss
           service: deployment
           command: './packages/devops/scripts/ci/deployFrontend.sh psss'
@@ -173,7 +173,7 @@
       steps:
         - name: build-lesmis
           service: builder
-          command: './packages/devops/scripts/ci/buildFrontend.sh lesmis'
+          command: './packages/devops/scripts/ci/buildPackage.sh lesmis'
         - name: deploy-lesmis
           service: deployment
           command: './packages/devops/scripts/ci/deployFrontend.sh lesmis'
