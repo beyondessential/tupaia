@@ -14,15 +14,15 @@ Cypress.Commands.add('login', ({ email, password }) => {
 });
 
 /*
- *   ---------- SURVEY COMMANDS ----------------------
+ *   ----------------SURVEY COMMANDS ----------------------
  */
 
-Cypress.Commands.add('selectIntoTextBox', (lableText, inputText) => {
-  cy.findByLabelText(lableText).type(inputText).type('{downarrow}').type('{enter}');
+Cypress.Commands.add('selectIntoTextBox', (labelText, inputText) => {
+  cy.findByLabelText(labelText).type(inputText).type('{downarrow}').type('{enter}');
 });
 
-Cypress.Commands.add('selectDropDownValue', (lableText, currentValue, valueToBeSelected) => {
-  cy.contains(lableText).parent().contains(currentValue).click();
+Cypress.Commands.add('selectDropDownValue', (labelText, currentValue, valueToBeSelected) => {
+  cy.contains(labelText).parent().contains(currentValue).click();
   cy.contains(valueToBeSelected).click();
 });
 
