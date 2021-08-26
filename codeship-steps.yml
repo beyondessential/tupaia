@@ -87,6 +87,10 @@
 #     - name: run db migrations
 #       command: './packages/devops/scripts/ci/runMigrations.sh'
 
+- name: check-for-deployment
+  service: deployment
+  command: './packages/devops/scripts/ci/checkForExistingDeployment.sh'
+
 - type: parallel
   name: build-and-deploy-frontends
   exclude: -e2e$
@@ -99,7 +103,7 @@
           command: './packages/devops/scripts/ci/buildFrontend.sh web-frontend'
         - name: deploy-web-frontend
           service: deployment
-          command: './packages/devops/scripts/ci/buildFrontend.deployFrontend web-frontend'
+          command: './packages/devops/scripts/ci/deployFrontend.sh web-frontend'
     - type: serial
       name: admin-panel
       steps:
@@ -108,7 +112,7 @@
           command: './packages/devops/scripts/ci/buildFrontend.sh admin-panel'
         - name: deploy-admin-panel
           service: deployment
-          command: './packages/devops/scripts/ci/buildFrontend.deployFrontend admin-panel'
+          command: './packages/devops/scripts/ci/deployFrontEnd.sh admin-panel'
     - type: serial
       name: psss
       steps:

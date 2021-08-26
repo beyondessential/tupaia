@@ -1,6 +1,8 @@
 #!/bin/bash
 set -x
 
-DEPLOYMENT_URL=$1
-echo $DEPLOYMENT_URL
-curl --output /dev/null --silent --head --fail $DEPLOYMENT_URL
+DIR=$(dirname "$0")
+DEPLOYMENT_SSH_URL=$(${DIR}/determineDeploymentSshUrl.sh)
+if curl --output /dev/null --silent --head --fail $DEPLOYMENT_SSH_URL; then
+  touch ${DIR}./tupaia_builds/deployment_exists
+fi
