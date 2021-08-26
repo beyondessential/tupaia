@@ -42,11 +42,7 @@ delete_command="rm -rf"
 # Build dependencies
 for PACKAGE in $(${DIR}/getInternalDependencies.sh ${package_path}); do
     delete_command="${delete_command} packages/${PACKAGE}/${OUT_DIR}"
-    if [ "$PACKAGE" = "api-client" ]; then
-      build_commands+=("\"yarn workspace @beyondessential/tupaia-api-client build $build_args\"")
-    else
-      build_commands+=("\"yarn workspace @tupaia/${PACKAGE} build $build_args\"")
-    fi
+    build_commands+=("\"yarn workspace @tupaia/${PACKAGE} build $build_args\"")
 done
 
 if [[ $watch == "true" ]]; then
