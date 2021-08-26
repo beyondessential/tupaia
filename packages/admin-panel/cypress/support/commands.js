@@ -13,10 +13,6 @@ Cypress.Commands.add('login', ({ email, password }) => {
   cy.findByText('Login to your account').click();
 });
 
-/*
- *   ---------- SURVEY COMMANDS ----------------------
- */
-
 Cypress.Commands.add('selectIntoTextBox', (lableText, inputText) => {
   cy.findByLabelText(lableText).type(inputText).type('{downarrow}').type('{enter}');
 });
