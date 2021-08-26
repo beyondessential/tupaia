@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { camel, snake } from 'case';
+
 import { compareAsc, compareDesc } from './compare';
 import { getUniqueEntries } from './getUniqueEntries';
 
@@ -256,3 +258,9 @@ export const haveSameFields = (objectCollection, fields) => {
     return true;
   });
 };
+
+export const camelKeys = object =>
+  Object.fromEntries(Object.entries(object).map(([key, value]) => [camel(key), value]));
+
+export const snakeKeys = object =>
+  Object.fromEntries(Object.entries(object).map(([key, value]) => [snake(key), value]));
