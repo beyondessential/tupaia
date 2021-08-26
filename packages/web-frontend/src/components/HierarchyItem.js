@@ -28,7 +28,7 @@ import OpenIcon from 'material-ui/svg-icons/navigation/expand-more';
 import SelectedIcon from 'material-ui/svg-icons/toggle/radio-button-checked';
 import UnSelectedIcon from 'material-ui/svg-icons/toggle/radio-button-unchecked';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { ReferenceTooltip, TOOLTIP_ICON_STYLE_OPTIONS } from './ReferenceTooltip';
+import { ReferenceTooltip } from '@tupaia/ui-components';
 
 export class HierarchyItem extends Component {
   constructor(props) {
@@ -99,10 +99,7 @@ export class HierarchyItem extends Component {
             {selectionIcon}
             <div style={styles.buttonLabel}>{label}</div>
             {info && info.reference && (
-              <ReferenceTooltip
-                reference={info.reference}
-                iconStyleOption={TOOLTIP_ICON_STYLE_OPTIONS.MAP_OVERLAY}
-              />
+              <ReferenceTooltip reference={info.reference} iconStyleOption="mayOverlay" />
             )}
           </div>
         </FlatButton>
