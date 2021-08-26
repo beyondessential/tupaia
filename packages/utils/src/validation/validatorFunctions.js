@@ -189,6 +189,17 @@ export const constructRecordExistsWithField = (model, field) => async value => {
   }
 };
 
+export const constructRecordNotExistsWithField = (model, field) => async value => {
+  hasContent(value);
+
+  const record = await model.findOne({ code: value });
+  if (record) {
+    throw new ValidationError(
+      `Another ${model.databaseType} record already exists with with ${field}: ${value}`,
+    );
+  }
+};
+
 export const constructRecordExistsWithCode = model => async value => {
   hasContent(value);
 

@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import styled from 'styled-components';
 import { IconButton } from './IconButton';
+import { FlexStart } from './Layout';
 
 const DARK_THEME_BORDER = 'rgb(82, 82, 88)';
 const BACKDROP_COLOUR = 'rgba(65, 77, 85, 0.3)';
@@ -33,14 +34,11 @@ export const Dialog = ({ children, ...props }) => (
 );
 
 Dialog.propTypes = {
-  children: PropTypes.array.isRequired,
+  children: PropTypes.any.isRequired,
 };
 
-const Header = styled.div`
+const Header = styled(FlexStart)`
   position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   background-color: ${({ theme }) => (theme.palette.type === 'light' ? 'white' : DARK_BACKGROUND)};
   padding: 1.3rem 1.875rem 1.25rem;
   border-bottom: 1px solid
@@ -61,11 +59,12 @@ const CloseButton = styled(IconButton)`
   color: ${props => props.theme.palette.text.primary};
 `;
 
-export const DialogHeader = ({ title, onClose, color }) => (
+export const DialogHeader = ({ title, onClose, color, children }) => (
   <Header>
     <DialogTitle color={color} variant="h3">
       {title}
     </DialogTitle>
+    {children}
     <CloseButton onClick={onClose}>
       <CloseIcon />
     </CloseButton>
@@ -76,10 +75,12 @@ DialogHeader.propTypes = {
   title: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   color: PropTypes.string,
+  children: PropTypes.any,
 };
 
 DialogHeader.defaultProps = {
   color: 'textPrimary',
+  children: null,
 };
 
 export const DialogContent = styled.div`
