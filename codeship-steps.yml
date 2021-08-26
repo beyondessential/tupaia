@@ -112,7 +112,7 @@
           command: './packages/devops/scripts/ci/buildFrontend.sh admin-panel'
         - name: deploy-admin-panel
           service: deployment
-          command: './packages/devops/scripts/ci/deployFrontEnd.sh admin-panel'
+          command: './packages/devops/scripts/ci/deployFrontend.sh admin-panel'
     - type: serial
       name: psss
       steps:
