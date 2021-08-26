@@ -29,6 +29,6 @@ describe('import survey file', () => {
     selectDataService('Tupaia');
     cy.uploadFile('surveys/Test Survey_1.xlsx');
     importSurvey();
-    cy.get('form').should('contain.text', 'Imported surveys');
+    cy.get('form').should('contain.text', 'Your import has been successfully processed');
   });
 });
