@@ -17,6 +17,7 @@ const BasicPolygon = styled(Polygon)`
   fill: ${POLYGON_BLUE};
   fill-opacity: 0.04;
   stroke-width: 1;
+  stroke: ${POLYGON_BLUE};
 
   :hover {
     fill-opacity: 0.5;

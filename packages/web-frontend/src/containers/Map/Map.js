@@ -77,7 +77,8 @@ class MapComponent extends Component {
     // These are the only cases where polygons or area tooltips should rerender.
     if (nextProps.measureInfo.measureId !== measureInfo.measureId) return true;
 
-    if (nextProps.displayedChildren !== displayedChildren) return true;
+    if (JSON.stringify(nextProps.displayedChildren) !== JSON.stringify(displayedChildren))
+      return true;
 
     if (
       (nextProps.currentOrganisationUnit || {}).organisationUnitCode !==
@@ -160,6 +161,13 @@ class MapComponent extends Component {
         <TileLayer tileSetUrl={tileSetUrl} />
         <ZoomControl sidePanelWidth={sidePanelWidth} />
         <DemoLand />
+        {currentOrganisationUnit && organisationUnitIsArea(currentOrganisationUnit) && (
+          <ConnectedPolygon
+            area={currentOrganisationUnit}
+            organisationUnitChildren={getChildren(currentOrganisationUnit.organisationUnitCode)}
+            isActive
+          />
+        )}
         {(displayedChildren || []).map(area => (
           <ConnectedPolygon
             area={area}
@@ -175,13 +183,6 @@ class MapComponent extends Component {
             organisationUnitChildren={getChildren(area.organisationUnitCode)}
           />
         ))}
-        {currentOrganisationUnit && organisationUnitIsArea(currentOrganisationUnit) && (
-          <ConnectedPolygon
-            area={currentOrganisationUnit}
-            organisationUnitChildren={getChildren(currentOrganisationUnit.organisationUnitCode)}
-            isActive
-          />
-        )}
         <MarkerLayer measureData={processedData} serieses={measureOptions || null} />
         <DisasterLayer />
       </StyledMap>
