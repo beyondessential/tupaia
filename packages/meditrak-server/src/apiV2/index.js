@@ -47,6 +47,11 @@ import {
   CreateDashboardRelation,
   GETDashboardRelations,
 } from './dashboardRelations';
+import {
+  GETDashboardVisualisations,
+  CreateDashboardVisualisation,
+  EditDashboardVisualisation,
+} from './dashboardVisualisations';
 import { DeleteLegacyReport, EditLegacyReport, GETLegacyReports } from './legacyReports';
 import { DeleteMapOverlays, EditMapOverlays, GETMapOverlays } from './mapOverlays';
 import { DeleteSurveyResponses, EditSurveyResponses, GETSurveyResponses } from './surveyResponses';
@@ -127,6 +132,7 @@ apiV2.get('/dashboards/:recordId?', useRouteHandler(GETDashboards));
 apiV2.get('/dashboards/:parentRecordId/dashboardRelations', useRouteHandler(GETDashboardRelations));
 apiV2.get('/dashboardItems/:recordId?', useRouteHandler(GETDashboardItems));
 apiV2.get('/dashboardRelations/:recordId?', useRouteHandler(GETDashboardRelations));
+apiV2.get('/dashboardVisualisations/:recordId?', useRouteHandler(GETDashboardVisualisations));
 apiV2.get('/legacyReports/:recordId?', useRouteHandler(GETLegacyReports));
 apiV2.get('/indicators/:recordId?', useRouteHandler(BESAdminGETHandler));
 apiV2.get('/feedItems/:recordId?', useRouteHandler(GETFeedItems));
@@ -187,6 +193,7 @@ apiV2.post('/feedItems', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/indicators', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/permissionGroups', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dashboardRelations', useRouteHandler(CreateDashboardRelation));
+apiV2.post('/dashboardVisualisations', useRouteHandler(CreateDashboardVisualisation));
 apiV2.post('/syncFromService', allowAnyone(manualKoBoSync));
 
 /**
@@ -209,6 +216,7 @@ apiV2.put('/questions/:recordId', useRouteHandler(EditQuestions));
 apiV2.put('/dashboards/:recordId', useRouteHandler(EditDashboard));
 apiV2.put('/dashboardItems/:recordId', useRouteHandler(EditDashboardItem));
 apiV2.put('/dashboardRelations/:recordId', useRouteHandler(EditDashboardRelation));
+apiV2.put('/dashboardVisualisations/:recordId', useRouteHandler(EditDashboardVisualisation));
 apiV2.put('/legacyReports/:recordId', useRouteHandler(EditLegacyReport));
 apiV2.put('/mapOverlays/:recordId', useRouteHandler(EditMapOverlays));
 apiV2.put('/indicators/:recordId', useRouteHandler(BESAdminEditHandler));
