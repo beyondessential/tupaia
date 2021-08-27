@@ -10,6 +10,5 @@ export type EmptyObject = Record<string, never>;
 export type QueryParameters = Record<string, string>;
 
 export interface AuthHandler {
-  email?: string;
-  getAuthHeader: () => string;
+  getAuthHeader: () => Promise<string>;
 }

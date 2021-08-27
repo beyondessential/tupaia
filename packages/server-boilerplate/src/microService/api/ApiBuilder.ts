@@ -17,7 +17,6 @@ import { TestRoute } from '../../routes';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
 import { RequestContext } from '../types';
 import { TupaiaApiClient } from '@tupaia/api-client';
-import type { EndpointBaseUrlSet } from '@tupaia/api-client';
 
 export class ApiBuilder {
   private readonly app: Express;
@@ -54,10 +53,13 @@ export class ApiBuilder {
         getAuthHeader: async () => req.headers.authorization || '',
       };
 
-      const baseUrls: EndpointBaseUrlSet = {
-        entity: process.env.ENTITY_API_URL,
-        meditrak: process.env.MEDITRAK_API_URL,
-        report: process.env.REPORT_API_URL,
+      const baseUrls = {
+        entity: process.env.ENTITY_API_URL || '',
+        meditrak: process.env.MEDITRAK_API_URL || '',
+        report: process.env.REPORT_API_URL || '',
+      }
+      for (const [service, baseUrl] of Object.entries(baseUrls)) {
+        if (!baseUrl) throw new Error(`Must specify API_URL for service ${service}`);
       }
 
       const context: RequestContext = {
