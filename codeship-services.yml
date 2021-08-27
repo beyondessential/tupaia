@@ -54,7 +54,7 @@ builder:
   encrypted_dockercfg_path: dockercfg.encrypted
   default_cache_branch: 'dev'
   volumes:
-    - ./tupaia_builds:/root/tupaia_builds # make built files available to deployment service
+    - ./tupaia:/root/tupaia # make built files available to deployment service
 
 deployment:
   build:
@@ -62,7 +62,7 @@ deployment:
   encrypted_env_file: ./ci-env-vars.encrypted
   volumes:
     - ./.ssh:/root/.ssh # persist `id_rsa` file to subsequent steps
-    - ./tupaia_builds:/root/tupaia_builds # retrieve files to enable push
+    - ./tupaia:/root/tupaia # retrieve files to enable push
   cached: true
   encrypted_dockercfg_path: dockercfg.encrypted
   default_cache_branch: 'dev'

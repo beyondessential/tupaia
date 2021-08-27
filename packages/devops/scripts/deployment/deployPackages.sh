@@ -54,8 +54,6 @@ for PACKAGE in ${PACKAGES[@]}; do
         # It's a static package, build it
         echo "Building ${PACKAGE}"
         yarn build
-        # Move the assets to the tupaia_builds folder where they are served
-        rm -rf /home/ubuntu/tupaia_builds/${PACKAGE} && mv build /home/ubuntu/tupaia_builds/${PACKAGE}
     fi
 
     if [[ $PACKAGE == 'meditrak-server' ]]; then
