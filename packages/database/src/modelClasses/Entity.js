@@ -415,6 +415,13 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     });
   }
 
+  /**
+   * Returns relations (either ancestors or descendants) of entity
+   * @param {*} ancestorsOrDescendants
+   * @param {*} entityIds
+   * @param {*} criteria
+   * @returns {Promise<EntityType[]>}
+   */
   async getRelationsOfEntities(ancestorsOrDescendants, entityIds, criteria) {
     const cacheKey = this.getCacheKey(this.getRelationsOfEntities.name, arguments);
     const [joinTablesOn, filterByEntityId] =

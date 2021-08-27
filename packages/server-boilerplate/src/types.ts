@@ -11,3 +11,5 @@ export type EmptyObject = Record<string, never>;
  * @deprecated use @tupaia/api-client
  */
 export type QueryParameters = Record<string, string>;
+
+export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
