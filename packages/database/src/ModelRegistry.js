@@ -14,14 +14,14 @@ export class ModelRegistry {
    * @param {import('./TupaiaDatabase').TupaiaDatabase} database
    * @param {import('./DatabaseModel').DatabaseModel[]} [extraModelClasses]
    */
-  constructor(database, extraModelClasses) {
+  constructor(database, extraModelClasses, useNotifiers = false) {
     this.database = database;
     this.modelClasses = {
       ...baseModelClasses,
       ...extraModelClasses,
     };
     this.generateModels();
-    if (this.database.isSingleton) {
+    if (useNotifiers) {
       this.initialiseNotifiers();
     }
   }
