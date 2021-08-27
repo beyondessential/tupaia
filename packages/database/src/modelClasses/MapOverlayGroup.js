@@ -21,8 +21,12 @@ export class MapOverlayGroupModel extends DatabaseModel {
     return MapOverlayGroupType;
   }
 
+  get RootMapOverlayGroupCode() {
+    return ROOT_MAP_OVERLAY_GROUP_CODE;
+  }
+
   async findRootMapOverlayGroup() {
-    return this.findOne({ code: ROOT_MAP_OVERLAY_GROUP_CODE });
+    return this.findOne({ code: this.RootMapOverlayGroupCode });
   }
 
   async findTopLevelMapOverlayGroups() {

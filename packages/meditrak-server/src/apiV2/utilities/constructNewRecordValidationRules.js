@@ -6,6 +6,7 @@
 import { TYPES } from '@tupaia/database';
 import {
   constructRecordExistsWithId,
+  constructRecordExistsWithField,
   constructRecordNotExistsWithField,
   hasContent,
   isEmail,
@@ -146,6 +147,24 @@ export const constructForSingle = (models, recordType) => {
         config: [hasContent],
         report_code: [hasContent],
         legacy: [hasContent, isBoolean],
+      };
+    case TYPES.MAP_OVERLAY_GROUP_RELATION:
+      return {
+        map_overlay_group_id: [constructRecordExistsWithId(models.mapOverlayGroup)],
+        child_id: [
+          async (value, { child_type: childType }) => {
+            if (childType === models.mapOverlayGroupRelation.RelationChildTypes.MAP_OVERLAY) {
+              // Map Overlay Id is not in UID form so this is a work around.
+              await constructRecordExistsWithField(models.mapOverlay, 'id')(value);
+            } else {
+              await constructRecordExistsWithId(models.mapOverlayGroup)(value);
+            }
+          },
+        ],
+        child_type: [
+          constructIsOneOf(Object.values(models.mapOverlayGroupRelation.RelationChildTypes)),
+        ],
+        sort_order: [constructIsEmptyOr(isNumber)],
       };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);

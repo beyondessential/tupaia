@@ -180,6 +180,15 @@ export const constructIsArrayOf = type => value => {
   });
 };
 
+export const constructRecordExistsWithField = (model, field) => async value => {
+  hasContent(value);
+
+  const record = await model.findOne({ [field]: value });
+  if (!record) {
+    throw new ValidationError(`No ${model.databaseType} with ${field}: ${value}`);
+  }
+};
+
 export const constructRecordNotExistsWithField = (model, field) => async value => {
   hasContent(value);
 

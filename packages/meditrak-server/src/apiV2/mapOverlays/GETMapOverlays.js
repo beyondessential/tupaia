@@ -29,7 +29,7 @@ export class GETMapOverlays extends GETHandler {
   }
 
   async getPermissionsFilter(criteria, options) {
-    const dbConditions = await createMapOverlayDBFilter(this.accessPolicy, this.models, criteria);
+    const dbConditions = createMapOverlayDBFilter(this.accessPolicy, criteria);
     return { dbConditions, dbOptions: options };
   }
 }
