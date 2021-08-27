@@ -52,46 +52,48 @@ export async function syncWithKoBo(models, dataBroker, serviceCode) {
   // Create new survey_responses
   let newSyncTime = syncService.sync_cursor;
   await models.wrapInTransaction(async transactingModels => {
-    for (const [surveyCode, responses] of Object.entries(koboData)) {
-      const survey = await transactingModels.survey.findOne({ code: surveyCode });
+    for (const koboSyncResponse of koboData) {
+      for (const [surveyCode, responses] of Object.entries(koboSyncResponse)) {
+        const survey = await transactingModels.survey.findOne({ code: surveyCode });
 
-      for (const responseData of responses) {
-        if (responseData.eventDate > newSyncTime) {
-          newSyncTime = responseData.eventDate;
-        }
-        const entity = await transactingModels.entity.findOne({ code: responseData.orgUnit });
-        if (!entity) {
-          await syncService.log(
-            `Skipping KoBo sync for record id ${responseData.event}: unknown entity ${responseData.orgUnit}`,
-          );
-          continue;
-        }
+        for (const responseData of responses) {
+          if (responseData.eventDate > newSyncTime) {
+            newSyncTime = responseData.eventDate;
+          }
+          const entity = await transactingModels.entity.findOne({ code: responseData.orgUnit });
+          if (!entity) {
+            await syncService.log(
+              `Skipping KoBo sync for record id ${responseData.event}: unknown entity ${responseData.orgUnit}`,
+            );
+            continue;
+          }
 
-        const surveyResponse = await transactingModels.surveyResponse.create({
-          id: generateId(),
-          survey_id: survey.id,
-          user_id: apiUser.user_account_id,
-          assessor_name: responseData.assessor || 'KoBo Integration',
-          entity_id: entity.id,
-          start_time: responseData.eventDate,
-          end_time: responseData.eventDate,
-          data_time: responseData.eventDate,
-        });
-
-        const questions = await transactingModels.question.find({
-          code: Object.keys(responseData.dataValues),
-        });
-        const questionByCode = keyBy(questions, 'code');
-
-        await transactingModels.answer.createMany(
-          Object.entries(responseData.dataValues).map(([questionCode, answer]) => ({
+          const surveyResponse = await transactingModels.surveyResponse.create({
             id: generateId(),
-            type: questionByCode[questionCode].type,
-            survey_response_id: surveyResponse.id,
-            question_id: questionByCode[questionCode].id,
-            text: answer,
-          })),
-        );
+            survey_id: survey.id,
+            user_id: apiUser.user_account_id,
+            assessor_name: responseData.assessor || 'KoBo Integration',
+            entity_id: entity.id,
+            start_time: responseData.eventDate,
+            end_time: responseData.eventDate,
+            data_time: responseData.eventDate,
+          });
+
+          const questions = await transactingModels.question.find({
+            code: Object.keys(responseData.dataValues),
+          });
+          const questionByCode = keyBy(questions, 'code');
+
+          await transactingModels.answer.createMany(
+            Object.entries(responseData.dataValues).map(([questionCode, answer]) => ({
+              id: generateId(),
+              type: questionByCode[questionCode].type,
+              survey_response_id: surveyResponse.id,
+              question_id: questionByCode[questionCode].id,
+              text: answer,
+            })),
+          );
+        }
       }
     }
   });
