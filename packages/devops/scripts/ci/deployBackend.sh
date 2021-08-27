@@ -15,7 +15,9 @@ if [ -f "/root/tupaia_builds/deployment_exists" ]; then
     PM2_START="pm2 start --name ${PACKAGE} dist --wait-ready --listen-timeout 15000 --time ${REPLICATION_PM2_CONFIG}"
 
     # push bundle to host
-    scp -o StrictHostKeyChecking=no -pr /root/tupaia_builds/${PACKAGE} ubuntu@$DEPLOYMENT_SSH_URL:/home/ubuntu/tupaia_builds
+    cd /root/tupaia_builds && tar -zcvf ${PACKAGE}.tar.gz ${PACKAGE}
+    scp -o StrictHostKeyChecking=no /root/tupaia_builds/${PACKAGE}.tar.gz ubuntu@$DEPLOYMENT_SSH_URL:/home/ubuntu/tupaia_builds
+    ssh -o ServerAliveInterval=15 ubuntu@$DEPLOYMENT_SSH_URL "cd tupaia_builds && rm -rf ${PACKAGE} && tar -zxvf ${PACKAGE}.tar.gz && rm ${PACKAGE}.tar.gz"
 
     # restart process with latest bundle
     ssh -o ServerAliveInterval=15 ubuntu@$DEPLOYMENT_SSH_URL "cd tupaia_builds/${PACKAGE} && pm2 delete ${PACKAGE} || true && ${PM2_START};"
