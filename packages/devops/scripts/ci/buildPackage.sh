@@ -16,7 +16,7 @@ if [ -f "./tupaia/deployment_exists" ]; then
 
     # Replace any instances of the placeholder [branch-name] in the .env file with the actual branch
     # name (e.g. [branch-name]-api.tupaia.org -> specific-branch-api.tupaia.org)
-    sed -i -e "s/\[branch-name\]/${BRANCH}/g" .env
+    sed -i -e "s/\[branch-name\]/${BRANCH}/g" ./packages/${PACKAGE}/.env
 
     if [[ "${CI_BRANCH}" == *-e2e || "${CI_BRANCH}" == e2e ]]; then
         # Update e2e environment variables
