@@ -11,10 +11,13 @@ import {
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
-export const assertMapOverlaysGetPermissions = async (accessPolicy, models, mapOverlayId) => {
+export const hasMapOverlayGetPermissions = async (accessPolicy, models, mapOverlayId) => {
   const mapOverlay = await models.mapOverlay.findById(mapOverlayId);
   if (!mapOverlay) {
-    throw new Error(`No map overlay exists with id ${mapOverlayId}`);
+    return {
+      result: false,
+      errorMessage: `No map overlay exists with id "${mapOverlayId}"`,
+    };
   }
 
   const entities = await models.entity.find({ code: mapOverlay.countryCodes });
@@ -27,17 +30,27 @@ export const assertMapOverlaysGetPermissions = async (accessPolicy, models, mapO
         mapOverlay.userGroup,
       )
     ) {
-      return true;
+      return {
+        result: true,
+      };
     }
   }
 
-  throw new Error('You do not have permissions for the requested map overlay(s)');
+  return {
+    result: false,
+    errorMessage: `Requires "${
+      mapOverlay.userGroup
+    }" access to all countries "${mapOverlay.countryCodes.toString()}" of the map overlay`,
+  };
 };
 
-export const assertMapOverlaysEditPermissions = async (accessPolicy, models, mapOverlayId) => {
+export const hasMapOverlayEditPermissions = async (accessPolicy, models, mapOverlayId) => {
   const mapOverlay = await models.mapOverlay.findById(mapOverlayId);
   if (!mapOverlay) {
-    throw new Error(`No map overlay exists with id ${mapOverlayId}`);
+    return {
+      result: false,
+      errorMessage: `No map overlay exists with id ${mapOverlayId}`,
+    };
   }
 
   const entities = await models.entity.find({ code: mapOverlay.countryCodes });
@@ -47,7 +60,10 @@ export const assertMapOverlaysEditPermissions = async (accessPolicy, models, map
   // And user group access to at least one of the countries
   for (let i = 0; i < entities.length; i++) {
     if (!(await hasTupaiaAdminAccessToEntityForVisualisation(accessPolicy, models, entities[i]))) {
-      throw new Error('Requires tupaia admin panel access to all countries for the map overlay');
+      return {
+        result: false,
+        errorMessage: `Requires Tupaia Admin Panel access to all countries (${mapOverlay.countryCodes}) for the map overlay "${mapOverlayId}"`,
+      };
     }
     if (
       !hasUserGroupAccess &&
@@ -63,15 +79,34 @@ export const assertMapOverlaysEditPermissions = async (accessPolicy, models, map
   }
 
   if (!hasUserGroupAccess) {
-    throw new Error(
-      'Cannot edit a map overlay you do not have user group access to in at least one country',
-    );
+    return {
+      result: false,
+      errorMessage: `Cannot edit map overlay "${mapOverlayId}" as you do not have user group access to any of its countries (${mapOverlay.countryCodes})`,
+    };
   }
 
-  return true;
+  return { result: true };
 };
 
-export const createMapOverlayDBFilter = async (accessPolicy, models, criteria) => {
+export const assertMapOverlaysGetPermissions = async (accessPolicy, models, mapOverlayId) => {
+  const result = await hasMapOverlayGetPermissions(accessPolicy, models, mapOverlayId);
+  if (result.result) {
+    return true;
+  }
+
+  throw new Error(result.errorMessage);
+};
+
+export const assertMapOverlaysEditPermissions = async (accessPolicy, models, mapOverlayId) => {
+  const result = await hasMapOverlayEditPermissions(accessPolicy, models, mapOverlayId);
+  if (result.result) {
+    return true;
+  }
+
+  throw new Error(result.errorMessage);
+};
+
+export const createMapOverlayDBFilter = (accessPolicy, criteria) => {
   if (hasBESAdminAccess(accessPolicy)) {
     return criteria;
   }

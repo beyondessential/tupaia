@@ -57,6 +57,10 @@
       "path": "packages/indicators"
     },
     {
+      "name": "kobo-api",
+      "path": "packages/kobo-api"
+    },
+    {
       "name": "lesmis",
       "path": "packages/lesmis"
     },
