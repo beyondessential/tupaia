@@ -6,7 +6,7 @@
 import { reduceToDictionary } from '@tupaia/utils';
 
 import { Service } from '../Service';
-import { translateAnalyticsForConsumer, translateOptionsForApi } from './translation';
+import { translateOptionsForApi } from './translation';
 
 // used for internal Tupaia apis: TupaiaDataApi and IndicatorApi
 export class TupaiaService extends Service {
@@ -39,17 +39,18 @@ export class TupaiaService extends Service {
 
   async pullAnalytics(dataSources, options) {
     const dataElementCodes = dataSources.map(({ code }) => code);
-    const analytics = await this.api.fetchAnalytics({
+    const { analytics, numAggregationsProcessed } = await this.api.fetchAnalytics({
       ...translateOptionsForApi(options),
       dataElementCodes,
     });
     const dataElements = await this.pullDataElementMetadata(dataSources, options);
 
     return {
-      results: translateAnalyticsForConsumer(analytics),
+      results: analytics,
       metadata: {
         dataElementCodeToName: reduceToDictionary(dataElements, 'code', 'name'),
       },
+      numAggregationsProcessed,
     };
   }
 

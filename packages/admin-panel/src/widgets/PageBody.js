@@ -13,7 +13,7 @@ const MinHeightContainer = styled(MuiContainer)`
 `;
 
 export const PageBody = ({ children, className }) => (
-  <MinHeightContainer className={className} maxWidth="lg">
+  <MinHeightContainer className={className} maxWidth="xl">
     {children}
   </MinHeightContainer>
 );

@@ -1,6 +1,5 @@
 import xlsx from 'xlsx';
 import fs from 'fs';
-import { truncateString } from 'sussol-utilities';
 import { getExportDatesString } from '@tupaia/utils';
 
 import { requestFromTupaiaConfigServer } from './requestFromTupaiaConfigServer';
@@ -84,7 +83,7 @@ export class ExportSurveyDataHandler extends RouteHandler {
         origin: -1, // Append to bottom of worksheet starting on first column
       });
 
-      const sheetName = truncateString(surveyName, 31);
+      const sheetName = surveyName.substring(0, 31); // stay within excel sheet name limit
 
       sheetNames.push(sheetName);
       sheets[sheetName] = sheet;
@@ -101,6 +100,8 @@ export class ExportSurveyDataHandler extends RouteHandler {
 
     const filePath = `${EXPORT_DIRECTORY}/${EXPORT_FILE_TITLE}_${Date.now()}.xlsx`;
     xlsx.writeFile(workbook, filePath);
-    this.res.download(filePath);
+    this.res.download(filePath, () => {
+      fs.unlinkSync(filePath); // delete export file after download
+    });
   }
 }
