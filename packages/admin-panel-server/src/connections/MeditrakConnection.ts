@@ -7,6 +7,9 @@ import { QueryParameters, ApiConnection } from '@tupaia/server-boilerplate';
 
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
 
+/**
+ * @deprecated use @tupaia/api-client
+ */
 export class MeditrakConnection extends ApiConnection {
   baseUrl = MEDITRAK_API_URL;
 
