@@ -6,51 +6,77 @@
 #   service (see below)
 # - 'cypress' service includes a base cypress container, plus code and node_module dependencies
 #   required by e2e tests in web-frontend
-# - the db service provides a postgres db with postgis (and takes a little while to run, thus the
+# - the 'db' service provides a postgres db with postgis (and takes a little while to run, thus the
 #   splitting of the above services so validation isn't slower than it should be)
-# - the deployment service just uses the base alpine image + ssh to log into
-#   an ec2 instance and deploy the latest version of the code for each package
+# - the 'lastpass' service is simply set up to be able to communicate with LastPass, to fetch
+#   environment variables
+# - the 'builder' service uses the same image as the 'testing' service, but skips the dependency on
+#   the db, and makes the built files available to the later deployment step
+# - the 'deployment' service just uses the base alpine image + ssh to log into an ec2 instance and
+#   deploy the latest version of the code for each package
+
+lastpass:
+  build:
+    dockerfile: tupaia-ci-cd.Dockerfile
+  encrypted_env_file: ./lastpass.env.encrypted # lastpass credentials to fetch env vars
+  cached: true
+  default_cache_branch: 'dev'
+  encrypted_dockercfg_path: dockercfg.encrypted
+  volumes:
+    - ./tmp:/common
 
 validation:
   build:
-    dockerfile: full-testable-package.Dockerfile
+    dockerfile: tupaia-ci-cd.Dockerfile
   cached: true
-  encrypted_dockercfg_path: dockercfg.encrypted
   default_cache_branch: 'dev'
+  encrypted_dockercfg_path: dockercfg.encrypted
+  volumes:
+    - ./tmp:/common
 
 testing:
   build:
-    dockerfile: full-testable-package.Dockerfile
+    dockerfile: tupaia-ci-cd.Dockerfile
+  cached: true
+  default_cache_branch: 'dev'
   depends_on:
     - db
-  encrypted_env_file: ./ci-env-vars.encrypted # all individual .env files combined and encrypted
-  cached: true
+  encrypted_env_file: ./testing.env.encrypted # test db env vars
   encrypted_dockercfg_path: dockercfg.encrypted
-  default_cache_branch: 'dev'
+  volumes:
+    - ./tmp:/common
 
 e2e:
   build:
     dockerfile: e2e.Dockerfile
-  encrypted_env_file: ./ci-env-vars.encrypted
+  encrypted_env_file: ./e2e.env.encrypted
   cached: true
-  encrypted_dockercfg_path: dockercfg.encrypted
   default_cache_branch: 'e2e'
+  encrypted_dockercfg_path: dockercfg.encrypted
   volumes:
     # see https://docs.cloudbees.com/docs/cloudbees-codeship/latest/pro-continuous-integration/browser-testing#_chrome_crashing
     - /dev/shm:/dev/shm
 
 db:
   image: mdillon/postgis:10-alpine
-  cached: true
   encrypted_dockercfg_path: dockercfg.encrypted
+
+builder:
+  build:
+    dockerfile: tupaia-ci-cd.Dockerfile
+  cached: true
+  default_cache_branch: 'dev'
+  encrypted_dockercfg_path: dockercfg.encrypted
+  volumes:
+    - ./tmp:/common
 
 deployment:
   build:
-    dockerfile: deploy-only.Dockerfile
-  encrypted_env_file: ./ci-env-vars.encrypted
-  volumes:
-    # mapping to `.ssh` directory ensures that `id_rsa` file persists to subsequent steps
-    - ./.ssh:/root/.ssh
+    dockerfile: tupaia-ci-cd.Dockerfile
   cached: true
+  default_cache_branch: dev
+  encrypted_env_file: ./deployment.env.encrypted
   encrypted_dockercfg_path: dockercfg.encrypted
-  default_cache_branch: 'dev'
+  volumes:
+    - ./.ssh:/root/.ssh # persist `id_rsa` across steps
+    - ./tmp:/common

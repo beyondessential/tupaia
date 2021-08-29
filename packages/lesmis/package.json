@@ -12,7 +12,6 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "GENERATE_SOURCEMAP=false react-scripts build",
-    "postbuild": "rm -rf served_build && mv build served_build",
     "eject": "react-scripts eject",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
@@ -31,8 +30,6 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/styles": "^4.9.10",
-    "@tupaia/access-policy": "3.0.0",
-    "@tupaia/auth": "1.0.0",
     "@tupaia/ui-components": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "axios": "^0.21.1",

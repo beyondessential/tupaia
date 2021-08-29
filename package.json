@@ -21,6 +21,7 @@
     "build-admin-panel": "yarn workspace @tupaia/admin-panel build",
     "build-internal-dependencies": "./scripts/bash/buildInternalDependencies.sh",
     "build-web-frontend": "yarn workspace @tupaia/web-frontend build",
+    "download-env-vars": "./scripts/bash/downloadEnvironmentVariables.sh",
     "dump-database": "yarn workspace @tupaia/database dump-database --target ../../",
     "migrate": "yarn workspace @tupaia/database migrate",
     "migrate-create": "yarn workspace @tupaia/database migrate-create",
@@ -30,7 +31,6 @@
     "refresh-database": "yarn workspace @tupaia/database refresh-database --root ../../",
     "test-all": "node ./scripts/node/testAll --silent",
     "update-codeship-env-vars": "./packages/devops/scripts/ci/updateCiEnvVars.sh",
-    "download-parameter-store-env-vars": "./scripts/bash/syncDotEnvWithParameterStore.sh --download",
     "validate": "./scripts/bash/validate.sh"
   },
   "resolutions": {

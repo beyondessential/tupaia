@@ -1,4 +1,3 @@
-import {} from 'dotenv/config'; // Load the environment variables into process.env
 import supertest from 'supertest';
 import { util } from 'client-sessions';
 import { createApp } from '/app';
@@ -7,11 +6,6 @@ import { USER_SESSION_CONFIG } from '/authSession';
 export const DEFAULT_API_VERSION = 1;
 const getVersionedEndpoint = (endpoint, apiVersion = DEFAULT_API_VERSION) =>
   `/api/v${apiVersion}/${endpoint}`;
-
-export const getAuthorizationHeader = () => {
-  const credentials = `${process.env.CLIENT_USERNAME}:${process.env.CLIENT_SECRET}`;
-  return `Basic ${new Buffer(credentials).toString('base64')}`;
-};
 
 const app = createApp();
 

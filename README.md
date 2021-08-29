@@ -52,6 +52,10 @@ if you prefer to pre-build internal dependencies, add `--skip-internal` to the a
 
 Most packages will require a .env file. `.env.example` files indicate the required variables per package.
 
+🔑 **BES internal:** If you have access to the LastPass folder Tupaia Environment Variables, you can get most environment variables
+onto your machine by running `LASTPASS_EMAIL=xxx LASTPASS_PASSWORD=yyy yarn download-env-vars local`. To update specific package(s),
+just add their names, e.g. `LASTPASS_EMAIL=xxx LASTPASS_PASSWORD=yyy yarn download-env-vars local admin-panel admin-panel-server`
+
 ### Local database
 
 🔑 **BES internal:** [Tupaia monorepo setup](https://beyond-essential.slab.com/posts/tupaia-monorepo-setup-v5egpdpq) - steps 4 and 5
@@ -65,19 +69,13 @@ root, and it will install dependencies everywhere.
 
 We use codeship for the admin-panel, meditrak-server, web-config-server, and web-frontend packages.
 
-For codeship to use our environment variables, we store them encrypted and committed to the repo as
-ci-env-vars.encrypted inside each package. In order to update an environment variable:
+Codeship pulls environment variables from the "Tupaia Environment Variables" shared folder on LastPass, so to update one,
+just modify the entry. If you'd like to test it for a specific branch, you can make a new entry using the same naming
+convention you'll find already in there, i.e. `package-name.branch-name.env`.
 
-- modify your local .env file
-- download the codeship encryption key (either from LastPass or codeship itself) and save as codeship.aes in the root directory
-- run `yarn update-codeship-env-vars`
-
-Note that environment variables are also stored in AWS parameter store for new dev and feature deployments to pull from,
-so if you've updated the environment variables here, you probably also need to persist them across there
-
-- ssh into the aws instance (cannot be run locally at this stage)
-- update the .env file (if it hasn't been updated automatically by the CI/CD process)
-- run `ENVIRONMENT=dev yarn update-paramater-store-env-vars` (setting environment to either dev or production)
+Codeship also uses a few secrets for various services. To update any of these, create a service.env (e.g. lastpass.env) file
+within the root tupaia directory, then run `jet encrypt lastpass.env lastpass.env.encrypted`. There are example.env files
+that show requirements for lastpass, deployment, testing, and e2e services
 
 ## Tests
 
