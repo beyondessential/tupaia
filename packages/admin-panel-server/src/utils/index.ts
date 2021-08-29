@@ -5,3 +5,4 @@
  */
 
 export { hasTupaiaAdminPanelAccess } from './hasTupaiaAdminPanelAccess';
+export { hasBESAdminAccess } from './hasBESAdminAccess';

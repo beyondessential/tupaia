@@ -48,7 +48,7 @@ const getSubContext = (
   const field = (queryField ? extractFieldFromQuery(queryField) : baseField) || 'code';
   const filter = extractFilterFromQuery(allowedCountries, queryFilter);
   const { type, ...restOfFilter } = filter;
-  if (type === null || Array.isArray(type)) {
+  if (type === null || typeof type !== 'string') {
     throw new Error(`${from}_filter:type must be a single, not null type constraint`);
   }
   return { type, field, filter: restOfFilter };
