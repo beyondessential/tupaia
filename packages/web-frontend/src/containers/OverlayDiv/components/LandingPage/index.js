@@ -55,7 +55,9 @@ export const LandingPage = ({ isUserLoggedIn }) => {
     <Container>
       <div>
         <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" />
-        <TagLine>Test test test for the most remote settings in the world</TagLine>
+        <TagLine>
+          Data aggregation, analysis, and visualisation for the most remote settings in the world
+        </TagLine>
         {isLoginPageVisible && (
           <ViewProjectsButton onClick={showProjects} variant="outlined">
             <ExploreIcon /> View projects
