@@ -2,12 +2,12 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import React, { useContext } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import MuiIconButton from '@material-ui/core/IconButton';
 import PlayIcon from '@material-ui/icons/PlayCircleFilled';
 
-import { PreviewDataContext } from '../context';
+import { usePreviewData } from '../context';
 
 const IconButton = styled(MuiIconButton)`
   border: 1px solid ${({ theme }) => theme.palette.grey['400']};
@@ -22,7 +22,7 @@ const IconButton = styled(MuiIconButton)`
 `;
 
 export const PlayButton = () => {
-  const { setFetchEnabled, setShowData } = useContext(PreviewDataContext);
+  const { setFetchEnabled, setShowData } = usePreviewData();
 
   const handleClick = () => {
     setFetchEnabled(true);

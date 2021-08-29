@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import debounce from 'lodash.debounce';
@@ -21,7 +21,7 @@ import { useLocations, useProjects } from '../api/queries';
 import { useVizBuilderConfig } from '../vizBuilderConfigStore';
 import { LinkButton } from './LinkButton';
 import { useUploadTestData } from '../api';
-import { PreviewDataContext } from '../context';
+import { usePreviewData } from '../context';
 
 const Container = styled(FlexSpaceBetween)`
   padding: 24px 0;
@@ -130,7 +130,7 @@ const UploadDataModal = ({ isOpen, onSubmit, onClose }) => (
 );
 
 export const PreviewOptions = () => {
-  const { setShowData } = useContext(PreviewDataContext);
+  const { setShowData } = usePreviewData();
   const [locationSearch, setLocationSearch] = useState('');
   const [selectedProjectOption, setSelectedProjectOption] = useState(null);
   const [selectedLocationOption, setSelectedLocationOption] = useState(null);

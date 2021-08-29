@@ -4,9 +4,9 @@
  */
 
 import PropTypes from 'prop-types';
-import React, { createContext, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
-export const PreviewDataContext = createContext(null);
+const PreviewDataContext = createContext(null);
 
 export const PreviewDataProvider = ({ children }) => {
   const [fetchEnabled, setFetchEnabled] = useState(false);
@@ -18,6 +18,8 @@ export const PreviewDataProvider = ({ children }) => {
     </PreviewDataContext.Provider>
   );
 };
+
+export const usePreviewData = () => useContext(PreviewDataContext);
 
 PreviewDataProvider.propTypes = {
   children: PropTypes.node.isRequired,

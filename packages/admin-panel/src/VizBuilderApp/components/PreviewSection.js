@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import React, { useContext, useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import MuiTab from '@material-ui/core/Tab';
 import MuiTabs from '@material-ui/core/Tabs';
@@ -11,7 +11,7 @@ import { FlexSpaceBetween, FetchLoader, DataTable } from '@tupaia/ui-components'
 import { TabPanel } from './TabPanel';
 import { useVizBuilderConfig } from '../vizBuilderConfigStore';
 import { useReportPreview } from '../api';
-import { PreviewDataContext } from '../context';
+import { usePreviewData } from '../context';
 import { JsonEditor } from './JsonEditor';
 import { IdleMessage } from './IdleMessage';
 
@@ -108,7 +108,7 @@ const getColumns = data => {
 };
 
 export const PreviewSection = () => {
-  const { fetchEnabled, setFetchEnabled, showData } = useContext(PreviewDataContext);
+  const { fetchEnabled, setFetchEnabled, showData } = usePreviewData();
   const [
     { project, location, visualisation, testData },
     { setPresentation },
