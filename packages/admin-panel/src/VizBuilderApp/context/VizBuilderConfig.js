@@ -131,8 +131,8 @@ const useConfigStore = () => {
   ];
 };
 
-const vizBuilderConfigStore = createContext(initialConfigState);
-const { Provider } = vizBuilderConfigStore;
+const VizBuilderConfigContext = createContext(initialConfigState);
+const { Provider } = VizBuilderConfigContext;
 
 // eslint-disable-next-line react/prop-types
 const VizBuilderConfigProvider = ({ children }) => {
@@ -146,7 +146,7 @@ const VizBuilderConfigProvider = ({ children }) => {
 };
 
 const useVizBuilderConfig = () => {
-  return useContext(vizBuilderConfigStore);
+  return useContext(VizBuilderConfigContext);
 };
 
 // Note: the store can be debugged in dev tools using a chrome plugin.

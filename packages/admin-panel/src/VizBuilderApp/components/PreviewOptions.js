@@ -18,10 +18,9 @@ import {
   ImportModal,
 } from '@tupaia/ui-components';
 import { useLocations, useProjects } from '../api/queries';
-import { useVizBuilderConfig } from '../vizBuilderConfigStore';
+import { usePreviewData, useVizBuilderConfig } from '../context';
 import { LinkButton } from './LinkButton';
 import { useUploadTestData } from '../api';
-import { usePreviewData } from '../context';
 
 const Container = styled(FlexSpaceBetween)`
   padding: 24px 0;

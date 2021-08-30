@@ -11,7 +11,7 @@ import { FlexColumn, FlexSpaceBetween } from '@tupaia/ui-components';
 import { TabPanel } from './TabPanel';
 import { JsonEditor } from './JsonEditor';
 import { PlayButton } from './PlayButton';
-import { useVizBuilderConfig } from '../vizBuilderConfigStore';
+import { useVizBuilderConfig } from '../context';
 
 const Container = styled(FlexColumn)`
   position: relative;

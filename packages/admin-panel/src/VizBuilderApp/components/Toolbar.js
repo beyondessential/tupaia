@@ -14,7 +14,7 @@ import { ExportButton } from './ExportButton';
 import { SaveButton } from './SaveButton';
 import { ReactComponent as DocumentIcon } from './DocumentIcon.svg';
 import { EditModal } from './Modal';
-import { useVizBuilderConfig } from '../vizBuilderConfigStore';
+import { useVizBuilderConfig } from '../context';
 
 const Wrapper = styled.div`
   width: 100%;

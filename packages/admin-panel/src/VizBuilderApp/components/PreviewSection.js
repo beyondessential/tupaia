@@ -9,9 +9,8 @@ import MuiTabs from '@material-ui/core/Tabs';
 import { Chart } from '@tupaia/ui-components/lib/chart';
 import { FlexSpaceBetween, FetchLoader, DataTable } from '@tupaia/ui-components';
 import { TabPanel } from './TabPanel';
-import { useVizBuilderConfig } from '../vizBuilderConfigStore';
 import { useReportPreview } from '../api';
-import { usePreviewData } from '../context';
+import { usePreviewData, useVizBuilderConfig } from '../context';
 import { JsonEditor } from './JsonEditor';
 import { IdleMessage } from './IdleMessage';
 

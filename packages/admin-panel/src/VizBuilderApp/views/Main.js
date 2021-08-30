@@ -11,10 +11,9 @@ import MuiContainer from '@material-ui/core/Container';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { FlexColumn, SmallAlert } from '@tupaia/ui-components';
 
-import { useVizBuilderConfig } from '../vizBuilderConfigStore';
 import { useDashboardVisualisation } from '../api';
 import { Toolbar, Panel, PreviewSection, PreviewOptions } from '../components';
-import { PreviewDataProvider } from '../context';
+import { PreviewDataProvider, useVizBuilderConfig } from '../context';
 
 const Container = styled(MuiContainer)`
   flex: 1;
