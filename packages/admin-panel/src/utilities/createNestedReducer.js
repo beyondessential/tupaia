@@ -29,5 +29,5 @@ export const createNestedReducer = (defaultNestedState, nestedStateChanges) => {
   Object.entries(nestedStateChanges).forEach(([actionType, actionHandler]) => {
     stateChanges[actionType] = createNestedStateChanger(defaultNestedState, actionHandler);
   });
-  return createReducer({}, stateChanges);
+  return createReducer(defaultNestedState, stateChanges);
 };

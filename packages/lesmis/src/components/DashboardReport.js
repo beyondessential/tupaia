@@ -31,7 +31,7 @@ const Footer = styled(FlexEnd)`
 `;
 
 export const DashboardReport = React.memo(
-  ({ name, reportCode, startDate, endDate, isEnlarged }) => {
+  ({ name, reportCode, startDate, endDate, isEnlarged, isExporting }) => {
     const { search } = useLocation();
     const { entityCode } = useUrlParams();
 
@@ -56,6 +56,7 @@ export const DashboardReport = React.memo(
           isError={isError}
           error={error}
           name={name}
+          isExporting={isExporting}
           drilldownPathname={drillDownPathname}
           reportCodes={reportCodes}
           isEnlarged={isEnlarged}
@@ -86,6 +87,7 @@ DashboardReport.propTypes = {
   name: PropTypes.string,
   reportCode: PropTypes.string,
   isEnlarged: PropTypes.bool,
+  isExporting: PropTypes.bool,
 };
 
 DashboardReport.defaultProps = {
@@ -94,4 +96,5 @@ DashboardReport.defaultProps = {
   reportCode: null,
   name: null,
   isEnlarged: false,
+  isExporting: false,
 };

@@ -10,7 +10,7 @@ let modelsSingleton = null;
 export function getModels() {
   if (!modelsSingleton) {
     const database = new TupaiaDatabase();
-    modelsSingleton = new ModelRegistry(database, modelClasses);
+    modelsSingleton = new ModelRegistry(database, modelClasses, true);
   }
 
   return modelsSingleton;
