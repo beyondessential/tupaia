@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import MuiBox from '@material-ui/core/Box';
 
-import { FlexStart, FlexEnd } from '@tupaia/ui-components';
+import { FlexStart, FlexEnd, FlexSpaceBetween } from '@tupaia/ui-components';
 
 import { ExportButton } from './ExportButton';
 import { SaveButton } from './SaveButton';
@@ -46,6 +46,13 @@ const Title = styled(Typography)`
   margin-bottom: 0.1rem;
 `;
 
+const ButtonContainer = styled(FlexSpaceBetween)`
+  .MuiButton-root {
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+`;
+
 export const Toolbar = () => {
   const [{ project, visualisation }] = useVizBuilderConfig();
 
@@ -62,9 +69,11 @@ export const Toolbar = () => {
           </MuiBox>
         </FlexStart>
         <FlexEnd>
-          <ExportButton />
-          <EditModal />
-          <SaveButton />
+          <ButtonContainer>
+            <ExportButton />
+            <EditModal />
+            <SaveButton />
+          </ButtonContainer>
         </FlexEnd>
       </Container>
     </Wrapper>
