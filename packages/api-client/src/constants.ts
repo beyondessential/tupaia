@@ -17,6 +17,12 @@ export const LOCALHOST_ENDPOINT_BASE_URLS: EndpointBaseUrlSet = {
   'report': 'http://localhost:x/y',
 }
 
+export const DEV_BASE_URLS: EndpointBaseUrlSet = {
+  'entity': 'https://dev-entity-api.tupaia.org/v1',
+  'meditrak': 'https://dev-api.tupaia.org/v2',
+  'report': 'https://dev-report-api.tupaia.org/v1',
+}
+
 export const ENDPOINT_BASE_URLS: EndpointBaseUrlSet = {
   'entity': 'https://entity-api.tupaia.org/v1',
   'meditrak': 'https://api.tupaia.org/v2',
