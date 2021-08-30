@@ -51,8 +51,8 @@ const PaperComponent = styled(MuiPaper)`
 const UploadedFileContainer = styled(FlexSpaceBetween)`
   width: 100%;
   padding: 14px;
-  background-color: ${blue[50]};
-  border: 1px solid ${blue[400]};
+  background-color: ${props => props.theme.palette.blue[100]};
+  border: 1px solid ${props => props.theme.palette.blue[300]};
   border-radius: 3px;
   font-size: 14px;
   .MuiSvgIcon-root {
