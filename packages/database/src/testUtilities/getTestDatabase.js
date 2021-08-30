@@ -18,5 +18,5 @@ export function getTestDatabase() {
 }
 
 export function getTestModels() {
-  return new ModelRegistry(getTestDatabase());
+  return new ModelRegistry(getTestDatabase(), {}, true);
 }

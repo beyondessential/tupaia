@@ -33,7 +33,22 @@ export const Editor = ({ fields, recordData, onEditField }) => {
   return (
     <div>
       {fields
-        .filter(({ show = true }) => show)
+        .filter(({ show = true, editConfig = {} }) => {
+          const { visibilityCriteria } = editConfig;
+
+          if (!show) {
+            return false;
+          }
+
+          // show or hide a field based on another field's value
+          if (visibilityCriteria) {
+            return Object.entries(visibilityCriteria).every(
+              ([key, value]) => recordData[key] === value,
+            );
+          }
+
+          return true;
+        })
         .map(({ editable = true, editConfig = {}, source, Header, accessor }) => (
           <InputField
             key={source}

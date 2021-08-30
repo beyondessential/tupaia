@@ -77,6 +77,15 @@ export const stringifyValue = value => {
   }
 };
 
+export const strictJsonParseValue = value => {
+  const o = JSON.parse(value);
+  // JSON.parse(null) returns null, and typeof null === "object"
+  if (typeof o === 'object' && o) {
+    return o;
+  }
+  throw new Error('JSON parse failed, result is not an object');
+};
+
 export const getTypeWithArticle = type =>
   [VALIDATION_TYPES.UNDEFINED, VALIDATION_TYPES.NULL].includes(type)
     ? type

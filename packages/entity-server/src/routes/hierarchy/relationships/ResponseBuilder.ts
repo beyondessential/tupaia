@@ -7,7 +7,7 @@ import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
 import { QueryConjunctions } from '@tupaia/server-boilerplate';
 
 import { EntityServerModelRegistry } from '../../../types';
-import { EntityFilter, EntityType, DefaultFilter } from '../../../models';
+import { EntityFilter, EntityType } from '../../../models';
 import { formatEntitiesForResponse } from '../format';
 import { MultiEntityRelationshipsContext } from './types';
 

@@ -145,7 +145,7 @@ describe('Aggregator', () => {
       await aggregator.fetchAnalytics(['POP01', 'POP02'], fetchOptions, aggregationOptions);
       expect(dataBroker.pull).toHaveBeenCalledBefore(AggregateAnalytics.aggregateAnalytics);
       expect(AggregateAnalytics.aggregateAnalytics).toHaveBeenCalledOnceWith(
-        results,
+        results[0].analytics,
         aggregationType,
         aggregationConfig,
       );

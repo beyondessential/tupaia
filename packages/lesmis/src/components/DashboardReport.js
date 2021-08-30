@@ -6,12 +6,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { DashboardReportModal } from './DashboardReportModal';
+import { ListVisual } from '@tupaia/ui-components';
+import Button from '@material-ui/core/Button';
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { Chart } from './Chart';
 import * as COLORS from '../constants';
-import { useDashboardReportData } from '../api/queries';
-import { yearToApiDates } from '../api/queries/utils';
+import { useDashboardReportDataWithConfig } from '../api/queries';
 import { FlexEnd } from './Layout';
+import { useUrlParams } from '../utils';
 
 const Container = styled.div`
   width: 55rem;
@@ -27,77 +30,71 @@ const Footer = styled(FlexEnd)`
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
-export const CHART_TYPES = {
-  AREA: 'area',
-  BAR: 'bar',
-  COMPOSED: 'composed',
-  LINE: 'line',
-  PIE: 'pie',
-};
-
 export const DashboardReport = React.memo(
-  ({
-    reportCode,
-    name,
-    entityCode,
-    dashboardCode,
-    dashboardName,
-    periodGranularity,
-    year,
-    viewConfig,
-  }) => {
-    const { code: itemCode, legacy } = viewConfig;
-    const { startDate, endDate } = yearToApiDates(year);
-    const { data, isLoading, isFetching, isError, error } = useDashboardReportData({
+  ({ name, reportCode, startDate, endDate, isEnlarged, isExporting }) => {
+    const { search } = useLocation();
+    const { entityCode } = useUrlParams();
+
+    const { data, isLoading, isFetching, isError, error } = useDashboardReportDataWithConfig({
       entityCode,
       reportCode,
-      dashboardCode,
-      itemCode,
-      legacy,
-      periodGranularity,
       startDate,
       endDate,
     });
 
+    const { reportData, dashboardItemConfig: config, reportCodes } = data;
+    const Visual = config?.type === 'list' ? ListVisual : Chart;
+    const Wrapper = isEnlarged ? React.Fragment : Container;
+    const drillDownPathname = `/${entityCode}/dashboard`;
+
     return (
-      <Container>
-        <Chart
-          viewContent={{ ...viewConfig, data, startDate, endDate }}
+      <Wrapper>
+        <Visual
+          viewContent={{ ...config, data: reportData, startDate, endDate }}
           isLoading={isLoading}
           isFetching={isFetching}
           isError={isError}
           error={error}
           name={name}
+          isExporting={isExporting}
+          drilldownPathname={drillDownPathname}
+          reportCodes={reportCodes}
+          isEnlarged={isEnlarged}
         />
-        <Footer>
-          <DashboardReportModal
-            buttonText="See More"
-            name={name}
-            entityCode={entityCode}
-            dashboardCode={dashboardCode}
-            dashboardName={dashboardName}
-            reportCode={reportCode}
-            periodGranularity={periodGranularity}
-            viewConfig={viewConfig}
-          />
-        </Footer>
-      </Container>
+        {!isEnlarged && (
+          <Footer>
+            <Button
+              component={RouterLink}
+              endIcon={<KeyboardArrowRightIcon />}
+              color="primary"
+              to={{
+                pathname: drillDownPathname,
+                search: `${search}&reportCode=${reportCode}`,
+              }}
+            >
+              See More
+            </Button>
+          </Footer>
+        )}
+      </Wrapper>
     );
   },
 );
 
 DashboardReport.propTypes = {
-  name: PropTypes.string.isRequired,
-  reportCode: PropTypes.string.isRequired,
-  entityCode: PropTypes.string.isRequired,
-  year: PropTypes.string,
-  dashboardCode: PropTypes.string.isRequired,
-  dashboardName: PropTypes.string.isRequired,
-  periodGranularity: PropTypes.string,
-  viewConfig: PropTypes.object.isRequired,
+  startDate: PropTypes.string,
+  endDate: PropTypes.string,
+  name: PropTypes.string,
+  reportCode: PropTypes.string,
+  isEnlarged: PropTypes.bool,
+  isExporting: PropTypes.bool,
 };
 
 DashboardReport.defaultProps = {
-  year: null,
-  periodGranularity: null,
+  startDate: null,
+  endDate: null,
+  reportCode: null,
+  name: null,
+  isEnlarged: false,
+  isExporting: false,
 };
