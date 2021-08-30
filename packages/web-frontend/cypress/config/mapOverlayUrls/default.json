@@ -83,5 +83,25 @@
     "id": "UNFPA_RH_Condoms_male",
     "project": "unfpa",
     "orgUnit": "TO"
+  },
+  {
+    "id": "RH_MOS_3b3994bf_Regional",
+    "project": "unfpa",
+    "orgUnit": "unfpa"
+  },
+  {
+    "id": "RH_Available_RHS3UNFPA536",
+    "project": "unfpa",
+    "orgUnit": "FM"
+  },
+  {
+    "id": "88",
+    "project": "unfpa",
+    "orgUnit": "WS"
+  },
+  {
+    "id": "88",
+    "project": "unfpa",
+    "orgUnit": "WS"
   }
 ]
