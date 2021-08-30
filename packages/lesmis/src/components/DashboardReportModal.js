@@ -154,9 +154,11 @@ export const DashboardReportModal = () => {
   // Display the modal  if there is a report code in the url
   const isOpen = !!reportCode;
 
-  const title = isExporting
-    ? `${entityCode}, ${config?.dashboardName}, ${config?.name}`
+  const dashboardTitle = isExporting
+    ? `${entityData?.name}, ${config?.dashboardName}, ${config?.name}`
     : config?.name;
+
+  const modalTitle = `${entityData?.name}, ${config?.dashboardName}`;
 
   return (
     <MuiDialog
@@ -169,7 +171,7 @@ export const DashboardReportModal = () => {
     >
       <DialogHeader
         handleClose={handleClose}
-        title={config?.dashboardName ? config?.dashboardName : 'Loading...'}
+        title={config?.dashboardName ? modalTitle : 'Loading...'}
       />
       <ExportLoader $isExporting={isExportLoading}>
         <CircularProgress size={50} />
@@ -181,7 +183,7 @@ export const DashboardReportModal = () => {
         <Container maxWidth="xl">
           <Header>
             <Box maxWidth={580}>
-              <Heading variant="h3">{title}</Heading>
+              <Heading variant="h3">{dashboardTitle}</Heading>
               {config?.description && <Description>{config.description}</Description>}
             </Box>
             <Toolbar $isExporting={isExporting}>
