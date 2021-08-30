@@ -100,8 +100,38 @@
     "orgUnit": "WS"
   },
   {
-    "id": "88",
-    "project": "unfpa",
-    "orgUnit": "WS"
+    "id": "FETP_Active_Graduates_By_District",
+    "project": "fetp",
+    "orgUnit": "PG"
+  },
+  {
+    "id": "STRIVE_CRF_Positive,STRIVE_CRF_mRDT_Tests_Radius",
+    "project": "strive",
+    "orgUnit": "PG"
+  },
+  {
+    "id": "STRIVE_CRF_Febrile_Cases_Radius",
+    "project": "strive",
+    "orgUnit": "PG"
+  },
+  {
+    "id": "STRIVE_FIS_Village_Percent_mRDT_Positive_Non_PF_In_Week",
+    "project": "strive",
+    "orgUnit": "PG"
+  },
+  {
+    "id": "PG_STRIVE_QMAL05_Positive",
+    "project": "strive",
+    "orgUnit": "PG"
+  },
+  {
+    "id": "PG_Strive_Mosquito_Species",
+    "project": "strive",
+    "orgUnit": "PG"
+  },
+  {
+    "id": "PNG_STRIVE_Resistance",
+    "project": "strive",
+    "orgUnit": "PG"
   }
 ]

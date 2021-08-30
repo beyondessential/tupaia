@@ -1029,5 +1029,23 @@
     "project": "ehealth_nauru",
     "orgUnit": "NR",
     "dashboard": "Clinical"
+  },
+  {
+    "code": "PSSS_Country_AFR_Case_Numbers_With_Percent_Sites_Reporting",
+    "project": "psss",
+    "orgUnit": "FJ",
+    "dashboard": "Syndromic Surveillance"
+  },
+  {
+    "code": "PSSS_Country_ILI_Case_Numbers_With_Percent_Sites_Reporting",
+    "project": "psss",
+    "orgUnit": "FJ",
+    "dashboard": "Syndromic Surveillance"
+  },
+  {
+    "code": "FETP_PG_graduate_locations",
+    "project": "fetp",
+    "orgUnit": "PG",
+    "dashboard": "FETP"
   }
 ]
