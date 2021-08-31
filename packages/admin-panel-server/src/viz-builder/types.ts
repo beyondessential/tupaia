@@ -42,6 +42,7 @@ export type DashboardVisualisationObject = {
 };
 
 export interface VisualisationValidator {
+  validationSchema: yup.ObjectSchema;
   validate: (object: DashboardVisualisationObject) => void;
 }
 

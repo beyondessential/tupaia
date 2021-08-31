@@ -26,56 +26,33 @@ export class FetchReportPreviewDataRoute extends Route {
   }
 
   async buildResponse() {
-    this.validate();
+    const { entityCode, hierarchy, previewMode } = this.req.query;
+    const { previewConfig } = this.req.body;
 
-    const { entityCode, hierarchy } = this.req.query;
-    const { testData = null } = this.req.body;
+    if (!previewConfig) {
+      throw new Error('Requires preview config to fetch preview data');
+    }
 
-    const reportConfig = this.getReportConfig();
+    if (!hierarchy) {
+      throw new Error('Requires hierarchy to fetch preview data');
+    }
+
+    if (!entityCode) {
+      throw new Error('Requires entity to fetch preview data');
+    }
+
+    const { config: reportConfig } = new DashboardVisualisationExtractor(
+      previewConfig,
+      new DraftDashboardItemValidator(),
+      new DraftReportValidator(),
+    ).getReport(previewMode as PreviewMode);
 
     return this.reportConnection.testReport(
       {
         organisationUnitCodes: entityCode as string,
         hierarchy: hierarchy as string,
       },
-      {
-        testData,
-        testConfig: reportConfig,
-      },
+      { testConfig: reportConfig },
     );
   }
-
-  private validate = () => {
-    const { entityCode, hierarchy } = this.req.query;
-    const { previewConfig, testData } = this.req.body;
-
-    if (!previewConfig) {
-      throw new Error('Requires preview config to fetch preview data');
-    }
-
-    if (!testData) {
-      if (!hierarchy) {
-        throw new Error('Requires hierarchy or test data to fetch preview data');
-      }
-      if (!entityCode) {
-        throw new Error('Requires entity or test data to fetch preview data');
-      }
-    }
-  };
-
-  private getReportConfig = () => {
-    const { previewMode } = this.req.query;
-    const { previewConfig, testData } = this.req.body;
-
-    const reportValidator = new DraftReportValidator();
-    reportValidator.setContext({ testData });
-    const dashboardItemValidator = new DraftDashboardItemValidator();
-    const extractor = new DashboardVisualisationExtractor(
-      previewConfig,
-      dashboardItemValidator,
-      reportValidator,
-    );
-
-    return extractor.getReport(previewMode as PreviewMode).config;
-  };
 }

@@ -4,4 +4,3 @@
  */
 
 export { ConfirmModal } from './ConfirmModal';
-export { ImportModal } from './ImportModal';
