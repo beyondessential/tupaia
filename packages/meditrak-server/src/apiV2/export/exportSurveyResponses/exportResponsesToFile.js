@@ -241,7 +241,7 @@ export async function exportResponsesToFile(
       surveyResponses.map((response, index) => [response.id, index]),
     );
     answers
-      .filter(answer => !!questionIdToIndex[answer['question.id']]) // filter out answers for a non-exported question, e.g. DateOfData
+      .filter(answer => questionIdToIndex[answer['question.id']] !== undefined) // filter out answers for a non-exported question, e.g. DateOfData
       .forEach(answer => {
         const surveyResponseIndex = responseIdToIndex[answer['survey_response.id']];
         const questionIndex = questionIdToIndex[answer['question.id']];
