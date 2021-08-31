@@ -4,10 +4,9 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import MuiIconButton from '@material-ui/core/IconButton';
 import PlayIcon from '@material-ui/icons/PlayCircleFilled';
-
-import { usePreviewData } from '../context';
 
 const IconButton = styled(MuiIconButton)`
   border: 1px solid ${({ theme }) => theme.palette.grey['400']};
@@ -21,12 +20,9 @@ const IconButton = styled(MuiIconButton)`
   }
 `;
 
-export const PlayButton = () => {
-  const { setFetchEnabled, setShowData } = usePreviewData();
-
+export const PlayButton = ({ setEnabled }) => {
   const handleClick = () => {
-    setFetchEnabled(true);
-    setShowData(true);
+    setEnabled(true);
   };
 
   return (
@@ -34,4 +30,8 @@ export const PlayButton = () => {
       <PlayIcon />
     </IconButton>
   );
+};
+
+PlayButton.propTypes = {
+  setEnabled: PropTypes.func.isRequired,
 };
