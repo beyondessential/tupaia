@@ -1,7 +1,6 @@
 'use strict';
 
-import { insertObject, codeToId, generateId, deleteObject } from '../utilities';
-import samoaHierarchyData from './migrationData/20210831002757-AddEntitiesRelationToSamoaForPenfaaSamoa/Entites_Hierarchy_Pen_Faa.json';
+import { insertObject, generateId, deleteObject } from '../utilities';
 
 var dbm;
 var type;
@@ -24,22 +23,30 @@ const hierarchyNameToId = async (db, name) => {
   return record?.rows[0].id;
 };
 
+const getEntityRelations = async db => {
+  const record = await db.runSql(`
+    SELECT er.parent_id, er.child_id FROM entity_relation er 
+    JOIN entity e ON er.child_id = e.id AND e."type" = 'sub_district' AND e.name not like 'Unknown%'
+    WHERE er.entity_hierarchy_id in (SELECT eh.id from entity_hierarchy eh where eh."name" = 'covid_samoa'); 
+  `);
+  return record?.rows;
+};
+
 exports.up = async function (db) {
   const entityHierarchyId = generateId();
   await insertObject(db, 'entity_hierarchy', {
     id: entityHierarchyId,
     name: projectCode,
-    canonical_types: '{country,district,sub_district,school}',
+    canonical_types: '{country,district,school}',
   });
 
+  const samoaHierarchyRelations = await getEntityRelations(db);
   Promise.all(
-    samoaHierarchyData.map(async ({ parent_code: parentCode, code }) => {
-      const parentId = await codeToId(db, 'entity', parentCode);
-      const childId = await codeToId(db, 'entity', code);
+    samoaHierarchyRelations.map(async relation => {
       await insertObject(db, 'entity_relation', {
         id: generateId(),
-        parent_id: parentId,
-        child_id: childId,
+        parent_id: relation.parent_id,
+        child_id: relation.child_id,
         entity_hierarchy_id: entityHierarchyId,
       });
     }),
