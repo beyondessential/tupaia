@@ -22,7 +22,7 @@ import {
 
 import { MODAL_STATUS } from '../../constants';
 import { useSaveVisualisation } from '../../api';
-import { useVizBuilderConfig } from '../../vizBuilderConfigStore';
+import { useVizBuilderConfig } from '../../context';
 
 const TickIcon = styled(CheckCircle)`
   font-size: 2.5rem;

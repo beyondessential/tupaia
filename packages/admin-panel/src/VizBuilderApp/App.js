@@ -10,7 +10,7 @@ import { FullPageLoader } from '@tupaia/ui-components';
 import { Main } from './views/Main';
 import { CreateNew } from './views/CreateNew';
 import { useUser } from './api/queries';
-import { VizBuilderConfigProvider as StateProvider } from './vizBuilderConfigStore';
+import { VizBuilderConfigProvider as StateProvider } from './context';
 
 const Container = styled.main`
   display: flex;
@@ -51,8 +51,8 @@ export const App = ({ Navbar, Footer }) => {
 };
 
 App.propTypes = {
-  Navbar: PropTypes.any,
-  Footer: PropTypes.any,
+  Navbar: PropTypes.func,
+  Footer: PropTypes.func,
 };
 
 App.defaultProps = {
