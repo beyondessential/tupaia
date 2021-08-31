@@ -26,10 +26,7 @@ export class FetchDashboardVisualisationRoute extends Route {
       `dashboardVisualisations/${dashboardVisualisationId}`,
     );
 
-    const extractor = new DashboardVisualisationCombiner(
-      dashboardItem,
-      report,
-    );
+    const extractor = new DashboardVisualisationCombiner(dashboardItem, report);
     const visualisation = extractor.getVisualisation();
 
     return {

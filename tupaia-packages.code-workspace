@@ -152,6 +152,7 @@
       "keyby",
       "middlewares",
       "migrator",
+      "originalname",
       "oucode",
       "outdater",
       "parameterise",
