@@ -95,7 +95,7 @@ export const DashboardReportModal = () => {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { entityCode } = useUrlParams();
   const [{ startDate, endDate, reportCode }, setParams] = useUrlSearchParams();
-  const { data: entityData } = useEntityData(entityCode);
+  const { data: entityData, isLoadingEntityData } = useEntityData(entityCode);
   const { data, isLoading } = useDashboardReportDataWithConfig({
     entityCode,
     reportCode,
@@ -158,7 +158,10 @@ export const DashboardReportModal = () => {
     ? `${entityData?.name}, ${config?.dashboardName}, ${config?.name}`
     : config?.name;
 
-  const modalTitle = `${entityData?.name}, ${config?.dashboardName}`;
+  const modalTitle =
+    isLoading || isLoadingEntityData
+      ? 'Loading...'
+      : `${entityData?.name}, ${config?.dashboardName}`;
 
   return (
     <MuiDialog
@@ -169,10 +172,7 @@ export const DashboardReportModal = () => {
       TransitionComponent={Transition}
       style={{ left: fullScreen ? '0' : '6.25rem' }}
     >
-      <DialogHeader
-        handleClose={handleClose}
-        title={config?.dashboardName ? modalTitle : 'Loading...'}
-      />
+      <DialogHeader handleClose={handleClose} title={modalTitle} />
       <ExportLoader $isExporting={isExportLoading}>
         <CircularProgress size={50} />
         <Box mt={3}>
