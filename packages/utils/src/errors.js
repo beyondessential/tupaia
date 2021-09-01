@@ -69,6 +69,9 @@ export class PermissionsError extends RespondingError {
 }
 
 export class UploadError extends RespondingError {
+  /**
+   * @param {{ message: string}} [originalError]
+   */
   constructor(originalError) {
     super(`File upload failed${originalError ? `: ${originalError.message}` : ''}`, 500);
   }

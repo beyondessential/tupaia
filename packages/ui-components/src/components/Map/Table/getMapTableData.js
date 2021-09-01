@@ -4,7 +4,6 @@
  */
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { useTable, useSortBy } from 'react-table';
 import { getFormattedInfo } from '../utils';
 
 const FirstColumnCell = styled.span`
@@ -13,6 +12,10 @@ const FirstColumnCell = styled.span`
 `;
 
 const processColumns = serieses => {
+  if (!serieses) {
+    return [];
+  }
+
   const configColumns = serieses.map(column => {
     return { accessor: column.key, Header: column.name };
   });
@@ -30,6 +33,10 @@ const processColumns = serieses => {
 };
 
 const processData = (serieses, measureData) => {
+  if (!measureData || !serieses) {
+    return [];
+  }
+
   return measureData.map(row => {
     const columns = serieses.reduce((cols, measureOption) => {
       const value = getFormattedInfo(row, measureOption).formattedValue;
@@ -44,15 +51,14 @@ const processData = (serieses, measureData) => {
   });
 };
 
-export const useMapTable = (serieses, measureData) => {
-  const columns = useMemo(() => processColumns(serieses), [serieses]);
-  const data = useMemo(() => processData(serieses, measureData), [serieses, measureData]);
-
-  return useTable(
-    {
-      columns,
-      data,
-    },
-    useSortBy,
-  );
+export const getMapTableData = (serieses, measureData) => {
+  const columns = useMemo(() => processColumns(serieses), [JSON.stringify(serieses)]);
+  const data = useMemo(() => processData(serieses, measureData), [
+    JSON.stringify(serieses),
+    JSON.stringify(measureData),
+  ]);
+  return {
+    columns,
+    data,
+  };
 };

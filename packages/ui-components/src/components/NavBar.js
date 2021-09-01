@@ -43,9 +43,9 @@ const StyledTab = styled(LightTab)`
   }
 `;
 
-export const NavBar = ({ HomeButton, Profile, links, isTabActive }) => (
+export const NavBar = ({ HomeButton, Profile, links, isTabActive, maxWidth }) => (
   <Wrapper>
-    <MuiContainer>
+    <MuiContainer maxWidth={maxWidth}>
       <Inner>
         <NavLinks>
           {HomeButton}
@@ -81,8 +81,10 @@ NavBar.propTypes = {
   ).isRequired,
   Profile: PropTypes.elementType.isRequired,
   isTabActive: PropTypes.func,
+  maxWidth: PropTypes.string,
 };
 
 NavBar.defaultProps = {
   isTabActive: () => {},
+  maxWidth: null,
 };

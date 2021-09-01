@@ -1,5 +1,5 @@
-// a mock module for replacing modules in other packages, such as `yargs` within `@tupaia/utils`,
-// that breaks storybook
+// mock implementation of `yargs`, because `script.js` within `@tupaia/utils` uses it but that
+// breaks storybook
 module.exports = {
   strict: () => {},
 };

@@ -26,6 +26,10 @@ const Wrapper = styled.div`
 const ChartWrapper = styled(Wrapper)`
   padding: 0.25rem 1.875rem 0;
 
+  .recharts-surface {
+    overflow: visible;
+  }
+
   .MuiAlert-root {
     position: relative;
     top: -0.15rem; // offset the chart wrapper padding
@@ -75,12 +79,16 @@ const Toggle = ({ value, onChange }) => (
 );
 
 // eslint-disable-next-line react/prop-types
-const ChartTable = ({ viewContent, isLoading, isError, error, selectedTab }) => {
+const ChartTable = ({ viewContent, isLoading, isError, error, selectedTab, isExporting }) => {
   return (
     <FetchLoader isLoading={isLoading} isError={isError} error={error}>
       {selectedTab === TABS.CHART ? (
         <ChartWrapper>
-          <ChartComponent viewContent={viewContent} legendPosition="top" />
+          <ChartComponent
+            viewContent={viewContent}
+            legendPosition="top"
+            isExporting={isExporting}
+          />
         </ChartWrapper>
       ) : (
         <Wrapper>
@@ -91,7 +99,16 @@ const ChartTable = ({ viewContent, isLoading, isError, error, selectedTab }) => 
   );
 };
 
-export const Chart = ({ name, viewContent, isLoading, isFetching, isError, error, isEnlarged }) => {
+export const Chart = ({
+  name,
+  viewContent,
+  isLoading,
+  isFetching,
+  isError,
+  error,
+  isEnlarged,
+  isExporting,
+}) => {
   const [selectedTab, setSelectedTab] = useState(TABS.CHART);
 
   const handleTabChange = (event, newValue) => {
@@ -107,15 +124,18 @@ export const Chart = ({ name, viewContent, isLoading, isFetching, isError, error
 
   return isEnlarged ? (
     <>
-      <FlexEnd>
-        <Toggle onChange={handleTabChange} value={selectedTab} exclusive />
-      </FlexEnd>
+      {!isExporting && (
+        <FlexEnd>
+          <Toggle onChange={handleTabChange} value={selectedTab} exclusive />
+        </FlexEnd>
+      )}
       <ChartTable
         viewContent={viewContent}
         isLoading={isLoading}
         isError={isError}
         error={error}
         selectedTab={selectedTab}
+        isExporting={isExporting}
       />
     </>
   ) : (
@@ -134,6 +154,7 @@ export const Chart = ({ name, viewContent, isLoading, isFetching, isError, error
           isError={isError}
           error={error}
           selectedTab={selectedTab}
+          isExporting={isExporting}
         />
       </Body>
     </>
@@ -145,6 +166,7 @@ Chart.propTypes = {
   isLoading: PropTypes.bool,
   isFetching: PropTypes.bool,
   isEnlarged: PropTypes.bool,
+  isExporting: PropTypes.bool,
   isError: PropTypes.bool,
   error: PropTypes.string,
   name: PropTypes.string,
@@ -155,6 +177,7 @@ Chart.defaultProps = {
   isLoading: false,
   isFetching: false,
   isEnlarged: false,
+  isExporting: false,
   isError: false,
   error: null,
   name: null,
