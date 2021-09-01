@@ -72,7 +72,7 @@ content-type: {{contentType}}
 Authorization: {{authorization}}
 
 ### Fetch filtered relatives of an entity that have names contain string 'Pa'
-GET http://{{host}}/{{version}}/hierarchy/explore/TO_HvlMCH/relatives?fields=type,code&filter=type=@Pa HTTP/1.1
+GET http://{{host}}/{{version}}/hierarchy/explore/TO_HvlMCH/relatives?fields=name,code&filter=name=@To HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
@@ -95,8 +95,8 @@ GET http://{{host}}/{{version}}/hierarchy/laos_schools/LA_Park ou District/relat
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
-### Fetch filtered relationships (that ancestors are not village and descendants are not Secondary school) among relatives of an entity
-GET http://{{host}}/{{version}}/hierarchy/laos_schools/LA_Park ou District/relationships?ancestor_filter=type!=village&descendant_filter=type==school;attributes_type!=Secondary&groupBy=descendant HTTP/1.1
+### Fetch filtered relationships (that sub_district ancestors have 'ar' in their name and descendants are not Secondary school) among relatives of an entity
+GET http://{{host}}/{{version}}/hierarchy/laos_schools/LA/relationships?ancestor_filter=type==sub_district;name=@ar&descendant_filter=type==school;attributes_type!=Secondary&groupBy=descendant HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
