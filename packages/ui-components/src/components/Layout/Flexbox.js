@@ -29,3 +29,9 @@ export const FlexEnd = styled(MuiBox)`
   justify-content: flex-end;
   align-items: center;
 `;
+
+export const FlexColumn = styled(MuiBox)`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+`;
