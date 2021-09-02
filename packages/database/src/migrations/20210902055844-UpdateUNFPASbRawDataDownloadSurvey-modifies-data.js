@@ -1,14 +1,10 @@
 'use strict';
 
-import { deleteObject, findSingleRecordBySql, insertObject, generateId } from '../utilities';
+import { deleteObject, insertObject, generateId, updateValues } from '../utilities';
 
 var dbm;
 var type;
 var seed;
-
-const OLD_REPORT_CODE = 'UNFPA_Raw_Data_Reproductive_Health_Facility';
-const NEW_REPORT_CODE = 'UNFPA_Raw_Data_Reproductive_Health_Facility_SB';
-const DASHBOARD_CODE = 'SB_UNFPA_Raw Data Downloads';
 
 /**
  * We receive the dbmigrate dependency from dbmigrate initially.
@@ -19,6 +15,24 @@ exports.setup = function (options, seedLink) {
   type = dbm.dataType;
   seed = seedLink;
 };
+
+const OLD_REPORT_CODE = 'UNFPA_Raw_Data_Reproductive_Health_Facility';
+const NEW_REPORT_CODE = 'UNFPA_Raw_Data_Reproductive_Health_Facility_SB';
+const DASHBOARD_CODE = 'SB_UNFPA_Raw Data Downloads';
+
+const buildSurveyExportConfig = ({ surveyCode, surveyName }) => ({
+  surveys: [{ code: surveyCode, name: surveyName }],
+  exportDataBuilder: {
+    dataBuilder: 'rawDataValues',
+    dataBuilderConfig: {
+      skipHeader: false,
+      surveysConfig: {
+        [surveyCode]: { entityAggregation: { dataSourceEntityType: 'facility' } },
+      },
+      transformations: [{ type: 'transposeMatrix' }],
+    },
+  },
+});
 
 const swapDashboardItemInRelation = async (db, dashboardCode, oldItemCode, newItemCode) =>
   db.runSql(`
@@ -34,25 +48,28 @@ const swapDashboardItemInRelation = async (db, dashboardCode, oldItemCode, newIt
 `);
 
 exports.up = async function (db) {
+  await updateValues(
+    db,
+    'legacy_report',
+    {
+      data_builder_config: JSON.stringify(
+        buildSurveyExportConfig({
+          surveyCode: 'RHFSC',
+          surveyName: 'Reproductive Health Facility Spot Check',
+        }),
+      ),
+    },
+    { code: OLD_REPORT_CODE },
+  );
+
   await insertObject(db, 'legacy_report', {
     id: generateId(),
     code: NEW_REPORT_CODE,
     data_builder: 'surveyDataExport',
-    data_builder_config: {
-      surveys: [
-        { code: 'RHFSCSI', name: 'Reproductive Health Facility Spot Check - Solomon Islands' },
-      ],
-      exportDataBuilder: {
-        dataBuilder: 'rawDataValues',
-        dataBuilderConfig: {
-          skipHeader: false,
-          surveysConfig: {
-            RHFSCSI: { entityAggregation: { dataSourceEntityType: 'facility' } },
-          },
-          transformations: [{ type: 'transposeMatrix' }],
-        },
-      },
-    },
+    data_builder_config: buildSurveyExportConfig({
+      surveyCode: 'RHFSCSI',
+      surveyName: 'Reproductive Health Facility Spot Check - Solomon Islands',
+    }),
   });
 
   await insertObject(db, 'dashboard_item', {
