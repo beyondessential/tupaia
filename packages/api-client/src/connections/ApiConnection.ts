@@ -57,7 +57,7 @@ export class ApiConnection {
     const fetchConfig: FetchConfig = {
       method: requestMethod || 'GET',
       headers: {
-        Authorization: this.authHandler.getAuthHeader(),
+        Authorization: await this.authHandler.getAuthHeader(),
         'Content-Type': 'application/json',
       },
     };
