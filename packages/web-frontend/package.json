@@ -95,8 +95,6 @@
     "react-scripts": "^4.0.3"
   },
   "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not op_mini all"
+    "defaults"
   ]
 }
