@@ -240,13 +240,15 @@ export async function exportResponsesToFile(
     const responseIdToIndex = Object.fromEntries(
       surveyResponses.map((response, index) => [response.id, index]),
     );
-    answers.forEach(answer => {
-      const surveyResponseIndex = responseIdToIndex[answer['survey_response.id']];
-      const questionIndex = questionIdToIndex[answer['question.id']];
-      const exportRow = preQuestionRowCount + questionIndex;
-      const exportColumn = infoColumnKeys.length + surveyResponseIndex;
-      exportData[exportRow][exportColumn] = answer?.text || '';
-    });
+    answers
+      .filter(answer => questionIdToIndex[answer['question.id']] !== undefined) // filter out answers for a non-exported question, e.g. DateOfData
+      .forEach(answer => {
+        const surveyResponseIndex = responseIdToIndex[answer['survey_response.id']];
+        const questionIndex = questionIdToIndex[answer['question.id']];
+        const exportRow = preQuestionRowCount + questionIndex;
+        const exportColumn = infoColumnKeys.length + surveyResponseIndex;
+        exportData[exportRow][exportColumn] = answer?.text || '';
+      });
 
     // If there is no data, add a message at the top
     if (answers.length === 0) {
