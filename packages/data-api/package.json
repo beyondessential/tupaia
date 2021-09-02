@@ -20,7 +20,6 @@
     "uninstall-mv-refresh": "scripts/uninstallMvRefreshModule.sh",
     "build-analytics-table": "scripts/buildAnalyticsMaterializedView.sh",
     "drop-analytics-table": "scripts/dropAnalyticsMaterializedView.sh",
-    "full-rebuild-analytics-table": "scripts/fullRebuildAnalyticsMaterializedView.sh",
     "refresh-analytics-table": "scripts/refreshAnalyticsTable.sh"
   },
   "dependencies": {

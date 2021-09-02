@@ -8,3 +8,4 @@ export * from './search';
 export * from './useUrlParams';
 export * from './useUrlSearchParams';
 export * from './useEntityBreadcrumbs';
+export * from './useExportToPNG';
