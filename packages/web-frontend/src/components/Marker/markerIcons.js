@@ -15,21 +15,17 @@ import L from 'leaflet';
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOMServer from 'react-dom/server';
-
 import styled from 'styled-components';
-
 import Warning from '@material-ui/icons/Warning';
 import Help from '@material-ui/icons/Help';
 import CheckBox from '@material-ui/icons/CheckBox';
 
 // from https://thenounproject.com/ochavisual/collection/ocha-humanitarian-icons/
-
-import Cyclone from '!!react-svg-loader!../../images/cyclone.svg';
-import Earthquake from '!!react-svg-loader!../../images/earthquake.svg';
-import Tsunami from '!!react-svg-loader!../../images/tsunami.svg';
-import Volcano from '!!react-svg-loader!../../images/volcano.svg';
-import Flood from '!!react-svg-loader!../../images/flood.svg';
-
+import { ReactComponent as Cyclone } from '../../images/cyclone.svg';
+import { ReactComponent as Earthquake } from '../../images/earthquake.svg';
+import { ReactComponent as Tsunami } from '../../images/tsunami.svg';
+import { ReactComponent as Volcano } from '../../images/volcano.svg';
+import { ReactComponent as Flood } from '../../images/flood.svg';
 import { BREWER_PALETTE, WHITE } from '../../styles';
 
 // allows passing a color to a material icon & scales it down a bit

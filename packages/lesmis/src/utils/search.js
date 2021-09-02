@@ -3,11 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import Laos from '../components/icons/laos.svg';
-import Province from '../components/icons/province.svg';
-import District from '../components/icons/district.svg';
-import School from '../components/icons/school.svg';
-import { getSvgIconImage } from './getSvgIconImage';
+import React from 'react';
+import { ReactComponent as Laos } from '../components/icons/laos.svg';
+import { ReactComponent as Province } from '../components/icons/province.svg';
+import { ReactComponent as District } from '../components/icons/district.svg';
+import { ReactComponent as School } from '../components/icons/school.svg';
 
 /**
  * Get the display icon for search results
@@ -15,15 +15,15 @@ import { getSvgIconImage } from './getSvgIconImage';
 export const getPlaceIcon = type => {
   switch (type) {
     case 'country':
-      return getSvgIconImage(Laos);
+      return <Laos />;
     case 'district':
-      return getSvgIconImage(Province);
+      return <Province />;
     case 'sub_district':
-      return getSvgIconImage(District);
+      return <District />;
     case 'school':
-      return getSvgIconImage(School);
+      return <School />;
     default:
-      return getSvgIconImage(District);
+      return <District />;
   }
 };
 

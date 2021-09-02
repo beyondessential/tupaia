@@ -9,15 +9,14 @@ import styled from 'styled-components';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
 import MuiBox from '@material-ui/core/Box';
-import LocationPin from './icons/location-pin.svg';
-import PushPin from './icons/push-pin.svg';
-import School from './icons/school-count.svg';
-import Group from './icons/group.svg';
-import Road from './icons/road.svg';
-import Study from './icons/study.svg';
-import Notepad from './icons/notepad.svg';
+import { ReactComponent as LocationPin } from './icons/location-pin.svg';
+import { ReactComponent as PushPin } from './icons/push-pin.svg';
+import { ReactComponent as School } from './icons/school-count.svg';
+import { ReactComponent as Group } from './icons/group.svg';
+import { ReactComponent as Road } from './icons/road.svg';
+import { ReactComponent as Study } from './icons/study.svg';
+import { ReactComponent as Notepad } from './icons/notepad.svg';
 import { FlexStart } from './Layout';
-import { getSvgIconImage } from '../utils';
 
 const IconContainer = styled.div`
   width: 38px;
@@ -32,19 +31,19 @@ const VitalsIcon = ({ icon }) => {
         {(() => {
           switch (icon) {
             case 'LocationPin':
-              return getSvgIconImage(LocationPin);
+              return <LocationPin />;
             case 'Group':
-              return getSvgIconImage(Group);
+              return <Group />;
             case 'School':
-              return getSvgIconImage(School);
+              return <School />;
             case 'Study':
-              return getSvgIconImage(Study);
+              return <Study />;
             case 'Road':
-              return getSvgIconImage(Road);
+              return <Road />;
             case 'PushPin':
-              return getSvgIconImage(PushPin);
+              return <PushPin />;
             case 'Notepad':
-              return getSvgIconImage(Notepad);
+              return <Notepad />;
             default:
               return null;
           }
