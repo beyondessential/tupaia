@@ -4,3 +4,5 @@
  */
 
 import './commands';
+
+export * from './actions';
