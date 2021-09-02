@@ -6,8 +6,11 @@
 import { TYPES } from '@tupaia/database';
 import {
   constructRecordExistsWithId,
+  constructRecordExistsWithField,
+  constructRecordNotExistsWithField,
   hasContent,
   isEmail,
+  isBoolean,
   isPlainObject,
   constructIsEmptyOr,
   constructIsOneOf,
@@ -96,6 +99,12 @@ export const constructForSingle = (models, recordType) => {
         code: [hasContent],
         builder: [hasContent],
       };
+    case TYPES.REPORT:
+      return {
+        code: [constructRecordNotExistsWithField(models.report, 'code')],
+        config: [hasContent],
+        permission_group: [hasContent],
+      };
     case TYPES.DASHBOARD:
       return {
         code: [hasContent],
@@ -129,6 +138,31 @@ export const constructForSingle = (models, recordType) => {
             }
             return true;
           },
+        ],
+        sort_order: [constructIsEmptyOr(isNumber)],
+      };
+    case TYPES.DASHBOARD_ITEM:
+      return {
+        code: [constructRecordNotExistsWithField(models.dashboardItem, 'code')],
+        config: [hasContent],
+        report_code: [hasContent],
+        legacy: [hasContent, isBoolean],
+      };
+    case TYPES.MAP_OVERLAY_GROUP_RELATION:
+      return {
+        map_overlay_group_id: [constructRecordExistsWithId(models.mapOverlayGroup)],
+        child_id: [
+          async (value, { child_type: childType }) => {
+            if (childType === models.mapOverlayGroupRelation.RelationChildTypes.MAP_OVERLAY) {
+              // Map Overlay Id is not in UID form so this is a work around.
+              await constructRecordExistsWithField(models.mapOverlay, 'id')(value);
+            } else {
+              await constructRecordExistsWithId(models.mapOverlayGroup)(value);
+            }
+          },
+        ],
+        child_type: [
+          constructIsOneOf(Object.values(models.mapOverlayGroupRelation.RelationChildTypes)),
         ],
         sort_order: [constructIsEmptyOr(isNumber)],
       };

@@ -17,7 +17,9 @@ export const getAccessibleOrgUnitCodes = async (
   );
   if (accessibleOrgUnits.length === 0) {
     throw new Error(
-      `No permissions to any one of entities ${foundOrgUnits.map(o => o.country_code)}`,
+      `No '${permissionGroupName}' permissions to any one of entities: ${foundOrgUnits.map(
+        orgUnit => orgUnit.code,
+      )}`,
     );
   }
   return accessibleOrgUnits.map(orgUnit => orgUnit.code);

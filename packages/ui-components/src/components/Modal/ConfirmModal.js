@@ -8,16 +8,11 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import ReportProblem from '@material-ui/icons/ReportProblem';
 import Typography from '@material-ui/core/Typography';
-import {
-  Button,
-  OutlinedButton,
-  Dialog,
-  DialogFooter,
-  DialogHeader,
-  DialogContent,
-  LoadingContainer,
-  Alert,
-} from '@tupaia/ui-components';
+
+import { Button, OutlinedButton } from '../Button';
+import { Dialog, DialogFooter, DialogHeader, DialogContent } from '../Dialog';
+import { LoadingContainer } from '../LoadingContainer';
+import { Alert } from '../Alert';
 
 const DescriptionText = styled(Typography)`
   font-size: 1rem;
