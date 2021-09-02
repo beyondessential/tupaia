@@ -34,7 +34,7 @@ const SPECIES = [
   ['Culex', 'Cx_Sitiens'],
   ['Mansonia', 'Mn_Uniformis'],
 ];
-const HIERARCHIES = ['Country', 'District'];
+const HIERARCHY_LEVELS = ['Country', 'District'];
 const PROJECT_CODE = 'pacmossi';
 const COUNTRY_CODES = {
   Country: ['pacmossi'],
@@ -136,7 +136,7 @@ exports.up = async function (db) {
 
   await Promise.all(
     SPECIES.map(async ([genus, species], index) => {
-      HIERARCHIES.map(async hierarchyLevel => {
+      HIERARCHY_LEVELS.map(async hierarchyLevel => {
         // Report
         await insertObject(db, 'report', {
           ...getReport(species, hierarchyLevel),
@@ -162,7 +162,7 @@ exports.up = async function (db) {
 exports.down = function (db) {
   Promise.all(
     SPECIES.map(async ([_, species]) => {
-      HIERARCHIES.map(async hierarchyLevel => {
+      HIERARCHY_LEVELS.map(async hierarchyLevel => {
         const mapOverlayIdSlashReportCode = getReportCode(species, hierarchyLevel);
         return db.runSql(`
         DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${mapOverlayIdSlashReportCode}';
