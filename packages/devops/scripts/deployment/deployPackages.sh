@@ -9,6 +9,7 @@ pm2 delete all
 PACKAGES=$(${HOME_DIRECTORY}/scripts/bash/getDeployablePackages.sh)
 
 # Set up .env to match the environment variables stored in LastPass
+cd ${HOME_DIRECTORY}
 LASTPASS_EMAIL=$LASTPASS_EMAIL LASTPASS_PASSWORD=$LASTPASS_PASSWORD yarn download-env-vars $BRANCH
 
 # For each package, get the latest and deploy it
