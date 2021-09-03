@@ -38,7 +38,7 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
       throw new UploadError();
     }
 
-    const visualisation = readJsonFile(this.req.file.path) as Record<string, unknown>;
+    const visualisation = readJsonFile<Record<string, unknown>>(this.req.file.path);
     fs.unlinkSync(this.req.file.path);
 
     const extractor = new DashboardVisualisationExtractor(

@@ -53,4 +53,5 @@ export const draftReportValidator = yup.object().shape({
 export const draftDashboardItemValidator = yup.object().shape({
   code: yup.string().required('Requires "code" for the visualisation'),
   config: yup.object().shape({ type: yup.string().required('Requires "type" in chart config') }),
+  reportCode: yup.string().required('Requires "code" for the visualisation'),
 });
