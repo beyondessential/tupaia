@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 # Kill all pm2 processes
 echo "Existing processes:"
