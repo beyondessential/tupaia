@@ -5,4 +5,5 @@
  */
 
 export { ApiConnection } from './ApiConnection';
-export { AuthHandler } from './types';
+export { EntityApi } from './EntityApi';
+export { MeditrakApi } from './MeditrakApi';

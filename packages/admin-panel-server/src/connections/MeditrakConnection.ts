@@ -15,6 +15,9 @@ const isBESAdmin = (policy: Record<string, string[]>) => {
   return new AccessPolicy(policy).allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
 };
 
+/**
+ * @deprecated use @tupaia/api-client
+ */
 export class MeditrakConnection extends ApiConnection {
   baseUrl = MEDITRAK_API_URL;
 

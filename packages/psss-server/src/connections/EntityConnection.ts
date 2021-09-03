@@ -72,6 +72,9 @@ const getRelationParams = (options: RelationOptions) => {
   };
 };
 
+/**
+ * @deprecated use @tupaia/api-client
+ */
 export class EntityConnection extends ApiConnection {
   baseUrl = ENTITY_API_URL;
 
