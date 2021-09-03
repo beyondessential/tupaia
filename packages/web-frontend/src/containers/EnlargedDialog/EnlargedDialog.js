@@ -8,6 +8,7 @@ import Dialog from '@material-ui/core/Dialog';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { toFilename } from '@tupaia/utils';
 import styled from 'styled-components';
 import { useChartDataExport } from '@tupaia/ui-components/lib/chart';
 import {
@@ -28,7 +29,6 @@ import {
 } from '../../selectors';
 import { DARK_BLUE, DIALOG_Z_INDEX } from '../../styles';
 import { exportToExcel, exportToPng } from '../../utils/exports';
-import { toFilename } from '@tupaia/utils';
 
 const Loader = styled.div`
   display: block;
