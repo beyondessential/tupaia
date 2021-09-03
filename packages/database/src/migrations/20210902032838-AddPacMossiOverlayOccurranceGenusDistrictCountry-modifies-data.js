@@ -6,8 +6,6 @@ var dbm;
 var type;
 var seed;
 
-// AddPacMossiOverlayOccurranceGenusDistrictCountry
-
 /**
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
@@ -101,7 +99,7 @@ const getMapOverlay = (species, hierarchyLevel) => ({
       },
     },
   },
-  countryCodes: `{${COUNTRY_CODES[hierarchyLevel].map(code => `"${code}"`).join(',')}}`,
+  countryCodes: `{${COUNTRY_CODES[hierarchyLevel].flat().join(', ')}}`,
   projectCodes: `{${PROJECT_CODE}}`,
 });
 
@@ -144,19 +142,19 @@ exports.up = async function (db) {
   );
 };
 
-exports.down = function (db) {
-  Promise.all(
-    SPECIES.map(async ([_, species]) => {
-      HIERARCHIES.map(async hierarchyLevel => {
-        const mapOverlayIdSlashReportCode = getReportCode(species, hierarchyLevel);
-        return db.runSql(`
-        DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${mapOverlayIdSlashReportCode}';
-        DELETE FROM "mapOverlay" WHERE "id" = '${mapOverlayIdSlashReportCode}';
-        DELETE FROM "report" WHERE code = '${mapOverlayIdSlashReportCode}';
-      `);
-      });
-    }),
-  );
+const removeMapOverlayAndReport = async (db, code) => {
+  await db.runSql(`DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${code}';`);
+  await db.runSql(`DELETE FROM "mapOverlay" WHERE "id" = '${code}';`);
+  await db.runSql(`DELETE FROM "report" WHERE code = '${code}';`);
+};
+
+exports.down = async function (db) {
+  for (const specie of SPECIES) {
+    for (const hierarchyLevel of HIERARCHIES) {
+      const mapOverlayIdSlashReportCode = getReportCode(specie, hierarchyLevel);
+      await removeMapOverlayAndReport(db, mapOverlayIdSlashReportCode);
+    }
+  }
 };
 
 exports._meta = {
