@@ -13,7 +13,7 @@ import { Credentials } from '../types';
 
 export interface LoginRequest extends Request<EmptyObject, AuthResponse, Credentials> {
   ctx: {
-    verifyLogin?: (accessPolicy: any) => void;
+    verifyLogin?: (accessPolicy: AccessPolicy) => void;
   };
 }
 
@@ -32,7 +32,7 @@ export class LoginRoute extends Route<LoginRequest> {
     const response = await this.authConnection.login(credentials);
 
     if (this.req.ctx.verifyLogin) {
-      this.req.ctx.verifyLogin(response.accessPolicy);
+      this.req.ctx.verifyLogin(new AccessPolicy(response.accessPolicy));
     }
 
     const session = await this.req.sessionModel.createSession(response);

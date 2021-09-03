@@ -43,7 +43,7 @@ const logoutStateUpdater = (payload, currentState) => ({
 });
 
 const isBESAdmin = policy => {
-  return new AccessPolicy(policy).allowsSome(null, BES_ADMIN_PERMISSION_GROUP);
+  return new AccessPolicy(policy).allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
 };
 
 const stateChanges = {
