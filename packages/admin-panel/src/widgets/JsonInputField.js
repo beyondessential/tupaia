@@ -34,6 +34,7 @@ const GreyCard = styled(Card)`
 `;
 
 const Container = styled.div`
+  position: relative;
   margin-bottom: 20px;
 `;
 
