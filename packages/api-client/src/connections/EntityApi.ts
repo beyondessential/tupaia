@@ -14,12 +14,10 @@ import type {
   EntityResponseObject,
 } from '@tupaia/entity-server/src/type-exports';
 
-import { FilterCriteria, AdvancedFilterValue } from '../models';
+import type { FilterCriteria, AdvancedFilterValue } from '@tupaia/server-boilerplate/src/type-exports';
 
 import { ApiConnection } from './ApiConnection';
-import { MicroserviceApi } from './types';
-
-const { ENTITY_API_URL = 'http://localhost:8050/v1' } = process.env;
+import { BaseApi } from './BaseApi';
 
 const CLAUSE_DELIMITER = ';';
 const NESTED_FIELD_DELIMITER = '_';
@@ -101,14 +99,7 @@ type Prefix<T, P extends string> = {
   [field in keyof T & string as `${P}_${field}`]: T[field];
 };
 
-export class EntityApi implements MicroserviceApi {
-  public baseUrl = ENTITY_API_URL;
-
-  private readonly connection: ApiConnection;
-
-  constructor(connection: ApiConnection) {
-    this.connection = connection;
-  }
+export class EntityApi extends BaseApi {
 
   private stringifyFields(fields?: ExtendedEntityFieldName[]) {
     return fields ? fields.join(',') : undefined;
