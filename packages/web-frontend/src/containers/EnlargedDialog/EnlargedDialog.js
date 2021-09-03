@@ -18,13 +18,7 @@ import {
 import { ExportDialog } from '../../components/ExportDialog';
 import { getIsDataDownload, getIsMatrix } from '../../components/View';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
-import {
-  isMobile,
-  sleep,
-  stringToFilename,
-  getBrowserTimeZone,
-  getUniqueViewId,
-} from '../../utils';
+import { isMobile, sleep, getBrowserTimeZone, getUniqueViewId } from '../../utils';
 import {
   selectCurrentInfoViewKey,
   selectCurrentOrgUnit,
@@ -34,6 +28,7 @@ import {
 } from '../../selectors';
 import { DARK_BLUE, DIALOG_Z_INDEX } from '../../styles';
 import { exportToExcel, exportToPng } from '../../utils/exports';
+import { toFilename } from '@tupaia/utils';
 
 const Loader = styled.div`
   display: block;
@@ -220,7 +215,7 @@ const EnlargedDialogComponent = ({
     setExportStatus(STATUS.LOADING);
     setIsExporting(true);
 
-    const filename = stringToFilename(`export-${organisationUnitName}-${newViewContent.name}`);
+    const filename = toFilename(`export-${organisationUnitName}-${newViewContent.name}`);
 
     try {
       if (isMatrix && format === 'xlsx') {
