@@ -385,6 +385,32 @@ sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-c
 
 # lastpass
 
+- Install lastpass-cli
+
+```
+sudo apt-get --no-install-recommends -yqq install \
+  bash-completion \
+  build-essential \
+  cmake \
+  libcurl3  \
+  libcurl3-openssl-dev  \
+  libssl1.0.0 \
+  libssl-dev \
+  libxml2 \
+  libxml2-dev  \
+  pkg-config \
+  ca-certificates \
+  xclip
+
+git clone https://github.com/lastpass/lastpass-cli.git
+cd lastpass-cli
+make
+sudo make install
+cd ../
+rm -rf lastpass-cli
+mkdir -p /home/ubuntu/.local/share/lpass
+```
+
 - Add lastpass credentials to permanent environment variables for pulling .env files during startup
 
 `vi /etc/profile.d/scripts.sh`
