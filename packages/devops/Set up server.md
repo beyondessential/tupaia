@@ -413,7 +413,7 @@ mkdir -p /home/ubuntu/.local/share/lpass
 
 - Add lastpass credentials to permanent environment variables for pulling .env files during startup
 
-`vi /etc/profile.d/scripts.sh`
+`vi /etc/profile.d/script.sh`
 
 ```
 export LASTPASS_EMAIL=xxx
