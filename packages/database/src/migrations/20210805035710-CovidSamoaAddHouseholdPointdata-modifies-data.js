@@ -38,7 +38,6 @@ const updatePoint = (db, entityCode, point) => {
 };
 
 exports.up = async function (db) {
-  // console.log('samoaHouseholds', samoaHouseholds);
   const results = await Promise.all(
     samoaHouseholds.map(async entity => {
       const point = entity.latitude
