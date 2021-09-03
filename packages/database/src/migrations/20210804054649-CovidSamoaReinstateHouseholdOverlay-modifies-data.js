@@ -35,21 +35,12 @@ exports.up = async function (db) {
         set config = jsonb_set(config, '{transform,1,where}', '"notEq($row.HVS_covidstatus, ''Fully vaccinated'')"')
         where code = '${reportCode}';
   `);
-  // add fetchOnLevel config
-  await db.runSql(`
-    update "mapOverlay" 
-      set "presentationOptions" = "presentationOptions" || '{"fetchOnlyDisplayLevel": true}'
-      where id = '${mapOverlayId}';
-  `);
   return null;
 };
 
 exports.down = function (db) {
   return db.runSql(`
     delete from "map_overlay_group_relation" where "child_id" = '${mapOverlayId}';
-    update "mapOverlay" 
-      set "presentationOptions" = "presentationOptions" - 'fetchOnlyDisplayLevel'
-      where id = '${mapOverlayId}';
   `);
 };
 
