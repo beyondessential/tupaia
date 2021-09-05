@@ -52,9 +52,7 @@ if you prefer to pre-build internal dependencies, add `--skip-internal` to the a
 
 Most packages will require a .env file. `.env.example` files indicate the required variables per package.
 
-🔑 **BES internal:** If you have access to the LastPass folder Tupaia Environment Variables, you can get most environment variables
-onto your machine by running `LASTPASS_EMAIL=xxx LASTPASS_PASSWORD=yyy yarn download-env-vars local`. To update specific package(s),
-just add their names, e.g. `LASTPASS_EMAIL=xxx LASTPASS_PASSWORD=yyy yarn download-env-vars local admin-panel admin-panel-server`
+🔑 **BES internal:** [Adding .env files](https://beyond-essential.slab.com/posts/tupaia-monorepo-setup-v5egpdpq#step-3-add-env-files)
 
 ### Local database
 
@@ -69,13 +67,7 @@ root, and it will install dependencies everywhere.
 
 We use codeship for the admin-panel, meditrak-server, web-config-server, and web-frontend packages.
 
-Codeship pulls environment variables from the "Tupaia Environment Variables" shared folder on LastPass, so to update one,
-just modify the entry. If you'd like to test it for a specific branch, you can make a new entry using the same naming
-convention you'll find already in there, i.e. `package-name.branch-name.env`.
-
-Codeship also uses a few secrets for various services. To update any of these, create a service.env (e.g. lastpass.env) file
-within the root tupaia directory, then run `jet encrypt lastpass.env lastpass.env.encrypted`. There are example.env files
-that show requirements for lastpass, deployment, testing, and e2e services
+🔑 **BES internal:** [CI/CD using Codeship](https://beyond-essential.slab.com/posts/ci-cd-using-codeship-uzxspw8z)
 
 ## Tests
 
