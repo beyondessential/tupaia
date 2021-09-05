@@ -7,6 +7,7 @@ import {
   AGGREGATEABLE_ANALYTICS,
   UNIQUE_AGGREGATEABLE_ANALYTICS,
   AGGREGATEABLE_ANALYTICS_WITH_NULL_VALUES,
+  MULTIPLE_ANALYTICS,
 } from './transform.fixtures';
 import { buildTransform } from '../../../reportBuilder/transform';
 
@@ -247,6 +248,34 @@ describe('aggregate', () => {
         { organisationUnit: 'PG', period: '20200102', BCD1: 8, BCD2: 99 },
         { organisationUnit: 'PG', period: '20200103', BCD1: 2, BCD2: -1 },
       ]);
+    });
+
+    describe('single', () => {
+      it('throws error is multiple values exist per group', () => {
+        const transform = buildTransform([
+          {
+            transform: 'aggregate',
+            period: 'group',
+            '...': 'single',
+          },
+        ]);
+        expect(() => transform(AGGREGATEABLE_ANALYTICS)).toThrow();
+      });
+
+      it('returns the value if a single value exists per group', () => {
+        const transform = buildTransform([
+          {
+            transform: 'aggregate',
+            period: 'group',
+            '...': 'single',
+          },
+        ]);
+        expect(transform(MULTIPLE_ANALYTICS)).toEqual([
+          { organisationUnit: 'TO', period: '20200101', dataElement: 'BCD1', value: 4 },
+          { organisationUnit: 'TO', period: '20200102', dataElement: 'BCD1', value: 2 },
+          { organisationUnit: 'TO', period: '20200103', dataElement: 'BCD1', value: 5 },
+        ]);
+      });
     });
   });
 });

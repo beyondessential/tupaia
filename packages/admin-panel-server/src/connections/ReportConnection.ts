@@ -7,6 +7,9 @@ import { QueryParameters, ApiConnection, RequestBody } from '@tupaia/server-boil
 
 const { REPORT_API_URL = 'http://localhost:8030/v2' } = process.env;
 
+/**
+ * @deprecated use @tupaia/api-client
+ */
 export class ReportConnection extends ApiConnection {
   baseUrl = REPORT_API_URL;
 

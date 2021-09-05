@@ -40,7 +40,7 @@ export class TestReportRoute extends Route<TestReportRequest> {
     const foundOrgUnits = await getRequestedOrgUnitObjects(
       hierarchy,
       organisationUnitCodes,
-      this.req.ctx.microServices.entityApi,
+      this.req.ctx.services.entity,
     );
 
     const accessibleOrgUnitCodes = await getAccessibleOrgUnitCodes(
