@@ -10,10 +10,12 @@ describe('parser', () => {
   it('aggregate supports parser lookups on where', () => {
     const transform = buildTransform([
       {
-        transform: 'aggregate',
-        organisationUnit: 'drop',
-        period: 'drop',
-        '...': 'sum',
+        transform: 'groupRows',
+        mergeUsing: {
+          organisationUnit: 'exclude',
+          period: 'exclude',
+          '*': 'sum',
+        },
         where: "eq($row.organisationUnit, 'TO')",
       },
     ]);

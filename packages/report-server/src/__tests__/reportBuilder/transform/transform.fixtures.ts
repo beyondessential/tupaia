@@ -13,7 +13,7 @@ export const MULTIPLE_ANALYTICS = [
   { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
 ];
 
-export const AGGREGATEABLE_ANALYTICS = [
+export const MERGEABLE_ANALYTICS = [
   { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
   { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
   { period: '20200103', organisationUnit: 'TO', BCD1: 5 },
@@ -28,12 +28,12 @@ export const AGGREGATEABLE_ANALYTICS = [
   { period: '20200103', organisationUnit: 'PG', BCD2: -1 },
 ];
 
-export const AGGREGATEABLE_ANALYTICS_WITH_NULL_VALUES = [
+export const MERGEABLE_ANALYTICS_WITH_NULL_VALUES = [
   { period: '20200101', organisationUnit: 'TO', BCD1: null },
   { period: '20200101', organisationUnit: 'PG', BCD2: null },
 ];
 
-export const UNIQUE_AGGREGATEABLE_ANALYTICS = [
+export const UNIQUE_MERGEABLE_ANALYTICS = [
   { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
   { period: '20200102', organisationUnit: 'TO', BCD1: 4 },
   { period: '20200103', organisationUnit: 'TO', BCD1: 4 },

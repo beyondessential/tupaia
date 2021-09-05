@@ -14,8 +14,8 @@ describe('transform', () => {
         '$row.dataElement': '$row.value',
       },
       {
-        transform: 'aggregate',
-        BCD1: 'sum',
+        transform: 'groupRows',
+        mergeUsing: { BCD1: 'sum' },
       },
       {
         transform: 'select',
@@ -36,8 +36,8 @@ describe('transform', () => {
       {
         $title: 'Sum BCD1',
         $description: 'Group all rows together and sum their values for BCD1',
-        transform: 'aggregate',
-        BCD1: 'sum',
+        transform: 'groupRows',
+        mergeUsing: { BCD1: 'sum' },
       },
       {
         $title: 'Add Total column',

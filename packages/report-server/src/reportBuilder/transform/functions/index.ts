@@ -4,14 +4,14 @@
  */
 
 import { buildSelect } from './select';
-import { buildAggregate } from './aggregate';
+import { buildGroupRows } from './groupRows';
 import { buildSort } from './sort';
 import { buildFilter } from './filter';
 import { buildInsert } from './insert';
 
 export const transformBuilders = {
   select: buildSelect,
-  aggregate: buildAggregate,
+  groupRows: buildGroupRows,
   sort: buildSort,
   filter: buildFilter,
   insert: buildInsert,
