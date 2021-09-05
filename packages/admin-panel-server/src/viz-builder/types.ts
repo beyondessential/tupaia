@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { yup } from '@tupaia/utils';
-
 type AggregationObject = {
   readonly type: string;
   readonly config?: Record<string, unknown>;
@@ -21,9 +19,10 @@ type DataObject = {
   transform: Transform[];
 };
 
-type PresentationObject = {
-  readonly type: 'view' | 'chart' | 'matrix';
-  readonly config: Record<string, unknown>;
+type VizType = 'view' | 'chart' | 'matrix';
+
+type PresentationObject = Record<string, unknown> & {
+  readonly type: VizType;
   readonly output: Record<string, unknown>;
 };
 
@@ -35,7 +34,7 @@ export enum PreviewMode {
 export type DashboardVisualisationObject = {
   id?: string;
   code: string;
-  name: string;
+  name?: string;
   permissionGroup: string;
   data: DataObject;
   presentation: PresentationObject;
@@ -48,7 +47,7 @@ export interface VisualisationValidator {
 export type DashboardItem = {
   id?: string;
   code: string;
-  config: Record<string, unknown>;
+  config: { name?: string } & { type: VizType } & Record<string, unknown>;
   reportCode: string;
   legacy: boolean;
 };

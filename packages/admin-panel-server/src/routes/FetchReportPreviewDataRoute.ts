@@ -11,15 +11,22 @@ import { Route } from '@tupaia/server-boilerplate';
 import { ReportConnection } from '../connections';
 import {
   DashboardVisualisationExtractor,
-  DraftDashboardItemValidator,
-  DraftReportValidator,
+  draftDashboardItemValidator,
+  draftReportValidator,
+  PreviewMode,
 } from '../viz-builder';
-import { PreviewMode } from '../viz-builder/types';
 
-export class FetchReportPreviewDataRoute extends Route {
+export type FetchReportPreviewDataRequest = Request<
+  { dashboardVisualisationId: string },
+  Record<string, unknown>,
+  { previewConfig?: Record<string, unknown>; testData?: unknown[] },
+  { entityCode?: string; hierarchy?: string; previewMode?: PreviewMode }
+>;
+
+export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataRequest> {
   private readonly reportConnection: ReportConnection;
 
-  constructor(req: Request, res: Response, next: NextFunction) {
+  constructor(req: FetchReportPreviewDataRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.reportConnection = new ReportConnection(req.session);
@@ -67,14 +74,12 @@ export class FetchReportPreviewDataRoute extends Route {
     const { previewMode } = this.req.query;
     const { previewConfig, testData } = this.req.body;
 
-    const reportValidator = new DraftReportValidator();
-    reportValidator.setContext({ testData });
-    const dashboardItemValidator = new DraftDashboardItemValidator();
     const extractor = new DashboardVisualisationExtractor(
-      previewConfig,
-      dashboardItemValidator,
-      reportValidator,
+      previewConfig as Record<string, unknown>,
+      draftDashboardItemValidator,
+      draftReportValidator,
     );
+    extractor.setReportValidatorContext({ testData });
 
     return extractor.getReport(previewMode as PreviewMode).config;
   };

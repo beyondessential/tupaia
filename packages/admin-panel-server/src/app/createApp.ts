@@ -19,11 +19,17 @@ import { AdminPanelSessionModel } from '../models';
 import { hasTupaiaAdminPanelAccess } from '../utils';
 import { attachAuthorizationHeader, upload, verifyBESAdminAccess } from '../middleware';
 import {
+  ExportDashboardVisualisationRequest,
   ExportDashboardVisualisationRoute,
+  FetchDashboardVisualisationRequest,
   FetchDashboardVisualisationRoute,
+  FetchHierarchyEntitiesRequest,
   FetchHierarchyEntitiesRoute,
+  FetchReportPreviewDataRequest,
   FetchReportPreviewDataRoute,
+  ImportDashboardVisualisationRequest,
   ImportDashboardVisualisationRoute,
+  SaveDashboardVisualisationRequest,
   SaveDashboardVisualisationRoute,
   UploadTestDataRoute,
   UserRoute,
@@ -45,8 +51,9 @@ const useForwardUnhandledRequestsToMeditrak = (app: Express) => {
       return path;
     },
     onProxyReq: fixRequestBody,
-    onProxyRes: function (proxyRes: IncomingMessage, req: IncomingMessage, res: ServerResponse) {
+    onProxyRes: (proxyRes: IncomingMessage, req: IncomingMessage, res: ServerResponse) => {
       // To get around CORS because Admin Panel has credentials: true in fetch for session cookies
+      // eslint-disable-next-line no-param-reassign
       proxyRes.headers['Access-Control-Allow-Origin'] = res.get('Access-Control-Allow-Origin');
     },
   };
@@ -63,37 +70,37 @@ export function createApp() {
     .useSessionModel(AdminPanelSessionModel)
     .verifyLogin(hasTupaiaAdminPanelAccess)
     .get('/v1/user', handleWith(UserRoute))
-    .get(
+    .get<FetchHierarchyEntitiesRequest>(
       '/v1/hierarchy/:hierarchyName/:entityCode',
       verifyBESAdminAccess,
       handleWith(FetchHierarchyEntitiesRoute),
     )
-    .post(
+    .post<FetchReportPreviewDataRequest>(
       '/v1/fetchReportPreviewData',
       verifyBESAdminAccess,
       handleWith(FetchReportPreviewDataRoute),
     )
-    .post(
+    .post<SaveDashboardVisualisationRequest>(
       '/v1/dashboardVisualisation',
       verifyBESAdminAccess,
       handleWith(SaveDashboardVisualisationRoute),
     )
-    .put(
+    .put<SaveDashboardVisualisationRequest>(
       '/v1/dashboardVisualisation/:dashboardVisualisationId',
       verifyBESAdminAccess,
       handleWith(SaveDashboardVisualisationRoute),
     )
-    .get(
+    .get<FetchDashboardVisualisationRequest>(
       '/v1/dashboardVisualisation/:dashboardVisualisationId',
       verifyBESAdminAccess,
       handleWith(FetchDashboardVisualisationRoute),
     )
-    .post(
+    .post<ExportDashboardVisualisationRequest>(
       '/v1/export/dashboardVisualisation',
       verifyBESAdminAccess,
       handleWith(ExportDashboardVisualisationRoute),
     )
-    .post(
+    .post<ImportDashboardVisualisationRequest>(
       '/v1/import/dashboardVisualisations',
       verifyBESAdminAccess,
       upload.single('dashboardVisualisations'),

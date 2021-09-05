@@ -5,8 +5,6 @@
 
 import { yup } from '@tupaia/utils';
 
-import { VisualisationValidator, DashboardVisualisationObject } from '../types';
-
 const dataSourceSchema = (sourceType: 'dataElement' | 'dataGroup') => {
   const otherSourceKey = sourceType === 'dataElement' ? 'dataGroups' : 'dataElements';
 
@@ -21,43 +19,28 @@ const dataSourceSchema = (sourceType: 'dataElement' | 'dataGroup') => {
     });
 };
 
-const draftReportSchema = yup.object().shape({
-  code: yup.string().required('Requires "code" for the visualisation'),
-  data: yup.object().shape(
-    {
-      dataElements: dataSourceSchema('dataElement'),
-      dataGroups: dataSourceSchema('dataGroup'),
-      aggregations: yup.array(),
-      transform: yup.array(),
-    },
-    ['dataElements', 'dataGroups'],
-  ),
+export const baseVisualisationValidator = yup.object().shape({
+  presentation: yup.object(),
+  data: yup.object(),
 });
 
-const draftDashboardItemSchema = yup.object().shape({
+export const draftReportValidator = yup.object().shape({
   code: yup.string().required('Requires "code" for the visualisation'),
-  presentation: yup.object().shape({
-    type: yup.string().required('Requires "type" in chart config'),
-    config: yup.object(),
+  config: yup.object().shape({
+    fetch: yup.object().shape(
+      {
+        dataElements: dataSourceSchema('dataElement'),
+        dataGroups: dataSourceSchema('dataGroup'),
+      },
+      [['dataElements', 'dataGroups']],
+    ),
+    transform: yup.array(),
     output: yup.object(),
   }),
 });
 
-export class DraftReportValidator implements VisualisationValidator {
-  // eslint-disable-next-line react/static-property-placement
-  private context: Record<string, unknown> = {};
-
-  setContext = (context: Record<string, unknown>) => {
-    this.context = context;
-  };
-
-  validate(visualisation: DashboardVisualisationObject) {
-    draftReportSchema.validateSync(visualisation, { context: this.context });
-  }
-}
-
-export class DraftDashboardItemValidator implements VisualisationValidator {
-  validate(visualisation: DashboardVisualisationObject) {
-    draftDashboardItemSchema.validateSync(visualisation);
-  }
-}
+export const draftDashboardItemValidator = yup.object().shape({
+  code: yup.string().required('Requires "code" for the visualisation'),
+  config: yup.object().shape({ type: yup.string().required('Requires "type" in chart config') }),
+  reportCode: yup.string().required('Requires "code" for the visualisation'),
+});

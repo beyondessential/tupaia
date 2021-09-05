@@ -10,7 +10,7 @@ import { PermissionsError } from '@tupaia/utils';
 import { BES_ADMIN_PERMISSION_GROUP } from '../constants';
 
 export const hasBESAdminAccess = (accessPolicy: AccessPolicy) => {
-  const hasAccess = accessPolicy.allowsSome(null, BES_ADMIN_PERMISSION_GROUP);
+  const hasAccess = accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
   if (!hasAccess) {
     throw new PermissionsError(`Need ${BES_ADMIN_PERMISSION_GROUP} access`);
   }
