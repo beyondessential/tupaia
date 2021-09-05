@@ -2,9 +2,7 @@
 set -x
 DIR=$(dirname "$0")
 
-# packages needing .env during CI/CD are all deployable, plus auth and data-api
-PACKAGES=$(${DIR}/../../../../scripts/bash/getDeployablePackages.sh)
-PACKAGES+=" auth data-api"
+PACKAGES=$(${DIR}/../../../../scripts/bash/getPackagesWithEnvFiles.sh)
 
 # download environment variables
 ${DIR}/../../../../scripts/bash/downloadEnvironmentVariables.sh ${CI_BRANCH} ${PACKAGES}

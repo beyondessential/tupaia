@@ -4,11 +4,10 @@ set +x # do not output commands in this script, as some would show credentials i
 BRANCH=$1
 DIR=$(dirname "$0")
 
-# can provide one or more packages as command line arguments, or will default to all deployable
-# packages
+# can provide one or more packages as command line arguments, or will default to all
 if [ -z $2 ]; then
-    echo "Fetching environment variables for all deployable packages"
-    PACKAGES=$(${DIR}/getDeployablePackages.sh)
+    echo "Fetching all .env files"
+    PACKAGES=$(${DIR}/getPackagesWithEnvFiles.sh)
 else
     PACKAGES=${@:2}
     echo "Fetching environment variables for ${PACKAGES}"
