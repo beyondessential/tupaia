@@ -33,7 +33,7 @@ const findAccessibleOrgUnits = async (
   const foundOrgUnits = await getRequestedOrgUnitObjects(
     hierarchy,
     orgUnitCodes,
-    req.ctx.microServices.entityApi,
+    req.ctx.services.entity,
   );
 
   return getAccessibleOrgUnitCodes(
