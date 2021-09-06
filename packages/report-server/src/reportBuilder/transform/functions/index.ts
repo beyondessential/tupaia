@@ -5,14 +5,14 @@
 
 import { buildUpdateColumns } from './updateColumns';
 import { buildGroupRows } from './groupRows';
-import { buildSort } from './sort';
+import { buildSortRows } from './sortRows';
 import { buildExcludeRows } from './excludeRows';
 import { buildInsert } from './insert';
 
 export const transformBuilders = {
   updateColumns: buildUpdateColumns,
   groupRows: buildGroupRows,
-  sort: buildSort,
+  sortRows: buildSortRows,
   excludeRows: buildExcludeRows,
   insert: buildInsert,
 };

@@ -67,11 +67,11 @@ describe('parser', () => {
     ]);
   });
 
-  it('sort supports row parser lookups', () => {
+  it('sortRows supports row parser lookups', () => {
     const transform = buildTransform([
       {
-        transform: 'sort',
-        by: '$row.BCD1',
+        transform: 'sortRows',
+        by: '=$row.BCD1',
       },
     ]);
     expect(transform(PARSABLE_ANALYTICS)).toEqual([
