@@ -76,7 +76,8 @@ export class AreaTooltip extends Component {
     if (orgUnitMeasureData) {
       measureOptions
         .filter(m => !m.hideFromPopup)
-        .forEach(({ key, name, ...otherConfigs }) => {
+        .forEach(({ key, name, values, ...otherConfigs }) => {
+          if (values.find(({ value }) => value === orgUnitMeasureData[key])?.hideFromPopup) return;
           const metadata = getMetadata(orgUnitMeasureData, key);
           formattedMeasureData[name || key] = getSingleFormattedValue(orgUnitMeasureData, [
             {
