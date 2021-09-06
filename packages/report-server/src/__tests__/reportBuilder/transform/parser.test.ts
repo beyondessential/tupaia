@@ -7,7 +7,7 @@ import { PARSABLE_ANALYTICS } from './transform.fixtures';
 import { buildTransform } from '../../../reportBuilder/transform';
 
 describe('parser', () => {
-  it('aggregate supports parser lookups on where', () => {
+  it('groupRows supports parser lookups on where', () => {
     const transform = buildTransform([
       {
         transform: 'groupRows',
@@ -27,12 +27,12 @@ describe('parser', () => {
     ]);
   });
 
-  it('filter supports parser lookups', () => {
+  it('excludeRows supports parser lookups', () => {
     const transform = buildTransform([
       {
-        transform: 'filter',
+        transform: 'excludeRows',
         where:
-          '$row.BCD1 > mean($where(f($otherRow) = eq($row.organisationUnit, $otherRow.organisationUnit)).BCD1)',
+          '$row.BCD1 <= mean($where(f($otherRow) = eq($row.organisationUnit, $otherRow.organisationUnit)).BCD1)',
       },
     ]);
     expect(transform(PARSABLE_ANALYTICS)).toEqual([

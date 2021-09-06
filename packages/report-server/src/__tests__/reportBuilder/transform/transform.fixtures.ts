@@ -63,7 +63,7 @@ export const SORTABLE_ANALYTICS = [
   { period: '20200103', organisationUnit: 'PG', BCD2: -1 },
 ];
 
-export const FILTERABLE_ANALYTICS = [
+export const EXCLUDEABLE_ANALYTICS = [
   { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
   { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
   { period: '20200103', organisationUnit: 'TO', BCD1: 5 },

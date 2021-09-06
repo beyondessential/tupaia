@@ -6,13 +6,13 @@
 import { buildUpdateColumns } from './updateColumns';
 import { buildGroupRows } from './groupRows';
 import { buildSort } from './sort';
-import { buildFilter } from './filter';
+import { buildExcludeRows } from './excludeRows';
 import { buildInsert } from './insert';
 
 export const transformBuilders = {
   updateColumns: buildUpdateColumns,
   groupRows: buildGroupRows,
   sort: buildSort,
-  filter: buildFilter,
+  excludeRows: buildExcludeRows,
   insert: buildInsert,
 };
