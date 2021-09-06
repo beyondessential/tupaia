@@ -52,7 +52,7 @@ export class DashboardVisualisationCombiner {
     const { permissionGroup } = this.report;
     const data = this.getData();
     const presentation = this.getPresentation();
-  
+
     return {
       id,
       code,
