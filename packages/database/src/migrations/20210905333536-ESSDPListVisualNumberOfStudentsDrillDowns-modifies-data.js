@@ -103,11 +103,6 @@ const DASHBOARD_ITEMS = [
     dashboardCode: 'LESMIS_ESSDP_EarlyChildhoodSubSector_HLO1',
   },
   {
-    code: 'LESMIS_ESSDP_pe_NumberOfStudents',
-    reportConfig: generateReportConfig('pe'),
-    dashboardCode: 'LESMIS_ESSDP_PrimarySubSector_HLO1',
-  },
-  {
     code: 'LESMIS_ESSDP_lse_NumberOfStudents',
     reportConfig: generateReportConfig('lse'),
     dashboardCode: 'LESMIS_ESSDP_LowerSecondarySubSector_HLO1',
