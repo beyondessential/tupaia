@@ -20,7 +20,8 @@
     "uninstall-mv-refresh": "scripts/uninstallMvRefreshModule.sh",
     "build-analytics-table": "scripts/buildAnalyticsMaterializedView.sh",
     "drop-analytics-table": "scripts/dropAnalyticsMaterializedView.sh",
-    "refresh-analytics-table": "scripts/refreshAnalyticsTable.sh"
+    "refresh-analytics-table": "scripts/refreshAnalyticsTable.sh",
+    "refresh-analytics-table:full": "scripts/refreshAnalyticsTable.sh --full"
   },
   "dependencies": {
     "@tupaia/database": "1.0.0",
