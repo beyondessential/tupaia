@@ -19,6 +19,9 @@ interface FetchConfig {
   body?: string;
 }
 
+/**
+ * @deprecated use @tupaia/api-client
+ */
 export class ApiConnection {
   public authHandler: AuthHandler;
 

@@ -44,4 +44,5 @@ The following environment variables need to be added to the server implementaion
   - `MEDITRAK_API_CLIENT_NAME`
   - `MEDITRAK_API_CLIENT_PASSWORD`
   - `MEDITRAK_API_URL`
-- You will also need to include any environment variables associated with any additional connections that are added.
+- You will also need to include any environment variables associated with any additional connections that are added. 
+  See `.env.example`

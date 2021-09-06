@@ -1,6 +1,6 @@
 'use strict';
 
-import samoaHouseholds from './migrationData/20210803014704-CovidSamoaAddSubDistrictEntities/Entities - households 20210812.json';
+import samoaHouseholds from './migrationData/20210803014704-CovidSamoaAddSubDistrictEntities/Entities - households.json';
 
 var dbm;
 var type;
@@ -38,7 +38,6 @@ const updatePoint = (db, entityCode, point) => {
 };
 
 exports.up = async function (db) {
-  // console.log('samoaHouseholds', samoaHouseholds);
   const results = await Promise.all(
     samoaHouseholds.map(async entity => {
       const point = entity.latitude
