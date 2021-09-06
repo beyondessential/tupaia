@@ -34,6 +34,8 @@ RUN mkdir -p ./packages/admin-panel-server
 COPY packages/admin-panel-server/package.json ./packages/admin-panel-server
 RUN mkdir -p ./packages/aggregator
 COPY packages/aggregator/package.json ./packages/aggregator
+RUN mkdir -p ./packages/api-client
+COPY packages/api-client/package.json ./packages/api-client
 RUN mkdir -p ./packages/auth
 COPY packages/auth/package.json ./packages/auth
 RUN mkdir -p ./packages/data-api
@@ -84,6 +86,7 @@ RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
 ## add content of all internal dependency packages ready for internal dependencies to be built
 COPY packages/access-policy/. ./packages/access-policy
 COPY packages/aggregator/. ./packages/aggregator
+COPY packages/api-client/. ./packages/api-client
 COPY packages/auth/. ./packages/auth
 COPY packages/database/. ./packages/database
 COPY packages/data-api/. ./packages/data-api
