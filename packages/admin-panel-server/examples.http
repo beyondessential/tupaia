@@ -16,12 +16,13 @@ content-type: {{contentType}}
 }
 
 ### Fetch Dashboard Preview Data
-POST {{baseUrl}}/fetchReportPreviewData?entityCode=TO
+POST {{baseUrl}}/fetchReportPreviewData?hierarchy=explore&entityCode=TO
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
 {
     "previewConfig": {
+        "code": "test",
         "data": {
             "dataElements": [
                 "BCD46",
@@ -45,9 +46,9 @@ Authorization: {{authorization}}
                     "transform": "select",
                     "'Doctors'": "$row.BCD46",
                     "'Midwives'": "$row.BCD47",
-                    "'Nurses'": "sum([$row.BCD48, $row.BCD48a, $row.BCD48b])",
+                    "'Nurses'": "sum($row.BCD48, $row.BCD48a, $row.BCD48b)",
                     "'Aides'": "$row.BCD49",
-                    "'Others'": "sum([$row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55])",
+                    "'Others'": "sum($row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55)",
                     "...": ["period", "organisationUnit"]
                 },
                 {
@@ -98,9 +99,9 @@ Authorization: {{authorization}}
                     "transform": "select",
                     "'Doctors'": "$row.BCD46",
                     "'Midwives'": "$row.BCD47",
-                    "'Nurses'": "sum([$row.BCD48, $row.BCD48a, $row.BCD48b])",
+                    "'Nurses'": "sum($row.BCD48, $row.BCD48a, $row.BCD48b)",
                     "'Aides'": "$row.BCD49",
-                    "'Others'": "sum([$row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55])",
+                    "'Others'": "sum($row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55)",
                     "...": ["period", "organisationUnit"]
                 },
                 {
@@ -122,7 +123,7 @@ Authorization: {{authorization}}
 }
 
 ### Save dashboard visualisation (report + dashboard_item)
-POST {{baseUrl}}/saveDashboardVisualisation
+POST {{baseUrl}}/dashboardVisualisation
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
@@ -154,9 +155,9 @@ Authorization: {{authorization}}
                     "transform": "select",
                     "'Doctors'": "$row.BCD46",
                     "'Midwives'": "$row.BCD47",
-                    "'Nurses'": "sum([$row.BCD48, $row.BCD48a, $row.BCD48b])",
+                    "'Nurses'": "sum($row.BCD48, $row.BCD48a, $row.BCD48b)",
                     "'Aides'": "$row.BCD49",
-                    "'Others'": "sum([$row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55])",
+                    "'Others'": "sum($row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55)",
                     "...": ["period", "organisationUnit"]
                 },
                 {

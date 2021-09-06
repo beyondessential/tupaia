@@ -95,6 +95,21 @@ const last = (values: FieldValue[]): FieldValue => {
   return values.slice().reverse().find(isNotUndefined);
 };
 
+const single = (values: FieldValue[]): FieldValue => {
+  const definedValues = values.filter(isNotUndefined);
+  if (definedValues.length === 0) {
+    return undefined;
+  }
+
+  if (definedValues.length === 1) {
+    return definedValues[0];
+  }
+
+  throw new Error(
+    `'single' aggregation expects a single value per group, however ${definedValues.length} were found`,
+  );
+};
+
 export const aggregations = {
   group,
   sum,
@@ -106,5 +121,6 @@ export const aggregations = {
   drop,
   first,
   last,
+  single,
   default: last,
 };
