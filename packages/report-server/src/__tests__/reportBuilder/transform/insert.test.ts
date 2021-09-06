@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { SINGLE_ANALYTIC, MULTIPLE_ANALYTICS, AGGREGATEABLE_ANALYTICS } from './transform.fixtures';
+import { SINGLE_ANALYTIC, MULTIPLE_ANALYTICS, MERGEABLE_ANALYTICS } from './transform.fixtures';
 import { buildTransform } from '../../../reportBuilder/transform';
 
 describe('insert', () => {
@@ -17,7 +17,10 @@ describe('insert', () => {
         "'boolean'": 'false',
       },
     ]);
-    expect(transform(SINGLE_ANALYTIC)).toEqual([...SINGLE_ANALYTIC, { number: 1, string: 'Hi', boolean: false }]);
+    expect(transform(SINGLE_ANALYTIC)).toEqual([
+      ...SINGLE_ANALYTIC,
+      { number: 1, string: 'Hi', boolean: false },
+    ]);
   });
 
   it('can insert row with values from previous row', () => {
@@ -172,7 +175,7 @@ describe('insert', () => {
       { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
       { period: '20200102', organisationUnit: 'TO', dataElement: 'BCD1', value: 2 },
       { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
-      { Total: 11 }
+      { Total: 11 },
     ]);
   });
 
@@ -181,11 +184,13 @@ describe('insert', () => {
       {
         transform: 'insert',
         where: 'not(eq($row.organisationUnit, $next.organisationUnit))',
-        "'Total_BCD1'": "sum($where(f($otherRow) = equalText($otherRow.organisationUnit, $row.organisationUnit)).BCD1)",
-        "'Total_BCD2'": "sum($where(f($otherRow) = equalText($otherRow.organisationUnit, $row.organisationUnit)).BCD2)",
+        "'Total_BCD1'":
+          'sum($where(f($otherRow) = equalText($otherRow.organisationUnit, $row.organisationUnit)).BCD1)',
+        "'Total_BCD2'":
+          'sum($where(f($otherRow) = equalText($otherRow.organisationUnit, $row.organisationUnit)).BCD2)',
       },
     ]);
-    expect(transform(AGGREGATEABLE_ANALYTICS)).toEqual([
+    expect(transform(MERGEABLE_ANALYTICS)).toEqual([
       { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
       { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
       { period: '20200103', organisationUnit: 'TO', BCD1: 5 },
@@ -201,8 +206,8 @@ describe('insert', () => {
       { period: '20200101', organisationUnit: 'PG', BCD2: 13 },
       { period: '20200102', organisationUnit: 'PG', BCD2: 99 },
       { period: '20200103', organisationUnit: 'PG', BCD2: -1 },
-      
+
       { Total_BCD1: 17, Total_BCD2: 111 },
-    ])
+    ]);
   });
 });

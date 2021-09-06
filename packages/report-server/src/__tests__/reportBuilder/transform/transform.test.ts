@@ -7,19 +7,39 @@ import { MULTIPLE_ANALYTICS } from './transform.fixtures';
 import { buildTransform } from '../../../reportBuilder/transform';
 
 describe('transform', () => {
+  it('throws an error for an unknown transform', () => {
+    expect(() =>
+      buildTransform([
+        {
+          transform: 'flyToTheMoon',
+          insert: {
+            '=$row.dataElement': '$row.value',
+          },
+          exclude: '*',
+        },
+      ]),
+    ).toThrow();
+  });
+
   it('can perform transforms in a row', () => {
     const transform = buildTransform([
       {
-        transform: 'select',
-        '$row.dataElement': '$row.value',
+        transform: 'updateColumns',
+        insert: {
+          '=$row.dataElement': '$row.value',
+        },
+        exclude: '*',
       },
       {
         transform: 'groupRows',
         mergeUsing: { BCD1: 'sum' },
       },
       {
-        transform: 'select',
-        "'Total'": '$row.BCD1',
+        transform: 'updateColumns',
+        insert: {
+          Total: '$row.BCD1',
+        },
+        exclude: '*',
       },
     ]);
     expect(transform(MULTIPLE_ANALYTICS)).toEqual([{ Total: 11 }]);
@@ -30,8 +50,11 @@ describe('transform', () => {
       {
         $title: 'Key value by data element',
         $description: 'Add a column for each data element name, useful for aggregating later on',
-        transform: 'select',
-        '$row.dataElement': '$row.value',
+        transform: 'updateColumns',
+        insert: {
+          '=$row.dataElement': '$row.value',
+        },
+        exclude: '*',
       },
       {
         $title: 'Sum BCD1',
@@ -42,8 +65,11 @@ describe('transform', () => {
       {
         $title: 'Add Total column',
         $description: 'Add a column called Total whose value is the same as BCD1',
-        transform: 'select',
-        "'Total'": '$row.BCD1',
+        transform: 'updateColumns',
+        insert: {
+          Total: '$row.BCD1',
+        },
+        exclude: '*',
       },
     ]);
     expect(transform(MULTIPLE_ANALYTICS)).toEqual([{ Total: 11 }]);

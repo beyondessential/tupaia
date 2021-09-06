@@ -43,15 +43,18 @@ describe('parser', () => {
     ]);
   });
 
-  it('select supports parser lookups', () => {
+  it('updateColumns supports parser lookups', () => {
     const transform = buildTransform([
       {
-        transform: 'select',
-        "'row'": '$row.BCD1',
-        "'lastAll'": 'last($all.BCD1)',
-        "'sumAllPrevious'": 'sum($allPrevious.BCD1)',
-        "'sumWhereMatchingOrgUnit'":
-          'sum($where(f($otherRow) = eq($row.organisationUnit, $otherRow.organisationUnit)).BCD1)',
+        transform: 'updateColumns',
+        insert: {
+          row: '$row.BCD1',
+          lastAll: 'last($all.BCD1)',
+          sumAllPrevious: 'sum($allPrevious.BCD1)',
+          sumWhereMatchingOrgUnit:
+            'sum($where(f($otherRow) = eq($row.organisationUnit, $otherRow.organisationUnit)).BCD1)',
+        },
+        exclude: '*',
       },
     ]);
     expect(transform(PARSABLE_ANALYTICS)).toEqual([

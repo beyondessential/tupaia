@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { getColumnMatcher } from '../helpers';
 import { mergeStrategies } from './mergeStrategies';
 
 const buildIsGroupByField = (by: string | string[] | undefined) => {
@@ -10,11 +11,7 @@ const buildIsGroupByField = (by: string | string[] | undefined) => {
     return () => false;
   }
 
-  if (typeof by === 'string') {
-    return (field: string) => field === by;
-  }
-
-  return (field: string) => by.includes(field);
+  return getColumnMatcher(by);
 };
 
 export const buildGetMergeStrategy = (

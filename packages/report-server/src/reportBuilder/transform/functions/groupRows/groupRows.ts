@@ -12,6 +12,7 @@ import { Row, FieldValue } from '../../../types';
 import { buildCreateGroupKey } from './createGroupKey';
 import { buildGetMergeStrategy } from './getMergeStrategy';
 import { functions } from '../../../functions';
+import { starSingleOrMultipleColumnsValidator } from '../transformValidators';
 
 type GroupRowsParams = {
   createGroupKey: (row: Row) => string;
@@ -20,17 +21,7 @@ type GroupRowsParams = {
 };
 
 const paramsValidator = yup.object().shape({
-  by: yup.lazy((value: unknown) => {
-    if (typeof value === 'string' || value === undefined) {
-      return yup.string();
-    }
-
-    if (Array.isArray(value)) {
-      return yup.array().of(yup.string().required());
-    }
-
-    throw new yup.ValidationError('by must be either a single column, or an array of columns');
-  }),
+  by: starSingleOrMultipleColumnsValidator,
   mergeUsing: yup.lazy((value: unknown) => {
     const mergeStrategyNameValidator = yup
       .mixed<keyof typeof mergeStrategies>()
