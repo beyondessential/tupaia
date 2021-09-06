@@ -9,8 +9,11 @@ import { TransformParser } from '../parser';
 import { functions } from '../../functions';
 import { buildWhere } from './where';
 import { Row } from '../../types';
-import { starSingleOrMultipleColumnsValidator } from './transformValidators';
-import { getColumnMatcher } from './helpers';
+import {
+  mapStringToStringValidator,
+  starSingleOrMultipleColumnsValidator,
+} from './transformValidators';
+import { getColumnMatcher, getParsedColumnKeyAndValue } from './helpers';
 
 type UpdateColumnsParams = {
   insert: { [key: string]: string };
@@ -19,16 +22,7 @@ type UpdateColumnsParams = {
 };
 
 const paramsValidator = yup.object().shape({
-  insert: yup.lazy((value: unknown) => {
-    if (typeof value === 'object' && value !== null) {
-      const insertMapValidator = Object.fromEntries(
-        Object.entries(value).map(([columnName]) => [columnName, yup.string().required()]),
-      );
-      return yup.object().shape(insertMapValidator);
-    }
-
-    throw new yup.ValidationError('insert must be a mapping between columns and values');
-  }),
+  insert: mapStringToStringValidator,
   include: starSingleOrMultipleColumnsValidator,
   exclude: starSingleOrMultipleColumnsValidator,
   where: yup.string(),
@@ -44,8 +38,8 @@ const updateColumns = (rows: Row[], params: UpdateColumnsParams): Row[] => {
     }
     const newRow: Row = {};
     Object.entries(params.insert).forEach(([key, expression]) => {
-      const newRowKey = key.startsWith('=') ? `${parser.evaluate(key.substring(1))}` : key;
-      newRow[newRowKey] = parser.evaluate(expression);
+      const [newRowKey, newRowValue] = getParsedColumnKeyAndValue(key, expression, parser);
+      newRow[newRowKey] = newRowValue;
     });
 
     Object.entries(row).forEach(([field, value]) => {
@@ -67,8 +61,7 @@ const updateColumns = (rows: Row[], params: UpdateColumnsParams): Row[] => {
 const buildParams = (params: unknown): UpdateColumnsParams => {
   const validatedParams = paramsValidator.validateSync(params);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { where, insert, include, exclude } = validatedParams;
+  const { insert, include, exclude } = validatedParams;
 
   const inclusionPolicy = exclude ? 'exclude' : 'include';
   const policyColumns = exclude || include || '*';

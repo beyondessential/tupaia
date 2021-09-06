@@ -9,6 +9,7 @@ import { TransformParser } from '../parser';
 import { functions } from '../../functions';
 import { buildWhere } from './where';
 import { Row } from '../../types';
+import { getParsedColumnKeyAndValue } from './helpers';
 
 type InsertParams = {
   columns: { [key: string]: string };
@@ -51,8 +52,8 @@ const insertRows = (rows: Row[], params: InsertParams): Row[] => {
     }
     const newRow: Row = {};
     Object.entries(params.columns).forEach(([key, expression]) => {
-      const newRowKey = key.startsWith('=') ? `${parser.evaluate(key.substring(1))}` : key;
-      newRow[newRowKey] = parser.evaluate(expression);
+      const [newRowKey, newRowValue] = getParsedColumnKeyAndValue(key, expression, parser);
+      newRow[newRowKey] = newRowValue;
     });
 
     parser.next();
@@ -71,8 +72,7 @@ const insertRows = (rows: Row[], params: InsertParams): Row[] => {
 const buildParams = (params: unknown): InsertParams => {
   const validatedParams = paramsValidator.validateSync(params);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { position, where, columns } = validatedParams;
+  const { position, columns } = validatedParams;
 
   return {
     columns,

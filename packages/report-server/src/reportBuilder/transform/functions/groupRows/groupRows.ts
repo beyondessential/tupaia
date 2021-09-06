@@ -105,8 +105,7 @@ const groupRows = (rows: Row[], params: GroupRowsParams): Row[] => {
 const buildParams = (params: unknown): GroupRowsParams => {
   const validatedParams = paramsValidator.validateSync(params);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { where, by, mergeUsing } = validatedParams;
+  const { by, mergeUsing } = validatedParams;
 
   return {
     createGroupKey: buildCreateGroupKey(by),

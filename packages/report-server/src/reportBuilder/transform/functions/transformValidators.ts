@@ -18,3 +18,14 @@ export const starSingleOrMultipleColumnsValidator = yup.lazy((value: unknown) =>
     "Input must be either '*', a single column, or an array of columns",
   );
 });
+
+export const mapStringToStringValidator = yup.lazy((value: unknown) => {
+  if (typeof value === 'object' && value !== null) {
+    const stringToStringMapValidator = Object.fromEntries(
+      Object.entries(value).map(([field]) => [field, yup.string().required()]),
+    );
+    return yup.object().shape(stringToStringMapValidator);
+  }
+
+  throw new yup.ValidationError('Input must be a string to string mapping');
+});
