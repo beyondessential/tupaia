@@ -74,16 +74,18 @@ export class AreaTooltip extends Component {
     const formattedMeasureData = {};
 
     if (orgUnitMeasureData) {
-      measureOptions.forEach(({ key, name, ...otherConfigs }) => {
-        const metadata = getMetadata(orgUnitMeasureData, key);
-        formattedMeasureData[name || key] = getSingleFormattedValue(orgUnitMeasureData, [
-          {
-            key,
-            metadata,
-            ...otherConfigs,
-          },
-        ]);
-      });
+      measureOptions
+        .filter(m => !m.hideFromPopup)
+        .forEach(({ key, name, ...otherConfigs }) => {
+          const metadata = getMetadata(orgUnitMeasureData, key);
+          formattedMeasureData[name || key] = getSingleFormattedValue(orgUnitMeasureData, [
+            {
+              key,
+              metadata,
+              ...otherConfigs,
+            },
+          ]);
+        });
     }
 
     return formattedMeasureData;

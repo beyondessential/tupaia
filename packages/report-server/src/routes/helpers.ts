@@ -39,7 +39,6 @@ export const getRequestedOrgUnitObjects = async (
     throw new Error(`No entities found with codes ${orgUnitCodesInArray}`);
   }
 
-  // If entity is a project
   if (entities.length === 1 && entities[0].type === 'project') {
     const countryEntities = await entityApi.getDescendantsOfEntities(
       hierarchy,
