@@ -49,10 +49,10 @@ export const useDataTableExport = (columns, data, title) => {
     const workbook = { SheetNames: [sheetName], Sheets: { [sheetName]: sheet } };
 
     // Make filename
-    const fileName = title ? toFilename(`export-${title}-${date}.xlsx`) : `export-${date}.xlsx`;
+    const fileName = title ? toFilename(`export-${title}-${date}`) : `export-${date}`;
 
     // Write file. This will trigger the file download in the browser
-    return xlsx.writeFile(workbook, fileName);
+    return xlsx.writeFile(workbook, `${fileName}.xlsx`);
   };
 
   return { doExport };
