@@ -17,7 +17,7 @@ import {
 } from '@tupaia/ui-components/lib/map';
 import { useEntitiesData } from './useEntitiesData';
 import { yearToApiDates } from './utils';
-import { useUrlSearchParam } from '../../utils';
+import { useUrlSearchParam } from '../../utils/useUrlSearchParams';
 import { get } from '../api';
 
 const processMeasureInfo = ({ serieses, measureData, ...rest }) => {

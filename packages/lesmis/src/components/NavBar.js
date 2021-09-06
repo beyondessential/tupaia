@@ -65,7 +65,7 @@ export const NavBar = () => {
           </Left>
           {pathname !== '/' && <Search linkType={view} />}
           <FlexStart>
-            {isLoggedIn ? null : ( //@see https://github.com/beyondessential/tupaia-backlog/issues/2290 //Todo: add Favourites Menu
+            {isLoggedIn ? null : ( // @see https://github.com/beyondessential/tupaia-backlog/issues/2290 //Todo: add Favourites Menu
               <TextButton
                 to={{
                   pathname: '/register',

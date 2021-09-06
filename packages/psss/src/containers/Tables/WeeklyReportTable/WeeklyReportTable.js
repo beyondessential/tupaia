@@ -7,14 +7,7 @@ import PropTypes from 'prop-types';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import {
-  LoadingContainer,
-  TableBody,
-  Button,
-  FakeHeader,
-  SmallAlert,
-  Table,
-} from '@tupaia/ui-components';
+import { LoadingContainer, TableBody, Button, SmallAlert, Table } from '@tupaia/ui-components';
 import MuiLink from '@material-ui/core/Link';
 import {
   EditableCell,

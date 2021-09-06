@@ -1,7 +1,8 @@
 import React, { useCallback, useContext } from 'react';
+import PropTypes from 'prop-types';
 import { ActionsMenu } from '@tupaia/ui-components';
-import { ArchiveTableContext } from '../../../containers/Tables';
 import * as COLORS from '../../../constants/colors';
+import { ArchiveTableContext } from '../../../context';
 
 export const ArchivedAlertMenuCell = React.memo(({ id }) => {
   const { setAlertId, setIsRestoreModalOpen, setIsDeleteModalOpen } = useContext(
@@ -32,3 +33,7 @@ export const ArchivedAlertMenuCell = React.memo(({ id }) => {
 
   return <ActionsMenu options={actions} />;
 });
+
+ArchivedAlertMenuCell.propTypes = {
+  id: PropTypes.string.isRequired,
+};

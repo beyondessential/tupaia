@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { createContext, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Table, useTableSorting } from '@tupaia/ui-components';
@@ -11,11 +11,11 @@ import {
   ArchivedAlertMenuCell,
   CountryNameCell,
   WeekAndDateCell,
-  StartDateCell,
 } from '../../components';
 import { useAlerts } from '../../api';
 import { getCountryCodes } from '../../store';
 import { RestoreArchivedAlertModal, DeleteAlertModal } from '../Modals';
+import { ArchiveTableContext } from '../../context';
 
 const createColumns = isSingleCountry => [
   ...(isSingleCountry
@@ -74,8 +74,6 @@ const createColumns = isSingleCountry => [
     width: '70px',
   },
 ];
-
-export const ArchiveTableContext = createContext(null);
 
 export const ArchiveTableComponent = React.memo(({ countryCodes, period }) => {
   const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);

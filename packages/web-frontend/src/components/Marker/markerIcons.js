@@ -1,3 +1,9 @@
+/* eslint-disable import/no-webpack-loader-syntax */
+/* eslint-disable import/no-unresolved */
+/**
+ * Disable eslint for no webpack-loader-syntax + unresolved to work around
+ * the issue that react-scripts 4.0.x doesn't load svg as ReactComponent properly.
+ */
 /**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
@@ -9,9 +15,7 @@ import L from 'leaflet';
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOMServer from 'react-dom/server';
-
 import styled from 'styled-components';
-
 import Warning from '@material-ui/icons/Warning';
 import Help from '@material-ui/icons/Help';
 import CheckBox from '@material-ui/icons/CheckBox';
@@ -22,7 +26,6 @@ import { ReactComponent as Earthquake } from '../../images/earthquake.svg';
 import { ReactComponent as Tsunami } from '../../images/tsunami.svg';
 import { ReactComponent as Volcano } from '../../images/volcano.svg';
 import { ReactComponent as Flood } from '../../images/flood.svg';
-
 import { BREWER_PALETTE, WHITE } from '../../styles';
 
 // allows passing a color to a material icon & scales it down a bit

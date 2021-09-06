@@ -62,14 +62,14 @@ export const LoginForm = () => {
           required: 'Required',
         })}
       />
-      {/*Todo: Remember me feature. @see https://github.com/beyondessential/tupaia-backlog/issues/2261*/}
-      {/*<Checkbox*/}
-      {/*  name="rememberMe"*/}
-      {/*  color="primary"*/}
-      {/*  label="Remember me"*/}
-      {/*  inputRef={register}*/}
-      {/*  defaultValue={false}*/}
-      {/*/>*/}
+      {/* Todo: Remember me feature. @see https://github.com/beyondessential/tupaia-backlog/issues/2261 */}
+      {/* <Checkbox */}
+      {/*  name="rememberMe" */}
+      {/*  color="primary" */}
+      {/*  label="Remember me" */}
+      {/*  inputRef={register} */}
+      {/*  defaultValue={false} */}
+      {/* /> */}
       <StyledButton type="submit" fullWidth isLoading={isLoading || isSuccess}>
         Login to your account
       </StyledButton>
