@@ -7,12 +7,12 @@ import { buildUpdateColumns } from './updateColumns';
 import { buildGroupRows } from './groupRows';
 import { buildSortRows } from './sortRows';
 import { buildExcludeRows } from './excludeRows';
-import { buildInsert } from './insert';
+import { buildInsertRows } from './insertRows';
 
 export const transformBuilders = {
   updateColumns: buildUpdateColumns,
   groupRows: buildGroupRows,
   sortRows: buildSortRows,
   excludeRows: buildExcludeRows,
-  insert: buildInsert,
+  insertRows: buildInsertRows,
 };

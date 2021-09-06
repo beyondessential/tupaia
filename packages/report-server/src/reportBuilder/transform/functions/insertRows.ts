@@ -1,0 +1,87 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ */
+
+import { yup } from '@tupaia/utils';
+
+import { TransformParser } from '../parser';
+import { functions } from '../../functions';
+import { buildWhere } from './where';
+import { Row } from '../../types';
+
+type InsertParams = {
+  columns: { [key: string]: string };
+  where: (parser: TransformParser) => boolean;
+  positioner: (index: number, insertCount: number) => number;
+};
+
+const positioners = {
+  before: (index: number, insertCount: number) => index + insertCount,
+  after: (index: number, insertCount: number) => index + insertCount + 1,
+  start: (index: number, insertCount: number) => insertCount,
+};
+
+const paramsValidator = yup.object().shape({
+  columns: yup.lazy((value: unknown) => {
+    if (typeof value === 'object' && value !== null) {
+      const insertMapValidator = Object.fromEntries(
+        Object.entries(value).map(([columnName]) => [columnName, yup.string().required()]),
+      );
+      return yup.object().shape(insertMapValidator);
+    }
+
+    throw new yup.ValidationError('columns must be a mapping between columns and values');
+  }),
+  where: yup.string(),
+  position: yup
+    .mixed<'before' | 'after' | 'start'>()
+    .oneOf(['before', 'after', 'start'])
+    .default('after'),
+});
+
+const insertRows = (rows: Row[], params: InsertParams): Row[] => {
+  const returnArray = [...rows];
+  const parser = new TransformParser(rows, functions);
+  const rowsToInsert = returnArray.map(() => {
+    const shouldInsertNewRow = params.where(parser);
+    if (!shouldInsertNewRow) {
+      parser.next();
+      return undefined;
+    }
+    const newRow: Row = {};
+    Object.entries(params.columns).forEach(([key, expression]) => {
+      const newRowKey = key.startsWith('=') ? `${parser.evaluate(key.substring(1))}` : key;
+      newRow[newRowKey] = parser.evaluate(expression);
+    });
+
+    parser.next();
+    return newRow;
+  });
+  let insertCount = 0;
+  rowsToInsert.forEach((newRow, index) => {
+    if (newRow !== undefined) {
+      returnArray.splice(params.positioner(index, insertCount), 0, newRow);
+      insertCount++;
+    }
+  });
+  return returnArray;
+};
+
+const buildParams = (params: unknown): InsertParams => {
+  const validatedParams = paramsValidator.validateSync(params);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { position, where, columns } = validatedParams;
+
+  return {
+    columns,
+    where: buildWhere(params),
+    positioner: positioners[position],
+  };
+};
+
+export const buildInsertRows = (params: unknown) => {
+  const builtParams = buildParams(params);
+  return (rows: Row[]) => insertRows(rows, builtParams);
+};

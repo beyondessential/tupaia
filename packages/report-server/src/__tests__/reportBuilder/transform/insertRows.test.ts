@@ -6,15 +6,17 @@
 import { SINGLE_ANALYTIC, MULTIPLE_ANALYTICS, MERGEABLE_ANALYTICS } from './transform.fixtures';
 import { buildTransform } from '../../../reportBuilder/transform';
 
-describe('insert', () => {
-  // SAME AS SELECT FUNCTIONALITY
+describe('insertRows', () => {
+  // SAME AS INSERT COLUMNS FUNCTIONALITY
   it('can insert row with basic values', () => {
     const transform = buildTransform([
       {
-        transform: 'insert',
-        "'number'": '1',
-        "'string'": "'Hi'",
-        "'boolean'": 'false',
+        transform: 'insertRows',
+        columns: {
+          number: '1',
+          string: "'Hi'",
+          boolean: 'false',
+        },
       },
     ]);
     expect(transform(SINGLE_ANALYTIC)).toEqual([
@@ -26,8 +28,10 @@ describe('insert', () => {
   it('can insert row with values from previous row', () => {
     const transform = buildTransform([
       {
-        transform: 'insert',
-        "'dataElementValue'": '$row.value',
+        transform: 'insertRows',
+        columns: {
+          dataElementValue: '$row.value',
+        },
       },
     ]);
     expect(transform(SINGLE_ANALYTIC)).toEqual([...SINGLE_ANALYTIC, { dataElementValue: 4 }]);
@@ -36,8 +40,10 @@ describe('insert', () => {
   it('can select a value from the row as a field name', () => {
     const transform = buildTransform([
       {
-        transform: 'insert',
-        '$row.dataElement': '$row.value',
+        transform: 'insertRows',
+        columns: {
+          '=$row.dataElement': '$row.value',
+        },
       },
     ]);
     expect(transform(SINGLE_ANALYTIC)).toEqual([...SINGLE_ANALYTIC, { BCD1: 4 }]);
@@ -46,8 +52,10 @@ describe('insert', () => {
   it('can execute functions', () => {
     const transform = buildTransform([
       {
-        transform: 'insert',
-        "'period'": "periodToDisplayString($row.period, 'DAY')",
+        transform: 'insertRows',
+        columns: {
+          period: "periodToDisplayString($row.period, 'DAY')",
+        },
       },
     ]);
     expect(transform(SINGLE_ANALYTIC)).toEqual([...SINGLE_ANALYTIC, { period: '1st Jan 2020' }]);
@@ -57,12 +65,14 @@ describe('insert', () => {
   it('can insert a single row at start', () => {
     const transform = buildTransform([
       {
-        transform: 'insert',
+        transform: 'insertRows',
         position: 'before',
         where: 'eq($index, 1)',
-        "'number'": '1',
-        "'string'": "'Hi'",
-        "'boolean'": 'false',
+        columns: {
+          number: '1',
+          string: "'Hi'",
+          boolean: 'false',
+        },
       },
     ]);
     expect(transform(MULTIPLE_ANALYTICS)).toEqual([
@@ -76,11 +86,13 @@ describe('insert', () => {
   it('can insert a single row at end', () => {
     const transform = buildTransform([
       {
-        transform: 'insert',
+        transform: 'insertRows',
         where: 'eq($index, length($table))',
-        "'number'": '1',
-        "'string'": "'Hi'",
-        "'boolean'": 'false',
+        columns: {
+          number: '1',
+          string: "'Hi'",
+          boolean: 'false',
+        },
       },
     ]);
     expect(transform(MULTIPLE_ANALYTICS)).toEqual([
@@ -94,8 +106,10 @@ describe('insert', () => {
   it('can insert multiple rows', () => {
     const transform = buildTransform([
       {
-        transform: 'insert',
-        "'dataElementValue'": '$row.value',
+        transform: 'insertRows',
+        columns: {
+          dataElementValue: '$row.value',
+        },
       },
     ]);
     expect(transform(MULTIPLE_ANALYTICS)).toEqual([
@@ -111,8 +125,10 @@ describe('insert', () => {
   it('can insert new rows before the relative row', () => {
     const transform = buildTransform([
       {
-        transform: 'insert',
-        "'dataElementValue'": '$row.value',
+        transform: 'insertRows',
+        columns: {
+          dataElementValue: '$row.value',
+        },
         position: 'before',
       },
     ]);
@@ -129,8 +145,10 @@ describe('insert', () => {
   it('can insert new rows at the beginning of the list', () => {
     const transform = buildTransform([
       {
-        transform: 'insert',
-        "'dataElementValue'": '$row.value',
+        transform: 'insertRows',
+        columns: {
+          dataElementValue: '$row.value',
+        },
         position: 'start',
       },
     ]);
@@ -147,8 +165,10 @@ describe('insert', () => {
   it('can insert specific new rows using a where clause', () => {
     const transform = buildTransform([
       {
-        transform: 'insert',
-        "'dataElementValue'": '$row.value',
+        transform: 'insertRows',
+        columns: {
+          dataElementValue: '$row.value',
+        },
         position: 'after',
         where: "not(eq($row.period, '20200101'))",
       },
@@ -166,9 +186,11 @@ describe('insert', () => {
   it('can sum all values into a new totals row', () => {
     const transform = buildTransform([
       {
-        transform: 'insert',
+        transform: 'insertRows',
         where: 'eq($index, length($table))',
-        "'Total'": 'sum($all.value)',
+        columns: {
+          Total: 'sum($all.value)',
+        },
       },
     ]);
     expect(transform(MULTIPLE_ANALYTICS)).toEqual([
@@ -182,12 +204,14 @@ describe('insert', () => {
   it('compare adjacent rows to insert between', () => {
     const transform = buildTransform([
       {
-        transform: 'insert',
+        transform: 'insertRows',
         where: 'not(eq($row.organisationUnit, $next.organisationUnit))',
-        "'Total_BCD1'":
-          'sum($where(f($otherRow) = equalText($otherRow.organisationUnit, $row.organisationUnit)).BCD1)',
-        "'Total_BCD2'":
-          'sum($where(f($otherRow) = equalText($otherRow.organisationUnit, $row.organisationUnit)).BCD2)',
+        columns: {
+          Total_BCD1:
+            'sum($where(f($otherRow) = equalText($otherRow.organisationUnit, $row.organisationUnit)).BCD1)',
+          Total_BCD2:
+            'sum($where(f($otherRow) = equalText($otherRow.organisationUnit, $row.organisationUnit)).BCD2)',
+        },
       },
     ]);
     expect(transform(MERGEABLE_ANALYTICS)).toEqual([

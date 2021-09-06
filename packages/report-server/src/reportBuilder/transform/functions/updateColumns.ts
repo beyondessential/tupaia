@@ -27,9 +27,7 @@ const paramsValidator = yup.object().shape({
       return yup.object().shape(insertMapValidator);
     }
 
-    throw new yup.ValidationError(
-      'mergeUsing must be either a single merge strategy, or a mapping between columns and merge strategies',
-    );
+    throw new yup.ValidationError('insert must be a mapping between columns and values');
   }),
   include: starSingleOrMultipleColumnsValidator,
   exclude: starSingleOrMultipleColumnsValidator,
