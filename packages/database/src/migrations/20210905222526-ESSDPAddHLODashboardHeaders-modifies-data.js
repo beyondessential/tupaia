@@ -49,6 +49,13 @@ const NEW_DASHBOARDS = [
   },
 ];
 
+const DASHBOARD_ITEMS = [
+  'LESMIS_enrolment_ece_5_target',
+  'LESMIS_enrolment_ece_3_4_target',
+  'LESMIS_enrolment_ece_0_2_target',
+  'LESMIS_ESSDP_ECE_HLO1', // We'll be moving it after it's renamed
+];
+
 const moveItemToNewDashboard = async (db, itemCode, oldDashboardCode, newDashboardCode) => {
   const itemId = (await findSingleRecord(db, 'dashboard_item', { code: itemCode })).id;
   const oldDashboardId = (await findSingleRecord(db, 'dashboard', { code: oldDashboardCode })).id;
@@ -85,23 +92,27 @@ exports.up = async function (db) {
     { code: 'LESMIS_ESSDP_ECE_HLO1', report_code: 'LESMIS_ESSDP_ECE_HLO1' }, // new values
     { code: 'LESMIS_ESSDP_ECE_SubSector_List' }, // old value
   );
-  // Move list to new dashboard
-  await moveItemToNewDashboard(
-    db,
-    'LESMIS_ESSDP_ECE_HLO1',
-    'LESMIS_ESSDP_EarlyChildhoodSubSector_Schools',
-    'LESMIS_ESSDP_EarlyChildhoodSubSector_HLO1',
-  );
+  // Move list and drilldowns to new dashboard
+  for (const code of DASHBOARD_ITEMS) {
+    await moveItemToNewDashboard(
+      db,
+      code,
+      'LESMIS_ESSDP_EarlyChildhoodSubSector_Schools',
+      'LESMIS_ESSDP_EarlyChildhoodSubSector_HLO1',
+    );
+  }
 };
 
 exports.down = async function (db) {
-  // Move list back to old dashboard
-  await moveItemToNewDashboard(
-    db,
-    'LESMIS_ESSDP_ECE_HLO1',
-    'LESMIS_ESSDP_EarlyChildhoodSubSector_HLO1',
-    'LESMIS_ESSDP_EarlyChildhoodSubSector_Schools',
-  );
+  // Move list and drilldowns back to old dashboard
+  for (const code of DASHBOARD_ITEMS) {
+    await moveItemToNewDashboard(
+      db,
+      code,
+      'LESMIS_ESSDP_EarlyChildhoodSubSector_HLO1',
+      'LESMIS_ESSDP_EarlyChildhoodSubSector_Schools',
+    );
+  }
   // Rename list
   await updateValues(
     db,
