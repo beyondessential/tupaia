@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
@@ -13,6 +12,8 @@ import { Alarm, CheckCircleOutline, Restore } from '@material-ui/icons';
 import { REPORT_STATUSES } from '../../../constants';
 import * as COLORS from '../../../constants/colors';
 import { openWeeklyReportsPanel } from '../../../store';
+import { connect } from 'react-redux';
+import { SiteSummaryTableComponent } from '../../../containers/Tables';
 
 const StatusStyles = css`
   display: inline-flex;

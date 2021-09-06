@@ -158,9 +158,9 @@ export const Header = ({ Title, back, ExportModal }) => {
 };
 
 Header.propTypes = {
-  Title: PropTypes.node.isRequired,
+  Title: PropTypes.any.isRequired,
   back: PropTypes.shape({ title: PropTypes.string.isRequired, url: PropTypes.string.isRequired }),
-  ExportModal: PropTypes.node,
+  ExportModal: PropTypes.any,
 };
 
 Header.defaultProps = {

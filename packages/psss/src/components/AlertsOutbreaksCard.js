@@ -33,7 +33,7 @@ export const AlertsOutbreaksCard = ({ children, ...props }) => (
 );
 
 AlertsOutbreaksCard.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.any.isRequired,
 };
 
 export const AlertsAndOutbreaksCardBody = styled(MuiExpansionPanelDetails)`

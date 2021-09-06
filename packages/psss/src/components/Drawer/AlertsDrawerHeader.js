@@ -84,7 +84,7 @@ export const AlertsDrawerHeader = React.memo(
 );
 
 AlertsDrawerHeader.propTypes = {
-  DropdownMenu: PropTypes.node,
+  DropdownMenu: PropTypes.any,
   heading: PropTypes.string.isRequired,
   subheading: PropTypes.string.isRequired,
   dateText: PropTypes.string.isRequired,

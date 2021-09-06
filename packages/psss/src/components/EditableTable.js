@@ -116,5 +116,5 @@ EditableTableProvider.propTypes = {
     TABLE_STATUSES.LOADING,
   ]).isRequired,
   setTableStatus: PropTypes.func.isRequired,
-  children: PropTypes.node.isRequired,
+  children: PropTypes.any.isRequired,
 };

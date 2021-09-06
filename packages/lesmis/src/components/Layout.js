@@ -4,7 +4,6 @@
  *
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import MuiBox from '@material-ui/core/Box';
@@ -46,10 +45,6 @@ export const Toolbar = ({ children }) => (
     <MuiContainer maxWidth="xl">{children}</MuiContainer>
   </ToolbarWrapper>
 );
-
-Toolbar.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 export const FlexStart = styled(MuiBox)`
   display: flex;
