@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { yup } from '@tupaia/utils';
+
 import { Row } from '../types';
 import { transformBuilders } from './functions';
 import { aliases } from './aliases';
@@ -11,6 +13,26 @@ type TransformParams = {
   name: string;
   apply: (rows: Row[]) => Row[];
 };
+
+const transformParamsValidator = yup.lazy((value: unknown) => {
+  if (typeof value === 'string') {
+    return yup
+      .mixed<keyof typeof aliases>()
+      .oneOf(Object.keys(aliases) as (keyof typeof aliases)[])
+      .required();
+  }
+
+  return yup.object().shape({
+    transform: yup
+      .mixed<keyof typeof transformBuilders>()
+      .oneOf(Object.keys(transformBuilders) as (keyof typeof transformBuilders)[])
+      .required(),
+    title: yup.string(),
+    description: yup.string(),
+  });
+});
+
+const paramsValidator = yup.array().required();
 
 const transform = (rows: Row[], transformSteps: TransformParams[]): Row[] => {
   let transformedRows: Row[] = rows;
@@ -21,52 +43,30 @@ const transform = (rows: Row[], transformSteps: TransformParams[]): Row[] => {
 };
 
 const buildParams = (params: unknown): TransformParams => {
-  if (typeof params === 'string') {
-    if (!(params in aliases)) {
-      throw new Error(
-        `Expected transform alias to be one of ${Object.keys(aliases)}, but got: ${params}`,
-      );
-    }
-
+  const validatedParams = transformParamsValidator.validateSync(params);
+  if (typeof validatedParams === 'string') {
     return {
-      name: params,
-      apply: aliases[params as keyof typeof aliases](),
+      name: validatedParams,
+      apply: aliases[validatedParams](),
     };
-  }
-
-  if (typeof params !== 'object' || params === null) {
-    throw new Error(`Expected object but got ${params}`);
-  }
-
-  if (!('transform' in params)) {
-    throw new Error(`Expected transform in params`);
   }
 
   const {
     transform: transformStep,
-    $title: title, // This is purely a cosmetic part of the config, ignore it
-    $description: description, // This is purely a cosmetic part of the config, ignore it
+    title, // This is purely a cosmetic part of the config, ignore it
+    description, // This is purely a cosmetic part of the config, ignore it
     ...restOfTransformParams
-  } = params;
-  if (typeof transformStep !== 'string' || !(transformStep in transformBuilders)) {
-    throw new Error(
-      `Expected transform to be one of ${Object.keys(transformBuilders)} but got ${transformStep}`,
-    );
-  }
+  } = validatedParams;
 
   return {
     name: transformStep,
-    apply: transformBuilders[transformStep as keyof typeof transformBuilders](
-      restOfTransformParams,
-    ),
+    apply: transformBuilders[transformStep](restOfTransformParams),
   };
 };
 
 export const buildTransform = (params: unknown) => {
-  if (!Array.isArray(params)) {
-    throw new Error(`Expected array of transform configs, but got ${params}`);
-  }
+  const validatedParams = paramsValidator.validateSync(params);
 
-  const builtParams = params.map(param => buildParams(param));
+  const builtParams = validatedParams.map(param => buildParams(param));
   return (rows: Row[]) => transform(rows, builtParams);
 };

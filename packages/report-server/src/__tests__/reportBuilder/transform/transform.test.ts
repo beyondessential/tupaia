@@ -48,8 +48,8 @@ describe('transform', () => {
   it('supports title and description in transforms', () => {
     const transform = buildTransform([
       {
-        $title: 'Key value by data element',
-        $description: 'Add a column for each data element name, useful for aggregating later on',
+        title: 'Key value by data element',
+        description: 'Add a column for each data element name, useful for aggregating later on',
         transform: 'updateColumns',
         insert: {
           '=$row.dataElement': '$row.value',
@@ -57,14 +57,14 @@ describe('transform', () => {
         exclude: '*',
       },
       {
-        $title: 'Sum BCD1',
-        $description: 'Group all rows together and sum their values for BCD1',
+        title: 'Sum BCD1',
+        description: 'Group all rows together and sum their values for BCD1',
         transform: 'groupRows',
         mergeUsing: { BCD1: 'sum' },
       },
       {
-        $title: 'Add Total column',
-        $description: 'Add a column called Total whose value is the same as BCD1',
+        title: 'Add Total column',
+        description: 'Add a column called Total whose value is the same as BCD1',
         transform: 'updateColumns',
         insert: {
           Total: '$row.BCD1',

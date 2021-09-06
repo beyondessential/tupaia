@@ -42,7 +42,16 @@ export class TransformParser extends ExpressionParser {
     super();
 
     this.rows = rows;
-    this.lookups = { row: {}, previous: {}, next: {}, all: {}, allPrevious: {}, index: this.currentRow + 1, table: this.rows, where: this.whereFunction };
+    this.lookups = {
+      row: {},
+      previous: {},
+      next: {},
+      all: {},
+      allPrevious: {},
+      index: this.currentRow + 1,
+      table: this.rows,
+      where: this.whereFunction,
+    };
 
     if (rows.length > 0) {
       this.lookups.row = this.rows[this.currentRow];
@@ -92,6 +101,7 @@ const addRowToLookup = (row: Row, lookup: RowLookup) => {
   Object.entries(row).forEach(([field, value]) => {
     if (value !== undefined && value !== null) {
       if (!(field in lookup)) {
+        // eslint-disable-next-line no-param-reassign
         lookup[field] = [];
       }
       lookup[field].push(value);
