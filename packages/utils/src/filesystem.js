@@ -6,6 +6,10 @@ import sanitize from 'sanitize-filename';
 import fs from 'fs';
 import path from 'path';
 
+/**
+ *  @template T the type of expected file contents
+ *  @returns {T}
+ */
 export const readJsonFile = filePath =>
   JSON.parse(fs.readFileSync(filePath, { encoding: 'utf-8' }));
 
