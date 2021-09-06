@@ -52,7 +52,7 @@ export const DrawerTray = ({ heading, Icon, color, onClose }) => (
 DrawerTray.propTypes = {
   heading: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-  Icon: PropTypes.node,
+  Icon: PropTypes.any,
   color: PropTypes.string,
 };
 

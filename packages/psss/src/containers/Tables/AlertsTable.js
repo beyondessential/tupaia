@@ -9,7 +9,7 @@ import { Table, useTableSorting } from '@tupaia/ui-components';
 import { useAlerts } from '../../api';
 import { SyndromeCell, AlertMenuCell, CountryNameCell, WeekAndDateCell } from '../../components';
 import { getCountryCodes } from '../../store';
-import { AlertsPanelContext } from '../../context';
+import { AlertsPanelContext } from '../Panels';
 
 const createColumns = isSingleCountry => [
   ...(isSingleCountry

@@ -37,7 +37,7 @@ export const BorderlessTable = ({ columns, data, SubComponent }) => {
 BorderlessTable.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
   data: PropTypes.array.isRequired,
-  SubComponent: PropTypes.node,
+  SubComponent: PropTypes.any,
 };
 
 BorderlessTable.defaultProps = {

@@ -4,7 +4,6 @@
  *
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { SmallAlert } from '@tupaia/ui-components';
 import { FlexCenter } from './Layout';
 
@@ -14,7 +13,7 @@ export class ErrorBoundary extends React.Component {
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError() {
+  static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
     return { hasError: true };
   }
@@ -38,7 +37,3 @@ export class ErrorBoundary extends React.Component {
     return this.props.children;
   }
 }
-
-ErrorBoundary.propTypes = {
-  children: PropTypes.node.isRequired,
-};

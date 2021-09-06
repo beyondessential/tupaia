@@ -80,7 +80,6 @@ ResourcePage.propTypes = {
   title: PropTypes.string.isRequired,
   baseFilter: PropTypes.object,
   defaultSorting: PropTypes.array,
-  defaultFilters: PropTypes.array,
 };
 
 ResourcePage.defaultProps = {
@@ -92,6 +91,5 @@ ResourcePage.defaultProps = {
   onProcessDataForSave: null,
   baseFilter: {},
   defaultSorting: [],
-  defaultFilters: [],
   reduxId: null,
 };

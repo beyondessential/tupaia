@@ -54,10 +54,6 @@ const VitalsIcon = ({ icon }) => {
   return null;
 };
 
-VitalsIcon.propTypes = {
-  icon: PropTypes.string.isRequired,
-};
-
 const VitalName = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
   font-size: 0.75rem;

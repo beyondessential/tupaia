@@ -90,7 +90,6 @@ export const SiteSummaryTableComponent = React.memo(({ rowData, handleOpen }) =>
       <TableWrapper>
         <FakeHeader>
           <div>{`${sitesReported}/${totalSites} Sentinel Sites Reported`}</div>
-          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
           <Link component="button" onClick={() => handleOpen(period)} underline="always">
             Review and Confirm Now
           </Link>

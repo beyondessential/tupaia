@@ -29,6 +29,6 @@ export const AppProviders = ({ children, store }) => {
 };
 
 AppProviders.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.any.isRequired,
   store: PropTypes.object.isRequired,
 };

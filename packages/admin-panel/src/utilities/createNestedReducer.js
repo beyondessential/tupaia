@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import { createReducer } from './createReducer';
+import { createReducer } from '.';
 
 const createNestedStateChanger = (defaultNestedState, handleActionPayload) => (
   { reduxId: id, ...restOfPayload },
