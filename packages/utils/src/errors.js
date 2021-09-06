@@ -14,7 +14,7 @@ class LoggedError extends Error {
   constructor(message) {
     super(message);
     this.message = message;
-    winston.error(this.message);
+    winston.error(this.message, { stack: this.stack });
   }
 }
 
