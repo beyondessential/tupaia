@@ -161,7 +161,7 @@ exports.up = async function (db) {
   );
 };
 
-exports.down = function (db) {
+exports.down = async function (db) {
   Promise.all(
     SPECIES.map(async ([_, species]) => {
       HIERARCHY_LEVELS.map(async hierarchyLevel => {
