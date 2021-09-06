@@ -100,22 +100,22 @@ const DASHBOARD_ITEMS = [
   {
     code: 'LESMIS_ESSDP_ece_NumberOfStudents',
     reportConfig: generateReportConfig('ece'),
-    dashboardCode: 'LESMIS_ESSDP_EarlyChildhoodSubSector_Schools',
+    dashboardCode: 'LESMIS_ESSDP_EarlyChildhoodSubSector_HLO1',
   },
   {
     code: 'LESMIS_ESSDP_pe_NumberOfStudents',
     reportConfig: generateReportConfig('pe'),
-    dashboardCode: 'LESMIS_ESSDP_PrimarySubSector_Schools',
+    dashboardCode: 'LESMIS_ESSDP_PrimarySubSector_HLO1',
   },
   {
     code: 'LESMIS_ESSDP_lse_NumberOfStudents',
     reportConfig: generateReportConfig('lse'),
-    dashboardCode: 'LESMIS_ESSDP_LowerSecondarySubSector_Schools',
+    dashboardCode: 'LESMIS_ESSDP_LowerSecondarySubSector_HLO1',
   },
   {
     code: 'LESMIS_ESSDP_use_NumberOfStudents',
     reportConfig: generateReportConfig('use'),
-    dashboardCode: 'LESMIS_ESSDP_UpperSecondarySubSector_Schools',
+    dashboardCode: 'LESMIS_ESSDP_UpperSecondarySubSector_HLO1',
   },
 ];
 
