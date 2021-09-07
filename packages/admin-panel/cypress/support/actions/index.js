@@ -5,6 +5,7 @@
 import { requireCyEnv } from '@tupaia/utils';
 
 export * from './importSurvey';
+export * from './survey.js';
 
 export const loginAsSuperUser = () => {
   cy.login({

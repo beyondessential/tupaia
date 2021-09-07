@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
+
 import {
   loginAsSuperUser,
   openImportSurveyForm,
@@ -12,15 +13,16 @@ import {
   selectReportingPeriod,
   selectDataService,
   importSurvey,
+  searchBySurveyName,
 } from '../../support';
 
 describe('import survey file', () => {
   before(() => {
     loginAsSuperUser();
-    openImportSurveyForm();
   });
 
   it('import a single survey to a single country', () => {
+    openImportSurveyForm();
     enterSurveyName('Test Survey_1');
     enterCountryName('Demo Land');
     enterPermissionGroup('Admin');
@@ -30,5 +32,8 @@ describe('import survey file', () => {
     cy.uploadFile('surveys/Test Survey_1.xlsx');
     importSurvey();
     cy.get('form').should('contain.text', 'Your import has been successfully processed');
+    cy.get('form').contains('Done').click();
+    searchBySurveyName('Test Survey_1');
+    cy.FirstRowElementOfTable().eq(1).should('have.text', 'Test Survey_1');
   });
 });
