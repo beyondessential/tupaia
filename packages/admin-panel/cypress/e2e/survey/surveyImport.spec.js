@@ -31,9 +31,11 @@ describe('import survey file', () => {
     selectDataService('Tupaia');
     cy.uploadFile('surveys/Test Survey_1.xlsx');
     importSurvey();
+    // assertion for confirmation message.
     cy.get('form').should('contain.text', 'Your import has been successfully processed');
     cy.get('form').contains('Done').click();
     searchBySurveyName('Test Survey_1');
+    // assertion for survey search.
     cy.FirstRowElementOfTable().eq(1).should('have.text', 'Test Survey_1');
   });
 });
