@@ -10,6 +10,7 @@ import { functions } from '../../functions';
 import { buildWhere } from './where';
 import { Row } from '../../types';
 import { getParsedColumnKeyAndValue } from './helpers';
+import { mapStringToStringValidator } from './transformValidators';
 
 type InsertParams = {
   columns: { [key: string]: string };
@@ -24,16 +25,7 @@ const positioners = {
 };
 
 const paramsValidator = yup.object().shape({
-  columns: yup.lazy((value: unknown) => {
-    if (typeof value === 'object' && value !== null) {
-      const insertMapValidator = Object.fromEntries(
-        Object.entries(value).map(([columnName]) => [columnName, yup.string().required()]),
-      );
-      return yup.object().shape(insertMapValidator);
-    }
-
-    throw new yup.ValidationError('columns must be a mapping between columns and values');
-  }),
+  columns: mapStringToStringValidator,
   where: yup.string(),
   position: yup
     .mixed<'before' | 'after' | 'start'>()

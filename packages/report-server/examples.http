@@ -39,25 +39,22 @@ Authorization: {{authorization}}
     "transform": [
       "keyValueByDataElementName",
       {
-          "$title": "Calculate occuptions from data elements",
-          "$description": "Sums the raw data elements values to their appropriate occuption",
-          "transform": "select",
-          "'Doctors'": "$row.BCD46",
-          "'Midwives'": "$row.BCD47",
-          "'Nurses'": "sum($row.BCD48, $row.BCD48a, $row.BCD48b)",
-          "'Aides'": "$row.BCD49",
-          "'Others'": "sum($row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55)",
-          "...": ["period", "organisationUnit"]
+          "title": "Calculate occuptions from data elements",
+          "description": "Sums the raw data elements values to their appropriate occuption",
+          "transform": "updateColumns",
+          "insert": {
+            "Doctors": "$row.BCD46",
+            "Midwives": "$row.BCD47",
+            "Nurses": "sum($row.BCD48, $row.BCD48a, $row.BCD48b)",
+            "Aides": "$row.BCD49",
+            "Others": "sum($row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55)"
+          },
+          "include": ["period", "organisationUnit"]
       },
       {
-        "transform": "aggregate",
-        "organisationUnit": "group",
-        "period": "group",
-        "Doctors": "sum",
-        "Midwives": "sum",
-        "Nurses": "sum",
-        "Aides": "sum",
-        "Others": "sum"
+        "transform": "groupRows",
+        "by": ["organisationUnit", "period"],
+        "mergeUsing": "sum"
       }
     ]
   }

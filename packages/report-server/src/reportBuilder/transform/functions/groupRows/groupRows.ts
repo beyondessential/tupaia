@@ -67,19 +67,19 @@ const buildGroups = (rows: Row[], params: GroupRowsParams) => {
       return;
     }
     const groupKey = params.createGroupKey(row);
-    groupsByKey[groupKey] = merge(groupsByKey[groupKey] || {}, row);
+    groupsByKey[groupKey] = addRowToGroup(groupsByKey[groupKey] || {}, row);
     parser.next();
   });
 
   return { groups: Object.values(groupsByKey), ungroupedRows };
 };
 
-const merge = (previousRow: Group, newRow: Row): Group => {
-  const mergedRow = { ...previousRow };
-  Object.keys(newRow).forEach((field: string) => {
-    mergedRow[field] = [...(mergedRow[field] || []), newRow[field]];
+const addRowToGroup = (group: Group, row: Row): Group => {
+  const newGroup = { ...group };
+  Object.keys(row).forEach((field: string) => {
+    newGroup[field] = [...(newGroup[field] || []), row[field]];
   });
-  return mergedRow;
+  return newGroup;
 };
 
 const mergeGroups = (groups: Group[], params: GroupRowsParams): Row[] => {

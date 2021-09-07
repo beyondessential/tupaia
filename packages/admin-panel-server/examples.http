@@ -43,23 +43,20 @@ Authorization: {{authorization}}
             "transform": [
                 "keyValueByDataElementName",
                 {
-                    "transform": "select",
-                    "'Doctors'": "$row.BCD46",
-                    "'Midwives'": "$row.BCD47",
-                    "'Nurses'": "sum($row.BCD48, $row.BCD48a, $row.BCD48b)",
-                    "'Aides'": "$row.BCD49",
-                    "'Others'": "sum($row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55)",
-                    "...": ["period", "organisationUnit"]
+                    "transform": "updateColumns",
+                    "columns": {
+                        "Doctors": "$row.BCD46",
+                        "Midwives": "$row.BCD47",
+                        "Nurses": "sum($BCD48, $BCD48a, $BCD48b)",
+                        "Aides": "$BCD49",
+                        "Others": "sum($row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55)",
+                    },
+                    "include": ["period", "organisationUnit"]
                 },
                 {
-                    "transform": "aggregate",
-                    "organisationUnit": "group",
-                    "period": "group",
-                    "Doctors": "sum",
-                    "Midwives": "sum",
-                    "Nurses": "sum",
-                    "Aides": "sum",
-                    "Others": "sum"
+                    "transform": "groupRows",
+                    "by": ["organisationUnit", "period"],
+                    "mergeUsing": "sum"
                 }
             ]
         }
@@ -96,23 +93,20 @@ Authorization: {{authorization}}
             "transform": [
                 "keyValueByDataElementName",
                 {
-                    "transform": "select",
-                    "'Doctors'": "$row.BCD46",
-                    "'Midwives'": "$row.BCD47",
-                    "'Nurses'": "sum($row.BCD48, $row.BCD48a, $row.BCD48b)",
-                    "'Aides'": "$row.BCD49",
-                    "'Others'": "sum($row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55)",
-                    "...": ["period", "organisationUnit"]
+                    "transform": "updateColumns",
+                    "columns": {
+                        "Doctors": "$row.BCD46",
+                        "Midwives": "$row.BCD47",
+                        "Nurses": "sum($BCD48, $BCD48a, $BCD48b)",
+                        "Aides": "$BCD49",
+                        "Others": "sum($row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55)",
+                    },
+                    "include": ["period", "organisationUnit"]
                 },
                 {
-                    "transform": "aggregate",
-                    "organisationUnit": "group",
-                    "period": "group",
-                    "Doctors": "sum",
-                    "Midwives": "sum",
-                    "Nurses": "sum",
-                    "Aides": "sum",
-                    "Others": "sum"
+                    "transform": "groupRows",
+                    "by": ["organisationUnit", "period"],
+                    "mergeUsing": "sum"
                 }
             ]
         },
@@ -152,23 +146,20 @@ Authorization: {{authorization}}
             "transform": [
                 "keyValueByDataElementName",
                 {
-                    "transform": "select",
-                    "'Doctors'": "$row.BCD46",
-                    "'Midwives'": "$row.BCD47",
-                    "'Nurses'": "sum($row.BCD48, $row.BCD48a, $row.BCD48b)",
-                    "'Aides'": "$row.BCD49",
-                    "'Others'": "sum($row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55)",
-                    "...": ["period", "organisationUnit"]
+                    "transform": "updateColumns",
+                    "columns": {
+                        "Doctors": "$row.BCD46",
+                        "Midwives": "$row.BCD47",
+                        "Nurses": "sum($BCD48, $BCD48a, $BCD48b)",
+                        "Aides": "$BCD49",
+                        "Others": "sum($row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55)",
+                    },
+                    "include": ["period", "organisationUnit"]
                 },
                 {
-                    "transform": "aggregate",
-                    "organisationUnit": "group",
-                    "period": "group",
-                    "Doctors": "sum",
-                    "Midwives": "sum",
-                    "Nurses": "sum",
-                    "Aides": "sum",
-                    "Others": "sum"
+                    "transform": "groupRows",
+                    "by": ["organisationUnit", "period"],
+                    "mergeUsing": "sum"
                 }
             ]
         },
