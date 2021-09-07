@@ -44,10 +44,25 @@ const translate = (value, translations) => {
  */
 const BUILT_IN_FUNCTIONS = ['equalText', 'round'];
 
+const ADDITIONAL_ALPHA_CHARS = ['@'];
+
 export class ExpressionParser {
-  constructor() {
-    this.math = create(all, {});
-    this.parser = this.math.parser();
+  /**
+   * @typedef { { get: (s: string) => unknown, set: (s: string, v: unknown) => void, has: (s: string) => boolean, keys: () => string[], delete: (s: string) => void, clear: () => void } } Scope
+   *
+   * Can pass in a custom scope
+   * @param {Scope} customScope
+   */
+  constructor(customScope = new Map()) {
+    this.math = create(all);
+
+    // Add additional alpha chars, to allow for usage in variable names
+    const isAlphaOriginal = this.math.parse.isAlpha;
+    this.math.parse.isAlpha = (c, cPrev, cNext) => {
+      return ADDITIONAL_ALPHA_CHARS.includes(c) || isAlphaOriginal(c, cPrev, cNext);
+    };
+
+    this.customScope = customScope;
     this.customFunctions = this.getCustomFunctions();
     this.math.import(this.customFunctions);
     this.validExpressionCache = new Set();
@@ -97,7 +112,7 @@ export class ExpressionParser {
    */
   evaluate(expression) {
     this.validate(expression);
-    return this.parser.evaluate(expression);
+    return this.math.evaluate(expression, this.customScope);
   }
 
   /**
@@ -115,23 +130,31 @@ export class ExpressionParser {
   }
 
   /**
-   * Set the parser's scope.
-   * @param {*} scope
+   * Set all variables to the parser's scope.
+   * @param {*} variables
    */
-  setScope(scope = {}) {
-    Object.entries(scope).forEach(([name, value]) => {
+  setAll(variables = {}) {
+    Object.entries(variables).forEach(([name, value]) => {
       const expressionValue = value || 0;
       this.set(name, expressionValue);
     });
   }
 
   /**
-   * Add a value to the parser's scope.
+   * Add a variable to the parser's scope.
    * @param {*} name
    * @param {*} value
    */
   set(name, value) {
-    this.parser.set(name, value);
+    this.customScope.set(name, value);
+  }
+
+  /**
+   * Delete a variable from the parser's scope.
+   * @param {*} name
+   */
+  delete(name) {
+    this.customScope.delete(name);
   }
 
   /**
@@ -139,7 +162,7 @@ export class ExpressionParser {
    * This will not remove any imported functions.
    */
   clearScope() {
-    this.parser.clear();
+    this.customScope.clear();
   }
 
   /**

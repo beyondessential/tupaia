@@ -181,7 +181,18 @@ exports.up = async function (db) {
   for (let i = 0; i < reports.length; i++) {
     const { code, config } = reports[i];
     const newConfig = getNewConfig(config);
-    const newConfigString = JSON.stringify(newConfig).replace(/'/g, "''");
+    const newConfigString = JSON.stringify(newConfig)
+      .replace(/'/g, "''")
+      .replace(/\$row\./g, '$')
+      .replace(/\$row/g, '@row')
+      .replace(/\$previous/g, '@previous')
+      .replace(/\$next/g, '@next')
+      .replace(/\$all/g, '@all')
+      .replace(/\$allPrevious/g, '@allPrevious')
+      .replace(/\$index/g, '@index')
+      .replace(/\$table/g, '@table')
+      .replace(/\$where/g, '@where');
+
     await db.runSql(`
         UPDATE report
         SET config = '${newConfigString}'::jsonb

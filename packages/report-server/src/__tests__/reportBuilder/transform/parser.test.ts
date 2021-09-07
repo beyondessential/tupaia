@@ -16,7 +16,7 @@ describe('parser', () => {
           period: 'exclude',
           '*': 'sum',
         },
-        where: "eq($row.organisationUnit, 'TO')",
+        where: "eq($organisationUnit, 'TO')",
       },
     ]);
     expect(transform(PARSABLE_ANALYTICS)).toEqual([
@@ -32,7 +32,7 @@ describe('parser', () => {
       {
         transform: 'excludeRows',
         where:
-          '$row.BCD1 <= mean($where(f($otherRow) = eq($row.organisationUnit, $otherRow.organisationUnit)).BCD1)',
+          '$BCD1 <= mean(@where(f(@otherRow) = eq($organisationUnit, @otherRow.organisationUnit)).BCD1)',
       },
     ]);
     expect(transform(PARSABLE_ANALYTICS)).toEqual([
@@ -48,11 +48,11 @@ describe('parser', () => {
       {
         transform: 'updateColumns',
         insert: {
-          row: '$row.BCD1',
-          lastAll: 'last($all.BCD1)',
-          sumAllPrevious: 'sum($allPrevious.BCD1)',
+          row: '$BCD1',
+          lastAll: 'last(@all.BCD1)',
+          sumAllPrevious: 'sum(@allPrevious.BCD1)',
           sumWhereMatchingOrgUnit:
-            'sum($where(f($otherRow) = eq($row.organisationUnit, $otherRow.organisationUnit)).BCD1)',
+            'sum(@where(f(@otherRow) = eq($organisationUnit, @otherRow.organisationUnit)).BCD1)',
         },
         exclude: '*',
       },
@@ -71,7 +71,7 @@ describe('parser', () => {
     const transform = buildTransform([
       {
         transform: 'sortRows',
-        by: '=$row.BCD1',
+        by: '=$BCD1',
       },
     ]);
     expect(transform(PARSABLE_ANALYTICS)).toEqual([

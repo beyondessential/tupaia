@@ -28,7 +28,7 @@ describe('insertColumns', () => {
       {
         transform: 'insertColumns',
         columns: {
-          dataElementValue: '$row.value',
+          dataElementValue: '$value',
         },
       },
     ]);
@@ -40,7 +40,7 @@ describe('insertColumns', () => {
       {
         transform: 'insertColumns',
         columns: {
-          '=$row.dataElement': '$row.value',
+          '=$dataElement': '$value',
         },
       },
     ]);
@@ -52,7 +52,7 @@ describe('insertColumns', () => {
       {
         transform: 'insertColumns',
         columns: {
-          period: "periodToDisplayString($row.period, 'DAY')",
+          period: "periodToDisplayString($period, 'DAY')",
         },
       },
     ]);
@@ -64,8 +64,8 @@ describe('insertColumns', () => {
       {
         transform: 'insertColumns',
         columns: {
-          period: "periodToDisplayString($row.period, 'DAY')",
-          '=$row.dataElement': '$row.value',
+          period: "periodToDisplayString($period, 'DAY')",
+          '=$dataElement': '$value',
         },
       },
     ]);
@@ -80,9 +80,9 @@ describe('insertColumns', () => {
     const transform = buildTransform([
       {
         transform: 'insertColumns',
-        where: 'exists($row.BCD1)',
+        where: 'exists($BCD1)',
         columns: {
-          newVal: '$row.BCD1 * 2', // This would fail on rows where BCD1 doesn't exist
+          newVal: '$BCD1 * 2', // This would fail on rows where BCD1 doesn't exist
         },
       },
     ]);

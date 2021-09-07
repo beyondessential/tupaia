@@ -28,7 +28,7 @@ describe('updateColumns', () => {
       {
         transform: 'updateColumns',
         insert: {
-          dataElementValue: '$row.value',
+          dataElementValue: '$value',
         },
       },
     ]);
@@ -40,7 +40,7 @@ describe('updateColumns', () => {
       {
         transform: 'updateColumns',
         insert: {
-          '=$row.dataElement': '$row.value',
+          '=$dataElement': '$value',
         },
       },
     ]);
@@ -52,7 +52,7 @@ describe('updateColumns', () => {
       {
         transform: 'updateColumns',
         insert: {
-          period: "periodToDisplayString($row.period, 'DAY')",
+          period: "periodToDisplayString($period, 'DAY')",
         },
       },
     ]);
@@ -64,7 +64,7 @@ describe('updateColumns', () => {
       {
         transform: 'updateColumns',
         insert: {
-          period: "periodToDisplayString($row.period, 'DAY')",
+          period: "periodToDisplayString($period, 'DAY')",
         },
         include: '*',
       },
@@ -79,7 +79,7 @@ describe('updateColumns', () => {
       {
         transform: 'updateColumns',
         insert: {
-          period: "periodToDisplayString($row.period, 'DAY')",
+          period: "periodToDisplayString($period, 'DAY')",
         },
         include: ['organisationUnit', 'value'],
       },
@@ -94,7 +94,7 @@ describe('updateColumns', () => {
       {
         transform: 'updateColumns',
         insert: {
-          period: "periodToDisplayString($row.period, 'DAY')",
+          period: "periodToDisplayString($period, 'DAY')",
         },
         exclude: '*',
       },
@@ -107,7 +107,7 @@ describe('updateColumns', () => {
       {
         transform: 'updateColumns',
         insert: {
-          period: "periodToDisplayString($row.period, 'DAY')",
+          period: "periodToDisplayString($period, 'DAY')",
         },
         exclude: ['organisationUnit', 'value'],
       },
@@ -120,8 +120,8 @@ describe('updateColumns', () => {
       {
         transform: 'updateColumns',
         insert: {
-          period: "periodToDisplayString($row.period, 'DAY')",
-          '=$row.dataElement': '$row.value',
+          period: "periodToDisplayString($period, 'DAY')",
+          '=$dataElement': '$value',
         },
         include: ['organisationUnit'],
       },
@@ -137,9 +137,9 @@ describe('updateColumns', () => {
     const transform = buildTransform([
       {
         transform: 'updateColumns',
-        where: 'exists($row.BCD1)',
+        where: 'exists($BCD1)',
         insert: {
-          newVal: '$row.BCD1 * 2', // This would fail on rows where BCD1 doesn't exist
+          newVal: '$BCD1 * 2', // This would fail on rows where BCD1 doesn't exist
         },
         include: ['period', 'organisationUnit'],
       },

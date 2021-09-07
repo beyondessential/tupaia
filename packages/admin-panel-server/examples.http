@@ -45,11 +45,11 @@ Authorization: {{authorization}}
                 {
                     "transform": "updateColumns",
                     "columns": {
-                        "Doctors": "$row.BCD46",
-                        "Midwives": "$row.BCD47",
+                        "Doctors": "$BCD46",
+                        "Midwives": "$BCD47",
                         "Nurses": "sum($BCD48, $BCD48a, $BCD48b)",
                         "Aides": "$BCD49",
-                        "Others": "sum($row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55)",
+                        "Others": "sum($BCD50, $BCD51, $BCD52, $BCD53, $BCD54, $BCD55)",
                     },
                     "include": ["period", "organisationUnit"]
                 },
@@ -95,11 +95,11 @@ Authorization: {{authorization}}
                 {
                     "transform": "updateColumns",
                     "columns": {
-                        "Doctors": "$row.BCD46",
-                        "Midwives": "$row.BCD47",
+                        "Doctors": "$BCD46",
+                        "Midwives": "$BCD47",
                         "Nurses": "sum($BCD48, $BCD48a, $BCD48b)",
                         "Aides": "$BCD49",
-                        "Others": "sum($row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55)",
+                        "Others": "sum($BCD50, $BCD51, $BCD52, $BCD53, $BCD54, $BCD55)",
                     },
                     "include": ["period", "organisationUnit"]
                 },
@@ -148,11 +148,11 @@ Authorization: {{authorization}}
                 {
                     "transform": "updateColumns",
                     "columns": {
-                        "Doctors": "$row.BCD46",
-                        "Midwives": "$row.BCD47",
+                        "Doctors": "$BCD46",
+                        "Midwives": "$BCD47",
                         "Nurses": "sum($BCD48, $BCD48a, $BCD48b)",
                         "Aides": "$BCD49",
-                        "Others": "sum($row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55)",
+                        "Others": "sum($BCD50, $BCD51, $BCD52, $BCD53, $BCD54, $BCD55)",
                     },
                     "include": ["period", "organisationUnit"]
                 },

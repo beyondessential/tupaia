@@ -116,7 +116,7 @@ describe('sortRows', () => {
     const transform = buildTransform([
       {
         transform: 'sortRows',
-        by: '=$row.BCD1 * $row.BCD1',
+        by: '=$BCD1 * $BCD1',
       },
     ]);
     expect(transform(SORTABLE_ANALYTICS)).toEqual([

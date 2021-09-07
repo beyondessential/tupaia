@@ -36,10 +36,15 @@ const paramsValidator = yup.object().shape({
 const getCustomRowSortFunction = (expression: string, direction: 'asc' | 'desc') => {
   const sortParser = new TransformParser([], functions);
   return (row1: Row, row2: Row) => {
-    sortParser.set('$row', row1);
+    sortParser.set('@row', row1);
+    sortParser.addRowToScope(row1);
     const row1Value = sortParser.evaluate(expression);
-    sortParser.set('$row', row2);
+    sortParser.removeRowFromScope(row1);
+
+    sortParser.set('@row', row2);
+    sortParser.addRowToScope(row2);
     const row2Value = sortParser.evaluate(expression);
+    sortParser.removeRowFromScope(row1);
 
     if (row1Value === undefined || row2Value === undefined) {
       throw new Error(`Unexpected undefined value when sorting rows: ${row1}, ${row2}`);

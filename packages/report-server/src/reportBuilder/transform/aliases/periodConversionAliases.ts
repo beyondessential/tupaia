@@ -10,7 +10,7 @@ export const convertPeriodToWeek = () =>
     {
       transform: 'updateColumns',
       insert: {
-        period: "convertToPeriod($row.period, 'WEEK')",
+        period: "convertToPeriod($period, 'WEEK')",
       },
       include: '*',
     },
@@ -21,7 +21,7 @@ export const convertEventDateToWeek = () =>
     {
       transform: 'updateColumns',
       insert: {
-        period: "convertToPeriod($row.eventDate, 'WEEK')",
+        period: "convertToPeriod($eventDate, 'WEEK')",
       },
       include: '*',
     },
