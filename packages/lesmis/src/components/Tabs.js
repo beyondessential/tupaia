@@ -28,7 +28,7 @@ const TabBarInnerContainer = styled(MuiContainer)`
 
 export const TabBar = ({ children, ...props }) => (
   <TabBarOuterContainer {...props}>
-    <TabBarInnerContainer>{children}</TabBarInnerContainer>
+    <TabBarInnerContainer maxWidth="xl">{children}</TabBarInnerContainer>
   </TabBarOuterContainer>
 );
 
