@@ -166,7 +166,9 @@ export class ExpressionParser {
   }
 
   /**
+   * @protected
    * This can be overridden in child classes to import new functions.
+   * @returns {Record<string, (...args: any[]) => any>} functions
    */
   getCustomFunctions() {
     return {

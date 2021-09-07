@@ -5,7 +5,6 @@
 
 import { yup } from '@tupaia/utils';
 import { TransformParser } from '../parser';
-import { functions } from '../../functions';
 import { buildWhere } from './where';
 import { Row } from '../../types';
 import { starSingleOrMultipleColumnsValidator } from './transformValidators';
@@ -22,7 +21,7 @@ const paramsValidator = yup.object().shape({
 });
 
 const excludeColumns = (rows: Row[], params: ExcludeColumnsParams): Row[] => {
-  const parser = new TransformParser(rows, functions);
+  const parser = new TransformParser(rows);
   return rows.map(row => {
     const matchesWhere = params.where(parser);
     if (!matchesWhere) {

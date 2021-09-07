@@ -11,7 +11,6 @@ import { buildWhere } from '../where';
 import { Row, FieldValue } from '../../../types';
 import { buildCreateGroupKey } from './createGroupKey';
 import { buildGetMergeStrategy } from './getMergeStrategy';
-import { functions } from '../../../functions';
 import { starSingleOrMultipleColumnsValidator } from '../transformValidators';
 
 type GroupRowsParams = {
@@ -57,7 +56,7 @@ type Group = {
 
 const buildGroups = (rows: Row[], params: GroupRowsParams) => {
   const groupsByKey: Record<string, Group> = {};
-  const parser = new TransformParser(rows, functions);
+  const parser = new TransformParser(rows);
   const ungroupedRows: Row[] = []; // Rows that don't match the 'where' clause are left ungrouped
 
   rows.forEach((row: Row) => {

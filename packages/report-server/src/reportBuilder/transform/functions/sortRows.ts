@@ -7,7 +7,6 @@ import { yup, orderBy } from '@tupaia/utils';
 
 import { TransformParser } from '../parser';
 import { Row } from '../../types';
-import { functions } from '../../functions';
 import { starSingleOrMultipleColumnsValidator } from './transformValidators';
 
 type SortParams = {
@@ -34,7 +33,7 @@ const paramsValidator = yup.object().shape({
 });
 
 const getCustomRowSortFunction = (expression: string, direction: 'asc' | 'desc') => {
-  const sortParser = new TransformParser([], functions);
+  const sortParser = new TransformParser([]);
   return (row1: Row, row2: Row) => {
     sortParser.set('@row', row1);
     sortParser.addRowToScope(row1);

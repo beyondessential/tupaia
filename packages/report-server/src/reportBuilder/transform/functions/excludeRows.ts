@@ -4,7 +4,6 @@
  */
 
 import { TransformParser } from '../parser';
-import { functions } from '../../functions';
 import { buildWhere } from './where';
 import { Row } from '../../types';
 
@@ -13,7 +12,7 @@ type ExcludeRowsParams = {
 };
 
 const excludeRows = (rows: Row[], params: ExcludeRowsParams): Row[] => {
-  const parser = new TransformParser(rows, functions);
+  const parser = new TransformParser(rows);
   return rows.filter(() => {
     const filterResult = !params.where(parser);
     parser.next();

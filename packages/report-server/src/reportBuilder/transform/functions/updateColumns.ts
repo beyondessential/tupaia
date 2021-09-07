@@ -6,7 +6,6 @@
 import { yup } from '@tupaia/utils';
 
 import { TransformParser } from '../parser';
-import { functions } from '../../functions';
 import { buildWhere } from './where';
 import { Row } from '../../types';
 import {
@@ -29,7 +28,7 @@ const paramsValidator = yup.object().shape({
 });
 
 const updateColumns = (rows: Row[], params: UpdateColumnsParams): Row[] => {
-  const parser = new TransformParser(rows, functions);
+  const parser = new TransformParser(rows);
   return rows.map(row => {
     const returnNewRow = params.where(parser);
     if (!returnNewRow) {
