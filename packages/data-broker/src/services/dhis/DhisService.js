@@ -123,8 +123,19 @@ export class DhisService extends Service {
     const {
       organisationUnitCode,
       organisationUnitCodes,
-      dataServices = DEFAULT_DATA_SERVICES,
+      dataServices: inputDataServices = DEFAULT_DATA_SERVICES,
+      detectDataServices = false,
     } = options;
+    let dataServices = inputDataServices;
+    // TODO remove the `detectDataServices` flag after
+    // https://linear.app/bes/issue/MEL-481/detect-data-services-in-the-data-broker-level
+    if (detectDataServices) {
+      dataServices = dataSources.map(ds => {
+        const { isDataRegional = true } = ds.config;
+        return { isDataRegional };
+      });
+    }
+
     const entityCodes = organisationUnitCodes || [organisationUnitCode];
     const pullData = this.pullers[type];
     const apis = dataServices.map(({ isDataRegional }) =>
