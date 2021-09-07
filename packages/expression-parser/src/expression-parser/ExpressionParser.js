@@ -114,8 +114,7 @@ export class ExpressionParser {
    */
   setScope(scope = {}) {
     Object.entries(scope).forEach(([name, value]) => {
-      const expressionValue = value || 0;
-      this.set(name, expressionValue);
+      this.set(name, value);
     });
   }
 
