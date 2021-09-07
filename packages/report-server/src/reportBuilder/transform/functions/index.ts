@@ -4,6 +4,7 @@
  */
 
 import { buildInsertColumns } from './insertColumns';
+import { buildExcludeColumns } from './excludeColumns';
 import { buildUpdateColumns } from './updateColumns';
 import { buildGroupRows } from './groupRows';
 import { buildSortRows } from './sortRows';
@@ -12,6 +13,7 @@ import { buildInsertRows } from './insertRows';
 
 export const transformBuilders = {
   insertColumns: buildInsertColumns,
+  excludeColumns: buildExcludeColumns,
   updateColumns: buildUpdateColumns,
   groupRows: buildGroupRows,
   sortRows: buildSortRows,
