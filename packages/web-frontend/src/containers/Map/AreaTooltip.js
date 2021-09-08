@@ -24,6 +24,37 @@ const Heading = styled.span`
   font-weight: ${props => (props.hasMeasureValue ? 'bold' : 'normal')};
 `;
 
+const PopupTextList = ({ measureOptions, orgUnitMeasureData }) => {
+  const getMetadata = (data, key) => {
+    if (data.metadata) {
+      return data.metadata;
+    }
+    const metadataKeys = Object.keys(data).filter(k => k.includes(`${key}_metadata`));
+    return Object.fromEntries(metadataKeys.map(k => [k.replace(`${key}_metadata`, ''), data[k]]));
+  };
+
+  const popUpList = orgUnitMeasureData
+    ? measureOptions
+        .filter(m => !m.hideFromPopup)
+        .map(({ key, name, values, ...otherConfigs }) => {
+          const metadata = getMetadata(orgUnitMeasureData, key);
+          const { formattedValue, valueInfo } = getFormattedInfo(orgUnitMeasureData, {
+            key,
+            metadata,
+            ...otherConfigs,
+          });
+          const formattedKey = name || key;
+          return valueInfo?.hideFromPopup ? null : (
+            <span key={key}>{`${formattedKey}: ${formattedValue}`}</span>
+          );
+        })
+        .filter(popupItem => popupItem !== null)
+    : [];
+
+  const { name, key } = measureOptions[0];
+  return popUpList.length === 0 ? [<span key={key}>{`${name || key}: No Data`}</span>] : popUpList;
+};
+
 export class AreaTooltip extends Component {
   constructor(props) {
     super(props);
@@ -41,59 +72,17 @@ export class AreaTooltip extends Component {
     }
   }
 
-  getTextList() {
-    const { orgUnitName, hasMeasureValue, measureOptions, orgUnitMeasureData } = this.props;
-
-    const defaultTextList = [
-      <Heading key={0} hasMeasureValue={hasMeasureValue}>
-        {orgUnitName}
-      </Heading>,
-    ];
-
-    if (!hasMeasureValue) {
-      return defaultTextList;
-    }
-
-    return defaultTextList.concat(this.buildPopupTextList(orgUnitMeasureData, measureOptions));
-  }
-
-  buildPopupTextList(orgUnitMeasureData, measureOptions) {
-    const getMetadata = (data, key) => {
-      if (data.metadata) {
-        return data.metadata;
-      }
-      const metadataKeys = Object.keys(data).filter(k => k.includes(`${key}_metadata`));
-      return Object.fromEntries(metadataKeys.map(k => [k.replace(`${key}_metadata`, ''), data[k]]));
-    };
-
-    const popUpList = orgUnitMeasureData
-      ? measureOptions
-          .filter(m => !m.hideFromPopup)
-          .map(({ key, name, values, ...otherConfigs }) => {
-            const metadata = getMetadata(orgUnitMeasureData, key);
-            const { formattedValue, valueInfo } = getFormattedInfo(orgUnitMeasureData, {
-              key,
-              metadata,
-              ...otherConfigs,
-            });
-            const formattedKey = name || key;
-            return valueInfo?.hideFromPopup ? null : (
-              <span key={key}>{`${formattedKey}: ${formattedValue}`}</span>
-            );
-          })
-          .filter(popupItem => popupItem !== null)
-      : [];
-
-    const { name, key } = measureOptions[0];
-    return popUpList.length === 0
-      ? [<span key={key}>{`${name || key}: No Data`}</span>]
-      : popUpList;
-  }
-
   render() {
-    const { permanent, onMouseOver, onMouseOut, sticky } = this.props;
-
-    const textList = this.getTextList();
+    const {
+      permanent,
+      onMouseOver,
+      onMouseOut,
+      sticky,
+      orgUnitName,
+      hasMeasureValue,
+      measureOptions,
+      orgUnitMeasureData,
+    } = this.props;
 
     return (
       <Tooltip
@@ -111,7 +100,17 @@ export class AreaTooltip extends Component {
           this.ref = r;
         }}
       >
-        <div style={{ display: 'grid' }}>{textList}</div>
+        <div style={{ display: 'grid' }}>
+          <Heading key={0} hasMeasureValue={hasMeasureValue}>
+            {orgUnitName}
+          </Heading>
+          {hasMeasureValue && (
+            <PopupTextList
+              measureOptions={measureOptions}
+              orgUnitMeasureData={orgUnitMeasureData}
+            />
+          )}
+        </div>
       </Tooltip>
     );
   }
