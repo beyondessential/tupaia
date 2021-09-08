@@ -6,7 +6,7 @@
 import { isNil, omitBy } from 'lodash';
 
 import { snakeKeys, yup } from '@tupaia/utils';
-import { PreviewMode, CamelKeysToSnake } from '../types';
+import { PreviewMode, DashboardVisualisationResource } from '../types';
 
 import { baseVisualisationValidator } from './validators';
 
@@ -51,10 +51,10 @@ export class DashboardVisualisationExtractor<
     const dashboardItem = this.getDashboardItem();
     const report = this.getReport();
 
-    return { dashboardItem: snakeKeys(dashboardItem), report: snakeKeys(report) } as {
-      dashboardItem: ExpandType<CamelKeysToSnake<typeof dashboardItem>>;
-      report: ExpandType<CamelKeysToSnake<typeof report>>;
-    };
+    return {
+      dashboardItem: snakeKeys(dashboardItem),
+      report: snakeKeys(report),
+    } as DashboardVisualisationResource;
   };
 
   private vizToDashboardItem() {

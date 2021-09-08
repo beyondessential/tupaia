@@ -28,10 +28,13 @@ describe('Permissions checker for GETDashboardRelations', async () => {
 
   const app = new TestableApp();
   const { models } = app;
+  let nationalDashboard1;
+  let nationalDashboardItem3;
   let districtDashboardRelation1;
   let nationalDashboardRelation1;
   let nationalDashboardRelation2;
-  let nationalDashboardRelation3;
+  let nationalDashboardRelation3a;
+  let nationalDashboardRelation3b;
   let projectDashboardRelation1;
 
   before(async () => {
@@ -53,10 +56,13 @@ describe('Permissions checker for GETDashboardRelations', async () => {
     ]);
 
     ({
+      nationalDashboard1,
+      nationalDashboardItem3,
       districtDashboardRelation1,
       nationalDashboardRelation1,
       nationalDashboardRelation2,
-      nationalDashboardRelation3,
+      nationalDashboardRelation3a,
+      nationalDashboardRelation3b,
       projectDashboardRelation1,
     } = await setupDashboardTestData(models));
   });
@@ -104,17 +110,19 @@ describe('Permissions checker for GETDashboardRelations', async () => {
     });
 
     it('Insufficient permissions: Should throw an error when requesting dashboard relation connected to NATIONAL dashboard that users do not have access', async () => {
-      // Remove the permission of LA to have insufficient permissions to access nationalDashboardRelation3.
+      // Remove admin permission of KI, LA to have insufficient permissions to access nationalDashboardRelation3a.
       const policy = {
         DL: ['Public'],
-        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /* 'Admin' */],
         SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
         VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
         // LA: ['Admin'],
         TO: ['Admin'],
       };
       await app.grantAccess(policy);
-      const { body: result } = await app.get(`dashboardRelations/${nationalDashboardRelation3.id}`);
+      const { body: result } = await app.get(
+        `dashboardRelations/${nationalDashboardRelation3a.id}`,
+      );
 
       expect(result).to.have.keys('error');
     });
@@ -144,7 +152,8 @@ describe('Permissions checker for GETDashboardRelations', async () => {
         districtDashboardRelation1.id,
         nationalDashboardRelation1.id,
         nationalDashboardRelation2.id,
-        nationalDashboardRelation3.id,
+        nationalDashboardRelation3a.id,
+        nationalDashboardRelation3b.id,
         projectDashboardRelation1.id,
       ];
       filterString = `filter={"id":{"comparator":"in","comparisonValue":["${dashboardRelations.join(
@@ -160,7 +169,8 @@ describe('Permissions checker for GETDashboardRelations', async () => {
         districtDashboardRelation1.id,
         nationalDashboardRelation1.id,
         nationalDashboardRelation2.id,
-        nationalDashboardRelation3.id,
+        nationalDashboardRelation3a.id,
+        nationalDashboardRelation3b.id,
         projectDashboardRelation1.id,
       ]);
     });
@@ -173,7 +183,8 @@ describe('Permissions checker for GETDashboardRelations', async () => {
         districtDashboardRelation1.id,
         nationalDashboardRelation1.id,
         nationalDashboardRelation2.id,
-        nationalDashboardRelation3.id,
+        nationalDashboardRelation3a.id,
+        nationalDashboardRelation3b.id,
         projectDashboardRelation1.id,
       ]);
     });
@@ -186,6 +197,114 @@ describe('Permissions checker for GETDashboardRelations', async () => {
       const { body: results } = await app.get(`dashboardRelations?${filterString}`);
 
       expect(results).to.be.empty;
+    });
+  });
+
+  describe('GET /dashboards/:id/dashboardRelations', async () => {
+    let filterString;
+
+    before(() => {
+      const dashboardRelations = [
+        districtDashboardRelation1.id,
+        nationalDashboardRelation1.id,
+        nationalDashboardRelation2.id,
+        nationalDashboardRelation3a.id,
+        nationalDashboardRelation3b.id,
+        projectDashboardRelation1.id,
+      ];
+      filterString = `filter={"id":{"comparator":"in","comparisonValue":["${dashboardRelations.join(
+        '","',
+      )}"]}}`;
+    });
+
+    it('Sufficient permissions: Should return all dashboard relations that users have access to', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+      const { body: results } = await app.get(
+        `dashboards/${nationalDashboard1.id}/dashboardRelations?${filterString}`,
+      );
+
+      expect(results.map(r => r.id)).to.deep.equal([
+        nationalDashboardRelation1.id,
+        nationalDashboardRelation2.id,
+        nationalDashboardRelation3a.id,
+      ]);
+    });
+
+    it('Sufficient permissions: Should return all dashboard relations if the user has BES Admin access', async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+      const { body: results } = await app.get(
+        `dashboards/${nationalDashboard1.id}/dashboardRelations?${filterString}`,
+      );
+      expect(results.map(r => r.id)).to.deep.equal([
+        nationalDashboardRelation1.id,
+        nationalDashboardRelation2.id,
+        nationalDashboardRelation3a.id,
+      ]);
+    });
+
+    it('Insufficient permissions: Should return an empty array if the user has permissions for no dashboard relations', async () => {
+      const policy = {
+        DL: ['Public'],
+      };
+      await app.grantAccess(policy);
+      const { body: results } = await app.get(
+        `dashboards/${nationalDashboard1.id}/dashboardRelations?${filterString}`,
+      );
+
+      expect(results).to.have.keys('error');
+    });
+  });
+
+  describe('GET /dashboardItems/:id/dashboardRelations', async () => {
+    let filterString;
+
+    before(() => {
+      const dashboardRelations = [
+        districtDashboardRelation1.id,
+        nationalDashboardRelation1.id,
+        nationalDashboardRelation2.id,
+        nationalDashboardRelation3a.id,
+        nationalDashboardRelation3b.id,
+        projectDashboardRelation1.id,
+      ];
+      filterString = `filter={"id":{"comparator":"in","comparisonValue":["${dashboardRelations.join(
+        '","',
+      )}"]}}`;
+    });
+
+    it('Sufficient permissions: Should return all dashboard relations that users have access to', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+      const { body: results } = await app.get(
+        `dashboardItems/${nationalDashboardItem3.id}/dashboardRelations?${filterString}`,
+      );
+
+      expect(results.map(r => r.id)).to.deep.equal([
+        nationalDashboardRelation3a.id,
+        nationalDashboardRelation3b.id,
+      ]);
+    });
+
+    it('Sufficient permissions: Should return all dashboard relations if the user has BES Admin access', async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+      const { body: results } = await app.get(
+        `dashboardItems/${nationalDashboardItem3.id}/dashboardRelations?${filterString}`,
+      );
+      expect(results.map(r => r.id)).to.deep.equal([
+        nationalDashboardRelation3a.id,
+        nationalDashboardRelation3b.id,
+      ]);
+    });
+
+    it('Insufficient permissions: Should throw an error if the user has permissions for no dashboard relations', async () => {
+      const policy = {
+        DL: ['Public'],
+      };
+      await app.grantAccess(policy);
+      const { body: results } = await app.get(
+        `dashboardItems/${nationalDashboardItem3.id}/dashboardRelations?${filterString}`,
+      );
+
+      expect(results).to.have.keys('error');
     });
   });
 });
