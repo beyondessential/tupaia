@@ -23,7 +23,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const getFrontEndConfig = () => ({
+const getFrontEndConfig = measureLevel => ({
   scaleType: 'performanceDesc',
   valueType: 'percentage',
   displayType: 'shaded-spectrum',
@@ -34,20 +34,20 @@ const getFrontEndConfig = () => ({
       min: 0,
     },
   },
-  measureLevel: 'District',
+  measureLevel,
   hideByDefault: {
     null: true,
   },
 });
 
-const getReportConfig = () => ({
+const getReportConfig = measureLevel => ({
   fetch: {
     aggregations: [
       {
         type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
         config: {
           dataSourceEntityType: 'facility',
-          aggregationEntityType: 'district',
+          aggregationEntityType: measureLevel === 'District' ? 'district' : 'sub_district',
         },
       },
     ],
@@ -82,12 +82,16 @@ const getReportConfig = () => ({
   ],
 });
 
-const getConfig = () => ({
-  code: 'FJ_Covid_7_Day_Positivity_Rate_Overlay_Division',
-  name: '7 day % positivity rate (Division)',
-  frontEndConfig: getFrontEndConfig(),
-  reportConfig: getReportConfig(),
-  userGroup: 'BES Admin',
+const FIJI_HIERARCHY_NAMES = {
+  District: 'Division',
+  SubDistrict: 'Sub-division',
+};
+const getConfig = measureLevel => ({
+  code: `FJ_Covid_7_Day_Positivity_Rate_Overlay_${FIJI_HIERARCHY_NAMES[measureLevel]}`,
+  name: `7 day % positivity rate (${FIJI_HIERARCHY_NAMES[measureLevel]})`,
+  frontEndConfig: getFrontEndConfig(measureLevel),
+  reportConfig: getReportConfig(measureLevel),
+  userGroup: 'Public',
   mapOverlayGroupCode: 'COVID-19_Testing_Fiji',
   countryCodes: ['FJ'],
   projectCodes: ['supplychain_fiji'],
@@ -174,7 +178,6 @@ const insertMapOverlayGroup = async (db, { name, code }) => {
     child_id: mapOverlayGroupId,
     child_type: 'mapOverlayGroup',
   });
-  console.log('he');
 };
 
 const removeMapOverlayGroup = async (db, code) => {
@@ -183,26 +186,24 @@ const removeMapOverlayGroup = async (db, code) => {
   await db.runSql(`DELETE FROM "map_overlay_group" WHERE code = '${code}';`);
 };
 
-const removeMapOverlayAndReport = async (db, code) => {
+const removeMapOverlayAndReport = async (db, { code }) => {
   await db.runSql(`DELETE FROM "map_overlay_group_relation" WHERE child_id = '${code}';`);
   await db.runSql(`DELETE FROM "mapOverlay" WHERE id = '${code}';`);
   await db.runSql(`DELETE FROM report WHERE code = '${code}';`);
 };
 
 exports.up = async function (db) {
-  const overlay = getConfig();
-
   await insertMapOverlayGroup(db, {
     name: 'COVID-19 Testing',
     code: 'COVID-19_Testing_Fiji',
   });
 
-  await addMapOverlayAndReport(db, overlay);
+  await addMapOverlayAndReport(db, getConfig('District'));
+  await addMapOverlayAndReport(db, getConfig('SubDistrict'));
 };
 
 exports.down = async function (db) {
-  const { code } = getConfig();
-
-  await removeMapOverlayAndReport(db, code);
+  await removeMapOverlayAndReport(db, getConfig('District'));
+  await removeMapOverlayAndReport(db, getConfig('SubDistrict'));
   await removeMapOverlayGroup(db, 'COVID-19_Testing_Fiji');
 };
