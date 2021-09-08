@@ -81,7 +81,7 @@ COPY packages/web-frontend/package.json ./packages/web-frontend
 
 ## run yarn without building internal dependencies, so we can cache that layer without code changes
 ## within internal dependencies invalidating it
-RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
+RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --non-interactive --frozen-lockfile
 
 ## add content of all internal dependency packages ready for internal dependencies to be built
 COPY packages/access-policy/. ./packages/access-policy
