@@ -17,7 +17,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import { Tooltip } from 'react-leaflet';
-import { getSingleFormattedValue } from '../../utils';
+import { getFormattedInfo } from '../../utils/measures';
 
 const Heading = styled.span`
   text-align: center;
@@ -54,15 +54,10 @@ export class AreaTooltip extends Component {
       return defaultTextList;
     }
 
-    const toTextList = data =>
-      Object.keys(data).map(key => <span key={key}>{`${key}: ${data[key]}`}</span>);
-
-    return defaultTextList.concat(
-      toTextList(this.buildFormattedMeasureData(orgUnitMeasureData, measureOptions)),
-    );
+    return defaultTextList.concat(this.buildPopupTextList(orgUnitMeasureData, measureOptions));
   }
 
-  buildFormattedMeasureData(orgUnitMeasureData, measureOptions) {
+  buildPopupTextList(orgUnitMeasureData, measureOptions) {
     const getMetadata = (data, key) => {
       if (data.metadata) {
         return data.metadata;
@@ -71,22 +66,28 @@ export class AreaTooltip extends Component {
       return Object.fromEntries(metadataKeys.map(k => [k.replace(`${key}_metadata`, ''), data[k]]));
     };
 
-    const formattedMeasureData = {};
+    const popUpList = orgUnitMeasureData
+      ? measureOptions
+          .filter(m => !m.hideFromPopup)
+          .map(({ key, name, values, ...otherConfigs }) => {
+            const metadata = getMetadata(orgUnitMeasureData, key);
+            const { formattedValue, valueInfo } = getFormattedInfo(orgUnitMeasureData, {
+              key,
+              metadata,
+              ...otherConfigs,
+            });
+            const formattedKey = name || key;
+            return valueInfo?.hideFromPopup ? null : (
+              <span key={key}>{`${formattedKey}: ${formattedValue}`}</span>
+            );
+          })
+          .filter(popupItem => popupItem !== null)
+      : [];
 
-    if (orgUnitMeasureData) {
-      measureOptions.forEach(({ key, name, ...otherConfigs }) => {
-        const metadata = getMetadata(orgUnitMeasureData, key);
-        formattedMeasureData[name || key] = getSingleFormattedValue(orgUnitMeasureData, [
-          {
-            key,
-            metadata,
-            ...otherConfigs,
-          },
-        ]);
-      });
-    }
-
-    return formattedMeasureData;
+    const { name, key } = measureOptions[0];
+    return popUpList.length === 0
+      ? [<span key={key}>{`${name || key}: No Data`}</span>]
+      : popUpList;
   }
 
   render() {
