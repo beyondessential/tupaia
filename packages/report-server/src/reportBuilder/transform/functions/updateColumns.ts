@@ -71,7 +71,7 @@ const buildParams = (params: unknown): UpdateColumnsParams => {
       : (column: string) => !columnMatcher(column);
 
   return {
-    insert,
+    insert: insert || {},
     shouldIncludeColumn,
     where: buildWhere(params),
   };

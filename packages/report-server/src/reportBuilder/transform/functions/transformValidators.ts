@@ -20,9 +20,9 @@ export const starSingleOrMultipleColumnsValidator = yup.lazy((value: unknown) =>
 });
 
 export const mapStringToStringValidator = yup.lazy((value: unknown) => {
-  if (typeof value === 'object' && value !== null) {
+  if ((typeof value === 'object' && value !== null) || value === undefined) {
     const stringToStringMapValidator = Object.fromEntries(
-      Object.entries(value).map(([field]) => [field, yup.string().required()]),
+      Object.entries(value || {}).map(([field]) => [field, yup.string().required()]),
     );
     return yup.object().shape(stringToStringMapValidator);
   }

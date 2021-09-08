@@ -43,6 +43,10 @@ const buildParams = (params: unknown): InsertColumnsParams => {
 
   const { columns } = validatedParams;
 
+  if (columns === undefined) {
+    throw new Error('columns key must be defined for insertColumns');
+  }
+
   return {
     columns,
     where: buildWhere(params),

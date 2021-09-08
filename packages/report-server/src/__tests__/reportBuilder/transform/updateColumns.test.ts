@@ -7,6 +7,15 @@ import { SINGLE_ANALYTIC, MULTIPLE_ANALYTICS, MERGEABLE_ANALYTICS } from './tran
 import { buildTransform } from '../../../reportBuilder/transform';
 
 describe('updateColumns', () => {
+  it('can do nothing', () => {
+    const transform = buildTransform([
+      {
+        transform: 'updateColumns',
+      },
+    ]);
+    expect(transform(SINGLE_ANALYTIC)).toEqual([{ ...SINGLE_ANALYTIC[0] }]);
+  });
+
   it('can insert basic values', () => {
     const transform = buildTransform([
       {
