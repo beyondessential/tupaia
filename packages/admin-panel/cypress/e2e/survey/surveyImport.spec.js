@@ -26,7 +26,7 @@ beforeEach(() => {
 describe('import new survey file', () => {
   // Check error message.
   it('Name does not match the sheet Name ', () => {
-    enterSurveyName('Test');
+    enterSurveyName('Test Survey_12');
     cy.uploadFile('surveys/Test Survey_1.xlsx');
     importSurvey();
     // assertion for error message.
