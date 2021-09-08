@@ -13,47 +13,16 @@
  */
 
 import React, { Component } from 'react';
+import { PopupDataItemList } from '@tupaia/ui-components/lib/map';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import { Tooltip } from 'react-leaflet';
-import { getFormattedInfo } from '../../utils/measures';
 
 const Heading = styled.span`
   text-align: center;
   font-weight: ${props => (props.hasMeasureValue ? 'bold' : 'normal')};
 `;
-
-const PopupTextList = ({ measureOptions, orgUnitMeasureData }) => {
-  const getMetadata = (data, key) => {
-    if (data.metadata) {
-      return data.metadata;
-    }
-    const metadataKeys = Object.keys(data).filter(k => k.includes(`${key}_metadata`));
-    return Object.fromEntries(metadataKeys.map(k => [k.replace(`${key}_metadata`, ''), data[k]]));
-  };
-
-  const popUpList = orgUnitMeasureData
-    ? measureOptions
-        .filter(m => !m.hideFromPopup)
-        .map(({ key, name, values, ...otherConfigs }) => {
-          const metadata = getMetadata(orgUnitMeasureData, key);
-          const { formattedValue, valueInfo } = getFormattedInfo(orgUnitMeasureData, {
-            key,
-            metadata,
-            ...otherConfigs,
-          });
-          const formattedKey = name || key;
-          return valueInfo?.hideFromPopup ? null : (
-            <span key={key}>{`${formattedKey}: ${formattedValue}`}</span>
-          );
-        })
-        .filter(popupItem => popupItem !== null)
-    : [];
-
-  const { name, key } = measureOptions[0];
-  return popUpList.length === 0 ? [<span key={key}>{`${name || key}: No Data`}</span>] : popUpList;
-};
 
 export class AreaTooltip extends Component {
   constructor(props) {
@@ -105,10 +74,7 @@ export class AreaTooltip extends Component {
             {orgUnitName}
           </Heading>
           {hasMeasureValue && (
-            <PopupTextList
-              measureOptions={measureOptions}
-              orgUnitMeasureData={orgUnitMeasureData}
-            />
+            <PopupDataItemList key={1} measureOptions={measureOptions} data={orgUnitMeasureData} />
           )}
         </div>
       </Tooltip>
