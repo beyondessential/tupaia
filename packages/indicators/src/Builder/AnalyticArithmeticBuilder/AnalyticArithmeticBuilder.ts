@@ -93,11 +93,11 @@ export class AnalyticArithmeticBuilder extends Builder {
   };
 
   private fetchFormulaAnalytics = async (fetchOptions: FetchOptions) => {
-    const aggregationLisByElement = stripFields(
+    const aggregationListByElement = stripFields(
       this.config.aggregation,
       Object.keys(this.paramBuildersByCode),
     );
-    return fetchAnalytics(this.api.getAggregator(), aggregationLisByElement, fetchOptions);
+    return fetchAnalytics(this.api.getAggregator(), aggregationListByElement, fetchOptions);
   };
 
   private fetchParameterAnalytics = async (fetchOptions: FetchOptions) => {
