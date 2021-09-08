@@ -12,9 +12,12 @@ import { BES_ADMIN_PERMISSION_GROUP } from '../constants';
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
 
 const isBESAdmin = (policy: Record<string, string[]>) => {
-  return new AccessPolicy(policy).allowsSome(null, BES_ADMIN_PERMISSION_GROUP);
+  return new AccessPolicy(policy).allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
 };
 
+/**
+ * @deprecated use @tupaia/api-client
+ */
 export class MeditrakConnection extends ApiConnection {
   baseUrl = MEDITRAK_API_URL;
 

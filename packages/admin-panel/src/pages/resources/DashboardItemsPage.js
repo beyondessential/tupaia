@@ -7,6 +7,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
+export const DASHBOARD_ITEMS_ENDPOINT = 'dashboardItems';
+
 const FIELDS = [
   {
     Header: 'Code',
@@ -72,8 +74,16 @@ export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin }) => {
       type: 'edit',
       source: 'id',
       actionConfig: {
-        editEndpoint: 'dashboardItems',
+        editEndpoint: DASHBOARD_ITEMS_ENDPOINT,
         fields: [...FIELDS, ...extraEditFields],
+      },
+    },
+    {
+      Header: 'Delete',
+      source: 'id',
+      type: 'delete',
+      actionConfig: {
+        endpoint: DASHBOARD_ITEMS_ENDPOINT,
       },
     },
   ];
@@ -81,7 +91,7 @@ export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin }) => {
   return (
     <ResourcePage
       title="Dashboard Items"
-      endpoint="dashboardItems"
+      endpoint={DASHBOARD_ITEMS_ENDPOINT}
       columns={columns}
       importConfig={IMPORT_CONFIG}
       editConfig={{

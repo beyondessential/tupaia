@@ -4,9 +4,20 @@
  *
  */
 
+import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
 
-export class ExportDashboardVisualisationRoute extends Route {
+import { DashboardVisualisationObject } from '../viz-builder';
+
+export type ExportDashboardVisualisationRequest = Request<
+  Record<string, never>,
+  { contents: DashboardVisualisationObject; filePath: string; type: string },
+  { visualisation: DashboardVisualisationObject },
+  Record<string, never>
+>;
+
+export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisualisationRequest> {
   protected readonly type = 'download';
 
   async buildResponse() {

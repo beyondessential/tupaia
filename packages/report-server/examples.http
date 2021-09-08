@@ -39,6 +39,8 @@ Authorization: {{authorization}}
     "transform": [
       "keyValueByDataElementName",
       {
+          "$title": "Calculate occuptions from data elements",
+          "$description": "Sums the raw data elements values to their appropriate occuption",
           "transform": "select",
           "'Doctors'": "$row.BCD46",
           "'Midwives'": "$row.BCD47",

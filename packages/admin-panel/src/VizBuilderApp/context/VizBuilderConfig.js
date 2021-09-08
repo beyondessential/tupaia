@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import React, { useReducer, createContext, useContext, useCallback } from 'react';
+import React, { useReducer, createContext, useContext } from 'react';
 
 /**
  * This store is designed to hold the state for the vizBuilderConfig
@@ -30,47 +30,29 @@ const initialConfigState = {
 
 const SET_PROJECT = 'SET_PROJECT';
 const SET_LOCATION = 'SET_LOCATION';
+const SET_TEST_DATA = 'SET_TEST_DATA';
 const SET_VISUALISATION = 'SET_VISUALISATION';
 const SET_VISUALISATION_VALUE = 'SET_VISUALISATION_VALUE';
 const SET_DATA_CONFIG = 'SET_DATA_CONFIG';
 const SET_FETCH_CONFIG = 'SET_FETCH_CONFIG';
 const SET_PRESENTATION_CONFIG = 'SET_PRESENTATION_CONFIG';
 
+const set = (object, key, value) => (object[key] === value ? object : { ...object, [key]: value });
+
 function configReducer(state, action) {
   const { type } = action;
 
   switch (type) {
-    case SET_LOCATION: {
-      const { value } = action;
-
-      if (value === state.location) {
-        return state;
-      }
-
-      return {
-        ...state,
-        location: value,
-      };
-    }
+    case SET_LOCATION:
+      return set(state, 'location', action.value);
     case SET_PROJECT: {
-      const { value } = action;
-
-      if (value === state.project) {
-        return state;
-      }
-
-      return {
-        ...state,
-        project: value,
-      };
+      return set(state, 'project', action.value);
+    }
+    case SET_TEST_DATA: {
+      return set(state, 'testData', action.value);
     }
     case SET_VISUALISATION: {
-      const { value } = action;
-
-      return {
-        ...state,
-        visualisation: value,
-      };
+      return set(state, 'visualisation', action.value);
     }
     case SET_VISUALISATION_VALUE: {
       const { key, value } = action;
@@ -124,28 +106,22 @@ function configReducer(state, action) {
 const useConfigStore = () => {
   const [state, dispatch] = useReducer(configReducer, initialConfigState);
 
-  const setLocation = useCallback(value => dispatch({ type: SET_LOCATION, value }), []);
-  const setProject = useCallback(value => dispatch({ type: SET_PROJECT, value }), []);
-  const setVisualisation = useCallback(value => dispatch({ type: SET_VISUALISATION, value }), []);
-  const setVisualisationValue = useCallback(
-    (key, value) => dispatch({ type: SET_VISUALISATION_VALUE, key, value }),
-    [],
-  );
-  const setPresentation = useCallback(
-    value => dispatch({ type: SET_PRESENTATION_CONFIG, value }),
-    [],
-  );
-  const setDataConfig = useCallback(
-    (key, value) => dispatch({ type: SET_DATA_CONFIG, key, value }),
-    [],
-  );
-  const setFetchConfig = useCallback(value => dispatch({ type: SET_FETCH_CONFIG, value }), []);
+  const setLocation = value => dispatch({ type: SET_LOCATION, value });
+  const setProject = value => dispatch({ type: SET_PROJECT, value });
+  const setTestData = value => dispatch({ type: SET_TEST_DATA, value });
+  const setVisualisation = value => dispatch({ type: SET_VISUALISATION, value });
+  const setVisualisationValue = (key, value) =>
+    dispatch({ type: SET_VISUALISATION_VALUE, key, value });
+  const setPresentation = value => dispatch({ type: SET_PRESENTATION_CONFIG, value });
+  const setDataConfig = (key, value) => dispatch({ type: SET_DATA_CONFIG, key, value });
+  const setFetchConfig = value => dispatch({ type: SET_FETCH_CONFIG, value });
 
   return [
     state,
     {
       setLocation,
       setProject,
+      setTestData,
       setVisualisation,
       setVisualisationValue,
       setDataConfig,
@@ -155,8 +131,8 @@ const useConfigStore = () => {
   ];
 };
 
-const vizBuilderConfigStore = createContext(initialConfigState);
-const { Provider } = vizBuilderConfigStore;
+const VizBuilderConfigContext = createContext(initialConfigState);
+const { Provider } = VizBuilderConfigContext;
 
 // eslint-disable-next-line react/prop-types
 const VizBuilderConfigProvider = ({ children }) => {
@@ -170,7 +146,7 @@ const VizBuilderConfigProvider = ({ children }) => {
 };
 
 const useVizBuilderConfig = () => {
-  return useContext(vizBuilderConfigStore);
+  return useContext(VizBuilderConfigContext);
 };
 
 // Note: the store can be debugged in dev tools using a chrome plugin.

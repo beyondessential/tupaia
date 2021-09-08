@@ -11,14 +11,21 @@ import { Route } from '@tupaia/server-boilerplate';
 import { MeditrakConnection } from '../connections';
 import {
   DashboardVisualisationExtractor,
-  DraftDashboardItemValidator,
-  DraftReportValidator,
+  draftDashboardItemValidator,
+  draftReportValidator,
 } from '../viz-builder';
 
-export class SaveDashboardVisualisationRoute extends Route {
+export type SaveDashboardVisualisationRequest = Request<
+  { dashboardVisualisationId?: string },
+  { id: string; message: string },
+  { visualisation?: Record<string, unknown> },
+  Record<string, never>
+>;
+
+export class SaveDashboardVisualisationRoute extends Route<SaveDashboardVisualisationRequest> {
   private readonly meditrakConnection: MeditrakConnection;
 
-  constructor(req: Request, res: Response, next: NextFunction) {
+  constructor(req: SaveDashboardVisualisationRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.meditrakConnection = new MeditrakConnection(req.session);
@@ -34,10 +41,10 @@ export class SaveDashboardVisualisationRoute extends Route {
 
     const extractor = new DashboardVisualisationExtractor(
       visualisation,
-      new DraftDashboardItemValidator(),
-      new DraftReportValidator(),
+      draftDashboardItemValidator,
+      draftReportValidator,
     );
-    const body = extractor.extractDashboardVisualisationResource();
+    const body = extractor.getDashboardVisualisationResource();
 
     let result;
 

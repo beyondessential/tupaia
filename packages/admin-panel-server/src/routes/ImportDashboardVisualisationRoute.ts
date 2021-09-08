@@ -13,14 +13,21 @@ import { readJsonFile, UploadError } from '@tupaia/utils';
 import { MeditrakConnection } from '../connections';
 import {
   DashboardVisualisationExtractor,
-  DraftDashboardItemValidator,
-  DraftReportValidator,
+  draftDashboardItemValidator,
+  draftReportValidator,
 } from '../viz-builder';
 
-export class ImportDashboardVisualisationRoute extends Route {
+export type ImportDashboardVisualisationRequest = Request<
+  Record<string, never>,
+  { id: string; message: string },
+  Record<string, never>,
+  Record<string, never>
+>;
+
+export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisualisationRequest> {
   private readonly meditrakConnection: MeditrakConnection;
 
-  constructor(req: Request, res: Response, next: NextFunction) {
+  constructor(req: ImportDashboardVisualisationRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.meditrakConnection = new MeditrakConnection(req.session);
@@ -31,17 +38,15 @@ export class ImportDashboardVisualisationRoute extends Route {
       throw new UploadError();
     }
 
-    const visualisation = readJsonFile(this.req.file.path);
+    const visualisation = readJsonFile<Record<string, unknown>>(this.req.file.path);
     fs.unlinkSync(this.req.file.path);
 
-    const dashItemValidator = new DraftDashboardItemValidator();
-    const reportValidator = new DraftReportValidator();
     const extractor = new DashboardVisualisationExtractor(
       visualisation,
-      dashItemValidator,
-      reportValidator,
+      draftDashboardItemValidator,
+      draftReportValidator,
     );
-    const body = extractor.extractDashboardVisualisationResource();
+    const body = extractor.getDashboardVisualisationResource();
     const existingId = await this.findExistingVisualisationId(visualisation);
 
     const id = existingId
@@ -52,7 +57,7 @@ export class ImportDashboardVisualisationRoute extends Route {
     return { id, message: `Visualisation ${action} successfully` };
   }
 
-  private findExistingVisualisationId = async (visualisation: Record<string, string>) => {
+  private findExistingVisualisationId = async (visualisation: Record<string, unknown>) => {
     const { id, code } = visualisation;
 
     const [viz] = await this.meditrakConnection.fetchResources('dashboardVisualisations', {

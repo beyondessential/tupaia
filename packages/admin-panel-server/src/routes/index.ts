@@ -4,10 +4,11 @@
  *
  */
 
+export * from './ExportDashboardVisualisationRoute';
+export * from './FetchDashboardVisualisationRoute';
+export * from './FetchHierarchyEntitiesRoute';
+export * from './FetchReportPreviewDataRoute';
+export * from './ImportDashboardVisualisationRoute';
+export * from './SaveDashboardVisualisationRoute';
+export * from './UploadTestDataRoute';
 export * from './UserRoute';
-export { ExportDashboardVisualisationRoute } from './ExportDashboardVisualisationRoute';
-export { ImportDashboardVisualisationRoute } from './ImportDashboardVisualisationRoute';
-export { FetchHierarchyEntitiesRoute } from './FetchHierarchyEntitiesRoute';
-export { FetchReportPreviewDataRoute } from './FetchReportPreviewDataRoute';
-export { SaveDashboardVisualisationRoute } from './SaveDashboardVisualisationRoute';
-export { FetchDashboardVisualisationRoute } from './FetchDashboardVisualisationRoute';

@@ -9,8 +9,11 @@ import {
   addBaselineTestCountries,
   buildAndInsertProjectsAndHierarchies,
 } from '@tupaia/database';
-import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
-import { TestableApp, setupDashboardTestData } from '../testUtilities';
+import {
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  BES_ADMIN_PERMISSION_GROUP,
+} from '../../../permissions';
+import { TestableApp, setupDashboardTestData } from '../../testUtilities';
 
 describe('Permissions checker for GETDashboardItems', async () => {
   const DEFAULT_POLICY = {

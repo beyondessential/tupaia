@@ -21,6 +21,10 @@
       "path": "packages/aggregator"
     },
     {
+      "name": "api-client",
+      "path": "packages/api-client"
+    },
+    {
       "name": "auth",
       "path": "packages/auth"
     },
@@ -152,6 +156,7 @@
       "keyby",
       "middlewares",
       "migrator",
+      "originalname",
       "oucode",
       "outdater",
       "parameterise",
