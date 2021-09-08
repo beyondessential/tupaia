@@ -45,12 +45,48 @@ export interface VisualisationValidator {
 }
 
 export type DashboardItem = {
-  id?: string;
   code: string;
   config: { name?: string } & { type: VizType } & Record<string, unknown>;
   reportCode: string;
   legacy: boolean;
 };
+
+export type Report = {
+  code: string;
+  permissionGroup: string;
+  config: ReportConfig;
+};
+
+export type Dashboard = {
+  code: string;
+  name: string;
+  rootEntityCode: string;
+  sortOrder?: number;
+};
+
+export type DashboardRecord = CamelKeysToSnake<Dashboard> & { id: string };
+
+export type DashboardItemRecord = CamelKeysToSnake<DashboardItem> & { id: string };
+
+export type DashboardRelationRecord = {
+  id: string;
+  dashboard_id: string;
+  child_id: string;
+  entity_types: string[];
+  project_codes: string[];
+  permission_groups: string[];
+  sort_order?: number;
+};
+
+export type DashboardRelationObject = {
+  dashboardCode: string;
+  entityTypes: string[];
+  projectCodes: string[];
+  permissionGroups: string[];
+  sortOrder?: number;
+};
+
+export type ReportRecord = CamelKeysToSnake<Report> & { id: string };
 
 type FetchConfig = {
   dataElements: string[];
@@ -64,12 +100,6 @@ type ReportConfig = {
   output: Record<string, unknown>;
 };
 
-export type Report = {
-  code: string;
-  permissionGroup: string;
-  config: ReportConfig;
-};
-
 type CamelToSnake<T extends string> = T extends `${infer Char}${infer Rest}`
   ? `${Char extends Uppercase<Char> ? '_' : ''}${Lowercase<Char>}${CamelToSnake<Rest>}`
   : '';
@@ -79,6 +109,6 @@ export type CamelKeysToSnake<T extends Record<string, unknown>> = {
 };
 
 export type DashboardVisualisationResource = {
-  dashboardItem: CamelKeysToSnake<DashboardItem>;
-  report: CamelKeysToSnake<Report>;
+  dashboardItem: DashboardItemRecord;
+  report: ReportRecord;
 };

@@ -2,13 +2,15 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import { hasBESAdminAccess } from '../../permissions';
-import { mergeFilter } from '../utilities';
+
+import { TYPES } from '@tupaia/database';
 import {
   hasDashboardRelationGetPermissions,
   hasDashboardRelationEditPermissions,
   createDashboardRelationsDBFilter,
 } from '../dashboardRelations';
+import { hasBESAdminAccess } from '../../permissions';
+import { mergeFilter } from '../utilities';
 
 export const hasDashboardItemGetPermissions = async (accessPolicy, models, dashboardItemId) => {
   const dashboards = await models.dashboard.findDashboardsWithRelationsByItemId(dashboardItemId);
@@ -81,10 +83,10 @@ export const createDashboardItemsDBFilter = async (accessPolicy, models, criteri
 
   // Pull the list of dashboard relations we have access to,
   // then pull the corresponding dashboard items
-  const dashboardRelationsFilter = createDashboardRelationsDBFilter(accessPolicy);
-  const permittedDashboardRelations = await models.dashboardRelation.find(dashboardRelationsFilter);
-  const permittedDashboardItems = await models.dashboardItem.find({
-    id: permittedDashboardRelations.map(dr => dr.child_id),
+  const permittedRelationConditions = createDashboardRelationsDBFilter(accessPolicy, criteria);
+  const permittedDashboardItems = await models.dashboardItem.find(permittedRelationConditions, {
+    joinWith: TYPES.DASHBOARD_RELATION,
+    joinCondition: ['dashboard_relation.child_id', 'dashboard_item.id'],
   });
   const permittedDashboardItemIds = permittedDashboardItems.map(d => d.id);
 

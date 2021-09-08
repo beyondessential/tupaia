@@ -69,18 +69,27 @@ describe('Permissions checker for GETDashboardItems', async () => {
   });
 
   describe('GET /dashboardItems/:id', async () => {
-    it('Sufficient permissions: Should return requested dashboard item connected to a SUB NATIONAL dashboard that users have access to their relations', async () => {
+    it('Sufficient permissions: Should return requested dashboard item connected to a SUB NATIONAL dashboard that users have access to any of their relations', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`dashboardItems/${districtDashboardItem1.id}`);
 
       expect(result.id).to.equal(districtDashboardItem1.id);
     });
 
-    it('Sufficient permissions: Should return requested dashboard item connected to a NATIONAL dashboard that users have access to their relations', async () => {
-      await app.grantAccess(DEFAULT_POLICY);
-      const { body: result } = await app.get(`dashboardItems/${nationalDashboardItem1.id}`);
+    it('Sufficient permissions: Should return requested dashboard item connected to a NATIONAL dashboard that users have access to any of their relations', async () => {
+      // Remove the permission of LA since KI permissions should be enough to access nationalDashboardItem3.
+      const policy = {
+        DL: ['Public'],
+        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+        SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
+        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+        // LA: ['Admin'],
+        TO: ['Admin'],
+      };
+      await app.grantAccess(policy);
+      const { body: result } = await app.get(`dashboardItems/${nationalDashboardItem3.id}`);
 
-      expect(result.id).to.equal(nationalDashboardItem1.id);
+      expect(result.id).to.equal(nationalDashboardItem3.id);
     });
 
     it('Sufficient permissions: Should return requested dashboard item connected to a project level dashboard that users have access to any of the project child countries', async () => {
@@ -107,10 +116,10 @@ describe('Permissions checker for GETDashboardItems', async () => {
     });
 
     it('Insufficient permissions: Should throw an error when requesting a dashboard item connected to a NATIONAL dashboard that users do not have access to their relations', async () => {
-      // Remove the permission of LA to have insufficient permissions to access nationalDashboardItem3.
+      // Remove admin permission of KI, LA to have insufficient permissions to access nationalDashboardItem3.
       const policy = {
         DL: ['Public'],
-        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /* 'Admin' */],
         SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
         VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
         // LA: ['Admin'],

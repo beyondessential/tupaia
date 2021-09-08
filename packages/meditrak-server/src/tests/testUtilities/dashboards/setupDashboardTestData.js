@@ -127,7 +127,20 @@ export const setupDashboardTestData = async models => {
       project_codes: ['explore'],
     },
   );
-  const nationalDashboardRelation3 = await findOrCreateDummyRecord(
+  const nationalDashboardRelation3a = await findOrCreateDummyRecord(
+    models.dashboardRelation,
+    {
+      dashboard_id: nationalDashboard1.id,
+      child_id: nationalDashboardItem3.id,
+    },
+    {
+      id: `${nationalDashboard1.id}-${nationalDashboardItem3.id}`,
+      permission_groups: ['Admin'],
+      entity_types: ['country'],
+      project_codes: ['explore'],
+    },
+  );
+  const nationalDashboardRelation3b = await findOrCreateDummyRecord(
     models.dashboardRelation,
     {
       dashboard_id: nationalDashboard2.id,
@@ -175,7 +188,8 @@ export const setupDashboardTestData = async models => {
     districtDashboardRelation1,
     nationalDashboardRelation1,
     nationalDashboardRelation2,
-    nationalDashboardRelation3,
+    nationalDashboardRelation3a,
+    nationalDashboardRelation3b,
     projectDashboardRelation1,
   };
 };

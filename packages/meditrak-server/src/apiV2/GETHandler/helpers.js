@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import formatLinkHeader from 'format-link-header';
-import { JOIN_TYPES } from '@tupaia/database';
 import { ValidationError } from '@tupaia/utils';
 import { getApiUrl, resourceToRecordType } from '../../utilities';
 
@@ -44,15 +43,15 @@ export const generateLinkHeader = (resource, pageString, lastPage, originalQuery
 };
 
 export const processColumnSelector = (models, unprocessedColumnSelector, baseRecordType) => {
-  if (unprocessedColumnSelector.includes('.')) {
-    const [resource, column] = unprocessedColumnSelector.split('.');
-    const recordType = resourceToRecordType(resource);
-    const model = models.getModelForDatabaseType(recordType);
-    const customSelector = model.customColumnSelectors && model.customColumnSelectors[column];
-    const selector = `${recordType}.${column}`;
-    return customSelector ? customSelector(selector) : selector;
-  }
-  return `${baseRecordType}.${unprocessedColumnSelector}`;
+  const [resource, column] = unprocessedColumnSelector.includes('.')
+    ? unprocessedColumnSelector.split('.')
+    : [baseRecordType, unprocessedColumnSelector];
+
+  const recordType = resourceToRecordType(resource);
+  const model = models.getModelForDatabaseType(recordType);
+  const customSelector = model?.customColumnSelectors?.[column];
+  const selector = `${recordType}.${column}`;
+  return customSelector ? customSelector(selector) : selector;
 };
 
 // Make sure all column keys have the table specified to avoid ambiguous column errors,

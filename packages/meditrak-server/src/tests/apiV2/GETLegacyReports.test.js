@@ -116,10 +116,10 @@ describe('Permissions checker for GETLegacyReports', async () => {
     });
 
     it('Insufficient permissions: Should throw an error when requesting legacy report that is used in a dashboard item connected to a NATIONAL dashboard, and users do not have access', async () => {
-      // Remove the permission of LA to have insufficient permissions to access nationalReport3.
+      // Remove admin permissions of KI, LA to have insufficient permissions to access nationalReport3.
       const policy = {
         DL: ['Public'],
-        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /* 'Admin' */],
         SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
         VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
         // LA: ['Admin'],

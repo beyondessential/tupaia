@@ -141,6 +141,10 @@ apiV2.get('/answers/:recordId?', useRouteHandler(GETAnswers));
 apiV2.get('/disasters/:recordId?', useRouteHandler(GETDisasters));
 apiV2.get('/dashboards/:recordId?', useRouteHandler(GETDashboards));
 apiV2.get('/dashboards/:parentRecordId/dashboardRelations', useRouteHandler(GETDashboardRelations));
+apiV2.get(
+  '/dashboardItems/:parentRecordId/dashboardRelations',
+  useRouteHandler(GETDashboardRelations),
+);
 apiV2.get('/dashboardItems/:recordId?', useRouteHandler(GETDashboardItems));
 apiV2.get('/dashboardRelations/:recordId?', useRouteHandler(GETDashboardRelations));
 apiV2.get('/dashboardVisualisations/:recordId?', useRouteHandler(GETDashboardVisualisations));
