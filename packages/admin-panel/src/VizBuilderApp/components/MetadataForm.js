@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { Autocomplete, TextField } from '@tupaia/ui-components';
 import { usePermissionGroups } from '../api/queries';
-import { useVizBuilderConfig } from '../vizBuilderConfigStore';
+import { useVizBuilderConfig } from '../context';
 
 export const MetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   const { handleSubmit, register, errors } = useForm();
