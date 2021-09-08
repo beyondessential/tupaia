@@ -100,6 +100,12 @@ export class ExpressionParser {
     return this.parser.evaluate(expression);
   }
 
+  /**
+   * Evaluate an expression and cast boolean results to 1 or 0. Also validate the expression beforehand.
+   *
+   * Note this could also return a string, array, or object (potentially others too)
+   * @param {*} expression
+   */
   evaluateToNumber(expression) {
     const result = this.evaluate(expression);
     if (typeof result === 'boolean') {

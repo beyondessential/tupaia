@@ -50,7 +50,7 @@ const buildParams = (params: unknown): TransformParams => {
   } = params;
   if (typeof transformStep !== 'string' || !(transformStep in transformBuilders)) {
     throw new Error(
-      `Expected transform to be one of ${Object.keys(transformBuilders)} but got ${transform}`,
+      `Expected transform to be one of ${Object.keys(transformBuilders)} but got ${transformStep}`,
     );
   }
 
