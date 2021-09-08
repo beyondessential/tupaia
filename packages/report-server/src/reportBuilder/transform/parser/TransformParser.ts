@@ -125,7 +125,7 @@ export class TransformParser extends ExpressionParser {
   };
 
   protected getCustomFunctions() {
-    return functions;
+    return { ...super.getCustomFunctions(), ...functions };
   }
 
   public static isExpression(expression: string) {
