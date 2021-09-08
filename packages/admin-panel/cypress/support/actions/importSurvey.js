@@ -34,3 +34,6 @@ export const selectDataService = dataService => {
 export const importSurvey = () => {
   cy.get('[type="submit"]').click();
 };
+export const closeImportSurveyForm = () => {
+  cy.contains('Import Surveys').parent().find('button').click();
+};

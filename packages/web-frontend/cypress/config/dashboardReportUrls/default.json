@@ -1037,11 +1037,13 @@
   {
     "code": "PMOS_Mosquito_Occurence",
     "project": "pacmossi",
-    "orgUnit": "SB"
+    "orgUnit": "SB",
+    "dashboard": "Vector Surveillance"
   },
   {
     "code": "PMOS_Mosquito_Larvae_By_Habitat_Type",
     "project": "pacmossi",
-    "orgUnit": "FS-MQ9-8TO-UJG7"
+    "orgUnit": "FS-MQ9-8TO-UJG7",
+    "dashboard": "Vector Surveillance"
   }
 ]
