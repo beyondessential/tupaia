@@ -7,16 +7,16 @@ import { PARSABLE_ANALYTICS } from './transform.fixtures';
 import { buildTransform } from '../../../reportBuilder/transform';
 
 describe('parser', () => {
-  it('groupRows supports parser lookups on where', () => {
+  it('mergeRows supports parser lookups on where', () => {
     const transform = buildTransform([
       {
-        transform: 'groupRows',
-        mergeUsing: {
+        transform: 'mergeRows',
+        using: {
           organisationUnit: 'exclude',
           period: 'exclude',
           '*': 'sum',
         },
-        where: "eq($organisationUnit, 'TO')",
+        where: "=eq($organisationUnit, 'TO')",
       },
     ]);
     expect(transform(PARSABLE_ANALYTICS)).toEqual([
@@ -32,7 +32,7 @@ describe('parser', () => {
       {
         transform: 'excludeRows',
         where:
-          '$BCD1 <= mean(@where(f(@otherRow) = eq($organisationUnit, @otherRow.organisationUnit)).BCD1)',
+          '=$BCD1 <= mean(where(f(@otherRow) = eq($organisationUnit, @otherRow.organisationUnit)).BCD1)',
       },
     ]);
     expect(transform(PARSABLE_ANALYTICS)).toEqual([
@@ -48,22 +48,23 @@ describe('parser', () => {
       {
         transform: 'updateColumns',
         insert: {
-          row: '$BCD1',
-          lastAll: 'last(@all.BCD1)',
-          sumAllPrevious: 'sum(@allPrevious.BCD1)',
+          row: '= $BCD1 + $BCD2',
+          current: '=@current.BCD1',
+          lastAll: '=last(@all.BCD1)',
+          sumAllPrevious: '=sum(@allPrevious.BCD1)',
           sumWhereMatchingOrgUnit:
-            'sum(@where(f(@otherRow) = eq($organisationUnit, @otherRow.organisationUnit)).BCD1)',
+            '=sum(where(f(@otherRow) = eq($organisationUnit, @otherRow.organisationUnit)).BCD1)',
         },
         exclude: '*',
       },
     ]);
     expect(transform(PARSABLE_ANALYTICS)).toEqual([
-      { row: 4, lastAll: 2, sumAllPrevious: 4, sumWhereMatchingOrgUnit: 11 },
-      { row: 2, lastAll: 2, sumAllPrevious: 6, sumWhereMatchingOrgUnit: 11 },
-      { row: 5, lastAll: 2, sumAllPrevious: 11, sumWhereMatchingOrgUnit: 11 },
-      { row: 7, lastAll: 2, sumAllPrevious: 18, sumWhereMatchingOrgUnit: 17 },
-      { row: 8, lastAll: 2, sumAllPrevious: 26, sumWhereMatchingOrgUnit: 17 },
-      { row: 2, lastAll: 2, sumAllPrevious: 28, sumWhereMatchingOrgUnit: 17 },
+      { row: 4, current: 4, lastAll: 2, sumAllPrevious: 4, sumWhereMatchingOrgUnit: 11 },
+      { row: 2, current: 2, lastAll: 2, sumAllPrevious: 6, sumWhereMatchingOrgUnit: 11 },
+      { row: 5, current: 5, lastAll: 2, sumAllPrevious: 11, sumWhereMatchingOrgUnit: 11 },
+      { row: 7, current: 7, lastAll: 2, sumAllPrevious: 18, sumWhereMatchingOrgUnit: 17 },
+      { row: 8, current: 8, lastAll: 2, sumAllPrevious: 26, sumWhereMatchingOrgUnit: 17 },
+      { row: 2, current: 2, lastAll: 2, sumAllPrevious: 28, sumWhereMatchingOrgUnit: 17 },
     ]);
   });
 

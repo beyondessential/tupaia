@@ -79,6 +79,12 @@ export const UNIQUE_MERGEABLE_ANALYTICS = [
   { period: '20200103', organisationUnit: 'PG', BCD2: 99 },
 ];
 
+export const SINGLE_MERGEABLE_ANALYTICS = [
+  { period: '20200101', BCD1: 4 },
+  { period: '20200101', BCD2: 4 },
+  { period: '20200101', BCD3: 4 },
+];
+
 export const SORTABLE_ANALYTICS = [
   { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
   { period: '20200102', organisationUnit: 'TO', BCD1: 2 },

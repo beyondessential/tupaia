@@ -11,7 +11,7 @@ describe('excludeRows', () => {
     const transform = buildTransform([
       {
         transform: 'excludeRows',
-        where: '$BCD1 < 6',
+        where: '=$BCD1 < 6',
       },
     ]);
     expect(transform(EXCLUDEABLE_ANALYTICS)).toEqual([

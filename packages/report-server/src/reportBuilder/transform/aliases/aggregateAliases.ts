@@ -12,26 +12,26 @@ export const mostRecentValuePerOrgUnit = () =>
       by: 'period',
     },
     {
-      transform: 'groupRows',
-      by: 'organisationUnit',
-      mergeUsing: 'last',
+      transform: 'mergeRows',
+      groupBy: 'organisationUnit',
+      using: 'last',
     },
   ]);
 
 export const firstValuePerPeriodPerOrgUnit = () =>
   buildTransform([
     {
-      transform: 'groupRows',
-      by: ['organisationUnit', 'period'],
-      mergeUsing: 'first',
+      transform: 'mergeRows',
+      groupBy: ['organisationUnit', 'period'],
+      using: 'first',
     },
   ]);
 
 export const lastValuePerPeriodPerOrgUnit = () =>
   buildTransform([
     {
-      transform: 'groupRows',
-      by: ['organisationUnit', 'period'],
-      mergeUsing: 'last',
+      transform: 'mergeRows',
+      groupBy: ['organisationUnit', 'period'],
+      using: 'last',
     },
   ]);

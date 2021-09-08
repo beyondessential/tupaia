@@ -12,7 +12,7 @@ import {
   mapStringToStringValidator,
   starSingleOrMultipleColumnsValidator,
 } from './transformValidators';
-import { getColumnMatcher, getParsedColumnKeyAndValue } from './helpers';
+import { getColumnMatcher } from './helpers';
 
 type UpdateColumnsParams = {
   insert: { [key: string]: string };
@@ -37,8 +37,7 @@ const updateColumns = (rows: Row[], params: UpdateColumnsParams): Row[] => {
     }
     const newRow: Row = {};
     Object.entries(params.insert).forEach(([key, expression]) => {
-      const [newRowKey, newRowValue] = getParsedColumnKeyAndValue(key, expression, parser);
-      newRow[newRowKey] = newRowValue;
+      newRow[parser.evaluate(key)] = parser.evaluate(expression);
     });
 
     Object.entries(row).forEach(([field, value]) => {

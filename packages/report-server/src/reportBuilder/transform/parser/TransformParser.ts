@@ -16,21 +16,20 @@ type RowLookup = {
  * Lookups object for rows within the transform data
  *
  * eg. if rows = [{BCD1: 5}, {BCD1: 8}, {BCD1: 4}], and currentRow = 1
- * '@row.BCD1' => 8
+ * '@current.BCD1' => 8
  * '@all.BCD1' => [5, 8, 4]
  * '@allPrevious.BCD1' => [5, 8]
- * '@where(f(@otherRow) = @otherRow.BCD1 < @row.BCD1).BCD1' => [5, 4]
- * '@row.BCD1 + sum(@allPrevious.BCD1)' => 21
+ * 'where(f(@otherRow) = @otherRow.BCD1 < @current.BCD1).BCD1' => [5, 4]
+ * '@current.BCD1 + sum(@allPrevious.BCD1)' => 21
  */
 type Lookups = {
-  row: Row;
+  current: Row;
   previous: Row;
   next: Row;
   all: RowLookup;
   allPrevious: RowLookup;
   index: number; // one-based index, this.currentRow + 1
   table: Row[];
-  where: (check: (row: Row) => boolean) => RowLookup;
 };
 
 export class TransformParser extends ExpressionParser {
@@ -50,31 +49,39 @@ export class TransformParser extends ExpressionParser {
 
     this.rows = rows;
     this.lookups = {
-      row: {},
+      current: {},
       previous: {},
       next: {},
       all: {},
       allPrevious: {},
       index: this.currentRow + 1,
       table: this.rows,
-      where: this.whereFunction,
     };
 
     if (rows.length > 0) {
-      this.lookups.row = this.rows[this.currentRow];
+      this.lookups.current = this.rows[this.currentRow];
       this.lookups.next = this.rows[this.currentRow + 1] || {};
       this.rows.forEach(row => addRowToLookup(row, this.lookups.all));
-      addRowToLookup(this.lookups.row, this.lookups.allPrevious);
-      this.addRowToScope(this.lookups.row);
+      addRowToLookup(this.lookups.current, this.lookups.allPrevious);
+      this.addRowToScope(this.lookups.current);
 
       Object.entries(this.lookups).forEach(([lookupName, lookup]) => {
         this.set(`@${lookupName}`, lookup);
       });
+      this.set('where', this.whereFunction); // '@' prefix for where
     }
   }
 
+  public evaluate(expression: string) {
+    if (TransformParser.isExpression(expression)) {
+      return super.evaluate(expression.substring(1));
+    }
+
+    return expression;
+  }
+
   public next() {
-    this.removeRowFromScope(this.lookups.row);
+    this.removeRowFromScope(this.lookups.current);
 
     this.currentRow++;
 
@@ -84,14 +91,14 @@ export class TransformParser extends ExpressionParser {
 
     this.lookups.previous = this.rows[this.currentRow - 1];
     this.lookups.next = this.rows[this.currentRow + 1] || {};
-    this.lookups.row = this.rows[this.currentRow];
+    this.lookups.current = this.rows[this.currentRow];
     this.lookups.index = this.currentRow + 1;
     this.set('@previous', this.lookups.previous);
     this.set('@next', this.lookups.next);
-    this.set('@row', this.lookups.row);
+    this.set('@current', this.lookups.current);
     this.set('@index', this.lookups.index);
-    addRowToLookup(this.lookups.row, this.lookups.allPrevious);
-    this.addRowToScope(this.lookups.row);
+    addRowToLookup(this.lookups.current, this.lookups.allPrevious);
+    this.addRowToScope(this.lookups.current);
   }
 
   public addRowToScope = (row: Row) => {
@@ -119,6 +126,10 @@ export class TransformParser extends ExpressionParser {
 
   protected getCustomFunctions() {
     return functions;
+  }
+
+  public static isExpression(expression: string) {
+    return expression.startsWith('=');
   }
 }
 

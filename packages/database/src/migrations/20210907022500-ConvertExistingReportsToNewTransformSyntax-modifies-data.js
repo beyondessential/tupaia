@@ -23,12 +23,16 @@ const convertSelectToUpdateColumns = oldConfig => {
     '...': spreadColumns,
     ...columnsToInsert
   } = oldConfig;
+
   const newConfig = {
     transform: 'updateColumns',
-    where,
     title,
     description,
   };
+
+  if (where) {
+    newConfig.where = `=${where}`;
+  }
 
   Object.entries(columnsToInsert).forEach(([columnKey, columnValue]) => {
     const isSimpleKey = columnKey.startsWith("'") && columnKey.endsWith("'");
@@ -36,7 +40,7 @@ const convertSelectToUpdateColumns = oldConfig => {
       ? columnKey.substring(1, columnKey.length - 1)
       : `=${columnKey}`;
 
-    newConfig.insert = { ...newConfig.insert, [newColumnKey]: columnValue };
+    newConfig.insert = { ...newConfig.insert, [newColumnKey]: `=${columnValue}` };
   });
 
   if (spreadColumns) {
@@ -48,7 +52,12 @@ const convertSelectToUpdateColumns = oldConfig => {
   return newConfig;
 };
 
-const convertAggregateToGroupRows = oldConfig => {
+const mergeStrategyNames = {
+  drop: 'exclude',
+  avg: 'average',
+};
+
+const convertAggregateToMergeRows = oldConfig => {
   const {
     transform,
     $title: title,
@@ -57,29 +66,51 @@ const convertAggregateToGroupRows = oldConfig => {
     ...columnsToAggregate
   } = oldConfig;
   const newConfig = {
-    transform: 'groupRows',
-    where,
+    transform: 'mergeRows',
     title,
     description,
   };
 
+  if (where) {
+    newConfig.where = `=${where}`;
+  }
+
+  const columnsWithBaseStrategy = [];
   Object.entries(columnsToAggregate).forEach(([column, aggregateFunc]) => {
     const isGroupColumn = aggregateFunc === 'group';
     if (isGroupColumn) {
-      if (Array.isArray(newConfig.by)) {
-        newConfig.by = [...newConfig.by, column];
-      } else if (newConfig.by) {
-        newConfig.by = [newConfig.by, column];
+      if (Array.isArray(newConfig.groupBy)) {
+        newConfig.groupBy = [...newConfig.groupBy, column];
+      } else if (newConfig.groupBy) {
+        newConfig.groupBy = [newConfig.groupBy, column];
       } else {
-        newConfig.by = column;
+        newConfig.groupBy = column;
       }
     } else {
       const columnKey = column === '...' ? '*' : column;
-      const mergeStrategy = aggregateFunc === 'drop' ? 'exclude' : aggregateFunc;
-      if (typeof newConfig.mergeUsing === 'object' && newConfig.mergeUsing !== null) {
-        newConfig.mergeUsing = { ...newConfig.mergeUsing, [columnKey]: mergeStrategy };
+      const mergeStrategy = mergeStrategyNames[aggregateFunc]
+        ? mergeStrategyNames[aggregateFunc]
+        : aggregateFunc;
+
+      if (typeof newConfig.using === 'object' && newConfig.using !== null) {
+        newConfig.using = { ...newConfig.using, [columnKey]: mergeStrategy };
+      } else if (typeof newConfig.using === 'string' && newConfig.using !== undefined) {
+        if (mergeStrategy === newConfig.using) {
+          columnsWithBaseStrategy.push(columnKey);
+        } else {
+          const commonStrategy = newConfig.using;
+          const usingObject = Object.fromEntries(
+            columnsWithBaseStrategy.map(columnWithBaseStrategy => [
+              columnWithBaseStrategy,
+              commonStrategy,
+            ]),
+          );
+          usingObject[columnKey] = mergeStrategy;
+          newConfig.using = usingObject;
+        }
       } else {
-        newConfig.mergeUsing = { [columnKey]: mergeStrategy };
+        columnsWithBaseStrategy.push(columnKey);
+        newConfig.using = mergeStrategy;
       }
     }
   });
@@ -112,7 +143,7 @@ const convertFilterToExcludeRows = oldConfig => {
     description,
   };
 
-  newConfig.where = `not (${where})`;
+  newConfig.where = `=not (${where})`;
 
   return newConfig;
 };
@@ -129,10 +160,13 @@ const convertInsertToInsertRows = oldConfig => {
   const newConfig = {
     transform: 'insertRows',
     position,
-    where,
     title,
     description,
   };
+
+  if (where) {
+    newConfig.where = `=${where}`;
+  }
 
   Object.entries(columnsToInsert).forEach(([columnKey, columnValue]) => {
     const isSimpleKey = columnKey.startsWith("'") && columnKey.endsWith("'");
@@ -148,7 +182,7 @@ const convertInsertToInsertRows = oldConfig => {
 
 const configMappers = {
   select: convertSelectToUpdateColumns,
-  aggregate: convertAggregateToGroupRows,
+  aggregate: convertAggregateToMergeRows,
   sort: convertSortToSortRows,
   filter: convertFilterToExcludeRows,
   insert: convertInsertToInsertRows,
@@ -184,14 +218,14 @@ exports.up = async function (db) {
     const newConfigString = JSON.stringify(newConfig)
       .replace(/'/g, "''")
       .replace(/\$row\./g, '$')
-      .replace(/\$row/g, '@row')
+      .replace(/\$row/g, '@current')
       .replace(/\$previous/g, '@previous')
       .replace(/\$next/g, '@next')
       .replace(/\$all/g, '@all')
       .replace(/\$allPrevious/g, '@allPrevious')
       .replace(/\$index/g, '@index')
       .replace(/\$table/g, '@table')
-      .replace(/\$where/g, '@where');
+      .replace(/\$where/g, 'where');
 
     await db.runSql(`
         UPDATE report

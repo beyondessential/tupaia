@@ -9,7 +9,6 @@ import { TransformParser } from '../parser';
 import { buildWhere } from './where';
 import { Row } from '../../types';
 import { mapStringToStringValidator } from './transformValidators';
-import { getParsedColumnKeyAndValue } from './helpers';
 
 type InsertColumnsParams = {
   columns: { [key: string]: string };
@@ -31,8 +30,7 @@ const insertColumns = (rows: Row[], params: InsertColumnsParams): Row[] => {
     }
     const newRow: Row = { ...row };
     Object.entries(params.columns).forEach(([key, expression]) => {
-      const [newRowKey, newRowValue] = getParsedColumnKeyAndValue(key, expression, parser);
-      newRow[newRowKey] = newRowValue;
+      newRow[parser.evaluate(key)] = parser.evaluate(expression);
     });
 
     parser.next();

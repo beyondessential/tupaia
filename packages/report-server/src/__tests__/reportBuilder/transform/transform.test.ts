@@ -13,7 +13,7 @@ describe('transform', () => {
         {
           transform: 'flyToTheMoon',
           insert: {
-            '=$dataElement': '$value',
+            '=$dataElement': '=$value',
           },
           exclude: '*',
         },
@@ -26,18 +26,18 @@ describe('transform', () => {
       {
         transform: 'updateColumns',
         insert: {
-          '=$dataElement': '$value',
+          '=$dataElement': '=$value',
         },
         exclude: '*',
       },
       {
-        transform: 'groupRows',
-        mergeUsing: { BCD1: 'sum' },
+        transform: 'mergeRows',
+        using: 'sum',
       },
       {
         transform: 'updateColumns',
         insert: {
-          Total: '$BCD1',
+          Total: '=$BCD1',
         },
         exclude: '*',
       },
@@ -52,22 +52,22 @@ describe('transform', () => {
         description: 'Add a column for each data element name, useful for aggregating later on',
         transform: 'updateColumns',
         insert: {
-          '=$dataElement': '$value',
+          '=$dataElement': '=$value',
         },
         exclude: '*',
       },
       {
         title: 'Sum BCD1',
-        description: 'Group all rows together and sum their values for BCD1',
-        transform: 'groupRows',
-        mergeUsing: { BCD1: 'sum' },
+        description: 'Merges all rows together and sum their values for BCD1',
+        transform: 'mergeRows',
+        using: 'sum',
       },
       {
         title: 'Add Total column',
         description: 'Add a column called Total whose value is the same as BCD1',
         transform: 'updateColumns',
         insert: {
-          Total: '$BCD1',
+          Total: '=$BCD1',
         },
         exclude: '*',
       },

@@ -13,19 +13,23 @@ import { buildCreateGroupKey } from './createGroupKey';
 import { buildGetMergeStrategy } from './getMergeStrategy';
 import { starSingleOrMultipleColumnsValidator } from '../transformValidators';
 
-type GroupRowsParams = {
+type MergeRowsParams = {
   createGroupKey: (row: Row) => string;
   getMergeStrategy: (field: string) => keyof typeof mergeStrategies;
   where: (parser: TransformParser) => boolean;
 };
 
 const paramsValidator = yup.object().shape({
-  by: starSingleOrMultipleColumnsValidator,
-  mergeUsing: yup.lazy((value: unknown) => {
-    const mergeStrategyNameValidator = yup
+  groupBy: starSingleOrMultipleColumnsValidator,
+  using: yup.lazy((value: unknown) => {
+    const undefinedMergeStrategyNameValidator = yup
       .mixed<keyof typeof mergeStrategies>()
-      .oneOf(Object.keys(mergeStrategies) as (keyof typeof mergeStrategies)[])
-      .required();
+      .oneOf(Object.keys(mergeStrategies) as (keyof typeof mergeStrategies)[]);
+    if (value === undefined) {
+      return undefinedMergeStrategyNameValidator;
+    }
+
+    const mergeStrategyNameValidator = undefinedMergeStrategyNameValidator.required();
     if (typeof value === 'string') {
       return mergeStrategyNameValidator;
     }
@@ -54,7 +58,7 @@ type Group = {
   [fieldKey: string]: FieldValue[];
 };
 
-const buildGroups = (rows: Row[], params: GroupRowsParams) => {
+const groupRows = (rows: Row[], params: MergeRowsParams) => {
   const groupsByKey: Record<string, Group> = {};
   const parser = new TransformParser(rows);
   const ungroupedRows: Row[] = []; // Rows that don't match the 'where' clause are left ungrouped
@@ -81,7 +85,7 @@ const addRowToGroup = (group: Group, row: Row): Group => {
   return newGroup;
 };
 
-const mergeGroups = (groups: Group[], params: GroupRowsParams): Row[] => {
+const mergeGroups = (groups: Group[], params: MergeRowsParams): Row[] => {
   return groups.map(group => {
     const mergedRow: Row = {};
     Object.entries(group).forEach(([fieldKey, fieldValue]) => {
@@ -95,25 +99,25 @@ const mergeGroups = (groups: Group[], params: GroupRowsParams): Row[] => {
   });
 };
 
-const groupRows = (rows: Row[], params: GroupRowsParams): Row[] => {
-  const { groups, ungroupedRows } = buildGroups(rows, params);
+const mergeRows = (rows: Row[], params: MergeRowsParams): Row[] => {
+  const { groups, ungroupedRows } = groupRows(rows, params);
   const mergedRows = mergeGroups(groups, params);
   return mergedRows.concat(ungroupedRows);
 };
 
-const buildParams = (params: unknown): GroupRowsParams => {
+const buildParams = (params: unknown): MergeRowsParams => {
   const validatedParams = paramsValidator.validateSync(params);
 
-  const { by, mergeUsing } = validatedParams;
+  const { groupBy, using } = validatedParams;
 
   return {
-    createGroupKey: buildCreateGroupKey(by),
-    getMergeStrategy: buildGetMergeStrategy(by, mergeUsing),
+    createGroupKey: buildCreateGroupKey(groupBy),
+    getMergeStrategy: buildGetMergeStrategy(groupBy, using),
     where: buildWhere(params),
   };
 };
 
-export const buildGroupRows = (params: unknown) => {
+export const buildMergeRows = (params: unknown) => {
   const builtParams = buildParams(params);
-  return (rows: Row[]) => groupRows(rows, builtParams);
+  return (rows: Row[]) => mergeRows(rows, builtParams);
 };

@@ -12,9 +12,9 @@ describe('insertColumns', () => {
       {
         transform: 'insertColumns',
         columns: {
-          number: '1',
-          string: "'Hi'",
-          boolean: 'false',
+          number: '=1',
+          string: 'Hi',
+          boolean: '=false',
         },
       },
     ]);
@@ -28,7 +28,7 @@ describe('insertColumns', () => {
       {
         transform: 'insertColumns',
         columns: {
-          dataElementValue: '$value',
+          dataElementValue: '=$value',
         },
       },
     ]);
@@ -40,7 +40,7 @@ describe('insertColumns', () => {
       {
         transform: 'insertColumns',
         columns: {
-          '=$dataElement': '$value',
+          '=$dataElement': '=$value',
         },
       },
     ]);
@@ -52,7 +52,7 @@ describe('insertColumns', () => {
       {
         transform: 'insertColumns',
         columns: {
-          period: "periodToDisplayString($period, 'DAY')",
+          period: "=periodToDisplayString($period, 'DAY')",
         },
       },
     ]);
@@ -64,8 +64,8 @@ describe('insertColumns', () => {
       {
         transform: 'insertColumns',
         columns: {
-          period: "periodToDisplayString($period, 'DAY')",
-          '=$dataElement': '$value',
+          period: "=periodToDisplayString($period, 'DAY')",
+          '=$dataElement': '=$value',
         },
       },
     ]);
@@ -80,9 +80,9 @@ describe('insertColumns', () => {
     const transform = buildTransform([
       {
         transform: 'insertColumns',
-        where: 'exists($BCD1)',
+        where: '=exists($BCD1)',
         columns: {
-          newVal: '$BCD1 * 2', // This would fail on rows where BCD1 doesn't exist
+          newVal: '=$BCD1 * 2', // This would fail on rows where BCD1 doesn't exist
         },
       },
     ]);

@@ -35,12 +35,12 @@ const paramsValidator = yup.object().shape({
 const getCustomRowSortFunction = (expression: string, direction: 'asc' | 'desc') => {
   const sortParser = new TransformParser([]);
   return (row1: Row, row2: Row) => {
-    sortParser.set('@row', row1);
+    sortParser.set('@current', row1);
     sortParser.addRowToScope(row1);
     const row1Value = sortParser.evaluate(expression);
     sortParser.removeRowFromScope(row1);
 
-    sortParser.set('@row', row2);
+    sortParser.set('@current', row2);
     sortParser.addRowToScope(row2);
     const row2Value = sortParser.evaluate(expression);
     sortParser.removeRowFromScope(row1);
@@ -73,9 +73,9 @@ const getCustomRowSortFunction = (expression: string, direction: 'asc' | 'desc')
 
 const sortRows = (rows: Row[], params: SortParams): Row[] => {
   const { by, direction } = params;
-  if (typeof by === 'string' && by.startsWith('=')) {
+  if (typeof by === 'string' && TransformParser.isExpression(by)) {
     const firstDirection = Array.isArray(direction) ? direction[0] : direction;
-    return rows.sort(getCustomRowSortFunction(by.substring(1), firstDirection));
+    return rows.sort(getCustomRowSortFunction(by, firstDirection));
   }
 
   const arrayBy = typeof by === 'string' ? [by] : by;

@@ -38,7 +38,7 @@ const sum = (values: FieldValue[]): number | undefined => {
       });
 };
 
-const avg = (values: FieldValue[]): number | undefined => {
+const average = (values: FieldValue[]): number | undefined => {
   const checkedValues = checkIsNum(values);
   const numerator = sum(checkedValues);
   const denominator = count(checkedValues);
@@ -115,7 +115,7 @@ const single = (values: FieldValue[]): FieldValue => {
 export const mergeStrategies = {
   group,
   sum,
-  avg,
+  average,
   count,
   max,
   min,
@@ -124,5 +124,5 @@ export const mergeStrategies = {
   first,
   last,
   single,
-  default: last,
+  default: single,
 };

@@ -13,9 +13,9 @@ describe('insertRows', () => {
       {
         transform: 'insertRows',
         columns: {
-          number: '1',
-          string: "'Hi'",
-          boolean: 'false',
+          number: '=1',
+          string: 'Hi',
+          boolean: '=false',
         },
       },
     ]);
@@ -30,7 +30,7 @@ describe('insertRows', () => {
       {
         transform: 'insertRows',
         columns: {
-          dataElementValue: '$value',
+          dataElementValue: '=$value',
         },
       },
     ]);
@@ -42,7 +42,7 @@ describe('insertRows', () => {
       {
         transform: 'insertRows',
         columns: {
-          '=$dataElement': '$value',
+          '=$dataElement': '=$value',
         },
       },
     ]);
@@ -54,7 +54,7 @@ describe('insertRows', () => {
       {
         transform: 'insertRows',
         columns: {
-          period: "periodToDisplayString($period, 'DAY')",
+          period: "=periodToDisplayString($period, 'DAY')",
         },
       },
     ]);
@@ -67,11 +67,11 @@ describe('insertRows', () => {
       {
         transform: 'insertRows',
         position: 'before',
-        where: 'eq(@index, 1)',
+        where: '=eq(@index, 1)',
         columns: {
-          number: '1',
-          string: "'Hi'",
-          boolean: 'false',
+          number: '=1',
+          string: 'Hi',
+          boolean: '=false',
         },
       },
     ]);
@@ -87,11 +87,11 @@ describe('insertRows', () => {
     const transform = buildTransform([
       {
         transform: 'insertRows',
-        where: 'eq(@index, length(@table))',
+        where: '=eq(@index, length(@table))',
         columns: {
-          number: '1',
-          string: "'Hi'",
-          boolean: 'false',
+          number: '=1',
+          string: 'Hi',
+          boolean: '=false',
         },
       },
     ]);
@@ -108,7 +108,7 @@ describe('insertRows', () => {
       {
         transform: 'insertRows',
         columns: {
-          dataElementValue: '$value',
+          dataElementValue: '=$value',
         },
       },
     ]);
@@ -127,7 +127,7 @@ describe('insertRows', () => {
       {
         transform: 'insertRows',
         columns: {
-          dataElementValue: '$value',
+          dataElementValue: '=$value',
         },
         position: 'before',
       },
@@ -147,7 +147,7 @@ describe('insertRows', () => {
       {
         transform: 'insertRows',
         columns: {
-          dataElementValue: '$value',
+          dataElementValue: '=$value',
         },
         position: 'start',
       },
@@ -167,10 +167,10 @@ describe('insertRows', () => {
       {
         transform: 'insertRows',
         columns: {
-          dataElementValue: '$value',
+          dataElementValue: '=$value',
         },
         position: 'after',
-        where: "not(eq($period, '20200101'))",
+        where: "=not(eq($period, '20200101'))",
       },
     ]);
     expect(transform(MULTIPLE_ANALYTICS)).toEqual([
@@ -187,9 +187,9 @@ describe('insertRows', () => {
     const transform = buildTransform([
       {
         transform: 'insertRows',
-        where: 'eq(@index, length(@table))',
+        where: '=eq(@index, length(@table))',
         columns: {
-          Total: 'sum(@all.value)',
+          Total: '=sum(@all.value)',
         },
       },
     ]);
@@ -205,12 +205,12 @@ describe('insertRows', () => {
     const transform = buildTransform([
       {
         transform: 'insertRows',
-        where: 'not(eq($organisationUnit, @next.organisationUnit))',
+        where: '=not(eq($organisationUnit, @next.organisationUnit))',
         columns: {
           Total_BCD1:
-            'sum(@where(f(@otherRow) = equalText(@otherRow.organisationUnit, $organisationUnit)).BCD1)',
+            '=sum(where(f(@otherRow) = equalText(@otherRow.organisationUnit, $organisationUnit)).BCD1)',
           Total_BCD2:
-            'sum(@where(f(@otherRow) = equalText(@otherRow.organisationUnit, $organisationUnit)).BCD2)',
+            '=sum(where(f(@otherRow) = equalText(@otherRow.organisationUnit, $organisationUnit)).BCD2)',
         },
       },
     ]);

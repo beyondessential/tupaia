@@ -8,7 +8,6 @@ import { yup } from '@tupaia/utils';
 import { TransformParser } from '../parser';
 import { buildWhere } from './where';
 import { Row } from '../../types';
-import { getParsedColumnKeyAndValue } from './helpers';
 import { mapStringToStringValidator } from './transformValidators';
 
 type InsertParams = {
@@ -43,8 +42,7 @@ const insertRows = (rows: Row[], params: InsertParams): Row[] => {
     }
     const newRow: Row = {};
     Object.entries(params.columns).forEach(([key, expression]) => {
-      const [newRowKey, newRowValue] = getParsedColumnKeyAndValue(key, expression, parser);
-      newRow[newRowKey] = newRowValue;
+      newRow[parser.evaluate(key)] = parser.evaluate(expression);
     });
 
     parser.next();
