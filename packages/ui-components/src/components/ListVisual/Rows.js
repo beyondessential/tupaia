@@ -30,7 +30,7 @@ const Row = styled(FlexSpaceBetween)`
   text-align: left;
 
   &:last-child {
-    border-bottom: none;
+    margin-bottom: -1px;
   }
 
   &:nth-child(even) {

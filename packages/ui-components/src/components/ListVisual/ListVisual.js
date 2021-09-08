@@ -41,8 +41,8 @@ const DEFAULT_LIST_CONFIGS = {
 const getDisplayConfig = ({ valueType, listConfig }, statistic) => {
   switch (valueType) {
     case 'color':
-      if (listConfig) {
-        return listConfig[statistic];
+      if (listConfig?.color) {
+        return listConfig.color[statistic];
       }
       return DEFAULT_LIST_CONFIGS.COLOR[statistic] || null;
     default:

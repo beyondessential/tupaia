@@ -139,6 +139,12 @@
       }
     },
     {
+      "files": ["packages/ui-components/**"],
+      "rules": {
+        "import/no-extraneous-dependencies": "off"
+      }
+    },
+    {
       "files": ["packages/web-config-server/**"],
       "plugins": ["module-resolver"],
       "rules": {
