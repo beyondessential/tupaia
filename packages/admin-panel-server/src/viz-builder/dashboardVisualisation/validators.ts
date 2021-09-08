@@ -49,7 +49,7 @@ export const dashboardSchema = yup.object().shape({
   code: yup.string().required(),
   name: yup.string().required(),
   rootEntityCode: yup.string().required(),
-  sortOrder: yup.number(),
+  sortOrder: yup.number().nullable(true),
 });
 
 export const dashboardRelationObjectSchema = yup.object().shape({
@@ -57,5 +57,5 @@ export const dashboardRelationObjectSchema = yup.object().shape({
   entityTypes: yup.array().of(yup.string()).required(),
   projectCodes: yup.array().of(yup.string()).required(),
   permissionGroups: yup.array().of(yup.string()).required(),
-  sortOrder: yup.number(),
+  sortOrder: yup.number().nullable(true),
 });
