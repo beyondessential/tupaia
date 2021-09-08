@@ -9,7 +9,7 @@ import MuiTableContainer from '@material-ui/core/TableContainer';
 import { DataTable } from '@tupaia/ui-components';
 import { getIsChartData, getNoDataString } from '../utils';
 import { SmallAlert } from '../../Alert';
-import { useChartTable } from './useChartTable';
+import { getChartTableData } from './getChartTableData';
 
 const TableContainer = styled(MuiTableContainer)`
   overflow: auto;
@@ -22,14 +22,7 @@ const NoData = styled(SmallAlert)`
 `;
 
 export const Table = ({ viewContent, className }) => {
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    rows,
-    columns,
-  } = useChartTable(viewContent);
+  const { columns, data } = getChartTableData(viewContent);
 
   if (!getIsChartData(viewContent)) {
     return (
@@ -41,14 +34,7 @@ export const Table = ({ viewContent, className }) => {
 
   return (
     <TableContainer className={className}>
-      <DataTable
-        rows={rows}
-        columns={columns}
-        getTableProps={getTableProps}
-        getTableBodyProps={getTableBodyProps}
-        headerGroups={headerGroups}
-        prepareRow={prepareRow}
-      />
+      <DataTable columns={columns} data={data} />
     </TableContainer>
   );
 };

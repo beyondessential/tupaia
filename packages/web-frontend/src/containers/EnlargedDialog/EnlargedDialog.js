@@ -3,27 +3,23 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import React, { useState, useEffect, useRef } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
+import { toFilename } from '@tupaia/utils';
 import styled from 'styled-components';
+import { useChartDataExport } from '@tupaia/ui-components/lib/chart';
 import {
   fetchEnlargedDialogData,
   setEnlargedDashboardDateRange,
   closeEnlargedDialog,
 } from '../../actions';
 import { ExportDialog } from '../../components/ExportDialog';
-import { getIsDataDownload, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
+import { getIsDataDownload, getIsMatrix } from '../../components/View';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
-import {
-  isMobile,
-  sleep,
-  stringToFilename,
-  getBrowserTimeZone,
-  getUniqueViewId,
-} from '../../utils';
+import { isMobile, sleep, getBrowserTimeZone, getUniqueViewId } from '../../utils';
 import {
   selectCurrentInfoViewKey,
   selectCurrentOrgUnit,
@@ -210,16 +206,19 @@ const EnlargedDialogComponent = ({
     return styles.container;
   };
 
-  const exportFormats = isMatrix ? ['xlsx'] : ['png'];
+  const exportFormats = isMatrix ? ['xlsx'] : ['png', 'xlsx'];
+  const exportTitle = `${newViewContent?.name}, ${organisationUnitName}`;
+
+  const { doExport } = useChartDataExport(newViewContent, exportTitle);
 
   const onExport = async format => {
     setExportStatus(STATUS.LOADING);
     setIsExporting(true);
 
-    const filename = stringToFilename(`export-${organisationUnitName}-${newViewContent.name}`);
+    const filename = toFilename(`export-${organisationUnitName}-${newViewContent.name}`);
 
     try {
-      if (format === 'xlsx') {
+      if (isMatrix && format === 'xlsx') {
         await exportToExcel({
           projectCode,
           dashboardCode,
@@ -231,15 +230,17 @@ const EnlargedDialogComponent = ({
           timeZone: getBrowserTimeZone(),
           filename,
         });
-      } else {
+      } else if (format === 'png') {
         const node = exportRef.current;
         await exportToPng(node, filename);
+      } else if (format === 'xlsx') {
+        doExport();
       }
 
       setIsExporting(false);
       await sleep(1000); // allow some time for the chart transition to finish before hiding the loader
       setExportStatus(STATUS.SUCCESS);
-    } catch (e) {
+    } catch (error) {
       setIsExporting(false);
       setExportStatus(STATUS.ERROR);
     }

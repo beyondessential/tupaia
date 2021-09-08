@@ -21,6 +21,10 @@
       "path": "packages/aggregator"
     },
     {
+      "name": "api-client",
+      "path": "packages/api-client"
+    },
+    {
       "name": "auth",
       "path": "packages/auth"
     },
@@ -55,6 +59,10 @@
     {
       "name": "indicators",
       "path": "packages/indicators"
+    },
+    {
+      "name": "kobo-api",
+      "path": "packages/kobo-api"
     },
     {
       "name": "lesmis",
@@ -127,6 +135,7 @@
       "cacheable",
       "cachers",
       "cleanup",
+      "ctes",
       "debouncing",
       "deleters",
       "dhis",
@@ -147,6 +156,7 @@
       "keyby",
       "middlewares",
       "migrator",
+      "originalname",
       "oucode",
       "outdater",
       "parameterise",

@@ -27,7 +27,7 @@ export { getTokenExpiry } from './getTokenExpiry';
 export * from './object';
 export * from './request';
 export { replaceValues } from './replaceValues';
-export { respond } from './respond';
+export { respond, respondWithDownload } from './respond';
 export * from './runScript';
 export * from './Script';
 export * from './string';

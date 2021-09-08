@@ -68,7 +68,7 @@
     "sinon-chai": "^3.3.0",
     "urlencode": "^1.1.0",
     "winston": "^3.3.3",
-    "xlsx": "^0.13.1"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "babel-plugin-module-resolver": "^4.0.0",

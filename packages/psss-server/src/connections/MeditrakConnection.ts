@@ -28,6 +28,9 @@ type Answer = {
   value: string | number;
 };
 
+/**
+ * @deprecated use @tupaia/api-client
+ */
 export class MeditrakConnection extends ApiConnection {
   baseUrl = MEDITRAK_API_URL;
 

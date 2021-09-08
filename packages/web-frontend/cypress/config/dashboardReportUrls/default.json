@@ -182,6 +182,12 @@
     "dashboard": "COVID-19"
   },
   {
+    "code": "COVID_Compose_Cumulative_Deaths_Vs_Cases",
+    "project": "covidau",
+    "orgUnit": "AU_Australian Capital Territory",
+    "dashboard": "COVID-19"
+  },
+  {
     "code": "FETP_PG_graduate_by_district",
     "project": "fetp",
     "orgUnit": "PG",
@@ -198,32 +204,6 @@
     "project": "fetp",
     "orgUnit": "FETP-DYO3",
     "dashboard": "FETP"
-  },
-  {
-    "code": "Imms_FridgeBreaches",
-    "project": "imms",
-    "orgUnit": "VU",
-    "dashboard": "Immunisation",
-    "startDate": "2020-04-01",
-    "endDate": "2020-04-30"
-  },
-  {
-    "code": "Imms_FridgeDailyTemperatures",
-    "project": "imms",
-    "orgUnit": "VU_1660",
-    "dashboard": "Immunisation"
-  },
-  {
-    "code": "Imms_FridgeVaccineCount",
-    "project": "imms",
-    "orgUnit": "VU",
-    "dashboard": "Immunisation"
-  },
-  {
-    "code": "Imms_Stockouts",
-    "project": "imms",
-    "orgUnit": "VU",
-    "dashboard": "Immunisation"
   },
   {
     "code": "LA_EOC_Total_Dengue_Cases_by_Week",
@@ -993,5 +973,75 @@
     "project": "covid_samoa",
     "orgUnit": "WS_002_Faiaai",
     "dashboard": "COVID-19 Samoa"
+  },
+  {
+    "code": "PSSS_Country_PF_Case_Numbers_With_Percent_Sites_Reporting",
+    "project": "psss",
+    "orgUnit": "PW",
+    "dashboard": "Syndromic Surveillance"
+  },
+  {
+    "code": "PSSS_PW_PF_Weekly_Case_Trend_Graph",
+    "project": "psss",
+    "orgUnit": "PW",
+    "dashboard": "Syndromic Surveillance National Data"
+  },
+  {
+    "code": "PSSS_PW_DIA_Weekly_Case_Trend_Graph",
+    "project": "psss",
+    "orgUnit": "PW",
+    "dashboard": "Syndromic Surveillance National Data"
+  },
+  {
+    "code": "PSSS_PW_CON_Weekly_Case_Trend_Graph_Country",
+    "project": "psss",
+    "orgUnit": "PW",
+    "dashboard": "Syndromic Surveillance National Data"
+  },
+  {
+    "code": "PSSS_PW_DLI_Weekly_Case_Trend_Graph",
+    "project": "psss",
+    "orgUnit": "PW",
+    "dashboard": "Syndromic Surveillance National Data"
+  },
+  {
+    "code": "20",
+    "project": "ehealth_nauru",
+    "orgUnit": "NR",
+    "dashboard": "General"
+  },
+  {
+    "code": "12",
+    "project": "ehealth_nauru",
+    "orgUnit": "NR",
+    "dashboard": "Clinical"
+  },
+  {
+    "code": "PSSS_Country_AFR_Case_Numbers_With_Percent_Sites_Reporting",
+    "project": "psss",
+    "orgUnit": "SB",
+    "dashboard": "Syndromic Surveillance"
+  },
+  {
+    "code": "PSSS_Country_Diarrhoea_Case_Numbers_With_Percent_Sites_Reporting",
+    "project": "psss",
+    "orgUnit": "FJ",
+    "dashboard": "Syndromic Surveillance"
+  },
+  {
+    "code": "FETP_PG_graduate_locations",
+    "project": "fetp",
+    "orgUnit": "PG",
+    "dashboard": "FETP"
+  },
+  {
+    "code": "PMOS_Mosquito_Occurence",
+    "project": "pacmossi",
+    "orgUnit": "SB"
+  },
+  {
+    "code": "PMOS_Mosquito_Larvae_By_Habitat_Type",
+    "project": "pacmossi",
+    "orgUnit": "FS-MQ9-8TO-UJG7"
   }
 ]

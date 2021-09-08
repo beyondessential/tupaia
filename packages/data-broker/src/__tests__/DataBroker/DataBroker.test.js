@@ -136,7 +136,7 @@ describe('DataBroker', () => {
         expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
         assertServicePulledDataElementsOnce(SERVICES.test, [DATA_ELEMENTS.TEST_01]);
         expect(data).toStrictEqual({
-          results: [{ value: 1 }],
+          results: [{ analytics: [{ value: 1 }], numAggregationsProcessed: 0 }],
           metadata: { dataElementCodeToName: { TEST_01: 'Test element 1' } },
         });
       });
@@ -154,7 +154,7 @@ describe('DataBroker', () => {
           DATA_ELEMENTS.TEST_02,
         ]);
         expect(data).toStrictEqual({
-          results: [{ value: 1 }, { value: 2 }],
+          results: [{ analytics: [{ value: 1 }, { value: 2 }], numAggregationsProcessed: 0 }],
           metadata: {
             dataElementCodeToName: { TEST_01: 'Test element 1', TEST_02: 'Test element 2' },
           },
@@ -177,7 +177,9 @@ describe('DataBroker', () => {
         ]);
         assertServicePulledDataElementsOnce(SERVICES.other, [DATA_ELEMENTS.OTHER_01]);
         expect(data).toStrictEqual({
-          results: [{ value: 1 }, { value: 2 }, { value: 3 }],
+          results: [
+            { analytics: [{ value: 1 }, { value: 2 }, { value: 3 }], numAggregationsProcessed: 0 },
+          ],
           metadata: {
             dataElementCodeToName: {
               TEST_01: 'Test element 1',

@@ -11,6 +11,7 @@ import { Route } from '@tupaia/server-boilerplate';
 import { Aggregator } from '../aggregator';
 import { ReportBuilder, Row, BuiltReport } from '../reportBuilder';
 import { ReportRouteQuery, ReportRouteBody } from './types';
+import { getRequestedOrgUnitObjects, getAccessibleOrgUnitCodes } from './helpers';
 
 export type TestReportRequest = Request<
   Record<string, never>,
@@ -22,28 +23,61 @@ export type TestReportRequest = Request<
   ReportRouteQuery
 >;
 
+const BES_DATA_ADMIN_PERMISSION_GROUP_NAME = 'BES Data Admin';
+
+const findAccessibleOrgUnits = async (
+  req: TestReportRequest,
+  hierarchy: string,
+  orgUnitCodes: string[],
+) => {
+  const foundOrgUnits = await getRequestedOrgUnitObjects(
+    hierarchy,
+    orgUnitCodes,
+    req.ctx.services.entity,
+  );
+
+  return getAccessibleOrgUnitCodes(
+    BES_DATA_ADMIN_PERMISSION_GROUP_NAME,
+    foundOrgUnits,
+    req.accessPolicy,
+  );
+};
+
+const parseOrgUnitCodes = (query: Record<string, unknown>): string[] => {
+  const { organisationUnitCodes } = query;
+  if (!organisationUnitCodes) {
+    throw new Error('Must provide organisationUnitCodes URL parameter');
+  }
+
+  return Array.isArray(organisationUnitCodes)
+    ? organisationUnitCodes
+    : (organisationUnitCodes as string).split(',');
+};
+
 export class TestReportRoute extends Route<TestReportRequest> {
   async buildResponse() {
     const { query, body } = this.req;
     const { testData, testConfig, ...restOfBody } = body;
-    const { organisationUnitCodes, ...restOfParams } = { ...query, ...restOfBody };
-    if (!organisationUnitCodes) {
-      throw new Error('Must provide organisationUnitCodes URL parameter');
-    }
+    const reportQuery = { ...query, ...restOfBody };
 
-    const organisationUnitCodesArray = Array.isArray(organisationUnitCodes)
-      ? organisationUnitCodes
-      : organisationUnitCodes.split(',');
-
-    const aggregator = createAggregator(Aggregator, this.req.ctx);
     const reportBuilder = new ReportBuilder();
     reportBuilder.setConfig(body.testConfig);
-    if (body.testData) {
-      reportBuilder.setTestData(body.testData);
+
+    if (testData) {
+      reportBuilder.setTestData(testData);
+    } else {
+      const { hierarchy = 'explore' } = reportQuery;
+      const orgUnitCodes = parseOrgUnitCodes(reportQuery);
+
+      reportQuery.hierarchy = hierarchy;
+      reportQuery.organisationUnitCodes = await findAccessibleOrgUnits(
+        this.req,
+        hierarchy,
+        orgUnitCodes,
+      );
     }
-    return reportBuilder.build(aggregator, {
-      organisationUnitCodes: organisationUnitCodesArray,
-      ...restOfParams,
-    });
+
+    const aggregator = createAggregator(Aggregator, this.req.ctx);
+    return reportBuilder.build(aggregator, reportQuery);
   }
 }

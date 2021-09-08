@@ -44,3 +44,11 @@ export const notExists = (val: FieldValue): boolean => {
 export const length = (val: any[]): number => {
   return val.length;
 };
+
+export const any = (...args: boolean[]): boolean => {
+  return args.some(x => x === true);
+};
+
+export const all = (...args: boolean[]): boolean => {
+  return args.every(x => x === true);
+};

@@ -103,15 +103,17 @@ export class DataBroker {
     }
 
     const dataSourcesByService = groupBy(dataSources, 'service_type');
+    const dataSourceFetches = Object.values(dataSourcesByService);
     const nestedResults = await Promise.all(
-      Object.values(dataSourcesByService).map(dataSourcesForService =>
-        this.pullForServiceAndType(dataSourcesForService, options),
+      dataSourceFetches.map(dataSourceForFetch =>
+        this.pullForServiceAndType(dataSourceForFetch, options),
       ),
     );
     const mergeResults = this.resultMergers[dataSources[0].type];
 
-    return nestedResults.reduce((results, resultsForService) =>
-      mergeResults(results, resultsForService),
+    return nestedResults.reduce(
+      (results, resultsForService) => mergeResults(results, resultsForService),
+      undefined,
     );
   }
 
@@ -121,15 +123,45 @@ export class DataBroker {
     return service.pull(dataSources, type, options);
   };
 
-  mergeAnalytics = (target = { results: [], metadata: {} }, source) => ({
-    results: target.results.concat(source.results),
-    metadata: {
-      dataElementCodeToName: {
-        ...target.metadata.dataElementCodeToName,
-        ...source.metadata.dataElementCodeToName,
+  mergeAnalytics = (target = { results: [], metadata: {} }, source) => {
+    const sourceNumAggregationsProcessed = source.numAggregationsProcessed || 0;
+    const targetResults = target.results;
+
+    // Result analytics can be combined if they've processed aggregations to the same level
+    const matchingResultIndex = targetResults.findIndex(
+      ({ numAggregationsProcessed }) => numAggregationsProcessed === sourceNumAggregationsProcessed,
+    );
+
+    let newResults;
+    if (matchingResultIndex >= 0) {
+      // Found a matching result, combine the matching result analytics and the new analytics
+      const matchingResult = targetResults[matchingResultIndex];
+      newResults = targetResults
+        .slice(0, matchingResultIndex)
+        .concat([
+          {
+            ...matchingResult,
+            analytics: matchingResult.analytics.concat(source.results),
+          },
+        ])
+        .concat(targetResults.slice(matchingResultIndex + 1, targetResults.length - 1));
+    } else {
+      // No matching result, just append this result to previous results
+      newResults = targetResults.concat([
+        { analytics: source.results, numAggregationsProcessed: sourceNumAggregationsProcessed },
+      ]);
+    }
+
+    return {
+      results: newResults,
+      metadata: {
+        dataElementCodeToName: {
+          ...target.metadata.dataElementCodeToName,
+          ...source.metadata.dataElementCodeToName,
+        },
       },
-    },
-  });
+    };
+  };
 
   mergeEvents = (target = [], source) => target.concat(source);
 

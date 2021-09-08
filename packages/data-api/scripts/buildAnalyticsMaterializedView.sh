@@ -6,5 +6,9 @@ source .env
 
 cd scripts
 export PGPASSWORD=$DB_PASSWORD
-psql -p $DB_PORT -h $DB_URL -d $DB_NAME -U $DB_USER -f createAnalyticsMaterializedView.sql
-psql -p $DB_PORT -h $DB_URL -d $DB_NAME -U $DB_USER -f createAnalyticsTableIndexes.sql
+if [[ "$1" == "--force" || "$1" == "-f" ]]; then
+  psql -p $DB_PORT -h $DB_URL -d $DB_NAME -U $DB_USER -tc "SELECT build_analytics_table(true);"
+else
+  psql -p $DB_PORT -h $DB_URL -d $DB_NAME -U $DB_USER -tc "SELECT build_analytics_table();"
+fi
+psql -p $DB_PORT -h $DB_URL -d $DB_NAME -U $DB_USER -tc "SELECT create_analytics_table_indexes();"

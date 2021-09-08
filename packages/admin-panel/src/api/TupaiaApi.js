@@ -11,6 +11,14 @@ import { logout } from '../authentication';
 
 const FETCH_TIMEOUT = 45 * 1000; // 45 seconds in milliseconds
 
+const extractHeadersAndBody = async response => {
+  const body = await response.json();
+  return {
+    headers: response.headers,
+    body,
+  };
+};
+
 export class TupaiaApi {
   constructor() {
     this.store = null; // Redux store for keeping state, will be injected after creation
@@ -59,8 +67,16 @@ export class TupaiaApi {
 
   async download(endpoint, queryParameters, fileName) {
     const response = await this.request(endpoint, queryParameters, this.buildFetchConfig('GET'));
+
+    // first check for JSON response, in case this is an early response indicating it will be emailed
+    const contentType = response.headers.get('content-type');
+    if (contentType.startsWith('application/json')) {
+      return extractHeadersAndBody(response);
+    }
+
     const responseBlob = await response.blob();
     saveAs(responseBlob, fileName);
+    return {};
   }
 
   upload(endpoint, fileName, file, queryParameters) {
@@ -72,11 +88,7 @@ export class TupaiaApi {
 
   async requestJson(...params) {
     const response = await this.request(...params);
-    const responseJson = await response.json();
-    return {
-      headers: response.headers,
-      body: responseJson,
-    };
+    return extractHeadersAndBody(response);
   }
 
   async checkIfAuthorized(response) {

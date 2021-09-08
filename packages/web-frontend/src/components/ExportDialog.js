@@ -55,7 +55,7 @@ export const ExportDialog = ({ status, isOpen, onClose, formats, onExport }) => 
 
   React.useEffect(() => {
     setSelectedFormat(formats[0]);
-  }, [formats]);
+  }, [formats[0]]);
 
   return (
     <Dialog

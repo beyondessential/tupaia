@@ -56,10 +56,10 @@ export const assertAnyPermissions = (assertions, errorMessage) => async accessPo
  * specific permissions assertions
  */
 export const hasLESMISAdminAccess = accessPolicy =>
-  accessPolicy.allowsSome(null, LESMIS_ADMIN_PERMISSION_GROUP);
+  accessPolicy.allowsSome(undefined, LESMIS_ADMIN_PERMISSION_GROUP);
 
 export const hasBESAdminAccess = accessPolicy =>
-  accessPolicy.allowsSome(null, BES_ADMIN_PERMISSION_GROUP);
+  accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
 
 export const assertBESAdminAccess = accessPolicy => {
   if (hasBESAdminAccess(accessPolicy)) {
@@ -70,7 +70,7 @@ export const assertBESAdminAccess = accessPolicy => {
 };
 
 export const hasTupaiaAdminPanelAccess = accessPolicy =>
-  accessPolicy.allowsSome(null, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP);
+  accessPolicy.allowsSome(undefined, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP);
 
 export const assertAdminPanelAccess = accessPolicy => {
   if (hasTupaiaAdminPanelAccess(accessPolicy) || hasLESMISAdminAccess(accessPolicy)) {

@@ -7,8 +7,9 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import DownloadIcon from '@material-ui/icons/GetApp';
 import { Dialog, DialogHeader, DialogContent } from '@tupaia/ui-components';
-import { Table } from '@tupaia/ui-components/lib/map';
+import { Table, useMapDataExport } from '@tupaia/ui-components/lib/map';
 import MuiIconButton from '@material-ui/core/IconButton';
 import {
   selectCurrentMeasure,
@@ -30,6 +31,8 @@ export const MapTableModalComponent = ({
   measureData,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const title = `${currentMeasure?.name}, ${currentCountry?.name}`;
+  const { doExport } = useMapDataExport(measureOptions, measureData, title);
 
   if (!currentMeasure || !measureData || !measureOptions || measureData.length === 0) {
     return null;
@@ -38,10 +41,11 @@ export const MapTableModalComponent = ({
   return (
     <>
       <Dialog onClose={() => setIsOpen(false)} open={isOpen} maxWidth="lg">
-        <DialogHeader
-          onClose={() => setIsOpen(false)}
-          title={`${currentMeasure.name}, ${currentCountry?.name}`}
-        />
+        <DialogHeader onClose={() => setIsOpen(false)} title={title}>
+          <MuiIconButton onClick={doExport}>
+            <DownloadIcon />
+          </MuiIconButton>
+        </DialogHeader>
         <DialogContent>
           <Table serieses={measureOptions} measureData={measureData} />
         </DialogContent>
@@ -63,7 +67,7 @@ MapTableModalComponent.propTypes = {
     }),
   ),
   currentCountry: PropTypes.string,
-  currentMeasure: PropTypes.string,
+  currentMeasure: PropTypes.object,
 };
 
 MapTableModalComponent.defaultProps = {

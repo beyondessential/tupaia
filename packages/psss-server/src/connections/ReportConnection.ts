@@ -22,6 +22,10 @@ const buildEmptyReport = (periods: string[]) => ({
 type ReportObject = {
   results: Record<string, unknown>[];
 };
+
+/**
+ * @deprecated use @tupaia/api-client
+ */
 export class ReportConnection extends ApiConnection {
   baseUrl = REPORT_API_URL;
 

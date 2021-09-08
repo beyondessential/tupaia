@@ -48,7 +48,7 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
   aggregationList,
 ) => {
   const { hierarchy, organisationUnitCodes } = fetchOptions;
-  const entityApi = context?.microServices?.entityApi;
+  const entityApi = context?.services?.entity;
   // TODO: Remove this check for entityApi when implementing https://github.com/beyondessential/tupaia-backlog/issues/2697
   if (!aggregationList.some(shouldFetchDataSourceEntities) || !entityApi) {
     return [organisationUnitCodes, aggregationList];
@@ -72,21 +72,16 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
         return [aggregation, dataSourceEntities];
       }
 
-      const {
-        aggregationEntityType,
-        dataSourceEntityType,
-        dataSourceEntityFilter,
-      } = aggregation.config;
-      const [
-        dataSourceEntities,
-        relationships,
-      ] = await entityProvider.getDataSourceEntitiesAndRelationships(
-        hierarchy,
-        organisationUnitCodes,
-        aggregationEntityType,
-        dataSourceEntityType,
-        dataSourceEntityFilter,
-      );
+      const { aggregationEntityType, dataSourceEntityType, dataSourceEntityFilter } =
+        aggregation.config;
+      const [dataSourceEntities, relationships] =
+        await entityProvider.getDataSourceEntitiesAndRelationships(
+          hierarchy,
+          organisationUnitCodes,
+          aggregationEntityType,
+          dataSourceEntityType,
+          dataSourceEntityFilter,
+        );
 
       return [
         {

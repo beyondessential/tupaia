@@ -3,17 +3,36 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { DataFetchQuery } from './DataFetchQuery';
+import { SqlQuery } from './SqlQuery';
 
-export class EventsFetchQuery extends DataFetchQuery {
+export class EventsFetchQuery {
   constructor(database, options) {
-    super(database, options);
+    this.database = database;
 
-    // immutable options specific to event fetching
-    const { eventId, dataGroupCode, dataElementCodes } = options;
+    const {
+      organisationUnitCodes,
+      startDate,
+      endDate,
+      eventId,
+      dataGroupCode,
+      dataElementCodes,
+    } = options;
+
+    this.dataElementCodes = dataElementCodes;
+    this.entityCodes = organisationUnitCodes;
+    this.startDate = startDate;
+    this.endDate = endDate;
     this.eventId = eventId;
     this.dataGroupCode = dataGroupCode;
     this.hasDataElements = dataElementCodes && dataElementCodes.length > 0;
+  }
+
+  async fetch() {
+    const { query, params } = this.buildQueryAndParams();
+
+    const sqlQuery = new SqlQuery(query, params);
+
+    return sqlQuery.executeOnDatabase(this.database);
   }
 
   getAliasedColumns() {
@@ -31,15 +50,17 @@ export class EventsFetchQuery extends DataFetchQuery {
     return aliasedColumns.join(', ');
   }
 
-  getInnerJoins() {
-    const joins = [this.createInnerJoin(this.entityCodes, 'entity_code')];
+  getInnerJoinsAndParams() {
+    let params = this.entityCodes;
+    const joins = [SqlQuery.innerJoin('analytics', 'entity_code', this.entityCodes)];
     if (this.hasDataElements) {
-      joins.push(this.createInnerJoin(this.dataElementCodes, 'data_element_code'));
+      params = params.concat(this.dataElementCodes);
+      joins.push(SqlQuery.innerJoin('analytics', 'data_element_code', this.dataElementCodes));
     }
-    return joins.join('\n');
+    return { joins: joins.join('\n'), params };
   }
 
-  getWhereClause() {
+  getWhereClauseAndParams() {
     const conditions = [];
     const params = [];
 
@@ -64,17 +85,20 @@ export class EventsFetchQuery extends DataFetchQuery {
       return '';
     }
 
-    this.paramsArray.push(...params);
-    return `WHERE ${conditions.join(' AND ')}`;
+    return { clause: `WHERE ${conditions.join(' AND ')}`, params };
   }
 
-  build() {
-    this.query = `
+  buildQueryAndParams() {
+    const { joins, params: joinsParams } = this.getInnerJoinsAndParams();
+    const { clause: whereClause, params: whereParams } = this.getWhereClauseAndParams();
+    const query = `
       SELECT ${this.getAliasedColumns()}
       FROM analytics
-      ${this.getInnerJoins()}
-      ${this.getWhereClause()}
+      ${joins}
+      ${whereClause}
       ORDER BY date;
      `;
+    const params = joinsParams.concat(whereParams);
+    return { query, params };
   }
 }

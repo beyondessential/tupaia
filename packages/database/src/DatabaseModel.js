@@ -138,14 +138,14 @@ export class DatabaseModel {
     return this.generateInstance(result);
   }
 
-  async findManyByColumn(column, values) {
+  async findManyByColumn(column, values, additionalConditions = {}, customQueryOptions = {}) {
     if (!values) {
       throw new Error(
         `Cannot search for ${this.databaseType} by ${column} without providing the values`,
       );
     }
     return runDatabaseFunctionInBatches(values, async batchOfValues =>
-      this.find({ [column]: batchOfValues }),
+      this.find({ [column]: batchOfValues, ...additionalConditions }, customQueryOptions),
     );
   }
 
@@ -160,6 +160,12 @@ export class DatabaseModel {
     return this.generateInstance(result);
   }
 
+  /**
+   * Finds all records matching query conditions
+   * @param {*} dbConditions
+   * @param {*} customQueryOptions
+   * @returns {Promise<any[]>}
+   */
   async find(dbConditions, customQueryOptions = {}) {
     const queryOptions = await this.getQueryOptions(customQueryOptions);
     const dbResults = await this.database.find(this.databaseType, dbConditions, queryOptions);

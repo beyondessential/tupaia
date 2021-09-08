@@ -18,44 +18,50 @@ COPY .babelrc-ts.js ./
 RUN mkdir ./scripts
 COPY scripts/. ./scripts
 
-## copy just the root of each package so it is ready for yarn install, without adding the src
-## directories, so that code changes don't invalidate the container cache before we've yarn installed
+## copy *just the package.json* of each package so it is ready for yarn install, without adding the
+## src directories, so that code changes don't invalidate the container cache before we've run yarn
 RUN mkdir -p ./packages/access-policy
-COPY packages/access-policy/. ./packages/access-policy
+COPY packages/access-policy/package.json ./packages/access-policy
+RUN mkdir -p ./packages/admin-panel
+COPY packages/admin-panel/package.json ./packages/admin-panel
 RUN mkdir -p ./packages/admin-panel-server
 COPY packages/admin-panel-server/package.json ./packages/admin-panel-server
 RUN mkdir -p ./packages/aggregator
 COPY packages/aggregator/package.json ./packages/aggregator
+RUN mkdir -p ./packages/api-client
+COPY packages/api-client/package.json ./packages/api-client
 RUN mkdir -p ./packages/auth
-COPY packages/auth/. ./packages/auth
+COPY packages/auth/package.json ./packages/auth
 RUN mkdir -p ./packages/data-api
 COPY packages/data-api/package.json ./packages/data-api
 RUN mkdir -p ./packages/data-broker
 COPY packages/data-broker/package.json ./packages/data-broker
 RUN mkdir -p ./packages/database
 COPY packages/database/package.json ./packages/database
-RUN mkdir -p ./packages/devops
-COPY packages/devops/package.json ./packages/devops
 RUN mkdir -p ./packages/dhis-api
 COPY packages/dhis-api/package.json ./packages/dhis-api
+RUN mkdir -p ./packages/entity-server
+COPY packages/entity-server/package.json ./packages/entity-server
+RUN mkdir -p ./packages/expression-parser
+COPY packages/expression-parser/package.json ./packages/expression-parser
 RUN mkdir -p ./packages/indicators
 COPY packages/indicators/package.json ./packages/indicators
 RUN mkdir -p ./packages/kobo-api
 COPY packages/kobo-api/package.json ./packages/kobo-api
-RUN mkdir -p ./packages/entity-server
-COPY packages/entity-server/package.json ./packages/entity-server
+RUN mkdir -p ./packages/lesmis
+COPY packages/lesmis/package.json ./packages/lesmis
 RUN mkdir -p ./packages/lesmis-server
 COPY packages/lesmis-server/package.json ./packages/lesmis-server
 RUN mkdir -p ./packages/meditrak-server
 COPY packages/meditrak-server/package.json ./packages/meditrak-server
+RUN mkdir -p ./packages/psss
+COPY packages/psss/package.json ./packages/psss
 RUN mkdir -p ./packages/psss-server
 COPY packages/psss-server/package.json ./packages/psss-server
 RUN mkdir -p ./packages/report-server
 COPY packages/report-server/package.json ./packages/report-server
 RUN mkdir -p ./packages/server-boilerplate
 COPY packages/server-boilerplate/package.json ./packages/server-boilerplate
-RUN mkdir -p ./packages/expression-parser
-COPY packages/expression-parser/package.json ./packages/expression-parser
 RUN mkdir -p ./packages/ui-components
 COPY packages/ui-components/package.json ./packages/ui-components
 RUN mkdir -p ./packages/utils
@@ -77,22 +83,19 @@ COPY tsconfig-js.json ./
 ## add content of all internal dependency packages ready for internal dependencies to be built
 COPY packages/access-policy/. ./packages/access-policy
 COPY packages/aggregator/. ./packages/aggregator
+COPY packages/api-client/. ./packages/api-client
 COPY packages/auth/. ./packages/auth
+COPY packages/database/. ./packages/database
 COPY packages/data-api/. ./packages/data-api
 COPY packages/data-broker/. ./packages/data-broker
-COPY packages/database/. ./packages/database
-COPY packages/devops/. ./packages/devops
 COPY packages/dhis-api/. ./packages/dhis-api
-COPY packages/indicators/. ./packages/indicators
-COPY packages/kobo-api/. ./packages/kobo-api
-COPY packages/psss-server/. ./packages/psss-server
-COPY packages/report-server/. ./packages/report-server
-COPY packages/server-boilerplate/. ./packages/server-boilerplate
 COPY packages/expression-parser/. ./packages/expression-parser
-COPY packages/ui-components/. ./packages/ui-components
+COPY packages/indicators/. ./packages/indicators
 COPY packages/utils/. ./packages/utils
+COPY packages/ui-components/. ./packages/ui-components
 COPY packages/weather-api/. ./packages/weather-api
-COPY packages/web-frontend/. ./packages/web-frontend
+COPY packages/server-boilerplate/. ./packages/server-boilerplate
+COPY packages/kobo-api/. ./packages/kobo-api
 
 ## build internal dependencies
 RUN yarn build-internal-dependencies

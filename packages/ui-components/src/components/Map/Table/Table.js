@@ -5,25 +5,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { DataTable } from '@tupaia/ui-components';
-import { useMapTable } from './useMapTable';
+import { getMapTableData } from './getMapTableData';
 
 export const Table = ({ serieses, measureData, className }) => {
-  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows, columns } = useMapTable(
-    serieses,
-    measureData,
-  );
+  const { columns, data } = getMapTableData(serieses, measureData);
 
-  return (
-    <DataTable
-      className={className}
-      getTableProps={getTableProps}
-      getTableBodyProps={getTableBodyProps}
-      headerGroups={headerGroups}
-      prepareRow={prepareRow}
-      rows={rows}
-      columns={columns}
-    />
-  );
+  return <DataTable className={className} columns={columns} data={data} />;
 };
 
 Table.propTypes = {

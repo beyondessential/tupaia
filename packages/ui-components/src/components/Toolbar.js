@@ -22,14 +22,19 @@ const ToolbarWrapper = styled.div`
   }
 `;
 
-export const BaseToolbar = ({ children }) => (
+export const BaseToolbar = ({ children, maxWidth }) => (
   <ToolbarWrapper>
-    <Container maxWidth="lg">{children}</Container>
+    <Container maxWidth={maxWidth}>{children}</Container>
   </ToolbarWrapper>
 );
 
 BaseToolbar.propTypes = {
   children: PropTypes.node.isRequired,
+  maxWidth: PropTypes.string,
+};
+
+BaseToolbar.defaultProps = {
+  maxWidth: null,
 };
 
 const ToolbarTab = styled(LightTab)`
@@ -47,7 +52,7 @@ const ToolbarTab = styled(LightTab)`
  * TabsToolbar
  * a component for navigating to router links
  */
-export const TabsToolbar = ({ links: linkInput }) => {
+export const TabsToolbar = ({ links: linkInput, maxWidth }) => {
   const location = useLocation();
   const match = useRouteMatch();
   const links = linkInput.map(link => ({
@@ -57,7 +62,7 @@ export const TabsToolbar = ({ links: linkInput }) => {
   const { target: value } = links.find(link => location.pathname === link.target) || links[0];
 
   return (
-    <BaseToolbar>
+    <BaseToolbar maxWidth={maxWidth}>
       {value && (
         <LightTabs value={value}>
           {links.map(({ label, to, target, icon }) => (
@@ -74,4 +79,9 @@ export const TabsToolbar = ({ links: linkInput }) => {
 
 TabsToolbar.propTypes = {
   links: PropTypes.array.isRequired,
+  maxWidth: PropTypes.string,
+};
+
+TabsToolbar.defaultProps = {
+  maxWidth: null,
 };
