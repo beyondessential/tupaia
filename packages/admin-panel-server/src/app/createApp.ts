@@ -31,6 +31,8 @@ import {
   ImportDashboardVisualisationRoute,
   SaveDashboardVisualisationRequest,
   SaveDashboardVisualisationRoute,
+  UploadTestDataRequest,
+  UploadTestDataRoute,
   UserRoute,
 } from '../routes';
 
@@ -104,6 +106,12 @@ export function createApp() {
       verifyBESAdminAccess,
       upload.single('dashboardVisualisations'),
       handleWith(ImportDashboardVisualisationRoute),
+    )
+    .post<UploadTestDataRequest>(
+      '/v1/uploadTestData',
+      verifyBESAdminAccess,
+      upload.single('testData'),
+      handleWith(UploadTestDataRoute),
     )
     .build();
 

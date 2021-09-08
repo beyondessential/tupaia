@@ -58,3 +58,9 @@ export const download = async (endpoint, options, fileName) => {
   const response = await request(endpoint, { method, ...options, responseType: 'blob' });
   saveAs(response, fileName);
 };
+
+export const upload = async (endpoint, options, fileName, file) => {
+  const data = new FormData();
+  data.append(fileName, file);
+  return request(endpoint, { method: 'post', ...options, data });
+};
