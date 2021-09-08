@@ -24,24 +24,20 @@ exports.setup = function (options, seedLink) {
 };
 
 const getFrontEndConfig = () => ({
-  scaleType: 'performance',
+  scaleType: 'performanceDesc',
   valueType: 'percentage',
   displayType: 'shaded-spectrum',
+  customLabel: '% Positivity rate',
   scaleBounds: {
     left: {
       max: 0,
       min: 0,
-    },
-    right: {
-      max: 1,
-      min: 1,
     },
   },
   measureLevel: 'District',
   hideByDefault: {
     null: true,
   },
-  scaleColorScheme: 'performance',
 });
 
 const getReportConfig = () => ({
