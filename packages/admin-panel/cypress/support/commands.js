@@ -27,6 +27,6 @@ Cypress.Commands.add('uploadFile', filePath => {
   cy.get('input[type="file"]').attachFile(filePath);
 });
 
-Cypress.Commands.add('FirstRowElementOfTable', () => {
+Cypress.Commands.add('getFirstRowElementsOfTable', () => {
   cy.get('.rt-tbody').find('[role="row"]').find('[role="gridcell"]');
 });

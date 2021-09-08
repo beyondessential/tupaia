@@ -15,6 +15,7 @@ import {
   importSurvey,
   searchBySurveyName,
   closeImportSurveyForm,
+  checkSurveyByName,
 } from '../../support';
 
 beforeEach(() => {
@@ -43,7 +44,7 @@ describe('import new survey file', () => {
     cy.get('form').contains('Done').click();
     searchBySurveyName('Test Survey_1');
     // assertion for survey search.
-    cy.FirstRowElementOfTable().eq(1).should('have.text', 'Test Survey_1');
+    checkSurveyByName('Test Survey_1');
   });
 
   it('import a new survey by filling all the fields', () => {
@@ -60,6 +61,6 @@ describe('import new survey file', () => {
     cy.get('form').contains('Done').click();
     searchBySurveyName('Test Survey_1');
     // assertion for survey search.
-    cy.FirstRowElementOfTable().eq(1).should('have.text', 'Test Survey_1');
+    checkSurveyByName('Test Survey_1');
   });
 });
