@@ -8,8 +8,8 @@ export const translateObjectFields = async (object, objectTranslators) => {
     Object.entries(object).map(async ([field, value]) => {
       if (objectTranslators[field]) {
         const newFields = await objectTranslators[field](value);
-        Object.entries(newFields).forEach(([newField, newValue]) => (object[newField] = newValue));
         delete object[field];
+        Object.entries(newFields).forEach(([newField, newValue]) => (object[newField] = newValue));
       }
     }),
   );
