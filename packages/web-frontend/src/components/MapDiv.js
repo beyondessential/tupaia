@@ -13,10 +13,14 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { MapControl } from '../containers/MapControl';
-import MeasureLegend from '../containers/MeasureLegend';
-import MeasureBar from '../containers/MeasureBar';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { TilePicker, tileSetShape } from '@tupaia/ui-components/lib/map';
 import { CONTROL_BAR_PADDING } from '../styles';
+import MeasureBar from '../containers/MeasureBar';
+import MeasureLegend from '../containers/MeasureLegend';
+import { selectActiveTileSet, selectTileSets } from '../selectors';
+import { changeTileSet } from '../actions';
 
 const FlexDiv = styled.div`
   flex: 1;
@@ -73,7 +77,7 @@ const Watermark = () => (
   </StyledLink>
 );
 
-export const MapDiv = () => (
+export const MapDivComponent = ({ tileSets, activeTileSet, onChangeTileSet }) => (
   <FlexDiv>
     <LeftCol>
       <TopRow>
@@ -83,7 +87,24 @@ export const MapDiv = () => (
         <MeasureLegend />
       </BottomRow>
     </LeftCol>
-    <MapControl />
+    <TilePicker tileSets={tileSets} activeTileSet={activeTileSet} onChange={onChangeTileSet} />
     <Watermark />
   </FlexDiv>
 );
+
+MapDivComponent.propTypes = {
+  activeTileSet: PropTypes.shape(tileSetShape).isRequired,
+  tileSets: PropTypes.arrayOf(PropTypes.shape(tileSetShape)).isRequired,
+  onChangeTileSet: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = state => ({
+  tileSets: selectTileSets(state),
+  activeTileSet: selectActiveTileSet(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  onChangeTileSet: setKey => dispatch(changeTileSet(setKey)),
+});
+
+export const MapDiv = connect(mapStateToProps, mapDispatchToProps)(MapDivComponent);
