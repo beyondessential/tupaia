@@ -1,9 +1,23 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 /**
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { sum as mathjsSum, divide as mathjsDivide } from 'mathjs';
+import { typed, sum as mathjsSum } from 'mathjs';
+
+export const divide = typed('divide', {
+  'number, undefined': (num: number, undef: undefined) => undefined,
+  'undefined, number': (undef: undefined, num: number) => undefined,
+  'undefined, undefined': (undef: undefined, undef2: undefined) => undefined,
+});
+
+export const add = typed('add', {
+  'number, undefined': (num: number, undef: undefined) => num,
+  'undefined, number': (undef: undefined, num: number) => num,
+  'undefined, undefined': (undef: undefined, undef2: undefined) => undefined,
+});
 
 const isNumeric = (value: unknown): value is number | undefined =>
   value === undefined || typeof value === 'number';
@@ -33,30 +47,4 @@ export const sum = (
   }
 
   return mathjsSum(validNumbers);
-};
-
-export const divide = (
-  ...args: (number | undefined | (number | undefined)[])[]
-): number | undefined => {
-  if (!args.every(isNumericOrArray)) {
-    throw new Error('divide received invalid input type');
-  }
-
-  const numbers = args.flat();
-
-  if (numbers.some(number => !isDefined(number))) {
-    return undefined;
-  }
-
-  const validNumbers = numbers.filter(isDefined);
-
-  if (validNumbers.length === 0) {
-    return undefined;
-  }
-
-  if (validNumbers.length === 1) {
-    return validNumbers[0];
-  }
-
-  return validNumbers.reduce((numerator, denominator) => mathjsDivide(numerator, denominator));
 };
