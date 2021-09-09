@@ -93,23 +93,21 @@ const getMapOverlay = (genus, species, hierarchyLevel) => ({
         name: 'Detected',
         value: 'Detected',
         color: 'Red',
-        hideFromPopup: true,
       },
       {
         name: 'Not Detected',
         value: 'Not Detected',
         color: 'Blue',
-        hideFromPopup: true,
       },
       {
         name: 'No data',
         color: 'Grey',
         value: 'null',
-        hideFromPopup: false,
       },
     ],
     displayType: 'shading',
     measureLevel: hierarchyLevel,
+    hideFromPopup: true,
     hideFromLegend: false,
     measureConfig: {
       $all: {
