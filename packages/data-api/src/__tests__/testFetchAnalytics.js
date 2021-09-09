@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { getTestDatabase } from '@tupaia/database';
+import { dateStringToPeriod } from '@tupaia/utils';
 
 import { TupaiaDataApi } from '../TupaiaDataApi';
 import {
@@ -14,7 +15,7 @@ import {
 } from './TupaiaDataApi.fixtures';
 import { testFetchAnalyticsAggregations } from './aggregations';
 
-const getAnalyticsFromResponses = (responses, dataElementsToInclude) => {
+const getAnalyticsFromResponses = (responses, dataElementsToInclude, periodType) => {
   const analytics = [];
   responses.forEach(r => {
     Object.entries(r.answers)
@@ -24,7 +25,7 @@ const getAnalyticsFromResponses = (responses, dataElementsToInclude) => {
           dataElement: questionCode,
           organisationUnit: r.entityCode,
           value: isNaN(answer) ? answer : parseFloat(answer),
-          date: r.data_time.substring(0, 10), // just the YYYY-MM-DD bit
+          period: dateStringToPeriod(r.data_time, periodType),
         });
       });
   });
@@ -34,10 +35,18 @@ const getAnalyticsFromResponses = (responses, dataElementsToInclude) => {
 export const testFetchAnalytics = () => {
   const api = new TupaiaDataApi(getTestDatabase());
 
-  const assertCorrectResponse = async (options, responses) =>
-    expect(api.fetchAnalytics(options)).resolves.toIncludeSameMembers(
-      getAnalyticsFromResponses(responses, options.dataElementCodes),
+  const assertCorrectResponse = async (
+    options,
+    responses,
+    expectedNumAggregationsProcessed = 0,
+    expectedPeriodType = 'DAY',
+  ) => {
+    const { analytics, numAggregationsProcessed } = await api.fetchAnalytics(options);
+    expect(analytics).toIncludeSameMembers(
+      getAnalyticsFromResponses(responses, options.dataElementCodes, expectedPeriodType),
     );
+    expect(numAggregationsProcessed).toEqual(expectedNumAggregationsProcessed);
+  };
 
   it('throws an error with invalid parameters', async () => {
     const testData = [

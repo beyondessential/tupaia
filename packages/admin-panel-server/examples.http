@@ -1,0 +1,176 @@
+@baseUrl = http://localhost:8070/v1
+# Uncomment below to fetch against the dev server, rather than localhost
+# @baseUrl = https://dev-admin-api.tupaia.org/v1
+@contentType = application/json
+# In order to setup authorization, please set 'email' and 'password' in your restClient environement variables
+# see: https://marketplace.visualstudio.com/items?itemName=humao.rest-client#environment-variables
+@authorization  = Basic {{email}}:{{password}}
+
+### Login
+POST {{baseUrl}}/login HTTP/1.1
+content-type: {{contentType}}
+
+{
+    "emailAddress": "{{email}}",
+    "password": "{{password}}"
+}
+
+### Fetch Dashboard Preview Data
+POST {{baseUrl}}/fetchReportPreviewData?hierarchy=explore&entityCode=TO
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "previewConfig": {
+        "code": "test",
+        "data": {
+            "dataElements": [
+                "BCD46",
+                "BCD47",
+                "BCD48",
+                "BCD48a",
+                "BCD48b",
+                "BCD49",
+                "BCD50",
+                "BCD50",
+                "BCD51",
+                "BCD52",
+                "BCD53",
+                "BCD54",
+                "BCD55"
+            ],
+            "aggregations": ["MOST_RECENT"],
+            "transform": [
+                "keyValueByDataElementName",
+                {
+                    "title": "Calculate occupations from data elements",
+                    "description": "Sums the raw data elements values to their appropriate occupations",
+                    "transform": "updateColumns",
+                    "insert": {
+                        "Doctors": "=$BCD46",
+                        "Midwives": "=$BCD47",
+                        "Nurses": "=$BCD48 + $BCD48a + $BCD48b",
+                        "Aides": "=$BCD49",
+                        "Others": "=$BCD50 + $BCD51 + $BCD52 + $BCD53 + $BCD54 + $BCD55"
+                    },
+                    "include": ["period", "organisationUnit"]
+                },
+                {
+                    "transform": "mergeRows",
+                    "groupBy": ["organisationUnit", "period"],
+                    "using": "sum"
+                }
+            ]
+        }
+    }
+}
+
+### Export dashboard visualisation
+POST {{baseUrl}}/export/dashboardVisualisation
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "visualisation": {
+        "code": "test_viz_12",
+        "name": "Test visualisation",
+        "permissionGroup": "Public",
+        "data": {
+            "dataElements": [
+                "BCD46",
+                "BCD47",
+                "BCD48",
+                "BCD48a",
+                "BCD48b",
+                "BCD49",
+                "BCD50",
+                "BCD50",
+                "BCD51",
+                "BCD52",
+                "BCD53",
+                "BCD54",
+                "BCD55"
+            ],
+            "aggregations": ["MOST_RECENT"],
+            "transform": [
+                "keyValueByDataElementName",
+                {
+                    "title": "Calculate occupations from data elements",
+                    "description": "Sums the raw data elements values to their appropriate occupations",
+                    "transform": "updateColumns",
+                    "insert": {
+                        "Doctors": "=$BCD46",
+                        "Midwives": "=$BCD47",
+                        "Nurses": "=$BCD48 + $BCD48a + $BCD48b",
+                        "Aides": "=$BCD49",
+                        "Others": "=$BCD50 + $BCD51 + $BCD52 + $BCD53 + $BCD54 + $BCD55"
+                    },
+                    "include": ["period", "organisationUnit"]
+                },
+                {
+                    "transform": "mergeRows",
+                    "groupBy": ["organisationUnit", "period"],
+                    "using": "sum"
+                }
+            ]
+        },
+        "presentation": {
+            "type": "chart"
+        }
+    }
+}
+
+### Save dashboard visualisation (report + dashboard_item)
+POST {{baseUrl}}/dashboardVisualisation
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "visualisation": {
+        "code": "test_viz_12",
+        "name": "Test visualisation",
+        "permissionGroup": "Public",
+        "data": {
+            "dataElements": [
+                "BCD46",
+                "BCD47",
+                "BCD48",
+                "BCD48a",
+                "BCD48b",
+                "BCD49",
+                "BCD50",
+                "BCD50",
+                "BCD51",
+                "BCD52",
+                "BCD53",
+                "BCD54",
+                "BCD55"
+            ],
+            "aggregations": ["MOST_RECENT"],
+            "transform": [
+                "keyValueByDataElementName",
+                {
+                    "title": "Calculate occupations from data elements",
+                    "description": "Sums the raw data elements values to their appropriate occupations",
+                    "transform": "updateColumns",
+                    "insert": {
+                        "Doctors": "=$BCD46",
+                        "Midwives": "=$BCD47",
+                        "Nurses": "= $BCD48 + $BCD48a + $BCD48b",
+                        "Aides": "=$BCD49",
+                        "Others": "= $BCD50 + $BCD51 + $BCD52 + $BCD53 + $BCD54 + $BCD55"
+                    },
+                    "include": ["period", "organisationUnit"]
+                },
+                {
+                    "transform": "mergeRows",
+                    "groupBy": ["organisationUnit", "period"],
+                    "using": "sum"
+                }
+            ]
+        },
+        "presentation": {
+            "type": "chart"
+        }
+    }
+}

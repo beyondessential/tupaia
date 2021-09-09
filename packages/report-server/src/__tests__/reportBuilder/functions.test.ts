@@ -65,8 +65,7 @@ describe('functions', () => {
     });
 
     describe('length', () => {
-      it('returns the length of an input array', () =>
-         expect(functions.length([1, 2, 3])).toBe(3));
+      it('returns the length of an input array', () => expect(functions.length([1, 2, 3])).toBe(3));
     });
   });
 
@@ -103,35 +102,26 @@ describe('functions', () => {
   });
 
   describe('math', () => {
-    // TODO: Fixup test after getting sum working correctly
-    // describe('sum', () => {
-    //   it('sums a list of numbers', () => expect(functions.sum(1, 2, 3)).toBe(6));
+    describe('add', () => {
+      it('returns first number if second is undefined', () =>
+        expect(functions.add(1, undefined)).toBe(1));
 
-    //   it('ignores undefined values', () => expect(functions.sum(1, undefined, 3)).toBe(4));
+      it('returns second number if first is undefined', () =>
+        expect(functions.add(undefined, 5)).toBe(5));
 
-    //   it('can sum an array', () => expect(functions.sum([1, 2, 3])).toBe(6));
-
-    //   it('ignores undefined within an array', () =>
-    //     expect(functions.sum([1, undefined, 3])).toBe(4));
-
-    //   it('can combine numbers and arrays', () =>
-    //     expect(functions.sum([1, undefined, 3], undefined, 2)).toBe(6));
-
-    //   it('returns undefined if all values are undefined', () =>
-    //     expect(functions.sum([undefined, undefined, undefined], undefined, undefined)).toBe(
-    //       undefined,
-    //     ));
-    // });
+      it('returns undefined if all values are undefined', () =>
+        expect(functions.add(undefined, undefined)).toBe(undefined));
+    });
 
     describe('divide', () => {
-      it('divides a list of numbers', () => expect(functions.divide(12, 3, 2)).toBe(2));
+      it('returns undefined if second number is undefined', () =>
+        expect(functions.divide(1, undefined)).toBe(undefined));
 
-      it('returns undefined if any number is undefined', () =>
-        expect(functions.divide(12, undefined, 2)).toBe(undefined));
+      it('returns undefined if first number is undefined', () =>
+        expect(functions.divide(undefined, 5)).toBe(undefined));
 
-      it('can divide an array', () => expect(functions.divide([12, 2, 3])).toBe(2));
-
-      it('can combine numbers and arrays', () => expect(functions.divide([100, 2], 10, 1)).toBe(5));
+      it('returns undefined if both numbers are undefined', () =>
+        expect(functions.divide(undefined, undefined)).toBe(undefined));
     });
   });
 });

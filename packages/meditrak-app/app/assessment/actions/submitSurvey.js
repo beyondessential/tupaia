@@ -98,7 +98,7 @@ const processQuestions = async (dispatch, getState, database, userId, questions)
   const answers = getAnswers(getState());
   for (const question of questions) {
     const answer = answers[question.id];
-    if (!answer) {
+    if (answer === undefined || answer === null || answer === '') {
       continue;
     }
 

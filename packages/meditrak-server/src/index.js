@@ -22,7 +22,7 @@ import { startSyncWithDhis } from './dhis';
 import { startSyncWithMs1 } from './ms1';
 import { startSyncWithKoBo } from './kobo';
 import { startFeedScraper } from './social';
-import { createApp } from './app';
+import { createApp } from './createApp';
 
 import winston from './log';
 
@@ -30,7 +30,7 @@ import winston from './log';
  * Set up database
  */
 const database = new TupaiaDatabase();
-const models = new ModelRegistry(database, modelClasses);
+const models = new ModelRegistry(database, modelClasses, true);
 
 /**
  * Set up change handlers e.g. for syncing

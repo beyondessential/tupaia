@@ -15,6 +15,7 @@ import { TabPanel, TabBar, TabBarSection, YearSelector } from '../components';
 import { useUrlParams, useUrlSearchParams, useUrlSearchParam } from '../utils';
 import { useEntityData } from '../api/queries';
 import { DEFAULT_DATA_YEAR } from '../constants';
+import { DashboardReportModal } from '../components/DashboardReportModal';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 
 const StyledSelect = styled(Select)`
@@ -211,6 +212,7 @@ export const DashboardView = React.memo(() => {
           />
         </TabPanel>
       ))}
+      <DashboardReportModal />
     </ErrorBoundary>
   );
 });

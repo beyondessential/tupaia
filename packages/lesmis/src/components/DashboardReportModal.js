@@ -1,13 +1,11 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  *
  */
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useTheme } from '@material-ui/core/styles';
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import {
   Box,
   useMediaQuery,
@@ -15,21 +13,24 @@ import {
   Typography,
   Dialog as MuiDialog,
   Container as MuiContainer,
-  Button as MuiButton,
+  CircularProgress,
 } from '@material-ui/core';
-import { DateRangePicker } from '@tupaia/ui-components';
+import { DateRangePicker, WhiteButton, SplitButton } from '@tupaia/ui-components';
+import { useChartDataExport } from '@tupaia/ui-components/lib/chart';
 import * as COLORS from '../constants';
-import { FlexSpaceBetween, FlexStart } from './Layout';
+import { FlexColumn, FlexSpaceBetween, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
-import { Chart } from './Chart';
-import { useDashboardReportData } from '../api/queries';
-import { useUrlSearchParams } from '../utils';
+import { useDashboardReportDataWithConfig, useEntityData } from '../api/queries';
+import { useUrlParams, useUrlSearchParams, useExportToPNG } from '../utils';
+import { DashboardReport } from './DashboardReport';
 
+// Transition component for modal animation
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
 
 const Wrapper = styled.div`
+  position: relative;
   height: 100%;
   background: ${COLORS.GREY_F9};
   min-height: 720px;
@@ -54,6 +55,10 @@ const Header = styled(FlexSpaceBetween)`
   }
 `;
 
+const Toolbar = styled(FlexStart)`
+  display: ${props => (props.$isExporting ? 'none' : 'flex')};
+`;
+
 const Heading = styled(Typography)`
   font-size: 1.25rem;
   line-height: 1.4rem;
@@ -67,55 +72,78 @@ const Description = styled(Typography)`
   margin-top: 0.625rem;
 `;
 
-export const DashboardReportModal = ({
-  name,
-  dashboardCode,
-  dashboardName,
-  buttonText,
-  entityCode,
-  reportCode,
-  periodGranularity,
-  viewConfig,
-}) => {
-  const { code: itemCode, legacy } = viewConfig;
-  const [{ startDate, endDate, reportCode: selectedReportCode }, setParams] = useUrlSearchParams();
-  const isOpen = reportCode === selectedReportCode;
-  const [open, setOpen] = useState(isOpen);
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+const ExportLoader = styled(FlexColumn)`
+  display: ${props => (props.$isExporting ? 'flex' : 'none')};
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  z-index: 1;
+`;
 
-  const { data, isLoading, isError, error } = useDashboardReportData({
+const EXPORT_OPTIONS = [
+  { id: 'xlsx', label: 'Export to XLSX' },
+  { id: 'png', label: 'Export to PNG' },
+];
+
+export const DashboardReportModal = () => {
+  const theme = useTheme();
+  const [exportFormatId, setExportFormatId] = useState(EXPORT_OPTIONS[1].id);
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const { entityCode } = useUrlParams();
+  const [{ startDate, endDate, reportCode }, setParams] = useUrlSearchParams();
+  const { data: entityData, isLoadingEntityData } = useEntityData(entityCode);
+  const { data, isLoading } = useDashboardReportDataWithConfig({
     entityCode,
-    dashboardCode,
     reportCode,
-    itemCode,
-    periodGranularity,
-    legacy,
     startDate,
     endDate,
   });
 
+  const { dashboardItemConfig: config, reportData } = data;
+
+  // Set up PNG export
+  const pngExportFilename = `export-${config?.name}-${new Date().toDateString()}`;
+  const { isExporting, isExportLoading, exportRef, exportToPNG } = useExportToPNG(
+    pngExportFilename,
+  );
+
+  // Set up Excel export
+  const viewContent = { ...config, data: reportData, startDate, endDate };
+  const excelExportTitle = `${viewContent?.name}, ${entityData?.name}`;
+  const { doExport } = useChartDataExport(viewContent, excelExportTitle);
+
+  /**
+   * Export click handler
+   */
+  const handleClickExport = async exportId => {
+    if (exportId === 'png') {
+      await exportToPNG();
+    } else {
+      await doExport();
+    }
+  };
+
+  /**
+   * Date change handler
+   */
   const handleDatesChange = (newStartDate, newEndDate) => {
-    setParams({
-      startDate: newStartDate,
-      endDate: newEndDate,
-    });
+    setParams(
+      {
+        startDate: newStartDate,
+        endDate: newEndDate,
+      },
+      false,
+    );
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  // set reportCode param after the modal render is rendered to improve the responsiveness
-  // of the modal transition
-  const onRendered = () => {
-    setParams({
-      reportCode,
-    });
-  };
-
+  /**
+   * Close click handler
+   */
   const handleClose = () => {
-    setOpen(false);
     setParams({
       startDate: null,
       endDate: null,
@@ -123,63 +151,68 @@ export const DashboardReportModal = ({
     });
   };
 
+  // Display the modal  if there is a report code in the url
+  const isOpen = !!reportCode;
+
+  const dashboardTitle = isExporting
+    ? `${entityData?.name}, ${config?.dashboardName}, ${config?.name}`
+    : config?.name;
+
+  const modalTitle =
+    isLoading || isLoadingEntityData
+      ? 'Loading...'
+      : `${entityData?.name}, ${config?.dashboardName}`;
+
   return (
-    <>
-      <MuiButton onClick={handleClickOpen} endIcon={<KeyboardArrowRightIcon />} color="primary">
-        {buttonText}
-      </MuiButton>
-      <MuiDialog
-        onRendered={onRendered}
-        scroll="paper"
-        fullScreen
-        open={open}
-        onClose={handleClose}
-        TransitionComponent={Transition}
-        style={{ left: fullScreen ? '0' : '6.25rem' }}
-      >
-        <DialogHeader handleClose={handleClose} title={dashboardName} />
-        <Wrapper>
-          <Container maxWidth="xl">
-            <Header>
-              <Box maxWidth={580}>
-                <Heading variant="h3">{name}</Heading>
-                {viewConfig?.description && <Description>{viewConfig.description}</Description>}
-              </Box>
-              <FlexStart>
-                <DateRangePicker
-                  isLoading={isLoading}
-                  startDate={startDate}
-                  endDate={endDate}
-                  granularity={periodGranularity}
-                  onSetDates={handleDatesChange}
-                />
-              </FlexStart>
-            </Header>
-            <Chart
-              viewContent={{ ...viewConfig, data, startDate, endDate }}
-              isLoading={isLoading}
-              isError={isError}
-              error={error}
-              isEnlarged
-            />
-          </Container>
-        </Wrapper>
-      </MuiDialog>
-    </>
+    <MuiDialog
+      scroll="paper"
+      fullScreen
+      open={isOpen}
+      onClose={handleClose}
+      TransitionComponent={Transition}
+      style={{ left: fullScreen ? '0' : '6.25rem' }}
+    >
+      <DialogHeader handleClose={handleClose} title={modalTitle} />
+      <ExportLoader $isExporting={isExportLoading}>
+        <CircularProgress size={50} />
+        <Box mt={3}>
+          <Typography>Exporting...</Typography>
+        </Box>
+      </ExportLoader>
+      <Wrapper ref={exportRef}>
+        <Container maxWidth="xl">
+          <Header>
+            <Box maxWidth={580}>
+              <Heading variant="h3">{dashboardTitle}</Heading>
+              {config?.description && <Description>{config.description}</Description>}
+            </Box>
+            <Toolbar $isExporting={isExporting}>
+              <SplitButton
+                options={EXPORT_OPTIONS}
+                selectedId={exportFormatId}
+                setSelectedId={setExportFormatId}
+                onClick={handleClickExport}
+                ButtonComponent={WhiteButton}
+              />
+              <DateRangePicker
+                isLoading={isLoading}
+                startDate={startDate}
+                endDate={endDate}
+                granularity={config?.periodGranularity}
+                onSetDates={handleDatesChange}
+              />
+            </Toolbar>
+          </Header>
+          <DashboardReport
+            name={config?.name}
+            reportCode={reportCode}
+            isExporting={isExporting}
+            startDate={startDate}
+            endDate={endDate}
+            isEnlarged
+          />
+        </Container>
+      </Wrapper>
+    </MuiDialog>
   );
-};
-
-DashboardReportModal.propTypes = {
-  name: PropTypes.string.isRequired,
-  buttonText: PropTypes.string.isRequired,
-  reportCode: PropTypes.string.isRequired,
-  entityCode: PropTypes.string.isRequired,
-  dashboardCode: PropTypes.string.isRequired,
-  periodGranularity: PropTypes.string,
-  dashboardName: PropTypes.string.isRequired,
-  viewConfig: PropTypes.object.isRequired,
-};
-
-DashboardReportModal.defaultProps = {
-  periodGranularity: null,
 };

@@ -19,18 +19,13 @@ const buildExportQueryParameters = (rowIdQueryParameter, rowData, filterQueryPar
   return queryParameters;
 };
 
-const processFileName = (unprocessedFileName, rowData) => {
-  const fileName = makeSubstitutionsInString(unprocessedFileName, rowData);
-  return `${fileName}.xlsx`;
-};
-
 export const ExportButton = ({ actionConfig, row }) => (
   <IconButton
     onClick={async () => {
       const { exportEndpoint, rowIdQueryParameter, extraQueryParameters, fileName } = actionConfig;
       const queryParameters = buildExportQueryParameters(rowIdQueryParameter, row);
       const endpoint = `export/${exportEndpoint}${!queryParameters && row.id ? `/${row.id}` : ''}`;
-      const processedFileName = processFileName(fileName, row);
+      const processedFileName = makeSubstitutionsInString(fileName, row);
       await api.download(endpoint, { queryParameters, ...extraQueryParameters }, processedFileName);
     }}
   >

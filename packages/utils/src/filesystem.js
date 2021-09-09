@@ -2,10 +2,14 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-
+import sanitize from 'sanitize-filename';
 import fs from 'fs';
 import path from 'path';
 
+/**
+ *  @template T the type of expected file contents
+ *  @returns {T}
+ */
 export const readJsonFile = filePath =>
   JSON.parse(fs.readFileSync(filePath, { encoding: 'utf-8' }));
 
@@ -30,4 +34,15 @@ export const getNestedFiles = (dirPath, options = {}) => {
   return options.extensions
     ? files.filter(filePath => options.extensions.some(ext => path.extname(filePath) === ext))
     : options;
+};
+
+export const toFilename = string => {
+  const maxLength = 255;
+  const sanitized = sanitize(string)
+    .replace(/\s+/g, '-') // replace spaces with dashes
+    .replace(/ *\([^)]*\) */g, '') // remove text in brackets
+    .replace(/[^a-z0-9-]/gi, '') // remove non numbers and letters
+    .replace(/-+/g, '-') // remove consecutive dashes
+    .toLowerCase();
+  return sanitized.length <= maxLength ? sanitized : sanitized.slice(0, maxLength);
 };

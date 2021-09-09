@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import ExportIcon from '@material-ui/icons/GetApp';
 import {
@@ -20,9 +20,8 @@ import { api } from '../api';
 const STATUS = {
   IDLE: 'idle',
   LOADING: 'loading',
-  SUCCESS: 'success',
+  TIMEOUT: 'timeout',
   ERROR: 'error',
-  DISABLED: 'disabled',
 };
 
 export const ExportModal = React.memo(({ title, exportEndpoint, fileName, values, children }) => {
@@ -37,7 +36,7 @@ export const ExportModal = React.memo(({ title, exportEndpoint, fileName, values
     setErrorMessage(null);
   };
 
-  const handleCancel = () => {
+  const handleClose = () => {
     setStatus(STATUS.IDLE);
     setErrorMessage(null);
     setIsOpen(false);
@@ -50,41 +49,65 @@ export const ExportModal = React.memo(({ title, exportEndpoint, fileName, values
 
     try {
       const endpoint = `export/${exportEndpoint}`;
-      await api.download(endpoint, values, fileName);
-      setIsOpen(false);
-      setStatus(STATUS.SUCCESS);
+      const queryParameters = {
+        respondWithEmailTimeout: 10 * 1000, // if an export doesn't finish in 10 seconds, email results
+        ...values,
+      };
+      const { body: response } = await api.download(endpoint, queryParameters, fileName);
+      if (response?.emailTimeoutHit) {
+        setStatus(STATUS.TIMEOUT);
+      } else {
+        handleClose();
+      }
     } catch (error) {
       setStatus(STATUS.ERROR);
       setErrorMessage(error.message);
     }
   };
 
+  const renderButtons = useCallback(() => {
+    switch (status) {
+      case STATUS.TIMEOUT:
+        return <Button onClick={handleClose}>Done</Button>;
+      case STATUS.ERROR:
+        return (
+          <>
+            <OutlinedButton onClick={handleDismiss}>Dismiss</OutlinedButton>
+            <Button disabled>Export</Button>
+          </>
+        );
+      default:
+        return (
+          <>
+            <OutlinedButton onClick={handleClose}>Cancel</OutlinedButton>
+            <Button type="submit" isLoading={status === STATUS.LOADING} onClick={handleSubmit}>
+              Export
+            </Button>
+          </>
+        );
+    }
+  }, [status, handleDismiss, handleClose, handleSubmit]);
+
   return (
     <>
-      <Dialog onClose={handleCancel} open={isOpen} disableBackdropClick>
+      <Dialog onClose={handleClose} open={isOpen} disableBackdropClick>
         <form onSubmit={handleSubmit} noValidate>
           <DialogHeader
-            onClose={handleCancel}
+            onClose={handleClose}
             title={errorMessage ? 'Error' : title}
             color={errorMessage ? 'error' : 'textPrimary'}
           />
           <ModalContentProvider errorMessage={errorMessage} isLoading={status === STATUS.LOADING}>
-            {children}
-          </ModalContentProvider>
-          <DialogFooter>
-            {status === STATUS.ERROR ? (
-              <OutlinedButton onClick={handleDismiss}>Dismiss</OutlinedButton>
+            {status === STATUS.TIMEOUT ? (
+              <p>
+                Export is taking a while, and will continue in the background. You will be emailed
+                the exported file when the process completes.
+              </p>
             ) : (
-              <OutlinedButton onClick={handleCancel}>Cancel</OutlinedButton>
+              children
             )}
-            <Button
-              type="submit"
-              disabled={status === STATUS.ERROR}
-              isLoading={status === STATUS.LOADING}
-            >
-              Export
-            </Button>
-          </DialogFooter>
+          </ModalContentProvider>
+          <DialogFooter>{renderButtons()}</DialogFooter>
         </form>
       </Dialog>
       <LightOutlinedButton

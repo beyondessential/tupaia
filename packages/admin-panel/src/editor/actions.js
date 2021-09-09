@@ -14,6 +14,8 @@ import {
   EDITOR_OPEN_CREATOR,
 } from './constants';
 
+const STATIC_FIELD_TYPES = ['link'];
+
 export const openEditModal = ({ editEndpoint, fields }, recordId) => async (
   dispatch,
   getState,
@@ -31,7 +33,7 @@ export const openEditModal = ({ editEndpoint, fields }, recordId) => async (
       const response = await api.get(endpoint, {
         columns: JSON.stringify(
           fields
-            .filter(field => !field.hideValue) // Ignore any that will be hidden, e.g. passwords
+            .filter(field => !field.hideValue && !STATIC_FIELD_TYPES.includes(field.type)) // Ignore any that will be hidden, e.g. passwords
             .map(field => field.source),
         ), // Fetch fields based on their source
       });

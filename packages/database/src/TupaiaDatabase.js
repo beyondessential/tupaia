@@ -45,7 +45,7 @@ export const JOIN_TYPES = {
 };
 
 // list valid behaviour so we can validate against sql injection
-const VALID_CAST_TYPES = ['text', 'date'];
+const VALID_CAST_TYPES = ['text', 'text[]', 'date'];
 const VALID_COMPARISON_TYPES = ['where', 'whereBetween', 'whereIn', 'orWhere'];
 
 // no math here, just hand-tuned to be as low as possible while
@@ -465,12 +465,22 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
     options.columns.map(columnSpec => {
       if (typeof columnSpec === 'string') return columnSpec;
       const [alias, selector] = Object.entries(columnSpec)[0];
+
+      if (selector?.castAs) {
+        const { castAs } = selector;
+        if (!VALID_CAST_TYPES.includes(castAs)) {
+          throw new Error(`Cannot cast as ${castAs}`);
+        }
+        return { [alias]: connection.raw(`??::${castAs}`, [alias]) };
+      }
+
       // special case to handle selecting geojson - avoid generic handling of functions to keep
       // out sql injection vulnerabilities
       if (selector.includes('ST_AsGeoJSON')) {
         const [, columnSelector] = selector.match(/ST_AsGeoJSON\((.*)\)/);
         return { [alias]: connection.raw('ST_AsGeoJSON(??)', [columnSelector]) };
       }
+
       return { [alias]: connection.raw('??', [selector]) };
     });
   query = addWhereClause(connection, query[queryMethod](queryMethodParameter || columns), where);

@@ -11,6 +11,9 @@ interface AuthHandler {
   getAuthHeader: () => Promise<string>;
 }
 
+/**
+ * @deprecated use @tupaia/api-client
+ */
 export class ApiConnection {
   authHandler: AuthHandler;
 

@@ -8,32 +8,30 @@ import { buildTransform } from '..';
 export const mostRecentValuePerOrgUnit = () =>
   buildTransform([
     {
-      transform: 'sort',
-      by: '$row.period',
+      transform: 'sortRows',
+      by: 'period',
     },
     {
-      transform: 'aggregate',
-      organisationUnit: 'group',
-      '...': 'last',
+      transform: 'mergeRows',
+      groupBy: 'organisationUnit',
+      using: 'last',
     },
   ]);
 
 export const firstValuePerPeriodPerOrgUnit = () =>
   buildTransform([
     {
-      transform: 'aggregate',
-      organisationUnit: 'group',
-      period: 'group',
-      '...': 'first',
+      transform: 'mergeRows',
+      groupBy: ['organisationUnit', 'period'],
+      using: 'first',
     },
   ]);
 
 export const lastValuePerPeriodPerOrgUnit = () =>
   buildTransform([
     {
-      transform: 'aggregate',
-      organisationUnit: 'group',
-      period: 'group',
-      '...': 'last',
+      transform: 'mergeRows',
+      groupBy: ['organisationUnit', 'period'],
+      using: 'last',
     },
   ]);

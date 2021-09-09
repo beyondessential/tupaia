@@ -4,3 +4,4 @@
  */
 
 export { uploadImage } from './uploadImage';
+export { uploadFile } from './uploadFile';

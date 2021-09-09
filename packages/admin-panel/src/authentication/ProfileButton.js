@@ -3,45 +3,38 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { connect } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { ProfileButton as BaseProfileButton, ProfileButtonItem } from '@tupaia/ui-components';
-import { logout } from './actions';
-import { getUser } from './selectors';
 
-const ProfileLinksComponent = ({ onLogout }) => (
-  <>
-    <ProfileButtonItem to="/profile">Edit Profile</ProfileButtonItem>
-    <ProfileButtonItem button onClick={onLogout}>
-      Logout
-    </ProfileButtonItem>
-  </>
-);
-
-ProfileLinksComponent.propTypes = {
-  onLogout: PropTypes.func.isRequired,
+export const ProfileButton = ({ user, isBESAdmin }) => {
+  const location = useLocation();
+  const inVizBuilder = location.pathname.startsWith('/viz-builder');
+  const ProfileLinks = () => (
+    <>
+      <ProfileButtonItem to="/profile">Edit Profile</ProfileButtonItem>
+      {isBESAdmin && !inVizBuilder && (
+        <ProfileButtonItem to="/viz-builder/new">Visualisation Builder</ProfileButtonItem>
+      )}
+      {inVizBuilder && (
+        <ProfileButtonItem to="/dashboard-items">Exit Visualisation Builder</ProfileButtonItem>
+      )}
+      <ProfileButtonItem to="/logout">Logout</ProfileButtonItem>
+    </>
+  );
+  return <BaseProfileButton user={user} MenuOptions={ProfileLinks} />;
 };
 
-const ProfileLinks = connect(null, dispatch => ({
-  onLogout: () => dispatch(logout()),
-}))(ProfileLinksComponent);
-
-const ProfileButtonComponent = ({ user }) => (
-  <BaseProfileButton user={user} MenuOptions={ProfileLinks} />
-);
-
-ProfileButtonComponent.propTypes = {
+ProfileButton.propTypes = {
   user: PropTypes.shape({
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     firstName: PropTypes.string,
     profileImage: PropTypes.string,
   }).isRequired,
+  isBESAdmin: PropTypes.bool,
 };
 
-export const ProfileButton = connect(
-  state => ({
-    user: getUser(state),
-  }),
-  null,
-)(ProfileButtonComponent);
+ProfileButton.defaultProps = {
+  isBESAdmin: false,
+};

@@ -17,11 +17,14 @@ const PUBLIC_USER_AUTH_HEADER = createBasicHeader(
 
 const { REPORT_API_URL = 'http://localhost:8030/v1' } = process.env;
 
+/**
+ * @deprecated use @tupaia/api-client
+ */
 export class ReportConnection extends ApiConnection {
   baseUrl = REPORT_API_URL;
 
   constructor(req) {
-    const userName = req.session?.userJson?.userName;
+    const userName = req?.userJson?.userName;
 
     const getAuthHeader = async () => {
       if (userName === PUBLIC_USER_NAME) {

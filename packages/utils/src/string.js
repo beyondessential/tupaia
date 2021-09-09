@@ -32,3 +32,15 @@ export const getArticle = word => {
   }
   return word.match(/^[aeiou]/i) ? 'an' : 'a';
 };
+
+/**
+ * Returns the string chopped off at maxLength, with ... replacing the last three characters if it
+ * overflowed
+ * @param  {string}   string     The string to be truncated
+ * @param  {integer}  maxLength  The maximum number of characters in the returned string
+ * @return {string}              The truncated string, with ellipses if it overflowed
+ */
+export const truncateString = (string, maxLength) => {
+  if (string.length <= maxLength) return string;
+  return `${string.substring(0, maxLength - 3)}...`;
+};

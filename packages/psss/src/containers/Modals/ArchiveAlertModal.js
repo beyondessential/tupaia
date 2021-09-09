@@ -7,6 +7,9 @@ import React, { useState, useContext, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Link as RouterLink } from 'react-router-dom';
+import CheckCircle from '@material-ui/icons/CheckCircle';
+import Typography from '@material-ui/core/Typography';
+
 import {
   Button,
   OutlinedButton,
@@ -14,11 +17,10 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
+  ConfirmModal,
 } from '@tupaia/ui-components';
-import CheckCircle from '@material-ui/icons/CheckCircle';
-import Typography from '@material-ui/core/Typography';
+
 import { AlertsPanelContext } from '../Panels';
-import { ConfirmModal } from './ConfirmModal';
 import { useArchiveAlert } from '../../api/queries';
 
 const TickIcon = styled(CheckCircle)`

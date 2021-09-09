@@ -15,4 +15,7 @@ else
     export DB_MV_HOME="$PWD"
     (. dropFastRefreshModule.sh)
     cd ../..
+    git submodule deinit --all
+    export PGPASSWORD=$DB_PG_PASSWORD
+    psql -p $DB_PORT -h $DB_URL -d $DB_NAME -U $DB_PG_USER -tc "REVOKE ALL PRIVILEGES on schema public FROM $DB_MV_USER; DROP ROLE IF EXISTS $DB_MV_USER;"
 fi

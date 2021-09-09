@@ -3,122 +3,166 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { DataFetchQuery, ANSWER_SPECIFIC_FIELDS } from './DataFetchQuery';
+import { SqlQuery } from './SqlQuery';
+
+const VALUE_AGGREGATION_FUNCTIONS = {
+  SUM: 'sum(value::numeric)::text',
+  MOST_RECENT: 'most_recent(value, date)',
+};
+
+const COMMONLY_SUPPORTED_CONFIG_KEYS = ['dataSourceEntityType', 'dataSourceEntityFilter'];
 
 const AGGREGATION_SWITCHES = {
   FINAL_EACH_DAY: {
     groupByPeriodField: 'day_period',
-    getLatestPerPeriod: true,
+    aggregationFunction: VALUE_AGGREGATION_FUNCTIONS.MOST_RECENT,
   },
   FINAL_EACH_WEEK: {
     groupByPeriodField: 'week_period',
-    getLatestPerPeriod: true,
+    aggregationFunction: VALUE_AGGREGATION_FUNCTIONS.MOST_RECENT,
+  },
+  SUM_EACH_WEEK: {
+    groupByPeriodField: 'week_period',
+    aggregationFunction: VALUE_AGGREGATION_FUNCTIONS.SUM,
   },
   FINAL_EACH_MONTH: {
     groupByPeriodField: 'month_period',
-    getLatestPerPeriod: true,
+    aggregationFunction: VALUE_AGGREGATION_FUNCTIONS.MOST_RECENT,
   },
   FINAL_EACH_YEAR: {
     groupByPeriodField: 'year_period',
-    getLatestPerPeriod: true,
+    aggregationFunction: VALUE_AGGREGATION_FUNCTIONS.MOST_RECENT,
   },
   MOST_RECENT: {
-    getLatestPerPeriod: true,
+    aggregationFunction: VALUE_AGGREGATION_FUNCTIONS.MOST_RECENT,
   },
   MOST_RECENT_PER_ORG_GROUP: {
-    getLatestPerPeriod: true,
+    aggregationFunction: VALUE_AGGREGATION_FUNCTIONS.MOST_RECENT,
     aggregateEntities: true,
+    supportedConfigKeys: ['aggregationEntityType', 'orgUnitMap'],
   },
   SUM_PER_ORG_GROUP: {
-    sum: true,
+    aggregationFunction: VALUE_AGGREGATION_FUNCTIONS.SUM,
     aggregateEntities: true,
+    supportedConfigKeys: ['aggregationEntityType', 'orgUnitMap'],
   },
   SUM_PER_PERIOD_PER_ORG_GROUP: {
-    sum: true,
+    aggregationFunction: VALUE_AGGREGATION_FUNCTIONS.SUM,
     aggregateEntities: true,
-    groupByPeriodField: 'day_period', // can assume first internal aggregation period type is daily
+    groupByPeriodField: 'period',
+    supportedConfigKeys: ['aggregationEntityType', 'orgUnitMap'],
   },
 };
 
-export class AnalyticsFetchQuery extends DataFetchQuery {
-  constructor(database, options) {
-    super(database, options);
+const supportsConfig = (aggregationSwitch, config) => {
+  if (!config) {
+    return true;
+  }
 
-    const firstAggregation = options.aggregations?.[0];
-    this.aggregation = { type: firstAggregation?.type };
-    this.aggregation.switches = AGGREGATION_SWITCHES[firstAggregation?.type]; // add internal switches
-    this.aggregation.config = firstAggregation?.config; // add external config, supplied by client
-    this.isAggregating = !!this.aggregation.switches;
+  const switchSupportedKeys = aggregationSwitch.supportedConfigKeys || [];
+  return Object.keys(config).every(
+    key => COMMONLY_SUPPORTED_CONFIG_KEYS.includes(key) || switchSupportedKeys.includes(key),
+  );
+};
+
+export class AnalyticsFetchQuery {
+  constructor(database, options) {
+    this.database = database;
+
+    const { dataElementCodes, organisationUnitCodes, startDate, endDate } = options;
+    this.dataElementCodes = dataElementCodes;
+    this.entityCodes = organisationUnitCodes;
+    this.startDate = startDate;
+    this.endDate = endDate;
+
+    this.aggregations = [];
+    if (options.aggregations) {
+      for (let i = 0; i < options.aggregations.length; i++) {
+        const aggregation = options.aggregations[i];
+        const aggregationSwitch = AGGREGATION_SWITCHES[aggregation?.type];
+        if (!aggregationSwitch || !supportsConfig(aggregationSwitch, aggregation?.config)) {
+          break; // We only support chaining aggregations up to the last supported type
+        }
+        const dbAggregation = { type: aggregation?.type };
+        dbAggregation.switch = AGGREGATION_SWITCHES[aggregation?.type]; // add internal switch
+        dbAggregation.config = aggregation?.config; // add external config, supplied by client
+        dbAggregation.stackId = i + 1;
+        this.aggregations.push(dbAggregation);
+      }
+    }
+
+    this.isAggregating = this.aggregations.length > 0;
 
     this.validate();
   }
 
+  async fetch() {
+    const { query, params } = this.buildQueryAndParams();
+
+    const sqlQuery = new SqlQuery(query, params);
+
+    return {
+      analytics: await sqlQuery.executeOnDatabase(this.database),
+      numAggregationsProcessed: this.aggregations.length,
+    };
+  }
+
   validate() {
-    if (this.aggregation.switches?.aggregateEntities && !this.aggregation.config?.orgUnitMap) {
-      throw new Error('When using entity aggregation you must provide an org unit map');
+    this.aggregations.forEach(aggregation => {
+      if (aggregation.switch.aggregateEntities && !aggregation.config?.orgUnitMap) {
+        throw new Error('When using entity aggregation you must provide an org unit map');
+      }
+    });
+  }
+
+  getEntityCodeField(aggregation) {
+    return aggregation.switch.aggregateEntities ? 'aggregation_entity_code' : 'entity_code';
+  }
+
+  getCtesAndParams(aggregation) {
+    if (!aggregation.switch.aggregateEntities) {
+      return { cte: '', params: [] };
     }
-  }
 
-  getEntityCodeField() {
-    return this.aggregation.switches?.aggregateEntities ? 'aggregation_entity_code' : 'entity_code';
-  }
-
-  getCommonFields() {
-    return [this.getEntityCodeField(), 'data_element_code'];
-  }
-
-  getEntityCommonTableExpression() {
     // if mapping from one set of entities to another, include the mapped codes as "aggregation_entity_code"
-    const isAggregatingEntities = this.isAggregating && this.aggregation.switches.aggregateEntities;
-    const entityMap = isAggregatingEntities && this.aggregation.config.orgUnitMap;
-    const columns = isAggregatingEntities ? ['code', 'aggregation_entity_code'] : ['code'];
-    const rows = isAggregatingEntities
-      ? Object.entries(entityMap).map(([key, value]) => [key, value.code])
-      : this.entityCodes.map(entityCode => [entityCode]);
-
-    return `
-      WITH entity_codes_and_relations (${columns.join(', ')})
-      AS (${this.parameteriseValues(rows)})
+    const entityMap = aggregation.config.orgUnitMap;
+    const columns = ['code', 'aggregation_entity_code'];
+    const rows = Object.entries(entityMap).map(([key, value]) => [key, value.code]);
+    const cte = `
+      WITH entity_relations_a${aggregation.stackId} (${columns.join(', ')})
+      AS (${SqlQuery.values(rows)})
     `;
+
+    return { cte, params: rows.flat() };
   }
 
   getAliasedColumns() {
     return [
-      `${this.getEntityCodeField()} AS "entityCode"`,
+      `entity_code AS "entityCode"`,
       'data_element_code AS "dataElementCode"',
-      'date',
+      'period',
       'value',
       'type',
     ].join(', ');
   }
 
-  getA1Select() {
-    if (!this.isAggregating) {
-      return `SELECT ${[...this.getCommonFields(), ...ANSWER_SPECIFIC_FIELDS].join(', ')}`;
-    }
-    const { groupByPeriodField, sum, getLatestPerPeriod } = this.aggregation.switches;
-    const fields = [...this.getCommonFields()];
+  getAggregationSelect(aggregation) {
+    const { aggregationFunction, groupByPeriodField = 'period' } = aggregation.switch;
 
-    if (groupByPeriodField) {
-      fields.push(groupByPeriodField);
-    }
-
-    if (sum) {
-      fields.push('SUM(value::NUMERIC)::text as value');
-      fields.push('MAX(type) as type');
-      if (!getLatestPerPeriod) {
-        fields.push('MAX(date) as date');
-      }
-    }
-    return `SELECT ${fields.join(', ')}`;
-  }
-
-  getA1InnerJoins() {
-    const joins = [
-      'INNER JOIN entity_codes_and_relations ON entity_codes_and_relations.code = analytics.entity_code',
-      this.createInnerJoin(this.dataElementCodes, 'data_element_code'),
+    const fields = [
+      `${this.getEntityCodeField(aggregation)} as entity_code`,
+      'data_element_code',
+      `${aggregationFunction} as value`,
+      'MAX(type) as type',
+      'MAX(day_period) as day_period',
+      'MAX(week_period) as week_period',
+      'MAX(month_period) as month_period',
+      'MAX(year_period) as year_period',
+      'MAX(date) as date',
+      `MAX(${groupByPeriodField}) as period`,
     ];
-    return joins.join('\n');
+
+    return `SELECT ${fields.join(', ')}`;
   }
 
   getPeriodConditionsAndParams() {
@@ -135,68 +179,64 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
     return { periodConditions, periodParams };
   }
 
-  getA1WhereClause() {
+  getBaseWhereClauseAndParams() {
     const { periodConditions, periodParams } = this.getPeriodConditionsAndParams();
 
-    if (periodConditions.length === 0) return '';
+    if (periodConditions.length === 0) {
+      return { clause: '', params: [] };
+    }
 
-    this.paramsArray.push(...periodParams);
-    return `WHERE ${periodConditions.join(' AND ')}`;
+    return { clause: `WHERE ${periodConditions.join(' AND ')}`, params: periodParams };
   }
 
-  getA1GroupByClause = () => {
-    if (!this.isAggregating) return '';
+  getAggregationJoin(aggregation) {
+    if (!aggregation.switch.aggregateEntities) {
+      return '';
+    }
+    const previousTableName =
+      aggregation.stackId === 1 ? 'base_analytics' : `a${aggregation.stackId - 1}`;
+    const relationsTableName = `entity_relations_a${aggregation.stackId}`;
+    return `INNER JOIN ${relationsTableName} on ${relationsTableName}.code = ${previousTableName}.entity_code`;
+  }
 
-    const groupByFields = [...this.getCommonFields()];
-    const { groupByPeriodField } = this.aggregation.switches;
+  getAggregationGroupByClause(aggregation) {
+    const groupByFields = [this.getEntityCodeField(aggregation), 'data_element_code'];
+    const { groupByPeriodField } = aggregation.switch;
     if (groupByPeriodField) groupByFields.push(groupByPeriodField);
     return `GROUP BY ${groupByFields.join(', ')}`;
-  };
-
-  getLatestPerPeriodClause() {
-    if (!this.isAggregating || !this.aggregation.switches.getLatestPerPeriod) return '';
-
-    // add where condition for each non-calculated table selected in a1
-    const joinFields = [...this.getCommonFields()];
-    const { groupByPeriodField } = this.aggregation.switches;
-    if (groupByPeriodField) joinFields.push(groupByPeriodField);
-    const joinConditions = joinFields.map(field => `${field} = a1.${field}`);
-
-    // add start/end date clauses to limit results and speed things up
-    const { periodConditions, periodParams } = this.getPeriodConditionsAndParams();
-    this.paramsArray.push(...periodParams);
-
-    const conditions = [...joinConditions, ...periodConditions];
-
-    const fields = this.aggregation.switches.sum
-      ? ANSWER_SPECIFIC_FIELDS.filter(field => field !== 'value')
-      : ANSWER_SPECIFIC_FIELDS;
-
-    return `
-      CROSS JOIN LATERAL (
-        SELECT ${fields}
-        FROM analytics
-        INNER JOIN entity_codes_and_relations ON entity_codes_and_relations.code = analytics.entity_code
-        WHERE ${conditions.join('\n      AND ')}
-        ORDER BY date DESC
-        LIMIT 1
-      ) as latestPerPeriod
-    `;
   }
 
-  build() {
-    this.query = `
-      ${this.getEntityCommonTableExpression()}
+  buildQueryAndParams() {
+    const { ctes: ctesClause, params: ctesParams } = this.aggregations.reduce(
+      ({ ctes, params }, aggregation) => {
+        const { cte, params: cteParams } = this.getCtesAndParams(aggregation);
+        return { ctes: `${ctes}\n${cte}`, params: params.concat(cteParams) };
+      },
+      { ctes: '', params: [] },
+    );
+
+    const { clause: whereClause, params: whereParams } = this.getBaseWhereClauseAndParams();
+    const baseAnalytics = `(SELECT *, day_period as period from analytics
+      ${SqlQuery.innerJoin('analytics', 'entity_code', this.entityCodes)}
+      ${SqlQuery.innerJoin('analytics', 'data_element_code', this.dataElementCodes)}
+      ${whereClause}) as base_analytics`;
+    const baseAnalyticsParams = this.entityCodes.concat(this.dataElementCodes).concat(whereParams);
+
+    const wrapAnalyticsInAggregation = (analytics, aggregation) =>
+      `(${this.getAggregationSelect(aggregation)} 
+      FROM 
+      ${analytics}
+      ${this.getAggregationJoin(aggregation)}
+      ${this.getAggregationGroupByClause(aggregation)}) as a${aggregation.stackId}`;
+
+    const query = `
+      ${ctesClause}
       SELECT ${this.getAliasedColumns()}
-      FROM (
-        ${this.getA1Select()}
-        FROM analytics
-          ${this.getA1InnerJoins()}
-          ${this.getA1WhereClause()}
-          ${this.getA1GroupByClause()}
-      ) as a1
-      ${this.getLatestPerPeriodClause()}
+      FROM ${this.aggregations.reduce(wrapAnalyticsInAggregation, baseAnalytics)}
       ORDER BY date;
      `;
+    const params = ctesParams.concat(baseAnalyticsParams);
+
+    return { query, params };
   }
 }

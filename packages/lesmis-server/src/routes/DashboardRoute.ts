@@ -26,6 +26,11 @@ export class DashboardRoute extends Route {
     });
     // Covid dashboard is not needed in lesmis but we want to keep it in tupaia
     // see https://github.com/beyondessential/tupaia-backlog/issues/3077 for more information
-    return response.filter((dashboard: any) => dashboard.dashboardCode !== 'LA_COVID');
+    return response
+      .filter((dashboard: any) => dashboard.dashboardCode !== 'LA_COVID')
+      .map((dashboard: any) => {
+        const items = dashboard.items.filter((item: any) => !item.legacy);
+        return { ...dashboard, items };
+      });
   }
 }

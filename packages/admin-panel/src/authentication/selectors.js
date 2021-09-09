@@ -2,7 +2,6 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
-
 const getAuthenticationState = ({ authentication = {} }) => authentication;
 
 // Login modal details
@@ -16,3 +15,6 @@ export const getIsUserAuthenticated = state => !!getAuthenticationState(state).u
 
 // User details
 export const getUser = state => getAuthenticationState(state).user || {}; // If null, return empty object
+
+// BES Admin
+export const getIsBESAdmin = state => getAuthenticationState(state).isBESAdmin;
