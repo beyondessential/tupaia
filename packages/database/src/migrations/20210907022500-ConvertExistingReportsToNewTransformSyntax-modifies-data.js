@@ -14,6 +14,13 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
+const convertToNewKeyAndValue = ([key, value]) => {
+  const isSimpleKey = key.startsWith("'") && key.endsWith("'");
+  const newKey = isSimpleKey ? key.substring(1, key.length - 1) : `=${key}`;
+  const newValue = `=${value}`;
+  return [newKey, newValue];
+};
+
 const convertSelectToUpdateColumns = oldConfig => {
   const {
     transform,
@@ -34,14 +41,11 @@ const convertSelectToUpdateColumns = oldConfig => {
     newConfig.where = `=${where}`;
   }
 
-  Object.entries(columnsToInsert).forEach(([columnKey, columnValue]) => {
-    const isSimpleKey = columnKey.startsWith("'") && columnKey.endsWith("'");
-    const newColumnKey = isSimpleKey
-      ? columnKey.substring(1, columnKey.length - 1)
-      : `=${columnKey}`;
-
-    newConfig.insert = { ...newConfig.insert, [newColumnKey]: `=${columnValue}` };
-  });
+  Object.entries(columnsToInsert)
+    .map(convertToNewKeyAndValue)
+    .forEach(([columnKey, columnValue]) => {
+      newConfig.insert = { ...newConfig.insert, [columnKey]: columnValue };
+    });
 
   if (spreadColumns) {
     newConfig.include = spreadColumns;
@@ -169,14 +173,11 @@ const convertInsertToInsertRows = oldConfig => {
     newConfig.where = `=${where}`;
   }
 
-  Object.entries(columnsToInsert).forEach(([columnKey, columnValue]) => {
-    const isSimpleKey = columnKey.startsWith("'") && columnKey.endsWith("'");
-    const newColumnKey = isSimpleKey
-      ? columnKey.substring(1, columnKey.length - 1)
-      : `=${columnKey}`;
-
-    newConfig.columns = { ...newConfig.columns, [newColumnKey]: columnValue };
-  });
+  Object.entries(columnsToInsert)
+    .map(convertToNewKeyAndValue)
+    .forEach(([columnKey, columnValue]) => {
+      newConfig.columns = { ...newConfig.columns, [columnKey]: columnValue };
+    });
 
   return newConfig;
 };
