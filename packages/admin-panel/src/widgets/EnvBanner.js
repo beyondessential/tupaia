@@ -17,11 +17,10 @@ const StyledBanner = styled.div`
 `;
 
 export const EnvBanner = () => {
-  const env = process.env.NODE_ENV;
+  const env = process.env.REACT_APP_BRANCH;
 
-  if (env === 'production') {
+  if (!env || typeof env !== 'string' || env === 'master' || env === 'main') {
     return null;
   }
-
-  return <StyledBanner>[{env}]</StyledBanner>;
+  return <StyledBanner>{env}</StyledBanner>;
 };

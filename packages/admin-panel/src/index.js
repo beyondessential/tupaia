@@ -8,13 +8,14 @@ import { render as renderReactApp } from 'react-dom';
 import 'react-table/react-table.css';
 import AdminPanel from './App';
 import { AdminPanelProviders, VizBuilderProviders } from './utilities';
-import { Footer, Navbar } from './widgets';
+import { Footer, Navbar, EnvBanner } from './widgets';
 
 const VizBuilder = lazy(() => import('./VizBuilderApp'));
 
 renderReactApp(
   <Router>
     <Suspense fallback={<div>loading...</div>}>
+      <EnvBanner />
       <Switch>
         <Route path="/viz-builder">
           <VizBuilderProviders>
