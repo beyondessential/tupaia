@@ -4,28 +4,27 @@
  */
 
 import { TransformParser } from '../parser';
-import { functions } from '../../functions';
 import { buildWhere } from './where';
 import { Row } from '../../types';
 
-type FilterParams = {
+type ExcludeRowsParams = {
   where: (parser: TransformParser) => boolean;
 };
 
-const filter = (rows: Row[], params: FilterParams): Row[] => {
-  const parser = new TransformParser(rows, functions);
+const excludeRows = (rows: Row[], params: ExcludeRowsParams): Row[] => {
+  const parser = new TransformParser(rows);
   return rows.filter(() => {
-    const filterResult = params.where(parser);
+    const filterResult = !params.where(parser);
     parser.next();
     return filterResult;
   });
 };
 
-const buildParams = (params: unknown): FilterParams => {
+const buildParams = (params: unknown): ExcludeRowsParams => {
   return { where: buildWhere(params) };
 };
 
-export const buildFilter = (params: unknown) => {
+export const buildExcludeRows = (params: unknown) => {
   const builtParams = buildParams(params);
-  return (rows: Row[]) => filter(rows, builtParams);
+  return (rows: Row[]) => excludeRows(rows, builtParams);
 };

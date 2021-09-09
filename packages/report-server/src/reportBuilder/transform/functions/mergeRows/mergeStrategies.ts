@@ -38,7 +38,7 @@ const sum = (values: FieldValue[]): number | undefined => {
       });
 };
 
-const avg = (values: FieldValue[]): number | undefined => {
+const average = (values: FieldValue[]): number | undefined => {
   const checkedValues = checkIsNum(values);
   const numerator = sum(checkedValues);
   const denominator = count(checkedValues);
@@ -83,8 +83,10 @@ const unique = (values: FieldValue[]): FieldValue => {
   return distinctValues.length === 1 ? distinctValues[0] : 'NO_UNIQUE_VALUE';
 };
 
-const drop = (values: FieldValue[]): FieldValue => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const exclude = (values: FieldValue[]): FieldValue => {
   // Do nothing, don't add the field to the existing row
+  return undefined;
 };
 
 const first = (values: FieldValue[]): FieldValue => {
@@ -106,21 +108,21 @@ const single = (values: FieldValue[]): FieldValue => {
   }
 
   throw new Error(
-    `'single' aggregation expects a single value per group, however ${definedValues.length} were found`,
+    `'single' merge strategy expects a single value per group, however ${definedValues.length} were found`,
   );
 };
 
-export const aggregations = {
+export const mergeStrategies = {
   group,
   sum,
-  avg,
+  average,
   count,
   max,
   min,
   unique,
-  drop,
+  exclude,
   first,
   last,
   single,
-  default: last,
+  default: single,
 };
