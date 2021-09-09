@@ -34,6 +34,11 @@ const palette = {
     secondary: COLORS.TEXT_MIDGREY,
     tertiary: COLORS.TEXT_LIGHTGREY,
   },
+  blue: {
+    100: COLORS.BLUE_F6,
+    200: COLORS.BLUE_E8,
+    300: COLORS.BLUE_BF,
+  },
   grey: {
     100: COLORS.GREY_FB,
     200: COLORS.GREY_F1,

@@ -27,7 +27,7 @@
   {
     "id": "192,198",
     "project": "explore",
-    "orgUnit": "PG"
+    "orgUnit": "TO"
   },
   {
     "id": "193,199",
@@ -43,11 +43,6 @@
     "id": "COVID_Amount_Of_Hand_Sanitizer_Available",
     "project": "explore",
     "orgUnit": "TO"
-  },
-  {
-    "id": "COVID_AU_HOSPITALS_AND_TESTING_SITES",
-    "project": "explore",
-    "orgUnit": "AU"
   },
   {
     "id": "COVID_AU_State_Total_Number_Confirmed_Cases",
@@ -67,12 +62,12 @@
   {
     "id": "STRIVE_CRF_Febrile_Cases_Radius",
     "project": "strive",
-    "orgUnit": "TO"
+    "orgUnit": "PG"
   },
   {
     "id": "STRIVE_CRF_Positive,STRIVE_CRF_mRDT_Tests_Radius",
     "project": "strive",
-    "orgUnit": "TO"
+    "orgUnit": "PG"
   },
   {
     "id": "TONGA_NUMBER_OF_HOUSEHOLDS",

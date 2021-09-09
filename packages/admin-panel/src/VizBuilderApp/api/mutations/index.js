@@ -5,3 +5,4 @@
  */
 export * from './useExportVisualisation';
 export * from './useSaveVisualisation';
+export * from './useUploadTestData';

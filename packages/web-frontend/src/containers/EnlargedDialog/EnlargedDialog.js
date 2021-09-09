@@ -8,6 +8,7 @@ import Dialog from '@material-ui/core/Dialog';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { toFilename } from '@tupaia/utils';
 import styled from 'styled-components';
 import { useChartDataExport } from '@tupaia/ui-components/lib/chart';
 import {
@@ -18,13 +19,7 @@ import {
 import { ExportDialog } from '../../components/ExportDialog';
 import { getIsDataDownload, getIsMatrix } from '../../components/View';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
-import {
-  isMobile,
-  sleep,
-  stringToFilename,
-  getBrowserTimeZone,
-  getUniqueViewId,
-} from '../../utils';
+import { isMobile, sleep, getBrowserTimeZone, getUniqueViewId } from '../../utils';
 import {
   selectCurrentInfoViewKey,
   selectCurrentOrgUnit,
@@ -220,7 +215,7 @@ const EnlargedDialogComponent = ({
     setExportStatus(STATUS.LOADING);
     setIsExporting(true);
 
-    const filename = stringToFilename(`export-${organisationUnitName}-${newViewContent.name}`);
+    const filename = toFilename(`export-${organisationUnitName}-${newViewContent.name}`);
 
     try {
       if (isMatrix && format === 'xlsx') {

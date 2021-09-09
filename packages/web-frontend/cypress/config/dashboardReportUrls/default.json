@@ -975,25 +975,19 @@
     "dashboard": "COVID-19 Samoa"
   },
   {
-    "code": "PSSS_Country_AFR_Case_Numbers_With_Percent_Sites_Reporting",
+    "code": "PSSS_Country_PF_Case_Numbers_With_Percent_Sites_Reporting",
     "project": "psss",
     "orgUnit": "PW",
     "dashboard": "Syndromic Surveillance"
   },
   {
-    "code": "PSSS_PW_DIA_Daily_Case_Trend_Graph_Country",
+    "code": "PSSS_PW_PF_Weekly_Case_Trend_Graph",
     "project": "psss",
     "orgUnit": "PW",
     "dashboard": "Syndromic Surveillance National Data"
   },
   {
-    "code": "PSSS_Country_ILI_Weekly_Case_Number_Trend_Graph",
-    "project": "psss",
-    "orgUnit": "PW",
-    "dashboard": "Syndromic Surveillance National Data"
-  },
-  {
-    "code": "PSSS_Country_Diarrhoea_Case_Numbers_With_Percent_Sites_Reporting",
+    "code": "PSSS_PW_DIA_Weekly_Case_Trend_Graph",
     "project": "psss",
     "orgUnit": "PW",
     "dashboard": "Syndromic Surveillance National Data"
@@ -1005,18 +999,10 @@
     "dashboard": "Syndromic Surveillance National Data"
   },
   {
-    "code": "Imms_FridgeVaccineCount",
-    "project": "imms",
-    "orgUnit": "SB",
-    "dashboard": "Immunisation"
-  },
-  {
-    "code": "Imms_FridgeBreaches",
-    "project": "imms",
-    "orgUnit": "VU",
-    "dashboard": "Immunisation",
-    "startDate": "2020-04-01",
-    "endDate": "2020-04-30"
+    "code": "PSSS_PW_DLI_Weekly_Case_Trend_Graph",
+    "project": "psss",
+    "orgUnit": "PW",
+    "dashboard": "Syndromic Surveillance National Data"
   },
   {
     "code": "20",
@@ -1033,11 +1019,11 @@
   {
     "code": "PSSS_Country_AFR_Case_Numbers_With_Percent_Sites_Reporting",
     "project": "psss",
-    "orgUnit": "FJ",
+    "orgUnit": "SB",
     "dashboard": "Syndromic Surveillance"
   },
   {
-    "code": "PSSS_Country_ILI_Case_Numbers_With_Percent_Sites_Reporting",
+    "code": "PSSS_Country_Diarrhoea_Case_Numbers_With_Percent_Sites_Reporting",
     "project": "psss",
     "orgUnit": "FJ",
     "dashboard": "Syndromic Surveillance"
@@ -1047,5 +1033,17 @@
     "project": "fetp",
     "orgUnit": "PG",
     "dashboard": "FETP"
+  },
+  {
+    "code": "PMOS_Mosquito_Occurence",
+    "project": "pacmossi",
+    "orgUnit": "SB",
+    "dashboard": "Vector Surveillance"
+  },
+  {
+    "code": "PMOS_Mosquito_Larvae_By_Habitat_Type",
+    "project": "pacmossi",
+    "orgUnit": "FS-MQ9-8TO-UJG7",
+    "dashboard": "Vector Surveillance"
   }
 ]
