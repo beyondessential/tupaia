@@ -202,7 +202,7 @@ const constructSurveyResponseTranslators = models => ({
   user_email: userEmail => translateUserEmailToIdAndAssessorName(models.user, userEmail),
   entity_code: entityCode => translateEntityCodeToId(models.entity, entityCode),
   survey_code: surveyCode => translateSurveyCodeToId(models.survey, surveyCode),
-  answers: answers => answers.filter(a => a.body !== ''), // remove any empty answers
+  answers: answers => ({ answers: answers.filter(a => a.body !== '') }), // remove any empty answers
 });
 
 const constructAnswerTranslators = models => ({
