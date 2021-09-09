@@ -74,7 +74,12 @@ export class AreaTooltip extends Component {
             {orgUnitName}
           </Heading>
           {hasMeasureValue && (
-            <PopupDataItemList key={1} measureOptions={measureOptions} data={orgUnitMeasureData} />
+            <PopupDataItemList
+              key={1}
+              measureOptions={measureOptions}
+              data={orgUnitMeasureData}
+              showNoDataLabel="true"
+            />
           )}
         </div>
       </Tooltip>
