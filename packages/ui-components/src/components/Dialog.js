@@ -34,7 +34,7 @@ export const Dialog = ({ children, ...props }) => (
 );
 
 Dialog.propTypes = {
-  children: PropTypes.array.isRequired,
+  children: PropTypes.any.isRequired,
 };
 
 const Header = styled(FlexStart)`

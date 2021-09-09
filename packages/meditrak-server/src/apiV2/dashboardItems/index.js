@@ -8,8 +8,6 @@ export { EditDashboardItem } from './EditDashboardItem';
 export { GETDashboardItems } from './GETDashboardItems';
 export {
   createDashboardItemsDBFilter,
-  hasDashboardRelationGetPermissions,
-  hasDashboardRelationEditPermissions,
   assertDashboardItemGetPermissions,
   hasDashboardItemGetPermissions,
   hasDashboardItemEditPermissions,

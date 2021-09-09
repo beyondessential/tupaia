@@ -34,11 +34,13 @@ export class ReportBuilder {
     if (!this.config) {
       throw new Error('Report requires a config be set');
     }
-    const fetch = buildFetch(this.config.fetch);
+    const fetch = this.testData
+      ? () => ({ results: this.testData as Row[] })
+      : buildFetch(this.config?.fetch);
     const transform = buildTransform(this.config.transform);
     const output = buildOutput(this.config.output);
 
-    const data = this.testData ? { results: this.testData } : await fetch(aggregator, query);
+    const data = await fetch(aggregator, query);
     const transformedData = transform(data.results);
     const outputData = output(transformedData);
     return { results: outputData };

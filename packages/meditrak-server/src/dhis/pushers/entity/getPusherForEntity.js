@@ -18,7 +18,7 @@ const getUpdatePusher = async (models, change) => {
 
 const getDeletePusher = async (models, change) => {
   const syncLogRecord = await models.dhisSyncLog.findOne({ record_id: change.record_id });
-  if (!syncLogRecord) {
+  if (!syncLogRecord?.data) {
     return NonExistingRecordPusher;
   }
 

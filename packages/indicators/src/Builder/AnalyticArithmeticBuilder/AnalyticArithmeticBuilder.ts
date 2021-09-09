@@ -59,7 +59,7 @@ export class AnalyticArithmeticBuilder extends Builder {
     return this.configCache;
   }
 
-  private get paramBuildersByCode() {
+  private get paramBuildersByCode(): Record<string, Builder> {
     if (!this.paramBuildersByCodeCache) {
       this.paramBuildersByCodeCache = Object.fromEntries(
         this.config.parameters.map(param => [param.code, createBuilder(this.api, param)]),
@@ -93,11 +93,11 @@ export class AnalyticArithmeticBuilder extends Builder {
   };
 
   private fetchFormulaAnalytics = async (fetchOptions: FetchOptions) => {
-    const aggregationLisByElement = stripFields(
+    const aggregationListByElement = stripFields(
       this.config.aggregation,
       Object.keys(this.paramBuildersByCode),
     );
-    return fetchAnalytics(this.api.getAggregator(), aggregationLisByElement, fetchOptions);
+    return fetchAnalytics(this.api.getAggregator(), aggregationListByElement, fetchOptions);
   };
 
   private fetchParameterAnalytics = async (fetchOptions: FetchOptions) => {
@@ -121,12 +121,12 @@ export class AnalyticArithmeticBuilder extends Builder {
     const checkClusterIncludesAllVariables = (cluster: AnalyticCluster) =>
       variables.every(variable => variable in cluster.dataValues);
 
-    const replaceAnalyticValuesWithDefaults = (cluster: AnalyticCluster) => ({
+    const replaceAnalyticValuesWithDefaults = (cluster: AnalyticCluster): AnalyticCluster => ({
       ...cluster,
       dataValues: replaceDataValuesWithDefaults(cluster.dataValues, defaultValues),
     });
 
-    const clusters = analyticsToAnalyticClusters(analytics);
+    const clusters: AnalyticCluster[] = analyticsToAnalyticClusters(analytics);
     // Remove clusters that do not include all specified elements
     return clusters.map(replaceAnalyticValuesWithDefaults).filter(checkClusterIncludesAllVariables);
   };

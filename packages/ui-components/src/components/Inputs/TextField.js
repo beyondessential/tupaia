@@ -107,7 +107,7 @@ export const TextField = styled(BaseTextField)`
   &&&& {
     .MuiInputBase-input::placeholder {
       opacity: 1 !important;
-      color: ${props => props.theme.palette.text.tertiary};
+      color: ${props => props.theme.palette.text.secondary};
     }
   }
 

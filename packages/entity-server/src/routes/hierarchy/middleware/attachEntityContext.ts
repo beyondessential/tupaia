@@ -18,7 +18,7 @@ const userCanAccessEntity = (entity: EntityType, allowedCountries: string[]) =>
   (notNull(entity.country_code) && allowedCountries.includes(entity.country_code));
 
 const validateEntitiesAndBuildContext = async (
-  req: Request<any, any, any, { filter?: string }>,
+  req: Request<{ hierarchyName: string }, any, any, { filter?: string }>,
   entityCodes: string[],
 ) => {
   const entities = await req.models.entity.find({ code: entityCodes });
@@ -30,7 +30,10 @@ const validateEntitiesAndBuildContext = async (
   // Root type shouldn't be locked into being a project entity, see: https://github.com/beyondessential/tupaia-backlog/issues/2570
   const rootEntity = await entities[0].getAncestorOfType(hierarchyId, 'project'); // Assuming all requested entities are in same hierarchy
   if (!rootEntity) {
-    throw new Error(`Cannot find root entity for requested entities: ${entityCodes}}`);
+    const { hierarchyName } = req.params;
+    throw new Error(
+      `Cannot find root entity for requested entities: [${entityCodes}] in hierarchy: ${hierarchyName}`,
+    );
   }
 
   const allowedCountries = (await rootEntity.getChildren(req.ctx.hierarchyId))
@@ -53,7 +56,7 @@ const validateEntitiesAndBuildContext = async (
 };
 
 export const attachSingleEntityContext = async (
-  req: Request<{ entityCode: string }, any, any, { filter?: string }> & {
+  req: Request<{ hierarchyName: string; entityCode: string }, any, any, { filter?: string }> & {
     ctx: { entities: EntityType[]; allowedCountries: string[]; filter: EntityFilter };
   },
   res: Response,
@@ -75,7 +78,12 @@ export const attachSingleEntityContext = async (
 };
 
 export const attachMultiEntityContext = async (
-  req: Request<any, any, { entities: string[] | undefined }, { filter?: string }> & {
+  req: Request<
+    { hierarchyName: string },
+    any,
+    { entities: string[] | undefined },
+    { filter?: string }
+  > & {
     ctx: { entities: EntityType[]; allowedCountries: string[]; filter: EntityFilter };
   },
   res: Response,

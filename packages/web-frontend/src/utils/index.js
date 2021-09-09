@@ -29,7 +29,7 @@ export { formatDateForApi } from './formatDateForApi';
 export { getBrowserTimeZone } from './getBrowserTimeZone';
 export { formatDataValue } from './formatters';
 export { findByKey } from './collection';
-export { areStringsEqual, stringToFilename } from './string';
+export { areStringsEqual } from './string';
 export { hexToRgba, getPresentationOption, getInactiveColor } from './color';
 export {
   getUniqueViewId,
