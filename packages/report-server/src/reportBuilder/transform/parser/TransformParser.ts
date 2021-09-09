@@ -68,7 +68,7 @@ export class TransformParser extends ExpressionParser {
       Object.entries(this.lookups).forEach(([lookupName, lookup]) => {
         this.set(`@${lookupName}`, lookup);
       });
-      this.set('where', this.whereFunction); // '@' prefix for where
+      this.set('where', this.whereFunction); // no '@' prefix for where
     }
   }
 

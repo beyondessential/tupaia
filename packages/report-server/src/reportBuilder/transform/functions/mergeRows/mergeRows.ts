@@ -22,14 +22,14 @@ type MergeRowsParams = {
 const paramsValidator = yup.object().shape({
   groupBy: starSingleOrMultipleColumnsValidator,
   using: yup.lazy((value: unknown) => {
-    const undefinedMergeStrategyNameValidator = yup
+    const optionalMergeStrategyNameValidator = yup
       .mixed<keyof typeof mergeStrategies>()
       .oneOf(Object.keys(mergeStrategies) as (keyof typeof mergeStrategies)[]);
     if (value === undefined) {
-      return undefinedMergeStrategyNameValidator;
+      return optionalMergeStrategyNameValidator;
     }
 
-    const mergeStrategyNameValidator = undefinedMergeStrategyNameValidator.required();
+    const mergeStrategyNameValidator = optionalMergeStrategyNameValidator.required();
     if (typeof value === 'string') {
       return mergeStrategyNameValidator;
     }
