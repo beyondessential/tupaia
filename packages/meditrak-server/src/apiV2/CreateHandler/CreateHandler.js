@@ -25,7 +25,10 @@ export class CreateHandler extends CRUDHandler {
     } catch (error) {
       throw new DatabaseError('Creating record', error);
     }
-    respond(this.res, { message: `Successfully created ${this.resource}`, ...customResponseDetails });
+    respond(this.res, {
+      message: `Successfully created ${this.resource}`,
+      ...customResponseDetails,
+    });
   }
 
   async validate() {

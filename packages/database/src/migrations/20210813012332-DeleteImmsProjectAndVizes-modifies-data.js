@@ -68,22 +68,22 @@ const deleteProjectAndHierarchy = async (db, code) => {
   );
   await db.runSql(`UPDATE "mapOverlay" SET "projectCodes" = array_remove("projectCodes", 'imms')`);
 
-  await toggleEntityTriggers(db, false);
+  // turn off entity relation trigger as it would fire loads of notifications that we don't need
+  // the notifications for deleting the root entity and hierarchy are enough
+  await toggleEntityRelationTrigger(db, false);
   await db.runSql(
     `DELETE FROM ancestor_descendant_relation WHERE entity_hierarchy_id = '${entityHierarchyId}'`,
   );
   await db.runSql(`DELETE FROM entity_relation WHERE entity_hierarchy_id = '${entityHierarchyId}'`);
   await db.runSql(`DELETE FROM entity_hierarchy WHERE id = '${entityHierarchyId}'`);
   await db.runSql(`DELETE FROM entity WHERE code = '${code}'`);
-  await toggleEntityTriggers(db, true);
+  await toggleEntityRelationTrigger(db, true);
 };
 
-const toggleEntityTriggers = async (db, enable) => {
+const toggleEntityRelationTrigger = async (db, enable) => {
   const action = enable ? 'ENABLE' : 'DISABLE';
 
   await db.runSql(`ALTER TABLE entity_relation ${action} TRIGGER entity_relation_trigger`);
-  await db.runSql(`ALTER TABLE entity_hierarchy ${action} TRIGGER entity_hierarchy_trigger`);
-  await db.runSql(`ALTER TABLE entity ${action} TRIGGER entity_trigger`);
 };
 
 const refreshProjectSortOrder = async db => {

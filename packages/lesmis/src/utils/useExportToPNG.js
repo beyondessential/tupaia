@@ -6,7 +6,7 @@
 import { useRef, useState } from 'react';
 import downloadJs from 'downloadjs';
 import domtoimage from 'dom-to-image';
-import { sleep, stringToFilename } from '@tupaia/utils';
+import { sleep, toFilename } from '@tupaia/utils';
 
 const exportToPng = (node, filename) => {
   return new Promise(resolve => {
@@ -22,7 +22,7 @@ export const useExportToPNG = filename => {
   const exportRef = useRef(null);
   const [isExporting, setIsExporting] = useState(false);
   const [isExportLoading, setIsExportLoading] = useState(false);
-  const sanitisedFileName = stringToFilename(filename);
+  const sanitisedFileName = toFilename(filename);
 
   const exportToPNG = async () => {
     const node = exportRef.current;

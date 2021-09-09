@@ -5,6 +5,4 @@
  */
 
 export { ApiConnection } from './ApiConnection';
-export { ApiConnectionBuilder } from './ApiConnectionBuilder';
 export { AuthHandler } from './types';
-export { EntityApi } from './EntityApi';

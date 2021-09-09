@@ -12,7 +12,7 @@ content-type: {{contentType}}
 Authorization: {{authorization}}
 
 ### Fetch Report With Test Config
-POST {{baseUrl}}/testReport?organisationUnitCodes=TO&hierarchy=psss&period=2020 HTTP/1.1
+POST {{baseUrl}}/testReport?organisationUnitCodes=TO&hierarchy=explore&period=2020 HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
@@ -39,12 +39,14 @@ Authorization: {{authorization}}
     "transform": [
       "keyValueByDataElementName",
       {
+          "$title": "Calculate occuptions from data elements",
+          "$description": "Sums the raw data elements values to their appropriate occuption",
           "transform": "select",
           "'Doctors'": "$row.BCD46",
           "'Midwives'": "$row.BCD47",
-          "'Nurses'": "sum([$row.BCD48, $row.BCD48a, $row.BCD48b])",
+          "'Nurses'": "sum($row.BCD48, $row.BCD48a, $row.BCD48b)",
           "'Aides'": "$row.BCD49",
-          "'Others'": "sum([$row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55])",
+          "'Others'": "sum($row.BCD50, $row.BCD51, $row.BCD52, $row.BCD53, $row.BCD54, $row.BCD55)",
           "...": ["period", "organisationUnit"]
       },
       {

@@ -6,12 +6,12 @@
  */
 
 import React, { PureComponent } from 'react';
+import { PopupDataItemList } from '@tupaia/ui-components/lib/map';
 import PropTypes from 'prop-types';
 import { Popup } from 'react-leaflet';
 import { MARKER_POPUP_STYLE, TOP_BAR_HEIGHT } from '../../styles';
 
 import { MarkerDataPropType, MeasureOptionsGroupPropType } from './propTypes';
-import { getFormattedInfo } from '../../utils/measures';
 
 const PopupHeader = ({ text }) => <h2 style={MARKER_POPUP_STYLE.header}>{text}</h2>;
 
@@ -27,35 +27,6 @@ const PopupCoordinates = ({ coordinates }) => {
 
 PopupCoordinates.propTypes = {
   coordinates: PropTypes.arrayOf(PropTypes.number).isRequired,
-};
-
-const PopupDataItem = ({ value, measureName }) => (
-  <div>
-    <span>{`${measureName}: `}</span>
-    <strong>{value}</strong>
-  </div>
-);
-
-PopupDataItem.propTypes = {
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  measureName: PropTypes.string.isRequired,
-};
-
-const PopupDataItemList = ({ measureOptions, data }) =>
-  measureOptions
-    .filter(measureOption => !measureOption.hideFromPopup)
-    .map(measureOption => {
-      const { key, name } = measureOption;
-      const { formattedValue, valueInfo } = getFormattedInfo(data, measureOption);
-
-      return valueInfo.hideFromPopup ? null : (
-        <PopupDataItem key={key} measureName={name} value={formattedValue} />
-      );
-    });
-
-PopupDataItemList.propTypes = {
-  data: MarkerDataPropType.isRequired,
-  measureOptions: MeasureOptionsGroupPropType.isRequired,
 };
 
 export class PopupMarker extends PureComponent {
@@ -122,7 +93,7 @@ export const MeasurePopup = ({ data, measureOptions, onOrgUnitClick }) => {
       coordinates={coordinates}
       onDetailButtonClick={() => onOrgUnitClick(organisationUnitCode)}
     >
-      <PopupDataItemList data={data} measureOptions={measureOptions} />
+      <PopupDataItemList measureOptions={measureOptions} data={data} showNoDataLabel="true" />
     </PopupMarker>
   );
 };

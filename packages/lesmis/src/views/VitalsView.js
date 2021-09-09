@@ -194,11 +194,22 @@ const Container = styled(MuiContainer)`
 `;
 
 const PartnersContainer = styled.div`
+  position: relative;
   background: white;
   padding-top: 32px;
   margin-right: -24px;
   margin-left: -15px;
   padding-left: 30px;
+
+  &:after {
+    content: '';
+    position: absolute;
+    background: white;
+    top: 0;
+    left: 100%;
+    bottom: 0;
+    width: 1000px;
+  }
 
   ${props => props.theme.breakpoints.down('sm')} {
     background: none;

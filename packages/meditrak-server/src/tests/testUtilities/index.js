@@ -9,3 +9,4 @@ export { randomEmail, randomIntBetween, randomString } from './random';
 export { setupDummySyncQueue } from './setupDummySyncQueue';
 export { getAuthorizationHeader, TestableApp } from './TestableApp';
 export { setupDashboardTestData } from './dashboards';
+export { setupMapOverlayTestData } from './mapOverlays';

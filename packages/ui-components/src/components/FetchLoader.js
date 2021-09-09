@@ -22,7 +22,15 @@ const SpinningLoader = () => (
   </Container>
 );
 
-export const FetchLoader = ({ isLoading, isError, error, children, Loader }) => {
+export const FetchLoader = ({
+  isLoading,
+  isError,
+  isNoData,
+  error,
+  noDataMessage,
+  children,
+  Loader,
+}) => {
   if (isLoading) {
     return <Loader />;
   }
@@ -37,6 +45,16 @@ export const FetchLoader = ({ isLoading, isError, error, children, Loader }) => 
     );
   }
 
+  if (isNoData) {
+    return (
+      <Container>
+        <SmallAlert severity="info" variant="standard">
+          {noDataMessage}
+        </SmallAlert>
+      </Container>
+    );
+  }
+
   return <ErrorBoundary>{children}</ErrorBoundary>;
 };
 
@@ -44,14 +62,18 @@ FetchLoader.propTypes = {
   children: PropTypes.node,
   isLoading: PropTypes.bool,
   isError: PropTypes.bool,
+  isNoData: PropTypes.bool,
   error: PropTypes.object,
+  noDataMessage: PropTypes.string,
   Loader: PropTypes.func,
 };
 
 FetchLoader.defaultProps = {
   isLoading: false,
   isError: false,
+  isNoData: false,
   children: null,
   error: null,
+  noDataMessage: null,
   Loader: SpinningLoader,
 };

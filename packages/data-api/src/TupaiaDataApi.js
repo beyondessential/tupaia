@@ -6,11 +6,11 @@
 import groupBy from 'lodash.groupby';
 
 import moment from 'moment';
-import { getSortByKey, momentToDateString, DEFAULT_BINARY_OPTIONS } from '@tupaia/utils';
+import { getSortByKey, DEFAULT_BINARY_OPTIONS } from '@tupaia/utils';
 import { SqlQuery } from './SqlQuery';
 import { AnalyticsFetchQuery } from './AnalyticsFetchQuery';
 import { EventsFetchQuery } from './EventsFetchQuery';
-import { sanitizeDataValue } from './utils';
+import { sanitizeMetadataValue, sanitizeAnalyticsTableValue } from './utils';
 import { validateEventOptions, validateAnalyticsOptions } from './validation';
 import { sanitiseFetchDataOptions } from './sanitiseFetchDataOptions';
 
@@ -20,7 +20,7 @@ const buildEventDataValues = resultsForEvent =>
   resultsForEvent.reduce(
     (values, { dataElementCode, type, value }) => ({
       ...values,
-      [dataElementCode]: sanitizeDataValue(value, type),
+      [dataElementCode]: sanitizeAnalyticsTableValue(value, type),
     }),
     {},
   );
@@ -62,7 +62,7 @@ export class TupaiaDataApi {
         organisationUnit: entityCode,
         dataElement: dataElementCode,
         period,
-        value: sanitizeDataValue(value, type),
+        value: sanitizeAnalyticsTableValue(value, type),
       })),
       numAggregationsProcessed,
     };
@@ -203,10 +203,10 @@ export class TupaiaDataApi {
         // options coming from option_set are actual JSON objects
         const optionObject = typeof option === 'string' ? JSON.parse(option) : option;
         const { value, label } = optionObject;
-        optionsMetadata[sanitizeDataValue(value, type)] = label || value;
+        optionsMetadata[sanitizeMetadataValue(value, type)] = label || value;
       } catch (error) {
         // Exception is thrown when option is a plain string
-        optionsMetadata[sanitizeDataValue(option, type)] = option;
+        optionsMetadata[sanitizeMetadataValue(option, type)] = option;
       }
     });
 

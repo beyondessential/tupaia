@@ -42,10 +42,15 @@ const buildParams = (params: unknown): TransformParams => {
     throw new Error(`Expected transform in params`);
   }
 
-  const { transform: transformStep, ...restOfTransformParams } = params;
+  const {
+    transform: transformStep,
+    $title: title, // This is purely a cosmetic part of the config, ignore it
+    $description: description, // This is purely a cosmetic part of the config, ignore it
+    ...restOfTransformParams
+  } = params;
   if (typeof transformStep !== 'string' || !(transformStep in transformBuilders)) {
     throw new Error(
-      `Expected transform to be one of ${Object.keys(transformBuilders)} but got ${transform}`,
+      `Expected transform to be one of ${Object.keys(transformBuilders)} but got ${transformStep}`,
     );
   }
 

@@ -2,15 +2,11 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
+import { loginAsSuperUser } from '../support';
 
-import { requireCyEnv } from '@tupaia/utils';
-
-describe('Test that e2e tests work', () => {
+describe('login as a super user user', () => {
   before(() => {
-    cy.login({
-      email: requireCyEnv('CYPRESS_TEST_USER_EMAIL'),
-      password: requireCyEnv('CYPRESS_TEST_USER_PASSWORD'),
-    });
+    loginAsSuperUser();
   });
 
   it('Loads the surveys page after login', () => {

@@ -58,6 +58,11 @@ const request = async (endpoint, options) => {
     if (error.response) {
       const { data } = error.response;
 
+      // logout the user out if we get a 401 response
+      if (error.response.status === 401 || data.code === 401) {
+        request('logout', { method: 'post' });
+      }
+
       if (data.error) {
         throw new FetchError(data.error, error.response.status);
       }

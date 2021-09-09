@@ -30,7 +30,7 @@ import winston from './log';
  * Set up database
  */
 const database = new TupaiaDatabase();
-const models = new ModelRegistry(database, modelClasses);
+const models = new ModelRegistry(database, modelClasses, true);
 
 /**
  * Set up change handlers e.g. for syncing

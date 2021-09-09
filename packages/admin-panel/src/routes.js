@@ -20,6 +20,8 @@ import {
   DisasterResponsePage,
   AccessRequestsPage,
   MapOverlaysPage,
+  MapOverlayGroupsPage,
+  MapOverlayGroupRelationsPage,
   IndicatorsPage,
   DashboardsPage,
   DashboardItemsPage,
@@ -97,6 +99,16 @@ export const ROUTES = [
         label: 'Map Overlays',
         to: '/map-overlays',
         component: MapOverlaysPage,
+      },
+      {
+        label: 'Map Overlay Groups',
+        to: '/map-overlay-groups',
+        component: MapOverlayGroupsPage,
+      },
+      {
+        label: 'Map Overlay Group Relations',
+        to: '/map-overlay-group-relations',
+        component: MapOverlayGroupRelationsPage,
       },
       {
         label: 'Indicators',
