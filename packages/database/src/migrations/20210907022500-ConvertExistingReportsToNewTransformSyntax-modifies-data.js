@@ -55,6 +55,7 @@ const convertSelectToUpdateColumns = oldConfig => {
 const mergeStrategyNames = {
   drop: 'exclude',
   avg: 'average',
+  default: 'last',
 };
 
 const convertAggregateToMergeRows = oldConfig => {
