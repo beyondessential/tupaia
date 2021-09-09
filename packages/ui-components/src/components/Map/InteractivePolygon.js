@@ -41,18 +41,20 @@ const parseProps = (organisationUnitCode, organisationUnitChildren, measureOrgUn
   let hasShadedChildren = false;
 
   if (measureOrgUnits.length > 0) {
-    const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
+    // const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
+    const measureOrgUnitCodes = new Set(
+      measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode),
+    );
 
     hasShadedChildren =
       organisationUnitChildren &&
-      organisationUnitChildren.some(child =>
-        measureOrgUnitCodes.includes(child.organisationUnitCode),
-      );
+      organisationUnitChildren.some(child => measureOrgUnitCodes.has(child.organisationUnitCode));
 
-    if (measureOrgUnitCodes.includes(organisationUnitCode)) {
+    if (measureOrgUnitCodes.has(organisationUnitCode)) {
       orgUnitMeasureData = measureOrgUnits.find(
         orgUnit => orgUnit.organisationUnitCode === organisationUnitCode,
       );
+
       if (orgUnitMeasureData) {
         shade = orgUnitMeasureData.color;
         isHidden = orgUnitMeasureData.isHidden;
