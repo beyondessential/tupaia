@@ -156,15 +156,17 @@ const DRILL_DOWN_REPORT_CONFIG = {
   },
   transform: [
     {
-      transform: 'select',
-      "translate($row.dataElement, { csr_priority_district_average: 'Priority Districts Average', csr_non_priority_district_average: 'Other Districts Average',  csr_priority_district_target: 'Priority Districts Target', csr_non_priority_district_target: 'Other Districts Target' })":
-        '$row.value/100',
-      "'timestamp'": 'periodToTimestamp($row.period)',
+      transform: 'insertColumns',
+      columns: {
+        "=translate($dataElement, { csr_priority_district_average: 'Priority Districts Average', csr_non_priority_district_average: 'Other Districts Average',  csr_priority_district_target: 'Priority Districts Target', csr_non_priority_district_target: 'Other Districts Target' })":
+          '=$value/100',
+        timestamp: '=periodToTimestamp($period)',
+      },
     },
     {
-      transform: 'aggregate',
-      timestamp: 'group',
-      '...': 'last',
+      transform: 'mergeRows',
+      groupBy: 'timestamp',
+      using: 'last',
     },
   ],
 };
@@ -205,73 +207,88 @@ const LIST_REPORT_CONFIG = {
   transform: [
     'keyValueByDataElementName',
     {
-      transform: 'aggregate',
-      organisationUnit: 'group',
-      '...': 'last',
+      transform: 'mergeRows',
+      groupBy: 'organisationUnit',
+      using: 'last',
     },
     {
-      transform: 'select',
-      "'code'": "'cohortSurvivalRate'",
-      // If stats red/yellow/green are equal use that value, otherwise default to yellow
-      "'statistic'":
-        'eq($row.csr_priority_district_summary, $row.csr_non_priority_district_summary) ? $row.csr_priority_district_summary : 0',
-      "'label'":
-        "'TARGET: Primary cohort survival rate – 2025 targets national average 90%, 40 districts 78%'",
-      "'parent'": "'IO3'",
+      transform: 'updateColumns',
+      insert: {
+        code: 'cohortSurvivalRate',
+        // If stats red/yellow/green are equal use that value, otherwise default to yellow
+        statistic:
+          '=eq($csr_priority_district_summary, $csr_non_priority_district_summary) ? $csr_priority_district_summary : 0',
+        label:
+          'TARGET: Primary cohort survival rate – 2025 targets national average 90%, 40 districts 78%',
+        parent: 'IO3',
+      },
+      exclude: '*',
     },
     // BUILD THE REST OF THE LIST
     {
-      transform: 'insert',
+      transform: 'insertRows',
       position: 'before',
-      where: 'eq($index, 1)',
-      "'code'": "'Strategy4'",
-      "'label'":
-        "'Strategy 4: Promote Reading through provision of more age-appropriate reading materials and advocacy '",
-      "'parent'": "'IO3'",
+      where: '=eq(@index, 1)',
+      columns: {
+        code: 'Strategy4',
+        label:
+          'Strategy 4: Promote Reading through provision of more age-appropriate reading materials and advocacy',
+        parent: 'IO3',
+      },
     },
     {
-      transform: 'insert',
+      transform: 'insertRows',
       position: 'before',
-      where: 'eq($index, 1)',
-      "'code'": "'Strategy3'",
-      "'label'":
-        "'Strategy 3: Implement progressive promotion policy more effectively, including provision of appropriate remedial support'",
-      "'parent'": "'IO3'",
+      where: '=eq(@index, 1)',
+      columns: {
+        code: 'Strategy3',
+        label:
+          'Strategy 3: Implement progressive promotion policy more effectively, including provision of appropriate remedial support',
+        parent: 'IO3',
+      },
     },
     {
-      transform: 'insert',
+      transform: 'insertRows',
       position: 'before',
-      where: 'eq($index, 1)',
-      "'code'": "'Strategy2'",
-      "'label'":
-        "'Strategy 2: Improve the school environment to align with Fundamental Quality Standard '",
-      "'parent'": "'IO3'",
+      where: '=eq(@index, 1)',
+      columns: {
+        code: 'Strategy2',
+        label:
+          'Strategy 2: Improve the school environment to align with Fundamental Quality Standard',
+        parent: 'IO3',
+      },
     },
     {
-      transform: 'insert',
+      transform: 'insertRows',
       position: 'before',
-      where: 'eq($index, 1)',
-      "'code'": "'Strategy1'",
-      "'label'":
-        "'Strategy 1: Development and implementation of a sustainable (human and financial resourcing) targeted primary school meals strategy and action plan '",
-      "'parent'": "'IO3'",
+      where: '=eq(@index, 1)',
+      columns: {
+        code: 'Strategy1',
+        label:
+          'Strategy 1: Development and implementation of a sustainable (human and financial resourcing) targeted primary school meals strategy and action plan',
+        parent: 'IO3',
+      },
     },
     {
-      transform: 'insert',
+      transform: 'insertRows',
       position: 'before',
-      where: 'eq($index, 1)',
-      "'code'": "'IO3'",
-      "'label'":
-        "'IO 3: Increased intake and progression rates at all levels leading to increasing graduation rates (Part I HLO 1, IO 1.3)'",
-      "'parent'": "'HLO1'",
+      where: '=eq(@index, 1)',
+      columns: {
+        code: 'IO3',
+        label:
+          'IO 3: Increased intake and progression rates at all levels leading to increasing graduation rates (Part I HLO 1, IO 1.3)',
+        parent: 'HLO1',
+      },
     },
     {
-      transform: 'insert',
+      transform: 'insertRows',
       position: 'before',
-      where: 'eq($index, 1)',
-      "'code'": "'HLO1'",
-      "'label'":
-        "'HLO 1: Increased number of graduates from primary education including NFE, with improved learning outcomes, particularly literacy and numeracy skills but also other 21st Century skills, with special focus on disadvantaged and gender equity'",
+      where: '=eq(@index, 1)',
+      columns: {
+        code: 'HLO1',
+        label:
+          'HLO 1: Increased number of graduates from primary education including NFE, with improved learning outcomes, particularly literacy and numeracy skills but also other 21st Century skills, with special focus on disadvantaged and gender equity',
+      },
     },
   ],
 };
