@@ -66,10 +66,13 @@ const getReport = (species, hierarchyLevel) => {
       },
       transform: [
         {
-          transform: 'select',
-          [popupItem]: '$row.value',
-          "'value'": "($row.value > 0) ? 'Detected': 'Not Detected'", // null > 0 = false, interesting.
-          "'organisationUnitCode'": '$row.organisationUnit',
+          insert: {
+            value: "=($value > 0) ? 'Detected': 'Not Detected'",
+            organisationUnitCode: '=$organisationUnit',
+            [popupItem]: '=$value',
+          },
+          exclude: '*',
+          transform: 'updateColumns',
         },
       ],
     },
