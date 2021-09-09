@@ -7,7 +7,7 @@ import { respond, PermissionsError, UnauthenticatedError } from '@tupaia/utils';
 
 import { PsssRequest, PsssResponseBody, SessionCookie } from '../types';
 import { PsssSessionModel, PsssSessionType } from '../models';
-import { MeditrakConnection, ReportConnection } from '../connections';
+import { EntityConnection, MeditrakConnection, ReportConnection } from '../connections';
 import { PSSS_PERMISSION_GROUP } from '../constants';
 
 export class Route {
@@ -22,6 +22,8 @@ export class Route {
   sessionCookie?: SessionCookie;
 
   session!: PsssSessionType;
+
+  entityConnection?: EntityConnection;
 
   meditrakConnection?: MeditrakConnection;
 
@@ -47,6 +49,7 @@ export class Route {
     // swallowed.
     try {
       const session = await this.verifyAuth();
+      this.entityConnection = new EntityConnection(session);
       this.meditrakConnection = new MeditrakConnection(session);
       this.reportConnection = new ReportConnection(session);
       const response = await this.buildResponse();
@@ -59,7 +62,7 @@ export class Route {
   async getSession() {
     const sessionId = this.sessionCookie?.id;
     if (!sessionId) {
-      throw new UnauthenticatedError('User not authenticated');
+      throw new UnauthenticatedError('Session not found or has expired. Please log in again.');
     }
 
     const session: PsssSessionType = await this.sessionModel.findById(sessionId);

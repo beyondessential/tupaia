@@ -3,21 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { periodToMoment, periodToType, periodTypeToMomentUnit } from './period';
-
-const DATE_FORMAT = 'YYYY-MM-DD';
-
-export const periodToDateString = (period, isEndPeriod) => {
-  const mutatingMoment = periodToMoment(period);
-  const periodType = periodToType(period);
-  const momentUnit = periodTypeToMomentUnit(periodType);
-  if (isEndPeriod) {
-    mutatingMoment.endOf(momentUnit);
-  } else {
-    mutatingMoment.startOf(momentUnit);
-  }
-  return mutatingMoment.format(DATE_FORMAT);
-};
+import { periodToDateString } from './period';
 
 /**
  * Takes in a string of periods (separated by ';'), and returns the formatted start and end date.

@@ -4,10 +4,11 @@
  */
 
 import moment from 'moment';
+import { AnalyticsRefresher } from '..';
 
 const COMPARISON = `LIKE '%_test%'`;
-const getDeleteStatement = (table, mainCondition = `id ${COMPARISON}`, extraConditions = []) => {
-  const conditions = [mainCondition, ...extraConditions];
+const getDeleteStatement = (table, extraConditions = []) => {
+  const conditions = [`id ${COMPARISON}`, ...extraConditions];
   return `DELETE FROM "${table}" WHERE ${conditions.join(' OR ')};`;
 };
 
@@ -28,11 +29,16 @@ const TABLES_TO_CLEAR = [
   'data_element_data_group',
   'data_source',
   'clinic',
+  'dashboard_relation',
+  'dashboard',
+  'dashboard_item',
+  'legacy_report',
   'ancestor_descendant_relation',
   'entity_relation',
   'project',
   'entity',
   'data_source',
+  'indicator',
   'comment',
   'entity_hierarchy',
   'geographical_area',
@@ -48,21 +54,17 @@ const TABLES_TO_CLEAR = [
   'refresh_token',
   'user_entity_permission',
   'permission_group',
-  'user_reward',
   'api_client',
   'user_account',
-  'dashboardGroup',
-  'dashboardReport',
+  'map_overlay_group_relation',
+  'map_overlay_group',
   'mapOverlay',
 ];
 
-export function clearTestData(db, testStartTime = moment().format('YYYY-MM-DD HH:mm:ss')) {
-  const mainConditions = {
-    dashboardGroup: `code ${COMPARISON}`, // id of dashboard group is still Integer, so have the mainCondition test on code rather than id
-  };
-
+export async function clearTestData(db, testStartTime = moment().format('YYYY-MM-DD HH:mm:ss')) {
   const extraConditions = {
     api_request_log: [`request_time >= '${testStartTime}'`],
+    api_client: [`id ${COMPARISON}`, `user_account_id ${COMPARISON}`],
     answer: [`question_id ${COMPARISON}`, `survey_response_id ${COMPARISON}`],
     survey_response: [`survey_id ${COMPARISON}`, `entity_id ${COMPARISON}`],
     survey_screen_component: [`question_id ${COMPARISON}`],
@@ -70,14 +72,16 @@ export function clearTestData(db, testStartTime = moment().format('YYYY-MM-DD HH
     user_entity_permission: [`permission_group_id ${COMPARISON}`],
     user_account: [`email = 'test.user@tupaia.org'`, `first_name = 'Automated test'`],
     clinic: [`country_id ${COMPARISON}`],
+    dashboard_relation: [`child_id ${COMPARISON}`, `dashboard_id ${COMPARISON}`],
+    map_overlay_group_relation: [`child_id ${COMPARISON}`, `map_overlay_group_id ${COMPARISON}`],
     entity: [`code LIKE 'test%'`, `code ${COMPARISON}`, `parent_id ${COMPARISON}`],
     entity_relation: [`child_id ${COMPARISON}`, `parent_id ${COMPARISON}`],
     meditrak_sync_queue: [`record_id ${COMPARISON}`],
   };
   const sql = TABLES_TO_CLEAR.reduce(
-    (acc, table) =>
-      `${acc}\n${getDeleteStatement(table, mainConditions[table], extraConditions[table])}`,
+    (acc, table) => `${acc}\n${getDeleteStatement(table, extraConditions[table])}`,
     '',
   );
-  return db.executeSql(sql);
+  await db.executeSql(sql);
+  await AnalyticsRefresher.refreshAnalytics(db);
 }

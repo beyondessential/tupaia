@@ -31,6 +31,9 @@ const QUESTION_FIELDS = [
     Header: 'Legacy Options',
     source: 'options',
     type: 'tooltip',
+    editConfig: {
+      type: 'jsonArray',
+    },
   },
   {
     Header: 'Detail',

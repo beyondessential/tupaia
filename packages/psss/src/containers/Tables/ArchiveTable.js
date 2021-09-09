@@ -2,30 +2,33 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { createContext, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Table } from '@tupaia/ui-components';
+import { connect } from 'react-redux';
+import { Table, useTableSorting } from '@tupaia/ui-components';
 import {
   SyndromeCell,
-  AlertMenuCell,
+  ArchivedAlertMenuCell,
   CountryNameCell,
   WeekAndDateCell,
   StartDateCell,
 } from '../../components';
-import { useTableQuery } from '../../api';
+import { useAlerts } from '../../api';
+import { getCountryCodes } from '../../store';
+import { RestoreArchivedAlertModal, DeleteAlertModal } from '../Modals';
 
-const createColumns = isForMultipleCountries => [
-  ...(isForMultipleCountries
-    ? [
+const createColumns = isSingleCountry => [
+  ...(isSingleCountry
+    ? []
+    : [
         {
           title: 'Country',
-          key: 'name',
+          key: 'organisationUnit',
           width: '25%',
           align: 'left',
           CellComponent: CountryNameCell,
         },
-      ]
-    : []),
+      ]),
   {
     title: 'Syndrome',
     key: 'syndrome',
@@ -35,7 +38,7 @@ const createColumns = isForMultipleCountries => [
   },
   {
     title: 'Alert Start Date',
-    key: 'weekNumber',
+    key: 'period',
     align: 'left',
     width: '220px',
     CellComponent: WeekAndDateCell,
@@ -45,52 +48,87 @@ const createColumns = isForMultipleCountries => [
     key: 'totalCases',
     align: 'left',
   },
-  {
-    title: 'Outbreak Start Date',
-    key: 'outbreakStartDate',
-    align: 'left',
-    CellComponent: StartDateCell,
-  },
+  // TODO uncomment when outbreak functionality is added
+  // {
+  //   title: 'Outbreak Start Date',
+  //   key: 'outbreakStartDate',
+  //   align: 'left',
+  //   CellComponent: StartDateCell,
+  // },
   {
     title: 'Diagnosis',
     key: 'diagnosis',
     align: 'left',
   },
+  // TODO uncomment when outbreak functionality is added
+  // {
+  //   title: 'Total Lab Confirmed Cases',
+  //   key: 'diagnosis',
+  //   align: 'left',
+  // },
   {
     title: '',
     key: 'id',
     sortable: false,
-    CellComponent: AlertMenuCell,
+    CellComponent: ArchivedAlertMenuCell,
     width: '70px',
   },
 ];
 
-export const ArchiveTable = React.memo(({ countryCode }) => {
-  const { isLoading, isFetching, error, data, order, orderBy, handleChangeOrderBy } = useTableQuery(
-    'archive',
-  );
+export const ArchiveTableContext = createContext(null);
+
+export const ArchiveTableComponent = React.memo(({ countryCodes, period }) => {
+  const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [alertId, setAlertId] = useState(null);
+  const isSingleCountry = countryCodes.length === 1;
+  const columns = createColumns(isSingleCountry);
+  const { data, isLoading, error, isFetching } = useAlerts(period, countryCodes, 'archive');
+  const { sortedData, order, orderBy, sortColumn } = useTableSorting(data);
 
   return (
-    <>
+    <ArchiveTableContext.Provider
+      value={{
+        alertId,
+        setAlertId,
+        isRestoreModalOpen,
+        setIsRestoreModalOpen,
+        isDeleteModalOpen,
+        setIsDeleteModalOpen,
+      }}
+    >
       <Table
-        order={order}
+        data={sortedData}
         orderBy={orderBy}
-        onChangeOrderBy={handleChangeOrderBy}
-        data={data ? data.data : 0}
-        count={data ? data.count : 0}
+        order={order}
+        onChangeOrderBy={sortColumn}
         isLoading={isLoading}
+        isFetching={!isLoading && isFetching}
         errorMessage={error && error.message}
-        columns={createColumns(!countryCode)}
+        noDataMessage="No archived alerts found"
+        columns={columns}
       />
-      {isFetching && 'Fetching...'}
-    </>
+      <RestoreArchivedAlertModal
+        isOpen={isRestoreModalOpen}
+        alertId={alertId}
+        onClose={() => setIsRestoreModalOpen(false)}
+      />
+      <DeleteAlertModal
+        isOpen={isDeleteModalOpen}
+        alertId={alertId}
+        onClose={() => setIsDeleteModalOpen(false)}
+      />
+    </ArchiveTableContext.Provider>
   );
 });
 
-ArchiveTable.propTypes = {
-  countryCode: PropTypes.string,
+ArchiveTableComponent.propTypes = {
+  countryCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  period: PropTypes.string.isRequired,
 };
 
-ArchiveTable.defaultProps = {
-  countryCode: null,
-};
+const mapStateToProps = state => ({
+  countryCodes: getCountryCodes(state),
+});
+
+export const ArchiveTable = connect(mapStateToProps)(ArchiveTableComponent);

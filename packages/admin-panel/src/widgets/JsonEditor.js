@@ -27,7 +27,7 @@ const HelperText = styled(Typography)`
   line-height: 1.66;
 `;
 
-export const JsonEditor = ({ inputKey, label, secondaryLabel, value, onChange }) => {
+export const JsonEditor = ({ inputKey, label, secondaryLabel, value, onChange, stringify }) => {
   if (!value) {
     return null;
   }
@@ -45,7 +45,7 @@ export const JsonEditor = ({ inputKey, label, secondaryLabel, value, onChange })
       <Editor
         history
         value={editorValue}
-        onChange={json => onChange(inputKey, JSON.stringify(json))}
+        onChange={json => onChange(inputKey, stringify ? JSON.stringify(json) : json)}
       />
       {secondaryLabel && <HelperText>{secondaryLabel}</HelperText>}
     </Container>
@@ -58,9 +58,11 @@ JsonEditor.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.array]),
   onChange: PropTypes.func.isRequired,
   secondaryLabel: PropTypes.string,
+  stringify: PropTypes.bool,
 };
 
 JsonEditor.defaultProps = {
   secondaryLabel: null,
   value: null,
+  stringify: true,
 };

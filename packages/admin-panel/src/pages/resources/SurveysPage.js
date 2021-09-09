@@ -7,6 +7,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
+const PERIOD_GRANULARITIES = [
+  { label: 'Daily', value: 'daily' },
+  { label: 'Weekly', value: 'weekly' },
+  { label: 'Monthly', value: 'monthly' },
+  { label: 'Quarterly', value: 'quarterly' },
+  { label: 'Yearly', value: 'yearly' },
+];
+
+const SERVICE_TYPES = [
+  { label: 'DHIS', value: 'dhis' },
+  { label: 'Tupaia', value: 'tupaia' },
+];
+
 const SURVEY_FIELDS = [
   {
     Header: 'Name',
@@ -61,19 +74,17 @@ const SURVEY_COLUMNS = [
       fields: [
         ...SURVEY_FIELDS,
         {
+          Header: 'Reporting Period',
+          source: 'period_granularity',
+          editConfig: {
+            options: [{ label: 'None', value: '' }, ...PERIOD_GRANULARITIES],
+          },
+        },
+        {
           Header: 'Data Service',
           source: 'data_source.service_type',
           editConfig: {
-            options: [
-              {
-                label: 'DHIS',
-                value: 'dhis',
-              },
-              {
-                label: 'Tupaia',
-                value: 'tupaia',
-              },
-            ],
+            options: SERVICE_TYPES,
             setFieldsOnChange: (newValue, currentRecord) => {
               const { isDataRegional = true } = currentRecord['data_source.config'];
               const config = newValue === 'dhis' ? { isDataRegional } : {};
@@ -390,19 +401,17 @@ const IMPORT_CONFIG = {
       optionValueKey: 'name',
     },
     {
+      label: 'Reporting Period',
+      secondaryLabel:
+        'Select a reporting period if new responses should overwrite previous ones within the same period',
+      parameterKey: 'periodGranularity',
+      options: PERIOD_GRANULARITIES,
+    },
+    {
       label: 'Data service',
       secondaryLabel: 'Select the data service this survey should use, or leave blank for tupaia',
       parameterKey: 'serviceType',
-      options: [
-        {
-          label: 'DHIS',
-          value: 'dhis',
-        },
-        {
-          label: 'Tupaia',
-          value: 'tupaia',
-        },
-      ],
+      options: SERVICE_TYPES,
     },
   ],
 };

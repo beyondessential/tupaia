@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-/* eslint-disable max-classes-per-file */
-
 import { PERIOD_TYPES, convertToPeriod, periodToType } from '@tupaia/utils';
 import { getPreferredPeriod, getContinuousPeriodsForAnalytics } from './utils';
 
@@ -108,12 +106,18 @@ class FinalValueAggregator {
     this.cache = cache;
   }
 
-  getContinuousValues(analytics, aggregationPeriod) {
-    const periods = getContinuousPeriodsForAnalytics(analytics, aggregationPeriod, true);
+  getFilledValues(aggregationPeriod, fillEmptyPeriodsWith) {
+    const fillingPreviousValues = fillEmptyPeriodsWith === 'previous';
 
     const values = [];
     this.cache.iterateOrganisationUnitCache(organisationUnitCache => {
-      let mostRecentValue;
+      const analyticsPerOrgUnit = Object.values(organisationUnitCache);
+      const periods = getContinuousPeriodsForAnalytics(
+        analyticsPerOrgUnit,
+        aggregationPeriod,
+        fillingPreviousValues, // To get a continuous period till now, we need to set true for this option config (continueTilCurrentPeriod). This can be a new option config in the future.
+      );
+      let mostRecentValue = fillingPreviousValues ? undefined : analyticsPerOrgUnit[0];
 
       periods.forEach(period => {
         const valueForPeriod = organisationUnitCache[period];
@@ -122,10 +126,14 @@ class FinalValueAggregator {
           mostRecentValue = valueForPeriod;
         }
         if (mostRecentValue !== undefined) {
-          values.push({
+          const valueForOneOrgUnit = {
             ...mostRecentValue,
             period,
-          });
+          };
+          if (!fillingPreviousValues && !valueForPeriod) {
+            valueForOneOrgUnit.value = fillEmptyPeriodsWith;
+          }
+          values.push(valueForOneOrgUnit);
         }
       });
     });
@@ -143,15 +151,13 @@ class FinalValueAggregator {
 
 export const getFinalValuePerPeriod = (analytics, aggregationConfig, aggregationPeriod) => {
   const defaultOptions = {
-    fillEmptyPeriodsTilNow: false,
     preferredPeriodType: PERIOD_TYPES.YEAR,
   };
-
   const options = { ...defaultOptions, ...aggregationConfig };
   const cache = new FinalValueCache(analytics, aggregationPeriod, options.preferredPeriodType);
   const valueAggregator = new FinalValueAggregator(cache);
 
-  return options.fillEmptyPeriodsTilNow
-    ? valueAggregator.getContinuousValues(analytics, aggregationPeriod)
+  return options.hasOwnProperty('fillEmptyPeriodsWith')
+    ? valueAggregator.getFilledValues(aggregationPeriod, options.fillEmptyPeriodsWith)
     : valueAggregator.getDistinctValues();
 };

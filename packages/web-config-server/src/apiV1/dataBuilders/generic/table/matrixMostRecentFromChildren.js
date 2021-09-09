@@ -3,7 +3,7 @@ import {
   getDataElementsInGroup,
   getDataElementsInGroupSet,
   getChildOrganisationUnits,
-  mapOrgUnitToGroupCodes,
+  mapOrgUnitCodeToGroup,
 } from '/apiV1/utils';
 import { buildCategories } from './buildCategories';
 
@@ -30,12 +30,12 @@ export const matrixMostRecentFromChildren = async (
 
   const { organisationUnits, categoryMapping, dataElementsInfo, optionSetOptions } = fetchedData;
 
-  const orgUnitToGroupKeys = mapOrgUnitToGroupCodes(organisationUnits);
+  const orgUnitMap = mapOrgUnitCodeToGroup(organisationUnits);
 
   const dataElementCodes = Object.keys(dataElementsInfo);
   const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query, {
     aggregationType: aggregator.aggregationTypes.MOST_RECENT_PER_ORG_GROUP,
-    aggregationConfig: { orgUnitToGroupKeys },
+    aggregationConfig: { orgUnitMap },
   });
   const returnJson = {};
 

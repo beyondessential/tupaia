@@ -11,8 +11,7 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "babel src --out-dir dist --source-maps --ignore \"src/__tests__/**\" --config-file \"../../babel.config.json\"",
-    "build:ts": "tsc",
+    "build": "babel src --out-dir dist --source-maps --ignore \"src/__tests__/**\" --config-file \"../../babel.config.json\" && tsc",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
     "test": "jest",
@@ -26,6 +25,7 @@
     "@tupaia/indicators": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "@tupaia/weather-api": "1.0.0",
+    "@tupaia/kobo-api": "1.0.0",
     "case": "^1.5.5",
     "lodash.flatten": "^4.4.0",
     "lodash.groupby": "^4.6.0",

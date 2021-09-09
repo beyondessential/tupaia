@@ -4,13 +4,15 @@ DIR=$(dirname "$0")
 . ${DIR}/utils.sh
 
 INVALID_CHARS=('/' '\' '.' '&' '?')
-SUBDOMAIN_SUFFIXES=(admin aggregation api config export mobile psss psss-api report-api tonga-aggregation www)
+SUBDOMAIN_SUFFIXES=(admin admin-api aggregation api config export lesmis lesmis-api mobile psss psss-api report report-api ssh entity entity-api tonga-aggregation www)
 
 # Branch names are used in AWS EC2 deployments. They are combined with standard suffixes
 # to create deployment urls, eg {{branchName}}-tonga-aggregation.tupaia.org
 MAX_SUBDOMAIN_LENGTH=64
 MAX_SUBDOMAIN_SUFFIX_LENGTH=$(get_max_length "${SUBDOMAIN_SUFFIXES[@]}")
 MAX_BRANCH_NAME_LENGTH=$((MAX_SUBDOMAIN_LENGTH - ${MAX_SUBDOMAIN_SUFFIX_LENGTH} - 1)) # Subtract 1 for the connecting `-`
+# As of 11/08/21, MAX_BRANCH_NAME_LENGTH = 64 - 17 - 1 = 46 (Longest subdomain "tonga-aggregation")
+
 
 function get_branch_name() {
     local branch_name="$CI_BRANCH"

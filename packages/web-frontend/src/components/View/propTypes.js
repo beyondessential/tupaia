@@ -18,6 +18,7 @@ export const VIEW_CONTENT_SHAPE = {
   name: PropTypes.string,
   data: PropTypes.arrayOf(PropTypes.object),
   periodGranularity: GRANULARITY_SHAPE,
+  reference: PropTypes.object,
 };
 
 export const CONDITIONAL_MATRIX_CONDITION_SHAPE = {

@@ -1,11 +1,13 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ * Tupaia
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ */
 
 import momentTimezone from 'moment-timezone';
+import moment from 'moment';
 
-import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import { MaterializedViewLogDatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+
 class SurveyResponseType extends DatabaseType {
   static databaseType = TYPES.SURVEY_RESPONSE;
 
@@ -40,8 +42,8 @@ class SurveyResponseType extends DatabaseType {
     return entity.isTrackedEntity();
   }
 
-  timezoneAwareSubmissionTime() {
-    return momentTimezone(this.submission_time).tz(this.timezone);
+  dataTime() {
+    return moment(this.data_time);
   }
 
   timezoneAwareEndTime() {
@@ -49,25 +51,14 @@ class SurveyResponseType extends DatabaseType {
   }
 }
 
-export class SurveyResponseModel extends DatabaseModel {
-  notifiers = [onChangeUpdateUserReward];
+export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
+  notifiers = [onChangeMarkAnswersChanged];
 
   get DatabaseTypeClass() {
     return SurveyResponseType;
   }
 
   isDeletableViaApi = true;
-
-  updateById(id, fieldsToUpdate) {
-    // If the entity or date has changed, mark all answers as changed so they resync to DHIS2 with
-    // the new entity/date (no need to async/await, just set it going)
-    if (fieldsToUpdate.entity_id || fieldsToUpdate.submission_time) {
-      this.otherModels.answer.markAsChanged({
-        survey_response_id: id,
-      });
-    }
-    return super.updateById(id, fieldsToUpdate);
-  }
 
   getOrgUnitEntityTypes = () => {
     const orgUnitEntityTypes = Object.values(this.otherModels.entity.orgUnitEntityTypes);
@@ -107,23 +98,18 @@ export class SurveyResponseModel extends DatabaseModel {
   }
 }
 
-const onChangeUpdateUserReward = async (
-  { type: changeType, record_id: recordId, new_record: newRecord },
+const onChangeMarkAnswersChanged = async (
+  { new_record: newRecord, old_record: oldRecord, record_id: surveyResponseId },
   models,
 ) => {
-  const modelDetails = {
-    type: 'SurveyResponse',
-    record_id: recordId,
-  };
+  // No need to mark any answers changed if freshly creating or fully deleting
+  if (!newRecord || !oldRecord) return;
 
-  if (changeType === 'delete') {
-    models.userReward.delete(modelDetails);
-  } else {
-    models.userReward.updateOrCreate(modelDetails, {
-      ...modelDetails,
-      coconuts: 1,
-      user_id: newRecord.user_id,
-      creation_date: newRecord.end_time,
+  // If the entity or date has changed, mark all answers as changed so they resync to DHIS2 with
+  // the new entity/date (no need to async/await, just set it going)
+  if (newRecord.entity_id !== oldRecord.entity_id || newRecord.data_time !== oldRecord.data_time) {
+    models.answer.markAsChanged({
+      survey_response_id: surveyResponseId,
     });
   }
 };

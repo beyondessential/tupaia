@@ -5,18 +5,17 @@
 
 import groupBy from 'lodash.groupby';
 
-import {
-  convertToPeriod,
-  EARLIEST_DATA_DATE,
-  getPeriodsInRange,
-  momentToPeriod,
-  utcMoment,
-} from '@tupaia/utils';
+import { convertToPeriod, EARLIEST_DATA_DATE_STRING, getPeriodsInRange } from '@tupaia/utils';
 import { getContinuousPeriodsForAnalytics } from './utils';
 
 export const sumPreviousPerPeriod = (analytics, aggregationConfig, aggregationPeriod) => {
-  const { requestedPeriod } = aggregationConfig;
-  const periods = calculatePeriodsFromAnalytics(analytics, aggregationPeriod, requestedPeriod);
+  const { requestedPeriod, sumTillLatestData } = aggregationConfig;
+  const periods = calculatePeriodsFromAnalytics(
+    analytics,
+    aggregationPeriod,
+    requestedPeriod,
+    sumTillLatestData,
+  );
   const analyticsByPeriod = groupBy(analytics, analytic =>
     convertToPeriod(analytic.period, aggregationPeriod),
   );
@@ -73,7 +72,12 @@ const sumByAnalytic = (previousAnalytics, currentAnalytics, period) => {
   return returnAnalytics;
 };
 
-const calculatePeriodsFromAnalytics = (analytics, aggregationPeriod, requestedPeriod) => {
+const calculatePeriodsFromAnalytics = (
+  analytics,
+  aggregationPeriod,
+  requestedPeriod,
+  sumTillLatestData = false,
+) => {
   const periodsInAnalytics = getContinuousPeriodsForAnalytics(analytics, aggregationPeriod);
   if (!requestedPeriod) {
     return periodsInAnalytics;
@@ -83,7 +87,7 @@ const calculatePeriodsFromAnalytics = (analytics, aggregationPeriod, requestedPe
     .map(period => convertToPeriod(period, aggregationPeriod));
 
   const endPeriod = Math.min(
-    Math.max(...periodsInAnalytics),
+    sumTillLatestData ? Math.max(...periodsInAnalytics) : Infinity,
     Math.max(...requestedPeriodArray),
   ).toString();
 
@@ -95,12 +99,7 @@ const calculatePeriodsFromAnalytics = (analytics, aggregationPeriod, requestedPe
   return getPeriodsInRange(startPeriod, endPeriod);
 };
 
-export const getDateRangeForSumPreviousPerPeriod = (dateRange, _, periodType) => {
-  const startDateMoment = EARLIEST_DATA_DATE.date(1);
-  const endDateMoment = utcMoment(dateRange.endDate) || utcMoment().endOf('month');
-
-  return {
-    startDate: momentToPeriod(startDateMoment, periodType),
-    endDate: momentToPeriod(endDateMoment, periodType),
-  };
-};
+export const getDateRangeForSumPreviousPerPeriod = dateRange => ({
+  startDate: EARLIEST_DATA_DATE_STRING,
+  endDate: dateRange.endDate,
+});

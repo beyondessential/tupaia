@@ -7,6 +7,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
+const EDIT_CONFIG = {
+  title: 'Edit Permission Groups',
+};
+
 const COLUMNS = [
   {
     Header: 'Name',
@@ -36,8 +40,10 @@ export const PermissionGroupsPage = ({ getHeaderEl }) => (
     title="Permission Groups"
     endpoint="permissionGroups"
     columns={COLUMNS}
+    editConfig={EDIT_CONFIG}
     createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
+    defaultSorting={[{ id: 'name', desc: false }]}
   />
 );
 

@@ -4,6 +4,7 @@
  */
 
 export const TYPES = {
+  ANALYTICS: 'analytics',
   ANCESTOR_DESCENDANT_RELATION: 'ancestor_descendant_relation',
   ANSWER: 'answer',
   ACCESS_REQUEST: 'access_request',
@@ -11,10 +12,13 @@ export const TYPES = {
   API_REQUEST_LOG: 'api_request_log',
   COMMENT: 'comment',
   COUNTRY: 'country',
-  DASHBOARD_GROUP: 'dashboardGroup',
-  DASHBOARD_REPORT: 'dashboardReport',
+  DASHBOARD: 'dashboard',
+  DASHBOARD_ITEM: 'dashboard_item',
+  DASHBOARD_RELATION: 'dashboard_relation',
   DATA_ELEMENT_DATA_GROUP: 'data_element_data_group',
   DATA_SOURCE: 'data_source',
+  DATA_SERVICE_ENTITY: 'data_service_entity',
+  DATA_SERVICE_SYNC_GROUP: 'data_service_sync_group',
   DHIS_SYNC_LOG: 'dhis_sync_log',
   DHIS_SYNC_QUEUE: 'dhis_sync_queue',
   DISASTER: 'disaster',
@@ -27,6 +31,7 @@ export const TYPES = {
   FEED_ITEM: 'feed_item',
   GEOGRAPHICAL_AREA: 'geographical_area',
   INDICATOR: 'indicator',
+  LEGACY_REPORT: 'legacy_report',
   MAP_OVERLAY: 'mapOverlay',
   MAP_OVERLAY_GROUP: 'map_overlay_group',
   MAP_OVERLAY_GROUP_RELATION: 'map_overlay_group_relation',
@@ -49,8 +54,9 @@ export const TYPES = {
   SURVEY_SCREEN_COMPONENT: 'survey_screen_component',
   SURVEY_SCREEN: 'survey_screen',
   SURVEY: 'survey',
+  SYNC_SERVICE: 'sync_service',
+  SYNC_SERVICE_LOG: 'sync_service_log',
   USER_ACCOUNT: 'user_account',
   USER_ENTITY_PERMISSION: 'user_entity_permission',
-  USER_REWARD: 'user_reward',
   USER_SESSION: 'userSession',
 };

@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button } from '.';
+import { Button } from './Button';
 import { THEME_COLOR_ONE, THEME_COLOR_TWO, BORDER_RADIUS } from '../globalStyles';
 
 export const BlueButton = props => {

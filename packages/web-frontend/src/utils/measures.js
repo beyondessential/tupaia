@@ -24,6 +24,7 @@ export const MEASURE_TYPE_RADIUS = 'radius';
 export const MEASURE_TYPE_SPECTRUM = 'spectrum';
 export const MEASURE_TYPE_SHADING = 'shading';
 export const MEASURE_TYPE_SHADED_SPECTRUM = 'shaded-spectrum';
+export const MEASURE_TYPE_POPUP_ONLY = 'popup-only';
 
 export const MEASURE_VALUE_OTHER = 'other';
 export const MEASURE_VALUE_NULL = 'null';
@@ -209,16 +210,13 @@ export function processMeasureInfo(response) {
       // use in the legend scale labels.
       const { min, max } = getSpectrumScaleValues(measureData, measureOption);
 
-      // A grey no data colour looks like part of the neutral scale
-      const noDataColour = scaleType === SCALE_TYPES.NEUTRAL ? 'black' : MAP_COLORS.NO_DATA;
-
       return {
         ...measureOption,
         values,
         valueMapping,
         min,
         max,
-        noDataColour,
+        noDataColour: MAP_COLORS.NO_DATA,
       };
     }
 
@@ -364,6 +362,8 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
           break;
         case MEASURE_TYPE_SHADING:
           displayInfo.color = MAP_COLORS[valueInfo.color] || valueInfo.color || MAP_COLORS.NO_DATA;
+          break;
+        case MEASURE_TYPE_POPUP_ONLY:
           break;
         case MEASURE_TYPE_COLOR:
         default:

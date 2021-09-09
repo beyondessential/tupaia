@@ -46,8 +46,8 @@ NameCell.propTypes = {
 const countryColumns = [
   {
     title: 'Date ',
-    key: 'weekNumber',
-    width: '190px', // must be same width as SiteSummaryTable name column to align
+    key: 'period',
+    width: COLUMN_WIDTHS.WEEKLY_REPORT_DATE,
     align: 'left',
     CellComponent: NameCell,
     sortable: false,

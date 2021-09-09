@@ -3,8 +3,6 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-/* eslint-disable max-classes-per-file */
-
 import winston from 'winston';
 import { respond } from './respond';
 
@@ -16,7 +14,7 @@ class LoggedError extends Error {
   constructor(message) {
     super(message);
     this.message = message;
-    winston.error(this.message);
+    winston.error(this.message, { stack: this.stack });
   }
 }
 
@@ -71,6 +69,9 @@ export class PermissionsError extends RespondingError {
 }
 
 export class UploadError extends RespondingError {
+  /**
+   * @param {{ message: string}} [originalError]
+   */
   constructor(originalError) {
     super(`File upload failed${originalError ? `: ${originalError.message}` : ''}`, 500);
   }

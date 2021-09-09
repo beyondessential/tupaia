@@ -242,6 +242,7 @@ const mapDispatchToProps = (dispatch, { reduxId }) => ({
 const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => {
   const {
     baseFilter = {},
+    defaultFilters = [],
     defaultSorting = [],
     endpoint,
     columns,
@@ -251,7 +252,8 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => {
   const onRefreshData = () =>
     dispatch(refreshData(reduxId, endpoint, columns, baseFilter, stateProps));
   const initialiseTable = () => {
-    dispatch(changeSorting(reduxId, defaultSorting)); // will trigger a data fetch afterwards
+    dispatch(changeSorting(reduxId, defaultSorting));
+    dispatch(changeFilters(reduxId, defaultFilters)); // will trigger a data fetch afterwards
   };
   return {
     reduxId,

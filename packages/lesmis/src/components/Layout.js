@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-
+import React from 'react';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import MuiBox from '@material-ui/core/Box';
@@ -16,17 +16,6 @@ const desktopWidth = '768px';
 export const Container = styled(MuiContainer)`
   min-height: 85vh;
   padding-top: 5%;
-
-  // Todo: Make page layouts
-  // @see https://github.com/beyondessential/tupaia-backlog/issues/2279
-
-  //display: grid;
-  //grid-template-columns: 2fr 1fr;
-  //grid-gap: 40px;
-
-  // @media (max-width: ${desktopWidth}) {
-  //   grid-template-columns: 1fr;
-  // }
 `;
 
 const headerHeight = '315px';
@@ -45,6 +34,18 @@ export const Main = styled.main`
   }
 `;
 
+const ToolbarWrapper = styled.section`
+  padding-top: 1.1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+`;
+
+export const Toolbar = ({ children }) => (
+  <ToolbarWrapper>
+    <MuiContainer maxWidth="xl">{children}</MuiContainer>
+  </ToolbarWrapper>
+);
+
 export const FlexStart = styled(MuiBox)`
   display: flex;
   align-items: center;
@@ -61,4 +62,16 @@ export const FlexSpaceBetween = styled(MuiBox)`
   display: flex;
   align-items: center;
   justify-content: space-between;
+`;
+
+export const FlexCenter = styled(MuiBox)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const FlexColumn = styled(MuiBox)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;

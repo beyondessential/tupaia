@@ -14,7 +14,7 @@ import {
   CardTabPanel,
   Toast,
 } from '@tupaia/ui-components';
-import { FetchLoader } from '../components';
+import { ComingSoon, FetchLoader } from '../components';
 import { createNote, updateNote, deleteNote } from '../api';
 import * as COLORS from '../constants/colors';
 
@@ -66,7 +66,8 @@ export const NotesTab = ({ state }) => {
   };
 
   return (
-    <Container>
+    <Container style={{ position: 'relative' }}>
+      <ComingSoon text="Alert notes coming soon" />
       <CardTabPanel>
         <FetchLoader state={state}>
           {messages.map(data => {

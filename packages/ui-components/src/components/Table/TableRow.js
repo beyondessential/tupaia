@@ -70,7 +70,7 @@ export const StyledTableRow = styled(MuiTableRow)`
 `;
 
 export const TableRow = React.memo(({ columns, rowData, className, onRowClick }) => (
-  <StyledTableRow className={className} onClick={onRowClick}>
+  <StyledTableRow className={className} onClick={onRowClick && (e => onRowClick(e, rowData))}>
     <TableRowCells columns={columns} rowData={rowData} />
   </StyledTableRow>
 ));
@@ -84,7 +84,7 @@ TableRow.propTypes = {
 
 TableRow.defaultProps = {
   className: '',
-  onRowClick: null,
+  onRowClick: () => {},
 };
 
 const condensedRowBackgroundColor = '#EFEFEF';

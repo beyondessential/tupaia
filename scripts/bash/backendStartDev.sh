@@ -6,14 +6,14 @@ set -e
 ##
 # usage:
 # $1 - port to run babel inspector on
-# Optionally provide '-s' or '--skip-internal' to skip the build and watch of internal dependencies
+# Optionally provide '-i' or '--include-internal' to include build and watching internal dependencies
 # Optionally provide '-ts' or '--typescript' to start typescript server
 
 ##
-USAGE="Usage: backendStartDev babel_port_inspector [-s --skip-internal] [-ts --typescript]"
+USAGE="Usage: backendStartDev babel_port_inspector [-i --include-internal] [-ts --typescript]"
 DIR=$(dirname "$0")
 watch_flags=""
-skip_internal=false
+include_internal=false
 type_script=false
 inspect_port=${1}
 
@@ -26,9 +26,13 @@ while [ "$2" != "" ]; do
         type_script=true
         shift
         ;;
-    -s | --skip-internal)
-        skip_internal=true
+    -i | --include-internal)
+        include_internal=true
         shift
+        ;;
+    -s | --skip-internal)
+        echo "Skipping internal dependencies is now done by default. Remove the -s | --skip-internal flag, and if you want to include internal dependencies, add a -i (do try it - it's a lot faster than it used to be, because it only builds those relevant to the current package!)"
+        exit 1
         ;;
     *)
         echo $USAGE
@@ -44,16 +48,16 @@ fi
 
 echo "Starting server"
 
-if [[ ${skip_internal} == true ]]; then
-    echo "Skipping internal dependency build and watch"
-    eval ${start_server}
-else
-    echo "Internal dependencies are under watch for hot reload (use --skip-internal or -s for faster startup times)"
-    for PACKAGE in $(${DIR}/getInternalDependencies.sh); do
+if [[ ${include_internal} == true ]]; then
+    echo "Internal dependencies are under watch for hot reload"
+    for PACKAGE in $(${DIR}/getInternalDependencies.sh .); do
         watch_flags="${watch_flags} --watch ../${PACKAGE}/dist"
     done
     # add the watch flags to the server start process, as well as a 1 second delay to debounce the
     # many restarts that otherwise happen during the initial build of internal dependencies
     start_server="${start_server} --delay 1 ${watch_flags}"
-    yarn concurrently "${DIR}/buildInternalDependencies.sh --watch --withTypes" "eval ${start_server}"
+    yarn concurrently "${DIR}/buildInternalDependencies.sh --watch --packagePath ." "eval ${start_server}"
+else
+    echo "Starting server without internal dependency build and watch. To include internal dependencies, add the -i flag - it's much faster than it used to be!"
+    eval ${start_server}
 fi

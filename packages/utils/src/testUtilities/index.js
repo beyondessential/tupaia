@@ -5,4 +5,3 @@
 
 export { addCustomJestMatchers } from './addCustomJestMatchers';
 export { createJestMockInstance } from './createJestMockInstance';
-export { oneSecondSleep, sleep } from './sleep';

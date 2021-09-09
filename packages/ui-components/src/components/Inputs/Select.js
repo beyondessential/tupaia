@@ -19,6 +19,7 @@ const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
 
 const StyledTextField = styled(TextField)`
   .MuiSelect-root {
+    padding-right: 1.8rem;
     color: ${props => props.theme.palette.text.primary};
 
     &:focus {
@@ -39,15 +40,27 @@ export const SelectField = ({ SelectProps, ...props }) => (
 );
 
 SelectField.propTypes = {
-  SelectProps: PropTypes.object.isRequired,
+  SelectProps: PropTypes.object,
 };
 
-const MenuItem = styled(MuiMenuItem)`
+SelectField.defaultProps = {
+  SelectProps: null,
+};
+
+export const MenuItem = styled(MuiMenuItem)`
   padding-top: 0.75rem;
   padding-bottom: 0.5rem;
 `;
 
-export const Select = ({ value, onChange, options, placeholder, defaultValue, ...props }) => {
+export const Select = ({
+  value,
+  onChange,
+  options,
+  showPlaceholder,
+  placeholder,
+  defaultValue,
+  ...props
+}) => {
   const [localValue, setValue] = useState(defaultValue);
 
   const handleChange = useCallback(
@@ -68,9 +81,12 @@ export const Select = ({ value, onChange, options, placeholder, defaultValue, ..
       }}
       {...props}
     >
-      <MenuItem value="" disabled>
-        {placeholder}
-      </MenuItem>
+      {showPlaceholder && (
+        <MenuItem value="" disabled>
+          {placeholder}
+        </MenuItem>
+      )}
+
       {options.map(option => (
         <MenuItem key={option.value} value={option.value}>
           {option.label}
@@ -82,9 +98,10 @@ export const Select = ({ value, onChange, options, placeholder, defaultValue, ..
 
 Select.propTypes = {
   id: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   options: PropTypes.array.isRequired,
   placeholder: PropTypes.string,
+  showPlaceholder: PropTypes.bool,
   defaultValue: PropTypes.any,
   value: PropTypes.any,
   onChange: PropTypes.func,
@@ -92,8 +109,10 @@ Select.propTypes = {
 
 Select.defaultProps = {
   placeholder: 'Please select',
+  showPlaceholder: true,
   defaultValue: '',
   value: '',
+  label: null,
   onChange: null,
 };
 

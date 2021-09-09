@@ -18,7 +18,7 @@ import BackButton from '../../../components/mobile/BackButton';
 import { DARK_BLUE, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
 import { getFacilityThumbnailUrl, getMapUrl } from '../../../utils';
 import { toggleDashboardSelectExpand, setDashboardGroup } from '../../../actions';
-import { selectCurrentDashboardGroupCode, selectCurrentOrgUnit } from '../../../selectors';
+import { selectCurrentDashboardName, selectCurrentOrgUnit } from '../../../selectors';
 
 class FacilityScreen extends PureComponent {
   componentWillMount() {
@@ -86,9 +86,9 @@ class FacilityScreen extends PureComponent {
 
   render() {
     const {
-      dashboardConfig,
+      dashboards,
       orgUnit,
-      currentDashboardGroupCode,
+      currentDashboardName,
       onToggleDashboardSelectExpand,
       dashboardFilterIsExpanded,
       onChangeDashboardGroup,
@@ -103,8 +103,8 @@ class FacilityScreen extends PureComponent {
         </div>
         <Dashboard
           orgUnit={orgUnit}
-          dashboardConfig={dashboardConfig}
-          currentDashboardGroupCode={currentDashboardGroupCode}
+          dashboards={dashboards}
+          currentDashboardName={currentDashboardName}
           toggleFilter={onToggleDashboardSelectExpand}
           filterIsExpanded={dashboardFilterIsExpanded}
           handleFilterChange={onChangeDashboardGroup}
@@ -183,21 +183,31 @@ const styles = {
 };
 
 FacilityScreen.propTypes = {
-  dashboardConfig: PropTypes.object.isRequired,
+  dashboards: PropTypes.array.isRequired,
   orgUnit: PropTypes.object.isRequired,
   isLoading: PropTypes.bool,
+  dashboardFilterIsExpanded: PropTypes.bool,
+  currentDashboardName: PropTypes.string,
+  onToggleDashboardSelectExpand: PropTypes.func.isRequired,
+  onChangeDashboardGroup: PropTypes.func.isRequired,
+};
+
+FacilityScreen.defaultProps = {
+  isLoading: false,
+  currentDashboardName: '',
+  dashboardFilterIsExpanded: PropTypes.func,
 };
 
 const mapStateToProps = state => {
-  const { dashboardConfig, isLoadingOrganisationUnit } = state.global;
+  const { dashboards, isLoadingOrganisationUnit } = state.global;
   const { isGroupSelectExpanded } = state.dashboard;
 
   return {
-    dashboardConfig,
+    dashboards,
     orgUnit: selectCurrentOrgUnit(state),
     isLoading: isLoadingOrganisationUnit,
     dashboardFilterIsExpanded: isGroupSelectExpanded,
-    currentDashboardGroupCode: selectCurrentDashboardGroupCode(state),
+    currentDashboardName: selectCurrentDashboardName(state),
   };
 };
 

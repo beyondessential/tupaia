@@ -31,7 +31,7 @@ export class AccessPolicy {
    * @param {string} [entity]
    * @param {string} [permissionGroup]
    *
-   * @returns boolean Whether or not the user has access to any of the entities, optionally for
+   * @returns {boolean} Whether or not the user has access to any of the entities, optionally for
    *                  the given permission group
    */
   allows(entity, permissionGroup) {
@@ -61,7 +61,7 @@ export class AccessPolicy {
    * @param {string[]} [entities]
    * @param {string} [permissionGroup]
    *
-   * @returns boolean Whether or not the user has access to any of the entities, optionally for
+   * @returns {boolean} Whether or not the user has access to any of the entities, optionally for
    *                  the given permission group
    */
   allowsSome(entities, permissionGroup) {
@@ -94,7 +94,7 @@ export class AccessPolicy {
    *
    * @param {string[]} [entities]
    *
-   * @returns string[] The permission groups, e.g ['Admin', 'Donor']
+   * @returns {string[]} The permission groups, e.g ['Admin', 'Donor']
    */
   getPermissionGroups(entities) {
     return [...this.getPermissionGroupsSet(entities)];

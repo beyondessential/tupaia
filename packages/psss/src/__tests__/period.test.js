@@ -2,6 +2,8 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+import MockDate from 'mockdate';
+
 import {
   getDisplayDatesByPeriod,
   getPeriodByDate,
@@ -36,25 +38,23 @@ describe('period', () => {
   });
 
   it('Gets Days Till Due Day', async () => {
-    const sunday = new Date(1606561200000); // Sun 29th November 2020
-    const monday = new Date(1606647600000); // Mon 30th November 2020
-    const tuesday = new Date(1606734000000); // Tuesday 1st December 2020
-    const wednesday = new Date(1606820400000); // Wednesday 2nd December 2020
+    const sunday = '2020-11-29';
+    const monday = '2020-11-30';
+    const tuesday = '2020-12-01';
+    const wednesday = '2020-12-02';
 
-    let spy = jest.spyOn(global, 'Date').mockImplementation(() => sunday);
+    MockDate.set(sunday);
     expect(getDaysTillDueDay()).toEqual(-4);
-    spy.mockRestore();
 
-    spy = jest.spyOn(global, 'Date').mockImplementation(() => monday);
+    MockDate.set(monday);
     expect(getDaysTillDueDay()).toEqual(2);
-    spy.mockRestore();
 
-    spy = jest.spyOn(global, 'Date').mockImplementation(() => tuesday);
+    MockDate.set(tuesday);
     expect(getDaysTillDueDay()).toEqual(1);
-    spy.mockRestore();
 
-    spy = jest.spyOn(global, 'Date').mockImplementation(() => wednesday);
+    MockDate.set(wednesday);
     expect(getDaysTillDueDay()).toEqual(0);
-    spy.mockRestore();
+
+    MockDate.reset();
   });
 });

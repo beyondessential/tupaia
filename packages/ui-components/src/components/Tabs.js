@@ -25,7 +25,7 @@ export const Tabs = props => {
     },
     [setValue],
   );
-  return <StyledTabs value={value} onChange={handleChange} {...props} />;
+  return <StyledTabs value={value} onChange={handleChange} variant="scrollable" {...props} />;
 };
 
 /*

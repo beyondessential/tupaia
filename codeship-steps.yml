@@ -1,5 +1,6 @@
 - type: parallel
   name: validate-and-test
+  exclude: -e2e$
   steps:
     - type: parallel
       name: validate
@@ -16,6 +17,12 @@
         - type: parallel
           name: test-batch-1 # they're in sandboxed containers, but share a db which can't handle all at once
           steps:
+            - name: test-admin-panel-server
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh admin-panel-server'
+            - name: test-lesmis-server
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh lesmis-server'
             - name: test-meditrak-server
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh meditrak-server'
@@ -28,6 +35,9 @@
             - name: test-report-server
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh report-server'
+            - name: test-entity-server
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh entity-server'
         - type: parallel
           name: test-batch-2
           steps:
@@ -40,6 +50,9 @@
             - name: test-auth
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh auth'
+            - name: test-indicators
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh indicators'
             - name: test-internal-dependencies
               service: testing
               command: './packages/devops/scripts/ci/testInternalDependencies.sh'
@@ -50,9 +63,12 @@
 - type: serial
   name: pull latest into ec2
   service: deployment
+  exclude: -e2e$
   steps:
     - name: reinstate SSH Private Key File
-      command: /bin/bash -c "echo -e $PRIVATE_SSH_KEY >> /root/.ssh/id_rsa"
+      # Need to use 'sed' here to remove open/close quotes, see: https://github.com/docker/compose/issues/2854
+      # Note: this issue is fixed in more recent versions of docker-compose (1.26+) but codeship still uses an older version
+      command: /bin/bash -c "echo -e $PRIVATE_SSH_KEY | sed -e 's/^"//' -e 's/"$//' >> /root/.ssh/id_rsa"
     - name: chmod id_rsa
       command: chmod 600 /root/.ssh/id_rsa
     - name: pull latest and install dependencies
@@ -60,6 +76,7 @@
 - type: serial
   name: deploy-all
   service: deployment
+  exclude: -e2e$
   steps:
     - type: serial
       name: deploy-backends
@@ -69,12 +86,18 @@
           steps:
             - name: deploy-web-config-server
               command: './packages/devops/scripts/ci/deployBackend.sh web-config-server'
+            - name: deploy-lesmis-server
+              command: './packages/devops/scripts/ci/deployBackend.sh lesmis-server'
             - name: deploy-meditrak-server
               command: './packages/devops/scripts/ci/deployBackend.sh meditrak-server'
             - name: deploy-psss-server
               command: './packages/devops/scripts/ci/deployBackend.sh psss-server'
+            - name: deploy-admin-panel-server
+              command: './packages/devops/scripts/ci/deployBackend.sh admin-panel-server'
             - name: deploy-report-server
               command: './packages/devops/scripts/ci/deployBackend.sh report-server'
+            - name: deploy-entity-server
+              command: './packages/devops/scripts/ci/deployBackend.sh entity-server'
         # run migrations immediately after backend deployment has finished so there is minimal time for code/db mismatch
         - name: run db migrations
           command: './packages/devops/scripts/ci/runMigrations.sh'
@@ -88,3 +111,13 @@
           command: './packages/devops/scripts/ci/deployFrontend.sh admin-panel'
         - name: deploy-psss
           command: './packages/devops/scripts/ci/deployFrontend.sh psss'
+        - name: deploy-lesmis
+          command: './packages/devops/scripts/ci/deployFrontend.sh lesmis'
+
+- type: parallel
+  name: e2e-test
+  service: e2e
+  tag: -e2e$
+  steps:
+    - name: e2e-test-web-frontend
+      command: './packages/devops/scripts/ci/testE2e.sh web-frontend'

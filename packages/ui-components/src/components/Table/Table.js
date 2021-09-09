@@ -48,7 +48,7 @@ export const Table = React.memo(
       <TableMessageProvider
         errorMessage={errorMessage}
         isLoading={isLoading}
-        isData={data.length > 0}
+        hasData={data.length > 0}
         noDataMessage={noDataMessage}
         colSpan={columns.length}
       >

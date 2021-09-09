@@ -16,9 +16,10 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  ListSubheader,
 } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
-import { Home, ImportContacts, ContactMail, Close, Menu } from '@material-ui/icons';
+import { Home, ImportContacts, ContactMail, Close, Menu, Assignment } from '@material-ui/icons';
 import { LightIconButton } from '@tupaia/ui-components';
 import { FlexEnd } from './Layout';
 
@@ -27,7 +28,6 @@ const StyledList = styled(List)`
 
   .MuiListItem-gutters {
     padding-left: 2rem;
-    padding-right: 2rem;
   }
 
   .MuiListItemIcon-root {
@@ -38,6 +38,12 @@ const StyledList = styled(List)`
     font-size: 1.125rem;
     line-height: 140%;
   }
+`;
+
+const Subheader = styled(ListSubheader)`
+  padding-left: 2rem;
+  line-height: 1.875rem;
+  margin-top: 0.875rem;
 `;
 
 const MenuSection = styled.div`
@@ -67,7 +73,7 @@ const MenuHeading = styled(Typography)`
 `;
 
 const StyledDivider = styled(Divider)`
-  margin: 0.375rem 1.875rem;
+  margin: 0.5rem 1.9rem 0.3rem;
 `;
 
 const TupaiaText = styled(Typography)`
@@ -93,7 +99,6 @@ export const MainMenu = () => {
           <Menu />
         </LightIconButton>
       </MenuSection>
-
       <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
         <MenuTray>
           <IconButton color="inherit" onClick={toggleDrawer(false)}>
@@ -121,6 +126,13 @@ export const MainMenu = () => {
               <ContactMail />
             </ListItemIcon>
             <ListItemText primary="Contact us" />
+          </ListItemLink>
+          <Subheader component="div">Online Questionnaires</Subheader>
+          <ListItemLink to="/fundamental-quality-standards">
+            <ListItemIcon>
+              <Assignment />
+            </ListItemIcon>
+            <ListItemText primary="Fundamental Quality Standards" />
           </ListItemLink>
         </StyledList>
         <StyledDivider />

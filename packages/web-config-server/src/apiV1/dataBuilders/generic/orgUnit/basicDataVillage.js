@@ -2,7 +2,7 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 export class BasicDataVillageBuilder extends DataBuilder {
   async build() {
-    const facility = await this.entity.parent();
+    const facility = await this.entity.getParent(await this.fetchEntityHierarchyId());
     const facilityName = facility ? facility.name : DataBuilder.NO_DATA_AVAILABLE;
 
     const data = [

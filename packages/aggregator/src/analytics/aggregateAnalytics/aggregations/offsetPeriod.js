@@ -3,7 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { momentToPeriod, periodToType, periodTypeToMomentUnit, utcMoment } from '@tupaia/utils';
+import {
+  momentToDateString,
+  momentToPeriod,
+  periodToMoment,
+  periodToType,
+  periodTypeToMomentUnit,
+  utcMoment,
+} from '@tupaia/utils';
 
 class RequiredConfigFieldError extends Error {
   constructor(fieldKey) {
@@ -24,31 +31,35 @@ const validateOffsetPeriodConfig = (config = {}) => {
 
 const addOffsetToPeriod = (period, { periodType, offset }) => {
   const momentUnit = periodTypeToMomentUnit(periodType.toUpperCase());
-  const momentWithOffset = utcMoment(period).add(offset, momentUnit);
-  const currentPeriodType = periodToType(period);
-  return momentToPeriod(momentWithOffset, currentPeriodType);
+  const momentWithOffset = periodToMoment(period).add(offset, momentUnit);
+  return momentToPeriod(momentWithOffset, periodToType(period));
 };
 
-export const offsetPeriod = (analytics, aggregationConfig) => {
-  validateOffsetPeriodConfig(aggregationConfig);
+export const offsetPeriod = (analytics, config) => {
+  validateOffsetPeriodConfig(config);
 
   return analytics.map(analytic => ({
     ...analytic,
-    period: addOffsetToPeriod(analytic.period, aggregationConfig),
+    period: addOffsetToPeriod(analytic.period, config),
   }));
 };
 
-/**
- * Expands the provided date to the opposite direction than the offset
- * so that enough data will be available for its calculation
- */
-const compensateForPeriodOffset = (date, { periodType, offset }) =>
-  addOffsetToPeriod(date, { periodType, offset: offset * -1 });
-
 export const getDateRangeForOffsetPeriod = (dateRange, config) => {
   validateOffsetPeriodConfig(config);
+
+  const periodType = config.periodType.toUpperCase();
+  // Expands the provided date to the opposite direction than the offset
+  // so that enough data will be available for its calculation
+  const offsetCompensation = config.offset * -1;
+  const momentUnit = periodTypeToMomentUnit(periodType);
+
+  const startMoment = utcMoment(dateRange.startDate).add(offsetCompensation, momentUnit);
+  const endMoment = utcMoment(dateRange.endDate)
+    .add(offsetCompensation, momentUnit)
+    .endOf(momentUnit);
+
   return {
-    startDate: compensateForPeriodOffset(dateRange.startDate, config),
-    endDate: compensateForPeriodOffset(dateRange.endDate, config),
+    startDate: momentToDateString(startMoment),
+    endDate: momentToDateString(endMoment),
   };
 };

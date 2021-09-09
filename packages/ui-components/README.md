@@ -28,3 +28,19 @@ The components are mostly built on top of components from the Material UI librar
 
 - Avoid hard coding children and allow them to be passed in as JSX as much as possible
 - Export components using named exports
+
+### Importing Components
+The build splits the ui components into the following 3 bundles.
+
+- map components (based on what's in: `src/components/Map/index.js`)
+- chart components (based on what's in:`src/components/Chart/index.js`)
+- core ui components (based on what's in: `src/components/index.js`)
+
+#### Core UI Components
+eg. `import { Buttton } from @tupaia/ui-components`
+
+#### Map Components
+eg `import { Legend } from @tupaia/ui-components/lib/map`
+
+#### Chart Components
+eg `import { Chart } from @tupaia/ui-components/lib/chart`

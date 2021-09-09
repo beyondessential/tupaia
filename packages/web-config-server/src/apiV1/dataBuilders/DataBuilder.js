@@ -12,6 +12,7 @@ export class DataBuilder {
   static NO_DATA_AVAILABLE = NO_DATA_AVAILABLE;
 
   /**
+   * @param {ModelRegistry} models
    * @param {Aggregator} aggregator
    * @param {DhisApi} dhisApi
    * @param {?Object} config
@@ -47,9 +48,15 @@ export class DataBuilder {
     dataElementCodes,
     additionalQueryConfig,
     aggregationType = this.aggregationType,
-    aggregationConfig = {},
+    aggregationConfig = this.config.aggregationConfig ?? {},
   ) {
-    const { dataServices, entityAggregation, dataSourceEntityFilter, filter = {} } = this.config;
+    const {
+      dataServices,
+      aggregations,
+      entityAggregation,
+      dataSourceEntityFilter,
+      filter = {},
+    } = this.config;
     const fetchOptions = {
       programCodes: this.getProgramCodesForAnalytics(),
       dataServices,
@@ -59,6 +66,7 @@ export class DataBuilder {
     };
 
     return this.aggregator.fetchAnalytics(dataElementCodes, fetchOptions, this.query, {
+      aggregations,
       aggregationConfig,
       aggregationType,
       filter,

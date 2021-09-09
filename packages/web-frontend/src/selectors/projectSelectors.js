@@ -6,7 +6,6 @@
  */
 
 import { createSelector } from 'reselect';
-import { DEFAULT_BOUNDS } from '../defaults';
 import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
 import { selectLocation } from './utils';
 import { TILE_SETS } from '../constants';
@@ -33,22 +32,13 @@ export const selectCurrentProject = createSelector(
   currentProject => currentProject,
 );
 
-export const selectAdjustedProjectBounds = createSelector(
-  [selectProjectByCode, (_, code) => code],
-  (project, code) => {
-    if (code === 'explore' || code === 'disaster') {
-      return DEFAULT_BOUNDS;
-    }
-    return project && project.bounds;
-  },
-);
-
 export const selectTileSets = createSelector(selectCurrentProject, project => {
   let tileSetKeys = ['osm', 'satellite'];
 
   if (project.config && project.config.tileSets) {
     const customSetKeys = project.config.tileSets.split(',').map(item => item.trim());
-    tileSetKeys = [...tileSetKeys, ...customSetKeys];
+    const { includeDefaultTileSets = true } = project.config;
+    tileSetKeys = includeDefaultTileSets ? [...tileSetKeys, ...customSetKeys] : customSetKeys;
   }
 
   return TILE_SETS.filter(tileSet => tileSetKeys.includes(tileSet.key));
@@ -59,7 +49,7 @@ export const selectActiveTileSetKey = state => state.map.activeTileSetKey;
 export const selectActiveTileSet = createSelector(
   [selectTileSets, selectActiveTileSetKey],
   (tileSets, activeTileSetKey) => {
-    return tileSets.find(tileSet => tileSet.key === activeTileSetKey);
+    return tileSets.find(tileSet => tileSet.key === activeTileSetKey) || tileSets[0];
   },
 );
 

@@ -2,6 +2,7 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
+import { convertDateRangeToPeriodQueryString } from '@tupaia/utils';
 import { getDefaultPeriod } from '/utils';
 
 export class QueryBuilder {
@@ -67,8 +68,10 @@ export class QueryBuilder {
       // If a the api consumer defined a period to use in query parameters, use that
       this.query.period = this.replacementValues.period;
     } else if (!this.query.period) {
-      // If no period defined anywhere, use the default
-      this.query.period = getDefaultPeriod();
+      // If no period defined anywhere, use the period defined by the start and end dates or the default
+      this.query.period =
+        convertDateRangeToPeriodQueryString(this.query.startDate, this.query.endDate) ??
+        getDefaultPeriod();
     }
   }
 }

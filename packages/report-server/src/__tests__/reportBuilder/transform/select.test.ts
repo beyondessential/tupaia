@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { SINGLE_ANALYTIC, MULTIPLE_ANALYTICS } from './transform.fixtures';
+import { SINGLE_ANALYTIC, MULTIPLE_ANALYTICS, AGGREGATEABLE_ANALYTICS } from './transform.fixtures';
 import { buildTransform } from '../../../reportBuilder/transform';
 
 describe('select', () => {
@@ -88,6 +88,31 @@ describe('select', () => {
       { period: '1st Jan 2020', organisationUnit: 'TO', BCD1: 4 },
       { period: '2nd Jan 2020', organisationUnit: 'TO', BCD1: 2 },
       { period: '3rd Jan 2020', organisationUnit: 'TO', BCD1: 5 },
+    ]);
+  });
+
+  it('where is processed before remaining fields', () => {
+    const transform = buildTransform([
+      {
+        transform: 'select',
+        where: 'exists($row.BCD1)',
+        "'newVal'": '$row.BCD1 * 2', // This would fail on rows where BCD1 doesn't exist
+        '...': ['period', 'organisationUnit'],
+      }
+    ]);
+    expect(transform(AGGREGATEABLE_ANALYTICS)).toEqual([
+      { period: '20200101', organisationUnit: 'TO', newVal: 8 },
+      { period: '20200102', organisationUnit: 'TO', newVal: 4 },
+      { period: '20200103', organisationUnit: 'TO', newVal: 10 },
+      { period: '20200101', organisationUnit: 'TO', BCD2: 11 },
+      { period: '20200102', organisationUnit: 'TO', BCD2: 1 },
+      { period: '20200103', organisationUnit: 'TO', BCD2: 0 },
+      { period: '20200101', organisationUnit: 'PG', newVal: 14 },
+      { period: '20200102', organisationUnit: 'PG', newVal: 16 },
+      { period: '20200103', organisationUnit: 'PG', newVal: 4 },
+      { period: '20200101', organisationUnit: 'PG', BCD2: 13 },
+      { period: '20200102', organisationUnit: 'PG', BCD2: 99 },
+      { period: '20200103', organisationUnit: 'PG', BCD2: -1 },
     ]);
   });
 });

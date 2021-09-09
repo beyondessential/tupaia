@@ -13,9 +13,12 @@ const EXCLUDED_TABLES_FROM_TRIGGER_CREATION = [
   'feed_item',
   'userSession',
   'spatial_ref_sys', // Reference table provided by postgis
-  'dashboardReport',
+  'legacy_report',
   'ancestor_descendant_relation',
   'psss_session',
+  'lesmis_session',
+  'admin_panel_session',
+  'analytics',
 ];
 
 // tables that should only have records created and deleted, and will throw an error if an update is
@@ -34,6 +37,7 @@ const getSelectForTablesWithoutTriggers = triggerSuffix => `
     AND privileges.privilege_type = 'TRIGGER'
     AND t.table_schema = 'public'
     AND t.table_type != 'VIEW'
+    AND t.table_name NOT LIKE 'log$_%'
 `;
 
 export const runPostMigration = async driver => {
@@ -84,6 +88,12 @@ export const runPostMigration = async driver => {
       `),
     ),
   );
+
+  // Refresh analytics in case they've been impacted by migrations
+  const start = Date.now();
+  await driver.runSql(`SELECT mv$refreshMaterializedView('analytics', 'public', true);`);
+  const end = Date.now();
+  console.log(`Analytics refresh took: ${end - start}ms`);
 
   driver.close(err => {
     if (tablesWithoutNotifier.length > 0) {

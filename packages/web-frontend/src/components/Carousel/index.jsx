@@ -18,8 +18,9 @@ const slideStyle = {
 const iconStyle = {
   height: '120px',
   width: '120px',
-  color: OFF_WHITE
+  color: OFF_WHITE,
 };
+
 class Carousel extends React.Component {
   static propTypes = {
     images: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -35,26 +36,22 @@ class Carousel extends React.Component {
   previousImage = () => {
     this.setState(currentState => {
       const { imageIndex } = currentState;
-      const newIndex = imageIndex === 0
-        ? this.props.images.length - 1
-        : imageIndex - 1;
-      return ({
+      const newIndex = imageIndex === 0 ? this.props.images.length - 1 : imageIndex - 1;
+      return {
         imageIndex: newIndex,
-      });
+      };
     });
-  }
+  };
 
   nextImage = () => {
     this.setState(currentState => {
       const { imageIndex } = currentState;
-      const newIndex = imageIndex === this.props.images.length - 1
-        ? 0
-        : imageIndex + 1;
-      return ({
+      const newIndex = imageIndex === this.props.images.length - 1 ? 0 : imageIndex + 1;
+      return {
         imageIndex: newIndex,
-      });
+      };
     });
-  }
+  };
 
   render() {
     const currentIndex = this.state.imageIndex;
@@ -66,7 +63,7 @@ class Carousel extends React.Component {
           Icon={<Left style={iconStyle} />}
           handleClick={this.previousImage}
           style={{
-            left: '1rem'
+            left: '1rem',
           }}
           tabIndex={0}
         />
@@ -77,7 +74,7 @@ class Carousel extends React.Component {
           Icon={<Right style={iconStyle} />}
           handleClick={this.nextImage}
           style={{
-            right: '1rem'
+            right: '1rem',
           }}
           tabIndex={-1}
         />

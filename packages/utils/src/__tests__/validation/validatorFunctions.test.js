@@ -5,9 +5,11 @@
 
 import {
   allValuesAreNumbers,
+  constructEveryItemSync,
   constructIsArrayOf,
   constructIsOneOfType,
   isArray,
+  isBoolean,
 } from '../../validation';
 
 describe('validatorFunctions', () => {
@@ -21,6 +23,28 @@ describe('validatorFunctions', () => {
     it('passes if given an array', () => {
       expect(() => isArray([])).not.toThrow();
       expect(() => isArray([1, 2])).not.toThrow();
+    });
+  });
+
+  describe('isBoolean', () => {
+    it('pass if given a boolean', () => {
+      expect(() => isBoolean(true)).not.toThrow();
+      expect(() => isBoolean(false)).not.toThrow();
+    });
+
+    const testData = [
+      ['"true"', 'true'],
+      ['"false"', 'false'],
+      ['number', 1],
+      ['undefined', undefined],
+      ['null', null],
+      ['[true, false]', [true, false]],
+    ];
+
+    describe('fails if given a non boolean', () => {
+      it.each(testData)('%s', (type, value) => {
+        expect(() => isBoolean(value)).toThrow(/should contain a boolean/i);
+      });
     });
   });
 
@@ -41,6 +65,39 @@ describe('validatorFunctions', () => {
 
     it('passes if given an empty object', () => {
       expect(() => allValuesAreNumbers({})).not.toThrowError();
+    });
+  });
+
+  describe('constructEveryItemSync', () => {
+    it('passes if input is empty', () => {
+      const validator = constructEveryItemSync(() => true);
+      expect(() => validator([])).not.toThrowError();
+    });
+
+    it('passes if input is empty, even if the validator always fails', () => {
+      const validator = constructEveryItemSync(() => {
+        throw new Error();
+      });
+      expect(() => validator([])).not.toThrowError();
+    });
+
+    it('fails if input is not an array ', () => {
+      const validator = constructEveryItemSync(() => true);
+      [undefined, null, {}].forEach(value => {
+        expect(() => validator(value)).toThrowError('array');
+      });
+    });
+
+    it('fails if any item in the input fails the validator', () => {
+      const errorMessage = 'Test error';
+      const validator = value => {
+        if (value !== '0') {
+          throw new Error(errorMessage);
+        }
+      };
+
+      expect(() => validator([0])).toThrowError(errorMessage);
+      expect(() => validator([1, 0])).toThrowError(errorMessage);
     });
   });
 

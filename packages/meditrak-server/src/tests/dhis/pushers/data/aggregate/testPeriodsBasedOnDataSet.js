@@ -26,7 +26,7 @@ export const testPeriodsBasedOnDataSet = (dhisApi, models, dataBroker) => {
 
       const result = await pusher.push();
       expect(result).to.be.true;
-      const expectedPeriod = moment(SURVEY_RESPONSE.submission_time).format(format);
+      const expectedPeriod = moment(SURVEY_RESPONSE.data_time).format(format);
       expect(dataBroker.push).to.have.been.calledOnceWith(
         { code: ANSWER_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
         { ...ANSWER_DATA_VALUE, period: expectedPeriod },

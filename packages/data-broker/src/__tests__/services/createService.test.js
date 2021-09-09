@@ -5,11 +5,13 @@
 
 import { TupaiaDataApi } from '@tupaia/data-api';
 import { IndicatorApi } from '@tupaia/indicators';
+import { KoBoApi } from '@tupaia/kobo-api';
 
 import { createService } from '../../services/createService';
 import { DhisService } from '../../services/dhis';
 import { IndicatorService } from '../../services/indicator';
 import { TupaiaService } from '../../services/tupaia';
+import { KoBoService } from '../../services/kobo';
 
 describe('createService()', () => {
   const database = 'db';
@@ -41,11 +43,26 @@ describe('createService()', () => {
   });
 
   it('indicator service', () => {
-    const service = createService(models, 'indicator');
+    const dataBroker = {
+      context: {
+        test: true,
+      },
+    };
+    const service = createService(models, 'indicator', dataBroker);
 
     expect(service).toBeInstanceOf(IndicatorService);
     expect(service).toHaveProperty('models', models);
     expect(service).toHaveProperty('api');
     expect(service.api).toBeInstanceOf(IndicatorApi);
+    expect(service.api.aggregator.context.test).toBe(true);
+  });
+
+  it('kobo service', () => {
+    const service = createService(models, 'kobo');
+
+    expect(service).toBeInstanceOf(KoBoService);
+    expect(service).toHaveProperty('models', models);
+    expect(service).toHaveProperty('api');
+    expect(service.api).toBeInstanceOf(KoBoApi);
   });
 });

@@ -15,7 +15,7 @@ import { ExportDialog } from '../../../components/ExportDialog';
 import HomeScreen from '../HomeScreen';
 import RegionScreen from '../RegionScreen';
 import FacilityScreen from '../FacilityScreen';
-import { LoadingScreen } from '../LoadingScreen';
+import { LoadingScreen } from '../../LoadingScreen';
 import Footer from '../../../components/mobile/Footer';
 import { ENTITY_TYPE } from '../../../constants';
 import OverlayDiv from '../../../containers/OverlayDiv';
@@ -68,7 +68,6 @@ RootScreen.propTypes = {
 };
 
 RootScreen.defaultProps = {
-  currentOrganisationUnitType: '',
   enlargedDialogIsVisible: false,
 };
 

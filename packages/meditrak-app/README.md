@@ -21,7 +21,8 @@ To work on Tupaia MediTrak, first you'll need to install the following
     - `export PATH=${JAVA_HOME}/bin:$PATH` (i.e. add the place you installed the JDK to the PATH)
 - Android SDK
   - Look for 'get just the command line tools' at the bottom of [the Android Studio Download page](https://developer.android.com/studio/index.html)
-  - Once downloaded and installed run `sdkmanager --update` and accept the licenses
+    - Note: since new updates from android, after unzipping the `command-line-tools.zip` package, you'll get a folder named `cmdline-tools`. To make it works, you should rename the unpacked directory from `cmdline-tools` to `tools`, and place it under `~/android-sdk/cmdline-tools/`. Now it should look like `~/android-sdk/cmdline-tools/tools/bin/` (Environment: Ubuntu 20.04.2 LTS)
+  - Once downloaded and installed run `sdkmanager --update` and accept the licenses `sdkmanager --licenses`
   - Add the following to your .bash_profile
     - `export ANDROID_HOME=/Users/YourUsernameHere/Library/Android/sdk` (or wherever the Android SDK is installed)
 - A phone you can debug on and/or the Android Emulator (e.g. Genymotion) and/or the iOS Simulator (only works on mac)
@@ -112,46 +113,60 @@ Use Genymotion to create a virtual device, and then install the app and debug by
 
 ### Making a release build
 
+We now use https://appcenter.ms/ to create our release builds!
+
+- Ask someone for access to the Beyond Essential org appcenter
+- Open either the Android or iOS project depending on your needs
+- Select the "Build" tab on the left column
+- Choose a branch
+- Either find the latest build if it's already set up, or clone the build config from dev and edit the BETA_BRANCH environment variable
+
+**Very important**: Please make sure the environment variable `BETA_BRANCH` is set correctly. If releasing to production, it should be set to nothing (`BETA_BRANCH=`). If building for testing against dev or a feature deployment, this should be set to the url prefix (`BETA_BRANCH="dev"`).
+
 #### Android
+
+Instructions for building locally, if you don't want to use an appcenter build:
 
 - If you've previously followed the iOS steps, rm -rf third-party && rm -rf node_modules && yarn
 - Create gradle.properties within the /android directory, using the contents found on LastPass
 - Copy meditrak-release-key.keystore from lastpass (follow instructions to save and decode) and save under /android/app
 - Uncomment the line `signingConfig signingConfigs.release` in android/app/build.gradle (don't commit this change, it will break CI builds)
-- If building an apk for local installation or distribution to team members: `cd android && ./gradlew assembleRelease`
-- If building an aab for the Google Play store: `cd android && ./gradlew bundleRelease`
-- You will find the build inside `tupaia/packages/meditrak-app/android/app/build/outputs/apk/release/app_release.apk`
+- If building an apk for local installation or distribution to team members: `cd android && ./gradlew assembleRelease`. You will find the build inside `tupaia/packages/meditrak-app/android/app/build/outputs/apk/release/app_release.apk`
+- If building an aab for the Google Play store, first check your `BETA_BRANCH` in `.env`, then: `cd android && ./gradlew bundleRelease`. You will find the build inside `tupaia/packages/meditrak-app/android/app/build/outputs/bundle/release/app_release.aab`
 
 ### Beta builds (Android)
 
-1. Create a new beta branch.
-2. Change the isBeta boolean to be true.
-3. Set BETA_BRANCH in .env to be the name of the branch it should build off (which sets the server URL it should look at, e.g. the beta branch points at beta-api.tupaia.org, dev branch points at dev-api.tupaia.org)
-4. Change the Android application id com.tupaiameditrak name in android/app/build.gradle to com.tupaiameditrak.beta
+Having a separate "MediTrak Beta" app can be helpful to be able to compare two, side by side. We don't currently support this through appcenter, so the following steps need to be done locally:
+
+1. Create a new beta branch off the branch you want to test (so you don't accidentally commit the beta changes)
+2. Set BETA_BRANCH in .env to be the name of the branch it should build off (which sets the server URL it should look at, e.g. the beta branch points at beta-api.tupaia.org, dev branch points at dev-api.tupaia.org)
+3. Find and replace com.tupaiameditrak name with com.tupaiameditrak.beta (especially in android/app/build.gradle)
+4. Change the app name from Tupaia MediTrak to MediTrak Beta in app.json and strings.xml
 5. Do a build (see above)
-6. Open the build on an Android device and make sure there is a semi-transparent orange banner on the bottom of the screen that says 'BETA' or the equivalent name of the branch it is building off.
+6. Open the build on an Android device and make sure it installs separately, and that there is a semi-transparent orange banner on the bottom of the screen that says 'BETA' or the equivalent name of the branch it is building off.
 
 #### iOS
 
-Can only be done on mac, with Xcode installed
+Best done using appcenter. To build a branch that isn't currently configured, simply clone the configuration from dev and set the BETA_BRANCH environment variable to the new branch name.
+
+If you need to do this locally, it can only be done on mac, with Xcode installed, using the following steps:
 
 - Be sure to follow the steps under "If you are developing/building for ios:" above
 - Open the `TupaiaMediTrak.xcworkspace` file within `meditrak-app/ios`
 - Set up signing:
-  - Get the provisioning profile, certificates (should be 2 of them), and private key from LastPass (MediTrak iOS App Building Resources)
-  - Double click the build certificates and private key to add each to your keychain (the private key will require a password, also in LastPass)
+  - Get the provisioning profile and .p12 file from LastPass (MediTrak iOS App Building Resources)
+  - Double click the .p12 to add the certificate and private key to your keychain (will require a password, also in LastPass)
   - In XCode, click the "folder" icon underneath the play/stop buttons
   - Select the first entry (with the workspace icon)
   - Go into Signing and Capabilities
-  - Under Signing (Release), select "Import Profile" next to Provisioning Profile, and select the profile that you downloaded from LastPass that is called Tupaia_Distribution_Profile_2020__2021.mobileprovision
+  - Under Signing (Release), select "Import Profile" next to Provisioning Profile, and select the profile that you downloaded from LastPass
 - Build the archive file (iOS equivalent of apk):
   - To the right of play/stop buttons, select the device as "Generic iOS Device"
   - From the "Product" menu, select "Archive"
- - Deploy the archive file
-  - Navigate to the Archive file in Window/Organizer & click Distribute App
-  - Use all the pre-selected options
-  - When prompted to select a profile, select second profile called Tupaia_MediTrak_Distribution_Profile_2020__2021.mobileprovision
-  
+- Deploy the archive file
+- Navigate to the Archive file in Window/Organizer & click Distribute App
+- Use all the pre-selected options
+- When prompted to select a profile, select the same as earlier
 
 ### Testing
 

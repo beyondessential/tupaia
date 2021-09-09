@@ -5,7 +5,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Table } from '@tupaia/ui-components';
-import { AlertMenuCell, CountryNameCell, StartDateCell, WeekAndDateCell } from '../../components';
+import {
+  AlertMenuCell,
+  FakeCountryNameCell,
+  StartDateCell,
+  WeekAndDateCell,
+} from '../../components';
 import { useTableQuery } from '../../api';
 
 const createColumns = isForMultipleCountries => [
@@ -13,10 +18,10 @@ const createColumns = isForMultipleCountries => [
     ? [
         {
           title: 'Country',
-          key: 'name',
+          key: 'organisationUnit',
           width: '26%',
           align: 'left',
-          CellComponent: CountryNameCell,
+          CellComponent: FakeCountryNameCell,
         },
       ]
     : []),
@@ -82,5 +87,5 @@ OutbreaksTable.propTypes = {
 };
 
 OutbreaksTable.defaultProps = {
-  countryCode: null,
+  countryCode: '',
 };

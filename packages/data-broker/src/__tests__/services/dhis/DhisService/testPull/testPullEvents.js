@@ -5,10 +5,14 @@
 
 import * as BuildEvents from '../../../../../services/dhis/buildAnalytics/buildEventsFromDhisEventAnalytics';
 import { DhisService } from '../../../../../services/dhis/DhisService';
+import { EventsPuller } from '../../../../../services/dhis/pullers/EventsPuller';
 import { DATA_SOURCES } from '../DhisService.fixtures';
-import { createModelsStub, stubDhisApi } from '../DhisService.stubs';
+import { createModelsStub, createDataSourceModelsStub, stubDhisApi } from '../DhisService.stubs';
 
 const dhisService = new DhisService(createModelsStub());
+const eventsPuller = new EventsPuller(createDataSourceModelsStub(), dhisService.translator);
+dhisService.analyticsPuller = eventsPuller;
+dhisService.pullers.dataGroup = eventsPuller.pull;
 let dhisApi;
 
 export const testPullEvents = () => {
@@ -21,13 +25,13 @@ export const testPullEvents = () => {
       dhisService.pull([DATA_SOURCES.POP01_GROUP, DATA_SOURCES.DIFF_GROUP], 'dataGroup', {}),
     ).toBeRejectedWith(/Cannot .*multiple programs/));
 
-  it('invokes the deprecated event api by default', async () => {
-    const eventApiSpy = jest.spyOn(dhisService, 'pullEventsForApi');
-    const deprecatedEventApiSpy = jest.spyOn(dhisService, 'pullEventsForApi_Deprecated');
+  it('invokes the modern event api by default', async () => {
+    const eventApiSpy = jest.spyOn(eventsPuller, 'pullEventsForApi');
+    const deprecatedEventApiSpy = jest.spyOn(eventsPuller, 'pullEventsForApi_Deprecated');
 
     await dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', {});
-    expect(eventApiSpy).not.toHaveBeenCalled();
-    expect(deprecatedEventApiSpy).toHaveBeenCalledTimes(1);
+    expect(eventApiSpy).toHaveBeenCalledTimes(1);
+    expect(deprecatedEventApiSpy).not.toHaveBeenCalled();
   });
 
   describe('DHIS API invocation', () => {
@@ -36,10 +40,7 @@ export const testPullEvents = () => {
       options = {},
       invocationArgs,
     }) => {
-      await dhisService.pull(dataSources, 'dataGroup', {
-        ...options,
-        useDeprecatedApi: false,
-      });
+      await dhisService.pull(dataSources, 'dataGroup', options);
       expect(dhisApi.getEventAnalytics).toHaveBeenCalledOnceWith(invocationArgs);
     };
 
@@ -59,10 +60,7 @@ export const testPullEvents = () => {
     it('`dataElementCodes` can be empty', async () => {
       const assertErrorIsNotThrown = async dataElementCodes =>
         expect(
-          dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', {
-            dataElementCodes,
-            useDeprecatedApi: false,
-          }),
+          dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', { dataElementCodes }),
         ).toResolve();
 
       return Promise.all([undefined, []].map(assertErrorIsNotThrown));
@@ -92,9 +90,6 @@ export const testPullEvents = () => {
   });
 
   describe('data building', () => {
-    const basicOptions = {
-      useDeprecatedApi: false,
-    };
     let buildEventsMock;
 
     beforeAll(() => {
@@ -122,10 +117,7 @@ export const testPullEvents = () => {
         dhisApi = stubDhisApi({ getEventAnalyticsResponse });
         const dataElementCodes = ['POP01', 'POP02'];
 
-        await dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', {
-          ...basicOptions,
-          dataElementCodes,
-        });
+        await dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', { dataElementCodes });
         expect(buildEventsMock).toHaveBeenCalledOnceWith(
           getEventAnalyticsResponse,
           dataElementCodes,
@@ -158,10 +150,7 @@ export const testPullEvents = () => {
         dhisApi = stubDhisApi({ getEventAnalyticsResponse });
 
         const dataElementCodes = ['DIF01'];
-        await dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', {
-          ...basicOptions,
-          dataElementCodes,
-        });
+        await dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', { dataElementCodes });
         expect(buildEventsMock).toHaveBeenCalledOnceWith(
           translatedEventAnalyticsResponse,
           dataElementCodes,
@@ -185,7 +174,7 @@ export const testPullEvents = () => {
       buildEventsMock.mockReturnValue(events);
 
       return expect(
-        dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', basicOptions),
+        dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup'),
       ).resolves.toStrictEqual(events);
     });
   });

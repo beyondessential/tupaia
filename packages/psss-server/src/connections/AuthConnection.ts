@@ -17,6 +17,9 @@ const basicAuthHandler = {
   getAuthHeader: async () => BASIC_AUTH_HEADER,
 };
 
+/**
+ * @deprecated use @tupaia/api-client
+ */
 export class AuthConnection extends ApiConnection {
   baseUrl = MEDITRAK_API_URL; // auth server is actually just meditrak server
 

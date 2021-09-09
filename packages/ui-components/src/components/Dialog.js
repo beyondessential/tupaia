@@ -10,8 +10,12 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import styled from 'styled-components';
 import { IconButton } from './IconButton';
+import { FlexStart } from './Layout';
 
+const DARK_THEME_BORDER = 'rgb(82, 82, 88)';
 const BACKDROP_COLOUR = 'rgba(65, 77, 85, 0.3)';
+const DARK_BACKGROUND = '#262834';
+const LIGHT_BACKGROUND = '#f9f9f9';
 
 const StyledDialog = styled(MuiDialog)`
   .MuiBackdrop-root {
@@ -30,17 +34,16 @@ export const Dialog = ({ children, ...props }) => (
 );
 
 Dialog.propTypes = {
-  children: PropTypes.array.isRequired,
+  children: PropTypes.any.isRequired,
 };
 
-const Header = styled.div`
+const Header = styled(FlexStart)`
   position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: white;
+  background-color: ${({ theme }) => (theme.palette.type === 'light' ? 'white' : DARK_BACKGROUND)};
   padding: 1.3rem 1.875rem 1.25rem;
-  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+  border-bottom: 1px solid
+    ${({ theme }) =>
+      theme.palette.type === 'light' ? theme.palette.grey['400'] : DARK_THEME_BORDER};
 `;
 
 const DialogTitle = styled(Typography)`
@@ -56,11 +59,12 @@ const CloseButton = styled(IconButton)`
   color: ${props => props.theme.palette.text.primary};
 `;
 
-export const DialogHeader = ({ title, onClose, color }) => (
+export const DialogHeader = ({ title, onClose, color, children }) => (
   <Header>
     <DialogTitle color={color} variant="h3">
       {title}
     </DialogTitle>
+    {children}
     <CloseButton onClick={onClose}>
       <CloseIcon />
     </CloseButton>
@@ -71,17 +75,18 @@ DialogHeader.propTypes = {
   title: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   color: PropTypes.string,
+  children: PropTypes.any,
 };
 
 DialogHeader.defaultProps = {
   color: 'textPrimary',
+  children: null,
 };
-
-const BACKGROUND_COLOUR = '#f9f9f9';
 
 export const DialogContent = styled.div`
   padding: 2.5rem 1.875rem;
-  background-color: ${BACKGROUND_COLOUR};
+  background-color: ${({ theme }) =>
+    theme.palette.type === 'light' ? LIGHT_BACKGROUND : DARK_BACKGROUND};
   text-align: center;
 `;
 
@@ -90,6 +95,9 @@ export const DialogFooter = styled.div`
   align-items: center;
   justify-content: flex-end;
   padding: 1.1rem 1.875rem;
-  background-color: ${BACKGROUND_COLOUR};
-  border-top: 1px solid ${props => props.theme.palette.grey['400']};
+  background-color: ${({ theme }) =>
+    theme.palette.type === 'light' ? LIGHT_BACKGROUND : DARK_BACKGROUND};
+  border-bottom: 1px solid
+    ${({ theme }) =>
+      theme.palette.type === 'light' ? theme.palette.grey['400'] : DARK_THEME_BORDER};
 `;

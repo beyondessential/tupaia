@@ -21,9 +21,12 @@ export class DhisChangeSideEffectHandler extends ChangeSideEffectHandler {
           SELECT DISTINCT survey_response.*
           FROM survey_response
           JOIN survey ON survey_response.survey_id = survey.id
+          JOIN data_source ds ON survey.data_source_id = ds.id
           JOIN entity ON survey_response.entity_id = entity.id
-          WHERE survey_response.id IN (${batchOfSurveyResponseIds.map(() => '?').join(',')})
-          AND ${this.models.surveyResponse.getOnlyEventsQueryClause()};
+          WHERE
+            survey_response.id IN (${batchOfSurveyResponseIds.map(() => '?').join(',')})
+            AND ${this.models.surveyResponse.getOnlyEventsQueryClause()}
+            AND ds.service_type = 'dhis';
         `,
         batchOfSurveyResponseIds,
       );

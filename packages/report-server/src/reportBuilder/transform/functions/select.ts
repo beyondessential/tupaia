@@ -18,6 +18,10 @@ const select = (rows: Row[], params: SelectParams): Row[] => {
   const parser = new TransformParser(rows, functions);
   return rows.map(row => {
     const returnNewRow = params.where(parser);
+    if (!returnNewRow) {
+      parser.next();
+      return row;
+    }
     const newRow: Row = {};
     Object.entries(params.select).forEach(([key, expression]) => {
       newRow[`${parser.evaluate(key)}`] = parser.evaluate(expression);
@@ -37,7 +41,7 @@ const select = (rows: Row[], params: SelectParams): Row[] => {
     }
 
     parser.next();
-    return returnNewRow ? newRow : { ...row };
+    return newRow;
   });
 };
 

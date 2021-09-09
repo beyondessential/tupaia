@@ -5,7 +5,6 @@
 
 export { AccessRequestModel as AccessRequest } from './AccessRequest';
 export { AnswerModel as Answer } from './Answer';
-export { APIClientModel as ApiClient } from './APIClient';
 export { ApiRequestLogModel as ApiRequestLog } from './ApiRequestLog';
 export { CommentModel as Comment } from './Comment';
 export { CountryModel as Country } from './Country';
@@ -30,4 +29,3 @@ export { SurveyResponseModel as SurveyResponse } from './SurveyResponse';
 export { SurveyScreenComponentModel as SurveyScreenComponent } from './SurveyScreenComponent';
 export { SurveyScreenModel as SurveyScreen } from './SurveyScreen';
 export { UserEntityPermissionModel as UserEntityPermission } from './UserEntityPermission';
-export { UserRewardModel as UserReward } from './UserReward';

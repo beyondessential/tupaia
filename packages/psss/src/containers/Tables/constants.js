@@ -5,4 +5,5 @@
 
 export const COLUMN_WIDTHS = {
   SITES_REPORTED: '135px',
+  WEEKLY_REPORT_DATE: '190px',
 };

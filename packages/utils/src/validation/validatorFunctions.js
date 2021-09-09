@@ -60,6 +60,12 @@ export const isNumber = value => {
   }
 };
 
+export const isBoolean = value => {
+  if (typeof value !== 'boolean') {
+    throw new ValidationError(`Should contain a boolean instead of ${stringifyValue(value)}`);
+  }
+};
+
 export const isAString = value => {
   if (typeof value !== 'string') {
     throw new ValidationError(`Should contain a string instead of ${value}`);
@@ -148,6 +154,22 @@ export const constructIsOneOfType = types => {
   };
 };
 
+export const constructIsSubSetOf = options => arrayValue => {
+  if (!Array.isArray(arrayValue)) {
+    throw new Error('constructIsSubSetOf expects an array of values');
+  }
+
+  if (!Array.isArray(options)) {
+    throw new Error('constructIsSubSetOf expects an array of options');
+  }
+
+  const isSubSet = arrayValue.every(v => options.includes(v));
+
+  if (!isSubSet) {
+    throw new Error(`Some values of '${arrayValue.toString}' are not included in '${options}'`);
+  }
+};
+
 export const constructIsArrayOf = type => value => {
   isArray(value);
   Object.values(value).forEach(item => {
@@ -156,6 +178,26 @@ export const constructIsArrayOf = type => value => {
       throw new ValidationError(`${stringifyValue(item)} is not ${typeDescription}`);
     }
   });
+};
+
+export const constructRecordExistsWithField = (model, field) => async value => {
+  hasContent(value);
+
+  const record = await model.findOne({ [field]: value });
+  if (!record) {
+    throw new ValidationError(`No ${model.databaseType} with ${field}: ${value}`);
+  }
+};
+
+export const constructRecordNotExistsWithField = (model, field) => async value => {
+  hasContent(value);
+
+  const record = await model.findOne({ code: value });
+  if (record) {
+    throw new ValidationError(
+      `Another ${model.databaseType} record already exists with with ${field}: ${value}`,
+    );
+  }
 };
 
 export const constructRecordExistsWithCode = model => async value => {
@@ -205,6 +247,17 @@ export const constructIsEmptyOr = validators => async (value, object, key) => {
   }
 };
 
+/**
+ * @param {Function|Function[]} validators
+ */
+export const constructIsEmptyOrSync = validators => (value, object, key) => {
+  if (value !== undefined && value !== null && value !== '') {
+    toArray(validators).forEach(validatorFunction => {
+      validatorFunction(value, object, key);
+    });
+  }
+};
+
 export const constructIsNotPresentOr = validatorFunction => (value, object, key) => {
   return !object.hasOwnProperty(key) || validatorFunction(value, object, key);
 };
@@ -229,6 +282,15 @@ export const constructEveryItem = validatorFunction => async value => {
   }
 
   await Promise.all(value.map(validatorFunction));
+  return true;
+};
+
+export const constructEveryItemSync = validatorFunction => value => {
+  if (!Array.isArray(value)) {
+    throw new Error('Must be an array');
+  }
+
+  value.forEach(validatorFunction);
   return true;
 };
 

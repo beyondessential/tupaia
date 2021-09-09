@@ -36,7 +36,6 @@
     "client-sessions": "^0.8.0",
     "cors": "^2.8.5",
     "express": "^4.16.2",
-    "jsonwebtoken": "^8.5.1",
     "winston": "^3.2.1"
   }
 }

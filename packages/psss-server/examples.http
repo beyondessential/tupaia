@@ -1,28 +1,53 @@
-### /login
-POST http://localhost:8040/v1/login HTTP/2.0
-content-type: application/json
+@hostname = localhost
+@port = 8040
+@host = {{hostname}}:{{port}}
+@version = v1
+@contentType = application/json
+@sessionCookie = {{login.response.headers.Set-Cookie}}
+
+###
+
+# @name login
+POST http://{{host}}/{{version}}/login HTTP/2.0
+content-type: {{contentType}}
 
 {
-    "emailAddress": "testuser@test.com",
-    "password": "password"
+    "emailAddress": "{{email}}",
+    "password": "{{password}}"
 }
 
-### /logout
-POST http://localhost:8040/v1/logout HTTP/2.0
-content-type: application/json
+###
 
-{
-    "test": "hi"
-}
+# @name logout
+POST http://{{host}}/{{version}}/logout HTTP/2.0
+content-type: {{contentType}}
 
 ### /test
-GET http://localhost:8040/v1/test HTTP/2.0
+GET http://{{host}}/{{version}}/test HTTP/2.0
 
-### Fetch Country Weekly Report Data
-GET http://localhost:8040/v1/weeklyReport/TO?startWeek=2021W07&endWeek=2021W07 HTTP/2.0
+### Fetch Alerts
+GET http://{{host}}/{{version}}/alerts/active?orgUnitCodes=TO,FJ&startWeek=2016W07&endWeek=2021W20 HTTP/2.0
 
-### Save Country Weekly Report Data
-PUT http://localhost:8040/v1/weeklyReport/TO?week=2021W07 HTTP/2.0
+### Fetch Countries
+GET http://{{host}}/{{version}}/country HTTP/2.0
+
+### Fetch Country Sites
+GET http://{{host}}/{{version}}/country/TO/sites HTTP/2.0
+
+### Fetch Weekly Report Data (single country)
+GET http://{{host}}/{{version}}/weeklyReport/TO?startWeek=2016W07&endWeek=2021W07 HTTP/2.0
+
+### Fetch Weekly Report Data (single country, single syndrome)
+GET http://{{host}}/{{version}}/weeklyReport/TO?startWeek=2021W16&endWeek=2021W16&syndrome=ILI HTTP/2.0
+
+### Fetch Weekly Report Data (all sites in a country)
+GET http://{{host}}/{{version}}/weeklyReport/TO/sites?startWeek=2021W18&endWeek=2021W18 HTTP/2.0
+
+### Fetch Weekly Report Data (all sites in a country, single syndrome)
+GET http://{{host}}/{{version}}/weeklyReport/TO/sites?startWeek=2021W18&endWeek=2021W18&syndrome=ILI HTTP/2.0
+
+### Save Weekly Report Data (single country)
+PUT http://{{host}}/{{version}}/weeklyReport/TO?week=2021W07 HTTP/2.0
 content-type: application/json
 
 {
@@ -35,14 +60,35 @@ content-type: application/json
     "sitesReported": 16
 }
 
-### Delete Country Weekly Report Data
-DELETE http://localhost:8040/v1/weeklyReport/TO?week=2021W07 HTTP/2.0
+### Save Weekly Report Data (single site)
+PUT http://{{host}}/{{version}}/weeklyReport/TO/TO_Nukuhc?week=2021W07 HTTP/2.0
+content-type: application/json
+Cookie: {{sessionCookie}}
 
-### Fetch Confirmed Weekly Report Data
-GET http://localhost:8040/v1/confirmedWeeklyReport?startWeek=2021W07&endWeek=2021W07 HTTP/2.0
+{
+    "afr": 7,
+    "dia": 3,
+    "ili": 9,
+    "pf": 11,
+    "dli": 2,
+    "sites": 13,
+    "sitesReported": 16
+}
 
-### Fetch Country Confirmed Weekly Report Data
-GET http://localhost:8040/v1/confirmedWeeklyReport/TO?startWeek=2021W07&endWeek=2021W07 HTTP/2.0
+### Delete Weekly Report Data (single country)
+DELETE http://{{host}}/{{version}}/weeklyReport/TO?week=2021W07 HTTP/2.0
 
-### Confirm Country Weekly Report Data
-POST http://localhost:8040/v1/confirmedWeeklyReport/TO?week=2021W07 HTTP/2.0
+### Delete Weekly Report Data (single site)
+DELETE http://{{host}}/{{version}}/weeklyReport/TO/TO_Nukuhc?week=2021W07 HTTP/2.0
+
+### Fetch Confirmed Weekly Report Data (all countries)
+GET http://{{host}}/{{version}}/confirmedWeeklyReport?startWeek=2021W07&endWeek=2021W07&orgUnitCodes=TO,FJ  HTTP/2.0./psss
+
+### Fetch Confirmed Weekly Report Data (single country)
+GET http://{{host}}/{{version}}/confirmedWeeklyReport/TO?startWeek=2021W07&endWeek=2021W07 HTTP/2.0
+
+### Fetch Confirmed Weekly Report Data (single country, single syndrome)
+GET http://{{host}}/{{version}}/confirmedWeeklyReport/TO?startWeek=2021W16&endWeek=2021W16&syndrome=ILI HTTP/2.0
+
+### Confirm Weekly Report Data (single country)
+POST http://{{host}}/{{version}}/confirmedWeeklyReport/TO?week=2021W07 HTTP/2.0

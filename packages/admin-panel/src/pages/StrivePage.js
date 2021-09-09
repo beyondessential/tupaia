@@ -11,7 +11,7 @@ import { usePortalWithCallback } from '../utilities';
 import { Header, PageBody } from '../widgets';
 
 const importConfig = {
-  title: 'Import Lab Results',
+  title: 'Import Lab Results or Vector Data',
   actionConfig: {
     importEndpoint: 'striveLabResults',
   },
@@ -31,9 +31,9 @@ export const StrivePage = ({ getHeaderEl }) => {
       {HeaderPortal}
       <StyledBody>
         <Typography variant="h4" gutterBottom>
-          Import lab results
+          Import lab results or vector data
         </Typography>
-        <Typography>Use the above Import button to import lab results.</Typography>
+        <Typography>Use the above Import button to import lab results or vector data.</Typography>
       </StyledBody>
     </>
   );

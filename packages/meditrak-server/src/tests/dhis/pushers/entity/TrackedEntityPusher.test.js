@@ -13,7 +13,7 @@ import { createDhisApiStub, createEntityStub, createModelsStub } from './helpers
 
 const { TRACKED_ENTITY_INSTANCE } = DHIS2_RESOURCE_TYPES;
 
-const DHIS_ID = 'dhisId';
+const DHIS_TRACKED_ENTITY_ID = 'dhisTrackedEntityId';
 const ENTITY_ID = 'entityId';
 const ENTITY_NAME = 'entityName';
 const ENTITY_CODE = 'entityCode';
@@ -27,7 +27,7 @@ const DEFAULT_DHIS_API_STUB_PROPS = {
   entityType: { id: ENTITY_TYPE_ID, displayName: 'Type' },
   organisationUnit: { id: ORGANISATION_UNIT_ID, code: ORGANISATION_UNIT_CODE },
   updateRecord: {
-    references: [DHIS_ID],
+    references: [DHIS_TRACKED_ENTITY_ID],
     wasSuccessful: true,
   },
   deleteRecordById: {
@@ -45,7 +45,7 @@ const getExistingEntity = () =>
     closestOrgUnit: getClosestOrgUnit(),
     type: 'type',
     metadata: {
-      dhis: { id: DHIS_ID },
+      dhis: { trackedEntityId: DHIS_TRACKED_ENTITY_ID },
     },
   });
 const getChange = () => ({ type: 'update', record_id: ENTITY_ID });
@@ -86,7 +86,9 @@ describe('TrackedEntityPusher', () => {
           orgUnit: ORGANISATION_UNIT_ID,
           attributes: [],
         });
-        expect(entity.setDhisId).to.always.have.been.calledWith(DHIS_ID);
+        expect(entity.setDhisTrackedEntityId).to.always.have.been.calledWith(
+          DHIS_TRACKED_ENTITY_ID,
+        );
         expect(result).to.equal(true);
       });
 
@@ -98,12 +100,12 @@ describe('TrackedEntityPusher', () => {
 
         const result = await pusher.push();
         expect(dhisApiStub.updateRecord).to.have.been.calledOnceWith(TRACKED_ENTITY_INSTANCE, {
-          id: DHIS_ID,
+          id: DHIS_TRACKED_ENTITY_ID,
           trackedEntityType: ENTITY_TYPE_ID,
           orgUnit: ORGANISATION_UNIT_ID,
           attributes: [],
         });
-        expect(entity.setDhisId).to.have.callCount(0);
+        expect(entity.setDhisTrackedEntityId).to.have.callCount(0);
         expect(result).to.equal(true);
       });
 
@@ -159,7 +161,7 @@ describe('TrackedEntityPusher', () => {
         const result = await pusher.push();
         expect(dhisApiStub.deleteRecordById).to.have.been.calledOnceWith(
           TRACKED_ENTITY_INSTANCE,
-          DHIS_ID,
+          DHIS_TRACKED_ENTITY_ID,
         );
         expect(result).to.equal(true);
       });

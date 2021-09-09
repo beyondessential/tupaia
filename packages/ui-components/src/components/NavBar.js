@@ -43,15 +43,15 @@ const StyledTab = styled(LightTab)`
   }
 `;
 
-export const NavBar = ({ HomeButton, Profile, links, isTabActive }) => (
+export const NavBar = ({ HomeButton, Profile, links, isTabActive, maxWidth }) => (
   <Wrapper>
-    <MuiContainer>
+    <MuiContainer maxWidth={maxWidth}>
       <Inner>
         <NavLinks>
           {HomeButton}
-          {links.map(({ label, to, icon }) => (
+          {links.map(({ label, to, isActive, icon }) => (
             <StyledTab
-              isActive={isTabActive}
+              isActive={isActive || isTabActive}
               activeClassName="Mui-selected"
               component={NavLink}
               key={to}
@@ -70,8 +70,21 @@ export const NavBar = ({ HomeButton, Profile, links, isTabActive }) => (
 );
 
 NavBar.propTypes = {
-  HomeButton: PropTypes.any.isRequired,
-  links: PropTypes.any.isRequired,
-  Profile: PropTypes.any.isRequired,
-  isTabActive: PropTypes.func.isRequired,
+  HomeButton: PropTypes.node.isRequired,
+  links: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.node,
+      to: PropTypes.string,
+      isActive: PropTypes.func,
+      icon: PropTypes.node,
+    }),
+  ).isRequired,
+  Profile: PropTypes.elementType.isRequired,
+  isTabActive: PropTypes.func,
+  maxWidth: PropTypes.string,
+};
+
+NavBar.defaultProps = {
+  isTabActive: () => {},
+  maxWidth: null,
 };

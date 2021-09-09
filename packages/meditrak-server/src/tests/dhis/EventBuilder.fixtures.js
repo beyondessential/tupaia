@@ -19,7 +19,7 @@ export const ENTITIES = {
     type: 'case',
     metadata: {
       dhis: {
-        id: 'trackedEntity_dhisId',
+        trackedEntityId: 'trackedEntity_dhisId',
       },
     },
   },

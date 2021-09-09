@@ -2,7 +2,7 @@ export { aggregateOperationalFacilityValues } from './aggregateOperationalFacili
 export { countByOrganisationUnitByValue } from './countByOrganisationUnitByValue';
 export { calculatePercentagesWithinRange } from './calculatePercentagesWithinRange';
 export { mapOrgUnitIdsToGroupIds } from './mapOrgUnitIdsToGroupIds';
-export { mapOrgUnitToGroupCodes } from './mapOrgUnitToGroupCodes';
+export { mapOrgUnitCodeToGroup } from './mapOrgUnitCodeToGroup';
 export { getMatchedNumeratorsAndDenominators } from './getMatchedNumeratorsAndDenominators';
 export {
   pluraliseFacilityType,
@@ -24,7 +24,6 @@ export {
 export { getDataElementGroups } from './getDataElementGroups';
 export { getDataElementGroupSets } from './getDataElementGroupSets';
 export { getDataElementsInGroupSet } from './getDataElementsInGroupSet';
-export isSingleValue from './isSingleValue';
 export { timestampToPeriod } from './timestampToPeriod';
 export { timestampToPeriodName } from './timestampToPeriodName';
 export { limitRange } from './limitRange';
@@ -41,3 +40,7 @@ export {
   findAccessibleMapOverlays,
   findAccessibleGroupedMapOverlays,
 } from './findAccessibleGroupedMapOverlays';
+export {
+  fetchAggregatedAnalyticsByDhisIds,
+  checkAllDataElementsAreDhisIndicators,
+} from './fetchIndicatorValues';

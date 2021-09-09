@@ -13,6 +13,7 @@ const buildAndInsertAnswer = async (models, surveyResponse, question, answerText
     question_id: question.id,
     survey_response_id: surveyResponse.id,
     text: answerText,
+    type: question.type,
   });
 
 const buildAndInsertSurveyResponse = async (

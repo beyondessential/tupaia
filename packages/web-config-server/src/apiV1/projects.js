@@ -1,13 +1,11 @@
 import { respond } from '@tupaia/utils';
-import { calculateBoundsFromEntities } from '/utils/geoJson';
 
 async function fetchEntitiesWithProjectAccess(req, entities, userGroups) {
   return Promise.all(
-    entities.map(async ({ id, name, code, bounds }) => ({
+    entities.map(async ({ id, name, code }) => ({
       id,
       name,
       code,
-      bounds,
       hasAccess: await Promise.all(userGroups.map(u => req.userHasAccess(code, u))),
     })),
   );
@@ -61,7 +59,7 @@ async function buildProjectDataForFrontend(project, req) {
   const homeEntityCode = getHomeEntityCode(project, entitiesWithAccess);
 
   // Only want to check pending if no access
-  const { userId } = req.session.userJson;
+  const { userId } = req.userJson;
   const hasPendingAccess = hasAccess
     ? false
     : await fetchHasPendingProjectAccess(projectId, userId, req);
@@ -75,7 +73,6 @@ async function buildProjectDataForFrontend(project, req) {
     imageUrl,
     logoUrl,
     names,
-    bounds: calculateBoundsFromEntities(entitiesWithAccess),
     hasAccess,
     hasPendingAccess,
     homeEntityCode,

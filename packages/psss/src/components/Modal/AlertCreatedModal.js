@@ -55,9 +55,11 @@ export const AlertCreatedModal = ({ isOpen, alerts, handleClose }) => (
         <Heading variant="h6">Alert has been created</Heading>
         <Copy>Syndrome is above the threshold and an Alert has been created.</Copy>
         {alerts.map(alert => (
-          <Link key={alert.id} to="alerts">
-            View alert: {alert.title}
-          </Link>
+          <div>
+            <Link key={alert.id} to="/alerts">
+              View alert: {alert.title}
+            </Link>
+          </div>
         ))}
       </Container>
     </DialogContent>

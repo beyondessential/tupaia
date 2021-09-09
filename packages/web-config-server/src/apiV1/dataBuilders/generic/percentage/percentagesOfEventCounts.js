@@ -49,7 +49,7 @@ export class PercentagesOfEventCountsBuilder extends DataBuilder {
       [],
     );
 
-    return this.fetchEvents({ useDeprecatedApi: false, dataElementCodes });
+    return this.fetchEvents({ dataElementCodes });
   }
 
   buildData(events) {

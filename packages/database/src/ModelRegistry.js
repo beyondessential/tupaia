@@ -10,14 +10,18 @@ const MAX_APP_VERSION = '999.999.999';
 const getModelKey = modelName => `${modelName.charAt(0).toLowerCase()}${modelName.slice(1)}`;
 
 export class ModelRegistry {
-  constructor(database, extraModelClasses) {
+  /**
+   * @param {import('./TupaiaDatabase').TupaiaDatabase} database
+   * @param {import('./DatabaseModel').DatabaseModel[]} [extraModelClasses]
+   */
+  constructor(database, extraModelClasses, useNotifiers = false) {
     this.database = database;
     this.modelClasses = {
       ...baseModelClasses,
       ...extraModelClasses,
     };
     this.generateModels();
-    if (this.database.isSingleton) {
+    if (useNotifiers) {
       this.initialiseNotifiers();
     }
   }

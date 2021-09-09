@@ -28,6 +28,7 @@ export {
   selectCurrentOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitSiblings,
+  selectCurrentOrgUnitBounds,
 } from './orgUnitSelectors';
 
 export {
@@ -35,7 +36,6 @@ export {
   selectCurrentProject,
   selectIsProject,
   selectProjectByCode,
-  selectAdjustedProjectBounds,
   selectTileSets,
   selectActiveTileSet,
   selectAreRegionLabelsPermanent,
@@ -43,14 +43,16 @@ export {
 
 export {
   selectCurrentInfoViewKey,
-  selectIsDashboardGroupCodeDefined,
-  selectCurrentDashboardGroupCode,
+  selectCurrentDashboardName,
+  selectCurrentDashboardNameFromLocation,
+  selectCurrentDashboardCodeForExpandedReport,
+  selectCurrentExpandedViewConfig,
   selectCurrentExpandedViewContent,
-  selectCurrentExpandedViewId,
+  selectCurrentExpandedViewCode,
   selectIsEnlargedDialogVisible,
   selectShouldUseDashboardData,
   selectCurrentExpandedDates,
-  selectCurrentDashboardGroupCodeFromLocation,
+  selectViewConfig,
 } from './dashboardSelectors';
 
 export {

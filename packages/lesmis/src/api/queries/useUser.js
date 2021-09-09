@@ -6,15 +6,18 @@
 import { useQuery } from 'react-query';
 import { get } from '../api';
 
-export const useUser = () => {
-  const query = useQuery('getUser', () => get('getUser'), {
+export const useUser = options => {
+  const query = useQuery('user', () => get('user'), {
     retry: 0,
     // should be refetched in the background every hour
     staleTime: 1000 * 60 * 60 * 1,
+    refetchOnWindowFocus: false,
+    ...options,
   });
 
   const user = query.data;
-  const isLoggedIn = query.isSuccess && user !== undefined && user.name !== 'public';
+  const isLoggedIn = user && Object.keys(user).length > 0;
+  const isLesmisAdmin = user && user.isLesmisAdmin;
 
-  return { ...query, isLoggedIn };
+  return { ...query, isLoggedIn, isLesmisAdmin };
 };

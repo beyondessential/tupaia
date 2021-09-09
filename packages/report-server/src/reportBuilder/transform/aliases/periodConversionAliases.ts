@@ -13,3 +13,13 @@ export const convertPeriodToWeek = () =>
       '...': '*',
     },
   ]);
+
+export const convertEventDateToWeek = () =>
+  buildTransform([
+    {
+      transform: 'select',
+      "'period'": "convertToPeriod($row.eventDate, 'WEEK')",
+      '...': '*',
+    },
+  ]);
+

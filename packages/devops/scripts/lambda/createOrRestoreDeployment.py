@@ -1,9 +1,8 @@
 import boto3
-import collections
-import datetime
 import re
 import asyncio
 import functools
+from utilities import *
 
 ec2 = boto3.resource('ec2')
 ec = boto3.client('ec2')
@@ -15,9 +14,6 @@ async def wait_for_volume(volume_id, to_be):
     volume_available_waiter = ec.get_waiter('volume_' + to_be)
     await loop.run_in_executor(None, functools.partial(volume_available_waiter.wait, VolumeIds=[volume_id]))
 
-async def wait_for_instance(instance_id, to_be):
-    volume_available_waiter = ec.get_waiter('instance_' + to_be)
-    await loop.run_in_executor(None, functools.partial(volume_available_waiter.wait, InstanceIds=[instance_id]))
 
 def get_latest_snapshot_id(account_ids, restore_code):
     filters = [
@@ -31,26 +27,15 @@ def get_latest_snapshot_id(account_ids, restore_code):
     print('Found snapshot with id ' + snapshot_id)
     return snapshot_id
 
-def get_tag(instance, tag_name):
-    try:
-        tag_value = [
-            t.get('Value') for t in instance['Tags']
-            if t['Key'] == tag_name][0]
-    except IndexError:
-        tag_value = ''
-    return tag_value
-
-def get_instances(filters):
-    reservations = ec.describe_instances(
-        Filters=filters
-    ).get(
-        'Reservations', []
-    )
-    return reservations[0]['Instances']
-
 
 async def restore_instance(account_ids, instance):
     print('Restoring instance {}'.format(instance['InstanceId']))
+    # Check it's not protected
+    protected = get_tag(instance, 'Protected')
+    name = get_tag(instance, 'Name')
+    if protected == 'true':
+        raise Exception('The instance ' + name + ' is protected and cannot be wiped and restored')
+
     # Get snapshot to restore volume from
     restore_code = get_tag(instance, 'RestoreFrom')
     snapshot_id = get_latest_snapshot_id(account_ids, restore_code)
@@ -61,13 +46,6 @@ async def restore_instance(account_ids, instance):
             continue
         dev_to_attach = dev
     print('Will attach to ' + dev_to_attach['DeviceName'])
-
-    # Stop the instance being restored
-    instance_object = ec2.Instance(instance['InstanceId'])
-    instance_object.stop()
-    print('Stopping instance ' + instance_object.id)
-    await wait_for_instance(instance_object.id, 'stopped')
-    print('Stopped instance with id ' + instance_object.id)
 
     # Detach the old volume
     old_vol_id = dev_to_attach['Ebs']['VolumeId']
@@ -92,32 +70,12 @@ async def restore_instance(account_ids, instance):
     await wait_for_volume(new_volume_id, 'in_use')
     print('Attached restored volume to instance')
 
-    # Start instance with new volume
-    instance_object.start()
-    print('Restarting instance')
-    await wait_for_instance(instance_object.id, 'running')
-    print('Instance successfully restored')
+    # Ensure EBS volumes are deleted on termination of instance
+    ec.modify_instance_attribute(InstanceId=instance['InstanceId'], BlockDeviceMappings=[{'DeviceName': dev_to_attach['DeviceName'], 'Ebs': { 'VolumeId': new_volume_id, 'DeleteOnTermination': True }}])
 
-def build_record_set_change(domain, subdomain, stage, ip_address):
-    if (subdomain == ''):
-        url = stage + '.' + domain + '.'
-    else:
-        url = stage + '-' + subdomain + '.' + domain + '.'
 
-    return {
-        'Action': 'UPSERT',
-        'ResourceRecordSet': {
-            'Name': url,
-            'Type': 'A',
-            'TTL': 300,
-            'ResourceRecords': [
-                { 'Value': ip_address }
-            ]
-        }
-    }
-
-def create_instance(account_ids, restore_code, stage):
-    print('Creating new instance for branch ' + stage + ' of ' + restore_code)
+def create_instance(restore_code, stage, instance_type):
+    print('Creating new ' + instance_type + ' instance for branch ' + stage + ' of ' + restore_code)
 
     # Get the (production) instance to base this new instance on
     base_instance_filters = [
@@ -145,7 +103,7 @@ def create_instance(account_ids, restore_code, stage):
     # Create the instance
     instance_creation_config = {
       'ImageId' : base_instance['ImageId'],
-      'InstanceType' : base_instance['InstanceType'],
+      'InstanceType' : instance_type,
       'SubnetId' : base_instance['SubnetId'],
       'Placement' : base_instance['Placement'],
       'SecurityGroupIds' : security_group_ids,
@@ -156,7 +114,9 @@ def create_instance(account_ids, restore_code, stage):
         { 'Key': 'Stage', 'Value': stage },
         { 'Key': 'RestoreFrom', 'Value': restore_code },
         { 'Key': 'DomainName', 'Value': domain },
-        { 'Key': 'Subdomains', 'Value': subdomains_string }
+        { 'Key': 'Subdomains', 'Value': subdomains_string },
+        { 'Key': 'StopAtUTC', 'Value': '09:00'}, # 9am UTC is 7pm AEST
+        { 'Key': 'StartAtUTC', 'Value': '20:00'} # 8pm UTC is 6am AEST
       ]}]
     }
     # Get details of IAM profile (e.g. role allowing access to lambda) if applicable
@@ -178,10 +138,22 @@ def create_instance(account_ids, restore_code, stage):
     ec.associate_address(AllocationId=elastic_ip['AllocationId'],InstanceId=new_instance_object['InstanceId'])
     public_ip_address = elastic_ip['PublicIp']
 
-    # Set up subdomains on hosted zone and point them at this instance's ip
+    # Fetch *.tupaia.org certificate
+    ssl_certificate = get_cert('TupaiaWildcard')
+
+    # Create a gateway for this instance
+    print('Creating gateway')
+    gateway_elb = create_gateway(
+        tupaia_instance_name=stage,
+        tupaia_instance_id=new_instance.id,
+        ssl_certificate_arn=ssl_certificate['CertificateArn']
+    )
+    print('Created gateway')
+
+    # Set up subdomains on hosted zone and point them at the gateway
     subdomains = subdomains_string.split(',')
-    print('Creating subdomains pointing to {}'.format(public_ip_address))
-    record_set_changes = [build_record_set_change(domain, subdomain, stage, public_ip_address) for subdomain in subdomains]
+    print('Creating subdomains forwarding to gateway')
+    record_set_changes = [build_record_set_change(domain, subdomain, stage, gateway_elb, public_ip_address) for subdomain in subdomains]
     print('Generated {} record set changes'.format(len(record_set_changes)))
     hosted_zone_id = route53.list_hosted_zones_by_name(DNSName=domain)['HostedZones'][0]['Id']
     route53.change_resource_record_sets(
@@ -196,6 +168,40 @@ def create_instance(account_ids, restore_code, stage):
     return new_instance_object
 
 
+def create_gateway(tupaia_instance_name, tupaia_instance_id, ssl_certificate_arn):
+    # 1. Create ELB
+    prod_gateway_elb = get_gateway_elb('production')
+    new_gateway_elb = create_gateway_elb(
+        tupaia_instance_name=tupaia_instance_name,
+        tupaia_instance_id=tupaia_instance_id,
+        config=prod_gateway_elb,
+    )
+    new_gateway_elb_arn = new_gateway_elb['LoadBalancerArn']
+
+    # 2. Create Target Group
+    prod_gateway_target_group = get_gateway_target_group('production')
+    new_gateway_target_group_arn = create_gateway_target_group(
+        tupaia_instance_name=tupaia_instance_name,
+        tupaia_instance_id=tupaia_instance_id,
+        config=prod_gateway_target_group,
+    )
+
+    # 3. Link target group <-> instance
+    register_gateway_target(
+        target_group_arn=new_gateway_target_group_arn,
+        tupaia_instance_id=tupaia_instance_id
+    )
+
+    # 4. Link ELB <-> target group
+    create_gateway_listeners(
+        elb_arn=new_gateway_elb_arn,
+        target_group_arn=new_gateway_target_group_arn,
+        certificate_arn=ssl_certificate_arn
+    )
+
+    return new_gateway_elb
+
+
 def lambda_handler(event, context):
     account_ids = list()
     try:
@@ -206,7 +212,7 @@ def lambda_handler(event, context):
 
     filters = [
         { 'Name': 'tag-key', 'Values': ['RestoreFrom'] },
-        { 'Name': 'instance-state-name', 'Values': ['running'] }
+        { 'Name': 'instance-state-name', 'Values': ['stopped'] }
     ]
     if 'RestoreFrom' in event:
       print('Restoring instances generated from ' + event['RestoreFrom'])
@@ -214,27 +220,24 @@ def lambda_handler(event, context):
     if 'Branch' in event:
       print('Restoring the ' + event['Branch'] + ' branch')
       filters.append({'Name': 'tag:Stage', 'Values': [event['Branch']]})
-    reservations = ec.describe_instances(
-        Filters=filters
-    ).get(
-        'Reservations', []
-    )
-    instances = sum(
-          [
-              [i for i in r['Instances']]
-              for r in reservations
-          ], [])
 
-    # If there isn't an existing ec2 instance matching the restore code and branch, create it
-    if len(instances) == 0 and 'RestoreFrom' in event and 'Branch' in event:
-      new_instance = create_instance(account_ids, event['RestoreFrom'], event['Branch'])
-      instances = [new_instance]
-      print('Finished creating new instance')
+    instances = find_instances(filters)
 
-    tasks = sum(
-    [
-        [asyncio.ensure_future(restore_instance(account_ids, instance)) for instance in instances]
-    ], [])
+    # If there are existing ec2 instance(s) to restore, restore them
+    if len(instances) > 0:
+      tasks = sum(
+      [
+          [asyncio.ensure_future(restore_instance(account_ids, instance)) for instance in instances]
+      ], [])
+      loop.run_until_complete(asyncio.wait(tasks))
+      print('Finished restoring all instances')
 
-    loop.run_until_complete(asyncio.wait(tasks))
-    print('Finished restoring all instances')
+    # If there are no matching instances and this is for a specific branch, create a new instance
+    elif 'RestoreFrom' in event and 'Branch' in event:
+      if 'InstanceType' not in event:
+          raise Exception('You must include the key "InstanceType" in the lambda config. We recommend "t3a.medium" unless you need more speed.')
+      new_instance = create_instance(event['RestoreFrom'], event['Branch'], event['InstanceType'])
+      loop.run_until_complete(stop_instance(new_instance))
+      loop.run_until_complete(restore_instance(account_ids, new_instance))
+      loop.run_until_complete(start_instance(new_instance))
+      print('Instance successfully created')

@@ -3,10 +3,11 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { DatabaseError, UploadError } from '@tupaia/utils';
+import momentTimezone from 'moment-timezone';
+import { DatabaseError, UploadError, stripTimezoneFromDate, reformatDateStringWithoutTz, ValidationError } from '@tupaia/utils';
 import { uploadImage } from '../s3';
 import { BUCKET_PATH, getImageFilePath } from '../s3/constants';
-import { getEntityIdFromClinicId } from '../database/utilities';
+import { DEFAULT_DATABASE_TIMEZONE, getEntityIdFromClinicId } from '../database';
 
 async function saveAnswer(models, answer, surveyResponseId) {
   const answerDocument = {
@@ -57,10 +58,16 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
   try {
     await createEntities(models, entitiesCreated, surveyResponseObject.survey_id);
     await createOptions(models, optionsCreated);
+
+    // Ensure entity_id is populated, supporting legacy versions of MediTrak
     if (clinicId) {
       const entityId = await getEntityIdFromClinicId(models, clinicId);
       surveyResponseProperties.entity_id = entityId;
     }
+
+    // Ensure data_time is populated, supporting legacy versions of MediTrak
+    surveyResponseProperties.data_time = getDataTime(surveyResponseObject);
+
     surveyResponse = await models.surveyResponse.updateOrCreate(
       {
         id: surveyResponseId,
@@ -70,11 +77,6 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
         ...surveyResponseProperties,
       },
     );
-    if (!surveyResponse.submission_time) {
-      // Survey responses from older versions of Tupaia MediTrak may not have a submission time
-      surveyResponse.submission_time = surveyResponse.end_time;
-      await surveyResponse.save();
-    }
   } catch (error) {
     throw new DatabaseError(`creating/updating survey response with id ${surveyResponseId}`, error);
   }
@@ -120,3 +122,49 @@ const createEntities = async (models, entitiesCreated, surveyId) => {
     ),
   );
 };
+
+/**
+ * @param surveyResponseObject
+ * @return {string}
+ * @throws ValidationError
+ */
+const getDataTime = surveyResponseObject => {
+  const {
+    data_time: suppliedDataTime,
+    submission_time: submissionTime, // v1.7.87 to v1.9.110 (inclusive) uses submission_time
+    end_time: endTime, // prior to v1.7.87 fall back to end_time
+    timezone: suppliedTimezone,
+  } = surveyResponseObject;
+
+  if (suppliedDataTime) {
+
+    if (suppliedTimezone) {
+      // Timezone specified, strip it
+      return stripTimezoneFromDate(
+        momentTimezone(suppliedDataTime).tz(suppliedTimezone).format(),
+      );
+    }
+
+    // No timezone specified. We are submitting the data_time explicitly without a tz.
+    //
+    // If the input is in a known format like ISO8601 without tz, we can use this directly, we just
+    // reformat it into our specific format without tz.
+    const reformattedDataTime = reformatDateStringWithoutTz(suppliedDataTime);
+    if (reformattedDataTime) {
+      return reformattedDataTime;
+    } else {
+      throw new ValidationError(`Unable to parse data_time ${suppliedDataTime} against known formats without timezone. Either use a known format or specify a timezone.`);
+    }
+  }
+
+  // Fallback for older versions
+  const dataTime = submissionTime || endTime;
+
+  const timezone = suppliedTimezone || DEFAULT_DATABASE_TIMEZONE; // if no timezone provided, use db default
+
+  // Convert to the original timezone, then strip timezone suffix, so it ends up in db as it
+  // appeared to the original survey submitter
+  return stripTimezoneFromDate(
+    momentTimezone(dataTime).tz(timezone).format(),
+  );
+}

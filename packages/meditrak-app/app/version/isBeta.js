@@ -5,5 +5,5 @@
 
 import { BETA_BRANCH } from 'react-native-dotenv';
 
-export const isBeta = !!BETA_BRANCH || false;
-export const betaBranch = BETA_BRANCH || 'beta';
+export const isBeta = !!BETA_BRANCH;
+export const betaBranch = BETA_BRANCH;

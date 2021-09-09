@@ -1,4 +1,4 @@
-import { findOrCreateDummyCountryEntity } from '@tupaia/database';
+import { findOrCreateDummyCountryEntity } from './findOrCreateDummyCountryEntity';
 
 /**
  * Create some sample countries. This is to avoid duplicated code to create dummy records

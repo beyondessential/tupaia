@@ -3,7 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { AGGREGATEABLE_ANALYTICS, UNIQUE_AGGREGATEABLE_ANALYTICS } from './transform.fixtures';
+import {
+  AGGREGATEABLE_ANALYTICS,
+  UNIQUE_AGGREGATEABLE_ANALYTICS,
+  AGGREGATEABLE_ANALYTICS_WITH_NULL_VALUES,
+  MULTIPLE_ANALYTICS,
+} from './transform.fixtures';
 import { buildTransform } from '../../../reportBuilder/transform';
 
 describe('aggregate', () => {
@@ -84,6 +89,38 @@ describe('aggregate', () => {
       ]);
     });
 
+    it('sum -> exclude null values', () => {
+      const transform = buildTransform([
+        {
+          transform: 'aggregate',
+          organisationUnit: 'group',
+          period: 'drop',
+          '...': 'sum',
+        },
+      ]);
+      expect(
+        transform([...AGGREGATEABLE_ANALYTICS, ...AGGREGATEABLE_ANALYTICS_WITH_NULL_VALUES]),
+      ).toEqual([
+        { organisationUnit: 'TO', BCD1: 11, BCD2: 12 },
+        { organisationUnit: 'PG', BCD1: 17, BCD2: 111 },
+      ]);
+    });
+
+    it('avg', () => {
+      const transform = buildTransform([
+        {
+          transform: 'aggregate',
+          organisationUnit: 'group',
+          period: 'drop',
+          '...': 'avg',
+        },
+      ]);
+      expect(transform(AGGREGATEABLE_ANALYTICS)).toEqual([
+        { organisationUnit: 'TO', BCD1: 3.6666666666666665, BCD2: 4 },
+        { organisationUnit: 'PG', BCD1: 5.666666666666667, BCD2: 37 },
+      ]);
+    });
+
     it('count', () => {
       const transform = buildTransform([
         {
@@ -123,6 +160,23 @@ describe('aggregate', () => {
       ]);
       expect(transform(AGGREGATEABLE_ANALYTICS)).toEqual([
         { organisationUnit: 'PG', period: '20200101', BCD1: 4, BCD2: 11 },
+        { organisationUnit: 'PG', period: '20200102', BCD1: 2, BCD2: 1 },
+        { organisationUnit: 'PG', period: '20200103', BCD1: 2, BCD2: -1 },
+      ]);
+    });
+
+    it('min -> consider null as minimum', () => {
+      const transform = buildTransform([
+        {
+          transform: 'aggregate',
+          period: 'group',
+          '...': 'min',
+        },
+      ]);
+      expect(
+        transform([...AGGREGATEABLE_ANALYTICS, ...AGGREGATEABLE_ANALYTICS_WITH_NULL_VALUES]),
+      ).toEqual([
+        { organisationUnit: 'PG', period: '20200101', BCD1: null, BCD2: null },
         { organisationUnit: 'PG', period: '20200102', BCD1: 2, BCD2: 1 },
         { organisationUnit: 'PG', period: '20200103', BCD1: 2, BCD2: -1 },
       ]);
@@ -194,6 +248,34 @@ describe('aggregate', () => {
         { organisationUnit: 'PG', period: '20200102', BCD1: 8, BCD2: 99 },
         { organisationUnit: 'PG', period: '20200103', BCD1: 2, BCD2: -1 },
       ]);
+    });
+
+    describe('single', () => {
+      it('throws error is multiple values exist per group', () => {
+        const transform = buildTransform([
+          {
+            transform: 'aggregate',
+            period: 'group',
+            '...': 'single',
+          },
+        ]);
+        expect(() => transform(AGGREGATEABLE_ANALYTICS)).toThrow();
+      });
+
+      it('returns the value if a single value exists per group', () => {
+        const transform = buildTransform([
+          {
+            transform: 'aggregate',
+            period: 'group',
+            '...': 'single',
+          },
+        ]);
+        expect(transform(MULTIPLE_ANALYTICS)).toEqual([
+          { organisationUnit: 'TO', period: '20200101', dataElement: 'BCD1', value: 4 },
+          { organisationUnit: 'TO', period: '20200102', dataElement: 'BCD1', value: 2 },
+          { organisationUnit: 'TO', period: '20200103', dataElement: 'BCD1', value: 5 },
+        ]);
+      });
     });
   });
 });

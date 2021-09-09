@@ -1,0 +1,48 @@
+@hostname = localhost
+@port = 8060
+@host = {{hostname}}:{{port}}
+@version = v1
+@contentType = application/json
+
+### Test
+GET http://{{host}}/{{version}}/test HTTP/1.1
+content-type: {{contentType}}
+
+###
+
+# @name login
+POST http://{{host}}/{{version}}/login HTTP/1.1
+content-type: {{contentType}}
+
+{
+    "emailAddress": "{{email}}",
+    "password": "{{password}}"
+}
+
+###
+
+# @name logout
+POST http://{{host}}/{{version}}/logout HTTP/1.1
+content-type: {{contentType}}
+
+###
+
+# @name entities
+
+GET http://{{host}}/{{version}}/entities/laos_schools?fields=id,child_codes,code,country_code,image_url,name,type,parent_code HTTP/1.1
+Content-Type: {{contentType}}
+
+###
+
+### Fetch user
+GET http://{{host}}/{{version}}/user HTTP/1.1
+content-type: {{contentType}}
+
+
+### Public report
+GET http://{{host}}/{{version}}/reportData/LA_Phonhong%20District/Laos_Schools_Number_Of_Schools_By_Type_Table?type=view&dashboardGroupId=337 HTTP/1.1
+content-type: {{contentType}}
+
+### MoES only report
+GET http://{{host}}/{{version}}/reportData/LA_Phonhong%20District/Laos_Schools_Language_Of_Students?type=view&dashboardGroupId=359 HTTP/1.1
+content-type: {{contentType}}

@@ -6,10 +6,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Line, LabelList } from 'recharts';
-import { formatDataValue } from './utils';
+import { formatDataValueByType } from '@tupaia/utils';
 import { BLUE, DARK_BLUE } from './constants';
 
-export const LineChart = ({ color, dataKey, yAxisId, valueType, isEnlarged, isExporting }) => {
+export const LineChart = ({
+  color,
+  dataKey,
+  yAxisId,
+  valueType,
+  isEnlarged,
+  isExporting,
+  opacity,
+  connectNulls,
+}) => {
   const defaultColor = isExporting ? DARK_BLUE : BLUE;
 
   return (
@@ -20,7 +29,9 @@ export const LineChart = ({ color, dataKey, yAxisId, valueType, isEnlarged, isEx
       yAxisId={yAxisId}
       stroke={color || defaultColor}
       strokeWidth={isEnlarged ? 3 : 1}
+      strokeOpacity={opacity}
       fill={color || defaultColor}
+      connectNulls={connectNulls}
       isAnimationActive={isEnlarged && !isExporting}
     >
       {isExporting && (
@@ -29,7 +40,7 @@ export const LineChart = ({ color, dataKey, yAxisId, valueType, isEnlarged, isEx
           position="insideTopRight"
           offset={-20}
           angle="50"
-          formatter={value => formatDataValue(value, valueType)}
+          formatter={value => formatDataValueByType({ value }, valueType)}
         />
       )}
     </Line>
@@ -38,15 +49,19 @@ export const LineChart = ({ color, dataKey, yAxisId, valueType, isEnlarged, isEx
 
 LineChart.propTypes = {
   dataKey: PropTypes.string.isRequired,
+  opacity: PropTypes.string,
   yAxisId: PropTypes.string.isRequired,
   valueType: PropTypes.string.isRequired,
   color: PropTypes.string,
   isExporting: PropTypes.bool,
   isEnlarged: PropTypes.bool,
+  connectNulls: PropTypes.bool,
 };
 
 LineChart.defaultProps = {
   color: BLUE,
   isExporting: false,
   isEnlarged: false,
+  opacity: null,
+  connectNulls: false,
 };

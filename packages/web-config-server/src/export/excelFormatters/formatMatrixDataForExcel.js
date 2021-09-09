@@ -30,7 +30,7 @@ export const formatMatrixDataForExcel = (
 ) => {
   // Create the empty array of objects to build the data into
   let formattedData = [];
-  const columnCategories = columns[0].columns && columns; // If columns are grouped into categories, store as a well named const
+  const columnCategories = columns[0]?.columns && columns; // If columns are grouped into categories, store as a well named const
   const config = { ...DEFAULT_CONFIG, ...configIn };
   // Returns populated array instead of object
   const formatRowData = row => {

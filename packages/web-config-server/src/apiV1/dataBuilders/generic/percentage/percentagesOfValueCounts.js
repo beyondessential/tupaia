@@ -7,6 +7,7 @@ import groupBy from 'lodash.groupby';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import {
   divideValues,
+  multiplyValues,
   countAnalyticsThatSatisfyConditions,
   countAnalyticsGroupsThatSatisfyConditions,
 } from '/apiV1/dataBuilders/helpers';
@@ -120,6 +121,8 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     } = this.getAggregationType();
 
     let numeratorResults = [];
+    let denominatorResults = [];
+
     if (numeratorCodes.length > 0) {
       numeratorResults = (await this.fetchAnalytics(numeratorCodes, {}, numeratorAggregationType))
         .results;
@@ -129,11 +132,9 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
       return numeratorResults;
     }
 
-    const { results: denominatorResults } = await this.fetchAnalytics(
-      denominatorCodes,
-      {},
-      denominatorAggregationType,
-    );
+    denominatorResults = (
+      await this.fetchAnalytics(denominatorCodes, {}, denominatorAggregationType)
+    ).results;
 
     const getResultMapKey = ({ organisationUnit, dataElement, value, period }) =>
       `${organisationUnit}|${dataElement}|${value}|${period}`;
@@ -163,23 +164,37 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     Object.entries(this.config.dataClasses)
       .sort(([key1, config1], [key2, config2]) => getSortOrder(config1) - getSortOrder(config2))
       .forEach(([name, dataClass]) => {
-      const numerator = this.calculateFractionPart(dataClass.numerator, analytics);
-      const denominator = this.calculateFractionPart(dataClass.denominator, analytics);
+        const numerator = this.calculateFractionPart(dataClass.numerator, analytics);
+        const denominator = this.calculateFractionPart(dataClass.denominator, analytics);
 
-      const data = {
-        value: divideValues(numerator, denominator),
-        name,
-        [`${name}_metadata`]: {
-          numerator,
-          denominator,
-        },
-      };
+        const data = {
+          value: divideValues(numerator, denominator),
+          name,
+          [`${name}_metadata`]: {
+            numerator,
+            denominator,
+          },
+        };
 
-      dataClasses.push(data);
-    });
+        dataClasses.push(data);
+      });
 
     return dataClasses;
   }
+
+  operateOrgUnitCount = (orgUnitCount, config) => {
+    const orgUnitCountOperators = {
+      MULTIPLY: multiplyValues,
+    };
+    const { operationConfig } = config;
+    const { operator, value } = operationConfig;
+
+    if (!orgUnitCountOperators[operator]) {
+      throw new Error('Cannot find this operator for org unit count operation');
+    }
+
+    return orgUnitCountOperators[operator](orgUnitCount, value);
+  };
 
   calculateFractionPart = (fraction, analytics) => {
     if (fraction.compare || fraction.operation) {
@@ -198,8 +213,14 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
       const groupedAnalytics = groupBy(analytics, fraction.groupBy);
       return countAnalyticsGroupsThatSatisfyConditions(groupedAnalytics, fraction);
     }
-    if (fraction === ORG_UNIT_COUNT) {
-      return [...new Set(analytics.map(data => data.organisationUnit))].length;
+    if (fraction === ORG_UNIT_COUNT || fraction.key === ORG_UNIT_COUNT) {
+      const orgUnitCount = [...new Set(analytics.map(data => data.organisationUnit))].length;
+
+      if (fraction.key === ORG_UNIT_COUNT) {
+        return this.operateOrgUnitCount(orgUnitCount, fraction);
+      }
+
+      return orgUnitCount;
     }
 
     return countAnalyticsThatSatisfyConditions(analytics, fraction);
@@ -226,10 +247,11 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
   };
 }
 
-export const percentagesOfValueCounts = async (
+const basicPercentagesOfValueCounts = (
   { models, dataBuilderConfig, query, organisationUnitInfo },
   aggregator,
   dhisApi,
+  aggregationType,
 ) => {
   const builder = new PercentagesOfValueCountsBuilder(
     models,
@@ -238,7 +260,14 @@ export const percentagesOfValueCounts = async (
     dataBuilderConfig,
     query,
     organisationUnitInfo,
+    aggregationType,
   );
 
   return builder.build();
 };
+
+export const percentagesOfValueCounts = async (queryConfig, aggregator, dhisApi) =>
+  basicPercentagesOfValueCounts(queryConfig, aggregator, dhisApi);
+
+export const percentagesOfAllValueCounts = async (queryConfig, aggregator, dhisApi) =>
+  basicPercentagesOfValueCounts(queryConfig, aggregator, dhisApi, aggregator.aggregationTypes.RAW);

@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import moment from 'moment';
 import { DateTimePicker, RadioGroup } from '@tupaia/ui-components';
+import { stripTimezoneFromDate } from '@tupaia/utils';
 import { Autocomplete } from '../autocomplete';
 import { ExportModal } from './ExportModal';
 
@@ -30,7 +31,7 @@ export const SurveyResponsesExportModal = () => {
       title="Export Survey Responses"
       values={values}
       exportEndpoint="surveyResponses"
-      fileName={`survey-responses-${Date.now()}.xlsx`}
+      fileName={'Survey Responses'}
     >
       <Autocomplete
         label="Surveys to Include"
@@ -89,7 +90,7 @@ export const SurveyResponsesExportModal = () => {
         }
         onChange={date => {
           if (date && moment(date).isValid()) {
-            handleValueChange('startDate', moment(date).toISOString());
+            handleValueChange('startDate', stripTimezoneFromDate(date));
           }
         }}
       />
@@ -103,7 +104,7 @@ export const SurveyResponsesExportModal = () => {
         }
         onChange={date => {
           if (date && moment(date).isValid()) {
-            handleValueChange('endDate', moment(date).toISOString());
+            handleValueChange('endDate', stripTimezoneFromDate(date));
           }
         }}
       />

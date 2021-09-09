@@ -64,8 +64,6 @@ export const ANALYTICS_RESULTS = {
         ou: ['to_dhisId', 'pg_dhisId'],
       },
     },
-    width: 3,
-    height: 2,
     rows: [
       ['to_dhisId', '10.0', '15.0'],
       ['pg_dhisId', '20.0', '25.0'],
@@ -89,8 +87,6 @@ export const ANALYTICS_RESULTS = {
         ou: ['to_dhisId', 'pg_dhisId'],
       },
     },
-    width: 3,
-    height: 2,
     rows: [
       ['to_dhisId', '10.0', '15.0'],
       ['pg_dhisId', '20.0', '25.0'],

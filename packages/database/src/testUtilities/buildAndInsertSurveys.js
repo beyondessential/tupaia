@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { findOrCreateDummyRecord, upsertDummyRecord } from './upsertDummyRecord';
+import { findOrCreateDummyRecord } from './upsertDummyRecord';
 
 const buildAndInsertQuestion = async (
   models,
@@ -28,19 +28,23 @@ const buildAndInsertQuestion = async (
   return { question, dataElement, surveyScreenComponent };
 };
 
-const buildAndInsertDataGroup = async (models, fields) =>
-  findOrCreateDummyRecord(
+const buildAndInsertDataGroup = async (models, fields) => {
+  const { code, type, ...createFields } = fields;
+  return findOrCreateDummyRecord(
     models.dataSource,
-    { service_type: 'dhis', ...fields, type: 'dataGroup' },
-    { config: { isDataRegional: true } },
+    { code, type: 'dataGroup' },
+    { service_type: 'tupaia', ...createFields },
   );
+};
 
-const buildAndInsertDataElement = async (models, fields) =>
-  findOrCreateDummyRecord(
+const buildAndInsertDataElement = async (models, fields) => {
+  const { code, type, ...createFields } = fields;
+  return findOrCreateDummyRecord(
     models.dataSource,
-    { service_type: 'dhis', ...fields, type: 'dataElement' },
-    { config: { isDataRegional: true } },
+    { code, type: 'dataElement' },
+    { service_type: 'tupaia', ...createFields },
   );
+};
 
 const buildAndInsertSurvey = async (
   models,

@@ -7,6 +7,9 @@ import compareVersions from 'semver-compare';
 
 import { DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
 import { AccessPolicyBuilder } from './AccessPolicyBuilder';
+import { mergeAccessPolicies } from './mergeAccessPolicies';
+import { encryptPassword } from './utils';
+import { getTokenClaims } from './userAuth';
 
 const REFRESH_TOKEN_LENGTH = 40;
 const MAX_MEDITRAK_USING_LEGACY_POLICY = '1.7.106';
@@ -17,6 +20,51 @@ export class Authenticator {
     this.accessPolicyBuilder = new AccessPolicyBuilderClass(models);
   }
 
+  /**
+   * Authenticate by access token string
+   * @param {string} accessToken
+   */
+  async authenticateAccessToken(accessToken) {
+    const { userId, apiClientUserId } = getTokenClaims(accessToken); // will throw if access token expired or invalid
+
+    if (!userId) {
+      throw new UnauthenticatedError('Could not authenticate access token');
+    }
+
+    const user = await this.models.user.findById(userId);
+    const userAccessPolicy = await this.getAccessPolicyForUser(user.id);
+
+    if (!apiClientUserId) {
+      return { user, accessPolicy: userAccessPolicy };
+    }
+
+    const apiClientAccessPolicy = await this.getAccessPolicyForUser(apiClientUserId);
+    return { user, accessPolicy: mergeAccessPolicies(userAccessPolicy, apiClientAccessPolicy) };
+  }
+
+  /**
+   * Authenticate an api client user
+   * @param {{ username: string, secretKey: string }} apiClientCredentials
+   */
+  async authenticateApiClient({ username, secretKey }) {
+    const secretKeyHash = encryptPassword(secretKey, process.env.API_CLIENT_SALT);
+    const apiClient = await this.models.apiClient.findOne({
+      username,
+      secret_key_hash: secretKeyHash,
+    });
+    if (!apiClient) {
+      throw new UnauthenticatedError('Could not authenticate Api Client');
+    }
+    const user = await apiClient.getUser();
+    const accessPolicy = await this.getAccessPolicyForUser(user.id);
+    return { user, accessPolicy };
+  }
+
+  /**
+   * Authenticate by email/password
+   * @param {{ emailAddress, password, deviceName }} authDetails
+   * @param {*} [meditrakDeviceDetails]
+   */
   async authenticatePassword({ emailAddress, password, deviceName }, meditrakDeviceDetails) {
     const user = await this.getAuthenticatedUser({ emailAddress, password, deviceName });
     const meditrakDevice =
@@ -101,6 +149,8 @@ export class Authenticator {
   /**
    * Returns a plain old javascript object representation of the user's policy. Consumers should
    * parse into an instance of AccessPolicy to use functions like `accessPolicy.allowsSome`
+   * @param {string} userId
+   * @param {*} [meditrakDevice]
    */
   async getAccessPolicyForUser(userId, meditrakDevice) {
     if (!meditrakDevice) return this.accessPolicyBuilder.getPolicyForUser(userId);

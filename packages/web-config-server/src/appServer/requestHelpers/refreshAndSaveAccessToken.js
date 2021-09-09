@@ -1,4 +1,8 @@
-import { TupaiaAppAuthorisationError, TupaiaAppCommunicationError } from '@tupaia/utils';
+import {
+  TupaiaAppAuthorisationError,
+  TupaiaAppCommunicationError,
+  getTokenExpiry,
+} from '@tupaia/utils';
 import { fetchFromMediTrakServer } from '/appServer/requestHelpers';
 
 export const refreshAndSaveAccessToken = async (models, refreshToken, userName) => {
@@ -11,7 +15,12 @@ export const refreshAndSaveAccessToken = async (models, refreshToken, userName) 
     if (!response.accessToken || !response.refreshToken) {
       throw new TupaiaAppAuthorisationError();
     } else {
-      await models.userSession.updateOrCreate({ userName }, { ...response }); // Save tokens for user
+      const tokenExpiry = getTokenExpiry(response.accessToken);
+      const { accessPolicy } = response.user;
+      await models.userSession.updateOrCreate(
+        { userName },
+        { ...response, access_token_expiry: tokenExpiry, accessPolicy },
+      ); // Save tokens for user
       return response.accessToken;
     }
   } catch (error) {

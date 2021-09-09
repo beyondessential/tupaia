@@ -1,15 +1,28 @@
 #!/usr/bin/env bash
 
-# This file runs on appcenter automated builds
-# Dependencies will be installed using yarn automatically by appcenter
+## This file runs on appcenter automated builds
 
-# Use more recent node version than default in the appcenter build servers
-set -ex
-brew uninstall node@6
-NODE_VERSION="8.10.0"
-curl "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}.pkg" > "$HOME/Downloads/node-installer.pkg"
-sudo installer -store -pkg "$HOME/Downloads/node-installer.pkg" -target "/"
-
-# Move environment variables saved by appcenter as USER-DEFINED_VARIABLE_NAME into .env, ready for react-native-dotenv
+## Move environment variables saved by appcenter as USER-DEFINED_VARIABLE_NAME into .env, ready for react-native-dotenv
 echo "Setting up environment variables"
 env | grep "USER-DEFINED_.*" | awk -F "USER-DEFINED_" '{print $2}' > .env
+
+## Although appcenter generally automatically installs dependencies, it doesn't handle mono-repo
+## internal dependencies (see https://github.com/microsoft/appcenter/issues/278)
+## To manage that, we here manually install external deps, build internal deps, then redirect the
+## package.json entries to the internal filesystem
+
+# move to the root folder
+cd ../..
+
+# install root dependencies
+SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
+
+# move to meditrak folder
+cd packages/meditrak-app
+
+# build internal dependencies of meditrak
+../../scripts/bash/buildInternalDependencies.sh --packagePath .
+
+# redirect package.json entries for internal dependencies to look locally
+node scripts/fixInternalDepsAppcenter.js
+

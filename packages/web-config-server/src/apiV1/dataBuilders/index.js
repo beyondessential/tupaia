@@ -16,13 +16,12 @@ export * from './generic/sum';
 export * from './generic/calc';
 export * from './generic/table';
 export * from './generic/unique';
+export * from './generic/reportServer';
 
 /** Modules */
 export * from './modules/disaster';
-export * from './modules/imms';
 export * from './modules/msupply';
 export * from './modules/pehs';
 export * from './modules/tonga';
-export * from './modules/covid';
 export * from './modules/covid-samoa';
 export * from './modules/fetp';

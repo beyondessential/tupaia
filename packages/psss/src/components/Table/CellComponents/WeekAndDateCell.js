@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import * as COLORS from '../../../constants/colors';
 import { getDisplayDatesByPeriod, getWeekNumberByPeriod } from '../../../utils';
 
-const CountrySummaryTitle = styled.div`
+const WeekAndDateTitle = styled.div`
   color: ${COLORS.TEXT_DARKGREY};
   font-weight: 400;
   font-size: 0.9375rem;
@@ -17,9 +17,9 @@ const CountrySummaryTitle = styled.div`
 `;
 
 export const WeekAndDateCell = ({ period }) => (
-  <CountrySummaryTitle>
+  <WeekAndDateTitle>
     <strong>W{getWeekNumberByPeriod(period)}</strong> {getDisplayDatesByPeriod(period)}
-  </CountrySummaryTitle>
+  </WeekAndDateTitle>
 );
 
 WeekAndDateCell.propTypes = {

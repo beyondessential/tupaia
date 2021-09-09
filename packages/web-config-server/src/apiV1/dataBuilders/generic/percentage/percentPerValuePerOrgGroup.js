@@ -5,7 +5,7 @@
 import {
   getChildOrganisationUnits,
   getDataElementCodesInGroup,
-  mapOrgUnitToGroupCodes,
+  mapOrgUnitCodeToGroup,
   countByOrganisationUnitByValue,
   calculatePercentagesWithinRange,
 } from '/apiV1/utils';
@@ -30,11 +30,11 @@ export const percentPerValuePerOrgGroup = async (
   );
 
   const dataElementCodes = await getDataElementCodesInGroup(dhisApi, dataElementGroupCode);
-  const orgUnitToGroupKeys = mapOrgUnitToGroupCodes(organisationUnits);
+  const orgUnitMap = mapOrgUnitCodeToGroup(organisationUnits);
 
   const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query, {
     aggregationType: aggregator.aggregationTypes.MOST_RECENT_PER_ORG_GROUP,
-    aggregationConfig: { orgUnitToGroupKeys },
+    aggregationConfig: { orgUnitMap },
   });
   const countsByOrganisationUnit = countByOrganisationUnitByValue(
     results,

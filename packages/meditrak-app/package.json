@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/meditrak-app",
-  "version": "1.9.110",
+  "version": "1.11.113",
   "private": true,
   "description": "Android and iOS app for surveying medical facilities",
   "repository": {

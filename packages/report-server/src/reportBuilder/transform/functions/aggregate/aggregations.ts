@@ -3,75 +3,117 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { Row, FieldValue } from '../../../types';
+import { FieldValue } from '../../../types';
 
-const isUndefined = (value: FieldValue): value is undefined => {
-  return value === undefined;
+const isNotUndefined = <T>(value: T): value is Exclude<T, undefined> => {
+  return value !== undefined;
 };
 
-const group = (existingRow: Row, field: string, value: FieldValue) => {
-  existingRow[field] = value;
+const isNotNullOrUndefined = <T>(value: T): value is NonNullable<T> => {
+  return value !== undefined && value !== null;
 };
 
-const sum = (existingRow: Row, field: string, value: FieldValue) => {
-  if (typeof value === 'number') {
-    existingRow[field] = ((existingRow[field] as number) || 0) + value;
-  } else {
-    throw new Error(`Expected number, got '${typeof value}'.`);
-  }
-};
-
-const count = (existingRow: Row, field: string, value: FieldValue) => {
-  existingRow[field] = ((existingRow[field] as number) || 0) + 1;
-};
-
-const max = (existingRow: Row, field: string, value: FieldValue) => {
-  const existingValue: FieldValue = existingRow[field];
-  if (!isUndefined(value)) {
-    if (isUndefined(existingValue)) {
-      existingRow[field] = value;
-    } else if (value > existingValue) {
-      existingRow[field] = value;
+// checkIsNum([1, 2, 3, null, undefined]) = 1, 2, 3]
+const checkIsNum = (values: FieldValue[]): number[] => {
+  const assertIsNumber = (value: FieldValue): value is number => {
+    if (typeof value !== 'number') {
+      throw new Error(`Expected number, got '${typeof value}'.`);
     }
-  }
+    return true;
+  };
+  const filteredUndefinedAndNullValues = values.filter(isNotNullOrUndefined);
+  return filteredUndefinedAndNullValues.filter(assertIsNumber);
 };
 
-const min = (existingRow: Row, field: string, value: FieldValue) => {
-  const existingValue: FieldValue = existingRow[field];
-  if (!isUndefined(value)) {
-    if (isUndefined(existingValue)) {
-      existingRow[field] = value;
-    } else if (value < existingValue) {
-      existingRow[field] = value;
+const group = (values: FieldValue[]): FieldValue => {
+  return values[0];
+};
+
+const sum = (values: FieldValue[]): number | undefined => {
+  const checkedValues = checkIsNum(values);
+  return checkedValues.length === 0
+    ? undefined
+    : checkedValues.reduce((a, b) => {
+        return a + b;
+      });
+};
+
+const avg = (values: FieldValue[]): number | undefined => {
+  const checkedValues = checkIsNum(values);
+  const numerator = sum(checkedValues);
+  const denominator = count(checkedValues);
+  if (isNotUndefined(numerator) && denominator !== 0) {
+    return numerator / denominator;
+  }
+  return undefined;
+};
+
+const count = (values: FieldValue[]): number => {
+  return values.length;
+};
+
+// helper of max() and min(), e.g.: customSort([1, 2, 3, null]) = [null, 1, 2, 3]
+const customSort = (values: FieldValue[]): FieldValue[] => {
+  const filteredUndefinedValues = values.filter(isNotUndefined);
+  return filteredUndefinedValues.sort((a, b) => {
+    if (a === null) {
+      return -1;
     }
-  }
+    if (b === null) {
+      return 1;
+    }
+    return a > b ? 1 : -1;
+  });
 };
 
-const unique = (existingRow: Row, field: string, value: FieldValue) => {
-  if (!isUndefined(existingRow[field]) && existingRow[field] !== value) {
-    existingRow[field] = 'NO_UNIQUE_VALUE';
-  } else {
-    existingRow[field] = value;
-  }
+// max([1, 2, 3, null]) = 3; max([null, null]) = null
+const max = (values: FieldValue[]): FieldValue => {
+  const sortedValues = customSort(values);
+  return sortedValues.length !== 0 ? sortedValues.slice().reverse()[0] : undefined;
 };
 
-const drop = (existingRow: Row, field: string, value: FieldValue) => {
+// min([1, 2, 3, null]) = null; min([null, null]) = null
+const min = (values: FieldValue[]): FieldValue => {
+  const sortedValues = customSort(values);
+  return sortedValues.length !== 0 ? sortedValues[0] : undefined;
+};
+
+const unique = (values: FieldValue[]): FieldValue => {
+  const distinctValues = [...new Set(values.filter(isNotUndefined))];
+  return distinctValues.length === 1 ? distinctValues[0] : 'NO_UNIQUE_VALUE';
+};
+
+const drop = (values: FieldValue[]): FieldValue => {
   // Do nothing, don't add the field to the existing row
 };
 
-const first = (existingRow: Row, field: string, value: FieldValue) => {
-  if (isUndefined(existingRow[field])) {
-    existingRow[field] = value;
-  }
+const first = (values: FieldValue[]): FieldValue => {
+  return values.find(isNotUndefined);
 };
 
-const last = (existingRow: Row, field: string, value: FieldValue) => {
-  existingRow[field] = value;
+const last = (values: FieldValue[]): FieldValue => {
+  return values.slice().reverse().find(isNotUndefined);
+};
+
+const single = (values: FieldValue[]): FieldValue => {
+  const definedValues = values.filter(isNotUndefined);
+  if (definedValues.length === 0) {
+    return undefined;
+  }
+
+  if (definedValues.length === 1) {
+    return definedValues[0];
+  }
+
+  throw new Error(
+    `'single' aggregation expects a single value per group, however ${definedValues.length} were found`,
+  );
 };
 
 export const aggregations = {
   group,
   sum,
+  avg,
   count,
   max,
   min,
@@ -79,5 +121,6 @@ export const aggregations = {
   drop,
   first,
   last,
+  single,
   default: last,
 };

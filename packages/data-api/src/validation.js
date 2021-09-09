@@ -14,14 +14,18 @@ import {
 } from '@tupaia/utils';
 
 const COMMON_OPTIONS = {
-  dataElementCodes: [hasContent, constructEveryItem(isAString)],
   organisationUnitCodes: [hasContent, constructEveryItem(isAString)],
   startDate: [constructIsEmptyOr(takesDateForm)],
   endDate: [constructIsEmptyOr(takesDateForm)],
 };
 
+const ANALYTIC_OPTIONS = {
+  dataElementCodes: [hasContent, constructEveryItem(isAString)],
+};
+
 const EVENT_OPTIONS = {
-  surveyCode: [hasContent, isAString],
+  dataElementCodes: [constructIsEmptyOr(constructEveryItem(isAString))],
+  dataGroupCode: [hasContent, isAString],
   eventId: [constructIsEmptyOr(takesIdForm)],
 };
 
@@ -29,10 +33,7 @@ export const validateEventOptions = async options => {
   if (!options) {
     throw new Error('Please provide options when fetching events');
   }
-  const validator = new ObjectValidator({
-    ...COMMON_OPTIONS,
-    ...EVENT_OPTIONS,
-  });
+  const validator = new ObjectValidator({ ...COMMON_OPTIONS, ...EVENT_OPTIONS });
   return validator.validate(options);
 };
 
@@ -40,6 +41,6 @@ export const validateAnalyticsOptions = async options => {
   if (!options) {
     throw new Error('Please provide options when fetching analytics');
   }
-  const validator = new ObjectValidator(COMMON_OPTIONS);
+  const validator = new ObjectValidator({ ...COMMON_OPTIONS, ...ANALYTIC_OPTIONS });
   return validator.validate(options);
 };

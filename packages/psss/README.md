@@ -18,5 +18,4 @@ In the project directory, you can run:
 
 #### Testing notes
 
-- `Cypress` Add a `cypress.env.json` file with real example `username` and `userPassword` values
 - `jest` Create React App does not include the latest version of `jest-dom` so it needs to be set in jest test scripts https://github.com/testing-library/react-testing-library/issues/141

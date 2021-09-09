@@ -43,6 +43,8 @@ import { VIEW_STYLES } from '../../styles';
 import { VIEW_CONTENT_SHAPE } from '.';
 import Carousel from '../Carousel';
 import Slide from '../Carousel/Slide';
+import { ViewTitle } from './Typography';
+import { ChartViewContainer } from './Layout';
 
 const MAX_THUMBNAILS = 3;
 
@@ -102,8 +104,8 @@ export class MultiPhotoWrapper extends React.Component {
     };
     const thumbnailProportions = getThumbProportions(thumbnails.length);
     return (
-      <div style={VIEW_STYLES.chartViewContainer}>
-        <div style={VIEW_STYLES.title}>{name}</div>
+      <ChartViewContainer>
+        <ViewTitle>{name}</ViewTitle>
         <div
           style={containerStyle}
           tabIndex={0}
@@ -126,7 +128,7 @@ export class MultiPhotoWrapper extends React.Component {
           {showIcon && <ZoomIcon style={VIEW_STYLES.multiPhotoZoomIcon} />}
         </div>
         {this.renderEnlargePopup()}
-      </div>
+      </ChartViewContainer>
     );
   }
 }

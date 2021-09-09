@@ -55,6 +55,28 @@ const IMPORT_CONFIG = {
   actionConfig: {
     importEndpoint: 'entities',
   },
+  queryParameters: [
+    {
+      label: 'Push new entities to DHIS2 server',
+      parameterKey: 'pushToDhis',
+      type: 'boolean',
+      editConfig: {
+        type: 'boolean',
+      },
+    },
+    {
+      label: 'Automatically fetch GeoJSON (defaults to "Yes")',
+      parameterKey: 'automaticallyFetchGeojson',
+      type: 'boolean',
+      editConfig: {
+        type: 'boolean',
+      },
+    },
+  ],
+};
+
+const EDIT_CONFIG = {
+  title: 'Edit Answer',
 };
 
 export const EntitiesPage = ({ getHeaderEl }) => (
@@ -62,6 +84,7 @@ export const EntitiesPage = ({ getHeaderEl }) => (
     title="Entities"
     endpoint="entities"
     columns={COLUMNS}
+    editConfig={EDIT_CONFIG}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     getHeaderEl={getHeaderEl}

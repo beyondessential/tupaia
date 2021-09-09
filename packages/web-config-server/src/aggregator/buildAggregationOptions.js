@@ -16,7 +16,7 @@ export const buildAggregationOptions = async (
   hierarchyId,
 ) => {
   const {
-    aggregations,
+    aggregations: multiAggregations,
     aggregationType,
     aggregationConfig,
     ...restOfOptions
@@ -28,12 +28,14 @@ export const buildAggregationOptions = async (
     aggregationOrder: entityAggregationOrder = DEFAULT_ENTITY_AGGREGATION_ORDER,
   } = entityAggregationOptions;
 
-  // Note aggregationType and aggregationConfig might be undefined
-  const inputAggregations = aggregations || [{ type: aggregationType, config: aggregationConfig }];
+  // Note aggregationType and aggregationConfig might be undefined, in which case it will default
+  // to MOST_RECENT if no multi-aggregations are provided
+  const singleAggregation = [{ type: aggregationType, config: aggregationConfig }];
+  const aggregations = multiAggregations || singleAggregation;
 
   if (!shouldAggregateEntities(dataSourceEntities, aggregationEntityType, entityAggregationType)) {
     return {
-      aggregations: inputAggregations,
+      aggregations,
       ...restOfOptions,
     };
   }
@@ -50,8 +52,8 @@ export const buildAggregationOptions = async (
   return {
     aggregations:
       entityAggregationOrder === ENTITY_AGGREGATION_ORDER_AFTER
-        ? [...inputAggregations, entityAggregation]
-        : [entityAggregation, ...inputAggregations],
+        ? [...aggregations, entityAggregation]
+        : [entityAggregation, ...aggregations],
     ...restOfOptions,
   };
 };

@@ -7,8 +7,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TextInput as RNTextInput, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { THEME_COLOR_ONE, THEME_TEXT_COLOR_ONE, THEME_FONT_SIZE_ONE } from '../globalStyles';
-import { MultilineTextInput } from '.';
+import { THEME_COLOR_ONE, THEME_FONT_SIZE_ONE } from '../globalStyles';
 
 const getLabelStyle = (fieldValue, isMultiline) => {
   const style = [localStyles.label];

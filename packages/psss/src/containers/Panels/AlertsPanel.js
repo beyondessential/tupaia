@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import React, { createContext, useCallback, useContext, useState } from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
 import { MoveToInbox, LocationOn, SpeakerNotes, List } from '@material-ui/icons';
 import {
   CardTabList,
@@ -16,7 +16,7 @@ import {
   Virus,
   LinkButton,
 } from '@tupaia/ui-components';
-import { getAffectedSites, getAlertsMessages, getActivityFeed } from '../../api';
+import { getAlertsMessages, getActivityFeed } from '../../api';
 import {
   Drawer,
   DropdownMenu,
@@ -25,9 +25,10 @@ import {
   ActivityTab,
   DrawerTray,
 } from '../../components';
-import { CreateOutbreakModal } from '../Modals';
+import { CreateOutbreakModal, ArchiveAlertModal } from '../Modals';
 import { NotesTab } from '../NotesTab';
-import { countryFlagImage, getCountryName } from '../../utils';
+import { getCountryName } from '../../store';
+import { countryFlagImage, getDisplayDatesByPeriod, getWeekNumberByPeriod } from '../../utils';
 import { useFetch } from '../../hooks';
 
 const Option = styled.span`
@@ -56,42 +57,85 @@ const menuOptions = [
       </Option>
     ),
   },
-  {
-    value: 'Outbreak',
-    label: (
-      <Option>
-        <Virus /> Create Outbreak
-      </Option>
-    ),
-  },
+  // {
+  //   value: 'Outbreak',
+  //   label: (
+  //     <Option>
+  //       <Virus /> Create Outbreak
+  //     </Option>
+  //   ),
+  // },
 ];
 
-const TabsContext = React.createContext(null);
+const TabsContext = createContext(null);
 
-export const AlertsPanel = React.memo(({ isOpen, handleClose }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+export const AlertsPanelContext = createContext(null);
+
+export const AlertsPanelProvider = ({ children }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [data, setData] = useState({});
+
+  return (
+    <AlertsPanelContext.Provider value={{ data, setData, isOpen, setIsOpen }}>
+      {children}
+    </AlertsPanelContext.Provider>
+  );
+};
+
+AlertsPanelProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
+export const AlertsPanel = React.memo(() => {
+  const { data: panelData, isOpen, setIsOpen } = useContext(AlertsPanelContext);
+  const { id: alertId, organisationUnit: countryCode, period, syndrome, syndromeName } = panelData;
+  const alert = { period, organisationUnit: countryCode, syndrome };
+  const [isArchiveAlertModalOpen, setIsArchiveAlertModalOpen] = useState(false);
+  const [isCreateOutbreakModalOpen, setIsCreateOutBreakModalOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
-  const sitesState = useFetch(getAffectedSites);
   const notesState = useFetch(getAlertsMessages);
   const activityState = useFetch(getActivityFeed);
-  const { countryCode } = useParams();
+  const countryName = useSelector(state => getCountryName(state, countryCode));
 
   const handleChange = option => {
-    // todo handle changes other than creating an outbreak
-    setIsModalOpen(true);
+    switch (option.value) {
+      case 'Archive':
+        setIsArchiveAlertModalOpen(true);
+        break;
+      case 'Outbreak':
+        setIsCreateOutBreakModalOpen(true);
+        break;
+      default:
+    }
   };
+
+  const handleClose = useCallback(() => {
+    setIsOpen(false);
+  }, [setIsOpen]);
+
+  const handleCloseCreateOutbreakModal = useCallback(() => {
+    setIsCreateOutBreakModalOpen(false);
+  }, [setIsCreateOutBreakModalOpen]);
+
+  const handleCloseArchiveAlertModal = useCallback(() => {
+    setIsArchiveAlertModalOpen(false);
+  }, [setIsArchiveAlertModalOpen]);
 
   return (
     <Drawer open={isOpen} onClose={handleClose}>
       <DrawerTray heading="Alert Details" onClose={handleClose} Icon={WarningCloud} />
-      <AlertsDrawerHeader
-        date="Week 9 Feb 25 - Mar 1, 2021"
-        dateText="Triggered on:"
-        avatarUrl={countryFlagImage('as')}
-        subheading={getCountryName(countryCode)}
-        heading="Acute Fever and Rash (AFR)"
-        DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
-      />
+      {period && countryCode && (
+        <AlertsDrawerHeader
+          dateText={`Triggered on: W${getWeekNumberByPeriod(period)}`}
+          date={getDisplayDatesByPeriod(period)}
+          avatarUrl={countryFlagImage(countryCode)}
+          subheading={countryName}
+          heading={syndromeName}
+          DropdownMenu={
+            <DropdownMenu options={menuOptions} onChange={handleChange} readOnly="true" />
+          }
+        />
+      )}
       <TabsContext.Provider value={{ activeIndex, setActiveIndex }}>
         <CardTabList Context={TabsContext}>
           <CardTab>
@@ -107,7 +151,7 @@ export const AlertsPanel = React.memo(({ isOpen, handleClose }) => {
           </CardTab>
         </CardTabList>
         <CardTabPanels Context={TabsContext}>
-          <AffectedSitesTab state={sitesState} />
+          <AffectedSitesTab alert={alert} />
           <NotesTab state={notesState} />
           <ActivityTab
             state={activityState}
@@ -115,12 +159,15 @@ export const AlertsPanel = React.memo(({ isOpen, handleClose }) => {
           />
         </CardTabPanels>
       </TabsContext.Provider>
-      <CreateOutbreakModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />
+      <CreateOutbreakModal
+        isOpen={isCreateOutbreakModalOpen}
+        onClose={handleCloseCreateOutbreakModal}
+      />
+      <ArchiveAlertModal
+        isOpen={isArchiveAlertModalOpen}
+        onClose={handleCloseArchiveAlertModal}
+        alertId={alertId}
+      />
     </Drawer>
   );
 });
-
-AlertsPanel.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
-};

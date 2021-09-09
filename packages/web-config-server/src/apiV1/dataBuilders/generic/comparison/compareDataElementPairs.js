@@ -18,13 +18,17 @@ import flatten from 'lodash.flatten';
  * }
  */
 export const compareDataElementPairs = async (
-  { dataBuilderConfig, viewJson, query },
+  { dataBuilderConfig, query },
   aggregator,
 ) => {
   const { organisationUnitCode } = query;
-  const { dataElementPairs, dataServices } = dataBuilderConfig;
-  const { dataPairNames, leftColumn, rightColumn } = viewJson.presentationOptions;
-
+  const {
+    dataElementPairs,
+    leftColumnHeader,
+    rightColumnHeader,
+    dataPairNames,
+    dataServices,
+  } = dataBuilderConfig;
   const dataElementCodes = flatten(dataElementPairs);
 
   const { results } = await aggregator.fetchAnalytics(
@@ -41,8 +45,8 @@ export const compareDataElementPairs = async (
   const data = dataElementPairs.reduce((returnData, pair, i) => {
     const row = {
       name: dataPairNames[i],
-      [leftColumn.header]: resultsByCode[pair[0]],
-      [rightColumn.header]: resultsByCode[pair[1]],
+      [leftColumnHeader]: resultsByCode[pair[0]],
+      [rightColumnHeader]: resultsByCode[pair[1]],
     };
 
     returnData.push(row);

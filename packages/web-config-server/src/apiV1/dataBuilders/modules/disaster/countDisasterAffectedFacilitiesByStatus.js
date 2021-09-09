@@ -20,6 +20,7 @@ export const countDisasterAffectedFacilitiesByStatus = async (
   const facilities = await entity.getDescendantsOfType(hierarchyId, models.entity.types.FACILITY);
   const options = await dhisApi.getOptionSetOptions({ code: optionSetCode });
   const { results } = await aggregator.fetchAnalytics([AFFECTED_STATUS_DATA_ELEMENT_CODE], {
+    ...query,
     dataServices,
     period,
   });

@@ -10,6 +10,7 @@ import {
   periodToType,
   periodTypeToMomentUnit,
   periodTypeToFormat,
+  stripTimezoneFromDate,
 } from '@tupaia/utils';
 import { DataPusher } from '../DataPusher';
 import { generateDataValue } from '../generateDataValue';
@@ -95,15 +96,15 @@ export class AggregateDataPusher extends DataPusher {
       return this.fetchPeriodType();
     };
     const periodType = await getPeriodType();
-    const getSubmissionTime = async () => {
+    const getDataTime = async () => {
       if (period) return moment(period, periodTypeToFormat(periodType));
       const surveyResponse = await this.fetchSurveyResponse();
-      return surveyResponse.timezoneAwareSubmissionTime();
+      return surveyResponse.dataTime();
     };
     const momentUnit = periodTypeToMomentUnit(periodType);
-    const submissionTime = await getSubmissionTime();
-    const minimumTime = submissionTime.clone().startOf(momentUnit).format();
-    const maximumTime = submissionTime.clone().endOf(momentUnit).format();
+    const dataTime = await getDataTime();
+    const minimumTime = stripTimezoneFromDate(dataTime.clone().startOf(momentUnit).format());
+    const maximumTime = stripTimezoneFromDate(dataTime.clone().endOf(momentUnit).format());
     return [minimumTime, maximumTime];
   }
 
@@ -140,7 +141,7 @@ export class AggregateDataPusher extends DataPusher {
 
       // interpret the submission time using the time zone of the survey response
       const surveyResponse = await this.fetchSurveyResponse();
-      const period = surveyResponse.timezoneAwareSubmissionTime().format(periodTypeFormat);
+      const period = surveyResponse.dataTime().format(periodTypeFormat);
 
       return period;
     });
@@ -266,7 +267,7 @@ export class AggregateDataPusher extends DataPusher {
     const baseDataValue = this.isSurveyResponse
       ? {
           code: `${survey.code}SurveyDate`,
-          value: surveyResponse.timezoneAwareSubmissionTime().format(),
+          value: stripTimezoneFromDate(surveyResponse.dataTime().format()),
         }
       : await generateDataValue(this.models, answer);
 
@@ -309,7 +310,7 @@ export class AggregateDataPusher extends DataPusher {
         },
         survey_id: surveyResponse.survey_id,
         entity_id: surveyResponse.entity_id,
-        submission_time: {
+        data_time: {
           comparisonType: 'whereBetween',
           args: [periodBounds],
         },
@@ -319,7 +320,7 @@ export class AggregateDataPusher extends DataPusher {
         },
       },
       {
-        sort: ['submission_time DESC'],
+        sort: ['data_time DESC'],
       },
     );
     if (laterSamePeriodSurveyResponses.length === 0) return null;
@@ -378,16 +379,12 @@ export class AggregateDataPusher extends DataPusher {
     const entityId =
       syncLogData.entityId || (await this.models.entity.findOne({ code: orgUnit })).id;
     const periodBounds = await this.fetchPeriodBounds(period);
-    const periodBoundsWithTimezoneBuffer = [
-      moment(periodBounds[0]).subtract(1, 'd'),
-      moment(periodBounds[1]).add(1, 'd'),
-    ];
     const duplicateSurveyResponseCriteria = {
       survey_id: surveyId,
       entity_id: entityId,
-      submission_time: {
+      data_time: {
         comparisonType: 'whereBetween',
-        args: [periodBoundsWithTimezoneBuffer],
+        args: [periodBounds],
       },
     };
     switch (this.recordType) {

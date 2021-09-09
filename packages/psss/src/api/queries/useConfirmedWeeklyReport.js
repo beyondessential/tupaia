@@ -4,16 +4,15 @@
  */
 
 import keyBy from 'lodash.keyby';
-import { useTableData } from './useTableData';
+import { usePaginatedReport } from './helpers';
 
-export const useConfirmedWeeklyReport = (period, countryCodes) => {
-  const query = useTableData('confirmedWeeklyReport', {
-    params: { startWeek: period },
-  });
+export const useConfirmedWeeklyReport = (period, orgUnitCodes) => {
+  const params = { startWeek: period, endWeek: period, orgUnitCodes: orgUnitCodes.join(',') };
+  const query = usePaginatedReport('confirmedWeeklyReport', { params });
 
   // Fill empty data if required so that every org unit renders as a row in the table
   const reportsByOrgUnit = keyBy(query.data, 'organisationUnit');
-  const data = countryCodes.map(
+  const data = orgUnitCodes.map(
     orgUnit => reportsByOrgUnit[orgUnit] || { organisationUnit: orgUnit },
   );
 

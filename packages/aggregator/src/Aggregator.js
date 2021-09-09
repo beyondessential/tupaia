@@ -4,7 +4,7 @@
  */
 
 import {
-  adjustTemporalDimensionsToAggregation,
+  adjustOptionsToAggregationList,
   aggregateAnalytics,
   filterAnalytics,
   periodFromAnalytics,
@@ -17,6 +17,7 @@ export class Aggregator {
 
   constructor(dataBroker) {
     this.dataBroker = dataBroker;
+    this.context = dataBroker.context;
   }
 
   async close() {
@@ -31,24 +32,36 @@ export class Aggregator {
     return this.dataBroker.getDataSourceTypes();
   }
 
-  processAnalytics = (analytics, aggregationOptions, requestedPeriod) => {
+  processAnalytics = (results, aggregationOptions, requestedPeriod) => {
     const { aggregations = [], filter } = aggregationOptions;
-
-    const aggregatedAnalytics = aggregations.reduce(
-      (partiallyAggregatedAnalytics, { type, config }) => {
-        return aggregateAnalytics(partiallyAggregatedAnalytics, type, {
-          ...config,
-          requestedPeriod,
-        });
-      },
-      analytics,
-    );
+    const aggregatedAnalytics = results.reduce((array, { analytics, numAggregationsProcessed }) => {
+      const remainingAggregations = aggregations.slice(numAggregationsProcessed);
+      return array.concat(
+        this.aggregateAnalytics(analytics, remainingAggregations, requestedPeriod),
+      );
+    }, []);
 
     return filterAnalytics(aggregatedAnalytics, filter);
   };
 
+  aggregateAnalytics = (analytics, aggregationList, requestedPeriod) =>
+    aggregationList.reduce((partiallyAggregatedAnalytics, { type, config }) => {
+      return aggregateAnalytics(partiallyAggregatedAnalytics, type, {
+        ...config,
+        requestedPeriod,
+      });
+    }, analytics);
+
   async fetchAnalytics(codeInput, fetchOptions, aggregationOptions = {}) {
-    const { organisationUnitCode, organisationUnitCodes } = fetchOptions;
+    const code = Array.isArray(codeInput) ? codeInput : [codeInput];
+    const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_ELEMENT };
+    const [adjustedFetchOptions, adjustedAggregationOptions] = await adjustOptionsToAggregationList(
+      this.context,
+      fetchOptions,
+      aggregationOptions,
+    );
+
+    const { organisationUnitCode, organisationUnitCodes } = adjustedFetchOptions;
     if (!organisationUnitCode && (!organisationUnitCodes || !organisationUnitCodes.length)) {
       // No organisation unit code, return empty response
       return {
@@ -59,23 +72,14 @@ export class Aggregator {
         period: periodFromAnalytics([], fetchOptions),
       };
     }
-    const code = Array.isArray(codeInput) ? codeInput : [codeInput];
-    const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_ELEMENT };
-    const { startDate, endDate, period, ...restOfFetchOptions } = fetchOptions;
-    const temporalDimensions = adjustTemporalDimensionsToAggregation(
-      { startDate, endDate, period },
-      aggregationOptions,
-    );
 
-    const { results, metadata } = await this.dataBroker.pull(dataSourceSpec, {
-      ...restOfFetchOptions,
-      ...temporalDimensions,
-    });
+    const { results, metadata } = await this.dataBroker.pull(dataSourceSpec, adjustedFetchOptions);
+    const rawAnalytics = results.reduce((array, { analytics }) => array.concat(analytics), []);
 
     return {
-      results: this.processAnalytics(results, aggregationOptions, period),
+      results: this.processAnalytics(results, adjustedAggregationOptions, fetchOptions.period),
       metadata,
-      period: periodFromAnalytics(results, fetchOptions),
+      period: periodFromAnalytics(rawAnalytics, fetchOptions),
     };
   }
 
@@ -90,14 +94,21 @@ export class Aggregator {
   };
 
   async fetchEvents(code, fetchOptions, aggregationOptions = {}) {
-    const { organisationUnitCode, organisationUnitCodes } = fetchOptions;
+    const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_GROUP };
+    const [adjustedFetchOptions, adjustedAggregationOptions] = await adjustOptionsToAggregationList(
+      this.context,
+      fetchOptions,
+      aggregationOptions,
+    );
+
+    const { organisationUnitCode, organisationUnitCodes } = adjustedFetchOptions;
     if (!organisationUnitCode && (!organisationUnitCodes || !organisationUnitCodes.length)) {
       return [];
     }
-    const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_GROUP };
-    const events = await this.dataBroker.pull(dataSourceSpec, fetchOptions);
 
-    return this.processEvents(events, aggregationOptions);
+    const events = await this.dataBroker.pull(dataSourceSpec, adjustedFetchOptions);
+
+    return this.processEvents(events, adjustedAggregationOptions);
   }
 
   async fetchDataElements(codes, fetchOptions) {

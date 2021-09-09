@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Container from '@material-ui/core/Container';
 import PropTypes from 'prop-types';
@@ -22,18 +22,19 @@ const ToolbarWrapper = styled.div`
   }
 `;
 
-export const BaseToolbar = ({ children }) => (
+export const BaseToolbar = ({ children, maxWidth }) => (
   <ToolbarWrapper>
-    <Container maxWidth="lg">{children}</Container>
+    <Container maxWidth={maxWidth}>{children}</Container>
   </ToolbarWrapper>
 );
 
 BaseToolbar.propTypes = {
-  children: PropTypes.any,
+  children: PropTypes.node.isRequired,
+  maxWidth: PropTypes.string,
 };
 
 BaseToolbar.defaultProps = {
-  children: [],
+  maxWidth: null,
 };
 
 const ToolbarTab = styled(LightTab)`
@@ -51,28 +52,21 @@ const ToolbarTab = styled(LightTab)`
  * TabsToolbar
  * a component for navigating to router links
  */
-export const TabsToolbar = ({ links }) => {
+export const TabsToolbar = ({ links: linkInput, maxWidth }) => {
   const location = useLocation();
   const match = useRouteMatch();
-  const [value, setValue] = useState(false);
-
-  useEffect(() => {
-    const valid = links.find(link => location.pathname === `${match.url}${link.to}`);
-    const newValue = valid ? location.pathname : `${match.url}${links[0].to}`;
-    setValue(newValue);
-  }, [location, match]);
+  const links = linkInput.map(link => ({
+    ...link,
+    target: link.exact ? link.to : `${match.url}${link.to}`,
+  }));
+  const { target: value } = links.find(link => location.pathname === link.target) || links[0];
 
   return (
-    <BaseToolbar>
+    <BaseToolbar maxWidth={maxWidth}>
       {value && (
         <LightTabs value={value}>
-          {links.map(({ label, to, icon }) => (
-            <ToolbarTab
-              key={to}
-              to={`${match.url}${to}`}
-              value={`${match.url}${to}`}
-              component={RouterLink}
-            >
+          {links.map(({ label, to, target, icon }) => (
+            <ToolbarTab key={to} to={target} value={target} component={RouterLink}>
               {icon}
               {label}
             </ToolbarTab>
@@ -85,4 +79,9 @@ export const TabsToolbar = ({ links }) => {
 
 TabsToolbar.propTypes = {
   links: PropTypes.array.isRequired,
+  maxWidth: PropTypes.string,
+};
+
+TabsToolbar.defaultProps = {
+  maxWidth: null,
 };

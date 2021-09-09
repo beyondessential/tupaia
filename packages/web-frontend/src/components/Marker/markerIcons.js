@@ -17,11 +17,11 @@ import Help from '@material-ui/icons/Help';
 import CheckBox from '@material-ui/icons/CheckBox';
 
 // from https://thenounproject.com/ochavisual/collection/ocha-humanitarian-icons/
-import Cyclone from '../../images/cyclone.svg';
-import Earthquake from '../../images/earthquake.svg';
-import Tsunami from '../../images/tsunami.svg';
-import Volcano from '../../images/volcano.svg';
-import Flood from '../../images/flood.svg';
+import { ReactComponent as Cyclone } from '../../images/cyclone.svg';
+import { ReactComponent as Earthquake } from '../../images/earthquake.svg';
+import { ReactComponent as Tsunami } from '../../images/tsunami.svg';
+import { ReactComponent as Volcano } from '../../images/volcano.svg';
+import { ReactComponent as Flood } from '../../images/flood.svg';
 
 import { BREWER_PALETTE, WHITE } from '../../styles';
 

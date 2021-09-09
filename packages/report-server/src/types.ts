@@ -3,46 +3,29 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { Request } from 'express';
-import { ParamsDictionary, Query } from 'express-serve-static-core';
-import { AccessPolicy } from '@tupaia/access-policy';
-import { Authenticator } from '@tupaia/auth';
-import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
+import { ModelRegistry } from '@tupaia/database';
+import { ReportModel } from './models';
 
-export interface FetchReportQuery extends Query {
-  organisationUnitCodes: string;
+export interface ReportServerModelRegistry extends ModelRegistry {
+  readonly report: ReportModel;
+}
+
+export interface FetchReportQuery {
+  organisationUnitCodes: string[];
+  hierarchy?: string;
   period?: string;
   startDate?: string;
   endDate?: string;
-}
-
-export interface FetchReportParams extends ParamsDictionary {
-  reportCode: string;
 }
 
 export interface ReportConfig {
   fetch: {
     dataElements?: string[];
     dataGroups?: string[];
+    aggregations?: (string | Record<string, unknown>)[];
   };
   transform: (string | Record<string, unknown>)[];
-}
-
-interface ReportsRequestBody {
-  testConfig?: ReportConfig;
-  testData?: Record<string, string | number>[];
-}
-
-export interface ReportsRequest<
-  P = FetchReportParams,
-  ResBody = unknown,
-  ReqBody = ReportsRequestBody,
-  ReqQuery = FetchReportQuery
-> extends Request<P, ResBody, ReqBody, ReqQuery> {
-  accessPolicy: AccessPolicy;
-  authenticator: Authenticator;
-  database: TupaiaDatabase;
-  models: ModelRegistry;
+  output?: Record<string, unknown>[];
 }
 
 export interface Event {
@@ -52,3 +35,5 @@ export interface Event {
   orgUnit: string;
   dataValues?: Record<string, string | number>;
 }
+
+export type AggregationObject = { type: string; config: Record<string, string> };

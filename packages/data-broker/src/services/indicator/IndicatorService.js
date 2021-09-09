@@ -21,10 +21,16 @@ export class IndicatorService extends Service {
   }
 
   async pull(dataSources, type, options) {
-    if (type === this.dataSourceTypes.DATA_GROUP) {
-      throw new Error('Event pulling is not supported in IndicatorService');
+    switch (type) {
+      case this.dataSourceTypes.DATA_ELEMENT:
+        return this.pullAnalytics(dataSources, options);
+      case this.dataSourceTypes.DATA_GROUP:
+        throw new Error('Event pulling is not supported in IndicatorService');
+      case this.dataSourceTypes.SYNC_GROUP:
+        throw new Error('Sync Group pulling is not supported in IndicatorService');
+      default:
+        throw new Error('Unexpected data source type');
     }
-    return this.pullAnalytics(dataSources, options);
   }
 
   async pullAnalytics(dataSources, options) {
@@ -38,7 +44,8 @@ export class IndicatorService extends Service {
     };
   }
 
-  async pullMetadata() {
-    throw new Error('Metadata pulling is not supported in IndicatorService');
+  async pullMetadata(dataSources) {
+    // TODO: Implement properly in #tupaia-backlog/issues/2137
+    return dataSources.map(dataSource => ({ code: dataSource.code, name: undefined }));
   }
 }

@@ -11,7 +11,7 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "react-scripts build",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "postbuild": "rm -rf served_build && mv build served_build",
     "eject": "react-scripts eject",
     "lint": "eslint --ignore-path ../../.gitignore .",
@@ -36,12 +36,19 @@
     "@tupaia/ui-components": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "axios": "^0.21.1",
+    "camelcase": "^6.2.0",
+    "dom-to-image": "^2.6.0",
+    "downloadjs": "^1.4.7",
+    "leaflet": "^1.7.1",
+    "lodash.keyby": "^4.6.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.15.1",
+    "react-password-strength-bar": "^0.3.3",
     "react-query": "^3.9.6",
     "react-router-dom": "^5.2.0",
+    "react-table": "^7.7.0",
     "styled-components": "^5.1.0"
   }
 }

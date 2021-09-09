@@ -1,23 +1,14 @@
-/* eslint-disable max-classes-per-file */
 /**
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import jwt from 'jsonwebtoken';
 import { DatabaseModel, DatabaseType } from '@tupaia/database';
+import { getTokenExpiry } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
 
 import { AccessPolicyObject, SessionFields, SessionDetails } from '../types';
 import { AuthConnection } from '../connections/AuthConnection';
-
-const getTokenExpiry = (accessToken: string) => {
-  const { exp: expiryAuthServerClock, iat: issuedAtAuthServerClock } = jwt.decode(accessToken);
-  // subtract 3 seconds to account for latency since generation on the auth server
-  const validForSeconds = expiryAuthServerClock - issuedAtAuthServerClock - 3;
-  const expiryPsssServerClock = Date.now() + validForSeconds * 1000;
-  return expiryPsssServerClock;
-};
 
 export class PsssSessionType extends DatabaseType {
   id: string;

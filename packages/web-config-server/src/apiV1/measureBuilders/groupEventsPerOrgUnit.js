@@ -11,7 +11,7 @@ export class GroupEventsPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   getBaseBuilderClass = () => CountEventsBuilder;
 
   async fetchResultsAndPeriod() {
-    return { results: await this.fetchEvents({ useDeprecatedApi: false }), period: null };
+    return { results: await this.fetchEvents({}), period: null };
   }
 
   formatData(data) {

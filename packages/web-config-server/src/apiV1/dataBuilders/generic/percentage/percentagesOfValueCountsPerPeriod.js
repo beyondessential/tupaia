@@ -3,13 +3,11 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-/* eslint-disable max-classes-per-file */
-
 import keyBy from 'lodash.keyby';
 import groupBy from 'lodash.groupby';
 
 import { groupAnalyticsByPeriod } from '@tupaia/dhis-api';
-import { PERIOD_TYPES, parsePeriodType } from '@tupaia/utils';
+import { PERIOD_TYPES, parsePeriodType, reduceToDictionary, sortFields } from '@tupaia/utils';
 import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
 import { PercentagesOfValueCountsBuilder } from '/apiV1/dataBuilders/generic/percentage/percentagesOfValueCounts';
 import { divideValues, mapAnalyticsToCountries } from '/apiV1/dataBuilders/helpers';
@@ -18,7 +16,7 @@ const filterFacility = async (models, filterCriteria, analytics) => {
   const facilities = await models.facility.find({
     type: {
       comparator: filterCriteria.comparator,
-      comparisonValue: '1',
+      comparisonValue: '1%',
     },
     code: {
       comparator: 'IN',
@@ -90,28 +88,19 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
   getDataClassesWithAnalytics = async analytics => {
     if (this.config.isProjectReport) {
       const dataWithCountries = await mapAnalyticsToCountries(this.models, analytics);
-      const dataByCountry = groupBy(dataWithCountries, result => result.organisationUnit);
-      // Only one data class is supported for country data classes
-      const baseDataClass = Object.values(this.config.dataClasses)[0];
-      const countryCodesToName = {};
-      const countryCodesToNamePromises = Object.entries(dataByCountry).map(
-        async ([countryCode]) => {
-          const country = await this.models.entity.findOne({ code: countryCode });
-          return { [countryCode]: country.name };
-        },
-        {},
-      );
-      (await Promise.all(countryCodesToNamePromises)).forEach(country =>
-        Object.assign(countryCodesToName, country),
-      );
+      const dataByCountryCode = groupBy(dataWithCountries, 'organisationUnit');
+      const countries = await this.models.entity.find({ code: Object.keys(dataByCountryCode) });
+      const countryCodeToName = reduceToDictionary(countries, 'code', 'name');
 
-      return Object.entries(dataByCountry).reduce(
-        (result, [code, analyticsForCountry]) => ({
-          ...result,
-          [countryCodesToName[code]]: { ...baseDataClass, analytics: analyticsForCountry },
-        }),
-        {},
+      // Only one data class is supported for country data classes
+      const [baseDataClass] = Object.values(this.config.dataClasses);
+      const dataClassesWithAnalytics = Object.fromEntries(
+        Object.entries(dataByCountryCode).map(([code, analyticsForCountry]) => [
+          countryCodeToName[code],
+          { ...baseDataClass, analytics: analyticsForCountry },
+        ]),
       );
+      return sortFields(dataClassesWithAnalytics);
     }
 
     const hasMultipleClasses = Object.keys(this.config.dataClasses).length > 1;

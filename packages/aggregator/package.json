@@ -11,8 +11,7 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "babel src --out-dir dist --source-maps --ignore \"src/__tests__/**\" --config-file \"../../babel.config.json\"",
-    "build:ts": "tsc",
+    "build": "rm -rf dist && babel src --out-dir dist --source-maps --ignore \"src/__tests__/**\" --config-file \"../../babel.config.json\" && tsc",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
     "test": "jest",
@@ -20,6 +19,7 @@
   },
   "dependencies": {
     "@tupaia/data-broker": "1.0.0",
+    "@tupaia/server-boilerplate": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "lodash.groupby": "^4.6.0",
     "winston": "^3.3.3"

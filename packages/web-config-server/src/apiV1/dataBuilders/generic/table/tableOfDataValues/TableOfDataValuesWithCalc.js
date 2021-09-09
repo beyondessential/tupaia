@@ -8,7 +8,7 @@ import moment from 'moment';
 import { CustomError } from '@tupaia/utils';
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 import { TableConfig } from './TableConfig';
-import { getValuesByCell } from './getValuesByCell';
+import { getValuesByCell } from './helpers/getValuesByCell';
 
 const add = transformResults => {
   return transformResults.reduce(

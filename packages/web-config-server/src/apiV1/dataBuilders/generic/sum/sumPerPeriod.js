@@ -11,6 +11,10 @@ import {
 } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import flattenDeep from 'lodash.flattendeep';
+import {
+  fetchAggregatedAnalyticsByDhisIds,
+  checkAllDataElementsAreDhisIndicators,
+} from '/apiV1/utils';
 
 /**
  * Sample dataBuilderConfig:
@@ -31,7 +35,7 @@ class SumPerPeriodBuilder extends DataBuilder {
   async build() {
     const dataElements = this.getAllDataElements();
 
-    const { results, period } = await this.fetchAnalytics(dataElements);
+    const { results, period } = await this.fetchResults(dataElements);
 
     const dataElementToDataClass = this.getDataElementToDataClass();
     const dataByPeriod = {};
@@ -79,6 +83,33 @@ class SumPerPeriodBuilder extends DataBuilder {
    */
   getAllDataElements() {
     return flattenDeep(Object.values(this.config.dataClasses).map(({ codes }) => codes));
+  }
+
+  async fetchResults(dataElementCodes) {
+    const allDataElementsAreDhisIndicators = await checkAllDataElementsAreDhisIndicators(
+      this.models,
+      dataElementCodes,
+    );
+
+    // TODO: This if block is to implement a hacky approach to fetch indicator values
+    // because the normal analytics/rawData.json endpoint does not return any data for indicators.
+    // Will have to implement this properly with #tupaia-backlog/issues/2412
+    // After that remove this file and anything related to it
+    if (allDataElementsAreDhisIndicators) {
+      const { entityAggregation } = this.config;
+      const hierarchyId = await this.fetchEntityHierarchyId();
+      const result = await fetchAggregatedAnalyticsByDhisIds(
+        this.models,
+        this.dhisApi,
+        dataElementCodes,
+        this.query,
+        entityAggregation,
+        hierarchyId
+      );
+  
+      return result;
+    }
+    return this.fetchAnalytics(dataElementCodes);
   }
 }
 

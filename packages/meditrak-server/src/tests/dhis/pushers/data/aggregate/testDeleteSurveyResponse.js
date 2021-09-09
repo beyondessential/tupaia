@@ -98,7 +98,7 @@ export const testDeleteSurveyResponse = (dhisApi, models, dataBroker) => {
     const nextMostRecentSurveyResponse = {
       ...SURVEY_RESPONSE,
       id: generateTestId(),
-      submission_time: '2019-05-20T12:05+00',
+      data_time: '2019-05-20T12:05',
     };
     await populateTestData(models, { surveyResponse: [nextMostRecentSurveyResponse] });
 

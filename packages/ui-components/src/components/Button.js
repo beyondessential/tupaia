@@ -117,6 +117,24 @@ export const SuccessButton = styled(Button)`
   }
 `;
 
+/**
+ * White background with Grey Border
+ */
+export const WhiteButton = styled(MuiButton)`
+  background: white;
+  padding: 0.7rem;
+  font-size: 1rem;
+  min-height: 3.1rem;
+  line-height: 1.2rem;
+  font-weight: 400;
+  color: ${props => props.theme.palette.text.secondary};
+  border: 1px solid ${props => props.theme.palette.grey['400']};
+
+  &:hover {
+    border: 1px solid ${props => props.theme.palette.grey['400']};
+  }
+`;
+
 /*
  * Small Button
  */

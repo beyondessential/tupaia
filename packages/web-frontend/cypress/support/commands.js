@@ -7,8 +7,8 @@ import '@testing-library/cypress/add-commands';
 
 import snapshot from '@cypress/snapshot';
 import { PUBLIC_USER } from '../constants';
-import { escapeRegex, serializeReactToHTML } from './utils';
 import { submitLoginForm } from './actions';
+import { escapeRegex, serializeReactToHTML } from './utils';
 
 snapshot.register();
 

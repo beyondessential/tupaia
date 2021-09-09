@@ -127,48 +127,18 @@ describe('EventBuilder', () => {
     });
   });
 
-  describe('Timezone awareness', () => {
-    const insertSurveyResponse = async surveyResponseProps => {
+  describe('Timezone agnosticism', () => {
+    it('Should store data_time without any timezone information', async () => {
       const [{ surveyResponse }] = await buildAndInsertSurveyResponses(models, [
         {
           surveyCode: 'DEFAULT_OU',
           entityCode: 'ORG_UNIT',
           answers: [{ DEFAULT_OU1: 'Leprosy' }],
-          ...surveyResponseProps,
+          data_time: '2019-07-15T06:25:05',
         },
       ]);
-
-      return surveyResponse;
-    };
-
-    it('Should use correct event time for UTC submissions', async () => {
-      const surveyResponse = await insertSurveyResponse({
-        submission_time: '2019-07-15T06:25:05Z',
-        timezone: 'Etc/UTC',
-      });
-
       const event = await new EventBuilder(dhisApi, models, surveyResponse).build();
       expect(event.eventDate).to.equal('2019-07-15T06:25:05');
-    });
-
-    it('Should use correct event time for Tonga based submissions', async () => {
-      const surveyResponse = await insertSurveyResponse({
-        submission_time: '2019-07-15T06:25:05Z',
-        timezone: 'Pacific/Tongatapu', // +13 standard, +14 in daylight saving
-      });
-
-      const event = await new EventBuilder(dhisApi, models, surveyResponse).build();
-      expect(event.eventDate).to.be.oneOf(['2019-07-15T19:25:05', '2019-07-15T20:25:05']);
-    });
-
-    it('Should use correct event time for Tonga based submissions, crossing days', async () => {
-      const surveyResponse = await insertSurveyResponse({
-        submission_time: '2019-07-15T20:25:05Z',
-        timezone: 'Pacific/Tongatapu', // +13 standard, +14 in daylight saving
-      });
-
-      const event = await new EventBuilder(dhisApi, models, surveyResponse).build();
-      expect(event.eventDate).to.be.oneOf(['2019-07-16T09:25:05', '2019-07-16T10:25:05']);
     });
   });
 });

@@ -13,13 +13,13 @@ const DottedUnderline = styled.div`
   border-bottom: 1px dotted ${props => props.theme.palette.text.secondary};
 `;
 
-export const SyndromeCell = ({ syndrome, syndromeDisplayName }) => (
-  <Tooltip title={syndromeDisplayName}>
+export const SyndromeCell = ({ syndrome, syndromeName }) => (
+  <Tooltip title={syndromeName}>
     <DottedUnderline>{syndrome}</DottedUnderline>
   </Tooltip>
 );
 
 SyndromeCell.propTypes = {
   syndrome: PropTypes.string.isRequired,
-  syndromeDisplayName: PropTypes.string.isRequired,
+  syndromeName: PropTypes.string.isRequired,
 };

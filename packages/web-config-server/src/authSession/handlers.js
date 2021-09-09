@@ -3,8 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { setSession } from './authSession';
-
-const TUPAIA_CONFIG_SERVER_DEVICE_NAME = 'Tupaia Config Server';
+import { TUPAIA_CONFIG_SERVER_DEVICE_NAME } from './constants';
 
 const respondWithError = (res, errorMessage) => {
   res.status(401).send({ error: errorMessage });

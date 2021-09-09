@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { LocationOn, SpeakerNotes, List, MoveToInbox } from '@material-ui/icons';
@@ -19,7 +20,8 @@ import {
 } from '../../components';
 import { NotesTab } from '../NotesTab';
 import * as COLORS from '../../constants/colors';
-import { countryFlagImage, getCountryName } from '../../utils';
+import { getCountryName } from '../../store';
+import { countryFlagImage } from '../../utils';
 import { getAffectedSites, getAlertsMessages, getActivityFeed } from '../../api';
 import { useFetch } from '../../hooks';
 
@@ -59,6 +61,7 @@ export const OutbreaksPanel = ({ isOpen, handleClose }) => {
   const notesState = useFetch(getAlertsMessages);
   const activityState = useFetch(getActivityFeed);
   const { countryCode } = useParams();
+  const countryName = useSelector(state => getCountryName(state, countryCode));
 
   const handleChange = option => {
     console.log('handle change...', option);
@@ -78,7 +81,7 @@ export const OutbreaksPanel = ({ isOpen, handleClose }) => {
           dateText="Outbreak Start Date:"
           date="Mar 6, 2020"
           avatarUrl={countryFlagImage('as')}
-          subheading={getCountryName(countryCode)}
+          subheading={countryName}
           heading="Measles"
           DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
         />

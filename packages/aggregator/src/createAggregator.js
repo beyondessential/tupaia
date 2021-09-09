@@ -6,7 +6,7 @@
 import { DataBroker } from '@tupaia/data-broker';
 import { Aggregator } from './Aggregator';
 
-export const createAggregator = (AggregatorClass = Aggregator, ...additionalParams) => {
-  const dataBroker = new DataBroker();
+export const createAggregator = (AggregatorClass = Aggregator, context, ...additionalParams) => {
+  const dataBroker = new DataBroker(context);
   return new AggregatorClass(dataBroker, ...additionalParams);
 };

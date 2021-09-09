@@ -1,0 +1,110 @@
+@hostname = localhost
+@port = 8050
+@host = {{hostname}}:{{port}}
+@version = v1
+@contentType = application/json
+
+# In order to setup authorization, please set 'email' and 'password' in your restClient environement variables 
+# see: https://marketplace.visualstudio.com/items?itemName=humao.rest-client#environment-variables
+@authorization  = Basic {{email}}:{{password}}
+
+### Test
+GET http://{{host}}/{{version}}/test HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch a single entity
+GET http://{{host}}/{{version}}/hierarchy/explore/TO HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch multiple entities
+POST http://{{host}}/{{version}}/hierarchy/explore HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "entities" : ["TO","PG"]
+}
+
+### Fetch descendants of an entity
+GET http://{{host}}/{{version}}/hierarchy/explore/TO/descendants?field=code&includeRootEntity=true HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch filtered descendants of an entity that are district or facility type
+GET http://{{host}}/{{version}}/hierarchy/explore/TO/descendants?fields=type,code&filter=type==district,facility HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch filtered descendants of an entity that are not village type
+GET http://{{host}}/{{version}}/hierarchy/explore/TO/descendants?fields=type,code&filter=type!=village HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch filtered descendants of an entity that have names contain string 'Pa'
+GET http://{{host}}/{{version}}/hierarchy/explore/TO/descendants?fields=type,code&filter=name=@Pa HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch descendants of multiple entities
+POST http://{{host}}/{{version}}/hierarchy/explore/descendants?field=code&includeRootEntity=true HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "entities" : ["TO","PG"]
+}
+
+### Fetch relatives of an entity
+GET http://{{host}}/{{version}}/hierarchy/explore/TO_Tongatapu_Mua/relatives?field=code HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch filtered relatives of an entity that are district or facility type
+GET http://{{host}}/{{version}}/hierarchy/explore/TO_HvlMCH/relatives?fields=type,code&filter=type==district,facility HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch filtered relatives of an entity that are not village type
+GET http://{{host}}/{{version}}/hierarchy/explore/TO_HvlMCH/relatives?fields=type,code&filter=type!=village HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch filtered relatives of an entity that have names contain string 'Pa'
+GET http://{{host}}/{{version}}/hierarchy/explore/TO_HvlMCH/relatives?fields=name,code&filter=name=@To HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch relatives of multiple entities
+POST http://{{host}}/{{version}}/hierarchy/explore/relatives?field=code HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "entities": ["TO_Tongatapu_Haatafu","PG_Sau_ASP"]
+}
+
+### Fetch relationships among relatives of an entity
+GET http://{{host}}/{{version}}/hierarchy/explore/TO/relationships?descendant_filter=type==village&ancestor_field=code&descendant_field=name&groupBy=ancestor HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch filtered relationships (that ancestors are district and descendants are school) among relatives of an entity
+GET http://{{host}}/{{version}}/hierarchy/laos_schools/LA_Park ou District/relationships?ancestor_filter=type==district&descendant_filter=type==school;attributes_type==Secondary&groupBy=descendant HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch filtered relationships (that sub_district ancestors have 'ar' in their name and descendants are not Secondary school) among relatives of an entity
+GET http://{{host}}/{{version}}/hierarchy/laos_schools/LA/relationships?ancestor_filter=type==sub_district;name=@ar&descendant_filter=type==school;attributes_type!=Secondary&groupBy=descendant HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch relationships among relatives of multiple entities
+POST http://{{host}}/{{version}}/hierarchy/explore/relationships?descendant_filter=type==district&ancestor_filter=type==country&ancestor_field=code&descendant_field=name&groupBy=descendant HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "entities":["TO_Tongatapu_Haatafu","PG_Sau_ASP"]
+}

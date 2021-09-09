@@ -7,7 +7,7 @@ import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
 import pick from 'lodash.pick';
 
-import { getSortByKey, utcMoment, reduceToDictionary, stripFromString } from '@tupaia/utils';
+import { getSortByKey, utcMoment, stripFromString } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { transformObject } from '/apiV1/dataBuilders/transform';
 import {
@@ -52,8 +52,21 @@ class TableOfEventsBuilder extends DataBuilder {
     return groupBy(allKeys, key => (isMetadataKey(key) ? 'metadata' : 'dataElement'));
   }
 
+  getDataElementCodes() {
+    const { dataElementCodes, columns } = this.config;
+
+    if (dataElementCodes) {
+      return dataElementCodes;
+    }
+    return Object.entries(columns)
+      .filter(([key]) => !isMetadataKey(key))
+      .map(([key, config]) => [key, ...(config?.additionalData || [])])
+      .flat();
+  }
+
   async fetchEvents() {
     const { organisationUnitCode, trackedEntityInstance } = this.query;
+
     const getOrganisationUnitCode = () => {
       // if we're fetching all data for a specific tracked entity instance, just limit it by country
       // as the data could have occurred within org units other than its direct parent
@@ -63,9 +76,11 @@ class TableOfEventsBuilder extends DataBuilder {
       }
       return organisationUnitCode;
     };
+
     const events = await super.fetchEvents({
       organisationUnitCode: getOrganisationUnitCode(),
-      dataValueFormat: 'object',
+      dataElementCodes: this.getDataElementCodes(),
+      useDeprecatedApi: true,
     });
 
     const { metadata } = this.getKeysBySourceType();
@@ -123,7 +138,7 @@ class TableOfEventsBuilder extends DataBuilder {
 
   buildCellValues = async (event, primaryKey, additionalKeys) => {
     const keys = [primaryKey].concat(additionalKeys);
-    const values = pick(reduceToDictionary(event.dataValues, 'dataElement', 'value'), keys);
+    const values = pick(event.dataValues, keys);
     const { transformation } = this.config.columns[primaryKey];
 
     return transformation ? transformObject(this.models, transformation, values) : values;

@@ -18,7 +18,7 @@
 - Close and reopen terminal session
 - `nvm install 12.18.3`
 
-# ssl
+# ssl (only needed for wordpress sites)
 
 ### Install certbot-auto
 
@@ -161,6 +161,13 @@ chmod og-rwx server.key
 - `vi postgresql.conf`
 - Under Connection Settings: `listen_addresses = '*'`
 - Under Security and Authentication: `ssl = on`
+
+### Update max connections
+
+- `vi postgresql.conf`
+- Under Connection Settings: `max_connections = 500`
+- This gives the app enough connections if processes are replicated on a 8-32 core machine
+- 32 cores + 10 other services with their own pools, with knex default of 7 connections = 42 * 7 = 294
 
 ### Edit pg_hba.conf
 

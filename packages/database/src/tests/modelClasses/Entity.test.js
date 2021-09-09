@@ -85,13 +85,30 @@ describe('EntityModel', () => {
     });
   });
 
-  describe('parent()', () => {
+  describe('getParent(hierarchyId)', () => {
     it('should return the parent entity', async () => {
       const parentEntity = await upsertEntity();
       const entity = await upsertEntity({ parent_id: parentEntity.id });
+      await setupAncestorDescendantRelations(models, entity, parentEntity);
+      const exploreHierarchy = await models.entityHierarchy.findOne({ name: 'explore' });
 
-      const result = await entity.parent();
+      const result = await entity.getParent(exploreHierarchy.id);
       assertHaveEqualIds(parentEntity, result);
+    });
+
+    it('should return the parent entity for the correct hierarchy', async () => {
+      const exploreParentEntity = await upsertEntity();
+      const lilyParentEntity = await upsertEntity();
+      const entity = await upsertEntity({ parent_id: exploreParentEntity.id });
+      await setupAncestorDescendantRelations(models, entity, exploreParentEntity);
+      await setupAncestorDescendantRelations(models, entity, lilyParentEntity, undefined, 'lily');
+      const exploreHierarchy = await models.entityHierarchy.findOne({ name: 'explore' });
+      const lilyHierarchy = await models.entityHierarchy.findOne({ name: 'lily' });
+
+      const exploreParentResult = await entity.getParent(exploreHierarchy.id);
+      const lilyParentResult = await entity.getParent(lilyHierarchy.id);
+      assertHaveEqualIds(exploreParentEntity, exploreParentResult);
+      assertHaveEqualIds(lilyParentEntity, lilyParentResult);
     });
   });
 

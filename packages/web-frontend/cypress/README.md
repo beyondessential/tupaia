@@ -1,74 +1,146 @@
-# tupaia.org end-to-end tests
+# E2e Tests
 
 [Cypress](https://www.cypress.io/) is used as the end-to-end test framework. This is the root folder of the test code and its configuration.
 
-## Installation
-
-1. If you haven't already, follow the instructions in [Tupaia Monorepo setup](https://docs.beyondessential.com.au/books/software-development/page/tupaia-monorepo-setup) to setup this project.
-
-   ⚠️: In **Step 2. Install node dependencies** you need to run the commands under a Windows terminal, see the note in that section.
-
-2. Point `web-frontend` to a local instance of `web-config-server`. In `packages/web-frontend/.env`, set
-
-   ```bash
-   REACT_APP_CONFIG_SERVER_BASE_URL=http://localhost:8000/api/v1/
-   ```
-
-3. The tests depend on `.json` configuration files that must be placed under `cypress/config`. To generate the default config:
-
-   ```bash
-   # ⊞ Windows users should run this under WSL
-   yarn workspace @tupaia/web-frontend cypress:generate-config
-   ```
-
-   You can also use custom config by manually populating those files, see the `\*.example.jsonc` files for more information.
-
 ## Running the tests locally
 
-We first need to run the servers locally, then run the end-to-end tests. First, `cd` in the root folder of this project. You can run the tests in either UI or terminal mode.
+See https://beyond-essential.slab.com/posts/e-2-e-test-guide-cnj4rgdb#running-the-tests
 
-🍎 MacOS
+## Configuration
 
-- UI mode
+Our e2e tests support Tupaia-specific configuration specified in [config.json](config.json). Example:
 
-```bash
-yarn workspace @tupaia/web-frontend test:cypress:open
+```jsonc
+{
+  "baselineUrl": "https://e2e.tupaia.org",
+  "compareUrl": "https://compare-e2e.tupaia.org",
+  "dashboardReports": {
+    "allowEmptyResponse": false, // Throw error for empty reports
+    "snapshotTypes": ["responseData", "html"],
+    "urlFiles": ["cypress/config/dashboardReportUrls/default.json"],
+    "urls": ["/explore/explore/IHR%20Report?report=WHO_IHR_SPAR_WPRO"],
+    "filter": {
+      "code": ["report_code1", "report_code2"],
+      "project": ["covidau", "strive"],
+      "orgUnit": "PG",
+      "dashboard": "Dashboard1",
+      "dataBuilder": ["tableOfEvents", "sumAll"]
+    }
+  },
+  "mapOverlays": {
+    "allowEmptyResponse": false,
+    "snapshotTypes": ["responseData"],
+    "urlGenerationOptions": {
+      "id": "overlay_id",
+      "orgUnit": ["TO", "VU"],
+      "project": "unfpa"
+    },
+    "urls": ["/covidau/AU?overlay=AU_FLUTRACKING_Fever_And_Cough"],
+    "filter": {
+      "id": "id",
+      "project": "covidau",
+      "orgUnit": "TO",
+      "measureBuilder": "valueForOrgGroup"
+    }
+  }
+}
 ```
 
-- Terminal (headless) mode
+You can find more information about config fields in the section below. For the exact schema, check [configSchema.js](scripts/generateConfig/configSchema.js#L22).
 
-```bash
-yarn workspace @tupaia/web-frontend test:cypress:run
+### Dashboard report & map overlay configuration
+
+#### Snapshot types
+
+| Type           | Description                                                                                         | Reports | Overlays |
+| -------------- | --------------------------------------------------------------------------------------------------- | ------- | -------- |
+| `responseData` | The body of the request which provides the data for the item under test                             | ✔       | ✔        |
+| `html`         | A snapshot of the DOM, sanitised to remove non-deterministic content (eg dynamically generated ids) | ✔       | ❌       |
+
+#### Urls
+
+Some of our tests use urls to adjust the scope of the testable items.
+
+Two formats are supported:
+
+- String:
+
+  ```
+  # Dashboard report
+  /covidau/AU/COVID-19?report=COVID_Compose_Daily_Deaths_Vs_Cases&reportPeriod=1st_Jan_2020-31st_Dec_2020
+
+  # Map overlay
+  /covidau/AU/COVID-19?overlay=AU_FLUTRACKING_Participants_Per_100k
+  ```
+
+- Object:
+
+  ```jsonc
+  // dashboard report
+  {
+    "code": "COVID_Compose_Daily_Deaths_Vs_Cases",
+    "project": "covidau",
+    "orgUnit": "AU",
+    "dashboard": "COVID-19",
+    "startDate": "2020-01-01",
+    "endDate": "2020-12-31"
+  }
+
+  // map overlay
+  {
+    "id": "PSSS_FJ_AFR_Syndrome_Bubble_Radius_Weekly",
+    "project": "psss",
+    "orgUnit": "FJ",
+    "startDate": "2021-02-01",
+    "endDate": "2021-02-07"
+  }
+  ```
+
+Use any of the fields below to specify test urls. You can use multiple fields in the same test run - their results will be combined in the final url list:
+
+```jsonc
+{
+  // Inline urls
+  "urls": ["/covidau/AU/COVID-19?report=COVID_Compose_Daily_Deaths_Vs_Cases"],
+
+  // Load urls from files
+  "urlFiles": [
+    "cypress/config/dashboardReportUrls/default.json",
+    "cypress/config/dashboardReportUrls/covidau.json"
+  ],
+
+  // ⚠️ This field is not currently available in CI/CD test runs
+  //
+  // Dynamically generate urls (available for `mapOverlays`)
+  // If the same overlay id is selected for the same country across projects, only the first
+  // project will be used, since the overlay will be the same in all these cases
+  "urlGenerationOptions": {
+    "project": ["strive", "covidau"]
+  }
+}
 ```
 
-⊞ Windows
+#### Filter
 
-Run the following in **WSL**:
+⚠️ This field is **not** currently available in CI/CD test runs
 
-```bash
-# In one terminal
-yarn workspace @tupaia/web-config-server start
+You can optionally specify a `filter` that will be applied to the tested visualisations. For example, to test all "Fanafana" project overlays that use the "valueForOrgGroup" data builder in Tonga and Vanuatu:
 
-# In another terminal
-yarn workspace @tupaia/web-frontend start
-```
-
-Then, in a **Windows terminal**:
-
-- UI mode
-
-```bash
-yarn workspace @tupaia/web-frontend cypress:open
-```
-
-- Terminal (headless) mode
-
-```bash
-yarn workspace @tupaia/web-frontend cypress:run
+```json
+{
+  "mapOverlays": {
+    "urlGenerationOptions": {
+      "project": "fanafana"
+    },
+    "filter": {
+      "orgUnit": ["TO", "VU"],
+      "measureBuilder": "valueForOrgGroup"
+    }
+  }
+}
 ```
 
 ## Limitations
 
-### Dashboard reports
-
-- Drill down levels are not tested
+- **Dashboard reports:** drill down levels are not tested
+- **Map overlays:** only the response data are tested, the UI components are not tested

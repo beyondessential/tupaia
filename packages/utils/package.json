@@ -11,8 +11,7 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "babel src --out-dir dist --source-maps --ignore \"src/__tests__/**\" --config-file \"../../babel.config.json\"",
-    "build:ts": "tsc",
+    "build": "babel src --out-dir dist --source-maps --ignore \"src/__tests__/**\" --config-file \"../../babel.config.json\" && tsc",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
     "test": "jest",
@@ -23,11 +22,14 @@
     "countrynames": "^0.1.1",
     "lodash.get": "^4.4.2",
     "lodash.pickby": "^4.6.0",
+    "jsonwebtoken": "^8.5.1",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.25",
     "node-fetch": "^1.7.3",
+    "numeral": "^2.0.6",
     "validator": "^8.2.0",
     "winston": "^3.3.3",
-    "xlsx": "^0.10.9"
+    "xlsx": "^0.10.9",
+    "yup": "^0.32.9"
   }
 }

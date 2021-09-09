@@ -13,8 +13,16 @@
       "path": "packages/admin-panel"
     },
     {
+      "name": "admin-panel-server",
+      "path": "packages/admin-panel-server"
+    },
+    {
       "name": "aggregator",
       "path": "packages/aggregator"
+    },
+    {
+      "name": "api-client",
+      "path": "packages/api-client"
     },
     {
       "name": "auth",
@@ -41,8 +49,8 @@
       "path": "packages/dhis-api"
     },
     {
-      "name": "eslint-config-typescript",
-      "path": "packages/eslint-config-typescript"
+      "name": "entity-server",
+      "path": "packages/entity-server"
     },
     {
       "name": "expression-parser",
@@ -53,12 +61,24 @@
       "path": "packages/indicators"
     },
     {
+      "name": "kobo-api",
+      "path": "packages/kobo-api"
+    },
+    {
       "name": "lesmis",
       "path": "packages/lesmis"
     },
     {
+      "name": "lesmis-server",
+      "path": "packages/lesmis-server"
+    },
+    {
       "name": "meditrak-app",
       "path": "packages/meditrak-app"
+    },
+    {
+      "name": "meditrak-server",
+      "path": "packages/meditrak-server"
     },
     {
       "name": "psss",
@@ -69,12 +89,12 @@
       "path": "packages/psss-server"
     },
     {
-      "name": "meditrak-server",
-      "path": "packages/meditrak-server"
-    },
-    {
       "name": "report-server",
       "path": "packages/report-server"
+    },
+    {
+      "name": "server-boilerplate",
+      "path": "packages/server-boilerplate"
     },
     {
       "name": "ui-components",
@@ -100,32 +120,46 @@
   "settings": {
     "cSpell.language": "en-GB",
     "cSpell.words": [
+      "Clazz",
       "Codeship",
-      "DHIS",
+      "Lesmis",
       "MediTrak",
+      "Microservice",
       "PSSS",
       "Tongatapu",
       "Tupaia",
       "analytics",
+      "asyncio",
       "beyondessential",
+      "boto",
       "cacheable",
       "cachers",
       "cleanup",
+      "ctes",
       "debouncing",
       "deleters",
+      "dhis",
       "dialogs",
       "enroll",
       "enrollment",
       "enrollments",
       "eqeqeq",
       "eventdate",
+      "flattable",
       "geojson",
       "groupby",
       "heatmap",
+      "ilike",
       "imms",
+      "isequal",
+      "jsonb",
       "keyby",
+      "middlewares",
       "migrator",
+      "originalname",
       "oucode",
+      "outdater",
+      "parameterise",
       "postgresql",
       "preaggregate",
       "preaggregated",

@@ -1,0 +1,44 @@
+[
+  {
+    "scaleType": "neutral",
+    "measureLevel": "Facility",
+    "name": "Households",
+    "linkedMeasures": null,
+    "measureBuilder": "valueForOrgGroup",
+    "countryCodes": [
+      "TO"
+    ],
+    "projectCodes": [
+      "fanafana",
+      "explore"
+    ],
+    "type": "spectrum",
+    "key": "TONGA_NUMBER_OF_HOUSEHOLDS",
+    "hideFromMenu": false,
+    "hideFromLegend": false,
+    "hideFromPopup": false,
+    "values": [
+      {
+        "color": "blue",
+        "value": "other"
+      },
+      {
+        "color": "grey",
+        "value": null
+      }
+    ],
+    "valueMapping": {
+      "other": {
+        "color": "blue",
+        "value": "other"
+      },
+      "null": {
+        "color": "grey",
+        "value": null
+      }
+    },
+    "min": 75,
+    "max": 2300,
+    "noDataColour": "black"
+  }
+]

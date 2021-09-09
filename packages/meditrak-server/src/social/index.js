@@ -4,3 +4,4 @@
  */
 export { startFeedScraper } from './feedScraper';
 export { getLeaderboard } from './getLeaderboard';
+export { getRewardsForUser } from './getRewardsForUser';

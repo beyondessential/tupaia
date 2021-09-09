@@ -3,28 +3,22 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { TEST_USER } from '../constants';
-import { TestUserPasswordUndefinedError } from './helpers';
-
-const getTestUserPassword = () => {
-  const password = Cypress.env('TEST_USER_PASSWORD');
-  if (!password) {
-    throw new TestUserPasswordUndefinedError();
-  }
-  return password;
-};
+import { requireCyEnv } from '@tupaia/utils';
 
 export const submitLoginForm = () => {
+  // eslint-disable-next-line cypress/no-force
+  cy.findByTextI('Sign in / Register').click({ force: true });
+
   cy.findAllByText(/Sign in/)
     .closest('form')
     .as('loginForm');
 
   cy.get('@loginForm')
     .findByLabelText(/e-?mail/i)
-    .type(TEST_USER.email);
+    .type(requireCyEnv('CYPRESS_TEST_USER_EMAIL'));
   cy.get('@loginForm')
     .findByLabelText(/password/i)
-    .type(getTestUserPassword(), { log: false });
+    .type(requireCyEnv('CYPRESS_TEST_USER_PASSWORD'), { log: false });
 
   cy.get('@loginForm').findByTextI('Sign in').click();
 };

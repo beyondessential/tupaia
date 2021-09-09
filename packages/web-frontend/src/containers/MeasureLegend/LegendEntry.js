@@ -34,7 +34,7 @@ const LegendEntry = React.memo(
 LegendEntry.propTypes = {
   marker: PropTypes.element.isRequired,
   label: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.string,
   dataKey: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   hiddenMeasures: PropTypes.object.isRequired,
@@ -43,6 +43,7 @@ LegendEntry.propTypes = {
 
 LegendEntry.defaultProps = {
   unClickable: false,
+  value: null,
 };
 
 const mapStateToProps = () => state => ({

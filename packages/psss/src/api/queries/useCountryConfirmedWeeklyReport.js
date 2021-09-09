@@ -5,7 +5,7 @@
 
 import keyBy from 'lodash.keyby';
 import { subtractWeeksFromPeriod } from '../../utils';
-import { useTableData } from './useTableData';
+import { usePaginatedReport } from './helpers';
 
 /**
  * Fill empty data if required so that every period renders as a row in the table
@@ -27,7 +27,7 @@ export const useCountryConfirmedWeeklyReport = (orgUnit, period, numberOfWeeks) 
   const endWeek = subtractWeeksFromPeriod(period, 1);
   const startWeek = subtractWeeksFromPeriod(period, numberOfWeeks);
 
-  const query = useTableData(`confirmedWeeklyReport/${orgUnit}`, {
+  const query = usePaginatedReport(`confirmedWeeklyReport/${orgUnit}`, {
     params: { startWeek, endWeek },
   });
 

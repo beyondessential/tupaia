@@ -25,9 +25,9 @@ import DashboardGroup from '../DashboardGroup';
 import { getFacilityThumbnailUrl } from '../../utils';
 import { DropDownMenu } from '../../components/DropDownMenu';
 import {
-  selectCurrentDashboardGroupCode,
+  selectCurrentDashboardName,
   selectCurrentOrgUnit,
-  selectAdjustedProjectBounds,
+  selectCurrentOrgUnitBounds,
 } from '../../selectors';
 import { DEFAULT_BOUNDS } from '../../defaults';
 
@@ -176,34 +176,23 @@ export class Dashboard extends Component {
   }
 
   renderGroupsDropdown() {
-    const { onChangeDashboardGroup, currentDashboardGroupCode, sections, project } = this.props;
+    const { onChangeDashboardGroup, currentDashboardName, dashboards, project } = this.props;
+    const dashboardNames = [];
 
     // sort group names based on current project
-    const groupNames = Object.entries(sections).reduce((names, entry) => {
-      /**
-       * entry[1] is the dashboard User Group:
-       * { Public: {..., project: "" }}
-       *
-       * subSection (Object.values(entry[1])[0]):
-       * {..., project: "" }
-       */
-      const subSection = Object.values(entry[1])[0];
-      const groupName = entry[0];
-
-      if (subSection.project === project) names.unshift(groupName);
-      else names.push(groupName);
-
-      return names;
+    dashboards.forEach(({ dashboardName, project: dashboardProject }) => {
+      if (dashboardProject === project) dashboardNames.unshift(dashboardName);
+      else dashboardNames.push(dashboardName);
     }, []);
 
-    if (groupNames.length < 1) {
+    if (dashboardNames.length === 0) {
       return null;
     }
 
     return (
       <DropDownMenu
-        selectedOption={currentDashboardGroupCode}
-        options={groupNames}
+        selectedOption={currentDashboardName}
+        options={dashboardNames}
         onChange={onChangeDashboardGroup}
         menuListStyle={DASHBOARD_STYLES.groupsDropDownMenu}
       />
@@ -222,7 +211,8 @@ export class Dashboard extends Component {
   }
 
   render() {
-    const { onDashboardClicked, isLoading, sections, currentDashboardGroupCode } = this.props;
+    const { onDashboardClicked, isLoading, dashboards, currentDashboardName } = this.props;
+    const currentGroupDashboard = dashboards.find(d => d.dashboardName === currentDashboardName);
 
     return (
       <div
@@ -236,7 +226,7 @@ export class Dashboard extends Component {
         {this.renderHeader()}
         <div style={DASHBOARD_STYLES.content}>
           {this.renderGroupsDropdown()}
-          {this.renderGroup(sections[currentDashboardGroupCode])}
+          {this.renderGroup(currentGroupDashboard)}
         </div>
         {this.renderFloatingHeader()}
         {this.renderEnlargePopup()}
@@ -247,34 +237,42 @@ export class Dashboard extends Component {
 
 Dashboard.propTypes = {
   onChangeDashboardGroup: PropTypes.func.isRequired,
-  currentDashboardGroupCode: PropTypes.string,
+  currentDashboardName: PropTypes.string,
   currentOrganisationUnit: PropTypes.object,
   currentOrganisationUnitBounds: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
   onDashboardClicked: PropTypes.func.isRequired,
   mapIsAnimating: PropTypes.bool,
   isSidePanelExpanded: PropTypes.bool.isRequired,
   contractedWidth: PropTypes.number,
+  dashboards: PropTypes.array,
+  project: PropTypes.string,
+  isLoading: PropTypes.bool,
+};
+
+Dashboard.defaultProps = {
+  currentDashboardName: '',
+  currentOrganisationUnit: {},
+  currentOrganisationUnitBounds: [],
+  mapIsAnimating: false,
+  contractedWidth: 0,
+  dashboards: [],
+  project: '',
+  isLoading: false,
 };
 
 const mapStateToProps = state => {
   const { isAnimating } = state.map;
-  const { isLoadingOrganisationUnit, dashboardConfig, isSidePanelExpanded, project } = state.global;
+  const { isLoadingOrganisationUnit, dashboards, isSidePanelExpanded, project } = state.global;
   const { contractedWidth } = state.dashboard;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
-  let currentOrganisationUnitBounds = DEFAULT_BOUNDS;
-  if (currentOrganisationUnit.type === 'Project') {
-    currentOrganisationUnitBounds = selectAdjustedProjectBounds(
-      state,
-      currentOrganisationUnit.organisationUnitCode,
-    );
-  } else if (currentOrganisationUnit.location && currentOrganisationUnit.location.bounds) {
-    currentOrganisationUnitBounds = currentOrganisationUnit.location.bounds;
-  }
+  const currentOrganisationUnitBounds = selectCurrentOrgUnitBounds(state);
+  const currentDashboardName = selectCurrentDashboardName(state);
+
   return {
     currentOrganisationUnit,
     currentOrganisationUnitBounds,
-    sections: dashboardConfig,
-    currentDashboardGroupCode: selectCurrentDashboardGroupCode(state),
+    dashboards,
+    currentDashboardName,
     mapIsAnimating: isAnimating,
     isLoading: isLoadingOrganisationUnit,
     isSidePanelExpanded,

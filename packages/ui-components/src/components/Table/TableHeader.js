@@ -6,6 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Skeleton from '@material-ui/lab/Skeleton';
 import MuiTableSortLabel from '@material-ui/core/TableSortLabel';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore';
 import MuiTableHead from '@material-ui/core/TableHead';
 import MuiTableRow from '@material-ui/core/TableRow';
@@ -71,10 +72,13 @@ export const TableHeader = React.memo(
       }
 
       if (sortable) {
+        const isActive = key === orderBy;
+        const IconComponent = isActive ? KeyboardArrowDownIcon : UnfoldMoreIcon;
+
         return (
           <SortLabel
-            IconComponent={UnfoldMoreIcon}
-            active={orderBy === key}
+            IconComponent={IconComponent}
+            active={isActive}
             direction={order}
             onClick={() => onChangeOrderBy(key)}
           >
@@ -105,7 +109,7 @@ TableHeader.propTypes = {
   onChangeOrderBy: PropTypes.func,
   orderBy: PropTypes.string,
   isFetching: PropTypes.bool,
-  order: PropTypes.string,
+  order: PropTypes.oneOf(['asc', 'desc']),
   className: PropTypes.string,
 };
 

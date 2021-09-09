@@ -9,9 +9,9 @@ import {
   selectCurrentOrgUnitCode,
   selectCurrentProjectCode,
   selectCurrentMeasureId,
-  selectCurrentExpandedViewId,
+  selectCurrentExpandedViewCode,
 } from '../../selectors';
-import { selectCurrentDashboardGroupCodeFromLocation } from '../../selectors/dashboardSelectors';
+import { selectCurrentDashboardNameFromLocation } from '../../selectors/dashboardSelectors';
 
 describe('urlSelectors', () => {
   it('should select from an empty url', () => {
@@ -23,9 +23,9 @@ describe('urlSelectors', () => {
     };
     expect(selectCurrentProjectCode(testState)).toEqual(undefined);
     expect(selectCurrentOrgUnitCode(testState)).toEqual(undefined);
-    expect(selectCurrentDashboardGroupCodeFromLocation(testState)).toEqual(undefined);
+    expect(selectCurrentDashboardNameFromLocation(testState)).toEqual(undefined);
     expect(selectCurrentMeasureId(testState)).toEqual(undefined);
-    expect(selectCurrentExpandedViewId(testState)).toEqual(undefined);
+    expect(selectCurrentExpandedViewCode(testState)).toEqual(undefined);
   });
 
   it('should select from a normal url', () => {
@@ -37,8 +37,8 @@ describe('urlSelectors', () => {
     };
     expect(selectCurrentProjectCode(testState)).toEqual('SOME_PROJECT');
     expect(selectCurrentOrgUnitCode(testState)).toEqual('AN_ORG_UNIT');
-    expect(selectCurrentDashboardGroupCodeFromLocation(testState)).toEqual('A_DASHBOARD');
-    expect(selectCurrentExpandedViewId(testState)).toEqual('report1');
+    expect(selectCurrentDashboardNameFromLocation(testState)).toEqual('A_DASHBOARD');
+    expect(selectCurrentExpandedViewCode(testState)).toEqual('report1');
     expect(selectCurrentMeasureId(testState)).toEqual('2,3');
   });
 
@@ -51,9 +51,9 @@ describe('urlSelectors', () => {
     };
     expect(selectCurrentProjectCode(testState)).toEqual(undefined);
     expect(selectCurrentOrgUnitCode(testState)).toEqual(undefined);
-    expect(selectCurrentDashboardGroupCodeFromLocation(testState)).toEqual(undefined);
+    expect(selectCurrentDashboardNameFromLocation(testState)).toEqual(undefined);
     expect(selectCurrentMeasureId(testState)).toEqual(undefined);
-    expect(selectCurrentExpandedViewId(testState)).toEqual(undefined);
+    expect(selectCurrentExpandedViewCode(testState)).toEqual(undefined);
   });
 
   it('should select from a verify-email url', () => {
@@ -65,8 +65,8 @@ describe('urlSelectors', () => {
     };
     expect(selectCurrentProjectCode(testState)).toEqual(undefined);
     expect(selectCurrentOrgUnitCode(testState)).toEqual(undefined);
-    expect(selectCurrentDashboardGroupCodeFromLocation(testState)).toEqual(undefined);
+    expect(selectCurrentDashboardNameFromLocation(testState)).toEqual(undefined);
     expect(selectCurrentMeasureId(testState)).toEqual(undefined);
-    expect(selectCurrentExpandedViewId(testState)).toEqual(undefined);
+    expect(selectCurrentExpandedViewCode(testState)).toEqual(undefined);
   });
 });

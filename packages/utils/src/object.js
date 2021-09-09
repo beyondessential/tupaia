@@ -3,22 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { camel, snake } from 'case';
+
+import { compareAsc, compareDesc } from './compare';
+import { getUniqueEntries } from './getUniqueEntries';
+
 /**
  * @typedef {Object<string, any>[] | Object<string, Object<string, any>>} ObjectCollection
  */
-
-const compareAsc = (a, b) => {
-  if (typeof a === 'string' && typeof b === 'string') {
-    return a.localeCompare(b, undefined, { numeric: true });
-  }
-
-  if (a < b) {
-    return -1;
-  }
-  return a > b ? 1 : 0;
-};
-
-const compareDesc = (a, b) => compareAsc(a, b) * -1;
 
 /**
  * Sorts the keys in the provided object by their corresponding values
@@ -47,6 +39,29 @@ export function getSortByKey(key, options) {
   return getSortByExtractedValue(o => o[key], options);
 }
 
+export const orderBy = (array, valueMappers, orders = []) => {
+  const comparators = valueMappers.map((valueMapper, i) => {
+    const mapValue =
+      typeof valueMapper === 'string' ? obj => obj?.[valueMapper] : obj => valueMapper(obj);
+    const order = typeof orders[i] === 'string' ? orders[i].toLowerCase() : 'asc';
+    const compare = order === 'desc' ? compareDesc : compareAsc;
+
+    return (a, b) => compare(mapValue(a), mapValue(b));
+  });
+
+  return array.sort((a, b) => {
+    for (const comparator of comparators) {
+      const result = comparator(a, b);
+      if (result !== 0) {
+        return result;
+      }
+    }
+
+    // No comparator was able to evaluate the items as not equal
+    return 0;
+  });
+};
+
 /**
  * Returns a callback which compares two objects using the provided `function` .
  * Can be used in `Array.prototype.sort` for an array of objects
@@ -56,25 +71,9 @@ export function getSortByKey(key, options) {
  * @returns { (a: Object<string, any>, b: Object<string, any> ) => number }
  */
 export function getSortByExtractedValue(valueExtractor, options) {
-  const compareValuesAscending = (a, b) => {
-    const valueA = valueExtractor(a);
-    const valueB = valueExtractor(b);
-
-    if (typeof valueA === 'string' && typeof valueB === 'string') {
-      return valueA.localeCompare(valueB, undefined, { numeric: true });
-    }
-
-    if (valueA < valueB) {
-      return -1;
-    }
-    return valueA > valueB ? 1 : 0;
-  };
-
   const { ascending = true } = options || {};
-  return (a, b) => {
-    const ascValue = compareValuesAscending(a, b);
-    return ascending ? ascValue : ascValue * -1;
-  };
+  const comparator = ascending ? compareAsc : compareDesc;
+  return (a, b) => comparator(valueExtractor(a), valueExtractor(b));
 }
 
 const collectionToArray = collection =>
@@ -96,6 +95,12 @@ export const flattenToObject = objectCollection => {
   );
 };
 
+const buildKeyAndValueFunctions = (keyMapper, valueMapper) => {
+  const keyOf = typeof keyMapper === 'function' ? keyMapper : object => object[keyMapper];
+  const valueOf = typeof valueMapper === 'function' ? valueMapper : object => object[valueMapper];
+  return [keyOf, valueOf];
+};
+
 /**
  * Creates a dictionary which maps the values of a selected field to another field
  * Available field (key/value) mapper types:
@@ -109,13 +114,39 @@ export const flattenToObject = objectCollection => {
  */
 export const reduceToDictionary = (objectCollection, keyMapper, valueMapper) => {
   const objects = collectionToArray(objectCollection);
-  const getFieldValue = (object, fieldMapper) =>
-    typeof fieldMapper === 'function' ? fieldMapper(object) : object[fieldMapper];
-
+  const [keyOf, valueOf] = buildKeyAndValueFunctions(keyMapper, valueMapper);
   const dictionary = {};
   // Using `forEach` is much quicker than using `reduce` with a spread operator on the accumulator
   objects.forEach(object => {
-    dictionary[getFieldValue(object, keyMapper)] = getFieldValue(object, valueMapper);
+    dictionary[keyOf(object)] = valueOf(object);
+  });
+  return dictionary;
+};
+
+/**
+ * Creates a dictionary which maps the values of a selected field to an array of matching values another field
+ * Use this function when you expect multiple objects in the collection to map to the same key, otherwise use reduceToDictionary
+ * Available field (key/value) mapper types:
+ * * `string`: uses the provided string as the field key
+ * * `Function`, will receive the object as its input eg object => object.value * 2
+ *
+ * @param {ObjectCollection} objectCollection
+ * @param {string|Function} keyMapper
+ * @param {string|Function} valueMapper
+ * @return {Object<string, string[]>}
+ */
+export const reduceToArrayDictionary = (objectCollection, keyMapper, valueMapper) => {
+  const objects = collectionToArray(objectCollection);
+  const [keyOf, valueOf] = buildKeyAndValueFunctions(keyMapper, valueMapper);
+  const dictionary = {};
+  // Using `forEach` is much quicker than using `reduce` with a spread operator on the accumulator
+  objects.forEach(object => {
+    const keyOfObject = keyOf(object);
+    if (dictionary[keyOfObject]) {
+      dictionary[keyOfObject].push(valueOf(object));
+    } else {
+      dictionary[keyOfObject] = [valueOf(object)];
+    }
   });
   return dictionary;
 };
@@ -192,3 +223,44 @@ export const filterValues = (object, valueFilter) =>
 
 export const stripFields = (object = {}, fieldsToExclude = []) =>
   Object.fromEntries(Object.entries(object).filter(([key]) => !fieldsToExclude.includes(key)));
+
+/**
+ * Note: this generally only guarantees insertion order for properties in the new object.
+ * Traversal order is not specified and thus not guaranteed in older ES versions.
+ * If order and cross-version support is critical, please use an Array instead
+ * @see https://github.com/tc39/proposal-for-in-order
+ */
+export const sortFields = object => {
+  const sortedEntries = Object.entries(object).sort(([keyA], [keyB]) => compareAsc(keyA, keyB));
+  return Object.fromEntries(sortedEntries);
+};
+
+export const getUniqueObjects = objects => {
+  const jsonStrings = objects.map(o => JSON.stringify(sortFields(o)));
+  return getUniqueEntries(jsonStrings).map(JSON.parse);
+};
+
+/**
+ * @param {ObjectCollection} objectCollection
+ */
+export const haveSameFields = (objectCollection, fields) => {
+  const objects = collectionToArray(objectCollection);
+
+  return fields.every(field => {
+    for (let i = 0; i < objects.length; i++) {
+      for (let j = i; j < objects.length; j++) {
+        if (objects[i][field] !== objects[j][field]) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  });
+};
+
+export const camelKeys = object =>
+  Object.fromEntries(Object.entries(object).map(([key, value]) => [camel(key), value]));
+
+export const snakeKeys = object =>
+  Object.fromEntries(Object.entries(object).map(([key, value]) => [snake(key), value]));

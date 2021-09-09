@@ -4,6 +4,7 @@
  */
 
 import autobind from 'react-autobind';
+import { types as pgTypes } from 'pg';
 import knex from 'knex';
 import winston from 'winston';
 import { Multilock } from '@tupaia/utils';
@@ -44,14 +45,21 @@ export const JOIN_TYPES = {
 };
 
 // list valid behaviour so we can validate against sql injection
-const VALID_CAST_TYPES = ['text', 'date'];
+const VALID_CAST_TYPES = ['text', 'text[]', 'date'];
 const VALID_COMPARISON_TYPES = ['where', 'whereBetween', 'whereIn', 'orWhere'];
 
 // no math here, just hand-tuned to be as low as possible while
 // keeping all the tests passing
 const HANDLER_DEBOUNCE_DURATION = 250;
 
+// turn off parsing of timestamp (not timestamptz), so that it stays as a sort of "universal time"
+// string, independent of timezones, rather than being converted to local time
+pgTypes.setTypeParser(pgTypes.builtins.TIMESTAMP, val => val);
+
 export class TupaiaDatabase {
+  /**
+   * @param {TupaiaDatabase} [transactingConnection]
+   */
   constructor(transactingConnection) {
     autobind(this);
     this.changeHandlers = {};
@@ -400,45 +408,6 @@ export class TupaiaDatabase {
   }
 
   /**
-   * Execute a sum query.
-   *
-   * eg:
-   * this.database.sum('user_reward', ['pigs', 'coconuts'], {
-   *   user_id: userId,
-   * });
-   * could return:
-   * { coconuts: 99, pigs: 55 }
-   *
-   * @param {string} table
-   * Database table to sum from.
-   * @param {array} fields
-   * An array of fields to sum.
-   * @param {object} where
-   * Conditions for the sum query.
-   */
-  async sum(table, fields = [], where = {}) {
-    if (!this.connection) {
-      await this.waitUntilConnected();
-    }
-
-    const query = this.connection(table);
-
-    fields.forEach(fieldToSum => {
-      query.sum(`${fieldToSum} as ${fieldToSum}`);
-    });
-
-    const result = await query.where(where);
-    const processedResult = {};
-
-    // Convert counts to integers.
-    Object.keys(result[0]).forEach(sumKey => {
-      processedResult[sumKey] = parseInt(result[0][sumKey], 10);
-    });
-
-    return processedResult;
-  }
-
-  /**
    * Runs an arbitrary SQL query against the database.
    *
    * Use only for situations in which Knex is not able to assemble a query.
@@ -496,12 +465,22 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
     options.columns.map(columnSpec => {
       if (typeof columnSpec === 'string') return columnSpec;
       const [alias, selector] = Object.entries(columnSpec)[0];
+
+      if (selector?.castAs) {
+        const { castAs } = selector;
+        if (!VALID_CAST_TYPES.includes(castAs)) {
+          throw new Error(`Cannot cast as ${castAs}`);
+        }
+        return { [alias]: connection.raw(`??::${castAs}`, [alias]) };
+      }
+
       // special case to handle selecting geojson - avoid generic handling of functions to keep
       // out sql injection vulnerabilities
       if (selector.includes('ST_AsGeoJSON')) {
         const [, columnSelector] = selector.match(/ST_AsGeoJSON\((.*)\)/);
         return { [alias]: connection.raw('ST_AsGeoJSON(??)', [columnSelector]) };
       }
+
       return { [alias]: connection.raw('??', [selector]) };
     });
   query = addWhereClause(connection, query[queryMethod](queryMethodParameter || columns), where);
@@ -578,7 +557,10 @@ function addWhereClause(connection, baseQuery, where) {
     if (!VALID_COMPARISON_TYPES.includes(comparisonType)) {
       throw new Error(`Cannot compare using ${comparisonType}`);
     }
-    const columnSelector = castAs ? connection.raw(`??::${castAs}`, [key]) : key;
+
+    const columnKey = key.includes('->>') ? connection.raw(`??->>?`, key.split('->>')) : key;
+    const columnSelector = castAs ? connection.raw(`??::${castAs}`, [columnKey]) : columnKey;
+
     const { args = [comparator, comparisonValue] } = value;
     return querySoFar[comparisonType](columnSelector, ...args);
   }, baseQuery);
@@ -589,12 +571,13 @@ function addJoin(baseQuery, recordType, joinOptions) {
   // e.g. survey_response.id = answer.survey_response_id
   const {
     joinWith,
+    joinAs = joinWith,
     joinType = JOIN_TYPES.DEFAULT,
-    joinCondition = [`${recordType}.id`, `${joinWith}.${recordType}_id`],
+    joinCondition = [`${recordType}.id`, `${joinAs}.${recordType}_id`],
     joinConditions = [joinCondition],
   } = joinOptions;
   const joinMethod = joinType ? `${joinType}Join` : 'join';
-  return baseQuery[joinMethod](joinWith, function () {
+  return baseQuery[joinMethod](`${joinWith} as ${joinAs}`, function () {
     const joining = this.on(...joinConditions[0]);
     for (
       let joinConditionIndex = 1;

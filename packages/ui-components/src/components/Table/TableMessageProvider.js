@@ -17,10 +17,10 @@ const ErrorAlert = styled(SmallAlert)`
   margin-bottom: 0.75rem;
 `;
 
-const getMessage = ({ isLoading, errorMessage, isData, noDataMessage }) => {
+const getMessage = ({ isLoading, errorMessage, hasData, noDataMessage }) => {
   if (isLoading) return 'Loading...';
   if (errorMessage) return errorMessage;
-  if (isData === 0) return noDataMessage;
+  if (!hasData) return noDataMessage;
   return null;
 };
 
@@ -28,8 +28,8 @@ const getMessage = ({ isLoading, errorMessage, isData, noDataMessage }) => {
  * Checks if there is a status message for the table and if so returns it instead of the table body
  */
 export const TableMessageProvider = React.memo(
-  ({ isLoading, errorMessage, isData, noDataMessage, colSpan, children }) => {
-    const message = getMessage({ errorMessage, isLoading, isData, noDataMessage });
+  ({ isLoading, errorMessage, hasData, noDataMessage, colSpan, children }) => {
+    const message = getMessage({ errorMessage, isLoading, hasData, noDataMessage });
     if (message) {
       return (
         <MuiTableBody>
@@ -53,9 +53,9 @@ export const TableMessageProvider = React.memo(
 );
 
 TableMessageProvider.propTypes = {
-  isData: PropTypes.bool.isRequired,
+  hasData: PropTypes.bool.isRequired,
   colSpan: PropTypes.number.isRequired,
-  children: PropTypes.any.isRequired,
+  children: PropTypes.node.isRequired,
   noDataMessage: PropTypes.string,
   isLoading: PropTypes.bool,
   errorMessage: PropTypes.string,

@@ -31,7 +31,7 @@ export const composeData = async (config, aggregator, dhisApi) => {
   const responses = await fetchComposedData(config, aggregator, dhisApi);
 
   if (Object.values(responses).every(({ data: responseData }) => containsNoData(responseData)))
-    return [];
+    return { data: [] };
 
   const data = [];
   Object.entries(responses).forEach(([name, { data: responseData }]) => {

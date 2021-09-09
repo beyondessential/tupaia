@@ -3,16 +3,19 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, lazy } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import MuiDivider from '@material-ui/core/Divider';
-import { Button, TextField, SmallAlert } from '@tupaia/ui-components';
-import { PasswordStrengthBar } from '../../components/PasswordStrengthBar';
+import { Button, TextField, SmallAlert, PasswordStrengthBar } from '@tupaia/ui-components';
 import { Main } from '../../components';
 import { updatePassword } from '../../api';
+
+// Lazy load the password strength library as it uses zxcvbn which is a large dependency.
+// For more about lazy loading components @see: https://reactjs.org/docs/code-splitting.html#reactlazy
+const StrengthBarComponent = lazy(() => import('react-password-strength-bar'));
 
 const Container = styled.section`
   padding-top: 1rem;
@@ -110,10 +113,11 @@ const ChangePasswordTabViewComponent = React.memo(({ onUpdatePassword }) => {
             })}
           />
           <PasswordStrengthBar
+            StrengthBarComponent={StrengthBarComponent}
             password={password}
             helperText="New password must be over 8 characters long."
             pt={1}
-            pb={4}
+            pb={3}
           />
           <StyledButton type="submit" fullWidth isLoading={isLoading}>
             Save Password

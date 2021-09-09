@@ -3,33 +3,12 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import flatten from 'lodash.flatten';
-import { stripFromString } from '@tupaia/utils';
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
+import { buildBaseRowsForOrgUnit } from './helpers/buildBaseRowsForOrgUnit';
 
 class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
-  /**
-   * @returns {
-   *  dataElement: { dataElement, categoryId }
-   * }
-   */
-
-  buildBaseRows(rows = this.tableConfig.rows, parent = undefined, baseCellIndex = 0) {
-    const { stripFromDataElementNames, cells } = this.config;
-    const flatCells = flatten(cells);
-    let currentCellIndex = baseCellIndex;
-    return rows.reduce((baseRows, row) => {
-      if (typeof row === 'string') {
-        const dataElement = stripFromString(row, stripFromDataElementNames);
-        const dataCode = flatCells[currentCellIndex];
-        currentCellIndex++;
-        return [...baseRows, { dataCode, dataElement, categoryId: parent }];
-      }
-
-      const next = this.buildBaseRows(row.rows, row.category, currentCellIndex);
-      currentCellIndex += next.length;
-      return [...baseRows, ...next];
-    }, []);
+  buildBaseRows() {
+    return buildBaseRowsForOrgUnit(this.tableConfig.rows, undefined, 0, this.config);
   }
 
   buildRows(columnsRaw) {
@@ -37,8 +16,8 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
     const columns = this.flattenColumnCategories(columnsRaw);
     const { filterEmptyRows } = this.config;
     const rowData = [...baseRows];
-    this.results.forEach(({ value, organisationUnit, metadata }) => {
-      const dataCode = metadata.code;
+    this.results.forEach(({ value, organisationUnit, metadata, dataElement }) => {
+      const dataCode = metadata.code || dataElement;
       const orgUnit = columns.find(col => col.title === organisationUnit);
       if (orgUnit) {
         rowData

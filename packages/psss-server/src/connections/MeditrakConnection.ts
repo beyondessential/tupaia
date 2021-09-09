@@ -4,25 +4,33 @@
  */
 
 import { generateId } from '@tupaia/database';
-import { convertPeriodStringToDateRange } from '@tupaia/utils';
+import { convertPeriodStringToDateRange, stripTimezoneFromDate } from '@tupaia/utils';
 import { ApiConnection } from './ApiConnection';
 
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
 
-const PSSS_SURVEY_RESPONSE_ANSWER_TYPE = 'Number'; // All survey response answers are 'Number' in PSSS
-
 type SurveyResponseObject = {
   'entity.code': string;
   'survey.code': string;
-  submission_time: string;
+  data_time: string;
   id: string;
 };
 
 type AnswerObject = {
   'question.code': string;
+  type: string;
   id: string;
 };
 
+type Answer = {
+  type: string;
+  code: string;
+  value: string | number;
+};
+
+/**
+ * @deprecated use @tupaia/api-client
+ */
 export class MeditrakConnection extends ApiConnection {
   baseUrl = MEDITRAK_API_URL;
 
@@ -30,63 +38,100 @@ export class MeditrakConnection extends ApiConnection {
     surveyCode: string,
     orgUnitCode: string,
     period: string,
-    answers: Record<string, number>,
+    answers: Answer[],
   ) {
     const existingSurveyResponse = await this.findSurveyResponse(surveyCode, orgUnitCode, period);
 
     if (existingSurveyResponse) {
-      return this.updateSurveyResponse(existingSurveyResponse, answers);
+      return this.updateSurveyResponseByObject(existingSurveyResponse, answers);
     }
 
     return this.createSurveyResponse(surveyCode, orgUnitCode, period, answers);
   }
 
-  async findSurveyResponse(surveyCode: string, orgUnitCode: string, period: string) {
+  async findSurveyResponses(
+    surveyCode: string,
+    orgUnitCode: string,
+    period: string,
+    pageSize?: string | undefined,
+  ) {
     const [startDate, endDate] = convertPeriodStringToDateRange(period);
-    const results = (await this.get(`surveyResponses/`, {
+    return (await this.get(`surveyResponses/`, {
       page: '0',
-      pageSize: '1',
-      columns: `["entity.code","survey.code","submission_time","id"]`,
+      pageSize,
+      columns: `["entity.code","survey.code","data_time","id"]`,
       filter: JSON.stringify({
         'survey.code': { comparisonValue: surveyCode },
         'entity.code': { comparisonValue: orgUnitCode },
-        submission_time: {
+        data_time: {
           comparator: 'BETWEEN',
           comparisonValue: [startDate, endDate],
           castAs: 'date',
         },
       }),
-      sort: '["submission_time DESC"]',
+      sort: '["data_time DESC"]',
     })) as SurveyResponseObject[];
+  }
 
+  async findSurveyResponse(surveyCode: string, orgUnitCode: string, period: string) {
+    const results = await this.findSurveyResponses(surveyCode, orgUnitCode, period, '1');
     return results.length > 0 ? results[0] : undefined;
   }
 
-  async updateSurveyResponse(
-    surveyResponse: SurveyResponseObject,
-    answers: Record<string, number>,
-  ) {
-    const existingAnswers = (await this.get(`surveyResponses/${surveyResponse.id}/answers`, {
-      columns: `["question.code","id"]`,
-    })) as AnswerObject[];
-
-    const newAnswers = existingAnswers.map(existingAnswer => {
-      const questionCode = existingAnswer['question.code'];
-      return {
-        id: existingAnswer.id,
-        type: PSSS_SURVEY_RESPONSE_ANSWER_TYPE,
-        question_code: questionCode,
-        body: answers[questionCode],
-      };
+  async findSurveyResponseById(surveyResponseId: string) {
+    return this.get(`surveyResponses/${surveyResponseId}`, {
+      columns: `["entity.code","survey.code","data_time","id"]`,
     });
+  }
+
+  async findAnswers(surveyResponseId: string) {
+    return (await this.get(`surveyResponses/${surveyResponseId}/answers`, {
+      columns: `["question.code","type","id"]`,
+    })) as AnswerObject[];
+  }
+
+  async updateSurveyResponse(
+    id: string,
+    entityCode: string,
+    surveyCode: string,
+    period: string,
+    answers: Answer[],
+  ) {
+    const [_, endDate] = convertPeriodStringToDateRange(period);
+    const surveyResponse = {
+      id,
+      'entity.code': entityCode,
+      'survey.code': surveyCode,
+      data_time: stripTimezoneFromDate(new Date(endDate).toISOString()),
+    }
+
+    return this.updateSurveyResponseByObject(surveyResponse, answers);
+  }
+
+  async updateSurveyResponseByObject(surveyResponse: SurveyResponseObject, answers: Answer[]) {
+    const existingAnswers = await this.findAnswers(surveyResponse.id);
+    const newAnswers = existingAnswers
+      .map(existingAnswer => {
+        const questionCode = existingAnswer['question.code'];
+        const answer = answers.find(a => a.code === questionCode)
+        return {
+          id: existingAnswer.id,
+          type: existingAnswer.type,
+          question_code: questionCode,
+          body: answer?.value,
+        };
+      })
+      .filter(a => a.body !== undefined);
+
     const currentDate = new Date().toISOString();
 
     return this.post(`changes`, {}, [
       {
         action: 'SubmitSurveyResponse',
+        waitForAnalyticsRebuild: true,
         payload: {
           id: surveyResponse.id,
-          submission_time: surveyResponse.submission_time,
+          data_time: surveyResponse.data_time,
           entity_code: surveyResponse['entity.code'],
           survey_code: surveyResponse['survey.code'],
           user_email: this.authHandler.email,
@@ -102,25 +147,26 @@ export class MeditrakConnection extends ApiConnection {
     surveyCode: string,
     organisationUnitCode: string,
     period: string,
-    answers: Record<string, number>,
+    answers: Answer[],
   ) {
     const [_, endDate] = convertPeriodStringToDateRange(period);
 
-    const newAnswers = Object.entries(answers).map(([questionCode, value]) => ({
+    const newAnswers = answers.map(({type, code, value}) => ({
       id: generateId(),
-      type: PSSS_SURVEY_RESPONSE_ANSWER_TYPE,
-      question_code: questionCode,
+      type,
+      question_code: code,
       body: value,
     }));
 
     const date = new Date().toISOString();
-
-    return this.post(`changes`, {}, [
+    const surveyResponseId = generateId();
+    const response = await this.post(`changes`, {}, [
       {
         action: 'SubmitSurveyResponse',
+        waitForAnalyticsRebuild: true,
         payload: {
-          id: generateId(),
-          submission_time: new Date(endDate).toISOString(),
+          id: surveyResponseId,
+          data_time: stripTimezoneFromDate(new Date(endDate).toISOString()),
           survey_code: surveyCode,
           entity_code: organisationUnitCode,
           user_email: this.authHandler.email,
@@ -130,9 +176,11 @@ export class MeditrakConnection extends ApiConnection {
         },
       },
     ]);
+
+    return { surveyResponseId, ...response };
   }
 
-  async deleteSurveyResponse(surveyResponse: SurveyResponseObject) {
-    return this.delete(`surveyResponse/${surveyResponse.id}`);
+  async deleteSurveyResponse(surveyResponseId: string) {
+    return this.delete(`surveyResponses/${surveyResponseId}`, { waitForAnalyticsRebuild: 'true' });
   }
 }

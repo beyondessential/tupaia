@@ -65,7 +65,7 @@ const styles = createStyles(theme => ({
  * Custom week picker component which allows selecting of ISOWeeks
  * Customisation is based heavily on material-ui docs @See: https://material-ui-pickers.dev/demo/datepicker
  */
-export const WeekPickerComponent = ({ label, value, onChange, isOpen, onClose, classes }) => {
+const WeekPickerComponent = ({ label, value, onChange, isOpen, onClose, classes }) => {
   const renderWeekPickerDay = (date, selectedDate, dayInCurrentMonth) => {
     const start = startOfISOWeek(selectedDate);
     const end = endOfISOWeek(selectedDate);

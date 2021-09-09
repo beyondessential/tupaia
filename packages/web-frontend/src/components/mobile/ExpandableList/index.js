@@ -27,7 +27,7 @@ const List = styled.div`
 `;
 
 const Container = styled.div`
-  padding: 20px ${MOBILE_MARGIN_SIZE}px 0 10px;
+  padding: 20px ${MOBILE_MARGIN_SIZE}px 0;
   display: grid;
   grid-template-columns: auto auto;
   grid-template-rows: auto auto;

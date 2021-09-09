@@ -4,8 +4,8 @@
  */
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Container, Main, ComingSoon } from '../../components';
-import { AlertsTable } from '../../containers/Tables';
+import { ComingSoon, Container, Main } from '../../components';
+import { FakeEventBasedDataTable } from '../../containers';
 
 export const EventBasedTabView = () => {
   const { countryCode } = useParams();
@@ -15,7 +15,7 @@ export const EventBasedTabView = () => {
       <ComingSoon text="The Event-based page will allow you to see event based data." />
       <Container>
         <Main>
-          <AlertsTable handlePanelOpen={() => {}} countryCode={countryCode} />
+          <FakeEventBasedDataTable countryCode={countryCode} />
         </Main>
       </Container>
     </div>

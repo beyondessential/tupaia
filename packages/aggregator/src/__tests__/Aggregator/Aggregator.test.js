@@ -23,6 +23,7 @@ FilterAnalytics.filterAnalytics.mockReturnValue(FILTERED_ANALYTICS);
 const { DATA_ELEMENT, DATA_GROUP } = DATA_SOURCE_TYPES;
 
 const dataBroker = createJestMockInstance('@tupaia/data-broker', 'DataBroker', {
+  context: {},
   getDataSourceTypes: () => DATA_SOURCE_TYPES,
   pull: ({ type }) => RESPONSE_BY_SOURCE_TYPE[type],
 });
@@ -39,7 +40,7 @@ const aggregationOptions = {
   aggregations: [
     {
       type: 'MOST_RECENT',
-      config: { orgUnitToGroupKeys: [], requestedPeriod: '20200214;20200215' },
+      config: { orgUnitMap: {}, requestedPeriod: '20200214;20200215' },
     },
   ],
   filter: { value: 3 },
@@ -89,6 +90,16 @@ describe('Aggregator', () => {
       assertDataBrokerPullIsInvokedCorrectly({ codeInput: codes });
     });
 
+    it('passes aggregations through to data source', async () => {
+      const codes = ['POP01', 'POP02'];
+
+      await aggregator.fetchAnalytics(codes, fetchOptions, aggregationOptions);
+      assertDataBrokerPullIsInvokedCorrectly(
+        { codeInput: codes },
+        { aggregations: aggregationOptions.aggregations },
+      );
+    });
+
     it('returns data for just organisationUnitCode', async () => {
       const codes = ['POP01', 'POP02'];
 
@@ -134,7 +145,7 @@ describe('Aggregator', () => {
       await aggregator.fetchAnalytics(['POP01', 'POP02'], fetchOptions, aggregationOptions);
       expect(dataBroker.pull).toHaveBeenCalledBefore(AggregateAnalytics.aggregateAnalytics);
       expect(AggregateAnalytics.aggregateAnalytics).toHaveBeenCalledOnceWith(
-        results,
+        results[0].analytics,
         aggregationType,
         aggregationConfig,
       );

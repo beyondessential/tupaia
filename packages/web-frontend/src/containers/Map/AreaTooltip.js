@@ -13,9 +13,16 @@
  */
 
 import React, { Component } from 'react';
+import { PopupDataItemList } from '@tupaia/ui-components/lib/map';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 
 import { Tooltip } from 'react-leaflet';
+
+const Heading = styled.span`
+  text-align: center;
+  font-weight: ${props => (props.hasMeasureValue ? 'bold' : 'normal')};
+`;
 
 export class AreaTooltip extends Component {
   constructor(props) {
@@ -35,7 +42,16 @@ export class AreaTooltip extends Component {
   }
 
   render() {
-    const { permanent, onMouseOver, onMouseOut, text, sticky } = this.props;
+    const {
+      permanent,
+      onMouseOver,
+      onMouseOut,
+      sticky,
+      orgUnitName,
+      hasMeasureValue,
+      measureOptions,
+      orgUnitMeasureData,
+    } = this.props;
 
     return (
       <Tooltip
@@ -53,7 +69,19 @@ export class AreaTooltip extends Component {
           this.ref = r;
         }}
       >
-        <span>{text}</span>
+        <div style={{ display: 'grid' }}>
+          <Heading key={0} hasMeasureValue={hasMeasureValue}>
+            {orgUnitName}
+          </Heading>
+          {hasMeasureValue && (
+            <PopupDataItemList
+              key={1}
+              measureOptions={measureOptions}
+              data={orgUnitMeasureData}
+              showNoDataLabel="true"
+            />
+          )}
+        </div>
       </Tooltip>
     );
   }
@@ -62,9 +90,12 @@ export class AreaTooltip extends Component {
 AreaTooltip.propTypes = {
   permanent: PropTypes.bool,
   sticky: PropTypes.bool,
-  text: PropTypes.string.isRequired,
   onMouseOver: PropTypes.func,
   onMouseOut: PropTypes.func,
+  hasMeasureValue: PropTypes.bool,
+  measureOptions: PropTypes.arrayOf(PropTypes.object),
+  orgUnitMeasureData: PropTypes.object,
+  orgUnitName: PropTypes.string,
 };
 
 AreaTooltip.defaultProps = {
@@ -72,4 +103,8 @@ AreaTooltip.defaultProps = {
   sticky: false,
   onMouseOver: undefined,
   onMouseOut: undefined,
+  hasMeasureValue: false,
+  measureOptions: [],
+  orgUnitMeasureData: undefined,
+  orgUnitName: undefined,
 };

@@ -20,22 +20,22 @@ const EVENTS = [
   {
     organisationUnitCode: 'ORG1',
     eventDate: '2020-02-03T11:14:00.000',
-    dataValues: { element1: { value: 'value1' } },
+    dataValues: { element1: 'value1' },
   },
   {
     organisationUnitCode: 'ORG1',
     eventDate: '2020-02-03T11:14:00.000',
-    dataValues: { element1: { value: 'value2' } },
+    dataValues: { element1: 'value2' },
   },
   {
     organisationUnitCode: 'ORG1',
     eventDate: '2020-02-10T11:14:00.000',
-    dataValues: { element1: { value: 'value1' } },
+    dataValues: { element1: 'value1' },
   },
   {
     organisationUnitCode: 'ORG1',
     eventDate: '2020-02-10T11:15:00.000',
-    dataValues: { element1: { value: 'value1' } },
+    dataValues: { element1: 'value1' },
   },
 ];
 

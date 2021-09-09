@@ -4,36 +4,45 @@
  */
 
 import { Aggregator } from '../aggregator';
-import { FetchReportQuery, ReportConfig } from '../types';
+import { FetchReportQuery } from '../types';
 import { buildFetch } from './fetch';
 import { buildTransform } from './transform';
+import { buildOutput } from './output';
 import { Row } from './types';
+import { OutputType } from './output/functions/outputBuilders';
 
-interface BuildReport {
-  results: Row[];
+interface BuiltReport {
+  results: OutputType;
 }
 
 export class ReportBuilder {
-  config?: ReportConfig;
+  config?: Record<string, unknown>;
 
   testData?: Row[];
 
-  setConfig = (config: ReportConfig) => {
+  setConfig = (config: Record<string, unknown>) => {
     this.config = config;
+    return this;
   };
 
   setTestData = (testData: Row[]) => {
     this.testData = testData;
+    return this;
   };
 
-  build = async (aggregator: Aggregator, query: FetchReportQuery): Promise<BuildReport> => {
+  build = async (aggregator: Aggregator, query: FetchReportQuery): Promise<BuiltReport> => {
     if (!this.config) {
       throw new Error('Report requires a config be set');
     }
-    const fetch = buildFetch(this.config.fetch);
+    const fetch = this.testData
+      ? () => ({ results: this.testData as Row[] })
+      : buildFetch(this.config?.fetch);
     const transform = buildTransform(this.config.transform);
-    const data = this.testData ? { results: this.testData } : await fetch(aggregator, query);
-    data.results = transform(data.results);
-    return data;
+    const output = buildOutput(this.config.output);
+
+    const data = await fetch(aggregator, query);
+    const transformedData = transform(data.results);
+    const outputData = output(transformedData);
+    return { results: outputData };
   };
 }

@@ -2,18 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
-import keyBy from 'lodash.keyby';
-
 import { Service } from '../Service';
 import { getDhisApiInstance } from './getDhisApiInstance';
 import { DhisTranslator } from './DhisTranslator';
-import {
-  buildAnalyticsFromDhisAnalytics,
-  buildAnalyticsFromDhisEventAnalytics,
-  buildAnalyticsFromEvents,
-  buildEventsFromDhisEventAnalytics,
-} from './buildAnalytics';
+import { AnalyticsPuller, EventsPuller, DataElementsMetadataPuller } from './pullers';
 
 const DEFAULT_DATA_SERVICE = { isDataRegional: true };
 const DEFAULT_DATA_SERVICES = [DEFAULT_DATA_SERVICE];
@@ -22,11 +14,21 @@ export class DhisService extends Service {
   constructor(models) {
     super(models);
 
+    this.translator = new DhisTranslator(this.models);
+    this.dataElementsMetadataPuller = new DataElementsMetadataPuller(
+      this.models.dataSource,
+      this.translator,
+    );
+    this.analyticsPuller = new AnalyticsPuller(
+      this.models.dataSource,
+      this.translator,
+      this.dataElementsMetadataPuller,
+    );
+    this.eventsPuller = new EventsPuller(this.models.dataSource, this.translator);
     this.pushers = this.getPushers();
     this.deleters = this.getDeleters();
     this.pullers = this.getPullers();
     this.metadataPullers = this.getMetadataPullers();
-    this.translator = new DhisTranslator(this.models);
   }
 
   getPushers() {
@@ -45,21 +47,21 @@ export class DhisService extends Service {
 
   getPullers() {
     return {
-      [this.dataSourceTypes.DATA_ELEMENT]: this.pullAnalytics.bind(this),
-      [this.dataSourceTypes.DATA_GROUP]: this.pullEvents.bind(this),
+      [this.dataSourceTypes.DATA_ELEMENT]: this.analyticsPuller.pull.bind(this),
+      [this.dataSourceTypes.DATA_GROUP]: this.eventsPuller.pull.bind(this),
     };
   }
 
   getMetadataPullers() {
     return {
-      [this.dataSourceTypes.DATA_ELEMENT]: this.pullDataElementMetadata.bind(this),
+      [this.dataSourceTypes.DATA_ELEMENT]: this.dataElementsMetadataPuller.pull.bind(this),
     };
   }
 
   getApiForValue = (dataSource, dataValue) => {
     const { isDataRegional } = dataSource.config;
     const { orgUnit: entityCode } = dataValue;
-    return getDhisApiInstance({ entityCode, isDataRegional });
+    return getDhisApiInstance({ entityCode, isDataRegional }, this.models);
   };
 
   validatePushData(dataSources, dataValues) {
@@ -100,7 +102,7 @@ export class DhisService extends Service {
 
   async delete(dataSource, data, { serverName } = {}) {
     const api = serverName
-      ? getDhisApiInstance({ serverName })
+      ? getDhisApiInstance({ serverName }, this.models)
       : this.getApiForValue(dataSource, data);
     const deleteData = this.deleters[dataSource.type];
     return deleteData(api, data, dataSource);
@@ -121,269 +123,33 @@ export class DhisService extends Service {
     const {
       organisationUnitCode,
       organisationUnitCodes,
-      dataServices = DEFAULT_DATA_SERVICES,
+      dataServices: inputDataServices = DEFAULT_DATA_SERVICES,
+      detectDataServices = false,
     } = options;
+    let dataServices = inputDataServices;
+    // TODO remove the `detectDataServices` flag after
+    // https://linear.app/bes/issue/MEL-481/detect-data-services-in-the-data-broker-level
+    if (detectDataServices) {
+      dataServices = dataSources.map(ds => {
+        const { isDataRegional = true } = ds.config;
+        return { isDataRegional };
+      });
+    }
+
     const entityCodes = organisationUnitCodes || [organisationUnitCode];
     const pullData = this.pullers[type];
     const apis = dataServices.map(({ isDataRegional }) =>
-      getDhisApiInstance({ entityCodes, isDataRegional }),
+      getDhisApiInstance({ entityCodes, isDataRegional }, this.models),
     );
 
     return pullData(apis, dataSources, options);
   }
 
-  getPullAnalyticsForApiMethod = options => {
-    const { programCodes } = options;
-
-    if (programCodes) {
-      // TODO remove `useDeprecatedApi` option as soon as `pullAnalyticsFromEventsForApi_Deprecated()` is deleted
-      const { useDeprecatedApi = true } = options;
-      return useDeprecatedApi
-        ? this.pullAnalyticsFromEventsForApi_Deprecated
-        : this.pullAnalyticsFromEventsForApi;
-    }
-
-    return this.pullAnalyticsForApi;
-  };
-
-  fetchEventsForPrograms = async (api, programCodes, query) => {
-    const events = [];
-    await Promise.all(
-      programCodes.map(async programCode => {
-        const newEvents = await api.getEvents({ ...query, programCode });
-        events.push(...newEvents);
-      }),
-    );
-
-    return events;
-  };
-
-  fetchEventAnalyticsForPrograms = async (api, programCodes, query) => {
-    const allHeaders = [];
-    let metaData = { items: {}, dimensions: {} };
-    let width = 0;
-    let height = 0;
-    const rows = [];
-
-    const fetchAnalyticsForProgram = async programCode => {
-      const newAnalytics = await api.getEventAnalytics({ ...query, programCode });
-
-      allHeaders.push(...newAnalytics.headers);
-      metaData = {
-        items: { ...metaData.items, ...newAnalytics.metaData.items },
-        dimensions: { ...metaData.dimensions, ...newAnalytics.metaData.dimensions },
-      };
-      width = newAnalytics.width;
-      height += newAnalytics.height;
-      rows.push(...newAnalytics.rows);
-    };
-
-    await Promise.all(programCodes.map(fetchAnalyticsForProgram));
-    return {
-      headers: Object.values(keyBy(allHeaders, 'name')),
-      metaData,
-      width,
-      height,
-      rows,
-    };
-  };
-
-  /**
-   * This is a deprecated method which invokes a slow DHIS2 api ('/events').
-   * It is invoked using the `options.useDeprecatedApi` flag
-   *
-   * TODO Delete this method as soon as all its past consumers have migrated over to
-   * the new (non-deprecated) method
-   */
-  pullAnalyticsFromEventsForApi_Deprecated = async (api, dataSources, options) => {
-    const {
-      organisationUnitCodes = [],
-      startDate,
-      endDate,
-      programCodes,
-      eventId,
-      trackedEntityInstance,
-    } = options;
-
-    const query = {
-      organisationUnitCode: organisationUnitCodes[0],
-      dataElementIdScheme: 'code',
-      startDate,
-      endDate,
-      programCodes,
-      eventId,
-      trackedEntityInstance,
-    };
-    const events = await this.fetchEventsForPrograms(api, programCodes, query);
-    const translatedEvents = await this.translator.translateInboundEvents(events, programCodes[0]);
-    const dataElements = await this.pullDataElementMetadata(api, dataSources, {
-      additionalFields: ['valueType'],
-    });
-
-    return buildAnalyticsFromEvents(translatedEvents, dataElements);
-  };
-
-  pullAnalyticsFromEventsForApi = async (api, dataSources, options) => {
-    const {
-      programCodes = [],
-      period,
-      startDate,
-      endDate,
-      organisationUnitCode,
-      organisationUnitCodes,
-    } = options;
-    const dataElementCodes = dataSources.map(({ code }) => code);
-    const dhisElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
-
-    const query = {
-      programCodes,
-      dataElementCodes: dhisElementCodes,
-      dataElementIdScheme: 'code',
-      organisationUnitCodes: organisationUnitCode ? [organisationUnitCode] : organisationUnitCodes,
-      period,
-      startDate,
-      endDate,
-    };
-    const eventAnalytics = await this.fetchEventAnalyticsForPrograms(api, programCodes, query);
-
-    const translatedEventAnalytics = await this.translator.translateInboundEventAnalytics(
-      eventAnalytics,
-      dataSources,
-    );
-
-    return buildAnalyticsFromDhisEventAnalytics(translatedEventAnalytics, dataElementCodes);
-  };
-
-  pullAnalyticsForApi = async (api, dataSources, options) => {
-    const dataElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
-    const { organisationUnitCode, organisationUnitCodes, period, startDate, endDate } = options;
-
-    const aggregateData = await api.getAnalytics({
-      dataElementCodes,
-      outputIdScheme: 'code',
-      organisationUnitCodes: organisationUnitCode ? [organisationUnitCode] : organisationUnitCodes,
-      period,
-      startDate,
-      endDate,
-    });
-
-    const translatedData = this.translator.translateInboundAggregateData(
-      aggregateData,
-      dataSources,
-    );
-
-    return buildAnalyticsFromDhisAnalytics(translatedData);
-  };
-
-  pullAnalytics = async (apis, dataSources, options) => {
-    const pullAnalyticsForApi = this.getPullAnalyticsForApiMethod(options);
-
-    const response = {
-      results: [],
-      metadata: {
-        dataElementCodeToName: {},
-      },
-    };
-    const pullForApi = async api => {
-      const { results, metadata } = await pullAnalyticsForApi(api, dataSources, options);
-      response.results.push(...results);
-      // Only the final query's metadata will be used in the result
-      response.metadata = metadata;
-    };
-
-    await Promise.all(apis.map(pullForApi));
-    return response;
-  };
-
-  /**
-   * This is a deprecated method which invokes a slow DHIS2 api ('/events')
-   * and returns an obsolete data structure (equivalent to the raw DHIS2 events).
-   * It is invoked using the `options.useDeprecatedApi` flag
-   *
-   * TODO Delete this method as soon as all its past consumers have migrated over to
-   * the new (non-deprecated) method
-   */
-  pullEventsForApi_Deprecated = async (api, programCode, options) => {
-    const {
-      organisationUnitCodes = [],
-      orgUnitIdScheme,
-      startDate,
-      endDate,
-      eventId,
-      trackedEntityInstance,
-      dataValueFormat,
-    } = options;
-
-    const events = await api.getEvents({
-      programCode,
-      dataElementIdScheme: 'code',
-      organisationUnitCode: organisationUnitCodes[0],
-      orgUnitIdScheme,
-      startDate,
-      endDate,
-      eventId,
-      trackedEntityInstance,
-      dataValueFormat,
-    });
-
-    return this.translator.translateInboundEvents(events, programCode);
-  };
-
-  pullEventsForApi = async (api, programCode, options) => {
-    const { dataElementCodes = [], organisationUnitCodes, period, startDate, endDate } = options;
-
-    const dataElementSources = await this.models.dataSource.find({
-      code: dataElementCodes,
-      type: this.dataSourceTypes.DATA_ELEMENT,
-    });
-    const dhisElementCodes = dataElementSources.map(({ dataElementCode }) => dataElementCode);
-
-    const eventAnalytics = await api.getEventAnalytics({
-      programCode,
-      dataElementCodes: dhisElementCodes,
-      organisationUnitCodes,
-      period,
-      startDate,
-      endDate,
-      dataElementIdScheme: 'code',
-    });
-
-    const translatedEventAnalytics = await this.translator.translateInboundEventAnalytics(
-      eventAnalytics,
-      dataElementSources,
-    );
-
-    return buildEventsFromDhisEventAnalytics(translatedEventAnalytics, dataElementCodes);
-  };
-
-  pullEvents = async (apis, dataSources, options) => {
-    if (dataSources.length > 1) {
-      throw new Error('Cannot pull from multiple programs at the same time');
-    }
-    const [dataSource] = dataSources;
-    const { code: programCode } = dataSource;
-
-    // TODO remove `useDeprecatedApi` option as soon as `pullEventsForApi_Deprecated()` is deleted
-    const { useDeprecatedApi = true } = options;
-    const pullEventsForApi = useDeprecatedApi
-      ? this.pullEventsForApi_Deprecated
-      : this.pullEventsForApi;
-
-    const events = [];
-    const pullForApi = async api => {
-      const newEvents = await pullEventsForApi(api, programCode, options);
-      events.push(...newEvents);
-    };
-
-    await Promise.all(apis.map(pullForApi));
-    return events;
-  };
-
   async pullMetadata(dataSources, type, options) {
     const { organisationUnitCode: entityCode, dataServices = DEFAULT_DATA_SERVICES } = options;
     const pullMetadata = this.metadataPullers[type];
     const apis = dataServices.map(({ isDataRegional }) =>
-      getDhisApiInstance({ entityCode, isDataRegional }),
+      getDhisApiInstance({ entityCode, isDataRegional }, this.models),
     );
 
     const results = [];
@@ -394,15 +160,5 @@ export class DhisService extends Service {
     await Promise.all(apis.map(pullForApi));
 
     return results;
-  }
-
-  async pullDataElementMetadata(api, dataSources, options) {
-    const dataElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
-    const { additionalFields, includeOptions } = options;
-    const dataElements = await api.fetchDataElements(dataElementCodes, {
-      additionalFields,
-      includeOptions,
-    });
-    return this.translator.translateInboundDataElements(dataElements, dataSources);
   }
 }

@@ -74,7 +74,7 @@ class RawDataValuesBuilder extends DataBuilder {
       const surveyConfig = surveysConfig[surveyCode];
 
       const dataElementCodes = dataElementsMetadata.map(d => d.code);
-      let additionalQueryConfig = { dataElementCodes };
+      let additionalQueryConfig = { dataElementCodes, useDeprecatedApi: true };
 
       if (surveyConfig) {
         const { excludeCodes = [] } = surveyConfig;
@@ -224,7 +224,7 @@ class RawDataValuesBuilder extends DataBuilder {
                   dataElementCodeToOptions[dataKey] !== undefined &&
                   dataElementCodeToOptions[dataKey][dataValue] !== undefined
                     ? dataElementCodeToOptions[dataKey][dataValue]
-                    : value;
+                    : dataValue;
                 break;
               }
             }

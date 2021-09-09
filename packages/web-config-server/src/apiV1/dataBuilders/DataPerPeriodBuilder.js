@@ -3,7 +3,12 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { parsePeriodType, periodToDisplayString, periodToTimestamp } from '@tupaia/utils';
+import {
+  getSortByKey,
+  parsePeriodType,
+  periodToDisplayString,
+  periodToTimestamp,
+} from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 /**
@@ -90,7 +95,7 @@ export class DataPerPeriodBuilder extends DataBuilder {
     };
     await Promise.all(Object.entries(resultsByPeriod).map(processResultsForPeriod));
 
-    return data;
+    return data.sort(getSortByKey('timestamp'));
   }
 
   /**

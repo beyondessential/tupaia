@@ -3,14 +3,16 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-export const getUniqueViewId = ({ organisationUnitCode, dashboardGroupId, viewId }) =>
-  [organisationUnitCode, dashboardGroupId, viewId].join('___');
+const SEPARATOR = '___';
+
+export const getUniqueViewId = (organisationUnitCode, dashboardCode, itemCode) =>
+  [organisationUnitCode, dashboardCode, itemCode].join(SEPARATOR);
 
 export const getInfoFromInfoViewKey = infoViewKey => {
   if (!infoViewKey) return {};
-  const [organisationUnitCode, dashboardGroupId, viewId] = infoViewKey.split('___');
-  return { organisationUnitCode, dashboardGroupId, viewId };
+  const [organisationUnitCode, dashboardCode, itemCode] = infoViewKey.split(SEPARATOR);
+  return { organisationUnitCode, dashboardCode, itemCode };
 };
 
 export const getViewIdFromInfoViewKey = infoViewKey =>
-  getInfoFromInfoViewKey(infoViewKey).viewId || null;
+  getInfoFromInfoViewKey(infoViewKey).itemCode || null;

@@ -3,7 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export { DashboardPermissionsChecker } from './DashboardPermissionsChecker';
+export { DashboardItemPermissionsChecker } from './DashboardItemPermissionsChecker';
+export { ReportPermissionsChecker } from './ReportPermissionsChecker';
 export { ExportSurveyResponsesPermissionsChecker } from './ExportSurveyResponsesPermissionsChecker';
 export { MapOverlayPermissionsChecker } from './MapOverlayPermissionsChecker';
 export { NoPermissionRequiredChecker } from './NoPermissionRequiredChecker';

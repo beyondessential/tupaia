@@ -7,11 +7,37 @@ import jwt from 'jsonwebtoken';
 import { UnauthenticatedError } from '@tupaia/utils';
 import { getJwtToken } from './security';
 
+const ACCESS_TOKEN_EXPIRY_SECONDS = 15 * 60; // User's access expires every 15 mins
+
+export const constructAccessToken = ({ userId, apiClientUserId, refreshToken }) => {
+  if (!userId) {
+    throw new Error('Cannot construct accessToken: missing userId');
+  }
+
+  if (!refreshToken) {
+    throw new Error('Cannot construct accessToken: missing refreshToken');
+  }
+
+  const jwtPayload = {
+    userId,
+    refreshToken,
+  };
+
+  if (apiClientUserId) {
+    jwtPayload.apiClientUserId = apiClientUserId;
+  }
+
+  // Generate JWT
+  return jwt.sign(jwtPayload, process.env.JWT_SECRET, {
+    expiresIn: ACCESS_TOKEN_EXPIRY_SECONDS,
+  });
+};
+
 /**
- * Custom authenticator to check user has a valid and current JWT token, i.e. they have previously
- * authenticated as someone with permission to access this resource
+ * Validate that Bearer Auth Header has valid and current JWT token (accessToken)
+ * @param {string} authHeader
  */
-export function getUserIDFromToken(authHeader) {
+export function getTokenClaimsFromBearerAuth(authHeader) {
   let jwtToken;
 
   try {
@@ -20,6 +46,15 @@ export function getUserIDFromToken(authHeader) {
     throw new UnauthenticatedError(error.message);
   }
 
+  return getTokenClaims(jwtToken);
+}
+
+/**
+ * Validate that Bearer Auth Header has valid and current JWT token (accessToken)
+ * @param {string} accessToken
+ * @returns {{userId?: string, refreshToken?: string, apiClientUserId?: string}} Access Token claims
+ */
+export function getTokenClaims(jwtToken) {
   let tokenClaims = {};
   try {
     tokenClaims = jwt.verify(jwtToken, process.env.JWT_SECRET);
@@ -31,5 +66,67 @@ export function getUserIDFromToken(authHeader) {
     }
   }
 
-  return tokenClaims.userId;
+  return tokenClaims;
 }
+
+export function getUserAndPassFromBasicAuth(authHeader) {
+  let usernamePassword;
+  try {
+    usernamePassword = Buffer.from(authHeader.split(' ')[1], 'base64').toString();
+  } catch (error) {
+    throw new UnauthenticatedError('Invalid Basic auth credentials');
+  }
+
+  if (!usernamePassword.includes(':')) {
+    throw new UnauthenticatedError('Invalid Basic auth credentials');
+  }
+
+  // Split on first occurrence because password can contain ':'
+  const username = usernamePassword.split(':')[0];
+  const password = usernamePassword.substring(username.length + 1, usernamePassword.length);
+  return { username, password };
+}
+
+export const getAuthorizationObject = async ({
+  accessPolicy,
+  refreshToken,
+  user,
+  apiClientUser,
+  permissionGroups,
+}) => {
+  const tokenClaims = {
+    userId: user.id,
+    refreshToken,
+  };
+
+  if (apiClientUser) {
+    tokenClaims.apiClientUserId = apiClientUser.id;
+  }
+  // Generate JWT
+  const accessToken = constructAccessToken(tokenClaims);
+
+  // Assemble and return authorization object
+  const userDetails = {
+    id: user.id,
+    name: user.fullName,
+    firstName: user.first_name,
+    lastName: user.last_name,
+    position: user.position,
+    employer: user.employer,
+    email: user.email,
+    profileImage: user.profile_image,
+    verifiedEmail: user.verified_email,
+    accessPolicy,
+  };
+  if (permissionGroups) {
+    userDetails.permissionGroups = permissionGroups;
+  }
+  if (apiClientUser) {
+    userDetails.apiClient = apiClientUser.email;
+  }
+  return {
+    accessToken,
+    refreshToken,
+    user: userDetails,
+  };
+};

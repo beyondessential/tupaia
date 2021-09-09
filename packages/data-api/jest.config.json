@@ -1,8 +1,0 @@
-{
-  "clearMocks": true,
-  "collectCoverageFrom": ["<rootDir>/src/**/*.js"],
-  "setupFilesAfterEnv": ["../../jest.setup.js", "./jest.setup.js"],
-  "testMatch": ["<rootDir>/src/__tests__/**/**.test.js"],
-  "transform": { "^.+\\.jsx?$": "../../jestTransformer.js" },
-  "transformIgnorePatterns": ["/node_modules/"]
-}

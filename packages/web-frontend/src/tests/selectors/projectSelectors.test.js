@@ -9,10 +9,8 @@ import {
   selectProjectByCode,
   selectCurrentProject,
   selectIsProject,
-  selectAdjustedProjectBounds,
   selectActiveTileSet,
 } from '../../selectors';
-import { DEFAULT_BOUNDS } from '../../defaults';
 import { state } from './selectors.test.fixtures';
 import { TILE_SETS } from '../../constants';
 
@@ -64,22 +62,6 @@ describe('projectSelectors', () => {
 
         selectIsProject(testState2, 'PROJECT_2');
         expect(selectIsProject.recomputations()).toEqual(3); // Code has changed, recompute
-      });
-    });
-
-    describe('selectAdjustedProjectBounds', () => {
-      it('recomputes by code or by state change', () => {
-        selectAdjustedProjectBounds(testState1, 'PROJECT_1');
-        expect(selectAdjustedProjectBounds.recomputations()).toEqual(1);
-
-        selectAdjustedProjectBounds({ ...testState1, someOtherState: 'irrelevant' }, 'PROJECT_1');
-        expect(selectAdjustedProjectBounds.recomputations()).toEqual(1); // Nothing has changed, so don't recompute
-
-        selectAdjustedProjectBounds(testState2, 'PROJECT_1');
-        expect(selectAdjustedProjectBounds.recomputations()).toEqual(2); // Projects array has changed, recompute
-
-        selectAdjustedProjectBounds(testState2, 'PROJECT_2');
-        expect(selectAdjustedProjectBounds.recomputations()).toEqual(3); // Code has changed, recompute
       });
     });
 
@@ -152,24 +134,6 @@ describe('projectSelectors', () => {
 
       it('returns `false` for a project which does not exist', () => {
         expect(selectIsProject(state, 'DOES_NOT_EXIST')).toEqual(false);
-      });
-    });
-
-    describe('selectAdjustedProjectBounds', () => {
-      it('can select bounds for a project which exists', () => {
-        expect(selectAdjustedProjectBounds(state, 'covidau')).toEqual(
-          state.project.projects[1].bounds,
-        );
-      });
-
-      it('can select bounds for the `explore` and `disaster` projects', () => {
-        expect(selectAdjustedProjectBounds(state, 'explore')).toEqual(DEFAULT_BOUNDS);
-
-        expect(selectAdjustedProjectBounds(state, 'disaster')).toEqual(DEFAULT_BOUNDS);
-      });
-
-      it('can select bounds for a project which does not exist', () => {
-        expect(selectAdjustedProjectBounds(state, 'DOES_NOT_EXIST')).toEqual(undefined);
       });
     });
 

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import { MaterializedViewLogDatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 
 class SurveyType extends DatabaseType {
   static databaseType = TYPES.SURVEY;
@@ -19,12 +19,12 @@ class SurveyType extends DatabaseType {
   async questions() {
     const questions = await this.database.executeSql(
       `
-      SELECT q.* FROM question q
-      JOIN survey_screen_component ssc ON ssc.question_id  = q.id
-      JOIN survey_screen ss ON ss.id = ssc.screen_id
-      JOIN survey s ON s.id = ss.survey_id
-      WHERE s.code = ?
-    `,
+       SELECT q.* FROM question q
+       JOIN survey_screen_component ssc ON ssc.question_id  = q.id
+       JOIN survey_screen ss ON ss.id = ssc.screen_id
+       JOIN survey s ON s.id = ss.survey_id
+       WHERE s.code = ?
+     `,
       [this.code],
     );
 
@@ -43,9 +43,12 @@ class SurveyType extends DatabaseType {
     const countries = await this.getCountries();
     return countries.map(c => c.code);
   }
+
+  hasResponses = async () =>
+    !!(await this.otherModels.surveyResponse.findOne({ survey_id: this.id }));
 }
 
-export class SurveyModel extends DatabaseModel {
+export class SurveyModel extends MaterializedViewLogDatabaseModel {
   notifiers = [onChangeUpdateDataGroup];
 
   get DatabaseTypeClass() {

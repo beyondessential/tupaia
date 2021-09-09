@@ -10,12 +10,16 @@ import {
   LoginRoute,
   LogoutRoute,
   TestRoute,
+  FetchAlertsRoute,
   FetchConfirmedWeeklyReportRoute,
-  FetchConfirmedCountryWeeklyReportRoute,
-  FetchCountryWeeklyReportRoute,
-  ConfirmCountryWeeklyReportRoute,
-  SaveCountryWeeklyReportRoute,
-  DeleteCountryWeeklyReportRoute,
+  FetchCountries,
+  FetchCountrySites,
+  FetchWeeklyReportRoute,
+  ConfirmWeeklyReportRoute,
+  SaveWeeklyReportRoute,
+  DeleteWeeklyReportRoute,
+  ProcessAlertActionRoute,
+  DeleteAlertRoute,
 } from '../routes';
 import { Route } from '../routes/Route';
 
@@ -44,37 +48,41 @@ const handleError = (
   error.respond(res);
 };
 
+const useSites = (req: Request, res: Response, next: NextFunction) => {
+  req.useSites = true;
+  next();
+};
+
 export function addRoutesToApp(app: Express) {
   /**
    * GET routes
    */
   app.get('/v1/test', handleWith(TestRoute));
-  app.get('/v1/confirmedWeeklyReport', handleWith(FetchConfirmedWeeklyReportRoute));
-  app.get(
-    '/v1/confirmedWeeklyReport/:organisationUnitCode',
-    handleWith(FetchConfirmedCountryWeeklyReportRoute),
-  );
-  app.get('/v1/weeklyReport/:organisationUnitCode', handleWith(FetchCountryWeeklyReportRoute));
+  app.get('/v1/alerts/:category', handleWith(FetchAlertsRoute));
+  app.get('/v1/confirmedWeeklyReport/:countryCode?', handleWith(FetchConfirmedWeeklyReportRoute));
+  app.get('/v1/country', handleWith(FetchCountries));
+  app.get('/v1/country/:countryCode/sites', handleWith(FetchCountrySites));
+  app.get('/v1/weeklyReport/:countryCode', handleWith(FetchWeeklyReportRoute));
+  app.get('/v1/weeklyReport/:countryCode/sites', useSites, handleWith(FetchWeeklyReportRoute));
 
   /**
    * POST routes
    */
   app.post('/v1/login', handleWith(LoginRoute));
   app.post('/v1/logout', handleWith(LogoutRoute));
-  app.post(
-    '/v1/confirmedWeeklyReport/:organisationUnitCode',
-    handleWith(ConfirmCountryWeeklyReportRoute),
-  );
+  app.post('/v1/confirmedWeeklyReport/:countryCode', handleWith(ConfirmWeeklyReportRoute));
 
   /**
    * PUT routes
    */
-  app.put('/v1/weeklyReport/:organisationUnitCode', handleWith(SaveCountryWeeklyReportRoute));
+  app.put('/v1/weeklyReport/:countryCode/:siteCode?', handleWith(SaveWeeklyReportRoute));
+  app.put('/v1/alerts/:alertId/:action', handleWith(ProcessAlertActionRoute));
 
   /**
    * DELETE routes
    */
-  app.delete('/v1/weeklyReport/:organisationUnitCode', handleWith(DeleteCountryWeeklyReportRoute));
+  app.delete('/v1/weeklyReport/:countryCode/:siteCode?', handleWith(DeleteWeeklyReportRoute));
+  app.delete('/v1/alerts/:alertId', handleWith(DeleteAlertRoute));
 
   app.use(handleError);
 }

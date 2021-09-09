@@ -96,14 +96,17 @@ const MenuItem = styled(MuiMenuItem)`
   }
 `;
 
-export const DropdownMenu = ({ options, onChange }) => {
+export const DropdownMenu = ({ options, onChange, readOnly }) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState((options[0] || {}).value);
 
   const handleMenuItemClick = (event, option) => {
     event.preventDefault();
     event.stopPropagation();
-    setValue(option.value);
+    if (!readOnly) {
+      // sometimes we just want to treat DropdownMenu as Actions Menu
+      setValue(option.value);
+    }
     onChange(option);
     setOpen(false);
   };
@@ -153,4 +156,9 @@ DropdownMenu.propTypes = {
     }),
   ).isRequired,
   onChange: PropTypes.func.isRequired,
+  readOnly: PropTypes.bool,
+};
+
+DropdownMenu.defaultProps = {
+  readOnly: false,
 };

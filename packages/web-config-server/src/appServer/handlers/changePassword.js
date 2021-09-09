@@ -5,8 +5,8 @@ import { fetchFromMeditrakServerUsingTokens } from '/appServer/requestHelpers';
  * Required fields in req.body: 'oldPassword', 'password', 'passwordConfirm'
  */
 export const changePassword = async req => {
-  const { session, models, body } = req;
-  const { userName } = session.userJson;
+  const { models, body } = req;
+  const { userName } = req.userJson;
   const endpoint = 'me/changePassword';
 
   return fetchFromMeditrakServerUsingTokens(models, endpoint, body, null, userName);

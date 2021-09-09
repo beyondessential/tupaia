@@ -3,8 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-/* eslint-disable max-classes-per-file */
-
 const getEventOrgUnitName = async (event, cache) => {
   const { orgUnit: code } = event;
   const entity = cache[CACHE_KEYS.entities].find(({ code: currentCode }) => currentCode === code);
@@ -50,32 +48,14 @@ class EventMetadataValueAdder {
     this.event = event;
     this.metadataKeys = metadataKeys;
     this.cache = cache;
-    this.hasArrayDataValues = Array.isArray(event.dataValues);
-  }
-
-  getInitialDataValue() {
-    const { dataValues } = this.event;
-    return this.hasArrayDataValues ? dataValues[0] : Object.values(dataValues)[0];
   }
 
   createMetadataValue = async key => {
     assertIsMetadataKey(key);
-
-    return {
-      ...this.getInitialDataValue(),
-      dataElement: key,
-      value: await METADATA_KEYS[key].getValue(this.event, this.cache),
-    };
+    return METADATA_KEYS[key].getValue(this.event, this.cache);
   };
 
-  async createArrayDataValues() {
-    const { dataValues } = this.event;
-    const metadataValues = await Promise.all(this.metadataKeys.map(this.createMetadataValue));
-
-    return dataValues.concat(metadataValues);
-  }
-
-  async createObjectDataValues() {
+  async createDataValues() {
     const metadataValues = {};
 
     const { dataValues } = this.event;
@@ -88,10 +68,7 @@ class EventMetadataValueAdder {
   }
 
   async run() {
-    const dataValues = this.hasArrayDataValues
-      ? await this.createArrayDataValues()
-      : await this.createObjectDataValues();
-
+    const dataValues = await this.createDataValues();
     return { ...this.event, dataValues };
   }
 }

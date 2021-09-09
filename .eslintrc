@@ -16,6 +16,8 @@
           "**/packages/psss/src/api/FakeApi.js",
           "**/packages/psss/src/utils/test-utils.js",
           "**/packages/ui-components/helpers/testingRenderer.js",
+          "**/packages/utils/src/runScript.js",
+          "**/packages/utils/src/Script.js",
           "**/packages/web-frontend/config/**",
           "**/packages/web-frontend/scripts/**"
         ],
@@ -27,7 +29,16 @@
   "overrides": [
     // TypeScript packages
     {
-      "files": ["packages/indicators/**", "packages/psss-server/**", "packages/report-server/**"],
+      "files": [
+        "packages/admin-panel-server/**",
+        "packages/api-client/**",
+        "packages/entity-server/**",
+        "packages/indicators/**",
+        "packages/lesmis-server/**",
+        "packages/psss-server/**",
+        "packages/report-server/**",
+        "packages/server-boilerplate/**"
+      ],
       "extends": "@beyondessential/ts",
       "parserOptions": {
         "project": "tsconfig.json"
@@ -35,23 +46,7 @@
     },
     // Packages using jest
     {
-      "files": [
-        "packages/access-policy/**",
-        "packages/aggregator/**",
-        "packages/auth/**",
-        "packages/data-api/**",
-        "packages/data-broker/**",
-        "packages/dhis-api/**",
-        "packages/expression-parser/**",
-        "packages/indicators/**",
-        "packages/meditrak-app/**",
-        "packages/psss/**",
-        "packages/psss-server/**",
-        "packages/report-server/**",
-        "packages/ui-components/**",
-        "packages/utils/**",
-        "packages/web-frontend/**"
-      ],
+      "files": ["packages/**/__tests__/**", "packages/web-frontend/src/tests/**"],
       "extends": "@beyondessential/jest"
     },
     // Frontend packages
@@ -66,19 +61,9 @@
         "browser": true
       }
     },
-    // Rule overrides
+    // Overrides per file pattern
     {
-      "files": [
-        "packages/database/src/modelClasses/**",
-        "packages/meditrak-server/src/database/models/**"
-      ],
-      "rules": {
-        "max-classes-per-file": ["error", 2]
-      }
-    },
-    // File pattern overrides
-    {
-      "files": "**/cypress/**",
+      "files": ["**/cypress/**", "packages/utils/src/cypress.js"],
       "extends": "plugin:cypress/recommended",
       "env": {
         "browser": true,
@@ -86,7 +71,13 @@
       },
       "rules": {
         "cypress/no-force": "error",
-        "jest/expect-expect": "off"
+        "no-unused-expressions": "off"
+      }
+    },
+    {
+      "files": "**/__integration/**",
+      "rules": {
+        "jest/no-standalone-expect": "off"
       }
     },
     {
@@ -107,9 +98,15 @@
       }
     },
     {
-      "files": ["**/webpack.config.js", "**/webpack.config*[!babel].js"],
+      "files": "jest.config.js",
       "rules": {
-        "prefer-object-spread": "off"
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    },
+    {
+      "files": "jest.setup.js",
+      "env": {
+        "jest": true
       }
     },
     // Root folder overrides
@@ -157,8 +154,33 @@
     {
       "files": ["packages/web-frontend/**"],
       "rules": {
+        "camelcase": "warn",
         "import/no-named-as-default": "off",
-        "react/destructuring-assignment": "off"
+        "no-debugger": "warn",
+        "import/no-cycle": "warn",
+        "jsx-a11y/click-events-have-key-events": "warn",
+        "jsx-a11y/no-noninteractive-element-interactions": "warn",
+        "jsx-a11y/no-static-element-interactions": "warn",
+        "no-dupe-keys": "warn",
+        "no-param-reassign": "warn",
+        "no-restricted-properties": "warn",
+        "no-shadow": "warn",
+        "no-unsafe-finally": "warn",
+        "no-useless-catch": "warn",
+        "no-unused-vars": "warn",
+        "react/button-has-type": "warn",
+        "react/default-props-match-prop-types": "warn",
+        "react/destructuring-assignment": "off",
+        "react/no-unused-prop-types": "warn",
+        "react/no-array-index-key": "warn",
+        "react/forbid-prop-types": "warn",
+        "react/prop-types": "warn",
+        "react/prefer-stateless-function": "warn",
+        "react/require-default-props": "warn",
+        "react/state-in-constructor": "warn",
+        "react/static-property-placement": "warn",
+        "prefer-destructuring": "warn",
+        "prettier/prettier": "warn"
       }
     }
   ]

@@ -6,11 +6,6 @@
 export { LoginRoute } from './LoginRoute';
 export { LogoutRoute } from './LogoutRoute';
 export { TestRoute } from './TestRoute';
-export {
-  FetchConfirmedWeeklyReportRoute,
-  FetchConfirmedCountryWeeklyReportRoute,
-  FetchCountryWeeklyReportRoute,
-  ConfirmCountryWeeklyReportRoute,
-  SaveCountryWeeklyReportRoute,
-  DeleteCountryWeeklyReportRoute,
-} from './reports';
+export * from './alerts';
+export * from './country';
+export * from './reports';

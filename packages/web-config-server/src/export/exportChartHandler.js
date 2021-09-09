@@ -16,38 +16,55 @@ export const exportChartHandler = async (req, res) => {
   const chartConfig = req.query;
 
   const {
-    viewId,
+    itemCode,
     organisationUnitCode,
-    dashboardGroupId,
+    dashboardCode,
     projectCode,
     startDate,
     endDate,
     timeZone,
     dataElementHeader,
   } = chartConfig;
-  
+
+  const dashboardItem = await req.models.dashboardItem.findOne({
+    code: itemCode,
+  });
+
+  if (!dashboardItem) {
+    throw new Error(`Cannot find dashboard item with code '${itemCode}'`);
+  }
+
+  const { report_code: reportCode, legacy, config } = dashboardItem;
+
   const queryParameters = {
-    viewId,
+    itemCode,
     organisationUnitCode,
-    dashboardGroupId,
+    dashboardCode,
     projectCode,
     isExpanded: true,
     startDate,
     endDate,
+    legacy,
   };
 
   const response = await requestFromTupaiaConfigServer(
-    'view',
+    `report/${reportCode}`,
     queryParameters,
     sessionCookieName,
     sessionCookie,
   );
 
+  const matrixData = {
+    ...response,
+    name: config.name,
+    organisationUnitCode,
+  };
+
   // Use a custom formatter to turn it into json in the format expected by the xlsx library, i.e.
   // an array of objects, with each object in the array representing a row in the spreadsheet, and
   // each key value pair in that object representing a column (with the key as the column header)
-  const extraConfig = dataElementHeader !== 'undefined' ? { dataElementHeader } : null;
-  const formattedData = formatMatrixDataForExcel(response, timeZone, extraConfig);
+  const extraConfig = dataElementHeader ? { dataElementHeader } : null;
+  const formattedData = formatMatrixDataForExcel(matrixData, timeZone, extraConfig);
 
   // Export out to an excel file
   const sheet = xlsx.utils.aoa_to_sheet(formattedData);
@@ -61,5 +78,7 @@ export const exportChartHandler = async (req, res) => {
   const filePath = `${EXPORT_DIRECTORY}/${EXPORT_FILE_TITLE}_${Date.now()}.xlsx`;
 
   xlsx.writeFile(workbook, filePath);
-  res.download(filePath);
+  res.download(filePath, () => {
+    fs.unlinkSync(filePath); // delete export file after downloaded
+  });
 };

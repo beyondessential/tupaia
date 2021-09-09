@@ -1,0 +1,40 @@
+{
+  "name": "@tupaia/server-boilerplate",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Generic boilerplate for back end orchestration servers",
+  "homepage": "https://github.com/beyondessential/tupaia",
+  "bugs": {
+    "url": "https://github.com/beyondessential/tupaia/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "babel src --out-dir dist --source-maps --ignore \"src/__tests__/**\" --extensions .ts --config-file \"../../.babelrc-ts.js\"",
+    "lint": "tsc; eslint . --ext .ts",
+    "lint:all": "yarn run lint \"src/**/*.{ts,jsx}\"",
+    "lint:fix": "yarn lint --fix",
+    "prestart": "npm run -s build",
+    "start": "node dist",
+    "start-dev": "LOG_LEVEL=debug ../../scripts/bash/backendStartDev.sh 9998 -ts",
+    "start-verbose": "LOG_LEVEL=debug npm run start-dev"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.0.0",
+    "@tupaia/access-policy": "3.0.0",
+    "@tupaia/auth": "1.0.0",
+    "@tupaia/database": "1.0.0",
+    "@tupaia/utils": "1.0.0",
+    "@tupaia/api-client": "^1.0.0",
+    "api-error-handler": "^1.0.0",
+    "client-sessions": "^0.8.0",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.16.2"
+  }
+}

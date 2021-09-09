@@ -17,11 +17,11 @@ import { isNull } from 'lodash';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import styled from 'styled-components';
-import { selectOrgUnitChildren, selectCurrentProjectCode } from '../../selectors';
 import SearchIcon from 'material-ui/svg-icons/action/search';
 import Button from '@material-ui/core/Button';
 import CircularProgress from 'material-ui/CircularProgress';
 import { List, ListItem } from 'material-ui/List';
+import { selectOrgUnitChildren, selectCurrentProjectCode } from '../../selectors';
 import { ControlBar } from '../../components/ControlBar';
 import {
   changeSearch,

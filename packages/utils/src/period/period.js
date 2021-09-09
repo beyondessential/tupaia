@@ -72,6 +72,8 @@ const PERIOD_TYPE_CONFIG = {
   },
 };
 
+const DATE_STRING_FORMAT = 'YYYY-MM-DD';
+
 const createFieldToNumericPeriodType = fieldName =>
   reduceToDictionary(
     Object.entries(PERIOD_TYPE_CONFIG)
@@ -157,7 +159,21 @@ export const periodToMoment = period => {
   return utcMoment(period, periodTypeToFormat(periodType));
 };
 
+export const periodToDateString = (period, isEndPeriod) => {
+  const mutatingMoment = periodToMoment(period);
+  const periodType = periodToType(period);
+  const momentUnit = periodTypeToMomentUnit(periodType);
+  if (isEndPeriod) {
+    mutatingMoment.endOf(momentUnit);
+  } else {
+    mutatingMoment.startOf(momentUnit);
+  }
+  return mutatingMoment.format(DATE_STRING_FORMAT);
+};
+
 export const momentToPeriod = (moment, periodType) => moment.format(periodTypeToFormat(periodType));
+
+export const momentToDateString = moment => moment.format(DATE_STRING_FORMAT);
 
 /**
  * @param {string} date Should start with a YYYY-MM-DD date (eg '2020-02-15', '2020-02-15 10:18:00')

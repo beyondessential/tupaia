@@ -4,6 +4,5 @@
   "viewportHeight": 900,
   "viewportWidth": 1400,
   "video": false,
-  "defaultCommandTimeout": 6000,
-  "pluginsFile": false
+  "defaultCommandTimeout": 6000
 }

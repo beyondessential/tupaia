@@ -22,6 +22,28 @@ const average = (...argumentList) => {
   return sum / existingValues.length;
 };
 
+const firstExistingValue = (...argumentList) => {
+  for (const value of argumentList) {
+    if (value !== 'undefined') {
+      return value;
+    }
+  }
+
+  return undefined; // Should make sure that at least 1 value exists
+};
+
+const translate = (value, translations) => {
+  return translations[value];
+};
+
+/**
+ * List of built in functions in math.js
+ * This list is here because when extracting variables for an expression by traversing the node tree,
+ * the built in functions are also considered as Symbol Node (which is similar to variables).
+ * So we want to exclude them when getting the variables.
+ */
+const BUILT_IN_FUNCTIONS = ['equalText', 'round'];
+
 export class ExpressionParser {
   constructor() {
     this.math = create(all, {});
@@ -38,10 +60,15 @@ export class ExpressionParser {
   getVariables(expression) {
     this.validate(expression);
     const nodeTree = this.math.parse(expression);
-    const result = nodeTree
-      .filter(node => node.isSymbolNode && !Object.keys(this.customFunctions).includes(node.name))
+    const variables = nodeTree
+      .filter(
+        node =>
+          node.isSymbolNode &&
+          !Object.keys(this.customFunctions).includes(node.name) &&
+          !BUILT_IN_FUNCTIONS.includes(node.name),
+      )
       .map(({ name }) => name);
-    return result;
+    return [...new Set(variables)];
   }
 
   /**
@@ -73,6 +100,12 @@ export class ExpressionParser {
     return this.parser.evaluate(expression);
   }
 
+  /**
+   * Evaluate an expression and cast boolean results to 1 or 0. Also validate the expression beforehand.
+   *
+   * Note this could also return a string, array, or object (potentially others too)
+   * @param {*} expression
+   */
   evaluateToNumber(expression) {
     const result = this.evaluate(expression);
     if (typeof result === 'boolean') {
@@ -115,6 +148,8 @@ export class ExpressionParser {
   getCustomFunctions() {
     return {
       avg: average,
+      firstExistingValue,
+      translate,
     };
   }
 }

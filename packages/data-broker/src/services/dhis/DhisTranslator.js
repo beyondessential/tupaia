@@ -6,14 +6,14 @@
 import keyBy from 'lodash.keyby';
 
 import { translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
-import { reduceToDictionary } from '@tupaia/utils';
-import { InboundAggregateDataTranslator } from './InboundAggregateDataTranslator';
+import { mapKeys, reduceToDictionary } from '@tupaia/utils';
+import { InboundAnalyticsTranslator } from './InboundAnalyticsTranslator';
 import { parseValueForDhis } from './parseValueForDhis';
 
 export class DhisTranslator {
   constructor(models) {
     this.models = models;
-    this.inboundAggregateDataTranslator = new InboundAggregateDataTranslator();
+    this.inboundAnalyticsTranslator = new InboundAnalyticsTranslator();
     this.dataElementsByCode = {};
   }
 
@@ -39,21 +39,18 @@ export class DhisTranslator {
     }
   };
 
-  /**
-   * If a group of data elements is not defined for a program, we cannot create
-   * a `dataElementToSourceCode` mapping . In this case use the existing data value code
-   */
-  eventDataElementToSourceCode = (dataElement, dataElementToSourceCode) =>
-    dataElementToSourceCode[dataElement] || dataElement;
-
   fetchOutboundDataElementsByCode = async (api, dataSources) => {
     const dataElementCodes = [...new Set(dataSources.map(d => d.dataElementCode))];
     const dataElements = await api.fetchDataElements(dataElementCodes, {
       includeOptions: true,
       additionalFields: ['valueType'],
     });
-    if (dataElements.length !== dataElementCodes.length) {
-      throw new Error('Not all data elements attempting to be pushed could be found on DHIS2');
+    const codesFound = dataElements.map(de => de.code);
+    const codesNotFound = dataElementCodes.filter(c => !codesFound.includes(c));
+    if (codesNotFound.length > 0) {
+      throw new Error(
+        `The following data elements were not found on DHIS2 during push: ${codesNotFound}`,
+      );
     }
     // invert options from { code: name } to { name: code }, and transform the name to lower case,
     // because that's the way they're used during outbound translation
@@ -132,37 +129,9 @@ export class DhisTranslator {
     return { ...restOfEvent, dataValues: translatedDataValues };
   }
 
-  translateInboundAggregateData = (response, dataSources) => {
-    return this.inboundAggregateDataTranslator.translate(response, dataSources);
+  translateInboundAnalytics = (response, dataSources) => {
+    return this.inboundAnalyticsTranslator.translate(response, dataSources);
   };
-
-  translateInboundEventDataValues = (dataValues, dataElementToSourceCode) => {
-    const translateEventDataValues = Array.isArray(dataValues)
-      ? this.translateInboundArrayEventDataValues
-      : this.translateInboundObjectEventDataValues;
-    return translateEventDataValues(dataValues, dataElementToSourceCode);
-  };
-
-  translateInboundArrayEventDataValues = (dataValues, dataElementToSourceCode) =>
-    dataValues.map(dataValue => this.translateInboundDataValue(dataValue, dataElementToSourceCode));
-
-  translateInboundObjectEventDataValues = (dataValues, dataElementToSourceCode) =>
-    Object.entries(dataValues).reduce((dataValueMap, [dataElement, dataValue]) => {
-      const dataSourceCode = this.eventDataElementToSourceCode(
-        dataElement,
-        dataElementToSourceCode,
-      );
-      const translatedDataValue = this.translateInboundDataValue(
-        dataValue,
-        dataElementToSourceCode,
-      );
-      return { ...dataValueMap, [dataSourceCode]: translatedDataValue };
-    }, {});
-
-  translateInboundDataValue = ({ dataElement, ...restOfDataValue }, dataElementToSourceCode) => ({
-    ...restOfDataValue,
-    dataElement: this.eventDataElementToSourceCode(dataElement, dataElementToSourceCode),
-  });
 
   async translateInboundEvents(events, dataGroupCode) {
     const dataElementsInGroup = await this.models.dataSource.getDataElementsInGroup(dataGroupCode);
@@ -174,7 +143,7 @@ export class DhisTranslator {
 
     return events.map(({ dataValues, ...restOfEvent }) => ({
       ...restOfEvent,
-      dataValues: this.translateInboundEventDataValues(dataValues, dataElementToSourceCode),
+      dataValues: mapKeys(dataValues, dataElementToSourceCode, { defaultToExistingKeys: true }),
     }));
   }
 
@@ -196,6 +165,19 @@ export class DhisTranslator {
         translatedDataElement.code = dataElementToSourceCode[code];
       }
       return translatedDataElement;
+    });
+  };
+
+  translateInboundIndicators = (indicators, dataSources) => {
+    const indicatorIdToSourceCode = reduceToDictionary(dataSources, d => d.config?.dhisId, 'code');
+
+    return indicators.map(({ code, ...restOfIndicators }) => {
+      const translatedIndicators = { ...restOfIndicators };
+      const { id } = translatedIndicators;
+      if (!translatedIndicators.code && id) {
+        translatedIndicators.code = indicatorIdToSourceCode[id];
+      }
+      return translatedIndicators;
     });
   };
 }

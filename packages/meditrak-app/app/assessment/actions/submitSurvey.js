@@ -98,14 +98,15 @@ const processQuestions = async (dispatch, getState, database, userId, questions)
   const answers = getAnswers(getState());
   for (const question of questions) {
     const answer = answers[question.id];
-    if (!answer) {
+    if (answer === undefined) {
       continue;
     }
 
     // Handle special question types
     switch (question.type) {
       case 'SubmissionDate':
-        responseFields.submissionTime = moment(answer).toISOString();
+      case 'DateOfData':
+        responseFields.dataTime = moment(answer).toISOString();
         break;
       case 'PrimaryEntity': {
         const { type } = question.config.entity;
@@ -211,7 +212,7 @@ export const submitSurvey = (surveyId, userId, startTime, questions, shouldRepea
       userId,
       metadata: JSON.stringify({ location }),
       endTime,
-      submissionTime: endTime, // Use endTime as default. May be changed by question processing above
+      dataTime: endTime, // Use endTime as default. May be changed by question processing above
       ...responseFields,
     };
 

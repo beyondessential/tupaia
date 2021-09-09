@@ -20,17 +20,42 @@ export const Editor = ({ fields, recordData, onEditField }) => {
     onEditField(inputKey, inputValue);
   };
 
+  const selectValue = (editConfig, accessor, source) => {
+    if (editConfig.accessor) {
+      return editConfig.accessor(recordData);
+    }
+    if (accessor) {
+      return accessor(recordData);
+    }
+    return recordData[source];
+  };
+
   return (
     <div>
       {fields
-        .filter(({ show = true }) => show)
+        .filter(({ show = true, editConfig = {} }) => {
+          const { visibilityCriteria } = editConfig;
+
+          if (!show) {
+            return false;
+          }
+
+          // show or hide a field based on another field's value
+          if (visibilityCriteria) {
+            return Object.entries(visibilityCriteria).every(
+              ([key, value]) => recordData[key] === value,
+            );
+          }
+
+          return true;
+        })
         .map(({ editable = true, editConfig = {}, source, Header, accessor }) => (
           <InputField
             key={source}
             inputKey={source}
             label={Header}
             onChange={(inputKey, inputValue) => onInputChange(inputKey, inputValue, editConfig)}
-            value={accessor ? accessor(recordData) : recordData[source]}
+            value={selectValue(editConfig, accessor, source)}
             disabled={!editable}
             recordData={recordData}
             {...editConfig}

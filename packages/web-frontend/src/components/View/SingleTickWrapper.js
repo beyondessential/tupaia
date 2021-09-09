@@ -24,6 +24,7 @@ import PropTypes from 'prop-types';
 import CheckIcon from 'material-ui/svg-icons/navigation/check';
 import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import { VIEW_STYLES } from '../../styles';
+import { ViewTitle } from './Typography';
 
 export class SingleTickWrapper extends PureComponent {
   render() {
@@ -31,7 +32,7 @@ export class SingleTickWrapper extends PureComponent {
     const tick = value === 0 ? <CheckIcon /> : <CloseIcon />;
     return (
       <div style={VIEW_STYLES.viewContainer}>
-        <div style={VIEW_STYLES.title}>{name}</div>
+        <ViewTitle>{name}</ViewTitle>
         {tick}
       </div>
     );

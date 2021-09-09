@@ -2,12 +2,30 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+import { fetchWithTimeout, stringifyQuery } from '../request';
 
-import { stringifyQuery } from '../request';
+jest.mock('node-fetch', () =>
+  jest.fn().mockImplementation(
+    () =>
+      new Promise(resolve => {
+        setTimeout(() => resolve('success'), 20); // mock fetch takes 20 ms to resolve
+      }),
+  ),
+);
 
 describe('request', () => {
   const BASE_URL = 'https://test-api.org';
   const ENDPOINT = 'reports';
+
+  describe('fetchWithTimeout()', () => {
+    it('resolves with request response if request is fast enough', async () => {
+      return expect(fetchWithTimeout(BASE_URL, {}, 40)).resolves.toEqual('success');
+    });
+
+    it('throws an error if request is too slow', () => {
+      return expect(fetchWithTimeout(BASE_URL, {}, 10)).rejects.toThrow(/request timed out/);
+    });
+  });
 
   describe('stringifyQuery()', () => {
     const testData = [

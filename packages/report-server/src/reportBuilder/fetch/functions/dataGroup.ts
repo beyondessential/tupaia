@@ -4,11 +4,24 @@
  */
 
 import { Aggregator } from '../../../aggregator';
-import { FetchReportQuery } from '../../../types';
+import { FetchReportQuery, AggregationObject } from '../../../types';
 import { FetchResponse } from '../types';
+import {
+  validateDataGroups,
+  validateDataElementsForEvents as validateDataElements,
+  validateAggregations,
+} from './helpers';
+
+type DataGroupParams = {
+  dataGroups: unknown;
+  dataElements: undefined;
+  aggregations?: unknown;
+};
 
 type DataGroupFetchParams = {
-  dataGroupCode: string;
+  dataGroupCodes: string[];
+  dataElementCodes?: string[];
+  aggregations?: (string | AggregationObject)[];
 };
 
 const fetchEvents = async (
@@ -16,43 +29,50 @@ const fetchEvents = async (
   query: FetchReportQuery,
   params: DataGroupFetchParams,
 ): Promise<FetchResponse> => {
-  const { dataGroupCode } = params;
-  const { organisationUnitCodes, period, startDate, endDate } = query;
-  const response = await aggregator.fetchEvents(dataGroupCode, organisationUnitCodes, {
-    period,
-    startDate,
-    endDate,
-  });
-  const rows = response.map(event => {
-    const { dataValues, ...restOfEvent } = event;
-    return { ...dataValues, ...restOfEvent };
-  });
+  const { dataGroupCodes, dataElementCodes, aggregations } = params;
+  const { organisationUnitCodes, hierarchy, period, startDate, endDate } = query;
+  // TODO: Eventually we want Aggregator to handle fetching multiple dataGroups
+  const results = await Promise.all(
+    dataGroupCodes.map(async dataGroupCode => {
+      const response = await aggregator.fetchEvents(
+        dataGroupCode,
+        aggregations,
+        organisationUnitCodes,
+        hierarchy,
+        {
+          period,
+          startDate,
+          endDate,
+        },
+        dataElementCodes,
+      );
+      return response.map(event => {
+        const { dataValues, ...restOfEvent } = event;
+        return { ...dataValues, ...restOfEvent };
+      });
+    }),
+  );
+
   return {
-    results: rows,
+    results: results.flat(),
   };
 };
 
-const buildParams = (params: unknown): DataGroupFetchParams => {
-  if (!Array.isArray(params)) {
-    throw new Error(`Expected an array with a single data group code but got ${params}`);
-  }
+const buildParams = (params: DataGroupParams): DataGroupFetchParams => {
+  const { dataGroups, dataElements, aggregations } = params;
 
-  if (params.length > 1) {
-    throw new Error(`Expected just a single data group code`);
-  }
-
-  const dataGroupCode = params[0];
-
-  if (typeof dataGroupCode !== 'string') {
-    throw new Error(`Expected the data group code to be a string, but got ${dataGroupCode}`);
-  }
+  validateDataGroups(dataGroups);
+  validateDataElements(dataElements);
+  validateAggregations(aggregations);
 
   return {
-    dataGroupCode,
+    dataGroupCodes: dataGroups,
+    dataElementCodes: dataElements,
+    aggregations,
   };
 };
 
-export const buildDataGroupFetch = (params: unknown) => {
+export const buildDataGroupFetch = (params: DataGroupParams) => {
   const builtDataGroupsFetchParams = buildParams(params);
   return (aggregator: Aggregator, query: FetchReportQuery) =>
     fetchEvents(aggregator, query, builtDataGroupsFetchParams);

@@ -41,7 +41,7 @@ export class EventBuilder {
     return {
       program: programCode,
       orgUnit: orgUnitCode,
-      eventDate: this.surveyResponse.timezoneAwareSubmissionTime().format(DATE_FORMAT),
+      eventDate: this.surveyResponse.dataTime().format(DATE_FORMAT),
       dataValues: await this.buildDataValues(),
     };
   }
@@ -65,7 +65,7 @@ export class EventBuilder {
   }
 
   async enrollTrackedEntityAndGetTrackerEventFields(entity, programCode) {
-    const trackedEntityId = entity.getDhisId();
+    const trackedEntityId = await entity.getDhisTrackedEntityIdPatiently();
     const program = await this.fetchProgram(programCode);
     if (!program) {
       throw new Error(`Program ${programCode} was not found on DHIS2`);

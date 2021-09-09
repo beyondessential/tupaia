@@ -12,6 +12,6 @@ export const rawDataDownload = ({ dataBuilderConfig, query, req }) => {
       name,
       value: code,
     })),
-    downloadUrl: buildExportUrl(req, 'surveyResponses', { ...query, easyReadingMode: true }),
+    downloadUrl: buildExportUrl('surveyResponses', { ...query, easyReadingMode: true }),
   };
 };

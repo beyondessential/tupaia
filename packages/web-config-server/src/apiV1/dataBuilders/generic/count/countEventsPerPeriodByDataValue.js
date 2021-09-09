@@ -3,9 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-/* eslint-disable max-classes-per-file */
-
-import moment from 'moment';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
 import { groupEventsByPeriod } from '@tupaia/dhis-api';
@@ -16,23 +13,40 @@ import { groupEventsByPeriod } from '@tupaia/dhis-api';
 class DataByValueBuilder extends DataBuilder {
   async buildData(results, optionCodeToName) {
     const { dataElement, valuesOfInterest, isPercentage } = this.config;
+
     const returnData = {};
     let totalEvents = 0;
+
+    const valuesOfInterestLabelByValue = {};
+    if (valuesOfInterest) {
+      for (const spec of valuesOfInterest) {
+        valuesOfInterestLabelByValue[spec.value] = spec.label;
+      }
+    }
+
     results.forEach(({ dataValues }) => {
-      if (!dataValues[dataElement]) {
+      const value = dataValues[dataElement];
+
+      if (!value) {
         return;
       }
-      if (valuesOfInterest && !valuesOfInterest.includes(value)) {
+
+      if (valuesOfInterest && !valuesOfInterestLabelByValue[value]) {
         // not interested in this value, ignore it
         return;
       }
-      const { value } = dataValues[dataElement];
-      const valueForMatching = optionCodeToName ? optionCodeToName[value] : value;
 
-      if (!returnData[valueForMatching]) {
-        returnData[valueForMatching] = 0;
+      let label = value;
+      if (valuesOfInterest && valuesOfInterestLabelByValue[value]) {
+        label = valuesOfInterestLabelByValue[value];
+      } else if (optionCodeToName && optionCodeToName[value]) {
+        label = optionCodeToName[value];
       }
-      returnData[valueForMatching] += 1;
+
+      if (!returnData[label]) {
+        returnData[label] = 0;
+      }
+      returnData[label] += 1;
       totalEvents++;
     });
 
@@ -48,7 +62,8 @@ class DataByValueBuilder extends DataBuilder {
 
 export class CountEventsPerPeriodByDataValueBuilder extends DataPerPeriodBuilder {
   async fetchResults() {
-    return this.fetchEvents({ dataValueFormat: 'object' });
+    const dataElementCodes = [this.config.dataElement];
+    return this.fetchEvents({ dataElementCodes });
   }
 
   groupResultsByPeriod = groupEventsByPeriod;

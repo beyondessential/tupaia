@@ -42,6 +42,10 @@ export class AccessPolicyBuilder {
   }
 
   async getPolicyForUser(userId, useLegacyFormat = false) {
+    if (!userId) {
+      throw new Error(`Error building access policy for userId: ${userId}`);
+    }
+
     const cacheKey = getCacheKey(userId, useLegacyFormat);
     if (!this.cachedPolicyPromises[cacheKey]) {
       this.cachedPolicyPromises[cacheKey] = useLegacyFormat

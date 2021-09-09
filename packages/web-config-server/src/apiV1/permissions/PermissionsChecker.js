@@ -5,11 +5,13 @@
 import { PermissionsError } from '@tupaia/utils';
 
 export class PermissionsChecker {
-  constructor(models, query, userHasAccess, entity) {
+  constructor(models, params, query, userHasAccess, entity, project) {
     this.models = models;
+    this.params = params;
     this.query = query;
     this.userHasAccess = userHasAccess;
     this.entity = entity;
+    this.project = project;
   }
 
   async checkPermissions() {

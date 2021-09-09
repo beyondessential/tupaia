@@ -64,7 +64,7 @@ export const testDeleteAnswer = (dhisApi, models, dataBroker) => {
     const nextMostRecentSurveyResponse = {
       ...SURVEY_RESPONSE,
       id: generateTestId(),
-      submission_time: '2019-05-20T12:05+00',
+      data_time: '2019-05-20T12:05',
     };
     const nextMostRecentAnswer = {
       ...ANSWER,

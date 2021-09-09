@@ -26,8 +26,8 @@ const END_OF_PERIOD = 'end_of';
 
 const CONFIG = {
   [DAY]: {
-    chartFormat: 'Do MMMM YYYY',
-    rangeFormat: 'Do MMMM YYYY',
+    chartFormat: 'Do MMM YYYY',
+    rangeFormat: 'Do MMM YYYY',
     pickerFormat: 'D',
     urlFormat: 'Do_MMM_YYYY',
     momentShorthand: 'd',
@@ -124,20 +124,29 @@ export const GRANULARITIES_WITH_ONE_DATE_VALID_OFFSET_UNIT = {
   [SINGLE_YEAR]: YEAR,
 };
 
-export function roundStartEndDates(granularity, startDate = moment(), endDate = moment()) {
+export const roundStartDate = (granularity, startDate) => {
   const { momentUnit } = GRANULARITY_CONFIG[granularity];
-  return {
-    startDate: startDate.clone().startOf(momentUnit),
-    endDate: endDate.clone().endOf(momentUnit),
-  };
-}
+  const momentStartDate = moment.isMoment(startDate) ? startDate : moment(startDate);
+  return momentStartDate.clone().startOf(momentUnit);
+};
+
+export const roundEndDate = (granularity, endDate) => {
+  const { momentUnit } = GRANULARITY_CONFIG[granularity];
+  const momentEndDate = moment.isMoment(endDate) ? endDate : moment(endDate);
+  return momentEndDate.clone().endOf(momentUnit);
+};
+
+export const roundStartEndDates = (granularity, startDate, endDate) => ({
+  startDate: roundStartDate(granularity, startDate),
+  endDate: roundEndDate(granularity, endDate),
+});
 
 export const momentToDateString = (date, granularity, format) =>
   granularity === WEEK || granularity === SINGLE_WEEK
     ? date.clone().startOf('W').format(format)
     : date.clone().format(format);
 
-const getOffsetDate = (offset, unit, modifier) => {
+const getOffsetDate = (offset, unit, modifier, modifierUnit = null) => {
   // We need a valid unit to proceed.
   if (!CONFIG[unit]) {
     return moment();
@@ -156,10 +165,14 @@ const getOffsetDate = (offset, unit, modifier) => {
   if (modifier) {
     switch (modifier) {
       case START_OF_PERIOD:
-        defaultDate = defaultDate.startOf(momentUnit);
+        defaultDate = modifierUnit
+          ? defaultDate.startOf(modifierUnit)
+          : defaultDate.startOf(momentUnit);
         break;
       case END_OF_PERIOD:
-        defaultDate = defaultDate.endOf(momentUnit);
+        defaultDate = modifierUnit
+          ? defaultDate.endOf(modifierUnit)
+          : defaultDate.endOf(momentUnit);
         break;
       default:
     }
@@ -213,8 +226,8 @@ const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTim
     }
 
     // Grab all the details and get a single default date used for both start/end period.
-    const { offset, unit, modifier } = singleDateConfig;
-    startDate = getOffsetDate(offset, unit, modifier);
+    const { offset, unit, modifier, modifierUnit } = singleDateConfig;
+    startDate = getOffsetDate(offset, unit, modifier, modifierUnit);
     endDate = startDate;
   }
 
@@ -240,13 +253,13 @@ const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeri
     let endDate = startDate;
 
     if (defaultTimePeriod.start) {
-      const { offset, unit, modifier } = defaultTimePeriod.start;
-      startDate = getOffsetDate(offset, unit, modifier);
+      const { offset, unit, modifier, modifierUnit } = defaultTimePeriod.start;
+      startDate = getOffsetDate(offset, unit, modifier, modifierUnit);
     }
 
     if (defaultTimePeriod.end) {
-      const { offset, unit, modifier } = defaultTimePeriod.end;
-      endDate = getOffsetDate(offset, unit, modifier);
+      const { offset, unit, modifier, modifierUnit } = defaultTimePeriod.end;
+      endDate = getOffsetDate(offset, unit, modifier, modifierUnit);
     }
 
     return roundStartEndDates(periodGranularity, startDate, endDate);
@@ -322,8 +335,8 @@ export function getLimits(periodGranularity, limits) {
       );
     }
 
-    const { offset, unit, modifier } = partConfig;
-    const offsetDate = getOffsetDate(offset, unit, modifier);
+    const { offset, unit, modifier, modifierUnit } = partConfig;
+    const offsetDate = getOffsetDate(offset, unit, modifier, modifierUnit);
     if (partKey === 'start') startDate = offsetDate;
     if (partKey === 'end') endDate = offsetDate;
   }
@@ -344,11 +357,17 @@ export const constrainDate = (date, min, max) => {
   return d;
 };
 
-const DATE_FORMAT = 'YYYY-MM-DD';
+export const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const formatDateForApi = (date, timezone) => {
   if (!date) return undefined;
-  const dateAsMoment = moment(date);
+  const dateAsMoment = moment.isMoment(date) ? date : moment(date);
   if (timezone) dateAsMoment.tz(timezone);
+  return dateAsMoment.format(DATE_FORMAT);
+};
+
+export const toStandardDateString = date => {
+  if (!date) return undefined;
+  const dateAsMoment = moment.isMoment(date) ? date : moment(date);
   return dateAsMoment.format(DATE_FORMAT);
 };

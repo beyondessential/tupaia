@@ -29,9 +29,10 @@ import {
 
 export const createLocation = params => {
   const { userPage } = params;
-  if (userPage) {
-    // Userpage locations are created by the backend,
-    // this is good enough for here
+
+  // Userpage urls are hanlded differently to project pages (eg. reset-password and verify-email)
+  // Assumption - Only load the user page url if there is no project being loaded
+  if (userPage && !params.PROJECT) {
     return { pathname: `/${userPage}`, search: '' };
   }
 

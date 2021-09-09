@@ -11,11 +11,9 @@ export class DatabaseModel {
   constructor(database) {
     this.database = database;
 
-    // this.schema contains information about the columns on the table in the database, e.g.:
-    // { id: { type: 'text', maxLength: null, nullable: false, defaultValue: null } }
-    // it will be populated on the first call to this.fetchSchema(), and should not be accessed
-    // directly
-    this.schema = null;
+    // schema promise will resolve with information about the columns on the table in the database,
+    // e.g.: { id: { type: 'text', maxLength: null, nullable: false, defaultValue: null } }
+    this.schemaPromise = this.startSchemaFetch();
 
     this.cache = {};
     this.cachedFunctionInvalidationCancellers = {};
@@ -39,7 +37,7 @@ export class DatabaseModel {
 
       // invalidate cached schema for this model on any change to db schema
       this.database.addSchemaChangeHandler(() => {
-        this.schema = null;
+        this.schemaPromise = this.startSchemaFetch();
         this.fieldNames = null;
       });
     }
@@ -50,6 +48,8 @@ export class DatabaseModel {
     return [];
   }
 
+  startSchemaFetch = () => this.database.fetchSchemaForTable(this.DatabaseTypeClass.databaseType);
+
   // functionArguments should receive the 'arguments' object
   getCacheKey = (functionName, functionArguments) =>
     `${functionName}:${JSON.stringify(Object.values(functionArguments))}`;
@@ -58,10 +58,7 @@ export class DatabaseModel {
     this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, handler);
 
   async fetchSchema() {
-    if (!this.schema) {
-      this.schema = await this.database.fetchSchemaForTable(this.DatabaseTypeClass.databaseType);
-    }
-    return this.schema;
+    return this.schemaPromise;
   }
 
   async fetchFieldNames() {
@@ -72,8 +69,10 @@ export class DatabaseModel {
     return this.fieldNames;
   }
 
-  // This method must be overridden by every subclass, so that the model knows what DatabaseType to
-  // generate when returning results
+  /**
+   * This method must be overridden by every subclass, so that the model knows what DatabaseType to generate when returning results
+   * @returns {*} DatabaseTypeClass
+   */
   get DatabaseTypeClass() {
     throw new TypeError('get DatabaseTypeClass was called on object that has not implemented it');
   }
@@ -115,9 +114,9 @@ export class DatabaseModel {
     if (this.joins.length > 0) {
       options.multiJoin = this.joins;
 
-      this.joins.forEach(({ joinWith, fields: joinFields }) =>
+      this.joins.forEach(({ joinWith, joinAs = joinWith, fields: joinFields }) =>
         Object.keys(joinFields).forEach(fieldName =>
-          options.columns.push(`${joinWith}.${fieldName} as ${joinFields[fieldName]}`),
+          options.columns.push(`${joinAs}.${fieldName} as ${joinFields[fieldName]}`),
         ),
       );
     }
@@ -139,14 +138,14 @@ export class DatabaseModel {
     return this.generateInstance(result);
   }
 
-  async findManyByColumn(column, values) {
+  async findManyByColumn(column, values, additionalConditions = {}, customQueryOptions = {}) {
     if (!values) {
       throw new Error(
         `Cannot search for ${this.databaseType} by ${column} without providing the values`,
       );
     }
     return runDatabaseFunctionInBatches(values, async batchOfValues =>
-      this.find({ [column]: batchOfValues }),
+      this.find({ [column]: batchOfValues, ...additionalConditions }, customQueryOptions),
     );
   }
 
@@ -161,6 +160,12 @@ export class DatabaseModel {
     return this.generateInstance(result);
   }
 
+  /**
+   * Finds all records matching query conditions
+   * @param {*} dbConditions
+   * @param {*} customQueryOptions
+   * @returns {Promise<any[]>}
+   */
   async find(dbConditions, customQueryOptions = {}) {
     const queryOptions = await this.getQueryOptions(customQueryOptions);
     const dbResults = await this.database.find(this.databaseType, dbConditions, queryOptions);

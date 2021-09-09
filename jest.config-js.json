@@ -1,0 +1,13 @@
+{
+  "clearMocks": true,
+  "collectCoverageFrom": ["<rootDir>/src/**/*.js)"],
+  "coveragePathIgnorePatterns": ["__tests__"],
+  "testMatch": ["<rootDir>/src/__tests__/**/**.test.js"],
+  "setupFilesAfterEnv": ["../../jest.setup.js"],
+  "transformIgnorePatterns": ["/node_modules/"],
+  "transform": {
+    "^.+\\.jsx?$": "../../jestTransformer.js"
+  },
+  "testEnvironment": "node",
+  "testTimeout": 30000
+}

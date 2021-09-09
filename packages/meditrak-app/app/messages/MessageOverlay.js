@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
 import { MessageExplode, MessageBanner } from './types';
-import { removeMessage, MESSAGE_TYPES } from '.';
+import { removeMessage } from './actions';
+import { MESSAGE_TYPES } from './constants';
 
 const renderMessage = (messageKey, messageObject, onRemoveMessage) => {
   const { message, options } = messageObject;

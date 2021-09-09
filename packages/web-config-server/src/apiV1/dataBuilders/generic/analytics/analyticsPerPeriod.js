@@ -12,14 +12,22 @@ import {
 } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
-class AnalyticsPerPeriodBuilder extends DataBuilder {
+export class AnalyticsPerPeriodBuilder extends DataBuilder {
   async build() {
     this.dataElementToSeriesKey = this.getDataElementToSeriesKey();
-    const dataElementCodes = Object.keys(this.dataElementToSeriesKey);
+    const dataElementCodes = this.getRequestDataElementCodes();
     const { results } = await this.fetchAnalytics(dataElementCodes);
     const resultsPerPeriod = this.getResultsPerPeriod(results);
 
     return { data: Object.values(resultsPerPeriod) };
+  }
+
+  getRequestDataElementCodes() {
+    return Object.keys(this.dataElementToSeriesKey);
+  }
+
+  getGroupingMapDataElementCodes(dataElement) {
+    return this.dataElementToSeriesKey[dataElement];
   }
 
   getDataElementToSeriesKey() {
@@ -29,7 +37,7 @@ class AnalyticsPerPeriodBuilder extends DataBuilder {
     return reduceToDictionary(series, 'dataElementCode', 'key');
   }
 
-  getResultsPerPeriod = results => {
+  getResultsPerPeriod = (results = []) => {
     const configPeriodType = this.config.periodType
       ? parsePeriodType(this.config.periodType)
       : null;
@@ -39,7 +47,7 @@ class AnalyticsPerPeriodBuilder extends DataBuilder {
       const convertPeriod = configPeriodType // Convert period to if configPeriodType is set (eg: period = '20200331', configPeriodType = 'MONTH' => convertPeriod = '202003')
         ? convertToPeriod(period, configPeriodType)
         : period;
-      const seriesKey = this.dataElementToSeriesKey[dataElement];
+      const seriesKey = this.getGroupingMapDataElementCodes(dataElement);
       if (!resultsPerPeriod[convertPeriod]) {
         resultsPerPeriod[convertPeriod] = {
           timestamp: periodToTimestamp(convertPeriod),
@@ -52,7 +60,6 @@ class AnalyticsPerPeriodBuilder extends DataBuilder {
       }
       resultsPerPeriod[convertPeriod][seriesKey] = value;
     });
-
     return resultsPerPeriod;
   };
 }

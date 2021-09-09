@@ -1,5 +1,4 @@
-import { respond } from '@tupaia/utils';
-import { translateBoundsForFrontend, translatePointForFrontend } from '/utils/geoJson';
+import { respond, translateBounds, translatePoint } from '@tupaia/utils';
 
 // disaster event types (match disasterEvent.type enum in postgres)
 const DISASTER_EVENT_START = 'start';
@@ -83,8 +82,8 @@ export async function disasters(req, res) {
     .filter(d => d.status !== DISASTER_RESOLVED)
     .map(({ bounds, point, ...d }) => ({
       ...d,
-      bounds: translateBoundsForFrontend(bounds),
-      coordinates: translatePointForFrontend(point),
+      bounds: translateBounds(bounds),
+      coordinates: translatePoint(point),
     }));
 
   respond(res, { disasters: responseData });

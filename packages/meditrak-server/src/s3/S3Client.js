@@ -28,16 +28,12 @@ export class S3Client {
     });
   }
 
-  async uploadFile(fileName, buffer) {
+  async upload(config) {
     return new Promise((resolve, reject) => {
       this.s3.upload(
         {
           Bucket: BUCKET_NAME,
-          Key: fileName,
-          Body: buffer,
-          ACL: 'public-read',
-          ContentType: 'image/png',
-          ContentEncoding: 'base64',
+          ...config,
         },
         (error, data) => {
           if (error) {
@@ -47,6 +43,24 @@ export class S3Client {
           }
         },
       );
+    });
+  }
+
+  async uploadPublicImage(fileName, buffer) {
+    return this.upload({
+      Key: fileName,
+      Body: buffer,
+      ACL: 'public-read',
+      ContentType: 'image/png',
+      ContentEncoding: 'base64',
+    });
+  }
+
+  async uploadPrivateFile(fileName, stream) {
+    return this.upload({
+      Key: fileName,
+      Body: stream,
+      ACL: 'bucket-owner-full-control',
     });
   }
 }

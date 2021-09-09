@@ -11,10 +11,10 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "babel src --out-dir dist --source-maps --ignore \"src/__tests__/**\" --config-file \"../../babel.config.json\"",
+    "build": "babel src --out-dir dist --source-maps --ignore \"src/__tests__/**\" --config-file \"../../babel.config.json\" && tsc",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
-    "test": "jest",
+    "test": "jest --runInBand",
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {

@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import faker from 'faker';
-import { getCountryName } from '../utils';
 
 export const FakeAPI = {
   sleep(delay = 0) {
@@ -209,19 +208,6 @@ export const FakeAPI = {
     };
   },
 
-  country(countryCode) {
-    return {
-      id: faker.random.uuid(),
-      name: getCountryName(countryCode),
-      countryCode: countryCode,
-      sitesReported: faker.random.number({
-        min: 0,
-        max: 30,
-      }),
-      syndromes: this.syndromes(),
-    };
-  },
-
   alert() {
     const weekNumber = faker.random.number({
       min: 10,
@@ -232,7 +218,7 @@ export const FakeAPI = {
       name: faker.address.country(),
       countryCode: faker.address.countryCode(),
       syndrome: faker.random.arrayElement(['AFR', 'DIA', 'ILI', 'PF', 'DLI']),
-      syndromeDisplayName: faker.random.arrayElement([
+      syndromeName: faker.random.arrayElement([
         'Acute Fever and Rash (AFR)',
         'Diarrhoea (DIA)',
         'Influenza-like Illness (ILI)',

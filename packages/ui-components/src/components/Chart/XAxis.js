@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Text, XAxis as XAxisComponent } from 'recharts';
 import { CHART_TYPES, DARK_BLUE } from './constants';
-import { formatTimestampForChart, getIsTimeSeries } from './utils';
+import { formatTimestampForChart, getIsTimeSeries, getContrastTextColor } from './utils';
 import { VerticalTick } from './VerticalTick';
 
 const AXIS_TIME_PROPS = {
@@ -34,6 +34,7 @@ const X_AXIS_PADDING = {
 
 export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
   const [xAxisHeight, setXAxisHeight] = useState(0);
+  const fillColor = getContrastTextColor();
 
   const { BAR, COMPOSED } = CHART_TYPES;
   const { chartType, chartConfig = {}, data } = viewContent;
@@ -125,12 +126,13 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
     <XAxisComponent
       dataKey="name"
       label={data.xName}
-      stroke={isExporting ? DARK_BLUE : 'white'}
+      stroke={isExporting ? DARK_BLUE : fillColor}
       height={isExporting ? xAxisHeight + 20 : undefined}
       interval={getXAxisTickInterval()}
       tick={getXAxisTickMethod()}
       tickFormatter={formatXAxisTick}
       padding={getXAxisPadding()}
+      tickSize={6}
       {...(getIsTimeSeries(data) ? AXIS_TIME_PROPS : {})}
     />
   );

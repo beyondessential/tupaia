@@ -57,13 +57,14 @@ export default class extends RouteHandler {
   }
 
   async getSearchResults(searchString, limit, startIndex) {
-    const project = await this.fetchProject();
+    const project = await this.fetchAndCacheProject();
     const projectEntity = await project.entity();
+    const typesExcludedFromWebFrontend = await this.fetchTypesExcludedFromWebFrontend(project);
 
     const allEntities = await projectEntity.getDescendants(project.entity_hierarchy_id, {
       type: {
         comparator: 'not in',
-        comparisonValue: this.models.entity.typesExcludedFromWebFrontend,
+        comparisonValue: typesExcludedFromWebFrontend,
       },
     });
     const { matchingEntities, hasMoreResults } = await this.getMatchingEntities(

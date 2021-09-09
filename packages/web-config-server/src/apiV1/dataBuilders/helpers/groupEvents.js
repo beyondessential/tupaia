@@ -47,8 +47,8 @@ const mapOrgUnitCodeToUniqueOrgUnitName = (allOrgUnits, eventsByOrgUnitCode) => 
   return eventsByUniqueOrgUnitName;
 };
 
-const groupByAllOrgUnitNames = async (models, events, options) => {
-  const orgUnits = await getOrgUnits(models, options);
+const groupByAllOrgUnitNames = async (models, events, options, hierarchyId) => {
+  const orgUnits = await getOrgUnits(models, { ...options, hierarchyId });
 
   const eventsByOrgUnitCode = orgUnits.reduce(
     (results, { code }) => ({ ...results, [code]: [] }),
@@ -65,9 +65,9 @@ const groupByAllOrgUnitNames = async (models, events, options) => {
   return mapOrgUnitCodeToUniqueOrgUnitName(orgUnits, eventsByOrgUnitCode);
 };
 
-const groupByAllOrgUnitParentNames = async (models, events, options) => {
-  const { aggregationLevel, hierarchyId } = options;
-  const orgUnits = await getOrgUnits(models, options);
+const groupByAllOrgUnitParentNames = async (models, events, options, hierarchyId) => {
+  const { aggregationLevel } = options;
+  const orgUnits = await getOrgUnits(models, { ...options, hierarchyId });
 
   const eventsByOrgUnitCode = orgUnits.reduce(
     (results, { code }) => ({ ...results, [code]: [] }),
@@ -128,13 +128,13 @@ const GROUP_BY_VALUE_TO_METHOD = {
  * @returns {Promise<object>} object of groupName => eventsForGroup
  */
 export const groupEvents = async (models, events, groupBySpecs = {}) => {
-  const { type, options } = groupBySpecs;
+  const { type, options, hierarchyId } = groupBySpecs;
   const groupByMethod = GROUP_BY_VALUE_TO_METHOD[type];
   if (!groupByMethod) {
     throw new Error(`'${type}' is not a supported groupBy type`);
   }
 
-  return groupByMethod(models, events, options);
+  return groupByMethod(models, events, options, hierarchyId);
 };
 
 /**

@@ -94,7 +94,6 @@ import {
   UPDATE_ENLARGED_DIALOG_ERROR,
   SET_PASSWORD_RESET_TOKEN,
   TOGGLE_DASHBOARD_SELECT_EXPAND,
-  SET_MOBILE_DASHBOARD_EXPAND,
   REQUEST_PROJECT_ACCESS,
   SET_PROJECT_ADDITIONAL_ACCESS,
   SET_PROJECT,
@@ -469,8 +468,12 @@ function dashboard(
   action,
 ) {
   switch (action.type) {
-    case FETCH_INFO_VIEW_DATA:
-      return state;
+    case FETCH_INFO_VIEW_DATA: {
+      const { infoViewKey } = action;
+      const viewResponses = { ...state.viewResponses };
+      viewResponses[infoViewKey] = null; // Clear view prior to fetch
+      return { ...state, viewResponses };
+    }
     case FETCH_INFO_VIEW_DATA_SUCCESS: {
       const { infoViewKey, response } = action;
       const viewResponses = { ...state.viewResponses };
@@ -497,8 +500,6 @@ function dashboard(
       };
     case TOGGLE_DASHBOARD_SELECT_EXPAND:
       return { ...state, isGroupSelectExpanded: !state.isGroupSelectExpanded };
-    case SET_MOBILE_DASHBOARD_EXPAND:
-      return { ...state, isMobileDashboardExpanded: action.shouldExpand };
     case SET_PROJECT:
       return { ...state, viewResponses: {} };
     default:
@@ -633,7 +634,7 @@ function global(
   state = {
     isSidePanelExpanded: false,
     overlay: null,
-    dashboardConfig: {},
+    dashboards: [],
     viewConfigs: {},
     isLoadingOrganisationUnit: false,
   },
@@ -666,9 +667,9 @@ function global(
     case CHANGE_ORG_UNIT_ERROR:
       return { ...state, isLoadingOrganisationUnit: false };
     case FETCH_DASHBOARD_CONFIG_SUCCESS: {
-      const { dashboardConfig } = action;
-      const viewConfigs = extractViewsFromAllDashboards(dashboardConfig);
-      return { ...state, dashboardConfig, viewConfigs };
+      const { dashboards } = action;
+      const viewConfigs = extractViewsFromAllDashboards(dashboards);
+      return { ...state, dashboards, viewConfigs };
     }
     case FETCH_DASHBOARD_CONFIG_ERROR:
       return state;
@@ -677,7 +678,7 @@ function global(
     case SET_OVERLAY_COMPONENT:
       return { ...state, overlay: action.component };
     case SET_PROJECT:
-      return { ...state, dashboardConfig: {}, viewConfigs: {} };
+      return { ...state, dashboards: [], viewConfigs: {} };
     default:
       return state;
   }
@@ -699,6 +700,7 @@ function enlargedDialog(
         isLoading: false,
         errorMessage: '',
         contentByLevel: null,
+        drillDownDatesByLevel: null,
       };
     case CLOSE_ENLARGED_DIALOG:
       return {
@@ -706,6 +708,7 @@ function enlargedDialog(
         isLoading: false,
         errorMessage: '',
         contentByLevel: null,
+        drillDownDatesByLevel: null,
       };
     case SET_ENLARGED_DIALOG_DATE_RANGE: {
       const { drillDownLevel, startDate, endDate } = action;
@@ -735,6 +738,7 @@ function enlargedDialog(
         contentByLevel: {
           ...(state.contentByLevel || {}),
           [action.options.drillDownLevel]: {
+            viewConfig: action.viewConfig,
             viewContent: action.viewContent,
             options: action.options,
           },
@@ -763,21 +767,27 @@ function routing(state = getInitialLocation(), action) {
 /**
  * Reach into the dashboard config, and pull out all views from every dashboard group/permission
  * level, then return them keyed by unique view id
- * @param {object}  dashboardConfig The dashboard config object returned by `/dashboard` endpoint
+ * @param {object}  dashboards The dashboard list returned by `/dashboards` endpoint
  * @return {object} viewConfigs     Config for every view, keyed by unique view id
  */
-function extractViewsFromAllDashboards(dashboardConfig) {
+function extractViewsFromAllDashboards(dashboards) {
   const viewConfigs = {};
-  Object.values(dashboardConfig).forEach(dashboardGroups =>
-    Object.values(dashboardGroups).forEach(({ dashboardGroupId, organisationUnitCode, views }) => {
-      views.forEach(view => {
-        const uniqueViewId = getUniqueViewId({
-          dashboardGroupId,
-          organisationUnitCode,
-          viewId: view.drillDownLevel ? `${view.viewId}_${view.drillDownLevel}` : view.viewId,
-        });
-        viewConfigs[uniqueViewId] = view;
-      });
+  dashboards.forEach(dashboardGroup =>
+    dashboardGroup.items.forEach(item => {
+      const uniqueViewId = getUniqueViewId(
+        dashboardGroup.entityCode,
+        dashboardGroup.dashboardCode,
+        item.code,
+      );
+      const viewConfig = { ...item };
+      if (viewConfig?.drillDown?.itemCode) {
+        viewConfig.drillDownViewId = getUniqueViewId(
+          dashboardGroup.entityCode,
+          dashboardGroup.dashboardCode,
+          viewConfig?.drillDown?.itemCode,
+        );
+      }
+      viewConfigs[uniqueViewId] = viewConfig;
     }),
   );
   return viewConfigs;

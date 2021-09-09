@@ -4,25 +4,55 @@
  */
 
 import React from 'react';
-import { get } from 'lodash';
+import get from 'lodash.get';
 import styled from 'styled-components';
+import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
-
+import { formatDataValueByType } from '@tupaia/utils';
 import { VALUE_TYPES, CHART_TYPES, PRESENTATION_OPTIONS_SHAPE } from './constants';
-import { formatTimestampForChart, getIsTimeSeries, formatDataValue } from './utils';
+import { formatTimestampForChart, getIsTimeSeries } from './utils';
+import { TooltipContainer } from './TooltipContainer';
 
 function formatLabelledValue(label, value, valueType, metadata) {
-  const valueText = formatDataValue(value, valueType, metadata);
+  const valueText = formatDataValueByType({ value, metadata }, valueType);
   if (label) {
     return `${label}: ${valueText}`;
   }
   return valueText;
 }
 
-const TooltipContainer = styled.div`
-  color: rgba(255, 255, 255, 0.87);
-  background: rgba(0, 0, 0, 0.7);
-  padding: 15px 10px 15px 5px;
+const Heading = styled(Typography)`
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1rem;
+  margin-bottom: 0.5rem;
+  color: #2c3236;
+`;
+
+const Text = styled(Typography)`
+  color: #2c3236;
+`;
+
+const List = styled.ul`
+  padding: 0;
+  margin: 0;
+`;
+
+const ListItem = styled.li`
+  display: flex;
+  align-items: center;
+  list-style: none;
+  font-size: 0.875rem;
+  line-height: 1rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+`;
+
+const Box = styled.div`
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 5px;
 `;
 
 const MultiValueTooltip = ({
@@ -46,30 +76,37 @@ const MultiValueTooltip = ({
     }
   }
 
-  const valueLabels = payload.map(({ dataKey, value }) => {
+  const valueLabels = payload.map(({ dataKey, value, color }) => {
     const options = chartConfig && chartConfig[dataKey];
     const label = (options && options.label) || dataKey;
-    const valueTypeForLabel = labelType || valueType || get(chartConfig, [dataKey, 'valueType']);
+    const valueTypeForLabel =
+      labelType ||
+      valueType ||
+      get(chartConfig, [dataKey, 'labelType']) ||
+      get(chartConfig, [dataKey, 'valueType']);
 
     const metadata = data[`${dataKey}_metadata`] || data[`${data.name}_metadata`] || {};
 
     return (
-      <li key={dataKey}>
+      <ListItem key={dataKey}>
+        <Box style={{ background: color }} />
         {formatLabelledValue(label, value, valueTypeForLabel, {
           presentationOptions,
           ...metadata,
         })}
-      </li>
+      </ListItem>
     );
   });
 
   return (
     <TooltipContainer>
-      {headline ||
-        (getIsTimeSeries([data]) &&
-          periodGranularity &&
-          formatTimestampForChart(timestamp, periodGranularity))}
-      <ul>{valueLabels}</ul>
+      <Heading>
+        {headline ||
+          (getIsTimeSeries([data]) &&
+            periodGranularity &&
+            formatTimestampForChart(timestamp, periodGranularity))}
+      </Heading>
+      <List>{valueLabels}</List>
     </TooltipContainer>
   );
 };
@@ -84,13 +121,30 @@ const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }
   return (
     <TooltipContainer>
       {getIsTimeSeries([payload[0].payload]) && periodGranularity ? (
-        <div>
-          <p>{formatTimestampForChart(timestamp, periodGranularity)}</p>
-          {formatDataValue(value, valueTypeForLabel, metadata)}
-        </div>
+        <>
+          <Heading>{formatTimestampForChart(timestamp, periodGranularity)}</Heading>
+          <Text>{formatDataValueByType({ value, metadata }, valueTypeForLabel)}</Text>
+        </>
       ) : (
-        formatLabelledValue(name, value, valueTypeForLabel, metadata)
+        <Heading>{formatLabelledValue(name, value, valueTypeForLabel, metadata)}</Heading>
       )}
+    </TooltipContainer>
+  );
+};
+
+const NoDataTooltip = ({ payload, periodGranularity }) => {
+  const data = payload[0]?.payload;
+  const { name = undefined, timestamp = undefined } = data || {};
+
+  return (
+    <TooltipContainer>
+      <Heading>
+        {name ||
+          (getIsTimeSeries([data]) &&
+            periodGranularity &&
+            formatTimestampForChart(timestamp, periodGranularity))}
+      </Heading>
+      <Text>No Data</Text>
     </TooltipContainer>
   );
 };
@@ -98,8 +152,8 @@ const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }
 export const Tooltip = props => {
   const { payload, active, presentationOptions } = props;
 
-  const data = payload || []; // This is to hancle when recharts overrides the payload as null
-  const filteredPayload = data.filter(({ value }) => value !== undefined);
+  const data = payload || []; // This is to handle when recharts overrides the payload as null
+  const filteredPayload = data.filter(({ value }) => ![null, undefined].includes(value));
 
   if (active && filteredPayload.length >= 1) {
     if (data.length === 1 && !presentationOptions) {
@@ -109,7 +163,8 @@ export const Tooltip = props => {
     return <MultiValueTooltip {...props} payload={filteredPayload} />;
   }
 
-  return <TooltipContainer>No Data</TooltipContainer>;
+  // For no data display, pass the non-filtered data so we can pull the name
+  return <NoDataTooltip {...props} payload={data} />;
 };
 
 Tooltip.propTypes = {
@@ -126,3 +181,4 @@ Tooltip.defaultProps = {
 
 SingleValueTooltip.propTypes = Tooltip.propTypes;
 MultiValueTooltip.propTypes = Tooltip.propTypes;
+NoDataTooltip.propTypes = Tooltip.propTypes;

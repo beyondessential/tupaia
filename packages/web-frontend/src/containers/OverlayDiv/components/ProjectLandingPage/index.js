@@ -109,6 +109,7 @@ export const ProjectLandingPage = ({
   project,
   scrollToTop,
 }) => {
+  useEffect(() => scrollToTop(), []);
   if (!project.code) return <LoadingIndicator />;
 
   const components = {
@@ -116,14 +117,14 @@ export const ProjectLandingPage = ({
   };
   const ProjectContent = components[project.code];
 
-  useEffect(() => scrollToTop(), []);
-
   return (
     <>
       <Header>
         <div>
           <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" />
-          <TagLine>Health resource and supply chain mapping for the Asia Pacific region</TagLine>
+          <TagLine>
+            Data aggregation, analysis, and visualisation for the most remote settings in the world
+          </TagLine>
         </div>
         <ExploreButton onClick={selectExplore} variant="outlined">
           <ExploreIcon />

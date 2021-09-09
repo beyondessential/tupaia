@@ -1,35 +1,38 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { render as renderReactApp } from 'react-dom';
-import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
-import { ThemeProvider } from 'styled-components';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/lib/integration/react';
-import { EnvBanner } from '../src/widgets';
 import 'react-table/react-table.css';
+import AdminPanel from './App';
+import { AdminPanelProviders, VizBuilderProviders } from './utilities';
+import { Footer, Navbar } from './widgets';
 
-import { theme } from './theme';
-import { store, persistor } from './store';
-import { App } from './App';
+const VizBuilder = lazy(() => import('./VizBuilderApp'));
 
 renderReactApp(
-  <Provider store={store}>
-    <PersistGate persistor={persistor} loading={null}>
-      <StylesProvider injectFirst>
-        <MuiThemeProvider theme={theme}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <EnvBanner />
-            <App />
-          </ThemeProvider>
-        </MuiThemeProvider>
-      </StylesProvider>
-    </PersistGate>
-  </Provider>,
+  <Router>
+    <Suspense fallback={<div>loading...</div>}>
+      <Switch>
+        <Route path="/viz-builder">
+          <VizBuilderProviders>
+            <VizBuilder Navbar={Navbar} Footer={Footer} />
+          </VizBuilderProviders>
+        </Route>
+        <Route path="/">
+          <AdminPanelProviders>
+            <AdminPanel />
+          </AdminPanelProviders>
+        </Route>
+        <Redirect to="/login" />
+      </Switch>
+    </Suspense>
+  </Router>,
   document.getElementById('root'),
 );
+
+if (module.hot) {
+  module.hot.accept();
+}

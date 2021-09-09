@@ -59,12 +59,17 @@ import CircularProgress from 'material-ui/CircularProgress';
 import { isMobile } from '../../../utils/mobile';
 import { VIEW_STYLES } from '../../../styles';
 import { PRESENTATION_OPTIONS_SHAPE } from '../propTypes';
-import matrixPlaceholder from '../../../images/matrix-placeholder.png';
+import dotOnlyMatrixPlaceholder from '../../../images/matrix-placeholder-dot-only.png';
+import textOnlyMatrixPlaceholder from '../../../images/matrix-placeholder-text-only.png';
+import mixMatrixPlaceholder from '../../../images/matrix-placeholder-mix.png';
+
 import { DateRangePicker } from '../../DateRangePicker';
 import { getStyles, DESCRIPTION_CELL_WIDTH, MINIMUM_CELL_WIDTH } from './styles';
 import { Matrix } from './components';
 import { formatDataValue } from '../../../utils';
 import { getLimits } from '../../../utils/periodGranularities';
+import { checkIfApplyDotStyle, getIsUsingDots } from '../utils';
+import { ChartContainer, ChartViewContainer } from '../Layout';
 
 const buildMatrixDataFromViewContent = viewContent => {
   if (!viewContent.columns) {
@@ -152,6 +157,14 @@ const buildMatrixDataFromViewContent = viewContent => {
     categoryPresentationOptions,
     hideColumnTitles,
   };
+};
+
+const getPlaceholder = viewContent => {
+  const { presentationOptions = {}, categoryPresentationOptions = {} } = viewContent;
+  if (!getIsUsingDots(presentationOptions) && !getIsUsingDots(categoryPresentationOptions))
+    return textOnlyMatrixPlaceholder;
+  if (checkIfApplyDotStyle(presentationOptions)) return mixMatrixPlaceholder;
+  return dotOnlyMatrixPlaceholder;
 };
 
 export class MatrixWrapper extends Component {
@@ -296,8 +309,8 @@ export class MatrixWrapper extends Component {
   }
 
   render() {
-    const { isEnlarged, isExporting } = this.props;
-
+    const { isEnlarged, isExporting, viewContent } = this.props;
+    const matrixPlaceholder = getPlaceholder(viewContent);
     if (isEnlarged || isExporting) {
       return (
         <div style={styles.matrixRef} ref={this.updateWrapper}>
@@ -306,8 +319,8 @@ export class MatrixWrapper extends Component {
       );
     }
     return (
-      <div style={VIEW_STYLES.chartViewContainer}>
-        <div style={VIEW_STYLES.chartContainer}>
+      <ChartViewContainer>
+        <ChartContainer>
           {isMobile() ? (
             <>
               <img
@@ -331,8 +344,8 @@ export class MatrixWrapper extends Component {
               />
             </div>
           )}
-        </div>
-      </div>
+        </ChartContainer>
+      </ChartViewContainer>
     );
   }
 }

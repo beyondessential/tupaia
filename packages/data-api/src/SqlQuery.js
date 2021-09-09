@@ -4,33 +4,30 @@
  */
 
 export class SqlQuery {
-  static parameteriseArray = arr => `(${arr.map(() => '?').join(',')})`;
+  static array = arr => `(${arr.map(() => '?').join(',')})`;
 
-  constructor(baseQuery, baseParameters) {
+  static values = rows =>
+    `VALUES (${rows.map(values => values.map(() => `?`).join(',')).join('), (')})`;
+
+  static innerJoin = (baseTable, columnName, values) => `
+    INNER JOIN (
+      ${SqlQuery.values(values.map(c => [c]))}
+    ) ${columnName}s(code) ON ${columnName}s.code = ${baseTable}.${columnName}
+  `;
+
+  constructor(baseQuery, baseParameters = []) {
     this.query = baseQuery;
     this.parameters = baseParameters;
-    this.orderByClause = null;
-  }
-
-  addClause(clause, parameters) {
-    this.query = `
-      ${this.query}
-      ${clause}
-    `;
-    this.parameters = this.parameters.concat(parameters);
-  }
-
-  orderBy(orderByClause) {
-    this.orderByClause = orderByClause;
   }
 
   async executeOnDatabase(database) {
-    return database.executeSql(
-      `
-      ${this.query}
-      ${this.orderByClause ? `ORDER BY ${this.orderByClause}` : ''};
-    `,
-      this.parameters,
-    );
+    return database.executeSql(this.query, this.parameters);
+  }
+
+  loggableQuery() {
+    const replacementIterator = this.parameters
+      .map(param => param.replace(/'/g, "''"))
+      [Symbol.iterator]();
+    return this.query.replace(/\?/g, () => `'${replacementIterator.next().value}'`);
   }
 }

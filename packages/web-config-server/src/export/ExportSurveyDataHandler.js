@@ -1,6 +1,5 @@
 import xlsx from 'xlsx';
 import fs from 'fs';
-import { truncateString } from 'sussol-utilities';
 import { getExportDatesString } from '@tupaia/utils';
 
 import { requestFromTupaiaConfigServer } from './requestFromTupaiaConfigServer';
@@ -19,8 +18,8 @@ export class ExportSurveyDataHandler extends RouteHandler {
     await super.handleRequest();
     const {
       organisationUnitCode,
-      viewId,
-      dashboardGroupId,
+      itemCode,
+      dashboardCode,
       projectCode,
       surveyCodes,
       startDate,
@@ -30,20 +29,25 @@ export class ExportSurveyDataHandler extends RouteHandler {
 
     const sessionCookieName = USER_SESSION_CONFIG.cookieName;
     const sessionCookie = this.req.cookies[sessionCookieName];
+    const { report_code: reportCode, legacy, config } = await this.models.dashboardItem.findOne({
+      code: itemCode,
+    });
 
     // Get the data for the chart
     const queryParameters = {
-      viewId,
+      itemCode,
       organisationUnitCode,
-      dashboardGroupId,
+      dashboardCode,
       projectCode,
       surveyCodes,
       startDate,
       endDate,
+      legacy,
       isExpanded: true,
     };
+
     const data = await requestFromTupaiaConfigServer(
-      'view',
+      `report/${reportCode}`,
       queryParameters,
       sessionCookieName,
       sessionCookie,
@@ -52,9 +56,9 @@ export class ExportSurveyDataHandler extends RouteHandler {
     const sheetNames = [];
     const sheets = {};
     const { name: organisationUnitName } = await this.models.entity.findOne({
-      code: data.organisationUnitCode,
+      code: organisationUnitCode,
     });
-    const reportTitle = `${data.name}, ${organisationUnitName}`;
+    const reportTitle = `${config.name}, ${organisationUnitName}`;
 
     Object.entries(data.data).forEach(([surveyName, surveyData]) => {
       const header = surveyData.data.columns.length
@@ -79,7 +83,7 @@ export class ExportSurveyDataHandler extends RouteHandler {
         origin: -1, // Append to bottom of worksheet starting on first column
       });
 
-      const sheetName = truncateString(surveyName, 31);
+      const sheetName = surveyName.substring(0, 31); // stay within excel sheet name limit
 
       sheetNames.push(sheetName);
       sheets[sheetName] = sheet;
@@ -96,6 +100,8 @@ export class ExportSurveyDataHandler extends RouteHandler {
 
     const filePath = `${EXPORT_DIRECTORY}/${EXPORT_FILE_TITLE}_${Date.now()}.xlsx`;
     xlsx.writeFile(workbook, filePath);
-    this.res.download(filePath);
+    this.res.download(filePath, () => {
+      fs.unlinkSync(filePath); // delete export file after download
+    });
   }
 }

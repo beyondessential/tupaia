@@ -21,14 +21,34 @@ export const last = (values: FieldValue[]): FieldValue => {
   return values[values.length - 1];
 };
 
-export const eq = (value1, value2): boolean => {
-  return value1 === value2;
+export const eq = (val1: any, val2: any): boolean => {
+  return val1 === val2;
 };
 
-export const gt = (value1, value2): boolean => {
-  return value1 > value2;
+export const notEq = (val1: any, val2: any): boolean => {
+  return val1 !== val2;
 };
 
-export const exists = (value: FieldValue): boolean => {
-  return value !== undefined;
+export const gt = (val1: any, val2: any): boolean => {
+  return val1 > val2;
+};
+
+export const exists = (val: any): boolean => {
+  return val !== undefined;
+};
+
+export const notExists = (val: FieldValue): boolean => {
+  return val === undefined;
+};
+
+export const length = (val: any[]): number => {
+  return val.length;
+};
+
+export const any = (...args: boolean[]): boolean => {
+  return args.some(x => x === true);
+};
+
+export const all = (...args: boolean[]): boolean => {
+  return args.every(x => x === true);
 };

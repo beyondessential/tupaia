@@ -8,6 +8,11 @@ import groupBy from 'lodash.groupby';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { checkValueSatisfiesCondition } from '@tupaia/utils';
 
+const CONDITION_TYPE = {
+  AND: 'every',
+  OR: 'some',
+};
+
 /**
  * Example conditions config:
  * conditions: {
@@ -29,18 +34,19 @@ class CheckMultiConditionsByOrgUnit extends DataBuilder {
     const analyticsByOrgUnit = groupBy(results, 'organisationUnit');
 
     Object.entries(analyticsByOrgUnit).forEach(([organisationUnitCode, analytics]) => {
-      const orgUnitMeasureData = Object.entries(conditions)
-        .filter(([displayValue, valueConditions]) => {
-          return Object.entries(valueConditions).every(([dataElement, condition]) => {
+      const [displayValue] = Object.entries(conditions).find(([_, conditionConfig]) => {
+        const { conditionType = 'AND', condition: conditionValues } = conditionConfig;
+        return Object.entries(conditionValues)[CONDITION_TYPE[conditionType]](
+          ([dataElement, condition]) => {
             const analytic = analytics.find(a => a.dataElement === dataElement);
-            return checkValueSatisfiesCondition(analytic.value, condition);
-          });
-        })
-        .map(([displayValue]) => {
-          return { organisationUnitCode, value: displayValue };
-        });
+            return analytic ? checkValueSatisfiesCondition(analytic.value, condition) : false;
+          },
+        );
+      }) || [];
 
-      measureData.push(...orgUnitMeasureData);
+      if (displayValue) {
+        measureData.push({ organisationUnitCode, value: displayValue });
+      }
     });
 
     return {

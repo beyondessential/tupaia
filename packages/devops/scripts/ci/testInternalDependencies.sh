@@ -1,8 +1,8 @@
 #!/bin/bash
 DIR=$(dirname "$0")
 for PACKAGE in $(${DIR}/../../../../scripts/bash/getInternalDependencies.sh); do
-    # skip database, data-api and auth packages - they get tested separately as they require db access
-    if [[ "$PACKAGE" == "database" || "$PACKAGE" == "data-api" || "$PACKAGE" == "auth" ]]; then
+    # skip the following packages - they get tested separately as they require db access
+    if [[ "$PACKAGE" == "database" || "$PACKAGE" == "data-api" || "$PACKAGE" == "auth" || "$PACKAGE" == "indicators" || "$PACKAGE" == "server-boilerplate" ]]; then
         continue
     fi
     echo Testing ${PACKAGE}

@@ -5,9 +5,10 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { useQueryClient } from 'react-query';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
+import MuiButton from '@material-ui/core/Button';
 import { ProfileButton as BaseProfileButton, ProfileButtonItem } from '@tupaia/ui-components';
-import { get, useUser } from '../api';
+import { useUser, useLogout } from '../api';
 
 const StyledProfileButton = styled(BaseProfileButton)`
   background: rgba(0, 0, 0, 0.2);
@@ -17,23 +18,46 @@ const StyledProfileButton = styled(BaseProfileButton)`
   }
 `;
 
-export const ProfileButton = () => {
-  const { data: user } = useUser();
-  const queryClient = useQueryClient();
-
-  const handleLogout = async () => {
-    await get('logout');
-    queryClient.invalidateQueries('getUser');
-  };
-
+const ProfileLinks = () => {
+  const { mutate: handleLogout } = useLogout();
+  const { isLesmisAdmin } = useUser();
   return (
-    <StyledProfileButton
-      user={user}
-      MenuOptions={() => (
-        <ProfileButtonItem button onClick={handleLogout}>
-          Logout
-        </ProfileButtonItem>
+    <>
+      {isLesmisAdmin && (
+        <ProfileButtonItem to="/users-and-permissions">Users and Permissions</ProfileButtonItem>
       )}
+      <ProfileButtonItem button onClick={handleLogout}>
+        Logout
+      </ProfileButtonItem>
+    </>
+  );
+};
+
+const LoginLink = styled(MuiButton)`
+  color: white;
+  border-color: white;
+  padding: 0.5rem 2rem;
+  border-radius: 2.5rem;
+`;
+
+export const ProfileButton = () => {
+  const history = useHistory();
+  const { data: user, isLoggedIn } = useUser();
+  return user && isLoggedIn ? (
+    <StyledProfileButton
+      user={{ ...user, name: `${user.firstName} ${user.lastName}` }}
+      MenuOptions={ProfileLinks}
     />
+  ) : (
+    <LoginLink
+      variant="outlined"
+      component={RouterLink}
+      to={{
+        pathname: '/login',
+        state: { referer: history.location },
+      }}
+    >
+      Log in
+    </LoginLink>
   );
 };

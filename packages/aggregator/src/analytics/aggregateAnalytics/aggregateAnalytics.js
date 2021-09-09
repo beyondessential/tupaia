@@ -47,8 +47,8 @@ export const aggregateAnalytics = (
       return getFinalValuePerPeriod(
         analytics,
         {
+          fillEmptyPeriodsWith: 'previous',
           ...aggregationConfig,
-          fillEmptyPeriodsTilNow: true,
         },
         DAY,
       );
@@ -66,8 +66,8 @@ export const aggregateAnalytics = (
       return getFinalValuePerPeriod(
         analytics,
         {
+          fillEmptyPeriodsWith: 'previous',
           ...aggregationConfig,
-          fillEmptyPeriodsTilNow: true,
         },
         MONTH,
       );
@@ -77,10 +77,16 @@ export const aggregateAnalytics = (
       return getFinalValuePerPeriod(
         analytics,
         {
+          fillEmptyPeriodsWith: 'previous',
           ...aggregationConfig,
-          fillEmptyPeriodsTilNow: true,
         },
         QUARTER,
+      );
+    case AGGREGATION_TYPES.FINAL_EACH_WEEK_FILL_EMPTY_WEEKS:
+      return getFinalValuePerPeriod(
+        analytics,
+        { fillEmptyPeriodsWith: 'previous', ...aggregationConfig },
+        WEEK,
       );
     case AGGREGATION_TYPES.SUM_EACH_QUARTER:
       return getSumValuePerPeriod(analytics, aggregationConfig, QUARTER);
@@ -90,8 +96,8 @@ export const aggregateAnalytics = (
       return getFinalValuePerPeriod(
         analytics,
         {
+          fillEmptyPeriodsWith: 'previous',
           ...aggregationConfig,
-          fillEmptyPeriodsTilNow: true,
         },
         YEAR,
       );
@@ -99,6 +105,8 @@ export const aggregateAnalytics = (
       return getSumValuePerPeriod(analytics, aggregationConfig, YEAR);
     case AGGREGATION_TYPES.SUM_EACH_MONTH:
       return getSumValuePerPeriod(analytics, aggregationConfig, MONTH);
+    case AGGREGATION_TYPES.SUM_EACH_WEEK:
+      return getSumValuePerPeriod(analytics, aggregationConfig, WEEK);
     case AGGREGATION_TYPES.SUM_PREVIOUS_EACH_DAY:
       return sumPreviousPerPeriod(analytics, aggregationConfig, DAY);
     case AGGREGATION_TYPES.SUM_PER_ORG_GROUP:

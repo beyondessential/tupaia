@@ -1,43 +1,48 @@
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 import session from 'client-sessions';
 
+import { UnauthenticatedError } from '@tupaia/utils';
+
+import { getUserFromAuthHeader } from './getUserFromAuthHeader';
 import { getAccessPolicyForUser } from './getAccessPolicyForUser';
 import { PUBLIC_USER_NAME } from './publicAccess';
 
-const allowedUnauthRoutes = ['/login', '/version'];
-
 // auth is a middleware that runs on every request
-const auth = () => (req, res, next) => {
-  if (
-    (req.session && req.session.userJson && req.session.userJson.userName) ||
-    checkAllowedUnauthRoutes(req)
-  ) {
-    // if logged in or loggin in continue
-    next();
-    // else check if this is the first request after user logged out
-    // and send 440 or authenticate as public user
-  } else if (req.lastuser && req.lastuser.userName && req.lastuser.userName !== PUBLIC_USER_NAME) {
-    req.lastuser.reset();
-    res.sendStatus(440);
-  } else {
-    authPublicUser(req, res, next);
-  }
-};
+const auth = () => async (req, res, next) => {
+  const { authenticator } = req;
 
-const authPublicUser = (req, res, next) => {
-  setSession(req, { userName: PUBLIC_USER_NAME }); // store new session as public user
+  try {
+    // if using basic or bearer auth, check credentials and set access policy for that user
+    const authHeaderUser = await getUserFromAuthHeader(req);
+    if (authHeaderUser) {
+      req.accessPolicy = await getAccessPolicyForUser(authenticator, authHeaderUser.id);
+      next();
+      return;
+    }
+
+    // if logged in
+    const userId = req.session?.userJson?.userId;
+    if (userId) {
+      req.userJson = req.session.userJson;
+      req.accessPolicy = req.accessPolicy || (await getAccessPolicyForUser(authenticator, userId));
+      next();
+      return;
+    }
+
+    // check if this is the first request after user logged out and send 440
+    if (req.lastuser?.userName && req.lastuser?.userName !== PUBLIC_USER_NAME) {
+      req.lastuser.reset();
+      res.sendStatus(440);
+      return;
+    }
+
+    // no previous login, authenticate as public user
+    req.userJson = { userName: PUBLIC_USER_NAME };
+    req.accessPolicy = await getAccessPolicyForUser(authenticator, PUBLIC_USER_NAME);
+  } catch (error) {
+    next(new UnauthenticatedError(error.message));
+  }
   next();
-};
-
-const checkAllowedUnauthRoutes = req =>
-  allowedUnauthRoutes.some(allowedRoute => req.originalUrl.endsWith(allowedRoute));
-
-const getUserAccessPolicyFromSession = async req => {
-  if (!req.accessPolicy) {
-    const { userName } = req.session.userJson;
-    req.accessPolicy = getAccessPolicyForUser(req.models, userName);
-  }
-  return req.accessPolicy;
 };
 
 export const setSession = (req, userInfo) => {
@@ -48,7 +53,7 @@ export const setSession = (req, userInfo) => {
 
 const addUserAccessHelper = (req, res, next) => {
   req.userHasAccess = async (entityOrCode, permissionGroup = '') => {
-    const accessPolicy = await getUserAccessPolicyFromSession(req);
+    const { accessPolicy } = req;
     if (!accessPolicy) {
       return false;
     }
@@ -88,7 +93,7 @@ const addUserAccessHelper = (req, res, next) => {
       return ['Public']; // At this stage, all users have Public access to the World dashboard
     }
 
-    const accessPolicy = await getUserAccessPolicyFromSession(req);
+    const { accessPolicy } = req;
     if (!accessPolicy) {
       return [];
     }

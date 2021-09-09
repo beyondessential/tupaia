@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { GreyButton } from '../Button';
@@ -25,9 +25,8 @@ const FileName = styled.span`
   margin-left: 0.8rem;
 `;
 
-export const FileUploadField = ({ onChange, name }) => {
+export const FileUploadField = ({ onChange, name, fileName }) => {
   const inputEl = useRef(null);
-  const [fileName, setFileName] = useState('No File chosen');
 
   const handleChange = event => {
     let newName;
@@ -39,8 +38,7 @@ export const FileUploadField = ({ onChange, name }) => {
       newName = event.target.value.split('\\').pop();
     }
 
-    setFileName(newName);
-    onChange(event);
+    onChange(event, newName);
   };
 
   return (
@@ -64,8 +62,10 @@ export const FileUploadField = ({ onChange, name }) => {
 FileUploadField.propTypes = {
   onChange: PropTypes.func,
   name: PropTypes.string.isRequired,
+  fileName: PropTypes.string,
 };
 
 FileUploadField.defaultProps = {
   onChange: () => {},
+  fileName: 'No File chosen',
 };

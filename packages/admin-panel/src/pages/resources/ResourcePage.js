@@ -28,6 +28,7 @@ export const ResourcePage = ({
   baseFilter,
   title,
   getHeaderEl,
+  defaultFilters,
   defaultSorting,
 }) => {
   const HeaderPortal = usePortalWithCallback(
@@ -49,6 +50,7 @@ export const ResourcePage = ({
           expansionTabs={expansionTabs}
           reduxId={reduxId || endpoint}
           baseFilter={baseFilter}
+          defaultFilters={defaultFilters}
           defaultSorting={defaultSorting}
         />
       </Container>

@@ -7,7 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ReferenceLine } from 'recharts';
 import { TUPAIA_ORANGE, CHART_TYPES } from './constants';
-import { formatDataValue } from './utils';
+import { formatDataValueByType } from '@tupaia/utils';
 import { ReferenceLabel } from './ReferenceLabel';
 
 const ReferenceLineLabel = ({ referenceLineLabel, isExporting }) => {
@@ -94,7 +94,7 @@ const AverageReferenceLine = ({ viewContent, isExporting, isEnlarged }) => {
       stroke={TUPAIA_ORANGE}
       label={
         <ReferenceLabel
-          value={`Average ${formatDataValue(average, valueType)}`}
+          value={`Average ${formatDataValueByType({ value: average }, valueType)}`}
           fill={TUPAIA_ORANGE}
         />
       }

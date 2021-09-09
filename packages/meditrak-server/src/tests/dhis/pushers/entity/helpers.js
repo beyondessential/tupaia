@@ -12,9 +12,9 @@ const { ORGANISATION_UNIT, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_TYPE } = DHI
 
 export const createEntityStub = (
   id,
-  { code, metadata, name, closestOrgUnit, setDhisId, type } = {},
+  { code, metadata, name, closestOrgUnit, setDhisTrackedEntityId, type } = {},
 ) => {
-  const dhisId = metadata && metadata.dhis && metadata.dhis.id;
+  const trackedEntityId = metadata && metadata.dhis && metadata.dhis.trackedEntityId;
 
   return {
     id,
@@ -23,9 +23,9 @@ export const createEntityStub = (
     name,
     type,
     fetchNearestOrgUnitAncestor: () => closestOrgUnit,
-    getDhisId: () => dhisId,
-    hasDhisId: () => !!dhisId,
-    setDhisId: setDhisId || sinon.stub().returnsArg(0),
+    getDhisTrackedEntityId: () => trackedEntityId,
+    hasDhisTrackedEntityId: () => !!trackedEntityId,
+    setDhisTrackedEntityId: setDhisTrackedEntityId || sinon.stub().returnsArg(0),
     getData: () => ({ id, code, metadata, name, type }),
   };
 };
