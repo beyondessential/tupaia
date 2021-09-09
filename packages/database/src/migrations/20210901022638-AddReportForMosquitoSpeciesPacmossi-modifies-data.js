@@ -57,25 +57,27 @@ const REPORT = {
     },
     transform: [
       {
-        transform: 'select',
-        "'organisationUnitCode'": '$row.organisationUnit',
-        "'name'": `translate($row.dataElement, ${JSON.stringify(dataElementsToNames)})`,
-        "'denominator'":
-          'sum($where(f($otherRow) = equalText($otherRow.organisationUnit, $row.organisationUnit)).value)',
-        "'numerator'": '$row.value',
+        transform: 'updateColumns',
+        insert: {
+          numerator: '=$value',
+          denominator:
+            '=sum(where(f($otherRow) = equalText($otherRow.organisationUnit, $organisationUnit)).value)',
+          name: `=translate($row.dataElement, ${JSON.stringify(dataElementsToNames)})`,
+          organisationUnitCode: '=$organisationUnit',
+        },
+        exclude: '*',
       },
-      { transform: 'filter', where: '$row.denominator > 0' },
+
+      { transform: 'excludeRows', where: '=not ($denominator > 0)' },
       {
-        transform: 'select',
-        '$row.name': 'formatAsFractionAndPercentage($row.numerator, $row.denominator)',
-        "'value'": "'exists'", // Just a tag to indicator we have data
-        '...': ['organisationUnitCode'],
+        transform: 'updateColumns',
+        insert: {
+          value: "='exists'",
+          '=$name': '=formatAsFractionAndPercentage($numerator, $denominator)',
+        },
+        include: ['organisationUnitCode'],
       },
-      {
-        transform: 'aggregate',
-        organisationUnitCode: 'group',
-        '...': 'last',
-      },
+      { transform: 'mergeRows', using: 'last', groupBy: 'organisationUnitCode' },
     ],
   },
 };
