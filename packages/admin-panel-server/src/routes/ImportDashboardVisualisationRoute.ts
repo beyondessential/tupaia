@@ -4,18 +4,37 @@
  *
  */
 
+import assert from 'assert';
 import { Request, Response, NextFunction } from 'express';
 import fs from 'fs';
 
 import { Route } from '@tupaia/server-boilerplate';
-import { readJsonFile, UploadError } from '@tupaia/utils';
+import { readJsonFile, reduceToDictionary, snakeKeys, UploadError, yup } from '@tupaia/utils';
 
 import { MeditrakConnection } from '../connections';
 import {
+  dashboardSchema,
+  dashboardRelationObjectSchema,
   DashboardVisualisationExtractor,
   draftDashboardItemValidator,
   draftReportValidator,
 } from '../viz-builder';
+import {
+  Dashboard,
+  DashboardRecord,
+  DashboardRelationObject,
+  DashboardRelationRecord,
+  DashboardVisualisationResource,
+} from '../viz-builder/types';
+
+const importFileSchema = yup.object().shape(
+  {
+    dashboards: yup.array().of(dashboardSchema),
+    dashboardRelations: yup.array().of(dashboardRelationObjectSchema),
+    // ...the rest of the fields belong to the visualisation object and are validated separately
+  },
+  [['dashboards', 'dashboardRelations']],
+);
 
 export type ImportDashboardVisualisationRequest = Request<
   Record<string, never>,
@@ -38,24 +57,33 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
       throw new UploadError();
     }
 
-    const visualisation = readJsonFile<Record<string, unknown>>(this.req.file.path);
-    fs.unlinkSync(this.req.file.path);
+    const { dashboards = [], dashboardRelations = [], ...visualisation } = this.readFileContents();
 
     const extractor = new DashboardVisualisationExtractor(
       visualisation,
       draftDashboardItemValidator,
       draftReportValidator,
     );
-    const body = extractor.getDashboardVisualisationResource();
+    const extractedViz = extractor.getDashboardVisualisationResource();
     const existingId = await this.findExistingVisualisationId(visualisation);
 
     const id = existingId
-      ? await this.updateVisualisation(existingId, body)
-      : await this.createVisualisation(body);
-    const action = existingId ? 'updated' : 'created';
+      ? await this.updateVisualisation(existingId, extractedViz)
+      : await this.createVisualisation(extractedViz);
 
+    await this.upsertDashboardsAndRelations(id, dashboards, dashboardRelations);
+
+    const action = existingId ? 'updated' : 'created';
     return { id, message: `Visualisation ${action} successfully` };
   }
+
+  private readFileContents = () => {
+    const { path } = this.req.file as { path: string };
+    const fileContents = readJsonFile<Record<string, unknown>>(path);
+    fs.unlinkSync(path);
+
+    return importFileSchema.validateSync(fileContents);
+  };
 
   private findExistingVisualisationId = async (visualisation: Record<string, unknown>) => {
     const { id, code } = visualisation;
@@ -69,13 +97,21 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
     return viz?.dashboardItem?.id;
   };
 
-  private createVisualisation = async (visualisation: Record<string, unknown>) => {
-    const { id } = await this.meditrakConnection.createResource(
+  private createVisualisation = async (visualisation: DashboardVisualisationResource) => {
+    await this.meditrakConnection.createResource('dashboardVisualisations', {}, visualisation);
+    const [viz]: DashboardVisualisationResource[] = await this.meditrakConnection.fetchResources(
       'dashboardVisualisations',
-      {},
-      visualisation,
+      {
+        filter: {
+          code: visualisation.dashboardItem.code,
+        },
+      },
     );
-    return id;
+
+    if (!viz) {
+      throw new Error('Could not create visualisation');
+    }
+    return viz.dashboardItem.id;
   };
 
   private updateVisualisation = async (vizId: string, visualisation: Record<string, unknown>) => {
@@ -86,4 +122,60 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
     );
     return vizId;
   };
+
+  private upsertDashboardsAndRelations = async (
+    vizId: string,
+    dashboards: Dashboard[],
+    dashboardRelations: DashboardRelationObject[],
+  ) => {
+    await this.upsertDashboards(dashboards.map(d => snakeKeys(d)));
+    const dashboardRecords = await this.meditrakConnection.fetchResources('dashboards', {
+      filter: {
+        code: dashboardRelations.map(dr => dr.dashboardCode),
+      },
+    });
+    const dashboardCodeToId = reduceToDictionary(dashboardRecords, 'code', 'id');
+
+    const relationsToUpsert = dashboardRelations.map(({ dashboardCode, ...dashboardRelation }) => {
+      const dashboardId = dashboardCodeToId[dashboardCode];
+      assert.ok(dashboardId, `Could not find id for dashboard with code ${dashboardCode}`);
+      return snakeKeys({
+        ...dashboardRelation,
+        dashboard_id: dashboardId,
+        child_id: vizId,
+      });
+    });
+    await this.upsertDashboardRelations(relationsToUpsert);
+  };
+
+  private upsertDashboards = async (dashboards: DashboardRecord[]) =>
+    Promise.all(
+      dashboards.map(dashboard =>
+        this.meditrakConnection.upsertResource(
+          'dashboards',
+          {
+            filter: {
+              code: dashboard.code,
+            },
+          },
+          dashboard,
+        ),
+      ),
+    );
+
+  private upsertDashboardRelations = async (dashboardRelations: DashboardRelationRecord[]) =>
+    Promise.all(
+      dashboardRelations.map(relation =>
+        this.meditrakConnection.upsertResource(
+          'dashboardRelations',
+          {
+            filter: {
+              dashboard_id: relation.dashboard_id,
+              child_id: relation.child_id,
+            },
+          },
+          relation,
+        ),
+      ),
+    );
 }

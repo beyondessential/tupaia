@@ -13,11 +13,11 @@
  */
 
 import React, { Component } from 'react';
+import { PopupDataItemList } from '@tupaia/ui-components/lib/map';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import { Tooltip } from 'react-leaflet';
-import { getSingleFormattedValue } from '../../utils';
 
 const Heading = styled.span`
   text-align: center;
@@ -41,61 +41,17 @@ export class AreaTooltip extends Component {
     }
   }
 
-  getTextList() {
-    const { orgUnitName, hasMeasureValue, measureOptions, orgUnitMeasureData } = this.props;
-
-    const defaultTextList = [
-      <Heading key={0} hasMeasureValue={hasMeasureValue}>
-        {orgUnitName}
-      </Heading>,
-    ];
-
-    if (!hasMeasureValue) {
-      return defaultTextList;
-    }
-
-    const toTextList = data =>
-      Object.keys(data).map(key => <span key={key}>{`${key}: ${data[key]}`}</span>);
-
-    return defaultTextList.concat(
-      toTextList(this.buildFormattedMeasureData(orgUnitMeasureData, measureOptions)),
-    );
-  }
-
-  buildFormattedMeasureData(orgUnitMeasureData, measureOptions) {
-    const getMetadata = (data, key) => {
-      if (data.metadata) {
-        return data.metadata;
-      }
-      const metadataKeys = Object.keys(data).filter(k => k.includes(`${key}_metadata`));
-      return Object.fromEntries(metadataKeys.map(k => [k.replace(`${key}_metadata`, ''), data[k]]));
-    };
-
-    const formattedMeasureData = {};
-
-    if (orgUnitMeasureData) {
-      measureOptions
-        .filter(m => !m.hideFromPopup)
-        .forEach(({ key, name, values, ...otherConfigs }) => {
-          if (values.find(({ value }) => value === orgUnitMeasureData[key])?.hideFromPopup) return;
-          const metadata = getMetadata(orgUnitMeasureData, key);
-          formattedMeasureData[name || key] = getSingleFormattedValue(orgUnitMeasureData, [
-            {
-              key,
-              metadata,
-              ...otherConfigs,
-            },
-          ]);
-        });
-    }
-
-    return formattedMeasureData;
-  }
-
   render() {
-    const { permanent, onMouseOver, onMouseOut, sticky } = this.props;
-
-    const textList = this.getTextList();
+    const {
+      permanent,
+      onMouseOver,
+      onMouseOut,
+      sticky,
+      orgUnitName,
+      hasMeasureValue,
+      measureOptions,
+      orgUnitMeasureData,
+    } = this.props;
 
     return (
       <Tooltip
@@ -113,7 +69,19 @@ export class AreaTooltip extends Component {
           this.ref = r;
         }}
       >
-        <div style={{ display: 'grid' }}>{textList}</div>
+        <div style={{ display: 'grid' }}>
+          <Heading key={0} hasMeasureValue={hasMeasureValue}>
+            {orgUnitName}
+          </Heading>
+          {hasMeasureValue && (
+            <PopupDataItemList
+              key={1}
+              measureOptions={measureOptions}
+              data={orgUnitMeasureData}
+              showNoDataLabel="true"
+            />
+          )}
+        </div>
       </Tooltip>
     );
   }
