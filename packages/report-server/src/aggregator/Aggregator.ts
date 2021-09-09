@@ -68,7 +68,7 @@ export class Aggregator extends BaseAggregator {
         period,
         startDate,
         endDate,
-        dataServices: [{ isDataRegional: true }],
+        detectDataServices: true,
       },
       { aggregations },
     );
