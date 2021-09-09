@@ -35,6 +35,12 @@ const getFrontEndConfig = measureLevel => ({
     },
   },
   measureLevel,
+  measureConfig: {
+    $all: {
+      type: 'popup-only',
+      hideFromLegend: true,
+    },
+  },
   hideByDefault: {
     null: true,
   },
@@ -73,7 +79,7 @@ const getReportConfig = measureLevel => ({
       where: 'exists($row.Num_Tests) and $row.Num_Tests > 0 and exists($row.Pos_Tests)',
     },
     {
-      "'value'": 'divide($row.Num_Tests,$row.Pos_Tests)',
+      "'value'": 'divide($row.Pos_Tests,$row.Num_Tests)',
       transform: 'select',
       "'Positive tests'": '$row.Pos_Tests',
       "'organisationUnitCode'": '$row.organisationUnit',
