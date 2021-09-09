@@ -20,6 +20,7 @@ const LegendFrame = styled.div`
   padding: 0.6rem;
   margin: 0.6rem auto;
   cursor: auto;
+  color: ${props => props.theme.palette.text.primary};
   background-color: ${({ theme }) =>
     theme.palette.type === 'light' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(43, 45, 56, 0.85)'};
   border-radius: 3px;

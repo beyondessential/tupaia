@@ -15,10 +15,9 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { TilePicker, tileSetShape } from '@tupaia/ui-components/lib/map';
+import { Legend as MapLegend, TilePicker, tileSetShape } from '@tupaia/ui-components/lib/map';
 import { CONTROL_BAR_PADDING } from '../styles';
 import MeasureBar from '../containers/MeasureBar';
-import MeasureLegend from '../containers/MeasureLegend';
 import { selectActiveTileSet, selectTileSets } from '../selectors';
 import { changeTileSet } from '../actions';
 
@@ -77,14 +76,25 @@ const Watermark = () => (
   </StyledLink>
 );
 
-export const MapDivComponent = ({ tileSets, activeTileSet, onChangeTileSet }) => (
+export const MapDivComponent = ({
+  tileSets,
+  activeTileSet,
+  onChangeTileSet,
+  setValueHidden,
+  hiddenValues,
+  serieses,
+}) => (
   <FlexDiv>
     <LeftCol>
       <TopRow>
         <MeasureBar />
       </TopRow>
       <BottomRow>
-        <MeasureLegend />
+        <MapLegend
+          setValueHidden={setValueHidden}
+          hiddenValues={hiddenValues}
+          serieses={serieses}
+        />
       </BottomRow>
     </LeftCol>
     <TilePicker tileSets={tileSets} activeTileSet={activeTileSet} onChange={onChangeTileSet} />
@@ -96,15 +106,31 @@ MapDivComponent.propTypes = {
   activeTileSet: PropTypes.shape(tileSetShape).isRequired,
   tileSets: PropTypes.arrayOf(PropTypes.shape(tileSetShape)).isRequired,
   onChangeTileSet: PropTypes.func.isRequired,
+  setValueHidden: PropTypes.func.isRequired,
+  hiddenValues: PropTypes.PropTypes.arrayOf(PropTypes.object),
+  serieses: PropTypes.PropTypes.arrayOf(PropTypes.object),
+};
+
+MapDivComponent.defaultProps = {
+  hiddenValues: null,
+  serieses: null,
 };
 
 const mapStateToProps = state => ({
-  tileSets: selectTileSets(state),
   activeTileSet: selectActiveTileSet(state),
+  hiddenValues: state.map.measureInfo.hiddenMeasures,
+  serieses: state.map.measureInfo.measureOptions,
+  tileSets: selectTileSets(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onChangeTileSet: setKey => dispatch(changeTileSet(setKey)),
+  setValueHidden: (key, value, hide) =>
+    dispatch({
+      key,
+      value,
+      type: hide ? 'HIDE_MAP_MEASURE' : 'UNHIDE_MAP_MEASURE',
+    }),
 });
 
 export const MapDiv = connect(mapStateToProps, mapDispatchToProps)(MapDivComponent);

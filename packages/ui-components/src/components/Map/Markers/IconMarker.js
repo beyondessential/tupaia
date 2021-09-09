@@ -13,7 +13,9 @@ export const IconMarker = React.memo(
     <Marker
       position={coordinates}
       icon={getMarkerForValue(icon, color, scale)}
-      onClick={handleClick}
+      eventHandlers={{
+        click: handleClick,
+      }}
     >
       {children}
     </Marker>
@@ -32,6 +34,6 @@ IconMarker.propTypes = {
 IconMarker.defaultProps = {
   scale: 1,
   children: null,
-  handleClick: null,
+  handleClick: () => {},
   icon: 'pin',
 };
