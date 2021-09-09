@@ -156,17 +156,17 @@ const DRILL_DOWN_REPORT_CONFIG = {
   },
   transform: [
     {
-      transform: 'insertColumns',
-      columns: {
+      transform: 'updateColumns',
+      insert: {
         "=translate($dataElement, { csr_priority_district_average: 'Priority Districts Average', csr_non_priority_district_average: 'Other Districts Average',  csr_priority_district_target: 'Priority Districts Target', csr_non_priority_district_target: 'Other Districts Target' })":
           '=$value/100',
         timestamp: '=periodToTimestamp($period)',
       },
+      exclude: '*',
     },
     {
       transform: 'mergeRows',
       groupBy: 'timestamp',
-      using: 'last',
     },
   ],
 };
@@ -208,8 +208,7 @@ const LIST_REPORT_CONFIG = {
     'keyValueByDataElementName',
     {
       transform: 'mergeRows',
-      groupBy: 'organisationUnit',
-      using: 'last',
+      groupBy: ['organisationUnit', 'period'],
     },
     {
       transform: 'updateColumns',
