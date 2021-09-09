@@ -12,6 +12,7 @@ export * from './MapContainer';
 export * from './MarkerLayer';
 export * from './Markers';
 export * from './PolygonLayer';
+export * from './PopupDataItemList';
 export * from './Table';
 export * from './TileLayer';
 export * from './TilePicker';

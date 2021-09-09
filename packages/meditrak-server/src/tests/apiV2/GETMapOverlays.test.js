@@ -4,13 +4,9 @@
  */
 
 import { expect } from 'chai';
-import {
-  findOrCreateDummyRecord,
-  addBaselineTestCountries,
-  buildAndInsertProjectsAndHierarchies,
-} from '@tupaia/database';
+import { addBaselineTestCountries, buildAndInsertProjectsAndHierarchies } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
-import { TestableApp } from '../testUtilities';
+import { TestableApp, setupMapOverlayTestData } from '../testUtilities';
 
 describe('Permissions checker for GETMapOverlays', async () => {
   const DEFAULT_POLICY = {
@@ -29,7 +25,7 @@ describe('Permissions checker for GETMapOverlays', async () => {
   const { models } = app;
   let nationalMapOverlay1;
   let nationalMapOverlay2;
-  let projectLevelMapOverlay;
+  let projectLevelMapOverlay1;
   let filterString;
 
   before(async () => {
@@ -43,43 +39,13 @@ describe('Permissions checker for GETMapOverlays', async () => {
         entities: [{ code: 'KI' }, { code: 'VU' }, { code: 'TO' }, { code: 'SB' }],
       },
     ]);
-    // Set up the map overlays
-    nationalMapOverlay1 = await findOrCreateDummyRecord(
-      models.mapOverlay,
-      { id: 'national_map_overlay_1_test' },
-      {
-        name: `Test national map overlay 1`,
-        userGroup: 'Admin',
-        countryCodes: ['KI'],
-      },
-    );
-    nationalMapOverlay2 = await findOrCreateDummyRecord(
-      models.mapOverlay,
-      { id: 'national_map_overlay_2_test' },
-      {
-        name: `Test national map overlay 2`,
-        userGroup: 'Admin',
-        countryCodes: ['LA'],
-      },
-    );
-    projectLevelMapOverlay = await findOrCreateDummyRecord(
-      models.mapOverlay,
-      { id: 'project_level_map_overlay_3_test' },
-      {
-        name: `Test project level map overlay 3`,
-        userGroup: 'Admin',
-        countryCodes: ['test_project'],
-      },
-    );
 
-    const mapOverlayIds = [
-      nationalMapOverlay1.id,
-      nationalMapOverlay2.id,
-      projectLevelMapOverlay.id,
-    ];
-    filterString = `filter={"id":{"comparator":"in","comparisonValue":["${mapOverlayIds.join(
-      '","',
-    )}"]}}`;
+    // Set up the map overlays
+    ({
+      nationalMapOverlay1,
+      nationalMapOverlay2,
+      projectLevelMapOverlay1,
+    } = await setupMapOverlayTestData(models));
   });
 
   afterEach(() => {
@@ -96,9 +62,9 @@ describe('Permissions checker for GETMapOverlays', async () => {
 
     it('Sufficient permissions: Should return a requested project level map overlay that users have access to any of their child countries', async () => {
       await app.grantAccess(DEFAULT_POLICY);
-      const { body: result } = await app.get(`mapOverlays/${projectLevelMapOverlay.id}`);
+      const { body: result } = await app.get(`mapOverlays/${projectLevelMapOverlay1.id}`);
 
-      expect(result.id).to.equal(projectLevelMapOverlay.id);
+      expect(result.id).to.equal(projectLevelMapOverlay1.id);
     });
 
     it('Insufficient permissions: Should throw an error if requesting map overlay that users do not have access to their countries', async () => {
@@ -116,13 +82,25 @@ describe('Permissions checker for GETMapOverlays', async () => {
         DL: ['Public'],
       };
       app.grantAccess(policy);
-      const { body: result } = await app.get(`mapOverlays/${projectLevelMapOverlay.id}`);
+      const { body: result } = await app.get(`mapOverlays/${projectLevelMapOverlay1.id}`);
 
       expect(result).to.have.keys('error');
     });
   });
 
   describe('GET /mapOverlays', async () => {
+    before(() => {
+      const mapOverlayIds = [
+        nationalMapOverlay1.id,
+        nationalMapOverlay2.id,
+        projectLevelMapOverlay1.id,
+      ];
+
+      filterString = `filter={"id":{"comparator":"in","comparisonValue":["${mapOverlayIds.join(
+        '","',
+      )}"]}}`;
+    });
+
     it('Sufficient permissions: Return only the list of entries we have permission for', async () => {
       const policy = {
         DL: ['Public'],
@@ -137,7 +115,7 @@ describe('Permissions checker for GETMapOverlays', async () => {
 
       expect(results.map(r => r.id)).to.deep.equal([
         nationalMapOverlay1.id,
-        projectLevelMapOverlay.id,
+        projectLevelMapOverlay1.id,
       ]);
     });
 
@@ -148,7 +126,7 @@ describe('Permissions checker for GETMapOverlays', async () => {
       expect(results.map(r => r.id)).to.deep.equal([
         nationalMapOverlay1.id,
         nationalMapOverlay2.id,
-        projectLevelMapOverlay.id,
+        projectLevelMapOverlay1.id,
       ]);
     });
 

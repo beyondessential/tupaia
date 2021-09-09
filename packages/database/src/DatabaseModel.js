@@ -160,6 +160,12 @@ export class DatabaseModel {
     return this.generateInstance(result);
   }
 
+  /**
+   * Finds all records matching query conditions
+   * @param {*} dbConditions
+   * @param {*} customQueryOptions
+   * @returns {Promise<any[]>}
+   */
   async find(dbConditions, customQueryOptions = {}) {
     const queryOptions = await this.getQueryOptions(customQueryOptions);
     const dbResults = await this.database.find(this.databaseType, dbConditions, queryOptions);

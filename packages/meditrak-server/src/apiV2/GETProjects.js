@@ -29,6 +29,11 @@ export const assertProjectPermissions = async (accessPolicy, models, projectId) 
 export class GETProjects extends GETHandler {
   permissionsFilteredInternally = true;
 
+  customJoinConditions = {
+    entity: ['entity.id', 'project.entity_id'],
+    entity_hierarchy: ['entity_hierarchy.id', 'project.entity_hierarchy_id'],
+  };
+
   async findSingleRecord(projectId, options) {
     const projectPermissionChecker = accessPolicy =>
       assertProjectPermissions(accessPolicy, this.models, projectId);

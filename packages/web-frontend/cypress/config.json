@@ -3,7 +3,7 @@
   "compareUrl": "",
   "dashboardReports": {
     "allowEmptyResponse": false,
-    "snapshotTypes": ["responseData", "html"],
+    "snapshotTypes": ["responseData"],
     "urlFiles": ["cypress/config/dashboardReportUrls/default.json"],
     "urls": []
   },

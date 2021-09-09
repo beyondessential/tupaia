@@ -56,6 +56,8 @@ const TABLES_TO_CLEAR = [
   'permission_group',
   'api_client',
   'user_account',
+  'map_overlay_group_relation',
+  'map_overlay_group',
   'mapOverlay',
 ];
 
@@ -71,6 +73,7 @@ export async function clearTestData(db, testStartTime = moment().format('YYYY-MM
     user_account: [`email = 'test.user@tupaia.org'`, `first_name = 'Automated test'`],
     clinic: [`country_id ${COMPARISON}`],
     dashboard_relation: [`child_id ${COMPARISON}`, `dashboard_id ${COMPARISON}`],
+    map_overlay_group_relation: [`child_id ${COMPARISON}`, `map_overlay_group_id ${COMPARISON}`],
     entity: [`code LIKE 'test%'`, `code ${COMPARISON}`, `parent_id ${COMPARISON}`],
     entity_relation: [`child_id ${COMPARISON}`, `parent_id ${COMPARISON}`],
     meditrak_sync_queue: [`record_id ${COMPARISON}`],

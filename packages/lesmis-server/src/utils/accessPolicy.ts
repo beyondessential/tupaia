@@ -7,11 +7,8 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { PermissionsError } from '@tupaia/utils';
 import { LESMIS_COUNTRY_CODE, LESMIS_PERMISSION_GROUPS } from '../constants';
 
-export const hasLesmisAccess = (policy: Record<string, string[]>) => {
-  const hasAccess = new AccessPolicy(policy).allows(
-    LESMIS_COUNTRY_CODE,
-    LESMIS_PERMISSION_GROUPS.PUBLIC,
-  );
+export const hasLesmisAccess = (policy: AccessPolicy) => {
+  const hasAccess = policy.allows(LESMIS_COUNTRY_CODE, LESMIS_PERMISSION_GROUPS.PUBLIC);
   if (!hasAccess) {
     throw new PermissionsError('Your permissions for Tupaia do not allow you to login to LESMIS');
   }

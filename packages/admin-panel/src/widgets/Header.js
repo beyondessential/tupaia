@@ -32,7 +32,7 @@ const HeaderInner = styled.div`
 
 export const Header = ({ title, importConfig, createConfig, ExportModalComponent }) => (
   <HeaderMain>
-    <MuiContainer maxWidth="lg">
+    <MuiContainer maxWidth="xl">
       <HeaderInner>
         <Typography variant="h1">{title}</Typography>
         <HeaderButtonContainer>
