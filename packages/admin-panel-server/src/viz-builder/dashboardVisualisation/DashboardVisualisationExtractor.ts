@@ -6,7 +6,7 @@
 import { isNil, omitBy } from 'lodash';
 
 import { snakeKeys, yup } from '@tupaia/utils';
-import { PreviewMode, CamelKeysToSnake } from '../types';
+import { PreviewMode, DashboardVisualisationResource } from '../types';
 
 import { baseVisualisationValidator } from './validators';
 
@@ -30,6 +30,8 @@ export class DashboardVisualisationExtractor<
 
   private readonly reportValidator: ReportValidator;
 
+  private reportValidatorContext: Record<string, unknown> = {};
+
   constructor(
     visualisation: Record<string, unknown>,
     dashboardItemValidator: DashboardItemValidator,
@@ -40,15 +42,19 @@ export class DashboardVisualisationExtractor<
     this.reportValidator = reportValidator;
   }
 
+  public setReportValidatorContext = (context: Record<string, unknown>) => {
+    this.reportValidatorContext = context;
+  };
+
   public getDashboardVisualisationResource = () => {
     // Resources (like the ones passed to meditrak-server for upsert) use snake_case keys
     const dashboardItem = this.getDashboardItem();
     const report = this.getReport();
 
-    return { dashboardItem: snakeKeys(dashboardItem), report: snakeKeys(report) } as {
-      dashboardItem: ExpandType<CamelKeysToSnake<typeof dashboardItem>>;
-      report: ExpandType<CamelKeysToSnake<typeof report>>;
-    };
+    return {
+      dashboardItem: snakeKeys(dashboardItem),
+      report: snakeKeys(report),
+    } as DashboardVisualisationResource;
   };
 
   private vizToDashboardItem() {
@@ -114,6 +120,8 @@ export class DashboardVisualisationExtractor<
     if (!this.reportValidator) {
       throw new Error('No validator provided for extracting report');
     }
-    return this.reportValidator.validateSync(this.vizToReport(previewMode));
+    return this.reportValidator.validateSync(this.vizToReport(previewMode), {
+      context: this.reportValidatorContext,
+    });
   }
 }

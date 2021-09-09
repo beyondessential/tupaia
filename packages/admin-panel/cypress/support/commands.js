@@ -26,3 +26,7 @@ Cypress.Commands.add('uploadFile', filePath => {
   cy.findByText('Choose file').click();
   cy.get('input[type="file"]').attachFile(filePath);
 });
+
+Cypress.Commands.add('getFirstRowElementsOfTable', () => {
+  cy.get('.rt-tbody').find('[role="row"]').find('[role="gridcell"]');
+});

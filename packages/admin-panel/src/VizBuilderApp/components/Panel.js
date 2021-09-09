@@ -3,7 +3,6 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiTab from '@material-ui/core/Tab';
 import ChevronRight from '@material-ui/icons/ChevronRight';
@@ -12,7 +11,7 @@ import { FlexColumn, FlexSpaceBetween } from '@tupaia/ui-components';
 import { TabPanel } from './TabPanel';
 import { JsonEditor } from './JsonEditor';
 import { PlayButton } from './PlayButton';
-import { useVizBuilderConfig } from '../vizBuilderConfigStore';
+import { useVizBuilderConfig } from '../context';
 
 const Container = styled(FlexColumn)`
   position: relative;
@@ -68,7 +67,7 @@ const PanelTabPanel = styled.div`
   }
 `;
 
-export const Panel = ({ setEnabled }) => {
+export const Panel = () => {
   const [tab, setTab] = useState(0);
   const [
     {
@@ -102,7 +101,7 @@ export const Panel = ({ setEnabled }) => {
           <Tab label="Aggregate" icon={<ChevronRight />} />
           <Tab label="Transform" />
         </Tabs>
-        <PlayButton setEnabled={setEnabled} />
+        <PlayButton />
       </PanelNav>
       <TabPanel isSelected={tab === 0} Panel={PanelTabPanel}>
         <JsonEditor value={fetchValue} onChange={value => setFetchConfig(value)} />
@@ -115,8 +114,4 @@ export const Panel = ({ setEnabled }) => {
       </TabPanel>
     </Container>
   );
-};
-
-Panel.propTypes = {
-  setEnabled: PropTypes.func.isRequired,
 };
