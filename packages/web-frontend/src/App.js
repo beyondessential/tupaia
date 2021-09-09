@@ -5,6 +5,7 @@
 
 import React, { lazy, Suspense } from 'react';
 import { Provider } from 'react-redux';
+import { EnvBanner } from '@tupaia/ui-components';
 
 import configureStore from './configureStore';
 import { AppStyleProviders } from './AppStyleProviders';
@@ -19,8 +20,6 @@ const { dispatch } = store;
 
 initHistoryDispatcher(store);
 
-const appType = process.env.REACT_APP_APP_TYPE;
-
 const initApp = () => {
   dispatch({
     type: FETCH_INITIAL_DATA,
@@ -28,6 +27,9 @@ const initApp = () => {
 };
 
 initApp();
+
+const appType = process.env.REACT_APP_APP_TYPE;
+const branch = process.env.REACT_APP_BRANCH;
 
 const App = () => {
   let RootScreen = DesktopApp;
@@ -40,6 +42,7 @@ const App = () => {
     <Provider store={store}>
       <AppStyleProviders>
         <Suspense fallback={null}>
+          <EnvBanner branch={branch} />
           <RootScreen />
         </Suspense>
       </AppStyleProviders>
