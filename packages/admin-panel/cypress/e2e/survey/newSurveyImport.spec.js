@@ -39,7 +39,7 @@ describe('import new survey file', () => {
     enterSurveyName('Test Survey_1');
     cy.uploadFile('surveys/Test Survey_1.xlsx');
     importSurvey();
-    // assertion for confirmation message.
+    // assertion for success message.
     cy.get('form').should('contain.text', 'Your import has been successfully processed');
     cy.get('form').contains('Done').click();
     searchBySurveyName('Test Survey_1');
@@ -56,7 +56,7 @@ describe('import new survey file', () => {
     selectDataService('Tupaia');
     cy.uploadFile('surveys/Test Survey_1.xlsx');
     importSurvey();
-    // assertion for confirmation message.
+    // assertion for success message.
     cy.get('form').should('contain.text', 'Your import has been successfully processed');
     cy.get('form').contains('Done').click();
     searchBySurveyName('Test Survey_1');

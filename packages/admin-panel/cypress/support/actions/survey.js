@@ -11,3 +11,11 @@ export const searchBySurveyName = surveyName => {
 export const checkSurveyByName = surveyName => {
   cy.getFirstRowElementsOfTable().eq(1).should('have.text', surveyName);
 };
+
+export const checkPermissionGroup = PermissionGroup => {
+  cy.getFirstRowElementsOfTable().eq(3).should('have.text', PermissionGroup);
+};
+
+export const checkSurveyGroup = surveyGroup => {
+  cy.getFirstRowElementsOfTable().eq(4).should('have.text', surveyGroup);
+};
