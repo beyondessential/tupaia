@@ -32,19 +32,29 @@ const MAP_OVERLAY = {
   presentationOptions: {
     values: [
       {
-        icon: 'circle',
         name: 'Mosquito species',
-        value: 'exists', // Just a tag to indicate we have data
-        hideFromLegend: false,
+        color: 'blue',
+        value: 'exists',
+      },
+      {
+        color: 'transparent',
+        value: null,
       },
     ],
-    displayType: 'icon',
-    measureLevel: 'FieldStation',
+    displayType: 'shading',
+    measureLevel: 'District',
     hideFromPopup: true,
+    hideFromLegend: false,
     measureConfig: {
       $all: {
         type: 'popup-only',
-        measureLevel: 'FieldStation',
+        values: [
+          {
+            value: null,
+            hideFromPopup: true,
+          },
+        ],
+        measureLevel: 'District',
       },
     },
   },
@@ -88,7 +98,7 @@ exports.up = async function (db) {
   );
 };
 
-exports.down = function (db) {
+exports.down = async function (db) {
   return db.runSql(`
     delete from "map_overlay_group_relation" where "child_id" = '${MAP_OVERLAY.id}';
     delete from "mapOverlay" where "id" = '${MAP_OVERLAY.id}';

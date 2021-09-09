@@ -125,20 +125,20 @@ class ConnectedPolygon extends Component {
       onClick: () => onChangeOrgUnit(organisationUnitCode),
     };
 
-    if (shade) {
-      // To match with the color in markerIcon.js which uses BREWER_PALETTE
-      const color = BREWER_PALETTE[shade] || shade;
-
-      // Work around: color should go through the styled components
-      // but there is a rendering bug between Styled Components + Leaflet
-      return (
-        <ShadedPolygon {...defaultProps} color={color}>
-          {tooltip}
-        </ShadedPolygon>
-      );
+    if (!shade || shade === 'transparent') {
+      return <BasicPolygon {...defaultProps}>{tooltip}</BasicPolygon>;
     }
 
-    return <BasicPolygon {...defaultProps}>{tooltip}</BasicPolygon>;
+    // To match with the color in markerIcon.js which uses BREWER_PALETTE
+    const color = BREWER_PALETTE[shade] || shade;
+
+    // Work around: color should go through the styled components
+    // but there is a rendering bug between Styled Components + Leaflet
+    return (
+      <ShadedPolygon {...defaultProps} color={color}>
+        {tooltip}
+      </ShadedPolygon>
+    );
   }
 }
 
