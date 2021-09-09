@@ -14,8 +14,9 @@ import {
   selectDataService,
   importSurvey,
   searchBySurveyName,
-  closeImportSurveyForm,
+  checkImportSuccess,
   checkSurveyByName,
+  checkImportFail,
 } from '../../support';
 
 beforeEach(() => {
@@ -29,21 +30,16 @@ describe('import new survey file', () => {
     enterSurveyName('Test Wrong Survey Name');
     cy.uploadFile('surveys/Test Survey_1.xlsx');
     importSurvey();
-    // assertion for error message.
-    cy.get('form').should('includes.text', 'Import failed');
-    cy.get('form').contains('Dismiss').click();
-    closeImportSurveyForm();
+    checkImportFail();
   });
 
   it('import a new survey by filling the mandatory fields', () => {
     enterSurveyName('Test Survey_1');
     cy.uploadFile('surveys/Test Survey_1.xlsx');
     importSurvey();
-    // assertion for success message.
-    cy.get('form').should('contain.text', 'Your import has been successfully processed');
-    cy.get('form').contains('Done').click();
+    checkImportSuccess();
     searchBySurveyName('Test Survey_1');
-    // assertion for survey search.
+
     checkSurveyByName('Test Survey_1');
   });
 
@@ -56,11 +52,8 @@ describe('import new survey file', () => {
     selectDataService('Tupaia');
     cy.uploadFile('surveys/Test Survey_1.xlsx');
     importSurvey();
-    // assertion for success message.
-    cy.get('form').should('contain.text', 'Your import has been successfully processed');
-    cy.get('form').contains('Done').click();
+    checkImportSuccess();
     searchBySurveyName('Test Survey_1');
-    // assertion for survey search.
     checkSurveyByName('Test Survey_1');
   });
 });

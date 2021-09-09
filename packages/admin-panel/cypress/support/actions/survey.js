@@ -8,6 +8,9 @@ export const searchBySurveyName = surveyName => {
   cy.get('.rt-table').find('[type="text"]').eq(0).type(surveyName);
 };
 
+/* *
+ * *assertion for survey search.
+ * */
 export const checkSurveyByName = surveyName => {
   cy.getFirstRowElementsOfTable().eq(1).should('have.text', surveyName);
 };

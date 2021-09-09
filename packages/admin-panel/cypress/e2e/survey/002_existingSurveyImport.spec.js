@@ -12,11 +12,12 @@ import {
   importSurvey,
   searchBySurveyName,
   checkSurveyByName,
-  closeImportSurveyForm,
   checkPermissionGroup,
   enterPermissionGroup,
   checkSurveyGroup,
   enterSurveyGroup,
+  checkImportSuccess,
+  checkImportFail,
 } from '../../support';
 
 beforeEach(() => {
@@ -31,11 +32,8 @@ describe('import existing survey', () => {
     enterCountryName('Demo Land');
     cy.uploadFile('surveys/Demo Land - Samoa COVID-19 Contact Tracing.xlsx');
     importSurvey();
-    // assertion for success message.
-    cy.get('form').should('contain.text', 'Your import has been successfully processed');
-    cy.get('form').contains('Done').click();
+    checkImportSuccess();
     searchBySurveyName('Demo Land - Samoa COVID-19 Contact Tracing');
-    // assertion for survey search.
     checkSurveyByName('Demo Land - Samoa COVID-19 Contact Tracing');
   });
 
@@ -47,11 +45,8 @@ describe('import existing survey', () => {
     selectDataService('DHIS');
     cy.uploadFile('surveys/Basic Clinic Data Demo Land.xlsx');
     importSurvey();
-    // assertion for success message.
-    cy.get('form').should('contain.text', 'Your import has been successfully processed');
-    cy.get('form').contains('Done').click();
+    checkImportSuccess();
     searchBySurveyName('Basic Clinic Data Demo Land');
-    // assertion for survey search.
     checkSurveyByName('Basic Clinic Data Demo Land');
     checkPermissionGroup('Admin');
   });
@@ -64,11 +59,8 @@ describe('import existing survey', () => {
     selectDataService('DHIS');
     cy.uploadFile('surveys/Basic Clinic Data Demo Land.xlsx');
     importSurvey();
-    // assertion for success message.
-    cy.get('form').should('contain.text', 'Your import has been successfully processed');
-    cy.get('form').contains('Done').click();
+    checkImportSuccess();
     searchBySurveyName('Basic Clinic Data Demo Land');
-    // assertion for survey search.
     checkSurveyByName('Basic Clinic Data Demo Land');
     checkSurveyGroup('Baseline Surveys');
   });
@@ -80,12 +72,8 @@ describe('import existing survey', () => {
     selectDataService('Tupaia');
     cy.uploadFile('surveys/Basic Clinic Data Demo Land.xlsx');
     importSurvey();
-    // assertion for confirmation message.
-    cy.get('form').should('includes.text', 'Import failed');
-    cy.get('form').contains('Dismiss').click();
-    closeImportSurveyForm();
+    checkImportFail();
     searchBySurveyName('Basic Clinic Data Demo Land');
-    // assertion for survey search.
     checkSurveyByName('Basic Clinic Data Demo Land');
   });
 });
