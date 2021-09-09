@@ -47,6 +47,7 @@ function areBoundsEqual(a, b) {
 function areBoundsValid(b) {
   return Array.isArray(b) && b.length === 2;
 }
+
 export class LeafletMap extends Component {
   constructor(props) {
     super(props);
@@ -144,25 +145,25 @@ export class LeafletMap extends Component {
     this.zooming = true;
   };
 
-  onZoomEnd = e => {
-    this.zoom = e.target.getZoom();
+  onZoomEnd = event => {
+    this.zoom = event.target.getZoom();
 
     this.zooming = false;
     this.onPositionChanged();
   };
 
-  onMoveEnd = e => {
-    const center = e.target.getCenter();
+  onMoveStart = () => {
+    this.moving = true;
+  };
+
+  onMoveEnd = event => {
+    const center = event.target.getCenter();
     this.lat = center.lat;
     this.lng = center.lng;
 
     this.moving = false;
 
     this.onPositionChanged();
-  };
-
-  onMoveStart = () => {
-    this.moving = false;
   };
 
   onPositionChanged = () => {
