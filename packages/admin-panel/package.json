@@ -19,7 +19,7 @@
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
     "start": "react-scripts start",
-    "start-dev": "REACT_APP_BRANCH=WAI-12345 npm run start",
+    "start-dev": "npm run start",
     "test": "react-scripts test --env=jsdom --passWithNoTests"
   },
   "browserslist": {

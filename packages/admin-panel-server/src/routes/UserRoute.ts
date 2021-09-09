@@ -5,7 +5,6 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-const { exec } = require('child_process');
 import { MeditrakConnection } from '../connections';
 
 export class UserRoute extends Route {
@@ -16,21 +15,7 @@ export class UserRoute extends Route {
     this.meditrakConnection = new MeditrakConnection(req.session);
   }
 
-  getBranch() {
-    return new Promise((resolve, reject) => {
-      return exec('git branch --show-current', (err, stdout) => {
-        if (err) {
-          return reject(`getBranch Error: ${err}`);
-        } else {
-          return resolve(stdout.trim());
-        }
-      });
-    });
-  }
-
   async buildResponse() {
-    const user = await this.meditrakConnection.getUser();
-    const branch = await this.getBranch();
-    return { ...user, branch };
+    return this.meditrakConnection.getUser();
   }
 }

@@ -6,16 +6,19 @@ import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { render as renderReactApp } from 'react-dom';
 import 'react-table/react-table.css';
+import { EnvBanner } from '@tupaia/ui-components';
 import AdminPanel from './App';
 import { AdminPanelProviders, VizBuilderProviders } from './utilities';
-import { Footer, Navbar, EnvBanner } from './widgets';
+import { Footer, Navbar } from './widgets';
 
 const VizBuilder = lazy(() => import('./VizBuilderApp'));
+
+const branch = process.env.REACT_APP_BRANCH;
 
 renderReactApp(
   <Router>
     <Suspense fallback={<div>loading...</div>}>
-      <EnvBanner />
+      <EnvBanner branch={branch} />
       <Switch>
         <Route path="/viz-builder">
           <VizBuilderProviders>
