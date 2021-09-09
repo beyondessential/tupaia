@@ -8,10 +8,9 @@ export const DATA_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 type ServiceName = 'entity' | 'meditrak' | 'report';
 export type ServiceBaseUrlSet = Record<ServiceName, string>;
 
-const productionSubdomains = new Set([
+const productionSubdomains = [
   'admin',
   'admin-api',
-  'api',
   'config',
   'lesmis',
   'lesmis-api',
@@ -22,7 +21,9 @@ const productionSubdomains = new Set([
   'entity',
   'entity-api',
   'www',
-]);
+  'api', // this must go last in the array, otherwise it will be detected before e.g. admin-api
+];
+const productionSubdomainSet = new Set(productionSubdomains);
 
 const SERVICES = {
   entity: {
@@ -50,18 +51,37 @@ export const LOCALHOST_BASE_URLS: ServiceBaseUrlSet = {
   report: getLocalUrl('report'),
 };
 
-const getProductionUrl = (service: ServiceName): string =>
-  `https://${SERVICES[service].subdomain}.tupaia.org/${SERVICES[service].version}`;
-export const PRODUCTION_BASE_URLS: ServiceBaseUrlSet = {
-  entity: getProductionUrl('entity'),
-  meditrak: getProductionUrl('meditrak'),
-  report: getProductionUrl('report'),
+const getServiceUrl = (service: ServiceName, subdomainPrefix?: string): string => {
+  const { subdomain, version } = SERVICES[service];
+  const fullSubdomain = subdomainPrefix ? `${subdomainPrefix}-${subdomain}` : subdomain;
+  return `https://${fullSubdomain}.tupaia.org/${version}`;
 };
 
-const getServiceUrlForSubdomain = (service: ServiceName, subdomain: string): string => {
-  const { subdomain: baseSubdomain, version } = SERVICES[service];
-  const subdomainPrefix = subdomain.split('-')[0]; // todo do this properly
-  return `https://${subdomainPrefix}-${baseSubdomain}.tupaia.org/${version}`;
+export const DEV_BASE_URLS: ServiceBaseUrlSet = {
+  entity: getServiceUrl('entity', 'dev'),
+  meditrak: getServiceUrl('meditrak', 'dev'),
+  report: getServiceUrl('report', 'dev'),
+};
+
+export const PRODUCTION_BASE_URLS: ServiceBaseUrlSet = {
+  entity: getServiceUrl('entity'),
+  meditrak: getServiceUrl('meditrak'),
+  report: getServiceUrl('report'),
+};
+
+const getServiceUrlForSubdomain = (service: ServiceName, originalSubdomain: string): string => {
+  const productionSubdomain = productionSubdomains.find(subdomain =>
+    originalSubdomain.endsWith(subdomain),
+  );
+  if (!productionSubdomain) {
+    throw new Error('No subdomain matched');
+  }
+  // cut the production subdomain component off the end, e.g. nz-917-admin-api -> nz-917
+  const subdomainPrefix = originalSubdomain.substring(
+    0,
+    originalSubdomain.length - productionSubdomain.length - 1, // remove trailing '-' as well
+  );
+  return getServiceUrl(service, subdomainPrefix);
 };
 
 const getDefaultBaseUrls = (hostname: string): ServiceBaseUrlSet => {
@@ -71,7 +91,7 @@ const getDefaultBaseUrls = (hostname: string): ServiceBaseUrlSet => {
 
   // production uses standard base urls
   const [subdomain] = hostname.split('.');
-  if (hostname === 'tupaia.org' || productionSubdomains.has(subdomain)) {
+  if (hostname === 'tupaia.org' || productionSubdomainSet.has(subdomain)) {
     return PRODUCTION_BASE_URLS;
   }
 

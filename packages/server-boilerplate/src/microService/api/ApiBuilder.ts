@@ -10,13 +10,13 @@ import errorHandler from 'api-error-handler';
 
 import { Authenticator } from '@tupaia/auth';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
+import { TupaiaApiClient, getBaseUrlsForHost } from '@tupaia/api-client';
 
 import { handleWith, handleError } from '../../utils';
 import { buildBasicBearerAuthMiddleware } from '../auth';
 import { TestRoute } from '../../routes';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
 import { RequestContext } from '../types';
-import { TupaiaApiClient, getBaseUrlsForHost } from '@tupaia/api-client';
 
 export class ApiBuilder {
   private readonly app: Express;

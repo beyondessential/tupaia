@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/api-client",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "API client for connecting to Tupaia APIs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
