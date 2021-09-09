@@ -4,35 +4,60 @@
  */
 
 import {
-  AGGREGATEABLE_ANALYTICS,
-  UNIQUE_AGGREGATEABLE_ANALYTICS,
-  AGGREGATEABLE_ANALYTICS_WITH_NULL_VALUES,
-  MULTIPLE_ANALYTICS,
+  MERGEABLE_ANALYTICS,
+  UNIQUE_MERGEABLE_ANALYTICS,
+  MERGEABLE_ANALYTICS_WITH_NULL_VALUES,
+  SINGLE_MERGEABLE_ANALYTICS,
 } from './transform.fixtures';
 import { buildTransform } from '../../../reportBuilder/transform';
 
-describe('aggregate', () => {
-  it('can not group by a any field', () => {
+describe('mergeRows', () => {
+  it('throws error when mergeUsing contains an invalid merge strategy', () => {
+    expect(() =>
+      buildTransform([
+        {
+          transform: 'mergeRows',
+          using: 'invalid_strategy',
+        },
+      ]),
+    ).toThrow();
+  });
+
+  it('defaults to single when using is not specified', () => {
     const transform = buildTransform([
       {
-        transform: 'aggregate',
-        organisationUnit: 'drop',
-        period: 'drop',
-        '...': 'sum',
+        transform: 'mergeRows',
+        groupBy: 'period',
       },
     ]);
-    expect(transform(AGGREGATEABLE_ANALYTICS)).toEqual([{ BCD1: 28, BCD2: 123 }]);
+    expect(transform(SINGLE_MERGEABLE_ANALYTICS)).toEqual([
+      { period: '20200101', BCD1: 4, BCD2: 4, BCD3: 4 },
+    ]);
+  });
+
+  it('when no groupBy is specified, group to a single row', () => {
+    const transform = buildTransform([
+      {
+        transform: 'mergeRows',
+        using: {
+          organisationUnit: 'exclude',
+          period: 'exclude',
+          '*': 'sum',
+        },
+      },
+    ]);
+    expect(transform(MERGEABLE_ANALYTICS)).toEqual([{ BCD1: 28, BCD2: 123 }]);
   });
 
   it('can group by a single field', () => {
     const transform = buildTransform([
       {
-        transform: 'aggregate',
-        organisationUnit: 'group',
-        '...': 'last',
+        transform: 'mergeRows',
+        groupBy: 'organisationUnit',
+        using: 'last',
       },
     ]);
-    expect(transform(AGGREGATEABLE_ANALYTICS)).toEqual([
+    expect(transform(MERGEABLE_ANALYTICS)).toEqual([
       { organisationUnit: 'TO', period: '20200103', BCD1: 5, BCD2: 0 },
       { organisationUnit: 'PG', period: '20200103', BCD1: 2, BCD2: -1 },
     ]);
@@ -41,13 +66,12 @@ describe('aggregate', () => {
   it('can group by a multiple fields', () => {
     const transform = buildTransform([
       {
-        transform: 'aggregate',
-        organisationUnit: 'group',
-        period: 'group',
-        '...': 'sum',
+        transform: 'mergeRows',
+        groupBy: ['organisationUnit', 'period'],
+        using: 'sum',
       },
     ]);
-    expect(transform(AGGREGATEABLE_ANALYTICS)).toEqual([
+    expect(transform(MERGEABLE_ANALYTICS)).toEqual([
       { organisationUnit: 'TO', period: '20200101', BCD1: 4, BCD2: 11 },
       { organisationUnit: 'TO', period: '20200102', BCD1: 2, BCD2: 1 },
       { organisationUnit: 'TO', period: '20200103', BCD1: 5, BCD2: 0 },
@@ -57,33 +81,37 @@ describe('aggregate', () => {
     ]);
   });
 
-  it('can perform different aggregations on different fields', () => {
+  it('can perform different merge strategies on different fields', () => {
     const transform = buildTransform([
       {
-        transform: 'aggregate',
-        organisationUnit: 'group',
-        period: 'last',
-        BCD1: 'sum',
-        BCD2: 'min',
+        transform: 'mergeRows',
+        groupBy: 'organisationUnit',
+        using: {
+          period: 'last',
+          BCD1: 'sum',
+          BCD2: 'min',
+        },
       },
     ]);
-    expect(transform(AGGREGATEABLE_ANALYTICS)).toEqual([
+    expect(transform(MERGEABLE_ANALYTICS)).toEqual([
       { organisationUnit: 'TO', period: '20200103', BCD1: 11, BCD2: 0 },
       { organisationUnit: 'PG', period: '20200103', BCD1: 17, BCD2: -1 },
     ]);
   });
 
-  describe('aggregations', () => {
+  describe('merge strategies', () => {
     it('sum', () => {
       const transform = buildTransform([
         {
-          transform: 'aggregate',
-          organisationUnit: 'group',
-          period: 'drop',
-          '...': 'sum',
+          transform: 'mergeRows',
+          groupBy: 'organisationUnit',
+          using: {
+            period: 'exclude',
+            '*': 'sum',
+          },
         },
       ]);
-      expect(transform(AGGREGATEABLE_ANALYTICS)).toEqual([
+      expect(transform(MERGEABLE_ANALYTICS)).toEqual([
         { organisationUnit: 'TO', BCD1: 11, BCD2: 12 },
         { organisationUnit: 'PG', BCD1: 17, BCD2: 111 },
       ]);
@@ -92,30 +120,32 @@ describe('aggregate', () => {
     it('sum -> exclude null values', () => {
       const transform = buildTransform([
         {
-          transform: 'aggregate',
-          organisationUnit: 'group',
-          period: 'drop',
-          '...': 'sum',
+          transform: 'mergeRows',
+          groupBy: 'organisationUnit',
+          using: {
+            period: 'exclude',
+            '*': 'sum',
+          },
         },
       ]);
-      expect(
-        transform([...AGGREGATEABLE_ANALYTICS, ...AGGREGATEABLE_ANALYTICS_WITH_NULL_VALUES]),
-      ).toEqual([
+      expect(transform([...MERGEABLE_ANALYTICS, ...MERGEABLE_ANALYTICS_WITH_NULL_VALUES])).toEqual([
         { organisationUnit: 'TO', BCD1: 11, BCD2: 12 },
         { organisationUnit: 'PG', BCD1: 17, BCD2: 111 },
       ]);
     });
 
-    it('avg', () => {
+    it('average', () => {
       const transform = buildTransform([
         {
-          transform: 'aggregate',
-          organisationUnit: 'group',
-          period: 'drop',
-          '...': 'avg',
+          transform: 'mergeRows',
+          groupBy: 'organisationUnit',
+          using: {
+            period: 'exclude',
+            '*': 'average',
+          },
         },
       ]);
-      expect(transform(AGGREGATEABLE_ANALYTICS)).toEqual([
+      expect(transform(MERGEABLE_ANALYTICS)).toEqual([
         { organisationUnit: 'TO', BCD1: 3.6666666666666665, BCD2: 4 },
         { organisationUnit: 'PG', BCD1: 5.666666666666667, BCD2: 37 },
       ]);
@@ -124,12 +154,12 @@ describe('aggregate', () => {
     it('count', () => {
       const transform = buildTransform([
         {
-          transform: 'aggregate',
-          period: 'group',
-          '...': 'count',
+          transform: 'mergeRows',
+          groupBy: 'period',
+          using: 'count',
         },
       ]);
-      expect(transform(AGGREGATEABLE_ANALYTICS)).toEqual([
+      expect(transform(MERGEABLE_ANALYTICS)).toEqual([
         { organisationUnit: 4, period: '20200101', BCD1: 2, BCD2: 2 },
         { organisationUnit: 4, period: '20200102', BCD1: 2, BCD2: 2 },
         { organisationUnit: 4, period: '20200103', BCD1: 2, BCD2: 2 },
@@ -139,12 +169,12 @@ describe('aggregate', () => {
     it('max', () => {
       const transform = buildTransform([
         {
-          transform: 'aggregate',
-          organisationUnit: 'group',
-          '...': 'max',
+          transform: 'mergeRows',
+          groupBy: 'organisationUnit',
+          using: 'max',
         },
       ]);
-      expect(transform(AGGREGATEABLE_ANALYTICS)).toEqual([
+      expect(transform(MERGEABLE_ANALYTICS)).toEqual([
         { organisationUnit: 'TO', period: '20200103', BCD1: 5, BCD2: 11 },
         { organisationUnit: 'PG', period: '20200103', BCD1: 8, BCD2: 99 },
       ]);
@@ -153,12 +183,12 @@ describe('aggregate', () => {
     it('min', () => {
       const transform = buildTransform([
         {
-          transform: 'aggregate',
-          period: 'group',
-          '...': 'min',
+          transform: 'mergeRows',
+          groupBy: 'period',
+          using: 'min',
         },
       ]);
-      expect(transform(AGGREGATEABLE_ANALYTICS)).toEqual([
+      expect(transform(MERGEABLE_ANALYTICS)).toEqual([
         { organisationUnit: 'PG', period: '20200101', BCD1: 4, BCD2: 11 },
         { organisationUnit: 'PG', period: '20200102', BCD1: 2, BCD2: 1 },
         { organisationUnit: 'PG', period: '20200103', BCD1: 2, BCD2: -1 },
@@ -168,14 +198,12 @@ describe('aggregate', () => {
     it('min -> consider null as minimum', () => {
       const transform = buildTransform([
         {
-          transform: 'aggregate',
-          period: 'group',
-          '...': 'min',
+          transform: 'mergeRows',
+          groupBy: 'period',
+          using: 'min',
         },
       ]);
-      expect(
-        transform([...AGGREGATEABLE_ANALYTICS, ...AGGREGATEABLE_ANALYTICS_WITH_NULL_VALUES]),
-      ).toEqual([
+      expect(transform([...MERGEABLE_ANALYTICS, ...MERGEABLE_ANALYTICS_WITH_NULL_VALUES])).toEqual([
         { organisationUnit: 'PG', period: '20200101', BCD1: null, BCD2: null },
         { organisationUnit: 'PG', period: '20200102', BCD1: 2, BCD2: 1 },
         { organisationUnit: 'PG', period: '20200103', BCD1: 2, BCD2: -1 },
@@ -185,12 +213,12 @@ describe('aggregate', () => {
     it('unique', () => {
       const transform = buildTransform([
         {
-          transform: 'aggregate',
-          organisationUnit: 'group',
-          '...': 'unique',
+          transform: 'mergeRows',
+          groupBy: 'organisationUnit',
+          using: 'unique',
         },
       ]);
-      expect(transform(UNIQUE_AGGREGATEABLE_ANALYTICS)).toEqual([
+      expect(transform(UNIQUE_MERGEABLE_ANALYTICS)).toEqual([
         {
           organisationUnit: 'TO',
           period: 'NO_UNIQUE_VALUE',
@@ -206,15 +234,15 @@ describe('aggregate', () => {
       ]);
     });
 
-    it('drop', () => {
+    it('exclude', () => {
       const transform = buildTransform([
         {
-          transform: 'aggregate',
-          period: 'group',
-          '...': 'drop',
+          transform: 'mergeRows',
+          groupBy: 'period',
+          using: 'exclude',
         },
       ]);
-      expect(transform(AGGREGATEABLE_ANALYTICS)).toEqual([
+      expect(transform(MERGEABLE_ANALYTICS)).toEqual([
         { period: '20200101' },
         { period: '20200102' },
         { period: '20200103' },
@@ -224,12 +252,12 @@ describe('aggregate', () => {
     it('first', () => {
       const transform = buildTransform([
         {
-          transform: 'aggregate',
-          organisationUnit: 'group',
-          '...': 'first',
+          transform: 'mergeRows',
+          groupBy: 'organisationUnit',
+          using: 'first',
         },
       ]);
-      expect(transform(AGGREGATEABLE_ANALYTICS)).toEqual([
+      expect(transform(MERGEABLE_ANALYTICS)).toEqual([
         { organisationUnit: 'TO', period: '20200101', BCD1: 4, BCD2: 11 },
         { organisationUnit: 'PG', period: '20200101', BCD1: 7, BCD2: 13 },
       ]);
@@ -238,12 +266,12 @@ describe('aggregate', () => {
     it('last', () => {
       const transform = buildTransform([
         {
-          transform: 'aggregate',
-          period: 'group',
-          '...': 'last',
+          transform: 'mergeRows',
+          groupBy: 'period',
+          using: 'last',
         },
       ]);
-      expect(transform(AGGREGATEABLE_ANALYTICS)).toEqual([
+      expect(transform(MERGEABLE_ANALYTICS)).toEqual([
         { organisationUnit: 'PG', period: '20200101', BCD1: 7, BCD2: 13 },
         { organisationUnit: 'PG', period: '20200102', BCD1: 8, BCD2: 99 },
         { organisationUnit: 'PG', period: '20200103', BCD1: 2, BCD2: -1 },
@@ -254,26 +282,24 @@ describe('aggregate', () => {
       it('throws error is multiple values exist per group', () => {
         const transform = buildTransform([
           {
-            transform: 'aggregate',
-            period: 'group',
-            '...': 'single',
+            transform: 'mergeRows',
+            groupBy: 'period',
+            using: 'single',
           },
         ]);
-        expect(() => transform(AGGREGATEABLE_ANALYTICS)).toThrow();
+        expect(() => transform(MERGEABLE_ANALYTICS)).toThrow();
       });
 
       it('returns the value if a single value exists per group', () => {
         const transform = buildTransform([
           {
-            transform: 'aggregate',
-            period: 'group',
-            '...': 'single',
+            transform: 'mergeRows',
+            groupBy: 'period',
+            using: 'single',
           },
         ]);
-        expect(transform(MULTIPLE_ANALYTICS)).toEqual([
-          { organisationUnit: 'TO', period: '20200101', dataElement: 'BCD1', value: 4 },
-          { organisationUnit: 'TO', period: '20200102', dataElement: 'BCD1', value: 2 },
-          { organisationUnit: 'TO', period: '20200103', dataElement: 'BCD1', value: 5 },
+        expect(transform(SINGLE_MERGEABLE_ANALYTICS)).toEqual([
+          { period: '20200101', BCD1: 4, BCD2: 4, BCD3: 4 },
         ]);
       });
     });

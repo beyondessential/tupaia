@@ -5,7 +5,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { getFormattedInfo } from '../utils';
+import { PopupDataItemList } from '../PopupDataItemList';
 import { PopupMarker } from './PopupMarker';
 
 const buildHeaderText = (markerData, popupHeaderFormat) => {
@@ -28,19 +28,7 @@ export const MeasurePopup = React.memo(({ markerData, serieses }) => {
       headerText={buildHeaderText(markerData, popupHeaderFormat)}
       coordinates={coordinates}
     >
-      {serieses
-        .filter(series => !series.hideFromPopup)
-        .map(series => {
-          const { key, name } = series;
-          const { formattedValue, valueInfo } = getFormattedInfo(markerData, series);
-
-          return valueInfo.hideFromPopup ? null : (
-            <div key={key}>
-              <span>{`${name}: `}</span>
-              <strong>{formattedValue}</strong>
-            </div>
-          );
-        })}
+      <PopupDataItemList measureOptions={serieses} data={markerData} />
     </PopupMarker>
   );
 });

@@ -8,18 +8,21 @@ import { buildTransform } from '..';
 export const convertPeriodToWeek = () =>
   buildTransform([
     {
-      transform: 'select',
-      "'period'": "convertToPeriod($row.period, 'WEEK')",
-      '...': '*',
+      transform: 'updateColumns',
+      insert: {
+        period: "=convertToPeriod($period, 'WEEK')",
+      },
+      include: '*',
     },
   ]);
 
 export const convertEventDateToWeek = () =>
   buildTransform([
     {
-      transform: 'select',
-      "'period'": "convertToPeriod($row.eventDate, 'WEEK')",
-      '...': '*',
+      transform: 'updateColumns',
+      insert: {
+        period: "=convertToPeriod($eventDate, 'WEEK')",
+      },
+      include: '*',
     },
   ]);
-
