@@ -27,7 +27,7 @@ const generateReportConfig = educationLevel => ({
     aggregations: [
       'FINAL_EACH_YEAR',
       {
-        type: 'SUM_PER_ORG_GROUP',
+        type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
         config: {
           dataSourceEntityType: 'sub_district',
           aggregationEntityType: 'requested',
