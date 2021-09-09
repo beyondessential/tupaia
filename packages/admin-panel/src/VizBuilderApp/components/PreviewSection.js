@@ -134,7 +134,6 @@ export const PreviewSection = () => {
     setTab(newValue);
   };
 
-
   const columns = useMemo(() => getColumns(reportData), [reportData]);
   const data = useMemo(() => reportData, [reportData]);
 
