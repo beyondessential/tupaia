@@ -93,12 +93,8 @@ export async function updateCountryEntities(
       );
     }
     codes.push(code);
-    const { parentGeographicalArea, parentEntity } = await getOrCreateParentEntity(
-      transactingModels,
-      entityObject,
-      country,
-      pushToDhis,
-    );
+    const { parentGeographicalArea, parentEntity } =
+      (await getOrCreateParentEntity(transactingModels, entityObject, country, pushToDhis)) || {};
     if (entityType === transactingModels.entity.types.FACILITY) {
       if (!parentGeographicalArea)
         throw new Error(
