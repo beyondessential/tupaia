@@ -39,8 +39,8 @@ Authorization: {{authorization}}
     "transform": [
       "keyValueByDataElementName",
       {
-          "title": "Calculate occuptions from data elements",
-          "description": "Sums the raw data elements values to their appropriate occuptions",
+          "title": "Calculate occupations from data elements",
+          "description": "Sums the raw data elements values to their appropriate occupations",
           "transform": "updateColumns",
           "insert": {
             "Doctors": "=$BCD46",
