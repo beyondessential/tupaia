@@ -75,14 +75,17 @@ class MapComponent extends Component {
     } = this.props;
     // Only updates/re-renders when the measure has changed or the orgUnit has changed.
     // These are the only cases where polygons or area tooltips should rerender.
-    if (nextProps.measureInfo.measureId !== measureInfo.measureId) return true;
-
-    if (JSON.stringify(nextProps.displayedChildren) !== JSON.stringify(displayedChildren))
+    if (nextProps.measureInfo.measureId !== measureInfo.measureId) {
       return true;
+    }
+
+    if (JSON.stringify(nextProps.displayedChildren) !== JSON.stringify(displayedChildren)) {
+      return true;
+    }
 
     if (
-      (nextProps.currentOrganisationUnit || {}).organisationUnitCode !==
-      (currentOrganisationUnit || {}).organisationUnitCode
+      nextProps.currentOrganisationUnit?.organisationUnitCode !==
+      currentOrganisationUnit?.organisationUnitCode
     ) {
       return true;
     }
