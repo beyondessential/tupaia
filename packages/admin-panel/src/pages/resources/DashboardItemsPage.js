@@ -70,6 +70,15 @@ export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin }) => {
   const columns = [
     ...FIELDS,
     {
+      Header: 'Export',
+      source: 'id',
+      type: 'export',
+      actionConfig: {
+        exportEndpoint: 'dashboardVisualisation',
+        fileName: '{code}',
+      },
+    },
+    {
       Header: 'Edit',
       type: 'edit',
       source: 'id',

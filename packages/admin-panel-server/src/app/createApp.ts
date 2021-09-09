@@ -96,6 +96,11 @@ export function createApp() {
       verifyBESAdminAccess,
       handleWith(FetchDashboardVisualisationRoute),
     )
+    .get(
+      '/v1/export/dashboardVisualisation/:dashboardVisualisationId',
+      verifyBESAdminAccess,
+      handleWith(ExportDashboardVisualisationRoute),
+    )
     .post<ExportDashboardVisualisationRequest>(
       '/v1/export/dashboardVisualisation',
       verifyBESAdminAccess,
