@@ -10,6 +10,7 @@ import { transformBuilders } from './functions';
 import { aliases } from './aliases';
 
 type TransformParams = {
+  title?: string;
   name: string;
   apply: (rows: Row[]) => Row[];
 };
@@ -36,8 +37,14 @@ const paramsValidator = yup.array().required();
 
 const transform = (rows: Row[], transformSteps: TransformParams[]): Row[] => {
   let transformedRows: Row[] = rows;
-  transformSteps.forEach((transformStep: TransformParams) => {
-    transformedRows = transformStep.apply(transformedRows);
+  transformSteps.forEach((transformStep: TransformParams, index: number) => {
+    try {
+      transformedRows = transformStep.apply(transformedRows);
+    } catch (e) {
+      const titlePart = transformStep.title ? ` (${transformStep.title})` : '';
+      const errorMessagePrefix = `Error in transform[${index + 1}]${titlePart}: `;
+      throw new Error(`${errorMessagePrefix}${(e as Error).message}`);
+    }
   });
   return transformedRows;
 };
@@ -53,12 +60,13 @@ const buildParams = (params: unknown): TransformParams => {
 
   const {
     transform: transformStep,
-    title, // This is purely a cosmetic part of the config, ignore it
+    title,
     description, // This is purely a cosmetic part of the config, ignore it
     ...restOfTransformParams
   } = validatedParams;
 
   return {
+    title,
     name: transformStep,
     apply: transformBuilders[transformStep](restOfTransformParams),
   };
