@@ -182,8 +182,10 @@ const requiresSurveyResponseTranslation = (
   const answerTranslatorFields = Object.keys(answerTranslators);
   const { answers } = surveyResponseObject;
   if (Array.isArray(answers)) {
-    return answers.some(answer =>
-      Object.keys(answer).some(field => answerTranslatorFields.includes(field)),
+    return answers.some(
+      answer =>
+        answer.body === '' ||
+        Object.keys(answer).some(field => answerTranslatorFields.includes(field)),
     );
   }
 
@@ -200,6 +202,7 @@ const constructSurveyResponseTranslators = models => ({
   user_email: userEmail => translateUserEmailToIdAndAssessorName(models.user, userEmail),
   entity_code: entityCode => translateEntityCodeToId(models.entity, entityCode),
   survey_code: surveyCode => translateSurveyCodeToId(models.survey, surveyCode),
+  answers: answers => answers.filter(a => a.body !== ''), // remove any empty answers
 });
 
 const constructAnswerTranslators = models => ({
