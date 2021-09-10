@@ -68,16 +68,16 @@ const REPORT = {
         exclude: '*',
       },
 
-      { transform: 'excludeRows', where: '=not ($denominator > 0)' },
+      { transform: 'excludeRows', where: '=$denominator <= 0' },
       {
         transform: 'updateColumns',
         insert: {
-          value: "='exists'",
+          value: 'exists',
           '=$name': '=formatAsFractionAndPercentage($numerator, $denominator)',
         },
         include: ['organisationUnitCode'],
       },
-      { transform: 'mergeRows', using: 'last', groupBy: 'organisationUnitCode' },
+      { transform: 'mergeRows', groupBy: 'organisationUnitCode' },
     ],
   },
 };
