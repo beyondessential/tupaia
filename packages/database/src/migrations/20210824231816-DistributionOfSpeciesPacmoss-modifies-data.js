@@ -47,7 +47,7 @@ const getReportCode = (species, hierarchyLevel) =>
   `PMOS_Distribution_Of_${species}_${hierarchyLevel}`;
 
 const getReport = (species, hierarchyLevel) => {
-  const popupItem = `'${species.substr(3)} found'`;
+  const popupItem = `${species.substr(3)} found`;
   return {
     id: generateId(),
     code: getReportCode(species, hierarchyLevel),
@@ -66,10 +66,13 @@ const getReport = (species, hierarchyLevel) => {
       },
       transform: [
         {
-          transform: 'select',
-          [popupItem]: '$row.value',
-          "'value'": "($row.value > 0) ? 'Detected': 'Not Detected'", // null > 0 = false, interesting.
-          "'organisationUnitCode'": '$row.organisationUnit',
+          insert: {
+            value: "=($value > 0) ? 'Detected': 'Not Detected'",
+            organisationUnitCode: '=$organisationUnit',
+            [popupItem]: '=$value',
+          },
+          exclude: '*',
+          transform: 'updateColumns',
         },
       ],
     },
