@@ -1,10 +1,6 @@
 /* eslint-disable import/no-webpack-loader-syntax */
 /* eslint-disable import/no-unresolved */
 /**
- * Disable eslint for no webpack-loader-syntax + unresolved to work around
- * the issue that react-scripts 4.0.x doesn't load svg as ReactComponent properly.
- */
-/**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
  * This source code is licensed under the AGPL-3.0 license
