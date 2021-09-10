@@ -33,7 +33,7 @@ const paramsValidator = yup.object().shape({
 });
 
 const getCustomRowSortFunction = (expression: string, direction: 'asc' | 'desc') => {
-  const sortParser = new TransformParser([]);
+  const sortParser = new TransformParser();
   return (row1: Row, row2: Row) => {
     sortParser.set('@current', row1);
     sortParser.addRowToScope(row1);

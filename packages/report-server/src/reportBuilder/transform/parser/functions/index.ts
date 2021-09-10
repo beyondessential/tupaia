@@ -14,9 +14,9 @@ import {
 import { add, divide, sum } from './math';
 
 /**
- * Functions to be imported into the expression parser
+ * Custom functions to be imported into mathjs
  */
-export const functions = {
+export const customFunctions = {
   value,
   last,
   eq,
@@ -32,6 +32,12 @@ export const functions = {
   formatAsFractionAndPercentage,
   any,
   all,
+};
+
+/**
+ * Functions to extend existing mathjs functions
+ */
+export const functionsExtensions = {
   add,
   divide,
 };

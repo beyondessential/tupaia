@@ -55,8 +55,10 @@ export class ExpressionParser {
     };
 
     this.customScope = customScope;
-    this.customFunctions = this.getCustomFunctions();
-    this.math.import(this.customFunctions);
+    this.customFunctionNames = Object.keys(this.getCustomFunctions());
+    this.math.import(this.getCustomFunctions(), { wrap: true });
+    this.math.import(this.getFunctionExtensions());
+    this.math.import(this.getFunctionOverrides(), { wrap: true, override: true });
     this.validExpressionCache = new Set();
   }
 
@@ -85,7 +87,7 @@ export class ExpressionParser {
       .filter(
         node =>
           node.isSymbolNode &&
-          !Object.keys(this.customFunctions).includes(node.name) &&
+          !this.customFunctionNames.includes(node.name) &&
           !this.isBuiltInFunction(node.name),
       )
       .map(({ name }) => name);
@@ -171,6 +173,7 @@ export class ExpressionParser {
   }
 
   /**
+   * Custom functions to be imported
    * @protected
    * This can be overridden in child classes to import new functions.
    * @returns {Record<string, (...args: any[]) => any>} functions
@@ -181,5 +184,25 @@ export class ExpressionParser {
       firstExistingValue,
       translate,
     };
+  }
+
+  /**
+   * Functions to merge with existing mathjs functions
+   * @protected
+   * This can be overridden in child classes to import new functions.
+   * @returns {Record<string, (...args: any[]) => any>} functions
+   */
+  getFunctionExtensions() {
+    return {};
+  }
+
+  /**
+   * Functions to override existing mathjs functions
+   * @protected
+   * This can be overridden in child classes to import new functions.
+   * @returns {Record<string, (...args: any[]) => any>} functions
+   */
+  getFunctionOverrides() {
+    return {};
   }
 }

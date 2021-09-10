@@ -5,7 +5,7 @@
 
 import { ExpressionParser } from '@tupaia/expression-parser';
 import { Row, FieldValue } from '../../types';
-import { functions, functionOverrides } from '../../functions';
+import { customFunctions, functionsExtensions, functionOverrides } from './functions';
 import { TransformScope } from './TransformScope';
 
 type RowLookup = {
@@ -39,13 +39,8 @@ export class TransformParser extends ExpressionParser {
 
   private lookups: Lookups;
 
-  public constructor(rows: Row[]) {
+  public constructor(rows: Row[] = []) {
     super(new TransformScope());
-
-    // Override mathjs functions
-    Object.entries(functionOverrides).forEach(([functionName, override]) => {
-      this.set(functionName, override);
-    });
 
     this.rows = rows;
     this.lookups = {
@@ -125,7 +120,15 @@ export class TransformParser extends ExpressionParser {
   };
 
   protected getCustomFunctions() {
-    return { ...super.getCustomFunctions(), ...functions };
+    return { ...super.getCustomFunctions(), ...customFunctions };
+  }
+
+  protected getFunctionExtensions() {
+    return { ...super.getFunctionExtensions(), ...functionsExtensions };
+  }
+
+  protected getFunctionOverrides() {
+    return { ...super.getFunctionOverrides(), ...functionOverrides };
   }
 
   public static isExpression(expression: string) {
