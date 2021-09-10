@@ -22,7 +22,7 @@ export const useReportPreview = (visualisation, project, location, enabled, setE
     },
     {
       ...DEFAULT_REACT_QUERY_OPTIONS,
-      // do not use query cache here because report data 
+      // do not use query cache here because report data
       // should be refetched frequently according to config changes
       enabled,
       keepPreviousData: true,

@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Prompt, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useBeforeunload } from 'react-beforeunload';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
@@ -41,6 +41,7 @@ export const Main = () => {
   // do not fetch existing viz if no visualisationId is provided in the params
   const fetchExistingVizEnabled = visualisationId !== undefined;
 
+  // eslint-disable-next-line no-unused-vars
   const [_, { setVisualisation }] = useVizBuilderConfig();
   const [enabled, setEnabled] = useState(false);
   const [visualisationLoaded, setVisualisationLoaded] = useState(false);

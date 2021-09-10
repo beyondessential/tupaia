@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import MuiBox from '@material-ui/core/Box';
 import { LocationPin } from './Icons/LocationPin';
 import { PushPin } from './Icons/PushPin';
-import { School } from './Icons/School';
+import { SchoolCount } from './Icons/SchoolCount';
 import { Group } from './Icons/Group';
 import { Road } from './Icons/Road';
 import { Study } from './Icons/Study';
@@ -35,7 +35,7 @@ const VitalsIcon = ({ icon }) => {
             case 'Group':
               return <Group />;
             case 'School':
-              return <School />;
+              return <SchoolCount />;
             case 'Study':
               return <Study />;
             case 'Road':

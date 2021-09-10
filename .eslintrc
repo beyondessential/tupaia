@@ -119,6 +119,19 @@
     },
     // Package overrides
     {
+      "files": ["packages/admin-panel/**"],
+      "plugins": ["module-resolver"],
+      "rules": {
+        "react/forbid-prop-types": "off",
+        "import/no-cycle": "warn"
+      },
+      "settings": {
+        "import/resolver": {
+          "babel-module": {}
+        }
+      }
+    },
+    {
       "files": "packages/database/src/migrations/**",
       "rules": {
         "func-names": "off",
