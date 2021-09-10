@@ -65,7 +65,7 @@ const IMPORT_CONFIG = {
       },
     },
     {
-      label: 'Automatically fetch GeoJSON (defaults to "Yes")',
+      label: 'Automatically fetch GeoJSON (defaults to "Yes", requires parent_code)',
       parameterKey: 'automaticallyFetchGeojson',
       type: 'boolean',
       editConfig: {
