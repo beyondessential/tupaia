@@ -91,7 +91,7 @@ const generateFiveYearIndicator = (code, dataElement, target) => ({
   code,
   builder: 'analyticArithmetic',
   config: {
-    formula: `${dataElement} >= ${target} ? 1 : ${dataElement} >= firstExistingValue(value1YearAgo, value2YearsAgo, value3YearsAgo, value4YearsAgo, value5YearsAgo, Infinity) ? 0 : -1`,
+    formula: `${dataElement} >= ${target} ? 1 : ${dataElement} > firstExistingValue(value1YearAgo, value2YearsAgo, value3YearsAgo, value4YearsAgo, value5YearsAgo, Infinity) ? 0 : -1`,
     parameters: [
       {
         builder: 'analyticArithmetic',
