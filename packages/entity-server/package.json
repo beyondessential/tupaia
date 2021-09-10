@@ -22,7 +22,7 @@
     "start": "node dist",
     "start-dev": "../../scripts/bash/backendStartDev.sh 9996 -ts",
     "start-verbose": "LOG_LEVEL=debug npm run start-dev",
-    "test": "jest",
+    "test": "jest --runInBand",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch"
   },

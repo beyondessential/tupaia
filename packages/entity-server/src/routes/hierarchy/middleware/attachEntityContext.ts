@@ -13,8 +13,12 @@ const throwNoAccessError = (entityCodes: string[]) => {
   throw new PermissionsError(`No access to requested entities: ${entityCodes}`);
 };
 
-const userCanAccessEntity = (entity: EntityType, allowedCountries: string[]) =>
-  entity.isProject() ||
+const userCanAccessEntity = (
+  entity: EntityType,
+  allowedCountries: string[],
+  rootEntity: EntityType,
+) =>
+  (entity.isProject() && entity.code === rootEntity.code) ||
   (notNull(entity.country_code) && allowedCountries.includes(entity.country_code));
 
 const validateEntitiesAndBuildContext = async (
@@ -46,13 +50,16 @@ const validateEntitiesAndBuildContext = async (
     throwNoAccessError(entityCodes);
   }
 
-  if (!entities.every(entity => userCanAccessEntity(entity, allowedCountries))) {
+  const allowedEntities = entities.filter(entity =>
+    userCanAccessEntity(entity, allowedCountries, rootEntity),
+  );
+  if (allowedEntities.length < 1) {
     throwNoAccessError(entityCodes);
   }
 
   const { filter: queryFilter } = req.query;
   const filter = extractFilterFromQuery(allowedCountries, queryFilter);
-  return { entities, allowedCountries, filter };
+  return { entities: allowedEntities, allowedCountries, filter };
 };
 
 export const attachSingleEntityContext = async (
