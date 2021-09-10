@@ -29,7 +29,6 @@ const initApp = () => {
 initApp();
 
 const appType = process.env.REACT_APP_APP_TYPE;
-const branch = process.env.REACT_APP_BRANCH;
 
 const App = () => {
   let RootScreen = DesktopApp;
@@ -42,7 +41,7 @@ const App = () => {
     <Provider store={store}>
       <AppStyleProviders>
         <Suspense fallback={null}>
-          <EnvBanner branch={branch} />
+          <EnvBanner />
           <RootScreen />
         </Suspense>
       </AppStyleProviders>

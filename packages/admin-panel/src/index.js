@@ -13,12 +13,10 @@ import { Footer, Navbar } from './widgets';
 
 const VizBuilder = lazy(() => import('./VizBuilderApp'));
 
-const branch = process.env.REACT_APP_BRANCH;
-
 renderReactApp(
   <Router>
     <Suspense fallback={<div>loading...</div>}>
-      <EnvBanner branch={branch} />
+      <EnvBanner />
       <Switch>
         <Route path="/viz-builder">
           <VizBuilderProviders>

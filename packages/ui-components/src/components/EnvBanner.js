@@ -23,7 +23,9 @@ const StyledBanner = styled(FlexCenter)`
   }
 `;
 
-export const EnvBanner = ({ branch, color }) => {
+export const EnvBanner = ({ color }) => {
+  const branch = process.env.REACT_APP_BRANCH;
+
   if (!branch || typeof branch !== 'string' || branch === 'master' || branch === 'main') {
     return null;
   }
@@ -37,11 +39,9 @@ export const EnvBanner = ({ branch, color }) => {
 };
 
 EnvBanner.propTypes = {
-  branch: PropTypes.string,
   color: PropTypes.string,
 };
 
 EnvBanner.defaultProps = {
-  branch: null,
   color: '#f39c12',
 };
