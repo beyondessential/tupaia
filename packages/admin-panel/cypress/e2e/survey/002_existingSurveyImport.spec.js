@@ -20,11 +20,11 @@ import {
   checkImportFail,
 } from '../../support';
 
-beforeEach(() => {
-  loginAsSuperUser();
-  openImportSurveyForm();
-});
 describe('import existing survey', () => {
+  beforeEach(() => {
+    loginAsSuperUser();
+    openImportSurveyForm();
+  });
   // Deleted Questions from Survey Demo Land - Samoa COVID-19 Contact Tracing .
 
   it('import an existing survey by removing questions', () => {

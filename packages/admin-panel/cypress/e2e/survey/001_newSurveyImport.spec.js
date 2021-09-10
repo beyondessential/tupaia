@@ -19,12 +19,11 @@ import {
   checkImportFail,
 } from '../../support';
 
-beforeEach(() => {
-  loginAsSuperUser();
-  openImportSurveyForm();
-});
-
 describe('import new survey file', () => {
+  beforeEach(() => {
+    loginAsSuperUser();
+    openImportSurveyForm();
+  });
   // Check error message.
   it('Name does not match the sheet Name', () => {
     enterSurveyName('Test Wrong Survey Name');
