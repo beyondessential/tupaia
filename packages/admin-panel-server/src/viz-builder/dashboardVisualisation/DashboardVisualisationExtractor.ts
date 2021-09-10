@@ -5,43 +5,59 @@
 
 import { isNil, omitBy } from 'lodash';
 
-import { snakeKeys } from '@tupaia/utils';
-import {
-  DashboardItem,
-  DashboardVisualisationObject,
-  DashboardVisualisationResource,
-  PreviewMode,
-  Report,
-  CamelKeysToSnake,
-  VisualisationValidator,
-} from '../types';
+import { snakeKeys, yup } from '@tupaia/utils';
+import { PreviewMode, DashboardVisualisationResource } from '../types';
 
-export class DashboardVisualisationExtractor {
-  private readonly visualisation: DashboardVisualisationObject;
+import { baseVisualisationValidator } from './validators';
 
-  private readonly dashboardItemValidator: VisualisationValidator;
+// expands object types recursively
+// TODO: Move this type to a generic @tupaia/utils-ts package
+type ExpandType<T> = T extends Record<string, unknown>
+  ? T extends infer O
+    ? {
+        [K in keyof O]: ExpandType<O[K]>;
+      }
+    : never
+  : T;
 
-  private readonly reportValidator: VisualisationValidator;
+export class DashboardVisualisationExtractor<
+  DashboardItemValidator extends yup.AnyObjectSchema,
+  ReportValidator extends yup.AnyObjectSchema
+> {
+  private readonly visualisation: ExpandType<yup.InferType<typeof baseVisualisationValidator>>;
+
+  private readonly dashboardItemValidator: DashboardItemValidator;
+
+  private readonly reportValidator: ReportValidator;
+
+  private reportValidatorContext: Record<string, unknown> = {};
 
   constructor(
-    visualisation: DashboardVisualisationObject,
-    dashboardItemValidator: VisualisationValidator,
-    reportValidator: VisualisationValidator,
+    visualisation: Record<string, unknown>,
+    dashboardItemValidator: DashboardItemValidator,
+    reportValidator: ReportValidator,
   ) {
-    this.visualisation = visualisation;
+    this.visualisation = baseVisualisationValidator.validateSync(visualisation);
     this.dashboardItemValidator = dashboardItemValidator;
     this.reportValidator = reportValidator;
   }
 
-  public extractDashboardVisualisationResource = (): DashboardVisualisationResource => {
-    // Resources (like the ones passed to meditrak-server for upsert) use snake_case keys
-    const dashboardItem = snakeKeys(this.getDashboardItem()) as CamelKeysToSnake<DashboardItem>;
-    const report = snakeKeys(this.getReport()) as CamelKeysToSnake<Report>;
-
-    return { dashboardItem, report };
+  public setReportValidatorContext = (context: Record<string, unknown>) => {
+    this.reportValidatorContext = context;
   };
 
-  extractDashboardItem(): DashboardItem {
+  public getDashboardVisualisationResource = () => {
+    // Resources (like the ones passed to meditrak-server for upsert) use snake_case keys
+    const dashboardItem = this.getDashboardItem();
+    const report = this.getReport();
+
+    return {
+      dashboardItem: snakeKeys(dashboardItem),
+      report: snakeKeys(report),
+    } as DashboardVisualisationResource;
+  };
+
+  private vizToDashboardItem() {
     const { id, code, name, presentation } = this.visualisation;
     return {
       id,
@@ -62,15 +78,14 @@ export class DashboardVisualisationExtractor {
     };
   }
 
-  getDashboardItem() {
+  public getDashboardItem(): ExpandType<yup.InferType<DashboardItemValidator>> {
     if (!this.dashboardItemValidator) {
       throw new Error('No validator provided for extracting dashboard item');
     }
-    this.dashboardItemValidator.validate(this.visualisation);
-    return this.extractDashboardItem();
+    return this.dashboardItemValidator.validateSync(this.vizToDashboardItem());
   }
 
-  extractReport(previewMode?: PreviewMode): Report {
+  private vizToReport(previewMode?: PreviewMode) {
     const { code, permissionGroup, data, presentation } = this.visualisation;
     const { dataElements, dataGroups, aggregations } = data;
 
@@ -101,11 +116,12 @@ export class DashboardVisualisationExtractor {
     };
   }
 
-  getReport(previewMode?: PreviewMode) {
+  public getReport(previewMode?: PreviewMode): ExpandType<yup.InferType<ReportValidator>> {
     if (!this.reportValidator) {
       throw new Error('No validator provided for extracting report');
     }
-    this.reportValidator.validate(this.visualisation);
-    return this.extractReport(previewMode);
+    return this.reportValidator.validateSync(this.vizToReport(previewMode), {
+      context: this.reportValidatorContext,
+    });
   }
 }

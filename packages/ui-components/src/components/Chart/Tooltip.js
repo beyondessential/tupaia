@@ -132,6 +132,23 @@ const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }
   );
 };
 
+const NoDataTooltip = ({ payload, periodGranularity }) => {
+  const data = payload[0]?.payload;
+  const { name = undefined, timestamp = undefined } = data || {};
+
+  return (
+    <TooltipContainer>
+      <Heading>
+        {name ||
+          (getIsTimeSeries([data]) &&
+            periodGranularity &&
+            formatTimestampForChart(timestamp, periodGranularity))}
+      </Heading>
+      <Text>No Data</Text>
+    </TooltipContainer>
+  );
+};
+
 export const Tooltip = props => {
   const { payload, active, presentationOptions } = props;
 
@@ -146,11 +163,8 @@ export const Tooltip = props => {
     return <MultiValueTooltip {...props} payload={filteredPayload} />;
   }
 
-  return (
-    <TooltipContainer>
-      <Text>No Data</Text>
-    </TooltipContainer>
-  );
+  // For no data display, pass the non-filtered data so we can pull the name
+  return <NoDataTooltip {...props} payload={data} />;
 };
 
 Tooltip.propTypes = {
@@ -167,3 +181,4 @@ Tooltip.defaultProps = {
 
 SingleValueTooltip.propTypes = Tooltip.propTypes;
 MultiValueTooltip.propTypes = Tooltip.propTypes;
+NoDataTooltip.propTypes = Tooltip.propTypes;

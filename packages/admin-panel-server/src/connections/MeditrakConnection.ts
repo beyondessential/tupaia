@@ -12,9 +12,19 @@ import { BES_ADMIN_PERMISSION_GROUP } from '../constants';
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
 
 const isBESAdmin = (policy: Record<string, string[]>) => {
-  return new AccessPolicy(policy).allowsSome(null, BES_ADMIN_PERMISSION_GROUP);
+  return new AccessPolicy(policy).allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
 };
 
+const translateParams = (queryParameters?: Record<string, unknown>) => {
+  const translatedParams = queryParameters?.filter
+    ? { ...queryParameters, filter: JSON.stringify(queryParameters?.filter) }
+    : queryParameters;
+  return translatedParams as QueryParameters;
+};
+
+/**
+ * @deprecated use @tupaia/api-client
+ */
 export class MeditrakConnection extends ApiConnection {
   baseUrl = MEDITRAK_API_URL;
 
@@ -23,19 +33,38 @@ export class MeditrakConnection extends ApiConnection {
     return { ...camelcaseKeys(user), isBESAdmin: isBESAdmin(user.accessPolicy) };
   }
 
-  async fetchResources(endpoint: string, rawQueryParams?: Record<string, unknown>) {
-    const queryParams = { ...rawQueryParams };
-    if (queryParams.filter) {
-      queryParams.filter = JSON.stringify(queryParams.filter);
+  async fetchResources(endpoint: string, params?: Record<string, unknown>) {
+    return this.get(endpoint, translateParams(params));
+  }
+
+  async createResource(endpoint: string, params: Record<string, unknown>, body: RequestBody) {
+    return this.post(endpoint, translateParams(params), body);
+  }
+
+  async updateResource(endpoint: string, params: Record<string, unknown>, body: RequestBody) {
+    return this.put(endpoint, translateParams(params), body);
+  }
+
+  async deleteResource(endpoint: string) {
+    return this.delete(endpoint);
+  }
+
+  async upsertResource(endpoint: string, params: Record<string, unknown>, body: RequestBody) {
+    const results = await this.fetchResources(endpoint, params);
+
+    if (results.length > 1) {
+      throw new Error(
+        `Cannot upsert ${endpoint} since multiple resources were found: please use unique fields in you query`,
+      );
     }
-    return this.get(endpoint, queryParams as Record<string, string>);
-  }
 
-  async createResource(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
-    return this.post(endpoint, queryParameters, body);
-  }
+    if (results.length === 1) {
+      await this.updateResource(`${endpoint}/${results[0].id}`, params, body);
+    } else {
+      await this.createResource(endpoint, params, body);
+    }
 
-  async updateResource(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
-    return this.put(endpoint, queryParameters, body);
+    const [resource] = await this.fetchResources(endpoint, params);
+    return resource;
   }
 }
