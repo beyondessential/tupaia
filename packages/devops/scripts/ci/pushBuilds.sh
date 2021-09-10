@@ -9,9 +9,9 @@ if [ -f "/common/deployment_exists" ]; then
     DEPLOYMENT_SSH_URL=$(${DIR}/determineDeploymentSshUrl.sh)
     cd /
     tar -zcf tupaia.tar.gz /tupaia
-    ssh -o ServerAliveInterval=15 ubuntu@$DEPLOYMENT_SSH_URL "mkdir -p incoming_builds"
-    scp -o StrictHostKeyChecking=no -p /tupaia.tar.gz ubuntu@$DEPLOYMENT_SSH_URL:./incoming_builds/tupaia.tar.gz
-    ssh -o ServerAliveInterval=15 ubuntu@$DEPLOYMENT_SSH_URL "cd incoming_builds && tar -zxf tupaia.tar.gz && cd .. && mv incoming_builds/tupaia . && rm -rf incoming_builds"
+    ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=15 ubuntu@$DEPLOYMENT_SSH_URL "mkdir -p incoming_builds"
+    scp -o StrictHostKeyChecking=no -o ServerAliveInterval=15 -p /tupaia.tar.gz ubuntu@$DEPLOYMENT_SSH_URL:./incoming_builds/tupaia.tar.gz
+    ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=15 ubuntu@$DEPLOYMENT_SSH_URL "cd incoming_builds && tar -zxf tupaia.tar.gz && cd .. && rm -rf tupaia && mv incoming_builds/tupaia . && rm -rf incoming_builds"
 else
     echo "No deployment exists for ${CI_BRANCH}, skipping push builds"
 fi
