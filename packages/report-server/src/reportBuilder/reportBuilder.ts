@@ -11,7 +11,7 @@ import { buildOutput } from './output';
 import { Row } from './types';
 import { OutputType } from './output/functions/outputBuilders';
 
-interface BuiltReport {
+export interface BuiltReport {
   results: OutputType;
 }
 
