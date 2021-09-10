@@ -47,7 +47,7 @@ const getReportCode = (species, hierarchyLevel) =>
   `PMOS_Distribution_Of_${species}_${hierarchyLevel}`;
 
 const getReport = (species, hierarchyLevel) => {
-  const popupItem = `'${species.substr(3)} found'`;
+  const popupItem = `${species.substr(3)} found`;
   return {
     id: generateId(),
     code: getReportCode(species, hierarchyLevel),
