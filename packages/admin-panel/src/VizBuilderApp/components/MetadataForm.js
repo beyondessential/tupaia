@@ -73,8 +73,8 @@ export const MetadataForm = ({ Header, Body, Footer, onSubmit }) => {
 };
 
 MetadataForm.propTypes = {
-  Header: PropTypes.any.isRequired,
-  Body: PropTypes.any.isRequired,
-  Footer: PropTypes.any.isRequired,
+  Header: PropTypes.node.isRequired,
+  Body: PropTypes.node.isRequired,
+  Footer: PropTypes.node.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };

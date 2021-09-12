@@ -7,7 +7,8 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import { render as renderReactApp } from 'react-dom';
 import 'react-table/react-table.css';
 import AdminPanel from './App';
-import { AdminPanelProviders, VizBuilderProviders } from './utilities';
+import { VizBuilderProviders } from './utilities/VizBuilderProviders';
+import { AdminPanelProviders } from './utilities/AdminPanelProviders';
 import { Footer, Navbar } from './widgets';
 
 const VizBuilder = lazy(() => import('./VizBuilderApp'));

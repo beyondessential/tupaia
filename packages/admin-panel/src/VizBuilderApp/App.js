@@ -51,8 +51,8 @@ export const App = ({ Navbar, Footer }) => {
 };
 
 App.propTypes = {
-  Navbar: PropTypes.any,
-  Footer: PropTypes.any,
+  Navbar: PropTypes.node,
+  Footer: PropTypes.node,
 };
 
 App.defaultProps = {
