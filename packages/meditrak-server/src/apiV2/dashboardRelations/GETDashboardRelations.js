@@ -3,14 +3,17 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { TYPES } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { assertDashboardGetPermissions } from '../dashboards';
+import { assertDashboardItemGetPermissions } from '../dashboardItems';
 import {
   assertDashboardRelationGetPermissions,
   createDashboardRelationsDBFilter,
   createDashboardRelationsViaParentDashboardDBFilter,
+  createDashboardRelationsViaParentDashboardItemDBFilter,
 } from './assertDashboardRelationsPermissions';
-import { assertDashboardGetPermissions } from '../dashboards';
 
 /**
  * Handles endpoints:
@@ -38,22 +41,47 @@ export class GETDashboardRelations extends GETHandler {
     return dashboardRelation;
   }
 
-  async getPermissionsFilter(criteria, options) {
+  getPermissionsFilter(criteria, options) {
     const dbConditions = createDashboardRelationsDBFilter(this.accessPolicy, criteria);
     return { dbConditions, dbOptions: options };
   }
 
   async getPermissionsViaParentFilter(criteria, options) {
-    // Check parent permissions
-    const dashboardPermissionChecker = accessPolicy =>
+    switch (this.parentRecordType) {
+      case TYPES.DASHBOARD:
+        return this.getPermissionsViaParentDashboardFilter(criteria, options);
+      case TYPES.DASHBOARD_ITEM:
+        return this.getPermissionsViaParentDashboardItemFilter(criteria, options);
+      default:
+        throw new Error(`Cannot get dashboard relations for ${this.parentRecordType}`);
+    }
+  }
+
+  async getPermissionsViaParentDashboardFilter(criteria, options) {
+    const parentPermissionChecker = accessPolicy =>
       assertDashboardGetPermissions(accessPolicy, this.models, this.parentRecordId);
 
     await this.assertPermissions(
-      assertAnyPermissions([assertBESAdminAccess, dashboardPermissionChecker]),
+      assertAnyPermissions([assertBESAdminAccess, parentPermissionChecker]),
     );
 
-    // Get permitted dashboard relations
     return createDashboardRelationsViaParentDashboardDBFilter(
+      this.accessPolicy,
+      criteria,
+      options,
+      this.parentRecordId,
+    );
+  }
+
+  async getPermissionsViaParentDashboardItemFilter(criteria, options) {
+    const parentPermissionChecker = accessPolicy =>
+      assertDashboardItemGetPermissions(accessPolicy, this.models, this.parentRecordId);
+
+    await this.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, parentPermissionChecker]),
+    );
+
+    return createDashboardRelationsViaParentDashboardItemDBFilter(
       this.accessPolicy,
       criteria,
       options,

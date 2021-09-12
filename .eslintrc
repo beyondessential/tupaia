@@ -32,12 +32,13 @@
     // TypeScript packages
     {
       "files": [
-        "packages/indicators/**",
+        "packages/admin-panel-server/**",
+        "packages/api-client/**",
         "packages/entity-server/**",
+        "packages/indicators/**",
+        "packages/lesmis-server/**",
         "packages/psss-server/**",
         "packages/report-server/**",
-        "packages/lesmis-server/**",
-        "packages/admin-panel-server/**",
         "packages/server-boilerplate/**"
       ],
       "extends": "@beyondessential/ts",

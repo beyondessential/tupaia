@@ -6,7 +6,14 @@ import { useQuery } from 'react-query';
 import { post } from '../api';
 import { DEFAULT_REACT_QUERY_OPTIONS } from '../constants';
 
-export const useReportPreview = (visualisation, project, location, enabled, setEnabled) =>
+export const useReportPreview = ({
+  visualisation,
+  project,
+  location,
+  testData,
+  enabled,
+  onSettled,
+}) =>
   useQuery(
     ['fetchReportPreviewData', visualisation],
     async () => {
@@ -15,7 +22,10 @@ export const useReportPreview = (visualisation, project, location, enabled, setE
           entityCode: location,
           hierarchy: project,
         },
-        data: { previewConfig: visualisation },
+        data: {
+          testData,
+          previewConfig: visualisation,
+        },
       });
 
       return response.results;
@@ -26,8 +36,6 @@ export const useReportPreview = (visualisation, project, location, enabled, setE
       // should be refetched frequently according to config changes
       enabled,
       keepPreviousData: true,
-      onSettled: () => {
-        setEnabled(false);
-      },
+      onSettled,
     },
   );

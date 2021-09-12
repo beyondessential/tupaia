@@ -33,6 +33,11 @@ export class DashboardRelationModel extends DatabaseModel {
     return DashboardRelationType;
   }
 
+  customColumnSelectors = {
+    // `entity_types` is enum[] in the DB, which doesn't get parsed into a JS array automatically
+    entity_types: () => ({ castAs: 'text[]' }),
+  };
+
   async findDashboardRelation(dashboardCode, dashboardItemCode) {
     return this.findOne(
       {

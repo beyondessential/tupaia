@@ -3,18 +3,18 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { FILTERABLE_ANALYTICS } from './transform.fixtures';
+import { EXCLUDEABLE_ANALYTICS } from './transform.fixtures';
 import { buildTransform } from '../../../reportBuilder/transform';
 
-describe('filter', () => {
-  it('can filter by boolean expression on field value', () => {
+describe('excludeRows', () => {
+  it('can exclude by boolean expression on row', () => {
     const transform = buildTransform([
       {
-        transform: 'filter',
-        where: '$row.BCD1 > 5',
+        transform: 'excludeRows',
+        where: '=$BCD1 < 6',
       },
     ]);
-    expect(transform(FILTERABLE_ANALYTICS)).toEqual([
+    expect(transform(EXCLUDEABLE_ANALYTICS)).toEqual([
       { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
       { period: '20200102', organisationUnit: 'PG', BCD1: 8 },
     ]);

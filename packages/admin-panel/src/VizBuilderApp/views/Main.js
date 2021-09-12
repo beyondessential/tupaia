@@ -11,9 +11,9 @@ import MuiContainer from '@material-ui/core/Container';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { FlexColumn, SmallAlert } from '@tupaia/ui-components';
 
-import { useVizBuilderConfig } from '../vizBuilderConfigStore';
 import { useDashboardVisualisation } from '../api';
 import { Toolbar, Panel, PreviewSection, PreviewOptions } from '../components';
+import { PreviewDataProvider, useVizBuilderConfig } from '../context';
 
 const Container = styled(MuiContainer)`
   flex: 1;
@@ -43,7 +43,6 @@ export const Main = () => {
 
   // eslint-disable-next-line no-unused-vars
   const [_, { setVisualisation }] = useVizBuilderConfig();
-  const [enabled, setEnabled] = useState(false);
   const [visualisationLoaded, setVisualisationLoaded] = useState(false);
   const { data = {}, error } = useDashboardVisualisation(visualisationId, fetchExistingVizEnabled);
   const { visualisation } = data;
@@ -77,11 +76,13 @@ export const Main = () => {
     <>
       <Toolbar />
       <Container maxWidth="xl">
-        <Panel setEnabled={setEnabled} />
-        <RightCol>
-          <PreviewOptions />
-          <PreviewSection enabled={enabled} setEnabled={setEnabled} />
-        </RightCol>
+        <PreviewDataProvider>
+          <Panel />
+          <RightCol>
+            <PreviewOptions />
+            <PreviewSection />
+          </RightCol>
+        </PreviewDataProvider>
       </Container>
     </>
   );

@@ -68,7 +68,6 @@
     "@types/lodash.groupby": "^4.6.0",
     "@types/lodash.keyby": "^4.6.6",
     "@types/lodash.pick": "^4.4.0",
-    "@types/mathjs": "^6.0.5",
     "@types/multer": "^1.4.7",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
