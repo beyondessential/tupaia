@@ -41,7 +41,6 @@ const parseProps = (organisationUnitCode, organisationUnitChildren, measureOrgUn
   let hasShadedChildren = false;
 
   if (measureOrgUnits.length > 0) {
-    // const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
     const measureOrgUnitCodes = new Set(
       measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode),
     );

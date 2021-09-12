@@ -107,7 +107,7 @@ MapDivComponent.propTypes = {
   tileSets: PropTypes.arrayOf(PropTypes.shape(tileSetShape)).isRequired,
   onChangeTileSet: PropTypes.func.isRequired,
   setValueHidden: PropTypes.func.isRequired,
-  hiddenValues: PropTypes.PropTypes.arrayOf(PropTypes.object),
+  hiddenValues: PropTypes.object,
   serieses: PropTypes.PropTypes.arrayOf(PropTypes.object),
 };
 

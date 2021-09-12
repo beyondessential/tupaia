@@ -171,7 +171,7 @@ class MapComponent extends Component {
             isActive
           />
         )}
-        {(displayedChildren || []).map(area => (
+        {displayedChildren?.map(area => (
           <ConnectedPolygon
             area={area}
             key={area.organisationUnitCode}
@@ -179,7 +179,7 @@ class MapComponent extends Component {
             isChildArea
           />
         ))}
-        {(currentOrganisationUnitSiblings || []).map(area => (
+        {currentOrganisationUnitSiblings?.map(area => (
           <ConnectedPolygon
             area={area}
             key={area.organisationUnitCode}

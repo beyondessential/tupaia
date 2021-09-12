@@ -65,7 +65,7 @@ MapTableModalComponent.propTypes = {
       value: PropTypes.string,
     }),
   ),
-  currentCountry: PropTypes.string,
+  currentCountry: PropTypes.object,
   currentMeasure: PropTypes.object,
 };
 
