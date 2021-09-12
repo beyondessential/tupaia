@@ -3,11 +3,17 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { yup } from '@tupaia/utils';
+
 import { TransformParser } from '../parser';
 
 type WhereParams = {
   where?: string;
 };
+
+const paramsValidator = yup.object().shape({
+  where: yup.string(),
+});
 
 const where = (parser: TransformParser, params: WhereParams): boolean => {
   if (params.where === undefined) {
@@ -22,23 +28,8 @@ const where = (parser: TransformParser, params: WhereParams): boolean => {
 };
 
 const buildParams = (params: unknown): WhereParams => {
-  if (typeof params !== 'object' || params === null) {
-    throw new Error(`Expected params object but got ${params}`);
-  }
-
-  if (!('where' in params)) {
-    return {};
-  }
-
-  const whereClaus: unknown = params.where;
-
-  if (typeof whereClaus !== 'string') {
-    throw new Error(`Expected string but got ${params}`);
-  }
-
-  return {
-    where: whereClaus,
-  };
+  const validatedParams = paramsValidator.validateSync(params);
+  return validatedParams;
 };
 
 export const buildWhere = (params: unknown) => {
