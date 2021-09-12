@@ -10,9 +10,8 @@ import {
   NO_COLOR,
   BREWER_AUTO,
   UNKNOWN_COLOR,
-  resolveSpectrumColour,
-} from '../components/Marker/markerColors';
-import { SPECTRUM_ICON, DEFAULT_ICON, UNKNOWN_ICON } from '../components/Marker/markerIcons';
+  UNKNOWN_ICON,
+} from '@tupaia/ui-components/lib/map';
 import { VALUE_TYPES } from '../components/View/constants';
 import { MAP_COLORS } from '../styles';
 import { formatDataValue } from './formatters';
@@ -35,7 +34,7 @@ export const SPECTRUM_MEASURE_TYPES = [MEASURE_TYPE_SPECTRUM, MEASURE_TYPE_SHADE
 const SPECTRUM_SCALE_DEFAULT = { left: {}, right: {} };
 const PERCENTAGE_SPECTRUM_SCALE_DEFAULT = { left: { max: 0 }, right: { min: 1 } };
 
-export function autoAssignColors(values) {
+function autoAssignColors(values) {
   if (!values) return [];
 
   let autoIndex = 0;
@@ -60,7 +59,7 @@ export function autoAssignColors(values) {
   }));
 }
 
-export function createValueMapping(valueObjects, type) {
+function createValueMapping(valueObjects, type) {
   const mapping = {};
 
   valueObjects.forEach(valueObject => {
@@ -235,7 +234,7 @@ export function processMeasureInfo(response) {
   };
 }
 
-export function getValueInfo(value, valueMapping, hiddenValues = {}) {
+function getValueInfo(value, valueMapping, hiddenValues = {}) {
   if (!value && typeof value !== 'number' && valueMapping.null) {
     // use 'no data' value
     const nullValue = hiddenValues.null || hiddenValues[valueMapping.null.value];
@@ -305,86 +304,6 @@ export function getSingleFormattedValue(orgUnitData, measureOptions) {
   // For situations where we can only show one value, just show the value
   // of the first measure.
   return getFormattedInfo(orgUnitData, measureOptions[0]).formattedValue;
-}
-
-export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasures = {}) {
-  const displayInfo = {};
-
-  measureOptions.forEach(({ color, icon, radius }) => {
-    if (color) {
-      displayInfo.color = color;
-    }
-    if (icon) {
-      displayInfo.icon = icon;
-    }
-    if (radius) {
-      displayInfo.radius = radius;
-    }
-  });
-  measureOptions.forEach(
-    ({
-      key,
-      type,
-      valueMapping,
-      noDataColour,
-      scaleType,
-      scaleColorScheme,
-      min,
-      max,
-      hideByDefault,
-    }) => {
-      const valueInfo = getValueInfo(measureData[key], valueMapping, {
-        ...hideByDefault,
-        ...hiddenMeasures[key],
-      });
-      switch (type) {
-        case MEASURE_TYPE_ICON:
-          displayInfo.icon = valueInfo.icon;
-          displayInfo.color = displayInfo.color || valueInfo.color;
-          break;
-        case MEASURE_TYPE_RADIUS:
-          displayInfo.radius = valueInfo.value || 0;
-          displayInfo.color = displayInfo.color || valueInfo.color;
-          break;
-        case MEASURE_TYPE_SPECTRUM:
-        case MEASURE_TYPE_SHADED_SPECTRUM:
-          displayInfo.originalValue =
-            valueInfo.value === null || valueInfo.value === undefined ? 'No data' : valueInfo.value;
-          displayInfo.color = resolveSpectrumColour(
-            scaleType,
-            scaleColorScheme,
-            valueInfo.value || (valueInfo.value === 0 ? 0 : null),
-            min,
-            max,
-            noDataColour,
-          );
-          displayInfo.icon = valueInfo.icon || displayInfo.icon || SPECTRUM_ICON;
-          break;
-        case MEASURE_TYPE_SHADING:
-          displayInfo.color = MAP_COLORS[valueInfo.color] || valueInfo.color || MAP_COLORS.NO_DATA;
-          break;
-        case MEASURE_TYPE_POPUP_ONLY:
-          break;
-        case MEASURE_TYPE_COLOR:
-        default:
-          displayInfo.color = valueInfo.color;
-          break;
-      }
-      if (valueInfo.isHidden) {
-        displayInfo.isHidden = true;
-      }
-    },
-  );
-
-  if (!displayInfo.icon && typeof displayInfo.radius === 'undefined') {
-    displayInfo.icon = DEFAULT_ICON;
-  }
-
-  if (!displayInfo.color) {
-    displayInfo.color = UNKNOWN_COLOR;
-  }
-
-  return displayInfo;
 }
 
 const MAX_ALLOWED_RADIUS = 1000;

@@ -44,7 +44,6 @@ export const LIGHT_GREY = '#EFEFF0';
 export const ERROR = red[500];
 export const FORM_BLUE = '#34abd0';
 
-export const DASHBOARD_TRANSITION_TIME = '1s';
 export const MOBILE_MARGIN_SIZE = 16;
 export const MOBILE_HEADER_HEIGHT = 55;
 const MATERIAL_UI_POPOVER_INDEX = 1300; // Taken from material-ui source code
@@ -55,6 +54,7 @@ export const DASHBOARD_META_MARGIN = 15;
 export const TOP_BAR_HEIGHT = 60;
 export const CONTROL_BAR_WIDTH = 340;
 export const CONTROL_BAR_PADDING = 10;
+export const MAP_CONTROLS_WIDTH = 166;
 
 // a 12-color palette designed to preserve distinction between colors,
 // factoring in colorblindness

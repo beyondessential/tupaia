@@ -49,7 +49,6 @@
     "email-validator": "^1.1.1",
     "history": "^4.7.2",
     "is-mobile": "^0.2.2",
-    "leaflet": "^1.1.0",
     "lodash": "^4.17.4",
     "markdown-to-jsx": "^6.4.1",
     "material-ui": "^0.18.3",
@@ -65,7 +64,6 @@
     "react": "^16.13.1",
     "react-animations": "^1.0.0",
     "react-dom": "^16.13.1",
-    "react-leaflet": "^1.4.0",
     "react-redux": "^5.0.5",
     "react-svg-loader": "^2.1.0",
     "react-tap-event-plugin": "^3.0.3",
@@ -96,16 +94,7 @@
     "react-error-overlay": "^1.0.7",
     "react-scripts": "^4.0.3"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "browserslist": [
+    "defaults"
+  ]
 }

@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 
 import { selectIsEnlargedDialogVisible } from '../../../selectors';
 import { LoadingScreen } from '../../LoadingScreen';
-import Map from '../../../containers/Map';
+import { Map } from '../../../containers/Map';
 import { MapDiv } from '../../../components/MapDiv';
 import TopBar from '../../../containers/TopBar';
 import SidePanel from '../../../containers/SidePanel';
