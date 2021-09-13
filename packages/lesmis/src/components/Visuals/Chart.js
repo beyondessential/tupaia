@@ -119,7 +119,7 @@ export const Chart = ({
         isLoading={isLoading}
         isError={isError}
         error={error}
-        selectedTab={selectedTab}
+        selectedTab={isExporting ? TABS.CHART : selectedTab}
         isExporting={isExporting}
       />
     </>
