@@ -162,12 +162,15 @@ chmod og-rwx server.key
 - Under Connection Settings: `listen_addresses = '*'`
 - Under Security and Authentication: `ssl = on`
 
-### Update max connections
+### Update some of the default config
 
 - `vi postgresql.conf`
 - Under Connection Settings: `max_connections = 500`
-- This gives the app enough connections if processes are replicated on a 8-32 core machine
-- 32 cores + 10 other services with their own pools, with knex default of 7 connections = 42 x 7 = 294
+  - This gives the app enough connections if processes are replicated on a 8-32 core machine
+  - 32 cores + 10 other services with their own pools, with knex default of 7 connections = 42 x 7 = 294
+- Set `shared_buffers = 1GB`
+  - This gives extra memory to play with in shared buffers (recommendations are of ~25% of RAM), and
+    has the flow on effect of increasing write ahead log buffers
 
 ### Edit pg_hba.conf
 
