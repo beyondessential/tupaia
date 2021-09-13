@@ -138,7 +138,7 @@ export const PreviewSection = () => {
   const data = useMemo(() => reportData, [reportData]);
 
   const stringifiedData = data.map(row => {
-    let rowArrays = Object.entries(row).map(([key, value]) => {
+    const rowArrays = Object.entries(row).map(([key, value]) => {
       return [key, JSON.stringify(value)];
     });
     return Object.fromEntries(rowArrays);
