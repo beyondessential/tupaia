@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 # Kill all pm2 processes
 echo "Existing processes:"
@@ -13,35 +13,18 @@ find ./packages -type d -name "served_build" -maxdepth 2 -exec rm -rf {} \;
 rm -rf ./packages/web-frontend/builds
 
 
-# Set the path of environment variables from parameter store
-if [[ $BRANCH == "master" ]]; then
-    ENVIRONMENT="production"
-else
-    # Any other branch uses the default dev environment variables
-    ENVIRONMENT="dev"
-fi
+PACKAGES=$(${HOME_DIRECTORY}/scripts/bash/getDeployablePackages.sh)
 
-PACKAGES=("meditrak-server" "web-config-server" "psss-server" "lesmis-server" "admin-panel-server" "report-server" "entity-server" "web-frontend" "admin-panel" "psss" "lesmis")
+# Set up .env to match the environment variables stored in LastPass
+cd ${HOME_DIRECTORY}
+LASTPASS_EMAIL=$LASTPASS_EMAIL LASTPASS_PASSWORD=$LASTPASS_PASSWORD yarn download-env-vars $BRANCH
+
 # For each package, get the latest and deploy it
 for PACKAGE in ${PACKAGES[@]}; do
     # reset cwd back to `/tupaia`
     cd ${HOME_DIRECTORY}
 
-    # Set up .env to match the environment variables stored in SSM parameter store
-    yarn download-parameter-store-env-vars --package-name $PACKAGE --environment $ENVIRONMENT
-
     cd ${HOME_DIRECTORY}/packages/$PACKAGE
-
-    # Replace any instances of the placeholder [branch-name] in the .env file with the actual branch
-    # name (e.g. [branch-name]-api.tupaia.org -> specific-branch-api.tupaia.org)
-    sed -i -e "s/\[branch-name\]/${BRANCH}/g" .env
-
-    if [[ "$BRANCH" == *-e2e || "$BRANCH" == e2e ]]; then
-        # Update e2e environment variables
-        if [[ $PACKAGE == "meditrak-server" || $PACKAGE == "web-config-server" ]]; then
-            sed -i -E 's/^AGGREGATION_URL_PREFIX="?dev-"?$/AGGREGATION_URL_PREFIX=e2e-/g' .env
-        fi
-    fi
 
     # If it's a server, start it running on pm2, otherwise build it
     echo "Preparing to start or build ${PACKAGE}"
@@ -60,7 +43,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     else
         # It's a static package, build it
         echo "Building ${PACKAGE}"
-        yarn build
+        REACT_APP_BRANCH=${BRANCH} yarn build
     fi
 
     if [[ $PACKAGE == 'meditrak-server' ]]; then
@@ -74,7 +57,7 @@ for PACKAGE in ${PACKAGES[@]}; do
         yarn migrate
 
         # After running migrations it's good to ensure that the analytics table is fully built
-        yarn download-parameter-store-env-vars --package-name data-api --environment $ENVIRONMENT
+        yarn download-env-vars $BRANCH data-api
         echo "Building analytics table"
         yarn workspace @tupaia/data-api install-mv-refresh
         yarn workspace @tupaia/data-api build-analytics-table
