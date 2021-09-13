@@ -101,6 +101,7 @@ export const ImportModalComponent = React.memo(
         changeSuccess();
       } catch (error) {
         setStatus(STATUS.ERROR);
+        setFinishedMessage(null);
         setErrorMessage(error.message);
         changeError();
       }
