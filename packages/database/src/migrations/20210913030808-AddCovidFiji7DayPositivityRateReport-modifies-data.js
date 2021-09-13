@@ -52,7 +52,7 @@ const generateConfig = () => ({
       {
         transform: 'excludeRows',
         where:
-          '=not (exists($COVID_FJ_7_Day_Rolling_Num_Tests) and $COVID_FJ_7_Day_Rolling_Num_Tests > 0)',
+          '=not(exists($COVID_FJ_7_Day_Rolling_Num_Tests)) or $COVID_FJ_7_Day_Rolling_Num_Tests <= 0',
       },
       {
         transform: 'updateColumns',
