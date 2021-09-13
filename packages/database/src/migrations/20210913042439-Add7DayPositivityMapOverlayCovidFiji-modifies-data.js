@@ -62,28 +62,31 @@ const getReportConfig = measureLevel => ({
   transform: [
     'keyValueByDataElementName',
     {
-      transform: 'select',
-      "'Pos_Tests'": '$row.COVID_FJ_7_Day_Rolling_Pos_Tests',
-      "'Num_Tests'": '$row.COVID_FJ_7_Day_Rolling_Num_Tests',
-      '...': ['period', 'organisationUnit'],
+      transform: 'updateColumns',
+      insert: {
+        Pos_Tests: '=$COVID_FJ_7_Day_Rolling_Pos_Tests',
+        Num_Tests: '=$COVID_FJ_7_Day_Rolling_Num_Tests',
+      },
+      include: ['organisationUnit'],
     },
     {
-      transform: 'aggregate',
-      period: 'drop',
-      organisationUnit: 'group',
-      Num_Tests: 'sum',
-      Pos_Tests: 'sum',
+      transform: 'mergeRows',
+      groupBy: 'organisationUnit',
+      using: 'sum',
     },
     {
-      transform: 'filter',
-      where: 'exists($row.Num_Tests) and $row.Num_Tests > 0 and exists($row.Pos_Tests)',
+      transform: 'excludeRows',
+      where: '=not(exists($Num_Tests)) or $Num_Tests <= 0 or not(exists($Pos_Tests))',
     },
     {
-      "'value'": 'divide($row.Pos_Tests,$row.Num_Tests)',
-      transform: 'select',
-      "'Positive tests'": '$row.Pos_Tests',
-      "'organisationUnitCode'": '$row.organisationUnit',
-      "'Total tests'": '$row.Num_Tests',
+      transform: 'updateColumns',
+      insert: {
+        value: '=divide($Pos_Tests,$Num_Tests)',
+        'Positive tests': '=$Pos_Tests',
+        organisationUnitCode: '=$organisationUnit',
+        'Total tests': '=$Num_Tests',
+      },
+      exclude: '*',
     },
   ],
 });
