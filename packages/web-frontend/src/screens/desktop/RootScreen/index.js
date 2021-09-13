@@ -9,7 +9,7 @@
  * Bare bones container that renders the map fixed in the background and controls vertical ratios
  * of Dashboard and MapDiv based on expanded state of Dashboard (through redux store)
  */
-import React, { Suspense } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
