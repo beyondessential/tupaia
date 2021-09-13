@@ -100,7 +100,7 @@ const getConfig = measureLevel => ({
   name: `7 day % positivity rate (${FIJI_HIERARCHY_NAMES[measureLevel]})`,
   frontEndConfig: getFrontEndConfig(measureLevel),
   reportConfig: getReportConfig(measureLevel),
-  userGroup: 'Public',
+  userGroup: 'BES Admin',
   mapOverlayGroupCode: 'COVID-19_Testing_Fiji',
   countryCodes: ['FJ'],
   projectCodes: ['supplychain_fiji'],
