@@ -148,7 +148,7 @@ exports.up = async function (db) {
     code,
     reportConfig,
     frontEndConfig,
-    permissionGroup: 'Public',
+    permissionGroup: 'BES Admin',
     dashboardCode: 'FJ_COVID-19_Fiji',
     entityTypes: ['sub_district', 'district', 'country'],
     projectCodes: ['supplychain_fiji'],
