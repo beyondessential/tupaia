@@ -43,7 +43,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     else
         # It's a static package, build it
         echo "Building ${PACKAGE}"
-        yarn build
+        REACT_APP_BRANCH=${BRANCH} yarn build
     fi
 
     if [[ $PACKAGE == 'meditrak-server' ]]; then
