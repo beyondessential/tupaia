@@ -60,7 +60,7 @@ export const selectCurrentMeasure = createSelector(
   currentMeasure => currentMeasure || {},
 );
 
-const selectDisplayLevelAncestor = createSelector(
+export const selectDisplayLevelAncestor = createSelector(
   [
     state => selectCountryHierarchy(state, selectCurrentOrgUnitCode(state)),
     selectCurrentOrgUnitCode,
@@ -79,6 +79,13 @@ const selectDisplayLevelAncestor = createSelector(
     return selectAncestors(country, currentOrganisationUnitCode, displayOnLevel).find(
       ancestor => ancestor.type === displayOnLevel,
     );
+  },
+);
+
+export const selectShouldFetchCurrentLevel = createSelector(
+  [state => selectDisplayLevelAncestor(state)],
+  displayLevelAncestor => {
+    return displayLevelAncestor !== undefined;
   },
 );
 

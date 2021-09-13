@@ -85,7 +85,7 @@ function measureInfo(state = {}, action) {
     case CLEAR_MEASURE:
       return {};
     case FETCH_MEASURE_DATA_SUCCESS: {
-      const currentCountry = action.countryCode;
+      const { countryCode: currentCountry, measureDataAncestor } = action;
       // remove measure units with no coordinates
       let { measureData } = action.response;
       // for circle heatmap remove empty values or values that are not of positive float type
@@ -106,6 +106,7 @@ function measureInfo(state = {}, action) {
           ...state.hiddenMeasures,
         },
         currentCountry,
+        measureDataAncestor,
         measureData,
       };
     }

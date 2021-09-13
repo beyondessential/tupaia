@@ -741,11 +741,12 @@ export function fetchDashboardItemDataError(error, infoViewKey) {
  * @param {array} response response from saga on successful fetch
  * @param {array} countryCode code of the country from orgUnit of measures
  */
-export function fetchMeasureInfoSuccess(response, countryCode) {
+export function fetchMeasureInfoSuccess(response, countryCode, measureDataAncestor) {
   return {
     type: FETCH_MEASURE_DATA_SUCCESS,
     response,
     countryCode,
+    measureDataAncestor,
   };
 }
 

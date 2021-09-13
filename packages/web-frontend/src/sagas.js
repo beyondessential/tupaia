@@ -131,6 +131,8 @@ import {
   selectCurrentProject,
   selectCurrentDashboardNameFromLocation,
   selectViewConfig,
+  selectShouldFetchCurrentLevel,
+  selectDisplayLevelAncestor,
 } from './selectors';
 import {
   formatDateForApi,
@@ -886,7 +888,21 @@ function* fetchMeasureInfo(measureId) {
 
   // This param should default to false, used when large quantity
   // of entities is detrimental to performance. Consequence is more fetching.
-  const fetchOnlyDisplayLevel = measureParams.fetchOnlyDisplayLevel === 'true' || false;
+  // displayOnLevel: SubDistrict
+  const { fetchOnlyDisplayLevel = false } = measureParams;
+  const measureDataAncestor = fetchOnlyDisplayLevel
+    ? selectDisplayLevelAncestor(state)
+    : countryCode;
+
+  const shouldFetchCurrentLevel = selectShouldFetchCurrentLevel(state);
+
+  if (!shouldFetchCurrentLevel) {
+    // Don't try and fetch null measures
+    yield put(cancelFetchMeasureData());
+
+    return;
+  }
+
   const shouldShowAllParentCountryResults =
     !fetchOnlyDisplayLevel && !isMobile() && countryCode !== activeProjectCode;
 
@@ -904,7 +920,7 @@ function* fetchMeasureInfo(measureId) {
     const measureInfoResponse = yield call(request, requestResourceUrl);
     const measureInfo = processMeasureInfo(measureInfoResponse);
 
-    yield put(fetchMeasureInfoSuccess(measureInfo, countryCode));
+    yield put(fetchMeasureInfoSuccess(measureInfo, countryCode, measureDataAncestor));
   } catch (error) {
     yield put(fetchMeasureInfoError(error));
   }
@@ -978,9 +994,16 @@ function* fetchMeasureInfoForNewOrgUnit(action) {
   const { countryCode } = action.organisationUnit;
   const state = yield select();
   const measureId = selectCurrentMeasureId(state);
-  const oldOrgUnitCountry = state.map.measureInfo.currentCountry;
-  if (oldOrgUnitCountry === countryCode) {
-    // We are in the same country as before, no need to refetch measureData
+  const measureParams = selectMeasureBarItemById(state, measureId) || {};
+  const { fetchOnlyDisplayLevel = false } = measureParams;
+  // if fetchOnlyDisplayLevel set to true use displayLevel type as ancestor root else
+  // default to country
+  const newMeasureDataAncestor = fetchOnlyDisplayLevel
+    ? selectDisplayLevelAncestor(state)
+    : countryCode;
+  const oldMeasureDataAncestor = state.map.measureInfo.measureDataAncestor;
+  if (newMeasureDataAncestor === oldMeasureDataAncestor) {
+    // We are in the same ancestor root as before, no need to refetch measureData
     return;
   }
 
@@ -1106,8 +1129,8 @@ function* fetchEnlargedDialogData(action) {
   // If the expanded view has changed, don't update the enlargedDialog's viewContent
   if (viewData && newInfoViewKey === infoViewKey) {
     const viewConfig = drillDownLevel
-    ? selectViewConfig(state, drillDownItemKey)
-    : selectCurrentExpandedViewConfig(state);
+      ? selectViewConfig(state, drillDownItemKey)
+      : selectCurrentExpandedViewConfig(state);
     yield put(updateEnlargedDialog(action.options, viewConfig, viewData));
   }
 }

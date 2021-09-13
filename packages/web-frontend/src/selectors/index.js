@@ -68,4 +68,6 @@ export {
   selectIsMeasureInHierarchy,
   selectDefaultMeasureId,
   selectCurrentPeriodGranularity,
+  selectShouldFetchCurrentLevel,
+  selectDisplayLevelAncestor,
 } from './measureSelectors';
