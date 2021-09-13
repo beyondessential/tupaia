@@ -35,16 +35,17 @@ const MAP_OVERLAY = {
         name: 'Mosquito species',
         color: 'blue',
         value: 'exists',
+        hideFromLegend: false,
       },
       {
         color: 'transparent',
         value: null,
+        hideFromLegend: true,
       },
     ],
     displayType: 'shading',
     measureLevel: 'District',
     hideFromPopup: true,
-    hideFromLegend: false,
     measureConfig: {
       $all: {
         type: 'popup-only',

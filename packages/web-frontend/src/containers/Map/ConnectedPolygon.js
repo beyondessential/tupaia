@@ -39,9 +39,9 @@ const BasicPolygon = styled(Polygon)`
 
 export const ShadedPolygon = styled(Polygon)`
   weight: 1;
-  fill-opacity: 0.5;
+  fill-opacity: ${props => (props.transparent ? 0.04 : 0.5)};
   :hover {
-    fill-opacity: 0.8;
+    fill-opacity: ${props => (props.transparent ? 0.04 : 0.8)};
   }
 `;
 
@@ -125,20 +125,20 @@ class ConnectedPolygon extends Component {
       onClick: () => onChangeOrgUnit(organisationUnitCode),
     };
 
-    if (!shade || shade === 'transparent') {
-      return <BasicPolygon {...defaultProps}>{tooltip}</BasicPolygon>;
+    if (shade) {
+      // To match with the color in markerIcon.js which uses BREWER_PALETTE
+      const color = BREWER_PALETTE[shade] || shade;
+
+      // Work around: color should go through the styled components
+      // but there is a rendering bug between Styled Components + Leaflet
+      return (
+        <ShadedPolygon {...defaultProps} transparent={shade === 'transparent'} color={color}>
+          {tooltip}
+        </ShadedPolygon>
+      );
     }
 
-    // To match with the color in markerIcon.js which uses BREWER_PALETTE
-    const color = BREWER_PALETTE[shade] || shade;
-
-    // Work around: color should go through the styled components
-    // but there is a rendering bug between Styled Components + Leaflet
-    return (
-      <ShadedPolygon {...defaultProps} color={color}>
-        {tooltip}
-      </ShadedPolygon>
-    );
+    return <BasicPolygon {...defaultProps}>{tooltip}</BasicPolygon>;
   }
 }
 

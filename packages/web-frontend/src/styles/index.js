@@ -71,7 +71,7 @@ export const BREWER_PALETTE = {
   green: '#0AB45A',
   red: '#AA0A3C',
   lime: '#A0FA82',
-  transparent: 'TRANSPARENT',
+  transparent: blue['500'],
 };
 
 export const SHADING_COLOR_LABELS = {

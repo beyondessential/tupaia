@@ -62,7 +62,7 @@ const REPORT = {
           numerator: '=$value',
           denominator:
             '=sum(where(f($otherRow) = equalText($otherRow.organisationUnit, $organisationUnit)).value)',
-          name: `=translate($row.dataElement, ${JSON.stringify(dataElementsToNames)})`,
+          name: `=translate($dataElement, ${JSON.stringify(dataElementsToNames)})`,
           organisationUnitCode: '=$organisationUnit',
         },
         exclude: '*',
@@ -77,7 +77,7 @@ const REPORT = {
         },
         include: ['organisationUnitCode'],
       },
-      { transform: 'mergeRows', groupBy: 'organisationUnitCode' },
+      { transform: 'mergeRows', groupBy: 'organisationUnitCode', using: 'last' },
     ],
   },
 };
