@@ -3,8 +3,15 @@
 # Kill all pm2 processes
 echo "Existing processes:"
 pm2 list
-echo "Deleting..."
+echo "Deleting existing backend processes..."
 pm2 delete all
+echo "Deleting existing frontend builds..."
+cd ${HOME_DIRECTORY}
+# delete all "served_build" folders, which is where most front ends are served from
+find ./packages -type d -name "served_build" -maxdepth 2 -exec rm -rf {} \;
+# delete "builds" from web-frontend, which is where those builds are served from
+rm -rf ./packages/web-frontend/builds
+
 
 # Set the path of environment variables from parameter store
 if [[ $BRANCH == "master" ]]; then
@@ -53,7 +60,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     else
         # It's a static package, build it
         echo "Building ${PACKAGE}"
-        yarn build
+        REACT_APP_BRANCH=${BRANCH} yarn build
     fi
 
     if [[ $PACKAGE == 'meditrak-server' ]]; then
