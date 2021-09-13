@@ -37,7 +37,7 @@ const generateAverageIndicator = (code, dataElement, attributeFilter) => ({
           formula: `${dataElement}`,
           aggregation: [
             {
-              type: 'SUM_PER_ORG_GROUP',
+              type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
               config: {
                 aggregationEntityType: 'requested',
                 dataSourceEntityType: 'sub_district',
@@ -56,7 +56,7 @@ const generateAverageIndicator = (code, dataElement, attributeFilter) => ({
           formula: `${dataElement}`,
           aggregation: [
             {
-              type: 'COUNT_PER_ORG_GROUP',
+              type: 'COUNT_PER_PERIOD_PER_ORG_GROUP',
               config: {
                 aggregationEntityType: 'requested',
                 dataSourceEntityType: 'sub_district',
