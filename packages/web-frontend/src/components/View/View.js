@@ -9,7 +9,6 @@ import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment';
 import { CHART_TYPES } from '@tupaia/ui-components/lib/chart';
 import { VIEW_STYLES } from '../../styles';
-import { OverlayView } from '../../utils';
 import { NoDataMessage } from './NoDataMessage';
 import { VIEW_CONTENT_SHAPE } from './propTypes';
 import { DashboardItemExpanderButton } from '../DashboardItemExpanderButton';
@@ -83,6 +82,16 @@ const StyledAlert = styled(Alert)`
     margin: 20px auto 10px;
     padding: 5px 16px 5px 13px;
   }
+`;
+
+const OverlayView = styled.div`
+  flex-direction: column;
+  flex-wrap: nowrap;
+  width: 100%;
+  height: 100%;
+  display: flex; /* Took me ages to find this, is the magic touch */
+  align-items: stretch;
+  align-content: stretch;
 `;
 
 export class View extends Component {
