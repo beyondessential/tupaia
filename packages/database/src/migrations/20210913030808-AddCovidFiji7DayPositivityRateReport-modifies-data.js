@@ -41,24 +41,29 @@ const generateConfig = () => ({
     transform: [
       'keyValueByDataElementName',
       {
-        transform: 'aggregate',
-        period: 'group',
-        '...': 'drop',
-        COVID_FJ_7_Day_Rolling_Num_Tests: 'sum',
-        COVID_FJ_7_Day_Rolling_Pos_Tests: 'sum',
+        transform: 'mergeRows',
+        groupBy: 'period',
+        using: {
+          COVID_FJ_7_Day_Rolling_Num_Tests: 'sum',
+          COVID_FJ_7_Day_Rolling_Pos_Tests: 'sum',
+          '*': 'exclude',
+        },
       },
       {
-        transform: 'filter',
+        transform: 'excludeRows',
         where:
-          'exists($row.COVID_FJ_7_Day_Rolling_Num_Tests) and $row.COVID_FJ_7_Day_Rolling_Num_Tests > 0',
+          '=not (exists($COVID_FJ_7_Day_Rolling_Num_Tests) and $COVID_FJ_7_Day_Rolling_Num_Tests > 0)',
       },
       {
-        transform: 'select',
-        "'value'": '$row.COVID_FJ_7_Day_Rolling_Pos_Tests / $row.COVID_FJ_7_Day_Rolling_Num_Tests',
-        "'name'": "periodToDisplayString($row.period, 'DAY')",
-        "'timestamp'": 'periodToTimestamp($row.period)',
-        "'value_metadata'":
-          '{numerator: $row.COVID_FJ_7_Day_Rolling_Pos_Tests, denominator: $row.COVID_FJ_7_Day_Rolling_Num_Tests}',
+        transform: 'updateColumns',
+        insert: {
+          value: '=$COVID_FJ_7_Day_Rolling_Pos_Tests / $COVID_FJ_7_Day_Rolling_Num_Tests',
+          name: "=periodToDisplayString($period, 'DAY')",
+          timestamp: '=periodToTimestamp($period)',
+          value_metadata:
+            '={numerator: $COVID_FJ_7_Day_Rolling_Pos_Tests, denominator: $COVID_FJ_7_Day_Rolling_Num_Tests}',
+        },
+        exclude: '*',
       },
     ],
   },
