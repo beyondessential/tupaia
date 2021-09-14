@@ -14,7 +14,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { EnvBanner } from '@tupaia/ui-components';
-
 import { selectIsEnlargedDialogVisible } from '../../../selectors';
 import { LoadingScreen } from '../../LoadingScreen';
 import Map from '../../../containers/Map';
@@ -24,10 +23,10 @@ import SidePanel from '../../../containers/SidePanel';
 import { EnlargedDialog } from '../../../containers/EnlargedDialog';
 import SessionExpiredDialog from '../../../containers/SessionExpiredDialog';
 import OverlayDiv from '../../../containers/OverlayDiv';
-import { DIALOG_Z_INDEX, TOP_BAR_HEIGHT } from '../../../styles';
+import { DIALOG_Z_INDEX } from '../../../styles';
 import './desktop-styles.css';
 
-const OverlayContainer = styled.div`
+const Container = styled.div`
   position: fixed;
   z-index: ${DIALOG_Z_INDEX};
   flex-direction: column;
@@ -41,24 +40,31 @@ const OverlayContainer = styled.div`
   align-content: stretch;
 `;
 
+const ContentContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  overflow: hidden;
+`;
+
 export const RootScreen = ({ enlargedDialogIsVisible, isLoading }) => {
   return (
-    <div>
+    <>
       {/* The order here matters, Map must be added to the DOM body after FlexContainer */}
-      <OverlayContainer>
+      <Container>
         <EnvBanner />
         <TopBar />
-        <div style={styles.contentWrapper}>
+        <ContentContainer>
           <MapDiv />
           <SidePanel />
-        </div>
+        </ContentContainer>
         <OverlayDiv />
         <SessionExpiredDialog />
         {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
         <LoadingScreen isLoading={isLoading} />
-      </OverlayContainer>
+      </Container>
       <Map />
-    </div>
+    </>
   );
 };
 
@@ -70,14 +76,6 @@ RootScreen.propTypes = {
 RootScreen.defaultProps = {
   enlargedDialogIsVisible: false,
   isLoading: false,
-};
-
-const styles = {
-  contentWrapper: {
-    display: 'flex',
-    flexDirection: 'row',
-    height: `calc(100% - ${TOP_BAR_HEIGHT}px`,
-  },
 };
 
 const mapStateToProps = state => ({
