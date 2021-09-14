@@ -12,6 +12,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { persistor, store } from '../store';
 import { theme } from '../theme';
 
+// eslint-disable-next-line react/prop-types
 export const AdminPanelProviders = ({ children }) => (
   <Provider store={store}>
     <PersistGate persistor={persistor} loading={null}>

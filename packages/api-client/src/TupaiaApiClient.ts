@@ -4,20 +4,17 @@
  *
  */
 
-
 import { AuthHandler } from './types';
 import { ApiConnection, EntityApi, MeditrakApi } from './connections';
-import { ENDPOINT_BASE_URLS, EndpointBaseUrlSet } from './constants';
+import { PRODUCTION_BASE_URLS, ServiceBaseUrlSet } from './constants';
 
 export class TupaiaApiClient {
-
   public readonly entity: EntityApi;
 
   public readonly meditrak: MeditrakApi;
 
-  constructor(authHandler: AuthHandler, baseUrls: EndpointBaseUrlSet = ENDPOINT_BASE_URLS) {
+  constructor(authHandler: AuthHandler, baseUrls: ServiceBaseUrlSet = PRODUCTION_BASE_URLS) {
     this.entity = new EntityApi(new ApiConnection(authHandler, baseUrls.entity));
     this.meditrak = new MeditrakApi(new ApiConnection(authHandler, baseUrls.meditrak));
   }
-
 }

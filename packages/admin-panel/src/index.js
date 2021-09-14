@@ -8,7 +8,8 @@ import { render as renderReactApp } from 'react-dom';
 import 'react-table/react-table.css';
 import { EnvBanner } from '@tupaia/ui-components';
 import AdminPanel from './App';
-import { AdminPanelProviders, VizBuilderProviders } from './utilities';
+import { VizBuilderProviders } from './utilities/VizBuilderProviders';
+import { AdminPanelProviders } from './utilities/AdminPanelProviders';
 import { Footer, Navbar } from './widgets';
 
 const VizBuilder = lazy(() => import('./VizBuilderApp'));
