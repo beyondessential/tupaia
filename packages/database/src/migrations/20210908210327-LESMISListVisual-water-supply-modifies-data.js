@@ -83,7 +83,7 @@ const FRONT_END_CONFIG = {
   name: 'Water Supply',
   type: 'list',
   valueType: 'color',
-  periodGranularity: 'year',
+  periodGranularity: 'one_year_at_a_time',
   listConfig: {
     color: {
       0: { color: '#D13333', label: 'no' },
