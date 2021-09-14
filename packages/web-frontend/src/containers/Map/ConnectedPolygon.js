@@ -39,9 +39,17 @@ const BasicPolygon = styled(Polygon)`
 
 export const ShadedPolygon = styled(Polygon)`
   weight: 1;
-  fill-opacity: ${props => (props.transparent ? 0.04 : 0.5)};
+  fill-opacity: 0.5;
   :hover {
-    fill-opacity: ${props => (props.transparent ? 0.04 : 0.8)};
+    fill-opacity: 0.8;
+  }
+`;
+
+export const TransparentShadedPolygon = styled(Polygon)`
+  fill: ${POLYGON_BLUE};
+  fill-opacity: 0;
+  :hover {
+    fill-opacity: 0.1;
   }
 `;
 
@@ -126,13 +134,17 @@ class ConnectedPolygon extends Component {
     };
 
     if (shade) {
+      if (shade === 'transparent') {
+        return <TransparentShadedPolygon {...defaultProps}>{tooltip}</TransparentShadedPolygon>;
+      }
+
       // To match with the color in markerIcon.js which uses BREWER_PALETTE
       const color = BREWER_PALETTE[shade] || shade;
 
       // Work around: color should go through the styled components
       // but there is a rendering bug between Styled Components + Leaflet
       return (
-        <ShadedPolygon {...defaultProps} transparent={shade === 'transparent'} color={color}>
+        <ShadedPolygon {...defaultProps} color={color}>
           {tooltip}
         </ShadedPolygon>
       );
