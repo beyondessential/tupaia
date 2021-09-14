@@ -24,7 +24,9 @@
         "packageDir": ["../../", "."]
       }
     ],
-    "jsx-a11y/href-no-hash": "off"
+    "jsx-a11y/href-no-hash": "off",
+    "react/destructuring-assignment": "off",
+    "react/no-unescaped-entities": "off"
   },
   "overrides": [
     // TypeScript packages
@@ -176,7 +178,6 @@
         "no-unused-vars": "warn",
         "react/button-has-type": "warn",
         "react/default-props-match-prop-types": "warn",
-        "react/destructuring-assignment": "off",
         "react/no-unused-prop-types": "warn",
         "react/no-array-index-key": "warn",
         "react/forbid-prop-types": "warn",

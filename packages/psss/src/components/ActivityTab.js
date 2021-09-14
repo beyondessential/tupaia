@@ -139,5 +139,5 @@ export const ActivityTab = React.memo(({ state, NotesTabLink }) => {
 
 ActivityTab.propTypes = {
   state: PropTypes.shape(fetchStateShape).isRequired,
-  NotesTabLink: PropTypes.any.isRequired,
+  NotesTabLink: PropTypes.node.isRequired,
 };
