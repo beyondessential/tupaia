@@ -46,6 +46,15 @@ const processMeasureInfo = ({ serieses, measureData, ...rest }) => {
       };
     }
 
+    if (!series.icon && typeof series.radius === 'undefined') {
+      return {
+        ...series,
+        icon: 'pin',
+        values,
+        valueMapping,
+      };
+    }
+
     return {
       ...series,
       values,
