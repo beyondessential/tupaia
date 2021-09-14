@@ -1,56 +1,80 @@
-# In setting up these services, I have tried to minimise how much is loaded into each container for
-# each step in order to speed up those individual step build + run times
-# - 'validation' service includes a nodejs container, plus the full repo code, and any node_modules
-#   dependencies for the package in question
-# - 'testing' service is the same as the validation service, but additionally depends on the db
-#   service (see below)
-# - 'cypress' service includes a base cypress container, plus code and node_module dependencies
-#   required by e2e tests in web-frontend
-# - the db service provides a postgres db with postgis (and takes a little while to run, thus the
-#   splitting of the above services so validation isn't slower than it should be)
-# - the deployment service just uses the base alpine image + ssh to log into
-#   an ec2 instance and deploy the latest version of the code for each package
+# Most of the services in this file use the "tupaia-ci-cd" docker image, which includes nodejs, plus
+# the full repo code, with node_modules installed and internal dependencies built.
+# Several also mount a volume called "common", which allows communication between containers/steps
+# See `copyToCommonVolume.sh` for a description of the pattern being used
 
+# 'lastpass' service has lastpass credentials in an encrypted file, which allows it to retrieve the
+# .env files for each package and copy them to the common volume for use in later steps
+lastpass:
+  build:
+    dockerfile: ./packages/devops/ci/tupaia-ci-cd.Dockerfile
+  encrypted_env_file: ./packages/devops/ci/lastpass.env.encrypted # lastpass credentials to fetch env vars
+  cached: true
+  default_cache_branch: 'dev'
+  encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
+  volumes:
+    - ./tmp:/common
+
+# 'validation' service just uses the tupaia-ci-cd image to check that some conventions are followed
 validation:
   build:
-    dockerfile: full-testable-package.Dockerfile
+    dockerfile: ./packages/devops/ci/tupaia-ci-cd.Dockerfile
   cached: true
-  encrypted_dockercfg_path: dockercfg.encrypted
   default_cache_branch: 'dev'
+  encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
 
+# 'testing' service uses mounts the common volume to retrieve .env files, and additionally depends
+# on the db service and encrypted db connection env vars to run integration tests
 testing:
   build:
-    dockerfile: full-testable-package.Dockerfile
+    dockerfile: ./packages/devops/ci/tupaia-ci-cd.Dockerfile
+  cached: true
+  default_cache_branch: 'dev'
   depends_on:
     - db
-  encrypted_env_file: ./ci-env-vars.encrypted # all individual .env files combined and encrypted
-  cached: true
-  encrypted_dockercfg_path: dockercfg.encrypted
-  default_cache_branch: 'dev'
+  encrypted_env_file: ./packages/devops/ci/testing.env.encrypted # test db env vars
+  encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
+  volumes:
+    - ./tmp:/common
 
+# 'e2e' service includes a base cypress container, plus code and node_module dependencies
+# required by e2e tests in web-frontend
 e2e:
   build:
-    dockerfile: e2e.Dockerfile
-  encrypted_env_file: ./ci-env-vars.encrypted
+    dockerfile: ./packages/devops/ci/e2e.Dockerfile
+  encrypted_env_file: ./packages/devops/ci/e2e.env.encrypted
   cached: true
-  encrypted_dockercfg_path: dockercfg.encrypted
   default_cache_branch: 'e2e'
+  encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
   volumes:
     # see https://docs.cloudbees.com/docs/cloudbees-codeship/latest/pro-continuous-integration/browser-testing#_chrome_crashing
     - /dev/shm:/dev/shm
 
+# 'db' service provides a postgres db with postgis
 db:
   image: mdillon/postgis:10-alpine
-  cached: true
-  encrypted_dockercfg_path: dockercfg.encrypted
+  encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
 
+# 'builder' service copies in the .env files from the common volume, builds each package, and
+# copies the builds back into the common volume ready for the deployment service
+builder:
+  build:
+    dockerfile: ./packages/devops/ci/tupaia-ci-cd.Dockerfile
+  cached: true
+  default_cache_branch: 'dev'
+  encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
+  volumes:
+    - ./tmp:/common
+
+# the 'deployment' service copies in the builds and env vars from the common volume populated by
+# earlier steps, then pushing them up to the ec2 instance via scp
 deployment:
   build:
-    dockerfile: deploy-only.Dockerfile
-  encrypted_env_file: ./ci-env-vars.encrypted
-  volumes:
-    # mapping to `.ssh` directory ensures that `id_rsa` file persists to subsequent steps
-    - ./.ssh:/root/.ssh
+    dockerfile: ./packages/devops/ci/tupaia-ci-cd.Dockerfile
   cached: true
-  encrypted_dockercfg_path: dockercfg.encrypted
-  default_cache_branch: 'dev'
+  default_cache_branch: dev
+  encrypted_env_file: ./packages/devops/ci/deployment.env.encrypted # ssh key to connect to ec2 instances
+  encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
+  volumes:
+    - ./.ssh:/root/.ssh # persist `id_rsa` across steps
+    - ./tmp:/common
