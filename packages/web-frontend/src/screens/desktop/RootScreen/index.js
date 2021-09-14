@@ -1,8 +1,6 @@
-/**
- * Tupaia Web
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
- * This source code is licensed under the AGPL-3.0 license
- * found in the LICENSE file in the root directory of this source tree.
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
 /**
@@ -14,6 +12,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
+import { EnvBanner } from '@tupaia/ui-components';
 
 import { selectIsEnlargedDialogVisible } from '../../../selectors';
 import { LoadingScreen } from '../../LoadingScreen';
@@ -24,15 +24,29 @@ import SidePanel from '../../../containers/SidePanel';
 import { EnlargedDialog } from '../../../containers/EnlargedDialog';
 import SessionExpiredDialog from '../../../containers/SessionExpiredDialog';
 import OverlayDiv from '../../../containers/OverlayDiv';
-import { OverlayContainer } from '../../../utils';
-import { TOP_BAR_HEIGHT } from '../../../styles';
+import { DIALOG_Z_INDEX, TOP_BAR_HEIGHT } from '../../../styles';
 import './desktop-styles.css';
+
+const OverlayContainer = styled.div`
+  position: fixed;
+  z-index: ${DIALOG_Z_INDEX};
+  flex-direction: column;
+  flex-wrap: nowrap;
+  width: 100%;
+  height: 100%;
+  pointer-events: visiblePainted; /* IE 9-10 doesn't have auto */
+  pointer-events: none;
+  display: flex; /* Took me ages to find this, is the magic touch */
+  align-items: stretch;
+  align-content: stretch;
+`;
 
 export const RootScreen = ({ enlargedDialogIsVisible, isLoading }) => {
   return (
     <div>
       {/* The order here matters, Map must be added to the DOM body after FlexContainer */}
       <OverlayContainer>
+        <EnvBanner />
         <TopBar />
         <div style={styles.contentWrapper}>
           <MapDiv />
