@@ -26,3 +26,20 @@ export const DATA_CHANGE_ACTIONS = {
   finish: DATA_CHANGE_SUCCESS,
   error: DATA_CHANGE_ERROR,
 };
+
+// Default State
+export const DEFAULT_TABLE_STATE = {
+  confirmActionMessage: null,
+  pendingActionCreator: () => {},
+  numberOfPages: 0,
+  data: [],
+  errorMessage: '',
+  fetchId: null,
+  pageIndex: 0,
+  pageSize: 20,
+  filters: [],
+  sorting: [],
+  expansions: {},
+  expansionTabStates: {},
+  resizedColumns: [],
+};

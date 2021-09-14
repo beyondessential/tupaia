@@ -4,7 +4,7 @@ DIR=$(dirname "$0")
 
 CONCURRENT_BUILD_BATCH_SIZE=2
 
-USAGE="Usage: buildInternalDependencies.sh [--watch] [--withTypes]"
+USAGE="Usage: buildInternalDependencies.sh [--watch] [--withTypes] [--packagePath]"
 
 OUT_DIR="dist"
 
