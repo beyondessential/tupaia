@@ -68,13 +68,7 @@ const runTestsAgainstUrl = (url, options = {}) => {
   });
 };
 
-const checkUrlExists = url => {
-  try {
-    execSync(`curl --output /dev/null --silent --head --fail ${url}`);
-  } catch (error) {
-    throw new Error(`No deployment exists for ${url}, cancelling e2e tests`);
-  }
-};
+const checkUrlExists = url => execSync(`curl --output /dev/null --silent --head --fail ${url}`);
 
 export const testE2e = async () => {
   const { ciBuildId } = getArgs(scriptConfig);
@@ -87,8 +81,14 @@ export const testE2e = async () => {
     fs.readFileSync(E2E_CONFIG_PATH, { encoding: 'utf-8' }),
   );
   // Check both urls before running the tests, in case one of them is invalid
-  checkUrlExists(baselineUrl);
-  checkUrlExists(compareUrl);
+  if (!checkUrlExists(baselineUrl)) {
+    logger.warn(`No deployment exists for baseline url '${baselineUrl}', stopping e2e tests`);
+    return;
+  }
+  if (!checkUrlExists(compareUrl)) {
+    logger.warn(`No deployment exists for compare url '${compareUrl}', stopping e2e tests`);
+    return;
+  }
 
   let baseError;
   try {
