@@ -30,6 +30,7 @@
     "@material-ui/lab": "^4.0.0-alpha.47",
     "@material-ui/styles": "^4.9.10",
     "@tupaia/ui-components": "1.0",
+    "@tupaia/access-policy": "3.0.0",
     "@tupaia/utils": "1.0.0",
     "axios": "^0.21.1",
     "brace": "^0.11.1",
