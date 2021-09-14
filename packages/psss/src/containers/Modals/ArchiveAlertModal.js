@@ -20,8 +20,8 @@ import {
   ConfirmModal,
 } from '@tupaia/ui-components';
 
-import { AlertsPanelContext } from '../Panels';
 import { useArchiveAlert } from '../../api/queries';
+import { AlertsPanelContext } from '../../context';
 
 const TickIcon = styled(CheckCircle)`
   font-size: 2.5rem;
