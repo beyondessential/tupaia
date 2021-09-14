@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/api-client",
-  "version": "2.0.2",
+  "version": "2.0.6",
   "description": "API client for connecting to Tupaia APIs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,7 +13,7 @@
     "test:coverage": "yarn test --coverage",
     "publish:run": "yarn publish --no-git-tag-version --access public",
     "prepublish:strict": "yarn lint && yarn build",
-    "prepublish:loose": "yarn lint; yarn build",
+    "prepublish:loose": "yarn build; echo ok",
     "prepublish": "printf \"\n\nNOTE: Running loose mode, change to strict when issues fixed\n\n\"; yarn prepublish:loose"
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
