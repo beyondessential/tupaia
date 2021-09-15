@@ -137,6 +137,7 @@ class MapComponent extends Component {
       displayedChildren,
       getChildren,
       measureData,
+      onChangeOrgUnit,
       measureInfo,
       position,
       shouldSnapToPosition,
@@ -186,7 +187,11 @@ class MapComponent extends Component {
             organisationUnitChildren={getChildren(area.organisationUnitCode)}
           />
         ))}
-        <MarkerLayer measureData={processedData} serieses={measureOptions || null} />
+        <MarkerLayer
+          measureData={processedData}
+          serieses={measureOptions || null}
+          onChangeOrgUnit={onChangeOrgUnit}
+        />
         <DisasterLayer />
       </StyledMap>
     );

@@ -36,7 +36,7 @@ const processData = (measureData, serieses) => {
   return data;
 };
 
-export const MarkerLayer = ({ measureData, serieses }) => {
+export const MarkerLayer = ({ measureData, serieses, onChangeOrgUnit }) => {
   if (!measureData || !serieses) return null;
 
   const data = processData(measureData, serieses);
@@ -50,7 +50,11 @@ export const MarkerLayer = ({ measureData, serieses }) => {
           </ShadedPolygon>
         ) : (
           <MeasureMarker key={measure.name} {...measure}>
-            <MeasurePopup markerData={measure} serieses={serieses} />
+            <MeasurePopup
+              markerData={measure}
+              serieses={serieses}
+              onOrgUnitClick={onChangeOrgUnit}
+            />
           </MeasureMarker>
         ),
       )}
@@ -66,9 +70,11 @@ MarkerLayer.propTypes = {
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     }),
   ),
+  onChangeOrgUnit: PropTypes.func,
 };
 
 MarkerLayer.defaultProps = {
   measureData: null,
   serieses: null,
+  onChangeOrgUnit: null,
 };
