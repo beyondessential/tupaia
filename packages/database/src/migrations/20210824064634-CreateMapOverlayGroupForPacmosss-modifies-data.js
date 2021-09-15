@@ -37,7 +37,7 @@ exports.up = async function (db) {
   });
 };
 
-exports.down = function (db) {
+exports.down = async function (db) {
   return db.runSql(`
     DELETE FROM "map_overlay_group" WHERE "code" = '${MAP_OVERLAY_GROUP_CODE}';
   `);
