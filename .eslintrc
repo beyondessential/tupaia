@@ -132,9 +132,9 @@
     {
       "files": ["packages/meditrak-app/**"],
       "plugins": ["react-native"],
-      "env": {
-        "react-native/react-native": true
-      },
+      // "env": {
+      //   "react-native/react-native": true
+      // },
       "rules": {
         "react/destructuring-assignment": "off",
         "react/prop-types": ["error", { "ignore": ["navigation"] }]
