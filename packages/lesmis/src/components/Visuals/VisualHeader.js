@@ -5,6 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import { FlexSpaceBetween, FlexStart } from '../Layout';
@@ -22,14 +23,24 @@ const Title = styled(Typography)`
   margin-right: 1rem;
 `;
 
-export const VisualHeader = ({ name, isLoading, children }) => {
-  return (
-    <Header>
-      <FlexStart>
-        <Title>{name}</Title>
-        {isLoading && <CircularProgress size={30} />}
-      </FlexStart>
-      {children}
-    </Header>
-  );
+export const VisualHeader = ({ name, isLoading, children }) => (
+  <Header>
+    <FlexStart>
+      <Title>{name}</Title>
+      {isLoading && <CircularProgress size={30} />}
+    </FlexStart>
+    {children}
+  </Header>
+);
+
+VisualHeader.propTypes = {
+  name: PropTypes.string,
+  children: PropTypes.node,
+  isLoading: PropTypes.bool,
+};
+
+VisualHeader.defaultProps = {
+  name: PropTypes.null,
+  isLoading: false,
+  children: PropTypes.null,
 };
