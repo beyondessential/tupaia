@@ -1,7 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
+ *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React, { useState } from 'react';
 import styled from 'styled-components';
@@ -9,13 +8,12 @@ import PropTypes from 'prop-types';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import GridOnIcon from '@material-ui/icons/GridOn';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from '@material-ui/core/Typography';
 import { Chart as ChartComponent, Table, getIsChartData } from '@tupaia/ui-components/lib/chart';
-import { FetchLoader } from './FetchLoader';
-import { FlexEnd, FlexStart, FlexSpaceBetween } from './Layout';
-import { ToggleButton } from './ToggleButton';
-import * as COLORS from '../constants';
+import { FetchLoader } from '../FetchLoader';
+import { FlexEnd } from '../Layout';
+import { ToggleButton } from '../ToggleButton';
+import { VisualHeader } from './VisualHeader';
+import * as COLORS from '../../constants';
 
 const Wrapper = styled.div`
   flex: 1;
@@ -36,11 +34,6 @@ const ChartWrapper = styled(Wrapper)`
   }
 `;
 
-const Header = styled(FlexSpaceBetween)`
-  padding: 1.25rem 1.875rem;
-  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
-`;
-
 const Body = styled.div`
   display: flex;
   background: ${COLORS.GREY_F9};
@@ -51,14 +44,6 @@ const Body = styled.div`
   .MuiTable-root {
     min-height: 100%;
   }
-`;
-
-const Title = styled(Typography)`
-  font-style: normal;
-  font-weight: 500;
-  font-size: 1.125rem;
-  line-height: 1.3rem;
-  margin-right: 1rem;
 `;
 
 export const TABS = {
@@ -134,19 +119,15 @@ export const Chart = ({
         isLoading={isLoading}
         isError={isError}
         error={error}
-        selectedTab={selectedTab}
+        selectedTab={isExporting ? TABS.CHART : selectedTab}
         isExporting={isExporting}
       />
     </>
   ) : (
     <>
-      <Header>
-        <FlexStart>
-          <Title>{name}</Title>
-          {isFetchingInBackground && <CircularProgress size={30} />}
-        </FlexStart>
+      <VisualHeader name={name} isLoading={isFetchingInBackground}>
         <Toggle onChange={handleTabChange} value={selectedTab} exclusive />
-      </Header>
+      </VisualHeader>
       <Body>
         <ChartTable
           viewContent={viewContent}

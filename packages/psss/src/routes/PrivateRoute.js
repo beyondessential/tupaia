@@ -50,7 +50,7 @@ export const PrivateRouteComponent = ({
 );
 
 PrivateRouteComponent.propTypes = {
-  children: PropTypes.any.isRequired,
+  children: PropTypes.node.isRequired,
   isLoggedIn: PropTypes.bool,
   currentUser: PropTypes.object,
   authCheck: PropTypes.func,
