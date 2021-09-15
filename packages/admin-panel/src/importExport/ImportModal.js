@@ -60,6 +60,7 @@ export const ImportModalComponent = React.memo(
     const handleDismiss = () => {
       setStatus(STATUS.IDLE);
       setErrorMessage(null);
+      setFinishedMessage(null);
       // Deselect file when dismissing an error, this avoids an error when editing selected files
       // @see https://github.com/beyondessential/tupaia-backlog/issues/1211
       setFile(null);
@@ -69,6 +70,7 @@ export const ImportModalComponent = React.memo(
     const handleClose = () => {
       setStatus(STATUS.IDLE);
       setErrorMessage(null);
+      setFinishedMessage(null);
       setIsOpen(false);
       setValues({});
       setFile(null);
@@ -78,6 +80,7 @@ export const ImportModalComponent = React.memo(
     const handleSubmit = async event => {
       event.preventDefault();
       setErrorMessage(null);
+      setFinishedMessage(null);
       setStatus(STATUS.LOADING);
       changeRequest();
 
@@ -101,6 +104,7 @@ export const ImportModalComponent = React.memo(
         changeSuccess();
       } catch (error) {
         setStatus(STATUS.ERROR);
+        setFinishedMessage(null);
         setErrorMessage(error.message);
         changeError();
       }
