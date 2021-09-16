@@ -4,13 +4,11 @@
 echo "Existing processes:"
 pm2 list
 echo "Deleting existing backend processes..."
-pm2 delete all
+pm2 delete all || : # return 0 exit code even if delete failed because there were no running processes
 echo "Deleting existing frontend builds..."
 cd ${HOME_DIRECTORY}
-# delete all "served_build" folders, which is where most front ends are served from
-find ./packages -type d -name "served_build" -maxdepth 2 -exec rm -rf {} \;
-# delete "builds" from web-frontend, which is where those builds are served from
-rm -rf ./packages/web-frontend/builds
+# delete all "build" folders, which is where front ends are served from
+find ./packages -type d -name "build" -maxdepth 2 -exec rm -rf {} \;
 
 
 PACKAGES=$(${HOME_DIRECTORY}/scripts/bash/getDeployablePackages.sh)
