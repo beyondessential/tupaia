@@ -36,14 +36,6 @@ const translate = (value, translations) => {
   return translations[value];
 };
 
-/**
- * List of built in functions in math.js
- * This list is here because when extracting variables for an expression by traversing the node tree,
- * the built in functions are also considered as Symbol Node (which is similar to variables).
- * So we want to exclude them when getting the variables.
- */
-const BUILT_IN_FUNCTIONS = ['equalText', 'round'];
-
 const ADDITIONAL_ALPHA_CHARS = ['@'];
 
 export class ExpressionParser {
@@ -69,6 +61,20 @@ export class ExpressionParser {
   }
 
   /**
+   * @param {string} name
+   * @return bool
+   */
+  isBuiltInFunction(name) {
+    try {
+      // see https://mathjs.org/docs/reference/functions/help.html
+      this.math.help(name);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
    * Return the variable names from an expression.
    * @param {*} expression
    */
@@ -80,7 +86,7 @@ export class ExpressionParser {
         node =>
           node.isSymbolNode &&
           !Object.keys(this.customFunctions).includes(node.name) &&
-          !BUILT_IN_FUNCTIONS.includes(node.name),
+          !this.isBuiltInFunction(node.name),
       )
       .map(({ name }) => name);
     return [...new Set(variables)];
