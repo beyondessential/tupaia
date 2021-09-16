@@ -45,11 +45,11 @@ export const MarkerLayer = ({ measureData, serieses, onChangeOrgUnit }) => {
     <LayerGroup>
       {data.map(measure =>
         measure.region ? (
-          <ShadedPolygon key={measure.name} positions={measure.region} {...measure}>
+          <ShadedPolygon key={measure.organisationUnitCode} positions={measure.region} {...measure}>
             <AreaTooltip text={getTooltipText(measure, serieses)} />
           </ShadedPolygon>
         ) : (
-          <MeasureMarker key={measure.name} {...measure}>
+          <MeasureMarker key={measure.organisationUnitCode} {...measure}>
             <MeasurePopup
               markerData={measure}
               serieses={serieses}
