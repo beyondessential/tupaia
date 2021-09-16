@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # See `copyToCommonVolume.sh` for a description of the pattern used here
 

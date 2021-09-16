@@ -1,7 +1,4 @@
-#!/bin/bash
-
-# Exit when any command fails
-set -e
+#!/bin/bash -e
 
 function print_help() {
     cat <<EOF

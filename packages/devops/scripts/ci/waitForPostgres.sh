@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 RETRIES=50
 
 args=(

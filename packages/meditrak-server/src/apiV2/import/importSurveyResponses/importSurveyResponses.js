@@ -313,9 +313,13 @@ async function getNewDataTimeIfRequired(models, surveyResponseId, newDataTime) {
 function getDateStringForColumn(sheet, columnIndex) {
   const dateString = getInfoForColumn(sheet, columnIndex, 'Date');
   const isInExportFormat = moment(dateString, EXPORT_DATE_FORMAT, true).isValid();
-  return isInExportFormat
-    ? stripTimezoneFromDate(moment(dateString, EXPORT_DATE_FORMAT).toDate())
-    : stripTimezoneFromDate(moment(dateString).toDate());
+  const date = isInExportFormat
+    ? moment(dateString, EXPORT_DATE_FORMAT).toDate()
+    : moment(dateString).toDate();
+  if (isNaN(date.getTime())) {
+    throw new ImportValidationError(`Invalid date ${dateString}`);
+  }
+  return stripTimezoneFromDate(date);
 }
 
 function checkIsCellEmpty(cellValue) {

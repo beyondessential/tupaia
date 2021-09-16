@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 set +x # do not output commands in this script, as some would show credentials in plain text
 
 BRANCH=$1
