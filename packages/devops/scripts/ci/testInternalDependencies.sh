@@ -1,4 +1,4 @@
-#!/bin/bash -le
+#!/bin/bash -e
 DIR=$(dirname "$0")
 ${DIR}/copyFromCommonVolume.sh
 for PACKAGE in $(${DIR}/../../../../scripts/bash/getInternalDependencies.sh); do
