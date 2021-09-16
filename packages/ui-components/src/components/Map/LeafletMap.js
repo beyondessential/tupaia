@@ -252,7 +252,6 @@ export class LeafletMap extends Component {
         zoom={this.initialZoom}
         center={this.initialCenter}
         bounds={this.initialBounds}
-        scrollWheelZoom={false}
       >
         {children}
       </Map>

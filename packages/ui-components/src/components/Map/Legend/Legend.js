@@ -12,6 +12,7 @@ import {
   MEASURE_TYPE_RADIUS,
   MEASURE_TYPE_SHADED_SPECTRUM,
   MEASURE_TYPE_SPECTRUM,
+  MEASURE_TYPE_POPUP_ONLY,
 } from '../utils';
 import { MarkerLegend } from './MarkerLegend';
 import { SpectrumLegend } from './SpectrumLegend';
@@ -51,7 +52,11 @@ export const Legend = React.memo(({ serieses, className, setValueHidden, hiddenV
     return null;
   }
 
-  const displayedLegends = serieses.filter(({ type }) => type !== MEASURE_TYPE_RADIUS);
+  const displayedLegends = serieses.filter(
+    ({ type, hideFromLegend }) =>
+      ![MEASURE_TYPE_RADIUS, MEASURE_TYPE_POPUP_ONLY].includes(type) && hideFromLegend !== true,
+  );
+
   const hasIconLayer = serieses.some(l => l.type === MEASURE_TYPE_ICON);
   const hasRadiusLayer = serieses.some(l => l.type === MEASURE_TYPE_RADIUS);
   const hasColorLayer = serieses.some(l => coloredMeasureTypes.includes(l.type));
