@@ -141,8 +141,7 @@ export class ExpressionParser {
    */
   setAll(variables = {}) {
     Object.entries(variables).forEach(([name, value]) => {
-      const expressionValue = value || 0;
-      this.set(name, expressionValue);
+      this.set(name, value);
     });
   }
 
