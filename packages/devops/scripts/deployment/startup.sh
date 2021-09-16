@@ -1,11 +1,8 @@
-#!/bin/bash
+#!/bin/bash -l
 # This script deploys the repositories on startup
 
 # Exit when any command fails
 set -e
-
-# Set PATH to include depencencies
-export PATH=/home/ubuntu/.local/bin:/home/ubuntu/.yarn/bin:/home/ubuntu/.config/yarn/global/node_modules/.bin:/home/ubuntu/.nvm/versions/node/v12.18.3/bin:/usr/local/bin:$PATH
 
 # Set the home directory of the user
 export HOME_DIRECTORY="/home/ubuntu/tupaia"
@@ -31,7 +28,7 @@ fi
 # Fetch the latest code
 ${HOME_DIRECTORY}/packages/devops/scripts/deployment/checkoutLatest.sh
 
-# Deploy each package based on the stage, including injecting environment variables from parameter
+# Deploy each package based on the stage, including injecting environment variables from LastPass
 # store into the .env file
 ${HOME_DIRECTORY}/packages/devops/scripts/deployment/deployPackages.sh
 

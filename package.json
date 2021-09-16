@@ -21,6 +21,7 @@
     "build-admin-panel": "yarn workspace @tupaia/admin-panel build",
     "build-internal-dependencies": "./scripts/bash/buildInternalDependencies.sh",
     "build-web-frontend": "yarn workspace @tupaia/web-frontend build",
+    "download-env-vars": "./scripts/bash/downloadEnvironmentVariables.sh",
     "dump-database": "yarn workspace @tupaia/database dump-database --target ../../",
     "migrate": "yarn workspace @tupaia/database migrate",
     "migrate-create": "yarn workspace @tupaia/database migrate-create",
@@ -30,7 +31,6 @@
     "refresh-database": "yarn workspace @tupaia/database refresh-database --root ../../",
     "test-all": "node ./scripts/node/testAll --silent",
     "update-codeship-env-vars": "./packages/devops/scripts/ci/updateCiEnvVars.sh",
-    "download-parameter-store-env-vars": "./scripts/bash/syncDotEnvWithParameterStore.sh --download",
     "validate": "./scripts/bash/validate.sh"
   },
   "resolutions": {
@@ -68,7 +68,6 @@
     "@types/lodash.groupby": "^4.6.0",
     "@types/lodash.keyby": "^4.6.6",
     "@types/lodash.pick": "^4.4.0",
-    "@types/mathjs": "^6.0.5",
     "@types/multer": "^1.4.7",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
@@ -94,7 +93,7 @@
     "npm-run-all": "^4.1.5",
     "nyc": "^15.1.0",
     "prettier": "^2.2.1",
-    "react-scripts": "3.4.1",
+    "react-scripts": "4.0.3",
     "sinon": "^9.0.2",
     "sinon-chai": "^3.5.0",
     "start-server-and-test": "^1.11.0",

@@ -45,6 +45,14 @@ export const ShadedPolygon = styled(Polygon)`
   }
 `;
 
+export const TransparentShadedPolygon = styled(Polygon)`
+  fill: ${POLYGON_BLUE};
+  fill-opacity: 0;
+  :hover {
+    fill-opacity: 0.1;
+  }
+`;
+
 /**
  * ConnectedPolygon: Polygons defined by coordinates on the map. The logic here
  * deals with shading or default styling when it is being used to represent a
@@ -126,6 +134,10 @@ class ConnectedPolygon extends Component {
     };
 
     if (shade) {
+      if (shade === 'transparent') {
+        return <TransparentShadedPolygon {...defaultProps}>{tooltip}</TransparentShadedPolygon>;
+      }
+
       // To match with the color in markerIcon.js which uses BREWER_PALETTE
       const color = BREWER_PALETTE[shade] || shade;
 
