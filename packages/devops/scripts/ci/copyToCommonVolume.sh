@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # This is used to copy files from the container they're retrieved or built in, to the same directory
 # location on the common volume.

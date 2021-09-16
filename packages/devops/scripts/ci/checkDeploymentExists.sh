@@ -1,5 +1,4 @@
-#!/bin/bash
-set -x
+#!/bin/bash -e
 
 DIR=$(dirname "$0")
 DEPLOYMENT_SSH_URL=$(${DIR}/determineDeploymentSshUrl.sh)

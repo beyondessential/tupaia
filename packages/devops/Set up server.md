@@ -425,6 +425,23 @@ export LASTPASS_PASSWORD=xxx
 
 (get actual credentials from LastPass)
 
+# Temporary files
+
+Add a rule so that temporary files (like uploads and exports) are only deleted after 20 days, rather
+than immediately on any reboot
+
+`sudo vi /etc/tmpfiles.d/tmp.conf`
+
+Paste in
+
+```
+#/etc/tmpfiles.d/tmp.conf
+
+d /tmp 1777 root root 20d
+```
+
+And save.
+
 # ssh (optional)
 
 ### On local machine, set .ssh/config to ignore known_hosts for dev ip (it changes every day so gets annoying to remove and re-add it)

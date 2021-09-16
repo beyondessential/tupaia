@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 # Script for generating and uploading Bugsnag Sourcemaps
 
 source .env
