@@ -329,6 +329,8 @@ export function getMeasureDisplayInfo(
           );
           displayInfo.icon = valueInfo.icon || displayInfo.icon || SPECTRUM_ICON;
           break;
+        case MEASURE_TYPE_POPUP_ONLY:
+          break;
         case MEASURE_TYPE_SHADING:
           displayInfo.color = MAP_COLORS[valueInfo.color] || valueInfo.color || MAP_COLORS.NO_DATA;
           break;
