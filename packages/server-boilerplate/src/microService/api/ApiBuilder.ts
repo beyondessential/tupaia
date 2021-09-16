@@ -10,13 +10,13 @@ import errorHandler from 'api-error-handler';
 
 import { Authenticator } from '@tupaia/auth';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
+import { TupaiaApiClient, getBaseUrlsForHost } from '@tupaia/api-client';
 
 import { handleWith, handleError } from '../../utils';
 import { buildBasicBearerAuthMiddleware } from '../auth';
 import { TestRoute } from '../../routes';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
 import { RequestContext } from '../types';
-import { TupaiaApiClient } from '@tupaia/api-client';
 
 export class ApiBuilder {
   private readonly app: Express;
@@ -53,14 +53,7 @@ export class ApiBuilder {
         getAuthHeader: async () => req.headers.authorization || '',
       };
 
-      const baseUrls = {
-        entity: process.env.ENTITY_API_URL || '',
-        meditrak: process.env.MEDITRAK_API_URL || '',
-        report: process.env.REPORT_API_URL || '',
-      }
-      for (const [service, baseUrl] of Object.entries(baseUrls)) {
-        if (!baseUrl) throw new Error(`Must specify API_URL for service ${service}`);
-      }
+      const baseUrls = getBaseUrlsForHost(req.hostname);
 
       const context: RequestContext = {
         services: new TupaiaApiClient(microServiceAuthHandler, baseUrls),

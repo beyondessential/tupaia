@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 source .env
 
 # Set default port in case it wasn't in .env

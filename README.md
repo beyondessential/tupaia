@@ -52,6 +52,8 @@ if you prefer to pre-build internal dependencies, add `--skip-internal` to the a
 
 Most packages will require a .env file. `.env.example` files indicate the required variables per package.
 
+🔑 **BES internal:** [Adding .env files](https://beyond-essential.slab.com/posts/tupaia-monorepo-setup-v5egpdpq#step-3-add-env-files)
+
 ### Local database
 
 🔑 **BES internal:** [Tupaia monorepo setup](https://beyond-essential.slab.com/posts/tupaia-monorepo-setup-v5egpdpq) - steps 4 and 5
@@ -65,19 +67,7 @@ root, and it will install dependencies everywhere.
 
 We use codeship for the admin-panel, meditrak-server, web-config-server, and web-frontend packages.
 
-For codeship to use our environment variables, we store them encrypted and committed to the repo as
-ci-env-vars.encrypted inside each package. In order to update an environment variable:
-
-- modify your local .env file
-- download the codeship encryption key (either from LastPass or codeship itself) and save as codeship.aes in the root directory
-- run `yarn update-codeship-env-vars`
-
-Note that environment variables are also stored in AWS parameter store for new dev and feature deployments to pull from,
-so if you've updated the environment variables here, you probably also need to persist them across there
-
-- ssh into the aws instance (cannot be run locally at this stage)
-- update the .env file (if it hasn't been updated automatically by the CI/CD process)
-- run `ENVIRONMENT=dev yarn update-paramater-store-env-vars` (setting environment to either dev or production)
+🔑 **BES internal:** [CI/CD using Codeship](https://beyond-essential.slab.com/posts/ci-cd-using-codeship-uzxspw8z)
 
 ## Tests
 

@@ -1,3 +1,5 @@
+/* eslint-disable import/no-webpack-loader-syntax */
+/* eslint-disable import/no-unresolved */
 /**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
@@ -9,20 +11,17 @@ import L from 'leaflet';
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOMServer from 'react-dom/server';
-
 import styled from 'styled-components';
-
 import Warning from '@material-ui/icons/Warning';
 import Help from '@material-ui/icons/Help';
 import CheckBox from '@material-ui/icons/CheckBox';
 
 // from https://thenounproject.com/ochavisual/collection/ocha-humanitarian-icons/
-import { ReactComponent as Cyclone } from '../../images/cyclone.svg';
-import { ReactComponent as Earthquake } from '../../images/earthquake.svg';
-import { ReactComponent as Tsunami } from '../../images/tsunami.svg';
-import { ReactComponent as Volcano } from '../../images/volcano.svg';
-import { ReactComponent as Flood } from '../../images/flood.svg';
-
+import { Cyclone } from '../../icons/Cyclone';
+import { Earthquake } from '../../icons/Earthquake';
+import { Tsunami } from '../../icons/Tsunami';
+import { Volcano } from '../../icons/Volcano';
+import { Flood } from '../../icons/Flood';
 import { BREWER_PALETTE, WHITE } from '../../styles';
 
 // allows passing a color to a material icon & scales it down a bit

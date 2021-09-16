@@ -6,7 +6,6 @@
 import React, { lazy } from 'react';
 import { TextField, Button, Checkbox, PasswordStrengthBar } from '@tupaia/ui-components';
 import styled from 'styled-components';
-import MuiLink from '@material-ui/core/Link';
 import MuiBox from '@material-ui/core/Box';
 import MuiFormGroup from '@material-ui/core/FormGroup';
 import Typography from '@material-ui/core/Typography';

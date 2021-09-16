@@ -90,6 +90,18 @@ const EditorContainer = styled.div`
   }
 `;
 
+const convertValueToPrimitive = val => {
+  if (val === null) return val;
+  switch (typeof val) {
+    case 'object':
+      return JSON.stringify(val);
+    case 'function':
+      return '[Function]';
+    default:
+      return val;
+  }
+};
+
 const getColumns = data => {
   const columnKeys = [...new Set(data.map(d => Object.keys(d)).flat())];
   const indexColumn = {
@@ -100,7 +112,7 @@ const getColumns = data => {
   const columns = columnKeys.map(columnKey => {
     return {
       Header: columnKey,
-      accessor: row => row[columnKey],
+      accessor: row => convertValueToPrimitive(row[columnKey]),
     };
   });
 

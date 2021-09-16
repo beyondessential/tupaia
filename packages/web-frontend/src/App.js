@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
 import React, { lazy, Suspense } from 'react';
@@ -19,8 +19,6 @@ const { dispatch } = store;
 
 initHistoryDispatcher(store);
 
-const appType = process.env.REACT_APP_APP_TYPE;
-
 const initApp = () => {
   dispatch({
     type: FETCH_INITIAL_DATA,
@@ -28,6 +26,8 @@ const initApp = () => {
 };
 
 initApp();
+
+const appType = process.env.REACT_APP_APP_TYPE;
 
 const App = () => {
   let RootScreen = DesktopApp;
