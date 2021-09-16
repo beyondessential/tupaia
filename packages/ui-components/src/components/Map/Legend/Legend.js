@@ -48,14 +48,14 @@ const getLegendComponent = measureType => {
 };
 
 export const Legend = React.memo(({ serieses, className, setValueHidden, hiddenValues }) => {
-  if (!serieses) {
-    return null;
-  }
-
-  const displayedLegends = serieses.filter(
+  const displayedLegends = serieses?.filter(
     ({ type, hideFromLegend }) =>
       ![MEASURE_TYPE_RADIUS, MEASURE_TYPE_POPUP_ONLY].includes(type) && hideFromLegend !== true,
   );
+
+  if (!serieses || displayedLegends.length === 0) {
+    return null;
+  }
 
   const hasIconLayer = serieses.some(l => l.type === MEASURE_TYPE_ICON);
   const hasRadiusLayer = serieses.some(l => l.type === MEASURE_TYPE_RADIUS);
