@@ -422,7 +422,7 @@ export function fetchCountryAccessDataError(errorMessage) {
  *
  * @param {array} entityIds The ids of the countries the user requests answers
  * @param {string} message A message describing the reasons access is requested
- * @param {string} userGroup A specific user (permission) group the user is requesting access for
+ * @param {string} permissionGroup A specific permission group the user is requesting access for
  */
 export function attemptRequestCountryAccess(entityIds, message = '', projectCode) {
   return {

@@ -23,12 +23,12 @@ const FIELDS = [
   {
     Header: 'Permission Group',
     width: 160,
-    source: 'userGroup',
+    source: 'permission_group',
     editConfig: {
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
       optionValueKey: 'name',
-      sourceKey: 'userGroup',
+      sourceKey: 'permission_group',
     },
   },
   {

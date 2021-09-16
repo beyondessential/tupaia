@@ -24,7 +24,7 @@ export class MapOverlayPermissionsChecker extends PermissionsChecker {
 
   async fetchPermissionGroups() {
     const overlays = await this.fetchAndCacheOverlays();
-    return overlays.map(o => o.userGroup);
+    return overlays.map(o => o.permission_group);
   }
 
   async checkPermissions() {

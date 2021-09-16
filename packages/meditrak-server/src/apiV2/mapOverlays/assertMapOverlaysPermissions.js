@@ -27,7 +27,7 @@ export const hasMapOverlayGetPermissions = async (accessPolicy, models, mapOverl
         accessPolicy,
         models,
         entities[i],
-        mapOverlay.userGroup,
+        mapOverlay.permission_group,
       )
     ) {
       return {
@@ -39,7 +39,7 @@ export const hasMapOverlayGetPermissions = async (accessPolicy, models, mapOverl
   return {
     result: false,
     errorMessage: `Requires "${
-      mapOverlay.userGroup
+      mapOverlay.permission_group
     }" access to all countries "${mapOverlay.countryCodes.toString()}" of the map overlay`,
   };
 };
@@ -54,10 +54,10 @@ export const hasMapOverlayEditPermissions = async (accessPolicy, models, mapOver
   }
 
   const entities = await models.entity.find({ code: mapOverlay.countryCodes });
-  let hasUserGroupAccess = false;
+  let hasPermissionGroupAccess = false;
 
   // Check we have tupaia admin access to all countries the mapOverlay is in
-  // And user group access to at least one of the countries
+  // And permission group access to at least one of the countries
   for (let i = 0; i < entities.length; i++) {
     if (!(await hasTupaiaAdminAccessToEntityForVisualisation(accessPolicy, models, entities[i]))) {
       return {
@@ -66,22 +66,22 @@ export const hasMapOverlayEditPermissions = async (accessPolicy, models, mapOver
       };
     }
     if (
-      !hasUserGroupAccess &&
+      !hasPermissionGroupAccess &&
       (await hasAccessToEntityForVisualisation(
         accessPolicy,
         models,
         entities[i],
-        mapOverlay.userGroup,
+        mapOverlay.permission_group,
       ))
     ) {
-      hasUserGroupAccess = true;
+      hasPermissionGroupAccess = true;
     }
   }
 
-  if (!hasUserGroupAccess) {
+  if (!hasPermissionGroupAccess) {
     return {
       result: false,
-      errorMessage: `Cannot edit map overlay "${mapOverlayId}" as you do not have user group access to any of its countries (${mapOverlay.countryCodes})`,
+      errorMessage: `Cannot edit map overlay "${mapOverlayId}" as you do not have permission group access to any of its countries (${mapOverlay.countryCodes})`,
     };
   }
 
@@ -128,7 +128,7 @@ export const createMapOverlayDBFilter = (accessPolicy, criteria) => {
         "map_overlay"."countryCodes"
         &&
         ARRAY(
-          SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"map_overlay"."userGroup")::TEXT)
+          SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"map_overlay"."permission_group")::TEXT)
         )
       )
       -- For project level overlays, pull the country codes from the child entities and check that there is
@@ -147,7 +147,7 @@ export const createMapOverlayDBFilter = (accessPolicy, criteria) => {
         )::TEXT[]
         &&
         ARRAY(
-          SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"map_overlay"."userGroup")::TEXT)
+          SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"map_overlay"."permission_group")::TEXT)
         )
       )
     )`,

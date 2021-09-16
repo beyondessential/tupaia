@@ -185,13 +185,20 @@ const translateOverlaysForResponse = mapOverlays =>
     );
 
 /**
- * Find accessible Map Overlays that have matched entityCode, projectCode and userGroups
+ * Find accessible Map Overlays that have matched entityCode, projectCode and permissionGroups
  */
-export const findAccessibleMapOverlays = async (models, overlayCode, projectCode, userGroups) => {
+export const findAccessibleMapOverlays = async (
+  models,
+  overlayCode,
+  projectCode,
+  permissionGroups,
+) => {
   const mapOverlays = await models.mapOverlay.find({
     [RAW]: {
-      sql: `("userGroup" = '' OR "userGroup" IN (${userGroups.map(() => '?').join(',')}))`, // turn `['Public', 'Donor', 'Admin']` into `?,?,?` for binding
-      parameters: userGroups,
+      sql: `("permission_group" = '' OR "permission_group" IN (${permissionGroups
+        .map(() => '?')
+        .join(',')}))`, // turn `['Public', 'Donor', 'Admin']` into `?,?,?` for binding
+      parameters: permissionGroups,
     },
     [AND]: {
       [RAW]: {

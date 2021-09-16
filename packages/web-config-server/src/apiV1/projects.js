@@ -1,12 +1,12 @@
 import { respond } from '@tupaia/utils';
 
-async function fetchEntitiesWithProjectAccess(req, entities, userGroups) {
+async function fetchEntitiesWithProjectAccess(req, entities, permissionGroups) {
   return Promise.all(
     entities.map(async ({ id, name, code }) => ({
       id,
       name,
       code,
-      hasAccess: await Promise.all(userGroups.map(u => req.userHasAccess(code, u))),
+      hasAccess: await Promise.all(permissionGroups.map(p => req.userHasAccess(code, p))),
     })),
   );
 }
@@ -41,7 +41,7 @@ async function buildProjectDataForFrontend(project, req) {
     sort_order: sortOrder,
     image_url: imageUrl,
     logo_url: logoUrl,
-    user_groups: userGroups,
+    permission_groups: permissionGroups,
     entity_ids: entityIds,
     dashboard_group_name: dashboardGroupName,
     default_measure: defaultMeasure,
@@ -49,7 +49,7 @@ async function buildProjectDataForFrontend(project, req) {
   } = project;
 
   const entities = await Promise.all(entityIds.map(id => req.models.entity.findById(id)));
-  const accessByEntity = await fetchEntitiesWithProjectAccess(req, entities, userGroups);
+  const accessByEntity = await fetchEntitiesWithProjectAccess(req, entities, permissionGroups);
   const entitiesWithAccess = accessByEntity.filter(e => e.hasAccess.some(x => x));
   const names = entities.map(e => e.name);
 
@@ -67,7 +67,7 @@ async function buildProjectDataForFrontend(project, req) {
   return {
     name,
     code,
-    userGroups,
+    permissionGroups,
     description,
     sortOrder,
     imageUrl,

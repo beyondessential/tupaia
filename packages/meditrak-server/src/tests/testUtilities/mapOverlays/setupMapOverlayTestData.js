@@ -12,7 +12,7 @@ export const findOrCreateMapOverlay = async (models, id, countryCode) => {
     { id },
     {
       name: id,
-      userGroup: 'Admin',
+      permission_group: 'Admin',
       countryCodes: [countryCode],
     },
   );

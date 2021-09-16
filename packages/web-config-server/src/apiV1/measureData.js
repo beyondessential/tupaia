@@ -32,7 +32,7 @@ const accessDeniedForMeasure = {
   responseText: {
     status: 'Permission Denied',
     details:
-      'Measure data requested is restricted to a user group the requesting user does not belong to.',
+      'Measure data requested is restricted to a permission group the requesting user does not belong to.',
   },
 };
 
@@ -191,8 +191,8 @@ export default class extends DataAggregatingRouteHandler {
 
     // check permission
     await Promise.all(
-      overlays.map(async ({ userGroup }) => {
-        const isUserAllowedMeasure = await this.req.userHasAccess(code, userGroup);
+      overlays.map(async ({ permission_group: permissionGroup }) => {
+        const isUserAllowedMeasure = await this.req.userHasAccess(code, permissionGroup);
         if (!isUserAllowedMeasure) {
           throw new CustomError(accessDeniedForMeasure);
         }
@@ -254,7 +254,7 @@ export default class extends DataAggregatingRouteHandler {
     const {
       id,
       groupName,
-      userGroup,
+      permission_group: permissionGroup,
       isDataRegional, // don't include these in response
       dataElementCode,
       presentationOptions,
