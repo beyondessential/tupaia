@@ -46,7 +46,8 @@ const processMeasureInfo = ({ serieses, measureData, ...rest }) => {
       };
     }
 
-    if (!series.icon && typeof series.radius === 'undefined') {
+    // If it is not a radius series and there is no icon set a default
+    if (series.type !== 'radius' && !series.icon) {
       return {
         ...series,
         icon: 'pin',
