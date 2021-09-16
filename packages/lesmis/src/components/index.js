@@ -7,7 +7,6 @@ export * from './Breadcrumbs';
 export * from './DataGrid';
 export * from './EntityMenu';
 export * from './EntityVitalsItem';
-export * from './EntityVitalsItem';
 export * from './FetchLoader';
 export * from './Forms';
 export * from './Footer';

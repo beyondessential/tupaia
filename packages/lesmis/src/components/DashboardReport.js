@@ -6,11 +6,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { ListVisual } from '@tupaia/ui-components';
 import Button from '@material-ui/core/Button';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { Chart } from './Chart';
+import { Chart, ListVisual } from './Visuals';
 import * as COLORS from '../constants';
 import { useDashboardReportDataWithConfig } from '../api/queries';
 import { FlexEnd } from './Layout';
