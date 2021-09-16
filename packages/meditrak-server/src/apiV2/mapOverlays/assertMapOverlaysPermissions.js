@@ -125,10 +125,10 @@ export const createMapOverlayDBFilter = (accessPolicy, criteria) => {
       -- Look up the country codes list from the map overlay and check that the user has
       -- access to at least one of the countries for the appropriate permissions group
       (
-        "mapOverlay"."countryCodes"
+        "map_overlay"."countryCodes"
         &&
         ARRAY(
-          SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"mapOverlay"."userGroup")::TEXT)
+          SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"map_overlay"."userGroup")::TEXT)
         )
       )
       -- For project level overlays, pull the country codes from the child entities and check that there is
@@ -143,11 +143,11 @@ export const createMapOverlayDBFilter = (accessPolicy, criteria) => {
             INNER JOIN project
               ON  entity_relation.parent_id = project.entity_id
               AND entity_relation.entity_hierarchy_id = project.entity_hierarchy_id
-            WHERE ARRAY[project.code] <@ "mapOverlay"."countryCodes"
+            WHERE ARRAY[project.code] <@ "map_overlay"."countryCodes"
         )::TEXT[]
         &&
         ARRAY(
-          SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"mapOverlay"."userGroup")::TEXT)
+          SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"map_overlay"."userGroup")::TEXT)
         )
       )
     )`,

@@ -86,29 +86,29 @@ const generateUrls = async (db, options) => {
     DROP TABLE IF EXISTS ${tableOverlayCountry};
     CREATE TEMP TABLE ${tableOverlayCountry} AS
     SELECT id AS overlay_id, unnest("countryCodes") AS "orgUnit"
-    FROM "mapOverlay";
+    FROM "map_overlay";
 
     DROP TABLE IF EXISTS ${tableOverlayProject};
     CREATE TEMP TABLE ${tableOverlayProject} AS
     SELECT id AS overlay_id, unnest("projectCodes") AS project
-    FROM "mapOverlay";
+    FROM "map_overlay";
   `);
 
   const queryOptions = {
     multiJoin: [
       {
         joinWith: tableOverlayCountry,
-        joinCondition: [`${tableOverlayCountry}.overlay_id`, 'mapOverlay.id'],
+        joinCondition: [`${tableOverlayCountry}.overlay_id`, 'map_overlay.id'],
       },
       {
         joinWith: tableOverlayProject,
-        joinCondition: [`${tableOverlayProject}.overlay_id`, 'mapOverlay.id'],
+        joinCondition: [`${tableOverlayProject}.overlay_id`, 'map_overlay.id'],
       },
     ],
   };
 
-  const overlays = await db.find('mapOverlay', where, queryOptions);
-  const linkedOverlays = await db.find('mapOverlay', {
+  const overlays = await db.find('map_overlay', where, queryOptions);
+  const linkedOverlays = await db.find('map_overlay', {
     id: getUniqueEntries(overlays.map(o => o.linkedMeasures).flat()),
   });
   const linkedOverlayIds = linkedOverlays.map(({ id }) => id);

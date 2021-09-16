@@ -133,7 +133,7 @@ export class MapOverlayFilter extends VisualisationFilter {
   static name = 'map overlay';
 
   fetchRecords = async objectUrls =>
-    this.db.find('mapOverlay', {
+    this.db.find('map_overlay', {
       id: objectUrls.map(u => u.id).flat(),
     });
 }
