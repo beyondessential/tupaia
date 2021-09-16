@@ -15,11 +15,12 @@ import { importSurveys } from './importSurveys';
 import { importUsers } from './importUsers';
 import { importSurveyResponses, constructImportEmail } from './importSurveyResponses';
 import { importDisaster } from './importDisaster';
+import { getTempDirectory } from '../../utilities';
 
 // create upload handler
 const upload = multer({
   storage: multer.diskStorage({
-    destination: './uploads/',
+    destination: getTempDirectory('uploads'),
     filename: (req, file, callback) => {
       callback(null, `${Date.now()}_${file.originalname}`);
     },
