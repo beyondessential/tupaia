@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # if env vars are not already defined (e.g. by script caller during CI/CD), pull them in from .env
 if [ "$DB_URL" == "" ]; then

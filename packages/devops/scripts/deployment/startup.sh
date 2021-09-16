@@ -1,8 +1,5 @@
-#!/bin/bash -l
+#!/bin/bash -le
 # This script deploys the repositories on startup
-
-# Exit when any command fails
-set -e
 
 # Set the home directory of the user
 export HOME_DIRECTORY="/home/ubuntu/tupaia"

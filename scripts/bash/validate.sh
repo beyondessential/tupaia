@@ -1,6 +1,4 @@
-#!/bin/bash
-
-set -e
+#!/bin/bash -e
 
 DIR=$(dirname "$0")
 . ${DIR}/../../packages/devops/scripts/ci/utils.sh

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 echo "Fully refreshing analytics table"
 
 source .env
