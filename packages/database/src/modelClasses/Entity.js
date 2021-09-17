@@ -446,12 +446,8 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       return Promise.all(relations.map(async r => r.getData()));
     });
 
-    const uniqueEntities = entityArray => {
-      const entitiesById = keyBy(entityArray, 'id');
-      return Object.values(entitiesById);
-    };
-
-    return Promise.all(uniqueEntities(relationData).map(async r => this.generateInstance(r)));
+    const uniqueEntities = Object.values(keyBy(relationData, 'id'));
+    return Promise.all(uniqueEntities.map(async r => this.generateInstance(r)));
   }
 
   async getAncestorsOfEntities(hierarchyId, entityIds, criteria) {

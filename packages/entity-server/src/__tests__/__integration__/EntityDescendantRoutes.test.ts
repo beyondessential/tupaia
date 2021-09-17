@@ -4,7 +4,7 @@
  */
 
 import { TestableEntityServer, setupTestApp, tearDownTestApp } from '../testUtilities';
-import { getEntitiesWithFields, sortedByCode, COUNTRIES } from './fixtures';
+import { getEntitiesWithFields, COUNTRIES } from './fixtures';
 
 describe('descendants', () => {
   let app: TestableEntityServer;
@@ -16,7 +16,7 @@ describe('descendants', () => {
 
   afterAll(() => tearDownTestApp(app));
 
-  describe('/hierarchy/<hierarchyName>/<entityCode>/descendants', () => {
+  describe('/hierarchy/:hierarchyName/:entityCode/descendants', () => {
     it('can include the root entity', async () => {
       const { text } = await app.get('hierarchy/redblue/LAVENDER/descendants', {
         query: { fields: 'code,name,type', includeRootEntity: 'true' },
@@ -24,8 +24,8 @@ describe('descendants', () => {
 
       const entities = JSON.parse(text);
       expect(entities).toBeArray();
-      expect(sortedByCode(entities)).toEqual(
-        sortedByCode(getEntitiesWithFields(['LAVENDER', 'PKMN_TOWER'], ['code', 'name', 'type'])),
+      expect(entities).toIncludeSameMembers(
+        getEntitiesWithFields(['LAVENDER', 'PKMN_TOWER'], ['code', 'name', 'type']),
       );
     });
 
@@ -36,31 +36,29 @@ describe('descendants', () => {
 
       const entities = JSON.parse(text);
       expect(entities).toBeArray();
-      expect(sortedByCode(entities)).toEqual(
-        sortedByCode(
-          getEntitiesWithFields(
-            [
-              'KANTO',
-              'PALLET',
-              'BLUE',
-              'VIRIDIAN',
-              'PEWTER',
-              'CERULEAN',
-              'CERULEAN_CAVE',
-              'VERMILLION',
-              'LAVENDER',
-              'PKMN_TOWER',
-              'CELADON',
-              'CELADON_GAME',
-              'FUCHSIA',
-              'SAFARI',
-              'SAFFRON',
-              'SILPH',
-              'CINNABAR',
-              'PKMN_MANSION',
-            ],
-            ['code', 'name', 'type'],
-          ),
+      expect(entities).toIncludeSameMembers(
+        getEntitiesWithFields(
+          [
+            'KANTO',
+            'PALLET',
+            'BLUE',
+            'VIRIDIAN',
+            'PEWTER',
+            'CERULEAN',
+            'CERULEAN_CAVE',
+            'VERMILLION',
+            'LAVENDER',
+            'PKMN_TOWER',
+            'CELADON',
+            'CELADON_GAME',
+            'FUCHSIA',
+            'SAFARI',
+            'SAFFRON',
+            'SILPH',
+            'CINNABAR',
+            'PKMN_MANSION',
+          ],
+          ['code', 'name', 'type'],
         ),
       );
     });
@@ -72,45 +70,43 @@ describe('descendants', () => {
 
       const entities = JSON.parse(text);
       expect(entities).toBeArray();
-      expect(sortedByCode(entities)).toEqual(
-        sortedByCode(
-          getEntitiesWithFields(
-            [
-              'SPROUT_TOWER',
-              'OLIVINE_LIGHTHOUSE',
-              'LAVENDER_RADIO_TOWER',
-              'CELADON_GAME',
-              'SLOWPOKE_WELL',
-              'DRAGONS_DEN',
-              'BELL_TOWER',
-              'CERULEAN_CAVE',
-              'BURNED_TOWER',
-              'GOLDENROD',
-              'NEWBARK',
-              'VERMILLION',
-              'MAHOGANY',
-              'CHERRYGROVE',
-              'VIOLET',
-              'CIANWOOD',
-              'CELADON',
-              'AZALEA',
-              'BLACKTHORN',
-              'PALLET',
-              'SAFFRON',
-              'ECRUTEAK',
-              'PEWTER',
-              'OLIVINE',
-              'CERULEAN',
-              'SILPH',
-              'VIRIDIAN',
-              'BLUE',
-              'FUCHSIA',
-              'LAVENDER',
-              'KANTO',
-              'JOHTO',
-            ],
-            ['code', 'name', 'type'],
-          ),
+      expect(entities).toIncludeSameMembers(
+        getEntitiesWithFields(
+          [
+            'SPROUT_TOWER',
+            'OLIVINE_LIGHTHOUSE',
+            'LAVENDER_RADIO_TOWER',
+            'CELADON_GAME',
+            'SLOWPOKE_WELL',
+            'DRAGONS_DEN',
+            'BELL_TOWER',
+            'CERULEAN_CAVE',
+            'BURNED_TOWER',
+            'GOLDENROD',
+            'NEWBARK',
+            'VERMILLION',
+            'MAHOGANY',
+            'CHERRYGROVE',
+            'VIOLET',
+            'CIANWOOD',
+            'CELADON',
+            'AZALEA',
+            'BLACKTHORN',
+            'PALLET',
+            'SAFFRON',
+            'ECRUTEAK',
+            'PEWTER',
+            'OLIVINE',
+            'CERULEAN',
+            'SILPH',
+            'VIRIDIAN',
+            'BLUE',
+            'FUCHSIA',
+            'LAVENDER',
+            'KANTO',
+            'JOHTO',
+          ],
+          ['code', 'name', 'type'],
         ),
       );
     });
@@ -122,30 +118,28 @@ describe('descendants', () => {
 
       const entities = JSON.parse(text);
       expect(entities).toBeArray();
-      expect(sortedByCode(entities)).toEqual(
-        sortedByCode(
-          getEntitiesWithFields(
-            [
-              'PALLET',
-              'BLUE',
-              'VIRIDIAN',
-              'PEWTER',
-              'CERULEAN',
-              'CERULEAN_CAVE',
-              'VERMILLION',
-              'LAVENDER',
-              'PKMN_TOWER',
-              'CELADON',
-              'CELADON_GAME',
-              'FUCHSIA',
-              'SAFARI',
-              'SAFFRON',
-              'SILPH',
-              'CINNABAR',
-              'PKMN_MANSION',
-            ],
-            ['code', 'name', 'type'],
-          ),
+      expect(entities).toIncludeSameMembers(
+        getEntitiesWithFields(
+          [
+            'PALLET',
+            'BLUE',
+            'VIRIDIAN',
+            'PEWTER',
+            'CERULEAN',
+            'CERULEAN_CAVE',
+            'VERMILLION',
+            'LAVENDER',
+            'PKMN_TOWER',
+            'CELADON',
+            'CELADON_GAME',
+            'FUCHSIA',
+            'SAFARI',
+            'SAFFRON',
+            'SILPH',
+            'CINNABAR',
+            'PKMN_MANSION',
+          ],
+          ['code', 'name', 'type'],
         ),
       );
     });
@@ -157,8 +151,8 @@ describe('descendants', () => {
 
       const entities = JSON.parse(text);
       expect(entities).toBeArray();
-      expect(sortedByCode(entities)).toEqual(
-        sortedByCode(getEntitiesWithFields(['CELADON_GAME'], ['code', 'name', 'type'])),
+      expect(entities).toIncludeSameMembers(
+        getEntitiesWithFields(['CELADON_GAME'], ['code', 'name', 'type']),
       );
     });
 
@@ -169,13 +163,11 @@ describe('descendants', () => {
 
       const entities = JSON.parse(text);
       expect(entities).toBeArray();
-      expect(sortedByCode(entities)).toEqual(
-        sortedByCode(getEntitiesWithFields([], ['code', 'name', 'type'])),
-      );
+      expect(entities).toIncludeSameMembers(getEntitiesWithFields([], ['code', 'name', 'type']));
     });
   });
 
-  describe('/hierarchy/<hierarchyName>/descendants', () => {
+  describe('/hierarchy/:hierarchyName/descendants', () => {
     it('can fetch descendants of multiple entities', async () => {
       const { text } = await app.post('hierarchy/redblue/descendants', {
         query: { fields: 'code,name,type' },
@@ -184,12 +176,10 @@ describe('descendants', () => {
 
       const entities = JSON.parse(text);
       expect(entities).toBeArray();
-      expect(sortedByCode(entities)).toEqual(
-        sortedByCode(
-          getEntitiesWithFields(
-            ['CELADON_GAME', 'PKMN_MANSION', 'PKMN_TOWER'],
-            ['code', 'name', 'type'],
-          ),
+      expect(entities).toIncludeSameMembers(
+        getEntitiesWithFields(
+          ['CELADON_GAME', 'PKMN_MANSION', 'PKMN_TOWER'],
+          ['code', 'name', 'type'],
         ),
       );
     });
@@ -202,12 +192,10 @@ describe('descendants', () => {
 
       const entities = JSON.parse(text);
       expect(entities).toBeArray();
-      expect(sortedByCode(entities)).toEqual(
-        sortedByCode(
-          getEntitiesWithFields(
-            ['CELADON_GAME', 'LAVENDER_RADIO_TOWER', 'BELL_TOWER', 'BURNED_TOWER'],
-            ['code', 'name', 'type'],
-          ),
+      expect(entities).toIncludeSameMembers(
+        getEntitiesWithFields(
+          ['CELADON_GAME', 'LAVENDER_RADIO_TOWER', 'BELL_TOWER', 'BURNED_TOWER'],
+          ['code', 'name', 'type'],
         ),
       );
     });

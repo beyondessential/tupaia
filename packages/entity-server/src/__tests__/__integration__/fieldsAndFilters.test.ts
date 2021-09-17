@@ -4,13 +4,7 @@
  */
 
 import { TestableEntityServer, setupTestApp, tearDownTestApp } from '../testUtilities';
-import {
-  getEntityWithFields,
-  getEntitiesWithFields,
-  sortedByCode,
-  ENTITIES,
-  COUNTRIES,
-} from './fixtures';
+import { getEntityWithFields, getEntitiesWithFields, ENTITIES, COUNTRIES } from './fixtures';
 
 describe('fieldsAndFilters', () => {
   let app: TestableEntityServer;
@@ -59,10 +53,7 @@ describe('fieldsAndFilters', () => {
 
       const error = JSON.parse(text);
 
-      expect(error).toEqual({
-        error:
-          'Internal server error: Invalid single field requested fake_field, must be one of: id,code,name',
-      });
+      expect(error.error).toContain('Invalid single field requested fake_field');
     });
 
     it('throws error if requesting field for not flat property', async () => {
@@ -72,10 +63,7 @@ describe('fieldsAndFilters', () => {
 
       const error = JSON.parse(text);
 
-      expect(error).toEqual({
-        error:
-          'Internal server error: Invalid single field requested attributes, must be one of: id,code,name',
-      });
+      expect(error.error).toContain('Invalid single field requested attributes');
     });
 
     it('can fetch a an entity as single field', async () => {
@@ -87,14 +75,14 @@ describe('fieldsAndFilters', () => {
       expect(entity).toBe('Kanto');
     });
 
-    it('can multiple entities as single fields', async () => {
+    it('can fetch multiple entities as single fields', async () => {
       const { text } = await app.post('hierarchy/redblue', {
         query: { field: 'code' },
         body: { entities: ['redblue', 'KANTO', 'VIRIDIAN', 'PKMN_TOWER'] },
       });
 
-      const entity = JSON.parse(text);
-      expect(entity.sort()).toEqual(['redblue', 'KANTO', 'VIRIDIAN', 'PKMN_TOWER'].sort());
+      const entities = JSON.parse(text);
+      expect(entities).toIncludeSameMembers(['redblue', 'KANTO', 'VIRIDIAN', 'PKMN_TOWER']);
     });
   });
 
@@ -106,10 +94,7 @@ describe('fieldsAndFilters', () => {
 
       const error = JSON.parse(text);
 
-      expect(error).toEqual({
-        error:
-          'Internal server error: Unknown field requested: fake_field, must be one of: id,code,country_code,name,image_url,type,attributes',
-      });
+      expect(error.error).toContain('Unknown field requested: fake_field');
     });
 
     it('can fetch an entity with specific fields', async () => {
@@ -129,12 +114,10 @@ describe('fieldsAndFilters', () => {
 
       const entities = JSON.parse(text);
       expect(entities).toBeArray();
-      expect(sortedByCode(entities)).toEqual(
-        sortedByCode(
-          getEntitiesWithFields(
-            ['redblue', 'KANTO', 'VIRIDIAN', 'PKMN_TOWER'],
-            ['code', 'type', 'attributes'],
-          ),
+      expect(entities).toIncludeSameMembers(
+        getEntitiesWithFields(
+          ['redblue', 'KANTO', 'VIRIDIAN', 'PKMN_TOWER'],
+          ['code', 'type', 'attributes'],
         ),
       );
     });
@@ -182,10 +165,7 @@ describe('fieldsAndFilters', () => {
 
       const error = JSON.parse(text);
 
-      expect(error).toEqual({
-        error:
-          'Internal server error: Unknown filter key: fake_field, must be one of: id,code,country_code,name,image_url,type,attributes_type',
-      });
+      expect(error.error).toContain('Unknown filter key: fake_field');
     });
 
     it('it can filter on equality', async () => {

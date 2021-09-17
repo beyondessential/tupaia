@@ -4,7 +4,7 @@
  */
 
 import { TestableEntityServer, setupTestApp, tearDownTestApp } from '../testUtilities';
-import { getEntitiesWithFields, getEntityWithFields, sortedByCode, COUNTRIES } from './fixtures';
+import { getEntitiesWithFields, getEntityWithFields, COUNTRIES } from './fixtures';
 
 describe('entity', () => {
   let app: TestableEntityServer;
@@ -16,7 +16,7 @@ describe('entity', () => {
 
   afterAll(() => tearDownTestApp(app));
 
-  describe('/hierarchy/<hierarchyName>/<entityCode>', () => {
+  describe('/hierarchy/:hierarchyName/:entityCode', () => {
     it('can fetch a project entity', async () => {
       const { text } = await app.get('hierarchy/redblue/redblue', {
         query: { fields: 'code,name,type' },
@@ -54,7 +54,7 @@ describe('entity', () => {
     });
   });
 
-  describe('/hierarchy/<hierarchyName>', () => {
+  describe('/hierarchy/:hierarchyName', () => {
     it('can fetch multiple entities', async () => {
       const { text } = await app.post('hierarchy/redblue', {
         query: { fields: 'code,name,type' },
@@ -63,12 +63,10 @@ describe('entity', () => {
 
       const entities = JSON.parse(text);
       expect(entities).toBeArray();
-      expect(sortedByCode(entities)).toEqual(
-        sortedByCode(
-          getEntitiesWithFields(
-            ['redblue', 'KANTO', 'VIRIDIAN', 'PKMN_TOWER'],
-            ['code', 'name', 'type'],
-          ),
+      expect(entities).toIncludeSameMembers(
+        getEntitiesWithFields(
+          ['redblue', 'KANTO', 'VIRIDIAN', 'PKMN_TOWER'],
+          ['code', 'name', 'type'],
         ),
       );
     });

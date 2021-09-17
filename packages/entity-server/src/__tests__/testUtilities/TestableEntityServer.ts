@@ -44,14 +44,14 @@ export class TestableEntityServer {
     this.app = createApp(getTestDatabase());
   }
 
-  public async grantAccessToCountries(countries: string[]) {
+  public grantAccessToCountries(countries: string[]) {
     const policy = Object.fromEntries(
       countries.map(country => [country, [PUBLIC_PERMISSION_GROUP]]),
     );
     return this.grantAccess(policy);
   }
 
-  private async grantAccess(policy: Record<string, string[]>) {
+  private grantAccess(policy: Record<string, string[]>) {
     jest
       .spyOn(Authenticator.prototype, 'getAccessPolicyForUser')
       .mockImplementation(async () => policy);

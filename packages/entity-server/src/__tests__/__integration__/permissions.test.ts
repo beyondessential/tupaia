@@ -4,7 +4,7 @@
  */
 
 import { TestableEntityServer, setupTestApp, tearDownTestApp } from '../testUtilities';
-import { getEntitiesWithFields, sortedByCode } from './fixtures';
+import { getEntitiesWithFields } from './fixtures';
 
 describe('permissions', () => {
   let app: TestableEntityServer;
@@ -24,9 +24,7 @@ describe('permissions', () => {
 
       const error = JSON.parse(text);
 
-      expect(error).toEqual({
-        error: 'No access to requested entities: redblue',
-      });
+      expect(error.error).toContain('No access to requested entities: redblue');
     });
 
     it('throws error if fetching country with no access', async () => {
@@ -36,9 +34,7 @@ describe('permissions', () => {
 
       const error = JSON.parse(text);
 
-      expect(error).toEqual({
-        error: 'No access to requested entities: KANTO',
-      });
+      expect(error.error).toContain('No access to requested entities: KANTO');
     });
 
     it('throws error if fetching city with no access to country', async () => {
@@ -48,9 +44,7 @@ describe('permissions', () => {
 
       const error = JSON.parse(text);
 
-      expect(error).toEqual({
-        error: 'No access to requested entities: CELADON',
-      });
+      expect(error.error).toContain('No access to requested entities: CELADON');
     });
   });
 
@@ -63,10 +57,8 @@ describe('permissions', () => {
 
       const entities = JSON.parse(text);
       expect(entities).toBeArray();
-      expect(sortedByCode(entities)).toEqual(
-        sortedByCode(
-          getEntitiesWithFields(['ECRUTEAK', 'SLOWPOKE_WELL'], ['code', 'name', 'type']),
-        ),
+      expect(entities).toIncludeSameMembers(
+        getEntitiesWithFields(['ECRUTEAK', 'SLOWPOKE_WELL'], ['code', 'name', 'type']),
       );
     });
 
@@ -78,10 +70,8 @@ describe('permissions', () => {
 
       const entities = JSON.parse(text);
       expect(entities).toBeArray();
-      expect(sortedByCode(entities)).toEqual(
-        sortedByCode(
-          getEntitiesWithFields(['BELL_TOWER', 'BURNED_TOWER'], ['code', 'name', 'type']),
-        ),
+      expect(entities).toIncludeSameMembers(
+        getEntitiesWithFields(['BELL_TOWER', 'BURNED_TOWER'], ['code', 'name', 'type']),
       );
     });
 
@@ -93,12 +83,10 @@ describe('permissions', () => {
 
       const entities = JSON.parse(text);
       expect(entities).toBeArray();
-      expect(sortedByCode(entities)).toEqual(
-        sortedByCode(
-          getEntitiesWithFields(
-            ['JOHTO', 'ECRUTEAK', 'BELL_TOWER', 'BURNED_TOWER'],
-            ['code', 'name', 'type'],
-          ),
+      expect(entities).toIncludeSameMembers(
+        getEntitiesWithFields(
+          ['JOHTO', 'ECRUTEAK', 'BELL_TOWER', 'BURNED_TOWER'],
+          ['code', 'name', 'type'],
         ),
       );
     });

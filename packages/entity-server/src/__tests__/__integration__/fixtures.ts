@@ -30,10 +30,10 @@ export const getEntitiesWithFields = (entityCodes: string[], fields: (keyof Enti
     .filter(entityCode => entityCodes.includes(entityCode))
     .map(entityCode => getEntityWithFields(entityCode, fields));
 
-export const sortedByCode = (entities: { code: string }[]) =>
-  entities.sort((a, b) => (a.code > b.code ? 1 : -1));
-
-export const PROJECTS = [{ code: 'redblue' }, { code: 'goldsilver' }];
+export const PROJECTS = [
+  { code: 'redblue', projectEntityName: 'Pokemon Red/Blue' },
+  { code: 'goldsilver', projectEntityName: 'Pokemon Gold/Silver' },
+];
 
 export const COUNTRIES = ['KANTO', 'JOHTO'];
 
@@ -250,8 +250,6 @@ export const ENTITIES: Entity[] = [
   },
 ];
 
-export const ENTITY_HIERARCHIES = [{ name: 'redblue' }, { name: 'goldsilver' }];
-
 export const ENTITY_RELATIONS = [
   { parent: 'redblue', child: 'KANTO', hierarchy: 'redblue' },
   { parent: 'KANTO', child: 'PALLET', hierarchy: 'redblue' },
@@ -259,49 +257,49 @@ export const ENTITY_RELATIONS = [
   { parent: 'KANTO', child: 'VIRIDIAN', hierarchy: 'redblue' },
   { parent: 'KANTO', child: 'PEWTER', hierarchy: 'redblue' },
   { parent: 'KANTO', child: 'CERULEAN', hierarchy: 'redblue' },
-  { parent: 'CERULEAN', child: 'CERULEAN_CAVE', hierarchy: 'redblue' },
   { parent: 'KANTO', child: 'VERMILLION', hierarchy: 'redblue' },
   { parent: 'KANTO', child: 'LAVENDER', hierarchy: 'redblue' },
-  { parent: 'LAVENDER', child: 'PKMN_TOWER', hierarchy: 'redblue' },
   { parent: 'KANTO', child: 'CELADON', hierarchy: 'redblue' },
-  { parent: 'CELADON', child: 'CELADON_GAME', hierarchy: 'redblue' },
   { parent: 'KANTO', child: 'FUCHSIA', hierarchy: 'redblue' },
+  { parent: 'KANTO', child: 'CINNABAR', hierarchy: 'redblue' },
+  { parent: 'CERULEAN', child: 'CERULEAN_CAVE', hierarchy: 'redblue' },
+  { parent: 'LAVENDER', child: 'PKMN_TOWER', hierarchy: 'redblue' },
+  { parent: 'CELADON', child: 'CELADON_GAME', hierarchy: 'redblue' },
   { parent: 'FUCHSIA', child: 'SAFARI', hierarchy: 'redblue' },
   { parent: 'KANTO', child: 'SAFFRON', hierarchy: 'redblue' },
   { parent: 'SAFFRON', child: 'SILPH', hierarchy: 'redblue' },
-  { parent: 'KANTO', child: 'CINNABAR', hierarchy: 'redblue' },
   { parent: 'CINNABAR', child: 'PKMN_MANSION', hierarchy: 'redblue' },
 
   { parent: 'goldsilver', child: 'KANTO', hierarchy: 'goldsilver' },
+  { parent: 'goldsilver', child: 'JOHTO', hierarchy: 'goldsilver' },
   { parent: 'KANTO', child: 'PALLET', hierarchy: 'goldsilver' },
   { parent: 'KANTO', child: 'VIRIDIAN', hierarchy: 'goldsilver' },
-  { parent: 'VIRIDIAN', child: 'BLUE', hierarchy: 'goldsilver' },
   { parent: 'KANTO', child: 'PEWTER', hierarchy: 'goldsilver' },
   { parent: 'KANTO', child: 'CERULEAN', hierarchy: 'goldsilver' },
-  { parent: 'CERULEAN', child: 'CERULEAN_CAVE', hierarchy: 'goldsilver' },
   { parent: 'KANTO', child: 'VERMILLION', hierarchy: 'goldsilver' },
   { parent: 'KANTO', child: 'LAVENDER', hierarchy: 'goldsilver' },
-  { parent: 'LAVENDER', child: 'LAVENDER_RADIO_TOWER', hierarchy: 'goldsilver' },
   { parent: 'KANTO', child: 'CELADON', hierarchy: 'goldsilver' },
-  { parent: 'CELADON', child: 'CELADON_GAME', hierarchy: 'goldsilver' },
   { parent: 'KANTO', child: 'FUCHSIA', hierarchy: 'goldsilver' },
   { parent: 'KANTO', child: 'SAFFRON', hierarchy: 'goldsilver' },
   { parent: 'KANTO', child: 'SILPH', hierarchy: 'goldsilver' },
-  { parent: 'goldsilver', child: 'JOHTO', hierarchy: 'goldsilver' },
   { parent: 'JOHTO', child: 'NEWBARK', hierarchy: 'goldsilver' },
   { parent: 'JOHTO', child: 'CHERRYGROVE', hierarchy: 'goldsilver' },
   { parent: 'JOHTO', child: 'VIOLET', hierarchy: 'goldsilver' },
-  { parent: 'VIOLET', child: 'SPROUT_TOWER', hierarchy: 'goldsilver' },
   { parent: 'JOHTO', child: 'AZALEA', hierarchy: 'goldsilver' },
-  { parent: 'AZALEA', child: 'SLOWPOKE_WELL', hierarchy: 'goldsilver' },
   { parent: 'JOHTO', child: 'GOLDENROD', hierarchy: 'goldsilver' },
   { parent: 'JOHTO', child: 'ECRUTEAK', hierarchy: 'goldsilver' },
-  { parent: 'ECRUTEAK', child: 'BELL_TOWER', hierarchy: 'goldsilver' },
-  { parent: 'ECRUTEAK', child: 'BURNED_TOWER', hierarchy: 'goldsilver' },
   { parent: 'JOHTO', child: 'OLIVINE', hierarchy: 'goldsilver' },
-  { parent: 'OLIVINE', child: 'OLIVINE_LIGHTHOUSE', hierarchy: 'goldsilver' },
   { parent: 'JOHTO', child: 'CIANWOOD', hierarchy: 'goldsilver' },
   { parent: 'JOHTO', child: 'MAHOGANY', hierarchy: 'goldsilver' },
   { parent: 'JOHTO', child: 'BLACKTHORN', hierarchy: 'goldsilver' },
+  { parent: 'VIRIDIAN', child: 'BLUE', hierarchy: 'goldsilver' },
+  { parent: 'CERULEAN', child: 'CERULEAN_CAVE', hierarchy: 'goldsilver' },
+  { parent: 'LAVENDER', child: 'LAVENDER_RADIO_TOWER', hierarchy: 'goldsilver' },
+  { parent: 'CELADON', child: 'CELADON_GAME', hierarchy: 'goldsilver' },
+  { parent: 'VIOLET', child: 'SPROUT_TOWER', hierarchy: 'goldsilver' },
+  { parent: 'AZALEA', child: 'SLOWPOKE_WELL', hierarchy: 'goldsilver' },
+  { parent: 'ECRUTEAK', child: 'BELL_TOWER', hierarchy: 'goldsilver' },
+  { parent: 'ECRUTEAK', child: 'BURNED_TOWER', hierarchy: 'goldsilver' },
+  { parent: 'OLIVINE', child: 'OLIVINE_LIGHTHOUSE', hierarchy: 'goldsilver' },
   { parent: 'BLACKTHORN', child: 'DRAGONS_DEN', hierarchy: 'goldsilver' },
 ];

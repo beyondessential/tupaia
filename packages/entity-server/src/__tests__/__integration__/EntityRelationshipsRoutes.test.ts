@@ -16,7 +16,7 @@ describe('relationships', () => {
 
   afterAll(() => tearDownTestApp(app));
 
-  describe('/hierarchy/<hierarchyName>/<entityCode>/relationships', () => {
+  describe('/hierarchy/:hierarchyName/:entityCode/relationships', () => {
     describe('errors', () => {
       it('throws error if no type in descendant_filter', async () => {
         const { text } = await app.get('hierarchy/redblue/redblue/relationships', {
@@ -25,9 +25,7 @@ describe('relationships', () => {
 
         const error = JSON.parse(text);
 
-        expect(error).toEqual({
-          error: 'Internal server error: descendant_filter:type url parameter must be present',
-        });
+        expect(error.error).toContain('descendant_filter:type url parameter must be present');
       });
 
       it('throws if type in ancestor_filter is non-equality', async () => {
@@ -40,10 +38,9 @@ describe('relationships', () => {
 
         const error = JSON.parse(text);
 
-        expect(error).toEqual({
-          error:
-            'Internal server error: ancestor_filter:type must be a basic equality, single, not null type constraint',
-        });
+        expect(error.error).toContain(
+          'ancestor_filter:type must be a basic equality, single, not null type constraint',
+        );
       });
 
       it('throws if type in descendant_filter is non-equality', async () => {
@@ -55,10 +52,9 @@ describe('relationships', () => {
 
         const error = JSON.parse(text);
 
-        expect(error).toEqual({
-          error:
-            'Internal server error: descendant_filter:type must be a basic equality, single, not null type constraint',
-        });
+        expect(error.error).toContain(
+          'descendant_filter:type must be a basic equality, single, not null type constraint',
+        );
       });
     });
 
@@ -138,7 +134,7 @@ describe('relationships', () => {
     });
   });
 
-  describe('/hierarchy/<hierarchyName>/relationships', () => {
+  describe('/hierarchy/:hierarchyName/relationships', () => {
     it('can fetch relationships of multiple entities', async () => {
       const { text } = await app.post('hierarchy/redblue/relationships', {
         query: { fields: 'code,name,type', descendant_filter: 'type==facility' },
