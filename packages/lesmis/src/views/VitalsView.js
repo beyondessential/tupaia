@@ -184,6 +184,7 @@ const SchoolView = ({ vitals }) => (
 
 const Wrapper = styled.section`
   background: #fbfbfb;
+  overflow: hidden;
 `;
 
 const Container = styled(MuiContainer)`
