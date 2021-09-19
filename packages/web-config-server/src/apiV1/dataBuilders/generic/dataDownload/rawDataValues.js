@@ -70,18 +70,23 @@ class RawDataValuesBuilder extends DataBuilder {
     // then build a matrix around the analytics
     for (let surveyCodeIndex = 0; surveyCodeIndex < surveyCodes.length; surveyCodeIndex++) {
       const surveyCode = surveyCodes[surveyCodeIndex];
-      const { dataElements: dataElementsMetadata } = await this.fetchDataGroup(surveyCode);
+      let { dataElements: dataElementsMetadata } = await this.fetchDataGroup(surveyCode);
       const surveyConfig = surveysConfig[surveyCode];
 
       const dataElementCodes = dataElementsMetadata.map(d => d.code);
       let additionalQueryConfig = { dataElementCodes, useDeprecatedApi: true };
-
+      
       if (surveyConfig) {
-        const { excludeCodes = [] } = surveyConfig;
+        const { excludeCodes = [], columnLabels } = surveyConfig;
         if (excludeCodes.length > 0) {
           additionalQueryConfig.dataElementCodes = dataElementCodes.filter(
             code => !excludeCodes.includes(code),
           );
+        }
+        if(columnLabels ) {
+          dataElementsMetadata = dataElementsMetadata.map(de => {
+            return (de.code in columnLabels) ? { ...de, text: columnLabels[de.code] } : de;
+          });
         }
         const { entityAggregation, entityIdToNameElements } = surveyConfig;
         additionalQueryConfig = {
