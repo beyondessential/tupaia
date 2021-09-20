@@ -70,14 +70,21 @@ const groupRows = (rows: Row[], params: MergeRowsParams) => {
       return;
     }
     const groupKey = params.createGroupKey(row);
-    groupsByKey[groupKey] = addRowToGroup(groupsByKey[groupKey], row);
+    addRowToGroup(groupsByKey, groupKey, row); // mutates groupsByKey
     parser.next();
   });
 
   return { groups: Object.values(groupsByKey), ungroupedRows };
 };
 
-const addRowToGroup = (group: Group = {}, row: Row): Group => {
+const addRowToGroup = (groupsByKey: Record<string, Group>, groupKey: string, row: Row) => {
+  if (!groupsByKey[groupKey]) {
+    // eslint-disable-next-line no-param-reassign
+    groupsByKey[groupKey] = {};
+  }
+
+  const group = groupsByKey[groupKey];
+
   Object.keys(row).forEach((field: string) => {
     if (!group[field]) {
       // eslint-disable-next-line no-param-reassign
@@ -85,7 +92,6 @@ const addRowToGroup = (group: Group = {}, row: Row): Group => {
     }
     group[field].push(row[field]);
   });
-  return group;
 };
 
 const mergeGroups = (groups: Group[], params: MergeRowsParams): Row[] => {
