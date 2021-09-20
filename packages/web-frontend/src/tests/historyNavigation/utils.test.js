@@ -9,7 +9,7 @@ import { decodeLocation } from '../../historyNavigation/utils';
 
 const baseLocation = {
   pathname: '/PROJECT_1/ORG_UNIT_1/GROUP_1',
-  search: '?overlay=overlay1&report=report1',
+  search: '?mapOverlayIds=overlay1&report=report1',
 };
 
 describe('historyNavigation/utils', () => {
@@ -19,7 +19,7 @@ describe('historyNavigation/utils', () => {
         PROJECT: 'PROJECT_1',
         ORG_UNIT: 'ORG_UNIT_1',
         DASHBOARD: 'GROUP_1',
-        MEASURE: 'overlay1',
+        MAP_OVERLAY_IDS: 'overlay1',
         REPORT: 'report1',
       });
     });
@@ -29,7 +29,7 @@ describe('historyNavigation/utils', () => {
         PROJECT: 'PROJECT_1',
         ORG_UNIT: '',
         DASHBOARD: 'GROUP_1',
-        MEASURE: 'overlay1',
+        MAP_OVERLAY_IDS: 'overlay1',
         REPORT: 'report1',
       });
     });
@@ -39,7 +39,7 @@ describe('historyNavigation/utils', () => {
         PROJECT: '',
         ORG_UNIT: 'ORG_UNIT_1',
         DASHBOARD: 'GROUP_1',
-        MEASURE: 'overlay1',
+        MAP_OVERLAY_IDS: 'overlay1',
         REPORT: 'report1',
       });
     });
@@ -49,13 +49,13 @@ describe('historyNavigation/utils', () => {
         PROJECT: 'PROJECT_1',
         ORG_UNIT: 'ORG_UNIT_1',
         DASHBOARD: '',
-        MEASURE: 'overlay1',
+        MAP_OVERLAY_IDS: 'overlay1',
         REPORT: 'report1',
       });
       expect(decodeLocation({ ...baseLocation, pathname: '/PROJECT_1/ORG_UNIT_1' })).toEqual({
         PROJECT: 'PROJECT_1',
         ORG_UNIT: 'ORG_UNIT_1',
-        MEASURE: 'overlay1',
+        MAP_OVERLAY_IDS: 'overlay1',
         REPORT: 'report1',
       });
     });
@@ -63,7 +63,7 @@ describe('historyNavigation/utils', () => {
     it('should be able to decode locations with empty path', () => {
       expect(decodeLocation({ ...baseLocation, pathname: '' })).toEqual({
         projectSelector: true,
-        MEASURE: 'overlay1',
+        MAP_OVERLAY_IDS: 'overlay1',
         REPORT: 'report1',
       });
     });
