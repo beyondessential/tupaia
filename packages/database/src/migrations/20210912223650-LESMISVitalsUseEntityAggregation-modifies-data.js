@@ -43,6 +43,82 @@ const OBSOLETE_REPORTS = [
   'LESMIS_multi_school_vitals',
 ];
 
+const NEW_STUDENT_NUMBERS = [
+  'nostu_e0_f',
+  'nostu_e0_m',
+  'nostu_e1_f',
+  'nostu_e1_m',
+  'nostu_e2_f',
+  'nostu_e2_m',
+  'nostu_e3_f',
+  'nostu_e3_m',
+  'nostu_pg_f',
+  'nostu_pg_m',
+  'nostu_p0_f',
+  'nostu_p0_m',
+  'nostu_p1_f',
+  'nostu_p1_m',
+  'nostu_p2_f',
+  'nostu_p2_m',
+  'nostu_p3_f',
+  'nostu_p3_m',
+  'nostu_p4_f',
+  'nostu_p4_m',
+  'nostu_p5_f',
+  'nostu_p5_m',
+  'nostu_s1_f',
+  'nostu_s1_m',
+  'nostu_s2_f',
+  'nostu_s2_m',
+  'nostu_s3_f',
+  'nostu_s3_m',
+  'nostu_s4_f',
+  'nostu_s4_m',
+  'nostu_s5_f',
+  'nostu_s5_m',
+  'nostu_s6_f',
+  'nostu_s6_m',
+  'nostu_s7_f',
+  'nostu_s7_m',
+];
+
+const OLD_STUDENT_NUMBERS = [
+  'SchPop001',
+  'SchPop002',
+  'SchPop003',
+  'SchPop004',
+  'SchPop005',
+  'SchPop006',
+  'SchPop007',
+  'SchPop008',
+  'SchPop009',
+  'SchPop010',
+  'SchPop011',
+  'SchPop012',
+  'SchPop013',
+  'SchPop014',
+  'SchPop015',
+  'SchPop016',
+  'SchPop017',
+  'SchPop018',
+  'SchPop019',
+  'SchPop020',
+  'SchPop021',
+  'SchPop022',
+  'SchPop023',
+  'SchPop024',
+  'SchPop025',
+  'SchPop026',
+  'SchPop027',
+  'SchPop028',
+  'SchPop029',
+  'SchPop030',
+  'SchPop031',
+  'SchPop032',
+  'SchPop033',
+  'SchPop034',
+];
+
 // New indicators
 const generateDevelopmentPartnerIndicator = baseDataElement => ({
   id: generateId(),
@@ -171,6 +247,12 @@ const ENTITY_VITALS_REPORT_CONFIG = {
   ],
 };
 
+const generateStudentCountIndicator = dataElements => ({
+  formula: dataElements.join(' + '),
+  aggregation: 'MOST_RECENT',
+  defaultValues: dataElements.reduce((obj, dataElement) => ({ ...obj, [dataElement]: 0 }), {}),
+});
+
 // Add an extra data element to school vitals report
 const updateSchoolVitalsReport = async db => {
   const report = await findSingleRecord(db, 'report', { code: 'LESMIS_school_vitals' });
@@ -183,6 +265,18 @@ const updateSchoolVitalsReport = async db => {
     'report',
     { config: report.config }, // updated values
     { code: 'LESMIS_school_vitals' }, // find criteria
+  );
+};
+
+// Update the LESMIS_Student_Count indicator to use the newer data elements
+const updateLESMISStudentCount = async db => {
+  const indicator = await findSingleRecord(db, 'indicator', { code: 'LESMIS_Student_Count' });
+  indicator.config = generateStudentCountIndicator(NEW_STUDENT_NUMBERS);
+  await updateValues(
+    db,
+    'indicator',
+    { config: indicator.config }, // updated values
+    { code: 'LESMIS_Student_Count' }, // find criteria
   );
 };
 
@@ -201,6 +295,17 @@ const downdateSchoolVitalsReport = async db => {
     'report',
     { config: report.config }, // updated values
     { code: 'LESMIS_school_vitals' }, // find criteria
+  );
+};
+// Update the LESMIS_Student_Count indicator to use the older data elements
+const downdateLESMISStudentCount = async db => {
+  const indicator = await findSingleRecord(db, 'indicator', { code: 'LESMIS_Student_Count' });
+  indicator.config = generateStudentCountIndicator(OLD_STUDENT_NUMBERS);
+  await updateValues(
+    db,
+    'indicator',
+    { config: indicator.config }, // updated values
+    { code: 'LESMIS_Student_Count' }, // find criteria
   );
 };
 
@@ -234,6 +339,7 @@ exports.up = async function (db) {
   });
 
   await updateSchoolVitalsReport(db);
+  await updateLESMISStudentCount(db);
 };
 
 exports.down = async function (db) {
@@ -245,6 +351,7 @@ exports.down = async function (db) {
   await deleteObject(db, 'report', { code: 'LESMIS_entity_vitals' });
 
   await downdateSchoolVitalsReport(db);
+  await downdateLESMISStudentCount(db);
 };
 
 exports._meta = {
