@@ -4,6 +4,7 @@
  */
 
 import { value, last, eq, notEq, exists, notExists, gt, length, any, all } from './basic';
+import { orgUnitCodeToName } from './context';
 import {
   convertToPeriod,
   dateStringToPeriod,
@@ -32,6 +33,10 @@ export const customFunctions = {
   formatAsFractionAndPercentage,
   any,
   all,
+};
+
+export const contextConfig = {
+  orgUnitCodeToName,
 };
 
 /**

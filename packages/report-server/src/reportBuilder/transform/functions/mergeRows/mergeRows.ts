@@ -8,7 +8,7 @@ import { yup } from '@tupaia/utils';
 import { TransformParser } from '../../parser';
 import { mergeStrategies } from './mergeStrategies';
 import { buildWhere } from '../where';
-import { Row, FieldValue } from '../../../types';
+import { Context, Row, FieldValue } from '../../../types';
 import { buildCreateGroupKey } from './createGroupKey';
 import { buildGetMergeStrategy } from './getMergeStrategy';
 import { starSingleOrMultipleColumnsValidator } from '../transformValidators';
@@ -58,9 +58,9 @@ type Group = {
   [fieldKey: string]: FieldValue[];
 };
 
-const groupRows = (rows: Row[], params: MergeRowsParams) => {
+const groupRows = (rows: Row[], params: MergeRowsParams, context: Context) => {
   const groupsByKey: Record<string, Group> = {};
-  const parser = new TransformParser(rows);
+  const parser = new TransformParser(rows, context);
   const ungroupedRows: Row[] = []; // Rows that don't match the 'where' clause are left ungrouped
 
   rows.forEach((row: Row) => {

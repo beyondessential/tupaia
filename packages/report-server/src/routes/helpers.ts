@@ -3,8 +3,10 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import type { EntityApi } from '@tupaia/api-client';
-import type { AccessPolicy } from '@tupaia/access-policy';
+import { AccessPolicy } from '@tupaia/access-policy';
+import { MicroServiceRequestContext } from '@tupaia/server-boilerplate';
+
+type EntityApi = MicroServiceRequestContext['services']['entity'];
 
 export const getAccessibleOrgUnitCodes = async (
   permissionGroupName: string,

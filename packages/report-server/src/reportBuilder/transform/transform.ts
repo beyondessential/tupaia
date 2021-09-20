@@ -6,10 +6,20 @@
 import { yup } from '@tupaia/utils';
 
 import { Row } from '../types';
+import { Context } from '../context';
 import { transformBuilders } from './functions';
 import { aliases } from './aliases';
 
-type TransformParams = {
+export type TransformParams =
+  | keyof typeof aliases
+  | {
+      [key: string]: string | Record<string, string> | undefined;
+      transform: string;
+      title?: string;
+      description?: string;
+    };
+
+type BuiltTransformParams = {
   title?: string;
   name: string;
   apply: (rows: Row[]) => Row[];
@@ -35,9 +45,9 @@ const transformParamsValidator = yup.lazy((value: unknown) => {
 
 const paramsValidator = yup.array().required();
 
-const transform = (rows: Row[], transformSteps: TransformParams[]): Row[] => {
+const transform = (rows: Row[], transformSteps: BuiltTransformParams[]): Row[] => {
   let transformedRows: Row[] = rows;
-  transformSteps.forEach((transformStep: TransformParams, index: number) => {
+  transformSteps.forEach((transformStep: BuiltTransformParams, index: number) => {
     try {
       transformedRows = transformStep.apply(transformedRows);
     } catch (e) {
@@ -49,8 +59,8 @@ const transform = (rows: Row[], transformSteps: TransformParams[]): Row[] => {
   return transformedRows;
 };
 
-const buildParams = (params: unknown): TransformParams => {
-  const validatedParams = transformParamsValidator.validateSync(params);
+const buildParams = (params: unknown, context?: Context): BuiltTransformParams => {
+  const validatedParams: TransformParams = transformParamsValidator.validateSync(params);
   if (typeof validatedParams === 'string') {
     return {
       name: validatedParams,
@@ -68,13 +78,13 @@ const buildParams = (params: unknown): TransformParams => {
   return {
     title,
     name: transformStep,
-    apply: transformBuilders[transformStep](restOfTransformParams),
+    apply: transformBuilders[transformStep](restOfTransformParams, context as Context),
   };
 };
 
-export const buildTransform = (params: unknown) => {
+export const buildTransform = (params: unknown, context?: Context) => {
   const validatedParams = paramsValidator.validateSync(params);
 
-  const builtParams = validatedParams.map(param => buildParams(param));
+  const builtParams = validatedParams.map(param => buildParams(param, context));
   return (rows: Row[]) => transform(rows, builtParams);
 };

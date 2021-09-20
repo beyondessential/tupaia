@@ -4,8 +4,15 @@
  */
 
 import { ExpressionParser } from '@tupaia/expression-parser';
+
+import { Context } from '../../context';
 import { Row, FieldValue } from '../../types';
-import { customFunctions, functionsExtensions, functionOverrides } from './functions';
+import {
+  customFunctions,
+  contextConfig,
+  functionsExtensions,
+  functionOverrides,
+} from './functions';
 import { TransformScope } from './TransformScope';
 
 type RowLookup = {
@@ -33,13 +40,18 @@ type Lookups = {
 };
 
 export class TransformParser extends ExpressionParser {
+  protected readonly CALCULATION_PREFIX = '=';
+
   private currentRow = 0;
 
   private rows: Row[];
 
   private lookups: Lookups;
 
-  public constructor(rows: Row[] = []) {
+  // eslint-disable-next-line react/static-property-placement
+  private context?: Context;
+
+  public constructor(rows: Row[] = [], context?: Context) {
     super(new TransformScope());
 
     this.rows = rows;
@@ -65,6 +77,8 @@ export class TransformParser extends ExpressionParser {
       });
       this.set('where', this.whereFunction); // no '@' prefix for where
     }
+
+    this.context = context;
   }
 
   public evaluate(expression: string) {
@@ -120,7 +134,14 @@ export class TransformParser extends ExpressionParser {
   };
 
   protected getCustomFunctions() {
-    return { ...super.getCustomFunctions(), ...customFunctions };
+    const { functions: factoryFunctions, dependencies } = this.buildFactoryFunctions();
+
+    return {
+      ...super.getCustomFunctions(),
+      ...customFunctions,
+      ...factoryFunctions,
+      ...dependencies,
+    };
   }
 
   protected getFunctionExtensions() {
@@ -129,6 +150,21 @@ export class TransformParser extends ExpressionParser {
 
   protected getFunctionOverrides() {
     return { ...super.getFunctionOverrides(), ...functionOverrides };
+  }
+
+  private buildFactoryFunctions() {
+    const dependencies = {
+      getContext: () => this.context,
+    };
+
+    const functions = Object.fromEntries(
+      Object.entries(contextConfig).map(([fnName, { create }]) => [
+        fnName,
+        this.factory(fnName, ['getContext'], create),
+      ]),
+    );
+
+    return { functions, dependencies };
   }
 
   public static isExpression(expression: string) {
