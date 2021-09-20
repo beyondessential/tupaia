@@ -81,7 +81,6 @@ describe('relatives', () => {
           [
             'KANTO',
             'JOHTO',
-            'CINNABAR',
             'CELADON',
             'LAVENDER',
             'ECRUTEAK',
