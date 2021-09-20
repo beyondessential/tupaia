@@ -526,7 +526,7 @@ export function changeBounds(bounds) {
 
 /**
  * Changes current measure, should change features rendered on map after saga data fetch.
- * Updates the current measureId in the url.
+ * Updates the current mayOverlayIds in the url.
  * @param {string} mayOverlayIds
  */
 export function setMapOverlay(mapOverlayIds) {

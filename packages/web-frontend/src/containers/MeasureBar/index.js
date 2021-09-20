@@ -31,7 +31,6 @@ import {
   selectCurrentMapOverlay,
   selectCurrentProject,
   selectMapOverlayById,
-  selectCurrentMapOverlayId,
 } from '../../selectors';
 import { getDefaultDates, getLimits } from '../../utils/periodGranularities';
 
@@ -208,7 +207,7 @@ const mapStateToProps = state => {
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
   const currentMapOverlay = selectCurrentMapOverlay(state);
 
-  const currentMapOverlayId = selectCurrentMapOverlayId(state) || '';
+  const currentMapOverlayId = currentMapOverlay.mapOverlayId || null;
   // TODO: current measures in Measure Bar
   // const currentMeasures = selectCurrentMeasures(state);
   const activeProject = selectCurrentProject(state);

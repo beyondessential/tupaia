@@ -175,8 +175,8 @@ export default class extends DataAggregatingRouteHandler {
 
   buildResponse = async () => {
     const { code } = this.entity;
-    const { measureId } = this.query;
-    const measureIds = measureId.split(',');
+    const { measureIds: measureIdsStr } = this.query;
+    const measureIds = measureIdsStr.split(',');
     const overlayResults = await this.models.mapOverlay.find({ id: measureIds });
 
     // Re-order the overlays array to follow the order in measureIds

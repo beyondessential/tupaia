@@ -56,20 +56,16 @@ export {
 } from './dashboardSelectors';
 
 export {
-  selectCurrentMeasure,
   selectCurrentMapOverlay,
   selectHasPolygonMeasure,
   selectAllMeasuresWithDisplayInfo,
   selectAllMeasuresWithDisplayAndOrgUnitData,
   selectRenderedMeasuresWithDisplayInfo,
   selectRadiusScaleFactor,
-  selectMeasureBarItemById,
-  selectCurrentMeasureId,
   selectMapOverlayById,
   selectCurrentMapOverlayId,
   selectMeasureBarItemCategoryById,
   selectIsMeasureInHierarchy,
-  selectDefaultMeasureId,
   selectDefaultMapOverlayId,
   selectCurrentPeriodGranularity,
   selectMeasureIdsByOverlayId,

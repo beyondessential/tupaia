@@ -945,7 +945,7 @@ function* fetchCurrentMeasureInfo() {
   const state = yield select();
   const currentOrganisationUnitCode = selectCurrentOrgUnitCode(state);
   const { measureHierarchy } = state.measureBar;
-  const selectedMapOverlayIds = selectCurrentMapOverlayId(state);
+  const selectedMapOverlayId = selectCurrentMapOverlayId(state);
 
   if (currentOrganisationUnitCode) {
     const isHierarchyPopulated = !!measureHierarchy.length;
@@ -955,12 +955,12 @@ function* fetchCurrentMeasureInfo() {
        * it is not selected through the measureBar UI
        * i.e. page reloaded when on org with measure selected
        */
-      yield put(setMapOverlay(selectedMapOverlayIds));
-    } else if (!selectIsMeasureInHierarchy(state, selectedMapOverlayIds)) {
+      yield put(setMapOverlay(selectedMapOverlayId));
+    } else if (!selectIsMeasureInHierarchy(state, selectedMapOverlayId)) {
       // Update to the default measure ID if the current measure id isn't in the hierarchy
       const newMapOverlayId = selectDefaultMapOverlayId(state);
       yield put(setMapOverlay(newMapOverlayId));
-    } else yield put(setMapOverlay(selectedMapOverlayIds));
+    }
   }
 }
 
