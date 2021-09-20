@@ -7,9 +7,11 @@ import { ApiConnection } from '@tupaia/server-boilerplate';
 import { createBasicHeader } from '@tupaia/utils';
 import { refreshAndSaveAccessToken } from '/appServer/requestHelpers/refreshAndSaveAccessToken';
 
-const { MICROSERVICE_CLIENT_USERNAME, MICROSERVICE_CLIENT_SECRET } = process.env;
+// const { MICROSERVICE_CLIENT_USERNAME, MICROSERVICE_CLIENT_SECRET } = process.env;
+const MICROSERVICE_CLIENT_USERNAME = 'lesmis-server@tupaia.org';
+const MICROSERVICE_CLIENT_SECRET = 'O@%OHPE8N9J#CLo..IpI';
 
-const PUBLIC_USER_NAME = 'public';
+const PUBLIC_USER_NAME = 'lesmis';
 const PUBLIC_USER_AUTH_HEADER = createBasicHeader(
   MICROSERVICE_CLIENT_USERNAME,
   MICROSERVICE_CLIENT_SECRET,
@@ -24,7 +26,7 @@ export class ReportConnection extends ApiConnection {
   baseUrl = REPORT_API_URL;
 
   constructor(req) {
-    const userName = req?.userJson?.userName;
+    const userName = req?.userJson?.userName || 'lesmis';
 
     const getAuthHeader = async () => {
       if (userName === PUBLIC_USER_NAME) {
@@ -51,6 +53,9 @@ export class ReportConnection extends ApiConnection {
   }
 
   async fetchReport(reportCode, query) {
-    return this.get(`fetchReport/${reportCode}`, query);
+    const report = await this.get(`fetchReport/${reportCode}`, query);
+
+    // console.log('report', report);
+    return report;
   }
 }

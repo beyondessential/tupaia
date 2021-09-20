@@ -1,0 +1,71 @@
+{
+  "fetch": {
+    "aggregations": [
+      { "type": "MOST_RECENT" },
+      {
+        "type": "SUM_PER_ORG_GROUP",
+        "config": { "dataSourceEntityType": "sub_district", "aggregationEntityType": "requested" }
+      }
+    ],
+    "dataElements": [
+      "ger_district_pe_t",
+      "ger_district_pe_f",
+      "ger_district_pe_m",
+      "ger_district_lse_t",
+      "ger_district_lse_f",
+      "ger_district_lse_m",
+      "ger_district_use_t",
+      "ger_district_use_f",
+      "ger_district_use_m"
+    ]
+  },
+  "transform": [],
+  "example": {
+    "fetch": {
+      "aggregations": [
+        { "type": "MOST_RECENT", "config": { "dataSourceEntityType": "sub_district" } }
+      ],
+      "dataElements": [
+        "ger_district_pe_t",
+        "ger_district_pe_f",
+        "ger_district_pe_m",
+        "ger_district_lse_t",
+        "ger_district_lse_f",
+        "ger_district_lse_m",
+        "ger_district_use_t",
+        "ger_district_use_f",
+        "ger_district_use_m"
+      ]
+    },
+    "transform": [
+      {
+        "insert": {
+          "name": "=translate($dataElement, { ger_district_pe_t: 'Primary', ger_district_pe_f: 'Primary', ger_district_pe_m: 'Primary', ger_district_lse_t: 'Lower Secondary', ger_district_lse_f: 'Lower Secondary', ger_district_lse_m: 'Lower Secondary', ger_district_use_t: 'Upper Secondary', ger_district_use_f: 'Upper Secondary', ger_district_use_m: 'Upper Secondary' })"
+        },
+        "include": "*",
+        "transform": "updateColumns"
+      },
+      "keyValueByDataElementName",
+      { "using": "last", "groupBy": "name", "transform": "mergeRows" },
+      {
+        "insert": {
+          "Male": "=sum($ger_district_pe_m, $ger_district_lse_m, $ger_district_use_m) / 100",
+          "Total": "=sum($ger_district_pe_t, $ger_district_lse_t, $ger_district_use_t) / 100",
+          "Female": "=sum($ger_district_pe_f, $ger_district_lse_f, $ger_district_use_f) / 100"
+        },
+        "include": ["name"],
+        "transform": "updateColumns"
+      },
+      { "insert": { "GPI": "=$Female/$Male" }, "include": "*", "transform": "updateColumns" },
+      {
+        "insert": {
+          "sort_order": "=translate($name, { 'Primary': 1', 'Lower Secondary': '2', 'Upper Secondary': '3' })"
+        },
+        "include": "*",
+        "transform": "updateColumns"
+      },
+      { "by": "=$sort_order", "transform": "sortRows" },
+      { "include": ["name", "Male", "Female", "Total", "GPI"], "transform": "updateColumns" }
+    ]
+  }
+}
