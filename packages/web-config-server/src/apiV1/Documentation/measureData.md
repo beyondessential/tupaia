@@ -14,12 +14,12 @@ Get measure data and option set for country level organisationUnit
 
   ```
   organisationUnitCode: ${organisationUnitCode}
-  measureIds: ${measureIds}
+  mapOverlayIds: ${mapOverlayIds}
   ```
 
 - ###### SAMPLE request
 
-`/api/v1/measureData?organisationUnitCode=DL&measureIds=93`
+`/api/v1/measureData?organisationUnitCode=DL&mapOverlayIds=93`
 
 - ###### ON SUCCESS
   - code: `200`
@@ -138,7 +138,7 @@ Get measure data and option set for country level organisationUnit
             "value": "1"
         }
     ],
-    "measureIds": [84],
+    "mapOverlayIds": [84],
     "displayType": ""
 }
 ```

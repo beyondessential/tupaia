@@ -131,7 +131,6 @@ import {
   selectCurrentProject,
   selectCurrentDashboardNameFromLocation,
   selectViewConfig,
-  selectMeasureIdsByOverlayId,
 } from './selectors';
 import {
   formatDateForApi,
@@ -202,7 +201,7 @@ function* handleUserPage(userPage, initialComponents) {
 const URL_REFRESH_COMPONENTS = {
   [URL_COMPONENTS.PROJECT]: setProject,
   [URL_COMPONENTS.ORG_UNIT]: setOrgUnit,
-  [URL_COMPONENTS.MAP_OVERLAY_IDS]: setMapOverlay,
+  [URL_COMPONENTS.URL_COMPONENTS]: setMapOverlay,
   [URL_COMPONENTS.REPORT]: openEnlargedDialog,
   [URL_COMPONENTS.MEASURE_PERIOD]: updateCurrentMeasureConfigOnceHierarchyLoads,
 };
@@ -876,12 +875,7 @@ function* fetchMeasureInfo(mapOverlayIds) {
 
   const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
-  // TODO: Modify fetching measureData
-  const measureIds = selectMeasureIdsByOverlayId(state, mapOverlayIds);
-  if (!measureIds) {
-    yield put(cancelFetchMeasureData());
-    return;
-  }
+
   const measureParams = selectMapOverlayById(state, mapOverlayIds);
   const activeProjectCode = selectCurrentProjectCode(state);
 
@@ -892,7 +886,7 @@ function* fetchMeasureInfo(mapOverlayIds) {
       : getDefaultDates(measureParams);
 
   const urlParameters = {
-    measureIds,
+    mapOverlayIds,
     organisationUnitCode,
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),

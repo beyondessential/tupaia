@@ -177,8 +177,6 @@ export class MeasureBar extends Component {
 
 const MapOverlayShape = PropTypes.shape({
   mapOverlayId: PropTypes.string,
-  // TODO: measureIds from string to Array
-  measureIds: PropTypes.string,
   name: PropTypes.string,
   periodGranularity: PropTypes.string,
   datePickerLimits: PropTypes.string,
@@ -207,6 +205,7 @@ const mapStateToProps = state => {
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
   const currentMapOverlay = selectCurrentMapOverlay(state);
 
+  // TODO failed prop type
   const currentMapOverlayId = currentMapOverlay.mapOverlayId || null;
   // TODO: current measures in Measure Bar
   // const currentMeasures = selectCurrentMeasures(state);

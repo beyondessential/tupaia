@@ -70,6 +70,5 @@ export {
   selectCurrentPeriodGranularity,
   selectIsMapOverlayInHierarchy,
   selectDefaultMapOverlayId,
-  selectMeasureIdsByOverlayId,
   selectMapOverlayGroupById,
 } from './mapOverlaySelectors';

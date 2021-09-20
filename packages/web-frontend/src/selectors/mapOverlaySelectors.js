@@ -56,14 +56,6 @@ export const selectCurrentPeriodGranularity = createSelector(
   mapOverlay => mapOverlay.periodGranularity,
 );
 
-export const selectMeasureIdsByOverlayId = createSelector(
-  [state => state, (_, mapOverlayId) => mapOverlayId],
-  (state, mapOverlayId) => {
-    const mapOverlay = selectMapOverlayById(state, mapOverlayId);
-    return mapOverlay?.measureIds || null;
-  },
-);
-
 export const selectMapOverlayGroupById = createSelector(
   [state => state.measureBar.measureHierarchy, (_, ids) => ids],
   (measureHierarchy, ids) => {

@@ -15,16 +15,3 @@ export const getMapOverlayFromHierarchy = (mapOverlayHierarchy, targetMapOverlay
   const flattenMapOverlays = flattenMapOverlayHierarchy(mapOverlayHierarchy);
   return flattenMapOverlays.find(({ mapOverlayId }) => targetMapOverlayId === mapOverlayId);
 };
-
-export const getMeasureIdsByMapOverlayIds = (mapOverlayHierarchy, targetMapOverlayIds) => {
-  if (!targetMapOverlayIds) {
-    return null;
-  }
-  const flattenMapOverlays = flattenMapOverlayHierarchy(mapOverlayHierarchy);
-  const measureIdsSet = new Set(
-    flattenMapOverlays
-      .filter(({ mapOverlayId }) => targetMapOverlayIds.includes(mapOverlayId))
-      .flatMap(({ measureIds }) => measureIds),
-  );
-  return Array.from(measureIdsSet);
-};

@@ -17,6 +17,25 @@ export class MapOverlayModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return MapOverlayType;
   }
+
+  async findMeasuresByIds(ids) {
+    const overlays = await this.find(
+      { id: ids },
+      {
+        columns: [
+          { id: `${TYPES.MAP_OVERLAY}.id` },
+          { linkedMeasures: `${TYPES.MAP_OVERLAY}.linkedMeasures` },
+        ],
+      },
+    );
+    const measureIds = new Set();
+    overlays.forEach(o => {
+      const { id, linkedMeasures = [] } = o;
+      measureIds.add(linkedMeasures);
+      measureIds.add(id);
+    });
+    return this.find({ id: Array.from(measureIds) });
+  }
 }
 
 const onChangeDeleteRelation = async ({ type: changeType, record_id: id }, models) => {

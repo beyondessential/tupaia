@@ -175,19 +175,9 @@ export default class extends DataAggregatingRouteHandler {
 
   buildResponse = async () => {
     const { code } = this.entity;
-    const { measureIds: measureIdsStr } = this.query;
-    const measureIds = measureIdsStr.split(',');
-    const overlayResults = await this.models.mapOverlay.find({ id: measureIds });
-
-    // Re-order the overlays array to follow the order in measureIds
-    const overlaysById = keyBy(overlayResults, 'id');
-    const overlays = [];
-
-    measureIds.forEach(id => {
-      if (overlaysById[id]) {
-        overlays.push(overlaysById[id]);
-      }
-    });
+    const { mapOverlayIds: mapOverlayIdsStr } = this.query;
+    const mapOverlayIds = mapOverlayIdsStr.split(',');
+    const overlays = await this.models.mapOverlay.findMeasuresByIds(mapOverlayIds);
 
     // check permission
     await Promise.all(
@@ -207,7 +197,10 @@ export default class extends DataAggregatingRouteHandler {
     const measureOptions = await this.fetchMeasureOptions(overlays, measureData);
 
     return {
-      measureIds: overlays.map(o => o.id).sort(),
+      measureIds: overlays
+        .map(o => o.id)
+        .sort()
+        .join(','),
       measureLevel: getMeasureLevel(overlays),
       measureOptions,
       serieses: measureOptions,
