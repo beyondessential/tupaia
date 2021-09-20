@@ -34,7 +34,7 @@ export const ATTEMPT_RESET_TOKEN_LOGIN = 'ATTEMPT_RESET_TOKEN_LOGIN';
 export const CHANGE_SIDE_BAR_CONTRACTED_WIDTH = 'CHANGE_SIDE_BAR_CONTRACTED_WIDTH';
 export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
 export const CLEAR_MEASURE_HIERARCHY = 'CLEAR_MEASURE_HIERARCHY';
-export const SET_MEASURE = 'SET_MEASURE';
+export const SET_MAP_OVERLAY = 'SET_MAP_OVERLAY';
 export const UPDATE_MEASURE_CONFIG = 'UPDATE_MEASURE_CONFIG';
 export const REQUEST_ORG_UNIT = 'REQUEST_ORG_UNIT';
 export const FETCH_ORG_UNIT = 'FETCH_ORG_UNIT';
@@ -527,12 +527,12 @@ export function changeBounds(bounds) {
 /**
  * Changes current measure, should change features rendered on map after saga data fetch.
  * Updates the current measureId in the url.
- * @param {string} measureId
+ * @param {string} mayOverlayIds
  */
-export function setMeasure(measureId) {
+export function setMapOverlay(mapOverlayIds) {
   return {
-    type: SET_MEASURE,
-    measureId,
+    type: SET_MAP_OVERLAY,
+    mapOverlayIds,
   };
 }
 
@@ -541,10 +541,10 @@ export function setMeasure(measureId) {
  *
  * @param {object} measureConfig
  */
-export function updateMeasureConfig(measureId, measureConfig) {
+export function updateMeasureConfig(mapOverlayIds, measureConfig) {
   return {
     type: UPDATE_MEASURE_CONFIG,
-    measureId,
+    mapOverlayIds,
     measureConfig,
   };
 }

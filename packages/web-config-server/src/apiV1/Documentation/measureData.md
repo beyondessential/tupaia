@@ -2,28 +2,29 @@
 
 Get measure data and option set for country level organisationUnit
 
-* ###### URL
+- ###### URL
 
- `/measureData`
+`/measureData`
 
-* ###### METHOD
+- ###### METHOD
 
   `GET`
 
-* ###### URL PARAMS
+- ###### URL PARAMS
 
   ```
   organisationUnitCode: ${organisationUnitCode}
-  measureId: ${measureId}
+  measureIds: ${measureIds}
   ```
 
-* ###### SAMPLE request
+- ###### SAMPLE request
 
- `/api/v1/measureData?organisationUnitCode=DL&measureId=93`
+`/api/v1/measureData?organisationUnitCode=DL&measureIds=93`
 
-* ###### ON SUCCESS
-  * code:  `200`
-  * content:
+- ###### ON SUCCESS
+  - code: `200`
+  - content:
+
 ```JSON
 {
     "measureOptions": [
@@ -137,19 +138,19 @@ Get measure data and option set for country level organisationUnit
             "value": "1"
         }
     ],
-    "measureId": 84,
+    "measureIds": [84],
     "displayType": ""
 }
 ```
 
-* ###### ON FAIL
+- ###### ON FAIL
 
-* code: `401` content: `{ status: permissionFail, details.. }`
-  * `{details: Organisation unit does not exist}` - invalid organisation units or organisationUnitCode is not the query params
-  * `{details: Measure with this id does not exist}`
-  * `{details: Measure does not match allowed userGroup}`
-  * `{details: Measure with this id is not allowed for given organisation unit}`
-  * `{details: Measures data not allowed for world}`
-  * `{details: measureId is not present in query}`
-  * code: `404` content: `{ status: Not Found, details:Cannot find country level in hierarchy }`
-* common responses as per `./Index.md`
+- code: `401` content: `{ status: permissionFail, details.. }`
+  - `{details: Organisation unit does not exist}` - invalid organisation units or organisationUnitCode is not the query params
+  - `{details: Measure with this id does not exist}`
+  - `{details: Measure does not match allowed userGroup}`
+  - `{details: Measure with this id is not allowed for given organisation unit}`
+  - `{details: Measures data not allowed for world}`
+  - `{details: measureId is not present in query}`
+  - code: `404` content: `{ status: Not Found, details:Cannot find country level in hierarchy }`
+- common responses as per `./Index.md`

@@ -36,7 +36,7 @@ import {
   ATTEMPT_REQUEST_COUNTRY_ACCESS,
   CHANGE_SIDE_BAR_CONTRACTED_WIDTH,
   CHANGE_SIDE_BAR_EXPANDED_WIDTH,
-  SET_MEASURE,
+  SET_MAP_OVERLAY,
   UPDATE_MEASURE_CONFIG,
   CLEAR_MEASURE_HIERARCHY,
   SET_ORG_UNIT,
@@ -592,7 +592,7 @@ function measureBar(
   switch (action.type) {
     case CLEAR_MEASURE_HIERARCHY:
       return { ...state, measureHierarchy: [] };
-    case SET_MEASURE:
+    case SET_MAP_OVERLAY:
       return {
         ...state,
         hiddenMeasures: {},
@@ -600,7 +600,7 @@ function measureBar(
     case UPDATE_MEASURE_CONFIG: {
       const { categoryIndex, measure, measureIndex } = selectMeasureBarItemCategoryById(
         { measureBar: state },
-        action.measureId,
+        action.mapOverlayIds,
       );
 
       const measureHierarchy = [...state.measureHierarchy];
@@ -633,7 +633,7 @@ function measureBar(
 function global(
   state = {
     isSidePanelExpanded: false,
-    overlay: null,
+    mapOverlayIds: null,
     dashboards: [],
     viewConfigs: {},
     isLoadingOrganisationUnit: false,
@@ -647,7 +647,7 @@ function global(
       return {
         ...state,
         isSidePanelExpanded: false,
-        overlay: !isMobile() && LANDING,
+        mapOverlayIds: !isMobile() && LANDING,
       };
     case SHOW_TUPAIA_INFO:
       return {

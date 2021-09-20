@@ -57,6 +57,7 @@ export {
 
 export {
   selectCurrentMeasure,
+  selectCurrentMapOverlay,
   selectHasPolygonMeasure,
   selectAllMeasuresWithDisplayInfo,
   selectAllMeasuresWithDisplayAndOrgUnitData,
@@ -64,8 +65,12 @@ export {
   selectRadiusScaleFactor,
   selectMeasureBarItemById,
   selectCurrentMeasureId,
+  selectMapOverlayById,
+  selectCurrentMapOverlayId,
   selectMeasureBarItemCategoryById,
   selectIsMeasureInHierarchy,
   selectDefaultMeasureId,
+  selectDefaultMapOverlayId,
   selectCurrentPeriodGranularity,
+  selectMeasureIdsByOverlayId,
 } from './measureSelectors';

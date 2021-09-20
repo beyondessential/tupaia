@@ -12,28 +12,18 @@ import {
   selectHasPolygonMeasure,
   selectAllMeasuresWithDisplayInfo,
   selectRenderedMeasuresWithDisplayInfo,
-  selectCurrentMeasureId,
   selectAreRegionLabelsPermanent,
 } from '../../selectors';
 import { setOrgUnit } from '../../actions';
 
 const Polygon = React.memo(
-  ({
-    measureData,
-    measureOrgUnits,
-    measureInfo,
-    measureId,
-    onChangeOrgUnit,
-    permanentLabels,
-    ...props
-  }) => {
+  ({ measureData, measureOrgUnits, measureInfo, onChangeOrgUnit, permanentLabels, ...props }) => {
     const { measureOptions } = measureInfo;
 
     return (
       <InteractivePolygon
         hasMeasureData={measureData && measureData.length > 0}
         measureOptions={measureOptions}
-        measureId={measureId}
         measureOrgUnits={measureOrgUnits}
         permanentLabels={permanentLabels}
         onChangeOrgUnit={onChangeOrgUnit}
@@ -47,14 +37,14 @@ Polygon.propTypes = {
   measureData: PropTypes.array.isRequired,
   measureOrgUnits: PropTypes.array.isRequired,
   measureInfo: PropTypes.object.isRequired,
-  measureId: PropTypes.string,
+  mapOverlayId: PropTypes.string,
   onChangeOrgUnit: PropTypes.func,
   permanentLabels: PropTypes.bool,
 };
 
 Polygon.defaultProps = {
   permanentLabels: true,
-  measureId: null,
+  mapOverlayId: null,
   onChangeOrgUnit: () => {},
 };
 
@@ -75,14 +65,12 @@ const mapStateToProps = state => {
   const measureData = selectMeasureDataWithCoordinates(
     selectRenderedMeasuresWithDisplayInfo(state),
   );
-  const measureId = selectCurrentMeasureId(state);
   const permanentLabels = selectAreRegionLabelsPermanent(state);
 
   return {
     measureData,
     measureOrgUnits,
     measureInfo,
-    measureId,
     permanentLabels,
   };
 };

@@ -16,7 +16,7 @@ export default class extends RouteHandler {
               name: 'GroupA',
               children: [
                 {
-                  measureId: 'Laos_Schools_A',
+                  measureIds: ['Laos_Schools_A'],
                   name: 'Overlay A',
                   ...presentationOptions,
                 }
@@ -29,7 +29,7 @@ export default class extends RouteHandler {
                   name: 'GroupC',
                   children: [
                     {
-                      measureId: 'Laos_Schools_D',
+                      measureIds: ['Laos_Schools_D'],
                       name: 'Overlay D',
                       ...presentationOptions,
                     }, 

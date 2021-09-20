@@ -16,7 +16,7 @@ import { Dashboard } from '../../../components/mobile/Dashboard';
 import { filterShape } from '../../../components/mobile/FilterSelect';
 import {
   setOrgUnit,
-  setMeasure,
+  setMapOverlay,
   toggleMeasureExpand,
   toggleDashboardSelectExpand,
   setDashboardGroup,
@@ -29,7 +29,7 @@ import {
   selectCurrentDashboardName,
   selectCurrentOrgUnit,
   selectOrgUnitChildren,
-  selectCurrentMeasure,
+  selectCurrentMapOverlay,
 } from '../../../selectors';
 
 const MAP_WIDTH = 420;
@@ -76,7 +76,7 @@ class RegionScreen extends PureComponent {
       dashboards,
       selectedFilter,
       measureFilters,
-      onChangeMeasure,
+      onChangeMapOverlay,
       mobileListItems,
       onToggleMeasureExpand,
       onToggleDashboardSelectExpand,
@@ -111,7 +111,7 @@ class RegionScreen extends PureComponent {
             filterTitle="Measures"
             filters={measureFilters}
             currentFilter={selectedFilter}
-            onFilterChange={onChangeMeasure}
+            onFilterChange={onChangeMapOverlay}
             filterIsExpanded={measureFilterIsExpanded}
             onFilterOpen={onToggleMeasureExpand}
             onFilterClose={onToggleMeasureExpand}
@@ -137,7 +137,7 @@ RegionScreen.propTypes = {
   selectedFilter: filterShape,
   measureFilterIsExpanded: PropTypes.bool,
   onToggleMeasureExpand: PropTypes.func.isRequired,
-  onChangeMeasure: PropTypes.func.isRequired,
+  onChangeMapOverlay: PropTypes.func.isRequired,
   isLoading: PropTypes.bool,
   isMeasureLoading: PropTypes.bool,
   onChangeOrgUnit: PropTypes.func.isRequired,
@@ -238,13 +238,13 @@ const getMeasureFiltersForHierarchy = measureHierarchy => {
 
       results.push(category);
     } else {
-      const measure = {
+      const mapOverlay = {
         label: measureObject.name,
-        id: String(measureObject.measureId),
+        id: measureObject.mapOverlayId.toString(),
         value: measureObject,
       };
 
-      results.push(measure);
+      results.push(mapOverlay);
     }
   });
 
@@ -256,7 +256,7 @@ const mapStateToProps = state => {
   const { measureHierarchy, isExpanded } = state.measureBar;
   const { measureInfo, isMeasureLoading } = state.map;
   const { isGroupSelectExpanded } = state.dashboard;
-  const currentMeasure = selectCurrentMeasure(state);
+  const currentMapOverlay = selectCurrentMapOverlay(state);
   const orgUnit = selectCurrentOrgUnit(state);
 
   const mobileListItems = getListItemsFromOrganisationUnitChildren(
@@ -271,8 +271,8 @@ const mapStateToProps = state => {
 
   const measureFilters = getMeasureFiltersForHierarchy(measureHierarchy);
 
-  const selectedFilter = currentMeasure.measureId
-    ? { label: currentMeasure.name, id: `${currentMeasure.measureId}` }
+  const selectedFilter = currentMapOverlay.mapOverlayId
+    ? { label: currentMapOverlay.name, id: `${currentMapOverlay.mapOverlayId.toString()}` }
     : { label: '' };
 
   return {
@@ -291,7 +291,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onChangeMeasure: measureId => dispatch(setMeasure(measureId)),
+  onChangeMapOverlay: mapOverlayId => dispatch(setMapOverlay(mapOverlayId)),
   onClearMeasure: () => dispatch(clearMeasure()),
   onToggleMeasureExpand: () => dispatch(toggleMeasureExpand()),
   onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),
@@ -300,13 +300,14 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { onChangeMeasure, onClearMeasure } = dispatchProps;
+  const { onChangeMapOverlay, onClearMeasure } = dispatchProps;
 
   return {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    onChangeMeasure: measure => (measure ? onChangeMeasure(measure.measureId) : onClearMeasure()),
+    onChangeMapOverlay: mapOverlay =>
+      mapOverlay ? onChangeMapOverlay(mapOverlay.mapOverlayId) : onClearMeasure(),
   };
 };
 

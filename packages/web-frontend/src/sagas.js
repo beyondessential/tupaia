@@ -75,10 +75,10 @@ import {
   OPEN_USER_DIALOG,
   REQUEST_ORG_UNIT,
   REQUEST_PROJECT_ACCESS,
-  setMeasure,
+  setMapOverlay,
   setOverlayComponent,
   FETCH_ENLARGED_DIALOG_DATA,
-  SET_MEASURE,
+  SET_MAP_OVERLAY,
   SET_ORG_UNIT,
   SET_VERIFY_EMAIL_TOKEN,
   updateEnlargedDialog,
@@ -113,17 +113,17 @@ import {
 import { setProject, setRequestingAccess } from './projects/actions';
 import {
   selectCurrentInfoViewKey,
-  selectCurrentMeasureId,
+  selectCurrentMapOverlayId,
   selectCurrentOrgUnitCode,
   selectShouldUseDashboardData,
   selectCurrentPeriodGranularity,
   selectCurrentProjectCode,
   selectCurrentExpandedViewConfig,
   selectCurrentExpandedViewContent,
-  selectDefaultMeasureId,
+  selectDefaultMapOverlayId,
   selectIsMeasureInHierarchy,
   selectIsProject,
-  selectMeasureBarItemById,
+  selectMapOverlayById,
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitCountry,
@@ -131,6 +131,7 @@ import {
   selectCurrentProject,
   selectCurrentDashboardNameFromLocation,
   selectViewConfig,
+  selectMeasureIdsByOverlayId,
 } from './selectors';
 import {
   formatDateForApi,
@@ -201,7 +202,7 @@ function* handleUserPage(userPage, initialComponents) {
 const URL_REFRESH_COMPONENTS = {
   [URL_COMPONENTS.PROJECT]: setProject,
   [URL_COMPONENTS.ORG_UNIT]: setOrgUnit,
-  [URL_COMPONENTS.URL_COMPONENTS]: setMeasure,
+  [URL_COMPONENTS.MAP_OVERLAY_IDS]: setMapOverlay,
   [URL_COMPONENTS.REPORT]: openEnlargedDialog,
   [URL_COMPONENTS.MEASURE_PERIOD]: updateCurrentMeasureConfigOnceHierarchyLoads,
 };
@@ -857,16 +858,16 @@ function* watchFetchMoreSearchResults() {
 }
 
 /**
- * fetchmeasureInfo
+ * fetchMeasureInfo
  *
  * Fetches data for a measure and write it to map state by calling fetchMeasureSuccess.
  *
  */
-function* fetchMeasureInfo(measureId) {
+function* fetchMeasureInfo(mapOverlayIds) {
   const state = yield select();
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
 
-  if (!measureId || !organisationUnitCode) {
+  if (!mapOverlayIds || !organisationUnitCode) {
     // Don't try and fetch null measures
     yield put(cancelFetchMeasureData());
 
@@ -875,7 +876,13 @@ function* fetchMeasureInfo(measureId) {
 
   const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
-  const measureParams = selectMeasureBarItemById(state, measureId) || {};
+  // TODO: Modify fetching measureData
+  const measureIds = selectMeasureIdsByOverlayId(state, mapOverlayIds);
+  if (!measureIds) {
+    yield put(cancelFetchMeasureData());
+    return;
+  }
+  const measureParams = selectMapOverlayById(state, mapOverlayIds);
   const activeProjectCode = selectCurrentProjectCode(state);
 
   // If the view should be constrained to a date range and isn't, constrain it
@@ -885,7 +892,7 @@ function* fetchMeasureInfo(measureId) {
       : getDefaultDates(measureParams);
 
   const urlParameters = {
-    measureId,
+    measureIds,
     organisationUnitCode,
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
@@ -905,11 +912,11 @@ function* fetchMeasureInfo(measureId) {
 }
 
 function* fetchMeasureInfoForMeasureChange(action) {
-  yield fetchMeasureInfo(action.measureId);
+  yield fetchMeasureInfo(action.mapOverlayIds);
 }
 
 function* watchMeasureChange() {
-  yield takeLatest(SET_MEASURE, fetchMeasureInfoForMeasureChange);
+  yield takeLatest(SET_MAP_OVERLAY, fetchMeasureInfoForMeasureChange);
 }
 
 function* watchMeasurePeriodChange() {
@@ -919,11 +926,11 @@ function* watchMeasurePeriodChange() {
 function* watchTryUpdateMeasureConfigAndWaitForHierarchyLoad() {
   yield takeLatest(
     UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
-    updateMeasureDateRangeOnceHierarchyLoads,
+    updateMapOverlayDateRangeOnceHierarchyLoads,
   );
 }
 
-function* updateMeasureDateRangeOnceHierarchyLoads(action) {
+function* updateMapOverlayDateRangeOnceHierarchyLoads(action) {
   yield take(FETCH_MEASURES_SUCCESS);
   const state = yield select();
   const periodGranularity = selectCurrentPeriodGranularity(state);
@@ -931,29 +938,29 @@ function* updateMeasureDateRangeOnceHierarchyLoads(action) {
     action.periodString,
     periodGranularity,
   );
-  yield put(updateMeasureConfig(selectCurrentMeasureId(state), { startDate, endDate }));
+  yield put(updateMeasureConfig(selectCurrentMapOverlayId(state), { startDate, endDate }));
 }
 
 function* fetchCurrentMeasureInfo() {
   const state = yield select();
   const currentOrganisationUnitCode = selectCurrentOrgUnitCode(state);
   const { measureHierarchy } = state.measureBar;
-  const selectedMeasureId = selectCurrentMeasureId(state);
+  const selectedMapOverlayIds = selectCurrentMapOverlayId(state);
 
   if (currentOrganisationUnitCode) {
     const isHierarchyPopulated = !!measureHierarchy.length;
-
+    // TODO refactor the logic
     if (!isHierarchyPopulated) {
       /** Ensure measure is selected if there is a current measure selected in the case
        * it is not selected through the measureBar UI
        * i.e. page reloaded when on org with measure selected
        */
-      yield put(setMeasure(selectedMeasureId));
-    } else if (!selectIsMeasureInHierarchy(state, selectedMeasureId)) {
+      yield put(setMapOverlay(selectedMapOverlayIds));
+    } else if (!selectIsMeasureInHierarchy(state, selectedMapOverlayIds)) {
       // Update to the default measure ID if the current measure id isn't in the hierarchy
-      const newMeasureId = selectDefaultMeasureId(state);
-      yield put(setMeasure(newMeasureId));
-    }
+      const newMapOverlayId = selectDefaultMapOverlayId(state);
+      yield put(setMapOverlay(newMapOverlayId));
+    } else yield put(setMapOverlay(selectedMapOverlayIds));
   }
 }
 
@@ -971,15 +978,15 @@ function* watchFetchMeasureSuccess() {
 function* fetchMeasureInfoForNewOrgUnit(action) {
   const { countryCode } = action.organisationUnit;
   const state = yield select();
-  const measureId = selectCurrentMeasureId(state);
+  const mapOverlayIds = selectCurrentMapOverlayId(state);
   const oldOrgUnitCountry = state.map.measureInfo.currentCountry;
   if (oldOrgUnitCountry === countryCode) {
     // We are in the same country as before, no need to refetch measureData
     return;
   }
 
-  if (measureId) {
-    yield put(setMeasure(measureId));
+  if (mapOverlayIds) {
+    yield put(setMapOverlay(mapOverlayIds));
   }
 }
 
@@ -1100,8 +1107,8 @@ function* fetchEnlargedDialogData(action) {
   // If the expanded view has changed, don't update the enlargedDialog's viewContent
   if (viewData && newInfoViewKey === infoViewKey) {
     const viewConfig = drillDownLevel
-    ? selectViewConfig(state, drillDownItemKey)
-    : selectCurrentExpandedViewConfig(state);
+      ? selectViewConfig(state, drillDownItemKey)
+      : selectCurrentExpandedViewConfig(state);
     yield put(updateEnlargedDialog(action.options, viewConfig, viewData));
   }
 }

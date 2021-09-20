@@ -8,11 +8,11 @@ import { PermissionsChecker } from './PermissionsChecker';
 
 export class MapOverlayPermissionsChecker extends PermissionsChecker {
   getMeasureIds() {
-    const { measureId } = this.query;
-    if (!measureId) {
+    const { measureIds } = this.query;
+    if (!measureIds) {
       throw new Error('No measure id was provided');
     }
-    return measureId.split(',');
+    return measureIds.split(',');
   }
 
   async fetchAndCacheOverlays() {

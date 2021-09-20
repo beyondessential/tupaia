@@ -11,7 +11,7 @@ const ORG_UNIT = 'ORG_UNIT';
 const DASHBOARD = 'DASHBOARD';
 
 // Search components
-const MEASURE = 'MEASURE';
+const MAP_OVERLAY_IDS = 'MAP_OVERLAY_IDS';
 const REPORT = 'REPORT';
 const PASSWORD_RESET_TOKEN = 'PASSWORD_RESET_TOKEN';
 const VERIFY_EMAIL_TOKEN = 'VERIFY_EMAIL_TOKEN';
@@ -25,7 +25,7 @@ export const URL_COMPONENTS = {
   DASHBOARD,
 
   // Search components
-  MEASURE,
+  MAP_OVERLAY_IDS,
   REPORT,
   PASSWORD_RESET_TOKEN,
   VERIFY_EMAIL_TOKEN,
@@ -35,7 +35,7 @@ export const URL_COMPONENTS = {
 
 export const PATH_COMPONENTS = [PROJECT, ORG_UNIT, DASHBOARD];
 export const SEARCH_COMPONENTS = [
-  MEASURE,
+  MAP_OVERLAY_IDS,
   REPORT,
   PASSWORD_RESET_TOKEN,
   VERIFY_EMAIL_TOKEN,
@@ -47,11 +47,11 @@ export const LEGACY_PATH_PREFIXES = ['country', 'facility'];
 
 export const SEARCH_PARAM_KEY_MAP = {
   // Different to key
-  [MEASURE]: 'overlay',
   [MEASURE_PERIOD]: 'overlayPeriod',
 
   // Just camel case
   [REPORT]: 'report',
+  [MAP_OVERLAY_IDS]: 'mapOverlayIds',
   [PASSWORD_RESET_TOKEN]: 'passwordResetToken',
   [VERIFY_EMAIL_TOKEN]: 'verifyEmailToken',
   [REPORT_PERIOD]: 'reportPeriod',

@@ -74,9 +74,8 @@ const findNestedGroupedMapOverlays = async (
     mapOverlayItemRelations,
   );
   return sortedMapOverlayResults.map(item => {
-    // id was added only for sorting purposes, remove it because it is not required in the front end
-    const { id, ...itemToReturn } = item;
-    return itemToReturn;
+    const { id: mapOverlayId, ...itemToReturn } = item;
+    return { mapOverlayId, ...itemToReturn };
   });
 };
 
@@ -164,8 +163,7 @@ const translateOverlaysForResponse = mapOverlays =>
 
       return {
         id, // just for sorting purpose, will be removed later
-        measureId: idString,
-        code: idString,
+        measureIds: idString,
         name,
         ...presentationOptions,
       };
