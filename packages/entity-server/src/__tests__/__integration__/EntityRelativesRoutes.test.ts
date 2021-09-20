@@ -14,7 +14,9 @@ describe('relatives', () => {
     app.grantAccessToCountries(COUNTRIES);
   });
 
-  afterAll(() => tearDownTestApp(app));
+  afterAll(async () => {
+    await tearDownTestApp(app);
+  });
 
   describe('/hierarchy/:hierarchyName/:entityCode/relatives', () => {
     it('can fetch relatives an entity', async () => {

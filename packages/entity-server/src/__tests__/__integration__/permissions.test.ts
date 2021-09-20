@@ -14,7 +14,9 @@ describe('permissions', () => {
     app.grantAccessToCountries(['JOHTO']);
   });
 
-  afterAll(() => tearDownTestApp(app));
+  afterAll(async () => {
+    await tearDownTestApp(app);
+  });
 
   describe('no access', () => {
     it('throws error if fetching project with no access to any of its countries', async () => {

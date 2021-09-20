@@ -14,7 +14,9 @@ describe('descendants', () => {
     app.grantAccessToCountries(COUNTRIES);
   });
 
-  afterAll(() => tearDownTestApp(app));
+  afterAll(async () => {
+    await tearDownTestApp(app);
+  });
 
   describe('/hierarchy/:hierarchyName/:entityCode/descendants', () => {
     it('can include the root entity', async () => {

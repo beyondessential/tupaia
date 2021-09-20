@@ -14,7 +14,9 @@ describe('entity', () => {
     app.grantAccessToCountries(COUNTRIES);
   });
 
-  afterAll(() => tearDownTestApp(app));
+  afterAll(async () => {
+    await tearDownTestApp(app);
+  });
 
   describe('/hierarchy/:hierarchyName/:entityCode', () => {
     it('can fetch a project entity', async () => {

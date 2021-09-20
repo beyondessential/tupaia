@@ -14,7 +14,9 @@ describe('relationships', () => {
     app.grantAccessToCountries(COUNTRIES);
   });
 
-  afterAll(() => tearDownTestApp(app));
+  afterAll(async () => {
+    await tearDownTestApp(app);
+  });
 
   describe('/hierarchy/:hierarchyName/:entityCode/relationships', () => {
     describe('errors', () => {

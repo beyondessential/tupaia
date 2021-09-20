@@ -14,7 +14,9 @@ describe('fieldsAndFilters', () => {
     app.grantAccessToCountries(COUNTRIES);
   });
 
-  afterAll(() => tearDownTestApp(app));
+  afterAll(async () => {
+    await tearDownTestApp(app);
+  });
 
   it('fetches whole entity object by default', async () => {
     const { body: entity } = await app.get('hierarchy/redblue/KANTO');
