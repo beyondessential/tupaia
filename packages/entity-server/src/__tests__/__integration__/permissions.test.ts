@@ -18,31 +18,25 @@ describe('permissions', () => {
 
   describe('no access', () => {
     it('throws error if fetching project with no access to any of its countries', async () => {
-      const { text } = await app.get('hierarchy/redblue/redblue', {
+      const { body: error } = await app.get('hierarchy/redblue/redblue', {
         query: { fields: 'code,name,type' },
       });
-
-      const error = JSON.parse(text);
 
       expect(error.error).toContain('No access to requested entities: redblue');
     });
 
     it('throws error if fetching country with no access', async () => {
-      const { text } = await app.get('hierarchy/redblue/KANTO', {
+      const { body: error } = await app.get('hierarchy/redblue/KANTO', {
         query: { fields: 'code,name,type' },
       });
-
-      const error = JSON.parse(text);
 
       expect(error.error).toContain('No access to requested entities: KANTO');
     });
 
     it('throws error if fetching city with no access to country', async () => {
-      const { text } = await app.get('hierarchy/redblue/CELADON', {
+      const { body: error } = await app.get('hierarchy/redblue/CELADON', {
         query: { fields: 'code,name,type' },
       });
-
-      const error = JSON.parse(text);
 
       expect(error.error).toContain('No access to requested entities: CELADON');
     });
@@ -50,12 +44,11 @@ describe('permissions', () => {
 
   describe('filtering entities by access', () => {
     it('filters entities when requested for some with access', async () => {
-      const { text } = await app.post('hierarchy/goldsilver', {
+      const { body: entities } = await app.post('hierarchy/goldsilver', {
         query: { fields: 'code,name,type' },
         body: { entities: ['KANTO', 'VIRIDIAN', 'ECRUTEAK', 'SLOWPOKE_WELL'] },
       });
 
-      const entities = JSON.parse(text);
       expect(entities).toBeArray();
       expect(entities).toIncludeSameMembers(
         getEntitiesWithFields(['ECRUTEAK', 'SLOWPOKE_WELL'], ['code', 'name', 'type']),
@@ -63,12 +56,11 @@ describe('permissions', () => {
     });
 
     it('filters descendants when requested for some with access', async () => {
-      const { text } = await app.post('hierarchy/goldsilver/descendants', {
+      const { body: entities } = await app.post('hierarchy/goldsilver/descendants', {
         query: { fields: 'code,name,type' },
         body: { entities: ['LAVENDER', 'ECRUTEAK'] },
       });
 
-      const entities = JSON.parse(text);
       expect(entities).toBeArray();
       expect(entities).toIncludeSameMembers(
         getEntitiesWithFields(['BELL_TOWER', 'BURNED_TOWER'], ['code', 'name', 'type']),
@@ -76,12 +68,11 @@ describe('permissions', () => {
     });
 
     it('filters relatives when requested for some with access', async () => {
-      const { text } = await app.post('hierarchy/goldsilver/relatives', {
+      const { body: entities } = await app.post('hierarchy/goldsilver/relatives', {
         query: { fields: 'code,name,type' },
         body: { entities: ['LAVENDER', 'ECRUTEAK'] },
       });
 
-      const entities = JSON.parse(text);
       expect(entities).toBeArray();
       expect(entities).toIncludeSameMembers(
         getEntitiesWithFields(
@@ -92,7 +83,7 @@ describe('permissions', () => {
     });
 
     it('filters relationships when requested for some with access', async () => {
-      const { text } = await app.post('hierarchy/goldsilver/relationships', {
+      const { body: entities } = await app.post('hierarchy/goldsilver/relationships', {
         query: {
           fields: 'code,name,type',
           ancestor_filter: 'type==country',
@@ -102,7 +93,6 @@ describe('permissions', () => {
         body: { entities: ['CINNABAR', 'CELADON', 'LAVENDER', 'ECRUTEAK'] },
       });
 
-      const entities = JSON.parse(text);
       expect(entities).toEqual({
         BELL_TOWER: 'JOHTO',
         BURNED_TOWER: 'JOHTO',

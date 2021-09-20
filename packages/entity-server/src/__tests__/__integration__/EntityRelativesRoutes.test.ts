@@ -18,11 +18,10 @@ describe('relatives', () => {
 
   describe('/hierarchy/:hierarchyName/:entityCode/relatives', () => {
     it('can fetch relatives an entity', async () => {
-      const { text } = await app.get('hierarchy/redblue/LAVENDER/relatives', {
+      const { body: entities } = await app.get('hierarchy/redblue/LAVENDER/relatives', {
         query: { fields: 'code,name,type' },
       });
 
-      const entities = JSON.parse(text);
       expect(entities).toBeArray();
       expect(entities).toIncludeSameMembers(
         getEntitiesWithFields(['KANTO', 'LAVENDER', 'PKMN_TOWER'], ['code', 'name', 'type']),
@@ -30,11 +29,10 @@ describe('relatives', () => {
     });
 
     it('can fetch descendants of a alternate project entity', async () => {
-      const { text } = await app.get('hierarchy/goldsilver/LAVENDER/relatives', {
+      const { body: entities } = await app.get('hierarchy/goldsilver/LAVENDER/relatives', {
         query: { fields: 'code,name,type' },
       });
 
-      const entities = JSON.parse(text);
       expect(entities).toBeArray();
       expect(entities).toIncludeSameMembers(
         getEntitiesWithFields(
@@ -47,12 +45,11 @@ describe('relatives', () => {
 
   describe('/hierarchy/:hierarchyName/relatives', () => {
     it('can fetch relatives of multiple entities', async () => {
-      const { text } = await app.post('hierarchy/redblue/relatives', {
+      const { body: entities } = await app.post('hierarchy/redblue/relatives', {
         query: { fields: 'code,name,type' },
         body: { entities: ['CINNABAR', 'CELADON', 'LAVENDER'] },
       });
 
-      const entities = JSON.parse(text);
       expect(entities).toBeArray();
       expect(entities).toIncludeSameMembers(
         getEntitiesWithFields(
@@ -71,12 +68,11 @@ describe('relatives', () => {
     });
 
     it('can fetch relatives of multiple entities for an alternate hierarchy', async () => {
-      const { text } = await app.post('hierarchy/goldsilver/relatives', {
+      const { body: entities } = await app.post('hierarchy/goldsilver/relatives', {
         query: { fields: 'code,name,type' },
         body: { entities: ['CINNABAR', 'CELADON', 'LAVENDER', 'ECRUTEAK'] },
       });
 
-      const entities = JSON.parse(text);
       expect(entities).toBeArray();
       expect(entities).toIncludeSameMembers(
         getEntitiesWithFields(

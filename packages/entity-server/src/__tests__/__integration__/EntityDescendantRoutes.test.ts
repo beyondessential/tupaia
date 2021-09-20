@@ -18,11 +18,10 @@ describe('descendants', () => {
 
   describe('/hierarchy/:hierarchyName/:entityCode/descendants', () => {
     it('can include the root entity', async () => {
-      const { text } = await app.get('hierarchy/redblue/LAVENDER/descendants', {
+      const { body: entities } = await app.get('hierarchy/redblue/LAVENDER/descendants', {
         query: { fields: 'code,name,type', includeRootEntity: 'true' },
       });
 
-      const entities = JSON.parse(text);
       expect(entities).toBeArray();
       expect(entities).toIncludeSameMembers(
         getEntitiesWithFields(['LAVENDER', 'PKMN_TOWER'], ['code', 'name', 'type']),
@@ -30,11 +29,10 @@ describe('descendants', () => {
     });
 
     it('can fetch descendants of a project entity', async () => {
-      const { text } = await app.get('hierarchy/redblue/redblue/descendants', {
+      const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
         query: { fields: 'code,name,type' },
       });
 
-      const entities = JSON.parse(text);
       expect(entities).toBeArray();
       expect(entities).toIncludeSameMembers(
         getEntitiesWithFields(
@@ -64,11 +62,10 @@ describe('descendants', () => {
     });
 
     it('can fetch descendants of a alternate project entity', async () => {
-      const { text } = await app.get('hierarchy/goldsilver/goldsilver/descendants', {
+      const { body: entities } = await app.get('hierarchy/goldsilver/goldsilver/descendants', {
         query: { fields: 'code,name,type' },
       });
 
-      const entities = JSON.parse(text);
       expect(entities).toBeArray();
       expect(entities).toIncludeSameMembers(
         getEntitiesWithFields(
@@ -112,11 +109,10 @@ describe('descendants', () => {
     });
 
     it('can fetch descendants of a country entity', async () => {
-      const { text } = await app.get('hierarchy/redblue/KANTO/descendants', {
+      const { body: entities } = await app.get('hierarchy/redblue/KANTO/descendants', {
         query: { fields: 'code,name,type' },
       });
 
-      const entities = JSON.parse(text);
       expect(entities).toBeArray();
       expect(entities).toIncludeSameMembers(
         getEntitiesWithFields(
@@ -145,11 +141,10 @@ describe('descendants', () => {
     });
 
     it('can fetch descendants of a city entity', async () => {
-      const { text } = await app.get('hierarchy/redblue/CELADON/descendants', {
+      const { body: entities } = await app.get('hierarchy/redblue/CELADON/descendants', {
         query: { fields: 'code,name,type' },
       });
 
-      const entities = JSON.parse(text);
       expect(entities).toBeArray();
       expect(entities).toIncludeSameMembers(
         getEntitiesWithFields(['CELADON_GAME'], ['code', 'name', 'type']),
@@ -157,11 +152,10 @@ describe('descendants', () => {
     });
 
     it('can fetch descendants of a facility entity', async () => {
-      const { text } = await app.get('hierarchy/redblue/CELADON_GAME/descendants', {
+      const { body: entities } = await app.get('hierarchy/redblue/CELADON_GAME/descendants', {
         query: { fields: 'code,name,type' },
       });
 
-      const entities = JSON.parse(text);
       expect(entities).toBeArray();
       expect(entities).toIncludeSameMembers(getEntitiesWithFields([], ['code', 'name', 'type']));
     });
@@ -169,12 +163,11 @@ describe('descendants', () => {
 
   describe('/hierarchy/:hierarchyName/descendants', () => {
     it('can fetch descendants of multiple entities', async () => {
-      const { text } = await app.post('hierarchy/redblue/descendants', {
+      const { body: entities } = await app.post('hierarchy/redblue/descendants', {
         query: { fields: 'code,name,type' },
         body: { entities: ['CINNABAR', 'CELADON', 'LAVENDER'] },
       });
 
-      const entities = JSON.parse(text);
       expect(entities).toBeArray();
       expect(entities).toIncludeSameMembers(
         getEntitiesWithFields(
@@ -185,12 +178,11 @@ describe('descendants', () => {
     });
 
     it('can fetch descendants of multiple entities for an alternate hierarchy', async () => {
-      const { text } = await app.post('hierarchy/goldsilver/descendants', {
+      const { body: entities } = await app.post('hierarchy/goldsilver/descendants', {
         query: { fields: 'code,name,type' },
         body: { entities: ['CINNABAR', 'CELADON', 'LAVENDER', 'ECRUTEAK'] },
       });
 
-      const entities = JSON.parse(text);
       expect(entities).toBeArray();
       expect(entities).toIncludeSameMembers(
         getEntitiesWithFields(

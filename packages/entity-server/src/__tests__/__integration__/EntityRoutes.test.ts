@@ -18,50 +18,45 @@ describe('entity', () => {
 
   describe('/hierarchy/:hierarchyName/:entityCode', () => {
     it('can fetch a project entity', async () => {
-      const { text } = await app.get('hierarchy/redblue/redblue', {
+      const { body: entity } = await app.get('hierarchy/redblue/redblue', {
         query: { fields: 'code,name,type' },
       });
 
-      const entity = JSON.parse(text);
       expect(entity).toEqual(getEntityWithFields('redblue', ['code', 'name', 'type']));
     });
 
     it('can fetch a country entity', async () => {
-      const { text } = await app.get('hierarchy/redblue/KANTO', {
+      const { body: entity } = await app.get('hierarchy/redblue/KANTO', {
         query: { fields: 'code,name,type' },
       });
 
-      const entity = JSON.parse(text);
       expect(entity).toEqual(getEntityWithFields('KANTO', ['code', 'name', 'type']));
     });
 
     it('can fetch a city entity', async () => {
-      const { text } = await app.get('hierarchy/redblue/VIRIDIAN', {
+      const { body: entity } = await app.get('hierarchy/redblue/VIRIDIAN', {
         query: { fields: 'code,name,type' },
       });
 
-      const entity = JSON.parse(text);
       expect(entity).toEqual(getEntityWithFields('VIRIDIAN', ['code', 'name', 'type']));
     });
 
     it('can fetch a facility entity', async () => {
-      const { text } = await app.get('hierarchy/redblue/PKMN_TOWER', {
+      const { body: entity } = await app.get('hierarchy/redblue/PKMN_TOWER', {
         query: { fields: 'code,name,type' },
       });
 
-      const entity = JSON.parse(text);
       expect(entity).toEqual(getEntityWithFields('PKMN_TOWER', ['code', 'name', 'type']));
     });
   });
 
   describe('/hierarchy/:hierarchyName', () => {
     it('can fetch multiple entities', async () => {
-      const { text } = await app.post('hierarchy/redblue', {
+      const { body: entities } = await app.post('hierarchy/redblue', {
         query: { fields: 'code,name,type' },
         body: { entities: ['redblue', 'KANTO', 'VIRIDIAN', 'PKMN_TOWER'] },
       });
 
-      const entities = JSON.parse(text);
       expect(entities).toBeArray();
       expect(entities).toIncludeSameMembers(
         getEntitiesWithFields(
