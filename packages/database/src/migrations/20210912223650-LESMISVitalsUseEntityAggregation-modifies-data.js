@@ -1,6 +1,12 @@
 'use strict';
 
-import { insertObject, deleteObject, generateId, findSingleRecord } from '../utilities';
+import {
+  insertObject,
+  deleteObject,
+  generateId,
+  findSingleRecord,
+  updateValues,
+} from '../utilities';
 
 var dbm;
 var type;
@@ -171,6 +177,13 @@ const updateSchoolVitalsReport = async db => {
   report.config.fetch.dataElements.push('school_complete');
   const updateIndex = report.config.transform.findIndex(x => x.transform === 'updateColumns');
   report.config.transform[updateIndex].insert.SchoolComplete = '=$school_complete';
+
+  await updateValues(
+    db,
+    'report',
+    { config: report.config }, // updated values
+    { code: 'LESMIS_school_vitals' }, // find criteria
+  );
 };
 
 // Remove school_complete from school vitals report
@@ -182,6 +195,13 @@ const downdateSchoolVitalsReport = async db => {
   report.config.fetch.dataElements.splice(elementIndexToDelete, 1);
   const updateIndex = report.config.transform.findIndex(x => x.transform === 'updateColumns');
   delete report.config.transform[updateIndex].insert.SchoolComplete;
+
+  await updateValues(
+    db,
+    'report',
+    { config: report.config }, // updated values
+    { code: 'LESMIS_school_vitals' }, // find criteria
+  );
 };
 
 const insertReport = async (db, { code, reportConfig, permissionGroup }) => {
