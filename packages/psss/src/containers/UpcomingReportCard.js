@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import { Warning } from '@material-ui/icons';
-import { CardContent, CardFooter, CardHeader, BarMeter, Card, Button } from '@tupaia/ui-components';
+import { CardContent, CardHeader, Card, Button } from '@tupaia/ui-components';
 import { openWeeklyReportsPanel } from '../store';
 import {
   getWeekNumberByPeriod,
@@ -96,7 +96,7 @@ export const UpcomingReportCardComponent = ({ handleOpen }) => {
       {/* Removed until there is data @see https://app.zenhub.com/workspaces/sprint-board-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/1336
       <CardFooter>
         <BarMeter value={22} total={30} legend="Sites reported" />
-      </CardFooter>*/}
+      </CardFooter> */}
     </Card>
   );
 };

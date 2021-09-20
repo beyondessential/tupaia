@@ -24,6 +24,9 @@ export class CreateDashboardVisualisation extends CreateHandler {
     const permissionGroup = await transactingModels.permissionGroup.findOne({
       name: permissionGroupName,
     });
+    if (!permissionGroup) {
+      throw new Error(`Could not find permission group with name '${permissionGroupName}'`);
+    }
     const report = {
       code,
       config,

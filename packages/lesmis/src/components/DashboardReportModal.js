@@ -49,6 +49,7 @@ const Header = styled(FlexSpaceBetween)`
   padding-bottom: 1.6rem;
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
   margin-bottom: 1.6rem;
+  z-index: 1;
 
   .MuiTextField-root {
     margin-right: 0;
@@ -95,7 +96,7 @@ export const DashboardReportModal = () => {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { entityCode } = useUrlParams();
   const [{ startDate, endDate, reportCode }, setParams] = useUrlSearchParams();
-  const { data: entityData } = useEntityData(entityCode);
+  const { data: entityData, isLoadingEntityData } = useEntityData(entityCode);
   const { data, isLoading } = useDashboardReportDataWithConfig({
     entityCode,
     reportCode,
@@ -154,9 +155,14 @@ export const DashboardReportModal = () => {
   // Display the modal  if there is a report code in the url
   const isOpen = !!reportCode;
 
-  const title = isExporting
-    ? `${entityCode}, ${config?.dashboardName}, ${config?.name}`
+  const dashboardTitle = isExporting
+    ? `${entityData?.name}, ${config?.dashboardName}, ${config?.name}`
     : config?.name;
+
+  const modalTitle =
+    isLoading || isLoadingEntityData
+      ? 'Loading...'
+      : `${entityData?.name}, ${config?.dashboardName}`;
 
   return (
     <MuiDialog
@@ -167,10 +173,7 @@ export const DashboardReportModal = () => {
       TransitionComponent={Transition}
       style={{ left: fullScreen ? '0' : '6.25rem' }}
     >
-      <DialogHeader
-        handleClose={handleClose}
-        title={config?.dashboardName ? config?.dashboardName : 'Loading...'}
-      />
+      <DialogHeader handleClose={handleClose} title={modalTitle} />
       <ExportLoader $isExporting={isExportLoading}>
         <CircularProgress size={50} />
         <Box mt={3}>
@@ -181,17 +184,19 @@ export const DashboardReportModal = () => {
         <Container maxWidth="xl">
           <Header>
             <Box maxWidth={580}>
-              <Heading variant="h3">{title}</Heading>
+              <Heading variant="h3">{dashboardTitle}</Heading>
               {config?.description && <Description>{config.description}</Description>}
             </Box>
             <Toolbar $isExporting={isExporting}>
-              <SplitButton
-                options={EXPORT_OPTIONS}
-                selectedId={exportFormatId}
-                setSelectedId={setExportFormatId}
-                onClick={handleClickExport}
-                ButtonComponent={WhiteButton}
-              />
+              {config?.type !== 'list' && (
+                <SplitButton
+                  options={EXPORT_OPTIONS}
+                  selectedId={exportFormatId}
+                  setSelectedId={setExportFormatId}
+                  onClick={handleClickExport}
+                  ButtonComponent={WhiteButton}
+                />
+              )}
               <DateRangePicker
                 isLoading={isLoading}
                 startDate={startDate}

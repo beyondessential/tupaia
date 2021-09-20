@@ -22,8 +22,3 @@ export const truncate = (str, num, ellipsis = false) => {
   }
   return ellipsis ? `${str.slice(0, num)}...` : str.slice(0, num);
 };
-
-export const stringToFilename = string => {
-  const sanitized = sanitize(string).replace(/\s+/g, '-').toLowerCase();
-  return truncate(sanitized, 255);
-};

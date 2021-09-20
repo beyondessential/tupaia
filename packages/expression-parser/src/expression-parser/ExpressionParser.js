@@ -36,21 +36,42 @@ const translate = (value, translations) => {
   return translations[value];
 };
 
-/**
- * List of built in functions in math.js
- * This list is here because when extracting variables for an expression by traversing the node tree,
- * the built in functions are also considered as Symbol Node (which is similar to variables).
- * So we want to exclude them when getting the variables.
- */
-const BUILT_IN_FUNCTIONS = ['equalText', 'round'];
+const ADDITIONAL_ALPHA_CHARS = ['@'];
 
 export class ExpressionParser {
-  constructor() {
-    this.math = create(all, {});
-    this.parser = this.math.parser();
+  /**
+   * @typedef { { get: (s: string) => unknown, set: (s: string, v: unknown) => void, has: (s: string) => boolean, keys: () => string[], delete: (s: string) => void, clear: () => void } } Scope
+   *
+   * Can pass in a custom scope
+   * @param {Scope} customScope
+   */
+  constructor(customScope = new Map()) {
+    this.math = create(all);
+
+    // Add additional alpha chars, to allow for usage in variable names
+    const isAlphaOriginal = this.math.parse.isAlpha;
+    this.math.parse.isAlpha = (c, cPrev, cNext) => {
+      return ADDITIONAL_ALPHA_CHARS.includes(c) || isAlphaOriginal(c, cPrev, cNext);
+    };
+
+    this.customScope = customScope;
     this.customFunctions = this.getCustomFunctions();
     this.math.import(this.customFunctions);
     this.validExpressionCache = new Set();
+  }
+
+  /**
+   * @param {string} name
+   * @return bool
+   */
+  isBuiltInFunction(name) {
+    try {
+      // see https://mathjs.org/docs/reference/functions/help.html
+      this.math.help(name);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   /**
@@ -65,7 +86,7 @@ export class ExpressionParser {
         node =>
           node.isSymbolNode &&
           !Object.keys(this.customFunctions).includes(node.name) &&
-          !BUILT_IN_FUNCTIONS.includes(node.name),
+          !this.isBuiltInFunction(node.name),
       )
       .map(({ name }) => name);
     return [...new Set(variables)];
@@ -97,9 +118,15 @@ export class ExpressionParser {
    */
   evaluate(expression) {
     this.validate(expression);
-    return this.parser.evaluate(expression);
+    return this.math.evaluate(expression, this.customScope);
   }
 
+  /**
+   * Evaluate an expression and cast boolean results to 1 or 0. Also validate the expression beforehand.
+   *
+   * Note this could also return a string, array, or object (potentially others too)
+   * @param {*} expression
+   */
   evaluateToNumber(expression) {
     const result = this.evaluate(expression);
     if (typeof result === 'boolean') {
@@ -109,23 +136,30 @@ export class ExpressionParser {
   }
 
   /**
-   * Set the parser's scope.
-   * @param {*} scope
+   * Set all variables to the parser's scope.
+   * @param {*} variables
    */
-  setScope(scope = {}) {
-    Object.entries(scope).forEach(([name, value]) => {
-      const expressionValue = value || 0;
-      this.set(name, expressionValue);
+  setAll(variables = {}) {
+    Object.entries(variables).forEach(([name, value]) => {
+      this.set(name, value);
     });
   }
 
   /**
-   * Add a value to the parser's scope.
+   * Add a variable to the parser's scope.
    * @param {*} name
    * @param {*} value
    */
   set(name, value) {
-    this.parser.set(name, value);
+    this.customScope.set(name, value);
+  }
+
+  /**
+   * Delete a variable from the parser's scope.
+   * @param {*} name
+   */
+  delete(name) {
+    this.customScope.delete(name);
   }
 
   /**
@@ -133,11 +167,13 @@ export class ExpressionParser {
    * This will not remove any imported functions.
    */
   clearScope() {
-    this.parser.clear();
+    this.customScope.clear();
   }
 
   /**
+   * @protected
    * This can be overridden in child classes to import new functions.
+   * @returns {Record<string, (...args: any[]) => any>} functions
    */
   getCustomFunctions() {
     return {

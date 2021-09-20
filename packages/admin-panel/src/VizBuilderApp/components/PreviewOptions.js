@@ -2,32 +2,32 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Typography from '@material-ui/core/Typography';
 import debounce from 'lodash.debounce';
 import MuiPaper from '@material-ui/core/Paper';
-import { Autocomplete as AutocompleteComponent, FlexStart } from '@tupaia/ui-components';
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+
+import {
+  Autocomplete as AutocompleteComponent,
+  FlexEnd,
+  FlexSpaceBetween,
+  FlexStart,
+  ImportModal,
+} from '@tupaia/ui-components';
 import { useLocations, useProjects } from '../api/queries';
-import { useVizBuilderConfig } from '../vizBuilderConfigStore';
+import { usePreviewData, useVizBuilderConfig } from '../context';
+import { LinkButton } from './LinkButton';
+import { useUploadTestData } from '../api';
 
-const Container = styled(FlexStart)`
-  padding-top: 24px;
-  padding-bottom: 24px;
-`;
-
-const Text = styled(Typography)`
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 140%;
-  display: block;
-  width: 140px;
+const Container = styled(FlexSpaceBetween)`
+  padding: 24px 0;
 `;
 
 const Autocomplete = styled(AutocompleteComponent)`
   flex: 1;
-  margin: 0 0 0 15px;
+  margin: 0 15px 0 0;
   max-width: 30%;
 
   input.MuiInputBase-input.MuiOutlinedInput-input.MuiAutocomplete-input {
@@ -46,6 +46,30 @@ const PaperComponent = styled(MuiPaper)`
     font-size: 14px;
   }
 `;
+
+const UploadedFileContainer = styled(FlexSpaceBetween)`
+  width: 100%;
+  padding: 14px;
+  background-color: ${props => props.theme.palette.blue[100]};
+  border: 1px solid ${props => props.theme.palette.blue[300]};
+  border-radius: 3px;
+  font-size: 14px;
+  .MuiSvgIcon-root {
+    margin-right: 10px;
+  }
+`;
+
+const UploadedFile = ({ children, onRemove }) => (
+  <UploadedFileContainer>
+    <FlexStart>
+      <InsertDriveFileIcon color="primary">{children}</InsertDriveFileIcon>
+      <span>{children}</span>
+    </FlexStart>
+    <FlexEnd>
+      <LinkButton onClick={onRemove}>Remove</LinkButton>
+    </FlexEnd>
+  </UploadedFileContainer>
+);
 
 const ProjectField = ({ project, projects, isLoadingProjects, onChange }) => (
   <Autocomplete
@@ -90,28 +114,61 @@ const LocationField = ({
   />
 );
 
+const UploadDataModal = ({ isOpen, onSubmit, onClose }) => (
+  <ImportModal
+    isOpen={isOpen}
+    onSubmit={onSubmit}
+    onClose={onClose}
+    title="Upload test data"
+    subtitle="Please upload a .json file with test data:"
+    actionText="Upload"
+    loadingText="Uploading"
+    showLoadingContainer={false}
+  />
+);
+
 export const PreviewOptions = () => {
+  const { setShowData } = usePreviewData();
   const [locationSearch, setLocationSearch] = useState('');
   const [selectedProjectOption, setSelectedProjectOption] = useState(null);
   const [selectedLocationOption, setSelectedLocationOption] = useState(null);
-  const [{ project, location }, { setProject, setLocation }] = useVizBuilderConfig();
+  const [fileName, setFileName] = useState('');
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [{ project, location }, { setProject, setLocation, setTestData }] = useVizBuilderConfig();
+  const { mutateAsync: uploadTestData } = useUploadTestData();
 
-  const handleSelectProject = useCallback((event, value) => {
+  const handleSelectProject = (event, value) => {
     if (!value) {
       return;
     }
 
     setSelectedProjectOption(value);
     setProject(value['project.code']);
-  });
-  const handleSelectLocation = useCallback((event, value) => {
+  };
+
+  const handleSelectLocation = (event, value) => {
     if (!value) {
       return;
     }
 
     setSelectedLocationOption(value);
     setLocation(value.code);
-  });
+  };
+
+  const handleUploadData = async file => {
+    const response = await uploadTestData(file);
+    setShowData(false);
+    setFileName(response.fileName);
+    setTestData(response.data);
+
+    return response;
+  };
+
+  const handleRemoveData = () => {
+    setShowData(false);
+    setFileName('');
+    setTestData(null);
+  };
 
   // Show the default options in the dropdown when an item is selected.
   // Otherwise it shows no options
@@ -127,23 +184,49 @@ export const PreviewOptions = () => {
 
   return (
     <Container>
-      <Text>Preview Options:</Text>
-      <ProjectField
-        project={selectedProjectOption}
-        projects={projects}
-        isLoadingProjects={isLoadingProjects}
-        onChange={handleSelectProject}
-      />
-      <LocationField
-        disabled={project === null}
-        location={selectedLocationOption}
-        locations={limitedLocations}
-        isLoadingLocations={isLoadingLocations}
-        setLocationSearch={setLocationSearch}
-        onChange={handleSelectLocation}
-      />
+      <FlexStart flex={1}>
+        {fileName ? (
+          <UploadedFile onRemove={handleRemoveData}>{fileName}</UploadedFile>
+        ) : (
+          <>
+            <ProjectField
+              project={selectedProjectOption}
+              projects={projects}
+              isLoadingProjects={isLoadingProjects}
+              onChange={handleSelectProject}
+            />
+            <LocationField
+              disabled={project === null}
+              location={selectedLocationOption}
+              locations={limitedLocations}
+              isLoadingLocations={isLoadingLocations}
+              setLocationSearch={setLocationSearch}
+              onChange={handleSelectLocation}
+            />
+            <LinkButton
+              onClick={() => {
+                setIsImportModalOpen(true);
+              }}
+            >
+              or upload data
+            </LinkButton>
+          </>
+        )}
+        <UploadDataModal
+          isOpen={isImportModalOpen}
+          onSubmit={handleUploadData}
+          onClose={() => {
+            setIsImportModalOpen(false);
+          }}
+        />
+      </FlexStart>
     </Container>
   );
+};
+
+UploadedFile.propTypes = {
+  children: PropTypes.node.isRequired,
+  onRemove: PropTypes.func.isRequired,
 };
 
 ProjectField.propTypes = {
@@ -169,4 +252,10 @@ LocationField.propTypes = {
 LocationField.defaultProps = {
   location: null,
   locations: [],
+};
+
+UploadDataModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };

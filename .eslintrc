@@ -24,18 +24,21 @@
         "packageDir": ["../../", "."]
       }
     ],
-    "jsx-a11y/href-no-hash": "off"
+    "jsx-a11y/href-no-hash": "off",
+    "react/destructuring-assignment": "off",
+    "react/no-unescaped-entities": "off"
   },
   "overrides": [
     // TypeScript packages
     {
       "files": [
-        "packages/indicators/**",
+        "packages/admin-panel-server/**",
+        "packages/api-client/**",
         "packages/entity-server/**",
+        "packages/indicators/**",
+        "packages/lesmis-server/**",
         "packages/psss-server/**",
         "packages/report-server/**",
-        "packages/lesmis-server/**",
-        "packages/admin-panel-server/**",
         "packages/server-boilerplate/**"
       ],
       "extends": "@beyondessential/ts",
@@ -129,12 +132,18 @@
     {
       "files": ["packages/meditrak-app/**"],
       "plugins": ["react-native"],
-      "env": {
-        "react-native/react-native": true
-      },
+      // "env": {
+      //   "react-native/react-native": true
+      // },
       "rules": {
         "react/destructuring-assignment": "off",
         "react/prop-types": ["error", { "ignore": ["navigation"] }]
+      }
+    },
+    {
+      "files": ["packages/ui-components/**"],
+      "rules": {
+        "import/no-extraneous-dependencies": "off"
       }
     },
     {
@@ -169,7 +178,6 @@
         "no-unused-vars": "warn",
         "react/button-has-type": "warn",
         "react/default-props-match-prop-types": "warn",
-        "react/destructuring-assignment": "off",
         "react/no-unused-prop-types": "warn",
         "react/no-array-index-key": "warn",
         "react/forbid-prop-types": "warn",
