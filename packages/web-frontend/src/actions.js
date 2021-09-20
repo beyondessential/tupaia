@@ -33,7 +33,7 @@ export const SET_DASHBOARD_GROUP = 'SET_DASHBOARD_GROUP';
 export const ATTEMPT_RESET_TOKEN_LOGIN = 'ATTEMPT_RESET_TOKEN_LOGIN';
 export const CHANGE_SIDE_BAR_CONTRACTED_WIDTH = 'CHANGE_SIDE_BAR_CONTRACTED_WIDTH';
 export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
-export const CLEAR_MEASURE_HIERARCHY = 'CLEAR_MEASURE_HIERARCHY';
+export const CLEAR_MAP_OVERLAY_HIERARCHY = 'CLEAR_MAP_OVERLAY_HIERARCHY';
 export const SET_MAP_OVERLAY = 'SET_MAP_OVERLAY';
 export const UPDATE_MEASURE_CONFIG = 'UPDATE_MEASURE_CONFIG';
 export const REQUEST_ORG_UNIT = 'REQUEST_ORG_UNIT';
@@ -525,7 +525,7 @@ export function changeBounds(bounds) {
 }
 
 /**
- * Changes current measure, should change features rendered on map after saga data fetch.
+ * Changes current map overlay, should change features rendered on map after saga data fetch.
  * Updates the current mayOverlayIds in the url.
  * @param {string} mayOverlayIds
  */
@@ -920,9 +920,9 @@ export function clearMeasure() {
 /**
  * Blanks out measure hierarchy (for switching between countries)
  */
-export function clearMeasureHierarchy() {
+export function clearMapOverlayHierarchy() {
   return {
-    type: CLEAR_MEASURE_HIERARCHY,
+    type: CLEAR_MAP_OVERLAY_HIERARCHY,
   };
 }
 

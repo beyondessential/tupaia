@@ -8,15 +8,7 @@
 import createCachedSelector from 're-reselect';
 import { createSelector } from 'reselect';
 import { getMeasureDisplayInfo } from '@tupaia/ui-components/lib/map';
-import { DEFAULT_MEASURE_ID } from '../defaults';
-import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
-import { getMapOverlayFromHierarchy } from '../utils';
-import {
-  calculateRadiusScaleFactor,
-  flattenMapOverlayHierarchy,
-  isMeasureHierarchyEmpty,
-  POLYGON_MEASURE_TYPES,
-} from '../utils/measures';
+import { calculateRadiusScaleFactor, POLYGON_MEASURE_TYPES } from '../utils/measures';
 import {
   selectActiveProjectCountries,
   selectAllOrgUnitsInCountry,
@@ -26,8 +18,8 @@ import {
   selectCurrentOrgUnitCode,
   selectDescendantsFromCache,
 } from './orgUnitSelectors';
-import { selectCurrentProject, selectCurrentProjectCode } from './projectSelectors';
-import { getOrgUnitFromCountry, safeGet, selectLocation } from './utils';
+import { selectCurrentProjectCode } from './projectSelectors';
+import { getOrgUnitFromCountry, safeGet } from './utils';
 
 const displayInfoCache = createCachedSelector(
   [
@@ -50,15 +42,6 @@ const getOrgUnitFromMeasureData = (measureData, code) =>
 
 const selectDisplayInfo = (measureOptions, hiddenMeasures, measureData, organisationUnitCode) =>
   safeGet(displayInfoCache, [measureOptions, hiddenMeasures, measureData, organisationUnitCode]);
-
-export const selectCurrentMapOverlayId = createSelector([selectLocation], location =>
-  getLocationComponentValue(location, URL_COMPONENTS.MAP_OVERLAY_IDS),
-);
-
-export const selectCurrentMapOverlay = createSelector(
-  [state => selectMapOverlayById(state, selectCurrentMapOverlayId(state))],
-  currentMapOverlay => currentMapOverlay || {},
-);
 
 const selectDisplayLevelAncestor = createSelector(
   [
@@ -194,69 +177,4 @@ export const selectRenderedMeasuresWithDisplayInfo = createSelector(
 export const selectRadiusScaleFactor = createSelector(
   [selectAllMeasuresWithDisplayInfo],
   calculateRadiusScaleFactor,
-);
-
-export const selectMapOverlayById = createSelector(
-  [state => state.measureBar.measureHierarchy, (_, id) => id],
-  (measureHierarchy, id) => {
-    return getMapOverlayFromHierarchy(measureHierarchy, id) || {};
-  },
-);
-
-export const selectMeasureBarItemCategoryById = createSelector(
-  [state => state.measureBar.measureHierarchy, (_, ids) => ids],
-  (measureHierarchy, ids) => {
-    let categoryMeasureIndex = {};
-
-    // TODO Select multiple measure bar item
-    measureHierarchy.forEach(({ name, children }, categoryIndex) => {
-      const selectedMeasureIndex = children.findIndex(
-        mapOverlay => mapOverlay.mapOverlayId === ids,
-      );
-      if (selectedMeasureIndex > -1) {
-        categoryMeasureIndex = {
-          name,
-          categoryIndex,
-          measureIndex: selectedMeasureIndex,
-          measure: children[selectedMeasureIndex],
-        };
-      }
-    });
-
-    return categoryMeasureIndex;
-  },
-);
-
-export const selectIsMeasureInHierarchy = createSelector(
-  [state => state.measureBar.measureHierarchy, (_, ids) => ids],
-  (measureHierarchy, ids) => !!getMapOverlayFromHierarchy(measureHierarchy, ids),
-);
-
-export const selectDefaultMapOverlayId = createSelector(
-  [state => state.measureBar.measureHierarchy, selectCurrentProject],
-  (measureHierarchy, project) => {
-    const projectMeasureId = project.defaultMeasure;
-    const measureIsDefined = id => !!getMapOverlayFromHierarchy(measureHierarchy, id);
-
-    if (measureIsDefined(projectMeasureId)) return projectMeasureId;
-    if (measureIsDefined(DEFAULT_MEASURE_ID)) return DEFAULT_MEASURE_ID;
-    if (!isMeasureHierarchyEmpty(measureHierarchy)) {
-      return flattenMapOverlayHierarchy(measureHierarchy)[0].mapOverlayId;
-    }
-
-    return DEFAULT_MEASURE_ID;
-  },
-);
-
-export const selectCurrentPeriodGranularity = createSelector(
-  [selectCurrentMapOverlay],
-  mapOverlay => mapOverlay.periodGranularity,
-);
-
-export const selectMeasureIdsByOverlayId = createSelector(
-  [state => state, (_, mapOverlayId) => mapOverlayId],
-  (state, mapOverlayId) => {
-    const mapOverlay = selectMapOverlayById(state, mapOverlayId);
-    return mapOverlay?.measureIds || null;
-  },
 );

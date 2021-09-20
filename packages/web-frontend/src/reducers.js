@@ -24,7 +24,7 @@ import { isMobile, getUniqueViewId } from './utils';
 import { LANDING } from './containers/OverlayDiv/constants';
 import { EMAIL_VERIFIED_STATUS } from './containers/EmailVerification';
 import { getInitialLocation } from './historyNavigation';
-import { selectMeasureBarItemCategoryById } from './selectors';
+import { selectMapOverlayGroupById } from './selectors';
 
 // Import Action Types
 import {
@@ -38,7 +38,7 @@ import {
   CHANGE_SIDE_BAR_EXPANDED_WIDTH,
   SET_MAP_OVERLAY,
   UPDATE_MEASURE_CONFIG,
-  CLEAR_MEASURE_HIERARCHY,
+  CLEAR_MAP_OVERLAY_HIERARCHY,
   SET_ORG_UNIT,
   CHANGE_SEARCH,
   FETCH_CHANGE_PASSWORD_ERROR,
@@ -590,7 +590,7 @@ function measureBar(
   action,
 ) {
   switch (action.type) {
-    case CLEAR_MEASURE_HIERARCHY:
+    case CLEAR_MAP_OVERLAY_HIERARCHY:
       return { ...state, measureHierarchy: [] };
     case SET_MAP_OVERLAY:
       return {
@@ -598,7 +598,7 @@ function measureBar(
         hiddenMeasures: {},
       };
     case UPDATE_MEASURE_CONFIG: {
-      const { categoryIndex, measure, measureIndex } = selectMeasureBarItemCategoryById(
+      const { categoryIndex, measure, measureIndex } = selectMapOverlayGroupById(
         { measureBar: state },
         action.mapOverlayIds,
       );

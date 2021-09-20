@@ -23,7 +23,7 @@ import {
   CHANGE_SEARCH,
   FETCH_MORE_SEARCH_RESULTS,
   clearMeasure,
-  clearMeasureHierarchy,
+  clearMapOverlayHierarchy,
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
   DIALOG_PAGE_RESET_PASSWORD,
   displayUnverified,
@@ -121,7 +121,7 @@ import {
   selectCurrentExpandedViewConfig,
   selectCurrentExpandedViewContent,
   selectDefaultMapOverlayId,
-  selectIsMeasureInHierarchy,
+  selectIsMapOverlayInHierarchy,
   selectIsProject,
   selectMapOverlayById,
   selectOrgUnit,
@@ -956,7 +956,7 @@ function* fetchCurrentMeasureInfo() {
        * i.e. page reloaded when on org with measure selected
        */
       yield put(setMapOverlay(selectedMapOverlayId));
-    } else if (!selectIsMeasureInHierarchy(state, selectedMapOverlayId)) {
+    } else if (!selectIsMapOverlayInHierarchy(state, selectedMapOverlayId)) {
       // Update to the default measure ID if the current measure id isn't in the hierarchy
       const newMapOverlayId = selectDefaultMapOverlayId(state);
       yield put(setMapOverlay(newMapOverlayId));
@@ -1118,7 +1118,7 @@ function* watchFetchNewEnlargedDialogData() {
 }
 
 function* resetToProjectSplash() {
-  yield put(clearMeasureHierarchy());
+  yield put(clearMapOverlayHierarchy());
   yield put(setOverlayComponent(LANDING));
   yield put(setProject(DEFAULT_PROJECT_CODE));
 }
