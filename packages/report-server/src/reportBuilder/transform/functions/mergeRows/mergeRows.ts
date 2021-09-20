@@ -70,19 +70,22 @@ const groupRows = (rows: Row[], params: MergeRowsParams) => {
       return;
     }
     const groupKey = params.createGroupKey(row);
-    groupsByKey[groupKey] = addRowToGroup(groupsByKey[groupKey] || {}, row);
+    groupsByKey[groupKey] = addRowToGroup(groupsByKey[groupKey], row);
     parser.next();
   });
 
   return { groups: Object.values(groupsByKey), ungroupedRows };
 };
 
-const addRowToGroup = (group: Group, row: Row): Group => {
-  const newGroup = { ...group };
+const addRowToGroup = (group: Group = {}, row: Row): Group => {
   Object.keys(row).forEach((field: string) => {
-    newGroup[field] = [...(newGroup[field] || []), row[field]];
+    if (!group[field]) {
+      // eslint-disable-next-line no-param-reassign
+      group[field] = [];
+    }
+    group[field].push(row[field]);
   });
-  return newGroup;
+  return group;
 };
 
 const mergeGroups = (groups: Group[], params: MergeRowsParams): Row[] => {
