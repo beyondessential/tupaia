@@ -1,17 +1,16 @@
-/**
- * Tupaia Web
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
- * This source code is licensed under the AGPL-3.0 license
- * found in the LICENSE file in the root directory of this source tree.
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Polygon } from 'react-leaflet';
 import styled from 'styled-components';
-import { MAP_COLORS } from '../../styles';
+import { MAP_COLORS } from './constants';
 
 const { POLYGON_HIGHLIGHT } = MAP_COLORS;
+
 const StyledPolygon = styled(Polygon)`
   stroke: ${props => props.shade || POLYGON_HIGHLIGHT};
   opacity: 1;
