@@ -184,7 +184,7 @@ const MapOverlayShape = PropTypes.shape({
 });
 
 MeasureBar.propTypes = {
-  currentMapOverlayId: PropTypes.string.isRequired,
+  currentMapOverlayId: PropTypes.string,
   currentMapOverlay: MapOverlayShape.isRequired,
   measureHierarchy: PropTypes.array.isRequired,
   isExpanded: PropTypes.bool.isRequired,
@@ -192,9 +192,13 @@ MeasureBar.propTypes = {
   onSelectMapOverlay: PropTypes.func.isRequired,
   onClearMeasure: PropTypes.func.isRequired,
   onUpdateMeasurePeriod: PropTypes.func.isRequired,
-  currentOrganisationUnitCode: PropTypes.string,
   currentOrganisationUnitName: PropTypes.string,
-  defaultMapOverlay: MapOverlayShape,
+  defaultMapOverlay: MapOverlayShape.isRequired,
+};
+
+MeasureBar.defaultProps = {
+  currentMapOverlayId: null,
+  currentOrganisationUnitName: '',
 };
 
 const mapStateToProps = state => {
@@ -206,7 +210,7 @@ const mapStateToProps = state => {
   const currentMapOverlay = selectCurrentMapOverlay(state);
 
   // TODO failed prop type
-  const currentMapOverlayId = currentMapOverlay.mapOverlayId || null;
+  const currentMapOverlayId = currentMapOverlay.mapOverlayId;
   // TODO: current measures in Measure Bar
   // const currentMeasures = selectCurrentMeasures(state);
   const activeProject = selectCurrentProject(state);
@@ -218,7 +222,6 @@ const mapStateToProps = state => {
     currentMapOverlayId,
     measureHierarchy,
     isExpanded,
-    currentOrganisationUnitCode: currentOrganisationUnit.organisationUnitCode,
     currentOrganisationUnitName: currentOrganisationUnit.name,
     isMeasureLoading: isMeasureLoading || isLoadingOrganisationUnit,
     defaultMapOverlay,
