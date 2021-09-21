@@ -63,6 +63,45 @@ const getReport = (reportCode, dataElement) => ({
   },
 });
 
+const getPriorityDistrictsReport = (reportCode, dataElement) => ({
+  id: generateId(),
+  code: reportCode,
+  config: {
+    fetch: {
+      dataElements: [dataElement],
+      aggregations: [
+        {
+          type: 'COUNT_PER_PERIOD_PER_ORG_GROUP',
+          config: {
+            aggregationEntityType: 'requested',
+            dataSourceEntityType: reportCode.includes('PROVINCE') ? 'district' : 'sub_district',
+            dataSourceEntityFilter: {
+              attributes_type: 'LESMIS_Target_District',
+            },
+          },
+        },
+        {
+          type: 'FINAL_EACH_YEAR',
+          config: {
+            dataSourceEntityType: reportCode.includes('PROVINCE') ? 'district' : 'sub_district',
+            aggregationEntityType: 'requested',
+          },
+        },
+      ],
+    },
+    transform: [
+      {
+        transform: 'updateColumns',
+        insert: {
+          organisationUnitCode: '=$organisationUnit',
+          value: '=divide($value, 100)',
+        },
+        exclude: ['organisationUnit', 'dataElement', 'period'],
+      },
+    ],
+  },
+});
+
 const getGPIReport = (reportCode, maleDataElement, femaleDataElement) => ({
   id: generateId(),
   code: reportCode,
@@ -180,6 +219,18 @@ const MAP_OVERLAYS = [
     sortOrder: 1,
   },
   {
+    report: getPriorityDistrictsReport(
+      'LESMIS_GIR_PRIORITY_DISTRICTS_PRIMARY_DISTRICT',
+      'gir_district_pe_t',
+    ),
+    mapOverlay: getMapOverlay(
+      'GIR into last grade of primary, 40 priority districts',
+      'LESMIS_GIR_PRIORITY_DISTRICTS_PRIMARY_DISTRICT',
+    ),
+    mapOverlayGroupId: DISTRICT_OVERLAY_GROUP.id,
+    sortOrder: 2,
+  },
+  {
     report: getReport('LESMIS_GIR_PRIMARY_PROVINCE', 'gir_province_pe_t'),
     mapOverlay: getMapOverlay('GIR into last grade of primary', 'LESMIS_GIR_PRIMARY_PROVINCE'),
     mapOverlayGroupId: PROVINCE_OVERLAY_GROUP.id,
@@ -197,6 +248,18 @@ const MAP_OVERLAYS = [
     ),
     mapOverlayGroupId: PROVINCE_OVERLAY_GROUP.id,
     sortOrder: 1,
+  },
+  {
+    report: getPriorityDistrictsReport(
+      'LESMIS_GIR_PRIORITY_DISTRICTS_PRIMARY_PROVINCE',
+      'gir_province_pe_t',
+    ),
+    mapOverlay: getMapOverlay(
+      'GIR into last grade of primary, 40 priority districts',
+      'LESMIS_GIR_PRIORITY_DISTRICTS_PRIMARY_PROVINCE',
+    ),
+    mapOverlayGroupId: PROVINCE_OVERLAY_GROUP.id,
+    sortOrder: 2,
   },
 ];
 
