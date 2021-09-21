@@ -13,8 +13,8 @@ import { MapOverlayFilter } from './VisualisationFilter';
 const { oneOrArrayOf } = yupUtils;
 
 const urlSchema = buildUrlSchema({
-  regex: new RegExp('^/[^/]+/[^/]+/[^/]+?.*overlay=.+'),
-  regexDescription: '/:projectCode/:orgUnit?overlay=:overlayId',
+  regex: new RegExp('^/[^/]+/[^/]+/[^/]+?.*mapOverlayIds=.+'),
+  regexDescription: '/:projectCode/:orgUnit?mapOverlayIds=:overlayId',
   shape: {
     id: oneOrArrayOf(yup.string().required()),
     project: yup.string().required(),
@@ -38,7 +38,7 @@ const stringifyUrl = url => {
   const { id, project, orgUnit, startDate, endDate, overlayPeriod } = url;
   const path = [project, orgUnit].map(encodeURIComponent).join('/');
   const queryParams = {
-    overlay: toArray(id).join(','),
+    mapOverlayIds: toArray(id).join(','),
     overlayPeriod: overlayPeriod || buildVizPeriod(startDate, endDate),
   };
 
@@ -60,7 +60,7 @@ const parseUrl = url => {
     .map(decodeURIComponent);
 
   return {
-    id: searchParams.get('overlay'),
+    id: searchParams.get('mapOverlayIds'),
     project,
     orgUnit,
     overlayPeriod: searchParams.get('overlayPeriod'),

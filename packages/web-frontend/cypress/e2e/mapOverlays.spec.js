@@ -30,12 +30,12 @@ const assertUrlResponseHasData = (url, response) => {
 
 const urlToRouteRegex = url => {
   const queryParams = url.split('?').slice(1).join('');
-  const measureId = new URLSearchParams(queryParams).get('overlay');
-  if (!measureId) {
+  const mapOverlayIds = new URLSearchParams(queryParams).get('mapOverlayIds');
+  if (!mapOverlayIds) {
     throw new Error(`'${url}' is not a valid report url: it must contain a 'report' query param`);
   }
 
-  return new RegExp(`measureData\\?(.*&|)measureId=${measureId}(&|$)`);
+  return new RegExp(`measureData\\?(.*&|)mapOverlayIds=${mapOverlayIds}(&|$)`);
 };
 
 describe('Map overlays', () => {
