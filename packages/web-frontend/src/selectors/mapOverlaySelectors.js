@@ -6,10 +6,10 @@
  */
 
 import { createSelector } from 'reselect';
-import { DEFAULT_MEASURE_ID } from '../defaults';
+import { DEFAULT_MAP_OVERLAY_ID } from '../defaults';
 import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
 import { getMapOverlayFromHierarchy } from '../utils';
-import { flattenMapOverlayHierarchy, isMeasureHierarchyEmpty } from '../utils/measures';
+import { flattenMapOverlayHierarchy, isMeasureHierarchyEmpty } from '../utils/mapOverlays';
 
 import { selectCurrentProject } from './projectSelectors';
 import { selectLocation } from './utils';
@@ -42,12 +42,12 @@ export const selectDefaultMapOverlayId = createSelector(
     const measureIsDefined = id => !!getMapOverlayFromHierarchy(measureHierarchy, id);
 
     if (measureIsDefined(projectMeasureId)) return projectMeasureId;
-    if (measureIsDefined(DEFAULT_MEASURE_ID)) return DEFAULT_MEASURE_ID;
+    if (measureIsDefined(DEFAULT_MAP_OVERLAY_ID)) return DEFAULT_MAP_OVERLAY_ID;
     if (!isMeasureHierarchyEmpty(measureHierarchy)) {
       return flattenMapOverlayHierarchy(measureHierarchy)[0].mapOverlayId;
     }
 
-    return DEFAULT_MEASURE_ID;
+    return DEFAULT_MAP_OVERLAY_ID;
   },
 );
 
@@ -69,8 +69,8 @@ export const selectMapOverlayGroupById = createSelector(
         mapOverlayGroupIndex = {
           name,
           categoryIndex,
-          measureIndex: selectedMapOverlayGroupIndex,
-          measure: children[selectedMapOverlayGroupIndex],
+          mapOverlayGroupIndex: selectedMapOverlayGroupIndex,
+          mapOverlays: children[selectedMapOverlayGroupIndex],
         };
       }
     });

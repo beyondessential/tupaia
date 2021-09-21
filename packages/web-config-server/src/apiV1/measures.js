@@ -16,7 +16,7 @@ export default class extends RouteHandler {
               name: 'GroupA',
               children: [
                 {
-                  measureIds: ['Laos_Schools_A'],
+                  mapOverlayId: 'Laos_Schools_A',
                   name: 'Overlay A',
                   ...presentationOptions,
                 }
@@ -29,7 +29,7 @@ export default class extends RouteHandler {
                   name: 'GroupC',
                   children: [
                     {
-                      measureIds: ['Laos_Schools_D'],
+                      mapOverlayId: 'Laos_Schools_D',
                       name: 'Overlay D',
                       ...presentationOptions,
                     }, 
@@ -42,8 +42,8 @@ export default class extends RouteHandler {
   */
   buildResponse = async () => {
     const { entity, query } = this;
-    const { code: entityCode, name: entityName, country_code: enityCountryCode } = entity;
-    const overlayCode = enityCountryCode || entityCode;
+    const { code: entityCode, name: entityName, country_code: entityCountryCode } = entity;
+    const overlayCode = entityCountryCode || entityCode;
     const userGroups = await this.req.getUserGroups(entityCode);
 
     let accessibleMapOverlayGroups = [];

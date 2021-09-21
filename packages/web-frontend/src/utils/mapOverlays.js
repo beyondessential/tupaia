@@ -5,8 +5,6 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import { flattenMapOverlayHierarchy } from './measures';
-
 export const getMapOverlayFromHierarchy = (mapOverlayHierarchy, targetMapOverlayId) => {
   if (!targetMapOverlayId) {
     return null;
@@ -15,3 +13,28 @@ export const getMapOverlayFromHierarchy = (mapOverlayHierarchy, targetMapOverlay
   const flattenMapOverlays = flattenMapOverlayHierarchy(mapOverlayHierarchy);
   return flattenMapOverlays.find(({ mapOverlayId }) => targetMapOverlayId === mapOverlayId);
 };
+
+export function flattenMapOverlayHierarchy(measureHierarchy) {
+  const results = [];
+  const flattenGroupedMeasure = ({ children }) => {
+    children.forEach(childObject => {
+      if (childObject.children && childObject.children.length) {
+        flattenGroupedMeasure(childObject);
+      } else {
+        results.push(childObject);
+      }
+    });
+  };
+  measureHierarchy.forEach(measure => {
+    if (measure.children) {
+      flattenGroupedMeasure(measure);
+    } else {
+      results.push(measure);
+    }
+  });
+
+  return results;
+}
+
+export const isMeasureHierarchyEmpty = measureHierarchy =>
+  flattenMapOverlayHierarchy(measureHierarchy).length === 0;

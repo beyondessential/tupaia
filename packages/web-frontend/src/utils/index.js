@@ -19,10 +19,12 @@ export {
   processMeasureInfo,
   getSingleFormattedValue,
   flattenNumericalMeasureData,
+} from './measures';
+export {
+  getMapOverlayFromHierarchy,
   flattenMapOverlayHierarchy,
   isMeasureHierarchyEmpty,
-} from './measures';
-export { getMapOverlayFromHierarchy } from './mapOverlays';
+} from './mapOverlays';
 export { default as ga, gaEvent, gaPageView, gaMiddleware } from './ga';
 export { formatDateForApi } from './formatDateForApi';
 export { getBrowserTimeZone } from './getBrowserTimeZone';

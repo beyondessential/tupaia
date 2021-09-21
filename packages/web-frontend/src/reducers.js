@@ -598,15 +598,15 @@ function measureBar(
         hiddenMeasures: {},
       };
     case UPDATE_MEASURE_CONFIG: {
-      const { categoryIndex, measure, measureIndex } = selectMapOverlayGroupById(
+      const { categoryIndex, mapOverlays, mapOverlayGroupIndex } = selectMapOverlayGroupById(
         { measureBar: state },
         action.mapOverlayIds,
       );
 
       const measureHierarchy = [...state.measureHierarchy];
 
-      measureHierarchy[categoryIndex].children[measureIndex] = {
-        ...measure,
+      measureHierarchy[categoryIndex].children[mapOverlayGroupIndex] = {
+        ...mapOverlays,
         ...action.measureConfig,
       };
 

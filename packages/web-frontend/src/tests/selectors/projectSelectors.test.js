@@ -69,17 +69,17 @@ describe('projectSelectors', () => {
       it('recomputes by code or by state change', () => {
         const routing1 = {
           pathname: '/PROJECT_1/TO/A%20DASHBOARD',
-          search: '?overlay=abc%20123',
+          search: '?mapOverlayIds=abc%20123',
         };
 
         const routing2 = {
           pathname: '/PROJECT_1/PG/ANOTHER%20DASHBOARD',
-          search: '?overlay=abc%20123',
+          search: '?mapOverlayIds=abc%20123',
         };
 
         const routing3 = {
           pathname: '/PROJECT_2/PG/ANOTHER%20DASHBOARD',
-          search: '?overlay=abc%20123',
+          search: '?mapOverlayIds=abc%20123',
         };
         selectCurrentProject({ ...testState1, routing: routing1 });
         expect(selectCurrentProject.recomputations()).toEqual(1);

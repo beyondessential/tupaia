@@ -197,10 +197,6 @@ export default class extends DataAggregatingRouteHandler {
     const measureOptions = await this.fetchMeasureOptions(overlays, measureData);
 
     return {
-      measureIds: overlays
-        .map(o => o.id)
-        .sort()
-        .join(','),
       measureLevel: getMeasureLevel(overlays),
       measureOptions,
       serieses: measureOptions,

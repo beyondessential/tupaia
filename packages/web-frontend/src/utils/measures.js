@@ -172,28 +172,6 @@ const clampValue = (value, config) => {
   return clampedValue;
 };
 
-export function flattenMapOverlayHierarchy(measureHierarchy) {
-  const results = [];
-  const flattenGroupedMeasure = ({ children }) => {
-    children.forEach(childObject => {
-      if (childObject.children && childObject.children.length) {
-        flattenGroupedMeasure(childObject);
-      } else {
-        results.push(childObject);
-      }
-    });
-  };
-  measureHierarchy.forEach(measure => {
-    if (measure.children) {
-      flattenGroupedMeasure(measure);
-    } else {
-      results.push(measure);
-    }
-  });
-
-  return results;
-}
-
 export function processMeasureInfo(response) {
   const { measureOptions, measureData, ...rest } = response;
   const hiddenMeasures = {};
@@ -323,7 +301,3 @@ export const calculateRadiusScaleFactor = measureData => {
 export function flattenNumericalMeasureData(measureData, key) {
   return measureData.map(v => parseFloat(v[key])).filter(x => !isNaN(x));
 }
-
-export const isMeasureHierarchyEmpty = measureHierarchy => {
-  return flattenMapOverlayHierarchy(measureHierarchy).length === 0;
-};

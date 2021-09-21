@@ -49,14 +49,14 @@ export class MeasureBar extends Component {
     return true;
   }
 
-  handleSelectMeasure = measure => {
+  handleSelectMapOverlay = mapOverlay => {
     if (this.state.hasNeverBeenChanged) {
       this.setState({
         hasNeverBeenChanged: false,
       });
     }
 
-    this.props.onSelectMapOverlay(measure);
+    this.props.onSelectMapOverlay(mapOverlay);
   };
 
   renderDefaultMeasure() {
@@ -67,7 +67,7 @@ export class MeasureBar extends Component {
         nestedMargin="0px"
         label={defaultMapOverlay.name}
         isSelected={currentMapOverlayId === defaultMapOverlay.mapOverlayId}
-        onClick={() => this.handleSelectMeasure(defaultMapOverlay)}
+        onClick={() => this.handleSelectMapOverlay(defaultMapOverlay)}
       />
     );
   }
@@ -87,7 +87,7 @@ export class MeasureBar extends Component {
         onClick =
           currentMapOverlayId === childObject.mapOverlayId
             ? () => onClearMeasure()
-            : () => this.handleSelectMeasure(childObject);
+            : () => this.handleSelectMapOverlay(childObject);
       }
 
       return (
