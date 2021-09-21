@@ -19,22 +19,34 @@ exports.setup = function (options, seedLink) {
 const PERMISSION_GROUP = 'LESMIS Public';
 const DISTRICT_OVERLAY_GROUP_ID = '5f2c7ddc61f76a513a000215';
 
-const MAP_OVERLAYS = [
-  {
-    dataElement: 'rr_district_p1_t',
-    name: 'Grade 1 Repetition Rate',
-    reportCode: 'LESMIS_primary_1_repetition_rate_district',
-    mapOverlayGroupId: DISTRICT_OVERLAY_GROUP_ID,
-    sortOrder: 0,
-  },
-  {
-    dataElement: 'rr_district_p2_t',
-    name: 'Grade 1 Repetition Rate',
-    reportCode: 'LESMIS_primary_2_repetition_rate_district',
-    mapOverlayGroupId: DISTRICT_OVERLAY_GROUP_ID,
-    sortOrder: 1,
-  },
-];
+// const MAP_OVERLAYS = [
+//   {
+//     dataElement: 'rr_district_p1_t',
+//     name: 'Grade 1 Repetition Rate',
+//     reportCode: 'LESMIS_primary_1_repetition_rate_district',
+//     mapOverlayGroupId: DISTRICT_OVERLAY_GROUP_ID,
+//     sortOrder: 0,
+//   },
+//   {
+//     dataElement: 'rr_district_p2_t',
+//     name: 'Grade 1 Repetition Rate',
+//     reportCode: 'LESMIS_primary_2_repetition_rate_district',
+//     mapOverlayGroupId: DISTRICT_OVERLAY_GROUP_ID,
+//     sortOrder: 1,
+//   },
+// ];
+
+const getMapOverlayObject = (grade, sortOrder) => {
+  return [
+    {
+      dataElement: `rr_district_p${grade}_t`,
+      name: `Grade ${grade} Repetition Rate`,
+      reportCode: `LESMIS_primary_${grade}_repetition_rate_district`,
+      mapOverlayGroupId: DISTRICT_OVERLAY_GROUP_ID,
+      sortOrder,
+    },
+  ];
+};
 
 const addMapOverlayGroupRelation = async (db, parentId, childId, childType = 'mapOverlayGroup') => {
   return insertObject(db, 'map_overlay_group_relation', {
@@ -134,9 +146,18 @@ const removeMapOverlay = (db, reportCode) => {
 
 exports.up = async function (db) {
   // Add Map Overlays
-  MAP_OVERLAYS.forEach(({ name, dataElement, reportCode, mapOverlayGroupId, sortOrder }) => {
+  for (var i = 0; i < 2; i++) {
+    const grade = i + 1;
+    const { name, dataElement, reportCode, mapOverlayGroupId, sortOrder } = getMapOverlayObject(
+      grade,
+      i,
+    );
     addMapOverlay(db, name, dataElement, reportCode, mapOverlayGroupId, sortOrder);
-  });
+  }
+
+  // MAP_OVERLAYS.forEach(({ name, dataElement, reportCode, mapOverlayGroupId, sortOrder }) => {
+  //   addMapOverlay(db, name, dataElement, reportCode, mapOverlayGroupId, sortOrder);
+  // });
 };
 
 exports.down = async function (db) {
