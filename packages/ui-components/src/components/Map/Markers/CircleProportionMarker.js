@@ -30,8 +30,10 @@ export const CircleProportionMarker = React.memo(({ radius, children, coordinate
     <HoverCircle
       center={coordinates}
       radius={displayRadius}
-      color={colorValue}
-      fillColor={colorValue}
+      pathOptions={{
+        color: colorValue,
+        fillColor: colorValue,
+      }}
     >
       {children}
     </HoverCircle>
