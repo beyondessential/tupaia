@@ -138,7 +138,6 @@ Get measure data and option set for country level organisationUnit
             "value": "1"
         }
     ],
-    "mapOverlayIds": [84],
     "displayType": ""
 }
 ```
