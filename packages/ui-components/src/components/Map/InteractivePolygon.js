@@ -118,7 +118,10 @@ export const InteractivePolygon = React.memo(
     return (
       <PolygonComponent
         positions={coordinates}
-        color={color}
+        pathOptions={{
+          color,
+          fillColor: color,
+        }}
         eventHandlers={{
           click: () => {
             return onChangeOrgUnit(organisationUnitCode);
