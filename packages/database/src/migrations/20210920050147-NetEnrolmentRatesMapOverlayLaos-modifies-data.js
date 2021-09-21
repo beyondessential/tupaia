@@ -21,19 +21,19 @@ const PERMISSION_GROUP = 'LESMIS Public';
 const MAP_OVERLAY_GROUP = {
   id: generateId(),
   name: 'Net Enrolment Rate',
-  code: 'Laos_Schools_Net_Enrolment_Rates_Group',
+  code: 'Laos_Schools_Net_Enrolment_Rate_Group',
 };
 
 const DISTRICT_OVERLAY_GROUP = {
   id: generateId(),
   name: 'District Level',
-  code: 'Laos_Schools_Net_Enrolment_Rates_District_Level_Group',
+  code: 'Laos_Schools_Net_Enrolment_Rate_District_Level_Group',
 };
 
 const PROVINCE_OVERLAY_GROUP = {
   id: generateId(),
   name: 'Province Level',
-  code: 'Laos_Schools_Net_Enrolment_Rates_Province_Level_Group',
+  code: 'Laos_Schools_Net_Enrolment_Rate_Province_Level_Group',
 };
 
 const MAP_OVERLAYS = [
@@ -82,7 +82,7 @@ const MAP_OVERLAYS = [
 ];
 
 const getMapOverlayGroupId = async function (db, code) {
-  const results = await db.runSql(`select "id" from "map_overlay_group" where "code" = '${code}';`);
+  const results = await db.runSql(`select id from map_overlay_group where code = '${code}';`);
 
   if (results.rows.length > 0) {
     return results.rows[0].id;
@@ -110,7 +110,7 @@ const getReport = (reportCode, dataElement) => ({
         {
           type: 'FINAL_EACH_YEAR',
           config: {
-            dataSourceEntityType: 'sub_district',
+            dataSourceEntityType: reportCode.includes('province') ? 'district' : 'sub_district',
             aggregationEntityType: 'requested',
           },
         },
@@ -123,15 +123,15 @@ const getReport = (reportCode, dataElement) => ({
           organisationUnitCode: '=$organisationUnit',
           value: '=divide($value, 100)',
         },
-        exclude: ['organisationUnit', 'dataElement'],
+        exclude: ['organisationUnit', 'dataElement', 'period'],
       },
     ],
   },
 });
 
-const getMapOverlay = reportCode => ({
+const getMapOverlay = (name, reportCode) => ({
   id: reportCode,
-  name: 'Gross Enrolment Ratio',
+  name,
   userGroup: PERMISSION_GROUP,
   dataElementCode: 'value',
   isDataRegional: true,
@@ -143,7 +143,7 @@ const getMapOverlay = reportCode => ({
   presentationOptions: {
     scaleType: 'performance',
     displayType: 'shaded-spectrum',
-    measureLevel: 'SubDistrict',
+    measureLevel: reportCode.includes('province') ? 'District' : 'SubDistrict',
     valueType: 'percentage',
     scaleBounds: {
       left: {
@@ -151,12 +151,6 @@ const getMapOverlay = reportCode => ({
       },
       right: {
         min: 'auto',
-      },
-    },
-    measureConfig: {
-      $all: {
-        type: 'popup-only',
-        hideFromLegend: true,
       },
     },
     periodGranularity: 'one_year_at_a_time',
@@ -172,16 +166,27 @@ const getPermissionGroupId = async (db, name) => {
 
 const addMapOverlayGroup = async (db, parentId, overlayGroup) => {
   await insertObject(db, 'map_overlay_group', overlayGroup);
-  await addMapOverlayGroupRelation(db, parentId, overlayGroup.id);
+  return insertObject(db, 'map_overlay_group_relation', {
+    id: generateId(),
+    map_overlay_group_id: parentId,
+    child_id: overlayGroup.id,
+    child_type: 'mapOverlayGroup',
+  });
 };
 
-const addMapOverlay = async (db, dataElement, reportCode, overlayId) => {
+const addMapOverlay = async (db, name, dataElement, reportCode, mapOverlayGroupId, sortOrder) => {
   const report = getReport(reportCode, dataElement);
-  const mapOverlay = getMapOverlay(reportCode);
+  const mapOverlay = getMapOverlay(name, reportCode);
   const permissionGroupId = await getPermissionGroupId(db, PERMISSION_GROUP);
   await insertObject(db, 'report', { ...report, permission_group_id: permissionGroupId });
   await insertObject(db, 'mapOverlay', mapOverlay);
-  await addMapOverlayGroupRelation(db, overlayId, mapOverlay.id, 'mapOverlay');
+  return insertObject(db, 'map_overlay_group_relation', {
+    id: generateId(),
+    map_overlay_group_id: mapOverlayGroupId,
+    child_id: mapOverlay.id,
+    child_type: 'mapOverlay',
+    sort_order: sortOrder,
+  });
 };
 
 const removeMapOverlay = (db, reportCode) => {
@@ -192,6 +197,13 @@ const removeMapOverlay = (db, reportCode) => {
   `);
 };
 
+const removeMapOverlayGroupRelation = async (db, groupCode) => {
+  const overlayId = await getMapOverlayGroupId(db, groupCode);
+  await db.runSql(`
+    DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${overlayId}';
+  `);
+};
+
 const removeMapOverlayGroups = async db => {
   await db.runSql(`
     DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${DISTRICT_OVERLAY_GROUP.id}';
@@ -199,7 +211,7 @@ const removeMapOverlayGroups = async db => {
     DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${MAP_OVERLAY_GROUP.id}';
   `);
 
-  await db.runSql(`
+  return db.runSql(`
     DELETE FROM "map_overlay_group" WHERE "code" = '${MAP_OVERLAY_GROUP.code}'; 
     DELETE FROM "map_overlay_group" WHERE "code" = '${DISTRICT_OVERLAY_GROUP.code}';
     DELETE FROM "map_overlay_group" WHERE "code" = '${PROVINCE_OVERLAY_GROUP.code}';
@@ -217,13 +229,26 @@ exports.up = async function (db) {
   MAP_OVERLAYS.forEach(({ name, dataElement, reportCode, mapOverlayGroupId, sortOrder }) => {
     addMapOverlay(db, name, dataElement, reportCode, mapOverlayGroupId, sortOrder);
   });
+};
 
 // Relations are deleted internally
 exports.down = async function (db) {
-  await removeMapOverlay(db, 'LESMIS_ner_primary_district');
-  await removeMapOverlay(db, 'LESMIS_ner_lower_secondary_district');
-  await removeMapOverlay(db, 'LESMIS_ner_upper_secondary_district');
-  await removeMapOverlayGroups(db);
+  // Remove Map Overlay Groups Relations
+  await removeMapOverlayGroupRelation(db, MAP_OVERLAY_GROUP.code);
+  await removeMapOverlayGroupRelation(db, DISTRICT_OVERLAY_GROUP.code);
+  await removeMapOverlayGroupRelation(db, PROVINCE_OVERLAY_GROUP.code);
+
+  // Remove Map Overlays
+  for (const { reportCode } of MAP_OVERLAYS) {
+    await removeMapOverlay(db, reportCode);
+  }
+
+  // Remove Map Overlay Groups
+  await db.runSql(`
+    DELETE FROM "map_overlay_group" WHERE "code" = '${DISTRICT_OVERLAY_GROUP.code}'; 
+    DELETE FROM "map_overlay_group" WHERE "code" = '${PROVINCE_OVERLAY_GROUP.code}'; 
+    DELETE FROM "map_overlay_group" WHERE "code" = '${MAP_OVERLAY_GROUP.code}'; 
+  `);
 };
 
 exports._meta = {
