@@ -175,9 +175,8 @@ export default class extends DataAggregatingRouteHandler {
 
   buildResponse = async () => {
     const { code } = this.entity;
-    const { mapOverlayIds: mapOverlayIdsStr } = this.query;
-    const mapOverlayIds = mapOverlayIdsStr.split(',');
-    const overlays = await this.models.mapOverlay.findMeasuresByIds(mapOverlayIds);
+    const { mapOverlayIds } = this.query;
+    const overlays = await this.models.mapOverlay.findMeasuresByIds(mapOverlayIds.split(','));
 
     // check permission
     await Promise.all(
