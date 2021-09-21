@@ -6,11 +6,10 @@
  */
 
 import React from 'react';
-
-import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from 'prop-types';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import { ReferenceTooltip } from '@tupaia/ui-components';
 import { WHITE } from '../styles';
-import { ReferenceTooltip } from './ReferenceTooltip';
 
 const renderReferenceTooltip = reference => {
   return <ReferenceTooltip reference={reference} />;

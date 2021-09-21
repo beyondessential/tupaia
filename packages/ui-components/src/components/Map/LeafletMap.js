@@ -1,8 +1,6 @@
-/**
- * Tupaia Web
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
- * This source code is licensed under the AGPL-3.0 license
- * found in the LICENSE file in the root directory of this source tree.
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
 /**
@@ -20,13 +18,35 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import { MapContainer as LeafletMapContainer } from 'react-leaflet';
+import { LeafletStyles } from './LeafletStyles';
+import { DEFAULT_BOUNDS } from './constants';
 
-import { Map } from 'react-leaflet';
+const Map = styled(LeafletMapContainer)`
+  ${LeafletStyles};
+`;
 
-import './styles/leaflet-overrides.css';
+function arePositionsEqual(a, b) {
+  if (a && b) {
+    // if both centers are defined, equal if the position matches
+    return a[0] === b[0] && a[1] === b[1];
+  }
+  // if either are not defined, equal only if both are not defined
+  return a === b;
+}
 
-import { DEFAULT_BOUNDS } from '../../defaults';
-import { arePositionsEqual, areBoundsEqual, areBoundsValid } from '../../utils/geometry';
+function areBoundsEqual(a, b) {
+  if (a && b) {
+    return arePositionsEqual(a[0], b[0]) && arePositionsEqual(a[1], b[1]);
+  }
+  // if either are not defined, equal only if both are not defined
+  return a === b;
+}
+
+function areBoundsValid(b) {
+  return Array.isArray(b) && b.length === 2;
+}
 
 export class LeafletMap extends Component {
   constructor(props) {
@@ -60,10 +80,10 @@ export class LeafletMap extends Component {
     // initial state of the element -- we keep sending these to leaflet so
     // that it doesn't snap to new coordinates (allowing us to animate them
     // instead)
-    const { position } = this.props;
-    this.initialCenter = position.center;
-    this.initialBounds = areBoundsValid(position.bounds) ? position.bounds : DEFAULT_BOUNDS;
-    this.initialZoom = position.zoom || 0;
+    const { center, bounds, zoom } = this.props;
+    this.initialCenter = center;
+    this.initialBounds = areBoundsValid(bounds) ? bounds : DEFAULT_BOUNDS;
+    this.initialZoom = zoom || 0;
   }
 
   componentDidMount = () => {
@@ -71,25 +91,73 @@ export class LeafletMap extends Component {
   };
 
   componentDidUpdate = prevProps => {
-    const { position } = this.props;
+    const { center, bounds, zoom } = this.props;
     if (this.map && this.requiresMoveAnimation(prevProps)) {
-      if (position.bounds) {
-        this.flyToBounds(position.bounds);
-      } else if (position.center) {
-        this.flyToPoint(position.center, position.zoom);
+      if (bounds) {
+        this.flyToBounds(bounds);
+      } else if (center) {
+        this.flyToPoint(center, zoom);
       }
     }
   };
 
-  onZoomEnd = e => {
-    this.zoom = e.target.getZoom();
+  adjustPointToAccountForMargin = (point, zoom) => {
+    const { rightPadding = 0 } = this.props;
+    const projectedPoint = this.map.project(point, zoom).add([rightPadding / 2, 0]);
+    return this.map.unproject(projectedPoint, zoom);
+  };
+
+  adjustPointToRemoveMargin = (point, zoom) => {
+    const { rightPadding = 0 } = this.props;
+    const projectedPoint = this.map.project(point, zoom).add([-rightPadding / 2, 0]);
+    return this.map.unproject(projectedPoint, zoom);
+  };
+
+  attachEvents = map => {
+    map.on('movestart', event => {
+      this.onMoveStart(event);
+    });
+
+    map.on('moveend', event => {
+      this.onMoveEnd(event);
+    });
+
+    map.on('zoomstart', event => {
+      this.onZoomStart(event);
+    });
+
+    map.on('zoomend', event => {
+      this.onZoomEnd(event);
+    });
+  };
+
+  captureMap = map => {
+    this.map = map;
+    const center = this.map.getCenter();
+    this.zoom = this.map.getZoom();
+    this.lat = center.lat;
+    this.lng = center.lng;
+  };
+
+  isAnimating = () => this.zooming || this.moving;
+
+  onZoomStart = () => {
+    this.zooming = true;
+  };
+
+  onZoomEnd = event => {
+    this.zoom = event.target.getZoom();
 
     this.zooming = false;
     this.onPositionChanged();
   };
 
-  onMoveEnd = e => {
-    const center = e.target.getCenter();
+  onMoveStart = () => {
+    this.moving = true;
+  };
+
+  onMoveEnd = event => {
+    const center = event.target.getCenter();
     this.lat = center.lat;
     this.lng = center.lng;
 
@@ -123,20 +191,6 @@ export class LeafletMap extends Component {
     this.refreshLayers();
   };
 
-  adjustPointToAccountForMargin = (point, zoom) => {
-    const { rightPadding = 0 } = this.props;
-    const projectedPoint = this.map.project(point, zoom).add([rightPadding / 2, 0]);
-    const adjustedPoint = this.map.unproject(projectedPoint, zoom);
-    return adjustedPoint;
-  };
-
-  adjustPointToRemoveMargin = (point, zoom) => {
-    const { rightPadding = 0 } = this.props;
-    const projectedPoint = this.map.project(point, zoom).add([-rightPadding / 2, 0]);
-    const adjustedPoint = this.map.unproject(projectedPoint, zoom);
-    return adjustedPoint;
-  };
-
   flyToPoint = (center, zoom) => {
     if (!center) return;
     const coordinate = this.adjustPointToAccountForMargin(center, zoom);
@@ -153,32 +207,20 @@ export class LeafletMap extends Component {
   };
 
   requiresMoveAnimation = prevProps => {
-    const { position, shouldSnapToPosition } = this.props;
-    const prevPosition = prevProps.position;
+    const { bounds, center, zoom, shouldSnapToPosition } = this.props;
 
     if (shouldSnapToPosition) {
-      if (prevPosition.zoom !== position.zoom) {
+      if (prevProps.zoom !== zoom) {
         return true;
       }
-      if (position.bounds) {
-        return !areBoundsEqual(position.bounds, prevPosition.bounds);
+      if (bounds) {
+        return !areBoundsEqual(bounds, prevProps.bounds);
       }
-      if (position.center) {
-        return !arePositionsEqual(position.center, prevPosition.center);
+      if (center) {
+        return !arePositionsEqual(center, prevProps.center);
       }
     }
     return false;
-  };
-
-  captureMap = ref => {
-    if (ref) {
-      this.map = ref.leafletElement;
-
-      const center = this.map.getCenter();
-      this.zoom = this.map.getZoom();
-      this.lat = center.lat;
-      this.lng = center.lng;
-    }
   };
 
   refreshLayers = () => {
@@ -193,24 +235,17 @@ export class LeafletMap extends Component {
     }
   };
 
-  isAnimating = () => this.zooming || this.moving;
-
   render = () => {
     const { onClick, children } = this.props;
 
     return (
       <Map
-        style={{ height: window.innerHeight, width: '100%' }}
+        {...this.props} // pass props down to react-leaflet
         zoomControl={false}
-        onZoomend={this.onZoomEnd}
-        onZoomstart={() => {
-          this.zooming = true;
+        whenCreated={map => {
+          this.captureMap(map);
+          this.attachEvents(map);
         }}
-        onMoveend={this.onMoveEnd}
-        onMovestart={() => {
-          this.moving = true;
-        }}
-        ref={this.captureMap}
         onClick={onClick}
         // these must be frozen to initial values as updates to them will
         // snap the map into place instead of animating it nicely
@@ -225,26 +260,22 @@ export class LeafletMap extends Component {
 }
 
 LeafletMap.propTypes = {
-  // presentational
-  rightPadding: PropTypes.number,
-
-  // view bounds
-  shouldSnapToPosition: PropTypes.bool.isRequired,
-  position: PropTypes.shape({
-    zoom: PropTypes.number,
-    center: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-    bounds: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  }).isRequired,
-
-  // handlers
+  bounds: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  center: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  children: PropTypes.node.isRequired,
   onClick: PropTypes.func,
   onPositionChanged: PropTypes.func,
-
-  children: PropTypes.node.isRequired,
+  rightPadding: PropTypes.number,
+  shouldSnapToPosition: PropTypes.bool,
+  zoom: PropTypes.number,
 };
 
 LeafletMap.defaultProps = {
+  bounds: null,
+  center: null,
+  onClick: () => {},
+  onPositionChanged: () => {},
   rightPadding: 0,
-  onClick: undefined,
-  onPositionChanged: undefined,
+  zoom: null,
+  shouldSnapToPosition: false,
 };
