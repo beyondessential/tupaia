@@ -18,6 +18,7 @@ import {
 import { useEntitiesData } from './useEntitiesData';
 import { yearToApiDates } from './utils';
 import { useUrlSearchParam } from '../../utils';
+import { useMapOverlaysData, findOverlay } from './useMapOverlaysData';
 import { get } from '../api';
 
 const processMeasureInfo = ({ serieses, measureData, ...rest }) => {
@@ -117,9 +118,10 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
   const { data: entitiesData, entitiesByCode, isLoading: entitiesLoading } = useEntitiesData(
     entityCode,
   );
+  const { data: overlaysData, isLoading: overlaysLoading } = useMapOverlaysData({ entityCode });
 
   const entityData = entitiesByCode[entityCode];
-
+  const overlay = findOverlay(overlaysData, selectedOverlay);
   const { startDate, endDate } = yearToApiDates(year);
 
   const params = {
@@ -127,6 +129,7 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
     endDate,
     shouldShowAllParentCountryResults: false,
     type: 'mapOverlay',
+    legacy: overlay?.legacy,
   };
 
   const { data: measureData, isLoading: measureDataLoading } = useQuery(
@@ -184,7 +187,7 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
       : null;
 
   return {
-    isLoading: entitiesLoading || measureDataLoading,
+    isLoading: entitiesLoading || measureDataLoading || overlaysLoading,
     data: { ...measureData, ...processedMeasureInfo, measureData: processedMeasureData },
     entityData,
     hiddenValues,
