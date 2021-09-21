@@ -50,7 +50,7 @@ export const extractContextProps = (transform: unknown): ContextProp[] => {
         return typeof param !== 'object' ? [param] : Object.entries(param);
       });
     })
-    .flat(3)
+    .flat(5)
     .filter(d => !!d);
 
   return extractContextPropsFromExpressions(expressions as string[]);

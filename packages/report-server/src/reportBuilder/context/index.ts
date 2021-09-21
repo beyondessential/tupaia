@@ -1,2 +1,2 @@
-export * from './buildContext';
-export * from './types';
+export { buildContext, ReqContext } from './buildContext';
+export { Context, ContextProp } from './types';

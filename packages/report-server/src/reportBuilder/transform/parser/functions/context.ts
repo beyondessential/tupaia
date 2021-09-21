@@ -8,19 +8,21 @@ import { reduceToDictionary } from '@tupaia/utils';
 import { Context, ContextProp } from '../../../context';
 
 /**
- * `contextProps`: props that will be required by the function
- * `create`: factory method that creates the function by injecting the context
+ * Config for functions that use `context`
+ *
+ * `contextProps`: declares the part of the context that will be used by the function
+ * `create`: factory method that creates a closure that can access the context
  */
-type ContextParams = {
+type ContextFunctionConfig = {
   contextProps: ContextProp[];
-  create: (deps: { getContext: () => Context }) => (...args: any[]) => unknown;
+  create: (dependencies: { getContext: () => Context }) => (...args: any[]) => unknown;
 };
 
-export const orgUnitCodeToName: ContextParams = {
-  contextProps: ['orgUnitMap'],
+export const orgUnitCodeToName: ContextFunctionConfig = {
+  contextProps: ['orgUnits'],
   create: ({ getContext }) => (orgUnitCode: string) => {
-    const { orgUnitMap } = getContext();
-    const codeToName = reduceToDictionary(Object.values(orgUnitMap), 'code', 'name');
+    const { orgUnits } = getContext();
+    const codeToName = reduceToDictionary(orgUnits, 'code', 'name');
     return codeToName[orgUnitCode];
   },
 };

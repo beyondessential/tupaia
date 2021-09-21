@@ -37,8 +37,8 @@ describe('buildContext', () => {
     } as ReqContext['services'],
   };
 
-  describe('orgUnitMap', () => {
-    it('builds orgUnitMap using fetched analytics', async () => {
+  describe('orgUnits', () => {
+    it('builds orgUnits using fetched analytics', async () => {
       const transform = [
         {
           insert: {
@@ -55,15 +55,15 @@ describe('buildContext', () => {
 
       const context = await buildContext(transform, reqContext, data);
       const expectedContext = {
-        orgUnitMap: {
-          TO: { code: 'TO', name: 'Tonga' },
-          FJ: { code: 'FJ', name: 'Fiji' },
-        },
+        orgUnits: [
+          { code: 'FJ', name: 'Fiji' },
+          { code: 'TO', name: 'Tonga' },
+        ],
       };
       expect(context).toStrictEqual(expectedContext);
     });
 
-    it('builds orgUnitMap using fetched events', async () => {
+    it('builds orgUnits using fetched events', async () => {
       const transform = [
         {
           insert: {
@@ -80,10 +80,10 @@ describe('buildContext', () => {
 
       const context = await buildContext(transform, reqContext, data);
       const expectedContext = {
-        orgUnitMap: {
-          TO: { code: 'TO', name: 'Tonga' },
-          FJ: { code: 'FJ', name: 'Fiji' },
-        },
+        orgUnits: [
+          { code: 'FJ', name: 'Fiji' },
+          { code: 'TO', name: 'Tonga' },
+        ],
       };
       expect(context).toStrictEqual(expectedContext);
     });
@@ -104,7 +104,7 @@ describe('buildContext', () => {
 
       const context = await buildContext(transform, reqContext, data);
       const expectedContext = {
-        orgUnitMap: {},
+        orgUnits: [],
       };
       expect(context).toStrictEqual(expectedContext);
     });

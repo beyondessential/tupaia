@@ -4,7 +4,7 @@
  */
 
 export interface Context {
-  orgUnitMap: Record<string, { code: string; name: string }>;
+  orgUnits: { code: string; name: string }[];
 }
 
 export type ContextProp = keyof Context;

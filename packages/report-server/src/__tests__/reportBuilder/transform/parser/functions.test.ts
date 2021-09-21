@@ -78,10 +78,10 @@ describe('functions', () => {
   describe('context', () => {
     describe('orgUnitCodeToName', () => {
       const context = {
-        orgUnitMap: {
-          FJ: { code: 'FJ', name: 'Fiji' },
-          TO: { code: 'TO', name: 'Tonga' },
-        },
+        orgUnits: [
+          { code: 'FJ', name: 'Fiji' },
+          { code: 'TO', name: 'Tonga' },
+        ],
       };
 
       it('converts given org unit code to name', () => {
