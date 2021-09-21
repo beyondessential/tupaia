@@ -48,10 +48,6 @@ const StyledTable = styled(DataTable)`
     thead {
       text-transform: none;
     }
-
-    td {
-      word-break: break-all;
-    }
   }
 `;
 
@@ -149,13 +145,6 @@ export const PreviewSection = () => {
   const columns = useMemo(() => getColumns(reportData), [reportData]);
   const data = useMemo(() => reportData, [reportData]);
 
-  const stringifiedData = data.map(row => {
-    const rowArrays = Object.entries(row).map(([key, value]) => {
-      return [key, JSON.stringify(value)];
-    });
-    return Object.fromEntries(rowArrays);
-  });
-
   // only update Chart Preview when play button is clicked
   useEffect(() => {
     const newViewContent = { data, ...visualisation.presentation };
@@ -184,7 +173,7 @@ export const PreviewSection = () => {
               isNoData={!reportData.length}
               noDataMessage="No Data Found"
             >
-              <StyledTable columns={columns} data={stringifiedData} />
+              <StyledTable columns={columns} data={data} />
             </FetchLoader>
           ) : (
             <IdleMessage />

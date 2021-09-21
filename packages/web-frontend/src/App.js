@@ -5,7 +5,6 @@
 
 import React, { lazy, Suspense } from 'react';
 import { Provider } from 'react-redux';
-import { EnvBanner } from '@tupaia/ui-components';
 
 import configureStore from './configureStore';
 import { AppStyleProviders } from './AppStyleProviders';
@@ -41,7 +40,6 @@ const App = () => {
     <Provider store={store}>
       <AppStyleProviders>
         <Suspense fallback={null}>
-          <EnvBanner />
           <RootScreen />
         </Suspense>
       </AppStyleProviders>

@@ -38,8 +38,6 @@ const translate = (value, translations) => {
 
 const ADDITIONAL_ALPHA_CHARS = ['@'];
 
-const ADDITIONAL_ALPHA_CHARS = ['@'];
-
 export class ExpressionParser {
   /**
    * @typedef { { get: (s: string) => unknown, set: (s: string, v: unknown) => void, has: (s: string) => boolean, keys: () => string[], delete: (s: string) => void, clear: () => void } } Scope
