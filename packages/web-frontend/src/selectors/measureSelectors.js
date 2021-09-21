@@ -7,13 +7,13 @@
 
 import createCachedSelector from 're-reselect';
 import { createSelector } from 'reselect';
+import { getMeasureDisplayInfo } from '@tupaia/ui-components/lib/map';
 import { DEFAULT_MEASURE_ID } from '../defaults';
 import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
 import { getMeasureFromHierarchy } from '../utils';
 import {
   calculateRadiusScaleFactor,
   flattenMeasureHierarchy,
-  getMeasureDisplayInfo,
   isMeasureHierarchyEmpty,
   POLYGON_MEASURE_TYPES,
 } from '../utils/measures';

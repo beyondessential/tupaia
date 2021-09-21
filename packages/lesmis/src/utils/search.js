@@ -4,10 +4,10 @@
  *
  */
 import React from 'react';
-import { ReactComponent as Laos } from '../components/icons/laos.svg';
-import { ReactComponent as Province } from '../components/icons/province.svg';
-import { ReactComponent as District } from '../components/icons/district.svg';
-import { ReactComponent as School } from '../components/icons/school.svg';
+import { Laos } from '../components/Icons/Laos';
+import { Province } from '../components/Icons/Province';
+import { District } from '../components/Icons/District';
+import { School } from '../components/Icons/School';
 
 /**
  * Get the display icon for search results

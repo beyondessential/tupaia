@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { Button } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
-import { ReactComponent as NotAuthorisedIcon } from '../components/icons/403.svg';
+import { NotAuthorised as NotAuthorisedIcon } from '../components/Icons/NotAuthorised';
 import { PageHeader } from '../components';
 import * as COLORS from '../constants';
 import { useUser } from '../api/queries';
