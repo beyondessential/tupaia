@@ -15,14 +15,6 @@ import { create, all, factory } from 'mathjs';
  */
 
 /**
- * @typedef {Object} FactoryParams
- * @property {string[]} dependencies
- * @property {(dependencies: Record<string, Function>) => Function} create
- *
- * @see https://mathjs.org/docs/core/extension.html#factory-functions
- */
-
-/**
  * Usage:
  * const expressionParser = new ExpressionParser();
  *
@@ -57,12 +49,6 @@ const ADDITIONAL_ALPHA_CHARS = ['@'];
 
 export class ExpressionParser {
   /**
-   * Override in child classes to use a custom prefix
-   * @protected
-   */
-  CALCULATION_PREFIX = '';
-
-  /**
    * Can pass in a custom scope
    * @param {Scope} customScope
    */
@@ -83,13 +69,13 @@ export class ExpressionParser {
     this.validExpressionCache = new Set();
   }
 
-  isCalculation = expression =>
-    expression.length > 0 && expression.startsWith(this.CALCULATION_PREFIX);
-
-  readExpression = expression =>
-    this.CALCULATION_PREFIX
-      ? expression.replace(new RegExp(`^${this.CALCULATION_PREFIX}`), '')
-      : expression;
+  /**
+   * Can override in child classes to allow custom expression formats
+   * @protected
+   */
+  readExpression(input) {
+    return input;
+  }
 
   /**
    * @param {string} name
@@ -105,11 +91,13 @@ export class ExpressionParser {
     }
   }
 
-  isFunctionName = name => this.customFunctionNames.includes(name) || this.isBuiltInFunction(name);
+  isFunctionName(name) {
+    return this.customFunctionNames.includes(name) || this.isBuiltInFunction(name);
+  }
 
   /**
    * Return the variable names in an expression.
-   * @param {string} expression
+   * @param {*} expression
    */
   getVariables(expression) {
     return this.extractSymbols(expression, node => !this.isFunctionName(node.name));
@@ -117,7 +105,7 @@ export class ExpressionParser {
 
   /**
    * Return the function names in an expression.
-   * @param {string} expression
+   * @param {*} expression
    */
   getFunctions(expression) {
     return this.extractSymbols(expression, node => this.isFunctionName(node.name));
@@ -136,7 +124,7 @@ export class ExpressionParser {
 
   /**
    * Validate an expression and throw an error if it's invalid.
-   * @param {string} expression
+   * @param {*} expression
    */
   validate(expression) {
     const expr = this.readExpression(expression);
@@ -157,7 +145,7 @@ export class ExpressionParser {
 
   /**
    * Evaluate an expression. Also validate the expression beforehand
-   * @param {string} expression
+   * @param {*} expression
    */
   evaluate(expression) {
     const expr = this.readExpression(expression);
@@ -169,7 +157,7 @@ export class ExpressionParser {
    * Evaluate an expression and cast boolean results to 1 or 0. Also validate the expression beforehand.
    *
    * Note this could also return a string, array, or object (potentially others too)
-   * @param {string} expression
+   * @param {*} expression
    */
   evaluateToNumber(expression) {
     const expr = this.readExpression(expression);
@@ -250,6 +238,6 @@ export class ExpressionParser {
   }
 
   factory(...args) {
-    return factory(...args);
+    return this.math.factory(...args);
   }
 }

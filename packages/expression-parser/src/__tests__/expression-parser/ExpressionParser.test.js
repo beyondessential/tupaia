@@ -62,22 +62,4 @@ describe('ExpressionParser', () => {
       expect(functions).toStrictEqual(expected);
     });
   });
-
-  describe('Using custom calculation prefix', () => {
-    const parser = new (class extends ExpressionParser {
-      CALCULATION_PREFIX = '=';
-    })();
-
-    it('getVariables()', () => {
-      const variables = parser.getVariables('=x + y');
-      const expected = ['x', 'y'];
-      expect(variables).toStrictEqual(expected);
-    });
-
-    it('getFunctions()', () => {
-      const functions = parser.getFunctions('=cos(90) + sin(90)');
-      const expected = ['cos', 'sin'];
-      expect(functions).toStrictEqual(expected);
-    });
-  });
 });

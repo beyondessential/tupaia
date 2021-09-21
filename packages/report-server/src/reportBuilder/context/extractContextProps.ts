@@ -13,7 +13,9 @@ import { ContextProp } from './types';
 const extractContextPropsFromExpressions = (expressions: string[]) => {
   const parser = new TransformParser();
   const functions = expressions
-    .filter(parser.isCalculation)
+    .filter(expression => {
+      return parser.isExpression(expression);
+    })
     .map(calcExpression => {
       return parser.getFunctions(calcExpression);
     })
@@ -35,7 +37,7 @@ export const extractContextProps = (transform: unknown): ContextProp[] => {
   const expressions = (transform as TransformParams[])
     .map(transformStep => {
       if (typeof transformStep === 'string' || !isPlainObject(transformStep)) {
-        // Skipping aliased transformations
+        // Skipping aliased transforms
         return undefined;
       }
 

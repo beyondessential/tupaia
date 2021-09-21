@@ -40,7 +40,7 @@ type Lookups = {
 };
 
 export class TransformParser extends ExpressionParser {
-  protected readonly CALCULATION_PREFIX = '=';
+  private readonly EXPRESSION_PREFIX = '=';
 
   private currentRow = 0;
 
@@ -81,12 +81,18 @@ export class TransformParser extends ExpressionParser {
     this.context = context;
   }
 
-  public evaluate(expression: string) {
-    if (TransformParser.isExpression(expression)) {
-      return super.evaluate(expression.substring(1));
-    }
+  public isExpression(input: unknown) {
+    return typeof input === 'string' && input.startsWith(this.EXPRESSION_PREFIX);
+  }
 
-    return expression;
+  protected readExpression(input: unknown) {
+    return this.isExpression(input)
+      ? (input as string).replace(new RegExp(`^${this.EXPRESSION_PREFIX}`), '')
+      : input;
+  }
+
+  public evaluate(input: unknown) {
+    return this.isExpression(input) ? super.evaluate(input) : input;
   }
 
   public next() {
@@ -165,10 +171,6 @@ export class TransformParser extends ExpressionParser {
     );
 
     return { functions, dependencies };
-  }
-
-  public static isExpression(expression: string) {
-    return expression.startsWith('=');
   }
 }
 

@@ -72,8 +72,9 @@ const getCustomRowSortFunction = (expression: string, direction: 'asc' | 'desc')
 };
 
 const sortRows = (rows: Row[], params: SortParams): Row[] => {
+  const sortParser = new TransformParser();
   const { by, direction } = params;
-  if (typeof by === 'string' && TransformParser.isExpression(by)) {
+  if (typeof by === 'string' && sortParser.isExpression(by)) {
     const firstDirection = Array.isArray(direction) ? direction[0] : direction;
     return rows.sort(getCustomRowSortFunction(by, firstDirection));
   }
