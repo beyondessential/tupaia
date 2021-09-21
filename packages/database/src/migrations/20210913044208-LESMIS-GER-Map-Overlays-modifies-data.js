@@ -1,6 +1,6 @@
 'use strict';
 
-import { generateId, insertObject, getMapOverlayGroupId, getPermissionGroupId } from '../utilities';
+import { generateId, insertObject, codeToId, nameToId } from '../utilities';
 
 var dbm;
 var type;
@@ -108,7 +108,7 @@ const addMapOverlayGroup = async (db, parentId, overlayGroup) => {
 const addMapOverlay = async (db, name, dataElement, reportCode, mapOverlayGroupId, sortOrder) => {
   const report = getReport(reportCode, dataElement);
   const mapOverlay = getMapOverlay(name, reportCode);
-  const permissionGroupId = await getPermissionGroupId(db, PERMISSION_GROUP);
+  const permissionGroupId = await nameToId(db, 'permission_group', PERMISSION_GROUP);
   await insertObject(db, 'report', { ...report, permission_group_id: permissionGroupId });
   await insertObject(db, 'mapOverlay', mapOverlay);
   return insertObject(db, 'map_overlay_group_relation', {
@@ -167,7 +167,7 @@ const MAP_OVERLAYS = [
 
 exports.up = async function (db) {
   // Add Map Overlay Groups
-  const rootOverlayId = await getMapOverlayGroupId(db, 'Root');
+  const rootOverlayId = await codeToId(db, 'map_overlay_group', 'Root');
   await addMapOverlayGroup(db, rootOverlayId, MAP_OVERLAY_GROUP);
   await addMapOverlayGroup(db, MAP_OVERLAY_GROUP.id, DISTRICT_OVERLAY_GROUP);
   await addMapOverlayGroup(db, MAP_OVERLAY_GROUP.id, PROVINCE_OVERLAY_GROUP);
@@ -187,7 +187,7 @@ const removeMapOverlay = (db, reportCode) => {
 };
 
 const removeMapOverlayGroupRelation = async (db, groupCode) => {
-  const overlayId = await getMapOverlayGroupId(db, groupCode);
+  const overlayId = await codeToId(db, 'map_overlay_group', groupCode);
   await db.runSql(`
     DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${overlayId}';
   `);
