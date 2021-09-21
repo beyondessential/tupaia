@@ -16,6 +16,8 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
+const PERMISSION_GROUP = 'LESMIS Public';
+
 const MAP_OVERLAY_GROUP = {
   id: generateId(),
   name: 'Net Enrolment Rate',
@@ -126,8 +128,6 @@ const getReport = (reportCode, dataElement) => ({
     ],
   },
 });
-
-const PERMISSION_GROUP = 'LESMIS Public';
 
 const getMapOverlay = reportCode => ({
   id: reportCode,
