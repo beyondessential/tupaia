@@ -75,7 +75,7 @@ class RawDataValuesBuilder extends DataBuilder {
 
       const dataElementCodes = dataElementsMetadata.map(d => d.code);
       let additionalQueryConfig = { dataElementCodes, useDeprecatedApi: true };
-      
+
       if (surveyConfig) {
         const { excludeCodes = [], columnLabels } = surveyConfig;
         if (excludeCodes.length > 0) {
@@ -83,7 +83,7 @@ class RawDataValuesBuilder extends DataBuilder {
             code => !excludeCodes.includes(code),
           );
         }
-        if(columnLabels ) {
+        if (columnLabels) {
           dataElementsMetadata = dataElementsMetadata.map(de => {
             return (de.code in columnLabels) ? { ...de, text: columnLabels[de.code] } : de;
           });
