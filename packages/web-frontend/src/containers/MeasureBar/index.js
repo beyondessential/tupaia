@@ -210,7 +210,7 @@ const mapStateToProps = state => {
   const currentMapOverlay = selectCurrentMapOverlay(state);
 
   // TODO failed prop type
-  const currentMapOverlayId = currentMapOverlay.mapOverlayId || null;
+  const currentMapOverlayId = currentMapOverlay.mapOverlayId;
   // TODO: current measures in Measure Bar
   // const currentMeasures = selectCurrentMeasures(state);
   const activeProject = selectCurrentProject(state);
