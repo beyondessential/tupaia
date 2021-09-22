@@ -14,7 +14,7 @@ export const getMapOverlayFromHierarchy = (mapOverlayHierarchy, targetMapOverlay
   return flattenMapOverlays.find(({ mapOverlayId }) => targetMapOverlayId === mapOverlayId);
 };
 
-export function flattenMapOverlayHierarchy(measureHierarchy) {
+export function flattenMapOverlayHierarchy(mapOverlayHierarchy) {
   const results = [];
   const flattenGroupedMeasure = ({ children }) => {
     children.forEach(childObject => {
@@ -25,7 +25,7 @@ export function flattenMapOverlayHierarchy(measureHierarchy) {
       }
     });
   };
-  measureHierarchy.forEach(measure => {
+  mapOverlayHierarchy.forEach(measure => {
     if (measure.children) {
       flattenGroupedMeasure(measure);
     } else {
@@ -36,5 +36,5 @@ export function flattenMapOverlayHierarchy(measureHierarchy) {
   return results;
 }
 
-export const isMeasureHierarchyEmpty = measureHierarchy =>
-  flattenMapOverlayHierarchy(measureHierarchy).length === 0;
+export const isMapOverlayHierarchyEmpty = mapOverlayHierarchy =>
+  flattenMapOverlayHierarchy(mapOverlayHierarchy).length === 0;

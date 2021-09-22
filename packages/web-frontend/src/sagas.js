@@ -938,15 +938,15 @@ function* updateMapOverlayDateRangeOnceHierarchyLoads(action) {
 function* fetchCurrentMeasureInfo() {
   const state = yield select();
   const currentOrganisationUnitCode = selectCurrentOrgUnitCode(state);
-  const { measureHierarchy } = state.measureBar;
+  const { mapOverlayHierarchy } = state.mapOverlayBar;
   const selectedMapOverlayId = selectCurrentMapOverlayId(state);
 
   if (currentOrganisationUnitCode) {
-    const isHierarchyPopulated = !!measureHierarchy.length;
+    const isHierarchyPopulated = !!mapOverlayHierarchy.length;
     // TODO refactor the logic
     if (!isHierarchyPopulated) {
       /** Ensure measure is selected if there is a current measure selected in the case
-       * it is not selected through the measureBar UI
+       * it is not selected through the mapOverlayBar UI
        * i.e. page reloaded when on org with measure selected
        */
       yield put(setMapOverlay(selectedMapOverlayId));
@@ -991,7 +991,7 @@ function* watchOrgUnitChangeAndFetchMeasureInfo() {
 /**
  * fetchMeasures
  *
- * Fetches the measures for current orgUnit for the current user. Written to measureBar State.
+ * Fetches the measures for current orgUnit for the current user. Written to mapOverlayBar State.
  *
  */
 function* fetchMeasures(action) {

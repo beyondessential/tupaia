@@ -581,17 +581,17 @@ function searchBar(
   }
 }
 
-function measureBar(
+function mapOverlayBar(
   state = {
     isExpanded: false,
-    measureHierarchy: [],
+    mapOverlayHierarchy: [],
     error: null,
   },
   action,
 ) {
   switch (action.type) {
     case CLEAR_MAP_OVERLAY_HIERARCHY:
-      return { ...state, measureHierarchy: [] };
+      return { ...state, mapOverlayHierarchy: [] };
     case SET_MAP_OVERLAY:
       return {
         ...state,
@@ -599,20 +599,20 @@ function measureBar(
       };
     case UPDATE_MEASURE_CONFIG: {
       const { categoryIndex, mapOverlays, mapOverlayGroupIndex } = selectMapOverlayGroupById(
-        { measureBar: state },
+        { mapOverlayBar: state },
         action.mapOverlayIds,
       );
 
-      const measureHierarchy = [...state.measureHierarchy];
+      const mapOverlayHierarchy = [...state.mapOverlayHierarchy];
 
-      measureHierarchy[categoryIndex].children[mapOverlayGroupIndex] = {
+      mapOverlayHierarchy[categoryIndex].children[mapOverlayGroupIndex] = {
         ...mapOverlays,
         ...action.measureConfig,
       };
 
       return {
         ...state,
-        measureHierarchy,
+        mapOverlayHierarchy,
       };
     }
     case TOGGLE_MEASURE_EXPAND:
@@ -620,7 +620,7 @@ function measureBar(
     case FETCH_MEASURES_SUCCESS:
       return {
         ...state,
-        measureHierarchy: action.response.measures,
+        mapOverlayHierarchy: action.response.measures,
         error: null,
       };
     case FETCH_MEASURES_ERROR:
@@ -799,7 +799,7 @@ export default combineReducers({
   authentication,
   dashboard,
   searchBar,
-  measureBar,
+  mapOverlayBar,
   global,
   signup,
   changePassword,

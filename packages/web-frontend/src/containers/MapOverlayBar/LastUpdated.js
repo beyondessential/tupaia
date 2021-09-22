@@ -6,7 +6,7 @@
  */
 
 /**
- * MeasureBar
+ * MapOverlayBar
  *
  * Similar to LocationBar, provides measures in a grouped listing. Measures from redux state.
  * Updates redux state with action when a measure is selected. Map listens to this part of state

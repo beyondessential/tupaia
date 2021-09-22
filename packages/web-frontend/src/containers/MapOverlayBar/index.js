@@ -6,7 +6,7 @@
  */
 
 /**
- * MeasureBar
+ * MapOverlayBar
  *
  * Similar to LocationBar, provides measures in a grouped listing. Measures from redux state.
  * Updates redux state with action when a measure is selected. Map listens to this part of state
@@ -32,9 +32,8 @@ import {
   selectCurrentProject,
   selectMapOverlayById,
 } from '../../selectors';
-import { getDefaultDates, getLimits } from '../../utils/periodGranularities';
 
-export class MeasureBar extends Component {
+export class MapOverlayBar extends Component {
   constructor(props) {
     super(props);
 
@@ -106,9 +105,9 @@ export class MeasureBar extends Component {
   }
 
   renderHierarchy() {
-    const { measureHierarchy, defaultMapOverlay } = this.props;
+    const { mapOverlayHierarchy, defaultMapOverlay } = this.props;
 
-    const items = measureHierarchy.map(({ name: groupName, children, info }) => {
+    const items = mapOverlayHierarchy.map(({ name: groupName, children, info }) => {
       if (!Array.isArray(children)) return null;
       const nestedItems = this.renderNestedHierarchyItems(children);
       if (nestedItems.length === 0) return null;
@@ -169,10 +168,10 @@ const MapOverlayShape = PropTypes.shape({
   isTimePeriodEditable: PropTypes.string,
 });
 
-MeasureBar.propTypes = {
+MapOverlayBar.propTypes = {
   currentMapOverlayId: PropTypes.string,
   currentMapOverlay: MapOverlayShape,
-  measureHierarchy: PropTypes.array.isRequired,
+  mapOverlayHierarchy: PropTypes.array.isRequired,
   isExpanded: PropTypes.bool.isRequired,
   isMeasureLoading: PropTypes.bool.isRequired,
   onSelectMapOverlay: PropTypes.func.isRequired,
@@ -182,7 +181,7 @@ MeasureBar.propTypes = {
   defaultMapOverlay: MapOverlayShape,
 };
 
-MeasureBar.defaultProps = {
+MapOverlayBar.defaultProps = {
   currentMapOverlayId: '',
   currentOrganisationUnitName: '',
   defaultMapOverlay: {},
@@ -190,7 +189,7 @@ MeasureBar.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const { measureHierarchy, isExpanded } = state.measureBar;
+  const { mapOverlayHierarchy, isExpanded } = state.mapOverlayBar;
   const { isMeasureLoading } = state.map;
   const { isLoadingOrganisationUnit } = state.global;
 
@@ -207,7 +206,7 @@ const mapStateToProps = state => {
   return {
     currentMapOverlay,
     currentMapOverlayId,
-    measureHierarchy,
+    mapOverlayHierarchy,
     isExpanded,
     currentOrganisationUnitName: currentOrganisationUnit.name,
     isMeasureLoading: isMeasureLoading || isLoadingOrganisationUnit,
@@ -235,4 +234,4 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(MeasureBar);
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(MapOverlayBar);

@@ -226,10 +226,10 @@ const getListItemsFromOrganisationUnitChildren = (
   }));
 };
 
-const getMeasureFiltersForHierarchy = measureHierarchy => {
+const getMeasureFiltersForHierarchy = mapOverlayHierarchy => {
   const results = [];
 
-  measureHierarchy.forEach(measureObject => {
+  mapOverlayHierarchy.forEach(measureObject => {
     if (measureObject.children) {
       const category = {
         category: measureObject.name,
@@ -253,7 +253,7 @@ const getMeasureFiltersForHierarchy = measureHierarchy => {
 
 const mapStateToProps = state => {
   const { dashboards, isLoadingOrganisationUnit } = state.global;
-  const { measureHierarchy, isExpanded } = state.measureBar;
+  const { mapOverlayHierarchy, isExpanded } = state.mapOverlayBar;
   const { measureInfo, isMeasureLoading } = state.map;
   const { isGroupSelectExpanded } = state.dashboard;
   const currentMapOverlay = selectCurrentMapOverlay(state);
@@ -269,7 +269,7 @@ const mapStateToProps = state => {
     ? 'Facilities'
     : 'Districts';
 
-  const measureFilters = getMeasureFiltersForHierarchy(measureHierarchy);
+  const measureFilters = getMeasureFiltersForHierarchy(mapOverlayHierarchy);
 
   const selectedFilter = currentMapOverlay.mapOverlayId
     ? { label: currentMapOverlay.name, id: `${currentMapOverlay.mapOverlayId.toString()}` }

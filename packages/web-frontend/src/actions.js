@@ -535,7 +535,7 @@ export function setMapOverlay(mapOverlayIds) {
 }
 
 /**
- * Updates measure config for current measure in measureBar.
+ * Updates measure config for current measure in mapOverlayBar.
  *
  * @param {object} measureConfig
  */
@@ -548,7 +548,7 @@ export function updateMeasureConfig(mapOverlayIds, measureConfig) {
 }
 
 /**
- * Updates measure config for current measure in measureBar once the hierarchy is populated
+ * Updates measure config for current measure in mapOverlayBar once the hierarchy is populated
  *
  * @param {object} measureConfig
  */
@@ -777,7 +777,7 @@ export function showServerUnreachableError(error) {
 }
 
 /**
- * Stores measures available in measureBar
+ * Stores measures available in mapOverlayBar
  *
  * @param {array} response response from saga on successful fetch
  */
