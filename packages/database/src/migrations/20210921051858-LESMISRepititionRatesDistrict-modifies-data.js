@@ -27,7 +27,7 @@ const getOverlayNames = (gradeNum, educationLevel, GPI) => {
       }`,
       dataElement: [
         `rr_district_${educationLevel.concat(gradeNum)}_${GPI ? 'f' : 't'}`,
-        `${GPI ? 'rr_district_s6_m' : ''}`,
+        `${GPI ? 'rr_district_s1_m' : ''}`,
       ],
       reportCode: `LESMIS_grade_${
         educationLevel === 'p' ? gradeNum : gradeNum + 5
@@ -49,14 +49,14 @@ const getOverlayNames = (gradeNum, educationLevel, GPI) => {
   };
 };
 
-const addMapOverlayGroupRelation = async (db, parentId, childId, childType) => {
-  return insertObject(db, 'map_overlay_group_relation', {
-    id: generateId(),
-    map_overlay_group_id: parentId,
-    child_id: childId,
-    child_type: childType,
-  });
-};
+// const addMapOverlayGroupRelation = async (db, parentId, childId, childType) => {
+//   return insertObject(db, 'map_overlay_group_relation', {
+//     id: generateId(),
+//     map_overlay_group_id: parentId,
+//     child_id: childId,
+//     child_type: childType,
+//   });
+// };
 
 const getReport = (reportCode, dataElement) => ({
   id: generateId(),
@@ -87,6 +87,47 @@ const getReport = (reportCode, dataElement) => ({
   },
 });
 
+const getGpiReport = (reportCode, dataElement) => ({
+  id: generateId(),
+  code: reportCode,
+  config: {
+    fetch: {
+      dataElements: dataElement,
+      aggregations: [
+        {
+          type: 'FINAL_EACH_YEAR',
+          config: {
+            dataSourceEntityType: 'sub_district',
+            aggregationEntityType: 'requested',
+          },
+        },
+      ],
+    },
+    transform: [
+      {
+        transform: 'updateColumns',
+        insert: {
+          organisationUnitCode: '=$organisationUnit',
+          '=$dataElement': '=divide($value, 100)',
+        },
+        exclude: ['dataElement', 'value', 'organisationUnit'],
+      },
+      {
+        transform: 'mergeRows',
+        groupBy: ['organisationUnitCode', 'period'],
+        using: 'single',
+      },
+      {
+        transform: 'updateColumns',
+        insert: {
+          value: `=divide($${dataElement[0]},$${dataElement[1]})`,
+        },
+        exclude: [dataElement[0], dataElement[1]],
+      },
+    ],
+  },
+});
+
 const getMapOverlay = (name, reportCode) => ({
   id: reportCode,
   name,
@@ -99,7 +140,7 @@ const getMapOverlay = (name, reportCode) => ({
     reportCode,
   },
   presentationOptions: {
-    scaleType: 'performance',
+    scaleType: 'performanceDesc',
     displayType: 'shaded-spectrum',
     measureLevel: 'SubDistrict',
     valueType: 'percentage',
@@ -117,16 +158,68 @@ const getMapOverlay = (name, reportCode) => ({
   projectCodes: '{laos_schools}',
 });
 
+const getGpiMapOverlay = (name, reportCode) => ({
+  id: reportCode,
+  name,
+  userGroup: PERMISSION_GROUP,
+  dataElementCode: 'value',
+  isDataRegional: true,
+  measureBuilder: 'useReportServer',
+  measureBuilderConfig: {
+    dataSourceType: 'custom',
+    reportCode,
+  },
+  presentationOptions: {
+    measureLevel: 'SubDistrict',
+    valueType: 'number',
+    values: [
+      {
+        name: 'Males favoured',
+        color: 'green',
+        value: 0,
+      },
+      {
+        name: 'Parity',
+        color: 'red',
+        value: 1,
+      },
+      {
+        name: 'Females favoured',
+        color: 'orange',
+        value: 2,
+      },
+    ],
+    displayType: 'color',
+    periodGranularity: 'one_year_at_a_time',
+  },
+  countryCodes: '{"LA"}',
+  projectCodes: '{laos_schools}',
+});
+
 const getPermissionGroupId = async (db, name) => {
   const record = await db.runSql(`SELECT id FROM permission_group WHERE name = '${name}'`);
   return record.rows[0] && record.rows[0].id;
 };
 
+const getSpecificReport = (reportCode, dataElement, GPI) => {
+  if (GPI) {
+    return getGpiReport(reportCode, dataElement);
+  }
+  return getReport(reportCode, dataElement);
+};
+
+const getSpecificMapOverlay = (name, reportCode, GPI) => {
+  if (GPI) {
+    return getGpiMapOverlay(name, reportCode);
+  }
+  return getMapOverlay(name, reportCode);
+};
+
 const addMapOverlay = async (db, gradeNum, educationLevel, sortOrder, GPI) => {
   const { name, dataElement, reportCode } = getOverlayNames(gradeNum, educationLevel, GPI);
   const mapOverlayGroupId = DISTRICT_OVERLAY_GROUP_ID;
-  const report = getReport(reportCode, dataElement);
-  const mapOverlay = getMapOverlay(name, reportCode);
+  const report = getSpecificReport(reportCode, dataElement, GPI);
+  const mapOverlay = getSpecificMapOverlay(name, reportCode, GPI);
   const permissionGroupId = await getPermissionGroupId(db, PERMISSION_GROUP);
   await insertObject(db, 'report', { ...report, permission_group_id: permissionGroupId });
   await insertObject(db, 'mapOverlay', mapOverlay);
