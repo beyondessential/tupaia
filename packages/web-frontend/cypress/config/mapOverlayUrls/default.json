@@ -100,11 +100,6 @@
     "orgUnit": "PG"
   },
   {
-    "id": "STRIVE_CRF_Positive",
-    "project": "strive",
-    "orgUnit": "PG"
-  },
-  {
     "id": "STRIVE_CRF_Febrile_Cases_Radius",
     "project": "strive",
     "orgUnit": "PG"
