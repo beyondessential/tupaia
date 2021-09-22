@@ -51,20 +51,13 @@ const getPriorityDistrictsReport = (reportCode, dataElements) => ({
       dataElements,
       aggregations: [
         {
-          type: 'COUNT_PER_PERIOD_PER_ORG_GROUP',
-          config: {
-            aggregationEntityType: 'requested',
-            dataSourceEntityType: reportCode.includes('Province') ? 'district' : 'sub_district',
-            dataSourceEntityFilter: {
-              attributes_type: 'LESMIS_Target_District',
-            },
-          },
-        },
-        {
           type: 'FINAL_EACH_YEAR',
           config: {
             dataSourceEntityType: reportCode.includes('Province') ? 'district' : 'sub_district',
             aggregationEntityType: 'requested',
+            dataSourceEntityFilter: {
+              attributes_type: 'LESMIS_Target_District',
+            },
           },
         },
       ],
@@ -345,13 +338,6 @@ const MAP_OVERLAYS = [
         dataElements: ['gir_province_pe_f', 'gir_province_pe_m'],
         sortOrder: 1,
       },
-      {
-        reportCode: `${OVERLAY_CODE}_Priority_Districts_Province_Primary_map`,
-        reportType: '40_PRIORITY_DISTRICTS',
-        name: 'GIR into last grade of primary, 40 priority districts',
-        dataElements: ['gir_province_pe_t'],
-        sortOrder: 2,
-      },
     ],
   },
   {
@@ -372,13 +358,6 @@ const MAP_OVERLAYS = [
         sortOrder: 1,
       },
       {
-        reportCode: `${OVERLAY_CODE}_Priority_Districts_Province_Lower_Secondary_map`,
-        reportType: '40_PRIORITY_DISTRICTS',
-        name: 'GIR into last grade of lower secondary, 40 priority districts',
-        dataElements: ['gir_province_lse_t'],
-        sortOrder: 2,
-      },
-      {
         reportCode: `${OVERLAY_CODE}_Province_Upper_Secondary_map`,
         reportType: 'STANDARD',
         name: 'GIR into last grade of upper secondary',
@@ -391,13 +370,6 @@ const MAP_OVERLAYS = [
         name: 'GIR into last grade of upper secondary, GPI',
         dataElements: ['gir_province_use_f', 'gir_province_use_m'],
         sortOrder: 4,
-      },
-      {
-        reportCode: `${OVERLAY_CODE}_Priority_Districts_Province_Upper_Secondary_map`,
-        reportType: '40_PRIORITY_DISTRICTS',
-        name: 'GIR into last grade of upper secondary, 40 priority districts',
-        dataElements: ['gir_province_use_t'],
-        sortOrder: 5,
       },
     ],
   },
