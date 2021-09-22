@@ -1,6 +1,6 @@
 'use strict';
 
-import { generateId, insertObject, codeToId, nameToId } from '../utilities';
+import { generateId, insertObject, codeToId, nameToId, arrayToDbString } from '../utilities';
 
 var dbm;
 var type;
@@ -17,7 +17,6 @@ exports.setup = function (options, seedLink) {
 };
 
 const getStandardReport = (reportCode, dataElements) => ({
-  id: generateId(),
   code: reportCode,
   config: {
     fetch: {
@@ -46,7 +45,6 @@ const getStandardReport = (reportCode, dataElements) => ({
 });
 
 const getPriorityDistrictsReport = (reportCode, dataElements) => ({
-  id: generateId(),
   code: reportCode,
   config: {
     fetch: {
@@ -85,7 +83,6 @@ const getPriorityDistrictsReport = (reportCode, dataElements) => ({
 });
 
 const getGPIReport = (reportCode, dataElements) => ({
-  id: generateId(),
   code: reportCode,
   config: {
     fetch: {
@@ -168,23 +165,33 @@ const getMapOverlay = (name, reportCode) => ({
   projectCodes: '{laos_schools}',
 });
 
-const addMapOverlayGroup = async (db, parentId, overlayGroup) => {
-  await insertObject(db, 'map_overlay_group', overlayGroup);
+const addMapOverlayGroup = async (db, { name, code, parentCode }) => {
+  const parentId = await codeToId(db, 'map_overlay_group', parentCode);
+
+  const overlayGroupId = generateId();
+  await insertObject(db, 'map_overlay_group', { id: overlayGroupId, name, code });
+
   return insertObject(db, 'map_overlay_group_relation', {
     id: generateId(),
     map_overlay_group_id: parentId,
-    child_id: overlayGroup.id,
+    child_id: overlayGroupId,
     child_type: 'mapOverlayGroup',
   });
 };
 
 const addMapOverlay = async (db, config) => {
-  const { reportCode, reportType, dataElements, name, mapOverlayGroupId, sortOrder } = config;
+  const { reportCode, reportType, dataElements, name, parentCode, sortOrder } = config;
   const report = getReport(reportType, reportCode, dataElements);
   const mapOverlay = getMapOverlay(name, reportCode);
   const permissionGroupId = await nameToId(db, 'permission_group', PERMISSION_GROUP);
-  await insertObject(db, 'report', { ...report, permission_group_id: permissionGroupId });
+  await insertObject(db, 'report', {
+    id: generateId(),
+    permission_group_id: permissionGroupId,
+    ...report,
+  });
   await insertObject(db, 'mapOverlay', mapOverlay);
+
+  const mapOverlayGroupId = await codeToId(db, 'map_overlay_group', parentCode);
   return insertObject(db, 'map_overlay_group_relation', {
     id: generateId(),
     map_overlay_group_id: mapOverlayGroupId,
@@ -194,86 +201,107 @@ const addMapOverlay = async (db, config) => {
   });
 };
 
-const MAP_OVERLAY_GROUP = {
-  id: generateId(),
-  name: 'Gross Intake Rate Grade 5',
-  code: 'Gross_Intake_Rate_Grade_5',
-};
+const OVERLAY_CODE = 'LESMIS_GIR';
 
-const DISTRICT_OVERLAY_GROUP = {
-  id: generateId(),
-  name: 'District Level',
-  code: 'LESMIS_GIR_GRADE_5_DISTRICT_LEVEL_GROUP',
-};
-
-const PROVINCE_OVERLAY_GROUP = {
-  id: generateId(),
-  name: 'Province Level',
-  code: 'LESMIS_GIR_GRADE_5_PROVINCE_LEVEL_GROUP',
-};
+const OVERLAY_GROUPS = [
+  {
+    name: 'Gross Intake Rate',
+    code: `${OVERLAY_CODE}_Group`,
+    parentCode: 'Root',
+  },
+  {
+    name: 'District Level',
+    code: `${OVERLAY_CODE}_District_Group`,
+    parentCode: `${OVERLAY_CODE}_Group`,
+  },
+  {
+    name: 'Province Level',
+    code: `${OVERLAY_CODE}_Province_Group`,
+    parentCode: `${OVERLAY_CODE}_Group`,
+  },
+  {
+    name: 'Primary Level',
+    code: `${OVERLAY_CODE}_District_Primary_Group`,
+    parentCode: `${OVERLAY_CODE}_District_Group`,
+  },
+  {
+    name: 'Secondary Level',
+    code: `${OVERLAY_CODE}_District_Secondary_Group`,
+    parentCode: `${OVERLAY_CODE}_District_Group`,
+  },
+  {
+    name: 'Primary Level',
+    code: `${OVERLAY_CODE}_Province_Primary_Group`,
+    parentCode: `${OVERLAY_CODE}_Province_Group`,
+  },
+  {
+    name: 'Secondary Level',
+    code: `${OVERLAY_CODE}_Province_Secondary_Group`,
+    parentCode: `${OVERLAY_CODE}_Province_Group`,
+  },
+];
 
 const MAP_OVERLAYS = [
   {
-    reportCode: 'LESMIS_GIR_PRIMARY_DISTRICT',
+    reportCode: `${OVERLAY_CODE}_Primary_District`,
     reportType: 'STANDARD',
     name: 'GIR into last grade of primary',
     dataElements: 'gir_district_pe_t',
-    mapOverlayGroupId: DISTRICT_OVERLAY_GROUP.id,
+    parentCode: `${OVERLAY_CODE}_District_Primary_Group`,
     sortOrder: 0,
   },
   {
-    reportCode: 'LESMIS_GIR_GPI_PRIMARY_DISTRICT',
+    reportCode: `${OVERLAY_CODE}_GPI_Primary_District`,
     reportType: 'GPI',
     name: 'GIR into last grade of primary, GPI',
     dataElements: ['gir_district_pe_f', 'gir_district_pe_m'],
-    mapOverlayGroupId: DISTRICT_OVERLAY_GROUP.id,
+    parentCode: `${OVERLAY_CODE}_District_Primary_Group`,
     sortOrder: 1,
   },
   {
-    reportCode: 'LESMIS_GIR_PRIORITY_DISTRICTS_PRIMARY_DISTRICT',
+    reportCode: `${OVERLAY_CODE}_Priority_Districts_Primary_District`,
     reportType: '40_PRIORITY_DISTRICTS',
     name: 'GIR into last grade of primary, 40 priority districts',
     dataElements: ['gir_district_pe_t'],
-    mapOverlayGroupId: DISTRICT_OVERLAY_GROUP.id,
+    parentCode: `${OVERLAY_CODE}_District_Primary_Group`,
     sortOrder: 2,
   },
   {
-    reportCode: 'LESMIS_GIR_PRIMARY_PROVINCE',
+    reportCode: `${OVERLAY_CODE}_Primary_Province`,
     reportType: 'STANDARD',
     name: 'GIR into last grade of primary',
     dataElements: ['gir_province_pe_t'],
-    mapOverlayGroupId: PROVINCE_OVERLAY_GROUP.id,
+    parentCode: `${OVERLAY_CODE}_Province_Primary_Group`,
     sortOrder: 0,
   },
   {
-    reportCode: 'LESMIS_GIR_GPI_PRIMARY_PROVINCE',
+    reportCode: `${OVERLAY_CODE}_GPI_Primary_Province`,
     reportType: 'GPI',
     name: 'GIR into last grade of primary, GPI',
     dataElements: ['gir_province_pe_f', 'gir_province_pe_m'],
-    mapOverlayGroupId: PROVINCE_OVERLAY_GROUP.id,
+    parentCode: `${OVERLAY_CODE}_Province_Primary_Group`,
     sortOrder: 1,
   },
   {
-    reportCode: 'LESMIS_GIR_PRIORITY_DISTRICTS_PRIMARY_PROVINCE',
+    reportCode: `${OVERLAY_CODE}_Priority_Districts_Primary_Province`,
     reportType: '40_PRIORITY_DISTRICTS',
     name: 'GIR into last grade of primary, 40 priority districts',
     dataElements: ['gir_province_pe_t'],
-    mapOverlayGroupId: PROVINCE_OVERLAY_GROUP.id,
+    parentCode: `${OVERLAY_CODE}_Province_Primary_Group`,
     sortOrder: 2,
   },
 ];
 
 exports.up = async function (db) {
   // Add Map Overlay Groups
-  const rootOverlayId = await codeToId(db, 'map_overlay_group', 'Root');
-  await addMapOverlayGroup(db, rootOverlayId, MAP_OVERLAY_GROUP);
-  await addMapOverlayGroup(db, MAP_OVERLAY_GROUP.id, DISTRICT_OVERLAY_GROUP);
-  await addMapOverlayGroup(db, MAP_OVERLAY_GROUP.id, PROVINCE_OVERLAY_GROUP);
+  for (const config of OVERLAY_GROUPS) {
+    await addMapOverlayGroup(db, config);
+  }
 
   // Add Map Overlays
-  MAP_OVERLAYS.forEach(config => {
-    addMapOverlay(db, config);
-  });
+  for (const config of MAP_OVERLAYS) {
+    await addMapOverlay(db, config);
+  }
 };
 
 const removeMapOverlay = (db, reportCode) => {
@@ -293,9 +321,9 @@ const removeMapOverlayGroupRelation = async (db, groupCode) => {
 
 exports.down = async function (db) {
   // Remove Map Overlay Groups Relations
-  await removeMapOverlayGroupRelation(db, MAP_OVERLAY_GROUP.code);
-  await removeMapOverlayGroupRelation(db, DISTRICT_OVERLAY_GROUP.code);
-  await removeMapOverlayGroupRelation(db, PROVINCE_OVERLAY_GROUP.code);
+  for (const { code } of OVERLAY_GROUPS) {
+    await removeMapOverlayGroupRelation(db, code);
+  }
 
   // Remove Map Overlays
   for (const { reportCode } of MAP_OVERLAYS) {
@@ -303,10 +331,9 @@ exports.down = async function (db) {
   }
 
   // Remove Map Overlay Groups
+  const overlayCodes = OVERLAY_GROUPS.map(config => config.code);
   await db.runSql(`
-    DELETE FROM "map_overlay_group" WHERE "code" = '${DISTRICT_OVERLAY_GROUP.code}'; 
-    DELETE FROM "map_overlay_group" WHERE "code" = '${PROVINCE_OVERLAY_GROUP.code}'; 
-    DELETE FROM "map_overlay_group" WHERE "code" = '${MAP_OVERLAY_GROUP.code}'; 
+    DELETE FROM "map_overlay_group" WHERE "code" IN (${arrayToDbString(overlayCodes)});
   `);
 };
 
