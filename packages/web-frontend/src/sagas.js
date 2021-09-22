@@ -924,6 +924,13 @@ function* watchTryUpdateMeasureConfigAndWaitForHierarchyLoad() {
   );
 }
 
+function* updateMapOverlayOnceHierarchyLoads() {
+  yield take(FETCH_MEASURES_SUCCESS);
+  const state = yield select();
+  const currentMapOverlayId = selectCurrentMapOverlayId(state);
+  yield put(setMapOverlay(currentMapOverlayId));
+}
+
 function* updateMapOverlayDateRangeOnceHierarchyLoads(action) {
   yield take(FETCH_MEASURES_SUCCESS);
   const state = yield select();
@@ -1196,4 +1203,5 @@ export default [
   watchMeasurePeriodChange,
   watchTryUpdateMeasureConfigAndWaitForHierarchyLoad,
   watchHandleLocationChange,
+  updateMapOverlayOnceHierarchyLoads,
 ];
