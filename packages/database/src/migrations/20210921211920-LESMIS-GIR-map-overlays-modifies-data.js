@@ -165,7 +165,7 @@ const getMapOverlay = (name, reportCode) => ({
   projectCodes: '{laos_schools}',
 });
 
-const addMapOverlayGroup = async (db, { name, code, parentCode }) => {
+const addMapOverlayGroup = async (db, parentCode, { name, code }) => {
   const parentId = await codeToId(db, 'map_overlay_group', parentCode);
 
   const overlayGroupId = generateId();
@@ -179,8 +179,8 @@ const addMapOverlayGroup = async (db, { name, code, parentCode }) => {
   });
 };
 
-const addMapOverlay = async (db, config) => {
-  const { reportCode, reportType, dataElements, name, parentCode, sortOrder } = config;
+const addMapOverlay = async (db, parentCode, config) => {
+  const { reportCode, reportType, dataElements, name, sortOrder } = config;
   const report = getReport(reportType, reportCode, dataElements);
   const mapOverlay = getMapOverlay(name, reportCode);
   const permissionGroupId = await nameToId(db, 'permission_group', PERMISSION_GROUP);
@@ -205,102 +205,125 @@ const OVERLAY_CODE = 'LESMIS_GIR';
 
 const OVERLAY_GROUPS = [
   {
-    name: 'Gross Intake Rate',
-    code: `${OVERLAY_CODE}_Group`,
     parentCode: 'Root',
+    children: [
+      {
+        name: 'Gross Intake Rate',
+        code: `${OVERLAY_CODE}_Group`,
+      },
+    ],
   },
   {
-    name: 'District Level',
-    code: `${OVERLAY_CODE}_District_Group`,
     parentCode: `${OVERLAY_CODE}_Group`,
+    children: [
+      {
+        name: 'District Level',
+        code: `${OVERLAY_CODE}_District_Group`,
+      },
+      {
+        name: 'Province Level',
+        code: `${OVERLAY_CODE}_Province_Group`,
+      },
+    ],
   },
   {
-    name: 'Province Level',
-    code: `${OVERLAY_CODE}_Province_Group`,
-    parentCode: `${OVERLAY_CODE}_Group`,
-  },
-  {
-    name: 'Primary Level',
-    code: `${OVERLAY_CODE}_District_Primary_Group`,
     parentCode: `${OVERLAY_CODE}_District_Group`,
+    children: [
+      {
+        name: 'Primary Level',
+        code: `${OVERLAY_CODE}_District_Primary_Group`,
+      },
+      {
+        name: 'Secondary Level',
+        code: `${OVERLAY_CODE}_District_Secondary_Group`,
+      },
+    ],
   },
   {
-    name: 'Secondary Level',
-    code: `${OVERLAY_CODE}_District_Secondary_Group`,
-    parentCode: `${OVERLAY_CODE}_District_Group`,
-  },
-  {
-    name: 'Primary Level',
-    code: `${OVERLAY_CODE}_Province_Primary_Group`,
     parentCode: `${OVERLAY_CODE}_Province_Group`,
-  },
-  {
-    name: 'Secondary Level',
-    code: `${OVERLAY_CODE}_Province_Secondary_Group`,
-    parentCode: `${OVERLAY_CODE}_Province_Group`,
+    children: [
+      {
+        name: 'Primary Level',
+        code: `${OVERLAY_CODE}_Province_Primary_Group`,
+        parentCode: `${OVERLAY_CODE}_Province_Group`,
+      },
+      {
+        name: 'Secondary Level',
+        code: `${OVERLAY_CODE}_Province_Secondary_Group`,
+        parentCode: `${OVERLAY_CODE}_Province_Group`,
+      },
+    ],
   },
 ];
 
 const MAP_OVERLAYS = [
   {
-    reportCode: `${OVERLAY_CODE}_Primary_District`,
-    reportType: 'STANDARD',
-    name: 'GIR into last grade of primary',
-    dataElements: ['gir_district_pe_t'],
     parentCode: `${OVERLAY_CODE}_District_Primary_Group`,
-    sortOrder: 0,
+    children: [
+      {
+        reportCode: `${OVERLAY_CODE}_Primary_District`,
+        reportType: 'STANDARD',
+        name: 'GIR into last grade of primary',
+        dataElements: ['gir_district_pe_t'],
+        sortOrder: 0,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_GPI_Primary_District`,
+        reportType: 'GPI',
+        name: 'GIR into last grade of primary, GPI',
+        dataElements: ['gir_district_pe_f', 'gir_district_pe_m'],
+        sortOrder: 1,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_Priority_Districts_Primary_District`,
+        reportType: '40_PRIORITY_DISTRICTS',
+        name: 'GIR into last grade of primary, 40 priority districts',
+        dataElements: ['gir_district_pe_t'],
+        sortOrder: 2,
+      },
+    ],
   },
   {
-    reportCode: `${OVERLAY_CODE}_GPI_Primary_District`,
-    reportType: 'GPI',
-    name: 'GIR into last grade of primary, GPI',
-    dataElements: ['gir_district_pe_f', 'gir_district_pe_m'],
-    parentCode: `${OVERLAY_CODE}_District_Primary_Group`,
-    sortOrder: 1,
-  },
-  {
-    reportCode: `${OVERLAY_CODE}_Priority_Districts_Primary_District`,
-    reportType: '40_PRIORITY_DISTRICTS',
-    name: 'GIR into last grade of primary, 40 priority districts',
-    dataElements: ['gir_district_pe_t'],
-    parentCode: `${OVERLAY_CODE}_District_Primary_Group`,
-    sortOrder: 2,
-  },
-  {
-    reportCode: `${OVERLAY_CODE}_Primary_Province`,
-    reportType: 'STANDARD',
-    name: 'GIR into last grade of primary',
-    dataElements: ['gir_province_pe_t'],
     parentCode: `${OVERLAY_CODE}_Province_Primary_Group`,
-    sortOrder: 0,
-  },
-  {
-    reportCode: `${OVERLAY_CODE}_GPI_Primary_Province`,
-    reportType: 'GPI',
-    name: 'GIR into last grade of primary, GPI',
-    dataElements: ['gir_province_pe_f', 'gir_province_pe_m'],
-    parentCode: `${OVERLAY_CODE}_Province_Primary_Group`,
-    sortOrder: 1,
-  },
-  {
-    reportCode: `${OVERLAY_CODE}_Priority_Districts_Primary_Province`,
-    reportType: '40_PRIORITY_DISTRICTS',
-    name: 'GIR into last grade of primary, 40 priority districts',
-    dataElements: ['gir_province_pe_t'],
-    parentCode: `${OVERLAY_CODE}_Province_Primary_Group`,
-    sortOrder: 2,
+    children: [
+      {
+        reportCode: `${OVERLAY_CODE}_Primary_Province`,
+        reportType: 'STANDARD',
+        name: 'GIR into last grade of primary',
+        dataElements: ['gir_province_pe_t'],
+        sortOrder: 0,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_GPI_Primary_Province`,
+        reportType: 'GPI',
+        name: 'GIR into last grade of primary, GPI',
+        dataElements: ['gir_province_pe_f', 'gir_province_pe_m'],
+        sortOrder: 1,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_Priority_Districts_Primary_Province`,
+        reportType: '40_PRIORITY_DISTRICTS',
+        name: 'GIR into last grade of primary, 40 priority districts',
+        dataElements: ['gir_province_pe_t'],
+        sortOrder: 2,
+      },
+    ],
   },
 ];
 
 exports.up = async function (db) {
   // Add Map Overlay Groups
-  for (const config of OVERLAY_GROUPS) {
-    await addMapOverlayGroup(db, config);
+  for (const { parentCode, children } of OVERLAY_GROUPS) {
+    for (const config of children) {
+      await addMapOverlayGroup(db, parentCode, config);
+    }
   }
 
   // Add Map Overlays
-  for (const config of MAP_OVERLAYS) {
-    await addMapOverlay(db, config);
+  for (const { parentCode, children } of MAP_OVERLAYS) {
+    for (const config of children) {
+      await addMapOverlay(db, parentCode, config);
+    }
   }
 };
 
@@ -321,19 +344,26 @@ const removeMapOverlayGroupRelation = async (db, groupCode) => {
 
 exports.down = async function (db) {
   // Remove Map Overlay Groups Relations
-  for (const { code } of OVERLAY_GROUPS) {
-    await removeMapOverlayGroupRelation(db, code);
+  for (const { children } of OVERLAY_GROUPS) {
+    for (const { code } of children) {
+      await removeMapOverlayGroupRelation(db, code);
+    }
   }
 
   // Remove Map Overlays
-  for (const { reportCode } of MAP_OVERLAYS) {
-    await removeMapOverlay(db, reportCode);
+  for (const { children } of MAP_OVERLAYS) {
+    for (const { reportCode } of children) {
+      await removeMapOverlay(db, reportCode);
+    }
   }
 
   // Remove Map Overlay Groups
-  const overlayCodes = OVERLAY_GROUPS.map(config => config.code);
+  const groupCodes = OVERLAY_GROUPS.reduce(
+    (allCodes, group) => [...allCodes, ...group.children.map(config => config.code)],
+    [],
+  );
   await db.runSql(`
-    DELETE FROM "map_overlay_group" WHERE "code" IN (${arrayToDbString(overlayCodes)});
+    DELETE FROM "map_overlay_group" WHERE "code" IN (${arrayToDbString(groupCodes)});
   `);
 };
 
