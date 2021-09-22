@@ -27,9 +27,9 @@ const INDICATORS = [
     code: 'COVID_FJ_Tests_Per_Sub_District',
     builder: 'analyticArithmetic',
     config: {
-      formula: 'BCD46',
+      formula: 'COVIDTest_FJNumTest',
       aggregation: {
-        BCD46: {
+        COVIDTest_FJNumTest: {
           type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
           config: { dataSourceEntityType: 'facility', aggregationEntityType: 'sub_district' },
         },
