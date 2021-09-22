@@ -245,12 +245,10 @@ const OVERLAY_GROUPS = [
       {
         name: 'Primary Level',
         code: `${OVERLAY_CODE}_Province_Primary_Group`,
-        parentCode: `${OVERLAY_CODE}_Province_Group`,
       },
       {
         name: 'Secondary Level',
         code: `${OVERLAY_CODE}_Province_Secondary_Group`,
-        parentCode: `${OVERLAY_CODE}_Province_Group`,
       },
     ],
   },
@@ -261,21 +259,21 @@ const MAP_OVERLAYS = [
     parentCode: `${OVERLAY_CODE}_District_Primary_Group`,
     children: [
       {
-        reportCode: `${OVERLAY_CODE}_Primary_District`,
+        reportCode: `${OVERLAY_CODE}_District_Primary`,
         reportType: 'STANDARD',
         name: 'GIR into last grade of primary',
         dataElements: ['gir_district_pe_t'],
         sortOrder: 0,
       },
       {
-        reportCode: `${OVERLAY_CODE}_GPI_Primary_District`,
+        reportCode: `${OVERLAY_CODE}_GPI_District_Primary`,
         reportType: 'GPI',
         name: 'GIR into last grade of primary, GPI',
         dataElements: ['gir_district_pe_f', 'gir_district_pe_m'],
         sortOrder: 1,
       },
       {
-        reportCode: `${OVERLAY_CODE}_Priority_Districts_Primary_District`,
+        reportCode: `${OVERLAY_CODE}_Priority_Districts_District_Primary`,
         reportType: '40_PRIORITY_DISTRICTS',
         name: 'GIR into last grade of primary, 40 priority districts',
         dataElements: ['gir_district_pe_t'],
@@ -284,27 +282,79 @@ const MAP_OVERLAYS = [
     ],
   },
   {
+    parentCode: `${OVERLAY_CODE}_District_Secondary_Group`,
+    children: [
+      {
+        reportCode: `${OVERLAY_CODE}_District_Secondary`,
+        reportType: 'STANDARD',
+        name: 'GIR into last grade of lower secondary',
+        dataElements: ['gir_district_lse_t'],
+        sortOrder: 0,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_GPI_District_Secondary`,
+        reportType: 'GPI',
+        name: 'GIR into last grade of lower secondary',
+        dataElements: ['gir_district_lse_f', 'gir_district_lse_m'],
+        sortOrder: 1,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_Priority_Districts_District_Secondary`,
+        reportType: '40_PRIORITY_DISTRICTS',
+        name: 'GIR into last grade of lower secondary',
+        dataElements: ['gir_district_lse_t'],
+        sortOrder: 2,
+      },
+    ],
+  },
+  {
     parentCode: `${OVERLAY_CODE}_Province_Primary_Group`,
     children: [
       {
-        reportCode: `${OVERLAY_CODE}_Primary_Province`,
+        reportCode: `${OVERLAY_CODE}_Province_Primary`,
         reportType: 'STANDARD',
         name: 'GIR into last grade of primary',
         dataElements: ['gir_province_pe_t'],
         sortOrder: 0,
       },
       {
-        reportCode: `${OVERLAY_CODE}_GPI_Primary_Province`,
+        reportCode: `${OVERLAY_CODE}_GPI_Province_Primary`,
         reportType: 'GPI',
         name: 'GIR into last grade of primary, GPI',
         dataElements: ['gir_province_pe_f', 'gir_province_pe_m'],
         sortOrder: 1,
       },
       {
-        reportCode: `${OVERLAY_CODE}_Priority_Districts_Primary_Province`,
+        reportCode: `${OVERLAY_CODE}_Priority_Districts_Province_Primary`,
         reportType: '40_PRIORITY_DISTRICTS',
         name: 'GIR into last grade of primary, 40 priority districts',
         dataElements: ['gir_province_pe_t'],
+        sortOrder: 2,
+      },
+    ],
+  },
+  {
+    parentCode: `${OVERLAY_CODE}_Province_Secondary_Group`,
+    children: [
+      {
+        reportCode: `${OVERLAY_CODE}_Province_Secondary`,
+        reportType: 'STANDARD',
+        name: 'GIR into last grade of lower secondary',
+        dataElements: ['gir_province_lse_t'],
+        sortOrder: 0,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_GPI_Province_Secondary`,
+        reportType: 'GPI',
+        name: 'GIR into last grade of lower secondary, GPI',
+        dataElements: ['gir_province_lse_f', 'gir_province_pe_m'],
+        sortOrder: 1,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_Priority_Districts_Province_Secondary`,
+        reportType: '40_PRIORITY_DISTRICTS',
+        name: 'GIR into last grade of lower secondary, 40 priority districts',
+        dataElements: ['gir_province_lse_t'],
         sortOrder: 2,
       },
     ],
