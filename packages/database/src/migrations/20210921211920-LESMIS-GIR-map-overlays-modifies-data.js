@@ -16,24 +16,6 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const MAP_OVERLAY_GROUP = {
-  id: generateId(),
-  name: 'Gross Intake Rate Grade 5',
-  code: 'Gross_Intake_Rate_Grade_5',
-};
-
-const DISTRICT_OVERLAY_GROUP = {
-  id: generateId(),
-  name: 'District Level',
-  code: 'LESMIS_GIR_GRADE_5_DISTRICT_LEVEL_GROUP',
-};
-
-const PROVINCE_OVERLAY_GROUP = {
-  id: generateId(),
-  name: 'Province Level',
-  code: 'LESMIS_GIR_GRADE_5_PROVINCE_LEVEL_GROUP',
-};
-
 const getStandardReport = (reportCode, dataElements) => ({
   id: generateId(),
   code: reportCode,
@@ -197,9 +179,9 @@ const addMapOverlayGroup = async (db, parentId, overlayGroup) => {
 };
 
 const addMapOverlay = async (db, config) => {
-  const { reportCode, reportType, dataElements, title, mapOverlayGroupId, sortOrder } = config;
+  const { reportCode, reportType, dataElements, name, mapOverlayGroupId, sortOrder } = config;
   const report = getReport(reportType, reportCode, dataElements);
-  const mapOverlay = getMapOverlay(title, reportCode);
+  const mapOverlay = getMapOverlay(name, reportCode);
   const permissionGroupId = await nameToId(db, 'permission_group', PERMISSION_GROUP);
   await insertObject(db, 'report', { ...report, permission_group_id: permissionGroupId });
   await insertObject(db, 'mapOverlay', mapOverlay);
@@ -212,11 +194,29 @@ const addMapOverlay = async (db, config) => {
   });
 };
 
+const MAP_OVERLAY_GROUP = {
+  id: generateId(),
+  name: 'Gross Intake Rate Grade 5',
+  code: 'Gross_Intake_Rate_Grade_5',
+};
+
+const DISTRICT_OVERLAY_GROUP = {
+  id: generateId(),
+  name: 'District Level',
+  code: 'LESMIS_GIR_GRADE_5_DISTRICT_LEVEL_GROUP',
+};
+
+const PROVINCE_OVERLAY_GROUP = {
+  id: generateId(),
+  name: 'Province Level',
+  code: 'LESMIS_GIR_GRADE_5_PROVINCE_LEVEL_GROUP',
+};
+
 const MAP_OVERLAYS = [
   {
     reportCode: 'LESMIS_GIR_PRIMARY_DISTRICT',
     reportType: 'STANDARD',
-    title: 'GIR into last grade of primary',
+    name: 'GIR into last grade of primary',
     dataElements: 'gir_district_pe_t',
     mapOverlayGroupId: DISTRICT_OVERLAY_GROUP.id,
     sortOrder: 0,
@@ -224,7 +224,7 @@ const MAP_OVERLAYS = [
   {
     reportCode: 'LESMIS_GIR_GPI_PRIMARY_DISTRICT',
     reportType: 'GPI',
-    title: 'GIR into last grade of primary, GPI',
+    name: 'GIR into last grade of primary, GPI',
     dataElements: ['gir_district_pe_f', 'gir_district_pe_m'],
     mapOverlayGroupId: DISTRICT_OVERLAY_GROUP.id,
     sortOrder: 1,
@@ -232,7 +232,7 @@ const MAP_OVERLAYS = [
   {
     reportCode: 'LESMIS_GIR_PRIORITY_DISTRICTS_PRIMARY_DISTRICT',
     reportType: '40_PRIORITY_DISTRICTS',
-    title: 'GIR into last grade of primary, 40 priority districts',
+    name: 'GIR into last grade of primary, 40 priority districts',
     dataElements: ['gir_district_pe_t'],
     mapOverlayGroupId: DISTRICT_OVERLAY_GROUP.id,
     sortOrder: 2,
@@ -240,7 +240,7 @@ const MAP_OVERLAYS = [
   {
     reportCode: 'LESMIS_GIR_PRIMARY_PROVINCE',
     reportType: 'STANDARD',
-    title: 'GIR into last grade of primary',
+    name: 'GIR into last grade of primary',
     dataElements: ['gir_province_pe_t'],
     mapOverlayGroupId: PROVINCE_OVERLAY_GROUP.id,
     sortOrder: 0,
@@ -248,7 +248,7 @@ const MAP_OVERLAYS = [
   {
     reportCode: 'LESMIS_GIR_GPI_PRIMARY_PROVINCE',
     reportType: 'GPI',
-    title: 'GIR into last grade of primary, GPI',
+    name: 'GIR into last grade of primary, GPI',
     dataElements: ['gir_province_pe_f', 'gir_province_pe_m'],
     mapOverlayGroupId: PROVINCE_OVERLAY_GROUP.id,
     sortOrder: 1,
@@ -256,7 +256,7 @@ const MAP_OVERLAYS = [
   {
     reportCode: 'LESMIS_GIR_PRIORITY_DISTRICTS_PRIMARY_PROVINCE',
     reportType: '40_PRIORITY_DISTRICTS',
-    title: 'GIR into last grade of primary, 40 priority districts',
+    name: 'GIR into last grade of primary, 40 priority districts',
     dataElements: ['gir_province_pe_t'],
     mapOverlayGroupId: PROVINCE_OVERLAY_GROUP.id,
     sortOrder: 2,
