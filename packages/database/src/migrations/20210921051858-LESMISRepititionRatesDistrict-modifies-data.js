@@ -19,17 +19,37 @@ exports.setup = function (options, seedLink) {
 const PERMISSION_GROUP = 'LESMIS Public';
 const DISTRICT_OVERLAY_GROUP_ID = '5f2c7ddc61f76a513a000215';
 
-const getOverlayNames = (gradeNum, educationLevel) => {
+const getOverlayNames = (gradeNum, educationLevel, GPI) => {
+  if (gradeNum !== null) {
+    return {
+      name: `Grade ${educationLevel === 'p' ? gradeNum : gradeNum + 5} Repetition Rate ${
+        GPI ? 'GPI' : ''
+      }`,
+      dataElement: [
+        `rr_district_${educationLevel.concat(gradeNum)}_${GPI ? 'f' : 't'}`,
+        `${GPI ? 'rr_district_s6_m' : ''}`,
+      ],
+      reportCode: `LESMIS_grade_${
+        educationLevel === 'p' ? gradeNum : gradeNum + 5
+      }_repetition_rate_${GPI ? 'GPI' : ''}_district_map`,
+    };
+  }
+  const educationLevelTranslation = {
+    pe: 'Primary',
+    lse: 'Lower Secondary',
+    use: 'Upper Secondary',
+  };
   return {
-    name: `Grade ${educationLevel === 'p' ? gradeNum : gradeNum + 5} Repetition Rate`,
-    dataElement: `rr_district_${educationLevel}${gradeNum}_t`,
-    reportCode: `LESMIS_grade_${
-      educationLevel === 'p' ? gradeNum : gradeNum + 5
-    }_repetition_rate_district`,
+    name: `${educationLevelTranslation[educationLevel]} Repetition Rate`,
+    dataElement: [`rr_district_${educationLevel}_t`],
+    reportCode: `LESMIS_${educationLevelTranslation[educationLevel]
+      .toLowerCase()
+      .split(' ')
+      .join('')}_repetition_rate_district_map`,
   };
 };
 
-const addMapOverlayGroupRelation = async (db, parentId, childId, childType = 'mapOverlayGroup') => {
+const addMapOverlayGroupRelation = async (db, parentId, childId, childType) => {
   return insertObject(db, 'map_overlay_group_relation', {
     id: generateId(),
     map_overlay_group_id: parentId,
@@ -43,7 +63,7 @@ const getReport = (reportCode, dataElement) => ({
   code: reportCode,
   config: {
     fetch: {
-      dataElements: [dataElement],
+      dataElements: dataElement,
       aggregations: [
         {
           type: 'FINAL_EACH_YEAR',
@@ -102,8 +122,8 @@ const getPermissionGroupId = async (db, name) => {
   return record.rows[0] && record.rows[0].id;
 };
 
-const addMapOverlay = async (db, gradeNum, educationLevel, sortOrder) => {
-  const { name, dataElement, reportCode } = getOverlayNames(gradeNum, educationLevel);
+const addMapOverlay = async (db, gradeNum, educationLevel, sortOrder, GPI) => {
+  const { name, dataElement, reportCode } = getOverlayNames(gradeNum, educationLevel, GPI);
   const mapOverlayGroupId = DISTRICT_OVERLAY_GROUP_ID;
   const report = getReport(reportCode, dataElement);
   const mapOverlay = getMapOverlay(name, reportCode);
@@ -119,8 +139,8 @@ const addMapOverlay = async (db, gradeNum, educationLevel, sortOrder) => {
   });
 };
 
-const removeMapOverlay = (db, gradeNum, educationLevel) => {
-  const { reportCode } = getOverlayNames(gradeNum, educationLevel);
+const removeMapOverlay = (db, gradeNum, educationLevel, GPI) => {
+  const { reportCode } = getOverlayNames(gradeNum, educationLevel, GPI);
   return db.runSql(`
     DELETE FROM "report" WHERE code = '${reportCode}';
     DELETE FROM "mapOverlay" WHERE "id" = '${reportCode}';
@@ -131,24 +151,40 @@ const removeMapOverlay = (db, gradeNum, educationLevel) => {
 exports.up = async function (db) {
   // Add Primary Overlays
   for (let i = 1; i < 6; i++) {
-    addMapOverlay(db, i, 'p', i - 1);
+    addMapOverlay(db, i, 'p', i - 1, false);
   }
 
   // Add Secondary Overlays
   for (let i = 1; i < 8; i++) {
-    addMapOverlay(db, i, 's', i + 4);
+    addMapOverlay(db, i, 's', i + 5, false);
   }
+
+  // Add primary, secondary overlays
+  addMapOverlay(db, null, 'pe', 13, false);
+  addMapOverlay(db, null, 'lse', 14, false);
+  addMapOverlay(db, null, 'use', 15, false);
+
+  // Add Grade 6 rate GPI overlay
+  addMapOverlay(db, 1, 's', 6, true);
 };
 
 exports.down = async function (db) {
   // Remove primary overlays
   for (let i = 1; i < 6; i++) {
-    removeMapOverlay(db, i, 'p');
+    removeMapOverlay(db, i, 'p', false);
   }
   // Remove secondary overlays
   for (let i = 1; i < 8; i++) {
-    removeMapOverlay(db, i, 's');
+    removeMapOverlay(db, i, 's', false);
   }
+
+  // Remove primary, secondary overlays
+  removeMapOverlay(db, null, 'pe', false);
+  removeMapOverlay(db, null, 'lse', false);
+  removeMapOverlay(db, null, 'use', false);
+
+  // Remove Grade 6 rate GPI overlay
+  removeMapOverlay(db, 1, 's', true);
 };
 
 exports._meta = {
