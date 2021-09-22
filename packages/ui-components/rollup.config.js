@@ -12,7 +12,8 @@ import analyze from 'rollup-plugin-analyzer';
 import babel from '@rollup/plugin-babel';
 import external from 'rollup-plugin-peer-deps-external';
 import del from 'rollup-plugin-delete';
-import svg from 'rollup-plugin-svg';
+import svgr from '@svgr/rollup';
+import url from 'rollup-plugin-url';
 import pkg from './package.json';
 
 const externalWatch = glob => {
@@ -33,7 +34,8 @@ const plugins = [
   json({
     compact: true,
   }),
-  svg(),
+  url(),
+  svgr(),
   babel({
     exclude: 'node_modules/**',
     configFile: './.babelrc.js',

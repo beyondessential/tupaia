@@ -20,7 +20,6 @@ import {
   DrawerHeader,
   EditableTableProvider,
   AlertCreatedModal,
-  ComingSoon,
 } from '../../components';
 import {
   closeWeeklyReportsPanel,
@@ -30,7 +29,7 @@ import {
 } from '../../store';
 import * as COLORS from '../../constants/colors';
 import { REPORT_STATUSES, TABLE_STATUSES } from '../../constants';
-import { WeeklyReportTable } from '../Tables';
+import { WeeklyReportTable } from '../Tables/WeeklyReportTable';
 import { countryFlagImage, getWeekNumberByPeriod, getDisplayDatesByPeriod } from '../../utils';
 import {
   useConfirmWeeklyReport,

@@ -9,5 +9,3 @@ export { convertSearchTermToFilter } from './convertSearchTermToFilter';
 export { makeSubstitutionsInString } from './makeSubstitutionsInString';
 export { usePortalWithCallback } from './usePortalWithCallback';
 export * from './pretty';
-export * from './AdminPanelProviders';
-export * from './VizBuilderProviders';

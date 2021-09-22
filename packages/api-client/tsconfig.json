@@ -5,8 +5,7 @@
     "outDir": "dist",
     "strict": true,
     "declaration": true,
-    "noEmit": false,
-    "emitDeclarationOnly": true
+    "noEmit": false
   },
-  "exclude": ["**/*.d.ts", "dist", "node_modules"]
+  "exclude": ["**/*.d.ts", "dist", "node_modules", "src/__tests__"]
 }

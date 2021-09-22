@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 set +x # do not output commands in this script, as some would show credentials in plain text
 
 BRANCH=$1
@@ -19,9 +19,7 @@ for PACKAGE in $PACKAGES; do
     ENV_FILE_PATH=${DIR}/../../packages/${PACKAGE}/.env
 
     # checkout branch specific env vars, or dev as fallback, temporarily redirecting stderr
-    exec 3> /dev/stderr 2> /dev/null
-    lpass show --notes ${PACKAGE}.${BRANCH}.env > ${ENV_FILE_PATH} || lpass show --notes ${PACKAGE}.dev.env > ${ENV_FILE_PATH}
-    exec 2>&3
+    lpass show --notes ${PACKAGE}.${BRANCH}.env 2> /dev/null > ${ENV_FILE_PATH} || lpass show --notes ${PACKAGE}.dev.env > ${ENV_FILE_PATH}
 
     # Replace any instances of the placeholder [branch-name] in the .env file with the actual branch
     # name (e.g. [branch-name]-api.tupaia.org -> specific-branch-api.tupaia.org)
