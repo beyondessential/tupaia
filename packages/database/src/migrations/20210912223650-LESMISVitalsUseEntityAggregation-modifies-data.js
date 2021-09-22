@@ -237,7 +237,7 @@ const ENTITY_VITALS_REPORT_CONFIG = {
         AEAL: '=gt($SchDP_AEAL_summary, 0)',
         Plan: '=gt($SchDP_Plan_summary, 0)',
         Other: '=gt($SchCVD023_summary, 0)',
-        UNICEF: '=gt($SchDP_UNICEF, 0)',
+        UNICEF: '=gt($SchDP_UNICEF_summary, 0)',
         NumberOfSchools: '=$nosch_total',
         NumberOfStudents: '=$nostu_total',
         Population: '=$SDP001',
@@ -253,12 +253,34 @@ const generateStudentCountIndicator = dataElements => ({
   defaultValues: dataElements.reduce((obj, dataElement) => ({ ...obj, [dataElement]: 0 }), {}),
 });
 
+const SCHOOL_VITALS_NEW_VALUES = {
+  SchoolComplete: '=$school_complete',
+  WB: '=exists($SchDP_WB)',
+  WC: '=exists($SchDP_WC)',
+  WR: '=exists($SchDP_WR)',
+  WV: '=exists($SchDP_WV)',
+  CRS: '=exists($SchDP_CRS)',
+  HII: '=exists($SchDP_HII)',
+  RtR: '=exists($SchDP_RtR)',
+  WFP: '=exists($SchDP_WFP)',
+  AEAL: '=exists($SchDP_AEAL)',
+  Plan: '=exists($SchDP_Plan)',
+  Other: '=exists($SchCVD023)',
+  UNICEF: '=exists($SchDP_UNICEF)',
+};
+
 // Add an extra data element to school vitals report
 const updateSchoolVitalsReport = async db => {
   const report = await findSingleRecord(db, 'report', { code: 'LESMIS_school_vitals' });
   report.config.fetch.dataElements.push('school_complete');
+  for (const partner of DEVELOPMENT_PARTNERS) {
+    report.config.fetch.dataElements.push(partner);
+  }
   const updateIndex = report.config.transform.findIndex(x => x.transform === 'updateColumns');
-  report.config.transform[updateIndex].insert.SchoolComplete = '=$school_complete';
+  report.config.transform[updateIndex].insert = {
+    ...SCHOOL_VITALS_NEW_VALUES,
+    ...report.config.transform[updateIndex].insert,
+  };
 
   await updateValues(
     db,
@@ -283,12 +305,14 @@ const updateLESMISStudentCount = async db => {
 // Remove school_complete from school vitals report
 const downdateSchoolVitalsReport = async db => {
   const report = await findSingleRecord(db, 'report', { code: 'LESMIS_school_vitals' });
-  const elementIndexToDelete = report.config.fetch.dataElements.findIndex(
-    x => x === 'school_complete',
-  );
-  report.config.fetch.dataElements.splice(elementIndexToDelete, 1);
+  for (const dataElement of [...DEVELOPMENT_PARTNERS, 'school_complete']) {
+    const elementIndexToDelete = report.config.fetch.dataElements.findIndex(x => x === dataElement);
+    report.config.fetch.dataElements.splice(elementIndexToDelete, 1);
+  }
   const updateIndex = report.config.transform.findIndex(x => x.transform === 'updateColumns');
-  delete report.config.transform[updateIndex].insert.SchoolComplete;
+  for (const key of Object.keys(SCHOOL_VITALS_NEW_VALUES)) {
+    delete report.config.transform[updateIndex].insert[key];
+  }
 
   await updateValues(
     db,
