@@ -24,7 +24,7 @@ exports.setup = function (options, seedLink) {
 
 const INDICATORS = [
   {
-    code: 'alastair_fiji_covid_tests_per_sub_district',
+    code: 'COVID_FJ_Tests_Per_Sub_District',
     builder: 'analyticArithmetic',
     config: {
       formula: 'BCD46',
@@ -37,7 +37,7 @@ const INDICATORS = [
     },
   },
   {
-    code: 'alastair_fiji_population_per_day',
+    code: 'COVID_FJ_Pop_Sum_Previous_Per_Day',
     builder: 'analyticArithmetic',
     config: {
       formula: 'population_FJ001',
@@ -47,13 +47,10 @@ const INDICATORS = [
 ];
 
 const generateConfig = () => ({
-  code: `FJ_Covid_abc`,
+  code: `FJ_Covid_Tests_Per_100k`,
   reportConfig: {
     fetch: {
-      dataElements: [
-        'alastair_fiji_covid_tests_per_sub_district',
-        'alastair_fiji_population_per_day',
-      ],
+      dataElements: ['COVID_FJ_Tests_Per_Sub_District', 'COVID_FJ_Pop_Sum_Previous_Per_Day'],
       aggregations: [
         {
           type: 'RAW',
@@ -70,19 +67,19 @@ const generateConfig = () => ({
         transform: 'mergeRows',
         groupBy: 'period',
         using: {
-          alastair_fiji_covid_tests_per_sub_district: 'sum',
-          alastair_fiji_population_per_day: 'sum',
+          COVID_FJ_Tests_Per_Sub_District: 'sum',
+          COVID_FJ_Pop_Sum_Previous_Per_Day: 'sum',
           organisationUnit: 'exclude',
         },
       },
       {
         transform: 'updateColumns',
         insert: {
-          Tests: '=$alastair_fiji_covid_tests_per_sub_district',
-          Population: '=subset(@all.alastair_fiji_population_per_day, index(1))',
+          Tests: '=$COVID_FJ_Tests_Per_Sub_District',
+          Population: '=subset(@all.COVID_FJ_Pop_Sum_Previous_Per_Day, index(1))',
         },
         description:
-          'subset(@all.alastair_fiji_population_per_day, index(1)), just takes the first population response (they should all be the same)',
+          'subset(@all.COVID_FJ_Pop_Sum_Previous_Per_Day, index(1)), just takes the first population response (they should all be the same)',
         include: ['period'],
       },
       {
