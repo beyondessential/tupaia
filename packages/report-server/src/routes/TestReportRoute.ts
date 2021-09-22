@@ -59,14 +59,18 @@ export class TestReportRoute extends Route<TestReportRequest> {
     const { query, body } = this.req;
     const { testData, testConfig, ...restOfBody } = body;
     const reportQuery = { ...query, ...restOfBody };
+    const { hierarchy = 'explore' } = reportQuery;
 
-    const reportBuilder = new ReportBuilder();
+    const reqContext = {
+      hierarchy,
+      services: this.req.ctx.services,
+    };
+    const reportBuilder = new ReportBuilder(reqContext);
     reportBuilder.setConfig(body.testConfig);
 
     if (testData) {
       reportBuilder.setTestData(testData);
     } else {
-      const { hierarchy = 'explore' } = reportQuery;
       const orgUnitCodes = parseOrgUnitCodes(reportQuery);
 
       reportQuery.hierarchy = hierarchy;

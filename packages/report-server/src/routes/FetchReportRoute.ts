@@ -53,11 +53,18 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
       this.req.accessPolicy,
     );
 
-    const aggregator = createAggregator(Aggregator, this.req.ctx);
-    return new ReportBuilder().setConfig(report.config).build(aggregator, {
+    const reqContext = {
+      hierarchy,
+      services: this.req.ctx.services,
+    };
+    const reportBuilder = new ReportBuilder(reqContext).setConfig(report.config);
+    const reportQuery = {
       organisationUnitCodes: accessibleOrgUnitCodes,
       hierarchy,
       ...restOfParams,
-    });
+    };
+
+    const aggregator = createAggregator(Aggregator, this.req.ctx);
+    return reportBuilder.build(aggregator, reportQuery);
   }
 }

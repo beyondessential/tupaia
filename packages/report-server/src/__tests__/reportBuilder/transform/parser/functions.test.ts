@@ -75,6 +75,27 @@ describe('functions', () => {
     });
   });
 
+  describe('context', () => {
+    describe('orgUnitCodeToName', () => {
+      const context = {
+        orgUnits: [
+          { code: 'FJ', name: 'Fiji' },
+          { code: 'TO', name: 'Tonga' },
+        ],
+      };
+
+      it('converts given org unit code to name', () => {
+        const parser = new TransformParser(undefined, context);
+        expect(parser.evaluate("=orgUnitCodeToName('TO')")).toBe('Tonga');
+      });
+
+      it('returns undefined if the org unit code is not found', () => {
+        const parser = new TransformParser(undefined, context);
+        expect(parser.evaluate("=orgUnitCodeToName('WS')")).toBe(undefined);
+      });
+    });
+  });
+
   describe('utils', () => {
     describe('convertToPeriod', () => {
       it('converts given period to target type', () =>
