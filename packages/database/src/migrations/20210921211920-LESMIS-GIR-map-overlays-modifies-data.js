@@ -25,7 +25,7 @@ const getStandardReport = (reportCode, dataElements) => ({
         {
           type: 'FINAL_EACH_YEAR',
           config: {
-            dataSourceEntityType: reportCode.includes('PROVINCE') ? 'district' : 'sub_district',
+            dataSourceEntityType: reportCode.includes('Province') ? 'district' : 'sub_district',
             aggregationEntityType: 'requested',
           },
         },
@@ -54,7 +54,7 @@ const getPriorityDistrictsReport = (reportCode, dataElements) => ({
           type: 'COUNT_PER_PERIOD_PER_ORG_GROUP',
           config: {
             aggregationEntityType: 'requested',
-            dataSourceEntityType: reportCode.includes('PROVINCE') ? 'district' : 'sub_district',
+            dataSourceEntityType: reportCode.includes('Province') ? 'district' : 'sub_district',
             dataSourceEntityFilter: {
               attributes_type: 'LESMIS_Target_District',
             },
@@ -63,7 +63,7 @@ const getPriorityDistrictsReport = (reportCode, dataElements) => ({
         {
           type: 'FINAL_EACH_YEAR',
           config: {
-            dataSourceEntityType: reportCode.includes('PROVINCE') ? 'district' : 'sub_district',
+            dataSourceEntityType: reportCode.includes('Province') ? 'district' : 'sub_district',
             aggregationEntityType: 'requested',
           },
         },
@@ -91,7 +91,7 @@ const getGPIReport = (reportCode, dataElements) => ({
         {
           type: 'FINAL_EACH_YEAR',
           config: {
-            dataSourceEntityType: reportCode.includes('PROVINCE') ? 'district' : 'sub_district',
+            dataSourceEntityType: reportCode.includes('Province') ? 'district' : 'sub_district',
             aggregationEntityType: 'requested',
           },
         },
@@ -149,7 +149,7 @@ const getMapOverlay = (name, reportCode) => ({
   presentationOptions: {
     scaleType: 'performance',
     displayType: 'shaded-spectrum',
-    measureLevel: reportCode.includes('PROVINCE') ? 'District' : 'SubDistrict',
+    measureLevel: reportCode.includes('Province') ? 'District' : 'SubDistrict',
     valueType: 'percentage',
     scaleBounds: {
       left: {
@@ -246,7 +246,7 @@ const MAP_OVERLAYS = [
     reportCode: `${OVERLAY_CODE}_Primary_District`,
     reportType: 'STANDARD',
     name: 'GIR into last grade of primary',
-    dataElements: 'gir_district_pe_t',
+    dataElements: ['gir_district_pe_t'],
     parentCode: `${OVERLAY_CODE}_District_Primary_Group`,
     sortOrder: 0,
   },
