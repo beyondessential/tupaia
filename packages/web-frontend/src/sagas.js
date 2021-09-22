@@ -865,8 +865,9 @@ function* watchFetchMoreSearchResults() {
 function* fetchMeasureInfo(mapOverlayIds) {
   const state = yield select();
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
+  const measureParams = selectMapOverlayById(state, mapOverlayIds);
 
-  if (!mapOverlayIds || !organisationUnitCode) {
+  if (!mapOverlayIds || !organisationUnitCode || !measureParams) {
     // Don't try and fetch null measures
     yield put(cancelFetchMeasureData());
 
@@ -876,7 +877,6 @@ function* fetchMeasureInfo(mapOverlayIds) {
   const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
 
-  const measureParams = selectMapOverlayById(state, mapOverlayIds);
   const activeProjectCode = selectCurrentProjectCode(state);
 
   // If the view should be constrained to a date range and isn't, constrain it
