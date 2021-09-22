@@ -19,33 +19,14 @@ exports.setup = function (options, seedLink) {
 const PERMISSION_GROUP = 'LESMIS Public';
 const DISTRICT_OVERLAY_GROUP_ID = '5f2c7ddc61f76a513a000215';
 
-// const MAP_OVERLAYS = [
-//   {
-//     dataElement: 'rr_district_p1_t',
-//     name: 'Grade 1 Repetition Rate',
-//     reportCode: 'LESMIS_primary_1_repetition_rate_district',
-//     mapOverlayGroupId: DISTRICT_OVERLAY_GROUP_ID,
-//     sortOrder: 0,
-//   },
-//   {
-//     dataElement: 'rr_district_p2_t',
-//     name: 'Grade 1 Repetition Rate',
-//     reportCode: 'LESMIS_primary_2_repetition_rate_district',
-//     mapOverlayGroupId: DISTRICT_OVERLAY_GROUP_ID,
-//     sortOrder: 1,
-//   },
-// ];
-
-const getMapOverlayObject = (grade, sortOrder) => {
-  return [
-    {
-      dataElement: `rr_district_p${grade}_t`,
-      name: `Grade ${grade} Repetition Rate`,
-      reportCode: `LESMIS_primary_${grade}_repetition_rate_district`,
-      mapOverlayGroupId: DISTRICT_OVERLAY_GROUP_ID,
-      sortOrder,
-    },
-  ];
+const getOverlayNames = (gradeNum, educationLevel) => {
+  return {
+    name: `Grade ${educationLevel === 'p' ? gradeNum : gradeNum + 5} Repetition Rate`,
+    dataElement: `rr_district_${educationLevel}${gradeNum}_t`,
+    reportCode: `LESMIS_grade_${
+      educationLevel === 'p' ? gradeNum : gradeNum + 5
+    }_repetition_rate_district`,
+  };
 };
 
 const addMapOverlayGroupRelation = async (db, parentId, childId, childType = 'mapOverlayGroup') => {
@@ -121,7 +102,9 @@ const getPermissionGroupId = async (db, name) => {
   return record.rows[0] && record.rows[0].id;
 };
 
-const addMapOverlay = async (db, name, dataElement, reportCode, mapOverlayGroupId, sortOrder) => {
+const addMapOverlay = async (db, gradeNum, educationLevel, sortOrder) => {
+  const { name, dataElement, reportCode } = getOverlayNames(gradeNum, educationLevel);
+  const mapOverlayGroupId = DISTRICT_OVERLAY_GROUP_ID;
   const report = getReport(reportCode, dataElement);
   const mapOverlay = getMapOverlay(name, reportCode);
   const permissionGroupId = await getPermissionGroupId(db, PERMISSION_GROUP);
@@ -136,7 +119,8 @@ const addMapOverlay = async (db, name, dataElement, reportCode, mapOverlayGroupI
   });
 };
 
-const removeMapOverlay = (db, reportCode) => {
+const removeMapOverlay = (db, gradeNum, educationLevel) => {
+  const { reportCode } = getOverlayNames(gradeNum, educationLevel);
   return db.runSql(`
     DELETE FROM "report" WHERE code = '${reportCode}';
     DELETE FROM "mapOverlay" WHERE "id" = '${reportCode}';
@@ -145,25 +129,25 @@ const removeMapOverlay = (db, reportCode) => {
 };
 
 exports.up = async function (db) {
-  // Add Map Overlays
-  for (var i = 0; i < 2; i++) {
-    const grade = i + 1;
-    const { name, dataElement, reportCode, mapOverlayGroupId, sortOrder } = getMapOverlayObject(
-      grade,
-      i,
-    );
-    addMapOverlay(db, name, dataElement, reportCode, mapOverlayGroupId, sortOrder);
+  // Add Primary Overlays
+  for (let i = 1; i < 6; i++) {
+    addMapOverlay(db, i, 'p', i - 1);
   }
 
-  // MAP_OVERLAYS.forEach(({ name, dataElement, reportCode, mapOverlayGroupId, sortOrder }) => {
-  //   addMapOverlay(db, name, dataElement, reportCode, mapOverlayGroupId, sortOrder);
-  // });
+  // Add Secondary Overlays
+  for (let i = 1; i < 8; i++) {
+    addMapOverlay(db, i, 's', i + 4);
+  }
 };
 
 exports.down = async function (db) {
-  // Remove Map Overlays
-  for (const { reportCode } of MAP_OVERLAYS) {
-    await removeMapOverlay(db, reportCode);
+  // Remove primary overlays
+  for (let i = 1; i < 6; i++) {
+    removeMapOverlay(db, i, 'p');
+  }
+  // Remove secondary overlays
+  for (let i = 1; i < 8; i++) {
+    removeMapOverlay(db, i, 's');
   }
 };
 
