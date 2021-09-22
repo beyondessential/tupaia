@@ -17,7 +17,7 @@ import { selectLocation } from './utils';
 export const selectMapOverlayById = createSelector(
   [state => state.measureBar.measureHierarchy, (_, id) => id],
   (measureHierarchy, id) => {
-    return getMapOverlayFromHierarchy(measureHierarchy, id) || {};
+    return getMapOverlayFromHierarchy(measureHierarchy, id);
   },
 );
 
@@ -27,7 +27,7 @@ export const selectCurrentMapOverlayId = createSelector([selectLocation], locati
 
 export const selectCurrentMapOverlay = createSelector(
   [state => selectMapOverlayById(state, selectCurrentMapOverlayId(state))],
-  currentMapOverlay => currentMapOverlay || {},
+  currentMapOverlay => currentMapOverlay,
 );
 
 export const selectIsMapOverlayInHierarchy = createSelector(

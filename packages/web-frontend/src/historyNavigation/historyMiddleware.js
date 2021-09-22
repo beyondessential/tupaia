@@ -78,10 +78,11 @@ export const historyMiddleware = store => next => action => {
       break;
     case SET_MAP_OVERLAY: {
       // TODO: ADD MAP OVERLAY instead of override
-      const { startDate, endDate, periodGranularity } = selectMapOverlayById(
-        state,
-        action.mapOverlayIds,
-      );
+      const mapOverlay = selectMapOverlayById(state, action.mapOverlayIds);
+      if (!mapOverlay) {
+        break;
+      }
+      const { startDate, endDate, periodGranularity } = mapOverlay;
 
       dispatchLocationUpdate(store, URL_COMPONENTS.MAP_OVERLAY_IDS, action.mapOverlayIds);
       dispatchLocationUpdate(

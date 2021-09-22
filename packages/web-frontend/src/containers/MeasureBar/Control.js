@@ -116,10 +116,11 @@ export const Control = ({
   children,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { periodGranularity, isTimePeriodEditable = true, name } = selectedMapOverlay;
-  const defaultDates = getDefaultDates(selectedMapOverlay);
-  const datePickerLimits = getLimits(periodGranularity, selectedMapOverlay.datePickerLimits);
-  const showDatePicker = !!(isTimePeriodEditable && selectedMapOverlay.periodGranularity);
+  const mapOverlay = selectedMapOverlay || {};
+  const { periodGranularity, isTimePeriodEditable = true, name } = mapOverlay;
+  const defaultDates = getDefaultDates(mapOverlay);
+  const datePickerLimits = getLimits(periodGranularity, mapOverlay.datePickerLimits);
+  const showDatePicker = !!(isTimePeriodEditable && periodGranularity);
   const isMeasureSelected = !!name;
   const toggleMeasures = useCallback(() => {
     if (isExpanded) {
@@ -136,8 +137,8 @@ export const Control = ({
 
   // Map overlays always have initial dates, so DateRangePicker always has dates on initialisation,
   // and uses those rather than calculating it's own defaults
-  const startDate = selectedMapOverlay?.startDate || defaultDates.startDate;
-  const endDate = selectedMapOverlay?.endDate || defaultDates.endDate;
+  const startDate = mapOverlay?.startDate || defaultDates.startDate;
+  const endDate = mapOverlay?.endDate || defaultDates.endDate;
 
   return (
     <Container>
@@ -154,12 +155,10 @@ export const Control = ({
         <Content
           expanded={isExpanded}
           selected={isMeasureSelected}
-          period={selectedMapOverlay.periodGranularity}
+          period={periodGranularity}
           onClick={toggleMeasures}
         >
-          <ContentText>
-            {isMeasureLoading ? <CircularProgress size={22} /> : selectedMapOverlay.name}
-          </ContentText>
+          <ContentText>{isMeasureLoading ? <CircularProgress size={22} /> : name}</ContentText>
           <IconWrapper>
             <DownArrow />
           </IconWrapper>
@@ -168,8 +167,8 @@ export const Control = ({
       {showDatePicker && (
         <MeasureDatePicker expanded={isExpanded}>
           <DateRangePicker
-            key={selectedMapOverlay.name} // force re-create the component on measure change, which resets initial dates
-            granularity={selectedMapOverlay.periodGranularity}
+            key={name} // force re-create the component on measure change, which resets initial dates
+            granularity={periodGranularity}
             startDate={startDate}
             endDate={endDate}
             min={datePickerLimits.startDate}
@@ -201,7 +200,7 @@ Control.propTypes = {
     }),
     startDate: PropTypes.shape({}),
     endDate: PropTypes.shape({}),
-  }).isRequired,
+  }),
   emptyMessage: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
   isMeasureLoading: PropTypes.bool,
@@ -209,5 +208,6 @@ Control.propTypes = {
 };
 
 Control.defaultProps = {
+  selectedMapOverlay: {},
   isMeasureLoading: false,
 };
