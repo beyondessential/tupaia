@@ -21,6 +21,53 @@ import { useUrlSearchParam } from '../../utils/useUrlSearchParams';
 import { useMapOverlaysData, findOverlay } from './useMapOverlaysData';
 import { get } from '../api';
 
+const translateMeasureOverlay = (overlay, measureDataRaw) => {
+  if (overlay.legacy === true) {
+    return measureDataRaw;
+  }
+
+  const {
+    id,
+    groupName,
+    userGroup,
+    isDataRegional, // don't include these in response
+    dataElementCode,
+    presentationOptions,
+    measureBuilderConfig,
+    name,
+    ...restOfMapOverlay
+  } = overlay;
+
+  const {
+    displayType,
+    hideFromMenu,
+    hideFromLegend,
+    hideFromPopup,
+    customLabel,
+    ...restOfPresentationOptions
+  } = presentationOptions;
+
+  const measureOptions = {
+    ...restOfPresentationOptions,
+    ...restOfMapOverlay,
+    name: customLabel ?? name,
+    type: displayType,
+    key: id,
+    periodGranularity: measureBuilderConfig.periodGranularity,
+    hideFromMenu: hideFromMenu || false,
+    hideFromLegend: hideFromLegend || false,
+    hideFromPopup: hideFromPopup || false,
+  };
+
+  return {
+    measureId: overlay.measureId,
+    measureLevel: presentationOptions.measureLevel,
+    measureOptions,
+    serieses: measureOptions,
+    measureData: measureDataRaw,
+  };
+};
+
 const processMeasureInfo = ({ serieses, measureData, ...rest }) => {
   const processedSerieses = serieses.map(series => {
     const { values: mapOptionValues, type } = series;
@@ -137,7 +184,7 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
     legacy: overlay?.legacy,
   };
 
-  const { data: measureData, isLoading: measureDataLoading } = useQuery(
+  const { data: measureDataRaw, isLoading: measureDataLoading } = useQuery(
     ['mapOverlay', entityCode, selectedOverlay, params],
     () =>
       get(`report/${entityCode}/${selectedOverlay}`, {
@@ -154,6 +201,8 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
   useEffect(() => {
     setHiddenValues({});
   }, [setHiddenValues, selectedOverlay, entityCode]);
+
+  const measureData = translateMeasureOverlay(overlay, measureDataRaw);
 
   // set default hidden measures when measure data changes
   useEffect(() => {
