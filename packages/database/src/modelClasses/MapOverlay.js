@@ -31,7 +31,9 @@ export class MapOverlayModel extends DatabaseModel {
     const measureIds = new Set();
     overlays.forEach(o => {
       const { id, linkedMeasures = [] } = o;
-      measureIds.add(linkedMeasures);
+      linkedMeasures.forEach(measureId => {
+        measureIds.add(measureId);
+      });
       measureIds.add(id);
     });
     return this.find({ id: Array.from(measureIds) });
