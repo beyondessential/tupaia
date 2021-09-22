@@ -598,15 +598,15 @@ function mapOverlayBar(
         hiddenMeasures: {},
       };
     case UPDATE_MEASURE_CONFIG: {
-      const { categoryIndex, mapOverlays, mapOverlayGroupIndex } = selectMapOverlayGroupById(
+      const { groupIndex, mapOverlay, mapOverlayGroupIndex } = selectMapOverlayGroupById(
         { mapOverlayBar: state },
         action.mapOverlayIds,
       );
 
       const mapOverlayHierarchy = [...state.mapOverlayHierarchy];
 
-      mapOverlayHierarchy[categoryIndex].children[mapOverlayGroupIndex] = {
-        ...mapOverlays,
+      mapOverlayHierarchy[groupIndex].children[mapOverlayGroupIndex] = {
+        ...mapOverlay,
         ...action.measureConfig,
       };
 

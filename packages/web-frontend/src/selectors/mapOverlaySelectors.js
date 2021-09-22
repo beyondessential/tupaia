@@ -31,8 +31,8 @@ export const selectCurrentMapOverlay = createSelector(
 );
 
 export const selectIsMapOverlayInHierarchy = createSelector(
-  [state => state.mapOverlayBar.mapOverlayHierarchy, (_, ids) => ids],
-  (mapOverlayHierarchy, ids) => !!getMapOverlayFromHierarchy(mapOverlayHierarchy, ids),
+  [state => state.mapOverlayBar.mapOverlayHierarchy, (_, id) => id],
+  (mapOverlayHierarchy, id) => !!getMapOverlayFromHierarchy(mapOverlayHierarchy, id),
 );
 
 export const selectDefaultMapOverlayId = createSelector(
@@ -57,24 +57,24 @@ export const selectCurrentPeriodGranularity = createSelector(
 );
 
 export const selectMapOverlayGroupById = createSelector(
-  [state => state.mapOverlayBar.mapOverlayHierarchy, (_, ids) => ids],
-  (mapOverlayHierarchy, ids) => {
-    let mapOverlayGroupIndex = {};
+  [state => state.mapOverlayBar.mapOverlayHierarchy, (_, id) => id],
+  (mapOverlayHierarchy, id) => {
+    let mapOverlayGroup = {};
 
-    mapOverlayHierarchy.forEach(({ name, children }, categoryIndex) => {
-      const selectedMapOverlayGroupIndex = children.findIndex(
-        mapOverlay => mapOverlay.mapOverlayId === ids,
+    mapOverlayHierarchy.forEach(({ name, children }, groupIndex) => {
+      const selectedMapOverlayIndex = children.findIndex(
+        mapOverlay => mapOverlay.mapOverlayId === id,
       );
-      if (selectedMapOverlayGroupIndex > -1) {
-        mapOverlayGroupIndex = {
+      if (selectedMapOverlayIndex > -1) {
+        mapOverlayGroup = {
           name,
-          categoryIndex,
-          mapOverlayGroupIndex: selectedMapOverlayGroupIndex,
-          mapOverlays: children[selectedMapOverlayGroupIndex],
+          groupIndex,
+          mapOverlayGroupIndex: selectedMapOverlayIndex,
+          mapOverlay: children[selectedMapOverlayIndex],
         };
       }
     });
 
-    return mapOverlayGroupIndex;
+    return mapOverlayGroup;
   },
 );
