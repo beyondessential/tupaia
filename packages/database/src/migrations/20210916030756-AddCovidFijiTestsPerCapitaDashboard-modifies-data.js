@@ -100,6 +100,7 @@ const generateConfig = () => ({
   frontEndConfig: {
     name: 'COVID-19 Total tests per capita',
     type: 'chart',
+    description: 'Total tests per 100k',
     chartType: 'bar',
     valueType: 'number',
     chartConfig: {
