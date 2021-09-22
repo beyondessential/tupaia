@@ -13,7 +13,6 @@ import {
   CHANGE_POSITION,
   CHANGE_BOUNDS,
   CHANGE_TILE_SET,
-  CHANGE_ZOOM,
   FETCH_MEASURE_DATA_ERROR,
   FETCH_MEASURE_DATA_SUCCESS,
   CANCEL_FETCH_MEASURE_DATA,
@@ -58,12 +57,6 @@ function position(state = { bounds: DEFAULT_BOUNDS }, action) {
         }
       }
       return state;
-    }
-
-    case CHANGE_ZOOM: {
-      const newZoom = state.zoom + action.value;
-      if (newZoom < 1 || newZoom > 18) return state;
-      return { ...state, zoom: newZoom };
     }
 
     case CHANGE_POSITION: {
@@ -178,17 +171,11 @@ function shouldSnapToPosition(state = true, action) {
   switch (action.type) {
     case CHANGE_POSITION:
       return false;
-
-    // Changing of Zoom happens using secondary interactions on a button and
-    // therefore overrides the users current map behavior.
-    case CHANGE_ZOOM:
     case CHANGE_BOUNDS:
       return true;
-
     case SET_ORG_UNIT:
     case CHANGE_ORG_UNIT_SUCCESS:
       return action.shouldChangeMapBounds ? true : state;
-
     default:
       return state;
   }

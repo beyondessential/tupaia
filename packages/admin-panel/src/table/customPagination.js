@@ -3,6 +3,8 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
+/* eslint-disable react/prop-types */
+
 import React from 'react';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';

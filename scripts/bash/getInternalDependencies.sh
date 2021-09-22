@@ -1,11 +1,13 @@
-#!/bin/bash
+#!/bin/bash -e
 
 DIR=$(dirname "$0")
-package_path=$1
+if [ "$1" != "" ]; then
+  # pop the package_path off, and interpret the rest as dependencies that have been checked earlier
+  # in the recursion
+  package_path=$1
+  shift
+fi
 
-# pop the package_path off, and interpret the rest as dependencies that have been checked earlier
-# in the recursion
-shift
 dependencies_already_visited=($@)
 
 # if no package.json entrypoint is specified, just return all internal dependencies

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # Get the stage tag of this ec2 instance from AWS
 TAG_NAME=$1

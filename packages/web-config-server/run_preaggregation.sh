@@ -1,4 +1,4 @@
-#!/bin/bash -l
+#!/bin/bash -le
 
 # Get script directory so that yarn knows where the root package.json is, no matter where it's called from
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

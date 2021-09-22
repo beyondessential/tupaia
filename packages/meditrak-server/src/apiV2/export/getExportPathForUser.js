@@ -2,17 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import fs from 'fs';
+import { getTempDirectory } from '../../utilities';
 
-const EXPORT_BASE_PATH = 'exports';
-export const getExportPathForUser = userId => {
-  const exportPath = `${EXPORT_BASE_PATH}/${userId}`;
-
-  // Make the export directory if it doesn't already exist
-  try {
-    fs.statSync(exportPath);
-  } catch (e) {
-    fs.mkdirSync(exportPath);
-  }
-  return exportPath;
-};
+export const getExportPathForUser = userId => getTempDirectory(`exports/${userId}`);

@@ -1,11 +1,10 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
 import React, { lazy, Suspense } from 'react';
 import { Provider } from 'react-redux';
-import { EnvBanner } from '@tupaia/ui-components';
 
 import configureStore from './configureStore';
 import { AppStyleProviders } from './AppStyleProviders';
@@ -41,7 +40,6 @@ const App = () => {
     <Provider store={store}>
       <AppStyleProviders>
         <Suspense fallback={null}>
-          <EnvBanner />
           <RootScreen />
         </Suspense>
       </AppStyleProviders>
