@@ -47,7 +47,6 @@ export const CHANGE_TILE_SET = 'CHANGE_TILE_SET';
 export const CLEAR_MEASURE = 'CLEAR_MEASURE';
 export const HIDE_MAP_MEASURE = 'HIDE_MAP_MEASURE';
 export const UNHIDE_MAP_MEASURE = 'UNHIDE_MAP_MEASURE';
-export const UPDATE_DEFAULT_MEASURE = 'UPDATE_DEFAULT_MEASURE';
 export const FETCH_CHANGE_PASSWORD_ERROR = 'FETCH_CHANGE_PASSWORD_ERROR';
 export const FETCH_CHANGE_PASSWORD_SUCCESS = 'FETCH_CHANGE_PASSWORD_SUCCESS';
 export const FETCH_COUNTRY_ACCESS_DATA_SUCCESS = 'FETCH_COUNTRY_ACCESS_DATA_SUCCESS';
@@ -96,7 +95,6 @@ export const TOGGLE_LOCATION_ITEM_EXPANDED = 'TOGGLE_LOCATION_ITEM_EXPANDED';
 export const OPEN_USER_DIALOG = 'OPEN_USER_DIALOG';
 export const CLOSE_USER_DIALOG = 'CLOSE_USER_DIALOG';
 export const TOGGLE_MEASURE_EXPAND = 'TOGGLE_MEASURE_EXPAND';
-export const TOGGLE_MEASURE_ITEM_EXPANDED = 'TOGGLE_MEASURE_ITEM_EXPANDED';
 export const TOGGLE_SEARCH_EXPAND = 'TOGGLE_SEARCH_EXPAND';
 export const SET_OVERLAY_COMPONENT = 'SET_OVERLAY_COMPONENT';
 export const OPEN_MAP_POPUP = 'OPEN_MAP_POPUP';
@@ -962,14 +960,6 @@ export function changeSidePanelExpandedWidth(expandedWidth) {
 export function closeDropdownOverlays() {
   return {
     type: CLOSE_DROPDOWN_OVERLAYS,
-  };
-}
-
-export function toggleMeasureItemExpanded(itemCode, expanded = true) {
-  return {
-    type: TOGGLE_MEASURE_ITEM_EXPANDED,
-    itemCode,
-    expanded,
   };
 }
 

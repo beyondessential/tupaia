@@ -240,7 +240,7 @@ const getMeasureFiltersForHierarchy = measureHierarchy => {
     } else {
       const mapOverlay = {
         label: measureObject.name,
-        id: measureObject.mapOverlayId.toString(),
+        id: measureObject.mapOverlayId,
         value: measureObject,
       };
 
