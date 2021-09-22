@@ -125,7 +125,7 @@ export class MeasureBar extends Component {
 
     return (
       <>
-        {defaultMapOverlay ? this.renderDefaultMeasure() : null}
+        {defaultMapOverlay?.mapOverlayId ? this.renderDefaultMeasure() : null}
         {items}
       </>
     );
@@ -148,24 +148,10 @@ export class MeasureBar extends Component {
     const orgName = currentOrganisationUnitName || 'Your current selection';
     const emptyMessage = `Select an area with valid data. ${orgName} has no map overlays available.`;
     // TODO: select multiple map overlays
-    const defaultDates = getDefaultDates(currentMapOverlay);
-
-    const datePickerLimits = getLimits(
-      currentMapOverlay.periodGranularity,
-      currentMapOverlay.datePickerLimits,
-    );
-
-    const { isTimePeriodEditable = true } = currentMapOverlay;
-
-    const showDatePicker = isTimePeriodEditable && currentMapOverlay.periodGranularity;
-
     return (
       <Control
         emptyMessage={emptyMessage}
-        selectedMeasure={currentMapOverlay}
-        showDatePicker={!!showDatePicker}
-        defaultDates={defaultDates}
-        datePickerLimits={datePickerLimits}
+        selectedMapOverlay={currentMapOverlay}
         isMeasureLoading={isMeasureLoading}
         onUpdateMeasurePeriod={onUpdateMeasurePeriod}
       >
@@ -185,7 +171,7 @@ const MapOverlayShape = PropTypes.shape({
 
 MeasureBar.propTypes = {
   currentMapOverlayId: PropTypes.string,
-  currentMapOverlay: MapOverlayShape.isRequired,
+  currentMapOverlay: MapOverlayShape,
   measureHierarchy: PropTypes.array.isRequired,
   isExpanded: PropTypes.bool.isRequired,
   isMeasureLoading: PropTypes.bool.isRequired,
@@ -193,12 +179,14 @@ MeasureBar.propTypes = {
   onClearMeasure: PropTypes.func.isRequired,
   onUpdateMeasurePeriod: PropTypes.func.isRequired,
   currentOrganisationUnitName: PropTypes.string,
-  defaultMapOverlay: MapOverlayShape.isRequired,
+  defaultMapOverlay: MapOverlayShape,
 };
 
 MeasureBar.defaultProps = {
-  currentMapOverlayId: null,
+  currentMapOverlayId: '',
   currentOrganisationUnitName: '',
+  defaultMapOverlay: {},
+  currentMapOverlay: {},
 };
 
 const mapStateToProps = state => {
@@ -209,8 +197,7 @@ const mapStateToProps = state => {
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
   const currentMapOverlay = selectCurrentMapOverlay(state);
 
-  // TODO failed prop type
-  const currentMapOverlayId = currentMapOverlay.mapOverlayId;
+  const currentMapOverlayId = currentMapOverlay?.mapOverlayId;
   // TODO: current measures in Measure Bar
   // const currentMeasures = selectCurrentMeasures(state);
   const activeProject = selectCurrentProject(state);

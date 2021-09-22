@@ -9,7 +9,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import LastUpdated from './LastUpdated';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { CONTROL_BAR_WIDTH, TUPAIA_ORANGE, MAP_OVERLAY_SELECTOR } from '../../styles';
-import { GRANULARITY_CONFIG } from '../../utils/periodGranularities';
+import { getDefaultDates, getLimits, GRANULARITY_CONFIG } from '../../utils/periodGranularities';
 import { MapTableModal } from '../MapTableModal';
 
 const Container = styled.div`
@@ -110,17 +110,17 @@ const ExpandedContent = styled.div`
 
 export const Control = ({
   emptyMessage,
-  selectedMeasure,
-  showDatePicker,
-  defaultDates,
-  datePickerLimits,
+  selectedMapOverlay,
   isMeasureLoading,
   onUpdateMeasurePeriod,
   children,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { periodGranularity } = selectedMeasure;
-  const isMeasureSelected = !!selectedMeasure.name;
+  const { periodGranularity, isTimePeriodEditable = true, name } = selectedMapOverlay;
+  const defaultDates = getDefaultDates(selectedMapOverlay);
+  const datePickerLimits = getLimits(periodGranularity, selectedMapOverlay.datePickerLimits);
+  const showDatePicker = !!(isTimePeriodEditable && selectedMapOverlay.periodGranularity);
+  const isMeasureSelected = !!name;
   const toggleMeasures = useCallback(() => {
     if (isExpanded) {
       setIsExpanded(false);
@@ -136,9 +136,8 @@ export const Control = ({
 
   // Map overlays always have initial dates, so DateRangePicker always has dates on initialisation,
   // and uses those rather than calculating it's own defaults
-  let { startDate, endDate } = selectedMeasure;
-  if (!startDate) startDate = defaultDates.startDate;
-  if (!endDate) endDate = defaultDates.endDate;
+  const startDate = selectedMapOverlay?.startDate || defaultDates.startDate;
+  const endDate = selectedMapOverlay?.endDate || defaultDates.endDate;
 
   return (
     <Container>
@@ -155,11 +154,11 @@ export const Control = ({
         <Content
           expanded={isExpanded}
           selected={isMeasureSelected}
-          period={selectedMeasure.periodGranularity}
+          period={selectedMapOverlay.periodGranularity}
           onClick={toggleMeasures}
         >
           <ContentText>
-            {isMeasureLoading ? <CircularProgress size={22} /> : selectedMeasure.name}
+            {isMeasureLoading ? <CircularProgress size={22} /> : selectedMapOverlay.name}
           </ContentText>
           <IconWrapper>
             <DownArrow />
@@ -169,8 +168,8 @@ export const Control = ({
       {showDatePicker && (
         <MeasureDatePicker expanded={isExpanded}>
           <DateRangePicker
-            key={selectedMeasure.name} // force re-create the component on measure change, which resets initial dates
-            granularity={selectedMeasure.periodGranularity}
+            key={selectedMapOverlay.name} // force re-create the component on measure change, which resets initial dates
+            granularity={selectedMapOverlay.periodGranularity}
             startDate={startDate}
             endDate={endDate}
             min={datePickerLimits.startDate}
@@ -192,21 +191,17 @@ export const Control = ({
 };
 
 Control.propTypes = {
-  selectedMeasure: PropTypes.shape({
+  selectedMapOverlay: PropTypes.shape({
     name: PropTypes.string,
     periodGranularity: PropTypes.string,
+    isTimePeriodEditable: PropTypes.bool,
+    datePickerLimits: PropTypes.shape({
+      startDate: PropTypes.object,
+      endDate: PropTypes.object,
+    }),
     startDate: PropTypes.shape({}),
     endDate: PropTypes.shape({}),
-  }),
-  showDatePicker: PropTypes.bool,
-  defaultDates: PropTypes.shape({
-    startDate: PropTypes.object,
-    endDate: PropTypes.object,
   }).isRequired,
-  datePickerLimits: PropTypes.shape({
-    startDate: PropTypes.object,
-    endDate: PropTypes.object,
-  }),
   emptyMessage: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
   isMeasureLoading: PropTypes.bool,
@@ -215,10 +210,4 @@ Control.propTypes = {
 
 Control.defaultProps = {
   isMeasureLoading: false,
-  selectedMeasure: {},
-  showDatePicker: false,
-  datePickerLimits: {
-    startDate: null,
-    endDate: null,
-  },
 };
