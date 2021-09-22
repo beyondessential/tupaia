@@ -201,7 +201,7 @@ function* handleUserPage(userPage, initialComponents) {
 const URL_REFRESH_COMPONENTS = {
   [URL_COMPONENTS.PROJECT]: setProject,
   [URL_COMPONENTS.ORG_UNIT]: setOrgUnit,
-  [URL_COMPONENTS.MAP_OVERLAY_ID]: setMapOverlay,
+  [URL_COMPONENTS.MAP_OVERLAY]: setMapOverlay,
   [URL_COMPONENTS.REPORT]: openEnlargedDialog,
   [URL_COMPONENTS.MEASURE_PERIOD]: updateCurrentMeasureConfigOnceHierarchyLoads,
 };

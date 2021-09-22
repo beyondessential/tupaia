@@ -90,14 +90,14 @@ export const decodeLocation = ({ pathname, search }) => {
 };
 
 export const isLocationEqual = (a, b) => {
-  const { [URL_COMPONENTS.MAP_OVERLAY_ID]: prevMapOverlayIds, ...prev } = decodeLocation(a);
-  const { [URL_COMPONENTS.MAP_OVERLAY_ID]: nextMapOverlayIds, ...next } = decodeLocation(b);
+  const { [URL_COMPONENTS.MAP_OVERLAY]: prevMapOverlayId, ...prev } = decodeLocation(a);
+  const { [URL_COMPONENTS.MAP_OVERLAY]: nextMapOverlayId, ...next } = decodeLocation(b);
 
   if (!Object.keys(prev).every(k => prev[k] === next[k])) {
     return false;
   }
 
-  if (prevMapOverlayIds && nextMapOverlayIds && prevMapOverlayIds !== nextMapOverlayIds) {
+  if (prevMapOverlayId && nextMapOverlayId && prevMapOverlayId !== nextMapOverlayId) {
     // only update history if measures are different, not when going from null to non-null
     return false;
   }

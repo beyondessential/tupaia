@@ -22,7 +22,7 @@ export const selectMapOverlayById = createSelector(
 );
 
 export const selectCurrentMapOverlayId = createSelector([selectLocation], location =>
-  getLocationComponentValue(location, URL_COMPONENTS.MAP_OVERLAY_ID),
+  getLocationComponentValue(location, URL_COMPONENTS.MAP_OVERLAY),
 );
 
 export const selectCurrentMapOverlay = createSelector(

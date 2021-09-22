@@ -84,7 +84,7 @@ export const historyMiddleware = store => next => action => {
       }
       const { startDate, endDate, periodGranularity } = mapOverlay;
 
-      dispatchLocationUpdate(store, URL_COMPONENTS.MAP_OVERLAY_ID, action.mapOverlayId);
+      dispatchLocationUpdate(store, URL_COMPONENTS.MAP_OVERLAY, action.mapOverlayId);
       dispatchLocationUpdate(
         store,
         URL_COMPONENTS.MEASURE_PERIOD,
@@ -93,7 +93,7 @@ export const historyMiddleware = store => next => action => {
       break;
     }
     case CLEAR_MEASURE:
-      dispatchLocationUpdate(store, URL_COMPONENTS.MAP_OVERLAY_ID, null);
+      dispatchLocationUpdate(store, URL_COMPONENTS.MAP_OVERLAY, null);
       dispatchLocationUpdate(store, URL_COMPONENTS.MEASURE_PERIOD, null);
       break;
     case UPDATE_MEASURE_CONFIG:
