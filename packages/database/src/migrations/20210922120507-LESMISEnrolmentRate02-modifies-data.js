@@ -134,10 +134,6 @@ const OVERLAY_GROUPS = [
         name: 'District Level',
         code: `${OVERLAY_CODE}_District_Group`,
       },
-      {
-        name: 'Province Level',
-        code: `${OVERLAY_CODE}_Province_Group`,
-      },
     ],
   },
 ];
