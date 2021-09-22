@@ -6,8 +6,6 @@
 import { TransformParser } from '../../../../reportBuilder/transform/parser/TransformParser';
 
 describe('TransformParser', () => {
-  const parser = new TransformParser();
-
   // Use inline class extending the testable class to make protected methods testable
   const testParser = new (class extends TransformParser {
     public readExpression(input: unknown) {
@@ -28,7 +26,7 @@ describe('TransformParser', () => {
     ];
 
     it.each(testData)('%s', (_, input, received) => {
-      const result = parser.isExpression(input);
+      const result = TransformParser.isExpression(input);
       expect(result).toBe(received);
     });
   });

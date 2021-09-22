@@ -10,14 +10,7 @@ import { Context } from '../context';
 import { transformBuilders } from './functions';
 import { aliases } from './aliases';
 
-export type TransformParams =
-  | keyof typeof aliases
-  | {
-      [key: string]: string | Record<string, string> | undefined;
-      transform: string;
-      title?: string;
-      description?: string;
-    };
+export type TransformParams = yup.InferType<typeof transformParamsValidator>;
 
 type BuiltTransformParams = {
   title?: string;

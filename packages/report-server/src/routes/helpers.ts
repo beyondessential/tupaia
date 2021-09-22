@@ -3,10 +3,8 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import type { TupaiaApiClient } from '@tupaia/api-client';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { MicroServiceRequestContext } from '@tupaia/server-boilerplate';
-
-type EntityApi = MicroServiceRequestContext['services']['entity'];
 
 export const getAccessibleOrgUnitCodes = async (
   permissionGroupName: string,
@@ -30,7 +28,7 @@ export const getAccessibleOrgUnitCodes = async (
 export const getRequestedOrgUnitObjects = async (
   hierarchy: string,
   orgUnitCodes: string | string[],
-  entityApi: EntityApi,
+  entityApi: TupaiaApiClient['entity'],
 ) => {
   const orgUnitCodesInArray = Array.isArray(orgUnitCodes) ? orgUnitCodes : orgUnitCodes.split(',');
 

@@ -13,9 +13,7 @@ import { ContextProp } from './types';
 const extractContextPropsFromExpressions = (expressions: string[]) => {
   const parser = new TransformParser();
   const functions = expressions
-    .filter(expression => {
-      return parser.isExpression(expression);
-    })
+    .filter(TransformParser.isExpression)
     .map(calcExpression => {
       return parser.getFunctions(calcExpression);
     })
