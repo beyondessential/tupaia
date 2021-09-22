@@ -5,10 +5,11 @@
 
 import { yup } from '@tupaia/utils';
 
+import { Context } from '../../../context';
 import { TransformParser } from '../../parser';
 import { mergeStrategies } from './mergeStrategies';
 import { buildWhere } from '../where';
-import { Context, Row, FieldValue } from '../../../types';
+import { Row, FieldValue } from '../../../types';
 import { buildCreateGroupKey } from './createGroupKey';
 import { buildGetMergeStrategy } from './getMergeStrategy';
 import { starSingleOrMultipleColumnsValidator } from '../transformValidators';
@@ -99,8 +100,8 @@ const mergeGroups = (groups: Group[], params: MergeRowsParams): Row[] => {
   });
 };
 
-const mergeRows = (rows: Row[], params: MergeRowsParams): Row[] => {
-  const { groups, ungroupedRows } = groupRows(rows, params);
+const mergeRows = (rows: Row[], params: MergeRowsParams, context: Context): Row[] => {
+  const { groups, ungroupedRows } = groupRows(rows, params, context);
   const mergedRows = mergeGroups(groups, params);
   return mergedRows.concat(ungroupedRows);
 };
@@ -117,7 +118,7 @@ const buildParams = (params: unknown): MergeRowsParams => {
   };
 };
 
-export const buildMergeRows = (params: unknown) => {
+export const buildMergeRows = (params: unknown, context: Context) => {
   const builtParams = buildParams(params);
-  return (rows: Row[]) => mergeRows(rows, builtParams);
+  return (rows: Row[]) => mergeRows(rows, builtParams, context);
 };

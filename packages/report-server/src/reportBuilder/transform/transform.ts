@@ -52,12 +52,12 @@ const transform = (rows: Row[], transformSteps: BuiltTransformParams[]): Row[] =
   return transformedRows;
 };
 
-const buildParams = (params: unknown, context?: Context): BuiltTransformParams => {
+const buildParams = (params: unknown, context: Context): BuiltTransformParams => {
   const validatedParams: TransformParams = transformParamsValidator.validateSync(params);
   if (typeof validatedParams === 'string') {
     return {
       name: validatedParams,
-      apply: aliases[validatedParams](),
+      apply: aliases[validatedParams](context),
     };
   }
 
@@ -71,11 +71,11 @@ const buildParams = (params: unknown, context?: Context): BuiltTransformParams =
   return {
     title,
     name: transformStep,
-    apply: transformBuilders[transformStep](restOfTransformParams, context as Context),
+    apply: transformBuilders[transformStep](restOfTransformParams, context),
   };
 };
 
-export const buildTransform = (params: unknown, context?: Context) => {
+export const buildTransform = (params: unknown, context: Context) => {
   const validatedParams = paramsValidator.validateSync(params);
 
   const builtParams = validatedParams.map(param => buildParams(param, context));
