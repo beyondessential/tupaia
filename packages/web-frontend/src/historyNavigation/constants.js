@@ -47,11 +47,11 @@ export const LEGACY_PATH_PREFIXES = ['country', 'facility'];
 
 export const SEARCH_PARAM_KEY_MAP = {
   // Different to key
+  [MAP_OVERLAY_IDS]: 'overlay',
   [MEASURE_PERIOD]: 'overlayPeriod',
 
   // Just camel case
   [REPORT]: 'report',
-  [MAP_OVERLAY_IDS]: 'mapOverlayIds',
   [PASSWORD_RESET_TOKEN]: 'passwordResetToken',
   [VERIFY_EMAIL_TOKEN]: 'verifyEmailToken',
   [REPORT_PERIOD]: 'reportPeriod',
