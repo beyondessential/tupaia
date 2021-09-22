@@ -22,7 +22,7 @@ import { useMapOverlaysData, findOverlay } from './useMapOverlaysData';
 import { get } from '../api';
 
 const translateMeasureOverlay = (overlay, measureDataRaw) => {
-  if (overlay.legacy === true) {
+  if (!overlay || overlay.legacy === true) {
     return measureDataRaw;
   }
 
@@ -193,7 +193,7 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
     {
       staleTime: 60 * 60 * 1000,
       refetchOnWindowFocus: false,
-      enabled: !!entityCode && !!selectedOverlay,
+      enabled: !!entityCode && !!selectedOverlay && !!overlay,
     },
   );
 
