@@ -32,14 +32,14 @@ describe('urlSelectors', () => {
     const testState = {
       routing: {
         pathname: '/SOME_PROJECT/AN_ORG_UNIT/A_DASHBOARD',
-        search: '?report=report1&mapOverlayIds=2,3',
+        search: '?report=report1&overlay=2',
       },
     };
     expect(selectCurrentProjectCode(testState)).toEqual('SOME_PROJECT');
     expect(selectCurrentOrgUnitCode(testState)).toEqual('AN_ORG_UNIT');
     expect(selectCurrentDashboardNameFromLocation(testState)).toEqual('A_DASHBOARD');
     expect(selectCurrentExpandedViewCode(testState)).toEqual('report1');
-    expect(selectCurrentMapOverlayId(testState)).toEqual('2,3');
+    expect(selectCurrentMapOverlayId(testState)).toEqual('2');
   });
 
   it('should select from a reset-password url', () => {

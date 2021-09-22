@@ -600,7 +600,7 @@ function mapOverlayBar(
     case UPDATE_MEASURE_CONFIG: {
       const { groupIndex, mapOverlay, mapOverlayGroupIndex } = selectMapOverlayGroupById(
         { mapOverlayBar: state },
-        action.mapOverlayIds,
+        action.mapOverlayId,
       );
 
       const mapOverlayHierarchy = [...state.mapOverlayHierarchy];
@@ -633,7 +633,7 @@ function mapOverlayBar(
 function global(
   state = {
     isSidePanelExpanded: false,
-    mapOverlayIds: null,
+    mapOverlayId: null,
     dashboards: [],
     viewConfigs: {},
     isLoadingOrganisationUnit: false,
@@ -647,7 +647,7 @@ function global(
       return {
         ...state,
         isSidePanelExpanded: false,
-        mapOverlayIds: !isMobile() && LANDING,
+        mapOverlayId: !isMobile() && LANDING,
       };
     case SHOW_TUPAIA_INFO:
       return {

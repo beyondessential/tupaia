@@ -201,7 +201,7 @@ function* handleUserPage(userPage, initialComponents) {
 const URL_REFRESH_COMPONENTS = {
   [URL_COMPONENTS.PROJECT]: setProject,
   [URL_COMPONENTS.ORG_UNIT]: setOrgUnit,
-  [URL_COMPONENTS.MAP_OVERLAY_IDS]: setMapOverlay,
+  [URL_COMPONENTS.MAP_OVERLAY_ID]: setMapOverlay,
   [URL_COMPONENTS.REPORT]: openEnlargedDialog,
   [URL_COMPONENTS.MEASURE_PERIOD]: updateCurrentMeasureConfigOnceHierarchyLoads,
 };
@@ -862,12 +862,12 @@ function* watchFetchMoreSearchResults() {
  * Fetches data for a measure and write it to map state by calling fetchMeasureSuccess.
  *
  */
-function* fetchMeasureInfo(mapOverlayIds) {
+function* fetchMeasureInfo(mapOverlayId) {
   const state = yield select();
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
-  const measureParams = selectMapOverlayById(state, mapOverlayIds);
+  const measureParams = selectMapOverlayById(state, mapOverlayId);
 
-  if (!mapOverlayIds || !organisationUnitCode || !measureParams) {
+  if (!mapOverlayId || !organisationUnitCode || !measureParams) {
     // Don't try and fetch null measures
     yield put(cancelFetchMeasureData());
 
@@ -886,7 +886,7 @@ function* fetchMeasureInfo(mapOverlayIds) {
       : getDefaultDates(measureParams);
 
   const urlParameters = {
-    mapOverlayIds,
+    mapOverlayId,
     organisationUnitCode,
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
@@ -906,7 +906,7 @@ function* fetchMeasureInfo(mapOverlayIds) {
 }
 
 function* fetchMeasureInfoForMeasureChange(action) {
-  yield fetchMeasureInfo(action.mapOverlayIds);
+  yield fetchMeasureInfo(action.mapOverlayId);
 }
 
 function* watchMeasureChange() {
@@ -972,15 +972,15 @@ function* watchFetchMeasureSuccess() {
 function* fetchMeasureInfoForNewOrgUnit(action) {
   const { countryCode } = action.organisationUnit;
   const state = yield select();
-  const mapOverlayIds = selectCurrentMapOverlayId(state);
+  const mapOverlayId = selectCurrentMapOverlayId(state);
   const oldOrgUnitCountry = state.map.measureInfo.currentCountry;
   if (oldOrgUnitCountry === countryCode) {
     // We are in the same country as before, no need to refetch measureData
     return;
   }
 
-  if (mapOverlayIds) {
-    yield put(setMapOverlay(mapOverlayIds));
+  if (mapOverlayId) {
+    yield put(setMapOverlay(mapOverlayId));
   }
 }
 

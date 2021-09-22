@@ -18,9 +18,9 @@ export class MapOverlayModel extends DatabaseModel {
     return MapOverlayType;
   }
 
-  async findMeasuresByIds(ids) {
+  async findMeasuresById(id) {
     const overlays = await this.find(
-      { id: ids },
+      { id: [id] },
       {
         columns: [
           { id: `${TYPES.MAP_OVERLAY}.id` },
@@ -29,12 +29,15 @@ export class MapOverlayModel extends DatabaseModel {
       },
     );
     const measureIds = new Set();
-    overlays.forEach(o => {
-      const { id, linkedMeasures = [] } = o;
-      linkedMeasures.forEach(measureId => {
-        measureIds.add(measureId);
-      });
-      measureIds.add(id);
+    overlays.forEach(overlay => {
+      const { id: overlayId, linkedMeasures } = overlay;
+      if (linkedMeasures) {
+        linkedMeasures.forEach(measureId => {
+          measureIds.add(measureId);
+        });
+      }
+
+      measureIds.add(overlayId);
     });
     return this.find({ id: Array.from(measureIds) });
   }

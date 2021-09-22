@@ -55,7 +55,7 @@ export const gaMiddleware = () => next => action => {
         break;
 
       case SET_MAP_OVERLAY:
-        gaEvent('Map Overlay', 'Change', action.mapOverlayIds);
+        gaEvent('Map Overlay', 'Change', action.mapOverlayId);
         break;
 
       case CHANGE_TILE_SET:
