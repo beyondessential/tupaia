@@ -113,57 +113,6 @@ export function getTimeHeatmapColor(value, noDataColour) {
   return `hsl(${100 - Math.floor(value * 100)}, 100%, 50%)`;
 }
 
-/**
- *
- * GPI Colors
- */
-const BLUE_COLOR_SET = [
-  blue['900'],
-  blue['900'],
-  blue['800'],
-  blue['800'],
-  blue['700'],
-  blue['600'],
-  blue['500'],
-  blue['400'],
-  blue['300'],
-];
-
-const RED_COLOR_SET = [
-  red['300'],
-  red['400'],
-  red['500'],
-  red['600'],
-  red['700'],
-  red['800'],
-  red['800'],
-  red['900'],
-  red['900'],
-];
-
-const GPI_PARITY_UPPER_LIMIT = '1.03';
-const GPI_PARITY_LOWER_LIMIT = '0.97';
-
-/**
- *
- * @param value - a gpi value between 0 and 2 where 0.97 - 1.03 is considered gender parity
- * @returns {string}
- */
-export function getGPIColor(value, min, max) {
-  if (value > GPI_PARITY_UPPER_LIMIT) {
-    const maxedValue = Math.min(value, 2);
-    const normalisedValue = normaliseToPercentage(maxedValue, GPI_PARITY_UPPER_LIMIT, max);
-    return getHeatmapColorByOrder({ value: normalisedValue, colorSet: RED_COLOR_SET });
-  }
-
-  if (value < GPI_PARITY_LOWER_LIMIT) {
-    const normalisedValue = normaliseToPercentage(value, min, GPI_PARITY_LOWER_LIMIT);
-    return getHeatmapColorByOrder({ value: normalisedValue, colorSet: BLUE_COLOR_SET });
-  }
-
-  return green['500'];
-}
-
 const HEATMAP_DEFAULT_RGB_SET = [
   'rgb(255, 255, 204)',
   'rgb(255, 237, 160)',
@@ -204,4 +153,58 @@ export function getReverseHeatmapColor(value) {
 // This allows measures to still use hex codes and named colors not in the palette.
 export function getColor(colorName) {
   return BREWER_PALETTE[colorName] || colorName;
+}
+
+/**
+ * GPI Colors
+ */
+const BLUE_COLOR_SET = [
+  blue['900'],
+  blue['900'],
+  blue['800'],
+  blue['800'],
+  blue['700'],
+  blue['600'],
+  blue['500'],
+  blue['400'],
+  blue['300'],
+];
+
+const RED_COLOR_SET = [
+  red['300'],
+  red['400'],
+  red['500'],
+  red['600'],
+  red['700'],
+  red['800'],
+  red['800'],
+  red['900'],
+  red['900'],
+];
+
+/**
+ *
+ *  A GPI between 0.97 - 1.03 is considered gender parity
+ */
+const GPI_PARITY_UPPER_LIMIT = '1.03';
+const GPI_PARITY_LOWER_LIMIT = '0.97';
+
+/**
+ *
+ * @param value - GPI value type is number between 0 and 2.
+ * @returns {string}
+ */
+export function getGPIColor(value, min, max) {
+  if (value > GPI_PARITY_UPPER_LIMIT) {
+    const maxedValue = Math.min(value, 2);
+    const normalisedValue = normaliseToPercentage(maxedValue, GPI_PARITY_UPPER_LIMIT, max);
+    return getHeatmapColorByOrder({ value: normalisedValue, colorSet: RED_COLOR_SET });
+  }
+
+  if (value < GPI_PARITY_LOWER_LIMIT) {
+    const normalisedValue = normaliseToPercentage(value, min, GPI_PARITY_LOWER_LIMIT);
+    return getHeatmapColorByOrder({ value: normalisedValue, colorSet: BLUE_COLOR_SET });
+  }
+
+  return green['500'];
 }
