@@ -18,14 +18,12 @@ import {
   DashboardVisualisationExtractor,
   draftDashboardItemValidator,
   draftReportValidator,
-} from '../viz-builder';
-import {
   Dashboard,
   DashboardRecord,
   DashboardRelationObject,
   DashboardRelationRecord,
-  DashboardVisualisationResource,
-} from '../viz-builder/types';
+  DashboardVizResource,
+} from '../viz-builder';
 
 const importFileSchema = yup.object().shape(
   {
@@ -97,9 +95,9 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
     return viz?.dashboardItem?.id;
   };
 
-  private createVisualisation = async (visualisation: DashboardVisualisationResource) => {
+  private createVisualisation = async (visualisation: DashboardVizResource) => {
     await this.meditrakConnection.createResource('dashboardVisualisations', {}, visualisation);
-    const [viz]: DashboardVisualisationResource[] = await this.meditrakConnection.fetchResources(
+    const [viz]: DashboardVizResource[] = await this.meditrakConnection.fetchResources(
       'dashboardVisualisations',
       {
         filter: {

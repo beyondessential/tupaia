@@ -34,17 +34,39 @@ export enum PreviewMode {
 export type DashboardVisualisationObject = {
   id?: string;
   code: string;
-  name?: string;
-  permissionGroup: string;
+  name: string;
   data: DataObject;
   presentation: PresentationObject;
+  permissionGroup: string;
 };
+
+export type LegacyDashboardVisualisationObject = {
+  id?: string;
+  code: string;
+  name: string;
+  data: {
+    dataBuilder: string;
+    config: LegacyReport['config'];
+  };
+  presentation: PresentationObject;
+};
+
+export type DashboardViz = DashboardVisualisationObject | LegacyDashboardVisualisationObject;
 
 export interface VisualisationValidator {
   validate: (object: DashboardVisualisationObject) => void;
 }
 
+export type Dashboard = {
+  id: string;
+  code: string;
+  name: string;
+  rootEntityCode: string;
+  sortOrder?: number;
+};
+
 export type DashboardItem = {
+  id: string;
   code: string;
   config: { name?: string } & { type: VizType } & Record<string, unknown>;
   reportCode: string;
@@ -57,16 +79,16 @@ export type Report = {
   config: ReportConfig;
 };
 
-export type Dashboard = {
+export type LegacyReport = {
   code: string;
-  name: string;
-  rootEntityCode: string;
-  sortOrder?: number;
+  dataBuilder: string;
+  config: Record<string, unknown>;
+  dataServices: { isDataRegional: boolean }[];
 };
 
-export type DashboardRecord = CamelKeysToSnake<Dashboard> & { id: string };
+export type DashboardRecord = CamelKeysToSnake<Dashboard>;
 
-export type DashboardItemRecord = CamelKeysToSnake<DashboardItem> & { id: string };
+export type DashboardItemRecord = CamelKeysToSnake<DashboardItem>;
 
 export type DashboardRelationRecord = {
   id: string;
@@ -108,7 +130,13 @@ export type CamelKeysToSnake<T extends Record<string, unknown>> = {
   [K in keyof T as CamelToSnake<Extract<K, string>>]: T[K];
 };
 
-export type DashboardVisualisationResource = {
-  dashboardItem: DashboardItemRecord;
-  report: ReportRecord;
+export type DashboardVisualisationResource = { dashboardItem: DashboardItem; report: Report };
+
+export type LegacyDashboardVisualisationResource = {
+  dashboardItem: DashboardItem;
+  report: LegacyReport;
 };
+
+export type DashboardVizResource =
+  | DashboardVisualisationResource
+  | LegacyDashboardVisualisationResource;
