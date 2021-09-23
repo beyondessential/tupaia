@@ -25,7 +25,7 @@ const getReport = (reportCode, dataElements) => ({
         {
           type: 'FINAL_EACH_YEAR',
           config: {
-            dataSourceEntityType: reportCode.includes('Province') ? 'district' : 'sub_district',
+            dataSourceEntityType: 'sub_district',
             aggregationEntityType: 'requested',
           },
         },
@@ -60,7 +60,7 @@ const getMapOverlay = (name, reportCode) => ({
   presentationOptions: {
     scaleType: 'performance',
     displayType: 'shaded-spectrum',
-    measureLevel: reportCode.includes('Province') ? 'District' : 'SubDistrict',
+    measureLevel: 'SubDistrict',
     valueType: 'percentage',
     scaleBounds: {
       left: {

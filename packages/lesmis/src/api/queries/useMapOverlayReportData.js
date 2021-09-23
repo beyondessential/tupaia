@@ -21,9 +21,10 @@ import { useUrlSearchParam } from '../../utils/useUrlSearchParams';
 import { useMapOverlaysData, findOverlay } from './useMapOverlaysData';
 import { get } from '../api';
 
-const translateMeasureOverlay = (overlay, measureDataRaw) => {
+const getMeasureDataFromResponse = (overlay, measureDataResponse) => {
+  // Legacy overlays have the config returned in the data response, return directly
   if (!overlay || overlay.legacy === true) {
-    return measureDataRaw;
+    return measureDataResponse;
   }
 
   const { measureId, measureLevel, displayType, dataElementCode, ...restOfOverlay } = overlay;
@@ -42,7 +43,7 @@ const translateMeasureOverlay = (overlay, measureDataRaw) => {
     measureLevel,
     measureOptions,
     serieses: measureOptions,
-    measureData: measureDataRaw,
+    measureData: measureDataResponse,
   };
 };
 
@@ -162,7 +163,7 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
     legacy: overlay?.legacy,
   };
 
-  const { data: measureDataRaw, isLoading: measureDataLoading } = useQuery(
+  const { data: measureDataResponse, isLoading: measureDataLoading } = useQuery(
     ['mapOverlay', entityCode, selectedOverlay, params],
     () =>
       get(`report/${entityCode}/${selectedOverlay}`, {
@@ -175,7 +176,9 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
     },
   );
 
-  const measureData = measureDataRaw ? translateMeasureOverlay(overlay, measureDataRaw) : null;
+  const measureData = measureDataResponse
+    ? getMeasureDataFromResponse(overlay, measureDataResponse)
+    : null;
 
   // reset hidden values when changing overlay or entity
   useEffect(() => {
@@ -190,7 +193,7 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
     }, {});
 
     setHiddenValues(hiddenByDefault);
-  }, [setHiddenValues, measureDataRaw]);
+  }, [setHiddenValues, measureDataResponse]);
 
   const setValueHidden = useCallback(
     (key, value, hidden) => {

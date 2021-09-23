@@ -88,7 +88,7 @@ const useSchoolVitals = entity => {
   const { data: results, isLoading } = useSchoolReport(entity);
 
   return {
-    data: results ? results[0] : undefined,
+    data: results?.[0],
     isLoading,
   };
 };
@@ -97,7 +97,7 @@ const useEntityVitals = entity => {
   const { data: results, isLoading } = useEntityReport(entity);
 
   return {
-    data: results ? results[0] : undefined,
+    data: results?.[0],
     isLoading,
   };
 };
