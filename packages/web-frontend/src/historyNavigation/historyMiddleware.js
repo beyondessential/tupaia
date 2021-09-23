@@ -10,6 +10,7 @@
  */
 
 import moment from 'moment';
+import { getLocationComponentValue } from '.';
 import {
   CLEAR_MEASURE,
   CLOSE_ENLARGED_DIALOG,
@@ -18,6 +19,7 @@ import {
   SET_DASHBOARD_GROUP,
   SET_ENLARGED_DIALOG_DATE_RANGE,
   SET_MAP_OVERLAY,
+  UNSELECT_MAP_OVERLAY,
   SET_ORG_UNIT,
   SET_PROJECT,
   updateHistoryLocation,
@@ -89,6 +91,22 @@ export const historyMiddleware = store => next => action => {
         store,
         URL_COMPONENTS.MEASURE_PERIOD,
         convertDateRangeToUrlPeriodString({ startDate, endDate }, periodGranularity),
+      );
+      break;
+    }
+    case UNSELECT_MAP_OVERLAY: {
+      const { routing } = state;
+      const currentMapOverlayIdsArray = getLocationComponentValue(
+        routing,
+        URL_COMPONENTS.MAP_OVERLAY,
+      ).split(',');
+      const updatedMapOverlayIds = currentMapOverlayIdsArray.filter(
+        mapOverlayId => mapOverlayId !== action.mapOverlayId,
+      );
+      dispatchLocationUpdate(
+        store,
+        URL_COMPONENTS.MAP_OVERLAY,
+        updatedMapOverlayIds.length > 0 ? updatedMapOverlayIds.join(',') : null,
       );
       break;
     }

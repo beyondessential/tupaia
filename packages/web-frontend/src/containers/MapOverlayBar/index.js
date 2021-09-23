@@ -21,7 +21,7 @@ import shallowEqual from 'shallowequal';
 import { Control } from './Control';
 import {
   setMapOverlay,
-  clearMeasure,
+  unselectMapOverlay,
   toggleMeasureExpand,
   updateMeasureConfig,
 } from '../../actions';
@@ -72,7 +72,7 @@ export class MapOverlayBar extends Component {
   }
 
   renderNestedHierarchyItems(children) {
-    const { currentMapOverlayId, onClearMeasure } = this.props;
+    const { currentMapOverlayId, onUnSelectMapOverlay } = this.props;
     return children.map(childObject => {
       let nestedItems;
 
@@ -85,7 +85,7 @@ export class MapOverlayBar extends Component {
       if (!childObject.children) {
         onClick =
           currentMapOverlayId === childObject.mapOverlayId
-            ? () => onClearMeasure()
+            ? () => onUnSelectMapOverlay(childObject.mapOverlayId)
             : () => this.handleSelectMapOverlay(childObject);
       }
 
@@ -175,7 +175,7 @@ MapOverlayBar.propTypes = {
   isExpanded: PropTypes.bool.isRequired,
   isMeasureLoading: PropTypes.bool.isRequired,
   onSelectMapOverlay: PropTypes.func.isRequired,
-  onClearMeasure: PropTypes.func.isRequired,
+  onUnSelectMapOverlay: PropTypes.func.isRequired,
   onUpdateMeasurePeriod: PropTypes.func.isRequired,
   currentOrganisationUnitName: PropTypes.string,
   defaultMapOverlay: MapOverlayShape,
@@ -216,7 +216,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   onExpandClick: () => dispatch(toggleMeasureExpand()),
-  onClearMeasure: () => dispatch(clearMeasure()),
+  onUnSelectMapOverlay: mapOverlayId => dispatch(unselectMapOverlay(mapOverlayId)),
   onSelectMapOverlay: mapOverlay => dispatch(setMapOverlay(mapOverlay.mapOverlayId)),
   dispatch,
 });
