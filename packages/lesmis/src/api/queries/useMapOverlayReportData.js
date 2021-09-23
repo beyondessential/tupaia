@@ -26,42 +26,20 @@ const translateMeasureOverlay = (overlay, measureDataRaw) => {
     return measureDataRaw;
   }
 
-  const {
-    id,
-    groupName,
-    userGroup,
-    isDataRegional, // don't include these in response
-    dataElementCode,
-    presentationOptions,
-    measureBuilderConfig,
-    name,
-    ...restOfMapOverlay
-  } = overlay;
+  const { measureId, measureLevel, displayType, dataElementCode, ...restOfOverlay } = overlay;
 
-  const {
-    displayType,
-    hideFromMenu,
-    hideFromLegend,
-    hideFromPopup,
-    customLabel,
-    ...restOfPresentationOptions
-  } = presentationOptions;
-
-  const measureOptions = {
-    ...restOfPresentationOptions,
-    ...restOfMapOverlay,
-    name: customLabel ?? name,
-    type: displayType,
-    key: id,
-    periodGranularity: measureBuilderConfig.periodGranularity,
-    hideFromMenu: hideFromMenu || false,
-    hideFromLegend: hideFromLegend || false,
-    hideFromPopup: hideFromPopup || false,
-  };
+  const measureOptions = [
+    {
+      measureLevel,
+      type: displayType,
+      key: dataElementCode,
+      ...restOfOverlay,
+    },
+  ];
 
   return {
-    measureId: overlay.measureId,
-    measureLevel: presentationOptions.measureLevel,
+    measureId,
+    measureLevel,
     measureOptions,
     serieses: measureOptions,
     measureData: measureDataRaw,
@@ -197,12 +175,12 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
     },
   );
 
+  const measureData = measureDataRaw ? translateMeasureOverlay(overlay, measureDataRaw) : null;
+
   // reset hidden values when changing overlay or entity
   useEffect(() => {
     setHiddenValues({});
   }, [setHiddenValues, selectedOverlay, entityCode]);
-
-  const measureData = translateMeasureOverlay(overlay, measureDataRaw);
 
   // set default hidden measures when measure data changes
   useEffect(() => {
@@ -212,7 +190,7 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
     }, {});
 
     setHiddenValues(hiddenByDefault);
-  }, [setHiddenValues, measureData]);
+  }, [setHiddenValues, measureDataRaw]);
 
   const setValueHidden = useCallback(
     (key, value, hidden) => {

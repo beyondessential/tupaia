@@ -46,11 +46,12 @@ export class ReportRoute extends Route {
       }
     }
     // Otherwise just pull from report server
-    return this.reportConnection.fetchReport(reportCode, {
+    const report = await this.reportConnection.fetchReport(reportCode, {
       // Report server can accept arrays so the parameters are plural
       organisationUnitCodes: entityCode,
       hierarchy: LESMIS_HIERARCHY_NAME,
       ...this.req.query,
     });
+    return report.results;
   }
 }
