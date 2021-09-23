@@ -53,18 +53,18 @@ const VitalsContainer = styled.div`
 /* eslint-disable react/prop-types */
 // Vitals data is essentially unstructured so no point checking prop types
 
-const CountryView = () => (
+const CountryView = ({ vitals }) => (
   <VitalsContainer>
     <Heading variant="h4">Country Details</Heading>
     <TwoColGrid>
       <EntityVitalsItem
         name="No. Schools"
-        value="13,849" // TODO: Remove hardcoded values https://github.com/beyondessential/tupaia-backlog/issues/2765
+        value={vitals.NumberOfSchools?.toLocaleString()}
         icon="School"
       />
       <EntityVitalsItem
         name="No. Students"
-        value="1,659,117" // TODO: Remove hardcoded values https://github.com/beyondessential/tupaia-backlog/issues/2765
+        value={vitals.NumberOfStudents?.toLocaleString()}
         icon="Study"
       />
     </TwoColGrid>
@@ -107,7 +107,7 @@ const DistrictView = ({ vitals }) => (
       />
       <EntityVitalsItem
         name="Priority District"
-        value={vitals.priorityDistrict ? 'Yes' : 'No'}
+        value={vitals.attributes?.type === 'LESMIS_Target_District' ? 'Yes' : 'No'}
         icon="Notepad"
       />
       <EntityVitalsItem
@@ -125,11 +125,11 @@ const DistrictView = ({ vitals }) => (
     <MuiBox mt={2}>
       <SubHeading variant="h4">Province Details</SubHeading>
       <FlexStart mt={1} mb={4}>
-        <EntityVitalsItem name="Name of Province" value={vitals.parentProvince?.name} mr={4} />
-        <EntityVitalsItem name="Province Code" value={vitals.parentProvince?.code} mr={4} />
+        <EntityVitalsItem name="Name of Province" value={vitals.parentVitals?.name} mr={4} />
+        <EntityVitalsItem name="Province Code" value={vitals.parentVitals?.code} mr={4} />
         <EntityVitalsItem
           name="Province Population"
-          value={vitals.parentProvince?.Population?.toLocaleString()}
+          value={vitals.parentVitals?.Population?.toLocaleString()}
         />
       </FlexStart>
     </MuiBox>
@@ -146,7 +146,11 @@ const SchoolView = ({ vitals }) => (
         value={vitals.NumberOfStudents?.toLocaleString()}
         icon="Study"
       />
-      <EntityVitalsItem name="Complete School" icon="Notepad" />
+      <EntityVitalsItem
+        name="Complete School"
+        value={vitals.SchoolComplete ? 'Yes' : 'No'}
+        icon="Notepad"
+      />
       <EntityVitalsItem
         name="Distance to Main Road"
         value={vitals.DistanceToMainRoad ? `${vitals.DistanceToMainRoad} km` : '-'}
@@ -163,15 +167,15 @@ const SchoolView = ({ vitals }) => (
     <MuiBox mt={2}>
       <SubHeading variant="h4">District Details</SubHeading>
       <FlexStart mt={1} mb={4}>
-        <EntityVitalsItem name="Name of District" value={vitals.parentDistrict?.name} mr={4} />
+        <EntityVitalsItem name="Name of District" value={vitals.parentVitals?.name} mr={4} />
         <EntityVitalsItem
           name="District Population"
-          value={vitals.parentDistrict?.Population?.toLocaleString()}
+          value={vitals.parentVitals?.Population?.toLocaleString()}
           mr={4}
         />
         <EntityVitalsItem
           name="Priority District"
-          value={vitals.parentDistrict?.priorityDistrict ? 'Yes' : 'No'}
+          value={vitals.parentVitals?.attributes?.type === 'LESMIS_Target_District' ? 'Yes' : 'No'}
         />
       </FlexStart>
     </MuiBox>

@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { PARSABLE_ANALYTICS } from './transform.fixtures';
-import { buildTransform } from '../../../reportBuilder/transform';
+import { PARSABLE_ANALYTICS } from '../transform.fixtures';
+import { buildTransform } from '../../../../reportBuilder/transform';
 
 describe('parser', () => {
   it('can do lookups', () => {
@@ -94,46 +94,6 @@ describe('parser', () => {
     ]);
   });
 
-  it('can add undefined values', () => {
-    const transform = buildTransform([
-      {
-        transform: 'updateColumns',
-        insert: {
-          add: '= $BCD1 + $BCD2',
-        },
-        include: 'period',
-      },
-    ]);
-    expect(transform(PARSABLE_ANALYTICS)).toEqual([
-      { period: '20200101', add: 4 },
-      { period: '20200102', add: 2 },
-      { period: '20200103', add: 5 },
-      { period: '20200101', add: 7 },
-      { period: '20200102', add: 8 },
-      { period: '20200103', add: 2 },
-    ]);
-  });
-
-  it('can divide undefined values', () => {
-    const transform = buildTransform([
-      {
-        transform: 'updateColumns',
-        insert: {
-          divide: '= $BCD1 / $BCD2',
-        },
-        include: 'period',
-      },
-    ]);
-    expect(transform(PARSABLE_ANALYTICS)).toEqual([
-      { period: '20200101' },
-      { period: '20200102' },
-      { period: '20200103' },
-      { period: '20200101' },
-      { period: '20200102' },
-      { period: '20200103' },
-    ]);
-  });
-
   describe('in transforms', () => {
     it('mergeRows supports parser lookups on where', () => {
       const transform = buildTransform([
@@ -155,7 +115,7 @@ describe('parser', () => {
       ]);
     });
 
-    it('excludeRows supports parser lookups', () => {
+    it('excludeRows supports parser lookups on where', () => {
       const transform = buildTransform([
         {
           transform: 'excludeRows',
@@ -171,7 +131,7 @@ describe('parser', () => {
       ]);
     });
 
-    it('updateColumns supports parser lookups', () => {
+    it('updateColumns supports parser lookups in column name and values', () => {
       const transform = buildTransform([
         {
           transform: 'updateColumns',

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { FieldValue } from '../types';
+import { FieldValue } from '../../../types';
 
 export const value = (valueGiven: FieldValue): FieldValue => {
   return valueGiven;
