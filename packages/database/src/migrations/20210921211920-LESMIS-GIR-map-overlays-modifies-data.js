@@ -95,7 +95,7 @@ const getGPIReport = (reportCode, dataElements) => ({
         transform: 'updateColumns',
         insert: {
           organisationUnitCode: '=$organisationUnit',
-          '=$dataElement': '=divide($value, 100)',
+          '=$dataElement': '=$value',
         },
         exclude: ['dataElement', 'value', 'organisationUnit'],
       },
@@ -158,6 +158,35 @@ const getMapOverlay = (name, reportCode) => ({
   projectCodes: '{laos_schools}',
 });
 
+const getGPIMapOverlay = (name, reportCode) => ({
+  id: reportCode,
+  name,
+  userGroup: PERMISSION_GROUP,
+  dataElementCode: 'value',
+  isDataRegional: true,
+  measureBuilder: 'useReportServer',
+  measureBuilderConfig: {
+    dataSourceType: 'custom',
+    reportCode,
+  },
+  presentationOptions: {
+    scaleType: 'gpi',
+    displayType: 'shaded-spectrum',
+    measureLevel: reportCode.includes('Province') ? 'District' : 'SubDistrict',
+    scaleBounds: {
+      left: {
+        max: 0,
+      },
+      right: {
+        min: 2,
+      },
+    },
+    periodGranularity: 'one_year_at_a_time',
+  },
+  countryCodes: '{"LA"}',
+  projectCodes: '{laos_schools}',
+});
+
 const addMapOverlayGroup = async (db, parentCode, { name, code }) => {
   const parentId = await codeToId(db, 'map_overlay_group', parentCode);
 
@@ -175,7 +204,8 @@ const addMapOverlayGroup = async (db, parentCode, { name, code }) => {
 const addMapOverlay = async (db, parentCode, config) => {
   const { reportCode, reportType, dataElements, name, sortOrder } = config;
   const report = getReport(reportType, reportCode, dataElements);
-  const mapOverlay = getMapOverlay(name, reportCode);
+  const mapOverlay =
+    reportType === 'GPI' ? getGPIMapOverlay(name, reportCode) : getMapOverlay(name, reportCode);
   const permissionGroupId = await nameToId(db, 'permission_group', PERMISSION_GROUP);
   await insertObject(db, 'report', {
     id: generateId(),

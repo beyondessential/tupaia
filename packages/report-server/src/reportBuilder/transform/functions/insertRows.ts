@@ -5,9 +5,10 @@
 
 import { yup } from '@tupaia/utils';
 
+import { Row } from '../../types';
+import { Context } from '../../context';
 import { TransformParser } from '../parser';
 import { buildWhere } from './where';
-import { Row } from '../../types';
 import { mapStringToStringValidator } from './transformValidators';
 
 type InsertParams = {
@@ -31,9 +32,9 @@ const paramsValidator = yup.object().shape({
     .default('after'),
 });
 
-const insertRows = (rows: Row[], params: InsertParams): Row[] => {
+const insertRows = (rows: Row[], params: InsertParams, context: Context): Row[] => {
   const returnArray = [...rows];
-  const parser = new TransformParser(rows);
+  const parser = new TransformParser(rows, context);
   const rowsToInsert = returnArray.map(() => {
     const shouldInsertNewRow = params.where(parser);
     if (!shouldInsertNewRow) {
@@ -74,7 +75,7 @@ const buildParams = (params: unknown): InsertParams => {
   };
 };
 
-export const buildInsertRows = (params: unknown) => {
+export const buildInsertRows = (params: unknown, context: Context) => {
   const builtParams = buildParams(params);
-  return (rows: Row[]) => insertRows(rows, builtParams);
+  return (rows: Row[]) => insertRows(rows, builtParams, context);
 };

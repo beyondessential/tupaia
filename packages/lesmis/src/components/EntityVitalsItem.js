@@ -91,7 +91,7 @@ export const EntityVitalsItem = ({ name, value, icon, isLoading, ...props }) =>
       <VitalsIcon icon={icon} />
       <div>
         <VitalName>{name}</VitalName>
-        {value === 'yes' ? (
+        {value === 'Yes' ? (
           <GreenVital>{value}</GreenVital>
         ) : (
           <VitalContent>{value || '-'}</VitalContent>

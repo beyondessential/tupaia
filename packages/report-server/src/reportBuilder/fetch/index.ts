@@ -4,3 +4,4 @@
  */
 
 export { buildFetch } from './fetch';
+export { FetchResponse } from './types';
