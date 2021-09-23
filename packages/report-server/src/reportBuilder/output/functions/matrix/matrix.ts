@@ -3,52 +3,46 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { yup } from '@tupaia/utils';
+
 import { Row } from '../../../types';
 import { MatrixBuilder } from './matrixBuilder';
 import { Matrix, MatrixParams } from './types';
+
+const paramsValidator = yup.object().shape(
+  {
+    columns: yup.lazy((value: unknown) =>
+      Array.isArray(value)
+        ? yup.array().of(yup.string().required())
+        : yup.mixed<'*'>().oneOf(['*']),
+    ),
+    rowField: yup
+      .string()
+      .required()
+      .when('categoryField', (categoryField: string | undefined, schema: yup.StringSchema) =>
+        categoryField !== undefined ? schema.notOneOf([categoryField]) : schema,
+      )
+      .when('columns', (columns: '*' | string[] | undefined, schema: yup.StringSchema) =>
+        Array.isArray(columns) ? schema.notOneOf(columns) : schema,
+      ),
+    categoryField: yup
+      .string()
+      .when('rowField', (rowField: string, schema: yup.StringSchema) => schema.notOneOf([rowField]))
+      .when('columns', (columns: '*' | string[] | undefined, schema: yup.StringSchema) =>
+        Array.isArray(columns) ? schema.notOneOf(columns) : schema,
+      ),
+  },
+  [['rowField', 'categoryField']],
+);
 
 const matrix = (rows: Row[], params: MatrixParams): Matrix => {
   return new MatrixBuilder(rows, params).build();
 };
 
 const buildParams = (params: unknown): MatrixParams => {
-  const getIncludeFields = (columns: unknown): string[] | '*' => {
-    if (columns === '*' || columns === undefined) {
-      return '*';
-    }
-    if (!Array.isArray(columns) || columns.length === 0) {
-      throw new Error(`Expected columns as string array or '*' but got ${columns}`);
-    }
-
-    columns.forEach(column => {
-      if (typeof column !== 'string') {
-        throw new Error(`Expected each column to be a string but got ${columns}`);
-      }
-    });
-    return columns;
-  };
-
-  if (typeof params !== 'object' || params === null) {
-    throw new Error(`Expected params object but got ${params}`);
-  }
-  const { columns, categoryField, rowField } = params;
-  const includeFields = getIncludeFields(columns);
-
-  if (typeof rowField !== 'string') {
-    throw new Error(`Expected rowField as string but got ${rowField}`);
-  }
-  if (categoryField !== undefined && typeof categoryField !== 'string') {
-    throw new Error(`Expected categoryField as string but got ${categoryField}`);
-  }
-  if (Array.isArray(includeFields) && includeFields.includes(rowField)) {
-    throw new Error(`rowField: ${rowField} is already defined as a column`);
-  }
-  if (categoryField && Array.isArray(includeFields) && includeFields.includes(categoryField)) {
-    throw new Error(`categoryField: ${categoryField} is already defined as a column`);
-  }
-  if (categoryField && rowField && categoryField === rowField) {
-    throw new Error(`categoryField: ${categoryField} is already defined as the rowField`);
-  }
+  const validatedParams = paramsValidator.validateSync(params);
+  const { columns, categoryField, rowField } = validatedParams;
+  const includeFields = columns || '*';
 
   const excludeFields = categoryField ? [categoryField, rowField] : [rowField];
 

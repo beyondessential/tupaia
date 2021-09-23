@@ -116,6 +116,29 @@ describe('output', () => {
     });
 
     describe('handle categoryField', () => {
+      it('throws error if categoryField matches any columns', () => {
+        const output = buildOutput({
+          type: 'matrix',
+          categoryField: 'InfrastructureType',
+          rowField: 'FacilityType',
+          columns: ['InfrastructureType', 'Laos', 'Tonga'],
+        });
+        expect(() => {
+          output(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES);
+        }).toThrow();
+      });
+
+      it('throws error if categoryField matches rowField', () => {
+        const output = buildOutput({
+          type: 'matrix',
+          categoryField: 'FacilityType',
+          rowField: 'FacilityType',
+        });
+        expect(() => {
+          output(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES);
+        }).toThrow();
+      });
+
       it('can perform with categoryField', () => {
         const expectedData = {
           columns: [
@@ -213,6 +236,89 @@ describe('output', () => {
       });
     });
 
-    // TODO: it('can perform with subCategoryField', () =>{})
+    describe('handle rowField', () => {
+      it('throws error if rowField matches any columns', () => {
+        const output = buildOutput({
+          type: 'matrix',
+          categoryField: 'InfrastructureType',
+          rowField: 'FacilityType',
+          columns: ['FacilityType', 'Laos', 'Tonga'],
+        });
+        expect(() => {
+          output(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES);
+        }).toThrow();
+      });
+
+      it('throws error if rowField matches categoryField', () => {
+        const output = buildOutput({
+          type: 'matrix',
+          categoryField: 'FacilityType',
+          rowField: 'FacilityType',
+        });
+        expect(() => {
+          output(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES);
+        }).toThrow();
+      });
+
+      it('throws error if rowField not provided ', () => {
+        const output = buildOutput({
+          type: 'matrix',
+          categoryField: 'FacilityType',
+        });
+        expect(() => {
+          output(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES);
+        }).toThrow();
+      });
+
+      it('can perform with rowField', () => {
+        const expectedData = {
+          columns: [
+            {
+              key: 'InfrastructureType',
+              title: 'InfrastructureType',
+            },
+            {
+              key: 'Laos',
+              title: 'Laos',
+            },
+            {
+              key: 'Tonga',
+              title: 'Tonga',
+            },
+          ],
+          rows: [
+            {
+              InfrastructureType: 'medical center',
+              dataElement: 'hospital',
+              Laos: 3,
+              Tonga: 0,
+            },
+            {
+              InfrastructureType: 'medical center',
+              dataElement: 'clinic',
+              Laos: 4,
+              Tonga: 9,
+            },
+            {
+              InfrastructureType: 'others',
+              dataElement: 'park',
+              Laos: 2,
+              Tonga: 0,
+            },
+            {
+              InfrastructureType: 'others',
+              dataElement: 'library',
+              Laos: 0,
+              Tonga: 5,
+            },
+          ],
+        };
+        const output = buildOutput({
+          type: 'matrix',
+          rowField: 'FacilityType',
+        });
+        expect(output(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES)).toEqual(expectedData);
+      });
+    });
   });
 });
