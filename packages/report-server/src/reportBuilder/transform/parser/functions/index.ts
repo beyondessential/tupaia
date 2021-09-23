@@ -4,6 +4,7 @@
  */
 
 import { value, last, eq, notEq, exists, notExists, gt, length, any, all } from './basic';
+import { orgUnitCodeToName } from './context';
 import {
   convertToPeriod,
   dateStringToPeriod,
@@ -14,9 +15,9 @@ import {
 import { add, divide, sum } from './math';
 
 /**
- * Functions to be imported into the expression parser
+ * Custom functions to be imported into mathjs
  */
-export const functions = {
+export const customFunctions = {
   value,
   last,
   eq,
@@ -32,6 +33,16 @@ export const functions = {
   formatAsFractionAndPercentage,
   any,
   all,
+};
+
+export const contextConfig = {
+  orgUnitCodeToName,
+};
+
+/**
+ * Functions to extend existing mathjs functions
+ */
+export const functionsExtensions = {
   add,
   divide,
 };
