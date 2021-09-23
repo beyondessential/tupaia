@@ -174,9 +174,10 @@ const translateOverlaysForResponse = mapOverlays =>
         return {
           id, // just for sorting purpose, will be removed later
           measureId: idString,
-          code: legacy ? idString : reportCode, // if we're not a legacy overlay, return the report code
+          code: idString,
           name,
           ...presentationOptions,
+          reportCode,
           dataElementCode,
           legacy,
         };

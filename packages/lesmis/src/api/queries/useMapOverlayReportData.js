@@ -153,6 +153,7 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
 
   const entityData = entitiesByCode[entityCode];
   const overlay = findOverlay(overlaysData, selectedOverlay);
+  const reportCode = overlay?.legacy ? selectedOverlay : overlay?.reportCode;
   const { startDate, endDate } = yearToApiDates(year);
 
   const params = {
@@ -166,13 +167,13 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
   const { data: measureDataResponse, isLoading: measureDataLoading } = useQuery(
     ['mapOverlay', entityCode, selectedOverlay, params],
     () =>
-      get(`report/${entityCode}/${selectedOverlay}`, {
+      get(`report/${entityCode}/${reportCode}`, {
         params,
       }),
     {
       staleTime: 60 * 60 * 1000,
       refetchOnWindowFocus: false,
-      enabled: !!entityCode && !!selectedOverlay && !!overlay,
+      enabled: !!entityCode && !!reportCode && !!overlay,
     },
   );
 
