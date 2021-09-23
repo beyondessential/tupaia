@@ -196,8 +196,7 @@ const GPI_PARITY_LOWER_LIMIT = '0.97';
  */
 export function getGPIColor(value, min, max) {
   if (value > GPI_PARITY_UPPER_LIMIT) {
-    const maxedValue = Math.min(value, 2);
-    const normalisedValue = normaliseToPercentage(maxedValue, GPI_PARITY_UPPER_LIMIT, max);
+    const normalisedValue = normaliseToPercentage(Math.min(value, 2), GPI_PARITY_UPPER_LIMIT, max);
     return getHeatmapColorByOrder({ value: normalisedValue, colorSet: RED_COLOR_SET });
   }
 
