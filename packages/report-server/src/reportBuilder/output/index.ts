@@ -4,3 +4,4 @@
  */
 
 export { buildOutput } from './output';
+export { ReportOutput } from './functions';

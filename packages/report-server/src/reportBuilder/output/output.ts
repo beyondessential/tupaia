@@ -5,8 +5,8 @@
 
 import { yup } from '@tupaia/utils';
 
-import { Row } from '../types';
-import { outputBuilders } from './functions/outputBuilders';
+import { Response } from './types';
+import { outputBuilders } from './functions';
 
 type OutputParams = {
   type: keyof typeof outputBuilders;
@@ -19,11 +19,11 @@ const paramsValidator = yup.object().shape({
     .oneOf(Object.keys(outputBuilders) as (keyof typeof outputBuilders)[]),
 });
 
-const output = (rows: Row[], params: OutputParams) => {
+const output = (response: Response, params: OutputParams) => {
   const { type, config } = params;
 
   const outputBuilder = outputBuilders[type](config);
-  return outputBuilder(rows);
+  return outputBuilder(response);
 };
 
 const buildParams = (params: unknown): OutputParams => {
@@ -34,5 +34,5 @@ const buildParams = (params: unknown): OutputParams => {
 
 export const buildOutput = (params: unknown) => {
   const builtParams = buildParams(params);
-  return (rows: Row[]) => output(rows, builtParams);
+  return (response: Response) => output(response, builtParams);
 };

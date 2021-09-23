@@ -5,9 +5,9 @@
 
 import { yup } from '@tupaia/utils';
 
-import { Row } from '../../../types';
+import { Response } from '../../types';
 import { MatrixBuilder } from './matrixBuilder';
-import { Matrix, MatrixParams } from './types';
+import { MatrixParams } from './types';
 
 const paramsValidator = yup.object().shape(
   {
@@ -16,6 +16,7 @@ const paramsValidator = yup.object().shape(
         ? yup.array().of(yup.string().required())
         : yup.mixed<'*'>().oneOf(['*'], "columns must be either '*' or an array"),
     ),
+    excludeFields: yup.array().of(yup.string().required()),
     rowField: yup
       .string()
       .required()
@@ -55,24 +56,30 @@ const paramsValidator = yup.object().shape(
   [['rowField', 'categoryField']],
 );
 
-const matrix = (rows: Row[], params: MatrixParams): Matrix => {
-  return new MatrixBuilder(rows, params).build();
+const matrix = (response: Response, params: MatrixParams) => {
+  return new MatrixBuilder(response, params).build();
 };
 
 const buildParams = (params: unknown): MatrixParams => {
   const validatedParams = paramsValidator.validateSync(params);
-  const { columns, categoryField, rowField } = validatedParams;
-  const includeFields = columns || '*';
+  const {
+    columns = '*',
+    excludeFields: excludeFieldsParams = [],
+    categoryField,
+    rowField,
+  } = validatedParams;
 
-  const excludeFields = categoryField ? [categoryField, rowField] : [rowField];
+  const excludeFields = categoryField
+    ? [categoryField, rowField, ...excludeFieldsParams]
+    : [rowField, ...excludeFieldsParams];
 
   return {
-    columns: { includeFields, excludeFields },
+    columns: { includeFields: columns, excludeFields },
     rows: { categoryField, rowField },
   };
 };
 
 export const buildMatrix = (params: unknown) => {
   const builtParams = buildParams(params);
-  return (rows: Row[]) => matrix(rows, builtParams);
+  return (response: Response) => matrix(response, builtParams);
 };

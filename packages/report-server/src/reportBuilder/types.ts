@@ -8,3 +8,13 @@ export type FieldValue = string | number | boolean | undefined | null;
 export interface Row {
   [field: string]: FieldValue;
 }
+
+export interface PeriodMetadata {
+  period?: {
+    requested?: string;
+    earliestAvailable?: string;
+    latestAvailable?: string;
+    reportStart?: string;
+    reportEnd?: string;
+  };
+}

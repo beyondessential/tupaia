@@ -1,5 +1,6 @@
 import pick from 'lodash.pick';
-import { Row } from '../../../types';
+import { Row, PeriodMetadata } from '../../../types';
+import { Response } from '../../types';
 import { MatrixParams, Matrix } from './types';
 
 /** TODO: currently we are using 'dataElement' as a key in rows to specify row field (name),
@@ -12,22 +13,27 @@ const NON_COLUMNS_KEYS = [CATEGORY_FIELD_KEY, ROW_FIELD_KEY];
 export class MatrixBuilder {
   private rows: Row[];
 
+  private metadata: PeriodMetadata;
+
   private matrixData: Matrix;
 
   private params: MatrixParams;
 
-  constructor(rows: Row[], params: MatrixParams) {
-    this.rows = rows;
+  constructor(response: Response, params: MatrixParams) {
+    const { results, ...metadata } = response;
+    this.rows = results;
+    this.metadata = metadata;
     this.params = params;
     this.matrixData = { columns: [], rows: [] };
   }
 
   public build() {
     this.buildColumns();
+    this.buildPeriod();
     this.buildRows();
     this.adjustRowsToUseIncludedColumns();
     this.buildCategories();
-    return this.matrixData;
+    return { results: this.matrixData, ...this.metadata };
   }
 
   private buildColumns() {
@@ -58,20 +64,37 @@ export class MatrixBuilder {
     assignColumnSetToMatrixData(columnsInArray);
   }
 
+  private buildPeriod() {
+    const isString = (val: unknown): val is string => typeof val === 'string';
+    const periods = this.rows
+      .map(row => row.period)
+      .filter(isString)
+      .sort();
+
+    if (periods.length > 0) {
+      const earliestPeriod = periods[0];
+      const latestPeriod = periods[periods.length - 1];
+      this.metadata.period = {
+        ...this.metadata.period,
+        reportStart: earliestPeriod,
+        reportEnd: latestPeriod,
+      };
+    }
+  }
+
   private buildRows() {
     const rows: Row[] = [];
+    const { excludeFields } = this.params.columns;
     const { rowField, categoryField } = this.params.rows;
 
     this.rows.forEach(row => {
-      let newRows: Row;
+      const newRow = { ...row };
+      excludeFields.forEach(field => delete newRow[field]);
       if (categoryField) {
-        const { [rowField]: rowFieldData, [categoryField]: categoryId, ...restOfRow } = row;
-        newRows = { [ROW_FIELD_KEY]: rowFieldData, [CATEGORY_FIELD_KEY]: categoryId, ...restOfRow };
-      } else {
-        const { [rowField]: rowFieldData, ...restOfRow } = row;
-        newRows = { [ROW_FIELD_KEY]: rowFieldData, ...restOfRow };
+        newRow[CATEGORY_FIELD_KEY] = row[categoryField];
       }
-      rows.push(newRows);
+      newRow[ROW_FIELD_KEY] = row[rowField];
+      rows.push(newRow);
     });
 
     this.matrixData.rows = rows;

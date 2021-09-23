@@ -9,13 +9,14 @@ import { createAggregator } from '@tupaia/aggregator';
 import { Route } from '@tupaia/server-boilerplate';
 
 import { Aggregator } from '../aggregator';
-import { ReportBuilder, Row, BuiltReport } from '../reportBuilder';
+import { ReportBuilder, Row } from '../reportBuilder';
+import { ReportOutput } from '../reportBuilder/output';
 import { ReportRouteQuery, ReportRouteBody } from './types';
 import { getRequestedOrgUnitObjects, getAccessibleOrgUnitCodes } from './helpers';
 
 export type TestReportRequest = Request<
   Record<string, never>,
-  BuiltReport,
+  ReportOutput,
   {
     testData?: Row[];
     testConfig: Record<string, unknown>;
