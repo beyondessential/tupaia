@@ -5,6 +5,7 @@
  */
 
 import moment from 'moment';
+import { blue, red, green } from '@material-ui/core/colors';
 import {
   BREWER_PALETTE,
   SCALE_TYPES,
@@ -13,6 +14,7 @@ import {
   REVERSE_DEFAULT_COLOR_SCHEME,
   PERFORMANCE_COLOR_SCHEME,
   TIME_COLOR_SCHEME,
+  GPI_COLOR_SCHEME,
 } from '../constants';
 
 export const DEFAULT_DISASTER_COLOR = 'orange';
@@ -22,6 +24,7 @@ const COLOR_SCHEME_TO_FUNCTION = {
   [REVERSE_DEFAULT_COLOR_SCHEME]: getReverseHeatmapColor,
   [PERFORMANCE_COLOR_SCHEME]: getPerformanceHeatmapColor,
   [TIME_COLOR_SCHEME]: getTimeHeatmapColor,
+  [GPI_COLOR_SCHEME]: getGPIColor,
 };
 
 const SCALE_TYPE_TO_COLOR_SCHEME = {
@@ -30,19 +33,8 @@ const SCALE_TYPE_TO_COLOR_SCHEME = {
   [SCALE_TYPES.NEUTRAL]: DEFAULT_COLOR_SCHEME,
   [SCALE_TYPES.NEUTRAL_REVERSE]: REVERSE_DEFAULT_COLOR_SCHEME,
   [SCALE_TYPES.TIME]: TIME_COLOR_SCHEME,
+  [SCALE_TYPES.GPI]: GPI_COLOR_SCHEME,
 };
-
-const HEATMAP_DEFAULT_RGB_SET = [
-  [255, 255, 204],
-  [255, 237, 160],
-  [254, 217, 118],
-  [254, 178, 76],
-  [253, 141, 60],
-  [252, 78, 42],
-  [227, 26, 28],
-  [118, 0, 38],
-  [128, 0, 38],
-];
 
 /**
  * Helper function just to point the spectrum type to the correct colours
@@ -74,6 +66,8 @@ export function resolveSpectrumColour(scaleType, scaleColorScheme, value, min, m
       if (isNaN(value)) return valueToColor(getTimeProportion(value, min, max), noDataColour);
       return valueToColor(value, noDataColour);
 
+    case SCALE_TYPES.GPI:
+      return valueToColor(value, min, max);
     case SCALE_TYPES.PERFORMANCE:
     case SCALE_TYPES.NEUTRAL:
     case SCALE_TYPES.NEUTRAL_REVERSE:
@@ -120,6 +114,69 @@ export function getTimeHeatmapColor(value, noDataColour) {
 }
 
 /**
+ *
+ * GPI Colors
+ */
+const BLUE_COLOR_SET = [
+  blue['900'],
+  blue['900'],
+  blue['800'],
+  blue['800'],
+  blue['700'],
+  blue['600'],
+  blue['500'],
+  blue['400'],
+  blue['300'],
+];
+
+const RED_COLOR_SET = [
+  red['300'],
+  red['400'],
+  red['500'],
+  red['600'],
+  red['700'],
+  red['800'],
+  red['800'],
+  red['900'],
+  red['900'],
+];
+
+const GPI_PARITY_UPPER_LIMIT = '1.03';
+const GPI_PARITY_LOWER_LIMIT = '0.97';
+
+/**
+ *
+ * @param value - a gpi value between 0 and 2 where 0.97 - 1.03 is considered gender parity
+ * @returns {string}
+ */
+export function getGPIColor(value, min, max) {
+  if (value > GPI_PARITY_UPPER_LIMIT) {
+    const maxedValue = Math.min(value, 2);
+    const normalisedValue = normaliseToPercentage(maxedValue, GPI_PARITY_UPPER_LIMIT, max);
+    return getHeatmapColorByOrder({ value: normalisedValue, colorSet: RED_COLOR_SET });
+  }
+
+  if (value < GPI_PARITY_LOWER_LIMIT) {
+    const normalisedValue = normaliseToPercentage(value, min, GPI_PARITY_LOWER_LIMIT);
+    return getHeatmapColorByOrder({ value: normalisedValue, colorSet: BLUE_COLOR_SET });
+  }
+
+  return green['500'];
+}
+
+const HEATMAP_DEFAULT_RGB_SET = [
+  'rgb(255, 255, 204)',
+  'rgb(255, 237, 160)',
+  'rgb(254, 217, 118)',
+  'rgb(254, 178, 76)',
+  'rgb(253, 141, 60)',
+  'rgb(252, 78, 42)',
+  'rgb(227, 26, 28)',
+  'rgb(118, 0, 38)',
+  'rgb(128, 0, 38)',
+];
+
+/**
  * Takes a value and returns color string for use as a style
  * to match the map/legend style shown here:
  * https://commons.wikimedia.org/wiki/File:South_Africa_2011_population_density_map.svg
@@ -128,24 +185,19 @@ export function getTimeHeatmapColor(value, noDataColour) {
  * @param {default} if default is true, return lightest to darkest colour, otherwise return darkest to lightest
  * @returns {style} css rgb string, e.g. `rgb(0,0,0)`
  */
-function getHeatmapColorByOrder(value, swapColor) {
+function getHeatmapColorByOrder({ value, swapColor = false, colorSet = HEATMAP_DEFAULT_RGB_SET }) {
   const difference = value - 0.15;
   const index = difference < 0 ? 0 : Math.floor(difference / 0.1) + 1;
-  const indexInRange =
-    index > HEATMAP_DEFAULT_RGB_SET.length - 1 ? HEATMAP_DEFAULT_RGB_SET.length - 1 : index;
-
-  const rgb = !swapColor
-    ? HEATMAP_DEFAULT_RGB_SET[indexInRange]
-    : HEATMAP_DEFAULT_RGB_SET[HEATMAP_DEFAULT_RGB_SET.length - indexInRange - 1];
-  return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
+  const indexInRange = index > colorSet.length - 1 ? colorSet.length - 1 : index;
+  return !swapColor ? colorSet[indexInRange] : colorSet[colorSet.length - indexInRange - 1];
 }
 
 export function getHeatmapColor(value) {
-  return getHeatmapColorByOrder(value, false);
+  return getHeatmapColorByOrder({ value, swapColor: false });
 }
 
 export function getReverseHeatmapColor(value) {
-  return getHeatmapColorByOrder(value, true);
+  return getHeatmapColorByOrder({ value, swapColor: true });
 }
 
 // Use a palette color if named, otherwise just return the name.
