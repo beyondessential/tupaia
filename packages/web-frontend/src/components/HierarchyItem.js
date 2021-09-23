@@ -20,83 +20,81 @@
  * @return {element} a HierarchyItem react component.
  */
 
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import FlatButton from 'material-ui/FlatButton';
 import ClosedIcon from 'material-ui/svg-icons/navigation/chevron-right';
 import OpenIcon from 'material-ui/svg-icons/navigation/expand-more';
-import SelectedIcon from 'material-ui/svg-icons/toggle/radio-button-checked';
-import UnSelectedIcon from 'material-ui/svg-icons/toggle/radio-button-unchecked';
+import SelectedRadioIcon from 'material-ui/svg-icons/toggle/radio-button-checked';
+import UnSelectedRadioIcon from 'material-ui/svg-icons/toggle/radio-button-unchecked';
+import SelectedCheckBoxIcon from 'material-ui/svg-icons/toggle/check-box';
+import UnSelectedCheckBoxIcon from 'material-ui/svg-icons/toggle/check-box-outline-blank';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { ReferenceTooltip } from '@tupaia/ui-components';
+import { connect } from 'react-redux';
 
-export class HierarchyItem extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isOpen: false,
+const HierarchyItemComponent = React.memo(
+  ({
+    label,
+    style,
+    nestedMargin,
+    nestedItems,
+    isSelected,
+    Icon,
+    isLoading,
+    hasNestedItems,
+    info,
+    onClick,
+    multipleMapOverlayCheckbox,
+    dispatch,
+    ...otherProps
+  }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const buttonOnClick = () => {
+      if (onClick) {
+        onClick();
+      }
+      setIsOpen(!isOpen);
     };
-  }
 
-  onClick() {
-    if (this.props.onClick) {
-      this.props.onClick();
-    }
-    this.setState(state => ({ isOpen: !state.isOpen }));
-  }
+    const OpenClosedIcon = () => {
+      const hasChildren = hasNestedItems || (Array.isArray(nestedItems) && nestedItems.length > 0);
+      if (!hasChildren) {
+        return null;
+      }
 
-  renderOpenClosedIcon() {
-    const { nestedItems, hasNestedItems } = this.props;
-    const { isOpen } = this.state;
+      const IconComponent = isOpen ? OpenIcon : ClosedIcon;
+      return <IconComponent style={styles.buttonIcon} />;
+    };
 
-    const hasChildren = hasNestedItems || (Array.isArray(nestedItems) && nestedItems.length > 0);
-    if (!hasChildren) {
-      return null;
-    }
-
-    const IconComponent = isOpen ? OpenIcon : ClosedIcon;
-    return <IconComponent style={styles.buttonIcon} />;
-  }
-
-  render() {
-    const {
-      label,
-      style,
-      nestedMargin,
-      nestedItems,
-      isSelected,
-      Icon,
-      onClick,
-      isLoading,
-      hasNestedItems,
-      info,
-      ...otherProps
-    } = this.props;
-    const { isOpen } = this.state;
-    let selectionIcon;
-
-    if (isSelected != null) {
-      // Check isSelected specifically for null or undefined, !isSelected would be anything falsy.
-      selectionIcon = isSelected ? (
+    const SelectionIcon = () => {
+      const SelectedIcon = multipleMapOverlayCheckbox ? SelectedCheckBoxIcon : SelectedRadioIcon;
+      const UnSelectedIcon = multipleMapOverlayCheckbox
+        ? UnSelectedCheckBoxIcon
+        : UnSelectedRadioIcon;
+      return isSelected ? (
         <SelectedIcon style={styles.buttonIcon} />
       ) : (
         <UnSelectedIcon style={styles.buttonIcon} />
       );
-    }
+    };
 
     const loadingSpinner = <CircularProgress style={styles.buttonIcon} size={24} thickness={3} />;
     const childItem = isLoading ? loadingSpinner : nestedItems;
+
     return (
       <div style={{ ...styles.nestedContainer, ...style, marginLeft: nestedMargin }}>
         <FlatButton
           {...otherProps}
-          onClick={() => this.onClick()}
+          onClick={() => buttonOnClick()}
           style={{ minHeight: 36, height: 'auto', padding: '5px 0' }}
         >
           <div style={styles.buttonContentContainer}>
-            {this.renderOpenClosedIcon()}
+            <OpenClosedIcon />
             {Icon && <Icon style={styles.buttonIcon} />}
-            {selectionIcon}
+            {/* Check isSelected specifically for null or undefined, !isSelected would be anything falsy. */}
+            {isSelected != null && <SelectionIcon />}
             <div style={styles.buttonLabel}>{label}</div>
             {info && info.reference && (
               <ReferenceTooltip reference={info.reference} iconStyleOption="mayOverlay" />
@@ -106,8 +104,8 @@ export class HierarchyItem extends Component {
         {isOpen ? childItem : null}
       </div>
     );
-  }
-}
+  },
+);
 
 const styles = {
   nestedContainer: {
@@ -142,7 +140,7 @@ const styles = {
   },
 };
 
-HierarchyItem.propTypes = {
+HierarchyItemComponent.propTypes = {
   ...FlatButton.propTypes,
   label: PropTypes.string,
   nestedItems: PropTypes.arrayOf(PropTypes.object),
@@ -151,12 +149,20 @@ HierarchyItem.propTypes = {
   hasNestedItems: PropTypes.bool,
   isLoading: PropTypes.bool,
   Icon: PropTypes.func,
+  multipleMapOverlayCheckbox: PropTypes.bool.isRequired,
 };
 
-HierarchyItem.defaultProps = {
-  willMountFunc: undefined,
-};
-
-HierarchyItem.defaultProps = {
+HierarchyItemComponent.defaultProps = {
   nestedMargin: '24px',
 };
+
+const mapStateToProps = state => {
+  const { multipleMapOverlayCheckbox } = state.mapOverlayBar;
+  return {
+    multipleMapOverlayCheckbox,
+  };
+};
+export const HierarchyItem = connect(
+  mapStateToProps,
+  // mapDispatchToProps,
+)(HierarchyItemComponent);

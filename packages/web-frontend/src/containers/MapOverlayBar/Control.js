@@ -11,6 +11,7 @@ import { DateRangePicker } from '../../components/DateRangePicker';
 import { CONTROL_BAR_WIDTH, TUPAIA_ORANGE, MAP_OVERLAY_SELECTOR } from '../../styles';
 import { getDefaultDates, getLimits, GRANULARITY_CONFIG } from '../../utils/periodGranularities';
 import { MapTableModal } from '../MapTableModal';
+import { EnableCheckboxButton } from './EnableCheckboxButton';
 
 const Container = styled.div`
   width: ${CONTROL_BAR_WIDTH}px;
@@ -145,6 +146,7 @@ export const Control = ({
       <Header>
         <LayersIcon />
         Map overlays
+        <EnableCheckboxButton />
         <MapTableModal />
       </Header>
       {!isMeasureSelected ? (
