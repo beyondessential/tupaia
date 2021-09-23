@@ -862,8 +862,9 @@ function* watchFetchMoreSearchResults() {
  * Fetches data for a measure and write it to map state by calling fetchMeasureSuccess.
  *
  */
-function* fetchMeasureInfo(mapOverlayId) {
+function* fetchMeasureInfo() {
   const state = yield select();
+  const mapOverlayId = selectCurrentMapOverlayId(state);
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
   const measureParams = selectMapOverlayById(state, mapOverlayId);
 
@@ -905,8 +906,8 @@ function* fetchMeasureInfo(mapOverlayId) {
   }
 }
 
-function* fetchMeasureInfoForMeasureChange(action) {
-  yield fetchMeasureInfo(action.mapOverlayId);
+function* fetchMeasureInfoForMeasureChange() {
+  yield fetchMeasureInfo();
 }
 
 function* watchMeasureChange() {
