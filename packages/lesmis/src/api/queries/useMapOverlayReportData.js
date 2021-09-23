@@ -18,7 +18,34 @@ import {
 import { useEntitiesData } from './useEntitiesData';
 import { yearToApiDates } from './utils';
 import { useUrlSearchParam } from '../../utils/useUrlSearchParams';
+import { useMapOverlaysData, findOverlay } from './useMapOverlaysData';
 import { get } from '../api';
+
+const getMeasureDataFromResponse = (overlay, measureDataResponse) => {
+  // Legacy overlays have the config returned in the data response, return directly
+  if (!overlay || overlay.legacy === true) {
+    return measureDataResponse;
+  }
+
+  const { measureId, measureLevel, displayType, dataElementCode, ...restOfOverlay } = overlay;
+
+  const measureOptions = [
+    {
+      measureLevel,
+      type: displayType,
+      key: dataElementCode,
+      ...restOfOverlay,
+    },
+  ];
+
+  return {
+    measureId,
+    measureLevel,
+    measureOptions,
+    serieses: measureOptions,
+    measureData: measureDataResponse,
+  };
+};
 
 const processMeasureInfo = ({ serieses, measureData, ...rest }) => {
   const processedSerieses = serieses.map(series => {
@@ -122,9 +149,11 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
   const { data: entitiesData, entitiesByCode, isLoading: entitiesLoading } = useEntitiesData(
     entityCode,
   );
+  const { data: overlaysData, isLoading: overlaysLoading } = useMapOverlaysData({ entityCode });
 
   const entityData = entitiesByCode[entityCode];
-
+  const overlay = findOverlay(overlaysData, selectedOverlay);
+  const reportCode = overlay?.legacy ? selectedOverlay : overlay?.reportCode;
   const { startDate, endDate } = yearToApiDates(year);
 
   const params = {
@@ -132,20 +161,25 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
     endDate,
     shouldShowAllParentCountryResults: false,
     type: 'mapOverlay',
+    legacy: overlay?.legacy,
   };
 
-  const { data: measureData, isLoading: measureDataLoading } = useQuery(
+  const { data: measureDataResponse, isLoading: measureDataLoading } = useQuery(
     ['mapOverlay', entityCode, selectedOverlay, params],
     () =>
-      get(`report/${entityCode}/${selectedOverlay}`, {
+      get(`report/${entityCode}/${reportCode}`, {
         params,
       }),
     {
       staleTime: 60 * 60 * 1000,
       refetchOnWindowFocus: false,
-      enabled: !!entityCode && !!selectedOverlay,
+      enabled: !!entityCode && !!reportCode && !!overlay,
     },
   );
+
+  const measureData = measureDataResponse
+    ? getMeasureDataFromResponse(overlay, measureDataResponse)
+    : null;
 
   // reset hidden values when changing overlay or entity
   useEffect(() => {
@@ -160,7 +194,7 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
     }, {});
 
     setHiddenValues(hiddenByDefault);
-  }, [setHiddenValues, measureData]);
+  }, [setHiddenValues, measureDataResponse]);
 
   const setValueHidden = useCallback(
     (key, value, hidden) => {
@@ -189,7 +223,7 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
       : null;
 
   return {
-    isLoading: entitiesLoading || measureDataLoading,
+    isLoading: entitiesLoading || measureDataLoading || overlaysLoading,
     data: { ...measureData, ...processedMeasureInfo, measureData: processedMeasureData },
     entityData,
     hiddenValues,

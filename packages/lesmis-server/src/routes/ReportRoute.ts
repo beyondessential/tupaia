@@ -24,9 +24,10 @@ export class ReportRoute extends Route {
   async buildResponse() {
     const { entityCode, reportCode } = this.req.params;
     const { type, legacy } = this.req.query;
-    switch (type) {
-      case 'dashboard': {
-        if (legacy === 'true') {
+    // We only care about the difference between dashboards and mapOverlays if we're requesting legacy reports
+    if (legacy === 'true') {
+      switch (type) {
+        case 'dashboard': {
           const legacyReport = await this.webConfigConnection.fetchDashboardReport(reportCode, {
             organisationUnitCode: entityCode,
             projectCode: LESMIS_PROJECT_NAME,
@@ -34,27 +35,23 @@ export class ReportRoute extends Route {
           });
           return legacyReport.data;
         }
-        const report = await this.reportConnection.fetchReport(reportCode, {
-          organisationUnitCodes: entityCode,
-          hierarchy: LESMIS_HIERARCHY_NAME,
-          ...this.req.query,
-        });
-        return report.results;
+        case 'mapOverlay': {
+          return this.webConfigConnection.fetchMapOverlayData({
+            measureId: reportCode,
+            organisationUnitCode: entityCode,
+            projectCode: LESMIS_PROJECT_NAME,
+            ...this.req.query,
+          });
+        }
       }
-      case 'mapOverlay':
-        return this.webConfigConnection.fetchMapOverlayData({
-          measureId: reportCode,
-          organisationUnitCode: entityCode,
-          projectCode: LESMIS_PROJECT_NAME,
-          ...this.req.query,
-        });
-      default:
-        return this.reportConnection.fetchReport(reportCode, {
-          // Report server can accept arrays so the parameters are plural
-          organisationUnitCodes: entityCode,
-          hierarchy: LESMIS_HIERARCHY_NAME,
-          ...this.req.query,
-        });
     }
+    // Otherwise just pull from report server
+    const report = await this.reportConnection.fetchReport(reportCode, {
+      // Report server can accept arrays so the parameters are plural
+      organisationUnitCodes: entityCode,
+      hierarchy: LESMIS_HIERARCHY_NAME,
+      ...this.req.query,
+    });
+    return report.results;
   }
 }
