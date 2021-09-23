@@ -150,6 +150,28 @@ const MAP_OVERLAYS = [
       },
     ],
   },
+  {
+    parentCode: `${OVERLAY_CODE}_District_Group`,
+    children: [
+      {
+        reportCode: `${OVERLAY_CODE}_3_4_District_map`,
+        name: 'Enrolment 3-4 year olds',
+        dataElements: ['er_district_ece_3_4_t'],
+        sortOrder: 1,
+      },
+    ],
+  },
+  {
+    parentCode: `${OVERLAY_CODE}_District_Group`,
+    children: [
+      {
+        reportCode: `${OVERLAY_CODE}_5_District_map`,
+        name: 'Enrolment 5 year olds',
+        dataElements: ['er_district_ece_5_t'],
+        sortOrder: 2,
+      },
+    ],
+  },
 ];
 
 exports.up = async function (db) {
