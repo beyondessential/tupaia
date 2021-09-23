@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { testPullAnalytics } from './testPullAnalytics';
-import { testPullEvents } from './testPullEvents';
-import { testPullEvents_Deprecated } from './testPullEvents_Deprecated';
+import { testPullAnalytics } from './testPull/testPullAnalytics';
+import { testPullEvents } from './testPull/testPullEvents';
+import { testPullEvents_Deprecated } from './testPull/testPullEvents_Deprecated';
 
 export const testPull = () => {
   describe('analytics', testPullAnalytics);
