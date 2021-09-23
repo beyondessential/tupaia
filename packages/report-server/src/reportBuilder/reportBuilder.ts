@@ -5,7 +5,8 @@
 
 import { Aggregator } from '../aggregator';
 import { FetchReportQuery } from '../types';
-import { buildFetch } from './fetch';
+import { buildContext, ReqContext } from './context';
+import { buildFetch, FetchResponse } from './fetch';
 import { buildTransform } from './transform';
 import { buildOutput } from './output';
 import { Row } from './types';
@@ -16,33 +17,43 @@ export interface BuiltReport {
 }
 
 export class ReportBuilder {
+  reqContext: ReqContext;
+
   config?: Record<string, unknown>;
 
   testData?: Row[];
 
-  setConfig = (config: Record<string, unknown>) => {
+  constructor(reqContext: ReqContext) {
+    this.reqContext = reqContext;
+  }
+
+  public setConfig = (config: Record<string, unknown>) => {
     this.config = config;
     return this;
   };
 
-  setTestData = (testData: Row[]) => {
+  public setTestData = (testData: Row[]) => {
     this.testData = testData;
     return this;
   };
 
-  build = async (aggregator: Aggregator, query: FetchReportQuery): Promise<BuiltReport> => {
+  public build = async (aggregator: Aggregator, query: FetchReportQuery): Promise<BuiltReport> => {
     if (!this.config) {
       throw new Error('Report requires a config be set');
     }
-    const fetch = this.testData
-      ? () => ({ results: this.testData as Row[] })
-      : buildFetch(this.config?.fetch);
-    const transform = buildTransform(this.config.transform);
-    const output = buildOutput(this.config.output);
 
+    const fetch = this.testData
+      ? () => ({ results: this.testData } as FetchResponse)
+      : buildFetch(this.config?.fetch);
     const data = await fetch(aggregator, query);
+
+    const context = await buildContext(this.config.transform, this.reqContext, data);
+    const transform = buildTransform(this.config.transform, context);
     const transformedData = transform(data.results);
+
+    const output = buildOutput(this.config.output);
     const outputData = output(transformedData);
+
     return { results: outputData };
   };
 }

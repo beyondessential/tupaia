@@ -17,7 +17,6 @@ export { getFacilityThumbnailUrl } from './getFacilityThumbnailUrl';
 export { getMapUrl } from './getMapUrl';
 export {
   processMeasureInfo,
-  getMeasureDisplayInfo,
   getSingleFormattedValue,
   flattenNumericalMeasureData,
   flattenMeasureHierarchy,

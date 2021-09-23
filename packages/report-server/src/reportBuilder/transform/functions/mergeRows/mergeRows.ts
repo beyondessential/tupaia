@@ -5,6 +5,7 @@
 
 import { yup } from '@tupaia/utils';
 
+import { Context } from '../../../context';
 import { TransformParser } from '../../parser';
 import { mergeStrategies } from './mergeStrategies';
 import { buildWhere } from '../where';
@@ -58,9 +59,9 @@ type Group = {
   [fieldKey: string]: FieldValue[];
 };
 
-const groupRows = (rows: Row[], params: MergeRowsParams) => {
+const groupRows = (rows: Row[], params: MergeRowsParams, context: Context) => {
   const groupsByKey: Record<string, Group> = {};
-  const parser = new TransformParser(rows);
+  const parser = new TransformParser(rows, context);
   const ungroupedRows: Row[] = []; // Rows that don't match the 'where' clause are left ungrouped
 
   rows.forEach((row: Row) => {
@@ -70,19 +71,28 @@ const groupRows = (rows: Row[], params: MergeRowsParams) => {
       return;
     }
     const groupKey = params.createGroupKey(row);
-    groupsByKey[groupKey] = addRowToGroup(groupsByKey[groupKey] || {}, row);
+    addRowToGroup(groupsByKey, groupKey, row); // mutates groupsByKey
     parser.next();
   });
 
   return { groups: Object.values(groupsByKey), ungroupedRows };
 };
 
-const addRowToGroup = (group: Group, row: Row): Group => {
-  const newGroup = { ...group };
+const addRowToGroup = (groupsByKey: Record<string, Group>, groupKey: string, row: Row) => {
+  if (!groupsByKey[groupKey]) {
+    // eslint-disable-next-line no-param-reassign
+    groupsByKey[groupKey] = {};
+  }
+
+  const group = groupsByKey[groupKey];
+
   Object.keys(row).forEach((field: string) => {
-    newGroup[field] = [...(newGroup[field] || []), row[field]];
+    if (!group[field]) {
+      // eslint-disable-next-line no-param-reassign
+      group[field] = [];
+    }
+    group[field].push(row[field]);
   });
-  return newGroup;
 };
 
 const mergeGroups = (groups: Group[], params: MergeRowsParams): Row[] => {
@@ -99,8 +109,8 @@ const mergeGroups = (groups: Group[], params: MergeRowsParams): Row[] => {
   });
 };
 
-const mergeRows = (rows: Row[], params: MergeRowsParams): Row[] => {
-  const { groups, ungroupedRows } = groupRows(rows, params);
+const mergeRows = (rows: Row[], params: MergeRowsParams, context: Context): Row[] => {
+  const { groups, ungroupedRows } = groupRows(rows, params, context);
   const mergedRows = mergeGroups(groups, params);
   return mergedRows.concat(ungroupedRows);
 };
@@ -117,7 +127,7 @@ const buildParams = (params: unknown): MergeRowsParams => {
   };
 };
 
-export const buildMergeRows = (params: unknown) => {
+export const buildMergeRows = (params: unknown, context: Context) => {
   const builtParams = buildParams(params);
-  return (rows: Row[]) => mergeRows(rows, builtParams);
+  return (rows: Row[]) => mergeRows(rows, builtParams, context);
 };
