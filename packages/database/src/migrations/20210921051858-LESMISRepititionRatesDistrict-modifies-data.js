@@ -79,7 +79,7 @@ const getReport = (reportCode, dataElement) => ({
         transform: 'updateColumns',
         insert: {
           organisationUnitCode: '=$organisationUnit',
-          value: '=divide($value, 100)',
+          value: '=$value',
         },
         exclude: ['organisationUnit', 'dataElement', 'period'],
       },
@@ -170,26 +170,17 @@ const getGpiMapOverlay = (name, reportCode) => ({
     reportCode,
   },
   presentationOptions: {
+    scaleType: 'gpi',
+    displayType: 'shaded-spectrum',
     measureLevel: 'SubDistrict',
-    valueType: 'number',
-    values: [
-      {
-        name: 'Males favoured',
-        color: 'green',
-        value: 0,
+    scaleBounds: {
+      left: {
+        max: 0,
       },
-      {
-        name: 'Parity',
-        color: 'red',
-        value: 1,
+      right: {
+        min: 2,
       },
-      {
-        name: 'Females favoured',
-        color: 'orange',
-        value: 2,
-      },
-    ],
-    displayType: 'color',
+    },
     periodGranularity: 'one_year_at_a_time',
   },
   countryCodes: '{"LA"}',
