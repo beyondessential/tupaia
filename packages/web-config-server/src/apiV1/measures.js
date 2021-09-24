@@ -18,7 +18,7 @@ export default class extends RouteHandler {
                 {
                   measureId: 'Laos_Schools_A',
                   name: 'Overlay A',
-                  ...presentationOptions,
+                  ...presentationConfig,
                 }
               ],
             },
@@ -31,7 +31,7 @@ export default class extends RouteHandler {
                     {
                       measureId: 'Laos_Schools_D',
                       name: 'Overlay D',
-                      ...presentationOptions,
+                      ...presentationConfig,
                     },
                   ],
                 },

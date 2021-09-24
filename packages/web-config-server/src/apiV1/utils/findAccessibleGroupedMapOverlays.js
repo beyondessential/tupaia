@@ -158,13 +158,13 @@ const sortMapOverlayItems = (mapOverlayItems, relations) => {
 
 const translateOverlaysForResponse = mapOverlays =>
   mapOverlays
-    .filter(({ presentationOptions: { hideFromMenu } }) => !hideFromMenu)
+    .filter(({ config: { hideFromMenu } }) => !hideFromMenu)
     .map(
       ({
         id,
         name,
         linked_measures: linkedMeasures,
-        presentationOptions,
+        config,
         report_code: reportCode,
         dataElementCode,
         legacy,
@@ -176,7 +176,7 @@ const translateOverlaysForResponse = mapOverlays =>
           measureId: idString,
           code: idString,
           name,
-          ...presentationOptions,
+          ...config,
           reportCode,
           dataElementCode,
           legacy,

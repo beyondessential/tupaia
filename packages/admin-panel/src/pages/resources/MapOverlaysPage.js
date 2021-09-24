@@ -73,8 +73,8 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Presentation Options',
-    source: 'presentationOptions',
+    Header: 'Presentation Config',
+    source: 'config',
     type: 'jsonTooltip',
     width: 200,
     editConfig: { type: 'jsonEditor' },

@@ -18,6 +18,7 @@ exports.up = async function (db) {
   await db.runSql('ALTER TABLE "project" RENAME COLUMN "user_groups" TO "permission_groups";');
   await db.runSql('ALTER TABLE "mapOverlay" RENAME COLUMN "userGroup" TO "permission_group";');
   await db.runSql('ALTER TABLE "mapOverlay" RENAME COLUMN "linkedMeasures" TO "linked_measures";');
+  await db.runSql('ALTER TABLE "mapOverlay" RENAME COLUMN "presentationOptions" TO "config";');
   await db.runSql('ALTER TABLE "mapOverlay" RENAME TO "map_overlay";');
 };
 

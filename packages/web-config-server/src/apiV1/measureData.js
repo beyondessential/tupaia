@@ -164,9 +164,7 @@ const createDataServices = mapOverlay => {
 };
 
 const getMeasureLevel = mapOverlays => {
-  const aggregationTypes = mapOverlays.map(
-    ({ presentationOptions }) => presentationOptions.measureLevel,
-  );
+  const aggregationTypes = mapOverlays.map(({ config }) => config.measureLevel);
   return [...new Set(aggregationTypes)].join(',');
 };
 
@@ -257,7 +255,7 @@ export default class extends DataAggregatingRouteHandler {
       permission_group: permissionGroup,
       isDataRegional, // don't include these in response
       dataElementCode,
-      presentationOptions,
+      config,
       measureBuilderConfig,
       name,
       ...restOfMapOverlay
@@ -270,8 +268,8 @@ export default class extends DataAggregatingRouteHandler {
       hideFromLegend,
       hideFromPopup,
       customLabel,
-      ...restOfPresentationOptions
-    } = presentationOptions;
+      ...restOfPresentationConfig
+    } = config;
 
     const { dataSourceType = DATA_SOURCE_TYPES.SINGLE, periodGranularity } =
       measureBuilderConfig || {};
@@ -279,7 +277,7 @@ export default class extends DataAggregatingRouteHandler {
     const dates = periodGranularity ? getDateRange(periodGranularity, startDate, endDate) : {};
 
     const baseOptions = {
-      ...restOfPresentationOptions,
+      ...restOfPresentationConfig,
       ...restOfMapOverlay,
       name: customLabel ?? name,
       type: displayType,
@@ -365,7 +363,7 @@ export default class extends DataAggregatingRouteHandler {
 
 function translateMeasureOptionSet(measureOptions, mapOverlay) {
   const {
-    presentationOptions: { customColors, displayType },
+    config: { customColors, displayType },
   } = mapOverlay;
 
   if (!measureOptions) {
