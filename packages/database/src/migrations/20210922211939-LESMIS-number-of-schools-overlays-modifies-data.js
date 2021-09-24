@@ -46,18 +46,11 @@ const getReport = (reportCode, dataElements) => {
       },
       transform: [
         {
-          transform: 'insertColumns',
-          columns: {
-            '=$dataElement': '=$value',
-          },
-        },
-        {
           transform: 'updateColumns',
           insert: {
             organisationUnitCode: '=$organisationUnit',
-            value: `=sum(${dataElements.map(code => `$${code}`)})`,
           },
-          include: ['period'],
+          include: ['period', 'value'],
         },
         {
           transform: 'mergeRows',
@@ -173,25 +166,13 @@ const MAP_OVERLAYS = [
       {
         reportCode: `${OVERLAY_CODE}_District_ECE_map`,
         name: 'Number of ECE Centres/Kindergartens',
-        dataElements: [
-          'nosch_type1_private',
-          'nosch_type1_public',
-          'nosch_type2_private',
-          'nosch_type2_public',
-          'nosch_type3_private',
-          'nosch_type3_public',
-        ],
+        dataElements: ['nosch_ece'],
         sortOrder: 0,
       },
       {
         reportCode: `${OVERLAY_CODE}_District_PE_map`,
         name: 'Number of Primary Schools',
-        dataElements: [
-          'nosch_type4_private',
-          'nosch_type5_public',
-          'nosch_type5_private',
-          'nosch_type5_public',
-        ],
+        dataElements: ['nosch_pe'],
         sortOrder: 1,
       },
       {
@@ -220,25 +201,13 @@ const MAP_OVERLAYS = [
       {
         reportCode: `${OVERLAY_CODE}_Province_ECE_Group`,
         name: 'Number of ECE Centres/Kindergartens',
-        dataElements: [
-          'nosch_type1_private',
-          'nosch_type1_public',
-          'nosch_type2_private',
-          'nosch_type2_public',
-          'nosch_type3_private',
-          'nosch_type3_public',
-        ],
+        dataElements: ['nosch_ece'],
         sortOrder: 0,
       },
       {
         reportCode: `${OVERLAY_CODE}_Province_PE_map`,
         name: 'Number of Primary Schools',
-        dataElements: [
-          'nosch_type4_private',
-          'nosch_type5_public',
-          'nosch_type5_private',
-          'nosch_type5_public',
-        ],
+        dataElements: ['nosch_pe'],
         sortOrder: 1,
       },
       {
