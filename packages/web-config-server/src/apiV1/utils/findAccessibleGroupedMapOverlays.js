@@ -202,7 +202,7 @@ export const findAccessibleMapOverlays = async (
     },
     [AND]: {
       [RAW]: {
-        sql: '"countryCodes" IS NULL OR :overlayCode = ANY("countryCodes")',
+        sql: '"country_codes" IS NULL OR :overlayCode = ANY("country_codes")',
         parameters: {
           overlayCode,
         },

@@ -251,6 +251,7 @@ export default class extends DataAggregatingRouteHandler {
   async fetchMeasureOption(mapOverlay) {
     const {
       id,
+      country_codes: countryCodes,
       groupName,
       permission_group: permissionGroup,
       isDataRegional, // don't include these in response

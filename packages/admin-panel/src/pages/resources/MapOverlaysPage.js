@@ -81,14 +81,14 @@ const FIELDS = [
   },
   {
     Header: 'Country Codes',
-    source: 'countryCodes',
+    source: 'country_codes',
     width: 140,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'entities',
       optionLabelKey: 'code',
       optionValueKey: 'code',
-      sourceKey: 'countryCodes',
+      sourceKey: 'country_codes',
       allowMultipleValues: true,
     },
   },

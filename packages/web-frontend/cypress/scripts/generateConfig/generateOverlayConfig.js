@@ -85,7 +85,7 @@ const generateUrls = async (db, options) => {
   await db.executeSql(`
     DROP TABLE IF EXISTS ${tableOverlayCountry};
     CREATE TEMP TABLE ${tableOverlayCountry} AS
-    SELECT id AS overlay_id, unnest("countryCodes") AS "orgUnit"
+    SELECT id AS overlay_id, unnest("country_codes") AS "orgUnit"
     FROM "map_overlay";
 
     DROP TABLE IF EXISTS ${tableOverlayProject};

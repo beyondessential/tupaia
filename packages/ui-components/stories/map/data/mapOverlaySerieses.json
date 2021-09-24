@@ -3,10 +3,17 @@
     "customColors": "RoyalBlue,RoyalBlue,OrangeRed,OrangeRed",
     "measureLevel": "Facility",
     "name": "Operational facilities",
-    "linkedMeasures": ["171"],
+    "linkedMeasures": [
+      "171"
+    ],
     "measureBuilder": "valueForOrgGroup",
-    "countryCodes": [],
-    "projectCodes": ["explore", "disaster", "imms", "fanafana", "olangch_palau"],
+    "projectCodes": [
+      "explore",
+      "disaster",
+      "imms",
+      "fanafana",
+      "olangch_palau"
+    ],
     "type": "icon",
     "key": "126",
     "hideFromMenu": false,
@@ -16,7 +23,10 @@
       {
         "icon": "circle",
         "name": "Open",
-        "value": ["Fully Operational", "Operational but closed this week"],
+        "value": [
+          "Fully Operational",
+          "Operational but closed this week"
+        ],
         "color": "#005AC8"
       },
       {
@@ -42,13 +52,19 @@
       "Fully Operational": {
         "icon": "circle",
         "name": "Open",
-        "value": ["Fully Operational", "Operational but closed this week"],
+        "value": [
+          "Fully Operational",
+          "Operational but closed this week"
+        ],
         "color": "#005AC8"
       },
       "Operational but closed this week": {
         "icon": "circle",
         "name": "Open",
-        "value": ["Fully Operational", "Operational but closed this week"],
+        "value": [
+          "Fully Operational",
+          "Operational but closed this week"
+        ],
         "color": "#005AC8"
       },
       "Temporarily Closed": {
@@ -77,8 +93,14 @@
     "name": "Facility type",
     "linkedMeasures": null,
     "measureBuilder": "valueForOrgGroup",
-    "countryCodes": [],
-    "projectCodes": ["explore", "disaster", "imms", "fanafana", "unfpa", "olangch_palau"],
+    "projectCodes": [
+      "explore",
+      "disaster",
+      "imms",
+      "fanafana",
+      "unfpa",
+      "olangch_palau"
+    ],
     "type": "color",
     "key": "171",
     "hideFromMenu": true,

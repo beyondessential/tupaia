@@ -20,7 +20,7 @@ export const hasMapOverlayGetPermissions = async (accessPolicy, models, mapOverl
     };
   }
 
-  const entities = await models.entity.find({ code: mapOverlay.countryCodes });
+  const entities = await models.entity.find({ code: mapOverlay.country_codes });
   for (let i = 0; i < entities.length; i++) {
     if (
       await hasAccessToEntityForVisualisation(
@@ -40,7 +40,7 @@ export const hasMapOverlayGetPermissions = async (accessPolicy, models, mapOverl
     result: false,
     errorMessage: `Requires "${
       mapOverlay.permission_group
-    }" access to all countries "${mapOverlay.countryCodes.toString()}" of the map overlay`,
+    }" access to all countries "${mapOverlay.country_codes.toString()}" of the map overlay`,
   };
 };
 
@@ -53,7 +53,7 @@ export const hasMapOverlayEditPermissions = async (accessPolicy, models, mapOver
     };
   }
 
-  const entities = await models.entity.find({ code: mapOverlay.countryCodes });
+  const entities = await models.entity.find({ code: mapOverlay.country_codes });
   let hasPermissionGroupAccess = false;
 
   // Check we have tupaia admin access to all countries the mapOverlay is in
@@ -62,7 +62,7 @@ export const hasMapOverlayEditPermissions = async (accessPolicy, models, mapOver
     if (!(await hasTupaiaAdminAccessToEntityForVisualisation(accessPolicy, models, entities[i]))) {
       return {
         result: false,
-        errorMessage: `Requires Tupaia Admin Panel access to all countries (${mapOverlay.countryCodes}) for the map overlay "${mapOverlayId}"`,
+        errorMessage: `Requires Tupaia Admin Panel access to all countries (${mapOverlay.country_codes}) for the map overlay "${mapOverlayId}"`,
       };
     }
     if (
@@ -81,7 +81,7 @@ export const hasMapOverlayEditPermissions = async (accessPolicy, models, mapOver
   if (!hasPermissionGroupAccess) {
     return {
       result: false,
-      errorMessage: `Cannot edit map overlay "${mapOverlayId}" as you do not have permission group access to any of its countries (${mapOverlay.countryCodes})`,
+      errorMessage: `Cannot edit map overlay "${mapOverlayId}" as you do not have permission group access to any of its countries (${mapOverlay.country_codes})`,
     };
   }
 
@@ -125,7 +125,7 @@ export const createMapOverlayDBFilter = (accessPolicy, criteria) => {
       -- Look up the country codes list from the map overlay and check that the user has
       -- access to at least one of the countries for the appropriate permissions group
       (
-        "map_overlay"."countryCodes"
+        "map_overlay"."country_codes"
         &&
         ARRAY(
           SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"map_overlay"."permission_group")::TEXT)
@@ -143,7 +143,7 @@ export const createMapOverlayDBFilter = (accessPolicy, criteria) => {
             INNER JOIN project
               ON  entity_relation.parent_id = project.entity_id
               AND entity_relation.entity_hierarchy_id = project.entity_hierarchy_id
-            WHERE ARRAY[project.code] <@ "map_overlay"."countryCodes"
+            WHERE ARRAY[project.code] <@ "map_overlay"."country_codes"
         )::TEXT[]
         &&
         ARRAY(
