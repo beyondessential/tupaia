@@ -252,6 +252,7 @@ export default class extends DataAggregatingRouteHandler {
     const {
       id,
       country_codes: countryCodes,
+      project_codes: projectCodes,
       groupName,
       permission_group: permissionGroup,
       isDataRegional, // don't include these in response
