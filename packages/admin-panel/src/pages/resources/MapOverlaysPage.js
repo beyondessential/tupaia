@@ -94,14 +94,14 @@ const FIELDS = [
   },
   {
     Header: 'Project Codes',
-    source: 'projectCodes',
+    source: 'project_codes',
     width: 140,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'projects',
       optionLabelKey: 'code',
       optionValueKey: 'code',
-      sourceKey: 'projectCodes',
+      sourceKey: 'project_codes',
       allowMultipleValues: true,
     },
   },

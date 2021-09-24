@@ -7,13 +7,6 @@
       "171"
     ],
     "measureBuilder": "valueForOrgGroup",
-    "projectCodes": [
-      "explore",
-      "disaster",
-      "imms",
-      "fanafana",
-      "olangch_palau"
-    ],
     "type": "icon",
     "key": "126",
     "hideFromMenu": false,
@@ -93,14 +86,6 @@
     "name": "Facility type",
     "linkedMeasures": null,
     "measureBuilder": "valueForOrgGroup",
-    "projectCodes": [
-      "explore",
-      "disaster",
-      "imms",
-      "fanafana",
-      "unfpa",
-      "olangch_palau"
-    ],
     "type": "color",
     "key": "171",
     "hideFromMenu": true,

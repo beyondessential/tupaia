@@ -20,6 +20,7 @@ exports.up = async function (db) {
   await db.runSql('ALTER TABLE "mapOverlay" RENAME COLUMN "linkedMeasures" TO "linked_measures";');
   await db.runSql('ALTER TABLE "mapOverlay" RENAME COLUMN "presentationOptions" TO "config";');
   await db.runSql('ALTER TABLE "mapOverlay" RENAME COLUMN "countryCodes" TO "country_codes";');
+  await db.runSql('ALTER TABLE "mapOverlay" RENAME COLUMN "projectCodes" TO "project_codes";');
   await db.runSql('ALTER TABLE "mapOverlay" RENAME TO "map_overlay";');
 };
 

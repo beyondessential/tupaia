@@ -208,7 +208,7 @@ export const findAccessibleMapOverlays = async (
         },
       },
       [AND]: {
-        projectCodes: {
+        project_codes: {
           comparator: '@>',
           comparisonValue: [projectCode],
         },

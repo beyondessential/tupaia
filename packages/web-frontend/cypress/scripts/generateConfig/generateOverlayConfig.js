@@ -90,7 +90,7 @@ const generateUrls = async (db, options) => {
 
     DROP TABLE IF EXISTS ${tableOverlayProject};
     CREATE TEMP TABLE ${tableOverlayProject} AS
-    SELECT id AS overlay_id, unnest("projectCodes") AS project
+    SELECT id AS overlay_id, unnest("project_codes") AS project
     FROM "map_overlay";
   `);
 
