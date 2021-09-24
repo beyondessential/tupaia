@@ -163,7 +163,7 @@ const translateOverlaysForResponse = mapOverlays =>
       ({
         id,
         name,
-        linkedMeasures,
+        linked_measures: linkedMeasures,
         presentationOptions,
         report_code: reportCode,
         dataElementCode,

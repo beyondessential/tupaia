@@ -62,13 +62,13 @@ const FIELDS = [
   },
   {
     Header: 'Linked Measures',
-    source: 'linkedMeasures',
+    source: 'linked_measures',
     width: 160,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'id',
-      sourceKey: 'linkedMeasures',
+      sourceKey: 'linked_measures',
       allowMultipleValues: true,
     },
   },

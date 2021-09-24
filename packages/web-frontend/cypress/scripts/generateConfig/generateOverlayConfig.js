@@ -109,14 +109,14 @@ const generateUrls = async (db, options) => {
 
   const overlays = await db.find('map_overlay', where, queryOptions);
   const linkedOverlays = await db.find('map_overlay', {
-    id: getUniqueEntries(overlays.map(o => o.linkedMeasures).flat()),
+    id: getUniqueEntries(overlays.map(o => o.linked_measures).flat()),
   });
   const linkedOverlayIds = linkedOverlays.map(({ id }) => id);
 
   return overlays
     .filter(o => !linkedOverlayIds.includes(o.id))
     .map(overlay => {
-      const { id, project, orgUnit, linkedMeasures } = overlay;
+      const { id, project, orgUnit, linked_measures: linkedMeasures } = overlay;
 
       return {
         id: linkedMeasures ? [id, ...linkedMeasures] : id,
