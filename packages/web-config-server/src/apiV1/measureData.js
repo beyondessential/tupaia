@@ -158,11 +158,6 @@ function updateLegendFromDisplayedValueKey(measureOption, dataElements) {
   });
 }
 
-const createDataServices = mapOverlay => {
-  const { isDataRegional } = mapOverlay;
-  return [{ isDataRegional }];
-};
-
 const getMeasureLevel = mapOverlays => {
   const aggregationTypes = mapOverlays.map(({ config }) => config.measureLevel);
   return [...new Set(aggregationTypes)].join(',');
@@ -250,12 +245,12 @@ export default class extends DataAggregatingRouteHandler {
 
   async fetchMeasureOption(mapOverlay) {
     const {
-      id,
-      country_codes: countryCodes,
-      project_codes: projectCodes,
-      groupName,
-      permission_group: permissionGroup,
-      isDataRegional, // don't include these in response
+      id, // -------------------------------- exclude these fields from the response --------------
+      country_codes: countryCodes, // -------------------------------------------------------------
+      project_codes: projectCodes, // -------------------------------------------------------------
+      groupName, // -------------------------------------------------------------------------------
+      permission_group: permissionGroup, // -------------------------------------------------------
+      data_services: dataServices, // -------------------------------------------------------------
       dataElementCode,
       config,
       measureBuilderConfig,
@@ -306,10 +301,9 @@ export default class extends DataAggregatingRouteHandler {
   }
 
   async getOptionsForDataElement(mapOverlay, dataElementCode) {
-    const dataServices = createDataServices(mapOverlay);
     const [dataElement] = await this.aggregator.fetchDataElements([dataElementCode], {
       organisationUnitCode: this.entityCode,
-      dataServices,
+      dataServices: mapOverlay.data_services,
       includeOptions: true,
     });
 
@@ -334,17 +328,19 @@ export default class extends DataAggregatingRouteHandler {
     const {
       id,
       dataElementCode,
-      isDataRegional,
       measureBuilderConfig,
       measureBuilder,
+      data_services: dataServices,
     } = mapOverlay;
 
     const entityCode = shouldFetchSiblings
       ? await this.getCountryLevelOrgUnitCode()
       : this.entity.code;
     const entity = await this.models.entity.findOne({ code: entityCode });
-    const dataServices = createDataServices(mapOverlay);
-    const dhisApi = getDhisApiInstance({ entityCode: this.entity.code, isDataRegional });
+    const dhisApi = getDhisApiInstance({
+      entityCode: this.entity.code,
+      isDataRegional: dataServices?.[0]?.isDataRegional,
+    });
     dhisApi.injectFetchDataSourceEntities(this.fetchDataSourceEntities);
     const buildMeasure = async (measureId, ...args) => ({
       [measureId]: await getMeasureBuilder(measureBuilder)(...args),

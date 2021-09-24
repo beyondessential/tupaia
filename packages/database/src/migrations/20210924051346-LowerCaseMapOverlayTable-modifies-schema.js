@@ -21,6 +21,16 @@ exports.up = async function (db) {
   await db.runSql('ALTER TABLE "mapOverlay" RENAME COLUMN "presentationOptions" TO "config";');
   await db.runSql('ALTER TABLE "mapOverlay" RENAME COLUMN "countryCodes" TO "country_codes";');
   await db.runSql('ALTER TABLE "mapOverlay" RENAME COLUMN "projectCodes" TO "project_codes";');
+  await db.runSql('ALTER TABLE "mapOverlay" RENAME COLUMN "projectCodes" TO "project_codes";');
+  await db.runSql(
+    `ALTER TABLE "mapOverlay" ADD COLUMN data_services JSONB DEFAULT '[{"isDataRegional": true}]';`,
+  );
+  await db.runSql(`
+    UPDATE "mapOverlay"
+    SET "data_services" = '[{"isDataRegional": false}]'
+    WHERE "isDataRegional" = false;
+  `);
+  await db.runSql('ALTER TABLE "mapOverlay" DROP COLUMN "isDataRegional";');
   await db.runSql('ALTER TABLE "mapOverlay" RENAME TO "map_overlay";');
 };
 

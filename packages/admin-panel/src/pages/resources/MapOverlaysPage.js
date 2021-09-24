@@ -55,12 +55,6 @@ const FIELDS = [
     editConfig: { type: 'jsonEditor' },
   },
   {
-    Header: 'isDataRegional',
-    source: 'isDataRegional',
-    type: 'boolean',
-    width: 150,
-  },
-  {
     Header: 'Linked Measures',
     source: 'linked_measures',
     width: 160,
