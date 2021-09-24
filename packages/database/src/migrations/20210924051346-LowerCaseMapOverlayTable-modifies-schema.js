@@ -35,7 +35,21 @@ exports.up = async function (db) {
 };
 
 exports.down = async function (db) {
-  return true;
+  await db.runSql('ALTER TABLE "map_overlay" RENAME TO "mapOverlay";');
+  await db.runSql('ALTER TABLE "project" RENAME COLUMN "permission_groups" TO "user_groups";');
+  await db.runSql('ALTER TABLE "mapOverlay" RENAME COLUMN "permission_group" TO "userGroup";');
+  await db.runSql('ALTER TABLE "mapOverlay" RENAME COLUMN "linked_measures" TO "linkedMeasures";');
+  await db.runSql('ALTER TABLE "mapOverlay" RENAME COLUMN "config" TO "presentationOptions";');
+  await db.runSql('ALTER TABLE "mapOverlay" RENAME COLUMN "country_codes" TO "countryCodes";');
+  await db.runSql('ALTER TABLE "mapOverlay" RENAME COLUMN "project_codes" TO "projectCodes";');
+  await db.runSql('ALTER TABLE "mapOverlay" RENAME COLUMN "project_codes" TO "projectCodes";');
+  await db.runSql(`ALTER TABLE "mapOverlay" ADD COLUMN "isDataRegional" boolean DEFAULT true;`);
+  await db.runSql(`
+    UPDATE "mapOverlay"
+    SET "isDataRegional" = false
+    WHERE "data_services"->0->'isDataRegional' = 'false';
+  `);
+  await db.runSql('ALTER TABLE "mapOverlay" DROP COLUMN "data_services";');
 };
 
 exports._meta = {
