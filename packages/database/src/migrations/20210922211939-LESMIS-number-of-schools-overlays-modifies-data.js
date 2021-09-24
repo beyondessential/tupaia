@@ -16,32 +16,58 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const getReport = (reportCode, dataElements) => ({
-  code: reportCode,
-  config: {
-    fetch: {
-      dataElements,
-      aggregations: [
+const getReport = (reportCode, dataElements) => {
+  const aggregations = [
+    {
+      type: 'FINAL_EACH_YEAR',
+      config: {
+        dataSourceEntityType: 'sub_district',
+        aggregationEntityType: 'requested',
+      },
+    },
+  ];
+
+  if (reportCode.includes('Province')) {
+    aggregations.push({
+      type: 'SUM_PER_ORG_GROUP',
+      config: {
+        dataSourceEntityType: 'sub_district',
+        aggregationEntityType: 'district',
+      },
+    });
+  }
+
+  return {
+    code: reportCode,
+    config: {
+      fetch: {
+        dataElements,
+        aggregations,
+      },
+      transform: [
         {
-          type: 'FINAL_EACH_YEAR',
-          config: {
-            dataSourceEntityType: reportCode.includes('Province') ? 'district' : 'sub_district',
-            aggregationEntityType: 'requested',
+          transform: 'insertColumns',
+          columns: {
+            '=$dataElement': '=$value',
           },
+        },
+        {
+          transform: 'updateColumns',
+          insert: {
+            organisationUnitCode: '=$organisationUnit',
+            value: `=sum(${dataElements.map(code => `$${code}`)})`,
+          },
+          include: ['period'],
+        },
+        {
+          transform: 'mergeRows',
+          groupBy: ['organisationUnitCode', 'period'],
+          using: 'sum',
         },
       ],
     },
-    transform: [
-      {
-        transform: 'updateColumns',
-        insert: {
-          organisationUnitCode: '=$organisationUnit',
-        },
-        exclude: ['organisationUnit', 'dataElement', 'period'],
-      },
-    ],
-  },
-});
+  };
+};
 
 const PERMISSION_GROUP = 'LESMIS Public';
 
@@ -155,6 +181,35 @@ const MAP_OVERLAYS = [
         ],
         sortOrder: 0,
       },
+      {
+        reportCode: `${OVERLAY_CODE}_District_PE_map`,
+        name: 'Number of Primary Schools',
+        dataElements: [
+          'nosch_type4_private',
+          'nosch_type5_public',
+          'nosch_type5_private',
+          'nosch_type5_public',
+        ],
+        sortOrder: 1,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_District_LSE_map`,
+        name: 'Number of Lower Secondary Schools',
+        dataElements: ['nosch_type6_private', 'nosch_type6_public'],
+        sortOrder: 2,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_District_USE_map`,
+        name: 'Number of Upper Secondary Schools',
+        dataElements: ['nosch_type7_private', 'nosch_type7_public'],
+        sortOrder: 3,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_District_COMPLETE_map`,
+        name: 'Number of Complete Secondary Schools',
+        dataElements: ['nosch_type8_private', 'nosch_type8_public'],
+        sortOrder: 4,
+      },
     ],
   },
   {
@@ -172,6 +227,35 @@ const MAP_OVERLAYS = [
           'nosch_type3_public',
         ],
         sortOrder: 0,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_Province_PE_map`,
+        name: 'Number of Primary Schools',
+        dataElements: [
+          'nosch_type4_private',
+          'nosch_type5_public',
+          'nosch_type5_private',
+          'nosch_type5_public',
+        ],
+        sortOrder: 1,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_Province_LSE_map`,
+        name: 'Number of Lower Secondary Schools',
+        dataElements: ['nosch_type6_private', 'nosch_type6_public'],
+        sortOrder: 2,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_Province_USE_map`,
+        name: 'Number of Upper Secondary Schools',
+        dataElements: ['nosch_type7_private', 'nosch_type7_public'],
+        sortOrder: 3,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_Province_COMPLETE_map`,
+        name: 'Number of Complete Secondary Schools',
+        dataElements: ['nosch_type8_private', 'nosch_type8_public'],
+        sortOrder: 4,
       },
     ],
   },
