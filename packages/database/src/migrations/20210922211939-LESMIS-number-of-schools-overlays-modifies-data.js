@@ -73,6 +73,8 @@ const PERMISSION_GROUP = 'LESMIS Public';
 
 const getMapOverlay = (name, reportCode) => ({
   id: reportCode,
+  report_code: reportCode,
+  legacy: false,
   name,
   userGroup: PERMISSION_GROUP,
   dataElementCode: 'value',
