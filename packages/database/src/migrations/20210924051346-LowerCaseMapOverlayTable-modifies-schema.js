@@ -35,7 +35,7 @@ exports.up = async function (db) {
 };
 
 exports.down = async function (db) {
-  await db.runSql('ALTER TABLE "map_overlay" RENAME TO "mapOverlay";');
+  return true;
 };
 
 exports._meta = {
