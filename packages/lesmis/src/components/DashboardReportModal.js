@@ -49,6 +49,7 @@ const Header = styled(FlexSpaceBetween)`
   padding-bottom: 1.6rem;
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
   margin-bottom: 1.6rem;
+  z-index: 1;
 
   .MuiTextField-root {
     margin-right: 0;
@@ -187,13 +188,15 @@ export const DashboardReportModal = () => {
               {config?.description && <Description>{config.description}</Description>}
             </Box>
             <Toolbar $isExporting={isExporting}>
-              <SplitButton
-                options={EXPORT_OPTIONS}
-                selectedId={exportFormatId}
-                setSelectedId={setExportFormatId}
-                onClick={handleClickExport}
-                ButtonComponent={WhiteButton}
-              />
+              {config?.type !== 'list' && (
+                <SplitButton
+                  options={EXPORT_OPTIONS}
+                  selectedId={exportFormatId}
+                  setSelectedId={setExportFormatId}
+                  onClick={handleClickExport}
+                  ButtonComponent={WhiteButton}
+                />
+              )}
               <DateRangePicker
                 isLoading={isLoading}
                 startDate={startDate}

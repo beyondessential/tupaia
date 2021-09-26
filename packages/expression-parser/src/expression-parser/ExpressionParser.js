@@ -3,7 +3,16 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { create, all } from 'mathjs';
+import { create, all, factory } from 'mathjs';
+
+/**
+ * @typedef {Object} Scope
+ * @property {(s: string) => unknown} get
+ * @property {(s: string, v: unknown) => void} set
+ * @property {(s: string) => boolean} has
+ * @property {(s: string) => void} delete
+ * @property {() => void} delete
+ */
 
 /**
  * Usage:
@@ -36,20 +45,10 @@ const translate = (value, translations) => {
   return translations[value];
 };
 
-/**
- * List of built in functions in math.js
- * This list is here because when extracting variables for an expression by traversing the node tree,
- * the built in functions are also considered as Symbol Node (which is similar to variables).
- * So we want to exclude them when getting the variables.
- */
-const BUILT_IN_FUNCTIONS = ['equalText', 'round'];
-
 const ADDITIONAL_ALPHA_CHARS = ['@'];
 
 export class ExpressionParser {
   /**
-   * @typedef { { get: (s: string) => unknown, set: (s: string, v: unknown) => void, has: (s: string) => boolean, keys: () => string[], delete: (s: string) => void, clear: () => void } } Scope
-   *
    * Can pass in a custom scope
    * @param {Scope} customScope
    */
@@ -63,27 +62,64 @@ export class ExpressionParser {
     };
 
     this.customScope = customScope;
-    this.customFunctions = this.getCustomFunctions();
-    this.math.import(this.customFunctions);
+    this.customFunctionNames = Object.keys(this.getCustomFunctions());
+    this.math.import(this.getCustomFunctions(), { wrap: true });
+    this.math.import(this.getFunctionExtensions());
+    this.math.import(this.getFunctionOverrides(), { wrap: true, override: true });
     this.validExpressionCache = new Set();
   }
 
   /**
-   * Return the variable names from an expression.
+   * Can override in child classes to allow custom expression formats
+   * @protected
+   */
+  readExpression(input) {
+    return input;
+  }
+
+  /**
+   * @param {string} name
+   * @return bool
+   */
+  isBuiltInFunction(name) {
+    try {
+      // see https://mathjs.org/docs/reference/functions/help.html
+      this.math.help(name);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  isFunctionName(name) {
+    return this.customFunctionNames.includes(name) || this.isBuiltInFunction(name);
+  }
+
+  /**
+   * Return the variable names in an expression.
    * @param {*} expression
    */
   getVariables(expression) {
-    this.validate(expression);
-    const nodeTree = this.math.parse(expression);
-    const variables = nodeTree
-      .filter(
-        node =>
-          node.isSymbolNode &&
-          !Object.keys(this.customFunctions).includes(node.name) &&
-          !BUILT_IN_FUNCTIONS.includes(node.name),
-      )
+    return this.extractSymbols(expression, node => !this.isFunctionName(node.name));
+  }
+
+  /**
+   * Return the function names in an expression.
+   * @param {*} expression
+   */
+  getFunctions(expression) {
+    return this.extractSymbols(expression, node => this.isFunctionName(node.name));
+  }
+
+  extractSymbols(expression, extractor) {
+    const expr = this.readExpression(expression);
+    this.validate(expr);
+    const nodeTree = this.math.parse(expr);
+    const items = nodeTree
+      .filter(node => node.isSymbolNode && extractor(node))
       .map(({ name }) => name);
-    return [...new Set(variables)];
+
+    return [...new Set(items)];
   }
 
   /**
@@ -91,11 +127,12 @@ export class ExpressionParser {
    * @param {*} expression
    */
   validate(expression) {
-    if (this.validExpressionCache.has(expression)) {
+    const expr = this.readExpression(expression);
+    if (this.validExpressionCache.has(expr)) {
       return;
     }
 
-    const nodeTree = this.math.parse(expression);
+    const nodeTree = this.math.parse(expr);
     nodeTree.traverse(node => {
       if (node.isOperatorNode && node.op === '*' && node.implicit) {
         throw new Error(
@@ -103,7 +140,7 @@ export class ExpressionParser {
         );
       }
     });
-    this.validExpressionCache.add(expression);
+    this.validExpressionCache.add(expr);
   }
 
   /**
@@ -111,8 +148,9 @@ export class ExpressionParser {
    * @param {*} expression
    */
   evaluate(expression) {
-    this.validate(expression);
-    return this.math.evaluate(expression, this.customScope);
+    const expr = this.readExpression(expression);
+    this.validate(expr);
+    return this.math.evaluate(expr, this.customScope);
   }
 
   /**
@@ -122,7 +160,8 @@ export class ExpressionParser {
    * @param {*} expression
    */
   evaluateToNumber(expression) {
-    const result = this.evaluate(expression);
+    const expr = this.readExpression(expression);
+    const result = this.evaluate(expr);
     if (typeof result === 'boolean') {
       return result ? 1 : 0;
     }
@@ -135,8 +174,7 @@ export class ExpressionParser {
    */
   setAll(variables = {}) {
     Object.entries(variables).forEach(([name, value]) => {
-      const expressionValue = value || 0;
-      this.set(name, expressionValue);
+      this.set(name, value);
     });
   }
 
@@ -166,6 +204,7 @@ export class ExpressionParser {
   }
 
   /**
+   * Custom functions to be imported
    * @protected
    * This can be overridden in child classes to import new functions.
    * @returns {Record<string, (...args: any[]) => any>} functions
@@ -176,5 +215,29 @@ export class ExpressionParser {
       firstExistingValue,
       translate,
     };
+  }
+
+  /**
+   * Functions to merge with existing mathjs functions
+   * @protected
+   * This can be overridden in child classes to import new functions.
+   * @returns {Record<string, (...args: any[]) => any>} functions
+   */
+  getFunctionExtensions() {
+    return {};
+  }
+
+  /**
+   * Functions to override existing mathjs functions
+   * @protected
+   * This can be overridden in child classes to import new functions.
+   * @returns {Record<string, (...args: any[]) => any>} functions
+   */
+  getFunctionOverrides() {
+    return {};
+  }
+
+  factory(...args) {
+    return this.math.factory(...args);
   }
 }

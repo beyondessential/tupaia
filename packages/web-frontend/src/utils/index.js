@@ -15,10 +15,8 @@ export { isMobile, delayMobileTapCallback } from './mobile';
 export { getCenterAndZoomForBounds } from './getCenterAndZoomForBounds';
 export { getFacilityThumbnailUrl } from './getFacilityThumbnailUrl';
 export { getMapUrl } from './getMapUrl';
-export { OverlayContainer, OverlayView } from './overlayContainer';
 export {
   processMeasureInfo,
-  getMeasureDisplayInfo,
   getSingleFormattedValue,
   flattenNumericalMeasureData,
   flattenMeasureHierarchy,
