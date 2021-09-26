@@ -513,6 +513,10 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
     query.returning('*');
   }
 
+  if (process.env.DB_VERBOSE === 'true') {
+    winston.info(query.toString());
+  }
+
   // Now constructed, the query can either be 'awaited' (in which case it will execute and return
   // the result), or passed back in to this.query as part of a nested query.
   return query;
