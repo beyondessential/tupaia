@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import keyBy from 'lodash.keyby';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
@@ -28,18 +29,19 @@ export class MapOverlayModel extends DatabaseModel {
         ],
       },
     );
-    const measureIds = new Set();
-    overlays.forEach(overlay => {
-      const { id: overlayId, linkedMeasures } = overlay;
-      if (linkedMeasures) {
-        linkedMeasures.forEach(measureId => {
-          measureIds.add(measureId);
-        });
-      }
+    const measureIds = overlays
+      .map(({ id: overlayId, linkedMeasures }) => [
+        overlayId,
+        ...(linkedMeasures !== null ? linkedMeasures : []),
+      ])
+      .flat();
 
-      measureIds.add(overlayId);
-    });
-    return this.find({ id: Array.from(measureIds) });
+    const measureResults = await this.find({ id: measureIds });
+    return measureResults.sort(
+      (a, b) =>
+        measureIds.findIndex(measureId => measureId === a.id) -
+        measureIds.findIndex(measureId => measureId === b.id),
+    );
   }
 }
 
