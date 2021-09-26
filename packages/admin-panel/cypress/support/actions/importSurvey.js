@@ -8,7 +8,7 @@ import 'cypress-file-upload';
 export const openImportSurveyForm = () => {
   cy.findByText('Import').click();
 };
-
+/*
 export const enterSurveyName = surveyName => {
   cy.selectIntoTextBox('Survey Names', surveyName);
 };
@@ -32,7 +32,7 @@ export const selectReportingPeriod = reportingPeriod => {
 export const selectDataService = dataService => {
   cy.selectDropDownValue('Data service', 'Please select', dataService);
 };
-
+*/
 export const importSurvey = () => {
   cy.get('[type="submit"]').click();
 };
@@ -48,4 +48,34 @@ export const checkImportFail = () => {
   cy.get('form').should('includes.text', 'Import failed');
   cy.get('form').contains('Dismiss').click();
   cy.contains('Import Surveys').parent().find('button').click();
+};
+
+export const fillSurveyImportForm = ({
+  surveyNames,
+  countries,
+  permissionGroup,
+  surveyGroup,
+  reportingPeriod,
+  dataService,
+}) => {
+  if (surveyNames) {
+    cy.selectIntoTextBox('Survey Names', surveyNames);
+  }
+  if (countries) {
+    cy.selectIntoDropDownTextBox('Countries', countries);
+  }
+
+  if (permissionGroup) {
+    cy.selectIntoDropDownTextBox('Permission Group', permissionGroup);
+  }
+  if (surveyGroup) {
+    cy.selectIntoTextBox('Survey Group', surveyGroup);
+  }
+  if (reportingPeriod) {
+    cy.selectDropDownValue('Reporting Period', 'Please select', reportingPeriod);
+  }
+
+  if (dataService) {
+    cy.selectDropDownValue('Data service', 'Please select', dataService);
+  }
 };

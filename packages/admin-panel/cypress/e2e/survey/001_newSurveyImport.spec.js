@@ -17,6 +17,7 @@ import {
   checkImportSuccess,
   checkSurveyByName,
   checkImportFail,
+  fillSurveyImportForm,
 } from '../../support';
 
 describe('import new survey file', () => {
@@ -38,21 +39,24 @@ describe('import new survey file', () => {
     importSurvey();
     checkImportSuccess();
     searchBySurveyName('Test Survey_1');
-
     checkSurveyByName('Test Survey_1');
   });
 
-  it('import a new survey by filling all the fields', () => {
-    enterSurveyName('Test Survey_1');
-    enterCountryName('Demo Land');
-    enterPermissionGroup('Admin');
-    enterSurveyGroup('Baseline Surveys');
-    selectReportingPeriod('Weekly');
-    selectDataService('Tupaia');
+  it.only('import a new survey by filling all the fields', () => {
+    fillSurveyImportForm({
+      surveyNames: ['Test Survey_1', 'Test Survey_15'],
+      countries: ['Demo Land', 'Kiribati', 'Australia'],
+      permissionGroup: 'Admin',
+      surveyGroup: 'Baseline Surveys',
+      reportingPeriod: 'Weekly',
+      dataService: 'Tupaia',
+    });
+    /*
     cy.uploadFile('surveys/Test Survey_1.xlsx');
     importSurvey();
     checkImportSuccess();
     searchBySurveyName('Test Survey_1');
     checkSurveyByName('Test Survey_1');
+    */
   });
 });
