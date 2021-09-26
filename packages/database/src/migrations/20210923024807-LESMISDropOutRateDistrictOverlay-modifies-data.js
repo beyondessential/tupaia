@@ -171,6 +171,8 @@ const getMapOverlay = (name, reportCode) => ({
   userGroup: PERMISSION_GROUP,
   dataElementCode: 'value',
   isDataRegional: true,
+  legacy: false,
+  report_code: reportCode,
   measureBuilder: 'useReportServer',
   measureBuilderConfig: {
     dataSourceType: 'custom',
@@ -201,6 +203,8 @@ const getGpiMapOverlay = (name, reportCode) => ({
   userGroup: PERMISSION_GROUP,
   dataElementCode: 'value',
   isDataRegional: true,
+  legacy: false,
+  report_code: reportCode,
   measureBuilder: 'useReportServer',
   measureBuilderConfig: {
     dataSourceType: 'custom',
