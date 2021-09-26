@@ -9,9 +9,9 @@ import { PopupDataItemList } from '../PopupDataItemList';
 import { PopupMarker } from './PopupMarker';
 
 const buildHeaderText = (markerData, popupHeaderFormat) => {
-  const { code, name } = markerData;
+  const { organisationUnitCode, name } = markerData;
   const replacements = {
-    code,
+    code: organisationUnitCode,
     name,
   };
   return Object.entries(replacements).reduce(
