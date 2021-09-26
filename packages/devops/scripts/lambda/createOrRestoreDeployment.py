@@ -115,8 +115,8 @@ def create_instance(restore_code, stage, instance_type):
         { 'Key': 'RestoreFrom', 'Value': restore_code },
         { 'Key': 'DomainName', 'Value': domain },
         { 'Key': 'Subdomains', 'Value': subdomains_string },
-        { 'Key': 'StopAtUTC', 'Value': '09:00'}, # 9am UTC is 7pm AEST
-        { 'Key': 'StartAtUTC', 'Value': '20:00'} # 8pm UTC is 6am AEST
+        { 'Key': 'StopAtUTC', 'Value': '09:00'}, # 9am UTC is 7pm AEST, 8pm AEDT, 9pm NZST, 10pm NZDT
+        { 'Key': 'StartAtUTC', 'Value': '18:00'} # 6pm UTC is 4am AEST, 5am AEDT, 6am NZST, 7am NZDT
       ]}]
     }
     # Get details of IAM profile (e.g. role allowing access to lambda) if applicable
