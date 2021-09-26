@@ -121,7 +121,7 @@ const getBubbleMapOverlay = (name, reportCode) => ({
     displayOnLevel: 'District',
     displayType: 'radius',
     measureLevel: 'School',
-    name: 'Total students',
+    name,
     periodGranularity: 'one_year_at_a_time',
     popupHeaderFormat: '{code}: {name}',
     valueType: 'number',
