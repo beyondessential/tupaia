@@ -16,51 +16,79 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const getReport = (reportCode, dataElements) => ({
-  code: reportCode,
-  config: {
-    fetch: {
-      dataElements,
-      aggregations: [
+const getReport = (reportCode, dataElements) => {
+  const aggregations = [
+    {
+      type: 'FINAL_EACH_YEAR',
+      config: {
+        dataSourceEntityType: 'school',
+        aggregationEntityType: 'requested',
+      },
+    },
+  ];
+
+  if (reportCode.includes('Province')) {
+    aggregations.push({
+      type: 'SUM_PER_ORG_GROUP',
+      config: {
+        dataSourceEntityType: 'school',
+        aggregationEntityType: 'district',
+      },
+    });
+  } else if (reportCode.includes('District')) {
+    aggregations.push({
+      type: 'SUM_PER_ORG_GROUP',
+      config: {
+        dataSourceEntityType: 'school',
+        aggregationEntityType: 'sub_district',
+      },
+    });
+  }
+
+  return {
+    code: reportCode,
+    config: {
+      fetch: {
+        dataElements,
+        aggregations,
+      },
+      transform: [
         {
-          type: 'FINAL_EACH_YEAR',
-          config: {
-            dataSourceEntityType: 'sub_district',
-            aggregationEntityType: 'requested',
+          transform: 'updateColumns',
+          insert: {
+            organisationUnitCode: '=$organisationUnit',
           },
+          include: ['period', 'value'],
+        },
+        {
+          transform: 'mergeRows',
+          groupBy: ['organisationUnitCode', 'period'],
+          using: 'sum',
         },
       ],
     },
-    transform: [
-      {
-        transform: 'updateColumns',
-        insert: {
-          organisationUnitCode: '=$organisationUnit',
-        },
-        exclude: ['organisationUnit', 'dataElement', 'period'],
-      },
-    ],
-  },
-});
+  };
+};
 
 const PERMISSION_GROUP = 'LESMIS Public';
 
 const getMapOverlay = (name, reportCode) => ({
-  id: reportCode,
-  name,
-  userGroup: PERMISSION_GROUP,
+  countryCodes: '{"LA"}',
   dataElementCode: 'value',
+  id: reportCode,
   isDataRegional: true,
+  legacy: false,
   measureBuilder: 'useReportServer',
   measureBuilderConfig: {
     dataSourceType: 'custom',
     reportCode,
   },
+  name,
   presentationOptions: {
-    scaleType: 'performance',
     displayType: 'shaded-spectrum',
-    measureLevel: 'SubDistrict',
-    valueType: 'number',
+    measureLevel: reportCode.includes('Province') ? 'District' : 'SubDistrict',
+    name,
+    scaleType: 'neutral',
     scaleBounds: {
       left: {
         max: 'auto',
@@ -70,17 +98,49 @@ const getMapOverlay = (name, reportCode) => ({
       },
     },
     periodGranularity: 'one_year_at_a_time',
+    valueType: 'number',
   },
-  countryCodes: '{"LA"}',
   projectCodes: '{laos_schools}',
-  legacy: false,
   report_code: reportCode,
+  userGroup: PERMISSION_GROUP,
+});
+
+const getBubbleMapOverlay = (name, reportCode) => ({
+  countryCodes: '{"LA"}',
+  dataElementCode: 'value',
+  id: reportCode,
+  isDataRegional: true,
+  legacy: false,
+  measureBuilder: 'useReportServer',
+  measureBuilderConfig: {
+    dataSourceType: 'custom',
+    reportCode,
+  },
+  name,
+  presentationOptions: {
+    displayOnLevel: 'District',
+    displayType: 'radius',
+    measureLevel: 'School',
+    name: 'Total students',
+    periodGranularity: 'one_year_at_a_time',
+    popupHeaderFormat: '{code}: {name}',
+    valueType: 'number',
+    values: [
+      { color: 'blue', value: 'other' },
+      { color: 'grey', value: null },
+    ],
+  },
+  projectCodes: '{laos_schools}',
+  report_code: reportCode,
+  userGroup: PERMISSION_GROUP,
 });
 
 const addMapOverlay = async (db, parentCode, config) => {
   const { reportCode, dataElements, name, sortOrder } = config;
   const report = getReport(reportCode, dataElements);
-  const mapOverlay = getMapOverlay(name, reportCode);
+  const mapOverlay = reportCode.includes('School')
+    ? getBubbleMapOverlay(name, reportCode)
+    : getMapOverlay(name, reportCode);
   const permissionGroupId = await nameToId(db, 'permission_group', PERMISSION_GROUP);
   await insertObject(db, 'report', {
     id: generateId(),
@@ -113,6 +173,18 @@ const MAP_OVERLAYS = [
     children: [
       {
         reportCode: `${OVERLAY_CODE}_District_Total_map`,
+        name: 'Total students',
+        dataElements: [...generateDataElements('m'), ...generateDataElements('f')],
+        sortOrder: 0,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_District_Female_map`,
+        name: 'Female students',
+        dataElements: generateDataElements('f'),
+        sortOrder: 1,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_District_Male_map`,
         name: 'Male students',
         dataElements: generateDataElements('m'),
         sortOrder: 2,
@@ -124,6 +196,18 @@ const MAP_OVERLAYS = [
     children: [
       {
         reportCode: `${OVERLAY_CODE}_Province_Total_map`,
+        name: 'Total students',
+        dataElements: [...generateDataElements('m'), ...generateDataElements('f')],
+        sortOrder: 0,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_Province_Female_map`,
+        name: 'Female students',
+        dataElements: generateDataElements('f'),
+        sortOrder: 1,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_Province_Male_map`,
         name: 'Male students',
         dataElements: generateDataElements('m'),
         sortOrder: 2,
@@ -135,6 +219,18 @@ const MAP_OVERLAYS = [
     children: [
       {
         reportCode: `${OVERLAY_CODE}_School_Total_map`,
+        name: 'Total students',
+        dataElements: [...generateDataElements('m'), ...generateDataElements('f')],
+        sortOrder: 0,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_School_Female_map`,
+        name: 'Female students',
+        dataElements: generateDataElements('f'),
+        sortOrder: 1,
+      },
+      {
+        reportCode: `${OVERLAY_CODE}_School_Male_map`,
         name: 'Male students',
         dataElements: generateDataElements('m'),
         sortOrder: 2,
