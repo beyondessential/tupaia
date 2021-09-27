@@ -49,15 +49,6 @@ const getOverlayNames = (gradeNum, educationLevel, GPI) => {
   };
 };
 
-// const addMapOverlayGroupRelation = async (db, parentId, childId, childType) => {
-//   return insertObject(db, 'map_overlay_group_relation', {
-//     id: generateId(),
-//     map_overlay_group_id: parentId,
-//     child_id: childId,
-//     child_type: childType,
-//   });
-// };
-
 const getReport = (reportCode, dataElement) => ({
   id: generateId(),
   code: reportCode,
@@ -196,19 +187,11 @@ const getPermissionGroupId = async (db, name) => {
   return record.rows[0] && record.rows[0].id;
 };
 
-const getSpecificReport = (reportCode, dataElement, GPI) => {
-  if (GPI) {
-    return getGpiReport(reportCode, dataElement);
-  }
-  return getReport(reportCode, dataElement);
-};
+const getSpecificReport = (reportCode, dataElement, GPI) =>
+  GPI ? getGpiReport(reportCode, dataElement) : getReport(reportCode, dataElement);
 
-const getSpecificMapOverlay = (name, reportCode, GPI) => {
-  if (GPI) {
-    return getGpiMapOverlay(name, reportCode);
-  }
-  return getMapOverlay(name, reportCode);
-};
+const getSpecificMapOverlay = (name, reportCode, GPI) =>
+  GPI ? getGpiMapOverlay(name, reportCode) : getMapOverlay(name, reportCode);
 
 const addMapOverlay = async (db, gradeNum, educationLevel, sortOrder, GPI) => {
   const { name, dataElement, reportCode } = getOverlayNames(gradeNum, educationLevel, GPI);
