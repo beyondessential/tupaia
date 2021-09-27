@@ -17,7 +17,7 @@ exports.setup = function (options, seedLink) {
 exports.up = async function (db) {
   await db.runSql(`
     UPDATE map_overlay
-    SET "measureBuilderConfig" = jsonb_set("measureBuilderConfig", '{"dataElementCode"}', "dataElementCode")
+    SET "measureBuilderConfig" = "measureBuilderConfig" || ('{"dataElementCode": "' || "dataElementCode" || '" }')::jsonb
     WHERE "dataElementCode" <> 'value';
   `);
   await db.runSql(`
