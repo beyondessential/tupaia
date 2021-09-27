@@ -5,11 +5,10 @@
 
 import { createModelsStub, stubDhisApi } from '../DhisService.stubs';
 import { DATA_SOURCES } from '../DhisService.fixtures';
-import { DeprecatedEventsPuller } from '../../../../../services/dhis/pullers';
-import { DhisTranslator } from '../../../../../services/dhis/DhisTranslator';
+import { DeprecatedEventsPuller } from '../../../../services/dhis/pullers';
+import { DhisTranslator } from '../../../../services/dhis/DhisTranslator';
 
 describe('DeprecatedEventsPuller', () => {
-
   let deprecatedEventsPuller;
   let dhisApi;
 

@@ -2,16 +2,16 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import * as BuildAnalytics from '../../../../../services/dhis/buildAnalytics/buildAnalyticsFromDhisEventAnalytics';
-import { AnalyticsPuller } from '../../../../../services/dhis/pullers/AnalyticsPuller';
+import * as BuildAnalytics from '../../../../services/dhis/buildAnalytics/buildAnalyticsFromDhisEventAnalytics';
+import { AnalyticsPuller } from '../../../../services/dhis/pullers/AnalyticsPuller';
 import { DATA_SOURCES, EVENT_ANALYTICS } from '../DhisService.fixtures';
 import {
   buildDhisAnalyticsResponse,
   createModelsStub,
   stubDhisApi,
 } from '../DhisService.stubs';
-import { DhisTranslator } from '../../../../../services/dhis/DhisTranslator';
-import { DataElementsMetadataPuller } from '../../../../../services/dhis/pullers';
+import { DhisTranslator } from '../../../../services/dhis/DhisTranslator';
+import { DataElementsMetadataPuller } from '../../../../services/dhis/pullers';
 
 describe('AnalyticsPuller', () => {
   let analyticsPuller;

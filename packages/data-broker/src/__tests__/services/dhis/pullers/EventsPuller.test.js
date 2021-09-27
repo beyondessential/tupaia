@@ -5,12 +5,11 @@
 
 import { createModelsStub, stubDhisApi } from '../DhisService.stubs';
 import { DATA_SOURCES } from '../DhisService.fixtures';
-import * as BuildEvents from '../../../../../services/dhis/buildAnalytics/buildEventsFromDhisEventAnalytics';
-import { EventsPuller } from '../../../../../services/dhis/pullers';
-import { DhisTranslator } from '../../../../../services/dhis/DhisTranslator';
+import * as BuildEvents from '../../../../services/dhis/buildAnalytics/buildEventsFromDhisEventAnalytics';
+import { EventsPuller } from '../../../../services/dhis/pullers';
+import { DhisTranslator } from '../../../../services/dhis/DhisTranslator';
 
 describe('EventsPuller', () => {
-
   let eventsPuller;
   let dhisApi;
 

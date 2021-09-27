@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import * as GetDhisApiInstance from '../../../../services/dhis/getDhisApiInstance';
+import * as GetDhisApiInstance from '../../../services/dhis/getDhisApiInstance';
 import { DATA_SOURCES, DATA_VALUES, DHIS_REFERENCE, SERVER_NAME } from './DhisService.fixtures';
-import { DhisService } from '../../../../services/dhis';
+import { DhisService } from '../../../services/dhis';
 import { createModelsStub, stubDhisApi } from './DhisService.stubs';
 
 describe('DhisService', () => {

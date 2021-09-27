@@ -3,14 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import * as GetDhisApiInstance from '../../../../services/dhis/getDhisApiInstance';
+import * as GetDhisApiInstance from '../../../services/dhis/getDhisApiInstance';
 import {
   DATA_ELEMENTS_BY_GROUP,
   DATA_ELEMENTS,
   DATA_SOURCES,
   SERVER_NAME,
 } from './DhisService.fixtures';
-import { createJestMockInstance } from '../../../../../../utils/src/testUtilities';
+import { createJestMockInstance } from '../../../../../utils/src/testUtilities';
 
 const defaultAnalytics = {
   headers: [],
