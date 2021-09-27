@@ -49,7 +49,7 @@ export const AreaTooltip = ({
               key={1}
               measureOptions={measureOptions}
               data={orgUnitMeasureData}
-              showNoDataLabel="true"
+              showNoDataLabel
             />
           )}
         </Grid>
