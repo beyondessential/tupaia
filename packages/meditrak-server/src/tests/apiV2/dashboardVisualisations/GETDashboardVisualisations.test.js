@@ -51,7 +51,7 @@ describe('GET dashboard visualisations', () => {
       code: legacyReport.code,
       dataBuilder: legacyReport.data_builder,
       config: legacyReport.data_builder_config,
-      dataServices: JSON.parse(legacyReport.data_services),
+      dataServices: legacyReport.data_services,
     },
   };
 

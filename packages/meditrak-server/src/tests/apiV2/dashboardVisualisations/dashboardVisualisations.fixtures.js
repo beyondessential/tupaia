@@ -63,7 +63,7 @@ const LEGACY_REPORTS = [
     data_builder_config: {
       dataElementCodes: ['BCD1'],
     },
-    data_services: JSON.stringify([{ isDataRegional: true }]),
+    data_services: [{ isDataRegional: true }],
   },
 ];
 
