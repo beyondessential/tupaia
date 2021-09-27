@@ -75,8 +75,8 @@ describe('output', () => {
           columns: 1,
         });
         expect(() => {
-          output(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES);
-        }).toThrow();
+          output([]);
+        }).toThrow("columns must be either '*' or an array");
       });
 
       it('can return only specified columns', () => {
@@ -124,8 +124,10 @@ describe('output', () => {
           columns: ['InfrastructureType', 'Laos', 'Tonga'],
         });
         expect(() => {
-          output(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES);
-        }).toThrow();
+          output([]);
+        }).toThrow(
+          'categoryField cannot be one of: [InfrastructureType,Laos,Tonga] they are already specified as columns',
+        );
       });
 
       it('throws error if categoryField matches rowField', () => {
@@ -135,8 +137,8 @@ describe('output', () => {
           rowField: 'FacilityType',
         });
         expect(() => {
-          output(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES);
-        }).toThrow();
+          output([]);
+        }).toThrow('rowField cannot be: FacilityType, it is already specified as categoryField');
       });
 
       it('can perform with categoryField', () => {
@@ -245,8 +247,10 @@ describe('output', () => {
           columns: ['FacilityType', 'Laos', 'Tonga'],
         });
         expect(() => {
-          output(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES);
-        }).toThrow();
+          output([]);
+        }).toThrow(
+          'rowField cannot be one of: [FacilityType,Laos,Tonga] they are already specified as columns',
+        );
       });
 
       it('throws error if rowField matches categoryField', () => {
@@ -256,8 +260,8 @@ describe('output', () => {
           rowField: 'FacilityType',
         });
         expect(() => {
-          output(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES);
-        }).toThrow();
+          output([]);
+        }).toThrow('rowField cannot be: FacilityType, it is already specified as categoryField');
       });
 
       it('throws error if rowField not provided ', () => {
@@ -266,8 +270,8 @@ describe('output', () => {
           categoryField: 'FacilityType',
         });
         expect(() => {
-          output(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES);
-        }).toThrow();
+          output([]);
+        }).toThrow('rowField is a required field');
       });
 
       it('can perform with rowField', () => {
