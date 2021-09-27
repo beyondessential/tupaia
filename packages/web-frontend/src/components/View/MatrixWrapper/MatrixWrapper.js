@@ -67,7 +67,7 @@ import { DateRangePicker } from '../../DateRangePicker';
 import { getStyles, DESCRIPTION_CELL_WIDTH, MINIMUM_CELL_WIDTH } from './styles';
 import { Matrix } from './components';
 import { formatDataValue } from '../../../utils';
-import { getLimits } from '../../../utils/periodGranularities';
+import { getDatePickerLimits, getDefaultDatePickerDates } from '../../../utils/periodGranularities';
 import { checkIfApplyDotStyle, getIsUsingDots } from '../utils';
 import { ChartContainer, ChartViewContainer } from '../Layout';
 
@@ -222,7 +222,7 @@ export class MatrixWrapper extends Component {
   };
 
   renderPeriodSelector() {
-    const { viewContent } = this.props;
+    const { viewContent, urlStartDate, urlEndDate } = this.props;
     const { periodGranularity } = viewContent;
     const { isLoading } = this.state;
 
@@ -230,19 +230,37 @@ export class MatrixWrapper extends Component {
       return null; // Not using a period selector
     }
 
-    const datePickerLimits = getLimits(viewContent.periodGranularity, viewContent.datePickerLimits);
+    const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDatePickerDates(
+      viewContent,
+    );
+
+    const startDate = urlStartDate || defaultStartDate;
+    const endDate = urlEndDate || defaultEndDate;
+
+    const datePickerLimits = getDatePickerLimits(
+      viewContent.periodGranularity,
+      viewContent.datePickerLimits,
+    );
 
     return (
       <div style={styles.periodSelector}>
         <DateRangePicker
           granularity={viewContent.periodGranularity}
           onSetDates={this.onSetDateRange}
-          startDate={viewContent.startDate}
-          endDate={viewContent.endDate}
+          startDate={startDate}
+          endDate={endDate}
           min={datePickerLimits.startDate}
           max={datePickerLimits.endDate}
           isLoading={isLoading}
         />
+      </div>
+    );
+  }
+
+  renderLoading() {
+    return (
+      <div style={styles.loadingWrapper}>
+        <CircularProgress />
       </div>
     );
   }
@@ -269,11 +287,7 @@ export class MatrixWrapper extends Component {
     const PeriodSelectorComponent = this.renderPeriodSelector();
 
     if (!columns) {
-      return (
-        <div style={styles.loadingWrapper}>
-          <CircularProgress />
-        </div>
-      );
+      return this.renderLoading();
     }
 
     let numberOfColumnsPerPage = 0;
@@ -390,6 +404,8 @@ MatrixWrapper.propTypes = {
   onChangeConfig: PropTypes.func,
   onSetDateRange: PropTypes.func,
   onItemClick: PropTypes.func,
+  urlStartDate: PropTypes.string,
+  urlEndDate: PropTypes.string,
 };
 
 MatrixWrapper.defaultProps = {
@@ -399,4 +415,6 @@ MatrixWrapper.defaultProps = {
   onChangeConfig: () => {},
   onSetDateRange: () => {},
   onItemClick: () => null,
+  urlStartDate: undefined,
+  urlEndDate: undefined,
 };

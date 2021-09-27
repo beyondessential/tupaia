@@ -1,4 +1,9 @@
-import { CustomError, replaceValues, convertDateRangeToPeriodQueryString } from '@tupaia/utils';
+import {
+  CustomError,
+  replaceValues,
+  convertDateRangeToPeriodQueryString,
+  periodToDateString,
+} from '@tupaia/utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { ReportPermissionsChecker } from './permissions';
 import { ReportConnection } from '/connections';
@@ -67,8 +72,18 @@ export class ReportHandler extends DataAggregatingRouteHandler {
       requestQuery.endDate = this.endDate;
     }
 
-    const { results } = await reportConnection.fetchReport(reportCode, requestQuery);
-    return Array.isArray(results) ? { data: results } : { ...results };
+    const { results, ...metadata } = await reportConnection.fetchReport(reportCode, requestQuery);
+    const { period } = metadata;
+    const reportMetadata = {};
+    if (period?.reportStart) {
+      reportMetadata.dataStartDate = periodToDateString(period.reportStart, false);
+    }
+    if (period?.reportEnd) {
+      reportMetadata.dataEndDate = periodToDateString(period.reportEnd, true);
+    }
+    return Array.isArray(results)
+      ? { data: results, ...reportMetadata }
+      : { ...results, ...reportMetadata };
   }
 
   async buildLegacyReportData(reportCode) {

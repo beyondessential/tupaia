@@ -19,7 +19,7 @@ import { DateRangePicker } from '../../components/DateRangePicker';
 import { getIsMatrix, getViewWrapper, VIEW_CONTENT_SHAPE } from '../../components/View';
 import { DARK_BLUE, DIALOG_Z_INDEX, WHITE } from '../../styles';
 import { LoadingIndicator } from '../Form/common';
-import { getLimits } from '../../utils/periodGranularities';
+import { getDatePickerLimits, getDefaultDatePickerDates } from '../../utils/periodGranularities';
 import { DialogTitleWrapper } from '../../components/DialogTitleWrapper';
 import { transformDataForViewType } from '../../components/View/utils';
 
@@ -140,7 +140,14 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   renderBodyContent() {
-    const { viewContent, onCloseOverlay, organisationUnitName, isExporting } = this.props;
+    const {
+      viewContent,
+      onCloseOverlay,
+      organisationUnitName,
+      isExporting,
+      urlStartDate,
+      urlEndDate,
+    } = this.props;
     const ViewWrapper = getViewWrapper(viewContent);
     const newViewContent = transformDataForViewType(viewContent);
     const viewProps = {
@@ -148,6 +155,8 @@ export class EnlargedDialogContent extends PureComponent {
       isEnlarged: true,
       onClose: onCloseOverlay,
       onItemClick: this.onItemClick,
+      urlStartDate,
+      urlEndDate,
     };
     if (getIsMatrix(viewContent)) {
       viewProps.organisationUnitName = organisationUnitName;
@@ -217,10 +226,27 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   renderPeriodSelector() {
-    const { onSetDateRange, isLoading, viewContent, isExporting } = this.props;
-    const { periodGranularity, startDate, endDate } = viewContent;
+    const {
+      onSetDateRange,
+      isLoading,
+      viewContent,
+      isExporting,
+      urlStartDate,
+      urlEndDate,
+    } = this.props;
+    const { periodGranularity } = viewContent;
 
-    const datePickerLimits = getLimits(viewContent.periodGranularity, viewContent.datePickerLimits);
+    const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDatePickerDates(
+      viewContent,
+    );
+
+    const startDate = urlStartDate || defaultStartDate;
+    const endDate = urlEndDate || defaultEndDate;
+
+    const datePickerLimits = getDatePickerLimits(
+      viewContent.periodGranularity,
+      viewContent.datePickerLimits,
+    );
 
     return (
       <div style={styles.periodSelector(isExporting)}>
@@ -408,6 +434,8 @@ EnlargedDialogContent.propTypes = {
   isDrilledDown: PropTypes.bool,
   isDrillDownContent: PropTypes.bool,
   onUnDrillDown: PropTypes.func,
+  urlStartDate: PropTypes.string,
+  urlEndDate: PropTypes.func,
 };
 
 EnlargedDialogContent.defaultProps = {
@@ -424,4 +452,6 @@ EnlargedDialogContent.defaultProps = {
   exportRef: null,
   isDrilledDown: false,
   isDrillDownContent: false,
+  urlStartDate: undefined,
+  urlEndDate: undefined,
 };

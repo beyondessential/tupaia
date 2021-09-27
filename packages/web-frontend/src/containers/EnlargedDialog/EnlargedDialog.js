@@ -8,7 +8,7 @@ import Dialog from '@material-ui/core/Dialog';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { toFilename } from '@tupaia/utils';
+import { toFilename, momentToDateString } from '@tupaia/utils';
 import styled from 'styled-components';
 import { useChartDataExport } from '@tupaia/ui-components/lib/chart';
 import {
@@ -276,6 +276,8 @@ const EnlargedDialogComponent = ({
           isDrillDownContent={false}
           onUnDrillDown={onUnDrillDown}
           isDrilledDown={drillDownState.drillDownLevel > 0}
+          urlStartDate={startDateForTopLevel ? momentToDateString(startDateForTopLevel) : undefined}
+          urlEndDate={endDateForTopLevel ? momentToDateString(endDateForTopLevel) : undefined}
         />
       </Dialog>
       <ExportDialog

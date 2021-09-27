@@ -5,7 +5,11 @@
 
 import moment from 'moment';
 import { mockNow, resetMocks } from '../testutil';
-import { roundStartEndDates, getDefaultDates, getLimits } from '../../utils/periodGranularities';
+import {
+  roundStartEndDates,
+  getDefaultDateRangeToFetch,
+  getDatePickerLimits,
+} from '../../utils/periodGranularities';
 
 describe('periodGranularities', () => {
   beforeEach(() => {
@@ -34,15 +38,15 @@ describe('periodGranularities', () => {
     });
   });
 
-  describe('getDefaultDates', () => {
+  describe('getDefaultDateRangeToFetch', () => {
     it('gives nothing if no period granularity set', () => {
-      const result = getDefaultDates({});
+      const result = getDefaultDateRangeToFetch({});
       expect(result).toEqual({});
     });
 
     describe('defaultTimePeriod with single period', () => {
       it('gives today by default', () => {
-        const { startDate, endDate } = getDefaultDates({
+        const { startDate, endDate } = getDefaultDateRangeToFetch({
           periodGranularity: 'one_day_at_a_time',
           defaultTimePeriod: null,
         });
@@ -51,7 +55,7 @@ describe('periodGranularities', () => {
       });
 
       it('basic config works', () => {
-        const { startDate, endDate } = getDefaultDates({
+        const { startDate, endDate } = getDefaultDateRangeToFetch({
           periodGranularity: 'one_day_at_a_time',
           defaultTimePeriod: {
             start: { unit: 'day', offset: -1 },
@@ -66,7 +70,7 @@ describe('periodGranularities', () => {
         // E.g. if periodGranularity is one_month_at_a_time, and offset is +5 days, it will not take
         // effect, the start date will be rounded to the start of the month.
         const functionCall = () =>
-          getDefaultDates({
+          getDefaultDateRangeToFetch({
             periodGranularity: 'one_month_at_a_time',
             defaultTimePeriod: {
               start: { unit: 'day', offset: -3 },
@@ -78,7 +82,7 @@ describe('periodGranularities', () => {
       it('ignores end offset if both provided', () => {
         // Because we are one_day_at_a_time, end date is restricted to the end of that period (in this case, the day),
         // so is ignored when specified alongside start.
-        const { startDate, endDate } = getDefaultDates({
+        const { startDate, endDate } = getDefaultDateRangeToFetch({
           periodGranularity: 'one_day_at_a_time',
           defaultTimePeriod: {
             start: { unit: 'day', offset: -1 },
@@ -90,7 +94,7 @@ describe('periodGranularities', () => {
       });
 
       it('works when only end date provided', () => {
-        const { startDate, endDate } = getDefaultDates({
+        const { startDate, endDate } = getDefaultDateRangeToFetch({
           periodGranularity: 'one_day_at_a_time',
           defaultTimePeriod: {
             end: { unit: 'day', offset: -2 },
@@ -107,7 +111,7 @@ describe('periodGranularities', () => {
          *     start: { unit: 'day', offset: -1 },
          *   }
          */
-        const { startDate, endDate } = getDefaultDates({
+        const { startDate, endDate } = getDefaultDateRangeToFetch({
           periodGranularity: 'one_day_at_a_time',
           defaultTimePeriod: {
             unit: 'day',
@@ -121,7 +125,7 @@ describe('periodGranularities', () => {
 
     describe('defaultTimePeriod with a date range', () => {
       it('uses the default date range for empty config', () => {
-        const { startDate, endDate } = getDefaultDates({
+        const { startDate, endDate } = getDefaultDateRangeToFetch({
           periodGranularity: 'day',
           defaultTimePeriod: null,
         });
@@ -130,7 +134,7 @@ describe('periodGranularities', () => {
       });
 
       it('basic config works', () => {
-        const { startDate, endDate } = getDefaultDates({
+        const { startDate, endDate } = getDefaultDateRangeToFetch({
           periodGranularity: 'day',
           defaultTimePeriod: {
             start: { unit: 'day', offset: -1 },
@@ -143,9 +147,9 @@ describe('periodGranularities', () => {
     });
   });
 
-  describe('getLimits', () => {
+  describe('getDatePickerLimits', () => {
     it('gives nothing if no config', () => {
-      const { startDate, endDate } = getLimits('day');
+      const { startDate, endDate } = getDatePickerLimits('day');
       expect(startDate).toBeNull();
       expect(endDate).toBeNull();
     });
@@ -155,12 +159,14 @@ describe('periodGranularities', () => {
       // E.g. if periodGranularity is one_month_at_a_time, and offset is +5 days, it will not take
       // effect, the start date will be rounded to the start of the month.
       const functionCall = () =>
-        getLimits('one_month_at_a_time', { start: { unit: 'day', offset: -3 } });
+        getDatePickerLimits('one_month_at_a_time', { start: { unit: 'day', offset: -3 } });
       expect(functionCall).toThrow('limit unit must match periodGranularity');
     });
 
     it('calculates limits', () => {
-      const { startDate, endDate } = getLimits('day', { start: { unit: 'day', offset: -3 } });
+      const { startDate, endDate } = getDatePickerLimits('day', {
+        start: { unit: 'day', offset: -3 },
+      });
       expect(startDate.format()).toEqual('2019-02-02T00:00:00+11:00'); // rounded
       expect(endDate.format()).toEqual('2019-02-05T23:59:59+11:00'); // rounded
     });

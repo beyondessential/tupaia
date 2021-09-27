@@ -7,7 +7,7 @@ import {
   getLocationComponentValue,
   URL_COMPONENTS,
 } from '../historyNavigation';
-import { getDefaultDates } from '../utils/periodGranularities';
+import { getDefaultDatePickerDates } from '../utils/periodGranularities';
 import { selectCurrentOrgUnitCode } from './orgUnitSelectors';
 import { selectLocation } from './utils';
 
@@ -85,25 +85,21 @@ export const selectIsEnlargedDialogVisible = createSelector(
 );
 
 export const selectShouldUseDashboardData = createSelector(
-  [selectCurrentInfoViewKey, selectCurrentExpandedViewContent, (_, options) => options],
-  (candidateInfoViewKey, candidateViewContent, options) => {
+  [selectCurrentInfoViewKey, selectCurrentExpandedViewConfig, (_, options) => options],
+  (candidateInfoViewKey, candidateViewConfig, options) => {
     const { startDate, endDate, infoViewKey, drillDownLevel } = options;
 
     if (drillDownLevel > 0) return false;
     if (candidateInfoViewKey !== infoViewKey) return false;
-    if (!candidateViewContent || candidateViewContent.type === 'matrix') return false;
+    if (!candidateViewConfig || candidateViewConfig.type === 'matrix') return false;
 
-    const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates(
-      candidateViewContent,
+    const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDatePickerDates(
+      candidateViewConfig,
     );
-    const {
-      startDate: candidateStartDate = defaultStartDate,
-      endDate: candidateEndDate = defaultEndDate,
-    } = candidateViewContent;
 
     if (!startDate && !endDate) return true;
-    if (!moment(candidateStartDate).isSame(moment(startDate), 'day')) return false;
-    if (!moment(candidateEndDate).isSame(moment(endDate), 'day')) return false;
+    if (!moment(defaultStartDate).isSame(moment(startDate), 'day')) return false;
+    if (!moment(defaultEndDate).isSame(moment(endDate), 'day')) return false;
 
     return true;
   },

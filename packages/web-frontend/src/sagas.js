@@ -139,7 +139,7 @@ import {
   getInfoFromInfoViewKey,
   getBrowserTimeZone,
 } from './utils';
-import { getDefaultDates, getDefaultDrillDownDates } from './utils/periodGranularities';
+import { getDefaultDateRangeToFetch, getDefaultDrillDownDates } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
 import { clearLocation } from './historyNavigation/historyNavigation';
 import { decodeLocation } from './historyNavigation/utils';
@@ -740,7 +740,9 @@ function* fetchViewData(parameters, errorHandler) {
   const viewConfig = selectViewConfig(state, infoViewKey);
   // If the view should be constrained to a date range and isn't, constrain it
   const { startDate, endDate } =
-    parameters.startDate || parameters.endDate ? parameters : getDefaultDates(viewConfig);
+    parameters.startDate || parameters.endDate
+      ? parameters
+      : getDefaultDateRangeToFetch(viewConfig);
 
   // Build the request url
   const {
@@ -883,7 +885,7 @@ function* fetchMeasureInfo(mapOverlayId) {
   const { startDate, endDate } =
     measureParams.startDate || measureParams.endDate
       ? measureParams
-      : getDefaultDates(measureParams);
+      : getDefaultDateRangeToFetch(measureParams);
 
   const urlParameters = {
     mapOverlayId,

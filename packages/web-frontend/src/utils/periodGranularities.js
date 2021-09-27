@@ -137,6 +137,8 @@ export const momentToDateString = (date, granularity, format) =>
     ? date.clone().startOf('W').format(format)
     : date.clone().format(format);
 
+const isEmpty = obj => !(obj && Object.keys(obj).length > 0);
+
 const getOffsetDate = (offset, unit, modifier, modifierUnit = null) => {
   // We need a valid unit to proceed.
   if (!CONFIG[unit]) {
@@ -196,7 +198,7 @@ const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTim
   let startDate = moment();
   let endDate = startDate;
 
-  if (defaultTimePeriod) {
+  if (!isEmpty(defaultTimePeriod)) {
     let singleDateConfig;
 
     // If defaultTimePeriod has either start or end,
@@ -239,7 +241,7 @@ const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTim
  * @param {*} defaultTimePeriod
  */
 const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeriod) => {
-  if (defaultTimePeriod) {
+  if (!isEmpty(defaultTimePeriod)) {
     let startDate = moment();
     let endDate = startDate;
 
@@ -259,7 +261,7 @@ const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeri
   return { startDate: moment(DEFAULT_MIN_DATE), endDate: moment() };
 };
 
-export function getDefaultDates(viewConfig) {
+export function getDefaultDateRangeToFetch(viewConfig) {
   const { periodGranularity, defaultTimePeriod } = viewConfig;
 
   // we need a valid granularity to proceed
@@ -267,11 +269,32 @@ export function getDefaultDates(viewConfig) {
     return {};
   }
 
+  // Fetch data for specified range and determine default dates based on that
+  const { useDatesOfData, ...restOfDefaultTimePeriod } = defaultTimePeriod || {};
+  if (useDatesOfData) {
+    return getDefaultDatesForRangeGranularities(periodGranularity, restOfDefaultTimePeriod);
+  }
+
   const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity);
   if (isSingleDate) {
-    return getDefaultDatesForSingleDateGranularities(periodGranularity, defaultTimePeriod);
+    return getDefaultDatesForSingleDateGranularities(periodGranularity, restOfDefaultTimePeriod);
   }
-  return getDefaultDatesForRangeGranularities(periodGranularity, defaultTimePeriod);
+  return getDefaultDatesForRangeGranularities(periodGranularity, restOfDefaultTimePeriod);
+}
+
+export function getDefaultDatePickerDates(viewConfig) {
+  const {
+    defaultTimePeriod,
+    startDate: requestedStartDate,
+    endDate: requestedEndDate,
+    dataStartDate,
+    dataEndDate,
+  } = viewConfig;
+
+  const startDate = defaultTimePeriod?.useDatesOfData ? dataStartDate : requestedStartDate;
+  const endDate = defaultTimePeriod?.useDatesOfData ? dataEndDate : requestedEndDate;
+
+  return { startDate, endDate };
 }
 
 export const getDefaultDrillDownDates = (drillDownViewConfig, previousStartDate) => {
@@ -300,7 +323,7 @@ export const getDefaultDrillDownDates = (drillDownViewConfig, previousStartDate)
  * @param {*} limits - same as defaultTimePeriod
  * @returns {{startDate, endDate}}
  */
-export function getLimits(periodGranularity, limits) {
+export function getDatePickerLimits(periodGranularity, limits) {
   if (!limits) {
     return { startDate: null, endDate: null };
   }
