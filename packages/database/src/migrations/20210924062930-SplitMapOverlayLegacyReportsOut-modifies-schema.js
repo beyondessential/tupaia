@@ -32,7 +32,7 @@ exports.up = async function (db) {
   `);
   await db.runSql('ALTER TABLE map_overlay DROP COLUMN "measureBuilder";');
   await db.runSql('ALTER TABLE map_overlay DROP COLUMN "measureBuilderConfig";');
-  await db.runSql('ALTER TABLE map_overlay DROP COLUMN "dataElement";');
+  await db.runSql('ALTER TABLE map_overlay DROP COLUMN "dataElementCode";');
   await db.runSql('ALTER TABLE map_overlay RENAME COLUMN id TO code;');
   await db.runSql(
     'ALTER TABLE map_overlay ADD COLUMN id TEXT PRIMARY KEY DEFAULT generate_object_id();',
@@ -42,20 +42,20 @@ exports.up = async function (db) {
 exports.down = async function (db) {
   await db.runSql('ALTER TABLE map_overlay ADD COLUMN "measureBuilder" text;');
   await db.runSql('ALTER TABLE map_overlay ADD COLUMN "measureBuilderConfig" jsonb;');
-  await db.runSql('ALTER TABLE map_overlay ADD COLUMN "dataElement" text;');
+  await db.runSql('ALTER TABLE map_overlay ADD COLUMN "dataElementCode" text;');
   await db.runSql(`
     UPDATE map_overlay
     SET
       "measureBuilder" = legacy_report.data_builder,
       "measureBuilderConfig" = legacy_report.data_builder_config,
-      "dataElement" = legacy_report.data_builder_config->'dataElementCode'
+      "dataElementCode" = legacy_report.data_builder_config->'dataElementCode'
     FROM legacy_report
     WHERE legacy_report.code = map_overlay.report_code;
   `);
   await db.runSql(`
     UPDATE map_overlay
-    SET "dataElement" = "value"
-    WHERE "dataElement" IS NULL;
+    SET "dataElementCode" = "value"
+    WHERE "dataElementCode" IS NULL;
   `);
   await db.runSql(`
     UPDATE map_overlay
