@@ -6,27 +6,10 @@
 import { setupTest } from '@tupaia/database';
 import { camelKeys } from '@tupaia/utils';
 
-import { expect } from 'chai';
-import { resetTestData, TestableApp } from '../../testUtilities';
+import { expectError, expectSuccess, resetTestData, TestableApp } from '../../testUtilities';
 import { findTestRecordByCode, TEST_SETUP } from './dashboardVisualisations.fixtures';
 
 describe('GET dashboard visualisations', () => {
-  const expectError = (response, error) => {
-    const { body, statusCode } = response;
-    const errorMatch = typeof error === 'string' ? new RegExp(error) : error;
-
-    expect(statusCode).to.equal(500);
-    expect(body).to.have.property('error');
-    expect(body.error).to.match(errorMatch);
-  };
-
-  const expectSuccess = (response, expectedBody) => {
-    const { body, statusCode } = response;
-
-    expect(statusCode).to.equal(200, body.error);
-    expect(body).to.deep.equal(expectedBody);
-  };
-
   const getVizId = code => findTestRecordByCode('dashboardItem', code).id;
 
   const app = new TestableApp();
