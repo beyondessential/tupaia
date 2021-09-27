@@ -138,11 +138,13 @@ export class DhisService extends Service {
 
     const entityCodes = organisationUnitCodes || [organisationUnitCode];
     const pullData = this.pullers[type];
-    const apis = dataServices.map(({ isDataRegional }) =>
-      getDhisApiInstance({ entityCodes, isDataRegional }, this.models),
-    );
 
-    return pullData(apis, dataSources, options);
+    const apis = new Set();
+    dataServices.forEach(({ isDataRegional }) => {
+      apis.add(getDhisApiInstance({ entityCodes, isDataRegional }, this.models));
+    });
+
+    return pullData(Array.from(apis), dataSources, options);
   }
 
   async pullMetadata(dataSources, type, options) {
