@@ -18,9 +18,9 @@ export class MapOverlayModel extends DatabaseModel {
     return MapOverlayType;
   }
 
-  async findMeasuresById(id) {
+  async findMeasuresByIds(ids) {
     const overlays = await this.find(
-      { id: [id] },
+      { id: ids },
       {
         columns: [
           { id: `${TYPES.MAP_OVERLAY}.id` },

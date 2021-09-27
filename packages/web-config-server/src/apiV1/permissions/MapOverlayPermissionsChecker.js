@@ -7,17 +7,17 @@ import { PermissionsError } from '@tupaia/utils';
 import { PermissionsChecker } from './PermissionsChecker';
 
 export class MapOverlayPermissionsChecker extends PermissionsChecker {
-  getMapOverlayId() {
-    const { mapOverlayId } = this.query;
-    if (!mapOverlayId) {
+  getMapOverlayIds() {
+    const { mapOverlayIds } = this.query;
+    if (!mapOverlayIds) {
       throw new Error('No map overlay id was provided');
     }
-    return mapOverlayId.split(',');
+    return mapOverlayIds.split(',');
   }
 
   async fetchAndCacheOverlays() {
     if (!this.overlays) {
-      this.overlays = await this.models.mapOverlay.find({ id: this.getMapOverlayId() });
+      this.overlays = await this.models.mapOverlay.find({ id: this.getMapOverlayIds() });
     }
     return this.overlays;
   }
@@ -37,7 +37,7 @@ export class MapOverlayPermissionsChecker extends PermissionsChecker {
     }
 
     const overlays = await this.fetchAndCacheOverlays();
-    if (overlays.length !== this.getMapOverlayId().length) {
+    if (overlays.length !== this.getMapOverlayIds().length) {
       throw new Error('Not all overlays requested could be found in the database');
     }
 

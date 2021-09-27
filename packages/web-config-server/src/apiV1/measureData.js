@@ -80,10 +80,13 @@ const accessDeniedForMeasure = {
  * }
  */
 const buildMeasureData = (overlays, resultData) => {
-  const measureDataResponsesByMeasureId = resultData.reduce((dataResponse, current) => ({
-    ...dataResponse,
-    ...current,
-  }));
+  const measureDataResponsesByMeasureId = resultData.reduce(
+    (dataResponse, current) => ({
+      ...dataResponse,
+      ...current,
+    }),
+    {},
+  );
   const measureDataResponses = overlays.map(({ id, dataElementCode }) => {
     const { data } = measureDataResponsesByMeasureId[id];
 
@@ -178,8 +181,8 @@ export default class extends DataAggregatingRouteHandler {
 
   buildResponse = async () => {
     const { code } = this.entity;
-    const { mapOverlayId } = this.query;
-    const overlays = await this.models.mapOverlay.findMeasuresById(mapOverlayId);
+    const { mapOverlayIds } = this.query;
+    const overlays = await this.models.mapOverlay.findMeasuresByIds(mapOverlayIds.split(','));
 
     // check permission
     await Promise.all(
@@ -199,7 +202,7 @@ export default class extends DataAggregatingRouteHandler {
     const measureOptions = await this.fetchMeasureOptions(overlays, measureData);
 
     return {
-      mapOverlayId,
+      mapOverlayIds,
       measureLevel: getMeasureLevel(overlays),
       measureOptions,
       serieses: measureOptions,
