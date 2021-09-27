@@ -3,18 +3,27 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { DhisService } from '../../../../../services/dhis/DhisService';
-import { DATA_SOURCES } from '../DhisService.fixtures';
 import { createModelsStub, stubDhisApi } from '../DhisService.stubs';
+import { DATA_SOURCES } from '../DhisService.fixtures';
+import { DeprecatedEventsPuller } from '../../../../../services/dhis/pullers';
+import { DhisTranslator } from '../../../../../services/dhis/DhisTranslator';
 
-const dhisService = new DhisService(createModelsStub());
-let dhisApi;
+describe('DeprecatedEventsPuller', () => {
 
-export const testPullEvents_Deprecated = () => {
+  let deprecatedEventsPuller;
+  let dhisApi;
+
   beforeEach(() => {
-    // recreate stub so spy calls are reset
+    const models = createModelsStub();
+    const translator = new DhisTranslator(models);
+    deprecatedEventsPuller = new DeprecatedEventsPuller(models.dataSource, translator);
     dhisApi = stubDhisApi();
   });
+
+  it('throws an error if multiple data groups are provided', async () =>
+    expect(
+      deprecatedEventsPuller.pull([dhisApi], [DATA_SOURCES.POP01_GROUP, DATA_SOURCES.DIFF_GROUP], {}),
+    ).toBeRejectedWith(/Cannot .*multiple programs/));
 
   describe('DHIS API invocation', () => {
     const assertEventsApiWasInvokedCorrectly = async ({
@@ -22,7 +31,7 @@ export const testPullEvents_Deprecated = () => {
       options = {},
       invocationArgs,
     }) => {
-      await dhisService.pull(dataSources, 'dataGroup', { useDeprecatedApi: true, ...options });
+      await deprecatedEventsPuller.pull([dhisApi], dataSources, options);
       expect(dhisApi.getEvents).toHaveBeenCalledOnceWith(invocationArgs);
     };
 
@@ -49,7 +58,7 @@ export const testPullEvents_Deprecated = () => {
     it('`organisationUnitCodes` can be empty', async () => {
       const assertErrorIsNotThrown = async organisationUnitCodes =>
         expect(
-          dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', { organisationUnitCodes }),
+          deprecatedEventsPuller.pull([dhisApi], [DATA_SOURCES.POP01_GROUP], { organisationUnitCodes }),
         ).toResolve();
 
       return Promise.all([undefined, []].map(assertErrorIsNotThrown));
@@ -88,7 +97,7 @@ export const testPullEvents_Deprecated = () => {
     }) => {
       dhisApi = stubDhisApi({ getEventsResponse });
       return expect(
-        dhisService.pull(dataSources, 'dataGroup', { useDeprecatedApi: true, ...options }),
+        deprecatedEventsPuller.pull([dhisApi], dataSources, options),
       ).resolves.toStrictEqual(expectedResults);
     };
 
@@ -136,4 +145,4 @@ export const testPullEvents_Deprecated = () => {
       });
     });
   });
-};
+});
