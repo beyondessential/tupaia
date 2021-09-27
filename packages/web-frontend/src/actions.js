@@ -33,8 +33,8 @@ export const SET_DASHBOARD_GROUP = 'SET_DASHBOARD_GROUP';
 export const ATTEMPT_RESET_TOKEN_LOGIN = 'ATTEMPT_RESET_TOKEN_LOGIN';
 export const CHANGE_SIDE_BAR_CONTRACTED_WIDTH = 'CHANGE_SIDE_BAR_CONTRACTED_WIDTH';
 export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
-export const CLEAR_MEASURE_HIERARCHY = 'CLEAR_MEASURE_HIERARCHY';
-export const SET_MEASURE = 'SET_MEASURE';
+export const CLEAR_MAP_OVERLAY_HIERARCHY = 'CLEAR_MAP_OVERLAY_HIERARCHY';
+export const SET_MAP_OVERLAY = 'SET_MAP_OVERLAY';
 export const UPDATE_MEASURE_CONFIG = 'UPDATE_MEASURE_CONFIG';
 export const REQUEST_ORG_UNIT = 'REQUEST_ORG_UNIT';
 export const FETCH_ORG_UNIT = 'FETCH_ORG_UNIT';
@@ -47,7 +47,6 @@ export const CHANGE_TILE_SET = 'CHANGE_TILE_SET';
 export const CLEAR_MEASURE = 'CLEAR_MEASURE';
 export const HIDE_MAP_MEASURE = 'HIDE_MAP_MEASURE';
 export const UNHIDE_MAP_MEASURE = 'UNHIDE_MAP_MEASURE';
-export const UPDATE_DEFAULT_MEASURE = 'UPDATE_DEFAULT_MEASURE';
 export const FETCH_CHANGE_PASSWORD_ERROR = 'FETCH_CHANGE_PASSWORD_ERROR';
 export const FETCH_CHANGE_PASSWORD_SUCCESS = 'FETCH_CHANGE_PASSWORD_SUCCESS';
 export const FETCH_COUNTRY_ACCESS_DATA_SUCCESS = 'FETCH_COUNTRY_ACCESS_DATA_SUCCESS';
@@ -96,7 +95,6 @@ export const TOGGLE_LOCATION_ITEM_EXPANDED = 'TOGGLE_LOCATION_ITEM_EXPANDED';
 export const OPEN_USER_DIALOG = 'OPEN_USER_DIALOG';
 export const CLOSE_USER_DIALOG = 'CLOSE_USER_DIALOG';
 export const TOGGLE_MEASURE_EXPAND = 'TOGGLE_MEASURE_EXPAND';
-export const TOGGLE_MEASURE_ITEM_EXPANDED = 'TOGGLE_MEASURE_ITEM_EXPANDED';
 export const TOGGLE_SEARCH_EXPAND = 'TOGGLE_SEARCH_EXPAND';
 export const SET_OVERLAY_COMPONENT = 'SET_OVERLAY_COMPONENT';
 export const OPEN_MAP_POPUP = 'OPEN_MAP_POPUP';
@@ -525,32 +523,32 @@ export function changeBounds(bounds) {
 }
 
 /**
- * Changes current measure, should change features rendered on map after saga data fetch.
- * Updates the current measureId in the url.
- * @param {string} measureId
+ * Changes current map overlay, should change features rendered on map after saga data fetch.
+ * Updates the current mayOverlayId in the url.
+ * @param {string} mayOverlayId
  */
-export function setMeasure(measureId) {
+export function setMapOverlay(mapOverlayId) {
   return {
-    type: SET_MEASURE,
-    measureId,
+    type: SET_MAP_OVERLAY,
+    mapOverlayId,
   };
 }
 
 /**
- * Updates measure config for current measure in measureBar.
+ * Updates measure config for current measure in mapOverlayBar.
  *
  * @param {object} measureConfig
  */
-export function updateMeasureConfig(measureId, measureConfig) {
+export function updateMeasureConfig(mapOverlayId, measureConfig) {
   return {
     type: UPDATE_MEASURE_CONFIG,
-    measureId,
+    mapOverlayId,
     measureConfig,
   };
 }
 
 /**
- * Updates measure config for current measure in measureBar once the hierarchy is populated
+ * Updates measure config for current measure in mapOverlayBar once the hierarchy is populated
  *
  * @param {object} measureConfig
  */
@@ -779,7 +777,7 @@ export function showServerUnreachableError(error) {
 }
 
 /**
- * Stores measures available in measureBar
+ * Stores measures available in mapOverlayBar
  *
  * @param {array} response response from saga on successful fetch
  */
@@ -920,9 +918,9 @@ export function clearMeasure() {
 /**
  * Blanks out measure hierarchy (for switching between countries)
  */
-export function clearMeasureHierarchy() {
+export function clearMapOverlayHierarchy() {
   return {
-    type: CLEAR_MEASURE_HIERARCHY,
+    type: CLEAR_MAP_OVERLAY_HIERARCHY,
   };
 }
 
@@ -962,14 +960,6 @@ export function changeSidePanelExpandedWidth(expandedWidth) {
 export function closeDropdownOverlays() {
   return {
     type: CLOSE_DROPDOWN_OVERLAYS,
-  };
-}
-
-export function toggleMeasureItemExpanded(itemCode, expanded = true) {
-  return {
-    type: TOGGLE_MEASURE_ITEM_EXPANDED,
-    itemCode,
-    expanded,
   };
 }
 

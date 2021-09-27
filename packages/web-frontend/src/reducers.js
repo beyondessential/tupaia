@@ -24,7 +24,7 @@ import { isMobile, getUniqueViewId } from './utils';
 import { LANDING } from './containers/OverlayDiv/constants';
 import { EMAIL_VERIFIED_STATUS } from './containers/EmailVerification';
 import { getInitialLocation } from './historyNavigation';
-import { selectMeasureBarItemCategoryById } from './selectors';
+import { selectMapOverlayGroupById } from './selectors';
 
 // Import Action Types
 import {
@@ -36,9 +36,9 @@ import {
   ATTEMPT_REQUEST_COUNTRY_ACCESS,
   CHANGE_SIDE_BAR_CONTRACTED_WIDTH,
   CHANGE_SIDE_BAR_EXPANDED_WIDTH,
-  SET_MEASURE,
+  SET_MAP_OVERLAY,
   UPDATE_MEASURE_CONFIG,
-  CLEAR_MEASURE_HIERARCHY,
+  CLEAR_MAP_OVERLAY_HIERARCHY,
   SET_ORG_UNIT,
   CHANGE_SEARCH,
   FETCH_CHANGE_PASSWORD_ERROR,
@@ -581,38 +581,38 @@ function searchBar(
   }
 }
 
-function measureBar(
+function mapOverlayBar(
   state = {
     isExpanded: false,
-    measureHierarchy: [],
+    mapOverlayHierarchy: [],
     error: null,
   },
   action,
 ) {
   switch (action.type) {
-    case CLEAR_MEASURE_HIERARCHY:
-      return { ...state, measureHierarchy: [] };
-    case SET_MEASURE:
+    case CLEAR_MAP_OVERLAY_HIERARCHY:
+      return { ...state, mapOverlayHierarchy: [] };
+    case SET_MAP_OVERLAY:
       return {
         ...state,
         hiddenMeasures: {},
       };
     case UPDATE_MEASURE_CONFIG: {
-      const { categoryIndex, measure, measureIndex } = selectMeasureBarItemCategoryById(
-        { measureBar: state },
-        action.measureId,
+      const { groupIndex, mapOverlay, mapOverlayGroupIndex } = selectMapOverlayGroupById(
+        { mapOverlayBar: state },
+        action.mapOverlayId,
       );
 
-      const measureHierarchy = [...state.measureHierarchy];
+      const mapOverlayHierarchy = [...state.mapOverlayHierarchy];
 
-      measureHierarchy[categoryIndex].children[measureIndex] = {
-        ...measure,
+      mapOverlayHierarchy[groupIndex].children[mapOverlayGroupIndex] = {
+        ...mapOverlay,
         ...action.measureConfig,
       };
 
       return {
         ...state,
-        measureHierarchy,
+        mapOverlayHierarchy,
       };
     }
     case TOGGLE_MEASURE_EXPAND:
@@ -620,7 +620,7 @@ function measureBar(
     case FETCH_MEASURES_SUCCESS:
       return {
         ...state,
-        measureHierarchy: action.response.measures,
+        mapOverlayHierarchy: action.response.measures,
         error: null,
       };
     case FETCH_MEASURES_ERROR:
@@ -633,7 +633,7 @@ function measureBar(
 function global(
   state = {
     isSidePanelExpanded: false,
-    overlay: null,
+    mapOverlayId: null,
     dashboards: [],
     viewConfigs: {},
     isLoadingOrganisationUnit: false,
@@ -647,7 +647,7 @@ function global(
       return {
         ...state,
         isSidePanelExpanded: false,
-        overlay: !isMobile() && LANDING,
+        mapOverlayId: !isMobile() && LANDING,
       };
     case SHOW_TUPAIA_INFO:
       return {
@@ -799,7 +799,7 @@ export default combineReducers({
   authentication,
   dashboard,
   searchBar,
-  measureBar,
+  mapOverlayBar,
   global,
   signup,
   changePassword,
