@@ -16,19 +16,18 @@ const getData = (report: Report) => {
 };
 
 const getLegacyData = (report: LegacyReport) => {
-  const { dataBuilder, config } = report;
-  return { dataBuilder, config };
+  const { dataBuilder, config, dataServices } = report;
+  return { dataBuilder, config, dataServices };
 };
 
 const getPresentation = (dashboardItem: DashboardItem, report: Report | LegacyReport) => {
   const { config: reportConfig } = report;
-  const { output } = reportConfig;
   const { config: dashboardItemConfig } = dashboardItem;
   const { type, name, ...config } = dashboardItemConfig;
 
   const presentation: Record<string, unknown> = { type, ...config };
-  if (dashboardItem.legacy) {
-    presentation.output = output;
+  if (!dashboardItem.legacy) {
+    presentation.output = reportConfig.output;
   }
 
   return presentation;
@@ -36,7 +35,7 @@ const getPresentation = (dashboardItem: DashboardItem, report: Report | LegacyRe
 
 export function combineVisualisation(visualisationResource: DashboardVizResource): DashboardViz {
   const { dashboardItem, report } = visualisationResource;
-  const { id, code, config } = dashboardItem;
+  const { id, code, config, legacy } = dashboardItem;
   const { name } = config;
   const data = dashboardItem.legacy
     ? getLegacyData(report as LegacyReport)
@@ -47,10 +46,11 @@ export function combineVisualisation(visualisationResource: DashboardVizResource
     id,
     code,
     name,
+    legacy,
     data,
     presentation,
   };
-  if (dashboardItem.legacy) {
+  if (!dashboardItem.legacy) {
     visualisation.permissionGroup = (report as Report).permissionGroup;
   }
 

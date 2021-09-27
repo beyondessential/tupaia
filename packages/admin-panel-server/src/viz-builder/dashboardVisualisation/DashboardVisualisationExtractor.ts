@@ -9,6 +9,7 @@ import { snakeKeys, yup } from '@tupaia/utils';
 import { PreviewMode, DashboardVisualisationResource } from '../types';
 
 import { baseVisualisationValidator } from './validators';
+import { LegacyReport, Report } from '..';
 
 // expands object types recursively
 // TODO: Move this type to a generic @tupaia/utils-ts package
@@ -58,7 +59,7 @@ export class DashboardVisualisationExtractor<
   };
 
   private vizToDashboardItem() {
-    const { id, code, name, presentation } = this.visualisation;
+    const { id, code, name, legacy, presentation } = this.visualisation;
     return {
       id,
       code,
@@ -74,7 +75,7 @@ export class DashboardVisualisationExtractor<
         name,
       },
       reportCode: code,
-      legacy: false,
+      legacy,
     };
   }
 
@@ -85,7 +86,7 @@ export class DashboardVisualisationExtractor<
     return this.dashboardItemValidator.validateSync(this.vizToDashboardItem());
   }
 
-  private vizToReport(previewMode?: PreviewMode) {
+  private vizToReport(previewMode?: PreviewMode): Record<keyof Report, unknown> {
     const { code, permissionGroup, data, presentation } = this.visualisation;
     const { dataElements, dataGroups, aggregations } = data;
 
@@ -116,12 +117,26 @@ export class DashboardVisualisationExtractor<
     };
   }
 
+  private vizToLegacyReport(): Record<keyof LegacyReport, unknown> {
+    const { code, data } = this.visualisation;
+    const { dataBuilder, config, dataServices } = data;
+
+    return {
+      code,
+      dataBuilder,
+      config,
+      dataServices,
+    };
+  }
+
   public getReport(previewMode?: PreviewMode): ExpandType<yup.InferType<ReportValidator>> {
     if (!this.reportValidator) {
       throw new Error('No validator provided for extracting report');
     }
-    return this.reportValidator.validateSync(this.vizToReport(previewMode), {
-      context: this.reportValidatorContext,
-    });
+
+    const report = this.visualisation.legacy
+      ? this.vizToLegacyReport()
+      : this.vizToReport(previewMode);
+    return this.reportValidator.validateSync(report, { context: this.reportValidatorContext });
   }
 }

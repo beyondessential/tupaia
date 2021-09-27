@@ -35,6 +35,7 @@ export type DashboardVisualisationObject = {
   id?: string;
   code: string;
   name: string;
+  legacy: false;
   data: DataObject;
   presentation: PresentationObject;
   permissionGroup: string;
@@ -44,6 +45,7 @@ export type LegacyDashboardVisualisationObject = {
   id?: string;
   code: string;
   name: string;
+  legacy: true;
   data: {
     dataBuilder: string;
     config: LegacyReport['config'];
