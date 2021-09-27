@@ -42,3 +42,7 @@ ext {
     targetSdkVersion = 29
     googlePlayServicesVersion = "15.0.1"
 }
+
+android {
+    ndkVersion = 20.1.5948944
+}
