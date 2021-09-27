@@ -8,39 +8,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Tooltip } from 'react-leaflet';
 import styled from 'styled-components';
-import { getSingleFormattedValue } from './utils';
+import { PopupDataItemList } from './PopupDataItemList';
 
 const Heading = styled.span`
   text-align: center;
   font-weight: ${props => (props.hasMeasureValue ? 'bold' : 'normal')};
 `;
 
-const buildFormattedMeasureData = (orgUnitMeasureData, measureOptions) => {
-  const getMetadata = (data, key) => {
-    if (data.metadata) {
-      return data.metadata;
-    }
-    const metadataKeys = Object.keys(data).filter(k => k.includes(`${key}_metadata`));
-    return Object.fromEntries(metadataKeys.map(k => [k.replace(`${key}_metadata`, ''), data[k]]));
-  };
-
-  const formattedMeasureData = {};
-
-  if (orgUnitMeasureData) {
-    measureOptions.forEach(({ key, name, ...otherConfigs }) => {
-      const metadata = getMetadata(orgUnitMeasureData, key);
-      formattedMeasureData[name || key] = getSingleFormattedValue(orgUnitMeasureData, [
-        {
-          key,
-          metadata,
-          ...otherConfigs,
-        },
-      ]);
-    });
-  }
-
-  return formattedMeasureData;
-};
+const Grid = styled.div`
+  display: grid;
+`;
 
 export const AreaTooltip = ({
   permanent,
@@ -51,27 +28,6 @@ export const AreaTooltip = ({
   orgUnitMeasureData,
   text,
 }) => {
-  const getTextList = () => {
-    const defaultTextList = [
-      <Heading key={0} hasMeasureValue={hasMeasureValue}>
-        {orgUnitName}
-      </Heading>,
-    ];
-
-    if (!hasMeasureValue) {
-      return defaultTextList;
-    }
-
-    const toTextList = data =>
-      Object.keys(data).map(key => <span key={key}>{`${key}: ${data[key]}`}</span>);
-
-    return defaultTextList.concat(
-      toTextList(buildFormattedMeasureData(orgUnitMeasureData, measureOptions)),
-    );
-  };
-
-  const displayText = text || getTextList();
-
   return (
     <Tooltip
       pane="tooltipPane"
@@ -81,7 +37,23 @@ export const AreaTooltip = ({
       permanent={permanent}
       interactive={permanent}
     >
-      <div style={{ display: 'grid' }}>{displayText}</div>
+      {text ? (
+        <Grid>{text}</Grid>
+      ) : (
+        <Grid>
+          <Heading key={0} hasMeasureValue={hasMeasureValue}>
+            {orgUnitName}
+          </Heading>
+          {hasMeasureValue && (
+            <PopupDataItemList
+              key={1}
+              measureOptions={measureOptions}
+              data={orgUnitMeasureData}
+              showNoDataLabel="true"
+            />
+          )}
+        </Grid>
+      )}
     </Tooltip>
   );
 };
