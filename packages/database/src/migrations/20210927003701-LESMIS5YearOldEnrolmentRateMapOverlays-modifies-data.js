@@ -155,13 +155,6 @@ const addMapOverlay = async (db, parentCode, config) => {
 };
 
 exports.up = async function (db) {
-  // Add Map Overlay Groups
-  // for (const { parentCode, children } of OVERLAY_GROUPS) {
-  //   for (const config of children) {
-  //     await addMapOverlayGroup(db, parentCode, config);
-  //   }
-  // }
-
   // Add Map Overlays
   for (const { parentCode, children } of MAP_OVERLAYS) {
     for (const config of children) {
@@ -199,15 +192,6 @@ exports.down = async function (db) {
       await removeMapOverlay(db, reportCode);
     }
   }
-
-  // Remove Map Overlay Groups
-  // const groupCodes = OVERLAY_GROUPS.reduce(
-  //   (allCodes, group) => [...allCodes, ...group.children.map(config => config.code)],
-  //   [],
-  // );
-  // await db.runSql(`
-  //   DELETE FROM "map_overlay_group" WHERE "code" IN (${arrayToDbString(groupCodes)});
-  // `);
 };
 
 exports._meta = {
