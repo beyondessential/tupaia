@@ -73,12 +73,13 @@ class MapComponent extends Component {
       tileSetUrl,
       sidePanelWidth,
     } = this.props;
-    // Only updates/re-renders when the measure has changed or the orgUnit has changed.
-    // These are the only cases where polygons or area tooltips should rerender.
-    if (nextProps.measureInfo.measureId !== measureInfo.measureId) {
+
+    if (nextProps.measureInfo.mapOverlayId !== measureInfo.mapOverlayId) {
       return true;
     }
 
+    // Only updates/re-renders when the measure has changed or the orgUnit has changed.
+    // These are the only cases where polygons or area tooltips should rerender.
     if (JSON.stringify(nextProps.displayedChildren) !== JSON.stringify(displayedChildren)) {
       return true;
     }
