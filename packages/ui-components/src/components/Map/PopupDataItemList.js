@@ -28,7 +28,7 @@ PopupDataItem.propTypes = {
   measureName: PropTypes.string.isRequired,
 };
 
-export const PopupDataItemList = ({ measureOptions, data, showNoDataLabel }) => {
+export const PopupDataItemList = ({ measureOptions, data }) => {
   const popupList = data
     ? measureOptions
         .filter(measureOption => !measureOption.hideFromPopup)
@@ -49,7 +49,7 @@ export const PopupDataItemList = ({ measureOptions, data, showNoDataLabel }) => 
 
   const { name, key } = measureOptions[0];
 
-  return popupList.length === 0 && showNoDataLabel
+  return popupList.length === 0
     ? [<PopupDataItem key={name || key} measureName={name || key} value="No Data" />]
     : popupList;
 };
