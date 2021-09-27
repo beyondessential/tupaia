@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { testPullEvents } from './testPull/testPullEvents';
 import { testPullEvents_Deprecated } from './testPull/testPullEvents_Deprecated';
 import { DhisService } from '../../../../services/dhis';
 import { createModelsStub } from './DhisService.stubs';
@@ -40,7 +39,7 @@ export const testPull = () => {
     });
   });
 
-  describe('events', testPullEvents);
+
 
   describe('events - deprecated API', testPullEvents_Deprecated);
 };
