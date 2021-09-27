@@ -63,10 +63,13 @@ export class MatrixBuilder {
     const { rowField, categoryField } = this.params.rows;
 
     this.rows.forEach(row => {
-      const { [categoryField]: categoryId, [rowField]: rowFieldData, ...restOfRow } = row;
-      const newRows: Row = { [ROW_FIELD_KEY]: rowFieldData, ...restOfRow };
-      if (categoryId) {
-        newRows[CATEGORY_FIELD_KEY] = categoryId;
+      let newRows: Row;
+      if (categoryField) {
+        const { [rowField]: rowFieldData, [categoryField]: categoryId, ...restOfRow } = row;
+        newRows = { [ROW_FIELD_KEY]: rowFieldData, [CATEGORY_FIELD_KEY]: categoryId, ...restOfRow };
+      } else {
+        const { [rowField]: rowFieldData, ...restOfRow } = row;
+        newRows = { [ROW_FIELD_KEY]: rowFieldData, ...restOfRow };
       }
       rows.push(newRows);
     });
