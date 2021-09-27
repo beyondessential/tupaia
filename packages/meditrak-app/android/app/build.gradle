@@ -119,8 +119,6 @@ def (major, minor, patch) = getAppVersion().tokenize('.')
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     
-    andriod.ndkVersion "20.1.5948944"
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
