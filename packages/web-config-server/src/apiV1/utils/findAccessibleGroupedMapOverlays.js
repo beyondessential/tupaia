@@ -74,9 +74,8 @@ const findNestedGroupedMapOverlays = async (
     mapOverlayItemRelations,
   );
   return sortedMapOverlayResults.map(item => {
-    // id was added only for sorting purposes, remove it because it is not required in the front end
-    const { id, ...itemToReturn } = item;
-    return itemToReturn;
+    const { id: mapOverlayId, ...itemToReturn } = item;
+    return { mapOverlayId, ...itemToReturn };
   });
 };
 
@@ -159,30 +158,14 @@ const sortMapOverlayItems = (mapOverlayItems, relations) => {
 const translateOverlaysForResponse = mapOverlays =>
   mapOverlays
     .filter(({ presentationOptions: { hideFromMenu } }) => !hideFromMenu)
-    .map(
-      ({
-        id,
-        name,
-        linkedMeasures,
-        presentationOptions,
-        report_code: reportCode,
-        dataElementCode,
-        legacy,
-      }) => {
-        const idString = [id, ...(linkedMeasures || [])].sort().join(',');
-
-        return {
-          id, // just for sorting purpose, will be removed later
-          measureId: idString,
-          code: idString,
-          name,
-          ...presentationOptions,
-          reportCode,
-          dataElementCode,
-          legacy,
-        };
-      },
-    );
+    .map(({ id, name, presentationOptions, report_code: reportCode, dataElementCode, legacy }) => ({
+      id, // just for sorting purpose, will be removed later
+      name,
+      ...presentationOptions,
+      reportCode,
+      dataElementCode,
+      legacy,
+    }));
 
 /**
  * Find accessible Map Overlays that have matched entityCode, projectCode and userGroups
