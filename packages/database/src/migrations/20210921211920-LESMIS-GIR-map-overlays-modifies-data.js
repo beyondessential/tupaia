@@ -135,6 +135,7 @@ const getMapOverlay = (name, reportCode) => ({
   dataElementCode: 'value',
   isDataRegional: true,
   legacy: false,
+  report_code: reportCode,
   measureBuilder: 'useReportServer',
   measureBuilderConfig: {
     dataSourceType: 'custom',
