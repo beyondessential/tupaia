@@ -27,10 +27,8 @@ exports.up = async function (db) {
   `);
   await db.runSql(`
     INSERT INTO legacy_report (id, code, data_builder, data_builder_config, data_services)
-    FROM (
-      SELECT generate_object_id(), id || '_map', "measureBuilder", "measureBuilderConfig", data_services
-      FROM map_overlay
-    );
+    SELECT generate_object_id(), id || '_map', "measureBuilder", "measureBuilderConfig", data_services
+    FROM map_overlay;
   `);
   await db.runSql('ALTER TABLE map_overlay DROP COLUMN "measureBuilder";');
   await db.runSql('ALTER TABLE map_overlay DROP COLUMN "measureBuilderConfig";');
