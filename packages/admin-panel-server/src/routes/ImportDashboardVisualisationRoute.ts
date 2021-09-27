@@ -23,6 +23,7 @@ import {
   DashboardRelationObject,
   DashboardRelationRecord,
   DashboardVizResource,
+  legacyReportValidator,
 } from '../viz-builder';
 
 const importFileSchema = yup.object().shape(
@@ -57,10 +58,11 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
 
     const { dashboards = [], dashboardRelations = [], ...visualisation } = this.readFileContents();
 
+    const reportValidator = visualisation?.legacy ? legacyReportValidator : draftReportValidator;
     const extractor = new DashboardVisualisationExtractor(
       visualisation,
       draftDashboardItemValidator,
-      draftReportValidator,
+      reportValidator,
     );
     const extractedViz = extractor.getDashboardVisualisationResource();
     const existingId = await this.findExistingVisualisationId(visualisation);
