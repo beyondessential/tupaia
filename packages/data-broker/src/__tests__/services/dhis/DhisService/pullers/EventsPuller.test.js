@@ -26,15 +26,6 @@ describe('EventsPuller', () => {
       eventsPuller.pull([dhisApi], [DATA_SOURCES.POP01_GROUP, DATA_SOURCES.DIFF_GROUP], {}),
     ).toBeRejectedWith(/Cannot .*multiple programs/));
 
-  it('invokes the modern event api by default', async () => {
-    const eventApiSpy = jest.spyOn(eventsPuller, 'pullEventsForApi');
-    const deprecatedEventApiSpy = jest.spyOn(eventsPuller, 'pullEventsForApi_Deprecated');
-
-    await eventsPuller.pull([dhisApi], [DATA_SOURCES.POP01_GROUP], {});
-    expect(eventApiSpy).toHaveBeenCalledTimes(1);
-    expect(deprecatedEventApiSpy).not.toHaveBeenCalled();
-  });
-
   describe('DHIS API invocation', () => {
     const assertEventAnalyticsApiWasInvokedCorrectly = async ({
       dataSources,
