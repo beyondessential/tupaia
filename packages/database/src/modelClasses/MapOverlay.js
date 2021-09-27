@@ -24,12 +24,12 @@ export class MapOverlayModel extends DatabaseModel {
       {
         columns: [
           { id: `${TYPES.MAP_OVERLAY}.id` },
-          { linkedMeasures: `${TYPES.MAP_OVERLAY}.linkedMeasures` },
+          { linked_measures: `${TYPES.MAP_OVERLAY}.linked_measures` },
         ],
       },
     );
     const measureIds = overlays
-      .map(({ id: overlayId, linkedMeasures }) => [
+      .map(({ id: overlayId, linked_measures: linkedMeasures }) => [
         overlayId,
         ...(linkedMeasures !== null ? linkedMeasures : []),
       ])

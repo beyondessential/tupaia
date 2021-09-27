@@ -158,12 +158,11 @@ const sortMapOverlayItems = (mapOverlayItems, relations) => {
 const translateOverlaysForResponse = mapOverlays =>
   mapOverlays
     .filter(({ config: { hideFromMenu } }) => !hideFromMenu)
-    .map(({ id, name, config, report_code: reportCode, dataElementCode, legacy }) => ({
+    .map(({ id, name, config, report_code: reportCode, legacy }) => ({
       id, // just for sorting purpose, will be removed later
       name,
       ...config,
       reportCode,
-      dataElementCode,
       legacy,
     }));
 
