@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { createDataSourceModelsStub, stubDhisApi } from '../DhisService.stubs';
+import { createModelsStub, stubDhisApi } from '../DhisService.stubs';
 import { DATA_SOURCES } from '../DhisService.fixtures';
 import * as BuildEvents from '../../../../../services/dhis/buildAnalytics/buildEventsFromDhisEventAnalytics';
 import { EventsPuller } from '../../../../../services/dhis/pullers';
@@ -15,9 +15,9 @@ describe('EventsPuller', () => {
   let dhisApi;
 
   beforeEach(() => {
-    const models = createDataSourceModelsStub();
+    const models = createModelsStub();
     const translator = new DhisTranslator(models);
-    eventsPuller = new EventsPuller(models, translator);
+    eventsPuller = new EventsPuller(models.dataSource, translator);
     dhisApi = stubDhisApi();
   });
 
