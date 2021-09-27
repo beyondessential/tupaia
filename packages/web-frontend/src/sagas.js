@@ -1100,8 +1100,8 @@ function* fetchEnlargedDialogData(action) {
   // If the expanded view has changed, don't update the enlargedDialog's viewContent
   if (viewData && newInfoViewKey === infoViewKey) {
     const viewConfig = drillDownLevel
-    ? selectViewConfig(state, drillDownItemKey)
-    : selectCurrentExpandedViewConfig(state);
+      ? selectViewConfig(state, drillDownItemKey)
+      : selectCurrentExpandedViewConfig(state);
     yield put(updateEnlargedDialog(action.options, viewConfig, viewData));
   }
 }
