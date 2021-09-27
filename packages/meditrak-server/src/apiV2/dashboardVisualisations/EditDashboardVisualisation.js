@@ -45,6 +45,7 @@ export class EditDashboardVisualisation extends EditHandler {
   async upsertReport(models, dashboardItem, reportRecord) {
     const dashboardItemRecord = this.getDashboardItemRecord();
     const legacy = dashboardItemRecord.legacy ?? dashboardItem.legacy;
+    const { report_code: code } = dashboardItemRecord;
 
     const report = legacy ? reportRecord : await buildReport(models, reportRecord);
 
@@ -52,7 +53,9 @@ export class EditDashboardVisualisation extends EditHandler {
       // `Legacy` value has been updated, need to use a different table for the report
       return legacy ? models.legacyReport.create(report) : models.report.create(report);
     }
-    return models.report.update({ code: dashboardItem.report_code }, report);
+    return legacy
+      ? models.legacyReport.update({ code }, report)
+      : models.report.update({ code }, report);
   }
 
   async validateRecordExists() {
