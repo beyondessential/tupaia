@@ -12,7 +12,7 @@ type Aggregation = string | AggregationObject;
 
 type Transform = Record<string, unknown>;
 
-type DataObject = {
+type VizData = {
   dataElements: string[];
   dataGroups: string[];
   aggregations: Aggregation[];
@@ -21,7 +21,7 @@ type DataObject = {
 
 type VizType = 'view' | 'chart' | 'matrix';
 
-type PresentationObject = Record<string, unknown> & {
+type Presentation = Record<string, unknown> & {
   readonly type: VizType;
   readonly output: Record<string, unknown>;
 };
@@ -31,17 +31,17 @@ export enum PreviewMode {
   PRESENTATION = 'presentation',
 }
 
-export type DashboardVisualisationObject = {
+type DashboardVisualisation = {
   id?: string;
   code: string;
   name: string;
   legacy: false;
-  data: DataObject;
-  presentation: PresentationObject;
+  data: VizData;
+  presentation: Presentation;
   permissionGroup: string;
 };
 
-export type LegacyDashboardVisualisationObject = {
+type LegacyDashboardVisualisation = {
   id?: string;
   code: string;
   name: string;
@@ -50,13 +50,13 @@ export type LegacyDashboardVisualisationObject = {
     dataBuilder: string;
     config: LegacyReport['config'];
   };
-  presentation: PresentationObject;
+  presentation: Presentation;
 };
 
-export type DashboardViz = DashboardVisualisationObject | LegacyDashboardVisualisationObject;
+export type DashboardViz = DashboardVisualisation | LegacyDashboardVisualisation;
 
 export interface VisualisationValidator {
-  validate: (object: DashboardVisualisationObject) => void;
+  validate: (object: DashboardVisualisation) => void;
 }
 
 export type Dashboard = {
@@ -73,6 +73,14 @@ export type DashboardItem = {
   config: { name?: string } & { type: VizType } & Record<string, unknown>;
   reportCode: string;
   legacy: boolean;
+};
+
+export type DashboardRelation = {
+  dashboardCode: string;
+  entityTypes: string[];
+  projectCodes: string[];
+  permissionGroups: string[];
+  sortOrder?: number;
 };
 
 export type Report = {
@@ -92,22 +100,10 @@ export type DashboardRecord = CamelKeysToSnake<Dashboard>;
 
 export type DashboardItemRecord = CamelKeysToSnake<DashboardItem>;
 
-export type DashboardRelationRecord = {
+export type DashboardRelationRecord = CamelKeysToSnake<Omit<DashboardRelation, 'dashboardCode'>> & {
   id: string;
-  dashboard_id: string;
   child_id: string;
-  entity_types: string[];
-  project_codes: string[];
-  permission_groups: string[];
-  sort_order?: number;
-};
-
-export type DashboardRelationObject = {
-  dashboardCode: string;
-  entityTypes: string[];
-  projectCodes: string[];
-  permissionGroups: string[];
-  sortOrder?: number;
+  dashboard_id: string;
 };
 
 export type ReportRecord = CamelKeysToSnake<Report> & { id: string };

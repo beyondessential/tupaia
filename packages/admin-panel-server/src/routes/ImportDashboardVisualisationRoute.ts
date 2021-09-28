@@ -23,7 +23,7 @@ import {
 import type {
   Dashboard,
   DashboardRecord,
-  DashboardRelationObject,
+  DashboardRelation,
   DashboardRelationRecord,
   DashboardVizResource,
 } from '../viz-builder';
@@ -128,7 +128,7 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
   private upsertDashboardsAndRelations = async (
     vizId: string,
     dashboards: Dashboard[],
-    dashboardRelations: DashboardRelationObject[],
+    dashboardRelations: DashboardRelation[],
   ) => {
     await this.upsertDashboards(dashboards.map(d => snakeKeys(d)));
     const dashboardRecords = await this.meditrakConnection.fetchResources('dashboards', {

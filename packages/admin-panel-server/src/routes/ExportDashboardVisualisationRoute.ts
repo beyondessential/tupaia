@@ -15,7 +15,7 @@ import type {
   Dashboard,
   DashboardItemRecord,
   DashboardRecord,
-  DashboardRelationObject,
+  DashboardRelation,
   DashboardRelationRecord,
   DashboardVizResource,
   DashboardViz,
@@ -142,7 +142,7 @@ export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisu
 
     return {
       dashboards: dashboards as Omit<Dashboard, 'id'>[],
-      dashboardRelations: dashboardRelations as DashboardRelationObject[],
+      dashboardRelations: dashboardRelations as DashboardRelation[],
     };
   };
 }
