@@ -10,8 +10,8 @@ import { keyBy } from 'lodash';
 import { camelKeys } from '@tupaia/utils';
 import { Route } from '@tupaia/server-boilerplate';
 import { MeditrakConnection } from '../connections';
-import {
-  combineVisualisation,
+import { combineVisualisation } from '../viz-builder';
+import type {
   Dashboard,
   DashboardItemRecord,
   DashboardRecord,

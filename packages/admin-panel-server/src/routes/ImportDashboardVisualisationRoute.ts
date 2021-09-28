@@ -18,12 +18,14 @@ import {
   DashboardVisualisationExtractor,
   draftDashboardItemValidator,
   draftReportValidator,
+  legacyReportValidator,
+} from '../viz-builder';
+import type {
   Dashboard,
   DashboardRecord,
   DashboardRelationObject,
   DashboardRelationRecord,
   DashboardVizResource,
-  legacyReportValidator,
 } from '../viz-builder';
 
 const importFileSchema = yup.object().shape(
