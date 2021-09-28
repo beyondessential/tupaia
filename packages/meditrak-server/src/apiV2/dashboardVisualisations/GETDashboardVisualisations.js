@@ -28,9 +28,9 @@ const buildReportObject = (report, legacy, permissionGroupsById) => {
   };
 };
 
-const buildVisualisationObject = (dashboardItemObject, associatedRecords) => {
+const buildVisualisationObject = (dashboardItemObject, referencedRecords) => {
   const { model, ...dashboardItem } = dashboardItemObject;
-  const { reportsByCode, legacyReportsByCode, permissionGroupsById } = associatedRecords;
+  const { reportsByCode, legacyReportsByCode, permissionGroupsById } = referencedRecords;
   const { report_code: reportCode, legacy } = dashboardItem;
 
   const report = reportsByCode[reportCode] || legacyReportsByCode[reportCode];
@@ -78,22 +78,22 @@ export class GETDashboardVisualisations extends GETHandler {
       throw new Error('Visualisation does not exist');
     }
 
-    const associatedRecords = await this.findAssociatedRecords([dashboardItem]);
-    return buildVisualisationObject(dashboardItem, associatedRecords);
+    const referencedRecords = await this.findReferencedRecords([dashboardItem]);
+    return buildVisualisationObject(dashboardItem, referencedRecords);
   }
 
   async findRecords(inputCriteria) {
     const criteria = parseCriteria(inputCriteria);
 
     const dashboardItems = await this.models.dashboardItem.find(criteria);
-    const associatedRecords = await this.findAssociatedRecords(dashboardItems);
+    const referencedRecords = await this.findReferencedRecords(dashboardItems);
 
     return dashboardItems.map(dashboardItem =>
-      buildVisualisationObject(dashboardItem, associatedRecords),
+      buildVisualisationObject(dashboardItem, referencedRecords),
     );
   }
 
-  async findAssociatedRecords(dashboardItems) {
+  async findReferencedRecords(dashboardItems) {
     const reports = await this.findReportsByLegacyValue(dashboardItems, false);
     const legacyReports = await this.findReportsByLegacyValue(dashboardItems, true);
     const permissionGroups = await this.models.permissionGroup.find({

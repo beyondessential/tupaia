@@ -49,18 +49,18 @@ describe('GET dashboard visualisations', () => {
   });
 
   describe('GET /dashboardVisualisations/:id', () => {
-    it('Throws error if id or code is not provided', async () => {
+    it('Throws if id or code is not provided', async () => {
       const response = await app.get('dashboardVisualisations/invalid_id');
       expectError(response, /visualisation does not exist/i);
     });
 
-    it('Throws error if  visualisation has no report', async () => {
+    it('Throws if  visualisation has no report', async () => {
       const id = getVizId('Dashboard_Item_No_Report');
       const response = await app.get(`dashboardVisualisations/${id}`);
       expectError(response, 'Cannot find a report for visualisation');
     });
 
-    it('Throws error if dashboard visualisation has no report', async () => {
+    it('Throws if dashboard visualisation has invalid report', async () => {
       const id = getVizId('Dashboard_Item_Invalid_Report');
       const response = await app.get(`dashboardVisualisations/${id}`);
       expectError(response, 'Cannot find a report for visualisation');
