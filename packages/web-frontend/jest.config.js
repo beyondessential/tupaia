@@ -12,5 +12,6 @@ module.exports = {
   transformIgnorePatterns: ['[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$'],
   moduleNameMapper: {
     '^react-native$': 'react-native-web',
+    '^@tupaia/ui-components/lib/map$': '<rootDir>/jestFileMock.js',
   },
 };

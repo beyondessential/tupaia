@@ -28,6 +28,7 @@ export * from './components/LoadingContainer';
 export * from './components/NavBar';
 export * from './components/PasswordStrengthBar';
 export * from './components/ProfileButton';
+export * from './components/ReferenceTooltip';
 export * from './components/SplitButton';
 export * from './components/Table';
 export * from './components/Tabs';

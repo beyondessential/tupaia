@@ -44,18 +44,16 @@ const getParentOfType = (entities, rootEntityCode, type) => {
   }
   return getParentOfType(entities, entity.parentCode, type);
 };
-const getDescendantCodesOfType = (entities, rootEntityCode, type) => {
-  const entity = entities?.find(e => e.code === rootEntityCode);
-  if (!entity) {
-    return [];
+
+const getParentEntity = (entities, rootEntity) => {
+  switch (rootEntity?.type) {
+    case 'school':
+      return getParentOfType(entities, rootEntity?.code, 'sub_district');
+    case 'sub_district':
+      return getParentOfType(entities, rootEntity?.code, 'district');
+    default:
+      return undefined;
   }
-  if (entity.type === type) {
-    return [entity?.code];
-  }
-  if (!entity.childCodes || entity.type === 'country') {
-    return [];
-  }
-  return entity.childCodes.map(c => getDescendantCodesOfType(entities, c, type)).flat();
 };
 
 const useReport = (entity, reportName, options, enabled) =>
@@ -78,104 +76,40 @@ const useSchoolReport = entity =>
     entity?.type === 'school',
   );
 
-const useDistrictReport = entity =>
+const useEntityReport = entity =>
   useReport(
     entity,
-    'LESMIS_sub_district_vitals',
+    'LESMIS_entity_vitals',
     { params: { endDate: utcMoment().format(endDateFormat) } },
-    entity?.type === 'sub_district',
+    entity !== undefined && entity?.type !== 'school',
   );
 
-const useMultiSchoolReport = (entities, rootEntity) => {
-  const descendants = getDescendantCodesOfType(entities, rootEntity?.code, 'school');
-  return useReport(
-    rootEntity,
-    'LESMIS_multi_school_vitals',
-    {
-      params: {
-        endDate: utcMoment().format(endDateFormat),
-      },
-    },
-    descendants.length > 0,
-  );
-};
-
-const useMultiDistrictReport = (entities, rootEntity) => {
-  const descendants = getDescendantCodesOfType(entities, rootEntity?.code, 'sub_district');
-  return useReport(
-    rootEntity,
-    'LESMIS_sub_district_vitals',
-    {
-      params: {
-        endDate: utcMoment().format(endDateFormat),
-      },
-    },
-    descendants.length > 0,
-  );
-};
-
-const useSchoolInformation = (entities, rootEntity) => {
-  const parentDistrict = getParentOfType(entities, rootEntity?.code, 'sub_district');
-  const { data: schoolData, isLoading: schoolLoading } = useSchoolReport(rootEntity);
-  const { data: districtData, isLoading: districtLoading } = useDistrictReport(parentDistrict);
+const useSchoolVitals = entity => {
+  const { data, isLoading } = useSchoolReport(entity);
 
   return {
     data: {
-      ...schoolData?.results[0],
-      parentDistrict: { ...districtData?.results[0], ...parentDistrict },
+      ...data?.results[0],
     },
-    isLoading: schoolLoading || districtLoading,
+    isLoading,
   };
 };
 
-const useDistrictInformation = (entities, rootEntity) => {
-  const parentProvince = getParentOfType(entities, rootEntity?.code, 'district');
-  const { data: districtData, isLoading: districtLoading } = useDistrictReport(rootEntity);
-  const { data: provinceData, isLoading: provinceLoading } = useMultiDistrictReport(
-    entities,
-    parentProvince,
-  );
-  const { data: subSchoolsData, isLoading: subSchoolsLoading } = useMultiSchoolReport(
-    entities,
-    rootEntity,
-  );
+const useEntityVitals = entity => {
+  const { data, isLoading } = useEntityReport(entity);
 
   return {
     data: {
-      ...districtData?.results[0],
-      ...subSchoolsData?.results[0],
-      parentProvince: { ...provinceData?.results[0], ...parentProvince },
+      ...data?.results[0],
     },
-    isLoading: districtLoading || provinceLoading || subSchoolsLoading,
-  };
-};
-
-const useProvinceInformation = (entities, rootEntity) => {
-  const { data: provinceData, isLoading: provinceLoading } = useMultiDistrictReport(
-    entities,
-    rootEntity,
-  );
-  const { data: subSchoolsData, isLoading: subSchoolsLoading } = useMultiSchoolReport(
-    entities,
-    rootEntity,
-  );
-
-  return {
-    data: {
-      ...provinceData?.results[0],
-      ...subSchoolsData?.results[0],
-    },
-    isLoading: provinceLoading || subSchoolsLoading,
+    isLoading,
   };
 };
 
 const getPartnersLogos = vitalsData => {
-  const partners =
-    vitalsData.type && vitalsData.type === 'country'
-      ? Object.entries(PARTNERS_LOGOS)
-      : Object.entries(vitalsData).filter(
-          ([key, value]) => Object.keys(PARTNERS_LOGOS).includes(key) && value === true,
-        );
+  const partners = Object.entries(vitalsData).filter(
+    ([key, value]) => Object.keys(PARTNERS_LOGOS).includes(key) && value === true,
+  );
 
   return partners.map(([key]) => `${PARTNERS_IMAGE_PATH}${PARTNERS_LOGOS[key]}`);
 };
@@ -183,29 +117,27 @@ const getPartnersLogos = vitalsData => {
 export const useVitalsData = entityCode => {
   const { data: entities = [], ...entitiesQuery } = useProjectEntitiesData();
   const { data: entityData } = useEntityData(entityCode);
+  const parentEntityData = getParentEntity(entities, entityData);
 
-  const { data: schoolData, isLoading: schoolLoading } = useSchoolInformation(entities, entityData);
-  const { data: districtData, isLoading: districtLoading } = useDistrictInformation(
-    entities,
-    entityData,
-  );
-  const { data: provinceData, isLoading: provinceLoading } = useProvinceInformation(
-    entities,
-    entityData,
-  );
+  const { data: schoolVitals, isLoading: schoolVitalsLoading } = useSchoolVitals(entityData);
+  const { data: entityVitals, isLoading: entityVitalsLoading } = useEntityVitals(entityData);
+  const { data: parentVitals, isLoading: parentVitalsLoading } = useEntityVitals(parentEntityData);
 
   const vitalsData = {
     ...entitiesQuery,
     ...entityData,
-    ...schoolData,
-    ...districtData,
-    ...provinceData,
+    ...schoolVitals,
+    ...entityVitals,
+    parentVitals: {
+      ...parentEntityData,
+      ...parentVitals,
+    },
   };
 
   const partners = getPartnersLogos(vitalsData);
 
   return {
     data: { ...vitalsData, partners },
-    isLoading: schoolLoading || districtLoading || provinceLoading,
+    isLoading: schoolVitalsLoading || entityVitalsLoading || parentVitalsLoading,
   };
 };

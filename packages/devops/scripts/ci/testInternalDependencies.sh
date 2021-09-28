@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 DIR=$(dirname "$0")
 ${DIR}/copyFromCommonVolume.sh
 for PACKAGE in $(${DIR}/../../../../scripts/bash/getInternalDependencies.sh); do
@@ -7,7 +7,5 @@ for PACKAGE in $(${DIR}/../../../../scripts/bash/getInternalDependencies.sh); do
         continue
     fi
     echo Testing ${PACKAGE}
-    if ! yarn workspace @tupaia/${PACKAGE} test; then
-        exit 1 # the tests for this internal depencency failed
-    fi
+    yarn workspace @tupaia/${PACKAGE} test
 done

@@ -4,6 +4,7 @@
  */
 
 import { yup } from '@tupaia/utils';
+import { Context } from '../../context';
 import { TransformParser } from '../parser';
 import { buildWhere } from './where';
 import { Row } from '../../types';
@@ -20,8 +21,8 @@ const paramsValidator = yup.object().shape({
   where: yup.string(),
 });
 
-const excludeColumns = (rows: Row[], params: ExcludeColumnsParams): Row[] => {
-  const parser = new TransformParser(rows);
+const excludeColumns = (rows: Row[], params: ExcludeColumnsParams, context: Context): Row[] => {
+  const parser = new TransformParser(rows, context);
   return rows.map(row => {
     const matchesWhere = params.where(parser);
     if (!matchesWhere) {
@@ -52,7 +53,7 @@ const buildParams = (params: unknown): ExcludeColumnsParams => {
   return { shouldIncludeColumn, where: buildWhere(params) };
 };
 
-export const buildExcludeColumns = (params: unknown) => {
+export const buildExcludeColumns = (params: unknown, context: Context) => {
   const builtParams = buildParams(params);
-  return (rows: Row[]) => excludeColumns(rows, builtParams);
+  return (rows: Row[]) => excludeColumns(rows, builtParams, context);
 };

@@ -7,35 +7,73 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Tooltip } from 'react-leaflet';
+import styled from 'styled-components';
+import { PopupDataItemList } from './PopupDataItemList';
 
-export const AreaTooltip = React.memo(({ permanent, onMouseOver, onMouseOut, text, sticky }) => (
-  <Tooltip
-    pane="tooltipPane"
-    direction="auto"
-    opacity={1}
-    sticky={sticky}
-    permanent={permanent}
-    interactive={false}
-    onMouseOver={onMouseOver}
-    onFocus={onMouseOver}
-    onMouseOut={onMouseOut}
-    onBlur={onMouseOut}
-  >
-    <span>{text}</span>
-  </Tooltip>
-));
+const Heading = styled.span`
+  text-align: center;
+  font-weight: ${props => (props.hasMeasureValue ? 'bold' : 'normal')};
+`;
+
+const Grid = styled.div`
+  display: grid;
+`;
+
+export const AreaTooltip = ({
+  permanent,
+  sticky,
+  orgUnitName,
+  hasMeasureValue,
+  measureOptions,
+  orgUnitMeasureData,
+  text,
+}) => {
+  return (
+    <Tooltip
+      pane="tooltipPane"
+      direction="auto"
+      opacity={1}
+      sticky={sticky}
+      permanent={permanent}
+      interactive={permanent}
+    >
+      {text ? (
+        <Grid>{text}</Grid>
+      ) : (
+        <Grid>
+          <Heading key={0} hasMeasureValue={hasMeasureValue}>
+            {orgUnitName}
+          </Heading>
+          {hasMeasureValue && (
+            <PopupDataItemList
+              key={1}
+              measureOptions={measureOptions}
+              data={orgUnitMeasureData}
+              showNoDataLabel
+            />
+          )}
+        </Grid>
+      )}
+    </Tooltip>
+  );
+};
 
 AreaTooltip.propTypes = {
   permanent: PropTypes.bool,
   sticky: PropTypes.bool,
-  text: PropTypes.string.isRequired,
-  onMouseOver: PropTypes.func,
-  onMouseOut: PropTypes.func,
+  hasMeasureValue: PropTypes.bool,
+  measureOptions: PropTypes.arrayOf(PropTypes.object),
+  orgUnitMeasureData: PropTypes.object,
+  orgUnitName: PropTypes.string,
+  text: PropTypes.string,
 };
 
 AreaTooltip.defaultProps = {
   permanent: false,
   sticky: false,
-  onMouseOver: undefined,
-  onMouseOut: undefined,
+  hasMeasureValue: false,
+  measureOptions: [],
+  orgUnitMeasureData: null,
+  orgUnitName: null,
+  text: null,
 };

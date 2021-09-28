@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # Get latest code and dependencies
 echo "Checking out ${BRANCH}, or dev if that doesn't exist"

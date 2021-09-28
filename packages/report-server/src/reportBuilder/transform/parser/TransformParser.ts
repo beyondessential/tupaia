@@ -4,8 +4,15 @@
  */
 
 import { ExpressionParser } from '@tupaia/expression-parser';
+
+import { Context } from '../../context';
 import { Row, FieldValue } from '../../types';
-import { functions, functionOverrides } from '../../functions';
+import {
+  customFunctions,
+  contextConfig,
+  functionsExtensions,
+  functionOverrides,
+} from './functions';
 import { TransformScope } from './TransformScope';
 
 type RowLookup = {
@@ -33,19 +40,19 @@ type Lookups = {
 };
 
 export class TransformParser extends ExpressionParser {
+  private static readonly EXPRESSION_PREFIX = '=';
+
   private currentRow = 0;
 
   private rows: Row[];
 
   private lookups: Lookups;
 
-  public constructor(rows: Row[]) {
-    super(new TransformScope());
+  // eslint-disable-next-line react/static-property-placement
+  private context?: Context;
 
-    // Override mathjs functions
-    Object.entries(functionOverrides).forEach(([functionName, override]) => {
-      this.set(functionName, override);
-    });
+  public constructor(rows: Row[] = [], context?: Context) {
+    super(new TransformScope());
 
     this.rows = rows;
     this.lookups = {
@@ -70,14 +77,22 @@ export class TransformParser extends ExpressionParser {
       });
       this.set('where', this.whereFunction); // no '@' prefix for where
     }
+
+    this.context = context;
   }
 
-  public evaluate(expression: string) {
-    if (TransformParser.isExpression(expression)) {
-      return super.evaluate(expression.substring(1));
-    }
+  public static isExpression(input: unknown) {
+    return typeof input === 'string' && input.startsWith(TransformParser.EXPRESSION_PREFIX);
+  }
 
-    return expression;
+  protected readExpression(input: unknown) {
+    return TransformParser.isExpression(input)
+      ? (input as string).replace(new RegExp(`^${TransformParser.EXPRESSION_PREFIX}`), '')
+      : input;
+  }
+
+  public evaluate(input: unknown) {
+    return TransformParser.isExpression(input) ? super.evaluate(input) : input;
   }
 
   public next() {
@@ -125,11 +140,37 @@ export class TransformParser extends ExpressionParser {
   };
 
   protected getCustomFunctions() {
-    return { ...super.getCustomFunctions(), ...functions };
+    const { functions: factoryFunctions, dependencies } = this.buildFactoryFunctions();
+
+    return {
+      ...super.getCustomFunctions(),
+      ...customFunctions,
+      ...factoryFunctions,
+      ...dependencies,
+    };
   }
 
-  public static isExpression(expression: string) {
-    return expression.startsWith('=');
+  protected getFunctionExtensions() {
+    return { ...super.getFunctionExtensions(), ...functionsExtensions };
+  }
+
+  protected getFunctionOverrides() {
+    return { ...super.getFunctionOverrides(), ...functionOverrides };
+  }
+
+  private buildFactoryFunctions() {
+    const dependencies = {
+      getContext: () => this.context,
+    };
+
+    const functions = Object.fromEntries(
+      Object.entries(contextConfig).map(([fnName, { create }]) => [
+        fnName,
+        this.factory(fnName, ['getContext'], create),
+      ]),
+    );
+
+    return { functions, dependencies };
   }
 }
 

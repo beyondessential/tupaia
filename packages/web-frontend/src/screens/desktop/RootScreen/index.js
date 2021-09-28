@@ -16,7 +16,7 @@ import styled from 'styled-components';
 import { EnvBanner } from '@tupaia/ui-components';
 import { selectIsEnlargedDialogVisible } from '../../../selectors';
 import { LoadingScreen } from '../../LoadingScreen';
-import Map from '../../../containers/Map';
+import { Map } from '../../../containers/Map';
 import { MapDiv } from '../../../components/MapDiv';
 import TopBar from '../../../containers/TopBar';
 import SidePanel from '../../../containers/SidePanel';
