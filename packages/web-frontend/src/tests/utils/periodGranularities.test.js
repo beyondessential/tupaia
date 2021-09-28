@@ -9,6 +9,7 @@ import {
   roundStartEndDates,
   getDefaultDateRangeToFetch,
   getDatePickerLimits,
+  getDefaultDatePickerDates,
 } from '../../utils/periodGranularities';
 
 describe('periodGranularities', () => {
@@ -145,6 +146,45 @@ describe('periodGranularities', () => {
         expect(endDate.format()).toEqual('2019-02-08T23:59:59+11:00');
       });
     });
+
+    describe('defaultTimePeriod with useDatesOfData', () => {
+      it('uses the default date range for empty config', () => {
+        const { startDate, endDate } = getDefaultDateRangeToFetch({
+          periodGranularity: 'day',
+          defaultTimePeriod: {
+            useDatesOfData: true,
+          },
+        });
+        expect(startDate.format()).toEqual('2015-01-01T00:00:00+11:00');
+        expect(endDate.format()).toEqual('2019-02-05T21:00:00+11:00');
+      });
+
+      it('uses the specified range for range config', () => {
+        const { startDate, endDate } = getDefaultDateRangeToFetch({
+          periodGranularity: 'day',
+          defaultTimePeriod: {
+            useDatesOfData: true,
+            start: { unit: 'day', offset: -1 },
+            end: { unit: 'day', offset: 3 },
+          },
+        });
+        expect(startDate.format()).toEqual('2019-02-04T00:00:00+11:00');
+        expect(endDate.format()).toEqual('2019-02-08T23:59:59+11:00');
+      });
+
+      it('uses range for single period granularity config', () => {
+        const { startDate, endDate } = getDefaultDateRangeToFetch({
+          periodGranularity: 'one_day_at_a_time',
+          defaultTimePeriod: {
+            useDatesOfData: true,
+            start: { unit: 'day', offset: -1 },
+            end: { unit: 'day', offset: 3 },
+          },
+        });
+        expect(startDate.format()).toEqual('2019-02-04T00:00:00+11:00');
+        expect(endDate.format()).toEqual('2019-02-08T23:59:59+11:00');
+      });
+    });
   });
 
   describe('getDatePickerLimits', () => {
@@ -169,6 +209,50 @@ describe('periodGranularities', () => {
       });
       expect(startDate.format()).toEqual('2019-02-02T00:00:00+11:00'); // rounded
       expect(endDate.format()).toEqual('2019-02-05T23:59:59+11:00'); // rounded
+    });
+  });
+
+  describe('getDefaultDatePickerDates', () => {
+    it('gives nothing if no config', () => {
+      const { startDate, endDate } = getDefaultDatePickerDates({});
+      expect(startDate).toBeNull();
+      expect(endDate).toBeNull();
+    });
+
+    it('gives startDate and endDate', () => {
+      const { startDate, endDate } = getDefaultDatePickerDates({
+        defaultTimePeriod: {
+          useDatesOfData: false,
+          start: {
+            start: { unit: 'day', offset: -1 },
+            end: { unit: 'day', offset: 3 },
+          },
+        },
+        startDate: '2021-01-01',
+        endDate: '2021-01-05',
+        dataStartDate: '2021-01-02',
+        dataEndDate: '2021-01-04',
+      });
+      expect(startDate).toEqual('2021-01-01');
+      expect(endDate).toEqual('2021-01-05');
+    });
+
+    it('gives dataStartDate and dataEndDate if using dates of data', () => {
+      const { startDate, endDate } = getDefaultDatePickerDates({
+        defaultTimePeriod: {
+          useDatesOfData: true,
+          start: {
+            start: { unit: 'day', offset: -1 },
+            end: { unit: 'day', offset: 3 },
+          },
+        },
+        startDate: '2021-01-01',
+        endDate: '2021-01-05',
+        dataStartDate: '2021-01-02',
+        dataEndDate: '2021-01-04',
+      });
+      expect(startDate).toEqual('2021-01-02');
+      expect(endDate).toEqual('2021-01-04');
     });
   });
 });
