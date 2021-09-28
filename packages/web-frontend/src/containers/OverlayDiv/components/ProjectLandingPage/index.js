@@ -163,7 +163,7 @@ ProjectLandingPage.propTypes = {
   project: PropTypes.shape({
     name: PropTypes.string,
     longDescription: PropTypes.string,
-    names: PropTypes.string,
+    names: PropTypes.array,
     logoUrl: PropTypes.string,
     imageUrl: PropTypes.string,
     code: PropTypes.string,

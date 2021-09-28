@@ -5,9 +5,10 @@
 
 import { yup } from '@tupaia/utils';
 
+import { Context } from '../../context';
+import { Row } from '../../types';
 import { TransformParser } from '../parser';
 import { buildWhere } from './where';
-import { Row } from '../../types';
 import {
   mapStringToStringValidator,
   starSingleOrMultipleColumnsValidator,
@@ -27,8 +28,8 @@ const paramsValidator = yup.object().shape({
   where: yup.string(),
 });
 
-const updateColumns = (rows: Row[], params: UpdateColumnsParams): Row[] => {
-  const parser = new TransformParser(rows);
+const updateColumns = (rows: Row[], params: UpdateColumnsParams, context: Context): Row[] => {
+  const parser = new TransformParser(rows, context);
   return rows.map(row => {
     const returnNewRow = params.where(parser);
     if (!returnNewRow) {
@@ -77,7 +78,7 @@ const buildParams = (params: unknown): UpdateColumnsParams => {
   };
 };
 
-export const buildUpdateColumns = (params: unknown) => {
+export const buildUpdateColumns = (params: unknown, context: Context) => {
   const builtParams = buildParams(params);
-  return (rows: Row[]) => updateColumns(rows, builtParams);
+  return (rows: Row[]) => updateColumns(rows, builtParams, context);
 };

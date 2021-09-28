@@ -7,16 +7,8 @@
 
 import createCachedSelector from 're-reselect';
 import { createSelector } from 'reselect';
-import { DEFAULT_MEASURE_ID } from '../defaults';
-import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
-import { getMeasureFromHierarchy } from '../utils';
-import {
-  calculateRadiusScaleFactor,
-  flattenMeasureHierarchy,
-  getMeasureDisplayInfo,
-  isMeasureHierarchyEmpty,
-  POLYGON_MEASURE_TYPES,
-} from '../utils/measures';
+import { getMeasureDisplayInfo } from '@tupaia/ui-components/lib/map';
+import { calculateRadiusScaleFactor, POLYGON_MEASURE_TYPES } from '../utils/measures';
 import {
   selectActiveProjectCountries,
   selectAllOrgUnitsInCountry,
@@ -26,8 +18,8 @@ import {
   selectCurrentOrgUnitCode,
   selectDescendantsFromCache,
 } from './orgUnitSelectors';
-import { selectCurrentProject, selectCurrentProjectCode } from './projectSelectors';
-import { getOrgUnitFromCountry, safeGet, selectLocation } from './utils';
+import { selectCurrentProjectCode } from './projectSelectors';
+import { getOrgUnitFromCountry, safeGet } from './utils';
 
 const displayInfoCache = createCachedSelector(
   [
@@ -50,15 +42,6 @@ const getOrgUnitFromMeasureData = (measureData, code) =>
 
 const selectDisplayInfo = (measureOptions, hiddenMeasures, measureData, organisationUnitCode) =>
   safeGet(displayInfoCache, [measureOptions, hiddenMeasures, measureData, organisationUnitCode]);
-
-export const selectCurrentMeasureId = createSelector([selectLocation], location =>
-  getLocationComponentValue(location, URL_COMPONENTS.MEASURE),
-);
-
-export const selectCurrentMeasure = createSelector(
-  [state => selectMeasureBarItemById(state, selectCurrentMeasureId(state))],
-  currentMeasure => currentMeasure || {},
-);
 
 const selectDisplayLevelAncestor = createSelector(
   [
@@ -194,58 +177,4 @@ export const selectRenderedMeasuresWithDisplayInfo = createSelector(
 export const selectRadiusScaleFactor = createSelector(
   [selectAllMeasuresWithDisplayInfo],
   calculateRadiusScaleFactor,
-);
-
-export const selectMeasureBarItemById = createSelector(
-  [state => state.measureBar.measureHierarchy, (_, id) => id],
-  (measureHierarchy, id) => {
-    return getMeasureFromHierarchy(measureHierarchy, id);
-  },
-);
-
-export const selectMeasureBarItemCategoryById = createSelector(
-  [state => state.measureBar.measureHierarchy, (_, id) => id],
-  (measureHierarchy, id) => {
-    let categoryMeasureIndex = {};
-
-    measureHierarchy.forEach(({ name, children }, categoryIndex) => {
-      const selectedMeasureIndex = children.findIndex(measure => measure.measureId === id);
-      if (selectedMeasureIndex > -1) {
-        categoryMeasureIndex = {
-          name,
-          categoryIndex,
-          measureIndex: selectedMeasureIndex,
-          measure: children[selectedMeasureIndex],
-        };
-      }
-    });
-
-    return categoryMeasureIndex;
-  },
-);
-
-export const selectIsMeasureInHierarchy = createSelector(
-  [state => state.measureBar.measureHierarchy, (_, id) => id],
-  (measureHierarchy, id) => !!getMeasureFromHierarchy(measureHierarchy, id),
-);
-
-export const selectDefaultMeasureId = createSelector(
-  [state => state.measureBar.measureHierarchy, selectCurrentProject],
-  (measureHierarchy, project) => {
-    const projectMeasureId = project.defaultMeasure;
-    const measureIsDefined = id => !!getMeasureFromHierarchy(measureHierarchy, id);
-
-    if (measureIsDefined(projectMeasureId)) return projectMeasureId;
-    if (measureIsDefined(DEFAULT_MEASURE_ID)) return DEFAULT_MEASURE_ID;
-    if (!isMeasureHierarchyEmpty(measureHierarchy)) {
-      return flattenMeasureHierarchy(measureHierarchy)[0].measureId;
-    }
-
-    return DEFAULT_MEASURE_ID;
-  },
-);
-
-export const selectCurrentPeriodGranularity = createSelector(
-  [selectCurrentMeasure],
-  measure => measure.periodGranularity,
 );

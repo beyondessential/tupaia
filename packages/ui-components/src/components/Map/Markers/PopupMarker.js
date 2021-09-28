@@ -50,7 +50,7 @@ const ContentItem = styled.div`
 
 const Button = styled.button`
   background: white;
-  border-radius: 2;
+  border-radius: 2px;
   border: 0;
   text-transform: uppercase;
   font-weight: 600;
@@ -115,7 +115,7 @@ PopupMarker.defaultProps = {
   onOpen: () => null,
   onClose: () => null,
   popupRef: () => null,
-  onDetailButtonClick: () => null,
+  onDetailButtonClick: null,
   sidePanelWidth: 0,
   coordinates: null,
   children: null,
