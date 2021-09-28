@@ -8,7 +8,6 @@ import { Provider } from 'react-redux';
 import { SurveysPage } from '@tupaia/admin-panel/lib';
 import { Container } from '@material-ui/core';
 import * as COLORS from '../constants';
-import { PageHeader } from '../components';
 import { store } from '../store';
 
 const Section = styled.section`
@@ -33,11 +32,9 @@ export const SurveysView = () => {
   return (
     <Provider store={store}>
       <div>
-        <PageHeader title="Surveys" breadcrumbs={[{ name: 'Surveys', url: '/surveys' }]} />
         <div ref={headerEl} />
         <Section>
-          <Container maxWidth="lg">
-            <h2>Surveys Table</h2>
+          <Container maxWidth="xl">
             <SurveysPage getHeaderEl={getHeaderEl} isBESAdmin />
           </Container>
         </Section>

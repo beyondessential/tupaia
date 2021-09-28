@@ -4,7 +4,7 @@
  *
  */
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { NavBar, Footer } from '../components';
 import { LesmisAdminRoute } from './LesmisAdminRoute';
 import { HomeView } from '../views/HomeView';
@@ -26,7 +26,7 @@ import { ABOUT_PAGE, FQS_PAGE, CONTACT_PAGE } from '../constants';
 export const PageRoutes = React.memo(() => (
   <Switch>
     <Route exact path="/">
-      <NavBar />
+      <NavBar hideSearch />
       <HomeView />
     </Route>
     <Route path="/login">
@@ -47,11 +47,14 @@ export const PageRoutes = React.memo(() => (
       </LesmisAdminRoute>
       <Footer />
     </Route>
-    <Route path="/surveys">
-      <NavBar />
-      <SurveysView />
-      <Footer />
-    </Route>
+    <LesmisAdminRoute path="/admin">
+      <LesmisAdminRoute path="/admin/surveys">
+        <NavBar hideSearch />
+        <SurveysView />
+        <Footer />
+      </LesmisAdminRoute>
+      <Redirect to="/admin/surveys" />
+    </LesmisAdminRoute>
     <Route path="/about">
       <NavBar />
       <PageView content={ABOUT_PAGE} />
