@@ -4,6 +4,7 @@
  */
 
 import { TYPES } from '@tupaia/database';
+import { hasBESAdminAccess } from '../../permissions';
 import { hasDashboardItemGetPermissions, hasDashboardItemEditPermissions } from '../dashboardItems';
 import { createDashboardRelationsDBFilter } from '../dashboardRelations';
 import { mergeFilter } from '../utilities';
@@ -41,6 +42,10 @@ export const assertLegacyReportEditPermissions = async (accessPolicy, models, le
 };
 
 export const createLegacyReportsDBFilter = async (accessPolicy, models, criteria) => {
+  if (hasBESAdminAccess(accessPolicy)) {
+    return criteria;
+  }
+
   const dbConditions = { ...criteria };
 
   // Pull the list of dashboard relations we have access to,
