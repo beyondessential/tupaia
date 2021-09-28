@@ -15,6 +15,7 @@ import { NotFoundView } from '../views/NotFoundView';
 import { LoginView } from '../views/LoginView';
 import { RegisterView } from '../views/RegisterView';
 import { UsersView } from '../views/UsersView';
+import { SurveysView } from '../views/SurveysView';
 import { NotAuthorisedView } from '../views/NotAuthorisedView';
 import { ABOUT_PAGE, FQS_PAGE, CONTACT_PAGE } from '../constants';
 
@@ -44,6 +45,11 @@ export const PageRoutes = React.memo(() => (
       <LesmisAdminRoute path="*">
         <UsersView />
       </LesmisAdminRoute>
+      <Footer />
+    </Route>
+    <Route path="/surveys">
+      <NavBar />
+      <SurveysView />
       <Footer />
     </Route>
     <Route path="/about">
