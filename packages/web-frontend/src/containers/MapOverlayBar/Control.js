@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import moment from 'moment';
@@ -117,13 +117,17 @@ export const Control = ({
   children,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isMeasureSelected, setIsMeasureSelected] = useState(false);
+  useEffect(() => {
+    setIsMeasureSelected(selectedMapOverlays.length > 0);
+  }, [selectedMapOverlays]);
+
   // TODO: PHX-1 Multiple date pickers
-  const mapOverlay = selectedMapOverlays.length === 1 ? selectedMapOverlays[0] : {};
+  const mapOverlay = selectedMapOverlays.length > 0 ? selectedMapOverlays[0] : {};
   const { periodGranularity, isTimePeriodEditable = true, name } = mapOverlay;
   const defaultDates = getDefaultDates(mapOverlay);
   const datePickerLimits = getLimits(periodGranularity, mapOverlay.datePickerLimits);
   const showDatePicker = !!(isTimePeriodEditable && periodGranularity);
-  const isMeasureSelected = !!name;
   const toggleMeasures = useCallback(() => {
     if (isExpanded) {
       setIsExpanded(false);
