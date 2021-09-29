@@ -96,6 +96,7 @@ import {
   LOCATION_CHANGE,
   goHome,
   setDashboardGroup,
+  UNSELECT_MAP_OVERLAY,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 import {
@@ -113,7 +114,7 @@ import {
 import { setProject, setRequestingAccess } from './projects/actions';
 import {
   selectCurrentInfoViewKey,
-  selectCurrentMapOverlayId,
+  selectCurrentMapOverlayIds,
   selectCurrentOrgUnitCode,
   selectShouldUseDashboardData,
   selectCurrentPeriodGranularity,
@@ -121,7 +122,6 @@ import {
   selectCurrentExpandedViewConfig,
   selectCurrentExpandedViewContent,
   selectDefaultMapOverlayId,
-  selectIsMapOverlayInHierarchy,
   selectIsProject,
   selectMapOverlayById,
   selectOrgUnit,
@@ -138,6 +138,7 @@ import {
   processMeasureInfo,
   getInfoFromInfoViewKey,
   getBrowserTimeZone,
+  checkIfMapOverlayIdsInHierarchy,
 } from './utils';
 import { getDefaultDates, getDefaultDrillDownDates } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
@@ -862,16 +863,17 @@ function* watchFetchMoreSearchResults() {
  * Fetches data for a measure and write it to map state by calling fetchMeasureSuccess.
  *
  */
+// TODO: PHX-1 set multiple overlay period in URL, currently use the first selected map overlay period
 function* fetchMeasureInfo() {
   const state = yield select();
-  const mapOverlayId = selectCurrentMapOverlayId(state);
+  const mapOverlayIds = selectCurrentMapOverlayIds(state);
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
-  const measureParams = selectMapOverlayById(state, mapOverlayId);
+  const measureParams =
+    mapOverlayIds && mapOverlayIds.length > 0 && selectMapOverlayById(state, mapOverlayIds[0]);
 
-  if (!mapOverlayId || !organisationUnitCode || !measureParams) {
+  if (mapOverlayIds.length === 0 || !organisationUnitCode || !measureParams) {
     // Don't try and fetch null measures
     yield put(cancelFetchMeasureData());
-
     return;
   }
 
@@ -887,7 +889,7 @@ function* fetchMeasureInfo() {
       : getDefaultDates(measureParams);
 
   const urlParameters = {
-    mapOverlayId,
+    mapOverlayIds: mapOverlayIds.join(','),
     organisationUnitCode,
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
@@ -906,16 +908,26 @@ function* fetchMeasureInfo() {
   }
 }
 
-function* fetchMeasureInfoForMeasureChange() {
+function* watchMeasureChange() {
+  yield takeLatest(SET_MAP_OVERLAY, fetchMeasureInfo);
+}
+
+function* clearMeasureIfNoMapOverlaySelected() {
+  const state = yield select();
+  const currentMapOverlayIds = selectCurrentMapOverlayIds(state);
+  if (currentMapOverlayIds.length === 0) {
+    yield put(clearMeasure());
+    return;
+  }
   yield fetchMeasureInfo();
 }
 
-function* watchMeasureChange() {
-  yield takeLatest(SET_MAP_OVERLAY, fetchMeasureInfoForMeasureChange);
+function* watchUnselectMapOverlayChange() {
+  yield takeLatest(UNSELECT_MAP_OVERLAY, clearMeasureIfNoMapOverlaySelected);
 }
 
 function* watchMeasurePeriodChange() {
-  yield takeLatest(UPDATE_MEASURE_CONFIG, fetchMeasureInfoForMeasureChange);
+  yield takeLatest(UPDATE_MEASURE_CONFIG, fetchMeasureInfo);
 }
 
 function* watchTryUpdateMeasureConfigAndWaitForHierarchyLoad() {
@@ -927,11 +939,10 @@ function* watchTryUpdateMeasureConfigAndWaitForHierarchyLoad() {
 
 function* updateMapOverlayOnceHierarchyLoads() {
   yield take(FETCH_MEASURES_SUCCESS);
-  const state = yield select();
-  const currentMapOverlayId = selectCurrentMapOverlayId(state);
-  yield put(setMapOverlay(currentMapOverlayId));
+  yield fetchMeasureInfo();
 }
 
+// TODO: PHX-1 set multiple overlay period in URL, currently use the first selected map overlay
 function* updateMapOverlayDateRangeOnceHierarchyLoads(action) {
   yield take(FETCH_MEASURES_SUCCESS);
   const state = yield select();
@@ -940,29 +951,21 @@ function* updateMapOverlayDateRangeOnceHierarchyLoads(action) {
     action.periodString,
     periodGranularity,
   );
-  yield put(updateMeasureConfig(selectCurrentMapOverlayId(state), { startDate, endDate }));
+  yield put(updateMeasureConfig(selectCurrentMapOverlayIds(state)[0], { startDate, endDate }));
 }
 
 function* fetchCurrentMeasureInfo() {
   const state = yield select();
   const currentOrganisationUnitCode = selectCurrentOrgUnitCode(state);
   const { mapOverlayHierarchy } = state.mapOverlayBar;
-  const selectedMapOverlayId = selectCurrentMapOverlayId(state);
+  const selectedMapOverlayIds = selectCurrentMapOverlayIds(state);
 
-  if (currentOrganisationUnitCode) {
-    const isHierarchyPopulated = !!mapOverlayHierarchy.length;
-    // TODO refactor the logic
-    if (!isHierarchyPopulated) {
-      /** Ensure measure is selected if there is a current measure selected in the case
-       * it is not selected through the mapOverlayBar UI
-       * i.e. page reloaded when on org with measure selected
-       */
-      yield put(setMapOverlay(selectedMapOverlayId));
-    } else if (!selectIsMapOverlayInHierarchy(state, selectedMapOverlayId)) {
-      // Update to the default measure ID if the current measure id isn't in the hierarchy
-      const newMapOverlayId = selectDefaultMapOverlayId(state);
-      yield put(setMapOverlay(newMapOverlayId));
-    }
+  if (
+    currentOrganisationUnitCode &&
+    !checkIfMapOverlayIdsInHierarchy(mapOverlayHierarchy, selectedMapOverlayIds)
+  ) {
+    const newMapOverlayId = selectDefaultMapOverlayId(state);
+    yield put(setMapOverlay(newMapOverlayId));
   }
 }
 
@@ -980,15 +983,15 @@ function* watchFetchMeasureSuccess() {
 function* fetchMeasureInfoForNewOrgUnit(action) {
   const { countryCode } = action.organisationUnit;
   const state = yield select();
-  const mapOverlayId = selectCurrentMapOverlayId(state);
+  const mapOverlayIds = selectCurrentMapOverlayIds(state);
   const oldOrgUnitCountry = state.map.measureInfo.currentCountry;
   if (oldOrgUnitCountry === countryCode) {
     // We are in the same country as before, no need to refetch measureData
     return;
   }
 
-  if (mapOverlayId) {
-    yield put(setMapOverlay(mapOverlayId));
+  if (mapOverlayIds.length > 0) {
+    yield put(setMapOverlay(mapOverlayIds.join(',')));
   }
 }
 
@@ -1205,4 +1208,5 @@ export default [
   watchTryUpdateMeasureConfigAndWaitForHierarchyLoad,
   watchHandleLocationChange,
   updateMapOverlayOnceHierarchyLoads,
+  watchUnselectMapOverlayChange,
 ];

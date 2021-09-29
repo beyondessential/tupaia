@@ -29,7 +29,7 @@ import {
   selectCurrentDashboardName,
   selectCurrentOrgUnit,
   selectOrgUnitChildren,
-  selectCurrentMapOverlay,
+  selectCurrentMapOverlays,
 } from '../../../selectors';
 
 const MAP_WIDTH = 420;
@@ -256,7 +256,7 @@ const mapStateToProps = state => {
   const { mapOverlayHierarchy, isExpanded } = state.mapOverlayBar;
   const { measureInfo, isMeasureLoading } = state.map;
   const { isGroupSelectExpanded } = state.dashboard;
-  const currentMapOverlay = selectCurrentMapOverlay(state);
+  const currentMapOverlay = selectCurrentMapOverlays(state)[0];
   const orgUnit = selectCurrentOrgUnit(state);
 
   const mobileListItems = getListItemsFromOrganisationUnitChildren(

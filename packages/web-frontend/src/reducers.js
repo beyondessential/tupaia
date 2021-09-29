@@ -100,6 +100,7 @@ import {
   FETCH_RESET_TOKEN_LOGIN_ERROR,
   SET_ENLARGED_DIALOG_DATE_RANGE,
   ON_SELECT_MULTIPLE_MAP_OVERLAY_CHECKBOX,
+  UNSELECT_MAP_OVERLAY,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 
@@ -595,6 +596,7 @@ function mapOverlayBar(
     case CLEAR_MAP_OVERLAY_HIERARCHY:
       return { ...state, mapOverlayHierarchy: [] };
     case SET_MAP_OVERLAY:
+    case UNSELECT_MAP_OVERLAY:
       return {
         ...state,
         hiddenMeasures: {},

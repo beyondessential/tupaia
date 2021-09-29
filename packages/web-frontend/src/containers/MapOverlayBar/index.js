@@ -28,9 +28,9 @@ import {
 import { HierarchyItem } from '../../components/HierarchyItem';
 import {
   selectCurrentOrgUnit,
-  selectCurrentMapOverlay,
-  selectCurrentProject,
-  selectMapOverlayById,
+  selectCurrentMapOverlays,
+  selectDefaultMapOverlay,
+  selectCurrentMapOverlayIds,
 } from '../../selectors';
 
 export class MapOverlayBar extends Component {
@@ -58,21 +58,21 @@ export class MapOverlayBar extends Component {
     this.props.onSelectMapOverlay(mapOverlay);
   };
 
-  renderDefaultMeasure() {
-    const { currentMapOverlayId, defaultMapOverlay } = this.props;
+  renderDefaultMapOverlay() {
+    const { currentMapOverlayIds, defaultMapOverlay } = this.props;
 
     return (
       <HierarchyItem
         nestedMargin="0px"
         label={defaultMapOverlay.name}
-        isSelected={currentMapOverlayId === defaultMapOverlay.mapOverlayId}
+        isSelected={currentMapOverlayIds.includes(defaultMapOverlay.mapOverlayId)}
         onClick={() => this.handleSelectMapOverlay(defaultMapOverlay)}
       />
     );
   }
 
   renderNestedHierarchyItems(children) {
-    const { currentMapOverlayId, onUnSelectMapOverlay } = this.props;
+    const { currentMapOverlayIds, onUnSelectMapOverlay } = this.props;
     return children.map(childObject => {
       let nestedItems;
 
@@ -83,10 +83,9 @@ export class MapOverlayBar extends Component {
       let onClick = null;
 
       if (!childObject.children) {
-        onClick =
-          currentMapOverlayId === childObject.mapOverlayId
-            ? () => onUnSelectMapOverlay(childObject.mapOverlayId)
-            : () => this.handleSelectMapOverlay(childObject);
+        onClick = currentMapOverlayIds.includes(childObject.mapOverlayId)
+          ? () => onUnSelectMapOverlay(childObject.mapOverlayId)
+          : () => this.handleSelectMapOverlay(childObject);
       }
 
       return (
@@ -94,7 +93,7 @@ export class MapOverlayBar extends Component {
           label={childObject.name}
           info={childObject.info}
           isSelected={
-            childObject.children ? null : currentMapOverlayId === childObject.mapOverlayId
+            childObject.children ? null : currentMapOverlayIds.includes(childObject.mapOverlayId)
           }
           key={childObject.mapOverlayId}
           onClick={onClick}
@@ -121,10 +120,9 @@ export class MapOverlayBar extends Component {
         />
       );
     });
-
     return (
       <>
-        {defaultMapOverlay?.mapOverlayId ? this.renderDefaultMeasure() : null}
+        {defaultMapOverlay?.mapOverlayId ? this.renderDefaultMapOverlay() : null}
         {items}
       </>
     );
@@ -139,7 +137,7 @@ export class MapOverlayBar extends Component {
 
   render() {
     const {
-      currentMapOverlay,
+      currentMapOverlays,
       isMeasureLoading,
       currentOrganisationUnitName,
       onUpdateMeasurePeriod,
@@ -150,7 +148,7 @@ export class MapOverlayBar extends Component {
     return (
       <Control
         emptyMessage={emptyMessage}
-        selectedMapOverlay={currentMapOverlay}
+        selectedMapOverlay={currentMapOverlays && currentMapOverlays[0]}
         isMeasureLoading={isMeasureLoading}
         onUpdateMeasurePeriod={onUpdateMeasurePeriod}
       >
@@ -169,8 +167,8 @@ const MapOverlayShape = PropTypes.shape({
 });
 
 MapOverlayBar.propTypes = {
-  currentMapOverlayId: PropTypes.string,
-  currentMapOverlay: MapOverlayShape,
+  currentMapOverlayIds: PropTypes.arrayOf(PropTypes.string),
+  currentMapOverlays: PropTypes.arrayOf(MapOverlayShape),
   mapOverlayHierarchy: PropTypes.array.isRequired,
   isExpanded: PropTypes.bool.isRequired,
   isMeasureLoading: PropTypes.bool.isRequired,
@@ -182,10 +180,10 @@ MapOverlayBar.propTypes = {
 };
 
 MapOverlayBar.defaultProps = {
-  currentMapOverlayId: '',
+  currentMapOverlayIds: [],
   currentOrganisationUnitName: '',
   defaultMapOverlay: {},
-  currentMapOverlay: {},
+  currentMapOverlays: [],
 };
 
 const mapStateToProps = state => {
@@ -194,18 +192,15 @@ const mapStateToProps = state => {
   const { isLoadingOrganisationUnit } = state.global;
 
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
-  const currentMapOverlay = selectCurrentMapOverlay(state);
+  const currentMapOverlays = selectCurrentMapOverlays(state);
 
-  const currentMapOverlayId = currentMapOverlay?.mapOverlayId;
+  const currentMapOverlayIds = selectCurrentMapOverlayIds(state);
   // TODO: current measures in Measure Bar
-  // const currentMeasures = selectCurrentMeasures(state);
-  const activeProject = selectCurrentProject(state);
-
-  const defaultMapOverlay = selectMapOverlayById(state, activeProject.defaultMeasure);
+  const defaultMapOverlay = selectDefaultMapOverlay(state);
 
   return {
-    currentMapOverlay,
-    currentMapOverlayId,
+    currentMapOverlays,
+    currentMapOverlayIds,
     mapOverlayHierarchy,
     isExpanded,
     currentOrganisationUnitName: currentOrganisationUnit.name,
@@ -223,14 +218,14 @@ const mapDispatchToProps = dispatch => ({
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch } = dispatchProps;
-  const { currentMapOverlayId } = stateProps;
+  const { currentMapOverlayIds } = stateProps;
 
   return {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
     onUpdateMeasurePeriod: (startDate, endDate) =>
-      dispatch(updateMeasureConfig(currentMapOverlayId, { startDate, endDate })),
+      dispatch(updateMeasureConfig(currentMapOverlayIds[0], { startDate, endDate })),
   };
 };
 
