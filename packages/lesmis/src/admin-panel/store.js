@@ -7,7 +7,8 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import localforage from 'localforage';
 import { persistReducer, persistStore } from 'redux-persist';
-import { rootReducer, api } from '@tupaia/admin-panel/lib';
+import { rootReducer } from '@tupaia/admin-panel/lib';
+import { api } from './apiSingleton';
 
 const persistedRootReducer = persistReducer(
   {

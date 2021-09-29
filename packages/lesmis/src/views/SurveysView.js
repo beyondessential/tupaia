@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 import { SurveysPage } from '@tupaia/admin-panel/lib';
 import { Container } from '@material-ui/core';
 import * as COLORS from '../constants';
-import { store } from '../store';
+import { store } from '../admin-panel';
 
 const Section = styled.section`
   display: flex;

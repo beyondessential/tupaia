@@ -4,3 +4,4 @@
  */
 
 export { api } from './apiSingleton';
+export { TupaiaApi } from './TupaiaApi';

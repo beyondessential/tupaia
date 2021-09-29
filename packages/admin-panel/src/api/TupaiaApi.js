@@ -19,6 +19,10 @@ const isJsonResponse = response => {
 export class TupaiaApi {
   constructor() {
     this.store = null; // Redux store for keeping state, will be injected after creation
+
+    // set env variables
+    this.apiUrl = process.env.REACT_APP_API_URL;
+    this.clientBasicAuthHeader = process.env.REACT_APP_CLIENT_BASIC_AUTH_HEADER;
   }
 
   injectReduxStore(store) {
@@ -34,7 +38,7 @@ export class TupaiaApi {
       'login',
       null,
       loginCredentials,
-      process.env.REACT_APP_CLIENT_BASIC_AUTH_HEADER,
+      this.clientBasicAuthHeader,
     );
     return authenticationDetails;
   }
@@ -101,7 +105,7 @@ export class TupaiaApi {
   }
 
   async request(endpoint, queryParameters, fetchConfig) {
-    const queryUrl = stringifyQuery(process.env.REACT_APP_API_URL, endpoint, queryParameters);
+    const queryUrl = stringifyQuery(this.apiUrl, endpoint, queryParameters);
     const response = await Promise.race([fetch(queryUrl, fetchConfig), createTimeoutPromise()]);
 
     await this.checkIfAuthorized(response);

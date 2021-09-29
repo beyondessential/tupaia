@@ -24,7 +24,10 @@ const ProfileLinks = () => {
   return (
     <>
       {isLesmisAdmin && (
-        <ProfileButtonItem to="/users-and-permissions">Users and Permissions</ProfileButtonItem>
+        <>
+          <ProfileButtonItem to="/users-and-permissions">Users and Permissions</ProfileButtonItem>
+          <ProfileButtonItem to="/admin">Admin</ProfileButtonItem>
+        </>
       )}
       <ProfileButtonItem button onClick={handleLogout}>
         Logout
