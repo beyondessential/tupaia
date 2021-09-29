@@ -30,19 +30,29 @@ const MapTableModalComponent = ({
   measureData,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const title = `${currentMapOverlays.map(({ name }) => name).join(', ')}, ${currentCountry?.name}`;
+  const MapOverlayIsSelected = currentMapOverlays.length > 0;
+  const title = MapOverlayIsSelected
+    ? `${currentMapOverlays.map(({ name }) => name).join(', ')}, ${currentCountry?.name}`
+    : '';
+
   const { doExport } = useMapDataExport(measureOptions, measureData, title);
 
   return (
     <>
       <Dialog onClose={() => setIsOpen(false)} open={isOpen} maxWidth="lg">
         <DialogHeader onClose={() => setIsOpen(false)} title={title}>
-          <MuiIconButton onClick={doExport}>
-            <DownloadIcon />
-          </MuiIconButton>
+          {MapOverlayIsSelected && (
+            <MuiIconButton onClick={doExport}>
+              <DownloadIcon />
+            </MuiIconButton>
+          )}
         </DialogHeader>
         <DialogContent>
-          <Table serieses={measureOptions} measureData={measureData} />
+          {MapOverlayIsSelected ? (
+            <Table serieses={measureOptions} measureData={measureData} />
+          ) : (
+            'No map overlay has been selected'
+          )}
         </DialogContent>
       </Dialog>
       <Tooltip arrow interactive placement="top" title="Generate Report">
