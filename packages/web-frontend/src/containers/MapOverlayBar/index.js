@@ -60,7 +60,7 @@ export class MapOverlayBar extends Component {
 
   renderDefaultMapOverlay() {
     const { currentMapOverlayIds, defaultMapOverlay } = this.props;
-
+    if (!defaultMapOverlay) return null;
     return (
       <HierarchyItem
         nestedMargin="0px"
@@ -148,7 +148,7 @@ export class MapOverlayBar extends Component {
     return (
       <Control
         emptyMessage={emptyMessage}
-        selectedMapOverlay={currentMapOverlays && currentMapOverlays[0]}
+        selectedMapOverlays={currentMapOverlays}
         isMeasureLoading={isMeasureLoading}
         onUpdateMeasurePeriod={onUpdateMeasurePeriod}
       >
@@ -182,7 +182,7 @@ MapOverlayBar.propTypes = {
 MapOverlayBar.defaultProps = {
   currentMapOverlayIds: [],
   currentOrganisationUnitName: '',
-  defaultMapOverlay: {},
+  defaultMapOverlay: null,
   currentMapOverlays: [],
 };
 
@@ -195,7 +195,6 @@ const mapStateToProps = state => {
   const currentMapOverlays = selectCurrentMapOverlays(state);
 
   const currentMapOverlayIds = selectCurrentMapOverlayIds(state);
-  // TODO: current measures in Measure Bar
   const defaultMapOverlay = selectDefaultMapOverlay(state);
 
   return {

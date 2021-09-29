@@ -7,7 +7,7 @@
 
 export const getMapOverlaysFromHierarchy = (mapOverlayHierarchy, targetMapOverlayIds) => {
   if (!targetMapOverlayIds) {
-    return null;
+    return [];
   }
 
   const flattenMapOverlays = flattenMapOverlayHierarchy(mapOverlayHierarchy);
@@ -15,19 +15,18 @@ export const getMapOverlaysFromHierarchy = (mapOverlayHierarchy, targetMapOverla
     targetMapOverlayIds.includes(mapOverlayId),
   );
 
-  return targettedMapOverlays.length === 0 ? null : targettedMapOverlays;
+  return targettedMapOverlays;
 };
 
 export const checkIfMapOverlayIdsInHierarchy = (mapOverlayHierarchy, targetMapOverlayIds) => {
   if (!targetMapOverlayIds || targetMapOverlayIds?.length === 0) {
     return false;
   }
-  for (const id of targetMapOverlayIds) {
-    if (!getMapOverlaysFromHierarchy(mapOverlayHierarchy, [id])) {
-      return false;
-    }
-  }
-  return true;
+  const { length: resultLength } = getMapOverlaysFromHierarchy(
+    mapOverlayHierarchy,
+    targetMapOverlayIds,
+  );
+  return resultLength === targetMapOverlayIds.length;
 };
 
 export function flattenMapOverlayHierarchy(mapOverlayHierarchy) {

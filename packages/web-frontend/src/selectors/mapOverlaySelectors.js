@@ -12,6 +12,7 @@ import {
   getMapOverlaysFromHierarchy,
   flattenMapOverlayHierarchy,
   isMapOverlayHierarchyEmpty,
+  checkIfMapOverlayIdsInHierarchy,
 } from '../utils';
 
 import { selectCurrentProject } from './projectSelectors';
@@ -28,7 +29,7 @@ export const selectMapOverlayById = createSelector(
   [state => state.mapOverlayBar.mapOverlayHierarchy, (_, id) => id],
   (mapOverlayHierarchy, id) => {
     const result = getMapOverlaysFromHierarchy(mapOverlayHierarchy, [id]);
-    return result && result[0];
+    return result[0];
   },
 );
 
@@ -46,7 +47,7 @@ export const selectDefaultMapOverlayId = createSelector(
   [state => state.mapOverlayBar.mapOverlayHierarchy, selectCurrentProject],
   (mapOverlayHierarchy, project) => {
     const projectMeasureId = project.defaultMeasure;
-    const measureIsDefined = id => !!getMapOverlaysFromHierarchy(mapOverlayHierarchy, [id]);
+    const measureIsDefined = id => checkIfMapOverlayIdsInHierarchy(mapOverlayHierarchy, [id]);
 
     if (measureIsDefined(projectMeasureId)) return projectMeasureId;
     if (measureIsDefined(DEFAULT_MAP_OVERLAY_ID)) return DEFAULT_MAP_OVERLAY_ID;
