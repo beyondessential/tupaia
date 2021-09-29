@@ -41,7 +41,7 @@ export const draftReportValidator = yup.object().shape({
 
 export const legacyReportValidator = yup.object().shape({
   code: yup.string().required('Requires "code" for the visualisation'),
-  dataBuilder: yup.string().required('Requires "dataBuilder" for the legacy visualisation'),
+  dataBuilder: yup.string(),
   config: yup.object(),
   dataServices: yup.array().of(yup.object().shape({ isDataRegional: yup.boolean() })),
 });
