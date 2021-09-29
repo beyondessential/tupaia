@@ -98,6 +98,7 @@ import {
   setDashboardGroup,
   UNSELECT_MAP_OVERLAY,
   SELECT_MAP_OVERLAY,
+  onSelectMultipleMapOverlayCheckBox,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 import {
@@ -910,11 +911,14 @@ function* fetchMeasureInfo() {
   }
 }
 
-function* fetchMeasureInfoOnlyIfHierarchyIsLoaded() {
+function* fetchMeasureInfoOnlyIfHierarchyIsLoaded(action) {
   const state = yield select();
   const { mapOverlayHierarchy } = state.mapOverlayBar;
   const isMapOverlayHierarchyLoaded = !isMapOverlayHierarchyEmpty(mapOverlayHierarchy);
   if (isMapOverlayHierarchyLoaded) {
+    if (action.mapOverlayIds.split(',').length > 1) {
+      yield put(onSelectMultipleMapOverlayCheckBox());
+    }
     yield fetchMeasureInfo();
   }
 }
