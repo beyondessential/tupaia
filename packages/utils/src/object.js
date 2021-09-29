@@ -264,3 +264,6 @@ export const camelKeys = object =>
 
 export const snakeKeys = object =>
   Object.fromEntries(Object.entries(object).map(([key, value]) => [snake(key), value]));
+
+export const isNullishOrEmptyObject = obj =>
+  obj === null || obj === undefined || (typeof obj === 'object' && Object.keys(obj).length < 1);

@@ -8,6 +8,8 @@
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
+import { isNullishOrEmptyObject } from '@tupaia/utils';
+
 export const DEFAULT_MIN_DATE = '20150101';
 
 const DAY = 'day';
@@ -137,8 +139,6 @@ export const momentToDateString = (date, granularity, format) =>
     ? date.clone().startOf('W').format(format)
     : date.clone().format(format);
 
-const isEmpty = obj => !(obj && Object.keys(obj).length > 0);
-
 const getOffsetDate = (offset, unit, modifier, modifierUnit = null) => {
   // We need a valid unit to proceed.
   if (!CONFIG[unit]) {
@@ -198,7 +198,7 @@ const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTim
   let startDate = moment();
   let endDate = startDate;
 
-  if (!isEmpty(defaultTimePeriod)) {
+  if (!isNullishOrEmptyObject(defaultTimePeriod)) {
     let singleDateConfig;
 
     // If defaultTimePeriod has either start or end,
@@ -241,7 +241,7 @@ const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTim
  * @param {*} defaultTimePeriod
  */
 const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeriod) => {
-  if (!isEmpty(defaultTimePeriod)) {
+  if (!isNullishOrEmptyObject(defaultTimePeriod)) {
     let startDate = moment();
     let endDate = startDate;
 
@@ -283,6 +283,10 @@ export function getDefaultDateRangeToFetch(viewConfig) {
 }
 
 export function getDefaultDatePickerDates(viewConfig) {
+  if (isNullishOrEmptyObject(viewConfig)) {
+    return { startDate: null, endDate: null };
+  }
+
   const {
     defaultTimePeriod,
     startDate: requestedStartDate,

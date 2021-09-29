@@ -17,6 +17,7 @@ import {
   reduceToDictionary,
   reduceToSet,
   stripFields,
+  isNullishOrEmptyObject,
 } from '../object';
 
 describe('object', () => {
@@ -601,5 +602,24 @@ describe('object', () => {
         expect(haveSameFields(objectCollection, fields)).toBe(false);
       });
     });
+  });
+
+  describe('isNullishOrEmptyObject', () => {
+    it('returns `true` for null or undefined', () => {
+      expect(isNullishOrEmptyObject(null)).toBe(true);
+      expect(isNullishOrEmptyObject(undefined)).toBe(true);
+    });
+
+    it('returns `false` for other falsey values', () => {
+      expect(isNullishOrEmptyObject(false)).toBe(false);
+      expect(isNullishOrEmptyObject('')).toBe(false);
+      expect(isNullishOrEmptyObject(0)).toBe(false);
+    });
+
+    it('returns `true` for object with no entries', () =>
+      expect(isNullishOrEmptyObject({})).toBe(true));
+
+    it('returns `false` for object with entries', () =>
+      expect(isNullishOrEmptyObject({ key: 'value' })).toBe(false));
   });
 });

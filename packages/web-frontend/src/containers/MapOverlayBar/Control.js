@@ -9,7 +9,11 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import LastUpdated from './LastUpdated';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { CONTROL_BAR_WIDTH, TUPAIA_ORANGE, MAP_OVERLAY_SELECTOR } from '../../styles';
-import { getDefaultDates, getLimits, GRANULARITY_CONFIG } from '../../utils/periodGranularities';
+import {
+  getDefaultDateRangeToFetch,
+  getDatePickerLimits,
+  GRANULARITY_CONFIG,
+} from '../../utils/periodGranularities';
 import { MapTableModal } from '../MapTableModal';
 
 const Container = styled.div`
@@ -118,8 +122,8 @@ export const Control = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const mapOverlay = selectedMapOverlay || {};
   const { periodGranularity, isTimePeriodEditable = true, name } = mapOverlay;
-  const defaultDates = getDefaultDates(mapOverlay);
-  const datePickerLimits = getLimits(periodGranularity, mapOverlay.datePickerLimits);
+  const defaultDates = getDefaultDateRangeToFetch(mapOverlay);
+  const datePickerLimits = getDatePickerLimits(periodGranularity, mapOverlay.datePickerLimits);
   const showDatePicker = !!(isTimePeriodEditable && periodGranularity);
   const isMeasureSelected = !!name;
   const toggleMeasures = useCallback(() => {
