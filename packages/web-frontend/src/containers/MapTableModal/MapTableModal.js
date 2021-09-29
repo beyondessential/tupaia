@@ -30,9 +30,6 @@ const MapTableModalComponent = ({
   measureData,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  if (!currentMapOverlays || !measureData || !measureOptions || measureData.length === 0) {
-    return null;
-  }
   const title = `${currentMapOverlays.map(({ name }) => name).join(', ')}, ${currentCountry?.name}`;
   const { doExport } = useMapDataExport(measureOptions, measureData, title);
 
@@ -40,7 +37,7 @@ const MapTableModalComponent = ({
     <>
       <Dialog onClose={() => setIsOpen(false)} open={isOpen} maxWidth="lg">
         <DialogHeader onClose={() => setIsOpen(false)} title={title}>
-          <MuiIconButton onClick={() => doExport}>
+          <MuiIconButton onClick={doExport}>
             <DownloadIcon />
           </MuiIconButton>
         </DialogHeader>
