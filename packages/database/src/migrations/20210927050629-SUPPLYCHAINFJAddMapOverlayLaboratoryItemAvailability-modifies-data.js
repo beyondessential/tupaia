@@ -7,9 +7,7 @@ var seed;
 import {
   insertObject,
   generateId,
-  findSingleRecord,
-  findSingleRecordBySql,
-  deleteObject,
+  codeToId
 } from '../utilities';
 
 /**
@@ -24,117 +22,174 @@ exports.setup = function(options, seedLink) {
 
 const PERMISSION_GROUP = 'Fiji Supply Chain';
 
-const DATA_ELEMENTS = [
+const LAB_ITEMS = [
   {
-    element: 'FijiBCS22',
-    name: 'Buffer Pack'
+    dataElements: ['FijiBCS22'],
+    name: 'Buffer Pack',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_buffer_pack',
+    sortOrder: '0',
   },
   {
-    element: 'FijiBCS23',
-    name: 'Wash and CD Pack 348'
+    dataElements: ['FijiBCS23'],
+    name: 'Wash and CD Pack 348',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_wash_cd_pack',
+    sortOrder: '1',
   },
   {
-    element: 'FijiBCS24',
-    name: 'Cellpack DCL 20L'
+    dataElements: ['FijiBCS24'],
+    name: 'Cellpack DCL 20L',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_cellpack_dcl',
+    sortOrder: '2',
   },
   {
-    element: 'FijiBCS25',
-    name: 'Aerobic Blood Culture Bottles BacT/Alert - FA'
+    dataElements: ['FijiBCS25'],
+    name: 'Aerobic Blood Culture Bottles BacT/Alert - FA',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_aerobic_blood_culture',
+    sortOrder: '3',
   },
   {
-    element: 'FijiBCS26',
-    name: 'Anaerobic Blood Culture Bottles BacT/Alert - SN'
+    dataElements: ['FijiBCS26'],
+    name: 'Anaerobic Blood Culture Bottles BacT/Alert - SN',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_anaerobic_blood_culture',
+    sortOrder: '4',
   },
   {
-    element: 'FijiBCS27',
-    name: 'Anti-A monoclonal reagent 10ml vial'
+    dataElements: ['FijiBCS27'],
+    name: 'Anti-A monoclonal reagent 10ml vial',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_anti_a_monoclonal',
+    sortOrder: '5',
   },
   {
-    element: 'FijiBCS28',
-    name: 'Anti-B monoclonal reagent 10ml vial'
-  },{
-    element: 'FijiBCS29',
-    name: 'Anti-D duoclone IgM IgG blend 10ml vial'
+    dataElements: ['FijiBCS28'],
+    name: 'Anti-B monoclonal reagent 10ml vial',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_anti_b_monoclonal',
+    sortOrder: '6',
   },
   {
-    element: 'FijiBCS30',
-    name: 'BD Sodium Citrate tubes (1.8ml) (1 x 100)'
-  },{
-    element: 'FijiBCS31',
-    name: 'Container 70ml sterile screw to pp labelled pink cap (Sputum Bottle)'
+    dataElements: ['FijiBCS29'],
+    name: 'Anti-D duoclone IgM IgG blend 10ml vial',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_anti_d_duoclone',
+    sortOrder: '7',
   },
   {
-    element: 'FijiBCS32',
-    name: 'Container Sterile Urine 70ml Screw to pp labeled Yellow cap, Technoplas 500/box'
-  },{
-    element: 'FijiBCS33',
-    name: 'Determine HepBsAntigen SP 100T'
+    dataElements: ['FijiBCS30'],
+    name: 'BD Sodium Citrate tubes (1.8ml) (1 x 100)',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_bd_sodium_citrate',
+    sortOrder: '8',
   },
   {
-    element: 'FijiBCS34',
-    name: 'Determine HIV 1/2 SP 100T'
-  },{
-    element: 'FijiBCS35',
-    name: 'Diluent 20L - BC 3000 Analyser'
+    dataElements: ['FijiBCS31'],
+    name: 'Container 70ml sterile screw to pp labelled pink cap (Sputum Bottle)',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_container_sterile_sputum',
+    sortOrder: '9',
   },
   {
-    element: 'FijiBCS36',
-    name: 'DT7D2543-Determine Syphilis SP 100T'
+    dataElements: ['FijiBCS32'],
+    name: 'Container Sterile Urine 70ml Screw to pp labeled Yellow cap, Technoplas 500/box',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_container_technoplas',
+    sortOrder: '10',
   },
   {
-    element: 'FijiBCS37',
-    name: 'Elite polyspecific Anti-human globulin blended rabbit monoclonal antihuman globulin 10ml'
+    dataElements: ['FijiBCS33'],
+    name: 'Determine HepBsAntigen SP 100T',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_hepbsantigen_sp',
+    sortOrder: '11',
   },
   {
-    element: 'FijiBCS38',
-    name: 'Greiner Vacuette K2E EDTA K2 Anticoagulant Tubes 13x75mm (rack of  100s)'
+    dataElements: ['FijiBCS34'],
+    name: 'Determine HIV 1/2 SP 100T',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_hiv_sp',
+    sortOrder: '12',
   },
   {
-    element: 'FijiBCS39',
-    name: 'HbA1c: BS-800M1 Reagents'
+    dataElements: ['FijiBCS35'],
+    name: 'Diluent 20L - BC 3000 Analyser',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_diluent_bc_3000_analyser',
+    sortOrder: '13',
   },
   {
-    element: 'FijiBCS40',
-    name: 'Lamp 801-BA-80-00001-00'
+    dataElements: ['FijiBCS36'],
+    name: 'DT7D2543-Determine Syphilis SP 100T',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_syphilis_sp',
+    sortOrder: '14',
   },
   {
-    element: 'FijiBCS41',
-    name: 'Liss ready for use 2500ml bottle'
+    dataElements: ['FijiBCS37'],
+    name: 'Elite polyspecific Anti-human globulin blended rabbit monoclonal antihuman globulin 10ml',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_antihuman_globulin',
+    sortOrder: '15',
   },
   {
-    element: 'FijiBCS42',
-    name: 'Macro-Vue RPR card test #104 300/test'
+    dataElements: ['FijiBCS38'],
+    name: 'Greiner Vacuette K2E EDTA K2 Anticoagulant Tubes 13x75mm (rack of  100s)',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_anticoagulant_tubes',
+    sortOrder: '16',
   },
   {
-    element: 'FijiBCS43',
-    name: 'Microbact 12 A (Identification Kits, Box of 120tests)'
+    dataElements: ['FijiBCS39'],
+    name: 'HbA1c: BS-800M1 Reagents',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_bs_800m1_reagents',
+    sortOrder: '17',
   },
   {
-    element: 'FijiBCS44',
-    name: 'Microbact 12 B (Identification Kits 120tests/box)'
+    dataElements: ['FijiBCS40'],
+    name: 'Lamp 801-BA-80-00001-00',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_lamp_801_ba',
+    sortOrder: '18',
   },
   {
-    element: 'FijiBCS45',
-    name: 'MP9B8004030-Leptospira IgM Dip S-25T'
+    dataElements: ['FijiBCS41'],
+    name: 'Liss ready for use 2500ml bottle',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_liss',
+    sortOrder: '19',
   },
   {
-    element: 'FijiBCS46',
-    name: 'MPBR70700-Dengue NSI Antigen Strip 25/pkt'
+    dataElements: ['FijiBCS42'],
+    name: 'Macro-Vue RPR card test #104 300/test',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_macrovue_rpr_card_test',
+    sortOrder: '20',
   },
   {
-    element: 'FijiBCS47',
-    name: 'Paediatric Blood Culture Bottles BacT/Alert - PF Bottle'
+    dataElements: ['FijiBCS43'],
+    name: 'Microbact 12 A (Identification Kits, Box of 120tests)',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_microbact_12_a',
+    sortOrder: '21',
   },
   {
-    element: 'FijiBCS48',
-    name: 'Reagent Module(Cal A, Cal B, Waste) ISE Module - BS 200 Reagents'
+    dataElements: ['FijiBCS44'],
+    name: 'Microbact 12 B (Identification Kits 120tests/box)',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_microbact_12_b',
+    sortOrder: '22',
+  },
+  {
+    dataElements: ['FijiBCS45'],
+    name: 'MP9B8004030-Leptospira IgM Dip S-25T',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_leptospira_igm_dip',
+    sortOrder: '23',
+  },
+  {
+    dataElements: ['FijiBCS46'],
+    name: 'MPBR70700-Dengue NSI Antigen Strip 25/pkt',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_dengue_nsi_antigen_strip',
+    sortOrder: '24',
+  },
+  {
+    dataElements: ['FijiBCS47'],
+    name: 'Paediatric Blood Culture Bottles BacT/Alert - PF Bottle',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_paediatric_blood_culture',
+    sortOrder: '25',
+  },
+  {
+    dataElements: ['FijiBCS48'],
+    name: 'Reagent Module(Cal A, Cal B, Waste) ISE Module - BS 200 Reagents',
+    reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_reagent_module_cal_a_b_waste',
+    sortOrder: '26',
   },
 ]
 
 const overlayGroupRecord = {
-  id: generateId(),
   name: 'Laboratory Item Availability',
-  code: 'FIJI_SUPPLY_CHAIN_Laboratory_Item_Availability',
+  code: 'SUPPLY_CHAIN_FIJI_Laboratory_Item_Availability',
 }
 
 const createReport = (reportCode, dataElements) => ({
@@ -205,12 +260,84 @@ const createMapOverlay = (name, reportCode) => ({
   report_code: reportCode,
 });
 
-exports.up = function(db) {
-  return null;
+export const nameToId = async (db, table, name) => {
+  const record = await db.runSql(`SELECT id FROM "${table}" WHERE name = '${name}'`);
+  return record.rows[0] && record.rows[0].id;
 };
 
-exports.down = function(db) {
-  return null;
+const addMapOverlayGroup = async (db, parentCode, { name, code }) => {
+  const parentId = await codeToId(db, 'map_overlay_group', parentCode);
+  const overlayGroupId = generateId();
+  await insertObject(db, 'map_overlay_group', { id: overlayGroupId, name, code });
+  return insertObject(db, 'map_overlay_group_relation', {
+    id: generateId(),
+    map_overlay_group_id: parentId,
+    child_id: overlayGroupId,
+    child_type: 'mapOverlayGroup',
+  });
+};
+
+const addMapOverlay = async (db, parentCode, config) => {
+  const { dataElements, reportCode, name, sortOrder } = config;
+  const report = createReport(reportCode, dataElements);
+  const mapOverlay = createMapOverlay(name, reportCode);
+  const permissionGroupId = await nameToId(db, 'permission_group', PERMISSION_GROUP);
+  await insertObject(db, 'report', {
+    id: generateId(),
+    permission_group_id: permissionGroupId,
+    ...report,
+  });
+  await insertObject(db, 'mapOverlay', mapOverlay);
+
+  const mapOverlayGroupId = await codeToId(db, 'map_overlay_group', parentCode);
+  return insertObject(db, 'map_overlay_group_relation', {
+    id: generateId(),
+    map_overlay_group_id: mapOverlayGroupId,
+    child_id: mapOverlay.id,
+    child_type: 'mapOverlay',
+    sort_order: sortOrder,
+  });
+};
+
+exports.up = async function(db) {
+  // Add map overlay group
+  await addMapOverlayGroup(db, 'Root', overlayGroupRecord);
+
+  // Add map overlays
+  for (const labItem of LAB_ITEMS) {
+    await addMapOverlay(db, overlayGroupRecord.code, labItem);
+  }
+};
+
+const removeMapOverlay = (db, reportCode) => {
+  return db.runSql(`
+    DELETE FROM "report" WHERE code = '${reportCode}';
+    DELETE FROM "mapOverlay" WHERE "id" = '${reportCode}';
+    DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${reportCode}';
+  `);
+};
+
+const removeMapOverlayGroupRelation = async (db, groupCode) => {
+  const overlayId = await codeToId(db, 'map_overlay_group', groupCode);
+  await db.runSql(`
+    DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${overlayId}';
+  `);
+};
+
+exports.down = async function (db) {
+  // Remove Map Overlay Group Relation
+      await removeMapOverlayGroupRelation(db, overlayGroupRecord.code);
+
+
+  // Remove Map Overlays
+  for (const labItem of LAB_ITEMS) {
+      await removeMapOverlay(db, labItem.reportCode);
+  }
+
+  // Remove Map Overlay Group
+  await db.runSql(`
+    DELETE FROM "map_overlay_group" WHERE "code" = '${overlayGroupRecord.code}';
+  `);
 };
 
 exports._meta = {
