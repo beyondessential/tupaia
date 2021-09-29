@@ -19,6 +19,7 @@ import {
   draftDashboardItemValidator,
   draftReportValidator,
   legacyReportValidator,
+  PreviewMode,
 } from '../viz-builder';
 import type {
   Dashboard,
@@ -66,7 +67,7 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
       draftDashboardItemValidator,
       reportValidator,
     );
-    const extractedViz = extractor.getDashboardVisualisationResource();
+    const extractedViz = extractor.getDashboardVisualisationResource(PreviewMode.PRESENTATION);
     const existingId = await this.findExistingVisualisationId(visualisation);
 
     const id = existingId

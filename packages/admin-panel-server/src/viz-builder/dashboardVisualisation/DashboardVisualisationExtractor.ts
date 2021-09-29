@@ -47,10 +47,10 @@ export class DashboardVisualisationExtractor<
     this.reportValidatorContext = context;
   };
 
-  public getDashboardVisualisationResource = () => {
+  public getDashboardVisualisationResource = (previewMode?: PreviewMode) => {
     // Resources (like the ones passed to meditrak-server for upsert) use snake_case keys
     const dashboardItem = this.getDashboardItem();
-    const report = this.getReport();
+    const report = this.getReport(previewMode);
 
     return {
       dashboardItem: snakeKeys(dashboardItem),
@@ -59,7 +59,9 @@ export class DashboardVisualisationExtractor<
   };
 
   private vizToDashboardItem() {
-    const { id, code, name, legacy, presentation } = this.visualisation;
+    const { id, code, name, legacy } = this.visualisation;
+    const { output, ...presentation } = this.visualisation.presentation;
+
     return {
       id,
       code,
