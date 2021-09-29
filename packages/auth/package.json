@@ -26,7 +26,7 @@
     "randomatic": "^3.1.1"
   },
   "devDependencies": {
-    "@beyondessential/tupaia-access-policy": "^2.5.0",
+    "@beyondessential/tupaia-access-policy": "^2.5.1",
     "@tupaia/access-policy": "3.0.0",
     "@tupaia/database": "1.0.0"
   }
