@@ -256,7 +256,8 @@ const mapStateToProps = state => {
   const { mapOverlayHierarchy, isExpanded } = state.mapOverlayBar;
   const { measureInfo, isMeasureLoading } = state.map;
   const { isGroupSelectExpanded } = state.dashboard;
-  const currentMapOverlay = selectCurrentMapOverlays(state)[0];
+  const currentMapOverlays = selectCurrentMapOverlays(state);
+  const currentMapOverlay = currentMapOverlays.length > 0 ? currentMapOverlays[0] : {};
   const orgUnit = selectCurrentOrgUnit(state);
 
   const mobileListItems = getListItemsFromOrganisationUnitChildren(
