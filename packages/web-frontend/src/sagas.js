@@ -138,7 +138,8 @@ import {
   processMeasureInfo,
   getInfoFromInfoViewKey,
   getBrowserTimeZone,
-  checkIfMapOverlayIdsInHierarchy,
+  mapOverlayIdsAreInHierarchy,
+  isMapOverlayHierarchyEmpty,
 } from './utils';
 import { getDefaultDates, getDefaultDrillDownDates } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
@@ -868,8 +869,7 @@ function* fetchMeasureInfo() {
   const state = yield select();
   const mapOverlayIds = selectCurrentMapOverlayIds(state);
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
-  const measureParams =
-    mapOverlayIds && mapOverlayIds.length > 0 && selectMapOverlayById(state, mapOverlayIds[0]);
+  const measureParams = mapOverlayIds.length > 0 && selectMapOverlayById(state, mapOverlayIds[0]);
 
   if (mapOverlayIds.length === 0 || !organisationUnitCode || !measureParams) {
     // Don't try and fetch null measures
@@ -908,13 +908,23 @@ function* fetchMeasureInfo() {
   }
 }
 
-function* watchMeasureChange() {
-  yield takeLatest(SET_MAP_OVERLAY, fetchMeasureInfo);
+function* fetchMeasureInfoOnlyIfHierarchyIsLoaded() {
+  const state = yield select();
+  const { mapOverlayHierarchy } = state.mapOverlayBar;
+  const isMapOverlayHierarchyLoaded = !isMapOverlayHierarchyEmpty(mapOverlayHierarchy);
+  if (isMapOverlayHierarchyLoaded) {
+    yield fetchMeasureInfo();
+  }
 }
 
-function* clearMeasureIfNoMapOverlaySelected() {
+function* watchSetMapOverlayChange() {
+  yield takeLatest(SET_MAP_OVERLAY, fetchMeasureInfoOnlyIfHierarchyIsLoaded);
+}
+
+function* fetchMeasureInfoOnlyIfMapOverlayIsSelected() {
   const state = yield select();
   const currentMapOverlayIds = selectCurrentMapOverlayIds(state);
+  // Clear measure if no mapOverlay is selected
   if (currentMapOverlayIds.length === 0) {
     yield put(clearMeasure());
     return;
@@ -923,7 +933,7 @@ function* clearMeasureIfNoMapOverlaySelected() {
 }
 
 function* watchUnselectMapOverlayChange() {
-  yield takeLatest(UNSELECT_MAP_OVERLAY, clearMeasureIfNoMapOverlaySelected);
+  yield takeLatest(UNSELECT_MAP_OVERLAY, fetchMeasureInfoOnlyIfMapOverlayIsSelected);
 }
 
 function* watchMeasurePeriodChange() {
@@ -935,11 +945,6 @@ function* watchTryUpdateMeasureConfigAndWaitForHierarchyLoad() {
     UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
     updateMapOverlayDateRangeOnceHierarchyLoads,
   );
-}
-
-function* updateMapOverlayOnceHierarchyLoads() {
-  yield take(FETCH_MEASURES_SUCCESS);
-  yield fetchMeasureInfo();
 }
 
 // TODO: PHX-1 set multiple overlay period in URL, currently use the first selected map overlay
@@ -960,12 +965,12 @@ function* fetchCurrentMeasureInfo() {
   const { mapOverlayHierarchy } = state.mapOverlayBar;
   const selectedMapOverlayIds = selectCurrentMapOverlayIds(state);
 
-  if (
-    currentOrganisationUnitCode &&
-    !checkIfMapOverlayIdsInHierarchy(mapOverlayHierarchy, selectedMapOverlayIds)
-  ) {
-    const newMapOverlayId = selectDefaultMapOverlayId(state);
-    yield put(setMapOverlay(newMapOverlayId));
+  if (currentOrganisationUnitCode) {
+    if (!mapOverlayIdsAreInHierarchy(mapOverlayHierarchy, selectedMapOverlayIds)) {
+      const newMapOverlayId = selectDefaultMapOverlayId(state);
+      yield put(setMapOverlay(newMapOverlayId));
+    }
+    yield put(setMapOverlay(selectedMapOverlayIds.join(',')));
   }
 }
 
@@ -1000,12 +1005,12 @@ function* watchOrgUnitChangeAndFetchMeasureInfo() {
 }
 
 /**
- * fetchMeasures
+ * fetchMapOverlaysMetadata
  *
- * Fetches the measures for current orgUnit for the current user. Written to mapOverlayBar State.
+ * Fetch map overlays metadata for current orgUnit for the current user. Written to mapOverlayBar State.
  *
  */
-function* fetchMeasures(action) {
+function* fetchMapOverlaysMetadata(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
   if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
@@ -1022,7 +1027,7 @@ function* fetchMeasures(action) {
 }
 
 function* watchOrgUnitChangeAndFetchMeasures() {
-  yield takeLatest(CHANGE_ORG_UNIT_SUCCESS, fetchMeasures);
+  yield takeLatest(CHANGE_ORG_UNIT_SUCCESS, fetchMapOverlaysMetadata);
 }
 
 /**
@@ -1189,7 +1194,7 @@ export default [
   watchViewFetchRequests,
   watchSearchChange,
   watchFetchMoreSearchResults,
-  watchMeasureChange,
+  watchSetMapOverlayChange,
   watchOrgUnitChangeAndFetchMeasures,
   watchFindUserCurrentLoggedIn,
   watchFetchNewEnlargedDialogData,
@@ -1207,6 +1212,5 @@ export default [
   watchMeasurePeriodChange,
   watchTryUpdateMeasureConfigAndWaitForHierarchyLoad,
   watchHandleLocationChange,
-  updateMapOverlayOnceHierarchyLoads,
   watchUnselectMapOverlayChange,
 ];

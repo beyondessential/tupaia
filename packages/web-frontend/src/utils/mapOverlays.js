@@ -18,7 +18,7 @@ export const getMapOverlaysFromHierarchy = (mapOverlayHierarchy, targetMapOverla
   return targettedMapOverlays;
 };
 
-export const checkIfMapOverlayIdsInHierarchy = (mapOverlayHierarchy, targetMapOverlayIds) => {
+export const mapOverlayIdsAreInHierarchy = (mapOverlayHierarchy, targetMapOverlayIds) => {
   if (!targetMapOverlayIds || targetMapOverlayIds?.length === 0) {
     return false;
   }
