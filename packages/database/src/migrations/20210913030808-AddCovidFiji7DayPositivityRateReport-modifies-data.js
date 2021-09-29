@@ -30,7 +30,7 @@ const generateConfig = () => ({
         {
           type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
           config: {
-            dataSourceEntityType: 'facility',
+            dataSourceEntityType: 'sub_district',
             aggregationEntityType: 'requested',
           },
         },
