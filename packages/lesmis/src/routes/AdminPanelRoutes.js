@@ -3,7 +3,6 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { Provider } from 'react-redux';
 import styled from 'styled-components';
 import { Switch, Redirect, Route } from 'react-router-dom';
 import { TabsToolbar } from '@tupaia/ui-components';
@@ -14,10 +13,11 @@ import {
   QuestionsPage,
   SurveysPage,
   SurveyResponsesPage,
+  StoreProvider,
 } from '@tupaia/admin-panel/lib';
-import { store } from '../admin-panel';
 import { LesmisAdminRoute } from './LesmisAdminRoute';
 import { useUser } from '../api/queries';
+import { TupaiaApi } from '../api/TupaiaApi';
 
 const ADMIN_URL = '/admin';
 
@@ -68,6 +68,8 @@ const HeaderContainer = styled.div`
   border-top: 1px solid rgba(0, 0, 0, 0.2); ;
 `;
 
+const api = new TupaiaApi();
+
 export const AdminPanelRoutes = () => {
   const headerEl = React.useRef(null);
   const { isLesmisAdmin } = useUser();
@@ -77,7 +79,7 @@ export const AdminPanelRoutes = () => {
   };
 
   return (
-    <Provider store={store}>
+    <StoreProvider api={api}>
       <div>
         <HeaderContainer ref={headerEl} />
         <Switch>
@@ -97,6 +99,6 @@ export const AdminPanelRoutes = () => {
           <Redirect to="/admin/surveys" />
         </Switch>
       </div>
-    </Provider>
+    </StoreProvider>
   );
 };

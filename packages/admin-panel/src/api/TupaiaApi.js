@@ -18,19 +18,9 @@ const isJsonResponse = response => {
 
 export class TupaiaApi {
   constructor() {
-    this.store = null; // Redux store for keeping state, will be injected after creation
-
     // set env variables
     this.apiUrl = process.env.REACT_APP_API_URL;
     this.clientBasicAuthHeader = process.env.REACT_APP_CLIENT_BASIC_AUTH_HEADER;
-  }
-
-  injectReduxStore(store) {
-    this.store = store;
-  }
-
-  dispatch(action) {
-    this.store.dispatch(action);
   }
 
   async login(loginCredentials) {
