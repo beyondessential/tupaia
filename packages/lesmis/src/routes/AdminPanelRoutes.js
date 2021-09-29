@@ -17,6 +17,7 @@ import {
 } from '@tupaia/admin-panel/lib';
 import { store } from '../admin-panel';
 import { LesmisAdminRoute } from './LesmisAdminRoute';
+import { useUser } from '../api/queries';
 
 const ADMIN_URL = '/admin';
 
@@ -69,6 +70,7 @@ const HeaderContainer = styled.div`
 
 export const AdminPanelRoutes = () => {
   const headerEl = React.useRef(null);
+  const { isLesmisAdmin } = useUser();
 
   const getHeaderEl = () => {
     return headerEl;
@@ -81,11 +83,11 @@ export const AdminPanelRoutes = () => {
         <Switch>
           {[...ROUTES].map(route => (
             <LesmisAdminRoute key={route.to} path={route.to}>
-              <TabsToolbar links={route.tabs} maxWidth="xl" style={{ background: '#D13333' }} />
+              <TabsToolbar links={route.tabs} maxWidth="xl" />
               <Switch>
                 {route.tabs.map(tab => (
                   <Route key={`${route.to}-${tab.to}`} path={`${route.to}${tab.to}`} exact>
-                    <tab.component getHeaderEl={getHeaderEl} isBESAdmin />
+                    <tab.component getHeaderEl={getHeaderEl} isBESAdmin={isLesmisAdmin} />
                   </Route>
                 ))}
                 <Redirect to={route.to} />

@@ -22,6 +22,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { Home, ImportContacts, ContactMail, Close, Menu, Assignment } from '@material-ui/icons';
 import { LightIconButton } from '@tupaia/ui-components';
 import { FlexEnd } from './Layout';
+import { useUser } from '../api/queries';
 
 const StyledList = styled(List)`
   width: 22.5rem;
@@ -87,6 +88,7 @@ const ListItemLink = props => <ListItem button component={RouterLink} {...props}
 
 export const MainMenu = () => {
   const [open, setOpen] = useState(false);
+  const { isLesmisAdmin } = useUser();
 
   const toggleDrawer = isOpen => () => {
     setOpen(isOpen);
@@ -127,8 +129,25 @@ export const MainMenu = () => {
             </ListItemIcon>
             <ListItemText primary="Contact us" />
           </ListItemLink>
+          {isLesmisAdmin && (
+            <>
+              <Subheader component="div">Admin</Subheader>
+              <ListItemLink to="/admin/surveys">
+                <ListItemIcon>
+                  <Assignment />
+                </ListItemIcon>
+                <ListItemText primary="Surveys" />
+              </ListItemLink>
+              <ListItemLink to="/admin/dashboard-items">
+                <ListItemIcon>
+                  <Assignment />
+                </ListItemIcon>
+                <ListItemText primary="Visualisations" />
+              </ListItemLink>
+            </>
+          )}
           <Subheader component="div">Online Questionnaires</Subheader>
-          <ListItemLink to="/fundamental-quality-standards">
+          <ListItemLink to="/admin/dashboard-items">
             <ListItemIcon>
               <Assignment />
             </ListItemIcon>

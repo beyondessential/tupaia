@@ -51,8 +51,6 @@ const useForwardUnhandledRequestsToMeditrak = (app: Express) => {
     pathRewrite: (path: string, req: IncomingMessage) => {
       // Remove the version string because version is already included in Meditrak base url.
 
-      console.log('path rewrite', path);
-
       if (req.path.startsWith('/v')) {
         const secondSlashIndex = req.path.indexOf('/', 2);
         const version = parseFloat(req.path.substring(2, secondSlashIndex));

@@ -5,6 +5,5 @@
 import 'react-table/react-table.css';
 
 export * from './pages/resources';
-export * from './widgets';
 export * from './rootReducer';
 export * from './api';
