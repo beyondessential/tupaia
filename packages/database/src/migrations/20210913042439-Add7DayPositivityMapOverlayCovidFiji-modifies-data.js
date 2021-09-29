@@ -33,7 +33,10 @@ const getFrontEndConfig = measureLevel => ({
       max: 0,
       min: 0,
     },
-    right: 'auto',
+    right: {
+      min: 'auto',
+      max: 0.3,
+    },
   },
   measureLevel,
   measureConfig: {
