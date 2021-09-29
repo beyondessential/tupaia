@@ -17,20 +17,25 @@ const BasicPolygon = styled(Polygon)`
   fill: ${POLYGON_BLUE};
   fill-opacity: 0.04;
   stroke-width: 1;
-  stroke: ${POLYGON_BLUE};
-
-  :hover {
+  &:hover {
     fill-opacity: 0.5;
     stroke: ${POLYGON_HIGHLIGHT};
     fill: ${POLYGON_HIGHLIGHT};
   }
 `;
 
-export const ShadedPolygon = styled(Polygon)`
+const ShadedPolygon = styled(Polygon)`
   fill-opacity: 0.5;
-
   &:hover {
     fill-opacity: 0.8;
+  }
+`;
+
+const TransparentShadedPolygon = styled(Polygon)`
+  fill: ${POLYGON_BLUE};
+  fill-opacity: 0;
+  &:hover {
+    fill-opacity: 0.1;
   }
 `;
 
@@ -103,43 +108,59 @@ export const InteractivePolygon = React.memo(
       );
     }
 
-    let PolygonComponent = BasicPolygon;
-    let color;
+    const getTooltip = () => {
+      const hasMeasureValue = !!(orgUnitMeasureData || orgUnitMeasureData === 0);
+      // don't render tooltips if we have a measure loaded
+      // and don't have a value to display in the tooltip (ie: radius overlay)
+      if (hasMeasureData && !hasMeasureValue) return null;
+
+      return (
+        <AreaTooltip
+          permanent={permanentLabels && isChildArea && !hasMeasureValue}
+          sticky={!permanentLabels}
+          hasMeasureValue={hasMeasureValue}
+          measureOptions={measureOptions}
+          orgUnitMeasureData={orgUnitMeasureData}
+          orgUnitName={area.name}
+        />
+      );
+    };
+
+    const tooltip = getTooltip();
+
+    const defaultProps = {
+      positions: coordinates,
+      eventHandlers: {
+        click: () => {
+          return onChangeOrgUnit(organisationUnitCode);
+        },
+      },
+    };
 
     if (shade) {
-      PolygonComponent = ShadedPolygon;
+      if (shade === 'transparent') {
+        return <TransparentShadedPolygon {...defaultProps}>{tooltip}</TransparentShadedPolygon>;
+      }
+
       // To match with the color in markerIcon.js which uses BREWER_PALETTE
-      color = BREWER_PALETTE[shade] || shade;
+      const color = BREWER_PALETTE[shade] || shade;
+
+      // Work around: color should go through the styled components
+      // but there is a rendering bug between Styled Components + Leaflet
+      return (
+        <ShadedPolygon
+          {...defaultProps}
+          pathOptions={{
+            color,
+            fillColor: color,
+          }}
+        >
+          {tooltip}
+        </ShadedPolygon>
+      );
     }
 
-    const hasMeasureValue = !!(orgUnitMeasureData || orgUnitMeasureData === 0);
-    const hideTooltip = hasMeasureData && !hasMeasureValue;
-
-    return (
-      <PolygonComponent
-        positions={coordinates}
-        pathOptions={{
-          color,
-          fillColor: color,
-        }}
-        eventHandlers={{
-          click: () => {
-            return onChangeOrgUnit(organisationUnitCode);
-          },
-        }}
-      >
-        {!hideTooltip && (
-          <AreaTooltip
-            permanent={permanentLabels && isChildArea && !hasMeasureValue}
-            sticky={!permanentLabels}
-            hasMeasureValue={hasMeasureValue}
-            measureOptions={measureOptions}
-            orgUnitMeasureData={orgUnitMeasureData}
-            orgUnitName={area.name}
-          />
-        )}
-      </PolygonComponent>
-    );
+    return <BasicPolygon {...defaultProps}>{tooltip}</BasicPolygon>;
   },
 );
 
