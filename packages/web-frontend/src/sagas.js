@@ -97,6 +97,7 @@ import {
   goHome,
   setDashboardGroup,
   UNSELECT_MAP_OVERLAY,
+  SELECT_MAP_OVERLAY,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 import {
@@ -140,6 +141,7 @@ import {
   getBrowserTimeZone,
   mapOverlayIdsAreInHierarchy,
   isMapOverlayHierarchyEmpty,
+  sortMapOverlayIdsByHierarchyOrder,
 } from './utils';
 import { getDefaultDates, getDefaultDrillDownDates } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
@@ -921,6 +923,23 @@ function* watchSetMapOverlayChange() {
   yield takeLatest(SET_MAP_OVERLAY, fetchMeasureInfoOnlyIfHierarchyIsLoaded);
 }
 
+function* callSetMapOverlay(action) {
+  const state = yield select();
+  const currentMapOverlayIds = selectCurrentMapOverlayIds(state);
+  const { multipleMapOverlayCheckbox, mapOverlayHierarchy } = state.mapOverlayBar;
+  const mapOverlayIds = multipleMapOverlayCheckbox
+    ? sortMapOverlayIdsByHierarchyOrder(mapOverlayHierarchy, [
+        ...currentMapOverlayIds,
+        action.mapOverlayId,
+      ])
+    : [action.mapOverlayId];
+  yield put(setMapOverlay(mapOverlayIds.join(',')));
+}
+
+function* watchSelectMapOverlayChange() {
+  yield takeLatest(SELECT_MAP_OVERLAY, callSetMapOverlay);
+}
+
 function* fetchMeasureInfoOnlyIfMapOverlayIsSelected() {
   const state = yield select();
   const currentMapOverlayIds = selectCurrentMapOverlayIds(state);
@@ -1213,4 +1232,5 @@ export default [
   watchTryUpdateMeasureConfigAndWaitForHierarchyLoad,
   watchHandleLocationChange,
   watchUnselectMapOverlayChange,
+  watchSelectMapOverlayChange,
 ];

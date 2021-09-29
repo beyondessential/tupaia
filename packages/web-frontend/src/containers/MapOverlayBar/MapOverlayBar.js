@@ -20,7 +20,7 @@ import shallowEqual from 'shallowequal';
 
 import { Control } from './Control';
 import {
-  setMapOverlay,
+  selectMapOverlay,
   unselectMapOverlay,
   toggleMeasureExpand,
   updateMeasureConfig,
@@ -211,7 +211,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   onExpandClick: () => dispatch(toggleMeasureExpand()),
   onUnSelectMapOverlay: mapOverlayId => dispatch(unselectMapOverlay(mapOverlayId)),
-  onSelectMapOverlay: mapOverlay => dispatch(setMapOverlay(mapOverlay.mapOverlayId)),
+  onSelectMapOverlay: mapOverlay => dispatch(selectMapOverlay(mapOverlay.mapOverlayId)),
   dispatch,
 });
 

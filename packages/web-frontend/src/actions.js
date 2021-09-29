@@ -35,6 +35,7 @@ export const CHANGE_SIDE_BAR_CONTRACTED_WIDTH = 'CHANGE_SIDE_BAR_CONTRACTED_WIDT
 export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
 export const CLEAR_MAP_OVERLAY_HIERARCHY = 'CLEAR_MAP_OVERLAY_HIERARCHY';
 export const SET_MAP_OVERLAY = 'SET_MAP_OVERLAY';
+export const SELECT_MAP_OVERLAY = 'SELECT_MAP_OVERLAY';
 export const UNSELECT_MAP_OVERLAY = 'UNSELECT_MAP_OVERLAY';
 export const UPDATE_MEASURE_CONFIG = 'UPDATE_MEASURE_CONFIG';
 export const REQUEST_ORG_UNIT = 'REQUEST_ORG_UNIT';
@@ -527,11 +528,23 @@ export function changeBounds(bounds) {
 /**
  * Changes current map overlay, should change features rendered on map after saga data fetch.
  * Updates the current mayOverlayId in the url.
- * @param {string} mayOverlayId
+ * @param {string} mayOverlayIds
  */
-export function setMapOverlay(mapOverlayId) {
+export function setMapOverlay(mapOverlayIds) {
   return {
     type: SET_MAP_OVERLAY,
+    mapOverlayIds,
+  };
+}
+
+/**
+ * Select one map overlay
+ * Call setMapOverlay() to updates the current mayOverlayId in the url.
+ * @param {string} mayOverlayId
+ */
+export function selectMapOverlay(mapOverlayId) {
+  return {
+    type: SELECT_MAP_OVERLAY,
     mapOverlayId,
   };
 }
