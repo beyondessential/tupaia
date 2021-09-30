@@ -99,6 +99,7 @@ import {
   UNSELECT_MAP_OVERLAY,
   SELECT_MAP_OVERLAY,
   setMultipleMapOverlayCheckBox,
+  TOGGLE_MULTIPLE_MAP_OVERLAY_CHECKBOX,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 import {
@@ -133,6 +134,7 @@ import {
   selectCurrentProject,
   selectCurrentDashboardNameFromLocation,
   selectViewConfig,
+  selectDefaultMapOverlay,
 } from './selectors';
 import {
   formatDateForApi,
@@ -1054,6 +1056,24 @@ function* watchOrgUnitChangeAndFetchMeasures() {
 }
 
 /**
+ * Clean multi selected map overlay ids and set to default id if disable multiple checkbox
+ */
+function* unselectAllIfDisableCheckbox() {
+  const state = yield select();
+  const { multipleMapOverlayCheckbox } = state.mapOverlayBar;
+  if (!multipleMapOverlayCheckbox) {
+    const currentMapOverlayIds = selectCurrentMapOverlayIds(state);
+    if (currentMapOverlayIds.length > 1) {
+      yield put(setMapOverlay(selectDefaultMapOverlayId(state)));
+    }
+  }
+}
+
+function* watchToggleMultipleMapOverlayCheckbox() {
+  yield takeLatest(TOGGLE_MULTIPLE_MAP_OVERLAY_CHECKBOX, unselectAllIfDisableCheckbox);
+}
+
+/**
  * findUserLoggedIn
  *
  * Find if any user was logged in and call action on success/fail.
@@ -1237,4 +1257,5 @@ export default [
   watchHandleLocationChange,
   watchUnselectMapOverlayChange,
   watchSelectMapOverlayChange,
+  watchToggleMultipleMapOverlayCheckbox,
 ];
