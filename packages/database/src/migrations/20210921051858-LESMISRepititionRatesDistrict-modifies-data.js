@@ -17,7 +17,6 @@ exports.setup = function (options, seedLink) {
 };
 
 const PERMISSION_GROUP = 'LESMIS Public';
-const DISTRICT_OVERLAY_GROUP_ID = '5f2c7ddc61f76a513a000215';
 
 const getOverlayNames = (gradeNum, educationLevel, GPI) => {
   if (gradeNum !== null) {
