@@ -131,7 +131,7 @@ const HeaderContainer = styled.div`
   border-top: 1px solid rgba(0, 0, 0, 0.2); ;
 `;
 
-export const AdminPanelRoutes = () => {
+const AdminPanelRoutes = () => {
   const headerEl = React.useRef(null);
   const { isLesmisAdmin } = useUser();
 
@@ -163,3 +163,6 @@ export const AdminPanelRoutes = () => {
     </AdminPanelDataProviders>
   );
 };
+
+// Must be a default export as React.lazy currently only supports default exports.
+export default AdminPanelRoutes;
