@@ -74,7 +74,10 @@ class MapComponent extends Component {
       sidePanelWidth,
     } = this.props;
 
-    if (nextProps.measureInfo.mapOverlayId !== measureInfo.mapOverlayId) {
+    if (
+      JSON.stringify(nextProps.measureInfo.mapOverlayIds) !==
+      JSON.stringify(measureInfo.mapOverlayIds)
+    ) {
       return true;
     }
 
