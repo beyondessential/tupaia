@@ -15,4 +15,4 @@ export const DEFAULT_BOUNDS = [
 
 export const DEFAULT_PROJECT_CODE = 'explore';
 
-export const DEFAULT_MEASURE_ID = '126,171'; // 'Operational Facilities'
+export const DEFAULT_MAP_OVERLAY_ID = '126'; // 'Operational Facilities'

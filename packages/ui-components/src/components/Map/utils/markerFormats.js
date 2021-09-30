@@ -169,7 +169,7 @@ const clampValue = (value, config) => {
   return clampedValue;
 };
 
-export function flattenMeasureHierarchy(measureHierarchy) {
+export function flattenMeasureHierarchy(mapOverlayHierarchy) {
   const results = [];
   const flattenGroupedMeasure = ({ children }) => {
     children.forEach(childObject => {
@@ -180,7 +180,7 @@ export function flattenMeasureHierarchy(measureHierarchy) {
       }
     });
   };
-  measureHierarchy.forEach(measure => {
+  mapOverlayHierarchy.forEach(measure => {
     if (measure.children) {
       flattenGroupedMeasure(measure);
     } else {

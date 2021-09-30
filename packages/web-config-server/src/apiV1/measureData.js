@@ -1,4 +1,7 @@
-import keyBy from 'lodash.keyby';
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ */
 
 import { CustomError } from '@tupaia/utils';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
@@ -175,19 +178,8 @@ export default class extends DataAggregatingRouteHandler {
 
   buildResponse = async () => {
     const { code } = this.entity;
-    const { measureId } = this.query;
-    const measureIds = measureId.split(',');
-    const overlayResults = await this.models.mapOverlay.find({ id: measureIds });
-
-    // Re-order the overlays array to follow the order in measureIds
-    const overlaysById = keyBy(overlayResults, 'id');
-    const overlays = [];
-
-    measureIds.forEach(id => {
-      if (overlaysById[id]) {
-        overlays.push(overlaysById[id]);
-      }
-    });
+    const { mapOverlayId } = this.query;
+    const overlays = await this.models.mapOverlay.findMeasuresById(mapOverlayId);
 
     // check permission
     await Promise.all(
@@ -207,10 +199,7 @@ export default class extends DataAggregatingRouteHandler {
     const measureOptions = await this.fetchMeasureOptions(overlays, measureData);
 
     return {
-      measureId: overlays
-        .map(o => o.id)
-        .sort()
-        .join(','),
+      mapOverlayId,
       measureLevel: getMeasureLevel(overlays),
       measureOptions,
       serieses: measureOptions,

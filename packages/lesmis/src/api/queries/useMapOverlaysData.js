@@ -39,7 +39,7 @@ const processOverlaysData = (data, entityType) =>
 
 export const findOverlay = (overlays, id) => {
   for (const overlayObject of overlays) {
-    if (overlayObject?.measureId === id) {
+    if (overlayObject?.mapOverlayId === id) {
       return overlayObject;
     }
     if (overlayObject?.children) {
