@@ -132,7 +132,6 @@ import {
   selectCurrentProject,
   selectCurrentDashboardNameFromLocation,
   selectViewConfig,
-  selectDefaultMapOverlay,
 } from './selectors';
 import {
   formatDateForApi,
@@ -140,8 +139,7 @@ import {
   processMeasureInfo,
   getInfoFromInfoViewKey,
   getBrowserTimeZone,
-  mapOverlayIdsAreInHierarchy,
-  isMapOverlayHierarchyEmpty,
+  checkHierarchyIncludesMapOverlayIds,
   sortMapOverlayIdsByHierarchyOrder,
 } from './utils';
 import { getDefaultDates, getDefaultDrillDownDates } from './utils/periodGranularities';
@@ -874,7 +872,13 @@ function* fetchMeasureInfo() {
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
   const measureParams = mapOverlayIds.length > 0 && selectMapOverlayById(state, mapOverlayIds[0]);
 
-  if (mapOverlayIds.length === 0 || !organisationUnitCode || !measureParams) {
+  if (mapOverlayIds.length === 0) {
+    yield put(clearMeasure());
+    yield put(cancelFetchMeasureData());
+    return;
+  }
+
+  if (!organisationUnitCode || !measureParams) {
     // Don't try and fetch null measures
     yield put(cancelFetchMeasureData());
     return;
@@ -911,17 +915,8 @@ function* fetchMeasureInfo() {
   }
 }
 
-function* fetchMeasureInfoOnlyIfHierarchyIsLoaded(action) {
-  const state = yield select();
-  const { mapOverlayHierarchy } = state.mapOverlayBar;
-  const isMapOverlayHierarchyLoaded = !isMapOverlayHierarchyEmpty(mapOverlayHierarchy);
-  if (isMapOverlayHierarchyLoaded) {
-    yield fetchMeasureInfo();
-  }
-}
-
 function* watchSetMapOverlayChange() {
-  yield takeLatest(SET_MAP_OVERLAY, fetchMeasureInfoOnlyIfHierarchyIsLoaded);
+  yield takeLatest(SET_MAP_OVERLAY, fetchMeasureInfo);
 }
 
 function* callSetMapOverlay(action) {
@@ -955,7 +950,7 @@ function* fetchMeasureInfoOnlyIfMapOverlayIsSelected() {
 }
 
 function* watchUnselectMapOverlayChange() {
-  yield takeLatest(UNSELECT_MAP_OVERLAY, fetchMeasureInfoOnlyIfMapOverlayIsSelected);
+  yield takeLatest(UNSELECT_MAP_OVERLAY, fetchMeasureInfo);
 }
 
 function* watchMeasurePeriodChange() {
@@ -988,7 +983,7 @@ function* fetchCurrentMeasureInfo() {
   const selectedMapOverlayIds = selectCurrentMapOverlayIds(state);
 
   if (currentOrganisationUnitCode) {
-    if (!mapOverlayIdsAreInHierarchy(mapOverlayHierarchy, selectedMapOverlayIds)) {
+    if (!checkHierarchyIncludesMapOverlayIds(mapOverlayHierarchy, selectedMapOverlayIds)) {
       const newMapOverlayId = selectDefaultMapOverlayId(state);
       yield put(setMapOverlay(newMapOverlayId));
     }
@@ -1027,12 +1022,12 @@ function* watchOrgUnitChangeAndFetchMeasureInfo() {
 }
 
 /**
- * fetchMapOverlaysMetadata
+ * fetchMapOverlayMetadata
  *
- * Fetch map overlays metadata for current orgUnit for the current user. Written to mapOverlayBar State.
+ * Fetch map overlay metadata for current orgUnit for the current user. Written to mapOverlayBar State.
  *
  */
-function* fetchMapOverlaysMetadata(action) {
+function* fetchMapOverlayMetadata(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
   if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
@@ -1049,7 +1044,7 @@ function* fetchMapOverlaysMetadata(action) {
 }
 
 function* watchOrgUnitChangeAndFetchMeasures() {
-  yield takeLatest(CHANGE_ORG_UNIT_SUCCESS, fetchMapOverlaysMetadata);
+  yield takeLatest(CHANGE_ORG_UNIT_SUCCESS, fetchMapOverlayMetadata);
 }
 
 /**

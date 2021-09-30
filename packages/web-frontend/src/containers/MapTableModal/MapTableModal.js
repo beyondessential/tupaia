@@ -30,8 +30,8 @@ const MapTableModalComponent = ({
   measureData,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const MapOverlayIsSelected = currentMapOverlays.length > 0;
-  const title = MapOverlayIsSelected
+  const isMapOverlaySelected = currentMapOverlays.length > 0;
+  const title = isMapOverlaySelected
     ? `${currentMapOverlays.map(({ name }) => name).join(', ')}, ${currentCountry?.name}`
     : '';
 
@@ -41,14 +41,14 @@ const MapTableModalComponent = ({
     <>
       <Dialog onClose={() => setIsOpen(false)} open={isOpen} maxWidth="lg">
         <DialogHeader onClose={() => setIsOpen(false)} title={title}>
-          {MapOverlayIsSelected && (
+          {isMapOverlaySelected && (
             <MuiIconButton onClick={doExport}>
               <DownloadIcon />
             </MuiIconButton>
           )}
         </DialogHeader>
         <DialogContent>
-          {MapOverlayIsSelected ? (
+          {isMapOverlaySelected ? (
             <Table serieses={measureOptions} measureData={measureData} />
           ) : (
             'No map overlay has been selected'
