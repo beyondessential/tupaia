@@ -42,21 +42,22 @@ export const attachAuthorizationHeader = async (
   next();
 };
 
-const useForwardUnhandledRequestsToMeditrak = (app: Express) => {
+const useForwardUnhandledRequestsToMeditrak = (app: Express, prefix: string) => {
   const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
 
   const options = {
     target: MEDITRAK_API_URL,
     changeOrigin: true,
-    pathRewrite: (path: string, req: IncomingMessage) => {
-      // Remove the version string because version is already included in Meditrak base url.
+    pathRewrite: (path: string) => {
+      if (prefix && path.startsWith(prefix)) {
+        path = path.replace(prefix, '');
+      }
 
-      if (req.path.startsWith('/v')) {
-        const secondSlashIndex = req.path.indexOf('/', 2);
-        const version = parseFloat(req.path.substring(2, secondSlashIndex));
-        const out = path.replace(`/v${version}`, '');
-        console.log('path rewrite out', out);
-        return out;
+      // Remove the version string because version is already included in Meditrak base url.
+      if (path.startsWith('/v')) {
+        const secondSlashIndex = path.indexOf('/', 2);
+        const version = parseFloat(path.substring(2, secondSlashIndex));
+        return path.replace(`/v${version}`, '');
       }
       return path;
     },
@@ -93,7 +94,7 @@ export function createApp() {
     .build();
 
   // Forward any unhandled request to meditrak-server
-  useForwardUnhandledRequestsToMeditrak(app);
+  useForwardUnhandledRequestsToMeditrak(app, '/admin');
 
   return app;
 }

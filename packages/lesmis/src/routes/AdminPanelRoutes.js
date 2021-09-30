@@ -124,7 +124,7 @@ export const ROUTES = [
   },
 ];
 
-const config = { apiUrl: getApiUrl() };
+const config = { apiUrl: `${getApiUrl()}/admin` };
 
 const HeaderContainer = styled.div`
   background: ${props => props.theme.palette.primary.main};
