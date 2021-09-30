@@ -19,27 +19,6 @@ exports.setup = function (options, seedLink) {
 const PERMISSION_GROUP = 'LESMIS Public';
 const OVERLAY_CODE = 'LESMIS_enrolment_ece';
 
-const OVERLAY_GROUPS = [
-  {
-    parentCode: 'Root',
-    children: [
-      {
-        name: 'ECE/Pre-Primary Enrolment',
-        code: `${OVERLAY_CODE}_Group`,
-      },
-    ],
-  },
-  {
-    parentCode: `${OVERLAY_CODE}_Group`,
-    children: [
-      {
-        name: 'District Level',
-        code: `${OVERLAY_CODE}_District_Group`,
-      },
-    ],
-  },
-];
-
 const MAP_OVERLAYS = [
   {
     parentCode: `${OVERLAY_CODE}_District_Group`,
@@ -115,24 +94,7 @@ const getMapOverlay = (name, reportCode) => ({
   },
   countryCodes: '{"LA"}',
   projectCodes: '{laos_schools}',
-
-  legacy: false,
-  report_code: reportCode,
 });
-
-const addMapOverlayGroup = async (db, parentCode, { name, code }) => {
-  const parentId = await codeToId(db, 'map_overlay_group', parentCode);
-
-  const overlayGroupId = generateId();
-  await insertObject(db, 'map_overlay_group', { id: overlayGroupId, name, code });
-
-  return insertObject(db, 'map_overlay_group_relation', {
-    id: generateId(),
-    map_overlay_group_id: parentId,
-    child_id: overlayGroupId,
-    child_type: 'mapOverlayGroup',
-  });
-};
 
 const addMapOverlay = async (db, parentCode, config) => {
   const { reportCode, dataElements, name, sortOrder } = config;
@@ -173,21 +135,7 @@ const removeMapOverlay = (db, reportCode) => {
   `);
 };
 
-const removeMapOverlayGroupRelation = async (db, groupCode) => {
-  const overlayId = await codeToId(db, 'map_overlay_group', groupCode);
-  await db.runSql(`
-    DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${overlayId}';
-  `);
-};
-
 exports.down = async function (db) {
-  // Remove Map Overlay Groups Relations
-  for (const { children } of OVERLAY_GROUPS) {
-    for (const { code } of children) {
-      await removeMapOverlayGroupRelation(db, code);
-    }
-  }
-
   // Remove Map Overlays
   for (const { children } of MAP_OVERLAYS) {
     for (const { reportCode } of children) {
