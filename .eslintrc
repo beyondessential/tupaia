@@ -121,6 +121,12 @@
     },
     // Package overrides
     {
+      "files": ["packages/admin-panel/**"],
+      "rules": {
+        "import/no-extraneous-dependencies": "off"
+      }
+    },
+    {
       "files": "packages/database/src/migrations/**",
       "rules": {
         "func-names": "off",

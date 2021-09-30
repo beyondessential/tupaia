@@ -36,15 +36,14 @@ const externals = [
   ...Object.keys(pkg.devDependencies || {}),
   ...Object.keys(pkg.dependencies || {}),
   /@material-ui/,
-  /date-fns/,
 ];
 
 export default [
   {
     input: 'src/library.js',
     output: [
-      { file: 'lib/index.js', format: 'cjs', plugins: [] },
-      { file: 'lib/index.esm.js', format: 'esm', plugins: [] },
+      { file: 'lib/index.js', format: 'cjs', plugins: [terser()] },
+      { file: 'lib/index.esm.js', format: 'esm', plugins: [terser()] },
     ],
     plugins: [...plugins, del({ targets: ['lib'] })],
     external: externals,
