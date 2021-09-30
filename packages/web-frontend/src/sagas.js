@@ -927,12 +927,16 @@ function* watchSetMapOverlayChange() {
 function* callSetMapOverlay(action) {
   const state = yield select();
   const currentMapOverlayIds = selectCurrentMapOverlayIds(state);
-  const { mapOverlayHierarchy } = state.mapOverlayBar;
-  const mapOverlayIds = sortMapOverlayIdsByHierarchyOrder(mapOverlayHierarchy, [
-    ...currentMapOverlayIds,
-    action.mapOverlayId,
-  ]);
-  yield put(setMapOverlay(mapOverlayIds.join(',')));
+
+  yield put(
+    setMapOverlay(
+      [
+        // Only two map overlays can be selected at the same time
+        ...(currentMapOverlayIds.length === 2 ? [currentMapOverlayIds[1]] : currentMapOverlayIds),
+        action.mapOverlayId,
+      ].join(','),
+    ),
+  );
 }
 
 function* watchSelectMapOverlayChange() {
