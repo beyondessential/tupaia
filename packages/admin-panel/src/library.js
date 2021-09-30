@@ -5,5 +5,4 @@
 import 'react-table/react-table.css';
 
 export * from './pages/resources';
-export * from './utilities/StoreProvider';
-export * from './api';
+export { AdminPanelDataProviders } from './utilities/AdminPanelProviders';

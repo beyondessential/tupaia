@@ -16,11 +16,16 @@ const isJsonResponse = response => {
   return contentType.startsWith('application/json');
 };
 
+const {
+  REACT_APP_API_URL = 'http://localhost:8070/v1',
+  REACT_APP_CLIENT_BASIC_AUTH_HEADER,
+} = process.env;
+
 export class TupaiaApi {
-  constructor() {
-    // set env variables
-    this.apiUrl = process.env.REACT_APP_API_URL;
-    this.clientBasicAuthHeader = process.env.REACT_APP_CLIENT_BASIC_AUTH_HEADER;
+  constructor(config) {
+    // set config
+    this.apiUrl = config?.apiUrl || REACT_APP_API_URL;
+    this.clientBasicAuthHeader = config?.basicAuthHeader || REACT_APP_CLIENT_BASIC_AUTH_HEADER;
   }
 
   async login(loginCredentials) {

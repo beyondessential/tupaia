@@ -13,11 +13,11 @@ import {
   QuestionsPage,
   SurveysPage,
   SurveyResponsesPage,
-  StoreProvider,
+  AdminPanelDataProviders,
 } from '@tupaia/admin-panel/lib';
 import { LesmisAdminRoute } from './LesmisAdminRoute';
 import { useUser } from '../api/queries';
-import { TupaiaApi } from '../api/TupaiaApi';
+import { getApiUrl } from '../utils/getApiUrl';
 
 const ADMIN_URL = '/admin';
 
@@ -63,12 +63,12 @@ export const ROUTES = [
   },
 ];
 
+const config = { apiUrl: getApiUrl() };
+
 const HeaderContainer = styled.div`
   background: ${props => props.theme.palette.primary.main};
   border-top: 1px solid rgba(0, 0, 0, 0.2); ;
 `;
-
-const api = new TupaiaApi();
 
 export const AdminPanelRoutes = () => {
   const headerEl = React.useRef(null);
@@ -79,7 +79,7 @@ export const AdminPanelRoutes = () => {
   };
 
   return (
-    <StoreProvider api={api}>
+    <AdminPanelDataProviders config={config}>
       <div>
         <HeaderContainer ref={headerEl} />
         <Switch>
@@ -99,6 +99,6 @@ export const AdminPanelRoutes = () => {
           <Redirect to="/admin/surveys" />
         </Switch>
       </div>
-    </StoreProvider>
+    </AdminPanelDataProviders>
   );
 };

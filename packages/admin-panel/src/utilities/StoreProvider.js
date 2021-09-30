@@ -13,7 +13,6 @@ import localforage from 'localforage';
 import { persistReducer, persistStore } from 'redux-persist';
 import { rootReducer } from '../rootReducer';
 import { RememberMeTransform } from '../authentication/reducer';
-import { ApiProvider } from './ApiProvider';
 
 const persistedRootReducer = persistReducer(
   {
@@ -35,37 +34,31 @@ if (process.env.NODE_ENV === 'development') {
   }
 }
 
-export const AppProvider = React.memo(({ children, api, persist }) => {
+export const StoreProvider = React.memo(({ children, api, persist }) => {
   const middleware = [thunk.withExtraArgument({ api })];
   const composedEnhancers = compose(applyMiddleware(...middleware), ...enhancers);
   const store = createStore(persistedRootReducer, initialState, composedEnhancers);
   const persistor = persistStore(store);
 
   if (!persist) {
-    return (
-      <ApiProvider api={api}>
-        <Provider store={store}>{children}</Provider>
-      </ApiProvider>
-    );
+    return <Provider store={store}>{children}</Provider>;
   }
 
   return (
-    <ApiProvider api={api}>
-      <Provider store={store}>
-        <PersistGate persistor={persistor} loading={null}>
-          {children}
-        </PersistGate>
-      </Provider>
-    </ApiProvider>
+    <Provider store={store}>
+      <PersistGate persistor={persistor} loading={null}>
+        {children}
+      </PersistGate>
+    </Provider>
   );
 });
 
-AppProvider.propTypes = {
+StoreProvider.propTypes = {
   api: PropTypes.object.isRequired,
   children: PropTypes.node.isRequired,
   persist: PropTypes.bool,
 };
 
-AppProvider.defaultProps = {
+StoreProvider.defaultProps = {
   persist: false,
 };
