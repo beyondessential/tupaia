@@ -55,7 +55,7 @@ export class MapOverlayBarComponent extends Component {
       });
     }
 
-    this.props.onSelectMapOverlay(mapOverlay);
+    this.props.onSelectMapOverlay(mapOverlay.mapOverlayId);
   };
 
   renderDefaultMapOverlay() {
@@ -211,7 +211,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   onExpandClick: () => dispatch(toggleMeasureExpand()),
   onUnSelectMapOverlay: mapOverlayId => dispatch(unselectMapOverlay(mapOverlayId)),
-  onSelectMapOverlay: mapOverlay => dispatch(selectMapOverlay(mapOverlay.mapOverlayId)),
+  onSelectMapOverlay: mapOverlayId => dispatch(selectMapOverlay(mapOverlayId)),
   dispatch,
 });
 

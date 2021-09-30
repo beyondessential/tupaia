@@ -47,7 +47,7 @@ export const HierarchyItem = React.memo(
   }) => {
     const [isOpen, setIsOpen] = useState(false);
 
-    const buttonOnClick = () => {
+    const handleClick = () => {
       if (onClick) {
         onClick();
       }
@@ -79,7 +79,7 @@ export const HierarchyItem = React.memo(
       <div style={{ ...styles.nestedContainer, ...style, marginLeft: nestedMargin }}>
         <FlatButton
           {...otherProps}
-          onClick={() => buttonOnClick()}
+          onClick={() => handleClick()}
           style={{ minHeight: 36, height: 'auto', padding: '5px 0' }}
         >
           <div style={styles.buttonContentContainer}>

@@ -538,7 +538,7 @@ export function setMapOverlay(mapOverlayIds) {
 
 /**
  * Select one map overlay
- * Call setMapOverlay() to updates the current mayOverlayId in the url.
+ * Call setMapOverlay() to update the current mayOverlayId in the url.
  * @param {string} mayOverlayId
  */
 export function selectMapOverlay(mapOverlayId) {

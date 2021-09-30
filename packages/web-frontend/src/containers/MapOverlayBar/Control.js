@@ -116,12 +116,9 @@ export const Control = ({
   children,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isMeasureSelected, setIsMeasureSelected] = useState(false);
-  useEffect(() => {
-    setIsMeasureSelected(selectedMapOverlays.length > 0);
-  }, [selectedMapOverlays]);
 
   // TODO: PHX-1 Multiple date pickers
+  const isMeasureSelected = selectedMapOverlays.length > 0;
   const mapOverlay = selectedMapOverlays.length > 0 ? selectedMapOverlays[0] : {};
   const { periodGranularity, isTimePeriodEditable = true, name } = mapOverlay;
   const defaultDates = getDefaultDates(mapOverlay);

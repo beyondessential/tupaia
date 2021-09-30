@@ -26,7 +26,11 @@ import {
   UPDATE_MEASURE_CONFIG,
   LOCATION_CHANGE,
 } from '../actions';
-import { selectCurrentPeriodGranularity, selectMapOverlayByIds } from '../selectors';
+import {
+  selectCurrentMapOverlayIds,
+  selectCurrentPeriodGranularity,
+  selectMapOverlayByIds,
+} from '../selectors';
 import { URL_COMPONENTS } from './constants';
 import {
   addPopStateListener,
@@ -96,12 +100,7 @@ export const historyMiddleware = store => next => action => {
       break;
     }
     case UNSELECT_MAP_OVERLAY: {
-      const { routing } = state;
-      const currentMapOverlayIdsArray = getLocationComponentValue(
-        routing,
-        URL_COMPONENTS.MAP_OVERLAY,
-      ).split(',');
-      const updatedMapOverlayIds = currentMapOverlayIdsArray.filter(
+      const updatedMapOverlayIds = selectCurrentMapOverlayIds(state).filter(
         mapOverlayId => mapOverlayId !== action.mapOverlayId,
       );
       dispatchLocationUpdate(store, {

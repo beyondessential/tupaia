@@ -10,15 +10,12 @@ export const getMapOverlaysFromHierarchy = (mapOverlayHierarchy, targetMapOverla
     return [];
   }
 
-  const flattenMapOverlays = flattenMapOverlayHierarchy(mapOverlayHierarchy);
-  const targettedMapOverlays = flattenMapOverlays.filter(({ mapOverlayId }) =>
+  return flattenMapOverlayHierarchy(mapOverlayHierarchy).filter(({ mapOverlayId }) =>
     targetMapOverlayIds.includes(mapOverlayId),
   );
-
-  return targettedMapOverlays;
 };
 
-export const mapOverlayIdsAreInHierarchy = (mapOverlayHierarchy, targetMapOverlayIds) => {
+export const checkHierarchyIncludesMapOverlayIds = (mapOverlayHierarchy, targetMapOverlayIds) => {
   if (!targetMapOverlayIds || targetMapOverlayIds?.length === 0) {
     return false;
   }
@@ -55,12 +52,12 @@ export const isMapOverlayHierarchyEmpty = mapOverlayHierarchy =>
   flattenMapOverlayHierarchy(mapOverlayHierarchy).length === 0;
 
 export const sortMapOverlayIdsByHierarchyOrder = (mapOverlayHierarchy, mapOverlayIds) => {
-  const flattenMapOverlayIds = flattenMapOverlayHierarchy(mapOverlayHierarchy).map(
+  const hierarchyMapOverlayIds = flattenMapOverlayHierarchy(mapOverlayHierarchy).map(
     overlay => overlay.mapOverlayId,
   );
   return mapOverlayIds.sort(
     (a, b) =>
-      flattenMapOverlayIds.findIndex(overlayId => overlayId === a) -
-      flattenMapOverlayIds.findIndex(overlayId => overlayId === b),
+      hierarchyMapOverlayIds.findIndex(overlayId => overlayId === a) -
+      hierarchyMapOverlayIds.findIndex(overlayId => overlayId === b),
   );
 };
