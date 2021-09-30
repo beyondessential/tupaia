@@ -98,8 +98,6 @@ import {
   setDashboardGroup,
   UNSELECT_MAP_OVERLAY,
   SELECT_MAP_OVERLAY,
-  setMultipleMapOverlayCheckBox,
-  TOGGLE_MULTIPLE_MAP_OVERLAY_CHECKBOX,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 import {
@@ -918,9 +916,6 @@ function* fetchMeasureInfoOnlyIfHierarchyIsLoaded(action) {
   const { mapOverlayHierarchy } = state.mapOverlayBar;
   const isMapOverlayHierarchyLoaded = !isMapOverlayHierarchyEmpty(mapOverlayHierarchy);
   if (isMapOverlayHierarchyLoaded) {
-    if (action.mapOverlayIds.split(',').length > 1) {
-      yield put(setMultipleMapOverlayCheckBox(true));
-    }
     yield fetchMeasureInfo();
   }
 }
@@ -932,13 +927,11 @@ function* watchSetMapOverlayChange() {
 function* callSetMapOverlay(action) {
   const state = yield select();
   const currentMapOverlayIds = selectCurrentMapOverlayIds(state);
-  const { multipleMapOverlayCheckbox, mapOverlayHierarchy } = state.mapOverlayBar;
-  const mapOverlayIds = multipleMapOverlayCheckbox
-    ? sortMapOverlayIdsByHierarchyOrder(mapOverlayHierarchy, [
-        ...currentMapOverlayIds,
-        action.mapOverlayId,
-      ])
-    : [action.mapOverlayId];
+  const { mapOverlayHierarchy } = state.mapOverlayBar;
+  const mapOverlayIds = sortMapOverlayIdsByHierarchyOrder(mapOverlayHierarchy, [
+    ...currentMapOverlayIds,
+    action.mapOverlayId,
+  ]);
   yield put(setMapOverlay(mapOverlayIds.join(',')));
 }
 
@@ -1053,24 +1046,6 @@ function* fetchMapOverlaysMetadata(action) {
 
 function* watchOrgUnitChangeAndFetchMeasures() {
   yield takeLatest(CHANGE_ORG_UNIT_SUCCESS, fetchMapOverlaysMetadata);
-}
-
-/**
- * Clean multi selected map overlay ids and set to default id if disable multiple checkbox
- */
-function* unselectAllIfDisableCheckbox() {
-  const state = yield select();
-  const { multipleMapOverlayCheckbox } = state.mapOverlayBar;
-  if (!multipleMapOverlayCheckbox) {
-    const currentMapOverlayIds = selectCurrentMapOverlayIds(state);
-    if (currentMapOverlayIds.length > 1) {
-      yield put(setMapOverlay(selectDefaultMapOverlayId(state)));
-    }
-  }
-}
-
-function* watchToggleMultipleMapOverlayCheckbox() {
-  yield takeLatest(TOGGLE_MULTIPLE_MAP_OVERLAY_CHECKBOX, unselectAllIfDisableCheckbox);
 }
 
 /**
@@ -1238,6 +1213,8 @@ export default [
   watchSearchChange,
   watchFetchMoreSearchResults,
   watchSetMapOverlayChange,
+  watchUnselectMapOverlayChange,
+  watchSelectMapOverlayChange,
   watchOrgUnitChangeAndFetchMeasures,
   watchFindUserCurrentLoggedIn,
   watchFetchNewEnlargedDialogData,
@@ -1255,7 +1232,4 @@ export default [
   watchMeasurePeriodChange,
   watchTryUpdateMeasureConfigAndWaitForHierarchyLoad,
   watchHandleLocationChange,
-  watchUnselectMapOverlayChange,
-  watchSelectMapOverlayChange,
-  watchToggleMultipleMapOverlayCheckbox,
 ];

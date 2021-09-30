@@ -25,15 +25,12 @@ import PropTypes from 'prop-types';
 import FlatButton from 'material-ui/FlatButton';
 import ClosedIcon from 'material-ui/svg-icons/navigation/chevron-right';
 import OpenIcon from 'material-ui/svg-icons/navigation/expand-more';
-import SelectedRadioIcon from 'material-ui/svg-icons/toggle/radio-button-checked';
-import UnSelectedRadioIcon from 'material-ui/svg-icons/toggle/radio-button-unchecked';
 import SelectedCheckBoxIcon from 'material-ui/svg-icons/toggle/check-box';
 import UnSelectedCheckBoxIcon from 'material-ui/svg-icons/toggle/check-box-outline-blank';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { ReferenceTooltip } from '@tupaia/ui-components';
-import { connect } from 'react-redux';
 
-const HierarchyItemComponent = React.memo(
+export const HierarchyItem = React.memo(
   ({
     label,
     style,
@@ -45,7 +42,6 @@ const HierarchyItemComponent = React.memo(
     hasNestedItems,
     info,
     onClick,
-    multipleMapOverlayCheckbox,
     dispatch,
     ...otherProps
   }) => {
@@ -69,14 +65,10 @@ const HierarchyItemComponent = React.memo(
     };
 
     const SelectionIcon = () => {
-      const SelectedIcon = multipleMapOverlayCheckbox ? SelectedCheckBoxIcon : SelectedRadioIcon;
-      const UnSelectedIcon = multipleMapOverlayCheckbox
-        ? UnSelectedCheckBoxIcon
-        : UnSelectedRadioIcon;
       return isSelected ? (
-        <SelectedIcon style={styles.buttonIcon} />
+        <SelectedCheckBoxIcon style={styles.buttonIcon} />
       ) : (
-        <UnSelectedIcon style={styles.buttonIcon} />
+        <UnSelectedCheckBoxIcon style={styles.buttonIcon} />
       );
     };
 
@@ -140,7 +132,7 @@ const styles = {
   },
 };
 
-HierarchyItemComponent.propTypes = {
+HierarchyItem.propTypes = {
   ...FlatButton.propTypes,
   label: PropTypes.string,
   nestedItems: PropTypes.arrayOf(PropTypes.object),
@@ -149,20 +141,8 @@ HierarchyItemComponent.propTypes = {
   hasNestedItems: PropTypes.bool,
   isLoading: PropTypes.bool,
   Icon: PropTypes.func,
-  multipleMapOverlayCheckbox: PropTypes.bool.isRequired,
 };
 
-HierarchyItemComponent.defaultProps = {
+HierarchyItem.defaultProps = {
   nestedMargin: '24px',
 };
-
-const mapStateToProps = state => {
-  const { multipleMapOverlayCheckbox } = state.mapOverlayBar;
-  return {
-    multipleMapOverlayCheckbox,
-  };
-};
-export const HierarchyItem = connect(
-  mapStateToProps,
-  // mapDispatchToProps,
-)(HierarchyItemComponent);

@@ -100,8 +100,6 @@ import {
   SET_PROJECT,
   FETCH_RESET_TOKEN_LOGIN_ERROR,
   SET_ENLARGED_DIALOG_DATE_RANGE,
-  TOGGLE_MULTIPLE_MAP_OVERLAY_CHECKBOX,
-  SET_MULTIPLE_MAP_OVERLAY_CHECKBOX,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 
@@ -589,7 +587,6 @@ function mapOverlayBar(
     isExpanded: false,
     mapOverlayHierarchy: [],
     error: null,
-    multipleMapOverlayCheckbox: false,
   },
   action,
 ) {
@@ -630,10 +627,6 @@ function mapOverlayBar(
       };
     case FETCH_MEASURES_ERROR:
       return { ...state, error: action.error };
-    case TOGGLE_MULTIPLE_MAP_OVERLAY_CHECKBOX:
-      return { ...state, multipleMapOverlayCheckbox: !state.multipleMapOverlayCheckbox };
-    case SET_MULTIPLE_MAP_OVERLAY_CHECKBOX:
-      return { ...state, multipleMapOverlayCheckbox: action.newCondition };
     default:
       return state;
   }
