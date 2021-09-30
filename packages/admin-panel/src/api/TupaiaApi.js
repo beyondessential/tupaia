@@ -89,6 +89,7 @@ export class TupaiaApi {
     // Unauthorized
     if (response.status === 401) {
       const data = await response.json();
+      // Todo: remove dispatch
       this.dispatch(logout(data.error)); // log out if user is unauthorized
       throw new Error(data.error);
     }

@@ -5,5 +5,5 @@
 import 'react-table/react-table.css';
 
 export * from './pages/resources';
-export * from './store';
+export * from './utilities/StoreProvider';
 export * from './api';

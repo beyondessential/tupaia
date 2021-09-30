@@ -113,7 +113,7 @@ export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin }) => {
 
 DashboardItemsPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
-  isBESAdmin: PropTypes.func,
+  isBESAdmin: PropTypes.bool,
 };
 
 DashboardItemsPage.defaultProps = {

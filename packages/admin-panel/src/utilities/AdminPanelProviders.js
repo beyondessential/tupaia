@@ -7,13 +7,13 @@ import React from 'react';
 import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import { ThemeProvider } from 'styled-components';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { StoreProvider } from '../store';
+import { AppProvider } from './AppProvider';
 import { theme } from '../theme';
 import { api } from '../api';
 
 // eslint-disable-next-line react/prop-types
 export const AdminPanelProviders = ({ children }) => (
-  <StoreProvider api={api} persist>
+  <AppProvider api={api} persist>
     <StylesProvider injectFirst>
       <MuiThemeProvider theme={theme}>
         <ThemeProvider theme={theme}>
@@ -22,5 +22,5 @@ export const AdminPanelProviders = ({ children }) => (
         </ThemeProvider>
       </MuiThemeProvider>
     </StylesProvider>
-  </StoreProvider>
+  </AppProvider>
 );
