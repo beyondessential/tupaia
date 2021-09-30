@@ -6,13 +6,22 @@ import React from 'react';
 import styled from 'styled-components';
 import { Switch, Redirect, Route } from 'react-router-dom';
 import { TabsToolbar } from '@tupaia/ui-components';
-import { Assignment, InsertChart } from '@material-ui/icons';
+import { Assignment, InsertChart, PeopleAlt } from '@material-ui/icons';
 import {
   DashboardItemsPage,
   DashboardsPage,
   QuestionsPage,
   SurveysPage,
   SurveyResponsesPage,
+  DataElementsPage,
+  DashboardRelationsPage,
+  MapOverlayGroupRelationsPage,
+  MapOverlayGroupsPage,
+  MapOverlaysPage,
+  AccessRequestsPage,
+  PermissionGroupsPage,
+  PermissionsPage,
+  UsersPage,
   AdminPanelDataProviders,
 } from '@tupaia/admin-panel/lib';
 import { LesmisAdminRoute } from './LesmisAdminRoute';
@@ -38,6 +47,11 @@ export const ROUTES = [
         component: QuestionsPage,
       },
       {
+        label: 'Data Elements',
+        to: '/data-elements',
+        component: DataElementsPage,
+      },
+      {
         label: 'Survey Responses',
         to: '/survey-responses',
         component: SurveyResponsesPage,
@@ -46,7 +60,7 @@ export const ROUTES = [
   },
   {
     label: 'Visualisations',
-    to: `${ADMIN_URL}/dashboard-items`,
+    to: `${ADMIN_URL}/visualisations`,
     icon: <InsertChart />,
     tabs: [
       {
@@ -58,6 +72,53 @@ export const ROUTES = [
         label: 'Dashboards',
         to: '/dashboards',
         component: DashboardsPage,
+      },
+      {
+        label: 'Dashboard Relations',
+        to: '/dashboard-relations',
+        component: DashboardRelationsPage,
+      },
+      {
+        label: 'Map Overlays',
+        to: '/map-overlays',
+        component: MapOverlaysPage,
+      },
+      {
+        label: 'Map Overlay Groups',
+        to: '/map-overlay-groups',
+        component: MapOverlayGroupsPage,
+      },
+      {
+        label: 'Map Overlay Group Relations',
+        to: '/map-overlay-group-relations',
+        component: MapOverlayGroupRelationsPage,
+      },
+    ],
+  },
+  {
+    label: 'Users & Permissions',
+    to: '/admin/users',
+    icon: <PeopleAlt />,
+    tabs: [
+      {
+        label: 'Users',
+        to: '',
+        component: UsersPage,
+      },
+      {
+        label: 'Permissions',
+        to: '/permissions',
+        component: PermissionsPage,
+      },
+      {
+        label: 'Permission Groups',
+        to: '/permission-groups',
+        component: PermissionGroupsPage,
+      },
+      {
+        label: 'Access Requests',
+        to: '/access-requests',
+        component: AccessRequestsPage,
       },
     ],
   },

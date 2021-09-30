@@ -23,9 +23,18 @@ const {
 
 export class TupaiaApi {
   constructor(config) {
+    this.store = null; // Redux store for keeping state, will be injected after creation
     // set config
     this.apiUrl = config?.apiUrl || REACT_APP_API_URL;
     this.clientBasicAuthHeader = config?.basicAuthHeader || REACT_APP_CLIENT_BASIC_AUTH_HEADER;
+  }
+
+  injectReduxStore(store) {
+    this.store = store;
+  }
+
+  dispatch(action) {
+    this.store.dispatch(action);
   }
 
   async login(loginCredentials) {
@@ -94,7 +103,6 @@ export class TupaiaApi {
     // Unauthorized
     if (response.status === 401) {
       const data = await response.json();
-      // Todo: remove dispatch
       this.dispatch(logout(data.error)); // log out if user is unauthorized
       throw new Error(data.error);
     }

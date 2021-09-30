@@ -40,6 +40,8 @@ export const StoreProvider = React.memo(({ children, api, persist }) => {
   const store = createStore(persistedRootReducer, initialState, composedEnhancers);
   const persistor = persistStore(store);
 
+  api.injectReduxStore(store);
+
   if (!persist) {
     return <Provider store={store}>{children}</Provider>;
   }

@@ -86,6 +86,30 @@ const TupaiaText = styled(Typography)`
 
 const ListItemLink = props => <ListItem button component={RouterLink} {...props} />;
 
+const AdminPanelLinks = () => (
+  <>
+    <Subheader component="div">Admin</Subheader>
+    <ListItemLink to="/admin/surveys">
+      <ListItemIcon>
+        <Assignment />
+      </ListItemIcon>
+      <ListItemText primary="Surveys" />
+    </ListItemLink>
+    <ListItemLink to="/admin/visualisations">
+      <ListItemIcon>
+        <Assignment />
+      </ListItemIcon>
+      <ListItemText primary="Visualisations" />
+    </ListItemLink>
+    <ListItemLink to="/admin/users">
+      <ListItemIcon>
+        <Assignment />
+      </ListItemIcon>
+      <ListItemText primary="Users" />
+    </ListItemLink>
+  </>
+);
+
 export const MainMenu = () => {
   const [open, setOpen] = useState(false);
   const { isLesmisAdmin } = useUser();
@@ -129,23 +153,7 @@ export const MainMenu = () => {
             </ListItemIcon>
             <ListItemText primary="Contact us" />
           </ListItemLink>
-          {isLesmisAdmin && (
-            <>
-              <Subheader component="div">Admin</Subheader>
-              <ListItemLink to="/admin/surveys">
-                <ListItemIcon>
-                  <Assignment />
-                </ListItemIcon>
-                <ListItemText primary="Surveys" />
-              </ListItemLink>
-              <ListItemLink to="/admin/dashboard-items">
-                <ListItemIcon>
-                  <Assignment />
-                </ListItemIcon>
-                <ListItemText primary="Visualisations" />
-              </ListItemLink>
-            </>
-          )}
+          {isLesmisAdmin && <AdminPanelLinks />}
           <Subheader component="div">Online Questionnaires</Subheader>
           <ListItemLink to="/admin/dashboard-items">
             <ListItemIcon>
