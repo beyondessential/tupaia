@@ -85,7 +85,7 @@ const buildMeasureData = (overlays, resultData) => {
     ...current,
   }));
   const measureDataResponses = overlays.map(({ id, data_builder_config: measureBuilderConfig }) => {
-    const { dataElementCode = 'value' } = measureBuilderConfig;
+    const { dataElementCode = 'value' } = measureBuilderConfig ?? {};
     const { data } = measureDataResponsesByMeasureId[id];
 
     return data.map(obj => {
@@ -249,7 +249,7 @@ export default class extends DataAggregatingRouteHandler {
       name,
       ...restOfMapOverlay
     } = mapOverlay;
-    const { dataElementCode = 'value' } = measureBuilderConfig;
+    const { dataElementCode = 'value' } = measureBuilderConfig ?? {};
 
     const {
       displayType,
@@ -261,7 +261,7 @@ export default class extends DataAggregatingRouteHandler {
       ...restOfPresentationConfig
     } = config;
 
-    const { dataSourceType = DATA_SOURCE_TYPES.SINGLE, periodGranularity } =
+    const { dataSourceType = DATA_SOURCE_TYPES.CUSTOM, periodGranularity } =
       measureBuilderConfig || {};
     const { startDate, endDate } = this.query;
     const dates = periodGranularity ? getDateRange(periodGranularity, startDate, endDate) : {};
@@ -318,24 +318,23 @@ export default class extends DataAggregatingRouteHandler {
   }
 
   async fetchMeasureData(mapOverlay, shouldFetchSiblings) {
-    const { id, legacy } = mapOverlay;
+    const { id, legacy, data_services: dataServices } = mapOverlay;
+
+    const entityCode = shouldFetchSiblings
+      ? await this.getCountryLevelOrgUnitCode()
+      : this.entity.code;
+    const entity = await this.models.entity.findOne({ code: entityCode });
+    const dhisApi = getDhisApiInstance({
+      entityCode: this.entity.code,
+      isDataRegional: dataServices?.[0]?.isDataRegional,
+    });
 
     if (legacy) {
       const {
-        data_services: dataServices,
         data_builder: measureBuilder,
         data_builder_config: measureBuilderConfig,
       } = mapOverlay;
       const { dataElementCode = 'value' } = measureBuilderConfig;
-
-      const entityCode = shouldFetchSiblings
-        ? await this.getCountryLevelOrgUnitCode()
-        : this.entity.code;
-      const entity = await this.models.entity.findOne({ code: entityCode });
-      const dhisApi = getDhisApiInstance({
-        entityCode: this.entity.code,
-        isDataRegional: dataServices?.[0]?.isDataRegional,
-      });
       dhisApi.injectFetchDataSourceEntities(this.fetchDataSourceEntities);
       const buildMeasure = async (measureId, ...args) => ({
         [measureId]: await getMeasureBuilder(measureBuilder)(...args),
@@ -352,8 +351,22 @@ export default class extends DataAggregatingRouteHandler {
         this.req,
       );
     }
-    // TODO: Handle non-legacy
-    return null;
+
+    // NON-LEGACY
+
+    const buildMeasure = async (measureId, ...args) => ({
+      [measureId]: await getMeasureBuilder('useReportServer')(...args),
+    });
+    return buildMeasure(
+      id,
+      this.models,
+      this.aggregator,
+      dhisApi,
+      { ...this.query, dataElementCode: 'value' },
+      { reportCode: mapOverlay.report_code },
+      entity,
+      this.req,
+    );
   }
 }
 

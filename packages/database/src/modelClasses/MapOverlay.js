@@ -47,7 +47,12 @@ export class MapOverlayModel extends DatabaseModel {
   // Return measures joined with legacy info if it exists
   async findMeasuresWithLegacyInfo(criteria) {
     return this.database.find(this.databaseType, criteria, {
-      columns: ['map_overlay.*', 'legacy_report.*'],
+      columns: [
+        'map_overlay.*',
+        'legacy_report.data_builder',
+        'legacy_report.data_builder_config',
+        'legacy_report.data_services',
+      ],
       joinWith: TYPES.LEGACY_REPORT,
       joinCondition: [`${TYPES.MAP_OVERLAY}.report_code`, `${TYPES.LEGACY_REPORT}.code`],
       joinType: JOIN_TYPES.LEFT,
