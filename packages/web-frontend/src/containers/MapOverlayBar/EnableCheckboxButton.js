@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import LibraryAddCheckIcon from '@material-ui/icons/LibraryAddCheck';
 import MuiIconButton from '@material-ui/core/IconButton';
-import { onSelectMultipleMapOverlayCheckBox } from '../../actions';
+import { toggleMultipleMapOverlayCheckBox } from '../../actions';
 
 const IconButton = styled(MuiIconButton)`
   margin: 0 0 0 1rem;
@@ -40,7 +40,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onSelectMultipleMapOverlayCheckbox: () => dispatch(onSelectMultipleMapOverlayCheckBox()),
+  onSelectMultipleMapOverlayCheckbox: () => dispatch(toggleMultipleMapOverlayCheckBox()),
 });
 
 export const EnableCheckboxButton = connect(

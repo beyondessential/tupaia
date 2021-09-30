@@ -131,7 +131,8 @@ export const UPDATE_HISTORY_LOCATION = 'UPDATE_HISTORY_LOCATION';
 export const UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS =
   'UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS';
 export const LOCATION_CHANGE = 'LOCATION_CHANGE';
-export const ON_SELECT_MULTIPLE_MAP_OVERLAY_CHECKBOX = 'ON_SELECT_MULTIPLE_MAP_OVERLAY_CHECKBOX';
+export const TOGGLE_MULTIPLE_MAP_OVERLAY_CHECKBOX = 'TOGGLE_MULTIPLE_MAP_OVERLAY_CHECKBOX';
+export const SET_MULTIPLE_MAP_OVERLAY_CHECKBOX = 'SET_MULTIPLE_MAP_OVERLAY_CHECKBOX';
 
 /**
  * Attempt password change using old password, new password and new password
@@ -1088,8 +1089,15 @@ export function updateHistoryLocation(location) {
   return { type: UPDATE_HISTORY_LOCATION, location };
 }
 
-export function onSelectMultipleMapOverlayCheckBox() {
+export function toggleMultipleMapOverlayCheckBox() {
   return {
-    type: ON_SELECT_MULTIPLE_MAP_OVERLAY_CHECKBOX,
+    type: TOGGLE_MULTIPLE_MAP_OVERLAY_CHECKBOX,
+  };
+}
+
+export function setMultipleMapOverlayCheckBox(newCondition) {
+  return {
+    type: SET_MULTIPLE_MAP_OVERLAY_CHECKBOX,
+    newCondition,
   };
 }

@@ -37,6 +37,7 @@ import {
   CHANGE_SIDE_BAR_CONTRACTED_WIDTH,
   CHANGE_SIDE_BAR_EXPANDED_WIDTH,
   SET_MAP_OVERLAY,
+  UNSELECT_MAP_OVERLAY,
   UPDATE_MEASURE_CONFIG,
   CLEAR_MAP_OVERLAY_HIERARCHY,
   SET_ORG_UNIT,
@@ -99,8 +100,8 @@ import {
   SET_PROJECT,
   FETCH_RESET_TOKEN_LOGIN_ERROR,
   SET_ENLARGED_DIALOG_DATE_RANGE,
-  ON_SELECT_MULTIPLE_MAP_OVERLAY_CHECKBOX,
-  UNSELECT_MAP_OVERLAY,
+  TOGGLE_MULTIPLE_MAP_OVERLAY_CHECKBOX,
+  SET_MULTIPLE_MAP_OVERLAY_CHECKBOX,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 
@@ -629,8 +630,10 @@ function mapOverlayBar(
       };
     case FETCH_MEASURES_ERROR:
       return { ...state, error: action.error };
-    case ON_SELECT_MULTIPLE_MAP_OVERLAY_CHECKBOX:
+    case TOGGLE_MULTIPLE_MAP_OVERLAY_CHECKBOX:
       return { ...state, multipleMapOverlayCheckbox: !state.multipleMapOverlayCheckbox };
+    case SET_MULTIPLE_MAP_OVERLAY_CHECKBOX:
+      return { ...state, multipleMapOverlayCheckbox: action.newCondition };
     default:
       return state;
   }
