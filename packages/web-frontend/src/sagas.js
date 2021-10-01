@@ -138,7 +138,6 @@ import {
   getInfoFromInfoViewKey,
   getBrowserTimeZone,
   checkHierarchyIncludesMapOverlayIds,
-  sortMapOverlayIdsByHierarchyOrder,
 } from './utils';
 import { getDefaultDates, getDefaultDrillDownDates } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
