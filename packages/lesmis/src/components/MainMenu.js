@@ -93,7 +93,7 @@ const AdminPanelLinks = () => (
       <ListItemIcon>
         <Assignment />
       </ListItemIcon>
-      <ListItemText primary="Surveys" />
+      <ListItemText primary="Surveys & Data" />
     </ListItemLink>
     <ListItemLink to="/admin/visualisations">
       <ListItemIcon>
