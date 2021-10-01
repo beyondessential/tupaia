@@ -4,7 +4,7 @@
  */
 
 import { Aggregator as BaseAggregator } from '@tupaia/aggregator';
-import { getDefaultPeriod, convertPeriodStringToDateRange } from '@tupaia/utils';
+import { getDefaultPeriod, convertPeriodStringToDateRange, convertDateRangeToPeriodString } from '@tupaia/utils';
 import { Event, AggregationObject } from '../types';
 
 type PeriodParams = {
@@ -86,6 +86,7 @@ const buildPeriodQueryParams = ({ period, startDate, endDate }: PeriodParams) =>
   if (startDate && endDate) {
     builtStartDate = startDate;
     builtEndDate = endDate;
+    builtPeriod = convertDateRangeToPeriodString(startDate, endDate);
   } else if (!period && !startDate && !endDate) {
     builtPeriod = getDefaultPeriod();
     [builtStartDate, builtEndDate] = convertPeriodStringToDateRange(builtPeriod);
