@@ -20,7 +20,7 @@ import {
   toggleMeasureExpand,
   toggleDashboardSelectExpand,
   setDashboardGroup,
-  unselectMapOverlay,
+  clearMeasure,
 } from '../../../actions';
 import { DARK_BLUE, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
 import { getSingleFormattedValue } from '../../../utils/measures';
@@ -293,7 +293,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   onChangeMapOverlay: mapOverlayId => dispatch(setMapOverlay(mapOverlayId)),
-  onUnselectMapOverlay: () => dispatch(unselectMapOverlay()),
+  onClearMeasure: () => dispatch(clearMeasure()),
   onToggleMeasureExpand: () => dispatch(toggleMeasureExpand()),
   onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),
   onChangeOrgUnit: organisationUnitCode => dispatch(setOrgUnit(organisationUnitCode, false)),
@@ -301,14 +301,14 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { onChangeMapOverlay, onUnselectMapOverlay } = dispatchProps;
+  const { onChangeMapOverlay, onClearMeasure } = dispatchProps;
 
   return {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
     onChangeMapOverlay: mapOverlay =>
-      mapOverlay ? onChangeMapOverlay(mapOverlay.mapOverlayId) : onUnselectMapOverlay(),
+      mapOverlay ? onChangeMapOverlay(mapOverlay.mapOverlayId) : onClearMeasure(),
   };
 };
 
