@@ -9,6 +9,12 @@ export interface Row {
   [field: string]: FieldValue;
 }
 
+export interface DataElementsMetadata {
+  metadata?: {
+    dataElementCodeToName?: Record<string, string>;
+  };
+}
+
 export interface PeriodMetadata {
   period?: {
     requested?: string;
