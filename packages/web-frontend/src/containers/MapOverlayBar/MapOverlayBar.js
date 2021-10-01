@@ -20,8 +20,8 @@ import shallowEqual from 'shallowequal';
 
 import { Control } from './Control';
 import {
-  selectMapOverlay,
-  unselectMapOverlay,
+  setMapOverlay,
+  clearMeasure,
   toggleMeasureExpand,
   updateMeasureConfig,
 } from '../../actions';
@@ -32,6 +32,7 @@ import {
   selectDefaultMapOverlay,
   selectCurrentMapOverlayIds,
 } from '../../selectors';
+import { sortMapOverlayIdsByHierarchyOrder } from '../../utils';
 
 export class MapOverlayBarComponent extends Component {
   constructor(props) {
@@ -208,16 +209,35 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  onExpandClick: () => dispatch(toggleMeasureExpand()),
-  onUnSelectMapOverlay: mapOverlayId => dispatch(unselectMapOverlay(mapOverlayId)),
-  onSelectMapOverlay: mapOverlayId => dispatch(selectMapOverlay(mapOverlayId)),
-  dispatch,
-});
+const mapDispatchToProps = dispatch => {
+  return {
+    onExpandClick: () => dispatch(toggleMeasureExpand()),
+    onSetMapOverlay: mapOverlayIds => dispatch(setMapOverlay(mapOverlayIds)),
+    onClearMeasure: () => dispatch(clearMeasure()),
+    dispatch,
+  };
+};
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { dispatch } = dispatchProps;
-  const { currentMapOverlayIds } = stateProps;
+  const { dispatch, onSetMapOverlay, onClearMeasure } = dispatchProps;
+  const { currentMapOverlayIds, mapOverlayHierarchy } = stateProps;
+  const onSelectMapOverlay = mapOverlayId => {
+    const mapOverlayIds = sortMapOverlayIdsByHierarchyOrder(mapOverlayHierarchy, [
+      ...currentMapOverlayIds,
+      mapOverlayId,
+    ]);
+    onSetMapOverlay(mapOverlayIds.join(','));
+  };
+  const onUnSelectMapOverlay = mapOverlayId => {
+    const updatedMapOverlayIds = currentMapOverlayIds.filter(
+      currentMapOverlayId => currentMapOverlayId !== mapOverlayId,
+    );
+    if (updatedMapOverlayIds.length > 0) {
+      onSetMapOverlay(updatedMapOverlayIds.join(','));
+    } else {
+      onClearMeasure();
+    }
+  };
 
   return {
     ...stateProps,
@@ -225,6 +245,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     onUpdateMeasurePeriod: (startDate, endDate) =>
       dispatch(updateMeasureConfig(currentMapOverlayIds[0], { startDate, endDate })),
+    onSelectMapOverlay,
+    onUnSelectMapOverlay,
   };
 };
 

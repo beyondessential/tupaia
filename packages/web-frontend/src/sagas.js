@@ -96,8 +96,6 @@ import {
   LOCATION_CHANGE,
   goHome,
   setDashboardGroup,
-  UNSELECT_MAP_OVERLAY,
-  SELECT_MAP_OVERLAY,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 import {
@@ -872,12 +870,6 @@ function* fetchMeasureInfo() {
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
   const measureParams = mapOverlayIds.length > 0 && selectMapOverlayById(state, mapOverlayIds[0]);
 
-  if (mapOverlayIds.length === 0) {
-    yield put(clearMeasure());
-    yield put(cancelFetchMeasureData());
-    return;
-  }
-
   if (!organisationUnitCode || !measureParams) {
     // Don't try and fetch null measures
     yield put(cancelFetchMeasureData());
@@ -917,36 +909,6 @@ function* fetchMeasureInfo() {
 
 function* watchSetMapOverlayChange() {
   yield takeLatest(SET_MAP_OVERLAY, fetchMeasureInfo);
-}
-
-function* callSetMapOverlay(action) {
-  const state = yield select();
-  const currentMapOverlayIds = selectCurrentMapOverlayIds(state);
-  const { mapOverlayHierarchy } = state.mapOverlayBar;
-  const mapOverlayIds = sortMapOverlayIdsByHierarchyOrder(mapOverlayHierarchy, [
-    ...currentMapOverlayIds,
-    action.mapOverlayId,
-  ]);
-  yield put(setMapOverlay(mapOverlayIds.join(',')));
-}
-
-function* watchSelectMapOverlayChange() {
-  yield takeLatest(SELECT_MAP_OVERLAY, callSetMapOverlay);
-}
-
-function* fetchMeasureInfoOnlyIfMapOverlayIsSelected() {
-  const state = yield select();
-  const currentMapOverlayIds = selectCurrentMapOverlayIds(state);
-  // Clear measure if no mapOverlay is selected
-  if (currentMapOverlayIds.length === 0) {
-    yield put(clearMeasure());
-    return;
-  }
-  yield fetchMeasureInfo();
-}
-
-function* watchUnselectMapOverlayChange() {
-  yield takeLatest(UNSELECT_MAP_OVERLAY, fetchMeasureInfo);
 }
 
 function* watchMeasurePeriodChange() {
@@ -1208,8 +1170,6 @@ export default [
   watchSearchChange,
   watchFetchMoreSearchResults,
   watchSetMapOverlayChange,
-  watchUnselectMapOverlayChange,
-  watchSelectMapOverlayChange,
   watchOrgUnitChangeAndFetchMeasures,
   watchFindUserCurrentLoggedIn,
   watchFetchNewEnlargedDialogData,
