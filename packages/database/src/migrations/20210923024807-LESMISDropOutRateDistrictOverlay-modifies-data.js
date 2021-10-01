@@ -29,8 +29,8 @@ const getOverlayNames = (gradeNum, educationLevel, GPI) => {
         `dor_district_${educationLevel.concat(gradeNum)}_${GPI ? 'f' : 't'}`,
         `${GPI ? 'dor_district_s1_m' : ''}`,
       ],
-      reportCode: `LESMIS_grade_${educationLevel === 'p' ? gradeNum : gradeNum + 5}_dropout_rate_${
-        GPI ? 'GPI' : ''
+      reportCode: `LESMIS_grade_${educationLevel === 'p' ? gradeNum : gradeNum + 5}_dropout_rate${
+        GPI ? '_GPI' : ''
       }_district_map`,
     };
   }
@@ -281,44 +281,44 @@ const removeMapOverlay = (db, gradeNum, educationLevel, GPI) => {
 exports.up = async function (db) {
   // Add Primary Overlays
   for (let i = 1; i < 6; i++) {
-    addMapOverlay(db, i, 'p', i - 1, false);
+    await addMapOverlay(db, i, 'p', i - 1, false);
   }
 
   // Add Secondary Overlays
   for (let i = 1; i < 8; i++) {
-    addMapOverlay(db, i, 's', i + 5, false);
+    await addMapOverlay(db, i, 's', i + 5, false);
   }
 
   // Add primary, secondary overlays
-  addMapOverlay(db, null, 'pe', 13, false);
-  addMapOverlay(db, null, 'p40', 14, false);
-  addMapOverlay(db, null, 'lse', 15, false);
-  addMapOverlay(db, null, 'ls40', 16, false);
-  addMapOverlay(db, null, 'use', 17, false);
+  await addMapOverlay(db, null, 'pe', 13, false);
+  await addMapOverlay(db, null, 'p40', 14, false);
+  await addMapOverlay(db, null, 'lse', 15, false);
+  await addMapOverlay(db, null, 'ls40', 16, false);
+  await addMapOverlay(db, null, 'use', 17, false);
 
   // Add Grade 6 rate GPI overlay
-  addMapOverlay(db, 1, 's', 6, true);
+  await addMapOverlay(db, 1, 's', 6, true);
 };
 
 exports.down = async function (db) {
   // Remove primary overlays
   for (let i = 1; i < 6; i++) {
-    removeMapOverlay(db, i, 'p', false);
+    await removeMapOverlay(db, i, 'p', false);
   }
   // Remove secondary overlays
   for (let i = 1; i < 8; i++) {
-    removeMapOverlay(db, i, 's', false);
+    await removeMapOverlay(db, i, 's', false);
   }
 
   // Remove primary, secondary overlays
-  removeMapOverlay(db, null, 'pe', false);
-  removeMapOverlay(db, null, 'p40', false);
-  removeMapOverlay(db, null, 'lse', false);
-  removeMapOverlay(db, null, 'ls40', false);
-  removeMapOverlay(db, null, 'use', false);
+  await removeMapOverlay(db, null, 'pe', false);
+  await removeMapOverlay(db, null, 'p40', false);
+  await removeMapOverlay(db, null, 'lse', false);
+  await removeMapOverlay(db, null, 'ls40', false);
+  await removeMapOverlay(db, null, 'use', false);
 
   // Remove Grade 6 rate GPI overlay
-  removeMapOverlay(db, 1, 's', true);
+  await removeMapOverlay(db, 1, 's', true);
 };
 
 exports._meta = {

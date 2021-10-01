@@ -31,7 +31,7 @@ const getOverlayNames = (gradeNum, educationLevel, GPI) => {
       ],
       reportCode: `LESMIS_grade_${
         educationLevel === 'p' ? gradeNum : gradeNum + 5
-      }_repetition_rate_${GPI ? 'GPI' : ''}_district_map`,
+      }_repetition_rate${GPI ? '_GPI' : ''}_district_map`,
     };
   }
   const educationLevelTranslation = {
@@ -222,40 +222,40 @@ const removeMapOverlay = (db, gradeNum, educationLevel, GPI) => {
 exports.up = async function (db) {
   // Add Primary Overlays
   for (let i = 1; i < 6; i++) {
-    addMapOverlay(db, i, 'p', i - 1, false);
+    await addMapOverlay(db, i, 'p', i - 1, false);
   }
 
   // Add Secondary Overlays
   for (let i = 1; i < 8; i++) {
-    addMapOverlay(db, i, 's', i + 5, false);
+    await addMapOverlay(db, i, 's', i + 5, false);
   }
 
   // Add primary, secondary overlays
-  addMapOverlay(db, null, 'pe', 13, false);
-  addMapOverlay(db, null, 'lse', 14, false);
-  addMapOverlay(db, null, 'use', 15, false);
+  await addMapOverlay(db, null, 'pe', 13, false);
+  await addMapOverlay(db, null, 'lse', 14, false);
+  await addMapOverlay(db, null, 'use', 15, false);
 
   // Add Grade 6 rate GPI overlay
-  addMapOverlay(db, 1, 's', 6, true);
+  await addMapOverlay(db, 1, 's', 6, true);
 };
 
 exports.down = async function (db) {
   // Remove primary overlays
   for (let i = 1; i < 6; i++) {
-    removeMapOverlay(db, i, 'p', false);
+    await removeMapOverlay(db, i, 'p', false);
   }
   // Remove secondary overlays
   for (let i = 1; i < 8; i++) {
-    removeMapOverlay(db, i, 's', false);
+    await removeMapOverlay(db, i, 's', false);
   }
 
   // Remove primary, secondary overlays
-  removeMapOverlay(db, null, 'pe', false);
-  removeMapOverlay(db, null, 'lse', false);
-  removeMapOverlay(db, null, 'use', false);
+  await removeMapOverlay(db, null, 'pe', false);
+  await removeMapOverlay(db, null, 'lse', false);
+  await removeMapOverlay(db, null, 'use', false);
 
   // Remove Grade 6 rate GPI overlay
-  removeMapOverlay(db, 1, 's', true);
+  await removeMapOverlay(db, 1, 's', true);
 };
 
 exports._meta = {
