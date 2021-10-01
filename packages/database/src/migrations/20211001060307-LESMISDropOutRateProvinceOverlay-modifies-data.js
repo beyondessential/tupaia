@@ -17,35 +17,38 @@ exports.setup = function (options, seedLink) {
 };
 
 const PERMISSION_GROUP = 'LESMIS Public';
-const DISTRICT_OVERLAY_GROUP_ID = '5f2c7ddc61f76a513a000215';
+const PROVINCE_OVERLAY_GROUP_ID = '5f2c7ddc61f76a513a0001f3';
 
 const getOverlayNames = (gradeNum, educationLevel, GPI) => {
   if (gradeNum !== null) {
     return {
-      name: `Grade ${educationLevel === 'p' ? gradeNum : gradeNum + 5} Repetition Rate ${
+      name: `Grade ${educationLevel === 'p' ? gradeNum : gradeNum + 5} Dropout Rate ${
         GPI ? 'GPI' : ''
       }`,
       dataElement: [
-        `rr_district_${educationLevel.concat(gradeNum)}_${GPI ? 'f' : 't'}`,
-        `${GPI ? 'rr_district_s1_m' : ''}`,
+        `dor_province_${educationLevel.concat(gradeNum)}_${GPI ? 'f' : 't'}`,
+        `${GPI ? 'dor_province_s1_m' : ''}`,
       ],
-      reportCode: `LESMIS_grade_${
-        educationLevel === 'p' ? gradeNum : gradeNum + 5
-      }_repetition_rate${GPI ? '_GPI' : ''}_district_map`,
+      reportCode: `LESMIS_grade_${educationLevel === 'p' ? gradeNum : gradeNum + 5}_dropout_rate${
+        GPI ? '_GPI' : ''
+      }_province_map`,
     };
   }
   const educationLevelTranslation = {
     pe: 'Primary',
     lse: 'Lower Secondary',
     use: 'Upper Secondary',
+    p40: 'Primary',
+    ls40: 'Lower Secondary',
   };
+
   return {
-    name: `${educationLevelTranslation[educationLevel]} Repetition Rate`,
-    dataElement: [`rr_district_${educationLevel}_t`],
+    name: `${educationLevelTranslation[educationLevel]} Dropout Rate`,
+    dataElement: [`dor_province_${educationLevel}_t`],
     reportCode: `LESMIS_${educationLevelTranslation[educationLevel]
       .toLowerCase()
       .split(' ')
-      .join('')}_repetition_rate_district_map`,
+      .join('')}_dropout_rate_province_map`,
   };
 };
 
@@ -59,7 +62,7 @@ const getReport = (reportCode, dataElement) => ({
         {
           type: 'FINAL_EACH_YEAR',
           config: {
-            dataSourceEntityType: 'sub_district',
+            dataSourceEntityType: 'district',
             aggregationEntityType: 'requested',
           },
         },
@@ -70,7 +73,7 @@ const getReport = (reportCode, dataElement) => ({
         transform: 'updateColumns',
         insert: {
           organisationUnitCode: '=$organisationUnit',
-          value: '=$value',
+          value: '=divide($value, 100)',
         },
         exclude: ['organisationUnit', 'dataElement', 'period'],
       },
@@ -88,7 +91,7 @@ const getGpiReport = (reportCode, dataElement) => ({
         {
           type: 'FINAL_EACH_YEAR',
           config: {
-            dataSourceEntityType: 'sub_district',
+            dataSourceEntityType: 'district',
             aggregationEntityType: 'requested',
           },
         },
@@ -99,7 +102,7 @@ const getGpiReport = (reportCode, dataElement) => ({
         transform: 'updateColumns',
         insert: {
           organisationUnitCode: '=$organisationUnit',
-          '=$dataElement': '=divide($value, 100)',
+          '=$dataElement': '=$value',
         },
         exclude: ['dataElement', 'value', 'organisationUnit'],
       },
@@ -114,6 +117,38 @@ const getGpiReport = (reportCode, dataElement) => ({
           value: `=divide($${dataElement[0]},$${dataElement[1]})`,
         },
         exclude: [dataElement[0], dataElement[1]],
+      },
+    ],
+  },
+});
+
+const getTargetDistrictReport = (reportCode, dataElement) => ({
+  id: generateId(),
+  code: reportCode,
+  config: {
+    fetch: {
+      dataElements: dataElement,
+      aggregations: [
+        {
+          type: 'FINAL_EACH_YEAR',
+          config: {
+            aggregationEntityType: 'requested',
+            dataSourceEntityType: 'district',
+            dataSourceEntityFilter: {
+              attributes_type: 'LESMIS_Target_District',
+            },
+          },
+        },
+      ],
+    },
+    transform: [
+      {
+        transform: 'updateColumns',
+        insert: {
+          organisationUnitCode: '=$organisationUnit',
+          value: '=divide($value, 100)',
+        },
+        exclude: ['organisationUnit', 'dataElement', 'period'],
       },
     ],
   },
@@ -135,7 +170,7 @@ const getMapOverlay = (name, reportCode) => ({
   presentationOptions: {
     scaleType: 'performanceDesc',
     displayType: 'shaded-spectrum',
-    measureLevel: 'SubDistrict',
+    measureLevel: 'District',
     valueType: 'percentage',
     scaleBounds: {
       left: {
@@ -167,7 +202,7 @@ const getGpiMapOverlay = (name, reportCode) => ({
   presentationOptions: {
     scaleType: 'gpi',
     displayType: 'shaded-spectrum',
-    measureLevel: 'SubDistrict',
+    measureLevel: 'District',
     scaleBounds: {
       left: {
         max: 0,
@@ -187,15 +222,28 @@ const getPermissionGroupId = async (db, name) => {
   return record.rows[0] && record.rows[0].id;
 };
 
-const getSpecificReport = (reportCode, dataElement, GPI) =>
-  GPI ? getGpiReport(reportCode, dataElement) : getReport(reportCode, dataElement);
+const getSpecificReport = (reportCode, dataElement, GPI) => {
+  if (GPI) {
+    return getGpiReport(reportCode, dataElement);
+  }
 
-const getSpecificMapOverlay = (name, reportCode, GPI) =>
-  GPI ? getGpiMapOverlay(name, reportCode) : getMapOverlay(name, reportCode);
+  if (reportCode.includes('40')) {
+    return getTargetDistrictReport(reportCode, dataElement);
+  }
+
+  return getReport(reportCode, dataElement);
+};
+
+const getSpecificMapOverlay = (name, reportCode, GPI) => {
+  if (GPI) {
+    return getGpiMapOverlay(name, reportCode);
+  }
+  return getMapOverlay(name, reportCode);
+};
 
 const addMapOverlay = async (db, gradeNum, educationLevel, sortOrder, GPI) => {
   const { name, dataElement, reportCode } = getOverlayNames(gradeNum, educationLevel, GPI);
-  const mapOverlayGroupId = DISTRICT_OVERLAY_GROUP_ID;
+  const mapOverlayGroupId = PROVINCE_OVERLAY_GROUP_ID;
   const report = getSpecificReport(reportCode, dataElement, GPI);
   const mapOverlay = getSpecificMapOverlay(name, reportCode, GPI);
   const permissionGroupId = await getPermissionGroupId(db, PERMISSION_GROUP);
@@ -232,17 +280,11 @@ exports.up = async function (db) {
 
   // Add primary, secondary overlays
   await addMapOverlay(db, null, 'pe', 13, false);
-  await addMapOverlay(db, null, 'lse', 14, false);
-  await addMapOverlay(db, null, 'use', 15, false);
+  await addMapOverlay(db, null, 'lse', 15, false);
+  await addMapOverlay(db, null, 'use', 17, false);
 
   // Add Grade 6 rate GPI overlay
   await addMapOverlay(db, 1, 's', 6, true);
-
-  // Remove Province level group
-  await db.runSql(`
-    DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '5f2c7ddc61f76a513a000216';
-    `
-  )
 };
 
 exports.down = async function (db) {
