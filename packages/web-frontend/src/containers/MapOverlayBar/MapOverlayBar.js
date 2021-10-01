@@ -220,13 +220,15 @@ const mapDispatchToProps = dispatch => {
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch, onSetMapOverlay, onClearMeasure } = dispatchProps;
-  const { currentMapOverlayIds, mapOverlayHierarchy } = stateProps;
+  const { currentMapOverlayIds } = stateProps;
   const onSelectMapOverlay = mapOverlayId => {
-    const mapOverlayIds = sortMapOverlayIdsByHierarchyOrder(mapOverlayHierarchy, [
-      ...currentMapOverlayIds,
-      mapOverlayId,
-    ]);
-    onSetMapOverlay(mapOverlayIds.join(','));
+    onSetMapOverlay(
+      [
+        // Only two map overlays can be selected at the same time
+        ...(currentMapOverlayIds.length === 2 ? [currentMapOverlayIds[1]] : currentMapOverlayIds),
+        mapOverlayId,
+      ].join(','),
+    );
   };
   const onUnSelectMapOverlay = mapOverlayId => {
     const updatedMapOverlayIds = currentMapOverlayIds.filter(
