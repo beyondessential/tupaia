@@ -27,7 +27,7 @@ const getOverlayNames = (gradeNum, educationLevel, GPI) => {
       }`,
       dataElement: [
         `dor_province_${educationLevel.concat(gradeNum)}_${GPI ? 'f' : 't'}`,
-        `${GPI ? 'dor_province_s1_m' : ''}`,
+        ... GPI ? ['dor_province_s1_m'] : [],
       ],
       reportCode: `LESMIS_grade_${educationLevel === 'p' ? gradeNum : gradeNum + 5}_dropout_rate${
         GPI ? '_GPI' : ''
@@ -117,38 +117,6 @@ const getGpiReport = (reportCode, dataElement) => ({
           value: `=divide($${dataElement[0]},$${dataElement[1]})`,
         },
         exclude: [dataElement[0], dataElement[1]],
-      },
-    ],
-  },
-});
-
-const getTargetDistrictReport = (reportCode, dataElement) => ({
-  id: generateId(),
-  code: reportCode,
-  config: {
-    fetch: {
-      dataElements: dataElement,
-      aggregations: [
-        {
-          type: 'FINAL_EACH_YEAR',
-          config: {
-            aggregationEntityType: 'requested',
-            dataSourceEntityType: 'district',
-            dataSourceEntityFilter: {
-              attributes_type: 'LESMIS_Target_District',
-            },
-          },
-        },
-      ],
-    },
-    transform: [
-      {
-        transform: 'updateColumns',
-        insert: {
-          organisationUnitCode: '=$organisationUnit',
-          value: '=divide($value, 100)',
-        },
-        exclude: ['organisationUnit', 'dataElement', 'period'],
       },
     ],
   },

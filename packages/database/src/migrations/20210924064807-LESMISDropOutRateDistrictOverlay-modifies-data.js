@@ -27,7 +27,7 @@ const getOverlayNames = (gradeNum, educationLevel, GPI) => {
       }`,
       dataElement: [
         `dor_district_${educationLevel.concat(gradeNum)}_${GPI ? 'f' : 't'}`,
-        `${GPI ? 'dor_district_s1_m' : ''}`,
+        ... GPI ? ['dor_province_s1_m'] : [],
       ],
       reportCode: `LESMIS_grade_${educationLevel === 'p' ? gradeNum : gradeNum + 5}_dropout_rate${
         GPI ? '_GPI' : ''
