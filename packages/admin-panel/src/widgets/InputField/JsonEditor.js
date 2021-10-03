@@ -5,13 +5,29 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { JsonEditor as Editor } from 'jsoneditor-react';
-import 'jsoneditor-react/es/editor.min.css';
-import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
+import Typography from '@material-ui/core/Typography';
+import { JsonEditor as Editor } from 'jsoneditor-react';
+import ace from 'brace';
+import 'brace/mode/json';
+import 'brace/theme/github';
+import 'jsoneditor-react/es/editor.min.css';
 
 const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
   margin-bottom: 20px;
+
+  > div {
+    display: flex;
+    flex: 1;
+    background-color: lightyellow;
+  }
+
+  .jsoneditor {
+    height: auto;
+  }
 `;
 
 const Label = styled(Typography)`
@@ -43,9 +59,13 @@ export const JsonEditor = ({ inputKey, label, secondaryLabel, value, onChange, s
       <Label gutterBottom>{label}</Label>
       {/* Use json editor plugin. For configuration options @see https://github.com/vankop/jsoneditor-react */}
       <Editor
-        history
-        value={editorValue}
+        ace={ace}
+        mainMenuBar={false}
+        statusBar={false}
+        mode="code"
+        theme="ace/theme/github"
         onChange={json => onChange(inputKey, stringify ? JSON.stringify(json) : json)}
+        value={editorValue}
       />
       {secondaryLabel && <HelperText>{secondaryLabel}</HelperText>}
     </Container>
