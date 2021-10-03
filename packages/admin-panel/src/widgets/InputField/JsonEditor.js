@@ -22,7 +22,6 @@ const Container = styled.div`
   > div {
     display: flex;
     flex: 1;
-    background-color: lightyellow;
   }
 
   .jsoneditor {
