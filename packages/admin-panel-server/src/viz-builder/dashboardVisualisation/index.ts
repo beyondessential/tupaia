@@ -4,5 +4,5 @@
  */
 
 export { DashboardVisualisationExtractor } from './DashboardVisualisationExtractor';
-export { DashboardVisualisationCombiner } from './DashboardVisualisationCombiner';
+export { combineVisualisation } from './combineVisualisation';
 export * from './validators';

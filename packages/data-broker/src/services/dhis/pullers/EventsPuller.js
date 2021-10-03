@@ -11,39 +11,6 @@ export class EventsPuller {
     this.translator = translator;
   }
 
-  /**
-   * This is a deprecated method which invokes a slow DHIS2 api ('/events')
-   * and returns an obsolete data structure (equivalent to the raw DHIS2 events).
-   * It is invoked using the `options.useDeprecatedApi` flag
-   *
-   * TODO Delete this method as soon as all its past consumers have migrated over to
-   * the new (non-deprecated) method
-   */
-  pullEventsForApi_Deprecated = async (api, programCode, options) => {
-    const {
-      organisationUnitCodes = [],
-      orgUnitIdScheme,
-      startDate,
-      endDate,
-      eventId,
-      trackedEntityInstance,
-    } = options;
-
-    const events = await api.getEvents({
-      programCode,
-      dataElementIdScheme: 'code',
-      organisationUnitCode: organisationUnitCodes[0],
-      dataValueFormat: 'object',
-      orgUnitIdScheme,
-      startDate,
-      endDate,
-      eventId,
-      trackedEntityInstance,
-    });
-
-    return this.translator.translateInboundEvents(events, programCode);
-  };
-
   pullEventsForApi = async (api, programCode, options) => {
     const { dataElementCodes = [], organisationUnitCodes, period, startDate, endDate } = options;
 
@@ -78,15 +45,9 @@ export class EventsPuller {
     const [dataSource] = dataSources;
     const { code: programCode } = dataSource;
 
-    // TODO remove `useDeprecatedApi` option as soon as `pullEventsForApi_Deprecated()` is deleted
-    const { useDeprecatedApi = false } = options;
-    const pullEventsForApi = useDeprecatedApi
-      ? this.pullEventsForApi_Deprecated
-      : this.pullEventsForApi;
-
     const events = [];
     const pullForApi = async api => {
-      const newEvents = await pullEventsForApi(api, programCode, options);
+      const newEvents = await this.pullEventsForApi(api, programCode, options);
       events.push(...newEvents);
     };
 
