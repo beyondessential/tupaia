@@ -172,28 +172,6 @@ const clampValue = (value, config) => {
   return clampedValue;
 };
 
-export function flattenMeasureHierarchy(measureHierarchy) {
-  const results = [];
-  const flattenGroupedMeasure = ({ children }) => {
-    children.forEach(childObject => {
-      if (childObject.children && childObject.children.length) {
-        flattenGroupedMeasure(childObject);
-      } else {
-        results.push(childObject);
-      }
-    });
-  };
-  measureHierarchy.forEach(measure => {
-    if (measure.children) {
-      flattenGroupedMeasure(measure);
-    } else {
-      results.push(measure);
-    }
-  });
-
-  return results;
-}
-
 export function processMeasureInfo(response) {
   const { measureOptions, measureData, ...rest } = response;
   const hiddenMeasures = {};
@@ -323,22 +301,3 @@ export const calculateRadiusScaleFactor = measureData => {
 export function flattenNumericalMeasureData(measureData, key) {
   return measureData.map(v => parseFloat(v[key])).filter(x => !isNaN(x));
 }
-
-export const getMeasureFromHierarchy = (measureHierarchy, measureIdString) => {
-  if (!measureIdString) {
-    return null;
-  }
-
-  const targetMeasureIds = measureIdString.split(',');
-  const flattenedMeasures = flattenMeasureHierarchy(measureHierarchy);
-
-  return flattenedMeasures.find(({ measureId }) => {
-    const measureIds = measureId.split(',');
-    // check if all the measureIds match with the id we want to find (there can be more than 1 id in measureId if they are linked measures)
-    return targetMeasureIds.every(targetMeasureId => measureIds.includes(targetMeasureId));
-  });
-};
-
-export const isMeasureHierarchyEmpty = measureHierarchy => {
-  return flattenMeasureHierarchy(measureHierarchy).length === 0;
-};

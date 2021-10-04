@@ -20,12 +20,12 @@
     "orgUnit": "TO"
   },
   {
-    "id": "173,89",
+    "id": "89",
     "project": "explore",
     "orgUnit": "TO"
   },
   {
-    "id": "192,198",
+    "id": "198",
     "project": "explore",
     "orgUnit": "TO"
   },
@@ -65,7 +65,7 @@
     "orgUnit": "PG"
   },
   {
-    "id": "STRIVE_CRF_Positive,STRIVE_CRF_mRDT_Tests_Radius",
+    "id": "STRIVE_CRF_Positive",
     "project": "strive",
     "orgUnit": "PG"
   },
@@ -97,11 +97,6 @@
   {
     "id": "FETP_Active_Graduates_By_District",
     "project": "fetp",
-    "orgUnit": "PG"
-  },
-  {
-    "id": "STRIVE_CRF_Positive,STRIVE_CRF_mRDT_Tests_Radius",
-    "project": "strive",
     "orgUnit": "PG"
   },
   {
@@ -140,7 +135,7 @@
     "orgUnit": "TO"
   },
   {
-    "id": "126,171",
+    "id": "126",
     "project": "fanafana",
     "orgUnit": "TO"
   },
@@ -165,7 +160,7 @@
     "orgUnit": "TO"
   },
   {
-    "id": " TO_HPU_NCD_Risk_Factory_Screening_Type_Setting_Type_Church,TO_HPU_NCD_Risk_Factory_Screening_Type_Setting_Type_Community,TO_HPU_NCD_Risk_Factory_Screening_Type_Setting_Type_School,TO_HPU_NCD_Risk_Factory_Screening_Type_Setting_Type_Workplace,TO_HPU_NCD_Risk_Factory_Screening_Type_Setting_Type_ZZZ_Total,TO_HPU_NCD_Risk_Factory_Screening_Type_Setting_Unique",
+    "id": " TO_HPU_NCD_Risk_Factory_Screening_Type_Setting_Unique",
     "project": "fanafana",
     "orgUnit": "TO"
   },

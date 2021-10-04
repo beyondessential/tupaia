@@ -11,6 +11,39 @@ import { camelKeys } from '@tupaia/utils';
 import { GETHandler } from '../GETHandler';
 import { assertBESAdminAccess } from '../../permissions';
 
+const buildReportObject = (report, legacy, permissionGroupsById) => {
+  if (legacy) {
+    return {
+      code: report.code,
+      dataBuilder: report.data_builder,
+      config: report.data_builder_config,
+      dataServices: report.data_services,
+    };
+  }
+
+  return {
+    code: report.code,
+    config: report.config,
+    permissionGroup: permissionGroupsById[report.permission_group_id]?.name || null,
+  };
+};
+
+const buildVisualisationObject = (dashboardItemObject, referencedRecords) => {
+  const { model, ...dashboardItem } = dashboardItemObject;
+  const { reportsByCode, legacyReportsByCode, permissionGroupsById } = referencedRecords;
+  const { report_code: reportCode, legacy } = dashboardItem;
+
+  const report = reportsByCode[reportCode] || legacyReportsByCode[reportCode];
+  if (!report) {
+    throw new Error(`Cannot find a report for visualisation "${dashboardItem.report_code}"`);
+  }
+
+  return {
+    dashboardItem: camelKeys(dashboardItem),
+    report: buildReportObject(report, legacy, permissionGroupsById),
+  };
+};
+
 const parseCriteria = criteria => {
   const { 'dashboard_visualisation.id': id, 'dashboard_visualisation.code': code } = criteria;
   if (!id && !code) {
@@ -20,25 +53,6 @@ const parseCriteria = criteria => {
   return {
     'dashboard_item.id': id,
     'dashboard_item.code': code,
-    legacy: false,
-  };
-};
-
-const buildVisualisationObject = (dashboardItemObject, reportsByCode, permissionGroupsById) => {
-  const { model, ...dashboardItem } = dashboardItemObject;
-  const report = reportsByCode[dashboardItem.report_code];
-  if (!report) {
-    throw new Error(`Cannot find a report for visualisation "${dashboardItem.report_code}"`);
-  }
-  const permissionGroup = permissionGroupsById[report.id]?.name || null;
-
-  return {
-    dashboardItem: camelKeys(dashboardItem),
-    report: {
-      code: report.code,
-      config: report.config,
-      permissionGroup,
-    },
   };
 };
 
@@ -64,46 +78,40 @@ export class GETDashboardVisualisations extends GETHandler {
       throw new Error('Visualisation does not exist');
     }
 
-    if (dashboardItem.legacy) {
-      throw new Error('Cannot fetch a legacy visualisation');
-    }
-
-    const [report] = await this.database.find(TYPES.REPORT, {
-      code: dashboardItem.report_code,
-    });
-
-    if (!report) {
-      throw new Error(`Cannot find report "${dashboardItem.report_code}" of the visualisation`);
-    }
-
-    const permissionGroup = await this.models.permissionGroup.findById(report.permission_group_id);
-
-    return {
-      dashboardItem: camelKeys(dashboardItem),
-      report: {
-        code: report.code,
-        config: report.config,
-        permissionGroup: permissionGroup.name,
-      },
-    };
+    const referencedRecords = await this.findReferencedRecords([dashboardItem]);
+    return buildVisualisationObject(dashboardItem, referencedRecords);
   }
 
   async findRecords(inputCriteria) {
     const criteria = parseCriteria(inputCriteria);
 
     const dashboardItems = await this.models.dashboardItem.find(criteria);
-    const reports = await this.models.report.find({
-      code: dashboardItems.map(di => di.report_code),
-    });
-    const reportsByCode = keyBy(reports, 'code');
-    const permissionGroups = await this.models.permissionGroup.find({
-      id: reports.map(r => r.permission_group_id),
-    });
-    const permissionGroupsById = keyBy(permissionGroups, 'id');
+    const referencedRecords = await this.findReferencedRecords(dashboardItems);
 
     return dashboardItems.map(dashboardItem =>
-      buildVisualisationObject(dashboardItem, reportsByCode, permissionGroupsById),
+      buildVisualisationObject(dashboardItem, referencedRecords),
     );
+  }
+
+  async findReferencedRecords(dashboardItems) {
+    const reports = await this.findReportsByLegacyValue(dashboardItems, false);
+    const legacyReports = await this.findReportsByLegacyValue(dashboardItems, true);
+    const permissionGroups = await this.models.permissionGroup.find({
+      id: reports.map(r => r.permission_group_id).filter(r => !!r),
+    });
+
+    return {
+      reportsByCode: keyBy(reports, 'code'),
+      legacyReportsByCode: keyBy(legacyReports, 'code'),
+      permissionGroupsById: keyBy(permissionGroups, 'id'),
+    };
+  }
+
+  async findReportsByLegacyValue(dashboardItems, legacy) {
+    const codes = dashboardItems.filter(di => di.legacy === legacy).map(di => di.report_code);
+    return legacy
+      ? this.models.legacyReport.find({ code: codes })
+      : this.models.report.find({ code: codes });
   }
 
   async countRecords(inputCriteria) {

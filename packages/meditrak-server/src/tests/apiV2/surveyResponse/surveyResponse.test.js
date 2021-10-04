@@ -4,6 +4,8 @@ import moment from 'moment';
 import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
 import { oneSecondSleep } from '@tupaia/utils';
 import {
+  expectErrors,
+  expectSuccess,
   randomIntBetween,
   setupDummySyncQueue,
   TestableApp,
@@ -33,19 +35,7 @@ const ENTITY_NON_CLINIC_ID = generateTestId();
 
 const questionCode = key => `TEST-${key}`;
 
-function expectSuccess(response) {
-  const { statusCode, body } = response;
-  expect(statusCode).to.equal(200);
-  expect(body.errors).to.be.undefined;
-}
-
-function expectError(response, match) {
-  const { body, statusCode } = response;
-  expect(statusCode).to.equal(400);
-  expect(body).to.have.property('errors');
-  const message = body.errors[0].error;
-  expect(message).to.match(match);
-}
+const expectError = (response, expectedError) => expectErrors(response, expectedError, 400);
 
 let surveyId;
 

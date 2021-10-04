@@ -59,6 +59,11 @@ export const codeToId = async (db, table, code) => {
   return record.rows[0] && record.rows[0].id;
 };
 
+export const nameToId = async (db, table, name) => {
+  const record = await db.runSql(`SELECT id FROM "${table}" WHERE name = '${name}'`);
+  return record.rows[0] && record.rows[0].id;
+};
+
 export const createForeignKeyConfig = (
   localTable,
   localColumn,

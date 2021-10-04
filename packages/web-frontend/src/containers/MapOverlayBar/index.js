@@ -6,7 +6,7 @@
  */
 
 /**
- * MeasureBar
+ * MapOverlayBar
  *
  * Similar to LocationBar, provides measures in a grouped listing. Measures from redux state.
  * Updates redux state with action when a measure is selected. Map listens to this part of state
@@ -19,17 +19,21 @@ import { connect } from 'react-redux';
 import shallowEqual from 'shallowequal';
 
 import { Control } from './Control';
-import { setMeasure, clearMeasure, toggleMeasureExpand, updateMeasureConfig } from '../../actions';
+import {
+  setMapOverlay,
+  clearMeasure,
+  toggleMeasureExpand,
+  updateMeasureConfig,
+} from '../../actions';
 import { HierarchyItem } from '../../components/HierarchyItem';
 import {
   selectCurrentOrgUnit,
-  selectCurrentMeasure,
+  selectCurrentMapOverlay,
   selectCurrentProject,
-  selectMeasureBarItemById,
+  selectMapOverlayById,
 } from '../../selectors';
-import { getDefaultDates, getLimits } from '../../utils/periodGranularities';
 
-export class MeasureBar extends Component {
+export class MapOverlayBar extends Component {
   constructor(props) {
     super(props);
 
@@ -44,32 +48,31 @@ export class MeasureBar extends Component {
     return true;
   }
 
-  handleSelectMeasure = measure => {
+  handleSelectMapOverlay = mapOverlay => {
     if (this.state.hasNeverBeenChanged) {
       this.setState({
         hasNeverBeenChanged: false,
       });
     }
 
-    this.props.onSelectMeasure(measure);
+    this.props.onSelectMapOverlay(mapOverlay);
   };
 
   renderDefaultMeasure() {
-    const { currentMeasure, currentOrganisationUnitCode, defaultMeasure } = this.props;
+    const { currentMapOverlayId, defaultMapOverlay } = this.props;
 
     return (
       <HierarchyItem
         nestedMargin="0px"
-        label={defaultMeasure.name}
-        isSelected={currentMeasure.measureId === defaultMeasure.measureId}
-        onClick={() => this.handleSelectMeasure(defaultMeasure, currentOrganisationUnitCode)}
+        label={defaultMapOverlay.name}
+        isSelected={currentMapOverlayId === defaultMapOverlay.mapOverlayId}
+        onClick={() => this.handleSelectMapOverlay(defaultMapOverlay)}
       />
     );
   }
 
   renderNestedHierarchyItems(children) {
-    const { currentMeasure, currentOrganisationUnitCode, onClearMeasure } = this.props;
-
+    const { currentMapOverlayId, onClearMeasure } = this.props;
     return children.map(childObject => {
       let nestedItems;
 
@@ -81,9 +84,9 @@ export class MeasureBar extends Component {
 
       if (!childObject.children) {
         onClick =
-          childObject.measureId === currentMeasure.measureId
+          currentMapOverlayId === childObject.mapOverlayId
             ? () => onClearMeasure()
-            : () => this.handleSelectMeasure(childObject, currentOrganisationUnitCode);
+            : () => this.handleSelectMapOverlay(childObject);
       }
 
       return (
@@ -91,9 +94,9 @@ export class MeasureBar extends Component {
           label={childObject.name}
           info={childObject.info}
           isSelected={
-            childObject.children ? null : childObject.measureId === currentMeasure.measureId
+            childObject.children ? null : currentMapOverlayId === childObject.mapOverlayId
           }
-          key={childObject.measureId}
+          key={childObject.mapOverlayId}
           onClick={onClick}
           nestedItems={nestedItems}
         />
@@ -102,9 +105,9 @@ export class MeasureBar extends Component {
   }
 
   renderHierarchy() {
-    const { measureHierarchy, defaultMeasure } = this.props;
+    const { mapOverlayHierarchy, defaultMapOverlay } = this.props;
 
-    const items = measureHierarchy.map(({ name: groupName, children, info }) => {
+    const items = mapOverlayHierarchy.map(({ name: groupName, children, info }) => {
       if (!Array.isArray(children)) return null;
       const nestedItems = this.renderNestedHierarchyItems(children);
       if (nestedItems.length === 0) return null;
@@ -121,7 +124,7 @@ export class MeasureBar extends Component {
 
     return (
       <>
-        {defaultMeasure ? this.renderDefaultMeasure() : null}
+        {defaultMapOverlay?.mapOverlayId ? this.renderDefaultMeasure() : null}
         {items}
       </>
     );
@@ -136,32 +139,18 @@ export class MeasureBar extends Component {
 
   render() {
     const {
-      currentMeasure,
+      currentMapOverlay,
       isMeasureLoading,
       currentOrganisationUnitName,
       onUpdateMeasurePeriod,
     } = this.props;
     const orgName = currentOrganisationUnitName || 'Your current selection';
     const emptyMessage = `Select an area with valid data. ${orgName} has no map overlays available.`;
-
-    const defaultDates = getDefaultDates(currentMeasure);
-
-    const datePickerLimits = getLimits(
-      currentMeasure.periodGranularity,
-      currentMeasure.datePickerLimits,
-    );
-
-    const { isTimePeriodEditable = true } = currentMeasure;
-
-    const showDatePicker = isTimePeriodEditable && currentMeasure.periodGranularity;
-
+    // TODO: select multiple map overlays
     return (
       <Control
         emptyMessage={emptyMessage}
-        selectedMeasure={currentMeasure}
-        showDatePicker={showDatePicker}
-        defaultDates={defaultDates}
-        datePickerLimits={datePickerLimits}
+        selectedMapOverlay={currentMapOverlay}
         isMeasureLoading={isMeasureLoading}
         onUpdateMeasurePeriod={onUpdateMeasurePeriod}
       >
@@ -171,64 +160,78 @@ export class MeasureBar extends Component {
   }
 }
 
-const MeasureShape = PropTypes.shape({
-  measureId: PropTypes.string,
+const MapOverlayShape = PropTypes.shape({
+  mapOverlayId: PropTypes.string,
   name: PropTypes.string,
+  periodGranularity: PropTypes.string,
+  datePickerLimits: PropTypes.string,
+  isTimePeriodEditable: PropTypes.string,
 });
 
-MeasureBar.propTypes = {
-  currentMeasure: MeasureShape.isRequired,
-  measureHierarchy: PropTypes.array.isRequired,
+MapOverlayBar.propTypes = {
+  currentMapOverlayId: PropTypes.string,
+  currentMapOverlay: MapOverlayShape,
+  mapOverlayHierarchy: PropTypes.array.isRequired,
   isExpanded: PropTypes.bool.isRequired,
   isMeasureLoading: PropTypes.bool.isRequired,
-  onSelectMeasure: PropTypes.func.isRequired,
+  onSelectMapOverlay: PropTypes.func.isRequired,
   onClearMeasure: PropTypes.func.isRequired,
   onUpdateMeasurePeriod: PropTypes.func.isRequired,
-  currentOrganisationUnitCode: PropTypes.string,
   currentOrganisationUnitName: PropTypes.string,
-  defaultMeasure: MeasureShape,
+  defaultMapOverlay: MapOverlayShape,
+};
+
+MapOverlayBar.defaultProps = {
+  currentMapOverlayId: '',
+  currentOrganisationUnitName: '',
+  defaultMapOverlay: {},
+  currentMapOverlay: {},
 };
 
 const mapStateToProps = state => {
-  const { measureHierarchy, isExpanded } = state.measureBar;
+  const { mapOverlayHierarchy, isExpanded } = state.mapOverlayBar;
   const { isMeasureLoading } = state.map;
   const { isLoadingOrganisationUnit } = state.global;
 
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
-  const currentMeasure = selectCurrentMeasure(state);
+  const currentMapOverlay = selectCurrentMapOverlay(state);
+
+  const currentMapOverlayId = currentMapOverlay?.mapOverlayId;
+  // TODO: current measures in Measure Bar
+  // const currentMeasures = selectCurrentMeasures(state);
   const activeProject = selectCurrentProject(state);
 
-  const defaultMeasure = selectMeasureBarItemById(state, activeProject.defaultMeasure);
+  const defaultMapOverlay = selectMapOverlayById(state, activeProject.defaultMeasure);
 
   return {
-    currentMeasure,
-    measureHierarchy,
+    currentMapOverlay,
+    currentMapOverlayId,
+    mapOverlayHierarchy,
     isExpanded,
-    currentOrganisationUnitCode: currentOrganisationUnit.organisationUnitCode,
     currentOrganisationUnitName: currentOrganisationUnit.name,
     isMeasureLoading: isMeasureLoading || isLoadingOrganisationUnit,
-    defaultMeasure,
+    defaultMapOverlay,
   };
 };
 
 const mapDispatchToProps = dispatch => ({
   onExpandClick: () => dispatch(toggleMeasureExpand()),
   onClearMeasure: () => dispatch(clearMeasure()),
-  onSelectMeasure: measure => dispatch(setMeasure(measure.measureId)),
+  onSelectMapOverlay: mapOverlay => dispatch(setMapOverlay(mapOverlay.mapOverlayId)),
   dispatch,
 });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch } = dispatchProps;
-  const { currentMeasure } = stateProps;
+  const { currentMapOverlayId } = stateProps;
 
   return {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
     onUpdateMeasurePeriod: (startDate, endDate) =>
-      dispatch(updateMeasureConfig(currentMeasure.measureId, { startDate, endDate })),
+      dispatch(updateMeasureConfig(currentMapOverlayId, { startDate, endDate })),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(MeasureBar);
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(MapOverlayBar);
