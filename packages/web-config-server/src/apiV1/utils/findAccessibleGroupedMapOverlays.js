@@ -158,10 +158,13 @@ const sortMapOverlayItems = (mapOverlayItems, relations) => {
 const translateOverlaysForResponse = mapOverlays =>
   mapOverlays
     .filter(({ presentationOptions: { hideFromMenu } }) => !hideFromMenu)
-    .map(({ id, name, presentationOptions }) => ({
+    .map(({ id, name, presentationOptions, report_code: reportCode, dataElementCode, legacy }) => ({
       id, // just for sorting purpose, will be removed later
       name,
       ...presentationOptions,
+      reportCode,
+      dataElementCode,
+      legacy,
     }));
 
 /**
