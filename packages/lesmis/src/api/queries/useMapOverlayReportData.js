@@ -34,7 +34,7 @@ const getMeasureDataFromResponse = (overlay, measureDataResponse) => {
     {
       measureLevel,
       type: displayType,
-      key: dataElementCode,
+      key: dataElementCode || 'value',
       ...restOfOverlay,
     },
   ];
