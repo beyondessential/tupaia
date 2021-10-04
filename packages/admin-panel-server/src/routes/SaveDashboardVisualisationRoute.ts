@@ -46,7 +46,6 @@ export class SaveDashboardVisualisationRoute extends Route<SaveDashboardVisualis
       draftReportValidator,
     );
     const body = extractor.getDashboardVisualisationResource(PreviewMode.PRESENTATION);
-    body.dashboardItem.legacy = false;
 
     let result;
 
