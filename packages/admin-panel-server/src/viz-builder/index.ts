@@ -4,4 +4,4 @@
  */
 
 export * from './dashboardVisualisation';
-export { DashboardVisualisationObject, PreviewMode } from './types';
+export * from './types';

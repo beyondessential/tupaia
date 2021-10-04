@@ -19,6 +19,7 @@ import { useEntitiesData } from './useEntitiesData';
 import { yearToApiDates } from './utils';
 import { useUrlSearchParam } from '../../utils/useUrlSearchParams';
 import { useMapOverlaysData, findOverlay } from './useMapOverlaysData';
+import { COUNTRY_CODE } from '../../constants';
 import { get } from '../api';
 
 const getMeasureDataFromResponse = (overlay, measureDataResponse) => {
@@ -47,14 +48,10 @@ const getMeasureDataFromResponse = (overlay, measureDataResponse) => {
   };
 };
 
-const processMeasureInfo = ({ serieses, measureData, ...rest }) => {
-  const processedSerieses = serieses.map(series => {
+const processSerieses = (serieses, measureData) =>
+  serieses.map(series => {
     const { values: mapOptionValues, type } = series;
-
-    // assign colors
     const values = autoAssignColors(mapOptionValues);
-
-    // value mapping
     const valueMapping = createValueMapping(values, type);
 
     if (SPECTRUM_MEASURE_TYPES.includes(type)) {
@@ -89,13 +86,6 @@ const processMeasureInfo = ({ serieses, measureData, ...rest }) => {
       valueMapping,
     };
   });
-
-  return {
-    serieses: processedSerieses,
-    measureData,
-    ...rest,
-  };
-};
 
 const processMeasureData = ({
   entityType,
@@ -165,15 +155,15 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
   };
 
   const { data: measureDataResponse, isLoading: measureDataLoading } = useQuery(
-    ['mapOverlay', entityCode, selectedOverlay, params],
+    ['mapOverlay', COUNTRY_CODE, selectedOverlay, params],
     () =>
-      get(`report/${entityCode}/${reportCode}`, {
+      get(`report/${COUNTRY_CODE}/${reportCode}`, {
         params,
       }),
     {
       staleTime: 60 * 60 * 1000,
       refetchOnWindowFocus: false,
-      enabled: !!entityCode && !!reportCode && !!overlay,
+      enabled: !!reportCode && !!overlay,
     },
   );
 
@@ -206,8 +196,10 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
     [setHiddenValues],
   );
 
-  // processMeasureInfo
-  const processedMeasureInfo = measureData ? processMeasureInfo(measureData) : null;
+  // processSerieses
+  const processedSerieses = measureData
+    ? processSerieses(measureData.serieses, measureData.measureData)
+    : null;
 
   // processMeasureData
   const processedMeasureData =
@@ -217,14 +209,14 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
           measureLevel: measureData.measureLevel,
           measureData: measureData.measureData,
           entitiesData,
-          serieses: processedMeasureInfo.serieses,
+          serieses: processedSerieses,
           hiddenValues,
         })
       : null;
 
   return {
     isLoading: entitiesLoading || measureDataLoading || overlaysLoading,
-    data: { ...measureData, ...processedMeasureInfo, measureData: processedMeasureData },
+    data: { ...measureData, serieses: processedSerieses, measureData: processedMeasureData },
     entityData,
     hiddenValues,
     setValueHidden,

@@ -18,14 +18,16 @@ import {
   DashboardVisualisationExtractor,
   draftDashboardItemValidator,
   draftReportValidator,
+  legacyReportValidator,
+  PreviewMode,
 } from '../viz-builder';
-import {
+import type {
   Dashboard,
   DashboardRecord,
-  DashboardRelationObject,
+  DashboardRelation,
   DashboardRelationRecord,
-  DashboardVisualisationResource,
-} from '../viz-builder/types';
+  DashboardVizResource,
+} from '../viz-builder';
 
 const importFileSchema = yup.object().shape(
   {
@@ -59,12 +61,13 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
 
     const { dashboards = [], dashboardRelations = [], ...visualisation } = this.readFileContents();
 
+    const reportValidator = visualisation?.legacy ? legacyReportValidator : draftReportValidator;
     const extractor = new DashboardVisualisationExtractor(
       visualisation,
       draftDashboardItemValidator,
-      draftReportValidator,
+      reportValidator,
     );
-    const extractedViz = extractor.getDashboardVisualisationResource();
+    const extractedViz = extractor.getDashboardVisualisationResource(PreviewMode.PRESENTATION);
     const existingId = await this.findExistingVisualisationId(visualisation);
 
     const id = existingId
@@ -97,9 +100,9 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
     return viz?.dashboardItem?.id;
   };
 
-  private createVisualisation = async (visualisation: DashboardVisualisationResource) => {
+  private createVisualisation = async (visualisation: DashboardVizResource) => {
     await this.meditrakConnection.createResource('dashboardVisualisations', {}, visualisation);
-    const [viz]: DashboardVisualisationResource[] = await this.meditrakConnection.fetchResources(
+    const [viz]: DashboardVizResource[] = await this.meditrakConnection.fetchResources(
       'dashboardVisualisations',
       {
         filter: {
@@ -126,7 +129,7 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
   private upsertDashboardsAndRelations = async (
     vizId: string,
     dashboards: Dashboard[],
-    dashboardRelations: DashboardRelationObject[],
+    dashboardRelations: DashboardRelation[],
   ) => {
     await this.upsertDashboards(dashboards.map(d => snakeKeys(d)));
     const dashboardRecords = await this.meditrakConnection.fetchResources('dashboards', {
