@@ -24,6 +24,7 @@ import {
   clearMeasure,
   toggleMeasureExpand,
   updateMeasureConfig,
+  setDisplayedMapOverlay,
 } from '../../actions';
 import { HierarchyItem } from '../../components/HierarchyItem';
 import {
@@ -212,7 +213,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onExpandClick: () => dispatch(toggleMeasureExpand()),
-    onSetMapOverlay: mapOverlayIds => dispatch(setMapOverlay(mapOverlayIds)),
+    onSetMapOverlay: mapOverlayIds => {
+      dispatch(setMapOverlay(mapOverlayIds.join(',')));
+      dispatch(setDisplayedMapOverlay(mapOverlayIds));
+    },
     onClearMeasure: () => dispatch(clearMeasure()),
     dispatch,
   };
@@ -222,20 +226,18 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch, onSetMapOverlay, onClearMeasure } = dispatchProps;
   const { currentMapOverlayIds } = stateProps;
   const onSelectMapOverlay = mapOverlayId => {
-    onSetMapOverlay(
-      [
-        // Only two map overlays can be selected at the same time
-        ...(currentMapOverlayIds.length === 2 ? [currentMapOverlayIds[1]] : currentMapOverlayIds),
-        mapOverlayId,
-      ].join(','),
-    );
+    onSetMapOverlay([
+      // Only two map overlays can be selected at the same time
+      ...(currentMapOverlayIds.length === 2 ? [currentMapOverlayIds[1]] : currentMapOverlayIds),
+      mapOverlayId,
+    ]);
   };
   const onUnSelectMapOverlay = mapOverlayId => {
     const updatedMapOverlayIds = currentMapOverlayIds.filter(
       currentMapOverlayId => currentMapOverlayId !== mapOverlayId,
     );
     if (updatedMapOverlayIds.length > 0) {
-      onSetMapOverlay(updatedMapOverlayIds.join(','));
+      onSetMapOverlay(updatedMapOverlayIds);
     } else {
       onClearMeasure();
     }

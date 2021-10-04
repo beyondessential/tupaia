@@ -35,6 +35,7 @@ export const CHANGE_SIDE_BAR_CONTRACTED_WIDTH = 'CHANGE_SIDE_BAR_CONTRACTED_WIDT
 export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
 export const CLEAR_MAP_OVERLAY_HIERARCHY = 'CLEAR_MAP_OVERLAY_HIERARCHY';
 export const SET_MAP_OVERLAY = 'SET_MAP_OVERLAY';
+export const SET_DISPLAYED_MAP_OVERLAY = 'SET_DISPLAYED_MAP_OVERLAY';
 export const UPDATE_MEASURE_CONFIG = 'UPDATE_MEASURE_CONFIG';
 export const REQUEST_ORG_UNIT = 'REQUEST_ORG_UNIT';
 export const FETCH_ORG_UNIT = 'FETCH_ORG_UNIT';
@@ -530,6 +531,17 @@ export function changeBounds(bounds) {
 export function setMapOverlay(mapOverlayIds) {
   return {
     type: SET_MAP_OVERLAY,
+    mapOverlayIds,
+  };
+}
+
+/**
+ * Works with switching on map overlay button.
+ * @param {array} mapOverlayIds
+ */
+export function setDisplayedMapOverlay(mapOverlayIds) {
+  return {
+    type: SET_DISPLAYED_MAP_OVERLAY,
     mapOverlayIds,
   };
 }

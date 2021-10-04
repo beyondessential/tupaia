@@ -8,7 +8,11 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { createSelector } from 'reselect';
 import { TileLayer, MarkerLayer, LeafletMap } from '@tupaia/ui-components/lib/map';
-import { checkBoundsDifference, organisationUnitIsArea } from '../../utils';
+import {
+  checkBoundsDifference,
+  flattenMapOverlayHierarchy,
+  organisationUnitIsArea,
+} from '../../utils';
 import { DemoLand } from './DemoLand';
 import { ConnectedPolygon } from './ConnectedPolygon';
 import { DisasterLayer } from './DisasterLayer';
@@ -67,17 +71,15 @@ class MapComponent extends Component {
     const {
       currentOrganisationUnit,
       displayedChildren,
-      measureInfo,
+      mapOverlayIds,
+      measureOptions,
       measureData,
       position,
       tileSetUrl,
       sidePanelWidth,
     } = this.props;
 
-    if (
-      JSON.stringify(nextProps.measureInfo.mapOverlayIds) !==
-      JSON.stringify(measureInfo.mapOverlayIds)
-    ) {
+    if (JSON.stringify(nextProps.mapOverlayIds) !== JSON.stringify(mapOverlayIds)) {
       return true;
     }
 
@@ -99,6 +101,8 @@ class MapComponent extends Component {
     if (nextProps.sidePanelWidth !== sidePanelWidth) return true;
 
     if (JSON.stringify(nextProps.position) !== JSON.stringify(position)) return true;
+
+    if (JSON.stringify(nextProps.measureOptions) !== JSON.stringify(measureOptions)) return true;
 
     if (JSON.stringify(nextProps.measureData) !== JSON.stringify(measureData)) return true;
 
@@ -142,20 +146,19 @@ class MapComponent extends Component {
       getChildren,
       measureData,
       onChangeOrgUnit,
-      measureInfo,
+      measureOptions,
       position,
       shouldSnapToPosition,
       sidePanelWidth,
       tileSetUrl,
     } = this.props;
 
-    const { measureOptions } = measureInfo;
-
     // Only show data with valid coordinates. Note: this also removes region data
     const processedData = measureData.filter(
       ({ coordinates }) => coordinates && coordinates.length === 2,
     );
 
+    console.log('measureOptions', measureOptions);
     return (
       <StyledMap
         onClick={onCloseDropdownOverlays}
@@ -211,7 +214,8 @@ MapComponent.propTypes = {
   displayedChildren: PropTypes.arrayOf(PropTypes.object),
   getChildren: PropTypes.func.isRequired,
   measureData: PropTypes.array,
-  measureInfo: PropTypes.object.isRequired,
+  mapOverlayIds: PropTypes.array.isRequired,
+  measureOptions: PropTypes.array.isRequired,
   position: PropTypes.shape({
     center: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     bounds: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
@@ -237,8 +241,38 @@ const selectMeasureDataWithCoordinates = createSelector([measureData => measureD
   })),
 );
 
+const selectMeasureOptionsBySelectedMapOverlays = createSelector([state => state], state => {
+  const { displayedMapOverlays, measureInfo } = state.map;
+  const { measureOptions } = measureInfo;
+  const { mapOverlayHierarchy } = state.mapOverlayBar;
+  const hierarchyMapOverlays = flattenMapOverlayHierarchy(mapOverlayHierarchy);
+  const displayedMeasures = hierarchyMapOverlays
+    .map(hierarchyMapOverlay =>
+      displayedMapOverlays.includes(hierarchyMapOverlay.mapOverlayId)
+        ? hierarchyMapOverlay.measureIds
+        : [],
+    )
+    .flat();
+
+  if (!measureOptions) {
+    return undefined;
+  }
+  const displayedMeasureOptions = measureOptions.filter(({ key }) =>
+    displayedMeasures.includes(key),
+  );
+
+  return displayedMeasureOptions.length > 0 ? displayedMeasureOptions : undefined;
+});
+
 const mapStateToProps = state => {
-  const { isAnimating, shouldSnapToPosition, position, measureInfo } = state.map;
+  const {
+    isAnimating,
+    shouldSnapToPosition,
+    position,
+    measureInfo,
+    displayedMapOverlays,
+  } = state.map;
+  const { mapOverlayIds } = measureInfo;
   const { isSidePanelExpanded } = state.global;
   const { contractedWidth, expandedWidth } = state.dashboard;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
@@ -268,6 +302,8 @@ const mapStateToProps = state => {
     selectRenderedMeasuresWithDisplayInfo(state),
   );
 
+  const measureOptions = selectMeasureOptionsBySelectedMapOverlays(state);
+
   const getChildren = organisationUnitCode => selectOrgUnitChildren(state, organisationUnitCode);
 
   return {
@@ -280,7 +316,9 @@ const mapStateToProps = state => {
       state,
       currentOrganisationUnit.organisationUnitCode,
     ),
-    measureInfo,
+    mapOverlayIds,
+    measureOptions,
+    displayedMapOverlays,
     getChildren,
     measureOrgUnits,
     tileSetUrl: selectActiveTileSet(state).url,

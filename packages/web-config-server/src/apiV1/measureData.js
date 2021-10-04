@@ -183,11 +183,11 @@ export default class extends DataAggregatingRouteHandler {
     const { code } = this.entity;
     const { mapOverlayIds: mapOverlayIdsStr } = this.query;
     const mapOverlayIds = mapOverlayIdsStr.split(',');
-    const overlays = await this.models.mapOverlay.findMeasuresByIds(mapOverlayIds);
+    const measures = await this.models.mapOverlay.findMeasuresByIds(mapOverlayIds);
 
     // check permission
     await Promise.all(
-      overlays.map(async ({ userGroup }) => {
+      measures.map(async ({ userGroup }) => {
         const isUserAllowedMeasure = await this.req.userHasAccess(code, userGroup);
         if (!isUserAllowedMeasure) {
           throw new CustomError(accessDeniedForMeasure);
@@ -197,14 +197,14 @@ export default class extends DataAggregatingRouteHandler {
     // start fetching actual data
     const shouldFetchSiblings = this.query.shouldShowAllParentCountryResults === 'true';
     const responseData = await Promise.all(
-      overlays.map(o => this.fetchMeasureData(o, shouldFetchSiblings)),
+      measures.map(o => this.fetchMeasureData(o, shouldFetchSiblings)),
     );
-    const { period, measureData } = buildMeasureData(overlays, responseData);
-    const measureOptions = await this.fetchMeasureOptions(overlays, measureData, mapOverlayIds);
+    const { period, measureData } = buildMeasureData(measures, responseData);
+    const measureOptions = await this.fetchMeasureOptions(measures, measureData, mapOverlayIds);
 
     return {
       mapOverlayIds,
-      measureLevel: getMeasureLevel(overlays),
+      measureLevel: getMeasureLevel(measures),
       measureOptions,
       serieses: measureOptions,
       measureData,

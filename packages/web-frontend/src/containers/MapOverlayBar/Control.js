@@ -73,7 +73,6 @@ export const Control = ({
   children,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [checked, setChecked] = useState(false);
   const isMeasureSelected = selectedMapOverlays.length > 0;
   const toggleMeasures = useCallback(() => {
     if (isExpanded) {
@@ -92,16 +91,15 @@ export const Control = ({
       </Header>
       {isMeasureSelected ? (
         selectedMapOverlays.map(mapOverlay => (
-          <Fade in={checked}>
-            <TitleAndDatePicker
-              mapOverlay={mapOverlay}
-              onUpdateMeasurePeriod={onUpdateMeasurePeriod}
-              isExpanded={isExpanded}
-              isMeasureSelected={isMeasureSelected}
-              toggleMeasures={toggleMeasures}
-              isMeasureLoading={isMeasureLoading}
-            />
-          </Fade>
+          <TitleAndDatePicker
+            key={mapOverlay.mapOverlayId}
+            mapOverlay={mapOverlay}
+            onUpdateMeasurePeriod={onUpdateMeasurePeriod}
+            isExpanded={isExpanded}
+            isMeasureSelected={isMeasureSelected}
+            toggleMeasures={toggleMeasures}
+            isMeasureLoading={isMeasureLoading}
+          />
         ))
       ) : (
         <Content>

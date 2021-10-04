@@ -25,6 +25,7 @@ import {
   CLEAR_MEASURE,
   UPDATE_MEASURE_CONFIG,
   SET_PROJECT,
+  SET_DISPLAYED_MAP_OVERLAY,
 } from '../actions';
 
 import { MARKER_TYPES } from '../constants';
@@ -139,6 +140,17 @@ function isMeasureLoading(state = false, action) {
   }
 }
 
+function displayedMapOverlays(state = [], action) {
+  switch (action.type) {
+    case SET_MAP_OVERLAY:
+      return action.mapOverlayIds.split(',');
+    case SET_DISPLAYED_MAP_OVERLAY:
+      return action.mapOverlayIds;
+    default:
+      return state;
+  }
+}
+
 function popup(state = null, action) {
   switch (action.type) {
     case OPEN_MAP_POPUP:
@@ -217,4 +229,5 @@ export default combineReducers({
   popup,
   shouldSnapToPosition,
   isMeasureLoading,
+  displayedMapOverlays,
 });
