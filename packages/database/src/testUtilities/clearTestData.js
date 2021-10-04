@@ -32,6 +32,7 @@ const TABLES_TO_CLEAR = [
   'dashboard_relation',
   'dashboard',
   'dashboard_item',
+  'report',
   'legacy_report',
   'ancestor_descendant_relation',
   'entity_relation',
