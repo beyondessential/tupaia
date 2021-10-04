@@ -4,7 +4,11 @@
  */
 
 import { Aggregator as BaseAggregator } from '@tupaia/aggregator';
-import { getDefaultPeriod, convertPeriodStringToDateRange, convertDateRangeToPeriodString } from '@tupaia/utils';
+import {
+  getDefaultPeriod,
+  convertPeriodStringToDateRange,
+  convertDateRangeToPeriodString,
+} from '@tupaia/utils';
 import { Event, AggregationObject } from '../types';
 
 type PeriodParams = {
