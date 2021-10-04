@@ -45,15 +45,7 @@ export const MarkerLayer = ({ measureData, serieses, onChangeOrgUnit }) => {
     <LayerGroup>
       {data.map(measure =>
         measure.region ? (
-          <ShadedPolygon
-            key={measure.organisationUnitCode}
-            positions={measure.region}
-            pathOptions={{
-              color: measure.color,
-              fillColor: measure.color,
-            }}
-            {...measure}
-          >
+          <ShadedPolygon key={measure.organisationUnitCode} positions={measure.region} {...measure}>
             <AreaTooltip text={getTooltipText(measure, serieses)} />
           </ShadedPolygon>
         ) : (
