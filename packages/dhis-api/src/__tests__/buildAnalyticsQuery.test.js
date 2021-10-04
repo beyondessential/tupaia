@@ -7,10 +7,17 @@ import { buildDataValueAnalyticsQueries, buildEventAnalyticsQuery } from '../bui
 import { assertDhisDimensionHasMembers } from './helpers';
 
 const assertArrayHasDimensionWithMembers = (array, dimensionKey, members) => {
-  const errorMessage = `Array does not include a '${dimensionKey}' dimension with the target members`;
+  /**
+   * Note: Due to incompatibility with jest-expected-message and jest 27+ we are disabling
+   * the custom error messages for these tests. Will re-instate once the fix gets merged:
+   *  https://github.com/mattphillips/jest-expect-message/pull/40
+   */
+
+  // const errorMessage = `Array does not include a '${dimensionKey}' dimension with the target members`;
 
   const dimensions = array.filter(item => item.startsWith(`${dimensionKey}:`));
-  expect(dimensions.length, errorMessage).toBeGreaterThan(0);
+  // expect(dimensions.length, errorMessage).toBeGreaterThan(0);
+  expect(dimensions.length).toBeGreaterThan(0);
 
   const results = dimensions.some(dimension => {
     try {
@@ -21,7 +28,8 @@ const assertArrayHasDimensionWithMembers = (array, dimensionKey, members) => {
 
     return true;
   });
-  expect(results, errorMessage).toBe(true);
+  // expect(results, errorMessage).toBe(true);
+  expect(results).toBe(true);
 };
 
 describe('buildAnalyticsQuery', () => {

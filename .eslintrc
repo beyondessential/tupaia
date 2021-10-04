@@ -13,6 +13,7 @@
           "**/tests/**",
           "**/__tests__/**",
           "jest.setup.js",
+          "**/packages/database/src/testUtilities/**",
           "**/packages/psss/src/api/FakeApi.js",
           "**/packages/psss/src/utils/test-utils.js",
           "**/packages/ui-components/helpers/testingRenderer.js",

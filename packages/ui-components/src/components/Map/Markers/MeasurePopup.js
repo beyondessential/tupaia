@@ -30,7 +30,7 @@ export const MeasurePopup = React.memo(({ markerData, serieses, onOrgUnitClick }
       coordinates={coordinates}
       onDetailButtonClick={onOrgUnitClick ? () => onOrgUnitClick(organisationUnitCode) : null}
     >
-      <PopupDataItemList measureOptions={serieses} data={markerData} />
+      <PopupDataItemList measureOptions={serieses} data={markerData} showNoDataLabel />
     </PopupMarker>
   );
 });

@@ -21,7 +21,7 @@
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
     "storybook": "start-storybook -s ./public -p 6006",
-    "test": "jest --env=jest-environment-jsdom-sixteen",
+    "test": "jest --env=jsdom",
     "test:coverage": "yarn test --coverage",
     "test:watch": "yarn test --watch"
   },

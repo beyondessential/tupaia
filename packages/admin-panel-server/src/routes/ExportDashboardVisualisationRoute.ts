@@ -10,19 +10,21 @@ import { keyBy } from 'lodash';
 import { camelKeys } from '@tupaia/utils';
 import { Route } from '@tupaia/server-boilerplate';
 import { MeditrakConnection } from '../connections';
-import { DashboardVisualisationCombiner, DashboardVisualisationObject } from '../viz-builder';
-import {
+import { combineVisualisation } from '../viz-builder';
+import type {
   Dashboard,
-  DashboardRecord,
   DashboardItemRecord,
-  DashboardRelationObject,
+  DashboardRecord,
+  DashboardRelation,
   DashboardRelationRecord,
-} from '../viz-builder/types';
+  DashboardVizResource,
+  DashboardViz,
+} from '../viz-builder';
 
 export type ExportDashboardVisualisationRequest = Request<
   { dashboardVisualisationId?: string },
-  { contents: DashboardVisualisationObject; filePath: string; type: string },
-  { visualisation: DashboardVisualisationObject },
+  { contents: DashboardViz; filePath: string; type: string },
+  { visualisation: DashboardViz },
   Record<string, any>
 >;
 
@@ -104,18 +106,10 @@ export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisu
   };
 
   private buildDashboardItemVisualisation = async (dashboardItem: DashboardItemRecord) => {
-    if (dashboardItem.legacy) {
-      return dashboardItem;
-    }
-
-    const visualisation = await this.meditrakConnection.fetchResources(
+    const vizResource: DashboardVizResource = await this.meditrakConnection.fetchResources(
       `dashboardVisualisations/${dashboardItem.id}`,
     );
-    const combiner = new DashboardVisualisationCombiner(
-      visualisation.dashboardItem,
-      visualisation.report,
-    );
-    return combiner.getVisualisation();
+    return combineVisualisation(vizResource);
   };
 
   private buildDashboardsAndRelations = async (dashboardItem: DashboardItemRecord) => {
@@ -147,8 +141,8 @@ export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisu
     );
 
     return {
-      dashboards: dashboards as Dashboard[],
-      dashboardRelations: dashboardRelations as DashboardRelationObject[],
+      dashboards: dashboards as Omit<Dashboard, 'id'>[],
+      dashboardRelations: dashboardRelations as DashboardRelation[],
     };
   };
 }

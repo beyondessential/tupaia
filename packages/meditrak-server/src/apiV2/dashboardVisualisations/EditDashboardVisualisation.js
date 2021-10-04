@@ -9,23 +9,53 @@ import { ObjectValidator, constructRecordExistsWithId } from '@tupaia/utils';
 import { EditHandler } from '../EditHandler';
 import { assertBESAdminAccess } from '../../permissions';
 
+const isFieldUpdated = (oldObject, newObject, fieldName) =>
+  newObject[fieldName] !== undefined && newObject[fieldName] !== oldObject[fieldName];
+
+const buildReport = async (models, reportRecord) => {
+  const { code, permission_group: permissionGroupName, config } = reportRecord;
+  const permissionGroup = await models.permissionGroup.findOne({ name: permissionGroupName });
+
+  return {
+    code,
+    config,
+    permission_group_id: permissionGroup.id,
+  };
+};
+
 export class EditDashboardVisualisation extends EditHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(assertBESAdminAccess);
   }
 
-  async updateReport(transactingModels, reportCode, reportObject) {
-    const { code, permission_group: permissionGroupName, config } = reportObject;
-    const permissionGroup = await transactingModels.permissionGroup.findOne({
-      name: permissionGroupName,
-    });
-    const report = {
-      code,
-      config,
-      permission_group_id: permissionGroup.id,
-    };
+  getDashboardItemRecord() {
+    return this.updatedFields.dashboardItem;
+  }
 
-    return transactingModels.report.update({ code: reportCode }, report);
+  getReportRecord() {
+    const { report, dashboardItem } = this.updatedFields;
+
+    if (dashboardItem.legacy) {
+      const { config, ...otherReportFields } = report;
+      return { ...otherReportFields, data_builder_config: config };
+    }
+    return report;
+  }
+
+  async upsertReport(models, dashboardItem, reportRecord) {
+    const dashboardItemRecord = this.getDashboardItemRecord();
+    const legacy = dashboardItemRecord.legacy ?? dashboardItem.legacy;
+    const { report_code: code } = dashboardItemRecord;
+
+    const report = legacy ? reportRecord : await buildReport(models, reportRecord);
+
+    if (isFieldUpdated(dashboardItem, dashboardItemRecord, 'legacy')) {
+      // `Legacy` value has been updated, need to use a different table for the report
+      return legacy ? models.legacyReport.create(report) : models.report.create(report);
+    }
+    return legacy
+      ? models.legacyReport.update({ code }, report)
+      : models.report.update({ code }, report);
   }
 
   async validateRecordExists() {
@@ -37,23 +67,27 @@ export class EditDashboardVisualisation extends EditHandler {
     return validator.validate({ id: this.recordId }); // Will throw an error if not valid
   }
 
-  async updateDashboardItem(transactingModels, dashboardItemCode, dashboardItemObject) {
-    return transactingModels.dashboardItem.update({ code: dashboardItemCode }, dashboardItemObject);
+  async updateDashboardItem(transactingModels, dashboardItem, dashboardItemRecord) {
+    const { code } = dashboardItem;
+    return transactingModels.dashboardItem.update({ code }, dashboardItemRecord);
   }
 
   async editRecord() {
     await this.assertPermissions(assertBESAdminAccess);
 
     return this.models.wrapInTransaction(async transactingModels => {
-      const { report: reportObject, dashboardItem: dashboardItemObject } = this.updatedFields;
-      if (dashboardItemObject.id && dashboardItemObject.id !== this.recordId) {
+      const dashboardItemRecord = this.getDashboardItemRecord();
+      const reportRecord = this.getReportRecord();
+
+      if (dashboardItemRecord.id !== undefined && dashboardItemRecord.id !== this.recordId) {
         throw new Error(`dashboardItem.id is different from resource id: ${this.recordId}`);
       }
-      const dashboardItem = await transactingModels.dashboardItem.findById(this.recordId);
-      await this.updateReport(transactingModels, dashboardItem.report_code, reportObject);
-      await this.updateDashboardItem(transactingModels, dashboardItem.code, dashboardItemObject);
 
-      return { report: reportObject, dashboardItem: dashboardItemObject };
+      const dashboardItem = await transactingModels.dashboardItem.findById(this.recordId);
+      await this.upsertReport(transactingModels, dashboardItem, reportRecord);
+      await this.updateDashboardItem(transactingModels, dashboardItem, dashboardItemRecord);
+
+      return { report: reportRecord, dashboardItem: dashboardItemRecord };
     });
   }
 }
