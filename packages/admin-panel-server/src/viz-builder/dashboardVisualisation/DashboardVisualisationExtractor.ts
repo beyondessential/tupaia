@@ -77,7 +77,7 @@ export class DashboardVisualisationExtractor<
         name,
       },
       reportCode: code,
-      legacy,
+      legacy: !!legacy,
     };
   }
 
