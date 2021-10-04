@@ -1,4 +1,4 @@
-import { AggregationObject } from '../../../../types';
+import { Aggregation } from '../../../../types';
 
 export function validateDataGroups(dataGroups: unknown): asserts dataGroups is [string] {
   if (!Array.isArray(dataGroups)) {
@@ -40,7 +40,7 @@ export function validateDataElementsForAnalytics(
 
 export function validateAggregations(
   aggregations: unknown,
-): asserts aggregations is undefined | (string | AggregationObject)[] {
+): asserts aggregations is undefined | Aggregation[] {
   if (aggregations === undefined) {
     return;
   }

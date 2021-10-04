@@ -9,7 +9,7 @@ import {
   convertPeriodStringToDateRange,
   convertDateRangeToPeriodString,
 } from '@tupaia/utils';
-import { Event, AggregationObject } from '../types';
+import { Aggregation, Event } from '../types';
 
 type PeriodParams = {
   period?: string;
@@ -18,7 +18,7 @@ type PeriodParams = {
 };
 
 export class Aggregator extends BaseAggregator {
-  aggregationToAggregationConfig = (aggregation: string | AggregationObject) =>
+  aggregationToAggregationConfig = (aggregation: Aggregation) =>
     typeof aggregation === 'string'
       ? {
           type: aggregation,
@@ -27,7 +27,7 @@ export class Aggregator extends BaseAggregator {
 
   async fetchAnalytics(
     dataElementCodes: string[],
-    aggregationList: (string | AggregationObject)[] | undefined,
+    aggregationList: Aggregation[] | undefined,
     organisationUnitCodes: string[],
     hierarchy: string | undefined,
     periodParams: PeriodParams,
@@ -53,7 +53,7 @@ export class Aggregator extends BaseAggregator {
 
   async fetchEvents(
     programCode: string,
-    aggregationList: (string | AggregationObject)[] | undefined,
+    aggregationList: Aggregation[] | undefined,
     organisationUnitCodes: string[],
     hierarchy: string | undefined,
     periodParams: PeriodParams,

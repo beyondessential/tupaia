@@ -4,7 +4,7 @@
  */
 
 import { Aggregator } from '../../../aggregator';
-import { FetchReportQuery, AggregationObject } from '../../../types';
+import { Aggregation, FetchReportQuery } from '../../../types';
 import { FetchResponse } from '../types';
 import {
   validateDataGroups,
@@ -21,7 +21,7 @@ type DataGroupParams = {
 type DataGroupFetchParams = {
   dataGroupCodes: string[];
   dataElementCodes?: string[];
-  aggregations?: (string | AggregationObject)[];
+  aggregations?: Aggregation[];
 };
 
 const fetchEvents = async (

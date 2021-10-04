@@ -182,6 +182,7 @@
       "packages/": true
     },
     "search.exclude": {
+      "**/index.esm.js": true,
       "**/logfile*.log": true,
       "**/yarn-1.18.0.js": true
     }
