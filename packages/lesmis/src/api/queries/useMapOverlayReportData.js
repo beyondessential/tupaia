@@ -28,7 +28,7 @@ const getMeasureDataFromResponse = (overlay, measureDataResponse) => {
     return measureDataResponse;
   }
 
-  const { measureId, measureLevel, displayType, dataElementCode, ...restOfOverlay } = overlay;
+  const { measureCode, measureLevel, displayType, dataElementCode, ...restOfOverlay } = overlay;
 
   const measureOptions = [
     {
@@ -40,7 +40,7 @@ const getMeasureDataFromResponse = (overlay, measureDataResponse) => {
   ];
 
   return {
-    measureId,
+    measureCode,
     measureLevel,
     measureOptions,
     serieses: measureOptions,

@@ -80,19 +80,21 @@ const accessDeniedForMeasure = {
  * }
  */
 const buildMeasureData = (overlays, resultData) => {
-  const measureDataResponsesByMeasureId = resultData.reduce((dataResponse, current) => ({
+  const measureDataResponsesByMeasureCode = resultData.reduce((dataResponse, current) => ({
     ...dataResponse,
     ...current,
   }));
-  const measureDataResponses = overlays.map(({ id, data_builder_config: measureBuilderConfig }) => {
-    const { dataElementCode = 'value' } = measureBuilderConfig ?? {};
-    const { data } = measureDataResponsesByMeasureId[id];
+  const measureDataResponses = overlays.map(
+    ({ code, data_builder_config: measureBuilderConfig }) => {
+      const { dataElementCode = 'value' } = measureBuilderConfig ?? {};
+      const { data } = measureDataResponsesByMeasureCode[code];
 
-    return data.map(obj => {
-      const { [dataElementCode]: value, ...restData } = obj;
-      return { [id]: value, ...restData };
-    });
-  });
+      return data.map(obj => {
+        const { [dataElementCode]: value, ...restData } = obj;
+        return { [code]: value, ...restData };
+      });
+    },
+  );
 
   /**
    * measureDataResponses: [
@@ -125,7 +127,7 @@ const buildMeasureData = (overlays, resultData) => {
   return {
     measureData: Object.values(measureDataByOrgUnit),
     period: getAggregatePeriod(
-      Object.values(measureDataResponsesByMeasureId).map(({ period }) => period),
+      Object.values(measureDataResponsesByMeasureCode).map(({ period }) => period),
     ),
   };
 };
@@ -172,8 +174,8 @@ export default class extends DataAggregatingRouteHandler {
 
   buildResponse = async () => {
     const { code } = this.entity;
-    const { mapOverlayId } = this.query;
-    const overlays = await this.models.mapOverlay.findMeasuresById(mapOverlayId);
+    const { mapOverlayCode } = this.query;
+    const overlays = await this.models.mapOverlay.findMeasuresByCode(mapOverlayCode);
     const overlaysWithLegacyInfo = await this.models.mapOverlay.findMeasuresWithLegacyInfo({
       'map_overlay.id': overlays.map(o => o.id),
     });
@@ -196,7 +198,7 @@ export default class extends DataAggregatingRouteHandler {
     const measureOptions = await this.fetchMeasureOptions(overlaysWithLegacyInfo, measureData);
 
     return {
-      mapOverlayId,
+      mapOverlayCode,
       measureLevel: getMeasureLevel(overlaysWithLegacyInfo),
       measureOptions,
       serieses: measureOptions,
@@ -271,7 +273,7 @@ export default class extends DataAggregatingRouteHandler {
       ...restOfMapOverlay,
       name: customLabel ?? name,
       type: displayType,
-      key: id,
+      key: code,
       periodGranularity,
       hideFromMenu: hideFromMenu || false,
       hideFromLegend: hideFromLegend || false,
@@ -318,7 +320,7 @@ export default class extends DataAggregatingRouteHandler {
   }
 
   async fetchMeasureData(mapOverlay, shouldFetchSiblings) {
-    const { id, legacy, data_services: dataServices } = mapOverlay;
+    const { code, legacy, data_services: dataServices } = mapOverlay;
 
     const entityCode = shouldFetchSiblings
       ? await this.getCountryLevelOrgUnitCode()
@@ -336,12 +338,12 @@ export default class extends DataAggregatingRouteHandler {
       } = mapOverlay;
       const { dataElementCode = 'value' } = measureBuilderConfig;
       dhisApi.injectFetchDataSourceEntities(this.fetchDataSourceEntities);
-      const buildMeasure = async (measureId, ...args) => ({
-        [measureId]: await getMeasureBuilder(measureBuilder)(...args),
+      const buildMeasure = async (measureCode, ...args) => ({
+        [measureCode]: await getMeasureBuilder(measureBuilder)(...args),
       });
 
       return buildMeasure(
-        id,
+        code,
         this.models,
         this.aggregator,
         dhisApi,
@@ -354,11 +356,11 @@ export default class extends DataAggregatingRouteHandler {
 
     // NON-LEGACY
 
-    const buildMeasure = async (measureId, ...args) => ({
-      [measureId]: await getMeasureBuilder('useReportServer')(...args),
+    const buildMeasure = async (measureCode, ...args) => ({
+      [measureCode]: await getMeasureBuilder('useReportServer')(...args),
     });
     return buildMeasure(
-      id,
+      code,
       this.models,
       this.aggregator,
       dhisApi,

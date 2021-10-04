@@ -19,28 +19,28 @@ export class MapOverlayModel extends DatabaseModel {
     return MapOverlayType;
   }
 
-  async findMeasuresById(id) {
+  async findMeasuresByCode(code) {
     const overlays = await this.find(
-      { id: [id] },
+      { code: [code] },
       {
         columns: [
-          { id: `${TYPES.MAP_OVERLAY}.id` },
+          { code: `${TYPES.MAP_OVERLAY}.code` },
           { linked_measures: `${TYPES.MAP_OVERLAY}.linked_measures` },
         ],
       },
     );
-    const measureIds = overlays
-      .map(({ id: overlayId, linked_measures: linkedMeasures }) => [
-        overlayId,
+    const measureCodes = overlays
+      .map(({ code: overlayCode, linked_measures: linkedMeasures }) => [
+        overlayCode,
         ...(linkedMeasures !== null ? linkedMeasures : []),
       ])
       .flat();
 
-    const measureResults = await this.find({ id: measureIds });
+    const measureResults = await this.find({ code: measureCodes });
     return measureResults.sort(
       (a, b) =>
-        measureIds.findIndex(measureId => measureId === a.id) -
-        measureIds.findIndex(measureId => measureId === b.id),
+        measureCodes.findIndex(measureCode => measureCode === a.code) -
+        measureCodes.findIndex(measureCode => measureCode === b.code),
     );
   }
 
