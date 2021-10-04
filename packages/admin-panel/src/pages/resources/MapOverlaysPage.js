@@ -10,8 +10,8 @@ import { prettyArray } from '../../utilities';
 
 const FIELDS = [
   {
-    Header: 'ID',
-    source: 'id',
+    Header: 'Code',
+    source: 'code',
     type: 'tooltip',
   },
   {
@@ -32,29 +32,6 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Data Element Code',
-    source: 'dataElementCode',
-    width: 170,
-  },
-  {
-    Header: 'Measure Builder',
-    source: 'measureBuilder',
-    width: 170,
-    editConfig: {
-      optionsEndpoint: 'mapOverlays',
-      optionLabelKey: 'measureBuilder',
-      optionValueKey: 'measureBuilder',
-      sourceKey: 'measureBuilder',
-    },
-  },
-  {
-    Header: 'Measure Builder Config',
-    source: 'measureBuilderConfig',
-    type: 'jsonTooltip',
-    width: 200,
-    editConfig: { type: 'jsonEditor' },
-  },
-  {
     Header: 'Linked Measures',
     source: 'linked_measures',
     width: 160,
@@ -67,7 +44,7 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Presentation Config',
+    Header: 'Config',
     source: 'config',
     type: 'jsonTooltip',
     width: 200,
@@ -98,6 +75,19 @@ const FIELDS = [
       sourceKey: 'project_codes',
       allowMultipleValues: true,
     },
+  },
+  {
+    Header: 'Report Code',
+    source: 'report_code',
+    width: 140,
+    type: 'tooltip',
+  },
+  {
+    Header: 'Legacy',
+    source: 'legacy',
+    width: 140,
+    type: 'boolean',
+    editConfig: { type: 'boolean' },
   },
 ];
 
