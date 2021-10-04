@@ -42,11 +42,10 @@ const nestedFields: (keyof NestedFilterQueryFields)[] = ['attributes_type'];
 const isNestedField = (field: keyof EntityFilterQuery): field is keyof NestedFilterQueryFields =>
   (nestedFields as (keyof EntityFilterQuery)[]).includes(field);
 
-type JsonBKey<
-  T extends keyof NestedFilterQueryFields
-> = T extends `${infer Field}${typeof NESTED_FIELD_DELIMITER}${infer Key}`
-  ? `${Field}${typeof JSONB_FIELD_DELIMITER}${Key}`
-  : T;
+type JsonBKey<T extends keyof NestedFilterQueryFields> =
+  T extends `${infer Field}${typeof NESTED_FIELD_DELIMITER}${infer Key}`
+    ? `${Field}${typeof JSONB_FIELD_DELIMITER}${Key}`
+    : T;
 
 const toJsonBKey = <T extends keyof NestedFilterQueryFields>(nestedField: T): JsonBKey<T> => {
   const [field, value] = nestedField.split(NESTED_FIELD_DELIMITER);
