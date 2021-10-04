@@ -3,36 +3,27 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import * as BuildEvents from '../../../../../services/dhis/buildAnalytics/buildEventsFromDhisEventAnalytics';
-import { DhisService } from '../../../../../services/dhis/DhisService';
-import { EventsPuller } from '../../../../../services/dhis/pullers/EventsPuller';
+import { createModelsStub, stubDhisApi } from '../DhisService.stubs';
 import { DATA_SOURCES } from '../DhisService.fixtures';
-import { createModelsStub, createDataSourceModelsStub, stubDhisApi } from '../DhisService.stubs';
+import * as BuildEvents from '../../../../services/dhis/buildAnalytics/buildEventsFromDhisEventAnalytics';
+import { EventsPuller } from '../../../../services/dhis/pullers';
+import { DhisTranslator } from '../../../../services/dhis/DhisTranslator';
 
-const dhisService = new DhisService(createModelsStub());
-const eventsPuller = new EventsPuller(createDataSourceModelsStub(), dhisService.translator);
-dhisService.analyticsPuller = eventsPuller;
-dhisService.pullers.dataGroup = eventsPuller.pull;
-let dhisApi;
+describe('EventsPuller', () => {
+  let eventsPuller;
+  let dhisApi;
 
-export const testPullEvents = () => {
   beforeEach(() => {
+    const models = createModelsStub();
+    const translator = new DhisTranslator(models);
+    eventsPuller = new EventsPuller(models.dataSource, translator);
     dhisApi = stubDhisApi();
   });
 
   it('throws an error if multiple data groups are provided', async () =>
     expect(
-      dhisService.pull([DATA_SOURCES.POP01_GROUP, DATA_SOURCES.DIFF_GROUP], 'dataGroup', {}),
+      eventsPuller.pull([dhisApi], [DATA_SOURCES.POP01_GROUP, DATA_SOURCES.DIFF_GROUP], {}),
     ).toBeRejectedWith(/Cannot .*multiple programs/));
-
-  it('invokes the modern event api by default', async () => {
-    const eventApiSpy = jest.spyOn(eventsPuller, 'pullEventsForApi');
-    const deprecatedEventApiSpy = jest.spyOn(eventsPuller, 'pullEventsForApi_Deprecated');
-
-    await dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', {});
-    expect(eventApiSpy).toHaveBeenCalledTimes(1);
-    expect(deprecatedEventApiSpy).not.toHaveBeenCalled();
-  });
 
   describe('DHIS API invocation', () => {
     const assertEventAnalyticsApiWasInvokedCorrectly = async ({
@@ -40,7 +31,7 @@ export const testPullEvents = () => {
       options = {},
       invocationArgs,
     }) => {
-      await dhisService.pull(dataSources, 'dataGroup', options);
+      await eventsPuller.pull([dhisApi], dataSources, options);
       expect(dhisApi.getEventAnalytics).toHaveBeenCalledOnceWith(invocationArgs);
     };
 
@@ -60,7 +51,7 @@ export const testPullEvents = () => {
     it('`dataElementCodes` can be empty', async () => {
       const assertErrorIsNotThrown = async dataElementCodes =>
         expect(
-          dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', { dataElementCodes }),
+          eventsPuller.pull([dhisApi], [DATA_SOURCES.POP01_GROUP], { dataElementCodes }),
         ).toResolve();
 
       return Promise.all([undefined, []].map(assertErrorIsNotThrown));
@@ -94,8 +85,8 @@ export const testPullEvents = () => {
 
     beforeAll(() => {
       buildEventsMock = jest
-        .spyOn(BuildEvents, 'buildEventsFromDhisEventAnalytics')
-        .mockReturnValue([]);
+      .spyOn(BuildEvents, 'buildEventsFromDhisEventAnalytics')
+      .mockReturnValue([]);
     });
 
     describe('buildEventsFromDhisEventAnalytics() invocation', () => {
@@ -117,7 +108,7 @@ export const testPullEvents = () => {
         dhisApi = stubDhisApi({ getEventAnalyticsResponse });
         const dataElementCodes = ['POP01', 'POP02'];
 
-        await dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', { dataElementCodes });
+        await eventsPuller.pull([dhisApi], [DATA_SOURCES.POP01_GROUP], { dataElementCodes });
         expect(buildEventsMock).toHaveBeenCalledOnceWith(
           getEventAnalyticsResponse,
           dataElementCodes,
@@ -150,7 +141,7 @@ export const testPullEvents = () => {
         dhisApi = stubDhisApi({ getEventAnalyticsResponse });
 
         const dataElementCodes = ['DIF01'];
-        await dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', { dataElementCodes });
+        await eventsPuller.pull([dhisApi], [DATA_SOURCES.POP01_GROUP], { dataElementCodes });
         expect(buildEventsMock).toHaveBeenCalledOnceWith(
           translatedEventAnalyticsResponse,
           dataElementCodes,
@@ -174,8 +165,9 @@ export const testPullEvents = () => {
       buildEventsMock.mockReturnValue(events);
 
       return expect(
-        dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup'),
+        eventsPuller.pull([dhisApi], [DATA_SOURCES.POP01_GROUP], {}),
       ).resolves.toStrictEqual(events);
     });
   });
-};
+
+});

@@ -12,6 +12,7 @@ import {
 } from '@tupaia/database';
 import { oneSecondSleep } from '@tupaia/utils';
 import {
+  expectError as baseExpectError,
   setupDummySyncQueue,
   TestableApp,
   upsertEntity,
@@ -19,12 +20,7 @@ import {
 } from '../../../testUtilities';
 import { importFile } from './helpers';
 
-function expectError(response, match) {
-  const { body, statusCode } = response;
-  expect(statusCode).to.equal(400);
-  expect(body).to.have.property('error');
-  expect(body.error).to.match(match);
-}
+const expectError = (response, expectedError) => baseExpectError(response, expectedError, 400);
 
 export const testFunctionality = async () => {
   const app = new TestableApp();
