@@ -109,4 +109,53 @@ describe('buildContext', () => {
       expect(context).toStrictEqual(expectedContext);
     });
   });
+
+  describe('dataElementCodeToName', () => {
+    it('includes dataElementCodeToName from fetched data', async () => {
+      const transform = [
+        {
+          insert: {
+            name: '=dataElementCodeToName($dataElement)',
+          },
+          transform: 'updateColumns',
+        },
+      ];
+      const analytics = [
+        { dataElement: 'BCD1', organisationUnit: 'TO', period: '20210101', value: 1 },
+        { dataElement: 'BCD2', organisationUnit: 'FJ', period: '20210101', value: 2 },
+      ];
+      const data = {
+        results: analytics,
+        metadata: {
+          dataElementCodeToName: { BCD1: 'Facility Status', BCD2: 'Reason for closure' },
+        },
+      };
+
+      const context = await buildContext(transform, reqContext, data);
+      const expectedContext = {
+        dataElementCodeToName: { BCD1: 'Facility Status', BCD2: 'Reason for closure' },
+      };
+      expect(context).toStrictEqual(expectedContext);
+    });
+
+    it('builds an empty object when using fetch events', async () => {
+      const transform = [
+        {
+          insert: {
+            name: '=dataElementCodeToName($dataElement)',
+          },
+          transform: 'updateColumns',
+        },
+      ];
+      const events = [
+        { event: 'evId1', eventDate: '2021-01-01T12:00:00', orgUnit: 'TO', orgUnitName: 'Tonga' },
+        { event: 'evId2', eventDate: '2021-01-01T12:00:00', orgUnit: 'FJ', orgUnitName: 'Fiji' },
+      ];
+      const data = { results: events };
+
+      const context = await buildContext(transform, reqContext, data);
+      const expectedContext = { dataElementCodeToName: {} };
+      expect(context).toStrictEqual(expectedContext);
+    });
+  });
 });
