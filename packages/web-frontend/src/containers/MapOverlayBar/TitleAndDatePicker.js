@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -55,6 +55,9 @@ export const TitleAndDatePickerComponent = ({
   onSetDisplayedMapOverlay,
 }) => {
   const [isSwitchedOn, setIsSwitchedOn] = useState(true);
+  useEffect(() => {
+    setIsSwitchedOn(displayedMapOverlays.includes(mapOverlay?.mapOverlayId));
+  }, [JSON.stringify(displayedMapOverlays)]);
   const switchOnChange = () => {
     if (isSwitchedOn) {
       onSetDisplayedMapOverlay(
