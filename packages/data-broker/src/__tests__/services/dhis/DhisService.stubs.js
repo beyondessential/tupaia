@@ -3,14 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import * as GetDhisApiInstance from '../../../../services/dhis/getDhisApiInstance';
+import * as GetDhisApiInstance from '../../../services/dhis/getDhisApiInstance';
 import {
   DATA_ELEMENTS_BY_GROUP,
   DATA_ELEMENTS,
   DATA_SOURCES,
   SERVER_NAME,
 } from './DhisService.fixtures';
-import { createJestMockInstance } from '../../../../../../utils/src/testUtilities';
+import { createJestMockInstance } from '../../../../../utils/src/testUtilities';
 
 const defaultAnalytics = {
   headers: [],
@@ -43,15 +43,7 @@ export const stubDhisApi = ({
 };
 
 export const createModelsStub = () => ({
-  dataSource: {
-    find: async specs =>
-      Object.values(DATA_SOURCES).filter(
-        ({ code, type }) => specs.code.includes(code) && specs.type === type,
-      ),
-    getDataElementsInGroup: async groupCode => DATA_ELEMENTS_BY_GROUP[groupCode],
-    getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
-    getDhisDataTypes: () => ({ DATA_ELEMENT: 'DataElement', INDICATOR: 'Indicator' }),
-  },
+  dataSource: createDataSourceModelsStub(),
 });
 
 export const createDataSourceModelsStub = () => ({

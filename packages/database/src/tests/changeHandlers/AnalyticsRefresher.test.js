@@ -36,10 +36,13 @@ describe('AnalyticsRefresher', () => {
   const analyticsRefresher = new AnalyticsRefresher(models);
   analyticsRefresher.setDebounceTime(REFRESH_DEBOUNCE_TIME);
 
-  const assertAnalyticsMatch = async expectedAnalytics => {
+  const assertAnalyticsMatch = async (
+    expectedAnalytics,
+    codesToFetch = TEST_DATA.question.map(q => q.code),
+  ) => {
     await models.database.waitForAllChangeHandlers();
     const analyticsInDb = await models.analytics.find({
-      data_element_code: TEST_DATA.question.map(q => q.code),
+      data_element_code: codesToFetch,
     });
     const formattedAnalyticsInDb = analyticsInDb.map(analytic => {
       const formattedAnalytic = {};
@@ -188,6 +191,79 @@ describe('AnalyticsRefresher', () => {
       }
       return analytic;
     });
+    await assertAnalyticsMatch(updatedAnalytics);
+  });
+
+  it('refreshes analytics table if surveys are updated', async () => {
+    // Update an answer, make sure analytic is updated
+    await models.survey.update(
+      {
+        id: 'survey001_test',
+      },
+      { code: 'updated_code' },
+    );
+    const updatedAnalytics = ANALYTICS.map(analytic => {
+      if (analytic.data_group_code === 'S001') {
+        return {
+          ...analytic,
+          data_group_code: 'updated_code',
+        };
+      }
+      return analytic;
+    });
+    await assertAnalyticsMatch(updatedAnalytics);
+  });
+
+  it('refreshes analytics table if entities are updated', async () => {
+    // Update an answer, make sure analytic is updated
+    await models.entity.update(
+      {
+        id: 'entity001_test',
+      },
+      { code: 'HAPPIER_LAND', name: 'The happiest land of all' },
+    );
+    const updatedAnalytics = ANALYTICS.map(analytic => {
+      if (analytic.entity_code === 'E001') {
+        return {
+          ...analytic,
+          entity_code: 'HAPPIER_LAND',
+          entity_name: 'The happiest land of all',
+        };
+      }
+      return analytic;
+    });
+    await assertAnalyticsMatch(updatedAnalytics);
+  });
+
+  it('refreshes analytics table if questions are updated', async () => {
+    // Update an answer, make sure analytic is updated
+    await models.question.update(
+      {
+        id: 'question001_test',
+      },
+      { code: 'NEW_Q' },
+    );
+    const updatedAnalytics = ANALYTICS.map(analytic => {
+      if (analytic.data_element_code === 'Q001') {
+        return {
+          ...analytic,
+          data_element_code: 'NEW_Q',
+        };
+      }
+      return analytic;
+    });
+    await assertAnalyticsMatch(updatedAnalytics, [...TEST_DATA.question.map(q => q.code), 'NEW_Q']);
+  });
+
+  it('refreshes analytics table if data sources are updated', async () => {
+    // Update an answer, make sure analytic is updated
+    await models.dataSource.update(
+      {
+        id: 'dataSource001_test',
+      },
+      { service_type: 'dhis' },
+    );
+    const updatedAnalytics = ANALYTICS.filter(analytic => analytic.data_element_code !== 'Q001');
     await assertAnalyticsMatch(updatedAnalytics);
   });
 });

@@ -5,4 +5,5 @@
 
 export { AnalyticsPuller } from './AnalyticsPuller';
 export { EventsPuller } from './EventsPuller';
+export { DeprecatedEventsPuller } from './DeprecatedEventsPuller';
 export { DataElementsMetadataPuller } from './DataElementsMetadataPuller';

@@ -15,7 +15,7 @@ export type ReqContext = {
   services: MicroServiceRequestContext['services'];
 };
 
-type ContextBuilder<K extends keyof Context> = (
+type ContextBuilder<K extends ContextProp> = (
   reqContext: ReqContext,
   data: FetchResponse,
 ) => Promise<Context[K]>;
@@ -34,8 +34,13 @@ const buildOrgUnits = async (reqContext: ReqContext, data: FetchResponse) => {
   );
 };
 
+const buildDataElementCodeToName = async (reqContext: ReqContext, data: FetchResponse) => {
+  return data.metadata?.dataElementCodeToName || {};
+};
+
 const contextBuilders: Record<ContextProp, ContextBuilder<ContextProp>> = {
   orgUnits: buildOrgUnits,
+  dataElementCodeToName: buildDataElementCodeToName,
 };
 
 function validateContextProp(key: string): asserts key is keyof typeof contextBuilders {
@@ -46,6 +51,14 @@ function validateContextProp(key: string): asserts key is keyof typeof contextBu
   }
 }
 
+const setContextValue = <Key extends ContextProp>(
+  context: Context,
+  key: Key,
+  value: Context[Key],
+) => {
+  context[key] = value;
+};
+
 export const buildContext = async (
   transform: unknown,
   reqContext: ReqContext,
@@ -53,14 +66,11 @@ export const buildContext = async (
 ): Promise<Context> => {
   const contextProps = extractContextProps(transform);
 
-  const context: Context = {
-    orgUnits: [],
-  };
+  const context: Context = {};
 
   for (const key of contextProps) {
     validateContextProp(key);
-    const builder = contextBuilders[key];
-    context[key] = await builder(reqContext, data);
+    setContextValue(context, key, await contextBuilders[key](reqContext, data));
   }
 
   return context;

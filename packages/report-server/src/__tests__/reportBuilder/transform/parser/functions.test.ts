@@ -94,6 +94,27 @@ describe('functions', () => {
         expect(parser.evaluate("=orgUnitCodeToName('WS')")).toBe(undefined);
       });
     });
+
+    describe('dataElementCodeToName', () => {
+      const context = {
+        dataElementCodeToName: {
+          FijiBCSC93: 'Haloperidol Tablets 5mg',
+          FijiBCSC61: 'Benztropine  Injection 2mg/ml',
+        },
+      };
+
+      it('converts given data element code to name', () => {
+        const parser = new TransformParser(undefined, context);
+        expect(parser.evaluate("=dataElementCodeToName('FijiBCSC93')")).toBe(
+          'Haloperidol Tablets 5mg',
+        );
+      });
+
+      it('returns undefined if the data element code is not found', () => {
+        const parser = new TransformParser(undefined, context);
+        expect(parser.evaluate("=dataElementCodeToName('BCD1')")).toBe(undefined);
+      });
+    });
   });
 
   describe('utils', () => {

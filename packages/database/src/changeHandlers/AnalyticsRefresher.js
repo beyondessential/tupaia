@@ -15,6 +15,10 @@ export class AnalyticsRefresher extends ChangeHandler {
     this.changeTranslators = {
       answer: () => [],
       surveyResponse: () => [],
+      survey: () => [],
+      entity: () => [],
+      question: () => [],
+      dataSource: () => [],
     };
   }
 
