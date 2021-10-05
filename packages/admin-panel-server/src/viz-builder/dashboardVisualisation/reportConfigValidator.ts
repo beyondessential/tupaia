@@ -1,0 +1,52 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+import { yup, yupUtils } from '@tupaia/utils';
+
+// TODO avoid duplication with report-server
+
+const periodTypeValidator = yup.mixed().oneOf(['day', 'week', 'month', 'quarter', 'year']);
+
+const createDataSourceValidator = (sourceType: 'dataElement' | 'dataGroup') => {
+  const otherSourceKey = sourceType === 'dataElement' ? 'dataGroups' : 'dataElements';
+
+  return yup
+    .array()
+    .of(yup.string())
+    .when(['$testData', otherSourceKey], {
+      is: ($testData: unknown, otherDataSource: string[]) =>
+        !$testData && (!otherDataSource || otherDataSource.length === 0),
+      then: yup.array().of(yup.string()).required('Requires "dataGroups" or "dataElements"').min(1),
+      otherwise: yup.array().of(yup.string()),
+    });
+};
+
+const dataElementValidator = createDataSourceValidator('dataElement');
+const dataGroupValidator = createDataSourceValidator('dataGroup');
+
+const dateSpecsValidator = yupUtils.polymorphic({
+  object: yup.object().shape({
+    unit: periodTypeValidator,
+    offset: yup.number(),
+    modifier: yup.mixed().oneOf(['start_of', 'end_of']),
+    modifierUnit: periodTypeValidator,
+  }),
+  string: yup.string().min(4),
+});
+
+export const reportConfigValidator = yup.object().shape({
+  fetch: yup.object().shape(
+    {
+      dataElements: dataElementValidator,
+      dataGroups: dataGroupValidator,
+      aggregations: yup.array().required(),
+      startDate: dateSpecsValidator,
+      endDate: dateSpecsValidator,
+    },
+    [['dataElements', 'dataGroups']],
+  ),
+  transform: yup.array().required(),
+  output: yup.object(),
+});
