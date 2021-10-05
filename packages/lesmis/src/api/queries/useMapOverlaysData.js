@@ -37,13 +37,13 @@ const getOverlays = (child, entityType) => {
 const processOverlaysData = (data, entityType) =>
   data.map(overlay => getOverlays(overlay, entityType)).filter(o => !!o);
 
-export const findOverlay = (overlays, id) => {
+export const findOverlay = (overlays, code) => {
   for (const overlayObject of overlays) {
-    if (overlayObject?.mapOverlayId === id) {
+    if (overlayObject?.mapOverlayCode === code) {
       return overlayObject;
     }
     if (overlayObject?.children) {
-      const result = findOverlay(overlayObject.children, id);
+      const result = findOverlay(overlayObject.children, code);
       if (result) {
         return result;
       }

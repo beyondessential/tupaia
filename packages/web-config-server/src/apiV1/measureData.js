@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import assert from 'assert';
 import { CustomError } from '@tupaia/utils';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
@@ -10,6 +11,7 @@ import { getDateRange, getAggregatePeriod } from './utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { MapOverlayPermissionsChecker } from './permissions';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
+import { reportServer } from './dataBuilders';
 
 const ADD_TO_ALL_KEY = '$all';
 
@@ -80,18 +82,22 @@ const accessDeniedForMeasure = {
  * }
  */
 const buildMeasureData = (overlays, resultData) => {
-  const measureDataResponsesByMeasureId = resultData.reduce((dataResponse, current) => ({
+  const measureDataResponsesByMeasureCode = resultData.reduce((dataResponse, current) => ({
     ...dataResponse,
     ...current,
   }));
-  const measureDataResponses = overlays.map(({ id, dataElementCode }) => {
-    const { data } = measureDataResponsesByMeasureId[id];
+  const measureDataResponses = overlays.map(
+    ({ code, data_builder_config: measureBuilderConfig }) => {
+      const { dataElementCode = 'value' } = measureBuilderConfig ?? {};
+      const { data } = measureDataResponsesByMeasureCode[code];
 
-    return data.map(obj => {
-      const { [dataElementCode]: value, ...restData } = obj;
-      return { [id]: value, ...restData };
-    });
-  });
+      // Rename the the value field from the dataElementCode to the measureCode
+      return data.map(obj => {
+        const { [dataElementCode]: measureValue, ...restData } = obj;
+        return { [code]: measureValue, ...restData };
+      });
+    },
+  );
 
   /**
    * measureDataResponses: [
@@ -124,7 +130,7 @@ const buildMeasureData = (overlays, resultData) => {
   return {
     measureData: Object.values(measureDataByOrgUnit),
     period: getAggregatePeriod(
-      Object.values(measureDataResponsesByMeasureId).map(({ period }) => period),
+      Object.values(measureDataResponsesByMeasureCode).map(({ period }) => period),
     ),
   };
 };
@@ -171,12 +177,15 @@ export default class extends DataAggregatingRouteHandler {
 
   buildResponse = async () => {
     const { code } = this.entity;
-    const { mapOverlayId } = this.query;
-    const overlays = await this.models.mapOverlay.findMeasuresById(mapOverlayId);
+    const { mapOverlayCode } = this.query;
+    const overlays = await this.models.mapOverlay.findMeasuresByCode(mapOverlayCode);
+    const overlaysWithLegacyInfo = await this.models.mapOverlay.findMeasuresWithLegacyInfo({
+      'map_overlay.id': overlays.map(o => o.id),
+    });
 
     // check permission
     await Promise.all(
-      overlays.map(async ({ permission_group: permissionGroup }) => {
+      overlaysWithLegacyInfo.map(async ({ permission_group: permissionGroup }) => {
         const isUserAllowedMeasure = await this.req.userHasAccess(code, permissionGroup);
         if (!isUserAllowedMeasure) {
           throw new CustomError(accessDeniedForMeasure);
@@ -186,14 +195,14 @@ export default class extends DataAggregatingRouteHandler {
     // start fetching actual data
     const shouldFetchSiblings = this.query.shouldShowAllParentCountryResults === 'true';
     const responseData = await Promise.all(
-      overlays.map(o => this.fetchMeasureData(o, shouldFetchSiblings)),
+      overlaysWithLegacyInfo.map(o => this.fetchMeasureData(o, shouldFetchSiblings)),
     );
-    const { period, measureData } = buildMeasureData(overlays, responseData);
-    const measureOptions = await this.fetchMeasureOptions(overlays, measureData);
+    const { period, measureData } = buildMeasureData(overlaysWithLegacyInfo, responseData);
+    const measureOptions = await this.fetchMeasureOptions(overlaysWithLegacyInfo, measureData);
 
     return {
-      mapOverlayId,
-      measureLevel: getMeasureLevel(overlays),
+      mapOverlayCode,
+      measureLevel: getMeasureLevel(overlaysWithLegacyInfo),
       measureOptions,
       serieses: measureOptions,
       measureData,
@@ -235,17 +244,18 @@ export default class extends DataAggregatingRouteHandler {
   async fetchMeasureOption(mapOverlay) {
     const {
       id, // -------------------------------- exclude these fields from the response --------------
+      code, // ------------------------------------------------------------------------------------
       country_codes: countryCodes, // -------------------------------------------------------------
       project_codes: projectCodes, // -------------------------------------------------------------
-      groupName, // -------------------------------------------------------------------------------
       permission_group: permissionGroup, // -------------------------------------------------------
       data_services: dataServices, // -------------------------------------------------------------
-      dataElementCode,
       config,
-      measureBuilderConfig,
+      data_builder_config: measureBuilderConfig,
       name,
+      legacy,
       ...restOfMapOverlay
-    } = await mapOverlay.getData();
+    } = mapOverlay;
+    const { dataElementCode = 'value' } = measureBuilderConfig ?? {};
 
     const {
       displayType,
@@ -257,8 +267,7 @@ export default class extends DataAggregatingRouteHandler {
       ...restOfPresentationConfig
     } = config;
 
-    const { dataSourceType = DATA_SOURCE_TYPES.SINGLE, periodGranularity } =
-      measureBuilderConfig || {};
+    const { periodGranularity } = measureBuilderConfig || {};
     const { startDate, endDate } = this.query;
     const dates = periodGranularity ? getDateRange(periodGranularity, startDate, endDate) : {};
 
@@ -267,11 +276,12 @@ export default class extends DataAggregatingRouteHandler {
       ...restOfMapOverlay,
       name: customLabel ?? name,
       type: displayType,
-      key: id,
+      key: code,
       periodGranularity,
       hideFromMenu: hideFromMenu || false,
       hideFromLegend: hideFromLegend || false,
       hideFromPopup: hideFromPopup || false,
+      legacy,
       ...dates,
     };
 
@@ -279,10 +289,13 @@ export default class extends DataAggregatingRouteHandler {
       return { ...baseOptions, values };
     }
     // values have not been provided locally - fetch them from DHIS2
-    const options =
-      dataSourceType === DATA_SOURCE_TYPES.SINGLE
-        ? await this.getOptionsForDataElement(mapOverlay, dataElementCode)
-        : {};
+    let options = {};
+    if (legacy === true) {
+      const { dataSourceType = DATA_SOURCE_TYPES.SINGLE } = measureBuilderConfig;
+      if (dataSourceType === DATA_SOURCE_TYPES.SINGLE) {
+        options = await this.getOptionsForDataElement(mapOverlay, dataElementCode);
+      }
+    }
 
     const translatedOptions = translateMeasureOptionSet(options, mapOverlay);
 
@@ -314,13 +327,7 @@ export default class extends DataAggregatingRouteHandler {
   }
 
   async fetchMeasureData(mapOverlay, shouldFetchSiblings) {
-    const {
-      id,
-      dataElementCode,
-      measureBuilderConfig,
-      measureBuilder,
-      data_services: dataServices,
-    } = mapOverlay;
+    const { code, legacy, data_services: dataServices } = mapOverlay;
 
     const entityCode = shouldFetchSiblings
       ? await this.getCountryLevelOrgUnitCode()
@@ -330,21 +337,44 @@ export default class extends DataAggregatingRouteHandler {
       entityCode: this.entity.code,
       isDataRegional: dataServices?.[0]?.isDataRegional,
     });
-    dhisApi.injectFetchDataSourceEntities(this.fetchDataSourceEntities);
-    const buildMeasure = async (measureId, ...args) => ({
-      [measureId]: await getMeasureBuilder(measureBuilder)(...args),
-    });
 
-    return buildMeasure(
-      id,
-      this.models,
-      this.aggregator,
-      dhisApi,
-      { ...this.query, dataElementCode },
-      { ...measureBuilderConfig, dataServices },
-      entity,
-      this.req,
-    );
+    if (legacy) {
+      const {
+        data_builder: measureBuilder,
+        data_builder_config: measureBuilderConfig,
+      } = mapOverlay;
+      assert.ok(
+        measureBuilderConfig,
+        `No data_builder_config for leagacy overlay ${mapOverlay.code}`,
+      );
+      const { dataElementCode = 'value' } = measureBuilderConfig;
+      dhisApi.injectFetchDataSourceEntities(this.fetchDataSourceEntities);
+      const buildMeasure = async (measureCode, ...args) => ({
+        [measureCode]: await getMeasureBuilder(measureBuilder)(...args),
+      });
+
+      return buildMeasure(
+        code,
+        this.models,
+        this.aggregator,
+        dhisApi,
+        { ...this.query, dataElementCode },
+        { ...measureBuilderConfig, dataServices },
+        entity,
+        this.req,
+      );
+    }
+
+    // NON-LEGACY
+    return {
+      [code]: await reportServer({
+        req: this.req,
+        models: this.models,
+        dataBuilderConfig: { reportCode: mapOverlay.report_code },
+        query: { ...this.query },
+        entity,
+      }),
+    };
   }
 }
 
