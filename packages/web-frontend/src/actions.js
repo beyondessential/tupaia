@@ -527,10 +527,10 @@ export function changeBounds(bounds) {
  * Updates the current mayOverlayId in the url.
  * @param {string} mayOverlayId
  */
-export function setMapOverlay(mapOverlayId) {
+export function setMapOverlay(mapOverlayCode) {
   return {
     type: SET_MAP_OVERLAY,
-    mapOverlayId,
+    mapOverlayCode,
   };
 }
 
@@ -539,10 +539,10 @@ export function setMapOverlay(mapOverlayId) {
  *
  * @param {object} measureConfig
  */
-export function updateMeasureConfig(mapOverlayId, measureConfig) {
+export function updateMeasureConfig(mapOverlayCode, measureConfig) {
   return {
     type: UPDATE_MEASURE_CONFIG,
-    mapOverlayId,
+    mapOverlayCode,
     measureConfig,
   };
 }
