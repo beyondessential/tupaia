@@ -11,6 +11,7 @@ import { getDateRange, getAggregatePeriod } from './utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { MapOverlayPermissionsChecker } from './permissions';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
+import { reportServer } from './dataBuilders';
 
 const ADD_TO_ALL_KEY = '$all';
 
@@ -342,7 +343,10 @@ export default class extends DataAggregatingRouteHandler {
         data_builder: measureBuilder,
         data_builder_config: measureBuilderConfig,
       } = mapOverlay;
-      assert.ok(measureBuilderConfig, `No data_builder_config for leagacy overlay ${mapOverlay.code}`);
+      assert.ok(
+        measureBuilderConfig,
+        `No data_builder_config for leagacy overlay ${mapOverlay.code}`,
+      );
       const { dataElementCode = 'value' } = measureBuilderConfig;
       dhisApi.injectFetchDataSourceEntities(this.fetchDataSourceEntities);
       const buildMeasure = async (measureCode, ...args) => ({
@@ -362,20 +366,15 @@ export default class extends DataAggregatingRouteHandler {
     }
 
     // NON-LEGACY
-
-    const buildMeasure = async (measureCode, ...args) => ({
-      [measureCode]: await getMeasureBuilder('useReportServer')(...args),
-    });
-    return buildMeasure(
-      code,
-      this.models,
-      this.aggregator,
-      dhisApi,
-      { ...this.query, dataElementCode: 'value' },
-      { reportCode: mapOverlay.report_code },
-      entity,
-      this.req,
-    );
+    return {
+      [code]: await reportServer({
+        req: this.req,
+        models: this.models,
+        dataBuilderConfig: { reportCode: mapOverlay.report_code },
+        query: { ...this.query },
+        entity,
+      }),
+    };
   }
 }
 
