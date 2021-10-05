@@ -89,9 +89,10 @@ const buildMeasureData = (overlays, resultData) => {
       const { dataElementCode = 'value' } = measureBuilderConfig ?? {};
       const { data } = measureDataResponsesByMeasureCode[code];
 
+      // Rename the the value field from the dataElementCode to the measureCode
       return data.map(obj => {
-        const { [dataElementCode]: value, ...restData } = obj;
-        return { [code]: value, ...restData };
+        const { [dataElementCode]: measureValue, ...restData } = obj;
+        return { [code]: measureValue, ...restData };
       });
     },
   );
