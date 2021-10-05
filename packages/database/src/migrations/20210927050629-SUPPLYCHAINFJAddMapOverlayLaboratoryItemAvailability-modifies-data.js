@@ -1,20 +1,16 @@
-'use strict';
+import { insertObject, generateId, codeToId } from '../utilities';
+
+('use strict');
 
 var dbm;
 var type;
 var seed;
 
-import {
-  insertObject,
-  generateId,
-  codeToId
-} from '../utilities';
-
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
-exports.setup = function(options, seedLink) {
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -115,7 +111,8 @@ const LAB_ITEMS = [
   },
   {
     dataElements: ['FijiBCSC37'],
-    name: 'Elite polyspecific Anti-human globulin blended rabbit monoclonal antihuman globulin 10ml',
+    name:
+      'Elite polyspecific Anti-human globulin blended rabbit monoclonal antihuman globulin 10ml',
     reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_antihuman_globulin',
     sortOrder: '15',
   },
@@ -185,12 +182,12 @@ const LAB_ITEMS = [
     reportCode: 'SUPPLYCHAIN_FIJI_current_avail_items_reagent_module_cal_a_b_waste',
     sortOrder: '26',
   },
-]
+];
 
 const overlayGroupRecord = {
   name: 'Laboratory Item Availability',
   code: 'SUPPLY_CHAIN_FIJI_Laboratory_Item_Availability',
-}
+};
 
 const createReport = (reportCode, dataElements) => ({
   code: reportCode,
@@ -255,9 +252,6 @@ const createMapOverlay = (name, reportCode) => ({
   },
   countryCodes: '{"FJ"}',
   projectCodes: '{supplychain_fiji}',
-
-  legacy: false,
-  report_code: reportCode,
 });
 
 export const nameToId = async (db, table, name) => {
@@ -299,7 +293,7 @@ const addMapOverlay = async (db, parentCode, config) => {
   });
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   // Add map overlay group
   await addMapOverlayGroup(db, 'Root', overlayGroupRecord);
 
@@ -326,12 +320,11 @@ const removeMapOverlayGroupRelation = async (db, groupCode) => {
 
 exports.down = async function (db) {
   // Remove Map Overlay Group Relation
-      await removeMapOverlayGroupRelation(db, overlayGroupRecord.code);
-
+  await removeMapOverlayGroupRelation(db, overlayGroupRecord.code);
 
   // Remove Map Overlays
   for (const labItem of LAB_ITEMS) {
-      await removeMapOverlay(db, labItem.reportCode);
+    await removeMapOverlay(db, labItem.reportCode);
   }
 
   // Remove Map Overlay Group
@@ -341,5 +334,5 @@ exports.down = async function (db) {
 };
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };
