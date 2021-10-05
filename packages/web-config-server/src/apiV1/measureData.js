@@ -249,6 +249,7 @@ export default class extends DataAggregatingRouteHandler {
       config,
       data_builder_config: measureBuilderConfig,
       name,
+      legacy,
       ...restOfMapOverlay
     } = mapOverlay;
     const { dataElementCode = 'value' } = measureBuilderConfig ?? {};
@@ -263,8 +264,10 @@ export default class extends DataAggregatingRouteHandler {
       ...restOfPresentationConfig
     } = config;
 
-    const { dataSourceType = DATA_SOURCE_TYPES.CUSTOM, periodGranularity } =
-      measureBuilderConfig || {};
+    const {
+      dataSourceType = legacy ? DATA_SOURCE_TYPES.SINGLE : DATA_SOURCE_TYPES.CUSTOM,
+      periodGranularity,
+    } = measureBuilderConfig || {};
     const { startDate, endDate } = this.query;
     const dates = periodGranularity ? getDateRange(periodGranularity, startDate, endDate) : {};
 
@@ -278,6 +281,7 @@ export default class extends DataAggregatingRouteHandler {
       hideFromMenu: hideFromMenu || false,
       hideFromLegend: hideFromLegend || false,
       hideFromPopup: hideFromPopup || false,
+      legacy,
       ...dates,
     };
 
