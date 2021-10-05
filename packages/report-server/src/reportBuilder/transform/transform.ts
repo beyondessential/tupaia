@@ -10,8 +10,6 @@ import { Context } from '../context';
 import { transformBuilders } from './functions';
 import { aliases } from './aliases';
 
-export type TransformParams = yup.InferType<typeof transformParamsValidator>;
-
 type BuiltTransformParams = {
   title?: string;
   name: string;
@@ -53,7 +51,7 @@ const transform = (rows: Row[], transformSteps: BuiltTransformParams[]): Row[] =
 };
 
 const buildParams = (params: unknown, context: Context): BuiltTransformParams => {
-  const validatedParams: TransformParams = transformParamsValidator.validateSync(params);
+  const validatedParams = transformParamsValidator.validateSync(params);
   if (typeof validatedParams === 'string') {
     return {
       name: validatedParams,
@@ -75,7 +73,7 @@ const buildParams = (params: unknown, context: Context): BuiltTransformParams =>
   };
 };
 
-export const buildTransform = (params: unknown, context: Context) => {
+export const buildTransform = (params: unknown, context: Context = {}) => {
   const validatedParams = paramsValidator.validateSync(params);
 
   const builtParams = validatedParams.map(param => buildParams(param, context));
