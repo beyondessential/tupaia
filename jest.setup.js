@@ -6,7 +6,13 @@
 /* eslint-env jest */
 
 require('jest-extended');
-require('jest-expect-message');
+
+/**
+ * Note: Due to incompatibility with jest-expected-message and jest 27+ we are disabling
+ * the custom error messages for these tests. Will re-instate once the fix gets merged:
+ *  https://github.com/mattphillips/jest-expect-message/pull/40
+ */
+// require('jest-expect-message');
 
 const winston = require('winston');
 

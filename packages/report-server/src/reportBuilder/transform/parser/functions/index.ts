@@ -4,7 +4,7 @@
  */
 
 import { value, last, eq, notEq, exists, notExists, gt, length, any, all } from './basic';
-import { orgUnitCodeToName } from './context';
+import { orgUnitCodeToName, dataElementCodeToName } from './context';
 import {
   convertToPeriod,
   dateStringToPeriod,
@@ -35,14 +35,15 @@ export const customFunctions = {
   all,
 };
 
-export const contextConfig = {
+export const contextFunctionConfigs = {
   orgUnitCodeToName,
+  dataElementCodeToName,
 };
 
 /**
  * Functions to extend existing mathjs functions
  */
-export const functionsExtensions = {
+export const functionExtensions = {
   add,
   divide,
 };

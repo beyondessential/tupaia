@@ -158,12 +158,25 @@ const sortMapOverlayItems = (mapOverlayItems, relations) => {
 const translateOverlaysForResponse = mapOverlays =>
   mapOverlays
     .filter(({ presentationOptions: { hideFromMenu } }) => !hideFromMenu)
-    .map(({ id, name, linkedMeasures, presentationOptions }) => ({
-      id, // just for sorting purpose, will be removed later
-      measureIds: [id, ...(linkedMeasures || [])],
-      name,
-      ...presentationOptions,
-    }));
+    .map(
+      ({
+        id,
+        name,
+        linkedMeasures,
+        presentationOptions,
+        report_code: reportCode,
+        dataElementCode,
+        legacy,
+      }) => ({
+        id, // just for sorting purpose, will be removed later
+        measureIds: [id, ...(linkedMeasures || [])],
+        name,
+        ...presentationOptions,
+        reportCode,
+        dataElementCode,
+        legacy,
+      }),
+    );
 
 /**
  * Find accessible Map Overlays that have matched entityCode, projectCode and userGroups

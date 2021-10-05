@@ -2,6 +2,8 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+import keyBy from 'lodash.keyby';
+
 import { fetchPatiently, translatePoint, translateRegion, translateBounds } from '@tupaia/utils';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseType } from '../DatabaseType';
@@ -428,6 +430,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       ancestorsOrDescendants === ENTITY_RELATION_TYPE.ANCESTORS
         ? ['ancestor_id', 'descendant_id']
         : ['descendant_id', 'ancestor_id'];
+
     const relationData = await this.runCachedFunction(cacheKey, async () => {
       const relations = await this.find(
         {
@@ -442,7 +445,9 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       );
       return Promise.all(relations.map(async r => r.getData()));
     });
-    return Promise.all(relationData.map(async r => this.generateInstance(r)));
+
+    const uniqueEntities = Object.values(keyBy(relationData, 'id'));
+    return Promise.all(uniqueEntities.map(async r => this.generateInstance(r)));
   }
 
   async getAncestorsOfEntities(hierarchyId, entityIds, criteria) {

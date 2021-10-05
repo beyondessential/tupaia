@@ -21,7 +21,7 @@
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
     "storybook": "start-storybook -s ./public -p 6006",
-    "test": "jest --env=jest-environment-jsdom-sixteen",
+    "test": "jest --env=jsdom",
     "test:coverage": "yarn test --coverage",
     "test:watch": "yarn test --watch"
   },
@@ -47,7 +47,6 @@
     "@rollup/plugin-commonjs": "^18.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-multi-entry": "^4.0.0",
-    "@svgr/rollup": "^5.5.0",
     "@tupaia/utils": "1.0.0",
     "axios": "^0.21.1",
     "faker": "^4.1.0",
