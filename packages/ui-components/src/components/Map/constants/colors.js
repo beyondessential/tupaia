@@ -56,18 +56,7 @@ export const DEFAULT_COLOR_SCHEME = 'default';
 export const REVERSE_DEFAULT_COLOR_SCHEME = 'default-reverse';
 export const PERFORMANCE_COLOR_SCHEME = 'performance';
 export const TIME_COLOR_SCHEME = 'time';
-
-export const HEATMAP_DEFAULT_RGB_SET = [
-  [255, 255, 204],
-  [255, 237, 160],
-  [254, 217, 118],
-  [254, 178, 76],
-  [253, 141, 60],
-  [252, 78, 42],
-  [227, 26, 28],
-  [118, 0, 38],
-  [128, 0, 38],
-];
+export const GPI_COLOR_SCHEME = 'gpi';
 
 export const BREWER_AUTO = [
   BREWER_PALETTE.navy,
