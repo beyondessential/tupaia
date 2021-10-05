@@ -24,13 +24,13 @@ import {
   UPDATE_MEASURE_CONFIG,
   LOCATION_CHANGE,
 } from '../actions';
-import { selectCurrentPeriodGranularity, selectMapOverlayById } from '../selectors';
+import { selectCurrentPeriodGranularity, selectMapOverlayByIds } from '../selectors';
 import { URL_COMPONENTS } from './constants';
 import {
   addPopStateListener,
   attemptPushHistory,
   clearLocation,
-  setLocationComponent,
+  setLocationComponents,
 } from './historyNavigation';
 import { convertDateRangeToUrlPeriodString } from './utils';
 
@@ -41,14 +41,16 @@ export const historyMiddleware = store => next => action => {
   switch (action.type) {
     // Actions that modify the path
     case SET_PROJECT:
-      dispatchLocationUpdate(store, URL_COMPONENTS.PROJECT, action.projectCode);
+      dispatchLocationUpdate(store, { [URL_COMPONENTS.PROJECT]: action.projectCode });
       break;
     case SET_ORG_UNIT:
-      dispatchLocationUpdate(store, URL_COMPONENTS.ORG_UNIT, action.organisationUnitCode);
-      dispatchLocationUpdate(store, URL_COMPONENTS.DASHBOARD, '');
+      dispatchLocationUpdate(store, { [URL_COMPONENTS.ORG_UNIT]: action.organisationUnitCode });
+      dispatchLocationUpdate(store, { [URL_COMPONENTS.DASHBOARD]: '' });
       break;
     case SET_DASHBOARD_GROUP:
-      dispatchLocationUpdate(store, URL_COMPONENTS.DASHBOARD, encodeURIComponent(action.name));
+      dispatchLocationUpdate(store, {
+        [URL_COMPONENTS.DASHBOARD]: encodeURIComponent(action.name),
+      });
       break;
     case GO_HOME:
       // Completely clear location, explore project will be set in a saga.
@@ -57,54 +59,51 @@ export const historyMiddleware = store => next => action => {
 
     // Actions that modify search params
     case OPEN_ENLARGED_DIALOG:
-      dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, action.itemCode);
+      dispatchLocationUpdate(store, { [URL_COMPONENTS.REPORT]: action.itemCode });
       break;
     case SET_ENLARGED_DIALOG_DATE_RANGE:
       // Drill down dates are handled in normal redux state
       if (action.drillDownLevel === 0) {
-        dispatchLocationUpdate(
-          store,
-          URL_COMPONENTS.REPORT_PERIOD,
-          convertDateRangeToUrlPeriodString({
+        dispatchLocationUpdate(store, {
+          [URL_COMPONENTS.REPORT_PERIOD]: convertDateRangeToUrlPeriodString({
             startDate: moment(action.startDate),
             endDate: moment(action.endDate),
           }),
-        );
+        });
       }
       break;
     case CLOSE_ENLARGED_DIALOG:
-      dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, null);
-      dispatchLocationUpdate(store, URL_COMPONENTS.REPORT_PERIOD, null);
+      dispatchLocationUpdate(store, { [URL_COMPONENTS.REPORT]: null });
+      dispatchLocationUpdate(store, { [URL_COMPONENTS.REPORT_PERIOD]: null });
       break;
     case SET_MAP_OVERLAY: {
-      // TODO: ADD MAP OVERLAY instead of override
-      const mapOverlay = selectMapOverlayById(state, action.mapOverlayId);
-      if (!mapOverlay) {
+      const mapOverlays = selectMapOverlayByIds(state, action.mapOverlayIds.split(','));
+      if (mapOverlays.length === 0) {
         break;
       }
-      const { startDate, endDate, periodGranularity } = mapOverlay;
 
-      dispatchLocationUpdate(store, URL_COMPONENTS.MAP_OVERLAY, action.mapOverlayId);
-      dispatchLocationUpdate(
-        store,
-        URL_COMPONENTS.MEASURE_PERIOD,
-        convertDateRangeToUrlPeriodString({ startDate, endDate }, periodGranularity),
-      );
+      // TODO: PHX-1 set multiple overlay period in URL
+      const { startDate, endDate, periodGranularity } = mapOverlays[0];
+      dispatchLocationUpdate(store, {
+        [URL_COMPONENTS.MAP_OVERLAY]: action.mapOverlayIds,
+        [URL_COMPONENTS.MEASURE_PERIOD]: convertDateRangeToUrlPeriodString(
+          { startDate, endDate },
+          periodGranularity,
+        ),
+      });
       break;
     }
     case CLEAR_MEASURE:
-      dispatchLocationUpdate(store, URL_COMPONENTS.MAP_OVERLAY, null);
-      dispatchLocationUpdate(store, URL_COMPONENTS.MEASURE_PERIOD, null);
+      dispatchLocationUpdate(store, { [URL_COMPONENTS.MAP_OVERLAY]: null });
+      dispatchLocationUpdate(store, { [URL_COMPONENTS.MEASURE_PERIOD]: null });
       break;
     case UPDATE_MEASURE_CONFIG:
-      dispatchLocationUpdate(
-        store,
-        URL_COMPONENTS.MEASURE_PERIOD,
-        convertDateRangeToUrlPeriodString(
+      dispatchLocationUpdate(store, {
+        [URL_COMPONENTS.MEASURE_PERIOD]: convertDateRangeToUrlPeriodString(
           action.measureConfig,
           selectCurrentPeriodGranularity(state),
         ),
-      );
+      });
       break;
     default:
   }
@@ -131,11 +130,11 @@ export const initHistoryDispatcher = store => {
   });
 };
 
-const dispatchLocationUpdate = (store, component, value) => {
+const dispatchLocationUpdate = (store, newComponents) => {
   const { dispatch } = store;
   const { routing } = store.getState();
 
-  const newLocation = setLocationComponent(routing, component, value);
+  const newLocation = setLocationComponents(routing, newComponents);
   dispatch(updateHistoryLocation(newLocation));
 };
 

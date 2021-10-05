@@ -525,12 +525,12 @@ export function changeBounds(bounds) {
 /**
  * Changes current map overlay, should change features rendered on map after saga data fetch.
  * Updates the current mayOverlayId in the url.
- * @param {string} mayOverlayId
+ * @param {string} mayOverlayIds
  */
-export function setMapOverlay(mapOverlayId) {
+export function setMapOverlay(mapOverlayIds) {
   return {
     type: SET_MAP_OVERLAY,
-    mapOverlayId,
+    mapOverlayIds,
   };
 }
 

@@ -65,10 +65,11 @@ export {
 
 export {
   selectMapOverlayById,
-  selectCurrentMapOverlay,
-  selectCurrentMapOverlayId,
+  selectMapOverlayByIds,
+  selectCurrentMapOverlays,
+  selectCurrentMapOverlayIds,
   selectCurrentPeriodGranularity,
-  selectIsMapOverlayInHierarchy,
+  selectDefaultMapOverlay,
   selectDefaultMapOverlayId,
   selectMapOverlayGroupById,
 } from './mapOverlaySelectors';

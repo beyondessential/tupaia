@@ -110,18 +110,20 @@ const ExpandedContent = styled.div`
 
 export const Control = ({
   emptyMessage,
-  selectedMapOverlay,
+  selectedMapOverlays,
   isMeasureLoading,
   onUpdateMeasurePeriod,
   children,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const mapOverlay = selectedMapOverlay || {};
+
+  // TODO: PHX-1 Multiple date pickers
+  const isMeasureSelected = selectedMapOverlays.length > 0;
+  const mapOverlay = selectedMapOverlays.length > 0 ? selectedMapOverlays[0] : {};
   const { periodGranularity, isTimePeriodEditable = true, name } = mapOverlay;
   const defaultDates = getDefaultDates(mapOverlay);
   const datePickerLimits = getLimits(periodGranularity, mapOverlay.datePickerLimits);
   const showDatePicker = !!(isTimePeriodEditable && periodGranularity);
-  const isMeasureSelected = !!name;
   const toggleMeasures = useCallback(() => {
     if (isExpanded) {
       setIsExpanded(false);
@@ -190,17 +192,19 @@ export const Control = ({
 };
 
 Control.propTypes = {
-  selectedMapOverlay: PropTypes.shape({
-    name: PropTypes.string,
-    periodGranularity: PropTypes.string,
-    isTimePeriodEditable: PropTypes.bool,
-    datePickerLimits: PropTypes.shape({
-      startDate: PropTypes.object,
-      endDate: PropTypes.object,
+  selectedMapOverlays: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      periodGranularity: PropTypes.string,
+      isTimePeriodEditable: PropTypes.bool,
+      datePickerLimits: PropTypes.shape({
+        startDate: PropTypes.object,
+        endDate: PropTypes.object,
+      }),
+      startDate: PropTypes.shape({}),
+      endDate: PropTypes.shape({}),
     }),
-    startDate: PropTypes.shape({}),
-    endDate: PropTypes.shape({}),
-  }),
+  ),
   emptyMessage: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
   isMeasureLoading: PropTypes.bool,
@@ -208,6 +212,6 @@ Control.propTypes = {
 };
 
 Control.defaultProps = {
-  selectedMapOverlay: {},
+  selectedMapOverlays: [],
   isMeasureLoading: false,
 };

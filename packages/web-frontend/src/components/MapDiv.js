@@ -17,7 +17,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Legend as MapLegend, TilePicker, tileSetShape } from '@tupaia/ui-components/lib/map';
 import { CONTROL_BAR_PADDING } from '../styles';
-import MapOverlayBar from '../containers/MapOverlayBar';
+import { MapOverlayBar } from '../containers/MapOverlayBar';
 import { selectActiveTileSet, selectTileSets } from '../selectors';
 import { changeTileSet } from '../actions';
 

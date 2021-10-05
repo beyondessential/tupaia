@@ -5,13 +5,25 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-export const getMapOverlayFromHierarchy = (mapOverlayHierarchy, targetMapOverlayId) => {
-  if (!targetMapOverlayId) {
-    return null;
+export const getMapOverlaysFromHierarchy = (mapOverlayHierarchy, targetMapOverlayIds) => {
+  if (!targetMapOverlayIds) {
+    return [];
   }
 
-  const flattenMapOverlays = flattenMapOverlayHierarchy(mapOverlayHierarchy);
-  return flattenMapOverlays.find(({ mapOverlayId }) => targetMapOverlayId === mapOverlayId);
+  return flattenMapOverlayHierarchy(mapOverlayHierarchy).filter(({ mapOverlayId }) =>
+    targetMapOverlayIds.includes(mapOverlayId),
+  );
+};
+
+export const checkHierarchyIncludesMapOverlayIds = (mapOverlayHierarchy, targetMapOverlayIds) => {
+  if (!targetMapOverlayIds || targetMapOverlayIds?.length === 0) {
+    return false;
+  }
+  const { length: resultLength } = getMapOverlaysFromHierarchy(
+    mapOverlayHierarchy,
+    targetMapOverlayIds,
+  );
+  return resultLength === targetMapOverlayIds.length;
 };
 
 export function flattenMapOverlayHierarchy(mapOverlayHierarchy) {
@@ -38,3 +50,14 @@ export function flattenMapOverlayHierarchy(mapOverlayHierarchy) {
 
 export const isMapOverlayHierarchyEmpty = mapOverlayHierarchy =>
   flattenMapOverlayHierarchy(mapOverlayHierarchy).length === 0;
+
+export const sortMapOverlayIdsByHierarchyOrder = (mapOverlayHierarchy, mapOverlayIds) => {
+  const hierarchyMapOverlayIds = flattenMapOverlayHierarchy(mapOverlayHierarchy).map(
+    overlay => overlay.mapOverlayId,
+  );
+  return mapOverlayIds.sort(
+    (a, b) =>
+      hierarchyMapOverlayIds.findIndex(overlayId => overlayId === a) -
+      hierarchyMapOverlayIds.findIndex(overlayId => overlayId === b),
+  );
+};
