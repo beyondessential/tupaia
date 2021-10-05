@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import assert from 'assert';
 import { CustomError } from '@tupaia/utils';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
@@ -341,6 +342,7 @@ export default class extends DataAggregatingRouteHandler {
         data_builder: measureBuilder,
         data_builder_config: measureBuilderConfig,
       } = mapOverlay;
+      assert.ok(measureBuilderConfig, `No data_builder_config for leagacy overlay ${mapOverlay.code}`);
       const { dataElementCode = 'value' } = measureBuilderConfig;
       dhisApi.injectFetchDataSourceEntities(this.fetchDataSourceEntities);
       const buildMeasure = async (measureCode, ...args) => ({
