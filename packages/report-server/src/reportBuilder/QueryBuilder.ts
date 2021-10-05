@@ -77,7 +77,7 @@ export class QueryBuilder {
       period = convertDateRangeToPeriodString(startDate, endDate);
     }
 
-    return { period, startDate, endDate };
+    return { period, startDate, endDate } as Required<PeriodParams>;
   }
 
   private matchesOriginalQuery(subQuery: Record<string, unknown>) {
