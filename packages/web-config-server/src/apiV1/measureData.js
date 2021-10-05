@@ -252,6 +252,7 @@ export default class extends DataAggregatingRouteHandler {
       config,
       data_builder_config: measureBuilderConfig,
       name,
+      legacy,
       ...restOfMapOverlay
     } = mapOverlay;
     const { dataElementCode = 'value' } = measureBuilderConfig ?? {};
@@ -266,8 +267,7 @@ export default class extends DataAggregatingRouteHandler {
       ...restOfPresentationConfig
     } = config;
 
-    const { dataSourceType = DATA_SOURCE_TYPES.CUSTOM, periodGranularity } =
-      measureBuilderConfig || {};
+    const { periodGranularity } = measureBuilderConfig || {};
     const { startDate, endDate } = this.query;
     const dates = periodGranularity ? getDateRange(periodGranularity, startDate, endDate) : {};
 
@@ -281,6 +281,7 @@ export default class extends DataAggregatingRouteHandler {
       hideFromMenu: hideFromMenu || false,
       hideFromLegend: hideFromLegend || false,
       hideFromPopup: hideFromPopup || false,
+      legacy,
       ...dates,
     };
 
@@ -288,10 +289,13 @@ export default class extends DataAggregatingRouteHandler {
       return { ...baseOptions, values };
     }
     // values have not been provided locally - fetch them from DHIS2
-    const options =
-      dataSourceType === DATA_SOURCE_TYPES.SINGLE
-        ? await this.getOptionsForDataElement(mapOverlay, dataElementCode)
-        : {};
+    let options = {};
+    if (legacy === true) {
+      const { dataSourceType = DATA_SOURCE_TYPES.SINGLE } = measureBuilderConfig;
+      if (dataSourceType === DATA_SOURCE_TYPES.SINGLE) {
+        options = await this.getOptionsForDataElement(mapOverlay, dataElementCode);
+      }
+    }
 
     const translatedOptions = translateMeasureOptionSet(options, mapOverlay);
 
