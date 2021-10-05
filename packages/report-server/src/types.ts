@@ -10,13 +10,16 @@ export interface ReportServerModelRegistry extends ModelRegistry {
   readonly report: ReportModel;
 }
 
-export interface FetchReportQuery {
-  organisationUnitCodes: string[];
-  hierarchy?: string;
+export type PeriodParams = {
   period?: string;
   startDate?: string;
   endDate?: string;
-}
+};
+
+export type FetchReportQuery = PeriodParams & {
+  organisationUnitCodes: string[];
+  hierarchy?: string;
+};
 
 export type AggregationObject = {
   type: string;
@@ -27,14 +30,14 @@ export type Aggregation = string | AggregationObject;
 
 type PeriodType = 'day' | 'week' | 'month' | 'quarter' | 'year';
 
-type DateSpecsObject = {
+export type DateOffset = {
   unit: PeriodType;
   offset?: number;
   modifier?: 'start_of' | 'end_of';
   modifierUnit?: PeriodType;
 };
 
-type DateSpecs = string | DateSpecsObject;
+export type DateSpecs = string | DateOffset;
 
 type Transform = string | Record<string, unknown>;
 
