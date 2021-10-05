@@ -4,12 +4,13 @@
  */
 
 import {
+  addMomentOffset,
   convertDateRangeToPeriodString,
   convertPeriodStringToDateRange,
   getDefaultPeriod,
-  getOffsetMoment,
   momentToPeriod,
   periodToDateString,
+  utcMoment,
 } from '@tupaia/utils';
 
 import { DateOffset, FetchReportQuery, PeriodParams, ReportConfig } from '../types';
@@ -19,7 +20,7 @@ const buildDateUsingSpecs = (
   dateOffset: DateOffset,
   { isEndDate = false },
 ) => {
-  const moment = getOffsetMoment(date, dateOffset);
+  const moment = addMomentOffset(utcMoment(date), dateOffset);
   const periodType = dateOffset.modifierUnit || dateOffset.unit;
   const period = momentToPeriod(moment, periodType);
   return periodToDateString(period, isEndDate);

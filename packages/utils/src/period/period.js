@@ -29,7 +29,7 @@ const NON_NUMERIC_PERIOD_TYPES = [WEEK, QUARTER];
 
 export const DEFAULT_PERIOD_TYPE = PERIOD_TYPES.DAY;
 
-const PERIOD_TYPE_CONFIG = {
+export const PERIOD_TYPE_CONFIG = {
   [DAY]: {
     format: 'YYYYMMDD',
     length: 8,
@@ -73,11 +73,6 @@ const PERIOD_TYPE_CONFIG = {
 };
 
 const DATE_STRING_FORMAT = 'YYYY-MM-DD';
-
-const DATE_OFFSET_MODIFIERS = {
-  START_OF: 'start_of',
-  END_OF: 'end_of',
-};
 
 const createFieldToNumericPeriodType = fieldName =>
   reduceToDictionary(
@@ -344,42 +339,4 @@ export const getPeriodsInRange = (start, end, targetType) => {
   }
 
   return periodsInRange;
-};
-
-export const getOffsetMoment = (date, dateOffset) => {
-  const { unit: unitInput = '', offset, modifier, modifierUnit = null } = dateOffset;
-  const unit = unitInput.toUpperCase();
-
-  // We need a valid unit to proceed.
-  if (!PERIOD_TYPE_CONFIG[unit]) {
-    return utcMoment(date);
-  }
-
-  let defaultDate = utcMoment(date);
-
-  const { momentUnit } = PERIOD_TYPE_CONFIG[unit];
-
-  if (offset) {
-    defaultDate = defaultDate.add(offset, momentUnit);
-  }
-
-  // If modifier is set (eg: 'start_of', 'end_of'),
-  // switch the default date to either start or end of the modifer unit
-  if (modifier) {
-    switch (modifier) {
-      case DATE_OFFSET_MODIFIERS.START_OF:
-        defaultDate = modifierUnit
-          ? defaultDate.startOf(modifierUnit)
-          : defaultDate.startOf(momentUnit);
-        break;
-      case DATE_OFFSET_MODIFIERS.END_OF:
-        defaultDate = modifierUnit
-          ? defaultDate.endOf(modifierUnit)
-          : defaultDate.endOf(momentUnit);
-        break;
-      default:
-    }
-  }
-
-  return defaultDate;
 };

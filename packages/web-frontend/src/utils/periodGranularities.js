@@ -8,7 +8,7 @@
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
-import { getOffsetMoment } from '@tupaia/utils';
+import { addMomentOffset } from '@tupaia/utils';
 
 export const DEFAULT_MIN_DATE = '20150101';
 
@@ -181,7 +181,7 @@ const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTim
     }
 
     // Grab all the details and get a single default date used for both start/end period.
-    startDate = getOffsetMoment(undefined, singleDateConfig);
+    startDate = addMomentOffset(moment(), singleDateConfig);
     endDate = startDate;
   }
 
@@ -207,10 +207,10 @@ const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeri
     let endDate = startDate;
 
     if (defaultTimePeriod.start) {
-      startDate = getOffsetMoment(undefined, defaultTimePeriod.start);
+      startDate = addMomentOffset(moment(), defaultTimePeriod.start);
     }
     if (defaultTimePeriod.end) {
-      endDate = getOffsetMoment(undefined, defaultTimePeriod.end);
+      endDate = addMomentOffset(moment(), defaultTimePeriod.end);
     }
 
     return roundStartEndDates(periodGranularity, startDate, endDate);
@@ -286,7 +286,7 @@ export function getLimits(periodGranularity, limits) {
       );
     }
 
-    const offsetDate = getOffsetMoment(undefined, partConfig);
+    const offsetDate = addMomentOffset(moment(), partConfig);
     if (partKey === 'start') startDate = offsetDate;
     if (partKey === 'end') endDate = offsetDate;
   }
