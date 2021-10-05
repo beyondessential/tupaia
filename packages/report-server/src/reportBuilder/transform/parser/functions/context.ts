@@ -22,7 +22,23 @@ export const orgUnitCodeToName: ContextFunctionConfig = {
   contextProps: ['orgUnits'],
   create: ({ getContext }) => (orgUnitCode: string) => {
     const { orgUnits } = getContext();
+    if (!orgUnits) {
+      throw new Error("Missing dependency 'orgUnits' required by 'orgUnitCodeToName'");
+    }
     const codeToName = reduceToDictionary(orgUnits, 'code', 'name');
     return codeToName[orgUnitCode];
+  },
+};
+
+export const dataElementCodeToName: ContextFunctionConfig = {
+  contextProps: ['dataElementCodeToName'],
+  create: ({ getContext }) => (dataElementCode: string) => {
+    const { dataElementCodeToName: codeToNameMap } = getContext();
+    if (!codeToNameMap) {
+      throw new Error(
+        "Missing dependency 'dataElementCodeToName' required by 'dataElementCodeToName'",
+      );
+    }
+    return codeToNameMap[dataElementCode];
   },
 };
