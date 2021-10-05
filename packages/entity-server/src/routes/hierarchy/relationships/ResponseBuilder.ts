@@ -45,7 +45,17 @@ export class ResponseBuilder {
   private async buildAncestorCodesAndPairs(descendants: EntityType[]): Promise<[string[], Pair[]]> {
     const { hierarchyId, entities } = this.ctx;
     const { type: ancestorType } = this.ctx.ancestor;
+    const { type: descendantType } = this.ctx.descendant;
+
     const descendantCodes = descendants.map(descendant => descendant.code);
+    if (ancestorType === descendantType) {
+      // types match, so just return descendants as mapping to themselves
+      return [
+        descendantCodes,
+        descendantCodes.map(descendant => ({ descendant, ancestor: descendant })),
+      ];
+    }
+
     const descendantAncestorMapping = await this.models.entity.fetchAncestorDetailsByDescendantCode(
       descendantCodes,
       hierarchyId,
