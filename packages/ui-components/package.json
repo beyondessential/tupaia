@@ -20,7 +20,7 @@
     "watch": "rollup -c -w",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
-    "storybook": "start-storybook -s ./public -p 6006",
+    "storybook": "start-storybook -s public -p 6006",
     "test": "jest --env=jsdom",
     "test:coverage": "yarn test --coverage",
     "test:watch": "yarn test --watch"
