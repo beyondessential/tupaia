@@ -63,14 +63,13 @@ export const Legend = React.memo(
         values.filter(value => !value?.hideFromLegend).length > 0,
     );
 
-    console.log('displayedLegends', displayedLegends);
     if (!serieses || displayedLegends.length === 0) {
       return null;
     }
 
     const legendTypes = displayedLegends.map(displayedLegend => displayedLegend.type);
     const legendsHaveSameType =
-      legendTypes.length > 0 && legendTypes.every(val => val === legendTypes[0]);
+      legendTypes.length > 1 && legendTypes.every(val => val === legendTypes[0]);
 
     return (
       <>
