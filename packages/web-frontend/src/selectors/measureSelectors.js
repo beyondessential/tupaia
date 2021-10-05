@@ -76,24 +76,28 @@ export const selectHasPolygonMeasure = createSelector(
   },
 );
 
-export const selectMeasureOptionsBySelectedMapOverlays = createSelector([state => state], state => {
-  const { displayedMapOverlays, measureInfo } = state.map;
-  const { measureOptions } = measureInfo;
-  if (!measureOptions) {
-    return undefined;
-  }
+export const selectDisplayedMeasureIds = createSelector([state => state], state => {
+  const { displayedMapOverlays } = state.map;
   const { mapOverlayHierarchy } = state.mapOverlayBar;
   const hierarchyMapOverlays = flattenMapOverlayHierarchy(mapOverlayHierarchy);
-  const displayedMeasures = hierarchyMapOverlays
+  return hierarchyMapOverlays
     .map(hierarchyMapOverlay =>
       displayedMapOverlays.includes(hierarchyMapOverlay.mapOverlayId)
         ? hierarchyMapOverlay.measureIds
         : [],
     )
     .flat();
+});
 
+export const selectMeasureOptionsBySelectedMapOverlays = createSelector([state => state], state => {
+  const { measureInfo } = state.map;
+  const { measureOptions } = measureInfo;
+  if (!measureOptions) {
+    return undefined;
+  }
+  const displayedMeasureIds = selectDisplayedMeasureIds(state);
   const displayedMeasureOptions = measureOptions.filter(({ key }) =>
-    displayedMeasures.includes(key),
+    displayedMeasureIds.includes(key),
   );
 
   return displayedMeasureOptions.length > 0 ? displayedMeasureOptions : undefined;

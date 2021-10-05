@@ -60,6 +60,7 @@ export {
   selectAllMeasuresWithDisplayInfo,
   selectMeasureOptionsBySelectedMapOverlays,
   selectRenderedMeasuresWithDisplayInfo,
+  selectDisplayedMeasureIds,
 } from './measureSelectors';
 
 export {
