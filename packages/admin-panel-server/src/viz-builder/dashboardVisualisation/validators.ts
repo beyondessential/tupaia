@@ -19,6 +19,27 @@ const dataSourceSchema = (sourceType: 'dataElement' | 'dataGroup') => {
     });
 };
 
+const periodTypeSchema = yup.mixed().oneOf(['day', 'week', 'month', 'quarter', 'year']);
+
+const dateSpecsSchema = yup.lazy(value => {
+  switch (typeof value) {
+    case 'object':
+      return yup.object().shape({
+        unit: periodTypeSchema,
+        offset: yup.number(),
+        modifier: yup.mixed().oneOf(['start_of', 'end_of']),
+        modifierUnit: periodTypeSchema,
+      });
+    case 'string':
+      return yup.string().min(4);
+    case 'undefined':
+      return yup.mixed();
+    default:
+      // eslint-disable-next-line no-template-curly-in-string
+      return yup.string().strict().typeError('${path} must be one of string | object');
+  }
+});
+
 export const baseVisualisationValidator = yup.object().shape({
   presentation: yup.object(),
   data: yup.object(),
@@ -31,6 +52,8 @@ export const draftReportValidator = yup.object().shape({
       {
         dataElements: dataSourceSchema('dataElement'),
         dataGroups: dataSourceSchema('dataGroup'),
+        startDate: dateSpecsSchema,
+        endDate: dateSpecsSchema,
       },
       [['dataElements', 'dataGroups']],
     ),
