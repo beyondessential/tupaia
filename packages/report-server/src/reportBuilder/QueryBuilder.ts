@@ -66,7 +66,7 @@ export class QueryBuilder {
 
     // Apply date offset if date specs is object
     if (typeof startDateSpecs === 'object') {
-      startDate = buildDateUsingSpecs(startDate, startDateSpecs, { isEndDate: false });
+      startDate = buildDateUsingSpecs(endDate, startDateSpecs, { isEndDate: false });
     }
     if (typeof endDateSpecs === 'object') {
       endDate = buildDateUsingSpecs(endDate, endDateSpecs, { isEndDate: true });
