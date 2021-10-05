@@ -8,11 +8,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { createSelector } from 'reselect';
 import { TileLayer, MarkerLayer, LeafletMap } from '@tupaia/ui-components/lib/map';
-import {
-  checkBoundsDifference,
-  flattenMapOverlayHierarchy,
-  organisationUnitIsArea,
-} from '../../utils';
+import { checkBoundsDifference, organisationUnitIsArea } from '../../utils';
 import { DemoLand } from './DemoLand';
 import { ConnectedPolygon } from './ConnectedPolygon';
 import { DisasterLayer } from './DisasterLayer';
@@ -22,6 +18,7 @@ import {
   selectAllMeasuresWithDisplayInfo,
   selectCurrentOrgUnit,
   selectHasPolygonMeasure,
+  selectMeasureOptionsBySelectedMapOverlays,
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitSiblings,
@@ -158,7 +155,6 @@ class MapComponent extends Component {
       ({ coordinates }) => coordinates && coordinates.length === 2,
     );
 
-    console.log('measureOptions', measureOptions);
     return (
       <StyledMap
         onClick={onCloseDropdownOverlays}
@@ -194,11 +190,13 @@ class MapComponent extends Component {
             organisationUnitChildren={getChildren(area.organisationUnitCode)}
           />
         ))}
+
         <MarkerLayer
           measureData={processedData}
           serieses={measureOptions || null}
           onChangeOrgUnit={onChangeOrgUnit}
         />
+
         <DisasterLayer />
       </StyledMap>
     );
@@ -240,29 +238,6 @@ const selectMeasureDataWithCoordinates = createSelector([measureData => measureD
     region: location && location.region,
   })),
 );
-
-const selectMeasureOptionsBySelectedMapOverlays = createSelector([state => state], state => {
-  const { displayedMapOverlays, measureInfo } = state.map;
-  const { measureOptions } = measureInfo;
-  const { mapOverlayHierarchy } = state.mapOverlayBar;
-  const hierarchyMapOverlays = flattenMapOverlayHierarchy(mapOverlayHierarchy);
-  const displayedMeasures = hierarchyMapOverlays
-    .map(hierarchyMapOverlay =>
-      displayedMapOverlays.includes(hierarchyMapOverlay.mapOverlayId)
-        ? hierarchyMapOverlay.measureIds
-        : [],
-    )
-    .flat();
-
-  if (!measureOptions) {
-    return undefined;
-  }
-  const displayedMeasureOptions = measureOptions.filter(({ key }) =>
-    displayedMeasures.includes(key),
-  );
-
-  return displayedMeasureOptions.length > 0 ? displayedMeasureOptions : undefined;
-});
 
 const mapStateToProps = state => {
   const {

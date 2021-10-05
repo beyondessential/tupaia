@@ -8,7 +8,7 @@
 import createCachedSelector from 're-reselect';
 import { createSelector } from 'reselect';
 import { getMeasureDisplayInfo } from '@tupaia/ui-components/lib/map';
-import { calculateRadiusScaleFactor, POLYGON_MEASURE_TYPES } from '../utils/measures';
+import { POLYGON_MEASURE_TYPES } from '../utils/measures';
 import {
   selectActiveProjectCountries,
   selectAllOrgUnitsInCountry,
@@ -20,6 +20,7 @@ import {
 } from './orgUnitSelectors';
 import { selectCurrentProjectCode } from './projectSelectors';
 import { getOrgUnitFromCountry, safeGet } from './utils';
+import { flattenMapOverlayHierarchy } from '../utils';
 
 const displayInfoCache = createCachedSelector(
   [
@@ -75,13 +76,36 @@ export const selectHasPolygonMeasure = createSelector(
   },
 );
 
+export const selectMeasureOptionsBySelectedMapOverlays = createSelector([state => state], state => {
+  const { displayedMapOverlays, measureInfo } = state.map;
+  const { measureOptions } = measureInfo;
+  if (!measureOptions) {
+    return undefined;
+  }
+  const { mapOverlayHierarchy } = state.mapOverlayBar;
+  const hierarchyMapOverlays = flattenMapOverlayHierarchy(mapOverlayHierarchy);
+  const displayedMeasures = hierarchyMapOverlays
+    .map(hierarchyMapOverlay =>
+      displayedMapOverlays.includes(hierarchyMapOverlay.mapOverlayId)
+        ? hierarchyMapOverlay.measureIds
+        : [],
+    )
+    .flat();
+
+  const displayedMeasureOptions = measureOptions.filter(({ key }) =>
+    displayedMeasures.includes(key),
+  );
+
+  return displayedMeasureOptions.length > 0 ? displayedMeasureOptions : undefined;
+});
+
 export const selectAllMeasuresWithDisplayInfo = createSelector(
   [
     state => selectActiveProjectCountries(state),
     state => selectCurrentProjectCode(state),
     state => selectCountryHierarchy(state, state.map.measureInfo.currentCountry),
     state => state.map.measureInfo.measureData,
-    state => state.map.measureInfo.measureOptions,
+    selectMeasureOptionsBySelectedMapOverlays,
     state => state.map.measureInfo.hiddenMeasures,
     state => state.map.measureInfo.currentCountry,
     state => state.map.measureInfo.measureLevel,
@@ -116,7 +140,7 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
   },
 );
 
-export const selectAllMeasuresWithDisplayAndOrgUnitData = createSelector(
+const selectAllMeasuresWithDisplayAndOrgUnitData = createSelector(
   [
     state => selectCountryHierarchy(state, state.map.measureInfo.currentCountry),
     selectAllMeasuresWithDisplayInfo,
@@ -149,7 +173,7 @@ export const selectRenderedMeasuresWithDisplayInfo = createSelector(
     state => selectCountryHierarchy(state, selectCurrentOrgUnitCode(state)),
     selectAllMeasuresWithDisplayAndOrgUnitData,
     selectDisplayLevelAncestor,
-    state => state.map.measureInfo.measureOptions,
+    selectMeasureOptionsBySelectedMapOverlays,
     state => selectCountriesAsOrgUnits(state),
   ],
   (country, allMeasuresWithMeasureInfo, displaylevelAncestor, measureOptions = []) => {
@@ -172,9 +196,4 @@ export const selectRenderedMeasuresWithDisplayInfo = createSelector(
       allDescendantCodesOfAncestor.includes(measure.organisationUnitCode),
     );
   },
-);
-
-export const selectRadiusScaleFactor = createSelector(
-  [selectAllMeasuresWithDisplayInfo],
-  calculateRadiusScaleFactor,
 );

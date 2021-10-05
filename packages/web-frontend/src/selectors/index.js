@@ -58,9 +58,8 @@ export {
 export {
   selectHasPolygonMeasure,
   selectAllMeasuresWithDisplayInfo,
-  selectAllMeasuresWithDisplayAndOrgUnitData,
+  selectMeasureOptionsBySelectedMapOverlays,
   selectRenderedMeasuresWithDisplayInfo,
-  selectRadiusScaleFactor,
 } from './measureSelectors';
 
 export {
