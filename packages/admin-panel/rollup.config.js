@@ -3,16 +3,16 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
+
+/* eslint-disable import/no-extraneous-dependencies */
 import json from '@rollup/plugin-json';
 import builtins from 'rollup-plugin-node-builtins';
 import { terser } from 'rollup-plugin-terser';
 import commonjs from '@rollup/plugin-commonjs';
-import analyze from 'rollup-plugin-analyzer';
 import babel from '@rollup/plugin-babel';
+import analyze from 'rollup-plugin-analyzer';
 import external from 'rollup-plugin-peer-deps-external';
 import del from 'rollup-plugin-delete';
-import svgr from '@svgr/rollup';
-import url from 'rollup-plugin-url';
 import pkg from './package.json';
 
 const plugins = [
@@ -21,8 +21,6 @@ const plugins = [
   json({
     compact: true,
   }),
-  url(),
-  svgr(),
   babel({
     exclude: 'node_modules/**',
     configFile: './.babelrc.js',
