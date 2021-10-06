@@ -48,6 +48,7 @@ const getFrontEndConfig = measureLevel => ({
   hideByDefault: {
     null: true,
   },
+  periodGranularity: 'one_day_at_a_time',
 });
 
 const getReportConfig = measureLevel => ({
