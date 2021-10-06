@@ -173,10 +173,10 @@ const getGpiMapOverlay = (name, reportCode) => ({
     measureLevel: 'District',
     scaleBounds: {
       left: {
-        max: 0,
+        min: 0,
       },
       right: {
-        min: 2,
+        max: 2,
       },
     },
     periodGranularity: 'one_year_at_a_time',

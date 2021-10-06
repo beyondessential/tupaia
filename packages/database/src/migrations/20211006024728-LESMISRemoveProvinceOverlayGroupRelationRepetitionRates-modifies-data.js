@@ -35,6 +35,105 @@ const MAP_OVERLAY_IDS = [
   'LESMIS_grade_6_repetition_rate_GPI_district_map',
 ];
 
+const reportsToChange = [
+  {
+    code: 'LESMIS_grade_1_repetition_rate__district_map',
+    dataElements: 'rr_district_p1_t',
+  },
+  {
+    code: 'LESMIS_grade_2_repetition_rate__district_map',
+    dataElements: 'rr_district_p2_t',
+  },
+  {
+    code: 'LESMIS_grade_3_repetition_rate__district_map',
+    dataElements: 'rr_district_p3_t',
+  },
+  {
+    code: 'LESMIS_grade_4_repetition_rate__district_map',
+    dataElements: 'rr_district_p4_t',
+  },
+  {
+    code: 'LESMIS_grade_5_repetition_rate__district_map',
+    dataElements: 'rr_district_p5_t',
+  },
+  {
+    code: 'LESMIS_grade_6_repetition_rate__district_map',
+    dataElements: 'rr_district_s1_t',
+  },
+  {
+    code: 'LESMIS_grade_7_repetition_rate__district_map',
+    dataElements: 'rr_district_s2_t',
+  },
+  {
+    code: 'LESMIS_grade_8_repetition_rate__district_map',
+    dataElements: 'rr_district_s3_t',
+  },
+  {
+    code: 'LESMIS_grade_9_repetition_rate__district_map',
+    dataElements: 'rr_district_s4_t',
+  },
+  {
+    code: 'LESMIS_grade_10_repetition_rate__district_map',
+    dataElements: 'rr_district_s5_t',
+  },
+  {
+    code: 'LESMIS_grade_11_repetition_rate__district_map',
+    dataElements: 'rr_district_s6_t',
+  },
+  {
+    code: 'LESMIS_grade_12_repetition_rate__district_map',
+    dataElements: 'rr_district_s7_t',
+  },
+  {
+    code: 'LESMIS_grade_1_dropout_rate__district_map',
+    dataElements: 'dor_district_p1_t',
+  },
+  {
+    code: 'LESMIS_grade_2_dropout_rate__district_map',
+    dataElements: 'dor_district_p2_t',
+  },
+  {
+    code: 'LESMIS_grade_3_dropout_rate__district_map',
+    dataElements: 'dor_district_p3_t',
+  },
+  {
+    code: 'LESMIS_grade_4_dropout_rate__district_map',
+    dataElements: 'dor_district_p4_t',
+  },
+  {
+    code: 'LESMIS_grade_5_dropout_rate__district_map',
+    dataElements: 'dor_district_p5_t',
+  },
+  {
+    code: 'LESMIS_grade_6_dropout_rate__district_map',
+    dataElements: 'dor_district_s1_t',
+  },
+  {
+    code: 'LESMIS_grade_7_dropout_rate__district_map',
+    dataElements: 'dor_district_s2_t',
+  },
+  {
+    code: 'LESMIS_grade_8_dropout_rate__district_map',
+    dataElements: 'dor_district_s3_t',
+  },
+  {
+    code: 'LESMIS_grade_9_dropout_rate__district_map',
+    dataElements: 'dor_district_s4_t',
+  },
+  {
+    code: 'LESMIS_grade_10_dropout_rate__district_map',
+    dataElements: 'dor_district_s5_t',
+  },
+  {
+    code: 'LESMIS_grade_11_dropout_rate__district_map',
+    dataElements: 'dor_district_s6_t',
+  },
+  {
+    code: 'LESMIS_grade_12_dropout_rate__district_map',
+    dataElements: 'dor_district_s7_t',
+  },
+];
+
 exports.up = async function (db) {
   // insert overlay relation records for overlays to district group
   MAP_OVERLAY_IDS.forEach(async id => {
@@ -50,6 +149,20 @@ exports.up = async function (db) {
   await db.runSql(`
     DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '5f2c7ddc61f76a513a000216';
     `);
+
+  // set data for GPI presentation config
+  await db.runSql(`
+      UPDATE "mapOverlay" SET "presentationOptions" = jsonb_set("presentationOptions", '{scaleBounds}', '{"left": {"min": 0}, "right": {"max": 2}}') WHERE "id" = 'LESMIS_grade_6_repetition_rate_GPI_district_map';
+    `);
+  await db.runSql(`
+  UPDATE "mapOverlay" SET "presentationOptions" = jsonb_set("presentationOptions", '{scaleBounds}', '{"left": {"min": 0}, "right": {"max": 2}}') WHERE "id" = 'LESMIS_grade_6_dropout_rate_GPI_district_map';
+`);
+
+  reportsToChange.forEach(async ({ code, dataElements }) => {
+    await db.runSql(`
+  UPDATE "report" SET "config" = jsonb_set("config", '{fetch, dataElements}', '["${dataElements}"]') WHERE "code" = '${code}';
+`);
+  });
 };
 
 exports.down = async function (db) {
