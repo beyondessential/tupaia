@@ -20,7 +20,7 @@
     "watch": "rollup -c -w",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
-    "storybook": "start-storybook -s ./public -p 6006",
+    "storybook": "start-storybook -s public -p 6006",
     "test": "jest --env=jsdom",
     "test:coverage": "yarn test --coverage",
     "test:watch": "yarn test --watch"
@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.14.5",
     "@date-io/date-fns": "1.x",
     "@material-ui/core": "^4.9.8",
     "@material-ui/icons": "^4.9.1",
