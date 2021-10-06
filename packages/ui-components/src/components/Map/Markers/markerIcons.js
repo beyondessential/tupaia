@@ -4,6 +4,8 @@
  *
  */
 
+/* eslint-disable react/prop-types */
+
 import L from 'leaflet';
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -14,11 +16,11 @@ import Help from '@material-ui/icons/Help';
 import CheckBox from '@material-ui/icons/CheckBox';
 
 // from https://thenounproject.com/ochavisual/collection/ocha-humanitarian-icons/
-import { ReactComponent as Cyclone } from './images/cyclone.svg';
-import { ReactComponent as Earthquake } from './images/earthquake.svg';
-import { ReactComponent as Tsunami } from './images/tsunami.svg';
-import { ReactComponent as Volcano } from './images/volcano.svg';
-import { ReactComponent as Flood } from './images/flood.svg';
+import { Cyclone } from './disasterIcons/Cyclone';
+import { Earthquake } from './disasterIcons/Earthquake';
+import { Tsunami } from './disasterIcons/Tsunami';
+import { Volcano } from './disasterIcons/Volcano';
+import { Flood } from './disasterIcons/Flood';
 import { BREWER_PALETTE, WHITE } from '../constants';
 
 // allows passing a color to a material icon & scales it down a bit
@@ -51,7 +53,7 @@ const IconContainer = ({ children, scale, ...props }) => (
 );
 
 IconContainer.propTypes = {
-  children: PropTypes.any,
+  children: PropTypes.node,
   scale: PropTypes.number,
 };
 
