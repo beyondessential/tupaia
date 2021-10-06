@@ -21,6 +21,7 @@ import {
 import { selectCurrentProjectCode } from './projectSelectors';
 import { getOrgUnitFromCountry, safeGet } from './utils';
 import { flattenMapOverlayHierarchy } from '../utils';
+import { selectCurrentMapOverlayIds } from './mapOverlaySelectors';
 
 const displayInfoCache = createCachedSelector(
   [
@@ -75,6 +76,18 @@ export const selectHasPolygonMeasure = createSelector(
     );
   },
 );
+
+export const selectCurrentMeasureIds = createSelector([state => state], state => {
+  const currentMapOverlayIds = selectCurrentMapOverlayIds(state);
+  const { mapOverlayHierarchy } = state.mapOverlayBar;
+  const hierarchyMapOverlays = flattenMapOverlayHierarchy(mapOverlayHierarchy);
+
+  return hierarchyMapOverlays.map(hierarchyMapOverlay =>
+    currentMapOverlayIds.includes(hierarchyMapOverlay.mapOverlayId)
+      ? hierarchyMapOverlay.measureIds
+      : [],
+  );
+});
 
 export const selectDisplayedMeasureIds = createSelector([state => state], state => {
   const { displayedMapOverlays } = state.map;

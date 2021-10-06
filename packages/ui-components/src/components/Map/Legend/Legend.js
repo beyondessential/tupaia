@@ -55,7 +55,14 @@ const getLegendComponent = measureType => {
 };
 
 export const Legend = React.memo(
-  ({ serieses, className, setValueHidden, hiddenValues, displayedMeasureIds }) => {
+  ({
+    serieses,
+    className,
+    setValueHidden,
+    hiddenValues,
+    currentMeasureIds,
+    displayedMeasureIds,
+  }) => {
     const displayedLegends = serieses?.filter(
       ({ type, hideFromLegend, values = [] }) =>
         ![MEASURE_TYPE_RADIUS, MEASURE_TYPE_POPUP_ONLY].includes(type) &&
@@ -73,27 +80,33 @@ export const Legend = React.memo(
 
     return (
       <>
-        {displayedLegends.map(series => {
-          const { type } = series;
-          const LegendComponent = getLegendComponent(type);
-          const isDisplayed = displayedMeasureIds.includes(series.key);
-          const hasIconLayer = type === MEASURE_TYPE_ICON;
-          const hasRadiusLayer = type === MEASURE_TYPE_RADIUS;
-          const hasColorLayer = coloredMeasureTypes.includes(type);
-          return (
-            <LegendFrame key={series.key} className={className} isDisplayed={isDisplayed}>
-              {legendsHaveSameType && <LegendName>{`${series.name}: `}</LegendName>}
-              <LegendComponent
-                key={series.key}
-                hasIconLayer={hasIconLayer}
-                hasRadiusLayer={hasRadiusLayer}
-                hasColorLayer={hasColorLayer}
-                series={series}
-                setValueHidden={setValueHidden}
-                hiddenValues={hiddenValues}
-              />
-            </LegendFrame>
+        {currentMeasureIds.map(measureIds => {
+          const displayedSerieses = displayedLegends.filter(legend =>
+            measureIds.includes(legend.key),
           );
+          const hasIconLayer = displayedSerieses.some(l => l.type === MEASURE_TYPE_ICON);
+          const hasRadiusLayer = displayedSerieses.some(l => l.type === MEASURE_TYPE_RADIUS);
+          const hasColorLayer = displayedSerieses.some(l => coloredMeasureTypes.includes(l.type));
+
+          return displayedSerieses.map(series => {
+            const { type } = series;
+            const LegendComponent = getLegendComponent(type);
+            const isDisplayed = displayedMeasureIds.includes(series.key);
+            return (
+              <LegendFrame key={series.key} className={className} isDisplayed={isDisplayed}>
+                {legendsHaveSameType && <LegendName>{`${series.name}: `}</LegendName>}
+                <LegendComponent
+                  key={series.key}
+                  hasIconLayer={hasIconLayer}
+                  hasRadiusLayer={hasRadiusLayer}
+                  hasColorLayer={hasColorLayer}
+                  series={series}
+                  setValueHidden={setValueHidden}
+                  hiddenValues={hiddenValues}
+                />
+              </LegendFrame>
+            );
+          });
         })}
       </>
     );
@@ -111,6 +124,7 @@ Legend.propTypes = {
     }),
   ),
   className: PropTypes.string,
+  currentMeasureIds: PropTypes.array.isRequired,
 };
 
 Legend.defaultProps = {

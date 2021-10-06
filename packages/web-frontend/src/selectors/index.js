@@ -61,6 +61,7 @@ export {
   selectMeasureOptionsByDisplayedMapOverlays,
   selectRenderedMeasuresWithDisplayInfo,
   selectDisplayedMeasureIds,
+  selectCurrentMeasureIds,
 } from './measureSelectors';
 
 export {

@@ -18,7 +18,12 @@ import { connect } from 'react-redux';
 import { Legend as MapLegend, TilePicker, tileSetShape } from '@tupaia/ui-components/lib/map';
 import { CONTROL_BAR_PADDING } from '../styles';
 import { MapOverlayBar } from '../containers/MapOverlayBar';
-import { selectActiveTileSet, selectDisplayedMeasureIds, selectTileSets } from '../selectors';
+import {
+  selectActiveTileSet,
+  selectDisplayedMeasureIds,
+  selectCurrentMeasureIds,
+  selectTileSets,
+} from '../selectors';
 import { changeTileSet } from '../actions';
 
 const FlexDiv = styled.div`
@@ -82,6 +87,7 @@ export const MapDivComponent = ({
   setValueHidden,
   hiddenValues,
   serieses,
+  currentMeasureIds,
   displayedMeasureIds,
 }) => (
   <FlexDiv>
@@ -94,6 +100,7 @@ export const MapDivComponent = ({
           setValueHidden={setValueHidden}
           hiddenValues={hiddenValues}
           serieses={serieses}
+          currentMeasureIds={currentMeasureIds}
           displayedMeasureIds={displayedMeasureIds}
         />
       </BottomRow>
@@ -111,6 +118,7 @@ MapDivComponent.propTypes = {
   setValueHidden: PropTypes.func.isRequired,
   hiddenValues: PropTypes.object,
   serieses: PropTypes.arrayOf(PropTypes.object),
+  currentMeasureIds: PropTypes.array.isRequired,
 };
 
 MapDivComponent.defaultProps = {
@@ -123,6 +131,7 @@ const mapStateToProps = state => ({
   hiddenValues: state.map.measureInfo.hiddenMeasures,
   serieses: state.map.measureInfo.measureOptions,
   tileSets: selectTileSets(state),
+  currentMeasureIds: selectCurrentMeasureIds(state),
   displayedMeasureIds: selectDisplayedMeasureIds(state),
 });
 
