@@ -53,6 +53,8 @@ export const TitleAndDatePickerComponent = ({
   isMeasureLoading,
   displayedMapOverlays,
   onSetDisplayedMapOverlay,
+  // TODO: PHX-103: show both date pickers
+  showDatePickerOnlyAfterSecondTitle,
 }) => {
   const [isSwitchedOn, setIsSwitchedOn] = useState(true);
   useEffect(() => {
@@ -96,7 +98,7 @@ export const TitleAndDatePickerComponent = ({
           </IconWrapper>
         </ToolsWrapper>
       </Content>
-      {showDatePicker && (
+      {showDatePicker && showDatePickerOnlyAfterSecondTitle && (
         <MeasureDatePicker expanded={isExpanded}>
           <DateRangePicker
             key={name} // force re-create the component on measure change, which resets initial dates

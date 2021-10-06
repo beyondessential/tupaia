@@ -90,7 +90,7 @@ export const Control = ({
         <MapTableModal />
       </Header>
       {isMeasureSelected ? (
-        selectedMapOverlays.map(mapOverlay => (
+        selectedMapOverlays.map((mapOverlay, index) => (
           <TitleAndDatePicker
             key={mapOverlay.mapOverlayId}
             mapOverlay={mapOverlay}
@@ -99,6 +99,9 @@ export const Control = ({
             isMeasureSelected={isMeasureSelected}
             toggleMeasures={toggleMeasures}
             isMeasureLoading={isMeasureLoading}
+            showDatePickerOnlyAfterSecondTitle={
+              selectedMapOverlays.length === 2 ? index === 1 : true
+            }
           />
         ))
       ) : (
