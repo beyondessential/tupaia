@@ -64,6 +64,7 @@ const renderYAxisLabel = (label, orientation, fillColor) => {
       fill: fillColor,
       style: { textAnchor: 'middle' },
       position: orientation === 'right' ? 'insideRight' : 'insideLeft',
+      offset: -10,
     };
   return null;
 };
