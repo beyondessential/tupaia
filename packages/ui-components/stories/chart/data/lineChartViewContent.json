@@ -1,27 +1,30 @@
 {
   "data": [
-    {
-      "timestamp": 1609459200000,
-      "Primary Education Multi Level (Public)": 19891,
-      "Primary Education Multi Level (Private)": 181,
-      "Primary Education Single Level (Public)": 120339,
-      "Primary Education Single Level (Private)": 12275
-    }
+    { "timestamp": 1585699200000, "value": 0.29983333333333334 },
+    { "timestamp": 1588291200000, "value": 0.35827272727272724 },
+    { "timestamp": 1590969600000, "value": 0.18787500000000001 },
+    { "timestamp": 1593561600000, "value": 0 },
+    { "timestamp": 1596240000000, "value": 0.08609090909090909 },
+    { "timestamp": 1598918400000, "value": 0 },
+    { "timestamp": 1601510400000, "value": 0.34854545454545455 },
+    { "timestamp": 1604188800000, "value": 0 },
+    { "timestamp": 1606780800000, "value": 0 },
+    { "timestamp": 1609459200000, "value": 0 },
+    { "timestamp": 1612137600000, "value": 0.03628571428571429 },
+    { "timestamp": 1614556800000, "value": 0 }
   ],
-  "code": "LESMIS_num_primary_classrooms",
-  "legacy": false,
-  "reportCode": "LESMIS_num_primary_classrooms",
-  "name": "Number of Primary School Classrooms",
+  "viewId": "12",
+  "organisationUnitCode": "TO",
+  "dashboardGroupId": "228",
+  "startDate": "2020-04-01",
+  "endDate": "2021-04-30",
+  "name": "% Availability of Medicines from Facilities Surveyed Each Month",
   "type": "chart",
-  "xName": "Year",
-  "yName": "Number of Classrooms",
+  "xName": "Month",
+  "yName": "%",
   "chartType": "line",
-  "valueType": "number",
-  "chartConfig": {
-    "Primary Education Multi Level (Public)": { "color": "#ff9800", "legendOrder": 3 },
-    "Primary Education Multi Level (Private)": { "color": "#ffc107", "legendOrder": 4 },
-    "Primary Education Single Level (Public)": { "color": "#e91e63", "legendOrder": 1 },
-    "Primary Education Single Level (Private)": { "color": "#ff5722", "legendOrder": 2 }
-  },
-  "periodGranularity": "year"
+  "valueType": "percentage",
+  "description": "Average each month is calculated across operational facilities that submitted data. If a facility was marked as non-operational, or did not submit data in a given month, it is not included in the average.",
+  "defaultTimePeriod": { "start": { "unit": "year", "offset": -1 } },
+  "periodGranularity": "month"
 }
