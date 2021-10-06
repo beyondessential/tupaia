@@ -944,7 +944,9 @@ function* fetchCurrentMeasureInfo() {
       const newMapOverlayId = selectDefaultMapOverlayId(state);
       yield put(setMapOverlay(newMapOverlayId));
     }
-    yield put(setMapOverlay(selectedMapOverlayIds.join(',')));
+    if (selectedMapOverlayIds.length > 0) {
+      yield put(setMapOverlay(selectedMapOverlayIds.join(',')));
+    }
   }
 }
 
