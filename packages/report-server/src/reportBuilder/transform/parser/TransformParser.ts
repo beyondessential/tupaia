@@ -9,8 +9,8 @@ import { Context } from '../../context';
 import { Row, FieldValue } from '../../types';
 import {
   customFunctions,
-  contextConfig,
-  functionsExtensions,
+  contextFunctionConfigs,
+  functionExtensions,
   functionOverrides,
 } from './functions';
 import { TransformScope } from './TransformScope';
@@ -151,7 +151,7 @@ export class TransformParser extends ExpressionParser {
   }
 
   protected getFunctionExtensions() {
-    return { ...super.getFunctionExtensions(), ...functionsExtensions };
+    return { ...super.getFunctionExtensions(), ...functionExtensions };
   }
 
   protected getFunctionOverrides() {
@@ -164,7 +164,7 @@ export class TransformParser extends ExpressionParser {
     };
 
     const functions = Object.fromEntries(
-      Object.entries(contextConfig).map(([fnName, { create }]) => [
+      Object.entries(contextFunctionConfigs).map(([fnName, { create }]) => [
         fnName,
         this.factory(fnName, ['getContext'], create),
       ]),

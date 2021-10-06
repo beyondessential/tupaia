@@ -7,7 +7,7 @@ import isPlainObject from 'lodash.isplainobject';
 
 import { getUniqueEntries } from '@tupaia/utils';
 
-import { contextConfig, TransformParams, TransformParser } from '../transform';
+import { contextFunctionConfigs, TransformParser } from '../transform';
 import { ContextProp } from './types';
 
 const extractContextPropsFromExpressions = (expressions: string[]) => {
@@ -19,7 +19,7 @@ const extractContextPropsFromExpressions = (expressions: string[]) => {
     })
     .flat();
 
-  const contextProps = Object.entries(contextConfig)
+  const contextProps = Object.entries(contextFunctionConfigs)
     .filter(([fnName]) => functions.includes(fnName))
     .map(([, config]) => config.contextProps)
     .flat();
@@ -32,7 +32,7 @@ export const extractContextProps = (transform: unknown): ContextProp[] => {
     return [];
   }
 
-  const expressions = (transform as TransformParams[])
+  const expressions = transform
     .map(transformStep => {
       if (typeof transformStep === 'string' || !isPlainObject(transformStep)) {
         // Skipping aliased transforms
@@ -47,7 +47,15 @@ export const extractContextProps = (transform: unknown): ContextProp[] => {
       } = transformStep;
 
       return Object.values(restOfTransformParams).map(param => {
-        return typeof param !== 'object' ? [param] : Object.entries(param);
+        if (typeof param !== 'object') {
+          return [param];
+        }
+
+        if (param === null) {
+          return [];
+        }
+
+        return Object.entries(param);
       });
     })
     .flat(5)
