@@ -5,7 +5,6 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import get from 'lodash.get';
 import {
   AreaChart,
@@ -83,13 +82,6 @@ const getLegendAlignment = (legendPosition, isExporting) => {
   }
   return { verticalAlign: 'top', align: 'left' };
 };
-
-const RechartsContainer = styled(ResponsiveContainer)`
-  .recharts-surface {
-    overflow: visible;
-    padding-left: 10px;
-  }
-`;
 
 /**
  * Cartesian Chart types using recharts
@@ -175,7 +167,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
    * so they are called as functions below
    */
   return (
-    <RechartsContainer width="100%" height={height} aspect={aspect}>
+    <ResponsiveContainer width="100%" height={height} aspect={aspect}>
       <ChartContainer
         data={filterDisabledData(data)}
         margin={
@@ -186,7 +178,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
       >
         {referenceAreas && referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />)}
         {XAxisComponent({ isEnlarged, isExporting, viewContent })}
-        {YAxes({ viewContent, isExporting })}
+        {YAxes({ viewContent, chartDataConfig, isExporting })}
         <Tooltip
           filterNull={false}
           content={
@@ -235,7 +227,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
           <Brush dataKey="name" height={20} stroke={CHART_BLUES[0]} fill={CHART_BLUES[1]} />
         )}
       </ChartContainer>
-    </RechartsContainer>
+    </ResponsiveContainer>
   );
 };
 

@@ -64,13 +64,21 @@ const renderYAxisLabel = (label, orientation, fillColor) => {
       fill: fillColor,
       style: { textAnchor: 'middle' },
       position: orientation === 'right' ? 'insideRight' : 'insideLeft',
-      offset: -10,
     };
   return null;
 };
 
-const YAxis = ({ config = {}, viewContent, isExporting }) => {
+const getAxisWidth = (data, chartDataConfig) => {
+  const keys = Object.keys(chartDataConfig);
+  const values = data.map(item => keys.map(key => item[key])).flat();
+  const maxValue = Math.max(...values);
+  const maxValueLength = maxValue.toString().length;
+  return maxValueLength * 8 + 32;
+};
+
+const YAxis = ({ config = {}, viewContent, chartDataConfig, isExporting }) => {
   const fillColor = getContrastTextColor();
+  const width = getAxisWidth(viewContent.data, chartDataConfig);
 
   const {
     yAxisId = DEFAULT_Y_AXIS.id,
@@ -86,6 +94,7 @@ const YAxis = ({ config = {}, viewContent, isExporting }) => {
     <YAxisComponent
       key={yAxisId}
       ticks={ticks}
+      width={width}
       tickSize={6}
       yAxisId={yAxisId}
       orientation={orientation}
@@ -111,6 +120,7 @@ const YAxis = ({ config = {}, viewContent, isExporting }) => {
 YAxis.propTypes = {
   config: PropTypes.object,
   viewContent: PropTypes.object.isRequired,
+  chartDataConfig: PropTypes.object.isRequired,
   isExporting: PropTypes.bool,
 };
 
@@ -119,7 +129,7 @@ YAxis.defaultProps = {
   isExporting: false,
 };
 
-export const YAxes = ({ viewContent, isExporting }) => {
+export const YAxes = ({ viewContent, chartDataConfig, isExporting }) => {
   const { chartConfig = {} } = viewContent;
 
   const axisPropsById = {
@@ -144,12 +154,13 @@ export const YAxes = ({ viewContent, isExporting }) => {
   const axesProps = Object.values(axisPropsById).filter(({ dataKeys }) => dataKeys.length > 0);
   // If no custom axes provided, render the  default y axis
   return axesProps.length > 0
-    ? axesProps.map(props => YAxis({ config: props, viewContent, isExporting }))
-    : YAxis({ viewContent, isExporting });
+    ? axesProps.map(props => YAxis({ config: props, viewContent, chartDataConfig, isExporting }))
+    : YAxis({ viewContent, chartDataConfig, isExporting });
 };
 
 YAxes.propTypes = {
   viewContent: PropTypes.object.isRequired,
+  chartDataConfig: PropTypes.object.isRequired,
   isExporting: PropTypes.bool,
 };
 
