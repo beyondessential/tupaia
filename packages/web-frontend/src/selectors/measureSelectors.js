@@ -89,19 +89,22 @@ export const selectDisplayedMeasureIds = createSelector([state => state], state 
     .flat();
 });
 
-export const selectMeasureOptionsBySelectedMapOverlays = createSelector([state => state], state => {
-  const { measureInfo } = state.map;
-  const { measureOptions } = measureInfo;
-  if (!measureOptions) {
-    return undefined;
-  }
-  const displayedMeasureIds = selectDisplayedMeasureIds(state);
-  const displayedMeasureOptions = measureOptions.filter(({ key }) =>
-    displayedMeasureIds.includes(key),
-  );
+export const selectMeasureOptionsByDisplayedMapOverlays = createSelector(
+  [state => state],
+  state => {
+    const { measureInfo } = state.map;
+    const { measureOptions } = measureInfo;
+    if (!measureOptions) {
+      return undefined;
+    }
+    const displayedMeasureIds = selectDisplayedMeasureIds(state);
+    const displayedMeasureOptions = measureOptions.filter(({ key }) =>
+      displayedMeasureIds.includes(key),
+    );
 
-  return displayedMeasureOptions.length > 0 ? displayedMeasureOptions : undefined;
-});
+    return displayedMeasureOptions.length > 0 ? displayedMeasureOptions : undefined;
+  },
+);
 
 export const selectAllMeasuresWithDisplayInfo = createSelector(
   [
@@ -109,7 +112,7 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
     state => selectCurrentProjectCode(state),
     state => selectCountryHierarchy(state, state.map.measureInfo.currentCountry),
     state => state.map.measureInfo.measureData,
-    selectMeasureOptionsBySelectedMapOverlays,
+    selectMeasureOptionsByDisplayedMapOverlays,
     state => state.map.measureInfo.hiddenMeasures,
     state => state.map.measureInfo.currentCountry,
     state => state.map.measureInfo.measureLevel,
@@ -177,7 +180,7 @@ export const selectRenderedMeasuresWithDisplayInfo = createSelector(
     state => selectCountryHierarchy(state, selectCurrentOrgUnitCode(state)),
     selectAllMeasuresWithDisplayAndOrgUnitData,
     selectDisplayLevelAncestor,
-    selectMeasureOptionsBySelectedMapOverlays,
+    selectMeasureOptionsByDisplayedMapOverlays,
     state => selectCountriesAsOrgUnits(state),
   ],
   (country, allMeasuresWithMeasureInfo, displaylevelAncestor, measureOptions = []) => {

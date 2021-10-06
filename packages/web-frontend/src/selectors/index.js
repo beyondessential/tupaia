@@ -58,7 +58,7 @@ export {
 export {
   selectHasPolygonMeasure,
   selectAllMeasuresWithDisplayInfo,
-  selectMeasureOptionsBySelectedMapOverlays,
+  selectMeasureOptionsByDisplayedMapOverlays,
   selectRenderedMeasuresWithDisplayInfo,
   selectDisplayedMeasureIds,
 } from './measureSelectors';

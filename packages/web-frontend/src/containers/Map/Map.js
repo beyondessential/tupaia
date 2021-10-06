@@ -18,7 +18,7 @@ import {
   selectAllMeasuresWithDisplayInfo,
   selectCurrentOrgUnit,
   selectHasPolygonMeasure,
-  selectMeasureOptionsBySelectedMapOverlays,
+  selectMeasureOptionsByDisplayedMapOverlays,
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitSiblings,
@@ -190,13 +190,11 @@ class MapComponent extends Component {
             organisationUnitChildren={getChildren(area.organisationUnitCode)}
           />
         ))}
-
         <MarkerLayer
           measureData={processedData}
           serieses={measureOptions || null}
           onChangeOrgUnit={onChangeOrgUnit}
         />
-
         <DisasterLayer />
       </StyledMap>
     );
@@ -276,8 +274,7 @@ const mapStateToProps = state => {
   const measureData = selectMeasureDataWithCoordinates(
     selectRenderedMeasuresWithDisplayInfo(state),
   );
-
-  const measureOptions = selectMeasureOptionsBySelectedMapOverlays(state);
+  const measureOptions = selectMeasureOptionsByDisplayedMapOverlays(state);
 
   const getChildren = organisationUnitCode => selectOrgUnitChildren(state, organisationUnitCode);
 
