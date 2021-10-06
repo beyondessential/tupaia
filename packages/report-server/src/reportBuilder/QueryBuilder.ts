@@ -8,22 +8,15 @@ import {
   convertDateRangeToPeriodString,
   convertPeriodStringToDateRange,
   getDefaultPeriod,
-  momentToPeriod,
-  periodToDateString,
+  momentToDateString,
   utcMoment,
 } from '@tupaia/utils';
 
 import { DateOffset, FetchReportQuery, PeriodParams, ReportConfig } from '../types';
 
-const buildDateUsingSpecs = (
-  date: string | undefined,
-  dateOffset: DateOffset,
-  { isEndDate = false },
-) => {
+const buildDateUsingSpecs = (date: string | undefined, dateOffset: DateOffset) => {
   const moment = addMomentOffset(utcMoment(date), dateOffset);
-  const periodType = dateOffset.modifierUnit || dateOffset.unit;
-  const period = momentToPeriod(moment, periodType);
-  return periodToDateString(period, isEndDate);
+  return momentToDateString(moment);
 };
 
 export class QueryBuilder {
@@ -67,10 +60,10 @@ export class QueryBuilder {
 
     // Apply date offset if date specs is object
     if (typeof startDateSpecs === 'object') {
-      startDate = buildDateUsingSpecs(endDate, startDateSpecs, { isEndDate: false });
+      startDate = buildDateUsingSpecs(endDate, startDateSpecs);
     }
     if (typeof endDateSpecs === 'object') {
-      endDate = buildDateUsingSpecs(endDate, endDateSpecs, { isEndDate: true });
+      endDate = buildDateUsingSpecs(endDate, endDateSpecs);
     }
 
     if (!this.matchesOriginalQuery({ startDate, endDate })) {

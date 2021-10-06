@@ -25,12 +25,15 @@ const dataElementValidator = createDataSourceValidator('dataElement');
 const dataGroupValidator = createDataSourceValidator('dataGroup');
 
 const dateSpecsValidator = yupUtils.polymorphic({
-  object: yup.object().shape({
-    unit: periodTypeValidator,
-    offset: yup.number(),
-    modifier: yup.mixed().oneOf(['start_of', 'end_of']),
-    modifierUnit: periodTypeValidator,
-  }),
+  object: yup
+    .object()
+    .shape({
+      unit: periodTypeValidator.required(),
+      offset: yup.number(),
+      modifier: yup.mixed().oneOf(['start_of', 'end_of']),
+      modifierUnit: periodTypeValidator,
+    })
+    .default(undefined),
   string: yup.string().min(4),
 });
 
