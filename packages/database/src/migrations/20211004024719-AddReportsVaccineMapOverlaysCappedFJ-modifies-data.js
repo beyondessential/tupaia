@@ -93,7 +93,7 @@ const getMapOverlay = (name, reportCode) => ({
     reportCode,
   },
   presentationOptions: {
-    scaleType: 'performace',
+    scaleType: 'performance',
     valueType: 'percentage',
     displayType: 'shaded-spectrum',
     scaleBounds: {
@@ -193,12 +193,12 @@ exports.up = async function (db) {
     }
   }
 
-  // // Remove Outdated Map Overlays @TODO ADD BACK
-  // for (const { children } of MAP_OVERLAYS) {
-  //   for (const { outdatedOverlayId } of children) {
-  //     await removeOutdatedMapOverlay(db, outdatedOverlayId);
-  //   }
-  // }
+  // Remove Outdated Map Overlays
+  for (const { children } of MAP_OVERLAYS) {
+    for (const { outdatedOverlayId } of children) {
+      await removeOutdatedMapOverlay(db, outdatedOverlayId);
+    }
+  }
 };
 
 exports.down = async function (db) {
