@@ -24,7 +24,6 @@ import {
   clearMeasure,
   toggleMeasureExpand,
   updateMeasureConfig,
-  setDisplayedMapOverlay,
 } from '../../actions';
 import { HierarchyItem } from '../../components/HierarchyItem';
 import {
@@ -33,7 +32,6 @@ import {
   selectDefaultMapOverlay,
   selectCurrentMapOverlayIds,
 } from '../../selectors';
-import { sortMapOverlayIdsByHierarchyOrder } from '../../utils';
 
 export class MapOverlayBarComponent extends Component {
   constructor(props) {
@@ -213,10 +211,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onExpandClick: () => dispatch(toggleMeasureExpand()),
-    onSetMapOverlay: mapOverlayIds => {
-      dispatch(setMapOverlay(mapOverlayIds.join(',')));
-      dispatch(setDisplayedMapOverlay(mapOverlayIds));
-    },
+    onSetMapOverlay: mapOverlayIds => dispatch(setMapOverlay(mapOverlayIds.join(','))),
     onClearMeasure: () => dispatch(clearMeasure()),
     dispatch,
   };
