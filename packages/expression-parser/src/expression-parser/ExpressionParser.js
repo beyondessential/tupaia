@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { create, all, factory } from 'mathjs';
+import { create, all } from 'mathjs';
 
 /**
  * @typedef {Object} Scope
@@ -44,6 +44,8 @@ const firstExistingValue = (...argumentList) => {
 const translate = (value, translations) => {
   return translations[value];
 };
+
+const date = (...argumentList) => new Date(...argumentList);
 
 const ADDITIONAL_ALPHA_CHARS = ['@'];
 
@@ -212,6 +214,7 @@ export class ExpressionParser {
   getCustomFunctions() {
     return {
       avg: average,
+      date,
       firstExistingValue,
       translate,
     };
