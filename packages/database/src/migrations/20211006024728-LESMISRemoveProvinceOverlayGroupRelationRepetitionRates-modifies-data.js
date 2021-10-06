@@ -15,7 +15,7 @@ exports.setup = function (options, seedLink) {
   type = dbm.dataType;
   seed = seedLink;
 };
-
+// overlays for adding relations
 const MAP_OVERLAY_IDS = [
   'LESMIS_grade_1_repetition_rate__district_map',
   'LESMIS_grade_2_repetition_rate__district_map',
@@ -34,8 +34,8 @@ const MAP_OVERLAY_IDS = [
   'LESMIS_uppersecondary_repetition_rate_district_map',
   'LESMIS_grade_6_repetition_rate_GPI_district_map',
 ];
-
-const reportsToChange = [
+// reports to remove empty string dataElement
+const REPORTS = [
   {
     code: 'LESMIS_grade_1_repetition_rate__district_map',
     dataElements: 'rr_district_p1_t',
@@ -158,7 +158,7 @@ exports.up = async function (db) {
   UPDATE "mapOverlay" SET "presentationOptions" = jsonb_set("presentationOptions", '{scaleBounds}', '{"left": {"min": 0}, "right": {"max": 2}}') WHERE "id" = 'LESMIS_grade_6_dropout_rate_GPI_district_map';
 `);
 
-  reportsToChange.forEach(async ({ code, dataElements }) => {
+  REPORTS.forEach(async ({ code, dataElements }) => {
     await db.runSql(`
   UPDATE "report" SET "config" = jsonb_set("config", '{fetch, dataElements}', '["${dataElements}"]') WHERE "code" = '${code}';
 `);
