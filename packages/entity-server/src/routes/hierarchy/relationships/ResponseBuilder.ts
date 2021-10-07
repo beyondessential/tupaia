@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import keyBy from 'lodash.keyby';
+
 import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
 import { QueryConjunctions } from '@tupaia/server-boilerplate';
 
@@ -181,9 +183,10 @@ export class ResponseBuilder {
     }
 
     const ancestors = await this.getAncestorTypeRelatives(ancestorCodes);
+    const ancestorsByCode = keyBy(ancestors, 'code');
     const formattedEntitiesByCode = await this.getFormattedEntitiesByCode(ancestors, descendants);
     const formattedPairs = pairs
-      .filter(pair => formattedEntitiesByCode[pair.ancestor])
+      .filter(pair => ancestorsByCode[pair.ancestor])
       .map(pair => ({
         ancestor: formattedEntitiesByCode[pair.ancestor],
         descendant: formattedEntitiesByCode[pair.descendant],

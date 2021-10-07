@@ -102,16 +102,15 @@ describe('relationships', () => {
 
     it('can fetch relations where ancestor and descendant have the same type', async () => {
       const { body: entities } = await app.get('hierarchy/redblue/KANTO/relationships', {
-        query: { ancestor_filter: 'type==facility', descendant_filter: 'type==facility' },
+        query: {
+          ancestor_filter: 'type==facility;name=@Pokemon',
+          descendant_filter: 'type==facility',
+        },
       });
 
       expect(entities).toEqual({
-        CELADON_GAME: ['CELADON_GAME'],
-        CERULEAN_CAVE: ['CERULEAN_CAVE'],
         PKMN_MANSION: ['PKMN_MANSION'],
-        SAFARI: ['SAFARI'],
         PKMN_TOWER: ['PKMN_TOWER'],
-        SILPH: ['SILPH'],
       });
     });
 
