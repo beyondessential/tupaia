@@ -2,15 +2,16 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useState } from 'react';
 import {
   IconButton,
   SurveyResponsesPage as ResourcePage,
   SURVEY_RESPONSE_COLUMNS,
 } from '@tupaia/admin-panel/lib';
+import MuiSnackbar from '@material-ui/core/Snackbar';
 import CheckIcon from '@material-ui/icons/Check';
-import { ConfirmModal } from '@tupaia/ui-components';
-import { MODAL_STATUS } from '@tupaia/admin-panel/src/VizBuilderApp/constants';
+import { ConfirmModal, SmallAlert } from '@tupaia/ui-components';
+import { useApproveSurveyResponse } from '../api/mutations/useApproveSurveyResponse';
 
 export const ApprovedSurveyResponsesView = props => (
   <ResourcePage
@@ -19,15 +20,6 @@ export const ApprovedSurveyResponsesView = props => (
     {...props}
   />
 );
-
-// eslint-disable-next-line no-unused-vars
-const ApproveCell = ({ value }) => {
-  return (
-    <IconButton onClick={() => console.log('click approve...')}>
-      <CheckIcon />
-    </IconButton>
-  );
-};
 
 const entityName = {
   Header: 'Entity',
@@ -38,6 +30,61 @@ const entityName = {
 };
 
 const { surveyName, assessorName, date, dateOfData } = SURVEY_RESPONSE_COLUMNS;
+
+// eslint-disable-next-line no-unused-vars
+const ApproveButton = ({ dispatch, value: id, actionConfig, reduxId }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const { mutate, isLoading, isError, isSuccess } = useApproveSurveyResponse();
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
+  const handleClickAccept = async () => {
+    console.log('click accept', id);
+
+    mutate(
+      {
+        surveyResponseId: id,
+      },
+      {
+        onSuccess: () => {
+          setIsOpen(true);
+        },
+        onError: () => {
+          setIsOpen(true);
+        },
+      },
+    );
+  };
+
+  return (
+    <>
+      <IconButton onClick={handleClickAccept}>
+        <CheckIcon />
+      </IconButton>
+      <MuiSnackbar
+        open={isOpen}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <>
+          {isSuccess && (
+            <SmallAlert onClose={handleClose} severity="success">
+              Success
+            </SmallAlert>
+          )}
+          {isError && (
+            <SmallAlert onClose={handleClose} severity="error">
+              Error. Please click refresh and try again.
+            </SmallAlert>
+          )}
+        </>
+      </MuiSnackbar>
+    </>
+  );
+};
 
 const COLUMNS = [
   entityName,
@@ -54,7 +101,7 @@ const COLUMNS = [
   {
     Header: 'Approve',
     source: 'id',
-    Cell: ApproveCell,
+    Cell: ApproveButton,
     filterable: false,
     sortable: false,
     width: 75,
