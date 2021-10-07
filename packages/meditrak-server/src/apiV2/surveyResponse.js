@@ -92,8 +92,8 @@ function buildResponseRecord(user, entitiesByCode, body) {
     user_id: user.id,
     entity_id: entityId || entitiesByCode[entityCode].id,
     data_time: stripTimezoneFromDate(time),
-    start_time: inputStartTime ? inputStartTime : time,
-    end_time: inputEndTime ? inputEndTime : time,
+    start_time: inputStartTime ? new Date(inputStartTime).toISOString() : time,
+    end_time: inputEndTime ? new Date(inputEndTime).toISOString() : time,
     timezone: timezoneName,
     assessor_name: user.fullName,
   };
