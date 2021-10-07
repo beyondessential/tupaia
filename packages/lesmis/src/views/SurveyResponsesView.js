@@ -9,6 +9,8 @@ import {
   SURVEY_RESPONSE_COLUMNS,
 } from '@tupaia/admin-panel/lib';
 import CheckIcon from '@material-ui/icons/Check';
+import { ConfirmModal } from '@tupaia/ui-components';
+import { MODAL_STATUS } from '@tupaia/admin-panel/src/VizBuilderApp/constants';
 
 export const ApprovedSurveyResponsesView = props => (
   <ResourcePage
@@ -67,11 +69,29 @@ const COLUMNS = [
   },
 ];
 
+// eslint-disable-next-line react/prop-types
+const ConfirmRejectModal = ({ isOpen, onConfirm, onCancel }) => {
+  return (
+    <ConfirmModal
+      onClose={onCancel}
+      isOpen={isOpen}
+      handleAction={onConfirm}
+      isLoading={false}
+      title="Reject Survey Response"
+      mainText="Are you sure you want to reject this Survey Response?"
+      description="Rejecting a Survey Response will also delete it. Once deleted this can’t be undone."
+      actionText="Yes, Reject and Delete"
+      loadingText="Saving"
+    />
+  );
+};
+
 export const DraftSurveyResponsesView = props => (
   <ResourcePage
     {...props}
-    title="Survey Responses (Review)1"
+    title="Survey Responses (Review)"
     baseFilter={{ 'survey.code': { comparator: 'NOT ILIKE', comparisonValue: '%_Confirmed_WNR' } }}
     columns={COLUMNS}
+    ConfirmDeleteModalComponent={ConfirmRejectModal}
   />
 );

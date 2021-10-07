@@ -62,9 +62,14 @@ class DataFetchingTableComponent extends React.Component {
   }
 
   renderConfirmModal() {
-    const { confirmActionMessage, onConfirmAction, onCancelAction } = this.props;
+    const {
+      confirmActionMessage,
+      onConfirmAction,
+      onCancelAction,
+      ConfirmDeleteModalComponent,
+    } = this.props;
     return (
-      <ConfirmDeleteModal
+      <ConfirmDeleteModalComponent
         isOpen={!!confirmActionMessage}
         message={confirmActionMessage}
         onConfirm={onConfirmAction}
@@ -176,8 +181,9 @@ class DataFetchingTableComponent extends React.Component {
 DataFetchingTableComponent.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   confirmActionMessage: PropTypes.string,
-  data: PropTypes.arrayOf(PropTypes.shape({})),
+  ConfirmDeleteModalComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
   errorMessage: PropTypes.string,
+  data: PropTypes.arrayOf(PropTypes.shape({})),
   expansionTabs: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
@@ -212,6 +218,7 @@ DataFetchingTableComponent.propTypes = {
 
 DataFetchingTableComponent.defaultProps = {
   confirmActionMessage: null,
+  ConfirmDeleteModalComponent: ConfirmDeleteModal,
   expansionTabs: null,
   data: [],
   errorMessage: '',

@@ -24,6 +24,7 @@ export const ResourcePage = ({
   expansionTabs,
   importConfig,
   ExportModalComponent,
+  ConfirmDeleteModalComponent,
   onProcessDataForSave,
   baseFilter,
   title,
@@ -52,6 +53,7 @@ export const ResourcePage = ({
           baseFilter={baseFilter}
           defaultFilters={defaultFilters}
           defaultSorting={defaultSorting}
+          ConfirmDeleteModalComponent={ConfirmDeleteModalComponent}
         />
       </Container>
       <EditModal {...editConfig} onProcessDataForSave={onProcessDataForSave} />
