@@ -8,7 +8,7 @@
 import { combineReducers } from 'redux';
 
 import {
-  SET_MAP_OVERLAY,
+  SET_MAP_OVERLAYS,
   SET_ORG_UNIT,
   CHANGE_POSITION,
   CHANGE_BOUNDS,
@@ -129,7 +129,7 @@ function measureInfo(state = {}, action) {
 function isMeasureLoading(state = false, action) {
   switch (action.type) {
     case UPDATE_MEASURE_CONFIG:
-    case SET_MAP_OVERLAY:
+    case SET_MAP_OVERLAYS:
       return true;
     case FETCH_MEASURE_DATA_ERROR:
     case FETCH_MEASURE_DATA_SUCCESS:
@@ -142,7 +142,7 @@ function isMeasureLoading(state = false, action) {
 
 function displayedMapOverlays(state = [], action) {
   switch (action.type) {
-    case SET_MAP_OVERLAY:
+    case SET_MAP_OVERLAYS:
       return action.mapOverlayIds.split(',');
     case SET_DISPLAYED_MAP_OVERLAY:
       return action.mapOverlayIds;

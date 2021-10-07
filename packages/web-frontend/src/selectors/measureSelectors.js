@@ -45,11 +45,49 @@ const getOrgUnitFromMeasureData = (measureData, code) =>
 const selectDisplayInfo = (measureOptions, hiddenMeasures, measureData, organisationUnitCode) =>
   safeGet(displayInfoCache, [measureOptions, hiddenMeasures, measureData, organisationUnitCode]);
 
+export const selectCurrentMeasureIds = createSelector(
+  [selectCurrentMapOverlayIds, state => state.mapOverlayBar.mapOverlayHierarchy],
+  (currentMapOverlayIds, mapOverlayHierarchy) => {
+    const hierarchy = flattenMapOverlayHierarchy(mapOverlayHierarchy);
+
+    return hierarchy.map(mapOverlay =>
+      currentMapOverlayIds.includes(mapOverlay.mapOverlayId) ? mapOverlay.measureIds : [],
+    );
+  },
+);
+
+export const selectDisplayedMeasureIds = createSelector(
+  [state => state.map.displayedMapOverlays, state => state.mapOverlayBar.mapOverlayHierarchy],
+  (displayedMapOverlays, mapOverlayHierarchy) => {
+    const hierarchy = flattenMapOverlayHierarchy(mapOverlayHierarchy);
+
+    return hierarchy
+      .map(mapOverlay =>
+        displayedMapOverlays.includes(mapOverlay.mapOverlayId) ? mapOverlay.measureIds : [],
+      )
+      .flat();
+  },
+);
+
+export const selectMeasureOptionsByDisplayedMapOverlays = createSelector(
+  [state => state.map.measureInfo.measureOptions, selectDisplayedMeasureIds],
+  (measureOptions, displayedMeasureIds) => {
+    if (!measureOptions) {
+      return undefined;
+    }
+    const displayedMeasureOptions = measureOptions.filter(({ key }) =>
+      displayedMeasureIds.includes(key),
+    );
+
+    return displayedMeasureOptions.length > 0 ? displayedMeasureOptions : undefined;
+  },
+);
+
 const selectDisplayLevelAncestor = createSelector(
   [
     state => selectCountryHierarchy(state, selectCurrentOrgUnitCode(state)),
     selectCurrentOrgUnitCode,
-    state => state.map.measureInfo.measureOptions,
+    selectMeasureOptionsByDisplayedMapOverlays,
   ],
   (country, currentOrganisationUnitCode, measureOptions) => {
     if (!country || !currentOrganisationUnitCode || !measureOptions) {
@@ -74,48 +112,6 @@ export const selectHasPolygonMeasure = createSelector(
       measureInfo.measureOptions &&
       measureInfo.measureOptions.some(option => POLYGON_MEASURE_TYPES.includes(option.type))
     );
-  },
-);
-
-export const selectCurrentMeasureIds = createSelector([state => state], state => {
-  const currentMapOverlayIds = selectCurrentMapOverlayIds(state);
-  const { mapOverlayHierarchy } = state.mapOverlayBar;
-  const hierarchyMapOverlays = flattenMapOverlayHierarchy(mapOverlayHierarchy);
-
-  return hierarchyMapOverlays.map(hierarchyMapOverlay =>
-    currentMapOverlayIds.includes(hierarchyMapOverlay.mapOverlayId)
-      ? hierarchyMapOverlay.measureIds
-      : [],
-  );
-});
-
-export const selectDisplayedMeasureIds = createSelector([state => state], state => {
-  const { displayedMapOverlays } = state.map;
-  const { mapOverlayHierarchy } = state.mapOverlayBar;
-  const hierarchyMapOverlays = flattenMapOverlayHierarchy(mapOverlayHierarchy);
-  return hierarchyMapOverlays
-    .map(hierarchyMapOverlay =>
-      displayedMapOverlays.includes(hierarchyMapOverlay.mapOverlayId)
-        ? hierarchyMapOverlay.measureIds
-        : [],
-    )
-    .flat();
-});
-
-export const selectMeasureOptionsByDisplayedMapOverlays = createSelector(
-  [state => state],
-  state => {
-    const { measureInfo } = state.map;
-    const { measureOptions } = measureInfo;
-    if (!measureOptions) {
-      return undefined;
-    }
-    const displayedMeasureIds = selectDisplayedMeasureIds(state);
-    const displayedMeasureOptions = measureOptions.filter(({ key }) =>
-      displayedMeasureIds.includes(key),
-    );
-
-    return displayedMeasureOptions.length > 0 ? displayedMeasureOptions : undefined;
   },
 );
 

@@ -20,7 +20,7 @@ import shallowEqual from 'shallowequal';
 
 import { Control } from './Control';
 import {
-  setMapOverlay,
+  setMapOverlays,
   clearMeasure,
   toggleMeasureExpand,
   updateMeasureConfig,
@@ -211,7 +211,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onExpandClick: () => dispatch(toggleMeasureExpand()),
-    onSetMapOverlay: mapOverlayIds => dispatch(setMapOverlay(mapOverlayIds.join(','))),
+    onSetMapOverlay: mapOverlayIds => dispatch(setMapOverlays(mapOverlayIds.join(','))),
     onClearMeasure: () => dispatch(clearMeasure()),
     dispatch,
   };
@@ -221,11 +221,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch, onSetMapOverlay, onClearMeasure } = dispatchProps;
   const { currentMapOverlayIds } = stateProps;
   const onSelectMapOverlay = mapOverlayId => {
-    onSetMapOverlay([
-      // Only two map overlays can be selected at the same time
-      ...(currentMapOverlayIds.length === 2 ? [currentMapOverlayIds[1]] : currentMapOverlayIds),
-      mapOverlayId,
-    ]);
+    const MAX_SELECTED_OVERLAYS = 2;
+    const newMapOverlayIds = [...currentMapOverlayIds, mapOverlayId];
+    if (newMapOverlayIds.length > MAX_SELECTED_OVERLAYS) {
+      newMapOverlayIds.shift();
+    }
+    onSetMapOverlay(newMapOverlayIds);
   };
   const onUnSelectMapOverlay = mapOverlayId => {
     const updatedMapOverlayIds = currentMapOverlayIds.filter(

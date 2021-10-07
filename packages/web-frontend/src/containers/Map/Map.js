@@ -238,13 +238,7 @@ const selectMeasureDataWithCoordinates = createSelector([measureData => measureD
 );
 
 const mapStateToProps = state => {
-  const {
-    isAnimating,
-    shouldSnapToPosition,
-    position,
-    measureInfo,
-    displayedMapOverlays,
-  } = state.map;
+  const { isAnimating, shouldSnapToPosition, position, measureInfo } = state.map;
   const { mapOverlayIds } = measureInfo;
   const { isSidePanelExpanded } = state.global;
   const { contractedWidth, expandedWidth } = state.dashboard;
@@ -290,7 +284,6 @@ const mapStateToProps = state => {
     ),
     mapOverlayIds,
     measureOptions,
-    displayedMapOverlays,
     getChildren,
     measureOrgUnits,
     tileSetUrl: selectActiveTileSet(state).url,

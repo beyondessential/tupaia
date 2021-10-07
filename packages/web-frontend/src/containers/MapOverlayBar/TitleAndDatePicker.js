@@ -9,9 +9,9 @@ import MuiSwitch from '@material-ui/core/Switch';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { getDefaultDates, getLimits, GRANULARITY_CONFIG } from '../../utils/periodGranularities';
-import { Content, ContentText } from './Styles';
+import { Content, ContentText } from './Content';
 import { TUPAIA_ORANGE } from '../../styles';
-import { setDisplayedMapOverlay } from '../../actions';
+import { setDisplayedMapOverlays } from '../../actions';
 
 const Switch = withStyles({
   switchBase: {
@@ -45,7 +45,7 @@ const MeasureDatePicker = styled.div`
 `;
 
 export const TitleAndDatePickerComponent = ({
-  mapOverlay,
+  mapOverlay = {},
   onUpdateMeasurePeriod,
   isExpanded,
   isMeasureSelected,
@@ -58,41 +58,37 @@ export const TitleAndDatePickerComponent = ({
 }) => {
   const [isSwitchedOn, setIsSwitchedOn] = useState(true);
   useEffect(() => {
-    setIsSwitchedOn(displayedMapOverlays.includes(mapOverlay?.mapOverlayId));
+    setIsSwitchedOn(displayedMapOverlays.includes(mapOverlay.mapOverlayId));
   }, [JSON.stringify(displayedMapOverlays)]);
-  const switchOnChange = () => {
-    if (isSwitchedOn) {
-      onSetDisplayedMapOverlay(
-        displayedMapOverlays.filter(mapOverlayId => mapOverlayId !== mapOverlay?.mapOverlayId),
-      );
-    } else {
-      onSetDisplayedMapOverlay([...displayedMapOverlays, mapOverlay?.mapOverlayId]);
-    }
-    setIsSwitchedOn(!isSwitchedOn);
-  };
+
   const { periodGranularity, isTimePeriodEditable = true, name } = mapOverlay;
   const defaultDates = getDefaultDates(mapOverlay);
   const datePickerLimits = getLimits(periodGranularity, mapOverlay.datePickerLimits);
   const showDatePicker = !!(isTimePeriodEditable && periodGranularity);
+  // Map overlays always have initial dates, so DateRangePicker always has dates on initialisation,
+  // and uses those rather than calculating it's own defaults
+  const startDate = mapOverlay.startDate || defaultDates.startDate;
+  const endDate = mapOverlay.endDate || defaultDates.endDate;
+
+  const handleSwitchChange = () => {
+    const newDisplayedOverlays = isSwitchedOn
+      ? displayedMapOverlays.filter(mapOverlayId => mapOverlayId !== mapOverlay.mapOverlayId)
+      : [...displayedMapOverlays, mapOverlay.mapOverlayId];
+    onSetDisplayedMapOverlay(newDisplayedOverlays);
+    setIsSwitchedOn(!isSwitchedOn);
+  };
+
   const updateMeasurePeriod = (startDate, endDate) => {
     const period = GRANULARITY_CONFIG[periodGranularity].momentUnit;
     onUpdateMeasurePeriod(moment(startDate).startOf(period), moment(endDate).endOf(period));
   };
-  // Map overlays always have initial dates, so DateRangePicker always has dates on initialisation,
-  // and uses those rather than calculating it's own defaults
-  const startDate = mapOverlay?.startDate || defaultDates.startDate;
-  const endDate = mapOverlay?.endDate || defaultDates.endDate;
+
   return (
     <>
       <Content expanded={isExpanded} selected={isMeasureSelected} period={periodGranularity}>
         <ContentText>{isMeasureLoading ? <CircularProgress size={22} /> : name}</ContentText>
         <ToolsWrapper>
-          <Switch
-            checked={isSwitchedOn}
-            onChange={() => {
-              switchOnChange();
-            }}
-          />
+          <Switch checked={isSwitchedOn} onChange={handleSwitchChange} />
           <IconWrapper onClick={toggleMeasures}>
             <DownArrow />
           </IconWrapper>
@@ -148,7 +144,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onSetDisplayedMapOverlay: mapOverlayIds => dispatch(setDisplayedMapOverlay(mapOverlayIds)),
+  onSetDisplayedMapOverlay: mapOverlayIds => dispatch(setDisplayedMapOverlays(mapOverlayIds)),
 });
 
 export const TitleAndDatePicker = connect(

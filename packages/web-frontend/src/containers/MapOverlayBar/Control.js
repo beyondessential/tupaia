@@ -5,7 +5,7 @@ import LayersIcon from '@material-ui/icons/Layers';
 import Fade from '@material-ui/core/Fade';
 import LastUpdated from './LastUpdated';
 import { CONTROL_BAR_WIDTH, TUPAIA_ORANGE } from '../../styles';
-import { Content, ContentText } from './Styles';
+import { Content, EmptyContentText, ExpandedContent } from './Content';
 import { MapTableModal } from '../MapTableModal';
 import { TitleAndDatePicker } from './TitleAndDatePicker';
 
@@ -38,11 +38,6 @@ const Header = styled.div`
   }
 `;
 
-const EmptyContentText = styled(ContentText)`
-  font-size: 16px;
-  padding-right: 6px;
-`;
-
 const SubHeader = styled.div`
   color: ${TUPAIA_ORANGE};
   font-size: 12px;
@@ -50,19 +45,6 @@ const SubHeader = styled.div`
   padding: 4px;
   text-transform: uppercase;
   margin-bottom: 10px;
-`;
-
-const ExpandedContent = styled.div`
-  pointer-events: auto;
-  background: #203e5c;
-  border-top: 1px solid rgba(255, 255, 255, 0.25);
-  color: #fff;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  overflow-y: auto;
-  padding: 15px;
-  flex-basis: 0;
-  flex-grow: 1;
 `;
 
 export const Control = ({

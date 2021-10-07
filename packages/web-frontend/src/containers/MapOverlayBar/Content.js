@@ -27,3 +27,21 @@ export const Content = styled.div`
 export const ContentText = styled.div`
   font-size: 16px;
 `;
+
+export const EmptyContentText = styled(ContentText)`
+  font-size: 16px;
+  padding-right: 6px;
+`;
+
+export const ExpandedContent = styled.div`
+  pointer-events: auto;
+  background: #203e5c;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  overflow-y: auto;
+  padding: 15px;
+  flex-basis: 0;
+  flex-grow: 1;
+`;
