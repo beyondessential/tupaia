@@ -391,6 +391,56 @@ describe('surveyResponse endpoint', () => {
     );
   });
 
+  it('Should use start and end times if provided', async () => {
+    const response = await app.post('surveyResponse', {
+      body: {
+        survey_id: surveyId,
+        entity_id: ENTITY_ID,
+        timestamp: '2021-01-01T23:59:59Z',
+        start_time: '2021-02-01T23:59:59Z',
+        end_time: '2021-03-01T23:59:59Z',
+        answers: {
+          [questionCode(1)]: '123',
+        },
+      },
+    });
+
+    const { body } = response;
+    expectSuccess(response);
+
+    const { surveyResponseId } = body.results[0];
+    const dbResponse = await models.surveyResponse.findOne({ id: surveyResponseId });
+    expect(moment(dbResponse.data_time).format('YYYY-MM-DDTHH:mm:ss.SSS')).to.equal(
+      '2021-01-01T23:59:59.000',
+    );
+    expect(moment(dbResponse.start_time).isSame('2021-02-01T23:59:59.000Z')).to.be.true;
+    expect(moment(dbResponse.end_time).isSame('2021-03-01T23:59:59.000Z')).to.be.true;
+  });
+
+  it('Should use timestamp as start and end times if not provided', async () => {
+    const response = await app.post('surveyResponse', {
+      body: {
+        survey_id: surveyId,
+        entity_id: ENTITY_ID,
+        timestamp: '2021-01-01T23:59:59Z',
+        answers: {
+          [questionCode(1)]: '123',
+        },
+      },
+    });
+
+    const { body } = response;
+    expectSuccess(response);
+
+    const { surveyResponseId } = body.results[0];
+    const dbResponse = await models.surveyResponse.findOne({ id: surveyResponseId });
+    expect(moment(dbResponse.data_time).format('YYYY-MM-DDTHH:mm:ss.SSS')).to.equal(
+      '2021-01-01T23:59:59.000',
+    );
+    expect(moment(dbResponse.start_time).isSame('2021-01-01T23:59:59.000Z')).to.be.true;
+    expect(moment(dbResponse.end_time).isSame('2021-01-01T23:59:59.000Z')).to.be.true;
+  });
+
   describe('Update entity for existing survey response', async function () {
     let syncQueue;
     let surveyResponseId;
