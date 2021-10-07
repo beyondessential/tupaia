@@ -1,6 +1,5 @@
 import React from 'react';
-import { addDecorator, addParameters } from '@storybook/react';
-import * as COLORS from '../stories/story-utils/theme/colors';
+import { addDecorator } from '@storybook/react';
 import { AppProviders } from '../helpers/AppProviders';
 
 export const parameters = {
