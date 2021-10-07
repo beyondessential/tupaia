@@ -5,4 +5,5 @@
 import 'react-table/react-table.css';
 
 export * from './pages/resources';
+export { IconButton } from './widgets';
 export { AdminPanelDataProviders } from './utilities/AdminPanelProviders';
