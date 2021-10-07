@@ -75,7 +75,14 @@ async function validateResponse(models, userId, body) {
 
 function buildResponseRecord(user, entitiesByCode, body) {
   // assumes validateResponse has succeeded
-  const { entity_id: entityId, entity_code: entityCode, timestamp, survey_id: surveyId } = body;
+  const {
+    entity_id: entityId,
+    entity_code: entityCode,
+    timestamp,
+    survey_id: surveyId,
+    start_time: inputStartTime,
+    end_time: inputEndTime,
+  } = body;
 
   const timezoneName = getTimezoneNameFromTimestamp(timestamp);
   const time = new Date(timestamp).toISOString();
@@ -85,8 +92,8 @@ function buildResponseRecord(user, entitiesByCode, body) {
     user_id: user.id,
     entity_id: entityId || entitiesByCode[entityCode].id,
     data_time: stripTimezoneFromDate(time),
-    start_time: time,
-    end_time: time,
+    start_time: inputStartTime ? inputStartTime : time,
+    end_time: inputEndTime ? inputEndTime : time,
     timezone: timezoneName,
     assessor_name: user.fullName,
   };
