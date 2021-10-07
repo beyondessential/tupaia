@@ -74,7 +74,7 @@ const findNestedGroupedMapOverlays = async (
     mapOverlayItemRelations,
   );
   return sortedMapOverlayResults.map(item => {
-    const { code: mapOverlayCode, ...itemToReturn } = item;
+    const { id, code: mapOverlayCode, ...itemToReturn } = item;
     return { mapOverlayCode, ...itemToReturn };
   });
 };
@@ -158,8 +158,9 @@ const sortMapOverlayItems = (mapOverlayItems, relations) => {
 const translateOverlaysForResponse = mapOverlays =>
   mapOverlays
     .filter(({ config: { hideFromMenu } }) => !hideFromMenu)
-    .map(({ code, name, config, report_code: reportCode, legacy }) => ({
-      code, // just for sorting purpose, will be removed later
+    .map(({ id, code, name, config, report_code: reportCode, legacy }) => ({
+      id, // just for lookup purpose, will be removed later
+      code,
       name,
       ...config,
       reportCode,
