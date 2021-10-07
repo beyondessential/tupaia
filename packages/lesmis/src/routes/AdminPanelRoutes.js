@@ -12,7 +12,6 @@ import {
   DashboardsPage,
   QuestionsPage,
   SurveysPage,
-  SurveyResponsesPage,
   DataElementsPage,
   DashboardRelationsPage,
   MapOverlayGroupRelationsPage,
@@ -27,10 +26,28 @@ import {
 import { LesmisAdminRoute } from './LesmisAdminRoute';
 import { useUser } from '../api/queries';
 import { getApiUrl } from '../utils/getApiUrl';
+import { SurveyResponsesPage } from '../components/SurveyResponsesPage';
 
 const ADMIN_URL = '/admin';
 
 export const ROUTES = [
+  {
+    label: 'Survey Data',
+    to: `${ADMIN_URL}/survey-responses`,
+    icon: <Assignment />,
+    tabs: [
+      {
+        label: 'Review',
+        to: '/review',
+        component: SurveyResponsesPage,
+      },
+      {
+        label: 'Approved',
+        to: '/approved',
+        component: SurveyResponsesPage,
+      },
+    ],
+  },
   {
     label: 'Surveys',
     to: `${ADMIN_URL}/surveys`,
@@ -50,11 +67,6 @@ export const ROUTES = [
         label: 'Data Elements',
         to: '/data-elements',
         component: DataElementsPage,
-      },
-      {
-        label: 'Survey Responses',
-        to: '/survey-responses',
-        component: SurveyResponsesPage,
       },
     ],
   },
