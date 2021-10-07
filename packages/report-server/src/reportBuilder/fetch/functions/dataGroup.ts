@@ -4,19 +4,14 @@
  */
 
 import { Aggregator } from '../../../aggregator';
-import { Aggregation, FetchReportQuery } from '../../../types';
+import { Aggregation, FetchReportQuery, ReportConfig } from '../../../types';
 import { FetchResponse } from '../types';
 import {
   validateDataGroups,
   validateDataElementsForEvents as validateDataElements,
-  validateAggregations,
 } from './helpers';
 
-type DataGroupParams = {
-  dataGroups: unknown;
-  dataElements: undefined;
-  aggregations?: unknown;
-};
+type DataGroupParams = Pick<ReportConfig['fetch'], 'dataGroups' | 'dataElements' | 'aggregations'>;
 
 type DataGroupFetchParams = {
   dataGroupCodes: string[];
@@ -63,7 +58,6 @@ const buildParams = (params: DataGroupParams): DataGroupFetchParams => {
 
   validateDataGroups(dataGroups);
   validateDataElements(dataElements);
-  validateAggregations(aggregations);
 
   return {
     dataGroupCodes: dataGroups,

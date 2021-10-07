@@ -76,7 +76,7 @@ export class QueryBuilder {
 
   private matchesOriginalQuery(subQuery: Record<string, unknown>) {
     return Object.entries(subQuery).every(
-      ([key, value]) => key in this.query && this.query[key as keyof FetchReportQuery] === value,
+      ([key, value]) => this.query[key as keyof FetchReportQuery] === value,
     );
   }
 }

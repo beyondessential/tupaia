@@ -4,17 +4,11 @@
  */
 
 import { Aggregator } from '../../../aggregator';
-import { Aggregation, FetchReportQuery } from '../../../types';
+import { Aggregation, FetchReportQuery, ReportConfig } from '../../../types';
 import { FetchResponse } from '../types';
-import {
-  validateDataElementsForAnalytics as validateDataElements,
-  validateAggregations,
-} from './helpers';
+import { validateDataElementsForAnalytics as validateDataElements } from './helpers';
 
-type DataElementParams = {
-  dataElements: unknown;
-  aggregations?: unknown;
-};
+type DataElementParams = Pick<ReportConfig['fetch'], 'dataElements' | 'aggregations'>;
 
 type DataElementFetchParams = {
   dataElementCodes: string[];
@@ -43,7 +37,6 @@ const fetchAnalytics = async (
 const buildParams = (params: DataElementParams): DataElementFetchParams => {
   const { dataElements, aggregations } = params;
   validateDataElements(dataElements);
-  validateAggregations(aggregations);
 
   return {
     dataElementCodes: dataElements,

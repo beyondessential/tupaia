@@ -7,6 +7,8 @@ import { yup, yupUtils } from '@tupaia/utils';
 
 // TODO avoid duplication with report-server
 
+const { polymorphic } = yupUtils;
+
 const periodTypeValidator = yup.mixed().oneOf(['day', 'week', 'month', 'quarter', 'year']);
 
 const createDataSourceValidator = (sourceType: 'dataElement' | 'dataGroup') => {
@@ -26,7 +28,15 @@ const createDataSourceValidator = (sourceType: 'dataElement' | 'dataGroup') => {
 const dataElementValidator = createDataSourceValidator('dataElement');
 const dataGroupValidator = createDataSourceValidator('dataGroup');
 
-const dateSpecsValidator = yupUtils.polymorphic({
+const aggregationValidator = polymorphic({
+  string: yup.string().min(1),
+  object: yup.object().shape({
+    type: yup.string().min(1).required(),
+    config: yup.object(),
+  }),
+});
+
+const dateSpecsValidator = polymorphic({
   object: yup
     .object()
     .shape({
@@ -39,12 +49,12 @@ const dateSpecsValidator = yupUtils.polymorphic({
   string: yup.string().min(4),
 });
 
-export const reportConfigValidator = yup.object().shape({
+export const configValidator = yup.object().shape({
   fetch: yup.object().shape(
     {
       dataElements: dataElementValidator,
       dataGroups: dataGroupValidator,
-      aggregations: yup.array().required(),
+      aggregations: yup.array().of(aggregationValidator),
       startDate: dateSpecsValidator,
       endDate: dateSpecsValidator,
     },
