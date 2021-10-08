@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject, nameToId, codeToId, deleteObject, generateId } from '../utilities';
+import { insertObject, nameToId, codeToId, updateValues, generateId } from '../utilities';
 
 var dbm;
 var type;
@@ -13,6 +13,10 @@ var seed;
 
 const PERMISSION_GROUP = 'Tonga Health Promotion Unit';
 const HPU_GROUP_CODE = 'Fanafana_Ola_HPU';
+const NEW_GROUP_VALUES = {
+  name: 'Health Promotion Unit',
+  code: 'Health_Promotion_Unit',
+};
 const LEGACY_OVERLAY_CODES = [
   'TO_HPU_NCD_Risk_Factory_Screening_Type_Setting_Unique',
   'TO_HPU_Health_Talks_Training_Type_Setting_Unique',
@@ -219,6 +223,9 @@ exports.up = async function (db) {
   for (const config of NEW_OVERLAY_CONFIGS) {
     await addMapOverlay(db, permissionGroupId, mapOverlayGroupId, config);
   }
+
+  // update group name to 'Health Promotion Unit'
+  await updateValues(db, 'map_overlay_group', NEW_GROUP_VALUES, { id: mapOverlayGroupId });
 };
 
 exports.down = async function (db) {
@@ -237,6 +244,13 @@ exports.down = async function (db) {
       child_type: 'mapOverlay',
     });
   }
+  // revert map overlay group to original name and code
+  await updateValues(
+    db,
+    'map_overlay_group',
+    { name: 'Fanafana Ola HPU', code: 'Fanafana_Ola_HPU' },
+    { id: mapOverlayGroupId },
+  );
 };
 
 exports._meta = {
