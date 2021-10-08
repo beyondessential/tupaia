@@ -2,22 +2,10 @@
 
 DIR=$(dirname "$0")
 
-# Kill all pm2 processes
-echo "Existing processes:"
-pm2 list
-echo "Deleting existing backend processes..."
-pm2 delete all || : # return 0 exit code even if delete failed because there were no running processes
-echo "Deleting existing frontend builds..."
-cd ${HOME_DIRECTORY}
-# delete all "build" folders, which is where front ends are served from
-find ./packages -type d -name "build" -maxdepth 2 -exec rm -rf {} \;
-
-
 PACKAGES=$(${HOME_DIRECTORY}/scripts/bash/getDeployablePackages.sh)
 
 # Set up .env to match the environment variables stored in LastPass
 cd ${HOME_DIRECTORY}
-
 LASTPASS_EMAIL=$($DIR/fetchParameterStoreValue.sh LASTPASS_EMAIL)
 LASTPASS_PASSWORD=$($DIR/fetchParameterStoreValue.sh LASTPASS_PASSWORD)
 LASTPASS_EMAIL=$LASTPASS_EMAIL LASTPASS_PASSWORD=$LASTPASS_PASSWORD yarn download-env-vars $BRANCH
