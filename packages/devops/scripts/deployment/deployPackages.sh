@@ -1,28 +1,28 @@
 #!/bin/bash -le
 
-# Kill all pm2 processes
-echo "Existing processes:"
-pm2 list
-echo "Deleting existing backend processes..."
-pm2 delete all || : # return 0 exit code even if delete failed because there were no running processes
-echo "Deleting existing frontend builds..."
-cd ${HOME_DIRECTORY}
-# delete all "build" folders, which is where front ends are served from
-find ./packages -type d -name "build" -maxdepth 2 -exec rm -rf {} \;
+DIR=$(dirname "$0")
+TUPAIA_DIR=$DIR/../../../..
+BRANCH=$1
+PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 
+# Initialise NVM (which sets the path for access to npm, yarn etc. as well)
+. $HOME/.nvm/nvm.sh
 
-PACKAGES=$(${HOME_DIRECTORY}/scripts/bash/getDeployablePackages.sh)
+# Install external dependencies and build internal dependencies
+cd ${TUPAIA_DIR}
+yarn install
 
-# Set up .env to match the environment variables stored in LastPass
-cd ${HOME_DIRECTORY}
+# Inject environment variables from LastPass
+LASTPASS_EMAIL=$($DIR/fetchParameterStoreValue.sh LASTPASS_EMAIL)
+LASTPASS_PASSWORD=$($DIR/fetchParameterStoreValue.sh LASTPASS_PASSWORD)
 LASTPASS_EMAIL=$LASTPASS_EMAIL LASTPASS_PASSWORD=$LASTPASS_PASSWORD yarn download-env-vars $BRANCH
 
 # For each package, get the latest and deploy it
 for PACKAGE in ${PACKAGES[@]}; do
     # reset cwd back to `/tupaia`
-    cd ${HOME_DIRECTORY}
+    cd ${TUPAIA_DIR}
 
-    cd ${HOME_DIRECTORY}/packages/$PACKAGE
+    cd ${TUPAIA_DIR}/packages/$PACKAGE
 
     # If it's a server, start it running on pm2, otherwise build it
     echo "Preparing to start or build ${PACKAGE}"
@@ -46,10 +46,9 @@ for PACKAGE in ${PACKAGES[@]}; do
 
     if [[ $PACKAGE == 'meditrak-server' ]]; then
         # reset cwd back to `/tupaia`
-        cd ${HOME_DIRECTORY}
+        cd ${TUPAIA_DIR}
 
         # Ensure that the analytics table is fully built
-        yarn download-env-vars $BRANCH data-api
         echo "Building analytics table"
         yarn workspace @tupaia/data-api install-mv-refresh
         yarn workspace @tupaia/data-api patch-mv-refresh up
