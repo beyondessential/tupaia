@@ -1,11 +1,14 @@
 #!/bin/bash -le
 
 DIR=$(dirname "$0")
+TUPAIA_DIR=$DIR/../../../..
+BRANCH=$1
 
-PACKAGES=$(${HOME_DIRECTORY}/scripts/bash/getDeployablePackages.sh)
+
+PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 
 # Set up .env to match the environment variables stored in LastPass
-cd ${HOME_DIRECTORY}
+cd ${TUPAIA_DIR}
 LASTPASS_EMAIL=$($DIR/fetchParameterStoreValue.sh LASTPASS_EMAIL)
 LASTPASS_PASSWORD=$($DIR/fetchParameterStoreValue.sh LASTPASS_PASSWORD)
 LASTPASS_EMAIL=$LASTPASS_EMAIL LASTPASS_PASSWORD=$LASTPASS_PASSWORD yarn download-env-vars $BRANCH
@@ -13,9 +16,9 @@ LASTPASS_EMAIL=$LASTPASS_EMAIL LASTPASS_PASSWORD=$LASTPASS_PASSWORD yarn downloa
 # For each package, get the latest and deploy it
 for PACKAGE in ${PACKAGES[@]}; do
     # reset cwd back to `/tupaia`
-    cd ${HOME_DIRECTORY}
+    cd ${TUPAIA_DIR}
 
-    cd ${HOME_DIRECTORY}/packages/$PACKAGE
+    cd ${TUPAIA_DIR}/packages/$PACKAGE
 
     # If it's a server, start it running on pm2, otherwise build it
     echo "Preparing to start or build ${PACKAGE}"
@@ -39,7 +42,7 @@ for PACKAGE in ${PACKAGES[@]}; do
 
     if [[ $PACKAGE == 'meditrak-server' ]]; then
         # reset cwd back to `/tupaia`
-        cd ${HOME_DIRECTORY}
+        cd ${TUPAIA_DIR}
 
         # now that meditrak-server is up and listening for changes, we can run any migrations
         # if run earlier when meditrak-server isn't listening, changes will be missed from the

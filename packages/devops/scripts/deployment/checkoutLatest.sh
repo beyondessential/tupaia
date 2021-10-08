@@ -1,8 +1,11 @@
 #!/bin/bash -e
 
 # Get latest code and dependencies
+DIR=$(dirname "$0")
+TUPAIA_DIR=$DIR/../../../..
+BRANCH=$1
 echo "Checking out ${BRANCH}, or dev if that doesn't exist"
-cd ${HOME_DIRECTORY}
+cd ${TUPAIA_DIR}
 BRANCH_ON_REMOTE=$(git ls-remote --heads origin ${BRANCH})
 if [[ $BRANCH_ON_REMOTE == *${BRANCH} ]]; then
   echo "${BRANCH} exists"

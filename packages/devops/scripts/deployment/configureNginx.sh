@@ -1,12 +1,15 @@
 #!/bin/bash -e
 
+DIR=$(dirname "$0")
+TUPAIA_DIR=$DIR/../../../..
+
 # Stop nginx
 service nginx stop
 
 # Copy servers.conf to proper nginx location
-cp ${HOME_DIRECTORY}/packages/devops/configs/servers.conf /etc/nginx/conf.d/servers.conf
+cp ${TUPAIA_DIR}/packages/devops/configs/servers.conf /etc/nginx/conf.d/servers.conf
 
-cp ${HOME_DIRECTORY}/packages/devops/misc/error_page.html ${HOME_DIRECTORY}/error_page.html
+cp ${TUPAIA_DIR}/packages/devops/misc/error_page.html ${TUPAIA_DIR}/error_page.html
 
 # Restart nginx
 service nginx start
