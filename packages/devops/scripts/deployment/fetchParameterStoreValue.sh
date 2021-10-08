@@ -1,4 +1,4 @@
 #!/bin/bash -le
 
 PARAMETER_NAME=$1
-echo $(aws ssm get-parameter --with-decryption --name LASTPASS_EMAIL | grep Value | cut -d'"' -f4)
+echo $(aws ssm get-parameter --with-decryption --name $PARAMETER_NAME | grep Value | cut -d'"' -f4)
