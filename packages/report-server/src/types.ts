@@ -6,6 +6,8 @@
 import { ModelRegistry } from '@tupaia/database';
 import { ReportModel } from './models';
 
+import type { DateSpecs } from './reportBuilder';
+
 export interface ReportServerModelRegistry extends ModelRegistry {
   readonly report: ReportModel;
 }
@@ -27,17 +29,6 @@ export type AggregationObject = {
 };
 
 export type Aggregation = string | AggregationObject;
-
-type PeriodType = 'day' | 'week' | 'month' | 'quarter' | 'year';
-
-export type DateOffset = {
-  unit: PeriodType;
-  offset?: number;
-  modifier?: 'start_of' | 'end_of';
-  modifierUnit?: PeriodType;
-};
-
-export type DateSpecs = string | DateOffset;
 
 type Transform = string | Record<string, unknown>;
 

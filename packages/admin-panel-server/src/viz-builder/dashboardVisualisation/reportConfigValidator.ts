@@ -5,7 +5,8 @@
 
 import { yup, yupUtils } from '@tupaia/utils';
 
-// TODO avoid duplication with report-server
+// This is a copy of packages/report-server/src/reportBuilder/configValidator.ts
+// TODO make DRY: https://linear.app/bes/issue/PHX-108/make-report-validation-dry
 
 const { polymorphic } = yupUtils;
 
@@ -16,12 +17,15 @@ const createDataSourceValidator = (sourceType: 'dataElement' | 'dataGroup') => {
 
   return yup
     .array()
-    .of(yup.string())
+    .of(yup.string().required())
     .when(['$testData', otherSourceKey], {
       is: ($testData: unknown, otherDataSource: string[]) =>
         !$testData && (!otherDataSource || otherDataSource.length === 0),
-      then: yup.array().of(yup.string()).required('Requires "dataGroups" or "dataElements"').min(1),
-      otherwise: yup.array().of(yup.string()),
+      then: yup
+        .array()
+        .of(yup.string().required())
+        .required('Requires "dataGroups" or "dataElements"')
+        .min(1),
     });
 };
 

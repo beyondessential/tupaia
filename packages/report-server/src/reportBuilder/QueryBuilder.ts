@@ -12,7 +12,18 @@ import {
   utcMoment,
 } from '@tupaia/utils';
 
-import { DateOffset, FetchReportQuery, PeriodParams, ReportConfig } from '../types';
+import { FetchReportQuery, PeriodParams, ReportConfig } from '../types';
+
+type PeriodType = 'day' | 'week' | 'month' | 'quarter' | 'year';
+
+type DateOffset = {
+  unit: PeriodType;
+  offset?: number;
+  modifier?: 'start_of' | 'end_of';
+  modifierUnit?: PeriodType;
+};
+
+export type DateSpecs = string | DateOffset;
 
 const buildDateUsingSpecs = (date: string | undefined, dateOffset: DateOffset) => {
   const moment = addMomentOffset(utcMoment(date), dateOffset);

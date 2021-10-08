@@ -14,12 +14,15 @@ const createDataSourceValidator = (sourceType: 'dataElement' | 'dataGroup') => {
 
   return yup
     .array()
-    .of(yup.string())
+    .of(yup.string().required())
     .when(['$testData', otherSourceKey], {
       is: ($testData: unknown, otherDataSource: string[]) =>
         !$testData && (!otherDataSource || otherDataSource.length === 0),
-      then: yup.array().of(yup.string()).required('Requires "dataGroups" or "dataElements"').min(1),
-      otherwise: yup.array().of(yup.string()),
+      then: yup
+        .array()
+        .of(yup.string().required())
+        .required('Requires "dataGroups" or "dataElements"')
+        .min(1),
     });
 };
 
