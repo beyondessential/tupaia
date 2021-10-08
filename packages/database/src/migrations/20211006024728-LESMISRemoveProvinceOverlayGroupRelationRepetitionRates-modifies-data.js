@@ -134,6 +134,12 @@ const REPORTS = [
   },
 ];
 
+const REPORTS_OTHER = [
+  'LESMIS_lowersecondary_repetition_rate_district_map',
+  'LESMIS_primary_repetition_rate_district_map',
+  'LESMIS_uppersecondary_repetition_rate_district_map'
+]
+
 exports.up = async function (db) {
   // insert overlay relation records for overlays to district group
   MAP_OVERLAY_IDS.forEach(async id => {
@@ -152,17 +158,30 @@ exports.up = async function (db) {
 
   // set data for GPI presentation config
   await db.runSql(`
-      UPDATE "mapOverlay" SET "presentationOptions" = jsonb_set("presentationOptions", '{scaleBounds}', '{"left": {"min": 0}, "right": {"max": 2}}') WHERE "id" = 'LESMIS_grade_6_repetition_rate_GPI_district_map';
-    `);
+    UPDATE "mapOverlay" SET "presentationOptions" = jsonb_set("presentationOptions", '{scaleBounds}', '{"left": {"min": 0}, "right": {"max": 2}}') WHERE "id" = 'LESMIS_grade_6_repetition_rate_GPI_district_map';
+  `);
   await db.runSql(`
-  UPDATE "mapOverlay" SET "presentationOptions" = jsonb_set("presentationOptions", '{scaleBounds}', '{"left": {"min": 0}, "right": {"max": 2}}') WHERE "id" = 'LESMIS_grade_6_dropout_rate_GPI_district_map';
-`);
-
+    UPDATE "mapOverlay" SET "presentationOptions" = jsonb_set("presentationOptions", '{scaleBounds}', '{"left": {"min": 0}, "right": {"max": 2}}') WHERE "id" = 'LESMIS_grade_6_dropout_rate_GPI_district_map';
+  `);
+  // update json for data elements
   REPORTS.forEach(async ({ code, dataElements }) => {
     await db.runSql(`
-  UPDATE "report" SET "config" = jsonb_set("config", '{fetch, dataElements}', '["${dataElements}"]') WHERE "code" = '${code}';
-`);
+      UPDATE "report" SET "config" = jsonb_set("config", '{fetch, dataElements}', '["${dataElements}"]') WHERE "code" = '${code}';
+    `);
   });
+  // update json for column value transform
+  REPORTS.forEach(async ({ code }) => {
+    await db.runSql(`
+      UPDATE "report" SET "config" = jsonb_set("config", '{transform, 0,insert, value}','"=divide($value,100)"') WHERE "code" = '${code}';
+    `);
+  });
+
+  REPORTS_OTHER.forEach(async code => {
+    await db.runSql(`
+      UPDATE "report" SET "config" = jsonb_set("config", '{transform, 0,insert, value}','"=divide($value,100)"') WHERE "code" = '${code}';
+    `);
+  });
+
 };
 
 exports.down = async function (db) {
