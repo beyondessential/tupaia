@@ -21,11 +21,11 @@ else
 fi
 
 # Fetch the latest code
-${HOME_DIRECTORY}/packages/devops/scripts/deployment/checkoutLatest.sh
+sudo -u ubuntu ${HOME_DIRECTORY}/packages/devops/scripts/deployment/checkoutLatest.sh
 
 # Deploy each package based on the stage, including injecting environment variables from LastPass
 # store into the .env file
-${HOME_DIRECTORY}/packages/devops/scripts/deployment/deployPackages.sh
+sudo -u ubuntu ${HOME_DIRECTORY}/packages/devops/scripts/deployment/deployPackages.sh
 
 # Set nginx config and start the service running
 ${HOME_DIRECTORY}/packages/devops/scripts/deployment/configureNginx.sh
