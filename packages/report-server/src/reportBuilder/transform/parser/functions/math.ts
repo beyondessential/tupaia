@@ -17,7 +17,9 @@ export const add = typed('add', {
   'number, undefined': (num: number, undef: undefined) => num,
   'undefined, number': (undef: undefined, num: number) => num,
   'undefined, undefined': (undef: undefined, undef2: undefined) => undefined,
-  'string, string': (string1: string, string2: string) => string1.concat(string2)
+  'string, string': (string1: string, string2: string) => string1 + string2,
+  'string, number': (string: string, num: number) => string + num,
+  'number, string': (num: number, string: string) => num.toString() + string
 });
 
 const enforceIsNumber = (value: unknown) => {
