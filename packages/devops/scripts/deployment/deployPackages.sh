@@ -1,5 +1,7 @@
 #!/bin/bash -le
 
+DIR=$(dirname "$0")
+
 # Kill all pm2 processes
 echo "Existing processes:"
 pm2 list
@@ -15,6 +17,9 @@ PACKAGES=$(${HOME_DIRECTORY}/scripts/bash/getDeployablePackages.sh)
 
 # Set up .env to match the environment variables stored in LastPass
 cd ${HOME_DIRECTORY}
+
+LASTPASS_EMAIL=$($DIR/fetchParameterStoreValue.sh LASTPASS_EMAIL)
+LASTPASS_PASSWORD=$($DIR/fetchParameterStoreValue.sh LASTPASS_PASSWORD)
 LASTPASS_EMAIL=$LASTPASS_EMAIL LASTPASS_PASSWORD=$LASTPASS_PASSWORD yarn download-env-vars $BRANCH
 
 # For each package, get the latest and deploy it
