@@ -64,6 +64,7 @@ export const ResourcePage = ({
 ResourcePage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
   columns: PropTypes.array.isRequired,
+  ConfirmDeleteModalComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
   createConfig: PropTypes.object,
   editConfig: PropTypes.object,
   onProcessDataForSave: PropTypes.func,
@@ -86,6 +87,7 @@ ResourcePage.propTypes = {
 };
 
 ResourcePage.defaultProps = {
+  ConfirmDeleteModalComponent: null,
   createConfig: null,
   editConfig: null,
   expansionTabs: null,

@@ -12,3 +12,4 @@ export { ReportRoute } from './ReportRoute';
 export { UserRoute } from './UserRoute';
 export { UsersRoute } from './UsersRoute';
 export { UpdateUserEntityPermissionRoute } from './UpdateUserEntityPermissionRoute';
+export { ApproveSurveyResponse } from './ApproveSurveyResponse';

@@ -7,10 +7,8 @@ import { post } from '../api';
 
 export const useApproveSurveyResponse = () => {
   return useMutation(
-    data => {
-      return post('approveSurveyResponse', {
-        data,
-      });
+    id => {
+      return post(`approveSurveyResponse/${id}`);
     },
     {
       onSuccess: () => {
