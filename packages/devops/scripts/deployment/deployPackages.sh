@@ -7,7 +7,7 @@ PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 
 # Install external dependencies and build internal dependencies
 cd ${TUPAIA_DIR}
-yarn Install
+yarn install
 
 # Inject environment variables from LastPass
 LASTPASS_EMAIL=$($DIR/fetchParameterStoreValue.sh LASTPASS_EMAIL)
