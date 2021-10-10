@@ -78,7 +78,13 @@ const getAxisWidth = (data, dataKeys, valueType) => {
     const maxValue = Math.max(...values);
 
     // Format the number in the same way that it will be displayed to take into account any rounding
-    const maxFormattedValue = formatDataValueByType({ value: maxValue }, valueType);
+    const maxFormattedValue =
+      valueType === undefined
+        ? formatDataValueByType(
+            { value: maxValue, metadata: { presentationOptions: { valueFormat: '0.00' } } },
+            'number',
+          )
+        : formatDataValueByType({ value: maxValue }, valueType);
     const maxValueLength = maxFormattedValue.toString().length;
     return maxValueLength * 8 + 32;
   }
@@ -98,7 +104,7 @@ const YAxis = ({ config = {}, viewContent, chartDataConfig, isExporting, isEnlar
 
   const { yName, presentationOptions, ticks } = viewContent;
   const dataKeys = config.dataKeys || Object.keys(chartDataConfig);
-  const valueType = config.valueType || viewContent.valueType;
+  const valueType = viewContent.valueType || config.valueType;
   const width = getAxisWidth(viewContent.data, dataKeys, valueType);
 
   return (
