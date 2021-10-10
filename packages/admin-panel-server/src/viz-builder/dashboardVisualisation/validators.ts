@@ -5,19 +5,7 @@
 
 import { yup } from '@tupaia/utils';
 
-const dataSourceSchema = (sourceType: 'dataElement' | 'dataGroup') => {
-  const otherSourceKey = sourceType === 'dataElement' ? 'dataGroups' : 'dataElements';
-
-  return yup
-    .array()
-    .of(yup.string())
-    .when(['$testData', otherSourceKey], {
-      is: ($testData: unknown, otherDataSource: string[]) =>
-        !$testData && (!otherDataSource || otherDataSource.length === 0),
-      then: yup.array().of(yup.string()).required('Requires "dataGroups" or "dataElements"').min(1),
-      otherwise: yup.array().of(yup.string()),
-    });
-};
+import { reportConfigValidator } from './reportConfigValidator';
 
 export const baseVisualisationValidator = yup.object().shape({
   presentation: yup.object(),
@@ -26,17 +14,7 @@ export const baseVisualisationValidator = yup.object().shape({
 
 export const draftReportValidator = yup.object().shape({
   code: yup.string().required('Requires "code" for the visualisation'),
-  config: yup.object().shape({
-    fetch: yup.object().shape(
-      {
-        dataElements: dataSourceSchema('dataElement'),
-        dataGroups: dataSourceSchema('dataGroup'),
-      },
-      [['dataElements', 'dataGroups']],
-    ),
-    transform: yup.array(),
-    output: yup.object(),
-  }),
+  config: reportConfigValidator,
 });
 
 export const legacyReportValidator = yup.object().shape({
@@ -52,14 +30,14 @@ export const draftDashboardItemValidator = yup.object().shape({
   reportCode: yup.string().required('Requires "code" for the visualisation'),
 });
 
-export const dashboardSchema = yup.object().shape({
+export const dashboardValidator = yup.object().shape({
   code: yup.string().required(),
   name: yup.string().required(),
   rootEntityCode: yup.string().required(),
   sortOrder: yup.number().nullable(true),
 });
 
-export const dashboardRelationObjectSchema = yup.object().shape({
+export const dashboardRelationObjectValidator = yup.object().shape({
   dashboardCode: yup.string().required(),
   entityTypes: yup.array().of(yup.string()).required(),
   projectCodes: yup.array().of(yup.string()).required(),

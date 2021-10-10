@@ -13,8 +13,8 @@ import { readJsonFile, reduceToDictionary, snakeKeys, UploadError, yup } from '@
 
 import { MeditrakConnection } from '../connections';
 import {
-  dashboardSchema,
-  dashboardRelationObjectSchema,
+  dashboardValidator,
+  dashboardRelationObjectValidator,
   DashboardVisualisationExtractor,
   draftDashboardItemValidator,
   draftReportValidator,
@@ -31,8 +31,8 @@ import type {
 
 const importFileSchema = yup.object().shape(
   {
-    dashboards: yup.array().of(dashboardSchema),
-    dashboardRelations: yup.array().of(dashboardRelationObjectSchema),
+    dashboards: yup.array().of(dashboardValidator),
+    dashboardRelations: yup.array().of(dashboardRelationObjectValidator),
     // ...the rest of the fields belong to the visualisation object and are validated separately
   },
   [['dashboards', 'dashboardRelations']],

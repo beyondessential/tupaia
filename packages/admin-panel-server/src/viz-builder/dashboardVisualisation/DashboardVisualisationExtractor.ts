@@ -6,10 +6,11 @@
 import { isNil, omitBy } from 'lodash';
 
 import { snakeKeys, yup } from '@tupaia/utils';
-import { PreviewMode, DashboardVisualisationResource } from '../types';
 
-import { baseVisualisationValidator } from './validators';
+import { PreviewMode, DashboardVisualisationResource } from '../types';
 import { LegacyReport, Report } from '..';
+import { extractFetch } from './helpers';
+import { baseVisualisationValidator } from './validators';
 
 // expands object types recursively
 // TODO: Move this type to a generic @tupaia/utils-ts package
@@ -90,19 +91,8 @@ export class DashboardVisualisationExtractor<
 
   private vizToReport(previewMode?: PreviewMode): Record<keyof Report, unknown> {
     const { code, permissionGroup, data, presentation } = this.visualisation;
-    const { dataElements, dataGroups, aggregations } = data;
 
-    // Remove empty config
-    const fetch = omitBy(
-      {
-        dataElements,
-        dataGroups,
-        aggregations,
-      },
-      isNil,
-    );
-
-    // Remove empty config
+    const fetch = extractFetch(data);
     const config = omitBy(
       {
         fetch,
