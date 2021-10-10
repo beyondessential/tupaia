@@ -127,7 +127,7 @@ export const Header = ({ Title, back, ExportModal }) => {
 
   return (
     <HeaderMain>
-      <MuiContainer maxWidth="lg">
+      <MuiContainer maxWidth="xl">
         <HeaderInner>
           <div>
             {back && (
