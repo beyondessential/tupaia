@@ -17,6 +17,7 @@ export const NavBarComponent = ({ homeUrl, links }) => (
     HomeButton={<HomeButton homeUrl={homeUrl} source="/psss-logo-white.svg" />}
     links={links}
     Profile={ProfileButton}
+    maxWidth="xl"
   />
 );
 
