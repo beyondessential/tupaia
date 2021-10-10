@@ -3,15 +3,20 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+// We use the `'undefined'` string to indicate a missing value in cases where the
+// actual `undefined` JS type cannot be used, e.g. in json config persisted in the DB
+const isUndefined = value => value !== undefined && value !== 'undefined';
+
 const average = (...argumentList) => {
-  const existingValues = argumentList.filter(a => a !== 'undefined');
+  const existingValues = argumentList.filter(isUndefined);
   const sum = existingValues.reduce((a, b) => a + b, 0);
-  return sum / existingValues.length;
+  const res = sum / existingValues.length;
+  return res;
 };
 
 const firstExistingValue = (...argumentList) => {
   for (const value of argumentList) {
-    if (value !== 'undefined') {
+    if (isUndefined(value)) {
       return value;
     }
   }

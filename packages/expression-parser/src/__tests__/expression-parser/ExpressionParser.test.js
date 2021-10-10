@@ -21,10 +21,20 @@ describe('ExpressionParser', () => {
 
     const testData = [
       ['simple expression', '1 + 1', 2],
+      ['average - one arg', 'avg(10)', 10],
+      ['average - multiple args (same)', 'avg(10, 10, 10, 10)', 10],
+      ['average - multiple args (different)', 'avg(0, 1, 2, 6)', 2.25],
+      ['average - `undefined` arg', 'avg(undefined, 1, 2)', 1.5],
+      ["average - `'undefined'` arg", "avg('undefined', 1, 2)", 1.5],
       ['date - simple', 'date()', new Date(CURRENT_DATE_STUB)],
       ['date - math', 'date().getMonth() * date().getDate()', (12 - 1) * 15],
       ['date - boolean (true)', 'date().getFullYear() > 2019', true],
       ['date - boolean (false)', 'date().getFullYear() <= 2019', false],
+      ['firstExistingValue - one arg', 'firstExistingValue(1)', 1],
+      ['firstExistingValue - multiple args', 'firstExistingValue(1, 2, 3, 4)', 1],
+      ['firstExistingValue - includes zero', 'firstExistingValue(0, 1)', 0],
+      ['firstExistingValue - ignores `undefined`', 'firstExistingValue(undefined, 1)', 1],
+      ["firstExistingValue - ignores `'undefined'`", "firstExistingValue('undefined', 1)", 1],
     ];
 
     const parser = new ExpressionParser();
