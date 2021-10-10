@@ -1,6 +1,7 @@
 import keyBy from 'lodash.keyby';
 import groupBy from 'lodash.groupby';
 import isEqual from 'lodash.isequal';
+import orderBy from 'lodash.orderBy';
 
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { reduceToDictionary, getSortByKey } from '@tupaia/utils';
@@ -139,20 +140,24 @@ const checkIfGroupedMapOverlaysAreEmpty = nestedMapOverlayGroups => {
 };
 
 /**
- * Sort map overlays/map overlay groups with sort_order first, then the ones without sort_order alphabetically
+ * Sort map overlays/map overlay groups with sort_order first, then alphabetically
  * @param {*} mapOverlayItems
  * @param {*} relations
  */
 const sortMapOverlayItems = (mapOverlayItems, relations) => {
   const childIdToSortOrder = reduceToDictionary(relations, 'child_id', 'sort_order');
-  const sortedOverlaysByOrder = mapOverlayItems
-    .filter(m => childIdToSortOrder[m.id] !== null)
-    .sort((m1, m2) => childIdToSortOrder[m1.id] - childIdToSortOrder[m2.id]);
-  const sortedOverlaysAlphabetically = mapOverlayItems
-    .filter(m => childIdToSortOrder[m.id] === null)
-    .sort(getSortByKey('name'));
+  // Momentarily add sort order so we can use orderBy
+  const overlaysWithSortOrder = mapOverlayItems.map(overlay => ({
+    ...overlay,
+    sort_order: childIdToSortOrder[overlay.id],
+  }));
+  const sortedOverlays = orderBy(overlaysWithSortOrder, ['sort_order', 'name']);
 
-  return [...sortedOverlaysByOrder, ...sortedOverlaysAlphabetically];
+  // Remove sort order from overlays before return
+  return sortedOverlays.map(overlay => {
+    const { sort_order: sortOrder, ...restOfOverlay } = overlay;
+    return restOfOverlay;
+  });
 };
 
 const translateOverlaysForResponse = mapOverlays =>
