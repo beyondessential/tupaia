@@ -36,7 +36,9 @@ export class MapOverlayModel extends DatabaseModel {
       ])
       .flat();
 
-    const measureResults = await this.find({ code: measureCodes });
+    const measureResults = await this.findMeasuresWithLegacyInfo({
+      'map_overlay.code': measureCodes,
+    });
     return measureResults.sort(
       (a, b) =>
         measureCodes.findIndex(measureCode => measureCode === a.code) -
