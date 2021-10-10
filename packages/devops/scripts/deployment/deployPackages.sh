@@ -3,12 +3,11 @@
 DIR=$(dirname "$0")
 TUPAIA_DIR=$DIR/../../../..
 BRANCH=$1
-
-
 PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 
-# Set up .env to match the environment variables stored in LastPass
+# Install external dependencies and build internal dependencies
 cd ${TUPAIA_DIR}
+yarn install
 LASTPASS_EMAIL=$($DIR/fetchParameterStoreValue.sh LASTPASS_EMAIL)
 LASTPASS_PASSWORD=$($DIR/fetchParameterStoreValue.sh LASTPASS_PASSWORD)
 LASTPASS_EMAIL=$LASTPASS_EMAIL LASTPASS_PASSWORD=$LASTPASS_PASSWORD yarn download-env-vars $BRANCH

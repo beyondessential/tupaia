@@ -19,6 +19,5 @@ git fetch --all --prune
 git reset --hard # clear out any manual changes that have been made, which would cause checkout to fail
 git checkout ${BRANCH_TO_USE}
 git reset --hard origin/${BRANCH_TO_USE}
-yarn install
 
 echo "Checked out latest code"
