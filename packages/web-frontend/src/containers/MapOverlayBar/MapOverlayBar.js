@@ -20,7 +20,7 @@ import shallowEqual from 'shallowequal';
 
 import { Control } from './Control';
 import {
-  setMapOverlay,
+  setMapOverlays,
   clearMeasure,
   toggleMeasureExpand,
   updateMeasureConfig,
@@ -32,8 +32,8 @@ import {
   selectDefaultMapOverlay,
   selectCurrentMapOverlayIds,
 } from '../../selectors';
-import { sortMapOverlayIdsByHierarchyOrder } from '../../utils';
 
+const MAX_SELECTED_OVERLAYS = 2;
 export class MapOverlayBarComponent extends Component {
   constructor(props) {
     super(props);
@@ -212,7 +212,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onExpandClick: () => dispatch(toggleMeasureExpand()),
-    onSetMapOverlay: mapOverlayIds => dispatch(setMapOverlay(mapOverlayIds)),
+    onSetMapOverlay: mapOverlayIds => dispatch(setMapOverlays(mapOverlayIds.join(','))),
     onClearMeasure: () => dispatch(clearMeasure()),
     dispatch,
   };
@@ -220,20 +220,20 @@ const mapDispatchToProps = dispatch => {
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch, onSetMapOverlay, onClearMeasure } = dispatchProps;
-  const { currentMapOverlayIds, mapOverlayHierarchy } = stateProps;
+  const { currentMapOverlayIds } = stateProps;
   const onSelectMapOverlay = mapOverlayId => {
-    const mapOverlayIds = sortMapOverlayIdsByHierarchyOrder(mapOverlayHierarchy, [
-      ...currentMapOverlayIds,
-      mapOverlayId,
-    ]);
-    onSetMapOverlay(mapOverlayIds.join(','));
+    const newMapOverlayIds = [...currentMapOverlayIds, mapOverlayId];
+    if (newMapOverlayIds.length > MAX_SELECTED_OVERLAYS) {
+      newMapOverlayIds.shift();
+    }
+    onSetMapOverlay(newMapOverlayIds);
   };
   const onUnSelectMapOverlay = mapOverlayId => {
     const updatedMapOverlayIds = currentMapOverlayIds.filter(
       currentMapOverlayId => currentMapOverlayId !== mapOverlayId,
     );
     if (updatedMapOverlayIds.length > 0) {
-      onSetMapOverlay(updatedMapOverlayIds.join(','));
+      onSetMapOverlay(updatedMapOverlayIds);
     } else {
       onClearMeasure();
     }

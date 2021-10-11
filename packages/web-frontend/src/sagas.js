@@ -75,10 +75,10 @@ import {
   OPEN_USER_DIALOG,
   REQUEST_ORG_UNIT,
   REQUEST_PROJECT_ACCESS,
-  setMapOverlay,
+  setMapOverlays,
   setOverlayComponent,
   FETCH_ENLARGED_DIALOG_DATA,
-  SET_MAP_OVERLAY,
+  SET_MAP_OVERLAYS,
   SET_ORG_UNIT,
   SET_VERIFY_EMAIL_TOKEN,
   updateEnlargedDialog,
@@ -201,7 +201,7 @@ function* handleUserPage(userPage, initialComponents) {
 const URL_REFRESH_COMPONENTS = {
   [URL_COMPONENTS.PROJECT]: setProject,
   [URL_COMPONENTS.ORG_UNIT]: setOrgUnit,
-  [URL_COMPONENTS.MAP_OVERLAY]: setMapOverlay,
+  [URL_COMPONENTS.MAP_OVERLAY]: setMapOverlays,
   [URL_COMPONENTS.REPORT]: openEnlargedDialog,
   [URL_COMPONENTS.MEASURE_PERIOD]: updateCurrentMeasureConfigOnceHierarchyLoads,
 };
@@ -907,7 +907,7 @@ function* fetchMeasureInfo() {
 }
 
 function* watchSetMapOverlayChange() {
-  yield takeLatest(SET_MAP_OVERLAY, fetchMeasureInfo);
+  yield takeLatest(SET_MAP_OVERLAYS, fetchMeasureInfo);
 }
 
 function* watchMeasurePeriodChange() {
@@ -942,9 +942,10 @@ function* fetchCurrentMeasureInfo() {
   if (currentOrganisationUnitCode) {
     if (!checkHierarchyIncludesMapOverlayIds(mapOverlayHierarchy, selectedMapOverlayIds)) {
       const newMapOverlayId = selectDefaultMapOverlayId(state);
-      yield put(setMapOverlay(newMapOverlayId));
+      yield put(setMapOverlays(newMapOverlayId));
+    } else {
+      yield put(setMapOverlays(selectedMapOverlayIds.join(',')));
     }
-    yield put(setMapOverlay(selectedMapOverlayIds.join(',')));
   }
 }
 
@@ -970,7 +971,7 @@ function* fetchMeasureInfoForNewOrgUnit(action) {
   }
 
   if (mapOverlayIds.length > 0) {
-    yield put(setMapOverlay(mapOverlayIds.join(',')));
+    yield put(setMapOverlays(mapOverlayIds.join(',')));
   }
 }
 

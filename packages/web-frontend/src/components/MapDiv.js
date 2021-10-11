@@ -18,7 +18,12 @@ import { connect } from 'react-redux';
 import { Legend as MapLegend, TilePicker, tileSetShape } from '@tupaia/ui-components/lib/map';
 import { CONTROL_BAR_PADDING } from '../styles';
 import { MapOverlayBar } from '../containers/MapOverlayBar';
-import { selectActiveTileSet, selectTileSets } from '../selectors';
+import {
+  selectActiveTileSet,
+  selectDisplayedMeasureIds,
+  selectCurrentMeasureIds,
+  selectTileSets,
+} from '../selectors';
 import { changeTileSet } from '../actions';
 
 const FlexDiv = styled.div`
@@ -40,11 +45,10 @@ const TopRow = styled.div`
 `;
 
 const BottomRow = styled.div`
-  display: flex;
+  display: content;
   flex-direction: row;
   align-items: flex-end;
   justify-content: center;
-  padding: 10px 10px 0 10px;
 `;
 
 const StyledLink = styled.a`
@@ -83,6 +87,8 @@ export const MapDivComponent = ({
   setValueHidden,
   hiddenValues,
   serieses,
+  currentMeasureIds,
+  displayedMeasureIds,
 }) => (
   <FlexDiv>
     <LeftCol>
@@ -94,6 +100,8 @@ export const MapDivComponent = ({
           setValueHidden={setValueHidden}
           hiddenValues={hiddenValues}
           serieses={serieses}
+          currentMeasureIds={currentMeasureIds}
+          displayedMeasureIds={displayedMeasureIds}
         />
       </BottomRow>
     </LeftCol>
@@ -105,10 +113,12 @@ export const MapDivComponent = ({
 MapDivComponent.propTypes = {
   activeTileSet: PropTypes.shape(tileSetShape).isRequired,
   tileSets: PropTypes.arrayOf(PropTypes.shape(tileSetShape)).isRequired,
+  displayedMeasureIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   onChangeTileSet: PropTypes.func.isRequired,
   setValueHidden: PropTypes.func.isRequired,
   hiddenValues: PropTypes.object,
-  serieses: PropTypes.PropTypes.arrayOf(PropTypes.object),
+  serieses: PropTypes.arrayOf(PropTypes.object),
+  currentMeasureIds: PropTypes.array.isRequired,
 };
 
 MapDivComponent.defaultProps = {
@@ -121,6 +131,8 @@ const mapStateToProps = state => ({
   hiddenValues: state.map.measureInfo.hiddenMeasures,
   serieses: state.map.measureInfo.measureOptions,
   tileSets: selectTileSets(state),
+  currentMeasureIds: selectCurrentMeasureIds(state),
+  displayedMeasureIds: selectDisplayedMeasureIds(state),
 });
 
 const mapDispatchToProps = dispatch => ({

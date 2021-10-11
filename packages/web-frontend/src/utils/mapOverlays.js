@@ -50,14 +50,3 @@ export function flattenMapOverlayHierarchy(mapOverlayHierarchy) {
 
 export const isMapOverlayHierarchyEmpty = mapOverlayHierarchy =>
   flattenMapOverlayHierarchy(mapOverlayHierarchy).length === 0;
-
-export const sortMapOverlayIdsByHierarchyOrder = (mapOverlayHierarchy, mapOverlayIds) => {
-  const hierarchyMapOverlayIds = flattenMapOverlayHierarchy(mapOverlayHierarchy).map(
-    overlay => overlay.mapOverlayId,
-  );
-  return mapOverlayIds.sort(
-    (a, b) =>
-      hierarchyMapOverlayIds.findIndex(overlayId => overlayId === a) -
-      hierarchyMapOverlayIds.findIndex(overlayId => overlayId === b),
-  );
-};
