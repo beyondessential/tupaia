@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+export * from './ApproveButton';
 export * from './Breadcrumbs';
 export * from './DataGrid';
 export * from './EntityMenu';

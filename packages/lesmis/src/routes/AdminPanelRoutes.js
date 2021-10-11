@@ -26,7 +26,10 @@ import {
 import { LesmisAdminRoute } from './LesmisAdminRoute';
 import { useUser } from '../api/queries';
 import { getApiUrl } from '../utils/getApiUrl';
-import { SurveyResponsesPage } from '../components/SurveyResponsesPage';
+import {
+  ApprovedSurveyResponsesView,
+  DraftSurveyResponsesView,
+} from '../views/SurveyResponsesView';
 
 const ADMIN_URL = '/admin';
 
@@ -38,13 +41,13 @@ export const ROUTES = [
     tabs: [
       {
         label: 'Review',
-        to: '/review',
-        component: SurveyResponsesPage,
+        to: '',
+        component: DraftSurveyResponsesView,
       },
       {
         label: 'Approved',
         to: '/approved',
-        component: SurveyResponsesPage,
+        component: ApprovedSurveyResponsesView,
       },
     ],
   },
