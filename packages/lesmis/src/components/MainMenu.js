@@ -89,7 +89,7 @@ const ListItemLink = props => <ListItem button component={RouterLink} {...props}
 const AdminPanelLinks = () => (
   <>
     <Subheader component="div">Admin</Subheader>
-    <ListItemLink to="/admin/survey-responses/review">
+    <ListItemLink to="/admin/survey-responses">
       <ListItemIcon>
         <Assignment />
       </ListItemIcon>

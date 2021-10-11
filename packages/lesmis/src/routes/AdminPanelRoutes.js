@@ -41,7 +41,7 @@ export const ROUTES = [
     tabs: [
       {
         label: 'Review',
-        to: '/review',
+        to: '',
         component: DraftSurveyResponsesView,
       },
       {

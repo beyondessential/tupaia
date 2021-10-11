@@ -10,9 +10,10 @@ import {
 import { ConfirmModal } from '@tupaia/ui-components';
 import { ApproveButton } from '../components';
 
+// Todo: Replace base filter with real filter @see WAI-832
 export const ApprovedSurveyResponsesView = props => (
   <ResourcePage
-    title="Survey Responses (Approved)"
+    title="Approved Survey Responses"
     baseFilter={{ 'survey.code': { comparator: 'ILIKE', comparisonValue: '%_Confirmed_WNR' } }}
     {...props}
   />
@@ -75,10 +76,11 @@ const ConfirmRejectModal = ({ isOpen, onConfirm, onCancel }) => {
   );
 };
 
+// Todo: Replace base filter with real filter @see WAI-832
 export const DraftSurveyResponsesView = props => (
   <ResourcePage
     {...props}
-    title="Survey Responses (Review)"
+    title="Survey Responses For Review"
     baseFilter={{ 'survey.code': { comparator: 'NOT ILIKE', comparisonValue: '%_Confirmed_WNR' } }}
     columns={COLUMNS}
     ConfirmDeleteModalComponent={ConfirmRejectModal}
