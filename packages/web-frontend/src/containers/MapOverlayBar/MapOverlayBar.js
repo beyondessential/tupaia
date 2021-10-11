@@ -33,6 +33,7 @@ import {
   selectCurrentMapOverlayIds,
 } from '../../selectors';
 
+const MAX_SELECTED_OVERLAYS = 2;
 export class MapOverlayBarComponent extends Component {
   constructor(props) {
     super(props);
@@ -221,7 +222,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch, onSetMapOverlay, onClearMeasure } = dispatchProps;
   const { currentMapOverlayIds } = stateProps;
   const onSelectMapOverlay = mapOverlayId => {
-    const MAX_SELECTED_OVERLAYS = 2;
     const newMapOverlayIds = [...currentMapOverlayIds, mapOverlayId];
     if (newMapOverlayIds.length > MAX_SELECTED_OVERLAYS) {
       newMapOverlayIds.shift();

@@ -75,9 +75,7 @@ export const Legend = React.memo(
     }
 
     const legendTypes = displayedLegends.map(displayedLegend => displayedLegend.type);
-    const legendsHaveSameType =
-      legendTypes.length > 1 && legendTypes.every(val => val === legendTypes[0]);
-
+    const legendsHaveSameType = legendTypes.length > 1 && new Set(legendTypes).size === 1;
     return (
       <>
         {currentMeasureIds.map(measureIds => {
