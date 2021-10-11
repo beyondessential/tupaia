@@ -127,7 +127,7 @@ export const DateToolbarComponent = ({ period, setPeriod }) => {
     comparePeriods(subtractWeeksFromPeriod(period, 1), getPeriodByDate(MIN_DATE)) < 0;
 
   return (
-    <BaseToolbar>
+    <BaseToolbar maxWidth="xl">
       <Container>
         <FlexStart>
           <CalendarButton onClick={() => setIsOpen(true)}>

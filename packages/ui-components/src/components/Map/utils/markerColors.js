@@ -17,8 +17,6 @@ import {
   GPI_COLOR_SCHEME,
 } from '../constants';
 
-export const DEFAULT_DISASTER_COLOR = 'orange';
-
 const COLOR_SCHEME_TO_FUNCTION = {
   [DEFAULT_COLOR_SCHEME]: getHeatmapColor,
   [REVERSE_DEFAULT_COLOR_SCHEME]: getReverseHeatmapColor,
