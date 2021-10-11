@@ -23,6 +23,9 @@ export const getAuthorizationHeader = () => {
   return `Basic ${Buffer.from(credentials).toString('base64')}`;
 };
 
+const translateQuery = query =>
+  query?.filter ? { ...query, filter: JSON.stringify(query?.filter) } : query;
+
 export class TestableApp {
   constructor() {
     this.models = getModels();
@@ -86,12 +89,15 @@ export class TestableApp {
     return this.addOptionsToRequest(supertest(this.app).delete(versionedEndpoint), options);
   }
 
-  addOptionsToRequest(request, { headers, body } = {}) {
+  addOptionsToRequest(request, { headers, query, body } = {}) {
     if (this.authToken) {
       request.set('Authorization', `Bearer ${this.authToken}`);
     }
     if (headers) {
       Object.entries(headers).forEach(([key, value]) => request.set(key, value));
+    }
+    if (query) {
+      request.query(translateQuery(query));
     }
     if (body) {
       request.send(body);

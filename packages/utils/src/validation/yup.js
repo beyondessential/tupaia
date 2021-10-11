@@ -99,10 +99,11 @@ const polymorphic = schemaPerType => {
       }
       return createType();
     });
-    oneOfType(typeSchemas).validateSync(value);
 
-    const matchedType = Object.keys(schemaPerType).find(type => yup[type]().isValidSync(value));
-    return schemaPerType[matchedType];
+    const [, matchedSchema] =
+      Object.entries(schemaPerType).find(([type]) => yup[type]().isValidSync(value)) ||
+      Object.entries(schemaPerType)[0];
+    return matchedSchema.typeError(createTypeError(typeSchemas));
   });
 };
 

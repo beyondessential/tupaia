@@ -8,6 +8,8 @@
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
+import { addMomentOffset } from '@tupaia/utils';
+
 export const DEFAULT_MIN_DATE = '20150101';
 
 const DAY = 'day';
@@ -20,9 +22,6 @@ const QUARTER = 'quarter';
 const SINGLE_QUARTER = 'one_quarter_at_a_time';
 const YEAR = 'year';
 const SINGLE_YEAR = 'one_year_at_a_time';
-
-const START_OF_PERIOD = 'start_of';
-const END_OF_PERIOD = 'end_of';
 
 const CONFIG = {
   [DAY]: {
@@ -137,41 +136,6 @@ export const momentToDateString = (date, granularity, format) =>
     ? date.clone().startOf('W').format(format)
     : date.clone().format(format);
 
-const getOffsetDate = (offset, unit, modifier, modifierUnit = null) => {
-  // We need a valid unit to proceed.
-  if (!CONFIG[unit]) {
-    return moment();
-  }
-
-  let defaultDate = moment();
-
-  const { momentUnit } = CONFIG[unit];
-
-  if (offset) {
-    defaultDate = defaultDate.add(offset, momentUnit);
-  }
-
-  // If modifier is set (eg: 'start_of', 'end_of'),
-  // switch the default date to either start or end of the year
-  if (modifier) {
-    switch (modifier) {
-      case START_OF_PERIOD:
-        defaultDate = modifierUnit
-          ? defaultDate.startOf(modifierUnit)
-          : defaultDate.startOf(momentUnit);
-        break;
-      case END_OF_PERIOD:
-        defaultDate = modifierUnit
-          ? defaultDate.endOf(modifierUnit)
-          : defaultDate.endOf(momentUnit);
-        break;
-      default:
-    }
-  }
-
-  return defaultDate;
-};
-
 /**
  * Get default dates for start and end period of single date period granularities,
  * meaning both start and end date will have the same date.
@@ -217,8 +181,7 @@ const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTim
     }
 
     // Grab all the details and get a single default date used for both start/end period.
-    const { offset, unit, modifier, modifierUnit } = singleDateConfig;
-    startDate = getOffsetDate(offset, unit, modifier, modifierUnit);
+    startDate = addMomentOffset(moment(), singleDateConfig);
     endDate = startDate;
   }
 
@@ -244,13 +207,10 @@ const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeri
     let endDate = startDate;
 
     if (defaultTimePeriod.start) {
-      const { offset, unit, modifier, modifierUnit } = defaultTimePeriod.start;
-      startDate = getOffsetDate(offset, unit, modifier, modifierUnit);
+      startDate = addMomentOffset(moment(), defaultTimePeriod.start);
     }
-
     if (defaultTimePeriod.end) {
-      const { offset, unit, modifier, modifierUnit } = defaultTimePeriod.end;
-      endDate = getOffsetDate(offset, unit, modifier, modifierUnit);
+      endDate = addMomentOffset(moment(), defaultTimePeriod.end);
     }
 
     return roundStartEndDates(periodGranularity, startDate, endDate);
@@ -326,8 +286,7 @@ export function getLimits(periodGranularity, limits) {
       );
     }
 
-    const { offset, unit, modifier, modifierUnit } = partConfig;
-    const offsetDate = getOffsetDate(offset, unit, modifier, modifierUnit);
+    const offsetDate = addMomentOffset(moment(), partConfig);
     if (partKey === 'start') startDate = offsetDate;
     if (partKey === 'end') endDate = offsetDate;
   }

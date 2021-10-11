@@ -4,7 +4,8 @@
  */
 
 export interface Context {
-  orgUnits: { code: string; name: string }[];
+  orgUnits?: { code: string; name: string }[];
+  dataElementCodeToName?: Record<string, string>;
 }
 
 export type ContextProp = keyof Context;

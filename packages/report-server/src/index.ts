@@ -32,3 +32,5 @@ winston.info(`Running on port ${port}`);
 if (process.send) {
   process.send('ready');
 }
+
+export * from './types';

@@ -4,6 +4,8 @@ import moment from 'moment';
 import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
 import { oneSecondSleep } from '@tupaia/utils';
 import {
+  expectErrors,
+  expectSuccess,
   randomIntBetween,
   setupDummySyncQueue,
   TestableApp,
@@ -33,19 +35,7 @@ const ENTITY_NON_CLINIC_ID = generateTestId();
 
 const questionCode = key => `TEST-${key}`;
 
-function expectSuccess(response) {
-  const { statusCode, body } = response;
-  expect(statusCode).to.equal(200);
-  expect(body.errors).to.be.undefined;
-}
-
-function expectError(response, match) {
-  const { body, statusCode } = response;
-  expect(statusCode).to.equal(400);
-  expect(body).to.have.property('errors');
-  const message = body.errors[0].error;
-  expect(message).to.match(match);
-}
+const expectError = (response, expectedError) => expectErrors(response, expectedError, 400);
 
 let surveyId;
 
@@ -399,6 +389,56 @@ describe('surveyResponse endpoint', () => {
     expect(moment(dbResponse.data_time).format('YYYY-MM-DDTHH:mm:ss.SSS')).to.equal(
       '2019-07-30T17:48:00.000',
     );
+  });
+
+  it('Should use start and end times if provided', async () => {
+    const response = await app.post('surveyResponse', {
+      body: {
+        survey_id: surveyId,
+        entity_id: ENTITY_ID,
+        timestamp: '2021-01-01T23:59:59Z',
+        start_time: '2021-02-01T23:59:59Z',
+        end_time: '2021-03-01T23:59:59Z',
+        answers: {
+          [questionCode(1)]: '123',
+        },
+      },
+    });
+
+    const { body } = response;
+    expectSuccess(response);
+
+    const { surveyResponseId } = body.results[0];
+    const dbResponse = await models.surveyResponse.findOne({ id: surveyResponseId });
+    expect(moment(dbResponse.data_time).format('YYYY-MM-DDTHH:mm:ss.SSS')).to.equal(
+      '2021-01-01T23:59:59.000',
+    );
+    expect(moment(dbResponse.start_time).isSame('2021-02-01T23:59:59.000Z')).to.be.true;
+    expect(moment(dbResponse.end_time).isSame('2021-03-01T23:59:59.000Z')).to.be.true;
+  });
+
+  it('Should use timestamp as start and end times if not provided', async () => {
+    const response = await app.post('surveyResponse', {
+      body: {
+        survey_id: surveyId,
+        entity_id: ENTITY_ID,
+        timestamp: '2021-01-01T23:59:59Z',
+        answers: {
+          [questionCode(1)]: '123',
+        },
+      },
+    });
+
+    const { body } = response;
+    expectSuccess(response);
+
+    const { surveyResponseId } = body.results[0];
+    const dbResponse = await models.surveyResponse.findOne({ id: surveyResponseId });
+    expect(moment(dbResponse.data_time).format('YYYY-MM-DDTHH:mm:ss.SSS')).to.equal(
+      '2021-01-01T23:59:59.000',
+    );
+    expect(moment(dbResponse.start_time).isSame('2021-01-01T23:59:59.000Z')).to.be.true;
+    expect(moment(dbResponse.end_time).isSame('2021-01-01T23:59:59.000Z')).to.be.true;
   });
 
   describe('Update entity for existing survey response', async function () {

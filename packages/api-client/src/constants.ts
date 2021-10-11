@@ -84,8 +84,11 @@ const getServiceUrlForSubdomain = (service: ServiceName, originalSubdomain: stri
   return getServiceUrl(service, subdomainPrefix);
 };
 
+const isLocalhost = (hostname: string) =>
+  hostname.startsWith('localhost') || hostname.startsWith('127.0.0.1');
+
 const getDefaultBaseUrls = (hostname: string): ServiceBaseUrlSet => {
-  if (hostname.startsWith('localhost')) {
+  if (isLocalhost(hostname)) {
     return LOCALHOST_BASE_URLS;
   }
 

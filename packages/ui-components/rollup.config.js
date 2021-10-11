@@ -12,7 +12,6 @@ import analyze from 'rollup-plugin-analyzer';
 import babel from '@rollup/plugin-babel';
 import external from 'rollup-plugin-peer-deps-external';
 import del from 'rollup-plugin-delete';
-import svgr from '@svgr/rollup';
 import url from 'rollup-plugin-url';
 import pkg from './package.json';
 
@@ -35,10 +34,10 @@ const plugins = [
     compact: true,
   }),
   url(),
-  svgr(),
   babel({
     exclude: 'node_modules/**',
     configFile: './.babelrc.js',
+    babelHelpers: 'bundled',
   }),
   commonjs(),
   analyze({ summaryOnly: true }),
