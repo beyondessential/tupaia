@@ -181,7 +181,11 @@ class DataFetchingTableComponent extends React.Component {
 DataFetchingTableComponent.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   confirmActionMessage: PropTypes.string,
-  ConfirmDeleteModalComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
+  ConfirmDeleteModalComponent: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.node,
+    PropTypes.object,
+  ]),
   errorMessage: PropTypes.string,
   data: PropTypes.arrayOf(PropTypes.shape({})),
   expansionTabs: PropTypes.arrayOf(
