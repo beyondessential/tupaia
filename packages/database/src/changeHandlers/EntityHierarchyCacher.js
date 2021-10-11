@@ -102,10 +102,8 @@ export class EntityHierarchyCacher {
       }
       subtreesForDelete[hierarchyId].add(rootEntityId);
     });
-    const deleteTasks = Object.entries(
-      subtreesForDelete,
-    ).map(async ([hierarchyId, rootEntityIds]) =>
-      this.deleteSubtrees(hierarchyId, [...rootEntityIds]),
+    const deleteTasks = Object.entries(subtreesForDelete).map(
+      async ([hierarchyId, rootEntityIds]) => this.deleteSubtrees(hierarchyId, [...rootEntityIds]),
     );
     await Promise.all(deleteTasks);
 
@@ -136,7 +134,7 @@ export class EntityHierarchyCacher {
   }
 
   /**
-   * @param {[string[]]} hierarchyIds The specific hierarchies to cache (defaults to all)
+   * @param {string[]} hierarchyIds The specific hierarchies to cache (defaults to all)
    */
   async buildAndCacheHierarchies(hierarchyIds) {
     // projects are the root entities of every full tree, so start with them

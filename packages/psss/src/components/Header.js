@@ -127,7 +127,7 @@ export const Header = ({ Title, back, ExportModal }) => {
 
   return (
     <HeaderMain>
-      <MuiContainer maxWidth="lg">
+      <MuiContainer maxWidth="xl">
         <HeaderInner>
           <div>
             {back && (
@@ -158,9 +158,9 @@ export const Header = ({ Title, back, ExportModal }) => {
 };
 
 Header.propTypes = {
-  Title: PropTypes.any.isRequired,
+  Title: PropTypes.node.isRequired,
   back: PropTypes.shape({ title: PropTypes.string.isRequired, url: PropTypes.string.isRequired }),
-  ExportModal: PropTypes.any,
+  ExportModal: PropTypes.node,
 };
 
 Header.defaultProps = {

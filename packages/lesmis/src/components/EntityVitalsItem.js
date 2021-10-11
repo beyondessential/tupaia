@@ -9,13 +9,13 @@ import styled from 'styled-components';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
 import MuiBox from '@material-ui/core/Box';
-import { ReactComponent as LocationPin } from './icons/location-pin.svg';
-import { ReactComponent as PushPin } from './icons/push-pin.svg';
-import { ReactComponent as School } from './icons/school-count.svg';
-import { ReactComponent as Group } from './icons/group.svg';
-import { ReactComponent as Road } from './icons/road.svg';
-import { ReactComponent as Study } from './icons/study.svg';
-import { ReactComponent as Notepad } from './icons/notepad.svg';
+import { LocationPin } from './Icons/LocationPin';
+import { PushPin } from './Icons/PushPin';
+import { SchoolCount } from './Icons/SchoolCount';
+import { Group } from './Icons/Group';
+import { Road } from './Icons/Road';
+import { Study } from './Icons/Study';
+import { Notepad } from './Icons/Notepad';
 import { FlexStart } from './Layout';
 
 const IconContainer = styled.div`
@@ -35,7 +35,7 @@ const VitalsIcon = ({ icon }) => {
             case 'Group':
               return <Group />;
             case 'School':
-              return <School />;
+              return <SchoolCount />;
             case 'Study':
               return <Study />;
             case 'Road':
@@ -52,6 +52,10 @@ const VitalsIcon = ({ icon }) => {
     );
   }
   return null;
+};
+
+VitalsIcon.propTypes = {
+  icon: PropTypes.string.isRequired,
 };
 
 const VitalName = styled(Typography)`
@@ -87,7 +91,7 @@ export const EntityVitalsItem = ({ name, value, icon, isLoading, ...props }) =>
       <VitalsIcon icon={icon} />
       <div>
         <VitalName>{name}</VitalName>
-        {value === 'yes' ? (
+        {value === 'Yes' ? (
           <GreenVital>{value}</GreenVital>
         ) : (
           <VitalContent>{value || '-'}</VitalContent>

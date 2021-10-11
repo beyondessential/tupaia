@@ -35,6 +35,7 @@ const LabelRight = styled.div`
 
 const getSpectrumLabels = (scaleType, min, max, valueType) => {
   switch (scaleType) {
+    case SCALE_TYPES.GPI:
     case SCALE_TYPES.PERFORMANCE:
     case SCALE_TYPES.PERFORMANCE_DESC:
     case SCALE_TYPES.NEUTRAL:
@@ -77,6 +78,7 @@ const renderSpectrum = ({ min, max, scaleType, scaleColorScheme, valueType }) =>
       }
       break;
     case SCALE_TYPES.PERFORMANCE:
+    case SCALE_TYPES.GPI:
     case SCALE_TYPES.PERFORMANCE_DESC:
     case SCALE_TYPES.NEUTRAL:
     default: {

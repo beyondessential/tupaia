@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 echo "Fast refreshing analytics table"
 
 source .env

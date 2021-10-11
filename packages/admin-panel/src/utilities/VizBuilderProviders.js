@@ -13,6 +13,7 @@ import { theme } from '../theme';
 
 const queryClient = new QueryClient();
 
+// eslint-disable-next-line react/prop-types
 export const VizBuilderProviders = ({ children }) => (
   <StylesProvider injectFirst>
     <MuiThemeProvider theme={theme}>

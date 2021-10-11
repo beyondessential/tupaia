@@ -73,14 +73,6 @@ describe('DataBroker', () => {
 
   describe('pull()', () => {
     describe('input validation', () => {
-      beforeAll(() => {
-        jest.spyOn(global.console, 'warn').mockImplementation();
-      });
-
-      afterAll(() => {
-        global.console.warn.restore();
-      });
-
       const testData = [
         ['empty object', {}, 'Please provide at least one existing data source code'],
         [

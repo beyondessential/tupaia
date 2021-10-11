@@ -9,11 +9,11 @@ import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 
 import { MeditrakConnection } from '../connections';
-import { DashboardVisualisationCombiner, DashboardVisualisationObject } from '../viz-builder';
+import { combineVisualisation, DashboardViz } from '../viz-builder';
 
 export type FetchDashboardVisualisationRequest = Request<
   { dashboardVisualisationId: string },
-  { visualisation: DashboardVisualisationObject },
+  { visualisation: DashboardViz },
   Record<string, never>,
   Record<string, never>
 >;
@@ -29,15 +29,11 @@ export class FetchDashboardVisualisationRoute extends Route<FetchDashboardVisual
 
   async buildResponse() {
     const { dashboardVisualisationId } = this.req.params;
-    const { dashboardItem, report } = await this.meditrakConnection.fetchResources(
+    const visualisationResource = await this.meditrakConnection.fetchResources(
       `dashboardVisualisations/${dashboardVisualisationId}`,
     );
+    const visualisation = combineVisualisation(visualisationResource);
 
-    const combiner = new DashboardVisualisationCombiner(dashboardItem, report);
-    const visualisation = combiner.getVisualisation();
-
-    return {
-      visualisation,
-    };
+    return { visualisation };
   }
 }

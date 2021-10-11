@@ -25,40 +25,63 @@ export type TestReportRequest = Request<
 
 const BES_DATA_ADMIN_PERMISSION_GROUP_NAME = 'BES Data Admin';
 
+const findAccessibleOrgUnits = async (
+  req: TestReportRequest,
+  hierarchy: string,
+  orgUnitCodes: string[],
+) => {
+  const foundOrgUnits = await getRequestedOrgUnitObjects(
+    hierarchy,
+    orgUnitCodes,
+    req.ctx.services.entity,
+  );
+
+  return getAccessibleOrgUnitCodes(
+    BES_DATA_ADMIN_PERMISSION_GROUP_NAME,
+    foundOrgUnits,
+    req.accessPolicy,
+  );
+};
+
+const parseOrgUnitCodes = (query: Record<string, unknown>): string[] => {
+  const { organisationUnitCodes } = query;
+  if (!organisationUnitCodes) {
+    throw new Error('Must provide organisationUnitCodes URL parameter');
+  }
+
+  return Array.isArray(organisationUnitCodes)
+    ? organisationUnitCodes
+    : (organisationUnitCodes as string).split(',');
+};
+
 export class TestReportRoute extends Route<TestReportRequest> {
   async buildResponse() {
     const { query, body } = this.req;
     const { testData, testConfig, ...restOfBody } = body;
-    const { organisationUnitCodes, hierarchy = 'explore', ...restOfParams } = {
-      ...query,
-      ...restOfBody,
-    };
-    if (!organisationUnitCodes) {
-      throw new Error('Must provide organisationUnitCodes URL parameter');
-    }
+    const reportQuery = { ...query, ...restOfBody };
+    const { hierarchy = 'explore' } = reportQuery;
 
-    const foundOrgUnits = await getRequestedOrgUnitObjects(
+    const reqContext = {
       hierarchy,
-      organisationUnitCodes,
-      this.req.ctx.services.entity,
-    );
+      services: this.req.ctx.services,
+    };
+    const reportBuilder = new ReportBuilder(reqContext);
+    reportBuilder.setConfig(body.testConfig);
 
-    const accessibleOrgUnitCodes = await getAccessibleOrgUnitCodes(
-      BES_DATA_ADMIN_PERMISSION_GROUP_NAME,
-      foundOrgUnits,
-      this.req.accessPolicy,
-    );
+    if (testData) {
+      reportBuilder.setTestData(testData);
+    } else {
+      const orgUnitCodes = parseOrgUnitCodes(reportQuery);
+
+      reportQuery.hierarchy = hierarchy;
+      reportQuery.organisationUnitCodes = await findAccessibleOrgUnits(
+        this.req,
+        hierarchy,
+        orgUnitCodes,
+      );
+    }
 
     const aggregator = createAggregator(Aggregator, this.req.ctx);
-    const reportBuilder = new ReportBuilder();
-    reportBuilder.setConfig(body.testConfig);
-    if (body.testData) {
-      reportBuilder.setTestData(body.testData);
-    }
-    return reportBuilder.build(aggregator, {
-      organisationUnitCodes: accessibleOrgUnitCodes,
-      hierarchy,
-      ...restOfParams,
-    });
+    return reportBuilder.build(aggregator, reportQuery);
   }
 }

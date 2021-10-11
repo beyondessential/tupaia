@@ -1,5 +1,9 @@
-#!/bin/bash
-source .env
+#!/bin/bash -e
+
+# if env vars are not already defined (e.g. by script caller during CI/CD), pull them in from .env
+if [ "$DB_URL" == "" ]; then
+    source .env
+fi
 
 # Set default port in case it wasn't in .env
 : "${DB_PORT:=5432}"

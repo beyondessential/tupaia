@@ -12,7 +12,6 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "GENERATE_SOURCEMAP=false react-scripts build",
-    "postbuild": "rm -rf served_build && mv build served_build",
     "cypress:open": "cross-env NODE_ENV=test yarn cypress open",
     "cypress:run": "cross-env NODE_ENV=test yarn cypress run",
     "eject": "react-scripts eject",
@@ -22,25 +21,16 @@
     "start-dev": "npm run start",
     "test": "react-scripts test --env=jsdom --passWithNoTests"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
+  "browserslist": [
+    "defaults"
+  ],
   "dependencies": {
     "@material-ui/core": "^4.9.11",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.47",
     "@material-ui/styles": "^4.9.10",
-    "@tupaia/access-policy": "3.0.0",
     "@tupaia/ui-components": "1.0",
+    "@tupaia/access-policy": "3.0.0",
     "@tupaia/utils": "1.0.0",
     "axios": "^0.21.1",
     "brace": "^0.11.1",
@@ -49,6 +39,7 @@
     "jsoneditor": "^9.0.4",
     "jsoneditor-react": "^3.0.1",
     "localforage": "^1.5.0",
+    "lodash.debounce": "^4.0.8",
     "lodash.keyby": "^4.6.0",
     "lodash.throttle": "^4.1.1",
     "moment": "^2.22.2",

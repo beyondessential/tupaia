@@ -68,11 +68,11 @@ const runTestsAgainstUrl = (url, options = {}) => {
   });
 };
 
-const checkUrlExists = url => {
+const validateUrl = (description, url) => {
   try {
     execSync(`curl --output /dev/null --silent --head --fail ${url}`);
   } catch (error) {
-    throw new Error(`No deployment exists for ${url}, cancelling e2e tests`);
+    throw new Error(`No deployment exists for ${description} url '${url}', cancelling e2e tests`);
   }
 };
 
@@ -87,8 +87,17 @@ export const testE2e = async () => {
     fs.readFileSync(E2E_CONFIG_PATH, { encoding: 'utf-8' }),
   );
   // Check both urls before running the tests, in case one of them is invalid
-  checkUrlExists(baselineUrl);
-  checkUrlExists(compareUrl);
+  if (!baselineUrl) {
+    logger.warn(`Baseline url is empty, stopping e2e tests`);
+    return;
+  }
+  validateUrl('baseline', baselineUrl);
+
+  if (!compareUrl) {
+    logger.warn(`Compare url is empty, stopping e2e tests`);
+    return;
+  }
+  validateUrl('compare', compareUrl);
 
   let baseError;
   try {

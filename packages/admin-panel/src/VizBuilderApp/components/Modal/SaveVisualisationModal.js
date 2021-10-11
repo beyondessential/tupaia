@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Link as RouterLink } from 'react-router-dom';
@@ -22,7 +22,7 @@ import {
 
 import { MODAL_STATUS } from '../../constants';
 import { useSaveVisualisation } from '../../api';
-import { useVizBuilderConfig } from '../../vizBuilderConfigStore';
+import { useVizBuilderConfig } from '../../context';
 
 const TickIcon = styled(CheckCircle)`
   font-size: 2.5rem;

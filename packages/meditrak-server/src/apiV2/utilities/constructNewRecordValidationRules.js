@@ -105,6 +105,12 @@ export const constructForSingle = (models, recordType) => {
         config: [hasContent],
         permission_group: [hasContent],
       };
+    case TYPES.LEGACY_REPORT:
+      return {
+        code: [constructRecordNotExistsWithField(models.legacyReport, 'code')],
+        data_builder: [hasContent],
+        data_builder_config: [hasContent],
+      };
     case TYPES.DASHBOARD:
       return {
         code: [hasContent],

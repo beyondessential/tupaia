@@ -9,7 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import GetAppIcon from '@material-ui/icons/GetApp';
 
 import { useExportVisualisation } from '../api/mutations';
-import { useVizBuilderConfig } from '../vizBuilderConfigStore';
+import { useVizBuilderConfig } from '../context';
 
 export const ExportButton = () => {
   const [{ visualisation }] = useVizBuilderConfig();

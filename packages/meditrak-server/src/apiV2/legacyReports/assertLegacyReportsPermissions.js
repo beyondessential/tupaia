@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { TYPES } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
 import { hasDashboardItemGetPermissions, hasDashboardItemEditPermissions } from '../dashboardItems';
 import { createDashboardRelationsDBFilter } from '../dashboardRelations';
@@ -47,16 +48,28 @@ export const createLegacyReportsDBFilter = async (accessPolicy, models, criteria
 
   const dbConditions = { ...criteria };
 
-  // Pull the list of dashboard items we have access to,
-  // then pull the dashboards we have permission to from that
-  const dashboardRelations = createDashboardRelationsDBFilter(accessPolicy);
-  const permittedDashboardRelations = await models.dashboardRelation.find(dashboardRelations);
-  const permittedDashboardItems = await models.dashboardItem.findManyById(
-    permittedDashboardRelations.map(dr => dr.child_id),
+  // Pull the list of dashboard relations we have access to,
+  // then pull the legacy reports we have permission to from that
+  const permittedRelationConditions = createDashboardRelationsDBFilter(accessPolicy, criteria);
+  const permittedLegacyReports = await models.legacyReport.find(
+    {
+      ...permittedRelationConditions,
+      'dashboard_item.legacy': true,
+    },
+    {
+      multiJoin: [
+        {
+          joinWith: TYPES.DASHBOARD_ITEM,
+          joinCondition: ['dashboard_item.report_code', 'legacy_report.code'],
+        },
+        {
+          joinWith: TYPES.DASHBOARD_RELATION,
+          joinCondition: ['dashboard_relation.child_id', 'dashboard_item.id'],
+        },
+      ],
+    },
   );
-  const permittedLegacyReportCodes = permittedDashboardItems
-    .filter(di => di.legacy && !!di.report_code)
-    .map(di => di.report_code);
+  const permittedLegacyReportCodes = permittedLegacyReports.map(r => r.code);
 
   dbConditions['legacy_report.code'] = mergeFilter(
     permittedLegacyReportCodes,
