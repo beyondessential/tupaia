@@ -1,7 +1,7 @@
 import keyBy from 'lodash.keyby';
 import groupBy from 'lodash.groupby';
 import isEqual from 'lodash.isequal';
-import orderBy from 'lodash.orderBy';
+import orderBy from 'lodash.orderby';
 
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { reduceToDictionary, getSortByKey } from '@tupaia/utils';
