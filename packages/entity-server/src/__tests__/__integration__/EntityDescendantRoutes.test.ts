@@ -179,6 +179,16 @@ describe('descendants', () => {
       );
     });
 
+    it('can fetch descendants of no entities', async () => {
+      const { body: entities } = await app.post('hierarchy/redblue/descendants', {
+        query: { fields: 'code,name,type' },
+        body: { entities: [] },
+      });
+
+      expect(entities).toBeArray();
+      expect(entities.length).toBe(0);
+    });
+
     it('can fetch descendants of multiple entities for an alternate hierarchy', async () => {
       const { body: entities } = await app.post('hierarchy/goldsilver/descendants', {
         query: { fields: 'code,name,type' },

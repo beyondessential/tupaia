@@ -4,13 +4,15 @@
  */
 
 import { Aggregator } from '../aggregator';
-import { FetchReportQuery } from '../types';
+import { FetchReportQuery, ReportConfig } from '../types';
+import { configValidator } from './configValidator';
 import { buildContext, ReqContext } from './context';
 import { buildFetch, FetchResponse } from './fetch';
 import { buildTransform } from './transform';
 import { buildOutput } from './output';
 import { Row } from './types';
 import { OutputType } from './output/functions/outputBuilders';
+import { QueryBuilder } from './QueryBuilder';
 
 export interface BuiltReport {
   results: OutputType;
@@ -19,7 +21,7 @@ export interface BuiltReport {
 export class ReportBuilder {
   reqContext: ReqContext;
 
-  config?: Record<string, unknown>;
+  config?: ReportConfig;
 
   testData?: Row[];
 
@@ -28,7 +30,7 @@ export class ReportBuilder {
   }
 
   public setConfig = (config: Record<string, unknown>) => {
-    this.config = config;
+    this.config = configValidator.validateSync(config);
     return this;
   };
 
@@ -45,7 +47,8 @@ export class ReportBuilder {
     const fetch = this.testData
       ? () => ({ results: this.testData } as FetchResponse)
       : buildFetch(this.config?.fetch);
-    const data = await fetch(aggregator, query);
+    const builtQuery = new QueryBuilder(this.config, query).build();
+    const data = await fetch(aggregator, builtQuery);
 
     const context = await buildContext(this.config.transform, this.reqContext, data);
     const transform = buildTransform(this.config.transform, context);

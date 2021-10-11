@@ -15,7 +15,7 @@ import { getHomeUrl } from '../store';
 export const NotFoundViewComponent = ({ homeUrl }) => (
   <>
     <Header Title={<HeaderTitle title="404 Page Not Found" />} />
-    <Container>
+    <Container maxWidth="xl">
       <Main>
         <br />
         <br />

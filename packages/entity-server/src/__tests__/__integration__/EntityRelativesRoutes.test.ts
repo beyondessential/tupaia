@@ -69,6 +69,16 @@ describe('relatives', () => {
       );
     });
 
+    it('can fetch relatives of no entities', async () => {
+      const { body: entities } = await app.post('hierarchy/redblue/relatives', {
+        query: { fields: 'code,name,type' },
+        body: { entities: [] },
+      });
+
+      expect(entities).toBeArray();
+      expect(entities.length).toBe(0);
+    });
+
     it('can fetch relatives of multiple entities for an alternate hierarchy', async () => {
       const { body: entities } = await app.post('hierarchy/goldsilver/relatives', {
         query: { fields: 'code,name,type' },

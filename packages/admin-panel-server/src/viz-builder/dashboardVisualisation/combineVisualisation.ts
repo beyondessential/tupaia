@@ -4,15 +4,12 @@
  */
 
 import { DashboardItem, LegacyReport, Report, DashboardVizResource, DashboardViz } from '../types';
+import { extractFetch } from './helpers';
 
 const getData = (report: Report) => {
   const { config } = report;
-  const {
-    fetch: { dataElements, dataGroups, aggregations },
-    transform,
-  } = config;
-
-  return { dataElements, dataGroups, aggregations, transform };
+  const { fetch, transform } = config;
+  return { ...extractFetch(fetch), transform };
 };
 
 const getLegacyData = (report: LegacyReport) => {
