@@ -6,7 +6,7 @@
 import type { TupaiaApiClient } from '@tupaia/api-client';
 import { AccessPolicy } from '@tupaia/access-policy';
 
-export const getAccessibleOrgUnitCodes = async (
+export const getAccessibleOrgUnitCodes = (
   permissionGroupName: string,
   foundOrgUnits: { country_code: string | null; code: string }[],
   accessPolicy: AccessPolicy,

@@ -63,7 +63,9 @@ export class TestReportRoute extends Route<TestReportRequest> {
 
     const reqContext = {
       hierarchy,
+      permissionGroup: BES_DATA_ADMIN_PERMISSION_GROUP_NAME,
       services: this.req.ctx.services,
+      accessPolicy: this.req.accessPolicy,
     };
     const reportBuilder = new ReportBuilder(reqContext);
     reportBuilder.setConfig(body.testConfig);

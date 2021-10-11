@@ -47,7 +47,7 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
       this.req.ctx.services.entity,
     );
 
-    const accessibleOrgUnitCodes = await getAccessibleOrgUnitCodes(
+    const accessibleOrgUnitCodes = getAccessibleOrgUnitCodes(
       permissionGroupName,
       foundOrgUnits,
       this.req.accessPolicy,
@@ -55,7 +55,9 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
 
     const reqContext = {
       hierarchy,
+      permissionGroup: permissionGroupName,
       services: this.req.ctx.services,
+      accessPolicy: this.req.accessPolicy,
     };
     const reportBuilder = new ReportBuilder(reqContext).setConfig(report.config);
     const reportQuery = {
