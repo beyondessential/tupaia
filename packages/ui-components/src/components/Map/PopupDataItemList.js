@@ -35,7 +35,6 @@ export const PopupDataItemList = ({ measureOptions, data, showNoDataLabel }) => 
         .sort((measure1, measure2) => measure1.sortOrder - measure2.sortOrder)
         .map(measureOption => {
           const { key, name, organisationUnit, sortOrder, ...otherConfigs } = measureOption;
-          console.log(sortOrder);
           const metadata = getMetadata(data, key);
           const { formattedValue, valueInfo } = getFormattedInfo(data, measureOption, {
             key,
