@@ -44,7 +44,7 @@ export function createApp() {
     .post('/v1/register', handleWith(RegisterRoute))
     .post('/v1/approveSurveyResponse/:id', handleWith(ApproveSurveyResponse))
     .post('/v1/report/:entityCode/:reportCode', handleWith(ReportRoute))
-    .put('/v1/userEntityPermission:', handleWith(UpdateUserEntityPermissionRoute))
+    .put('/v1/userEntityPermission', handleWith(UpdateUserEntityPermissionRoute))
     .build();
 
   // Forward any unhandled request to meditrak-server
