@@ -17,8 +17,6 @@ import {
   RegisterRoute,
   ReportRoute,
   UserRoute,
-  UsersRoute,
-  UpdateUserEntityPermissionRoute,
   ApproveSurveyResponse,
 } from '../routes';
 import { attachSession } from '../session';
@@ -36,7 +34,6 @@ export function createApp() {
     .verifyLogin(hasLesmisAccess)
     .get('/v1/dashboard/:entityCode', handleWith(DashboardRoute))
     .get('/v1/user', handleWith(UserRoute))
-    .get('/v1/users', handleWith(UsersRoute))
     .get('/v1/entities/:entityCode', handleWith(EntitiesRoute))
     .get('/v1/map-overlays/:entityCode', handleWith(MapOverlaysRoute))
     .get('/v1/entity/:entityCode', handleWith(EntityRoute))
@@ -44,7 +41,6 @@ export function createApp() {
     .post('/v1/register', handleWith(RegisterRoute))
     .post('/v1/approveSurveyResponse/:id', handleWith(ApproveSurveyResponse))
     .post('/v1/report/:entityCode/:reportCode', handleWith(ReportRoute))
-    .put('/v1/userEntityPermission', handleWith(UpdateUserEntityPermissionRoute))
     .build();
 
   // Forward any unhandled request to meditrak-server

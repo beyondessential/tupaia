@@ -5,7 +5,6 @@
 
 export * from './ApproveButton';
 export * from './Breadcrumbs';
-export * from './DataGrid';
 export * from './EntityMenu';
 export * from './EntityVitalsItem';
 export * from './FetchLoader';

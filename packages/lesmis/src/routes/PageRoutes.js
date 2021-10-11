@@ -6,7 +6,6 @@
 import React, { lazy, Suspense } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { NavBar, Footer, FullPageLoader } from '../components';
-import { LesmisAdminRoute } from './LesmisAdminRoute';
 import { HomeView } from '../views/HomeView';
 import { ProfileView } from '../views/ProfileView';
 import { PageView, TwoColumnPageView } from '../views/PageView';
@@ -14,7 +13,6 @@ import { EntityView } from '../views/EntityView';
 import { NotFoundView } from '../views/NotFoundView';
 import { LoginView } from '../views/LoginView';
 import { RegisterView } from '../views/RegisterView';
-import { UsersView } from '../views/UsersView';
 import { NotAuthorisedView } from '../views/NotAuthorisedView';
 import { ABOUT_PAGE, FQS_PAGE, CONTACT_PAGE } from '../constants';
 
@@ -40,13 +38,6 @@ export const PageRoutes = React.memo(() => (
       <Route path="/profile">
         <NavBar />
         <ProfileView />
-        <Footer />
-      </Route>
-      <Route path="/users-and-permissions">
-        <NavBar />
-        <LesmisAdminRoute path="*">
-          <UsersView />
-        </LesmisAdminRoute>
         <Footer />
       </Route>
       <Route path="/admin">
