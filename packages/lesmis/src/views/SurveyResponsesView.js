@@ -3,16 +3,13 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import {
-  SurveyResponsesPage as ResourcePage,
-  SURVEY_RESPONSE_COLUMNS,
-} from '@tupaia/admin-panel/lib';
+import { SurveyResponsesPage, SURVEY_RESPONSE_COLUMNS } from '@tupaia/admin-panel/lib';
 import { ConfirmModal } from '@tupaia/ui-components';
 import { ApproveButton } from '../components';
 
 // Todo: Replace base filter with real filter @see WAI-832
 export const ApprovedSurveyResponsesView = props => (
-  <ResourcePage
+  <SurveyResponsesPage
     title="Approved Survey Responses"
     baseFilter={{ 'survey.code': { comparator: 'ILIKE', comparisonValue: '%_Confirmed_WNR' } }}
     {...props}
@@ -78,7 +75,7 @@ const ConfirmRejectModal = ({ isOpen, onConfirm, onCancel }) => {
 
 // Todo: Replace base filter with real filter @see WAI-832
 export const DraftSurveyResponsesView = props => (
-  <ResourcePage
+  <SurveyResponsesPage
     {...props}
     title="Survey Responses For Review"
     baseFilter={{ 'survey.code': { comparator: 'NOT ILIKE', comparisonValue: '%_Confirmed_WNR' } }}
