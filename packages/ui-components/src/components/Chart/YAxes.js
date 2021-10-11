@@ -56,49 +56,76 @@ const calculateYAxisDomain = ({ min, max }) => {
 
 const containsClamp = ({ min, max }) => min.type === 'clamp' || max.type === 'clamp';
 
-const renderYAxisLabel = (label, orientation, fillColor) => {
+const renderYAxisLabel = (label, orientation, fillColor, isEnlarged) => {
   if (label)
     return {
       value: label,
       angle: -90,
       fill: fillColor,
-      style: { textAnchor: 'middle' },
+      style: { textAnchor: 'middle', fontSize: isEnlarged ? '1em' : '0.8em' },
       position: orientation === 'right' ? 'insideRight' : 'insideLeft',
     };
   return null;
 };
 
-const YAxis = ({ config = {}, viewContent, isExporting }) => {
+/**
+ * Calculate a dynamic width for the YAxis
+ */
+const getAxisWidth = (data, dataKeys, valueType) => {
+  // Only use a dynamic width for number types. Otherwise fallback to the recharts default
+  if (valueType === VALUE_TYPES.NUMBER || valueType === undefined) {
+    const values = data.map(item => dataKeys.map(key => item[key])).flat();
+    const maxValue = Math.max(...values);
+
+    // Format the number in the same way that it will be displayed to take into account any rounding
+    const maxFormattedValue =
+      valueType === undefined
+        ? formatDataValueByType(
+            { value: maxValue, metadata: { presentationOptions: { valueFormat: '0.00' } } },
+            'number',
+          )
+        : formatDataValueByType({ value: maxValue }, valueType);
+    const maxValueLength = maxFormattedValue.toString().length;
+    return maxValueLength * 8 + 32;
+  }
+
+  return undefined;
+};
+
+const YAxis = ({ config = {}, viewContent, chartDataConfig, isExporting, isEnlarged }) => {
   const fillColor = getContrastTextColor();
 
   const {
     yAxisId = DEFAULT_Y_AXIS.id,
     orientation = DEFAULT_Y_AXIS.orientation,
     yAxisDomain = getDefaultYAxisDomain(viewContent),
-    valueType: axisValueType,
     yName: yAxisLabel,
   } = config;
 
-  const { yName, valueType, presentationOptions, ticks } = viewContent;
+  const { yName, presentationOptions, ticks } = viewContent;
+  const dataKeys = config.dataKeys || Object.keys(chartDataConfig);
+  const valueType = viewContent.valueType || config.valueType;
+  const width = getAxisWidth(viewContent.data, dataKeys, valueType);
 
   return (
     <YAxisComponent
       key={yAxisId}
       ticks={ticks}
+      width={width}
       tickSize={6}
       yAxisId={yAxisId}
       orientation={orientation}
       domain={calculateYAxisDomain(yAxisDomain)}
       allowDataOverflow={valueType === PERCENTAGE || containsClamp(yAxisDomain)}
       // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
-      label={renderYAxisLabel(yName || yAxisLabel, orientation, fillColor)}
+      label={renderYAxisLabel(yName || yAxisLabel, orientation, fillColor, isEnlarged)}
       tickFormatter={value =>
         formatDataValueByType(
           {
             value,
             metadata: { presentationOptions },
           },
-          valueType || axisValueType,
+          valueType,
         )
       }
       interval={isExporting ? 0 : 'preserveStartEnd'}
@@ -110,15 +137,18 @@ const YAxis = ({ config = {}, viewContent, isExporting }) => {
 YAxis.propTypes = {
   config: PropTypes.object,
   viewContent: PropTypes.object.isRequired,
+  chartDataConfig: PropTypes.object.isRequired,
   isExporting: PropTypes.bool,
+  isEnlarged: PropTypes.bool,
 };
 
 YAxis.defaultProps = {
   config: {},
   isExporting: false,
+  isEnlarged: false,
 };
 
-export const YAxes = ({ viewContent, isExporting }) => {
+export const YAxes = ({ viewContent, chartDataConfig, isExporting, isEnlarged }) => {
   const { chartConfig = {} } = viewContent;
 
   const axisPropsById = {
@@ -141,17 +171,22 @@ export const YAxes = ({ viewContent, isExporting }) => {
   );
 
   const axesProps = Object.values(axisPropsById).filter(({ dataKeys }) => dataKeys.length > 0);
+  const baseProps = { viewContent, chartDataConfig, isExporting, isEnlarged };
+
   // If no custom axes provided, render the  default y axis
   return axesProps.length > 0
-    ? axesProps.map(props => YAxis({ config: props, viewContent, isExporting }))
-    : YAxis({ viewContent, isExporting });
+    ? axesProps.map(props => YAxis({ config: props, ...baseProps }))
+    : YAxis(baseProps);
 };
 
 YAxes.propTypes = {
   viewContent: PropTypes.object.isRequired,
+  chartDataConfig: PropTypes.object.isRequired,
   isExporting: PropTypes.bool,
+  isEnlarged: PropTypes.bool,
 };
 
 YAxes.defaultProps = {
   isExporting: false,
+  isEnlarged: false,
 };
