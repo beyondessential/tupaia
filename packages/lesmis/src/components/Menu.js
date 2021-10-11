@@ -4,77 +4,142 @@
  *
  */
 import React from 'react';
-import MuiButton from '@material-ui/core/Button';
-import Popper from '@material-ui/core/Popper';
-import MuiList from '@material-ui/core/List';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import styled from 'styled-components';
-import MuiListItem from '@material-ui/core/ListItem';
+import MuiButton from '@material-ui/core/Button';
+import MuiMenu from '@material-ui/core/Menu';
+import MuiMenuItem from '@material-ui/core/MenuItem';
+import LanguageIcon from '@material-ui/icons/Language';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import { LaosFlagSmall } from './Icons/LaosFlagSmall';
+import { EnglishFlagSmall } from './Icons/EnglishFlagSmall';
 
-const StyledButton = styled(MuiButton)``;
+const StyledButton = styled(MuiButton)`
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 140%;
 
-const Paper = styled.div`
-  background: white;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
-  border-radius: 5px;
-  margin-top: 0.3rem;
-  min-width: 13rem;
-`;
+  .MuiButton-startIcon {
+    color: ${props => props.theme.palette.text.secondary};
+    margin-right: 3px;
+  }
 
-const StyledListItem = styled(MuiListItem)`
-  font-size: 0.875rem;
-  line-height: 1rem;
-  padding: 0.5rem 1.25rem;
-  color: ${props => props.theme.palette.text.secondary};
+  .MuiButton-endIcon {
+    margin-left: 2px;
 
-  &:hover {
-    color: ${props => props.theme.palette.text.primary};
-    background: none;
+    .MuiSvgIcon-root {
+      font-size: 15px;
+    }
   }
 `;
 
-const options = ['English', 'Laotian'];
+const StyledMenu = styled(MuiMenu)`
+  .MuiList-root {
+    padding: 8px 5px;
+  }
+
+  .MuiMenu-paper {
+    overflow: visible;
+    border: 1px solid ${props => props.theme.palette.grey['400']};
+
+    &:before {
+      position: absolute;
+      top: -8px;
+      right: 36px;
+      z-index: -1;
+      content: '';
+      border-right: 5px solid transparent;
+      border-left: 5px solid transparent;
+      border-bottom: 7px solid ${props => props.theme.palette.grey['400']};
+    }
+
+    &:after {
+      position: absolute;
+      top: -7px;
+      right: 36px;
+      content: '';
+      z-index: 12;
+      border-right: 5px solid transparent;
+      border-left: 5px solid transparent;
+      border-bottom: 7px solid white;
+    }
+  }
+`;
+
+const MenuItem = styled(MuiMenuItem)`
+  font-size: 12px;
+  line-height: 140%;
+  width: 150px;
+  border-radius: 5px;
+
+  svg {
+    width: 30px;
+    margin-right: 6px;
+  }
+`;
+
+const options = [
+  { key: 'en', label: 'English', Icon: EnglishFlagSmall },
+  { key: 'la', label: 'Laotian', Icon: LaosFlagSmall },
+];
 
 export const Menu = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [selectedKey, setSelectedKey] = React.useState(options[0].key);
 
-  const handleMenuItemClick = (event, index) => {
-    setSelectedIndex(index);
+  const handleMenuItemClick = (event, key) => {
+    setSelectedKey(key);
     setAnchorEl(null);
   };
 
   const handleClick = event => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
+    setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  const open = Boolean(anchorEl);
+  const selectedOption = options.find(o => o.key === selectedKey);
 
   return (
-    <ClickAwayListener onClickAway={handleClose}>
-      <div style={{ position: 'relative' }}>
-        <StyledButton onClick={handleClick}>{options[selectedIndex]}</StyledButton>
-        <Popper keepMounted disablePortal anchorEl={anchorEl} open={open} placement="bottom-end">
-          <Paper>
-            <MuiList>
-              {options.map((option, index) => (
-                <StyledListItem
-                  key={option}
-                  button
-                  selected={index === selectedIndex}
-                  onClick={event => handleMenuItemClick(event, index)}
-                >
-                  {option}
-                </StyledListItem>
-              ))}
-            </MuiList>
-          </Paper>
-        </Popper>
-      </div>
-    </ClickAwayListener>
+    <>
+      <StyledButton
+        onClick={handleClick}
+        startIcon={<LanguageIcon />}
+        endIcon={<ArrowDropDownIcon />}
+      >
+        <span>{selectedOption.label}</span>
+      </StyledButton>
+      <StyledMenu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        // This is needed to make the position work
+        getContentAnchorEl={null}
+        keepMounted
+        elevation={0}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        variant="menu"
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        {options.map(({ key, label, Icon }) => (
+          <MenuItem
+            key={key}
+            selected={key === selectedKey}
+            onClick={event => handleMenuItemClick(event, key)}
+          >
+            <Icon />
+            {label}
+          </MenuItem>
+        ))}
+      </StyledMenu>
+    </>
   );
 };
