@@ -76,7 +76,7 @@ export const Panel = () => {
     { setDataConfig, setFetchConfig },
   ] = useVizBuilderConfig();
 
-  const { dataElements, dataGroups, aggregations, transform } = dataConfig;
+  const { dataElements, dataGroups, startDate, endDate, aggregations, transform } = dataConfig;
 
   const handleChange = (event, newValue) => {
     setTab(newValue);
@@ -85,6 +85,8 @@ export const Panel = () => {
   const fetchValue = {
     dataElements,
     dataGroups,
+    startDate,
+    endDate,
   };
 
   return (
