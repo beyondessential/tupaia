@@ -5,10 +5,11 @@
  */
 import React from 'react';
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
-import { LocationHeader, Toolbar, Breadcrumbs, Footer } from '../components';
+import { LocationHeader, Toolbar, Breadcrumbs, Footer, FlexSpaceBetween } from '../components';
 import { DashboardView } from './DashboardView';
 import { MapView } from './MapView';
 import { useEntityBreadcrumbs } from '../utils';
+import { Menu } from '../components/Menu';
 
 export const EntityView = () => {
   const match = useRouteMatch();
@@ -18,7 +19,10 @@ export const EntityView = () => {
   return (
     <>
       <Toolbar>
-        <Breadcrumbs breadcrumbs={breadcrumbs} isLoading={isLoading} />
+        <FlexSpaceBetween>
+          <Breadcrumbs breadcrumbs={breadcrumbs} isLoading={isLoading} />
+          <Menu />
+        </FlexSpaceBetween>
       </Toolbar>
       <LocationHeader />
       <Switch>
