@@ -87,7 +87,7 @@ ResourcePage.propTypes = {
 };
 
 ResourcePage.defaultProps = {
-  ConfirmDeleteModalComponent: null,
+  ConfirmDeleteModalComponent: undefined,
   createConfig: null,
   editConfig: null,
   expansionTabs: null,
