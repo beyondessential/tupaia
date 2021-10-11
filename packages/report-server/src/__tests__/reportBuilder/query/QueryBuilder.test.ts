@@ -5,8 +5,8 @@
 
 import MockDate from 'mockdate';
 
-import { QueryBuilder } from '../../reportBuilder/QueryBuilder';
-import { FetchReportQuery } from '../../types';
+import { QueryBuilder } from '../../../reportBuilder/query/QueryBuilder';
+import { FetchReportQuery } from '../../../types';
 
 describe('QueryBuilder', () => {
   /**
