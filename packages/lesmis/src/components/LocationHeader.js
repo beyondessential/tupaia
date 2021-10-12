@@ -92,7 +92,7 @@ const ToggleButton = styled(MuiToggleButton)`
 `;
 
 export const LocationHeader = () => {
-  const { entityCode, view } = useUrlParams();
+  const { lang, entityCode, view } = useUrlParams();
   const { search } = useLocation();
   const { data: entityData } = useEntityData(entityCode);
 
@@ -124,7 +124,7 @@ export const LocationHeader = () => {
             <ToggleButton
               value="dashboard"
               component={Link}
-              to={`${makeEntityLink(entityCode, 'dashboard')}${search}`}
+              to={`${makeEntityLink(lang, entityCode, 'dashboard')}${search}`}
               aria-label="dashboard"
             >
               <Dashboard /> Dashboard
@@ -132,7 +132,7 @@ export const LocationHeader = () => {
             <ToggleButton
               value="map"
               component={Link}
-              to={`${makeEntityLink(entityCode, 'map')}${search}`}
+              to={`${makeEntityLink(lang, entityCode, 'map')}${search}`}
               aria-label="map"
             >
               <Map /> Map

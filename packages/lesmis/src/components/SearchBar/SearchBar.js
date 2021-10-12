@@ -19,7 +19,7 @@ import Fade from '@material-ui/core/Fade';
 import { EntityMenu } from '../EntityMenu';
 import { useAutocomplete } from './useAutocomplete';
 import { useProjectEntitiesData } from '../../api';
-import { getPlaceIcon, getOptionText, makeEntityLink } from '../../utils';
+import { getPlaceIcon, getOptionText, makeEntityLink, useUrlParams } from '../../utils';
 
 const SearchContainer = styled.div`
   position: relative;
@@ -139,6 +139,7 @@ const EXPANDED_LIMIT = 200;
 
 export const SearchBar = ({ linkType, className }) => {
   const history = useHistory();
+  const { lang } = useUrlParams();
   const [inputValue, setInputValue] = useState('');
   const [expanded, setExpanded] = useState(false);
   const { data: options = [], isLoading } = useProjectEntitiesData();
@@ -160,7 +161,7 @@ export const SearchBar = ({ linkType, className }) => {
     limit: inputValue && expanded ? EXPANDED_LIMIT : DEFAULT_LIMIT,
     onChange: (event, option) => {
       if (option && option.code) {
-        history.push(makeEntityLink(option.code, linkType));
+        history.push(makeEntityLink(lang, option.code, linkType));
       }
     },
   });
@@ -194,7 +195,7 @@ export const SearchBar = ({ linkType, className }) => {
             {groupedOptions.map((option, index) => (
               <ResultsItem
                 key={option.name}
-                to={makeEntityLink(option.code, linkType)}
+                to={makeEntityLink(lang, option.code, linkType)}
                 {...getOptionProps({ option, index })}
               >
                 {getPlaceIcon(option.type)}
