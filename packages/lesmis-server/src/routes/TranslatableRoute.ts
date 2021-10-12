@@ -17,7 +17,6 @@ export class TranslatableRoute extends Route {
 
   // TODO: use a better type
   respond(responseBody: any[], statusCode: number) {
-    // TODO: fetch this locale from query
     const { locale } = this.req.query;
     if (locale) {
       i18n.setLocale(locale);
