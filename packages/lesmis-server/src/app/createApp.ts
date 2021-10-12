@@ -20,10 +20,17 @@ import {
 import { attachSession } from '../session';
 import { hasLesmisAccess } from '../utils';
 
+const path = require('path')
+const i18n = require('i18n')
+
 /**
  * Set up express server with middleware,
  */
 export function createApp() {
+  i18n.configure({
+    locales: ['en', 'lo'],
+    directory: path.join(__dirname, '../locales')
+  });
   return new OrchestratorApiBuilder(new TupaiaDatabase())
     .useSessionModel(LesmisSessionModel)
     .useAttachSession(attachSession)

@@ -6,13 +6,18 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
+import { TranslatableRoute } from './TranslatableRoute';
 import { ReportConnection, WebConfigConnection } from '../connections';
 import { LESMIS_PROJECT_NAME, LESMIS_HIERARCHY_NAME } from '../constants';
 
-export class ReportRoute extends Route {
+export class ReportRoute extends TranslatableRoute {
   private readonly reportConnection: ReportConnection;
 
   private readonly webConfigConnection: WebConfigConnection;
+
+  translationKeys = [
+    'label'
+  ];
 
   constructor(req: Request, res: Response, next: NextFunction) {
     super(req, res, next);
