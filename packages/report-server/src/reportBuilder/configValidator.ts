@@ -56,6 +56,7 @@ export const configValidator = yup.object().shape({
       dataElements: dataElementValidator,
       dataGroups: dataGroupValidator,
       aggregations: yup.array().of(aggregationValidator),
+      organisationUnits: yup.array().of(yup.string().required()),
       startDate: dateSpecsValidator,
       endDate: dateSpecsValidator,
     },

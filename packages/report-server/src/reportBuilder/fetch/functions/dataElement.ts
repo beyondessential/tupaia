@@ -3,10 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { yup } from '@tupaia/utils';
+
 import { Aggregator } from '../../../aggregator';
 import { Aggregation, FetchReportQuery, ReportConfig } from '../../../types';
 import { FetchResponse } from '../types';
-import { validateDataElementsForAnalytics as validateDataElements } from './helpers';
 
 type DataElementParams = Pick<ReportConfig['fetch'], 'dataElements' | 'aggregations'>;
 
@@ -14,6 +15,8 @@ type DataElementFetchParams = {
   dataElementCodes: string[];
   aggregations?: Aggregation[];
 };
+
+const dataElementsValidator = yup.array().of(yup.string().required()).min(1).required();
 
 const fetchAnalytics = async (
   aggregator: Aggregator,
@@ -36,10 +39,9 @@ const fetchAnalytics = async (
 
 const buildParams = (params: DataElementParams): DataElementFetchParams => {
   const { dataElements, aggregations } = params;
-  validateDataElements(dataElements);
 
   return {
-    dataElementCodes: dataElements,
+    dataElementCodes: dataElementsValidator.validateSync(dataElements),
     aggregations,
   };
 };
