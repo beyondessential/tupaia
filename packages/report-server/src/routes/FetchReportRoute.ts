@@ -11,7 +11,7 @@ import { Route } from '@tupaia/server-boilerplate';
 import { Aggregator } from '../aggregator';
 import { ReportBuilder, BuiltReport } from '../reportBuilder';
 import { ReportRouteQuery, ReportRouteBody } from './types';
-import { parseOrgUnitCodes } from './helpers';
+import { parseOrgUnitCodes } from './parseOrgUnitCodes';
 
 export type FetchReportRequest = Request<
   { reportCode: string },
