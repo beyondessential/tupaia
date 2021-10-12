@@ -9,7 +9,6 @@ import { snakeKeys, yup } from '@tupaia/utils';
 
 import { PreviewMode, DashboardVisualisationResource } from '../types';
 import { LegacyReport, Report } from '..';
-import { extractFetch } from './helpers';
 import { baseVisualisationValidator } from './validators';
 
 // expands object types recursively
@@ -48,10 +47,10 @@ export class DashboardVisualisationExtractor<
     this.reportValidatorContext = context;
   };
 
-  public getDashboardVisualisationResource = (previewMode?: PreviewMode) => {
+  public getDashboardVisualisationResource = () => {
     // Resources (like the ones passed to meditrak-server for upsert) use snake_case keys
     const dashboardItem = this.getDashboardItem();
-    const report = this.getReport(previewMode);
+    const report = this.getReport(PreviewMode.PRESENTATION); // always fetch full report when building resource
 
     return {
       dashboardItem: snakeKeys(dashboardItem),
@@ -60,11 +59,10 @@ export class DashboardVisualisationExtractor<
   };
 
   private vizToDashboardItem() {
-    const { id, code, name, legacy } = this.visualisation;
+    const { code, name, legacy } = this.visualisation;
     const { output, ...presentation } = this.visualisation.presentation;
 
     return {
-      id,
       code,
       // TODO: for prototype, the whole presentation object will be the json edit box
       // But in the future, it will be broken down into different structure.
@@ -92,11 +90,22 @@ export class DashboardVisualisationExtractor<
   private vizToReport(previewMode?: PreviewMode): Record<keyof Report, unknown> {
     const { code, permissionGroup, data, presentation } = this.visualisation;
 
-    const fetch = extractFetch(data);
+    const { fetch: vizFetch, aggregate, transform } = data;
+    const validatedVizFetch = yup
+      .object()
+      .required('fetch is a required field')
+      .validateSync(vizFetch);
+    const fetch = omitBy(
+      {
+        ...validatedVizFetch,
+        aggregations: aggregate,
+      },
+      isNil,
+    );
     const config = omitBy(
       {
         fetch,
-        transform: data.transform,
+        transform,
         output: previewMode === PreviewMode.PRESENTATION ? presentation?.output : null,
       },
       isNil,
