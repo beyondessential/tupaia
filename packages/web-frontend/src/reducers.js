@@ -36,7 +36,7 @@ import {
   ATTEMPT_REQUEST_COUNTRY_ACCESS,
   CHANGE_SIDE_BAR_CONTRACTED_WIDTH,
   CHANGE_SIDE_BAR_EXPANDED_WIDTH,
-  SET_MAP_OVERLAY,
+  SET_MAP_OVERLAYS,
   UPDATE_MEASURE_CONFIG,
   CLEAR_MAP_OVERLAY_HIERARCHY,
   SET_ORG_UNIT,
@@ -592,7 +592,7 @@ function mapOverlayBar(
   switch (action.type) {
     case CLEAR_MAP_OVERLAY_HIERARCHY:
       return { ...state, mapOverlayHierarchy: [] };
-    case SET_MAP_OVERLAY:
+    case SET_MAP_OVERLAYS:
       return {
         ...state,
         hiddenMeasures: {},

@@ -34,7 +34,8 @@ export const ATTEMPT_RESET_TOKEN_LOGIN = 'ATTEMPT_RESET_TOKEN_LOGIN';
 export const CHANGE_SIDE_BAR_CONTRACTED_WIDTH = 'CHANGE_SIDE_BAR_CONTRACTED_WIDTH';
 export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
 export const CLEAR_MAP_OVERLAY_HIERARCHY = 'CLEAR_MAP_OVERLAY_HIERARCHY';
-export const SET_MAP_OVERLAY = 'SET_MAP_OVERLAY';
+export const SET_MAP_OVERLAYS = 'SET_MAP_OVERLAYS';
+export const SET_DISPLAYED_MAP_OVERLAY = 'SET_DISPLAYED_MAP_OVERLAY';
 export const UPDATE_MEASURE_CONFIG = 'UPDATE_MEASURE_CONFIG';
 export const REQUEST_ORG_UNIT = 'REQUEST_ORG_UNIT';
 export const FETCH_ORG_UNIT = 'FETCH_ORG_UNIT';
@@ -523,13 +524,24 @@ export function changeBounds(bounds) {
 }
 
 /**
- * Changes current map overlay, should change features rendered on map after saga data fetch.
+ * Changes current map overlays, should change features rendered on map after saga data fetch.
  * Updates the current mayOverlayId in the url.
  * @param {string} mayOverlayIds
  */
-export function setMapOverlay(mapOverlayIds) {
+export function setMapOverlays(mapOverlayIds) {
   return {
-    type: SET_MAP_OVERLAY,
+    type: SET_MAP_OVERLAYS,
+    mapOverlayIds,
+  };
+}
+
+/**
+ * Works with switching on map overlay button.
+ * @param {string[]} mapOverlayIds
+ */
+export function setDisplayedMapOverlays(mapOverlayIds) {
+  return {
+    type: SET_DISPLAYED_MAP_OVERLAY,
     mapOverlayIds,
   };
 }

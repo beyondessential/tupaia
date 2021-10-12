@@ -16,7 +16,7 @@ import { Dashboard } from '../../../components/mobile/Dashboard';
 import { filterShape } from '../../../components/mobile/FilterSelect';
 import {
   setOrgUnit,
-  setMapOverlay,
+  setMapOverlays,
   toggleMeasureExpand,
   toggleDashboardSelectExpand,
   setDashboardGroup,
@@ -292,7 +292,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onChangeMapOverlay: mapOverlayId => dispatch(setMapOverlay(mapOverlayId)),
+  onChangeMapOverlay: mapOverlayId => dispatch(setMapOverlays(mapOverlayId)),
   onClearMeasure: () => dispatch(clearMeasure()),
   onToggleMeasureExpand: () => dispatch(toggleMeasureExpand()),
   onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),

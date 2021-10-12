@@ -25,7 +25,6 @@ export {
   checkHierarchyIncludesMapOverlayIds,
   flattenMapOverlayHierarchy,
   isMapOverlayHierarchyEmpty,
-  sortMapOverlayIdsByHierarchyOrder,
 } from './mapOverlays';
 export { default as ga, gaEvent, gaPageView, gaMiddleware } from './ga';
 export { formatDateForApi } from './formatDateForApi';

@@ -17,7 +17,7 @@ import {
   OPEN_ENLARGED_DIALOG,
   SET_DASHBOARD_GROUP,
   SET_ENLARGED_DIALOG_DATE_RANGE,
-  SET_MAP_OVERLAY,
+  SET_MAP_OVERLAYS,
   SET_ORG_UNIT,
   SET_PROJECT,
   updateHistoryLocation,
@@ -76,7 +76,7 @@ export const historyMiddleware = store => next => action => {
       dispatchLocationUpdate(store, { [URL_COMPONENTS.REPORT]: null });
       dispatchLocationUpdate(store, { [URL_COMPONENTS.REPORT_PERIOD]: null });
       break;
-    case SET_MAP_OVERLAY: {
+    case SET_MAP_OVERLAYS: {
       const mapOverlays = selectMapOverlayByIds(state, action.mapOverlayIds.split(','));
       if (mapOverlays.length === 0) {
         break;
