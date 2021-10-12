@@ -12,7 +12,10 @@ npm install --global yarn
 # install nginx and add h5bp config
 apt-get install nginx <<< "Y"
 git clone https://github.com/h5bp/server-configs-nginx.git
-cp -R ./server-configs-nginx/h5bp/ /etc/nginx/
+cd ./server-configs-nginx
+git checkout tags/2.0.0
+cd ..
+sudo cp -R ./server-configs-nginx/h5bp/ /etc/nginx/
 rm -rf server-configs-nginx
 
 # install pm2
