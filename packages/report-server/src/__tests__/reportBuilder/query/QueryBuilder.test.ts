@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+/* eslint-disable jest/no-conditional-expect */
+
 import MockDate from 'mockdate';
 
 import { AccessPolicy } from '@tupaia/access-policy';
@@ -19,16 +21,34 @@ describe('QueryBuilder', () => {
   const HIERARCHY = 'explore';
   const ENTITIES = {
     explore: [
-      { code: 'PG', country_code: 'PG', type: 'country' },
+      { code: 'explore', country_code: null, type: 'project' },
       { code: 'TO', country_code: 'TO', type: 'country' },
+      { code: 'WS', country_code: 'WS', type: 'country' },
       { code: 'KI', country_code: 'KI', type: 'country' },
-      { code: 'PROJ', country_code: 'PROJ', type: 'project' },
       { code: 'MY', country_code: 'MY', type: 'country' },
+      { code: 'PG', country_code: 'PG', type: 'country' },
+      { code: 'PG_District', country_code: 'PG', type: 'district' },
       { code: 'PG_Facility', country_code: 'PG', type: 'facility' },
     ],
+    underwater_world: [
+      { code: 'underwater_world', country_code: null, type: 'project' },
+      { code: 'AQUA_LAND', country_code: 'AQUA_LAND', type: 'country' },
+    ],
+  };
+  const RELATIONS = {
+    explore: [
+      { parent: 'explore', child: 'TO' },
+      { parent: 'explore', child: 'WS' },
+      { parent: 'explore', child: 'KI' },
+      { parent: 'explore', child: 'MY' },
+      { parent: 'explore', child: 'PG' },
+      { parent: 'PG', child: 'PG_District' },
+      { parent: 'PG_District', child: 'PG_Facility' },
+    ],
+    underwater_world: [{ parent: 'underwater_world', child: 'AQUA_LAND' }],
   };
 
-  const apiMock = entityApiMock(ENTITIES);
+  const apiMock = entityApiMock(ENTITIES, RELATIONS);
 
   const reqContext: ReqContext = {
     hierarchy: HIERARCHY,
@@ -39,7 +59,8 @@ describe('QueryBuilder', () => {
     accessPolicy: new AccessPolicy({
       PG: ['Admin'],
       TO: ['Admin'],
-      PROJ: ['Admin'],
+      WS: ['Admin'],
+      explore: ['Admin'],
       MY: ['Public'],
     }),
   };
@@ -289,6 +310,77 @@ describe('QueryBuilder', () => {
       MockDate.reset();
     });
 
+    describe('error cases', () => {
+      type TestParams = [
+        string,
+        { config: { fetch: Record<string, unknown> }; query: FetchReportQuery },
+        string | null,
+      ];
+
+      const testData: TestParams[] = [
+        [
+          'throws error if no organisation units requested',
+          {
+            config: { fetch: {} },
+            query: inputQuery({ organisationUnitCodes: [] }),
+          },
+          "Must provide 'organisationUnitCodes' URL parameter, or 'organisationUnits' in fetch config",
+        ],
+        [
+          'throws error if no organisation units found with requested codes',
+          {
+            config: { fetch: {} },
+            query: inputQuery({ organisationUnitCodes: ['fake_code'] }),
+          },
+          "No 'Admin' access to any one of entities: fake_code",
+        ],
+        [
+          'throws error if no organisation units found with config codes',
+          {
+            config: { fetch: { organisationUnits: ['fake_code', 'faker_code'] } },
+            query: inputQuery(),
+          },
+          "No 'Admin' access to any one of entities: fake_code,faker_code",
+        ],
+        [
+          'throws error if no organisation units with permission for requested codes',
+          {
+            config: { fetch: {} },
+            query: inputQuery({ organisationUnitCodes: ['KI'] }),
+          },
+          "No 'Admin' access to any one of entities: KI",
+        ],
+        [
+          'throws error if no organisation units found with config codes',
+          {
+            config: { fetch: { organisationUnits: ['MY'] } },
+            query: inputQuery(),
+          },
+          "No 'Admin' access to any one of entities: MY",
+        ],
+        [
+          'throws error if no country organisation units found with project config codes',
+          {
+            config: { fetch: { organisationUnits: ['underwater_world'] } },
+            query: inputQuery({ hierarchy: 'underwater_world' }),
+          },
+          "No 'Admin' access to any one of entities: underwater_world",
+        ],
+      ];
+
+      it.each(testData)('%s', async (_, { config, query }, expectedError) => {
+        const fullConfig = { transform: [], ...config };
+        const build = async () => {
+          await new QueryBuilder(reqContext, fullConfig, query).build();
+        };
+        if (expectedError) {
+          await expect(build()).rejects.toThrow(expectedError);
+        } else {
+          await expect(build()).rejects.not.toThrow();
+        }
+      });
+    });
+
     describe('organisation unit specs in config', () => {
       type TestParams = [
         string,
@@ -305,6 +397,16 @@ describe('QueryBuilder', () => {
           },
           outputQuery({
             organisationUnitCodes: ['PG', 'PG_Facility'],
+          }),
+        ],
+        [
+          'uses provided non-country organisation unit codes if have access',
+          {
+            config: { fetch: { organisationUnits: ['PG_District', 'PG_Facility'] } },
+            query: inputQuery(),
+          },
+          outputQuery({
+            organisationUnitCodes: ['PG_District', 'PG_Facility'],
           }),
         ],
         [
@@ -328,13 +430,13 @@ describe('QueryBuilder', () => {
           }),
         ],
         [
-          'organisation unit not included if project',
+          'all countries with access included if organisationUnit is project',
           {
-            config: { fetch: { organisationUnits: ['PG', 'PROJ'] } },
-            query: inputQuery(),
+            config: { fetch: { organisationUnits: ['explore'] } },
+            query: inputQuery({ organisationUnitCodes: ['PG_Facility'] }),
           },
           outputQuery({
-            organisationUnitCodes: ['PG'],
+            organisationUnitCodes: ['TO', 'WS', 'PG'],
           }),
         ],
         [
@@ -355,6 +457,16 @@ describe('QueryBuilder', () => {
           },
           outputQuery({
             organisationUnitCodes: ['TO', 'WS', 'PG'],
+          }),
+        ],
+        [
+          'all countries with access included if requested organisation unit is project',
+          {
+            config: { fetch: { organisationUnits: ['$requested', 'PG_Facility'] } },
+            query: inputQuery({ organisationUnitCodes: ['explore'] }),
+          },
+          outputQuery({
+            organisationUnitCodes: ['TO', 'WS', 'PG', 'PG_Facility'],
           }),
         ],
       ];
