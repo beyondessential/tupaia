@@ -23,9 +23,6 @@ if [[ $BRANCH == "master" || $BRANCH == "dev" ]]; then
     $DEPLOYMENT_SCRIPTS/startCloudwatchAgent.sh | while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
 fi
 
-# Use ubuntu user for checking out and deploying latest code
-su - ubuntu
-
 # Fetch the latest code
 cd $TUPAIA_DIR
 BRANCH_ON_REMOTE=$(git ls-remote --heads origin ${BRANCH})
@@ -43,7 +40,7 @@ git checkout ${BRANCH_TO_USE}
 git reset --hard origin/${BRANCH_TO_USE}
 
 # Deploy each package based on the branch, including injecting environment variables from LastPass
-HOME=$HOME $DEPLOYMENT_SCRIPTS/deployPackages.sh $BRANCH | while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
+sudo -u ubuntu HOME=$HOME $DEPLOYMENT_SCRIPTS/deployPackages.sh $BRANCH | while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
 
 # Set nginx config and start the service running
 sudo $DEPLOYMENT_SCRIPTS/configureNginx.sh | while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt

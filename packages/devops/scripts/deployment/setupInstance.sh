@@ -23,7 +23,11 @@ npm i --global pm2
 pm2 install pm2-logrotate
 
 # do the rest of the operations as the ubuntu user, so everything is available correctly
+echo "Changing user"
+whoami
 su - ubuntu
+echo "Changed user"
+whoami
 
 # install lastpass
 sudo apt-get --no-install-recommends -yqq install \
