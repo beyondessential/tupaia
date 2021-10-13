@@ -24,6 +24,7 @@ Cypress.Commands.add('selectIntoTextBox', (labelText, input) => {
 Cypress.Commands.add('selectIntoDropDownTextBox', (labelText, input) => {
   const inputItems = toArray(input);
   inputItems.forEach(inputText => {
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.findByLabelText(labelText).type(inputText).wait(20).type('{downarrow}');
     cy.get('[aria-activedescendant*="-option-0"]').type('{enter}');
   });

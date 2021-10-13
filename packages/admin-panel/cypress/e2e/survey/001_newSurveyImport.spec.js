@@ -6,12 +6,6 @@
 import {
   loginAsSuperUser,
   openImportSurveyForm,
-  enterSurveyName,
-  enterCountryName,
-  enterPermissionGroup,
-  enterSurveyGroup,
-  selectReportingPeriod,
-  selectDataService,
   importSurvey,
   searchBySurveyName,
   checkImportSuccess,
@@ -27,14 +21,21 @@ describe('import new survey file', () => {
   });
   // Check error message.
   it('Name does not match the sheet Name', () => {
-    enterSurveyName('Test Wrong Survey Name');
+    it('import a new survey by filling all the fields', () => {
+      fillSurveyImportForm({
+        surveyNames: ['Test Wrong Survey Name'],
+      });   
     cy.uploadFile('surveys/Test Survey_1.xlsx');
     importSurvey();
     checkImportFail();
   });
 
   it('import a new survey by filling the mandatory fields', () => {
-    enterSurveyName('Test Survey_1');
+
+    it('import a new survey by filling all the fields', () => {
+      fillSurveyImportForm({
+        surveyNames: ['Test Survey_1'],
+      });
     cy.uploadFile('surveys/Test Survey_1.xlsx');
     importSurvey();
     checkImportSuccess();
@@ -51,12 +52,10 @@ describe('import new survey file', () => {
       reportingPeriod: 'Weekly',
       dataService: 'Tupaia',
     });
-    /*
     cy.uploadFile('surveys/Test Survey_1.xlsx');
     importSurvey();
     checkImportSuccess();
     searchBySurveyName('Test Survey_1');
     checkSurveyByName('Test Survey_1');
-    */
   });
 });
