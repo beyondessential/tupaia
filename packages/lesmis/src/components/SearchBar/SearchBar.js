@@ -139,7 +139,7 @@ const EXPANDED_LIMIT = 200;
 
 export const SearchBar = ({ linkType, className }) => {
   const history = useHistory();
-  const { lang } = useUrlParams();
+  const { locale } = useUrlParams();
   const [inputValue, setInputValue] = useState('');
   const [expanded, setExpanded] = useState(false);
   const { data: options = [], isLoading } = useProjectEntitiesData();
@@ -161,7 +161,7 @@ export const SearchBar = ({ linkType, className }) => {
     limit: inputValue && expanded ? EXPANDED_LIMIT : DEFAULT_LIMIT,
     onChange: (event, option) => {
       if (option && option.code) {
-        history.push(makeEntityLink(lang, option.code, linkType));
+        history.push(makeEntityLink(locale, option.code, linkType));
       }
     },
   });
@@ -195,7 +195,7 @@ export const SearchBar = ({ linkType, className }) => {
             {groupedOptions.map((option, index) => (
               <ResultsItem
                 key={option.name}
-                to={makeEntityLink(lang, option.code, linkType)}
+                to={makeEntityLink(locale, option.code, linkType)}
                 {...getOptionProps({ option, index })}
               >
                 {getPlaceIcon(option.type)}

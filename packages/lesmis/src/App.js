@@ -9,7 +9,7 @@ import { PageRoutes } from './routes/PageRoutes';
 export const App = () => (
   <Router>
     <Switch>
-      <Route path="/:lang(en|la)">
+      <Route path="/:locale(en|lo)">
         <PageRoutes />
       </Route>
       <Redirect to="/en" />

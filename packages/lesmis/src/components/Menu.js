@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  *
  */
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
 import MuiMenu from '@material-ui/core/Menu';
@@ -12,6 +12,7 @@ import LanguageIcon from '@material-ui/icons/Language';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { LaosFlagSmall } from './Icons/LaosFlagSmall';
 import { EnglishFlagSmall } from './Icons/EnglishFlagSmall';
+import { useUrlSearchParam } from '../utils';
 
 const StyledButton = styled(MuiButton)`
   font-size: 12px;
@@ -78,16 +79,16 @@ const MenuItem = styled(MuiMenuItem)`
 `;
 
 const options = [
-  { key: 'en', label: 'English', Icon: EnglishFlagSmall },
-  { key: 'la', label: 'Laotian', Icon: LaosFlagSmall },
+  { code: 'en', label: 'English', Icon: EnglishFlagSmall },
+  { code: 'lo', label: 'Laotian', Icon: LaosFlagSmall },
 ];
 
 export const Menu = () => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [selectedKey, setSelectedKey] = React.useState(options[0].key);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [locale, setLocale] = useUrlSearchParam('locale', options[0].code);
 
-  const handleMenuItemClick = (event, key) => {
-    setSelectedKey(key);
+  const handleChange = (event, code) => {
+    setLocale(code);
     setAnchorEl(null);
   };
 
@@ -99,7 +100,7 @@ export const Menu = () => {
     setAnchorEl(null);
   };
 
-  const selectedOption = options.find(o => o.key === selectedKey);
+  const selectedLocale = options.find(o => o.code === locale);
 
   return (
     <>
@@ -108,7 +109,7 @@ export const Menu = () => {
         startIcon={<LanguageIcon />}
         endIcon={<ArrowDropDownIcon />}
       >
-        <span>{selectedOption.label}</span>
+        <span>{selectedLocale.label}</span>
       </StyledButton>
       <StyledMenu
         id="simple-menu"
@@ -129,11 +130,11 @@ export const Menu = () => {
           horizontal: 'right',
         }}
       >
-        {options.map(({ key, label, Icon }) => (
+        {options.map(({ code, label, Icon }) => (
           <MenuItem
-            key={key}
-            selected={key === selectedKey}
-            onClick={event => handleMenuItemClick(event, key)}
+            key={code}
+            selected={code === locale}
+            onClick={event => handleChange(event, code)}
           >
             <Icon />
             {label}

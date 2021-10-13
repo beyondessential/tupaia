@@ -5,9 +5,9 @@
  */
 import { generatePath } from 'react-router-dom';
 
-export const makeEntityLink = (lang, entityCode, view = 'dashboard') =>
-  generatePath(`/:lang/:entityCode/:view`, {
-    lang,
+export const makeEntityLink = (locale, entityCode, view = 'dashboard') =>
+  generatePath(`/:locale/:entityCode/:view`, {
+    locale,
     entityCode,
     view,
   });
