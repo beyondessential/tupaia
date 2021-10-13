@@ -19,10 +19,11 @@ const Button = styled(MuiButton)`
   margin-bottom: 0.1rem;
   cursor: pointer;
   opacity: ${props => (props.hidden ? '0.5' : '1')};
+  text-transform: none;
 `;
 
 const Label = styled.div`
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
 `;
 
 export const LegendEntry = React.memo(

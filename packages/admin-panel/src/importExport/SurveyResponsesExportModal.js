@@ -31,7 +31,7 @@ export const SurveyResponsesExportModal = () => {
       title="Export Survey Responses"
       values={values}
       exportEndpoint="surveyResponses"
-      fileName={'Survey Responses'}
+      fileName="Survey Responses"
     >
       <Autocomplete
         label="Surveys to Include"

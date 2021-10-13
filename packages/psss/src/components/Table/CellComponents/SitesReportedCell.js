@@ -4,7 +4,6 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { distanceInWordsToNow } from 'date-fns';
 import styled from 'styled-components';
 import { Tooltip } from '@tupaia/ui-components';
 
@@ -27,7 +26,7 @@ export const SitesReportedCell = ({ Sites, ...data }) => {
   );
 };
 
-SitesReportedCell.defaultProps = {
+SitesReportedCell.propTypes = {
   Sites: PropTypes.string,
 };
 

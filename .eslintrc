@@ -13,6 +13,7 @@
           "**/tests/**",
           "**/__tests__/**",
           "jest.setup.js",
+          "**/packages/database/src/testUtilities/**",
           "**/packages/psss/src/api/FakeApi.js",
           "**/packages/psss/src/utils/test-utils.js",
           "**/packages/ui-components/helpers/testingRenderer.js",
@@ -24,7 +25,9 @@
         "packageDir": ["../../", "."]
       }
     ],
-    "jsx-a11y/href-no-hash": "off"
+    "jsx-a11y/href-no-hash": "off",
+    "react/destructuring-assignment": "off",
+    "react/no-unescaped-entities": "off"
   },
   "overrides": [
     // TypeScript packages
@@ -130,12 +133,18 @@
     {
       "files": ["packages/meditrak-app/**"],
       "plugins": ["react-native"],
-      "env": {
-        "react-native/react-native": true
-      },
+      // "env": {
+      //   "react-native/react-native": true
+      // },
       "rules": {
         "react/destructuring-assignment": "off",
         "react/prop-types": ["error", { "ignore": ["navigation"] }]
+      }
+    },
+    {
+      "files": ["packages/ui-components/**"],
+      "rules": {
+        "import/no-extraneous-dependencies": "off"
       }
     },
     {
@@ -170,7 +179,6 @@
         "no-unused-vars": "warn",
         "react/button-has-type": "warn",
         "react/default-props-match-prop-types": "warn",
-        "react/destructuring-assignment": "off",
         "react/no-unused-prop-types": "warn",
         "react/no-array-index-key": "warn",
         "react/forbid-prop-types": "warn",

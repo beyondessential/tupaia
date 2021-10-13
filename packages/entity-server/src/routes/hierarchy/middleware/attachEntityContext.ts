@@ -13,29 +13,46 @@ const throwNoAccessError = (entityCodes: string[]) => {
   throw new PermissionsError(`No access to requested entities: ${entityCodes}`);
 };
 
-const userCanAccessEntity = (entity: EntityType, allowedCountries: string[]) =>
-  entity.isProject() ||
+const userCanAccessEntity = (
+  entity: EntityType,
+  allowedCountries: string[],
+  rootEntity: EntityType,
+) =>
+  (entity.isProject() && entity.code === rootEntity.code) ||
   (notNull(entity.country_code) && allowedCountries.includes(entity.country_code));
 
 const validateEntitiesAndBuildContext = async (
   req: Request<{ hierarchyName: string }, any, any, { filter?: string }>,
   entityCodes: string[],
 ) => {
-  const entities = await req.models.entity.find({ code: entityCodes });
+  const { hierarchyId } = req.ctx;
+  const { hierarchyName } = req.params;
+  // Root type shouldn't be locked into being a project entity, see: https://github.com/beyondessential/tupaia-backlog/issues/2570
+  const rootEntity = await req.models.entity.findOne({
+    type: 'project',
+    code: hierarchyName,
+  });
+  if (!rootEntity) {
+    throw new Error(`Cannot find root entity for hierarchy: ${req.params.hierarchyName}`);
+  }
+
+  if (entityCodes.length === 0) {
+    // No entities requested
+    return { entities: [], allowedCountries: [] };
+  }
+
+  const entities = await rootEntity.getDescendants(hierarchyId, {
+    code: entityCodes,
+  });
+
+  // 'getDescendants' won't return root entity, so add here if requested
+  if (entityCodes.includes(rootEntity.code)) {
+    entities.push(rootEntity);
+  }
+
   if (!entities || entities.length === 0) {
     throwNoAccessError(entityCodes);
   }
-
-  const { hierarchyId } = req.ctx;
-  // Root type shouldn't be locked into being a project entity, see: https://github.com/beyondessential/tupaia-backlog/issues/2570
-  const rootEntity = await entities[0].getAncestorOfType(hierarchyId, 'project'); // Assuming all requested entities are in same hierarchy
-  if (!rootEntity) {
-    const { hierarchyName } = req.params;
-    throw new Error(
-      `Cannot find root entity for requested entities: [${entityCodes}] in hierarchy: ${hierarchyName}`,
-    );
-  }
-
   const allowedCountries = (await rootEntity.getChildren(req.ctx.hierarchyId))
     .map(child => child.country_code)
     .filter(notNull)
@@ -46,13 +63,16 @@ const validateEntitiesAndBuildContext = async (
     throwNoAccessError(entityCodes);
   }
 
-  if (!entities.every(entity => userCanAccessEntity(entity, allowedCountries))) {
+  const allowedEntities = entities.filter(entity =>
+    userCanAccessEntity(entity, allowedCountries, rootEntity),
+  );
+  if (allowedEntities.length < 1) {
     throwNoAccessError(entityCodes);
   }
 
   const { filter: queryFilter } = req.query;
   const filter = extractFilterFromQuery(allowedCountries, queryFilter);
-  return { entities, allowedCountries, filter };
+  return { entities: allowedEntities, allowedCountries, filter };
 };
 
 export const attachSingleEntityContext = async (

@@ -6,7 +6,6 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import debounce from 'lodash.debounce';
-import blue from '@material-ui/core/colors/blue';
 import MuiPaper from '@material-ui/core/Paper';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 

@@ -4,3 +4,4 @@
  */
 
 export { buildTransform } from './transform';
+export { contextFunctionConfigs, TransformParser } from './parser';

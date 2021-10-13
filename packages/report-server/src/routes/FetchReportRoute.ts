@@ -11,7 +11,7 @@ import { Route } from '@tupaia/server-boilerplate';
 import { Aggregator } from '../aggregator';
 import { ReportBuilder, BuiltReport } from '../reportBuilder';
 import { ReportRouteQuery, ReportRouteBody } from './types';
-import { getRequestedOrgUnitObjects, getAccessibleOrgUnitCodes } from './helpers';
+import { parseOrgUnitCodes } from './parseOrgUnitCodes';
 
 export type FetchReportRequest = Request<
   { reportCode: string },
@@ -35,29 +35,25 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
   async buildResponse() {
     const { query, body } = this.req;
     const { organisationUnitCodes, hierarchy = 'explore', ...restOfParams } = { ...query, ...body };
-    if (!organisationUnitCodes) {
-      throw new Error('Must provide organisationUnitCodes URL parameter');
-    }
+
     const report = await this.findReport();
     const permissionGroupName = await report.permissionGroupName();
 
-    const foundOrgUnits = await getRequestedOrgUnitObjects(
+    const reqContext = {
       hierarchy,
-      organisationUnitCodes,
-      this.req.ctx.services.entity,
-    );
+      permissionGroup: permissionGroupName,
+      services: this.req.ctx.services,
+      accessPolicy: this.req.accessPolicy,
+    };
 
-    const accessibleOrgUnitCodes = await getAccessibleOrgUnitCodes(
-      permissionGroupName,
-      foundOrgUnits,
-      this.req.accessPolicy,
-    );
-
-    const aggregator = createAggregator(Aggregator, this.req.ctx);
-    return new ReportBuilder().setConfig(report.config).build(aggregator, {
-      organisationUnitCodes: accessibleOrgUnitCodes,
+    const reportBuilder = new ReportBuilder(reqContext).setConfig(report.config);
+    const reportQuery = {
+      organisationUnitCodes: parseOrgUnitCodes(organisationUnitCodes),
       hierarchy,
       ...restOfParams,
-    });
+    };
+
+    const aggregator = createAggregator(Aggregator, this.req.ctx);
+    return reportBuilder.build(aggregator, reportQuery);
   }
 }

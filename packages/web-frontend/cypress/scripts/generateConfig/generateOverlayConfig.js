@@ -13,7 +13,7 @@ import { MapOverlayFilter } from './VisualisationFilter';
 const { oneOrArrayOf } = yupUtils;
 
 const urlSchema = buildUrlSchema({
-  regex: new RegExp('^/[^/]+/[^/]+/[^/]+?.*overlay=.+'),
+  regex: new RegExp('^/[^/]+/[^/]+?.*overlay=.+'),
   regexDescription: '/:projectCode/:orgUnit?overlay=:overlayId',
   shape: {
     id: oneOrArrayOf(yup.string().required()),

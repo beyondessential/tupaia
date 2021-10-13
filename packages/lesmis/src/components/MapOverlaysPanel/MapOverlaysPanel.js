@@ -35,7 +35,7 @@ const Box = styled(MuiBox)`
 
 const searchOverlays = (result, child, path, selectedOverlay) => {
   if (!child.children) {
-    if (child.code === selectedOverlay) {
+    if (child.mapOverlayId === selectedOverlay) {
       return path;
     }
 

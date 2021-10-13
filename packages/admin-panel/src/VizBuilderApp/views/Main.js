@@ -41,6 +41,7 @@ export const Main = () => {
   // do not fetch existing viz if no visualisationId is provided in the params
   const fetchExistingVizEnabled = visualisationId !== undefined;
 
+  // eslint-disable-next-line no-unused-vars
   const [_, { setVisualisation }] = useVizBuilderConfig();
   const [visualisationLoaded, setVisualisationLoaded] = useState(false);
   const { data = {}, error } = useDashboardVisualisation(visualisationId, fetchExistingVizEnabled);

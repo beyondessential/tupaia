@@ -22,9 +22,9 @@
     "start": "node dist",
     "start-dev": "../../scripts/bash/backendStartDev.sh 9996 -ts",
     "start-verbose": "LOG_LEVEL=debug npm run start-dev",
-    "test": "jest",
-    "test:coverage": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test": "jest --runInBand",
+    "test:coverage": "yarn test --coverage",
+    "test:watch": "yarn test --watch"
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
@@ -35,6 +35,7 @@
     "@tupaia/utils": "1.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.16.2",
+    "lodash.keyby": "^4.6.0",
     "winston": "^3.2.1"
   }
 }

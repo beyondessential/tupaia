@@ -11,12 +11,9 @@ import { logout } from '../authentication';
 
 const FETCH_TIMEOUT = 45 * 1000; // 45 seconds in milliseconds
 
-const extractHeadersAndBody = async response => {
-  const body = await response.json();
-  return {
-    headers: response.headers,
-    body,
-  };
+const isJsonResponse = response => {
+  const contentType = response.headers.get('content-type');
+  return contentType.startsWith('application/json');
 };
 
 export class TupaiaApi {
@@ -68,10 +65,12 @@ export class TupaiaApi {
   async download(endpoint, queryParameters, fileName) {
     const response = await this.request(endpoint, queryParameters, this.buildFetchConfig('GET'));
 
-    // first check for JSON response, in case this is an early response indicating it will be emailed
-    const contentType = response.headers.get('content-type');
-    if (contentType.startsWith('application/json')) {
-      return extractHeadersAndBody(response);
+    // Check if this is an early response indicating it will be emailed
+    if (isJsonResponse(response)) {
+      const body = await response.clone().json();
+      if (body.emailTimeoutHit) {
+        return { headers: response.headers, body };
+      }
     }
 
     const responseBlob = await response.blob();
@@ -88,7 +87,8 @@ export class TupaiaApi {
 
   async requestJson(...params) {
     const response = await this.request(...params);
-    return extractHeadersAndBody(response);
+    const body = await response.json();
+    return { headers: response.headers, body };
   }
 
   async checkIfAuthorized(response) {
@@ -134,6 +134,6 @@ const createTimeoutPromise = () =>
   new Promise((resolve, reject) => {
     const id = setTimeout(() => {
       clearTimeout(id);
-      reject({ message: 'Network request timed out' });
+      reject(new Error('Network request timed out'));
     }, FETCH_TIMEOUT);
   });

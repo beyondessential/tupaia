@@ -8,13 +8,12 @@ import {
   hasContent,
   constructIsEmptyOr,
   constructIsOneOf,
-  constructThisOrThatHasContent,
   isPlainObject,
 } from '@tupaia/utils';
 
 const constructEntityFieldValidators = models => ({
-  parent_code: [constructThisOrThatHasContent('district')],
-  district: [constructThisOrThatHasContent('parent_code')],
+  parent_code: [],
+  district: [],
   sub_district: [],
   code: [hasContent],
   name: [hasContent],

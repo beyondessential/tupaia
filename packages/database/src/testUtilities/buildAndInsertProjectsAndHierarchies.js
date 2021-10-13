@@ -5,26 +5,18 @@
 
 import { findOrCreateDummyRecord } from './upsertDummyRecord';
 
-const buildAndInsertEntityAndHierarchy = async (
-  models,
-  hierarchyId,
-  projectEntityId,
-  { code, ...entityProperties },
-) => {
-  const entity = await findOrCreateDummyRecord(models.entity, { code }, entityProperties);
-  const entityRelation = await findOrCreateDummyRecord(models.entityRelation, {
-    parent_id: projectEntityId,
-    child_id: entity.id,
-    entity_hierarchy_id: hierarchyId,
-  });
-  return { entity, entityRelation };
-};
-
 const buildAndInsertProjectAndHierarchy = async (
   models,
-  { entities: entityProps = [], code, ...projectProps },
+  { entities: entitiesProps = [], relations: relationProps, code, ...projectProps },
 ) => {
-  const projectEntity = await findOrCreateDummyRecord(models.entity, { code, type: 'project' });
+  const entityCodeToId = {};
+  const projectEntity = await findOrCreateDummyRecord(
+    models.entity,
+    { code },
+    { type: 'project', name: projectProps.projectEntityName },
+  );
+  entityCodeToId[projectEntity.code] = projectEntity.id;
+
   const entityHierarchy = await findOrCreateDummyRecord(models.entityHierarchy, { name: code });
   const project = await findOrCreateDummyRecord(
     models.project,
@@ -34,18 +26,30 @@ const buildAndInsertProjectAndHierarchy = async (
 
   const entities = [];
   const entityRelations = [];
-  const processEntity = async e => {
-    const { entity, entityRelation } = await buildAndInsertEntityAndHierarchy(
-      models,
-      entityHierarchy.id,
-      projectEntity.id,
-      e,
-    );
+  const processEntity = async entityProps => {
+    const { code: entityCode, ...restOfEntity } = entityProps;
+    const entity = await findOrCreateDummyRecord(models.entity, { code: entityCode }, restOfEntity);
 
     entities.push(entity);
-    entityRelations.push(entityRelation);
+    entityCodeToId[entity.code] = entity.id;
   };
-  await Promise.all(entityProps.map(processEntity));
+
+  const processEntityRelation = async entityRelationProps => {
+    const { parent, child } = entityRelationProps;
+    const relation = await findOrCreateDummyRecord(models.entityRelation, {
+      parent_id: entityCodeToId[parent],
+      child_id: entityCodeToId[child],
+      entity_hierarchy_id: entityHierarchy.id,
+    });
+
+    entityRelations.push(relation);
+  };
+
+  await Promise.all(entitiesProps.map(processEntity));
+
+  const relations =
+    relationProps || entities.map(entity => ({ parent: projectEntity.code, child: entity.code }));
+  await Promise.all(relations.map(processEntityRelation));
 
   return { project, projectEntity, entityHierarchy, entityRelations, entities };
 };
@@ -62,20 +66,26 @@ const buildAndInsertProjectAndHierarchy = async (
  *     entities: [
  *      { code: 'KI', type: 'country', country_code: 'Kiribati' },
  *      { code: 'VU', type: 'country', country_code: 'Vanuatu' },
+ *      { code: 'VU_Malampa', type: 'district', country_code: 'Vanuatu' },
  *     ],
+ *     relations: [
+ *      {parent: 'code', child: 'KI' }
+ *      {parent: 'code', child: 'VU' }
+ *      {parent: 'VU', child: 'VU_Malampa' }
+ *     ] (optional, if omitted all entities will be child of the project)
  *   },
  *   ..., // can handle more than one project
  * ]);
  * ```
  */
 export const buildAndInsertProjectsAndHierarchies = async (models, projects) => {
-  const createdModels = [];
-  await Promise.all(
-    projects.map(async survey => {
-      const newCreatedModels = await buildAndInsertProjectAndHierarchy(models, survey);
-      createdModels.push(newCreatedModels);
-    }),
-  );
+  const createdProjects = [];
 
-  return createdModels;
+  for (let i = 0; i < projects.length; i++) {
+    const project = projects[i];
+    const newCreatedProjects = await buildAndInsertProjectAndHierarchy(models, project);
+    createdProjects.push(newCreatedProjects);
+  }
+
+  return createdProjects;
 };

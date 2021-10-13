@@ -22,6 +22,7 @@ export const MEASURE_TYPE_RADIUS = 'radius';
 export const MEASURE_TYPE_SPECTRUM = 'spectrum';
 export const MEASURE_TYPE_SHADING = 'shading';
 export const MEASURE_TYPE_SHADED_SPECTRUM = 'shaded-spectrum';
+export const MEASURE_TYPE_POPUP_ONLY = 'popup-only';
 
 export const MEASURE_VALUE_OTHER = 'other';
 export const MEASURE_VALUE_NULL = 'null';
@@ -168,7 +169,7 @@ const clampValue = (value, config) => {
   return clampedValue;
 };
 
-export function flattenMeasureHierarchy(measureHierarchy) {
+export function flattenMeasureHierarchy(mapOverlayHierarchy) {
   const results = [];
   const flattenGroupedMeasure = ({ children }) => {
     children.forEach(childObject => {
@@ -179,7 +180,7 @@ export function flattenMeasureHierarchy(measureHierarchy) {
       }
     });
   };
-  measureHierarchy.forEach(measure => {
+  mapOverlayHierarchy.forEach(measure => {
     if (measure.children) {
       flattenGroupedMeasure(measure);
     } else {
@@ -327,6 +328,8 @@ export function getMeasureDisplayInfo(
             noDataColour,
           );
           displayInfo.icon = valueInfo.icon || displayInfo.icon || SPECTRUM_ICON;
+          break;
+        case MEASURE_TYPE_POPUP_ONLY:
           break;
         case MEASURE_TYPE_SHADING:
           displayInfo.color = MAP_COLORS[valueInfo.color] || valueInfo.color || MAP_COLORS.NO_DATA;

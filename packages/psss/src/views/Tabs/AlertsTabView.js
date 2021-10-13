@@ -21,7 +21,7 @@ export const AlertsTabView = React.memo(() => {
   const period = getCurrentPeriod();
 
   return (
-    <Container>
+    <Container maxWidth="xl">
       <Main>
         <AlertsPanelProvider>
           <AlertsTable period={period} />

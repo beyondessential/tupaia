@@ -12,11 +12,10 @@ import { Dialog, DialogHeader, DialogContent } from '@tupaia/ui-components';
 import { Table, useMapDataExport } from '@tupaia/ui-components/lib/map';
 import MuiIconButton from '@material-ui/core/IconButton';
 import {
-  selectCurrentMeasure,
+  selectCurrentMapOverlay,
   selectOrgUnitCountry,
   selectRenderedMeasuresWithDisplayInfo,
 } from '../../selectors';
-import { MeasureOptionsGroupPropType } from '../../components/Marker/propTypes';
 import { Tooltip } from '../../components/Tooltip';
 
 const IconButton = styled(MuiIconButton)`
@@ -26,15 +25,15 @@ const IconButton = styled(MuiIconButton)`
 
 export const MapTableModalComponent = ({
   currentCountry,
-  currentMeasure,
+  currentMapOverlay,
   measureOptions,
   measureData,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const title = `${currentMeasure?.name}, ${currentCountry?.name}`;
+  const title = `${currentMapOverlay?.name}, ${currentCountry?.name}`;
   const { doExport } = useMapDataExport(measureOptions, measureData, title);
 
-  if (!currentMeasure || !measureData || !measureOptions || measureData.length === 0) {
+  if (!currentMapOverlay || !measureData || !measureOptions || measureData.length === 0) {
     return null;
   }
 
@@ -60,31 +59,32 @@ export const MapTableModalComponent = ({
 };
 
 MapTableModalComponent.propTypes = {
-  measureOptions: MeasureOptionsGroupPropType,
+  measureOptions: PropTypes.arrayOf(PropTypes.object),
   measureData: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string,
     }),
   ),
-  currentCountry: PropTypes.string,
-  currentMeasure: PropTypes.object,
+  currentCountry: PropTypes.object,
+  currentMapOverlay: PropTypes.object,
 };
 
 MapTableModalComponent.defaultProps = {
   measureOptions: null,
   measureData: null,
   currentCountry: null,
-  currentMeasure: null,
+  currentMapOverlay: null,
 };
 
 const mapStateToProps = state => {
   const { measureOptions } = state.map.measureInfo;
-  const currentMeasure = selectCurrentMeasure(state);
+  // TODO: select multiple map overlays
+  const currentMapOverlay = selectCurrentMapOverlay(state);
   const measureData = selectRenderedMeasuresWithDisplayInfo(state);
   const currentCountry = selectOrgUnitCountry(state, state.map.measureInfo.currentCountry);
 
   return {
-    currentMeasure,
+    currentMapOverlay,
     measureOptions,
     measureData,
     currentCountry,
