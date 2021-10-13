@@ -178,7 +178,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
       >
         {referenceAreas && referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />)}
         {XAxisComponent({ isEnlarged, isExporting, viewContent })}
-        {YAxes({ viewContent, isExporting })}
+        {YAxes({ viewContent, chartDataConfig, isExporting, isEnlarged })}
         <Tooltip
           filterNull={false}
           content={

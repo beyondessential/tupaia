@@ -16,7 +16,7 @@ export const OutbreaksTabView = () => {
   return (
     <div style={{ position: 'relative' }}>
       <ComingSoon text="The Outbreaks page will show archived Alerts and Outbreaks." />
-      <MuiContainer style={{ position: 'relative ' }}>
+      <MuiContainer style={{ position: 'relative ' }} maxWidth="xl">
         <Main>
           <OutbreaksTable handlePanelOpen={() => setIsPanelOpen(true)} countryCode={countryCode} />
           {/* Removed for MVP release */}
