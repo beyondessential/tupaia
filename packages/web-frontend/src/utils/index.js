@@ -15,16 +15,16 @@ export { isMobile, delayMobileTapCallback } from './mobile';
 export { getCenterAndZoomForBounds } from './getCenterAndZoomForBounds';
 export { getFacilityThumbnailUrl } from './getFacilityThumbnailUrl';
 export { getMapUrl } from './getMapUrl';
-export { OverlayContainer, OverlayView } from './overlayContainer';
 export {
   processMeasureInfo,
-  getMeasureDisplayInfo,
   getSingleFormattedValue,
   flattenNumericalMeasureData,
-  flattenMeasureHierarchy,
-  getMeasureFromHierarchy,
-  isMeasureHierarchyEmpty,
 } from './measures';
+export {
+  getMapOverlayFromHierarchy,
+  flattenMapOverlayHierarchy,
+  isMapOverlayHierarchyEmpty,
+} from './mapOverlays';
 export { default as ga, gaEvent, gaPageView, gaMiddleware } from './ga';
 export { formatDateForApi } from './formatDateForApi';
 export { getBrowserTimeZone } from './getBrowserTimeZone';

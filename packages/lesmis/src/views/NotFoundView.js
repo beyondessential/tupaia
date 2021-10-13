@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
-import { ReactComponent as NotFoundIcon } from '../components/icons/404.svg';
+import { NotFound as NotFoundIcon } from '../components/Icons/NotFound';
 import { PageHeader } from '../components';
 import * as COLORS from '../constants';
 

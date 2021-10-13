@@ -15,7 +15,7 @@ export const TabPanel = React.memo(({ children, isSelected, Panel }) => {
 TabPanel.propTypes = {
   children: PropTypes.node.isRequired,
   isSelected: PropTypes.bool,
-  Panel: PropTypes.any,
+  Panel: PropTypes.node,
 };
 
 TabPanel.defaultProps = {

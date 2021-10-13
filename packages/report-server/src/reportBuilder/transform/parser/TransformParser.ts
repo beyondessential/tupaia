@@ -4,7 +4,16 @@
  */
 
 import { ExpressionParser } from '@tupaia/expression-parser';
+
+import { Context } from '../../context';
 import { Row, FieldValue } from '../../types';
+import {
+  customFunctions,
+  contextFunctionConfigs,
+  functionExtensions,
+  functionOverrides,
+} from './functions';
+import { TransformScope } from './TransformScope';
 
 type RowLookup = {
   [key: string]: FieldValue[];
@@ -14,53 +23,81 @@ type RowLookup = {
  * Lookups object for rows within the transform data
  *
  * eg. if rows = [{BCD1: 5}, {BCD1: 8}, {BCD1: 4}], and currentRow = 1
- * '$row.BCD1' => 8
- * '$all.BCD1' => [5, 8, 4]
- * '$allPrevious.BCD1' => [5, 8]
- * '$where(f($otherRow) = $otherRow.BCD1 < $row.BCD1).BCD1' => [5, 4]
- * '$row.BCD1 + sum($allPrevious.BCD1)' => 21
+ * '@current.BCD1' => 8
+ * '@all.BCD1' => [5, 8, 4]
+ * '@allPrevious.BCD1' => [5, 8]
+ * 'where(f(@otherRow) = @otherRow.BCD1 < @current.BCD1).BCD1' => [5, 4]
+ * '@current.BCD1 + sum(@allPrevious.BCD1)' => 21
  */
 type Lookups = {
-  row: Row;
+  current: Row;
   previous: Row;
   next: Row;
   all: RowLookup;
   allPrevious: RowLookup;
   index: number; // one-based index, this.currentRow + 1
   table: Row[];
-  where: (check: (row: Row) => boolean) => RowLookup;
 };
 
 export class TransformParser extends ExpressionParser {
+  private static readonly EXPRESSION_PREFIX = '=';
+
   private currentRow = 0;
 
   private rows: Row[];
 
   private lookups: Lookups;
 
-  constructor(rows: Row[], additionalFunctions: { [key: string]: (...params: any[]) => any }) {
-    super();
+  // eslint-disable-next-line react/static-property-placement
+  private context?: Context;
+
+  public constructor(rows: Row[] = [], context?: Context) {
+    super(new TransformScope());
 
     this.rows = rows;
-    this.lookups = { row: {}, previous: {}, next: {}, all: {}, allPrevious: {}, index: this.currentRow + 1, table: this.rows, where: this.whereFunction };
+    this.lookups = {
+      current: {},
+      previous: {},
+      next: {},
+      all: {},
+      allPrevious: {},
+      index: this.currentRow + 1,
+      table: this.rows,
+    };
 
     if (rows.length > 0) {
-      this.lookups.row = this.rows[this.currentRow];
+      this.lookups.current = this.rows[this.currentRow];
       this.lookups.next = this.rows[this.currentRow + 1] || {};
       this.rows.forEach(row => addRowToLookup(row, this.lookups.all));
-      addRowToLookup(this.lookups.row, this.lookups.allPrevious);
+      addRowToLookup(this.lookups.current, this.lookups.allPrevious);
+      this.addRowToScope(this.lookups.current);
 
       Object.entries(this.lookups).forEach(([lookupName, lookup]) => {
-        this.set(`$${lookupName}`, lookup);
+        this.set(`@${lookupName}`, lookup);
       });
+      this.set('where', this.whereFunction); // no '@' prefix for where
     }
 
-    Object.entries(additionalFunctions).forEach(([functionName, functionCall]) => {
-      this.set(functionName, functionCall);
-    });
+    this.context = context;
   }
 
-  next() {
+  public static isExpression(input: unknown) {
+    return typeof input === 'string' && input.startsWith(TransformParser.EXPRESSION_PREFIX);
+  }
+
+  protected readExpression(input: unknown) {
+    return TransformParser.isExpression(input)
+      ? (input as string).replace(new RegExp(`^${TransformParser.EXPRESSION_PREFIX}`), '')
+      : input;
+  }
+
+  public evaluate(input: unknown) {
+    return TransformParser.isExpression(input) ? super.evaluate(input) : input;
+  }
+
+  public next() {
+    this.removeRowFromScope(this.lookups.current);
+
     this.currentRow++;
 
     if (this.currentRow >= this.rows.length) {
@@ -69,16 +106,31 @@ export class TransformParser extends ExpressionParser {
 
     this.lookups.previous = this.rows[this.currentRow - 1];
     this.lookups.next = this.rows[this.currentRow + 1] || {};
-    this.lookups.row = this.rows[this.currentRow];
+    this.lookups.current = this.rows[this.currentRow];
     this.lookups.index = this.currentRow + 1;
-    this.set('$previous', this.lookups.previous);
-    this.set('$next', this.lookups.next);
-    this.set('$row', this.lookups.row);
-    this.set('$index', this.lookups.index);
-    addRowToLookup(this.lookups.row, this.lookups.allPrevious);
+    this.set('@previous', this.lookups.previous);
+    this.set('@next', this.lookups.next);
+    this.set('@current', this.lookups.current);
+    this.set('@index', this.lookups.index);
+    addRowToLookup(this.lookups.current, this.lookups.allPrevious);
+    this.addRowToScope(this.lookups.current);
   }
 
-  whereFunction = (check: (row: Row) => boolean) => {
+  public addRowToScope = (row: Row) => {
+    Object.entries(row).forEach(([field, value]) => {
+      if (value !== undefined && value !== null && !field.includes(' ')) {
+        this.set(`$${field}`, value);
+      }
+    });
+  };
+
+  public removeRowFromScope = (row: Row) => {
+    Object.keys(row).forEach(field => {
+      this.delete(`$${field}`);
+    });
+  };
+
+  private whereFunction = (check: (row: Row) => boolean) => {
     const whereData = {};
     const filteredRows = this.rows.filter(rowInFilter => check(rowInFilter));
     filteredRows.forEach(row => {
@@ -86,12 +138,47 @@ export class TransformParser extends ExpressionParser {
     });
     return whereData;
   };
+
+  protected getCustomFunctions() {
+    const { functions: factoryFunctions, dependencies } = this.buildFactoryFunctions();
+
+    return {
+      ...super.getCustomFunctions(),
+      ...customFunctions,
+      ...factoryFunctions,
+      ...dependencies,
+    };
+  }
+
+  protected getFunctionExtensions() {
+    return { ...super.getFunctionExtensions(), ...functionExtensions };
+  }
+
+  protected getFunctionOverrides() {
+    return { ...super.getFunctionOverrides(), ...functionOverrides };
+  }
+
+  private buildFactoryFunctions() {
+    const dependencies = {
+      getContext: () => this.context,
+    };
+
+    const functions = Object.fromEntries(
+      Object.entries(contextFunctionConfigs).map(([fnName, { create }]) => [
+        fnName,
+        this.factory(fnName, ['getContext'], create),
+      ]),
+    );
+
+    return { functions, dependencies };
+  }
 }
 
 const addRowToLookup = (row: Row, lookup: RowLookup) => {
   Object.entries(row).forEach(([field, value]) => {
     if (value !== undefined && value !== null) {
       if (!(field in lookup)) {
+        // eslint-disable-next-line no-param-reassign
         lookup[field] = [];
       }
       lookup[field].push(value);

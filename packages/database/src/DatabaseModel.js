@@ -201,7 +201,15 @@ export class DatabaseModel {
   }
 
   generateInstance = async (fields = {}) => {
-    const data = await this.getDatabaseSafeData(fields);
+    const data = {};
+
+    // add values for standard fields
+    const fieldNames = await this.fetchFieldNames();
+    fieldNames.forEach(fieldName => {
+      data[fieldName] = fields[fieldName];
+    });
+
+    // add values for joined fields
     this.joins.forEach(({ fields: joinFields }) => {
       Object.values(joinFields).forEach(fieldName => {
         data[fieldName] = fields[fieldName];
@@ -219,12 +227,18 @@ export class DatabaseModel {
   // ready to save to the record.
   getDatabaseSafeData = async fieldValues => {
     const data = {};
-    const fieldNames = await this.fetchFieldNames();
-    fieldNames.forEach(fieldName => {
+    const schema = await this.fetchSchema();
+    Object.entries(schema).forEach(([fieldName, fieldConfig]) => {
       const value = fieldValues[fieldName];
       // TODO needs investigating why we can't send undefined through
       if (value !== undefined) {
         data[fieldName] = value;
+      }
+
+      // Sanitize JSON and JSONB mutations where the base is an array
+      // See https://knexjs.org/#Schema-json
+      if (['json', 'jsonb'].includes(fieldConfig.type) && Array.isArray(value)) {
+        data[fieldName] = JSON.stringify(value);
       }
     });
     return data;

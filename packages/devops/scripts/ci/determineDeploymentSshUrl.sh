@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 if [[ $CI_BRANCH == "master" ]]; then
     echo "ssh.tupaia.org"

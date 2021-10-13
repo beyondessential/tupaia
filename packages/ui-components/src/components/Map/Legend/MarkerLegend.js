@@ -60,7 +60,14 @@ const getMarkerColor = (value, type, hasColorLayer) => {
   return value.color || UNKNOWN_COLOR;
 };
 
-const getLegendMarkerForValue = (value, type, hasIconLayer, hasRadiusLayer, hasColorLayer) => {
+const getLegendMarkerForValue = (
+  value,
+  type,
+  hasIconLayer,
+  hasRadiusLayer,
+  hasColorLayer,
+  defaultIcon = null,
+) => {
   const { icon } = value;
   const color = getMarkerColor(value, type, hasColorLayer);
 
@@ -88,13 +95,17 @@ const getLegendMarkerForValue = (value, type, hasIconLayer, hasRadiusLayer, hasC
     // show rings, as we are indicating radius colors
     return getMarkerForOption(LEGEND_RADIUS_ICON, color);
   }
+
+  if (defaultIcon) {
+    return getMarkerForOption(defaultIcon, color);
+  }
   // color is the only measure here - show pins
   return getMarkerForOption(DEFAULT_ICON, color);
 };
 
 export const MarkerLegend = React.memo(
   ({ series, setValueHidden, hiddenValues, hasIconLayer, hasRadiusLayer, hasColorLayer }) => {
-    const { type, values, key: dataKey, valueMapping } = series;
+    const { type, values, key: dataKey, valueMapping, icon } = series;
 
     const keys = values
       .filter(v => !v.hideFromLegend)
@@ -107,6 +118,7 @@ export const MarkerLegend = React.memo(
           hasIconLayer,
           hasRadiusLayer,
           hasColorLayer,
+          icon,
         );
         return (
           <LegendEntry
@@ -143,6 +155,7 @@ export const MarkerLegend = React.memo(
             hasIconLayer,
             hasRadiusLayer,
             hasColorLayer,
+            icon,
           )}
           dataKey={dataKey}
           label={nullItem.name}

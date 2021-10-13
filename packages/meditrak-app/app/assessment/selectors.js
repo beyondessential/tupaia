@@ -141,7 +141,7 @@ export const getArithmeticResult = (state, arithmeticQuestionId) => {
   });
 
   // Evaluate the expression
-  expressionParser.setScope(values);
+  expressionParser.setAll(values);
   const result = !isNaN(expressionParser.evaluate(formula))
     ? Math.round(expressionParser.evaluate(formula) * 1000) / 1000 // Round to 3 decimal places
     : 0;
@@ -178,7 +178,7 @@ export const getConditionResult = (state, conditionQuestionId) => {
       values[questionIdVariable] = value;
     });
 
-    expressionParser.setScope(values);
+    expressionParser.setAll(values);
     return expressionParser.evaluate(formula);
   };
 

@@ -49,9 +49,6 @@ export const testFetchDataElements = () => {
       api.fetchDataElements(['BCD1TEST', 'BCD57TEST', 'CROP_1', 'CROP_2'], {
         includeOptions: false,
       }),
-      {
-        includeOptions: false,
-      },
     ).resolves.toIncludeSameMembers([
       {
         code: 'BCD1TEST',
@@ -73,9 +70,11 @@ export const testFetchDataElements = () => {
   });
 
   it('returns multiple data elements with options metadata included', async () => {
-    await expect(api.fetchDataElements(['BCD1TEST', 'BCD57TEST', 'CROP_1', 'CROP_2']), {
-      includeOptions: false,
-    }).resolves.toIncludeSameMembers([
+    await expect(
+      api.fetchDataElements(['BCD1TEST', 'BCD57TEST', 'CROP_1', 'CROP_2'], {
+        includeOptions: true,
+      }),
+    ).resolves.toIncludeSameMembers([
       {
         code: 'BCD1TEST',
         name: 'Facility Status',

@@ -1,14 +1,13 @@
-/**
- * Tupaia Web
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
- * This source code is licensed under the AGPL-3.0 license
- * found in the LICENSE file in the root directory of this source tree.
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
 import { PropTypes } from 'prop-types';
 import React, { Component } from 'react';
 import { StyleRoot } from 'radium';
 import { connect } from 'react-redux';
+import { EnvBanner } from '@tupaia/ui-components';
 
 import HeaderBar from '../../../containers/mobile/HeaderBar';
 import { ExportDialog } from '../../../components/ExportDialog';
@@ -44,6 +43,7 @@ class RootScreen extends Component {
 
     return (
       <StyleRoot>
+        <EnvBanner />
         <LoadingScreen isLoading={isLoading} />
         <div>
           <HeaderBar />

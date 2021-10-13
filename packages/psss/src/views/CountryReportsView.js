@@ -38,7 +38,7 @@ const CountryReportsViewComponent = ({ backButtonConfig }) => {
         back={backButtonConfig}
         ExportModal={WeeklyReportsExportModal}
       />
-      <TabsToolbar links={links} />
+      <TabsToolbar links={links} maxWidth="xl" />
       <CountryRoutes />
     </>
   );

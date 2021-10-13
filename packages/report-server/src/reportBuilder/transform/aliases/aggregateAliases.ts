@@ -3,37 +3,45 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { Context } from '../../context';
 import { buildTransform } from '..';
 
-export const mostRecentValuePerOrgUnit = () =>
-  buildTransform([
-    {
-      transform: 'sort',
-      by: '$row.period',
-    },
-    {
-      transform: 'aggregate',
-      organisationUnit: 'group',
-      '...': 'last',
-    },
-  ]);
+export const mostRecentValuePerOrgUnit = (context: Context) =>
+  buildTransform(
+    [
+      {
+        transform: 'sortRows',
+        by: 'period',
+      },
+      {
+        transform: 'mergeRows',
+        groupBy: 'organisationUnit',
+        using: 'last',
+      },
+    ],
+    context,
+  );
 
-export const firstValuePerPeriodPerOrgUnit = () =>
-  buildTransform([
-    {
-      transform: 'aggregate',
-      organisationUnit: 'group',
-      period: 'group',
-      '...': 'first',
-    },
-  ]);
+export const firstValuePerPeriodPerOrgUnit = (context: Context) =>
+  buildTransform(
+    [
+      {
+        transform: 'mergeRows',
+        groupBy: ['organisationUnit', 'period'],
+        using: 'first',
+      },
+    ],
+    context,
+  );
 
-export const lastValuePerPeriodPerOrgUnit = () =>
-  buildTransform([
-    {
-      transform: 'aggregate',
-      organisationUnit: 'group',
-      period: 'group',
-      '...': 'last',
-    },
-  ]);
+export const lastValuePerPeriodPerOrgUnit = (context: Context) =>
+  buildTransform(
+    [
+      {
+        transform: 'mergeRows',
+        groupBy: ['organisationUnit', 'period'],
+        using: 'last',
+      },
+    ],
+    context,
+  );

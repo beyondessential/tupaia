@@ -201,7 +201,7 @@ export async function exportResponsesToFile(
       models,
       surveyResponseIds,
       {},
-      { columns: [{ [`${TYPES.SURVEY_RESPONSE}.id`]: 'survey_response.id' }], sort: [] },
+      { columns: [{ [`${TYPES.SURVEY_RESPONSE}.id`]: 'answer.survey_response_id' }], sort: [] },
     );
 
     // Add any questions that are in survey responses but no longer in the survey

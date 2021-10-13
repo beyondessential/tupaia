@@ -1,5 +1,10 @@
 #!/bin/bash
-source .env
+DIR=$(dirname "$0")
+
+# if env vars are not already defined (e.g. by script caller during CI/CD), pull them in from .env
+if [ "$DB_URL" == "" ]; then
+    source .env
+fi
 
 # Set default port in case it wasn't in .env
 : "${DB_PORT:=5432}"
@@ -15,7 +20,7 @@ else
     export DB_MV_HOME="$PWD"
     (. runCreateFastRefreshModule.sh)
     cd ../..
-    git submodule deinit --all
+    git submodule deinit scripts/pg-mv-fast-refresh
 fi
 
 export PGPASSWORD=$DB_PG_PASSWORD

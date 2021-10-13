@@ -12,7 +12,6 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "GENERATE_SOURCEMAP=false react-scripts build",
-    "postbuild": "rm -rf served_build && mv build served_build",
     "eject": "react-scripts eject",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
@@ -21,7 +20,7 @@
     "start-meditrak-server": "yarn workspace @tupaia/meditrak-server start-dev -s",
     "start-web-config-server": "yarn workspace @tupaia/web-config-server start-dev -s",
     "test": "npm run test:jest",
-    "test:jest": "react-scripts test --env=jest-environment-jsdom-sixteen"
+    "test:jest": "react-scripts test --env=jsdom"
   },
   "browserslist": [
     "defaults"
@@ -31,15 +30,12 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/styles": "^4.9.10",
-    "@tupaia/access-policy": "3.0.0",
-    "@tupaia/auth": "1.0.0",
     "@tupaia/ui-components": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "axios": "^0.21.1",
     "camelcase": "^6.2.0",
     "dom-to-image": "^2.6.0",
     "downloadjs": "^1.4.7",
-    "leaflet": "^1.7.1",
     "lodash.keyby": "^4.6.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",

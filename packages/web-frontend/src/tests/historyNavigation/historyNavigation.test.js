@@ -39,8 +39,8 @@ describe('historyNavigation', () => {
       });
     });
 
-    it('should be able to set measure', () => {
-      expect(setLocationComponent(baseLocation, URL_COMPONENTS.MEASURE, 'overlay2')).toEqual({
+    it('should be able to set map overlay ids', () => {
+      expect(setLocationComponent(baseLocation, URL_COMPONENTS.MAP_OVERLAY, 'overlay2')).toEqual({
         pathname: baseLocation.pathname,
         search: '?overlay=overlay2&report=report1',
       });

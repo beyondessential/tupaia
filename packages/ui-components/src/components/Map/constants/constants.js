@@ -37,4 +37,5 @@ export const SCALE_TYPES = {
   NEUTRAL: 'neutral',
   NEUTRAL_REVERSE: 'neutralReverse',
   TIME: 'time',
+  GPI: 'gpi',
 };

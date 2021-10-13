@@ -5,13 +5,13 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { getFormattedInfo } from '../utils';
+import { PopupDataItemList } from '../PopupDataItemList';
 import { PopupMarker } from './PopupMarker';
 
 const buildHeaderText = (markerData, popupHeaderFormat) => {
-  const { code, name } = markerData;
+  const { organisationUnitCode, name } = markerData;
   const replacements = {
-    code,
+    code: organisationUnitCode,
     name,
   };
   return Object.entries(replacements).reduce(
@@ -20,27 +20,17 @@ const buildHeaderText = (markerData, popupHeaderFormat) => {
   );
 };
 
-export const MeasurePopup = React.memo(({ markerData, serieses }) => {
-  const { coordinates } = markerData;
+export const MeasurePopup = React.memo(({ markerData, serieses, onOrgUnitClick }) => {
+  const { coordinates, organisationUnitCode } = markerData;
   const { popupHeaderFormat = '{name}' } = serieses.reduce((all, mo) => ({ ...all, ...mo }), {});
   return (
     <PopupMarker
       headerText={buildHeaderText(markerData, popupHeaderFormat)}
+      buttonText="See Dashboard"
       coordinates={coordinates}
+      onDetailButtonClick={onOrgUnitClick ? () => onOrgUnitClick(organisationUnitCode) : null}
     >
-      {serieses
-        .filter(series => !series.hideFromPopup)
-        .map(series => {
-          const { key, name } = series;
-          const { formattedValue, valueInfo } = getFormattedInfo(markerData, series);
-
-          return valueInfo.hideFromPopup ? null : (
-            <div key={key}>
-              <span>{`${name}: `}</span>
-              <strong>{formattedValue}</strong>
-            </div>
-          );
-        })}
+      <PopupDataItemList measureOptions={serieses} data={markerData} showNoDataLabel />
     </PopupMarker>
   );
 });
@@ -48,10 +38,11 @@ export const MeasurePopup = React.memo(({ markerData, serieses }) => {
 MeasurePopup.propTypes = {
   markerData: PropTypes.shape({
     coordinates: PropTypes.arrayOf(PropTypes.number),
-    value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    photoUrl: PropTypes.string,
     code: PropTypes.string,
     name: PropTypes.string,
+    organisationUnitCode: PropTypes.string,
+    photoUrl: PropTypes.string,
+    value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   }).isRequired,
   serieses: PropTypes.arrayOf(
     PropTypes.shape({
@@ -59,4 +50,9 @@ MeasurePopup.propTypes = {
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     }),
   ).isRequired,
+  onOrgUnitClick: PropTypes.func,
+};
+
+MeasurePopup.defaultProps = {
+  onOrgUnitClick: null,
 };

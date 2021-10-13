@@ -49,7 +49,7 @@ export const evaluateFormulaToNumber = (
   formula: string,
   dataValues: DataValues,
 ) => {
-  parser.setScope(dataValues);
+  parser.setAll(dataValues);
   const value = parser.evaluateToNumber(formula);
   parser.clearScope();
   return value;

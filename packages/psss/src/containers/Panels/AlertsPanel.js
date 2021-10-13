@@ -13,7 +13,6 @@ import {
   CardTab,
   CardTabPanels,
   WarningCloud,
-  Virus,
   LinkButton,
 } from '@tupaia/ui-components';
 import { getAlertsMessages, getActivityFeed } from '../../api';
@@ -30,6 +29,7 @@ import { NotesTab } from '../NotesTab';
 import { getCountryName } from '../../store';
 import { countryFlagImage, getDisplayDatesByPeriod, getWeekNumberByPeriod } from '../../utils';
 import { useFetch } from '../../hooks';
+import { AlertsPanelContext } from '../../context';
 
 const Option = styled.span`
   display: flex;
@@ -68,8 +68,6 @@ const menuOptions = [
 ];
 
 const TabsContext = createContext(null);
-
-export const AlertsPanelContext = createContext(null);
 
 export const AlertsPanelProvider = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
