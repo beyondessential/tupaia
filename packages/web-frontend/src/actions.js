@@ -66,6 +66,7 @@ export const FETCH_LOGOUT_ERROR = 'FETCH_LOGOUT_ERROR';
 export const FETCH_LOGOUT_SUCCESS = 'FETCH_LOGOUT_SUCCESS';
 export const FETCH_MEASURE_DATA_ERROR = 'FETCH_MEASURE_DATA_ERROR';
 export const FETCH_MEASURE_DATA_SUCCESS = 'FETCH_MEASURE_DATA_SUCCESS';
+export const FETCH_ALL_MEASURE_DATA_SUCCESS = 'FETCH_ALL_MEASURE_DATA_SUCCESS';
 export const CANCEL_FETCH_MEASURE_DATA = 'CANCEL_FETCH_MEASURE_DATA';
 export const FETCH_MEASURES_ERROR = 'FETCH_MEASURES_ERROR';
 export const FETCH_MEASURES_SUCCESS = 'FETCH_MEASURES_SUCCESS';
@@ -743,6 +744,15 @@ export function fetchMeasureInfoSuccess(response, countryCode) {
     type: FETCH_MEASURE_DATA_SUCCESS,
     response,
     countryCode,
+  };
+}
+
+/**
+ * All measure data have been arrived, changes isMeasureLoading to TRUE.
+ */
+export function fetchAllMeasureInfoSuccess() {
+  return {
+    type: FETCH_ALL_MEASURE_DATA_SUCCESS,
   };
 }
 

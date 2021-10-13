@@ -15,14 +15,15 @@ import { DisasterLayer } from './DisasterLayer';
 import { ZoomControl } from './ZoomControl';
 import {
   selectActiveTileSet,
-  selectAllMeasuresWithDisplayInfo,
+  selectMeasuresWithDisplayInfo,
+  selectCurrentMapOverlayIds,
   selectCurrentOrgUnit,
   selectHasPolygonMeasure,
-  selectMeasureOptionsByDisplayedMapOverlays,
+  selectMeasureOptions,
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitSiblings,
-  selectRenderedMeasuresWithDisplayInfo,
+  selectRenderedDMeasuresWithDisplayInfo,
 } from '../../selectors';
 import { changePosition, closeDropdownOverlays, setOrgUnit } from '../../actions';
 import { TRANS_BLACK, TRANS_BLACK_LESS } from '../../styles';
@@ -211,7 +212,7 @@ MapComponent.propTypes = {
   getChildren: PropTypes.func.isRequired,
   measureData: PropTypes.array,
   mapOverlayIds: PropTypes.array.isRequired,
-  measureOptions: PropTypes.array.isRequired,
+  measureOptions: PropTypes.array,
   position: PropTypes.shape({
     center: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     bounds: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
@@ -226,6 +227,7 @@ MapComponent.propTypes = {
 MapComponent.defaultProps = {
   displayedChildren: [],
   measureData: [],
+  measureOptions: undefined,
   currentParent: null,
 };
 
@@ -238,8 +240,8 @@ const selectMeasureDataWithCoordinates = createSelector([measureData => measureD
 );
 
 const mapStateToProps = state => {
-  const { isAnimating, shouldSnapToPosition, position, measureInfo } = state.map;
-  const { mapOverlayIds } = measureInfo;
+  const { isAnimating, shouldSnapToPosition, position, displayedMapOverlays } = state.map;
+  const mapOverlayIds = selectCurrentMapOverlayIds(state);
   const { isSidePanelExpanded } = state.global;
   const { contractedWidth, expandedWidth } = state.dashboard;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
@@ -253,7 +255,7 @@ const mapStateToProps = state => {
   let measureOrgUnits = [];
 
   if (selectHasPolygonMeasure(state)) {
-    measureOrgUnits = selectAllMeasuresWithDisplayInfo(state);
+    measureOrgUnits = selectMeasuresWithDisplayInfo(state, displayedMapOverlays);
     const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
     const grandchildren = currentChildren
       .map(area => selectOrgUnitChildren(state, area.organisationUnitCode))
@@ -266,9 +268,9 @@ const mapStateToProps = state => {
   }
 
   const measureData = selectMeasureDataWithCoordinates(
-    selectRenderedMeasuresWithDisplayInfo(state),
+    selectRenderedDMeasuresWithDisplayInfo(state, displayedMapOverlays),
   );
-  const measureOptions = selectMeasureOptionsByDisplayedMapOverlays(state);
+  const measureOptions = selectMeasureOptions(state, displayedMapOverlays);
 
   const getChildren = organisationUnitCode => selectOrgUnitChildren(state, organisationUnitCode);
 

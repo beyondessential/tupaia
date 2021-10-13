@@ -6,6 +6,7 @@
  */
 
 import { combineReducers } from 'redux';
+import { pick } from 'lodash';
 
 import {
   SET_MAP_OVERLAYS,
@@ -15,6 +16,7 @@ import {
   CHANGE_TILE_SET,
   FETCH_MEASURE_DATA_ERROR,
   FETCH_MEASURE_DATA_SUCCESS,
+  FETCH_ALL_MEASURE_DATA_SUCCESS,
   CANCEL_FETCH_MEASURE_DATA,
   CHANGE_ORG_UNIT_SUCCESS,
   SET_MAP_IS_ANIMATING,
@@ -78,8 +80,20 @@ function measureInfo(state = {}, action) {
   switch (action.type) {
     case CLEAR_MEASURE:
       return {};
+    case SET_MAP_OVERLAYS: {
+      return {
+        ...pick(state, action.mapOverlayIds),
+      };
+    }
     case FETCH_MEASURE_DATA_SUCCESS: {
-      const currentCountry = action.countryCode;
+      const {
+        mapOverlayId,
+        hiddenMeasures,
+        serieses,
+        measureLevel,
+        ...restOfResponse
+      } = action.response;
+
       // remove measure units with no coordinates
       let { measureData } = action.response;
       // for circle heatmap remove empty values or values that are not of positive float type
@@ -91,16 +105,21 @@ function measureInfo(state = {}, action) {
         });
       }
 
+      const previousHiddenMeasures = (state[mapOverlayId] || {}).hiddenMeasures || {};
+
       return {
-        ...action.response,
-        // Combine default hiddenMeasures (action.response.hiddenMeasures) and hiddenMeasures in the state so that default hiddenMeasures are populated
-        // If hiddenMeasures in the state has the same value, override the default hiddenMeasures.
-        hiddenMeasures: {
-          ...action.response.hiddenMeasures,
-          ...state.hiddenMeasures,
+        ...state,
+        [mapOverlayId]: {
+          ...restOfResponse,
+          measureData,
+          measureLevel: measureLevel.split(','),
+          // Combine default hiddenMeasures (action.response.hiddenMeasures) and hiddenMeasures in the state so that default hiddenMeasures are populated
+          // If hiddenMeasures in the state has the same value, override the default hiddenMeasures.
+          hiddenMeasures: {
+            ...hiddenMeasures,
+            ...previousHiddenMeasures,
+          },
         },
-        currentCountry,
-        measureData,
       };
     }
     case FETCH_MEASURE_DATA_ERROR:
@@ -132,7 +151,7 @@ function isMeasureLoading(state = false, action) {
     case SET_MAP_OVERLAYS:
       return true;
     case FETCH_MEASURE_DATA_ERROR:
-    case FETCH_MEASURE_DATA_SUCCESS:
+    case FETCH_ALL_MEASURE_DATA_SUCCESS:
     case CANCEL_FETCH_MEASURE_DATA:
       return false;
     default:
@@ -146,6 +165,17 @@ function displayedMapOverlays(state = [], action) {
       return action.mapOverlayIds.split(',');
     case SET_DISPLAYED_MAP_OVERLAY:
       return action.mapOverlayIds;
+    default:
+      return state;
+  }
+}
+
+function currentCountry(state = null, action) {
+  switch (action.type) {
+    case FETCH_MEASURE_DATA_SUCCESS:
+      return action.countryCode;
+    case CLEAR_MEASURE:
+      return null;
     default:
       return state;
   }
@@ -230,4 +260,5 @@ export default combineReducers({
   shouldSnapToPosition,
   isMeasureLoading,
   displayedMapOverlays,
+  currentCountry,
 });

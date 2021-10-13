@@ -38,6 +38,7 @@ import {
   fetchEmailVerifyError,
   fetchMeasureInfoError,
   fetchMeasureInfoSuccess,
+  fetchAllMeasureInfoSuccess,
   fetchMeasuresError,
   fetchMeasuresSuccess,
   fetchOrgUnit,
@@ -867,43 +868,45 @@ function* fetchMeasureInfo() {
   const state = yield select();
   const mapOverlayIds = selectCurrentMapOverlayIds(state);
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
-  const measureParams = mapOverlayIds.length > 0 && selectMapOverlayById(state, mapOverlayIds[0]);
+  const country = selectOrgUnitCountry(state, organisationUnitCode);
+  const countryCode = country ? country.organisationUnitCode : undefined;
+  const activeProjectCode = selectCurrentProjectCode(state);
 
-  if (!organisationUnitCode || !measureParams) {
-    // Don't try and fetch null measures
+  if (!organisationUnitCode) {
     yield put(cancelFetchMeasureData());
     return;
   }
 
-  const country = selectOrgUnitCountry(state, organisationUnitCode);
-  const countryCode = country ? country.organisationUnitCode : undefined;
+  for (const mapOverlayId of mapOverlayIds) {
+    const measureParams = selectMapOverlayById(state, mapOverlayId);
+    if (!measureParams) {
+      yield put(cancelFetchMeasureData());
+      return;
+    }
 
-  const activeProjectCode = selectCurrentProjectCode(state);
-
-  // If the view should be constrained to a date range and isn't, constrain it
-  const { startDate, endDate } =
-    measureParams.startDate || measureParams.endDate
-      ? measureParams
-      : getDefaultDates(measureParams);
-
-  const urlParameters = {
-    mapOverlayIds: mapOverlayIds.join(','),
-    organisationUnitCode,
-    startDate: formatDateForApi(startDate),
-    endDate: formatDateForApi(endDate),
-    shouldShowAllParentCountryResults: !isMobile() && countryCode !== activeProjectCode,
-    projectCode: activeProjectCode,
-  };
-  const requestResourceUrl = `measureData?${queryString.stringify(urlParameters)}`;
-
-  try {
-    const measureInfoResponse = yield call(request, requestResourceUrl);
-    const measureInfo = processMeasureInfo(measureInfoResponse);
-
-    yield put(fetchMeasureInfoSuccess(measureInfo, countryCode));
-  } catch (error) {
-    yield put(fetchMeasureInfoError(error));
+    // If the view should be constrained to a date range and isn't, constrain it
+    const { startDate, endDate } =
+      measureParams.startDate || measureParams.endDate
+        ? measureParams
+        : getDefaultDates(measureParams);
+    const urlParameters = {
+      mapOverlayId,
+      organisationUnitCode,
+      startDate: formatDateForApi(startDate),
+      endDate: formatDateForApi(endDate),
+      shouldShowAllParentCountryResults: !isMobile() && countryCode !== activeProjectCode,
+      projectCode: activeProjectCode,
+    };
+    const requestResourceUrl = `measureData?${queryString.stringify(urlParameters)}`;
+    try {
+      const measureInfoResponse = yield call(request, requestResourceUrl);
+      const measureInfo = processMeasureInfo(measureInfoResponse);
+      yield put(fetchMeasureInfoSuccess(measureInfo, countryCode));
+    } catch (error) {
+      yield put(fetchMeasureInfoError(error));
+    }
   }
+  yield put(fetchAllMeasureInfoSuccess());
 }
 
 function* watchSetMapOverlayChange() {
@@ -964,7 +967,7 @@ function* fetchMeasureInfoForNewOrgUnit(action) {
   const { countryCode } = action.organisationUnit;
   const state = yield select();
   const mapOverlayIds = selectCurrentMapOverlayIds(state);
-  const oldOrgUnitCountry = state.map.measureInfo.currentCountry;
+  const oldOrgUnitCountry = state.map.currentCountry;
   if (oldOrgUnitCountry === countryCode) {
     // We are in the same country as before, no need to refetch measureData
     return;

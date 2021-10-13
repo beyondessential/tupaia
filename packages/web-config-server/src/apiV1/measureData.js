@@ -181,9 +181,8 @@ export default class extends DataAggregatingRouteHandler {
 
   buildResponse = async () => {
     const { code } = this.entity;
-    const { mapOverlayIds: mapOverlayIdsStr } = this.query;
-    const mapOverlayIds = mapOverlayIdsStr.split(',');
-    const measures = await this.models.mapOverlay.findMeasuresByIds(mapOverlayIds);
+    const { mapOverlayId } = this.query;
+    const measures = await this.models.mapOverlay.findMeasuresByIds(mapOverlayId);
 
     // check permission
     await Promise.all(
@@ -200,10 +199,10 @@ export default class extends DataAggregatingRouteHandler {
       measures.map(o => this.fetchMeasureData(o, shouldFetchSiblings)),
     );
     const { period, measureData } = buildMeasureData(measures, responseData);
-    const measureOptions = await this.fetchMeasureOptions(measures, measureData, mapOverlayIds);
+    const measureOptions = await this.fetchMeasureOptions(measures, measureData, mapOverlayId);
 
     return {
-      mapOverlayIds,
+      mapOverlayId,
       measureLevel: getMeasureLevel(measures),
       measureOptions,
       serieses: measureOptions,
@@ -212,22 +211,20 @@ export default class extends DataAggregatingRouteHandler {
     };
   };
 
-  async fetchMeasureOptions(mapOverlays, measureData, mapOverlayIds) {
+  async fetchMeasureOptions(mapOverlays, measureData, mapOverlayId) {
     const measureOptions = await Promise.all(mapOverlays.map(o => this.fetchMeasureOption(o)));
     measureOptions
       .filter(mo => mo.displayedValueKey)
       .filter(mo => !mo.disableRenameLegend)
       .map(mo => updateLegendFromDisplayedValueKey(mo, measureData));
 
-    const getOtherMeasureOptionKeys = mainMapOverlayIds => {
+    const getOtherMeasureOptionKeys = mainMapOverlayId => {
       const otherLinkMeasureKeySet = new Set();
       measureData.forEach(data => {
         Object.keys(data).forEach(key => otherLinkMeasureKeySet.add(key));
       });
       otherLinkMeasureKeySet.delete('organisationUnitCode');
-      mainMapOverlayIds.forEach(mainMapOverlayId =>
-        otherLinkMeasureKeySet.delete(mainMapOverlayId),
-      );
+      otherLinkMeasureKeySet.delete(mainMapOverlayId);
 
       return Array.from(otherLinkMeasureKeySet);
     };
@@ -236,7 +233,7 @@ export default class extends DataAggregatingRouteHandler {
     const { measureConfig, ...mainMeasureOption } = measureOptions[0];
     if (measureConfig) {
       const { [ADD_TO_ALL_KEY]: configForAllKeys, ...restOfConfig } = measureConfig;
-      getOtherMeasureOptionKeys(mapOverlayIds)
+      getOtherMeasureOptionKeys(mapOverlayId)
         .filter(key => !key.includes('_metadata'))
         .forEach(key => {
           measureOptions.push({ ...configForAllKeys, key, name: key, ...restOfConfig[key] });
