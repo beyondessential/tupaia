@@ -5,6 +5,7 @@
  */
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import MuiButton from '@material-ui/core/Button';
 import MuiMenu from '@material-ui/core/Menu';
 import MuiMenuItem from '@material-ui/core/MenuItem';
@@ -12,7 +13,7 @@ import LanguageIcon from '@material-ui/icons/Language';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { LaosFlagSmall } from './Icons/LaosFlagSmall';
 import { EnglishFlagSmall } from './Icons/EnglishFlagSmall';
-import { useUrlSearchParam } from '../utils';
+import { makeEntityLink, useUrlParams } from '../utils';
 
 const StyledButton = styled(MuiButton)`
   font-size: 12px;
@@ -85,12 +86,8 @@ const options = [
 
 export const Menu = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [locale, setLocale] = useUrlSearchParam('locale', options[0].code);
-
-  const handleChange = (event, code) => {
-    setLocale(code);
-    setAnchorEl(null);
-  };
+  const { locale, entityCode, view } = useUrlParams();
+  const { search } = useLocation();
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -120,6 +117,7 @@ export const Menu = () => {
         elevation={0}
         open={Boolean(anchorEl)}
         onClose={handleClose}
+        onClick={handleClose}
         variant="menu"
         anchorOrigin={{
           vertical: 'bottom',
@@ -134,7 +132,9 @@ export const Menu = () => {
           <MenuItem
             key={code}
             selected={code === locale}
-            onClick={event => handleChange(event, code)}
+            button
+            component={RouterLink}
+            to={`${makeEntityLink(code, entityCode, view)}${search}`}
           >
             <Icon />
             {label}
