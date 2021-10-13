@@ -18,9 +18,9 @@ import {
   ListItemText,
   ListSubheader,
 } from '@material-ui/core';
-import { Link as RouterLink } from 'react-router-dom';
 import { Home, ImportContacts, ContactMail, Close, Menu, Assignment } from '@material-ui/icons';
 import { LightIconButton } from '@tupaia/ui-components';
+import { LocaleListItemLink } from './LocaleLinks';
 import { FlexEnd } from './Layout';
 
 const StyledList = styled(List)`
@@ -83,8 +83,6 @@ const TupaiaText = styled(Typography)`
   line-height: 140%;
 `;
 
-const ListItemLink = props => <ListItem button component={RouterLink} {...props} />;
-
 export const MainMenu = () => {
   const [open, setOpen] = useState(false);
 
@@ -109,31 +107,31 @@ export const MainMenu = () => {
           <ListItem>
             <MenuHeading variant="h3">Menu</MenuHeading>
           </ListItem>
-          <ListItemLink to="/">
+          <LocaleListItemLink to="/">
             <ListItemIcon>
               <Home />
             </ListItemIcon>
             <ListItemText primary="Home" />
-          </ListItemLink>
-          <ListItemLink to="/about">
+          </LocaleListItemLink>
+          <LocaleListItemLink to="/about">
             <ListItemIcon>
               <ImportContacts />
             </ListItemIcon>
             <ListItemText primary="About LESMIS" />
-          </ListItemLink>
-          <ListItemLink to="/contact">
+          </LocaleListItemLink>
+          <LocaleListItemLink to="/contact">
             <ListItemIcon>
               <ContactMail />
             </ListItemIcon>
             <ListItemText primary="Contact us" />
-          </ListItemLink>
+          </LocaleListItemLink>
           <Subheader component="div">Online Questionnaires</Subheader>
-          <ListItemLink to="/fundamental-quality-standards">
+          <LocaleListItemLink to="/fundamental-quality-standards">
             <ListItemIcon>
               <Assignment />
             </ListItemIcon>
             <ListItemText primary="Fundamental Quality Standards" />
-          </ListItemLink>
+          </LocaleListItemLink>
         </StyledList>
         <StyledDivider />
         <StyledList component="nav" aria-label="secondary mailbox folders">

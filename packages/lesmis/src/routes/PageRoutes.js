@@ -34,10 +34,10 @@ export const PageRoutes = React.memo(() => {
       <Route path={`${path}/login`}>
         <LoginView />
       </Route>
-      <Route path="/register">
+      <Route path={`${path}/register`}>
         <RegisterView />
       </Route>
-      <Route path="/profile">
+      <Route path={`${path}/profile`}>
         <NavBar />
         <ProfileView />
         <Footer />
@@ -49,7 +49,7 @@ export const PageRoutes = React.memo(() => {
         </LesmisAdminRoute>
         <Footer />
       </Route>
-      <Route path="/about">
+      <Route path={`${path}/about`}>
         <NavBar />
         <PageView content={ABOUT_PAGE} />
         <Footer />

@@ -52,7 +52,7 @@ const Search = styled(SearchBar)`
 export const NavBar = () => {
   const history = useHistory();
   const { isLoggedIn } = useUser();
-  const { view } = useUrlParams();
+  const { locale, view } = useUrlParams();
   const { pathname } = useLocation();
   const { homeUrl, isHomeUrl } = useHomeUrl();
 
@@ -69,7 +69,7 @@ export const NavBar = () => {
             {isLoggedIn ? null : ( // @see https://github.com/beyondessential/tupaia-backlog/issues/2290 //Todo: add Favourites Menu
               <TextButton
                 to={{
-                  pathname: '/register',
+                  pathname: `${locale}/register`,
                   state: { referer: history.location },
                 }}
                 component={RouterLink}

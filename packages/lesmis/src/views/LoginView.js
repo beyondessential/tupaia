@@ -4,11 +4,11 @@
  *
  */
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import MuiCard from '@material-ui/core/Card';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { LoginForm, FlexCenter, FlexColumn, FormBackButton } from '../components';
+import { LocaleLink } from '../components/LocaleLinks';
 
 const Container = styled(FlexColumn)`
   padding-top: 3rem;
@@ -34,8 +34,13 @@ const StyledImg = styled.img`
 const Text = styled(Typography)`
   font-size: 0.875rem;
   line-height: 1rem;
+  margin-right: 5px;
+`;
+
+const Link = styled(LocaleLink)`
+  font-size: 0.875rem;
+  line-height: 1rem;
   text-decoration: none;
-  margin-right: 0.3rem;
 `;
 
 export const LoginView = () => (
@@ -47,9 +52,9 @@ export const LoginView = () => (
     </StyledCard>
     <FlexCenter mb={4}>
       <Text color="textSecondary">Don&apos;t have access?</Text>
-      <Text component={RouterLink} to="register" color="primary">
+      <Link to="/register" color="primary">
         Register here
-      </Text>
+      </Link>
     </FlexCenter>
   </Container>
 );

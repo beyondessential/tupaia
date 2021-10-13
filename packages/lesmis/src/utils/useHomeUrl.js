@@ -8,12 +8,9 @@ import { useRouteMatch } from 'react-router-dom';
 export const useHomeUrl = () => {
   const { params } = useRouteMatch();
   const { locale } = params;
-
   const homeUrl = `/${locale}`;
 
-  const isHomeUrl = test => {
-    return test.trim('/') === homeUrl;
-  };
+  const isHomeUrl = path => path.replace(/\/$/, '') === homeUrl;
 
   return {
     homeUrl,
