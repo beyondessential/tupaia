@@ -60,10 +60,7 @@ const getReportObject = (reportCode, dataElements, dataGroups) => ({
         exclude: ['event', 'eventDate', 'orgUnitName', 'orgUnit', dataElements[0]],
         insert: {
           organisationUnitCode: '=$orgUnit',
-          Church: `= eq($${dataElements[0]},'Church') ? 1 : undefined`,
-          Community: `= eq($${dataElements[0]},'Community') ? 1 : undefined`,
-          Workplace: `= eq($${dataElements[0]},'Workplace') ? 1 : undefined`,
-          School: `= eq($${dataElements[0]},'School') ? 1 : undefined`,
+          [`=$${dataElements[0]}`]: `= 1`,
           Unique: `=$${dataElements[0]}`,
         },
       },
