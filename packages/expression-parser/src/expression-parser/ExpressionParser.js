@@ -3,7 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { create, all, factory } from 'mathjs';
+import { create, all } from 'mathjs';
+
+import { customFunctions } from './customFunctions';
 
 /**
  * @typedef {Object} Scope
@@ -24,26 +26,6 @@ import { create, all, factory } from 'mathjs';
  * //Evaluate an expression that has a as a variable
  * expressionParser.evaluate('a + 2'); //returns 3
  */
-
-const average = (...argumentList) => {
-  const existingValues = argumentList.filter(a => a !== 'undefined');
-  const sum = existingValues.reduce((a, b) => a + b, 0);
-  return sum / existingValues.length;
-};
-
-const firstExistingValue = (...argumentList) => {
-  for (const value of argumentList) {
-    if (value !== 'undefined') {
-      return value;
-    }
-  }
-
-  return undefined; // Should make sure that at least 1 value exists
-};
-
-const translate = (value, translations) => {
-  return translations[value];
-};
 
 const ADDITIONAL_ALPHA_CHARS = ['@'];
 
@@ -210,11 +192,7 @@ export class ExpressionParser {
    * @returns {Record<string, (...args: any[]) => any>} functions
    */
   getCustomFunctions() {
-    return {
-      avg: average,
-      firstExistingValue,
-      translate,
-    };
+    return customFunctions;
   }
 
   /**
