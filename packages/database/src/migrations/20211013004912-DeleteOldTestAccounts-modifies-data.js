@@ -33,6 +33,7 @@ exports.up = async function (db) {
   testAccounts.forEach(testAccount => {
     return db.runSql(`
       DELETE FROM api_client WHERE user_account_id = '${testAccount.id}';
+      DELETE FROM api_request_log WHERE user_id = '${testAccount.id}';
       DELETE FROM user_entity_permission WHERE user_id = '${testAccount.id}';
       DELETE FROM user_account WHERE id = '${testAccount.id}';
     `);
