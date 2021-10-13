@@ -4,21 +4,11 @@
  */
 
 import { Aggregator as BaseAggregator } from '@tupaia/aggregator';
-import {
-  getDefaultPeriod,
-  convertPeriodStringToDateRange,
-  convertDateRangeToPeriodString,
-} from '@tupaia/utils';
-import { Event, AggregationObject } from '../types';
 
-type PeriodParams = {
-  period?: string;
-  startDate?: string;
-  endDate?: string;
-};
+import { Aggregation, Event, PeriodParams } from '../types';
 
 export class Aggregator extends BaseAggregator {
-  aggregationToAggregationConfig = (aggregation: string | AggregationObject) =>
+  aggregationToAggregationConfig = (aggregation: Aggregation) =>
     typeof aggregation === 'string'
       ? {
           type: aggregation,
@@ -27,12 +17,12 @@ export class Aggregator extends BaseAggregator {
 
   async fetchAnalytics(
     dataElementCodes: string[],
-    aggregationList: (string | AggregationObject)[] | undefined,
+    aggregationList: Aggregation[] | undefined,
     organisationUnitCodes: string[],
     hierarchy: string | undefined,
     periodParams: PeriodParams,
   ) {
-    const { period, startDate, endDate } = buildPeriodQueryParams(periodParams);
+    const { period, startDate, endDate } = periodParams;
     const aggregations = aggregationList
       ? aggregationList.map(this.aggregationToAggregationConfig)
       : [{ type: 'RAW' }];
@@ -53,13 +43,13 @@ export class Aggregator extends BaseAggregator {
 
   async fetchEvents(
     programCode: string,
-    aggregationList: (string | AggregationObject)[] | undefined,
+    aggregationList: Aggregation[] | undefined,
     organisationUnitCodes: string[],
     hierarchy: string | undefined,
     periodParams: PeriodParams,
     dataElementCodes?: string[],
   ): Promise<Event[]> {
-    const { period, startDate, endDate } = buildPeriodQueryParams(periodParams);
+    const { period, startDate, endDate } = periodParams;
     const aggregations = aggregationList
       ? aggregationList.map(this.aggregationToAggregationConfig)
       : [{ type: 'RAW' }];
@@ -78,32 +68,3 @@ export class Aggregator extends BaseAggregator {
     );
   }
 }
-
-/**
- * Returns { startDate, endDate } format if either startDate, or endDate are passed in
- * Otherwise returns { period, startDate, endDate } format
- */
-const buildPeriodQueryParams = ({ period, startDate, endDate }: PeriodParams) => {
-  let builtPeriod: string | undefined;
-  let builtStartDate: string | undefined;
-  let builtEndDate: string | undefined;
-  if (startDate && endDate) {
-    builtStartDate = startDate;
-    builtEndDate = endDate;
-    builtPeriod = convertDateRangeToPeriodString(startDate, endDate);
-  } else if (!period && !startDate && !endDate) {
-    builtPeriod = getDefaultPeriod();
-    [builtStartDate, builtEndDate] = convertPeriodStringToDateRange(builtPeriod);
-  } else if (!startDate && !endDate) {
-    builtPeriod = period;
-    [builtStartDate, builtEndDate] = convertPeriodStringToDateRange(builtPeriod);
-  } else if (startDate) {
-    builtStartDate = startDate;
-    [, builtEndDate] = convertPeriodStringToDateRange(period || getDefaultPeriod());
-  } else if (endDate) {
-    [builtStartDate] = convertPeriodStringToDateRange(period || getDefaultPeriod());
-    builtEndDate = endDate;
-  }
-
-  return { period: builtPeriod, startDate: builtStartDate, endDate: builtEndDate };
-};

@@ -154,63 +154,80 @@ describe('fieldsAndFilters', () => {
     });
 
     it('it can filter on equality', async () => {
-      const { body: entity } = await app.get('hierarchy/redblue/redblue/descendants', {
+      const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
         query: { field: 'code', filter: 'type==facility' },
       });
 
-      expect(entity.sort()).toEqual(
-        ['CELADON_GAME', 'CERULEAN_CAVE', 'PKMN_MANSION', 'PKMN_TOWER', 'SAFARI', 'SILPH'].sort(),
-      );
+      expect(entities).toIncludeSameMembers([
+        'CELADON_GAME',
+        'CERULEAN_CAVE',
+        'PKMN_MANSION',
+        'PKMN_TOWER',
+        'SAFARI',
+        'SILPH',
+      ]);
     });
 
     it('it can filter on inequality', async () => {
-      const { body: entity } = await app.get('hierarchy/redblue/redblue/descendants', {
+      const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
         query: { field: 'code', filter: 'type!=facility' },
       });
 
-      expect(entity.sort()).toEqual(
-        [
-          'BLUE',
-          'CELADON',
-          'CERULEAN',
-          'CINNABAR',
-          'FUCHSIA',
-          'KANTO',
-          'LAVENDER',
-          'PALLET',
-          'PEWTER',
-          'SAFFRON',
-          'VERMILLION',
-          'VIRIDIAN',
-        ].sort(),
-      );
+      expect(entities).toIncludeSameMembers([
+        'BLUE',
+        'CELADON',
+        'CERULEAN',
+        'CINNABAR',
+        'FUCHSIA',
+        'KANTO',
+        'LAVENDER',
+        'PALLET',
+        'PEWTER',
+        'SAFFRON',
+        'VERMILLION',
+        'VIRIDIAN',
+      ]);
     });
 
     it('it can filter on likeness', async () => {
-      const { body: entity } = await app.get('hierarchy/redblue/redblue/descendants', {
+      const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
         query: { field: 'code', filter: 'name=@Pokemon' },
       });
 
-      expect(entity.sort()).toEqual(['PKMN_MANSION', 'PKMN_TOWER'].sort());
+      expect(entities).toIncludeSameMembers(['PKMN_MANSION', 'PKMN_TOWER']);
     });
 
     it('it can filter on deep properties of object properties', async () => {
-      const { body: entity } = await app.get('hierarchy/redblue/redblue/descendants', {
+      const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
         query: { field: 'code', filter: 'attributes_type==gym' },
       });
 
-      expect(entity.sort()).toEqual(
-        [
-          'CINNABAR',
-          'SAFFRON',
-          'FUCHSIA',
-          'CELADON',
-          'VERMILLION',
-          'PEWTER',
-          'CERULEAN',
-          'VIRIDIAN',
-        ].sort(),
-      );
+      expect(entities).toIncludeSameMembers([
+        'CINNABAR',
+        'SAFFRON',
+        'FUCHSIA',
+        'CELADON',
+        'VERMILLION',
+        'PEWTER',
+        'CERULEAN',
+        'VIRIDIAN',
+      ]);
+    });
+
+    it('it can filter for multiple properties', async () => {
+      const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
+        query: { field: 'code', filter: 'type!=facility;name=@City' },
+      });
+
+      expect(entities).toIncludeSameMembers([
+        'SAFFRON',
+        'FUCHSIA',
+        'CELADON',
+        'VERMILLION',
+        'CERULEAN',
+        'PEWTER',
+        'VIRIDIAN',
+      ]);
     });
   });
 });
