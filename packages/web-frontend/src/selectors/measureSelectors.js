@@ -43,18 +43,6 @@ const getMeasureDataByOrgUnit = (measureData, code) =>
 const selectDisplayInfo = (measureOptions, hiddenMeasures, measureData, organisationUnitCode) =>
   safeGet(displayInfoCache, [measureOptions, hiddenMeasures, measureData, organisationUnitCode]);
 
-// const selectMeasureOptions = createSelector(
-//   [state => state.map.measureInfo, (_, mapOverlayIds) => mapOverlayIds],
-//   (measureInfo = {}, mapOverlayIds) => {
-//     const selectedMeasureOptions = mapOverlayIds.reduce((results, mapOverlayId) => {
-//       const { measureOptions = [] } = measureInfo[mapOverlayId] || {};
-//       return [...results, ...measureOptions];
-//     }, []);
-
-//     return selectedMeasureOptions.length > 0 ? selectedMeasureOptions : undefined;
-//   },
-// );
-
 export const selectMeasureOptions = createSelector(
   [state => state.map.measureInfo, (_, mapOverlayIds) => mapOverlayIds],
   (measureInfo = {}, mapOverlayIds) => {
@@ -70,18 +58,6 @@ export const selectMeasureOptions = createSelector(
 
     const filteredMeasureOptions = Object.values(measureOptionsByKey);
     return filteredMeasureOptions.length > 0 ? filteredMeasureOptions : undefined;
-  },
-);
-
-export const selectMeasureOptionsWithoutDuplicatedKey = createSelector(
-  [selectMeasureOptions],
-  measureOptions => {
-    const measureOptionsByKey = measureOptions.reduce((results, measureOption) => {
-      const { key } = measureOption;
-      return { ...results, [key]: measureOption };
-    }, {});
-
-    return Object.values(measureOptionsByKey);
   },
 );
 
