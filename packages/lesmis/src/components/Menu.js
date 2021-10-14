@@ -4,8 +4,9 @@
  *
  */
 import React, { useState } from 'react';
+import { useQueryClient } from 'react-query';
 import styled from 'styled-components';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import MuiButton from '@material-ui/core/Button';
 import MuiMenu from '@material-ui/core/Menu';
 import MuiMenuItem from '@material-ui/core/MenuItem';
@@ -86,8 +87,18 @@ const options = [
 
 export const Menu = () => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const history = useHistory();
   const { locale, entityCode, view } = useUrlParams();
   const { search } = useLocation();
+  const queryClient = useQueryClient();
+
+  const handleChange = (event, code) => {
+    console.log('code', code);
+    const link = `${makeEntityLink(code, entityCode, view)}${search}`;
+    history.replace(link);
+    queryClient.clear();
+    setAnchorEl(null);
+  };
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -117,7 +128,6 @@ export const Menu = () => {
         elevation={0}
         open={Boolean(anchorEl)}
         onClose={handleClose}
-        onClick={handleClose}
         variant="menu"
         anchorOrigin={{
           vertical: 'bottom',
@@ -133,8 +143,7 @@ export const Menu = () => {
             key={code}
             selected={code === locale}
             button
-            component={RouterLink}
-            to={`${makeEntityLink(code, entityCode, view)}${search}`}
+            onClick={event => handleChange(event, code)}
           >
             <Icon />
             {label}
