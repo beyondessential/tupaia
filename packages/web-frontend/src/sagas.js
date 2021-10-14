@@ -113,17 +113,17 @@ import {
 import { setProject, setRequestingAccess } from './projects/actions';
 import {
   selectCurrentInfoViewKey,
-  selectCurrentMapOverlayId,
+  selectCurrentMapOverlayCode,
   selectCurrentOrgUnitCode,
   selectShouldUseDashboardData,
   selectCurrentPeriodGranularity,
   selectCurrentProjectCode,
   selectCurrentExpandedViewConfig,
   selectCurrentExpandedViewContent,
-  selectDefaultMapOverlayId,
+  selectDefaultMapOverlayCode,
   selectIsMapOverlayInHierarchy,
   selectIsProject,
-  selectMapOverlayById,
+  selectMapOverlayByCode,
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitCountry,
@@ -862,12 +862,12 @@ function* watchFetchMoreSearchResults() {
  * Fetches data for a measure and write it to map state by calling fetchMeasureSuccess.
  *
  */
-function* fetchMeasureInfo(mapOverlayId) {
+function* fetchMeasureInfo(mapOverlayCode) {
   const state = yield select();
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
-  const measureParams = selectMapOverlayById(state, mapOverlayId);
+  const measureParams = selectMapOverlayByCode(state, mapOverlayCode);
 
-  if (!mapOverlayId || !organisationUnitCode || !measureParams) {
+  if (!mapOverlayCode || !organisationUnitCode || !measureParams) {
     // Don't try and fetch null measures
     yield put(cancelFetchMeasureData());
 
@@ -886,7 +886,7 @@ function* fetchMeasureInfo(mapOverlayId) {
       : getDefaultDates(measureParams);
 
   const urlParameters = {
-    mapOverlayId,
+    mapOverlayCode,
     organisationUnitCode,
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
@@ -906,7 +906,7 @@ function* fetchMeasureInfo(mapOverlayId) {
 }
 
 function* fetchMeasureInfoForMeasureChange(action) {
-  yield fetchMeasureInfo(action.mapOverlayId);
+  yield fetchMeasureInfo(action.mapOverlayCode);
 }
 
 function* watchMeasureChange() {
@@ -927,8 +927,8 @@ function* watchTryUpdateMeasureConfigAndWaitForHierarchyLoad() {
 function* updateMapOverlayOnceHierarchyLoads() {
   yield take(FETCH_MEASURES_SUCCESS);
   const state = yield select();
-  const currentMapOverlayId = selectCurrentMapOverlayId(state);
-  yield put(setMapOverlay(currentMapOverlayId));
+  const currentMapOverlayCode = selectCurrentMapOverlayCode(state);
+  yield put(setMapOverlay(currentMapOverlayCode));
 }
 
 function* updateMapOverlayDateRangeOnceHierarchyLoads(action) {
@@ -939,14 +939,14 @@ function* updateMapOverlayDateRangeOnceHierarchyLoads(action) {
     action.periodString,
     periodGranularity,
   );
-  yield put(updateMeasureConfig(selectCurrentMapOverlayId(state), { startDate, endDate }));
+  yield put(updateMeasureConfig(selectCurrentMapOverlayCode(state), { startDate, endDate }));
 }
 
 function* fetchCurrentMeasureInfo() {
   const state = yield select();
   const currentOrganisationUnitCode = selectCurrentOrgUnitCode(state);
   const { mapOverlayHierarchy } = state.mapOverlayBar;
-  const selectedMapOverlayId = selectCurrentMapOverlayId(state);
+  const selectedMapOverlayCode = selectCurrentMapOverlayCode(state);
 
   if (currentOrganisationUnitCode) {
     const isHierarchyPopulated = !!mapOverlayHierarchy.length;
@@ -956,11 +956,11 @@ function* fetchCurrentMeasureInfo() {
        * it is not selected through the mapOverlayBar UI
        * i.e. page reloaded when on org with measure selected
        */
-      yield put(setMapOverlay(selectedMapOverlayId));
-    } else if (!selectIsMapOverlayInHierarchy(state, selectedMapOverlayId)) {
-      // Update to the default measure ID if the current measure id isn't in the hierarchy
-      const newMapOverlayId = selectDefaultMapOverlayId(state);
-      yield put(setMapOverlay(newMapOverlayId));
+      yield put(setMapOverlay(selectedMapOverlayCode));
+    } else if (!selectIsMapOverlayInHierarchy(state, selectedMapOverlayCode)) {
+      // Update to the default measure code if the current measure code isn't in the hierarchy
+      const newMapOverlayCode = selectDefaultMapOverlayCode(state);
+      yield put(setMapOverlay(newMapOverlayCode));
     }
   }
 }
@@ -979,15 +979,15 @@ function* watchFetchMeasureSuccess() {
 function* fetchMeasureInfoForNewOrgUnit(action) {
   const { countryCode } = action.organisationUnit;
   const state = yield select();
-  const mapOverlayId = selectCurrentMapOverlayId(state);
+  const mapOverlayCode = selectCurrentMapOverlayCode(state);
   const oldOrgUnitCountry = state.map.measureInfo.currentCountry;
   if (oldOrgUnitCountry === countryCode) {
     // We are in the same country as before, no need to refetch measureData
     return;
   }
 
-  if (mapOverlayId) {
-    yield put(setMapOverlay(mapOverlayId));
+  if (mapOverlayCode) {
+    yield put(setMapOverlay(mapOverlayCode));
   }
 }
 

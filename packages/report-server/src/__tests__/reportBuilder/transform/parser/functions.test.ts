@@ -169,6 +169,21 @@ describe('functions', () => {
 
       it('returns undefined if all values are undefined', () =>
         expect(new TransformParser().evaluate('=undefined + undefined')).toBe(undefined));
+
+      it('returns string if both values are strings', () =>
+        expect(new TransformParser().evaluate("='cat' + 'dog'")).toBe('catdog'));
+
+      it('returns string if first value is string and second is number', () =>
+        expect(new TransformParser().evaluate("='age ' + 5")).toBe('age 5'));
+
+      it('returns string if first value is number and second is string', () =>
+        expect(new TransformParser().evaluate("=5 + ' cats'")).toBe('5 cats'));
+
+      it('returns string if two operations of two numbers and a string', () =>
+        expect(new TransformParser().evaluate("=5 + ' cats and ' + 4")).toBe('5 cats and 4'));
+
+      it('returns string if four operations of numbers and strings', () =>
+        expect(new TransformParser().evaluate("=5 + ' cats and ' + 4 + ' hello ' + 5")).toBe('5 cats and 4 hello 5'));
     });
 
     describe('divide', () => {
