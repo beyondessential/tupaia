@@ -77,19 +77,6 @@ const selectMeasureData = createSelector(
     return Object.keys(measureData).length === 0 ? undefined : Object.values(measureData);
   },
 );
-const selectHiddenMeasures = createSelector(
-  [state => state.map.measureInfo, (_, mapOverlayIds) => mapOverlayIds],
-  (measureInfo, mapOverlayIds) => {
-    let hiddenMeasures = {};
-
-    mapOverlayIds.forEach(mapOverlayId => {
-      const { hiddenMeasures: selectedHiddenMeasures } = measureInfo[mapOverlayId] || {};
-      hiddenMeasures = { ...hiddenMeasures, ...selectedHiddenMeasures };
-    });
-
-    return hiddenMeasures;
-  },
-);
 
 const selectMeasureLevel = createSelector(
   [state => state.map.measureInfo, (_, mapOverlayIds) => mapOverlayIds],
@@ -151,8 +138,8 @@ export const selectMeasuresWithDisplayInfo = createSelector(
     state => selectCountryHierarchy(state, state.map.currentCountry),
     (state, mapOverlayIds) => selectMeasureData(state, mapOverlayIds),
     (state, mapOverlayIds) => selectMeasureOptions(state, mapOverlayIds),
-    (state, mapOverlayIds) => selectHiddenMeasures(state, mapOverlayIds),
     (state, mapOverlayIds) => selectMeasureLevel(state, mapOverlayIds),
+    state => state.map.hiddenMeasures,
     state => state.map.currentCountry,
   ],
   (
@@ -161,8 +148,8 @@ export const selectMeasuresWithDisplayInfo = createSelector(
     country,
     measureData,
     measureOptions,
-    hiddenMeasures,
     measureLevel,
+    hiddenMeasures,
     currentCountry,
   ) => {
     if (!currentCountry || !measureData || !country) {

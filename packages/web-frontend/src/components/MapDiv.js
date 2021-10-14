@@ -79,6 +79,7 @@ export const MapDivComponent = ({
   tileSets,
   activeTileSet,
   onChangeTileSet,
+  hiddenValues,
   setValueHidden,
   measureInfo,
   isMeasureLoading,
@@ -94,6 +95,7 @@ export const MapDivComponent = ({
         {!isMeasureLoading && (
           <MapLegend
             setValueHidden={setValueHidden}
+            hiddenValues={hiddenValues}
             measureInfo={measureInfo}
             currentMapOverlayIds={currentMapOverlayIds}
             displayedMapOverlayIds={displayedMapOverlayIds}
@@ -113,6 +115,7 @@ MapDivComponent.propTypes = {
   isMeasureLoading: PropTypes.bool.isRequired,
   onChangeTileSet: PropTypes.func.isRequired,
   setValueHidden: PropTypes.func.isRequired,
+  hiddenValues: PropTypes.object.isRequired,
   displayedMapOverlayIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   currentMapOverlayIds: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
@@ -122,6 +125,7 @@ MapDivComponent.defaultProps = {};
 const mapStateToProps = state => {
   return {
     activeTileSet: selectActiveTileSet(state),
+    hiddenValues: state.map.hiddenMeasures,
     measureInfo: state.map.measureInfo,
     isMeasureLoading: state.map.isMeasureLoading,
     tileSets: selectTileSets(state),

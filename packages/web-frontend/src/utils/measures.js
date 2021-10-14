@@ -15,7 +15,7 @@ import {
 import { VALUE_TYPES } from '../components/View/constants';
 import { MAP_COLORS } from '../styles';
 import { formatDataValue } from './formatters';
-import { SCALE_TYPES } from '../constants';
+import { MARKER_TYPES, SCALE_TYPES } from '../constants';
 
 export const MEASURE_TYPE_ICON = 'icon';
 export const MEASURE_TYPE_COLOR = 'color';
@@ -173,10 +173,11 @@ const clampValue = (value, config) => {
 };
 
 export function processMeasureInfo(response) {
-  const { measureOptions, measureData, ...rest } = response;
+  const { measureOptions, displayType, ...rest } = response;
+  let { measureData } = response;
   const hiddenMeasures = {};
   const processedOptions = measureOptions.map(measureOption => {
-    const { values: mapOptionValues, type, scaleType } = measureOption;
+    const { values: mapOptionValues, type } = measureOption;
     const values = autoAssignColors(mapOptionValues);
     const valueMapping = createValueMapping(values, type);
 
@@ -203,6 +204,16 @@ export function processMeasureInfo(response) {
       valueMapping,
     };
   });
+
+  // remove measure units with no coordinates
+  // for circle heatmap remove empty values or values that are not of positive float type
+  if (displayType === MARKER_TYPES.CIRCLE_HEATMAP) {
+    measureData = measureData.filter(({ value }) => {
+      if (!value || value === '') return false;
+      const parsedValue = parseFloat(value);
+      return !Number.isNaN(parsedValue) && parsedValue >= 0;
+    });
+  }
 
   return {
     measureOptions: processedOptions,

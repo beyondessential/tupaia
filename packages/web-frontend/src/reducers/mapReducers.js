@@ -30,7 +30,6 @@ import {
   SET_DISPLAYED_MAP_OVERLAY,
 } from '../actions';
 
-import { MARKER_TYPES } from '../constants';
 import { DEFAULT_BOUNDS } from '../defaults';
 
 function position(state = { bounds: DEFAULT_BOUNDS }, action) {
@@ -89,57 +88,21 @@ function measureInfo(state = {}, action) {
       const {
         mapOverlayId,
         hiddenMeasures,
-        serieses,
+        serieses, // remove serieses
         measureLevel,
         ...restOfResponse
       } = action.response;
-
-      // remove measure units with no coordinates
-      let { measureData } = action.response;
-      // for circle heatmap remove empty values or values that are not of positive float type
-      if (action.response.displayType === MARKER_TYPES.CIRCLE_HEATMAP) {
-        measureData = measureData.filter(({ value }) => {
-          if (!value || value === '') return false;
-          const parsedValue = parseFloat(value);
-          return !Number.isNaN(parsedValue) && parsedValue >= 0;
-        });
-      }
-
-      const previousHiddenMeasures = (state[mapOverlayId] || {}).hiddenMeasures || {};
 
       return {
         ...state,
         [mapOverlayId]: {
           ...restOfResponse,
-          measureData,
           measureLevel: measureLevel.split(','),
-          // Combine default hiddenMeasures (action.response.hiddenMeasures) and hiddenMeasures in the state so that default hiddenMeasures are populated
-          // If hiddenMeasures in the state has the same value, override the default hiddenMeasures.
-          hiddenMeasures: {
-            ...hiddenMeasures,
-            ...previousHiddenMeasures,
-          },
         },
       };
     }
     case FETCH_MEASURE_DATA_ERROR:
       return action.error;
-    case HIDE_MAP_MEASURE:
-      return {
-        ...state,
-        hiddenMeasures: {
-          ...state.hiddenMeasures,
-          [action.key]: { ...state.hiddenMeasures[action.key], [action.value]: true },
-        },
-      };
-    case UNHIDE_MAP_MEASURE:
-      return {
-        ...state,
-        hiddenMeasures: {
-          ...state.hiddenMeasures,
-          [action.key]: { ...state.hiddenMeasures[action.key], [action.value]: false },
-        },
-      };
     default:
       return state;
   }
@@ -176,6 +139,31 @@ function currentCountry(state = null, action) {
       return action.countryCode;
     case CLEAR_MEASURE:
       return null;
+    default:
+      return state;
+  }
+}
+
+function hiddenMeasures(state = {}, action) {
+  switch (action.type) {
+    case FETCH_MEASURE_DATA_SUCCESS: {
+      const { hiddenMeasures: newHiddenMeasures } = action.response;
+      // Combine default hiddenMeasures (action.response.hiddenMeasures) and hiddenMeasures in the state so that default hiddenMeasures are populated
+      return {
+        ...state,
+        ...newHiddenMeasures,
+      };
+    }
+    case HIDE_MAP_MEASURE:
+      return {
+        ...state,
+        [action.key]: { ...state[action.key], [action.value]: true },
+      };
+    case UNHIDE_MAP_MEASURE:
+      return {
+        ...state,
+        [action.key]: { ...state[action.key], [action.value]: false },
+      };
     default:
       return state;
   }
@@ -261,4 +249,5 @@ export default combineReducers({
   isMeasureLoading,
   displayedMapOverlays,
   currentCountry,
+  hiddenMeasures,
 });

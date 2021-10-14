@@ -55,15 +55,22 @@ const getLegendComponent = measureType => {
 };
 
 export const Legend = React.memo(
-  ({ measureInfo, className, setValueHidden, displayedMapOverlayIds, currentMapOverlayIds }) => {
-    const { hideMeasures: hiddenValues } = measureInfo;
+  ({
+    className,
+    setValueHidden,
+    hiddenValues,
+    measureInfo,
+    displayedMapOverlayIds,
+    currentMapOverlayIds,
+  }) => {
+    if (Object.keys(measureInfo).length === 0) {
+      return null;
+    }
 
     const legendTypes = currentMapOverlayIds
       .map(mapOverlayId => measureInfo[mapOverlayId].measureOptions)
       .flat()
       .map(({ type }) => type);
-
-    console.log('legendTypes', legendTypes);
     const legendsHaveSameType = legendTypes.length > 1 && new Set(legendTypes).size === 1;
 
     return (
@@ -108,6 +115,7 @@ export const Legend = React.memo(
 Legend.propTypes = {
   measureInfo: PropTypes.object.isRequired,
   className: PropTypes.string,
+  hiddenValues: PropTypes.object,
   setValueHidden: PropTypes.func,
   displayedMapOverlayIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   currentMapOverlayIds: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -115,5 +123,6 @@ Legend.propTypes = {
 
 Legend.defaultProps = {
   className: null,
+  hiddenValues: {},
   setValueHidden: null,
 };
