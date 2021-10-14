@@ -25,6 +25,32 @@ export default {
   ],
 };
 
-export const SimpleLegend = () => <Legend serieses={mapOverlaySerieses} />;
+const mapOverlayIdA = 'mapOverlayIdA';
+const mapOverlayIdB = 'mapOverlayIdB';
 
-export const SpectrumLegend = () => <Legend serieses={spectrumMapOverlaySeries} />;
+export const SimpleLegend = () => (
+  <Legend
+    measureInfo={{ [mapOverlayIdA]: { serieses: spectrumMapOverlaySeries } }}
+    currentMapOverlayIds={[mapOverlayIdA]}
+    displayedMapOverlayIds={[mapOverlayIdA]}
+  />
+);
+
+export const SpectrumLegend = () => (
+  <Legend
+    measureInfo={{ [mapOverlayIdA]: { serieses: mapOverlaySerieses } }}
+    currentMapOverlayIds={[mapOverlayIdA]}
+    displayedMapOverlayIds={[mapOverlayIdA]}
+  />
+);
+
+export const MultipleLegends = () => (
+  <Legend
+    measureInfo={{
+      [mapOverlayIdA]: { serieses: spectrumMapOverlaySeries },
+      [mapOverlayIdB]: { serieses: mapOverlaySerieses },
+    }}
+    currentMapOverlayIds={[mapOverlayIdA, mapOverlayIdB]}
+    displayedMapOverlayIds={[mapOverlayIdA]}
+  />
+);

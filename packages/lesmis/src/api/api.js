@@ -12,6 +12,11 @@ const getApiUrl = () => {
   // if no env var, use sensible defaults based on the front end url
   const { hostname } = window.location; // eslint-disable-line no-undef
 
+  const { REACT_APP_LESMIS_API_URL } = process.env;
+  if (REACT_APP_LESMIS_API_URL) {
+    return REACT_APP_LESMIS_API_URL;
+  }
+
   // localhost becomes http://localhost:8060
   if (hostname === 'localhost') {
     return 'http://localhost:8060';
