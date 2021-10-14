@@ -99,6 +99,7 @@ export const MapDivComponent = ({
             measureInfo={measureInfo}
             currentMapOverlayIds={currentMapOverlayIds}
             displayedMapOverlayIds={displayedMapOverlayIds}
+            seriesesKey="measureOptions"
           />
         )}
       </BottomRow>

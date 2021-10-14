@@ -62,20 +62,21 @@ export const Legend = React.memo(
     hiddenValues,
     currentMapOverlayIds,
     displayedMapOverlayIds,
+    seriesesKey = 'serieses',
   }) => {
     if (Object.keys(baseMeasureInfo).length === 0) {
       return null;
     }
 
-    const measureInfo = currentMapOverlayIds.reduce((acc, mapOverlayId) => {
-      const serieses = baseMeasureInfo[mapOverlayId].serieses.filter(
+    const measureInfo = currentMapOverlayIds.reduce((results, mapOverlayId) => {
+      const serieses = baseMeasureInfo[mapOverlayId][seriesesKey].filter(
         ({ type, hideFromLegend, values = [] }) =>
           ![MEASURE_TYPE_RADIUS, MEASURE_TYPE_POPUP_ONLY].includes(type) &&
           hideFromLegend !== true &&
           // Spetrum legend has values = []
           (values.length === 0 || values.filter(value => !value?.hideFromLegend).length > 0),
       );
-      return { ...acc, [mapOverlayId]: { serieses } };
+      return { ...results, [mapOverlayId]: { serieses } };
     }, {});
 
     const legendTypes = currentMapOverlayIds
