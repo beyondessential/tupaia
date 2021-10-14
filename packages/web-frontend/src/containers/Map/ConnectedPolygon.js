@@ -46,7 +46,7 @@ Polygon.defaultProps = {
 const mapStateToProps = state => {
   const { displayedMapOverlays } = state.map;
   const currentMapOverlayIds = selectCurrentMapOverlayIds(state);
-  const measureOptions = selectMeasureOptions(state, currentMapOverlayIds);
+  const measureOptions = selectMeasureOptions(state, currentMapOverlayIds) || [];
   const measureOrgUnits = selectHasPolygonMeasure(state)
     ? selectMeasuresWithDisplayInfo(state, displayedMapOverlays)
     : [];

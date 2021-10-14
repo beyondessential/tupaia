@@ -72,7 +72,8 @@ export const Legend = React.memo(
         ({ type, hideFromLegend, values = [] }) =>
           ![MEASURE_TYPE_RADIUS, MEASURE_TYPE_POPUP_ONLY].includes(type) &&
           hideFromLegend !== true &&
-          values.filter(value => !value?.hideFromLegend).length > 0,
+          // Spetrum legend has values = []
+          (values.length === 0 || values.filter(value => !value?.hideFromLegend).length > 0),
       );
       return { ...acc, [mapOverlayId]: { measureOptions: serieses } };
     }, {});
