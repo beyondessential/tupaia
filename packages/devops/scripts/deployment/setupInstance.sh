@@ -2,32 +2,25 @@
 
 # Possibly: aws configure to set region for cli
 
-# install node and yarn
-curl -sL https://deb.nodesource.com/setup_12.x -o nodesource_setup.sh
-bash nodesource_setup.sh
-rm nodesource_setup.sh
-apt-get install nodejs <<< "Y"
-npm install --global yarn
-
 # install nginx and add h5bp config
-apt-get install nginx <<< "Y"
+sudo apt-get install -yqq nginx
 git clone https://github.com/h5bp/server-configs-nginx.git
 cd ./server-configs-nginx
 git checkout tags/2.0.0
 cd ..
-sudo cp -R ./server-configs-nginx/h5bp/ /etc/nginx/
+cp -R ./server-configs-nginx/h5bp/ /etc/nginx/
 rm -rf server-configs-nginx
 
-# install pm2
-npm i --global pm2
-pm2 install pm2-logrotate
+# install node and yarn
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+nvm install 12
+npm install --global yarn
 
-# do the rest of the operations as the ubuntu user, so everything is available correctly
-echo "Changing user"
-whoami
-su - ubuntu
-echo "Changed user"
-whoami
+# install pm2
+npm install --global pm2
+pm2 install pm2-logrotate
 
 # install lastpass
 sudo apt-get --no-install-recommends -yqq install \
@@ -42,11 +35,11 @@ sudo apt-get --no-install-recommends -yqq install \
   libssl1.1 \
   pkg-config \
   ca-certificates \
-  xclip <<< "Y"
+  xclip
 
 git clone https://github.com/lastpass/lastpass-cli.git
 cd lastpass-cli
-make
+sudo make
 sudo make install
 cd ../
 rm -rf lastpass-cli
