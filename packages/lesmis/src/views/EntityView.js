@@ -9,7 +9,7 @@ import { LocationHeader, Toolbar, Breadcrumbs, Footer, FlexSpaceBetween } from '
 import { DashboardView } from './DashboardView';
 import { MapView } from './MapView';
 import { useEntityBreadcrumbs } from '../utils';
-import { Menu } from '../components/Menu';
+import { LocaleMenu } from '../components/LocaleMenu';
 
 export const EntityView = () => {
   const match = useRouteMatch();
@@ -21,7 +21,7 @@ export const EntityView = () => {
       <Toolbar>
         <FlexSpaceBetween>
           <Breadcrumbs breadcrumbs={breadcrumbs} isLoading={isLoading} />
-          <Menu />
+          <LocaleMenu />
         </FlexSpaceBetween>
       </Toolbar>
       <LocationHeader />

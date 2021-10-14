@@ -85,7 +85,7 @@ const options = [
   { code: 'lo', label: 'Laotian', Icon: LaosFlagSmall },
 ];
 
-export const Menu = () => {
+export const LocaleMenu = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory();
   const { locale, entityCode, view } = useUrlParams();
@@ -93,11 +93,13 @@ export const Menu = () => {
   const queryClient = useQueryClient();
 
   const handleChange = (event, code) => {
-    console.log('code', code);
     const link = `${makeEntityLink(code, entityCode, view)}${search}`;
     history.replace(link);
-    queryClient.clear();
     setAnchorEl(null);
+    queryClient.clear();
+
+    // eslint-disable-next-line no-undef
+    window.localStorage.setItem('lesmis-locale', code);
   };
 
   const handleClick = event => {

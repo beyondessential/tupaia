@@ -5,6 +5,7 @@
  */
 import axios from 'axios';
 import FetchError from './fetchError';
+import { DEFAULT_LOCALE } from '../constants';
 
 const getApiUrl = () => {
   // if no env var, use sensible defaults based on the front end url
@@ -39,10 +40,11 @@ axios.defaults.withCredentials = true;
 const timeout = 45 * 1000; // 45 seconds
 
 const getRequestOptions = options => {
+  // eslint-disable-next-line no-undef
   const locale = window.location.pathname.split('/')[1];
   let requestOptions = { timeout, ...options };
 
-  if (locale !== 'en') {
+  if (locale !== DEFAULT_LOCALE) {
     requestOptions = {
       ...options,
       params: {
