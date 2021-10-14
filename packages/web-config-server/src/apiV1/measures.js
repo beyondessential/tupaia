@@ -5,7 +5,7 @@ import { findAccessibleMapOverlays, findAccessibleGroupedMapOverlays } from './u
 export default class extends RouteHandler {
   static PermissionsChecker = PermissionsChecker;
 
-  /** 
+  /**
    * Sample Response:
        {
           organisationUnitType: 'Country',
@@ -18,7 +18,7 @@ export default class extends RouteHandler {
                 {
                   mapOverlayId: 'Laos_Schools_A',
                   name: 'Overlay A',
-                  ...presentationOptions,
+                  ...presentationConfig,
                 }
               ],
             },
@@ -31,10 +31,10 @@ export default class extends RouteHandler {
                     {
                       mapOverlayId: 'Laos_Schools_D',
                       name: 'Overlay D',
-                      ...presentationOptions,
-                    }, 
+                      ...presentationConfig,
+                    },
                   ],
-                }, 
+                },
               ],
             }
           ],
@@ -44,7 +44,7 @@ export default class extends RouteHandler {
     const { entity, query } = this;
     const { code: entityCode, name: entityName, country_code: entityCountryCode } = entity;
     const overlayCode = entityCountryCode || entityCode;
-    const userGroups = await this.req.getUserGroups(entityCode);
+    const permissionGroups = await this.req.getPermissionGroups(entityCode);
 
     let accessibleMapOverlayGroups = [];
     // Projects do not have a country_code
@@ -54,7 +54,7 @@ export default class extends RouteHandler {
         this.req.models,
         overlayCode,
         query.projectCode,
-        userGroups,
+        permissionGroups,
       );
 
       // Find the accessible map overlay groups using the accessible map overlays above

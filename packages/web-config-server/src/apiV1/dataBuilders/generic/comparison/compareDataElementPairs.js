@@ -9,7 +9,7 @@ import flatten from 'lodash.flatten';
  *  [...]
  * ]
  *
- * presentationOptions must have the structure:
+ * presentation config must have the structure:
  * {
  *  "rowHeader": { "name": "Indicators", "color": "#efeff0"},
  *  "leftColumn": {"color": "#22c7fc", "header": "Normal"},
@@ -17,10 +17,7 @@ import flatten from 'lodash.flatten';
  *  "dataPairNames": ["Pair 1 Name", "Pair 2 Name", ...]
  * }
  */
-export const compareDataElementPairs = async (
-  { dataBuilderConfig, query },
-  aggregator,
-) => {
+export const compareDataElementPairs = async ({ dataBuilderConfig, query }, aggregator) => {
   const { organisationUnitCode } = query;
   const {
     dataElementPairs,

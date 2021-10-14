@@ -85,38 +85,38 @@ const generateUrls = async (db, options) => {
   await db.executeSql(`
     DROP TABLE IF EXISTS ${tableOverlayCountry};
     CREATE TEMP TABLE ${tableOverlayCountry} AS
-    SELECT id AS overlay_id, unnest("countryCodes") AS "orgUnit"
-    FROM "mapOverlay";
+    SELECT id AS overlay_id, unnest("country_codes") AS "orgUnit"
+    FROM "map_overlay";
 
     DROP TABLE IF EXISTS ${tableOverlayProject};
     CREATE TEMP TABLE ${tableOverlayProject} AS
-    SELECT id AS overlay_id, unnest("projectCodes") AS project
-    FROM "mapOverlay";
+    SELECT id AS overlay_id, unnest("project_codes") AS project
+    FROM "map_overlay";
   `);
 
   const queryOptions = {
     multiJoin: [
       {
         joinWith: tableOverlayCountry,
-        joinCondition: [`${tableOverlayCountry}.overlay_id`, 'mapOverlay.id'],
+        joinCondition: [`${tableOverlayCountry}.overlay_id`, 'map_overlay.id'],
       },
       {
         joinWith: tableOverlayProject,
-        joinCondition: [`${tableOverlayProject}.overlay_id`, 'mapOverlay.id'],
+        joinCondition: [`${tableOverlayProject}.overlay_id`, 'map_overlay.id'],
       },
     ],
   };
 
-  const overlays = await db.find('mapOverlay', where, queryOptions);
-  const linkedOverlays = await db.find('mapOverlay', {
-    id: getUniqueEntries(overlays.map(o => o.linkedMeasures).flat()),
+  const overlays = await db.find('map_overlay', where, queryOptions);
+  const linkedOverlays = await db.find('map_overlay', {
+    id: getUniqueEntries(overlays.map(o => o.linked_measures).flat()),
   });
   const linkedOverlayIds = linkedOverlays.map(({ id }) => id);
 
   return overlays
     .filter(o => !linkedOverlayIds.includes(o.id))
     .map(overlay => {
-      const { id, project, orgUnit, linkedMeasures } = overlay;
+      const { id, project, orgUnit, linked_measures: linkedMeasures } = overlay;
 
       return {
         id: linkedMeasures ? [id, ...linkedMeasures] : id,
