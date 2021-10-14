@@ -16,7 +16,6 @@ import {
   selectCurrentMapOverlays,
   selectMeasureOptions,
   selectOrgUnitCountry,
-  selectMeasuresWithDisplayInfo,
   selectRenderedDMeasuresWithDisplayInfo,
 } from '../../selectors';
 import { Tooltip } from '../../components/Tooltip';

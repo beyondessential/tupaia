@@ -59,13 +59,23 @@ export const Legend = React.memo(
     className,
     setValueHidden,
     hiddenValues,
-    measureInfo,
+    measureInfo: baseMeasureInfo,
     displayedMapOverlayIds,
     currentMapOverlayIds,
   }) => {
-    if (Object.keys(measureInfo).length === 0) {
+    if (Object.keys(baseMeasureInfo).length === 0) {
       return null;
     }
+
+    const measureInfo = currentMapOverlayIds.reduce((acc, mapOverlayId) => {
+      const serieses = baseMeasureInfo[mapOverlayId].measureOptions.filter(
+        ({ type, hideFromLegend, values = [] }) =>
+          ![MEASURE_TYPE_RADIUS, MEASURE_TYPE_POPUP_ONLY].includes(type) &&
+          hideFromLegend !== true &&
+          values.filter(value => !value?.hideFromLegend).length > 0,
+      );
+      return { ...acc, [mapOverlayId]: { measureOptions: serieses } };
+    }, {});
 
     const legendTypes = currentMapOverlayIds
       .map(mapOverlayId => measureInfo[mapOverlayId].measureOptions)
@@ -76,12 +86,7 @@ export const Legend = React.memo(
     return (
       <>
         {currentMapOverlayIds.map(mapOverlayId => {
-          const serieses = measureInfo[mapOverlayId].measureOptions.filter(
-            ({ type, hideFromLegend, values = [] }) =>
-              ![MEASURE_TYPE_RADIUS, MEASURE_TYPE_POPUP_ONLY].includes(type) &&
-              hideFromLegend !== true &&
-              values.filter(value => !value?.hideFromLegend).length > 0,
-          );
+          const serieses = measureInfo[mapOverlayId].measureOptions;
 
           const hasIconLayer = serieses.some(l => l.type === MEASURE_TYPE_ICON);
           const hasRadiusLayer = serieses.some(l => l.type === MEASURE_TYPE_RADIUS);

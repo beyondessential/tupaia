@@ -43,15 +43,45 @@ const getMeasureDataByOrgUnit = (measureData, code) =>
 const selectDisplayInfo = (measureOptions, hiddenMeasures, measureData, organisationUnitCode) =>
   safeGet(displayInfoCache, [measureOptions, hiddenMeasures, measureData, organisationUnitCode]);
 
+// const selectMeasureOptions = createSelector(
+//   [state => state.map.measureInfo, (_, mapOverlayIds) => mapOverlayIds],
+//   (measureInfo = {}, mapOverlayIds) => {
+//     const selectedMeasureOptions = mapOverlayIds.reduce((results, mapOverlayId) => {
+//       const { measureOptions = [] } = measureInfo[mapOverlayId] || {};
+//       return [...results, ...measureOptions];
+//     }, []);
+
+//     return selectedMeasureOptions.length > 0 ? selectedMeasureOptions : undefined;
+//   },
+// );
+
 export const selectMeasureOptions = createSelector(
   [state => state.map.measureInfo, (_, mapOverlayIds) => mapOverlayIds],
   (measureInfo = {}, mapOverlayIds) => {
-    const selectedMeasureOptions = mapOverlayIds.reduce((accumulator, mapOverlayId) => {
+    const selectedMeasureOptions = mapOverlayIds.reduce((results, mapOverlayId) => {
       const { measureOptions = [] } = measureInfo[mapOverlayId] || {};
-      return [...accumulator, ...measureOptions];
+      return [...results, ...measureOptions];
     }, []);
 
-    return selectedMeasureOptions.length > 0 ? selectedMeasureOptions : undefined;
+    const measureOptionsByKey = selectedMeasureOptions.reduce((results, measureOption) => {
+      const { key } = measureOption;
+      return results[key] ? results : { ...results, [key]: measureOption };
+    }, {});
+
+    const filteredMeasureOptions = Object.values(measureOptionsByKey);
+    return filteredMeasureOptions.length > 0 ? filteredMeasureOptions : undefined;
+  },
+);
+
+export const selectMeasureOptionsWithoutDuplicatedKey = createSelector(
+  [selectMeasureOptions],
+  measureOptions => {
+    const measureOptionsByKey = measureOptions.reduce((results, measureOption) => {
+      const { key } = measureOption;
+      return { ...results, [key]: measureOption };
+    }, {});
+
+    return Object.values(measureOptionsByKey);
   },
 );
 
@@ -89,28 +119,6 @@ const selectMeasureLevel = createSelector(
     });
 
     return [...new Set(measureLevelArray)];
-  },
-);
-
-const selectDisplayLevelAncestor = createSelector(
-  [
-    state => selectCountryHierarchy(state, selectCurrentOrgUnitCode(state)),
-    selectCurrentOrgUnitCode,
-    state => selectMeasureOptions(state, state.map.displayedMapOverlays),
-  ],
-  (country, currentOrganisationUnitCode, measureOptions) => {
-    if (!country || !currentOrganisationUnitCode || !measureOptions) {
-      return undefined;
-    }
-
-    const displayOnLevel = measureOptions.map(option => option.displayOnLevel).find(level => level);
-    if (!displayOnLevel) {
-      return undefined;
-    }
-
-    return selectAncestors(country, currentOrganisationUnitCode, displayOnLevel).find(
-      ancestor => ancestor.type === displayOnLevel,
-    );
   },
 );
 
@@ -199,6 +207,28 @@ const selectMeasuresWithDisplayAndOrgUnitData = createSelector(
       ...data,
       ...getOrgUnitFromCountry(country, data.organisationUnitCode),
     }));
+  },
+);
+
+const selectDisplayLevelAncestor = createSelector(
+  [
+    state => selectCountryHierarchy(state, selectCurrentOrgUnitCode(state)),
+    selectCurrentOrgUnitCode,
+    state => selectMeasureOptions(state, state.map.displayedMapOverlays),
+  ],
+  (country, currentOrganisationUnitCode, measureOptions) => {
+    if (!country || !currentOrganisationUnitCode || !measureOptions) {
+      return undefined;
+    }
+
+    const displayOnLevel = measureOptions.map(option => option.displayOnLevel).find(level => level);
+    if (!displayOnLevel) {
+      return undefined;
+    }
+
+    return selectAncestors(country, currentOrganisationUnitCode, displayOnLevel).find(
+      ancestor => ancestor.type === displayOnLevel,
+    );
   },
 );
 
