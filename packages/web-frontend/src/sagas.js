@@ -863,7 +863,6 @@ function* watchFetchMoreSearchResults() {
  * Fetches data for a measure and write it to map state by calling fetchMeasureSuccess.
  *
  */
-// TODO: PHX-1 set multiple overlay period in URL, currently use the first selected map overlay period
 function* fetchMeasureInfo() {
   const state = yield select();
   const mapOverlayIds = selectCurrentMapOverlayIds(state);
@@ -877,18 +876,19 @@ function* fetchMeasureInfo() {
     return;
   }
 
+  // TODO: PHX-103 - Now only select the last map overlay start date and end date, will use both in PHX-103
   for (const mapOverlayId of mapOverlayIds) {
-    const measureParams = selectMapOverlayById(state, mapOverlayId);
-    if (!measureParams) {
+    const mapOverlayParams = selectMapOverlayById(state, mapOverlayIds[mapOverlayIds.length - 1]);
+    if (!mapOverlayParams) {
       yield put(cancelFetchMeasureData());
       return;
     }
 
     // If the view should be constrained to a date range and isn't, constrain it
     const { startDate, endDate } =
-      measureParams.startDate || measureParams.endDate
-        ? measureParams
-        : getDefaultDates(measureParams);
+      mapOverlayParams.startDate || mapOverlayParams.endDate
+        ? mapOverlayParams
+        : getDefaultDates(mapOverlayParams);
     const urlParameters = {
       mapOverlayId,
       organisationUnitCode,
@@ -898,6 +898,7 @@ function* fetchMeasureInfo() {
       projectCode: activeProjectCode,
     };
     const requestResourceUrl = `measureData?${queryString.stringify(urlParameters)}`;
+
     try {
       const measureInfoResponse = yield call(request, requestResourceUrl);
       const measureInfo = processMeasureInfo(measureInfoResponse);

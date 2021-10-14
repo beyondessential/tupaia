@@ -251,7 +251,13 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...dispatchProps,
     ...ownProps,
     onUpdateMeasurePeriod: (startDate, endDate) =>
-      dispatch(updateMeasureConfig(currentMapOverlayIds[0], { startDate, endDate })),
+      // TODO: PHX-103 - Now only select the last map overlay start date and end date, will use both in PHX-103
+      dispatch(
+        updateMeasureConfig(currentMapOverlayIds[currentMapOverlayIds.length - 1], {
+          startDate,
+          endDate,
+        }),
+      ),
     onSelectMapOverlay,
     onUnSelectMapOverlay,
   };
