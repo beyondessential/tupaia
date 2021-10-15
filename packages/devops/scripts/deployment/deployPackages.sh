@@ -5,6 +5,9 @@ TUPAIA_DIR=$DIR/../../../..
 BRANCH=$1
 PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 
+# Initialise NVM (which sets the path for access to npm, yarn etc. as well)
+$HOME_DIR/.nvm/nvm.sh
+
 # Install external dependencies and build internal dependencies
 cd ${TUPAIA_DIR}
 yarn install
