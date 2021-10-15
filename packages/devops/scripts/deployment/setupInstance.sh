@@ -8,7 +8,7 @@ git clone https://github.com/h5bp/server-configs-nginx.git
 cd ./server-configs-nginx
 git checkout tags/2.0.0
 cd ..
-cp -R ./server-configs-nginx/h5bp/ /etc/nginx/
+sudo cp -R ./server-configs-nginx/h5bp/ /etc/nginx/
 rm -rf server-configs-nginx
 
 # install node and yarn

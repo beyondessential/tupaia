@@ -55,7 +55,6 @@ for PACKAGE in ${PACKAGES[@]}; do
         yarn migrate
 
         # After running migrations it's good to ensure that the analytics table is fully built
-        yarn download-env-vars $BRANCH data-api
         echo "Building analytics table"
         yarn workspace @tupaia/data-api install-mv-refresh
         yarn workspace @tupaia/data-api build-analytics-table
