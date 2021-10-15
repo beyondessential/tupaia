@@ -14,8 +14,26 @@ const Container = styled.div`
   padding: 1rem;
 `;
 
+const mapOverlayIdA = 'mapOverlayIdA';
+const mapOverlayIdB = 'mapOverlayIdB';
+
 export default {
   title: 'Map/Legend',
+  component: Legend,
+  argTypes: {
+    displayedMapOverlayIds: {
+      control: 'check',
+      options: [mapOverlayIdA, mapOverlayIdB],
+      description: 'Map overlays that have been switched on',
+    },
+    currentMapOverlayIds: {
+      description: 'Map overlays that has been selected in hierarchy',
+      control: null,
+    },
+    measureInfo: {
+      control: null,
+    },
+  },
   decorators: [
     Story => (
       <Container>
@@ -25,32 +43,35 @@ export default {
   ],
 };
 
-const mapOverlayIdA = 'mapOverlayIdA';
-const mapOverlayIdB = 'mapOverlayIdB';
+const LegendStory = ({ ...args }) => <Legend {...args} />;
 
-export const SimpleLegend = () => (
-  <Legend
-    measureInfo={{ [mapOverlayIdA]: { serieses: spectrumMapOverlaySeries } }}
-    currentMapOverlayIds={[mapOverlayIdA]}
-    displayedMapOverlayIds={[mapOverlayIdA]}
-  />
-);
+export const MultipleLegends = LegendStory.bind({});
 
-export const SpectrumLegend = () => (
-  <Legend
-    measureInfo={{ [mapOverlayIdA]: { serieses: mapOverlaySerieses } }}
-    currentMapOverlayIds={[mapOverlayIdA]}
-    displayedMapOverlayIds={[mapOverlayIdA]}
-  />
-);
+MultipleLegends.args = {
+  measureInfo: {
+    [mapOverlayIdA]: { serieses: spectrumMapOverlaySeries },
+    [mapOverlayIdB]: { serieses: mapOverlaySerieses },
+  },
+  currentMapOverlayIds: [mapOverlayIdA, mapOverlayIdB],
+  displayedMapOverlayIds: [mapOverlayIdA],
+};
 
-export const MultipleLegends = () => (
-  <Legend
-    measureInfo={{
-      [mapOverlayIdA]: { serieses: spectrumMapOverlaySeries },
-      [mapOverlayIdB]: { serieses: mapOverlaySerieses },
-    }}
-    currentMapOverlayIds={[mapOverlayIdA, mapOverlayIdB]}
-    displayedMapOverlayIds={[mapOverlayIdA]}
-  />
-);
+export const SimpleLegend = LegendStory.bind({});
+
+SimpleLegend.args = {
+  measureInfo: {
+    [mapOverlayIdA]: { serieses: spectrumMapOverlaySeries },
+  },
+  currentMapOverlayIds: [mapOverlayIdA],
+  displayedMapOverlayIds: [mapOverlayIdA],
+};
+
+export const SpectrumLegend = LegendStory.bind({});
+
+SpectrumLegend.args = {
+  measureInfo: {
+    [mapOverlayIdA]: { serieses: mapOverlaySerieses },
+  },
+  currentMapOverlayIds: [mapOverlayIdA],
+  displayedMapOverlayIds: [mapOverlayIdA],
+};
