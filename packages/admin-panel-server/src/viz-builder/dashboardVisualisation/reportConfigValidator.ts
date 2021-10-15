@@ -54,16 +54,19 @@ const dateSpecsValidator = polymorphic({
 });
 
 export const configValidator = yup.object().shape({
-  fetch: yup.object().shape(
-    {
-      dataElements: dataElementValidator,
-      dataGroups: dataGroupValidator,
-      aggregations: yup.array().of(aggregationValidator),
-      startDate: dateSpecsValidator,
-      endDate: dateSpecsValidator,
-    },
-    [['dataElements', 'dataGroups']],
-  ),
+  fetch: yup
+    .object()
+    .shape(
+      {
+        dataElements: dataElementValidator,
+        dataGroups: dataGroupValidator,
+        aggregations: yup.array().of(aggregationValidator),
+        startDate: dateSpecsValidator,
+        endDate: dateSpecsValidator,
+      },
+      [['dataElements', 'dataGroups']],
+    )
+    .required(),
   transform: yup.array().required(),
   output: yup.object(),
 });
