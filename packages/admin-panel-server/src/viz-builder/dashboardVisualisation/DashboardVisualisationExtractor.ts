@@ -9,7 +9,7 @@ import { snakeKeys, yup } from '@tupaia/utils';
 
 import { PreviewMode, DashboardVisualisationResource } from '../types';
 import { LegacyReport, Report } from '..';
-import { baseVisualisationValidator } from './validators';
+import { baseVisualisationValidator, baseVisualisationDataValidator } from './validators';
 
 // expands object types recursively
 // TODO: Move this type to a generic @tupaia/utils-ts package
@@ -89,15 +89,13 @@ export class DashboardVisualisationExtractor<
 
   private vizToReport(previewMode?: PreviewMode): Record<keyof Report, unknown> {
     const { code, permissionGroup, data, presentation } = this.visualisation;
+    const validatedData = baseVisualisationDataValidator.validateSync(data);
 
-    const { fetch: vizFetch, aggregate, transform } = data;
-    const validatedVizFetch = yup
-      .object()
-      .required('fetch is a required field')
-      .validateSync(vizFetch);
+    const { fetch: vizFetch, aggregate, transform } = validatedData;
+
     const fetch = omitBy(
       {
-        ...validatedVizFetch,
+        ...vizFetch,
         aggregations: aggregate,
       },
       isNil,

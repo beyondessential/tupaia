@@ -12,6 +12,10 @@ export const baseVisualisationValidator = yup.object().shape({
   data: yup.object().required(),
 });
 
+export const baseVisualisationDataValidator = yup.object().shape({
+  fetch: yup.object().required(),
+});
+
 export const draftReportValidator = yup.object().shape({
   code: yup.string().required('Requires "code" for the visualisation'),
   config: configValidator,
