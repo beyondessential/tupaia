@@ -37,8 +37,8 @@ const buildListItems = items => {
       }
 
       return {
-        data: item.id,
-        key: item.id,
+        data: item.code,
+        key: item.code,
         title: item.label,
       };
     })
@@ -52,8 +52,8 @@ const renderList = (filterItem, onFilterchange, currentFilter) => {
   } else {
     listItems = [
       {
-        data: filterItem.id,
-        key: filterItem.id,
+        data: filterItem.code,
+        key: filterItem.code,
         title: filterItem.label,
       },
     ];
@@ -61,13 +61,13 @@ const renderList = (filterItem, onFilterchange, currentFilter) => {
   const title = filterItem.category ? filterItem.category : '';
 
   return (
-    <li style={styles.listItem} key={filterItem.id}>
+    <li style={styles.listItem} key={filterItem.code}>
       <List
         title={title}
         items={listItems}
         displayArrows={false}
         onSelectItem={onFilterchange}
-        selectedItems={[currentFilter.id]}
+        selectedItems={[currentFilter.code]}
       />
     </li>
   );
@@ -82,8 +82,8 @@ const getFlattenedIds = filterItems => {
   let flattenedItems = {};
 
   filterItems.forEach(filterItem => {
-    if (filterItem.id) {
-      flattenedItems[filterItem.id] = filterItem.value;
+    if (filterItem.code) {
+      flattenedItems[filterItem.code] = filterItem.value;
     } else if (filterItem.items) {
       flattenedItems = { ...flattenedItems, ...getFlattenedIds(filterItem.items) };
     }
