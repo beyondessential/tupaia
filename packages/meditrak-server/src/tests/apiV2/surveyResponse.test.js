@@ -12,7 +12,7 @@ import {
   upsertEntity,
   upsertFacility,
   upsertQuestion,
-} from '../../testUtilities';
+} from '../testUtilities';
 
 const getRandomSurveyResponse = async models => {
   const surveyResponses = await models.surveyResponse.all();
