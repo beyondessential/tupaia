@@ -78,14 +78,14 @@ const renderList = (filterItem, onFilterchange, currentFilter) => {
  *
  * @param {filterShape} filterItems
  */
-const getFlattenedIds = filterItems => {
+const getFlattenedCodes = filterItems => {
   let flattenedItems = {};
 
   filterItems.forEach(filterItem => {
     if (filterItem.code) {
       flattenedItems[filterItem.code] = filterItem.value;
     } else if (filterItem.items) {
-      flattenedItems = { ...flattenedItems, ...getFlattenedIds(filterItem.items) };
+      flattenedItems = { ...flattenedItems, ...getFlattenedCodes(filterItem.items) };
     }
   });
 
@@ -114,11 +114,11 @@ const FilterSelect = ({
   showLoadingIcon,
   theme: { color },
 }) => {
-  const flatFilterValues = getFlattenedIds(filters);
+  const flatFilterValues = getFlattenedCodes(filters);
 
-  const onFilterSelect = id => {
+  const onFilterSelect = code => {
     onFilterClose();
-    onFilterChange(flatFilterValues[id]);
+    onFilterChange(flatFilterValues[code]);
   };
 
   return (
@@ -139,7 +139,7 @@ const FilterSelect = ({
 
 export const filterShape = PropTypes.shape({
   label: PropTypes.string,
-  id: PropTypes.string,
+  code: PropTypes.string,
   value: PropTypes.any,
 });
 
