@@ -39,10 +39,7 @@ const externals = [
 export default [
   {
     input: 'src/library.js',
-    output: [
-      { file: 'lib/index.js', format: 'cjs', plugins: [terser()] },
-      { file: 'lib/index.esm.js', format: 'esm', plugins: [terser()] },
-    ],
+    output: [{ file: 'lib/index.js', format: 'cjs', plugins: [terser()] }],
     plugins: [...plugins, del({ targets: ['lib'] })],
     external: externals,
   },
