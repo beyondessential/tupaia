@@ -1,9 +1,5 @@
 import boto3
-import collections
-import datetime
 import re
-import asyncio
-import functools
 from utilities.utilities import *
 
 ec2 = boto3.resource('ec2')
