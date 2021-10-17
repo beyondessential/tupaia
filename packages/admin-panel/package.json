@@ -13,7 +13,7 @@
   "scripts": {
     "build:library": "rollup -c",
     "watch:library": "rollup -c -w",
-    "build": "test -n \"$BUILD_LIBRARY\" && yarn build:library || GENERATE_SOURCEMAP=false react-scripts build",
+    "build": "test -n \"$BUILD_LIBRARY\" && npm run build:library || GENERATE_SOURCEMAP=false react-scripts build",
     "cypress:open": "cross-env NODE_ENV=test yarn cypress open",
     "cypress:run": "cross-env NODE_ENV=test yarn cypress run",
     "eject": "react-scripts eject",
