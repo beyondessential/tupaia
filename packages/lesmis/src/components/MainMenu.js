@@ -159,7 +159,8 @@ export const MainMenu = () => {
             </ListItemIcon>
             <ListItemText primary="Contact us" />
           </ListItemLink>
-          {isLesmisAdmin && <AdminPanelLinks />}
+          {/*// Todo: Display admin-panel links @see WAI-832*/}
+          {/*{isLesmisAdmin && <AdminPanelLinks />}*/}
           <Subheader component="div">Online Questionnaires</Subheader>
           <ListItemLink to="/admin/dashboard-items">
             <ListItemIcon>

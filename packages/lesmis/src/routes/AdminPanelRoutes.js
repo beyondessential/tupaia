@@ -20,6 +20,7 @@ import {
   AccessRequestsPage,
   PermissionGroupsPage,
   PermissionsPage,
+  SurveyResponsesPage,
   UsersPage,
   AdminPanelDataProviders,
 } from '@tupaia/admin-panel/lib';
@@ -33,21 +34,28 @@ import {
 
 const ADMIN_URL = '/admin';
 
+// Todo: Replace SurveyResponsesPage with ApprovedSurveyResponsesView and DraftSurveyResponsesView
+// @see WAI-832
 export const ROUTES = [
   {
     label: 'Survey Data',
     to: `${ADMIN_URL}/survey-responses`,
     icon: <Assignment />,
     tabs: [
+      // {
+      //   label: 'Review',
+      //   to: '',
+      //   component: DraftSurveyResponsesView,
+      // },
+      // {
+      //   label: 'Approved',
+      //   to: '/approved',
+      //   component: ApprovedSurveyResponsesView,
+      // },
       {
-        label: 'Review',
+        label: 'Survey Responses',
         to: '',
-        component: DraftSurveyResponsesView,
-      },
-      {
-        label: 'Approved',
-        to: '/approved',
-        component: ApprovedSurveyResponsesView,
+        component: SurveyResponsesPage,
       },
     ],
   },
