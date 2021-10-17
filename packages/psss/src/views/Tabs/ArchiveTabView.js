@@ -9,7 +9,7 @@ import { ArchiveTable } from '../../containers';
 import { getCurrentPeriod } from '../../utils';
 
 export const ArchiveTabView = () => (
-  <MuiContainer style={{ position: 'relative ' }}>
+  <MuiContainer style={{ position: 'relative ' }} maxWidth="xl">
     <Main>
       <ArchiveTable period={getCurrentPeriod()} />
     </Main>

@@ -73,18 +73,13 @@ export const Panel = () => {
     {
       visualisation: { data: dataConfig },
     },
-    { setDataConfig, setFetchConfig },
+    { setDataConfig },
   ] = useVizBuilderConfig();
 
-  const { dataElements, dataGroups, aggregations, transform } = dataConfig;
+  const { fetch, aggregate, transform } = dataConfig;
 
   const handleChange = (event, newValue) => {
     setTab(newValue);
-  };
-
-  const fetchValue = {
-    dataElements,
-    dataGroups,
   };
 
   return (
@@ -104,10 +99,10 @@ export const Panel = () => {
         <PlayButton />
       </PanelNav>
       <TabPanel isSelected={tab === 0} Panel={PanelTabPanel}>
-        <JsonEditor value={fetchValue} onChange={value => setFetchConfig(value)} />
+        <JsonEditor value={fetch} onChange={value => setDataConfig('fetch', value)} />
       </TabPanel>
       <TabPanel isSelected={tab === 1} Panel={PanelTabPanel}>
-        <JsonEditor value={aggregations} onChange={value => setDataConfig('aggregations', value)} />
+        <JsonEditor value={aggregate} onChange={value => setDataConfig('aggregate', value)} />
       </TabPanel>
       <TabPanel isSelected={tab === 2} Panel={PanelTabPanel}>
         <JsonEditor value={transform} onChange={value => setDataConfig('transform', value)} />

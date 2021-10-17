@@ -30,13 +30,13 @@ const FIELDS = [
   },
   {
     Header: 'Permission Group',
-    source: 'user_groups',
+    source: 'permission_groups',
     type: 'jsonTooltip',
     editConfig: {
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
       optionValueKey: 'name',
-      sourceKey: 'user_groups',
+      sourceKey: 'permission_groups',
       allowMultipleValues: true,
     },
   },

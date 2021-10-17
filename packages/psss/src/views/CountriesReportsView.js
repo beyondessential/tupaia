@@ -36,7 +36,7 @@ export const CountriesReportsView = () => (
   <>
     <Header Title={<HeaderTitle title="Countries" />} ExportModal={WeeklyReportsExportModal} />
     <DateToolbar />
-    <Container>
+    <Container maxWidth="xl">
       <Main data-testid="countries-table">
         <CountriesTable />
       </Main>
