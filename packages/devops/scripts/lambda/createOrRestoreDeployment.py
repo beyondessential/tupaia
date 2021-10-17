@@ -2,7 +2,7 @@ import boto3
 import re
 import asyncio
 import functools
-from utilities import *
+from utilities.utilities import *
 
 ec2 = boto3.resource('ec2')
 ec = boto3.client('ec2')
