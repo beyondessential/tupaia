@@ -60,14 +60,13 @@ const Right = styled(Left)`
   box-shadow: 6px 0 10px ${SHADOW};
 `;
 
-export const ExpansionContainer = ({ children }) => {
-  return (
-    <Container>
-      <Top />
-      <Left />
-      <Right />
-      {children}
-      <Bottom />
-    </Container>
-  );
-};
+// eslint-disable-next-line react/prop-types
+export const ExpansionContainer = ({ children }) => (
+  <Container>
+    <Top />
+    <Left />
+    <Right />
+    {children}
+    <Bottom />
+  </Container>
+);
