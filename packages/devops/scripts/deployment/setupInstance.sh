@@ -11,6 +11,9 @@ cd ..
 sudo cp -R ./server-configs-nginx/h5bp/ /etc/nginx/
 rm -rf server-configs-nginx
 
+# install psql for use when installing mv refresh in the db
+sudo apt-get install -yqq postgresql-client
+
 # install node and yarn
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
