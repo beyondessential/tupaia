@@ -17,7 +17,7 @@ import { EnglishFlagSmall } from './Icons/EnglishFlagSmall';
 import { makeEntityLink, useUrlParams } from '../utils';
 
 const StyledButton = styled(MuiButton)`
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 400;
   line-height: 140%;
 
@@ -30,14 +30,14 @@ const StyledButton = styled(MuiButton)`
     margin-left: 2px;
 
     .MuiSvgIcon-root {
-      font-size: 15px;
+      font-size: 0.9rem;
     }
   }
 `;
 
 const StyledMenu = styled(MuiMenu)`
   .MuiList-root {
-    padding: 8px 5px;
+    padding: 0.5rem 0.3rem;
   }
 
   .MuiMenu-paper {
@@ -60,7 +60,7 @@ const StyledMenu = styled(MuiMenu)`
       top: -7px;
       right: 36px;
       content: '';
-      z-index: 12;
+      z-index: 1;
       border-right: 5px solid transparent;
       border-left: 5px solid transparent;
       border-bottom: 7px solid white;
@@ -69,14 +69,14 @@ const StyledMenu = styled(MuiMenu)`
 `;
 
 const MenuItem = styled(MuiMenuItem)`
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 140%;
-  width: 150px;
+  width: 9.3rem;
   border-radius: 5px;
 
   svg {
-    width: 30px;
-    margin-right: 6px;
+    width: 1.9rem;
+    margin-right: 0.375rem;
   }
 `;
 
