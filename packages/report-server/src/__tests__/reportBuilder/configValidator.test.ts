@@ -213,6 +213,25 @@ describe('configValidator', () => {
 
       runConfigTestCases(testData);
     });
+
+    describe('organisationUnits', () => {
+      // optional array of strings
+      const testData: ConfigTestData = [
+        [
+          'non-array',
+          fullConfig({ fetch: { organisationUnits: { TO: true } } }),
+          'fetch.organisationUnits must be a `array`',
+        ],
+        [
+          'array of non-string',
+          fullConfig({ fetch: { organisationUnits: [{ TO: true }] } }),
+          'fetch.organisationUnits[0] must be a `string`',
+        ],
+        ['array of string', fullConfig({ fetch: { organisationUnits: ['TO', 'WS'] } }), null],
+      ];
+
+      runConfigTestCases(testData);
+    });
   });
 
   describe('transform', () => {

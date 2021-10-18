@@ -55,7 +55,7 @@ export default class extends RouteHandler {
   };
 
   getDashboardsWithItems = async (dashboards, entity, projectCode) => {
-    const permissionGroups = await this.req.getUserGroups(entity.code);
+    const permissionGroups = await this.req.getPermissionGroups(entity.code);
     const sortedDashboards = orderBy(dashboards, ['sort_order', 'name']);
 
     return (

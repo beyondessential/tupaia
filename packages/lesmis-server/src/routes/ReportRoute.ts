@@ -50,7 +50,7 @@ export class ReportRoute extends TranslatableRoute {
         }
         case 'mapOverlay': {
           return this.webConfigConnection.fetchMapOverlayData({
-            mapOverlayId: reportCode,
+            mapOverlayCode: reportCode,
             organisationUnitCode: entityCode,
             projectCode: LESMIS_PROJECT_NAME,
             ...this.req.query,

@@ -10,8 +10,8 @@ import { prettyArray } from '../../utilities';
 
 const FIELDS = [
   {
-    Header: 'ID',
-    source: 'id',
+    Header: 'Code',
+    source: 'code',
     type: 'tooltip',
   },
   {
@@ -23,87 +23,71 @@ const FIELDS = [
   {
     Header: 'Permission Group',
     width: 160,
-    source: 'userGroup',
+    source: 'permission_group',
     editConfig: {
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
       optionValueKey: 'name',
-      sourceKey: 'userGroup',
+      sourceKey: 'permission_group',
     },
-  },
-  {
-    Header: 'Data Element Code',
-    source: 'dataElementCode',
-    width: 170,
-  },
-  {
-    Header: 'Measure Builder',
-    source: 'measureBuilder',
-    width: 170,
-    editConfig: {
-      optionsEndpoint: 'mapOverlays',
-      optionLabelKey: 'measureBuilder',
-      optionValueKey: 'measureBuilder',
-      sourceKey: 'measureBuilder',
-    },
-  },
-  {
-    Header: 'Measure Builder Config',
-    source: 'measureBuilderConfig',
-    type: 'jsonTooltip',
-    width: 200,
-    editConfig: { type: 'jsonEditor' },
-  },
-  {
-    Header: 'isDataRegional',
-    source: 'isDataRegional',
-    type: 'boolean',
-    width: 150,
   },
   {
     Header: 'Linked Measures',
-    source: 'linkedMeasures',
+    source: 'linked_measures',
     width: 160,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'id',
-      sourceKey: 'linkedMeasures',
+      sourceKey: 'linked_measures',
       allowMultipleValues: true,
     },
   },
   {
-    Header: 'Presentation Options',
-    source: 'presentationOptions',
+    Header: 'Config',
+    source: 'config',
     type: 'jsonTooltip',
     width: 200,
     editConfig: { type: 'jsonEditor' },
   },
   {
     Header: 'Country Codes',
-    source: 'countryCodes',
+    source: 'country_codes',
     width: 140,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'entities',
       optionLabelKey: 'code',
       optionValueKey: 'code',
-      sourceKey: 'countryCodes',
+      sourceKey: 'country_codes',
       allowMultipleValues: true,
     },
   },
   {
     Header: 'Project Codes',
-    source: 'projectCodes',
+    source: 'project_codes',
     width: 140,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'projects',
       optionLabelKey: 'code',
       optionValueKey: 'code',
-      sourceKey: 'projectCodes',
+      sourceKey: 'project_codes',
       allowMultipleValues: true,
     },
+  },
+  {
+    Header: 'Report Code',
+    source: 'report_code',
+    width: 140,
+    type: 'tooltip',
+  },
+  {
+    Header: 'Legacy',
+    source: 'legacy',
+    width: 140,
+    type: 'boolean',
+    editConfig: { type: 'boolean' },
   },
 ];
 

@@ -28,19 +28,19 @@ const getMeasureDataFromResponse = (overlay, measureDataResponse) => {
     return measureDataResponse;
   }
 
-  const { measureId, measureLevel, displayType, dataElementCode, ...restOfOverlay } = overlay;
+  const { measureCode, measureLevel, displayType, dataElementCode, ...restOfOverlay } = overlay;
 
   const measureOptions = [
     {
       measureLevel,
       type: displayType,
-      key: dataElementCode,
+      key: dataElementCode || 'value',
       ...restOfOverlay,
     },
   ];
 
   return {
-    measureId,
+    measureCode,
     measureLevel,
     measureOptions,
     serieses: measureOptions,
