@@ -37,6 +37,8 @@ async function validateResponse(models, userId, body) {
   const surveyResponseValidator = createSurveyResponseValidator(models);
   await surveyResponseValidator.validate(body);
 
+  const survey = await models.survey.findById(body.survey_id);
+
   if (!body.entity_id && !body.entity_code) {
     throw new Error('Must provide one of entity_id or entity_code');
   }
@@ -44,7 +46,7 @@ async function validateResponse(models, userId, body) {
   const surveyQuestions = await findQuestionsInSurvey(models, body.survey_id);
 
   const { answers } = body;
-  if (Object.keys(answers).length === 0) {
+  if (survey.can_repeat && Object.keys(answers).length === 0) {
     throw new ValidationError('Each survey response must contain at least one answer');
   }
 
