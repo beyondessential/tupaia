@@ -97,6 +97,8 @@ export const LocaleMenu = () => {
     history.replace(link);
     setAnchorEl(null);
     queryClient.clear();
+
+    window.localStorage.setItem('lesmis-locale', code);
   };
 
   const handleClick = event => {
