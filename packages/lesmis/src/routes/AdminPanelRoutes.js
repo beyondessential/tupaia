@@ -182,7 +182,7 @@ const AdminPanelRoutes = () => {
               </Switch>
             </LesmisAdminRoute>
           ))}
-          <Redirect to="/admin/surveys" />
+          <Redirect to="/admin/survey-responses" />
         </Switch>
       </div>
     </AdminPanelDataProviders>
