@@ -17,9 +17,9 @@ import {
   dashboardRelationObjectValidator,
   DashboardVisualisationExtractor,
   draftDashboardItemValidator,
+  legacyDashboardItemValidator,
   draftReportValidator,
   legacyReportValidator,
-  PreviewMode,
 } from '../viz-builder';
 import type {
   Dashboard,
@@ -61,13 +61,15 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
 
     const { dashboards = [], dashboardRelations = [], ...visualisation } = this.readFileContents();
 
-    const reportValidator = visualisation?.legacy ? legacyReportValidator : draftReportValidator;
+    const [dashboardItemValidator, reportValidator] = visualisation?.legacy
+      ? [legacyDashboardItemValidator, legacyReportValidator]
+      : [draftDashboardItemValidator, draftReportValidator];
     const extractor = new DashboardVisualisationExtractor(
       visualisation,
-      draftDashboardItemValidator,
+      dashboardItemValidator,
       reportValidator,
     );
-    const extractedViz = extractor.getDashboardVisualisationResource(PreviewMode.PRESENTATION);
+    const extractedViz = extractor.getDashboardVisualisationResource();
     const existingId = await this.findExistingVisualisationId(visualisation);
 
     const id = existingId

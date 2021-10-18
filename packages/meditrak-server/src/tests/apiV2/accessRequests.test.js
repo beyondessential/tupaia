@@ -20,7 +20,7 @@ describe('Access Requests', () => {
     await findOrCreateDummyRecord(
       models.project,
       { code: projectCode },
-      { user_groups: [permissionGroupName] },
+      { permission_groups: [permissionGroupName] },
     );
 
     return { userId, entityId, permissionGroupId };

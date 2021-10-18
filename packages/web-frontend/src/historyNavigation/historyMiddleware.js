@@ -24,7 +24,7 @@ import {
   UPDATE_MEASURE_CONFIG,
   LOCATION_CHANGE,
 } from '../actions';
-import { selectCurrentPeriodGranularity, selectMapOverlayById } from '../selectors';
+import { selectCurrentPeriodGranularity, selectMapOverlayByCode } from '../selectors';
 import { URL_COMPONENTS } from './constants';
 import {
   addPopStateListener,
@@ -78,13 +78,13 @@ export const historyMiddleware = store => next => action => {
       break;
     case SET_MAP_OVERLAY: {
       // TODO: ADD MAP OVERLAY instead of override
-      const mapOverlay = selectMapOverlayById(state, action.mapOverlayId);
+      const mapOverlay = selectMapOverlayByCode(state, action.mapOverlayCode);
       if (!mapOverlay) {
         break;
       }
       const { startDate, endDate, periodGranularity } = mapOverlay;
 
-      dispatchLocationUpdate(store, URL_COMPONENTS.MAP_OVERLAY, action.mapOverlayId);
+      dispatchLocationUpdate(store, URL_COMPONENTS.MAP_OVERLAY, action.mapOverlayCode);
       dispatchLocationUpdate(
         store,
         URL_COMPONENTS.MEASURE_PERIOD,

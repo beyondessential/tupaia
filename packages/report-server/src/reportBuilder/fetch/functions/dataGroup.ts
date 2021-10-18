@@ -3,15 +3,15 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { yup } from '@tupaia/utils';
+
 import { Aggregator } from '../../../aggregator';
 import { Aggregation, FetchReportQuery, ReportConfig } from '../../../types';
 import { FetchResponse } from '../types';
-import {
-  validateDataGroups,
-  validateDataElementsForEvents as validateDataElements,
-} from './helpers';
 
 type DataGroupParams = Pick<ReportConfig['fetch'], 'dataGroups' | 'dataElements' | 'aggregations'>;
+
+const dataGroupsValidator = yup.array().of(yup.string().required()).min(1).required();
 
 type DataGroupFetchParams = {
   dataGroupCodes: string[];
@@ -56,11 +56,8 @@ const fetchEvents = async (
 const buildParams = (params: DataGroupParams): DataGroupFetchParams => {
   const { dataGroups, dataElements, aggregations } = params;
 
-  validateDataGroups(dataGroups);
-  validateDataElements(dataElements);
-
   return {
-    dataGroupCodes: dataGroups,
+    dataGroupCodes: dataGroupsValidator.validateSync(dataGroups),
     dataElementCodes: dataElements,
     aggregations,
   };
