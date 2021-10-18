@@ -23,7 +23,7 @@ import {
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitSiblings,
-  selectRenderedDMeasuresWithDisplayInfo,
+  selectRenderedMeasuresWithDisplayInfo,
 } from '../../selectors';
 import { changePosition, closeDropdownOverlays, setOrgUnit } from '../../actions';
 import { TRANS_BLACK, TRANS_BLACK_LESS } from '../../styles';
@@ -268,7 +268,7 @@ const mapStateToProps = state => {
   }
 
   const measureData = selectMeasureDataWithCoordinates(
-    selectRenderedDMeasuresWithDisplayInfo(state, displayedMapOverlays),
+    selectRenderedMeasuresWithDisplayInfo(state, displayedMapOverlays),
   );
   const measureOptions = selectMeasureOptions(state, displayedMapOverlays);
 

@@ -59,7 +59,7 @@ export {
   selectHasPolygonMeasure,
   selectMeasuresWithDisplayInfo,
   selectMeasureOptions,
-  selectRenderedDMeasuresWithDisplayInfo,
+  selectRenderedMeasuresWithDisplayInfo,
 } from './measureSelectors';
 
 export {

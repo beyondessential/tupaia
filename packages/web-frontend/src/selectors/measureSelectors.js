@@ -73,10 +73,10 @@ const selectMeasureData = createSelector(
       const selectedMeasureData = measureInfo[mapOverlayId]?.measureData;
       if (selectedMeasureData) {
         selectedMeasureData.forEach(measure => {
-          measureData[measure.organisationUnitCode] = {
-            ...measureData[measure.organisationUnitCode],
-            ...measure,
-          };
+          measureData[measure.organisationUnitCode] = Object.assign(
+            measureData[measure.organisationUnitCode] || {},
+            measure,
+          );
         });
       }
     });
@@ -120,9 +120,9 @@ export const selectMeasuresWithDisplayInfo = createSelector(
     selectActiveProjectCountries,
     selectCurrentProjectCode,
     state => selectCountryHierarchy(state, state.map.currentCountry),
-    (state, mapOverlayIds) => selectMeasureData(state, mapOverlayIds),
-    (state, mapOverlayIds) => selectMeasureOptions(state, mapOverlayIds),
-    (state, mapOverlayIds) => selectMeasureLevel(state, mapOverlayIds),
+    selectMeasureData,
+    selectMeasureOptions,
+    selectMeasureLevel,
     state => state.map.hiddenMeasures,
     state => state.map.currentCountry,
   ],
@@ -161,7 +161,7 @@ export const selectMeasuresWithDisplayInfo = createSelector(
 const selectMeasuresWithDisplayAndOrgUnitData = createSelector(
   [
     state => selectCountryHierarchy(state, state.map.currentCountry),
-    (state, mapOverlayIds) => selectMeasuresWithDisplayInfo(state, mapOverlayIds),
+    selectMeasuresWithDisplayInfo,
     state => selectCountriesAsOrgUnits(state),
   ],
   (country, measureData, countries) => {
@@ -208,12 +208,12 @@ const selectDisplayLevelAncestor = createSelector(
   },
 );
 
-export const selectRenderedDMeasuresWithDisplayInfo = createSelector(
+export const selectRenderedMeasuresWithDisplayInfo = createSelector(
   [
     state => selectCountryHierarchy(state, selectCurrentOrgUnitCode(state)),
-    (state, mapOverlayIds) => selectMeasuresWithDisplayAndOrgUnitData(state, mapOverlayIds),
+    selectMeasuresWithDisplayAndOrgUnitData,
     selectDisplayLevelAncestor,
-    (state, mapOverlayIds) => selectMeasureOptions(state, mapOverlayIds),
+    selectMeasureOptions,
   ],
   (country, measures, displaylevelAncestor, measureOptions = []) => {
     const displayOnLevel = measureOptions.map(option => option.displayOnLevel).find(level => level);

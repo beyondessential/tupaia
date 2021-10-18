@@ -747,9 +747,6 @@ export function fetchMeasureInfoSuccess(response, countryCode) {
   };
 }
 
-/**
- * All measure data have been arrived, changes isMeasureLoading to TRUE.
- */
 export function fetchAllMeasureInfoSuccess() {
   return {
     type: FETCH_ALL_MEASURE_DATA_SUCCESS,

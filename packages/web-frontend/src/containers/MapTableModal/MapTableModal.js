@@ -16,7 +16,7 @@ import {
   selectCurrentMapOverlays,
   selectMeasureOptions,
   selectOrgUnitCountry,
-  selectRenderedDMeasuresWithDisplayInfo,
+  selectRenderedMeasuresWithDisplayInfo,
 } from '../../selectors';
 import { Tooltip } from '../../components/Tooltip';
 
@@ -88,7 +88,7 @@ const mapStateToProps = state => {
   const currentMapOverlayIds = selectCurrentMapOverlayIds(state);
   const currentMapOverlays = selectCurrentMapOverlays(state);
   const measureOptions = selectMeasureOptions(state, currentMapOverlayIds);
-  const measureData = selectRenderedDMeasuresWithDisplayInfo(state, currentMapOverlayIds);
+  const measureData = selectRenderedMeasuresWithDisplayInfo(state, currentMapOverlayIds);
   const currentCountry = selectOrgUnitCountry(state, state.map.currentCountry);
 
   return {
