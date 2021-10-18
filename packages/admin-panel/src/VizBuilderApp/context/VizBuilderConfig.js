@@ -19,9 +19,11 @@ const initialConfigState = {
     code: null,
     permissionGroup: null,
     data: {
-      dataElements: [],
-      dataGroups: [],
-      aggregations: [],
+      fetch: {
+        dataElements: [],
+        dataGroups: [],
+      },
+      aggregate: [],
       transform: [],
     },
     presentation: {},
@@ -34,7 +36,6 @@ const SET_TEST_DATA = 'SET_TEST_DATA';
 const SET_VISUALISATION = 'SET_VISUALISATION';
 const SET_VISUALISATION_VALUE = 'SET_VISUALISATION_VALUE';
 const SET_DATA_CONFIG = 'SET_DATA_CONFIG';
-const SET_FETCH_CONFIG = 'SET_FETCH_CONFIG';
 const SET_PRESENTATION_CONFIG = 'SET_PRESENTATION_CONFIG';
 
 const set = (object, key, value) => (object[key] === value ? object : { ...object, [key]: value });
@@ -74,20 +75,6 @@ function configReducer(state, action) {
         },
       };
     }
-    case SET_FETCH_CONFIG: {
-      const { value } = action;
-      return {
-        ...state,
-        visualisation: {
-          ...state.visualisation,
-          data: {
-            aggregations: state.visualisation.data.aggregations,
-            transform: state.visualisation.data.transform,
-            ...value,
-          },
-        },
-      };
-    }
     case SET_PRESENTATION_CONFIG: {
       const { value } = action;
       return {
@@ -114,7 +101,6 @@ const useConfigStore = () => {
     dispatch({ type: SET_VISUALISATION_VALUE, key, value });
   const setPresentation = value => dispatch({ type: SET_PRESENTATION_CONFIG, value });
   const setDataConfig = (key, value) => dispatch({ type: SET_DATA_CONFIG, key, value });
-  const setFetchConfig = value => dispatch({ type: SET_FETCH_CONFIG, value });
 
   return [
     state,
@@ -125,7 +111,6 @@ const useConfigStore = () => {
       setVisualisation,
       setVisualisationValue,
       setDataConfig,
-      setFetchConfig,
       setPresentation,
     },
   ];

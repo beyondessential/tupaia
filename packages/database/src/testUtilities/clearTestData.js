@@ -59,7 +59,7 @@ const TABLES_TO_CLEAR = [
   'user_account',
   'map_overlay_group_relation',
   'map_overlay_group',
-  'mapOverlay',
+  'map_overlay',
 ];
 
 export async function clearTestData(db, testStartTime = moment().format('YYYY-MM-DD HH:mm:ss')) {

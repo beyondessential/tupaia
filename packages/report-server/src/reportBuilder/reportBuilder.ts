@@ -12,7 +12,7 @@ import { buildTransform } from './transform';
 import { buildOutput } from './output';
 import { Row } from './types';
 import { OutputType } from './output/functions/outputBuilders';
-import { QueryBuilder } from './QueryBuilder';
+import { QueryBuilder } from './query';
 
 export interface BuiltReport {
   results: OutputType;
@@ -47,7 +47,7 @@ export class ReportBuilder {
     const fetch = this.testData
       ? () => ({ results: this.testData } as FetchResponse)
       : buildFetch(this.config?.fetch);
-    const builtQuery = new QueryBuilder(this.config, query).build();
+    const builtQuery = await new QueryBuilder(this.reqContext, this.config, query).build();
     const data = await fetch(aggregator, builtQuery);
 
     const context = await buildContext(this.config.transform, this.reqContext, data);

@@ -20,7 +20,7 @@ export type PeriodParams = {
 
 export type FetchReportQuery = PeriodParams & {
   organisationUnitCodes: string[];
-  hierarchy?: string;
+  hierarchy: string;
 };
 
 export type AggregationObject = {
@@ -39,6 +39,7 @@ export interface ReportConfig {
     aggregations?: Aggregation[];
     startDate?: DateSpecs;
     endDate?: DateSpecs;
+    organisationUnits?: string[];
   };
   transform: Transform[];
   output?: Record<string, unknown>;

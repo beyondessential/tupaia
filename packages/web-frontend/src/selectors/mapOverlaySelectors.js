@@ -14,37 +14,37 @@ import { flattenMapOverlayHierarchy, isMapOverlayHierarchyEmpty } from '../utils
 import { selectCurrentProject } from './projectSelectors';
 import { selectLocation } from './utils';
 
-export const selectMapOverlayById = createSelector(
-  [state => state.mapOverlayBar.mapOverlayHierarchy, (_, id) => id],
-  (mapOverlayHierarchy, id) => {
-    return getMapOverlayFromHierarchy(mapOverlayHierarchy, id);
+export const selectMapOverlayByCode = createSelector(
+  [state => state.mapOverlayBar.mapOverlayHierarchy, (_, code) => code],
+  (mapOverlayHierarchy, code) => {
+    return getMapOverlayFromHierarchy(mapOverlayHierarchy, code);
   },
 );
 
-export const selectCurrentMapOverlayId = createSelector([selectLocation], location =>
+export const selectCurrentMapOverlayCode = createSelector([selectLocation], location =>
   getLocationComponentValue(location, URL_COMPONENTS.MAP_OVERLAY),
 );
 
 export const selectCurrentMapOverlay = createSelector(
-  [state => selectMapOverlayById(state, selectCurrentMapOverlayId(state))],
+  [state => selectMapOverlayByCode(state, selectCurrentMapOverlayCode(state))],
   currentMapOverlay => currentMapOverlay,
 );
 
 export const selectIsMapOverlayInHierarchy = createSelector(
-  [state => state.mapOverlayBar.mapOverlayHierarchy, (_, id) => id],
-  (mapOverlayHierarchy, id) => !!getMapOverlayFromHierarchy(mapOverlayHierarchy, id),
+  [state => state.mapOverlayBar.mapOverlayHierarchy, (_, code) => code],
+  (mapOverlayHierarchy, code) => !!getMapOverlayFromHierarchy(mapOverlayHierarchy, code),
 );
 
-export const selectDefaultMapOverlayId = createSelector(
+export const selectDefaultMapOverlayCode = createSelector(
   [state => state.mapOverlayBar.mapOverlayHierarchy, selectCurrentProject],
   (mapOverlayHierarchy, project) => {
-    const projectMeasureId = project.defaultMeasure;
-    const measureIsDefined = id => !!getMapOverlayFromHierarchy(mapOverlayHierarchy, id);
+    const projectMeasureCode = project.defaultMeasure;
+    const measureIsDefined = code => !!getMapOverlayFromHierarchy(mapOverlayHierarchy, code);
 
-    if (measureIsDefined(projectMeasureId)) return projectMeasureId;
+    if (measureIsDefined(projectMeasureCode)) return projectMeasureCode;
     if (measureIsDefined(DEFAULT_MAP_OVERLAY_ID)) return DEFAULT_MAP_OVERLAY_ID;
     if (!isMapOverlayHierarchyEmpty(mapOverlayHierarchy)) {
-      return flattenMapOverlayHierarchy(mapOverlayHierarchy)[0].mapOverlayId;
+      return flattenMapOverlayHierarchy(mapOverlayHierarchy)[0].mapOverlayCode;
     }
 
     return DEFAULT_MAP_OVERLAY_ID;
@@ -56,14 +56,14 @@ export const selectCurrentPeriodGranularity = createSelector(
   mapOverlay => mapOverlay.periodGranularity,
 );
 
-export const selectMapOverlayGroupById = createSelector(
-  [state => state.mapOverlayBar.mapOverlayHierarchy, (_, id) => id],
-  (mapOverlayHierarchy, id) => {
+export const selectMapOverlayGroupByCode = createSelector(
+  [state => state.mapOverlayBar.mapOverlayHierarchy, (_, code) => code],
+  (mapOverlayHierarchy, code) => {
     let mapOverlayGroup = {};
 
     mapOverlayHierarchy.forEach(({ name, children }, groupIndex) => {
       const selectedMapOverlayIndex = children.findIndex(
-        mapOverlay => mapOverlay.mapOverlayId === id,
+        mapOverlay => mapOverlay.mapOverlayCode === code,
       );
       if (selectedMapOverlayIndex > -1) {
         mapOverlayGroup = {

@@ -64,11 +64,11 @@ export {
 } from './measureSelectors';
 
 export {
-  selectMapOverlayById,
+  selectMapOverlayByCode,
   selectCurrentMapOverlay,
-  selectCurrentMapOverlayId,
+  selectCurrentMapOverlayCode,
   selectCurrentPeriodGranularity,
   selectIsMapOverlayInHierarchy,
-  selectDefaultMapOverlayId,
-  selectMapOverlayGroupById,
+  selectDefaultMapOverlayCode,
+  selectMapOverlayGroupByCode,
 } from './mapOverlaySelectors';

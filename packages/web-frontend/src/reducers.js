@@ -24,7 +24,7 @@ import { isMobile, getUniqueViewId } from './utils';
 import { LANDING } from './containers/OverlayDiv/constants';
 import { EMAIL_VERIFIED_STATUS } from './containers/EmailVerification';
 import { getInitialLocation } from './historyNavigation';
-import { selectMapOverlayGroupById } from './selectors';
+import { selectMapOverlayGroupByCode } from './selectors';
 
 // Import Action Types
 import {
@@ -598,9 +598,9 @@ function mapOverlayBar(
         hiddenMeasures: {},
       };
     case UPDATE_MEASURE_CONFIG: {
-      const { groupIndex, mapOverlay, mapOverlayGroupIndex } = selectMapOverlayGroupById(
+      const { groupIndex, mapOverlay, mapOverlayGroupIndex } = selectMapOverlayGroupByCode(
         { mapOverlayBar: state },
-        action.mapOverlayId,
+        action.mapOverlayCode,
       );
 
       const mapOverlayHierarchy = [...state.mapOverlayHierarchy];
@@ -633,7 +633,7 @@ function mapOverlayBar(
 function global(
   state = {
     isSidePanelExpanded: false,
-    mapOverlayId: null,
+    mapOverlayCode: null,
     dashboards: [],
     viewConfigs: {},
     isLoadingOrganisationUnit: false,
@@ -647,7 +647,7 @@ function global(
       return {
         ...state,
         isSidePanelExpanded: false,
-        mapOverlayId: !isMobile() && LANDING,
+        mapOverlayCode: !isMobile() && LANDING,
       };
     case SHOW_TUPAIA_INFO:
       return {
