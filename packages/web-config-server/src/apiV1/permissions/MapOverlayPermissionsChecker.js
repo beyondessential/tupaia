@@ -7,24 +7,24 @@ import { PermissionsError } from '@tupaia/utils';
 import { PermissionsChecker } from './PermissionsChecker';
 
 export class MapOverlayPermissionsChecker extends PermissionsChecker {
-  getMapOverlayIds() {
-    const { mapOverlayIds } = this.query;
-    if (!mapOverlayIds) {
+  getMapOverlayId() {
+    const { mapOverlayId } = this.query;
+    if (!mapOverlayId) {
       throw new Error('No map overlay id was provided');
     }
-    return mapOverlayIds.split(',');
+    return mapOverlayId;
   }
 
-  async fetchAndCacheOverlays() {
-    if (!this.overlays) {
-      this.overlays = await this.models.mapOverlay.find({ id: this.getMapOverlayIds() });
+  async fetchAndCacheOverlay() {
+    if (!this.overlay) {
+      this.overlay = await this.models.mapOverlay.find({ id: this.getMapOverlayId() });
     }
-    return this.overlays;
+    return this.overlay;
   }
 
   async fetchPermissionGroups() {
-    const overlays = await this.fetchAndCacheOverlays();
-    return overlays.map(o => o.userGroup);
+    const overlay = await this.fetchAndCacheOverlay();
+    return [overlay.userGroup];
   }
 
   async checkPermissions() {
@@ -36,9 +36,10 @@ export class MapOverlayPermissionsChecker extends PermissionsChecker {
       throw new PermissionsError('Measures data not allowed for world');
     }
 
-    const overlays = await this.fetchAndCacheOverlays();
-    if (overlays.length !== this.getMapOverlayIds().length) {
-      throw new Error('Not all overlays requested could be found in the database');
+    const overlay = await this.fetchAndCacheOverlay();
+    const mapOverlayId = this.getMapOverlayId();
+    if (overlay[0]?.id !== mapOverlayId) {
+      throw new Error(`Map overlay ${mapOverlayId} could not be found in the database`);
     }
 
     await this.checkHasEntityAccess(this.entity.code);

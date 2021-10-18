@@ -6,25 +6,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
 import { InteractivePolygon } from '@tupaia/ui-components/lib/map';
 import {
   selectHasPolygonMeasure,
-  selectAllMeasuresWithDisplayInfo,
-  selectRenderedMeasuresWithDisplayInfo,
+  selectMeasuresWithDisplayInfo,
   selectAreRegionLabelsPermanent,
+  selectCurrentMapOverlayIds,
 } from '../../selectors';
 import { setOrgUnit } from '../../actions';
+import { selectMeasureOptions } from '../../selectors/measureSelectors';
 
 const Polygon = React.memo(
-  ({ measureData, measureOrgUnits, measureInfo, onChangeOrgUnit, permanentLabels, ...props }) => {
-    const { measureOptions } = measureInfo;
-
+  ({ measureOrgUnits, measureOptions, onChangeOrgUnit, permanentLabels, ...props }) => {
     return (
       <InteractivePolygon
-        hasMeasureData={measureData && measureData.length > 0}
-        measureOptions={measureOptions}
+        hasMeasureData={measureOrgUnits && measureOrgUnits.length > 0}
         measureOrgUnits={measureOrgUnits}
+        measureOptions={measureOptions}
         permanentLabels={permanentLabels}
         onChangeOrgUnit={onChangeOrgUnit}
         {...props}
@@ -34,9 +32,8 @@ const Polygon = React.memo(
 );
 
 Polygon.propTypes = {
-  measureData: PropTypes.array.isRequired,
   measureOrgUnits: PropTypes.array.isRequired,
-  measureInfo: PropTypes.object.isRequired,
+  measureOptions: PropTypes.array.isRequired,
   onChangeOrgUnit: PropTypes.func,
   permanentLabels: PropTypes.bool,
 };
@@ -46,29 +43,19 @@ Polygon.defaultProps = {
   onChangeOrgUnit: () => {},
 };
 
-const selectMeasureDataWithCoordinates = createSelector([measureData => measureData], measureData =>
-  measureData.map(({ location, ...otherData }) => ({
-    ...otherData,
-    coordinates: location && location.point,
-    region: location && location.region,
-  })),
-);
-
 const mapStateToProps = state => {
-  const { measureInfo } = state.map;
-
+  const { displayedMapOverlays } = state.map;
+  const currentMapOverlayIds = selectCurrentMapOverlayIds(state);
+  const measureOptions = selectMeasureOptions(state, currentMapOverlayIds) || [];
   const measureOrgUnits = selectHasPolygonMeasure(state)
-    ? selectAllMeasuresWithDisplayInfo(state)
+    ? selectMeasuresWithDisplayInfo(state, displayedMapOverlays)
     : [];
-  const measureData = selectMeasureDataWithCoordinates(
-    selectRenderedMeasuresWithDisplayInfo(state),
-  );
+
   const permanentLabels = selectAreRegionLabelsPermanent(state);
 
   return {
-    measureData,
     measureOrgUnits,
-    measureInfo,
+    measureOptions,
     permanentLabels,
   };
 };

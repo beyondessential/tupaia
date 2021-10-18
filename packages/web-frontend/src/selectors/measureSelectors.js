@@ -20,8 +20,6 @@ import {
 } from './orgUnitSelectors';
 import { selectCurrentProjectCode } from './projectSelectors';
 import { getOrgUnitFromCountry, safeGet } from './utils';
-import { flattenMapOverlayHierarchy } from '../utils';
-import { selectCurrentMapOverlayIds } from './mapOverlaySelectors';
 
 const displayInfoCache = createCachedSelector(
   [
@@ -34,52 +32,157 @@ const displayInfoCache = createCachedSelector(
     return {
       organisationUnitCode,
       ...data,
-      ...getMeasureDisplayInfo({ ...data }, options, hiddenMeasures),
+      ...getMeasureDisplayInfo(data, options, hiddenMeasures),
     };
   },
 )((_, __, ___, organisationUnitCode) => organisationUnitCode);
 
-const getOrgUnitFromMeasureData = (measureData, code) =>
+const getMeasureDataByOrgUnit = (measureData, code) =>
   measureData.find(val => val.organisationUnitCode === code);
 
 const selectDisplayInfo = (measureOptions, hiddenMeasures, measureData, organisationUnitCode) =>
   safeGet(displayInfoCache, [measureOptions, hiddenMeasures, measureData, organisationUnitCode]);
 
-export const selectCurrentMeasureIds = createSelector(
-  [selectCurrentMapOverlayIds, state => state.mapOverlayBar.mapOverlayHierarchy],
-  (currentMapOverlayIds, mapOverlayHierarchy) => {
-    const hierarchy = flattenMapOverlayHierarchy(mapOverlayHierarchy);
+export const selectMeasureOptions = createSelector(
+  [state => state.map.measureInfo, (_, mapOverlayIds) => mapOverlayIds],
+  (measureInfo = {}, mapOverlayIds) => {
+    const selectedMeasureOptions = mapOverlayIds.reduce((results, mapOverlayId) => {
+      const { measureOptions = [] } = measureInfo[mapOverlayId] || {};
+      return [...results, ...measureOptions];
+    }, []);
 
-    return hierarchy.map(mapOverlay =>
-      currentMapOverlayIds.includes(mapOverlay.mapOverlayId) ? mapOverlay.measureIds : [],
-    );
+    const measureOptionsByKey = selectedMeasureOptions.reduce((results, measureOption) => {
+      const { key } = measureOption;
+      return results[key] ? results : { ...results, [key]: measureOption };
+    }, {});
+
+    const filteredMeasureOptions = Object.values(measureOptionsByKey);
+    return filteredMeasureOptions.length > 0 ? filteredMeasureOptions : undefined;
   },
 );
 
-export const selectDisplayedMeasureIds = createSelector(
-  [state => state.map.displayedMapOverlays, state => state.mapOverlayBar.mapOverlayHierarchy],
-  (displayedMapOverlays, mapOverlayHierarchy) => {
-    const hierarchy = flattenMapOverlayHierarchy(mapOverlayHierarchy);
-
-    return hierarchy
-      .map(mapOverlay =>
-        displayedMapOverlays.includes(mapOverlay.mapOverlayId) ? mapOverlay.measureIds : [],
-      )
-      .flat();
-  },
-);
-
-export const selectMeasureOptionsByDisplayedMapOverlays = createSelector(
-  [state => state.map.measureInfo.measureOptions, selectDisplayedMeasureIds],
-  (measureOptions, displayedMeasureIds) => {
-    if (!measureOptions) {
+const selectMeasureData = createSelector(
+  [state => state.map.measureInfo, (_, mapOverlayIds) => mapOverlayIds],
+  (measureInfo, mapOverlayIds) => {
+    if (!measureInfo || mapOverlayIds.length === 0) {
       return undefined;
     }
-    const displayedMeasureOptions = measureOptions.filter(({ key }) =>
-      displayedMeasureIds.includes(key),
-    );
 
-    return displayedMeasureOptions.length > 0 ? displayedMeasureOptions : undefined;
+    const measureData = {};
+    mapOverlayIds.forEach(mapOverlayId => {
+      const selectedMeasureData = measureInfo[mapOverlayId]?.measureData;
+      if (selectedMeasureData) {
+        selectedMeasureData.forEach(measure => {
+          measureData[measure.organisationUnitCode] = Object.assign(
+            measureData[measure.organisationUnitCode] || {},
+            measure,
+          );
+        });
+      }
+    });
+    return Object.keys(measureData).length === 0 ? undefined : Object.values(measureData);
+  },
+);
+
+const selectMeasureLevel = createSelector(
+  [state => state.map.measureInfo, (_, mapOverlayIds) => mapOverlayIds],
+  (measureInfo, mapOverlayIds) => {
+    let measureLevelArray = [];
+
+    mapOverlayIds.forEach(mapOverlayId => {
+      const { measureLevel: selectedMeasureLevel = [] } = measureInfo[mapOverlayId] || {};
+      measureLevelArray = [...measureLevelArray, ...selectedMeasureLevel];
+    });
+
+    return [...new Set(measureLevelArray)];
+  },
+);
+
+export const selectHasPolygonMeasure = createSelector(
+  [state => state.map.measureInfo, state => state.map.displayedMapOverlays],
+  (measureInfo = {}, displayedMapOverlays) => {
+    for (const displayedMapOverlayId of displayedMapOverlays) {
+      if (
+        measureInfo[displayedMapOverlayId]?.measureOptions &&
+        measureInfo[displayedMapOverlayId].measureOptions.some(option =>
+          POLYGON_MEASURE_TYPES.includes(option.type),
+        )
+      ) {
+        return true;
+      }
+    }
+    return false;
+  },
+);
+
+export const selectMeasuresWithDisplayInfo = createSelector(
+  [
+    selectActiveProjectCountries,
+    selectCurrentProjectCode,
+    state => selectCountryHierarchy(state, state.map.currentCountry),
+    selectMeasureData,
+    selectMeasureOptions,
+    selectMeasureLevel,
+    state => state.map.hiddenMeasures,
+    state => state.map.currentCountry,
+  ],
+  (
+    projectCountries,
+    projectCode,
+    country,
+    measureData,
+    measureOptions,
+    measureLevel,
+    hiddenMeasures,
+    currentCountry,
+  ) => {
+    if (!currentCountry || !measureData || !country) {
+      return [];
+    }
+
+    const allOrgUnitsOfLevel =
+      currentCountry === projectCode
+        ? projectCountries
+        : selectAllOrgUnitsInCountry(country).filter(orgUnit =>
+            measureLevel.includes(orgUnit.type),
+          );
+
+    return allOrgUnitsOfLevel.map(orgUnit =>
+      selectDisplayInfo(
+        measureOptions,
+        hiddenMeasures,
+        getMeasureDataByOrgUnit(measureData, orgUnit.organisationUnitCode),
+        orgUnit.organisationUnitCode,
+      ),
+    );
+  },
+);
+
+const selectMeasuresWithDisplayAndOrgUnitData = createSelector(
+  [
+    state => selectCountryHierarchy(state, state.map.currentCountry),
+    selectMeasuresWithDisplayInfo,
+    state => selectCountriesAsOrgUnits(state),
+  ],
+  (country, measureData, countries) => {
+    const type = country && country[country.countryCode]?.type;
+
+    if (type === 'Project') {
+      return measureData.map(data => {
+        const countryData = countries.find(
+          c => c.organisationUnitCode === data.organisationUnitCode,
+        );
+        return {
+          ...data,
+          ...countryData,
+        };
+      });
+    }
+
+    return measureData.map(data => ({
+      ...data,
+      ...getOrgUnitFromCountry(country, data.organisationUnitCode),
+    }));
   },
 );
 
@@ -87,7 +190,7 @@ const selectDisplayLevelAncestor = createSelector(
   [
     state => selectCountryHierarchy(state, selectCurrentOrgUnitCode(state)),
     selectCurrentOrgUnitCode,
-    selectMeasureOptionsByDisplayedMapOverlays,
+    state => selectMeasureOptions(state, state.map.displayedMapOverlays),
   ],
   (country, currentOrganisationUnitCode, measureOptions) => {
     if (!country || !currentOrganisationUnitCode || !measureOptions) {
@@ -105,98 +208,18 @@ const selectDisplayLevelAncestor = createSelector(
   },
 );
 
-export const selectHasPolygonMeasure = createSelector(
-  [state => state.map.measureInfo],
-  (measureInfo = {}) => {
-    return (
-      measureInfo.measureOptions &&
-      measureInfo.measureOptions.some(option => POLYGON_MEASURE_TYPES.includes(option.type))
-    );
-  },
-);
-
-export const selectAllMeasuresWithDisplayInfo = createSelector(
-  [
-    state => selectActiveProjectCountries(state),
-    state => selectCurrentProjectCode(state),
-    state => selectCountryHierarchy(state, state.map.measureInfo.currentCountry),
-    state => state.map.measureInfo.measureData,
-    selectMeasureOptionsByDisplayedMapOverlays,
-    state => state.map.measureInfo.hiddenMeasures,
-    state => state.map.measureInfo.currentCountry,
-    state => state.map.measureInfo.measureLevel,
-  ],
-  (
-    projectCountries,
-    projectCode,
-    country,
-    measureData,
-    measureOptions,
-    hiddenMeasures,
-    currentCountry,
-    measureLevel,
-  ) => {
-    if (!currentCountry || !measureData || !country) {
-      return [];
-    }
-
-    const listOfMeasureLevels = measureLevel.split(',');
-    let allOrgUnitsOfLevel = selectAllOrgUnitsInCountry(country).filter(orgUnit => {
-      return listOfMeasureLevels.includes(orgUnit.type);
-    });
-    if (currentCountry === projectCode) allOrgUnitsOfLevel = projectCountries;
-    return allOrgUnitsOfLevel.map(orgUnit =>
-      selectDisplayInfo(
-        measureOptions,
-        hiddenMeasures,
-        getOrgUnitFromMeasureData(measureData, orgUnit.organisationUnitCode),
-        orgUnit.organisationUnitCode,
-      ),
-    );
-  },
-);
-
-const selectAllMeasuresWithDisplayAndOrgUnitData = createSelector(
-  [
-    state => selectCountryHierarchy(state, state.map.measureInfo.currentCountry),
-    selectAllMeasuresWithDisplayInfo,
-    state => selectCountriesAsOrgUnits(state),
-  ],
-  (country, allMeasureData, countries) => {
-    const type = country && country[country.countryCode]?.type;
-
-    if (type === 'Project') {
-      return allMeasureData.map(data => {
-        const countryData = countries.find(
-          c => c.organisationUnitCode === data.organisationUnitCode,
-        );
-        return {
-          ...data,
-          ...countryData,
-        };
-      });
-    }
-
-    return allMeasureData.map(data => ({
-      ...data,
-      ...getOrgUnitFromCountry(country, data.organisationUnitCode),
-    }));
-  },
-);
-
 export const selectRenderedMeasuresWithDisplayInfo = createSelector(
   [
     state => selectCountryHierarchy(state, selectCurrentOrgUnitCode(state)),
-    selectAllMeasuresWithDisplayAndOrgUnitData,
+    selectMeasuresWithDisplayAndOrgUnitData,
     selectDisplayLevelAncestor,
-    selectMeasureOptionsByDisplayedMapOverlays,
-    state => selectCountriesAsOrgUnits(state),
+    selectMeasureOptions,
   ],
-  (country, allMeasuresWithMeasureInfo, displaylevelAncestor, measureOptions = []) => {
+  (country, measures, displaylevelAncestor, measureOptions = []) => {
     const displayOnLevel = measureOptions.map(option => option.displayOnLevel).find(level => level);
 
     if (!displayOnLevel) {
-      return allMeasuresWithMeasureInfo;
+      return measures;
     }
 
     if (!displaylevelAncestor) {
@@ -208,7 +231,7 @@ export const selectRenderedMeasuresWithDisplayInfo = createSelector(
       displaylevelAncestor.organisationUnitCode,
     ).map(descendant => descendant.organisationUnitCode);
 
-    return allMeasuresWithMeasureInfo.filter(measure =>
+    return measures.filter(measure =>
       allDescendantCodesOfAncestor.includes(measure.organisationUnitCode),
     );
   },

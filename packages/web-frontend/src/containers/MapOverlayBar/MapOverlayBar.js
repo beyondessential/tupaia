@@ -49,53 +49,60 @@ export class MapOverlayBarComponent extends Component {
     return true;
   }
 
-  handleSelectMapOverlay = mapOverlay => {
+  handleSelectMapOverlay = (mapOverlay, isSelected) => {
     if (this.state.hasNeverBeenChanged) {
       this.setState({
         hasNeverBeenChanged: false,
       });
     }
 
-    this.props.onSelectMapOverlay(mapOverlay.mapOverlayId);
+    if (isSelected) {
+      this.props.onUnSelectMapOverlay(mapOverlay.mapOverlayId);
+    } else {
+      this.props.onSelectMapOverlay(mapOverlay.mapOverlayId);
+    }
   };
 
   renderDefaultMapOverlay() {
     const { currentMapOverlayIds, defaultMapOverlay } = this.props;
-    if (!defaultMapOverlay) return null;
+    if (!defaultMapOverlay) {
+      return null;
+    }
+
+    const isSelected = currentMapOverlayIds.includes(defaultMapOverlay.mapOverlayId);
+
     return (
       <HierarchyItem
         nestedMargin="0px"
         label={defaultMapOverlay.name}
-        isSelected={currentMapOverlayIds.includes(defaultMapOverlay.mapOverlayId)}
-        onClick={() => this.handleSelectMapOverlay(defaultMapOverlay)}
+        isSelected={isSelected}
+        onClick={() => this.handleSelectMapOverlay(defaultMapOverlay, isSelected)}
       />
     );
   }
 
   renderNestedHierarchyItems(children) {
-    const { currentMapOverlayIds, onUnSelectMapOverlay } = this.props;
+    const { currentMapOverlayIds } = this.props;
     return children.map(childObject => {
       let nestedItems;
-
       if (childObject.children && childObject.children.length) {
         nestedItems = this.renderNestedHierarchyItems(childObject.children);
       }
 
-      let onClick = null;
+      const isSelected = childObject.children
+        ? null
+        : currentMapOverlayIds.includes(childObject.mapOverlayId);
 
+      let onClick = null;
       if (!childObject.children) {
-        onClick = currentMapOverlayIds.includes(childObject.mapOverlayId)
-          ? () => onUnSelectMapOverlay(childObject.mapOverlayId)
-          : () => this.handleSelectMapOverlay(childObject);
+        onClick = () => this.handleSelectMapOverlay(childObject, isSelected);
       }
 
       return (
         <HierarchyItem
           label={childObject.name}
           info={childObject.info}
-          isSelected={
-            childObject.children ? null : currentMapOverlayIds.includes(childObject.mapOverlayId)
-          }
+          isSelected={isSelected}
           key={childObject.mapOverlayId}
           onClick={onClick}
           nestedItems={nestedItems}
@@ -244,7 +251,13 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...dispatchProps,
     ...ownProps,
     onUpdateMeasurePeriod: (startDate, endDate) =>
-      dispatch(updateMeasureConfig(currentMapOverlayIds[0], { startDate, endDate })),
+      // TODO: PHX-103 - Now only select the last map overlay start date and end date, will use both in PHX-103
+      dispatch(
+        updateMeasureConfig(currentMapOverlayIds[currentMapOverlayIds.length - 1], {
+          startDate,
+          endDate,
+        }),
+      ),
     onSelectMapOverlay,
     onUnSelectMapOverlay,
   };

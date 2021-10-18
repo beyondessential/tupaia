@@ -9,6 +9,11 @@ import FetchError from './fetchError';
 const timeout = 45 * 1000; // 45 seconds
 
 const getApiUrl = () => {
+  const { REACT_APP_LESMIS_API_URL } = process.env;
+  if (REACT_APP_LESMIS_API_URL) {
+    return REACT_APP_LESMIS_API_URL;
+  }
+
   // if no env var, use sensible defaults based on the front end url
   const { hostname } = window.location; // eslint-disable-line no-undef
 

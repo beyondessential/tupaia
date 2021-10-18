@@ -56,40 +56,48 @@ const getLegendComponent = measureType => {
 
 export const Legend = React.memo(
   ({
-    serieses,
     className,
+    measureInfo: baseMeasureInfo,
     setValueHidden,
     hiddenValues,
-    currentMeasureIds,
-    displayedMeasureIds,
+    currentMapOverlayIds,
+    displayedMapOverlayIds,
+    seriesesKey = 'serieses',
   }) => {
-    const displayedLegends = serieses?.filter(
-      ({ type, hideFromLegend, values = [] }) =>
-        ![MEASURE_TYPE_RADIUS, MEASURE_TYPE_POPUP_ONLY].includes(type) &&
-        hideFromLegend !== true &&
-        values.filter(value => !value?.hideFromLegend).length > 0,
-    );
-
-    if (!serieses || displayedLegends.length === 0) {
+    if (Object.keys(baseMeasureInfo).length === 0) {
       return null;
     }
 
-    const legendTypes = displayedLegends.map(displayedLegend => displayedLegend.type);
+    const measureInfo = currentMapOverlayIds.reduce((results, mapOverlayId) => {
+      const serieses = baseMeasureInfo[mapOverlayId][seriesesKey].filter(
+        ({ type, hideFromLegend, values = [] }) =>
+          ![MEASURE_TYPE_RADIUS, MEASURE_TYPE_POPUP_ONLY].includes(type) &&
+          hideFromLegend !== true &&
+          // Spetrum legend has values = []
+          (values.length === 0 || values.filter(value => !value?.hideFromLegend).length > 0),
+      );
+      return { ...results, [mapOverlayId]: { serieses } };
+    }, {});
+
+    const legendTypes = currentMapOverlayIds
+      .map(mapOverlayId => measureInfo[mapOverlayId].serieses)
+      .flat()
+      .map(({ type }) => type);
     const legendsHaveSameType = legendTypes.length > 1 && new Set(legendTypes).size === 1;
+
     return (
       <>
-        {currentMeasureIds.map(measureIds => {
-          const displayedSerieses = displayedLegends.filter(legend =>
-            measureIds.includes(legend.key),
-          );
-          const hasIconLayer = displayedSerieses.some(l => l.type === MEASURE_TYPE_ICON);
-          const hasRadiusLayer = displayedSerieses.some(l => l.type === MEASURE_TYPE_RADIUS);
-          const hasColorLayer = displayedSerieses.some(l => coloredMeasureTypes.includes(l.type));
+        {currentMapOverlayIds.map(mapOverlayId => {
+          const { serieses } = measureInfo[mapOverlayId];
 
-          return displayedSerieses.map(series => {
+          const hasIconLayer = serieses.some(l => l.type === MEASURE_TYPE_ICON);
+          const hasRadiusLayer = serieses.some(l => l.type === MEASURE_TYPE_RADIUS);
+          const hasColorLayer = serieses.some(l => coloredMeasureTypes.includes(l.type));
+          const isDisplayed = displayedMapOverlayIds.includes(mapOverlayId);
+
+          return serieses.map(series => {
             const { type } = series;
             const LegendComponent = getLegendComponent(type);
-            const isDisplayed = displayedMeasureIds.includes(series.key);
             return (
               <LegendFrame key={series.key} className={className} isDisplayed={isDisplayed}>
                 {legendsHaveSameType && <LegendName>{`${series.name}: `}</LegendName>}
@@ -112,21 +120,15 @@ export const Legend = React.memo(
 );
 
 Legend.propTypes = {
-  displayedMeasureIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-  setValueHidden: PropTypes.func,
-  hiddenValues: PropTypes.object,
-  serieses: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string,
-      value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    }),
-  ),
+  measureInfo: PropTypes.object.isRequired,
   className: PropTypes.string,
-  currentMeasureIds: PropTypes.array.isRequired,
+  hiddenValues: PropTypes.object,
+  setValueHidden: PropTypes.func,
+  displayedMapOverlayIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  currentMapOverlayIds: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 Legend.defaultProps = {
-  serieses: null,
   className: null,
   hiddenValues: {},
   setValueHidden: null,
