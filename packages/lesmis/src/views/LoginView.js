@@ -37,7 +37,7 @@ const Text = styled(Typography)`
   margin-right: 5px;
 `;
 
-const Link = styled(LocaleLink)`
+const StyledLocaleLink = styled(LocaleLink)`
   font-size: 0.875rem;
   line-height: 1rem;
   text-decoration: none;
@@ -52,9 +52,9 @@ export const LoginView = () => (
     </StyledCard>
     <FlexCenter mb={4}>
       <Text color="textSecondary">Don&apos;t have access?</Text>
-      <Link to="/register" color="primary">
+      <StyledLocaleLink to="/register" color="primary">
         Register here
-      </Link>
+      </StyledLocaleLink>
     </FlexCenter>
   </Container>
 );
