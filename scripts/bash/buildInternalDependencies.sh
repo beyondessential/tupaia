@@ -40,10 +40,9 @@ build_commands=()
 delete_command="rm -rf"
 
 # Build dependencies
-# a BUILD_LIBRARY flag is added for packages that have both an app build and a library build
 for PACKAGE in $(${DIR}/getInternalDependencies.sh ${package_path}); do
     delete_command="${delete_command} packages/${PACKAGE}/${OUT_DIR}"
-    build_commands+=("\"BUILD_LIBRARY=true yarn workspace @tupaia/${PACKAGE} build $build_args\"")
+    build_commands+=("\"yarn workspace @tupaia/${PACKAGE} build $build_args\"")
 done
 
 if [[ $watch == "true" ]]; then
