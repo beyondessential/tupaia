@@ -99,10 +99,8 @@ const useStickyBar = () => {
     // detect once when the effect is run
     detectScrolledPastTop();
     // and again on scroll events
-    // eslint-disable-next-line no-undef
     window.addEventListener('scroll', detectScrolledPastTop);
 
-    // eslint-disable-next-line no-undef
     return () => window.removeEventListener('scroll', detectScrolledPastTop);
   }, [stickyBarsHeight]);
 
@@ -110,7 +108,6 @@ const useStickyBar = () => {
     // if the top of the dashboards container is above the sticky dashboard header, scroll to the top
     if (isScrolledPastTop) {
       const newTop = topRef.current.offsetTop - stickyBarsHeight;
-      // eslint-disable-next-line no-undef
       window.scrollTo({ top: newTop, behavior: 'smooth' });
     }
   }, [isScrolledPastTop, stickyBarsHeight]);

@@ -20,7 +20,6 @@ export const useLogin = () => {
         data: {
           emailAddress: email,
           password,
-          // eslint-disable-next-line no-undef
           deviceName: window.navigator.userAgent,
         },
       }),

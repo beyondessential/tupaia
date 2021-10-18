@@ -98,7 +98,6 @@ export const LocaleMenu = () => {
     setAnchorEl(null);
     queryClient.clear();
 
-    // eslint-disable-next-line no-undef
     window.localStorage.setItem('lesmis-locale', code);
   };
 

@@ -9,7 +9,7 @@ import { DEFAULT_LOCALE } from '../constants';
 
 const getApiUrl = () => {
   // if no env var, use sensible defaults based on the front end url
-  const { hostname } = window.location; // eslint-disable-line no-undef
+  const { hostname } = window.location;
 
   // localhost becomes http://localhost:8060
   if (hostname === 'localhost') {
@@ -40,7 +40,6 @@ axios.defaults.withCredentials = true;
 const timeout = 45 * 1000; // 45 seconds
 
 const getRequestOptions = options => {
-  // eslint-disable-next-line no-undef
   const locale = window.location.pathname.split('/')[1];
   let requestOptions = { timeout, ...options };
 
