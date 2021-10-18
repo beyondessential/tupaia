@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import { useHomeUrl } from '../utils';
 
 const CloseButton = styled(IconButton)`
   position: absolute;
@@ -16,13 +17,14 @@ const CloseButton = styled(IconButton)`
 `;
 
 export const FormBackButton = () => {
-  const history = useHistory();
+  const { pushToHomeUrl } = useHomeUrl();
+  const { push, location } = useHistory();
 
   const handleClose = () => {
-    if (history.location?.state?.referer) {
-      history.push(history.location.state.referer);
+    if (location?.state?.referer) {
+      push(location.state.referer);
     } else {
-      history.push('/');
+      pushToHomeUrl();
     }
   };
   return (

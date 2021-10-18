@@ -4,19 +4,17 @@
  *
  */
 import { useMutation, useQueryClient } from 'react-query';
-import { useHistory } from 'react-router-dom';
 import { post } from '../api';
+import { useHomeUrl } from '../../utils/useHomeUrl';
 
 export const useLogout = () => {
-  const history = useHistory();
+  const { pushToHomeUrl } = useHomeUrl();
   const queryClient = useQueryClient();
 
-  const query = useMutation(() => post('logout'), {
+  return useMutation(() => post('logout'), {
     onSuccess: () => {
       queryClient.clear();
-      history.push('/');
+      pushToHomeUrl();
     },
   });
-
-  return query;
 };

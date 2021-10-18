@@ -7,9 +7,11 @@ import { useMutation, useQueryClient } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import { post } from '../api';
 import { useUser } from '../queries';
+import { useHomeUrl } from '../../utils/useHomeUrl';
 
 export const useLogin = () => {
-  const history = useHistory();
+  const { pushToHomeUrl } = useHomeUrl();
+  const { push, location } = useHistory();
   const queryClient = useQueryClient();
 
   const loginQuery = useMutation(
@@ -18,6 +20,7 @@ export const useLogin = () => {
         data: {
           emailAddress: email,
           password,
+          // eslint-disable-next-line no-undef
           deviceName: window.navigator.userAgent,
         },
       }),
@@ -26,11 +29,11 @@ export const useLogin = () => {
         queryClient.clear();
 
         // Send the user back to the previous page if there is one saved in referer
-        if (history.location?.state?.referer) {
-          history.push(history.location.state.referer);
+        if (location?.state?.referer) {
+          push(location.state.referer);
         } else {
           // Otherwise send them to the homepage
-          history.push('/');
+          pushToHomeUrl();
         }
       },
     },

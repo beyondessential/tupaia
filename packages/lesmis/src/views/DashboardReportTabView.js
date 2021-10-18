@@ -21,7 +21,7 @@ import {
   TabPanel,
 } from '../components';
 import { NAVBAR_HEIGHT_INT } from '../constants';
-import { useUrlSearchParam } from '../utils';
+import { useHomeUrl, useUrlSearchParam } from '../utils';
 import { yearToApiDates } from '../api/queries/utils';
 
 const StickyTabBarContainer = styled.div`
@@ -52,6 +52,7 @@ const SCHOOL_DEFAULT_DASHBOARD_GROUP = 'Students';
 // Gets the best default dashboard possible, and check if the selected dashboard is valid
 const useDefaultDashboardTab = (selectedDashboard = null, options) => {
   const history = useHistory();
+  const { homeUrl } = useHomeUrl();
   const { isLoggedIn, isFetching: isFetchingUser } = useUser();
 
   if (!options || options.length === 0) {
@@ -65,7 +66,7 @@ const useDefaultDashboardTab = (selectedDashboard = null, options) => {
       return selectedDashboard;
     }
     if (!isFetchingUser && !isLoggedIn) {
-      return history.push('/login', { referer: history.location });
+      return history.push(`${homeUrl}/login`, { referer: history.location });
     }
   }
 
@@ -98,8 +99,10 @@ const useStickyBar = () => {
     // detect once when the effect is run
     detectScrolledPastTop();
     // and again on scroll events
+    // eslint-disable-next-line no-undef
     window.addEventListener('scroll', detectScrolledPastTop);
 
+    // eslint-disable-next-line no-undef
     return () => window.removeEventListener('scroll', detectScrolledPastTop);
   }, [stickyBarsHeight]);
 
@@ -107,6 +110,7 @@ const useStickyBar = () => {
     // if the top of the dashboards container is above the sticky dashboard header, scroll to the top
     if (isScrolledPastTop) {
       const newTop = topRef.current.offsetTop - stickyBarsHeight;
+      // eslint-disable-next-line no-undef
       window.scrollTo({ top: newTop, behavior: 'smooth' });
     }
   }, [isScrolledPastTop, stickyBarsHeight]);
