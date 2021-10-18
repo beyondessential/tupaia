@@ -39,7 +39,7 @@ const expectError = (response, expectedError) => expectErrors(response, expected
 
 let surveyId;
 
-describe.only('surveyResponse endpoint', () => {
+describe('surveyResponse endpoint', () => {
   const app = new TestableApp();
   const { models } = app;
 
