@@ -15,9 +15,17 @@ export class ReportRoute extends TranslatableRoute {
 
   private readonly webConfigConnection: WebConfigConnection;
 
-  translationKeys = [
-    'label'
-  ];
+  translationKeys = {
+    type: 'array',
+    items: {
+      type: 'object',
+      properties: {
+        label: {
+          type: 'string'
+        }
+      }
+    }
+  };
 
   constructor(req: Request, res: Response, next: NextFunction) {
     super(req, res, next);
