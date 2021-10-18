@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import moment from 'moment';
 
-import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
+import { buildAndInsertSurveys, generateId, generateTestId, upsertDummyRecord } from '@tupaia/database';
 import { oneSecondSleep } from '@tupaia/utils';
 import {
   expectErrors,
@@ -77,7 +77,7 @@ describe('surveyResponse endpoint', () => {
     const [{ survey }] = await buildAndInsertSurveys(models, [
       {
         id: surveyId,
-        code: 'TEST_SURVEY',
+        code: 'TEST_SURVEY_' + generateId(), // prevent test cross-pollination
         can_repeat: true,
         questions: [
           { code: questionCode(1), type: 'FreeText' },
@@ -451,7 +451,7 @@ describe('surveyResponse endpoint', () => {
       const [{ survey }] = await buildAndInsertSurveys(models, [
         {
           id: periodicSurveyId,
-          code: 'TEST_SURVEY_PERIODIC',
+          code: 'TEST_SURVEY_PERIODIC' + generateId(), // prevent test cross-pollination
           can_repeat: false,
           period_granularity: 'daily',
           questions: [
