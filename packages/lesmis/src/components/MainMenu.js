@@ -86,6 +86,7 @@ const TupaiaText = styled(Typography)`
 
 const ListItemLink = props => <ListItem button component={RouterLink} {...props} />;
 
+/* eslint-disable */
 const AdminPanelLinks = () => (
   <>
     <Subheader component="div">Admin</Subheader>
