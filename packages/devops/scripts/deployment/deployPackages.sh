@@ -59,6 +59,7 @@ for PACKAGE in ${PACKAGES[@]}; do
         echo "Building analytics table"
         yarn workspace @tupaia/data-api install-mv-refresh
         yarn workspace @tupaia/data-api build-analytics-table
+        yarn workspace @tupaia/data-api patch-analytics-table up
     fi
 done
 
