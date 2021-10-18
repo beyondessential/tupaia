@@ -1,6 +1,7 @@
 import keyBy from 'lodash.keyby';
 import groupBy from 'lodash.groupby';
 import isEqual from 'lodash.isequal';
+import orderBy from 'lodash.orderby';
 
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { reduceToDictionary, getSortByKey } from '@tupaia/utils';
@@ -74,8 +75,8 @@ const findNestedGroupedMapOverlays = async (
     mapOverlayItemRelations,
   );
   return sortedMapOverlayResults.map(item => {
-    const { id: mapOverlayId, ...itemToReturn } = item;
-    return { mapOverlayId, ...itemToReturn };
+    const { id, code: mapOverlayCode, ...itemToReturn } = item;
+    return { mapOverlayCode, ...itemToReturn };
   });
 };
 
@@ -139,52 +140,63 @@ const checkIfGroupedMapOverlaysAreEmpty = nestedMapOverlayGroups => {
 };
 
 /**
- * Sort map overlays/map overlay groups with sort_order first, then the ones without sort_order alphabetically
+ * Sort map overlays/map overlay groups with sort_order first, then alphabetically
  * @param {*} mapOverlayItems
  * @param {*} relations
  */
 const sortMapOverlayItems = (mapOverlayItems, relations) => {
   const childIdToSortOrder = reduceToDictionary(relations, 'child_id', 'sort_order');
-  const sortedOverlaysByOrder = mapOverlayItems
-    .filter(m => childIdToSortOrder[m.id] !== null)
-    .sort((m1, m2) => childIdToSortOrder[m1.id] - childIdToSortOrder[m2.id]);
-  const sortedOverlaysAlphabetically = mapOverlayItems
-    .filter(m => childIdToSortOrder[m.id] === null)
-    .sort(getSortByKey('name'));
+  // Momentarily add sort order so we can use orderBy
+  const overlaysWithSortOrder = mapOverlayItems.map(overlay => ({
+    ...overlay,
+    sort_order: childIdToSortOrder[overlay.id],
+  }));
+  const sortedOverlays = orderBy(overlaysWithSortOrder, ['sort_order', 'name']);
 
-  return [...sortedOverlaysByOrder, ...sortedOverlaysAlphabetically];
+  // Remove sort order from overlays before return
+  return sortedOverlays.map(overlay => {
+    const { sort_order: sortOrder, ...restOfOverlay } = overlay;
+    return restOfOverlay;
+  });
 };
 
 const translateOverlaysForResponse = mapOverlays =>
   mapOverlays
-    .filter(({ presentationOptions: { hideFromMenu } }) => !hideFromMenu)
-    .map(({ id, name, presentationOptions, report_code: reportCode, dataElementCode, legacy }) => ({
-      id, // just for sorting purpose, will be removed later
+    .filter(({ config: { hideFromMenu } }) => !hideFromMenu)
+    .map(({ id, code, name, config, report_code: reportCode, legacy }) => ({
+      id, // just for lookup purpose, will be removed later
+      code,
       name,
-      ...presentationOptions,
+      ...config,
       reportCode,
-      dataElementCode,
       legacy,
     }));
 
 /**
- * Find accessible Map Overlays that have matched entityCode, projectCode and userGroups
+ * Find accessible Map Overlays that have matched entityCode, projectCode and permissionGroups
  */
-export const findAccessibleMapOverlays = async (models, overlayCode, projectCode, userGroups) => {
+export const findAccessibleMapOverlays = async (
+  models,
+  overlayCode,
+  projectCode,
+  permissionGroups,
+) => {
   const mapOverlays = await models.mapOverlay.find({
     [RAW]: {
-      sql: `("userGroup" = '' OR "userGroup" IN (${userGroups.map(() => '?').join(',')}))`, // turn `['Public', 'Donor', 'Admin']` into `?,?,?` for binding
-      parameters: userGroups,
+      sql: `("permission_group" = '' OR "permission_group" IN (${permissionGroups
+        .map(() => '?')
+        .join(',')}))`, // turn `['Public', 'Donor', 'Admin']` into `?,?,?` for binding
+      parameters: permissionGroups,
     },
     [AND]: {
       [RAW]: {
-        sql: '"countryCodes" IS NULL OR :overlayCode = ANY("countryCodes")',
+        sql: '"country_codes" IS NULL OR :overlayCode = ANY("country_codes")',
         parameters: {
           overlayCode,
         },
       },
       [AND]: {
-        projectCodes: {
+        project_codes: {
           comparator: '@>',
           comparisonValue: [projectCode],
         },

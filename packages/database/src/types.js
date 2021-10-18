@@ -32,7 +32,7 @@ export const TYPES = {
   GEOGRAPHICAL_AREA: 'geographical_area',
   INDICATOR: 'indicator',
   LEGACY_REPORT: 'legacy_report',
-  MAP_OVERLAY: 'mapOverlay',
+  MAP_OVERLAY: 'map_overlay',
   MAP_OVERLAY_GROUP: 'map_overlay_group',
   MAP_OVERLAY_GROUP_RELATION: 'map_overlay_group_relation',
   MEDITRAK_DEVICE: 'meditrak_device',

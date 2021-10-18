@@ -36,6 +36,11 @@ const validateEntitiesAndBuildContext = async (
     throw new Error(`Cannot find root entity for hierarchy: ${req.params.hierarchyName}`);
   }
 
+  if (entityCodes.length === 0) {
+    // No entities requested
+    return { entities: [], allowedCountries: [] };
+  }
+
   const entities = await rootEntity.getDescendants(hierarchyId, {
     code: entityCodes,
   });

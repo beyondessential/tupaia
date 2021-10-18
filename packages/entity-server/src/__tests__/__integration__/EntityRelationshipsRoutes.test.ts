@@ -100,6 +100,20 @@ describe('relationships', () => {
       expect(entities).toEqual({ Kanto: ['Cerulean Cave'] });
     });
 
+    it('can fetch relations where ancestor and descendant have the same type', async () => {
+      const { body: entities } = await app.get('hierarchy/redblue/KANTO/relationships', {
+        query: {
+          ancestor_filter: 'type==facility;name=@Pokemon',
+          descendant_filter: 'type==facility',
+        },
+      });
+
+      expect(entities).toEqual({
+        PKMN_MANSION: ['PKMN_MANSION'],
+        PKMN_TOWER: ['PKMN_TOWER'],
+      });
+    });
+
     it('can fetch relationships in an alternate hierarchy', async () => {
       const { body: entities } = await app.get('hierarchy/goldsilver/goldsilver/relationships', {
         query: {
@@ -140,6 +154,15 @@ describe('relationships', () => {
         CELADON: ['CELADON_GAME'],
         LAVENDER: ['PKMN_TOWER'],
       });
+    });
+
+    it('can fetch relationships of no entities', async () => {
+      const { body: entities } = await app.post('hierarchy/redblue/relationships', {
+        query: { fields: 'code,name,type', descendant_filter: 'type==facility' },
+        body: { entities: [] },
+      });
+
+      expect(entities).toEqual({});
     });
 
     it('can fetch relationships of multiple entities in an alternate hierarchy', async () => {

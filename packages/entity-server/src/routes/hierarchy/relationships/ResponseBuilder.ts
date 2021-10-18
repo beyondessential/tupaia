@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import keyBy from 'lodash.keyby';
+
 import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
 import { QueryConjunctions } from '@tupaia/server-boilerplate';
 
@@ -45,7 +47,17 @@ export class ResponseBuilder {
   private async buildAncestorCodesAndPairs(descendants: EntityType[]): Promise<[string[], Pair[]]> {
     const { hierarchyId, entities } = this.ctx;
     const { type: ancestorType } = this.ctx.ancestor;
+    const { type: descendantType } = this.ctx.descendant;
+
     const descendantCodes = descendants.map(descendant => descendant.code);
+    if (ancestorType === descendantType) {
+      // types match, so just return descendants as mapping to themselves
+      return [
+        descendantCodes,
+        descendantCodes.map(descendant => ({ descendant, ancestor: descendant })),
+      ];
+    }
+
     const descendantAncestorMapping = await this.models.entity.fetchAncestorDetailsByDescendantCode(
       descendantCodes,
       hierarchyId,
@@ -171,9 +183,10 @@ export class ResponseBuilder {
     }
 
     const ancestors = await this.getAncestorTypeRelatives(ancestorCodes);
+    const ancestorsByCode = keyBy(ancestors, 'code');
     const formattedEntitiesByCode = await this.getFormattedEntitiesByCode(ancestors, descendants);
     const formattedPairs = pairs
-      .filter(pair => formattedEntitiesByCode[pair.ancestor])
+      .filter(pair => ancestorsByCode[pair.ancestor])
       .map(pair => ({
         ancestor: formattedEntitiesByCode[pair.ancestor],
         descendant: formattedEntitiesByCode[pair.descendant],

@@ -67,5 +67,15 @@ describe('entity', () => {
         ),
       );
     });
+
+    it('can fetch no entities', async () => {
+      const { body: entities } = await app.post('hierarchy/redblue', {
+        query: { fields: 'code,name,type' },
+        body: { entities: [] },
+      });
+
+      expect(entities).toBeArray();
+      expect(entities.length).toBe(0);
+    });
   });
 });
