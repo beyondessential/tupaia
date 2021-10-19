@@ -22,7 +22,7 @@ export {
 } from './measures';
 export {
   getMapOverlaysFromHierarchy,
-  checkHierarchyIncludesMapOverlayIds,
+  checkHierarchyIncludesMapOverlayCodes,
   flattenMapOverlayHierarchy,
   isMapOverlayHierarchyEmpty,
 } from './mapOverlays';

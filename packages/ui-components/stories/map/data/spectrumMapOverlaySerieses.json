@@ -5,13 +5,6 @@
     "name": "Households",
     "linkedMeasures": null,
     "measureBuilder": "valueForOrgGroup",
-    "countryCodes": [
-      "TO"
-    ],
-    "projectCodes": [
-      "fanafana",
-      "explore"
-    ],
     "type": "spectrum",
     "key": "TONGA_NUMBER_OF_HOUSEHOLDS",
     "hideFromMenu": false,

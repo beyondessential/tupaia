@@ -74,7 +74,7 @@ export const Control = ({
       {isMeasureSelected ? (
         selectedMapOverlays.map((mapOverlay, index) => (
           <TitleAndDatePicker
-            key={mapOverlay.mapOverlayId}
+            key={mapOverlay.mapOverlayCode}
             mapOverlay={mapOverlay}
             onUpdateMeasurePeriod={onUpdateMeasurePeriod}
             isExpanded={isExpanded}

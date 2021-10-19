@@ -7,24 +7,24 @@ import { PermissionsError } from '@tupaia/utils';
 import { PermissionsChecker } from './PermissionsChecker';
 
 export class MapOverlayPermissionsChecker extends PermissionsChecker {
-  getMapOverlayId() {
-    const { mapOverlayId } = this.query;
-    if (!mapOverlayId) {
-      throw new Error('No map overlay id was provided');
+  getMapOverlayCode() {
+    const { mapOverlayCode } = this.query;
+    if (!mapOverlayCode) {
+      throw new Error('No map overlay code was provided');
     }
-    return mapOverlayId;
+    return mapOverlayCode;
   }
 
   async fetchAndCacheOverlay() {
     if (!this.overlay) {
-      this.overlay = await this.models.mapOverlay.find({ id: this.getMapOverlayId() });
+      this.overlay = await this.models.mapOverlay.find({ code: this.getMapOverlayCode() });
     }
     return this.overlay;
   }
 
   async fetchPermissionGroups() {
     const overlay = await this.fetchAndCacheOverlay();
-    return [overlay.userGroup];
+    return [overlay.permission_group];
   }
 
   async checkPermissions() {
@@ -37,9 +37,9 @@ export class MapOverlayPermissionsChecker extends PermissionsChecker {
     }
 
     const overlay = await this.fetchAndCacheOverlay();
-    const mapOverlayId = this.getMapOverlayId();
-    if (overlay[0]?.id !== mapOverlayId) {
-      throw new Error(`Map overlay ${mapOverlayId} could not be found in the database`);
+    const mapOverlayCode = this.getMapOverlayCode();
+    if (overlay[0]?.code !== mapOverlayCode) {
+      throw new Error(`Map overlay ${mapOverlayCode} could not be found in the database`);
     }
 
     await this.checkHasEntityAccess(this.entity.code);

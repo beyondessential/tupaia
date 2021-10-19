@@ -16,7 +16,7 @@ import { ZoomControl } from './ZoomControl';
 import {
   selectActiveTileSet,
   selectMeasuresWithDisplayInfo,
-  selectCurrentMapOverlayIds,
+  selectCurrentMapOverlayCodes,
   selectCurrentOrgUnit,
   selectHasPolygonMeasure,
   selectMeasureOptions,
@@ -69,7 +69,7 @@ class MapComponent extends Component {
     const {
       currentOrganisationUnit,
       displayedChildren,
-      mapOverlayIds,
+      mapOverlayCodes,
       measureOptions,
       measureData,
       position,
@@ -77,7 +77,7 @@ class MapComponent extends Component {
       sidePanelWidth,
     } = this.props;
 
-    if (JSON.stringify(nextProps.mapOverlayIds) !== JSON.stringify(mapOverlayIds)) {
+    if (JSON.stringify(nextProps.mapOverlayCodes) !== JSON.stringify(mapOverlayCodes)) {
       return true;
     }
 
@@ -211,7 +211,7 @@ MapComponent.propTypes = {
   displayedChildren: PropTypes.arrayOf(PropTypes.object),
   getChildren: PropTypes.func.isRequired,
   measureData: PropTypes.array,
-  mapOverlayIds: PropTypes.array.isRequired,
+  mapOverlayCodes: PropTypes.array.isRequired,
   measureOptions: PropTypes.array,
   position: PropTypes.shape({
     center: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
@@ -241,7 +241,7 @@ const selectMeasureDataWithCoordinates = createSelector([measureData => measureD
 
 const mapStateToProps = state => {
   const { isAnimating, shouldSnapToPosition, position, displayedMapOverlays } = state.map;
-  const mapOverlayIds = selectCurrentMapOverlayIds(state);
+  const mapOverlayCodes = selectCurrentMapOverlayCodes(state);
   const { isSidePanelExpanded } = state.global;
   const { contractedWidth, expandedWidth } = state.dashboard;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
@@ -284,7 +284,7 @@ const mapStateToProps = state => {
       state,
       currentOrganisationUnit.organisationUnitCode,
     ),
-    mapOverlayIds,
+    mapOverlayCodes,
     measureOptions,
     getChildren,
     measureOrgUnits,

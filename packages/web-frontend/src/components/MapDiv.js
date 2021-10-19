@@ -18,7 +18,7 @@ import { connect } from 'react-redux';
 import { Legend as MapLegend, TilePicker, tileSetShape } from '@tupaia/ui-components/lib/map';
 import { CONTROL_BAR_PADDING } from '../styles';
 import { MapOverlayBar } from '../containers/MapOverlayBar';
-import { selectActiveTileSet, selectCurrentMapOverlayIds, selectTileSets } from '../selectors';
+import { selectActiveTileSet, selectCurrentMapOverlayCodes, selectTileSets } from '../selectors';
 import { changeTileSet } from '../actions';
 
 const FlexDiv = styled.div`
@@ -83,8 +83,8 @@ export const MapDivComponent = ({
   setValueHidden,
   measureInfo,
   isMeasureLoading,
-  currentMapOverlayIds,
-  displayedMapOverlayIds,
+  currentMapOverlayCodes,
+  displayedMapOverlayCodes,
 }) => (
   <FlexDiv>
     <LeftCol>
@@ -97,8 +97,8 @@ export const MapDivComponent = ({
             setValueHidden={setValueHidden}
             hiddenValues={hiddenValues}
             measureInfo={measureInfo}
-            currentMapOverlayIds={currentMapOverlayIds}
-            displayedMapOverlayIds={displayedMapOverlayIds}
+            currentMapOverlayCodes={currentMapOverlayCodes}
+            displayedMapOverlayCodes={displayedMapOverlayCodes}
             seriesesKey="measureOptions"
           />
         )}
@@ -117,8 +117,8 @@ MapDivComponent.propTypes = {
   onChangeTileSet: PropTypes.func.isRequired,
   setValueHidden: PropTypes.func.isRequired,
   hiddenValues: PropTypes.object.isRequired,
-  displayedMapOverlayIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-  currentMapOverlayIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  displayedMapOverlayCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  currentMapOverlayCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 MapDivComponent.defaultProps = {};
@@ -130,8 +130,8 @@ const mapStateToProps = state => {
     measureInfo: state.map.measureInfo,
     isMeasureLoading: state.map.isMeasureLoading,
     tileSets: selectTileSets(state),
-    currentMapOverlayIds: selectCurrentMapOverlayIds(state),
-    displayedMapOverlayIds: state.map.displayedMapOverlays,
+    currentMapOverlayCodes: selectCurrentMapOverlayCodes(state),
+    displayedMapOverlayCodes: state.map.displayedMapOverlays,
   };
 };
 

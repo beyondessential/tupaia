@@ -24,7 +24,7 @@ import {
   UPDATE_MEASURE_CONFIG,
   LOCATION_CHANGE,
 } from '../actions';
-import { selectCurrentPeriodGranularity, selectMapOverlayByIds } from '../selectors';
+import { selectCurrentPeriodGranularity, selectMapOverlayByCodes } from '../selectors';
 import { URL_COMPONENTS } from './constants';
 import {
   addPopStateListener,
@@ -77,7 +77,7 @@ export const historyMiddleware = store => next => action => {
       dispatchLocationUpdate(store, { [URL_COMPONENTS.REPORT_PERIOD]: null });
       break;
     case SET_MAP_OVERLAYS: {
-      const mapOverlays = selectMapOverlayByIds(state, action.mapOverlayIds.split(','));
+      const mapOverlays = selectMapOverlayByCodes(state, action.mapOverlayCodes.split(','));
       if (mapOverlays.length === 0) {
         break;
       }
@@ -85,7 +85,7 @@ export const historyMiddleware = store => next => action => {
       // TODO: PHX-1 set multiple overlay period in URL
       const { startDate, endDate, periodGranularity } = mapOverlays[0];
       dispatchLocationUpdate(store, {
-        [URL_COMPONENTS.MAP_OVERLAY]: action.mapOverlayIds,
+        [URL_COMPONENTS.MAP_OVERLAY]: action.mapOverlayCodes,
         [URL_COMPONENTS.MEASURE_PERIOD]: convertDateRangeToUrlPeriodString(
           { startDate, endDate },
           periodGranularity,

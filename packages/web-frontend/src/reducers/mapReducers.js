@@ -81,21 +81,21 @@ function measureInfo(state = {}, action) {
       return {};
     case SET_MAP_OVERLAYS: {
       return {
-        ...pick(state, action.mapOverlayIds),
+        ...pick(state, action.mapOverlayCodes),
       };
     }
     case FETCH_MEASURE_DATA_SUCCESS: {
       const {
-        mapOverlayId,
-        hiddenMeasures,
-        serieses, // remove serieses
+        mapOverlayCode,
+        hiddenMeasures: _, // --- remove hiddenMeasures and serieses-
+        serieses, // ------------------------------------------------
         measureLevel,
         ...restOfResponse
       } = action.response;
 
       return {
         ...state,
-        [mapOverlayId]: {
+        [mapOverlayCode]: {
           ...restOfResponse,
           measureLevel: measureLevel.split(','),
         },
@@ -125,9 +125,9 @@ function isMeasureLoading(state = false, action) {
 function displayedMapOverlays(state = [], action) {
   switch (action.type) {
     case SET_MAP_OVERLAYS:
-      return action.mapOverlayIds.split(',');
+      return action.mapOverlayCodes.split(',');
     case SET_DISPLAYED_MAP_OVERLAY:
-      return action.mapOverlayIds;
+      return action.mapOverlayCodes;
     default:
       return state;
   }

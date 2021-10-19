@@ -6,6 +6,7 @@
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
+import { JOIN_TYPES } from '../TupaiaDatabase';
 
 class MapOverlayType extends DatabaseType {
   static databaseType = TYPES.MAP_OVERLAY;
@@ -18,29 +19,46 @@ export class MapOverlayModel extends DatabaseModel {
     return MapOverlayType;
   }
 
-  async findMeasuresByIds(ids) {
+  async findMeasuresByCode(code) {
     const overlays = await this.find(
-      { id: ids },
+      { code: [code] },
       {
         columns: [
-          { id: `${TYPES.MAP_OVERLAY}.id` },
-          { linkedMeasures: `${TYPES.MAP_OVERLAY}.linkedMeasures` },
+          { code: `${TYPES.MAP_OVERLAY}.code` },
+          { linked_measures: `${TYPES.MAP_OVERLAY}.linked_measures` },
         ],
       },
     );
-    const measureIds = overlays
-      .map(({ id: overlayId, linkedMeasures }) => [
-        overlayId,
+    const measureCodes = overlays
+      .map(({ code: overlayCode, linked_measures: linkedMeasures }) => [
+        overlayCode,
         ...(linkedMeasures !== null ? linkedMeasures : []),
       ])
       .flat();
 
-    const measureResults = await this.find({ id: measureIds });
+    const measureResults = await this.findMeasuresWithLegacyInfo({
+      'map_overlay.code': measureCodes,
+    });
     return measureResults.sort(
       (a, b) =>
-        measureIds.findIndex(measureId => measureId === a.id) -
-        measureIds.findIndex(measureId => measureId === b.id),
+        measureCodes.findIndex(measureCode => measureCode === a.code) -
+        measureCodes.findIndex(measureCode => measureCode === b.code),
     );
+  }
+
+  // Return measures joined with legacy info if it exists
+  async findMeasuresWithLegacyInfo(criteria) {
+    return this.database.find(this.databaseType, criteria, {
+      columns: [
+        'map_overlay.*',
+        'legacy_report.data_builder',
+        'legacy_report.data_builder_config',
+        'legacy_report.data_services',
+      ],
+      joinWith: TYPES.LEGACY_REPORT,
+      joinCondition: [`${TYPES.MAP_OVERLAY}.report_code`, `${TYPES.LEGACY_REPORT}.code`],
+      joinType: JOIN_TYPES.LEFT,
+    });
   }
 }
 

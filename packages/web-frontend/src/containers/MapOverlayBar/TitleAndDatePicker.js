@@ -58,7 +58,7 @@ export const TitleAndDatePickerComponent = ({
 }) => {
   const [isSwitchedOn, setIsSwitchedOn] = useState(true);
   useEffect(() => {
-    setIsSwitchedOn(displayedMapOverlays.includes(mapOverlay.mapOverlayId));
+    setIsSwitchedOn(displayedMapOverlays.includes(mapOverlay.mapOverlayCode));
   }, [JSON.stringify(displayedMapOverlays)]);
 
   const { periodGranularity, isTimePeriodEditable = true, name } = mapOverlay;
@@ -72,8 +72,8 @@ export const TitleAndDatePickerComponent = ({
 
   const handleSwitchChange = () => {
     const newDisplayedOverlays = isSwitchedOn
-      ? displayedMapOverlays.filter(mapOverlayId => mapOverlayId !== mapOverlay.mapOverlayId)
-      : [...displayedMapOverlays, mapOverlay.mapOverlayId];
+      ? displayedMapOverlays.filter(mapOverlayCode => mapOverlayCode !== mapOverlay.mapOverlayCode)
+      : [...displayedMapOverlays, mapOverlay.mapOverlayCode];
     onSetDisplayedMapOverlay(newDisplayedOverlays);
     setIsSwitchedOn(!isSwitchedOn);
   };
@@ -114,7 +114,7 @@ export const TitleAndDatePickerComponent = ({
 
 TitleAndDatePickerComponent.propTypes = {
   mapOverlay: PropTypes.shape({
-    mapOverlayId: PropTypes.string,
+    mapOverlayCode: PropTypes.string,
     name: PropTypes.string,
     periodGranularity: PropTypes.string,
     isTimePeriodEditable: PropTypes.bool,
@@ -144,7 +144,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onSetDisplayedMapOverlay: mapOverlayIds => dispatch(setDisplayedMapOverlays(mapOverlayIds)),
+  onSetDisplayedMapOverlay: mapOverlayCodes => dispatch(setDisplayedMapOverlays(mapOverlayCodes)),
 });
 
 export const TitleAndDatePicker = connect(

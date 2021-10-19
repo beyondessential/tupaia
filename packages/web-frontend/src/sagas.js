@@ -114,16 +114,16 @@ import {
 import { setProject, setRequestingAccess } from './projects/actions';
 import {
   selectCurrentInfoViewKey,
-  selectCurrentMapOverlayIds,
+  selectCurrentMapOverlayCodes,
   selectCurrentOrgUnitCode,
   selectShouldUseDashboardData,
   selectCurrentPeriodGranularity,
   selectCurrentProjectCode,
   selectCurrentExpandedViewConfig,
   selectCurrentExpandedViewContent,
-  selectDefaultMapOverlayId,
+  selectDefaultMapOverlayCode,
   selectIsProject,
-  selectMapOverlayById,
+  selectMapOverlayByCode,
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitCountry,
@@ -138,7 +138,7 @@ import {
   processMeasureInfo,
   getInfoFromInfoViewKey,
   getBrowserTimeZone,
-  checkHierarchyIncludesMapOverlayIds,
+  checkHierarchyIncludesMapOverlayCodes,
 } from './utils';
 import { getDefaultDates, getDefaultDrillDownDates } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
@@ -865,7 +865,7 @@ function* watchFetchMoreSearchResults() {
  */
 function* fetchMeasureInfo() {
   const state = yield select();
-  const mapOverlayIds = selectCurrentMapOverlayIds(state);
+  const mapOverlayCodes = selectCurrentMapOverlayCodes(state);
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
   const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
@@ -877,8 +877,11 @@ function* fetchMeasureInfo() {
   }
 
   // TODO: PHX-103 - Now only select the last map overlay start date and end date, will use both in PHX-103
-  for (const mapOverlayId of mapOverlayIds) {
-    const mapOverlayParams = selectMapOverlayById(state, mapOverlayIds[mapOverlayIds.length - 1]);
+  for (const mapOverlayCode of mapOverlayCodes) {
+    const mapOverlayParams = selectMapOverlayByCode(
+      state,
+      mapOverlayCodes[mapOverlayCodes.length - 1],
+    );
     if (!mapOverlayParams) {
       yield put(cancelFetchMeasureData());
       return;
@@ -890,7 +893,7 @@ function* fetchMeasureInfo() {
         ? mapOverlayParams
         : getDefaultDates(mapOverlayParams);
     const urlParameters = {
-      mapOverlayId,
+      mapOverlayCode,
       organisationUnitCode,
       startDate: formatDateForApi(startDate),
       endDate: formatDateForApi(endDate),
@@ -934,21 +937,21 @@ function* updateMapOverlayDateRangeOnceHierarchyLoads(action) {
     action.periodString,
     periodGranularity,
   );
-  yield put(updateMeasureConfig(selectCurrentMapOverlayIds(state)[0], { startDate, endDate }));
+  yield put(updateMeasureConfig(selectCurrentMapOverlayCodes(state)[0], { startDate, endDate }));
 }
 
 function* fetchCurrentMeasureInfo() {
   const state = yield select();
   const currentOrganisationUnitCode = selectCurrentOrgUnitCode(state);
   const { mapOverlayHierarchy } = state.mapOverlayBar;
-  const selectedMapOverlayIds = selectCurrentMapOverlayIds(state);
+  const selectedMapOverlayCodes = selectCurrentMapOverlayCodes(state);
 
   if (currentOrganisationUnitCode) {
-    if (!checkHierarchyIncludesMapOverlayIds(mapOverlayHierarchy, selectedMapOverlayIds)) {
-      const newMapOverlayId = selectDefaultMapOverlayId(state);
-      yield put(setMapOverlays(newMapOverlayId));
+    if (!checkHierarchyIncludesMapOverlayCodes(mapOverlayHierarchy, selectedMapOverlayCodes)) {
+      const defaultMapOverlayCode = selectDefaultMapOverlayCode(state);
+      yield put(setMapOverlays(defaultMapOverlayCode));
     } else {
-      yield put(setMapOverlays(selectedMapOverlayIds.join(',')));
+      yield put(setMapOverlays(selectedMapOverlayCodes.join(',')));
     }
   }
 }
@@ -967,15 +970,15 @@ function* watchFetchMeasureSuccess() {
 function* fetchMeasureInfoForNewOrgUnit(action) {
   const { countryCode } = action.organisationUnit;
   const state = yield select();
-  const mapOverlayIds = selectCurrentMapOverlayIds(state);
+  const mapOverlayCodes = selectCurrentMapOverlayCodes(state);
   const oldOrgUnitCountry = state.map.currentCountry;
   if (oldOrgUnitCountry === countryCode) {
     // We are in the same country as before, no need to refetch measureData
     return;
   }
 
-  if (mapOverlayIds.length > 0) {
-    yield put(setMapOverlays(mapOverlayIds.join(',')));
+  if (mapOverlayCodes.length > 0) {
+    yield put(setMapOverlays(mapOverlayCodes.join(',')));
   }
 }
 

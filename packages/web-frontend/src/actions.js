@@ -422,7 +422,7 @@ export function fetchCountryAccessDataError(errorMessage) {
  *
  * @param {array} entityIds The ids of the countries the user requests answers
  * @param {string} message A message describing the reasons access is requested
- * @param {string} userGroup A specific user (permission) group the user is requesting access for
+ * @param {string} permissionGroup A specific permission group the user is requesting access for
  */
 export function attemptRequestCountryAccess(entityIds, message = '', projectCode) {
   return {
@@ -526,24 +526,24 @@ export function changeBounds(bounds) {
 
 /**
  * Changes current map overlays, should change features rendered on map after saga data fetch.
- * Updates the current mayOverlayId in the url.
- * @param {string} mayOverlayIds
+ * Updates the current mapOverlayCodes to overlay in the url.
+ * @param {string} mapOverlayCodes
  */
-export function setMapOverlays(mapOverlayIds) {
+export function setMapOverlays(mapOverlayCodes) {
   return {
     type: SET_MAP_OVERLAYS,
-    mapOverlayIds,
+    mapOverlayCodes,
   };
 }
 
 /**
  * Works with switching on map overlay button.
- * @param {string[]} mapOverlayIds
+ * @param {string[]} mapOverlayCodes
  */
-export function setDisplayedMapOverlays(mapOverlayIds) {
+export function setDisplayedMapOverlays(mapOverlayCodes) {
   return {
     type: SET_DISPLAYED_MAP_OVERLAY,
-    mapOverlayIds,
+    mapOverlayCodes,
   };
 }
 
@@ -552,10 +552,10 @@ export function setDisplayedMapOverlays(mapOverlayIds) {
  *
  * @param {object} measureConfig
  */
-export function updateMeasureConfig(mapOverlayId, measureConfig) {
+export function updateMeasureConfig(mapOverlayCode, measureConfig) {
   return {
     type: UPDATE_MEASURE_CONFIG,
-    mapOverlayId,
+    mapOverlayCode,
     measureConfig,
   };
 }

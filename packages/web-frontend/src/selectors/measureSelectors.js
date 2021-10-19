@@ -44,10 +44,10 @@ const selectDisplayInfo = (measureOptions, hiddenMeasures, measureData, organisa
   safeGet(displayInfoCache, [measureOptions, hiddenMeasures, measureData, organisationUnitCode]);
 
 export const selectMeasureOptions = createSelector(
-  [state => state.map.measureInfo, (_, mapOverlayIds) => mapOverlayIds],
-  (measureInfo = {}, mapOverlayIds) => {
-    const selectedMeasureOptions = mapOverlayIds.reduce((results, mapOverlayId) => {
-      const { measureOptions = [] } = measureInfo[mapOverlayId] || {};
+  [state => state.map.measureInfo, (_, mapOverlayCodes) => mapOverlayCodes],
+  (measureInfo = {}, mapOverlayCodes) => {
+    const selectedMeasureOptions = mapOverlayCodes.reduce((results, mapOverlayCode) => {
+      const { measureOptions = [] } = measureInfo[mapOverlayCode] || {};
       return [...results, ...measureOptions];
     }, []);
 
@@ -62,15 +62,15 @@ export const selectMeasureOptions = createSelector(
 );
 
 const selectMeasureData = createSelector(
-  [state => state.map.measureInfo, (_, mapOverlayIds) => mapOverlayIds],
-  (measureInfo, mapOverlayIds) => {
-    if (!measureInfo || mapOverlayIds.length === 0) {
+  [state => state.map.measureInfo, (_, mapOverlayCodes) => mapOverlayCodes],
+  (measureInfo, mapOverlayCodes) => {
+    if (!measureInfo || mapOverlayCodes.length === 0) {
       return undefined;
     }
 
     const measureData = {};
-    mapOverlayIds.forEach(mapOverlayId => {
-      const selectedMeasureData = measureInfo[mapOverlayId]?.measureData;
+    mapOverlayCodes.forEach(mapOverlayCode => {
+      const selectedMeasureData = measureInfo[mapOverlayCode]?.measureData;
       if (selectedMeasureData) {
         selectedMeasureData.forEach(measure => {
           measureData[measure.organisationUnitCode] = Object.assign(
@@ -85,12 +85,12 @@ const selectMeasureData = createSelector(
 );
 
 const selectMeasureLevel = createSelector(
-  [state => state.map.measureInfo, (_, mapOverlayIds) => mapOverlayIds],
-  (measureInfo, mapOverlayIds) => {
+  [state => state.map.measureInfo, (_, mapOverlayCodes) => mapOverlayCodes],
+  (measureInfo, mapOverlayCodes) => {
     let measureLevelArray = [];
 
-    mapOverlayIds.forEach(mapOverlayId => {
-      const { measureLevel: selectedMeasureLevel = [] } = measureInfo[mapOverlayId] || {};
+    mapOverlayCodes.forEach(mapOverlayCode => {
+      const { measureLevel: selectedMeasureLevel = [] } = measureInfo[mapOverlayCode] || {};
       measureLevelArray = [...measureLevelArray, ...selectedMeasureLevel];
     });
 
@@ -101,10 +101,10 @@ const selectMeasureLevel = createSelector(
 export const selectHasPolygonMeasure = createSelector(
   [state => state.map.measureInfo, state => state.map.displayedMapOverlays],
   (measureInfo = {}, displayedMapOverlays) => {
-    for (const displayedMapOverlayId of displayedMapOverlays) {
+    for (const displayedMapOverlayCode of displayedMapOverlays) {
       if (
-        measureInfo[displayedMapOverlayId]?.measureOptions &&
-        measureInfo[displayedMapOverlayId].measureOptions.some(option =>
+        measureInfo[displayedMapOverlayCode]?.measureOptions &&
+        measureInfo[displayedMapOverlayCode].measureOptions.some(option =>
           POLYGON_MEASURE_TYPES.includes(option.type),
         )
       ) {

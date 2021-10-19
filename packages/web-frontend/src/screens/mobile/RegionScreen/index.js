@@ -240,7 +240,7 @@ const getMeasureFiltersForHierarchy = mapOverlayHierarchy => {
     } else {
       const mapOverlay = {
         label: measureObject.name,
-        id: measureObject.mapOverlayId,
+        code: measureObject.mapOverlayCode,
         value: measureObject,
       };
 
@@ -272,8 +272,8 @@ const mapStateToProps = state => {
 
   const measureFilters = getMeasureFiltersForHierarchy(mapOverlayHierarchy);
 
-  const selectedFilter = currentMapOverlay.mapOverlayId
-    ? { label: currentMapOverlay.name, id: `${currentMapOverlay.mapOverlayId.toString()}` }
+  const selectedFilter = currentMapOverlay.mapOverlayCode
+    ? { label: currentMapOverlay.name, code: `${currentMapOverlay.mapOverlayCode.toString()}` }
     : { label: '' };
 
   return {
@@ -292,7 +292,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onChangeMapOverlay: mapOverlayId => dispatch(setMapOverlays(mapOverlayId)),
+  onChangeMapOverlay: mapOverlayCode => dispatch(setMapOverlays(mapOverlayCode)),
   onClearMeasure: () => dispatch(clearMeasure()),
   onToggleMeasureExpand: () => dispatch(toggleMeasureExpand()),
   onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),
@@ -308,7 +308,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...dispatchProps,
     ...ownProps,
     onChangeMapOverlay: mapOverlay =>
-      mapOverlay ? onChangeMapOverlay(mapOverlay.mapOverlayId) : onClearMeasure(),
+      mapOverlay ? onChangeMapOverlay(mapOverlay.mapOverlayCode) : onClearMeasure(),
   };
 };
 

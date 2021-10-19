@@ -14,19 +14,19 @@ const Container = styled.div`
   padding: 1rem;
 `;
 
-const mapOverlayIdA = 'mapOverlayIdA';
-const mapOverlayIdB = 'mapOverlayIdB';
+const mapOverlayCodeA = 'mapOverlayCodeA';
+const mapOverlayCodeB = 'mapOverlayCodeB';
 
 export default {
   title: 'Map/Legend',
   component: Legend,
   argTypes: {
-    displayedMapOverlayIds: {
+    displayedMapOverlayCodes: {
       control: 'check',
-      options: [mapOverlayIdA, mapOverlayIdB],
+      options: [mapOverlayCodeA, mapOverlayCodeB],
       description: 'Map overlays that have been switched on',
     },
-    currentMapOverlayIds: {
+    currentMapOverlayCodes: {
       description: 'Map overlays that has been selected in hierarchy',
       control: null,
     },
@@ -49,29 +49,29 @@ export const MultipleLegends = LegendStory.bind({});
 
 MultipleLegends.args = {
   measureInfo: {
-    [mapOverlayIdA]: { serieses: spectrumMapOverlaySeries },
-    [mapOverlayIdB]: { serieses: mapOverlaySerieses },
+    [mapOverlayCodeA]: { serieses: spectrumMapOverlaySeries },
+    [mapOverlayCodeB]: { serieses: mapOverlaySerieses },
   },
-  currentMapOverlayIds: [mapOverlayIdA, mapOverlayIdB],
-  displayedMapOverlayIds: [mapOverlayIdA],
+  currentMapOverlayCodes: [mapOverlayCodeA, mapOverlayCodeB],
+  displayedMapOverlayCodes: [mapOverlayCodeA],
 };
 
 export const SimpleLegend = LegendStory.bind({});
 
 SimpleLegend.args = {
   measureInfo: {
-    [mapOverlayIdA]: { serieses: spectrumMapOverlaySeries },
+    [mapOverlayCodeA]: { serieses: spectrumMapOverlaySeries },
   },
-  currentMapOverlayIds: [mapOverlayIdA],
-  displayedMapOverlayIds: [mapOverlayIdA],
+  currentMapOverlayCodes: [mapOverlayCodeA],
+  displayedMapOverlayCodes: [mapOverlayCodeA],
 };
 
 export const SpectrumLegend = LegendStory.bind({});
 
 SpectrumLegend.args = {
   measureInfo: {
-    [mapOverlayIdA]: { serieses: mapOverlaySerieses },
+    [mapOverlayCodeA]: { serieses: mapOverlaySerieses },
   },
-  currentMapOverlayIds: [mapOverlayIdA],
-  displayedMapOverlayIds: [mapOverlayIdA],
+  currentMapOverlayCodes: [mapOverlayCodeA],
+  displayedMapOverlayCodes: [mapOverlayCodeA],
 };

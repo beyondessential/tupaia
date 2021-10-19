@@ -11,7 +11,7 @@ import {
   selectHasPolygonMeasure,
   selectMeasuresWithDisplayInfo,
   selectAreRegionLabelsPermanent,
-  selectCurrentMapOverlayIds,
+  selectCurrentMapOverlayCodes,
 } from '../../selectors';
 import { setOrgUnit } from '../../actions';
 import { selectMeasureOptions } from '../../selectors/measureSelectors';
@@ -45,12 +45,11 @@ Polygon.defaultProps = {
 
 const mapStateToProps = state => {
   const { displayedMapOverlays } = state.map;
-  const currentMapOverlayIds = selectCurrentMapOverlayIds(state);
-  const measureOptions = selectMeasureOptions(state, currentMapOverlayIds) || [];
+  const currentMapOverlayCodes = selectCurrentMapOverlayCodes(state);
+  const measureOptions = selectMeasureOptions(state, currentMapOverlayCodes) || [];
   const measureOrgUnits = selectHasPolygonMeasure(state)
     ? selectMeasuresWithDisplayInfo(state, displayedMapOverlays)
     : [];
-
   const permanentLabels = selectAreRegionLabelsPermanent(state);
 
   return {

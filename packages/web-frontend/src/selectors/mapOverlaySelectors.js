@@ -12,45 +12,46 @@ import {
   getMapOverlaysFromHierarchy,
   flattenMapOverlayHierarchy,
   isMapOverlayHierarchyEmpty,
-  checkHierarchyIncludesMapOverlayIds,
+  checkHierarchyIncludesMapOverlayCodes,
 } from '../utils';
 
 import { selectCurrentProject } from './projectSelectors';
 import { selectLocation } from './utils';
 
-export const selectMapOverlayByIds = createSelector(
-  [state => state.mapOverlayBar.mapOverlayHierarchy, (_, ids) => ids],
+export const selectMapOverlayByCodes = createSelector(
+  [state => state.mapOverlayBar.mapOverlayHierarchy, (_, codes) => codes],
   getMapOverlaysFromHierarchy,
 );
 
-export const selectMapOverlayById = createSelector(
-  [state => state.mapOverlayBar.mapOverlayHierarchy, (_, id) => id],
-  (mapOverlayHierarchy, id) => {
-    const result = getMapOverlaysFromHierarchy(mapOverlayHierarchy, [id]);
+export const selectMapOverlayByCode = createSelector(
+  [state => state.mapOverlayBar.mapOverlayHierarchy, (_, code) => code],
+  (mapOverlayHierarchy, mapOverlayCode) => {
+    const result = getMapOverlaysFromHierarchy(mapOverlayHierarchy, [mapOverlayCode]);
     return result[0];
   },
 );
 
-export const selectCurrentMapOverlayIds = createSelector([selectLocation], location => {
-  const mapOverlayIdsInUrl = getLocationComponentValue(location, URL_COMPONENTS.MAP_OVERLAY);
-  return mapOverlayIdsInUrl ? mapOverlayIdsInUrl.split(',') : [];
+export const selectCurrentMapOverlayCodes = createSelector([selectLocation], location => {
+  const mapOverlayCodesInUrl = getLocationComponentValue(location, URL_COMPONENTS.MAP_OVERLAY);
+  return mapOverlayCodesInUrl ? mapOverlayCodesInUrl.split(',') : [];
 });
 
 export const selectCurrentMapOverlays = createSelector(
-  [state => state, selectCurrentMapOverlayIds],
-  selectMapOverlayByIds,
+  [state => state, selectCurrentMapOverlayCodes],
+  selectMapOverlayByCodes,
 );
 
-export const selectDefaultMapOverlayId = createSelector(
+export const selectDefaultMapOverlayCode = createSelector(
   [state => state.mapOverlayBar.mapOverlayHierarchy, selectCurrentProject],
   (mapOverlayHierarchy, project) => {
-    const projectMeasureId = project.defaultMeasure;
-    const measureIsDefined = id => checkHierarchyIncludesMapOverlayIds(mapOverlayHierarchy, [id]);
+    const projectMeasureCode = project.defaultMeasure;
+    const measureIsDefined = code =>
+      checkHierarchyIncludesMapOverlayCodes(mapOverlayHierarchy, [code]);
 
-    if (measureIsDefined(projectMeasureId)) return projectMeasureId;
+    if (measureIsDefined(projectMeasureCode)) return projectMeasureCode;
     if (measureIsDefined(DEFAULT_MAP_OVERLAY_ID)) return DEFAULT_MAP_OVERLAY_ID;
     if (!isMapOverlayHierarchyEmpty(mapOverlayHierarchy)) {
-      return flattenMapOverlayHierarchy(mapOverlayHierarchy)[0].mapOverlayId;
+      return flattenMapOverlayHierarchy(mapOverlayHierarchy)[0].mapOverlayCode;
     }
 
     return DEFAULT_MAP_OVERLAY_ID;
@@ -58,9 +59,9 @@ export const selectDefaultMapOverlayId = createSelector(
 );
 
 export const selectDefaultMapOverlay = createSelector(
-  [state => state, state => selectDefaultMapOverlayId(state)],
-  (state, defaultMapOverlayId) => {
-    return selectMapOverlayById(state, defaultMapOverlayId);
+  [state => state, state => selectDefaultMapOverlayCode(state)],
+  (state, defaultMapOverlayCode) => {
+    return selectMapOverlayByCode(state, defaultMapOverlayCode);
   },
 );
 
@@ -70,14 +71,14 @@ export const selectCurrentPeriodGranularity = createSelector(
   mapOverlays => mapOverlays[0]?.periodGranularity,
 );
 
-export const selectMapOverlayGroupById = createSelector(
-  [state => state.mapOverlayBar.mapOverlayHierarchy, (_, id) => id],
-  (mapOverlayHierarchy, id) => {
+export const selectMapOverlayGroupByCode = createSelector(
+  [state => state.mapOverlayBar.mapOverlayHierarchy, (_, code) => code],
+  (mapOverlayHierarchy, code) => {
     let mapOverlayGroup = {};
 
     mapOverlayHierarchy.forEach(({ name, children }, groupIndex) => {
       const selectedMapOverlayIndex = children.findIndex(
-        mapOverlay => mapOverlay.mapOverlayId === id,
+        mapOverlay => mapOverlay.mapOverlayCode === code,
       );
       if (selectedMapOverlayIndex > -1) {
         mapOverlayGroup = {

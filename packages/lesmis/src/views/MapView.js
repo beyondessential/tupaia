@@ -133,8 +133,8 @@ export const MapView = () => {
                 measureInfo={{ [selectedOverlay]: overlayReportData }}
                 setValueHidden={setValueHidden}
                 hiddenValues={hiddenValues}
-                currentMapOverlayIds={[selectedOverlay]}
-                displayedMapOverlayIds={[selectedOverlay]}
+                currentMapOverlayCodes={[selectedOverlay]}
+                displayedMapOverlayCodes={[selectedOverlay]}
               />
             )}
           </LegendContainer>

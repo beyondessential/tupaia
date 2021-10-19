@@ -60,40 +60,40 @@ export const Legend = React.memo(
     measureInfo: baseMeasureInfo,
     setValueHidden,
     hiddenValues,
-    currentMapOverlayIds,
-    displayedMapOverlayIds,
+    currentMapOverlayCodes,
+    displayedMapOverlayCodes,
     seriesesKey = 'serieses',
   }) => {
     if (Object.keys(baseMeasureInfo).length === 0) {
       return null;
     }
 
-    const measureInfo = currentMapOverlayIds.reduce((results, mapOverlayId) => {
-      const serieses = baseMeasureInfo[mapOverlayId][seriesesKey].filter(
+    const measureInfo = currentMapOverlayCodes.reduce((results, mapOverlayCode) => {
+      const serieses = baseMeasureInfo[mapOverlayCode][seriesesKey].filter(
         ({ type, hideFromLegend, values = [] }) =>
           ![MEASURE_TYPE_RADIUS, MEASURE_TYPE_POPUP_ONLY].includes(type) &&
           hideFromLegend !== true &&
           // Spetrum legend has values = []
           (values.length === 0 || values.filter(value => !value?.hideFromLegend).length > 0),
       );
-      return { ...results, [mapOverlayId]: { serieses } };
+      return { ...results, [mapOverlayCode]: { serieses } };
     }, {});
 
-    const legendTypes = currentMapOverlayIds
-      .map(mapOverlayId => measureInfo[mapOverlayId].serieses)
+    const legendTypes = currentMapOverlayCodes
+      .map(mapOverlayCode => measureInfo[mapOverlayCode].serieses)
       .flat()
       .map(({ type }) => type);
     const legendsHaveSameType = legendTypes.length > 1 && new Set(legendTypes).size === 1;
 
     return (
       <>
-        {currentMapOverlayIds.map(mapOverlayId => {
-          const { serieses } = measureInfo[mapOverlayId];
+        {currentMapOverlayCodes.map(mapOverlayCode => {
+          const { serieses } = measureInfo[mapOverlayCode];
 
           const hasIconLayer = serieses.some(l => l.type === MEASURE_TYPE_ICON);
           const hasRadiusLayer = serieses.some(l => l.type === MEASURE_TYPE_RADIUS);
           const hasColorLayer = serieses.some(l => coloredMeasureTypes.includes(l.type));
-          const isDisplayed = displayedMapOverlayIds.includes(mapOverlayId);
+          const isDisplayed = displayedMapOverlayCodes.includes(mapOverlayCode);
 
           return serieses.map(series => {
             const { type } = series;
@@ -124,8 +124,8 @@ Legend.propTypes = {
   className: PropTypes.string,
   hiddenValues: PropTypes.object,
   setValueHidden: PropTypes.func,
-  displayedMapOverlayIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-  currentMapOverlayIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  displayedMapOverlayCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  currentMapOverlayCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 Legend.defaultProps = {
