@@ -82,6 +82,85 @@ async def start_instance(instance):
     await wait_for_instance(instance_object.id, 'running')
     print('Started instance with id ' + instance_object.id)
 
+def allocate_elastic_ip(instance_id):
+    elastic_ip = ec.allocate_address(Domain='Vpc')
+    ec.associate_address(AllocationId=elastic_ip['AllocationId'],InstanceId=instance_id)
+    return elastic_ip['PublicIp']
+
+def get_instance_creation_config(code, instance_type, stage, iam_role_arn=None, image_id=None, user_data=None, base_instance=None):
+    # Get the security group tagged with the key matching this restore code
+    security_group_filters = [
+      {'Name': 'tag-key', 'Values': [code]}
+    ]
+    security_groups = ec.describe_security_groups(
+      Filters=security_group_filters
+    ).get(
+      'SecurityGroups', []
+    )
+    security_group_ids = [security_group['GroupId'] for security_group in security_groups]
+    print('Found security group ids')
+
+    tags = [
+        { 'Key': 'Name', 'Value': code + ': ' + stage },
+        { 'Key': 'Stage', 'Value': stage },
+        { 'Key': 'Code', 'Value': code },
+        { 'Key': 'StopAtUTC', 'Value': '09:00'}, # 9am UTC is 7pm AEST, 8pm AEDT, 9pm NZST, 10pm NZDT
+        { 'Key': 'StartAtUTC', 'Value': '18:00'} # 6pm UTC is 4am AEST, 5am AEDT, 6am NZST, 7am NZDT
+    ]
+
+    # attach restoration config tags
+    if base_instance is not None:
+        restore_code = get_tag(base_instance, 'RestoreCode')
+        if restore_code is not '':
+            base_instance_stage = get_tag(base_instance, 'Stage')
+            if base_instance_stage == stage:
+                # we are replacing the same stage instance, keep the RestoreCode
+                tags.append({ 'Key': 'RestoreCode', 'Value': restore_code })
+            else:
+                # new branch instance, add a "RestoreFrom"
+                tags.append({ 'Key': 'RestoreFrom', 'Value': restore_code })
+
+    instance_creation_config = {
+      'ImageId' : image_id or base_instance['ImageId'], #todo fix this
+      'InstanceType' : instance_type,
+    #   todo reinstate some form of these
+    #   'SubnetId' : base_instance['SubnetId'],
+    #   'Placement' : base_instance['Placement'],
+      'SecurityGroupIds' : security_group_ids,
+      'MinCount' : 1,
+      'MaxCount' : 1,
+      'TagSpecifications' : [{ 'ResourceType': 'instance', 'Tags': tags}]
+    }
+
+    # add IAM profile (e.g. role allowing access to lambda) if applicable
+    if iam_role_arn is not None:
+        instance_creation_config['IamInstanceProfile'] = { 'Arn': iam_role_arn }
+
+    # add user data startup script if applicable
+    if user_data is not None:
+        instance_creation_config['UserData'] = user_data
+
+    return instance_creation_config
+
+def create_instance(code, instance_type, stage, iam_role_arn=None, image_id=None, user_data=None, base_instance=None):
+    instance_creation_config = get_instance_creation_config(code, instance_type, stage, iam_role_arn=iam_role_arn, image_id=image_id, user_data=user_data, base_instance=base_instance)
+    new_instances = ec2.create_instances(**instance_creation_config)
+    print('Started new instance creation')
+
+    # wait until it is ready
+    new_instance = new_instances[0]
+    new_instance.wait_until_running()
+    print('New instance is up')
+
+    # attach elastic ip
+    allocate_elastic_ip(new_instance.id)
+
+    # return instance object
+    new_instance_object = get_instances([
+      {'Name': 'instance-id', 'Values': [new_instance.id]}
+    ])[0]
+    return new_instance_object
+
 # --------------
 # Gateway
 # --------------
@@ -237,33 +316,36 @@ def register_gateway_target(target_group_arn, tupaia_instance_id):
 # Route 53
 # --------------
 
-def build_record_set_change(domain, subdomain, stage, gateway, ip_address):
-    return build_record_set('UPSERT', domain, subdomain, stage, gateway, ip_address)
+def build_record_set_change(domain, subdomain, stage, gateway=None, dns_url=None):
+    return build_record_set('UPSERT', domain, subdomain, stage, gateway=gateway, dns_url=dns_url)
 
 
-def build_record_set_deletion(domain, subdomain, stage, gateway, ip_address):
-    return build_record_set('DELETE', domain, subdomain, stage, gateway, ip_address)
+def build_record_set_deletion(domain, subdomain, stage, gateway=None, dns_url=None):
+    return build_record_set('DELETE', domain, subdomain, stage, gateway=gateway, dns_url=dns_url)
 
 
-def build_record_set(action, domain, subdomain, stage, gateway, ip_address):
+def build_record_set(action, domain, subdomain, stage, gateway=None, dns_url=None):
     if (subdomain == ''):
         url = stage + '.' + domain + '.'
     else:
         url = stage + '-' + subdomain + '.' + domain + '.'
 
-    # ssh subdomain bypasses gateway ELB
-    if (subdomain == 'ssh'):
+    # e.g. db subdomain uses CNAME to AWS DNS so that it can be internally resolved within the VPC
+    if (dns_url is not None):
         return {
             'Action': action,
             'ResourceRecordSet': {
                 'Name': url,
-                'Type': 'A',
+                'Type': 'CNAME',
                 'TTL': 300,
                 'ResourceRecords': [
-                    {'Value': ip_address}
+                    {'Value': dns_url}
                 ]
             }
         }
+
+    if (gateway is None):
+        raise Exception('You must include a dns url, or gateway to configure route53.')
 
     # prefix with dualstack, see
     # https://aws.amazon.com/premiumsupport/knowledge-center/alias-resource-record-set-route53-cli/
