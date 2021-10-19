@@ -78,7 +78,6 @@ describe('surveyResponse endpoint', () => {
       {
         id: surveyId,
         code: 'TEST_SURVEY_' + generateId(), // prevent test cross-pollination
-        period_granularity: null,
         questions: [
           { code: questionCode(1), type: 'FreeText' },
           { code: questionCode(2), type: 'FreeText' },
@@ -316,6 +315,23 @@ describe('surveyResponse endpoint', () => {
     expectError(response, /Could not find question/);
   });
 
+  it('Should allow a survey response with no answers', async () => {
+    const response = await app.post('surveyResponse', {
+      body: {
+        survey_id: surveyId,
+        entity_id: ENTITY_ID,
+        timestamp: 123,
+        answers: {},
+      },
+    });
+
+    expectSuccess(response);
+    const { body } = response;
+    expect(body.results).to.have.length(1);
+    expect(body.results[0].surveyResponseId).to.not.be.undefined;
+    expect(body.results[0].answerIds).to.have.length(0);
+  });
+
   it('Should throw if a survey has an answer with no content', async () => {
     const response = await app.post('surveyResponse', {
       body: {
@@ -427,56 +443,6 @@ describe('surveyResponse endpoint', () => {
     );
     expect(moment(dbResponse.start_time).isSame('2021-01-01T23:59:59.000Z')).to.be.true;
     expect(moment(dbResponse.end_time).isSame('2021-01-01T23:59:59.000Z')).to.be.true;
-  });
-
-  describe('non-periodic', () => {
-    it('Should throw if a survey has no answers', async () => {
-      const response = await app.post('surveyResponse', {
-        body: {
-          survey_id: surveyId,
-          entity_id: ENTITY_ID,
-          timestamp: 123,
-          answers: {},
-        },
-      });
-
-      expectError(response, /must contain at least one answer/);
-    });
-  });
-
-  describe('periodic', () => {
-    let periodicSurveyId;
-
-    before(async () => {
-      const [{ survey }] = await buildAndInsertSurveys(models, [
-        {
-          id: periodicSurveyId,
-          code: 'TEST_SURVEY_PERIODIC' + generateId(), // prevent test cross-pollination
-          period_granularity: 'daily',
-          questions: [
-            { code: questionCode(1), type: 'FreeText' },
-          ],
-        },
-      ]);
-      periodicSurveyId = survey.id;
-    });
-
-    it('Should allow a periodic survey with no answers', async () => {
-      const response = await app.post('surveyResponse', {
-        body: {
-          survey_id: periodicSurveyId,
-          entity_id: ENTITY_ID,
-          timestamp: 123,
-          answers: {},
-        },
-      });
-
-      expectSuccess(response);
-      const { body } = response;
-      expect(body.results).to.have.length(1);
-      expect(body.results[0].surveyResponseId).to.not.be.undefined;
-      expect(body.results[0].answerIds).to.have.length(0);
-    });
   });
 
   describe('Update entity for existing survey response', async function () {
