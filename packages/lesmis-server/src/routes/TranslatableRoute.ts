@@ -24,22 +24,26 @@ type ArrayKey = {
   items: TranslationKey;
 }
 
-type EmptyKey = {
-  type: 'empty';
-}
-
-type TranslationKey = StringKey | ObjectKey | ArrayKey | EmptyKey;
+type TranslationKey = StringKey | ObjectKey | ArrayKey;
+type TranslationValue = undefined | string | TranslationValue[] | { [key: string]: TranslationValue };
 
 export class TranslatableRoute extends Route {
-  translationKeys: TranslationKey = { type: 'empty' };
+  translationKeys: TranslationKey = { type: 'string' };
 
-  // TODO: use a better type
-  respond(responseBody: any[], statusCode: number) {
+  respond(responseBody: TranslationValue, statusCode: number) {
     const translatedResponse = this.translateResponse(this.translationKeys, responseBody);
     super.respond(translatedResponse, statusCode);
   }
 
-  translateResponse(translationKey: TranslationKey, translationValue: any) {
+  // Overload this function so that translationKey implies the shape of translationValue
+  translateResponse(translationKey: StringKey, translationValue: string): TranslationValue;
+  translateResponse(translationKey: ObjectKey, translationValue: { [key: string]: TranslationValue }): TranslationValue;
+  translateResponse(translationKey: ArrayKey, translationValue: TranslationValue[]): TranslationValue;
+  translateResponse(translationKey: TranslationKey, translationValue: TranslationValue): TranslationValue;
+  translateResponse(translationKey: any, translationValue: any): any {
+    if (!translationValue) {
+      return undefined;
+    }
     switch(translationKey.type) {
       case 'string':
         return this.res.__(translationValue);
@@ -51,7 +55,7 @@ export class TranslatableRoute extends Route {
         return translatedObject;
       }
       case 'array':
-        return translationValue.map(entry => this.translateResponse(translationKey.items, entry));
+        return translationValue.map((entry: TranslationValue) => this.translateResponse(translationKey.items, entry));
       default:
         return translationValue;
     }
