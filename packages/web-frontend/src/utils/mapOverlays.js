@@ -11,7 +11,7 @@ export const getMapOverlayFromHierarchy = (mapOverlayHierarchy, targetMapOverlay
   }
 
   const flattenMapOverlays = flattenMapOverlayHierarchy(mapOverlayHierarchy);
-  return flattenMapOverlays.find(({ mapOverlayId }) => targetMapOverlayId === mapOverlayId);
+  return flattenMapOverlays.find(({ mapOverlayCode }) => targetMapOverlayId === mapOverlayCode);
 };
 
 export function flattenMapOverlayHierarchy(mapOverlayHierarchy) {
