@@ -7,10 +7,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { createSelector } from 'reselect';
-import { TileLayer, MarkerLayer, LeafletMap } from '@tupaia/ui-components/lib/map';
+import {
+  TileLayer,
+  MarkerLayer,
+  LeafletMap,
+  InteractivePolygon,
+} from '@tupaia/ui-components/lib/map';
 import { checkBoundsDifference, organisationUnitIsArea } from '../../utils';
 import { DemoLand } from './DemoLand';
-import { ConnectedPolygon } from './ConnectedPolygon';
 import { DisasterLayer } from './DisasterLayer';
 import { ZoomControl } from './ZoomControl';
 import {
@@ -24,6 +28,7 @@ import {
   selectOrgUnitChildren,
   selectOrgUnitSiblings,
   selectRenderedMeasuresWithDisplayInfo,
+  selectAreRegionLabelsPermanent,
 } from '../../selectors';
 import { changePosition, closeDropdownOverlays, setOrgUnit } from '../../actions';
 import { TRANS_BLACK, TRANS_BLACK_LESS } from '../../styles';
@@ -149,12 +154,22 @@ class MapComponent extends Component {
       shouldSnapToPosition,
       sidePanelWidth,
       tileSetUrl,
+      measureOrgUnits,
+      permanentLabels,
     } = this.props;
 
     // Only show data with valid coordinates. Note: this also removes region data
     const processedData = measureData.filter(
       ({ coordinates }) => coordinates && coordinates.length === 2,
     );
+    const hasMeasureData = measureOrgUnits && measureOrgUnits.length > 0;
+    const basicPropsForInteractivePolygon = {
+      hasMeasureData,
+      measureOrgUnits,
+      measureOptions,
+      onChangeOrgUnit,
+      permanentLabels,
+    };
 
     return (
       <StyledMap
@@ -170,25 +185,28 @@ class MapComponent extends Component {
         <ZoomControl sidePanelWidth={sidePanelWidth} />
         <DemoLand />
         {currentOrganisationUnit && organisationUnitIsArea(currentOrganisationUnit) && (
-          <ConnectedPolygon
+          <InteractivePolygon
             area={currentOrganisationUnit}
             organisationUnitChildren={getChildren(currentOrganisationUnit.organisationUnitCode)}
             isActive
+            {...basicPropsForInteractivePolygon}
           />
         )}
         {displayedChildren?.map(area => (
-          <ConnectedPolygon
+          <InteractivePolygon
             area={area}
             key={area.organisationUnitCode}
             organisationUnitChildren={getChildren(area.organisationUnitCode)}
             isChildArea
+            {...basicPropsForInteractivePolygon}
           />
         ))}
         {currentOrganisationUnitSiblings?.map(area => (
-          <ConnectedPolygon
+          <InteractivePolygon
             area={area}
             key={area.organisationUnitCode}
             organisationUnitChildren={getChildren(area.organisationUnitCode)}
+            {...basicPropsForInteractivePolygon}
           />
         ))}
         <MarkerLayer
@@ -211,6 +229,7 @@ MapComponent.propTypes = {
   displayedChildren: PropTypes.arrayOf(PropTypes.object),
   getChildren: PropTypes.func.isRequired,
   measureData: PropTypes.array,
+  measureOrgUnits: PropTypes.array,
   mapOverlayCodes: PropTypes.array.isRequired,
   measureOptions: PropTypes.array,
   position: PropTypes.shape({
@@ -222,12 +241,14 @@ MapComponent.propTypes = {
   shouldSnapToPosition: PropTypes.bool.isRequired,
   sidePanelWidth: PropTypes.number.isRequired,
   tileSetUrl: PropTypes.string.isRequired,
+  permanentLabels: PropTypes.bool.isRequired,
 };
 
 MapComponent.defaultProps = {
   displayedChildren: [],
   measureData: [],
-  measureOptions: undefined,
+  measureOrgUnits: [],
+  measureOptions: [],
   currentParent: null,
 };
 
@@ -274,6 +295,8 @@ const mapStateToProps = state => {
 
   const getChildren = organisationUnitCode => selectOrgUnitChildren(state, organisationUnitCode);
 
+  const permanentLabels = selectAreRegionLabelsPermanent(state);
+
   return {
     position,
     currentOrganisationUnit,
@@ -292,6 +315,7 @@ const mapStateToProps = state => {
     isAnimating,
     shouldSnapToPosition,
     sidePanelWidth: isSidePanelExpanded ? expandedWidth : contractedWidth,
+    permanentLabels,
   };
 };
 
