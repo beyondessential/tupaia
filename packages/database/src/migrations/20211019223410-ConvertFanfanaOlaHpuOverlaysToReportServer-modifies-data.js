@@ -26,6 +26,7 @@ const LEGACY_OVERLAY_CODES = [
 const NEW_OVERLAY_CONFIGS = [
   {
     reportCode: 'FANAFANA_hpu_ncd_risk_factor_screening_setting_type_map',
+    code: 'FANAFANA_hpu_ncd_risk_factor_screening_setting_type',
     dataElements: ['HP31n'],
     name: 'NCD Risk Factor Screening: Setting Type',
     dataGroups: ['HP02'],
@@ -33,6 +34,7 @@ const NEW_OVERLAY_CONFIGS = [
   },
   {
     reportCode: 'FANAFANA_hpu_health_talks_training_type_setting_map',
+    code: 'FANAFANA_hpu_health_talks_training_type_setting',
     dataElements: ['HP281'],
     name: 'Health Talks and Training: Setting Type',
     dataGroups: ['HP07'],
@@ -40,6 +42,7 @@ const NEW_OVERLAY_CONFIGS = [
   },
   {
     reportCode: 'FANAFANA_hpu_physical_activity_type_setting_map',
+    code: 'FANAFANA_hpu_physical_activity_type_setting',
     dataElements: ['HP4'],
     name: 'Physical Activity: Setting Type',
     dataGroups: ['HP01'],
@@ -61,14 +64,14 @@ const getReportObject = (reportCode, dataElements, dataGroups) => ({
         insert: {
           organisationUnitCode: '=$orgUnit',
           [`=$${dataElements[0]}`]: `= 1`,
-          Unique: `=$${dataElements[0]}`,
+          value: `=$${dataElements[0]}`,
         },
       },
       {
         transform: 'mergeRows',
         groupBy: ['organisationUnitCode'],
         using: {
-          Unique: 'unique',
+          value: 'unique',
           '*': 'sum',
         },
       },
@@ -82,20 +85,15 @@ const getReportObject = (reportCode, dataElements, dataGroups) => ({
   },
 });
 
-const getOverlayObject = (reportCode, name) => ({
-  id: reportCode,
+const getOverlayObject = (reportCode, code, mapOverlayId, name) => ({
+  id: mapOverlayId,
   name,
-  userGroup: PERMISSION_GROUP,
-  isDataRegional: true,
-  dataElementCode: 'Unique',
+  code,
+  permission_group: PERMISSION_GROUP,
+  data_services: [{ isDataRegional: true }],
   legacy: false,
   report_code: reportCode,
-  measureBuilder: 'useReportServer',
-  measureBuilderConfig: {
-    dataSourceType: 'custom',
-    reportCode,
-  },
-  presentationOptions: {
+  config: {
     measureLevel: 'Village',
     values: [
       {
@@ -169,34 +167,35 @@ const getOverlayObject = (reportCode, name) => ({
     displayType: 'icon',
     hideFromPopup: true,
   },
-  countryCodes: '{"TO"}',
-  projectCodes: '{"fanafana"}',
+  country_codes: '{"TO"}',
+  project_codes: '{"fanafana"}',
 });
 
 const addMapOverlay = async (db, permissionGroupId, mapOverlayGroupId, config) => {
-  const { reportCode, dataElements, dataGroups, name, sortOrder } = config;
+  const { reportCode, dataElements, code, dataGroups, name, sortOrder } = config;
   const report = getReportObject(reportCode, dataElements, dataGroups);
-  const mapOverlay = getOverlayObject(reportCode, name);
+  const mapOverlayId = generateId();
+  const mapOverlay = getOverlayObject(reportCode, code, mapOverlayId, name);
   await insertObject(db, 'report', {
     id: generateId(),
     permission_group_id: permissionGroupId,
     ...report,
   });
-  await insertObject(db, 'mapOverlay', mapOverlay);
+  await insertObject(db, 'map_overlay', mapOverlay);
   return insertObject(db, 'map_overlay_group_relation', {
     id: generateId(),
     map_overlay_group_id: mapOverlayGroupId,
-    child_id: mapOverlay.id,
+    child_id: mapOverlayId,
     child_type: 'mapOverlay',
     sort_order: sortOrder,
   });
 };
 
-const removeMapOverlay = (db, reportCode) => {
+const removeMapOverlay = (db, reportCode, overlayId) => {
   return db.runSql(`
-    DELETE FROM "report" WHERE code = '${reportCode}';
-    DELETE FROM "mapOverlay" WHERE "id" = '${reportCode}';
-    DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${reportCode}';
+    DELETE FROM "report" WHERE "code" = '${reportCode}';
+    DELETE FROM "map_overlay" WHERE "id" = '${overlayId}';
+    DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${overlayId}';
   `);
 };
 
@@ -227,27 +226,37 @@ exports.up = async function (db) {
 
 exports.down = async function (db) {
   // Remove map overlays
-  for (const { reportCode } of NEW_OVERLAY_CONFIGS) {
-    await removeMapOverlay(db, reportCode);
+  for (const { reportCode, code } of NEW_OVERLAY_CONFIGS) {
+    const overlayId = await codeToId(db, 'map_overlay', code);
+    await removeMapOverlay(db, reportCode, overlayId);
   }
-  // get overlaygroup id
-  const mapOverlayGroupId = await codeToId(db, 'map_overlay_group', HPU_GROUP_CODE);
+
+  const rootId = await codeToId(db, 'map_overlay_group', 'Root');
+  const mapOverlayGroupId = generateId();
+  // revert map overlay group to original name and code
+  await insertObject(db, 'map_overlay_group', {
+    id: mapOverlayGroupId,
+    name: 'Fanafana Ola HPU',
+    code: 'Fanafana_Ola_HPU',
+  });
+  // reattach the original overlay to Root.
+  await insertObject(db, 'map_overlay_group_relation', {
+    id: generateId(),
+    map_overlay_group_id: rootId,
+    child_id: mapOverlayGroupId,
+    child_type: 'mapOverlay',
+  });
+
   // Reinstall legacy overlay relations
-  for (const code of LEGACY_OVERLAY_CODES) {
+  LEGACY_OVERLAY_CODES.forEach(async code => {
+    const overlayId = await codeToId(db, 'map_overlay', code);
     await insertObject(db, 'map_overlay_group_relation', {
       id: generateId(),
       map_overlay_group_id: mapOverlayGroupId,
-      child_id: code,
+      child_id: overlayId,
       child_type: 'mapOverlay',
     });
-  }
-  // revert map overlay group to original name and code
-  await updateValues(
-    db,
-    'map_overlay_group',
-    { name: 'Fanafana Ola HPU', code: 'Fanafana_Ola_HPU' },
-    { id: mapOverlayGroupId },
-  );
+  });
 };
 
 exports._meta = {
