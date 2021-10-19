@@ -78,7 +78,7 @@ describe('surveyResponse endpoint', () => {
       {
         id: surveyId,
         code: 'TEST_SURVEY_' + generateId(), // prevent test cross-pollination
-        can_repeat: true,
+        period_granularity: null,
         questions: [
           { code: questionCode(1), type: 'FreeText' },
           { code: questionCode(2), type: 'FreeText' },
@@ -452,7 +452,6 @@ describe('surveyResponse endpoint', () => {
         {
           id: periodicSurveyId,
           code: 'TEST_SURVEY_PERIODIC' + generateId(), // prevent test cross-pollination
-          can_repeat: false,
           period_granularity: 'daily',
           questions: [
             { code: questionCode(1), type: 'FreeText' },

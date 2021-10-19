@@ -46,7 +46,7 @@ async function validateResponse(models, userId, body) {
   const surveyQuestions = await findQuestionsInSurvey(models, body.survey_id);
 
   const { answers } = body;
-  if (survey.can_repeat && Object.keys(answers).length === 0) {
+  if (survey.period_granularity === null && Object.keys(answers).length === 0) {
     throw new ValidationError('Each survey response must contain at least one answer');
   }
 
