@@ -274,6 +274,7 @@ const createMapOverlay = (name, reportCode, code, mapOverlayId) => ({
   },
   country_codes: '{"FJ"}',
   project_codes: '{supplychain_fiji}',
+  report_code: reportCode,
 });
 
 export const nameToId = async (db, table, name) => {
