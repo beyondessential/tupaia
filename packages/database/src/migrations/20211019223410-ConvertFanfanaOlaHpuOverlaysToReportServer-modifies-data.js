@@ -211,8 +211,9 @@ exports.up = async function (db) {
   const mapOverlayGroupId = await codeToId(db, 'map_overlay_group', HPU_GROUP_CODE);
   // Remove legacy overlay relations
   for (const code of LEGACY_OVERLAY_CODES) {
+    const mapOverlayId = await nameToId(db, 'map_overlay', code);
     await db.runSql(`
-    DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${code}';
+    DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${mapOverlayId}';
   `);
   }
   // Add new map overlays
