@@ -27,8 +27,8 @@ if [[ "$VERSION" == "" ]]; then
     VERSION_SQL_FUNC="SELECT mv\$version()"
     DB_MV_VERSION=`psql -p $DB_PORT -X -A -h $DB_URL -d $DB_NAME -U $DB_USER -t -c "$VERSION_SQL_FUNC"`
     echo "Version unspecified, defaulting to database mvrefresh version: $DB_MV_VERSION"
-    babel-node ./scripts/patch.js $COMMAND:$DB_MV_VERSION $PATCH_NAME -v --config-file "../../babel.config.json"
+    babel-node ./scripts/patchMvRefresh.js $COMMAND:$DB_MV_VERSION $PATCH_NAME -v --config-file "../../babel.config.json"
 else
-    babel-node ./scripts/patch.js $COMMAND:$VERSION $PATCH_NAME -v --config-file "../../babel.config.json"
+    babel-node ./scripts/patchMvRefresh.js $COMMAND:$VERSION $PATCH_NAME -v --config-file "../../babel.config.json"
 fi
 

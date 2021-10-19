@@ -42,6 +42,30 @@ If you wish, you can also uninstall mvrefresh from your database entirely. Run:
 
 Note: You must drop the analytics table before uninstalling mvrefresh.
 
+### Patching MV Refresh
+
+The best way to ensure the mvrefresh module is up to date is to perform a full reinstallation. However, in practice, this isn't always the best option for pushing changes to the mvrefresh in production. Since a full reinstallation requires drop and rebuilding the analytics table, which can take up to an hour.
+
+Instead, we write a patch to apply the latest changes to the production mvrefresh module. Patches are created and applied using `db-migrate` (https://db-migrate.readthedocs.io/en/latest/)
+
+To create a new patch, run:
+
+`yarn workspace @tupaia/data-api patch-mv-refresh create [version]` - The version argument is optional, and will create a patch against a specific mvrefresh version (more on this below). If no `version` argument is provided, the current installed mvrefresh version will be used.
+
+To apply the patches, run:
+
+`yarn workspace @tupaia/data-api patch-mv-refresh up [version]` - The version argument is optional, and defaults the same as above.
+
+#### Patch Versioning
+
+The patches that an mvrefresh module has had applied are stored in a `migrations` table within the `mvrefresh` schema. However, whenever the mvrefresh is reinstalled, this schema gets dropped and re-created, losing a history of its patches.
+
+This is largely fine, as on re-installation the latest version of `mvrefresh` will be installed, so there's no need to apply any patches. However, we need to avoid applying all previous patches when running `patch-mv-refresh up`, as these patches may cause issues or fail against the latest `mvrefresh` schema.
+
+We avoid this by versioning every patch. The patch's version implies that this patch should only be run against an mvrefresh module of that same version. When creating a new patch to deploy to production, ensure that the version it is being created with matches the version of the production mvrefresh module (can be checked using `SELECT mv$version()`).
+
+Patch versions follow a `major_minor_patch` syntax.
+
 ### Refreshing the Analytics table
 
 The analytics table will be automatically updated ('refreshed') by the meditrak-server whenever changes come in to the answer, or survey_response tables. However, there may be times when you wish to refresh the analytics table yourself. To do this you have a couple of options:
@@ -57,27 +81,3 @@ You may need to rebuild the analytics once it has been build, if for instance th
 - `yarn workspace @tupaia/data-api build-analytics-table --force` - Force rebuilds the analytics table on top of an existing analytics table. This process builds the new analytics table in the background and then swaps them once it's complete, allowing for the data-api to be available the whole time.
 
 - `yarn workspace @tupaia/data-api drop-analytics-table && yarn workspace @tupaia/data-api build-analytics-table` - Fully reinstalls the analytics table and underlying log tables in the database.
-
-### Patching the analytics table
-
-The best way to ensure the analytics table is up to date is to perform a full reinstallation. However, in practice, this isn't always the best option for pushing changes to the analytics table in production. Since a full reinstallation requires drop and rebuilding the analytics table, which can take up to an hour.
-
-Instead, we write a patch to apply the latest changes to the production analytics table. Patches are created and applied using `db-migrate` (https://db-migrate.readthedocs.io/en/latest/)
-
-To create a new patch, run:
-
-`yarn workspace @tupaia/data-api patch-analytics-table create [version]` - The version argument is optional, and will create a patch against a specific mvrefresh version (more on this below). If no `version` argument is provided, the current analytics version will be used.
-
-To apply the patches, run:
-
-`yarn workspace @tupaia/data-api patch-analytics-table up [version]` - The version argument is optional, and defaults the same as above.
-
-#### Patch Versioning
-
-The patches that an analytics table has had applied are stored in a `migrations` table within the `mvrefresh` schema. However, whenever the analytics table is reinstalled, this schema gets dropped and re-created, losing a history of its patches.
-
-This is largely fine, as on re-installation the latest version of `mvrefresh` will be installed, so there's no need to apply any patches. However, we need to avoid applying all previous patches when running `patch-analytics-table up`, as these patches may cause issues or fail against the latest `mvrefresh` schema.
-
-We avoid this by versioning every patch. The patch's version implies that this patch should only be run against an analytics table of that same version. When creating a new patch to deploy to production, ensure that the version it is being created with matches the version of the production analytics table (can be checked using `SELECT mv$version()`).
-
-Patch versions follow a `major_minor_patch` syntax.
