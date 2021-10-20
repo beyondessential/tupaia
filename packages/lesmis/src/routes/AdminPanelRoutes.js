@@ -8,7 +8,6 @@ import { Switch, Redirect, Route } from 'react-router-dom';
 import { TabsToolbar } from '@tupaia/ui-components';
 import { Assignment, InsertChart, PeopleAlt } from '@material-ui/icons';
 import {
-  DashboardItemsPage,
   DashboardsPage,
   QuestionsPage,
   SurveysPage,
@@ -27,12 +26,13 @@ import {
 import { LesmisAdminRoute } from './LesmisAdminRoute';
 import { useUser } from '../api/queries';
 import { getApiUrl } from '../utils/getApiUrl';
+import { DashboardItemsView } from '../views/AdminPanel/DashboardItemsView';
 
 /* eslint-disable */
 import {
   ApprovedSurveyResponsesView,
   DraftSurveyResponsesView,
-} from '../views/SurveyResponsesView';
+} from '../views/AdminPanel/SurveyResponsesView';
 
 const ADMIN_URL = '/admin';
 
@@ -91,7 +91,7 @@ export const ROUTES = [
       {
         label: 'Dashboard Items',
         to: '',
-        component: DashboardItemsPage,
+        component: DashboardItemsView,
       },
       {
         label: 'Dashboards',

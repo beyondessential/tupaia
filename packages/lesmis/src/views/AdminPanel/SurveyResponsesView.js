@@ -5,7 +5,7 @@
 import React from 'react';
 import { SurveyResponsesPage, SURVEY_RESPONSE_COLUMNS } from '@tupaia/admin-panel/lib';
 import { ConfirmModal } from '@tupaia/ui-components';
-import { ApproveButton } from '../components';
+import { ApproveButton } from '../../components';
 
 // Todo: Replace base filter with real filter @see WAI-832
 export const ApprovedSurveyResponsesView = props => (
