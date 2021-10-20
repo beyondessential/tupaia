@@ -1,10 +1,10 @@
 import boto3
-import collections
 import datetime
+from helpers.utilities import *
 
 ec = boto3.client('ec2')
 
-def lambda_handler(event, context):
+def backup_instances(event):
     filters = [
         {'Name': 'tag-key', 'Values': ['backup', 'Backup']},
     ]
@@ -27,8 +27,6 @@ def lambda_handler(event, context):
         print('Found no instances to back up. Make sure the instance has the tag "Backup"')
 
 
-    to_tag = collections.defaultdict(list)
-
     for instance in instances:
         try:
             retention_days = [
@@ -43,11 +41,11 @@ def lambda_handler(event, context):
         except IndexError:
             instance_name = 'Unnamed Instance'
         try:
-            restore_code = [
+            code = [
                 t.get('Value') for t in instance['Tags']
-                if t['Key'] == 'RestoreCode'][0]
+                if t['Key'] == 'Code'][0]
         except IndexError:
-            restore_code = ''
+            code = ''
 
         print('Backing up ' + instance_name)
 
@@ -64,10 +62,16 @@ def lambda_handler(event, context):
             delete_date = datetime.date.today() + datetime.timedelta(days=retention_days)
             delete_fmt = delete_date.strftime('%Y-%m-%d')
 
+            snapshot_tags = [
+                {'Key': 'DeleteOn', 'Value': delete_fmt},
+                {'Key': 'Code', 'Value': code}
+            ]
+
+            instance_stage = get_tag(instance, 'Stage')
+            if instance_stage != '':
+                snapshot_tags.append({'Key': 'Stage', 'Value': instance_stage})
+
             ec.create_tags(
                 Resources=[snap['SnapshotId']],
-                Tags=[
-                    {'Key': 'DeleteOn', 'Value': delete_fmt},
-                    {'Key': 'RestoreCode', 'Value': restore_code}
-                ]
+                Tags=snapshot_tags
             )

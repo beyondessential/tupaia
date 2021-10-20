@@ -1,42 +1,35 @@
-import boto3
-import asyncio
 import functools
 
-from utilities.utilities import *
-
-ec = boto3.client('ec2')
-
-loop = asyncio.get_event_loop()
+from helpers.creation import *
 
 async def wait_for_volume(volume_id, to_be):
     volume_available_waiter = ec.get_waiter('volume_' + to_be)
     await loop.run_in_executor(None, functools.partial(volume_available_waiter.wait, VolumeIds=[volume_id]))
 
-def get_latest_snapshot_id(account_ids, code):
+def get_latest_snapshot_id(account_ids, code, from_stage):
     filters = [
-        {'Name': 'tag:RestoreCode', 'Values': [code]},
+        {'Name': 'tag:Code', 'Values': [code]},
+        {'Name': 'tag:Stage', 'Values': [from_stage]}
     ]
     snapshot_response = ec.describe_snapshots(OwnerIds=account_ids, Filters=filters)
     if 'Snapshots' not in snapshot_response or len(snapshot_response['Snapshots']) == 0:
-        print('No snapshots to restore from, cancelling')
-        return
+        raise Exception('No snapshots found')
     snapshot_id = sorted(snapshot_response['Snapshots'], key=lambda k: k['StartTime'], reverse=True)[0]['SnapshotId']
     print('Found snapshot with id ' + snapshot_id)
     return snapshot_id
 
-async def restore_instance(account_ids, instance):
-    print('Restoring instance {}'.format(instance['InstanceId']))
+async def clone_volume_into_instance(account_ids, instance, code, from_stage='production'):
+    print('Cloning volume into instance {}'.format(instance['InstanceId']))
     # Check it's not protected
     protected = get_tag(instance, 'Protected')
     name = get_tag(instance, 'Name')
     if protected == 'true':
-        raise Exception('The instance ' + name + ' is protected and cannot be wiped and restored')
+        raise Exception('The instance ' + name + ' is protected and cannot be wiped and cloned')
 
-    # Get snapshot to restore volume from
-    code = get_tag(instance, 'Code')
-    snapshot_id = get_latest_snapshot_id(account_ids, code)
+    # Get snapshot to clone volume from
+    snapshot_id = get_latest_snapshot_id(account_ids, code, from_stage)
 
-    # Get the device on the instance that the volume should restore to
+    # Get the device on the instance that the volume should clone to
     for dev in instance['BlockDeviceMappings']:
         if dev.get('Ebs', None) is None:
             continue
@@ -64,20 +57,22 @@ async def restore_instance(account_ids, instance):
     new_volume = ec2.Volume(new_volume_id)
     new_volume.attach_to_instance(InstanceId=instance['InstanceId'], Device=dev_to_attach['DeviceName'])
     await wait_for_volume(new_volume_id, 'in_use')
-    print('Attached restored volume to instance')
+    print('Attached cloned volume to instance')
 
     # Ensure EBS volumes are deleted on termination of instance
     ec.modify_instance_attribute(InstanceId=instance['InstanceId'], BlockDeviceMappings=[{'DeviceName': dev_to_attach['DeviceName'], 'Ebs': { 'VolumeId': new_volume_id, 'DeleteOnTermination': True }}])
 
 
-def clone_instance(account_ids, code, stage, instance_type):
-  print('Creating ' + instance_type + ' clone of ' + code + ' for branch ' + stage)
-  base_instance_filters = [
-    { 'Name': 'tag:RestoreCode', 'Values': [code] }
-  ]
-  base_instance = get_instances(base_instance_filters)[0]
-  new_instance = create_instance(code, instance_type, stage, iam_role_arn=base_instance['IamInstanceProfile']['Arn'], base_instance=base_instance)
-  loop.run_until_complete(stop_instance(new_instance))
-  loop.run_until_complete(restore_instance(account_ids, new_instance))
-  loop.run_until_complete(start_instance(new_instance))
-  return new_instance
+def clone_instance(account_ids, code, from_stage, to_stage, instance_type, subdomains_via_dns=None, subdomains_via_gateway=None):
+    print('Creating ' + instance_type + ' clone of ' + code + ' (' + from_stage + ') for branch ' + to_stage)
+    base_instance_filters = [
+        { 'Name': 'tag:Code', 'Values': [code] },
+        { 'Name': 'tag:Stage', 'Values': [from_stage] }
+    ]
+    base_instance = get_instances(base_instance_filters)[0]
+    new_instance = create_instance(code, instance_type, to_stage, iam_role_arn=base_instance['IamInstanceProfile']['Arn'], base_instance=base_instance, subdomains_via_dns=subdomains_via_dns, subdomains_via_gateway=subdomains_via_gateway)
+    loop.run_until_complete(stop_instance(new_instance))
+    loop.run_until_complete(clone_volume_into_instance(account_ids, new_instance, code, from_stage=from_stage))
+    loop.run_until_complete(start_instance(new_instance))
+
+    return new_instance

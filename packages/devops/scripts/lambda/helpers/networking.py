@@ -1,41 +1,12 @@
 import boto3
-import asyncio
-import functools
 
-ec2 = boto3.resource('ec2')
-ec = boto3.client('ec2')
-elbv2 = boto3.client('elbv2')
+from helpers.utilities import *
+
+# --------------
+# Certificate manager
+# --------------
+
 acm = boto3.client('acm')
-
-loop = asyncio.get_event_loop()
-
-
-def get_tag(instance, tag_name):
-    try:
-        tag_value = [
-            t.get('Value') for t in instance['Tags']
-            if t['Key'] == tag_name][0]
-    except IndexError:
-        tag_value = ''
-    return tag_value
-
-
-def get_instances(filters):
-    reservations = ec.describe_instances(
-        Filters=filters
-    ).get(
-        'Reservations', []
-    )
-    return reservations[0]['Instances']
-
-
-def tags_contains(tags, key, value):
-    tags_matching_key = list(filter(lambda x: x['Key'] == key, tags))
-    if len(tags_matching_key) == 0:
-        return False
-    tag_matching_key = tags_matching_key[0]
-    return tag_matching_key['Value'] == value
-
 
 def get_cert(type_tag):
     certs = acm.list_certificates(MaxItems=400)
@@ -46,124 +17,10 @@ def get_cert(type_tag):
     raise Exception('No certificate found with type tag: ' + type_tag)
 
 # --------------
-# EC2
-# --------------
-
-def find_instances(filters):
-    reservations = ec.describe_instances(
-        Filters=filters
-    ).get(
-        'Reservations', []
-    )
-    return sum(
-          [
-              [i for i in r['Instances']]
-              for r in reservations
-          ], [])
-
-
-async def wait_for_instance(instance_id, to_be):
-    volume_available_waiter = ec.get_waiter('instance_' + to_be)
-    await loop.run_in_executor(None, functools.partial(volume_available_waiter.wait, InstanceIds=[instance_id]))
-
-
-async def stop_instance(instance):
-    instance_object = ec2.Instance(instance['InstanceId'])
-    instance_object.stop()
-    print('Stopping instance ' + instance_object.id)
-    await wait_for_instance(instance_object.id, 'stopped')
-    print('Stopped instance with id ' + instance_object.id)
-
-
-async def start_instance(instance):
-    instance_object = ec2.Instance(instance['InstanceId'])
-    instance_object.start()
-    print('Starting instance ' + instance_object.id)
-    await wait_for_instance(instance_object.id, 'running')
-    print('Started instance with id ' + instance_object.id)
-
-def allocate_elastic_ip(instance_id):
-    elastic_ip = ec.allocate_address(Domain='Vpc')
-    ec.associate_address(AllocationId=elastic_ip['AllocationId'],InstanceId=instance_id)
-    return elastic_ip['PublicIp']
-
-def get_instance_creation_config(code, instance_type, stage, iam_role_arn=None, image_id=None, user_data=None, base_instance=None):
-    # Get the security group tagged with the key matching this restore code
-    security_group_filters = [
-      {'Name': 'tag-key', 'Values': [code]}
-    ]
-    security_groups = ec.describe_security_groups(
-      Filters=security_group_filters
-    ).get(
-      'SecurityGroups', []
-    )
-    security_group_ids = [security_group['GroupId'] for security_group in security_groups]
-    print('Found security group ids')
-
-    tags = [
-        { 'Key': 'Name', 'Value': code + ': ' + stage },
-        { 'Key': 'Stage', 'Value': stage },
-        { 'Key': 'Code', 'Value': code },
-        { 'Key': 'StopAtUTC', 'Value': '09:00'}, # 9am UTC is 7pm AEST, 8pm AEDT, 9pm NZST, 10pm NZDT
-        { 'Key': 'StartAtUTC', 'Value': '18:00'} # 6pm UTC is 4am AEST, 5am AEDT, 6am NZST, 7am NZDT
-    ]
-
-    # attach restoration config tags
-    if base_instance is not None:
-        restore_code = get_tag(base_instance, 'RestoreCode')
-        if restore_code is not '':
-            base_instance_stage = get_tag(base_instance, 'Stage')
-            if base_instance_stage == stage:
-                # we are replacing the same stage instance, keep the RestoreCode
-                tags.append({ 'Key': 'RestoreCode', 'Value': restore_code })
-            else:
-                # new branch instance, add a "RestoreFrom"
-                tags.append({ 'Key': 'RestoreFrom', 'Value': restore_code })
-
-    instance_creation_config = {
-      'ImageId' : image_id or base_instance['ImageId'], #todo fix this
-      'InstanceType' : instance_type,
-    #   todo reinstate some form of these
-    #   'SubnetId' : base_instance['SubnetId'],
-    #   'Placement' : base_instance['Placement'],
-      'SecurityGroupIds' : security_group_ids,
-      'MinCount' : 1,
-      'MaxCount' : 1,
-      'TagSpecifications' : [{ 'ResourceType': 'instance', 'Tags': tags}]
-    }
-
-    # add IAM profile (e.g. role allowing access to lambda) if applicable
-    if iam_role_arn is not None:
-        instance_creation_config['IamInstanceProfile'] = { 'Arn': iam_role_arn }
-
-    # add user data startup script if applicable
-    if user_data is not None:
-        instance_creation_config['UserData'] = user_data
-
-    return instance_creation_config
-
-def create_instance(code, instance_type, stage, iam_role_arn=None, image_id=None, user_data=None, base_instance=None):
-    instance_creation_config = get_instance_creation_config(code, instance_type, stage, iam_role_arn=iam_role_arn, image_id=image_id, user_data=user_data, base_instance=base_instance)
-    new_instances = ec2.create_instances(**instance_creation_config)
-    print('Started new instance creation')
-
-    # wait until it is ready
-    new_instance = new_instances[0]
-    new_instance.wait_until_running()
-    print('New instance is up')
-
-    # attach elastic ip
-    allocate_elastic_ip(new_instance.id)
-
-    # return instance object
-    new_instance_object = get_instances([
-      {'Name': 'instance-id', 'Values': [new_instance.id]}
-    ])[0]
-    return new_instance_object
-
-# --------------
 # Gateway
 # --------------
+
+elbv2 = boto3.client('elbv2')
 
 def get_gateway_elb(tupaia_instance_name):
     elbs = elbv2.describe_load_balancers(PageSize=400)
@@ -316,6 +173,8 @@ def register_gateway_target(target_group_arn, tupaia_instance_id):
 # Route 53
 # --------------
 
+route53 = boto3.client('route53')
+
 def build_record_set_change(domain, subdomain, stage, gateway=None, dns_url=None):
     return build_record_set('UPSERT', domain, subdomain, stage, gateway=gateway, dns_url=dns_url)
 
@@ -363,3 +222,97 @@ def build_record_set(action, domain, subdomain, stage, gateway=None, dns_url=Non
             }
         }
     }
+
+def add_subdomains_to_route53(domain, subdomains, stage, gateway=None, dns_url=None):
+    print('Creating subdomains')
+    record_set_changes = [build_record_set_change(domain, subdomain, stage, gateway=gateway, dns_url=dns_url) for subdomain in subdomains]
+    print('Generated {} record set changes'.format(len(record_set_changes)))
+    hosted_zone_id = route53.list_hosted_zones_by_name(DNSName=domain)['HostedZones'][0]['Id']
+    route53.change_resource_record_sets(
+        HostedZoneId=hosted_zone_id,
+        ChangeBatch={
+            'Comment': 'Adding subdomains for ' + stage + ' to ' + domain,
+            'Changes': record_set_changes
+        }
+    )
+    print('Submitted changes to hosted zone')
+
+
+# --------------
+# Putting it all together
+# --------------
+
+def create_tupaia_gateway(tupaia_instance_name, tupaia_instance_id, ssl_certificate_arn):
+    # 1. Create ELB
+    prod_gateway_elb = get_gateway_elb('production')
+    new_gateway_elb = create_gateway_elb(
+        tupaia_instance_name=tupaia_instance_name,
+        tupaia_instance_id=tupaia_instance_id,
+        config=prod_gateway_elb,
+    )
+    new_gateway_elb_arn = new_gateway_elb['LoadBalancerArn']
+
+    # 2. Create Target Group
+    prod_gateway_target_group = get_gateway_target_group('production')
+    new_gateway_target_group_arn = create_gateway_target_group(
+        tupaia_instance_name=tupaia_instance_name,
+        tupaia_instance_id=tupaia_instance_id,
+        config=prod_gateway_target_group,
+    )
+
+    # 3. Link target group <-> instance
+    register_gateway_target(
+        target_group_arn=new_gateway_target_group_arn,
+        tupaia_instance_id=tupaia_instance_id
+    )
+
+    # 4. Link ELB <-> target group
+    create_gateway_listeners(
+        elb_arn=new_gateway_elb_arn,
+        target_group_arn=new_gateway_target_group_arn,
+        certificate_arn=ssl_certificate_arn
+    )
+
+    return new_gateway_elb
+
+def delete_gateway(tupaia_instance_name):
+    gateway_elb = get_gateway_elb(tupaia_instance_name)
+
+    # (order matters)
+    # 1. Delete listeners
+    listeners = get_gateway_listeners(tupaia_instance_name)
+    for listener in listeners:
+        elbv2.delete_listener(
+            ListenerArn=listener['ListenerArn']
+        )
+
+    # 2. Delete ELB
+    elbv2.delete_load_balancer(
+        LoadBalancerArn=gateway_elb['LoadBalancerArn']
+    )
+
+    # 3. Delete Target Group
+    gateway_target_group = get_gateway_target_group(tupaia_instance_name)
+    elbv2.delete_target_group(
+        TargetGroupArn=gateway_target_group['TargetGroupArn']
+    )
+
+
+def setup_subdomains_via_gateway(instance_object, subdomains, stage):
+    # Fetch *.tupaia.org certificate
+    ssl_certificate = get_cert('TupaiaWildcard')
+
+    # Create a gateway for the server instance
+    print('Creating gateway')
+    gateway_elb = create_tupaia_gateway(
+        tupaia_instance_name=stage,
+        tupaia_instance_id=instance_object['InstanceId'],
+        ssl_certificate_arn=ssl_certificate['CertificateArn']
+    )
+
+    add_subdomains_to_route53('tupaia.org', subdomains, stage, gateway=gateway_elb)
+
+def setup_subdomains_via_dns(instance_object, subdomains, stage):
+    add_subdomains_to_route53('tupaia.org', subdomains, stage, dns_url=instance_object['PublicDnsName'])
+
+

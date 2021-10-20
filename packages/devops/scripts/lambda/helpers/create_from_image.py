@@ -1,11 +1,4 @@
-import boto3
-import asyncio
-
-from utilities.utilities import *
-
-ec = boto3.client('ec2')
-
-loop = asyncio.get_event_loop()
+from helpers.creation import *
 
 def get_latest_image_id(account_ids, code):
     filters = [
@@ -18,12 +11,12 @@ def get_latest_image_id(account_ids, code):
     print('Found image with id ' + image_id)
     return image_id
 
-def create_instance_from_image(account_ids, code, stage, instance_type, iam_role_arn=None, user_data=None):
+def create_instance_from_image(account_ids, code, stage, instance_type, iam_role_arn=None, user_data=None, subdomains_via_dns=None, subdomains_via_gateway=None):
     print('Creating ' + instance_type + ' from image tagged with Code=' + code)
 
     # get ami to create instance from
     image_id = get_latest_image_id(account_ids, code)
 
-    instance_object = create_instance(code, instance_type, stage, iam_role_arn=iam_role_arn, image_id=image_id, user_data=user_data)
+    instance_object = create_instance(code, instance_type, stage, iam_role_arn=iam_role_arn, image_id=image_id, user_data=user_data, subdomains_via_dns=subdomains_via_dns, subdomains_via_gateway=subdomains_via_gateway)
 
     return instance_object
