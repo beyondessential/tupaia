@@ -15,19 +15,11 @@ def terminate_instance(instance):
     # Terminate ec2 instance (taking with it ebs)
     ec.terminate_instances(InstanceIds=[instance['InstanceId']])
 
-def teardown_instance(instance_name):
-    filters = [
-      { 'Name': 'tag:Name', 'Values': [instance_name] },
-    ]
-    instance = get_instances(filters)[0]
-
-    if not instance:
-      raise Exception('No matching instance found')
-
+def teardown_instance(instance):
     # Check it's not protected
     protected = get_tag(instance, 'Protected')
     if protected == 'true':
-        raise Exception('The instance ' + get_tag(instance, 'InstanceName') + ' is protected and cannot be deleted')
+        raise Exception('The instance ' + get_tag(instance, 'Name') + ' is protected and cannot be deleted')
 
     # Get tagged details of instance
     stage = get_tag(instance, 'Stage')

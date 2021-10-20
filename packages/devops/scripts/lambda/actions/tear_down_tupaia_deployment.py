@@ -14,12 +14,12 @@
 # {
 #   "Action": "tear_down_tupaia_deployment",
 #   "Branch": "wai-965",
-#   "ServerDeploymentCode": "edwin-test",
-#   "DbDeploymentCode": "edwin-test"
+#   "ServerDeploymentCode": "edwin-test-server",
+#   "DbDeploymentCode": "edwin-test-db"
 # }
 
 from helpers.teardown import teardown_instance
-from helpers.utilities import get_instances
+from helpers.utilities import get_instances, get_tag
 
 def tear_down_tupaia_deployment(event):
     if 'Branch' not in event:
@@ -37,6 +37,6 @@ def tear_down_tupaia_deployment(event):
       raise Exception('No matching instances found')
 
     for instance in instances:
-      teardown_instance(instance['InstanceName'])
+      teardown_instance(instance)
 
     print('Finished tearing down clone')

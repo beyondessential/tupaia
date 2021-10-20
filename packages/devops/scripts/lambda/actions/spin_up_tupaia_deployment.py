@@ -23,8 +23,8 @@
 #   "Action": "spin_up_tupaia_deployment",
 #   "Branch": "wai-965",
 #   "InstanceType": "t3a.medium",
-#   "ServerDeploymentCode": "edwin-test",
-#   "DbDeploymentCode": "edwin-test"
+#   "ServerDeploymentCode": "edwin-test-server",
+#   "DbDeploymentCode": "edwin-test-db"
 # }
 # N.B. example 3 is unusual and generally just used for debugging the redeploy process itself. If
 # used, you need to tag the AMI with "Code": "your-code" and add the tag "your-code": "true" to the
