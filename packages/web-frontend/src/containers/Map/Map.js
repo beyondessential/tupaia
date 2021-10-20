@@ -249,7 +249,7 @@ MapComponent.propTypes = {
   shouldSnapToPosition: PropTypes.bool.isRequired,
   sidePanelWidth: PropTypes.number.isRequired,
   tileSetUrl: PropTypes.string.isRequired,
-  permanentLabels: PropTypes.bool.isRequired,
+  permanentLabels: PropTypes.bool,
 };
 
 MapComponent.defaultProps = {
@@ -260,6 +260,7 @@ MapComponent.defaultProps = {
   allMeasureData: [],
   allMeasureOptions: [],
   currentParent: null,
+  permanentLabels: undefined,
 };
 
 const selectMeasureDataWithCoordinates = createSelector([measureData => measureData], measureData =>
