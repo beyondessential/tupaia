@@ -24,17 +24,6 @@ export class DashboardRoute extends TranslatableRoute {
           dashboardName: {
             type: 'string'
           },
-          items: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                name: {
-                  type: 'string'
-                }
-              }
-            }
-          }
         }
       }
     };
