@@ -5,7 +5,6 @@
  */
 import axios from 'axios';
 import FetchError from './fetchError';
-import { DEFAULT_LOCALE } from '../constants';
 
 const getApiUrl = () => {
   // if no env var, use sensible defaults based on the front end url
