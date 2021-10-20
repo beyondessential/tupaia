@@ -96,7 +96,6 @@ const getEntitiesByCodes = (entities, codes) =>
     });
 
 const ListItemComponent = React.memo(({ entities, entity, onMenuClose, view }) => {
-  const { locale } = useUrlParams();
   const [open, setOpen] = useState(false);
   const hasChildren = Array.isArray(entity.childCodes);
   const PlaceIcon = getPlaceIcon(entity.type);
