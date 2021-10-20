@@ -41,19 +41,14 @@ const timeout = 45 * 1000; // 45 seconds
 
 const getRequestOptions = options => {
   const locale = window.location.pathname.split('/')[1];
-  let requestOptions = { timeout, ...options };
-
-  if (locale !== DEFAULT_LOCALE) {
-    requestOptions = {
-      ...options,
-      params: {
-        ...options.params,
-        locale,
-      },
-    };
-  }
-
-  return requestOptions;
+  return {
+    ...options,
+    timeout,
+    params: {
+      ...options.params,
+      locale,
+    },
+  };
 };
 
 /**
