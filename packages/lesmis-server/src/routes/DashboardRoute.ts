@@ -11,6 +11,7 @@ import { LESMIS_PROJECT_NAME } from '../constants';
 
 export class DashboardRoute extends TranslatableRoute {
   private readonly webConfigConnection: WebConfigConnection;
+  translationSubGroup = 'dashboards';
 
   constructor(req: Request, res: Response, next: NextFunction) {
     super(req, res, next);

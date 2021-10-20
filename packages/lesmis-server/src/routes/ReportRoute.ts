@@ -13,6 +13,7 @@ export class ReportRoute extends TranslatableRoute {
   private readonly reportConnection: ReportConnection;
 
   private readonly webConfigConnection: WebConfigConnection;
+  translationSubGroup = 'reports';
 
   constructor(req: Request, res: Response, next: NextFunction) {
     super(req, res, next);

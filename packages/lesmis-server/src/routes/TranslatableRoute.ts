@@ -28,6 +28,7 @@ type TranslationKey = StringKey | ObjectKey | ArrayKey;
 type TranslationValue = undefined | string | TranslationValue[] | { [key: string]: TranslationValue };
 
 export class TranslatableRoute extends Route {
+  translationSubGroup: string = '';
   translationKeys: TranslationKey = { type: 'string' };
 
   respond(responseBody: TranslationValue, statusCode: number) {
@@ -46,7 +47,7 @@ export class TranslatableRoute extends Route {
     }
     switch(translationKey.type) {
       case 'string':
-        return this.res.__(translationValue);
+        return this.res.__(`${this.translationSubGroup}.${translationValue}:${translationValue}`);
       case 'object': {
         let translatedObject = translationValue;
         for (const key of Object.keys(translationKey.properties)) {
