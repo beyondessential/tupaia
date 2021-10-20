@@ -29,25 +29,24 @@ PopupDataItem.propTypes = {
 };
 
 export const PopupDataItemList = ({ measureOptions, data, showNoDataLabel }) => {
-  const popupList = [];
-
-  if (data) {
-    measureOptions
-      .filter(measureOption => !measureOption.hideFromPopup)
-      .sort((measure1, measure2) => measure1.sortOrder - measure2.sortOrder)
-      .forEach(measureOption => {
-        const { key, name, organisationUnit, ...otherConfigs } = measureOption;
-        const metadata = getMetadata(data, key);
-        const { formattedValue, valueInfo } = getFormattedInfo(data, measureOption, {
-          key,
-          metadata,
-          ...otherConfigs,
-        });
-        if (!valueInfo.hideFromPopup) {
-          popupList.push(<PopupDataItem key={name} measureName={name} value={formattedValue} />);
-        }
-      });
-  }
+  const popupList = data
+    ? measureOptions
+        .filter(measureOption => !measureOption.hideFromPopup)
+        .sort((measure1, measure2) => measure1.sortOrder - measure2.sortOrder)
+        .map(measureOption => {
+          const { key, name, organisationUnit, ...otherConfigs } = measureOption;
+          const metadata = getMetadata(data, key);
+          const { formattedValue, valueInfo } = getFormattedInfo(data, measureOption, {
+            key,
+            metadata,
+            ...otherConfigs,
+          });
+          return valueInfo.hideFromPopup ? null : (
+            <PopupDataItem key={name} measureName={name} value={formattedValue} />
+          );
+        })
+        .filter(popupItem => popupItem !== null)
+    : [];
 
   const { name, key } = measureOptions[0];
 
