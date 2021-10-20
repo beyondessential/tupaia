@@ -19,7 +19,7 @@ import Fade from '@material-ui/core/Fade';
 import { EntityMenu } from '../EntityMenu';
 import { useAutocomplete } from './useAutocomplete';
 import { useProjectEntitiesData } from '../../api';
-import { getPlaceIcon, getOptionText, makeEntityLink, useUrlParams } from '../../utils';
+import { getPlaceIcon, getOptionText, makeEntityLink } from '../../utils';
 
 const SearchContainer = styled.div`
   position: relative;
@@ -28,7 +28,7 @@ const SearchContainer = styled.div`
 
 const SearchBox = styled(MuiPaper)`
   display: flex;
-  alignitems: center;
+  align-items: center;
   border-radius: 2.6rem;
   height: 2.8rem;
 `;
@@ -38,12 +38,11 @@ const Input = styled(InputBase)`
 `;
 
 const SearchIcon = styled(MuiSearchIcon)`
-  margin: 0.75rem 0.375rem 0 0.5rem;
+  margin: 0 0.375rem 0 0.5rem;
   font-size: 1.3rem;
 `;
 
 const ClearButton = styled(MuiIconButton)`
-  margin: 1px 0 0 0;
   padding: 0.5rem;
 
   &:hover {
@@ -58,7 +57,6 @@ const ClearButton = styled(MuiIconButton)`
 
 const Divider = styled(MuiDivider)`
   height: 1.125rem;
-  margin-top: 0.875rem;
   background: ${props => props.theme.palette.text.tertiary};
 `;
 
@@ -139,7 +137,6 @@ const EXPANDED_LIMIT = 200;
 
 export const SearchBar = ({ linkType, className }) => {
   const history = useHistory();
-  const { locale } = useUrlParams();
   const [inputValue, setInputValue] = useState('');
   const [expanded, setExpanded] = useState(false);
   const { data: options = [], isLoading } = useProjectEntitiesData();
@@ -161,7 +158,7 @@ export const SearchBar = ({ linkType, className }) => {
     limit: inputValue && expanded ? EXPANDED_LIMIT : DEFAULT_LIMIT,
     onChange: (event, option) => {
       if (option && option.code) {
-        history.push(makeEntityLink(locale, option.code, linkType));
+        history.push(makeEntityLink(option.code, linkType));
       }
     },
   });
@@ -195,7 +192,7 @@ export const SearchBar = ({ linkType, className }) => {
             {groupedOptions.map((option, index) => (
               <ResultsItem
                 key={option.name}
-                to={makeEntityLink(locale, option.code, linkType)}
+                to={makeEntityLink(option.code, linkType)}
                 {...getOptionProps({ option, index })}
               >
                 {getPlaceIcon(option.type)}

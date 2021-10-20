@@ -10,7 +10,8 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import MuiBreadcrumbs from '@material-ui/core/Breadcrumbs';
 import MuiLink from '@material-ui/core/Link';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import { LocaleLink } from './LocaleLinks';
+import { Link as RouterLink } from 'react-router-dom';
+import { useHomeUrl } from '../utils';
 
 const StyledBreadcrumbs = styled(MuiBreadcrumbs)`
   font-size: 0.75rem;
@@ -37,25 +38,31 @@ const Loader = () => (
   </Skeleton>
 );
 
-export const Breadcrumbs = ({ isLoading, breadcrumbs }) => (
-  <StyledBreadcrumbs separator={<NavigateNextIcon />}>
-    <LocaleLink to="/">Home</LocaleLink>
-    {isLoading ? (
-      <Loader />
-    ) : (
-      breadcrumbs.map(({ name, url }, index) => {
-        const last = index === breadcrumbs.length - 1;
-        return last ? (
-          <ActiveSegment key={url}>{name}</ActiveSegment>
-        ) : (
-          <LocaleLink to={url} key={url}>
-            {name}
-          </LocaleLink>
-        );
-      })
-    )}
-  </StyledBreadcrumbs>
-);
+const Link = props => <MuiLink color="inherit" {...props} component={RouterLink} />;
+
+export const Breadcrumbs = ({ isLoading, breadcrumbs }) => {
+  const { homeUrl } = useHomeUrl();
+
+  return (
+    <StyledBreadcrumbs separator={<NavigateNextIcon />}>
+      <Link to={homeUrl}>Home</Link>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        breadcrumbs.map(({ name, url }, index) => {
+          const last = index === breadcrumbs.length - 1;
+          return last ? (
+            <ActiveSegment key={url}>{name}</ActiveSegment>
+          ) : (
+            <Link to={url} key={url}>
+              {name}
+            </Link>
+          );
+        })
+      )}
+    </StyledBreadcrumbs>
+  );
+};
 
 Breadcrumbs.propTypes = {
   breadcrumbs: PropTypes.arrayOf(

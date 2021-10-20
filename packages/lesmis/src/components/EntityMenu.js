@@ -114,7 +114,7 @@ const ListItemComponent = React.memo(({ entities, entity, onMenuClose, view }) =
     <>
       <ListItem className={open && 'open'}>
         {entity.imageUrl ? <img src={entity.imageUrl} alt="place" /> : PlaceIcon}
-        <ListItemLink to={makeEntityLink(locale, entity.code, view)} onClick={handleMenuClose}>
+        <ListItemLink to={makeEntityLink(entity.code, view)} onClick={handleMenuClose}>
           {getOptionText(entity, entities)}
         </ListItemLink>
         {hasChildren && (
@@ -186,7 +186,7 @@ const ContainerList = styled(MuiList)`
 
 export const EntityMenu = React.memo(({ buttonText }) => {
   const [open, setOpen] = useState(false);
-  const { view, locale } = useUrlParams();
+  const { view } = useUrlParams();
   const { data: entities = [], isSuccess } = useProjectEntitiesData();
   const country = entities.find(e => e.type === 'country');
 
@@ -209,7 +209,7 @@ export const EntityMenu = React.memo(({ buttonText }) => {
               {/* Manually add the country link at the top of the list */}
               <ListItem>
                 {getPlaceIcon('country')}
-                <ListItemLink to={makeEntityLink(locale, country.code, view)} onClick={handleClose}>
+                <ListItemLink to={makeEntityLink(country.code, view)} onClick={handleClose}>
                   {getOptionText(country, entities)}
                 </ListItemLink>
               </ListItem>

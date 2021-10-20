@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import { useQueryClient } from 'react-query';
 import styled from 'styled-components';
-import { useHistory, useLocation } from 'react-router-dom';
+import { generatePath, useHistory, useLocation } from 'react-router-dom';
 import MuiButton from '@material-ui/core/Button';
 import MuiMenu from '@material-ui/core/Menu';
 import MuiMenuItem from '@material-ui/core/MenuItem';
@@ -14,7 +14,7 @@ import LanguageIcon from '@material-ui/icons/Language';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { LaosFlagSmall } from './Icons/LaosFlagSmall';
 import { EnglishFlagSmall } from './Icons/EnglishFlagSmall';
-import { makeEntityLink, useUrlParams } from '../utils';
+import { useUrlParams } from '../utils';
 
 const StyledButton = styled(MuiButton)`
   font-size: 0.75rem;
@@ -92,8 +92,13 @@ export const LocaleMenu = () => {
   const { search } = useLocation();
   const queryClient = useQueryClient();
 
-  const handleChange = (event, code) => {
-    const link = `${makeEntityLink(code, entityCode, view)}${search}`;
+  const handleChange = (event, newLocale) => {
+    const path = generatePath(`/:locale/:entityCode/:view`, {
+      locale: newLocale,
+      entityCode,
+      view,
+    });
+    const link = `${path}${search}`;
     history.replace(link);
     setAnchorEl(null);
     queryClient.clear();
