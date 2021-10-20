@@ -1,3 +1,18 @@
+# Creates snapshots of volumes of instances.
+#
+# Example configs
+#
+# 1. Snapshot all instances that have been marked with the "Backup" tag:
+# {
+#   "Action": "backup_instances"
+# }
+#
+# 2. Snapshot a specific instance
+# {
+#   "Action": "backup_instances",
+#   "InstanceName": "Tupaia Tonga Aggregation Server"
+# }
+
 import boto3
 import datetime
 from helpers.utilities import get_tag
@@ -5,12 +20,14 @@ from helpers.utilities import get_tag
 ec = boto3.client('ec2')
 
 def backup_instances(event):
-    filters = [
-        {'Name': 'tag-key', 'Values': ['backup', 'Backup']},
-    ]
+
     if 'InstanceName' in event:
-      print('Only backing up ' + event['InstanceName'])
-      filters.append({'Name': 'tag:Name', 'Values': [event['InstanceName']]})
+        print('Only backing up ' + event['InstanceName'])
+        filters = [{'Name': 'tag:Name', 'Values': [event['InstanceName']]}]
+    else:
+        print('Backing up all instances tagged "Backup')
+        filters = [{'Name': 'tag-key', 'Values': ['backup', 'Backup']}]
+
     reservations = ec.describe_instances(
         Filters=filters
     ).get(

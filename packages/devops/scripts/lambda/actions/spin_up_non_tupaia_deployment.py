@@ -1,6 +1,26 @@
-from helpers.clone import clone_instance
+# Creates a new deployment of DHIS2 or another EC2 instance hosted within the tupaia.org domain, but
+# not Tupaia proper (which has a separate file, see spin_up_tupaia_deployment)
+#
+# Example configs
+#
+# 1. Spin up new deployment of Tonga DHIS2
+# {
+#   "Action": "spin_up_non_tupaia_deployment",
+#   "Branch": "wai-965",
+#   "InstanceType": "t3a.medium",
+#   "DeploymentCode": "tonga"
+# }
+#
+# 2. Spin up new deployment of Tonga DHIS2, but based on the dev instance
+# {
+#   "Action": "spin_up_non_tupaia_deployment",
+#   "Branch": "wai-965",
+#   "InstanceType": "t3a.medium",
+#   "DeploymentCode": "tonga",
+#   "CloneFromStage": "dev"
+# }
 
-# Used for cloning a deployment of DHIS2 or another EC2 instance
+from helpers.clone import clone_instance
 
 def spin_up_non_tupaia_deployment(event):
     # validate input config

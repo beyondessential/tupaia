@@ -1,3 +1,11 @@
+# Terminates an instance and any associated elastic ip, route53 entries, load balancer, and gateway
+#
+# Example config
+# {
+#   "Action": "tear_down_non_tupaia_deployment",
+#   "InstanceName": "tonga: wai-965"
+# }
+
 from helpers.teardown import teardown_instance
 
 def tear_down_non_tupaia_deployment(event):

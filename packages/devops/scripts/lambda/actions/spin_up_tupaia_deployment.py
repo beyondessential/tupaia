@@ -1,3 +1,36 @@
+# Creates a new deployment of Tupaia with a specific branch checked out
+#
+# Example configs
+#
+# 1. Spin up a new feature branch deployment of Tupaia
+# {
+#   "Action": "spin_up_tupaia_deployment",
+#   "Branch": "wai-965",
+#   "InstanceType": "t3a.medium"
+# }
+#
+# 2. Spin up a new feature branch deployment of Tupaia, but with the db cloned from dev
+# {
+#   "Action": "spin_up_tupaia_deployment",
+#   "Branch": "wai-965",
+#   "InstanceType": "t3a.medium",
+#   "CloneFromStage": "dev"
+# }
+#
+# 3. Spin up a new deployment of Tupaia, but using a different AMI for the server and different base
+#    instance for the db
+# {
+#   "Action": "spin_up_tupaia_deployment",
+#   "Branch": "wai-965",
+#   "InstanceType": "t3a.medium",
+#   "ServerDeploymentCode": "edwin-test",
+#   "DbDeploymentCode": "edwin-test"
+# }
+# N.B. example 3 is unusual and generally just used for debugging the redeploy process itself. If
+# used, you need to tag the AMI with "Code": "your-code" and add the tag "your-code": "true" to the
+# security group
+
+
 from helpers.clone import clone_instance
 from helpers.create_from_image import create_tupaia_instance_from_image
 

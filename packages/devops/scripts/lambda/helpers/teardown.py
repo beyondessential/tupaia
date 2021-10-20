@@ -7,7 +7,7 @@ ec = boto3.client('ec2')
 route53 = boto3.client('route53')
 
 def terminate_instance(instance):
-  # Release elastic ip
+    # Release elastic ip
     public_ip_address = instance['PublicIpAddress']
     elastic_ip = ec.describe_addresses(PublicIps=[public_ip_address])['Addresses'][0]
     ec.release_address(AllocationId=elastic_ip['AllocationId'])

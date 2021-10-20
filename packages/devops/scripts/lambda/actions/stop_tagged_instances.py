@@ -1,3 +1,11 @@
+# Stops any instance tagged with "StopAtUTC" that is currently running, and due to be stopped
+# within the last hour
+#
+# Example config
+# {
+#   "Action": "stop_tagged_instances"
+# }
+
 import asyncio
 import time
 from helpers.utilities import find_instances, stop_instance
