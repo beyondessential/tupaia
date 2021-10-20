@@ -1,4 +1,4 @@
-from helpers.teardown import *
+from helpers.teardown import teardown_instance
 
 def tear_down_non_tupaia_deployment(event):
     if 'InstanceName' not in event:

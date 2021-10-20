@@ -1,6 +1,6 @@
 import boto3
 import datetime
-from helpers.utilities import *
+from helpers.utilities import get_tag
 
 ec = boto3.client('ec2')
 

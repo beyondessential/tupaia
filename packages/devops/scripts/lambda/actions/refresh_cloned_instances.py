@@ -1,14 +1,14 @@
 import asyncio
 
-from helpers.clone import *
+from helpers.clone import clone_volume_into_instance
+from helpers.utilities import find_instances, get_tag
+
+loop = asyncio.get_event_loop()
 
 # Replaces the volume of any cloned instance with the latest snapshot from the original clone volume
 def refresh_cloned_instances(event):
-    account_ids = get_account_ids()
-
     filters = [
-        { 'Name': 'tag-key', 'Values': ['ClonedFrom'] },
-        { 'Name': 'instance-state-name', 'Values': ['stopped'] }
+        { 'Name': 'tag-key', 'Values': ['ClonedFrom'] }
     ]
     if 'ClonedFrom' in event:
       print('Refreshing instances cloned from ' + event['ClonedFrom'])
@@ -25,7 +25,7 @@ def refresh_cloned_instances(event):
 
     tasks = sum(
     [
-        [asyncio.ensure_future(clone_volume_into_instance(account_ids, instance, get_tag(instance, 'ClonedFrom'))) for instance in instances]
+        [asyncio.ensure_future(clone_volume_into_instance(instance, get_tag(instance, 'ClonedFrom'))) for instance in instances]
     ], [])
     loop.run_until_complete(asyncio.wait(tasks))
     print('Finished refreshing all clones')

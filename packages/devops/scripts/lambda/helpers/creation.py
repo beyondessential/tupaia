@@ -1,5 +1,10 @@
-from helpers.utilities import *
-from helpers.networking import *
+import boto3
+
+from helpers.networking import setup_subdomains_via_dns, setup_subdomains_via_gateway
+from helpers.utilities import get_instances, get_tag
+
+ec2 = boto3.resource('ec2')
+ec = boto3.client('ec2')
 
 def allocate_elastic_ip(instance_id):
     elastic_ip = ec.allocate_address(Domain='Vpc')

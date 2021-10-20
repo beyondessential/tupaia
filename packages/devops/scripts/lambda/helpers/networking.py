@@ -1,6 +1,6 @@
 import boto3
 
-from helpers.utilities import *
+from helpers.utilities import tags_contains
 
 # --------------
 # Certificate manager

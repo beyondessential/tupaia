@@ -1,4 +1,19 @@
-from helpers.networking import *
+import boto3
+
+from helpers.networking import delete_gateway, build_record_set_deletion, get_gateway_elb
+from helpers.utilities import get_instances, get_tag
+
+ec = boto3.client('ec2')
+route53 = boto3.client('route53')
+
+def terminate_instance(instance):
+  # Release elastic ip
+    public_ip_address = instance['PublicIpAddress']
+    elastic_ip = ec.describe_addresses(PublicIps=[public_ip_address])['Addresses'][0]
+    ec.release_address(AllocationId=elastic_ip['AllocationId'])
+
+    # Terminate ec2 instance (taking with it ebs)
+    ec.terminate_instances(InstanceIds=[instance['InstanceId']])
 
 def teardown_instance(instance_name):
     filters = [
@@ -45,14 +60,6 @@ def teardown_instance(instance_name):
       )
       print('Submitted {} deletions to hosted zone'.format(len(record_set_deletions)))
 
-    # Release elastic ip
-    public_ip_address = instance['PublicIpAddress']
-    elastic_ip = ec.describe_addresses(PublicIps=[public_ip_address])['Addresses'][0]
-    ec.release_address(AllocationId=elastic_ip['AllocationId'])
-
     # Delete gateway
     if (subdomains_via_gateway != ''):
       delete_gateway(stage)
-
-    # Terminate ec2 instance (taking with it ebs)
-    ec.terminate_instances(InstanceIds=[instance['InstanceId']])
