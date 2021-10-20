@@ -5,17 +5,39 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { Route } from '@tupaia/server-boilerplate';
+import { TranslatableRoute } from './TranslatableRoute';
 import { WebConfigConnection } from '../connections';
 import { LESMIS_PROJECT_NAME } from '../constants';
 
-export class DashboardRoute extends Route {
+export class DashboardRoute extends TranslatableRoute {
   private readonly webConfigConnection: WebConfigConnection;
 
   constructor(req: Request, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.webConfigConnection = new WebConfigConnection(req.session);
+    this.translationKeys = {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          dashboardName: {
+            type: 'string'
+          },
+          items: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                name: {
+                  type: 'string'
+                }
+              }
+            }
+          }
+        }
+      }
+    };
   }
 
   async buildResponse() {
