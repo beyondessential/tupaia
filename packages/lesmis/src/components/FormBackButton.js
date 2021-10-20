@@ -17,14 +17,14 @@ const CloseButton = styled(IconButton)`
 `;
 
 export const FormBackButton = () => {
-  const { pushToHomeUrl } = useHomeUrl();
+  const { navigateToHomeUrl } = useHomeUrl();
   const { push, location } = useHistory();
 
   const handleClose = () => {
     if (location?.state?.referer) {
       push(location.state.referer);
     } else {
-      pushToHomeUrl();
+      navigateToHomeUrl();
     }
   };
   return (

@@ -13,11 +13,11 @@ export const useHomeUrl = () => {
 
   const isHomeUrl = path => path.replace(/\/$/, '') === homeUrl;
 
-  const pushToHomeUrl = push(homeUrl);
+  const navigateToHomeUrl = push(homeUrl);
 
   return {
     homeUrl,
     isHomeUrl,
-    pushToHomeUrl,
+    navigateToHomeUrl,
   };
 };

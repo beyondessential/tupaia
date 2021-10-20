@@ -10,7 +10,7 @@ import { useUser } from '../queries';
 import { useHomeUrl } from '../../utils/useHomeUrl';
 
 export const useLogin = () => {
-  const { pushToHomeUrl } = useHomeUrl();
+  const { navigateToHomeUrl } = useHomeUrl();
   const { push, location } = useHistory();
   const queryClient = useQueryClient();
 
@@ -32,7 +32,7 @@ export const useLogin = () => {
           push(location.state.referer);
         } else {
           // Otherwise send them to the homepage
-          pushToHomeUrl();
+          navigateToHomeUrl();
         }
       },
     },
