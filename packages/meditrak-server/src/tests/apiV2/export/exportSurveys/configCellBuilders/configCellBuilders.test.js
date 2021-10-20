@@ -22,7 +22,7 @@ const generateModelsStub = () => {
     .withArgs(sinon.match(sinon.match.any))
     .callsFake(inputCodes =>
       QUESTIONS.filter(({ code }) => inputCodes.includes(code)).reduce(
-        ({ code, id }, acc) => ({ ...acc, [code]: id }),
+        (acc, { code, id }) => ({ ...acc, [code]: id }),
         {},
       ),
     );
@@ -48,9 +48,6 @@ const runTestCase = async testCase => {
   const builtConfig = await arithmeticConfigCellBuilder.build(input);
   console.log(builtConfig);
 
-  // if (throws) {
-  //   return expect(builtConfig).toBeRejectedWith(expected);
-  // }
   return expect(builtConfig).to.equal(expected);
 };
 

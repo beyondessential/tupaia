@@ -20,12 +20,26 @@
 export const translateExpression = async (models, rawExpression, codes) => {
   const questionCodeToId = await models.question.findIdByCode(codes);
   let expression = rawExpression;
+  console.log(models, rawExpression, codes, questionCodeToId);
 
   for (const code of codes) {
     const questionId = questionCodeToId[code];
     // Retain the $ prefix, as UUID often starts with a number (breaks evaluation in mathjs)
     expression = expression.replace(`$${code}`, `$${questionId}`);
   }
+
+  return expression;
+};
+
+export const unTranslateExpression = async (models, rawExpression, ids) => {
+  let expression = rawExpression;
+
+  for (const id of ids) {
+    const question = await models.question.findById(id);
+    // Retain the $ prefix, as UUID often starts with a number (breaks evaluation in mathjs)
+    expression = expression.replace(`$${id}`, `$${question?.code || `No question with id: ${id}`}`);
+  }
+  console.log({ rawExpression, expression, ids });
 
   return expression;
 };

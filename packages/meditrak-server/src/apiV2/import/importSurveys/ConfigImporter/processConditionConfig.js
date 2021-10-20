@@ -7,7 +7,7 @@ import {
   splitStringOn,
   splitStringOnComma,
   translateExpression,
-  getExpressionQuestionCodes,
+  getDollarPrefixedExpressionVariables,
 } from '../../../utilities';
 
 export const processConditionConfig = async (models, config) => {
@@ -51,7 +51,7 @@ const translateConditions = async (models, conditionsConfig, defaultValuesConfig
   // Translate the expressions
   for (const condition of conditions) {
     const [targetValue, expression] = splitStringOn(condition, ':');
-    const codes = getExpressionQuestionCodes(expression);
+    const codes = getDollarPrefixedExpressionVariables(expression);
     const translatedExpression = await translateExpression(models, expression, codes);
     translatedConditions[targetValue] = {
       formula: translatedExpression,

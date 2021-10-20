@@ -7,12 +7,12 @@ import {
   splitStringOn,
   splitStringOnComma,
   translateExpression,
-  getExpressionQuestionCodes,
+  getDollarPrefixedExpressionVariables,
 } from '../../../utilities';
 
 export const processArithmeticConfig = async (models, config) => {
   const { formula, defaultValues, valueTranslation, answerDisplayText } = config;
-  const codes = getExpressionQuestionCodes(formula);
+  const codes = getDollarPrefixedExpressionVariables(formula);
 
   let translatedConfig = {
     formula: await translateExpression(models, formula, codes),

@@ -4,14 +4,24 @@
  */
 
 import { KeyValueCellBuilder } from './KeyValueCellBuilder';
+import { unTranslateExpression, getDollarPrefixedExpressionVariables } from '../../../utilities';
 
-const SPECIAL_VALUE_PROCESSORS = [];
+const translateFormula = (models, formula) =>
+  unTranslateExpression(models, formula, getDollarPrefixedExpressionVariables(formula));
+
+const SPECIAL_VALUE_PROCESSORS = {
+  formula: translateFormula,
+};
+
 export class ArithmeticConfigCellBuilder extends KeyValueCellBuilder {
-  // async processValue(value, key) {
-  //   return SPECIAL_VALUE_PROCESSORS[key]
-  //     ? SPECIAL_VALUE_PROCESSORS[key](value)
-  //     : this.fetchQuestionCode(value);
-  // }
+  async processValue(value, key) {
+    console.log('preprocess', value, key);
+    const processed = await (SPECIAL_VALUE_PROCESSORS[key]
+      ? SPECIAL_VALUE_PROCESSORS[key](this.models, value)
+      : super.processValue(value));
+    console.log('processed', processed);
+    return processed;
+  }
 
   extractRelevantObject({ arithmetic }) {
     return arithmetic;
@@ -38,7 +48,7 @@ export class ArithmeticConfigCellBuilder extends KeyValueCellBuilder {
 
 // export const processArithmeticConfig = async (models, config) => {
 //   const { formula, defaultValues, valueTranslation, answerDisplayText } = config;
-//   const codes = getExpressionQuestionCodes(formula);
+//   const codes = getDollarPrefixedExpressionVariables(formula);
 
 //   let translatedConfig = {
 //     formula: await translateExpression(models, formula, codes),
