@@ -29,6 +29,7 @@ import {
   selectOrgUnitSiblings,
   selectRenderedMeasuresWithDisplayInfo,
   selectAreRegionLabelsPermanent,
+  selectMeasureData,
 } from '../../selectors';
 import { changePosition, closeDropdownOverlays, setOrgUnit } from '../../actions';
 import { TRANS_BLACK, TRANS_BLACK_LESS } from '../../styles';
@@ -150,6 +151,8 @@ class MapComponent extends Component {
       measureData,
       onChangeOrgUnit,
       measureOptions,
+      allMeasureData,
+      allMeasureOptions,
       position,
       shouldSnapToPosition,
       sidePanelWidth,
@@ -166,7 +169,8 @@ class MapComponent extends Component {
     const basicPropsForInteractivePolygon = {
       hasMeasureData,
       measureOrgUnits,
-      measureOptions,
+      allMeasureOptions,
+      allMeasureData,
       onChangeOrgUnit,
       permanentLabels,
     };
@@ -213,6 +217,8 @@ class MapComponent extends Component {
           measureData={processedData}
           serieses={measureOptions || null}
           onChangeOrgUnit={onChangeOrgUnit}
+          allMeasureData={allMeasureData}
+          allMeasureOptions={allMeasureOptions}
         />
         <DisasterLayer />
       </StyledMap>
@@ -232,6 +238,8 @@ MapComponent.propTypes = {
   measureOrgUnits: PropTypes.array,
   mapOverlayCodes: PropTypes.array.isRequired,
   measureOptions: PropTypes.array,
+  allMeasureData: PropTypes.array,
+  allMeasureOptions: PropTypes.array,
   position: PropTypes.shape({
     center: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     bounds: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
@@ -249,6 +257,8 @@ MapComponent.defaultProps = {
   measureData: [],
   measureOrgUnits: [],
   measureOptions: [],
+  allMeasureData: [],
+  allMeasureOptions: [],
   currentParent: null,
 };
 
@@ -269,7 +279,13 @@ const mapStateToProps = state => {
   const currentParent = selectOrgUnit(state, currentOrganisationUnit.parent);
   const currentChildren =
     selectOrgUnitChildren(state, currentOrganisationUnit.organisationUnitCode) || [];
-
+  const measureData = selectMeasureDataWithCoordinates(
+    selectRenderedMeasuresWithDisplayInfo(state, displayedMapOverlays),
+  );
+  const measureOptions = selectMeasureOptions(state, displayedMapOverlays);
+  const permanentLabels = selectAreRegionLabelsPermanent(state);
+  const allMeasureData = selectMeasureData(state, mapOverlayCodes);
+  const allMeasureOptions = selectMeasureOptions(state, mapOverlayCodes);
   // If the org unit's grandchildren are polygons and have a measure, display grandchildren
   // rather than children
   let displayedChildren = currentChildren;
@@ -288,14 +304,7 @@ const mapStateToProps = state => {
     if (hasShadedGrandchildren) displayedChildren = grandchildren;
   }
 
-  const measureData = selectMeasureDataWithCoordinates(
-    selectRenderedMeasuresWithDisplayInfo(state, displayedMapOverlays),
-  );
-  const measureOptions = selectMeasureOptions(state, displayedMapOverlays);
-
   const getChildren = organisationUnitCode => selectOrgUnitChildren(state, organisationUnitCode);
-
-  const permanentLabels = selectAreRegionLabelsPermanent(state);
 
   return {
     position,
@@ -303,14 +312,16 @@ const mapStateToProps = state => {
     currentParent,
     displayedChildren,
     measureData,
+    measureOptions,
+    mapOverlayCodes,
+    measureOrgUnits,
+    allMeasureData,
+    allMeasureOptions,
     currentOrganisationUnitSiblings: selectOrgUnitSiblings(
       state,
       currentOrganisationUnit.organisationUnitCode,
     ),
-    mapOverlayCodes,
-    measureOptions,
     getChildren,
-    measureOrgUnits,
     tileSetUrl: selectActiveTileSet(state).url,
     isAnimating,
     shouldSnapToPosition,
