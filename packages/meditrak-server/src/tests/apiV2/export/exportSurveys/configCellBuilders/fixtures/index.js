@@ -4,4 +4,4 @@
  */
 
 export { ARITHMETIC_TEST_CASES } from './ArithmeticConfigCellBuilderFixtures';
-export { QUESIONS } from './common';
+export { QUESTIONS } from './common';

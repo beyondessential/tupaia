@@ -5,7 +5,7 @@
 
 export const QUESTIONS = [
   {
-    code: 'hi',
-    id: 'test_1',
+    code: 'question_1_code',
+    id: 'question_1_id',
   },
 ];
