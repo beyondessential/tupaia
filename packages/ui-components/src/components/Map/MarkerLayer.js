@@ -36,53 +36,74 @@ const processData = (measureData, serieses) => {
   return data;
 };
 
-export const MarkerLayer = ({ measureData, serieses, onChangeOrgUnit }) => {
+export const MarkerLayer = ({
+  measureData,
+  allMeasureData,
+  serieses,
+  allSerieses,
+  onChangeOrgUnit,
+}) => {
   if (!measureData || !serieses) return null;
 
   const data = processData(measureData, serieses);
 
   return (
     <LayerGroup>
-      {data.map(measure =>
-        measure.region ? (
-          <ShadedPolygon
-            key={measure.organisationUnitCode}
-            positions={measure.region}
-            pathOptions={{
-              color: measure.color,
-              fillColor: measure.color,
-            }}
-            {...measure}
-          >
-            <AreaTooltip text={getTooltipText(measure, serieses)} />
-          </ShadedPolygon>
-        ) : (
+      {data.map(measure => {
+        if (measure.region) {
+          return (
+            <ShadedPolygon
+              key={measure.organisationUnitCode}
+              positions={measure.region}
+              pathOptions={{
+                color: measure.color,
+                fillColor: measure.color,
+              }}
+              {...measure}
+            >
+              <AreaTooltip text={getTooltipText(measure, serieses)} />
+            </ShadedPolygon>
+          );
+        }
+        const allMeasures = {
+          ...measure,
+          ...(allMeasureData &&
+            allMeasureData.find(
+              ({ organisationUnitCode }) => organisationUnitCode === measure.organisationUnitCode,
+            )),
+        };
+        return (
           <MeasureMarker key={measure.organisationUnitCode} {...measure}>
             <MeasurePopup
-              markerData={measure}
+              markerData={allMeasures}
               serieses={serieses}
               onOrgUnitClick={onChangeOrgUnit}
+              allSerieses={allSerieses}
             />
           </MeasureMarker>
-        ),
-      )}
+        );
+      })}
     </LayerGroup>
   );
 };
 
 MarkerLayer.propTypes = {
   measureData: PropTypes.array,
+  allMeasureData: PropTypes.array,
   serieses: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     }),
   ),
+  allSerieses: PropTypes.array,
   onChangeOrgUnit: PropTypes.func,
 };
 
 MarkerLayer.defaultProps = {
   measureData: null,
+  allMeasureData: null,
   serieses: null,
+  allSerieses: null,
   onChangeOrgUnit: null,
 };

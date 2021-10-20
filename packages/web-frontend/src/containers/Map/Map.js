@@ -218,7 +218,7 @@ class MapComponent extends Component {
           serieses={measureOptions || null}
           onChangeOrgUnit={onChangeOrgUnit}
           allMeasureData={allMeasureData}
-          allMeasureOptions={allMeasureOptions}
+          allSerieses={allMeasureOptions}
         />
         <DisasterLayer />
       </StyledMap>

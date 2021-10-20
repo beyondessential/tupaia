@@ -20,7 +20,7 @@ const buildHeaderText = (markerData, popupHeaderFormat) => {
   );
 };
 
-export const MeasurePopup = React.memo(({ markerData, serieses, onOrgUnitClick }) => {
+export const MeasurePopup = React.memo(({ markerData, serieses, onOrgUnitClick, allSerieses }) => {
   const { coordinates, organisationUnitCode } = markerData;
   const { popupHeaderFormat = '{name}' } = serieses.reduce((all, mo) => ({ ...all, ...mo }), {});
   return (
@@ -30,7 +30,11 @@ export const MeasurePopup = React.memo(({ markerData, serieses, onOrgUnitClick }
       coordinates={coordinates}
       onDetailButtonClick={onOrgUnitClick ? () => onOrgUnitClick(organisationUnitCode) : null}
     >
-      <PopupDataItemList measureOptions={serieses} data={markerData} showNoDataLabel />
+      <PopupDataItemList
+        measureOptions={allSerieses || serieses}
+        data={markerData}
+        showNoDataLabel
+      />
     </PopupMarker>
   );
 });
@@ -44,15 +48,19 @@ MeasurePopup.propTypes = {
     photoUrl: PropTypes.string,
     value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   }).isRequired,
+  allMeasureData: PropTypes.object,
   serieses: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     }),
   ).isRequired,
+  allSerieses: PropTypes.array,
   onOrgUnitClick: PropTypes.func,
 };
 
 MeasurePopup.defaultProps = {
   onOrgUnitClick: null,
+  allMeasureData: null,
+  allSerieses: null,
 };
