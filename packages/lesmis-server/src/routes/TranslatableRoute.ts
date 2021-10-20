@@ -22,6 +22,7 @@ type ObjectKey = {
 type ArrayKey = {
   type: 'array';
   items: TranslationKey;
+  where?: (entry: any) => boolean;
 }
 
 type TranslationKey = StringKey | ObjectKey | ArrayKey;
@@ -56,7 +57,7 @@ export class TranslatableRoute extends Route {
         return translatedObject;
       }
       case 'array':
-        return translationValue.map((entry: TranslationValue) => this.translateResponse(translationKey.items, entry));
+        return translationValue.map((entry: TranslationValue) => (translationKey.where && translationKey.where(entry)) ? this.translateResponse(translationKey.items, entry) : entry);
       default:
         return translationValue;
     }

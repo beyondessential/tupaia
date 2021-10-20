@@ -18,6 +18,7 @@ export class EntitiesRoute extends TranslatableRoute {
     this.entityConnection = new EntityConnection(req.session);
     this.translationKeys = {
       type: 'array',
+      where: (entry => entry.type !== 'school'),
       items: {
         type: 'object',
         properties: {
