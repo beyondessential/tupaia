@@ -22,6 +22,7 @@ import { Home, ImportContacts, ContactMail, Close, Menu, Assignment } from '@mat
 import { LightIconButton } from '@tupaia/ui-components';
 import { LocaleListItemLink } from './LocaleLinks';
 import { FlexEnd } from './Layout';
+import { I18n } from './I18n';
 
 const StyledList = styled(List)`
   width: 22.5rem;
@@ -105,39 +106,43 @@ export const MainMenu = () => {
         </MenuTray>
         <StyledList onClick={toggleDrawer(false)}>
           <ListItem>
-            <MenuHeading variant="h3">Menu</MenuHeading>
+            <MenuHeading variant="h3">
+              <I18n t="menu" />
+            </MenuHeading>
           </ListItem>
           <LocaleListItemLink to="/">
             <ListItemIcon>
               <Home />
             </ListItemIcon>
-            <ListItemText primary="Home" />
+            <ListItemText primary={<I18n t="home" />} />
           </LocaleListItemLink>
           <LocaleListItemLink to="/about">
             <ListItemIcon>
               <ImportContacts />
             </ListItemIcon>
-            <ListItemText primary="About LESMIS" />
+            <ListItemText primary={<I18n t="aboutLesmis" />} />
           </LocaleListItemLink>
           <LocaleListItemLink to="/contact">
             <ListItemIcon>
               <ContactMail />
             </ListItemIcon>
-            <ListItemText primary="Contact us" />
+            <ListItemText primary={<I18n t="contactUs" />} />
           </LocaleListItemLink>
-          <Subheader component="div">Online Questionnaires</Subheader>
+          <Subheader component="div">
+            <I18n t="onlineQs" />
+          </Subheader>
           <LocaleListItemLink to="/fundamental-quality-standards">
             <ListItemIcon>
               <Assignment />
             </ListItemIcon>
-            <ListItemText primary="Fundamental Quality Standards" />
+            <ListItemText primary={<I18n t="fqs" />} />
           </LocaleListItemLink>
         </StyledList>
         <StyledDivider />
         <StyledList component="nav" aria-label="secondary mailbox folders">
           <ListItem>
             <TupaiaText>
-              Powered by <Link href="https://www.info.tupaia.org">Tupaia</Link>
+              <I18n t="poweredBy" /> <Link href="https://www.info.tupaia.org">Tupaia</Link>
             </TupaiaText>
           </ListItem>
         </StyledList>

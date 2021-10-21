@@ -17,6 +17,7 @@ import MuiSearchIcon from '@material-ui/icons/Search';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Fade from '@material-ui/core/Fade';
 import { EntityMenu } from '../EntityMenu';
+import { useI18n } from '../I18n';
 import { useAutocomplete } from './useAutocomplete';
 import { useProjectEntitiesData } from '../../api';
 import { getPlaceIcon, getOptionText, makeEntityLink } from '../../utils';
@@ -137,6 +138,7 @@ const EXPANDED_LIMIT = 200;
 
 export const SearchBar = ({ linkType, className }) => {
   const history = useHistory();
+  const { translate } = useI18n();
   const [inputValue, setInputValue] = useState('');
   const [expanded, setExpanded] = useState(false);
   const { data: options = [], isLoading } = useProjectEntitiesData();
@@ -178,14 +180,17 @@ export const SearchBar = ({ linkType, className }) => {
       <SearchContainer className={className}>
         <SearchBox {...getRootProps()} elevation={0}>
           <SearchIcon color={focused ? 'primary' : 'inherit'} />
-          <Input placeholder="Search location" inputProps={{ ...getInputProps() }} />
+          <Input
+            placeholder={translate('searchBar.placeholder')}
+            inputProps={{ ...getInputProps() }}
+          />
           {inputValue && (
             <ClearButton {...clearProps} onClick={handleClear} aria-label="clear">
               <CancelIcon />
             </ClearButton>
           )}
           <Divider orientation="vertical" />
-          <EntityMenu buttonText="or view all" />
+          <EntityMenu buttonText={translate('searchBar.viewAll')} />
         </SearchBox>
         {groupedOptions.length > 0 ? (
           <ResultsBox elevation={3} {...getListboxProps()}>

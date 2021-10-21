@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { NAVBAR_HEIGHT } from '../constants';
-import { SearchBar, FlexEnd, FlexStart } from '../components';
+import { SearchBar, FlexEnd, FlexStart, I18n } from '../components';
 import { useProjectEntitiesData } from '../api/queries';
 
 const Wrapper = styled.div`
@@ -116,31 +116,41 @@ export const HomeView = React.memo(() => {
       <Container maxWidth="xl">
         <Main>
           <Title variant="h1">
-            Find a location <br />
-            to <YellowTitle>start viewing data</YellowTitle>
+            <I18n t="homePage.intro1" />
+            <br />
+            <I18n t="homePage.intro2" />{' '}
+            <YellowTitle>
+              <I18n t="homePage.intro3" />
+            </YellowTitle>
           </Title>
           {isLoading && <CircularProgress size={60} />}
           <SearchBar />
         </Main>
         <Info>
           <InfoSection>
-            <InfoHeading variant="h5">About LESMIS</InfoHeading>
+            <InfoHeading variant="h5">
+              <I18n t="aboutLesmis" />
+            </InfoHeading>
             <InfoText>
-              The Lao PDR Education and Sports Management Information System (LESMIS) is a
-              GIS-enabled data aggregation, analysis and visualization platform for improved data
-              management and utilization for monitoring and planning.
+              <I18n t="aboutText" />
             </InfoText>
           </InfoSection>
           <InfoSection>
-            <InfoHeading variant="h5">Contact us</InfoHeading>
-            <InfoText>Ph: +856 20 55617710</InfoText>
-            <InfoText>Website: www.moes.edu.la</InfoText>
+            <InfoHeading variant="h5">
+              <I18n t="contactUs" />
+            </InfoHeading>
+            <InfoText>
+              <I18n t="ph" />: +856 20 54 015 004
+            </InfoText>
+            <InfoText>
+              <I18n t="website" />: www.moes.edu.la
+            </InfoText>
           </InfoSection>
         </Info>
         <Footer maxWidth="xl">
           <FooterInner>
             <Typography>
-              Powered by{' '}
+              <I18n t="poweredBy" />{' '}
               <Link href={INFO_LINK} color="inherit" underline="always">
                 Tupaia
               </Link>
