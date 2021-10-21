@@ -11,20 +11,22 @@ import { LESMIS_PROJECT_NAME } from '../constants';
 
 export class DashboardRoute extends TranslatableRoute {
   private readonly webConfigConnection: WebConfigConnection;
-  translationSubGroup = 'dashboards';
 
   constructor(req: Request, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.webConfigConnection = new WebConfigConnection(req.session);
-    this.translationKeys = {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          dashboardName: {
-            type: 'string'
-          },
+    this.translationSchema = {
+      domain: 'dashboards',
+      layout:{
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            dashboardName: {
+              type: 'string'
+            },
+          }
         }
       }
     };

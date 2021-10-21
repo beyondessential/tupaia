@@ -13,20 +13,22 @@ export class ReportRoute extends TranslatableRoute {
   private readonly reportConnection: ReportConnection;
 
   private readonly webConfigConnection: WebConfigConnection;
-  translationSubGroup = 'reports';
 
   constructor(req: Request, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.reportConnection = new ReportConnection(req.session);
     this.webConfigConnection = new WebConfigConnection(req.session);
-    this.translationKeys = {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          label: {
-            type: 'string'
+    this.translationSchema = {
+      domain: 'reports',
+      layout: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            label: {
+              type: 'string'
+            }
           }
         }
       }

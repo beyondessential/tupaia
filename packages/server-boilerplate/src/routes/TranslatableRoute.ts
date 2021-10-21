@@ -4,7 +4,7 @@
  */
 
 import { NextFunction } from 'express';
-import { Route } from '@tupaia/server-boilerplate';
+import { Route } from './Route';
 
 // Overwrite the respond function to include a translate step
 // Use translationKeys to define which pieces of the response body
@@ -25,15 +25,22 @@ type ArrayKey = {
   where?: (entry: any) => boolean;
 }
 
+type TranslationSchema = {
+  domain: string;
+  layout: TranslationKey;
+}
+
 type TranslationKey = StringKey | ObjectKey | ArrayKey;
 type TranslationValue = undefined | string | TranslationValue[] | { [key: string]: TranslationValue };
 
 export class TranslatableRoute extends Route {
-  translationSubGroup: string = '';
-  translationKeys: TranslationKey = { type: 'string' };
+  translationSchema: TranslationSchema = {
+    domain: '',
+    layout: { type: 'string' }
+  }
 
   respond(responseBody: TranslationValue, statusCode: number) {
-    const translatedResponse = this.translateResponse(this.translationKeys, responseBody);
+    const translatedResponse = this.translateResponse(this.translationSchema.layout, responseBody);
     super.respond(translatedResponse, statusCode);
   }
 

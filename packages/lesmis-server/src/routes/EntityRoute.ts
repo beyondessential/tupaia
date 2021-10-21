@@ -10,16 +10,18 @@ import { EntityConnection } from '../connections';
 
 export class EntityRoute extends TranslatableRoute {
   private readonly entityConnection: EntityConnection;
-  translationSubGroup = 'entities';
 
   constructor(req: Request, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.entityConnection = new EntityConnection(req.session);
-    this.translationKeys = {
-      type: 'object',
-      properties: {
-        name: { type: 'string' }
+    this.translationSchema = {
+      domain: 'entities',
+      layout:{
+        type: 'object',
+        properties: {
+          name: { type: 'string' }
+        }
       }
     }
   }
