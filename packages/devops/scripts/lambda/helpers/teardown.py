@@ -54,3 +54,5 @@ def teardown_instance(instance):
     # Delete gateway
     if (subdomains_via_gateway != ''):
       delete_gateway(stage)
+
+    terminate_instance(instance)
