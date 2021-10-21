@@ -36,12 +36,17 @@ const Header = styled.div`
   border-top-right-radius: 5px;
   padding: 2px 15px 0;
   height: 40px;
-  align-items: center;
+  justify-content: space-between;
 
   .MuiSvgIcon-root {
     font-size: 21px;
     margin-right: 5px;
   }
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const SubHeader = styled.div`
@@ -101,17 +106,19 @@ export const Control = ({
   return (
     <Container>
       <Header>
-        <LayersIcon />
-        <DropDownMenu
-          title="MAP OVERLAYS"
-          selectedOptionIndex={maxSelectedOverlays - 1}
-          options={options}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          onChange={onChange}
-          StyledPrimaryComponent={StyledPrimaryComponent}
-          StyledOptionComponent={StyledOptionComponent}
-          disableGutters
-        />
+        <Wrapper>
+          <LayersIcon />
+          <DropDownMenu
+            title="MAP OVERLAYS"
+            selectedOptionIndex={maxSelectedOverlays - 1}
+            options={options}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            onChange={onChange}
+            StyledPrimaryComponent={StyledPrimaryComponent}
+            StyledOptionComponent={StyledOptionComponent}
+            disableGutters
+          />
+        </Wrapper>
         <MapTableModal />
       </Header>
       {isMeasureSelected ? (
