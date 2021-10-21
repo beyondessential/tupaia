@@ -89,7 +89,18 @@ export class ApiBuilder {
   useTranslation(locales: string[], directory: string, queryParameter: string) {
     // Configure only once
     if (!this.translatorConfigured) {
-      i18n.configure({ locales, directory, queryParameter, objectNotation: true, updateFiles: false });
+      i18n.configure({
+        locales,
+        directory,
+        queryParameter,
+        objectNotation: true, // Allow locale files to use x.y notation
+        updateFiles: false,   // Don't update locale files while running
+        api: {
+          // Rename translation functions
+          __: 'translate',
+          __n: 'translaten'
+        }
+      });
       this.translatorConfigured = true;
     }
     // Add translation to req/res locals

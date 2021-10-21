@@ -55,7 +55,9 @@ export class TranslatableRoute extends Route {
     }
     switch(translationKey.type) {
       case 'string':
-        return this.res.__(`${this.translationSubGroup}.${translationValue}:${translationValue}`);
+        // Object notation format: "group.key:default"
+        // Find the translation for the string, or return the string itself
+        return this.res.translate(`${this.translationSchema.domain}.${translationValue}:${translationValue}`);
       case 'object': {
         let translatedObject = translationValue;
         for (const key of Object.keys(translationKey.properties)) {
