@@ -5,7 +5,7 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { TranslatableRoute } from './TranslatableRoute';
+import { TranslatableRoute } from '@tupaia/server-boilerplate';
 import { ReportConnection, WebConfigConnection } from '../connections';
 import { LESMIS_PROJECT_NAME, LESMIS_HIERARCHY_NAME } from '../constants';
 

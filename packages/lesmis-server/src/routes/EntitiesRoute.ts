@@ -5,7 +5,7 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { TranslatableRoute } from './TranslatableRoute';
+import { TranslatableRoute } from '@tupaia/server-boilerplate';
 import { EntityConnection } from '../connections';
 
 export class EntitiesRoute extends TranslatableRoute {
