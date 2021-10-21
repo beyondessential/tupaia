@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { NAVBAR_HEIGHT } from '../constants';
-import { SearchBar, FlexEnd, FlexStart } from '../components';
+import { SearchBar, FlexEnd, FlexStart, I18n } from '../components';
 import { useProjectEntitiesData } from '../api/queries';
 
 const Wrapper = styled.div`
@@ -126,6 +126,7 @@ export const HomeView = React.memo(() => {
           <InfoSection>
             <InfoHeading variant="h5">About LESMIS</InfoHeading>
             <InfoText>
+              <I18n t="home.about" />
               The Lao PDR Education and Sports Management Information System (LESMIS) is a
               GIS-enabled data aggregation, analysis and visualization platform for improved data
               management and utilization for monitoring and planning.

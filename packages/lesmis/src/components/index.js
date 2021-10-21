@@ -14,6 +14,7 @@ export * from './FormBackButton';
 export * from './FullPageLoader';
 export * from './Layout';
 export * from './LocationHeader';
+export * from './I18n';
 export * from './MainMenu';
 export * from './MapOverlaysPanel';
 export * from './MiniMap';
