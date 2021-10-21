@@ -43,12 +43,12 @@ const parseProps = (
   organisationUnitCode,
   organisationUnitChildren,
   measureOrgUnits,
-  allMeasureData,
+  multiOverlayMeasureData,
 ) => {
   let shade;
   let isHidden;
   let orgUnitMeasureData;
-  let orgUnitAllMeasureData;
+  let orgUnitMultiOverlayMeasureData;
   let hasShadedChildren = false;
 
   if (measureOrgUnits.length > 0) {
@@ -61,7 +61,7 @@ const parseProps = (
       organisationUnitChildren.some(child => measureOrgUnitCodes.has(child.organisationUnitCode));
 
     if (measureOrgUnitCodes.has(organisationUnitCode)) {
-      orgUnitAllMeasureData = allMeasureData.find(
+      orgUnitMultiOverlayMeasureData = multiOverlayMeasureData.find(
         orgUnit => orgUnit.organisationUnitCode === organisationUnitCode,
       );
 
@@ -76,15 +76,15 @@ const parseProps = (
     }
   }
 
-  return { shade, isHidden, hasShadedChildren, orgUnitMeasureData, orgUnitAllMeasureData };
+  return { shade, isHidden, hasShadedChildren, orgUnitMeasureData, orgUnitMultiOverlayMeasureData };
 };
 
 export const InteractivePolygon = React.memo(
   ({
     isChildArea,
     hasMeasureData,
-    allMeasureOptions,
-    allMeasureData,
+    multiOverlaySerieses,
+    multiOverlayMeasureData,
     permanentLabels,
     onChangeOrgUnit,
     area,
@@ -101,8 +101,13 @@ export const InteractivePolygon = React.memo(
       isHidden,
       hasShadedChildren,
       orgUnitMeasureData,
-      orgUnitAllMeasureData,
-    } = parseProps(organisationUnitCode, organisationUnitChildren, measureOrgUnits, allMeasureData);
+      orgUnitMultiOverlayMeasureData,
+    } = parseProps(
+      organisationUnitCode,
+      organisationUnitChildren,
+      measureOrgUnits,
+      multiOverlayMeasureData,
+    );
 
     if (isHidden || !coordinates) return null;
 
@@ -134,8 +139,8 @@ export const InteractivePolygon = React.memo(
           permanent={permanentLabels && isChildArea && !hasMeasureValue}
           sticky={!permanentLabels}
           hasMeasureValue={hasMeasureValue}
-          measureOptions={allMeasureOptions}
-          orgUnitMeasureData={orgUnitAllMeasureData}
+          serieses={multiOverlaySerieses}
+          orgUnitMeasureData={orgUnitMultiOverlayMeasureData}
           orgUnitName={area.name}
         />
       );
@@ -191,9 +196,9 @@ InteractivePolygon.propTypes = {
   isChildArea: PropTypes.bool,
   onChangeOrgUnit: PropTypes.func,
   hasMeasureData: PropTypes.bool,
-  allMeasureOptions: PropTypes.arrayOf(PropTypes.object),
+  multiOverlaySerieses: PropTypes.arrayOf(PropTypes.object),
   measureOrgUnits: PropTypes.arrayOf(PropTypes.object),
-  allMeasureData: PropTypes.arrayOf(PropTypes.object),
+  multiOverlayMeasureData: PropTypes.arrayOf(PropTypes.object),
   organisationUnitChildren: PropTypes.arrayOf(PropTypes.object),
 };
 
@@ -203,8 +208,8 @@ InteractivePolygon.defaultProps = {
   isChildArea: false,
   onChangeOrgUnit: () => {},
   hasMeasureData: false,
-  allMeasureOptions: [],
+  multiOverlaySerieses: [],
   organisationUnitChildren: [],
   measureOrgUnits: [],
-  allMeasureData: [],
+  multiOverlayMeasureData: [],
 };

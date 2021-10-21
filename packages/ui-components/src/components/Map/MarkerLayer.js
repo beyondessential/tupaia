@@ -38,9 +38,9 @@ const processData = (measureData, serieses) => {
 
 export const MarkerLayer = ({
   measureData,
-  allMeasureData,
   serieses,
-  allSerieses,
+  multiOverlayMeasureData,
+  multiOverlaySerieses,
   onChangeOrgUnit,
 }) => {
   if (!measureData || !serieses) return null;
@@ -65,20 +65,20 @@ export const MarkerLayer = ({
             </ShadedPolygon>
           );
         }
-        const allMeasures = {
+        const markerData = {
           ...measure,
-          ...(allMeasureData &&
-            allMeasureData.find(
+          ...(multiOverlayMeasureData &&
+            multiOverlayMeasureData.find(
               ({ organisationUnitCode }) => organisationUnitCode === measure.organisationUnitCode,
             )),
         };
         return (
           <MeasureMarker key={measure.organisationUnitCode} {...measure}>
             <MeasurePopup
-              markerData={allMeasures}
+              markerData={markerData}
               serieses={serieses}
               onOrgUnitClick={onChangeOrgUnit}
-              allSerieses={allSerieses}
+              multiOverlaySerieses={multiOverlaySerieses}
             />
           </MeasureMarker>
         );
@@ -89,21 +89,21 @@ export const MarkerLayer = ({
 
 MarkerLayer.propTypes = {
   measureData: PropTypes.array,
-  allMeasureData: PropTypes.array,
+  multiOverlayMeasureData: PropTypes.array,
   serieses: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     }),
   ),
-  allSerieses: PropTypes.array,
+  multiOverlaySerieses: PropTypes.array,
   onChangeOrgUnit: PropTypes.func,
 };
 
 MarkerLayer.defaultProps = {
   measureData: null,
-  allMeasureData: null,
+  multiOverlayMeasureData: null,
   serieses: null,
-  allSerieses: null,
+  multiOverlaySerieses: null,
   onChangeOrgUnit: null,
 };

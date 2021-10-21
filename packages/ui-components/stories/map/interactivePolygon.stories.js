@@ -11,7 +11,7 @@ import {
   MapContainer,
 } from 'react-leaflet';
 import { InteractivePolygon } from '../../src/components/Map';
-import serieses from './data/interactivePolygonSerieses.json';
+import multiOverlaySerieses from './data/interactivePolygonSerieses.json';
 import area from './data/entityAreaData.json';
 
 const position = {
@@ -57,7 +57,7 @@ const measureOrgUnits = [
   },
 ];
 
-const allMeasureData = [
+const multiOverlayMeasureData = [
   {
     organisationUnitCode: 'SB_Guadalcanal Province',
     'Anopheles found': 2,
@@ -71,8 +71,8 @@ const allMeasureData = [
 
 export const BasicInteractivePolygon = () => (
   <InteractivePolygon
-    allMeasureOptions={serieses}
-    allMeasureData={allMeasureData}
+    multiOverlaySerieses={multiOverlaySerieses}
+    multiOverlayMeasureData={multiOverlayMeasureData}
     measureOrgUnits={measureOrgUnits}
     area={area}
     hasMeasureData

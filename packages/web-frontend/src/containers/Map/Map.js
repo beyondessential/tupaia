@@ -76,7 +76,7 @@ class MapComponent extends Component {
       currentOrganisationUnit,
       displayedChildren,
       mapOverlayCodes,
-      measureOptions,
+      serieses,
       measureData,
       position,
       tileSetUrl,
@@ -106,7 +106,7 @@ class MapComponent extends Component {
 
     if (JSON.stringify(nextProps.position) !== JSON.stringify(position)) return true;
 
-    if (JSON.stringify(nextProps.measureOptions) !== JSON.stringify(measureOptions)) return true;
+    if (JSON.stringify(nextProps.serieses) !== JSON.stringify(serieses)) return true;
 
     if (JSON.stringify(nextProps.measureData) !== JSON.stringify(measureData)) return true;
 
@@ -150,9 +150,9 @@ class MapComponent extends Component {
       getChildren,
       measureData,
       onChangeOrgUnit,
-      measureOptions,
-      allMeasureData,
-      allMeasureOptions,
+      serieses,
+      multiOverlayMeasureData,
+      multiOverlaySerieses,
       position,
       shouldSnapToPosition,
       sidePanelWidth,
@@ -169,8 +169,8 @@ class MapComponent extends Component {
     const basicPropsForInteractivePolygon = {
       hasMeasureData,
       measureOrgUnits,
-      allMeasureOptions,
-      allMeasureData,
+      multiOverlaySerieses,
+      multiOverlayMeasureData,
       onChangeOrgUnit,
       permanentLabels,
     };
@@ -215,10 +215,10 @@ class MapComponent extends Component {
         ))}
         <MarkerLayer
           measureData={processedData}
-          serieses={measureOptions || null}
+          serieses={serieses || null}
           onChangeOrgUnit={onChangeOrgUnit}
-          allMeasureData={allMeasureData}
-          allSerieses={allMeasureOptions}
+          multiOverlayMeasureData={multiOverlayMeasureData}
+          multiOverlaySerieses={multiOverlaySerieses}
         />
         <DisasterLayer />
       </StyledMap>
@@ -237,9 +237,9 @@ MapComponent.propTypes = {
   measureData: PropTypes.array,
   measureOrgUnits: PropTypes.array,
   mapOverlayCodes: PropTypes.array.isRequired,
-  measureOptions: PropTypes.array,
-  allMeasureData: PropTypes.array,
-  allMeasureOptions: PropTypes.array,
+  serieses: PropTypes.array,
+  multiOverlayMeasureData: PropTypes.array,
+  multiOverlaySerieses: PropTypes.array,
   position: PropTypes.shape({
     center: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     bounds: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
@@ -256,9 +256,9 @@ MapComponent.defaultProps = {
   displayedChildren: [],
   measureData: [],
   measureOrgUnits: [],
-  measureOptions: [],
-  allMeasureData: [],
-  allMeasureOptions: [],
+  serieses: [],
+  multiOverlayMeasureData: [],
+  multiOverlaySerieses: [],
   currentParent: null,
   permanentLabels: undefined,
 };
@@ -283,10 +283,10 @@ const mapStateToProps = state => {
   const measureData = selectMeasureDataWithCoordinates(
     selectRenderedMeasuresWithDisplayInfo(state, displayedMapOverlays),
   );
-  const measureOptions = selectMeasureOptions(state, displayedMapOverlays);
+  const serieses = selectMeasureOptions(state, displayedMapOverlays);
   const permanentLabels = selectAreRegionLabelsPermanent(state);
-  const allMeasureData = selectMeasureData(state, mapOverlayCodes);
-  const allMeasureOptions = selectMeasureOptions(state, mapOverlayCodes);
+  const multiOverlayMeasureData = selectMeasureData(state, mapOverlayCodes);
+  const multiOverlaySerieses = selectMeasureOptions(state, mapOverlayCodes);
   // If the org unit's grandchildren are polygons and have a measure, display grandchildren
   // rather than children
   let displayedChildren = currentChildren;
@@ -313,11 +313,11 @@ const mapStateToProps = state => {
     currentParent,
     displayedChildren,
     measureData,
-    measureOptions,
+    serieses,
     mapOverlayCodes,
     measureOrgUnits,
-    allMeasureData,
-    allMeasureOptions,
+    multiOverlayMeasureData,
+    multiOverlaySerieses,
     currentOrganisationUnitSiblings: selectOrgUnitSiblings(
       state,
       currentOrganisationUnit.organisationUnitCode,
