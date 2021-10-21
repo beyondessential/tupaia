@@ -176,24 +176,20 @@ export class Dashboard extends Component {
   }
 
   renderGroupsDropdown() {
-    const { onChangeDashboardGroup, currentDashboardName, dashboards, project } = this.props;
-    const dashboardNames = [];
-
-    // sort group names based on current project
-    dashboards.forEach(({ dashboardName, project: dashboardProject }) => {
-      if (dashboardProject === project) dashboardNames.unshift(dashboardName);
-      else dashboardNames.push(dashboardName);
-    }, []);
+    const { onChangeDashboardGroup, currentDashboardName, dashboardNames } = this.props;
 
     if (dashboardNames.length === 0) {
       return null;
     }
 
+    const currentDashboardIndex = dashboardNames.findIndex(name => name === currentDashboardName);
+
     return (
       <DropDownMenu
-        selectedOption={currentDashboardName}
+        selectedOptionIndex={currentDashboardIndex}
         options={dashboardNames}
         onChange={onChangeDashboardGroup}
+        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
         menuListStyle={DASHBOARD_STYLES.groupsDropDownMenu}
       />
     );
@@ -211,8 +207,7 @@ export class Dashboard extends Component {
   }
 
   render() {
-    const { onDashboardClicked, isLoading, dashboards, currentDashboardName } = this.props;
-    const currentGroupDashboard = dashboards.find(d => d.dashboardName === currentDashboardName);
+    const { onDashboardClicked, isLoading, currentGroupDashboard } = this.props;
 
     return (
       <div
@@ -240,12 +235,11 @@ Dashboard.propTypes = {
   currentDashboardName: PropTypes.string,
   currentOrganisationUnit: PropTypes.object,
   currentOrganisationUnitBounds: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
+  dashboardNames: PropTypes.arrayOf(PropTypes.string).isRequired,
   onDashboardClicked: PropTypes.func.isRequired,
   mapIsAnimating: PropTypes.bool,
   isSidePanelExpanded: PropTypes.bool.isRequired,
   contractedWidth: PropTypes.number,
-  dashboards: PropTypes.array,
-  project: PropTypes.string,
   isLoading: PropTypes.bool,
 };
 
@@ -255,8 +249,6 @@ Dashboard.defaultProps = {
   currentOrganisationUnitBounds: [],
   mapIsAnimating: false,
   contractedWidth: 0,
-  dashboards: [],
-  project: '',
   isLoading: false,
 };
 
@@ -268,24 +260,47 @@ const mapStateToProps = state => {
   const currentOrganisationUnitBounds = selectCurrentOrgUnitBounds(state);
   const currentDashboardName = selectCurrentDashboardName(state);
 
+  const dashboardNames = [];
+  // sort group names based on current project
+  dashboards.forEach(({ dashboardName, project: dashboardProject }) => {
+    if (dashboardProject && dashboardProject === project) {
+      dashboardNames.unshift(dashboardName);
+    } else {
+      dashboardNames.push(dashboardName);
+    }
+  });
+
+  const currentGroupDashboard = dashboards.find(d => d.dashboardName === currentDashboardName);
+
   return {
     currentOrganisationUnit,
     currentOrganisationUnitBounds,
-    dashboards,
+    dashboardNames,
+    currentGroupDashboard,
     currentDashboardName,
     mapIsAnimating: isAnimating,
     isLoading: isLoadingOrganisationUnit,
     isSidePanelExpanded,
     contractedWidth,
-    project,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onChangeDashboardGroup: name => dispatch(setDashboardGroup(name)),
+    onSetDashboardGroup: name => dispatch(setDashboardGroup(name)),
     onDashboardClicked: () => dispatch(closeDropdownOverlays()),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  const { dashboardNames } = stateProps;
+  const { onSetDashboardGroup, ...restOfDispatchProps } = dispatchProps;
+  return {
+    ...stateProps,
+    ...restOfDispatchProps,
+    ...ownProps,
+    onChangeDashboardGroup: index => onSetDashboardGroup(dashboardNames[index]),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(Dashboard);
