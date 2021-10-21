@@ -13,6 +13,8 @@ const TRANSLATIONS = {
   lo,
 };
 
+const hasKey = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
+
 /**
  * Recursive lookup function of the translation value in the translations object
  * @param obj {object}
@@ -27,14 +29,14 @@ const lookupTranslationByKey = (obj, keys) => {
   const [first, ...rest] = keys;
 
   if (rest.length === 0) {
-    if (obj.hasOwnProperty(first)) {
+    if (hasKey(obj, first)) {
       return obj[first];
     }
 
     return null;
   }
 
-  if (obj.hasOwnProperty(first)) {
+  if (hasKey(obj, first)) {
     return lookupTranslationByKey(obj[first], rest);
   }
 
@@ -51,7 +53,7 @@ const lookupTranslationByKey = (obj, keys) => {
 const getTranslation = (locale, t) => {
   const splitT = t.split('.');
 
-  if (TRANSLATIONS.hasOwnProperty(locale)) {
+  if (hasKey(TRANSLATIONS, locale)) {
     const translation = lookupTranslationByKey(TRANSLATIONS[locale], splitT);
 
     if (typeof translation === 'string') {
