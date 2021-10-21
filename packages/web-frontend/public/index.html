@@ -13,8 +13,10 @@
           e:g})}}(window,document,"script","//cdn.raygun.io/raygun4js/raygun.min.js","rg4js");
     </script>
     <script type="text/javascript">
-      rg4js('apiKey', 'NZ1gywaMMHfofleGHW58Hw');
-      rg4js('enableCrashReporting', true);
+      if (['www.tupaia.org', 'tupaia.org', 'mobile.tupaia.org'].indexOf(window.location.hostname) !== -1) {
+        rg4js('apiKey', 'NZ1gywaMMHfofleGHW58Hw');
+        rg4js('enableCrashReporting', true);
+      }
     </script>
     <!-- Open Graph for Facebook link preview -->
     <meta property="og:image" content="https://tupaia.org/images/social-preview.jpeg" />
