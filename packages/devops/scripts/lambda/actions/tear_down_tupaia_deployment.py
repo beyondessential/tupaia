@@ -31,7 +31,7 @@ def tear_down_tupaia_deployment(event):
     instances = find_instances([
       { 'Name': 'tag:Code', 'Values': [server_deployment_code, db_deployment_code] },
       { 'Name': 'tag:Stage', 'Values': [branch] },
-      { 'Name': 'instance-state-name', 'Values': ['running', 'stopped']}
+      { 'Name': 'instance-state-name', 'Values': ['running', 'stopped']} # ignore terminated instances
     ])
 
     if len(instances) == 0:

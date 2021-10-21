@@ -77,7 +77,8 @@ def clone_instance(code, from_stage, to_stage, instance_type):
     print('Creating ' + instance_type + ' clone of ' + code + ' (' + from_stage + ') for branch ' + to_stage)
     base_instance_filters = [
         { 'Name': 'tag:Code', 'Values': [code] },
-        { 'Name': 'tag:Stage', 'Values': [from_stage] }
+        { 'Name': 'tag:Stage', 'Values': [from_stage] },
+        { 'Name': 'instance-state-name', 'Values': ['running', 'stopped']} # ignore terminated instances
     ]
     base_instance = get_instances(base_instance_filters)[0]
 

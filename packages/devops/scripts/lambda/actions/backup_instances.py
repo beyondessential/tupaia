@@ -21,12 +21,15 @@ ec = boto3.client('ec2')
 
 def backup_instances(event):
 
+    # ignore terminated instances
+    filters = [{ 'Name': 'instance-state-name', 'Values': ['running', 'stopped'] }]
+
     if 'InstanceName' in event:
         print('Only backing up ' + event['InstanceName'])
-        filters = [{'Name': 'tag:Name', 'Values': [event['InstanceName']]}]
+        filters.append({'Name': 'tag:Name', 'Values': [event['InstanceName']]})
     else:
         print('Backing up all instances tagged "Backup')
-        filters = [{'Name': 'tag-key', 'Values': ['backup', 'Backup']}]
+        filters.append({'Name': 'tag-key', 'Values': ['backup', 'Backup']})
 
     reservations = ec.describe_instances(
         Filters=filters

@@ -49,7 +49,7 @@ def redeploy_tupaia_server(event):
     existing_instance = get_instances([
         { 'Name': 'tag:Code', 'Values': [server_deployment_code] },
         { 'Name': 'tag:Stage', 'Values': [branch] },
-        { 'Name': 'instance-state-name', 'Values': ['running', 'stopped'] }
+        { 'Name': 'instance-state-name', 'Values': ['running', 'stopped'] } # ignore terminated instances
     ])[0]
 
     if not existing_instance:
