@@ -5,16 +5,29 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { Route } from '@tupaia/server-boilerplate';
+import { TranslatableRoute } from '@tupaia/server-boilerplate';
 import { EntityConnection } from '../connections';
 
-export class EntitiesRoute extends Route {
+export class EntitiesRoute extends TranslatableRoute {
   private readonly entityConnection: EntityConnection;
 
   constructor(req: Request, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.entityConnection = new EntityConnection(req.session);
+    this.translationSchema = {
+      domain: 'entities',
+      layout:{
+        type: 'array',
+        where: (entry => entry.type !== 'school'), // Schools are always in laotian
+        items: {
+          type: 'object',
+          properties: {
+            name: { type: 'string' }
+          }
+        }
+      }
+    }
   }
 
   async buildResponse() {
