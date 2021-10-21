@@ -3,11 +3,10 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import PropTypes from 'prop-types';
 import { useUrlParams } from '../utils';
 import { translations } from '../constants/translations';
 import { DEFAULT_LOCALE } from '../constants';
-
-const MISSING_TEXT = 'Translation could not be found';
 
 const hasKey = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
 
@@ -36,17 +35,17 @@ const dig = (obj, keys) => {
 const getTranslation = (locale, t) => {
   const splitT = t.split('.');
 
-  if (hasKey(translations, locale)) {
+  if (translations.hasOwnProperty(locale)) {
     const translation = dig(translations[locale], splitT);
 
-    if (translation !== null) {
+    if (typeof translation === 'string') {
       return translation;
     }
   }
 
   const defaultTranslation = dig(translations[DEFAULT_LOCALE], splitT);
 
-  if (defaultTranslation !== null) {
+  if (typeof defaultTranslation === 'string') {
     return defaultTranslation;
   }
 
@@ -61,9 +60,18 @@ export const I18n = ({ t, children }) => {
     return translation;
   }
 
-  if (children !== undefined) {
+  if (children) {
     return children;
   }
 
-  return MISSING_TEXT;
+  return null;
+};
+
+I18n.propTypes = {
+  t: PropTypes.string,
+  children: PropTypes.node,
+};
+
+I18n.defaultProps = {
+  missingText: null,
 };
