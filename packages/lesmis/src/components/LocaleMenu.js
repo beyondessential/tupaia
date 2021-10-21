@@ -103,7 +103,7 @@ export const LocaleMenu = () => {
     setAnchorEl(null);
     queryClient.clear();
 
-    window.localStorage.setItem('lesmis-locale', code);
+    window.localStorage.setItem('lesmis-locale', newLocale);
   };
 
   const handleClick = event => {
