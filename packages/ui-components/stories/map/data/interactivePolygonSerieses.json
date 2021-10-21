@@ -1,0 +1,87 @@
+[
+  {
+    "measureLevel": "District",
+    "linked_measures": null,
+    "report_code": "PMOS_Distribution_Of_Anopheles_District_map",
+    "data_builder": "useReportServer",
+    "name": "Distribution of Anopheles (district)",
+    "type": "shading",
+    "key": "PMOS_Distribution_Of_Anopheles_District",
+    "hideFromMenu": false,
+    "hideFromLegend": false,
+    "hideFromPopup": true,
+    "legacy": true,
+    "values": [
+      { "name": "Detected", "color": "Red", "value": "Detected" },
+      { "name": "Not Detected", "color": "Blue", "value": "Not Detected" },
+      { "name": "No data", "color": "Grey", "value": "null" }
+    ],
+    "valueMapping": {}
+  },
+  {
+    "type": "popup-only",
+    "measureLevel": "District",
+    "key": "Anopheles found",
+    "name": "Anopheles found",
+    "values": [],
+    "valueMapping": { "null": { "name": "No data", "value": "null" } }
+  },
+  {
+    "measureLevel": "District",
+    "linked_measures": null,
+    "report_code": "PacMosssi_Mosquito_Species_District_map",
+    "data_builder": "useReportServer",
+    "name": "Mosquito species",
+    "type": "shading",
+    "key": "PacMosssi_Mosquito_Species_District",
+    "hideFromMenu": false,
+    "hideFromLegend": false,
+    "hideFromPopup": true,
+    "legacy": true,
+    "values": [
+      { "name": "Mosquito species", "color": "blue", "value": "exists", "hideFromLegend": false },
+      { "color": "transparent", "value": null, "hideFromLegend": true }
+    ],
+    "valueMapping": {}
+  },
+  {
+    "type": "popup-only",
+    "values": [{ "value": null, "hideFromPopup": true, "color": "#005AC8" }],
+    "measureLevel": "District",
+    "key": "An. farauti",
+    "name": "An. farauti",
+    "valueMapping": {}
+  },
+  {
+    "type": "popup-only",
+    "values": [{ "value": null, "hideFromPopup": true, "color": "#005AC8" }],
+    "measureLevel": "District",
+    "key": "An. koliensis",
+    "name": "An. koliensis",
+    "valueMapping": {}
+  },
+  {
+    "type": "popup-only",
+    "values": [{ "value": null, "hideFromPopup": true, "color": "#005AC8" }],
+    "measureLevel": "District",
+    "key": "Ae. aegypti",
+    "name": "Ae. aegypti",
+    "valueMapping": {}
+  },
+  {
+    "type": "popup-only",
+    "values": [{ "value": null, "hideFromPopup": true, "color": "#005AC8" }],
+    "measureLevel": "District",
+    "key": "Ae. albopictus",
+    "name": "Ae. albopictus",
+    "valueMapping": {}
+  },
+  {
+    "type": "popup-only",
+    "values": [{ "value": null, "hideFromPopup": true, "color": "#005AC8" }],
+    "measureLevel": "District",
+    "key": "Ae. cooki",
+    "name": "Ae. cooki",
+    "valueMapping": {}
+  }
+]

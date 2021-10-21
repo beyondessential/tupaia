@@ -28,15 +28,15 @@ PopupDataItem.propTypes = {
   measureName: PropTypes.string.isRequired,
 };
 
-export const PopupDataItemList = ({ measureOptions, data, showNoDataLabel }) => {
+export const PopupDataItemList = ({ serieses, data, showNoDataLabel }) => {
   const popupList = data
-    ? measureOptions
-        .filter(measureOption => !measureOption.hideFromPopup)
+    ? serieses
+        .filter(series => !series.hideFromPopup)
         .sort((measure1, measure2) => measure1.sortOrder - measure2.sortOrder)
-        .map(measureOption => {
-          const { key, name, organisationUnit, ...otherConfigs } = measureOption;
+        .map(series => {
+          const { key, name, organisationUnit, ...otherConfigs } = series;
           const metadata = getMetadata(data, key);
-          const { formattedValue, valueInfo } = getFormattedInfo(data, measureOption, {
+          const { formattedValue, valueInfo } = getFormattedInfo(data, series, {
             key,
             metadata,
             ...otherConfigs,
@@ -48,7 +48,7 @@ export const PopupDataItemList = ({ measureOptions, data, showNoDataLabel }) => 
         .filter(popupItem => popupItem !== null)
     : [];
 
-  const { name, key } = measureOptions[0];
+  const { name, key } = serieses[0];
 
   return popupList.length === 0 && showNoDataLabel
     ? [<PopupDataItem key={name || key} measureName={name || key} value="No Data" />]
@@ -57,7 +57,7 @@ export const PopupDataItemList = ({ measureOptions, data, showNoDataLabel }) => 
 
 PopupDataItemList.propTypes = {
   data: PropTypes.object.isRequired,
-  measureOptions: PropTypes.arrayOf(
+  serieses: PropTypes.arrayOf(
     PropTypes.shape({
       key: PropTypes.string.isRequired,
       name: PropTypes.string,

@@ -61,7 +61,7 @@ export const selectMeasureOptions = createSelector(
   },
 );
 
-const selectMeasureData = createSelector(
+export const selectMeasureData = createSelector(
   [state => state.map.measureInfo, (_, mapOverlayCodes) => mapOverlayCodes],
   (measureInfo, mapOverlayCodes) => {
     if (!measureInfo || mapOverlayCodes.length === 0) {
