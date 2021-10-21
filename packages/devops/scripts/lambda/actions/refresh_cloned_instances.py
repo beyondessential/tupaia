@@ -50,11 +50,12 @@ def refresh_cloned_instances(event):
       print('No clones to refresh')
       return
 
-    stop_tasks = sum(
-    [
-        [asyncio.ensure_future(stop_instance(instance)) for instance in instances]
-    ], [])
-    loop.run_until_complete(asyncio.wait(stop_tasks))
+    if len(running_instances) > 0:
+      stop_tasks = sum(
+      [
+          [asyncio.ensure_future(stop_instance(instance)) for instance in running_instances]
+      ], [])
+      loop.run_until_complete(asyncio.wait(stop_tasks))
 
     clone_tasks = sum(
     [
@@ -62,10 +63,11 @@ def refresh_cloned_instances(event):
     ], [])
     loop.run_until_complete(asyncio.wait(clone_tasks))
 
-    start_tasks = sum(
-    [
-        [asyncio.ensure_future(start_instance(instance)) for instance in instances]
-    ], [])
-    loop.run_until_complete(asyncio.wait(start_tasks))
+    if len(running_instances) > 0:
+      start_tasks = sum(
+      [
+          [asyncio.ensure_future(start_instance(instance)) for instance in running_instances]
+      ], [])
+      loop.run_until_complete(asyncio.wait(start_tasks))
 
     print('Finished refreshing all clones')
