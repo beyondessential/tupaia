@@ -18,9 +18,9 @@ LASTPASS_PASSWORD=$($DIR/fetchParameterStoreValue.sh LASTPASS_PASSWORD)
 LASTPASS_EMAIL=$LASTPASS_EMAIL LASTPASS_PASSWORD=$LASTPASS_PASSWORD yarn download-env-vars $BRANCH
 
 # Build each front end package
-front_end_build_batch_size=3 # max 3 concurrent builds to avoid running out of memory
+declare -i front_end_build_batch_size=3 # max 3 concurrent builds to avoid running out of memory
+declare -i front_end_build_index=0
 front_end_build_pids=()
-front_end_build_index=0
 for PACKAGE in ${PACKAGES[@]}; do
     if [[ $PACKAGE != *server ]]; then
         # It's a front end package, build it in the background
@@ -48,7 +48,7 @@ for PACKAGE in ${PACKAGES[@]}; do
 
     # If we've already started a few builds, wait for those to finish before moving on, lest we start
     # too many and run out of memory
-    if (( front_end_build_index > front_end_build_batch_size - 1 ))
+    if (( front_end_build_index > front_end_build_batch_size - 1 )); then
         for pid in ${front_end_build_pids[*]}; do
             wait $pid
         done
