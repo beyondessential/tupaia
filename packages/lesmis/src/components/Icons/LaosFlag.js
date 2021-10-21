@@ -5,7 +5,7 @@
  */
 import React from 'react';
 
-export const Laos = () => (
+export const LaosFlag = () => (
   <svg
     className="place-icon"
     width="45"

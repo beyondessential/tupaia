@@ -32,7 +32,7 @@ const Footer = styled(FlexEnd)`
 export const DashboardReport = React.memo(
   ({ name, reportCode, startDate, endDate, isEnlarged, isExporting }) => {
     const { search } = useLocation();
-    const { entityCode } = useUrlParams();
+    const { locale, entityCode } = useUrlParams();
 
     const { data, isLoading, isFetching, isError, error } = useDashboardReportDataWithConfig({
       entityCode,
@@ -44,7 +44,7 @@ export const DashboardReport = React.memo(
     const { reportData, dashboardItemConfig: config, reportCodes } = data;
     const Visual = config?.type === 'list' ? ListVisual : Chart;
     const Wrapper = isEnlarged ? React.Fragment : Container;
-    const drillDownPathname = `/${entityCode}/dashboard`;
+    const drillDownPathname = `/${locale}/${entityCode}/dashboard`;
 
     return (
       <Wrapper>

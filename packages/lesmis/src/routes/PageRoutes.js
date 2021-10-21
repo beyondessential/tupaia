@@ -4,7 +4,7 @@
  *
  */
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import { NavBar, Footer } from '../components';
 import { LesmisAdminRoute } from './LesmisAdminRoute';
 import { HomeView } from '../views/HomeView';
@@ -20,60 +20,64 @@ import { ABOUT_PAGE, FQS_PAGE, CONTACT_PAGE } from '../constants';
 
 /**
  * Main Page Routes
- * eg. /en/TO/dashboard
+ * eg. /en/LA/dashboard
  */
-export const PageRoutes = React.memo(() => (
-  <Switch>
-    <Route exact path="/">
-      <NavBar />
-      <HomeView />
-    </Route>
-    <Route path="/login">
-      <LoginView />
-    </Route>
-    <Route path="/register">
-      <RegisterView />
-    </Route>
-    <Route path="/profile">
-      <NavBar />
-      <ProfileView />
-      <Footer />
-    </Route>
-    <Route path="/users-and-permissions">
-      <NavBar />
-      <LesmisAdminRoute path="*">
-        <UsersView />
-      </LesmisAdminRoute>
-      <Footer />
-    </Route>
-    <Route path="/about">
-      <NavBar />
-      <PageView content={ABOUT_PAGE} />
-      <Footer />
-    </Route>
-    <Route path="/fundamental-quality-standards">
-      <NavBar />
-      <TwoColumnPageView content={FQS_PAGE} />
-      <Footer />
-    </Route>
-    <Route path="/contact">
-      <NavBar />
-      <PageView content={CONTACT_PAGE} />
-      <Footer />
-    </Route>
-    <Route path="/page-not-found">
-      <NavBar />
-      <NotFoundView />
-      <Footer />
-    </Route>
-    <Route path="/not-authorised">
-      <NavBar />
-      <NotAuthorisedView />
-      <Footer />
-    </Route>
-    <Route path="/:entityCode/:view?">
-      <NavBar />
-      <EntityView />
-    </Route>
-  </Switch>
-));
+export const PageRoutes = React.memo(() => {
+  const { path } = useRouteMatch();
+
+  return (
+    <Switch>
+      <Route exact path={`${path}/`}>
+        <NavBar />
+        <HomeView />
+      </Route>
+      <Route path={`${path}/login`}>
+        <LoginView />
+      </Route>
+      <Route path={`${path}/register`}>
+        <RegisterView />
+      </Route>
+      <Route path={`${path}/profile`}>
+        <NavBar />
+        <ProfileView />
+        <Footer />
+      </Route>
+      <Route path={`${path}/users-and-permissions`}>
+        <NavBar />
+        <LesmisAdminRoute path="*">
+          <UsersView />
+        </LesmisAdminRoute>
+        <Footer />
+      </Route>
+      <Route path={`${path}/about`}>
+        <NavBar />
+        <PageView content={ABOUT_PAGE} />
+        <Footer />
+      </Route>
+      <Route path={`${path}/fundamental-quality-standards`}>
+        <NavBar />
+        <TwoColumnPageView content={FQS_PAGE} />
+        <Footer />
+      </Route>
+      <Route path={`${path}/contact`}>
+        <NavBar />
+        <PageView content={CONTACT_PAGE} />
+        <Footer />
+      </Route>
+      <Route path={`${path}/page-not-found`}>
+        <NavBar />
+        <NotFoundView />
+        <Footer />
+      </Route>
+      <Route path={`${path}/not-authorised`}>
+        <NavBar />
+        <NotAuthorisedView />
+        <Footer />
+      </Route>
+      <Route path={`${path}/:entityCode/:view?`}>
+        <NavBar />
+        <EntityView />
+      </Route>
+    </Switch>
+  );
+});

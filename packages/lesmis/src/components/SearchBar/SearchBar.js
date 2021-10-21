@@ -28,7 +28,7 @@ const SearchContainer = styled.div`
 
 const SearchBox = styled(MuiPaper)`
   display: flex;
-  alignitems: center;
+  align-items: center;
   border-radius: 2.6rem;
   height: 2.8rem;
 `;
@@ -38,12 +38,11 @@ const Input = styled(InputBase)`
 `;
 
 const SearchIcon = styled(MuiSearchIcon)`
-  margin: 0.75rem 0.375rem 0 0.5rem;
+  margin: 0 0.375rem 0 0.5rem;
   font-size: 1.3rem;
 `;
 
 const ClearButton = styled(MuiIconButton)`
-  margin: 1px 0 0 0;
   padding: 0.5rem;
 
   &:hover {
@@ -58,7 +57,6 @@ const ClearButton = styled(MuiIconButton)`
 
 const Divider = styled(MuiDivider)`
   height: 1.125rem;
-  margin-top: 0.875rem;
   background: ${props => props.theme.palette.text.tertiary};
 `;
 

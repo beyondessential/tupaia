@@ -14,6 +14,7 @@ import MuiContainer from '@material-ui/core/Container';
 import { PageHeader } from '../components';
 import * as COLORS from '../constants';
 import { contentPageTheme } from '../theme';
+import { useUrlParams } from '../utils';
 
 const Container = styled(MuiContainer)`
   max-width: 48rem;
@@ -29,9 +30,11 @@ const TemplateBody = styled.section`
 
 export const PageView = ({ content }) => {
   const { title, body, url } = content;
+  const { locale } = useUrlParams();
+  const link = `/${locale}/${url}`;
   return (
     <>
-      <PageHeader title={title} breadcrumbs={[{ name: title, url }]} center />
+      <PageHeader title={title} breadcrumbs={[{ name: title, url: link }]} center />
       <MuiThemeProvider theme={contentPageTheme}>
         <TemplateBody>
           <Container>{body}</Container>

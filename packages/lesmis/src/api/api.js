@@ -6,11 +6,9 @@
 import axios from 'axios';
 import FetchError from './fetchError';
 
-const timeout = 45 * 1000; // 45 seconds
-
 const getApiUrl = () => {
   // if no env var, use sensible defaults based on the front end url
-  const { hostname } = window.location; // eslint-disable-line no-undef
+  const { hostname } = window.location;
 
   // localhost becomes http://localhost:8060
   if (hostname === 'localhost') {
@@ -38,6 +36,20 @@ const getApiUrl = () => {
 // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
 axios.defaults.withCredentials = true;
 
+const timeout = 45 * 1000; // 45 seconds
+
+const getRequestOptions = options => {
+  const locale = window.location.pathname.split('/')[1];
+  return {
+    ...options,
+    timeout,
+    params: {
+      ...options.params,
+      locale,
+    },
+  };
+};
+
 /**
  * Abstraction for making api requests
  * @see: https://github.com/axios/axios for docs on options
@@ -47,11 +59,10 @@ axios.defaults.withCredentials = true;
  * @returns {AxiosPromise}
  */
 const request = async (endpoint, options) => {
+  const requestOptions = getRequestOptions(options);
+
   try {
-    const response = await axios(`${getApiUrl()}/v1/${endpoint}`, {
-      timeout,
-      ...options,
-    });
+    const response = await axios(`${getApiUrl()}/v1/${endpoint}`, requestOptions);
     return response.data;
   } catch (error) {
     // normalise errors using fetch error class

@@ -12,6 +12,7 @@ import { NotAuthorised as NotAuthorisedIcon } from '../components/Icons/NotAutho
 import { PageHeader } from '../components';
 import * as COLORS from '../constants';
 import { useUser } from '../api/queries';
+import { useUrlParams } from '../utils';
 
 const Section = styled.section`
   background: ${COLORS.GREY_F9};
@@ -33,6 +34,7 @@ const Text = styled(Typography)`
 
 export const NotAuthorisedView = () => {
   const history = useHistory();
+  const { locale } = useUrlParams();
   const { isLoading, isLoggedIn } = useUser();
 
   return (
@@ -55,7 +57,7 @@ export const NotAuthorisedView = () => {
           <Button
             component={RouterLink}
             to={{
-              pathname: '/login',
+              pathname: `${locale}/login`,
               state: { referer: history.location },
             }}
           >
