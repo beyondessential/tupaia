@@ -91,7 +91,11 @@ def clone_instance(code, from_stage, to_stage, instance_type):
     if subdomains_via_gateway_string != '':
         subdomains_via_gateway = subdomains_via_gateway_string.split(',')
 
-    new_instance = create_instance(code, instance_type, to_stage, iam_role_arn=base_instance['IamInstanceProfile']['Arn'], base_instance=base_instance, subdomains_via_dns=subdomains_via_dns, subdomains_via_gateway=subdomains_via_gateway)
+    iam_role_arn = None
+    if 'IamInstanceProfile' in base_instance:
+        iam_role_arn = base_instance['IamInstanceProfile']['Arn']
+
+    new_instance = create_instance(code, instance_type, to_stage, iam_role_arn=iam_role_arn, base_instance=base_instance, subdomains_via_dns=subdomains_via_dns, subdomains_via_gateway=subdomains_via_gateway)
     loop.run_until_complete(stop_instance(new_instance))
     loop.run_until_complete(clone_volume_into_instance(new_instance, code, from_stage=from_stage))
     loop.run_until_complete(start_instance(new_instance))
