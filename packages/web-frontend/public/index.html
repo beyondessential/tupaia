@@ -56,6 +56,17 @@
     <script type="text/javascript">
       rg4js('apiKey', 'NZ1gywaMMHfofleGHW58Hw');
       rg4js('enableCrashReporting', true);
+      var lastSeenErrorMsg = null;
+      rg4js('onBeforeSend', function (payload) {
+        // RN-46
+        if (payload.Details && payload.Details.Error) {
+          if (payload.Details.Error.Message === lastSeenErrorMsg) {
+            return false;
+          }
+          lastSeenErrorMsg = payload.Details.Error.Message;
+        }
+        return payload;
+      });
     </script>
     <% } %>
 
