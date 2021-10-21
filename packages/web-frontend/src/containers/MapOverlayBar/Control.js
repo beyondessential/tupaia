@@ -81,7 +81,7 @@ export const Control = ({
   onUpdateMeasurePeriod,
   children,
   maxSelectedOverlays,
-  setMaxSelectedOverlays,
+  changeMaxSelectedOverlays,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const isMeasureSelected = selectedMapOverlays.length > 0;
@@ -92,10 +92,6 @@ export const Control = ({
       setIsExpanded(true);
     }
   }, [isExpanded, setIsExpanded]);
-
-  const onChange = selectedIndex => {
-    setMaxSelectedOverlays(selectedIndex + 1);
-  };
 
   const options = [];
   for (let i = 1; i <= MAX_MAP_OVERLAYS; i++) {
@@ -113,7 +109,7 @@ export const Control = ({
             selectedOptionIndex={maxSelectedOverlays - 1}
             options={options}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            onChange={onChange}
+            onChange={changeMaxSelectedOverlays}
             StyledPrimaryComponent={StyledPrimaryComponent}
             StyledOptionComponent={StyledOptionComponent}
             disableGutters
@@ -170,8 +166,8 @@ Control.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
   isMeasureLoading: PropTypes.bool,
   onUpdateMeasurePeriod: PropTypes.func.isRequired,
-  setMaxSelectedOverlays: PropTypes.func.isRequired,
   maxSelectedOverlays: PropTypes.number.isRequired,
+  changeMaxSelectedOverlays: PropTypes.func.isRequired,
 };
 
 Control.defaultProps = {

@@ -163,6 +163,14 @@ const MapOverlayBarComponent = ({
   const orgName = currentOrganisationUnitName || 'Your current selection';
   const emptyMessage = `Select an area with valid data. ${orgName} has no map overlays available.`;
 
+  const changeMaxSelectedOverlays = selectedIndex => {
+    const selectedMaxOverlays = selectedIndex + 1;
+    setMaxSelectedOverlays(selectedMaxOverlays);
+    if (selectedMaxOverlays < currentMapOverlayCodes.length) {
+      onSetMapOverlay(currentMapOverlayCodes.slice(0, selectedMaxOverlays));
+    }
+  };
+
   return (
     <Control
       emptyMessage={emptyMessage}
@@ -170,7 +178,7 @@ const MapOverlayBarComponent = ({
       isMeasureLoading={isMeasureLoading}
       onUpdateMeasurePeriod={onUpdateMeasurePeriod}
       maxSelectedOverlays={maxSelectedOverlays}
-      setMaxSelectedOverlays={setMaxSelectedOverlays}
+      changeMaxSelectedOverlays={changeMaxSelectedOverlays}
     >
       {renderHierarchy()}
     </Control>
