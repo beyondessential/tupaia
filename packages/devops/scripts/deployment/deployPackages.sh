@@ -57,10 +57,12 @@ for PACKAGE in ${PACKAGES[@]}; do
     fi
 done
 
-# Wait for all front end builds to complete
-for pid in ${front_end_build_pids[*]}; do
-    wait $pid
-done
+# If there are any front end builds active, wait for them to complete
+if (( front_end_build_index > 0 )); then
+    for pid in ${front_end_build_pids[*]}; do
+        wait $pid
+    done
+fi
 
 # Build and start back end server packages
 for PACKAGE in ${PACKAGES[@]}; do
