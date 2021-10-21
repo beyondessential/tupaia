@@ -1,13 +1,22 @@
+/**
+ * Tupaia Web
+ * Copyright (c) 2021 Beyond Essential Systems Pty Ltd.
+ * This source code is licensed under the AGPL-3.0 license
+ * found in the LICENSE file in the root directory of this source tree.
+ */
+
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import LayersIcon from '@material-ui/icons/Layers';
-import Fade from '@material-ui/core/Fade';
+import { Fade, Typography } from '@material-ui/core';
 import LastUpdated from './LastUpdated';
 import { CONTROL_BAR_WIDTH, TUPAIA_ORANGE } from '../../styles';
 import { Content, EmptyContentText, ExpandedContent } from './Content';
 import { MapTableModal } from '../MapTableModal';
 import { TitleAndDatePicker } from './TitleAndDatePicker';
+import { DropDownMenu } from '../../components/DropDownMenu';
+import { MAX_MAP_OVERLAYS } from './constant';
 
 const Container = styled.div`
   width: ${CONTROL_BAR_WIDTH}px;
@@ -20,16 +29,13 @@ const Container = styled.div`
 
 const Header = styled.div`
   display: flex;
-  font-weight: 500;
   pointer-events: auto;
   background: ${TUPAIA_ORANGE};
   color: #ffffff;
-  text-transform: uppercase;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   padding: 2px 15px 0;
   height: 40px;
-  font-size: 0.75rem;
   align-items: center;
 
   .MuiSvgIcon-root {
@@ -47,12 +53,30 @@ const SubHeader = styled.div`
   margin-bottom: 10px;
 `;
 
+const StyledPrimaryComponent = styled(Typography)`
+  margin: 0 0 0 0;
+  padding: 0px 0px 0px 0px;
+  font-size: 0.75rem;
+  color: #ffffff;
+  font-weight: 500;
+`;
+
+const StyledOptionComponent = styled(Typography)`
+  margin: -0.1rem 0;
+  padding: 0px 0px 0px 0px;
+  font-size: 0.75rem;
+  color: #ffffff;
+  font-weight: 500;
+`;
+
 export const Control = ({
   emptyMessage,
   selectedMapOverlays,
   isMeasureLoading,
   onUpdateMeasurePeriod,
   children,
+  maxSelectedOverlays,
+  setMaxSelectedOverlays,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const isMeasureSelected = selectedMapOverlays.length > 0;
@@ -64,11 +88,30 @@ export const Control = ({
     }
   }, [isExpanded, setIsExpanded]);
 
+  const onChange = selectedIndex => {
+    setMaxSelectedOverlays(selectedIndex + 1);
+  };
+
+  const options = [];
+  for (let i = 1; i <= MAX_MAP_OVERLAYS; i++) {
+    const newOption = `${i} map overlay${i > 1 ? 's' : ''}`;
+    options.push(newOption);
+  }
+
   return (
     <Container>
       <Header>
         <LayersIcon />
-        Map overlays
+        <DropDownMenu
+          title="MAP OVERLAYS"
+          selectedOptionIndex={maxSelectedOverlays - 1}
+          options={options}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          onChange={onChange}
+          StyledPrimaryComponent={StyledPrimaryComponent}
+          StyledOptionComponent={StyledOptionComponent}
+          disableGutters
+        />
         <MapTableModal />
       </Header>
       {isMeasureSelected ? (
@@ -120,6 +163,8 @@ Control.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
   isMeasureLoading: PropTypes.bool,
   onUpdateMeasurePeriod: PropTypes.func.isRequired,
+  setMaxSelectedOverlays: PropTypes.func.isRequired,
+  maxSelectedOverlays: PropTypes.number.isRequired,
 };
 
 Control.defaultProps = {
