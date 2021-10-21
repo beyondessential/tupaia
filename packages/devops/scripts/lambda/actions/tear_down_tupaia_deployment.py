@@ -19,7 +19,7 @@
 # }
 
 from helpers.teardown import teardown_instance
-from helpers.utilities import get_instances, get_tag
+from helpers.utilities import find_instances, get_tag
 
 def tear_down_tupaia_deployment(event):
     if 'Branch' not in event:
@@ -28,13 +28,15 @@ def tear_down_tupaia_deployment(event):
     server_deployment_code = event.get('ServerDeploymentCode', 'tupaia-server') # default to "tupaia-server"
     db_deployment_code = event.get('DbDeploymentCode', 'tupaia-db') # default to "tupaia-db"
 
-    instances = get_instances([
+    instances = find_instances([
       { 'Name': 'tag:Code', 'Values': [server_deployment_code, db_deployment_code] },
       { 'Name': 'tag:Stage', 'Values': [branch] }
     ])
 
     if len(instances) == 0:
       raise Exception('No matching instances found')
+
+    print('Tearing down the instances ' + ', '.join([get_tag(instance, 'Name') for instance in instances]))
 
     for instance in instances:
       teardown_instance(instance)

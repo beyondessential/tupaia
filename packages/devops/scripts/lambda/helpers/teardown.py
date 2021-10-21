@@ -1,7 +1,7 @@
 import boto3
 
 from helpers.networking import delete_gateway, build_record_set_deletion, get_gateway_elb
-from helpers.utilities import get_instances, get_tag
+from helpers.utilities import get_tag
 
 ec = boto3.client('ec2')
 route53 = boto3.client('route53')
