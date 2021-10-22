@@ -11,7 +11,7 @@ def allocate_elastic_ip(instance_id):
     ec.associate_address(AllocationId=elastic_ip['AllocationId'],InstanceId=instance_id)
     return elastic_ip['PublicIp']
 
-def get_instance_creation_config(code, instance_type, stage, iam_role_arn=None, image_id=None, user_data=None, base_instance=None, subdomains_via_dns=None, subdomains_via_gateway=None):
+def get_instance_creation_config(code, instance_type, stage, iam_role_arn=None, image_id=None, user_data=None, base_instance=None, subdomains_via_dns=None, subdomains_via_gateway=None, volume_size=None):
     # Get the security group tagged with the key matching this code
     security_group_filters = [
       {'Name': 'tag-key', 'Values': [code]}
@@ -65,10 +65,20 @@ def get_instance_creation_config(code, instance_type, stage, iam_role_arn=None, 
     if user_data is not None:
         instance_creation_config['UserData'] = user_data
 
+    if volume_size is not None:
+        instance_creation_config['BlockDeviceMappings'] = [
+          {
+            'DeviceName': '/dev/sda1',
+            'Ebs': {
+              'VolumeSize': volume_size
+              }
+          }
+        ]
+
     return instance_creation_config
 
-def create_instance(code, instance_type, stage, iam_role_arn=None, image_id=None, user_data=None, base_instance=None, subdomains_via_dns=None, subdomains_via_gateway=None):
-    instance_creation_config = get_instance_creation_config(code, instance_type, stage, iam_role_arn=iam_role_arn, image_id=image_id, user_data=user_data, base_instance=base_instance, subdomains_via_dns=subdomains_via_dns, subdomains_via_gateway=subdomains_via_gateway)
+def create_instance(code, instance_type, stage, iam_role_arn=None, image_id=None, user_data=None, base_instance=None, subdomains_via_dns=None, subdomains_via_gateway=None, volume_size=None):
+    instance_creation_config = get_instance_creation_config(code, instance_type, stage, iam_role_arn=iam_role_arn, image_id=image_id, user_data=user_data, base_instance=base_instance, subdomains_via_dns=subdomains_via_dns, subdomains_via_gateway=subdomains_via_gateway, volume_size=volume_size)
     new_instances = ec2.create_instances(**instance_creation_config)
     print('Started new instance creation')
 
