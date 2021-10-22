@@ -32,7 +32,6 @@ import {
   selectDefaultMapOverlay,
   selectCurrentMapOverlayCodes,
 } from '../../selectors';
-import { MAX_MAP_OVERLAYS } from './constant';
 
 const MapOverlayBarComponent = ({
   currentMapOverlays,
@@ -49,9 +48,7 @@ const MapOverlayBarComponent = ({
   const [maxSelectedOverlays, setMaxSelectedOverlays] = useState(1);
   useEffect(() => {
     const { length } = currentMapOverlayCodes;
-    if (length > MAX_MAP_OVERLAYS) {
-      setMaxSelectedOverlays(MAX_MAP_OVERLAYS);
-    } else {
+    if (length > maxSelectedOverlays) {
       setMaxSelectedOverlays(length);
     }
   }, [currentMapOverlayCodes]);
