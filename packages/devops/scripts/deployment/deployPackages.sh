@@ -40,49 +40,6 @@ for ((start_index = 0; start_index < ${total_build_commands}; start_index += ${C
     eval "yarn concurrently ${front_end_build_commands[@]:${start_index}:${CONCURRENT_BUILD_BATCH_SIZE}}"
 done
 
-for PACKAGE in ${PACKAGES[@]}; do
-    if [[ $PACKAGE != *server ]]; then
-        # It's a front end package, build it in the background
-        echo "Building ${PACKAGE}"
-        cd ${TUPAIA_DIR}/packages/$PACKAGE
-        if [[ $PACKAGE == "web-frontend" ]]; then
-            # The package web-frontend has a desktop and a mobile version, build both in background
-
-            # Build desktop version
-            REACT_APP_BRANCH=${BRANCH} BUILD_PATH=/build/desktop mkdir -p build/desktop && yarn build-desktop &
-            front_end_build_pids[${i}]=$!
-            front_end_build_index=front_end_build_index+1
-
-            # Build mobile version
-            REACT_APP_BRANCH=${BRANCH} BUILD_PATH=/build/mobile mkdir -p build/mobile && yarn build-mobile &
-            front_end_build_pids[${i}]=$!
-            front_end_build_index=front_end_build_index+1
-        else
-            # Build package in background
-            REACT_APP_BRANCH=${BRANCH} yarn build &
-            front_end_build_pids[${i}]=$!
-            front_end_build_index=front_end_build_index+1
-        fi
-    fi
-
-    # If we've already started a batch worth of builds, wait for those to finish before moving on,
-    # lest we start too many and run out of memory
-    if (( front_end_build_index > front_end_build_batch_size - 1 )); then
-        for pid in ${front_end_build_pids[*]}; do
-            wait $pid
-        done
-        front_end_build_pids=()
-        front_end_build_index=0
-    fi
-done
-
-# If there are any front end builds active, wait for them to complete
-if (( front_end_build_index > 0 )); then
-    for pid in ${front_end_build_pids[*]}; do
-        wait $pid
-    done
-fi
-
 # Build and start back end server packages
 for PACKAGE in ${PACKAGES[@]}; do
     if [[ $PACKAGE == *server ]]; then
