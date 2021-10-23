@@ -7,11 +7,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { JsonEditor as Editor } from 'jsoneditor-react';
+import { JsonEditor as Editor } from '@tupaia/ui-components';
 import ace from 'brace';
 import 'brace/mode/json';
 import 'brace/theme/github';
-import 'jsoneditor-react/es/editor.min.css';
 
 const Container = styled.div`
   display: flex;
