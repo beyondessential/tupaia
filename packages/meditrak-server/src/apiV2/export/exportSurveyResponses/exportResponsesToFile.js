@@ -250,13 +250,6 @@ export async function exportResponsesToFile(
         exportData[exportRow][exportColumn] = answer?.text || '';
       });
 
-    // If there is no data, add a message at the top
-    if (answers.length === 0) {
-      exportData.unshift([
-        `No data for ${survey.name} ${getExportDatesString(startDate, endDate)}`,
-      ]);
-    }
-
     if (easyReadingMode) {
       return addExportedDateAndOriginAtTheSheetBottom(exportData, timeZone);
     }

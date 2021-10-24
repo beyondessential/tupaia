@@ -44,9 +44,6 @@ async function validateResponse(models, userId, body) {
   const surveyQuestions = await findQuestionsInSurvey(models, body.survey_id);
 
   const { answers } = body;
-  if (Object.keys(answers).length === 0) {
-    throw new ValidationError('Each survey response must contain at least one answer');
-  }
 
   const answerValidations = Object.entries(answers).map(async ([questionCode, value]) => {
     if (value === null || value === undefined) {
