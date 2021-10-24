@@ -13,6 +13,7 @@ export * from './Footer';
 export * from './FormBackButton';
 export * from './FullPageLoader';
 export * from './Layout';
+export * from './LocaleMenu';
 export * from './LocationHeader';
 export * from './I18n';
 export * from './MainMenu';

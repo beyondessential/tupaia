@@ -5,6 +5,7 @@
  */
 import React, { useState } from 'react';
 import { useQueryClient } from 'react-query';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { generatePath, useHistory, useLocation } from 'react-router-dom';
 import MuiButton from '@material-ui/core/Button';
@@ -85,7 +86,7 @@ const options = [
   { code: 'lo', label: 'Laotian', Icon: LaosFlagSmall },
 ];
 
-export const LocaleMenu = () => {
+export const LocaleMenu = ({ className }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory();
   const { locale, entityCode, view } = useUrlParams();
@@ -93,7 +94,7 @@ export const LocaleMenu = () => {
   const queryClient = useQueryClient();
 
   const handleChange = (event, newLocale) => {
-    const path = generatePath(`/:locale/:entityCode/:view`, {
+    const path = generatePath(`/:locale/:entityCode?/:view?`, {
       locale: newLocale,
       entityCode,
       view,
@@ -122,6 +123,7 @@ export const LocaleMenu = () => {
         onClick={handleClick}
         startIcon={<LanguageIcon />}
         endIcon={<ArrowDropDownIcon />}
+        className={className}
       >
         <span>{selectedLocale.label}</span>
       </StyledButton>
@@ -158,4 +160,12 @@ export const LocaleMenu = () => {
       </StyledMenu>
     </>
   );
+};
+
+LocaleMenu.propTypes = {
+  className: PropTypes.string,
+};
+
+LocaleMenu.defaultProps = {
+  className: null,
 };

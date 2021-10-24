@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { NAVBAR_HEIGHT } from '../constants';
-import { SearchBar, FlexEnd, FlexStart, I18n } from '../components';
+import { SearchBar, FlexEnd, FlexStart, I18n, LocaleMenu } from '../components';
 import { useProjectEntitiesData } from '../api/queries';
 
 const Wrapper = styled.div`
@@ -30,7 +30,20 @@ const Container = styled(MuiContainer)`
 
   @media screen and (min-width: 600px) {
     padding-left: 50px;
-    padding-right: 50px;
+  }
+`;
+
+const LightLocaleMenu = styled(LocaleMenu)`
+  position: absolute;
+  right: 24px;
+  top: 1rem;
+  padding: 6px 15px;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  z-index: 1;
+
+  .MuiSvgIcon-root {
+    color: rgba(255, 255, 255, 0.9);
   }
 `;
 
@@ -41,7 +54,7 @@ const Main = styled.div`
   left: 0;
 
   @media screen and (max-width: 600px) {
-    padding-top: 3rem;
+    padding-top: 4rem;
   }
 `;
 
@@ -114,6 +127,7 @@ export const HomeView = React.memo(() => {
     // The background image is applied here instead of the styled component as it creates a flicker when added there
     <Wrapper style={{ backgroundImage: "url('/images/home-cover.png')" }}>
       <Container maxWidth="xl">
+        <LightLocaleMenu />
         <Main>
           <Title variant="h1">
             <I18n t="homePage.intro1" />
