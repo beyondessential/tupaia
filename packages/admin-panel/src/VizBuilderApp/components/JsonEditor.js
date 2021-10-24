@@ -5,9 +5,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { JsonEditor as Editor } from '@tupaia/ui-components';
-import ace from 'brace';
-import 'brace/mode/json';
-import 'brace/theme/github';
 
 export const JsonEditor = ({ value, onChange, onInvalidChange }) => {
   return (
@@ -15,8 +12,6 @@ export const JsonEditor = ({ value, onChange, onInvalidChange }) => {
       value={value}
       onChange={onChange}
       onInvalidChange={onInvalidChange}
-      ace={ace}
-      theme="ace/theme/github"
       mode="code"
       mainMenuBar={false}
     />

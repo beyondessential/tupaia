@@ -8,9 +8,6 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { JsonEditor as Editor } from '@tupaia/ui-components';
-import ace from 'brace';
-import 'brace/mode/json';
-import 'brace/theme/github';
 
 const Container = styled.div`
   display: flex;
@@ -57,11 +54,9 @@ export const JsonEditor = ({ inputKey, label, secondaryLabel, value, onChange, s
       <Label gutterBottom>{label}</Label>
       {/* Use json editor plugin. For configuration options @see https://github.com/vankop/jsoneditor-react */}
       <Editor
-        ace={ace}
         mainMenuBar={false}
         statusBar={false}
         mode="code"
-        theme="ace/theme/github"
         onChange={json => onChange(inputKey, stringify ? JSON.stringify(json) : json)}
         value={editorValue}
       />

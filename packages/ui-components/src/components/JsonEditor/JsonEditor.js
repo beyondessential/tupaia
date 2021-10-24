@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import JSONEditor from 'jsoneditor/dist/jsoneditor-minimalist';
 import 'jsoneditor/dist/jsoneditor.css';
+import Ace from 'ace-builds/src-noconflict/ace';
+import 'ace-builds/webpack-resolver';
+import 'ace-builds/src-noconflict/mode-json';
+import 'ace-builds/src-noconflict/theme-github';
 
 /**
  * @typedef {{
@@ -86,7 +90,15 @@ export class JsonEditor extends Component {
   }
 
   componentDidMount() {
-    const { allowedModes, innerRef, htmlElementProps, tag, onChange, ...rest } = this.props;
+    const {
+      allowedModes,
+      innerRef,
+      htmlElementProps,
+      tag,
+      onChange,
+      onInvalidChange,
+      ...rest
+    } = this.props;
 
     this.createEditor({
       ...rest,
@@ -105,6 +117,7 @@ export class JsonEditor extends Component {
     htmlElementProps,
     tag,
     onChange,
+    onInvalidChange,
     ...rest
   }) {
     if (this.jsonEditor) {
@@ -254,9 +267,9 @@ JsonEditor.defaultProps = {
   onInvalidChange: undefined,
   onError: undefined,
   onModeChange: undefined,
-  ace: undefined,
+  ace: Ace,
   ajv: undefined,
-  theme: undefined,
+  theme: 'ace/theme/github',
   history: false,
   navigationBar: true,
   statusBar: true,

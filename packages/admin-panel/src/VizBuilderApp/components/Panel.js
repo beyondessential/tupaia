@@ -84,12 +84,10 @@ export const Panel = () => {
   };
 
   const handleInvalidChange = () => {
-    console.log('isInError', true);
     setIsInError(true);
   };
 
   const setTabValue = (tabName, value) => {
-    console.log('isInError', false);
     setDataConfig(tabName, value);
     setIsInError(false);
   };
