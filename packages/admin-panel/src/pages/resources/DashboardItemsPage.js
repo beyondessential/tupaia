@@ -57,7 +57,7 @@ export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
       editConfig: {
         type: 'link',
         linkOptions: {
-          path: '/viz-builder/:id',
+          path: '/viz-builder/dashboard-item/:id',
           parameters: { id: 'id' },
         },
         visibilityCriteria: {

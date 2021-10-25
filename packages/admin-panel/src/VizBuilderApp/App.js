@@ -40,7 +40,7 @@ export const App = ({ Navbar, Footer }) => {
           <Route path="/viz-builder/new" exact>
             <CreateNew />
           </Route>
-          <Route path="/viz-builder/:visualisationId?">
+          <Route path="/viz-builder/dashboard-item/:visualisationId?">
             <Main />
           </Route>
         </Switch>
