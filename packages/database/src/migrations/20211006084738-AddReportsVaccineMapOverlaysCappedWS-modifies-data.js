@@ -79,20 +79,15 @@ const getReport = (reportCode, dataElements) => {
 
 const PERMISSION_GROUP = 'COVID-19';
 
-const getMapOverlay = (name, reportCode) => ({
-  id: reportCode,
+const getMapOverlay = (name, reportCode, code, mapOverlayId) => ({
+  id: mapOverlayId,
+  code,
+  name,
   report_code: reportCode,
   legacy: false,
-  name,
-  userGroup: PERMISSION_GROUP,
-  dataElementCode: 'value',
-  isDataRegional: true,
-  measureBuilder: 'useReportServer',
-  measureBuilderConfig: {
-    dataSourceType: 'custom',
-    reportCode,
-  },
-  presentationOptions: {
+  permission_group: PERMISSION_GROUP,
+  data_services: [{ isDataRegional: true }],
+  config: {
     scaleType: 'performance',
     valueType: 'percentage',
     displayType: 'shaded-spectrum',
@@ -108,27 +103,31 @@ const getMapOverlay = (name, reportCode) => ({
     },
     measureLevel: reportCode.includes('Sub_District') ? 'SubDistrict' : 'Village',
   },
-  countryCodes: '{"WS"}',
-  projectCodes: '{covid_samoa}',
+  country_codes: '{"WS"}',
+  project_codes: '{covid_samoa}',
 });
 
 const addMapOverlay = async (db, parentCode, config) => {
-  const { reportCode, dataElements, name, sortOrder } = config;
+  const { reportCode, dataElements, code, name, sortOrder } = config;
   const report = getReport(reportCode, dataElements);
-  const mapOverlay = getMapOverlay(name, reportCode);
+  const mapOverlayId = generateId();
+  const mapOverlay = getMapOverlay(name, reportCode, code, mapOverlayId);
+
   const permissionGroupId = await nameToId(db, 'permission_group', PERMISSION_GROUP);
+  const mapOverlayGroupId = await codeToId(db, 'map_overlay_group', parentCode);
+
   await insertObject(db, 'report', {
     id: generateId(),
     permission_group_id: permissionGroupId,
     ...report,
   });
-  await insertObject(db, 'mapOverlay', mapOverlay);
 
-  const mapOverlayGroupId = await codeToId(db, 'map_overlay_group', parentCode);
+  await insertObject(db, 'map_overlay', mapOverlay);
+
   return insertObject(db, 'map_overlay_group_relation', {
     id: generateId(),
     map_overlay_group_id: mapOverlayGroupId,
-    child_id: mapOverlay.id,
+    child_id: mapOverlayId,
     child_type: 'mapOverlay',
     sort_order: sortOrder,
   });
@@ -139,28 +138,32 @@ const MAP_OVERLAYS = [
     parentCode: `COVID19_Samoa`,
     children: [
       {
-        reportCode: 'WS_COVID_TRACKING_Dose_1_Home_Sub_District_Percentage_Capped',
+        reportCode: 'WS_COVID_TRACKING_Dose_1_Home_Sub_District_Percentage_Capped_map',
+        code: 'WS_COVID_TRACKING_Dose_1_Home_Sub_District_Percentage_Capped',
         outdatedOverlayId: 'WS_COVID_TRACKING_Dose_1_Home_Sub_District_Percentage',
         name: '% of Eligible Population Vaccinated COVID-19 Dose 1 (District)',
         dataElements: ['COVIDVac4', 'most_recent_WS_population'],
         sortOrder: 0,
       },
       {
-        reportCode: `WS_COVID_TRACKING_Dose_2_Home_Sub_District_Percentage_Capped`,
+        reportCode: `WS_COVID_TRACKING_Dose_2_Home_Sub_District_Percentage_Capped_map`,
+        code: `WS_COVID_TRACKING_Dose_2_Home_Sub_District_Percentage_Capped`,
         outdatedOverlayId: 'WS_COVID_TRACKING_Dose_2_Home_Sub_District_Percentage',
         name: '% of Eligible Population Vaccinated COVID-19 Dose 2 (District)',
         dataElements: ['COVIDVac8', 'most_recent_WS_population'],
         sortOrder: 2,
       },
       {
-        reportCode: `WS_COVID_TRACKING_Dose_1_Home_Village_Percentage_Capped`,
+        reportCode: `WS_COVID_TRACKING_Dose_1_Home_Village_Percentage_Capped_map`,
+        code: `WS_COVID_TRACKING_Dose_1_Home_Village_Percentage_Capped`,
         outdatedOverlayId: 'WS_COVID_TRACKING_Dose_1_Home_Village_Percentage',
         name: '% of Eligible Population Vaccinated COVID-19 Dose 1 (Village)',
         dataElements: ['COVIDVac4', 'most_recent_WS_population'],
         sortOrder: 1,
       },
       {
-        reportCode: `WS_COVID_TRACKING_Dose_2_Home_Village_Percentage_Capped`,
+        reportCode: `WS_COVID_TRACKING_Dose_2_Home_Village_Percentage_Capped_map`,
+        code: `WS_COVID_TRACKING_Dose_2_Home_Village_Percentage_Capped`,
         outdatedOverlayId: 'WS_COVID_TRACKING_Dose_2_Home_Village_Percentage',
         name: '% of Eligible Population Vaccinated COVID-19 Dose 2 (Village)',
         dataElements: ['COVIDVac8', 'most_recent_WS_population'],
@@ -172,7 +175,7 @@ const MAP_OVERLAYS = [
 
 const removeOutdatedMapOverlay = (db, outdatedOverlayId) => {
   return db.runSql(`
-    DELETE FROM "mapOverlay" WHERE "id" = '${outdatedOverlayId}';
+    DELETE FROM "map_overlay" WHERE "id" = '${outdatedOverlayId}';
     DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${outdatedOverlayId}';
   `);
 };
@@ -180,7 +183,7 @@ const removeOutdatedMapOverlay = (db, outdatedOverlayId) => {
 const removeMapOverlay = (db, reportCode) => {
   return db.runSql(`
     DELETE FROM "report" WHERE code = '${reportCode}';
-    DELETE FROM "mapOverlay" WHERE "id" = '${reportCode}';
+    DELETE FROM "map_overlay" WHERE "id" = '${reportCode}';
     DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${reportCode}';
   `);
 };
