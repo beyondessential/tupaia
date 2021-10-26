@@ -16,7 +16,8 @@ import { Content, EmptyContentText, ExpandedContent } from './Content';
 import { MapTableModal } from '../MapTableModal';
 import { TitleAndDatePicker } from './TitleAndDatePicker';
 import { DropDownMenu } from '../../components/DropDownMenu';
-import { MAX_MAP_OVERLAYS } from './constant';
+
+const MAX_MAP_OVERLAYS = 2;
 
 const Container = styled.div`
   width: ${CONTROL_BAR_WIDTH}px;
@@ -59,20 +60,22 @@ const SubHeader = styled.div`
 `;
 
 const StyledPrimaryComponent = styled(Typography)`
-  margin: 0 0 0 0;
-  padding: 0px 0px 0px 0px;
+  margin: 0;
+  padding: 0;
   font-size: 0.75rem;
   color: #ffffff;
   font-weight: 500;
 `;
 
-const StyledOptionComponent = styled(Typography)`
+const StyledOptionComponent = styled(StyledPrimaryComponent)`
   margin: -0.1rem 0;
-  padding: 0px 0px 0px 0px;
-  font-size: 0.75rem;
-  color: #ffffff;
-  font-weight: 500;
 `;
+
+const options = [];
+for (let i = 1; i <= MAX_MAP_OVERLAYS; i++) {
+  const newOption = `${i} map overlay${i > 1 ? 's' : ''}`;
+  options.push(newOption);
+}
 
 export const Control = ({
   emptyMessage,
@@ -92,12 +95,6 @@ export const Control = ({
       setIsExpanded(true);
     }
   }, [isExpanded, setIsExpanded]);
-
-  const options = [];
-  for (let i = 1; i <= MAX_MAP_OVERLAYS; i++) {
-    const newOption = `${i} map overlay${i > 1 ? 's' : ''}`;
-    options.push(newOption);
-  }
 
   return (
     <Container>
