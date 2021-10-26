@@ -46,4 +46,4 @@ sudo -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployPackages.sh $BRANCH | while IFS= read 
 # Set nginx config and start the service running
 $DEPLOYMENT_SCRIPTS/configureNginx.sh | while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
 
-aws lambda invoke --function-name edwinTestCreate --payload "{\"Action\": \"swap_out_tupaia_server\", \"Branch\": \"$BRANCH\" }"  --cli-binary-format raw-in-base64-out response.json
+aws lambda invoke --function-name edwinTestCreate --payload "{\"Action\": \"swap_out_tupaia_server\", \"Branch\": \"$BRANCH\", \"ServerDeploymentCode\": \"etest3-server\" }"  --cli-binary-format raw-in-base64-out response.json

@@ -1,32 +1,22 @@
-# Deploys a new tupaia server (keeping the db) for a given branch, and tears down the old instance.
-# Useful for getting an updated version of the code released.
+# Swaps an ELB to point at a new tupaia server, and kills the old one for a given branch. This is
+# called by the startup script on the instance as the second phase of "redeploy_tupaia_server", and
+# shouldn't generally be used directly
 #
 # Example configs
 #
-# 1. Redeploy production (note non-matching branch name)
+# 1. Swap out new production instance in place of old
 # {
-#   "Action": "redeploy_tupaia_server",
-#   "Branch": "production",
-#   "InstanceType": "t3.2xlarge"
+#   "Action": "swap_out_tupaia_server",
+#   "Branch": "production"
 # }
 #
-# 2. Redeploy feature branch
+# 2. Swap out using a specific deployment code
 # {
-#   "Action": "redeploy_tupaia_server",
-#   "Branch": "wai-965",
-#   "InstanceType": "t3a.medium"
-# }
-#
-# 3. Redeploy based on a different AMI
-# {
-#   "Action": "redeploy_tupaia_server",
-#   "Branch": "wai-965",
-#   "InstanceType": "t3a.medium",
+#   "Action": "swap_out_tupaia_server",
+#   "Branch": "wai-965"
 #   "ServerDeploymentCode": "edwin-test"
 # }
-# N.B. example 3 is unusual and generally just used for debugging the redeploy process itself. If
-# used, you need to tag the AMI with "Code": "your-code" and add the tag "your-code": "true" to the
-# security group
+# N.B. example 2 is unusual and generally just used for debugging the redeploy process itself.
 
 from helpers.networking import swap_gateway_instance
 from helpers.teardown import terminate_instance
