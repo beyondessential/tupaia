@@ -99,6 +99,8 @@ exports.up = async function (db) {
 };
 
 exports.down = async function (db) {
+  await addDashboard(db, 'Students', SCHOOLS_DASHBOARD_CODE);
+
   // update GIR dashboard relations
   for (const code of GIR_DASHBOARDS) {
     await updateDashboardRelation(db, GIR_DASHBOARD_CODE, SCHOOLS_DASHBOARD_CODE, code);
@@ -112,7 +114,6 @@ exports.down = async function (db) {
   await removeDashboard(db, GIR_DASHBOARD_CODE);
   await removeDashboard(db, COA_DASHBOARD_CODE);
 
-  await addDashboard(db, 'Students', SCHOOLS_DASHBOARD_CODE);
   return null;
 };
 
