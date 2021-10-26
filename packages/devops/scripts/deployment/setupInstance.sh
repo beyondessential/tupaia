@@ -1,6 +1,7 @@
 #!/bin/bash -le
 
-# Possibly: aws configure to set region for cli
+# This script is used by Amazon Image Builder to pre-bake a Tupaia AMI
+# To deploy changes, upload the latest to the S3 bucket "tupaia_devops"
 
 # install nginx and add h5bp config
 sudo apt-get install -yqq nginx

@@ -59,4 +59,9 @@ for PACKAGE in ${PACKAGES[@]}; do
     fi
 done
 
+# get pm2 to restart all processes on boot
+setup_startup_command=$(pm2 startup ubuntu -u ubuntu --hp /home/ubuntu | tail -1)
+eval "$setup_startup_command"
+pm2 save
+
 echo "Finished deploying latest"
