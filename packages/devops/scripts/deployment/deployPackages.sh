@@ -21,6 +21,7 @@ LASTPASS_EMAIL=$LASTPASS_EMAIL LASTPASS_PASSWORD=$LASTPASS_PASSWORD yarn downloa
 for PACKAGE in ${PACKAGES[@]}; do
     if [[ $PACKAGE != *server ]]; then
         # It's a front end package, build it
+        echo "Building ${PACKAGE}"
         REACT_APP_BRANCH=${BRANCH} yarn workspace @tupaia/${PACKAGE} build
     fi
 done
