@@ -51,7 +51,7 @@ def swap_out_tupaia_server(event):
     swap_gateway_instance(branch, old_instance['InstanceId'], new_instance['InstanceId'])
 
     # add the subdomain tags that now relate to the new instance
-    add_tag(new_instance, get_tag(old_instance, 'SubdomainsViaGateway'))
+    add_tag(new_instance, 'SubdomainsViaGateway', get_tag(old_instance, 'SubdomainsViaGateway'))
 
     terminate_instance(old_instance)
 
