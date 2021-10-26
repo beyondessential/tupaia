@@ -1,5 +1,5 @@
-# Deploys a new tupaia server (keeping the db) for a given branch. Useful for getting an updated
-# version of the code released.
+# Deploys a new tupaia server (keeping the db) for a given branch, and tears down the old instance.
+# Useful for getting an updated version of the code released.
 #
 # Example configs
 #
@@ -28,33 +28,41 @@
 # used, you need to tag the AMI with "Code": "your-code" and add the tag "your-code": "true" to the
 # security group
 
-from helpers.create_from_image import create_tupaia_instance_from_image
-from helpers.utilities import get_instance
+from helpers.networking import swap_gateway_instance
+from helpers.teardown import terminate_instance
+from helpers.utilities import add_tag, find_instances, get_tag
 
-def redeploy_tupaia_server(event):
+def swap_out_tupaia_server(event):
     # validate input config
     if 'Branch' not in event:
         raise Exception('You must include the key "Branch" in the lambda config, e.g. "dev".')
     branch = event['Branch']
 
-    if 'InstanceType' not in event:
-        raise Exception('You must include the key "InstanceType" in the lambda config. We recommend "t3a.medium" unless you need more speed.')
-    instance_type = event['InstanceType']
-
     server_deployment_code = event.get('ServerDeploymentCode', 'tupaia-server') # default to "tupaia-server"
 
-    # find current instance
-    existing_instance = get_instance([
+    # find existing instances, and
+    instances = find_instances([
         { 'Name': 'tag:Code', 'Values': [server_deployment_code] },
         { 'Name': 'tag:Stage', 'Values': [branch] },
         { 'Name': 'instance-state-name', 'Values': ['running', 'stopped'] } # ignore terminated instances
     ])
 
-    if not existing_instance:
-      raise Exception('No existing instance found to redeploy, perhaps you want to spin up a new deployment?')
+    if not instances or len(instances) == 0:
+      raise Exception('No instances found to swap out')
 
-    # launch server instance based on gold master AMI
-    # original instance will be deleted by lambda script "swap_out_tupaia_server" once new instance is running
-    create_tupaia_instance_from_image(server_deployment_code, branch, instance_type, setup_gateway=False)
+    if not instances or len(instances) == 1:
+      raise Exception('To swap out Tupaia server, there should be two instances (the new and the old)')
 
-    print('Successfully deployed branch ' + branch)
+    sorted_instances = sorted(instances, key=lambda k: k['LaunchTime'])
+    old_instance = sorted_instances[0]
+    new_instance = sorted_instances[1]
+
+    # set up ELB from the old instance to point at the new one
+    swap_gateway_instance(branch, old_instance['InstanceId'], new_instance['InstanceId'])
+
+    # add the subdomain tags that now relate to the new instance
+    add_tag(new_instance, get_tag(old_instance, 'SubdomainsViaGateway'))
+
+    terminate_instance(old_instance)
+
+    print('Successfully swapped out ' + branch)

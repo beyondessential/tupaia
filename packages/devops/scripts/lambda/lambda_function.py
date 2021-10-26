@@ -5,6 +5,7 @@ from actions.spin_up_non_tupaia_deployment import spin_up_non_tupaia_deployment
 from actions.spin_up_tupaia_deployment import spin_up_tupaia_deployment
 from actions.start_tagged_instances import start_tagged_instances
 from actions.stop_tagged_instances import stop_tagged_instances
+from actions.swap_out_tupaia_server import swap_out_tupaia_server
 from actions.tear_down_tupaia_deployment import tear_down_tupaia_deployment
 from actions.tear_down_non_tupaia_deployment import tear_down_non_tupaia_deployment
 
@@ -16,6 +17,7 @@ actions = {
   'spin_up_tupaia_deployment': spin_up_tupaia_deployment,
   'start_tagged_instances': start_tagged_instances,
   'stop_tagged_instances': stop_tagged_instances,
+  'swap_out_tupaia_server': swap_out_tupaia_server,
   'tear_down_tupaia_deployment': tear_down_tupaia_deployment,
   'tear_down_non_tupaia_deployment': tear_down_non_tupaia_deployment,
 }

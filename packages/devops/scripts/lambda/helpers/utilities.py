@@ -29,26 +29,22 @@ def get_tag(instance, tag_name):
         tag_value = ''
     return tag_value
 
+def add_tag(instance, tag_name, tag_value):
+    ec.add_tags(
+        Resources=[instance['InstanceId']],
+        Tags=[{
+            'Key': tag_name,
+            'Value': tag_value
+        }]
+    )
 
-def get_instances(filters):
+def get_instance(filters):
     reservations = ec.describe_instances(
         Filters=filters
     ).get(
         'Reservations', []
     )
-    return reservations[0]['Instances']
-
-
-def tags_contains(tags, key, value):
-    tags_matching_key = list(filter(lambda x: x['Key'] == key, tags))
-    if len(tags_matching_key) == 0:
-        return False
-    tag_matching_key = tags_matching_key[0]
-    return tag_matching_key['Value'] == value
-
-# --------------
-# EC2
-# --------------
+    return reservations[0]['Instances'][0]
 
 def find_instances(filters):
     reservations = ec.describe_instances(
@@ -61,6 +57,14 @@ def find_instances(filters):
               [i for i in r['Instances']]
               for r in reservations
           ], [])
+
+def tags_contains(tags, key, value):
+    tags_matching_key = list(filter(lambda x: x['Key'] == key, tags))
+    if len(tags_matching_key) == 0:
+        return False
+    tag_matching_key = tags_matching_key[0]
+    return tag_matching_key['Value'] == value
+
 
 
 async def wait_for_instance(instance_id, to_be):

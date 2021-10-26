@@ -1,7 +1,7 @@
 import boto3
 
 from helpers.networking import setup_subdomains_via_dns, setup_subdomains_via_gateway
-from helpers.utilities import get_instances, get_tag
+from helpers.utilities import get_instance, get_tag
 
 ec2 = boto3.resource('ec2')
 ec = boto3.client('ec2')
@@ -46,11 +46,8 @@ def get_instance_creation_config(code, instance_type, stage, iam_role_arn=None, 
             tags.append({ 'Key': 'ClonedFrom', 'Value': code })
 
     instance_creation_config = {
-      'ImageId' : image_id or base_instance['ImageId'], #todo fix this
+      'ImageId' : image_id or base_instance['ImageId'],
       'InstanceType' : instance_type,
-    #   todo reinstate some form of these
-    #   'SubnetId' : base_instance['SubnetId'],
-    #   'Placement' : base_instance['Placement'],
       'SecurityGroupIds' : security_group_ids,
       'MinCount' : 1,
       'MaxCount' : 1,
@@ -91,9 +88,9 @@ def create_instance(code, instance_type, stage, iam_role_arn=None, image_id=None
     allocate_elastic_ip(new_instance.id)
 
     # return instance object
-    new_instance_object = get_instances([
+    new_instance_object = get_instance([
       {'Name': 'instance-id', 'Values': [new_instance.id]}
-    ])[0]
+    ])
 
     if (subdomains_via_dns):
         setup_subdomains_via_dns(new_instance_object, subdomains_via_dns, stage)

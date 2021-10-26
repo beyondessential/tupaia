@@ -168,6 +168,17 @@ def register_gateway_target(target_group_arn, tupaia_instance_id):
         ]
     )
 
+def deregister_gateway_target(target_group_arn, tupaia_instance_id):
+    elbv2.register_targets(
+        TargetGroupArn=target_group_arn,
+        Targets=[
+            {
+                'Id': tupaia_instance_id,
+                'Port': 80
+            },
+        ]
+    )
+
 
 # --------------
 # Route 53
@@ -295,6 +306,19 @@ def delete_gateway(tupaia_instance_name):
     gateway_target_group = get_gateway_target_group(tupaia_instance_name)
     elbv2.delete_target_group(
         TargetGroupArn=gateway_target_group['TargetGroupArn']
+    )
+
+def swap_gateway_instance(tupaia_instance_name, old_instance_id, new_instance_id):
+    gateway_target_group = get_gateway_target_group(tupaia_instance_name)
+
+    register_gateway_target(
+        target_group_arn=gateway_target_group['TargetGroupArn'],
+        tupaia_instance_id=new_instance_id
+    )
+
+    deregister_gateway_target(
+        target_group_arn=gateway_target_group['TargetGroupArn'],
+        tupaia_instance_id=old_instance_id
     )
 
 

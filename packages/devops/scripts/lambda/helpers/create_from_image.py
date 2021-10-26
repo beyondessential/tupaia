@@ -28,9 +28,9 @@ def create_instance_from_image(code, stage, instance_type, iam_role_arn=None, us
 
     return instance_object
 
-def create_tupaia_instance_from_image(server_deployment_code, branch, instance_type):
+def create_tupaia_instance_from_image(server_deployment_code, branch, instance_type, setup_gateway=True):
     tupaia_server_iam_role_arn = 'arn:aws:iam::843218180240:instance-profile/TupaiaServerRole'
-    tupaia_subdomains = ['','admin','admin-api','api','config','export','mobile','psss','report-api','psss-api','entity-api','lesmis-api','lesmis']
+    tupaia_subdomains = ['','admin','admin-api','api','config','export','mobile','psss','report-api','psss-api','entity-api','lesmis-api','lesmis'] if setup_gateway else None
     tupaia_volume_size = 20 # 20GB
     startup_script = Path('./resources/startup.sh').read_text()
 

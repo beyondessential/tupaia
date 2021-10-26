@@ -3,7 +3,7 @@ import asyncio
 import functools
 
 from helpers.creation import create_instance
-from helpers.utilities import get_account_ids, get_tag, get_instances, start_instance, stop_instance
+from helpers.utilities import get_account_ids, get_tag, get_instance, start_instance, stop_instance
 
 ec2 = boto3.resource('ec2')
 ec = boto3.client('ec2')
@@ -80,7 +80,7 @@ def clone_instance(code, from_stage, to_stage, instance_type):
         { 'Name': 'tag:Stage', 'Values': [from_stage] },
         { 'Name': 'instance-state-name', 'Values': ['running', 'stopped']} # ignore terminated instances
     ]
-    base_instance = get_instances(base_instance_filters)[0]
+    base_instance = get_instance(base_instance_filters)
 
     subdomains_via_dns = None
     subdomains_via_dns_string = get_tag(base_instance, 'SubdomainsViaDns')

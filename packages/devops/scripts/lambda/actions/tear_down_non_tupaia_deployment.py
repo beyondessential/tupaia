@@ -7,7 +7,7 @@
 # }
 
 from helpers.teardown import teardown_instance
-from helpers.utilities import get_instances
+from helpers.utilities import get_instance
 
 def tear_down_non_tupaia_deployment(event):
     if 'InstanceName' not in event:
@@ -17,7 +17,7 @@ def tear_down_non_tupaia_deployment(event):
       { 'Name': 'tag:Name', 'Values': [event['InstanceName']] },
       { 'Name': 'instance-state-name', 'Values': ['running', 'stopped'] }, # ignore terminated instances
     ]
-    instance = get_instances(filters)[0]
+    instance = get_instance(filters)
 
     if not instance:
       raise Exception('No matching instance found')
