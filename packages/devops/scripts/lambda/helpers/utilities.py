@@ -30,7 +30,7 @@ def get_tag(instance, tag_name):
     return tag_value
 
 def add_tag(instance, tag_name, tag_value):
-    ec.add_tags(
+    ec.create_tags(
         Resources=[instance['InstanceId']],
         Tags=[{
             'Key': tag_name,
