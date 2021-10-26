@@ -11,7 +11,6 @@ import AdminPanel from './App';
 import { VizBuilderProviders } from './utilities/VizBuilderProviders';
 import { AdminPanelProviders } from './utilities/AdminPanelProviders';
 import { StoreProvider } from './utilities/StoreProvider';
-import { useApi } from './utilities/ApiProvider';
 import { Footer, Navbar } from './widgets';
 import { TupaiaApi } from './api';
 
