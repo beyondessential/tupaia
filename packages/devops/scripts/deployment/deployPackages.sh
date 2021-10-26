@@ -18,26 +18,11 @@ LASTPASS_PASSWORD=$($DIR/fetchParameterStoreValue.sh LASTPASS_PASSWORD)
 LASTPASS_EMAIL=$LASTPASS_EMAIL LASTPASS_PASSWORD=$LASTPASS_PASSWORD yarn download-env-vars $BRANCH
 
 # Build each front end package
-CONCURRENT_BUILD_BATCH_SIZE=2
-front_end_build_commands=()
 for PACKAGE in ${PACKAGES[@]}; do
     if [[ $PACKAGE != *server ]]; then
-        # It's a front end package, add the build command
-        if [[ $PACKAGE == "web-frontend" ]]; then
-            # The package web-frontend has a desktop and a mobile version, build both
-            front_end_build_commands+=("\"REACT_APP_BRANCH=${BRANCH} BUILD_PATH=/build/desktop mkdir -p build/desktop && yarn workspace @tupaia/web-frontend build-desktop\"")
-            front_end_build_commands+=("\"REACT_APP_BRANCH=${BRANCH} BUILD_PATH=/build/mobile mkdir -p build/mobile && yarn workspace @tupaia/web-frontend build-mobile\"")
-        else
-            front_end_build_commands+=("\"REACT_APP_BRANCH=${BRANCH} yarn workspace @tupaia/${PACKAGE} build\"")
-        fi
+        # It's a front end package, build it
+        REACT_APP_BRANCH=${BRANCH} yarn workspace @tupaia/${PACKAGE} build
     fi
-done
-
-echo "Concurrently front end packages in batches of ${CONCURRENT_BUILD_BATCH_SIZE}"
-total_build_commands=${#front_end_build_commands[@]}
-for ((start_index = 0; start_index < ${total_build_commands}; start_index += ${CONCURRENT_BUILD_BATCH_SIZE})); do
-    echo "yarn concurrently ${front_end_build_commands[@]:${start_index}:${CONCURRENT_BUILD_BATCH_SIZE}}"
-    eval "yarn concurrently ${front_end_build_commands[@]:${start_index}:${CONCURRENT_BUILD_BATCH_SIZE}}"
 done
 
 # Build and start back end server packages
