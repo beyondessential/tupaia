@@ -18,9 +18,9 @@
 # }
 # N.B. example 2 is unusual and generally just used for debugging the redeploy process itself.
 
-from helpers.networking import swap_gateway_instance
+from helpers.networking import get_instance_behind_gateway, swap_gateway_instance
 from helpers.teardown import terminate_instance
-from helpers.utilities import add_tag, find_instances, get_tag
+from helpers.utilities import add_tag, get_tag
 
 def swap_out_tupaia_server(event):
     # validate input config
@@ -28,30 +28,19 @@ def swap_out_tupaia_server(event):
         raise Exception('You must include the key "Branch" in the lambda config, e.g. "dev".')
     branch = event['Branch']
 
-    server_deployment_code = event.get('ServerDeploymentCode', 'tupaia-server') # default to "tupaia-server"
+    if 'NewInstanceId' not in event:
+        raise Exception('You must include the key "NewInstanceId" in the lambda config, e.g. "dev".')
+    new_instance_id = event['NewInstanceId']
 
-    # find existing instances, and
-    instances = find_instances([
-        { 'Name': 'tag:Code', 'Values': [server_deployment_code] },
-        { 'Name': 'tag:Stage', 'Values': [branch] },
-        { 'Name': 'instance-state-name', 'Values': ['running', 'stopped'] } # ignore terminated instances
-    ])
-
-    if not instances or len(instances) == 0:
-      raise Exception('No instances found to swap out')
-
-    if not instances or len(instances) == 1:
-      raise Exception('To swap out Tupaia server, there should be two instances (the new and the old)')
-
-    sorted_instances = sorted(instances, key=lambda k: k['LaunchTime'])
-    old_instance = sorted_instances[0]
-    new_instance = sorted_instances[1]
+    old_instance = get_instance_behind_gateway(branch)
+    if not old_instance:
+      raise Exception('Could not find old instance to swap out')
 
     # set up ELB from the old instance to point at the new one
-    swap_gateway_instance(branch, old_instance['InstanceId'], new_instance['InstanceId'])
+    swap_gateway_instance(branch, old_instance['InstanceId'], new_instance_id)
 
     # add the subdomain tags that now relate to the new instance
-    add_tag(new_instance, 'SubdomainsViaGateway', get_tag(old_instance, 'SubdomainsViaGateway'))
+    add_tag(new_instance_id, 'SubdomainsViaGateway', get_tag(old_instance, 'SubdomainsViaGateway'))
 
     terminate_instance(old_instance)
 

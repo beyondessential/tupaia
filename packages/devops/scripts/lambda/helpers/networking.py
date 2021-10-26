@@ -1,6 +1,6 @@
 import boto3
 
-from helpers.utilities import tags_contains
+from helpers.utilities import get_instance, tags_contains
 
 # --------------
 # Certificate manager
@@ -247,6 +247,25 @@ def add_subdomains_to_route53(domain, subdomains, stage, gateway=None, dns_url=N
         }
     )
     print('Submitted changes to hosted zone')
+
+
+
+def get_instance_behind_gateway(tupaia_instance_name):
+    gateway_target_group = get_gateway_target_group(tupaia_instance_name)
+
+    targets = elbv2.describe_target_health(TargetGroupArn=gateway_target_group['TargetGroupArn'])['TargetHealthDescriptions']
+
+    if not targets or len(targets) == 0:
+        raise Exception('Could not find any targets behind the gateway for ' + tupaia_instance_name)
+
+    if len(targets) > 1:
+        raise Exception('Too many targets for ' + tupaia_instance_name)
+
+    instance_id = targets[0]['Target']['Id']
+
+    return get_instance([
+      {'Name': 'instance-id', 'Values': [instance_id]}
+    ])
 
 
 # --------------

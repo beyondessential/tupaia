@@ -29,9 +29,9 @@ def get_tag(instance, tag_name):
         tag_value = ''
     return tag_value
 
-def add_tag(instance, tag_name, tag_value):
+def add_tag(instance_id, tag_name, tag_value):
     ec.create_tags(
-        Resources=[instance['InstanceId']],
+        Resources=[instance_id],
         Tags=[{
             'Key': tag_name,
             'Value': tag_value
