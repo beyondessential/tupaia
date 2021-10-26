@@ -17,18 +17,16 @@ export const AdminPanelProviders = ({ children }) => {
   const api = new TupaiaApi();
 
   return (
-    <StoreProvider api={api} persist>
-      <ApiProvider api={api}>
-        <StylesProvider injectFirst>
-          <MuiThemeProvider theme={theme}>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              {children}
-            </ThemeProvider>
-          </MuiThemeProvider>
-        </StylesProvider>
-      </ApiProvider>
-    </StoreProvider>
+    <ApiProvider api={api}>
+      <StylesProvider injectFirst>
+        <MuiThemeProvider theme={theme}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            {children}
+          </ThemeProvider>
+        </MuiThemeProvider>
+      </StylesProvider>
+    </ApiProvider>
   );
 };
 
