@@ -23,7 +23,7 @@ import {
   setMapOverlays,
   clearMeasure,
   toggleMeasureExpand,
-  updateMeasureConfig,
+  updateMeasureConfigs,
 } from '../../actions';
 import { HierarchyItem } from '../../components/HierarchyItem';
 import {
@@ -242,20 +242,14 @@ const mapDispatchToProps = dispatch => {
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch } = dispatchProps;
-  const { currentMapOverlayCodes } = stateProps;
 
   return {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    onUpdateMeasurePeriod: (startDate, endDate) =>
-      // TODO: PHX-103 - Now only select the last map overlay start date and end date, will use both in PHX-103
-      dispatch(
-        updateMeasureConfig(currentMapOverlayCodes[currentMapOverlayCodes.length - 1], {
-          startDate,
-          endDate,
-        }),
-      ),
+    onUpdateMeasurePeriod: (mapOverlayCode, measureConfig) => {
+      dispatch(updateMeasureConfigs({ [mapOverlayCode]: measureConfig }));
+    },
   };
 };
 

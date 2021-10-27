@@ -67,6 +67,7 @@ export {
   selectMapOverlayByCode,
   selectMapOverlayByCodes,
   selectCurrentMapOverlayCodes,
+  selectCurrentMapOverlayPeriods,
   selectCurrentMapOverlays,
   selectDefaultMapOverlayCode,
   selectDefaultMapOverlay,

@@ -45,7 +45,7 @@ const MeasureDatePicker = styled.div`
 `;
 
 export const TitleAndDatePickerComponent = ({
-  mapOverlay = {},
+  mapOverlay,
   onUpdateMeasurePeriod,
   isExpanded,
   isMeasureSelected,
@@ -53,15 +53,13 @@ export const TitleAndDatePickerComponent = ({
   isMeasureLoading,
   displayedMapOverlays,
   onSetDisplayedMapOverlay,
-  // TODO: PHX-103: show both date pickers
-  showDatePickerOnlyAfterSecondTitle,
 }) => {
   const [isSwitchedOn, setIsSwitchedOn] = useState(true);
   useEffect(() => {
     setIsSwitchedOn(displayedMapOverlays.includes(mapOverlay.mapOverlayCode));
   }, [JSON.stringify(displayedMapOverlays)]);
 
-  const { periodGranularity, isTimePeriodEditable = true, name } = mapOverlay;
+  const { periodGranularity, isTimePeriodEditable = true, name, mapOverlayCode } = mapOverlay;
   const defaultDates = getDefaultDates(mapOverlay);
   const datePickerLimits = getLimits(periodGranularity, mapOverlay.datePickerLimits);
   const showDatePicker = !!(isTimePeriodEditable && periodGranularity);
@@ -72,7 +70,7 @@ export const TitleAndDatePickerComponent = ({
 
   const handleSwitchChange = () => {
     const newDisplayedOverlays = isSwitchedOn
-      ? displayedMapOverlays.filter(mapOverlayCode => mapOverlayCode !== mapOverlay.mapOverlayCode)
+      ? displayedMapOverlays.filter(code => code !== mapOverlay.mapOverlayCode)
       : [...displayedMapOverlays, mapOverlay.mapOverlayCode];
     onSetDisplayedMapOverlay(newDisplayedOverlays);
     setIsSwitchedOn(!isSwitchedOn);
@@ -80,7 +78,10 @@ export const TitleAndDatePickerComponent = ({
 
   const updateMeasurePeriod = (startDate, endDate) => {
     const period = GRANULARITY_CONFIG[periodGranularity].momentUnit;
-    onUpdateMeasurePeriod(moment(startDate).startOf(period), moment(endDate).endOf(period));
+    onUpdateMeasurePeriod(mapOverlayCode, {
+      startDate: moment(startDate).startOf(period),
+      endDate: moment(endDate).endOf(period),
+    });
   };
 
   return (
@@ -94,7 +95,7 @@ export const TitleAndDatePickerComponent = ({
           </IconWrapper>
         </ToolsWrapper>
       </Content>
-      {showDatePicker && showDatePickerOnlyAfterSecondTitle && (
+      {showDatePicker && (
         <MeasureDatePicker expanded={isExpanded}>
           <DateRangePicker
             key={name} // force re-create the component on measure change, which resets initial dates

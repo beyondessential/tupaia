@@ -36,7 +36,7 @@ export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
 export const CLEAR_MAP_OVERLAY_HIERARCHY = 'CLEAR_MAP_OVERLAY_HIERARCHY';
 export const SET_MAP_OVERLAYS = 'SET_MAP_OVERLAYS';
 export const SET_DISPLAYED_MAP_OVERLAY = 'SET_DISPLAYED_MAP_OVERLAY';
-export const UPDATE_MEASURE_CONFIG = 'UPDATE_MEASURE_CONFIG';
+export const UPDATE_MEASURE_CONFIGS = 'UPDATE_MEASURE_CONFIGS';
 export const REQUEST_ORG_UNIT = 'REQUEST_ORG_UNIT';
 export const FETCH_ORG_UNIT = 'FETCH_ORG_UNIT';
 export const SET_ORG_UNIT = 'SET_ORG_UNIT';
@@ -549,14 +549,16 @@ export function setDisplayedMapOverlays(mapOverlayCodes) {
 
 /**
  * Updates measure config for current measure in mapOverlayBar.
+ * @typedef {Object} measureConfig
+ * @property {Moment} startDate
+ * @property {Moment} endDate
  *
- * @param {object} measureConfig
+ * @param {Object<string, measureConfig>} measureConfigs
  */
-export function updateMeasureConfig(mapOverlayCode, measureConfig) {
+export function updateMeasureConfigs(measureConfigs) {
   return {
-    type: UPDATE_MEASURE_CONFIG,
-    mapOverlayCode,
-    measureConfig,
+    type: UPDATE_MEASURE_CONFIGS,
+    measureConfigs,
   };
 }
 
