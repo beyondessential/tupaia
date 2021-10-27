@@ -51,7 +51,6 @@ const runArithmeticTestCase = async testCase => {
   const expected = config;
 
   const builtConfig = await arithmeticConfigCellBuilder.build(input);
-  console.log(builtConfig);
 
   return expect(builtConfig).to.equal(expected);
 };
@@ -64,7 +63,6 @@ const runConditionTestCase = async testCase => {
   const expected = config;
 
   const builtConfig = await conditionConfigCellBuilder.build(input);
-  console.log(builtConfig);
 
   return expect(builtConfig).to.equal(expected);
 };
