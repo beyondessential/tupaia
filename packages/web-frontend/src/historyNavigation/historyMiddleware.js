@@ -30,7 +30,7 @@ import {
   selectPeriodGranularityByCode,
   selectMapOverlayByCodes,
 } from '../selectors';
-import { NO_PERIOD, URL_COMPONENTS } from './constants';
+import { DEFAULT_PERIOD, URL_COMPONENTS } from './constants';
 import {
   addPopStateListener,
   attemptPushHistory,
@@ -96,7 +96,7 @@ export const historyMiddleware = store => next => action => {
           { startDate, endDate },
           periodGranularity,
         );
-        currentOverlayPeriods.push(overlayPeriod || NO_PERIOD);
+        currentOverlayPeriods.push(overlayPeriod || DEFAULT_PERIOD);
       });
 
       dispatchLocationUpdate(store, {
@@ -121,7 +121,7 @@ export const historyMiddleware = store => next => action => {
           measureConfig,
           selectPeriodGranularityByCode(state, mapOverlayCode),
         );
-        currentOverlayPeriods[targetedOverlayIndex] = newOverlayPeriod || NO_PERIOD;
+        currentOverlayPeriods[targetedOverlayIndex] = newOverlayPeriod || DEFAULT_PERIOD;
       });
 
       dispatchLocationUpdate(store, {

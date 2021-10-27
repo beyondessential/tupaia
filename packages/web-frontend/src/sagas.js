@@ -110,7 +110,7 @@ import {
   convertUrlPeriodStringToDateRange,
   getInitialLocation,
   URL_COMPONENTS,
-  NO_PERIOD,
+  DEFAULT_PERIOD,
 } from './historyNavigation';
 import { setProject, setRequestingAccess } from './projects/actions';
 import {
@@ -934,7 +934,7 @@ function* updateMapOverlayDateRangeOnceHierarchyLoads() {
   const measureConfigs = {};
 
   for (let index = 0; index < currentOverlayCodes.length; index++) {
-    if (currentOverlayPeriods[index] === NO_PERIOD) {
+    if (currentOverlayPeriods[index] === DEFAULT_PERIOD) {
       break;
     }
     const currentOverlayCode = currentOverlayCodes[index];

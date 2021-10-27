@@ -54,7 +54,7 @@ export const SEARCH_PARAM_KEY_MAP = {
   [VERIFY_EMAIL_TOKEN]: 'verifyEmailToken',
 };
 
-export const NO_PERIOD = 'NO_PERIOD';
+export const DEFAULT_PERIOD = 'DEFAULT_PERIOD';
 export const PASSWORD_RESET_PREFIX = 'reset-password';
 export const VERIFY_EMAIL_PREFIX = 'verify-email';
 export const USER_PAGE_PREFIXES = [PASSWORD_RESET_PREFIX, VERIFY_EMAIL_PREFIX];
