@@ -4,10 +4,97 @@
  */
 
 import { KeyValueCellBuilder } from './KeyValueCellBuilder';
+import {
+  replaceQuestionIdsWithCodes,
+  getDollarPrefixedExpressionVariables,
+} from '../../../utilities';
 
 export class ConditionConfigCellBuilder extends KeyValueCellBuilder {
   extractRelevantObject({ condition }) {
     return condition;
+  }
+
+  /**
+   * Input:
+   * conditions: {
+   *   Yes: {
+   *     formula: '5fa0cdcd5da1e614f30001fd >= 3',
+   *     defaultValues: {
+   *        '5fa0cdcd5da1e614f30001fd': '0',
+   *     },
+   *   },
+   *   No: {
+   *     formula: '5fa0cdcd5da1e614f30001fd < 3',
+   *     defaultValues: {
+   *       '5fa0cdcd5da1e614f30001fd': '0',
+   *     },
+   *   },
+   * }
+   * will be converted to:
+   * Excel config:
+   * conditions: Yes:RHS6UNFPA1353Calc >= 3,No:RHS6UNFPA1353Calc < 3
+   *
+   */
+  async getExcelConditionConfig(conditions) {
+    console.log(conditions);
+    return (
+      await Promise.all(
+        Object.entries(conditions).map(async ([targetValue, config]) => {
+          const { formula } = config;
+          console.log({ targetValue, formula });
+          const translatedFormula = await replaceQuestionIdsWithCodes(
+            this.models,
+            formula,
+            getDollarPrefixedExpressionVariables(formula),
+            { useDollarPrefixes: true },
+          );
+          console.log({ translatedFormula });
+          return `${targetValue}:${translatedFormula}`;
+        }),
+      )
+    ).join(',');
+  }
+
+  /**
+   *
+   * conditions: {
+   *   Yes: {
+   *     formula: '5fa0cdcd5da1e614f30001fd >= 3',
+   *     defaultValues: {
+   *        '5fa0cdcd5da1e614f30001fd': '0',
+   *     },
+   *   },
+   *   No: {
+   *     formula: '5fa0cdcd5da1e614f30001fd < 3',
+   *     defaultValues: {
+   *       '5fa0cdcd5da1e614f30001fd': '0',
+   *     },
+   *   },
+   * }
+   * will be converted to:
+   * Excel config:
+   * defaultValues: Yes.RHS6UNFPA1353Calc:0,No.RHS6UNFPA1353Calc:0
+   *
+   */
+  async getExcelDefaultValues(conditions) {
+    console.log(conditions);
+    const defaultValues = {};
+    const promises = Object.entries(conditions).map(async ([targetValue, config]) => {
+      const { defaultValues: defaultValuesConfig } = config;
+      return Promise.all(
+        Object.entries(defaultValuesConfig).map(async ([questionId, value]) => {
+          const question = await this.models.question.findById(questionId);
+          const questionCode = question?.code || `[No question with id: ${questionId}]`;
+          defaultValues[`${targetValue}.${questionCode}`] = value;
+        }),
+      );
+    });
+
+    await Promise.all(promises);
+
+    return Object.entries(defaultValues)
+      .map(([key, value]) => `${key}:${value}`)
+      .join(',');
   }
 
   // We have to override the base class' build method because
@@ -22,8 +109,8 @@ export class ConditionConfigCellBuilder extends KeyValueCellBuilder {
     const { conditions } = config;
 
     const translatedConfig = {
-      conditions: 'a',
-      defaultValues: 'a',
+      conditions: await this.getExcelConditionConfig(conditions),
+      defaultValues: await this.getExcelDefaultValues(conditions),
     };
 
     return Object.entries(translatedConfig)

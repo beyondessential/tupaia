@@ -6,8 +6,7 @@
 import { ExpressionParser } from '@tupaia/expression-parser';
 
 export const getDollarPrefixedExpressionVariables = expression => {
-  const expressionParser = new ExpressionParser();
-  const variables = expressionParser.getVariables(expression);
+  const variables = getExpressionVariables(expression);
   return variables.map(variable => {
     if (!variable.match(/^\$/)) {
       throw new Error(`Variable ${variable} must have prefix $`);
@@ -16,13 +15,7 @@ export const getDollarPrefixedExpressionVariables = expression => {
   });
 };
 
-// export const getExpressionVariables = expression => {
-//   const expressionParser = new ExpressionParser();
-//   const variables = expressionParser.getVariables(expression);
-//   return variables.map(variable => {
-//     if (!variable.match(/^\$/)) {
-//       throw new Error(`Variable ${variable} must have prefix $`);
-//     }
-//     return variable.replace(/^\$/, '');
-//   });
-// };
+export const getExpressionVariables = expression => {
+  const expressionParser = new ExpressionParser();
+  return expressionParser.getVariables(expression);
+};
