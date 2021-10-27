@@ -70,7 +70,7 @@ export const selectDefaultMapOverlay = createSelector(
   },
 );
 
-export const selectCurrentPeriodGranularity = createSelector(
+export const selectPeriodGranularityByCode = createSelector(
   [selectMapOverlayByCode],
   mapOverlay => mapOverlay?.periodGranularity,
 );

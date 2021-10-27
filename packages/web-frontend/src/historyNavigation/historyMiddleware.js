@@ -27,7 +27,7 @@ import {
 import {
   selectCurrentMapOverlayCodes,
   selectCurrentMapOverlayPeriods,
-  selectCurrentPeriodGranularity,
+  selectPeriodGranularityByCode,
   selectMapOverlayByCodes,
 } from '../selectors';
 import { NO_PERIOD, URL_COMPONENTS } from './constants';
@@ -119,7 +119,7 @@ export const historyMiddleware = store => next => action => {
         const targetedOverlayIndex = currentOverlayCodes.findIndex(code => code === mapOverlayCode);
         const newOverlayPeriod = convertDateRangeToUrlPeriodString(
           measureConfig,
-          selectCurrentPeriodGranularity(state, mapOverlayCode),
+          selectPeriodGranularityByCode(state, mapOverlayCode),
         );
         currentOverlayPeriods[targetedOverlayIndex] = newOverlayPeriod || NO_PERIOD;
       });

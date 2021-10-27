@@ -119,7 +119,7 @@ import {
   selectCurrentMapOverlayPeriods,
   selectCurrentOrgUnitCode,
   selectShouldUseDashboardData,
-  selectCurrentPeriodGranularity,
+  selectPeriodGranularityByCode,
   selectCurrentProjectCode,
   selectCurrentExpandedViewConfig,
   selectCurrentExpandedViewContent,
@@ -939,7 +939,7 @@ function* updateMapOverlayDateRangeOnceHierarchyLoads() {
     }
     const currentOverlayCode = currentOverlayCodes[index];
     const currentOverlayPeriod = currentOverlayPeriods[index];
-    const periodGranularity = selectCurrentPeriodGranularity(state, currentOverlayCode);
+    const periodGranularity = selectPeriodGranularityByCode(state, currentOverlayCode);
 
     const { startDate, endDate } = convertUrlPeriodStringToDateRange(
       currentOverlayPeriod,
