@@ -6,9 +6,13 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import { ArithmeticConfigCellBuilder } from '../../../../../apiV2/export/exportSurveys/cellBuilders';
-import { ARITHMETIC_TEST_CASES, QUESTIONS } from './fixtures';
+import {
+  ArithmeticConfigCellBuilder,
+  ConditionConfigCellBuilder,
+} from '../../../../../apiV2/export/exportSurveys/cellBuilders';
+import { ARITHMETIC_TEST_CASES, CONDITION_TEST_CASES, QUESTIONS } from './fixtures';
 import { processArithmeticConfig } from '../../../../../apiV2/import/importSurveys/ConfigImporter/processArithmeticConfig';
+import { processConditionConfig } from '../../../../../apiV2/import/importSurveys/ConfigImporter/processConditionConfig';
 import { convertCellToJson } from '../../../../../apiV2/import/importSurveys/utilities';
 
 const generateModelsStub = () => {
@@ -37,8 +41,9 @@ const generateModelsStub = () => {
 
 const modelsStub = generateModelsStub();
 const arithmeticConfigCellBuilder = new ArithmeticConfigCellBuilder(modelsStub);
+const conditionConfigCellBuilder = new ConditionConfigCellBuilder(modelsStub);
 
-const runTestCase = async testCase => {
+const runArithmeticTestCase = async testCase => {
   const { config } = testCase;
   const input = {
     arithmetic: await processArithmeticConfig(modelsStub, convertCellToJson(config)),
@@ -51,11 +56,31 @@ const runTestCase = async testCase => {
   return expect(builtConfig).to.equal(expected);
 };
 
+const runConditionTestCase = async testCase => {
+  const { config } = testCase;
+  const input = {
+    condition: await processConditionConfig(modelsStub, convertCellToJson(config)),
+  };
+  const expected = config;
+
+  const builtConfig = await conditionConfigCellBuilder.build(input);
+  console.log(builtConfig);
+
+  return expect(builtConfig).to.equal(expected);
+};
+
 describe('configCellBuilders', () => {
   describe('ArithmeticConfigCellBuilder', () => {
     ARITHMETIC_TEST_CASES.forEach(testCase => {
       it(testCase.description, async () => {
-        await runTestCase(testCase);
+        await runArithmeticTestCase(testCase);
+      });
+    });
+  });
+  describe('ConditionConfigCellBuilder', () => {
+    CONDITION_TEST_CASES.forEach(testCase => {
+      it(testCase.description, async () => {
+        await runConditionTestCase(testCase);
       });
     });
   });
