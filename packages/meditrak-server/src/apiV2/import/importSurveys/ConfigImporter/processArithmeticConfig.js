@@ -121,6 +121,7 @@ const translateAnswerDisplayText = async (models, text, codes) => {
   let translatedText = text;
   const questionCodeToId = await models.question.findIdByCode(codes);
 
+  // Note a difference between 'answerDisplayText' and 'formula' is question codes are not dollar prefixed
   for (const code of codes) {
     const questionId = questionCodeToId[code];
     translatedText = translatedText.replace(code, questionId);

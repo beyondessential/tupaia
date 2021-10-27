@@ -16,6 +16,11 @@ export const ARITHMETIC_TEST_CASES = [
     description: 'Duplicate question code translation',
     config: 'formula: $question_1_code + $question_2_code + ($question_1_code * 2)',
   },
+  {
+    description: 'answerDisplayText works',
+    config: `formula: $question_1_code + $question_2_code + ($question_1_code * 2)
+answerDisplayText: Modified question_1_code equals $result`,
+  },
 ];
 
 // export const ARITHMETIC_TEST_CASES = ARITHMETIC_TEST_CASES_2.map(({ description, config }) => ({
