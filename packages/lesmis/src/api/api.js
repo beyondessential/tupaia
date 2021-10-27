@@ -5,33 +5,7 @@
  */
 import axios from 'axios';
 import FetchError from './fetchError';
-
-const getApiUrl = () => {
-  // if no env var, use sensible defaults based on the front end url
-  const { hostname } = window.location;
-
-  // localhost becomes http://localhost:8060
-  if (hostname === 'localhost') {
-    return 'http://localhost:8060';
-  }
-
-  // lesmis.la becomes https://api.lesmis.la
-  const domainComponents = hostname.split('.');
-  if (domainComponents.length === 2) {
-    const [domain, tld] = domainComponents;
-    return `https://api.${domain}.${tld}`;
-  }
-
-  // www.lesmis.la becomes https://api.lesmis.la
-  const [subdomain, domain, tld] = domainComponents;
-  if (subdomain === 'www') {
-    return `https://api.${domain}.${tld}`;
-  }
-
-  // lesmis.tupaia.org becomes https://lesmis-api.tupaia.org, and dev-lesmis.tupaia.org becomes
-  // https://dev-lesmis-api.tupaia.org
-  return `https://${subdomain}-api.${domain}.${tld}`;
-};
+import { getApiUrl } from '../utils/getApiUrl';
 
 // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
 axios.defaults.withCredentials = true;

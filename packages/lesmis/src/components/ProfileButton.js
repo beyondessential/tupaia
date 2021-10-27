@@ -21,16 +21,10 @@ const StyledProfileButton = styled(BaseProfileButton)`
 
 const ProfileLinks = () => {
   const { mutate: handleLogout } = useLogout();
-  const { isLesmisAdmin } = useUser();
   return (
-    <>
-      {isLesmisAdmin && (
-        <ProfileButtonItem to="/users-and-permissions">Users and Permissions</ProfileButtonItem>
-      )}
-      <ProfileButtonItem button onClick={handleLogout}>
-        Logout
-      </ProfileButtonItem>
-    </>
+    <ProfileButtonItem button onClick={handleLogout}>
+      Logout
+    </ProfileButtonItem>
   );
 };
 

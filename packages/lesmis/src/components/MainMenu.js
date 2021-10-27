@@ -23,6 +23,7 @@ import { LightIconButton } from '@tupaia/ui-components';
 import { LocaleListItemLink } from './LocaleLinks';
 import { FlexEnd } from './Layout';
 import { I18n } from './I18n';
+import { useUser } from '../api/queries';
 
 const StyledList = styled(List)`
   width: 22.5rem;
@@ -84,8 +85,42 @@ const TupaiaText = styled(Typography)`
   line-height: 140%;
 `;
 
+const ListItemLink = props => <ListItem button component={RouterLink} {...props} />;
+
+/* eslint-disable */
+const AdminPanelLinks = () => (
+  <>
+    <Subheader component="div">Admin</Subheader>
+    <ListItemLink to="/admin/survey-responses">
+      <ListItemIcon>
+        <Assignment />
+      </ListItemIcon>
+      <ListItemText primary="Survey Responses" />
+    </ListItemLink>
+    <ListItemLink to="/admin/surveys">
+      <ListItemIcon>
+        <Assignment />
+      </ListItemIcon>
+      <ListItemText primary="Surveys" />
+    </ListItemLink>
+    <ListItemLink to="/admin/visualisations">
+      <ListItemIcon>
+        <Assignment />
+      </ListItemIcon>
+      <ListItemText primary="Visualisations" />
+    </ListItemLink>
+    <ListItemLink to="/admin/users">
+      <ListItemIcon>
+        <Assignment />
+      </ListItemIcon>
+      <ListItemText primary="Users" />
+    </ListItemLink>
+  </>
+);
+
 export const MainMenu = () => {
   const [open, setOpen] = useState(false);
+  const { isLesmisAdmin } = useUser();
 
   const toggleDrawer = isOpen => () => {
     setOpen(isOpen);
@@ -132,6 +167,12 @@ export const MainMenu = () => {
             <I18n t="onlineQs" />
           </Subheader>
           <LocaleListItemLink to="/fundamental-quality-standards">
+            <ListItemText primary="Contact us" />
+          </ListItemLink>
+          {/*// Todo: Display admin-panel links @see WAI-832*/}
+          {/*{isLesmisAdmin && <AdminPanelLinks />}*/}
+          <Subheader component="div">Online Questionnaires</Subheader>
+          <ListItemLink to="/fundamental-quality-standards">
             <ListItemIcon>
               <Assignment />
             </ListItemIcon>

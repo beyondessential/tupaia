@@ -85,6 +85,7 @@ RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --non-interactive --froze
 
 ## add content of all internal dependency packages ready for internal dependencies to be built
 COPY packages/access-policy/. ./packages/access-policy
+COPY packages/admin-panel/. ./packages/admin-panel
 COPY packages/aggregator/. ./packages/aggregator
 COPY packages/api-client/. ./packages/api-client
 COPY packages/auth/. ./packages/auth

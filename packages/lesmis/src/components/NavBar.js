@@ -5,7 +5,8 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Link as RouterLink, useLocation, useHistory } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 import MuiContainer from '@material-ui/core/Container';
 import MuiButton from '@material-ui/core/Button';
 import { HomeButton } from '@tupaia/ui-components';
@@ -49,12 +50,11 @@ const Search = styled(SearchBar)`
   }
 `;
 
-export const NavBar = () => {
+export const NavBar = ({ hideSearch }) => {
   const history = useHistory();
   const { isLoggedIn } = useUser();
   const { locale, view } = useUrlParams();
-  const { pathname } = useLocation();
-  const { homeUrl, isHomeUrl } = useHomeUrl();
+  const { homeUrl } = useHomeUrl();
 
   return (
     <Container>
@@ -64,7 +64,7 @@ export const NavBar = () => {
             <MainMenu />
             <StyledHomeButton homeUrl={homeUrl} source="/lesmis-logo-white.svg" />
           </Left>
-          {!isHomeUrl(pathname) && <Search linkType={view} />}
+          {!hideSearch && <Search linkType={view} />}
           <FlexStart>
             {isLoggedIn ? null : ( // @see https://github.com/beyondessential/tupaia-backlog/issues/2290 //Todo: add Favourites Menu
               <TextButton
@@ -83,4 +83,12 @@ export const NavBar = () => {
       </MuiContainer>
     </Container>
   );
+};
+
+NavBar.propTypes = {
+  hideSearch: PropTypes.bool,
+};
+
+NavBar.defaultProps = {
+  hideSearch: false,
 };
