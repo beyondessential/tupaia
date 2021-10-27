@@ -36,6 +36,11 @@ export const selectCurrentMapOverlayCodes = createSelector([selectLocation], loc
   return mapOverlayCodesInUrl ? mapOverlayCodesInUrl.split(',') : [];
 });
 
+export const selectCurrentMapOverlayPeriods = createSelector([selectLocation], location => {
+  const mapOverlayPeriodsInUrl = getLocationComponentValue(location, URL_COMPONENTS.OVERLAY_PERIOD);
+  return mapOverlayPeriodsInUrl ? mapOverlayPeriodsInUrl.split(',') : [];
+});
+
 export const selectCurrentMapOverlays = createSelector(
   [state => state, selectCurrentMapOverlayCodes],
   selectMapOverlayByCodes,
@@ -65,10 +70,9 @@ export const selectDefaultMapOverlay = createSelector(
   },
 );
 
-export const selectCurrentPeriodGranularity = createSelector(
-  [selectCurrentMapOverlays],
-  // TODO: PHX-1 set multiple overlay period in URL, currently use the first selected map overlay
-  mapOverlays => mapOverlays[0]?.periodGranularity,
+export const selectPeriodGranularityByCode = createSelector(
+  [selectMapOverlayByCode],
+  mapOverlay => mapOverlay?.periodGranularity,
 );
 
 export const selectMapOverlayGroupByCode = createSelector(

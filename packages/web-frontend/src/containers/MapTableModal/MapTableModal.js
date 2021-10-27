@@ -87,7 +87,7 @@ MapTableModalComponent.defaultProps = {
 const mapStateToProps = state => {
   const currentMapOverlayCodes = selectCurrentMapOverlayCodes(state);
   const currentMapOverlays = selectCurrentMapOverlays(state);
-  const measureOptions = selectMeasureOptions(state, currentMapOverlayCodes);
+  const measureOptions = selectMeasureOptions(state, currentMapOverlayCodes) || [];
   const measureData = selectRenderedMeasuresWithDisplayInfo(state, currentMapOverlayCodes);
   const currentCountry = selectOrgUnitCountry(state, state.map.currentCountry);
 

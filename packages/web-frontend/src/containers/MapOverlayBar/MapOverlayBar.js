@@ -23,7 +23,7 @@ import {
   setMapOverlays,
   clearMeasure,
   toggleMeasureExpand,
-  updateMeasureConfig,
+  updateOverlayConfigs,
 } from '../../actions';
 import { HierarchyItem } from '../../components/HierarchyItem';
 import {
@@ -37,7 +37,7 @@ const MapOverlayBarComponent = ({
   currentMapOverlays,
   isMeasureLoading,
   currentOrganisationUnitName,
-  onUpdateMeasurePeriod,
+  onUpdateOverlayPeriod,
   mapOverlayHierarchy,
   defaultMapOverlay,
   currentMapOverlayCodes,
@@ -173,7 +173,7 @@ const MapOverlayBarComponent = ({
       emptyMessage={emptyMessage}
       selectedMapOverlays={currentMapOverlays}
       isMeasureLoading={isMeasureLoading}
-      onUpdateMeasurePeriod={onUpdateMeasurePeriod}
+      onUpdateOverlayPeriod={onUpdateOverlayPeriod}
       maxSelectedOverlays={maxSelectedOverlays}
       changeMaxSelectedOverlays={changeMaxSelectedOverlays}
     >
@@ -198,7 +198,7 @@ MapOverlayBarComponent.propTypes = {
   isMeasureLoading: PropTypes.bool.isRequired,
   onSetMapOverlay: PropTypes.func.isRequired,
   onClearMeasure: PropTypes.func.isRequired,
-  onUpdateMeasurePeriod: PropTypes.func.isRequired,
+  onUpdateOverlayPeriod: PropTypes.func.isRequired,
   currentOrganisationUnitName: PropTypes.string,
   defaultMapOverlay: MapOverlayShape,
 };
@@ -242,20 +242,14 @@ const mapDispatchToProps = dispatch => {
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { dispatch } = dispatchProps;
-  const { currentMapOverlayCodes } = stateProps;
 
   return {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    onUpdateMeasurePeriod: (startDate, endDate) =>
-      // TODO: PHX-103 - Now only select the last map overlay start date and end date, will use both in PHX-103
-      dispatch(
-        updateMeasureConfig(currentMapOverlayCodes[currentMapOverlayCodes.length - 1], {
-          startDate,
-          endDate,
-        }),
-      ),
+    onUpdateOverlayPeriod: (mapOverlayCode, overlayConfig) => {
+      dispatch(updateOverlayConfigs({ [mapOverlayCode]: overlayConfig }));
+    },
   };
 };
 

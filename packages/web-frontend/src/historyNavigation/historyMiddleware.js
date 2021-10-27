@@ -21,11 +21,16 @@ import {
   SET_ORG_UNIT,
   SET_PROJECT,
   updateHistoryLocation,
-  UPDATE_MEASURE_CONFIG,
+  UPDATE_OVERLAY_CONFIGS,
   LOCATION_CHANGE,
 } from '../actions';
-import { selectCurrentPeriodGranularity, selectMapOverlayByCodes } from '../selectors';
-import { URL_COMPONENTS } from './constants';
+import {
+  selectCurrentMapOverlayCodes,
+  selectCurrentMapOverlayPeriods,
+  selectPeriodGranularityByCode,
+  selectMapOverlayByCodes,
+} from '../selectors';
+import { DEFAULT_PERIOD, URL_COMPONENTS } from './constants';
 import {
   addPopStateListener,
   attemptPushHistory,
@@ -77,34 +82,53 @@ export const historyMiddleware = store => next => action => {
       dispatchLocationUpdate(store, { [URL_COMPONENTS.REPORT_PERIOD]: null });
       break;
     case SET_MAP_OVERLAYS: {
-      const mapOverlays = selectMapOverlayByCodes(state, action.mapOverlayCodes.split(','));
+      const currentMapOverlayCodes = action.mapOverlayCodes.split(',');
+      const mapOverlays = selectMapOverlayByCodes(state, currentMapOverlayCodes);
       if (mapOverlays.length === 0) {
         break;
       }
-
-      // TODO: PHX-1 set multiple overlay period in URL
-      const { startDate, endDate, periodGranularity } = mapOverlays[0];
-      dispatchLocationUpdate(store, {
-        [URL_COMPONENTS.MAP_OVERLAY]: action.mapOverlayCodes,
-        [URL_COMPONENTS.MEASURE_PERIOD]: convertDateRangeToUrlPeriodString(
+      const currentOverlayPeriods = [];
+      currentMapOverlayCodes.forEach(mapOverlayCode => {
+        const { startDate, endDate, periodGranularity } = mapOverlays.find(
+          mapOverlay => mapOverlay.mapOverlayCode === mapOverlayCode,
+        );
+        const overlayPeriod = convertDateRangeToUrlPeriodString(
           { startDate, endDate },
           periodGranularity,
-        ),
+        );
+        currentOverlayPeriods.push(overlayPeriod || DEFAULT_PERIOD);
+      });
+
+      dispatchLocationUpdate(store, {
+        [URL_COMPONENTS.MAP_OVERLAY]: action.mapOverlayCodes,
+        [URL_COMPONENTS.OVERLAY_PERIOD]: currentOverlayPeriods.join(','),
       });
       break;
     }
     case CLEAR_MEASURE:
-      dispatchLocationUpdate(store, { [URL_COMPONENTS.MAP_OVERLAY]: null });
-      dispatchLocationUpdate(store, { [URL_COMPONENTS.MEASURE_PERIOD]: null });
-      break;
-    case UPDATE_MEASURE_CONFIG:
       dispatchLocationUpdate(store, {
-        [URL_COMPONENTS.MEASURE_PERIOD]: convertDateRangeToUrlPeriodString(
-          action.measureConfig,
-          selectCurrentPeriodGranularity(state),
-        ),
+        [URL_COMPONENTS.MAP_OVERLAY]: null,
+        [URL_COMPONENTS.OVERLAY_PERIOD]: null,
       });
       break;
+    case UPDATE_OVERLAY_CONFIGS: {
+      const currentOverlayCodes = selectCurrentMapOverlayCodes(state);
+      const currentOverlayPeriods = selectCurrentMapOverlayPeriods(state);
+
+      Object.entries(action.overlayConfigs).forEach(([mapOverlayCode, overlayConfig]) => {
+        const targetedOverlayIndex = currentOverlayCodes.findIndex(code => code === mapOverlayCode);
+        const newOverlayPeriod = convertDateRangeToUrlPeriodString(
+          overlayConfig,
+          selectPeriodGranularityByCode(state, mapOverlayCode),
+        );
+        currentOverlayPeriods[targetedOverlayIndex] = newOverlayPeriod || DEFAULT_PERIOD;
+      });
+
+      dispatchLocationUpdate(store, {
+        [URL_COMPONENTS.OVERLAY_PERIOD]: currentOverlayPeriods.join(','),
+      });
+      break;
+    }
     default:
   }
 

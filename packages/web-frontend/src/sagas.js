@@ -84,16 +84,16 @@ import {
   SET_VERIFY_EMAIL_TOKEN,
   updateEnlargedDialog,
   updateEnlargedDialogError,
-  updateMeasureConfig,
-  UPDATE_MEASURE_CONFIG,
-  UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
+  updateOverlayConfigs,
+  UPDATE_OVERLAY_CONFIGS,
+  UPDATE_OVERLAY_DATE_RANGE_ONCE_HIERARCHY_LOADS,
   FETCH_INITIAL_DATA,
   setPasswordResetToken,
   DIALOG_PAGE_ONE_TIME_LOGIN,
   setVerifyEmailToken,
   setOrgUnit,
   openEnlargedDialog,
-  updateCurrentMeasureConfigOnceHierarchyLoads,
+  updateCurrentOverlayConfigOnceHierarchyLoads,
   LOCATION_CHANGE,
   goHome,
   setDashboardGroup,
@@ -110,14 +110,16 @@ import {
   convertUrlPeriodStringToDateRange,
   getInitialLocation,
   URL_COMPONENTS,
+  DEFAULT_PERIOD,
 } from './historyNavigation';
 import { setProject, setRequestingAccess } from './projects/actions';
 import {
   selectCurrentInfoViewKey,
   selectCurrentMapOverlayCodes,
+  selectCurrentMapOverlayPeriods,
   selectCurrentOrgUnitCode,
   selectShouldUseDashboardData,
-  selectCurrentPeriodGranularity,
+  selectPeriodGranularityByCode,
   selectCurrentProjectCode,
   selectCurrentExpandedViewConfig,
   selectCurrentExpandedViewContent,
@@ -204,7 +206,7 @@ const URL_REFRESH_COMPONENTS = {
   [URL_COMPONENTS.ORG_UNIT]: setOrgUnit,
   [URL_COMPONENTS.MAP_OVERLAY]: setMapOverlays,
   [URL_COMPONENTS.REPORT]: openEnlargedDialog,
-  [URL_COMPONENTS.MEASURE_PERIOD]: updateCurrentMeasureConfigOnceHierarchyLoads,
+  [URL_COMPONENTS.OVERLAY_PERIOD]: updateCurrentOverlayConfigOnceHierarchyLoads,
 };
 
 function* handleLocationChange({ location, previousLocation }) {
@@ -876,12 +878,8 @@ function* fetchMeasureInfo() {
     return;
   }
 
-  // TODO: PHX-103 - Now only select the last map overlay start date and end date, will use both in PHX-103
   for (const mapOverlayCode of mapOverlayCodes) {
-    const mapOverlayParams = selectMapOverlayByCode(
-      state,
-      mapOverlayCodes[mapOverlayCodes.length - 1],
-    );
+    const mapOverlayParams = selectMapOverlayByCode(state, mapOverlayCode);
     if (!mapOverlayParams) {
       yield put(cancelFetchMeasureData());
       return;
@@ -917,27 +915,40 @@ function* watchSetMapOverlayChange() {
   yield takeLatest(SET_MAP_OVERLAYS, fetchMeasureInfo);
 }
 
-function* watchMeasurePeriodChange() {
-  yield takeLatest(UPDATE_MEASURE_CONFIG, fetchMeasureInfo);
+function* watchOverlayPeriodChange() {
+  yield takeLatest(UPDATE_OVERLAY_CONFIGS, fetchMeasureInfo);
 }
 
-function* watchTryUpdateMeasureConfigAndWaitForHierarchyLoad() {
+function* watchTryUpdateOverlayConfigAndWaitForHierarchyLoad() {
   yield takeLatest(
-    UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
+    UPDATE_OVERLAY_DATE_RANGE_ONCE_HIERARCHY_LOADS,
     updateMapOverlayDateRangeOnceHierarchyLoads,
   );
 }
 
-// TODO: PHX-1 set multiple overlay period in URL, currently use the first selected map overlay
-function* updateMapOverlayDateRangeOnceHierarchyLoads(action) {
+function* updateMapOverlayDateRangeOnceHierarchyLoads() {
   yield take(FETCH_MEASURES_SUCCESS);
   const state = yield select();
-  const periodGranularity = selectCurrentPeriodGranularity(state);
-  const { startDate, endDate } = convertUrlPeriodStringToDateRange(
-    action.periodString,
-    periodGranularity,
-  );
-  yield put(updateMeasureConfig(selectCurrentMapOverlayCodes(state)[0], { startDate, endDate }));
+  const currentOverlayCodes = selectCurrentMapOverlayCodes(state);
+  const currentOverlayPeriods = selectCurrentMapOverlayPeriods(state);
+  const overlayConfigs = {};
+
+  for (let index = 0; index < currentOverlayCodes.length; index++) {
+    if (currentOverlayPeriods[index] === DEFAULT_PERIOD) {
+      break;
+    }
+    const currentOverlayCode = currentOverlayCodes[index];
+    const currentOverlayPeriod = currentOverlayPeriods[index];
+    const periodGranularity = selectPeriodGranularityByCode(state, currentOverlayCode);
+
+    const { startDate, endDate } = convertUrlPeriodStringToDateRange(
+      currentOverlayPeriod,
+      periodGranularity,
+    );
+    overlayConfigs[currentOverlayCode] = { startDate, endDate };
+  }
+
+  yield put(updateOverlayConfigs(overlayConfigs));
 }
 
 function* fetchCurrentMeasureInfo() {
@@ -1191,7 +1202,7 @@ export default [
   watchRequestProjectAccess,
   watchGoHomeAndResetToProjectSplash,
   watchFetchResetTokenLoginSuccess,
-  watchMeasurePeriodChange,
-  watchTryUpdateMeasureConfigAndWaitForHierarchyLoad,
+  watchOverlayPeriodChange,
+  watchTryUpdateOverlayConfigAndWaitForHierarchyLoad,
   watchHandleLocationChange,
 ];

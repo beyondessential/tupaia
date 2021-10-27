@@ -45,23 +45,21 @@ const MeasureDatePicker = styled.div`
 `;
 
 export const TitleAndDatePickerComponent = ({
-  mapOverlay = {},
-  onUpdateMeasurePeriod,
+  mapOverlay,
+  onUpdateOverlayPeriod,
   isExpanded,
-  isMeasureSelected,
+  isMapOverlaySelected,
   toggleMeasures,
   isMeasureLoading,
   displayedMapOverlays,
   onSetDisplayedMapOverlay,
-  // TODO: PHX-103: show both date pickers
-  showDatePickerOnlyAfterSecondTitle,
 }) => {
   const [isSwitchedOn, setIsSwitchedOn] = useState(true);
   useEffect(() => {
     setIsSwitchedOn(displayedMapOverlays.includes(mapOverlay.mapOverlayCode));
   }, [JSON.stringify(displayedMapOverlays)]);
 
-  const { periodGranularity, isTimePeriodEditable = true, name } = mapOverlay;
+  const { periodGranularity, isTimePeriodEditable = true, name, mapOverlayCode } = mapOverlay;
   const defaultDates = getDefaultDates(mapOverlay);
   const datePickerLimits = getLimits(periodGranularity, mapOverlay.datePickerLimits);
   const showDatePicker = !!(isTimePeriodEditable && periodGranularity);
@@ -72,7 +70,7 @@ export const TitleAndDatePickerComponent = ({
 
   const handleSwitchChange = () => {
     const newDisplayedOverlays = isSwitchedOn
-      ? displayedMapOverlays.filter(mapOverlayCode => mapOverlayCode !== mapOverlay.mapOverlayCode)
+      ? displayedMapOverlays.filter(code => code !== mapOverlay.mapOverlayCode)
       : [...displayedMapOverlays, mapOverlay.mapOverlayCode];
     onSetDisplayedMapOverlay(newDisplayedOverlays);
     setIsSwitchedOn(!isSwitchedOn);
@@ -80,12 +78,15 @@ export const TitleAndDatePickerComponent = ({
 
   const updateMeasurePeriod = (startDate, endDate) => {
     const period = GRANULARITY_CONFIG[periodGranularity].momentUnit;
-    onUpdateMeasurePeriod(moment(startDate).startOf(period), moment(endDate).endOf(period));
+    onUpdateOverlayPeriod(mapOverlayCode, {
+      startDate: moment(startDate).startOf(period),
+      endDate: moment(endDate).endOf(period),
+    });
   };
 
   return (
     <>
-      <Content expanded={isExpanded} selected={isMeasureSelected} period={periodGranularity}>
+      <Content expanded={isExpanded} selected={isMapOverlaySelected} period={periodGranularity}>
         <ContentText>{isMeasureLoading ? <CircularProgress size={22} /> : name}</ContentText>
         <ToolsWrapper>
           <Switch checked={isSwitchedOn} onChange={handleSwitchChange} />
@@ -94,7 +95,7 @@ export const TitleAndDatePickerComponent = ({
           </IconWrapper>
         </ToolsWrapper>
       </Content>
-      {showDatePicker && showDatePickerOnlyAfterSecondTitle && (
+      {showDatePicker && (
         <MeasureDatePicker expanded={isExpanded}>
           <DateRangePicker
             key={name} // force re-create the component on measure change, which resets initial dates
@@ -126,10 +127,10 @@ TitleAndDatePickerComponent.propTypes = {
     endDate: PropTypes.shape({}),
   }).isRequired,
   isExpanded: PropTypes.bool.isRequired,
-  isMeasureSelected: PropTypes.bool.isRequired,
+  isMapOverlaySelected: PropTypes.bool.isRequired,
   toggleMeasures: PropTypes.func.isRequired,
   isMeasureLoading: PropTypes.bool,
-  onUpdateMeasurePeriod: PropTypes.func.isRequired,
+  onUpdateOverlayPeriod: PropTypes.func.isRequired,
   displayedMapOverlays: PropTypes.arrayOf(PropTypes.string).isRequired,
   onSetDisplayedMapOverlay: PropTypes.func.isRequired,
 };
