@@ -32,6 +32,7 @@ export const processArithmeticConfig = async (models, config) => {
     };
   }
 
+  // Note: Only question codes included in the formula will be translated
   if (answerDisplayText) {
     translatedConfig = {
       ...translatedConfig,

@@ -20,7 +20,6 @@
 export const translateExpression = async (models, rawExpression, codes) => {
   const questionCodeToId = await models.question.findIdByCode(codes);
   let expression = rawExpression;
-  console.log(models, rawExpression, codes, questionCodeToId);
 
   for (const code of codes) {
     const questionId = questionCodeToId[code];
