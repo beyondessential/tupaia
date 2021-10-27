@@ -25,17 +25,11 @@ export class ArithmeticConfigCellBuilder extends KeyValueCellBuilder {
    * @param {*} defaultValuesConfig
    */
   async translateDefaultValues(defaultValuesConfig) {
-    console.log({ defaultValuesConfig })
     const promises = Object.entries(defaultValuesConfig).map(async ([key, value]) => {
-      console.log({ key, value });
       const question = await this.models.question.findById(key);
-      console.log({ question });
       return `${question?.code || `No question with id: ${key}`}:${value}`;
     });
-    console.log({ promises });
-    const out = await Promise.all(promises);
-    console.log({ out });
-    return out.join(',');
+    return (await Promise.all(promises)).join(',');
   }
 
   /**
