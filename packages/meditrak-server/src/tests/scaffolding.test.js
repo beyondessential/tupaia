@@ -26,7 +26,7 @@ before(async () => {
 
   sinon.stub(SendEmail, 'sendEmail');
 
-  await resetTestData();
+  // await resetTestData();
 
   chai.use(chaiSubset);
   chai.use(deepEqualInAnyOrder);
@@ -34,10 +34,10 @@ before(async () => {
   // `chaiAsPromised` must be used after other plugins to promisify them
   chai.use(chaiAsPromised);
 
-  // Silence winston logs
-  winston.configure({
-    transports: [new winston.transports.Console({ silent: true })],
-  });
+  // // Silence winston logs
+  // winston.configure({
+  //   transports: [new winston.transports.Console({ silent: true })],
+  // });
 });
 
 after(async () => {

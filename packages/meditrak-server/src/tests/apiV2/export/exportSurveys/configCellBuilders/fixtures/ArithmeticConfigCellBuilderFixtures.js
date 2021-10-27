@@ -18,8 +18,8 @@ export const ARITHMETIC_TEST_CASES = [
   },
   {
     description: 'answerDisplayText works',
-    config: `formula: $question_1_code + $question_2_code + ($question_1_code * 2)
-answerDisplayText: Modified question_1_code equals $result`,
+    config:
+      'formula: $question_1_code + $question_2_code + ($question_1_code * 2)\r\nanswerDisplayText: Modified question_1_code equals $result',
   },
 ];
 

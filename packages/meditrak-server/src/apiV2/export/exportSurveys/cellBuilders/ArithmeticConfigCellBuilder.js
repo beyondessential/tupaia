@@ -4,7 +4,10 @@
  */
 
 import { KeyValueCellBuilder } from './KeyValueCellBuilder';
-import { unTranslateExpression, getDollarPrefixedExpressionVariables } from '../../../utilities';
+import {
+  replaceQuestionIdsWithCodes,
+  getDollarPrefixedExpressionVariables,
+} from '../../../utilities';
 
 export class ArithmeticConfigCellBuilder extends KeyValueCellBuilder {
   extractRelevantObject({ arithmetic }) {
@@ -85,15 +88,9 @@ export class ArithmeticConfigCellBuilder extends KeyValueCellBuilder {
    * @param {*} codes
    */
   async translateAnswerDisplayText(text, questionIds) {
-    let translatedText = text;
-    const questionCodeToId = await this.fetchQuestionCode();
-
-    for (const code of codes) {
-      const questionId = questionCodeToId[code];
-      translatedText = translatedText.replace(code, questionId);
-    }
-
-    return translatedText;
+    return replaceQuestionIdsWithCodes(this.models, text, questionIds, {
+      useDollarPrefixes: false,
+    });
   }
 
   // We have to override the base class' build method because
@@ -112,7 +109,9 @@ export class ArithmeticConfigCellBuilder extends KeyValueCellBuilder {
     console.log({ questionIds });
 
     const translatedConfig = {
-      formula: await unTranslateExpression(this.models, formula, questionIds),
+      formula: await replaceQuestionIdsWithCodes(this.models, formula, questionIds, {
+        useDollarPrefixes: true,
+      }),
       defaultValues:
         defaultValues &&
         (await this.translateDefaultValues(this.models, answerDisplayText, questionIds)),
