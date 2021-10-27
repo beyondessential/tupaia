@@ -27,7 +27,7 @@ export class ArithmeticConfigCellBuilder extends KeyValueCellBuilder {
   async translateDefaultValues(defaultValuesConfig) {
     const promises = Object.entries(defaultValuesConfig).map(async ([key, value]) => {
       const question = await this.models.question.findById(key);
-      return `${question?.code || `No question with id: ${key}`}:${value}`;
+      return `${question?.code || `[No question with id: ${key}]`}:${value}`;
     });
     return (await Promise.all(promises)).join(',');
   }
@@ -42,30 +42,24 @@ export class ArithmeticConfigCellBuilder extends KeyValueCellBuilder {
    * @param {*} valueTranslationConfig
    */
   async translateValueTranslation(valueTranslationConfig) {
-    // const valueTranslation = splitStringOnComma(valueTranslationConfig);
-    // const translatedValueTranslation = {};
-    // const codes = [
-    //   ...new Set( // Remove duplicated codes
-    //     valueTranslation.map(defaultValue => {
-    //       const [code] = splitStringOn(defaultValue, '.');
-    //       return code;
-    //     }),
-    //   ),
-    // ];
-    // const questionCodeToId = await models.question.findIdByCode(codes);
+    console.log({ valueTranslationConfig });
+    const questionIds = Object.keys(valueTranslationConfig);
+    const translatedValueTranslation = {};
 
-    // for (const translation of valueTranslation) {
-    //   const [code, value] = splitStringOn(translation, ':');
-    //   const [questionCode, questionOption] = splitStringOn(code, '.');
-    //   const questionId = questionCodeToId[questionCode];
+    for (const id of questionIds) {
+      const question = await this.models.question.findById(id);
+      const code = question?.code || `[No question with id: ${id}]`;
+      // eg. key = Yes, value = 3
+      Object.entries(valueTranslationConfig[id]).forEach(([key, value]) => {
+        console.log({ key, value });
+        translatedValueTranslation[`${code}.${key}`] = value;
+      });
+      console.log({ valueTranslationConfig, id, question, translatedValueTranslation });
+    }
 
-    //   if (!translatedValueTranslation[questionId]) {
-    //     translatedValueTranslation[questionId] = {};
-    //   }
-    //   translatedValueTranslation[questionId][questionOption] = value;
-    // }
-
-    return translatedValueTranslation;
+    return Object.entries(translatedValueTranslation)
+      .map(([key, value]) => `${key}:${value}`)
+      .join(',');
   }
 
   /**
@@ -107,8 +101,7 @@ export class ArithmeticConfigCellBuilder extends KeyValueCellBuilder {
         answerDisplayText &&
         (await this.translateAnswerDisplayText(answerDisplayText, questionIds)),
       valueTranslation:
-        valueTranslation &&
-        (await this.translateValueTranslation(this.models, valueTranslation, questionIds)),
+        valueTranslation && (await this.translateValueTranslation(valueTranslation)),
     };
     console.log({ translatedConfig });
 
