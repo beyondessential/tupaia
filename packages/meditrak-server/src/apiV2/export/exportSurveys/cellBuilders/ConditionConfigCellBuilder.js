@@ -36,19 +36,16 @@ export class ConditionConfigCellBuilder extends KeyValueCellBuilder {
    *
    */
   async getExcelConditionConfig(conditions) {
-    console.log(conditions);
     return (
       await Promise.all(
         Object.entries(conditions).map(async ([targetValue, config]) => {
           const { formula } = config;
-          console.log({ targetValue, formula });
           const translatedFormula = await replaceQuestionIdsWithCodes(
             this.models,
             formula,
             getDollarPrefixedExpressionVariables(formula),
             { useDollarPrefixes: true },
           );
-          console.log({ translatedFormula });
           return `${targetValue}:${translatedFormula}`;
         }),
       )
@@ -77,10 +74,9 @@ export class ConditionConfigCellBuilder extends KeyValueCellBuilder {
    *
    */
   async getExcelDefaultValues(conditions) {
-    console.log(conditions);
     const defaultValues = {};
     const promises = Object.entries(conditions).map(async ([targetValue, config]) => {
-      const { defaultValues: defaultValuesConfig } = config;
+      const { defaultValues: defaultValuesConfig = {} } = config;
       return Promise.all(
         Object.entries(defaultValuesConfig).map(async ([questionId, value]) => {
           const question = await this.models.question.findById(questionId);
@@ -91,6 +87,8 @@ export class ConditionConfigCellBuilder extends KeyValueCellBuilder {
     });
 
     await Promise.all(promises);
+
+    if (Object.entries(defaultValues).length === 0) return undefined;
 
     return Object.entries(defaultValues)
       .map(([key, value]) => `${key}:${value}`)
