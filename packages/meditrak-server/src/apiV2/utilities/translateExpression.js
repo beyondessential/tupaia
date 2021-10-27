@@ -25,7 +25,8 @@ export const translateExpression = async (models, rawExpression, codes) => {
   for (const code of codes) {
     const questionId = questionCodeToId[code];
     // Retain the $ prefix, as UUID often starts with a number (breaks evaluation in mathjs)
-    expression = expression.replace(`$${code}`, `$${questionId}`);
+    // Using the global regular expression ensures we replace all instances
+    expression = expression.replace(new RegExp(`$${code}`, 'g'), `$${questionId}`);
   }
 
   return expression;
@@ -36,8 +37,11 @@ export const unTranslateExpression = async (models, rawExpression, ids) => {
 
   for (const id of ids) {
     const question = await models.question.findById(id);
-    // Retain the $ prefix, as UUID often starts with a number (breaks evaluation in mathjs)
-    expression = expression.replace(`$${id}`, `$${question?.code || `No question with id: ${id}`}`);
+    // Using the global regular expression ensures we replace all instances
+    expression = expression.replace(
+      new RegExp(`$${id}`, 'g'),
+      `$${question?.code || `No question with id: ${id}`}`,
+    );
   }
   console.log({ rawExpression, expression, ids });
 

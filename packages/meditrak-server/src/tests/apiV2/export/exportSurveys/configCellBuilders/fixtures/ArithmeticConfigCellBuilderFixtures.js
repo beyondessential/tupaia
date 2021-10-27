@@ -10,7 +10,7 @@ export const ARITHMETIC_TEST_CASES = [
   },
   {
     description: 'Question code translation',
-    config: 'formula: $question_1_code',
+    config: 'formula: $question_1_code + $question_2_code + ($question_1_code * 2)',
   },
 ];
 

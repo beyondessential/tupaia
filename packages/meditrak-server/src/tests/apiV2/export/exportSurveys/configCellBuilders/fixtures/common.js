@@ -8,4 +8,8 @@ export const QUESTIONS = [
     code: 'question_1_code',
     id: 'question_1_id',
   },
+  {
+    code: 'question_2_code',
+    id: 'question_2_id',
+  },
 ];
