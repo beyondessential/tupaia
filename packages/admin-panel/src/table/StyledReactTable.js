@@ -85,7 +85,6 @@ export const StyledReactTable = styled(ReactTable)`
   .rt-tr {
     padding-left: 10px;
     padding-right: 25px;
-    z-index: 1;
     align-items: center;
 
     .rt-td {

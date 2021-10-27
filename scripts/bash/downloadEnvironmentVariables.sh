@@ -31,4 +31,11 @@ for PACKAGE in $PACKAGES; do
             sed -i -E 's/^AGGREGATION_URL_PREFIX="?dev-"?$/AGGREGATION_URL_PREFIX=e2e-/g' ${ENV_FILE_PATH}
         fi
     fi
+
+    if [[ "${BRANCH}" == dev ]]; then
+        # Update dev specific environment variables
+        # (removes ###DEV_ONLY### prefixes, leaving the key=value pair uncommented)
+        # (after removing prefix, if there are duplicate keys, dotenv uses the last one in the file)
+        sed -i -E 's/^###DEV_ONLY###//g' ${ENV_FILE_PATH}
+    fi
 done

@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import moment from 'moment';
 
-import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
+import { buildAndInsertSurveys, generateId, generateTestId, upsertDummyRecord } from '@tupaia/database';
 import { oneSecondSleep } from '@tupaia/utils';
 import {
   expectErrors,
@@ -12,7 +12,7 @@ import {
   upsertEntity,
   upsertFacility,
   upsertQuestion,
-} from '../../testUtilities';
+} from '../testUtilities';
 
 const getRandomSurveyResponse = async models => {
   const surveyResponses = await models.surveyResponse.all();
@@ -77,7 +77,7 @@ describe('surveyResponse endpoint', () => {
     const [{ survey }] = await buildAndInsertSurveys(models, [
       {
         id: surveyId,
-        code: 'TEST_SURVEY',
+        code: 'TEST_SURVEY_' + generateId(), // prevent test cross-pollination
         questions: [
           { code: questionCode(1), type: 'FreeText' },
           { code: questionCode(2), type: 'FreeText' },
@@ -225,7 +225,7 @@ describe('surveyResponse endpoint', () => {
     expect(body.results[1].answerIds).to.have.length(2);
   });
 
-  it('Should throw if a submission has an invalid survey code', async () => {
+  it('Should throw if a submission has an invalid survey id', async () => {
     const response = await app.post('surveyResponse', {
       body: {
         survey_id: 'NOT_REAL',
@@ -315,7 +315,7 @@ describe('surveyResponse endpoint', () => {
     expectError(response, /Could not find question/);
   });
 
-  it('Should throw if a survey has no answers', async () => {
+  it('Should allow a survey response with no answers', async () => {
     const response = await app.post('surveyResponse', {
       body: {
         survey_id: surveyId,
@@ -325,7 +325,11 @@ describe('surveyResponse endpoint', () => {
       },
     });
 
-    expectError(response, /must contain at least one answer/);
+    expectSuccess(response);
+    const { body } = response;
+    expect(body.results).to.have.length(1);
+    expect(body.results[0].surveyResponseId).to.not.be.undefined;
+    expect(body.results[0].answerIds).to.have.length(0);
   });
 
   it('Should throw if a survey has an answer with no content', async () => {

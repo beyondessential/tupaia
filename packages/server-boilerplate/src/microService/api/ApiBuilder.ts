@@ -10,7 +10,7 @@ import errorHandler from 'api-error-handler';
 
 import { Authenticator } from '@tupaia/auth';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
-import { TupaiaApiClient, getBaseUrlsForHost } from '@tupaia/api-client';
+import { TupaiaApiClient, getBaseUrlsForHost, LOCALHOST_BASE_URLS } from '@tupaia/api-client';
 
 import { handleWith, handleError } from '../../utils';
 import { buildBasicBearerAuthMiddleware } from '../auth';
@@ -53,7 +53,7 @@ export class ApiBuilder {
         getAuthHeader: async () => req.headers.authorization || '',
       };
 
-      const baseUrls = getBaseUrlsForHost(req.hostname);
+      const baseUrls = process.env.NODE_ENV === 'test' ? LOCALHOST_BASE_URLS : getBaseUrlsForHost(req.hostname);
 
       const context: RequestContext = {
         services: new TupaiaApiClient(microServiceAuthHandler, baseUrls),
