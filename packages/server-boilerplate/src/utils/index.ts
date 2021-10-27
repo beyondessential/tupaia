@@ -5,3 +5,4 @@
  */
 export { handleError } from './handleError';
 export { handleWith } from './handleWith';
+export { useForwardUnhandledRequests } from './useForwardUnhandledRequests';

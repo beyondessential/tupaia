@@ -19,7 +19,11 @@ export type Answers = {
 export class MeditrakApi extends BaseApi {
 
   async createSurveyResponses(responses: SurveyResponse[]): Promise<void> {
-    await this.connection.post('surveyResponse', null, responses);
+    const BATCH_SIZE = 500;
+    for (let i = 0; i < responses.length; i += BATCH_SIZE) {
+      const chunk = responses.slice(i, i + BATCH_SIZE);
+      await this.connection.post('surveyResponse', null, chunk);
+    }
   }
 
 }
