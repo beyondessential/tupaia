@@ -37,7 +37,7 @@ import {
   CHANGE_SIDE_BAR_CONTRACTED_WIDTH,
   CHANGE_SIDE_BAR_EXPANDED_WIDTH,
   SET_MAP_OVERLAYS,
-  UPDATE_MEASURE_CONFIGS,
+  UPDATE_OVERLAY_CONFIGS,
   CLEAR_MAP_OVERLAY_HIERARCHY,
   SET_ORG_UNIT,
   CHANGE_SEARCH,
@@ -597,9 +597,9 @@ function mapOverlayBar(
         ...state,
         hiddenMeasures: {},
       };
-    case UPDATE_MEASURE_CONFIGS: {
+    case UPDATE_OVERLAY_CONFIGS: {
       const mapOverlayHierarchy = [...state.mapOverlayHierarchy];
-      Object.entries(action.measureConfigs).forEach(([mapOverlayCode, measureConfig]) => {
+      Object.entries(action.overlayConfigs).forEach(([mapOverlayCode, overlayConfig]) => {
         const { groupIndex, mapOverlay, mapOverlayGroupIndex } = selectMapOverlayGroupByCode(
           { mapOverlayBar: state },
           mapOverlayCode,
@@ -607,7 +607,7 @@ function mapOverlayBar(
 
         mapOverlayHierarchy[groupIndex].children[mapOverlayGroupIndex] = {
           ...mapOverlay,
-          ...measureConfig,
+          ...overlayConfig,
         };
       });
 

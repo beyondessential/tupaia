@@ -23,7 +23,7 @@ import {
   setMapOverlays,
   clearMeasure,
   toggleMeasureExpand,
-  updateMeasureConfigs,
+  updateOverlayConfigs,
 } from '../../actions';
 import { HierarchyItem } from '../../components/HierarchyItem';
 import {
@@ -37,7 +37,7 @@ const MapOverlayBarComponent = ({
   currentMapOverlays,
   isMeasureLoading,
   currentOrganisationUnitName,
-  onUpdateMeasurePeriod,
+  onUpdateOverlayPeriod,
   mapOverlayHierarchy,
   defaultMapOverlay,
   currentMapOverlayCodes,
@@ -173,7 +173,7 @@ const MapOverlayBarComponent = ({
       emptyMessage={emptyMessage}
       selectedMapOverlays={currentMapOverlays}
       isMeasureLoading={isMeasureLoading}
-      onUpdateMeasurePeriod={onUpdateMeasurePeriod}
+      onUpdateOverlayPeriod={onUpdateOverlayPeriod}
       maxSelectedOverlays={maxSelectedOverlays}
       changeMaxSelectedOverlays={changeMaxSelectedOverlays}
     >
@@ -198,7 +198,7 @@ MapOverlayBarComponent.propTypes = {
   isMeasureLoading: PropTypes.bool.isRequired,
   onSetMapOverlay: PropTypes.func.isRequired,
   onClearMeasure: PropTypes.func.isRequired,
-  onUpdateMeasurePeriod: PropTypes.func.isRequired,
+  onUpdateOverlayPeriod: PropTypes.func.isRequired,
   currentOrganisationUnitName: PropTypes.string,
   defaultMapOverlay: MapOverlayShape,
 };
@@ -247,8 +247,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    onUpdateMeasurePeriod: (mapOverlayCode, measureConfig) => {
-      dispatch(updateMeasureConfigs({ [mapOverlayCode]: measureConfig }));
+    onUpdateOverlayPeriod: (mapOverlayCode, overlayConfig) => {
+      dispatch(updateOverlayConfigs({ [mapOverlayCode]: overlayConfig }));
     },
   };
 };

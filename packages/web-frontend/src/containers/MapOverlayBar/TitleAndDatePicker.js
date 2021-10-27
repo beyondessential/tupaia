@@ -46,9 +46,9 @@ const MeasureDatePicker = styled.div`
 
 export const TitleAndDatePickerComponent = ({
   mapOverlay,
-  onUpdateMeasurePeriod,
+  onUpdateOverlayPeriod,
   isExpanded,
-  isMeasureSelected,
+  isMapOverlaySelected,
   toggleMeasures,
   isMeasureLoading,
   displayedMapOverlays,
@@ -78,7 +78,7 @@ export const TitleAndDatePickerComponent = ({
 
   const updateMeasurePeriod = (startDate, endDate) => {
     const period = GRANULARITY_CONFIG[periodGranularity].momentUnit;
-    onUpdateMeasurePeriod(mapOverlayCode, {
+    onUpdateOverlayPeriod(mapOverlayCode, {
       startDate: moment(startDate).startOf(period),
       endDate: moment(endDate).endOf(period),
     });
@@ -86,7 +86,7 @@ export const TitleAndDatePickerComponent = ({
 
   return (
     <>
-      <Content expanded={isExpanded} selected={isMeasureSelected} period={periodGranularity}>
+      <Content expanded={isExpanded} selected={isMapOverlaySelected} period={periodGranularity}>
         <ContentText>{isMeasureLoading ? <CircularProgress size={22} /> : name}</ContentText>
         <ToolsWrapper>
           <Switch checked={isSwitchedOn} onChange={handleSwitchChange} />
@@ -127,10 +127,10 @@ TitleAndDatePickerComponent.propTypes = {
     endDate: PropTypes.shape({}),
   }).isRequired,
   isExpanded: PropTypes.bool.isRequired,
-  isMeasureSelected: PropTypes.bool.isRequired,
+  isMapOverlaySelected: PropTypes.bool.isRequired,
   toggleMeasures: PropTypes.func.isRequired,
   isMeasureLoading: PropTypes.bool,
-  onUpdateMeasurePeriod: PropTypes.func.isRequired,
+  onUpdateOverlayPeriod: PropTypes.func.isRequired,
   displayedMapOverlays: PropTypes.arrayOf(PropTypes.string).isRequired,
   onSetDisplayedMapOverlay: PropTypes.func.isRequired,
 };

@@ -81,13 +81,13 @@ export const Control = ({
   emptyMessage,
   selectedMapOverlays,
   isMeasureLoading,
-  onUpdateMeasurePeriod,
+  onUpdateOverlayPeriod,
   children,
   maxSelectedOverlays,
   changeMaxSelectedOverlays,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const isMeasureSelected = selectedMapOverlays.length > 0;
+  const isMapOverlaySelected = selectedMapOverlays.length > 0;
   const toggleMeasures = useCallback(() => {
     if (isExpanded) {
       setIsExpanded(false);
@@ -114,14 +114,14 @@ export const Control = ({
         </Wrapper>
         <MapTableModal />
       </Header>
-      {isMeasureSelected ? (
+      {isMapOverlaySelected ? (
         selectedMapOverlays.map(mapOverlay => (
           <TitleAndDatePicker
             key={mapOverlay.mapOverlayCode}
             mapOverlay={mapOverlay}
-            onUpdateMeasurePeriod={onUpdateMeasurePeriod}
+            onUpdateOverlayPeriod={onUpdateOverlayPeriod}
             isExpanded={isExpanded}
-            isMeasureSelected={isMeasureSelected}
+            isMapOverlaySelected={isMapOverlaySelected}
             toggleMeasures={toggleMeasures}
             isMeasureLoading={isMeasureLoading}
           />
@@ -159,7 +159,7 @@ Control.propTypes = {
   emptyMessage: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
   isMeasureLoading: PropTypes.bool,
-  onUpdateMeasurePeriod: PropTypes.func.isRequired,
+  onUpdateOverlayPeriod: PropTypes.func.isRequired,
   maxSelectedOverlays: PropTypes.number.isRequired,
   changeMaxSelectedOverlays: PropTypes.func.isRequired,
 };

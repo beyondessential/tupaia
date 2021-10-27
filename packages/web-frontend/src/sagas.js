@@ -84,16 +84,16 @@ import {
   SET_VERIFY_EMAIL_TOKEN,
   updateEnlargedDialog,
   updateEnlargedDialogError,
-  updateMeasureConfigs,
-  UPDATE_MEASURE_CONFIGS,
-  UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
+  updateOverlayConfigs,
+  UPDATE_OVERLAY_CONFIGS,
+  UPDATE_OVERLAY_DATE_RANGE_ONCE_HIERARCHY_LOADS,
   FETCH_INITIAL_DATA,
   setPasswordResetToken,
   DIALOG_PAGE_ONE_TIME_LOGIN,
   setVerifyEmailToken,
   setOrgUnit,
   openEnlargedDialog,
-  updateCurrentMeasureConfigOnceHierarchyLoads,
+  updateCurrentOverlayConfigOnceHierarchyLoads,
   LOCATION_CHANGE,
   goHome,
   setDashboardGroup,
@@ -206,7 +206,7 @@ const URL_REFRESH_COMPONENTS = {
   [URL_COMPONENTS.ORG_UNIT]: setOrgUnit,
   [URL_COMPONENTS.MAP_OVERLAY]: setMapOverlays,
   [URL_COMPONENTS.REPORT]: openEnlargedDialog,
-  [URL_COMPONENTS.OVERLAY_PERIOD]: updateCurrentMeasureConfigOnceHierarchyLoads,
+  [URL_COMPONENTS.OVERLAY_PERIOD]: updateCurrentOverlayConfigOnceHierarchyLoads,
 };
 
 function* handleLocationChange({ location, previousLocation }) {
@@ -915,13 +915,13 @@ function* watchSetMapOverlayChange() {
   yield takeLatest(SET_MAP_OVERLAYS, fetchMeasureInfo);
 }
 
-function* watchMeasurePeriodChange() {
-  yield takeLatest(UPDATE_MEASURE_CONFIGS, fetchMeasureInfo);
+function* watchOverlayPeriodChange() {
+  yield takeLatest(UPDATE_OVERLAY_CONFIGS, fetchMeasureInfo);
 }
 
-function* watchTryUpdateMeasureConfigAndWaitForHierarchyLoad() {
+function* watchTryUpdateOverlayConfigAndWaitForHierarchyLoad() {
   yield takeLatest(
-    UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
+    UPDATE_OVERLAY_DATE_RANGE_ONCE_HIERARCHY_LOADS,
     updateMapOverlayDateRangeOnceHierarchyLoads,
   );
 }
@@ -931,7 +931,7 @@ function* updateMapOverlayDateRangeOnceHierarchyLoads() {
   const state = yield select();
   const currentOverlayCodes = selectCurrentMapOverlayCodes(state);
   const currentOverlayPeriods = selectCurrentMapOverlayPeriods(state);
-  const measureConfigs = {};
+  const overlayConfigs = {};
 
   for (let index = 0; index < currentOverlayCodes.length; index++) {
     if (currentOverlayPeriods[index] === DEFAULT_PERIOD) {
@@ -945,10 +945,10 @@ function* updateMapOverlayDateRangeOnceHierarchyLoads() {
       currentOverlayPeriod,
       periodGranularity,
     );
-    measureConfigs[currentOverlayCode] = { startDate, endDate };
+    overlayConfigs[currentOverlayCode] = { startDate, endDate };
   }
 
-  yield put(updateMeasureConfigs(measureConfigs));
+  yield put(updateOverlayConfigs(overlayConfigs));
 }
 
 function* fetchCurrentMeasureInfo() {
@@ -1202,7 +1202,7 @@ export default [
   watchRequestProjectAccess,
   watchGoHomeAndResetToProjectSplash,
   watchFetchResetTokenLoginSuccess,
-  watchMeasurePeriodChange,
-  watchTryUpdateMeasureConfigAndWaitForHierarchyLoad,
+  watchOverlayPeriodChange,
+  watchTryUpdateOverlayConfigAndWaitForHierarchyLoad,
   watchHandleLocationChange,
 ];

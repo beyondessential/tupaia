@@ -21,7 +21,7 @@ import {
   SET_ORG_UNIT,
   SET_PROJECT,
   updateHistoryLocation,
-  UPDATE_MEASURE_CONFIGS,
+  UPDATE_OVERLAY_CONFIGS,
   LOCATION_CHANGE,
 } from '../actions';
 import {
@@ -111,14 +111,14 @@ export const historyMiddleware = store => next => action => {
         [URL_COMPONENTS.OVERLAY_PERIOD]: null,
       });
       break;
-    case UPDATE_MEASURE_CONFIGS: {
+    case UPDATE_OVERLAY_CONFIGS: {
       const currentOverlayCodes = selectCurrentMapOverlayCodes(state);
       const currentOverlayPeriods = selectCurrentMapOverlayPeriods(state);
 
-      Object.entries(action.measureConfigs).forEach(([mapOverlayCode, measureConfig]) => {
+      Object.entries(action.overlayConfigs).forEach(([mapOverlayCode, overlayConfig]) => {
         const targetedOverlayIndex = currentOverlayCodes.findIndex(code => code === mapOverlayCode);
         const newOverlayPeriod = convertDateRangeToUrlPeriodString(
-          measureConfig,
+          overlayConfig,
           selectPeriodGranularityByCode(state, mapOverlayCode),
         );
         currentOverlayPeriods[targetedOverlayIndex] = newOverlayPeriod || DEFAULT_PERIOD;

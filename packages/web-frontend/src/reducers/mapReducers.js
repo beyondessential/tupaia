@@ -25,7 +25,7 @@ import {
   HIDE_MAP_MEASURE,
   UNHIDE_MAP_MEASURE,
   CLEAR_MEASURE,
-  UPDATE_MEASURE_CONFIGS,
+  UPDATE_OVERLAY_CONFIGS,
   SET_PROJECT,
   SET_DISPLAYED_MAP_OVERLAY,
 } from '../actions';
@@ -110,7 +110,7 @@ function measureInfo(state = {}, action) {
 
 function isMeasureLoading(state = false, action) {
   switch (action.type) {
-    case UPDATE_MEASURE_CONFIGS:
+    case UPDATE_OVERLAY_CONFIGS:
     case SET_MAP_OVERLAYS:
       return true;
     case FETCH_MEASURE_DATA_ERROR:
