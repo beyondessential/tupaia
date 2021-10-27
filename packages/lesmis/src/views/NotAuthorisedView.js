@@ -49,7 +49,7 @@ export const NotAuthorisedView = () => {
         <Heading variant="h4">You are not authorised to view this page</Heading>
         <Text>If you would like access please contact an administrator.</Text>
         {isLoggedIn && (
-          <Button component={RouterLink} to="/">
+          <Button component={RouterLink} to={`/${locale}/`}>
             Go back to home page
           </Button>
         )}
@@ -57,7 +57,7 @@ export const NotAuthorisedView = () => {
           <Button
             component={RouterLink}
             to={{
-              pathname: `${locale}/login`,
+              pathname: `/${locale}/login`,
               state: { referer: history.location },
             }}
           >

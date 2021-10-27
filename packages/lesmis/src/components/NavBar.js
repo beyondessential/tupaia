@@ -69,7 +69,7 @@ export const NavBar = ({ hideSearch }) => {
             {isLoggedIn ? null : ( // @see https://github.com/beyondessential/tupaia-backlog/issues/2290 //Todo: add Favourites Menu
               <TextButton
                 to={{
-                  pathname: `${locale}/register`,
+                  pathname: `/${locale}/register`,
                   state: { referer: history.location },
                 }}
                 component={RouterLink}
