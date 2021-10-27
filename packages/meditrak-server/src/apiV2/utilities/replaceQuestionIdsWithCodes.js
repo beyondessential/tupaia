@@ -15,7 +15,6 @@ export const replaceQuestionIdsWithCodes = async (models, rawExpression, ids, op
       `${useDollarPrefixes ? '$' : ''}${question?.code || `No question with id: ${id}`}`,
     );
   }
-  console.log({ rawExpression, expression, ids });
 
   return expression;
 };

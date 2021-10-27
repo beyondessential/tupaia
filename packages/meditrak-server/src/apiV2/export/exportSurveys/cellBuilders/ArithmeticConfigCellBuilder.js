@@ -42,7 +42,6 @@ export class ArithmeticConfigCellBuilder extends KeyValueCellBuilder {
    * @param {*} valueTranslationConfig
    */
   async translateValueTranslation(valueTranslationConfig) {
-    console.log({ valueTranslationConfig });
     const questionIds = Object.keys(valueTranslationConfig);
     const translatedValueTranslation = {};
 
@@ -51,10 +50,8 @@ export class ArithmeticConfigCellBuilder extends KeyValueCellBuilder {
       const code = question?.code || `[No question with id: ${id}]`;
       // eg. key = Yes, value = 3
       Object.entries(valueTranslationConfig[id]).forEach(([key, value]) => {
-        console.log({ key, value });
         translatedValueTranslation[`${code}.${key}`] = value;
       });
-      console.log({ valueTranslationConfig, id, question, translatedValueTranslation });
     }
 
     return Object.entries(translatedValueTranslation)
@@ -85,12 +82,10 @@ export class ArithmeticConfigCellBuilder extends KeyValueCellBuilder {
     }
     const fullObject =
       typeof jsonStringOrObject === 'string' ? JSON.parse(jsonStringOrObject) : jsonStringOrObject;
-    console.log({ fullObject });
     const config = this.extractRelevantObject(fullObject) || {};
     const { formula, defaultValues, valueTranslation, answerDisplayText } = config;
 
     const questionIds = getDollarPrefixedExpressionVariables(formula);
-    console.log({ questionIds });
 
     const translatedConfig = {
       formula: await replaceQuestionIdsWithCodes(this.models, formula, questionIds, {
@@ -103,7 +98,6 @@ export class ArithmeticConfigCellBuilder extends KeyValueCellBuilder {
         answerDisplayText &&
         (await this.translateAnswerDisplayText(answerDisplayText, questionIds)),
     };
-    console.log({ translatedConfig });
 
     return Object.entries(translatedConfig)
       .filter(([_, value]) => value !== undefined)
