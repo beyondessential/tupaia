@@ -69,7 +69,8 @@ export const Legend = React.memo(
     }
 
     const measureInfo = currentMapOverlayCodes.reduce((results, mapOverlayCode) => {
-      const serieses = baseMeasureInfo[mapOverlayCode][seriesesKey].filter(
+      const baseSerieses = baseMeasureInfo[mapOverlayCode]?.[seriesesKey] || [];
+      const serieses = baseSerieses.filter(
         ({ type, hideFromLegend, values = [] }) =>
           ![MEASURE_TYPE_RADIUS, MEASURE_TYPE_POPUP_ONLY].includes(type) &&
           hideFromLegend !== true &&
@@ -126,10 +127,12 @@ Legend.propTypes = {
   setValueHidden: PropTypes.func,
   displayedMapOverlayCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
   currentMapOverlayCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  seriesesKey: PropTypes.string,
 };
 
 Legend.defaultProps = {
   className: null,
   hiddenValues: {},
   setValueHidden: null,
+  seriesesKey: null,
 };

@@ -25,6 +25,8 @@ import PropTypes from 'prop-types';
 import FlatButton from 'material-ui/FlatButton';
 import ClosedIcon from 'material-ui/svg-icons/navigation/chevron-right';
 import OpenIcon from 'material-ui/svg-icons/navigation/expand-more';
+import SelectedRadioIcon from 'material-ui/svg-icons/toggle/radio-button-checked';
+import UnSelectedRadioIcon from 'material-ui/svg-icons/toggle/radio-button-unchecked';
 import SelectedCheckBoxIcon from 'material-ui/svg-icons/toggle/check-box';
 import UnSelectedCheckBoxIcon from 'material-ui/svg-icons/toggle/check-box-outline-blank';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -36,6 +38,7 @@ export const HierarchyItem = React.memo(
     style,
     nestedMargin,
     nestedItems,
+    isCheckBox,
     isSelected,
     Icon,
     isLoading,
@@ -65,10 +68,12 @@ export const HierarchyItem = React.memo(
     };
 
     const SelectionIcon = () => {
+      const SelectedIcon = isCheckBox ? SelectedCheckBoxIcon : SelectedRadioIcon;
+      const UnSelectedIcon = isCheckBox ? UnSelectedCheckBoxIcon : UnSelectedRadioIcon;
       return isSelected ? (
-        <SelectedCheckBoxIcon style={styles.buttonIcon} />
+        <SelectedIcon style={styles.buttonIcon} />
       ) : (
-        <UnSelectedCheckBoxIcon style={styles.buttonIcon} />
+        <UnSelectedIcon style={styles.buttonIcon} />
       );
     };
 
