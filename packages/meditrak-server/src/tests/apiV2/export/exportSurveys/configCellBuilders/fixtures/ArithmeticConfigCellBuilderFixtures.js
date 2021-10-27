@@ -17,6 +17,15 @@ export const ARITHMETIC_TEST_CASES = [
     config: 'formula: $question_1_code + $question_2_code + ($question_1_code * 2)',
   },
   {
+    description: 'defaultValues work',
+    config: 'formula: $question_1_code\r\ndefaultValues: question_1_code:0',
+  },
+  {
+    description: 'multiple defaultValues work',
+    config:
+      'formula: $question_1_code + $question_2_code\r\ndefaultValues: question_1_code:0,question_2_code:test_ran\'dom"_str`ing',
+  },
+  {
     description: 'answerDisplayText works',
     config:
       'formula: $question_1_code + $question_2_code + ($question_1_code * 2)\r\nanswerDisplayText: Modified question_1_code equals $result',

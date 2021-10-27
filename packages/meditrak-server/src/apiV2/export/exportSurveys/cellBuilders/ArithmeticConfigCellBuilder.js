@@ -25,21 +25,17 @@ export class ArithmeticConfigCellBuilder extends KeyValueCellBuilder {
    * @param {*} defaultValuesConfig
    */
   async translateDefaultValues(defaultValuesConfig) {
-    // const defaultValues = splitStringOnComma(defaultValuesConfig);
-    // const translatedDefaultValues = {};
-    // const codeToValue = {};
-    // defaultValues.forEach(defaultValue => {
-    //   const [code, value] = splitStringOn(defaultValue, ':');
-    //   codeToValue[code] = value;
-    // });
-    // const questionCodeToId = await models.question.findIdByCode(Object.keys(codeToValue));
-
-    // Object.entries(codeToValue).forEach(([code, value]) => {
-    //   const questionId = questionCodeToId[code];
-    //   translatedDefaultValues[questionId] = value;
-    // });
-
-    return translatedDefaultValues;
+    console.log({ defaultValuesConfig })
+    const promises = Object.entries(defaultValuesConfig).map(async ([key, value]) => {
+      console.log({ key, value });
+      const question = await this.models.question.findById(key);
+      console.log({ question });
+      return `${question?.code || `No question with id: ${key}`}:${value}`;
+    });
+    console.log({ promises });
+    const out = await Promise.all(promises);
+    console.log({ out });
+    return out.join(',');
   }
 
   /**
@@ -112,15 +108,13 @@ export class ArithmeticConfigCellBuilder extends KeyValueCellBuilder {
       formula: await replaceQuestionIdsWithCodes(this.models, formula, questionIds, {
         useDollarPrefixes: true,
       }),
-      defaultValues:
-        defaultValues &&
-        (await this.translateDefaultValues(this.models, answerDisplayText, questionIds)),
+      defaultValues: defaultValues && (await this.translateDefaultValues(defaultValues)),
       answerDisplayText:
         answerDisplayText &&
         (await this.translateAnswerDisplayText(answerDisplayText, questionIds)),
       valueTranslation:
         valueTranslation &&
-        (await this.translateValueTranslation(this.models, answerDisplayText, questionIds)),
+        (await this.translateValueTranslation(this.models, valueTranslation, questionIds)),
     };
     console.log({ translatedConfig });
 
