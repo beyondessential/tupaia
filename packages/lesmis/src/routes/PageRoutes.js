@@ -29,7 +29,7 @@ export const PageRoutes = React.memo(() => {
     <Suspense fallback={<FullPageLoader />}>
       <Switch>
         <Route exact path={`${path}/`}>
-          <NavBar />
+          <NavBar hideSearch />
           <HomeView />
         </Route>
         <Route path={`${path}/login`}>
@@ -43,7 +43,7 @@ export const PageRoutes = React.memo(() => {
           <ProfileView />
           <Footer />
         </Route>
-        <Route path="/admin">
+        <Route path={`${path}/admin`}>
           <NavBar hideSearch />
           <AdminPanel />
           <Footer />

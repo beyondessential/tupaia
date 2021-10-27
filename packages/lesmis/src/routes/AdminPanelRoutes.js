@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Switch, Redirect, Route } from 'react-router-dom';
+import { Switch, Redirect, Route, useRouteMatch } from 'react-router-dom';
 import { TabsToolbar } from '@tupaia/ui-components';
 import { Assignment, InsertChart, PeopleAlt } from '@material-ui/icons';
 import {
@@ -122,7 +122,7 @@ export const ROUTES = [
   },
   {
     label: 'Users & Permissions',
-    to: '/admin/users',
+    to: `${ADMIN_URL}/users`,
     icon: <PeopleAlt />,
     tabs: [
       {
@@ -158,6 +158,7 @@ const HeaderContainer = styled.div`
 
 const AdminPanelRoutes = () => {
   const headerEl = React.useRef(null);
+  const { path } = useRouteMatch();
   const { isLesmisAdmin } = useUser();
 
   const getHeaderEl = () => {
@@ -170,19 +171,19 @@ const AdminPanelRoutes = () => {
         <HeaderContainer ref={headerEl} />
         <Switch>
           {[...ROUTES].map(route => (
-            <LesmisAdminRoute key={route.to} path={route.to}>
+            <LesmisAdminRoute key={route.to} path={`${path}${route.to}`}>
               <TabsToolbar links={route.tabs} maxWidth="xl" />
               <Switch>
                 {route.tabs.map(tab => (
-                  <Route key={`${route.to}-${tab.to}`} path={`${route.to}${tab.to}`} exact>
+                  <Route key={`${route.to}-${tab.to}`} path={`${path}${route.to}${tab.to}`} exact>
                     <tab.component getHeaderEl={getHeaderEl} isBESAdmin={isLesmisAdmin} />
                   </Route>
                 ))}
-                <Redirect to={route.to} />
+                <Redirect to={`${path}${route.to}`} />
               </Switch>
             </LesmisAdminRoute>
           ))}
-          <Redirect to="/admin/survey-responses" />
+          <Redirect to={`${path}${ADMIN_URL}/survey-responses`} />
         </Switch>
       </div>
     </AdminPanelDataProviders>

@@ -85,36 +85,34 @@ const TupaiaText = styled(Typography)`
   line-height: 140%;
 `;
 
-const ListItemLink = props => <ListItem button component={RouterLink} {...props} />;
-
 /* eslint-disable */
 const AdminPanelLinks = () => (
   <>
     <Subheader component="div">Admin</Subheader>
-    <ListItemLink to="/admin/survey-responses">
+    <LocaleListItemLink to="/admin/survey-responses">
       <ListItemIcon>
         <Assignment />
       </ListItemIcon>
       <ListItemText primary="Survey Responses" />
-    </ListItemLink>
-    <ListItemLink to="/admin/surveys">
+    </LocaleListItemLink>
+    <LocaleListItemLink to="/admin/surveys">
       <ListItemIcon>
         <Assignment />
       </ListItemIcon>
       <ListItemText primary="Surveys" />
-    </ListItemLink>
-    <ListItemLink to="/admin/visualisations">
+    </LocaleListItemLink>
+    <LocaleListItemLink to="/admin/visualisations">
       <ListItemIcon>
         <Assignment />
       </ListItemIcon>
       <ListItemText primary="Visualisations" />
-    </ListItemLink>
-    <ListItemLink to="/admin/users">
+    </LocaleListItemLink>
+    <LocaleListItemLink to="/admin/users">
       <ListItemIcon>
         <Assignment />
       </ListItemIcon>
       <ListItemText primary="Users" />
-    </ListItemLink>
+    </LocaleListItemLink>
   </>
 );
 
@@ -163,16 +161,12 @@ export const MainMenu = () => {
             </ListItemIcon>
             <ListItemText primary={<I18n t="contactUs" />} />
           </LocaleListItemLink>
+          {/*// Todo: Display admin-panel links @see WAI-832*/}
+          {/*{isLesmisAdmin && <AdminPanelLinks />}*/}
           <Subheader component="div">
             <I18n t="onlineQs" />
           </Subheader>
           <LocaleListItemLink to="/fundamental-quality-standards">
-            <ListItemText primary="Contact us" />
-          </ListItemLink>
-          {/*// Todo: Display admin-panel links @see WAI-832*/}
-          {/*{isLesmisAdmin && <AdminPanelLinks />}*/}
-          <Subheader component="div">Online Questionnaires</Subheader>
-          <ListItemLink to="/fundamental-quality-standards">
             <ListItemIcon>
               <Assignment />
             </ListItemIcon>
@@ -180,7 +174,7 @@ export const MainMenu = () => {
           </LocaleListItemLink>
         </StyledList>
         <StyledDivider />
-        <StyledList component="nav" aria-label="secondary mailbox folders">
+        <StyledList component="nav">
           <ListItem>
             <TupaiaText>
               <I18n t="poweredBy" /> <Link href="https://www.info.tupaia.org">Tupaia</Link>
