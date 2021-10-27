@@ -97,11 +97,11 @@ export class ArithmeticConfigCellBuilder extends KeyValueCellBuilder {
         useDollarPrefixes: true,
       }),
       defaultValues: defaultValues && (await this.translateDefaultValues(defaultValues)),
+      valueTranslation:
+        valueTranslation && (await this.translateValueTranslation(valueTranslation)),
       answerDisplayText:
         answerDisplayText &&
         (await this.translateAnswerDisplayText(answerDisplayText, questionIds)),
-      valueTranslation:
-        valueTranslation && (await this.translateValueTranslation(valueTranslation)),
     };
     console.log({ translatedConfig });
 

@@ -40,6 +40,11 @@ export const ARITHMETIC_TEST_CASES = [
     config:
       'formula: $question_1_code + $question_2_code + ($question_1_code * 2)\r\nanswerDisplayText: Modified question_1_code equals $result',
   },
+  {
+    description: 'All work together (Order not preserved)',
+    config:
+      'formula: $question_1_code + $question_2_code + ($question_1_code * 2)\r\ndefaultValues: question_1_code:0,question_2_code:test_ran\'dom"_str`ing\r\nvalueTranslation: question_1_code.Yes:0,question_1_code.No:1,question_2_code.Yes:random_string,question_2_code.No:4\r\nanswerDisplayText: Modified question_1_code equals $result',
+  },
 ];
 
 // export const ARITHMETIC_TEST_CASES = ARITHMETIC_TEST_CASES_2.map(({ description, config }) => ({
