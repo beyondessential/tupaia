@@ -7,8 +7,9 @@ import { isNil, omitBy } from 'lodash';
 
 import { snakeKeys, yup } from '@tupaia/utils';
 
-import { PreviewMode, DashboardVisualisationResource } from '../types';
-import { LegacyReport, Report } from '..';
+import { PreviewMode} from '../types';
+import { DashboardVisualisationResource } from './types';
+import { LegacyReport, Report } from '../types';
 import { baseVisualisationValidator, baseVisualisationDataValidator } from './validators';
 
 // expands object types recursively
