@@ -31,7 +31,7 @@ const getPresentation = (dashboardItem: DashboardItem, report: Report | LegacyRe
   return presentation;
 };
 
-export function combineVisualisation(visualisationResource: DashboardVizResource): DashboardViz {
+export function combineDashboardVisualisation(visualisationResource: DashboardVizResource): DashboardViz {
   const { dashboardItem, report } = visualisationResource;
   const { id, code, config, legacy } = dashboardItem;
   const { name } = config;

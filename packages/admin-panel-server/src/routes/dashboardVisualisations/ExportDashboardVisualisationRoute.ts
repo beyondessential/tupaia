@@ -10,7 +10,7 @@ import { keyBy } from 'lodash';
 import { camelKeys } from '@tupaia/utils';
 import { Route } from '@tupaia/server-boilerplate';
 import { MeditrakConnection } from '../../connections';
-import { combineVisualisation } from '../../viz-builder';
+import { combineDashboardVisualisation } from '../../viz-builder';
 import type {
   Dashboard,
   DashboardItemRecord,
@@ -109,7 +109,7 @@ export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisu
     const vizResource: DashboardVizResource = await this.meditrakConnection.fetchResources(
       `dashboardVisualisations/${dashboardItem.id}`,
     );
-    return combineVisualisation(vizResource);
+    return combineDashboardVisualisation(vizResource);
   };
 
   private buildDashboardsAndRelations = async (dashboardItem: DashboardItemRecord) => {
