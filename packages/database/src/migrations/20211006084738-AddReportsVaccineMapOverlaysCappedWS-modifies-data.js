@@ -175,7 +175,7 @@ const MAP_OVERLAYS = [
 
 const removeOutdatedMapOverlay = (db, outdatedOverlayId) => {
   return db.runSql(`
-    DELETE FROM "map_overlay" WHERE "id" = '${outdatedOverlayId}';
+    DELETE FROM "map_overlay" WHERE "code" = '${outdatedOverlayId}';
     DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${outdatedOverlayId}';
   `);
 };
@@ -183,7 +183,7 @@ const removeOutdatedMapOverlay = (db, outdatedOverlayId) => {
 const removeMapOverlay = (db, reportCode) => {
   return db.runSql(`
     DELETE FROM "report" WHERE code = '${reportCode}';
-    DELETE FROM "map_overlay" WHERE "id" = '${reportCode}';
+    DELETE FROM "map_overlay" WHERE "code" = '${reportCode}';
     DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${reportCode}';
   `);
 };
