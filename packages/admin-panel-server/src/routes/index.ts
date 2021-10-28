@@ -4,11 +4,8 @@
  *
  */
 
-export * from './ExportDashboardVisualisationRoute';
-export * from './FetchDashboardVisualisationRoute';
+export * from './dashboardVisualisations';
 export * from './FetchHierarchyEntitiesRoute';
 export * from './FetchReportPreviewDataRoute';
-export * from './ImportDashboardVisualisationRoute';
-export * from './SaveDashboardVisualisationRoute';
 export * from './UploadTestDataRoute';
 export * from './UserRoute';

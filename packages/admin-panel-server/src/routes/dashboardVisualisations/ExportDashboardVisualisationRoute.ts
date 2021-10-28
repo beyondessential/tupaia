@@ -9,8 +9,8 @@ import { keyBy } from 'lodash';
 
 import { camelKeys } from '@tupaia/utils';
 import { Route } from '@tupaia/server-boilerplate';
-import { MeditrakConnection } from '../connections';
-import { combineVisualisation } from '../viz-builder';
+import { MeditrakConnection } from '../../connections';
+import { combineVisualisation } from '../../viz-builder';
 import type {
   Dashboard,
   DashboardItemRecord,
@@ -19,7 +19,7 @@ import type {
   DashboardRelationRecord,
   DashboardVizResource,
   DashboardViz,
-} from '../viz-builder';
+} from '../../viz-builder';
 
 export type ExportDashboardVisualisationRequest = Request<
   { dashboardVisualisationId?: string },

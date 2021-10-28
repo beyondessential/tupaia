@@ -8,8 +8,8 @@ import { Request, Response, NextFunction } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 
-import { MeditrakConnection } from '../connections';
-import { combineVisualisation, DashboardViz } from '../viz-builder';
+import { MeditrakConnection } from '../../connections';
+import { combineVisualisation, DashboardViz } from '../../viz-builder';
 
 export type FetchDashboardVisualisationRequest = Request<
   { dashboardVisualisationId: string },

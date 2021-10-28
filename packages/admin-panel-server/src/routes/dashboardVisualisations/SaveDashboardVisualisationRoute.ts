@@ -8,12 +8,12 @@ import { Request, Response, NextFunction } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 
-import { MeditrakConnection } from '../connections';
+import { MeditrakConnection } from '../../connections';
 import {
   DashboardVisualisationExtractor,
   draftDashboardItemValidator,
   draftReportValidator,
-} from '../viz-builder';
+} from '../../viz-builder';
 
 export type SaveDashboardVisualisationRequest = Request<
   { dashboardVisualisationId?: string },
