@@ -6,10 +6,10 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { Autocomplete, TextField } from '@tupaia/ui-components';
-import { usePermissionGroups } from '../api/queries';
-import { useVizConfig } from '../context';
+import { usePermissionGroups } from '../../api/queries';
+import { useVizConfig } from '../../context';
 
-export const MetadataForm = ({ Header, Body, Footer, onSubmit }) => {
+export const DashboardMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   const { handleSubmit, register, errors } = useForm();
   const [{ visualisation }, { setVisualisationValue }] = useVizConfig();
   const {
@@ -72,7 +72,7 @@ export const MetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   );
 };
 
-MetadataForm.propTypes = {
+DashboardMetadataForm.propTypes = {
   Header: PropTypes.node.isRequired,
   Body: PropTypes.node.isRequired,
   Footer: PropTypes.node.isRequired,

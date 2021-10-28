@@ -5,7 +5,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button, Dialog, DialogFooter, DialogHeader } from '@tupaia/ui-components';
-import { MetadataForm } from '../MetadataForm';
+import { DashboardMetadataForm } from '../Dashboard/DashboardMetadataForm';
 
 export const Body = styled.div`
   padding: 30px 20px;
@@ -26,7 +26,7 @@ export const EditModal = () => {
   return (
     <>
       <Dialog onClose={handleClose} open={isOpen}>
-        <MetadataForm
+        <DashboardMetadataForm
           onSubmit={handleClose}
           Header={() => <DialogHeader onClose={handleClose} title="Edit Details" />}
           Body={Body}

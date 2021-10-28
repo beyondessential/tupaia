@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { Button, FlexEnd } from '@tupaia/ui-components';
-import { MetadataForm } from '../components';
+import { DashboardMetadataForm } from '../components';
 
 const Container = styled(MuiContainer)`
   flex: 1;
@@ -56,7 +56,7 @@ export const CreateNew = () => {
   return (
     <Container>
       <Card>
-        <MetadataForm
+        <DashboardMetadataForm
           onSubmit={handleCreate}
           Header={() => (
             <Header>
