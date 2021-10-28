@@ -15,6 +15,7 @@ import ButtonComponent from '@material-ui/core/Button';
 import { FlexStart, FlexEnd } from './Layout';
 import { useEntityData } from '../api';
 import { useUrlParams, makeEntityLink } from '../utils';
+import { I18n } from './I18n';
 
 const Wrapper = styled.section`
   padding-top: 1rem;
@@ -116,7 +117,9 @@ export const LocationHeader = () => {
           <FlexStart>
             {/* Todo: add exports @see */}
             {/* https://app.zenhub.com/workspaces/active-sprints-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/2511 */}
-            <IconButton startIcon={<GetApp />}>Export</IconButton>
+            <IconButton startIcon={<GetApp />}>
+              <I18n t="dashboards.export" />
+            </IconButton>
             {/* Todo: add favourites @see https://app.zenhub.com/workspaces/active-sprints-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/2493 */}
             {/* <IconButton startIcon={<StarBorder />}>Add</IconButton> */}
           </FlexStart>
@@ -127,7 +130,7 @@ export const LocationHeader = () => {
               to={`${makeEntityLink(entityCode, 'dashboard')}${search}`}
               aria-label="dashboard"
             >
-              <Dashboard /> Dashboard
+              <Dashboard /> <I18n t="dashboards.dashboard" />
             </ToggleButton>
             <ToggleButton
               value="map"
@@ -135,7 +138,7 @@ export const LocationHeader = () => {
               to={`${makeEntityLink(entityCode, 'map')}${search}`}
               aria-label="map"
             >
-              <Map /> Map
+              <Map /> <I18n t="dashboards.map" />
             </ToggleButton>
           </ToggleButtonGroup>
         </FlexEnd>

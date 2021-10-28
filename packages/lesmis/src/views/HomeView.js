@@ -120,7 +120,9 @@ const FooterInner = styled(FlexEnd)`
 
 const INFO_LINK = 'https://info.tupaia.org';
 
-export const HomeView = React.memo(() => {
+// Don't wrap HomeView with React.memo as it will prevent the useProjectEntitiesData hooking
+// running and the loading state will not display correctly
+export const HomeView = () => {
   const { isLoading } = useProjectEntitiesData();
 
   return (
@@ -130,11 +132,11 @@ export const HomeView = React.memo(() => {
         <LightLocaleMenu />
         <Main>
           <Title variant="h1">
-            <I18n t="homePage.intro1" />
+            <I18n t="home.findALocation" />
             <br />
-            <I18n t="homePage.intro2" />{' '}
+            <I18n t="home.to" />{' '}
             <YellowTitle>
-              <I18n t="homePage.intro3" />
+              <I18n t="home.startViewingData" />
             </YellowTitle>
           </Title>
           {isLoading && <CircularProgress size={60} />}
@@ -143,28 +145,28 @@ export const HomeView = React.memo(() => {
         <Info>
           <InfoSection>
             <InfoHeading variant="h5">
-              <I18n t="aboutLesmis" />
+              <I18n t="home.aboutLesmis" />
             </InfoHeading>
             <InfoText>
-              <I18n t="aboutText" />
+              <I18n t="home.aboutText" />
             </InfoText>
           </InfoSection>
           <InfoSection>
             <InfoHeading variant="h5">
-              <I18n t="contactUs" />
+              <I18n t="home.contactUs" />
             </InfoHeading>
             <InfoText>
-              <I18n t="ph" />: +856 20 54 015 004
+              <I18n t="home.ph" />: +856 20 54 015 004
             </InfoText>
             <InfoText>
-              <I18n t="website" />: www.moes.edu.la
+              <I18n t="home.website" />: www.moes.edu.la
             </InfoText>
           </InfoSection>
         </Info>
         <Footer maxWidth="xl">
           <FooterInner>
             <Typography>
-              <I18n t="poweredBy" />{' '}
+              <I18n t="home.poweredBy" />{' '}
               <Link href={INFO_LINK} color="inherit" underline="always">
                 Tupaia
               </Link>
@@ -174,4 +176,4 @@ export const HomeView = React.memo(() => {
       </Container>
     </Wrapper>
   );
-});
+};

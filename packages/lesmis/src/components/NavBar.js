@@ -17,6 +17,7 @@ import { SearchBar } from './SearchBar';
 import { NAVBAR_HEIGHT } from '../constants';
 import { useUser } from '../api';
 import { useUrlParams, useHomeUrl } from '../utils';
+import { I18n } from './I18n';
 
 const Container = styled.nav`
   position: sticky;
@@ -74,7 +75,7 @@ export const NavBar = ({ hideSearch }) => {
                 }}
                 component={RouterLink}
               >
-                Sign up
+                <I18n t="home.signUp" />
               </TextButton>
             )}
             <ProfileButton />

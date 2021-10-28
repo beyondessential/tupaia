@@ -12,6 +12,7 @@ import MuiLink from '@material-ui/core/Link';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { Link as RouterLink } from 'react-router-dom';
 import { useHomeUrl } from '../utils';
+import { I18n } from './I18n';
 
 const StyledBreadcrumbs = styled(MuiBreadcrumbs)`
   font-size: 0.75rem;
@@ -45,7 +46,9 @@ export const Breadcrumbs = ({ isLoading, breadcrumbs }) => {
 
   return (
     <StyledBreadcrumbs separator={<NavigateNextIcon />}>
-      <Link to={homeUrl}>Home</Link>
+      <Link to={homeUrl}>
+        <I18n t="home.home" />
+      </Link>
       {isLoading ? (
         <Loader />
       ) : (

@@ -19,6 +19,7 @@ import { DialogHeader } from './FullScreenDialog';
 import { useProjectEntitiesData } from '../api/queries';
 import { makeEntityLink, useUrlParams, getOptionText, getPlaceIcon } from '../utils';
 import * as COLORS from '../constants';
+import { I18n } from './I18n';
 
 const List = styled(MuiList)`
   background: white;
@@ -201,7 +202,7 @@ export const EntityMenu = React.memo(({ buttonText }) => {
     <>
       <TextButton onClick={handleClickOpen}>{buttonText}</TextButton>
       <Dialog scroll="paper" fullScreen open={open} onClose={handleClose}>
-        <DialogHeader handleClose={handleClose} title="All Locations" />
+        <DialogHeader handleClose={handleClose} title={<I18n t="home.allLocations" />} />
         <Body>
           {isSuccess && country && (
             <ContainerList>
