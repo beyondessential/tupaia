@@ -14,6 +14,7 @@ import * as COLORS from '../constants';
 import { useDashboardReportDataWithConfig } from '../api/queries';
 import { FlexEnd } from './Layout';
 import { useUrlParams } from '../utils';
+import { I18n } from './I18n';
 
 const Container = styled.div`
   width: 55rem;
@@ -71,7 +72,7 @@ export const DashboardReport = React.memo(
                 search: `${search}&reportCode=${reportCode}`,
               }}
             >
-              See More
+              <I18n t="dashboards.seeMore" />
             </Button>
           </Footer>
         )}
