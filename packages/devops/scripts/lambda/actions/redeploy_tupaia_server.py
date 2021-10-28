@@ -3,21 +3,19 @@
 #
 # Example configs
 #
-# 1. Redeploy production (note non-matching branch name)
+# 1. Redeploy production (note non-matching branch name), using the same instance size
 # {
 #   "Action": "redeploy_tupaia_server",
-#   "Branch": "production",
-#   "InstanceType": "t3.2xlarge"
+#   "Branch": "production"
 # }
 #
-# 2. Redeploy feature branch
+# 2. Redeploy feature branch, maintaining the same instance size
 # {
 #   "Action": "redeploy_tupaia_server",
-#   "Branch": "wai-965",
-#   "InstanceType": "t3a.medium"
+#   "Branch": "wai-965"
 # }
 #
-# 3. Redeploy based on a different AMI
+# 3. Redeploy based on a different AMI, with a different instance size
 # {
 #   "Action": "redeploy_tupaia_server",
 #   "Branch": "wai-965",
@@ -37,10 +35,6 @@ def redeploy_tupaia_server(event):
         raise Exception('You must include the key "Branch" in the lambda config, e.g. "dev".')
     branch = event['Branch']
 
-    if 'InstanceType' not in event:
-        raise Exception('You must include the key "InstanceType" in the lambda config. We recommend "t3a.medium" unless you need more speed.')
-    instance_type = event['InstanceType']
-
     server_deployment_code = event.get('ServerDeploymentCode', 'tupaia-server') # default to "tupaia-server"
 
     # find current instance
@@ -52,6 +46,8 @@ def redeploy_tupaia_server(event):
 
     if not existing_instance:
       raise Exception('No existing instance found to redeploy, perhaps you want to spin up a new deployment?')
+
+    instance_type = event.get('InstanceType', existing_instance['InstanceType'])
 
     # launch server instance based on gold master AMI
     # original instance will be deleted by lambda script "swap_out_tupaia_server" once new instance is running
