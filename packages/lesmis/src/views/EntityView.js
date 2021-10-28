@@ -8,13 +8,13 @@ import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
 import { LocationHeader, Toolbar, Breadcrumbs, Footer, FlexSpaceBetween } from '../components';
 import { DashboardView } from './DashboardView';
 import { MapView } from './MapView';
-import { useEntityBreadcrumbs } from '../utils';
+import { useEntityBreadcrumbs, useUrlParams } from '../utils';
 import { LocaleMenu } from '../components/LocaleMenu';
 
 export const EntityView = () => {
   const match = useRouteMatch();
+  const { locale, entityCode, view } = useUrlParams();
   const { breadcrumbs, isLoading } = useEntityBreadcrumbs();
-  const { entityCode, view } = match.params;
 
   return (
     <>
@@ -32,7 +32,7 @@ export const EntityView = () => {
         <Route path={`${match.path}/map`}>
           <MapView />
         </Route>
-        <Redirect to={`/${entityCode}/dashboard`} />
+        <Redirect to={`/${locale}/${entityCode}/dashboard`} />
       </Switch>
       {view !== 'map' && <Footer />}
     </>

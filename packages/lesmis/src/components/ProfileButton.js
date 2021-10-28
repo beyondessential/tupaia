@@ -49,7 +49,7 @@ export const ProfileButton = () => {
       variant="outlined"
       component={RouterLink}
       to={{
-        pathname: `${locale}/login`,
+        pathname: `/${locale}/login`,
         state: { referer: history.location },
       }}
     >
