@@ -120,7 +120,9 @@ const FooterInner = styled(FlexEnd)`
 
 const INFO_LINK = 'https://info.tupaia.org';
 
-export const HomeView = React.memo(() => {
+// Don't wrap HomeView with React.memo as it will prevent the useProjectEntitiesData hooking
+// running and the loading state will not display correctly
+export const HomeView = () => {
   const { isLoading } = useProjectEntitiesData();
 
   return (
@@ -130,11 +132,11 @@ export const HomeView = React.memo(() => {
         <LightLocaleMenu />
         <Main>
           <Title variant="h1">
-            <I18n t="home.searchLocation" />
+            <I18n t="home.findALocation" />
             <br />
             <I18n t="home.to" />{' '}
             <YellowTitle>
-              <I18n t="home.findALocation" />
+              <I18n t="home.startViewingData" />
             </YellowTitle>
           </Title>
           {isLoading && <CircularProgress size={60} />}
@@ -174,4 +176,4 @@ export const HomeView = React.memo(() => {
       </Container>
     </Wrapper>
   );
-});
+};
