@@ -135,33 +135,51 @@ const getOverlayObject = (reportCode, code, mapOverlayId, name) => ({
     ],
     measureConfig: {
       Church: {
-        name: 'Church Screenings',
+        name: `Church ${reportCode.includes('ncd') ? 'Screenings' : 'Sessions'}`,
         sortOrder: 1,
-      },
-      Community: {
-        name: 'Community Screenings',
-        sortOrder: 2,
-      },
-      School: {
-        name: 'School Screenings',
-        sortOrder: 3,
-      },
-      Workplace: {
-        name: 'Workplace Screenings',
-        sortOrder: 4,
-      },
-      Total: {
-        name: 'Total Screenings',
-        sortOrder: 0,
-      },
-      $all: {
-        type: 'popup-only',
         values: [
           {
             value: null,
             hideFromPopup: true,
           },
         ],
+      },
+      Community: {
+        name: `Community ${reportCode.includes('ncd') ? 'Screenings' : 'Sessions'}`,
+        sortOrder: 2,
+        values: [
+          {
+            value: null,
+            hideFromPopup: true,
+          },
+        ],
+      },
+      School: {
+        name: `School ${reportCode.includes('ncd') ? 'Screenings' : 'Sessions'}`,
+        sortOrder: 3,
+        values: [
+          {
+            value: null,
+            hideFromPopup: true,
+          },
+        ],
+      },
+      Workplace: {
+        name: `Workplace ${reportCode.includes('ncd') ? 'Screenings' : 'Sessions'}`,
+        sortOrder: 4,
+        values: [
+          {
+            value: null,
+            hideFromPopup: true,
+          },
+        ],
+      },
+      Total: {
+        name: `Total ${reportCode.includes('ncd') ? 'Screenings' : 'Sessions'}`,
+        sortOrder: 0,
+      },
+      $all: {
+        type: 'popup-only',
       },
     },
     displayType: 'icon',
@@ -209,6 +227,7 @@ exports.up = async function (db) {
   // get Permission Group Id and overlay group id
   const permissionGroupId = await nameToId(db, 'permission_group', PERMISSION_GROUP);
   const mapOverlayGroupId = await codeToId(db, 'map_overlay_group', HPU_GROUP_CODE);
+
   // Remove legacy overlay relations
   for (const code of LEGACY_OVERLAY_CODES) {
     const mapOverlayId = await codeToId(db, 'map_overlay', code);
@@ -232,21 +251,14 @@ exports.down = async function (db) {
     await removeMapOverlay(db, reportCode, overlayId);
   }
 
-  const rootId = await codeToId(db, 'map_overlay_group', 'Root');
-  const mapOverlayGroupId = generateId();
+  const mapOverlayGroupId = await codeToId(db, 'map_overlay_group', NEW_GROUP_VALUES.code);
   // revert map overlay group to original name and code
-  await insertObject(db, 'map_overlay_group', {
-    id: mapOverlayGroupId,
-    name: 'Fanafana Ola HPU',
-    code: 'Fanafana_Ola_HPU',
-  });
-  // reattach the original overlay to Root.
-  await insertObject(db, 'map_overlay_group_relation', {
-    id: generateId(),
-    map_overlay_group_id: rootId,
-    child_id: mapOverlayGroupId,
-    child_type: 'mapOverlay',
-  });
+  await updateValues(
+    db,
+    'map_overlay_group',
+    { name: 'Fanafana Ola HPU', code: 'Fanafana_Ola_HPU' },
+    { id: mapOverlayGroupId },
+  );
 
   // Reinstall legacy overlay relations
   LEGACY_OVERLAY_CODES.forEach(async code => {
