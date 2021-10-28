@@ -44,7 +44,18 @@ def get_instance(filters):
     ).get(
         'Reservations', []
     )
-    return reservations[0]['Instances'][0]
+    if len(reservations) == 0:
+        return None
+    instances = reservations[0]['Instances']
+    if len(instances) == 0:
+        return None
+    return instances[0]
+
+def get_instance_by_id(id):
+    return get_instance([
+      {'Name': 'instance-id', 'Values': [id]},
+      { 'Name': 'instance-state-name', 'Values': ['running', 'stopped']} # ignore terminated instances
+    ])
 
 def find_instances(filters):
     reservations = ec.describe_instances(

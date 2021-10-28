@@ -20,7 +20,7 @@
 
 from helpers.networking import get_instance_behind_gateway, swap_gateway_instance
 from helpers.teardown import terminate_instance
-from helpers.utilities import add_tag, get_tag, get_instance
+from helpers.utilities import add_tag, get_tag, get_instance_by_id
 
 def swap_out_tupaia_server(event):
     # validate input config
@@ -32,9 +32,7 @@ def swap_out_tupaia_server(event):
         raise Exception('You must include the key "NewInstanceId" in the lambda config, e.g. "dev".')
     new_instance_id = event['NewInstanceId']
 
-    new_instance = get_instance([
-      {'Name': 'instance-id', 'Values': [new_instance_id]}
-    ])
+    new_instance = get_instance_by_id(new_instance_id)
     if not new_instance:
         raise Exception('Could not find new instance to swap in')
 

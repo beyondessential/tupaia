@@ -1,7 +1,7 @@
 import boto3
 
 from helpers.networking import setup_subdomains_via_dns, setup_subdomains_via_gateway
-from helpers.utilities import get_instance, get_tag
+from helpers.utilities import get_instance_by_id, get_tag
 
 ec2 = boto3.resource('ec2')
 ec = boto3.client('ec2')
@@ -91,9 +91,7 @@ def create_instance(code, instance_type, stage, iam_role_arn=None, image_id=None
     allocate_elastic_ip(new_instance.id)
 
     # return instance object
-    new_instance_object = get_instance([
-      {'Name': 'instance-id', 'Values': [new_instance.id]}
-    ])
+    new_instance_object = get_instance_by_id(new_instance.id)
 
     if (subdomains_via_dns):
         setup_subdomains_via_dns(new_instance_object, subdomains_via_dns, stage)

@@ -1,6 +1,6 @@
 import boto3
 
-from helpers.utilities import get_instance, tags_contains
+from helpers.utilities import get_instance_by_id, tags_contains
 
 # --------------
 # Certificate manager
@@ -263,9 +263,7 @@ def get_instance_behind_gateway(tupaia_instance_name):
 
     instance_id = targets[0]['Target']['Id']
 
-    return get_instance([
-      {'Name': 'instance-id', 'Values': [instance_id]}
-    ])
+    return get_instance_by_id(instance_id)
 
 
 # --------------
