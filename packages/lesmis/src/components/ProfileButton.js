@@ -10,6 +10,7 @@ import MuiButton from '@material-ui/core/Button';
 import { ProfileButton as BaseProfileButton, ProfileButtonItem } from '@tupaia/ui-components';
 import { useUser, useLogout } from '../api';
 import { useUrlParams } from '../utils';
+import { I18n } from './I18n';
 
 const StyledProfileButton = styled(BaseProfileButton)`
   background: rgba(0, 0, 0, 0.2);
@@ -53,7 +54,7 @@ export const ProfileButton = () => {
         state: { referer: history.location },
       }}
     >
-      Log in
+      <I18n t="home.logIn" />
     </LoginLink>
   );
 };

@@ -140,44 +140,45 @@ export const MainMenu = () => {
         <StyledList onClick={toggleDrawer(false)}>
           <ListItem>
             <MenuHeading variant="h3">
-              <I18n t="menu" />
+              <I18n t="home.menu" />
             </MenuHeading>
           </ListItem>
           <LocaleListItemLink to="/">
             <ListItemIcon>
               <Home />
             </ListItemIcon>
-            <ListItemText primary={<I18n t="home" />} />
+            <ListItemText primary={<I18n t="home.home" />} />
           </LocaleListItemLink>
           <LocaleListItemLink to="/about">
             <ListItemIcon>
               <ImportContacts />
             </ListItemIcon>
-            <ListItemText primary={<I18n t="aboutLesmis" />} />
+            <ListItemText primary={<I18n t="home.aboutLesmis" />} />
           </LocaleListItemLink>
           <LocaleListItemLink to="/contact">
             <ListItemIcon>
               <ContactMail />
             </ListItemIcon>
-            <ListItemText primary={<I18n t="contactUs" />} />
+            <ListItemText primary={<I18n t="home.contactUs" />} />
           </LocaleListItemLink>
           {/*// Todo: Display admin-panel links @see WAI-832*/}
           {/*{isLesmisAdmin && <AdminPanelLinks />}*/}
           <Subheader component="div">
-            <I18n t="onlineQs" />
+            <I18n t="home.onlineQuestionaires" />
           </Subheader>
           <LocaleListItemLink to="/fundamental-quality-standards">
             <ListItemIcon>
               <Assignment />
             </ListItemIcon>
-            <ListItemText primary={<I18n t="fqs" />} />
+            <ListItemText primary={<I18n t="home.fundamentalQualityStandards" />} />
           </LocaleListItemLink>
         </StyledList>
         <StyledDivider />
         <StyledList component="nav">
           <ListItem>
             <TupaiaText>
-              <I18n t="poweredBy" /> <Link href="https://www.info.tupaia.org">Tupaia</Link>
+              <I18n t="home.poweredByTupaia" />{' '}
+              <Link href="https://www.info.tupaia.org">Tupaia</Link>
             </TupaiaText>
           </ListItem>
         </StyledList>

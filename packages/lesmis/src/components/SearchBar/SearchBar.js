@@ -181,7 +181,7 @@ export const SearchBar = ({ linkType, className }) => {
         <SearchBox {...getRootProps()} elevation={0}>
           <SearchIcon color={focused ? 'primary' : 'inherit'} />
           <Input
-            placeholder={translate('searchBar.placeholder')}
+            placeholder={translate('home.searchLocation')}
             inputProps={{ ...getInputProps() }}
           />
           {inputValue && (
@@ -190,7 +190,7 @@ export const SearchBar = ({ linkType, className }) => {
             </ClearButton>
           )}
           <Divider orientation="vertical" />
-          <EntityMenu buttonText={translate('searchBar.viewAll')} />
+          <EntityMenu buttonText={translate('home.orViewAll')} />
         </SearchBox>
         {groupedOptions.length > 0 ? (
           <ResultsBox elevation={3} {...getListboxProps()}>

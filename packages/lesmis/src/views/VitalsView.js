@@ -10,7 +10,7 @@ import MuiContainer from '@material-ui/core/Container';
 import MuiDivider from '@material-ui/core/Divider';
 import MuiBox from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import { EntityVitalsItem, FlexStart, MiniMap, VitalsLoader } from '../components';
+import { EntityVitalsItem, FlexStart, I18n, MiniMap, VitalsLoader } from '../components';
 import { useVitalsData } from '../api/queries';
 import { useUrlParams } from '../utils';
 
@@ -55,7 +55,9 @@ const VitalsContainer = styled.div`
 
 const CountryView = ({ vitals }) => (
   <VitalsContainer>
-    <Heading variant="h4">Country Details</Heading>
+    <Heading variant="h4">
+      <I18n t="dashboards.countryDetails" />
+    </Heading>
     <TwoColGrid>
       <EntityVitalsItem
         name="No. Schools"
@@ -73,7 +75,9 @@ const CountryView = ({ vitals }) => (
 
 const ProvinceView = ({ vitals }) => (
   <VitalsContainer>
-    <Heading variant="h4">Province Details</Heading>
+    <Heading variant="h4">
+      <I18n t="dashboards.provinceDetails" />
+    </Heading>
     <ThreeColGrid>
       <EntityVitalsItem name="Province Code" value={vitals.code} icon="LocationPin" />
       <EntityVitalsItem
@@ -97,7 +101,9 @@ const ProvinceView = ({ vitals }) => (
 
 const DistrictView = ({ vitals }) => (
   <VitalsContainer>
-    <Heading variant="h4">District Details</Heading>
+    <Heading variant="h4">
+      <I18n t="dashboards.districtDetails" />
+    </Heading>
     <ThreeColGrid>
       <EntityVitalsItem name="District Code" value={vitals.code} icon="LocationPin" />
       <EntityVitalsItem
@@ -138,7 +144,9 @@ const DistrictView = ({ vitals }) => (
 
 const SchoolView = ({ vitals }) => (
   <VitalsContainer>
-    <Heading variant="h4">School Details</Heading>
+    <Heading variant="h4">
+      <I18n t="dashboards.schoolDetails" />
+    </Heading>
     <ThreeColGrid>
       <EntityVitalsItem name="School Code" value={vitals.code} icon="LocationPin" />
       <EntityVitalsItem
@@ -285,7 +293,9 @@ export const VitalsView = ({ entityType }) => {
           <MiniMap entityCode={vitals.code} />
         )}
         <PartnersContainer>
-          <PartnersTitle>Development Partner Support</PartnersTitle>
+          <PartnersTitle>
+            <I18n t="dashboards.developmentPartnerSupport" />
+          </PartnersTitle>
           <FlexStart flexWrap="wrap" pt={1} mb={4}>
             {vitals?.partners?.map(image => (
               <LogoWrapper key={image}>
