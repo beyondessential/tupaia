@@ -34,4 +34,4 @@ def create_tupaia_instance_from_image(server_deployment_code, branch, instance_t
     tupaia_volume_size = 20 # 20GB
     startup_script = Path('./resources/startup.sh').read_text()
 
-    create_instance_from_image(server_deployment_code, branch, instance_type, iam_role_arn=tupaia_server_iam_role_arn, user_data=startup_script, subdomains_via_dns=['ssh'], subdomains_via_gateway=tupaia_subdomains, volume_size=tupaia_volume_size, security_group_id=security_group_id)
+    return create_instance_from_image(server_deployment_code, branch, instance_type, iam_role_arn=tupaia_server_iam_role_arn, user_data=startup_script, subdomains_via_dns=['ssh'], subdomains_via_gateway=tupaia_subdomains, volume_size=tupaia_volume_size, security_group_id=security_group_id)

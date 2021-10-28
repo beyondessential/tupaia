@@ -53,6 +53,8 @@ def redeploy_tupaia_server(event):
 
     # launch server instance based on gold master AMI
     # original instance will be deleted by lambda script "swap_out_tupaia_server" once new instance is running
-    create_tupaia_instance_from_image(server_deployment_code, branch, instance_type, setup_gateway=False, security_group_id=security_group_id)
+    new_instance = create_tupaia_instance_from_image(server_deployment_code, branch, instance_type, setup_gateway=False, security_group_id=security_group_id)
 
     print('Successfully deployed branch ' + branch)
+
+    return { 'OldInstanceId': existing_instance['InstanceId'], 'NewInstanceId': new_instance['InstanceId'] }

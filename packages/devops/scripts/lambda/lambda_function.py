@@ -33,4 +33,4 @@ def lambda_handler(event, context):
 
     action_handler = actions[action]
 
-    action_handler(event)
+    return action_handler(event)
