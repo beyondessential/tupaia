@@ -22,6 +22,7 @@ export * from './components/HomeButton';
 export * from './components/Icons';
 export * from './components/IconButton';
 export * from './components/Inputs';
+export * from './components/JsonEditor';
 export * from './components/Layout';
 export * from './components/ListVisual';
 export * from './components/LoadingContainer';
