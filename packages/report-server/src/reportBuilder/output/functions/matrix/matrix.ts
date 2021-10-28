@@ -61,8 +61,8 @@ const matrix = (rows: Row[], params: MatrixParams): Matrix => {
 
 const buildParams = (params: unknown): MatrixParams => {
   const validatedParams = paramsValidator.validateSync(params);
-  const { columns, categoryField, rowField } = validatedParams;
-  const includeFields = columns || '*';
+  const { columns = '*', categoryField, rowField } = validatedParams;
+  const includeFields = columns === '*' ? ['*'] : columns;
 
   const excludeFields = categoryField ? [categoryField, rowField] : [rowField];
 
