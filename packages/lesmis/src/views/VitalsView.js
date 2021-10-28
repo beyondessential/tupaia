@@ -60,12 +60,12 @@ const CountryView = ({ vitals }) => (
     </Heading>
     <TwoColGrid>
       <EntityVitalsItem
-        name="No. Schools"
+        name={<I18n t="dashboards.numberOfSchools" />}
         value={vitals.NumberOfSchools?.toLocaleString()}
         icon="School"
       />
       <EntityVitalsItem
-        name="No. Students"
+        name={<I18n t="dashboards.numberOfStudents" />}
         value={vitals.NumberOfStudents?.toLocaleString()}
         icon="Study"
       />
@@ -79,19 +79,23 @@ const ProvinceView = ({ vitals }) => (
       <I18n t="dashboards.provinceDetails" />
     </Heading>
     <ThreeColGrid>
-      <EntityVitalsItem name="Province Code" value={vitals.code} icon="LocationPin" />
       <EntityVitalsItem
-        name="Province Population"
+        name={<I18n t="dashboards.provinceCode" />}
+        value={vitals.code}
+        icon="LocationPin"
+      />
+      <EntityVitalsItem
+        name={<I18n t="dashboards.provincePopulation" />}
         value={vitals.Population?.toLocaleString()}
         icon="Group"
       />
       <EntityVitalsItem
-        name="No. Schools"
+        name={<I18n t="dashboards.numberOfSchools" />}
         value={vitals.NumberOfSchools?.toLocaleString()}
         icon="School"
       />
       <EntityVitalsItem
-        name="No. Students"
+        name={<I18n t="dashboards.numberOfStudents" />}
         value={vitals.NumberOfStudents?.toLocaleString()}
         icon="Study"
       />
@@ -105,36 +109,46 @@ const DistrictView = ({ vitals }) => (
       <I18n t="dashboards.districtDetails" />
     </Heading>
     <ThreeColGrid>
-      <EntityVitalsItem name="District Code" value={vitals.code} icon="LocationPin" />
       <EntityVitalsItem
-        name="District Population"
+        name={<I18n t="dashboards.districtCode" />}
+        value={vitals.code}
+        icon="LocationPin"
+      />
+      <EntityVitalsItem
+        name={<I18n t="dashboards.districtPopulation" />}
         value={vitals.Population?.toLocaleString()}
         icon="Group"
       />
       <EntityVitalsItem
-        name="Priority District"
+        name={<I18n t="dashboards.priorityDistrict" />}
         value={vitals.attributes?.type === 'LESMIS_Target_District' ? 'Yes' : 'No'}
         icon="Notepad"
       />
       <EntityVitalsItem
-        name="No. Schools"
+        name={<I18n t="dashboards.numberOfSchools" />}
         value={vitals.NumberOfSchools?.toLocaleString()}
         icon="School"
       />
       <EntityVitalsItem
-        name="No. Students"
+        name={<I18n t="dashboards.numberOfStudents" />}
         value={vitals.NumberOfStudents?.toLocaleString()}
         icon="Study"
       />
     </ThreeColGrid>
     <HorizontalDivider />
     <MuiBox mt={2}>
-      <SubHeading variant="h4">Province Details</SubHeading>
+      <SubHeading variant="h4">
+        <I18n t="dashboards.provinceDetails" />
+      </SubHeading>
       <FlexStart mt={1} mb={4}>
         <EntityVitalsItem name="Name of Province" value={vitals.parentVitals?.name} mr={4} />
-        <EntityVitalsItem name="Province Code" value={vitals.parentVitals?.code} mr={4} />
         <EntityVitalsItem
-          name="Province Population"
+          name={<I18n t="dashboards.provinceCode" />}
+          value={vitals.parentVitals?.code}
+          mr={4}
+        />
+        <EntityVitalsItem
+          name={<I18n t="dashboards.provincePopulation" />}
           value={vitals.parentVitals?.Population?.toLocaleString()}
         />
       </FlexStart>
@@ -148,28 +162,36 @@ const SchoolView = ({ vitals }) => (
       <I18n t="dashboards.schoolDetails" />
     </Heading>
     <ThreeColGrid>
-      <EntityVitalsItem name="School Code" value={vitals.code} icon="LocationPin" />
       <EntityVitalsItem
-        name="Number of Students"
+        name={<I18n t="dashboards.schoolCode" />}
+        value={vitals.code}
+        icon="LocationPin"
+      />
+      <EntityVitalsItem
+        name={<I18n t="dashboards.numberOfStudents" />}
         value={vitals.NumberOfStudents?.toLocaleString()}
         icon="Study"
       />
       <EntityVitalsItem
-        name="Complete School"
+        name={<I18n t="dashboards.completeSchool" />}
         value={vitals.SchoolComplete ? 'Yes' : 'No'}
         icon="Notepad"
       />
       <EntityVitalsItem
-        name="Distance to Main Road"
+        name={<I18n t="dashboards.distanceToMainRoad" />}
         value={vitals.DistanceToMainRoad ? `${vitals.DistanceToMainRoad} km` : '-'}
         icon="Road"
       />
       <EntityVitalsItem
-        name="Location"
+        name={<I18n t="dashboards.location" />}
         value={vitals.point?.map(x => x.toFixed(3)).join(', ')}
         icon="PushPin"
       />
-      <EntityVitalsItem name="School Type" value={vitals.attributes?.type} icon="School" />
+      <EntityVitalsItem
+        name={<I18n t="dashboards.schoolType" />}
+        value={vitals.attributes?.type}
+        icon="School"
+      />
     </ThreeColGrid>
     <HorizontalDivider />
     <MuiBox mt={2}>
@@ -177,12 +199,12 @@ const SchoolView = ({ vitals }) => (
       <FlexStart mt={1} mb={4}>
         <EntityVitalsItem name="Name of District" value={vitals.parentVitals?.name} mr={4} />
         <EntityVitalsItem
-          name="District Population"
+          name={<I18n t="dashboards.districtPopulation" />}
           value={vitals.parentVitals?.Population?.toLocaleString()}
           mr={4}
         />
         <EntityVitalsItem
-          name="Priority District"
+          name={<I18n t="dashboards.priorityDistrict" />}
           value={vitals.parentVitals?.attributes?.type === 'LESMIS_Target_District' ? 'Yes' : 'No'}
         />
       </FlexStart>
