@@ -121,6 +121,7 @@ const getColumns = data => {
 
 export const PreviewSection = () => {
   const { fetchEnabled, setFetchEnabled, showData } = usePreviewData();
+
   const [
     { project, location, visualisation, testData },
     { setPresentation },
@@ -138,9 +139,19 @@ export const PreviewSection = () => {
     },
   });
   const [tab, setTab] = useState(0);
+  const [isPresentationInError, setIsPresentationInError] = useState(false);
 
   const handleChange = (event, newValue) => {
     setTab(newValue);
+  };
+
+  const handleInvalidPresentationChange = () => {
+    setIsPresentationInError(true);
+  };
+
+  const setPresentationValue = value => {
+    setPresentation(value);
+    setIsPresentationInError(false);
   };
 
   const columns = useMemo(() => getColumns(reportData), [reportData]);
@@ -161,7 +172,7 @@ export const PreviewSection = () => {
         textColor="primary"
         onChange={handleChange}
       >
-        <PreviewTab label="Data Preview" />
+        <PreviewTab label="Data Preview" disabled={isPresentationInError} />
         <PreviewTab label="Chart Preview" />
       </PreviewTabs>
       <TabPanel isSelected={tab === 0} Panel={PanelTabPanel}>
@@ -193,7 +204,11 @@ export const PreviewSection = () => {
             )}
           </ChartContainer>
           <EditorContainer>
-            <JsonEditor value={visualisation.presentation} onChange={setPresentation} />
+            <JsonEditor
+              value={visualisation.presentation}
+              onChange={setPresentationValue}
+              onInvalidChange={handleInvalidPresentationChange}
+            />
           </EditorContainer>
         </Container>
       </TabPanel>
