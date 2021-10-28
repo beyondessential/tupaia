@@ -11,18 +11,21 @@ def allocate_elastic_ip(instance_id):
     ec.associate_address(AllocationId=elastic_ip['AllocationId'],InstanceId=instance_id)
     return elastic_ip['PublicIp']
 
-def get_instance_creation_config(code, instance_type, stage, iam_role_arn=None, image_id=None, user_data=None, base_instance=None, subdomains_via_dns=None, subdomains_via_gateway=None, volume_size=None):
-    # Get the security group tagged with the key matching this code
-    security_group_filters = [
-      {'Name': 'tag-key', 'Values': [code]}
-    ]
-    security_groups = ec.describe_security_groups(
-      Filters=security_group_filters
-    ).get(
-      'SecurityGroups', []
-    )
-    security_group_ids = [security_group['GroupId'] for security_group in security_groups]
-    print('Found security group ids')
+def get_instance_creation_config(code, instance_type, stage, iam_role_arn=None, image_id=None, user_data=None, base_instance=None, subdomains_via_dns=None, subdomains_via_gateway=None, volume_size=None, security_group_id=None):
+    if security_group_id is None:
+      # Get the security group tagged with the key matching this code
+      security_group_filters = [
+        {'Name': 'tag-key', 'Values': [code]}
+      ]
+      security_groups = ec.describe_security_groups(
+        Filters=security_group_filters
+      ).get(
+        'SecurityGroups', []
+      )
+      security_group_ids = [security_group['GroupId'] for security_group in security_groups]
+      print('Found security group ids')
+    else:
+      security_group_ids = [security_group_id]
 
     tags = [
         { 'Key': 'Name', 'Value': code + ': ' + stage },
@@ -74,8 +77,8 @@ def get_instance_creation_config(code, instance_type, stage, iam_role_arn=None, 
 
     return instance_creation_config
 
-def create_instance(code, instance_type, stage, iam_role_arn=None, image_id=None, user_data=None, base_instance=None, subdomains_via_dns=None, subdomains_via_gateway=None, volume_size=None):
-    instance_creation_config = get_instance_creation_config(code, instance_type, stage, iam_role_arn=iam_role_arn, image_id=image_id, user_data=user_data, base_instance=base_instance, subdomains_via_dns=subdomains_via_dns, subdomains_via_gateway=subdomains_via_gateway, volume_size=volume_size)
+def create_instance(code, instance_type, stage, iam_role_arn=None, image_id=None, user_data=None, base_instance=None, subdomains_via_dns=None, subdomains_via_gateway=None, volume_size=None, security_group_id=None):
+    instance_creation_config = get_instance_creation_config(code, instance_type, stage, iam_role_arn=iam_role_arn, image_id=image_id, user_data=user_data, base_instance=base_instance, subdomains_via_dns=subdomains_via_dns, subdomains_via_gateway=subdomains_via_gateway, volume_size=volume_size, security_group_id=security_group_id)
     new_instances = ec2.create_instances(**instance_creation_config)
     print('Started new instance creation')
 
