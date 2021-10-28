@@ -5,3 +5,4 @@
 
 export * from './dashboardVisualisation';
 export * from './types';
+export * from './validators';

@@ -10,7 +10,7 @@ import { snakeKeys, yup } from '@tupaia/utils';
 import { PreviewMode} from '../types';
 import { DashboardVisualisationResource } from './types';
 import { LegacyReport, Report } from '../types';
-import { baseVisualisationValidator, baseVisualisationDataValidator } from './validators';
+import { baseVisualisationValidator, baseVisualisationDataValidator } from '../validators';
 
 // expands object types recursively
 // TODO: Move this type to a generic @tupaia/utils-ts package
