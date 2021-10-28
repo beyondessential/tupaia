@@ -57,7 +57,8 @@ export class TranslatableRoute extends Route {
       case 'string':
         // Object notation format: "domain.key:default"
         // Find the translation for the string, or return the string itself
-        return this.res.translate(`${this.translationSchema.domain}.${translationValue}:${translationValue}`);
+        // i18n doesn't allow escaping the delimiter characters, so strip them out for now
+        return this.res.translate(`${this.translationSchema.domain}.${translationValue.replace(/(:|\.)/g, '')}:${translationValue}`);
       case 'object': {
         let translatedObject = translationValue;
         for (const key of Object.keys(translationKey.properties)) {
