@@ -316,7 +316,7 @@ export const MapOverlayGroup = ({
           setOpen(true);
         } else {
           setOpen(true);
-          setSelectedOverlay(options[0].mapOverlayId);
+          setSelectedOverlay(options[0].mapOverlayCode);
         }
       });
     }
@@ -337,7 +337,7 @@ export const MapOverlayGroup = ({
             setSelectedOverlay(newValue);
           }}
         >
-          {options.map(({ name: label, mapOverlayId, children }, index) =>
+          {options.map(({ name: label, mapOverlayCode, children }, index) =>
             children ? (
               <MapOverlayGroup
                 key={label}
@@ -351,8 +351,8 @@ export const MapOverlayGroup = ({
             ) : (
               <FormControlLabel
                 control={<Radio />}
-                key={mapOverlayId}
-                value={mapOverlayId}
+                key={mapOverlayCode}
+                value={mapOverlayCode}
                 label={label}
                 className={getActiveClass([...path, index], selectedPath)}
               />

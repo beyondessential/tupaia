@@ -12,6 +12,7 @@ const palette = {
   primary: {
     main: COLORS.BLUE,
     light: COLORS.LIGHT_BLUE,
+    dark: COLORS.DARK_BLUE,
   },
   secondary: {
     main: COLORS.DARK_BLUE,

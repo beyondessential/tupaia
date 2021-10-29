@@ -47,7 +47,7 @@ import { CountryTable, UpcomingReportCard } from '../../containers';
 
 export const WeeklyCasesTabView = () => {
   return (
-    <Container>
+    <Container maxWidth="xl">
       <Main data-testid="country-table">
         <CountryTable />
       </Main>

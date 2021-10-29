@@ -3,9 +3,11 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import pick from 'lodash.pick';
+import { AccessPolicy } from '@tupaia/access-policy';
 
 import { buildContext, ReqContext } from '../../../reportBuilder/context/buildContext';
+
+import { entityApiMock } from '../testUtils';
 
 describe('buildContext', () => {
   const HIERARCHY = 'test_hierarchy';
@@ -18,23 +20,15 @@ describe('buildContext', () => {
     ],
   };
 
-  const entityApiMock = {
-    getEntities: async (
-      hierarchyName: keyof typeof ENTITIES,
-      entityCodes: string[],
-      queryOptions: { fields?: string[] } = {},
-    ) => {
-      const entities = ENTITIES[hierarchyName]?.filter(e => entityCodes.includes(e.code));
-      const { fields } = queryOptions;
-      return fields ? entities.map(e => pick(e, fields)) : entities;
-    },
-  };
+  const apiMock = entityApiMock(ENTITIES);
 
   const reqContext: ReqContext = {
     hierarchy: HIERARCHY,
+    permissionGroup: 'Public',
     services: {
-      entity: entityApiMock,
+      entity: apiMock,
     } as ReqContext['services'],
+    accessPolicy: new AccessPolicy({ AU: ['Public'] }),
   };
 
   describe('orgUnits', () => {

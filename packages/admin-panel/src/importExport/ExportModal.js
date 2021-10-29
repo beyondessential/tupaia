@@ -15,7 +15,7 @@ import {
   OutlinedButton,
 } from '@tupaia/ui-components';
 import { ModalContentProvider } from '../widgets';
-import { api } from '../api';
+import { useApi } from '../utilities/ApiProvider';
 
 const STATUS = {
   IDLE: 'idle',
@@ -25,6 +25,7 @@ const STATUS = {
 };
 
 export const ExportModal = React.memo(({ title, exportEndpoint, fileName, values, children }) => {
+  const api = useApi();
   const [status, setStatus] = useState(STATUS.IDLE);
   const [errorMessage, setErrorMessage] = useState(null);
   const [isOpen, setIsOpen] = useState(false);

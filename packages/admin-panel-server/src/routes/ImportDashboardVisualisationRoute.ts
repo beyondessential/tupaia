@@ -13,13 +13,13 @@ import { readJsonFile, reduceToDictionary, snakeKeys, UploadError, yup } from '@
 
 import { MeditrakConnection } from '../connections';
 import {
-  dashboardSchema,
-  dashboardRelationObjectSchema,
+  dashboardValidator,
+  dashboardRelationObjectValidator,
   DashboardVisualisationExtractor,
   draftDashboardItemValidator,
+  legacyDashboardItemValidator,
   draftReportValidator,
   legacyReportValidator,
-  PreviewMode,
 } from '../viz-builder';
 import type {
   Dashboard,
@@ -31,8 +31,8 @@ import type {
 
 const importFileSchema = yup.object().shape(
   {
-    dashboards: yup.array().of(dashboardSchema),
-    dashboardRelations: yup.array().of(dashboardRelationObjectSchema),
+    dashboards: yup.array().of(dashboardValidator),
+    dashboardRelations: yup.array().of(dashboardRelationObjectValidator),
     // ...the rest of the fields belong to the visualisation object and are validated separately
   },
   [['dashboards', 'dashboardRelations']],
@@ -61,13 +61,15 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
 
     const { dashboards = [], dashboardRelations = [], ...visualisation } = this.readFileContents();
 
-    const reportValidator = visualisation?.legacy ? legacyReportValidator : draftReportValidator;
+    const [dashboardItemValidator, reportValidator] = visualisation?.legacy
+      ? [legacyDashboardItemValidator, legacyReportValidator]
+      : [draftDashboardItemValidator, draftReportValidator];
     const extractor = new DashboardVisualisationExtractor(
       visualisation,
-      draftDashboardItemValidator,
+      dashboardItemValidator,
       reportValidator,
     );
-    const extractedViz = extractor.getDashboardVisualisationResource(PreviewMode.PRESENTATION);
+    const extractedViz = extractor.getDashboardVisualisationResource();
     const existingId = await this.findExistingVisualisationId(visualisation);
 
     const id = existingId

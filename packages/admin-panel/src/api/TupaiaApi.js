@@ -16,9 +16,17 @@ const isJsonResponse = response => {
   return contentType.startsWith('application/json');
 };
 
+const {
+  REACT_APP_API_URL = 'http://localhost:8070/v1',
+  REACT_APP_CLIENT_BASIC_AUTH_HEADER,
+} = process.env;
+
 export class TupaiaApi {
-  constructor() {
+  constructor(config) {
     this.store = null; // Redux store for keeping state, will be injected after creation
+    // set config
+    this.apiUrl = config?.apiUrl || REACT_APP_API_URL;
+    this.clientBasicAuthHeader = config?.basicAuthHeader || REACT_APP_CLIENT_BASIC_AUTH_HEADER;
   }
 
   injectReduxStore(store) {
@@ -34,7 +42,7 @@ export class TupaiaApi {
       'login',
       null,
       loginCredentials,
-      process.env.REACT_APP_CLIENT_BASIC_AUTH_HEADER,
+      this.clientBasicAuthHeader,
     );
     return authenticationDetails;
   }
@@ -101,7 +109,7 @@ export class TupaiaApi {
   }
 
   async request(endpoint, queryParameters, fetchConfig) {
-    const queryUrl = stringifyQuery(process.env.REACT_APP_API_URL, endpoint, queryParameters);
+    const queryUrl = stringifyQuery(this.apiUrl, endpoint, queryParameters);
     const response = await Promise.race([fetch(queryUrl, fetchConfig), createTimeoutPromise()]);
 
     await this.checkIfAuthorized(response);

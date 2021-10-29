@@ -24,6 +24,7 @@ export const ResourcePage = ({
   expansionTabs,
   importConfig,
   ExportModalComponent,
+  ConfirmDeleteModalComponent,
   onProcessDataForSave,
   baseFilter,
   title,
@@ -52,6 +53,7 @@ export const ResourcePage = ({
           baseFilter={baseFilter}
           defaultFilters={defaultFilters}
           defaultSorting={defaultSorting}
+          ConfirmDeleteModalComponent={ConfirmDeleteModalComponent}
         />
       </Container>
       <EditModal {...editConfig} onProcessDataForSave={onProcessDataForSave} />
@@ -62,6 +64,7 @@ export const ResourcePage = ({
 ResourcePage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
   columns: PropTypes.array.isRequired,
+  ConfirmDeleteModalComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
   createConfig: PropTypes.object,
   editConfig: PropTypes.object,
   onProcessDataForSave: PropTypes.func,
@@ -84,6 +87,7 @@ ResourcePage.propTypes = {
 };
 
 ResourcePage.defaultProps = {
+  ConfirmDeleteModalComponent: undefined,
   createConfig: null,
   editConfig: null,
   expansionTabs: null,

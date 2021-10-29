@@ -37,8 +37,8 @@ const buildListItems = items => {
       }
 
       return {
-        data: item.id,
-        key: item.id,
+        data: item.code,
+        key: item.code,
         title: item.label,
       };
     })
@@ -52,8 +52,8 @@ const renderList = (filterItem, onFilterchange, currentFilter) => {
   } else {
     listItems = [
       {
-        data: filterItem.id,
-        key: filterItem.id,
+        data: filterItem.code,
+        key: filterItem.code,
         title: filterItem.label,
       },
     ];
@@ -61,13 +61,13 @@ const renderList = (filterItem, onFilterchange, currentFilter) => {
   const title = filterItem.category ? filterItem.category : '';
 
   return (
-    <li style={styles.listItem} key={filterItem.id}>
+    <li style={styles.listItem} key={filterItem.code}>
       <List
         title={title}
         items={listItems}
         displayArrows={false}
         onSelectItem={onFilterchange}
-        selectedItems={[currentFilter.id]}
+        selectedItems={[currentFilter.code]}
       />
     </li>
   );
@@ -78,14 +78,14 @@ const renderList = (filterItem, onFilterchange, currentFilter) => {
  *
  * @param {filterShape} filterItems
  */
-const getFlattenedIds = filterItems => {
+const getFlattenedCodes = filterItems => {
   let flattenedItems = {};
 
   filterItems.forEach(filterItem => {
-    if (filterItem.id) {
-      flattenedItems[filterItem.id] = filterItem.value;
+    if (filterItem.code) {
+      flattenedItems[filterItem.code] = filterItem.value;
     } else if (filterItem.items) {
-      flattenedItems = { ...flattenedItems, ...getFlattenedIds(filterItem.items) };
+      flattenedItems = { ...flattenedItems, ...getFlattenedCodes(filterItem.items) };
     }
   });
 
@@ -114,11 +114,11 @@ const FilterSelect = ({
   showLoadingIcon,
   theme: { color },
 }) => {
-  const flatFilterValues = getFlattenedIds(filters);
+  const flatFilterValues = getFlattenedCodes(filters);
 
-  const onFilterSelect = id => {
+  const onFilterSelect = code => {
     onFilterClose();
-    onFilterChange(flatFilterValues[id]);
+    onFilterChange(flatFilterValues[code]);
   };
 
   return (
@@ -139,7 +139,7 @@ const FilterSelect = ({
 
 export const filterShape = PropTypes.shape({
   label: PropTypes.string,
-  id: PropTypes.string,
+  code: PropTypes.string,
   value: PropTypes.any,
 });
 

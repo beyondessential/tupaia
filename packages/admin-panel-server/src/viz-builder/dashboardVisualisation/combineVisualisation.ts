@@ -7,12 +7,9 @@ import { DashboardItem, LegacyReport, Report, DashboardVizResource, DashboardViz
 
 const getData = (report: Report) => {
   const { config } = report;
-  const {
-    fetch: { dataElements, dataGroups, aggregations },
-    transform,
-  } = config;
-
-  return { dataElements, dataGroups, aggregations, transform };
+  const { fetch, transform } = config;
+  const { aggregations, ...restOfFetch } = fetch;
+  return { fetch: restOfFetch, aggregate: aggregations, transform };
 };
 
 const getLegacyData = (report: LegacyReport) => {

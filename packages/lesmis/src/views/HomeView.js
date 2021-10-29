@@ -8,7 +8,7 @@ import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { NAVBAR_HEIGHT } from '../constants';
+import { NAVBAR_HEIGHT, YELLOW } from '../constants';
 import { SearchBar, FlexEnd, FlexStart } from '../components';
 import { useProjectEntitiesData } from '../api/queries';
 
@@ -55,7 +55,7 @@ const Title = styled(Typography)`
 `;
 
 const YellowTitle = styled.span`
-  color: ${props => props.theme.palette.secondary.main};
+  color: ${YELLOW};
 `;
 
 const Info = styled(FlexStart)`

@@ -13,7 +13,6 @@ import {
   DashboardVisualisationExtractor,
   draftDashboardItemValidator,
   draftReportValidator,
-  PreviewMode,
 } from '../viz-builder';
 
 export type SaveDashboardVisualisationRequest = Request<
@@ -45,7 +44,7 @@ export class SaveDashboardVisualisationRoute extends Route<SaveDashboardVisualis
       draftDashboardItemValidator,
       draftReportValidator,
     );
-    const body = extractor.getDashboardVisualisationResource(PreviewMode.PRESENTATION);
+    const body = extractor.getDashboardVisualisationResource();
 
     let result;
 

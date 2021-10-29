@@ -168,7 +168,7 @@ const IMPORT_CONFIG = {
   ],
 };
 
-export const SurveyResponsesPage = ({ getHeaderEl }) => (
+export const SurveyResponsesPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
     title="Survey Responses"
     endpoint="surveyResponses"
@@ -180,6 +180,7 @@ export const SurveyResponsesPage = ({ getHeaderEl }) => (
     editConfig={EDIT_CONFIG}
     getHeaderEl={getHeaderEl}
     ExportModalComponent={SurveyResponsesExportModal}
+    {...props}
   />
 );
 

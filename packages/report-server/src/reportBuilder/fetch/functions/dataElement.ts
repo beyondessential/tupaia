@@ -3,23 +3,20 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { Aggregator } from '../../../aggregator';
-import { FetchReportQuery, AggregationObject } from '../../../types';
-import { FetchResponse } from '../types';
-import {
-  validateDataElementsForAnalytics as validateDataElements,
-  validateAggregations,
-} from './helpers';
+import { yup } from '@tupaia/utils';
 
-type DataElementParams = {
-  dataElements: unknown;
-  aggregations?: unknown;
-};
+import { Aggregator } from '../../../aggregator';
+import { Aggregation, FetchReportQuery, ReportConfig } from '../../../types';
+import { FetchResponse } from '../types';
+
+type DataElementParams = Pick<ReportConfig['fetch'], 'dataElements' | 'aggregations'>;
 
 type DataElementFetchParams = {
   dataElementCodes: string[];
-  aggregations?: (string | AggregationObject)[];
+  aggregations?: Aggregation[];
 };
+
+const dataElementsValidator = yup.array().of(yup.string().required()).min(1).required();
 
 const fetchAnalytics = async (
   aggregator: Aggregator,
@@ -42,11 +39,9 @@ const fetchAnalytics = async (
 
 const buildParams = (params: DataElementParams): DataElementFetchParams => {
   const { dataElements, aggregations } = params;
-  validateDataElements(dataElements);
-  validateAggregations(aggregations);
 
   return {
-    dataElementCodes: dataElements,
+    dataElementCodes: dataElementsValidator.validateSync(dataElements),
     aggregations,
   };
 };
