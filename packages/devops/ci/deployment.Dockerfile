@@ -1,3 +1,3 @@
-FROM codeship/aws-deployment
+FROM amazon/aws-cli
 
 COPY ./packages/devops/scripts/ci/triggerRedeploy.sh .
