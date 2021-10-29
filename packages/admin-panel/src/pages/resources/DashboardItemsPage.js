@@ -42,7 +42,7 @@ const IMPORT_CONFIG = {
   },
 };
 
-export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin }) => {
+export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
   const extraEditFields = [
     // ID field for constructing viz-builder path only, not for showing or editing
     {
@@ -107,13 +107,14 @@ export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin }) => {
         title: 'Edit Dashboard Item',
       }}
       getHeaderEl={getHeaderEl}
+      {...props}
     />
   );
 };
 
 DashboardItemsPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
-  isBESAdmin: PropTypes.func,
+  isBESAdmin: PropTypes.bool,
 };
 
 DashboardItemsPage.defaultProps = {

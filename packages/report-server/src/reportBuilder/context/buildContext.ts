@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { AccessPolicy } from '@tupaia/access-policy';
 import { MicroServiceRequestContext } from '@tupaia/server-boilerplate';
 import { getUniqueEntries } from '@tupaia/utils';
 
@@ -12,7 +13,9 @@ import { Context, ContextProp } from './types';
 
 export type ReqContext = {
   hierarchy: string;
+  permissionGroup: string;
   services: MicroServiceRequestContext['services'];
+  accessPolicy: AccessPolicy;
 };
 
 type ContextBuilder<K extends ContextProp> = (

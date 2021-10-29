@@ -33,7 +33,9 @@ ${countryNames.map(n => `  -  ${n}`).join('\n')}
 ${
   project
     ? `
-For the project ${project.code} (linked to permission groups: ${project.user_groups.join(', ')})
+For the project ${project.code} (linked to permission groups: ${project.permission_groups.join(
+        ', ',
+      )})
     `
     : ''
 }
@@ -43,7 +45,7 @@ With the message: '${message}'
 };
 
 const createAccessRequests = async (models, userId, entities, message, project) => {
-  // use the first permission group in the project's user_groups as the placeholder permission group
+  // use the first permission group in the project's permission_groups as the placeholder permission group
   // that the access request administrator can choose to accept or change
   const [placeholderPermissionGroup] = project ? await project.permissionGroups() : [];
   await Promise.all(

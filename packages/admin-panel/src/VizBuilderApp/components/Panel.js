@@ -69,22 +69,31 @@ const PanelTabPanel = styled.div`
 
 export const Panel = () => {
   const [tab, setTab] = useState(0);
+  const [isInError, setIsInError] = useState(false);
   const [
     {
       visualisation: { data: dataConfig },
     },
-    { setDataConfig, setFetchConfig },
+    { setDataConfig },
   ] = useVizBuilderConfig();
 
-  const { dataElements, dataGroups, aggregations, transform } = dataConfig;
+  const { fetch, aggregate, transform } = dataConfig;
 
   const handleChange = (event, newValue) => {
     setTab(newValue);
   };
 
-  const fetchValue = {
-    dataElements,
-    dataGroups,
+  const handleInvalidChange = () => {
+    setIsInError(true);
+  };
+
+  const setTabValue = (tabName, value) => {
+    setDataConfig(tabName, value);
+    setIsInError(false);
+  };
+
+  const isTabDisabled = tabId => {
+    return tab !== tabId && isInError;
   };
 
   return (
@@ -97,20 +106,32 @@ export const Panel = () => {
           textColor="primary"
           onChange={handleChange}
         >
-          <Tab label="Fetch" icon={<ChevronRight />} />
-          <Tab label="Aggregate" icon={<ChevronRight />} />
-          <Tab label="Transform" />
+          <Tab disabled={isTabDisabled(0)} label="Fetch" icon={<ChevronRight />} />
+          <Tab disabled={isTabDisabled(1)} label="Aggregate" icon={<ChevronRight />} />
+          <Tab disabled={isTabDisabled(2)} label="Transform" />
         </Tabs>
-        <PlayButton />
+        <PlayButton disabled={isInError} />
       </PanelNav>
       <TabPanel isSelected={tab === 0} Panel={PanelTabPanel}>
-        <JsonEditor value={fetchValue} onChange={value => setFetchConfig(value)} />
+        <JsonEditor
+          value={fetch}
+          onChange={value => setTabValue('fetch', value)}
+          onInvalidChange={handleInvalidChange}
+        />
       </TabPanel>
       <TabPanel isSelected={tab === 1} Panel={PanelTabPanel}>
-        <JsonEditor value={aggregations} onChange={value => setDataConfig('aggregations', value)} />
+        <JsonEditor
+          value={aggregate}
+          onChange={value => setTabValue('aggregate', value)}
+          onInvalidChange={handleInvalidChange}
+        />
       </TabPanel>
       <TabPanel isSelected={tab === 2} Panel={PanelTabPanel}>
-        <JsonEditor value={transform} onChange={value => setDataConfig('transform', value)} />
+        <JsonEditor
+          value={transform}
+          onChange={value => setTabValue('transform', value)}
+          onInvalidChange={handleInvalidChange}
+        />
       </TabPanel>
     </Container>
   );

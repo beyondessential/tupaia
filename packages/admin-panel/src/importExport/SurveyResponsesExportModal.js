@@ -44,6 +44,7 @@ export const SurveyResponsesExportModal = () => {
         allowMultipleValues
       />
       <RadioGroup
+        name="survey responses mode"
         label="Mode"
         onChange={event => setMode(event.currentTarget.value)}
         options={[
