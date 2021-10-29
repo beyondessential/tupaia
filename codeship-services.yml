@@ -1,10 +1,5 @@
-# Most of the services in this file use the "tupaia-ci-cd" docker image, which includes nodejs, plus
-# the full repo code, with node_modules installed and internal dependencies built.
-# Several also mount a volume called "common", which allows communication between containers/steps
-# See `copyToCommonVolume.sh` for a description of the pattern being used
-
 # 'lastpass' service has lastpass credentials in an encrypted file, which allows it to retrieve the
-# .env files for each package and copy them to the common volume for use in later steps
+# .env files for each package and copy them to the environment_variables volume for use in later steps
 lastpass:
   build:
     dockerfile: ./packages/devops/ci/tupaia-ci-cd.Dockerfile
@@ -13,7 +8,7 @@ lastpass:
   default_cache_branch: 'dev'
   encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
   volumes:
-    - ./tmp:/common
+    - ./tmp:/environment_variables
 
 # 'validation' service just uses the tupaia-ci-cd image to check that some conventions are followed
 validation:
@@ -23,8 +18,8 @@ validation:
   default_cache_branch: 'dev'
   encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
 
-# 'testing' service uses mounts the common volume to retrieve .env files, and additionally depends
-# on the db service and encrypted db connection env vars to run integration tests
+# 'testing' service uses mounts the environment_variables volume to retrieve .env files, and additionally
+# depends on the db service and encrypted db connection env vars to run integration tests
 testing:
   build:
     dockerfile: ./packages/devops/ci/tupaia-ci-cd.Dockerfile
@@ -35,7 +30,7 @@ testing:
   encrypted_env_file: ./packages/devops/ci/testing.env.encrypted # test db env vars
   encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
   volumes:
-    - ./tmp:/common
+    - ./tmp:/environment_variables
 
 # 'e2e' service includes a base cypress container, plus code and node_module dependencies
 # required by e2e tests in web-frontend
@@ -55,26 +50,10 @@ db:
   image: mdillon/postgis:10-alpine
   encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
 
-# 'builder' service copies in the .env files from the common volume, builds each package, and
-# copies the builds back into the common volume ready for the deployment service
-builder:
-  build:
-    dockerfile: ./packages/devops/ci/tupaia-ci-cd.Dockerfile
-  cached: true
-  default_cache_branch: 'dev'
-  encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
-  volumes:
-    - ./tmp:/common
-
-# the 'deployment' service copies in the builds and env vars from the common volume populated by
-# earlier steps, then pushing them up to the ec2 instance via scp
+# the 'deployment' service has the aws cli, and credentials for an IAM role to trigger the lambda
+# script that redeploys tupaia
 deployment:
-  build:
-    dockerfile: ./packages/devops/ci/tupaia-ci-cd.Dockerfile
-  cached: true
-  default_cache_branch: dev
-  encrypted_env_file: ./packages/devops/ci/deployment.env.encrypted # ssh key to connect to ec2 instances
-  encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
-  volumes:
-    - ./.ssh:/root/.ssh # persist `id_rsa` across steps
-    - ./tmp:/common
+  image: codeship/aws-deployment
+  encrypted_env_file: ./packages/devops/ci/deployment.env.encrypted
+  environment:
+    - AWS_DEFAULT_REGION=ap-southeast-2
