@@ -1,7 +1,5 @@
 #!/bin/bash
 
-DIR=$(dirname "$0")
-
 if [[ $CI_BRANCH == "master" ]]; then
     DEPLOYMENT_URL="tupaia.org"
 else
