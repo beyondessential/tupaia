@@ -55,7 +55,6 @@ db:
 deployment:
   build:
     dockerfile: ./packages/devops/ci/deployment.Dockerfile
-  entrypoint: ''
   encrypted_env_file: ./packages/devops/ci/deployment.env.encrypted
   environment:
     - AWS_DEFAULT_REGION=ap-southeast-2
