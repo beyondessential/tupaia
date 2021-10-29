@@ -22,8 +22,8 @@ export const DashboardMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   const { name, code, permissionGroup } = defaults;
 
   const doSubmit = data => {
-    setVisualisationValue('name', data.name);
     setVisualisationValue('code', data.code);
+    setVisualisationValue('name', data.name);
     setVisualisationValue('permissionGroup', data.permissionGroup);
     onSubmit();
   };
@@ -32,16 +32,12 @@ export const DashboardMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
     <form onSubmit={handleSubmit(doSubmit)} noValidate>
       <Header />
       <Body>
-        <Autocomplete
-          id="permissionGroup"
-          name="permissionGroup"
-          label="Permission Group"
-          placeholder="Select Permission Group"
-          defaultValue={permissionGroup}
-          options={permissionGroups.map(p => p.name)}
-          disabled={isLoadingPermissionGroups}
-          error={!!errors.permissionGroup}
-          helperText={errors.permissionGroup && errors.permissionGroup.message}
+        <TextField
+          name="code"
+          label="Code"
+          defaultValue={code}
+          error={!!errors.code}
+          helperText={errors.code && errors.code.message}
           inputRef={register({
             required: 'Required',
           })}
@@ -56,12 +52,16 @@ export const DashboardMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
             required: 'Required',
           })}
         />
-        <TextField
-          name="code"
-          label="Code"
-          defaultValue={code}
-          error={!!errors.code}
-          helperText={errors.code && errors.code.message}
+        <Autocomplete
+          id="permissionGroup"
+          name="permissionGroup"
+          label="Permission Group"
+          placeholder="Select Permission Group"
+          defaultValue={permissionGroup}
+          options={permissionGroups.map(p => p.name)}
+          disabled={isLoadingPermissionGroups}
+          error={!!errors.permissionGroup}
+          helperText={errors.permissionGroup && errors.permissionGroup.message}
           inputRef={register({
             required: 'Required',
           })}
