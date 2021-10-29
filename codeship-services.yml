@@ -53,7 +53,8 @@ db:
 # the 'deployment' service has the aws cli, and credentials for an IAM role to trigger the lambda
 # script that redeploys tupaia
 deployment:
-  image: codeship/aws-deployment
+  build:
+    dockerfile: ./packages/devops/ci/deployment.Dockerfile
   encrypted_env_file: ./packages/devops/ci/deployment.env.encrypted
   environment:
     - AWS_DEFAULT_REGION=ap-southeast-2
