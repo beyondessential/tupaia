@@ -49,7 +49,6 @@ for PACKAGE in ${PACKAGES[@]}; do
         cd ${TUPAIA_DIR}
 
         # Ensure that the analytics table is fully built
-        yarn download-env-vars $BRANCH data-api
         echo "Building analytics table"
         yarn workspace @tupaia/data-api install-mv-refresh
         yarn workspace @tupaia/data-api patch-mv-refresh up
