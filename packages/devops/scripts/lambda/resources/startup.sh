@@ -51,5 +51,5 @@ $DEPLOYMENT_SCRIPTS/configureNginx.sh | while IFS= read -r line; do printf '\%s 
 SUBDOMAINS_VIA_GATEWAY_TAG=$(aws ec2 describe-tags --filters "Name=resource-id,Values=$(ec2metadata --instance-id | cut -d ' ' -f2)" "Name=key,Values=SubdomainsViaGateway" --output text)
 if [[ $SUBDOMAINS_VIA_GATEWAY_TAG == "" ]]; then
   INSTANCE_ID=$(ec2metadata --instance-id)
-  aws lambda invoke --function-name edwinTestCreate --payload "{\"Action\": \"swap_out_tupaia_server\", \"Branch\": \"$BRANCH\", \"NewInstanceId\": \"$INSTANCE_ID\" }"  --cli-binary-format raw-in-base64-out $LOGS_DIR/lambda_swap_out_response.json
+  aws lambda invoke --function-name deployment --payload "{\"Action\": \"swap_out_tupaia_server\", \"Branch\": \"$BRANCH\", \"NewInstanceId\": \"$INSTANCE_ID\" }"  --cli-binary-format raw-in-base64-out $LOGS_DIR/lambda_swap_out_response.json
 fi

@@ -57,4 +57,4 @@ def redeploy_tupaia_server(event):
 
     print('Successfully deployed branch ' + branch)
 
-    return { 'OldInstanceId': existing_instance['InstanceId'], 'NewInstanceId': new_instance['InstanceId'] }
+    return new_instance['InstanceId']
