@@ -14,7 +14,7 @@ class VisualisationFilter {
 
   static builderKey = null;
 
-  static name = 'visualisation';
+  static vizName = 'visualisation';
 
   constructor(db, filter) {
     this.db = db;
@@ -36,7 +36,7 @@ class VisualisationFilter {
   }
 
   get name() {
-    return this.constructor.name;
+    return this.constructor.vizName;
   }
 
   /**
@@ -94,7 +94,7 @@ export class DashboardReportFilter extends VisualisationFilter {
 
   static builderKey = 'dataBuilder';
 
-  static name = 'dashboard report';
+  static vizName = 'dashboard report';
 
   fetchRecords = async objectUrls => {
     const objectUrlsByCode = keyBy(objectUrls, 'code');
@@ -130,10 +130,10 @@ export class MapOverlayFilter extends VisualisationFilter {
 
   static builderKey = 'measureBuilder';
 
-  static name = 'map overlay';
+  static vizName = 'map overlay';
 
   fetchRecords = async objectUrls =>
-    this.db.find('mapOverlay', {
+    this.db.find('map_overlay', {
       id: objectUrls.map(u => u.id).flat(),
     });
 }

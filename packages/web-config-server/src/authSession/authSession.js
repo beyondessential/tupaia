@@ -88,7 +88,7 @@ const addUserAccessHelper = (req, res, next) => {
     return accessPolicy.allows(entity.country_code, permissionGroup);
   };
 
-  req.getUserGroups = async entityCode => {
+  req.getPermissionGroups = async entityCode => {
     if (entityCode === 'World') {
       return ['Public']; // At this stage, all users have Public access to the World dashboard
     }

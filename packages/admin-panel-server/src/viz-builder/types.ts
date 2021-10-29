@@ -3,20 +3,15 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-type AggregationObject = {
-  readonly type: string;
-  readonly config?: Record<string, unknown>;
-};
-
-type Aggregation = string | AggregationObject;
-
-type Transform = Record<string, unknown>;
+import type { ReportConfig } from '@tupaia/report-server';
 
 type VizData = {
-  dataElements: string[];
-  dataGroups: string[];
-  aggregations: Aggregation[];
-  transform: Transform[];
+  dataElements: ReportConfig['fetch']['dataElements'];
+  dataGroups: ReportConfig['fetch']['dataGroups'];
+  startDate?: ReportConfig['fetch']['startDate'];
+  endDate?: ReportConfig['fetch']['endDate'];
+  aggregations: ReportConfig['fetch']['aggregations'];
+  transform: ReportConfig['transform'];
 };
 
 type VizType = 'view' | 'chart' | 'matrix';
@@ -107,18 +102,6 @@ export type DashboardRelationRecord = CamelKeysToSnake<Omit<DashboardRelation, '
 };
 
 export type ReportRecord = CamelKeysToSnake<Report> & { id: string };
-
-type FetchConfig = {
-  dataElements: string[];
-  dataGroups: string[];
-  aggregations: Aggregation[];
-};
-
-type ReportConfig = {
-  fetch: FetchConfig;
-  transform: Transform[];
-  output: Record<string, unknown>;
-};
 
 type CamelToSnake<T extends string> = T extends `${infer Char}${infer Rest}`
   ? `${Char extends Uppercase<Char> ? '_' : ''}${Lowercase<Char>}${CamelToSnake<Rest>}`

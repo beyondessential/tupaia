@@ -13,7 +13,7 @@ export const EventBasedTabView = () => {
   return (
     <div style={{ position: 'relative' }}>
       <ComingSoon text="The Event-based page will allow you to see event based data." />
-      <Container>
+      <Container maxWidth="xl">
         <Main>
           <FakeEventBasedDataTable countryCode={countryCode} />
         </Main>

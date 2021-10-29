@@ -46,16 +46,17 @@ for PACKAGE in ${PACKAGES[@]}; do
             # reset cwd back to `/tupaia`
             cd ${TUPAIA_DIR}
 
+            # ensure that the analytics table is fully built
+            echo "Building analytics table"
+            yarn workspace @tupaia/data-api install-mv-refresh
+            yarn workspace @tupaia/data-api patch-mv-refresh up
+            yarn workspace @tupaia/data-api build-analytics-table
+
             # now that meditrak-server is up and listening for changes, we can run any migrations
             # if run earlier when meditrak-server isn't listening, changes will be missed from the
             # sync queues
             echo "Migrating the database"
             yarn migrate
-
-            # After running migrations it's good to ensure that the analytics table is fully built
-            echo "Building analytics table"
-            yarn workspace @tupaia/data-api install-mv-refresh
-            yarn workspace @tupaia/data-api build-analytics-table
         fi
     fi
 done

@@ -16,9 +16,14 @@ export const assertProjectPermissions = async (accessPolicy, models, projectId) 
     throw new Error(`No project exists with id ${projectId}`);
   }
   const entity = await models.entity.findById(project.entity_id);
-  for (let i = 0; i < project.user_groups.length; ++i) {
+  for (let i = 0; i < project.permission_groups.length; ++i) {
     if (
-      await hasAccessToEntityForVisualisation(accessPolicy, models, entity, project.user_groups[i])
+      await hasAccessToEntityForVisualisation(
+        accessPolicy,
+        models,
+        entity,
+        project.permission_groups[i],
+      )
     ) {
       return true;
     }
@@ -56,13 +61,13 @@ export class GETProjects extends GETHandler {
         countryCodesByPermissionGroup[pg] = this.accessPolicy.getEntitiesAllowed(pg);
       });
 
-      // Pulls user_group/country_code pairs from the project
+      // Pulls permission_group/country_code pairs from the project
       // Returns any project where we have access to at least one of those pairs
       dbConditions[RAW] = {
         sql: `(
-          SELECT COUNT(*) > 0 FROM 
+          SELECT COUNT(*) > 0 FROM
           (
-            SELECT UNNEST(project.user_groups) as permission_group, entity.country_code
+            SELECT UNNEST(project.permission_groups) as permission_group, entity.country_code
             FROM entity
             INNER JOIN entity_relation
               ON entity_relation.child_id = entity.id
