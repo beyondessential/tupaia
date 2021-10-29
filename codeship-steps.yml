@@ -45,7 +45,7 @@
         - name: Test web-frontend
           command: './packages/devops/scripts/ci/testFrontend.sh web-frontend'
 
-- name: Check for deployment and redeploy if one exists
+- name: Deploy changes
   service: deployment
   command: './packages/devops/scripts/ci/triggerRedeploy.sh'
 
