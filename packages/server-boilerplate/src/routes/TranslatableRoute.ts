@@ -17,6 +17,8 @@ type StringKey = {
 type ObjectKey = {
   type: 'object';
   properties: { [key: string]: TranslationKey };
+  // Keys within the object to translate
+  keys?: 'all' | string[];
 }
 
 type ArrayKey = {
@@ -44,6 +46,21 @@ export class TranslatableRoute extends Route {
     super.respond(translatedResponse, statusCode);
   }
 
+  translateString(value: string): string {
+    // Object notation format: "domain.key:default"
+    // Find the translation for the string, or return the string itself
+    // i18n doesn't allow escaping the delimiter characters, so strip them out for now
+    return this.res.translate(`${this.translationSchema.domain}.${value.replace(/(:|\.)/g, '')}:${value}`);
+  }
+
+  translateKey(value: string): string {
+    if (value.endsWith('_metadata')) {
+      const key = this.translateString(value.slice(0, -('_metadata'.length)));
+      return `${key}_metadata`;
+    }
+    return this.translateString(value);
+  }
+
   // Overload this function so that translationKey implies the shape of translationValue
   translateResponse(translationKey: StringKey, translationValue: string): TranslationValue;
   translateResponse(translationKey: ObjectKey, translationValue: { [key: string]: TranslationValue }): TranslationValue;
@@ -55,14 +72,20 @@ export class TranslatableRoute extends Route {
     }
     switch(translationKey.type) {
       case 'string':
-        // Object notation format: "domain.key:default"
-        // Find the translation for the string, or return the string itself
-        // i18n doesn't allow escaping the delimiter characters, so strip them out for now
-        return this.res.translate(`${this.translationSchema.domain}.${translationValue.replace(/(:|\.)/g, '')}:${translationValue}`);
+        return this.translateString(translationValue);
       case 'object': {
         let translatedObject = translationValue;
-        for (const key of Object.keys(translationKey.properties)) {
-          translatedObject[key] = this.translateResponse(translationKey.properties[key], translationValue[key]);
+        for (const key of Object.keys(translationValue)) {
+          if (key in translationKey.properties) {
+            translatedObject[key] = this.translateResponse(translationKey.properties[key], translationValue[key]);
+          }
+          if (translationKey.keys) {
+            const newKey = (translationKey.keys === 'all' || translationKey.keys.includes(key)) ? this.translateKey(key) : key;
+            if (newKey !== key) {
+              translatedObject[newKey] = translatedObject[key];
+              delete translatedObject[key];
+            }
+          }
         }
         return translatedObject;
       }

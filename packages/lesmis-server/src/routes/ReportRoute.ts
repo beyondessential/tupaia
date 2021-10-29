@@ -25,10 +25,14 @@ export class ReportRoute extends TranslatableRoute {
         type: 'array',
         items: {
           type: 'object',
+          keys: 'all',
           properties: {
             label: {
               type: 'string'
-            }
+            },
+            name: {
+              type: 'string'
+            },
           }
         }
       }

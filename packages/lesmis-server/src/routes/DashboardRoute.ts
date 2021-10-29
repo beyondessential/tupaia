@@ -36,6 +36,24 @@ export class DashboardRoute extends TranslatableRoute {
                   // Translate dashboard item names
                   name: {
                     type: 'string'
+                  },
+                  xName: {
+                    type: 'string'
+                  },
+                  yName: {
+                    type: 'string'
+                  },
+                  chartConfig: {
+                    type: 'object',
+                    keys: 'all',
+                    properties: {
+                      Male: {
+                        type: 'object',
+                        properties: {
+                          yName: { type: 'string' }
+                        }
+                      }
+                    }
                   }
                 }
               }
