@@ -9,7 +9,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { ExpandableList } from '../ExpandableList';
-import DashboardGroup from '../../../containers/DashboardGroup';
+import { DashboardGroup } from '../../../containers/DashboardGroup';
 import { DARK_BLUE, WHITE } from '../../../styles';
 
 const Container = styled.div`
