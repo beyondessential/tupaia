@@ -10,7 +10,12 @@ import StateDashboardItem from './StateDashboardItem';
 import { getUniqueViewId } from '../utils';
 
 const Container = styled.div`
-  display: block;
+  &.collapsed {
+    display: block;
+    > div {
+      margin-bottom: 5px;
+    }
+  }
 
   &.expanded {
     display: grid;
@@ -23,8 +28,7 @@ const Container = styled.div`
   }
 `;
 
-// compressed=true is used on mobile
-export const DashboardGroup = ({ compressed, tab, isSidePanelExpanded }) => {
+export const DashboardGroup = ({ tab, isSidePanelExpanded }) => {
   if (!tab) return null;
 
   const { dashboardCode, entityCode: organisationUnitCode, project } = tab;
@@ -34,7 +38,7 @@ export const DashboardGroup = ({ compressed, tab, isSidePanelExpanded }) => {
     .map(view => view.drillDown?.itemCode);
 
   return (
-    <Container className={isSidePanelExpanded ? 'expanded' : ''}>
+    <Container className={isSidePanelExpanded ? 'expanded' : 'collapsed'}>
       {tab.items
         .filter(view => !drillDownItemCodes.includes(view.code))
         .map(view => {
@@ -63,12 +67,10 @@ export const DashboardGroup = ({ compressed, tab, isSidePanelExpanded }) => {
 
 DashboardGroup.propTypes = {
   tab: PropTypes.object,
-  compressed: PropTypes.bool,
   isSidePanelExpanded: PropTypes.bool,
 };
 
 DashboardGroup.defaultProps = {
   tab: null,
-  compressed: false,
   isSidePanelExpanded: false,
 };

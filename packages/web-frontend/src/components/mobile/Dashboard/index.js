@@ -54,7 +54,6 @@ export const Dashboard = ({
           <DashboardGroup
             key={currentFilter.label}
             tab={dashboards.find(d => d.dashboardName === currentFilter.label)}
-            compressed
           />,
         ]}
         isExpanded={isDashboardExpanded}
