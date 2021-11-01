@@ -159,8 +159,6 @@ export const DashboardReportTabView = ({
 
   const { startDate, endDate } = yearToApiDates(year);
 
-  console.log('searchIsActive', searchIsActive);
-
   return (
     <>
       <StickyTabBarContainer ref={onLoadTabBar}>

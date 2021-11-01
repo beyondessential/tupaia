@@ -49,7 +49,7 @@ export const useDashboardSearch = ({ inputValue, setInputValue, options, limit, 
   });
 
   return useMuiAutocomplete({
-    id: 'location-search',
+    id: 'dashboard-search',
     filterOptions,
     options,
     onChange,
@@ -61,6 +61,6 @@ export const useDashboardSearch = ({ inputValue, setInputValue, options, limit, 
     onInputChange: (event, newValue) => {
       setInputValue(newValue);
     },
-    getOptionLabel: option => option.name,
+    getOptionLabel: option => option.dashboardName,
   });
 };

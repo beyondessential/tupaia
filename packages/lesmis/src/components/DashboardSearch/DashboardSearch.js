@@ -12,9 +12,10 @@ import MuiIconButton from '@material-ui/core/IconButton';
 import MuiSearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import { useDashboardSearch } from './useDashboardSearch';
-import { useProjectEntitiesData } from '../../api';
-import { makeEntityLink } from '../../utils';
+import { useDashboardData } from '../../api';
+import { makeEntityLink, useUrlParams } from '../../utils';
 import { usePortal } from './usePortal';
+import { DashboardSearchResults } from './DashboardSearchResult';
 
 const SearchButton = styled(MuiIconButton)`
   border: 1px solid ${props => props.theme.palette.grey['400']};
@@ -25,6 +26,7 @@ const SearchButton = styled(MuiIconButton)`
     background: ${props => props.theme.palette.primary.main};
     padding: 0 1.8rem;
     border-radius: 0;
+    border: none;
     color: white;
 
     .MuiSvgIcon-root {
@@ -73,18 +75,6 @@ const ClearButton = styled(MuiIconButton)`
   }
 `;
 
-const DashboardSearchResults = styled.div`
-  &.active {
-    background: lightblue;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-  }
-`;
-
 const DEFAULT_LIMIT = 5;
 const EXPANDED_LIMIT = 200;
 
@@ -92,20 +82,14 @@ export const DashboardSearch = ({ linkType, onToggleSearch, getResultsEl }) => {
   const [inputValue, setInputValue] = useState('');
   const [expanded, setExpanded] = useState(false);
   const [isActive, setIsActive] = useState(false);
-  const { data: options = [], isLoading } = useProjectEntitiesData();
+  const { entityCode } = useUrlParams();
+  const { data: options, isLoading } = useDashboardData({
+    entityCode,
+    includeDrillDowns: false,
+  });
   const history = useHistory();
 
-  const {
-    getRootProps,
-    getInputProps,
-    getListboxProps,
-    getOptionProps,
-    groupedOptions,
-    focused,
-    getClearProps,
-    popupOpen,
-    value,
-  } = useDashboardSearch({
+  const searchResults = useDashboardSearch({
     inputValue,
     setInputValue,
     options,
@@ -117,10 +101,7 @@ export const DashboardSearch = ({ linkType, onToggleSearch, getResultsEl }) => {
     },
   });
 
-  const RenderResults = usePortal(
-    <DashboardSearchResults className={isActive ? 'active' : ''} />,
-    getResultsEl,
-  );
+  const { getRootProps, getInputProps, getClearProps } = searchResults;
 
   const clearProps = getClearProps();
 
@@ -134,9 +115,14 @@ export const DashboardSearch = ({ linkType, onToggleSearch, getResultsEl }) => {
     setIsActive(!isActive);
   };
 
+  const SearchResults = usePortal(
+    <DashboardSearchResults isActive={isActive} searchResults={searchResults} />,
+    getResultsEl,
+  );
+
   return (
     <>
-      {RenderResults}
+      {SearchResults}
       <SearchContainer {...getRootProps()} elevation={0} className={isActive ? 'active' : ''}>
         <SearchButton
           onClick={handleClickSearch}
