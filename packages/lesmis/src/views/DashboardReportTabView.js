@@ -23,6 +23,7 @@ import {
 import { NAVBAR_HEIGHT_INT } from '../constants';
 import { useUrlSearchParam } from '../utils';
 import { yearToApiDates } from '../api/queries/utils';
+import { DashboardSearch } from '../components/DashboardSearch/DashboardSearch';
 
 const StickyTabBarContainer = styled.div`
   position: sticky;
@@ -121,6 +122,7 @@ const useStickyBar = () => {
 
 export const DashboardReportTabView = ({
   entityCode,
+  SearchSection,
   TabBarLeftSection,
   year,
   filterSubDashboards,
@@ -147,6 +149,7 @@ export const DashboardReportTabView = ({
   return (
     <>
       <StickyTabBarContainer ref={onLoadTabBar}>
+        <DashboardSearch />
         <TabBar>
           <TabBarLeftSection />
           {isLoading ? (
