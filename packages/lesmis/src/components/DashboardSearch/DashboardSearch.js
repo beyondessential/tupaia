@@ -10,10 +10,11 @@ import MuiPaper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
 import MuiIconButton from '@material-ui/core/IconButton';
 import MuiSearchIcon from '@material-ui/icons/Search';
-import CancelIcon from '@material-ui/icons/Cancel';
+import CloseIcon from '@material-ui/icons/Close';
 import { useDashboardSearch } from './useDashboardSearch';
 import { useProjectEntitiesData } from '../../api';
 import { makeEntityLink } from '../../utils';
+import { usePortal } from './usePortal';
 
 const SearchButton = styled(MuiIconButton)`
   border: 1px solid ${props => props.theme.palette.grey['400']};
@@ -45,6 +46,7 @@ const SearchContainer = styled(MuiPaper)`
   z-index: 1;
   border-radius: 0;
   background: white;
+  padding-right: 15px;
 
   &.active {
     position: absolute;
@@ -61,26 +63,35 @@ const Input = styled(InputBase)`
 `;
 
 const ClearButton = styled(MuiIconButton)`
-  margin: 1px 0 0 0;
-  padding: 0.5rem;
+  align-self: center;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.05);
 
   &:hover {
-    background: none;
-    color: ${props => props.theme.palette.primary.main};
+    background-color: rgba(0, 0, 0, 0.1);
   }
+`;
 
-  .MuiSvgIcon-root {
-    font-size: 1.1rem;
+const DashboardSearchResults = styled.div`
+  &.active {
+    background: lightblue;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
   }
 `;
 
 const DEFAULT_LIMIT = 5;
 const EXPANDED_LIMIT = 200;
 
-export const DashboardSearch = ({ linkType }) => {
+export const DashboardSearch = ({ linkType, onToggleSearch, getResultsEl }) => {
   const [inputValue, setInputValue] = useState('');
   const [expanded, setExpanded] = useState(false);
-  const [showSearch, setShowSearch] = useState(false);
+  const [isActive, setIsActive] = useState(false);
   const { data: options = [], isLoading } = useProjectEntitiesData();
   const history = useHistory();
 
@@ -106,6 +117,11 @@ export const DashboardSearch = ({ linkType }) => {
     },
   });
 
+  const RenderResults = usePortal(
+    <DashboardSearchResults className={isActive ? 'active' : ''} />,
+    getResultsEl,
+  );
+
   const clearProps = getClearProps();
 
   const handleClear = () => {
@@ -114,34 +130,41 @@ export const DashboardSearch = ({ linkType }) => {
   };
 
   const handleClickSearch = () => {
-    setShowSearch(isOpen => !isOpen);
+    onToggleSearch(!isActive);
+    setIsActive(!isActive);
   };
 
   return (
-    <SearchContainer {...getRootProps()} elevation={0} className={showSearch ? 'active' : ''}>
-      <SearchButton
-        onClick={handleClickSearch}
-        className={showSearch ? 'active' : ''}
-        color="primary"
-      >
-        <MuiSearchIcon />
-      </SearchButton>
-      <Input placeholder="Start typing to search dashboards" inputProps={{ ...getInputProps() }} />
-      {inputValue && (
-        <ClearButton {...clearProps} onClick={handleClear} aria-label="clear">
-          <CancelIcon />
-        </ClearButton>
-      )}
-    </SearchContainer>
+    <>
+      {RenderResults}
+      <SearchContainer {...getRootProps()} elevation={0} className={isActive ? 'active' : ''}>
+        <SearchButton
+          onClick={handleClickSearch}
+          className={isActive ? 'active' : ''}
+          color="primary"
+        >
+          <MuiSearchIcon />
+        </SearchButton>
+        <Input
+          placeholder="Start typing to search dashboards"
+          inputProps={{ ...getInputProps() }}
+        />
+        {inputValue && (
+          <ClearButton {...clearProps} onClick={handleClear} aria-label="clear">
+            <CloseIcon />
+          </ClearButton>
+        )}
+      </SearchContainer>
+    </>
   );
 };
 
 DashboardSearch.propTypes = {
-  className: PropTypes.string,
+  getResultsEl: PropTypes.func.isRequired,
+  onToggleSearch: PropTypes.func.isRequired,
   linkType: PropTypes.oneOf(['dashboard', 'map']),
 };
 
 DashboardSearch.defaultProps = {
-  className: null,
   linkType: 'dashboard',
 };

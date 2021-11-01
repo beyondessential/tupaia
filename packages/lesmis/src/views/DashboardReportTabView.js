@@ -34,6 +34,8 @@ const StickyTabBarContainer = styled.div`
 const DashboardSection = styled(FlexCenter)`
   position: relative;
   min-height: calc(100vh - 200px);
+  height: ${props => (props.$searchIsActive ? 0 : 'auto')};
+  overflow: hidden;
 `;
 
 const ScrollToTopButton = styled(ArrowUpward)`
@@ -121,30 +123,13 @@ const useStickyBar = () => {
   };
 };
 
-const DashboardSearchResults = styled.div`
-  background: lightblue;
-  //position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-`;
-
-const PanelComponent = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2rem;
-  margin-bottom: 2rem;
-`;
-
 export const DashboardReportTabView = ({
   entityCode,
   TabBarLeftSection,
   year,
   filterSubDashboards,
 }) => {
+  const [searchIsActive, setSearchIsActive] = useState(false);
   const [selectedDashboard, setSelectedDashboard] = useUrlSearchParam('subDashboard');
   const { data, isLoading, isError, error } = useDashboardData({
     entityCode,
@@ -157,18 +142,30 @@ export const DashboardReportTabView = ({
   ]);
   const activeDashboard = useDefaultDashboardTab(selectedDashboard, subDashboards);
 
+  const resultsEl = React.useRef(null);
+
+  const getResultsEl = () => {
+    return resultsEl;
+  };
+
   const handleChangeDashboard = (event, newValue) => {
     setSelectedDashboard(newValue);
     scrollToTop();
   };
 
+  const onToggleSearch = isActive => {
+    setSearchIsActive(isActive);
+  };
+
   const { startDate, endDate } = yearToApiDates(year);
+
+  console.log('searchIsActive', searchIsActive);
 
   return (
     <>
       <StickyTabBarContainer ref={onLoadTabBar}>
         <TabBar>
-          <DashboardSearch />
+          <DashboardSearch getResultsEl={getResultsEl} onToggleSearch={onToggleSearch} />
           <TabBarLeftSection />
           {isLoading ? (
             <TabsLoader />
@@ -188,12 +185,11 @@ export const DashboardReportTabView = ({
           )}
         </TabBar>
       </StickyTabBarContainer>
-      <DashboardSection ref={topRef}>
-        <DashboardSearchResults />
+      <DashboardSection ref={topRef} $searchIsActive={searchIsActive}>
+        <div ref={resultsEl} />
         <FetchLoader isLoading={isLoading} isError={isError} error={error}>
           {subDashboards?.map(dashboard => (
             <TabPanel
-              Panel={PanelComponent}
               key={dashboard.dashboardId}
               isSelected={dashboard.dashboardName === activeDashboard}
             >
@@ -216,7 +212,7 @@ export const DashboardReportTabView = ({
           ))}
         </FetchLoader>
       </DashboardSection>
-      {isScrolledPastTop && <ScrollToTopButton onClick={scrollToTop} />}
+      {isScrolledPastTop && !searchIsActive && <ScrollToTopButton onClick={scrollToTop} />}
     </>
   );
 };
