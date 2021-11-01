@@ -4,7 +4,7 @@
  */
 
 export interface Context {
-  orgUnits?: { code: string; name: string }[];
+  orgUnits?: { code: string; name: string, id: string }[];
   dataElementCodeToName?: Record<string, string>;
 }
 

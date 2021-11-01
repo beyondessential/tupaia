@@ -33,7 +33,7 @@ const buildOrgUnits = async (reqContext: ReqContext, data: FetchResponse) => {
   return reqContext.services.entity.getEntities(
     reqContext.hierarchy,
     getUniqueEntries(orgUnitCodes),
-    { fields: ['code', 'name'] },
+    { fields: ['code', 'name', 'id'] },
   );
 };
 
