@@ -51,13 +51,18 @@ def redeploy_tupaia_server(event):
     if not existing_instance:
       raise Exception('No existing instance found to redeploy, perhaps you want to spin up a new deployment?')
 
+    extra_tags = None
+    delete_at = get_tag(existing_instance, 'DeleteAt')
+    if delete_at is not '':
+        extra_tags = [{ 'Key': 'DeleteAt', 'Value': delete_at }],
+
     # launch server instance based on gold master AMI
     # original instance will be deleted by lambda script "swap_out_tupaia_server" once new instance is running
     new_instance = create_tupaia_instance_from_image(
         deployment_name=get_tag(existing_instance, 'DeploymentName'),
         branch=get_tag(existing_instance, 'Branch'),
         instance_type=event.get('InstanceType', existing_instance['InstanceType']),
-        extra_tags=[{ 'Key': 'DeleteAt', 'Value': get_tag(existing_instance, 'DeleteAt') }],
+        extra_tags=extra_tags,
         image_code=event.get('ImageCode', None), # will use id below if not defined in the event
         image_id=existing_instance['ImageId'],
         security_group_code=event.get('SecurityGroupCode', None), # will use id below if not defined in the event
