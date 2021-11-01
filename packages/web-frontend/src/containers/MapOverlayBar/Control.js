@@ -8,10 +8,17 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import LayersIcon from '@material-ui/icons/Layers';
-import { Fade, Typography } from '@material-ui/core';
+import MuiLayersIcon from '@material-ui/icons/Layers';
+import DownArrow from '@material-ui/icons/ArrowDropDown';
+import { Fade, Typography, Divider } from '@material-ui/core';
 import LastUpdated from './LastUpdated';
-import { CONTROL_BAR_WIDTH, TUPAIA_ORANGE } from '../../styles';
+import {
+  CONTROL_BAR_WIDTH,
+  MAP_OVERLAY_SELECTOR,
+  TUPAIA_ORANGE,
+  LIGHT_GREY,
+  DARK_GREY,
+} from '../../styles';
 import { Content, EmptyContentText, ExpandedContent } from './Content';
 import { MapTableModal } from '../MapTableModal';
 import { TitleAndDatePicker } from './TitleAndDatePicker';
@@ -19,8 +26,13 @@ import { DropDownMenu } from '../../components/DropDownMenu';
 
 const MAX_MAP_OVERLAYS = 2;
 
+const DividerWrapper = styled.div`
+  background: ${MAP_OVERLAY_SELECTOR.subBackGround};
+`;
+
 const Container = styled.div`
   width: ${CONTROL_BAR_WIDTH}px;
+  pointer-events: auto;
   cursor: auto;
   min-height: 0; /* firefox vertical scroll */
   display: flex;
@@ -30,7 +42,6 @@ const Container = styled.div`
 
 const Header = styled.div`
   display: flex;
-  pointer-events: auto;
   background: ${TUPAIA_ORANGE};
   color: #ffffff;
   border-top-left-radius: 5px;
@@ -41,7 +52,6 @@ const Header = styled.div`
 
   .MuiSvgIcon-root {
     font-size: 21px;
-    margin-right: 5px;
   }
 `;
 
@@ -50,13 +60,25 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
-const SubHeader = styled.div`
-  color: ${TUPAIA_ORANGE};
+const OverlayLibrary = styled.div`
+  background: ${MAP_OVERLAY_SELECTOR.subBackGround};
+  display: flex;
+  justify-content: space-between;
+  color: ${({ expanded }) => (expanded ? LIGHT_GREY : DARK_GREY)};
   font-size: 12px;
   font-weight: 500;
-  padding: 4px;
-  text-transform: uppercase;
-  margin-bottom: 10px;
+  padding: 8px 4px;
+  &:hover {
+    cursor: pointer;
+    color: ${LIGHT_GREY};
+  }
+  border-bottom-left-radius: ${({ expanded }) => (!expanded ? '5px' : '0')};
+  border-bottom-right-radius: ${({ expanded }) => (!expanded ? '5px' : '0')};
+`;
+
+const OverlayLibraryHeader = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const StyledPrimaryComponent = styled(Typography)`
@@ -71,11 +93,36 @@ const StyledOptionComponent = styled(StyledPrimaryComponent)`
   margin: -0.1rem 0;
 `;
 
+const LayersIcon = styled(MuiLayersIcon)`
+  font-size: 20px;
+  margin-left: 11px;
+  margin-right: 6px;
+  color: ${({ $expanded }) => ($expanded ? TUPAIA_ORANGE : 'default')};
+`;
+
+const DownArrowIconWrapper = styled.div`
+  display: flex;
+  padding: 8px 14px 0 5px;
+  .MuiSvgIcon-root {
+    transition: transform 0.3s ease;
+    transform: rotate(${({ expanded }) => (expanded ? '180deg' : '0deg')});
+  }
+
+  &:hover: {
+    color: ${TUPAIA_ORANGE};
+  }
+`;
+
 const options = [];
 for (let i = 1; i <= MAX_MAP_OVERLAYS; i++) {
   const newOption = `${i} map overlay${i > 1 ? 's' : ''}`;
   options.push(newOption);
 }
+
+const DatePickerWrapper = styled.div`
+  display: block;
+  background: ${MAP_OVERLAY_SELECTOR.background};
+`;
 
 export const Control = ({
   emptyMessage,
@@ -100,7 +147,6 @@ export const Control = ({
     <Container>
       <Header>
         <Wrapper>
-          <LayersIcon />
           <DropDownMenu
             title="MAP OVERLAYS"
             selectedOptionIndex={maxSelectedOverlays - 1}
@@ -114,28 +160,41 @@ export const Control = ({
         </Wrapper>
         <MapTableModal />
       </Header>
-      {isMapOverlaySelected ? (
-        selectedMapOverlays.map(mapOverlay => (
-          <TitleAndDatePicker
-            key={mapOverlay.mapOverlayCode}
-            mapOverlay={mapOverlay}
-            onUpdateOverlayPeriod={onUpdateOverlayPeriod}
-            isExpanded={isExpanded}
-            isMapOverlaySelected={isMapOverlaySelected}
-            toggleMeasures={toggleMeasures}
-            isMeasureLoading={isMeasureLoading}
-          />
-        ))
-      ) : (
-        <Content>
-          <EmptyContentText>{emptyMessage}</EmptyContentText>
-        </Content>
+      <DatePickerWrapper>
+        {isMapOverlaySelected ? (
+          selectedMapOverlays.map((mapOverlay, index) => (
+            <div key={mapOverlay.mapOverlayCode}>
+              <TitleAndDatePicker
+                mapOverlay={mapOverlay}
+                onUpdateOverlayPeriod={onUpdateOverlayPeriod}
+                isMapOverlaySelected={isMapOverlaySelected}
+                isMeasureLoading={isMeasureLoading}
+              />
+              {index !== selectedMapOverlays.length - 1 && <Divider />}
+            </div>
+          ))
+        ) : (
+          <Content>
+            <EmptyContentText>{emptyMessage}</EmptyContentText>
+          </Content>
+        )}
+      </DatePickerWrapper>
+      <OverlayLibrary expanded={isExpanded} onClick={toggleMeasures}>
+        <OverlayLibraryHeader>
+          <LayersIcon $expanded={isExpanded} />
+          OVERLAY LIBRARY
+        </OverlayLibraryHeader>
+        <DownArrowIconWrapper expanded={isExpanded}>
+          <DownArrow />
+        </DownArrowIconWrapper>
+      </OverlayLibrary>
+      {isExpanded && (
+        <DividerWrapper>
+          <Divider variant="middle" />
+        </DividerWrapper>
       )}
       <Fade in={isExpanded} mountOnEnter unmountOnExit exit={false}>
-        <ExpandedContent>
-          <SubHeader>Select an overlay</SubHeader>
-          {children}
-        </ExpandedContent>
+        <ExpandedContent>{children}</ExpandedContent>
       </Fade>
       <LastUpdated />
     </Container>

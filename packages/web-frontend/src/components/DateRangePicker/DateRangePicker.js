@@ -11,7 +11,6 @@ import Typography from '@material-ui/core/Typography';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import MuiIconButton from '@material-ui/core/IconButton';
 import styled from 'styled-components';
 import { Error } from '../Error';
@@ -27,15 +26,18 @@ import {
   constrainDate,
 } from '../../utils/periodGranularities';
 import { FlexStart, FlexSpaceBetween } from '../Flexbox';
+import { DARK_GREY } from '../../styles';
 
 const hoverBlue = '#2196f3';
 
 const IconButton = styled(MuiIconButton)`
+  margin-left: -2px;
+  padding: 0;
   color: white;
   transition: color 0.2s ease;
 
   .MuiSvgIcon-root {
-    font-size: 22px;
+    font-size: 20px;
   }
 
   &:hover {
@@ -59,23 +61,22 @@ const ArrowButton = styled(MuiIconButton)`
 `;
 
 const Label = styled(Typography)`
+  margin-left: 0.5rem;
   color: white;
-  font-size: 16px;
-  line-height: 19px;
+  font-size: 14px;
+  line-height: 16px;
 `;
 
 const LabelContainer = styled.div`
-  border-left: 1px solid rgba(255, 255, 255, 0.5);
-  padding-left: 12px;
-  padding-right: 10px;
+  display: flex;
+  align-items: end;
 `;
 
 const ResetLabel = styled(Link)`
-  color: rgba(255, 255, 255, 0.6);
+  color: ${DARK_GREY};
   font-size: 12px;
   line-height: 14px;
   margin-top: 3px;
-
   &:hover {
     color: white;
   }
@@ -177,17 +178,17 @@ export const DateRangePicker = ({
             <KeyboardArrowLeftIcon />
           </ArrowButton>
         )}
-        <FlexStart>
-          <IconButton onClick={() => setIsOpen(true)} aria-label="open">
-            {isLoading ? <CircularProgress size={21} /> : <DateRangeIcon />}
-          </IconButton>
+        <div>
           <LabelContainer>
+            <IconButton onClick={() => setIsOpen(true)} aria-label="open">
+              <DateRangeIcon />
+            </IconButton>
             <Label aria-label="active-date">{labelText}</Label>
-            <ResetLabel component="button" onClick={handleReset}>
-              Reset to default
-            </ResetLabel>
           </LabelContainer>
-        </FlexStart>
+          <ResetLabel component="button" onClick={handleReset}>
+            Reset to default
+          </ResetLabel>
+        </div>
         {isSingleDate && (
           <FlexStart>
             {align === 'left' && (

@@ -21,8 +21,8 @@ import {
 import { Tooltip } from '../../components/Tooltip';
 
 const IconButton = styled(MuiIconButton)`
-  margin: 0 0 0 1rem;
-  padding: 10px 8px 10px 12px;
+  margin: 0;
+  padding: 0;
 `;
 
 const MapTableModalComponent = ({

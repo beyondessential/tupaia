@@ -39,6 +39,7 @@ export const PRIMARY_BLUE = '#2196f3';
 export const BLUE = '#22c7fc';
 export const LIGHT_BLUE = '#cde9ff';
 export const DARKENED_BLUE = '#0296c5';
+export const DARK_GREY = 'rgba(255, 255, 255, 0.6)';
 export const GREY = '#c7c7c7';
 export const LIGHT_GREY = '#EFEFF0';
 export const ERROR = red[500];
@@ -173,6 +174,7 @@ export const BUTTON_COLORS = {
 export const MAP_OVERLAY_SELECTOR = {
   background: 'rgb(7, 40, 73)',
   border: '1px solid #2196f3',
+  subBackGround: '#203e5c',
 };
 
 export const MARKER_POPUP_STYLE = {

@@ -1,20 +1,34 @@
 import React, { useEffect, useState } from 'react';
+import MuiBox from '@material-ui/core/Box';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import moment from 'moment';
 import { withStyles } from '@material-ui/core/styles';
-import DownArrow from '@material-ui/icons/ArrowDropDown';
 import MuiSwitch from '@material-ui/core/Switch';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { getDefaultDates, getLimits, GRANULARITY_CONFIG } from '../../utils/periodGranularities';
 import { Content, ContentText } from './Content';
-import { TUPAIA_ORANGE } from '../../styles';
+import { MAP_OVERLAY_SELECTOR, TUPAIA_ORANGE } from '../../styles';
 import { setDisplayedMapOverlays } from '../../actions';
+import { Pin } from './Pin';
+
+const FlexSpaceBetween = styled(MuiBox)`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+`;
 
 const Switch = withStyles({
+  root: {
+    height: '16px',
+    width: '37px',
+    padding: '1px',
+  },
   switchBase: {
+    color: '#315C88',
+    padding: 0,
     '&$checked': {
       color: TUPAIA_ORANGE,
     },
@@ -22,34 +36,34 @@ const Switch = withStyles({
       backgroundColor: TUPAIA_ORANGE,
     },
   },
+  thumb: {
+    width: '16px',
+    height: '16px',
+  },
+
   checked: {},
   track: {},
 })(MuiSwitch);
 
-const ToolsWrapper = styled.div`
-  display: flex;
-`;
-
-const IconWrapper = styled.div`
-  display: flex;
-  border-left: 1px solid rgba(255, 255, 255, 0.5);
-  padding: 8px 0 0 5px;
+const SwitchWrapper = styled.div`
+  margin: 0;
 `;
 
 const MeasureDatePicker = styled.div`
-  pointer-events: auto;
-  background: #203e5c;
-  padding: 16px 8px;
-  border-bottom-left-radius: ${({ expanded }) => (!expanded ? '5px' : '0')};
-  border-bottom-right-radius: ${({ expanded }) => (!expanded ? '5px' : '0')};
+  margin: 21px 16px 20px 42px;
+`;
+
+const Wrapper = styled.div`
+  background: ${MAP_OVERLAY_SELECTOR.background};
+`;
+
+const PinWrapper = styled.div`
+  margin: 1px 12px 0 3px;
 `;
 
 export const TitleAndDatePickerComponent = ({
   mapOverlay,
   onUpdateOverlayPeriod,
-  isExpanded,
-  isMapOverlaySelected,
-  toggleMeasures,
   isMeasureLoading,
   displayedMapOverlays,
   onSetDisplayedMapOverlay,
@@ -85,18 +99,21 @@ export const TitleAndDatePickerComponent = ({
   };
 
   return (
-    <>
-      <Content expanded={isExpanded} selected={isMapOverlaySelected} period={periodGranularity}>
-        <ContentText>{isMeasureLoading ? <CircularProgress size={22} /> : name}</ContentText>
-        <ToolsWrapper>
+    <Wrapper>
+      <Content>
+        <FlexSpaceBetween>
+          <PinWrapper>
+            <Pin />
+          </PinWrapper>
+          <ContentText>{isMeasureLoading ? <CircularProgress size={22} /> : name}</ContentText>
+        </FlexSpaceBetween>
+        <SwitchWrapper>
           <Switch checked={isSwitchedOn} onChange={handleSwitchChange} />
-          <IconWrapper onClick={toggleMeasures}>
-            <DownArrow />
-          </IconWrapper>
-        </ToolsWrapper>
+        </SwitchWrapper>
       </Content>
+
       {showDatePicker && (
-        <MeasureDatePicker expanded={isExpanded}>
+        <MeasureDatePicker>
           <DateRangePicker
             key={name} // force re-create the component on measure change, which resets initial dates
             granularity={periodGranularity}
@@ -109,7 +126,7 @@ export const TitleAndDatePickerComponent = ({
           />
         </MeasureDatePicker>
       )}
-    </>
+    </Wrapper>
   );
 };
 
@@ -126,9 +143,6 @@ TitleAndDatePickerComponent.propTypes = {
     startDate: PropTypes.shape({}),
     endDate: PropTypes.shape({}),
   }).isRequired,
-  isExpanded: PropTypes.bool.isRequired,
-  isMapOverlaySelected: PropTypes.bool.isRequired,
-  toggleMeasures: PropTypes.func.isRequired,
   isMeasureLoading: PropTypes.bool,
   onUpdateOverlayPeriod: PropTypes.func.isRequired,
   displayedMapOverlays: PropTypes.arrayOf(PropTypes.string).isRequired,
