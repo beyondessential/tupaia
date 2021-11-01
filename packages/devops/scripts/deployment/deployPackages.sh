@@ -2,7 +2,8 @@
 
 DIR=$(dirname "$0")
 TUPAIA_DIR=$DIR/../../../..
-BRANCH=$1
+DEPLOYMENT_NAME=$1
+BRANCH=$2
 PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 
 # Initialise NVM (which sets the path for access to npm, yarn etc. as well)
@@ -15,7 +16,7 @@ yarn install
 # Inject environment variables from LastPass
 LASTPASS_EMAIL=$($DIR/fetchParameterStoreValue.sh LASTPASS_EMAIL)
 LASTPASS_PASSWORD=$($DIR/fetchParameterStoreValue.sh LASTPASS_PASSWORD)
-LASTPASS_EMAIL=$LASTPASS_EMAIL LASTPASS_PASSWORD=$LASTPASS_PASSWORD yarn download-env-vars $BRANCH
+LASTPASS_EMAIL=$LASTPASS_EMAIL LASTPASS_PASSWORD=$LASTPASS_PASSWORD yarn download-env-vars $DEPLOYMENT_NAME
 
 # Build each front end package
 for PACKAGE in ${PACKAGES[@]}; do

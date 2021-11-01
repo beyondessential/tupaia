@@ -2,19 +2,21 @@
 #
 # Example configs
 #
-# 1. Spin up a new feature branch deployment of Tupaia
+# 1. Spin up a new feature branch deployment of Tupaia, that will be deleted after 8 hours
 # {
 #   "Action": "spin_up_tupaia_deployment",
 #   "Branch": "wai-965",
-#   "InstanceType": "t3a.medium"
+#   "HoursOfLife": "8"
 # }
 #
-# 2. Spin up a new feature branch deployment of Tupaia, but with the db cloned from dev
+# 2. Spin up a new deployment of Tupaia, but with the db cloned from dev and a different branch
+#    checked out (wai-965) to its url prefix (timing-test), and specifying the instance type
 # {
 #   "Action": "spin_up_tupaia_deployment",
+#   "DeploymentName": "timing-test",
 #   "Branch": "wai-965",
-#   "InstanceType": "t3a.medium",
-#   "CloneFromStage": "dev"
+#   "CloneDbFrom": "dev",
+#   "InstanceType": "t3.2xlarge"
 # }
 #
 # 3. Spin up a new deployment of Tupaia, but using a different AMI for the server and different base
@@ -22,14 +24,14 @@
 # {
 #   "Action": "spin_up_tupaia_deployment",
 #   "Branch": "wai-965",
-#   "InstanceType": "t3a.medium",
-#   "ServerDeploymentCode": "edwin-test-server",
-#   "DbDeploymentCode": "edwin-test-db"
+#   "ImageCode": "edwin-test-server",
+#   "SecurityGroupCode": "edwin-test-server",
+#   "CloneDbFrom": "edwin-test-db"
 # }
 # N.B. example 3 is unusual and generally just used for debugging the redeploy process itself. If
-# used, you need to tag the AMI with "Code": "your-code" and add the tag "your-code": "true" to the
-# security group
+# used, you need to tag the AMI and security groups with the codes you specify
 
+from datetime import datetime, timedelta
 
 from helpers.clone import clone_instance
 from helpers.create_from_image import create_tupaia_instance_from_image
@@ -43,20 +45,38 @@ def spin_up_tupaia_deployment(event):
         raise Exception('You must include the key "Branch" in the lambda config, e.g. "dev".')
     branch = event['Branch']
 
-    if 'InstanceType' not in event:
-        raise Exception('You must include the key "InstanceType" in the lambda config. We recommend "t3a.medium" unless you need more speed.')
-    instance_type = event['InstanceType']
+    # get manual input parameters, or default for any not provided
+    deployment_name = event.get('DeploymentName', branch) # default to branch if no deployment code set
+    instance_type = event.get('InstanceType', 't3a.medium')
+    image_code = event.get('ImageCode', 'tupaia-gold-master') # Use AMI tagged with code
+    security_group_code = event.get('SecurityGroupCode', 'tupaia-dev-sg') # Use security group tagged with code
+    clone_db_from = event.get('CloneDbFrom', 'production') # Use volume snapshot tagged with deployment name
+
+    extra_tags = None
+    if 'HoursOfLife' in event:
+        delete_at = datetime.now() + timedelta(hours=event['HoursOfLife'])
+        extra_tags = [{ 'Key': 'DeleteAt', 'Value': format(delete_at, "%Y-%m-%d %H:00") }]
 
     # launch server instance based on gold master AMI
-    server_deployment_code = event.get('ServerDeploymentCode', 'tupaia-server') # default to "tupaia-server"
-    create_tupaia_instance_from_image(server_deployment_code, branch, instance_type)
+    create_tupaia_instance_from_image(
+        deployment_name,
+        branch,
+        instance_type,
+        extra_tags=extra_tags,
+        image_code=image_code,
+        security_group_code=security_group_code,
+    )
 
     # clone db instance
     # do this after the server has started because it will take a while to run its startup script, so
     # we might as well be cloning the db instance at the same time, so long is it is available before
     # the server first tries to connect
-    db_deployment_code = event.get('DbDeploymentCode', 'tupaia-db') # default to "tupaia-db"
-    clone_from_stage = event.get('CloneFromStage', 'production') # default to cloning production
-    clone_instance(db_deployment_code, clone_from_stage, branch, instance_type)
+    clone_instance(
+        clone_db_from,
+        deployment_name,
+        instance_type,
+        extra_tags=extra_tags,
+        security_group_code=security_group_code,
+    )
 
     print('Successfully deployed branch ' + branch)

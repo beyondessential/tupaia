@@ -6,7 +6,8 @@
 # 1. Redeploy production (note non-matching branch name), using the same instance size
 # {
 #   "Action": "redeploy_tupaia_server",
-#   "Branch": "production"
+#   "DeploymentName": "production",
+#   "Branch": "master"
 # }
 #
 # 2. Redeploy feature branch, maintaining the same instance size
@@ -20,41 +21,50 @@
 #   "Action": "redeploy_tupaia_server",
 #   "Branch": "wai-965",
 #   "InstanceType": "t3a.medium",
-#   "ServerDeploymentCode": "edwin-test"
+#   "ImageCode": "edwin-test",
+#   "SecurityGroupCode": "edwin-test"
 # }
 # N.B. example 3 is unusual and generally just used for debugging the redeploy process itself. If
-# used, you need to tag the AMI with "Code": "your-code" and add the tag "your-code": "true" to the
-# security group
+# used, you need to tag the AMI and security groups with the codes you specify
 
 from helpers.create_from_image import create_tupaia_instance_from_image
-from helpers.utilities import get_instance
+from helpers.utilities import get_instance, get_tag
 
 def redeploy_tupaia_server(event):
-    # validate input config
-    if 'Branch' not in event:
-        raise Exception('You must include the key "Branch" in the lambda config, e.g. "dev".')
-    branch = event['Branch']
+    instance_filters = [
+        { 'Name': 'tag:SubdomainsViaDns', 'Values': ['ssh'] }, # the main server rather than db instance
+        { 'Name': 'instance-state-name', 'Values': ['running', 'stopped'] } # ignore terminated instances
+    ]
 
-    server_deployment_code = event.get('ServerDeploymentCode', 'tupaia-server') # default to "tupaia-server"
+    if 'Branch' not in event and 'DeploymentName' not in event:
+        raise Exception('You must include either "DeploymentName" or "Branch" in the lambda config, e.g. "dev".')
+
+    if 'Branch' in event:
+        instance_filters.append({ 'Name': 'tag:Branch', 'Values': [event['Branch']] })
+
+    if 'DeploymentName' in event:
+        instance_filters.append({ 'Name': 'tag:DeploymentName', 'Values': [event['DeploymentName']] })
 
     # find current instance
-    existing_instance = get_instance([
-        { 'Name': 'tag:Code', 'Values': [server_deployment_code] },
-        { 'Name': 'tag:Stage', 'Values': [branch] },
-        { 'Name': 'instance-state-name', 'Values': ['running', 'stopped'] } # ignore terminated instances
-    ])
+    existing_instance = get_instance(instance_filters)
 
     if not existing_instance:
       raise Exception('No existing instance found to redeploy, perhaps you want to spin up a new deployment?')
 
-    instance_type = event.get('InstanceType', existing_instance['InstanceType'])
-
-    security_group_id = existing_instance['SecurityGroups'][0]['GroupId']
-
     # launch server instance based on gold master AMI
     # original instance will be deleted by lambda script "swap_out_tupaia_server" once new instance is running
-    new_instance = create_tupaia_instance_from_image(server_deployment_code, branch, instance_type, setup_gateway=False, security_group_id=security_group_id)
+    new_instance = create_tupaia_instance_from_image(
+        deployment_name=get_tag(existing_instance, 'DeploymentName'),
+        branch=get_tag(existing_instance, 'Branch'),
+        instance_type=event.get('InstanceType', existing_instance['InstanceType']),
+        extra_tags=[{ 'Key': 'DeleteAt', 'Value': get_tag(existing_instance, 'DeleteAt') }],
+        image_code=event.get('ImageCode', None), # will use id below if not defined in the event
+        image_id=existing_instance['ImageId'],
+        security_group_code=event.get('SecurityGroupCode', None), # will use id below if not defined in the event
+        security_group_id=existing_instance['SecurityGroups'][0]['GroupId'],
+        setup_gateway=False,
+    )
 
-    print('Successfully deployed branch ' + branch)
+    print('Successfully deployed ' + get_tag(new_instance, 'DeploymentName'))
 
     return new_instance['InstanceId']
