@@ -15,37 +15,48 @@ import { useDashboardSearch } from './useDashboardSearch';
 import { useProjectEntitiesData } from '../../api';
 import { makeEntityLink } from '../../utils';
 
-const SearchBox = styled(MuiPaper)`
-  position: absolute;
-  display: flex;
-  height: 100%;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  z-index: 1;
-  border-radius: 0;
-  border-top: 1px solid ${props => props.theme.palette.grey['400']};
-  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+const SearchButton = styled(MuiIconButton)`
+  border: 1px solid ${props => props.theme.palette.grey['400']};
+  border-radius: 3px;
+  transition: all 0.2s ease;
+
+  &.active {
+    background: ${props => props.theme.palette.primary.main};
+    padding: 0 1.8rem;
+    border-radius: 0;
+    color: white;
+
+    .MuiSvgIcon-root {
+      font-size: 1.8rem;
+    }
+
+    &:hover {
+      background: ${props => props.theme.palette.primary.main};
+    }
+  }
 `;
 
-const SearchButton = styled(MuiIconButton)`
-  background: ${props => props.theme.palette.primary.main};
+const SearchContainer = styled(MuiPaper)`
+  display: flex;
+  top: 1px;
+  right: 0;
+  left: 0;
+  bottom: 1px;
+  z-index: 1;
   border-radius: 0;
-  padding: 0 1.8rem;
-  color: white;
+  background: white;
 
-  .MuiSvgIcon-root {
-    font-size: 1.8rem;
-  }
+  &.active {
+    position: absolute;
 
-  &:hover {
-    background: ${props => props.theme.palette.primary.main};
+    .MuiInputBase-root {
+      width: 100%;
+    }
   }
 `;
 
 const Input = styled(InputBase)`
-  width: 100%;
+  width: 0;
   padding-left: 15px;
 `;
 
@@ -66,11 +77,12 @@ const ClearButton = styled(MuiIconButton)`
 const DEFAULT_LIMIT = 5;
 const EXPANDED_LIMIT = 200;
 
-export const DashboardSearch = ({ linkType, className }) => {
-  const history = useHistory();
+export const DashboardSearch = ({ linkType }) => {
   const [inputValue, setInputValue] = useState('');
   const [expanded, setExpanded] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
   const { data: options = [], isLoading } = useProjectEntitiesData();
+  const history = useHistory();
 
   const {
     getRootProps,
@@ -101,9 +113,17 @@ export const DashboardSearch = ({ linkType, className }) => {
     clearProps.onClick();
   };
 
+  const handleClickSearch = () => {
+    setShowSearch(isOpen => !isOpen);
+  };
+
   return (
-    <SearchBox {...getRootProps()} elevation={0} className={className}>
-      <SearchButton>
+    <SearchContainer {...getRootProps()} elevation={0} className={showSearch ? 'active' : ''}>
+      <SearchButton
+        onClick={handleClickSearch}
+        className={showSearch ? 'active' : ''}
+        color="primary"
+      >
         <MuiSearchIcon />
       </SearchButton>
       <Input placeholder="Start typing to search dashboards" inputProps={{ ...getInputProps() }} />
@@ -112,7 +132,7 @@ export const DashboardSearch = ({ linkType, className }) => {
           <CancelIcon />
         </ClearButton>
       )}
-    </SearchBox>
+    </SearchContainer>
   );
 };
 

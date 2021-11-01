@@ -23,7 +23,7 @@ import {
 import { NAVBAR_HEIGHT_INT } from '../constants';
 import { useUrlSearchParam } from '../utils';
 import { yearToApiDates } from '../api/queries/utils';
-import { DashboardSearch } from '../components/DashboardSearch/DashboardSearch';
+import { DashboardSearch } from '../components/DashboardSearch';
 
 const StickyTabBarContainer = styled.div`
   position: sticky;
@@ -32,7 +32,8 @@ const StickyTabBarContainer = styled.div`
 `;
 
 const DashboardSection = styled(FlexCenter)`
-  min-height: 31rem;
+  position: relative;
+  min-height: calc(100vh - 200px);
 `;
 
 const ScrollToTopButton = styled(ArrowUpward)`
@@ -120,9 +121,26 @@ const useStickyBar = () => {
   };
 };
 
+const DashboardSearchResults = styled.div`
+  background: lightblue;
+  //position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+`;
+
+const PanelComponent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  margin-bottom: 2rem;
+`;
+
 export const DashboardReportTabView = ({
   entityCode,
-  SearchSection,
   TabBarLeftSection,
   year,
   filterSubDashboards,
@@ -149,8 +167,8 @@ export const DashboardReportTabView = ({
   return (
     <>
       <StickyTabBarContainer ref={onLoadTabBar}>
-        <DashboardSearch />
         <TabBar>
+          <DashboardSearch />
           <TabBarLeftSection />
           {isLoading ? (
             <TabsLoader />
@@ -171,9 +189,11 @@ export const DashboardReportTabView = ({
         </TabBar>
       </StickyTabBarContainer>
       <DashboardSection ref={topRef}>
+        <DashboardSearchResults />
         <FetchLoader isLoading={isLoading} isError={isError} error={error}>
           {subDashboards?.map(dashboard => (
             <TabPanel
+              Panel={PanelComponent}
               key={dashboard.dashboardId}
               isSelected={dashboard.dashboardName === activeDashboard}
             >
