@@ -3,6 +3,7 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiIconButton from '@material-ui/core/IconButton';
 import PlayIcon from '@material-ui/icons/PlayCircleFilled';
@@ -21,7 +22,7 @@ const IconButton = styled(MuiIconButton)`
   }
 `;
 
-export const PlayButton = () => {
+export const PlayButton = React.memo(({ disabled }) => {
   const { setFetchEnabled, setShowData } = usePreviewData();
 
   const handleClick = () => {
@@ -30,8 +31,16 @@ export const PlayButton = () => {
   };
 
   return (
-    <IconButton onClick={handleClick}>
+    <IconButton disabled={disabled} onClick={handleClick}>
       <PlayIcon />
     </IconButton>
   );
+});
+
+PlayButton.propTypes = {
+  disabled: PropTypes.bool,
+};
+
+PlayButton.defaultProps = {
+  disabled: false,
 };
