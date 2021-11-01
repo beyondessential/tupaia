@@ -98,7 +98,7 @@ const REPORT_CONFIG = {
         Status: '=$isCase ? $TO_C19CRF12 : $TO_FCF_05',
         Contacts: '=$isCase ? $organisationUnit : $TO_C19CLF22',
         Symptomatic: "=$isCase ? $caseSymptomatic : translate($TO_FCF_06, {'0': 'No', '1': 'Yes'})",
-        'Phone Number': '=$TO_C19CLF10',
+        'Phone Number': '=$isCase ? TO_C19CRF29 : TO_C19CLF10',
         'Last Contacted': '=periodToDisplayString($period)',
         'Vaccination Status': '=$isCase ? $TO_C19CRF85 : $TO_C19CLF26',
         'Last Contact with Case':
