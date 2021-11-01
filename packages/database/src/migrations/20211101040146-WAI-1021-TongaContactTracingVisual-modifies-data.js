@@ -18,6 +18,23 @@ exports.setup = function (options, seedLink) {
 
 const CODE = 'TO_COVID_Contact_Tracing_national';
 
+const CASE_SYMPTOMS = [
+  'TO_C19CRF38',
+  'TO_C19CRF39',
+  'TO_C19CRF40',
+  'TO_C19CRF41',
+  'TO_C19CRF42',
+  'TO_C19CRF43',
+  'TO_C19CRF44',
+  'TO_C19CRF45',
+  'TO_C19CRF46',
+  'TO_C19CRF47',
+  'TO_C19CRF48',
+  'TO_C19CRF49',
+  'TO_C19CRF50',
+  'TO_C19CRF51',
+];
+
 const REPORT_CONFIG = {
   fetch: {
     aggregations: [
@@ -37,6 +54,12 @@ const REPORT_CONFIG = {
       'TO_FCF_06',
       'TO_FCF_05',
       'TO_C19CLF02',
+
+      'TO_C19CRF29',
+      'TO_C19CRF85',
+      'TO_C19CRF12',
+
+      ...CASE_SYMPTOMS,
     ],
   },
   output: {
@@ -61,14 +84,23 @@ const REPORT_CONFIG = {
     },
     {
       insert: {
+        isCase: '=exists($TO_C19CRF112)',
+        caseSymptomatic: `=any(${CASE_SYMPTOMS.map(x => `eq($${x}, 'Yes')`).join(
+          ',',
+        )}) ? 'Yes' : 'No'`,
+      },
+      transform: 'updateColumns',
+    },
+    {
+      insert: {
         Case:
-          "=exists($TO_C19CRF112) ? $TO_C19CRF112 : exists($TO_C19CLF02) ? orgUnitIdToCode($TO_C19CLF02) : 'Case not found'",
-        Status: '=$TO_FCF_05',
-        Contacts: '=exists($TO_C19CLF22) ? $TO_C19CLF22 : $organisationUnit',
-        Symptomatic: "=translate($TO_FCF_06, {'0': 'No', '1': 'Yes'})",
+          "=$isCase ? $TO_C19CRF112 : exists($TO_C19CLF02) ? orgUnitIdToCode($TO_C19CLF02) : 'Case not found'",
+        Status: '=$isCase ? $TO_C19CRF12 : $TO_FCF_05',
+        Contacts: '=$isCase ? $organisationUnit : $TO_C19CLF22',
+        Symptomatic: "=$isCase ? $caseSymptomatic : translate($TO_FCF_06, {'0': 'No', '1': 'Yes'})",
         'Phone Number': '=$TO_C19CLF10',
         'Last Contacted': '=periodToDisplayString($period)',
-        'Vaccination Status': '=$TO_C19CLF26',
+        'Vaccination Status': '=$isCase ? $TO_C19CRF85 : $TO_C19CLF26',
         'Last Contact with Case':
           '=exists($TO_C19CLF16) ? periodToDisplayString(dateStringToPeriod($TO_C19CLF16)) : undefined',
       },
