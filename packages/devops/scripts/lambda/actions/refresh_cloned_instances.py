@@ -38,7 +38,7 @@ def refresh_cloned_instances(event):
       filters.append({'Name': 'tag:ClonedFrom', 'Values': [event['ClonedFrom']]})
     if 'Branch' in event:
       print('Refreshing the ' + event['Branch'] + ' branch clone')
-      filters.append({'Name': 'tag:Stage', 'Values': [event['Branch']]})
+      filters.append({'Name': 'tag:Branch', 'Values': [event['Branch']]})
 
 
     running_instances = find_instances(filters + [{ 'Name': 'instance-state-name', 'Values': ['running'] }])

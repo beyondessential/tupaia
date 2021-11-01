@@ -48,24 +48,13 @@ def backup_instances(event):
 
 
     for instance in instances:
-        try:
-            retention_days = [
-                int(t.get('Value')) for t in instance['Tags']
-                if t['Key'] == 'Retention'][0]
-        except IndexError:
-            retention_days = 7
-        try:
-            instance_name = [
-                t.get('Value') for t in instance['Tags']
-                if t['Key'] == 'Name'][0]
-        except IndexError:
-            instance_name = 'Unnamed Instance'
-        try:
-            code = [
-                t.get('Value') for t in instance['Tags']
-                if t['Key'] == 'Code'][0]
-        except IndexError:
-            code = ''
+
+        instance_name = get_tag(instance, 'Name')
+        deployment_name = get_tag(instance, 'DeploymentName')
+        retention_days = get_tag(instance, retention_days)
+
+        if retention_days == '':
+            retention_days = 7 # default to 7 days of snapshot retention
 
         print('Backing up ' + instance_name)
 
@@ -84,12 +73,12 @@ def backup_instances(event):
 
             snapshot_tags = [
                 {'Key': 'DeleteOn', 'Value': delete_fmt},
-                {'Key': 'Code', 'Value': code}
+                {'Key': 'DeploymentName', 'Value': deployment_name}
             ]
 
-            instance_stage = get_tag(instance, 'Stage')
-            if instance_stage != '':
-                snapshot_tags.append({'Key': 'Stage', 'Value': instance_stage})
+            deployment_name = get_tag(instance, 'DeploymentName')
+            if deployment_name != '':
+                snapshot_tags.append({'Key': 'DeploymentName', 'Value': deployment_name})
 
             ec.create_tags(
                 Resources=[snap['SnapshotId']],

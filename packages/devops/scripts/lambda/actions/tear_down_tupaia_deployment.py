@@ -9,30 +9,30 @@
 #   "Branch": "wai-965"
 # }
 #
-# 2. Tear down a deployment of Tupaia, but which was spun up based on a non-standard AMI etc. (see
-# example 3 in "spin_up_tupaia_deployment" for more info of when this is used)
+# 1. Tear down a Tupaia deployment using its deployment name (which is usually the same as the branch)
 # {
 #   "Action": "tear_down_tupaia_deployment",
-#   "Branch": "wai-965",
-#   "ServerDeploymentCode": "edwin-test-server",
-#   "DbDeploymentCode": "edwin-test-db"
+#   "DeploymentName": "wai-965"
 # }
 
 from helpers.teardown import teardown_instance
 from helpers.utilities import find_instances, get_tag
 
 def tear_down_tupaia_deployment(event):
-    if 'Branch' not in event:
-      raise Exception('Must provide Branch when tearing down a Tupaia deployment')
-    branch = event['Branch']
-    server_deployment_code = event.get('ServerDeploymentCode', 'tupaia-server') # default to "tupaia-server"
-    db_deployment_code = event.get('DbDeploymentCode', 'tupaia-db') # default to "tupaia-db"
-
-    instances = find_instances([
-      { 'Name': 'tag:Code', 'Values': [server_deployment_code, db_deployment_code] },
-      { 'Name': 'tag:Stage', 'Values': [branch] },
+    instance_filters = [
       { 'Name': 'instance-state-name', 'Values': ['running', 'stopped']} # ignore terminated instances
-    ])
+    ]
+
+    if 'Branch' not in event and 'DeploymentName' not in event:
+        raise Exception('You must include either "DeploymentName" or "Branch" in the lambda config, e.g. "dev".')
+
+    if 'Branch' in event:
+        instance_filters.append({ 'Name': 'tag:Branch', 'Values': [event['Branch']] })
+
+    if 'DeploymentName' in event:
+        instance_filters.append({ 'Name': 'tag:DeploymentName', 'Values': [event['DeploymentName']] })
+
+    instances = find_instances(instance_filters)
 
     if len(instances) == 0:
       raise Exception('No matching instances found')

@@ -1,4 +1,5 @@
 from actions.backup_instances import backup_instances
+from actions.delete_old_snapshots import delete_old_snapshots
 from actions.refresh_cloned_instances import refresh_cloned_instances
 from actions.redeploy_tupaia_server import redeploy_tupaia_server
 from actions.spin_up_non_tupaia_deployment import spin_up_non_tupaia_deployment
@@ -11,6 +12,7 @@ from actions.tear_down_non_tupaia_deployment import tear_down_non_tupaia_deploym
 
 actions = {
   'backup_instances': backup_instances,
+  'delete_old_snapshots': delete_old_snapshots,
   'refresh_cloned_instances': refresh_cloned_instances,
   'redeploy_tupaia_server': redeploy_tupaia_server,
   'spin_up_non_tupaia_deployment': spin_up_non_tupaia_deployment,

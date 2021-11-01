@@ -15,10 +15,9 @@ async def wait_for_volume(volume_id, to_be):
     volume_available_waiter = ec.get_waiter('volume_' + to_be)
     await loop.run_in_executor(None, functools.partial(volume_available_waiter.wait, VolumeIds=[volume_id]))
 
-def get_latest_snapshot_id(code, from_stage):
+def get_latest_snapshot_id(deployment_name):
     filters = [
-        {'Name': 'tag:Code', 'Values': [code]},
-        {'Name': 'tag:Stage', 'Values': [from_stage]}
+        {'Name': 'tag:DeploymentName', 'Values': [deployment_name]}
     ]
     account_ids = get_account_ids()
     snapshot_response = ec.describe_snapshots(OwnerIds=account_ids, Filters=filters)
@@ -28,7 +27,7 @@ def get_latest_snapshot_id(code, from_stage):
     print('Found snapshot with id ' + snapshot_id)
     return snapshot_id
 
-async def clone_volume_into_instance(instance, code, from_stage='production'):
+async def clone_volume_into_instance(instance, deployment_name='production'):
     print('Cloning volume into instance {}'.format(instance['InstanceId']))
     # Check it's not protected
     protected = get_tag(instance, 'Protected')
@@ -37,7 +36,7 @@ async def clone_volume_into_instance(instance, code, from_stage='production'):
         raise Exception('The instance ' + name + ' is protected and cannot be wiped and cloned')
 
     # Get snapshot to clone volume from
-    snapshot_id = get_latest_snapshot_id(code, from_stage)
+    snapshot_id = get_latest_snapshot_id(deployment_name)
 
     # Get the device on the instance that the volume should clone to
     for dev in instance['BlockDeviceMappings']:
@@ -73,14 +72,21 @@ async def clone_volume_into_instance(instance, code, from_stage='production'):
     ec.modify_instance_attribute(InstanceId=instance['InstanceId'], BlockDeviceMappings=[{'DeviceName': dev_to_attach['DeviceName'], 'Ebs': { 'VolumeId': new_volume_id, 'DeleteOnTermination': True }}])
 
 
-def clone_instance(code, from_stage, to_stage, instance_type):
-    print('Creating ' + instance_type + ' clone of ' + code + ' (' + from_stage + ') for branch ' + to_stage)
+def clone_instance(
+    from_deployment,
+    to_deployment,
+    instance_type,
+    extra_tags=None,
+    security_group_code=None,
+):
+    print('Creating ' + instance_type + ' clone of ' + from_deployment + ' as ' + to_deployment)
     base_instance_filters = [
-        { 'Name': 'tag:Code', 'Values': [code] },
-        { 'Name': 'tag:Stage', 'Values': [from_stage] },
+        { 'Name': 'tag:DeploymentName', 'Values': [from_deployment] },
         { 'Name': 'instance-state-name', 'Values': ['running', 'stopped']} # ignore terminated instances
     ]
     base_instance = get_instance(base_instance_filters)
+    base_instance_name = get_tag(base_instance, 'Name')
+    instance_name_prefix = base_instance_name.replace(from_deployment, '')
 
     subdomains_via_dns = None
     subdomains_via_dns_string = get_tag(base_instance, 'SubdomainsViaDns')
@@ -96,9 +102,21 @@ def clone_instance(code, from_stage, to_stage, instance_type):
     if 'IamInstanceProfile' in base_instance:
         iam_role_arn = base_instance['IamInstanceProfile']['Arn']
 
-    new_instance = create_instance(code, instance_type, to_stage, iam_role_arn=iam_role_arn, base_instance=base_instance, subdomains_via_dns=subdomains_via_dns, subdomains_via_gateway=subdomains_via_gateway)
+
+    new_instance = create_instance(
+        to_deployment,
+        instance_name_prefix,
+        instance_type,
+        cloned_from=from_deployment,
+        extra_tags=extra_tags,
+        iam_role_arn=iam_role_arn,
+        image_id=base_instance['ImageId'],
+        security_group_code=security_group_code,
+        subdomains_via_dns=subdomains_via_dns,
+        subdomains_via_gateway=subdomains_via_gateway,
+    )
     loop.run_until_complete(stop_instance(new_instance))
-    loop.run_until_complete(clone_volume_into_instance(new_instance, code, from_stage=from_stage))
+    loop.run_until_complete(clone_volume_into_instance(new_instance, from_deployment))
     loop.run_until_complete(start_instance(new_instance))
 
     return new_instance
