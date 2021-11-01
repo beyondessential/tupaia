@@ -26,9 +26,7 @@ import {
   constrainDate,
 } from '../../utils/periodGranularities';
 import { FlexStart, FlexSpaceBetween } from '../Flexbox';
-import { DARK_GREY } from '../../styles';
-
-const hoverBlue = '#2196f3';
+import { DARK_GREY, PRIMARY_BLUE } from '../../styles';
 
 const IconButton = styled(MuiIconButton)`
   margin-left: -2px;
@@ -42,7 +40,7 @@ const IconButton = styled(MuiIconButton)`
 
   &:hover {
     background-color: initial;
-    color: ${hoverBlue};
+    color: ${PRIMARY_BLUE};
   }
 `;
 
@@ -56,7 +54,7 @@ const ArrowButton = styled(MuiIconButton)`
 
   &:hover {
     background: rgba(0, 0, 0, 0.2);
-    color: ${hoverBlue};
+    color: ${PRIMARY_BLUE};
   }
 `;
 

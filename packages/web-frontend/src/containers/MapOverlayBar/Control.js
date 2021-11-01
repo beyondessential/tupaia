@@ -5,7 +5,7 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiLayersIcon from '@material-ui/icons/Layers';
@@ -132,6 +132,8 @@ export const Control = ({
   children,
   maxSelectedOverlays,
   changeMaxSelectedOverlays,
+  pinnedOverlay,
+  setPinnedOverlay,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const isMapOverlaySelected = selectedMapOverlays.length > 0;
@@ -142,6 +144,21 @@ export const Control = ({
       setIsExpanded(true);
     }
   }, [isExpanded, setIsExpanded]);
+
+  const reorderedSelectedMapOverlays = useMemo(() => {
+    const results = [];
+    if (!pinnedOverlay) {
+      return selectedMapOverlays;
+    }
+
+    selectedMapOverlays.forEach(overlay => {
+      if (overlay.mapOverlayCode === pinnedOverlay) {
+        results.unshift(overlay);
+      } else results.push(overlay);
+    });
+
+    return results;
+  }, [selectedMapOverlays, pinnedOverlay]);
 
   return (
     <Container>
@@ -162,13 +179,15 @@ export const Control = ({
       </Header>
       <DatePickerWrapper>
         {isMapOverlaySelected ? (
-          selectedMapOverlays.map((mapOverlay, index) => (
+          reorderedSelectedMapOverlays.map((mapOverlay, index) => (
             <div key={mapOverlay.mapOverlayCode}>
               <TitleAndDatePicker
                 mapOverlay={mapOverlay}
                 onUpdateOverlayPeriod={onUpdateOverlayPeriod}
                 isMapOverlaySelected={isMapOverlaySelected}
                 isMeasureLoading={isMeasureLoading}
+                pinnedOverlay={pinnedOverlay}
+                setPinnedOverlay={setPinnedOverlay}
               />
               {index !== selectedMapOverlays.length - 1 && <Divider />}
             </div>
@@ -221,9 +240,12 @@ Control.propTypes = {
   onUpdateOverlayPeriod: PropTypes.func.isRequired,
   maxSelectedOverlays: PropTypes.number.isRequired,
   changeMaxSelectedOverlays: PropTypes.func.isRequired,
+  pinnedOverlay: PropTypes.string,
+  setPinnedOverlay: PropTypes.func.isRequired,
 };
 
 Control.defaultProps = {
   selectedMapOverlays: [],
   isMeasureLoading: false,
+  pinnedOverlay: null,
 };

@@ -58,7 +58,7 @@ const Wrapper = styled.div`
 `;
 
 const PinWrapper = styled.div`
-  margin: 1px 12px 0 3px;
+  margin: -1px 12px 0 3px;
 `;
 
 export const TitleAndDatePickerComponent = ({
@@ -67,8 +67,11 @@ export const TitleAndDatePickerComponent = ({
   isMeasureLoading,
   displayedMapOverlays,
   onSetDisplayedMapOverlay,
+  pinnedOverlay,
+  setPinnedOverlay,
 }) => {
   const [isSwitchedOn, setIsSwitchedOn] = useState(true);
+
   useEffect(() => {
     setIsSwitchedOn(displayedMapOverlays.includes(mapOverlay.mapOverlayCode));
   }, [JSON.stringify(displayedMapOverlays)]);
@@ -84,8 +87,8 @@ export const TitleAndDatePickerComponent = ({
 
   const handleSwitchChange = () => {
     const newDisplayedOverlays = isSwitchedOn
-      ? displayedMapOverlays.filter(code => code !== mapOverlay.mapOverlayCode)
-      : [...displayedMapOverlays, mapOverlay.mapOverlayCode];
+      ? displayedMapOverlays.filter(code => code !== mapOverlayCode)
+      : [...displayedMapOverlays, mapOverlayCode];
     onSetDisplayedMapOverlay(newDisplayedOverlays);
     setIsSwitchedOn(!isSwitchedOn);
   };
@@ -98,12 +101,16 @@ export const TitleAndDatePickerComponent = ({
     });
   };
 
+  const handlePinChange = () => {
+    setPinnedOverlay(mapOverlayCode);
+  };
+
   return (
     <Wrapper>
       <Content>
         <FlexSpaceBetween>
           <PinWrapper>
-            <Pin />
+            <Pin isPinned={pinnedOverlay === mapOverlayCode} onChange={handlePinChange} />
           </PinWrapper>
           <ContentText>{isMeasureLoading ? <CircularProgress size={22} /> : name}</ContentText>
         </FlexSpaceBetween>
@@ -147,10 +154,13 @@ TitleAndDatePickerComponent.propTypes = {
   onUpdateOverlayPeriod: PropTypes.func.isRequired,
   displayedMapOverlays: PropTypes.arrayOf(PropTypes.string).isRequired,
   onSetDisplayedMapOverlay: PropTypes.func.isRequired,
+  pinnedOverlay: PropTypes.string,
+  setPinnedOverlay: PropTypes.func.isRequired,
 };
 
 TitleAndDatePickerComponent.defaultProps = {
   isMeasureLoading: false,
+  pinnedOverlay: null,
 };
 
 const mapStateToProps = state => {
