@@ -61,6 +61,6 @@ export const useDashboardSearch = ({ inputValue, setInputValue, options, limit, 
     onInputChange: (event, newValue) => {
       setInputValue(newValue);
     },
-    getOptionLabel: option => option.dashboardName,
+    getOptionLabel: option => option.name,
   });
 };

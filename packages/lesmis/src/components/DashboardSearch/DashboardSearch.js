@@ -52,16 +52,16 @@ const SearchContainer = styled(MuiPaper)`
 
   &.active {
     position: absolute;
-
-    .MuiInputBase-root {
-      width: 100%;
-    }
   }
 `;
 
 const Input = styled(InputBase)`
   width: 0;
-  padding-left: 15px;
+
+  &.active {
+    width: 100%;
+    padding-left: 15px;
+  }
 `;
 
 const ClearButton = styled(MuiIconButton)`
@@ -75,25 +75,36 @@ const ClearButton = styled(MuiIconButton)`
   }
 `;
 
-const DEFAULT_LIMIT = 5;
-const EXPANDED_LIMIT = 200;
+const LIMIT = 50;
 
-export const DashboardSearch = ({ linkType, onToggleSearch, getResultsEl }) => {
-  const [inputValue, setInputValue] = useState('');
-  const [expanded, setExpanded] = useState(false);
-  const [isActive, setIsActive] = useState(false);
+const useDashboardItems = () => {
   const { entityCode } = useUrlParams();
-  const { data: options, isLoading } = useDashboardData({
+
+  const { data } = useDashboardData({
     entityCode,
     includeDrillDowns: false,
   });
+
+  if (!data) {
+    return [];
+  }
+
+  return data.reduce((allItems, dashboard) => {
+    return [...allItems, ...dashboard.items];
+  }, []);
+};
+
+export const DashboardSearch = ({ linkType, onToggleSearch, getResultsEl }) => {
+  const [inputValue, setInputValue] = useState('');
+  const [isActive, setIsActive] = useState(false);
+  const options = useDashboardItems();
   const history = useHistory();
 
   const searchResults = useDashboardSearch({
     inputValue,
     setInputValue,
     options,
-    limit: inputValue && expanded ? EXPANDED_LIMIT : DEFAULT_LIMIT,
+    limit: LIMIT,
     onChange: (event, option) => {
       if (option && option.code) {
         history.push(makeEntityLink(option.code, linkType));
@@ -106,7 +117,6 @@ export const DashboardSearch = ({ linkType, onToggleSearch, getResultsEl }) => {
   const clearProps = getClearProps();
 
   const handleClear = () => {
-    setExpanded(false);
     clearProps.onClick();
   };
 
@@ -132,10 +142,11 @@ export const DashboardSearch = ({ linkType, onToggleSearch, getResultsEl }) => {
           <MuiSearchIcon />
         </SearchButton>
         <Input
+          className={isActive ? 'active' : ''}
           placeholder="Start typing to search dashboards"
           inputProps={{ ...getInputProps() }}
         />
-        {inputValue && (
+        {inputValue && isActive && (
           <ClearButton {...clearProps} onClick={handleClear} aria-label="clear">
             <CloseIcon />
           </ClearButton>

@@ -5,10 +5,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { makeEntityLink, useUrlParams } from '../../utils';
+import { useUrlParams } from '../../utils';
 
 const Result = styled(Link)`
   position: relative;
@@ -43,7 +43,10 @@ const SubHeading = styled(Typography)`
 `;
 
 const Overlay = styled.div`
+  display: none;
+
   &.active {
+    display: block;
     background: white;
     position: absolute;
     top: 0;
@@ -65,83 +68,6 @@ const Text = styled(Typography)`
   margin-bottom: 20px;
 `;
 
-const testResults = [
-  {
-    dashboardName: 'Basic Emergency/Disaster Information',
-    dashboardId: '60f0c1f661f76a30d700000c',
-    dashboardCode: 'LESMIS_EmergencyInEducation_Basic_Information',
-    entityType: 'district',
-    entityCode: 'LA_Champasack',
-    entityName: 'Champasack',
-    items: [],
-  },
-  {
-    dashboardName: 'Loss Teaching & Learning Materials',
-    dashboardId: '60f0c1f661f76a30d700000e',
-    dashboardCode: 'LESMIS_EmergencyInEducation_Teaching_Learning_Materials',
-    entityType: 'district',
-    entityCode: 'LA_Champasack',
-    entityName: 'Champasack',
-    items: [],
-  },
-  {
-    dashboardName: 'Teaching-Learning Continuity',
-    dashboardId: '60f0c1f661f76a30d7000010',
-    dashboardCode: 'LESMIS_EmergencyInEducation_Teaching_Learning_Continuity',
-    entityType: 'district',
-    entityCode: 'LA_Champasack',
-    entityName: 'Champasack',
-    items: [],
-  },
-  {
-    dashboardName: 'WASH Affected',
-    dashboardId: '60f0c1f661f76a30d7000012',
-    dashboardCode: 'LESMIS_EmergencyInEducation_WASH_Affected',
-    entityType: 'district',
-    entityCode: 'LA_Champasack',
-    entityName: 'Champasack',
-    items: [],
-  },
-  {
-    dashboardName: 'Staff',
-    dashboardId: '60de99cc61f76a1b830006ea',
-    dashboardCode: 'LA_Staff',
-    entityType: 'district',
-    entityCode: 'LA_Champasack',
-    entityName: 'Champasack',
-    items: [
-      {
-        code: 'LESMIS_teachers_education_level_district',
-        legacy: false,
-        reportCode: 'LESMIS_teachers_education_level_district',
-        name: 'Number of Teachers: by Level of Education, Gender, GPI',
-        type: 'chart',
-        xName: 'Level of Education',
-        chartType: 'composed',
-        chartConfig: {
-          GPI: { color: '#ffeb3b', yName: 'GPI', chartType: 'line', yAxisOrientation: 'right' },
-          Male: {
-            color: '#f44336',
-            yName: 'Number of Teachers',
-            stackId: '1',
-            chartType: 'bar',
-            labelType: 'fraction',
-            valueType: 'number',
-          },
-          Female: {
-            color: '#2196f3',
-            stackId: '1',
-            chartType: 'bar',
-            labelType: 'fraction',
-            valueType: 'number',
-          },
-        },
-        periodGranularity: 'one_year_at_a_time',
-      },
-    ],
-  },
-];
-
 export const DashboardSearchResults = ({ searchResults, isActive }) => {
   const { search } = useLocation();
   const { entityCode } = useUrlParams();
@@ -158,26 +84,27 @@ export const DashboardSearchResults = ({ searchResults, isActive }) => {
     value,
   } = searchResults;
 
-  // console.log('groupedOptions', JSON.stringify(groupedOptions));
-  // todo: get report code
-
   return (
     <Overlay className={isActive ? 'active' : ''}>
       <Container {...getListboxProps()}>
-        <Text>15 Results found</Text>
+        {groupedOptions.length > 0 && (
+          <Text>
+            {groupedOptions.length} Result{groupedOptions.length > 1 && 's'} found
+          </Text>
+        )}
         {groupedOptions.map((option, index) => {
           return (
             <Result
-              key={option.dashboardId}
+              key={option.code}
               to={{
                 pathname: `/${entityCode}/dashboard`,
-                search: `${search}&reportCode=${option.dashboardCode}`,
+                search: `${search}&reportCode=${option.reportCode}`,
               }}
               {...getOptionProps({ option, index })}
             >
               <div>
                 <SubHeading>ESDP Early Childhood / 2019 / HLO 5: School leavers</SubHeading>
-                <Heading>{option.dashboardName}</Heading>
+                <Heading>{option.name}</Heading>
               </div>
               <ChevronRightIcon />
             </Result>
