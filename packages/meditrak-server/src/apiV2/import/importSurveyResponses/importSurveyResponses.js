@@ -31,6 +31,20 @@ import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions
 import { SurveyResponseUpdatePersistor } from './SurveyResponseUpdatePersistor';
 import { getFailureMessage } from './getFailureMessage';
 
+const ANSWER_SANITIZERS = {
+  [ANSWER_TYPES.ENTITY]: async (models, answerText) => {
+    if (!answerText) {
+      return answerText;
+    }
+    // entity answers are stored as codes in the spreadsheet, but ids in the db
+    const entity = await models.entity.findOne({ code: answerText });
+    if (!entity) {
+      throw new Error(`Could not find entity with code ${answerText}`);
+    }
+    return entity.id;
+  },
+};
+
 /**
  * Creates or updates survey responses by importing the new answers from an Excel file, and either
  * updating or creating each answer as appropriate
@@ -121,6 +135,7 @@ export async function importSurveyResponses(req, res) {
 
         // Validate every cell in rows other than the header rows
         let answerValidator;
+        let answerSanitizer;
         const questionId = getInfoForRow(sheet, rowIndex, 'Id');
         if (questionId !== 'N/A') {
           if (questionIds.includes(questionId)) {
@@ -137,6 +152,7 @@ export async function importSurveyResponses(req, res) {
           await infoValidator.validate(rowInfo);
           const question = await models.question.findById(questionId);
           answerValidator = new ObjectValidator({}, constructAnswerValidator(models, question));
+          answerSanitizer = ANSWER_SANITIZERS[question.type];
         }
 
         for (
@@ -147,16 +163,22 @@ export async function importSurveyResponses(req, res) {
           const columnHeader = getColumnHeader(sheet, columnIndex);
           const surveyResponseId = surveyResponseIds[columnIndex];
           const cellValue = getCellContents(sheet, columnIndex, rowIndex);
+          const sanitizedCellValue = answerSanitizer
+            ? await answerSanitizer(models, cellValue)
+            : cellValue;
           // If we already deleted this survey response wholesale, no need to check specific rows
           if (surveyResponseId && !deletedResponseIds.has(surveyResponseId)) {
             if (answerValidator) {
               const constructImportValidationError = message =>
                 new ImportValidationError(message, excelRowNumber, columnHeader, tabName);
-              await answerValidator.validate({ answer: cellValue }, constructImportValidationError);
+              await answerValidator.validate(
+                { answer: sanitizedCellValue },
+                constructImportValidationError,
+              );
             }
             if (questionId === 'N/A') {
               // Info row (e.g. entity name): if no content delete the survey response wholesale
-              if (checkIsCellEmpty(cellValue)) {
+              if (checkIsCellEmpty(sanitizedCellValue)) {
                 updatePersistor.deleteSurveyResponse(surveyResponseId);
                 deletedResponseIds.add(surveyResponseId);
               } else {
@@ -171,7 +193,7 @@ export async function importSurveyResponses(req, res) {
                   updatePersistor.updateDataTime(surveyResponseId, newDataTime);
                 }
               }
-            } else if (checkIsCellEmpty(cellValue)) {
+            } else if (checkIsCellEmpty(sanitizedCellValue)) {
               // Empty question row: delete any matching answer
               updatePersistor.deleteAnswer(surveyResponseId, { questionId });
             } else if (
@@ -183,7 +205,7 @@ export async function importSurveyResponses(req, res) {
               const newDataTime = await getNewDataTimeIfRequired(
                 models,
                 surveyResponseId,
-                cellValue.toString(),
+                sanitizedCellValue.toString(),
               );
               if (newDataTime) {
                 updatePersistor.updateDataTime(surveyResponseId, newDataTime);
@@ -193,7 +215,7 @@ export async function importSurveyResponses(req, res) {
               updatePersistor.upsertAnswer(surveyResponseId, {
                 surveyResponseId,
                 questionId,
-                text: cellValue.toString(),
+                text: sanitizedCellValue.toString(),
                 type: rowType,
               });
             }
