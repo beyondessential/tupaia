@@ -6,12 +6,14 @@
 # 1. Tear down a specific branch deployment of Tupaia
 # {
 #   "Action": "tear_down_tupaia_deployment",
+#   "User": "edwin",
 #   "Branch": "wai-965"
 # }
 #
 # 1. Tear down a Tupaia deployment using its deployment name (which is usually the same as the branch)
 # {
 #   "Action": "tear_down_tupaia_deployment",
+#   "User": "edwin",
 #   "DeploymentName": "wai-965"
 # }
 

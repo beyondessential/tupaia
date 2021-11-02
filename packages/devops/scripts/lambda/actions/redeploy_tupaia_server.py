@@ -6,6 +6,7 @@
 # 1. Redeploy production (note non-matching branch name), using the same instance size
 # {
 #   "Action": "redeploy_tupaia_server",
+#   "User": "edwin",
 #   "DeploymentName": "production",
 #   "Branch": "master"
 # }
@@ -13,12 +14,14 @@
 # 2. Redeploy feature branch, maintaining the same instance size
 # {
 #   "Action": "redeploy_tupaia_server",
+#   "User": "edwin",
 #   "Branch": "wai-965"
 # }
 #
 # 3. Redeploy based on a different AMI, with a different instance size
 # {
 #   "Action": "redeploy_tupaia_server",
+#   "User": "edwin",
 #   "Branch": "wai-965",
 #   "InstanceType": "t3a.medium",
 #   "ImageCode": "edwin-test",

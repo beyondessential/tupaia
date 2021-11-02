@@ -6,6 +6,7 @@
 # 1. Spin up new deployment of Tonga DHIS2
 # {
 #   "Action": "spin_up_non_tupaia_deployment",
+#   "User": "edwin",
 #   "DeploymentName": "tonga-for-testing",
 #   "InstanceType": "t3a.medium",
 #   "FromDeployment": "tonga"
@@ -29,6 +30,8 @@ def spin_up_non_tupaia_deployment(event):
 
     instance_name_prefix = 'Clone of ' + from_deployment + ': '
 
-    clone_instance(from_deployment, deployment_name, instance_type, instance_name_prefix=instance_name_prefix)
+    extra_tags = [{ 'Key': 'DeployedBy', 'Value': event['User'] }]
+
+    clone_instance(from_deployment, deployment_name, instance_type, extra_tags=extra_tags, instance_name_prefix=instance_name_prefix)
 
     print('Deployment cloned')

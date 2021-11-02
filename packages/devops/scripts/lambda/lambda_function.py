@@ -32,9 +32,16 @@ def lambda_handler(event, context):
 
     action = event['Action']
 
+    if 'User' not in event:
+      raise Exception('Must provide your AWS username under the key "User" in the lambda config')
+
+    user = event['User']
+
     if action not in actions:
       raise Exception('Action must be one of ' + ', '.join(actions.keys()))
 
     action_handler = actions[action]
+
+    print(user + ' triggered ' + action)
 
     return action_handler(event)

@@ -3,6 +3,7 @@
 # Example config
 # {
 #   "Action": "tear_down_non_tupaia_deployment",
+#   "User": "edwin",
 #   "DeploymentName": "tonga: wai-965"
 # }
 
