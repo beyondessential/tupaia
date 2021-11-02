@@ -36,7 +36,8 @@ git checkout ${BRANCH_TO_USE}
 git reset --hard origin/${BRANCH_TO_USE}
 
 # Deploy each package, including injecting environment variables from LastPass
-sudo -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployPackages.sh $DEPLOYMENT_NAME | while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
+sudo -Hu ubuntu $DEPLOYMENT_SCRIPTS/buildDeployablePackages.sh $DEPLOYMENT_NAME | while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
+sudo -Hu ubuntu $DEPLOYMENT_SCRIPTS/startBackEnds.sh | while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
 
 # Set nginx config and start the service running
 $DEPLOYMENT_SCRIPTS/configureNginx.sh | while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt

@@ -2,39 +2,17 @@
 
 DIR=$(dirname "$0")
 TUPAIA_DIR=$DIR/../../../..
-DEPLOYMENT_NAME=$1
 PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 
 # Initialise NVM (which sets the path for access to npm, yarn etc. as well)
 . $HOME/.nvm/nvm.sh
 
-# Install external dependencies and build internal dependencies
-cd ${TUPAIA_DIR}
-yarn install
-
-# Inject environment variables from LastPass
-LASTPASS_EMAIL=$($DIR/fetchParameterStoreValue.sh LASTPASS_EMAIL)
-LASTPASS_PASSWORD=$($DIR/fetchParameterStoreValue.sh LASTPASS_PASSWORD)
-LASTPASS_EMAIL=$LASTPASS_EMAIL LASTPASS_PASSWORD=$LASTPASS_PASSWORD yarn download-env-vars $DEPLOYMENT_NAME
-
-# Build each front end package
-for PACKAGE in ${PACKAGES[@]}; do
-    if [[ $PACKAGE != *server ]]; then
-        # It's a front end package, build it
-        echo "Building ${PACKAGE}"
-        REACT_APP_DEPLOYMENT_NAME=${DEPLOYMENT_NAME} yarn workspace @tupaia/${PACKAGE} build
-    fi
-done
-
-# Build and start back end server packages
+# Start back end server packages
 for PACKAGE in ${PACKAGES[@]}; do
     if [[ $PACKAGE == *server ]]; then
         # It's a server, start the pm2 process
-        echo "Building ${PACKAGE}"
-        cd ${TUPAIA_DIR}/packages/$PACKAGE
-        yarn build
-
         echo "Starting ${PACKAGE}"
+        cd ${TUPAIA_DIR}/packages/$PACKAGE
         REPLICATION_PM2_CONFIG=''
         if [[ $PACKAGE == "web-config-server" ]]; then
             # as many replicas as cpu cores - 1
