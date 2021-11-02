@@ -5,8 +5,11 @@ if [[ $CI_BRANCH == "master" ]]; then
 else
     DEPLOYMENT_URL="${CI_BRANCH}.tupaia.org"
 fi
+EXISTING_INSTANCES=$(aws ec2 describe-instances \
+      --filters Name=tag:Branch,Values=${CI_BRANCH} Name=tag-key,Values=SubdomainsViaGateway Name=instance-state-name,Values=running,stopped \
+      --no-cli-pager --profile codeship)
 
-if curl --output /dev/null --silent --head --fail $DEPLOYMENT_URL; then
+if [[ $EXISTING_INSTANCES == *"Instances"* ]]; then
   echo "Existing deployment, triggering redeploy"
   RESPONSE_FILE=lambda_redeploy_response.json
   aws lambda invoke \
@@ -28,7 +31,7 @@ if curl --output /dev/null --silent --head --fail $DEPLOYMENT_URL; then
   while true; do
     aws ec2 wait instance-exists \
       --instance-ids ${NEW_INSTANCE_ID} \
-      --filters Name=tag-key,Values=SubdomainsViaGateway \
+      --filters Name=tag-key,Values=SubdomainsViaGateway Name=instance-state-name,Values=running,stopped \
       --no-cli-pager
     if [ $? -eq 0 ]; then
       echo "New instance is online."
