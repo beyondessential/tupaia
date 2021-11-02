@@ -58,6 +58,7 @@ export const useDashboardSearch = ({ inputValue, setInputValue, options, limit, 
     disableCloseOnSelect: true,
     clearOnBlur: false,
     blurOnSelect: true,
+    debug: true,
     onInputChange: (event, newValue) => {
       setInputValue(newValue);
     },

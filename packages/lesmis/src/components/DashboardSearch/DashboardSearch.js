@@ -89,12 +89,13 @@ const useDashboardItems = () => {
     return [];
   }
 
-  return data.reduce((allItems, dashboard) => {
-    return [...allItems, ...dashboard.items];
+  return data.reduce((allItems, { dashboardName, entityName, ...dashboard }) => {
+    const items = dashboard.items.map(item => ({ ...item, dashboardName, entityName }));
+    return [...allItems, ...items];
   }, []);
 };
 
-export const DashboardSearch = ({ linkType, onToggleSearch, getResultsEl }) => {
+export const DashboardSearch = ({ linkType, onToggleSearch, getResultsEl, year }) => {
   const [inputValue, setInputValue] = useState('');
   const [isActive, setIsActive] = useState(false);
   const options = useDashboardItems();
@@ -116,17 +117,23 @@ export const DashboardSearch = ({ linkType, onToggleSearch, getResultsEl }) => {
 
   const clearProps = getClearProps();
 
-  const handleClear = () => {
-    clearProps.onClick();
+  const handleClickClear = () => {
+    if (inputValue) {
+      clearProps.onClick();
+    } else {
+      onToggleSearch(false);
+      setIsActive(false);
+    }
   };
 
   const handleClickSearch = () => {
     onToggleSearch(!isActive);
     setIsActive(!isActive);
+    setInputValue('');
   };
 
   const SearchResults = usePortal(
-    <DashboardSearchResults isActive={isActive} searchResults={searchResults} />,
+    <DashboardSearchResults isActive={isActive} searchResults={searchResults} year={year} />,
     getResultsEl,
   );
 
@@ -146,8 +153,8 @@ export const DashboardSearch = ({ linkType, onToggleSearch, getResultsEl }) => {
           placeholder="Start typing to search dashboards"
           inputProps={{ ...getInputProps() }}
         />
-        {inputValue && isActive && (
-          <ClearButton {...clearProps} onClick={handleClear} aria-label="clear">
+        {isActive && (
+          <ClearButton {...clearProps} onClick={handleClickClear} aria-label="clear">
             <CloseIcon />
           </ClearButton>
         )}
@@ -160,6 +167,7 @@ DashboardSearch.propTypes = {
   getResultsEl: PropTypes.func.isRequired,
   onToggleSearch: PropTypes.func.isRequired,
   linkType: PropTypes.oneOf(['dashboard', 'map']),
+  year: PropTypes.string.isRequired,
 };
 
 DashboardSearch.defaultProps = {

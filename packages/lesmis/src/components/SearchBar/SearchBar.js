@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Link, useHistory } from 'react-router-dom';
 import MuiButton from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import MuiPaper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
 import MuiDivider from '@material-ui/core/Divider';
@@ -20,6 +19,7 @@ import { EntityMenu } from '../EntityMenu';
 import { useAutocomplete } from './useAutocomplete';
 import { useProjectEntitiesData } from '../../api';
 import { getPlaceIcon, getOptionText, makeEntityLink } from '../../utils';
+import { NoResultsMessage } from '../NoResultsMessage';
 
 const SearchContainer = styled.div`
   position: relative;
@@ -114,26 +114,6 @@ const ResultsItem = styled(Link)`
   }
 `;
 
-const NoResultsBox = styled(ResultsBox)`
-  text-align: center;
-  padding: 1.5rem 1rem 2rem;
-
-  img {
-    width: 4.375rem;
-    margin-bottom: 0.625rem;
-  }
-`;
-
-const NoResultsText = styled(Typography)`
-  color: ${props => props.theme.palette.text.secondary};
-  margin-bottom: 0.625rem;
-  font-size: 0.875rem;
-`;
-
-const NoResultsValue = styled.div`
-  font-weight: 700;
-`;
-
 const DEFAULT_LIMIT = 5;
 const EXPANDED_LIMIT = 200;
 
@@ -190,7 +170,7 @@ export const SearchBar = ({ linkType, className }) => {
           <EntityMenu buttonText="or view all" />
         </SearchBox>
         {groupedOptions.length > 0 ? (
-          <ResultsBox elevation={3} {...getListboxProps()}>
+          <ResultsBox {...getListboxProps()}>
             {groupedOptions.map((option, index) => (
               <ResultsItem
                 key={option.name}
@@ -214,11 +194,9 @@ export const SearchBar = ({ linkType, className }) => {
           </ResultsBox>
         ) : (
           showNoResults && (
-            <NoResultsBox>
-              <img src="/images/no-results-icon.svg" alt="no results" />
-              <NoResultsText>No results found for the search</NoResultsText>
-              <NoResultsValue>&quot;{inputValue}&quot;</NoResultsValue>
-            </NoResultsBox>
+            <ResultsBox {...getListboxProps()}>
+              <NoResultsMessage inputValue={inputValue} />
+            </ResultsBox>
           )
         )}
       </SearchContainer>

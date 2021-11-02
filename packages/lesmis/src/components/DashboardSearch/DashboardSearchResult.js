@@ -9,6 +9,29 @@ import { Link, useLocation } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { useUrlParams } from '../../utils';
+import { NoResultsMessage } from '../NoResultsMessage';
+
+const Overlay = styled.div`
+  display: none;
+
+  &.active {
+    display: block;
+    background: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: auto;
+    min-height: 100%;
+    z-index: 1;
+  }
+`;
+
+const Container = styled.div`
+  max-width: 900px;
+  margin: 0 auto;
+  padding-top: 36px;
+`;
 
 const Result = styled(Link)`
   position: relative;
@@ -42,74 +65,58 @@ const SubHeading = styled(Typography)`
   color: #d13333;
 `;
 
-const Overlay = styled.div`
-  display: none;
-
-  &.active {
-    display: block;
-    background: white;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: auto;
-    min-height: 100%;
-    z-index: 1;
-  }
-`;
-
-const Container = styled.div`
-  max-width: 900px;
-  margin: 0 auto;
-  padding-top: 36px;
-`;
-
 const Text = styled(Typography)`
   margin-bottom: 20px;
 `;
 
-export const DashboardSearchResults = ({ searchResults, isActive }) => {
+const NoResultsBox = styled.div`
+  background: #f9f9f9;
+  padding: 50px 15px;
+`;
+
+export const DashboardSearchResults = ({ searchResults, isActive, year }) => {
   const { search } = useLocation();
   const { entityCode } = useUrlParams();
 
-  const {
-    getRootProps,
-    getInputProps,
-    getListboxProps,
-    getOptionProps,
-    groupedOptions,
-    focused,
-    getClearProps,
-    popupOpen,
-    value,
-  } = searchResults;
+  const { getListboxProps, getOptionProps, groupedOptions, inputValue } = searchResults;
+  const showNoResults = inputValue;
 
   return (
     <Overlay className={isActive ? 'active' : ''}>
       <Container {...getListboxProps()}>
-        {groupedOptions.length > 0 && (
-          <Text>
-            {groupedOptions.length} Result{groupedOptions.length > 1 && 's'} found
-          </Text>
+        {groupedOptions.length > 0 ? (
+          <>
+            <Text>
+              {groupedOptions.length} Result{groupedOptions.length > 1 && 's'} found
+            </Text>
+            {groupedOptions.map((option, index) => {
+              return (
+                <Result
+                  key={option.code}
+                  to={{
+                    pathname: `/${entityCode}/dashboard`,
+                    search: `${search}&reportCode=${option.reportCode}`,
+                  }}
+                  {...getOptionProps({ option, index })}
+                >
+                  <div>
+                    <SubHeading>
+                      {option.entityName} / {year} / {option.dashboardName}
+                    </SubHeading>
+                    <Heading>{option.name}</Heading>
+                  </div>
+                  <ChevronRightIcon />
+                </Result>
+              );
+            })}
+          </>
+        ) : (
+          showNoResults && (
+            <NoResultsBox>
+              <NoResultsMessage inputValue={inputValue} />
+            </NoResultsBox>
+          )
         )}
-        {groupedOptions.map((option, index) => {
-          return (
-            <Result
-              key={option.code}
-              to={{
-                pathname: `/${entityCode}/dashboard`,
-                search: `${search}&reportCode=${option.reportCode}`,
-              }}
-              {...getOptionProps({ option, index })}
-            >
-              <div>
-                <SubHeading>ESDP Early Childhood / 2019 / HLO 5: School leavers</SubHeading>
-                <Heading>{option.name}</Heading>
-              </div>
-              <ChevronRightIcon />
-            </Result>
-          );
-        })}
       </Container>
     </Overlay>
   );
@@ -118,6 +125,7 @@ export const DashboardSearchResults = ({ searchResults, isActive }) => {
 DashboardSearchResults.propTypes = {
   searchResults: PropTypes.object.isRequired,
   isActive: PropTypes.bool,
+  year: PropTypes.string.isRequired,
 };
 
 DashboardSearchResults.defaultProps = {

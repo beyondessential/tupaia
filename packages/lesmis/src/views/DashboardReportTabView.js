@@ -163,7 +163,11 @@ export const DashboardReportTabView = ({
     <>
       <StickyTabBarContainer ref={onLoadTabBar}>
         <TabBar>
-          <DashboardSearch getResultsEl={getResultsEl} onToggleSearch={onToggleSearch} />
+          <DashboardSearch
+            getResultsEl={getResultsEl}
+            onToggleSearch={onToggleSearch}
+            year={year}
+          />
           <TabBarLeftSection />
           {isLoading ? (
             <TabsLoader />
