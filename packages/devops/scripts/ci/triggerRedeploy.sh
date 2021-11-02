@@ -8,10 +8,10 @@ fi
 
 if curl --output /dev/null --silent --head --fail $DEPLOYMENT_URL; then
   echo "Existing deployment, triggering redeploy"
-  RESPONSE_FILE=lambda_swap_out_response.json
+  RESPONSE_FILE=lambda_redeploy_response.json
   aws lambda invoke \
     --function-name deployment \
-    --payload "{\"Action\": \"redeploy_tupaia_server\", \"Branch\": \"$CI_BRANCH\", \"ServerDeploymentCode\": \"etest3-server\" }" \
+    --payload "{\"Action\": \"redeploy_tupaia_server\", \"Branch\": \"$CI_BRANCH\" }" \
     --cli-binary-format raw-in-base64-out $RESPONSE_FILE \
     --no-cli-pager
 

@@ -32,7 +32,7 @@ from helpers.utilities import get_instance, get_tag
 
 def redeploy_tupaia_server(event):
     instance_filters = [
-        { 'Name': 'tag:SubdomainsViaDns', 'Values': ['ssh'] }, # the main server rather than db instance
+        { 'Name': 'tag:SubdomainsViaDns', 'Values': ['ssh'] }, # the main server rather than db instance (can be removed after RN-195)
         { 'Name': 'instance-state-name', 'Values': ['running', 'stopped'] } # ignore terminated instances
     ]
 
