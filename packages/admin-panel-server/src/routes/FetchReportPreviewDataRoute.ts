@@ -14,10 +14,11 @@ import {
   draftDashboardItemValidator,
   draftReportValidator,
   PreviewMode,
+  VIZ_TYPE_PARAM,
 } from '../viz-builder';
 
 export type FetchReportPreviewDataRequest = Request<
-  { dashboardVisualisationId: string },
+  {},
   Record<string, unknown>,
   { previewConfig?: Record<string, unknown>; testData?: unknown[] },
   { entityCode?: string; hierarchy?: string; previewMode?: PreviewMode }
@@ -71,16 +72,28 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
   };
 
   private getReportConfig = () => {
-    const { previewMode } = this.req.query;
+    const { previewMode, vizType } = this.req.query;
     const { previewConfig, testData } = this.req.body;
 
-    const extractor = new DashboardVisualisationExtractor(
-      previewConfig as Record<string, unknown>,
-      draftDashboardItemValidator,
-      draftReportValidator,
-    );
+    const extractor = this.getVizExtractor(vizType, previewConfig);
+
     extractor.setReportValidatorContext({ testData });
 
     return extractor.getReport(previewMode as PreviewMode).config;
   };
+
+  private getVizExtractor = (vizType, previewConfig) => {
+    if (vizType === VIZ_TYPE_PARAM.DASHBOARD_ITEM) {
+      return new DashboardVisualisationExtractor(
+        previewConfig as Record<string, unknown>,
+        draftDashboardItemValidator,
+        draftReportValidator,
+      );
+    } else if (vizType === VIZ_TYPE_PARAM.MAP_OVERLAY) {
+      // TODO
+      throw new Error('TODO');
+    } else {
+      throw new Error('Unknown viz type');
+    }
+  }
 }
