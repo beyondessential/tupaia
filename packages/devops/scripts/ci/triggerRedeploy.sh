@@ -7,7 +7,7 @@ else
 fi
 EXISTING_INSTANCES=$(aws ec2 describe-instances \
       --filters Name=tag:Branch,Values=${CI_BRANCH} Name=tag-key,Values=SubdomainsViaGateway Name=instance-state-name,Values=running,stopped \
-      --no-cli-pager --profile codeship)
+      --no-cli-pager)
 
 if [[ $EXISTING_INSTANCES == *"Instances"* ]]; then
   echo "Existing deployment, triggering redeploy"
