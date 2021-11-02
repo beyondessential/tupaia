@@ -5,14 +5,13 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { useHistory } from 'react-router-dom';
 import MuiPaper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
 import MuiIconButton from '@material-ui/core/IconButton';
 import MuiSearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import { useDashboardData } from '../../api';
-import { makeEntityLink, usePortal, useUrlParams, useAutocomplete } from '../../utils';
+import { usePortal, useUrlParams, useAutocomplete } from '../../utils';
 import { DashboardSearchResults } from './DashboardSearchResults';
 
 const SearchButton = styled(MuiIconButton)`
@@ -99,11 +98,16 @@ const useDashboardItems = () => {
   }, []);
 };
 
-export const DashboardSearch = ({ linkType, onToggleSearch, getResultsEl, year }) => {
+export const DashboardSearch = ({ onToggleSearch, getResultsEl, year }) => {
   const [inputValue, setInputValue] = useState('');
   const [isActive, setIsActive] = useState(false);
   const options = useDashboardItems();
-  const history = useHistory();
+
+  const resetSearch = () => {
+    onToggleSearch(false);
+    setIsActive(false);
+    setInputValue('');
+  };
 
   const searchResults = useAutocomplete({
     id: 'dashboard-search',
@@ -111,13 +115,18 @@ export const DashboardSearch = ({ linkType, onToggleSearch, getResultsEl, year }
     setInputValue,
     options,
     limit: LIMIT,
-    onChange: (event, option) => {
-      if (option && option.code) {
-        history.push(makeEntityLink(option.code, linkType));
+    onChange: (event, option, reason) => {
+      if (reason === 'select-option' && option && option.code) {
+        resetSearch();
       }
     },
     muiProps: {
       debug: true, // Keeps the options in memory after blur event
+      onClose: (event, reason) => {
+        if (reason === 'escape') {
+          resetSearch();
+        }
+      },
     },
   });
 
@@ -174,11 +183,9 @@ export const DashboardSearch = ({ linkType, onToggleSearch, getResultsEl, year }
 DashboardSearch.propTypes = {
   getResultsEl: PropTypes.func.isRequired,
   onToggleSearch: PropTypes.func.isRequired,
-  linkType: PropTypes.oneOf(['dashboard', 'map']),
   year: PropTypes.string,
 };
 
 DashboardSearch.defaultProps = {
-  linkType: 'dashboard',
   year: null,
 };
