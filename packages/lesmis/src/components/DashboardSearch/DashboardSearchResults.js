@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { useUrlParams } from '../../utils';
 import { NoResultsMessage } from '../NoResultsMessage';
+import * as COLORS from '../../constants';
 
 const Container = styled.div`
   display: none;
@@ -33,13 +34,17 @@ const Result = styled(Link)`
   align-items: center;
   justify-content: space-between;
   text-decoration: none;
-  background: #f9f9f9;
+  background: ${COLORS.GREY_F9};
   border-radius: 3px;
   padding: 30px;
   margin-bottom: 20px;
 
   .MuiSvgIcon-root {
     color: ${props => props.theme.palette.primary.main};
+  }
+
+  &:hover {
+    background: ${COLORS.GREY_F1};
   }
 `;
 
@@ -48,7 +53,7 @@ const Heading = styled(Typography)`
   font-weight: 500;
   font-size: 18px;
   line-height: 21px;
-  color: #2c3236;
+  color: ${props => props.theme.palette.text.primary};
 `;
 
 const SubHeading = styled(Typography)`
@@ -56,7 +61,7 @@ const SubHeading = styled(Typography)`
   font-size: 12px;
   line-height: 14px;
   margin-bottom: 10px;
-  color: #d13333;
+  color: ${props => props.theme.palette.primary.main};
 `;
 
 const Text = styled(Typography)`
@@ -64,7 +69,7 @@ const Text = styled(Typography)`
 `;
 
 const NoResultsBox = styled.div`
-  background: #f9f9f9;
+  background: ${COLORS.GREY_F9};
   padding: 50px 15px;
 `;
 

@@ -1,7 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
+ *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
@@ -15,11 +14,10 @@ import MuiIconButton from '@material-ui/core/IconButton';
 import MuiSearchIcon from '@material-ui/icons/Search';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Fade from '@material-ui/core/Fade';
-import { EntityMenu } from '../EntityMenu';
-import { useAutocomplete } from './useAutocomplete';
-import { useProjectEntitiesData } from '../../api';
-import { getPlaceIcon, getOptionText, makeEntityLink } from '../../utils';
-import { NoResultsMessage } from '../NoResultsMessage';
+import { EntityMenu } from './EntityMenu';
+import { NoResultsMessage } from './NoResultsMessage';
+import { useProjectEntitiesData } from '../api';
+import { getPlaceIcon, getOptionText, makeEntityLink, useAutocomplete } from '../utils';
 
 const SearchContainer = styled.div`
   position: relative;
@@ -134,6 +132,7 @@ export const SearchBar = ({ linkType, className }) => {
     popupOpen,
     value,
   } = useAutocomplete({
+    id: 'location-search',
     inputValue,
     setInputValue,
     options,

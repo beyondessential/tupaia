@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import { createFilterOptions } from '../useAutocomplete';
+import { createFilterOptions } from '../../../utils/useAutocomplete';
 import options from './exampleOptions.json';
 
 const getFilterResults = (inputValue, limit = 10) => {

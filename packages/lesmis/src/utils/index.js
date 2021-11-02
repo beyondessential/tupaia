@@ -5,7 +5,9 @@
  */
 export * from './makeEntityLink';
 export * from './search';
-export * from './useUrlParams';
-export * from './useUrlSearchParams';
+export * from './useAutocomplete';
 export * from './useEntityBreadcrumbs';
 export * from './useExportToPNG';
+export * from './usePortal';
+export * from './useUrlParams';
+export * from './useUrlSearchParams';

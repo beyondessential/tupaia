@@ -11,10 +11,8 @@ import InputBase from '@material-ui/core/InputBase';
 import MuiIconButton from '@material-ui/core/IconButton';
 import MuiSearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
-import { useDashboardSearch } from './useDashboardSearch';
 import { useDashboardData } from '../../api';
-import { makeEntityLink, useUrlParams } from '../../utils';
-import { usePortal } from './usePortal';
+import { makeEntityLink, usePortal, useUrlParams, useAutocomplete } from '../../utils';
 import { DashboardSearchResults } from './DashboardSearchResults';
 
 const SearchButton = styled(MuiIconButton)`
@@ -107,7 +105,8 @@ export const DashboardSearch = ({ linkType, onToggleSearch, getResultsEl, year }
   const options = useDashboardItems();
   const history = useHistory();
 
-  const searchResults = useDashboardSearch({
+  const searchResults = useAutocomplete({
+    id: 'dashboard-search',
     inputValue,
     setInputValue,
     options,
@@ -116,6 +115,9 @@ export const DashboardSearch = ({ linkType, onToggleSearch, getResultsEl, year }
       if (option && option.code) {
         history.push(makeEntityLink(option.code, linkType));
       }
+    },
+    muiProps: {
+      debug: true, // Keeps the options in memory after blur event
     },
   });
 

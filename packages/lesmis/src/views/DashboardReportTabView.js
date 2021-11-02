@@ -230,7 +230,7 @@ export const DashboardReportTabView = ({
           ))}
         </FetchLoader>
       </DashboardSection>
-      {isScrolledPastTop && !searchIsActive && <ScrollToTopButton onClick={scrollToTop} />}
+      {isScrolledPastTop && <ScrollToTopButton onClick={scrollToTop} />}
     </>
   );
 };
