@@ -164,7 +164,7 @@ export const MainMenu = () => {
           {/*// Todo: Display admin-panel links @see WAI-832*/}
           {/*{isLesmisAdmin && <AdminPanelLinks />}*/}
           <Subheader component="div">
-            <I18n t="home.onlineQuestionaires" />
+            <I18n t="home.onlineQuestionnaires" />
           </Subheader>
           <LocaleListItemLink to="/fundamental-quality-standards">
             <ListItemIcon>
@@ -177,8 +177,7 @@ export const MainMenu = () => {
         <StyledList component="nav">
           <ListItem>
             <TupaiaText>
-              <I18n t="home.poweredByTupaia" />{' '}
-              <Link href="https://www.info.tupaia.org">Tupaia</Link>
+              <I18n t="home.poweredBy" /> <Link href="https://www.info.tupaia.org">Tupaia</Link>
             </TupaiaText>
           </ListItem>
         </StyledList>

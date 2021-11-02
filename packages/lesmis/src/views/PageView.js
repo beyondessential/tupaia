@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import MuiContainer from '@material-ui/core/Container';
 import { PageHeader } from '../components';
 import * as COLORS from '../constants';
+import { DEFAULT_LOCALE } from '../constants';
 import { contentPageTheme } from '../theme';
 import { useUrlParams } from '../utils';
 
@@ -28,8 +29,16 @@ const TemplateBody = styled.section`
   min-height: 70vh;
 `;
 
+const useTranslatedPageContent = pageContent => {
+  const { locale } = useUrlParams();
+  if (pageContent[locale]) {
+    return pageContent[locale];
+  }
+  return pageContent[DEFAULT_LOCALE];
+};
+
 export const PageView = ({ content }) => {
-  const { title, body, url } = content;
+  const { title, body, url } = useTranslatedPageContent(content);
   const { locale } = useUrlParams();
   const link = `/${locale}/${url}`;
   return (
@@ -92,7 +101,8 @@ const Link = styled(MuiLink)`
 `;
 
 export const TwoColumnPageView = ({ content }) => {
-  const { title, body, url, linkSections } = content;
+  const { title, body, url, linkSections } = useTranslatedPageContent(content);
+
   return (
     <>
       <PageHeader title={title} breadcrumbs={[{ name: title, url }]} />

@@ -23,6 +23,7 @@ import { DialogHeader } from './FullScreenDialog';
 import { useDashboardReportDataWithConfig, useEntityData } from '../api/queries';
 import { useUrlParams, useUrlSearchParams, useExportToPNG } from '../utils';
 import { DashboardReport } from './DashboardReport';
+import { useI18n } from './I18n';
 
 // Transition component for modal animation
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -85,14 +86,19 @@ const ExportLoader = styled(FlexColumn)`
   z-index: 1;
 `;
 
-const EXPORT_OPTIONS = [
-  { id: 'xlsx', label: 'Export to XLSX' },
-  { id: 'png', label: 'Export to PNG' },
-];
+const useExportOptions = () => {
+  const { translate } = useI18n();
+
+  return [
+    { id: 'xlsx', label: translate('dashboards.exportToXlsx') },
+    { id: 'png', label: translate('dashboards.exportToPng') },
+  ];
+};
 
 export const DashboardReportModal = () => {
   const theme = useTheme();
-  const [exportFormatId, setExportFormatId] = useState(EXPORT_OPTIONS[1].id);
+  const exportOptions = useExportOptions();
+  const [exportFormatId, setExportFormatId] = useState(exportOptions[1].id);
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { entityCode } = useUrlParams();
   const [{ startDate, endDate, reportCode }, setParams] = useUrlSearchParams();
@@ -190,7 +196,7 @@ export const DashboardReportModal = () => {
             <Toolbar $isExporting={isExporting}>
               {config?.type !== 'list' && (
                 <SplitButton
-                  options={EXPORT_OPTIONS}
+                  options={exportOptions}
                   selectedId={exportFormatId}
                   setSelectedId={setExportFormatId}
                   onClick={handleClickExport}

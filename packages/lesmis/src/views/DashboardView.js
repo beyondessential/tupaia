@@ -11,7 +11,7 @@ import { useIsFetching } from 'react-query';
 import { Select } from '@tupaia/ui-components';
 import { VitalsView } from './VitalsView';
 import { DashboardReportTabView } from './DashboardReportTabView';
-import { TabPanel, TabBar, TabBarSection, YearSelector } from '../components';
+import { useI18n, TabPanel, TabBar, TabBarSection, YearSelector } from '../components';
 import { useUrlParams, useUrlSearchParams, useUrlSearchParam } from '../utils';
 import { useEntityData } from '../api/queries';
 import { DEFAULT_DATA_YEAR } from '../constants';
@@ -43,17 +43,18 @@ TabTemplate.propTypes = {
   Body: PropTypes.string.isRequired,
 };
 
-const getProfileLabel = entityType => {
+const getProfileLabel = (translate, entityType) => {
   if (!entityType) {
     return 'Profile';
   }
+
   switch (entityType) {
     case 'district':
-      return 'Province Profile';
+      return translate('dashboards.provinceProfile');
     case 'sub_district':
-      return 'District Profile';
+      return translate('dashboards.districtProfile');
     default:
-      return `${entityType} Profile`;
+      return translate(`dashboards.${entityType}Profile`);
   }
 };
 
@@ -67,90 +68,94 @@ const DASHBOARD_CODES = {
   emergencyInEducation: 'LESMIS_EmergencyInEducation',
 };
 
-const makeDropdownOptions = entityType => [
-  {
-    value: 'profile',
-    label: getProfileLabel(entityType),
-    TabComponent: DashboardReportTabView,
-    useYearSelector: true,
-    componentProps: {
-      filterSubDashboards: ({ dashboardCode }) =>
-        !Object.values(DASHBOARD_CODES).some(code => dashboardCode.startsWith(code)), // those not included anywhere else
+const useDropdownOptions = entityType => {
+  const { translate } = useI18n();
+
+  return [
+    {
+      value: 'profile',
+      label: getProfileLabel(translate, entityType),
+      TabComponent: DashboardReportTabView,
+      useYearSelector: true,
+      componentProps: {
+        filterSubDashboards: ({ dashboardCode }) =>
+          !Object.values(DASHBOARD_CODES).some(code => dashboardCode.startsWith(code)), // those not included anywhere else
+      },
     },
-  },
-  {
-    value: 'indicators',
-    label: 'Free Indicator Selection',
-    TabComponent: TabTemplate,
-    componentProps: {
-      Body: 'Free Indicator Selection',
+    {
+      value: 'indicators',
+      label: translate('dashboards.freeIndicatorSelection'),
+      TabComponent: TabTemplate,
+      componentProps: {
+        Body: 'Free Indicator Selection',
+      },
     },
-  },
-  {
-    value: 'essdpPlan',
-    label: 'ESSDP Plan 2021-25 M&E Framework',
-    TabComponent: TabTemplate,
-    componentProps: {
-      Body: '9th Education Sector and Sports Development Plan 2021-25 M&E Framework',
-      filterSubDashboards: ({ dashboardCode }) =>
-        dashboardCode.startsWith(DASHBOARD_CODES.essdpPlan),
+    {
+      value: 'essdpPlan',
+      label: translate('dashboards.essdpPlan202125M&eFramework'),
+      TabComponent: TabTemplate,
+      componentProps: {
+        Body: '9th Education Sector and Sports Development Plan 2021-25 M&E Framework',
+        filterSubDashboards: ({ dashboardCode }) =>
+          dashboardCode.startsWith(DASHBOARD_CODES.essdpPlan),
+      },
     },
-  },
-  {
-    value: 'essdpEarlyChildhood',
-    label: 'ESSDP Early childhood education sub-sector',
-    TabComponent: DashboardReportTabView,
-    componentProps: {
-      filterSubDashboards: ({ dashboardCode }) =>
-        dashboardCode.startsWith(DASHBOARD_CODES.essdpEarlyChildhood),
+    {
+      value: 'essdpEarlyChildhood',
+      label: translate('dashboards.essdpEarlyChildhoodEducationSubSector'),
+      TabComponent: DashboardReportTabView,
+      componentProps: {
+        filterSubDashboards: ({ dashboardCode }) =>
+          dashboardCode.startsWith(DASHBOARD_CODES.essdpEarlyChildhood),
+      },
     },
-  },
-  {
-    value: 'essdpPrimary',
-    label: 'ESSDP Primary sub-sector',
-    TabComponent: DashboardReportTabView,
-    componentProps: {
-      filterSubDashboards: ({ dashboardCode }) =>
-        dashboardCode.startsWith(DASHBOARD_CODES.essdpPrimary),
+    {
+      value: 'essdpPrimary',
+      label: translate('dashboards.essdpPrimarySubSector'),
+      TabComponent: DashboardReportTabView,
+      componentProps: {
+        filterSubDashboards: ({ dashboardCode }) =>
+          dashboardCode.startsWith(DASHBOARD_CODES.essdpPrimary),
+      },
     },
-  },
-  {
-    value: 'essdpLowerSecondary',
-    label: 'ESSDP Lower secondary sub-sector',
-    TabComponent: DashboardReportTabView,
-    componentProps: {
-      filterSubDashboards: ({ dashboardCode }) =>
-        dashboardCode.startsWith(DASHBOARD_CODES.essdpLowerSecondary),
+    {
+      value: 'essdpLowerSecondary',
+      label: translate('dashboards.essdpLowerSecondarySubSector'),
+      TabComponent: DashboardReportTabView,
+      componentProps: {
+        filterSubDashboards: ({ dashboardCode }) =>
+          dashboardCode.startsWith(DASHBOARD_CODES.essdpLowerSecondary),
+      },
     },
-  },
-  {
-    value: 'essdpUpperSecondary',
-    label: 'ESSDP Upper secondary sub-sector',
-    TabComponent: DashboardReportTabView,
-    componentProps: {
-      filterSubDashboards: ({ dashboardCode }) =>
-        dashboardCode.startsWith(DASHBOARD_CODES.essdpUpperSecondary),
+    {
+      value: 'essdpUpperSecondary',
+      label: 'ESSDP Upper secondary sub-sector',
+      TabComponent: DashboardReportTabView,
+      componentProps: {
+        filterSubDashboards: ({ dashboardCode }) =>
+          dashboardCode.startsWith(DASHBOARD_CODES.essdpUpperSecondary),
+      },
     },
-  },
-  {
-    value: 'emergency',
-    label: 'Emergency in Education Preparedness and Response',
-    TabComponent: DashboardReportTabView,
-    componentProps: {
-      filterSubDashboards: ({ dashboardCode }) =>
-        dashboardCode.startsWith(DASHBOARD_CODES.emergencyInEducation),
+    {
+      value: 'emergency',
+      label: translate('dashboards.emergencyInEducation'),
+      TabComponent: DashboardReportTabView,
+      componentProps: {
+        filterSubDashboards: ({ dashboardCode }) =>
+          dashboardCode.startsWith(DASHBOARD_CODES.emergencyInEducation),
+      },
     },
-  },
-  {
-    value: 'internationalSDGs',
-    label: 'International reporting on SDGs',
-    TabComponent: DashboardReportTabView,
-    componentProps: {
-      filterSubDashboards: ({ dashboardCode }) =>
-        dashboardCode.startsWith(DASHBOARD_CODES.internationalSDGs),
+    {
+      value: 'internationalSDGs',
+      label: translate('dashboards.internationalReportingOnSdGs'),
+      TabComponent: DashboardReportTabView,
+      componentProps: {
+        filterSubDashboards: ({ dashboardCode }) =>
+          dashboardCode.startsWith(DASHBOARD_CODES.internationalSDGs),
+      },
     },
-  },
-];
+  ];
+};
 
 // Gets the best default dashboard possible, and check if the selected dashboard is valid
 const useDefaultDashboardTab = (selectedDashboard = null, options) => {
@@ -169,7 +174,7 @@ export const DashboardView = React.memo(() => {
   const isFetching = useIsFetching('dashboardReport');
   const { entityCode } = useUrlParams();
   const { data: entityData } = useEntityData(entityCode);
-  const dropdownOptions = makeDropdownOptions(entityData?.type);
+  const dropdownOptions = useDropdownOptions(entityData?.type);
   const [params, setParams] = useUrlSearchParams();
   const [selectedYear, setSelectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
 
