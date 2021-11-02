@@ -4,7 +4,7 @@ from helpers.teardown import teardown_instance
 
 # Deletes all deployments with an expired "DeleteAt" tag
 
-def delete_old_deployments():
+def delete_old_deployments(event):
     current_date_and_hour = time.strftime("%Y-%m-%d %H:00")
     filters = [
         {'Name': 'instance-state-name', 'Values': ['running', 'stopped']}, # ignore terminated instances

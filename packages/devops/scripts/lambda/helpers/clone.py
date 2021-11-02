@@ -78,6 +78,7 @@ def clone_instance(
     instance_type,
     extra_tags=None,
     security_group_code=None,
+    instance_name_prefix=None,
 ):
     print('Creating ' + instance_type + ' clone of ' + from_deployment + ' as ' + to_deployment)
     base_instance_filters = [
@@ -85,8 +86,9 @@ def clone_instance(
         { 'Name': 'instance-state-name', 'Values': ['running', 'stopped']} # ignore terminated instances
     ]
     base_instance = get_instance(base_instance_filters)
-    base_instance_name = get_tag(base_instance, 'Name')
-    instance_name_prefix = base_instance_name.replace(from_deployment, '')
+    if not instance_name_prefix:
+        base_instance_name = get_tag(base_instance, 'Name')
+        instance_name_prefix = base_instance_name.replace(from_deployment, '')
 
     subdomains_via_dns = None
     subdomains_via_dns_string = get_tag(base_instance, 'SubdomainsViaDns')
@@ -111,7 +113,8 @@ def clone_instance(
         extra_tags=extra_tags,
         iam_role_arn=iam_role_arn,
         image_id=base_instance['ImageId'],
-        security_group_code=security_group_code,
+        security_group_code=security_group_code, # will use id below if no code specified
+        security_group_id=base_instance['SecurityGroups'][0]['GroupId'],
         subdomains_via_dns=subdomains_via_dns,
         subdomains_via_gateway=subdomains_via_gateway,
     )

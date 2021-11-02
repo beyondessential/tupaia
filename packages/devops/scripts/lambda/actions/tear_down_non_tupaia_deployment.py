@@ -3,18 +3,18 @@
 # Example config
 # {
 #   "Action": "tear_down_non_tupaia_deployment",
-#   "InstanceName": "tonga: wai-965"
+#   "DeploymentName": "tonga: wai-965"
 # }
 
 from helpers.teardown import teardown_instance
 from helpers.utilities import get_instance
 
 def tear_down_non_tupaia_deployment(event):
-    if 'InstanceName' not in event:
-      raise Exception('Must provide InstanceName when tearing down an instance')
+    if 'DeploymentName' not in event:
+      raise Exception('Must provide DeploymentName when tearing down an instance')
 
     filters = [
-      { 'Name': 'tag:Name', 'Values': [event['InstanceName']] },
+      { 'Name': 'tag:DeploymentName', 'Values': [event['DeploymentName']] },
       { 'Name': 'instance-state-name', 'Values': ['running', 'stopped'] }, # ignore terminated instances
     ]
     instance = get_instance(filters)

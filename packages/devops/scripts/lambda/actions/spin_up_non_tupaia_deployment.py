@@ -27,6 +27,8 @@ def spin_up_non_tupaia_deployment(event):
         raise Exception('You must include the key "InstanceType" in the lambda config. We recommend "t3a.medium" unless you need more speed.')
     instance_type = event['InstanceType']
 
-    clone_instance(from_deployment, deployment_name, instance_type)
+    instance_name_prefix = 'Clone of ' + from_deployment + ': '
+
+    clone_instance(from_deployment, deployment_name, instance_type, instance_name_prefix=instance_name_prefix)
 
     print('Deployment cloned')
