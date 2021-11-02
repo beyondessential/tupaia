@@ -16,6 +16,7 @@ import { FlexEnd } from './Layout';
 import { useUrlParams } from '../utils';
 
 const Container = styled.div`
+  width: 55rem;
   max-width: 100%;
   border: 1px solid ${props => props.theme.palette.grey['400']};
   margin-bottom: 1.8rem;

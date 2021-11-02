@@ -9,5 +9,6 @@ export * from './useAutocomplete';
 export * from './useEntityBreadcrumbs';
 export * from './useExportToPNG';
 export * from './usePortal';
+export * from './useStickyBar';
 export * from './useUrlParams';
 export * from './useUrlSearchParams';

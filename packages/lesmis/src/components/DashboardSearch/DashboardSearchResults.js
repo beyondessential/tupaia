@@ -14,10 +14,10 @@ import * as COLORS from '../../constants';
 
 const Container = styled.div`
   display: none;
-  width: 900px;
+  width: 950px;
   max-width: 100%;
   margin: 0 auto;
-  padding-top: 36px;
+  padding: 36px 24px;
 
   &.active {
     display: block;
@@ -78,7 +78,6 @@ export const DashboardSearchResults = ({ searchResults, isActive, year }) => {
   const { entityCode } = useUrlParams();
 
   const { getListboxProps, getOptionProps, groupedOptions, inputValue } = searchResults;
-  const showNoResults = inputValue;
 
   return (
     <Container className={isActive ? 'active' : ''} {...getListboxProps()}>
@@ -109,7 +108,7 @@ export const DashboardSearchResults = ({ searchResults, isActive, year }) => {
           })}
         </>
       ) : (
-        showNoResults && (
+        inputValue && (
           <NoResultsBox>
             <NoResultsMessage inputValue={inputValue} />
           </NoResultsBox>
