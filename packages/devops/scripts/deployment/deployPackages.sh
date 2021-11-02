@@ -3,7 +3,6 @@
 DIR=$(dirname "$0")
 TUPAIA_DIR=$DIR/../../../..
 DEPLOYMENT_NAME=$1
-BRANCH=$2
 PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 
 # Initialise NVM (which sets the path for access to npm, yarn etc. as well)
@@ -23,7 +22,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     if [[ $PACKAGE != *server ]]; then
         # It's a front end package, build it
         echo "Building ${PACKAGE}"
-        REACT_APP_BRANCH=${BRANCH} yarn workspace @tupaia/${PACKAGE} build
+        REACT_APP_DEPLOYMENT_NAME=${DEPLOYMENT_NAME} yarn workspace @tupaia/${PACKAGE} build
     fi
 done
 
