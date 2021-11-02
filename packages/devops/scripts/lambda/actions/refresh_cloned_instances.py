@@ -1,5 +1,4 @@
 # Replaces the volume of any cloned instance with the latest snapshot from the original clone volume
-# N.B. will only work on stopped instances
 #
 # Example configs
 #
@@ -14,11 +13,10 @@
 #   "ClonedFrom": "tupaia-db"
 # }
 #
-# 3. Refresh a specific instance (remember, it still needs to be stopped first)
+# 3. Refresh a specific instance
 # {
 #   "Action": "refresh_cloned_instances",
-#   "ClonedFrom": "tupaia-db",
-#   "Branch": "wai-965"
+#   "DeploymentName": "edwin-test",
 # }
 
 
@@ -36,9 +34,9 @@ def refresh_cloned_instances(event):
     if 'ClonedFrom' in event:
       print('Refreshing instances cloned from ' + event['ClonedFrom'])
       filters.append({'Name': 'tag:ClonedFrom', 'Values': [event['ClonedFrom']]})
-    if 'Branch' in event:
-      print('Refreshing the ' + event['Branch'] + ' branch clone')
-      filters.append({'Name': 'tag:Branch', 'Values': [event['Branch']]})
+    if 'DeploymentName' in event:
+      print('Refreshing the ' + event['DeploymentName'] + ' clone')
+      filters.append({'Name': 'tag:DeploymentName', 'Values': [event['DeploymentName']]})
 
 
     running_instances = find_instances(filters + [{ 'Name': 'instance-state-name', 'Values': ['running'] }])

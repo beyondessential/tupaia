@@ -53,7 +53,7 @@ def redeploy_tupaia_server(event):
 
     extra_tags = None
     delete_at = get_tag(existing_instance, 'DeleteAt')
-    if delete_at is not '':
+    if delete_at != '':
         extra_tags = [{ 'Key': 'DeleteAt', 'Value': delete_at }],
 
     # launch server instance based on gold master AMI
