@@ -13,7 +13,7 @@ import { useDashboardData, useUser } from '../api/queries';
 import {
   FetchLoader,
   TabsLoader,
-  FlexCenter,
+  FlexColumn,
   DashboardReport,
   TabBar,
   Tabs,
@@ -31,11 +31,10 @@ const StickyTabBarContainer = styled.div`
   z-index: 2;
 `;
 
-const DashboardSection = styled(FlexCenter)`
-  position: relative;
+const DashboardSection = styled(FlexColumn)`
+  align-items: center;
+  justify-content: flex-start;
   min-height: calc(100vh - 200px);
-  height: ${props => (props.$searchIsActive ? 0 : 'auto')};
-  overflow: hidden;
 `;
 
 const ScrollToTopButton = styled(ArrowUpward)`
@@ -123,6 +122,21 @@ const useStickyBar = () => {
   };
 };
 
+const PanelComponent = styled.div`
+  display: block;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  max-width: 100%;
+  width: 60rem;
+
+  &.active {
+    opacity: 0;
+    z-index: -1;
+    height: 0;
+    overflow: hidden;
+  }
+`;
+
 export const DashboardReportTabView = ({
   entityCode,
   TabBarLeftSection,
@@ -187,11 +201,13 @@ export const DashboardReportTabView = ({
           )}
         </TabBar>
       </StickyTabBarContainer>
-      <DashboardSection ref={topRef} $searchIsActive={searchIsActive}>
+      <DashboardSection ref={topRef}>
         <div ref={resultsEl} />
         <FetchLoader isLoading={isLoading} isError={isError} error={error}>
           {subDashboards?.map(dashboard => (
             <TabPanel
+              className={searchIsActive ? 'active' : ''}
+              Panel={PanelComponent}
               key={dashboard.dashboardId}
               isSelected={dashboard.dashboardName === activeDashboard}
             >

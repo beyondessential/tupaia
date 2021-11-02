@@ -80,11 +80,11 @@ const PanelComponent = styled.div`
   margin-bottom: 2rem;
 `;
 
-export const TabPanel = React.memo(({ children, isSelected, Panel }) => {
+export const TabPanel = React.memo(({ children, isSelected, Panel, ...props }) => {
   if (!isSelected) {
     return null;
   }
-  return <Panel>{children}</Panel>;
+  return <Panel {...props}>{children}</Panel>;
 });
 
 TabPanel.propTypes = {

@@ -15,23 +15,27 @@ import { useDashboardSearch } from './useDashboardSearch';
 import { useDashboardData } from '../../api';
 import { makeEntityLink, useUrlParams } from '../../utils';
 import { usePortal } from './usePortal';
-import { DashboardSearchResults } from './DashboardSearchResult';
+import { DashboardSearchResults } from './DashboardSearchResults';
 
 const SearchButton = styled(MuiIconButton)`
   border: 1px solid ${props => props.theme.palette.grey['400']};
   border-radius: 3px;
-  transition: all 0.2s ease;
+  height: 50px;
+  width: 50px;
+  transition: height 0.1s ease, width 0.1s ease, margin 0.1s ease;
+
+  .MuiSvgIcon-root {
+    font-size: 1.8rem;
+  }
 
   &.active {
+    height: 90px;
+    width: 90px;
+    margin-left: -24px;
     background: ${props => props.theme.palette.primary.main};
-    padding: 0 1.8rem;
     border-radius: 0;
     border: none;
     color: white;
-
-    .MuiSvgIcon-root {
-      font-size: 1.8rem;
-    }
 
     &:hover {
       background: ${props => props.theme.palette.primary.main};
@@ -41,6 +45,7 @@ const SearchButton = styled(MuiIconButton)`
 
 const SearchContainer = styled(MuiPaper)`
   display: flex;
+  align-items: center;
   top: 1px;
   right: 0;
   left: 0;
@@ -52,6 +57,7 @@ const SearchContainer = styled(MuiPaper)`
 
   &.active {
     position: absolute;
+    padding-left: 24px;
   }
 `;
 
@@ -167,9 +173,10 @@ DashboardSearch.propTypes = {
   getResultsEl: PropTypes.func.isRequired,
   onToggleSearch: PropTypes.func.isRequired,
   linkType: PropTypes.oneOf(['dashboard', 'map']),
-  year: PropTypes.string.isRequired,
+  year: PropTypes.string,
 };
 
 DashboardSearch.defaultProps = {
   linkType: 'dashboard',
+  year: null,
 };

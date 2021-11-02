@@ -11,26 +11,20 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { useUrlParams } from '../../utils';
 import { NoResultsMessage } from '../NoResultsMessage';
 
-const Overlay = styled.div`
+const Container = styled.div`
   display: none;
+  width: 900px;
+  max-width: 100%;
+  margin: 0 auto;
+  padding-top: 36px;
 
   &.active {
     display: block;
     background: white;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
     height: auto;
     min-height: 100%;
     z-index: 1;
   }
-`;
-
-const Container = styled.div`
-  max-width: 900px;
-  margin: 0 auto;
-  padding-top: 36px;
 `;
 
 const Result = styled(Link)`
@@ -82,52 +76,51 @@ export const DashboardSearchResults = ({ searchResults, isActive, year }) => {
   const showNoResults = inputValue;
 
   return (
-    <Overlay className={isActive ? 'active' : ''}>
-      <Container {...getListboxProps()}>
-        {groupedOptions.length > 0 ? (
-          <>
-            <Text>
-              {groupedOptions.length} Result{groupedOptions.length > 1 && 's'} found
-            </Text>
-            {groupedOptions.map((option, index) => {
-              return (
-                <Result
-                  key={option.code}
-                  to={{
-                    pathname: `/${entityCode}/dashboard`,
-                    search: `${search}&reportCode=${option.reportCode}`,
-                  }}
-                  {...getOptionProps({ option, index })}
-                >
-                  <div>
-                    <SubHeading>
-                      {option.entityName} / {year} / {option.dashboardName}
-                    </SubHeading>
-                    <Heading>{option.name}</Heading>
-                  </div>
-                  <ChevronRightIcon />
-                </Result>
-              );
-            })}
-          </>
-        ) : (
-          showNoResults && (
-            <NoResultsBox>
-              <NoResultsMessage inputValue={inputValue} />
-            </NoResultsBox>
-          )
-        )}
-      </Container>
-    </Overlay>
+    <Container className={isActive ? 'active' : ''} {...getListboxProps()}>
+      {groupedOptions.length > 0 ? (
+        <>
+          <Text>
+            {groupedOptions.length} Result{groupedOptions.length > 1 && 's'} found
+          </Text>
+          {groupedOptions.map((option, index) => {
+            return (
+              <Result
+                key={option.code}
+                to={{
+                  pathname: `/${entityCode}/dashboard`,
+                  search: `${search}&reportCode=${option.reportCode}`,
+                }}
+                {...getOptionProps({ option, index })}
+              >
+                <div>
+                  <SubHeading>
+                    {option.entityName} / {year} / {option.dashboardName}
+                  </SubHeading>
+                  <Heading>{option.name}</Heading>
+                </div>
+                <ChevronRightIcon />
+              </Result>
+            );
+          })}
+        </>
+      ) : (
+        showNoResults && (
+          <NoResultsBox>
+            <NoResultsMessage inputValue={inputValue} />
+          </NoResultsBox>
+        )
+      )}
+    </Container>
   );
 };
 
 DashboardSearchResults.propTypes = {
   searchResults: PropTypes.object.isRequired,
   isActive: PropTypes.bool,
-  year: PropTypes.string.isRequired,
+  year: PropTypes.string,
 };
 
 DashboardSearchResults.defaultProps = {
   isActive: false,
+  year: null,
 };
