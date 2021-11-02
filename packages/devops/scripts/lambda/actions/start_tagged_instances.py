@@ -3,7 +3,8 @@
 #
 # Example config
 # {
-#   "Action": "start_tagged_instances"
+#   "Action": "start_tagged_instances",
+#   "User": "edwin"
 # }
 
 import asyncio

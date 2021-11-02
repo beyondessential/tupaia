@@ -5,6 +5,7 @@
 # 1. Spin up a new feature branch deployment of Tupaia, that will be deleted after 8 hours
 # {
 #   "Action": "spin_up_tupaia_deployment",
+#   "User": "edwin",
 #   "Branch": "wai-965",
 #   "HoursOfLife": "8"
 # }
@@ -13,6 +14,7 @@
 #    checked out (wai-965) to its url prefix (timing-test), and specifying the instance type
 # {
 #   "Action": "spin_up_tupaia_deployment",
+#   "User": "edwin",
 #   "DeploymentName": "timing-test",
 #   "Branch": "wai-965",
 #   "CloneDbFrom": "dev",
@@ -23,6 +25,7 @@
 #    instance for the db
 # {
 #   "Action": "spin_up_tupaia_deployment",
+#   "User": "edwin",
 #   "Branch": "wai-965",
 #   "ImageCode": "edwin-test-server",
 #   "SecurityGroupCode": "edwin-test-server",
@@ -52,10 +55,10 @@ def spin_up_tupaia_deployment(event):
     security_group_code = event.get('SecurityGroupCode', 'tupaia-dev-sg') # Use security group tagged with code
     clone_db_from = event.get('CloneDbFrom', 'production') # Use volume snapshot tagged with deployment name
 
-    extra_tags = None
+    extra_tags = [{ 'Key': 'DeployedBy', 'Value': event['User'] }]
     if 'HoursOfLife' in event:
         delete_at = datetime.now() + timedelta(hours=event['HoursOfLife'])
-        extra_tags = [{ 'Key': 'DeleteAt', 'Value': format(delete_at, "%Y-%m-%d %H:00") }]
+        extra_tags.append({ 'Key': 'DeleteAt', 'Value': format(delete_at, "%Y-%m-%d %H:00") })
 
     # launch server instance based on gold master AMI
     create_tupaia_instance_from_image(

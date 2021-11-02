@@ -4,19 +4,22 @@
 #
 # 1. Refresh all cloned instances (i.e. those with the tag "ClonedFrom")
 # {
-#   "Action": "refresh_cloned_instances"
+#   "Action": "refresh_cloned_instances",
+#   "User": "edwin"
 # }
 #
 # 2. Refresh all instances cloned from a specific base, e.g. all tupaia-db instances
 # {
 #   "Action": "refresh_cloned_instances",
+#   "User": "edwin",
 #   "ClonedFrom": "tupaia-db"
 # }
 #
 # 3. Refresh a specific instance
 # {
 #   "Action": "refresh_cloned_instances",
-#   "DeploymentName": "edwin-test",
+#   "User": "edwin",
+#   "DeploymentName": "edwin-test"
 # }
 
 
