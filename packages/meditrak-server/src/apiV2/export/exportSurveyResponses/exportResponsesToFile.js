@@ -173,6 +173,20 @@ export async function exportResponsesToFile(
     );
   };
 
+  const getAnswerTextForExport = async answer => {
+    if (answer === undefined) {
+      return '';
+    }
+    if (answer.type === ANSWER_TYPES.ENTITY) {
+      const entity = await models.entity.findById(answer.text);
+      if (!entity) {
+        return `Could not find entity with id ${answer.text}`;
+      }
+      return entity.code;
+    }
+    return answer.text;
+  };
+
   const getMetadataCellsForResponse = response => {
     const entity = entitiesById[response.entity_id];
 
@@ -240,15 +254,16 @@ export async function exportResponsesToFile(
     const responseIdToIndex = Object.fromEntries(
       surveyResponses.map((response, index) => [response.id, index]),
     );
-    answers
+    const answerTasks = answers
       .filter(answer => questionIdToIndex[answer['question.id']] !== undefined) // filter out answers for a non-exported question, e.g. DateOfData
-      .forEach(answer => {
+      .map(async answer => {
         const surveyResponseIndex = responseIdToIndex[answer['survey_response.id']];
         const questionIndex = questionIdToIndex[answer['question.id']];
         const exportRow = preQuestionRowCount + questionIndex;
         const exportColumn = infoColumnKeys.length + surveyResponseIndex;
-        exportData[exportRow][exportColumn] = answer?.text || '';
+        exportData[exportRow][exportColumn] = await getAnswerTextForExport(answer);
       });
+    await Promise.all(answerTasks);
 
     if (easyReadingMode) {
       return addExportedDateAndOriginAtTheSheetBottom(exportData, timeZone);

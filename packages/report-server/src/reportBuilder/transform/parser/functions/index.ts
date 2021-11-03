@@ -4,7 +4,7 @@
  */
 
 import { value, last, eq, notEq, exists, notExists, gt, length, any, all } from './basic';
-import { orgUnitCodeToName, dataElementCodeToName } from './context';
+import { orgUnitCodeToName, dataElementCodeToName, orgUnitIdToCode } from './context';
 import {
   convertToPeriod,
   dateStringToPeriod,
@@ -38,6 +38,7 @@ export const customFunctions = {
 export const contextFunctionConfigs = {
   orgUnitCodeToName,
   dataElementCodeToName,
+  orgUnitIdToCode,
 };
 
 /**
