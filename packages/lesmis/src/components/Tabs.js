@@ -84,13 +84,14 @@ export const TabPanel = React.memo(({ children, isSelected, Panel, ...props }) =
   if (!isSelected) {
     return null;
   }
+
   return <Panel {...props}>{children}</Panel>;
 });
 
 TabPanel.propTypes = {
   children: PropTypes.node.isRequired,
   isSelected: PropTypes.bool,
-  Panel: PropTypes.any,
+  Panel: PropTypes.oneOfType([PropTypes.node, PropTypes.object, PropTypes.symbol]),
 };
 
 TabPanel.defaultProps = {
