@@ -92,11 +92,11 @@ const DownArrowIconWrapper = styled.div`
   padding: 8px 14px 0 5px;
   .MuiSvgIcon-root {
     transition: transform 0.3s ease;
-    transform: rotate(${({ expanded }) => (expanded ? '180deg' : '0deg')});
+    transform: rotate(${({ $expanded }) => ($expanded ? '180deg' : '0deg')});
   }
 
   &:hover {
-    color: ${TUPAIA_ORANGE};
+    color: ${({ $expanded }) => ($expanded ? LIGHT_GREY : 'default')};
   }
 `;
 
@@ -175,7 +175,7 @@ export const Control = ({
           <LayersIcon $expanded={isExpanded} />
           OVERLAY LIBRARY
         </FlexStart>
-        <DownArrowIconWrapper expanded={isExpanded}>
+        <DownArrowIconWrapper $expanded={isExpanded}>
           <DownArrow />
         </DownArrowIconWrapper>
       </OverlayLibrary>
