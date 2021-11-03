@@ -15,6 +15,22 @@ export const LESMIS_PERMISSION_GROUPS = {
   ADMIN: 'LESMIS Admin',
 };
 
+// Dashboard Constants
+export const SUB_DASHBOARD_OPTIONS = [
+  {
+    code: 'ESSDP_EarlyChildhood',
+    label: 'ESSDP Early childhood education sub-sector',
+  },
+  { code: 'ESSDP_Primary', label: 'ESSDP Primary sub-sector' },
+  { code: 'ESSDP_LowerSecondary', label: 'ESSDP Lower secondary sub-sector' },
+  { code: 'ESSDP_UpperSecondary', label: 'ESSDP Upper secondary sub-sector' },
+  { code: 'International_SDGs', label: 'International reporting on SDGs' },
+  {
+    code: 'EmergencyInEducation',
+    label: 'Emergency in Education Preparedness and Response',
+  },
+];
+
 // Date Constants
 export const SINGLE_YEAR_GRANULARITY = 'one_year_at_a_time';
 export const MIN_DATA_DATE = '20150101';
