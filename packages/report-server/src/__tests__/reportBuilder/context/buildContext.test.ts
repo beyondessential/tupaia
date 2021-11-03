@@ -50,8 +50,8 @@ describe('buildContext', () => {
       const context = await buildContext(transform, reqContext, data);
       const expectedContext = {
         orgUnits: [
-          { code: 'FJ', name: 'Fiji' },
-          { code: 'TO', name: 'Tonga' },
+          { id: 'ouId2', code: 'FJ', name: 'Fiji' },
+          { id: 'ouId4', code: 'TO', name: 'Tonga' },
         ],
       };
       expect(context).toStrictEqual(expectedContext);
@@ -75,8 +75,8 @@ describe('buildContext', () => {
       const context = await buildContext(transform, reqContext, data);
       const expectedContext = {
         orgUnits: [
-          { code: 'FJ', name: 'Fiji' },
-          { code: 'TO', name: 'Tonga' },
+          { id: 'ouId2', code: 'FJ', name: 'Fiji' },
+          { id: 'ouId4', code: 'TO', name: 'Tonga' },
         ],
       };
       expect(context).toStrictEqual(expectedContext);
