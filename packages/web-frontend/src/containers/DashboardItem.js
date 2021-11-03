@@ -1,8 +1,6 @@
-/**
- * Tupaia Web
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
- * This source code is licensed under the AGPL-3.0 license
- * found in the LICENSE file in the root directory of this source tree.
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
 /**
@@ -41,10 +39,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
-import { View } from '../../components/View';
-import { fetchDashboardItemData, openEnlargedDialog } from '../../actions';
-import { getViewIdFromInfoViewKey } from '../../utils';
-import { selectCurrentOrgUnit } from '../../selectors';
+import { View } from '../components/View';
+import { fetchDashboardItemData, openEnlargedDialog } from '../actions';
+import { getViewIdFromInfoViewKey } from '../utils';
+import { selectCurrentOrgUnit } from '../selectors';
 
 export class DashboardItem extends Component {
   componentWillMount() {
