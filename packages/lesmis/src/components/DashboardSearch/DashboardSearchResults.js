@@ -17,7 +17,7 @@ const Container = styled.div`
   width: 950px;
   max-width: 100%;
   margin: 0 auto;
-  padding: 36px 24px;
+  padding: ${props => props.theme.spacing(5, 3)};
 
   &.active {
     display: block;
@@ -49,7 +49,6 @@ const Result = styled(Link)`
 `;
 
 const Heading = styled(Typography)`
-  font-style: normal;
   font-weight: 500;
   font-size: 18px;
   line-height: 21px;
@@ -57,7 +56,6 @@ const Heading = styled(Typography)`
 `;
 
 const SubHeading = styled(Typography)`
-  font-weight: normal;
   font-size: 12px;
   line-height: 14px;
   margin-bottom: 10px;
@@ -70,7 +68,7 @@ const Text = styled(Typography)`
 
 const NoResultsBox = styled.div`
   background: ${COLORS.GREY_F9};
-  padding: 50px 15px;
+  padding: ${props => props.theme.spacing(6, 2)};
 `;
 
 export const DashboardSearchResults = ({ searchResults, isActive }) => {

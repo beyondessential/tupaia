@@ -15,11 +15,15 @@ import { usePortal, useUrlParams, useAutocomplete } from '../../utils';
 import { DashboardSearchResults } from './DashboardSearchResults';
 import { SUB_DASHBOARD_OPTIONS } from '../../constants';
 
+// Setting the button size directly allows a smooth animation
+const BUTTON_SIZE = '50px';
+const EXPANDED_BUTTON_SIZE = '90px';
+
 const SearchButton = styled(MuiIconButton)`
   border: 1px solid ${props => props.theme.palette.grey['400']};
   border-radius: 3px;
-  height: 50px;
-  width: 50px;
+  height: ${BUTTON_SIZE};
+  width: ${BUTTON_SIZE};
   transition: height 0.1s ease, width 0.1s ease, margin 0.1s ease;
 
   .MuiSvgIcon-root {
@@ -27,9 +31,9 @@ const SearchButton = styled(MuiIconButton)`
   }
 
   &.active {
-    height: 90px;
-    width: 90px;
-    margin-left: -24px;
+    height: ${EXPANDED_BUTTON_SIZE};
+    width: ${EXPANDED_BUTTON_SIZE};
+    margin-left: ${props => props.theme.spacing(-3)}px;
     background: ${props => props.theme.palette.primary.main};
     border-radius: 0;
     border: none;
@@ -55,7 +59,7 @@ const SearchContainer = styled(MuiPaper)`
 
   &.active {
     position: absolute;
-    padding-left: 24px;
+    padding-left: ${props => props.theme.spacing(3)}px;
   }
 `;
 
@@ -78,8 +82,6 @@ const ClearButton = styled(MuiIconButton)`
     background-color: rgba(0, 0, 0, 0.1);
   }
 `;
-
-const LIMIT = 50;
 
 const useDashboardItems = () => {
   const { entityCode } = useUrlParams();
@@ -106,6 +108,8 @@ const useDashboardItems = () => {
     return [...allItems, ...items];
   }, []);
 };
+
+const LIMIT = 50;
 
 export const DashboardSearch = ({ onToggleSearch, getResultsEl }) => {
   const [inputValue, setInputValue] = useState('');
