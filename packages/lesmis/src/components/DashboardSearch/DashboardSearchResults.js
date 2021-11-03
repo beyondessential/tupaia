@@ -73,7 +73,7 @@ const NoResultsBox = styled.div`
   padding: 50px 15px;
 `;
 
-export const DashboardSearchResults = ({ searchResults, isActive, year }) => {
+export const DashboardSearchResults = ({ searchResults, isActive }) => {
   const { search } = useLocation();
   const { entityCode } = useUrlParams();
 
@@ -98,7 +98,7 @@ export const DashboardSearchResults = ({ searchResults, isActive, year }) => {
               >
                 <div>
                   <SubHeading>
-                    {option.entityName} / {year} / {option.dashboardName}
+                    {option.entityName} / {option.subDashboardName} / {option.dashboardName}
                   </SubHeading>
                   <Heading>{option.name}</Heading>
                 </div>
@@ -121,10 +121,8 @@ export const DashboardSearchResults = ({ searchResults, isActive, year }) => {
 DashboardSearchResults.propTypes = {
   searchResults: PropTypes.object.isRequired,
   isActive: PropTypes.bool,
-  year: PropTypes.string,
 };
 
 DashboardSearchResults.defaultProps = {
   isActive: false,
-  year: null,
 };

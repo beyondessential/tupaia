@@ -13,6 +13,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { useDashboardData } from '../../api';
 import { usePortal, useUrlParams, useAutocomplete } from '../../utils';
 import { DashboardSearchResults } from './DashboardSearchResults';
+import { SUB_DASHBOARD_OPTIONS } from '../../constants';
 
 const SearchButton = styled(MuiIconButton)`
   border: 1px solid ${props => props.theme.palette.grey['400']};
@@ -93,12 +94,20 @@ const useDashboardItems = () => {
   }
 
   return data.reduce((allItems, { dashboardName, entityName, ...dashboard }) => {
-    const items = dashboard.items.map(item => ({ ...item, dashboardName, entityName }));
+    const subDashboardName = SUB_DASHBOARD_OPTIONS.find(option =>
+      dashboard.dashboardCode.startsWith(`LESMIS_${option.code}`),
+    )?.label;
+    const items = dashboard.items.map(item => ({
+      ...item,
+      subDashboardName,
+      dashboardName,
+      entityName,
+    }));
     return [...allItems, ...items];
   }, []);
 };
 
-export const DashboardSearch = ({ onToggleSearch, getResultsEl, year }) => {
+export const DashboardSearch = ({ onToggleSearch, getResultsEl }) => {
   const [inputValue, setInputValue] = useState('');
   const [isActive, setIsActive] = useState(false);
   const options = useDashboardItems();
@@ -150,7 +159,7 @@ export const DashboardSearch = ({ onToggleSearch, getResultsEl, year }) => {
   };
 
   const SearchResults = usePortal(
-    <DashboardSearchResults isActive={isActive} searchResults={searchResults} year={year} />,
+    <DashboardSearchResults isActive={isActive} searchResults={searchResults} />,
     getResultsEl,
   );
 
@@ -183,9 +192,4 @@ export const DashboardSearch = ({ onToggleSearch, getResultsEl, year }) => {
 DashboardSearch.propTypes = {
   getResultsEl: PropTypes.func.isRequired,
   onToggleSearch: PropTypes.func.isRequired,
-  year: PropTypes.string,
-};
-
-DashboardSearch.defaultProps = {
-  year: null,
 };

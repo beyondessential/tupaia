@@ -34,7 +34,7 @@ const StickyTabBarContainer = styled.div`
 const DashboardSection = styled(FlexColumn)`
   align-items: center;
   justify-content: flex-start;
-  min-height: calc(100vh - 200px);
+  min-height: 38rem;
 `;
 
 const ScrollToTopButton = styled(ArrowUpward)`
@@ -50,6 +50,7 @@ const ScrollToTopButton = styled(ArrowUpward)`
 `;
 
 const PanelComponent = styled(FlexColumn)`
+  position: relative;
   padding: 2rem;
   margin-bottom: 2rem;
   max-width: 100%;
@@ -134,11 +135,7 @@ export const DashboardReportTabView = ({
     <>
       <StickyTabBarContainer ref={onLoadTabBar}>
         <TabBar>
-          <DashboardSearch
-            getResultsEl={getResultsEl}
-            onToggleSearch={onToggleSearch}
-            year={year}
-          />
+          <DashboardSearch getResultsEl={getResultsEl} onToggleSearch={onToggleSearch} />
           <TabBarLeftSection />
           {isLoading ? (
             <TabsLoader />
@@ -159,7 +156,11 @@ export const DashboardReportTabView = ({
         </TabBar>
       </StickyTabBarContainer>
       <DashboardSection ref={dashboardsRef}>
-        <FetchLoader isLoading={isLoading} isError={isError} error={error}>
+        <FetchLoader
+          isLoading={isLoading && !searchIsActive}
+          isError={isError && !searchIsActive}
+          error={error}
+        >
           {subDashboards?.map(dashboard => (
             <TabPanel
               className={searchIsActive ? 'active' : ''}
