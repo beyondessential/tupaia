@@ -15,6 +15,7 @@ cd ${TUPAIA_DIR}
 # yarn install
 
 # Inject environment variables from LastPass
+echo $(aws ssm get-parameter --region ap-southeast-2 --with-decryption --name LASTPASS_EMAIL)
 LASTPASS_EMAIL=$($DIR/fetchParameterStoreValue.sh LASTPASS_EMAIL)
 LASTPASS_PASSWORD=$($DIR/fetchParameterStoreValue.sh LASTPASS_PASSWORD)
 echo "Found ${LASTPASS_EMAIL} yay"
