@@ -8,6 +8,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { FlexSpaceBetween, FlexStart } from '@tupaia/ui-components';
 import MuiLayersIcon from '@material-ui/icons/Layers';
 import DownArrow from '@material-ui/icons/ArrowDropDown';
 import { Fade, Typography, Divider } from '@material-ui/core';
@@ -40,30 +41,21 @@ const Container = styled.div`
   height: 100%;
 `;
 
-const Header = styled.div`
-  display: flex;
+const Header = styled(FlexSpaceBetween)`
   background: ${TUPAIA_ORANGE};
   color: #ffffff;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   padding: 2px 15px 0;
   height: 40px;
-  justify-content: space-between;
 
   .MuiSvgIcon-root {
     font-size: 21px;
   }
 `;
 
-const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const OverlayLibrary = styled.div`
+const OverlayLibrary = styled(FlexSpaceBetween)`
   background: ${MAP_OVERLAY_SELECTOR.subBackGround};
-  display: flex;
-  justify-content: space-between;
   color: ${({ expanded }) => (expanded ? LIGHT_GREY : DARK_GREY)};
   font-size: 12px;
   font-weight: 500;
@@ -74,11 +66,6 @@ const OverlayLibrary = styled.div`
   }
   border-bottom-left-radius: ${({ expanded }) => (!expanded ? '5px' : '0')};
   border-bottom-right-radius: ${({ expanded }) => (!expanded ? '5px' : '0')};
-`;
-
-const OverlayLibraryHeader = styled.div`
-  display: flex;
-  align-items: center;
 `;
 
 const StyledPrimaryComponent = styled(Typography)`
@@ -108,7 +95,7 @@ const DownArrowIconWrapper = styled.div`
     transform: rotate(${({ expanded }) => (expanded ? '180deg' : '0deg')});
   }
 
-  &:hover: {
+  &:hover {
     color: ${TUPAIA_ORANGE};
   }
 `;
@@ -120,7 +107,6 @@ for (let i = 1; i <= MAX_MAP_OVERLAYS; i++) {
 }
 
 const DatePickerWrapper = styled.div`
-  display: block;
   background: ${MAP_OVERLAY_SELECTOR.background};
 `;
 
@@ -138,43 +124,30 @@ export const Control = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const isMapOverlaySelected = selectedMapOverlays.length > 0;
   const toggleMeasures = useCallback(() => {
-    if (isExpanded) {
-      setIsExpanded(false);
-    } else {
-      setIsExpanded(true);
-    }
+    setIsExpanded(!isExpanded);
   }, [isExpanded, setIsExpanded]);
 
-  const reorderedSelectedMapOverlays = useMemo(() => {
-    const results = [];
-    if (!pinnedOverlay) {
-      return selectedMapOverlays;
-    }
-
-    selectedMapOverlays.forEach(overlay => {
-      if (overlay.mapOverlayCode === pinnedOverlay) {
-        results.unshift(overlay);
-      } else results.push(overlay);
-    });
-
-    return results;
-  }, [selectedMapOverlays, pinnedOverlay]);
+  const reorderedSelectedMapOverlays = useMemo(
+    () =>
+      pinnedOverlay
+        ? selectedMapOverlays.sort(first => (first.mapOverlayCode === pinnedOverlay ? -1 : 1))
+        : selectedMapOverlays,
+    [selectedMapOverlays, pinnedOverlay],
+  );
 
   return (
     <Container>
       <Header>
-        <Wrapper>
-          <DropDownMenu
-            title="MAP OVERLAYS"
-            selectedOptionIndex={maxSelectedOverlays - 1}
-            options={options}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            onChange={changeMaxSelectedOverlays}
-            StyledPrimaryComponent={StyledPrimaryComponent}
-            StyledOptionComponent={StyledOptionComponent}
-            disableGutters
-          />
-        </Wrapper>
+        <DropDownMenu
+          title="MAP OVERLAYS"
+          selectedOptionIndex={maxSelectedOverlays - 1}
+          options={options}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          onChange={changeMaxSelectedOverlays}
+          StyledPrimaryComponent={StyledPrimaryComponent}
+          StyledOptionComponent={StyledOptionComponent}
+          disableGutters
+        />
         <MapTableModal />
       </Header>
       <DatePickerWrapper>
@@ -184,12 +157,11 @@ export const Control = ({
               <TitleAndDatePicker
                 mapOverlay={mapOverlay}
                 onUpdateOverlayPeriod={onUpdateOverlayPeriod}
-                isMapOverlaySelected={isMapOverlaySelected}
                 isMeasureLoading={isMeasureLoading}
                 pinnedOverlay={pinnedOverlay}
                 setPinnedOverlay={setPinnedOverlay}
               />
-              {index !== selectedMapOverlays.length - 1 && <Divider />}
+              {index < selectedMapOverlays.length - 1 && <Divider />}
             </div>
           ))
         ) : (
@@ -199,10 +171,10 @@ export const Control = ({
         )}
       </DatePickerWrapper>
       <OverlayLibrary expanded={isExpanded} onClick={toggleMeasures}>
-        <OverlayLibraryHeader>
+        <FlexStart>
           <LayersIcon $expanded={isExpanded} />
           OVERLAY LIBRARY
-        </OverlayLibraryHeader>
+        </FlexStart>
         <DownArrowIconWrapper expanded={isExpanded}>
           <DownArrow />
         </DownArrowIconWrapper>

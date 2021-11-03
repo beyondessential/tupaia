@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import MuiBox from '@material-ui/core/Box';
 import { connect } from 'react-redux';
+import { FlexSpaceBetween as FlexSpaceBetweenCenter } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import moment from 'moment';
-import { withStyles } from '@material-ui/core/styles';
 import MuiSwitch from '@material-ui/core/Switch';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { DateRangePicker } from '../../components/DateRangePicker';
@@ -12,41 +11,35 @@ import { getDefaultDates, getLimits, GRANULARITY_CONFIG } from '../../utils/peri
 import { Content, ContentText } from './Content';
 import { MAP_OVERLAY_SELECTOR, TUPAIA_ORANGE } from '../../styles';
 import { setDisplayedMapOverlays } from '../../actions';
-import { Pin } from './Pin';
+import { Pin as PinBase } from './Pin';
 
-const FlexSpaceBetween = styled(MuiBox)`
-  display: flex;
-  justify-content: space-between;
+const FlexSpaceBetween = styled(FlexSpaceBetweenCenter)`
   align-items: flex-start;
 `;
 
-const Switch = withStyles({
-  root: {
-    height: '16px',
-    width: '37px',
-    padding: '1px',
-  },
-  switchBase: {
-    color: '#315C88',
-    padding: 0,
-    '&$checked': {
-      color: TUPAIA_ORANGE,
-    },
-    '&$checked + $track': {
-      backgroundColor: TUPAIA_ORANGE,
-    },
-  },
-  thumb: {
-    width: '16px',
-    height: '16px',
-  },
+const Switch = styled(MuiSwitch)`
+  height: 16px;
+  width: 37px;
+  padding: 1px;
+  margin-top: 2px;
 
-  checked: {},
-  track: {},
-})(MuiSwitch);
+  .MuiSwitch-switchBase {
+    color: #315c88;
+    padding: 0;
+    margin: 0;
+  }
 
-const SwitchWrapper = styled.div`
-  margin: 0;
+  .Mui-checked {
+    color: ${TUPAIA_ORANGE};
+    + .MuiSwitch-track {
+      background-color: ${TUPAIA_ORANGE};
+    }
+  }
+
+  .MuiSwitch-thumb {
+    width: 16px;
+    height: 16px;
+  }
 `;
 
 const MeasureDatePicker = styled.div`
@@ -57,8 +50,8 @@ const Wrapper = styled.div`
   background: ${MAP_OVERLAY_SELECTOR.background};
 `;
 
-const PinWrapper = styled.div`
-  margin: -1px 12px 0 3px;
+const Pin = styled(PinBase)`
+  margin: 3px 12px 0 3px;
 `;
 
 export const TitleAndDatePickerComponent = ({
@@ -109,14 +102,10 @@ export const TitleAndDatePickerComponent = ({
     <Wrapper>
       <Content>
         <FlexSpaceBetween>
-          <PinWrapper>
-            <Pin isPinned={pinnedOverlay === mapOverlayCode} onChange={handlePinChange} />
-          </PinWrapper>
+          <Pin isPinned={pinnedOverlay === mapOverlayCode} onChange={handlePinChange} />
           <ContentText>{isMeasureLoading ? <CircularProgress size={22} /> : name}</ContentText>
         </FlexSpaceBetween>
-        <SwitchWrapper>
-          <Switch checked={isSwitchedOn} onChange={handleSwitchChange} />
-        </SwitchWrapper>
+        <Switch checked={isSwitchedOn} onChange={handleSwitchChange} />
       </Content>
 
       {showDatePicker && (

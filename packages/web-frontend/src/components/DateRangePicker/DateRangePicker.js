@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import { FlexEnd } from '@tupaia/ui-components/src/components/Layout/Flexbox';
 import MuiIconButton from '@material-ui/core/IconButton';
 import styled from 'styled-components';
 import { Error } from '../Error';
@@ -65,8 +66,7 @@ const Label = styled(Typography)`
   line-height: 16px;
 `;
 
-const LabelContainer = styled.div`
-  display: flex;
+const LabelContainer = styled(FlexEnd)`
   align-items: end;
 `;
 
