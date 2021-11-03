@@ -27,7 +27,6 @@ const IconButton = styled(MuiIconButton)`
 const StyledSvg = styled.svg`
   width: 12px;
   height: 12px;
-  xmlns:http://www.w3.org/2000/svg;
 `;
 
 export const Pin = React.memo(props => {
