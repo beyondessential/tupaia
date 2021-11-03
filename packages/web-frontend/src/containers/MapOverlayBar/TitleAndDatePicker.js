@@ -135,7 +135,7 @@ export const TitleAndDatePickerComponent = ({
 
       {showDatePicker &&
         (isMeasureLoading ? (
-          <Box ml="50px" mb="10px">
+          <Box ml="51px" mb="10px">
             <Skeleton animation="wave" width={200} height={40} />
             <Skeleton animation="wave" width={100} height={30} mt={-10} />
           </Box>
