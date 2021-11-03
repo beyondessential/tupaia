@@ -7,20 +7,10 @@ import { isNil, omitBy } from 'lodash';
 
 import { snakeKeys, yup } from '@tupaia/utils';
 
-import { PreviewMode} from '../types';
-import { DashboardVisualisationResource } from './types';
-import { LegacyReport, Report } from '../types';
+import type { DashboardVisualisationResource } from './types';
+import type { LegacyReport, Report, ExpandType } from '../types';
+import { PreviewMode } from '../types';
 import { baseVisualisationValidator, baseVisualisationDataValidator } from '../validators';
-
-// expands object types recursively
-// TODO: Move this type to a generic @tupaia/utils-ts package
-type ExpandType<T> = T extends Record<string, unknown>
-  ? T extends infer O
-    ? {
-        [K in keyof O]: ExpandType<O[K]>;
-      }
-    : never
-  : T;
 
 export class DashboardVisualisationExtractor<
   DashboardItemValidator extends yup.AnyObjectSchema,

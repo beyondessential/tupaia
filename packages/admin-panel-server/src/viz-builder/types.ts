@@ -42,3 +42,12 @@ export type CamelKeysToSnake<T extends Record<string, unknown>> = {
   [K in keyof T as CamelToSnake<Extract<K, string>>]: T[K];
 };
 
+// expands object types recursively
+// TODO: Move this type to a generic @tupaia/utils-ts package
+export type ExpandType<T> = T extends Record<string, unknown>
+  ? T extends infer O
+    ? {
+      [K in keyof O]: ExpandType<O[K]>;
+    }
+    : never
+  : T;
