@@ -1,8 +1,6 @@
-/**
- * Tupaia Web
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
- * This source code is licensed under the AGPL-3.0 license
- * found in the LICENSE file in the root directory of this source tree.
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -11,8 +9,8 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import ArrowOpenIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
 import ArrowCloseIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
-import { toggleSidePanelExpanded } from '../../actions';
-import { TRANS_BLACK } from '../../styles';
+import { toggleSidePanelExpanded } from '../actions';
+import { TRANS_BLACK } from '../styles';
 
 const SemiCircle = styled.div`
   position: absolute;
@@ -30,18 +28,22 @@ const SemiCircle = styled.div`
   pointer-events: auto;
 `;
 
-function ExpandButton(props) {
+const ExpandButtonComponent = props => {
   const arrowIcon = props.isSidePanelExpanded ? (
     <ArrowCloseIcon style={{ marginLeft: 5 }} />
   ) : (
     <ArrowOpenIcon style={{ marginLeft: 5 }} />
   );
   return <SemiCircle onClick={props.onExpandClick}>{arrowIcon}</SemiCircle>;
-}
+};
 
-ExpandButton.propTypes = {
+ExpandButtonComponent.propTypes = {
   isSidePanelExpanded: PropTypes.bool,
   onExpandClick: PropTypes.func.isRequired,
+};
+
+ExpandButtonComponent.defaultProps = {
+  isSidePanelExpanded: false,
 };
 
 const mapStateToProps = state => {
@@ -57,4 +59,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ExpandButton);
+export const ExpandButton = connect(mapStateToProps, mapDispatchToProps)(ExpandButtonComponent);
