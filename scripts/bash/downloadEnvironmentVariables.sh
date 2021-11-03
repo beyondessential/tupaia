@@ -1,5 +1,5 @@
 #!/bin/bash -e
-set -x #debug revert # do not output commands in this script, as some would show credentials in plain text
+set +x # do not output commands in this script, as some would show credentials in plain text
 
 DEPLOYMENT_NAME=$1
 DIR=$(dirname "$0")
@@ -8,18 +8,14 @@ DIR=$(dirname "$0")
 if [ -z $2 ]; then
     echo "Fetching all .env files"
     PACKAGES=$(${DIR}/getPackagesWithEnvFiles.sh)
-    echo "Fetched" #debug
 else
     PACKAGES=${@:2}
     echo "Fetching environment variables for ${PACKAGES}"
 fi
 
-echo "Querying lastpass ${LASTPASS_EMAIL} ${LASTPASS_PASSWORD} woop"
 echo ${LASTPASS_PASSWORD} | LPASS_DISABLE_PINENTRY=1 lpass login ${LASTPASS_EMAIL}
-echo "Queried"
 
 for PACKAGE in $PACKAGES; do
-    echo $PACKAGE
     ENV_FILE_PATH=${DIR}/../../packages/${PACKAGE}/.env
 
     # checkout deployment specific env vars, or dev as fallback, temporarily redirecting stderr
