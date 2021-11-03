@@ -17,6 +17,7 @@ cd ${TUPAIA_DIR}
 # Inject environment variables from LastPass
 LASTPASS_EMAIL=$($DIR/fetchParameterStoreValue.sh LASTPASS_EMAIL)
 LASTPASS_PASSWORD=$($DIR/fetchParameterStoreValue.sh LASTPASS_PASSWORD)
+echo "Found ${LASTPASS_EMAIL} yay"
 LASTPASS_EMAIL=$LASTPASS_EMAIL LASTPASS_PASSWORD=$LASTPASS_PASSWORD yarn download-env-vars $DEPLOYMENT_NAME
 
 # Build each package

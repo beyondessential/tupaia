@@ -14,7 +14,7 @@ else
     echo "Fetching environment variables for ${PACKAGES}"
 fi
 
-echo "Querying lastpass ${LASTPASS_EMAIL} ${LASTPASS_PASSWORD}"
+echo "Querying lastpass ${LASTPASS_EMAIL} ${LASTPASS_PASSWORD} woop"
 echo ${LASTPASS_PASSWORD} | LPASS_DISABLE_PINENTRY=1 lpass login ${LASTPASS_EMAIL}
 echo "Queried"
 
