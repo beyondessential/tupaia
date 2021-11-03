@@ -10,9 +10,14 @@ export const getMapOverlaysFromHierarchy = (mapOverlayHierarchy, targetMapOverla
     return [];
   }
 
-  return flattenMapOverlayHierarchy(mapOverlayHierarchy).filter(({ mapOverlayCode }) =>
-    targetMapOverlayCodes.includes(mapOverlayCode),
-  );
+  return flattenMapOverlayHierarchy(mapOverlayHierarchy)
+    .filter(({ mapOverlayCode }) => targetMapOverlayCodes.includes(mapOverlayCode))
+    .sort((mapOverlayA, mapOverlayB) => {
+      return (
+        targetMapOverlayCodes.findIndex(code => code === mapOverlayA.mapOverlayCode) -
+        targetMapOverlayCodes.findIndex(code => code === mapOverlayB.mapOverlayCode)
+      );
+    });
 };
 
 export const checkHierarchyIncludesMapOverlayCodes = (

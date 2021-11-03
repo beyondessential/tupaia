@@ -5,14 +5,6 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-/**
- * MapOverlayBar
- *
- * Similar to LocationBar, provides measures in a grouped listing. Measures from redux state.
- * Updates redux state with action when a measure is selected. Map listens to this part of state
- * and renders appropriately.
- */
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';

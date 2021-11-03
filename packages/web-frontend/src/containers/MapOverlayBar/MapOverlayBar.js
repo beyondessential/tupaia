@@ -13,7 +13,7 @@
  * and renders appropriately.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import shallowEqual from 'shallowequal';
@@ -33,6 +33,14 @@ import {
   selectCurrentMapOverlayCodes,
 } from '../../selectors';
 
+const pinnedOverlayCodeReducer = (currentOverlayCode, newOverlayCode) => {
+  if (currentOverlayCode === newOverlayCode) {
+    return null;
+  }
+
+  return newOverlayCode;
+};
+
 const MapOverlayBarComponent = ({
   currentMapOverlays,
   isMeasureLoading,
@@ -45,6 +53,7 @@ const MapOverlayBarComponent = ({
   onClearMeasure,
 }) => {
   const [hasNeverBeenChanged, setHasNeverBeenChanged] = useState(true);
+  const [pinnedOverlay, setPinnedOverlay] = useReducer(pinnedOverlayCodeReducer, null);
   const [maxSelectedOverlays, setMaxSelectedOverlays] = useState(1);
   useEffect(() => {
     const { length } = currentMapOverlayCodes;
@@ -56,11 +65,25 @@ const MapOverlayBarComponent = ({
   const isCheckBox = maxSelectedOverlays > 1;
 
   const onSelectMapOverlay = mapOverlayCode => {
+    const shiftOverlayCodes = mapOverlayCodes => {
+      // Pinned map overlay should be always selected.
+      const results = mapOverlayCodes.filter(code => code !== pinnedOverlay);
+      results.shift();
+      if (pinnedOverlay) {
+        results.unshift(pinnedOverlay);
+      }
+
+      return results;
+    };
+
     const newMapOverlayCodes = [...currentMapOverlayCodes, mapOverlayCode];
-    if (newMapOverlayCodes.length > maxSelectedOverlays) {
-      newMapOverlayCodes.shift();
-    }
-    onSetMapOverlay(newMapOverlayCodes);
+
+    const shiftedOverlayCodes =
+      newMapOverlayCodes.length > maxSelectedOverlays
+        ? shiftOverlayCodes(newMapOverlayCodes)
+        : newMapOverlayCodes;
+
+    onSetMapOverlay(shiftedOverlayCodes);
   };
 
   const onUnSelectMapOverlay = mapOverlayCode => {
@@ -176,6 +199,8 @@ const MapOverlayBarComponent = ({
       onUpdateOverlayPeriod={onUpdateOverlayPeriod}
       maxSelectedOverlays={maxSelectedOverlays}
       changeMaxSelectedOverlays={changeMaxSelectedOverlays}
+      pinnedOverlay={pinnedOverlay}
+      setPinnedOverlay={setPinnedOverlay}
     >
       {renderHierarchy()}
     </Control>

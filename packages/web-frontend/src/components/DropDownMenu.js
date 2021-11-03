@@ -121,8 +121,8 @@ DropDownMenu.propTypes = {
   onChange: PropTypes.func.isRequired,
   menuListStyle: PropTypes.object,
   anchorOrigin: PropTypes.object,
-  StyledPrimaryComponent: PropTypes.element,
-  StyledOptionComponent: PropTypes.element,
+  StyledPrimaryComponent: PropTypes.object,
+  StyledOptionComponent: PropTypes.object,
 };
 
 DropDownMenu.defaultProps = {

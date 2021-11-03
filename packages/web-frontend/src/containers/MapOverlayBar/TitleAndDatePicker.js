@@ -1,60 +1,70 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { FlexSpaceBetween as FlexSpaceBetweenCenter } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import moment from 'moment';
-import { withStyles } from '@material-ui/core/styles';
-import DownArrow from '@material-ui/icons/ArrowDropDown';
 import MuiSwitch from '@material-ui/core/Switch';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { getDefaultDates, getLimits, GRANULARITY_CONFIG } from '../../utils/periodGranularities';
 import { Content, ContentText } from './Content';
-import { TUPAIA_ORANGE } from '../../styles';
+import { MAP_OVERLAY_SELECTOR, TUPAIA_ORANGE } from '../../styles';
 import { setDisplayedMapOverlays } from '../../actions';
+import { Pin as PinBase } from './Pin';
 
-const Switch = withStyles({
-  switchBase: {
-    '&$checked': {
-      color: TUPAIA_ORANGE,
-    },
-    '&$checked + $track': {
-      backgroundColor: TUPAIA_ORANGE,
-    },
-  },
-  checked: {},
-  track: {},
-})(MuiSwitch);
-
-const ToolsWrapper = styled.div`
-  display: flex;
+const FlexSpaceBetween = styled(FlexSpaceBetweenCenter)`
+  align-items: flex-start;
 `;
 
-const IconWrapper = styled.div`
-  display: flex;
-  border-left: 1px solid rgba(255, 255, 255, 0.5);
-  padding: 8px 0 0 5px;
+const Switch = styled(MuiSwitch)`
+  height: 16px;
+  width: 37px;
+  padding: 1px;
+  margin-top: 2px;
+
+  .MuiSwitch-switchBase {
+    color: #315c88;
+    padding: 0;
+    margin: 0;
+  }
+
+  .Mui-checked {
+    color: ${TUPAIA_ORANGE};
+    + .MuiSwitch-track {
+      background-color: ${TUPAIA_ORANGE};
+    }
+  }
+
+  .MuiSwitch-thumb {
+    width: 16px;
+    height: 16px;
+  }
 `;
 
 const MeasureDatePicker = styled.div`
-  pointer-events: auto;
-  background: #203e5c;
-  padding: 16px 8px;
-  border-bottom-left-radius: ${({ expanded }) => (!expanded ? '5px' : '0')};
-  border-bottom-right-radius: ${({ expanded }) => (!expanded ? '5px' : '0')};
+  margin: 21px 16px 20px 46px;
+`;
+
+const Wrapper = styled.div`
+  background: ${MAP_OVERLAY_SELECTOR.background};
+`;
+
+const Pin = styled(PinBase)`
+  margin: 3px 12px 0 7px;
 `;
 
 export const TitleAndDatePickerComponent = ({
   mapOverlay,
   onUpdateOverlayPeriod,
-  isExpanded,
-  isMapOverlaySelected,
-  toggleMeasures,
   isMeasureLoading,
   displayedMapOverlays,
   onSetDisplayedMapOverlay,
+  pinnedOverlay,
+  setPinnedOverlay,
 }) => {
   const [isSwitchedOn, setIsSwitchedOn] = useState(true);
+
   useEffect(() => {
     setIsSwitchedOn(displayedMapOverlays.includes(mapOverlay.mapOverlayCode));
   }, [JSON.stringify(displayedMapOverlays)]);
@@ -70,8 +80,8 @@ export const TitleAndDatePickerComponent = ({
 
   const handleSwitchChange = () => {
     const newDisplayedOverlays = isSwitchedOn
-      ? displayedMapOverlays.filter(code => code !== mapOverlay.mapOverlayCode)
-      : [...displayedMapOverlays, mapOverlay.mapOverlayCode];
+      ? displayedMapOverlays.filter(code => code !== mapOverlayCode)
+      : [...displayedMapOverlays, mapOverlayCode];
     onSetDisplayedMapOverlay(newDisplayedOverlays);
     setIsSwitchedOn(!isSwitchedOn);
   };
@@ -84,19 +94,22 @@ export const TitleAndDatePickerComponent = ({
     });
   };
 
+  const handlePinChange = () => {
+    setPinnedOverlay(mapOverlayCode);
+  };
+
   return (
-    <>
-      <Content expanded={isExpanded} selected={isMapOverlaySelected} period={periodGranularity}>
-        <ContentText>{isMeasureLoading ? <CircularProgress size={22} /> : name}</ContentText>
-        <ToolsWrapper>
-          <Switch checked={isSwitchedOn} onChange={handleSwitchChange} />
-          <IconWrapper onClick={toggleMeasures}>
-            <DownArrow />
-          </IconWrapper>
-        </ToolsWrapper>
+    <Wrapper>
+      <Content>
+        <FlexSpaceBetween>
+          <Pin isPinned={pinnedOverlay === mapOverlayCode} onChange={handlePinChange} />
+          <ContentText>{isMeasureLoading ? <CircularProgress size={22} /> : name}</ContentText>
+        </FlexSpaceBetween>
+        <Switch checked={isSwitchedOn} onChange={handleSwitchChange} />
       </Content>
+
       {showDatePicker && (
-        <MeasureDatePicker expanded={isExpanded}>
+        <MeasureDatePicker>
           <DateRangePicker
             key={name} // force re-create the component on measure change, which resets initial dates
             granularity={periodGranularity}
@@ -109,7 +122,7 @@ export const TitleAndDatePickerComponent = ({
           />
         </MeasureDatePicker>
       )}
-    </>
+    </Wrapper>
   );
 };
 
@@ -126,17 +139,17 @@ TitleAndDatePickerComponent.propTypes = {
     startDate: PropTypes.shape({}),
     endDate: PropTypes.shape({}),
   }).isRequired,
-  isExpanded: PropTypes.bool.isRequired,
-  isMapOverlaySelected: PropTypes.bool.isRequired,
-  toggleMeasures: PropTypes.func.isRequired,
   isMeasureLoading: PropTypes.bool,
   onUpdateOverlayPeriod: PropTypes.func.isRequired,
   displayedMapOverlays: PropTypes.arrayOf(PropTypes.string).isRequired,
   onSetDisplayedMapOverlay: PropTypes.func.isRequired,
+  pinnedOverlay: PropTypes.string,
+  setPinnedOverlay: PropTypes.func.isRequired,
 };
 
 TitleAndDatePickerComponent.defaultProps = {
   isMeasureLoading: false,
+  pinnedOverlay: null,
 };
 
 const mapStateToProps = state => {
