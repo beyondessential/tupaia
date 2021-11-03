@@ -59,7 +59,7 @@ const OverlayLibrary = styled(FlexSpaceBetween)`
   color: ${({ expanded }) => (expanded ? LIGHT_GREY : DARK_GREY)};
   font-size: 12px;
   font-weight: 500;
-  padding: 8px 4px;
+  padding: 8px 0px 8px 7px;
   &:hover {
     cursor: pointer;
     color: ${LIGHT_GREY};
@@ -83,7 +83,7 @@ const StyledOptionComponent = styled(StyledPrimaryComponent)`
 const LayersIcon = styled(MuiLayersIcon)`
   font-size: 20px;
   margin-left: 11px;
-  margin-right: 6px;
+  margin-right: 7px;
   color: ${({ $expanded }) => ($expanded ? TUPAIA_ORANGE : 'default')};
 `;
 

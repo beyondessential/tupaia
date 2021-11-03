@@ -43,7 +43,7 @@ const Switch = styled(MuiSwitch)`
 `;
 
 const MeasureDatePicker = styled.div`
-  margin: 21px 16px 20px 42px;
+  margin: 21px 16px 20px 46px;
 `;
 
 const Wrapper = styled.div`
@@ -51,7 +51,7 @@ const Wrapper = styled.div`
 `;
 
 const Pin = styled(PinBase)`
-  margin: 3px 12px 0 3px;
+  margin: 3px 12px 0 7px;
 `;
 
 export const TitleAndDatePickerComponent = ({
