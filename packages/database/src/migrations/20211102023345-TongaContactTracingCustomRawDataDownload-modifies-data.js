@@ -31,7 +31,7 @@ const LEGACY_REPORT_CONFIG = {
       skipHeader: true,
       surveysConfig: {
         CCFU: {
-          mergeRowKey: 'TO_FCF_03',
+          mergeRowKey: 'orgUnit',
           columnLabels: {
             TO_FCF_05: 'Current Test Status',
             TO_FCF_06: 'Are they Symptomatic?',
@@ -48,7 +48,7 @@ const LEGACY_REPORT_CONFIG = {
           },
         },
         CCLF: {
-          mergeRowKey: 'TO_C19CLF24',
+          mergeRowKey: 'orgUnit',
           columnLabels: {
             TO_C19CLF02: 'Case ID this contact is linked to',
             TO_C19CLF03: 'First Name',
