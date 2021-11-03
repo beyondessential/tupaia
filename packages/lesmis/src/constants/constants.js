@@ -15,7 +15,7 @@ export const LESMIS_PERMISSION_GROUPS = {
   ADMIN: 'LESMIS Admin',
 };
 
-// Dashboards
+// Dashboard Constants
 export const SUB_DASHBOARD_OPTIONS = [
   {
     code: 'ESSDP_EarlyChildhood',
