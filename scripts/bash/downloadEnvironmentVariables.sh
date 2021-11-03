@@ -1,5 +1,5 @@
 #!/bin/bash -e
-set +x # do not output commands in this script, as some would show credentials in plain text
+set -x #todo revert # do not output commands in this script, as some would show credentials in plain text
 
 DEPLOYMENT_NAME=$1
 DIR=$(dirname "$0")
