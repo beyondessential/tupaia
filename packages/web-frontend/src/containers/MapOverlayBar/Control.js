@@ -56,7 +56,7 @@ const Header = styled(FlexSpaceBetween)`
 
 const OverlayLibrary = styled(FlexSpaceBetween)`
   background: ${MAP_OVERLAY_SELECTOR.subBackGround};
-  color: ${({ expanded }) => (expanded ? LIGHT_GREY : DARK_GREY)};
+  color: ${({ $expanded }) => ($expanded ? LIGHT_GREY : DARK_GREY)};
   font-size: 12px;
   font-weight: 500;
   padding: 8px 0px 8px 7px;
@@ -170,7 +170,7 @@ export const Control = ({
           </Content>
         )}
       </DatePickerWrapper>
-      <OverlayLibrary expanded={isExpanded} onClick={toggleMeasures}>
+      <OverlayLibrary $expanded={isExpanded} onClick={toggleMeasures}>
         <FlexStart>
           <LayersIcon $expanded={isExpanded} />
           OVERLAY LIBRARY

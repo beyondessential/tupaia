@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { FlexSpaceBetween as FlexSpaceBetweenCenter } from '@tupaia/ui-components';
+import { FlexCenter, FlexSpaceBetween as FlexSpaceBetweenCenter } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import moment from 'moment';
-import MuiSwitch from '@material-ui/core/Switch';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import {
+  CircularProgress as MuiCircularProgress,
+  Box,
+  Switch as MuiSwitch,
+} from '@material-ui/core';
+import { Skeleton as MuiSkeleton } from '@material-ui/lab';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { getDefaultDates, getLimits, GRANULARITY_CONFIG } from '../../utils/periodGranularities';
 import { Content, ContentText } from './Content';
@@ -15,6 +19,10 @@ import { Pin as PinBase } from './Pin';
 
 const FlexSpaceBetween = styled(FlexSpaceBetweenCenter)`
   align-items: flex-start;
+`;
+
+const SkeletonHeader = styled(FlexCenter)`
+  margin-top: ${({ mt = 0 }) => mt};
 `;
 
 const Switch = styled(MuiSwitch)`
@@ -52,6 +60,15 @@ const Wrapper = styled.div`
 
 const Pin = styled(PinBase)`
   margin: 3px 12px 0 7px;
+`;
+
+const CircularProgress = styled(MuiCircularProgress)`
+  color: #2196f3;
+`;
+
+const Skeleton = styled(MuiSkeleton)`
+  margin-left: ${({ ml = 0 }) => ml}px;
+  margin-top: ${({ mt = 0 }) => mt}px;
 `;
 
 export const TitleAndDatePickerComponent = ({
@@ -100,28 +117,42 @@ export const TitleAndDatePickerComponent = ({
 
   return (
     <Wrapper>
-      <Content>
-        <FlexSpaceBetween>
-          <Pin isPinned={pinnedOverlay === mapOverlayCode} onChange={handlePinChange} />
-          <ContentText>{isMeasureLoading ? <CircularProgress size={22} /> : name}</ContentText>
-        </FlexSpaceBetween>
-        <Switch checked={isSwitchedOn} onChange={handleSwitchChange} />
-      </Content>
+      {isMeasureLoading ? (
+        <SkeletonHeader mt="10px">
+          <CircularProgress size={22} thickness={7} />
+          <Skeleton animation="wave" width={270} height={40} ml={10} />
+        </SkeletonHeader>
+      ) : (
+        <Content>
+          <FlexSpaceBetween>
+            <Pin isPinned={pinnedOverlay === mapOverlayCode} onChange={handlePinChange} />
 
-      {showDatePicker && (
-        <MeasureDatePicker>
-          <DateRangePicker
-            key={name} // force re-create the component on measure change, which resets initial dates
-            granularity={periodGranularity}
-            startDate={startDate}
-            endDate={endDate}
-            min={datePickerLimits.startDate}
-            max={datePickerLimits.endDate}
-            onSetDates={updateMeasurePeriod}
-            isLoading={isMeasureLoading}
-          />
-        </MeasureDatePicker>
+            <ContentText>{name}</ContentText>
+          </FlexSpaceBetween>
+          <Switch checked={isSwitchedOn} onChange={handleSwitchChange} />
+        </Content>
       )}
+
+      {showDatePicker &&
+        (isMeasureLoading ? (
+          <Box ml="50px" mb="10px">
+            <Skeleton animation="wave" width={200} height={40} />
+            <Skeleton animation="wave" width={100} height={30} mt={-10} />
+          </Box>
+        ) : (
+          <MeasureDatePicker>
+            <DateRangePicker
+              key={name} // force re-create the component on measure change, which resets initial dates
+              granularity={periodGranularity}
+              startDate={startDate}
+              endDate={endDate}
+              min={datePickerLimits.startDate}
+              max={datePickerLimits.endDate}
+              onSetDates={updateMeasurePeriod}
+              isLoading={isMeasureLoading}
+            />
+          </MeasureDatePicker>
+        ))}
     </Wrapper>
   );
 };
