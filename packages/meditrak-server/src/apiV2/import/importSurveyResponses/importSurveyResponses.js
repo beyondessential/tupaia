@@ -31,15 +31,15 @@ import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions
 import { SurveyResponseUpdatePersistor } from './SurveyResponseUpdatePersistor';
 import { getFailureMessage } from './getFailureMessage';
 
-const ANSWER_SANITIZERS = {
-  [ANSWER_TYPES.ENTITY]: async (models, answerText) => {
-    if (!answerText) {
-      return answerText;
+const ANSWER_TRANSFORMERS = {
+  [ANSWER_TYPES.ENTITY]: async (models, answerValue) => {
+    if (!answerValue) {
+      return answerValue;
     }
     // entity answers are stored as codes in the spreadsheet, but ids in the db
-    const entity = await models.entity.findOne({ code: answerText });
+    const entity = await models.entity.findOne({ code: answerValue });
     if (!entity) {
-      throw new Error(`Could not find entity with code ${answerText}`);
+      throw new Error(`Could not find entity with code ${answerValue}`);
     }
     return entity.id;
   },
@@ -135,7 +135,7 @@ export async function importSurveyResponses(req, res) {
 
         // Validate every cell in rows other than the header rows
         let answerValidator;
-        let answerSanitizer;
+        let answerTransformer;
         const questionId = getInfoForRow(sheet, rowIndex, 'Id');
         if (questionId !== 'N/A') {
           if (questionIds.includes(questionId)) {
@@ -152,7 +152,7 @@ export async function importSurveyResponses(req, res) {
           await infoValidator.validate(rowInfo);
           const question = await models.question.findById(questionId);
           answerValidator = new ObjectValidator({}, constructAnswerValidator(models, question));
-          answerSanitizer = ANSWER_SANITIZERS[question.type];
+          answerTransformer = ANSWER_TRANSFORMERS[question.type];
         }
 
         for (
@@ -162,23 +162,23 @@ export async function importSurveyResponses(req, res) {
         ) {
           const columnHeader = getColumnHeader(sheet, columnIndex);
           const surveyResponseId = surveyResponseIds[columnIndex];
-          const cellValue = getCellContents(sheet, columnIndex, rowIndex);
-          const sanitizedCellValue = answerSanitizer
-            ? await answerSanitizer(models, cellValue)
-            : cellValue;
+          const answerValue = getCellContents(sheet, columnIndex, rowIndex);
+          const transformedAnswerValue = answerTransformer
+            ? await answerTransformer(models, answerValue)
+            : answerValue;
           // If we already deleted this survey response wholesale, no need to check specific rows
           if (surveyResponseId && !deletedResponseIds.has(surveyResponseId)) {
             if (answerValidator) {
               const constructImportValidationError = message =>
                 new ImportValidationError(message, excelRowNumber, columnHeader, tabName);
               await answerValidator.validate(
-                { answer: sanitizedCellValue },
+                { answer: transformedAnswerValue },
                 constructImportValidationError,
               );
             }
             if (questionId === 'N/A') {
               // Info row (e.g. entity name): if no content delete the survey response wholesale
-              if (checkIsCellEmpty(sanitizedCellValue)) {
+              if (checkIsCellEmpty(transformedAnswerValue)) {
                 updatePersistor.deleteSurveyResponse(surveyResponseId);
                 deletedResponseIds.add(surveyResponseId);
               } else {
@@ -193,7 +193,7 @@ export async function importSurveyResponses(req, res) {
                   updatePersistor.updateDataTime(surveyResponseId, newDataTime);
                 }
               }
-            } else if (checkIsCellEmpty(sanitizedCellValue)) {
+            } else if (checkIsCellEmpty(transformedAnswerValue)) {
               // Empty question row: delete any matching answer
               updatePersistor.deleteAnswer(surveyResponseId, { questionId });
             } else if (
@@ -205,7 +205,7 @@ export async function importSurveyResponses(req, res) {
               const newDataTime = await getNewDataTimeIfRequired(
                 models,
                 surveyResponseId,
-                sanitizedCellValue.toString(),
+                transformedAnswerValue.toString(),
               );
               if (newDataTime) {
                 updatePersistor.updateDataTime(surveyResponseId, newDataTime);
@@ -215,7 +215,7 @@ export async function importSurveyResponses(req, res) {
               updatePersistor.upsertAnswer(surveyResponseId, {
                 surveyResponseId,
                 questionId,
-                text: sanitizedCellValue.toString(),
+                text: transformedAnswerValue.toString(),
                 type: rowType,
               });
             }
