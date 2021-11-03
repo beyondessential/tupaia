@@ -173,14 +173,24 @@ exports.up = async function (db) {
     dataBuilder: 'surveyDataExport',
     frontEndConfig: FRONT_END_CONFIG,
     permissionGroup: 'COVID-19 Senior',
-    dashboardCode: 'TO_Raw_Data Downloads',
+    dashboardCode: 'TO_COVID-19',
     entityTypes: ['country'],
     projectCodes: ['fanafana'],
   });
+  await db.runSql(`
+    UPDATE project
+    SET permission_groups = array_append(permission_groups, 'COVID-19 Senior')
+    WHERE code = 'fanafana'
+  `);
 };
 
-exports.down = function (db) {
-  return removeDashboardItemAndReport(db, CODE);
+exports.down = async function (db) {
+  await removeDashboardItemAndReport(db, CODE);
+  await db.runSql(`
+    UPDATE project
+    SET permission_groups = array_remove(permission_groups, 'COVID-19 Senior')
+    WHERE code = 'fanafana'
+  `);
 };
 
 exports._meta = {
