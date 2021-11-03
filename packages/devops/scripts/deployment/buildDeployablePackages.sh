@@ -3,6 +3,8 @@
 DIR=$(dirname "$0")
 TUPAIA_DIR=$DIR/../../../..
 DEPLOYMENT_NAME=$1
+
+echo "Building deployable packages"
 PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 
 # Initialise NVM (which sets the path for access to npm, yarn etc. as well)
