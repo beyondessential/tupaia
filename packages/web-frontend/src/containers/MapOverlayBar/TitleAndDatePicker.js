@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { FlexCenter, FlexSpaceBetween as FlexSpaceBetweenCenter } from '@tupaia/ui-components';
+import { FlexStart, FlexSpaceBetween as FlexSpaceBetweenCenter } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import moment from 'moment';
@@ -116,10 +116,10 @@ export const TitleAndDatePickerComponent = ({
   return (
     <Wrapper>
       {isMeasureLoading ? (
-        <FlexCenter mt="10px">
+        <FlexStart mt="10px" ml="18px">
           <CircularProgress size={22} thickness={7} />
-          <Skeleton animation="wave" width={270} height={40} ml={10} />
-        </FlexCenter>
+          <Skeleton animation="wave" width={270} height={40} ml={7} />
+        </FlexStart>
       ) : (
         <Content>
           <FlexSpaceBetween>
@@ -132,7 +132,7 @@ export const TitleAndDatePickerComponent = ({
 
       {showDatePicker &&
         (isMeasureLoading ? (
-          <Box ml="51px" mb="10px" mt="-3px">
+          <Box ml="47px" mb="10px" mt="-3px">
             <Skeleton animation="wave" width={200} height={40} />
             <Skeleton animation="wave" width={100} height={30} mt={-10} />
           </Box>
