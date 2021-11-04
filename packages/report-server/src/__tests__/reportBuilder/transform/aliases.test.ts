@@ -81,4 +81,16 @@ describe('aliases', () => {
     const transform = buildTransform(['convertEventDateToWeek']);
     expect(transform(SINGLE_EVENT)).toEqual([{ ...SINGLE_EVENT[0], period: '2020W01' }]);
   });
+
+  it('insertBinaryRowSummary', () => {
+    const transform = buildTransform(['insertBinaryRowSummary']);
+    expect(transform(MULTIPLE_MERGEABLE_ANALYTICS)).toEqual([
+      { period: '20200101', organisationUnit: 'TO', BCD1: 7, BCD2: 4 },
+      { period: '20200102', organisationUnit: 'TO', BCD1: 12, BCD2: 18 },
+      { period: '20200103', organisationUnit: 'TO', BCD1: 23, BCD2: 9 },
+      { period: '20200101', organisationUnit: 'PG', BCD1: 17, BCD2: 23 },
+      { period: '20200102', organisationUnit: 'PG', BCD1: 4, BCD2: -4 },
+      { period: '20200103', organisationUnit: 'PG', BCD1: 1, BCD2: 12 },
+    ]);
+  });
 });

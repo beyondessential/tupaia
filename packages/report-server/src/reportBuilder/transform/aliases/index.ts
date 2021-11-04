@@ -14,6 +14,7 @@ import {
   lastValuePerPeriodPerOrgUnit,
 } from './aggregateAliases';
 import { convertPeriodToWeek, convertEventDateToWeek } from './periodConversionAliases';
+import { insertSummaryRowAndColumn } from './summaryAliases';
 
 export const aliases = {
   keyValueByDataElementName,
@@ -24,4 +25,5 @@ export const aliases = {
   lastValuePerPeriodPerOrgUnit,
   convertPeriodToWeek,
   convertEventDateToWeek,
+  insertSummaryRowAndColumn
 };

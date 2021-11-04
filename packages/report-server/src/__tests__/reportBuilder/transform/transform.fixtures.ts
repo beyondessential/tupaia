@@ -17,6 +17,12 @@ export const MULTIPLE_ANALYTICS = [
   { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
 ];
 
+export const MULTIPLE_ANALYTICS_BINARY_VALUE_COLUMNS = [
+  { rowField: 'Male condoms', TO: 'N', FJ: 'N', NR: 'Y', KI: 'N' },
+  { rowField: 'Female condoms', TO: 'N', FJ: 'Y', NR: 'Y', KI: 'Y' },
+  { rowField: '% items out of stock', TO: 1, FJ: 0.5, NR: 0, KI: 0.5 },
+];
+
 export const MERGEABLE_ANALYTICS = [
   { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
   { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
