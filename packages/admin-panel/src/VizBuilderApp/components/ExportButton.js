@@ -8,13 +8,13 @@ import React from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import GetAppIcon from '@material-ui/icons/GetApp';
 
-import { useExportVisualisation } from '../api/mutations';
+import { useExportDashboardVisualisation } from '../api/mutations';
 import { useVizConfig, useVizConfigError } from '../context';
 
 export const ExportButton = () => {
   const [{ visualisation }] = useVizConfig();
   const { hasError: vizConfigHasError } = useVizConfigError();
-  const { mutateAsync: exportVisualisation } = useExportVisualisation(visualisation);
+  const { mutateAsync: exportVisualisation } = useExportDashboardVisualisation(visualisation);
 
   return (
     <IconButton disabled={vizConfigHasError} onClick={exportVisualisation}>
