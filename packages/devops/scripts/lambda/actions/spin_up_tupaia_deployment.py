@@ -57,8 +57,8 @@ def spin_up_tupaia_deployment(event):
 
     extra_tags = [{ 'Key': 'DeployedBy', 'Value': event['User'] }]
     if 'HoursOfLife' in event:
-        delete_at = datetime.now() + timedelta(hours=event['HoursOfLife'])
-        extra_tags.append({ 'Key': 'DeleteAt', 'Value': format(delete_at, "%Y-%m-%d %H:00") })
+        delete_after = datetime.now() + timedelta(hours=event['HoursOfLife'])
+        extra_tags.append({ 'Key': 'DeleteAfter', 'Value': format(delete_after, "%Y-%m-%d %H:%M") })
 
     # launch server instance based on gold master AMI
     create_tupaia_instance_from_image(

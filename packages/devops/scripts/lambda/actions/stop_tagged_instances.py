@@ -13,7 +13,7 @@ from helpers.utilities import find_instances, stop_instance
 
 loop = asyncio.get_event_loop()
 
-def stop_tagged_instances():
+def stop_tagged_instances(event):
     hour = time.strftime("%H:00")
     instances = find_instances([
         { 'Name': 'tag:StopAtUTC', 'Values': [hour] },
