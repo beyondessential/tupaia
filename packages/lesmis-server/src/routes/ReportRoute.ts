@@ -25,14 +25,21 @@ export class ReportRoute extends TranslatableRoute {
         type: 'array',
         items: {
           type: 'object',
-          properties: {
-            label: {
-              type: 'string'
-            }
-          }
+          keysToTranslate: '*',
+          valuesToTranslate: ['label', 'name'],
         }
       }
     };
+  }
+
+  // Check for _metadata keys and only translate the first part
+  // Lets us use the same translation entry for regular and _metadata keys
+  translateKey(value: string): string {
+    if (value.endsWith('_metadata')) {
+      const key = this.translateString(value.slice(0, -('_metadata'.length)));
+      return `${key}_metadata`;
+    }
+    return this.translateString(value);
   }
 
   async buildResponse() {

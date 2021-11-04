@@ -22,20 +22,26 @@ export class DashboardRoute extends TranslatableRoute {
         type: 'array',
         items: {
           type: 'object',
+          valuesToTranslate: ['dashboardName'],
           properties: {
-            // Translate dashboard names
-            dashboardName: {
-              type: 'string'
-            },
             // Object property named 'items'
             items: {
               type: 'array',
               items: {
                 type: 'object',
+                // Dashboard item names, and axis names
+                valuesToTranslate: ['name', 'xName', 'yName'],
                 properties: {
-                  // Translate dashboard item names
-                  name: {
-                    type: 'string'
+                  chartConfig: {
+                    type: 'object',
+                    keysToTranslate: '*',
+                    properties: {
+                      '*': {
+                        type: 'object',
+                        // For multi-axis visuals
+                        valuesToTranslate: ['yName'],
+                      }
+                    }
                   }
                 }
               }

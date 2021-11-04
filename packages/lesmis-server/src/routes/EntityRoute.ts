@@ -19,9 +19,7 @@ export class EntityRoute extends TranslatableRoute {
       domain: 'entities',
       layout:{
         type: 'object',
-        properties: {
-          name: { type: 'string' }
-        }
+        valuesToTranslate: ['name'],
       }
     }
   }
