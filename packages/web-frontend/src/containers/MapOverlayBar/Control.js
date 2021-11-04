@@ -64,8 +64,8 @@ const OverlayLibrary = styled(FlexSpaceBetween)`
     cursor: pointer;
     color: ${LIGHT_GREY};
   }
-  border-bottom-left-radius: ${({ expanded }) => (!expanded ? '5px' : '0')};
-  border-bottom-right-radius: ${({ expanded }) => (!expanded ? '5px' : '0')};
+  border-bottom-left-radius: ${({ $expanded }) => (!$expanded ? '5px' : '0')};
+  border-bottom-right-radius: ${({ $expanded }) => (!$expanded ? '5px' : '0')};
 `;
 
 const StyledPrimaryComponent = styled(Typography)`
