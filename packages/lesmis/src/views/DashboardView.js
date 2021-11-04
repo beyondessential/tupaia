@@ -32,7 +32,7 @@ const TabTemplate = ({ TabBarLeftSection, Body }) => (
     <TabBar>
       <TabBarLeftSection />
     </TabBar>
-    <MuiBox p={5} minHeight={500}>
+    <MuiBox p={5} minHeight={600}>
       {Body}
     </MuiBox>
   </>
@@ -70,8 +70,11 @@ const useDashboardDropdownOptions = () => {
       TabComponent: DashboardReportTabView,
       useYearSelector: true,
       componentProps: {
+        // those not included anywhere else
         filterSubDashboards: ({ dashboardCode }) =>
-          !Object.values(SUB_DASHBOARD_OPTIONS).some(code => dashboardCode.startsWith(code)), // those not included anywhere else
+          !Object.values(SUB_DASHBOARD_OPTIONS).some(({ code }) =>
+            dashboardCode.startsWith(`LESMIS_${code}`),
+          ),
       },
     },
     {
@@ -102,15 +105,13 @@ const useDashboardDropdownOptions = () => {
     })),
   ];
 
-  // default option
-  let selectedOption = dropdownOptions[0];
+  const selectedOption =
+    selectedDashboard && dropdownOptions.find(option => option.value === selectedDashboard);
 
-  // check if the selected dashboard is valid
-  if (selectedDashboard && dropdownOptions.find(option => option.value === selectedDashboard)) {
-    selectedOption = dropdownOptions.find(option => option.value === selectedDashboard);
-  }
-
-  return { dropdownOptions, selectedOption };
+  return {
+    dropdownOptions,
+    selectedOption: selectedOption || dropdownOptions[0],
+  };
 };
 
 export const DashboardView = React.memo(() => {

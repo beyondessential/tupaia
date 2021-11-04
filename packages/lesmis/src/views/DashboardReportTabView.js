@@ -34,7 +34,7 @@ const StickyTabBarContainer = styled.div`
 const DashboardSection = styled(FlexColumn)`
   align-items: center;
   justify-content: flex-start;
-  min-height: 38rem;
+  min-height: 40rem;
 `;
 
 const ScrollToTopButton = styled(ArrowUpward)`

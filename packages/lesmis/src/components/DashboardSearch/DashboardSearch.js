@@ -143,7 +143,7 @@ export const DashboardSearch = ({ onToggleSearch, getResultsEl }) => {
     },
   });
 
-  const { getRootProps, getInputProps, getClearProps } = searchResults;
+  const { getRootProps, getInputProps, getClearProps } = autocompleteResponse;
 
   const clearProps = getClearProps();
 
