@@ -16,9 +16,10 @@ type StringKey = {
 
 type ObjectKey = {
   type: 'object';
-  properties: { [key: string]: TranslationKey };
+  properties?: { [key: string]: TranslationKey };
   // Keys within the object to translate
-  keys?: 'all' | string[];
+  keysToTranslate?: 'all' | string[];
+  valuesToTranslate?: 'all' | string[];
 }
 
 type ArrayKey = {
@@ -53,11 +54,8 @@ export class TranslatableRoute extends Route {
     return this.res.translate(`${this.translationSchema.domain}.${value.replace(/(:|\.)/g, '')}:${value}`);
   }
 
+  // Overwritable for more specific handling
   translateKey(value: string): string {
-    if (value.endsWith('_metadata')) {
-      const key = this.translateString(value.slice(0, -('_metadata'.length)));
-      return `${key}_metadata`;
-    }
     return this.translateString(value);
   }
 
@@ -76,11 +74,19 @@ export class TranslatableRoute extends Route {
       case 'object': {
         let translatedObject = translationValue;
         for (const key of Object.keys(translationValue)) {
-          if (key in translationKey.properties) {
-            translatedObject[key] = this.translateResponse(translationKey.properties[key], translationValue[key]);
+          if (translationKey.valuesToTranslate && translationKey.valuesToTranslate.includes(key)) {
+            // valuesToTranslate should always be strings
+            translatedObject[key] = this.translateString(translationValue[key]);
+          } else if (translationKey.properties) {
+            if (key in translationKey.properties) {
+              translatedObject[key] = this.translateResponse(translationKey.properties[key], translationValue[key]);
+            } else if ('*' in translationKey.properties) {
+              // '*' is a special case key to describe all other properties
+              translatedObject[key] = this.translateResponse(translationKey.properties['*'], translationValue[key]);
+            }
           }
-          if (translationKey.keys) {
-            const newKey = (translationKey.keys === 'all' || translationKey.keys.includes(key)) ? this.translateKey(key) : key;
+          if (translationKey.keysToTranslate) {
+            const newKey = (translationKey.keysToTranslate === 'all' || translationKey.keysToTranslate.includes(key)) ? this.translateKey(key) : key;
             if (newKey !== key) {
               translatedObject[newKey] = translatedObject[key];
               delete translatedObject[key];

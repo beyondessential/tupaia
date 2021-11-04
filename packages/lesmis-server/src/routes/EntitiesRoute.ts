@@ -22,9 +22,7 @@ export class EntitiesRoute extends TranslatableRoute {
         where: (entry => entry.type !== 'school'), // Schools are always in laotian
         items: {
           type: 'object',
-          properties: {
-            name: { type: 'string' }
-          }
+          valuesToTranslate: ['name'],
         }
       }
     }
