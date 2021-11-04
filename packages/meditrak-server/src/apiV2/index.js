@@ -96,6 +96,11 @@ import { getCountryAccessList } from './getCountryAccessList';
 import { surveyResponse } from './surveyResponse';
 import { verifyEmail, requestResendEmail } from './verifyEmail';
 import { manualKoBoSync } from '../kobo';
+import {
+  CreateMapOverlayVisualisation,
+  EditMapOverlayVisualisation,
+  GETMapOverlayVisualisations,
+} from './mapOverlayVisualisations';
 
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
@@ -148,6 +153,7 @@ apiV2.get(
 apiV2.get('/dashboardItems/:recordId?', useRouteHandler(GETDashboardItems));
 apiV2.get('/dashboardRelations/:recordId?', useRouteHandler(GETDashboardRelations));
 apiV2.get('/dashboardVisualisations/:recordId?', useRouteHandler(GETDashboardVisualisations));
+apiV2.get('/mapOverlayVisualisations/:recordId?', useRouteHandler(GETMapOverlayVisualisations));
 apiV2.get('/legacyReports/:recordId?', useRouteHandler(GETLegacyReports));
 apiV2.get('/indicators/:recordId?', useRouteHandler(BESAdminGETHandler));
 apiV2.get('/feedItems/:recordId?', useRouteHandler(GETFeedItems));
@@ -215,6 +221,7 @@ apiV2.post('/indicators', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/permissionGroups', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dashboardRelations', useRouteHandler(CreateDashboardRelation));
 apiV2.post('/dashboardVisualisations', useRouteHandler(CreateDashboardVisualisation));
+apiV2.post('/mapOverlayVisualisations', useRouteHandler(CreateMapOverlayVisualisation));
 apiV2.post('/mapOverlayGroupRelations', useRouteHandler(CreateMapOverlayGroupRelation));
 apiV2.post('/syncFromService', allowAnyone(manualKoBoSync));
 
@@ -239,6 +246,7 @@ apiV2.put('/dashboards/:recordId', useRouteHandler(EditDashboard));
 apiV2.put('/dashboardItems/:recordId', useRouteHandler(EditDashboardItem));
 apiV2.put('/dashboardRelations/:recordId', useRouteHandler(EditDashboardRelation));
 apiV2.put('/dashboardVisualisations/:recordId', useRouteHandler(EditDashboardVisualisation));
+apiV2.put('/mapOverlayVisualisations/:recordId', useRouteHandler(EditMapOverlayVisualisation));
 apiV2.put('/legacyReports/:recordId', useRouteHandler(EditLegacyReport));
 apiV2.put('/mapOverlays/:recordId', useRouteHandler(EditMapOverlays));
 apiV2.put('/mapOverlayGroups/:recordId', useRouteHandler(EditMapOverlayGroups));
