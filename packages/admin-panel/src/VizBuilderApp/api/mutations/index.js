@@ -4,5 +4,5 @@
  *
  */
 export * from './useExportVisualisation';
-export * from './useSaveVisualisation';
+export * from './useSaveDashboardVisualisation';
 export * from './useUploadTestData';

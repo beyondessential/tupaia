@@ -21,7 +21,7 @@ import {
 } from '@tupaia/ui-components';
 
 import { MODAL_STATUS } from '../../constants';
-import { useSaveVisualisation } from '../../api';
+import { useSaveDashboardVisualisation } from '../../api';
 import { useVizConfig } from '../../context';
 
 const TickIcon = styled(CheckCircle)`
@@ -38,7 +38,7 @@ const SuccessText = styled(Typography)`
 export const SaveVisualisationModal = ({ isOpen, onClose }) => {
   const [status, setStatus] = useState(MODAL_STATUS.INITIAL);
   const [{ visualisation }, { setVisualisationValue }] = useVizConfig();
-  const { mutateAsync: saveVisualisation, error } = useSaveVisualisation(visualisation);
+  const { mutateAsync: saveVisualisation, error } = useSaveDashboardVisualisation(visualisation);
   const handleSave = useCallback(async () => {
     setStatus(MODAL_STATUS.LOADING);
     try {

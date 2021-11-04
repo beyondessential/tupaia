@@ -6,7 +6,7 @@
 import { useMutation } from 'react-query';
 import { post, put } from '../api';
 
-export const useSaveVisualisation = config =>
+export const useSaveDashboardVisualisation = config =>
   useMutation(
     ['dashboardVisualisation', config],
     () => {
