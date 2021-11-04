@@ -14,6 +14,8 @@ import { FlexColumn, SmallAlert } from '@tupaia/ui-components';
 import { useDashboardVisualisation } from '../api';
 import { Toolbar, Panel, PreviewSection, PreviewOptions } from '../components';
 import { PreviewDataProvider, VizConfigErrorProvider, useVizConfig } from '../context';
+import { useMapOverlayVisualisation } from '../api/queries/useMapOverlayVisualisation';
+import { VIZ_TYPE_PARAM } from '../constants';
 
 const Container = styled(MuiContainer)`
   flex: 1;
@@ -36,15 +38,23 @@ const Progress = styled(CircularProgress)`
 
 // Todo: add warning on page unload https://github.com/jacobbuck/react-beforeunload#readme
 export const Main = () => {
-  const { visualisationId } = useParams();
+  const { visualisationId, vizType } = useParams();
 
   // do not fetch existing viz if no visualisationId is provided in the params
   const fetchExistingVizEnabled = visualisationId !== undefined;
 
+  const useViz = () => {
+    if (vizType === VIZ_TYPE_PARAM.DASHBOARD_ITEM)
+      return useDashboardVisualisation(visualisationId, fetchExistingVizEnabled);
+    if (vizType === VIZ_TYPE_PARAM.MAP_OVERLAY)
+      return useMapOverlayVisualisation(visualisationId, fetchExistingVizEnabled);
+    throw new Error(`Unknown viz type ${vizType}`);
+  };
+
   // eslint-disable-next-line no-unused-vars
   const [_, { setVisualisation }] = useVizConfig();
   const [visualisationLoaded, setVisualisationLoaded] = useState(false);
-  const { data = {}, error } = useDashboardVisualisation(visualisationId, fetchExistingVizEnabled);
+  const { data = {}, error } = useViz();
   const { visualisation } = data;
 
   useEffect(() => {
