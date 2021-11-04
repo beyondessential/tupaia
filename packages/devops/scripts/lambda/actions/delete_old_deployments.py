@@ -1,5 +1,5 @@
 import time
-import datetime
+from datetime import datetime
 from helpers.utilities import find_instances, get_tag
 from helpers.teardown import teardown_instance
 
