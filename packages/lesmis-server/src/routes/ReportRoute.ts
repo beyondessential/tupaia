@@ -25,7 +25,7 @@ export class ReportRoute extends TranslatableRoute {
         type: 'array',
         items: {
           type: 'object',
-          keysToTranslate: 'all',
+          keysToTranslate: '*',
           valuesToTranslate: ['label', 'name'],
         }
       }

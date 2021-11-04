@@ -18,8 +18,8 @@ type ObjectKey = {
   type: 'object';
   properties?: { [key: string]: TranslationKey };
   // Keys within the object to translate
-  keysToTranslate?: 'all' | string[];
-  valuesToTranslate?: 'all' | string[];
+  keysToTranslate?: '*' | string[];
+  valuesToTranslate?: '*' | string[];
 }
 
 type ArrayKey = {
@@ -74,7 +74,7 @@ export class TranslatableRoute extends Route {
       case 'object': {
         let translatedObject = translationValue;
         for (const key of Object.keys(translationValue)) {
-          if (translationKey.valuesToTranslate && translationKey.valuesToTranslate.includes(key)) {
+          if (translationKey.valuesToTranslate && (translationKey.valuesToTranslate === '*' || translationKey.valuesToTranslate.includes(key))) {
             // valuesToTranslate should always be strings
             translatedObject[key] = this.translateString(translationValue[key]);
           } else if (translationKey.properties) {
@@ -86,7 +86,7 @@ export class TranslatableRoute extends Route {
             }
           }
           if (translationKey.keysToTranslate) {
-            const newKey = (translationKey.keysToTranslate === 'all' || translationKey.keysToTranslate.includes(key)) ? this.translateKey(key) : key;
+            const newKey = (translationKey.keysToTranslate === '*' || translationKey.keysToTranslate.includes(key)) ? this.translateKey(key) : key;
             if (newKey !== key) {
               translatedObject[newKey] = translatedObject[key];
               delete translatedObject[key];

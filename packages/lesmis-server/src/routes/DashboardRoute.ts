@@ -34,7 +34,7 @@ export class DashboardRoute extends TranslatableRoute {
                 properties: {
                   chartConfig: {
                     type: 'object',
-                    keysToTranslate: 'all',
+                    keysToTranslate: '*',
                     properties: {
                       '*': {
                         type: 'object',
