@@ -6,7 +6,7 @@ export const Content = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   pointer-events: auto;
-  padding: 21px 16px 15px 16px;
+  padding: 21px 16px 15px 18px;
   color: #ffffff;
 `;
 

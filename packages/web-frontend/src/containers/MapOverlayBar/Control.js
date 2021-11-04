@@ -157,6 +157,7 @@ export const Control = ({
                 mapOverlay={mapOverlay}
                 onUpdateOverlayPeriod={onUpdateOverlayPeriod}
                 isMeasureLoading={isMeasureLoading}
+                maxSelectedOverlays={maxSelectedOverlays}
                 pinnedOverlay={pinnedOverlay}
                 setPinnedOverlay={setPinnedOverlay}
               />
