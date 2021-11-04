@@ -4,8 +4,12 @@ import { FlexSpaceBetween as FlexSpaceBetweenCenter } from '@tupaia/ui-component
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import moment from 'moment';
-import MuiSwitch from '@material-ui/core/Switch';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import {
+  CircularProgress as MuiCircularProgress,
+  Box as MuiBox,
+  Switch as MuiSwitch,
+} from '@material-ui/core';
+import { Skeleton as MuiSkeleton } from '@material-ui/lab';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { getDefaultDates, getLimits, GRANULARITY_CONFIG } from '../../utils/periodGranularities';
 import { Content, ContentText } from './Content';
@@ -42,8 +46,19 @@ const Switch = styled(MuiSwitch)`
   }
 `;
 
-const MeasureDatePicker = styled.div`
-  margin: 21px 16px 20px 46px;
+const Box = styled(MuiBox)`
+  margin-top: ${props => (props.$isMeasureLoading ? '-3px' : '0px')};
+  margin-bottom: ${props => (props.$isMeasureLoading ? '10px' : '0px')};
+  margin-left: ${props => (props.$isPinShowed ? '47px' : '18px')};
+  padding: 0;
+  min-height: 60px;
+`;
+
+const BoxContent = styled(Content)`
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 10px;
+  padding-bottom: 0px;
 `;
 
 const Wrapper = styled.div`
@@ -54,6 +69,17 @@ const Pin = styled(PinBase)`
   margin: 3px 12px 0 7px;
 `;
 
+const CircularProgress = styled(MuiCircularProgress)`
+  color: #2196f3;
+  margin-right: 7px;
+`;
+
+const Skeleton = styled(MuiSkeleton)`
+  // background: none;
+  margin-left: ${({ ml = 0 }) => ml}px;
+  margin-top: ${({ mt = 0 }) => mt}px;
+`;
+
 export const TitleAndDatePickerComponent = ({
   mapOverlay,
   onUpdateOverlayPeriod,
@@ -62,6 +88,7 @@ export const TitleAndDatePickerComponent = ({
   onSetDisplayedMapOverlay,
   pinnedOverlay,
   setPinnedOverlay,
+  maxSelectedOverlays,
 }) => {
   const [isSwitchedOn, setIsSwitchedOn] = useState(true);
 
@@ -77,6 +104,8 @@ export const TitleAndDatePickerComponent = ({
   // and uses those rather than calculating it's own defaults
   const startDate = mapOverlay.startDate || defaultDates.startDate;
   const endDate = mapOverlay.endDate || defaultDates.endDate;
+  const isPinned = pinnedOverlay === mapOverlayCode;
+  const isPinShowed = maxSelectedOverlays > 1;
 
   const handleSwitchChange = () => {
     const newDisplayedOverlays = isSwitchedOn
@@ -100,27 +129,41 @@ export const TitleAndDatePickerComponent = ({
 
   return (
     <Wrapper>
-      <Content>
-        <FlexSpaceBetween>
-          <Pin isPinned={pinnedOverlay === mapOverlayCode} onChange={handlePinChange} />
-          <ContentText>{isMeasureLoading ? <CircularProgress size={22} /> : name}</ContentText>
-        </FlexSpaceBetween>
-        <Switch checked={isSwitchedOn} onChange={handleSwitchChange} />
-      </Content>
+      {isMeasureLoading ? (
+        <BoxContent>
+          {isPinShowed && <CircularProgress size={22} thickness={7} />}
+          <Skeleton animation="wave" width={270} height={40} />
+        </BoxContent>
+      ) : (
+        <Content>
+          <FlexSpaceBetween>
+            {isPinShowed && <Pin isPinned={isPinned} onChange={handlePinChange} />}
+            <ContentText>{name}</ContentText>
+          </FlexSpaceBetween>
+          <Switch checked={isSwitchedOn} onChange={handleSwitchChange} />
+        </Content>
+      )}
 
       {showDatePicker && (
-        <MeasureDatePicker>
-          <DateRangePicker
-            key={name} // force re-create the component on measure change, which resets initial dates
-            granularity={periodGranularity}
-            startDate={startDate}
-            endDate={endDate}
-            min={datePickerLimits.startDate}
-            max={datePickerLimits.endDate}
-            onSetDates={updateMeasurePeriod}
-            isLoading={isMeasureLoading}
-          />
-        </MeasureDatePicker>
+        <Box $isPinShowed={isPinShowed} $isMeasureLoading={isMeasureLoading}>
+          {isMeasureLoading ? (
+            <>
+              <Skeleton animation="wave" width={200} height={40} />
+              <Skeleton animation="wave" width={100} height={30} mt={-10} />
+            </>
+          ) : (
+            <DateRangePicker
+              key={name} // force re-create the component on measure change, which resets initial dates
+              granularity={periodGranularity}
+              startDate={startDate}
+              endDate={endDate}
+              min={datePickerLimits.startDate}
+              max={datePickerLimits.endDate}
+              onSetDates={updateMeasurePeriod}
+              isLoading={isMeasureLoading}
+            />
+          )}
+        </Box>
       )}
     </Wrapper>
   );
@@ -145,6 +188,7 @@ TitleAndDatePickerComponent.propTypes = {
   onSetDisplayedMapOverlay: PropTypes.func.isRequired,
   pinnedOverlay: PropTypes.string,
   setPinnedOverlay: PropTypes.func.isRequired,
+  maxSelectedOverlays: PropTypes.number.isRequired,
 };
 
 TitleAndDatePickerComponent.defaultProps = {

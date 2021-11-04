@@ -173,7 +173,7 @@ export const BUTTON_COLORS = {
 export const MAP_OVERLAY_SELECTOR = {
   background: 'rgb(7, 40, 73)',
   border: '1px solid #2196f3',
-  subBackGround: '#203e5c',
+  subBackground: '#203e5c',
 };
 
 export const MARKER_POPUP_STYLE = {

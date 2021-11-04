@@ -6,14 +6,15 @@ export const Content = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   pointer-events: auto;
-  margin: 21px 16px 20px 16px;
+  padding: 21px 16px 15px 18px;
   color: #ffffff;
 `;
 
 export const ContentText = styled.div`
   font-weight: 500;
   font-size: 16px;
-  line-height: 19px;
+  line-height: 21px;
+  padding-right: 15px;
 `;
 
 export const EmptyContentText = styled(ContentText)`
@@ -23,7 +24,7 @@ export const EmptyContentText = styled(ContentText)`
 
 export const ExpandedContent = styled.div`
   pointer-events: auto;
-  background: ${MAP_OVERLAY_SELECTOR.subBackGround};
+  background: ${MAP_OVERLAY_SELECTOR.subBackground};
   color: #fff;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;

@@ -28,7 +28,7 @@ import { DropDownMenu } from '../../components/DropDownMenu';
 const MAX_MAP_OVERLAYS = 2;
 
 const DividerWrapper = styled.div`
-  background: ${MAP_OVERLAY_SELECTOR.subBackGround};
+  background: ${MAP_OVERLAY_SELECTOR.subBackground};
 `;
 
 const Container = styled.div`
@@ -55,17 +55,17 @@ const Header = styled(FlexSpaceBetween)`
 `;
 
 const OverlayLibrary = styled(FlexSpaceBetween)`
-  background: ${MAP_OVERLAY_SELECTOR.subBackGround};
-  color: ${({ expanded }) => (expanded ? LIGHT_GREY : DARK_GREY)};
+  background: ${MAP_OVERLAY_SELECTOR.subBackground};
+  color: ${({ $expanded }) => ($expanded ? LIGHT_GREY : DARK_GREY)};
   font-size: 12px;
   font-weight: 500;
-  padding: 8px 0px 8px 7px;
+  padding: 8px 0px 8px 18px;
   &:hover {
     cursor: pointer;
     color: ${LIGHT_GREY};
   }
-  border-bottom-left-radius: ${({ expanded }) => (!expanded ? '5px' : '0')};
-  border-bottom-right-radius: ${({ expanded }) => (!expanded ? '5px' : '0')};
+  border-bottom-left-radius: ${({ $expanded }) => (!$expanded ? '5px' : '0')};
+  border-bottom-right-radius: ${({ $expanded }) => (!$expanded ? '5px' : '0')};
 `;
 
 const StyledPrimaryComponent = styled(Typography)`
@@ -82,7 +82,6 @@ const StyledOptionComponent = styled(StyledPrimaryComponent)`
 
 const LayersIcon = styled(MuiLayersIcon)`
   font-size: 20px;
-  margin-left: 11px;
   margin-right: 7px;
   color: ${({ $expanded }) => ($expanded ? TUPAIA_ORANGE : 'default')};
 `;
@@ -92,11 +91,11 @@ const DownArrowIconWrapper = styled.div`
   padding: 8px 14px 0 5px;
   .MuiSvgIcon-root {
     transition: transform 0.3s ease;
-    transform: rotate(${({ expanded }) => (expanded ? '180deg' : '0deg')});
+    transform: rotate(${({ $expanded }) => ($expanded ? '180deg' : '0deg')});
   }
 
   &:hover {
-    color: ${TUPAIA_ORANGE};
+    color: ${({ $expanded }) => ($expanded ? LIGHT_GREY : 'default')};
   }
 `;
 
@@ -158,6 +157,7 @@ export const Control = ({
                 mapOverlay={mapOverlay}
                 onUpdateOverlayPeriod={onUpdateOverlayPeriod}
                 isMeasureLoading={isMeasureLoading}
+                maxSelectedOverlays={maxSelectedOverlays}
                 pinnedOverlay={pinnedOverlay}
                 setPinnedOverlay={setPinnedOverlay}
               />
@@ -170,12 +170,12 @@ export const Control = ({
           </Content>
         )}
       </DatePickerWrapper>
-      <OverlayLibrary expanded={isExpanded} onClick={toggleMeasures}>
+      <OverlayLibrary $expanded={isExpanded} onClick={toggleMeasures}>
         <FlexStart>
           <LayersIcon $expanded={isExpanded} />
           OVERLAY LIBRARY
         </FlexStart>
-        <DownArrowIconWrapper expanded={isExpanded}>
+        <DownArrowIconWrapper $expanded={isExpanded}>
           <DownArrow />
         </DownArrowIconWrapper>
       </OverlayLibrary>
