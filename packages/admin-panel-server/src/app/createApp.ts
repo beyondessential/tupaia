@@ -19,6 +19,8 @@ import {
   FetchDashboardVisualisationRoute,
   FetchHierarchyEntitiesRequest,
   FetchHierarchyEntitiesRoute,
+  FetchMapOverlayVisualisationRequest,
+  FetchMapOverlayVisualisationRoute,
   FetchReportPreviewDataRequest,
   FetchReportPreviewDataRoute,
   ImportDashboardVisualisationRequest,
@@ -86,6 +88,11 @@ export function createApp() {
       verifyBESAdminAccess,
       upload.single('testData'),
       handleWith(UploadTestDataRoute),
+    )
+    .get<FetchMapOverlayVisualisationRequest>(
+      '/v1/mapOverlayVisualisation/:mapOverlayVisualisationId',
+      verifyBESAdminAccess,
+      handleWith(FetchMapOverlayVisualisationRoute),
     )
     .build();
 

@@ -5,6 +5,7 @@
  */
 
 export * from './dashboardVisualisations';
+export * from './mapOverlayVisualisations';
 export * from './FetchHierarchyEntitiesRoute';
 export * from './FetchReportPreviewDataRoute';
 export * from './UploadTestDataRoute';

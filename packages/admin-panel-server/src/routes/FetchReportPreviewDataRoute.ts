@@ -11,11 +11,12 @@ import { Route } from '@tupaia/server-boilerplate';
 import { ReportConnection } from '../connections';
 import {
   DashboardVisualisationExtractor,
-  draftDashboardItemValidator,
+  draftDashboardItemValidator, draftMapOverlayValidator,
   draftReportValidator,
   PreviewMode,
   VIZ_TYPE_PARAM,
 } from '../viz-builder';
+import { MapOverlayVisualisationExtractor } from '../viz-builder/mapOverlayVisualisation/MapOverlayVisualisationExtractor';
 
 export type FetchReportPreviewDataRequest = Request<
   {},
@@ -90,8 +91,11 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
         draftReportValidator,
       );
     } else if (vizType === VIZ_TYPE_PARAM.MAP_OVERLAY) {
-      // TODO
-      throw new Error('TODO');
+      return new MapOverlayVisualisationExtractor(
+        previewConfig as Record<string, unknown>,
+        draftMapOverlayValidator,
+        draftReportValidator,
+      );
     } else {
       throw new Error('Unknown viz type');
     }
