@@ -1,8 +1,6 @@
-/**
- * Tupaia Web
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
- * This source code is licensed under the AGPL-3.0 license
- * found in the LICENSE file in the root directory of this source tree.
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
 /**
@@ -17,19 +15,18 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import shallowEqual from 'shallowequal';
 import Dialog from '@material-ui/core/Dialog';
-import StaticMap from '../../components/StaticMap';
-
-import { DASHBOARD_STYLES, DASHBOARD_META_MARGIN } from '../../styles';
-import { setDashboardGroup, closeDropdownOverlays } from '../../actions';
-import DashboardGroup from '../DashboardGroup';
-import { getFacilityThumbnailUrl } from '../../utils';
-import { DropDownMenu } from '../../components/DropDownMenu';
+import StaticMap from '../components/StaticMap';
+import { DASHBOARD_STYLES, DASHBOARD_META_MARGIN } from '../styles';
+import { setDashboardGroup, closeDropdownOverlays } from '../actions';
+import { DashboardGroup } from './DashboardGroup';
+import { getFacilityThumbnailUrl } from '../utils';
+import { DropDownMenu } from '../components/DropDownMenu';
 import {
   selectCurrentDashboardName,
   selectCurrentOrgUnit,
   selectCurrentOrgUnitBounds,
-} from '../../selectors';
-import { DEFAULT_BOUNDS } from '../../defaults';
+} from '../selectors';
+import { DEFAULT_BOUNDS } from '../defaults';
 
 const IMAGE_HEIGHT_RATIO = 0.5;
 

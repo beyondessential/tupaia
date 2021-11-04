@@ -4,19 +4,14 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { JsonEditor as Editor } from 'jsoneditor-react';
-import 'jsoneditor-react/es/editor.min.css';
-import ace from 'brace';
-import 'brace/mode/json';
-import 'brace/theme/github';
+import { JsonEditor as Editor } from '@tupaia/ui-components';
 
-export const JsonEditor = ({ value, onChange }) => {
+export const JsonEditor = ({ value, onChange, onInvalidChange }) => {
   return (
     <Editor
       value={value}
       onChange={onChange}
-      ace={ace}
-      theme="ace/theme/github"
+      onInvalidChange={onInvalidChange}
       mode="code"
       mainMenuBar={false}
     />
@@ -26,4 +21,9 @@ export const JsonEditor = ({ value, onChange }) => {
 JsonEditor.propTypes = {
   value: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   onChange: PropTypes.func.isRequired,
+  onInvalidChange: PropTypes.func,
+};
+
+JsonEditor.defaultProps = {
+  onInvalidChange: () => {},
 };
