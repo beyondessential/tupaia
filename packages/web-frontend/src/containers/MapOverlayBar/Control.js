@@ -28,7 +28,7 @@ import { DropDownMenu } from '../../components/DropDownMenu';
 const MAX_MAP_OVERLAYS = 2;
 
 const DividerWrapper = styled.div`
-  background: ${MAP_OVERLAY_SELECTOR.subBackGround};
+  background: ${MAP_OVERLAY_SELECTOR.subBackground};
 `;
 
 const Container = styled.div`
@@ -55,7 +55,7 @@ const Header = styled(FlexSpaceBetween)`
 `;
 
 const OverlayLibrary = styled(FlexSpaceBetween)`
-  background: ${MAP_OVERLAY_SELECTOR.subBackGround};
+  background: ${MAP_OVERLAY_SELECTOR.subBackground};
   color: ${({ $expanded }) => ($expanded ? LIGHT_GREY : DARK_GREY)};
   font-size: 12px;
   font-weight: 500;

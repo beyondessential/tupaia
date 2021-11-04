@@ -24,7 +24,7 @@ export const EmptyContentText = styled(ContentText)`
 
 export const ExpandedContent = styled.div`
   pointer-events: auto;
-  background: ${MAP_OVERLAY_SELECTOR.subBackGround};
+  background: ${MAP_OVERLAY_SELECTOR.subBackground};
   color: #fff;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
