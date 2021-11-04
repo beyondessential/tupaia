@@ -6,14 +6,15 @@ export const Content = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   pointer-events: auto;
-  margin: 21px 16px 20px 16px;
+  padding: 21px 16px 15px 16px;
   color: #ffffff;
 `;
 
 export const ContentText = styled.div`
   font-weight: 500;
   font-size: 16px;
-  line-height: 19px;
+  line-height: 21px;
+  padding-right: 15px;
 `;
 
 export const EmptyContentText = styled(ContentText)`

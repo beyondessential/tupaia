@@ -21,10 +21,6 @@ const FlexSpaceBetween = styled(FlexSpaceBetweenCenter)`
   align-items: flex-start;
 `;
 
-const SkeletonHeader = styled(FlexCenter)`
-  margin-top: ${({ mt = 0 }) => mt};
-`;
-
 const Switch = styled(MuiSwitch)`
   height: 16px;
   width: 37px;
@@ -51,7 +47,8 @@ const Switch = styled(MuiSwitch)`
 `;
 
 const MeasureDatePicker = styled.div`
-  margin: 21px 16px 20px 46px;
+  min-height: 60px;
+  padding: 0px 16px 0px 46px;
 `;
 
 const Wrapper = styled.div`
@@ -67,6 +64,7 @@ const CircularProgress = styled(MuiCircularProgress)`
 `;
 
 const Skeleton = styled(MuiSkeleton)`
+  background: none;
   margin-left: ${({ ml = 0 }) => ml}px;
   margin-top: ${({ mt = 0 }) => mt}px;
 `;
@@ -118,15 +116,14 @@ export const TitleAndDatePickerComponent = ({
   return (
     <Wrapper>
       {isMeasureLoading ? (
-        <SkeletonHeader mt="10px">
+        <FlexCenter mt="10px">
           <CircularProgress size={22} thickness={7} />
           <Skeleton animation="wave" width={270} height={40} ml={10} />
-        </SkeletonHeader>
+        </FlexCenter>
       ) : (
         <Content>
           <FlexSpaceBetween>
             <Pin isPinned={pinnedOverlay === mapOverlayCode} onChange={handlePinChange} />
-
             <ContentText>{name}</ContentText>
           </FlexSpaceBetween>
           <Switch checked={isSwitchedOn} onChange={handleSwitchChange} />
@@ -135,7 +132,7 @@ export const TitleAndDatePickerComponent = ({
 
       {showDatePicker &&
         (isMeasureLoading ? (
-          <Box ml="51px" mb="10px">
+          <Box ml="51px" mb="10px" mt="-3px">
             <Skeleton animation="wave" width={200} height={40} />
             <Skeleton animation="wave" width={100} height={30} mt={-10} />
           </Box>
