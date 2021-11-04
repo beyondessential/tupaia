@@ -71,11 +71,11 @@ const NoResultsBox = styled.div`
   padding: ${props => props.theme.spacing(6, 2)};
 `;
 
-export const DashboardSearchResults = ({ searchResults, isActive }) => {
+export const DashboardSearchResults = ({ autocompleteResponse, isActive }) => {
   const { search } = useLocation();
   const { entityCode } = useUrlParams();
 
-  const { getListboxProps, getOptionProps, groupedOptions, inputValue } = searchResults;
+  const { getListboxProps, getOptionProps, groupedOptions, inputValue } = autocompleteResponse;
 
   return (
     <Container className={isActive ? 'active' : ''} {...getListboxProps()}>
@@ -117,7 +117,7 @@ export const DashboardSearchResults = ({ searchResults, isActive }) => {
 };
 
 DashboardSearchResults.propTypes = {
-  searchResults: PropTypes.object.isRequired,
+  autocompleteResponse: PropTypes.object.isRequired, // material-ui autocomplete response object
   isActive: PropTypes.bool,
 };
 

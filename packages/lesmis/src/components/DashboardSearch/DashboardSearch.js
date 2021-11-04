@@ -122,7 +122,7 @@ export const DashboardSearch = ({ onToggleSearch, getResultsEl }) => {
     setInputValue('');
   };
 
-  const searchResults = useAutocomplete({
+  const autocompleteResponse = useAutocomplete({
     id: 'dashboard-search',
     inputValue,
     setInputValue,
@@ -163,7 +163,7 @@ export const DashboardSearch = ({ onToggleSearch, getResultsEl }) => {
   };
 
   const SearchResults = usePortal(
-    <DashboardSearchResults isActive={isActive} searchResults={searchResults} />,
+    <DashboardSearchResults isActive={isActive} autocompleteResponse={autocompleteResponse} />,
     getResultsEl,
   );
 
