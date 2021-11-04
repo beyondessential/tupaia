@@ -5,4 +5,5 @@
  */
 export * from './useExportVisualisation';
 export * from './useSaveDashboardVisualisation';
+export * from './useSaveMapOverlayVisualisation';
 export * from './useUploadTestData';

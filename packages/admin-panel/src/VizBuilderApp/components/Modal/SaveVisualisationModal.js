@@ -6,7 +6,7 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useParams } from 'react-router-dom';
 import CheckCircle from '@material-ui/icons/CheckCircle';
 import Typography from '@material-ui/core/Typography';
 
@@ -20,8 +20,8 @@ import {
   ConfirmModal,
 } from '@tupaia/ui-components';
 
-import { MODAL_STATUS } from '../../constants';
-import { useSaveDashboardVisualisation } from '../../api';
+import { MODAL_STATUS, VIZ_TYPE_PARAM } from '../../constants';
+import { useSaveDashboardVisualisation, useSaveMapOverlayVisualisation } from '../../api';
 import { useVizConfig } from '../../context';
 
 const TickIcon = styled(CheckCircle)`
@@ -38,22 +38,31 @@ const SuccessText = styled(Typography)`
 export const SaveVisualisationModal = ({ isOpen, onClose }) => {
   const [status, setStatus] = useState(MODAL_STATUS.INITIAL);
   const [{ visualisation }, { setVisualisationValue }] = useVizConfig();
-  const { mutateAsync: saveVisualisation, error } = useSaveDashboardVisualisation(visualisation);
-  const handleSave = useCallback(async () => {
-    setStatus(MODAL_STATUS.LOADING);
-    try {
-      const response = await saveVisualisation();
-      setVisualisationValue('id', response.id);
-    } catch (e) {
-      setStatus(MODAL_STATUS.ERROR);
-      return;
+
+  const { vizType } = useParams();
+
+  const useSaveViz = () => {
+    if (vizType === VIZ_TYPE_PARAM.DASHBOARD_ITEM) {
+      return useSaveDashboardVisualisation(visualisation);
     }
-    setStatus(MODAL_STATUS.SUCCESS);
-  });
+    if (vizType === VIZ_TYPE_PARAM.MAP_OVERLAY) {
+      return useSaveMapOverlayVisualisation(visualisation);
+    }
+    throw new Error('Unknown viz type');
+  };
+  const { mutateAsync: saveVisualisation, error } = useSaveViz();
+
   const handleClose = useCallback(() => {
     setStatus(MODAL_STATUS.INITIAL);
     onClose();
   });
+
+  let backLink = '/';
+  if (vizType === VIZ_TYPE_PARAM.DASHBOARD_ITEM) {
+    backLink = '/dashboard-items';
+  } else if (vizType === VIZ_TYPE_PARAM.MAP_OVERLAY) {
+    backLink = '/dashboard-items/map-overlays';
+  }
 
   if (status === MODAL_STATUS.SUCCESS) {
     return (
@@ -68,7 +77,7 @@ export const SaveVisualisationModal = ({ isOpen, onClose }) => {
         </DialogContent>
         <DialogFooter>
           <OutlinedButton onClick={handleClose}>Stay on this page</OutlinedButton>
-          <Button to="/dashboard-items" component={RouterLink}>
+          <Button to={backLink} component={RouterLink}>
             Go back to Admin Panel
           </Button>
         </DialogFooter>

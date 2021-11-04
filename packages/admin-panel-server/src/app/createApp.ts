@@ -27,6 +27,8 @@ import {
   ImportDashboardVisualisationRoute,
   SaveDashboardVisualisationRequest,
   SaveDashboardVisualisationRoute,
+  SaveMapOverlayVisualisationRequest,
+  SaveMapOverlayVisualisationRoute,
   UploadTestDataRequest,
   UploadTestDataRoute,
   UserRoute,
@@ -61,6 +63,11 @@ export function createApp() {
       '/v1/dashboardVisualisation/:dashboardVisualisationId',
       verifyBESAdminAccess,
       handleWith(SaveDashboardVisualisationRoute),
+    )
+    .put<SaveMapOverlayVisualisationRequest>(
+      '/v1/mapOverlayVisualisation/:mapOverlayVisualisationId',
+      verifyBESAdminAccess,
+      handleWith(SaveMapOverlayVisualisationRoute),
     )
     .get<FetchDashboardVisualisationRequest>(
       '/v1/dashboardVisualisation/:dashboardVisualisationId',

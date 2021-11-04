@@ -15,7 +15,7 @@ import { baseVisualisationValidator, baseVisualisationDataValidator } from '../v
 export class MapOverlayVisualisationExtractor<
   MapOverlayValidator extends yup.AnyObjectSchema,
   ReportValidator extends yup.AnyObjectSchema
-  > {
+> {
   private readonly visualisation: ExpandType<yup.InferType<typeof baseVisualisationValidator>>;
 
   private readonly mapOverlayValidator: MapOverlayValidator;
@@ -64,8 +64,8 @@ export class MapOverlayVisualisationExtractor<
       // },
       config: {
         ...presentation,
-        name,
       },
+      name,
       reportCode: code,
       legacy: !!legacy,
     };

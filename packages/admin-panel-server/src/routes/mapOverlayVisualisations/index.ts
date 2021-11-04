@@ -7,4 +7,4 @@
 // export * from './ExportMapOverlayVisualisationRoute';
 export * from './FetchMapOverlayVisualisationRoute';
 // export * from './ImportMapOverlayVisualisationRoute';
-// export * from './SaveMapOverlayVisualisationRoute';
+export * from './SaveMapOverlayVisualisationRoute';
