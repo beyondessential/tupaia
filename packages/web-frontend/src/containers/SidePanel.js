@@ -1,21 +1,16 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import Dashboard from '../Dashboard';
-import ExpandButton from '../ExpandButton';
-import {
-  TRANS_BLACK,
-  CONTROL_BAR_WIDTH,
-  CONTROL_BAR_PADDING,
-  MAP_CONTROLS_WIDTH,
-} from '../../styles';
-import { changeSidePanelContractedWidth, changeSidePanelExpandedWidth } from '../../actions';
+import Dashboard from './Dashboard';
+import { ExpandButton } from './ExpandButton';
+import { TRANS_BLACK, CONTROL_BAR_WIDTH, CONTROL_BAR_PADDING, MAP_CONTROLS_WIDTH } from '../styles';
+import { changeSidePanelContractedWidth, changeSidePanelExpandedWidth } from '../actions';
 
 const MIN_DEFAULT_WIDTH = 350;
 const MAX_DEFAULT_WIDTH = 500;

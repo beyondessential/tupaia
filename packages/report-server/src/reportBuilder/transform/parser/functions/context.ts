@@ -42,3 +42,15 @@ export const dataElementCodeToName: ContextFunctionConfig = {
     return codeToNameMap[dataElementCode];
   },
 };
+
+export const orgUnitIdToCode: ContextFunctionConfig = {
+  contextProps: ['orgUnits'],
+  create: ({ getContext }) => (orgUnitId: string) => {
+    const { orgUnits } = getContext();
+    if (!orgUnits) {
+      throw new Error("Missing dependency 'orgUnits' required by 'orgUnitIdToCode'");
+    }
+    const idToCode = reduceToDictionary(orgUnits, 'id', 'code');
+    return idToCode[orgUnitId];
+  },
+};
