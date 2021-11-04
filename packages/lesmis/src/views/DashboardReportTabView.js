@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
@@ -13,7 +13,7 @@ import { useDashboardData, useUser } from '../api/queries';
 import {
   FetchLoader,
   TabsLoader,
-  FlexCenter,
+  FlexColumn,
   DashboardReport,
   TabBar,
   Tabs,
@@ -21,8 +21,9 @@ import {
   TabPanel,
 } from '../components';
 import { NAVBAR_HEIGHT_INT } from '../constants';
-import { useUrlSearchParam } from '../utils';
+import { useUrlSearchParam, useStickyBar } from '../utils';
 import { yearToApiDates } from '../api/queries/utils';
+import { DashboardSearch } from '../components/DashboardSearch';
 
 const StickyTabBarContainer = styled.div`
   position: sticky;
@@ -30,8 +31,10 @@ const StickyTabBarContainer = styled.div`
   z-index: 2;
 `;
 
-const DashboardSection = styled(FlexCenter)`
-  min-height: 31rem;
+const DashboardSection = styled(FlexColumn)`
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 38rem;
 `;
 
 const ScrollToTopButton = styled(ArrowUpward)`
@@ -44,6 +47,21 @@ const ScrollToTopButton = styled(ArrowUpward)`
   padding: 10px;
   background: ${props => props.theme.palette.text.primary};
   border-radius: 3px;
+`;
+
+const PanelComponent = styled(FlexColumn)`
+  position: relative;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  max-width: 100%;
+
+  &.active {
+    position: absolute;
+    opacity: 0;
+    z-index: -1;
+    height: 0;
+    overflow: hidden;
+  }
 `;
 
 const DEFAULT_DASHBOARD_GROUP = 'Student Enrolment';
@@ -78,68 +96,37 @@ const useDefaultDashboardTab = (selectedDashboard = null, options) => {
   return dashboardNames[0];
 };
 
-// Utility for sticking the tab bar to the top of the page and scrolling up to the tab bar
-const useStickyBar = () => {
-  const topRef = useRef();
-  const [isScrolledPastTop, setIsScrolledPastTop] = useState(false);
-  const [stickyBarsHeight, setStickyBarsHeight] = useState(0);
-
-  const onLoadTabBar = useCallback(tabBarNode => {
-    if (tabBarNode !== null) {
-      const tabBarHeight = tabBarNode.getBoundingClientRect().height;
-      setStickyBarsHeight(tabBarHeight + NAVBAR_HEIGHT_INT);
-    }
-  }, []);
-
-  useEffect(() => {
-    const detectScrolledPastTop = () =>
-      setIsScrolledPastTop(topRef.current.getBoundingClientRect().top < stickyBarsHeight);
-
-    // detect once when the effect is run
-    detectScrolledPastTop();
-    // and again on scroll events
-    window.addEventListener('scroll', detectScrolledPastTop);
-
-    return () => window.removeEventListener('scroll', detectScrolledPastTop);
-  }, [stickyBarsHeight]);
-
-  const scrollToTop = useCallback(() => {
-    // if the top of the dashboards container is above the sticky dashboard header, scroll to the top
-    if (isScrolledPastTop) {
-      const newTop = topRef.current.offsetTop - stickyBarsHeight;
-      window.scrollTo({ top: newTop, behavior: 'smooth' });
-    }
-  }, [isScrolledPastTop, stickyBarsHeight]);
-
-  return {
-    scrollToTop,
-    topRef,
-    isScrolledPastTop,
-    onLoadTabBar,
-  };
-};
-
 export const DashboardReportTabView = ({
   entityCode,
   TabBarLeftSection,
   year,
   filterSubDashboards,
 }) => {
+  const dashboardsRef = useRef(null);
+  const [searchIsActive, setSearchIsActive] = useState(false);
   const [selectedDashboard, setSelectedDashboard] = useUrlSearchParam('subDashboard');
   const { data, isLoading, isError, error } = useDashboardData({
     entityCode,
     includeDrillDowns: false,
   });
-  const { scrollToTop, topRef, isScrolledPastTop, onLoadTabBar } = useStickyBar();
+  const { scrollToTop, isScrolledPastTop, onLoadTabBar } = useStickyBar(dashboardsRef);
   const subDashboards = useMemo(() => data?.filter(filterSubDashboards), [
     data,
     filterSubDashboards,
   ]);
   const activeDashboard = useDefaultDashboardTab(selectedDashboard, subDashboards);
 
+  const getResultsEl = () => {
+    return dashboardsRef;
+  };
+
   const handleChangeDashboard = (event, newValue) => {
     setSelectedDashboard(newValue);
     scrollToTop();
+  };
+
+  const onToggleSearch = isActive => {
+    setSearchIsActive(isActive);
   };
 
   const { startDate, endDate } = yearToApiDates(year);
@@ -148,6 +135,7 @@ export const DashboardReportTabView = ({
     <>
       <StickyTabBarContainer ref={onLoadTabBar}>
         <TabBar>
+          <DashboardSearch getResultsEl={getResultsEl} onToggleSearch={onToggleSearch} />
           <TabBarLeftSection />
           {isLoading ? (
             <TabsLoader />
@@ -167,10 +155,16 @@ export const DashboardReportTabView = ({
           )}
         </TabBar>
       </StickyTabBarContainer>
-      <DashboardSection ref={topRef}>
-        <FetchLoader isLoading={isLoading} isError={isError} error={error}>
+      <DashboardSection ref={dashboardsRef}>
+        <FetchLoader
+          isLoading={isLoading && !searchIsActive}
+          isError={isError && !searchIsActive}
+          error={error}
+        >
           {subDashboards?.map(dashboard => (
             <TabPanel
+              className={searchIsActive ? 'active' : ''}
+              Panel={PanelComponent}
               key={dashboard.dashboardId}
               isSelected={dashboard.dashboardName === activeDashboard}
             >
