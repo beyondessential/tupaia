@@ -66,7 +66,7 @@ export class DateQuestion extends PureComponent {
   }
 
   render() {
-    const { answer, questionText, maximumDate } = this.props;
+    const { answer, datePickerMode, questionText, maximumDate } = this.props;
     const hasAnswer = answer === 0 || !!answer;
 
     return (
@@ -94,6 +94,7 @@ export class DateQuestion extends PureComponent {
           onCancel={() => this.onCloseDatePicker()}
           date={hasAnswer ? new Date(answer) : new Date()}
           maximumDate={maximumDate}
+          mode={datePickerMode}
         />
       </View>
     );
@@ -102,6 +103,7 @@ export class DateQuestion extends PureComponent {
 
 DateQuestion.propTypes = {
   answer: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  datePickerMode: PropTypes.oneOf(['date', 'time', 'datetime']),
   onChangeAnswer: PropTypes.func.isRequired,
   questionText: PropTypes.string,
   maximumDate: PropTypes.instanceOf(Date),
@@ -109,6 +111,7 @@ DateQuestion.propTypes = {
 
 DateQuestion.defaultProps = {
   answer: '',
+  datePickerMode: 'date',
   questionText: null,
   maximumDate: undefined,
 };
@@ -143,3 +146,9 @@ const localStyles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+export class DateTimeQuestion extends PureComponent {
+  render() {
+    return <DateQuestion mode="datetime" {...this.props} />;
+  }
+}
