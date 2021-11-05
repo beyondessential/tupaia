@@ -39,9 +39,6 @@ from datetime import datetime, timedelta
 from helpers.clone import clone_instance
 from helpers.create_from_image import create_tupaia_instance_from_image
 
-tupaia_server_iam_role_arn = 'arn:aws:iam::843218180240:instance-profile/TupaiaServerRole'
-tupaia_subdomains = ['','admin','admin-api','api','config','export','mobile','psss','report-api','psss-api','entity-api','lesmis-api','lesmis']
-
 def spin_up_tupaia_deployment(event):
     # validate input config
     if 'Branch' not in event:

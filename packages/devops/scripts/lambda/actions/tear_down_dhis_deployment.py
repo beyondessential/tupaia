@@ -2,7 +2,7 @@
 #
 # Example config
 # {
-#   "Action": "tear_down_non_tupaia_deployment",
+#   "Action": "tear_down_dhis_deployment",
 #   "User": "edwin",
 #   "DeploymentName": "tonga: wai-965"
 # }
@@ -10,7 +10,7 @@
 from helpers.teardown import teardown_instance
 from helpers.utilities import get_instance
 
-def tear_down_non_tupaia_deployment(event):
+def tear_down_dhis_deployment(event):
     if 'DeploymentName' not in event:
       raise Exception('Must provide DeploymentName when tearing down an instance')
 
