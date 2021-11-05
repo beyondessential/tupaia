@@ -21,7 +21,7 @@ export default class extends RouteHandler {
 
     // If this is a project entity, get entitiesWithAccess and set them on the entity
     if (this.entity.isProject()) {
-      const orgUnits = await this.entity.getNearestOrgUnitDescendants();
+      const orgUnits = await this.entity.getChildren(project.entity_hierarchy_id);
 
       const entitiesWithAccessInfo = await Promise.all(
         orgUnits.map(async orgUnit => ({
@@ -39,8 +39,13 @@ export default class extends RouteHandler {
   }
 
   async getEntityAndCountryDataByCode(project) {
+    const { userHasAccess } = this.req;
     const projectEntity = await project.entity();
     const country = await this.entity.countryEntity();
+    if (!(await userHasAccess(country))) {
+      return {};
+    }
+
     const typesExcludedFromWebFrontend = await this.fetchTypesExcludedFromWebFrontend(project);
     const countryDescendants = country
       ? await country.getDescendants(project.entity_hierarchy_id, {
@@ -50,11 +55,8 @@ export default class extends RouteHandler {
           },
         })
       : [];
-    const orgUnitHierarchy = await this.filterForAccess([
-      projectEntity,
-      country,
-      ...countryDescendants,
-    ]);
+
+    const orgUnitHierarchy = [projectEntity].concat([country]).concat(countryDescendants);
 
     const childIdToParentId = await this.models.ancestorDescendantRelation.getChildIdToParentId(
       project.entity_hierarchy_id,
