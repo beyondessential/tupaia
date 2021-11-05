@@ -149,6 +149,6 @@ const localStyles = StyleSheet.create({
 
 export class DateTimeQuestion extends PureComponent {
   render() {
-    return <DateQuestion mode="datetime" {...this.props} />;
+    return <DateQuestion datePickerMode="datetime" {...this.props} />;
   }
 }
