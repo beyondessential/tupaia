@@ -47,8 +47,6 @@ const Switch = styled(MuiSwitch)`
 `;
 
 const Box = styled(MuiBox)`
-  margin-top: ${props => (props.$isMeasureLoading ? '-3px' : '0px')};
-  margin-bottom: ${props => (props.$isMeasureLoading ? '10px' : '0px')};
   margin-left: ${props => (props.$isPinShowed ? '47px' : '18px')};
   padding: 0;
   min-height: 60px;
@@ -57,8 +55,6 @@ const Box = styled(MuiBox)`
 const BoxContent = styled(Content)`
   align-items: center;
   justify-content: flex-start;
-  padding-top: 10px;
-  padding-bottom: 0px;
 `;
 
 const Wrapper = styled.div`
@@ -75,9 +71,13 @@ const CircularProgress = styled(MuiCircularProgress)`
 `;
 
 const Skeleton = styled(MuiSkeleton)`
-  // background: none;
+  background: none;
   margin-left: ${({ ml = 0 }) => ml}px;
   margin-top: ${({ mt = 0 }) => mt}px;
+
+  .MuiSkeleton-text {
+    transform: scale(1, 1);
+  }
 `;
 
 export const TitleAndDatePickerComponent = ({
@@ -131,8 +131,8 @@ export const TitleAndDatePickerComponent = ({
     <Wrapper>
       {isMeasureLoading ? (
         <BoxContent>
-          {isPinShowed && <CircularProgress size={22} thickness={7} />}
-          <Skeleton animation="wave" width={270} height={40} />
+          {isPinShowed && <CircularProgress size={21} thickness={7} />}
+          <Skeleton animation="wave" width={270} height={21} />
         </BoxContent>
       ) : (
         <Content>
@@ -145,11 +145,11 @@ export const TitleAndDatePickerComponent = ({
       )}
 
       {showDatePicker && (
-        <Box $isPinShowed={isPinShowed} $isMeasureLoading={isMeasureLoading}>
+        <Box $isPinShowed={isPinShowed}>
           {isMeasureLoading ? (
             <>
-              <Skeleton animation="wave" width={200} height={40} />
-              <Skeleton animation="wave" width={100} height={30} mt={-10} />
+              <Skeleton animation="wave" width={200} height={20} />
+              <Skeleton animation="wave" width={100} height={14} mt={3} />
             </>
           ) : (
             <DateRangePicker
