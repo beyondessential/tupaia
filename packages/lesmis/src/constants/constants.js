@@ -24,11 +24,11 @@ export const SUB_DASHBOARD_OPTIONS = [
   { code: 'ESSDP_Primary', label: 'ESSDP Primary sub-sector' },
   { code: 'ESSDP_LowerSecondary', label: 'ESSDP Lower secondary sub-sector' },
   { code: 'ESSDP_UpperSecondary', label: 'ESSDP Upper secondary sub-sector' },
-  { code: 'International_SDGs', label: 'International reporting on SDGs' },
   {
     code: 'EmergencyInEducation',
     label: 'Emergency in Education Preparedness and Response',
   },
+  { code: 'International_SDGs', label: 'International reporting on SDGs' },
 ];
 
 // Date Constants

@@ -51,6 +51,8 @@ const ScrollToTopButton = styled(ArrowUpward)`
 
 const PanelComponent = styled(FlexColumn)`
   position: relative;
+  flex: 1;
+  justify-content: flex-start;
   padding: 2rem;
   margin-bottom: 2rem;
   max-width: 100%;
@@ -62,6 +64,10 @@ const PanelComponent = styled(FlexColumn)`
     height: 0;
     overflow: hidden;
   }
+`;
+
+const InfoAlert = styled(SmallAlert)`
+  margin: auto;
 `;
 
 const DEFAULT_DASHBOARD_GROUP = 'Student Enrolment';
@@ -179,9 +185,9 @@ export const DashboardReportTabView = ({
                   />
                 ))
               ) : (
-                <SmallAlert key={dashboard.dashboardName} severity="info" variant="standard">
+                <InfoAlert key={dashboard.dashboardName} severity="info" variant="standard">
                   There are no reports available for this dashboard
-                </SmallAlert>
+                </InfoAlert>
               )}
             </TabPanel>
           ))}

@@ -12,7 +12,7 @@ import { Select } from '@tupaia/ui-components';
 import { VitalsView } from './VitalsView';
 import { DashboardReportTabView } from './DashboardReportTabView';
 import { TabPanel, TabBar, TabBarSection, YearSelector } from '../components';
-import { useUrlParams, useUrlSearchParams, useUrlSearchParam } from '../utils';
+import { useUrlParams, useUrlSearchParams, useUrlSearchParam, getProfileLabel } from '../utils';
 import { useEntityData } from '../api/queries';
 import { DEFAULT_DATA_YEAR, SUB_DASHBOARD_OPTIONS } from '../constants';
 import { DashboardReportModal } from '../components/DashboardReportModal';
@@ -41,20 +41,6 @@ const TabTemplate = ({ TabBarLeftSection, Body }) => (
 TabTemplate.propTypes = {
   TabBarLeftSection: PropTypes.func.isRequired,
   Body: PropTypes.string.isRequired,
-};
-
-const getProfileLabel = entityType => {
-  if (!entityType) {
-    return 'Profile';
-  }
-  switch (entityType) {
-    case 'district':
-      return 'Province Profile';
-    case 'sub_district':
-      return 'District Profile';
-    default:
-      return `${entityType} Profile`;
-  }
 };
 
 const useDashboardDropdownOptions = () => {

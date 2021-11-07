@@ -11,7 +11,7 @@ import MuiIconButton from '@material-ui/core/IconButton';
 import MuiSearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import { useDashboardData } from '../../api';
-import { usePortal, useUrlParams, useAutocomplete } from '../../utils';
+import { usePortal, useUrlParams, useAutocomplete, getProfileLabel } from '../../utils';
 import { DashboardSearchResults } from './DashboardSearchResults';
 import { SUB_DASHBOARD_OPTIONS } from '../../constants';
 
@@ -95,16 +95,19 @@ const useDashboardItems = () => {
     return [];
   }
 
-  return data.reduce((allItems, { dashboardName, entityName, ...dashboard }) => {
-    const subDashboardName = SUB_DASHBOARD_OPTIONS.find(option =>
-      dashboard.dashboardCode.startsWith(`LESMIS_${option.code}`),
-    )?.label;
+  return data.reduce((allItems, { dashboardName, entityName, entityType, ...dashboard }) => {
+    const subDashboardName =
+      SUB_DASHBOARD_OPTIONS.find(option =>
+        dashboard.dashboardCode.startsWith(`LESMIS_${option.code}`),
+      )?.label ?? getProfileLabel(entityType);
+
     const items = dashboard.items.map(item => ({
       ...item,
       subDashboardName,
       dashboardName,
       entityName,
     }));
+
     return [...allItems, ...items];
   }, []);
 };
