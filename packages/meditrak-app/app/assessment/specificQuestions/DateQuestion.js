@@ -27,9 +27,11 @@ export class DateQuestion extends PureComponent {
   }
 
   onDateChange(date) {
-    const { onChangeAnswer } = this.props;
-    onChangeAnswer(formatDate(date));
-    this.setState({ isDatePickerOpen: false });
+    // set to closed before changing answer, per https://github.com/mmazzarolo/react-native-modal-datetime-picker#the-picker-shows-up-twice-on-android
+    this.setState({ isDatePickerOpen: false }, () => {
+      const { onChangeAnswer } = this.props;
+      onChangeAnswer(formatDate(date));
+    });
   }
 
   onOpenDatePicker() {
