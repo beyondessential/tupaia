@@ -44,9 +44,11 @@ def spin_up_tupaia_deployment(event):
     if 'Branch' not in event:
         raise Exception('You must include the key "Branch" in the lambda config, e.g. "dev".')
     branch = event['Branch']
+    deployment_name = event.get('DeploymentName', branch) # default to branch if no deployment code set
+    if deployment_name == 'production' and branch != 'master':
+        raise Exception('The production deployment needs to check out master, not ' + branch)
 
     # get manual input parameters, or default for any not provided
-    deployment_name = event.get('DeploymentName', branch) # default to branch if no deployment code set
     instance_type = event.get('InstanceType', 't3a.medium')
     image_code = event.get('ImageCode', 'tupaia-gold-master') # Use AMI tagged with code
     security_group_code = event.get('SecurityGroupCode', 'tupaia-dev-sg') # Use security group tagged with code

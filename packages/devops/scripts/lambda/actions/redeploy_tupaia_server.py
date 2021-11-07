@@ -39,14 +39,21 @@ def redeploy_tupaia_server(event):
         { 'Name': 'instance-state-name', 'Values': ['running', 'stopped'] } # ignore terminated instances
     ]
 
-    if 'Branch' not in event and 'DeploymentName' not in event:
+    branch = event.get('Branch')
+    deployment_name = event.get('DeploymentName')
+
+    if not branch and not deployment_name:
         raise Exception('You must include either "DeploymentName" or "Branch" in the lambda config, e.g. "dev".')
 
-    if 'Branch' in event:
-        instance_filters.append({ 'Name': 'tag:Branch', 'Values': [event['Branch']] })
 
-    if 'DeploymentName' in event:
-        instance_filters.append({ 'Name': 'tag:DeploymentName', 'Values': [event['DeploymentName']] })
+    if deployment_name and branch and deployment_name == 'production' and branch != 'master':
+            raise Exception('The production deployment branch should not be changed from master to ' + branch)
+
+    if branch:
+        instance_filters.append({ 'Name': 'tag:Branch', 'Values': [branch] })
+
+    if deployment_name:
+        instance_filters.append({ 'Name': 'tag:DeploymentName', 'Values': [deployment_name] })
 
     # find current instance
     existing_instance = get_instance(instance_filters)
