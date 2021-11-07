@@ -31,10 +31,16 @@ if [[ $EXISTING_INSTANCES == *"Instances"* ]]; then
   while true; do
     aws ec2 wait instance-exists \
       --instance-ids ${NEW_INSTANCE_ID} \
-      --filters Name=tag-key,Values=SubdomainsViaGateway Name=instance-state-name,Values=running,stopped \
+      --filters Name=tag-key,Values=SubdomainsViaGateway Name=tag:DeploymentProgress,Values=complete \
       --no-cli-pager
     if [ $? -eq 0 ]; then
-      echo "New instance is online."
+      echo "New instance is ready, swapping over ELB"
+      aws lambda invoke \
+        --function-name deployment \
+        --payload "{\"Action\": \"swap_out_tupaia_server\", \"DeploymentName\": \"$DEPLOYMENT_NAME\", \"NewInstanceId\": \"$INSTANCE_ID\" }" \
+        --cli-binary-format raw-in-base64-out $RESPONSE_FILE \
+        --no-cli-pager
+      echo "Redeploy complete"
       break
     else
       if [ "$WAIT_ATTEMPTS" -ge 10 ]; then
