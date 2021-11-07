@@ -7,10 +7,10 @@ from helpers.teardown import teardown_instance
 
 def delete_old_deployments(event):
     current_datetime = datetime.now()
-    current_date_and_hour = time.strftime("%Y-%m-%d %H")
+    current_date = time.strftime("%Y-%m-%d")
     filters = [
         {'Name': 'instance-state-name', 'Values': ['running', 'stopped']}, # ignore terminated instances
-        {'Name': 'tag:DeleteAfter', 'Values': [current_date_and_hour + '*']} # get any due to be deleted this hour
+        {'Name': 'tag:DeleteAfter', 'Values': [current_date + '*']} # get any due to be deleted this hour
     ]
     instances = find_instances(filters)
 

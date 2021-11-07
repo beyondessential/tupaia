@@ -1,11 +1,10 @@
-# Creates a new deployment of DHIS2 or another EC2 instance hosted within the tupaia.org domain, but
-# not Tupaia proper (which has a separate file, see spin_up_tupaia_deployment)
+# Creates a new deployment of DHIS2 hosted within the tupaia.org domain
 #
 # Example configs
 #
 # 1. Spin up new deployment of Tonga DHIS2
 # {
-#   "Action": "spin_up_non_tupaia_deployment",
+#   "Action": "spin_up_dhis_deployment",
 #   "User": "edwin",
 #   "DeploymentName": "tonga-for-testing",
 #   "InstanceType": "t3a.medium",
@@ -14,7 +13,7 @@
 
 from helpers.clone import clone_instance
 
-def spin_up_non_tupaia_deployment(event):
+def spin_up_dhis_deployment(event):
     # validate input config
     if 'FromDeployment' not in event:
         raise Exception('You must include the key "FromDeployment" in the lambda config to indicate which database snapshot to use.')

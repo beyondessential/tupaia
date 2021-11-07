@@ -39,17 +39,16 @@ from datetime import datetime, timedelta
 from helpers.clone import clone_instance
 from helpers.create_from_image import create_tupaia_instance_from_image
 
-tupaia_server_iam_role_arn = 'arn:aws:iam::843218180240:instance-profile/TupaiaServerRole'
-tupaia_subdomains = ['','admin','admin-api','api','config','export','mobile','psss','report-api','psss-api','entity-api','lesmis-api','lesmis']
-
 def spin_up_tupaia_deployment(event):
     # validate input config
     if 'Branch' not in event:
         raise Exception('You must include the key "Branch" in the lambda config, e.g. "dev".')
     branch = event['Branch']
+    deployment_name = event.get('DeploymentName', branch) # default to branch if no deployment code set
+    if deployment_name == 'production' and branch != 'master':
+        raise Exception('The production deployment needs to check out master, not ' + branch)
 
     # get manual input parameters, or default for any not provided
-    deployment_name = event.get('DeploymentName', branch) # default to branch if no deployment code set
     instance_type = event.get('InstanceType', 't3a.medium')
     image_code = event.get('ImageCode', 'tupaia-gold-master') # Use AMI tagged with code
     security_group_code = event.get('SecurityGroupCode', 'tupaia-dev-sg') # Use security group tagged with code
