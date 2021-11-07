@@ -42,10 +42,6 @@ sudo -Hu ubuntu $DEPLOYMENT_SCRIPTS/startBackEnds.sh | while IFS= read -r line; 
 # Set nginx config and start the service running
 $DEPLOYMENT_SCRIPTS/configureNginx.sh | while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
 
-# Check if the subdomains via gateway is missing, in which case this is a redeploy and needs to trigger
-# lambda to swap it into the gateway and terminate the existing instance
-SUBDOMAINS_VIA_GATEWAY_TAG=$(aws ec2 describe-tags --filters "Name=resource-id,Values=$(ec2metadata --instance-id | cut -d ' ' -f2)" "Name=key,Values=SubdomainsViaGateway" --output text)
-if [[ $SUBDOMAINS_VIA_GATEWAY_TAG == "" ]]; then
-  INSTANCE_ID=$(ec2metadata --instance-id)
-  aws lambda invoke --function-name deployment --payload "{\"Action\": \"swap_out_tupaia_server\", \"DeploymentName\": \"$DEPLOYMENT_NAME\", \"NewInstanceId\": \"$INSTANCE_ID\" }"  --cli-binary-format raw-in-base64-out $LOGS_DIR/lambda_swap_out_response.json
-fi
+# Tag as complete so CI/CD system can use the tag as a health check
+INSTANCE_ID=$(ec2metadata --instance-id)
+aws ec2 create-tags --resources ${INSTANCE_ID} --tags Key=DeploymentProgress,Value=complete

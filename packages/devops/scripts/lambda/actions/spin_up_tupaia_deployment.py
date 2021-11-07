@@ -54,7 +54,10 @@ def spin_up_tupaia_deployment(event):
     security_group_code = event.get('SecurityGroupCode', 'tupaia-dev-sg') # Use security group tagged with code
     clone_db_from = event.get('CloneDbFrom', 'production') # Use volume snapshot tagged with deployment name
 
-    extra_tags = [{ 'Key': 'DeployedBy', 'Value': event['User'] }]
+    extra_tags = [
+        { 'Key': 'DeployedBy', 'Value': event['User'] },
+        { 'Key': 'DeploymentProgress', 'Value': 'deploying' }
+    ]
     if 'HoursOfLife' in event:
         delete_after = datetime.now() + timedelta(hours=event['HoursOfLife'])
         extra_tags.append({ 'Key': 'DeleteAfter', 'Value': format(delete_after, "%Y-%m-%d %H:%M") })
