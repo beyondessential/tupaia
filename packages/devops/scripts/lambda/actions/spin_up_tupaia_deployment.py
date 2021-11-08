@@ -55,8 +55,7 @@ def spin_up_tupaia_deployment(event):
     clone_db_from = event.get('CloneDbFrom', 'production') # Use volume snapshot tagged with deployment name
 
     extra_tags = [
-        { 'Key': 'DeployedBy', 'Value': event['User'] },
-        { 'Key': 'DeploymentProgress', 'Value': 'deploying' }
+        { 'Key': 'DeployedBy', 'Value': event['User'] }
     ]
     if 'HoursOfLife' in event:
         delete_after = datetime.now() + timedelta(hours=event['HoursOfLife'])

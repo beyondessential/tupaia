@@ -61,10 +61,18 @@ def redeploy_tupaia_server(event):
     if not existing_instance:
       raise Exception('No existing instance found to redeploy, perhaps you want to spin up a new deployment?')
 
-    extra_tags = None
+    original_deployed_by = get_tag(existing_instance, 'DeleteAfter')
+    if original_deployed_by:
+        deployed_by = original_deployed_by + ' (redeployed by ' + event['User'] + ')'
+    else:
+        deployed_by = event['User']
+
+    extra_tags = [
+        { 'Key': 'DeployedBy', 'Value': deployed_by }
+    ]
     delete_after = get_tag(existing_instance, 'DeleteAfter')
     if delete_after != '':
-        extra_tags = [{ 'Key': 'DeleteAfter', 'Value': delete_after }],
+        extra_tags.append({ 'Key': 'DeleteAfter', 'Value': delete_after }),
 
     # launch server instance based on gold master AMI
     # original instance will be deleted by lambda script "swap_out_tupaia_server" once new instance is running
