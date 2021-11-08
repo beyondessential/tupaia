@@ -7,6 +7,10 @@ TUPAIA_DIR=$HOME_DIR/tupaia
 LOGS_DIR=$HOME_DIR/logs
 DEPLOYMENT_SCRIPTS=${TUPAIA_DIR}/packages/devops/scripts/deployment
 
+# Add tag for CI/CD to use as a health check
+INSTANCE_ID=$(ec2metadata --instance-id)
+aws ec2 create-tags --resources ${INSTANCE_ID} --tags Key=StartupBuildProgress,Value=building
+
 DEPLOYMENT_NAME=$(${DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh DeploymentName)
 BRANCH=$(${DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh Branch)
 echo "Starting up ${DEPLOYMENT_NAME} (${BRANCH})"
@@ -43,5 +47,4 @@ sudo -Hu ubuntu $DEPLOYMENT_SCRIPTS/startBackEnds.sh | while IFS= read -r line; 
 $DEPLOYMENT_SCRIPTS/configureNginx.sh | while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
 
 # Tag as complete so CI/CD system can use the tag as a health check
-INSTANCE_ID=$(ec2metadata --instance-id)
-aws ec2 create-tags --resources ${INSTANCE_ID} --tags Key=DeploymentProgress,Value=complete
+aws ec2 create-tags --resources ${INSTANCE_ID} --tags Key=StartupBuildProgress,Value=complete
