@@ -36,7 +36,7 @@ const {
   INDICATOR,
 } = DHIS2_RESOURCE_TYPES;
 
-const LATEST_LOOKBACK_PERIOD = '600d';
+const LATEST_LOOKBACK_PERIOD = '3650d';
 
 export class DhisApi {
   constructor(serverName, serverUrl, serverReadOnly = false) {
