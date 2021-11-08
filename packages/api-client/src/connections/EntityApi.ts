@@ -14,9 +14,11 @@ import type {
   EntityResponseObject,
 } from '@tupaia/entity-server/src/type-exports';
 
-import type { FilterCriteria, AdvancedFilterValue } from '@tupaia/server-boilerplate/src/type-exports';
+import type {
+  FilterCriteria,
+  AdvancedFilterValue,
+} from '@tupaia/server-boilerplate/src/type-exports';
 
-import { ApiConnection } from './ApiConnection';
 import { BaseApi } from './BaseApi';
 
 const CLAUSE_DELIMITER = ';';
@@ -100,7 +102,6 @@ type Prefix<T, P extends string> = {
 };
 
 export class EntityApi extends BaseApi {
-
   private stringifyFields(fields?: ExtendedEntityFieldName[]) {
     return fields ? fields.join(',') : undefined;
   }
@@ -389,7 +390,6 @@ export class EntityApi extends BaseApi {
     ancestorQueryOptions?: RelationshipsSubQueryOptions,
     descendantQueryOptions?: RelationshipsSubQueryOptions,
   ): Promise<GroupByAncestorRelationshipsResponseBody>;
-
   public async getRelationshipsOfEntities(
     hierarchyName: string,
     entityCodes: string[],
