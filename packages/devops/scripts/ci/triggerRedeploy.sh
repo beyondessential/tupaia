@@ -31,7 +31,7 @@ if [[ $EXISTING_INSTANCES == *"Instances"* ]]; then
   while true; do
     aws ec2 wait instance-exists \
       --instance-ids ${NEW_INSTANCE_ID} \
-      --filters Name=tag-key,Values=SubdomainsViaGateway Name=tag:DeploymentProgress,Values=complete \
+      --filters Name=tag-key,Values=SubdomainsViaGateway Name=tag:StartupBuildProgress,Values=complete \
       --no-cli-pager
     if [ $? -eq 0 ]; then
       echo "New instance is ready, swapping over ELB"
