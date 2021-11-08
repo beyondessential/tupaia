@@ -5,9 +5,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
-import { Autocomplete, MultiSelect, TextField } from '@tupaia/ui-components';
+import { Autocomplete, TextField } from '@tupaia/ui-components';
 import { useCountries, usePermissionGroups, useProjects } from '../../api/queries';
 import { useVizBuilderConfig } from '../../context';
+import Chip from '@material-ui/core/Chip';
 
 export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   const { handleSubmit, register, errors } = useForm();
@@ -21,14 +22,23 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
 
   // Save the default values here so that they are frozen from the store when the component first mounts
   const [defaults] = useState(visualisation);
-  const { name, code, mapOverlayPermissionGroup, projectCodes, countryCodes } = defaults;
+  const {
+    name,
+    code,
+    mapOverlayPermissionGroup,
+    projectCodes: inputProjectCodes,
+    countryCodes: inputCountryCodes,
+  } = defaults;
+
+  const [projectCodes, setProjectCodes] = useState(inputProjectCodes);
+  const [countryCodes, setCountryCodes] = useState(inputCountryCodes);
 
   const doSubmit = data => {
     setVisualisationValue('code', data.code);
     setVisualisationValue('name', data.name);
     setVisualisationValue('mapOverlayPermissionGroup', data.mapOverlayPermissionGroup);
-    setVisualisationValue('projectCodes', data.projectCodes);
-    setVisualisationValue('countryCodes', data.countryCodes);
+    setVisualisationValue('projectCodes', projectCodes);
+    setVisualisationValue('countryCodes', countryCodes);
     onSubmit();
   };
 
@@ -70,27 +80,49 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
             required: 'Required',
           })}
         />
-        <MultiSelect
+        <Autocomplete
           id="projectCodes"
           name="projectCodes"
           label="Project Codes"
-          placeholder="Select Project Codes"
           defaultValue={projectCodes ?? []}
-          options={allProjects.map(p => ({ label: p['project.code'], value: p['project.code'] }))}
+          options={allProjects.map(p => p['project.code'])}
           disabled={isLoadingAllProjects}
           error={!!errors.projectCodes}
           helperText={errors.projectCodes && errors.projectCodes.message}
+          muiProps={{
+            freeSolo: true,
+            multiple: true,
+            selectOnFocus: true,
+            clearOnBlur: true,
+            handleHomeEndKeys: true,
+            renderTags: (selected, getTagProps) =>
+              selected.map((option, index) => (
+                <Chip color="primary" label={option} {...getTagProps({ index })} />
+              )),
+          }}
+          onChange={(thing, selected) => setProjectCodes(selected)}
         />
-        <MultiSelect
+        <Autocomplete
           id="countryCodes"
           name="countryCodes"
           label="Country Codes"
-          placeholder="Select Country Codes"
           defaultValue={countryCodes ?? []}
-          options={allCountries.map(c => ({ label: c.code, value: c.code }))}
+          options={allCountries.map(c => c.code)}
           disabled={isLoadingAllCountries}
           error={!!errors.countryCodes}
           helperText={errors.countryCodes && errors.countryCodes.message}
+          muiProps={{
+            freeSolo: true,
+            multiple: true,
+            selectOnFocus: true,
+            clearOnBlur: true,
+            handleHomeEndKeys: true,
+            renderTags: (selected, getTagProps) =>
+              selected.map((option, index) => (
+                <Chip color="primary" label={option} {...getTagProps({ index })} />
+              )),
+          }}
+          onChange={(thing, selected) => setCountryCodes(selected)}
         />
       </Body>
       <Footer />
