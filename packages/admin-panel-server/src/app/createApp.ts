@@ -15,6 +15,8 @@ import { upload, verifyBESAdminAccess } from '../middleware';
 import {
   ExportDashboardVisualisationRequest,
   ExportDashboardVisualisationRoute,
+  ExportMapOverlayVisualisationRequest,
+  ExportMapOverlayVisualisationRoute,
   FetchDashboardVisualisationRequest,
   FetchDashboardVisualisationRoute,
   FetchHierarchyEntitiesRequest,
@@ -83,6 +85,11 @@ export function createApp() {
       '/v1/export/dashboardVisualisation',
       verifyBESAdminAccess,
       handleWith(ExportDashboardVisualisationRoute),
+    )
+    .post<ExportMapOverlayVisualisationRequest>(
+      '/v1/export/mapOverlayVisualisation',
+      verifyBESAdminAccess,
+      handleWith(ExportMapOverlayVisualisationRoute),
     )
     .post<ImportDashboardVisualisationRequest>(
       '/v1/import/dashboardVisualisations',

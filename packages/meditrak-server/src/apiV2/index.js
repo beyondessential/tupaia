@@ -154,6 +154,10 @@ apiV2.get('/dashboardItems/:recordId?', useRouteHandler(GETDashboardItems));
 apiV2.get('/dashboardRelations/:recordId?', useRouteHandler(GETDashboardRelations));
 apiV2.get('/dashboardVisualisations/:recordId?', useRouteHandler(GETDashboardVisualisations));
 apiV2.get('/mapOverlayVisualisations/:recordId?', useRouteHandler(GETMapOverlayVisualisations));
+apiV2.get(
+  '/mapOverlays/:parentRecordId/mapOverlayGroupRelations',
+  useRouteHandler(GETMapOverlayGroupRelations),
+);
 apiV2.get('/legacyReports/:recordId?', useRouteHandler(GETLegacyReports));
 apiV2.get('/indicators/:recordId?', useRouteHandler(BESAdminGETHandler));
 apiV2.get('/feedItems/:recordId?', useRouteHandler(GETFeedItems));

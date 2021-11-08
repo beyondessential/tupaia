@@ -55,13 +55,6 @@ export class MapOverlayVisualisationExtractor<
 
     return {
       code,
-      // TODO: for prototype, the whole presentation object will be the json edit box
-      // But in the future, it will be broken down into different structure.
-      // config: {
-      //   type: presentation.type,
-      //   ...presentation.config,
-      //   name,
-      // },
       config: {
         ...presentation,
       },
@@ -127,8 +120,6 @@ export class MapOverlayVisualisationExtractor<
     const report = this.visualisation.legacy
       ? this.vizToLegacyReport()
       : this.vizToReport(previewMode);
-    const x = this.reportValidator.validateSync(report, { context: this.reportValidatorContext });
-
-    return x;
+    return this.reportValidator.validateSync(report, { context: this.reportValidatorContext });
   }
 }

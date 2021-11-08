@@ -8,21 +8,26 @@ import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
   assertMapOverlayGroupRelationsGetPermissions,
   createMapOverlayGroupRelationDBFilter,
+  createRelationsViaParentMapOverlayDBFilter,
   createRelationsViaParentOverlayGroupDBFilter,
 } from './assertMapOverlayGroupRelationsPermissions';
 import { assertMapOverlayGroupsGetPermissions } from '../mapOverlayGroups';
+import { TYPES } from '@tupaia/database';
+import { assertMapOverlaysGetPermissions } from '../mapOverlays';
 
 /**
  * Handles endpoints:
  * - /mapOverlayGroupRelations
  * - /mapOverlayGroupRelations/:mapOverlayGroupRelationId
  * - /mapOverlayGroups/:parentRecordId/mapOverlayGroupRelations
+ * - /mapOverlays/:parentRecordId/mapOverlayGroupRelations
  */
 export class GETMapOverlayGroupRelations extends GETHandler {
   permissionsFilteredInternally = true;
 
   customJoinConditions = {
     map_overlay_group: ['map_overlay_group.id', 'map_overlay_group_relation.map_overlay_group_id'],
+    map_overlay: ['map_overlay.id', 'map_overlay_group_relation.child_id'],
   };
 
   async findSingleRecord(mapOverlayGroupRelationId, options) {
@@ -53,7 +58,17 @@ export class GETMapOverlayGroupRelations extends GETHandler {
   }
 
   async getPermissionsViaParentFilter(criteria, options) {
-    // Check parent permissions
+    switch (this.parentRecordType) {
+      case TYPES.MAP_OVERLAY_GROUP:
+        return this.getPermissionsViaParentMapOverlayGroupFilter(criteria, options);
+      case TYPES.MAP_OVERLAY:
+        return this.getPermissionsViaParentMapOverlayFilter(criteria, options);
+      default:
+        throw new Error(`Cannot get map overlay relations for ${this.parentRecordType}`);
+    }
+  }
+
+  async getPermissionsViaParentMapOverlayGroupFilter(criteria, options) {
     const mapOverlayGroupPermissionChecker = accessPolicy =>
       assertMapOverlayGroupsGetPermissions(accessPolicy, this.models, this.parentRecordId);
 
@@ -62,6 +77,24 @@ export class GETMapOverlayGroupRelations extends GETHandler {
     );
 
     const dbConditions = await createRelationsViaParentOverlayGroupDBFilter(
+      this.accessPolicy,
+      this.models,
+      criteria,
+      this.parentRecordId,
+    );
+
+    return { dbConditions, dbOptions: options };
+  }
+
+  async getPermissionsViaParentMapOverlayFilter(criteria, options) {
+    const parentPermissionChecker = accessPolicy =>
+      assertMapOverlaysGetPermissions(accessPolicy, this.models, this.parentRecordId);
+
+    await this.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, parentPermissionChecker]),
+    );
+
+    const dbConditions = await createRelationsViaParentMapOverlayDBFilter(
       this.accessPolicy,
       this.models,
       criteria,

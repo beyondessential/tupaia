@@ -29,19 +29,20 @@ type MapOverlayVisualisation = {
 //   presentation: Presentation;
 // };
 //
-export type MapOverlayViz = MapOverlayVisualisation //| LegacyMapOverlayVisualisation;
+export type MapOverlayViz = MapOverlayVisualisation; //| LegacyMapOverlayVisualisation;
 //
 // export interface VisualisationValidator {
 //   validate: (object: MapOverlayVisualisation) => void;
 // }
-//
-// export type MapOverlayGroup = {
-//   id: string;
-//   code: string;
-//   name: string;
-//   sortOrder?: number;
-// };
-//
+
+export type MapOverlayGroup = {
+  id: string;
+  code: string;
+  name: string;
+};
+
+export type MapOverlayGroupRecord = CamelKeysToSnake<MapOverlayGroup>;
+
 export type MapOverlay = {
   id: string;
   code: string;
@@ -55,25 +56,24 @@ export type MapOverlay = {
   projectCodes: any; // FIXME
   countryCodes: any; // FIXME
 };
-//
-// export type MapOverlayRelation = {
-//   mapOverlayCode: string;
-//   entityTypes: string[];
-//   projectCodes: string[];
-//   permissionGroups: string[];
-//   sortOrder?: number;
-// };
-//
-// export type MapOverlayRecord = CamelKeysToSnake<MapOverlay>;
-//
-// export type MapOverlayItemRecord = CamelKeysToSnake<MapOverlayItem>;
-//
-// export type MapOverlayRelationRecord = CamelKeysToSnake<Omit<MapOverlayRelation, 'mapOverlayCode'>> & {
-//   id: string;
-//   child_id: string;
-//   mapOverlay_id: string;
-// };
-//
+
+export type MapOverlayGroupRelation = {
+  mapOverlayCode: string;
+  sortOrder?: number;
+};
+
+export type MapOverlayRecord = CamelKeysToSnake<MapOverlay>;
+
+export type MapOverlayGroupRelationRecord = CamelKeysToSnake<
+  Omit<MapOverlayGroupRelation, 'mapOverlayCode'>
+> & {
+  id: string;
+  map_overlay_group_id: string;
+  child_id: string;
+  child_type: 'mapOverlay' | 'mapOverlayGroup';
+  sort_order?: number;
+};
+
 export type MapOverlayVisualisationResource = { mapOverlay: MapOverlay; report: Report };
 //
 // export type LegacyMapOverlayVisualisationResource = {
@@ -81,6 +81,5 @@ export type MapOverlayVisualisationResource = { mapOverlay: MapOverlay; report: 
 //   report: LegacyReport;
 // };
 //
-export type MapOverlayVizResource =
-  | MapOverlayVisualisationResource
-  //| LegacyMapOverlayVisualisationResource;
+export type MapOverlayVizResource = MapOverlayVisualisationResource;
+//| LegacyMapOverlayVisualisationResource;
