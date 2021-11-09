@@ -9,14 +9,15 @@ import IconButton from '@material-ui/core/IconButton';
 import GetAppIcon from '@material-ui/icons/GetApp';
 
 import { useExportVisualisation } from '../api/mutations';
-import { useVizBuilderConfig } from '../context';
+import { useVizBuilderConfig, useVizConfigError } from '../context';
 
 export const ExportButton = () => {
   const [{ visualisation }] = useVizBuilderConfig();
+  const { hasError: vizConfigHasError } = useVizConfigError();
   const { mutateAsync: exportVisualisation } = useExportVisualisation(visualisation);
 
   return (
-    <IconButton onClick={exportVisualisation}>
+    <IconButton disabled={vizConfigHasError} onClick={exportVisualisation}>
       <GetAppIcon />
     </IconButton>
   );
