@@ -7,4 +7,7 @@ import { Row } from '../types';
 
 export interface FetchResponse {
   results: Row[];
+  metadata?: {
+    dataElementCodeToName?: Record<string, string>;
+  };
 }

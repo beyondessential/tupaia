@@ -5,4 +5,4 @@
 
 export { buildContext, ReqContext } from './buildContext';
 
-export { Context, ContextProp } from './types';
+export { Context, ContextDependency } from './types';

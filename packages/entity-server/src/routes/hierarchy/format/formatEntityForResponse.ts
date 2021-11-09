@@ -85,12 +85,13 @@ export async function formatEntitiesForResponse(
 
   const fields = fieldOrFields;
   const { hierarchyId } = ctx;
-  const relationRecords =
-    fields.includes('parent_code') || fields.includes('child_codes')
-      ? await models.ancestorDescendantRelation.getImmediateRelations(hierarchyId, {
-          'descendant.country_code': ctx.allowedCountries,
-        })
-      : [];
+  const childCodeToParentCode: Record<string, string> = fields.includes('parent_code')
+    ? await models.ancestorDescendantRelation.getChildCodeToParentCode(hierarchyId)
+    : {};
+  const parentCodeToChildCodes: Record<string, string[]> = fields.includes('child_codes')
+    ? await models.ancestorDescendantRelation.getParentCodeToChildCodes(hierarchyId)
+    : {};
+
   const responseBuilders: EntityResponseObjectBuilder[] = new Array(entities.length)
     .fill(0)
     .map(() => new EntityResponseObjectBuilder()); // fill array with empty objects
@@ -99,24 +100,14 @@ export async function formatEntitiesForResponse(
     if (isExtendedField(field)) {
       switch (field) {
         case 'parent_code': {
-          const childToParentMap = reduceToDictionary(
-            relationRecords,
-            'descendant_code',
-            'ancestor_code',
-          );
           entities.forEach((entity, index) =>
-            responseBuilders[index].set('parent_code', childToParentMap[entity.code]),
+            responseBuilders[index].set('parent_code', childCodeToParentCode[entity.code]),
           );
           break;
         }
         case 'child_codes': {
-          const parentToChildrenMap = reduceToArrayDictionary(
-            relationRecords,
-            'ancestor_code',
-            'descendant_code',
-          );
           entities.forEach((entity, index) =>
-            responseBuilders[index].set('child_codes', parentToChildrenMap[entity.code]),
+            responseBuilders[index].set('child_codes', parentCodeToChildCodes[entity.code]),
           );
           break;
         }
