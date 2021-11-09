@@ -29,6 +29,7 @@ initApp();
 
 const appType = process.env.REACT_APP_APP_TYPE;
 
+// Todo: fix export issues
 const App = () => {
   let RootScreen = DesktopApp;
 
