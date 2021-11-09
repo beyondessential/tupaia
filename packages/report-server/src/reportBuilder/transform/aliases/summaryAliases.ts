@@ -16,7 +16,7 @@ const getRowsWithSummaryColumn = (rows: Row[]) => {
     const numerator = Object.entries(row).filter(([key,value]) => value === 'N').length;
     const denominator = Object.entries(row).filter(([key,value]) => value === 'N' || value === 'Y').length;
     if (denominator === 0) {
-      return { 'summaryColumn': null, ...row };
+      return { 'summaryColumn': undefined, ...row };
     }
     const summary = `${(numerator / denominator * 100).toFixed(1)}%`;
     return { 'summaryColumn': summary, ...row };
@@ -25,30 +25,29 @@ const getRowsWithSummaryColumn = (rows: Row[]) => {
 
 const getFractionRow = (rows: Row[],isNumerator: boolean) => {
   return rows.reduce((accum: Row, currentRow: Row) => {
-    const rowKeyValueArray = Object.entries(currentRow)
+    const rowToArray = Object.entries(currentRow)
     let futureValue: Row = {...accum}
-    rowKeyValueArray.forEach(([key,value]) => {
-      let currentValue = futureValue[key] as string | undefined | number; 
+    rowToArray.forEach(([key,value]) => {
       if (isNumerator) {
         if (value === 'N') {
-          if (typeof currentValue === 'number') {
-            currentValue = currentValue + 1;
+          if (typeof futureValue[key] === 'number') {
+            futureValue[key] = futureValue[key] + 1;
           } else {
-            currentValue = 1;
+            futureValue[key] = 1;
           }
         } else if (value === 'Y'){
-          if (typeof currentValue === 'number') {
-            currentValue = currentValue + 0;
+          if (typeof futureValue[key] === 'number') {
+            futureValue[key] = futureValue[key] + 0;
           } else {
-            currentValue = 0;
+            futureValue[key] = 0;
           }
         }
       } else {
         if (value === 'N' || value === 'Y') {
-          if (typeof currentValue === 'number') {
-            currentValue = currentValue + 1;
+          if (typeof futureValue[key] === 'number') {
+            futureValue[key] = futureValue[key] + 1;
           } else {
-            currentValue = 1;
+            futureValue[key] = 1;
           }
         }
       }

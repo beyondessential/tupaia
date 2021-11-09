@@ -17,10 +17,10 @@ export const MULTIPLE_ANALYTICS = [
   { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
 ];
 
-export const MULTIPLE_ANALYTICS_BINARY_VALUE_COLUMNS = [
-  { rowField: 'Male condoms', TO: 'N', FJ: 'N', NR: 'Y', KI: 'N' },
-  { rowField: 'Female condoms', TO: 'N', FJ: 'Y', NR: 'Y', KI: 'Y' },
-  { rowField: '% items out of stock', TO: 1, FJ: 0.5, NR: 0, KI: 0.5 },
+export const MULTIPLE_ANALYTICS_SUMMARY_BINARY = [
+  { dataElement: 'Male condoms', TO: 'N', FJ: 'N', NR: 'Y', KI: 'N' },
+  { dataElement: 'Female condoms', TO: 'N', FJ: 'Y', NR: 'Y', KI: 'Y' },
+  { dataElement: 'Injectable contraceptives', TO: 'Y', FJ: 'Y', NR: undefined, KI: undefined },
 ];
 
 export const MERGEABLE_ANALYTICS = [

@@ -9,6 +9,7 @@ import {
   MULTIPLE_MERGEABLE_ANALYTICS,
   SINGLE_ANALYTIC,
   SINGLE_EVENT,
+  MULTIPLE_ANALYTICS_SUMMARY_BINARY
 } from './transform.fixtures';
 import { buildTransform } from '../../../reportBuilder/transform';
 
@@ -82,15 +83,13 @@ describe('aliases', () => {
     expect(transform(SINGLE_EVENT)).toEqual([{ ...SINGLE_EVENT[0], period: '2020W01' }]);
   });
 
-  it('insertBinaryRowSummary', () => {
-    const transform = buildTransform(['insertBinaryRowSummary']);
-    expect(transform(MULTIPLE_MERGEABLE_ANALYTICS)).toEqual([
-      { period: '20200101', organisationUnit: 'TO', BCD1: 7, BCD2: 4 },
-      { period: '20200102', organisationUnit: 'TO', BCD1: 12, BCD2: 18 },
-      { period: '20200103', organisationUnit: 'TO', BCD1: 23, BCD2: 9 },
-      { period: '20200101', organisationUnit: 'PG', BCD1: 17, BCD2: 23 },
-      { period: '20200102', organisationUnit: 'PG', BCD1: 4, BCD2: -4 },
-      { period: '20200103', organisationUnit: 'PG', BCD1: 1, BCD2: 12 },
+  it('insertSummaryRowAndColumn', () => {
+    const transform = buildTransform(['insertSummaryRowAndColumn']);
+    expect(transform(MULTIPLE_ANALYTICS_SUMMARY_BINARY)).toEqual([
+      { summaryColumn: '75.0%', dataElement: 'Male condoms', TO: 'N', FJ: 'N', NR: 'Y', KI: 'N' },
+      { summaryColumn: '25.0%', dataElement: 'Female condoms', TO: 'N', FJ: 'Y', NR: 'Y', KI: 'Y' },
+      { summaryColumn: '0.0%', dataElement: 'Injectable contraceptives', TO: 'Y', FJ: 'Y', NR: undefined, KI: undefined },
+      { TO: '66.7%', FJ: '33.3%', NR: '50.0%', KI: '0.0%' },
     ]);
   });
 });
