@@ -8,6 +8,8 @@ import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { prettyArray } from '../../utilities';
 
+export const MAP_OVERLAYS_ENDPOINT = 'mapOverlays';
+
 const FIELDS = [
   {
     Header: 'Code',
@@ -37,7 +39,7 @@ const FIELDS = [
     width: 160,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
-      optionsEndpoint: 'mapOverlays',
+      optionsEndpoint: MAP_OVERLAYS_ENDPOINT,
       optionLabelKey: 'id',
       sourceKey: 'linked_measures',
       allowMultipleValues: true,
@@ -91,19 +93,6 @@ const FIELDS = [
   },
 ];
 
-const COLUMNS = [
-  ...FIELDS,
-  {
-    Header: 'Edit',
-    type: 'edit',
-    source: 'id',
-    actionConfig: {
-      editEndpoint: 'mapOverlays',
-      fields: [...FIELDS],
-    },
-  },
-];
-
 const IMPORT_CONFIG = {
   title: 'Import Map Overlay Visualisation',
   subtitle: 'Please upload a .json file with the visualisation to be imported:',
@@ -112,19 +101,72 @@ const IMPORT_CONFIG = {
   },
 };
 
-export const MapOverlaysPage = ({ getHeaderEl }) => (
-  <ResourcePage
-    title="Map Overlays"
-    endpoint="mapOverlays"
-    columns={COLUMNS}
-    importConfig={IMPORT_CONFIG}
-    getHeaderEl={getHeaderEl}
-    editConfig={{
-      title: 'Edit Map Overlay',
-    }}
-  />
-);
+export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin }) => {
+  const extraEditFields = [
+    // ID field for constructing viz-builder path only, not for showing or editing
+    {
+      Header: 'ID',
+      source: 'id',
+      show: false,
+    },
+    {
+      Header: 'Edit using Visualisation Builder',
+      type: 'link',
+      show: isBESAdmin,
+      editConfig: {
+        type: 'link',
+        linkOptions: {
+          path: '/viz-builder/map-overlay/:id',
+          parameters: { id: 'id' },
+        },
+        visibilityCriteria: {
+          legacy: false,
+        },
+      },
+    },
+  ];
+
+  const COLUMNS = [
+    ...FIELDS,
+    {
+      Header: 'Export',
+      source: 'id',
+      type: 'export',
+      actionConfig: {
+        exportEndpoint: 'mapOverlayVisualisation',
+        fileName: '{code}',
+      },
+    },
+    {
+      Header: 'Edit',
+      type: 'edit',
+      source: 'id',
+      actionConfig: {
+        editEndpoint: MAP_OVERLAYS_ENDPOINT,
+        fields: [...FIELDS, ...extraEditFields],
+      },
+    },
+  ];
+
+  return (
+    <ResourcePage
+      title="Map Overlays"
+      endpoint="mapOverlays"
+      columns={COLUMNS}
+      importConfig={IMPORT_CONFIG}
+      getHeaderEl={getHeaderEl}
+      editConfig={{
+        title: 'Edit Map Overlay',
+      }}
+    />
+  );
+};
 
 MapOverlaysPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
+  isBESAdmin: PropTypes.bool,
+};
+
+MapOverlaysPage.defaultProps = {
+  isBESAdmin: false,
 };

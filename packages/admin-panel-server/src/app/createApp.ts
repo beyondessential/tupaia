@@ -83,6 +83,11 @@ export function createApp() {
       verifyBESAdminAccess,
       handleWith(ExportDashboardVisualisationRoute),
     )
+    .get(
+      '/v1/export/mapOverlayVisualisation/:mapOverlayVisualisationId',
+      verifyBESAdminAccess,
+      handleWith(ExportMapOverlayVisualisationRoute),
+    )
     .post<ExportDashboardVisualisationRequest>(
       '/v1/export/dashboardVisualisation',
       verifyBESAdminAccess,
