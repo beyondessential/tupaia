@@ -11,7 +11,7 @@ import { Row } from '../../types';
  *  => { rowFieldName: 'Availability of Male Condoms', facilityNameA: 'N', facilityNameB: 'N', facilityNameC: 'Y', facilityNameD: 'N', rowSummary: 0.75 }
  */
 export const insertSummaryRowAndColumn = () => (rows: Row[]) => {
-  const returnArray = rows.map(row => {
+  const dataWithSummaryColumn = rows.map(row => {
     const numerator = Object.entries(row).filter(([key,value]) => value === 0).length;
     const denominator = Object.entries(row).filter(([key,value]) => value === 0 || value === 1).length;
     if (denominator === 0) {
@@ -21,35 +21,54 @@ export const insertSummaryRowAndColumn = () => (rows: Row[]) => {
     return { 'summaryColumn': summary, ...row };
   });
 
-  const summaryRow = rows.reduce((accum: Row, currentRow: Row) => {
-    const arrayOfNumeratorEntries = Object.entries(currentRow).map(([key,value]) => {
+  const numeratorRow = rows.reduce((accum: Row, currentRow: Row) => {
+    const rowKeyValueArray = Object.entries(currentRow)
+    let futureValue = {...accum}
+    rowKeyValueArray.forEach(([key,value]) => {
       if (value === 0) {
-        return [key,1]
+        if (typeof futureValue[key] === 'number') {
+          futureValue[key] = futureValue[key] + 1;
+        } else {
+          futureValue[key] = 1;
+        }
+      } else if (value === 1){
+        if (typeof futureValue[key] === 'number') {
+          futureValue[key] = futureValue[key] + 0;
+        } else {
+          futureValue[key] = 0;
+        }
       }
-      return [key,0]
-    });
+    })
+    return futureValue
+  },{});
 
-    const arrayOfDenominatorEntries = Object.entries(currentRow).map(([key,value]) => {
+  const denominatorRow = rows.reduce((accum: Row, currentRow: Row) => {
+    const rowKeyValueArray = Object.entries(currentRow)
+    let futureValue = {...accum}
+    
+    rowKeyValueArray.forEach(([key,value]) => {
       if (value === 0 || value === 1) {
-        return [key,1]
+        if (typeof futureValue[key] === 'number') {
+          futureValue[key] = futureValue[key] + 1;
+        } else {
+          futureValue[key] = 1;
+        }
       }
-      return [key,0]
-    });
+    })
+    console.log('returned denominator',JSON.stringify(futureValue))
+    return futureValue
+  },{});
 
-    arrayOfNumeratorEntries.forEach(([key, value], index) => {
-      const percentage = value / arrayOfDenominatorEntries[index][1]
-      if (typeof value === 'number' && typeof accum[key] !== 'number') {
-        accum[key] = 0;
-        accum[key] = accum[key] + percentage;
-      } else {
-        accum[key] = accum[key] + percentage;
-      }
-    });
+  const summaryRow = Object.fromEntries(Object.entries(denominatorRow).map(([key,value]) => {
+    if (typeof value === 'number') {
+      const percentage = numeratorRow[key] / value;
+    return [key, percentage]
+    }
+    return [key, value]
+  }));
 
-    return accum
-  });
 
-  return [...returnArray,summaryRow]
+  return [...dataWithSummaryColumn,summaryRow]
 
 };
 
