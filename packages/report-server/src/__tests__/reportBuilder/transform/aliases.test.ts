@@ -91,5 +91,10 @@ describe('aliases', () => {
       { summaryColumn: '0.0%', dataElement: 'Injectable contraceptives', TO: 'Y', FJ: 'Y', NR: undefined, KI: undefined },
       { TO: '66.7%', FJ: '33.3%', NR: '50.0%', KI: '0.0%' },
     ]);
+  it('insertNumberOfFacilitiesColumn', () => {
+    const transform = buildTransform(['insertNumberOfFacilitiesColumn'], {
+      facilityCountByOrgUnit: { TO: 14 },
+    });
+    expect(transform(SINGLE_ANALYTIC)).toEqual([{ ...SINGLE_ANALYTIC[0], numberOfFacilities: 14 }]);
   });
 });
