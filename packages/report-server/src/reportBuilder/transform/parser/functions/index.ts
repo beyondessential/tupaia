@@ -35,10 +35,16 @@ export const customFunctions = {
   all,
 };
 
-export const contextFunctionConfigs = {
-  orgUnitCodeToName,
-  dataElementCodeToName,
-  orgUnitIdToCode,
+export const contextFunctions = {
+  orgUnitIdToCode: orgUnitIdToCode.func,
+  orgUnitCodeToName: orgUnitCodeToName.func,
+  dataElementCodeToName: dataElementCodeToName.func,
+};
+
+export const contextFunctionDependencies = {
+  orgUnitIdToCode: orgUnitIdToCode.dependencies,
+  orgUnitCodeToName: orgUnitCodeToName.dependencies,
+  dataElementCodeToName: dataElementCodeToName.dependencies,
 };
 
 /**
