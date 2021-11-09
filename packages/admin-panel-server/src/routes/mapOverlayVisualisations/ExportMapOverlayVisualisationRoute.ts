@@ -139,7 +139,7 @@ export class ExportMapOverlayVisualisationRoute extends Route<ExportMapOverlayVi
         camelKeys({
           mapOverlayGroupCode: mapOverlayGroupsById[mapOverlayGroupId]?.code,
           ...mapOverlayGroupRelation,
-          mapOverlayCode: mapOverlay.code,
+          childCode: mapOverlay.code,
         }),
     );
 

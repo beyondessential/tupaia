@@ -29,19 +29,19 @@ type MapOverlayVisualisation = {
 //   presentation: Presentation;
 // };
 //
-export type MapOverlayViz = MapOverlayVisualisation; //| LegacyMapOverlayVisualisation;
-//
-// export interface VisualisationValidator {
-//   validate: (object: MapOverlayVisualisation) => void;
-// }
+export type MapOverlayViz = MapOverlayVisualisation; // | LegacyMapOverlayVisualisation;
 
 export type MapOverlayGroup = {
-  id: string;
+  id?: string;
   code: string;
   name: string;
 };
 
 export type MapOverlayGroupRecord = CamelKeysToSnake<MapOverlayGroup>;
+
+type DataService = {
+  isDataRegional: boolean;
+};
 
 export type MapOverlay = {
   id: string;
@@ -51,27 +51,27 @@ export type MapOverlay = {
   config: Record<string, unknown>;
   reportCode: string;
   legacy: boolean;
-  linkedMeasures: null | any; // FIXME no any
-  dataServices: any; // FIXME
-  projectCodes: any; // FIXME
-  countryCodes: any; // FIXME
+  linkedMeasures: null | string[];
+  dataServices: DataService[];
+  projectCodes: string[];
+  countryCodes: string[];
 };
 
 export type MapOverlayGroupRelation = {
-  mapOverlayCode: string;
+  mapOverlayGroupCode: string;
+  childCode: string;
+  childType: 'mapOverlay' | 'mapOverlayGroup';
   sortOrder?: number;
 };
 
 export type MapOverlayRecord = CamelKeysToSnake<MapOverlay>;
 
 export type MapOverlayGroupRelationRecord = CamelKeysToSnake<
-  Omit<MapOverlayGroupRelation, 'mapOverlayCode'>
+  Omit<MapOverlayGroupRelation, 'mapOverlayGroupCode' | 'childCode'>
 > & {
   id: string;
   map_overlay_group_id: string;
   child_id: string;
-  child_type: 'mapOverlay' | 'mapOverlayGroup';
-  sort_order?: number;
 };
 
 export type MapOverlayVisualisationResource = { mapOverlay: MapOverlay; report: Report };

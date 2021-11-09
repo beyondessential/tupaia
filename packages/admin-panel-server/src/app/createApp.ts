@@ -34,6 +34,8 @@ import {
   UploadTestDataRequest,
   UploadTestDataRoute,
   UserRoute,
+  ImportMapOverlayVisualisationRequest,
+  ImportMapOverlayVisualisationRoute,
 } from '../routes';
 
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
@@ -96,6 +98,12 @@ export function createApp() {
       verifyBESAdminAccess,
       upload.single('dashboardVisualisations'),
       handleWith(ImportDashboardVisualisationRoute),
+    )
+    .post<ImportMapOverlayVisualisationRequest>(
+      '/v1/import/mapOverlayVisualisations',
+      verifyBESAdminAccess,
+      upload.single('mapOverlayVisualisations'),
+      handleWith(ImportMapOverlayVisualisationRoute),
     )
     .post<UploadTestDataRequest>(
       '/v1/uploadTestData',

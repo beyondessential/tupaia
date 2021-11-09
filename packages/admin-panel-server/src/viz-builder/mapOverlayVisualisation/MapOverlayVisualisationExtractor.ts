@@ -50,7 +50,15 @@ export class MapOverlayVisualisationExtractor<
   };
 
   private vizToMapOverlay() {
-    const { code, name, legacy } = this.visualisation;
+    const {
+      code,
+      name,
+      legacy,
+      projectCodes,
+      countryCodes,
+      linkedMeasures,
+      mapOverlayPermissionGroup: permissionGroup,
+    } = this.visualisation;
     const { output, ...presentation } = this.visualisation.presentation;
 
     return {
@@ -61,6 +69,10 @@ export class MapOverlayVisualisationExtractor<
       name,
       reportCode: code,
       legacy: !!legacy,
+      projectCodes,
+      countryCodes,
+      linkedMeasures,
+      permissionGroup,
     };
   }
 

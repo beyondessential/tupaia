@@ -36,10 +36,6 @@ type LegacyDashboardVisualisation = {
 
 export type DashboardViz = DashboardVisualisation | LegacyDashboardVisualisation;
 
-export interface VisualisationValidator {
-  validate: (object: DashboardVisualisation) => void;
-}
-
 export type Dashboard = {
   id: string;
   code: string;

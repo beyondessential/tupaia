@@ -104,11 +104,20 @@ const COLUMNS = [
   },
 ];
 
+const IMPORT_CONFIG = {
+  title: 'Import Map Overlay Visualisation',
+  subtitle: 'Please upload a .json file with the visualisation to be imported:',
+  actionConfig: {
+    importEndpoint: 'mapOverlayVisualisations',
+  },
+};
+
 export const MapOverlaysPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Map Overlays"
     endpoint="mapOverlays"
     columns={COLUMNS}
+    importConfig={IMPORT_CONFIG}
     getHeaderEl={getHeaderEl}
     editConfig={{
       title: 'Edit Map Overlay',
