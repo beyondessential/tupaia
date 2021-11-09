@@ -88,7 +88,6 @@ def create_tupaia_instance_from_image(
         image_id=image_id,
         security_group_code=security_group_code,
         security_group_id=security_group_id,
-        subdomains_via_dns=['ssh'],
         subdomains_via_gateway=tupaia_subdomains,
         user_data=startup_script,
         volume_size=tupaia_volume_size,

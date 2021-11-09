@@ -31,11 +31,11 @@
 # used, you need to tag the AMI and security groups with the codes you specify
 
 from helpers.create_from_image import create_tupaia_instance_from_image
-from helpers.utilities import get_instance, get_tag
+from helpers.utilities import find_instances, get_tag
 
 def redeploy_tupaia_server(event):
     instance_filters = [
-        { 'Name': 'tag:SubdomainsViaDns', 'Values': ['ssh'] }, # the main server rather than db instance (can be removed after RN-195)
+        { 'Name': 'tag-key', 'Values': ['SubdomainsViaGateway'] }, # the server that is currently behind the ELB
         { 'Name': 'instance-state-name', 'Values': ['running', 'stopped'] } # ignore terminated instances
     ]
 
@@ -56,38 +56,44 @@ def redeploy_tupaia_server(event):
         instance_filters.append({ 'Name': 'tag:DeploymentName', 'Values': [deployment_name] })
 
     # find current instance
-    existing_instance = get_instance(instance_filters)
+    existing_instances = find_instances(instance_filters)
 
-    if not existing_instance:
-      raise Exception('No existing instance found to redeploy, perhaps you want to spin up a new deployment?')
+    if len(existing_instances) == 0:
+      raise Exception('No existing instances found to redeploy, perhaps you want to spin up a new deployment?')
 
-    original_deployed_by = get_tag(existing_instance, 'DeleteAfter')
-    if original_deployed_by:
-        deployed_by = original_deployed_by + ' (redeployed by ' + event['User'] + ')'
-    else:
-        deployed_by = event['User']
+    response = []
 
-    extra_tags = [
-        { 'Key': 'DeployedBy', 'Value': deployed_by }
-    ]
-    delete_after = get_tag(existing_instance, 'DeleteAfter')
-    if delete_after != '':
-        extra_tags.append({ 'Key': 'DeleteAfter', 'Value': delete_after }),
+    # could be multiple deployments to redeploy if just "Branch" was specified
+    for existing_instance in existing_instances:
+        original_deployed_by = get_tag(existing_instance, 'DeployedBy')
+        if original_deployed_by:
+            deployed_by = original_deployed_by + ' (redeployed by ' + event['User'] + ')'
+        else:
+            deployed_by = event['User']
 
-    # launch server instance based on gold master AMI
-    # original instance will be deleted by lambda script "swap_out_tupaia_server" once new instance is running
-    new_instance = create_tupaia_instance_from_image(
-        deployment_name=get_tag(existing_instance, 'DeploymentName'),
-        branch=get_tag(existing_instance, 'Branch'),
-        instance_type=event.get('InstanceType', existing_instance['InstanceType']),
-        extra_tags=extra_tags,
-        image_code=event.get('ImageCode', None), # will use id below if not defined in the event
-        image_id=existing_instance['ImageId'],
-        security_group_code=event.get('SecurityGroupCode', None), # will use id below if not defined in the event
-        security_group_id=existing_instance['SecurityGroups'][0]['GroupId'],
-        setup_gateway=False,
-    )
+        extra_tags = [
+            { 'Key': 'DeployedBy', 'Value': deployed_by }
+        ]
+        delete_after = get_tag(existing_instance, 'DeleteAfter')
+        if delete_after != '':
+            extra_tags.append({ 'Key': 'DeleteAfter', 'Value': delete_after }),
 
-    print('Successfully deployed ' + get_tag(new_instance, 'DeploymentName'))
+        # launch server instance based on gold master AMI
+        # original instance will be deleted by lambda script "swap_out_tupaia_server" once new instance is running
+        new_instance = create_tupaia_instance_from_image(
+            deployment_name=get_tag(existing_instance, 'DeploymentName'),
+            branch=get_tag(existing_instance, 'Branch'),
+            instance_type=event.get('InstanceType', existing_instance['InstanceType']),
+            extra_tags=extra_tags,
+            image_code=event.get('ImageCode', None), # will use id below if not defined in the event
+            image_id=existing_instance['ImageId'],
+            security_group_code=event.get('SecurityGroupCode', None), # will use id below if not defined in the event
+            security_group_id=existing_instance['SecurityGroups'][0]['GroupId'],
+            setup_gateway=False,
+        )
 
-    return new_instance['InstanceId']
+        deployment_name = get_tag(new_instance, 'DeploymentName')
+
+        print('Successfully deployed ' + deployment_name)
+        response.append({ "DeploymentName": deployment_name, "NewInstanceId": new_instance['InstanceId'] })
+    return response
