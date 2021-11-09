@@ -146,6 +146,14 @@ export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin }) => {
         fields: [...FIELDS, ...extraEditFields],
       },
     },
+    {
+      Header: 'Delete',
+      source: 'id',
+      type: 'delete',
+      actionConfig: {
+        endpoint: MAP_OVERLAYS_ENDPOINT,
+      },
+    },
   ];
 
   return (
