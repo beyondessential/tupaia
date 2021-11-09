@@ -10,7 +10,7 @@ import { Chart } from '@tupaia/ui-components/lib/chart';
 import { FlexSpaceBetween, FetchLoader, DataTable } from '@tupaia/ui-components';
 import { TabPanel } from './TabPanel';
 import { useReportPreview } from '../api';
-import { usePreviewData, useVizBuilderConfig, useVizConfigError } from '../context';
+import { usePreviewData, useVizConfig, useVizConfigError } from '../context';
 import { JsonEditor } from './JsonEditor';
 import { IdleMessage } from './IdleMessage';
 
@@ -123,10 +123,7 @@ export const PreviewSection = () => {
   const { fetchEnabled, setFetchEnabled, showData } = usePreviewData();
   const { hasPresentationError, setPresentationError } = useVizConfigError();
 
-  const [
-    { project, location, visualisation, testData },
-    { setPresentation },
-  ] = useVizBuilderConfig();
+  const [{ project, location, visualisation, testData }, { setPresentation }] = useVizConfig();
   const [viewContent, setViewContent] = useState(null);
 
   const { data: reportData = [], isLoading, isFetching, isError, error } = useReportPreview({

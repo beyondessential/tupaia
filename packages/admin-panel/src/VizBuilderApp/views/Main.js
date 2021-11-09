@@ -13,7 +13,7 @@ import { FlexColumn, SmallAlert } from '@tupaia/ui-components';
 
 import { useDashboardVisualisation } from '../api';
 import { Toolbar, Panel, PreviewSection, PreviewOptions } from '../components';
-import { PreviewDataProvider, VizConfigErrorProvider, useVizBuilderConfig } from '../context';
+import { PreviewDataProvider, VizConfigErrorProvider, useVizConfig } from '../context';
 
 const Container = styled(MuiContainer)`
   flex: 1;
@@ -42,7 +42,7 @@ export const Main = () => {
   const fetchExistingVizEnabled = visualisationId !== undefined;
 
   // eslint-disable-next-line no-unused-vars
-  const [_, { setVisualisation }] = useVizBuilderConfig();
+  const [_, { setVisualisation }] = useVizConfig();
   const [visualisationLoaded, setVisualisationLoaded] = useState(false);
   const { data = {}, error } = useDashboardVisualisation(visualisationId, fetchExistingVizEnabled);
   const { visualisation } = data;

@@ -11,7 +11,7 @@ import { FlexColumn, FlexSpaceBetween } from '@tupaia/ui-components';
 import { TabPanel } from './TabPanel';
 import { JsonEditor } from './JsonEditor';
 import { PlayButton } from './PlayButton';
-import { useVizBuilderConfig, useVizConfigError } from '../context';
+import { useVizConfig, useVizConfigError } from '../context';
 
 const Container = styled(FlexColumn)`
   position: relative;
@@ -75,7 +75,7 @@ export const Panel = () => {
       visualisation: { data: dataConfig },
     },
     { setDataConfig },
-  ] = useVizBuilderConfig();
+  ] = useVizConfig();
 
   const { fetch, aggregate, transform } = dataConfig;
 
