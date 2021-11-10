@@ -885,7 +885,7 @@ function* fetchMeasureInfo(mapOverlayCodes, displayedOverlayCodes, action) {
 
     // If the view should be constrained to a date range and isn't, constrain it
     const { startDate, endDate } =
-      mapOverlayParams.startDate || mapOverlayParams.startDate
+      mapOverlayParams.startDate || mapOverlayParams.endDate
         ? mapOverlayParams
         : getDefaultDates(mapOverlayParams);
     const urlParameters = {
