@@ -31,6 +31,7 @@ export const checkHierarchyIncludesMapOverlayCodes = (
     mapOverlayHierarchy,
     targetMapOverlayCodes,
   );
+
   return resultLength === targetMapOverlayCodes.length;
 };
 

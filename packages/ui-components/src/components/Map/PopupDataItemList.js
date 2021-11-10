@@ -48,15 +48,15 @@ export const PopupDataItemList = ({ serieses, data, showNoDataLabel }) => {
         .filter(popupItem => popupItem !== null)
     : [];
 
-  const { name, key } = serieses[0];
+  const noDataLabels = serieses.map(({ name, key }) => (
+    <PopupDataItem key={name || key} measureName={name || key} value="No Data" />
+  ));
 
-  return popupList.length === 0 && showNoDataLabel
-    ? [<PopupDataItem key={name || key} measureName={name || key} value="No Data" />]
-    : popupList;
+  return popupList.length === 0 && showNoDataLabel ? noDataLabels : popupList;
 };
 
 PopupDataItemList.propTypes = {
-  data: PropTypes.object.isRequired,
+  data: PropTypes.object,
   serieses: PropTypes.arrayOf(
     PropTypes.shape({
       key: PropTypes.string.isRequired,
@@ -68,3 +68,5 @@ PopupDataItemList.propTypes = {
   ).isRequired,
   showNoDataLabel: PropTypes.bool,
 };
+
+PopupDataItemList.defaultTypes = { data: null };

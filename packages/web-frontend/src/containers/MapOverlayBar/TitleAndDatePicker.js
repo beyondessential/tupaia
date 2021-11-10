@@ -48,6 +48,7 @@ const Switch = styled(MuiSwitch)`
 
 const Box = styled(MuiBox)`
   margin-left: ${props => (props.$isPinShowed ? '47px' : '18px')};
+  margin-right: 10px;
   padding: 0;
   min-height: 60px;
 `;
@@ -74,9 +75,9 @@ const Skeleton = styled(MuiSkeleton)`
   background: none;
   margin-left: ${({ ml = 0 }) => ml}px;
   margin-top: ${({ mt = 0 }) => mt}px;
-
-  .MuiSkeleton-text {
-    transform: scale(1, 1);
+  transform: scale(1, 1);
+  ::after {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   }
 `;
 
@@ -115,11 +116,11 @@ export const TitleAndDatePickerComponent = ({
     setIsSwitchedOn(!isSwitchedOn);
   };
 
-  const updateMeasurePeriod = (startDate, endDate) => {
+  const updateMeasurePeriod = (_startDate, _endDate) => {
     const period = GRANULARITY_CONFIG[periodGranularity].momentUnit;
     onUpdateOverlayPeriod(mapOverlayCode, {
-      startDate: moment(startDate).startOf(period),
-      endDate: moment(endDate).endOf(period),
+      startDate: moment(_startDate).startOf(period),
+      endDate: moment(_endDate).endOf(period),
     });
   };
 

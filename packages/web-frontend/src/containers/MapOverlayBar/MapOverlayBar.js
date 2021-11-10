@@ -29,8 +29,9 @@ import { HierarchyItem } from '../../components/HierarchyItem';
 import {
   selectCurrentOrgUnit,
   selectCurrentMapOverlays,
-  selectDefaultMapOverlay,
   selectCurrentMapOverlayCodes,
+  selectCurrentProject,
+  selectMapOverlayByCode,
 } from '../../selectors';
 
 const pinnedOverlayCodeReducer = (currentOverlayCode, newOverlayCode) => {
@@ -172,6 +173,8 @@ const MapOverlayBarComponent = ({
       );
     });
 
+    if (items.length === 0) return null;
+
     return (
       <>
         {defaultMapOverlay?.mapOverlayCode ? renderDefaultMapOverlay() : null}
@@ -243,7 +246,9 @@ const mapStateToProps = state => {
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
   const currentMapOverlays = selectCurrentMapOverlays(state);
   const currentMapOverlayCodes = selectCurrentMapOverlayCodes(state);
-  const defaultMapOverlay = selectDefaultMapOverlay(state);
+  const activeProject = selectCurrentProject(state);
+
+  const defaultMapOverlay = selectMapOverlayByCode(state, activeProject.defaultMeasure);
 
   return {
     currentMapOverlays,

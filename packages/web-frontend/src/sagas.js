@@ -84,16 +84,16 @@ import {
   SET_VERIFY_EMAIL_TOKEN,
   updateEnlargedDialog,
   updateEnlargedDialogError,
-  updateOverlayConfigs,
+  setOverlayConfigs,
   UPDATE_OVERLAY_CONFIGS,
-  UPDATE_OVERLAY_DATE_RANGE_ONCE_HIERARCHY_LOADS,
+  SET_MAP_OVERLAYS_ONCE_HIERARCHY_LOADS,
   FETCH_INITIAL_DATA,
   setPasswordResetToken,
   DIALOG_PAGE_ONE_TIME_LOGIN,
   setVerifyEmailToken,
   setOrgUnit,
   openEnlargedDialog,
-  updateCurrentOverlayConfigOnceHierarchyLoads,
+  setMapOverlaysOnceHierarchyLoads,
   LOCATION_CHANGE,
   goHome,
   setDashboardGroup,
@@ -204,9 +204,8 @@ function* handleUserPage(userPage, initialComponents) {
 const URL_REFRESH_COMPONENTS = {
   [URL_COMPONENTS.PROJECT]: setProject,
   [URL_COMPONENTS.ORG_UNIT]: setOrgUnit,
-  [URL_COMPONENTS.MAP_OVERLAY]: setMapOverlays,
+  [URL_COMPONENTS.MAP_OVERLAY]: setMapOverlaysOnceHierarchyLoads,
   [URL_COMPONENTS.REPORT]: openEnlargedDialog,
-  [URL_COMPONENTS.OVERLAY_PERIOD]: updateCurrentOverlayConfigOnceHierarchyLoads,
 };
 
 function* handleLocationChange({ location, previousLocation }) {
@@ -865,9 +864,8 @@ function* watchFetchMoreSearchResults() {
  * Fetches data for a measure and write it to map state by calling fetchMeasureSuccess.
  *
  */
-function* fetchMeasureInfo() {
+function* fetchMeasureInfo(mapOverlayCodes, displayedOverlayCodes, action) {
   const state = yield select();
-  const mapOverlayCodes = selectCurrentMapOverlayCodes(state);
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
   const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
@@ -887,7 +885,7 @@ function* fetchMeasureInfo() {
 
     // If the view should be constrained to a date range and isn't, constrain it
     const { startDate, endDate } =
-      mapOverlayParams.startDate || mapOverlayParams.endDate
+      mapOverlayParams.startDate || mapOverlayParams.startDate
         ? mapOverlayParams
         : getDefaultDates(mapOverlayParams);
     const urlParameters = {
@@ -908,47 +906,67 @@ function* fetchMeasureInfo() {
       yield put(fetchMeasureInfoError(error));
     }
   }
-  yield put(fetchAllMeasureInfoSuccess());
+
+  yield put(fetchAllMeasureInfoSuccess(mapOverlayCodes, displayedOverlayCodes));
 }
 
 function* watchSetMapOverlayChange() {
-  yield takeLatest(SET_MAP_OVERLAYS, fetchMeasureInfo);
+  yield takeLatest(SET_MAP_OVERLAYS, function* _(action) {
+    const state = yield select();
+    const mapOverlayCodes = selectCurrentMapOverlayCodes(state);
+    const { displayedMapOverlays, measureInfo } = state.map;
+
+    const previousDisplayedOverlays = displayedMapOverlays.filter(code =>
+      mapOverlayCodes.includes(code),
+    );
+    const newSelectedMapOverlays = mapOverlayCodes.filter(code => !measureInfo[code]);
+
+    yield fetchMeasureInfo(
+      newSelectedMapOverlays,
+      [...previousDisplayedOverlays, ...newSelectedMapOverlays],
+      action,
+    );
+  });
 }
 
 function* watchOverlayPeriodChange() {
-  yield takeLatest(UPDATE_OVERLAY_CONFIGS, fetchMeasureInfo);
+  yield takeLatest(UPDATE_OVERLAY_CONFIGS, function* _(action) {
+    const state = yield select();
+    const { displayedMapOverlays } = state.map;
+    const mapOverlayCodes = Object.keys(action.overlayConfigs);
+
+    yield fetchMeasureInfo(mapOverlayCodes, displayedMapOverlays, action);
+  });
 }
 
-function* watchTryUpdateOverlayConfigAndWaitForHierarchyLoad() {
-  yield takeLatest(
-    UPDATE_OVERLAY_DATE_RANGE_ONCE_HIERARCHY_LOADS,
-    updateMapOverlayDateRangeOnceHierarchyLoads,
-  );
-}
+function* watchSetMapOverlaysOnceHierarchyLoads() {
+  yield takeLatest(SET_MAP_OVERLAYS_ONCE_HIERARCHY_LOADS, function* _(action) {
+    yield take(FETCH_MEASURES_SUCCESS);
+    const state = yield select();
+    const currentOverlayCodes = selectCurrentMapOverlayCodes(state);
+    const currentOverlayPeriods = selectCurrentMapOverlayPeriods(state);
+    const overlayConfigs = {};
 
-function* updateMapOverlayDateRangeOnceHierarchyLoads() {
-  yield take(FETCH_MEASURES_SUCCESS);
-  const state = yield select();
-  const currentOverlayCodes = selectCurrentMapOverlayCodes(state);
-  const currentOverlayPeriods = selectCurrentMapOverlayPeriods(state);
-  const overlayConfigs = {};
+    for (let index = 0; index < currentOverlayCodes.length; index++) {
+      const currentOverlayCode = currentOverlayCodes[index];
+      const currentOverlayPeriod = currentOverlayPeriods[index];
 
-  for (let index = 0; index < currentOverlayCodes.length; index++) {
-    if (currentOverlayPeriods[index] === DEFAULT_PERIOD) {
-      break;
+      if (currentOverlayPeriod === DEFAULT_PERIOD) {
+        overlayConfigs[currentOverlayCode] = {};
+        continue;
+      }
+
+      const periodGranularity = selectPeriodGranularityByCode(state, currentOverlayCode);
+      const { startDate, endDate } = convertUrlPeriodStringToDateRange(
+        currentOverlayPeriod,
+        periodGranularity,
+      );
+      overlayConfigs[currentOverlayCode] = { startDate, endDate };
     }
-    const currentOverlayCode = currentOverlayCodes[index];
-    const currentOverlayPeriod = currentOverlayPeriods[index];
-    const periodGranularity = selectPeriodGranularityByCode(state, currentOverlayCode);
 
-    const { startDate, endDate } = convertUrlPeriodStringToDateRange(
-      currentOverlayPeriod,
-      periodGranularity,
-    );
-    overlayConfigs[currentOverlayCode] = { startDate, endDate };
-  }
-
-  yield put(updateOverlayConfigs(overlayConfigs));
+    yield put(setOverlayConfigs(overlayConfigs));
+    yield fetchMeasureInfo(currentOverlayCodes, currentOverlayCodes, action);
+  });
 }
 
 function* fetchCurrentMeasureInfo() {
@@ -1203,6 +1221,6 @@ export default [
   watchGoHomeAndResetToProjectSplash,
   watchFetchResetTokenLoginSuccess,
   watchOverlayPeriodChange,
-  watchTryUpdateOverlayConfigAndWaitForHierarchyLoad,
+  watchSetMapOverlaysOnceHierarchyLoads,
   watchHandleLocationChange,
 ];

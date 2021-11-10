@@ -18,7 +18,7 @@ export const ContentText = styled.div`
 `;
 
 export const EmptyContentText = styled(ContentText)`
-  font-size: 16px;
+  font-weight: 400;
   padding-right: 6px;
 `;
 
