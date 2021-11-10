@@ -96,7 +96,7 @@ describe('aliases', () => {
       { summaryColumn: '75.0%', dataElement: 'Male condoms', TO: 'N', FJ: 'N', NR: 'Y', KI: 'N' },
       { summaryColumn: '25.0%', dataElement: 'Female condoms', TO: 'N', FJ: 'Y', NR: 'Y', KI: 'Y' },
       { summaryColumn: '0.0%', dataElement: 'Injectable contraceptives', TO: 'Y', FJ: 'Y', NR: undefined, KI: undefined },
-      { TO: '66.7%', FJ: '33.3%', NR: '50.0%', KI: '0.0%' },
+      { TO: '66.7%', FJ: '33.3%', NR: '0.0%', KI: '50.0%' },
     ]);
   });
 });
