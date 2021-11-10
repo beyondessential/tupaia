@@ -83,6 +83,13 @@ describe('aliases', () => {
     expect(transform(SINGLE_EVENT)).toEqual([{ ...SINGLE_EVENT[0], period: '2020W01' }]);
   });
 
+  it('insertNumberOfFacilitiesColumn', () => {
+    const transform = buildTransform(['insertNumberOfFacilitiesColumn'], {
+      facilityCountByOrgUnit: { TO: 14 },
+    });
+    expect(transform(SINGLE_ANALYTIC)).toEqual([{ ...SINGLE_ANALYTIC[0], numberOfFacilities: 14 }]);
+  });
+
   it('insertSummaryRowAndColumn', () => {
     const transform = buildTransform(['insertSummaryRowAndColumn']);
     expect(transform(MULTIPLE_ANALYTICS_SUMMARY_BINARY)).toEqual([
@@ -91,10 +98,5 @@ describe('aliases', () => {
       { summaryColumn: '0.0%', dataElement: 'Injectable contraceptives', TO: 'Y', FJ: 'Y', NR: undefined, KI: undefined },
       { TO: '66.7%', FJ: '33.3%', NR: '50.0%', KI: '0.0%' },
     ]);
-  it('insertNumberOfFacilitiesColumn', () => {
-    const transform = buildTransform(['insertNumberOfFacilitiesColumn'], {
-      facilityCountByOrgUnit: { TO: 14 },
-    });
-    expect(transform(SINGLE_ANALYTIC)).toEqual([{ ...SINGLE_ANALYTIC[0], numberOfFacilities: 14 }]);
   });
 });
