@@ -4,8 +4,9 @@
  */
 
 export interface Context {
-  orgUnits?: { code: string; name: string, id: string }[];
+  orgUnits?: { code: string; name: string; id: string }[];
+  facilityCountByOrgUnit?: Record<string, number>; // { TO: 14, PG: 9 }
   dataElementCodeToName?: Record<string, string>;
 }
 
-export type ContextProp = keyof Context;
+export type ContextDependency = keyof Context;

@@ -5,22 +5,22 @@
 
 import { reduceToDictionary } from '@tupaia/utils';
 
-import { Context, ContextProp } from '../../../context';
+import { Context, ContextDependency } from '../../../context';
 
 /**
  * Config for functions that use `context`
  *
- * `contextProps`: declares the part of the context that will be used by the function
- * `create`: factory method that creates a closure that can access the context
+ * `dependencies`: declares the part of the context that will be used by the function
+ * `func`: factory method that creates a closure that can access the context
  */
 type ContextFunctionConfig = {
-  contextProps: ContextProp[];
-  create: (dependencies: { getContext: () => Context }) => (...args: any[]) => unknown;
+  dependencies: ContextDependency[];
+  func: (dependencies: { getContext: () => Context }) => (...args: any[]) => unknown;
 };
 
 export const orgUnitCodeToName: ContextFunctionConfig = {
-  contextProps: ['orgUnits'],
-  create: ({ getContext }) => (orgUnitCode: string) => {
+  dependencies: ['orgUnits'],
+  func: ({ getContext }) => (orgUnitCode: string) => {
     const { orgUnits } = getContext();
     if (!orgUnits) {
       throw new Error("Missing dependency 'orgUnits' required by 'orgUnitCodeToName'");
@@ -31,8 +31,8 @@ export const orgUnitCodeToName: ContextFunctionConfig = {
 };
 
 export const dataElementCodeToName: ContextFunctionConfig = {
-  contextProps: ['dataElementCodeToName'],
-  create: ({ getContext }) => (dataElementCode: string) => {
+  dependencies: ['dataElementCodeToName'],
+  func: ({ getContext }) => (dataElementCode: string) => {
     const { dataElementCodeToName: codeToNameMap } = getContext();
     if (!codeToNameMap) {
       throw new Error(
@@ -44,8 +44,8 @@ export const dataElementCodeToName: ContextFunctionConfig = {
 };
 
 export const orgUnitIdToCode: ContextFunctionConfig = {
-  contextProps: ['orgUnits'],
-  create: ({ getContext }) => (orgUnitId: string) => {
+  dependencies: ['orgUnits'],
+  func: ({ getContext }) => (orgUnitId: string) => {
     const { orgUnits } = getContext();
     if (!orgUnits) {
       throw new Error("Missing dependency 'orgUnits' required by 'orgUnitIdToCode'");

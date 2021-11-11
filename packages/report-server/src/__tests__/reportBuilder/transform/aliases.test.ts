@@ -81,4 +81,11 @@ describe('aliases', () => {
     const transform = buildTransform(['convertEventDateToWeek']);
     expect(transform(SINGLE_EVENT)).toEqual([{ ...SINGLE_EVENT[0], period: '2020W01' }]);
   });
+
+  it('insertNumberOfFacilitiesColumn', () => {
+    const transform = buildTransform(['insertNumberOfFacilitiesColumn'], {
+      facilityCountByOrgUnit: { TO: 14 },
+    });
+    expect(transform(SINGLE_ANALYTIC)).toEqual([{ ...SINGLE_ANALYTIC[0], numberOfFacilities: 14 }]);
+  });
 });

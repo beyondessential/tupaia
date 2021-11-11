@@ -14,6 +14,7 @@ import {
   lastValuePerPeriodPerOrgUnit,
 } from './aggregateAliases';
 import { convertPeriodToWeek, convertEventDateToWeek } from './periodConversionAliases';
+import { insertNumberOfFacilitiesColumn } from './entityMetadataAliases';
 
 export const aliases = {
   keyValueByDataElementName,
@@ -24,4 +25,9 @@ export const aliases = {
   lastValuePerPeriodPerOrgUnit,
   convertPeriodToWeek,
   convertEventDateToWeek,
+  insertNumberOfFacilitiesColumn: insertNumberOfFacilitiesColumn.transform,
+};
+
+export const contextAliasDependencies = {
+  insertNumberOfFacilitiesColumn: insertNumberOfFacilitiesColumn.dependencies,
 };
