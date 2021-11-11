@@ -181,7 +181,7 @@ export const DashboardReportTabView = ({
                     key={item.code}
                     reportCode={item.reportCode}
                     name={item.name}
-                    startData={startDate}
+                    startDate={startDate}
                     endDate={endDate}
                   />
                 ))
