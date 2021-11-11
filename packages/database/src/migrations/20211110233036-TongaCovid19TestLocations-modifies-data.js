@@ -23,13 +23,12 @@ const reportRecord = {
   code: reportCode,
   config: {
     fetch: {
-      dataElements: ['BH01_08'],
-      dataGroups: ['BH01'],
+      dataGroups: ['LRF_TO'],
       aggregations: [
         {
           type: 'RAW',
           config: {
-            dataSourceEntityType: 'facility',
+            dataSourceEntityType: 'village',
           },
         },
       ],
@@ -37,128 +36,46 @@ const reportRecord = {
     transform: [
       {
         transform: 'updateColumns',
-        exclude: ['event', 'eventDate', 'orgUnitName', 'orgUnit', 'BH01_08'],
+        exclude: ['event', 'eventDate', 'orgUnitName', 'orgUnit'],
         insert: {
           organisationUnitCode: '=$orgUnit',
-          '=$BH01_08': '= 1',
-          value: '=$BH01_08',
+          value: 1,
         },
       },
       {
         transform: 'mergeRows',
-        groupBy: ['organisationUnitCode'],
-        using: {
-          value: 'unique',
-          '*': 'sum',
-        },
-      },
-      {
-        transform: 'insertColumns',
-        columns: {
-          Total: '=sum($Church, $Community, $Workplace, $School)',
-        },
+        groupBy: 'organisationUnitCode',
+        using: 'sum',
       },
     ],
   },
-  permission_group: 'Behavioural Health',
+  permission_group: 'COVID-19 Senior',
 };
 
 const mapOverlayRecord = {
   id: generateId(),
-  name: 'Activity Encounters by Setting Type',
-  code: 'OLANGCH_Activity_Encounters_By_Setting',
-  permission_group: 'Behavioural Health',
-  data_services: [{ isDataRegional: true }],
+  name: 'COVID-19 Test Locations',
+  code: 'COVID_19_Tonga_Test_Locations',
+  permission_group: 'COVID-19 Senior',
+  data_services: [{ isDataRegional: false }],
   config: {
     displayType: 'color',
-    valueType: 'text',
+    scaleType: 'performanceDesc',
     measureLevel: 'Village',
     hideFromPopup: true,
     hideFromLegend: false,
-    values: [
-      {
-        icon: 'circle',
-        name: 'Church',
-        color: 'darkblue',
-        value: 'Church',
+    hideByDefault: { null: true },
+    scaleBounds: {
+      left: {
+        max: 'auto',
       },
-      {
-        icon: 'circle',
-        name: 'School',
-        color: 'orange',
-        value: 'School',
+      right: {
+        min: 'auto',
       },
-      {
-        icon: 'circle',
-        name: 'Workplace',
-        color: 'pink',
-        value: 'Workplace',
-      },
-      {
-        icon: 'circle',
-        name: 'Community',
-        color: 'lightblue',
-        value: 'Community',
-      },
-      {
-        icon: 'circle',
-        name: 'Multiple Settings',
-        color: 'yellow',
-        value: 'NO_UNIQUE_VALUE',
-      },
-      {
-        icon: 'circle',
-        name: 'No data',
-        color: 'Grey',
-        value: 'null',
-      },
-    ],
+    },
     measureConfig: {
-      Church: {
-        name: 'Church',
-        sortOrder: 1,
-        values: [
-          {
-            value: null,
-            hideFromPopup: true,
-          },
-        ],
-      },
-      Community: {
-        name: 'Community',
-        sortOrder: 2,
-        values: [
-          {
-            value: null,
-            hideFromPopup: true,
-          },
-        ],
-      },
-      School: {
-        name: 'School',
-        sortOrder: 3,
-        values: [
-          {
-            value: null,
-            hideFromPopup: true,
-          },
-        ],
-      },
-      Workplace: {
-        name: 'Workplace',
-        sortOrder: 4,
-        values: [
-          {
-            value: null,
-            hideFromPopup: true,
-          },
-        ],
-      },
-      Total: {
-        name: 'Total',
-        sortOrder: 0,
-      },
       $all: {
+        name: 'Total COVID-19 Swabs',
         type: 'popup-only',
       },
     },
