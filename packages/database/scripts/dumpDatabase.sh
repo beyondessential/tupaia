@@ -50,7 +50,7 @@ if [ "$identity_file" == "" ]; then
     exit 1
 fi
 
-domain=$server-ssh.tupaia.org
+domain=$server-db.tupaia.org
 host="ubuntu@$domain"
 dump_file_path="/var/lib/postgresql/$DUMP_FILE_NAME"
 
