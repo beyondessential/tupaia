@@ -53,10 +53,10 @@ def backup_instances(event):
 
         instance_name = get_tag(instance, 'Name')
         deployment_name = get_tag(instance, 'DeploymentName')
-        retention_days = int(get_tag(instance, 'Retention'))
+        retention_days = get_tag(instance, 'Retention')
 
         if retention_days == '':
-            retention_days = 7 # default to 7 days of snapshot retention
+            retention_days = '7' # default to 7 days of snapshot retention
 
         print('Backing up ' + instance_name)
 
@@ -70,7 +70,7 @@ def backup_instances(event):
                 Description='Backup created from ' + instance_name,
             )
 
-            delete_date = datetime.date.today() + datetime.timedelta(days=retention_days)
+            delete_date = datetime.date.today() + datetime.timedelta(days=int(retention_days))
             delete_fmt = delete_date.strftime('%Y-%m-%d')
 
             snapshot_tags = [
