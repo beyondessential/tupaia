@@ -21,9 +21,8 @@ import * as COLORS from '../constants';
 import { FlexColumn, FlexSpaceBetween, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
 import { useDashboardReportDataWithConfig, useEntityData } from '../api/queries';
-import { useUrlParams, useUrlSearchParams, useExportToPNG } from '../utils';
+import { useI18n, useUrlParams, useUrlSearchParams, useExportToPNG } from '../utils';
 import { DashboardReport } from './DashboardReport';
-import { useI18n } from './I18n';
 
 // Transition component for modal animation
 const Transition = React.forwardRef(function Transition(props, ref) {

@@ -14,7 +14,7 @@ import { MapOverlaysLoader } from './MapOverlaysLoader';
 import { FlexStart } from '../Layout';
 import { MapOverlaysPanelContainer as Container } from './MapOverlaysPanelContainer';
 import { ErrorBoundary } from '../ErrorBoundary';
-import { I18n } from '../I18n';
+import { I18n } from '../../utils';
 
 const Header = styled.div`
   padding: 1.25rem 1.875rem 2rem;

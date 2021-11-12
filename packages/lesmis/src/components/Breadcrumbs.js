@@ -11,8 +11,7 @@ import MuiBreadcrumbs from '@material-ui/core/Breadcrumbs';
 import MuiLink from '@material-ui/core/Link';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { Link as RouterLink } from 'react-router-dom';
-import { useHomeUrl } from '../utils';
-import { I18n } from './I18n';
+import { useHomeUrl, I18n } from '../utils';
 
 const StyledBreadcrumbs = styled(MuiBreadcrumbs)`
   font-size: 0.75rem;

@@ -15,7 +15,7 @@ export * from './FullPageLoader';
 export * from './Layout';
 export * from './LocaleMenu';
 export * from './LocationHeader';
-export * from './I18n';
+export * from '../utils/I18n';
 export * from './MapOverlaysPanel';
 export * from './MiniMap';
 export * from './NavBar';

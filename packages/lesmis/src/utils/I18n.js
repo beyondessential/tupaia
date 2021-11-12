@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types';
-import { useUrlParams } from '../utils';
+import { useUrlParams } from './useUrlParams';
 import { DEFAULT_LOCALE } from '../constants';
 import { en, lo } from '../translations';
 
@@ -105,5 +105,23 @@ export const useI18n = () => {
     return null;
   };
 
-  return { translate };
+  const getProfileLabel = entityType => {
+    if (!entityType) {
+      return 'Profile';
+    }
+    switch (entityType) {
+      case 'country':
+        return translate('dashboards.countryProfile');
+      case 'district':
+        return translate('dashboards.provinceProfile');
+      case 'sub_district':
+        return translate('dashboards.districtProfile');
+      case 'school':
+        return translate('dashboards.schoolProfile');
+      default:
+        return `${entityType} Profile`;
+    }
+  };
+
+  return { translate, getProfileLabel };
 };

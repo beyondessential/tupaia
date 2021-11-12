@@ -13,8 +13,7 @@ import { Chart, ListVisual } from './Visuals';
 import * as COLORS from '../constants';
 import { useDashboardReportDataWithConfig } from '../api/queries';
 import { FlexEnd } from './Layout';
-import { useUrlParams } from '../utils';
-import { I18n } from './I18n';
+import { I18n, useUrlParams } from '../utils';
 
 const Container = styled.div`
   width: 55rem;

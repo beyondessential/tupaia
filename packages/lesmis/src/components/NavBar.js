@@ -16,8 +16,7 @@ import { MainMenu } from './MainMenu';
 import { SearchBar } from './SearchBar';
 import { NAVBAR_HEIGHT } from '../constants';
 import { useUser } from '../api';
-import { useUrlParams, useHomeUrl } from '../utils';
-import { I18n } from './I18n';
+import { useUrlParams, useHomeUrl, I18n } from '../utils';
 
 const Container = styled.nav`
   position: sticky;

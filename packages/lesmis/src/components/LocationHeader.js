@@ -14,8 +14,7 @@ import { GetApp, Phone, Email, Map, Dashboard } from '@material-ui/icons';
 import ButtonComponent from '@material-ui/core/Button';
 import { FlexStart, FlexEnd } from './Layout';
 import { useEntityData } from '../api';
-import { useUrlParams, makeEntityLink } from '../utils';
-import { I18n } from './I18n';
+import { I18n, useUrlParams, makeEntityLink } from '../utils';
 
 const Wrapper = styled.section`
   padding-top: 1rem;

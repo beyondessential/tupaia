@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { useForm } from 'react-hook-form';
 import * as COLORS from '../../constants';
 import { useLogin } from '../../api/mutations';
-import { I18n, useI18n } from '../I18n';
+import { I18n, useI18n } from '../../utils';
 
 const ErrorMessage = styled.p`
   color: ${COLORS.RED};

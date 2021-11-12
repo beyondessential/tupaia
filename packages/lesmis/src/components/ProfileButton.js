@@ -9,8 +9,7 @@ import { Link as RouterLink, useHistory } from 'react-router-dom';
 import MuiButton from '@material-ui/core/Button';
 import { ProfileButton as BaseProfileButton, ProfileButtonItem } from '@tupaia/ui-components';
 import { useUser, useLogout } from '../api';
-import { useUrlParams } from '../utils';
-import { I18n } from './I18n';
+import { useUrlParams, I18n } from '../utils';
 
 const StyledProfileButton = styled(BaseProfileButton)`
   background: rgba(0, 0, 0, 0.2);

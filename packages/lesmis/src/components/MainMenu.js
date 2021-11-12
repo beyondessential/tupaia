@@ -22,7 +22,7 @@ import { Home, ImportContacts, ContactMail, Close, Menu, Assignment } from '@mat
 import { LightIconButton } from '@tupaia/ui-components';
 import { LocaleListItemLink } from './LocaleLinks';
 import { FlexEnd } from './Layout';
-import { I18n } from './I18n';
+import { I18n } from '../utils';
 import { useUser } from '../api/queries';
 
 const StyledList = styled(List)`

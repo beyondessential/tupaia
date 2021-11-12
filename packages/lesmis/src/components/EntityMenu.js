@@ -17,9 +17,8 @@ import MuiList from '@material-ui/core/List';
 import MuiListItem from '@material-ui/core/ListItem';
 import { DialogHeader } from './FullScreenDialog';
 import { useProjectEntitiesData } from '../api/queries';
-import { makeEntityLink, useUrlParams, getOptionText, getPlaceIcon } from '../utils';
+import { I18n, makeEntityLink, useUrlParams, getOptionText, getPlaceIcon } from '../utils';
 import * as COLORS from '../constants';
-import { I18n } from './I18n';
 
 const List = styled(MuiList)`
   background: white;

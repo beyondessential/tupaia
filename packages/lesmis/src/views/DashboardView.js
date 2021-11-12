@@ -11,8 +11,8 @@ import { useIsFetching } from 'react-query';
 import { Select } from '@tupaia/ui-components';
 import { VitalsView } from './VitalsView';
 import { DashboardReportTabView } from './DashboardReportTabView';
-import { TabPanel, TabBar, TabBarSection, YearSelector, useI18n } from '../components';
-import { useUrlParams, useUrlSearchParams, useUrlSearchParam, useProfileLabel } from '../utils';
+import { TabPanel, TabBar, TabBarSection, YearSelector } from '../components';
+import { useUrlParams, useUrlSearchParams, useUrlSearchParam, useI18n } from '../utils';
 import { useEntityData } from '../api/queries';
 import { DEFAULT_DATA_YEAR, SUB_DASHBOARD_OPTIONS } from '../constants';
 import { DashboardReportModal } from '../components/DashboardReportModal';
@@ -45,8 +45,7 @@ TabTemplate.propTypes = {
 
 const useDashboardDropdownOptions = () => {
   const { entityCode } = useUrlParams();
-  const { translate } = useI18n();
-  const { getProfileLabel } = useProfileLabel();
+  const { getProfileLabel, translate } = useI18n();
   const { data: entityData } = useEntityData(entityCode);
   const [params] = useUrlSearchParams();
   const selectedDashboard = params.dashboard;

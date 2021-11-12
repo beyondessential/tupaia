@@ -11,10 +11,9 @@ import MuiIconButton from '@material-ui/core/IconButton';
 import MuiSearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import { useDashboardData } from '../../api';
-import { usePortal, useUrlParams, useAutocomplete, useProfileLabel } from '../../utils';
+import { useI18n, usePortal, useUrlParams, useAutocomplete } from '../../utils';
 import { DashboardSearchResults } from './DashboardSearchResults';
 import { SUB_DASHBOARD_OPTIONS } from '../../constants';
-import { useI18n } from '../I18n';
 
 // Setting the button size directly allows a smooth animation
 const BUTTON_SIZE = '50px';
@@ -85,8 +84,7 @@ const ClearButton = styled(MuiIconButton)`
 `;
 
 const useDashboardItems = () => {
-  const { translate } = useI18n();
-  const { getProfileLabel } = useProfileLabel();
+  const { getProfileLabel, translate } = useI18n();
   const { entityCode } = useUrlParams();
 
   const { data } = useDashboardData({

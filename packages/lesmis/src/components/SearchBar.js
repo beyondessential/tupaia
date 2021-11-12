@@ -16,9 +16,8 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import Fade from '@material-ui/core/Fade';
 import { EntityMenu } from './EntityMenu';
 import { NoResultsMessage } from './NoResultsMessage';
-import { useI18n } from './I18n';
 import { useProjectEntitiesData } from '../api';
-import { useAutocomplete, getPlaceIcon, getOptionText, makeEntityLink } from '../utils';
+import { useAutocomplete, getPlaceIcon, getOptionText, makeEntityLink, useI18n } from '../utils';
 
 const SearchContainer = styled.div`
   position: relative;
