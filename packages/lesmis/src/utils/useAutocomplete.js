@@ -1,7 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
+ *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import useMuiAutocomplete from '@material-ui/lab/useAutocomplete';
 
@@ -43,24 +42,33 @@ export function createFilterOptions(config = {}) {
   };
 }
 
-export const useAutocomplete = ({ inputValue, setInputValue, options, limit, onChange }) => {
+export const useAutocomplete = ({
+  id,
+  inputValue,
+  setInputValue,
+  options,
+  limit,
+  onChange,
+  muiProps,
+}) => {
   const filterOptions = createFilterOptions({
     limit,
   });
 
   return useMuiAutocomplete({
-    id: 'location-search',
+    blurOnSelect: true,
+    clearOnEscape: true,
+    clearOnBlur: false,
+    disableCloseOnSelect: true,
     filterOptions,
+    getOptionLabel: option => option.name,
+    id,
+    inputValue,
     options,
     onChange,
-    inputValue,
-    clearOnEscape: true,
-    disableCloseOnSelect: true,
-    clearOnBlur: false,
-    blurOnSelect: true,
     onInputChange: (event, newValue) => {
       setInputValue(newValue);
     },
-    getOptionLabel: option => option.name,
+    ...muiProps,
   });
 };
