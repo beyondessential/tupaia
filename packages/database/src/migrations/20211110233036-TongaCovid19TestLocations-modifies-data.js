@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject, generateId, findSingleRecord, findSingleRecordBySql } from '../utilities';
+import { generateId, codeToId, insertObject } from '../utilities';
 
 var dbm;
 var type;
@@ -17,6 +17,7 @@ exports.setup = function (options, seedLink) {
 };
 
 const reportCode = 'COVID_19_Tonga_Test_Locations_map';
+const MAP_OVERLAY_GROUP_CODE = 'COVID19_Tonga';
 
 const reportRecord = {
   id: generateId(),
@@ -39,7 +40,7 @@ const reportRecord = {
         exclude: ['event', 'eventDate', 'orgUnitName', 'orgUnit'],
         insert: {
           organisationUnitCode: '=$orgUnit',
-          value: 1,
+          value: '=1',
         },
       },
       {
@@ -49,7 +50,7 @@ const reportRecord = {
       },
     ],
   },
-  permission_group: 'COVID-19 Senior',
+  permission_group_id: '5e8a9e2961f76a32a10881c4',
 };
 
 const mapOverlayRecord = {
@@ -59,10 +60,10 @@ const mapOverlayRecord = {
   permission_group: 'COVID-19 Senior',
   data_services: [{ isDataRegional: false }],
   config: {
-    displayType: 'color',
-    scaleType: 'performanceDesc',
+    customLabel: 'Total COVID-19 Swabs',
+    displayType: 'shaded-spectrum',
+    scaleType: 'performance',
     measureLevel: 'Village',
-    hideFromPopup: true,
     hideFromLegend: false,
     hideByDefault: { null: true },
     scaleBounds: {
@@ -73,24 +74,43 @@ const mapOverlayRecord = {
         min: 'auto',
       },
     },
-    measureConfig: {
-      $all: {
-        name: 'Total COVID-19 Swabs',
-        type: 'popup-only',
-      },
-    },
   },
-  country_codes: '{"PW"}',
-  project_codes: '{olangch_palau}',
+  country_codes: '{"TO"}',
+  project_codes: '{fanafana}',
   report_code: reportCode,
 };
 
-exports.up = function (db) {
-  return null;
+exports.up = async function (db) {
+  // add mapOverlay record to map_overlay
+  await insertObject(db, 'map_overlay', mapOverlayRecord);
+  // add report record to report
+  await insertObject(db, 'report', reportRecord);
+  // look up map overlay group code
+  const mapOverlayGroupId = await codeToId(db, 'map_overlay_group', MAP_OVERLAY_GROUP_CODE);
+  // add mapoverlay to map_over_group_relation
+  await insertObject(db, 'map_overlay_group_relation', {
+    id: generateId(),
+    map_overlay_group_id: mapOverlayGroupId,
+    child_id: mapOverlayRecord.id,
+    child_type: 'mapOverlay',
+  });
 };
 
-exports.down = function (db) {
-  return null;
+exports.down = async function (db) {
+  // lookup map overlay id
+  const mapOverlayId = await codeToId(db, 'map_overlay', mapOverlayRecord.code);
+  // delete mapoverlay from group relations
+  await db.runSql(`
+    DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${mapOverlayId}';
+  `);
+  // delete map overlay from map_overlay
+  await db.runSql(`
+  DELETE FROM "map_overlay" WHERE "id" = '${mapOverlayId}';
+  `);
+  // delete report from report
+  await db.runSql(`
+  DELETE FROM "report" WHERE "code" = '${reportCode}';
+  `);
 };
 
 exports._meta = {
