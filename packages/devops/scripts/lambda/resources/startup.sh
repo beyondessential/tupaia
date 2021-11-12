@@ -23,6 +23,13 @@ if [[ $DEPLOYMENT_NAME == "production" || $DEPLOYMENT_NAME == "dev" ]]; then
     $DEPLOYMENT_SCRIPTS/startCloudwatchAgent.sh | while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
 fi
 
+# Add preaggregation cron job if production
+if [[ $DEPLOYMENT_NAME == "production" ]]; then
+  set +e # Temporarily allow non 0 exit, as crontab probably doesn't exist yet
+  (crontab -l ; echo "10 13 * * * /home/ubuntu/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done > /home/ubuntu/logs/preaggregation.txt") | crontab -
+  set -e
+fi
+
 # Fetch the latest code
 cd $TUPAIA_DIR
 BRANCH_ON_REMOTE=$(git ls-remote --heads origin ${BRANCH})
