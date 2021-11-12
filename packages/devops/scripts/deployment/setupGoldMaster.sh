@@ -53,10 +53,5 @@ mkdir -p /home/ubuntu/.local/share/lpass
 cd /home/ubuntu
 git clone https://github.com/beyondessential/tupaia.git
 
-# TODO delete once merged to dev, but needed while `buildDeployablePackages` doesn't exist there
-cd tupaia
-git checkout wai-965-update-ci-cd
-git pull
-
 # build all packages once using dev to speed up future branch-specific builds
 /home/ubuntu/tupaia/packages/devops/scripts/deployment/buildDeployablePackages.sh gold-master-image-builder
