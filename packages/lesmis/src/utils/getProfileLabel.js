@@ -10,6 +10,8 @@ export const getProfileLabel = entityType => {
   switch (entityType) {
     case 'district':
       return 'Province Profile';
+    case 'country':
+      return 'Country';
     case 'sub_district':
       return 'District Profile';
     default:
