@@ -1,16 +1,19 @@
-import boto3
+# Starts any instance tagged with "StartAtUTC" that is currently stopped, and due to be started
+# within the last hour
+#
+# Example config
+# {
+#   "Action": "start_tagged_instances",
+#   "User": "edwin"
+# }
+
 import asyncio
 import time
-from utilities import *
+from helpers.utilities import find_instances, start_instance
 
-ec2 = boto3.resource('ec2')
-ec = boto3.client('ec2')
-iam = boto3.client('iam')
-route53 = boto3.client('route53')
 loop = asyncio.get_event_loop()
 
-
-def lambda_handler(event, context):
+def start_tagged_instances(event):
     hour = time.strftime("%H:00")
     instances = find_instances([
         { 'Name': 'tag:StartAtUTC', 'Values': [hour] },

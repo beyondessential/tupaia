@@ -1,14 +1,12 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
+ *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Link, useHistory } from 'react-router-dom';
 import MuiButton from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import MuiPaper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
 import MuiDivider from '@material-ui/core/Divider';
@@ -16,6 +14,10 @@ import MuiIconButton from '@material-ui/core/IconButton';
 import MuiSearchIcon from '@material-ui/icons/Search';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Fade from '@material-ui/core/Fade';
+import { EntityMenu } from './EntityMenu';
+import { NoResultsMessage } from './NoResultsMessage';
+import { useProjectEntitiesData } from '../api';
+import { getPlaceIcon, getOptionText, makeEntityLink, useAutocomplete } from '../utils';
 import { EntityMenu } from '../EntityMenu';
 import { useI18n } from '../I18n';
 import { useAutocomplete } from './useAutocomplete';
@@ -113,26 +115,6 @@ const ResultsItem = styled(Link)`
   }
 `;
 
-const NoResultsBox = styled(ResultsBox)`
-  text-align: center;
-  padding: 1.5rem 1rem 2rem;
-
-  img {
-    width: 4.375rem;
-    margin-bottom: 0.625rem;
-  }
-`;
-
-const NoResultsText = styled(Typography)`
-  color: ${props => props.theme.palette.text.secondary};
-  margin-bottom: 0.625rem;
-  font-size: 0.875rem;
-`;
-
-const NoResultsValue = styled.div`
-  font-weight: 700;
-`;
-
 const DEFAULT_LIMIT = 5;
 const EXPANDED_LIMIT = 200;
 
@@ -154,6 +136,7 @@ export const SearchBar = ({ linkType, className }) => {
     popupOpen,
     value,
   } = useAutocomplete({
+    id: 'location-search',
     inputValue,
     setInputValue,
     options,
@@ -193,7 +176,7 @@ export const SearchBar = ({ linkType, className }) => {
           <EntityMenu buttonText={translate('home.orViewAll')} />
         </SearchBox>
         {groupedOptions.length > 0 ? (
-          <ResultsBox elevation={3} {...getListboxProps()}>
+          <ResultsBox {...getListboxProps()}>
             {groupedOptions.map((option, index) => (
               <ResultsItem
                 key={option.name}
@@ -217,11 +200,9 @@ export const SearchBar = ({ linkType, className }) => {
           </ResultsBox>
         ) : (
           showNoResults && (
-            <NoResultsBox>
-              <img src="/images/no-results-icon.svg" alt="no results" />
-              <NoResultsText>No results found for the search</NoResultsText>
-              <NoResultsValue>&quot;{inputValue}&quot;</NoResultsValue>
-            </NoResultsBox>
+            <ResultsBox {...getListboxProps()}>
+              <NoResultsMessage inputValue={inputValue} />
+            </ResultsBox>
           )
         )}
       </SearchContainer>
