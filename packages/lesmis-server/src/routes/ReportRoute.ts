@@ -20,7 +20,7 @@ export class ReportRoute extends TranslatableRoute {
     this.reportConnection = new ReportConnection(req.session);
     this.webConfigConnection = new WebConfigConnection(req.session);
     this.translationSchema = {
-      domain: 'reports',
+      domain: 'lesmis',
       layout: {
         type: 'array',
         items: {

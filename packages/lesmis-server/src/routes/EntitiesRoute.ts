@@ -16,7 +16,7 @@ export class EntitiesRoute extends TranslatableRoute {
 
     this.entityConnection = new EntityConnection(req.session);
     this.translationSchema = {
-      domain: 'entities',
+      domain: 'lesmis',
       layout:{
         type: 'array',
         where: (entry => entry.type !== 'school'), // Schools are always in laotian

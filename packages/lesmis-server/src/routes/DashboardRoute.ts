@@ -17,7 +17,7 @@ export class DashboardRoute extends TranslatableRoute {
 
     this.webConfigConnection = new WebConfigConnection(req.session);
     this.translationSchema = {
-      domain: 'dashboards',
+      domain: 'lesmis',
       layout: {
         type: 'array',
         items: {

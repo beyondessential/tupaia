@@ -16,7 +16,7 @@ export class EntityRoute extends TranslatableRoute {
 
     this.entityConnection = new EntityConnection(req.session);
     this.translationSchema = {
-      domain: 'entities',
+      domain: 'lesmis',
       layout:{
         type: 'object',
         valuesToTranslate: ['name'],
