@@ -69,9 +69,16 @@ const Text = styled(Typography)`
   color: #333;
 `;
 
-const makeCustomTooltip = ({ valueType, labelType }) => {
+const getFormattedValue = (viewContent, data) => {
+  const { valueType, labelType } = viewContent;
   const valueTypeForLabel = labelType || valueType;
+  const { name, value, originalItem } = data;
+  const metadata = originalItem[`${name}_metadata`];
 
+  return formatDataValueByType({ value, metadata }, valueTypeForLabel);
+};
+
+const makeCustomTooltip = viewContent => {
   return props => {
     const { active, payload } = props;
 
@@ -80,18 +87,24 @@ const makeCustomTooltip = ({ valueType, labelType }) => {
     }
 
     const data = payload[0].payload;
-    const { name, value, originalItem, fill } = data;
-    const metadata = originalItem[`${name}_metadata`];
+    const { name, fill } = data;
 
     return (
       <TooltipContainer>
         <Heading>{name}</Heading>
         <Item>
           <Box style={{ background: fill }} />
-          <Text>{formatDataValueByType({ value, metadata }, valueTypeForLabel)}</Text>
+          <Text>{getFormattedValue(viewContent, data)}</Text>
         </Item>
       </TooltipContainer>
     );
+  };
+};
+
+const makeLabel = viewContent => {
+  return props => {
+    const { payload } = props;
+    return getFormattedValue(viewContent, payload.payload);
   };
 };
 
@@ -157,7 +170,7 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
           onClick={item => {
             onItemClick(item.originalItem);
           }}
-          label={isExporting}
+          label={isExporting ? makeLabel(viewContent) : null}
           startAngle={360 + 90}
           endAngle={90}
         >
