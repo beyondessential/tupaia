@@ -65,8 +65,8 @@ export class TranslatableRoute extends Route {
   translateResponse(translationKey: ArrayKey, translationValue: TranslationValue[]): TranslationValue;
   translateResponse(translationKey: TranslationKey, translationValue: TranslationValue): TranslationValue;
   translateResponse(translationKey: any, translationValue: any): any {
-    if (!translationValue) {
-      return undefined;
+    if (!this.checkSchema(translationKey, translationValue)) {
+      return translationValue;
     }
     switch(translationKey.type) {
       case 'string':
@@ -99,6 +99,22 @@ export class TranslatableRoute extends Route {
         return translationValue.map((entry: TranslationValue) => (!translationKey.where || translationKey.where(entry)) ? this.translateResponse(translationKey.items, entry) : entry);
       default:
         return translationValue;
+    }
+  }
+
+  checkSchema(translationKey: TranslationKey, translationValue: TranslationValue): boolean {
+    if (!translationValue) {
+      return false;
+    }
+    switch(translationKey.type) {
+      case 'string':
+        return (typeof translationValue === 'string');
+      case 'object':
+        return (typeof translationValue === 'object');
+      case 'array':
+        return Array.isArray(translationValue);
+      default:
+        return false;
     }
   }
 
