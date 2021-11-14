@@ -18,11 +18,11 @@ export class DashboardRoute extends TranslatableRoute {
     this.webConfigConnection = new WebConfigConnection(req.session);
     this.translationSchema = {
       domain: 'dashboards',
-      layout:{
+      layout: {
         type: 'array',
         items: {
           type: 'object',
-          valuesToTranslate: ['dashboardName'],
+          valuesToTranslate: ['dashboardName', 'entityName'],
           properties: {
             // Object property named 'items'
             items: {
@@ -40,15 +40,19 @@ export class DashboardRoute extends TranslatableRoute {
                         type: 'object',
                         // For multi-axis visuals
                         valuesToTranslate: ['yName'],
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+                      },
+                    },
+                  },
+                  presentationOptions: {
+                    type: 'object',
+                    keysToTranslate: '*',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     };
   }
 

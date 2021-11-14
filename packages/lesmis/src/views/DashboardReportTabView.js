@@ -19,6 +19,7 @@ import {
   Tabs,
   Tab,
   TabPanel,
+  useI18n,
 } from '../components';
 import { NAVBAR_HEIGHT_INT } from '../constants';
 import { useHomeUrl, useUrlSearchParam, useStickyBar } from '../utils';
@@ -70,14 +71,14 @@ const InfoAlert = styled(SmallAlert)`
   margin: auto;
 `;
 
-const DEFAULT_DASHBOARD_GROUP = 'Student Enrolment';
-const SCHOOL_DEFAULT_DASHBOARD_GROUP = 'Students';
-
 // Gets the best default dashboard possible, and check if the selected dashboard is valid
 const useDefaultDashboardTab = (selectedDashboard = null, options) => {
   const history = useHistory();
+  const { translate } = useI18n();
   const { homeUrl } = useHomeUrl();
   const { isLoggedIn, isFetching: isFetchingUser } = useUser();
+  const defaultDashboardGroup = translate('dashboards.studentEnrolment');
+  const schoolDefaultDashboardGroup = 'Students';
 
   if (!options || options.length === 0) {
     return null;
@@ -94,11 +95,11 @@ const useDefaultDashboardTab = (selectedDashboard = null, options) => {
     }
   }
 
-  if (dashboardNames.includes(DEFAULT_DASHBOARD_GROUP)) {
-    return DEFAULT_DASHBOARD_GROUP;
+  if (dashboardNames.includes(defaultDashboardGroup)) {
+    return defaultDashboardGroup;
   }
-  if (dashboardNames.includes(SCHOOL_DEFAULT_DASHBOARD_GROUP)) {
-    return SCHOOL_DEFAULT_DASHBOARD_GROUP;
+  if (dashboardNames.includes(schoolDefaultDashboardGroup)) {
+    return schoolDefaultDashboardGroup;
   }
   return dashboardNames[0];
 };
