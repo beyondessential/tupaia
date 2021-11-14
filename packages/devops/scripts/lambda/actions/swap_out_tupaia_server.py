@@ -27,9 +27,9 @@ def swap_out_tupaia_server(event):
     # set up ELB from the old instance to point at the new one
     swap_gateway_instance(deployment_name, old_instance['InstanceId'], new_instance_id)
 
-    terminate_instance(old_instance)
-
     # add the subdomain tags that now relate to the new instance
     add_tag(new_instance_id, 'SubdomainsViaGateway', get_tag(old_instance, 'SubdomainsViaGateway'))
+
+    terminate_instance(old_instance)
 
     print('Successfully swapped out ' + deployment_name)
