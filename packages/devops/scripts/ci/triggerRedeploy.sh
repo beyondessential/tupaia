@@ -13,7 +13,7 @@ echo "At least one existing deployment, triggering redeploy of any tagged with B
 RESPONSE_FILE=lambda_redeploy_response.json
 aws lambda invoke \
   --function-name deployment \
-  --payload "{\"Action\": \"redeploy_tupaia_server\", \"User\": \"codeship\", \"Branch\": \"$CI_BRANCH\" }" \
+  --payload "{\"Action\": \"redeploy_tupaia_server\", \"User\": \"${CI_COMMITTER_NAME} via codeship\", \"Branch\": \"$CI_BRANCH\" }" \
   --cli-binary-format raw-in-base64-out $RESPONSE_FILE \
   --no-cli-pager
 
