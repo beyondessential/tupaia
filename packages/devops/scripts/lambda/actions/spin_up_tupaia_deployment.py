@@ -38,6 +38,7 @@ from datetime import datetime, timedelta
 
 from helpers.clone import clone_instance
 from helpers.create_from_image import create_tupaia_instance_from_image
+from helpers.utilities import find_instances
 
 def spin_up_tupaia_deployment(event):
     # validate input config
@@ -47,6 +48,15 @@ def spin_up_tupaia_deployment(event):
     deployment_name = event.get('DeploymentName', branch) # default to branch if no deployment code set
     if deployment_name == 'production' and branch != 'master':
         raise Exception('The production deployment needs to check out master, not ' + branch)
+
+    # find current instances
+    existing_instances = find_instances([
+        { 'Name': 'tag:DeploymentName', 'Values': [deployment_name] },
+        { 'Name': 'instance-state-name', 'Values': ['running', 'stopped'] } # ignore terminated instances
+    ])
+
+    if len(existing_instances) != 0:
+      raise Exception('A deployment already exists, perhaps you want to redeploy and swap out the existing one? The easiest way is to push a new commit.')
 
     # get manual input parameters, or default for any not provided
     instance_type = event.get('InstanceType', 't3a.medium')
