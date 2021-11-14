@@ -38,11 +38,17 @@ for DEPLOYMENT_BASE64 in $DEPLOYMENTS; do
       --no-cli-pager
     if [ $? -eq 0 ]; then
       echo "New instance ${NEW_INSTANCE_ID} is ready, swapping over ELB"
+      SWAP_OUT_RESPONSE_FILE=lambda_swap_out_response.json
       aws lambda invoke \
         --function-name deployment \
-        --payload "{\"Action\": \"swap_out_tupaia_server\", \"User\": \"codeship\", \"DeploymentName\": \"$DEPLOYMENT_NAME\", \"NewInstanceId\": \"$NEW_INSTANCE_ID\" }" \
-        --cli-binary-format raw-in-base64-out $RESPONSE_FILE \
+        --payload "{\"Action\": \"swap_out_tupaia_server\", \"User\": \"${CI_COMMITTER_NAME} via codeship\", \"DeploymentName\": \"$DEPLOYMENT_NAME\", \"NewInstanceId\": \"$NEW_INSTANCE_ID\" }" \
+        --cli-binary-format raw-in-base64-out $SWAP_OUT_RESPONSE_FILE \
         --no-cli-pager
+      if grep -q errorMessage "$SWAP_OUT_RESPONSE_FILE"; then
+        echo "Error while trying to swap out instances"
+        cat $SWAP_OUT_RESPONSE_FILE
+        exit 1
+      fi
       echo "ELB for ${DEPLOYMENT_NAME} now points to ${NEW_INSTANCE_ID}"
       break
     else
