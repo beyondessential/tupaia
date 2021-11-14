@@ -1,16 +1,19 @@
-import boto3
+# Stops any instance tagged with "StopAtUTC" that is currently running, and due to be stopped
+# within the last hour
+#
+# Example config
+# {
+#   "Action": "stop_tagged_instances",
+#   "User": "edwin"
+# }
+
 import asyncio
 import time
-from utilities import *
+from helpers.utilities import find_instances, stop_instance
 
-ec2 = boto3.resource('ec2')
-ec = boto3.client('ec2')
-iam = boto3.client('iam')
-route53 = boto3.client('route53')
 loop = asyncio.get_event_loop()
 
-
-def lambda_handler(event, context):
+def stop_tagged_instances(event):
     hour = time.strftime("%H:00")
     instances = find_instances([
         { 'Name': 'tag:StopAtUTC', 'Values': [hour] },

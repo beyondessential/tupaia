@@ -10,8 +10,7 @@ RUN apk --no-cache add \
   postgresql-client \
   rsync
 
-# set the workdir so that all following commands run within /tupaia, which can then be copied
-# to the common volume for use by other containers throughout the codeship steps
+# set the workdir so that all following commands run within /tupaia
 WORKDIR /tupaia
 
 # get ready for dependencies to be installed via yarn, before copying the rest of the package, so
