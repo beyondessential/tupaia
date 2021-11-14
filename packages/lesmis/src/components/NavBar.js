@@ -16,7 +16,7 @@ import { MainMenu } from './MainMenu';
 import { SearchBar } from './SearchBar';
 import { NAVBAR_HEIGHT } from '../constants';
 import { useUser } from '../api';
-import { useUrlParams } from '../utils';
+import { useUrlParams, useHomeUrl, I18n } from '../utils';
 
 const Container = styled.nav`
   position: sticky;
@@ -53,7 +53,8 @@ const Search = styled(SearchBar)`
 export const NavBar = ({ hideSearch }) => {
   const history = useHistory();
   const { isLoggedIn } = useUser();
-  const { view } = useUrlParams();
+  const { locale, view } = useUrlParams();
+  const { homeUrl } = useHomeUrl();
 
   return (
     <Container>
@@ -61,19 +62,19 @@ export const NavBar = ({ hideSearch }) => {
         <Inner>
           <Left>
             <MainMenu />
-            <StyledHomeButton homeUrl="/" source="/lesmis-logo-white.svg" />
+            <StyledHomeButton homeUrl={homeUrl} source="/lesmis-logo-white.svg" />
           </Left>
           {!hideSearch && <Search linkType={view} />}
           <FlexStart>
             {isLoggedIn ? null : ( // @see https://github.com/beyondessential/tupaia-backlog/issues/2290 //Todo: add Favourites Menu
               <TextButton
                 to={{
-                  pathname: '/register',
+                  pathname: `/${locale}/register`,
                   state: { referer: history.location },
                 }}
                 component={RouterLink}
               >
-                Sign up
+                <I18n t="home.signUp" />
               </TextButton>
             )}
             <ProfileButton />

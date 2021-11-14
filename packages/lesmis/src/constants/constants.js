@@ -19,16 +19,16 @@ export const LESMIS_PERMISSION_GROUPS = {
 export const SUB_DASHBOARD_OPTIONS = [
   {
     code: 'ESSDP_EarlyChildhood',
-    label: 'ESSDP Early childhood education sub-sector',
+    label: 'dashboards.essdpEarlyChildhoodEducationSubSector',
   },
-  { code: 'ESSDP_Primary', label: 'ESSDP Primary sub-sector' },
-  { code: 'ESSDP_LowerSecondary', label: 'ESSDP Lower secondary sub-sector' },
-  { code: 'ESSDP_UpperSecondary', label: 'ESSDP Upper secondary sub-sector' },
+  { code: 'ESSDP_Primary', label: 'dashboards.essdpPrimarySubSector' },
+  { code: 'ESSDP_LowerSecondary', label: 'dashboards.essdpLowerSecondarySubSector' },
+  { code: 'ESSDP_UpperSecondary', label: 'dashboards.essdpUpperSecondarySubSector' },
   {
     code: 'EmergencyInEducation',
-    label: 'Emergency in Education Preparedness and Response',
+    label: 'dashboards.emergencyInEducation',
   },
-  { code: 'International_SDGs', label: 'International reporting on SDGs' },
+  { code: 'International_SDGs', label: 'dashboards.internationalReportingOnSdGs' },
 ];
 
 // Date Constants

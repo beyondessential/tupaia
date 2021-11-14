@@ -6,3 +6,4 @@
 
 export { Route } from './Route';
 export { TestRoute } from './TestRoute';
+export { TranslatableRoute } from './TranslatableRoute';

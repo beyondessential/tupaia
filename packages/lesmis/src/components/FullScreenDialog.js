@@ -36,7 +36,7 @@ export const DialogHeader = ({ title, handleClose, className }) => (
 );
 
 DialogHeader.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   handleClose: PropTypes.func.isRequired,
   className: PropTypes.string,
 };

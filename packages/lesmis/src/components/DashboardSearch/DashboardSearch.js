@@ -11,7 +11,7 @@ import MuiIconButton from '@material-ui/core/IconButton';
 import MuiSearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import { useDashboardData } from '../../api';
-import { usePortal, useUrlParams, useAutocomplete, getProfileLabel } from '../../utils';
+import { useI18n, usePortal, useUrlParams, useAutocomplete } from '../../utils';
 import { DashboardSearchResults } from './DashboardSearchResults';
 import { SUB_DASHBOARD_OPTIONS } from '../../constants';
 
@@ -84,6 +84,7 @@ const ClearButton = styled(MuiIconButton)`
 `;
 
 const useDashboardItems = () => {
+  const { getProfileLabel, translate } = useI18n();
   const { entityCode } = useUrlParams();
 
   const { data } = useDashboardData({
@@ -96,10 +97,13 @@ const useDashboardItems = () => {
   }
 
   return data.reduce((allItems, { dashboardName, entityName, entityType, ...dashboard }) => {
-    const subDashboardName =
-      SUB_DASHBOARD_OPTIONS.find(option =>
-        dashboard.dashboardCode.startsWith(`LESMIS_${option.code}`),
-      )?.label ?? getProfileLabel(entityType);
+    const subDashboard = SUB_DASHBOARD_OPTIONS.find(option =>
+      dashboard.dashboardCode.startsWith(`LESMIS_${option.code}`),
+    );
+
+    const subDashboardName = subDashboard
+      ? translate(subDashboard.label)
+      : getProfileLabel(entityType);
 
     const items = dashboard.items.map(item => ({
       ...item,

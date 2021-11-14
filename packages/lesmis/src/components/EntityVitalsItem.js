@@ -101,7 +101,7 @@ export const EntityVitalsItem = ({ name, value, icon, isLoading, ...props }) =>
   );
 
 EntityVitalsItem.propTypes = {
-  name: PropTypes.string,
+  name: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   icon: PropTypes.string,
   isLoading: PropTypes.bool,

@@ -12,7 +12,7 @@ import { Select } from '@tupaia/ui-components';
 import { VitalsView } from './VitalsView';
 import { DashboardReportTabView } from './DashboardReportTabView';
 import { TabPanel, TabBar, TabBarSection, YearSelector } from '../components';
-import { useUrlParams, useUrlSearchParams, useUrlSearchParam, getProfileLabel } from '../utils';
+import { useUrlParams, useUrlSearchParams, useUrlSearchParam, useI18n } from '../utils';
 import { useEntityData } from '../api/queries';
 import { DEFAULT_DATA_YEAR, SUB_DASHBOARD_OPTIONS } from '../constants';
 import { DashboardReportModal } from '../components/DashboardReportModal';
@@ -45,6 +45,7 @@ TabTemplate.propTypes = {
 
 const useDashboardDropdownOptions = () => {
   const { entityCode } = useUrlParams();
+  const { getProfileLabel, translate } = useI18n();
   const { data: entityData } = useEntityData(entityCode);
   const [params] = useUrlSearchParams();
   const selectedDashboard = params.dashboard;
@@ -65,7 +66,7 @@ const useDashboardDropdownOptions = () => {
     },
     {
       value: 'indicators',
-      label: 'Free Indicator Selection',
+      label: translate('dashboards.freeIndicatorSelection'),
       TabComponent: TabTemplate,
       componentProps: {
         Body: 'Free Indicator Selection',
@@ -73,7 +74,7 @@ const useDashboardDropdownOptions = () => {
     },
     {
       value: 'ESSDP_Plan',
-      label: 'ESSDP Plan 2021-25 M&E Framework',
+      label: translate('dashboards.essdpPlan202125M&eFramework'),
       TabComponent: TabTemplate,
       componentProps: {
         Body: '9th Education Sector and Sports Development Plan 2021-25 M&E Framework',
@@ -82,7 +83,7 @@ const useDashboardDropdownOptions = () => {
     },
     ...SUB_DASHBOARD_OPTIONS.map(dashboard => ({
       value: dashboard.code,
-      label: dashboard.label,
+      label: translate(dashboard.label),
       TabComponent: DashboardReportTabView,
       componentProps: {
         filterSubDashboards: ({ dashboardCode }) =>

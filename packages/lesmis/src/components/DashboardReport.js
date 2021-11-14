@@ -13,7 +13,7 @@ import { Chart, ListVisual } from './Visuals';
 import * as COLORS from '../constants';
 import { useDashboardReportDataWithConfig } from '../api/queries';
 import { FlexEnd } from './Layout';
-import { useUrlParams } from '../utils';
+import { I18n, useUrlParams } from '../utils';
 
 const Container = styled.div`
   width: 55rem;
@@ -32,7 +32,7 @@ const Footer = styled(FlexEnd)`
 export const DashboardReport = React.memo(
   ({ name, reportCode, startDate, endDate, isEnlarged, isExporting }) => {
     const { search } = useLocation();
-    const { entityCode } = useUrlParams();
+    const { locale, entityCode } = useUrlParams();
 
     const { data, isLoading, isFetching, isError, error } = useDashboardReportDataWithConfig({
       entityCode,
@@ -44,7 +44,7 @@ export const DashboardReport = React.memo(
     const { reportData, dashboardItemConfig: config, reportCodes } = data;
     const Visual = config?.type === 'list' ? ListVisual : Chart;
     const Wrapper = isEnlarged ? React.Fragment : Container;
-    const drillDownPathname = `/${entityCode}/dashboard`;
+    const drillDownPathname = `/${locale}/${entityCode}/dashboard`;
 
     return (
       <Wrapper>
@@ -71,7 +71,7 @@ export const DashboardReport = React.memo(
                 search: `${search}&reportCode=${reportCode}`,
               }}
             >
-              See More
+              <I18n t="dashboards.seeMore" />
             </Button>
           </Footer>
         )}
