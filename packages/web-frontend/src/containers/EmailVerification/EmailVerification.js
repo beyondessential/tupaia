@@ -21,7 +21,7 @@ export const EmailVerificationComponent = ({
   onResendEmail,
   hasSentEmail,
   messageFailEmailVerify,
-  currentUserEmail
+  currentUserEmail,
 }) => {
   const titleText = 'Sign in to Tupaia';
 
@@ -60,12 +60,12 @@ EmailVerificationComponent.propTypes = {
   onResendEmail: PropTypes.func.isRequired,
   hasSentEmail: PropTypes.bool.isRequired,
   messageFailEmailVerify: PropTypes.string.isRequired,
-  currentUserEmail: PropTypes.string
+  currentUserEmail: PropTypes.string,
 };
 
 EmailVerificationComponent.defaultProps = {
-  currentUserEmail: null
-}
+  currentUserEmail: null,
+};
 
 const mapStateToProps = state => {
   const { hasSentEmail, messageFailEmailVerify, currentUserEmail } = state.authentication;
@@ -73,7 +73,7 @@ const mapStateToProps = state => {
   return {
     hasSentEmail,
     messageFailEmailVerify,
-    currentUserEmail
+    currentUserEmail,
   };
 };
 
