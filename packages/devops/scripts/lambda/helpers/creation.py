@@ -45,11 +45,10 @@ def get_instance_creation_config(
     instance_name = instance_name_prefix + deployment_name
 
     tags = [
-        { 'Key': 'Name', 'Value': instance_name },
-        { 'Key': 'DeploymentName', 'Value': deployment_name },
-        { 'Key': 'StopAtUTC', 'Value': '09:00'}, # 9am UTC is 7pm AEST, 8pm AEDT, 9pm NZST, 10pm NZDT
-        { 'Key': 'StartAtUTC', 'Value': '18:00'} # 6pm UTC is 4am AEST, 5am AEDT, 6am NZST, 7am NZDT
+      { 'Key': 'Name', 'Value': instance_name },
+      { 'Key': 'DeploymentName', 'Value': deployment_name }
     ]
+
 
     if branch:
       tags.append({ 'Key': 'Branch', 'Value': branch })
@@ -64,8 +63,16 @@ def get_instance_creation_config(
     if cloned_from:
       tags.append({ 'Key': 'ClonedFrom', 'Value': cloned_from })
 
+    extra_tag_keys = []
     if extra_tags:
       tags = tags + extra_tags
+      extra_tag_keys = [extra_tag['Key'] for extra_tag in extra_tags]
+
+    if 'StopAtUTC' not in extra_tag_keys:
+      tags.append({ 'Key': 'StopAtUTC', 'Value': '09:00'}) # 9am UTC is 7pm AEST, 8pm AEDT, 9pm NZST, 10pm NZDT
+
+    if 'StartAtUTC' not in extra_tag_keys:
+      tags.append({ 'Key': 'StartAtUTC', 'Value': '18:00'}) # 6pm UTC is 4am AEST, 5am AEDT, 6am NZST, 7am NZDT
 
     instance_creation_config = {
       'ImageId' : image_id,
