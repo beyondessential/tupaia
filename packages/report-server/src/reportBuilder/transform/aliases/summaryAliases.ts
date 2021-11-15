@@ -26,7 +26,7 @@ const getRowsWithSummaryColumn = (rows: Row[]) => {
 const getFractionRow = (rows: Row[],isNumerator: boolean) => {
   return rows.reduce((accum: Row, currentRow: Row) => {
     const rowToArray = Object.entries(currentRow)
-    let futureValue: Row = {...accum}
+    const futureValue: Row = {...accum}
     rowToArray.forEach(([key,value]) => {
       if (isNumerator) {
         if (value === 'N') {
@@ -66,6 +66,9 @@ const getSummaryRow = (numeratorRow: Row, denominatorRow: Row) => {
     return [key, value]
   }))
 }
+
+
+
 
 export const insertSummaryRowAndColumn = () => (rows: Row[]) => {
   const rowsWithSummaryColumn = getRowsWithSummaryColumn(rows);
