@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 
 import { VIEW_STYLES } from '../../styles';
+import { selectCurrentMapOverlayCodes } from '../../selectors';
 
 class LastUpdated extends Component {
   getFormattedDate = () => {
@@ -37,9 +38,13 @@ LastUpdated.defaultProps = {
 
 const mapStateToProps = state => {
   const { measureInfo = {} } = state.map;
+  const currentMapOverlayCodes = selectCurrentMapOverlayCodes(state);
+  if (currentMapOverlayCodes.length > 1) {
+    return {};
+  }
 
-  const latestAvailable = measureInfo.period && measureInfo.period.latestAvailable;
-  return { latestAvailable };
+  const measureData = measureInfo[currentMapOverlayCodes[0]] || {};
+  return { latestAvailable: measureData.period && measureData.period.latestAvailable };
 };
 
 export default connect(mapStateToProps)(LastUpdated);

@@ -65,7 +65,7 @@ export const selectMeasureData = createSelector(
   [state => state.map.measureInfo, (_, mapOverlayCodes) => mapOverlayCodes],
   (measureInfo, mapOverlayCodes) => {
     if (!measureInfo || mapOverlayCodes.length === 0) {
-      return undefined;
+      return [];
     }
 
     const measureData = {};
@@ -80,7 +80,7 @@ export const selectMeasureData = createSelector(
         });
       }
     });
-    return Object.keys(measureData).length === 0 ? undefined : Object.values(measureData);
+    return Object.keys(measureData).length === 0 ? [] : Object.values(measureData);
   },
 );
 
@@ -136,7 +136,7 @@ export const selectMeasuresWithDisplayInfo = createSelector(
     hiddenMeasures,
     currentCountry,
   ) => {
-    if (!currentCountry || !measureData || !country) {
+    if (!currentCountry || !country) {
       return [];
     }
 

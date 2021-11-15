@@ -39,6 +39,10 @@ const MapTableModalComponent = ({
 
   const { doExport } = useMapDataExport(measureOptions, measureData, title);
 
+  if (!currentMapOverlays || !measureData || !measureOptions || measureData.length === 0) {
+    return null;
+  }
+
   return (
     <>
       <Dialog onClose={() => setIsOpen(false)} open={isOpen} maxWidth="lg">

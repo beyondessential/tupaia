@@ -89,9 +89,8 @@ export const historyMiddleware = store => next => action => {
       }
       const currentOverlayPeriods = [];
       currentMapOverlayCodes.forEach(mapOverlayCode => {
-        const { startDate, endDate, periodGranularity } = mapOverlays.find(
-          mapOverlay => mapOverlay.mapOverlayCode === mapOverlayCode,
-        );
+        const { startDate, endDate, periodGranularity } =
+          mapOverlays.find(mapOverlay => mapOverlay.mapOverlayCode === mapOverlayCode) || {};
         const overlayPeriod = convertDateRangeToUrlPeriodString(
           { startDate, endDate },
           periodGranularity,

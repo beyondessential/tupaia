@@ -79,11 +79,6 @@ function measureInfo(state = {}, action) {
   switch (action.type) {
     case CLEAR_MEASURE:
       return {};
-    case SET_MAP_OVERLAYS: {
-      return {
-        ...pick(state, action.mapOverlayCodes),
-      };
-    }
     case FETCH_MEASURE_DATA_SUCCESS: {
       const {
         mapOverlayCode,
@@ -101,6 +96,11 @@ function measureInfo(state = {}, action) {
         },
       };
     }
+    // Remove previous selected measure info.
+    case FETCH_ALL_MEASURE_DATA_SUCCESS:
+      return {
+        ...pick(state, action.mapOverlayCodes),
+      };
     case FETCH_MEASURE_DATA_ERROR:
       return action.error;
     default:
@@ -124,8 +124,6 @@ function isMeasureLoading(state = false, action) {
 
 function displayedMapOverlays(state = [], action) {
   switch (action.type) {
-    case SET_MAP_OVERLAYS:
-      return action.mapOverlayCodes.split(',');
     case SET_DISPLAYED_MAP_OVERLAY:
       return action.mapOverlayCodes;
     default:

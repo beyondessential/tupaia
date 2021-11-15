@@ -14,8 +14,9 @@ import { DateRangePicker } from '../../components/DateRangePicker';
 import { getDefaultDates, getLimits, GRANULARITY_CONFIG } from '../../utils/periodGranularities';
 import { Content, ContentText } from './Content';
 import { MAP_OVERLAY_SELECTOR, TUPAIA_ORANGE } from '../../styles';
-import { setDisplayedMapOverlays } from '../../actions';
-import { Pin as PinBase } from './Pin';
+import { setDisplayedMapOverlays, updateOverlayConfigs } from '../../actions';
+import { Pin } from './Pin';
+import { Tooltip } from '../../components/Tooltip';
 
 const FlexSpaceBetween = styled(FlexSpaceBetweenCenter)`
   align-items: flex-start;
@@ -47,9 +48,8 @@ const Switch = styled(MuiSwitch)`
 `;
 
 const Box = styled(MuiBox)`
-  margin-top: ${props => (props.$isMeasureLoading ? '-3px' : '0px')};
-  margin-bottom: ${props => (props.$isMeasureLoading ? '10px' : '0px')};
-  margin-left: ${props => (props.$isPinShowed ? '47px' : '18px')};
+  margin-left: ${props => (props.$isMultiOverlays ? '47px' : '18px')};
+  margin-right: 10px;
   padding: 0;
   min-height: 60px;
 `;
@@ -57,16 +57,14 @@ const Box = styled(MuiBox)`
 const BoxContent = styled(Content)`
   align-items: center;
   justify-content: flex-start;
-  padding-top: 10px;
-  padding-bottom: 0px;
 `;
 
 const Wrapper = styled.div`
   background: ${MAP_OVERLAY_SELECTOR.background};
 `;
 
-const Pin = styled(PinBase)`
-  margin: 3px 12px 0 7px;
+const PinWrapper = styled.span`
+  margin: 0px 10px 0 7px;
 `;
 
 const CircularProgress = styled(MuiCircularProgress)`
@@ -75,9 +73,12 @@ const CircularProgress = styled(MuiCircularProgress)`
 `;
 
 const Skeleton = styled(MuiSkeleton)`
-  // background: none;
   margin-left: ${({ ml = 0 }) => ml}px;
   margin-top: ${({ mt = 0 }) => mt}px;
+  transform: scale(1, 1);
+  ::after {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  }
 `;
 
 export const TitleAndDatePickerComponent = ({
@@ -105,7 +106,7 @@ export const TitleAndDatePickerComponent = ({
   const startDate = mapOverlay.startDate || defaultDates.startDate;
   const endDate = mapOverlay.endDate || defaultDates.endDate;
   const isPinned = pinnedOverlay === mapOverlayCode;
-  const isPinShowed = maxSelectedOverlays > 1;
+  const isMultiOverlays = maxSelectedOverlays > 1;
 
   const handleSwitchChange = () => {
     const newDisplayedOverlays = isSwitchedOn
@@ -115,11 +116,11 @@ export const TitleAndDatePickerComponent = ({
     setIsSwitchedOn(!isSwitchedOn);
   };
 
-  const updateMeasurePeriod = (startDate, endDate) => {
+  const updateMeasurePeriod = (_startDate, _endDate) => {
     const period = GRANULARITY_CONFIG[periodGranularity].momentUnit;
     onUpdateOverlayPeriod(mapOverlayCode, {
-      startDate: moment(startDate).startOf(period),
-      endDate: moment(endDate).endOf(period),
+      startDate: moment(_startDate).startOf(period),
+      endDate: moment(_endDate).endOf(period),
     });
   };
 
@@ -131,25 +132,37 @@ export const TitleAndDatePickerComponent = ({
     <Wrapper>
       {isMeasureLoading ? (
         <BoxContent>
-          {isPinShowed && <CircularProgress size={22} thickness={7} />}
-          <Skeleton animation="wave" width={270} height={40} />
+          {isMultiOverlays && <CircularProgress size={21} thickness={7} />}
+          <Skeleton animation="wave" width={270} height={21} />
         </BoxContent>
       ) : (
         <Content>
           <FlexSpaceBetween>
-            {isPinShowed && <Pin isPinned={isPinned} onChange={handlePinChange} />}
+            {isMultiOverlays && (
+              <Tooltip
+                arrow
+                interactive
+                placement="top"
+                title={isPinned ? 'Unpin' : 'Pin and move to top'}
+              >
+                {/* PinWrapper is required to enable material-ui tooltip */}
+                <PinWrapper>
+                  <Pin isPinned={isPinned} onChange={handlePinChange} />
+                </PinWrapper>
+              </Tooltip>
+            )}
             <ContentText>{name}</ContentText>
           </FlexSpaceBetween>
-          <Switch checked={isSwitchedOn} onChange={handleSwitchChange} />
+          {isMultiOverlays && <Switch checked={isSwitchedOn} onChange={handleSwitchChange} />}
         </Content>
       )}
 
       {showDatePicker && (
-        <Box $isPinShowed={isPinShowed} $isMeasureLoading={isMeasureLoading}>
+        <Box $isMultiOverlays={isMultiOverlays}>
           {isMeasureLoading ? (
             <>
-              <Skeleton animation="wave" width={200} height={40} />
-              <Skeleton animation="wave" width={100} height={30} mt={-10} />
+              <Skeleton animation="wave" width={200} height={20} />
+              <Skeleton animation="wave" width={100} height={14} mt={3} />
             </>
           ) : (
             <DateRangePicker
@@ -197,12 +210,16 @@ TitleAndDatePickerComponent.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const { displayedMapOverlays } = state.map;
-  return { displayedMapOverlays };
+  const { displayedMapOverlays, isMeasureLoading } = state.map;
+  const { isLoadingOrganisationUnit } = state.global;
+  return { displayedMapOverlays, isMeasureLoading: isMeasureLoading || isLoadingOrganisationUnit };
 };
 
 const mapDispatchToProps = dispatch => ({
   onSetDisplayedMapOverlay: mapOverlayCodes => dispatch(setDisplayedMapOverlays(mapOverlayCodes)),
+  onUpdateOverlayPeriod: (mapOverlayCode, overlayConfig) => {
+    dispatch(updateOverlayConfigs({ [mapOverlayCode]: overlayConfig }));
+  },
 });
 
 export const TitleAndDatePicker = connect(
