@@ -17,7 +17,7 @@ import MuiList from '@material-ui/core/List';
 import MuiListItem from '@material-ui/core/ListItem';
 import { DialogHeader } from './FullScreenDialog';
 import { useProjectEntitiesData } from '../api/queries';
-import { makeEntityLink, useUrlParams, getOptionText, getPlaceIcon } from '../utils';
+import { I18n, makeEntityLink, useUrlParams, getOptionText, getPlaceIcon } from '../utils';
 import * as COLORS from '../constants';
 
 const List = styled(MuiList)`
@@ -201,7 +201,7 @@ export const EntityMenu = React.memo(({ buttonText }) => {
     <>
       <TextButton onClick={handleClickOpen}>{buttonText}</TextButton>
       <Dialog scroll="paper" fullScreen open={open} onClose={handleClose}>
-        <DialogHeader handleClose={handleClose} title="All Locations" />
+        <DialogHeader handleClose={handleClose} title={<I18n t="home.allLocations" />} />
         <Body>
           {isSuccess && country && (
             <ContainerList>

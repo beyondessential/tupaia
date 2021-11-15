@@ -18,10 +18,11 @@ import {
   ListItemText,
   ListSubheader,
 } from '@material-ui/core';
-import { Link as RouterLink } from 'react-router-dom';
 import { Home, ImportContacts, ContactMail, Close, Menu, Assignment } from '@material-ui/icons';
 import { LightIconButton } from '@tupaia/ui-components';
+import { LocaleListItemLink } from './LocaleLinks';
 import { FlexEnd } from './Layout';
+import { I18n } from '../utils';
 import { useUser } from '../api/queries';
 
 const StyledList = styled(List)`
@@ -84,36 +85,34 @@ const TupaiaText = styled(Typography)`
   line-height: 140%;
 `;
 
-const ListItemLink = props => <ListItem button component={RouterLink} {...props} />;
-
 /* eslint-disable */
 const AdminPanelLinks = () => (
   <>
     <Subheader component="div">Admin</Subheader>
-    <ListItemLink to="/admin/survey-responses">
+    <LocaleListItemLink to="/admin/survey-responses">
       <ListItemIcon>
         <Assignment />
       </ListItemIcon>
       <ListItemText primary="Survey Responses" />
-    </ListItemLink>
-    <ListItemLink to="/admin/surveys">
+    </LocaleListItemLink>
+    <LocaleListItemLink to="/admin/surveys">
       <ListItemIcon>
         <Assignment />
       </ListItemIcon>
       <ListItemText primary="Surveys" />
-    </ListItemLink>
-    <ListItemLink to="/admin/visualisations">
+    </LocaleListItemLink>
+    <LocaleListItemLink to="/admin/visualisations">
       <ListItemIcon>
         <Assignment />
       </ListItemIcon>
       <ListItemText primary="Visualisations" />
-    </ListItemLink>
-    <ListItemLink to="/admin/users">
+    </LocaleListItemLink>
+    <LocaleListItemLink to="/admin/users">
       <ListItemIcon>
         <Assignment />
       </ListItemIcon>
       <ListItemText primary="Users" />
-    </ListItemLink>
+    </LocaleListItemLink>
   </>
 );
 
@@ -140,41 +139,45 @@ export const MainMenu = () => {
         </MenuTray>
         <StyledList onClick={toggleDrawer(false)}>
           <ListItem>
-            <MenuHeading variant="h3">Menu</MenuHeading>
+            <MenuHeading variant="h3">
+              <I18n t="home.menu" />
+            </MenuHeading>
           </ListItem>
-          <ListItemLink to="/">
+          <LocaleListItemLink to="/">
             <ListItemIcon>
               <Home />
             </ListItemIcon>
-            <ListItemText primary="Home" />
-          </ListItemLink>
-          <ListItemLink to="/about">
+            <ListItemText primary={<I18n t="home.home" />} />
+          </LocaleListItemLink>
+          <LocaleListItemLink to="/about">
             <ListItemIcon>
               <ImportContacts />
             </ListItemIcon>
-            <ListItemText primary="About LESMIS" />
-          </ListItemLink>
-          <ListItemLink to="/contact">
+            <ListItemText primary={<I18n t="home.aboutLesmis" />} />
+          </LocaleListItemLink>
+          <LocaleListItemLink to="/contact">
             <ListItemIcon>
               <ContactMail />
             </ListItemIcon>
-            <ListItemText primary="Contact us" />
-          </ListItemLink>
+            <ListItemText primary={<I18n t="home.contactUs" />} />
+          </LocaleListItemLink>
           {/*// Todo: Display admin-panel links @see WAI-832*/}
           {/*{isLesmisAdmin && <AdminPanelLinks />}*/}
-          <Subheader component="div">Online Questionnaires</Subheader>
-          <ListItemLink to="/fundamental-quality-standards">
+          <Subheader component="div">
+            <I18n t="home.onlineQuestionnaires" />
+          </Subheader>
+          <LocaleListItemLink to="/fundamental-quality-standards">
             <ListItemIcon>
               <Assignment />
             </ListItemIcon>
-            <ListItemText primary="Fundamental Quality Standards" />
-          </ListItemLink>
+            <ListItemText primary={<I18n t="home.fundamentalQualityStandards" />} />
+          </LocaleListItemLink>
         </StyledList>
         <StyledDivider />
-        <StyledList component="nav" aria-label="secondary mailbox folders">
+        <StyledList component="nav">
           <ListItem>
             <TupaiaText>
-              Powered by <Link href="https://www.info.tupaia.org">Tupaia</Link>
+              <I18n t="home.poweredBy" /> <Link href="https://www.info.tupaia.org">Tupaia</Link>
             </TupaiaText>
           </ListItem>
         </StyledList>
