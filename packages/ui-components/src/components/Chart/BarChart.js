@@ -7,7 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Bar, LabelList } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
-import { BLUE, CHART_TYPES } from './constants';
+import { BLUE, CHART_TYPES, PRESENTATION_OPTIONS_SHAPE } from './constants';
 
 export const BarChart = ({
   color = BLUE,
@@ -19,7 +19,9 @@ export const BarChart = ({
   isEnlarged,
   isExporting,
   chartConfig,
+  presentationOptions = {},
 }) => {
+  const { hideExportValues } = presentationOptions;
   const getBarSize = () => {
     if (chartConfig.chartType === CHART_TYPES.COMPOSED || data.length === 1) {
       return isEnlarged ? 100 : 50;
@@ -37,7 +39,7 @@ export const BarChart = ({
       isAnimationActive={isEnlarged && !isExporting}
       barSize={getBarSize()}
     >
-      {isExporting && (
+      {isExporting && !hideExportValues && (
         <LabelList
           dataKey={dataKey}
           position="insideTop"
@@ -59,10 +61,12 @@ BarChart.propTypes = {
   isExporting: PropTypes.bool,
   isEnlarged: PropTypes.bool,
   data: PropTypes.array.isRequired,
+  presentationOptions: PropTypes.shape(PRESENTATION_OPTIONS_SHAPE),
 };
 
 BarChart.defaultProps = {
   color: BLUE,
+  presentationOptions: {},
   isExporting: false,
   isEnlarged: false,
 };

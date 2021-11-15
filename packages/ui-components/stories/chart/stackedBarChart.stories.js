@@ -21,6 +21,7 @@ export const LightTheme = LightThemeChartTemplate.bind({});
 LightTheme.args = {
   viewContent,
   isEnlarged: true,
+  isExporting: true,
   legendPosition: 'top',
 };
 

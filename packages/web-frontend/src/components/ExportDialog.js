@@ -50,12 +50,20 @@ const STATUS = {
   ERROR: 'error',
 };
 
-export const ExportDialog = ({ status, isOpen, onClose, formats, onExport }) => {
-  const [selectedFormat, setSelectedFormat] = React.useState(formats[0]);
+export const ExportDialog = ({
+  status,
+  isOpen,
+  onClose,
+  formats,
+  onExport,
+  selectedFormat,
+  setSelectedFormat,
+}) => {
+  // const [selectedFormat, setSelectedFormat] = React.useState(formats[0]);
 
-  React.useEffect(() => {
-    setSelectedFormat(formats[0]);
-  }, [formats[0]]);
+  // React.useEffect(() => {
+  //   setSelectedFormat(formats[0]);
+  // }, [formats[0]]);
 
   return (
     <Dialog
@@ -116,11 +124,14 @@ ExportDialog.propTypes = {
     .isRequired,
   onClose: PropTypes.func.isRequired,
   onExport: PropTypes.func.isRequired,
+  setSelectedFormat: PropTypes.func.isRequired,
+  selectedFormat: PropTypes.string,
   isOpen: PropTypes.bool,
   formats: PropTypes.array,
 };
 
 ExportDialog.defaultProps = {
   isOpen: false,
+  selectedFormat: null,
   formats: ['png'],
 };

@@ -29,5 +29,6 @@ export const CONDITIONAL_MATRIX_CONDITION_SHAPE = {
 export const PRESENTATION_OPTIONS_SHAPE = {
   type: PropTypes.string,
   showRawValue: PropTypes.bool,
+  hideExportValues: PropTypes.bool,
   conditions: PropTypes.arrayOf(PropTypes.shape(CONDITIONAL_MATRIX_CONDITION_SHAPE)),
 };

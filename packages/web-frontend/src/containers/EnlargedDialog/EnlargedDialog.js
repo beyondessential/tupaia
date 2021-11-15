@@ -88,6 +88,38 @@ const hasDrillDownChanged = (options, cachedOptions) =>
   options.parameterLink !== cachedOptions.parameterLink ||
   options.parameterValue !== cachedOptions.parameterValue;
 
+const useDrillDownState = contentByLevel => {
+  const [drillDownState, setDrillDownState] = useState({
+    drillDownLevel: 0,
+    parameterLinks: {},
+    parameterValues: {},
+  });
+
+  // Regardless of the drillDown level, we pass the base view content through
+  const baseViewContent = contentByLevel?.[0]?.viewContent;
+  const drillDownContent = contentByLevel?.[drillDownState.drillDownLevel]?.viewContent;
+  const baseViewConfig = contentByLevel?.[0]?.viewConfig;
+  const drillDownConfig = contentByLevel?.[drillDownState.drillDownLevel]?.viewConfig;
+
+  const viewContent =
+    baseViewContent === undefined ? null : { ...baseViewConfig, ...baseViewContent };
+  const newDrillDownContent =
+    drillDownContent === undefined ? null : { ...drillDownConfig, ...drillDownContent };
+
+  const isMatrix = getIsMatrix(viewContent);
+  const exportFormats = isMatrix ? ['xlsx'] : ['png', 'png with no labels', 'xlsx'];
+
+  return {
+    drillDownConfig,
+    drillDownState,
+    exportFormats,
+    isMatrix,
+    viewContent,
+    newDrillDownContent,
+    setDrillDownState,
+  };
+};
+
 const EnlargedDialogComponent = ({
   onCloseOverlay,
   contentByLevel,
@@ -104,27 +136,33 @@ const EnlargedDialogComponent = ({
   fetchViewData,
   drillDownDatesByLevel,
 }) => {
+  const {
+    newDrillDownContent,
+    drillDownConfig,
+    drillDownState,
+    exportFormats,
+    isMatrix,
+    setDrillDownState,
+    viewContent,
+  } = useDrillDownState(contentByLevel);
+
   const exportRef = useRef(null);
   const [exportDialogIsOpen, setExportDialogIsOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-
+  const [selectedFormat, setSelectedFormat] = useState(exportFormats[0]);
   const [exportStatus, setExportStatus] = useState(STATUS.IDLE);
-  const [drillDownState, setDrillDownState] = useState({
-    drillDownLevel: 0,
-    parameterLinks: {},
-    parameterValues: {},
-  });
 
-  // Regardless of the drillDown level, we pass the base view content through
-  const baseViewContent = contentByLevel?.[0]?.viewContent;
-  const drillDownContent = contentByLevel?.[drillDownState.drillDownLevel]?.viewContent;
-  const baseViewConfig = contentByLevel?.[0]?.viewConfig;
-  const drillDownConfig = contentByLevel?.[drillDownState.drillDownLevel]?.viewConfig;
+  let newViewContent = viewContent;
 
-  const newViewContent =
-    baseViewContent === undefined ? null : { ...baseViewConfig, ...baseViewContent };
-  const newDrillDownContent =
-    drillDownContent === undefined ? null : { ...drillDownConfig, ...drillDownContent };
+  if (true) {
+    newViewContent = {
+      ...newViewContent,
+      presentationOptions: {
+        hideExportValues: true,
+        exportDataTable: true,
+      },
+    };
+  }
 
   const { startDate, endDate } = getDatesForCurrentLevel(
     drillDownState.drillDownLevel,
@@ -197,8 +235,6 @@ const EnlargedDialogComponent = ({
     });
   };
 
-  const isMatrix = getIsMatrix(newViewContent);
-
   const getDialogStyle = () => {
     const hasBigData = isMatrix || newViewContent?.data?.length > 20;
     if (hasBigData) return styles.largeContainer;
@@ -206,7 +242,6 @@ const EnlargedDialogComponent = ({
     return styles.container;
   };
 
-  const exportFormats = isMatrix ? ['xlsx'] : ['png', 'xlsx'];
   const exportTitle = `${newViewContent?.name}, ${organisationUnitName}`;
 
   const { doExport } = useChartDataExport(newViewContent, exportTitle);
@@ -283,6 +318,8 @@ const EnlargedDialogComponent = ({
         isOpen={exportDialogIsOpen}
         onClose={() => setExportDialogIsOpen(false)}
         formats={exportFormats}
+        selectedFormat={selectedFormat}
+        setSelectedFormat={setSelectedFormat}
         onExport={onExport}
       />
     </>
