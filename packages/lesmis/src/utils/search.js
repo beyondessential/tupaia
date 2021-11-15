@@ -4,7 +4,7 @@
  *
  */
 import React from 'react';
-import { Laos } from '../components/Icons/Laos';
+import { LaosFlag } from '../components/Icons/LaosFlag';
 import { Province } from '../components/Icons/Province';
 import { District } from '../components/Icons/District';
 import { School } from '../components/Icons/School';
@@ -15,7 +15,7 @@ import { School } from '../components/Icons/School';
 export const getPlaceIcon = type => {
   switch (type) {
     case 'country':
-      return <Laos />;
+      return <LaosFlag />;
     case 'district':
       return <Province />;
     case 'sub_district':
