@@ -9,20 +9,28 @@ import { connect } from 'react-redux';
 import EditIcon from '@material-ui/icons/Edit';
 import { IconButton } from '../widgets';
 import { openEditModal } from './actions';
+import { fetchUsedBy } from '../usedBy';
 
-export const EditButtonComponent = ({ dispatch, value: recordId, actionConfig }) => (
-  <IconButton onClick={() => dispatch(openEditModal(actionConfig, recordId))}>
+export const EditButtonComponent = ({ onEdit }) => (
+  <IconButton onClick={onEdit}>
     <EditIcon />
   </IconButton>
 );
 
 EditButtonComponent.propTypes = {
-  actionConfig: PropTypes.PropTypes.shape({
-    editEndpoint: PropTypes.string,
-    fields: PropTypes.array,
-  }).isRequired,
-  dispatch: PropTypes.func.isRequired,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  onEdit: PropTypes.func,
 };
 
-export const EditButton = connect()(EditButtonComponent);
+EditButtonComponent.defaultProps = {
+  onEdit: () => {},
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  onEdit: () => {
+    const recordId = ownProps.value;
+    dispatch(openEditModal(ownProps.actionConfig, recordId));
+    dispatch(fetchUsedBy('dataSource', recordId));
+  },
+});
+
+export const EditButton = connect(null, mapDispatchToProps)(EditButtonComponent);

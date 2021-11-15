@@ -27,6 +27,7 @@ export const openEditModal = ({ editEndpoint, fields }, recordId) => async (
       type: EDITOR_DATA_FETCH_BEGIN,
       fields,
       endpoint,
+      recordId,
     });
 
     try {

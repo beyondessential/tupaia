@@ -12,6 +12,7 @@ import { closeEditModal, editField, saveEdits } from './actions';
 import { getEditorState, getIsUnchanged } from './selectors';
 import { Editor } from './Editor';
 import { ModalContentProvider } from '../widgets';
+import { UsedBy } from '../usedBy/UsedBy';
 
 const getFieldSourceToEdit = field => {
   const { source, editConfig = {} } = field;
@@ -38,6 +39,9 @@ export const EditModalComponent = ({
   title,
   fields,
   isUnchanged,
+  usedBy,
+  usedByIsLoading,
+  usedByErrorMessage,
 }) => {
   const fieldsBySource = keyBy(fields, 'source');
 
@@ -45,16 +49,19 @@ export const EditModalComponent = ({
     <Dialog onClose={onDismiss} open={!!fields} disableBackdropClick>
       <DialogHeader onClose={onDismiss} title={title} />
       <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading || !fields}>
-        {fields && (
-          <Editor
-            fields={fields}
-            recordData={recordData}
-            onEditField={(fieldSource, newValue) => {
-              const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
-              return onEditField(fieldSourceToEdit, newValue);
-            }}
-          />
-        )}
+        <>
+          {fields && (
+            <Editor
+              fields={fields}
+              recordData={recordData}
+              onEditField={(fieldSource, newValue) => {
+                const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
+                return onEditField(fieldSourceToEdit, newValue);
+              }}
+            />
+          )}
+          <UsedBy usedBy={usedBy} isLoading={usedByIsLoading} errorMessage={usedByErrorMessage} />
+        </>
       </ModalContentProvider>
       <DialogFooter>
         <Button variant="outlined" onClick={onDismiss} disabled={isLoading}>
@@ -78,6 +85,9 @@ EditModalComponent.propTypes = {
   title: PropTypes.string,
   fields: PropTypes.arrayOf(PropTypes.shape({})),
   isUnchanged: PropTypes.bool,
+  usedBy: PropTypes.array,
+  usedByIsLoading: PropTypes.bool,
+  usedByErrorMessage: PropTypes.string,
 };
 
 EditModalComponent.defaultProps = {
@@ -86,11 +96,17 @@ EditModalComponent.defaultProps = {
   recordData: null,
   fields: null,
   isUnchanged: false,
+  usedBy: null,
+  usedByIsLoading: null,
+  usedByErrorMessage: null,
 };
 
 const mapStateToProps = state => ({
   ...getEditorState(state),
   isUnchanged: getIsUnchanged(state),
+  usedBy: state.usedBy.byRecordId[state.editor.recordId] ?? [],
+  usedByIsLoading: state.usedBy.isLoading,
+  usedByErrorMessage: state.usedBy.errorMessage,
 });
 
 const mapDispatchToProps = dispatch => ({
