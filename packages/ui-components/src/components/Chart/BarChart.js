@@ -37,7 +37,7 @@ export const BarChart = ({
       isAnimationActive={isEnlarged && !isExporting}
       barSize={getBarSize()}
     >
-      {isExporting && !stackId && (
+      {isExporting && (
         <LabelList
           dataKey={dataKey}
           position="insideTop"
