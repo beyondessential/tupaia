@@ -5,11 +5,11 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { Route } from '@tupaia/server-boilerplate';
+import { TranslatableRoute } from '@tupaia/server-boilerplate';
 import { ReportConnection, WebConfigConnection } from '../connections';
 import { LESMIS_PROJECT_NAME, LESMIS_HIERARCHY_NAME } from '../constants';
 
-export class ReportRoute extends Route {
+export class ReportRoute extends TranslatableRoute {
   private readonly reportConnection: ReportConnection;
 
   private readonly webConfigConnection: WebConfigConnection;
@@ -19,6 +19,27 @@ export class ReportRoute extends Route {
 
     this.reportConnection = new ReportConnection(req.session);
     this.webConfigConnection = new WebConfigConnection(req.session);
+    this.translationSchema = {
+      domain: 'lesmis',
+      layout: {
+        type: 'array',
+        items: {
+          type: 'object',
+          keysToTranslate: '*',
+          valuesToTranslate: ['label', 'name'],
+        }
+      }
+    };
+  }
+
+  // Check for _metadata keys and only translate the first part
+  // Lets us use the same translation entry for regular and _metadata keys
+  translateKey(value: string): string {
+    if (value.endsWith('_metadata')) {
+      const key = this.translateString(value.slice(0, -('_metadata'.length)));
+      return `${key}_metadata`;
+    }
+    return this.translateString(value);
   }
 
   async buildResponse() {

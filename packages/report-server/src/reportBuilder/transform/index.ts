@@ -4,4 +4,5 @@
  */
 
 export { buildTransform } from './transform';
-export { contextFunctionConfigs, TransformParser } from './parser';
+export { contextFunctionDependencies, TransformParser } from './parser';
+export { contextAliasDependencies } from './aliases';
