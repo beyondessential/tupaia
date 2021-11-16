@@ -1,17 +1,15 @@
-/**
- * Tupaia Web
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
- * This source code is licensed under the AGPL-3.0 license
- * found in the LICENSE file in the root directory of this source tree.
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Dialog from 'material-ui/Dialog';
 import Box from '@material-ui/core/Box';
 import FlatButton from 'material-ui/FlatButton';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
+import Checkbox from 'material-ui/Checkbox';
 import CircularProgress from 'material-ui/CircularProgress';
 import { DIALOG_Z_INDEX } from '../styles';
 import { Alert, AlertAction, AlertLink } from './Alert';
@@ -43,9 +41,11 @@ const StyledAlert = styled(Alert)`
   }
 `;
 
-const STATUS = {
+export const STATUS = {
+  CLOSED: 'closed',
   IDLE: 'idle',
-  LOADING: 'loading',
+  EXPORTING: 'exporting',
+  ANIMATING: 'animating',
   SUCCESS: 'success',
   ERROR: 'error',
 };
@@ -54,16 +54,26 @@ export const ExportDialog = ({
   status,
   isOpen,
   onClose,
-  formats,
+  isMatrix,
   onExport,
-  selectedFormat,
-  setSelectedFormat,
+  exportOptions,
+  setExportOptions,
 }) => {
-  // const [selectedFormat, setSelectedFormat] = React.useState(formats[0]);
+  const formats = isMatrix ? ['xlsx'] : ['png', 'xlsx'];
+  const [selectedFormat, setSelectedFormat] = useState(formats[0]);
+  const { exportWithLabels } = exportOptions;
 
-  // React.useEffect(() => {
-  //   setSelectedFormat(formats[0]);
-  // }, [formats[0]]);
+  useEffect(() => {
+    setSelectedFormat(formats[0]);
+  }, [formats[0]]);
+
+  const toggleLabels = () => {
+    const newExportOptions = {
+      ...exportOptions,
+      exportWithLabels: !exportWithLabels,
+    };
+    setExportOptions(newExportOptions);
+  };
 
   return (
     <Dialog
@@ -80,7 +90,7 @@ export const ExportDialog = ({
       contentStyle={styles.dialogContent}
       autoScrollBodyContent
     >
-      {status === STATUS.LOADING && (
+      {status === STATUS.EXPORTING && (
         <Box textAlign="center">
           <CircularProgress />
         </Box>
@@ -113,6 +123,7 @@ export const ExportDialog = ({
               />
             ))}
           </RadioButtonGroup>
+          <Checkbox label="Export With Labels" checked={exportWithLabels} onCheck={toggleLabels} />
         </div>
       )}
     </Dialog>
@@ -120,18 +131,17 @@ export const ExportDialog = ({
 };
 
 ExportDialog.propTypes = {
-  status: PropTypes.PropTypes.oneOf([STATUS.IDLE, STATUS.LOADING, STATUS.SUCCESS, STATUS.ERROR])
-    .isRequired,
+  status: PropTypes.PropTypes.oneOf(Object.values(STATUS)).isRequired,
   onClose: PropTypes.func.isRequired,
   onExport: PropTypes.func.isRequired,
-  setSelectedFormat: PropTypes.func.isRequired,
-  selectedFormat: PropTypes.string,
+  setExportOptions: PropTypes.func.isRequired,
+  exportOptions: PropTypes.object,
   isOpen: PropTypes.bool,
-  formats: PropTypes.array,
+  isMatrix: PropTypes.bool,
 };
 
 ExportDialog.defaultProps = {
   isOpen: false,
-  selectedFormat: null,
-  formats: ['png'],
+  exportOptions: null,
+  isMatrix: false,
 };

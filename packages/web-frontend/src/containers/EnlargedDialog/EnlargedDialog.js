@@ -2,7 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
 import React, { useState, useEffect, useRef } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import moment from 'moment';
@@ -16,7 +15,7 @@ import {
   setEnlargedDashboardDateRange,
   closeEnlargedDialog,
 } from '../../actions';
-import { ExportDialog } from '../../components/ExportDialog';
+import { ExportDialog, STATUS } from '../../components/ExportDialog';
 import { getIsDataDownload, getIsMatrix } from '../../components/View';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
 import { isMobile, sleep, getBrowserTimeZone, getUniqueViewId } from '../../utils';
@@ -44,13 +43,6 @@ const Loader = styled.div`
   text-align: center;
   font-size: 18px;
 `;
-
-const STATUS = {
-  IDLE: 'idle',
-  LOADING: 'loading',
-  SUCCESS: 'success',
-  ERROR: 'error',
-};
 
 const getDatesForCurrentLevel = (
   drillDownLevel,
@@ -106,17 +98,30 @@ const useDrillDownState = contentByLevel => {
   const newDrillDownContent =
     drillDownContent === undefined ? null : { ...drillDownConfig, ...drillDownContent };
 
-  const isMatrix = getIsMatrix(viewContent);
-  const exportFormats = isMatrix ? ['xlsx'] : ['png', 'png with no labels', 'xlsx'];
-
   return {
     drillDownConfig,
     drillDownState,
-    exportFormats,
-    isMatrix,
     viewContent,
     newDrillDownContent,
     setDrillDownState,
+  };
+};
+
+const useExports = () => {
+  const defaultOptions = {
+    exportWithLabels: true,
+    exportDataTable: true,
+  };
+  const [exportOptions, setExportOptions] = useState(defaultOptions);
+  const [exportStatus, setExportStatus] = useState(STATUS.CLOSED);
+  const exportRef = useRef(null);
+
+  return {
+    exportRef,
+    exportOptions,
+    setExportOptions,
+    exportStatus,
+    setExportStatus,
   };
 };
 
@@ -140,29 +145,26 @@ const EnlargedDialogComponent = ({
     newDrillDownContent,
     drillDownConfig,
     drillDownState,
-    exportFormats,
-    isMatrix,
     setDrillDownState,
     viewContent,
   } = useDrillDownState(contentByLevel);
 
-  const exportRef = useRef(null);
-  const [exportDialogIsOpen, setExportDialogIsOpen] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
-  const [selectedFormat, setSelectedFormat] = useState(exportFormats[0]);
-  const [exportStatus, setExportStatus] = useState(STATUS.IDLE);
+  const {
+    isMatrix,
+    exportRef,
+    exportOptions,
+    setExportOptions,
+    exportStatus,
+    setExportStatus,
+  } = useExports();
 
-  let newViewContent = viewContent;
-
-  if (true) {
-    newViewContent = {
-      ...newViewContent,
-      presentationOptions: {
-        hideExportValues: true,
-        exportDataTable: true,
-      },
-    };
-  }
+  const newViewContent = {
+    ...viewContent,
+    presentationOptions: {
+      ...viewContent?.presentationOptions,
+      ...exportOptions,
+    },
+  };
 
   const { startDate, endDate } = getDatesForCurrentLevel(
     drillDownState.drillDownLevel,
@@ -247,8 +249,9 @@ const EnlargedDialogComponent = ({
   const { doExport } = useChartDataExport(newViewContent, exportTitle);
 
   const onExport = async format => {
-    setExportStatus(STATUS.LOADING);
-    setIsExporting(true);
+    setExportStatus(STATUS.ANIMATING);
+    await sleep(100); // allow some time for the chart transition to finish before hiding the loader
+    setExportStatus(STATUS.EXPORTING);
 
     const filename = toFilename(`export-${organisationUnitName}-${newViewContent.name}`);
 
@@ -272,19 +275,15 @@ const EnlargedDialogComponent = ({
         doExport();
       }
 
-      setIsExporting(false);
+      setExportStatus(STATUS.ANIMATING);
       await sleep(1000); // allow some time for the chart transition to finish before hiding the loader
       setExportStatus(STATUS.SUCCESS);
     } catch (error) {
-      setIsExporting(false);
       setExportStatus(STATUS.ERROR);
     }
   };
 
-  const handleOpenExportDialog = () => {
-    setExportStatus(STATUS.IDLE);
-    setExportDialogIsOpen(true);
-  };
+  const showLoader = exportStatus === STATUS.EXPORTING || exportStatus === STATUS.ANIMATING;
 
   return (
     <>
@@ -295,7 +294,7 @@ const EnlargedDialogComponent = ({
         scroll={isMobile() ? 'body' : 'paper'}
         PaperProps={{ style: getDialogStyle() }}
       >
-        {exportStatus === STATUS.LOADING && <Loader>Exporting...</Loader>}
+        {showLoader && <Loader>Exporting...</Loader>}
         <EnlargedDialogContent
           exportRef={exportRef}
           onCloseOverlay={onCloseOverlay}
@@ -303,10 +302,10 @@ const EnlargedDialogComponent = ({
           drillDownContent={drillDownState.drillDownLevel === 0 ? null : newDrillDownContent}
           organisationUnitName={organisationUnitName}
           onDrillDown={onDrillDown}
-          onOpenExportDialog={handleOpenExportDialog}
+          onOpenExportDialog={() => setExportStatus(STATUS.IDLE)}
           onSetDateRange={onSetDateRange(drillDownState.drillDownLevel)}
           isLoading={isLoading}
-          isExporting={isExporting} // Todo: set exporting theme here?
+          isExporting={exportStatus === STATUS.EXPORTING}
           errorMessage={errorMessage}
           isDrillDownContent={false}
           onUnDrillDown={onUnDrillDown}
@@ -315,11 +314,11 @@ const EnlargedDialogComponent = ({
       </Dialog>
       <ExportDialog
         status={exportStatus}
-        isOpen={exportDialogIsOpen}
-        onClose={() => setExportDialogIsOpen(false)}
-        formats={exportFormats}
-        selectedFormat={selectedFormat}
-        setSelectedFormat={setSelectedFormat}
+        isOpen={exportStatus !== STATUS.CLOSED}
+        onClose={() => setExportStatus(STATUS.CLOSED)}
+        isMatrix={getIsMatrix(newViewContent)}
+        exportOptions={exportOptions}
+        setExportOptions={setExportOptions}
         onExport={onExport}
       />
     </>

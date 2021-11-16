@@ -211,8 +211,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
             const yAxisOrientation = get(chartConfig, [dataKey, 'yAxisOrientation']);
             const yAxisId = orientationToYAxisId(yAxisOrientation);
 
-            console.log('presentationOptions cart', presentationOptions);
-
             return Chart({
               valueType,
               ...chartConfig[dataKey],
@@ -222,7 +220,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
               isEnlarged,
               yAxisId,
               data,
-              presentationOptions,
+              exportWithLabels: presentationOptions?.exportWithLabels,
             });
           })}
         {ReferenceLines({ viewContent, isExporting, isEnlarged })}

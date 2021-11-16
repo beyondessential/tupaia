@@ -114,6 +114,7 @@ const chartColorAtIndex = (colorArray, index) => {
 
 export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, legendPosition }) => {
   const [activeIndex, setActiveIndex] = useState(-1);
+  const { presentationOptions, data } = viewContent;
 
   const handleMouseEnter = (event, index) => {
     setActiveIndex(index);
@@ -124,13 +125,10 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
   };
 
   const getPresentationOption = (key, option) => {
-    const { presentationOptions } = viewContent;
     return presentationOptions && presentationOptions[key] && presentationOptions[key][option];
   };
 
   const getValidData = () => {
-    const { data } = viewContent;
-
     return data
       .filter(element => element.value > 0)
       .map(item => {
@@ -170,7 +168,9 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
           onClick={item => {
             onItemClick(item.originalItem);
           }}
-          label={isExporting ? makeLabel(viewContent) : null}
+          label={
+            isExporting && presentationOptions?.exportWithLabels ? makeLabel(viewContent) : null
+          }
           startAngle={360 + 90}
           endAngle={90}
         >
