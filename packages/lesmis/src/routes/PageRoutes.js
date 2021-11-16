@@ -4,7 +4,7 @@
  *
  */
 import React, { lazy, Suspense } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import { NavBar, Footer, FullPageLoader } from '../components';
 import { HomeView } from '../views/HomeView';
 import { ProfileView } from '../views/ProfileView';
@@ -20,60 +20,64 @@ const AdminPanel = lazy(() => import('./AdminPanelRoutes'));
 
 /**
  * Main Page Routes
- * eg. /en/TO/dashboard
+ * eg. /en/LA/dashboard
  */
-export const PageRoutes = React.memo(() => (
-  <Suspense fallback={<FullPageLoader />}>
-    <Switch>
-      <Route exact path="/">
-        <NavBar hideSearch />
-        <HomeView />
-      </Route>
-      <Route path="/login">
-        <LoginView />
-      </Route>
-      <Route path="/register">
-        <RegisterView />
-      </Route>
-      <Route path="/profile">
-        <NavBar />
-        <ProfileView />
-        <Footer />
-      </Route>
-      <Route path="/admin">
-        <NavBar hideSearch />
-        <AdminPanel />
-        <Footer />
-      </Route>
-      <Route path="/about">
-        <NavBar />
-        <PageView content={ABOUT_PAGE} />
-        <Footer />
-      </Route>
-      <Route path="/fundamental-quality-standards">
-        <NavBar />
-        <TwoColumnPageView content={FQS_PAGE} />
-        <Footer />
-      </Route>
-      <Route path="/contact">
-        <NavBar />
-        <PageView content={CONTACT_PAGE} />
-        <Footer />
-      </Route>
-      <Route path="/page-not-found">
-        <NavBar />
-        <NotFoundView />
-        <Footer />
-      </Route>
-      <Route path="/not-authorised">
-        <NavBar />
-        <NotAuthorisedView />
-        <Footer />
-      </Route>
-      <Route path="/:entityCode/:view?">
-        <NavBar />
-        <EntityView />
-      </Route>
-    </Switch>
-  </Suspense>
-));
+export const PageRoutes = React.memo(() => {
+  const { path } = useRouteMatch();
+
+  return (
+    <Suspense fallback={<FullPageLoader />}>
+      <Switch>
+        <Route exact path={`${path}/`}>
+          <NavBar hideSearch />
+          <HomeView />
+        </Route>
+        <Route path={`${path}/login`}>
+          <LoginView />
+        </Route>
+        <Route path={`${path}/register`}>
+          <RegisterView />
+        </Route>
+        <Route path={`${path}/profile`}>
+          <NavBar />
+          <ProfileView />
+          <Footer />
+        </Route>
+        <Route path={`${path}/admin`}>
+          <NavBar hideSearch />
+          <AdminPanel />
+          <Footer />
+        </Route>
+        <Route path={`${path}/about`}>
+          <NavBar />
+          <PageView content={ABOUT_PAGE} />
+          <Footer />
+        </Route>
+        <Route path={`${path}/fundamental-quality-standards`}>
+          <NavBar />
+          <TwoColumnPageView content={FQS_PAGE} />
+          <Footer />
+        </Route>
+        <Route path={`${path}/contact`}>
+          <NavBar />
+          <PageView content={CONTACT_PAGE} />
+          <Footer />
+        </Route>
+        <Route path={`${path}/page-not-found`}>
+          <NavBar />
+          <NotFoundView />
+          <Footer />
+        </Route>
+        <Route path={`${path}/not-authorised`}>
+          <NavBar />
+          <NotAuthorisedView />
+          <Footer />
+        </Route>
+        <Route path={`${path}/:entityCode/:view?`}>
+          <NavBar />
+          <EntityView />
+        </Route>
+      </Switch>
+    </Suspense>
+  );
+});

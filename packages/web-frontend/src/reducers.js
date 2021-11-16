@@ -160,6 +160,7 @@ function authentication(
         isUserLoggedIn: false,
         isRequestingLogin: false,
         emailVerified: EMAIL_VERIFIED_STATUS.NEW_USER,
+        currentUserEmail: action.emailAddress,
       };
     case FETCH_LOGIN_ERROR:
       return {

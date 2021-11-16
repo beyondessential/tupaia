@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { useForm } from 'react-hook-form';
 import * as COLORS from '../../constants';
 import { useLogin } from '../../api/mutations';
+import { I18n, useI18n } from '../../utils';
 
 const ErrorMessage = styled.p`
   color: ${COLORS.RED};
@@ -32,14 +33,17 @@ const StyledButton = styled(Button)`
 export const LoginForm = () => {
   const { handleSubmit, register, errors } = useForm();
   const { mutate: login, user, isError, isLoading, isSuccess, error } = useLogin();
+  const { translate } = useI18n();
 
   return (
     <form onSubmit={handleSubmit(({ email, password }) => login({ email, password }))} noValidate>
-      <Heading variant="h4">Enter your email and password</Heading>
+      <Heading variant="h4">
+        <I18n t="login.enterYourEmailAndPassword" />
+      </Heading>
       {isError && <ErrorMessage>{error.message}</ErrorMessage>}
       <TextField
         name="email"
-        placeholder="Email"
+        placeholder={translate('login.email')}
         type="email"
         defaultValue={user?.email}
         error={!!errors.email}
@@ -55,7 +59,7 @@ export const LoginForm = () => {
       <TextField
         name="password"
         type="password"
-        placeholder="Password"
+        placeholder={translate('login.password')}
         error={!!errors.password}
         helperText={errors.password && errors.password.message}
         inputRef={register({
@@ -71,7 +75,7 @@ export const LoginForm = () => {
       {/*  defaultValue={false} */}
       {/* /> */}
       <StyledButton type="submit" fullWidth isLoading={isLoading || isSuccess}>
-        Login to your account
+        <I18n t="login.loginToYourAccount" />
       </StyledButton>
     </form>
   );

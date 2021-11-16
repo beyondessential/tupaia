@@ -24,6 +24,8 @@ import { hasLesmisAccess } from '../utils';
 
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
 
+const path = require('path')
+
 /**
  * Set up express server with middleware,
  */
@@ -32,6 +34,7 @@ export function createApp() {
     .useSessionModel(LesmisSessionModel)
     .useAttachSession(attachSession)
     .verifyLogin(hasLesmisAccess)
+    .useTranslation(['en', 'lo'], path.join(__dirname, '../../locales'), 'locale')
     .get('/v1/dashboard/:entityCode', handleWith(DashboardRoute))
     .get('/v1/user', handleWith(UserRoute))
     .get('/v1/entities/:entityCode', handleWith(EntitiesRoute))

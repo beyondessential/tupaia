@@ -7,7 +7,8 @@ PACKAGES=$(${DIR}/../../../../scripts/bash/getPackagesWithEnvFiles.sh)
 # download environment variables
 ${DIR}/../../../../scripts/bash/downloadEnvironmentVariables.sh ${CI_BRANCH} ${PACKAGES}
 
-# copy environment variables to common
+# copy environment variables to common environment_variables volume
 for PACKAGE in $PACKAGES; do
-    ${DIR}/copyToCommonVolume.sh "packages/${PACKAGE}" ".env"
+    mkdir -p "/environment_variables/packages/${PACKAGE}"
+    cp -r "/tupaia/packages/${PACKAGE}/.env" "/environment_variables/packages/${PACKAGE}/.env"
 done
