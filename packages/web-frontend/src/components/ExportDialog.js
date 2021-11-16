@@ -5,34 +5,48 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Dialog from 'material-ui/Dialog';
-import Box from '@material-ui/core/Box';
-import FlatButton from 'material-ui/FlatButton';
-import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
-import Checkbox from 'material-ui/Checkbox';
-import CircularProgress from 'material-ui/CircularProgress';
-import { DIALOG_Z_INDEX } from '../styles';
+import { ExpandMore, Close } from '@material-ui/icons';
+import {
+  Dialog,
+  Box,
+  Radio,
+  RadioGroup,
+  Collapse,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  Typography,
+  Button,
+  IconButton,
+  CircularProgress,
+} from '@material-ui/core';
 import { Alert, AlertAction, AlertLink } from './Alert';
+import { FlexEnd, FlexStart } from './Flexbox';
 
-const formatLabels = {
-  png: 'PNG',
-  xlsx: 'Excel (Raw Data)',
-};
+const StyledDialog = styled(Dialog)`
+  .MuiPaper-root {
+    padding: 25px 30px 20px;
+  }
+`;
 
-const styles = {
-  dialog: {
-    zIndex: DIALOG_Z_INDEX + 1,
-  },
-  dialogContent: {
-    maxWidth: 450,
-  },
-  options: {
-    marginTop: 20,
-  },
-  option: {
-    marginTop: 5,
-  },
-};
+const Title = styled(Typography)`
+  font-size: 21px;
+  margin-bottom: 20px;
+`;
+
+const CloseButton = styled(IconButton)`
+  position: absolute;
+  top: 3px;
+  right: 3px;
+`;
+
+const StyledRadioGroup = styled(RadioGroup)`
+  margin-top: 10px;
+
+  .MuiRadio-root {
+    padding: 5px 8px;
+  }
+`;
 
 const StyledAlert = styled(Alert)`
   &.MuiAlert-root {
@@ -41,13 +55,26 @@ const StyledAlert = styled(Alert)`
   }
 `;
 
+const OptionsButton = styled(Button)`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-transform: none;
+  margin-top: 10px;
+  padding-left: 0;
+`;
+
 export const STATUS = {
   CLOSED: 'closed',
   IDLE: 'idle',
   EXPORTING: 'exporting',
   ANIMATING: 'animating',
-  SUCCESS: 'success',
   ERROR: 'error',
+};
+
+const formatLabels = {
+  png: 'PNG',
+  xlsx: 'Excel (Raw Data)',
 };
 
 export const ExportDialog = ({
@@ -61,72 +88,114 @@ export const ExportDialog = ({
 }) => {
   const formats = isMatrix ? ['xlsx'] : ['png', 'xlsx'];
   const [selectedFormat, setSelectedFormat] = useState(formats[0]);
-  const { exportWithLabels } = exportOptions;
+  const [expanded, setExpanded] = useState(false);
+  const { exportWithLabels, exportWithTable } = exportOptions;
 
   useEffect(() => {
     setSelectedFormat(formats[0]);
   }, [formats[0]]);
 
-  const toggleLabels = () => {
-    const newExportOptions = {
+  const onChangeExportOptions = newExportOptions => {
+    setExportOptions({
       ...exportOptions,
-      exportWithLabels: !exportWithLabels,
-    };
-    setExportOptions(newExportOptions);
+      ...newExportOptions,
+    });
   };
 
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
+
+  const loading = status === STATUS.EXPORTING || status === STATUS.ANIMATING;
+
   return (
-    <Dialog
-      title="Export this chart"
-      actions={
-        <>
-          <FlatButton label="Cancel" primary onClick={onClose} />
-          <FlatButton label="Export chart" primary onClick={() => onExport(selectedFormat)} />
-        </>
-      }
-      open={isOpen}
-      modal={false}
-      style={styles.dialog}
-      contentStyle={styles.dialogContent}
-      autoScrollBodyContent
-    >
-      {status === STATUS.EXPORTING && (
-        <Box textAlign="center">
-          <CircularProgress />
-        </Box>
-      )}
-      {status === STATUS.ERROR && (
-        <>
-          <StyledAlert severity="error">
-            There was an error with the export. Please try again.
-            <AlertAction onClick={() => onExport(selectedFormat)}>Retry export</AlertAction> or
-            contact <AlertLink href="mailto:support@tupaia.org">support@tupaia.org</AlertLink>
-          </StyledAlert>
-        </>
-      )}
-      {status === STATUS.SUCCESS && <div>Export complete.</div>}
-      {status === STATUS.IDLE && (
-        <div>
-          The chart will be exported and downloaded to your browser.
-          <RadioButtonGroup
-            name="format"
-            onChange={(e, value) => setSelectedFormat(value)}
-            style={styles.options}
-            valueSelected={selectedFormat}
-          >
-            {formats.map(type => (
-              <RadioButton
-                key={type}
-                value={type}
-                label={formatLabels[type] ? formatLabels[type] : type}
-                style={styles.option}
-              />
-            ))}
-          </RadioButtonGroup>
-          <Checkbox label="Export With Labels" checked={exportWithLabels} onCheck={toggleLabels} />
-        </div>
-      )}
-    </Dialog>
+    <StyledDialog open={isOpen} maxWidth="xs" fullWidth>
+      <CloseButton onClick={onClose}>
+        <Close />
+      </CloseButton>
+      <Title>Export this chart</Title>
+      <FlexStart minHeight={160}>
+        {loading && (
+          <Box pb={3} style={{ margin: 'auto' }}>
+            <CircularProgress />
+          </Box>
+        )}
+        {status === STATUS.ERROR && (
+          <>
+            <StyledAlert severity="error">
+              There was an error with the export. Please try again.
+              <AlertAction onClick={() => onExport(selectedFormat)}>Retry export</AlertAction> or
+              contact <AlertLink href="mailto:support@tupaia.org">support@tupaia.org</AlertLink>
+            </StyledAlert>
+          </>
+        )}
+        {status === STATUS.IDLE && (
+          <div>
+            <Typography>The chart will be exported and downloaded to your browser</Typography>
+            <FormControl component="fieldset">
+              <StyledRadioGroup
+                name="format"
+                value={selectedFormat}
+                onChange={(e, value) => setSelectedFormat(value)}
+              >
+                {formats.map(format => (
+                  <FormControlLabel
+                    key={format}
+                    value={format}
+                    control={<Radio color="primary" />}
+                    label={formatLabels[format]}
+                  />
+                ))}
+              </StyledRadioGroup>
+            </FormControl>
+            {selectedFormat === 'png' && (
+              <>
+                <OptionsButton onClick={handleExpandClick}>
+                  <Typography>Advanced Options</Typography>
+                  <ExpandMore />
+                </OptionsButton>
+                <Collapse in={expanded} timeout="auto" unmountOnExit>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={exportWithLabels}
+                        onChange={event =>
+                          onChangeExportOptions({ exportWithLabels: event.target.checked })
+                        }
+                        name="exportWithLabels"
+                      />
+                    }
+                    label="Export With Labels"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={exportWithTable}
+                        onChange={event =>
+                          onChangeExportOptions({ exportWithTable: event.target.checked })
+                        }
+                        name="exportWithTable"
+                      />
+                    }
+                    label="Export With Table"
+                  />
+                </Collapse>
+              </>
+            )}
+          </div>
+        )}
+      </FlexStart>
+      <FlexEnd>
+        <Button disabled={loading} color="primary" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button disabled={loading} color="primary" onClick={() => onExport(selectedFormat)}>
+          Export chart
+        </Button>
+      </FlexEnd>
+    </StyledDialog>
   );
 };
 

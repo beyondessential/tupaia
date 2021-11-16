@@ -110,7 +110,7 @@ const useDrillDownState = contentByLevel => {
 const useExports = () => {
   const defaultOptions = {
     exportWithLabels: true,
-    exportDataTable: true,
+    exportWithTable: true,
   };
   const [exportOptions, setExportOptions] = useState(defaultOptions);
   const [exportStatus, setExportStatus] = useState(STATUS.CLOSED);
@@ -277,7 +277,7 @@ const EnlargedDialogComponent = ({
 
       setExportStatus(STATUS.ANIMATING);
       await sleep(1000); // allow some time for the chart transition to finish before hiding the loader
-      setExportStatus(STATUS.SUCCESS);
+      setExportStatus(STATUS.IDLE);
     } catch (error) {
       setExportStatus(STATUS.ERROR);
     }
