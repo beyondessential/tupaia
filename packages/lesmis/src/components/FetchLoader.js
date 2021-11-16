@@ -15,6 +15,7 @@ const Container = styled(FlexCenter)`
   width: 100%;
   height: 100%;
   align-self: center;
+  margin: auto;
 `;
 
 const SpinningLoader = () => (
