@@ -372,7 +372,7 @@ function* attemptUserLogin(action) {
   } catch (error) {
     const errorMessage = error.response ? yield error.response.json() : {};
     if (errorMessage?.error === 'Email address not yet verified') {
-      yield put(displayUnverified());
+      yield put(displayUnverified(action.emailAddress));
     } else yield put(error.errorFunction(errorMessage));
   }
 }
