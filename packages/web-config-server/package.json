@@ -32,7 +32,7 @@
     "@tupaia/server-boilerplate": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "async": "^2.6.0",
-    "aws-sdk": "^2.203.0",
+    "aws-sdk": "^2.814.0",
     "body-parser": "^1.18.2",
     "case": "^1.5.5",
     "client-sessions": "^0.8.0",

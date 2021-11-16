@@ -33,7 +33,7 @@
     "adm-zip": "^0.5.5",
     "api-error-handler": "^1.0.0",
     "async": "^2.6.2",
-    "aws-sdk": "^2.451.0",
+    "aws-sdk": "^2.814.0",
     "body-parser": "^1.18.3",
     "case": "^1.6.1",
     "chai-as-promised": "^7.1.1",
