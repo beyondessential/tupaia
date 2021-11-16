@@ -394,9 +394,10 @@ export function fetchUserSignupError(error) {
   };
 }
 
-export function displayUnverified() {
+export function displayUnverified(emailAddress) {
   return {
     type: SHOW_UNVERIFIED_LOGIN,
+    emailAddress,
   };
 }
 
