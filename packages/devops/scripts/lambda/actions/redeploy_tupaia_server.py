@@ -67,7 +67,8 @@ def redeploy_tupaia_server(event):
     for existing_instance in existing_instances:
         original_deployed_by = get_tag(existing_instance, 'DeployedBy')
         if original_deployed_by:
-            deployed_by = original_deployed_by + ' (redeployed by ' + event['User'] + ')'
+            original_deployed_by = original_deployed_by.split(' (latest redeploy by ', 1)[0]
+            deployed_by = original_deployed_by + ' (latest redeploy by ' + event['User'] + ')'
         else:
             deployed_by = event['User']
 

@@ -7,10 +7,22 @@ import axios from 'axios';
 import FetchError from './fetchError';
 import { getApiUrl } from '../utils/getApiUrl';
 
-const timeout = 45 * 1000; // 45 seconds
-
 // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
 axios.defaults.withCredentials = true;
+
+const timeout = 45 * 1000; // 45 seconds
+
+const getRequestOptions = options => {
+  const locale = window.location.pathname.split('/')[1];
+  return {
+    ...options,
+    timeout,
+    params: {
+      ...options.params,
+      locale,
+    },
+  };
+};
 
 /**
  * Abstraction for making api requests
@@ -21,11 +33,10 @@ axios.defaults.withCredentials = true;
  * @returns {AxiosPromise}
  */
 const request = async (endpoint, options) => {
+  const requestOptions = getRequestOptions(options);
+
   try {
-    const response = await axios(`${getApiUrl()}/v1/${endpoint}`, {
-      timeout,
-      ...options,
-    });
+    const response = await axios(`${getApiUrl()}/v1/${endpoint}`, requestOptions);
     return response.data;
   } catch (error) {
     // normalise errors using fetch error class

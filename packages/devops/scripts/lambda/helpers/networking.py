@@ -169,7 +169,7 @@ def register_gateway_target(target_group_arn, tupaia_instance_id):
     )
 
 def deregister_gateway_target(target_group_arn, tupaia_instance_id):
-    elbv2.register_targets(
+    elbv2.deregister_targets(
         TargetGroupArn=target_group_arn,
         Targets=[
             {

@@ -17,7 +17,7 @@ import Fade from '@material-ui/core/Fade';
 import { EntityMenu } from './EntityMenu';
 import { NoResultsMessage } from './NoResultsMessage';
 import { useProjectEntitiesData } from '../api';
-import { getPlaceIcon, getOptionText, makeEntityLink, useAutocomplete } from '../utils';
+import { useAutocomplete, getPlaceIcon, getOptionText, makeEntityLink, useI18n } from '../utils';
 
 const SearchContainer = styled.div`
   position: relative;
@@ -26,7 +26,7 @@ const SearchContainer = styled.div`
 
 const SearchBox = styled(MuiPaper)`
   display: flex;
-  alignitems: center;
+  align-items: center;
   border-radius: 2.6rem;
   height: 2.8rem;
 `;
@@ -36,12 +36,11 @@ const Input = styled(InputBase)`
 `;
 
 const SearchIcon = styled(MuiSearchIcon)`
-  margin: 0.75rem 0.375rem 0 0.5rem;
+  margin: 0 0.375rem 0 0.5rem;
   font-size: 1.3rem;
 `;
 
 const ClearButton = styled(MuiIconButton)`
-  margin: 1px 0 0 0;
   padding: 0.5rem;
 
   &:hover {
@@ -56,7 +55,6 @@ const ClearButton = styled(MuiIconButton)`
 
 const Divider = styled(MuiDivider)`
   height: 1.125rem;
-  margin-top: 0.875rem;
   background: ${props => props.theme.palette.text.tertiary};
 `;
 
@@ -117,6 +115,7 @@ const EXPANDED_LIMIT = 200;
 
 export const SearchBar = ({ linkType, className }) => {
   const history = useHistory();
+  const { translate } = useI18n();
   const [inputValue, setInputValue] = useState('');
   const [expanded, setExpanded] = useState(false);
   const { data: options = [], isLoading } = useProjectEntitiesData();
@@ -159,14 +158,17 @@ export const SearchBar = ({ linkType, className }) => {
       <SearchContainer className={className}>
         <SearchBox {...getRootProps()} elevation={0}>
           <SearchIcon color={focused ? 'primary' : 'inherit'} />
-          <Input placeholder="Search location" inputProps={{ ...getInputProps() }} />
+          <Input
+            placeholder={translate('home.searchLocation')}
+            inputProps={{ ...getInputProps() }}
+          />
           {inputValue && (
             <ClearButton {...clearProps} onClick={handleClear} aria-label="clear">
               <CancelIcon />
             </ClearButton>
           )}
           <Divider orientation="vertical" />
-          <EntityMenu buttonText="or view all" />
+          <EntityMenu buttonText={translate('home.orViewAll')} />
         </SearchBox>
         {groupedOptions.length > 0 ? (
           <ResultsBox {...getListboxProps()}>
