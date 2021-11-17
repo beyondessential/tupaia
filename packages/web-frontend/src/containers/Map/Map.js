@@ -165,7 +165,7 @@ class MapComponent extends Component {
     const processedData = measureData.filter(
       ({ coordinates }) => coordinates && coordinates.length === 2,
     );
-    const hasMeasureData = measureOrgUnits && measureOrgUnits.length > 0;
+    const hasMeasureData = measureData && measureData.length > 0;
     const basicPropsForInteractivePolygon = {
       hasMeasureData,
       measureOrgUnits,

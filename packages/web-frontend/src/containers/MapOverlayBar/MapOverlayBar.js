@@ -23,14 +23,15 @@ import {
   setMapOverlays,
   clearMeasure,
   toggleMeasureExpand,
-  updateOverlayConfigs,
+  setDisplayedMapOverlays,
 } from '../../actions';
 import { HierarchyItem } from '../../components/HierarchyItem';
 import {
   selectCurrentOrgUnit,
   selectCurrentMapOverlays,
-  selectDefaultMapOverlay,
   selectCurrentMapOverlayCodes,
+  selectCurrentProject,
+  selectMapOverlayByCode,
 } from '../../selectors';
 
 const pinnedOverlayCodeReducer = (currentOverlayCode, newOverlayCode) => {
@@ -43,28 +44,41 @@ const pinnedOverlayCodeReducer = (currentOverlayCode, newOverlayCode) => {
 
 const MapOverlayBarComponent = ({
   currentMapOverlays,
-  isMeasureLoading,
   currentOrganisationUnitName,
-  onUpdateOverlayPeriod,
   mapOverlayHierarchy,
   defaultMapOverlay,
   currentMapOverlayCodes,
   onSetMapOverlay,
+  onSetDisplayedMapOverlays,
   onClearMeasure,
 }) => {
   const [hasNeverBeenChanged, setHasNeverBeenChanged] = useState(true);
-  const [pinnedOverlay, setPinnedOverlay] = useReducer(pinnedOverlayCodeReducer, null);
   const [maxSelectedOverlays, setMaxSelectedOverlays] = useState(1);
+  const [pinnedOverlay, setPinnedOverlay] = useReducer(pinnedOverlayCodeReducer, null);
   useEffect(() => {
     const { length } = currentMapOverlayCodes;
     if (length > maxSelectedOverlays) {
       setMaxSelectedOverlays(length);
     }
+    if (!currentMapOverlayCodes.includes(pinnedOverlay)) {
+      setPinnedOverlay(null);
+    }
   }, [currentMapOverlayCodes]);
+  useEffect(() => {
+    if (maxSelectedOverlays === 1) {
+      setPinnedOverlay(null);
+      onSetDisplayedMapOverlays(currentMapOverlayCodes);
+    }
+    if (maxSelectedOverlays < currentMapOverlayCodes.length) {
+      onSetMapOverlay(currentMapOverlayCodes.slice(0, maxSelectedOverlays));
+    }
+  }, [maxSelectedOverlays]);
 
   const isCheckBox = maxSelectedOverlays > 1;
 
   const onSelectMapOverlay = mapOverlayCode => {
+    const newMapOverlayCodes = [...currentMapOverlayCodes, mapOverlayCode];
+
     const shiftOverlayCodes = mapOverlayCodes => {
       // Pinned map overlay should be always selected.
       const results = mapOverlayCodes.filter(code => code !== pinnedOverlay);
@@ -75,8 +89,6 @@ const MapOverlayBarComponent = ({
 
       return results;
     };
-
-    const newMapOverlayCodes = [...currentMapOverlayCodes, mapOverlayCode];
 
     const shiftedOverlayCodes =
       newMapOverlayCodes.length > maxSelectedOverlays
@@ -90,6 +102,7 @@ const MapOverlayBarComponent = ({
     const updatedMapOverlayCodes = currentMapOverlayCodes.filter(
       currentMapOverlayCode => currentMapOverlayCode !== mapOverlayCode,
     );
+
     if (updatedMapOverlayCodes.length > 0) {
       onSetMapOverlay(updatedMapOverlayCodes);
     } else {
@@ -107,6 +120,11 @@ const MapOverlayBarComponent = ({
     } else {
       onSelectMapOverlay(mapOverlay.mapOverlayCode);
     }
+  };
+
+  const changeMaxSelectedOverlays = selectedIndex => {
+    const maxNumOfSelectedOverlays = selectedIndex + 1;
+    setMaxSelectedOverlays(maxNumOfSelectedOverlays);
   };
 
   const renderDefaultMapOverlay = () => {
@@ -172,6 +190,8 @@ const MapOverlayBarComponent = ({
       );
     });
 
+    if (items.length === 0) return null;
+
     return (
       <>
         {defaultMapOverlay?.mapOverlayCode ? renderDefaultMapOverlay() : null}
@@ -183,20 +203,10 @@ const MapOverlayBarComponent = ({
   const orgName = currentOrganisationUnitName || 'Your current selection';
   const emptyMessage = `Select an area with valid data. ${orgName} has no map overlays available.`;
 
-  const changeMaxSelectedOverlays = selectedIndex => {
-    const selectedMaxOverlays = selectedIndex + 1;
-    setMaxSelectedOverlays(selectedMaxOverlays);
-    if (selectedMaxOverlays < currentMapOverlayCodes.length) {
-      onSetMapOverlay(currentMapOverlayCodes.slice(0, selectedMaxOverlays));
-    }
-  };
-
   return (
     <Control
       emptyMessage={emptyMessage}
       selectedMapOverlays={currentMapOverlays}
-      isMeasureLoading={isMeasureLoading}
-      onUpdateOverlayPeriod={onUpdateOverlayPeriod}
       maxSelectedOverlays={maxSelectedOverlays}
       changeMaxSelectedOverlays={changeMaxSelectedOverlays}
       pinnedOverlay={pinnedOverlay}
@@ -220,10 +230,9 @@ MapOverlayBarComponent.propTypes = {
   currentMapOverlays: PropTypes.arrayOf(MapOverlayShape),
   mapOverlayHierarchy: PropTypes.array.isRequired,
   isExpanded: PropTypes.bool.isRequired,
-  isMeasureLoading: PropTypes.bool.isRequired,
   onSetMapOverlay: PropTypes.func.isRequired,
   onClearMeasure: PropTypes.func.isRequired,
-  onUpdateOverlayPeriod: PropTypes.func.isRequired,
+  onSetDisplayedMapOverlays: PropTypes.func.isRequired,
   currentOrganisationUnitName: PropTypes.string,
   defaultMapOverlay: MapOverlayShape,
 };
@@ -237,13 +246,13 @@ MapOverlayBarComponent.defaultProps = {
 
 const mapStateToProps = state => {
   const { mapOverlayHierarchy, isExpanded } = state.mapOverlayBar;
-  const { isMeasureLoading } = state.map;
-  const { isLoadingOrganisationUnit } = state.global;
 
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
   const currentMapOverlays = selectCurrentMapOverlays(state);
   const currentMapOverlayCodes = selectCurrentMapOverlayCodes(state);
-  const defaultMapOverlay = selectDefaultMapOverlay(state);
+  const activeProject = selectCurrentProject(state);
+
+  const defaultMapOverlay = selectMapOverlayByCode(state, activeProject.defaultMeasure);
 
   return {
     currentMapOverlays,
@@ -251,7 +260,6 @@ const mapStateToProps = state => {
     mapOverlayHierarchy,
     isExpanded,
     currentOrganisationUnitName: currentOrganisationUnit.name,
-    isMeasureLoading: isMeasureLoading || isLoadingOrganisationUnit,
     defaultMapOverlay,
   };
 };
@@ -260,21 +268,10 @@ const mapDispatchToProps = dispatch => {
   return {
     onExpandClick: () => dispatch(toggleMeasureExpand()),
     onSetMapOverlay: mapOverlayCodes => dispatch(setMapOverlays(mapOverlayCodes.join(','))),
+    onSetDisplayedMapOverlays: mapOverlayCodes =>
+      dispatch(setDisplayedMapOverlays(mapOverlayCodes)),
     onClearMeasure: () => dispatch(clearMeasure()),
     dispatch,
-  };
-};
-
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { dispatch } = dispatchProps;
-
-  return {
-    ...stateProps,
-    ...dispatchProps,
-    ...ownProps,
-    onUpdateOverlayPeriod: (mapOverlayCode, overlayConfig) => {
-      dispatch(updateOverlayConfigs({ [mapOverlayCode]: overlayConfig }));
-    },
   };
 };
 
@@ -287,5 +284,4 @@ function shouldComponentUpdate(prevProps, nextProps) {
 export const MapOverlayBar = connect(
   mapStateToProps,
   mapDispatchToProps,
-  mergeProps,
 )(React.memo(MapOverlayBarComponent, shouldComponentUpdate));

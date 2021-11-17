@@ -99,6 +99,7 @@ import {
   SET_PROJECT,
   FETCH_RESET_TOKEN_LOGIN_ERROR,
   SET_ENLARGED_DIALOG_DATE_RANGE,
+  SET_OVERLAY_CONFIGS,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 
@@ -597,6 +598,7 @@ function mapOverlayBar(
         ...state,
         hiddenMeasures: {},
       };
+    case SET_OVERLAY_CONFIGS:
     case UPDATE_OVERLAY_CONFIGS: {
       const mapOverlayHierarchy = [...state.mapOverlayHierarchy];
       Object.entries(action.overlayConfigs).forEach(([mapOverlayCode, overlayConfig]) => {

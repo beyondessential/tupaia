@@ -31,11 +31,7 @@ export const MeasurePopup = React.memo(
         coordinates={coordinates}
         onDetailButtonClick={onOrgUnitClick ? () => onOrgUnitClick(organisationUnitCode) : null}
       >
-        <PopupDataItemList
-          serieses={multiOverlaySerieses || serieses}
-          data={markerData}
-          showNoDataLabel
-        />
+        <PopupDataItemList serieses={multiOverlaySerieses || serieses} data={markerData} />
       </PopupMarker>
     );
   },

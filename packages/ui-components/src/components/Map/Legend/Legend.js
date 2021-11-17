@@ -62,13 +62,14 @@ export const Legend = React.memo(
     hiddenValues,
     currentMapOverlayCodes,
     displayedMapOverlayCodes,
-    seriesesKey = 'serieses',
+    seriesesKey,
   }) => {
     if (Object.keys(baseMeasureInfo).length === 0) {
       return null;
     }
 
     const measureInfo = currentMapOverlayCodes.reduce((results, mapOverlayCode) => {
+      // measure info for mapOverlayCode may not exist when location changes.
       const baseSerieses = baseMeasureInfo[mapOverlayCode]?.[seriesesKey] || [];
       const serieses = baseSerieses.filter(
         ({ type, hideFromLegend, values = [] }) =>
@@ -90,10 +91,10 @@ export const Legend = React.memo(
       <>
         {currentMapOverlayCodes.map(mapOverlayCode => {
           const { serieses } = measureInfo[mapOverlayCode];
-
-          const hasIconLayer = serieses.some(l => l.type === MEASURE_TYPE_ICON);
-          const hasRadiusLayer = serieses.some(l => l.type === MEASURE_TYPE_RADIUS);
-          const hasColorLayer = serieses.some(l => coloredMeasureTypes.includes(l.type));
+          const baseSerieses = baseMeasureInfo[mapOverlayCode]?.[seriesesKey] || [];
+          const hasIconLayer = baseSerieses.some(l => l.type === MEASURE_TYPE_ICON);
+          const hasRadiusLayer = baseSerieses.some(l => l.type === MEASURE_TYPE_RADIUS);
+          const hasColorLayer = baseSerieses.some(l => coloredMeasureTypes.includes(l.type));
           const isDisplayed = displayedMapOverlayCodes.includes(mapOverlayCode);
 
           return serieses.map(series => {
@@ -134,5 +135,5 @@ Legend.defaultProps = {
   className: null,
   hiddenValues: {},
   setValueHidden: null,
-  seriesesKey: null,
+  seriesesKey: 'serieses',
 };

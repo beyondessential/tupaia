@@ -236,6 +236,9 @@ export default class extends DataAggregatingRouteHandler {
         });
       measureOptions[0] = mainMeasureOption;
     }
+    if (measureData.length === 0) {
+      measureOptions[0].hideFromPopup = false;
+    }
     return measureOptions;
   }
 
