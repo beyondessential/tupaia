@@ -32,9 +32,20 @@ const X_AXIS_PADDING = {
   },
 };
 
+const renderXAxisLabel = (label, fillColor, isEnlarged) => {
+  if (label)
+    return {
+      value: label,
+      fill: fillColor,
+      position: 'bottom',
+      style: { fontSize: isEnlarged ? '1em' : '0.8em' },
+    };
+  return null;
+};
+
 export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
   const [xAxisHeight, setXAxisHeight] = useState(0);
-  const fillColor = getContrastTextColor();
+  const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
 
   const { BAR, COMPOSED } = CHART_TYPES;
   const { chartType, chartConfig = {}, data } = viewContent;
@@ -125,9 +136,9 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
   return (
     <XAxisComponent
       dataKey="name"
-      label={data.xName}
+      label={renderXAxisLabel(viewContent?.xName, fillColor, isEnlarged)}
       stroke={isExporting ? DARK_BLUE : fillColor}
-      height={isExporting ? xAxisHeight + 20 : undefined}
+      height={undefined}
       interval={getXAxisTickInterval()}
       tick={getXAxisTickMethod()}
       tickFormatter={formatXAxisTick}

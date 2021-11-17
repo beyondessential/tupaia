@@ -112,6 +112,13 @@ const chartColorAtIndex = (colorArray, index) => {
   return colorArray[index % colorArray.length];
 };
 
+const getHeight = (isExporting, isEnlarged) => {
+  if (isExporting) {
+    return 420;
+  }
+  return isEnlarged && isMobile() ? 320 : undefined;
+};
+
 export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, legendPosition }) => {
   const [activeIndex, setActiveIndex] = useState(-1);
   const { presentationOptions, data } = viewContent;
@@ -155,7 +162,7 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
   // (and just looks a bit weird). So, bump it up by 20px.
   const offsetStyle = isEnlarged && !isMobile() && !isExporting ? { position: 'relative' } : null;
   const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
-  const height = isExporting || (isEnlarged && isMobile()) ? 320 : undefined;
+  const height = getHeight(isExporting, isEnlarged);
 
   return (
     <ResponsiveContainer width="100%" height={height} aspect={responsiveStyle}>
