@@ -220,6 +220,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
               isEnlarged,
               yAxisId,
               data,
+              exportWithLabels: presentationOptions?.exportWithLabels,
             });
           })}
         {ReferenceLines({ viewContent, isExporting, isEnlarged })}
