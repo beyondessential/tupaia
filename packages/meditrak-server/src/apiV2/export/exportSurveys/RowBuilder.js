@@ -11,6 +11,8 @@ import {
   EntityConfigCellBuilder,
   KeyValueCellBuilder,
   VisibilityCriteriaCellBuilder,
+  ConditionConfigCellBuilder,
+  ArithmeticConfigCellBuilder,
 } from './cellBuilders';
 
 export class RowBuilder {
@@ -23,6 +25,8 @@ export class RowBuilder {
     this.configCellBuilders = {
       Autocomplete: new AutocompleteConfigCellBuilder(models),
       CodeGenerator: new CodeGeneratorConfigCellBuilder(models),
+      Condition: new ConditionConfigCellBuilder(models),
+      Arithmetic: new ArithmeticConfigCellBuilder(models),
       Entity: entityConfigCellBuilder,
       PrimaryEntity: entityConfigCellBuilder,
     };
