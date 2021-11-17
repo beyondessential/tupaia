@@ -73,7 +73,7 @@ const NoResultsBox = styled.div`
 
 export const DashboardSearchResults = ({ autocompleteResponse, isActive }) => {
   const { search } = useLocation();
-  const { entityCode } = useUrlParams();
+  const { locale, entityCode } = useUrlParams();
 
   const { getListboxProps, getOptionProps, groupedOptions, inputValue } = autocompleteResponse;
 
@@ -89,7 +89,7 @@ export const DashboardSearchResults = ({ autocompleteResponse, isActive }) => {
               <Result
                 key={option.code}
                 to={{
-                  pathname: `/${entityCode}/dashboard`,
+                  pathname: `/${locale}/${entityCode}/dashboard`,
                   search: `${search}&reportCode=${option.reportCode}`,
                 }}
                 {...getOptionProps({ option, index })}

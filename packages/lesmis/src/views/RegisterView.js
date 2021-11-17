@@ -4,11 +4,11 @@
  *
  */
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiCard from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
 import { RegisterForm, FlexCenter, FlexColumn, FormBackButton } from '../components';
+import { LocaleLink } from '../components/LocaleLinks';
 
 const Container = styled(FlexColumn)`
   padding-top: 2rem;
@@ -36,8 +36,13 @@ const StyledImg = styled.img`
 const Text = styled(Typography)`
   font-size: 0.875rem;
   line-height: 1rem;
-  text-decoration: none;
   margin-right: 5px;
+`;
+
+const StyledLocaleLink = styled(LocaleLink)`
+  font-size: 0.875rem;
+  line-height: 1rem;
+  text-decoration: none;
 `;
 
 export const RegisterView = () => (
@@ -49,9 +54,9 @@ export const RegisterView = () => (
     </StyledCard>
     <FlexCenter mb={4}>
       <Text color="textSecondary">Already have an account?</Text>
-      <Text component={RouterLink} to="login" color="primary">
+      <StyledLocaleLink to="/login" color="primary">
         Log in
-      </Text>
+      </StyledLocaleLink>
     </FlexCenter>
   </Container>
 );

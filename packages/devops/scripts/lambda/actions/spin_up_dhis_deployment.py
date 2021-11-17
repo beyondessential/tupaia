@@ -31,6 +31,12 @@ def spin_up_dhis_deployment(event):
 
     extra_tags = [{ 'Key': 'DeployedBy', 'Value': event['User'] }]
 
+    if 'StartAtUTC' in event:
+        extra_tags.append({ 'Key': 'StartAtUTC', 'Value': event['StartAtUTC'] })
+
+    if 'StopAtUTC' in event:
+        extra_tags.append({ 'Key': 'StopAtUTC', 'Value': event['StopAtUTC'] })
+
     clone_instance(from_deployment, deployment_name, instance_type, extra_tags=extra_tags, instance_name_prefix=instance_name_prefix)
 
     print('Deployment cloned')

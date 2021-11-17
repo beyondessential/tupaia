@@ -12,6 +12,7 @@ import { NotAuthorised as NotAuthorisedIcon } from '../components/Icons/NotAutho
 import { PageHeader } from '../components';
 import * as COLORS from '../constants';
 import { useUser } from '../api/queries';
+import { useUrlParams } from '../utils';
 
 const Section = styled.section`
   background: ${COLORS.GREY_F9};
@@ -33,6 +34,7 @@ const Text = styled(Typography)`
 
 export const NotAuthorisedView = () => {
   const history = useHistory();
+  const { locale } = useUrlParams();
   const { isLoading, isLoggedIn } = useUser();
 
   return (
@@ -47,7 +49,7 @@ export const NotAuthorisedView = () => {
         <Heading variant="h4">You are not authorised to view this page</Heading>
         <Text>If you would like access please contact an administrator.</Text>
         {isLoggedIn && (
-          <Button component={RouterLink} to="/">
+          <Button component={RouterLink} to={`/${locale}/`}>
             Go back to home page
           </Button>
         )}
@@ -55,7 +57,7 @@ export const NotAuthorisedView = () => {
           <Button
             component={RouterLink}
             to={{
-              pathname: '/login',
+              pathname: `/${locale}/login`,
               state: { referer: history.location },
             }}
           >
