@@ -31,6 +31,7 @@ const EnlargedChartContainer = styled(CustomChartContainer)`
 
 const GREY_DE = '#DEDEE0';
 const GREY_FB = '#FBF9F9';
+const TEXT_DARKGREY = '#414D55';
 
 const StyledTable = styled(Table)`
   overflow: auto;
@@ -46,12 +47,8 @@ const StyledTable = styled(Table)`
 
     // table head
     thead {
-      border-bottom: 1px solid ${GREY_DE};
+      border: 1px solid ${GREY_DE};
       background: none;
-
-      th {
-        font-weight: 400;
-      }
     }
 
     // table body
@@ -65,7 +62,7 @@ const StyledTable = styled(Table)`
 
     th,
     td {
-      color: #6f7b82;
+      color: ${TEXT_DARKGREY};
       border-color: ${GREY_DE};
     }
   }
@@ -118,6 +115,7 @@ export const ChartWrapper = ({ viewContent, isEnlarged, isExporting, onItemClick
   }
 
   if (isExporting) {
+    const { exportWithTable } = viewContent?.presentationOptions;
     return (
       <EnlargedChartContainer>
         <Chart
@@ -126,7 +124,9 @@ export const ChartWrapper = ({ viewContent, isEnlarged, isExporting, onItemClick
           viewContent={viewContent}
           onItemClick={onItemClick}
         />
-        <StyledTable viewContent={viewContent} className={isExporting && 'exporting'} />
+        {exportWithTable && (
+          <StyledTable viewContent={viewContent} className={isExporting && 'exporting'} />
+        )}
       </EnlargedChartContainer>
     );
   }

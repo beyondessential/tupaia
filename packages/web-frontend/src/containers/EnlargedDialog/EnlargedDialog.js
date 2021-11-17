@@ -107,10 +107,12 @@ const useDrillDownState = contentByLevel => {
   };
 };
 
-const useExports = () => {
+const useExports = viewContent => {
+  const config = viewContent?.presentationOptions;
+
   const defaultOptions = {
-    exportWithLabels: true,
-    exportWithTable: true,
+    exportWithLabels: config?.exportWithLabels !== undefined ? config.exportWithLabels : true,
+    exportWithTable: config?.exportWithTable !== undefined ? config.exportWithTable : false,
   };
   const [exportOptions, setExportOptions] = useState(defaultOptions);
   const [exportStatus, setExportStatus] = useState(STATUS.CLOSED);
@@ -156,7 +158,7 @@ const EnlargedDialogComponent = ({
     setExportOptions,
     exportStatus,
     setExportStatus,
-  } = useExports();
+  } = useExports(viewContent);
 
   const newViewContent = {
     ...viewContent,
