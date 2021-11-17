@@ -318,7 +318,6 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    height: 390,
   },
   matrixContent: {
     height: '80vh',
