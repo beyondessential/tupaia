@@ -173,13 +173,15 @@ const EnlargedDialogComponent = ({
     setExportStatus,
   } = useExports(viewContent);
 
-  const newViewContent = {
-    ...viewContent,
-    presentationOptions: {
-      ...viewContent?.presentationOptions,
-      ...exportOptions,
-    },
-  };
+  const newViewContent = viewContent
+    ? {
+        ...viewContent,
+        presentationOptions: {
+          ...viewContent?.presentationOptions,
+          ...exportOptions,
+        },
+      }
+    : null;
 
   const { startDate, endDate } = getDatesForCurrentLevel(
     drillDownState.drillDownLevel,
