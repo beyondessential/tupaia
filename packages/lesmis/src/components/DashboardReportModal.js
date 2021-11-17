@@ -123,7 +123,7 @@ export const DashboardReportModal = () => {
     } else if (exportWithLabels) {
       setExportFormatId('pngWithLabels');
     }
-  }, [config, setExportFormatId]);
+  }, [JSON.stringify(config), setExportFormatId]);
 
   // Set up PNG export
   const pngExportFilename = `export-${config?.name}-${new Date().toDateString()}`;

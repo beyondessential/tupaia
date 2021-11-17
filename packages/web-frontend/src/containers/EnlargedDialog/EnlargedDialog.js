@@ -110,13 +110,26 @@ const useDrillDownState = contentByLevel => {
 const useExports = viewContent => {
   const config = viewContent?.presentationOptions;
 
-  const defaultOptions = {
-    exportWithLabels: config?.exportWithLabels !== undefined ? config.exportWithLabels : true,
-    exportWithTable: config?.exportWithTable !== undefined ? config.exportWithTable : false,
-  };
-  const [exportOptions, setExportOptions] = useState(defaultOptions);
+  const [exportOptions, setExportOptions] = useState({
+    exportWithLabels: true,
+    exportWithTable: false,
+  });
   const [exportStatus, setExportStatus] = useState(STATUS.CLOSED);
   const exportRef = useRef(null);
+
+  // Set default export options from config if they are set
+  useEffect(() => {
+    const exportWithLabels =
+      config?.exportWithLabels !== undefined
+        ? config.exportWithLabels
+        : exportOptions.exportWithLabels;
+    const exportWithTable =
+      config?.exportWithTable !== undefined
+        ? config.exportWithTable
+        : exportOptions.exportWithTable;
+
+    setExportOptions({ exportWithLabels, exportWithTable });
+  }, [JSON.stringify(config), setExportOptions]);
 
   return {
     exportRef,

@@ -125,8 +125,12 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   renderBody() {
-    const { viewContent, errorMessage } = this.props;
+    const { viewContent, errorMessage, isLoading } = this.props;
     const noData = viewContent.data && viewContent.data.length === 0;
+
+    if (isLoading) {
+      return null;
+    }
 
     if (errorMessage) {
       return <StyledAlert severity="error">{errorMessage}</StyledAlert>;
