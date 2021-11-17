@@ -14,11 +14,12 @@ const LegendContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: ${props => (props.$position === 'bottom' ? 'center' : 'flex-start')};
+  // Add more padding at the bottom for exports
   padding: ${props => {
-    if (props.$position === 'bottom') {
-      return props.$isExporting ? '1rem 0 3rem 3.5rem' : '1rem 0 0 3.5rem';
+    if (props.$isExporting) {
+      return props.$position === 'bottom' ? '1rem 0 3rem 3.5rem' : '0 0 3rem 0';
     }
-    return '0 0 2rem 0';
+    return props.$position === 'bottom' ? '1rem 0 0 3.5rem' : '0 0 2rem 0';
   }};
 `;
 
