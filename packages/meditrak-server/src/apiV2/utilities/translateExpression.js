@@ -13,6 +13,8 @@
  * ($SchFF00Section1Total / $SchFF00Section1TotalObtainable) * 100
  * will be converted to:
  * ($5ed7558b61f76a6ba5003114 / $5ec5bf8961f76a18ad00d4f9) * 100
+ *
+ * Inverse operation: replaceQuestionIdsWithCodes
  * @param {*} models
  * @param {*} expression Expression to evaluate (assumes that all the variables in an expression have prefix '$')
  * @param {*} codes: List of question codes (with no prefix $)
@@ -20,11 +22,11 @@
 export const translateExpression = async (models, rawExpression, codes) => {
   const questionCodeToId = await models.question.findIdByCode(codes);
   let expression = rawExpression;
-
   for (const code of codes) {
     const questionId = questionCodeToId[code];
     // Retain the $ prefix, as UUID often starts with a number (breaks evaluation in mathjs)
-    expression = expression.replace(`$${code}`, `$${questionId}`);
+    // Using the global regular expression ensures we replace all instances
+    expression = expression.replace(new RegExp(`\\$${code}`, 'g'), `$${questionId}`);
   }
 
   return expression;

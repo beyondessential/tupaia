@@ -7,12 +7,12 @@ import {
   splitStringOn,
   splitStringOnComma,
   translateExpression,
-  getExpressionQuestionCodes,
+  getDollarPrefixedExpressionVariables,
 } from '../../../utilities';
 
 export const processArithmeticConfig = async (models, config) => {
   const { formula, defaultValues, valueTranslation, answerDisplayText } = config;
-  const codes = getExpressionQuestionCodes(formula);
+  const codes = getDollarPrefixedExpressionVariables(formula);
 
   let translatedConfig = {
     formula: await translateExpression(models, formula, codes),
@@ -32,6 +32,7 @@ export const processArithmeticConfig = async (models, config) => {
     };
   }
 
+  // Note: Only question codes included in the formula will be translated
   if (answerDisplayText) {
     translatedConfig = {
       ...translatedConfig,
@@ -121,6 +122,7 @@ const translateAnswerDisplayText = async (models, text, codes) => {
   let translatedText = text;
   const questionCodeToId = await models.question.findIdByCode(codes);
 
+  // Note a difference between 'answerDisplayText' and 'formula' is question codes are not dollar prefixed
   for (const code of codes) {
     const questionId = questionCodeToId[code];
     translatedText = translatedText.replace(code, questionId);
