@@ -19,16 +19,8 @@ export default {
  */
 export const LightTheme = LightThemeChartTemplate.bind({});
 LightTheme.args = {
-  viewContent: {
-    ...viewContent,
-    presentationOptions: {
-      ...viewContent.presentationOptions,
-      hideExportValues: true,
-      exportDataTable: true,
-    },
-  },
+  viewContent,
   isEnlarged: true,
-  isExporting: true,
   legendPosition: 'top',
 };
 
