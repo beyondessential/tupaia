@@ -919,6 +919,7 @@ function* watchSetMapOverlayChange() {
     const mapOverlayCodes = selectCurrentMapOverlayCodes(state);
     const { displayedMapOverlays, measureInfo } = state.map;
 
+    // We need to make sure previous hidden or unhidden overlays stay the same way as they did.
     const previousDisplayedOverlays = displayedMapOverlays.filter(code =>
       mapOverlayCodes.includes(code),
     );

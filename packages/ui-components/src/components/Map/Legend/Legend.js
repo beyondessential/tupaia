@@ -69,7 +69,7 @@ export const Legend = React.memo(
     }
 
     const measureInfo = currentMapOverlayCodes.reduce((results, mapOverlayCode) => {
-      // measure info for mapOverlayCode could be not existed when location changes.
+      // measure info for mapOverlayCode may not exist when location changes.
       const baseSerieses = baseMeasureInfo[mapOverlayCode]?.[seriesesKey] || [];
       const serieses = baseSerieses.filter(
         ({ type, hideFromLegend, values = [] }) =>
