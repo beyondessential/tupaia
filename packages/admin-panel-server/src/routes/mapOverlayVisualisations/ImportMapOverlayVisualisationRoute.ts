@@ -29,8 +29,8 @@ import type {
 
 const importFileSchema = yup.object().shape(
   {
-    mapOverlayGroups: yup.array().of(mapOverlayGroupValidator),
-    mapOverlayGroupRelations: yup.array().of(mapOverlayGroupRelationsValidator),
+    mapOverlayGroups: yup.array().of(mapOverlayGroupValidator.required()),
+    mapOverlayGroupRelations: yup.array().of(mapOverlayGroupRelationsValidator.required()),
     // ...the rest of the fields belong to the visualisation object and are validated separately
   },
   [['mapOverlayGroups', 'mapOverlayGroupRelations']],

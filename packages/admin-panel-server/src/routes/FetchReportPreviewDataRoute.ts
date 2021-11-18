@@ -20,9 +20,13 @@ import {
 import { MapOverlayVisualisationExtractor } from '../viz-builder/mapOverlayVisualisation/MapOverlayVisualisationExtractor';
 
 export type FetchReportPreviewDataRequest = Request<
-  {},
+  Record<string, never>,
   Record<string, unknown>,
-  { previewConfig?: Record<string, unknown>; testData?: unknown[] },
+  {
+    previewConfig?: Record<string, unknown>;
+    testData?: unknown[];
+    vizType?: keyof typeof VIZ_TYPE_PARAM;
+  },
   { entityCode?: string; hierarchy?: string; previewMode?: PreviewMode }
 >;
 
@@ -98,7 +102,9 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
         draftReportValidator,
       );
     } else {
-      throw new Error('Unknown viz type');
+      throw new Error(
+        `Unknown viz type: ${vizType}, must be one of: [${Object.values(VIZ_TYPE_PARAM)}]`,
+      );
     }
   };
 }

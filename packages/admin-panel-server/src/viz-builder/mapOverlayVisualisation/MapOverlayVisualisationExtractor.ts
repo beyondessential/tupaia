@@ -77,9 +77,6 @@ export class MapOverlayVisualisationExtractor<
   }
 
   public getMapOverlay(): ExpandType<yup.InferType<MapOverlayValidator>> {
-    if (!this.mapOverlayValidator) {
-      throw new Error('No validator provided for extracting map overlay');
-    }
     return this.mapOverlayValidator.validateSync(this.vizToMapOverlay());
   }
 
@@ -125,10 +122,6 @@ export class MapOverlayVisualisationExtractor<
   }
 
   public getReport(previewMode?: PreviewMode): ExpandType<yup.InferType<ReportValidator>> {
-    if (!this.reportValidator) {
-      throw new Error('No validator provided for extracting report');
-    }
-
     const report = this.visualisation.legacy
       ? this.vizToLegacyReport()
       : this.vizToReport(previewMode);
