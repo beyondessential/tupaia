@@ -179,7 +179,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
         data={filterDisabledData(data)}
         margin={
           isExporting
-            ? { left: 20, right: 20, top: 20, bottom: 100 }
+            ? { left: 20, right: 20, top: 20, bottom: 60 }
             : { left: 0, right: 0, top: 0, bottom: 20 }
         }
       >

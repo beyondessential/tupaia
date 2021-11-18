@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Text, XAxis as XAxisComponent } from 'recharts';
 import { CHART_TYPES, DARK_BLUE } from './constants';
@@ -32,23 +32,24 @@ const X_AXIS_PADDING = {
   },
 };
 
-const renderXAxisLabel = (label, fillColor, isEnlarged) => {
+const renderXAxisLabel = (label, fillColor, isEnlarged, isExporting) => {
   if (label)
     return {
       value: label,
       fill: fillColor,
-      position: 'bottom',
+      position: isExporting ? 'bottom' : 'bottom',
       style: { fontSize: isEnlarged ? '1em' : '0.8em' },
     };
   return null;
 };
 
 export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
-  const [xAxisHeight, setXAxisHeight] = useState(0);
   const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
-
   const { BAR, COMPOSED } = CHART_TYPES;
   const { chartType, chartConfig = {}, data } = viewContent;
+
+  const longestWord = Math.max(...data.map(item => item.name.length));
+  const height = isExporting ? Math.min(40 + longestWord * 6, 190) : 40;
 
   /*
     If set 0, all the ticks will be shown.
@@ -117,14 +118,6 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
       <VerticalTick
         {...restOfProps}
         viewContent={viewContent}
-        onHeight={height => {
-          if (xAxisHeight < height) {
-            setXAxisHeight(height);
-            // State isn't fast enough at updating to compare against
-            // so always set the instance variable for comparison.
-            // xAxisHeight = height;
-          }
-        }}
         payload={{
           ...payload,
           value: formatXAxisTick(payload.value),
@@ -136,9 +129,9 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
   return (
     <XAxisComponent
       dataKey="name"
-      label={renderXAxisLabel(viewContent?.xName, fillColor, isEnlarged)}
+      label={renderXAxisLabel(viewContent?.xName, fillColor, isEnlarged, isExporting)}
       stroke={isExporting ? DARK_BLUE : fillColor}
-      height={undefined}
+      height={height}
       interval={getXAxisTickInterval()}
       tick={getXAxisTickMethod()}
       tickFormatter={formatXAxisTick}
