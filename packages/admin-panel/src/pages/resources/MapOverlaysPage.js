@@ -7,6 +7,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { prettyArray } from '../../utilities';
+import { LightOutlinedButton } from '@tupaia/ui-components';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 export const MAP_OVERLAYS_ENDPOINT = 'mapOverlays';
 
@@ -101,6 +103,12 @@ const IMPORT_CONFIG = {
   },
 };
 
+const renderNewMapOverlayVizButton = () => (
+  <LightOutlinedButton startIcon={<AddCircleIcon />} href="/viz-builder/map-overlay/">
+    New
+  </LightOutlinedButton>
+);
+
 export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin }) => {
   const extraEditFields = [
     // ID field for constructing viz-builder path only, not for showing or editing
@@ -162,6 +170,7 @@ export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin }) => {
       endpoint="mapOverlays"
       columns={COLUMNS}
       importConfig={IMPORT_CONFIG}
+      LinksComponent={renderNewMapOverlayVizButton}
       getHeaderEl={getHeaderEl}
       editConfig={{
         title: 'Edit Map Overlay',

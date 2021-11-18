@@ -6,6 +6,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
+import { LightOutlinedButton } from '@tupaia/ui-components';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 export const DASHBOARD_ITEMS_ENDPOINT = 'dashboardItems';
 
@@ -41,6 +43,12 @@ const IMPORT_CONFIG = {
     importEndpoint: 'dashboardVisualisations',
   },
 };
+
+const renderNewDashboardVizButton = () => (
+  <LightOutlinedButton startIcon={<AddCircleIcon />} href="/viz-builder/dashboard-item/">
+    New
+  </LightOutlinedButton>
+);
 
 export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
   const extraEditFields = [
@@ -106,6 +114,7 @@ export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
       editConfig={{
         title: 'Edit Dashboard Item',
       }}
+      LinksComponent={renderNewDashboardVizButton}
       getHeaderEl={getHeaderEl}
       {...props}
     />
