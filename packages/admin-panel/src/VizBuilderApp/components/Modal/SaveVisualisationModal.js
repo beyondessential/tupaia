@@ -22,7 +22,7 @@ import {
 
 import { MODAL_STATUS } from '../../constants';
 import { useSaveVisualisation } from '../../api';
-import { useVizBuilderConfig } from '../../context';
+import { useVizConfig } from '../../context';
 
 const TickIcon = styled(CheckCircle)`
   font-size: 2.5rem;
@@ -37,7 +37,7 @@ const SuccessText = styled(Typography)`
 
 export const SaveVisualisationModal = ({ isOpen, onClose }) => {
   const [status, setStatus] = useState(MODAL_STATUS.INITIAL);
-  const [{ visualisation }, { setVisualisationValue }] = useVizBuilderConfig();
+  const [{ visualisation }, { setVisualisationValue }] = useVizConfig();
   const { mutateAsync: saveVisualisation, error } = useSaveVisualisation(visualisation);
   const handleSave = useCallback(async () => {
     setStatus(MODAL_STATUS.LOADING);
