@@ -20,11 +20,11 @@ const StyledHomeButton = styled(HomeButton)`
   margin-bottom: 14px;
 `;
 
-export const Navbar = ({ links, user, isBESAdmin }) => (
+export const Navbar = ({ links, user }) => (
   <BaseNavBar
     HomeButton={<StyledHomeButton source="/admin-panel-logo-white.svg" />}
     links={links}
-    Profile={() => <ProfileButton user={user} isBESAdmin={isBESAdmin} />}
+    Profile={() => <ProfileButton user={user} />}
     isTabActive={isTabActive}
     maxWidth="xl"
   />
@@ -38,10 +38,8 @@ Navbar.propTypes = {
     firstName: PropTypes.string,
     profileImage: PropTypes.string,
   }).isRequired,
-  isBESAdmin: PropTypes.bool,
 };
 
 Navbar.defaultProps = {
-  isBESAdmin: false,
   links: [],
 };
