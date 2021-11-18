@@ -12,7 +12,7 @@ import { ExportButton } from './ExportButton';
 import { SaveButton } from './SaveButton';
 import { DocumentIcon } from './DocumentIcon';
 import { EditModal } from './Modal';
-import { useVizBuilderConfig } from '../context';
+import { useVizConfig } from '../context';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -52,7 +52,7 @@ const ButtonContainer = styled(FlexSpaceBetween)`
 `;
 
 export const Toolbar = () => {
-  const [{ project, visualisation }] = useVizBuilderConfig();
+  const [{ project, visualisation }] = useVizConfig();
 
   return (
     <Wrapper>
