@@ -164,14 +164,9 @@ const EnlargedDialogComponent = ({
     viewContent,
   } = useDrillDownState(contentByLevel);
 
-  const {
-    isMatrix,
-    exportRef,
-    exportOptions,
-    setExportOptions,
-    exportStatus,
-    setExportStatus,
-  } = useExports(viewContent);
+  const { exportRef, exportOptions, setExportOptions, exportStatus, setExportStatus } = useExports(
+    viewContent,
+  );
 
   const newViewContent = viewContent
     ? {
@@ -183,6 +178,7 @@ const EnlargedDialogComponent = ({
       }
     : null;
 
+  const isMatrix = getIsMatrix(newViewContent);
   const { startDate, endDate } = getDatesForCurrentLevel(
     drillDownState.drillDownLevel,
     startDateForTopLevel,
@@ -333,7 +329,7 @@ const EnlargedDialogComponent = ({
         status={exportStatus}
         isOpen={exportStatus !== STATUS.CLOSED}
         onClose={() => setExportStatus(STATUS.CLOSED)}
-        isMatrix={getIsMatrix(newViewContent)}
+        isMatrix={isMatrix}
         exportOptions={exportOptions}
         setExportOptions={setExportOptions}
         onExport={onExport}
