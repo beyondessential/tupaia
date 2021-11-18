@@ -11,7 +11,8 @@ import { Route } from '@tupaia/server-boilerplate';
 import { ReportConnection } from '../connections';
 import {
   DashboardVisualisationExtractor,
-  draftDashboardItemValidator, draftMapOverlayValidator,
+  draftDashboardItemValidator,
+  draftMapOverlayValidator,
   draftReportValidator,
   PreviewMode,
   VIZ_TYPE_PARAM,
@@ -99,5 +100,5 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
     } else {
       throw new Error('Unknown viz type');
     }
-  }
+  };
 }
