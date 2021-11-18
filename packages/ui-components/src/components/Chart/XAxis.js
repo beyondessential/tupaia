@@ -43,13 +43,17 @@ const renderXAxisLabel = (label, fillColor, isEnlarged, isExporting) => {
   return null;
 };
 
+const BASE_H = 40;
+
+const calculateXAxisHeight = data => {
+  return Math.min(BASE_H + Math.max(...data.map(item => item.name.length)) * 6, 190);
+};
+
 export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
   const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
   const { BAR, COMPOSED } = CHART_TYPES;
   const { chartType, chartConfig = {}, data } = viewContent;
-
-  const longestWord = Math.max(...data.map(item => item.name.length));
-  const height = isExporting ? Math.min(40 + longestWord * 6, 190) : 40;
+  const axisHeight = isExporting ? calculateXAxisHeight(data) : BASE_H;
 
   /*
     If set 0, all the ticks will be shown.
@@ -131,7 +135,7 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
       dataKey="name"
       label={renderXAxisLabel(viewContent?.xName, fillColor, isEnlarged, isExporting)}
       stroke={isExporting ? DARK_BLUE : fillColor}
-      height={height}
+      height={axisHeight}
       interval={getXAxisTickInterval()}
       tick={getXAxisTickMethod()}
       tickFormatter={formatXAxisTick}
