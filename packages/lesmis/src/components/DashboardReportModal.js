@@ -5,6 +5,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { utcMoment } from '@tupaia/utils';
 import { useTheme } from '@material-ui/core/styles';
 import {
   Box,
@@ -84,6 +85,25 @@ const ExportLoader = styled(FlexColumn)`
   background: white;
   z-index: 1;
 `;
+
+const ExportText = styled(Description)`
+  text-align: center;
+`;
+
+const formatDate = date => utcMoment(date).format('DD/MM/YY');
+
+// eslint-disable-next-line react/prop-types
+const ExportDate = ({ startDate, endDate }) => {
+  const date = String(utcMoment());
+  return (
+    <ExportText>
+      {startDate &&
+        endDate &&
+        `Includes data from ${formatDate(startDate)} to ${formatDate(endDate)}. `}
+      Exported on {date} from {window.location.hostname}
+    </ExportText>
+  );
+};
 
 const useExportFormats = () => {
   const { translate } = useI18n();
@@ -234,6 +254,9 @@ export const DashboardReportModal = () => {
             }}
             isEnlarged
           />
+          {isExporting && (
+            <ExportDate startDate={viewContent.startDate} endDate={viewContent.endDate} />
+          )}
         </Container>
       </Wrapper>
     </MuiDialog>
