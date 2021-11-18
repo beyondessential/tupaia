@@ -7,12 +7,12 @@ import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { Autocomplete, TextField } from '@tupaia/ui-components';
 import { useCountries, usePermissionGroups, useProjects } from '../../api/queries';
-import { useVizBuilderConfig } from '../../context';
+import { useVizConfig } from '../../context';
 import Chip from '@material-ui/core/Chip';
 
 export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   const { handleSubmit, register, errors } = useForm();
-  const [{ visualisation }, { setVisualisationValue }] = useVizBuilderConfig();
+  const [{ visualisation }, { setVisualisationValue }] = useVizConfig();
   const {
     data: permissionGroups = [],
     isLoading: isLoadingPermissionGroups,

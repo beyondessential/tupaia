@@ -21,8 +21,8 @@ import {
 } from '@tupaia/ui-components';
 
 import { MODAL_STATUS, VIZ_TYPE_PARAM } from '../../constants';
-import { useSaveDashboardVisualisation, useSaveMapOverlayVisualisation } from '../../api';
 import { useVizConfig } from '../../context';
+import { useSaveDashboardVisualisation, useSaveMapOverlayVisualisation } from '../../api';
 
 const TickIcon = styled(CheckCircle)`
   font-size: 2.5rem;
@@ -51,6 +51,18 @@ export const SaveVisualisationModal = ({ isOpen, onClose }) => {
     throw new Error('Unknown viz type');
   };
   const { mutateAsync: saveVisualisation, error } = useSaveViz();
+
+  const handleSave = useCallback(async () => {
+    setStatus(MODAL_STATUS.LOADING);
+    try {
+      const response = await saveVisualisation();
+      setVisualisationValue('id', response.id);
+    } catch (e) {
+      setStatus(MODAL_STATUS.ERROR);
+      return;
+    }
+    setStatus(MODAL_STATUS.SUCCESS);
+  });
 
   const handleClose = useCallback(() => {
     setStatus(MODAL_STATUS.INITIAL);
