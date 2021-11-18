@@ -24,7 +24,7 @@
   }
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
@@ -122,6 +122,16 @@ const getHeight = (isExporting, isEnlarged) => {
 export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, legendPosition }) => {
   const [activeIndex, setActiveIndex] = useState(-1);
   const { presentationOptions, data } = viewContent;
+  // eslint-disable-next-line no-unused-vars
+  const [loaded, setLoaded] = useState(false);
+
+  // Delay rendering of the chart to fix an issue with the legend overlapping the chart.
+  // This is a work around for a recharts bug. @see https://github.com/recharts/recharts/issues/511
+  useEffect(() => {
+    setTimeout(() => {
+      setLoaded(true);
+    }, 50);
+  }, []);
 
   const handleMouseEnter = (event, index) => {
     setActiveIndex(index);
