@@ -21,6 +21,7 @@ export const EmailVerificationComponent = ({
   onResendEmail,
   hasSentEmail,
   messageFailEmailVerify,
+  currentUserEmail,
 }) => {
   const titleText = 'Sign in to Tupaia';
 
@@ -32,7 +33,7 @@ export const EmailVerificationComponent = ({
     <FormWrapper titleText={titleText}>
       <div>
         <Form
-          errorMessage={messageFailEmailVerify}
+          formError={messageFailEmailVerify}
           onSubmit={email => onResendEmail(email)}
           render={submitForm => (
             <>
@@ -40,6 +41,7 @@ export const EmailVerificationComponent = ({
                 fullWidth
                 label="E-mail"
                 name="email"
+                defaultValue={currentUserEmail}
                 validators={[emailAddress]}
                 required
               />
@@ -58,14 +60,20 @@ EmailVerificationComponent.propTypes = {
   onResendEmail: PropTypes.func.isRequired,
   hasSentEmail: PropTypes.bool.isRequired,
   messageFailEmailVerify: PropTypes.string.isRequired,
+  currentUserEmail: PropTypes.string,
+};
+
+EmailVerificationComponent.defaultProps = {
+  currentUserEmail: null,
 };
 
 const mapStateToProps = state => {
-  const { hasSentEmail, messageFailEmailVerify } = state.authentication;
+  const { hasSentEmail, messageFailEmailVerify, currentUserEmail } = state.authentication;
 
   return {
     hasSentEmail,
     messageFailEmailVerify,
+    currentUserEmail,
   };
 };
 

@@ -24,16 +24,20 @@ const StyledBanner = styled(FlexCenter)`
 `;
 
 export const EnvBanner = ({ color }) => {
-  const branch = process.env.REACT_APP_BRANCH;
+  const deploymentName = process.env.REACT_APP_DEPLOYMENT_NAME;
 
-  if (!branch || typeof branch !== 'string' || branch === 'master' || branch === 'main') {
+  if (
+    !deploymentName ||
+    typeof deploymentName !== 'string' ||
+    ['main', 'master', 'production'].includes(deploymentName) // don't show banner on prod
+  ) {
     return null;
   }
 
   return (
     <StyledBanner $color={color}>
       <GitHubIcon />
-      {branch}
+      {deploymentName}
     </StyledBanner>
   );
 };

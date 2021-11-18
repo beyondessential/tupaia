@@ -11,7 +11,7 @@ import { FlexColumn, FlexSpaceBetween } from '@tupaia/ui-components';
 import { TabPanel } from './TabPanel';
 import { JsonEditor } from './JsonEditor';
 import { PlayButton } from './PlayButton';
-import { useVizBuilderConfig } from '../context';
+import { useVizConfig, useVizConfigError } from '../context';
 
 const Container = styled(FlexColumn)`
   position: relative;
@@ -68,14 +68,14 @@ const PanelTabPanel = styled.div`
 `;
 
 export const Panel = () => {
+  const { hasDataError, setDataError } = useVizConfigError();
   const [tab, setTab] = useState(0);
-  const [isInError, setIsInError] = useState(false);
   const [
     {
       visualisation: { data: dataConfig },
     },
     { setDataConfig },
-  ] = useVizBuilderConfig();
+  ] = useVizConfig();
 
   const { fetch, aggregate, transform } = dataConfig;
 
@@ -83,17 +83,17 @@ export const Panel = () => {
     setTab(newValue);
   };
 
-  const handleInvalidChange = () => {
-    setIsInError(true);
+  const handleInvalidChange = errMsg => {
+    setDataError(errMsg);
   };
 
   const setTabValue = (tabName, value) => {
     setDataConfig(tabName, value);
-    setIsInError(false);
+    setDataError(null);
   };
 
   const isTabDisabled = tabId => {
-    return tab !== tabId && isInError;
+    return tab !== tabId && hasDataError;
   };
 
   return (
@@ -110,7 +110,7 @@ export const Panel = () => {
           <Tab disabled={isTabDisabled(1)} label="Aggregate" icon={<ChevronRight />} />
           <Tab disabled={isTabDisabled(2)} label="Transform" />
         </Tabs>
-        <PlayButton disabled={isInError} />
+        <PlayButton />
       </PanelNav>
       <TabPanel isSelected={tab === 0} Panel={PanelTabPanel}>
         <JsonEditor
