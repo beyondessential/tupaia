@@ -101,19 +101,16 @@ const chartColorAtIndex = (colorArray, index) => {
 
 export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, legendPosition }) => {
   const [activeIndex, setActiveIndex] = useState(-1);
-  const [loaded, setLoaded] = useState(false);
 
   // Delay rendering of the chart to fix an issue with the legend overlapping the chart.
   // This is a work around for a recharts bug. @see https://github.com/recharts/recharts/issues/511
+  // eslint-disable-next-line no-unused-vars
+  const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     setTimeout(() => {
       setLoaded(true);
     }, 50);
   }, []);
-
-  if (!loaded) {
-    return null;
-  }
 
   const handleMouseEnter = (event, index) => {
     setActiveIndex(index);
