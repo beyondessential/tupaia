@@ -71,11 +71,20 @@ def spin_up_tupaia_deployment(event):
         delete_after = datetime.now() + timedelta(hours=event['HoursOfLife'])
         extra_tags.append({ 'Key': 'DeleteAfter', 'Value': format(delete_after, "%Y-%m-%d %H:%M") })
 
-    if 'StartAtUTC' in event:
-        extra_tags.append({ 'Key': 'StartAtUTC', 'Value': event['StartAtUTC'] })
+    if deployment_name == 'production':
+        if 'StartAtUTC' in event or 'StopAtUTC' in event:
+            raise Exception('Production deployment cannot have StartAtUTC/StopAtUTC')
+    else:
+        if 'StartAtUTC' in event:
+            extra_tags.append({ 'Key': 'StartAtUTC', 'Value': event['StartAtUTC'] })
+        else:
+            extra_tags.append({ 'Key': 'StartAtUTC', 'Value': '18:00'}) # 6pm UTC is 4am AEST, 5am AEDT, 6am NZST, 7am NZDT
 
-    if 'StopAtUTC' in event:
-        extra_tags.append({ 'Key': 'StopAtUTC', 'Value': event['StopAtUTC'] })
+        if 'StopAtUTC' in event:
+            extra_tags.append({ 'Key': 'StopAtUTC', 'Value': event['StopAtUTC'] })
+        else:
+            extra_tags.append({ 'Key': 'StopAtUTC', 'Value': '09:00'}) # 9am UTC is 7pm AEST, 8pm AEDT, 9pm NZST, 10pm NZDT
+
 
     # launch server instance based on gold master AMI
     create_tupaia_instance_from_image(
