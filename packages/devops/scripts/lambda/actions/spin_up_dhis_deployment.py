@@ -27,8 +27,6 @@ def spin_up_dhis_deployment(event):
         raise Exception('You must include the key "InstanceType" in the lambda config. We recommend "t3a.medium" unless you need more speed.')
     instance_type = event['InstanceType']
 
-    instance_name_prefix = 'Clone of ' + from_deployment + ': '
-
     extra_tags = [{ 'Key': 'DeployedBy', 'Value': event['User'] }]
 
     if 'StartAtUTC' in event:
@@ -37,6 +35,6 @@ def spin_up_dhis_deployment(event):
     if 'StopAtUTC' in event:
         extra_tags.append({ 'Key': 'StopAtUTC', 'Value': event['StopAtUTC'] })
 
-    clone_instance(from_deployment, deployment_name, instance_type, extra_tags=extra_tags, instance_name_prefix=instance_name_prefix)
+    clone_instance(from_deployment, deployment_name, instance_type, extra_tags=extra_tags)
 
     print('Deployment cloned')

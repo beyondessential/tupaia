@@ -78,7 +78,6 @@ def clone_instance(
     instance_type,
     extra_tags=None,
     security_group_code=None,
-    instance_name_prefix=None,
 ):
     print('Creating ' + instance_type + ' clone of ' + from_deployment + ' as ' + to_deployment)
     base_instance_filters = [
@@ -86,9 +85,12 @@ def clone_instance(
         { 'Name': 'instance-state-name', 'Values': ['running', 'stopped']} # ignore terminated instances
     ]
     base_instance = get_instance(base_instance_filters)
-    if not instance_name_prefix:
-        base_instance_name = get_tag(base_instance, 'Name')
-        instance_name_prefix = base_instance_name.replace(from_deployment, '')
+
+    if not base_instance:
+        raise Exception('No instance to clone from for ' + from_deployment)
+
+    base_instance_name = get_tag(base_instance, 'Name')
+    instance_name_prefix = base_instance_name.replace(from_deployment, '')
 
     subdomains_via_dns = None
     subdomains_via_dns_string = get_tag(base_instance, 'SubdomainsViaDns')
