@@ -7,8 +7,17 @@
 #   "Action": "spin_up_dhis_deployment",
 #   "User": "edwin",
 #   "DeploymentName": "tonga-for-testing",
-#   "InstanceType": "t3a.medium",
-#   "FromDeployment": "tonga"
+#   "FromDeployment": "production-tonga-aggregation"
+# }
+#
+# 2. Spin up a new deployment of the regional DHIS2, with a custom instance size and security group
+# {
+#   "Action": "spin_up_dhis_deployment",
+#   "User": "edwin",
+#   "DeploymentName": "fast-regional-agg",
+#   "FromDeployment": "production-aggregation",
+#   "InstanceType": "t3a.2xlarge",
+#   "SecurityGroupCode": "tupaia-prod-sg"
 # }
 
 from helpers.clone import clone_instance
@@ -27,6 +36,8 @@ def spin_up_dhis_deployment(event):
         raise Exception('You must include the key "InstanceType" in the lambda config. We recommend "t3a.medium" unless you need more speed.')
     instance_type = event['InstanceType']
 
+    security_group_code = event.get('SecurityGroupCode', 'tupaia-dev-sg') # Use security group tagged with code
+
     extra_tags = [{ 'Key': 'DeployedBy', 'Value': event['User'] }]
 
     if 'StartAtUTC' in event:
@@ -35,6 +46,6 @@ def spin_up_dhis_deployment(event):
     if 'StopAtUTC' in event:
         extra_tags.append({ 'Key': 'StopAtUTC', 'Value': event['StopAtUTC'] })
 
-    clone_instance(from_deployment, deployment_name, instance_type, extra_tags=extra_tags)
+    clone_instance(from_deployment, deployment_name, instance_type, extra_tags=extra_tags, security_group_code=security_group_code)
 
     print('Deployment cloned')
