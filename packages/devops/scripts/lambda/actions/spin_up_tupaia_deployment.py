@@ -7,7 +7,7 @@
 #   "Action": "spin_up_tupaia_deployment",
 #   "User": "edwin",
 #   "Branch": "wai-965",
-#   "HoursOfLife": "8"
+#   "HoursOfLife": 8
 # }
 #
 # 2. Spin up a new deployment of Tupaia, but with the db cloned from dev and a different branch
@@ -91,7 +91,7 @@ def spin_up_tupaia_deployment(event):
         deployment_name,
         branch,
         instance_type,
-        extra_tags=extra_tags,
+        extra_tags=extra_tags + [{ 'Key': 'DeploymentComponent', 'Value': 'app-server' }],
         image_code=image_code,
         security_group_code=security_group_code,
     )
@@ -100,11 +100,13 @@ def spin_up_tupaia_deployment(event):
     # do this after the server has started because it will take a while to run its startup script, so
     # we might as well be cloning the db instance at the same time, so long is it is available before
     # the server first tries to connect
+    deployment_type='tupaia'
     clone_instance(
+        deployment_type,
         clone_db_from,
         deployment_name,
         instance_type,
-        extra_tags=extra_tags,
+        extra_tags=extra_tags + [{ 'Key': 'DeploymentComponent', 'Value': 'db' }],
         security_group_code=security_group_code,
     )
 
