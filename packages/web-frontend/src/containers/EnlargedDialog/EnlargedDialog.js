@@ -102,7 +102,7 @@ const useDrillDownState = contentByLevel => {
     drillDownConfig,
     drillDownState,
     viewContent,
-    newDrillDownContent,
+    drillDownContent: newDrillDownContent,
     setDrillDownState,
   };
 };
@@ -157,23 +157,18 @@ const EnlargedDialogComponent = ({
   drillDownDatesByLevel,
 }) => {
   const {
-    newDrillDownContent,
+    drillDownContent,
     drillDownConfig,
     drillDownState,
     setDrillDownState,
     viewContent,
   } = useDrillDownState(contentByLevel);
 
-  const {
-    isMatrix,
-    exportRef,
-    exportOptions,
-    setExportOptions,
-    exportStatus,
-    setExportStatus,
-  } = useExports(viewContent);
+  const { exportRef, exportOptions, setExportOptions, exportStatus, setExportStatus } = useExports(
+    viewContent,
+  );
 
-  const newViewContent = viewContent
+  const viewContentWithExportOptions = viewContent
     ? {
         ...viewContent,
         presentationOptions: {
@@ -183,6 +178,7 @@ const EnlargedDialogComponent = ({
       }
     : null;
 
+  const isMatrix = getIsMatrix(viewContent);
   const { startDate, endDate } = getDatesForCurrentLevel(
     drillDownState.drillDownLevel,
     startDateForTopLevel,
@@ -255,29 +251,31 @@ const EnlargedDialogComponent = ({
   };
 
   const getDialogStyle = () => {
-    const hasBigData = isMatrix || newViewContent?.data?.length > 20;
+    const hasBigData = isMatrix || viewContentWithExportOptions?.data?.length > 20;
     if (hasBigData) return styles.largeContainer;
-    if (getIsDataDownload(newViewContent)) return styles.smallContainer;
+    if (getIsDataDownload(viewContentWithExportOptions)) return styles.smallContainer;
     return styles.container;
   };
 
-  const exportTitle = `${newViewContent?.name}, ${organisationUnitName}`;
+  const exportTitle = `${viewContentWithExportOptions?.name}, ${organisationUnitName}`;
 
-  const { doExport } = useChartDataExport(newViewContent, exportTitle);
+  const { doExport } = useChartDataExport(viewContentWithExportOptions, exportTitle);
 
   const onExport = async format => {
     setExportStatus(STATUS.ANIMATING);
     await sleep(100); // allow some time for the chart transition to finish before hiding the loader
     setExportStatus(STATUS.EXPORTING);
 
-    const filename = toFilename(`export-${organisationUnitName}-${newViewContent.name}`);
+    const filename = toFilename(
+      `export-${organisationUnitName}-${viewContentWithExportOptions.name}`,
+    );
 
     try {
       if (isMatrix && format === 'xlsx') {
         await exportToExcel({
           projectCode,
           dashboardCode,
-          viewContent: newViewContent,
+          viewContent: viewContentWithExportOptions,
           organisationUnitCode,
           organisationUnitName,
           startDate: moment.isMoment(startDate) ? startDate.utc().toISOString() : startDate,
@@ -315,8 +313,8 @@ const EnlargedDialogComponent = ({
         <EnlargedDialogContent
           exportRef={exportRef}
           onCloseOverlay={onCloseOverlay}
-          viewContent={newViewContent}
-          drillDownContent={drillDownState.drillDownLevel === 0 ? null : newDrillDownContent}
+          viewContent={viewContentWithExportOptions}
+          drillDownContent={drillDownState.drillDownLevel === 0 ? null : drillDownContent}
           organisationUnitName={organisationUnitName}
           onDrillDown={onDrillDown}
           onOpenExportDialog={() => setExportStatus(STATUS.IDLE)}
@@ -333,7 +331,7 @@ const EnlargedDialogComponent = ({
         status={exportStatus}
         isOpen={exportStatus !== STATUS.CLOSED}
         onClose={() => setExportStatus(STATUS.CLOSED)}
-        isMatrix={getIsMatrix(newViewContent)}
+        isMatrix={isMatrix}
         exportOptions={exportOptions}
         setExportOptions={setExportOptions}
         onExport={onExport}
