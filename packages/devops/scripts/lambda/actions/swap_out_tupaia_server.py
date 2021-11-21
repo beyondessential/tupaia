@@ -20,12 +20,12 @@ def swap_out_tupaia_server(event):
     if not new_instance:
         raise Exception('Could not find new instance to swap in')
 
-    old_instance = get_instance_behind_gateway(deployment_name)
+    old_instance = get_instance_behind_gateway('tupaia', deployment_name)
     if not old_instance:
       raise Exception('Could not find old instance to swap out')
 
     # set up ELB from the old instance to point at the new one
-    swap_gateway_instance(deployment_name, old_instance['InstanceId'], new_instance_id)
+    swap_gateway_instance('tupaia', deployment_name, old_instance['InstanceId'], new_instance_id)
 
     # add the subdomain tags that now relate to the new instance
     add_tag(new_instance_id, 'SubdomainsViaGateway', get_tag(old_instance, 'SubdomainsViaGateway'))

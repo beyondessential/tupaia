@@ -13,7 +13,7 @@ def allocate_elastic_ip(instance_id):
 
 def get_instance_creation_config(
   deployment_name,
-  instance_name_prefix,
+  deployment_type,
   instance_type,
   branch=None,
   cloned_from=None,
@@ -42,11 +42,12 @@ def get_instance_creation_config(
     else:
       security_group_ids = [security_group_id]
 
-    instance_name = instance_name_prefix + deployment_name
+    instance_name = deployment_type + ': ' + deployment_name
 
     tags = [
       { 'Key': 'Name', 'Value': instance_name },
-      { 'Key': 'DeploymentName', 'Value': deployment_name }
+      { 'Key': 'DeploymentName', 'Value': deployment_name },
+      { 'Key': 'DeploymentType', 'Value': deployment_type },
     ]
 
 
@@ -105,7 +106,7 @@ def get_instance_creation_config(
 
 def create_instance(
   deployment_name,
-  instance_name_prefix,
+  deployment_type,
   instance_type,
   branch=None,
   cloned_from=None,
@@ -121,7 +122,7 @@ def create_instance(
 ):
     instance_creation_config = get_instance_creation_config(
       deployment_name,
-      instance_name_prefix,
+      deployment_type,
       instance_type,
       branch=branch,
       cloned_from=cloned_from,
@@ -152,6 +153,6 @@ def create_instance(
     if subdomains_via_dns:
         setup_subdomains_via_dns(new_instance_object, subdomains_via_dns, deployment_name)
     if subdomains_via_gateway:
-        setup_subdomains_via_gateway(new_instance_object, subdomains_via_gateway, deployment_name)
+        setup_subdomains_via_gateway(deployment_type, new_instance_object, subdomains_via_gateway, deployment_name)
 
     return new_instance_object

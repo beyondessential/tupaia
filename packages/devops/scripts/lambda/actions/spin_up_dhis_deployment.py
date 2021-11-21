@@ -6,16 +6,18 @@
 # {
 #   "Action": "spin_up_dhis_deployment",
 #   "User": "edwin",
+#   "DeploymentType": "tonga-dhis2",
 #   "DeploymentName": "tonga-for-testing",
-#   "FromDeployment": "production-tonga-aggregation"
+#   "FromDeployment": "production"
 # }
 #
 # 2. Spin up a new deployment of the regional DHIS2, with a custom instance size and security group
 # {
 #   "Action": "spin_up_dhis_deployment",
 #   "User": "edwin",
+#   "DeploymentType": "tonga-dhis2",
 #   "DeploymentName": "fast-regional-agg",
-#   "FromDeployment": "production-aggregation",
+#   "FromDeployment": "production",
 #   "InstanceType": "t3a.2xlarge",
 #   "SecurityGroupCode": "tupaia-prod-sg"
 # }
@@ -24,6 +26,10 @@ from helpers.clone import clone_instance
 
 def spin_up_dhis_deployment(event):
     # validate input config
+    if 'DeploymentType' not in event:
+        raise Exception('You must include the key "DeploymentType" in the lambda config to indicate whether this is for regional-dhis2, tonga-dhis2, etc.')
+    deployment_type = event['DeploymentType']
+
     if 'FromDeployment' not in event:
         raise Exception('You must include the key "FromDeployment" in the lambda config to indicate which database snapshot to use.')
     from_deployment = event['FromDeployment']
@@ -46,6 +52,6 @@ def spin_up_dhis_deployment(event):
     if 'StopAtUTC' in event:
         extra_tags.append({ 'Key': 'StopAtUTC', 'Value': event['StopAtUTC'] })
 
-    clone_instance(from_deployment, deployment_name, instance_type, extra_tags=extra_tags, security_group_code=security_group_code)
+    clone_instance(deployment_type, from_deployment, deployment_name, instance_type, extra_tags=extra_tags, security_group_code=security_group_code)
 
     print('Deployment cloned')

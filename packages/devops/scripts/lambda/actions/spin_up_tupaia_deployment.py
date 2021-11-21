@@ -91,7 +91,9 @@ def spin_up_tupaia_deployment(event):
     # do this after the server has started because it will take a while to run its startup script, so
     # we might as well be cloning the db instance at the same time, so long is it is available before
     # the server first tries to connect
+    deployment_type='tupaia'
     clone_instance(
+        deployment_type,
         clone_db_from,
         deployment_name,
         instance_type,
