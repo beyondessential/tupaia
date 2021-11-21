@@ -61,7 +61,7 @@ def get_gateway_listeners(deployment_type, deployment_name):
 
 def create_gateway_elb(deployment_type, deployment_name, config):
     response = elbv2.create_load_balancer(
-        Name=deployment_type + ': ' + deployment_name,
+        Name=deployment_type + '-' + deployment_name,
         Subnets=list(map(lambda x: x['SubnetId'], config['AvailabilityZones'])),
         SecurityGroups=config['SecurityGroups'],
         Scheme=config['Scheme'],
@@ -83,7 +83,7 @@ def create_gateway_elb(deployment_type, deployment_name, config):
 
 def create_gateway_target_group(deployment_type, deployment_name, config):
     response = elbv2.create_target_group(
-        Name=deployment_type + ': ' + deployment_name,
+        Name=deployment_type + '-' + deployment_name,
         Protocol=config['Protocol'],
         ProtocolVersion=config['ProtocolVersion'],
         Port=config['Port'],
