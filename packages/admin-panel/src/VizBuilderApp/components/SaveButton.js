@@ -5,10 +5,12 @@
 
 import React, { useState, useCallback } from 'react';
 import { Button } from '@tupaia/ui-components';
+import { useVizConfigError } from '../context';
 
 import { SaveVisualisationModal } from './Modal';
 
 export const SaveButton = () => {
+  const { hasError: vizConfigHasError } = useVizConfigError();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
@@ -19,7 +21,9 @@ export const SaveButton = () => {
   };
   return (
     <div>
-      <Button onClick={handleSave}>Save</Button>
+      <Button disabled={vizConfigHasError} onClick={handleSave}>
+        Save
+      </Button>
       <SaveVisualisationModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
   );

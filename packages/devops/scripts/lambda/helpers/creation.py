@@ -69,12 +69,6 @@ def get_instance_creation_config(
       tags = tags + extra_tags
       extra_tag_keys = [extra_tag['Key'] for extra_tag in extra_tags]
 
-    if 'StopAtUTC' not in extra_tag_keys:
-      tags.append({ 'Key': 'StopAtUTC', 'Value': '09:00'}) # 9am UTC is 7pm AEST, 8pm AEDT, 9pm NZST, 10pm NZDT
-
-    if 'StartAtUTC' not in extra_tag_keys:
-      tags.append({ 'Key': 'StartAtUTC', 'Value': '18:00'}) # 6pm UTC is 4am AEST, 5am AEDT, 6am NZST, 7am NZDT
-
     instance_creation_config = {
       'ImageId' : image_id,
       'InstanceType' : instance_type,

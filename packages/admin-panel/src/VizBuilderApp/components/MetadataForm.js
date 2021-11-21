@@ -7,11 +7,11 @@ import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { Autocomplete, TextField } from '@tupaia/ui-components';
 import { usePermissionGroups } from '../api/queries';
-import { useVizBuilderConfig } from '../context';
+import { useVizConfig } from '../context';
 
 export const MetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   const { handleSubmit, register, errors } = useForm();
-  const [{ visualisation }, { setVisualisationValue }] = useVizBuilderConfig();
+  const [{ visualisation }, { setVisualisationValue }] = useVizConfig();
   const {
     data: permissionGroups = [],
     isLoading: isLoadingPermissionGroups,

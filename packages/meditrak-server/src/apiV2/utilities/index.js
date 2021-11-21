@@ -31,8 +31,9 @@ export {
   replaceNestedQuestionCodesWithIds,
   translateQuestionCodeToId,
 } from './translateQuestionDependentFields';
+export { replaceQuestionIdsWithCodes } from './replaceQuestionIdsWithCodes';
 export { translateExpression } from './translateExpression';
-export { getExpressionQuestionCodes } from './getExpressionQuestionCodes';
+export { getDollarPrefixedExpressionVariables } from './getDollarPrefixedExpressionVariables';
 export {
   translateEntityCodeToId,
   translateSurveyCodeToId,
