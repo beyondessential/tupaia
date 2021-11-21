@@ -7,7 +7,7 @@
 #   "Action": "spin_up_tupaia_deployment",
 #   "User": "edwin",
 #   "Branch": "wai-965",
-#   "HoursOfLife": "8"
+#   "HoursOfLife": 8
 # }
 #
 # 2. Spin up a new deployment of Tupaia, but with the db cloned from dev and a different branch
