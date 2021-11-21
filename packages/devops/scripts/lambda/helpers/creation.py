@@ -44,12 +44,21 @@ def get_instance_creation_config(
 
     instance_name = deployment_type + ': ' + deployment_name
 
+    # TODO delete deployment component stuff after db on RDS
+    if extra_tags:
+      try:
+        deployment_component = [
+            t.get('Value') for t in extra_tags
+            if t['Key'] == 'DeploymentComponent'][0]
+        instance_name = deployment_type + '-' + deployment_component + ': ' + deployment_name
+      except IndexError:
+        pass # no deployment component to add to instance name
+
     tags = [
       { 'Key': 'Name', 'Value': instance_name },
       { 'Key': 'DeploymentName', 'Value': deployment_name },
       { 'Key': 'DeploymentType', 'Value': deployment_type },
     ]
-
 
     if branch:
       tags.append({ 'Key': 'Branch', 'Value': branch })
@@ -64,10 +73,8 @@ def get_instance_creation_config(
     if cloned_from:
       tags.append({ 'Key': 'ClonedFrom', 'Value': cloned_from })
 
-    extra_tag_keys = []
     if extra_tags:
       tags = tags + extra_tags
-      extra_tag_keys = [extra_tag['Key'] for extra_tag in extra_tags]
 
     instance_creation_config = {
       'ImageId' : image_id,

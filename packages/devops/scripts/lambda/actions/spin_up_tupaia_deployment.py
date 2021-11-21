@@ -91,7 +91,7 @@ def spin_up_tupaia_deployment(event):
         deployment_name,
         branch,
         instance_type,
-        extra_tags=extra_tags,
+        extra_tags=extra_tags + [{ 'Key': 'DeploymentComponent', 'Value': 'app-server' }],
         image_code=image_code,
         security_group_code=security_group_code,
     )
@@ -106,7 +106,7 @@ def spin_up_tupaia_deployment(event):
         clone_db_from,
         deployment_name,
         instance_type,
-        extra_tags=extra_tags,
+        extra_tags=extra_tags + [{ 'Key': 'DeploymentComponent', 'Value': 'db' }],
         security_group_code=security_group_code,
     )
 
