@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { LightOutlinedButton } from '@tupaia/ui-components';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import { Link } from 'react-router-dom';
 
 export const DASHBOARD_ITEMS_ENDPOINT = 'dashboardItems';
 
@@ -45,9 +46,9 @@ const IMPORT_CONFIG = {
 };
 
 const renderNewDashboardVizButton = () => (
-  <LightOutlinedButton startIcon={<AddCircleIcon />} href="/viz-builder/dashboard-item/">
-    New
-  </LightOutlinedButton>
+  <Link to="/viz-builder/dashboard-item/new">
+    <LightOutlinedButton startIcon={<AddCircleIcon />}>New</LightOutlinedButton>
+  </Link>
 );
 
 export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin, ...props }) => {

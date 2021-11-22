@@ -9,6 +9,7 @@ import { ResourcePage } from './ResourcePage';
 import { prettyArray } from '../../utilities';
 import { LightOutlinedButton } from '@tupaia/ui-components';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import { Link } from 'react-router-dom';
 
 export const MAP_OVERLAYS_ENDPOINT = 'mapOverlays';
 
@@ -104,9 +105,9 @@ const IMPORT_CONFIG = {
 };
 
 const renderNewMapOverlayVizButton = () => (
-  <LightOutlinedButton startIcon={<AddCircleIcon />} href="/viz-builder/map-overlay/">
-    New
-  </LightOutlinedButton>
+  <Link to="/viz-builder/map-overlay/new">
+    <LightOutlinedButton startIcon={<AddCircleIcon />}>New</LightOutlinedButton>
+  </Link>
 );
 
 export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin }) => {
