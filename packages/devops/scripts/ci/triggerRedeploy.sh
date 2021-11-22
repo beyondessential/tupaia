@@ -1,7 +1,7 @@
 #!/bin/bash
 
 STOPPED_INSTANCES=$(aws ec2 describe-instances \
-      --filters Name=tag:Branch,Values=${CI_BRANCH} Name=tag-key,Values=SubdomainsViaGateway Name=instance-state-name,Values=stopped \
+      --filters Name=tag:Branch,Values=${CI_BRANCH} Name=tag:DeploymentType,Values=tupaia Name=tag:DeploymentComponent,Values=app-server Name=instance-state-name,Values=stopped \
       --no-cli-pager)
 
 if [[ $STOPPED_INSTANCES == *"Instances"* ]]; then
@@ -11,7 +11,7 @@ fi
 
 
 RUNNING_INSTANCES=$(aws ec2 describe-instances \
-      --filters Name=tag:Branch,Values=${CI_BRANCH} Name=tag-key,Values=SubdomainsViaGateway Name=instance-state-name,Values=running \
+      --filters Name=tag:Branch,Values=${CI_BRANCH} Name=tag:DeploymentType,Values=tupaia Name=tag:DeploymentComponent,Values=app-server Name=instance-state-name,Values=running \
       --no-cli-pager)
 
 if [[ $RUNNING_INSTANCES != *"Instances"* ]]; then
