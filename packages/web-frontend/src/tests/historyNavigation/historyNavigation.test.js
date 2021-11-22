@@ -6,7 +6,7 @@
  */
 
 import {
-  setLocationComponent,
+  setLocationComponents,
   getLocationComponentValue,
 } from '../../historyNavigation/historyNavigation';
 import { URL_COMPONENTS } from '../../historyNavigation/constants';
@@ -19,37 +19,57 @@ const baseLocation = {
 describe('historyNavigation', () => {
   describe('setLocationComponent', () => {
     it('should be able to set project', () => {
-      expect(setLocationComponent(baseLocation, URL_COMPONENTS.PROJECT, 'PROJECT_2')).toEqual({
+      expect(
+        setLocationComponents(baseLocation, { [URL_COMPONENTS.PROJECT]: 'PROJECT_2' }),
+      ).toEqual({
         pathname: '/PROJECT_2/ORG_UNIT_1/GROUP_1',
         search: baseLocation.search,
       });
     });
 
     it('should be able to set org unit', () => {
-      expect(setLocationComponent(baseLocation, URL_COMPONENTS.ORG_UNIT, 'ORG_UNIT_2')).toEqual({
+      expect(
+        setLocationComponents(baseLocation, { [URL_COMPONENTS.ORG_UNIT]: 'ORG_UNIT_2' }),
+      ).toEqual({
         pathname: '/PROJECT_1/ORG_UNIT_2/GROUP_1',
         search: baseLocation.search,
       });
     });
 
     it('should be able to set dashboard', () => {
-      expect(setLocationComponent(baseLocation, URL_COMPONENTS.DASHBOARD, 'GROUP_2')).toEqual({
+      expect(
+        setLocationComponents(baseLocation, { [URL_COMPONENTS.DASHBOARD]: 'GROUP_2' }),
+      ).toEqual({
         pathname: '/PROJECT_1/ORG_UNIT_1/GROUP_2',
         search: baseLocation.search,
       });
     });
 
     it('should be able to set map overlay ids', () => {
-      expect(setLocationComponent(baseLocation, URL_COMPONENTS.MAP_OVERLAY, 'overlay2')).toEqual({
+      expect(
+        setLocationComponents(baseLocation, { [URL_COMPONENTS.MAP_OVERLAY]: 'overlay2' }),
+      ).toEqual({
         pathname: baseLocation.pathname,
         search: '?overlay=overlay2&report=report1',
       });
     });
 
     it('should be able to set expanded report', () => {
-      expect(setLocationComponent(baseLocation, URL_COMPONENTS.REPORT, 'report2')).toEqual({
+      expect(setLocationComponents(baseLocation, { [URL_COMPONENTS.REPORT]: 'report2' })).toEqual({
         pathname: baseLocation.pathname,
         search: '?overlay=overlay1&report=report2',
+      });
+    });
+
+    it('should be able to set two components', () => {
+      expect(
+        setLocationComponents(baseLocation, {
+          [URL_COMPONENTS.REPORT]: 'report2',
+          [URL_COMPONENTS.MAP_OVERLAY]: 'overlay2',
+        }),
+      ).toEqual({
+        pathname: baseLocation.pathname,
+        search: '?overlay=overlay2&report=report2',
       });
     });
   });

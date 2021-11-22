@@ -20,20 +20,22 @@ const buildHeaderText = (markerData, popupHeaderFormat) => {
   );
 };
 
-export const MeasurePopup = React.memo(({ markerData, serieses, onOrgUnitClick }) => {
-  const { coordinates, organisationUnitCode } = markerData;
-  const { popupHeaderFormat = '{name}' } = serieses.reduce((all, mo) => ({ ...all, ...mo }), {});
-  return (
-    <PopupMarker
-      headerText={buildHeaderText(markerData, popupHeaderFormat)}
-      buttonText="See Dashboard"
-      coordinates={coordinates}
-      onDetailButtonClick={onOrgUnitClick ? () => onOrgUnitClick(organisationUnitCode) : null}
-    >
-      <PopupDataItemList measureOptions={serieses} data={markerData} showNoDataLabel />
-    </PopupMarker>
-  );
-});
+export const MeasurePopup = React.memo(
+  ({ markerData, serieses, onOrgUnitClick, multiOverlaySerieses }) => {
+    const { coordinates, organisationUnitCode } = markerData;
+    const { popupHeaderFormat = '{name}' } = serieses.reduce((all, mo) => ({ ...all, ...mo }), {});
+    return (
+      <PopupMarker
+        headerText={buildHeaderText(markerData, popupHeaderFormat)}
+        buttonText="See Dashboard"
+        coordinates={coordinates}
+        onDetailButtonClick={onOrgUnitClick ? () => onOrgUnitClick(organisationUnitCode) : null}
+      >
+        <PopupDataItemList serieses={multiOverlaySerieses || serieses} data={markerData} />
+      </PopupMarker>
+    );
+  },
+);
 
 MeasurePopup.propTypes = {
   markerData: PropTypes.shape({
@@ -50,9 +52,11 @@ MeasurePopup.propTypes = {
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     }),
   ).isRequired,
+  multiOverlaySerieses: PropTypes.array,
   onOrgUnitClick: PropTypes.func,
 };
 
 MeasurePopup.defaultProps = {
   onOrgUnitClick: null,
+  multiOverlaySerieses: null,
 };
