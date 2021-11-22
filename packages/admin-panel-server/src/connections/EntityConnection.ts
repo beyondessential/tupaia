@@ -19,6 +19,13 @@ export class EntityConnection extends ApiConnection {
     entityCode: string,
     queryParameters: QueryParameters = {},
   ) {
-    return this.get(`hierarchy/${hierarchyName}/${entityCode}/descendants`, queryParameters);
+    const projectEntity = await this.post(`hierarchy/${hierarchyName}`, queryParameters, {
+      entities: [entityCode],
+    });
+    const descendants = await this.get(
+      `hierarchy/${hierarchyName}/${entityCode}/descendants`,
+      queryParameters,
+    );
+    return projectEntity.concat(descendants);
   }
 }

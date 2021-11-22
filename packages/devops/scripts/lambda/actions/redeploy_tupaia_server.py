@@ -55,7 +55,7 @@ def redeploy_tupaia_server(event):
     if deployment_name:
         instance_filters.append({ 'Name': 'tag:DeploymentName', 'Values': [deployment_name] })
 
-    # find current instance
+    # find current instances
     existing_instances = find_instances(instance_filters)
 
     if len(existing_instances) == 0:

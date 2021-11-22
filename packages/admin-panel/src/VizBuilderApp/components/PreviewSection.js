@@ -10,7 +10,7 @@ import { Chart } from '@tupaia/ui-components/lib/chart';
 import { FlexSpaceBetween, FetchLoader, DataTable } from '@tupaia/ui-components';
 import { TabPanel } from './TabPanel';
 import { useReportPreview } from '../api';
-import { usePreviewData, useVizBuilderConfig } from '../context';
+import { usePreviewData, useVizConfig, useVizConfigError } from '../context';
 import { JsonEditor } from './JsonEditor';
 import { IdleMessage } from './IdleMessage';
 
@@ -121,11 +121,9 @@ const getColumns = data => {
 
 export const PreviewSection = () => {
   const { fetchEnabled, setFetchEnabled, showData } = usePreviewData();
+  const { hasPresentationError, setPresentationError } = useVizConfigError();
 
-  const [
-    { project, location, visualisation, testData },
-    { setPresentation },
-  ] = useVizBuilderConfig();
+  const [{ project, location, visualisation, testData }, { setPresentation }] = useVizConfig();
   const [viewContent, setViewContent] = useState(null);
 
   const { data: reportData = [], isLoading, isFetching, isError, error } = useReportPreview({
@@ -139,19 +137,18 @@ export const PreviewSection = () => {
     },
   });
   const [tab, setTab] = useState(0);
-  const [isPresentationInError, setIsPresentationInError] = useState(false);
 
   const handleChange = (event, newValue) => {
     setTab(newValue);
   };
 
-  const handleInvalidPresentationChange = () => {
-    setIsPresentationInError(true);
+  const handleInvalidPresentationChange = errMsg => {
+    setPresentationError(errMsg);
   };
 
   const setPresentationValue = value => {
     setPresentation(value);
-    setIsPresentationInError(false);
+    setPresentationError(null);
   };
 
   const columns = useMemo(() => getColumns(reportData), [reportData]);
@@ -172,7 +169,7 @@ export const PreviewSection = () => {
         textColor="primary"
         onChange={handleChange}
       >
-        <PreviewTab label="Data Preview" disabled={isPresentationInError} />
+        <PreviewTab label="Data Preview" disabled={hasPresentationError} />
         <PreviewTab label="Chart Preview" />
       </PreviewTabs>
       <TabPanel isSelected={tab === 0} Panel={PanelTabPanel}>
