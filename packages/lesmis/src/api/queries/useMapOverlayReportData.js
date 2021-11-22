@@ -221,6 +221,7 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
     hiddenValues,
     setValueHidden,
     selectedOverlay,
+    selectedOverlayName: overlay?.name,
     setSelectedOverlay,
   };
 };
