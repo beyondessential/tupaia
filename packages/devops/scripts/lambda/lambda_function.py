@@ -10,6 +10,7 @@ from actions.stop_tagged_instances import stop_tagged_instances
 from actions.swap_out_tupaia_server import swap_out_tupaia_server
 from actions.tear_down_tupaia_deployment import tear_down_tupaia_deployment
 from actions.tear_down_dhis_deployment import tear_down_dhis_deployment
+from actions.spin_up_rds_instance import spin_up_rds_deployment
 
 actions = {
   'backup_instances': backup_instances,
@@ -19,6 +20,7 @@ actions = {
   'redeploy_tupaia_server': redeploy_tupaia_server,
   'spin_up_dhis_deployment': spin_up_dhis_deployment,
   'spin_up_tupaia_deployment': spin_up_tupaia_deployment,
+  'spin_up_rds_deployment': spin_up_rds_deployment,
   'start_tagged_instances': start_tagged_instances,
   'stop_tagged_instances': stop_tagged_instances,
   'swap_out_tupaia_server': swap_out_tupaia_server,
