@@ -52,6 +52,14 @@ const SURVEY_FIELDS = [
       type: 'boolean',
     },
   },
+  {
+    Header: 'Requires Approval',
+    source: 'requires_approval',
+    type: 'boolean',
+    editConfig: {
+      type: 'boolean',
+    },
+  },
 ];
 
 const SURVEY_COLUMNS = [

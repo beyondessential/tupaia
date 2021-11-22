@@ -10,6 +10,13 @@ import { getBrowserTimeZone } from '@tupaia/utils';
 import { ResourcePage } from './ResourcePage';
 import { SurveyResponsesExportModal } from '../../importExport';
 
+const APPROVAL_STATUS_TYPES = [
+  { label: 'Not Required', value: 'not_required' },
+  { label: 'Pending', value: 'pending' },
+  { label: 'Rejected', value: 'rejected' },
+  { label: 'Approved', value: 'approved' },
+];
+
 const surveyName = {
   Header: 'Survey',
   source: 'survey.name',
@@ -50,6 +57,12 @@ const outdated = {
   type: 'boolean',
 };
 
+const approvalStatus = {
+  Header: 'Approval Status',
+  source: 'approval_status',
+  type: 'tooltip',
+};
+
 const entityName = {
   Header: 'Entity',
   source: 'entity.name',
@@ -64,6 +77,7 @@ export const SURVEY_RESPONSE_COLUMNS = [
   date,
   dateOfData,
   outdated,
+  approvalStatus,
   {
     Header: 'Export',
     source: 'id',
@@ -87,7 +101,20 @@ const COLUMNS = [
     source: 'id',
     actionConfig: {
       editEndpoint: 'surveyResponses',
-      fields: [entityName, surveyName, assessorName, date, dateOfData],
+      fields: [
+        entityName,
+        surveyName,
+        assessorName,
+        date,
+        dateOfData,
+        {
+          Header: 'Approval Status',
+          source: 'approval_status',
+          editConfig: {
+            options: APPROVAL_STATUS_TYPES,
+          },
+        },
+      ],
     },
   },
   {
