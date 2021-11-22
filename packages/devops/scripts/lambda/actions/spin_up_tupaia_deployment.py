@@ -7,7 +7,7 @@
 #   "Action": "spin_up_tupaia_deployment",
 #   "User": "edwin",
 #   "Branch": "wai-965",
-#   "HoursOfLife": "8"
+#   "HoursOfLife": 8
 # }
 #
 # 2. Spin up a new deployment of Tupaia, but with the db cloned from dev and a different branch
@@ -71,18 +71,27 @@ def spin_up_tupaia_deployment(event):
         delete_after = datetime.now() + timedelta(hours=event['HoursOfLife'])
         extra_tags.append({ 'Key': 'DeleteAfter', 'Value': format(delete_after, "%Y-%m-%d %H:%M") })
 
-    if 'StartAtUTC' in event:
-        extra_tags.append({ 'Key': 'StartAtUTC', 'Value': event['StartAtUTC'] })
+    if deployment_name == 'production':
+        if 'StartAtUTC' in event or 'StopAtUTC' in event:
+            raise Exception('Production deployment cannot have StartAtUTC/StopAtUTC')
+    else:
+        if 'StartAtUTC' in event:
+            extra_tags.append({ 'Key': 'StartAtUTC', 'Value': event['StartAtUTC'] })
+        else:
+            extra_tags.append({ 'Key': 'StartAtUTC', 'Value': '18:00'}) # 6pm UTC is 4am AEST, 5am AEDT, 6am NZST, 7am NZDT
 
-    if 'StopAtUTC' in event:
-        extra_tags.append({ 'Key': 'StopAtUTC', 'Value': event['StopAtUTC'] })
+        if 'StopAtUTC' in event:
+            extra_tags.append({ 'Key': 'StopAtUTC', 'Value': event['StopAtUTC'] })
+        else:
+            extra_tags.append({ 'Key': 'StopAtUTC', 'Value': '09:00'}) # 9am UTC is 7pm AEST, 8pm AEDT, 9pm NZST, 10pm NZDT
+
 
     # launch server instance based on gold master AMI
     create_tupaia_instance_from_image(
         deployment_name,
         branch,
         instance_type,
-        extra_tags=extra_tags,
+        extra_tags=extra_tags + [{ 'Key': 'DeploymentComponent', 'Value': 'app-server' }],
         image_code=image_code,
         security_group_code=security_group_code,
     )
@@ -91,11 +100,13 @@ def spin_up_tupaia_deployment(event):
     # do this after the server has started because it will take a while to run its startup script, so
     # we might as well be cloning the db instance at the same time, so long is it is available before
     # the server first tries to connect
+    deployment_type='tupaia'
     clone_instance(
+        deployment_type,
         clone_db_from,
         deployment_name,
         instance_type,
-        extra_tags=extra_tags,
+        extra_tags=extra_tags + [{ 'Key': 'DeploymentComponent', 'Value': 'db' }],
         security_group_code=security_group_code,
     )
 

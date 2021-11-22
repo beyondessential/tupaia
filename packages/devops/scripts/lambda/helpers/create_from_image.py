@@ -20,7 +20,7 @@ def get_latest_image_id(code):
 
 def create_instance_from_image(
     deployment_name,
-    instance_name_prefix,
+    deployment_type,
     instance_type,
     branch=None,
     extra_tags=None,
@@ -44,7 +44,7 @@ def create_instance_from_image(
 
     instance_object = create_instance(
         deployment_name,
-        instance_name_prefix,
+        deployment_type,
         instance_type,
         branch=branch,
         extra_tags=extra_tags,
@@ -71,7 +71,7 @@ def create_tupaia_instance_from_image(
     security_group_id=None,
     setup_gateway=True,
 ):
-    instance_name_prefix = 'tupaia: '
+    deployment_type = 'tupaia'
     tupaia_server_iam_role_arn = 'arn:aws:iam::843218180240:instance-profile/TupaiaServerRole'
     tupaia_subdomains = ['','admin','admin-api','api','config','export','mobile','psss','report-api','psss-api','entity-api','lesmis-api','lesmis'] if setup_gateway else None
     tupaia_volume_size = 20 # 20GB
@@ -79,7 +79,7 @@ def create_tupaia_instance_from_image(
 
     return create_instance_from_image(
         deployment_name,
-        instance_name_prefix,
+        deployment_type,
         instance_type,
         branch=branch,
         extra_tags=extra_tags,

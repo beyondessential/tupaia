@@ -5,7 +5,7 @@
 
 import { ExpressionParser } from '@tupaia/expression-parser';
 
-export const getExpressionQuestionCodes = expression => {
+export const getDollarPrefixedExpressionVariables = expression => {
   const expressionParser = new ExpressionParser();
   const variables = expressionParser.getVariables(expression);
   return variables.map(variable => {
