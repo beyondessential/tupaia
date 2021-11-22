@@ -32,12 +32,12 @@ const X_AXIS_PADDING = {
   },
 };
 
-const renderXAxisLabel = (label, fillColor, isEnlarged, isExporting) => {
+const renderXAxisLabel = (label, fillColor, isEnlarged) => {
   if (label)
     return {
       value: label,
       fill: fillColor,
-      position: isExporting ? 'bottom' : 'bottom',
+      position: 'bottom',
       style: { fontSize: isEnlarged ? '1em' : '0.8em' },
     };
   return null;
@@ -45,15 +45,18 @@ const renderXAxisLabel = (label, fillColor, isEnlarged, isExporting) => {
 
 const BASE_H = 40;
 
-const calculateXAxisHeight = data => {
-  return Math.min(BASE_H + Math.max(...data.map(item => item.name.length)) * 6, 190);
+const calculateXAxisHeight = (data, isExporting) => {
+  if (isExporting) {
+    return Math.min(BASE_H + Math.max(...data.map(item => item.name.length)) * 6, 190);
+  }
+  return BASE_H;
 };
 
 export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
   const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
   const { BAR, COMPOSED } = CHART_TYPES;
   const { chartType, chartConfig = {}, data } = viewContent;
-  const axisHeight = isExporting ? calculateXAxisHeight(data) : BASE_H;
+  const axisHeight = calculateXAxisHeight(data, isExporting);
 
   /*
     If set 0, all the ticks will be shown.
@@ -133,7 +136,7 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
   return (
     <XAxisComponent
       dataKey="name"
-      label={renderXAxisLabel(viewContent?.xName, fillColor, isEnlarged, isExporting)}
+      label={renderXAxisLabel(viewContent?.xName, fillColor, isEnlarged)}
       stroke={isExporting ? DARK_BLUE : fillColor}
       height={axisHeight}
       interval={getXAxisTickInterval()}
