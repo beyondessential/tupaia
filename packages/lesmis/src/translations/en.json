@@ -29,6 +29,8 @@
     "essdpUpperSecondarySubSector": "ESSDP Upper Secondary Sub-Sector",
     "export": "Export",
     "exportToPng": "Export to PNG",
+    "exportToPngWithLabels": "Export to PNG (including labels)",
+    "exportToPngWithTable": "Export to PNG (including table)",
     "exportToXlsx": "Export to XLSX",
     "fqs": "FQS",
     "freeIndicatorSelection": "Free indicator Selection",

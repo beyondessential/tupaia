@@ -23,7 +23,15 @@ const DEFAULT_CONFIG = {
 // ]
 // See https://docs.sheetjs.com/#array-of-objects-input for more
 export const formatMatrixDataForExcel = (
-  { columns, categories: rowCategories, rows, name: reportName, organisationUnitCode },
+  {
+    columns,
+    categories: rowCategories,
+    rows,
+    name: reportName,
+    organisationUnitCode,
+    startDate,
+    endDate,
+  },
   timeZone,
   configIn,
   outputFormat = 'aoa',
@@ -94,7 +102,12 @@ export const formatMatrixDataForExcel = (
   }
 
   // Add export date and origin to the bottom of the sheet
-  formattedData = addExportedDateAndOriginAtTheSheetBottom(formattedData, timeZone);
+  formattedData = addExportedDateAndOriginAtTheSheetBottom(
+    formattedData,
+    timeZone,
+    startDate,
+    endDate,
+  );
 
   return outputFormat === 'aoo' ? convertAoaToAoo(formattedData) : formattedData;
 };

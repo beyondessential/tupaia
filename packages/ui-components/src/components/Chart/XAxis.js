@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Text, XAxis as XAxisComponent } from 'recharts';
 import { CHART_TYPES, DARK_BLUE } from './constants';
@@ -32,12 +32,31 @@ const X_AXIS_PADDING = {
   },
 };
 
-export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
-  const [xAxisHeight, setXAxisHeight] = useState(0);
-  const fillColor = getContrastTextColor();
+const renderXAxisLabel = (label, fillColor, isEnlarged) => {
+  if (label)
+    return {
+      value: label,
+      fill: fillColor,
+      position: 'bottom',
+      style: { fontSize: isEnlarged ? '1em' : '0.8em' },
+    };
+  return null;
+};
 
+const BASE_H = 40;
+
+const calculateXAxisHeight = (data, isExporting) => {
+  if (isExporting) {
+    return Math.min(BASE_H + Math.max(...data.map(item => item.name.length)) * 6, 190);
+  }
+  return BASE_H;
+};
+
+export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
+  const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
   const { BAR, COMPOSED } = CHART_TYPES;
   const { chartType, chartConfig = {}, data } = viewContent;
+  const axisHeight = calculateXAxisHeight(data, isExporting);
 
   /*
     If set 0, all the ticks will be shown.
@@ -106,14 +125,6 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
       <VerticalTick
         {...restOfProps}
         viewContent={viewContent}
-        onHeight={height => {
-          if (xAxisHeight < height) {
-            setXAxisHeight(height);
-            // State isn't fast enough at updating to compare against
-            // so always set the instance variable for comparison.
-            // xAxisHeight = height;
-          }
-        }}
         payload={{
           ...payload,
           value: formatXAxisTick(payload.value),
@@ -125,9 +136,9 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
   return (
     <XAxisComponent
       dataKey="name"
-      label={data.xName}
+      label={renderXAxisLabel(viewContent?.xName, fillColor, isEnlarged)}
       stroke={isExporting ? DARK_BLUE : fillColor}
-      height={isExporting ? xAxisHeight + 20 : undefined}
+      height={axisHeight}
       interval={getXAxisTickInterval()}
       tick={getXAxisTickMethod()}
       tickFormatter={formatXAxisTick}

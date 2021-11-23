@@ -3,8 +3,9 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { utcMoment } from '@tupaia/utils';
 import { useTheme } from '@material-ui/core/styles';
 import {
   Box,
@@ -32,7 +33,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const Wrapper = styled.div`
   position: relative;
   height: 100%;
-  background: ${COLORS.GREY_F9};
+  background: ${props => (props.$isExporting ? 'none' : COLORS.GREY_F9)};
   min-height: 720px;
 `;
 
@@ -85,19 +86,40 @@ const ExportLoader = styled(FlexColumn)`
   z-index: 1;
 `;
 
-const useExportOptions = () => {
+const ExportText = styled(Description)`
+  text-align: center;
+`;
+
+const formatDate = date => utcMoment(date).format('DD/MM/YY');
+
+// eslint-disable-next-line react/prop-types
+const ExportDate = ({ startDate, endDate }) => {
+  const date = String(utcMoment());
+  return (
+    <ExportText>
+      {startDate &&
+        endDate &&
+        `Includes data from ${formatDate(startDate)} to ${formatDate(endDate)}. `}
+      Exported on {date} from {window.location.hostname}
+    </ExportText>
+  );
+};
+
+const useExportFormats = () => {
   const { translate } = useI18n();
 
   return [
     { id: 'xlsx', label: translate('dashboards.exportToXlsx') },
     { id: 'png', label: translate('dashboards.exportToPng') },
+    { id: 'pngWithLabels', label: translate('dashboards.exportToPngWithLabels') },
+    { id: 'pngWithTable', label: translate('dashboards.exportToPngWithTable') },
   ];
 };
 
 export const DashboardReportModal = () => {
   const theme = useTheme();
-  const exportOptions = useExportOptions();
-  const [exportFormatId, setExportFormatId] = useState(exportOptions[1].id);
+  const exportFormats = useExportFormats();
+  const [exportFormatId, setExportFormatId] = useState(exportFormats[1].id);
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { entityCode } = useUrlParams();
   const [{ startDate, endDate, reportCode }, setParams] = useUrlSearchParams();
@@ -111,6 +133,18 @@ export const DashboardReportModal = () => {
 
   const { dashboardItemConfig: config, reportData } = data;
 
+  // Set default export options from config if they are set
+  useEffect(() => {
+    const exportWithLabels = config?.presentationOptions?.exportWithLabels;
+    const exportWithTable = config?.presentationOptions?.exportWithTable;
+
+    if (exportWithTable) {
+      setExportFormatId('pngWithTable');
+    } else if (exportWithLabels) {
+      setExportFormatId('pngWithLabels');
+    }
+  }, [JSON.stringify(config), setExportFormatId]);
+
   // Set up PNG export
   const pngExportFilename = `export-${config?.name}-${new Date().toDateString()}`;
   const { isExporting, isExportLoading, exportRef, exportToPNG } = useExportToPNG(
@@ -122,20 +156,16 @@ export const DashboardReportModal = () => {
   const excelExportTitle = `${viewContent?.name}, ${entityData?.name}`;
   const { doExport } = useChartDataExport(viewContent, excelExportTitle);
 
-  /**
-   * Export click handler
-   */
+  // Export click handler
   const handleClickExport = async exportId => {
-    if (exportId === 'png') {
-      await exportToPNG();
-    } else {
+    if (exportId === 'xlsx') {
       await doExport();
+    } else {
+      await exportToPNG();
     }
   };
 
-  /**
-   * Date change handler
-   */
+  // Date change handler
   const handleDatesChange = (newStartDate, newEndDate) => {
     setParams(
       {
@@ -146,9 +176,7 @@ export const DashboardReportModal = () => {
     );
   };
 
-  /**
-   * Close click handler
-   */
+  // Close click handler
   const handleClose = () => {
     setParams({
       startDate: null,
@@ -169,6 +197,9 @@ export const DashboardReportModal = () => {
       ? 'Loading...'
       : `${entityData?.name}, ${config?.dashboardName}`;
 
+  const exportWithLabels = exportFormatId === 'pngWithLabels';
+  const exportWithTable = exportFormatId === 'pngWithTable';
+
   return (
     <MuiDialog
       scroll="paper"
@@ -185,7 +216,7 @@ export const DashboardReportModal = () => {
           <Typography>Exporting...</Typography>
         </Box>
       </ExportLoader>
-      <Wrapper ref={exportRef}>
+      <Wrapper ref={exportRef} $isExporting={isExporting}>
         <Container maxWidth="xl">
           <Header>
             <Box maxWidth={580}>
@@ -195,7 +226,7 @@ export const DashboardReportModal = () => {
             <Toolbar $isExporting={isExporting}>
               {config?.type !== 'list' && (
                 <SplitButton
-                  options={exportOptions}
+                  options={exportFormats}
                   selectedId={exportFormatId}
                   setSelectedId={setExportFormatId}
                   onClick={handleClickExport}
@@ -217,8 +248,15 @@ export const DashboardReportModal = () => {
             isExporting={isExporting}
             startDate={startDate}
             endDate={endDate}
+            exportOptions={{
+              exportWithLabels,
+              exportWithTable,
+            }}
             isEnlarged
           />
+          {isExporting && (
+            <ExportDate startDate={viewContent.startDate} endDate={viewContent.endDate} />
+          )}
         </Container>
       </Wrapper>
     </MuiDialog>

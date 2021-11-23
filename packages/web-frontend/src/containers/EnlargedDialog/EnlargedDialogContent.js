@@ -120,6 +120,7 @@ export class EnlargedDialogContent extends PureComponent {
         color={isExporting ? DARK_BLUE : WHITE}
         renderPeriodSelector={this.renderPeriodSelector}
         reference={reference}
+        isExporting={isExporting}
       />
     );
   }
@@ -318,7 +319,6 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    height: 390,
   },
   matrixContent: {
     height: '80vh',
