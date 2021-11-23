@@ -1,7 +1,10 @@
 import boto3
 
+from helpers.networking import add_subdomains_to_route53
+
 resource_group_tagging_api = boto3.client('resourcegroupstaggingapi')
 rds = boto3.client('rds')
+ec = boto3.client('ec2')
 
 def get_latest_db_snapshot(source_db_id):
     snapshots_response = rds.describe_db_snapshots(
@@ -44,8 +47,24 @@ def create_db_instance_from_snapshot(
   instance_name,
   snapshot_name,
   instance_type,
-  security_group_code
+  security_group_code,
+  security_group_id='sg-07bc2960'
 ):
+    if security_group_code:
+          # Get the security group tagged with the key matching this code
+      security_group_filters = [
+        {'Name': 'tag:Code', 'Values': [security_group_code]}
+      ]
+      security_groups = ec.describe_security_groups(
+        Filters=security_group_filters
+      ).get(
+        'SecurityGroups', []
+      )
+      security_group_ids = [security_group['GroupId'] for security_group in security_groups]
+      print('Found security group ids')
+    else:
+      security_group_ids = [security_group_id]
+
     snapshot_id = get_latest_db_snapshot(snapshot_name)
     print('Starting to clone db instance from snapshot')
     rds.restore_db_instance_from_db_snapshot(
@@ -54,7 +73,7 @@ def create_db_instance_from_snapshot(
         DBInstanceClass=instance_type,
         Port=5432, # Need to ensure this is handled by env vars
         PubliclyAccessible=True,
-        VpcSecurityGroupIds=['sg-07bc2960', security_group_code],
+        VpcSecurityGroupIds=security_group_ids,
         Tags=[
             {
                 'Key': 'DeploymentName',
@@ -62,10 +81,18 @@ def create_db_instance_from_snapshot(
             },
         ],
     )
+    
     print('Successfully cloned new db instance from snapshot')
     waiter = rds.get_waiter('db_instance_available')
     waiter.wait(DBInstanceIdentifier=instance_name)
     instance = rds.describe_db_instances(DBInstanceIdentifier=instance_name)['DBInstances'][0]
+
+    add_subdomains_to_route53(
+        domain='tupaia.org', 
+        subdomains=['db'], 
+        deployment_name=instance_name, 
+        dns_url=instance['Endpoint']['Address']
+    )
 
     return instance
 

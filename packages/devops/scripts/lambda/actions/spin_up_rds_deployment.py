@@ -8,7 +8,6 @@
 # }
 
 from helpers.rds import create_db_instance_from_snapshot
-from helpers.networking import add_subdomains_to_route53
 
 def spin_up_rds_deployment(event):
     # validate input config
@@ -18,7 +17,7 @@ def spin_up_rds_deployment(event):
     
     # get manual input parameters, or default for any not provided
     instance_type = event.get('InstanceType', 't4g.medium')
-    security_group_code = event.get('SecurityGroupCode', 'sg-9b2853fc') # Use security group tagged with code
+    security_group_code = event.get('SecurityGroupCode', 'tupaia-dev-sg') # Use security group tagged with code
     snapshot = event.get('Snapshot', 'production') # Use volume snapshot tagged with deployment name
 
     # find current instances
@@ -33,13 +32,6 @@ def spin_up_rds_deployment(event):
         snapshot,
         instance_type,
         security_group_code
-    )
-
-    add_subdomains_to_route53(
-        domain='tupaia.org', 
-        subdomains=['db'], 
-        deployment_name=deployment_name, 
-        dns_url=instance['Endpoint']['Address']
     )
 
     print('Successfully deployed RDS instance ' + deployment_name)
