@@ -103,8 +103,9 @@ def spin_up_tupaia_deployment(event):
     # the server first tries to connect
     create_db_instance_from_snapshot(
         deployment_name,
-        'rn-195-migrate-to-rds',
-        instance_type
+        clone_db_from,
+        instance_type,
+        security_group_code
     )
 
     print('Successfully deployed branch ' + branch)
