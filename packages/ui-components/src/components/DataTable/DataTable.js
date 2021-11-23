@@ -15,7 +15,7 @@ import TableBody from '@material-ui/core/TableBody';
 import { StyledTable } from './StyledTable';
 import { FlexStart } from '../Layout';
 
-export const DataTable = ({ columns, data, className, chartConfig }) => {
+export const DataTable = ({ columns, data, className }) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -27,7 +27,6 @@ export const DataTable = ({ columns, data, className, chartConfig }) => {
     {
       columns,
       data,
-      chartConfig,
     },
     useSortBy,
   );
@@ -42,7 +41,7 @@ export const DataTable = ({ columns, data, className, chartConfig }) => {
                 ({ getHeaderProps, getSortByToggleProps, isSorted, isSortedDesc, render }) => (
                   <TableCell {...getHeaderProps(getSortByToggleProps())}>
                     <FlexStart>
-                      {chartConfig[render('Header')]?.label || render('Header')}
+                      {render('Header')}
                       <TableSortLabel active={isSorted} direction={isSortedDesc ? 'asc' : 'desc'} />
                     </FlexStart>
                   </TableCell>
@@ -71,7 +70,6 @@ export const DataTable = ({ columns, data, className, chartConfig }) => {
 DataTable.propTypes = {
   columns: PropTypes.array.isRequired,
   data: PropTypes.array.isRequired,
-  chartConfig: PropTypes.object.isRequired,
   className: PropTypes.string,
 };
 

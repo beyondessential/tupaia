@@ -61,7 +61,11 @@ const processColumns = viewContent => {
 
   const configColumns = Object.keys(chartDataConfig).map(columnKey => {
     return {
-      Header: columnKey,
+      id: columnKey,
+      Header: props => {
+        const columnId = props.column.id;
+        return chartConfig[columnId]?.label || columnId;
+      },
       accessor: row => {
         const rowValue = row[columnKey];
         const columnConfig = chartConfig[columnKey];
@@ -90,10 +94,8 @@ const processData = viewContent => {
 export const getChartTableData = viewContent => {
   const columns = useMemo(() => processColumns(viewContent), [JSON.stringify(viewContent)]);
   const data = useMemo(() => processData(viewContent), [JSON.stringify(viewContent)]);
-  const { chartConfig } = viewContent;
   return {
     columns,
     data,
-    chartConfig,
   };
 };
