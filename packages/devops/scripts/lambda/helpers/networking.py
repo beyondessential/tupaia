@@ -24,7 +24,10 @@ elbv2 = boto3.client('elbv2')
 
 def get_gateway_name(deployment_type, deployment_name):
     name = deployment_type + '-' + deployment_name
-    return name[0:32] # max 32 chars in an ELB or gateway name
+    name = name[0:32] # max 32 chars in an ELB or gateway name
+    if name.endswith('-'):
+        name = name[:-1] # name cannot end with a hyphen
+    return name
 
 def get_gateway_elb(deployment_type, deployment_name):
     elbs = elbv2.describe_load_balancers(PageSize=400)
