@@ -16,6 +16,7 @@ export class UserEntityPermissionModel extends CommonUserEntityPermissionModel {
  * hold off and pool several changes for the same user (e.g. if they're being granted permission
  * to three countries at once), but this is good enough.
  */
+// Todo: Update Email For LESMIS
 async function onUpsertSendPermissionGrantEmail(
   { type: changeType, new_record: newRecord },
   models,

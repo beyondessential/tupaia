@@ -4,6 +4,7 @@ import { encryptPassword } from '@tupaia/auth';
 import { sendEmail } from '../utilities';
 import { allowNoPermissions } from '../permissions';
 
+// Todo: Update Email For LESMIS
 export const sendVerifyEmail = async (req, userId) => {
   const { models } = req;
   const user = await models.user.findById(userId);
