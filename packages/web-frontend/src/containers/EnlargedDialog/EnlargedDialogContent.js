@@ -120,6 +120,7 @@ export class EnlargedDialogContent extends PureComponent {
         color={isExporting ? DARK_BLUE : WHITE}
         renderPeriodSelector={this.renderPeriodSelector}
         reference={reference}
+        isExporting={isExporting}
       />
     );
   }
