@@ -90,8 +90,10 @@ const processData = viewContent => {
 export const getChartTableData = viewContent => {
   const columns = useMemo(() => processColumns(viewContent), [JSON.stringify(viewContent)]);
   const data = useMemo(() => processData(viewContent), [JSON.stringify(viewContent)]);
+  const { chartConfig } = viewContent;
   return {
     columns,
     data,
+    chartConfig,
   };
 };

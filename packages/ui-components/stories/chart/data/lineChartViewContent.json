@@ -1,17 +1,193 @@
 {
   "data": [
-    { "timestamp": 1585699200000, "value": 0.29983333333333334 },
-    { "timestamp": 1588291200000, "value": 0.35827272727272724 },
-    { "timestamp": 1590969600000, "value": 0.18787500000000001 },
-    { "timestamp": 1593561600000, "value": 0 },
-    { "timestamp": 1596240000000, "value": 0.08609090909090909 },
-    { "timestamp": 1598918400000, "value": 0 },
-    { "timestamp": 1601510400000, "value": 0.34854545454545455 },
-    { "timestamp": 1604188800000, "value": 0 },
-    { "timestamp": 1606780800000, "value": 0 },
-    { "timestamp": 1609459200000, "value": 0 },
-    { "timestamp": 1612137600000, "value": 0.03628571428571429 },
-    { "timestamp": 1614556800000, "value": 0 }
+    {
+      "timestamp": 1588291200000,
+      "name": "May 2020",
+      "UNFPA_RH_MOS_Condoms_male": 35.827743703509,
+      "UNFPA_RH_MOS_Intra_Uterine_Device": 0,
+      "UNFPA_RH_MOS_Ethinylestradiol_levonorgestrel_30mcg_150mcg_tablet": 0,
+      "UNFPA_RH_MOS_Levonorgestrel_30mcg_tablet": 2.35,
+      "UNFPA_RH_MOS_Levonorgestrel_750mcg_tablet_pack_of_two": 4.481927710843,
+      "UNFPA_RH_MOS_Medroxyprogesterone_acetate_depot_injection_150mgpermL_in_1mL_vial": 0.6942148760331,
+      "UNFPA_RH_MOS_Condoms_female": 14.47513812155,
+      "UNFPA_RH_MOS_Jadelle_Contraceptive_Implant": 12.8
+    },
+    {
+      "timestamp": 1590969600000,
+      "name": "Jun 2020",
+      "UNFPA_RH_MOS_Condoms_male": 35.068250032623,
+      "UNFPA_RH_MOS_Intra_Uterine_Device": 0,
+      "UNFPA_RH_MOS_Ethinylestradiol_levonorgestrel_30mcg_150mcg_tablet": 0,
+      "UNFPA_RH_MOS_Levonorgestrel_30mcg_tablet": 1.224489795918,
+      "UNFPA_RH_MOS_Levonorgestrel_750mcg_tablet_pack_of_two": 0.4819277108434,
+      "UNFPA_RH_MOS_Medroxyprogesterone_acetate_depot_injection_150mgpermL_in_1mL_vial": 0.1967213114754,
+      "UNFPA_RH_MOS_Condoms_female": 12.92817679558,
+      "UNFPA_RH_MOS_Jadelle_Contraceptive_Implant": 12.8
+    },
+    {
+      "timestamp": 1593561600000,
+      "name": "Jul 2020",
+      "UNFPA_RH_MOS_Condoms_male": 58.513677811549,
+      "UNFPA_RH_MOS_Intra_Uterine_Device": 0,
+      "UNFPA_RH_MOS_Ethinylestradiol_levonorgestrel_30mcg_150mcg_tablet": 0,
+      "UNFPA_RH_MOS_Levonorgestrel_30mcg_tablet": 0,
+      "UNFPA_RH_MOS_Levonorgestrel_750mcg_tablet_pack_of_two": 1.44,
+      "UNFPA_RH_MOS_Medroxyprogesterone_acetate_depot_injection_150mgpermL_in_1mL_vial": 0,
+      "UNFPA_RH_MOS_Condoms_female": 24.3956043956,
+      "UNFPA_RH_MOS_Jadelle_Contraceptive_Implant": 7.5
+    },
+    {
+      "timestamp": 1596240000000,
+      "name": "Aug 2020",
+      "UNFPA_RH_MOS_Condoms_male": 57.654377880183006,
+      "UNFPA_RH_MOS_Intra_Uterine_Device": 9.807692307692,
+      "UNFPA_RH_MOS_Ethinylestradiol_levonorgestrel_30mcg_150mcg_tablet": 0,
+      "UNFPA_RH_MOS_Levonorgestrel_30mcg_tablet": 2.825745682889,
+      "UNFPA_RH_MOS_Levonorgestrel_750mcg_tablet_pack_of_two": 1.44,
+      "UNFPA_RH_MOS_Medroxyprogesterone_acetate_depot_injection_150mgpermL_in_1mL_vial": 2.961038961039,
+      "UNFPA_RH_MOS_Condoms_female": 25.61538461538,
+      "UNFPA_RH_MOS_Jadelle_Contraceptive_Implant": 7.5
+    },
+    {
+      "timestamp": 1598918400000,
+      "name": "Sep 2020",
+      "UNFPA_RH_MOS_Condoms_male": 58.991764597018,
+      "UNFPA_RH_MOS_Intra_Uterine_Device": 1.900621118012,
+      "UNFPA_RH_MOS_Ethinylestradiol_levonorgestrel_30mcg_150mcg_tablet": 0.1778656126482,
+      "UNFPA_RH_MOS_Levonorgestrel_30mcg_tablet": 3.448869752422,
+      "UNFPA_RH_MOS_Levonorgestrel_750mcg_tablet_pack_of_two": 0,
+      "UNFPA_RH_MOS_Medroxyprogesterone_acetate_depot_injection_150mgpermL_in_1mL_vial": 3.906976744186,
+      "UNFPA_RH_MOS_Condoms_female": 18.96774193548,
+      "UNFPA_RH_MOS_Jadelle_Contraceptive_Implant": 10.90909090909
+    },
+    {
+      "timestamp": 1601510400000,
+      "name": "Oct 2020",
+      "UNFPA_RH_MOS_Condoms_male": 116.252512784313,
+      "UNFPA_RH_MOS_Intra_Uterine_Device": 1.814814814815,
+      "UNFPA_RH_MOS_Ethinylestradiol_levonorgestrel_30mcg_150mcg_tablet": 0.1778656126482,
+      "UNFPA_RH_MOS_Levonorgestrel_30mcg_tablet": 3.754116355653,
+      "UNFPA_RH_MOS_Levonorgestrel_750mcg_tablet_pack_of_two": 0,
+      "UNFPA_RH_MOS_Medroxyprogesterone_acetate_depot_injection_150mgpermL_in_1mL_vial": 3.906976744186,
+      "UNFPA_RH_MOS_Condoms_female": 18.96774193548,
+      "UNFPA_RH_MOS_Jadelle_Contraceptive_Implant": 10.90909090909
+    },
+    {
+      "timestamp": 1604188800000,
+      "name": "Nov 2020",
+      "UNFPA_RH_MOS_Condoms_male": 109.0909090909273,
+      "UNFPA_RH_MOS_Intra_Uterine_Device": 1.40119760479,
+      "UNFPA_RH_MOS_Ethinylestradiol_levonorgestrel_30mcg_150mcg_tablet": 0,
+      "UNFPA_RH_MOS_Levonorgestrel_30mcg_tablet": 2.99689119171,
+      "UNFPA_RH_MOS_Levonorgestrel_750mcg_tablet_pack_of_two": 0,
+      "UNFPA_RH_MOS_Medroxyprogesterone_acetate_depot_injection_150mgpermL_in_1mL_vial": 2.869565217391,
+      "UNFPA_RH_MOS_Condoms_female": 11.13253012048,
+      "UNFPA_RH_MOS_Jadelle_Contraceptive_Implant": 3.75
+    },
+    {
+      "timestamp": 1606780800000,
+      "name": "Dec 2020",
+      "UNFPA_RH_MOS_Condoms_male": 115.1407837445189,
+      "UNFPA_RH_MOS_Intra_Uterine_Device": 2,
+      "UNFPA_RH_MOS_Ethinylestradiol_levonorgestrel_30mcg_150mcg_tablet": 0,
+      "UNFPA_RH_MOS_Levonorgestrel_30mcg_tablet": 2.149253731343,
+      "UNFPA_RH_MOS_Levonorgestrel_750mcg_tablet_pack_of_two": 0,
+      "UNFPA_RH_MOS_Medroxyprogesterone_acetate_depot_injection_150mgpermL_in_1mL_vial": 2.857142857143,
+      "UNFPA_RH_MOS_Condoms_female": 11.13253012048,
+      "UNFPA_RH_MOS_Jadelle_Contraceptive_Implant": 3.75
+    },
+    {
+      "timestamp": 1609459200000,
+      "name": "Jan 2021",
+      "UNFPA_RH_MOS_Condoms_male": 115.8055555555222,
+      "UNFPA_RH_MOS_Intra_Uterine_Device": 1.989304812834,
+      "UNFPA_RH_MOS_Ethinylestradiol_levonorgestrel_30mcg_150mcg_tablet": 0,
+      "UNFPA_RH_MOS_Levonorgestrel_30mcg_tablet": 1.12017167382,
+      "UNFPA_RH_MOS_Levonorgestrel_750mcg_tablet_pack_of_two": 0,
+      "UNFPA_RH_MOS_Medroxyprogesterone_acetate_depot_injection_150mgpermL_in_1mL_vial": 1.609756097561,
+      "UNFPA_RH_MOS_Condoms_female": 12.12598425197,
+      "UNFPA_RH_MOS_Jadelle_Contraceptive_Implant": 3.75
+    },
+    {
+      "timestamp": 1612137600000,
+      "name": "Feb 2021",
+      "UNFPA_RH_MOS_Condoms_male": 406.42222222223296,
+      "UNFPA_RH_MOS_Intra_Uterine_Device": 2.440677966102,
+      "UNFPA_RH_MOS_Ethinylestradiol_levonorgestrel_30mcg_150mcg_tablet": 17.96847635727,
+      "UNFPA_RH_MOS_Levonorgestrel_30mcg_tablet": 6.438695163105,
+      "UNFPA_RH_MOS_Levonorgestrel_750mcg_tablet_pack_of_two": 0,
+      "UNFPA_RH_MOS_Medroxyprogesterone_acetate_depot_injection_150mgpermL_in_1mL_vial": 13.39534883721,
+      "UNFPA_RH_MOS_Condoms_female": 10.02493765586,
+      "UNFPA_RH_MOS_Jadelle_Contraceptive_Implant": 2.4
+    },
+    {
+      "timestamp": 1614556800000,
+      "name": "Mar 2021",
+      "UNFPA_RH_MOS_Condoms_male": 301.104421768741,
+      "UNFPA_RH_MOS_Intra_Uterine_Device": 0.6315789473684,
+      "UNFPA_RH_MOS_Ethinylestradiol_levonorgestrel_30mcg_150mcg_tablet": 15.27071823204,
+      "UNFPA_RH_MOS_Levonorgestrel_30mcg_tablet": 6.870712401055,
+      "UNFPA_RH_MOS_Levonorgestrel_750mcg_tablet_pack_of_two": 0,
+      "UNFPA_RH_MOS_Medroxyprogesterone_acetate_depot_injection_150mgpermL_in_1mL_vial": 10.63157894737,
+      "UNFPA_RH_MOS_Condoms_female": 7.482993197279,
+      "UNFPA_RH_MOS_Jadelle_Contraceptive_Implant": 0
+    },
+    {
+      "timestamp": 1617235200000,
+      "name": "Apr 2021",
+      "UNFPA_RH_MOS_Condoms_male": 250.506504922689,
+      "UNFPA_RH_MOS_Intra_Uterine_Device": 6.947368421053,
+      "UNFPA_RH_MOS_Ethinylestradiol_levonorgestrel_30mcg_150mcg_tablet": 17.32769556025,
+      "UNFPA_RH_MOS_Levonorgestrel_30mcg_tablet": 7.075239398085,
+      "UNFPA_RH_MOS_Levonorgestrel_750mcg_tablet_pack_of_two": 300,
+      "UNFPA_RH_MOS_Medroxyprogesterone_acetate_depot_injection_150mgpermL_in_1mL_vial": 11.16831683168,
+      "UNFPA_RH_MOS_Condoms_female": 15.06315789474,
+      "UNFPA_RH_MOS_Jadelle_Contraceptive_Implant": 0
+    },
+    {
+      "timestamp": 1619827200000,
+      "name": "May 2021",
+      "UNFPA_RH_MOS_Condoms_male": 250.853090766868,
+      "UNFPA_RH_MOS_Intra_Uterine_Device": 6.947368421053,
+      "UNFPA_RH_MOS_Ethinylestradiol_levonorgestrel_30mcg_150mcg_tablet": 17.32769556025,
+      "UNFPA_RH_MOS_Levonorgestrel_30mcg_tablet": 6.951111111111,
+      "UNFPA_RH_MOS_Levonorgestrel_750mcg_tablet_pack_of_two": 1200,
+      "UNFPA_RH_MOS_Medroxyprogesterone_acetate_depot_injection_150mgpermL_in_1mL_vial": 12.22764227642,
+      "UNFPA_RH_MOS_Condoms_female": 18.46451612903
+    },
+    {
+      "timestamp": 1622505600000,
+      "name": "Jun 2021",
+      "UNFPA_RH_MOS_Condoms_male": 148.040151515118,
+      "UNFPA_RH_MOS_Intra_Uterine_Device": 6.947368421053,
+      "UNFPA_RH_MOS_Ethinylestradiol_levonorgestrel_30mcg_150mcg_tablet": 13.86813186813,
+      "UNFPA_RH_MOS_Levonorgestrel_30mcg_tablet": 6.644776119403,
+      "UNFPA_RH_MOS_Levonorgestrel_750mcg_tablet_pack_of_two": 66.75,
+      "UNFPA_RH_MOS_Medroxyprogesterone_acetate_depot_injection_150mgpermL_in_1mL_vial": 10.75862068966,
+      "UNFPA_RH_MOS_Condoms_female": 16.3875
+    },
+    {
+      "timestamp": 1625097600000,
+      "name": "Jul 2021",
+      "UNFPA_RH_MOS_Condoms_male": 130.096296296333,
+      "UNFPA_RH_MOS_Intra_Uterine_Device": 7.490445859873,
+      "UNFPA_RH_MOS_Ethinylestradiol_levonorgestrel_30mcg_150mcg_tablet": 15.67289719626,
+      "UNFPA_RH_MOS_Levonorgestrel_30mcg_tablet": 8.424,
+      "UNFPA_RH_MOS_Levonorgestrel_750mcg_tablet_pack_of_two": 52.86486486486,
+      "UNFPA_RH_MOS_Medroxyprogesterone_acetate_depot_injection_150mgpermL_in_1mL_vial": 9.702127659574,
+      "UNFPA_RH_MOS_Condoms_female": 5.382857142857
+    },
+    {
+      "timestamp": 1627776000000,
+      "name": "Aug 2021",
+      "UNFPA_RH_MOS_Condoms_male": 104.29696969697001,
+      "UNFPA_RH_MOS_Intra_Uterine_Device": 12,
+      "UNFPA_RH_MOS_Ethinylestradiol_levonorgestrel_30mcg_150mcg_tablet": 12.94669509595,
+      "UNFPA_RH_MOS_Levonorgestrel_30mcg_tablet": 14.4,
+      "UNFPA_RH_MOS_Levonorgestrel_750mcg_tablet_pack_of_two": 39.06382978723,
+      "UNFPA_RH_MOS_Medroxyprogesterone_acetate_depot_injection_150mgpermL_in_1mL_vial": 9.882352941176,
+      "UNFPA_RH_MOS_Condoms_female": 6.610526315789
+    }
   ],
   "viewId": "12",
   "organisationUnitCode": "TO",
@@ -26,5 +202,72 @@
   "valueType": "percentage",
   "description": "Average each month is calculated across operational facilities that submitted data. If a facility was marked as non-operational, or did not submit data in a given month, it is not included in the average.",
   "defaultTimePeriod": { "start": { "unit": "year", "offset": -1 } },
-  "periodGranularity": "month"
+  "periodGranularity": "month",
+  "chartConfig": {
+    "max_reference_line": {
+      "hideFromLegend": true,
+      "referenceLabel": "MAX (12)",
+      "referenceValue": 12
+    },
+    "min_reference_line": {
+      "hideFromLegend": true,
+      "referenceLabel": "MIN (6)",
+      "referenceValue": 6
+    },
+    "UNFPA_RH_MOS_Condoms_male": {
+      "color": "#FC1D26",
+      "label": "Condoms, male",
+      "legendOrder": 0
+    },
+    "UNFPA_RH_MOS_Condoms_female": {
+      "color": "#FD9155",
+      "label": "Condoms, female",
+      "legendOrder": 1
+    },
+    "UNFPA_RH_MOS_Intra_Uterine_Device": {
+      "color": "#D9D9D9",
+      "label": "IUD",
+      "legendOrder": 10
+    },
+    "UNFPA_RH_MOS_Levonorgestrel_30mcg_tablet": {
+      "color": "#81D75E",
+      "label": "POP",
+      "legendOrder": 3
+    },
+    "UNFPA_RH_MOS_Jadelle_Contraceptive_Implant": {
+      "color": "#20C2CA",
+      "label": "Jadelle",
+      "legendOrder": 5
+    },
+    "UNFPA_RH_MOS_Levonorgestrel_750mcg_tablet_pack_of_two": {
+      "color": "#40B7FC",
+      "label": "EC",
+      "legendOrder": 6
+    },
+    "UNFPA_RH_MOS_Ethinylestradiol_levonorgestrel_30mcg_150mcg_tablet": {
+      "color": "#FEDD64",
+      "label": "COC",
+      "legendOrder": 2
+    },
+    "UNFPA_RH_MOS_Medroxyprogesterone_acetate_104mgper0dot65ml_SAYANA_Press": {
+      "color": "#8C5AFB",
+      "label": "SAYANA Press",
+      "legendOrder": 8
+    },
+    "UNFPA_RH_MOS_Norethisterone_enantate_200mgpermL_in_1mL_ampoule_oily_solution": {
+      "color": "#FD6AC4",
+      "label": "Norethisterone",
+      "legendOrder": 9
+    },
+    "UNFPA_RH_MOS_Medroxyprogesterone_acetate_depot_injection_150mgpermL_in_1mL_vial": {
+      "color": "#0A4EAB",
+      "label": "DMPA",
+      "legendOrder": 7
+    },
+    "UNFPA_RH_MOS_Etonogestrel_releasing_implant_single_rod_containing_68mg_of_etonogestrel": {
+      "color": "#0F7F3B",
+      "label": "Implant",
+      "legendOrder": 4
+    }
+  }
 }
