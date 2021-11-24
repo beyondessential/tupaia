@@ -15,8 +15,9 @@ async def wait_for_volume(volume_id, to_be):
     volume_available_waiter = ec.get_waiter('volume_' + to_be)
     await loop.run_in_executor(None, functools.partial(volume_available_waiter.wait, VolumeIds=[volume_id]))
 
-def get_latest_snapshot_id(deployment_name):
+def get_latest_snapshot_id(deployment_type, deployment_name):
     filters = [
+        {'Name': 'tag:DeploymentType', 'Values': [deployment_type]},
         {'Name': 'tag:DeploymentName', 'Values': [deployment_name]}
     ]
     account_ids = get_account_ids()
@@ -27,7 +28,7 @@ def get_latest_snapshot_id(deployment_name):
     print('Found snapshot with id ' + snapshot_id)
     return snapshot_id
 
-async def clone_volume_into_instance(instance, deployment_name='production'):
+async def clone_volume_into_instance(instance, deployment_type, deployment_name='production'):
     print('Cloning volume into instance {}'.format(instance['InstanceId']))
     # Check it's not protected
     protected = get_tag(instance, 'Protected')
@@ -36,7 +37,7 @@ async def clone_volume_into_instance(instance, deployment_name='production'):
         raise Exception('The instance ' + name + ' is protected and cannot be wiped and cloned')
 
     # Get snapshot to clone volume from
-    snapshot_id = get_latest_snapshot_id(deployment_name)
+    snapshot_id = get_latest_snapshot_id(deployment_type, deployment_name)
 
     # Get the device on the instance that the volume should clone to
     for dev in instance['BlockDeviceMappings']:
@@ -73,22 +74,23 @@ async def clone_volume_into_instance(instance, deployment_name='production'):
 
 
 def clone_instance(
+    deployment_type,
     from_deployment,
     to_deployment,
     instance_type,
     extra_tags=None,
     security_group_code=None,
-    instance_name_prefix=None,
 ):
-    print('Creating ' + instance_type + ' clone of ' + from_deployment + ' as ' + to_deployment)
+    print('Creating ' + instance_type + ' clone of ' + deployment_type + ': ' + from_deployment + ' as ' + to_deployment)
     base_instance_filters = [
+        { 'Name': 'tag:DeploymentType', 'Values': [deployment_type] },
         { 'Name': 'tag:DeploymentName', 'Values': [from_deployment] },
         { 'Name': 'instance-state-name', 'Values': ['running', 'stopped']} # ignore terminated instances
     ]
     base_instance = get_instance(base_instance_filters)
-    if not instance_name_prefix:
-        base_instance_name = get_tag(base_instance, 'Name')
-        instance_name_prefix = base_instance_name.replace(from_deployment, '')
+
+    if not base_instance:
+        raise Exception('No instance to clone from for ' + deployment_type + ': ' + from_deployment)
 
     subdomains_via_dns = None
     subdomains_via_dns_string = get_tag(base_instance, 'SubdomainsViaDns')
@@ -107,7 +109,7 @@ def clone_instance(
 
     new_instance = create_instance(
         to_deployment,
-        instance_name_prefix,
+        deployment_type,
         instance_type,
         cloned_from=from_deployment,
         extra_tags=extra_tags,
@@ -119,7 +121,7 @@ def clone_instance(
         subdomains_via_gateway=subdomains_via_gateway,
     )
     loop.run_until_complete(stop_instance(new_instance))
-    loop.run_until_complete(clone_volume_into_instance(new_instance, from_deployment))
+    loop.run_until_complete(clone_volume_into_instance(new_instance, deployment_type, from_deployment))
     loop.run_until_complete(start_instance(new_instance))
 
     return new_instance

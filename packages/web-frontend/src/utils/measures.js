@@ -15,7 +15,7 @@ import {
 import { VALUE_TYPES } from '../components/View/constants';
 import { MAP_COLORS } from '../styles';
 import { formatDataValue } from './formatters';
-import { SCALE_TYPES } from '../constants';
+import { MARKER_TYPES, SCALE_TYPES } from '../constants';
 
 export const MEASURE_TYPE_ICON = 'icon';
 export const MEASURE_TYPE_COLOR = 'color';
@@ -173,10 +173,11 @@ const clampValue = (value, config) => {
 };
 
 export function processMeasureInfo(response) {
-  const { measureOptions, measureData, ...rest } = response;
+  const { measureOptions, displayType, ...rest } = response;
+  let { measureData } = response;
   const hiddenMeasures = {};
   const processedOptions = measureOptions.map(measureOption => {
-    const { values: mapOptionValues, type, scaleType } = measureOption;
+    const { values: mapOptionValues, type } = measureOption;
     const values = autoAssignColors(mapOptionValues);
     const valueMapping = createValueMapping(values, type);
 
@@ -203,6 +204,16 @@ export function processMeasureInfo(response) {
       valueMapping,
     };
   });
+
+  // remove measure units with no coordinates
+  // for circle heatmap remove empty values or values that are not of positive float type
+  if (displayType === MARKER_TYPES.CIRCLE_HEATMAP) {
+    measureData = measureData.filter(({ value }) => {
+      if (!value || value === '') return false;
+      const parsedValue = parseFloat(value);
+      return !Number.isNaN(parsedValue) && parsedValue >= 0;
+    });
+  }
 
   return {
     measureOptions: processedOptions,
@@ -283,18 +294,6 @@ export function getSingleFormattedValue(orgUnitData, measureOptions) {
   // of the first measure.
   return getFormattedInfo(orgUnitData, measureOptions[0]).formattedValue;
 }
-
-const MAX_ALLOWED_RADIUS = 1000;
-export const calculateRadiusScaleFactor = measureData => {
-  // Check if any of the radii in the dataset are larger than the max allowed
-  // radius, and scale everything down proportionally if so.
-  // (this needs to happen here instead of inside the circle marker component
-  // because it needs to operate on the dataset level, not the datapoint level)
-  const maxRadius = measureData
-    .map(d => parseInt(d.radius, 10) || 1)
-    .reduce((state, current) => Math.max(state, current), 0);
-  return maxRadius < MAX_ALLOWED_RADIUS ? 1 : (1 / maxRadius) * MAX_ALLOWED_RADIUS;
-};
 
 // Take a measureData array where the [key]: value is a number
 // and filters NaN values (e.g. undefined).

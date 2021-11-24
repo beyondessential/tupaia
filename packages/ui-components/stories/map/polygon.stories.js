@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import L from 'leaflet';
-import { MapContainer, TileLayer, PolygonLayer } from '../../src/components/Map';
+import { LeafletMapContainer, TileLayer, PolygonLayer } from '../../src/components/Map';
 import entityData from './data/entityData.json';
 
 const Container = styled.div`
@@ -30,8 +30,8 @@ const mapBoxBounds = L.latLngBounds(bounds);
 const maxBounds = mapBoxBounds.pad(1);
 
 export const SimplePolygonLayer = () => (
-  <MapContainer bounds={maxBounds}>
+  <LeafletMapContainer style={{ height: 500 }} bounds={maxBounds}>
     <TileLayer />
     <PolygonLayer entities={entityData} />
-  </MapContainer>
+  </LeafletMapContainer>
 );
