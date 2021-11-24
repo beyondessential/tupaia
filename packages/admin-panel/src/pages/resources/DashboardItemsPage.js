@@ -9,6 +9,18 @@ import { ResourcePage } from './ResourcePage';
 import { LightOutlinedButton } from '@tupaia/ui-components';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  &:focus,
+  &:hover,
+  &:visited,
+  &:link,
+  &:active {
+    text-decoration: none;
+  }
+`;
 
 export const DASHBOARD_ITEMS_ENDPOINT = 'dashboardItems';
 
@@ -46,9 +58,9 @@ const IMPORT_CONFIG = {
 };
 
 const renderNewDashboardVizButton = () => (
-  <Link to="/viz-builder/dashboard-item/new">
+  <StyledLink to="/viz-builder/dashboard-item/new">
     <LightOutlinedButton startIcon={<AddCircleIcon />}>New</LightOutlinedButton>
-  </Link>
+  </StyledLink>
 );
 
 export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
