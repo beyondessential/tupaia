@@ -1,188 +1,192 @@
-import React, { useState, useCallback } from 'react';
+/**
+ * Tupaia Web
+ * Copyright (c) 2021 Beyond Essential Systems Pty Ltd.
+ * This source code is licensed under the AGPL-3.0 license
+ * found in the LICENSE file in the root directory of this source tree.
+ */
+
+import React, { useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import moment from 'moment';
-import LayersIcon from '@material-ui/icons/Layers';
+import { FlexSpaceBetween, FlexStart } from '@tupaia/ui-components';
+import MuiLayersIcon from '@material-ui/icons/Layers';
 import DownArrow from '@material-ui/icons/ArrowDropDown';
-import Fade from '@material-ui/core/Fade';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { Fade, Typography, Divider } from '@material-ui/core';
 import LastUpdated from './LastUpdated';
-import { DateRangePicker } from '../../components/DateRangePicker';
-import { CONTROL_BAR_WIDTH, TUPAIA_ORANGE, MAP_OVERLAY_SELECTOR } from '../../styles';
-import { getDefaultDates, getLimits, GRANULARITY_CONFIG } from '../../utils/periodGranularities';
+import {
+  CONTROL_BAR_WIDTH,
+  MAP_OVERLAY_SELECTOR,
+  TUPAIA_ORANGE,
+  LIGHT_GREY,
+  DARK_GREY,
+} from '../../styles';
+import { Content, EmptyContentText, ExpandedContent } from './Content';
 import { MapTableModal } from '../MapTableModal';
+import { TitleAndDatePicker } from './TitleAndDatePicker';
+import { DropDownMenu } from '../../components/DropDownMenu';
+
+const MAX_MAP_OVERLAYS = 2;
+
+const DividerWrapper = styled.div`
+  background: ${MAP_OVERLAY_SELECTOR.subBackground};
+`;
 
 const Container = styled.div`
   width: ${CONTROL_BAR_WIDTH}px;
+  pointer-events: auto;
   cursor: auto;
   min-height: 0; /* firefox vertical scroll */
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: ${({ $isExpanded }) => ($isExpanded ? '100%' : 'default')};
 `;
 
-const Header = styled.div`
-  display: flex;
-  font-weight: 500;
-  pointer-events: auto;
+const Header = styled(FlexSpaceBetween)`
   background: ${TUPAIA_ORANGE};
   color: #ffffff;
-  text-transform: uppercase;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-  padding: 2px 15px 0;
+  padding: 2px 15px 2px 0;
   height: 40px;
-  font-size: 0.75rem;
-  align-items: center;
 
   .MuiSvgIcon-root {
     font-size: 21px;
-    margin-right: 5px;
   }
 `;
 
-const Content = styled.div`
-  display: flex;
-  pointer-events: auto;
-  padding: 12px 15px;
-  background: ${MAP_OVERLAY_SELECTOR.background};
-  color: #ffffff;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom-left-radius: ${({ expanded, selected, period }) =>
-    !expanded && (!selected || !period) ? '5px' : '0'};
-  border-bottom-right-radius: ${({ expanded, selected, period }) =>
-    !expanded && (!selected || !period) ? '5px' : '0'};
-
-  &:hover {
-    cursor: pointer;
-  }
-
-  .MuiSvgIcon-root {
-    transition: transform 0.3s ease;
-    transform: rotate(${({ expanded }) => (expanded ? '180deg' : '0deg')});
-  }
-`;
-
-const IconWrapper = styled.div`
-  display: flex;
-  border-left: 1px solid rgba(255, 255, 255, 0.5);
-  padding: 2px 0 2px 10px;
-`;
-
-const ContentText = styled.div`
-  font-size: 16px;
-`;
-
-const EmptyContentText = styled(ContentText)`
-  padding-right: 6px;
-`;
-
-const SubHeader = styled.div`
-  color: ${TUPAIA_ORANGE};
+const OverlayLibrary = styled(FlexSpaceBetween)`
+  background: ${MAP_OVERLAY_SELECTOR.subBackground};
+  color: ${({ $expanded }) => ($expanded ? LIGHT_GREY : DARK_GREY)};
   font-size: 12px;
   font-weight: 500;
-  padding: 4px;
-  text-transform: uppercase;
-  margin-bottom: 10px;
+  padding: 8px 0px 8px 18px;
+  &:hover {
+    cursor: pointer;
+    color: ${LIGHT_GREY};
+  }
+  border-bottom-left-radius: ${({ $expanded }) => (!$expanded ? '5px' : '0')};
+  border-bottom-right-radius: ${({ $expanded }) => (!$expanded ? '5px' : '0')};
 `;
 
-const MeasureDatePicker = styled.div`
-  pointer-events: auto;
-  background: #203e5c;
-  padding: 16px 8px;
-  border-bottom-left-radius: ${({ expanded }) => (!expanded ? '5px' : '0')};
-  border-bottom-right-radius: ${({ expanded }) => (!expanded ? '5px' : '0')};
+const StyledPrimaryComponent = styled(Typography)`
+  margin-left: 15px;
+  padding: 0;
+  font-size: 0.75rem;
+  color: #ffffff;
+  font-weight: 500;
 `;
 
-const ExpandedContent = styled.div`
-  pointer-events: auto;
-  background: #203e5c;
-  border-top: 1px solid rgba(255, 255, 255, 0.25);
-  color: #fff;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  overflow-y: auto;
-  padding: 15px;
-  flex-basis: 0;
-  flex-grow: 1;
+const StyledOptionComponent = styled(StyledPrimaryComponent)`
+  margin: -0.1rem 0;
+`;
+
+const LayersIcon = styled(MuiLayersIcon)`
+  font-size: 20px;
+  margin-right: 7px;
+  color: ${({ $expanded }) => ($expanded ? TUPAIA_ORANGE : 'default')};
+`;
+
+const DownArrowIconWrapper = styled.div`
+  display: flex;
+  padding: 8px 14px 0 5px;
+  .MuiSvgIcon-root {
+    transition: transform 0.3s ease;
+    transform: rotate(${({ $expanded }) => ($expanded ? '180deg' : '0deg')});
+  }
+
+  &:hover {
+    color: ${({ $expanded }) => ($expanded ? LIGHT_GREY : 'default')};
+  }
+`;
+
+const options = [];
+for (let i = 1; i <= MAX_MAP_OVERLAYS; i++) {
+  const newOption = `${i} map overlay${i > 1 ? 's' : ''}`;
+  options.push(newOption);
+}
+
+const DatePickerWrapper = styled.div`
+  background: ${MAP_OVERLAY_SELECTOR.background};
+  border-bottom-left-radius: ${props => (props.$hasChildren ? '0px' : '5px')};
+  border-bottom-right-radius: ${props => (props.$hasChildren ? '0px' : '5px')};
 `;
 
 export const Control = ({
   emptyMessage,
-  selectedMapOverlay,
-  isMeasureLoading,
-  onUpdateMeasurePeriod,
+  selectedMapOverlays,
   children,
+  maxSelectedOverlays,
+  changeMaxSelectedOverlays,
+  pinnedOverlay,
+  setPinnedOverlay,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const mapOverlay = selectedMapOverlay || {};
-  const { periodGranularity, isTimePeriodEditable = true, name } = mapOverlay;
-  const defaultDates = getDefaultDates(mapOverlay);
-  const datePickerLimits = getLimits(periodGranularity, mapOverlay.datePickerLimits);
-  const showDatePicker = !!(isTimePeriodEditable && periodGranularity);
-  const isMeasureSelected = !!name;
+  const isMapOverlaySelected = selectedMapOverlays.length > 0;
+  const hasChildren = !!children;
+
   const toggleMeasures = useCallback(() => {
-    if (isExpanded) {
-      setIsExpanded(false);
-    } else {
-      setIsExpanded(true);
-    }
+    setIsExpanded(!isExpanded);
   }, [isExpanded, setIsExpanded]);
-
-  const updateMeasurePeriod = (startDate, endDate) => {
-    const period = GRANULARITY_CONFIG[periodGranularity].momentUnit;
-    onUpdateMeasurePeriod(moment(startDate).startOf(period), moment(endDate).endOf(period));
-  };
-
-  // Map overlays always have initial dates, so DateRangePicker always has dates on initialisation,
-  // and uses those rather than calculating it's own defaults
-  const startDate = mapOverlay?.startDate || defaultDates.startDate;
-  const endDate = mapOverlay?.endDate || defaultDates.endDate;
+  const reorderedSelectedMapOverlays = useMemo(
+    () =>
+      pinnedOverlay
+        ? selectedMapOverlays.sort(first => (first.mapOverlayCode === pinnedOverlay ? -1 : 1))
+        : selectedMapOverlays,
+    [selectedMapOverlays, pinnedOverlay],
+  );
 
   return (
-    <Container>
+    <Container $isExpanded={isExpanded}>
       <Header>
-        <LayersIcon />
-        Map overlays
+        <DropDownMenu
+          title="MAP OVERLAYS"
+          selectedOptionIndex={maxSelectedOverlays - 1}
+          options={options}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          onChange={changeMaxSelectedOverlays}
+          StyledPrimaryComponent={StyledPrimaryComponent}
+          StyledOptionComponent={StyledOptionComponent}
+          disableGutters
+        />
         <MapTableModal />
       </Header>
-      {!isMeasureSelected ? (
-        <Content>
-          <EmptyContentText>{emptyMessage}</EmptyContentText>
-        </Content>
-      ) : (
-        <Content
-          expanded={isExpanded}
-          selected={isMeasureSelected}
-          period={periodGranularity}
-          onClick={toggleMeasures}
-        >
-          <ContentText>{isMeasureLoading ? <CircularProgress size={22} /> : name}</ContentText>
-          <IconWrapper>
+      <DatePickerWrapper $hasChildren={hasChildren}>
+        {isMapOverlaySelected ? (
+          reorderedSelectedMapOverlays.map((mapOverlay, index) => (
+            <div key={mapOverlay.mapOverlayCode}>
+              <TitleAndDatePicker
+                mapOverlay={mapOverlay}
+                maxSelectedOverlays={maxSelectedOverlays}
+                pinnedOverlay={pinnedOverlay}
+                setPinnedOverlay={setPinnedOverlay}
+              />
+              {index < selectedMapOverlays.length - 1 && <Divider />}
+            </div>
+          ))
+        ) : (
+          <Content>
+            <EmptyContentText>{emptyMessage}</EmptyContentText>
+          </Content>
+        )}
+      </DatePickerWrapper>
+      {hasChildren && (
+        <OverlayLibrary $expanded={isExpanded} onClick={toggleMeasures}>
+          <FlexStart>
+            <LayersIcon $expanded={isExpanded} />
+            OVERLAY LIBRARY
+          </FlexStart>
+          <DownArrowIconWrapper $expanded={isExpanded}>
             <DownArrow />
-          </IconWrapper>
-        </Content>
+          </DownArrowIconWrapper>
+        </OverlayLibrary>
       )}
-      {showDatePicker && (
-        <MeasureDatePicker expanded={isExpanded}>
-          <DateRangePicker
-            key={name} // force re-create the component on measure change, which resets initial dates
-            granularity={periodGranularity}
-            startDate={startDate}
-            endDate={endDate}
-            min={datePickerLimits.startDate}
-            max={datePickerLimits.endDate}
-            onSetDates={updateMeasurePeriod}
-            isLoading={isMeasureLoading}
-          />
-        </MeasureDatePicker>
+      {isExpanded && (
+        <DividerWrapper>
+          <Divider variant="middle" />
+        </DividerWrapper>
       )}
       <Fade in={isExpanded} mountOnEnter unmountOnExit exit={false}>
-        <ExpandedContent>
-          <SubHeader>Select an overlay</SubHeader>
-          {children}
-        </ExpandedContent>
+        <ExpandedContent>{children}</ExpandedContent>
       </Fade>
       <LastUpdated />
     </Container>
@@ -190,24 +194,29 @@ export const Control = ({
 };
 
 Control.propTypes = {
-  selectedMapOverlay: PropTypes.shape({
-    name: PropTypes.string,
-    periodGranularity: PropTypes.string,
-    isTimePeriodEditable: PropTypes.bool,
-    datePickerLimits: PropTypes.shape({
-      startDate: PropTypes.object,
-      endDate: PropTypes.object,
+  selectedMapOverlays: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      periodGranularity: PropTypes.string,
+      isTimePeriodEditable: PropTypes.bool,
+      datePickerLimits: PropTypes.shape({
+        startDate: PropTypes.object,
+        endDate: PropTypes.object,
+      }),
+      startDate: PropTypes.shape({}),
+      endDate: PropTypes.shape({}),
     }),
-    startDate: PropTypes.shape({}),
-    endDate: PropTypes.shape({}),
-  }),
+  ),
   emptyMessage: PropTypes.string.isRequired,
-  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
-  isMeasureLoading: PropTypes.bool,
-  onUpdateMeasurePeriod: PropTypes.func.isRequired,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+  maxSelectedOverlays: PropTypes.number.isRequired,
+  changeMaxSelectedOverlays: PropTypes.func.isRequired,
+  pinnedOverlay: PropTypes.string,
+  setPinnedOverlay: PropTypes.func.isRequired,
 };
 
 Control.defaultProps = {
-  selectedMapOverlay: {},
-  isMeasureLoading: false,
+  selectedMapOverlays: [],
+  pinnedOverlay: null,
+  children: null,
 };
