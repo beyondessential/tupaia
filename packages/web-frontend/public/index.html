@@ -14,7 +14,9 @@
     <meta property="og:url" content="https://tupaia.org" />
     <meta property="og:title" content="Tupaia" />
 
-    <% if (process.env.NODE_ENV === 'production') { %>
+    <% if (process.env.REACT_APP_DEPLOYMENT_NAME === 'master'
+    || process.env.REACT_APP_DEPLOYMENT_NAME === 'main'
+    || process.env.REACT_APP_DEPLOYMENT_NAME === 'production') { %>
     <!-- Google Analytics -->
     <script>
       (function(i, s, o, g, r, a, m) {

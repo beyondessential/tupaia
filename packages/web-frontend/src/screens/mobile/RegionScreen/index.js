@@ -16,7 +16,7 @@ import { Dashboard } from '../../../components/mobile/Dashboard';
 import { filterShape } from '../../../components/mobile/FilterSelect';
 import {
   setOrgUnit,
-  setMapOverlay,
+  setMapOverlays,
   toggleMeasureExpand,
   toggleDashboardSelectExpand,
   setDashboardGroup,
@@ -29,7 +29,7 @@ import {
   selectCurrentDashboardName,
   selectCurrentOrgUnit,
   selectOrgUnitChildren,
-  selectCurrentMapOverlay,
+  selectCurrentMapOverlays,
 } from '../../../selectors';
 
 const MAP_WIDTH = 420;
@@ -256,7 +256,8 @@ const mapStateToProps = state => {
   const { mapOverlayHierarchy, isExpanded } = state.mapOverlayBar;
   const { measureInfo, isMeasureLoading } = state.map;
   const { isGroupSelectExpanded } = state.dashboard;
-  const currentMapOverlay = selectCurrentMapOverlay(state) || {};
+  const currentMapOverlays = selectCurrentMapOverlays(state);
+  const currentMapOverlay = currentMapOverlays.length > 0 ? currentMapOverlays[0] : {};
   const orgUnit = selectCurrentOrgUnit(state);
 
   const mobileListItems = getListItemsFromOrganisationUnitChildren(
@@ -291,7 +292,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onChangeMapOverlay: mapOverlayCode => dispatch(setMapOverlay(mapOverlayCode)),
+  onChangeMapOverlay: mapOverlayCode => dispatch(setMapOverlays(mapOverlayCode)),
   onClearMeasure: () => dispatch(clearMeasure()),
   onToggleMeasureExpand: () => dispatch(toggleMeasureExpand()),
   onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),

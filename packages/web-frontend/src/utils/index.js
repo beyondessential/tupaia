@@ -21,7 +21,8 @@ export {
   flattenNumericalMeasureData,
 } from './measures';
 export {
-  getMapOverlayFromHierarchy,
+  getMapOverlaysFromHierarchy,
+  checkHierarchyIncludesMapOverlayCodes,
   flattenMapOverlayHierarchy,
   isMapOverlayHierarchyEmpty,
 } from './mapOverlays';

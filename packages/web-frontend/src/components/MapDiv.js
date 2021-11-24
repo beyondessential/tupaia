@@ -17,8 +17,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Legend as MapLegend, TilePicker, tileSetShape } from '@tupaia/ui-components/lib/map';
 import { CONTROL_BAR_PADDING } from '../styles';
-import MapOverlayBar from '../containers/MapOverlayBar';
-import { selectActiveTileSet, selectTileSets } from '../selectors';
+import { MapOverlayBar } from '../containers/MapOverlayBar';
+import { selectActiveTileSet, selectCurrentMapOverlayCodes, selectTileSets } from '../selectors';
 import { changeTileSet } from '../actions';
 
 const FlexDiv = styled.div`
@@ -40,11 +40,10 @@ const TopRow = styled.div`
 `;
 
 const BottomRow = styled.div`
-  display: flex;
+  display: content;
   flex-direction: row;
   align-items: flex-end;
   justify-content: center;
-  padding: 10px 10px 0 10px;
 `;
 
 const StyledLink = styled.a`
@@ -80,9 +79,12 @@ export const MapDivComponent = ({
   tileSets,
   activeTileSet,
   onChangeTileSet,
-  setValueHidden,
   hiddenValues,
-  serieses,
+  setValueHidden,
+  measureInfo,
+  isMeasureLoading,
+  currentMapOverlayCodes,
+  displayedMapOverlayCodes,
 }) => (
   <FlexDiv>
     <LeftCol>
@@ -90,11 +92,16 @@ export const MapDivComponent = ({
         <MapOverlayBar />
       </TopRow>
       <BottomRow>
-        <MapLegend
-          setValueHidden={setValueHidden}
-          hiddenValues={hiddenValues}
-          serieses={serieses}
-        />
+        {!isMeasureLoading && (
+          <MapLegend
+            setValueHidden={setValueHidden}
+            hiddenValues={hiddenValues}
+            measureInfo={measureInfo}
+            currentMapOverlayCodes={currentMapOverlayCodes}
+            displayedMapOverlayCodes={displayedMapOverlayCodes}
+            seriesesKey="measureOptions"
+          />
+        )}
       </BottomRow>
     </LeftCol>
     <TilePicker tileSets={tileSets} activeTileSet={activeTileSet} onChange={onChangeTileSet} />
@@ -105,23 +112,28 @@ export const MapDivComponent = ({
 MapDivComponent.propTypes = {
   activeTileSet: PropTypes.shape(tileSetShape).isRequired,
   tileSets: PropTypes.arrayOf(PropTypes.shape(tileSetShape)).isRequired,
+  measureInfo: PropTypes.object.isRequired,
+  isMeasureLoading: PropTypes.bool.isRequired,
   onChangeTileSet: PropTypes.func.isRequired,
   setValueHidden: PropTypes.func.isRequired,
-  hiddenValues: PropTypes.object,
-  serieses: PropTypes.PropTypes.arrayOf(PropTypes.object),
+  hiddenValues: PropTypes.object.isRequired,
+  displayedMapOverlayCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  currentMapOverlayCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
-MapDivComponent.defaultProps = {
-  hiddenValues: null,
-  serieses: null,
-};
+MapDivComponent.defaultProps = {};
 
-const mapStateToProps = state => ({
-  activeTileSet: selectActiveTileSet(state),
-  hiddenValues: state.map.measureInfo.hiddenMeasures,
-  serieses: state.map.measureInfo.measureOptions,
-  tileSets: selectTileSets(state),
-});
+const mapStateToProps = state => {
+  return {
+    activeTileSet: selectActiveTileSet(state),
+    hiddenValues: state.map.hiddenMeasures,
+    measureInfo: state.map.measureInfo,
+    isMeasureLoading: state.map.isMeasureLoading,
+    tileSets: selectTileSets(state),
+    currentMapOverlayCodes: selectCurrentMapOverlayCodes(state),
+    displayedMapOverlayCodes: state.map.displayedMapOverlays,
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
   onChangeTileSet: setKey => dispatch(changeTileSet(setKey)),
