@@ -21,19 +21,13 @@ from helpers.teardown import teardown_instance
 from helpers.utilities import find_instances, get_tag
 
 def tear_down_tupaia_deployment(event):
+    if 'DeploymentName' not in event:
+        raise Exception('You must include "DeploymentName" in the lambda config, which is the subdomain of tupaia.org you want to tear down (e.g. "dev").')
+
     instance_filters = [
+      { 'Name': 'tag:DeploymentName', 'Values': [event['DeploymentName']] },
       { 'Name': 'instance-state-name', 'Values': ['running', 'stopped']} # ignore terminated instances
     ]
-
-    if 'Branch' not in event and 'DeploymentName' not in event:
-        raise Exception('You must include either "DeploymentName" or "Branch" in the lambda config, e.g. "dev".')
-
-    if 'Branch' in event:
-        instance_filters.append({ 'Name': 'tag:Branch', 'Values': [event['Branch']] })
-
-    if 'DeploymentName' in event:
-        instance_filters.append({ 'Name': 'tag:DeploymentName', 'Values': [event['DeploymentName']] })
-
     instances = find_instances(instance_filters)
 
     if len(instances) == 0:

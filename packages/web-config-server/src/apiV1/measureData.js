@@ -161,7 +161,7 @@ function updateLegendFromDisplayedValueKey(measureOption, dataElements) {
   measureOption.values = measureOption.values.map(({ name, value, ...rest }) => {
     const matchingElements = dataElements
       // use a weakly typed comparison here to match how the frontend does it
-      .filter(e => e[measureOption.key] == value) // eslint-disable-line eqeqeq
+      .filter(e => e[measureOption.key] == value) // eslint-disable-line
       .map(e => e[measureOption.displayedValueKey]);
     return { name: getMostCommon(matchingElements) || name, value, ...rest };
   });
@@ -178,11 +178,11 @@ export default class extends DataAggregatingRouteHandler {
   buildResponse = async () => {
     const { code } = this.entity;
     const { mapOverlayCode } = this.query;
-    const overlays = await this.models.mapOverlay.findMeasuresByCode(mapOverlayCode);
+    const measures = await this.models.mapOverlay.findMeasuresByCode(mapOverlayCode);
 
     // check permission
     await Promise.all(
-      overlays.map(async ({ permission_group: permissionGroup }) => {
+      measures.map(async ({ permission_group: permissionGroup }) => {
         const isUserAllowedMeasure = await this.req.userHasAccess(code, permissionGroup);
         if (!isUserAllowedMeasure) {
           throw new CustomError(accessDeniedForMeasure);
@@ -192,14 +192,14 @@ export default class extends DataAggregatingRouteHandler {
     // start fetching actual data
     const shouldFetchSiblings = this.query.shouldShowAllParentCountryResults === 'true';
     const responseData = await Promise.all(
-      overlays.map(o => this.fetchMeasureData(o, shouldFetchSiblings)),
+      measures.map(o => this.fetchMeasureData(o, shouldFetchSiblings)),
     );
-    const { period, measureData } = buildMeasureData(overlays, responseData);
-    const measureOptions = await this.fetchMeasureOptions(overlays, measureData);
+    const { period, measureData } = buildMeasureData(measures, responseData);
+    const measureOptions = await this.fetchMeasureOptions(measures, measureData, mapOverlayCode);
 
     return {
       mapOverlayCode,
-      measureLevel: getMeasureLevel(overlays),
+      measureLevel: getMeasureLevel(measures),
       measureOptions,
       serieses: measureOptions,
       measureData,
@@ -207,20 +207,21 @@ export default class extends DataAggregatingRouteHandler {
     };
   };
 
-  async fetchMeasureOptions(mapOverlays, measureData) {
+  async fetchMeasureOptions(mapOverlays, measureData, mapOverlayCode) {
     const measureOptions = await Promise.all(mapOverlays.map(o => this.fetchMeasureOption(o)));
     measureOptions
       .filter(mo => mo.displayedValueKey)
       .filter(mo => !mo.disableRenameLegend)
       .map(mo => updateLegendFromDisplayedValueKey(mo, measureData));
 
-    const getOtherMeasureOptionKeys = mainMeasureOptionKey => {
+    const getOtherMeasureOptionKeys = mainMapOverlayCode => {
       const otherLinkMeasureKeySet = new Set();
       measureData.forEach(data => {
         Object.keys(data).forEach(key => otherLinkMeasureKeySet.add(key));
       });
       otherLinkMeasureKeySet.delete('organisationUnitCode');
-      otherLinkMeasureKeySet.delete(mainMeasureOptionKey);
+      otherLinkMeasureKeySet.delete(mainMapOverlayCode);
+
       return Array.from(otherLinkMeasureKeySet);
     };
 
@@ -228,12 +229,15 @@ export default class extends DataAggregatingRouteHandler {
     const { measureConfig, ...mainMeasureOption } = measureOptions[0];
     if (measureConfig) {
       const { [ADD_TO_ALL_KEY]: configForAllKeys, ...restOfConfig } = measureConfig;
-      getOtherMeasureOptionKeys(mainMeasureOption.key)
+      getOtherMeasureOptionKeys(mapOverlayCode)
         .filter(key => !key.includes('_metadata'))
         .forEach(key => {
           measureOptions.push({ ...configForAllKeys, key, name: key, ...restOfConfig[key] });
         });
       measureOptions[0] = mainMeasureOption;
+    }
+    if (measureData.length === 0) {
+      measureOptions[0].hideFromPopup = false;
     }
     return measureOptions;
   }

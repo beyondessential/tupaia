@@ -12,19 +12,19 @@ export class MapOverlayPermissionsChecker extends PermissionsChecker {
     if (!mapOverlayCode) {
       throw new Error('No map overlay code was provided');
     }
-    return mapOverlayCode.split(',');
+    return mapOverlayCode;
   }
 
-  async fetchAndCacheOverlays() {
-    if (!this.overlays) {
-      this.overlays = await this.models.mapOverlay.find({ code: this.getMapOverlayCode() });
+  async fetchAndCacheOverlay() {
+    if (!this.overlay) {
+      this.overlay = await this.models.mapOverlay.find({ code: this.getMapOverlayCode() });
     }
-    return this.overlays;
+    return this.overlay;
   }
 
   async fetchPermissionGroups() {
-    const overlays = await this.fetchAndCacheOverlays();
-    return overlays.map(o => o.permission_group);
+    const overlay = await this.fetchAndCacheOverlay();
+    return [overlay.permission_group];
   }
 
   async checkPermissions() {
@@ -36,9 +36,10 @@ export class MapOverlayPermissionsChecker extends PermissionsChecker {
       throw new PermissionsError('Measures data not allowed for world');
     }
 
-    const overlays = await this.fetchAndCacheOverlays();
-    if (overlays.length !== this.getMapOverlayCode().length) {
-      throw new Error('Not all overlays requested could be found in the database');
+    const overlay = await this.fetchAndCacheOverlay();
+    const mapOverlayCode = this.getMapOverlayCode();
+    if (overlay[0]?.code !== mapOverlayCode) {
+      throw new Error(`Map overlay ${mapOverlayCode} could not be found in the database`);
     }
 
     await this.checkHasEntityAccess(this.entity.code);

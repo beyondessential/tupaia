@@ -12,28 +12,34 @@ import { Dialog, DialogHeader, DialogContent } from '@tupaia/ui-components';
 import { Table, useMapDataExport } from '@tupaia/ui-components/lib/map';
 import MuiIconButton from '@material-ui/core/IconButton';
 import {
-  selectCurrentMapOverlay,
+  selectCurrentMapOverlayCodes,
+  selectCurrentMapOverlays,
+  selectMeasureOptions,
   selectOrgUnitCountry,
   selectRenderedMeasuresWithDisplayInfo,
 } from '../../selectors';
 import { Tooltip } from '../../components/Tooltip';
 
 const IconButton = styled(MuiIconButton)`
-  margin: 0 0 0 1rem;
-  padding: 10px 8px 10px 12px;
+  margin-right: -10px;
+  padding: 10px 10px 10px 12px;
 `;
 
-export const MapTableModalComponent = ({
+const MapTableModalComponent = ({
   currentCountry,
-  currentMapOverlay,
+  currentMapOverlays,
   measureOptions,
   measureData,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const title = `${currentMapOverlay?.name}, ${currentCountry?.name}`;
+  const isMapOverlaySelected = currentMapOverlays.length > 0;
+  const title = isMapOverlaySelected
+    ? `${currentMapOverlays.map(({ name }) => name).join(', ')}, ${currentCountry?.name}`
+    : '';
+
   const { doExport } = useMapDataExport(measureOptions, measureData, title);
 
-  if (!currentMapOverlay || !measureData || !measureOptions || measureData.length === 0) {
+  if (!currentMapOverlays || !measureData || !measureOptions || measureData.length === 0) {
     return null;
   }
 
@@ -41,12 +47,18 @@ export const MapTableModalComponent = ({
     <>
       <Dialog onClose={() => setIsOpen(false)} open={isOpen} maxWidth="lg">
         <DialogHeader onClose={() => setIsOpen(false)} title={title}>
-          <MuiIconButton onClick={doExport}>
-            <DownloadIcon />
-          </MuiIconButton>
+          {isMapOverlaySelected && (
+            <MuiIconButton onClick={doExport}>
+              <DownloadIcon />
+            </MuiIconButton>
+          )}
         </DialogHeader>
         <DialogContent>
-          <Table serieses={measureOptions} measureData={measureData} />
+          {isMapOverlaySelected ? (
+            <Table serieses={measureOptions} measureData={measureData} />
+          ) : (
+            'No map overlay has been selected'
+          )}
         </DialogContent>
       </Dialog>
       <Tooltip arrow interactive placement="top" title="Generate Report">
@@ -66,25 +78,25 @@ MapTableModalComponent.propTypes = {
     }),
   ),
   currentCountry: PropTypes.object,
-  currentMapOverlay: PropTypes.object,
+  currentMapOverlays: PropTypes.arrayOf(PropTypes.object),
 };
 
 MapTableModalComponent.defaultProps = {
   measureOptions: null,
   measureData: null,
   currentCountry: null,
-  currentMapOverlay: null,
+  currentMapOverlays: [],
 };
 
 const mapStateToProps = state => {
-  const { measureOptions } = state.map.measureInfo;
-  // TODO: select multiple map overlays
-  const currentMapOverlay = selectCurrentMapOverlay(state);
-  const measureData = selectRenderedMeasuresWithDisplayInfo(state);
-  const currentCountry = selectOrgUnitCountry(state, state.map.measureInfo.currentCountry);
+  const currentMapOverlayCodes = selectCurrentMapOverlayCodes(state);
+  const currentMapOverlays = selectCurrentMapOverlays(state);
+  const measureOptions = selectMeasureOptions(state, currentMapOverlayCodes) || [];
+  const measureData = selectRenderedMeasuresWithDisplayInfo(state, currentMapOverlayCodes);
+  const currentCountry = selectOrgUnitCountry(state, state.map.currentCountry);
 
   return {
-    currentMapOverlay,
+    currentMapOverlays,
     measureOptions,
     measureData,
     currentCountry,

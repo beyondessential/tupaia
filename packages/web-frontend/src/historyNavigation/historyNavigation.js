@@ -52,12 +52,12 @@ export const getInitialLocationComponents = () => {
 /**
  * Returns a new location with a component of the url set to the specified value
  * @param {Object} baseLocation The existing location
- * @param {String} component A member of URL_COMPONENTS
- * @param {String} value The value to set it to
+ * @param {Object} newComponents a new set of components of URL_COMPONENTS
  */
-export const setLocationComponent = (baseLocation, component, value) => {
+
+export const setLocationComponents = (baseLocation, newComponents) => {
   const previousComponents = decodeLocation(baseLocation);
-  const params = { ...previousComponents, [component]: value };
+  const params = { ...previousComponents, ...newComponents };
 
   return createLocation(params);
 };
