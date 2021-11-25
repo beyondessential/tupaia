@@ -21,7 +21,6 @@ const PLATFORM_CONFIGS = {
     primaryPlatform: 'lesmis',
     permissionGroupName: 'LESMIS Public',
     countryName: 'Laos',
-    verifyUrl: process.env.LESMIS_VERIFY_EMAIL_URL,
   },
 };
 
@@ -105,8 +104,7 @@ export class RegisterUserAccounts extends CreateUserAccounts {
     }
 
     const user = await this.createUserRecord(userData);
-
-    await sendEmailVerification(user, platformConfig?.verifyUrl);
+    await sendEmailVerification(user);
 
     return { userId: user.userId };
   }

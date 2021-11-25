@@ -11,12 +11,12 @@ export class UserEntityPermissionModel extends CommonUserEntityPermissionModel {
   notifiers = [onUpsertSendPermissionGrantEmail];
 }
 
-const EMAIL_CONTENTS = {
+const EMAILS = {
   tupaia: {
     subject: 'Tupaia Permission Granted',
     body: (userName, permissionGroupName, entityName) =>
       `Hi ${userName},\n\n` +
-      `This is just to let you know that you've been added to the ${permissionGroupName} access group for ${entityName}.` +
+      `This is just to let you know that you've been added to the ${permissionGroupName} access group for ${entityName}. ` +
       'This allows you to collect surveys through the Tupaia data collection app, and to see reports and map overlays on Tupaia.org.\n\n' +
       "Please note that you'll need to log out and then log back in to get access to the new permissions.\n\n" +
       'Have fun exploring Tupaia, and feel free to get in touch if you have any questions.\n',
@@ -25,7 +25,7 @@ const EMAIL_CONTENTS = {
     subject: 'LESMIS Permission Granted',
     body: (userName, permissionGroupName, entityName) =>
       `Hi ${userName},\n\n` +
-      `This is just to let you know that you've been added to the ${permissionGroupName} access group for ${entityName}.` +
+      `This is just to let you know that you've been added to the ${permissionGroupName} access group for ${entityName}. ` +
       'This allows you to see reports and map overlays on lesmis.la.\n\n' +
       "Please note that you'll need to log out and then log back in to get access to the new permissions.\n\n" +
       'Feel free to get in touch if you have any questions.\n',
@@ -50,8 +50,9 @@ async function onUpsertSendPermissionGrantEmail(
   const user = await models.user.findById(newRecord.user_id);
   const entity = await models.entity.findById(newRecord.entity_id);
   const permissionGroup = await models.permissionGroup.findById(newRecord.permission_group_id);
+  const platform = user.primary_platform ? user.primary_platform : 'tupaia';
 
-  const { subject, body, signOff } = EMAIL_CONTENTS[user.platform];
+  const { subject, body, signOff } = EMAILS[platform];
 
   sendEmail(
     user.email,
