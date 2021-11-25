@@ -24,6 +24,10 @@ for PACKAGE in ${PACKAGES[@]}; do
             # reset cwd back to `/tupaia`
             cd ${TUPAIA_DIR}
 
+            # ensure db master password is set correctly
+            echo "Setting RDS master password for ${DEPLOYMENT_NAME}"
+            source packages/data-api/.env && aws rds modify-db-instance --db-instance-identifier $DEPLOYMENT_NAME --master-user-password $DB_PG_PASSWORD
+
             # ensure that the analytics table is fully built
             echo "Building analytics table"
             yarn workspace @tupaia/data-api install-mv-refresh
