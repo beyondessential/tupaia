@@ -45,7 +45,7 @@ def spin_up_tupaia_deployment(event):
     if 'DeploymentName' not in event:
         raise Exception('You must include the key "DeploymentName" in the lambda config, e.g. "dev".')
     deployment_name = event['DeploymentName']
-    branch = event.get('Branch', deployment_name) # default to branch if no deployment code set
+    branch = event.get('Branch', deployment_name) # branch defaults to deployment name if not specified
     if deployment_name == 'production' and branch != 'master':
         raise Exception('The production deployment needs to check out master, not ' + branch)
 
