@@ -15,14 +15,20 @@ import { Row } from '../../types';
  */
 
 const detectColumnsToSummarise = (rows: Row[]) => {
-  const setOfColumnsToSummarise = rows.reduce((columnsToSummarise, row) => {
+  const allPossibleColumns = rows.reduce((columnsToSummarise, row) => {
     const columnsWithYorN = Object.entries(row)
       .filter(([, value]) => value === 'Y' || value === 'N')
       .map(([column]) => column);
     columnsWithYorN.forEach(column => columnsToSummarise.add(column));
     return columnsToSummarise;
   }, new Set<string>());
-  return [...setOfColumnsToSummarise];
+  const setOfColumnsToSummarise = [...allPossibleColumns].filter(column => {
+    return (
+      rows.filter(row => row[column] !== undefined && row[column] !== 'Y' && row[column] !== 'N')
+        .length === 0
+    );
+  });
+  return setOfColumnsToSummarise;
 };
 
 const addPercentage = (numerator: number, denominator: number) => {

@@ -9,7 +9,8 @@ import {
   MULTIPLE_MERGEABLE_ANALYTICS,
   SINGLE_ANALYTIC,
   SINGLE_EVENT,
-  MULTIPLE_ANALYTICS_SUMMARY_BINARY
+  TRANSFORMED_SUMMARY_BINARY,
+  TRANSFORMED_SUMMARY_VARIOUS,
 } from './transform.fixtures';
 import { buildTransform } from '../../../reportBuilder/transform';
 
@@ -89,14 +90,36 @@ describe('aliases', () => {
     });
     expect(transform(SINGLE_ANALYTIC)).toEqual([{ ...SINGLE_ANALYTIC[0], numberOfFacilities: 14 }]);
   });
+});
 
-  it('insertSummaryRowAndColumn', () => {
+describe('insertSummaryRowAndColumn', () => {
+  it('inserts a summary row and summary column', () => {
     const transform = buildTransform(['insertSummaryRowAndColumn']);
-    expect(transform(MULTIPLE_ANALYTICS_SUMMARY_BINARY)).toEqual([
+    expect(transform(TRANSFORMED_SUMMARY_BINARY)).toEqual([
       { summaryColumn: '75.0%', dataElement: 'Male condoms', TO: 'N', FJ: 'N', NR: 'Y', KI: 'N' },
       { summaryColumn: '25.0%', dataElement: 'Female condoms', TO: 'N', FJ: 'Y', NR: 'Y', KI: 'Y' },
-      { summaryColumn: '0.0%', dataElement: 'Injectable contraceptives', TO: 'Y', FJ: 'Y', NR: undefined, KI: undefined },
+      {
+        summaryColumn: '0.0%',
+        dataElement: 'Injectable contraceptives',
+        TO: 'Y',
+        FJ: 'Y',
+      },
       { TO: '66.7%', FJ: '33.3%', NR: '0.0%', KI: '50.0%' },
+    ]);
+  });
+
+  it('only summarises columns that have only Y | N | undefined values', () => {
+    const transform = buildTransform(['insertSummaryRowAndColumn']);
+    expect(transform(TRANSFORMED_SUMMARY_VARIOUS)).toEqual([
+      { summaryColumn: '66.7%', dataElement: 'Male condoms', TO: 'Yes', FJ: 'N', NR: 'Y', KI: 'N' },
+      { summaryColumn: '0.0%', dataElement: 'Female condoms', TO: 'N', FJ: 'Y', NR: 'Y', KI: 'Y' },
+      {
+        summaryColumn: '0.0%',
+        dataElement: 'Injectable contraceptives',
+        TO: 'Y',
+        FJ: 'Y',
+      },
+      { FJ: '33.3%', NR: '0.0%', KI: '50.0%' },
     ]);
   });
 });
