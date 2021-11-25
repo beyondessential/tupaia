@@ -15,20 +15,24 @@ import { Row } from '../../types';
  */
 
 const detectColumnsToSummarise = (rows: Row[]) => {
-  const allPossibleColumns = rows.reduce((columnsToSummarise, row) => {
-    const columnsWithYorN = Object.entries(row)
-      .filter(([, value]) => value === 'Y' || value === 'N')
-      .map(([column]) => column);
-    columnsWithYorN.forEach(column => columnsToSummarise.add(column));
-    return columnsToSummarise;
-  }, new Set<string>());
-  const setOfColumnsToSummarise = [...allPossibleColumns].filter(column => {
-    return (
-      rows.filter(row => row[column] !== undefined && row[column] !== 'Y' && row[column] !== 'N')
-        .length === 0
-    );
-  });
-  return setOfColumnsToSummarise;
+  const { columnsWithOnlyYorN: columnsToSummarise } = rows.reduce(
+    ({ columnsWithOnlyYorN, columnsWithOtherValues }, row) => {
+      Object.entries(row).forEach(([column, value]) => {
+        if (columnsWithOtherValues.has(column)) {
+          /* do nothing */
+        } else if (value === 'Y' || value === 'N') {
+          columnsWithOnlyYorN.add(column);
+        } else {
+          columnsWithOnlyYorN.delete(column);
+          columnsWithOtherValues.add(column);
+        }
+      });
+      return { columnsWithOnlyYorN, columnsWithOtherValues };
+    },
+    { columnsWithOnlyYorN: new Set<string>(), columnsWithOtherValues: new Set<string>() },
+  );
+
+  return [...columnsToSummarise];
 };
 
 const addPercentage = (numerator: number, denominator: number) => {
