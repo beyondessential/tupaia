@@ -3,7 +3,8 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { DashboardItem, LegacyReport, Report, DashboardVizResource, DashboardViz } from '../types';
+import { LegacyReport, Report} from '../types';
+import { DashboardItem, DashboardViz, DashboardVizResource } from './types';
 
 const getData = (report: Report) => {
   const { config } = report;
@@ -30,7 +31,7 @@ const getPresentation = (dashboardItem: DashboardItem, report: Report | LegacyRe
   return presentation;
 };
 
-export function combineVisualisation(visualisationResource: DashboardVizResource): DashboardViz {
+export function combineDashboardVisualisation(visualisationResource: DashboardVizResource): DashboardViz {
   const { dashboardItem, report } = visualisationResource;
   const { id, code, config, legacy } = dashboardItem;
   const { name } = config;

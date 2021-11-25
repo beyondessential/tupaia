@@ -5,7 +5,7 @@
 
 import type { ReportConfig } from '@tupaia/report-server';
 
-type VizData = {
+export type VizData = {
   dataElements: ReportConfig['fetch']['dataElements'];
   dataGroups: ReportConfig['fetch']['dataGroups'];
   startDate?: ReportConfig['fetch']['startDate'];
@@ -14,69 +14,10 @@ type VizData = {
   transform: ReportConfig['transform'];
 };
 
-type VizType = 'view' | 'chart' | 'matrix';
-
-type Presentation = Record<string, unknown> & {
-  readonly type: VizType;
-  readonly output: Record<string, unknown>;
-};
-
 export enum PreviewMode {
   DATA = 'data',
   PRESENTATION = 'presentation',
 }
-
-type DashboardVisualisation = {
-  id?: string;
-  code: string;
-  name: string;
-  legacy: false;
-  data: VizData;
-  presentation: Presentation;
-  permissionGroup: string;
-};
-
-type LegacyDashboardVisualisation = {
-  id?: string;
-  code: string;
-  name: string;
-  legacy: true;
-  data: {
-    dataBuilder: string;
-    config: LegacyReport['config'];
-  };
-  presentation: Presentation;
-};
-
-export type DashboardViz = DashboardVisualisation | LegacyDashboardVisualisation;
-
-export interface VisualisationValidator {
-  validate: (object: DashboardVisualisation) => void;
-}
-
-export type Dashboard = {
-  id: string;
-  code: string;
-  name: string;
-  rootEntityCode: string;
-  sortOrder?: number;
-};
-
-export type DashboardItem = {
-  id: string;
-  code: string;
-  config: { name?: string } & { type: VizType } & Record<string, unknown>;
-  reportCode: string;
-  legacy: boolean;
-};
-
-export type DashboardRelation = {
-  dashboardCode: string;
-  entityTypes: string[];
-  projectCodes: string[];
-  permissionGroups: string[];
-  sortOrder?: number;
-};
 
 export type Report = {
   code: string;
@@ -91,16 +32,6 @@ export type LegacyReport = {
   dataServices: { isDataRegional: boolean }[];
 };
 
-export type DashboardRecord = CamelKeysToSnake<Dashboard>;
-
-export type DashboardItemRecord = CamelKeysToSnake<DashboardItem>;
-
-export type DashboardRelationRecord = CamelKeysToSnake<Omit<DashboardRelation, 'dashboardCode'>> & {
-  id: string;
-  child_id: string;
-  dashboard_id: string;
-};
-
 export type ReportRecord = CamelKeysToSnake<Report> & { id: string };
 
 type CamelToSnake<T extends string> = T extends `${infer Char}${infer Rest}`
@@ -111,13 +42,12 @@ export type CamelKeysToSnake<T extends Record<string, unknown>> = {
   [K in keyof T as CamelToSnake<Extract<K, string>>]: T[K];
 };
 
-export type DashboardVisualisationResource = { dashboardItem: DashboardItem; report: Report };
-
-export type LegacyDashboardVisualisationResource = {
-  dashboardItem: DashboardItem;
-  report: LegacyReport;
-};
-
-export type DashboardVizResource =
-  | DashboardVisualisationResource
-  | LegacyDashboardVisualisationResource;
+// expands object types recursively
+// TODO: Move this type to a generic @tupaia/utils-ts package
+export type ExpandType<T> = T extends Record<string, unknown>
+  ? T extends infer O
+    ? {
+      [K in keyof O]: ExpandType<O[K]>;
+    }
+    : never
+  : T;

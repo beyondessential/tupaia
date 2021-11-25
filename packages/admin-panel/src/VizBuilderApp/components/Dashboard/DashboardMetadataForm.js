@@ -6,10 +6,10 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { Autocomplete, TextField } from '@tupaia/ui-components';
-import { usePermissionGroups } from '../api/queries';
-import { useVizConfig } from '../context';
+import { usePermissionGroups } from '../../api/queries';
+import { useVizConfig } from '../../context';
 
-export const MetadataForm = ({ Header, Body, Footer, onSubmit }) => {
+export const DashboardMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   const { handleSubmit, register, errors } = useForm();
   const [{ visualisation }, { setVisualisationValue }] = useVizConfig();
   const {
@@ -22,8 +22,8 @@ export const MetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   const { name, code, permissionGroup } = defaults;
 
   const doSubmit = data => {
-    setVisualisationValue('name', data.name);
     setVisualisationValue('code', data.code);
+    setVisualisationValue('name', data.name);
     setVisualisationValue('permissionGroup', data.permissionGroup);
     onSubmit();
   };
@@ -32,16 +32,12 @@ export const MetadataForm = ({ Header, Body, Footer, onSubmit }) => {
     <form onSubmit={handleSubmit(doSubmit)} noValidate>
       <Header />
       <Body>
-        <Autocomplete
-          id="permissionGroup"
-          name="permissionGroup"
-          label="Permission Group"
-          placeholder="Select Permission Group"
-          defaultValue={permissionGroup}
-          options={permissionGroups.map(p => p.name)}
-          disabled={isLoadingPermissionGroups}
-          error={!!errors.permissionGroup}
-          helperText={errors.permissionGroup && errors.permissionGroup.message}
+        <TextField
+          name="code"
+          label="Code"
+          defaultValue={code}
+          error={!!errors.code}
+          helperText={errors.code && errors.code.message}
           inputRef={register({
             required: 'Required',
           })}
@@ -56,12 +52,16 @@ export const MetadataForm = ({ Header, Body, Footer, onSubmit }) => {
             required: 'Required',
           })}
         />
-        <TextField
-          name="code"
-          label="Code"
-          defaultValue={code}
-          error={!!errors.code}
-          helperText={errors.code && errors.code.message}
+        <Autocomplete
+          id="permissionGroup"
+          name="permissionGroup"
+          label="Permission Group"
+          placeholder="Select Permission Group"
+          defaultValue={permissionGroup}
+          options={permissionGroups.map(p => p.name)}
+          disabled={isLoadingPermissionGroups}
+          error={!!errors.permissionGroup}
+          helperText={errors.permissionGroup && errors.permissionGroup.message}
           inputRef={register({
             required: 'Required',
           })}
@@ -72,7 +72,7 @@ export const MetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   );
 };
 
-MetadataForm.propTypes = {
+DashboardMetadataForm.propTypes = {
   Header: PropTypes.node.isRequired,
   Body: PropTypes.node.isRequired,
   Footer: PropTypes.node.isRequired,
