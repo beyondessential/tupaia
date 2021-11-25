@@ -13,11 +13,16 @@ import {
   isValidPassword,
 } from '@tupaia/utils';
 import { CreateUserAccounts } from './CreateUserAccounts';
-import { sendVerifyEmail } from '../verifyEmail';
+import { sendEmailVerification } from '../utilities/emailVerification';
 import { allowNoPermissions } from '../../permissions';
 
-const BASE_PERMISSION_GROUPS = {
-  'lesmis-server@tupaia.org': { permissionGroupName: 'LESMIS Public', countryName: 'Laos' },
+const PLATFORM_CONFIGS = {
+  'lesmis-server@tupaia.org': {
+    primaryPlatform: 'lesmis',
+    permissionGroupName: 'LESMIS Public',
+    countryName: 'Laos',
+    verifyUrl: process.env.LESMIS_VERIFY_EMAIL_URL,
+  },
 };
 
 /**
@@ -90,17 +95,19 @@ export class RegisterUserAccounts extends CreateUserAccounts {
       password,
     };
 
-    // Get one of the non-default base permission groups if it exists
+    // Get one of the non-default platform configs if it exists
     const email = this.req?.apiClientUser?.email;
-    if (email in BASE_PERMISSION_GROUPS) {
-      const { permissionGroupName, countryName } = BASE_PERMISSION_GROUPS[email];
-      userData = { ...userData, permissionGroupName, countryName };
+    const platformConfig = email in PLATFORM_CONFIGS ? PLATFORM_CONFIGS[email] : null;
+
+    if (platformConfig) {
+      const { permissionGroupName, countryName, primaryPlatform } = platformConfig;
+      userData = { ...userData, permissionGroupName, countryName, primaryPlatform };
     }
 
-    const { userId } = await this.createUserRecord(userData);
+    const user = await this.createUserRecord(userData);
 
-    sendVerifyEmail(this.req, userId);
+    await sendEmailVerification(user, platformConfig?.verifyUrl);
 
-    return { userId };
+    return { userId: user.userId };
   }
 }
