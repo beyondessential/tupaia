@@ -252,6 +252,10 @@ const constructNewSurveyResponseDetails = async (models, tabName, sheet, columnI
   if (!survey) {
     throw new Error(`No survey named ${surveyName}`);
   }
+  let approvalStatus = models.surveyResponse.appovalStatusTypes.NOT_REQUIRED;
+  if (survey.approval_required) {
+    approvalStatus = models.surveyResponse.appovalStatusTypes.PENDING;
+  }
   const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
   const entity = await models.entity.findOne({ code: entityCode });
   if (!entity) {
@@ -274,6 +278,7 @@ const constructNewSurveyResponseDetails = async (models, tabName, sheet, columnI
     end_time: importDate,
     data_time: stripTimezoneFromDate(surveyDate),
     timezone: timeZone,
+    approval_status: approvalStatus,
   };
 };
 
