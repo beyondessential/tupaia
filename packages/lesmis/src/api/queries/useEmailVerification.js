@@ -11,7 +11,8 @@ export const useEmailVerification = () => {
   const [{ verifyEmailToken }] = useUrlSearchParams();
 
   return useQuery(['user', verifyEmailToken], () => get(`verify/${verifyEmailToken}`), {
-    ...QUERY_OPTIONS,
+    refetchOnWindowFocus: false,
+    retry: 0,
     enabled: !!verifyEmailToken,
   });
 };

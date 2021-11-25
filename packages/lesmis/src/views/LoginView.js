@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  *
  */
 import React from 'react';
@@ -9,7 +9,6 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { LoginForm, FlexCenter, FlexColumn, FormBackButton } from '../components';
 import { LocaleLink } from '../components/LocaleLinks';
-import { useEmailVerification } from '../api/queries';
 
 const Container = styled(FlexColumn)`
   padding-top: 3rem;
@@ -44,25 +43,18 @@ const StyledLocaleLink = styled(LocaleLink)`
   text-decoration: none;
 `;
 
-export const LoginView = () => {
-  const query = useEmailVerification();
-
-  // Todo: add toast for error and success messages
-  console.log('query', query);
-
-  return (
-    <Container>
-      <FormBackButton />
-      <StyledImg src="/lesmis-login-logo.svg" alt="lesmis-logo" />
-      <StyledCard>
-        <LoginForm />
-      </StyledCard>
-      <FlexCenter mb={4}>
-        <Text color="textSecondary">Don&apos;t have access?</Text>
-        <StyledLocaleLink to="/register" color="primary">
-          Register here
-        </StyledLocaleLink>
-      </FlexCenter>
-    </Container>
-  );
-};
+export const LoginView = () => (
+  <Container>
+    <FormBackButton />
+    <StyledImg src="/lesmis-login-logo.svg" alt="lesmis-logo" />
+    <StyledCard>
+      <LoginForm />
+    </StyledCard>
+    <FlexCenter mb={4}>
+      <Text color="textSecondary">Don&apos;t have access?</Text>
+      <StyledLocaleLink to="/register" color="primary">
+        Register here
+      </StyledLocaleLink>
+    </FlexCenter>
+  </Container>
+);
