@@ -52,6 +52,7 @@ def backup_instances(event):
     for instance in instances:
 
         instance_name = get_tag(instance, 'Name')
+        deployment_type = get_tag(instance, 'DeploymentType')
         deployment_name = get_tag(instance, 'DeploymentName')
         retention_days = get_tag(instance, 'Retention')
 
@@ -75,12 +76,9 @@ def backup_instances(event):
 
             snapshot_tags = [
                 {'Key': 'DeleteOn', 'Value': delete_fmt},
-                {'Key': 'DeploymentName', 'Value': deployment_name}
+                {'Key': 'DeploymentType', 'Value': deployment_type},
+                {'Key': 'DeploymentName', 'Value': deployment_name},
             ]
-
-            deployment_name = get_tag(instance, 'DeploymentName')
-            if deployment_name != '':
-                snapshot_tags.append({'Key': 'DeploymentName', 'Value': deployment_name})
 
             ec.create_tags(
                 Resources=[snap['SnapshotId']],

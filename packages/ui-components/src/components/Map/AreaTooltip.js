@@ -24,7 +24,7 @@ export const AreaTooltip = ({
   sticky,
   orgUnitName,
   hasMeasureValue,
-  measureOptions,
+  serieses,
   orgUnitMeasureData,
   text,
 }) => {
@@ -45,12 +45,7 @@ export const AreaTooltip = ({
             {orgUnitName}
           </Heading>
           {hasMeasureValue && (
-            <PopupDataItemList
-              key={1}
-              measureOptions={measureOptions}
-              data={orgUnitMeasureData}
-              showNoDataLabel
-            />
+            <PopupDataItemList key={1} serieses={serieses} data={orgUnitMeasureData} />
           )}
         </Grid>
       )}
@@ -62,7 +57,7 @@ AreaTooltip.propTypes = {
   permanent: PropTypes.bool,
   sticky: PropTypes.bool,
   hasMeasureValue: PropTypes.bool,
-  measureOptions: PropTypes.arrayOf(PropTypes.object),
+  serieses: PropTypes.arrayOf(PropTypes.object),
   orgUnitMeasureData: PropTypes.object,
   orgUnitName: PropTypes.string,
   text: PropTypes.string,
@@ -72,8 +67,8 @@ AreaTooltip.defaultProps = {
   permanent: false,
   sticky: false,
   hasMeasureValue: false,
-  measureOptions: [],
-  orgUnitMeasureData: null,
+  serieses: [],
+  orgUnitMeasureData: {},
   orgUnitName: null,
   text: null,
 };

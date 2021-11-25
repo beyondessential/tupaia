@@ -3,12 +3,14 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { Button, FlexEnd } from '@tupaia/ui-components';
-import { MetadataForm } from '../components';
+import { DashboardMetadataForm } from '../components';
+import { VIZ_TYPE_PARAM } from '../constants';
+import { MapOverlayMetadataForm } from '../components/MapOverlay';
 
 const Container = styled(MuiContainer)`
   flex: 1;
@@ -46,17 +48,27 @@ const Footer = styled(FlexEnd)`
   border-top: 1px solid ${({ theme }) => theme.palette.grey['400']};
 `;
 
+const getMetadataFormComponent = vizType => {
+  if (vizType === VIZ_TYPE_PARAM.DASHBOARD_ITEM) return DashboardMetadataForm;
+  if (vizType === VIZ_TYPE_PARAM.MAP_OVERLAY) return MapOverlayMetadataForm;
+  throw new Error(`Unknown viz type ${vizType}`);
+};
+
 export const CreateNew = () => {
+  const { vizType } = useParams();
+
   const history = useHistory();
 
   const handleCreate = () => {
-    history.push('/viz-builder');
+    history.push(`/viz-builder/${vizType}/`);
   };
+
+  const MetadataFormComponent = getMetadataFormComponent(vizType);
 
   return (
     <Container>
       <Card>
-        <MetadataForm
+        <MetadataFormComponent
           onSubmit={handleCreate}
           Header={() => (
             <Header>
