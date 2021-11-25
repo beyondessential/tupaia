@@ -416,6 +416,13 @@ const IMPORT_CONFIG = {
       options: PERIOD_GRANULARITIES,
     },
     {
+      label: 'Requires Approval',
+      secondaryLabel:
+        'Select whether survey responses require approval before their data appear in visualisations',
+      parameterKey: 'requiresApproval',
+      type: 'boolean',
+    },
+    {
       label: 'Data service',
       secondaryLabel: 'Select the data service this survey should use, or leave blank for tupaia',
       parameterKey: 'serviceType',
