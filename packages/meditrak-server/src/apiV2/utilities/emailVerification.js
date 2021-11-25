@@ -9,18 +9,18 @@ import { sendEmail } from '../../utilities';
 const EMAIL_CONTENTS = {
   tupaia: {
     subject: 'Tupaia email verification',
-    body:
+    body: resetUrl =>
       'Thank you for registering with tupaia.org.\n' +
       'Please click on the following link to register your email address.\n\n' +
-      '{resetUrl}\n\n' +
+      `${resetUrl}\n\n` +
       'If you believe this email was sent to you in error, please contact us immediately at admin@tupaia.org.\n',
   },
   lesmis: {
     subject: 'LESMIS email verification',
-    body:
+    body: resetUrl =>
       'Thank you for registering with lesmis.la\n' +
       'Please click on the following link to register your email address\n\n' +
-      '{resetUrl}\n\n' +
+      `${resetUrl}\n\n` +
       'If you believe this email was sent to you in error, please contact us immediately at admin@tupaia.org.\n',
     signOff: 'Best regards,\nThe LESMIS Team',
   },
@@ -35,9 +35,8 @@ export const sendEmailVerification = async (user, verifyUrl = VERIFY_URL) => {
   const platform = user.primary_platform ? user.primary_platform : 'tupaia';
 
   const { subject, body, signOff } = EMAIL_CONTENTS[platform];
-  const emailBody = body.replace('{resetUrl}', resetUrl);
 
-  return sendEmail(user.email, subject, emailBody, null, signOff);
+  return sendEmail(user.email, subject, body(resetUrl), null, signOff);
 };
 
 export const verifyEmailHelper = async (models, searchCondition, token) => {
