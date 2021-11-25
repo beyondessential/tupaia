@@ -1,15 +1,25 @@
 #!/bin/bash
 
-EXISTING_INSTANCES=$(aws ec2 describe-instances \
-      --filters Name=tag:Branch,Values=${CI_BRANCH} Name=tag-key,Values=SubdomainsViaGateway Name=instance-state-name,Values=running,stopped \
+STOPPED_INSTANCES=$(aws ec2 describe-instances \
+      --filters Name=tag:Branch,Values=${CI_BRANCH} Name=tag:DeploymentType,Values=tupaia Name=tag:DeploymentComponent,Values=app-server Name=instance-state-name,Values=stopped \
       --no-cli-pager)
 
-if [[ $EXISTING_INSTANCES != *"Instances"* ]]; then
+if [[ $STOPPED_INSTANCES == *"Instances"* ]]; then
+  echo "Can't redeploy while a deployment for ${CI_BRANCH} is stopped. Try again inside office hours, or start the app server and database then restart the build."
+  exit 1
+fi
+
+
+RUNNING_INSTANCES=$(aws ec2 describe-instances \
+      --filters Name=tag:Branch,Values=${CI_BRANCH} Name=tag:DeploymentType,Values=tupaia Name=tag:DeploymentComponent,Values=app-server Name=instance-state-name,Values=running \
+      --no-cli-pager)
+
+if [[ $RUNNING_INSTANCES != *"Instances"* ]]; then
   echo "No deployment running, skipping redeploy"
   exit 0
 fi
 
-echo "At least one existing deployment, triggering redeploy of any tagged with Branch ${CI_BRANCH}"
+echo "At least one running deployment, triggering redeploy of any tagged with Branch ${CI_BRANCH}"
 RESPONSE_FILE=lambda_redeploy_response.json
 AWS_MAX_ATTEMPTS=1 aws lambda invoke \
   --function-name deployment \
