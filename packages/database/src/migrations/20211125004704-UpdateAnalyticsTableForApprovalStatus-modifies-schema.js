@@ -58,7 +58,7 @@ exports.up = async function (db) {
           question ON question.id = answer.question_id
         INNER JOIN
           data_source ON data_source.id = question.data_source_id
-        WHERE data_source.service_type = ''tupaia'' AND survey_response.outdated IS FALSE AND survey_response.approval_status IN ('not_required', 'approved')';
+        WHERE data_source.service_type = ''tupaia'' AND survey_response.outdated IS FALSE AND survey_response.approval_status IN (''not_required'', ''approved'')';
 
     begin
       RAISE NOTICE 'Creating Materialized View Logs...';
