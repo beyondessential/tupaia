@@ -51,7 +51,7 @@ mkdir -p /home/ubuntu/.local/share/lpass
 
 # clone our repo
 cd /home/ubuntu
-git clone https://github.com/beyondessential/tupaia.git
+sudo -Hu ubuntu git clone https://github.com/beyondessential/tupaia.git
 
 # build all packages once using dev to speed up future branch-specific builds
-/home/ubuntu/tupaia/packages/devops/scripts/deployment/buildDeployablePackages.sh gold-master-image-builder
+sudo -Hu ubuntu /home/ubuntu/tupaia/packages/devops/scripts/deployment/buildDeployablePackages.sh gold-master-image-builder

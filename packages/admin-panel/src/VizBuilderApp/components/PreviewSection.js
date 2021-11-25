@@ -3,6 +3,7 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React, { useState, useEffect, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiTab from '@material-ui/core/Tab';
 import MuiTabs from '@material-ui/core/Tabs';
@@ -126,6 +127,8 @@ export const PreviewSection = () => {
   const [{ project, location, visualisation, testData }, { setPresentation }] = useVizConfig();
   const [viewContent, setViewContent] = useState(null);
 
+  const { vizType } = useParams();
+
   const { data: reportData = [], isLoading, isFetching, isError, error } = useReportPreview({
     visualisation,
     project,
@@ -135,6 +138,7 @@ export const PreviewSection = () => {
     onSettled: () => {
       setFetchEnabled(false);
     },
+    vizType,
   });
   const [tab, setTab] = useState(0);
 

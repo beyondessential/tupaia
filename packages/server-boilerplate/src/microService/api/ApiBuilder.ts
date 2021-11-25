@@ -7,6 +7,7 @@ import express, { Express, Request, Response, NextFunction, RequestHandler } fro
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
+import morgan from 'morgan';
 
 import { Authenticator } from '@tupaia/auth';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
@@ -31,6 +32,13 @@ export class ApiBuilder {
 
     this.version = 'v[0-9]'; // Default version
 
+    /**
+     * Access logs
+     */
+    if (process.env.NODE_ENV !== 'production') {
+      this.app.use(morgan('dev'));
+    }
+    
     /**
      * Add middleware
      */

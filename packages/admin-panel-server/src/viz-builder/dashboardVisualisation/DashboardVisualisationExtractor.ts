@@ -7,19 +7,10 @@ import { isNil, omitBy } from 'lodash';
 
 import { snakeKeys, yup } from '@tupaia/utils';
 
-import { PreviewMode, DashboardVisualisationResource } from '../types';
-import { LegacyReport, Report } from '..';
-import { baseVisualisationValidator, baseVisualisationDataValidator } from './validators';
-
-// expands object types recursively
-// TODO: Move this type to a generic @tupaia/utils-ts package
-type ExpandType<T> = T extends Record<string, unknown>
-  ? T extends infer O
-    ? {
-        [K in keyof O]: ExpandType<O[K]>;
-      }
-    : never
-  : T;
+import type { DashboardVisualisationResource } from './types';
+import type { LegacyReport, Report, ExpandType } from '../types';
+import { PreviewMode } from '../types';
+import { baseVisualisationValidator, baseVisualisationDataValidator } from '../validators';
 
 export class DashboardVisualisationExtractor<
   DashboardItemValidator extends yup.AnyObjectSchema,
@@ -81,9 +72,6 @@ export class DashboardVisualisationExtractor<
   }
 
   public getDashboardItem(): ExpandType<yup.InferType<DashboardItemValidator>> {
-    if (!this.dashboardItemValidator) {
-      throw new Error('No validator provided for extracting dashboard item');
-    }
     return this.dashboardItemValidator.validateSync(this.vizToDashboardItem());
   }
 
@@ -129,10 +117,6 @@ export class DashboardVisualisationExtractor<
   }
 
   public getReport(previewMode?: PreviewMode): ExpandType<yup.InferType<ReportValidator>> {
-    if (!this.reportValidator) {
-      throw new Error('No validator provided for extracting report');
-    }
-
     const report = this.visualisation.legacy
       ? this.vizToLegacyReport()
       : this.vizToReport(previewMode);

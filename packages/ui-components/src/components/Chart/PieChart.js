@@ -133,6 +133,16 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
     }, 50);
   }, []);
 
+  // Trigger rendering of the chart to fix an issue with the legend overlapping the chart.
+  // This is a work around for a recharts bug. @see https://github.com/recharts/recharts/issues/511
+  // eslint-disable-next-line no-unused-vars
+  const [_, setLoaded] = useState(false);
+  useEffect(() => {
+    setTimeout(() => {
+      setLoaded(true);
+    }, 50);
+  }, []);
+
   const handleMouseEnter = (event, index) => {
     setActiveIndex(index);
   };
