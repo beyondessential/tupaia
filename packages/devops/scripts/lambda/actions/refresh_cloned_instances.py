@@ -60,7 +60,7 @@ def refresh_cloned_instances(event):
 
     clone_tasks = sum(
     [
-        [asyncio.ensure_future(clone_volume_into_instance(instance, get_tag(instance, 'ClonedFrom'))) for instance in instances]
+        [asyncio.ensure_future(clone_volume_into_instance(instance, get_tag(instance, 'DeploymentType'), get_tag(instance, 'ClonedFrom'))) for instance in instances]
     ], [])
     loop.run_until_complete(asyncio.wait(clone_tasks))
 

@@ -22,6 +22,7 @@ def teardown_instance(instance):
         raise Exception('The instance ' + get_tag(instance, 'Name') + ' is protected and cannot be deleted')
 
     # Get tagged details of instance
+    deployment_type = get_tag(instance, 'DeploymentType')
     deployment_name = get_tag(instance, 'DeploymentName')
 
     # Delete DNS subdomains
@@ -32,7 +33,7 @@ def teardown_instance(instance):
     # Delete gateway subdomains
     subdomains_via_gateway = get_tag(instance, 'SubdomainsViaGateway')
     if subdomains_via_gateway != '':
-      gateway_elb = get_gateway_elb(deployment_name)
+      gateway_elb = get_gateway_elb(deployment_type, deployment_name)
       record_set_deletions = record_set_deletions + [build_record_set_deletion('tupaia.org', subdomain, deployment_name, gateway=gateway_elb) for subdomain in subdomains_via_gateway.split(',')]
 
     # Filter out deletions for record sets that don't actually exist
@@ -53,6 +54,6 @@ def teardown_instance(instance):
 
     # Delete gateway
     if subdomains_via_gateway != '':
-      delete_gateway(deployment_name)
+      delete_gateway(deployment_type, deployment_name)
 
     terminate_instance(instance)

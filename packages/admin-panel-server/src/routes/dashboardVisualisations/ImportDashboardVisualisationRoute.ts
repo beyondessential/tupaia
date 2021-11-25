@@ -11,7 +11,7 @@ import fs from 'fs';
 import { Route } from '@tupaia/server-boilerplate';
 import { readJsonFile, reduceToDictionary, snakeKeys, UploadError, yup } from '@tupaia/utils';
 
-import { MeditrakConnection } from '../connections';
+import { MeditrakConnection } from '../../connections';
 import {
   dashboardValidator,
   dashboardRelationObjectValidator,
@@ -20,14 +20,14 @@ import {
   legacyDashboardItemValidator,
   draftReportValidator,
   legacyReportValidator,
-} from '../viz-builder';
+} from '../../viz-builder';
 import type {
   Dashboard,
   DashboardRecord,
   DashboardRelation,
   DashboardRelationRecord,
   DashboardVizResource,
-} from '../viz-builder';
+} from '../../viz-builder';
 
 const importFileSchema = yup.object().shape(
   {

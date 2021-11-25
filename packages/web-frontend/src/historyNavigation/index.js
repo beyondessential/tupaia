@@ -12,4 +12,4 @@ export {
   getInitialLocationComponents,
 } from './historyNavigation';
 export { convertUrlPeriodStringToDateRange } from './utils';
-export { URL_COMPONENTS } from './constants';
+export { URL_COMPONENTS, DEFAULT_PERIOD } from './constants';

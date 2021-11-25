@@ -9,11 +9,12 @@ import { yup } from '@tupaia/utils';
 import {
   draftDashboardItemValidator,
   legacyDashboardItemValidator,
-  draftReportValidator,
-  legacyReportValidator,
+
+
 } from '../../../viz-builder/dashboardVisualisation/validators';
 import { PreviewMode } from '../../../viz-builder/types';
 import { DashboardVisualisationExtractor } from '../../../viz-builder/dashboardVisualisation/DashboardVisualisationExtractor';
+import { draftReportValidator, legacyReportValidator } from '../../../viz-builder';
 
 describe('DashboardVisualisationExtractor', () => {
   describe('validation', () => {

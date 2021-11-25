@@ -55,7 +55,7 @@ def redeploy_tupaia_server(event):
     if deployment_name:
         instance_filters.append({ 'Name': 'tag:DeploymentName', 'Values': [deployment_name] })
 
-    # find current instance
+    # find current instances
     existing_instances = find_instances(instance_filters)
 
     if len(existing_instances) == 0:
@@ -85,7 +85,7 @@ def redeploy_tupaia_server(event):
             deployment_name=get_tag(existing_instance, 'DeploymentName'),
             branch=get_tag(existing_instance, 'Branch'),
             instance_type=event.get('InstanceType', existing_instance['InstanceType']),
-            extra_tags=extra_tags,
+            extra_tags=extra_tags + [{ 'Key': 'DeploymentComponent', 'Value': 'app-server' }], # TODO remove deployment component stuff after move to RDS
             image_code=event.get('ImageCode', None), # will use id below if not defined in the event
             image_id=existing_instance['ImageId'],
             security_group_code=event.get('SecurityGroupCode', None), # will use id below if not defined in the event

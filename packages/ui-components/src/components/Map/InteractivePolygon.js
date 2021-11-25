@@ -39,10 +39,16 @@ const TransparentShadedPolygon = styled(Polygon)`
   }
 `;
 
-const parseProps = (organisationUnitCode, organisationUnitChildren, measureOrgUnits) => {
+const parseProps = (
+  organisationUnitCode,
+  organisationUnitChildren,
+  measureOrgUnits,
+  multiOverlayMeasureData,
+) => {
   let shade;
   let isHidden;
   let orgUnitMeasureData;
+  let orgUnitMultiOverlayMeasureData;
   let hasShadedChildren = false;
 
   if (measureOrgUnits.length > 0) {
@@ -55,6 +61,10 @@ const parseProps = (organisationUnitCode, organisationUnitChildren, measureOrgUn
       organisationUnitChildren.some(child => measureOrgUnitCodes.has(child.organisationUnitCode));
 
     if (measureOrgUnitCodes.has(organisationUnitCode)) {
+      orgUnitMultiOverlayMeasureData = multiOverlayMeasureData.find(
+        orgUnit => orgUnit.organisationUnitCode === organisationUnitCode,
+      );
+
       orgUnitMeasureData = measureOrgUnits.find(
         orgUnit => orgUnit.organisationUnitCode === organisationUnitCode,
       );
@@ -66,14 +76,15 @@ const parseProps = (organisationUnitCode, organisationUnitChildren, measureOrgUn
     }
   }
 
-  return { shade, isHidden, hasShadedChildren, orgUnitMeasureData };
+  return { shade, isHidden, hasShadedChildren, orgUnitMeasureData, orgUnitMultiOverlayMeasureData };
 };
 
 export const InteractivePolygon = React.memo(
   ({
     isChildArea,
     hasMeasureData,
-    measureOptions,
+    multiOverlaySerieses,
+    multiOverlayMeasureData,
     permanentLabels,
     onChangeOrgUnit,
     area,
@@ -85,10 +96,17 @@ export const InteractivePolygon = React.memo(
     const coordinates = area.location?.region;
     const hasChildren = organisationUnitChildren && organisationUnitChildren.length > 0;
 
-    const { shade, isHidden, hasShadedChildren, orgUnitMeasureData } = parseProps(
+    const {
+      shade,
+      isHidden,
+      hasShadedChildren,
+      orgUnitMeasureData,
+      orgUnitMultiOverlayMeasureData,
+    } = parseProps(
       organisationUnitCode,
       organisationUnitChildren,
       measureOrgUnits,
+      multiOverlayMeasureData,
     );
 
     if (isHidden || !coordinates) return null;
@@ -114,13 +132,15 @@ export const InteractivePolygon = React.memo(
       // and don't have a value to display in the tooltip (ie: radius overlay)
       if (hasMeasureData && !hasMeasureValue) return null;
 
+      // Render all measure data even it is not selected on switch button to display.
       return (
         <AreaTooltip
+          hasMeasureData={hasMeasureData}
           permanent={permanentLabels && isChildArea && !hasMeasureValue}
           sticky={!permanentLabels}
           hasMeasureValue={hasMeasureValue}
-          measureOptions={measureOptions}
-          orgUnitMeasureData={orgUnitMeasureData}
+          serieses={multiOverlaySerieses}
+          orgUnitMeasureData={orgUnitMultiOverlayMeasureData}
           orgUnitName={area.name}
         />
       );
@@ -176,8 +196,9 @@ InteractivePolygon.propTypes = {
   isChildArea: PropTypes.bool,
   onChangeOrgUnit: PropTypes.func,
   hasMeasureData: PropTypes.bool,
-  measureOptions: PropTypes.arrayOf(PropTypes.object),
+  multiOverlaySerieses: PropTypes.arrayOf(PropTypes.object),
   measureOrgUnits: PropTypes.arrayOf(PropTypes.object),
+  multiOverlayMeasureData: PropTypes.arrayOf(PropTypes.object),
   organisationUnitChildren: PropTypes.arrayOf(PropTypes.object),
 };
 
@@ -187,7 +208,8 @@ InteractivePolygon.defaultProps = {
   isChildArea: false,
   onChangeOrgUnit: () => {},
   hasMeasureData: false,
-  measureOptions: [],
+  multiOverlaySerieses: [],
   organisationUnitChildren: [],
   measureOrgUnits: [],
+  multiOverlayMeasureData: [],
 };

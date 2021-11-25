@@ -7,7 +7,7 @@
 #   "Action": "spin_up_tupaia_deployment",
 #   "User": "edwin",
 #   "Branch": "wai-965",
-#   "HoursOfLife": "8"
+#   "HoursOfLife": 8
 # }
 #
 # 2. Spin up a new deployment of Tupaia, but with the db cloned from dev and a different branch
@@ -42,10 +42,10 @@ from helpers.utilities import find_instances
 
 def spin_up_tupaia_deployment(event):
     # validate input config
-    if 'Branch' not in event:
-        raise Exception('You must include the key "Branch" in the lambda config, e.g. "dev".')
-    branch = event['Branch']
-    deployment_name = event.get('DeploymentName', branch) # default to branch if no deployment code set
+    if 'DeploymentName' not in event:
+        raise Exception('You must include the key "DeploymentName" in the lambda config, e.g. "dev".')
+    deployment_name = event['DeploymentName']
+    branch = event.get('Branch', deployment_name) # default to branch if no deployment code set
     if deployment_name == 'production' and branch != 'master':
         raise Exception('The production deployment needs to check out master, not ' + branch)
 
@@ -91,7 +91,7 @@ def spin_up_tupaia_deployment(event):
         deployment_name,
         branch,
         instance_type,
-        extra_tags=extra_tags,
+        extra_tags=extra_tags + [{ 'Key': 'DeploymentComponent', 'Value': 'app-server' }],
         image_code=image_code,
         security_group_code=security_group_code,
     )
@@ -100,11 +100,13 @@ def spin_up_tupaia_deployment(event):
     # do this after the server has started because it will take a while to run its startup script, so
     # we might as well be cloning the db instance at the same time, so long is it is available before
     # the server first tries to connect
+    deployment_type='tupaia'
     clone_instance(
+        deployment_type,
         clone_db_from,
         deployment_name,
         instance_type,
-        extra_tags=extra_tags,
+        extra_tags=extra_tags + [{ 'Key': 'DeploymentComponent', 'Value': 'db' }],
         security_group_code=security_group_code,
     )
 
