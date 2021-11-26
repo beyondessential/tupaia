@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 STOPPED_INSTANCES=$(aws ec2 describe-instances \
       --filters Name=tag:Branch,Values=${CI_BRANCH} Name=tag:DeploymentType,Values=tupaia Name=tag:DeploymentComponent,Values=app-server Name=instance-state-name,Values=stopped \
@@ -44,11 +44,20 @@ for DEPLOYMENT_BASE64 in $DEPLOYMENTS; do
   echo "Waiting for ${DEPLOYMENT_NAME} to run its startup build script. To watch detailed progress, connect to instance ${NEW_INSTANCE_ID} and run tail -f logs/deployment_log.txt"
   WAIT_ATTEMPTS=0
   while true; do
+    STARTUP_COMPLETE=false
     aws ec2 wait instance-exists \
       --instance-ids ${NEW_INSTANCE_ID} \
-      --filters Name=tag:StartupBuildProgress,Values=complete \
-      --no-cli-pager
-    if [ $? -eq 0 ]; then
+      --filters Name=tag:StartupBuildProgress,Values=complete,errored \
+      --no-cli-pager && STARTUP_COMPLETE=true
+    if [ $STARTUP_COMPLETE == true ]; then
+      INSTANCE_ERRORED_RESPONSE=$(aws ec2 describe-instances \
+          --instance-ids ${NEW_INSTANCE_ID} \
+          --filters Name=tag:StartupBuildProgress,Values=errored \
+          --no-cli-pager)
+      if [[ $INSTANCE_ERRORED_RESPONSE == *"Instances"* ]]; then
+        echo "Build failed! Connect to instance ${NEW_INSTANCE_ID} and check the logs at ~/logs/deployment_log.txt and /var/log/cloud-init-output.log"
+        exit 1
+      fi
       echo "New instance ${NEW_INSTANCE_ID} is ready, swapping over ELB"
       SWAP_OUT_RESPONSE_FILE=lambda_swap_out_response.json
       AWS_MAX_ATTEMPTS=1 aws lambda invoke \
