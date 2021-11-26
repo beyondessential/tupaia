@@ -1,21 +1,33 @@
 #!/bin/bash
 
-EXISTING_INSTANCES=$(aws ec2 describe-instances \
-      --filters Name=tag:Branch,Values=${CI_BRANCH} Name=tag-key,Values=SubdomainsViaGateway Name=instance-state-name,Values=running,stopped \
+STOPPED_INSTANCES=$(aws ec2 describe-instances \
+      --filters Name=tag:Branch,Values=${CI_BRANCH} Name=tag:DeploymentType,Values=tupaia Name=tag:DeploymentComponent,Values=app-server Name=instance-state-name,Values=stopped \
       --no-cli-pager)
 
-if [[ $EXISTING_INSTANCES != *"Instances"* ]]; then
+if [[ $STOPPED_INSTANCES == *"Instances"* ]]; then
+  echo "Can't redeploy while a deployment for ${CI_BRANCH} is stopped. Try again inside office hours, or start the app server and database then restart the build."
+  exit 1
+fi
+
+
+RUNNING_INSTANCES=$(aws ec2 describe-instances \
+      --filters Name=tag:Branch,Values=${CI_BRANCH} Name=tag:DeploymentType,Values=tupaia Name=tag:DeploymentComponent,Values=app-server Name=instance-state-name,Values=running \
+      --no-cli-pager)
+
+if [[ $RUNNING_INSTANCES != *"Instances"* ]]; then
   echo "No deployment running, skipping redeploy"
   exit 0
 fi
 
-echo "At least one existing deployment, triggering redeploy of any tagged with Branch ${CI_BRANCH}"
+echo "At least one running deployment, triggering redeploy of any tagged with Branch ${CI_BRANCH}"
 RESPONSE_FILE=lambda_redeploy_response.json
-aws lambda invoke \
+AWS_MAX_ATTEMPTS=1 aws lambda invoke \
   --function-name deployment \
   --payload "{\"Action\": \"redeploy_tupaia_server\", \"User\": \"${CI_COMMITTER_NAME} via codeship\", \"Branch\": \"$CI_BRANCH\" }" \
-  --cli-binary-format raw-in-base64-out $RESPONSE_FILE \
-  --no-cli-pager
+  --no-cli-pager \
+  --cli-binary-format raw-in-base64-out \
+  --cli-read-timeout 900 \
+  $RESPONSE_FILE
 
 if grep -q errorMessage "$RESPONSE_FILE"; then
   echo "Error while trying to redeploy"
@@ -39,11 +51,13 @@ for DEPLOYMENT_BASE64 in $DEPLOYMENTS; do
     if [ $? -eq 0 ]; then
       echo "New instance ${NEW_INSTANCE_ID} is ready, swapping over ELB"
       SWAP_OUT_RESPONSE_FILE=lambda_swap_out_response.json
-      aws lambda invoke \
+      AWS_MAX_ATTEMPTS=1 aws lambda invoke \
         --function-name deployment \
         --payload "{\"Action\": \"swap_out_tupaia_server\", \"User\": \"${CI_COMMITTER_NAME} via codeship\", \"DeploymentName\": \"$DEPLOYMENT_NAME\", \"NewInstanceId\": \"$NEW_INSTANCE_ID\" }" \
-        --cli-binary-format raw-in-base64-out $SWAP_OUT_RESPONSE_FILE \
-        --no-cli-pager
+        --no-cli-pager \
+        --cli-binary-format raw-in-base64-out \
+        --cli-read-timeout 900 \
+        $SWAP_OUT_RESPONSE_FILE
       if grep -q errorMessage "$SWAP_OUT_RESPONSE_FILE"; then
         echo "Error while trying to swap out instances"
         cat $SWAP_OUT_RESPONSE_FILE

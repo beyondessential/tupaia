@@ -8,7 +8,7 @@ import { CalculatedConfigValidator } from './CalculatedConfigValidator';
 import {
   splitStringOn,
   splitStringOnComma,
-  getExpressionQuestionCodes,
+  getDollarPrefixedExpressionVariables,
 } from '../../../../utilities';
 
 export class ConditionConfigValidator extends CalculatedConfigValidator {
@@ -111,7 +111,7 @@ export class ConditionConfigValidator extends CalculatedConfigValidator {
 
       for (const condition of conditions) {
         const [targetValue, expression] = splitStringOn(condition, ':');
-        const codes = getExpressionQuestionCodes(expression);
+        const codes = getDollarPrefixedExpressionVariables(expression);
 
         for (const code of codes) {
           this.assertPointingToPrecedingQuestion(

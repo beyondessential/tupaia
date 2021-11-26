@@ -8,24 +8,24 @@ import { Request, Response, NextFunction } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 
-import { MeditrakConnection } from '../connections';
+import { MeditrakConnection } from '../../connections';
 import {
-  DashboardVisualisationExtractor,
-  draftDashboardItemValidator,
+  MapOverlayVisualisationExtractor,
+  draftMapOverlayValidator,
   draftReportValidator,
-} from '../viz-builder';
+} from '../../viz-builder';
 
-export type SaveDashboardVisualisationRequest = Request<
-  { dashboardVisualisationId?: string },
+export type SaveMapOverlayVisualisationRequest = Request<
+  { mapOverlayVisualisationId?: string },
   { id: string; message: string },
   { visualisation?: Record<string, unknown> },
   Record<string, never>
 >;
 
-export class SaveDashboardVisualisationRoute extends Route<SaveDashboardVisualisationRequest> {
+export class SaveMapOverlayVisualisationRoute extends Route<SaveMapOverlayVisualisationRequest> {
   private readonly meditrakConnection: MeditrakConnection;
 
-  constructor(req: SaveDashboardVisualisationRequest, res: Response, next: NextFunction) {
+  constructor(req: SaveMapOverlayVisualisationRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.meditrakConnection = new MeditrakConnection(req.session);
@@ -33,34 +33,34 @@ export class SaveDashboardVisualisationRoute extends Route<SaveDashboardVisualis
 
   async buildResponse() {
     const { visualisation } = this.req.body;
-    const { dashboardVisualisationId } = this.req.params;
+    const { mapOverlayVisualisationId } = this.req.params;
 
     if (!visualisation) {
       throw new Error('Visualisation cannot be empty.');
     }
 
-    const extractor = new DashboardVisualisationExtractor(
+    const extractor = new MapOverlayVisualisationExtractor(
       visualisation,
-      draftDashboardItemValidator,
+      draftMapOverlayValidator,
       draftReportValidator,
     );
-    const body = extractor.getDashboardVisualisationResource();
+    const body = extractor.getMapOverlayVisualisationResource();
 
     let result;
 
     // Update visualisation if id exists
-    if (dashboardVisualisationId) {
+    if (mapOverlayVisualisationId) {
       result = await this.meditrakConnection.updateResource(
-        `dashboardVisualisations/${dashboardVisualisationId}`,
+        `mapOverlayVisualisations/${mapOverlayVisualisationId}`,
         {},
         body,
       );
     } else {
-      result = await this.meditrakConnection.createResource('dashboardVisualisations', {}, body);
+      result = await this.meditrakConnection.createResource('mapOverlayVisualisations', {}, body);
     }
 
     return {
-      id: dashboardVisualisationId || result.dashboardItem?.id,
+      id: mapOverlayVisualisationId || result.mapOverlay?.id,
       message: 'Visualisation saved successfully',
     };
   }

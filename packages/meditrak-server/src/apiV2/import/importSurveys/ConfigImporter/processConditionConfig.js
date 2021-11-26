@@ -7,7 +7,7 @@ import {
   splitStringOn,
   splitStringOnComma,
   translateExpression,
-  getExpressionQuestionCodes,
+  getDollarPrefixedExpressionVariables,
 } from '../../../utilities';
 
 export const processConditionConfig = async (models, config) => {
@@ -21,20 +21,20 @@ export const processConditionConfig = async (models, config) => {
  * Translate and combine conditions and defaultValues into 1 config object.
  *
  * Excel config:
- * conditions: Yes:RHS6UNFPA1353Calc >= 3,No:RHS6UNFPA1353Calc < 3
+ * conditions: Yes:$RHS6UNFPA1353Calc >= 3,No:$RHS6UNFPA1353Calc < 3
  * defaultValues: Yes.RHS6UNFPA1353Calc:0,No.RHS6UNFPA1353Calc:0
  *
  * will be converted to:
  *
  * conditions: {
  *   Yes: {
- *     formula: '5fa0cdcd5da1e614f30001fd >= 3',
+ *     formula: '$5fa0cdcd5da1e614f30001fd >= 3',
  *     defaultValues: {
  *        '5fa0cdcd5da1e614f30001fd': '0',
  *     },
  *   },
  *   No: {
- *     formula: '5fa0cdcd5da1e614f30001fd < 3',
+ *     formula: '$5fa0cdcd5da1e614f30001fd < 3',
  *     defaultValues: {
  *       '5fa0cdcd5da1e614f30001fd': '0',
  *     },
@@ -51,7 +51,7 @@ const translateConditions = async (models, conditionsConfig, defaultValuesConfig
   // Translate the expressions
   for (const condition of conditions) {
     const [targetValue, expression] = splitStringOn(condition, ':');
-    const codes = getExpressionQuestionCodes(expression);
+    const codes = getDollarPrefixedExpressionVariables(expression);
     const translatedExpression = await translateExpression(models, expression, codes);
     translatedConditions[targetValue] = {
       formula: translatedExpression,

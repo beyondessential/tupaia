@@ -34,8 +34,10 @@ export const ATTEMPT_RESET_TOKEN_LOGIN = 'ATTEMPT_RESET_TOKEN_LOGIN';
 export const CHANGE_SIDE_BAR_CONTRACTED_WIDTH = 'CHANGE_SIDE_BAR_CONTRACTED_WIDTH';
 export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
 export const CLEAR_MAP_OVERLAY_HIERARCHY = 'CLEAR_MAP_OVERLAY_HIERARCHY';
-export const SET_MAP_OVERLAY = 'SET_MAP_OVERLAY';
-export const UPDATE_MEASURE_CONFIG = 'UPDATE_MEASURE_CONFIG';
+export const SET_MAP_OVERLAYS = 'SET_MAP_OVERLAYS';
+export const SET_DISPLAYED_MAP_OVERLAY = 'SET_DISPLAYED_MAP_OVERLAY';
+export const SET_OVERLAY_CONFIGS = 'SET_OVERLAY_CONFIGS';
+export const UPDATE_OVERLAY_CONFIGS = 'UPDATE_OVERLAY_CONFIGS';
 export const REQUEST_ORG_UNIT = 'REQUEST_ORG_UNIT';
 export const FETCH_ORG_UNIT = 'FETCH_ORG_UNIT';
 export const SET_ORG_UNIT = 'SET_ORG_UNIT';
@@ -65,6 +67,7 @@ export const FETCH_LOGOUT_ERROR = 'FETCH_LOGOUT_ERROR';
 export const FETCH_LOGOUT_SUCCESS = 'FETCH_LOGOUT_SUCCESS';
 export const FETCH_MEASURE_DATA_ERROR = 'FETCH_MEASURE_DATA_ERROR';
 export const FETCH_MEASURE_DATA_SUCCESS = 'FETCH_MEASURE_DATA_SUCCESS';
+export const FETCH_ALL_MEASURE_DATA_SUCCESS = 'FETCH_ALL_MEASURE_DATA_SUCCESS';
 export const CANCEL_FETCH_MEASURE_DATA = 'CANCEL_FETCH_MEASURE_DATA';
 export const FETCH_MEASURES_ERROR = 'FETCH_MEASURES_ERROR';
 export const FETCH_MEASURES_SUCCESS = 'FETCH_MEASURES_SUCCESS';
@@ -126,8 +129,7 @@ export const FETCH_PROJECTS_ERROR = 'FETCH_PROJECTS_ERROR';
 export const REQUEST_PROJECT_ACCESS = 'REQUEST_PROJECT_ACCESS';
 export const SET_PROJECT_ADDITIONAL_ACCESS = 'SET_PROJECT_ADDITIONAL_ACCESS';
 export const UPDATE_HISTORY_LOCATION = 'UPDATE_HISTORY_LOCATION';
-export const UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS =
-  'UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS';
+export const SET_MAP_OVERLAYS_ONCE_HIERARCHY_LOADS = 'SET_MAP_OVERLAYS_ONCE_HIERARCHY_LOADS';
 export const LOCATION_CHANGE = 'LOCATION_CHANGE';
 
 /**
@@ -394,9 +396,10 @@ export function fetchUserSignupError(error) {
   };
 }
 
-export function displayUnverified() {
+export function displayUnverified(emailAddress) {
   return {
     type: SHOW_UNVERIFIED_LOGIN,
+    emailAddress,
   };
 }
 
@@ -523,38 +526,69 @@ export function changeBounds(bounds) {
 }
 
 /**
- * Changes current map overlay, should change features rendered on map after saga data fetch.
- * Updates the current mayOverlayId in the url.
- * @param {string} mayOverlayId
+ * Changes current map overlays, should change features rendered on map after saga data fetch.
+ * Updates the current mapOverlayCodes to overlay in the url.
+ * @param {string} mapOverlayCodes
  */
-export function setMapOverlay(mapOverlayCode) {
+export function setMapOverlays(mapOverlayCodes) {
   return {
-    type: SET_MAP_OVERLAY,
-    mapOverlayCode,
+    type: SET_MAP_OVERLAYS,
+    mapOverlayCodes,
   };
 }
 
 /**
- * Updates measure config for current measure in mapOverlayBar.
- *
- * @param {object} measureConfig
+ * Works with switching on map overlay button.
+ * @param {string[]} mapOverlayCodes
  */
-export function updateMeasureConfig(mapOverlayCode, measureConfig) {
+export function setDisplayedMapOverlays(mapOverlayCodes) {
   return {
-    type: UPDATE_MEASURE_CONFIG,
-    mapOverlayCode,
-    measureConfig,
+    type: SET_DISPLAYED_MAP_OVERLAY,
+    mapOverlayCodes,
   };
 }
 
 /**
- * Updates measure config for current measure in mapOverlayBar once the hierarchy is populated
+ * Set overlay configs for current map overlays in mapOverlayBar.
+ * It will not send requests as UPDATE_OVERLAY_CONFIGS do.
+ * @typedef {Object} overlayConfig
+ * @property {Moment} startDate
+ * @property {Moment} endDate
  *
- * @param {object} measureConfig
+ * @typedef {string} mapOverlayCode
+ * @param {Object<mapOverlayCode, overlayConfig>} overlayConfigs
  */
-export function updateCurrentMeasureConfigOnceHierarchyLoads(periodString) {
+export function setOverlayConfigs(overlayConfigs) {
   return {
-    type: UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
+    type: SET_OVERLAY_CONFIGS,
+    overlayConfigs,
+  };
+}
+
+/**
+ * Updates overlay configs for current map overlays in mapOverlayBar.
+ * @typedef {Object} overlayConfig
+ * @property {Moment} startDate
+ * @property {Moment} endDate
+ *
+ * @typedef {string} mapOverlayCode
+ * @param {Object<mapOverlayCode, overlayConfig>} overlayConfigs
+ */
+export function updateOverlayConfigs(overlayConfigs) {
+  return {
+    type: UPDATE_OVERLAY_CONFIGS,
+    overlayConfigs,
+  };
+}
+
+/**
+ * Set map overlays and overlay configs in mapOverlayBar once the hierarchy is populated
+ *
+ * @param {string} periodString
+ */
+export function setMapOverlaysOnceHierarchyLoads(periodString) {
+  return {
+    type: SET_MAP_OVERLAYS_ONCE_HIERARCHY_LOADS,
     periodString,
   };
 }
@@ -731,6 +765,13 @@ export function fetchMeasureInfoSuccess(response, countryCode) {
     type: FETCH_MEASURE_DATA_SUCCESS,
     response,
     countryCode,
+  };
+}
+
+export function fetchAllMeasureInfoSuccess(mapOverlayCodes) {
+  return {
+    type: FETCH_ALL_MEASURE_DATA_SUCCESS,
+    mapOverlayCodes,
   };
 }
 

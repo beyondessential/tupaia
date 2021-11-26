@@ -36,8 +36,8 @@ import {
   ATTEMPT_REQUEST_COUNTRY_ACCESS,
   CHANGE_SIDE_BAR_CONTRACTED_WIDTH,
   CHANGE_SIDE_BAR_EXPANDED_WIDTH,
-  SET_MAP_OVERLAY,
-  UPDATE_MEASURE_CONFIG,
+  SET_MAP_OVERLAYS,
+  UPDATE_OVERLAY_CONFIGS,
   CLEAR_MAP_OVERLAY_HIERARCHY,
   SET_ORG_UNIT,
   CHANGE_SEARCH,
@@ -99,6 +99,7 @@ import {
   SET_PROJECT,
   FETCH_RESET_TOKEN_LOGIN_ERROR,
   SET_ENLARGED_DIALOG_DATE_RANGE,
+  SET_OVERLAY_CONFIGS,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 
@@ -160,6 +161,7 @@ function authentication(
         isUserLoggedIn: false,
         isRequestingLogin: false,
         emailVerified: EMAIL_VERIFIED_STATUS.NEW_USER,
+        currentUserEmail: action.emailAddress,
       };
     case FETCH_LOGIN_ERROR:
       return {
@@ -592,23 +594,25 @@ function mapOverlayBar(
   switch (action.type) {
     case CLEAR_MAP_OVERLAY_HIERARCHY:
       return { ...state, mapOverlayHierarchy: [] };
-    case SET_MAP_OVERLAY:
+    case SET_MAP_OVERLAYS:
       return {
         ...state,
         hiddenMeasures: {},
       };
-    case UPDATE_MEASURE_CONFIG: {
-      const { groupIndex, mapOverlay, mapOverlayGroupIndex } = selectMapOverlayGroupByCode(
-        { mapOverlayBar: state },
-        action.mapOverlayCode,
-      );
-
+    case SET_OVERLAY_CONFIGS:
+    case UPDATE_OVERLAY_CONFIGS: {
       const mapOverlayHierarchy = [...state.mapOverlayHierarchy];
+      Object.entries(action.overlayConfigs).forEach(([mapOverlayCode, overlayConfig]) => {
+        const { groupIndex, mapOverlay, mapOverlayGroupIndex } = selectMapOverlayGroupByCode(
+          { mapOverlayBar: state },
+          mapOverlayCode,
+        );
 
-      mapOverlayHierarchy[groupIndex].children[mapOverlayGroupIndex] = {
-        ...mapOverlay,
-        ...action.measureConfig,
-      };
+        mapOverlayHierarchy[groupIndex].children[mapOverlayGroupIndex] = {
+          ...mapOverlay,
+          ...overlayConfig,
+        };
+      });
 
       return {
         ...state,

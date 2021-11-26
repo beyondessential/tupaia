@@ -17,7 +17,7 @@ import {
   ImportModal,
 } from '@tupaia/ui-components';
 import { useLocations, useProjects } from '../api/queries';
-import { usePreviewData, useVizBuilderConfig } from '../context';
+import { usePreviewData, useVizConfig } from '../context';
 import { LinkButton } from './LinkButton';
 import { useUploadTestData } from '../api';
 
@@ -134,7 +134,7 @@ export const PreviewOptions = () => {
   const [selectedLocationOption, setSelectedLocationOption] = useState(null);
   const [fileName, setFileName] = useState('');
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
-  const [{ project, location }, { setProject, setLocation, setTestData }] = useVizBuilderConfig();
+  const [{ project, location }, { setProject, setLocation, setTestData }] = useVizConfig();
   const { mutateAsync: uploadTestData } = useUploadTestData();
 
   const handleSelectProject = (event, value) => {

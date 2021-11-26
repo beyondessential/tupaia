@@ -6,16 +6,16 @@
 import { useMutation } from 'react-query';
 import { post, put } from '../api';
 
-export const useSaveVisualisation = config =>
+export const useSaveMapOverlayVisualisation = config =>
   useMutation(
-    ['dashboardVisualisation', config],
+    ['mapOverlayVisualisation', config],
     () => {
       if (config.id) {
-        return put(`dashboardVisualisation/${config.id}`, {
+        return put(`mapOverlayVisualisation/${config.id}`, {
           data: { visualisation: config },
         });
       }
-      return post('dashboardVisualisation', {
+      return post('mapOverlayVisualisation', {
         data: { visualisation: config },
       });
     },
