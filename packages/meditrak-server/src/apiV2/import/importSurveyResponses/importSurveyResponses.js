@@ -252,9 +252,9 @@ const constructNewSurveyResponseDetails = async (models, tabName, sheet, columnI
   if (!survey) {
     throw new Error(`No survey named ${surveyName}`);
   }
-  let approvalStatus = models.surveyResponse.appovalStatusTypes.NOT_REQUIRED;
+  let approvalStatus = models.surveyResponse.approvalStatusTypes.NOT_REQUIRED;
   if (survey.approval_required) {
-    approvalStatus = models.surveyResponse.appovalStatusTypes.PENDING;
+    approvalStatus = models.surveyResponse.approvalStatusTypes.PENDING;
   }
   const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
   const entity = await models.entity.findOne({ code: entityCode });
