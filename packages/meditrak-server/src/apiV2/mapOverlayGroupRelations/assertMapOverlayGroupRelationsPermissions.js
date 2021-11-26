@@ -4,7 +4,7 @@
  */
 
 import { hasBESAdminAccess } from '../../permissions';
-import { mergeFilter } from '../utilities';
+import { mergeFilter, mergeMultiJoin } from '../utilities';
 import { hasMapOverlayGetPermissions, hasMapOverlayEditPermissions } from '../mapOverlays';
 
 import {
@@ -12,6 +12,8 @@ import {
   hasMapOverlayGroupGetPermissions,
   hasMapOverlayGroupEditPermissions,
 } from '../mapOverlayGroups';
+import { TYPES } from '@tupaia/database';
+import { createDashboardRelationsDBFilter } from '../dashboardRelations';
 
 export const hasMapOverlayGroupRelationGetPermissions = async (
   accessPolicy,
@@ -145,6 +147,38 @@ export const createRelationsViaParentOverlayGroupDBFilter = async (
 
   const relations = await models.mapOverlayGroupRelation.find({
     map_overlay_group_id: mapOverlayGroupId,
+  });
+
+  const permittedRelationIds = [];
+  for (const relation of relations) {
+    const result = await hasMapOverlayGroupRelationGetPermissions(
+      accessPolicy,
+      models,
+      relation.id,
+    );
+    if (result.result) {
+      permittedRelationIds.push(relation.id);
+    }
+  }
+
+  dbConditions['map_overlay_group_relation.id'] = mergeFilter(
+    permittedRelationIds,
+    dbConditions['map_overlay_group_relation.id'],
+  );
+
+  return dbConditions;
+};
+
+export const createRelationsViaParentMapOverlayDBFilter = async (
+  accessPolicy,
+  models,
+  criteria,
+  mapOverlayId,
+) => {
+  const dbConditions = { ...criteria };
+
+  const relations = await models.mapOverlayGroupRelation.find({
+    child_id: mapOverlayId,
   });
 
   const permittedRelationIds = [];

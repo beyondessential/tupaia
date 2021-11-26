@@ -37,10 +37,10 @@ export const App = ({ Navbar, Footer }) => {
       <Container>
         {Navbar && <Navbar user={user} isBESAdmin={isBESAdmin} />}
         <Switch>
-          <Route path="/viz-builder/new" exact>
+          <Route path="/viz-builder/:vizType/new" exact>
             <CreateNew />
           </Route>
-          <Route path="/viz-builder/:visualisationId?">
+          <Route path="/viz-builder/:vizType/:visualisationId?">
             <Main />
           </Route>
         </Switch>
