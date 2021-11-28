@@ -41,7 +41,7 @@ const AVERAGE_INDICATOR = {
               type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
               config: {
                 dataSourceEntityType: 'sub_district',
-                aggregationEntityType: 'requested',
+                aggregationEntityType: 'country',
                 dataSourceEntityFilter: {
                   attributes_type: 'LESMIS_Target_District',
                 },
@@ -60,7 +60,7 @@ const AVERAGE_INDICATOR = {
               type: 'COUNT_PER_PERIOD_PER_ORG_GROUP',
               config: {
                 dataSourceEntityType: 'sub_district',
-                aggregationEntityType: 'requested',
+                aggregationEntityType: 'country',
                 dataSourceEntityFilter: {
                   attributes_type: 'LESMIS_Target_District',
                 },
