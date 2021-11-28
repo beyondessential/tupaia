@@ -17,6 +17,7 @@ import { FlexStart, FlexEnd } from './Layout';
 import { useEntityData, useMapOverlayReportData } from '../api';
 import { I18n, useUrlParams, makeEntityLink, useUrlSearchParam } from '../utils';
 import { MapTableModal } from './MapTableModal';
+import { DEFAULT_DATA_YEAR } from '../constants';
 
 const Wrapper = styled.section`
   padding-top: 1rem;
@@ -102,7 +103,7 @@ const getExportTitle = (entityData, currentMapOverlay) => {
 export const LocationHeader = () => {
   const { entityCode, view } = useUrlParams();
   const { search } = useLocation();
-  const [selectedYear] = useUrlSearchParam('year');
+  const [selectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
   const { data: overlayReportData, selectedOverlayName } = useMapOverlayReportData({
     entityCode,
     year: selectedYear,

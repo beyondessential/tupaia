@@ -123,6 +123,7 @@ const processMeasureData = ({
         ...measure,
         isHidden,
         radius,
+        organisationUnit: entity.code,
         coordinates: entity.point,
         region: entity.region,
         color,
