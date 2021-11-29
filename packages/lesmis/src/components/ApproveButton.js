@@ -10,7 +10,7 @@ import { IconButton } from '@tupaia/admin-panel/lib';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import MuiSnackbar from '@material-ui/core/Snackbar';
 import { SmallAlert } from '@tupaia/ui-components';
-import { useApproveSurveyResponse } from '../api/mutations/useApproveSurveyResponse';
+import { useApproveSurveyResponseStatus } from '../api';
 import { FlexCenter } from './Layout';
 import { GREEN } from '../constants';
 
@@ -25,7 +25,7 @@ const Button = styled(IconButton)`
 export const ApproveButton = ({ value: id }) => {
   const [isApproved, setIsApproved] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const { mutate, isLoading, isError, isSuccess } = useApproveSurveyResponse();
+  const { mutate, isLoading, isError, isSuccess } = useApproveSurveyResponseStatus();
 
   const handleClose = () => {
     setShowAlert(false);

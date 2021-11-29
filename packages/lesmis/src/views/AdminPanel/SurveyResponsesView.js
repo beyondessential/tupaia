@@ -4,14 +4,20 @@
  */
 import React from 'react';
 import { SurveyResponsesPage, SURVEY_RESPONSE_COLUMNS } from '@tupaia/admin-panel/lib';
-import { ConfirmModal } from '@tupaia/ui-components';
-import { ApproveButton } from '../../components';
+import { ApproveButton, RejectButton } from '../../components';
 
-// Todo: Replace base filter with real filter @see WAI-832
 export const ApprovedSurveyResponsesView = props => (
   <SurveyResponsesPage
     title="Approved Survey Responses"
     baseFilter={{ approval_status: { comparisonValue: 'approved' } }}
+    {...props}
+  />
+);
+
+export const RejectedSurveyResponsesView = props => (
+  <SurveyResponsesPage
+    title="Rejected Survey Responses"
+    baseFilter={{ approval_status: { comparisonValue: 'rejected' } }}
     {...props}
   />
 );
@@ -49,6 +55,7 @@ const COLUMNS = [
   {
     Header: 'Reject',
     source: 'id',
+    Cell: RejectButton,
     type: 'delete',
     actionConfig: {
       endpoint: 'surveyResponses',
@@ -56,30 +63,11 @@ const COLUMNS = [
   },
 ];
 
-// eslint-disable-next-line react/prop-types
-const ConfirmRejectModal = ({ isOpen, onConfirm, onCancel }) => {
-  return (
-    <ConfirmModal
-      onClose={onCancel}
-      isOpen={isOpen}
-      handleAction={onConfirm}
-      isLoading={false}
-      title="Reject Survey Response"
-      mainText="Are you sure you want to reject this Survey Response?"
-      description="Rejecting a Survey Response will also delete it. Once deleted this can’t be undone."
-      actionText="Yes, Reject and Delete"
-      loadingText="Saving"
-    />
-  );
-};
-
-// Todo: Replace base filter with real filter @see WAI-832
 export const DraftSurveyResponsesView = props => (
   <SurveyResponsesPage
     {...props}
     title="Survey Responses For Review"
     baseFilter={{ approval_status: { comparisonValue: 'pending' } }}
     columns={COLUMNS}
-    ConfirmDeleteModalComponent={ConfirmRejectModal}
   />
 );

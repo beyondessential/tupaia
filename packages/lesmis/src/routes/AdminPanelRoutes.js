@@ -19,7 +19,6 @@ import {
   AccessRequestsPage,
   PermissionGroupsPage,
   PermissionsPage,
-  SurveyResponsesPage,
   UsersPage,
   AdminPanelDataProviders,
 } from '@tupaia/admin-panel/lib';
@@ -27,11 +26,10 @@ import { LesmisAdminRoute } from './LesmisAdminRoute';
 import { useUser } from '../api/queries';
 import { getApiUrl } from '../utils/getApiUrl';
 import { DashboardItemsView } from '../views/AdminPanel/DashboardItemsView';
-
-/* eslint-disable */
 import {
   ApprovedSurveyResponsesView,
   DraftSurveyResponsesView,
+  RejectedSurveyResponsesView,
 } from '../views/AdminPanel/SurveyResponsesView';
 
 export const ROUTES = [
@@ -51,9 +49,9 @@ export const ROUTES = [
         component: ApprovedSurveyResponsesView,
       },
       {
-        label: 'All Survey Responses',
-        to: '/all',
-        component: SurveyResponsesPage,
+        label: 'Rejected',
+        to: '/rejected',
+        component: RejectedSurveyResponsesView,
       },
     ],
   },
