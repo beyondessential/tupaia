@@ -22,23 +22,14 @@ const SERVICE_TYPES = {
   INDICATOR: 'indicator',
 };
 
-const CONFIG_SCHEMA_BY_TYPE_AND_SERVICE = {
-  [DATA_SOURCE_TYPES.DATA_ELEMENT]: {
-    [SERVICE_TYPES.DHIS]: {
-      categoryOptionCombo: {},
-      dataElementCode: {},
-      isDataRegional: { default: true },
-    },
-    [SERVICE_TYPES.TUPAIA]: {},
-    [SERVICE_TYPES.INDICATOR]: {},
+const CONFIG_SCHEMA_BY_SERVICE = {
+  [SERVICE_TYPES.DHIS]: {
+    categoryOptionCombo: {},
+    dataElementCode: {},
+    isDataRegional: { default: true },
   },
-  [DATA_SOURCE_TYPES.DATA_GROUP]: {
-    [SERVICE_TYPES.DHIS]: {
-      isDataRegional: { default: true },
-    },
-    [SERVICE_TYPES.TUPAIA]: {},
-    [SERVICE_TYPES.INDICATOR]: {},
-  },
+  [SERVICE_TYPES.TUPAIA]: {},
+  [SERVICE_TYPES.INDICATOR]: {},
 };
 
 const DHIS_DATA_TYPES = {
@@ -58,7 +49,7 @@ export class DataSourceType extends DatabaseType {
   getTypes = () => DATA_SOURCE_TYPES;
 
   sanitizeConfig() {
-    const configSchema = CONFIG_SCHEMA_BY_TYPE_AND_SERVICE[this.type][this.service_type];
+    const configSchema = CONFIG_SCHEMA_BY_SERVICE[this.service_type];
     if (!configSchema) {
       throw new Error(`No config schema for '${this.service_type}' service found`);
     }
@@ -82,21 +73,6 @@ export class DataSourceType extends DatabaseType {
       }
     });
   }
-
-  assertFnCalledByDataGroup = functionName => {
-    if (this.type !== DATA_GROUP) {
-      throw new Error(`Can only invoke "${functionName}" in a dataGroup`);
-    }
-  };
-
-  attachDataElement = async dataElementId => {
-    this.assertFnCalledByDataGroup(this.attachDataElement.name);
-
-    await this.otherModels.dataElementDataGroup.findOrCreate({
-      data_element_id: dataElementId,
-      data_group_id: this.id,
-    });
-  };
 }
 
 export class DataSourceModel extends MaterializedViewLogDatabaseModel {
@@ -111,42 +87,4 @@ export class DataSourceModel extends MaterializedViewLogDatabaseModel {
   getTypes = () => DataSourceModel.types;
 
   getDhisDataTypes = () => DHIS_DATA_TYPES;
-
-  async getDataElementsInGroup(dataGroupCode) {
-    const dataGroup = await this.findOne({
-      code: dataGroupCode,
-      type: DATA_GROUP,
-    });
-
-    // if the data group is not a defined data source, default to an empty array of elements
-    if (!dataGroup) return [];
-
-    const dataElements = await this.otherModels.dataElementDataGroup.find({
-      data_group_id: dataGroup.id,
-    });
-
-    return this.find({
-      id: dataElements.map(({ data_element_id: dataElementId }) => dataElementId),
-      type: DATA_ELEMENT,
-    });
-  }
-
-  getDataGroupsThatIncludeElement = async elementConditions => {
-    const dataElement = await this.findOne({ ...elementConditions, type: DATA_ELEMENT });
-    if (!dataElement) {
-      return [];
-    }
-
-    // TODO use `this.find` with joins after
-    // https://github.com/beyondessential/tupaia-backlog/issues/662 is implemented
-    const dataGroups = await this.database.executeSql(
-      `
-        SELECT dg.* FROM data_source dg
-        JOIN data_element_data_group dedg ON dedg.data_group_id = dg.id
-        WHERE dg.type = 'dataGroup' and dedg.data_element_id = ?;
-      `,
-      [dataElement.id],
-    );
-    return Promise.all(dataGroups.map(this.generateInstance));
-  };
 }

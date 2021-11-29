@@ -21,6 +21,7 @@ import { DisasterEventModel } from './DisasterEvent';
 import { EntityModel } from './Entity';
 import { EntityHierarchyModel } from './EntityHierarchy';
 import { EntityRelationModel } from './EntityRelation';
+import { EventModel } from './Event';
 import { FacilityModel } from './Facility';
 import { GeographicalAreaModel } from './GeographicalArea';
 import { IndicatorModel } from './Indicator';
@@ -68,6 +69,7 @@ export const modelClasses = {
   Entity: EntityModel,
   EntityHierarchy: EntityHierarchyModel,
   EntityRelation: EntityRelationModel,
+  Event: EventModel,
   Facility: FacilityModel,
   GeographicalArea: GeographicalAreaModel,
   Indicator: IndicatorModel,
