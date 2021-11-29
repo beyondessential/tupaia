@@ -193,7 +193,8 @@ apiV2.get(
 );
 apiV2.get('/accessRequests/:recordId?', useRouteHandler(GETAccessRequests));
 apiV2.get('/dataSources/:recordId?', useRouteHandler(GETDataSources));
-apiV2.get('/dataSources/:parentRecordId/dataSources', useRouteHandler(GETDataSources));
+apiV2.get('/events/:parentRecordId/dataSources', useRouteHandler(GETDataSources));
+apiV2.get('/events/:recordId?', useRouteHandler(BESAdminGETHandler));
 apiV2.get('/entities/:recordId?', useRouteHandler(GETEntities));
 apiV2.get('/entities/:parentRecordId/surveyResponses', useRouteHandler(GETSurveyResponses));
 apiV2.get('/countries/:recordId?', useRouteHandler(GETCountries));
@@ -218,6 +219,7 @@ apiV2.post('/surveyResponse', catchAsyncErrors(surveyResponse)); // used by mSup
 apiV2.post('/surveyResponses', catchAsyncErrors(surveyResponse));
 apiV2.post('/countries', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataSources', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/events', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dashboards', useRouteHandler(CreateDashboard));
 apiV2.post('/disasters', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/feedItems', useRouteHandler(BESAdminCreateHandler));
@@ -241,6 +243,7 @@ apiV2.put('/surveyScreenComponents/:recordId', useRouteHandler(EditSurveyScreenC
 apiV2.put('/answers/:recordId', useRouteHandler(EditAnswers));
 apiV2.put('/surveyResponses/:parentRecordId/answers/:recordId', useRouteHandler(EditAnswers));
 apiV2.put('/dataSources/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/events/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/disasters/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/feedItems/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/options/:recordId', useRouteHandler(EditOptions));
@@ -269,6 +272,7 @@ apiV2.delete('/surveyScreenComponents/:recordId', useRouteHandler(DeleteSurveySc
 apiV2.delete('/answers/:recordId', useRouteHandler(DeleteAnswers));
 apiV2.delete('/surveyResponses/:parentRecordId/answers/:recordId', useRouteHandler(DeleteAnswers));
 apiV2.delete('/dataSources/:recordId', useRouteHandler(BESAdminDeleteHandler));
+apiV2.delete('/events/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/disasters/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/feedItems/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/options/:recordId', useRouteHandler(DeleteOptions));

@@ -22,7 +22,7 @@ export class GETDataSources extends GETHandler {
   async getPermissionsViaParentFilter(criteria, options) {
     const dbConditions = { ...criteria };
     const dbOptions = { ...options };
-    dbConditions[`${TYPES.DATA_ELEMENT_DATA_GROUP}.data_group_id`] = this.parentRecordId;
+    dbConditions[`${TYPES.DATA_ELEMENT_DATA_GROUP}.event_id`] = this.parentRecordId;
     dbOptions.multiJoin = mergeMultiJoin(
       [
         {

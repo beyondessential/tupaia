@@ -114,31 +114,22 @@ const DATA_GROUP_FIELDS = [
 export const DataGroupsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Data Groups"
-    endpoint="dataSources"
+    endpoint="events"
     reduxId="dataGroups"
     columns={[...DATA_GROUP_FIELDS, ...getButtonsConfig(DATA_GROUP_FIELDS)]}
     expansionTabs={[
       {
         title: 'Data Elements',
-        endpoint: 'dataSources/{id}/dataSources',
+        endpoint: 'events/{id}/dataSources',
         columns: [...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS)],
       },
     ]}
     editConfig={{ title: 'Edit Data Source' }}
-    baseFilter={{ type: { comparisonValue: 'dataGroup' } }}
     createConfig={{
       title: 'New Data Group',
       actionConfig: {
         editEndpoint: 'dataSources',
-        fields: [
-          ...DATA_GROUP_FIELDS,
-          {
-            Header: 'Type',
-            source: 'type',
-            editConfig: { default: 'dataGroup' },
-            show: false,
-          },
-        ],
+        fields: [...DATA_GROUP_FIELDS],
       },
     }}
     getHeaderEl={getHeaderEl}
@@ -156,20 +147,11 @@ export const DataElementsPage = ({ getHeaderEl }) => (
     reduxId="dataElements"
     columns={[...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS)]}
     editConfig={{ title: 'Edit Data Source' }}
-    baseFilter={{ type: { comparisonValue: 'dataElement' } }}
     createConfig={{
       title: 'New Data Element',
       actionConfig: {
         editEndpoint: 'dataSources',
-        fields: [
-          ...DATA_ELEMENT_FIELDS,
-          {
-            Header: 'Type',
-            source: 'type',
-            editConfig: { default: 'dataElement' },
-            show: false,
-          },
-        ],
+        fields: [...DATA_ELEMENT_FIELDS],
       },
     }}
     getHeaderEl={getHeaderEl}
