@@ -6,14 +6,7 @@ import { useMutation } from 'react-query';
 import { post } from '../api';
 
 export const useApproveSurveyResponse = () => {
-  return useMutation(
-    id => {
-      return post(`approveSurveyResponse/${id}`);
-    },
-    {
-      onSuccess: () => {
-        console.log('success');
-      },
-    },
-  );
+  return useMutation(id => {
+    return post(`approveSurveyResponse/${id}`);
+  });
 };

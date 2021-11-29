@@ -28,4 +28,8 @@ export class MeditrakConnection extends SessionHandlingApiConnection {
   registerUser(userData: RequestBody) {
     return this.post('user', {}, userData);
   }
+
+  updateSurveyResponse(id: string) {
+    return this.put(`surveyResponses/${id}`, {}, { approval_status: 'approved' });
+  }
 }

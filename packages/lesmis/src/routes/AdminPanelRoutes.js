@@ -34,36 +34,32 @@ import {
   DraftSurveyResponsesView,
 } from '../views/AdminPanel/SurveyResponsesView';
 
-const ADMIN_URL = '/admin';
-
-// Todo: Replace SurveyResponsesPage with ApprovedSurveyResponsesView and DraftSurveyResponsesView
-// @see WAI-832
 export const ROUTES = [
   {
     label: 'Survey Data',
-    to: `${ADMIN_URL}/survey-responses`,
+    to: '/survey-responses',
     icon: <Assignment />,
     tabs: [
-      // {
-      //   label: 'Review',
-      //   to: '',
-      //   component: DraftSurveyResponsesView,
-      // },
-      // {
-      //   label: 'Approved',
-      //   to: '/approved',
-      //   component: ApprovedSurveyResponsesView,
-      // },
       {
-        label: 'Survey Responses',
+        label: 'Under Review',
         to: '',
+        component: DraftSurveyResponsesView,
+      },
+      {
+        label: 'Approved',
+        to: '/approved',
+        component: ApprovedSurveyResponsesView,
+      },
+      {
+        label: 'All Survey Responses',
+        to: '/all',
         component: SurveyResponsesPage,
       },
     ],
   },
   {
     label: 'Surveys',
-    to: `${ADMIN_URL}/surveys`,
+    to: '/surveys',
     icon: <Assignment />,
     tabs: [
       {
@@ -85,7 +81,7 @@ export const ROUTES = [
   },
   {
     label: 'Visualisations',
-    to: `${ADMIN_URL}/visualisations`,
+    to: '/visualisations',
     icon: <InsertChart />,
     tabs: [
       {
@@ -122,7 +118,7 @@ export const ROUTES = [
   },
   {
     label: 'Users & Permissions',
-    to: `${ADMIN_URL}/users`,
+    to: '/users',
     icon: <PeopleAlt />,
     tabs: [
       {
@@ -183,7 +179,7 @@ const AdminPanelRoutes = () => {
               </Switch>
             </LesmisAdminRoute>
           ))}
-          <Redirect to={`${path}${ADMIN_URL}/survey-responses`} />
+          <Redirect to={`${path}/survey-responses`} />
         </Switch>
       </div>
     </AdminPanelDataProviders>

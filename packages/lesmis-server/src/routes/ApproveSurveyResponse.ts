@@ -19,8 +19,6 @@ export class ApproveSurveyResponse extends Route {
 
   async buildResponse() {
     const { id } = this.req.params;
-    console.log('Approve Survey Response. Id: ', id);
-    await sleep(2000);
-    return true;
+    return this.meditrakConnection.updateSurveyResponse(id);
   }
 }

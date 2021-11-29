@@ -16,6 +16,10 @@ import { GREEN } from '../constants';
 
 const Button = styled(IconButton)`
   width: 56px;
+
+  &:hover {
+    background: ${GREEN};
+  }
 `;
 
 export const ApproveButton = ({ value: id }) => {

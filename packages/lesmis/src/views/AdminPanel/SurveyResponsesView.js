@@ -11,7 +11,7 @@ import { ApproveButton } from '../../components';
 export const ApprovedSurveyResponsesView = props => (
   <SurveyResponsesPage
     title="Approved Survey Responses"
-    baseFilter={{ 'survey.code': { comparator: 'ILIKE', comparisonValue: '%_Confirmed_WNR' } }}
+    baseFilter={{ approval_status: { comparisonValue: 'approved' } }}
     {...props}
   />
 );
@@ -78,7 +78,7 @@ export const DraftSurveyResponsesView = props => (
   <SurveyResponsesPage
     {...props}
     title="Survey Responses For Review"
-    baseFilter={{ 'survey.code': { comparator: 'NOT ILIKE', comparisonValue: '%_Confirmed_WNR' } }}
+    baseFilter={{ approval_status: { comparisonValue: 'pending' } }}
     columns={COLUMNS}
     ConfirmDeleteModalComponent={ConfirmRejectModal}
   />
