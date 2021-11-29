@@ -41,7 +41,7 @@ export function createApp() {
     .get('/v1/map-overlays/:entityCode', handleWith(MapOverlaysRoute))
     .get('/v1/entity/:entityCode', handleWith(EntityRoute))
     .get('/v1/report/:entityCode/:reportCode', handleWith(ReportRoute))
-    .put('/v1/updateSurveyResponse/:id', handleWith(UpdateSurveyResponseRoute))
+    .put('/v1/survey-response/:id', handleWith(UpdateSurveyResponseRoute))
     .post('/v1/register', handleWith(RegisterRoute))
     .post('/v1/report/:entityCode/:reportCode', handleWith(ReportRoute))
     .build();

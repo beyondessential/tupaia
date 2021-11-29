@@ -22,6 +22,14 @@ export const RejectedSurveyResponsesView = props => (
   />
 );
 
+export const NonApprovalSurveyResponsesView = props => (
+  <SurveyResponsesPage
+    title="Approval Not Required Survey Responses"
+    baseFilter={{ approval_status: { comparisonValue: 'not_required' } }}
+    {...props}
+  />
+);
+
 const entityName = {
   Header: 'Entity',
   source: 'entity.name',

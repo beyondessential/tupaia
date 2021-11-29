@@ -30,6 +30,7 @@ import {
   ApprovedSurveyResponsesView,
   DraftSurveyResponsesView,
   RejectedSurveyResponsesView,
+  NonApprovalSurveyResponsesView,
 } from '../views/AdminPanel/SurveyResponsesView';
 
 export const ROUTES = [
@@ -39,7 +40,7 @@ export const ROUTES = [
     icon: <Assignment />,
     tabs: [
       {
-        label: 'Under Review',
+        label: 'Review',
         to: '',
         component: DraftSurveyResponsesView,
       },
@@ -52,6 +53,11 @@ export const ROUTES = [
         label: 'Rejected',
         to: '/rejected',
         component: RejectedSurveyResponsesView,
+      },
+      {
+        label: 'Approval Not Required',
+        to: '/non-approval',
+        component: NonApprovalSurveyResponsesView,
       },
     ],
   },
