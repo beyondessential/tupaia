@@ -103,9 +103,10 @@ export class RegisterUserAccounts extends CreateUserAccounts {
       userData = { ...userData, permissionGroupName, countryName, primaryPlatform };
     }
 
-    const user = await this.createUserRecord(userData);
+    const { userId } = await this.createUserRecord(userData);
+    const user = await this.models.user.findById(userId);
     await sendEmailVerification(user);
 
-    return { userId: user.userId };
+    return { userId };
   }
 }

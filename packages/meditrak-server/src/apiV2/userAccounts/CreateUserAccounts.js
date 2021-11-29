@@ -78,7 +78,7 @@ export class CreateUserAccounts extends CreateHandler {
         });
       }
 
-      return { ...user, userId: user.id, secretKey };
+      return { userId: user.id, secretKey };
     });
   }
 }

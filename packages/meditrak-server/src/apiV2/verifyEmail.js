@@ -54,7 +54,7 @@ export const requestResendEmail = async (req, res) => {
     throw new FormValidationError(`Unable to send verification email to ${emailAddress}`);
   }
 
-  await sendEmailVerification(user);
+  sendEmailVerification(user);
   respond(res, {
     success: true,
   });

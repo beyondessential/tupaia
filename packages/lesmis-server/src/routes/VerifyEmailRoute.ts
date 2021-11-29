@@ -18,12 +18,6 @@ export class VerifyEmailRoute extends Route {
 
   async buildResponse() {
     const { emailToken } = this.req.params;
-
-    const response = await this.meditrakConnection.verifyEmail(emailToken);
-    if (response.emailVerified === 'true') {
-      return response;
-    }
-
-    throw Error('Email was not correctly verified');
+    return this.meditrakConnection.verifyEmail(emailToken);
   }
 }
