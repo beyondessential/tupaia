@@ -107,7 +107,6 @@ export class DhisTranslator {
   async translateOutboundEventDataValues(api, dataValues) {
     const dataSources = await this.models.dataSource.find({
       code: dataValues.map(({ code }) => code),
-      type: this.dataSourceTypes.DATA_ELEMENT,
     });
     const dataElementsByCode = await this.fetchOutboundDataElementsByCode(api, dataSources);
     const outboundDataValues = await this.translateOutboundDataValues(api, dataValues, dataSources);
@@ -133,10 +132,10 @@ export class DhisTranslator {
     return this.inboundAnalyticsTranslator.translate(response, dataSources);
   };
 
-  async translateInboundEvents(events, dataGroupCode) {
-    const dataElementsInGroup = await this.models.dataSource.getDataElementsInGroup(dataGroupCode);
+  async translateInboundEvents(events, eventCode) {
+    const dataElementsInEvent = await this.models.event.getDataElementsInEvent(eventCode);
     const dataElementToSourceCode = reduceToDictionary(
-      dataElementsInGroup,
+      dataElementsInEvent,
       'dataElementCode',
       'code',
     );

@@ -46,7 +46,7 @@ const DEFAULT_SERVICE_TYPE = 'tupaia';
 const VIS_CRITERIA_CONJUNCTION = '_conjunction';
 
 const validateSurveyServiceType = async (models, surveyCode, serviceType) => {
-  const existingDataGroup = await models.dataSource.findOne({ code: surveyCode });
+  const existingDataGroup = await models.event.findOne({ code: surveyCode });
   if (existingDataGroup !== null) {
     if (serviceType !== existingDataGroup.service_type) {
       throw new ImportValidationError(
@@ -65,9 +65,8 @@ const validateQuestionExistence = rows => {
 };
 
 const updateOrCreateDataGroup = async (models, { surveyCode, serviceType }) => {
-  const dataGroup = await models.dataSource.findOrCreate(
+  const dataGroup = await models.event.findOrCreate(
     {
-      type: models.dataSource.getTypes().DATA_GROUP,
       code: surveyCode,
     },
     { service_type: serviceType },
@@ -92,7 +91,6 @@ const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGro
   if (dataElement === null) {
     // Data Element doesn't exist, create it
     dataElement = await models.dataSource.create({
-      type: models.dataSource.getTypes().DATA_ELEMENT,
       code: dataElementCode,
       service_type: serviceType,
     });

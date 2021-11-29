@@ -31,7 +31,6 @@ export const upsertQuestion = async (data = {}) => {
     service_type: 'tupaia',
     ...data,
     code,
-    type: 'dataElement',
   });
   return upsertDummyRecord(models.question, {
     ...data,

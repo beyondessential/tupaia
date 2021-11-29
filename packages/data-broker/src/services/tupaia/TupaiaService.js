@@ -81,11 +81,9 @@ export class TupaiaService extends Service {
     }
     const { includeOptions } = options;
     const [dataSource] = dataSources;
-    const { code: dataGroupCode } = dataSource;
-    const dataElementDataSources = await this.models.dataSource.getDataElementsInGroup(
-      dataGroupCode,
-    );
+    const { code: eventCode } = dataSource;
+    const dataElementDataSources = await this.models.event.getDataElementsInEvent(eventCode);
     const dataElementCodes = dataElementDataSources.map(({ code }) => code);
-    return this.api.fetchDataGroup(dataGroupCode, dataElementCodes, { includeOptions });
+    return this.api.fetchDataGroup(eventCode, dataElementCodes, { includeOptions });
   }
 }

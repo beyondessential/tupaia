@@ -137,7 +137,6 @@ export class DhisInputSchemeResolvingApiProxy {
     const dataElementIdToCode = {};
     const dataElements = await this.models.dataSource.find({
       code: dataElementCodes,
-      type: 'dataElement',
     });
 
     for (const dataElement of dataElements) {
@@ -212,7 +211,6 @@ export class DhisInputSchemeResolvingApiProxy {
   allDataElementsHaveDhisId = async dataElementCodes => {
     const dataElements = await this.models.dataSource.find({
       code: dataElementCodes,
-      type: 'dataElement',
     });
 
     for (const dataElementCode of dataElementCodes) {
@@ -250,10 +248,10 @@ export class DhisInputSchemeResolvingApiProxy {
    * @private
    */
   allProgramsHaveDhisId = async programCodes => {
-    const dataGroups = await this.models.dataSource.find({ code: programCodes, type: 'dataGroup' });
+    const events = await this.models.event.find({ code: programCodes });
 
-    for (const dataGroup of dataGroups) {
-      if (!dataGroup.config.dhisId) {
+    for (const event of events) {
+      if (!event.config.dhisId) {
         return false;
       }
     }
@@ -273,7 +271,6 @@ export class DhisInputSchemeResolvingApiProxy {
 
     const dataElements = await this.models.dataSource.find({
       code: dataElementCodes,
-      type: 'dataElement',
     });
 
     for (const dataElementCode of dataElementCodes) {
@@ -309,7 +306,6 @@ export class DhisInputSchemeResolvingApiProxy {
 
     const dataElements = await this.models.dataSource.find({
       code: dataElementCodes,
-      type: 'dataElement',
     });
 
     for (const dataElement of dataElements) {
@@ -403,29 +399,28 @@ export class DhisInputSchemeResolvingApiProxy {
       throw new Error('No program codes to replace');
     }
 
-    const dataGroups = await this.models.dataSource.find({
+    const events = await this.models.event.find({
       code: programCodes,
-      type: 'dataGroup',
     });
 
     const programIds = [];
 
     for (const programCode of programCodes) {
-      const dataGroup = dataGroups.find(d => d.code === programCode);
+      const event = events.find(d => d.code === programCode);
 
-      if (!dataGroup) {
+      if (!event) {
         throw new Error(
           `Program/DataGroup ${programCode} not found in data_source, attempted to replace its code with an id`,
         );
       }
 
-      if (!dataGroup.config.dhisId) {
+      if (!event.config.dhisId) {
         throw new Error(
           `Program/DataGroup ${programCode} does not have a dhisId, attempted to replace its code with the id`,
         );
       }
 
-      programIds.push(dataGroup.config.dhisId);
+      programIds.push(event.config.dhisId);
     }
 
     modifiedQuery.programIds = programIds;

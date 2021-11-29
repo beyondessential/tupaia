@@ -17,12 +17,12 @@ export const assertCanAddDataElementInGroup = async (
 ) => {
   const { service_type: newServiceType, config: newConfig = {} } = updatedFields;
 
-  const dataGroups = await models.dataSource.getDataGroupsThatIncludeElement({
+  const events = await models.event.getEventsThatIncludeElement({
     code: dataElementCode,
   });
-  const otherDataGroups = dataGroups.filter(({ code }) => code !== dataGroupCode);
-  otherDataGroups.forEach(otherDataGroup => {
-    const { service_type: serviceType, config } = otherDataGroup;
+  const otherEvents = events.filter(({ code }) => code !== dataGroupCode);
+  otherEvents.forEach(otherEvent => {
+    const { service_type: serviceType, config } = otherEvent;
 
     if (areBothDefinedAndDifferent(serviceType, newServiceType)) {
       throw new Error(
@@ -30,7 +30,7 @@ export const assertCanAddDataElementInGroup = async (
           property: 'service type',
           value: newServiceType,
           dataElementCode,
-          otherGroupCode: otherDataGroup.code,
+          otherGroupCode: otherEvent.code,
         }),
       );
     }
@@ -41,7 +41,7 @@ export const assertCanAddDataElementInGroup = async (
           property: 'DHIS server',
           value: `${config.isDataRegional ? '' : 'non '}regional`,
           dataElementCode,
-          otherGroupCode: otherDataGroup.code,
+          otherGroupCode: otherEvent.code,
         }),
       );
     }

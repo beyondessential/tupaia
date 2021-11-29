@@ -31,8 +31,8 @@ const buildAndInsertQuestion = async (
 const buildAndInsertDataGroup = async (models, fields) => {
   const { code, type, ...createFields } = fields;
   return findOrCreateDummyRecord(
-    models.dataSource,
-    { code, type: 'dataGroup' },
+    models.event,
+    { code },
     { service_type: 'tupaia', ...createFields },
   );
 };
@@ -41,7 +41,7 @@ const buildAndInsertDataElement = async (models, fields) => {
   const { code, type, ...createFields } = fields;
   return findOrCreateDummyRecord(
     models.dataSource,
-    { code, type: 'dataElement' },
+    { code },
     { service_type: 'tupaia', ...createFields },
   );
 };

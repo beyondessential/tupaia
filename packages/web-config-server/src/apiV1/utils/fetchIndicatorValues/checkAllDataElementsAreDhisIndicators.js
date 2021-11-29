@@ -10,7 +10,6 @@
 export const checkAllDataElementsAreDhisIndicators = async (models, dataElementCodes) => {
   const dataElements = await models.dataSource.find({
     code: dataElementCodes,
-    type: 'dataElement',
   });
 
   if (dataElementCodes.length !== dataElements.length) {

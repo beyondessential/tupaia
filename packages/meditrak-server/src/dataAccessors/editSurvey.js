@@ -18,7 +18,7 @@ class SurveyEditor {
 
   async edit(recordId, updatedFields) {
     this.survey = await this.models.survey.findById(recordId);
-    this.dataGroup = await this.survey.dataGroup();
+    this.event = await this.survey.event();
     this.updatedFieldsByResource = this.createUpdatedFieldsByResource(updatedFields);
 
     await this.updateDataElements();
@@ -60,12 +60,12 @@ class SurveyEditor {
       return;
     }
 
-    const dataElements = await this.models.dataSource.getDataElementsInGroup(this.dataGroup.code);
+    const dataElements = await this.models.event.getDataElementsInEvent(this.event.code);
     const updateDataElement = async dataElement => {
       await assertCanAddDataElementInGroup(
         this.models,
         dataElement.code,
-        this.dataGroup.code,
+        this.event.code,
         this.updatedFieldsByResource.dataElement,
       );
       await this.updateResource(dataElement, RESOURCE_TYPES.DATA_ELEMENT);
@@ -75,9 +75,9 @@ class SurveyEditor {
   };
 
   updateDataGroup = async () => {
-    await this.dataGroup.deleteSurveyDateElement();
-    await this.updateResource(this.dataGroup, RESOURCE_TYPES.DATA_GROUP);
-    await this.dataGroup.upsertSurveyDateElement();
+    await this.event.deleteSurveyDateElement();
+    await this.updateResource(this.event, RESOURCE_TYPES.DATA_GROUP);
+    await this.event.upsertSurveyDateElement();
   };
 
   updateSurvey = async () => this.updateResource(this.survey, RESOURCE_TYPES.SURVEY);

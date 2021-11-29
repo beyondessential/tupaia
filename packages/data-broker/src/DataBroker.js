@@ -30,7 +30,7 @@ export class DataBroker {
     };
     this.fetchers = {
       [this.getDataSourceTypes().DATA_ELEMENT]: this.fetchFromDataSourceTable,
-      [this.getDataSourceTypes().DATA_GROUP]: this.fetchFromDataSourceTable,
+      [this.getDataSourceTypes().DATA_GROUP]: this.fetchFromEventTable,
       [this.getDataSourceTypes().SYNC_GROUP]: this.fetchFromSyncGroupTable,
     };
   }
@@ -45,6 +45,10 @@ export class DataBroker {
 
   fetchFromDataSourceTable = async dataSourceSpec => {
     return this.models.dataSource.find(dataSourceSpec);
+  };
+
+  fetchFromEventTable = async dataSourceSpec => {
+    return this.models.event.find(dataSourceSpec);
   };
 
   fetchFromSyncGroupTable = async dataSourceSpec => {
