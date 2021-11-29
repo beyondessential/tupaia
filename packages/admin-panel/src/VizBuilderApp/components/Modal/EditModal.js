@@ -4,8 +4,11 @@
  */
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 import { Button, Dialog, DialogFooter, DialogHeader } from '@tupaia/ui-components';
-import { MetadataForm } from '../MetadataForm';
+import { DashboardMetadataForm } from '../Dashboard';
+import { MapOverlayMetadataForm } from '../MapOverlay';
+import { VIZ_TYPE_PARAM } from '../../constants';
 
 export const Body = styled.div`
   padding: 30px 20px;
@@ -13,6 +16,8 @@ export const Body = styled.div`
 `;
 
 export const EditModal = () => {
+  const { vizType } = useParams();
+
   const [isOpen, setIsOpen] = useState(false);
 
   const handleClose = () => {
@@ -22,6 +27,15 @@ export const EditModal = () => {
   const handleOpen = () => {
     setIsOpen(true);
   };
+
+  let MetadataForm = null;
+  if (vizType === VIZ_TYPE_PARAM.DASHBOARD_ITEM) {
+    MetadataForm = DashboardMetadataForm;
+  } else if (vizType === VIZ_TYPE_PARAM.MAP_OVERLAY) {
+    MetadataForm = MapOverlayMetadataForm;
+  } else {
+    throw new Error(`Unknown viz type ${vizType}`);
+  }
 
   return (
     <>

@@ -5,13 +5,34 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-export const getMapOverlayFromHierarchy = (mapOverlayHierarchy, targetMapOverlayId) => {
-  if (!targetMapOverlayId) {
-    return null;
+export const getMapOverlaysFromHierarchy = (mapOverlayHierarchy, targetMapOverlayCodes) => {
+  if (!targetMapOverlayCodes) {
+    return [];
   }
 
-  const flattenMapOverlays = flattenMapOverlayHierarchy(mapOverlayHierarchy);
-  return flattenMapOverlays.find(({ mapOverlayCode }) => targetMapOverlayId === mapOverlayCode);
+  return flattenMapOverlayHierarchy(mapOverlayHierarchy)
+    .filter(({ mapOverlayCode }) => targetMapOverlayCodes.includes(mapOverlayCode))
+    .sort((mapOverlayA, mapOverlayB) => {
+      return (
+        targetMapOverlayCodes.findIndex(code => code === mapOverlayA.mapOverlayCode) -
+        targetMapOverlayCodes.findIndex(code => code === mapOverlayB.mapOverlayCode)
+      );
+    });
+};
+
+export const checkHierarchyIncludesMapOverlayCodes = (
+  mapOverlayHierarchy,
+  targetMapOverlayCodes,
+) => {
+  if (!targetMapOverlayCodes || targetMapOverlayCodes?.length === 0) {
+    return false;
+  }
+  const { length: resultLength } = getMapOverlaysFromHierarchy(
+    mapOverlayHierarchy,
+    targetMapOverlayCodes,
+  );
+
+  return resultLength === targetMapOverlayCodes.length;
 };
 
 export function flattenMapOverlayHierarchy(mapOverlayHierarchy) {

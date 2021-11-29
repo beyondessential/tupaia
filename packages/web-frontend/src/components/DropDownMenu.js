@@ -6,12 +6,16 @@
  */
 
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import MuiList from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
+import {
+  List as MuiList,
+  ListItem,
+  ListItemText,
+  MenuItem,
+  Menu,
+  Typography,
+} from '@material-ui/core';
 import DropDownIcon from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import { WHITE } from '../styles';
 
@@ -38,48 +42,60 @@ export class DropDownMenu extends PureComponent {
     this.setState({ anchorEl: null });
   }
 
-  handleChangeSelection(newSelectedOption) {
+  handleChangeSelection(newSelectedOptionIndex) {
     this.handleCloseMenu();
-    this.props.onChange(newSelectedOption);
+    this.props.onChange(newSelectedOptionIndex);
   }
 
   renderListComponent() {
-    const { options, selectedOption, iconStyle } = this.props;
+    const {
+      title,
+      options,
+      selectedOptionIndex,
+      iconStyle,
+      StyledPrimaryComponent,
+      disableGutters,
+    } = this.props;
+    const PrimaryComponent = StyledPrimaryComponent || Typography;
+    const primaryTitle = title || options[selectedOptionIndex];
 
-    return options.length > 1 ? (
+    return (
       <List component="nav">
-        <ListItem button onClick={this.handleOpenMenu}>
-          <ListItemText primary={selectedOption} />
-          <DropDownIcon style={iconStyle} />
-        </ListItem>
-      </List>
-    ) : (
-      <List component="nav">
-        <ListItem>
-          <ListItemText primary={selectedOption} />
+        <ListItem disableGutters={disableGutters} onClick={this.handleOpenMenu} button>
+          <ListItemText primary={<PrimaryComponent>{primaryTitle}</PrimaryComponent>} />
+          {options.length > 1 && <DropDownIcon style={iconStyle} />}
         </ListItem>
       </List>
     );
   }
 
   renderMenuComponent() {
-    const { options, selectedOption, menuListStyle } = this.props;
+    const {
+      options,
+      selectedOptionIndex,
+      menuListStyle,
+      anchorOrigin,
+      StyledOptionComponent,
+    } = this.props;
     const { anchorEl } = this.state;
+    const OptionComponent = StyledOptionComponent || Typography;
 
     return options.length > 1 ? (
       <Menu
         open={!!anchorEl}
         anchorEl={anchorEl}
+        getContentAnchorEl={null}
+        anchorOrigin={anchorOrigin}
         onClose={this.handleCloseMenu}
         MenuListProps={{ style: menuListStyle }}
       >
-        {options.map(option => (
+        {options.map((option, index) => (
           <MenuItem
             key={option}
-            onClick={() => this.handleChangeSelection(option)}
-            selected={option === selectedOption}
+            onClick={() => this.handleChangeSelection(index)}
+            selected={index === selectedOptionIndex}
           >
-            {option}
+            <OptionComponent>{option}</OptionComponent>
           </MenuItem>
         ))}
       </Menu>
@@ -95,3 +111,26 @@ export class DropDownMenu extends PureComponent {
     );
   }
 }
+
+DropDownMenu.propTypes = {
+  title: PropTypes.string,
+  options: PropTypes.arrayOf(PropTypes.string).isRequired,
+  selectedOptionIndex: PropTypes.number.isRequired,
+  iconStyle: PropTypes.object,
+  disableGutters: PropTypes.bool,
+  onChange: PropTypes.func.isRequired,
+  menuListStyle: PropTypes.object,
+  anchorOrigin: PropTypes.object,
+  StyledPrimaryComponent: PropTypes.object,
+  StyledOptionComponent: PropTypes.object,
+};
+
+DropDownMenu.defaultProps = {
+  title: '',
+  iconStyle: {},
+  disableGutters: false,
+  menuListStyle: {},
+  anchorOrigin: {},
+  StyledPrimaryComponent: null,
+  StyledOptionComponent: null,
+};

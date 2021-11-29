@@ -15,7 +15,7 @@ const MAP_OVERLAY = 'MAP_OVERLAY';
 const REPORT = 'REPORT';
 const PASSWORD_RESET_TOKEN = 'PASSWORD_RESET_TOKEN';
 const VERIFY_EMAIL_TOKEN = 'VERIFY_EMAIL_TOKEN';
-const MEASURE_PERIOD = 'MEASURE_PERIOD';
+const OVERLAY_PERIOD = 'OVERLAY_PERIOD';
 const REPORT_PERIOD = 'REPORT_PERIOD';
 
 export const URL_COMPONENTS = {
@@ -29,7 +29,7 @@ export const URL_COMPONENTS = {
   REPORT,
   PASSWORD_RESET_TOKEN,
   VERIFY_EMAIL_TOKEN,
-  MEASURE_PERIOD,
+  OVERLAY_PERIOD,
   REPORT_PERIOD,
 };
 
@@ -39,25 +39,22 @@ export const SEARCH_COMPONENTS = [
   REPORT,
   PASSWORD_RESET_TOKEN,
   VERIFY_EMAIL_TOKEN,
-  MEASURE_PERIOD,
+  OVERLAY_PERIOD,
   REPORT_PERIOD,
 ];
 
 export const LEGACY_PATH_PREFIXES = ['country', 'facility'];
 
 export const SEARCH_PARAM_KEY_MAP = {
-  // Different to key
   [MAP_OVERLAY]: 'overlay',
-  [MEASURE_PERIOD]: 'overlayPeriod',
-
-  // Just camel case
+  [OVERLAY_PERIOD]: 'overlayPeriod',
   [REPORT]: 'report',
+  [REPORT_PERIOD]: 'reportPeriod',
   [PASSWORD_RESET_TOKEN]: 'passwordResetToken',
   [VERIFY_EMAIL_TOKEN]: 'verifyEmailToken',
-  [REPORT_PERIOD]: 'reportPeriod',
 };
 
+export const DEFAULT_PERIOD = 'DEFAULT_PERIOD';
 export const PASSWORD_RESET_PREFIX = 'reset-password';
 export const VERIFY_EMAIL_PREFIX = 'verify-email';
-
 export const USER_PAGE_PREFIXES = [PASSWORD_RESET_PREFIX, VERIFY_EMAIL_PREFIX];

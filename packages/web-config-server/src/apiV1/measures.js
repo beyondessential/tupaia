@@ -16,7 +16,7 @@ export default class extends RouteHandler {
               name: 'GroupA',
               children: [
                 {
-                  mapOverlayId: 'Laos_Schools_A',
+                  mapOverlayCode: 'Laos_Schools_A',
                   name: 'Overlay A',
                   ...presentationConfig,
                 }
@@ -29,7 +29,7 @@ export default class extends RouteHandler {
                   name: 'GroupC',
                   children: [
                     {
-                      mapOverlayId: 'Laos_Schools_D',
+                      mapOverlayCode: 'Laos_Schools_D',
                       name: 'Overlay D',
                       ...presentationConfig,
                     },

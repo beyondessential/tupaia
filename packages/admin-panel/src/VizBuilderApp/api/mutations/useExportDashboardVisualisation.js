@@ -6,7 +6,7 @@
 import { useMutation } from 'react-query';
 import { download } from '../api';
 
-export const useExportVisualisation = config =>
+export const useExportDashboardVisualisation = config =>
   useMutation(['export/dashboardVisualisation', config], () =>
     download(
       'export/dashboardVisualisation',
