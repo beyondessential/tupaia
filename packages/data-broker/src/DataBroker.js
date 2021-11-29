@@ -58,12 +58,13 @@ export class DataBroker {
   };
 
   async fetchDataSources(dataSourceSpec) {
-    const { code, type } = dataSourceSpec;
+    const { code } = dataSourceSpec;
+    const { type, ...restOfSpec } = dataSourceSpec;
     if (!code || (Array.isArray(code) && code.length === 0)) {
       throw new Error('Please provide at least one existing data source code');
     }
     const fetcher = this.fetchers[type];
-    const dataSources = await fetcher(dataSourceSpec);
+    const dataSources = await fetcher(restOfSpec);
     const typeDescription = `${lower(type)}s`;
     if (dataSources.length === 0) {
       throw new Error(`None of the following ${typeDescription} exist: ${code}`);
@@ -102,18 +103,16 @@ export class DataBroker {
 
   async pull(dataSourceSpec, options) {
     const dataSources = await this.fetchDataSources(dataSourceSpec);
-    if (countDistinct(dataSources, 'type') > 1) {
-      throw new Error('Cannot pull multiple types of data in one call');
-    }
+    const { type } = dataSourceSpec;
 
     const dataSourcesByService = groupBy(dataSources, 'service_type');
     const dataSourceFetches = Object.values(dataSourcesByService);
     const nestedResults = await Promise.all(
       dataSourceFetches.map(dataSourceForFetch =>
-        this.pullForServiceAndType(dataSourceForFetch, options),
+        this.pullForServiceAndType(dataSourceForFetch, options, type),
       ),
     );
-    const mergeResults = this.resultMergers[dataSources[0].type];
+    const mergeResults = this.resultMergers[type];
 
     return nestedResults.reduce(
       (results, resultsForService) => mergeResults(results, resultsForService),
@@ -121,8 +120,8 @@ export class DataBroker {
     );
   }
 
-  pullForServiceAndType = async (dataSources, options) => {
-    const { type, service_type: serviceType } = dataSources[0];
+  pullForServiceAndType = async (dataSources, options, type) => {
+    const { service_type: serviceType } = dataSources[0];
     const service = this.createService(serviceType);
     return service.pull(dataSources, type, options);
   };
@@ -178,7 +177,7 @@ export class DataBroker {
     }
     const service = this.createService(dataSources[0].service_type);
     // `dataSourceSpec` is defined  for a single `type`
-    const { type } = dataSources[0];
+    const { type } = dataSourceSpec;
     return service.pullMetadata(dataSources, type, options);
   }
 }
