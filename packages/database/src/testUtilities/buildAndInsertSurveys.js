@@ -28,7 +28,7 @@ const buildAndInsertQuestion = async (
   return { question, dataElement, surveyScreenComponent };
 };
 
-const buildAndInsertDataGroup = async (models, fields) => {
+const buildAndInsertEvent = async (models, fields) => {
   const { code, type, ...createFields } = fields;
   return findOrCreateDummyRecord(
     models.event,
@@ -50,12 +50,12 @@ const buildAndInsertSurvey = async (
   models,
   { dataGroup: dataSourceFields, questions: questionFields = [], code, ...surveyFields },
 ) => {
-  const dataGroup = await buildAndInsertDataGroup(models, { code, ...dataSourceFields });
+  const event = await buildAndInsertEvent(models, { code, ...dataSourceFields });
 
   const survey = await findOrCreateDummyRecord(
     models.survey,
     { code },
-    { ...surveyFields, data_source_id: dataGroup.id },
+    { ...surveyFields, event_id: event.id },
   );
   const surveyScreen = await findOrCreateDummyRecord(
     models.surveyScreen,
