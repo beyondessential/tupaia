@@ -24,10 +24,9 @@ export const addExportedDateAndOriginAtTheSheetBottom = (
   return [
     ...exportData,
     [],
-    [],
     startDate && endDate
       ? [`Includes data from ${formatDate(startDate)} to ${formatDate(endDate)}`]
-      : null,
+      : [],
     [`Data exported from Tupaia.org on ${moment().tz(timeZone).format('Do MMM YYYY')} ${timeZone}`],
   ];
 };
