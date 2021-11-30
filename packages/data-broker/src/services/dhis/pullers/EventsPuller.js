@@ -16,7 +16,6 @@ export class EventsPuller {
 
     const dataElementSources = await this.dataSourceModel.find({
       code: dataElementCodes,
-      type: this.dataSourceModel.getTypes().DATA_ELEMENT,
     });
     const dhisElementCodes = dataElementSources.map(({ dataElementCode }) => dataElementCode);
 
