@@ -105,7 +105,7 @@ const createOptions = async (models, optionsCreated) => {
 
 const createEntities = async (models, entitiesCreated, surveyId) => {
   const survey = await models.survey.findById(surveyId);
-  const dataGroup = await survey.dataGroup();
+  const event = await survey.event();
 
   return Promise.all(
     entitiesCreated.map(async entity =>
@@ -114,8 +114,8 @@ const createEntities = async (models, entitiesCreated, surveyId) => {
         {
           ...entity,
           metadata:
-            dataGroup.service_type === 'dhis'
-              ? { dhis: { isDataRegional: !!dataGroup.config.isDataRegional } }
+            event.service_type === 'dhis'
+              ? { dhis: { isDataRegional: !!event.config.isDataRegional } }
               : {},
         },
       ),
