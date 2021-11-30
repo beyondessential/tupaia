@@ -285,6 +285,7 @@ export class EnlargedDialogContent extends PureComponent {
     };
 
     const getBodyStyle = () => {
+      if (isExporting) return {};
       if (isMatrix) return styles.matrixContent;
       if (viewContent.chartType) return styles.chartContent;
       return {}; // No custom styling for other types of dialog content
