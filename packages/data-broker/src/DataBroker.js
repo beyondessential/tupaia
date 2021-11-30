@@ -91,14 +91,14 @@ export class DataBroker {
       throw new Error('Cannot push data belonging to different services');
     }
     const service = this.createService(dataSources[0].service_type);
-    return service.push(dataSources, data);
+    return service.push(dataSources, data, { type: dataSourceSpec.type });
   }
 
   async delete(dataSourceSpec, data, options) {
     const dataSources = await this.fetchDataSources(dataSourceSpec);
     const [dataSource] = dataSources;
     const service = this.createService(dataSource.service_type);
-    return service.delete(dataSource, data, options);
+    return service.delete(dataSource, data, { type: dataSourceSpec.type, ...options });
   }
 
   async pull(dataSourceSpec, options) {

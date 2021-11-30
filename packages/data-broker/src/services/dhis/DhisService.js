@@ -77,8 +77,8 @@ export class DhisService extends Service {
     }
   }
 
-  async push(dataSources, data) {
-    const pushData = this.pushers[dataSources[0].type]; // all are of the same type
+  async push(dataSources, data, { type }) {
+    const pushData = this.pushers[type]; // all are of the same type
     const dataValues = Array.isArray(data) ? data : [data];
     this.validatePushData(dataSources, dataValues);
     const api = this.getApiForValue(dataSources[0], dataValues[0]); // all are for the same instance
@@ -102,11 +102,11 @@ export class DhisService extends Service {
     return api.postEvents(translatedEvents);
   }
 
-  async delete(dataSource, data, { serverName } = {}) {
+  async delete(dataSource, data, { serverName, type } = {}) {
     const api = serverName
       ? getDhisApiInstance({ serverName }, this.models)
       : this.getApiForValue(dataSource, data);
-    const deleteData = this.deleters[dataSource.type];
+    const deleteData = this.deleters[type];
     return deleteData(api, data, dataSource);
   }
 

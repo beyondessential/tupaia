@@ -8,6 +8,7 @@ import {
   DATA_ELEMENTS_BY_GROUP,
   DATA_ELEMENTS,
   DATA_SOURCES,
+  EVENTS,
   SERVER_NAME,
 } from './DhisService.fixtures';
 import { createJestMockInstance } from '../../../../../utils/src/testUtilities';
@@ -44,6 +45,7 @@ export const stubDhisApi = ({
 
 export const createModelsStub = () => ({
   dataSource: createDataSourceModelsStub(),
+  event: createEventModelsStub(),
 });
 
 export const createDataSourceModelsStub = () => ({
@@ -51,9 +53,13 @@ export const createDataSourceModelsStub = () => ({
     Object.values(DATA_SOURCES).filter(
       ({ code, type }) => specs.code.includes(code) && specs.type === type,
     ),
-  getDataElementsInGroup: async groupCode => DATA_ELEMENTS_BY_GROUP[groupCode],
   getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
   getDhisDataTypes: () => ({ DATA_ELEMENT: 'DataElement', INDICATOR: 'Indicator' }),
+});
+
+export const createEventModelsStub = () => ({
+  find: async specs => Object.values(EVENTS).filter(({ code }) => specs.code.includes(code)),
+  getDataElementsInEvent: async groupCode => DATA_ELEMENTS_BY_GROUP[groupCode],
 });
 
 /**
