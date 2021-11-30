@@ -46,8 +46,12 @@ const renderXAxisLabel = (label, fillColor, isEnlarged) => {
 const BASE_H = 40;
 
 const calculateXAxisHeight = (data, isExporting) => {
+  if (getIsTimeSeries(data)) {
+    return 80;
+  }
+
   if (isExporting) {
-    return Math.min(BASE_H + Math.max(...data.map(item => item.name.length)) * 6, 190);
+    return Math.min(BASE_H + Math.max(...data.map(item => item.name?.length)) * 6, 190);
   }
   return BASE_H;
 };
