@@ -26,6 +26,7 @@ export const TYPES = {
   ENTITY_HIERARCHY: 'entity_hierarchy',
   ENTITY_RELATION: 'entity_relation',
   ENTITY: 'entity',
+  EVENT: 'event',
   ERROR_LOG: 'error_log',
   FACILITY: 'clinic',
   FEED_ITEM: 'feed_item',
