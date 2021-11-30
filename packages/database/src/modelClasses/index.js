@@ -108,6 +108,7 @@ export { DataSourceModel, DataSourceType } from './DataSource';
 export { EntityModel, EntityType } from './Entity';
 export { EntityHierarchyModel, EntityHierarchyType } from './EntityHierarchy';
 export { EntityRelationModel } from './EntityRelation';
+export { EventModel, EventType } from './Event';
 export { FacilityModel } from './Facility';
 export { GeographicalAreaModel } from './GeographicalArea';
 export { MeditrakDeviceModel } from './MeditrakDevice';

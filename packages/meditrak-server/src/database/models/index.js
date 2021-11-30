@@ -12,6 +12,7 @@ export { DataSourceModel as DataSource } from './DataSource';
 export { DhisSyncLogModel as DhisSyncLog } from './DhisSyncLog';
 export { DhisSyncQueueModel as DhisSyncQueue } from './DhisSyncQueue';
 export { EntityModel as Entity } from './Entity';
+export { EventModel as Event } from './Event';
 export { FacilityModel as Facility } from './Facility';
 export { FeedItemModel as FeedItem } from './FeedItem';
 export { GeographicalAreaModel as GeographicalArea } from './GeographicalArea';

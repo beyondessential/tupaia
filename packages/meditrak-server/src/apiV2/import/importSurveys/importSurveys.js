@@ -100,13 +100,13 @@ const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGro
 
     await models.dataElementDataGroup.findOrCreate({
       data_element_id: dataElement.id,
-      data_group_id: dataGroup.id,
+      event_id: dataGroup.id,
     });
   } else {
     // dataElement already exists, don't overwrite it
     await models.dataElementDataGroup.findOrCreate({
       data_element_id: dataElement.id,
-      data_group_id: dataGroup.id,
+      event_id: dataGroup.id,
     });
   }
 
@@ -180,7 +180,7 @@ export async function importSurveys(req, res) {
 
         // Clear all existing data element/data group associations
         // We will re-create the ones required by the survey while processing its questions
-        await transactingModels.dataElementDataGroup.delete({ data_group_id: dataGroup.id });
+        await transactingModels.dataElementDataGroup.delete({ event_id: dataGroup.id });
 
         // Refresh SurveyDate element
         await dataGroup.deleteSurveyDateElement();
@@ -195,7 +195,7 @@ export async function importSurveys(req, res) {
             // If no survey with that name is found, give it a code and public permissions
             code: surveyCode,
             permission_group_id: permissionGroup.id,
-            data_source_id: dataGroup.id,
+            event_id: dataGroup.id,
           },
         );
         if (!survey) {

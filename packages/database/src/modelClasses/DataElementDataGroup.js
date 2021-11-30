@@ -17,14 +17,12 @@ class DataElementDataGroupType extends DatabaseType {
   async dataElement() {
     return this.otherModels.dataSource.findOne({
       id: this.data_element_id,
-      type: this.dataSourceTypes.DATA_ELEMENT,
     });
   }
 
   async dataGroup() {
-    return this.otherModels.dataSource.findOne({
-      id: this.data_group_id,
-      type: this.dataSourceTypes.DATA_GROUP,
+    return this.otherModels.event.findOne({
+      id: this.event_id,
     });
   }
 }
