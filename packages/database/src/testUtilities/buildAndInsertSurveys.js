@@ -80,7 +80,7 @@ const buildAndInsertSurvey = async (
   };
   await Promise.all(questionFields.map(processQuestion));
 
-  return { survey, surveyScreen, surveyScreenComponents, questions, dataGroup, dataElements };
+  return { survey, surveyScreen, surveyScreenComponents, questions, event, dataElements };
 };
 
 /**
