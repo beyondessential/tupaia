@@ -13,15 +13,14 @@ describe('DataSource', () => {
       fetchSchemaForTable: () => {},
     };
 
-    const createDataSource = ({ type = 'dataElement', serviceType = 'tupaia', config }) =>
+    const createDataSource = ({ serviceType = 'tupaia', config }) =>
       new DataSourceType(new DataSourceModel(database), {
-        type,
         service_type: serviceType,
         config,
       });
 
-    const assertConfigIsSanitized = ({ type, serviceType }, config, expectedConfig) => {
-      const dataSource = createDataSource({ type, serviceType, config });
+    const assertConfigIsSanitized = ({ serviceType }, config, expectedConfig) => {
+      const dataSource = createDataSource({ serviceType, config });
       dataSource.sanitizeConfig();
       expect(dataSource.config).to.deep.equal(expectedConfig);
     };
@@ -43,7 +42,6 @@ describe('DataSource', () => {
       it('data element', () => {
         assertConfigIsSanitized(
           {
-            type: 'dataElement',
             serviceType: 'dhis',
           },
           {
@@ -57,28 +55,12 @@ describe('DataSource', () => {
             dataElementCode: 'Gender_Age',
             isDataRegional: true,
           },
-        );
-      });
-
-      it('data group', () => {
-        assertConfigIsSanitized(
-          {
-            type: 'dataGroup',
-            serviceType: 'dhis',
-          },
-          {
-            dataElementCode: 'newCode',
-            isDataRegional: true,
-            other: 'random',
-          },
-          { isDataRegional: true },
         );
       });
 
       it('should default `isDataRegional` to true', () => {
         assertConfigIsSanitized(
           {
-            type: 'dataElement',
             serviceType: 'dhis',
           },
           {},
@@ -88,7 +70,6 @@ describe('DataSource', () => {
         ['', undefined, null].forEach(emptyValue => {
           assertConfigIsSanitized(
             {
-              type: 'dataElement',
               serviceType: 'dhis',
             },
             { isDataRegional: emptyValue },
@@ -100,7 +81,6 @@ describe('DataSource', () => {
       it('should allow `isDataRegional` to be false', () => {
         assertConfigIsSanitized(
           {
-            type: 'dataElement',
             serviceType: 'dhis',
           },
           { isDataRegional: false },
@@ -113,18 +93,6 @@ describe('DataSource', () => {
       it('data element', () => {
         assertConfigIsSanitized(
           {
-            type: 'dataElement',
-            serviceType: 'tupaia',
-          },
-          { isDataRegional: false, other: 'random' },
-          {},
-        );
-      });
-
-      it('data group', () => {
-        assertConfigIsSanitized(
-          {
-            type: 'dataGroup',
             serviceType: 'tupaia',
           },
           { isDataRegional: false, other: 'random' },
@@ -137,7 +105,6 @@ describe('DataSource', () => {
       ['', undefined, null].forEach(emptyValue => {
         assertConfigIsSanitized(
           {
-            type: 'dataElement',
             serviceType: 'dhis',
           },
           { isDataRegional: true, dataElementCode: emptyValue },

@@ -116,8 +116,8 @@ const SURVEY_RESPONSE = [
 ];
 
 const SURVEY = [
-  { id: 'survey001_test', code: 'S001', data_source_id: 'dataSource005_test' },
-  { id: 'survey002_test', code: 'S002', data_source_id: 'dataSource006_test' },
+  { id: 'survey001_test', code: 'S001', event_id: 'event001_test' },
+  { id: 'survey002_test', code: 'S002', event_id: 'event002_test' },
 ];
 
 const ENTITY = [
@@ -133,18 +133,22 @@ const QUESTION = [
 ];
 
 const DATA_SOURCE = [
-  { id: 'dataSource001_test', type: 'dataElement', service_type: 'tupaia' },
-  { id: 'dataSource002_test', type: 'dataElement', service_type: 'tupaia' },
-  { id: 'dataSource003_test', type: 'dataElement', service_type: 'tupaia' },
-  { id: 'dataSource004_test', type: 'dataElement', service_type: 'tupaia' },
-  { id: 'dataSource005_test', type: 'dataGroup', service_type: 'tupaia' },
-  { id: 'dataSource006_test', type: 'dataGroup', service_type: 'tupaia' },
+  { id: 'dataSource001_test', service_type: 'tupaia' },
+  { id: 'dataSource002_test', service_type: 'tupaia' },
+  { id: 'dataSource003_test', service_type: 'tupaia' },
+  { id: 'dataSource004_test', service_type: 'tupaia' },
+];
+
+const EVENT = [
+  { id: 'event001_test', service_type: 'tupaia' },
+  { id: 'event002_test', service_type: 'tupaia' },
 ];
 
 export const TEST_DATA = {
   entity: ENTITY,
   user: USER,
   dataSource: DATA_SOURCE,
+  event: EVENT,
   survey: SURVEY,
   question: QUESTION,
   surveyResponse: SURVEY_RESPONSE,
