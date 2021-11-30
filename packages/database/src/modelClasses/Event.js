@@ -76,7 +76,7 @@ export class EventModel extends MaterializedViewLogDatabaseModel {
       event_id: event.id,
     });
 
-    return this.find({
+    return this.otherModels.dataSource.find({
       id: dataElements.map(({ data_element_id: dataElementId }) => dataElementId),
     });
   }
