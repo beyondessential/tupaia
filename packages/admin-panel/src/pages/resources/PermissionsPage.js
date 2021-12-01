@@ -15,6 +15,7 @@ export const PERMISSIONS_COLUMNS = [
     source: 'entity.name',
     editConfig: {
       optionsEndpoint: 'entities',
+      baseFilter: { type: 'country' },
     },
   },
   {

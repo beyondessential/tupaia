@@ -16,7 +16,7 @@ const FIELDS = [
   {
     Header: 'Entity',
     source: 'entity.name',
-    editConfig: { optionsEndpoint: 'entities' },
+    editConfig: { optionsEndpoint: 'entities', baseFilter: { type: 'country' } },
   },
   {
     Header: 'Message',
