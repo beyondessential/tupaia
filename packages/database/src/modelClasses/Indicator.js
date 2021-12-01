@@ -28,13 +28,11 @@ const onChangeUpdateDataElement = async (
       if (oldRecord && oldRecord.code !== newRecord.code) {
         await models.dataSource.delete({
           code: oldRecord.code,
-          type: models.dataSource.getTypes().DATA_ELEMENT,
         });
       }
       return models.dataSource.findOrCreate(
         {
           code: newRecord.code,
-          type: models.dataSource.getTypes().DATA_ELEMENT,
           service_type: models.dataSource.SERVICE_TYPES.INDICATOR,
         },
         {},
