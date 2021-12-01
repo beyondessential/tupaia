@@ -16,10 +16,9 @@ export const stubCreateService = services =>
   });
 
 export const createServiceStub = serviceData => {
-  const pull = dataSources => {
+  const pull = (dataSources, type) => {
     const dataSourceCodes = dataSources.map(({ code }) => code);
     // Service specs require that data must be pulled for a specific type each time
-    const { type } = dataSources[0];
     const filteredServiceData = serviceData.filter(
       ({ code, type: currentType }) => dataSourceCodes.includes(code) && currentType === type,
     );
@@ -43,10 +42,12 @@ export const createServiceStub = serviceData => {
   return createJestMockInstance('@tupaia/data-broker/src/services/Service', 'Service', { pull });
 };
 
-export const createModelsStub = dataSources => ({
+export const createModelsStub = (dataSources, events) => ({
   dataSource: {
-    find: spec =>
-      dataSources.filter(({ code, type }) => spec.code.includes(code) && spec.type === type),
+    find: spec => dataSources.filter(({ code }) => spec.code.includes(code)),
     getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
+  },
+  event: {
+    find: spec => events.filter(({ code }) => spec.code.includes(code)),
   },
 });

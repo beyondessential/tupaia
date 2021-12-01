@@ -5,7 +5,12 @@
 import { Service } from '../Service';
 import { getDhisApiInstance } from './getDhisApiInstance';
 import { DhisTranslator } from './DhisTranslator';
-import { AnalyticsPuller, EventsPuller, DataElementsMetadataPuller, DeprecatedEventsPuller } from './pullers';
+import {
+  AnalyticsPuller,
+  EventsPuller,
+  DataElementsMetadataPuller,
+  DeprecatedEventsPuller,
+} from './pullers';
 
 const DEFAULT_DATA_SERVICE = { isDataRegional: true };
 const DEFAULT_DATA_SERVICES = [DEFAULT_DATA_SERVICE];
@@ -25,7 +30,10 @@ export class DhisService extends Service {
       this.dataElementsMetadataPuller,
     );
     this.eventsPuller = new EventsPuller(this.models.dataSource, this.translator);
-    this.deprecatedEventsPuller = new DeprecatedEventsPuller(this.models.dataSource, this.translator);
+    this.deprecatedEventsPuller = new DeprecatedEventsPuller(
+      this.models.dataSource,
+      this.translator,
+    );
     this.pushers = this.getPushers();
     this.deleters = this.getDeleters();
     this.pullers = this.getPullers();
@@ -50,7 +58,9 @@ export class DhisService extends Service {
     return {
       [this.dataSourceTypes.DATA_ELEMENT]: this.analyticsPuller.pull.bind(this),
       [this.dataSourceTypes.DATA_GROUP]: this.eventsPuller.pull.bind(this),
-      [`${this.dataSourceTypes.DATA_GROUP}_deprecated`]: this.deprecatedEventsPuller.pull.bind(this),
+      [`${this.dataSourceTypes.DATA_GROUP}_deprecated`]: this.deprecatedEventsPuller.pull.bind(
+        this,
+      ),
     };
   }
 
