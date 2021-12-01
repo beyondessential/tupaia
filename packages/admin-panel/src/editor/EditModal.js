@@ -5,7 +5,7 @@
 
 import React from 'react';
 import keyBy from 'lodash.keyby';
-import PropTypes from 'prop-types';
+import PropTypes, { array } from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Dialog, DialogFooter, DialogHeader } from '@tupaia/ui-components';
 import { closeEditModal, editField, saveEdits } from './actions';
@@ -26,6 +26,19 @@ const getFieldSourceToEdit = field => {
     }
   }
   return source;
+};
+
+const processRecordData = (recordData, fields) => {
+  if (Array.isArray(recordData)) {
+    const bulkRecord = recordData[0];
+    fields.forEach(field => {
+      if (field.bulkAccessor) {
+        bulkRecord[field.source] = field.bulkAccessor(recordData);
+      }
+    });
+    return { ...recordData[0] };
+  }
+  return recordData;
 };
 
 export const EditModalComponent = ({
@@ -103,21 +116,23 @@ const mergeProps = (
   { endpoint, editedFields, recordData, ...stateProps },
   { dispatch, ...dispatchProps },
   { onProcessDataForSave, ...ownProps },
-) => ({
-  ...ownProps,
-  ...stateProps,
-  ...dispatchProps,
-  recordData: { ...recordData, ...editedFields }, // Include edits in visible record data
-  onSave: () => {
-    // If there is no record data, this is a new record
-    const isNew = Object.keys(recordData).length === 0;
-    const fieldValuesToSave = { ...editedFields };
-    if (onProcessDataForSave) {
-      onProcessDataForSave(fieldValuesToSave);
-    }
-    dispatch(saveEdits(endpoint, fieldValuesToSave, isNew));
-  },
-});
+) => {
+  return {
+    ...ownProps,
+    ...stateProps,
+    ...dispatchProps,
+    recordData: { ...processRecordData(recordData, stateProps.fields), ...editedFields }, // Include edits in visible record data
+    onSave: () => {
+      // If there is no record data, this is a new record
+      const isNew = Object.keys(recordData).length === 0;
+      const fieldValuesToSave = { ...editedFields };
+      if (onProcessDataForSave) {
+        onProcessDataForSave(fieldValuesToSave);
+      }
+      dispatch(saveEdits(endpoint, fieldValuesToSave, isNew));
+    },
+  };
+};
 
 export const EditModal = connect(
   mapStateToProps,

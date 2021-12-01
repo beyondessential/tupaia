@@ -43,20 +43,6 @@ const USER_FIELDS = [
   },
 ];
 
-const USER_COLUMNS = [
-  ...USER_FIELDS,
-  {
-    Header: 'Edit',
-    source: 'id',
-    type: 'edit',
-    width: 150,
-    actionConfig: {
-      editEndpoint: 'users',
-      fields: USER_FIELDS,
-    },
-  },
-];
-
 const ACCESS_REQUEST_FIELDS = [
   {
     Header: 'Entity',
@@ -81,6 +67,63 @@ const ACCESS_REQUEST_FIELDS = [
       optionsEndpoint: 'permissionGroups',
       secondaryLabel:
         'If a default is shown here, it will give the user access to the project they requested, but please review carefully as some projects have several permission levels.',
+    },
+  },
+];
+
+const USER_COLUMNS = [
+  ...USER_FIELDS,
+  {
+    Header: 'Edit',
+    source: 'user_id',
+    type: 'bulkEdit',
+    width: 150,
+    actionConfig: {
+      editEndpoint: `users/{user_id}/${ACCESS_REQUESTS_ENDPOINT}`,
+      baseFilter: { approved: null },
+      fields: [
+        {
+          Header: 'Entity',
+          source: 'entity.name',
+          bulkAccessor: rows => {
+            return rows.map(row => row['entity.name']).join(', ');
+          },
+          editable: false,
+        },
+        {
+          Header: 'Project Code',
+          source: 'project.code',
+          editable: false,
+        },
+        {
+          Header: 'Message',
+          source: 'message',
+          type: 'tooltip',
+          editable: false,
+        },
+        {
+          Header: 'Permission Group',
+          source: 'permission_group.name',
+          editConfig: {
+            optionsEndpoint: 'permissionGroups',
+            secondaryLabel:
+              'If a default is shown here, it will give the user access to the project they requested, but please review carefully as some projects have several permission levels.',
+          },
+        },
+        {
+          Header: 'Approved',
+          source: 'approved',
+          type: 'boolean',
+          editConfig: {
+            type: 'boolean',
+          },
+        },
+        {
+          Header: 'Note',
+          source: 'note',
+          editConfig: { type: 'textarea' },
+        },
+      ],
     },
   },
 ];

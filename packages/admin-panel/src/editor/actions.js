@@ -13,8 +13,71 @@ import {
   EDITOR_FIELD_EDIT,
   EDITOR_OPEN_CREATOR,
 } from './constants';
+import { convertSearchTermToFilter, makeSubstitutionsInString } from '../utilities';
 
 const STATIC_FIELD_TYPES = ['link'];
+
+export const openBulkEditModal = (
+  { editEndpoint, fields, baseFilter },
+  recordId,
+  rowData,
+) => async (dispatch, getState, { api }) => {
+  if (recordId) {
+    const endpoint = `${editEndpoint}`;
+    const newEndpoint = makeSubstitutionsInString(endpoint, rowData);
+    dispatch({
+      type: EDITOR_DATA_FETCH_BEGIN,
+      fields,
+      endpoint: newEndpoint,
+    });
+
+    // Set up filter
+    const filterString = JSON.stringify(convertSearchTermToFilter({ ...baseFilter }));
+
+    try {
+      const response = await api.get(newEndpoint, {
+        filter: filterString.length > 0 ? filterString : undefined,
+        columns: JSON.stringify(
+          fields
+            .filter(field => !field.hideValue && !STATIC_FIELD_TYPES.includes(field.type)) // Ignore any that will be hidden, e.g. passwords
+            .map(field => field.source),
+        ), // Fetch fields based on their source
+      });
+      dispatch({
+        type: EDITOR_DATA_FETCH_SUCCESS,
+        recordData: response.body,
+      });
+    } catch (error) {
+      dispatch({
+        type: EDITOR_ERROR,
+        errorMessage: error.message,
+      });
+    }
+  } else {
+    // set default values
+    fields.forEach(field => {
+      if (field.editConfig && field.editConfig.default) {
+        const {
+          source: fieldKey,
+          editConfig: { default: newValue },
+        } = field;
+
+        dispatch({
+          type: EDITOR_FIELD_EDIT,
+          fieldKey,
+          newValue,
+        });
+      }
+    });
+
+    dispatch({
+      type: EDITOR_OPEN_CREATOR,
+      fields,
+      recordData: {},
+      endpoint: editEndpoint,
+    });
+  }
+};
 
 export const openEditModal = ({ editEndpoint, fields }, recordId) => async (
   dispatch,
