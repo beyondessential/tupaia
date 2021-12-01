@@ -1,6 +1,8 @@
-#!/bin/bash -le
+#!/bin/bash -leE
 # This script gets loaded as "User Data" against the EC2 instance, and deploys the tagged branch
 # the first time the instance starts
+
+set -o pipefail # fail pipe where scripts are e.g. piped out to deployment logs
 
 HOME_DIR=/home/ubuntu
 TUPAIA_DIR=$HOME_DIR/tupaia
@@ -11,17 +13,25 @@ DEPLOYMENT_SCRIPTS=${TUPAIA_DIR}/packages/devops/scripts/deployment
 INSTANCE_ID=$(ec2metadata --instance-id)
 aws ec2 create-tags --resources ${INSTANCE_ID} --tags Key=StartupBuildProgress,Value=building
 
+# Mark the build progress as errored if anything goes wrong
+tag_errored() {
+  aws ec2 create-tags --resources ${INSTANCE_ID} --tags Key=StartupBuildProgress,Value=errored
+  service nginx stop # stop nginx as an obvious sign the build has failed
+}
+trap tag_errored ERR
+
 DEPLOYMENT_NAME=$(${DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh DeploymentName)
 BRANCH=$(${DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh Branch)
 echo "Starting up ${DEPLOYMENT_NAME} (${BRANCH})"
 
 # Create a directory for logs to go
-mkdir $LOGS_DIR
+mkdir -p $LOGS_DIR
 
 # Turn on cloudwatch agent for prod and dev (can be turned on manually if needed on feature instances)
-if [[ $DEPLOYMENT_NAME == "production" || $DEPLOYMENT_NAME == "dev" ]]; then
-    $DEPLOYMENT_SCRIPTS/startCloudwatchAgent.sh | while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
-fi
+# TODO currently broken
+# if [[ $DEPLOYMENT_NAME == "production" || $DEPLOYMENT_NAME == "dev" ]]; then
+#     $DEPLOYMENT_SCRIPTS/startCloudwatchAgent.sh | while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
+# fi
 
 # Add preaggregation cron job if production
 if [[ $DEPLOYMENT_NAME == "production" ]]; then
