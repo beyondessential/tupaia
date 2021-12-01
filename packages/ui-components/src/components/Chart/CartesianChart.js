@@ -90,6 +90,18 @@ const getHeight = (isExporting, isEnlarged, hasLegend) => {
   return isEnlarged && hasLegend && isMobile() ? 320 : undefined;
 };
 
+const getMargin = (isExporting, isEnlarged) => {
+  if (isExporting) {
+    return { left: 20, right: 20, top: 20, bottom: 60 };
+  }
+
+  if (isEnlarged) {
+    return { left: 0, right: 0, top: 0, bottom: 20 };
+  }
+
+  return { left: 0, right: 0, top: 0, bottom: 0 };
+};
+
 /**
  * Cartesian Chart types using recharts
  * @see https://recharts.org
@@ -175,14 +187,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
    */
   return (
     <ResponsiveContainer width="100%" height={height} aspect={aspect}>
-      <ChartContainer
-        data={filterDisabledData(data)}
-        margin={
-          isExporting
-            ? { left: 20, right: 20, top: 20, bottom: 60 }
-            : { left: 0, right: 0, top: 0, bottom: 20 }
-        }
-      >
+      <ChartContainer data={filterDisabledData(data)} margin={getMargin(isExporting, isEnlarged)}>
         {referenceAreas && referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />)}
         {XAxisComponent({ isEnlarged, isExporting, viewContent })}
         {YAxes({ viewContent, chartDataConfig, isExporting, isEnlarged })}

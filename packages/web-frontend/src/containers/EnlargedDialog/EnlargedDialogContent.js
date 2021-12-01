@@ -320,6 +320,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'flex-start',
+    minHeight: 390,
   },
   matrixContent: {
     height: '80vh',

@@ -33,12 +33,11 @@ const X_AXIS_PADDING = {
 };
 
 const renderXAxisLabel = (label, fillColor, isEnlarged) => {
-  if (label)
+  if (label && isEnlarged)
     return {
       value: label,
       fill: fillColor,
       position: 'bottom',
-      style: { fontSize: isEnlarged ? '1em' : '0.8em' },
     };
   return null;
 };
@@ -47,11 +46,11 @@ const BASE_H = 40;
 
 const calculateXAxisHeight = (data, isExporting) => {
   if (getIsTimeSeries(data)) {
-    return 80;
+    return BASE_H;
   }
 
   if (isExporting) {
-    return Math.min(BASE_H + Math.max(...data.map(item => item.name?.length)) * 6, 190);
+    return Math.min(BASE_H + Math.max(...data.map(item => item.name?.length)) || 5 * 6, 190);
   }
   return BASE_H;
 };
