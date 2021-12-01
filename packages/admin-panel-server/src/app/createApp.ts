@@ -68,6 +68,11 @@ export function createApp() {
       verifyBESAdminAccess,
       handleWith(SaveDashboardVisualisationRoute),
     )
+    .post<SaveMapOverlayVisualisationRequest>(
+      '/v1/mapOverlayVisualisation',
+      verifyBESAdminAccess,
+      handleWith(SaveMapOverlayVisualisationRoute),
+    )
     .put<SaveMapOverlayVisualisationRequest>(
       '/v1/mapOverlayVisualisation/:mapOverlayVisualisationId',
       verifyBESAdminAccess,
