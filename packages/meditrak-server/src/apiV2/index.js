@@ -186,6 +186,7 @@ apiV2.get('/optionSets/:recordId?', useRouteHandler(GETOptionSets));
 apiV2.get('/optionSets/:parentRecordId/options', useRouteHandler(GETOptions));
 apiV2.get('/projects/:recordId?', useRouteHandler(GETProjects));
 apiV2.get('/users/:recordId?', useRouteHandler(GETUserAccounts));
+apiV2.get('/users/:parentRecordId?/accessRequests/:recordId?', useRouteHandler(GETUserAccounts));
 apiV2.get('/userEntityPermissions/:recordId?', useRouteHandler(GETUserEntityPermissions));
 apiV2.get(
   '/users/:parentRecordId/userEntityPermissions/:recordId?',

@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { JOIN_TYPES } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import {
   assertAnyPermissions,
@@ -22,6 +23,8 @@ import {
 
 export class GETUserAccounts extends GETHandler {
   permissionsFilteredInternally = true;
+
+  defaultJoinType = JOIN_TYPES.LEFT_OUTER;
 
   async assertUserHasAccess() {
     await this.assertPermissions(
@@ -45,6 +48,17 @@ export class GETUserAccounts extends GETHandler {
 
   async getPermissionsFilter(criteria, options) {
     const dbConditions = await createUserAccountDBFilter(this.accessPolicy, this.models, criteria);
+
     return { dbConditions, dbOptions: options };
+  }
+
+  async getPermissionsViaParentFilter(criteria, options) {
+    // Add additional filter by user id
+    const dbConditions = {
+      'access_request.user_id': this.parentRecordId,
+      ...criteria,
+    };
+
+    return this.getPermissionsFilter(dbConditions, options);
   }
 }

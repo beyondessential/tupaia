@@ -7,26 +7,71 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
-const FIELDS = [
+export const ACCESS_REQUESTS_ENDPOINT = 'accessRequests';
+
+const USER_FIELDS = [
   {
-    Header: 'User',
-    source: 'user.email',
-    editable: false,
+    Header: 'Email Address',
+    source: 'user_account.email',
+    type: 'tooltip',
   },
+  {
+    Header: 'First Name',
+    source: 'user.first_name',
+  },
+  {
+    Header: 'Last Name',
+    source: 'user.last_name',
+  },
+  {
+    Header: 'Employer',
+    source: 'user.employer',
+  },
+  {
+    Header: 'Phone',
+    source: 'user.mobile_number',
+  },
+  {
+    Header: 'Approved',
+    source: 'approved',
+    show: false,
+  },
+  {
+    Header: 'user_id',
+    source: 'user_id',
+    show: false,
+  },
+];
+
+const USER_COLUMNS = [
+  ...USER_FIELDS,
+  {
+    Header: 'Edit',
+    source: 'id',
+    type: 'edit',
+    width: 150,
+    actionConfig: {
+      editEndpoint: 'users',
+      fields: USER_FIELDS,
+    },
+  },
+];
+
+const ACCESS_REQUEST_FIELDS = [
   {
     Header: 'Entity',
     source: 'entity.name',
     editConfig: { optionsEndpoint: 'entities' },
   },
   {
-    Header: 'Message',
-    source: 'message',
-    type: 'tooltip',
+    Header: 'Project Code',
+    source: 'project.code',
     editable: false,
   },
   {
-    Header: 'Project Code',
-    source: 'project.code',
+    Header: 'Message',
+    source: 'message',
+    type: 'tooltip',
     editable: false,
   },
   {
@@ -40,16 +85,17 @@ const FIELDS = [
   },
 ];
 
-const COLUMNS = [
-  ...FIELDS,
+const EXPANSION_COLUMNS = [
+  ...ACCESS_REQUEST_FIELDS,
   {
     Header: 'Approve/Decline',
+    width: 140,
     type: 'edit',
     source: 'id',
     actionConfig: {
       editEndpoint: 'accessRequests',
       fields: [
-        ...FIELDS,
+        ...ACCESS_REQUEST_FIELDS,
         {
           Header: 'Approved',
           source: 'approved',
@@ -68,15 +114,25 @@ const COLUMNS = [
   },
 ];
 
+const EXPANSION_CONFIG = [
+  {
+    title: 'Access Requests',
+    endpoint: `users/{user_id}/${ACCESS_REQUESTS_ENDPOINT}`,
+    columns: EXPANSION_COLUMNS,
+    baseFilter: { approved: null },
+  },
+];
+
 export const AccessRequestsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Access Requests"
     endpoint="accessRequests"
-    columns={COLUMNS}
+    columns={USER_COLUMNS}
+    expansionTabs={EXPANSION_CONFIG}
+    baseFilter={{ approved: null }}
     editConfig={{
       title: 'Edit & Approve Access Request',
     }}
-    baseFilter={{ approved: null }}
     getHeaderEl={getHeaderEl}
   />
 );
