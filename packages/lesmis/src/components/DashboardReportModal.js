@@ -226,7 +226,11 @@ export const DashboardReportModal = () => {
             <Toolbar $isExporting={isExporting}>
               {config?.type !== 'list' && (
                 <SplitButton
-                  options={exportFormats}
+                  options={
+                    config?.presentationOptions?.exportWithTableDisabled
+                      ? exportFormats.filter(format => format.id !== 'pngWithTable')
+                      : exportFormats
+                  }
                   selectedId={exportFormatId}
                   setSelectedId={setExportFormatId}
                   onClick={handleClickExport}

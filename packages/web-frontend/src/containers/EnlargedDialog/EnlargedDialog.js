@@ -113,6 +113,7 @@ const useExports = viewContent => {
   const [exportOptions, setExportOptions] = useState({
     exportWithLabels: true,
     exportWithTable: false,
+    exportWithTableDisabled: false,
   });
   const [exportStatus, setExportStatus] = useState(STATUS.CLOSED);
   const exportRef = useRef(null);
@@ -127,8 +128,12 @@ const useExports = viewContent => {
       config?.exportWithTable !== undefined
         ? config.exportWithTable
         : exportOptions.exportWithTable;
+    const exportWithTableDisabled =
+      config?.exportWithTableDisabled !== undefined
+        ? config.exportWithTableDisabled
+        : exportOptions.exportWithTableDisabled;
 
-    setExportOptions({ exportWithLabels, exportWithTable });
+    setExportOptions({ exportWithLabels, exportWithTable, exportWithTableDisabled });
   }, [JSON.stringify(config), setExportOptions]);
 
   return {

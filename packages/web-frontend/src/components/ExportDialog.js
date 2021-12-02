@@ -89,7 +89,7 @@ export const ExportDialog = ({
   const formats = isMatrix ? ['xlsx'] : ['png', 'xlsx'];
   const [selectedFormat, setSelectedFormat] = useState(formats[0]);
   const [expanded, setExpanded] = useState(false);
-  const { exportWithLabels, exportWithTable } = exportOptions;
+  const { exportWithLabels, exportWithTable, exportWithTableDisabled } = exportOptions;
 
   useEffect(() => {
     setSelectedFormat(formats[0]);
@@ -168,19 +168,21 @@ export const ExportDialog = ({
                     }
                     label="Export With Labels"
                   />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        color="primary"
-                        checked={exportWithTable}
-                        onChange={event =>
-                          onChangeExportOptions({ exportWithTable: event.target.checked })
-                        }
-                        name="exportWithTable"
-                      />
-                    }
-                    label="Export With Table"
-                  />
+                  {!exportWithTableDisabled && (
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          color="primary"
+                          checked={exportWithTable}
+                          onChange={event =>
+                            onChangeExportOptions({ exportWithTable: event.target.checked })
+                          }
+                          name="exportWithTable"
+                        />
+                      }
+                      label="Export With Table"
+                    />
+                  )}
                 </Collapse>
               </>
             )}

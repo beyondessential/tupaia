@@ -21,6 +21,10 @@ const Container = styled.div`
   border: 1px solid ${props => props.theme.palette.grey['400']};
   margin-bottom: 1.8rem;
   border-radius: 3px;
+
+  .recharts-cartesian-axis.recharts-xAxis .recharts-label {
+    display: none;
+  }
 `;
 
 const Footer = styled(FlexEnd)`
