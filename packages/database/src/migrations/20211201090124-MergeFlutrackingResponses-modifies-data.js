@@ -166,7 +166,6 @@ const mergeFlutrackingResponses = async (db, surveyCode) => {
 
   await processInBatches(groupsToProcess, RESPONSE_GROUP_BATCH_SIZE, async (groupBatch, i) => {
     await db.runSql('START TRANSACTION');
-    // Print percentage when its integer part changes
     console.log(`${getPercentage(i, groupsToProcess.length)}%`);
     await processResponseGroups(db, groupBatch);
     await db.runSql('COMMIT');
