@@ -213,6 +213,6 @@ ExportDialog.propTypes = {
 
 ExportDialog.defaultProps = {
   isOpen: false,
-  exportOptions: null,
+  exportOptions: {},
   isMatrix: false,
 };
