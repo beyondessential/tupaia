@@ -11,6 +11,11 @@ import CardContent from '@material-ui/core/CardContent';
 
 const TYPE_HEADINGS = {
   question: 'Questions',
+  indicator: 'Indicators',
+  dashboardItem: 'Dashboard Items',
+  mapOverlay: 'Map Overlays',
+  legacyReport: 'Legacy Reports',
+  dataGroup: 'Data Groups',
 };
 
 const renderUsedByList = usedBy => {
