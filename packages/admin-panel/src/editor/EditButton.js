@@ -29,7 +29,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   onEdit: () => {
     const recordId = ownProps.value;
     dispatch(openEditModal(ownProps.actionConfig, recordId));
-    dispatch(fetchUsedBy('dataSource', recordId));
+    if (ownProps.actionConfig?.displayUsedBy) {
+      dispatch(fetchUsedBy('dataSource', recordId));
+    }
   },
 });
 

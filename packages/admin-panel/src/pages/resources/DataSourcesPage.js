@@ -41,6 +41,7 @@ const getButtonsConfig = fields => [
     actionConfig: {
       editEndpoint: 'dataSources',
       fields,
+      displayUsedBy: true,
     },
   },
   {
@@ -142,6 +143,7 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
       },
     }}
     getHeaderEl={getHeaderEl}
+    displayUsedBy
   />
 );
 
@@ -173,6 +175,7 @@ export const DataElementsPage = ({ getHeaderEl }) => (
       },
     }}
     getHeaderEl={getHeaderEl}
+    displayUsedBy
   />
 );
 

@@ -39,6 +39,7 @@ export const EditModalComponent = ({
   title,
   fields,
   isUnchanged,
+  displayUsedBy,
   usedBy,
   usedByIsLoading,
   usedByErrorMessage,
@@ -60,7 +61,9 @@ export const EditModalComponent = ({
               }}
             />
           )}
-          <UsedBy usedBy={usedBy} isLoading={usedByIsLoading} errorMessage={usedByErrorMessage} />
+          {displayUsedBy && (
+            <UsedBy usedBy={usedBy} isLoading={usedByIsLoading} errorMessage={usedByErrorMessage} />
+          )}
         </>
       </ModalContentProvider>
       <DialogFooter>
@@ -85,6 +88,7 @@ EditModalComponent.propTypes = {
   title: PropTypes.string,
   fields: PropTypes.arrayOf(PropTypes.shape({})),
   isUnchanged: PropTypes.bool,
+  displayUsedBy: PropTypes.bool,
   usedBy: PropTypes.array,
   usedByIsLoading: PropTypes.bool,
   usedByErrorMessage: PropTypes.string,
@@ -96,6 +100,7 @@ EditModalComponent.defaultProps = {
   recordData: null,
   fields: null,
   isUnchanged: false,
+  displayUsedBy: false,
   usedBy: null,
   usedByIsLoading: null,
   usedByErrorMessage: null,
