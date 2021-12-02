@@ -17,9 +17,8 @@
 #   "DeploymentName": "wai-965"
 # }
 
-from helpers.teardown import teardown_instance
+from helpers.teardown import teardown_instance, teardown_db_instance
 from helpers.utilities import find_instances, get_tag
-from helpers.rds import delete_db_instance
 
 def tear_down_tupaia_deployment(event):
     if 'DeploymentName' not in event:
@@ -39,6 +38,6 @@ def tear_down_tupaia_deployment(event):
 
     for instance in instances:
       teardown_instance(instance)
-      delete_db_instance(deployment_name)
+      teardown_db_instance(deployment_name)
 
     print('Finished tearing down clone')

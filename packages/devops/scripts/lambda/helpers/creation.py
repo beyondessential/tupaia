@@ -1,15 +1,38 @@
 import boto3
 
-from helpers.networking import setup_subdomains_via_dns, setup_subdomains_via_gateway
+from helpers.networking import add_subdomains_to_route53, setup_subdomains_via_dns, setup_subdomains_via_gateway
 from helpers.utilities import get_instance_by_id
+from helpers.rds import get_latest_db_snapshot
 
 ec2 = boto3.resource('ec2')
 ec = boto3.client('ec2')
+rds = boto3.client('rds')
 
 def allocate_elastic_ip(instance_id):
     elastic_ip = ec.allocate_address(Domain='Vpc')
     ec.associate_address(AllocationId=elastic_ip['AllocationId'],InstanceId=instance_id)
     return elastic_ip['PublicIp']
+
+def get_security_group_ids_config(
+  security_group_code=None,
+  security_group_id=None,
+):
+    if security_group_code:
+        # Get the security group tagged with the key matching this code
+        security_group_filters = [
+          {'Name': 'tag:Code', 'Values': [security_group_code]}
+        ]
+        security_groups = ec.describe_security_groups(
+          Filters=security_group_filters
+        ).get(
+          'SecurityGroups', []
+        )
+        security_group_ids = [security_group['GroupId'] for security_group in security_groups]
+        print('Found security group ids')
+    else:
+        security_group_ids = [security_group_id]
+
+    return security_group_ids
 
 def get_instance_creation_config(
   deployment_name,
@@ -27,20 +50,7 @@ def get_instance_creation_config(
   user_data=None,
   volume_size=None,
 ):
-    if security_group_code:
-      # Get the security group tagged with the key matching this code
-      security_group_filters = [
-        {'Name': 'tag:Code', 'Values': [security_group_code]}
-      ]
-      security_groups = ec.describe_security_groups(
-        Filters=security_group_filters
-      ).get(
-        'SecurityGroups', []
-      )
-      security_group_ids = [security_group['GroupId'] for security_group in security_groups]
-      print('Found security group ids')
-    else:
-      security_group_ids = [security_group_id]
+    security_group_ids = get_security_group_ids_config(security_group_code, security_group_id)
 
     instance_name = deployment_type + ': ' + deployment_name
 
@@ -157,3 +167,43 @@ def create_instance(
         setup_subdomains_via_gateway(deployment_type, new_instance_object, subdomains_via_gateway, deployment_name)
 
     return new_instance_object
+
+def create_db_instance_from_snapshot(
+  instance_name,
+  snapshot_name,
+  instance_type,
+  security_group_code=None,
+  security_group_id=None,
+):
+    security_group_ids = get_security_group_ids_config(security_group_code, security_group_id)
+
+    snapshot_id = get_latest_db_snapshot(snapshot_name)
+    print('Starting to clone db instance from snapshot')
+    rds.restore_db_instance_from_db_snapshot(
+        DBInstanceIdentifier=instance_name,
+        DBSnapshotIdentifier=snapshot_id,
+        DBInstanceClass=instance_type,
+        Port=5432,
+        PubliclyAccessible=True,
+        VpcSecurityGroupIds=security_group_ids,
+        Tags=[
+            {
+                'Key': 'DeploymentName',
+                'Value': instance_name
+            },
+        ],
+    )
+    
+    print('Successfully cloned new db instance from snapshot')
+    waiter = rds.get_waiter('db_instance_available')
+    waiter.wait(DBInstanceIdentifier=instance_name)
+    instance = rds.describe_db_instances(DBInstanceIdentifier=instance_name)['DBInstances'][0]
+
+    add_subdomains_to_route53(
+        domain='tupaia.org', 
+        subdomains=['db'], 
+        deployment_name=instance_name, 
+        dns_url=instance['Endpoint']['Address']
+    )
+
+    return instance

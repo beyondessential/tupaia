@@ -5,6 +5,7 @@ from helpers.utilities import get_tag
 
 ec = boto3.client('ec2')
 route53 = boto3.client('route53')
+rds = boto3.client('rds')
 
 def terminate_instance(instance):
     # Release elastic ip
@@ -57,3 +58,15 @@ def teardown_instance(instance):
       delete_gateway(deployment_type, deployment_name)
 
     terminate_instance(instance)
+
+def teardown_db_instance(
+  instance_name
+):
+    deleted_instance = rds.delete_db_instance(
+        DBInstanceIdentifier=instance_name,
+        SkipFinalSnapshot=True,
+        DeleteAutomatedBackups=True
+    )
+    print('Successfully deleted db instance')
+
+    return deleted_instance

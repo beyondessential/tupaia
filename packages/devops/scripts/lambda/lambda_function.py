@@ -5,13 +5,11 @@ from actions.refresh_cloned_instances import refresh_cloned_instances
 from actions.redeploy_tupaia_server import redeploy_tupaia_server
 from actions.spin_up_dhis_deployment import spin_up_dhis_deployment
 from actions.spin_up_tupaia_deployment import spin_up_tupaia_deployment
-from actions.spin_up_rds_deployment import spin_up_rds_deployment
 from actions.start_tagged_instances import start_tagged_instances
 from actions.stop_tagged_instances import stop_tagged_instances
 from actions.swap_out_tupaia_server import swap_out_tupaia_server
 from actions.tear_down_tupaia_deployment import tear_down_tupaia_deployment
 from actions.tear_down_dhis_deployment import tear_down_dhis_deployment
-from actions.tear_down_rds_deployment import tear_down_rds_deployment
 
 actions = {
   'backup_instances': backup_instances,
@@ -21,13 +19,11 @@ actions = {
   'redeploy_tupaia_server': redeploy_tupaia_server,
   'spin_up_dhis_deployment': spin_up_dhis_deployment,
   'spin_up_tupaia_deployment': spin_up_tupaia_deployment,
-  'spin_up_rds_deployment': spin_up_rds_deployment,
   'start_tagged_instances': start_tagged_instances,
   'stop_tagged_instances': stop_tagged_instances,
   'swap_out_tupaia_server': swap_out_tupaia_server,
   'tear_down_tupaia_deployment': tear_down_tupaia_deployment,
   'tear_down_dhis_deployment': tear_down_dhis_deployment,
-  'tear_down_rds_deployment': tear_down_rds_deployment,
 }
 
 def lambda_handler(event, context):

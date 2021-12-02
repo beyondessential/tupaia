@@ -36,8 +36,7 @@
 
 from datetime import datetime, timedelta
 
-from helpers.rds import create_db_instance_from_snapshot
-from helpers.clone import clone_instance
+from helpers.creation import create_db_instance_from_snapshot
 from helpers.create_from_image import create_tupaia_instance_from_image
 from helpers.utilities import find_instances
 
@@ -98,9 +97,9 @@ def spin_up_tupaia_deployment(event):
         security_group_code=security_group_code,
     )
 
-    # clone db instance
-    # do this after the server has started because it will take a while to run its startup script, so
-    # we might as well be cloning the db instance at the same time, so long is it is available before
+    # create db instance from a snapshot
+    # do this after the server has started because it will take a while to populate the db from the snapshot, 
+    # so we might as well be cloning the db instance at the same time, so long is it is available before
     # the server first tries to connect
     create_db_instance_from_snapshot(
         deployment_name,
