@@ -5,7 +5,7 @@
 
 import React from 'react';
 import keyBy from 'lodash.keyby';
-import PropTypes, { array } from 'prop-types';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Dialog, DialogFooter, DialogHeader } from '@tupaia/ui-components';
 import { closeEditModal, editField, saveEdits } from './actions';
@@ -28,19 +28,6 @@ const getFieldSourceToEdit = field => {
   return source;
 };
 
-const processRecordData = (recordData, fields) => {
-  if (Array.isArray(recordData)) {
-    const bulkRecord = recordData[0];
-    fields.forEach(field => {
-      if (field.bulkAccessor) {
-        bulkRecord[field.source] = field.bulkAccessor(recordData);
-      }
-    });
-    return { ...recordData[0] };
-  }
-  return recordData;
-};
-
 export const EditModalComponent = ({
   errorMessage,
   isLoading,
@@ -48,11 +35,13 @@ export const EditModalComponent = ({
   onEditField,
   onSave,
   recordData,
+  editedFields,
   title,
   fields,
   isUnchanged,
 }) => {
   const fieldsBySource = keyBy(fields, 'source');
+  const displayData = processRecordData(recordData, editedFields, fields);
 
   return (
     <Dialog onClose={onDismiss} open={!!fields} disableBackdropClick>
@@ -61,7 +50,7 @@ export const EditModalComponent = ({
         {fields && (
           <Editor
             fields={fields}
-            recordData={recordData}
+            recordData={displayData}
             onEditField={(fieldSource, newValue) => {
               const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
               return onEditField(fieldSourceToEdit, newValue);
@@ -87,7 +76,8 @@ EditModalComponent.propTypes = {
   onDismiss: PropTypes.func.isRequired,
   onEditField: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
-  recordData: PropTypes.object,
+  recordData: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  editedFields: PropTypes.object,
   title: PropTypes.string,
   fields: PropTypes.arrayOf(PropTypes.shape({})),
   isUnchanged: PropTypes.bool,
@@ -97,6 +87,7 @@ EditModalComponent.defaultProps = {
   errorMessage: null,
   title: 'Edit',
   recordData: null,
+  editedFields: null,
   fields: null,
   isUnchanged: false,
 };
@@ -112,6 +103,18 @@ const mapDispatchToProps = dispatch => ({
   dispatch,
 });
 
+const processRecordData = (recordData, fields) => {
+  if (Array.isArray(recordData)) {
+    const [firstRecord] = recordData;
+    return fields.reduce((obj, field) => {
+      const value = field.bulkAccessor ? field.bulkAccessor(recordData) : firstRecord[field.source];
+      return { [field.source]: value, ...obj };
+    }, {});
+  }
+
+  return recordData;
+};
+
 const mergeProps = (
   { endpoint, editedFields, recordData, ...stateProps },
   { dispatch, ...dispatchProps },
@@ -121,13 +124,14 @@ const mergeProps = (
     ...ownProps,
     ...stateProps,
     ...dispatchProps,
+    editedFields,
     recordData: { ...processRecordData(recordData, stateProps.fields), ...editedFields }, // Include edits in visible record data
     onSave: () => {
       // If there is no record data, this is a new record
       const isNew = Object.keys(recordData).length === 0;
-      const fieldValuesToSave = { ...editedFields };
+      let fieldValuesToSave = { ...editedFields };
       if (onProcessDataForSave) {
-        onProcessDataForSave(fieldValuesToSave);
+        fieldValuesToSave = onProcessDataForSave(fieldValuesToSave, recordData);
       }
       dispatch(saveEdits(endpoint, fieldValuesToSave, isNew));
     },

@@ -116,6 +116,7 @@ export const SocialFeedPage = ({ getHeaderEl }) => (
     editConfig={EDIT_CONFIG}
     createConfig={CREATE_CONFIG}
     onProcessDataForSave={data => {
+      // todo: update to be immutable
       data.type = 'markdown'; // eslint-disable-line no-param-reassign
     }}
     getHeaderEl={getHeaderEl}

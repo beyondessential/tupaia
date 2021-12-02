@@ -177,6 +177,12 @@ export const AccessRequestsPage = ({ getHeaderEl }) => (
       title: 'Edit & Approve Access Request',
     }}
     getHeaderEl={getHeaderEl}
+    onProcessDataForSave={(editedFields, recordData) => {
+      const data = recordData.map(record => {
+        return { ...record, ...editedFields };
+      });
+      return data;
+    }}
   />
 );
 

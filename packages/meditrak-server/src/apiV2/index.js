@@ -235,7 +235,7 @@ apiV2.post('/syncFromService', allowAnyone(manualKoBoSync));
  */
 apiV2.put('/users/:recordId', useRouteHandler(EditUserAccounts));
 apiV2.put('/userEntityPermissions/:recordId', useRouteHandler(EditUserEntityPermissions));
-apiV2.put('/accessRequests/:recordId', useRouteHandler(EditAccessRequests));
+apiV2.put('/accessRequests/:recordId?', useRouteHandler(EditAccessRequests));
 apiV2.put('/surveys/:recordId', useRouteHandler(EditSurveys));
 apiV2.put('/surveyResponses/:recordId', useRouteHandler(EditSurveyResponses));
 apiV2.put('/surveyScreenComponents/:recordId', useRouteHandler(EditSurveyScreenComponents));

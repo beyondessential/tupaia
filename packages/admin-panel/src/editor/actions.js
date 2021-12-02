@@ -28,8 +28,9 @@ export const openBulkEditModal = (
     dispatch({
       type: EDITOR_DATA_FETCH_BEGIN,
       fields,
-      endpoint: newEndpoint,
+      endpoint: 'accessRequests',
     });
+    // todo: add update endpoint
 
     // Set up filter
     const filterString = JSON.stringify(convertSearchTermToFilter({ ...baseFilter }));
