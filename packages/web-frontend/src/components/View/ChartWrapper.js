@@ -119,7 +119,7 @@ export const ChartWrapper = ({ viewContent, isEnlarged, isExporting, onItemClick
   if (isExporting) {
     const { exportWithTable } = viewContent?.presentationOptions;
     return (
-      <EnlargedChartContainer>
+      <EnlargedChartContainer $isExporting={isExporting}>
         <Chart
           isEnlarged={isEnlarged}
           isExporting={isExporting}
