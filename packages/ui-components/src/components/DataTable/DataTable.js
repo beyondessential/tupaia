@@ -15,7 +15,7 @@ import TableBody from '@material-ui/core/TableBody';
 import { StyledTable } from './StyledTable';
 import { FlexStart } from '../Layout';
 
-export const DataTable = ({ columns, data, className }) => {
+export const DataTable = ({ columns, data, className, rowLimit }) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -30,6 +30,12 @@ export const DataTable = ({ columns, data, className }) => {
     },
     useSortBy,
   );
+
+  const hasLimitedRows = rowLimit !== null && rows.length > rowLimit;
+  const rowsToRender = hasLimitedRows ? rows.slice(0, rowLimit) : rows;
+  const limitedRowsMessage = hasLimitedRows
+    ? `Displaying ${rowLimit} of ${rows.length} rows`
+    : null;
 
   return (
     <TableContainer className={className}>
@@ -51,7 +57,7 @@ export const DataTable = ({ columns, data, className }) => {
           ))}
         </TableHead>
         <TableBody {...getTableBodyProps()}>
-          {rows.map(row => {
+          {rowsToRender.map(row => {
             prepareRow(row);
             return (
               <TableRow {...row.getRowProps()}>
@@ -61,6 +67,7 @@ export const DataTable = ({ columns, data, className }) => {
               </TableRow>
             );
           })}
+          {hasLimitedRows ? <div>{limitedRowsMessage}</div> : null}
         </TableBody>
       </StyledTable>
     </TableContainer>
@@ -71,8 +78,10 @@ DataTable.propTypes = {
   columns: PropTypes.array.isRequired,
   data: PropTypes.array.isRequired,
   className: PropTypes.string,
+  rowLimit: PropTypes.number,
 };
 
 DataTable.defaultProps = {
   className: null,
+  rowLimit: null,
 };
