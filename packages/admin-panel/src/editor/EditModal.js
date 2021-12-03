@@ -35,13 +35,11 @@ export const EditModalComponent = ({
   onEditField,
   onSave,
   recordData,
-  editedFields,
   title,
   fields,
   isUnchanged,
 }) => {
   const fieldsBySource = keyBy(fields, 'source');
-  const displayData = processRecordData(recordData, editedFields, fields);
 
   return (
     <Dialog onClose={onDismiss} open={!!fields} disableBackdropClick>
@@ -50,7 +48,7 @@ export const EditModalComponent = ({
         {fields && (
           <Editor
             fields={fields}
-            recordData={displayData}
+            recordData={recordData}
             onEditField={(fieldSource, newValue) => {
               const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
               return onEditField(fieldSourceToEdit, newValue);
@@ -77,7 +75,6 @@ EditModalComponent.propTypes = {
   onEditField: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   recordData: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  editedFields: PropTypes.object,
   title: PropTypes.string,
   fields: PropTypes.arrayOf(PropTypes.shape({})),
   isUnchanged: PropTypes.bool,
@@ -87,7 +84,6 @@ EditModalComponent.defaultProps = {
   errorMessage: null,
   title: 'Edit',
   recordData: null,
-  editedFields: null,
   fields: null,
   isUnchanged: false,
 };
