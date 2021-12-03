@@ -5,9 +5,9 @@
 
 export const getDataSourceUsedBy = async (api, recordType, recordId) => {
   let usedBy = [];
-  const questionsResponse = await api.get(
-    `questions?filter=${encodeURIComponent(JSON.stringify({ data_source_id: recordId }))}`,
-  );
+  const questionsResponse = await api.get('questions', {
+    filter: JSON.stringify({ data_source_id: recordId }),
+  });
   usedBy = [
     ...usedBy,
     ...questionsResponse.body.map(question => ({
@@ -21,21 +21,17 @@ export const getDataSourceUsedBy = async (api, recordType, recordId) => {
 
   const dataSource = (await api.get(`dataSources/${recordId}`)).body;
 
-  const dataElementDataGroupResponse = await api.get(
-    `dataElementDataGroups?filter=${encodeURIComponent(
-      JSON.stringify({
-        data_element_id: recordId,
-      }),
-    )}`,
-  );
+  const dataElementDataGroupResponse = await api.get('dataElementDataGroups', {
+    filter: JSON.stringify({
+      data_element_id: recordId,
+    }),
+  });
 
-  const dataGroupsResponse = await api.get(
-    `dataSources?filter=${encodeURIComponent(
-      JSON.stringify({
-        id: dataElementDataGroupResponse.body.map(dedg => dedg.data_group_id),
-      }),
-    )}`,
-  );
+  const dataGroupsResponse = await api.get('dataSources', {
+    filter: JSON.stringify({
+      id: dataElementDataGroupResponse.body.map(dedg => dedg.data_group_id),
+    }),
+  });
 
   usedBy = [
     ...usedBy,
@@ -48,25 +44,21 @@ export const getDataSourceUsedBy = async (api, recordType, recordId) => {
     })),
   ];
 
-  const reportsResponse = await api.get(
-    `reports?filter=${encodeURIComponent(
-      JSON.stringify({
-        config: { comparator: 'like', comparisonValue: `%${dataSource.code}%`, castAs: 'text' },
-      }),
-    )}`,
-  );
+  const reportsResponse = await api.get('reports', {
+    filter: JSON.stringify({
+      config: { comparator: 'like', comparisonValue: `%${dataSource.code}%`, castAs: 'text' },
+    }),
+  });
 
-  const legacyReportsResponse = await api.get(
-    `legacyReports?filter=${encodeURIComponent(
-      JSON.stringify({
-        data_builder_config: {
-          comparator: 'like',
-          comparisonValue: `%${dataSource.code}%`,
-          castAs: 'text',
-        },
-      }),
-    )}`,
-  );
+  const legacyReportsResponse = await api.get('legacyReports', {
+    filter: JSON.stringify({
+      data_builder_config: {
+        comparator: 'like',
+        comparisonValue: `%${dataSource.code}%`,
+        castAs: 'text',
+      },
+    }),
+  });
 
   usedBy = [
     ...usedBy,
@@ -79,16 +71,14 @@ export const getDataSourceUsedBy = async (api, recordType, recordId) => {
     })),
   ];
 
-  const dashboardItemsResponse = await api.get(
-    `dashboardItems?filter=${encodeURIComponent(
-      JSON.stringify({
-        report_code: [
-          ...reportsResponse.body.map(report => report.code),
-          ...legacyReportsResponse.body.map(legacyReport => legacyReport.code),
-        ],
-      }),
-    )}`,
-  );
+  const dashboardItemsResponse = await api.get('dashboardItems', {
+    filter: JSON.stringify({
+      report_code: [
+        ...reportsResponse.body.map(report => report.code),
+        ...legacyReportsResponse.body.map(legacyReport => legacyReport.code),
+      ],
+    }),
+  });
 
   usedBy = [
     ...usedBy,
@@ -101,16 +91,14 @@ export const getDataSourceUsedBy = async (api, recordType, recordId) => {
     })),
   ];
 
-  const mapOverlaysResponse = await api.get(
-    `mapOverlays?filter=${encodeURIComponent(
-      JSON.stringify({
-        report_code: [
-          ...reportsResponse.body.map(report => report.code),
-          ...legacyReportsResponse.body.map(legacyReport => legacyReport.code),
-        ],
-      }),
-    )}`,
-  );
+  const mapOverlaysResponse = await api.get('mapOverlays', {
+    filter: JSON.stringify({
+      report_code: [
+        ...reportsResponse.body.map(report => report.code),
+        ...legacyReportsResponse.body.map(legacyReport => legacyReport.code),
+      ],
+    }),
+  });
 
   usedBy = [
     ...usedBy,
@@ -123,17 +111,15 @@ export const getDataSourceUsedBy = async (api, recordType, recordId) => {
     })),
   ];
 
-  const indicatorsResponse = await api.get(
-    `indicators?filter=${encodeURIComponent(
-      JSON.stringify({
-        config: {
-          comparator: 'like',
-          comparisonValue: `%${dataSource.code}%`,
-          castAs: 'text',
-        },
-      }),
-    )}`,
-  );
+  const indicatorsResponse = await api.get('indicators', {
+    filter: JSON.stringify({
+      config: {
+        comparator: 'like',
+        comparisonValue: `%${dataSource.code}%`,
+        castAs: 'text',
+      },
+    }),
+  });
 
   usedBy = [
     ...usedBy,
