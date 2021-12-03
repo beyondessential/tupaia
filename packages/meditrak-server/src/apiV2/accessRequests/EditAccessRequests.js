@@ -27,16 +27,23 @@ export class EditAccessRequests extends EditHandler {
     );
   }
 
-  async editRecord() {
+  async validate() {
+    if (Array.isArray(this.updatedFields)) {
+      return this.updatedFields.map(r => this.validateRecordExists(r.id));
+    }
+
+    return this.validateRecordExists();
+  }
+
+  async editRecord(recordId = this.recordId, updatedFields = this.updatedFields) {
+    if (Array.isArray(updatedFields)) {
+      return updatedFields.map(r => this.editRecord(r.id, r));
+    }
+
+    const accessRequest = await this.models.accessRequest.findById(recordId);
     // Check Permissions
-    const accessRequest = await this.models.accessRequest.findById(this.recordId);
     const accessRequestChecker = accessPolicy =>
-      assertAccessRequestEditPermissions(
-        accessPolicy,
-        this.models,
-        this.recordId,
-        this.updatedFields,
-      );
+      assertAccessRequestEditPermissions(accessPolicy, this.models, this.recordId, updatedFields);
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, accessRequestChecker]),
     );
@@ -46,8 +53,9 @@ export class EditAccessRequests extends EditHandler {
     if (approved !== null) {
       throw new ValidationError(`AccessRequest has already been processed`);
     }
-    return this.models.accessRequest.updateById(this.recordId, {
-      ...this.updatedFields,
+
+    return this.models.accessRequest.updateById(recordId, {
+      ...updatedFields,
       processed_by: this.req.userId,
       processed_date: new Date(),
     });

@@ -61,6 +61,11 @@ const ACCESS_REQUEST_FIELDS = [
     editable: false,
   },
   {
+    Header: 'Note',
+    source: 'note',
+    editConfig: { type: 'textarea' },
+  },
+  {
     Header: 'Permission Group',
     source: 'permission_group.name',
     editConfig: {
@@ -100,6 +105,11 @@ const USER_COLUMNS = [
           source: 'message',
           type: 'tooltip',
           editable: false,
+        },
+        {
+          Header: 'id',
+          source: 'id',
+          show: false,
         },
         {
           Header: 'Permission Group',
@@ -146,11 +156,6 @@ const EXPANSION_COLUMNS = [
           editConfig: {
             type: 'boolean',
           },
-        },
-        {
-          Header: 'Note',
-          source: 'note',
-          editConfig: { type: 'textarea' },
         },
       ],
     },

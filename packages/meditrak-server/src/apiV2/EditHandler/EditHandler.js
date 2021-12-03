@@ -36,12 +36,12 @@ export class EditHandler extends CRUDHandler {
       .updateById(this.recordId, this.updatedFields);
   }
 
-  async validateRecordExists() {
+  async validateRecordExists(recordId = this.recordId) {
     const validationCriteria = {
       id: [constructRecordExistsWithId(this.database, this.recordType)],
     };
 
     const validator = new ObjectValidator(validationCriteria);
-    return validator.validate({ id: this.recordId }); // Will throw an error if not valid
+    return validator.validate({ id: recordId }); // Will throw an error if not valid
   }
 }
