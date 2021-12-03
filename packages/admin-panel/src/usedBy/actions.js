@@ -4,10 +4,12 @@
  */
 
 import { USED_BY_FETCH_BEGIN, USED_BY_FETCH_ERROR, USED_BY_FETCH_SUCCESS } from './constants';
-import { getDataSourceUsedBy } from './api';
+import { getDataSourceUsedBy, getQuestionUsedBy } from './api';
 
-const SUPPORTED_RECORD_TYPES = {
-  dataSource: getDataSourceUsedBy,
+const RECORD_TYPE_USED_BY_FN = {
+  dataElement: async (api, recordId) => getDataSourceUsedBy(api, 'dataElement', recordId),
+  dataGroup: async (api, recordId) => getDataSourceUsedBy(api, 'dataGroup', recordId),
+  question: getQuestionUsedBy,
 };
 
 export const fetchUsedBy = (recordType, recordId) => async (dispatch, getState, { api }) => {
@@ -15,13 +17,13 @@ export const fetchUsedBy = (recordType, recordId) => async (dispatch, getState, 
     type: USED_BY_FETCH_BEGIN,
   });
 
-  const getUsedBy = SUPPORTED_RECORD_TYPES[recordType] ?? null;
+  const getUsedBy = RECORD_TYPE_USED_BY_FN[recordType] ?? null;
   if (!getUsedBy) {
     throw new Error('Unsupported record type');
   }
 
   try {
-    const usedBy = await getUsedBy(api, recordType, recordId);
+    const usedBy = await getUsedBy(api, recordId);
     dispatch({
       type: USED_BY_FETCH_SUCCESS,
       recordId,

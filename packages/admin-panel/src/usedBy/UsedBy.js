@@ -20,6 +20,7 @@ const TYPE_HEADINGS = {
   mapOverlay: 'Map Overlays',
   legacyReport: 'Legacy Reports',
   dataGroup: 'Data Groups',
+  survey: 'Surveys',
 };
 
 const StyledHeader = styled(Typography)`
