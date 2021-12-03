@@ -47,9 +47,14 @@ const ExpandRowIcon = styled(AddBox)`
 
 class DataFetchingTableComponent extends React.Component {
   componentWillMount() {
-    const params = queryString.parse(location.search); // set filters from query params
-    const filters = params.filters ? JSON.parse(params.filters) : undefined;
-    this.props.initialiseTable(filters);
+    if (this.props.nestingLevel === 0) {
+      // Page-level filters only apply to top-level data tables
+      const params = queryString.parse(location.search); // set filters from query params
+      const filters = params.filters ? JSON.parse(params.filters) : undefined;
+      this.props.initialiseTable(filters);
+    } else {
+      this.props.initialiseTable();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -104,6 +109,7 @@ class DataFetchingTableComponent extends React.Component {
       resizedColumns,
       expansionTabStates,
       onExpandedTabChange,
+      nestingLevel,
     } = this.props;
 
     return (
@@ -156,6 +162,7 @@ class DataFetchingTableComponent extends React.Component {
                   endpoint={makeSubstitutionsInString(endpoint, rowData)}
                   key={expansionTab} // Triggers refresh of data.
                   {...restOfProps}
+                  nestingLevel={nestingLevel + 1}
                 />
               </ExpansionContainer>
             );
@@ -221,6 +228,7 @@ DataFetchingTableComponent.propTypes = {
   sorting: PropTypes.array.isRequired,
   expansionTabStates: PropTypes.object.isRequired,
   onExpandedTabChange: PropTypes.func.isRequired,
+  nestingLevel: PropTypes.number,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -230,6 +238,7 @@ DataFetchingTableComponent.defaultProps = {
   data: [],
   errorMessage: '',
   numberOfPages: 0,
+  nestingLevel: 0,
 };
 
 const mapStateToProps = (state, { columns, reduxId }) => ({
