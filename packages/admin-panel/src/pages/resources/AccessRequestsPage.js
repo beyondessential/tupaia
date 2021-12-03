@@ -47,7 +47,7 @@ const ACCESS_REQUEST_FIELDS = [
   {
     Header: 'Entity',
     source: 'entity.name',
-    editConfig: { optionsEndpoint: 'entities' },
+    editConfig: { optionsEndpoint: 'entities', baseFilter: { type: 'country' } },
   },
   {
     Header: 'Project Code',
