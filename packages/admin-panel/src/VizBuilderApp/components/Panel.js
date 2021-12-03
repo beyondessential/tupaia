@@ -12,6 +12,7 @@ import { TabPanel } from './TabPanel';
 import { JsonEditor } from './JsonEditor';
 import { PlayButton } from './PlayButton';
 import { useVizConfig, useVizConfigError } from '../context';
+import { DataElementDataLibrary } from './DataLibrary';
 
 const Container = styled(FlexColumn)`
   position: relative;
@@ -56,6 +57,8 @@ const Tab = styled(MuiTab)`
 
 const PanelTabPanel = styled.div`
   flex: 1;
+  display: flex;
+  flex-direction: column;
 
   > div {
     width: 100%;
@@ -64,6 +67,7 @@ const PanelTabPanel = styled.div`
 
   .jsoneditor {
     border: none;
+    min-height: 500px;
   }
 `;
 
@@ -96,6 +100,8 @@ export const Panel = () => {
     return tab !== tabId && hasDataError;
   };
 
+  const [fetchJsonEditorKey, setFetchJsonEditorKey] = useState(0);
+
   return (
     <Container>
       <PanelNav>
@@ -113,7 +119,15 @@ export const Panel = () => {
         <PlayButton />
       </PanelNav>
       <TabPanel isSelected={tab === 0} Panel={PanelTabPanel}>
+        <DataElementDataLibrary
+          fetch={fetch}
+          onFetchChange={value => {
+            setTabValue('fetch', value);
+            setFetchJsonEditorKey(fetchJsonEditorKey + 1);
+          }}
+        />
         <JsonEditor
+          key={fetchJsonEditorKey}
           value={fetch}
           onChange={value => setTabValue('fetch', value)}
           onInvalidChange={handleInvalidChange}
