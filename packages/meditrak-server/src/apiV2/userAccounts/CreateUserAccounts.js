@@ -29,6 +29,7 @@ export class CreateUserAccounts extends CreateHandler {
     password,
     countryName = 'Demo Land',
     permissionGroupName,
+    primaryPlatform,
     is_api_client: isApiClient,
     verifiedEmail,
     ...restOfUser
@@ -55,6 +56,7 @@ export class CreateUserAccounts extends CreateHandler {
         last_name: lastName,
         email: emailAddress,
         mobile_number: contactNumber,
+        primary_platform: primaryPlatform,
         ...hashAndSaltPassword(password),
         verified_email: verifiedEmail,
         ...restOfUser,

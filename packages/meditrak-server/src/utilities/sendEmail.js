@@ -5,7 +5,9 @@
 import nodemailer from 'nodemailer';
 import { getIsProductionEnvironment } from '../devops';
 
-export const sendEmail = async (to, subject, text, attachments) => {
+const DEFAULT_SIGN_OFF = 'Cheers,\n\nThe Tupaia Team';
+
+export const sendEmail = async (to, subject, text, attachments, signOff = DEFAULT_SIGN_OFF) => {
   const { SMTP_HOST, SMTP_USER, SMTP_PASSWORD, SITE_EMAIL_ADDRESS } = process.env;
 
   const transporter = nodemailer.createTransport({
@@ -28,9 +30,6 @@ export const sendEmail = async (to, subject, text, attachments) => {
     to,
     subject,
     attachments,
-    text: `${text}
-
-Cheers,
-The Tupaia Team`,
+    text: `${text}\n${signOff}`,
   });
 };
