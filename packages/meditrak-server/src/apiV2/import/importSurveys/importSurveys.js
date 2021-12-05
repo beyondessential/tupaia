@@ -46,7 +46,7 @@ const DEFAULT_SERVICE_TYPE = 'tupaia';
 const VIS_CRITERIA_CONJUNCTION = '_conjunction';
 
 const validateSurveyServiceType = async (models, surveyCode, serviceType) => {
-  const existingDataGroup = await models.event.findOne({ code: surveyCode });
+  const existingDataGroup = await models.dataGroup.findOne({ code: surveyCode });
   if (existingDataGroup !== null) {
     if (serviceType !== existingDataGroup.service_type) {
       throw new ImportValidationError(
@@ -65,7 +65,7 @@ const validateQuestionExistence = rows => {
 };
 
 const updateOrCreateDataGroup = async (models, { surveyCode, serviceType }) => {
-  const dataGroup = await models.event.findOrCreate(
+  const dataGroup = await models.dataGroup.findOrCreate(
     {
       code: surveyCode,
     },
@@ -86,11 +86,11 @@ const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGro
     config,
   });
 
-  let dataElement = await models.dataSource.findOne({ code: dataElementCode });
+  let dataElement = await models.dataElement.findOne({ code: dataElementCode });
 
   if (dataElement === null) {
     // Data Element doesn't exist, create it
-    dataElement = await models.dataSource.create({
+    dataElement = await models.dataElement.create({
       code: dataElementCode,
       service_type: serviceType,
     });
@@ -100,13 +100,13 @@ const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGro
 
     await models.dataElementDataGroup.findOrCreate({
       data_element_id: dataElement.id,
-      event_id: dataGroup.id,
+      data_group_id: dataGroup.id,
     });
   } else {
     // dataElement already exists, don't overwrite it
     await models.dataElementDataGroup.findOrCreate({
       data_element_id: dataElement.id,
-      event_id: dataGroup.id,
+      data_group_id: dataGroup.id,
     });
   }
 
@@ -180,7 +180,7 @@ export async function importSurveys(req, res) {
 
         // Clear all existing data element/data group associations
         // We will re-create the ones required by the survey while processing its questions
-        await transactingModels.dataElementDataGroup.delete({ event_id: dataGroup.id });
+        await transactingModels.dataElementDataGroup.delete({ data_group_id: dataGroup.id });
 
         // Refresh SurveyDate element
         await dataGroup.deleteSurveyDateElement();
@@ -195,7 +195,7 @@ export async function importSurveys(req, res) {
             // If no survey with that name is found, give it a code and public permissions
             code: surveyCode,
             permission_group_id: permissionGroup.id,
-            event_id: dataGroup.id,
+            data_group_id: dataGroup.id,
           },
         );
         if (!survey) {
@@ -323,7 +323,7 @@ export async function importSurveys(req, res) {
             detail,
             options: processOptions(options, optionLabels, optionColors, type),
             option_set_id: await processOptionSetName(transactingModels, optionSet),
-            data_source_id: dataElement && dataElement.id,
+            data_element_id: dataElement && dataElement.id,
           };
 
           // Either create or update the question depending on if there exists a matching code

@@ -22,7 +22,7 @@ export const fetchAggregatedAnalyticsByDhisIds = async (
   entityAggregation,
   hierarchyId,
 ) => {
-  const dataElements = await models.dataSource.find({
+  const dataElements = await models.dataElement.find({
     code: dataElementCodes,
   });
   // Need to find all the data source org unit levels for the aggregated analytics endpoint,

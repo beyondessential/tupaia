@@ -9,6 +9,7 @@ import groupBy from 'lodash.groupby';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { countDistinct, toArray } from '@tupaia/utils';
 import { createService } from './services';
+import { DATA_SOURCE_TYPES } from './utils';
 
 let modelRegistry;
 
@@ -29,8 +30,8 @@ export class DataBroker {
       [this.getDataSourceTypes().SYNC_GROUP]: this.mergeSyncGroups,
     };
     this.fetchers = {
-      [this.getDataSourceTypes().DATA_ELEMENT]: this.fetchFromDataSourceTable,
-      [this.getDataSourceTypes().DATA_GROUP]: this.fetchFromEventTable,
+      [this.getDataSourceTypes().DATA_ELEMENT]: this.fetchFromDataElementTable,
+      [this.getDataSourceTypes().DATA_GROUP]: this.fetchFromDataGroupTable,
       [this.getDataSourceTypes().SYNC_GROUP]: this.fetchFromSyncGroupTable,
     };
   }
@@ -40,15 +41,15 @@ export class DataBroker {
   }
 
   getDataSourceTypes() {
-    return this.models.dataSource.getTypes();
+    return DATA_SOURCE_TYPES;
   }
 
-  fetchFromDataSourceTable = async dataSourceSpec => {
-    return this.models.dataSource.find(dataSourceSpec);
+  fetchFromDataElementTable = async dataSourceSpec => {
+    return this.models.dataElement.find(dataSourceSpec);
   };
 
-  fetchFromEventTable = async dataSourceSpec => {
-    return this.models.event.find(dataSourceSpec);
+  fetchFromDataGroupTable = async dataSourceSpec => {
+    return this.models.dataGroup.find(dataSourceSpec);
   };
 
   fetchFromSyncGroupTable = async dataSourceSpec => {

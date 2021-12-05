@@ -10,7 +10,7 @@ export const DATA_ELEMENTS = {
   TEST_02: { code: 'TEST_02', service_type: 'test', config: {} },
   OTHER_01: { code: 'OTHER_01', service_type: 'other', config: {} },
 };
-export const EVENTS = {
+export const DATA_GROUPS = {
   TEST_01: { code: 'TEST_01', service_type: 'test', config: {} },
   TEST_02: { code: 'TEST_02', service_type: 'test', config: {} },
   OTHER_01: { code: 'OTHER_01', service_type: 'other', config: {} },

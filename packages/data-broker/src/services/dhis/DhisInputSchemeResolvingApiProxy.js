@@ -135,7 +135,7 @@ export class DhisInputSchemeResolvingApiProxy {
 
   async getDataElementDhisIdToCode(dataElementCodes) {
     const dataElementIdToCode = {};
-    const dataElements = await this.models.dataSource.find({
+    const dataElements = await this.models.dataElement.find({
       code: dataElementCodes,
     });
 
@@ -209,7 +209,7 @@ export class DhisInputSchemeResolvingApiProxy {
    * @private
    */
   allDataElementsHaveDhisId = async dataElementCodes => {
-    const dataElements = await this.models.dataSource.find({
+    const dataElements = await this.models.dataElement.find({
       code: dataElementCodes,
     });
 
@@ -248,10 +248,10 @@ export class DhisInputSchemeResolvingApiProxy {
    * @private
    */
   allProgramsHaveDhisId = async programCodes => {
-    const events = await this.models.event.find({ code: programCodes });
+    const dataGroups = await this.models.dataGroup.find({ code: programCodes });
 
-    for (const event of events) {
-      if (!event.config.dhisId) {
+    for (const dataGroup of dataGroups) {
+      if (!dataGroup.config.dhisId) {
         return false;
       }
     }
@@ -269,7 +269,7 @@ export class DhisInputSchemeResolvingApiProxy {
 
     const { dataElementCodes } = query;
 
-    const dataElements = await this.models.dataSource.find({
+    const dataElements = await this.models.dataElement.find({
       code: dataElementCodes,
     });
 
@@ -278,7 +278,7 @@ export class DhisInputSchemeResolvingApiProxy {
 
       if (!dataElement) {
         throw new Error(
-          'DataElement not found in data_source, attempted to replace its code with an id',
+          'DataElement not found in data_group, attempted to replace its code with an id',
         );
       }
 
@@ -304,7 +304,7 @@ export class DhisInputSchemeResolvingApiProxy {
   translateDataElementIdsToCodesInEventAnalyticResponse = async (response, dataElementCodes) => {
     const dataElementIdToCode = {};
 
-    const dataElements = await this.models.dataSource.find({
+    const dataElements = await this.models.dataElement.find({
       code: dataElementCodes,
     });
 
@@ -399,28 +399,28 @@ export class DhisInputSchemeResolvingApiProxy {
       throw new Error('No program codes to replace');
     }
 
-    const events = await this.models.event.find({
+    const dataGroups = await this.models.dataGroup.find({
       code: programCodes,
     });
 
     const programIds = [];
 
     for (const programCode of programCodes) {
-      const event = events.find(d => d.code === programCode);
+      const dataGroup = dataGroups.find(d => d.code === programCode);
 
-      if (!event) {
+      if (!dataGroup) {
         throw new Error(
-          `Program/DataGroup ${programCode} not found in data_source, attempted to replace its code with an id`,
+          `Program/DataGroup ${programCode} not found in data_group, attempted to replace its code with an id`,
         );
       }
 
-      if (!event.config.dhisId) {
+      if (!dataGroup.config.dhisId) {
         throw new Error(
           `Program/DataGroup ${programCode} does not have a dhisId, attempted to replace its code with the id`,
         );
       }
 
-      programIds.push(event.config.dhisId);
+      programIds.push(dataGroup.config.dhisId);
     }
 
     modifiedQuery.programIds = programIds;

@@ -12,8 +12,8 @@ class SurveyType extends DatabaseType {
     minAppVersion: '0.0.1',
   };
 
-  async event() {
-    return this.otherModels.event.findById(this.event_id);
+  async dataGroup() {
+    return this.otherModels.dataGroup.findById(this.data_group_id);
   }
 
   async questions() {
@@ -49,7 +49,7 @@ class SurveyType extends DatabaseType {
 }
 
 export class SurveyModel extends MaterializedViewLogDatabaseModel {
-  notifiers = [onChangeUpdateEvent];
+  notifiers = [onChangeUpdateDataGroup];
 
   get DatabaseTypeClass() {
     return SurveyType;
@@ -62,18 +62,18 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   isDeletableViaApi = true;
 }
 
-const onChangeUpdateEvent = async (
+const onChangeUpdateDataGroup = async (
   { type: changeType, old_record: oldRecord, new_record: newRecord },
   models,
 ) => {
   switch (changeType) {
     case 'update': {
-      const { code, data_source_id: dataSourceId } = newRecord;
-      return models.event.updateById(dataSourceId, { code });
+      const { code, data_element_id: dataElementId } = newRecord;
+      return models.dataGroup.updateById(dataElementId, { code });
     }
     case 'delete': {
-      const { data_source_id: dataSourceId } = oldRecord;
-      return models.event.deleteById(dataSourceId);
+      const { data_element_id: dataElementId } = oldRecord;
+      return models.dataGroup.deleteById(dataElementId);
     }
     default:
       throw new Error(`Non supported change type: ${changeType}`);

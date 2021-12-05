@@ -18,7 +18,7 @@ class SurveyEditor {
 
   async edit(recordId, updatedFields) {
     this.survey = await this.models.survey.findById(recordId);
-    this.event = await this.survey.event();
+    this.dataGroup = await this.survey.dataGroup();
     this.updatedFieldsByResource = this.createUpdatedFieldsByResource(updatedFields);
 
     await this.updateDataElements();
@@ -28,8 +28,8 @@ class SurveyEditor {
 
   createUpdatedFieldsByResource = updatedFields => {
     const {
-      'data_source.service_type': serviceType,
-      'data_source.config': config,
+      'data_group.service_type': serviceType,
+      'data_group.config': config,
       ...surveyFields
     } = updatedFields;
     const { period_granularity: periodGranularity } = surveyFields;
@@ -60,12 +60,12 @@ class SurveyEditor {
       return;
     }
 
-    const dataElements = await this.models.event.getDataElementsInEvent(this.event.code);
+    const dataElements = await this.models.dataGroup.getDataElementsInEvent(this.dataGroup.code);
     const updateDataElement = async dataElement => {
       await assertCanAddDataElementInGroup(
         this.models,
         dataElement.code,
-        this.event.code,
+        this.dataGroup.code,
         this.updatedFieldsByResource.dataElement,
       );
       await this.updateResource(dataElement, RESOURCE_TYPES.DATA_ELEMENT);
@@ -75,9 +75,9 @@ class SurveyEditor {
   };
 
   updateDataGroup = async () => {
-    await this.event.deleteSurveyDateElement();
-    await this.updateResource(this.event, RESOURCE_TYPES.DATA_GROUP);
-    await this.event.upsertSurveyDateElement();
+    await this.dataGroup.deleteSurveyDateElement();
+    await this.updateResource(this.dataGroup, RESOURCE_TYPES.DATA_GROUP);
+    await this.dataGroup.upsertSurveyDateElement();
   };
 
   updateSurvey = async () => this.updateResource(this.survey, RESOURCE_TYPES.SURVEY);
@@ -87,7 +87,9 @@ class SurveyEditor {
    */
   updateResource = async (model, resourceType) => {
     const updatedFields = this.updatedFieldsByResource[resourceType];
-    const isDataSource = model.databaseType === this.models.dataSource.databaseType;
+    const isDataSource =
+      model.databaseType === this.models.dataElement.databaseType ||
+      model.databaseType === this.models.dataGroup.databaseType;
 
     Object.entries(updatedFields)
       .filter(([, fieldValue]) => fieldValue !== undefined)

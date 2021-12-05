@@ -46,9 +46,9 @@ const updateForeignKey = async (
 };
 
 exports.up = async function (db) {
-  // Create new table for data groups (renamed to events)
+  // Create new table for data groups
   await db.runSql(`
-    CREATE TABLE event (
+    CREATE TABLE data_group (
       id TEXT PRIMARY KEY,
       code TEXT NOT NULL,
       service_type service_type NOT NULL,
@@ -57,7 +57,7 @@ exports.up = async function (db) {
   `);
   // Copy data groups info into new table
   await db.runSql(`
-    INSERT INTO event (id, code, service_type, config)
+    INSERT INTO data_group (id, code, service_type, config)
     SELECT generate_object_id(), code, service_type, config
     FROM data_source
     WHERE type = 'dataGroup';
@@ -68,10 +68,17 @@ exports.up = async function (db) {
     'data_element_data_group',
     'data_source',
     'data_group_id',
-    'event',
-    'event_id',
+    'data_group',
+    'data_group_id',
   );
-  await updateForeignKey(db, 'survey', 'data_source', 'data_source_id', 'event', 'event_id');
+  await updateForeignKey(
+    db,
+    'survey',
+    'data_source',
+    'data_source_id',
+    'data_group',
+    'data_group_id',
+  );
 
   // Drop data groups from data source table
   // Drop type column since it's no longer relevant
@@ -81,6 +88,17 @@ exports.up = async function (db) {
 
     ALTER TABLE data_source
     DROP COLUMN type;
+  `);
+
+  // Rename data_source table to data_element
+  await db.runSql(`
+    ALTER TABLE data_source
+    RENAME TO data_element
+  `);
+  // Rename foreign keys
+  await db.runSql(`
+    ALTER TABLE question
+    RENAME COLUMN data_source_id TO data_element_id
   `);
 };
 
@@ -100,21 +118,39 @@ exports.down = async function (db) {
   await db.runSql(`
     INSERT INTO data_source (id, code, service_type, config, type)
     SELECT generate_object_id(), code, service_type, config, 'dataGroup'
-    FROM event;
+    FROM data_group;
   `);
   // Update foreign keys back to data_source table
   await updateForeignKey(
     db,
     'data_element_data_group',
-    'event',
-    'event_id',
+    'data_group',
+    'data_group_id',
     'data_source',
     'data_group_id',
   );
-  await updateForeignKey(db, 'survey', 'event', 'event_id', 'data_source', 'data_source_id');
-  // Drop the event table
+  await updateForeignKey(
+    db,
+    'survey',
+    'data_group',
+    'data_group_id',
+    'data_source',
+    'data_source_id',
+  );
+  // Drop the data_group table
   await db.runSql(`
-    DROP TABLE event;
+    DROP TABLE data_group;
+  `);
+
+  // Rename data_element table back to data_source
+  await db.runSql(`
+    ALTER TABLE data_source
+    RENAME TO data_element
+  `);
+  // Rename foreign keys
+  await db.runSql(`
+    ALTER TABLE question
+    RENAME COLUMN data_element_id TO data_source_id
   `);
 };
 

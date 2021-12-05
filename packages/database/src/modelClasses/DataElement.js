@@ -7,15 +7,6 @@ import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-const DATA_ELEMENT = 'dataElement';
-const DATA_GROUP = 'dataGroup';
-const SYNC_GROUP = 'syncGroup';
-const DATA_SOURCE_TYPES = {
-  DATA_ELEMENT,
-  DATA_GROUP,
-  SYNC_GROUP,
-};
-
 const SERVICE_TYPES = {
   DHIS: 'dhis',
   TUPAIA: 'tupaia',
@@ -37,16 +28,14 @@ const DHIS_DATA_TYPES = {
   INDICATOR: 'Indicator',
 };
 
-export class DataSourceType extends DatabaseType {
-  static databaseType = TYPES.DATA_SOURCE;
+export class DataElementType extends DatabaseType {
+  static databaseType = TYPES.DATA_ELEMENT;
 
   SERVICE_TYPES = SERVICE_TYPES;
 
   get dataElementCode() {
     return this.config.dataElementCode || this.code;
   }
-
-  getTypes = () => DATA_SOURCE_TYPES;
 
   sanitizeConfig() {
     const configSchema = CONFIG_SCHEMA_BY_SERVICE[this.service_type];
@@ -75,16 +64,12 @@ export class DataSourceType extends DatabaseType {
   }
 }
 
-export class DataSourceModel extends MaterializedViewLogDatabaseModel {
-  static types = DATA_SOURCE_TYPES;
-
+export class DataElementModel extends MaterializedViewLogDatabaseModel {
   SERVICE_TYPES = SERVICE_TYPES;
 
   get DatabaseTypeClass() {
-    return DataSourceType;
+    return DataElementType;
   }
-
-  getTypes = () => DataSourceModel.types;
 
   getDhisDataTypes = () => DHIS_DATA_TYPES;
 }

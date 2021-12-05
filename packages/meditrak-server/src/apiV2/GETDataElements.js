@@ -8,7 +8,7 @@ import { GETHandler } from './GETHandler';
 import { assertBESAdminAccess } from '../permissions';
 import { mergeMultiJoin } from './utilities';
 
-export class GETDataSources extends GETHandler {
+export class GETDataElements extends GETHandler {
   permissionsFilteredInternally = true;
 
   async assertUserHasAccess() {
@@ -22,14 +22,14 @@ export class GETDataSources extends GETHandler {
   async getPermissionsViaParentFilter(criteria, options) {
     const dbConditions = { ...criteria };
     const dbOptions = { ...options };
-    dbConditions[`${TYPES.DATA_ELEMENT_DATA_GROUP}.event_id`] = this.parentRecordId;
+    dbConditions[`${TYPES.DATA_ELEMENT_DATA_GROUP}.data_group_id`] = this.parentRecordId;
     dbOptions.multiJoin = mergeMultiJoin(
       [
         {
           joinWith: TYPES.DATA_ELEMENT_DATA_GROUP,
           joinCondition: [
             `${TYPES.DATA_ELEMENT_DATA_GROUP}.data_element_id`,
-            `${TYPES.DATA_SOURCE}.id`,
+            `${TYPES.DATA_ELEMENT}.id`,
           ],
         },
       ],

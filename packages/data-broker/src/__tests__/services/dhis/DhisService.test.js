@@ -7,7 +7,7 @@ import * as GetDhisApiInstance from '../../../services/dhis/getDhisApiInstance';
 import {
   DATA_SOURCES,
   DATA_VALUES,
-  EVENTS,
+  DATA_GROUPS,
   DHIS_REFERENCE,
   SERVER_NAME,
 } from './DhisService.fixtures';
@@ -64,7 +64,7 @@ describe('DhisService', () => {
           dataValues: [DATA_VALUES.POP01, DATA_VALUES.POP02],
         };
 
-        await dhisService.push([EVENTS.POP01_GROUP], event, { type: 'dataGroup' });
+        await dhisService.push([DATA_GROUPS.POP01_GROUP], event, { type: 'dataGroup' });
         expect(dhisApi.postEvents).toHaveBeenCalledOnceWith([
           {
             ...event,
@@ -82,7 +82,7 @@ describe('DhisService', () => {
           dataValues: [DATA_VALUES.POP01, DATA_VALUES.DIF01],
         };
 
-        await dhisService.push([EVENTS.POP01_GROUP], event, { type: 'dataGroup' });
+        await dhisService.push([DATA_GROUPS.POP01_GROUP], event, { type: 'dataGroup' });
         expect(dhisApi.postEvents).toHaveBeenCalledOnceWith([
           {
             ...event,
@@ -140,7 +140,7 @@ describe('DhisService', () => {
           dhisReference: DHIS_REFERENCE,
         };
 
-        await dhisService.delete(EVENTS.POP01_GROUP, eventData, {
+        await dhisService.delete(DATA_GROUPS.POP01_GROUP, eventData, {
           serverName: SERVER_NAME,
           type: 'dataGroup',
         });
@@ -165,22 +165,22 @@ describe('DhisService', () => {
       });
 
       it('uses EventsPuller for dataGroups', async () => {
-        await dhisService.pull([EVENTS.POP01_GROUP], 'dataGroup', {});
+        await dhisService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', {});
         expect(dhisService.eventsPuller.pull).toHaveBeenCalledOnceWith(
           [{ myDhisApi: 1 }],
-          [EVENTS.POP01_GROUP],
+          [DATA_GROUPS.POP01_GROUP],
           {},
         );
       });
 
       it('uses the modern EventsPuller by default', async () => {
-        await dhisService.pull([EVENTS.POP01_GROUP], 'dataGroup', {});
+        await dhisService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', {});
         expect(dhisService.eventsPuller.pull).toHaveBeenCalledTimes(1);
         expect(dhisService.deprecatedEventsPuller.pull).not.toHaveBeenCalled();
       });
 
       it('uses the deprecated EventsPuller if flag passed', async () => {
-        await dhisService.pull([EVENTS.POP01_GROUP], 'dataGroup', { useDeprecatedApi: true });
+        await dhisService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', { useDeprecatedApi: true });
         expect(dhisService.eventsPuller.pull).not.toHaveBeenCalled();
         expect(dhisService.deprecatedEventsPuller.pull).toHaveBeenCalledTimes(1);
       });

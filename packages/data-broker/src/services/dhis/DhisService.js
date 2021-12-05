@@ -21,17 +21,17 @@ export class DhisService extends Service {
 
     this.translator = new DhisTranslator(this.models);
     this.dataElementsMetadataPuller = new DataElementsMetadataPuller(
-      this.models.dataSource,
+      this.models.dataElement,
       this.translator,
     );
     this.analyticsPuller = new AnalyticsPuller(
-      this.models.dataSource,
+      this.models.dataElement,
       this.translator,
       this.dataElementsMetadataPuller,
     );
-    this.eventsPuller = new EventsPuller(this.models.dataSource, this.translator);
+    this.eventsPuller = new EventsPuller(this.models.dataElement, this.translator);
     this.deprecatedEventsPuller = new DeprecatedEventsPuller(
-      this.models.dataSource,
+      this.models.dataElement,
       this.translator,
     );
     this.pushers = this.getPushers();
