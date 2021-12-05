@@ -11,9 +11,18 @@ import { useForm } from 'react-hook-form';
 import * as COLORS from '../../constants';
 import { useLogin } from '../../api/mutations';
 import { I18n, useI18n } from '../../utils';
+import { useEmailVerification } from '../../api';
 
-const ErrorMessage = styled.p`
+const ErrorMessage = styled(Typography)`
+  text-align: center;
   color: ${COLORS.RED};
+  margin: -1rem 0 1rem;
+`;
+
+const SuccessMessage = styled(Typography)`
+  text-align: center;
+  color: ${COLORS.GREEN};
+  margin: -1rem 0 1rem;
 `;
 
 const Heading = styled(Typography)`
@@ -30,17 +39,28 @@ const StyledButton = styled(Button)`
   padding-bottom: 1rem;
 `;
 
+const VerifyEmail = () => {
+  const { isSuccess, isError } = useEmailVerification();
+
+  return (
+    <>
+      {isSuccess && <SuccessMessage>Your e-mail was successfully verified</SuccessMessage>}
+      {isError && <ErrorMessage>Your email address could not be verified</ErrorMessage>}
+    </>
+  );
+};
+
 export const LoginForm = () => {
+  const { translate } = useI18n();
   const { handleSubmit, register, errors } = useForm();
   const { mutate: login, user, isError, isLoading, isSuccess, error } = useLogin();
-  const { translate } = useI18n();
 
   return (
     <form onSubmit={handleSubmit(({ email, password }) => login({ email, password }))} noValidate>
       <Heading variant="h4">
         <I18n t="login.enterYourEmailAndPassword" />
       </Heading>
-      {isError && <ErrorMessage>{error.message}</ErrorMessage>}
+      {isError ? <ErrorMessage>{error.message}</ErrorMessage> : <VerifyEmail />}
       <TextField
         name="email"
         placeholder={translate('login.email')}

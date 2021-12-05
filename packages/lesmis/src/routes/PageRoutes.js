@@ -14,6 +14,7 @@ import { NotFoundView } from '../views/NotFoundView';
 import { LoginView } from '../views/LoginView';
 import { RegisterView } from '../views/RegisterView';
 import { NotAuthorisedView } from '../views/NotAuthorisedView';
+import { VerifyEmailView } from '../views/VerifyEmailView';
 import { ABOUT_PAGE, FQS_PAGE, CONTACT_PAGE } from '../constants';
 
 const AdminPanel = lazy(() => import('./AdminPanelRoutes'));
@@ -34,6 +35,9 @@ export const PageRoutes = React.memo(() => {
         </Route>
         <Route path={`${path}/login`}>
           <LoginView />
+        </Route>
+        <Route path={`${path}/verify-email`}>
+          <VerifyEmailView />
         </Route>
         <Route path={`${path}/register`}>
           <RegisterView />
