@@ -1,12 +1,21 @@
 {
+  "extends": "../../tsconfig-ts.json",
+
   "compilerOptions": {
+    "outDir": "dist",
+    "strict": true,
+    "declaration": true,
+    "noEmit": false,
+
+
     "allowUnreachableCode": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "module": "CommonJS",
-    "noEmit": true,
     "skipLibCheck": true,
-    "strict": true,
     "target": "ES2019"
-  }
+  },
+
+  "include": ["src/**/*"],
+  "exclude": ["src/__tests__"]
 }

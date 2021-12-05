@@ -1,9 +1,14 @@
 {
   "extends": "../../tsconfig-ts.json",
+
   "compilerOptions": {
     "typeRoots": ["src/@types", "node_modules/@types", "../../node_modules/@types"],
-    "outDir": "dist"
+    "outDir": "dist",
+    "strict": true,
+    "declaration": true,
+    "noEmit": false
   },
 
-  "exclude": ["node_modules", "dist", "src/@types"]
+  "include": ["src/**/*"],
+  "exclude": ["src/__tests__"]
 }
