@@ -187,7 +187,11 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
    */
   return (
     <ResponsiveContainer width="100%" height={height} aspect={aspect}>
-      <ChartContainer data={filterDisabledData(data)} margin={getMargin(isExporting, isEnlarged)}>
+      <ChartContainer
+        data={filterDisabledData(data)}
+        margin={getMargin(isExporting, isEnlarged)}
+        reverseStackOrder
+      >
         {referenceAreas && referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />)}
         {XAxisComponent({ isEnlarged, isExporting, viewContent })}
         {YAxes({ viewContent, chartDataConfig, isExporting, isEnlarged })}

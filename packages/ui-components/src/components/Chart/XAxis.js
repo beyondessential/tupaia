@@ -32,12 +32,13 @@ const X_AXIS_PADDING = {
   },
 };
 
-const renderXAxisLabel = (label, fillColor, isEnlarged) => {
-  if (label && isEnlarged)
+const renderXAxisLabel = (label, fillColor, isEnlarged, isExporting) => {
+  if (label && isEnlarged && !isExporting)
     return {
       value: label,
       fill: fillColor,
-      position: 'bottom',
+      offset: -5,
+      position: 'insideBottom',
     };
   return null;
 };
@@ -60,6 +61,7 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
   const { BAR, COMPOSED } = CHART_TYPES;
   const { chartType, chartConfig = {}, data } = viewContent;
   const axisHeight = calculateXAxisHeight(data, isExporting);
+  const isTimeSeries = getIsTimeSeries(data);
 
   /*
     If set 0, all the ticks will be shown.
@@ -68,6 +70,10 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
   */
   const getXAxisTickInterval = () => {
     if (chartType === BAR || chartType === COMPOSED) {
+      if (isTimeSeries) {
+        return 'preserveStartEnd';
+      }
+
       return isExporting ? 0 : 'preserveStartEnd';
     }
 
@@ -78,7 +84,7 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
     const { periodGranularity, presentationOptions = {} } = viewContent;
     const { periodTickFormat } = presentationOptions;
 
-    return getIsTimeSeries(data)
+    return isTimeSeries
       ? formatTimestampForChart(tickData, periodGranularity, periodTickFormat)
       : tickData;
   };
@@ -111,7 +117,7 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
       chartType === BAR ||
       Object.values(chartConfig).some(({ chartType: composedType }) => composedType === BAR);
 
-    if (hasBars && data.length > 1 && getIsTimeSeries(data)) {
+    if (hasBars && data.length > 1 && isTimeSeries) {
       const paddingKey = isEnlarged ? 'enlarged' : 'preview';
       const { dataLengthThreshold, base, offset, minimum } = X_AXIS_PADDING[paddingKey];
       const padding = Math.max(minimum, (dataLengthThreshold - data.length) * base + offset);
@@ -139,7 +145,7 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
   return (
     <XAxisComponent
       dataKey="name"
-      label={renderXAxisLabel(viewContent?.xName, fillColor, isEnlarged)}
+      label={renderXAxisLabel(viewContent?.xName, fillColor, isEnlarged, isExporting)}
       stroke={isExporting ? DARK_BLUE : fillColor}
       height={axisHeight}
       interval={getXAxisTickInterval()}
@@ -147,7 +153,7 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
       tickFormatter={formatXAxisTick}
       padding={getXAxisPadding()}
       tickSize={6}
-      {...(getIsTimeSeries(data) ? AXIS_TIME_PROPS : {})}
+      {...(isTimeSeries ? AXIS_TIME_PROPS : {})}
     />
   );
 };

@@ -17,9 +17,9 @@ export const VerticalTick = ({ x, y, payload }) => {
   return (
     <g transform={`translate(${x - 5},${y + 3})`}>
       <text
-        fontSize="14px"
-        transform="rotate(90)"
-        textAnchor="start"
+        fontSize="13px"
+        transform="rotate(305)"
+        textAnchor="end"
         fill="#333"
         className="recharts-text recharts-cartesian-axis-tick-value"
       >

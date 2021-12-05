@@ -30,6 +30,7 @@ const StyledAlert = styled(Alert)`
 `;
 
 const ExportDateText = styled.div`
+  padding-top: 15px;
   padding-bottom: 5px;
   text-align: center;
   font-size: 12px;
