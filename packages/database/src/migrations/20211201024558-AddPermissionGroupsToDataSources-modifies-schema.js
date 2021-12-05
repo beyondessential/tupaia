@@ -1,0 +1,102 @@
+'use strict';
+
+import { ExpressionParser } from '@tupaia/expression-parser';
+import { arrayToDbString, updateValues } from '../utilities';
+
+var dbm;
+var type;
+var seed;
+
+/**
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
+exports.setup = function (options, seedLink) {
+  dbm = options.dbmigrate;
+  type = dbm.dataType;
+  seed = seedLink;
+};
+
+const getAllDataElements = async (db, parser, indicator) => {
+  const variables = parser.getVariables(indicator.config.formula);
+  if (variables.length <= 0) {
+    return [];
+  }
+  const subIndicators = (
+    await db.runSql(`
+    SELECT * from indicator
+    WHERE code IN (${arrayToDbString(variables)})
+  `)
+  ).rows;
+
+  let dataElements = variables.filter(varCode => !subIndicators.map(x => x.code).includes(varCode));
+  for (const subIndicator of subIndicators) {
+    dataElements = dataElements.concat(await getAllDataElements(db, parser, subIndicator));
+  }
+  return dataElements;
+};
+
+exports.up = async function (db) {
+  // Add column
+  await db.runSql(`
+    ALTER TABLE "data_source"
+      ADD COLUMN permission_groups TEXT[] NOT NULL DEFAULT '{}'
+  `);
+
+  // Fill out permissions based on the surveys a data element is connected to (via questions)
+  await db.runSql(`
+    UPDATE "data_source"
+      SET permission_groups = sub_query.permission_groups
+      FROM (
+          SELECT data_element_id, array_agg(survey.permission_group_id) as permission_groups
+          FROM data_element_data_group
+          INNER JOIN survey
+            ON survey.event_id = data_element_data_group.event_id
+          GROUP BY data_element_id
+        ) as sub_query
+      where data_source.id = sub_query.data_element_id
+  `);
+
+  // For indicators, process with the expression parser and use the same permissions as the data elements
+  const parser = new ExpressionParser();
+  const indicators = (
+    await db.runSql(`
+    SELECT * from "data_source"
+      INNER JOIN indicator
+      ON data_source.code = indicator.code
+    WHERE data_source.service_type = 'indicator'
+  `)
+  ).rows;
+
+  for (const indicator of indicators) {
+    const variables = await getAllDataElements(db, parser, indicator);
+    if (variables.length <= 0) { continue; }
+    const permissions = (
+      await db.runSql(`
+        SELECT array_agg(distinct(permissions)) AS permission_groups
+          FROM data_source, unnest(permission_groups) AS permissions
+        WHERE code IN (${arrayToDbString(variables)})
+      `)
+    ).rows[0];
+
+    if (permissions.permission_groups) {
+      await updateValues(
+        db,
+        'data_source',
+        { permission_groups: permissions.permission_groups || [] },
+        { code: indicator.code },
+      );
+    }
+  }
+};
+
+exports.down = async function (db) {
+  await db.runSql(`
+    ALTER TABLE "data_source"
+      DROP COLUMN permission_groups
+  `);
+};
+
+exports._meta = {
+  version: 1,
+};
