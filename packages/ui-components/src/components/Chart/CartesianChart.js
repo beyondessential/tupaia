@@ -190,7 +190,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
       <ChartContainer
         data={filterDisabledData(data)}
         margin={getMargin(isExporting, isEnlarged)}
-        reverseStackOrder
+        reverseStackOrder={isExporting === true}
       >
         {referenceAreas && referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />)}
         {XAxisComponent({ isEnlarged, isExporting, viewContent })}
