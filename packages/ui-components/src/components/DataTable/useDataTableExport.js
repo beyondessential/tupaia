@@ -9,14 +9,18 @@ import { useTable } from 'react-table';
 import moment from 'moment';
 
 export const useDataTableExport = (columns, data, title) => {
-  const { rows: tableData, columns: tableColumns } = useTable({
+  const { headerGroups, rows: tableData, columns: tableColumns } = useTable({
     columns,
     data,
   });
 
   const doExport = () => {
     // Get data from react table properties
-    const header = [tableColumns.map(col => col.Header)];
+    const header = headerGroups.map(({ headers }) =>
+      headers.map(({ Header: getHeader, id }) =>
+        typeof getHeader === 'function' ? getHeader({ column: { id } }) : getHeader,
+      ),
+    );
     const body =
       tableData.length > 0
         ? tableData.map(row => tableColumns.map(col => row.values[col.id]))
