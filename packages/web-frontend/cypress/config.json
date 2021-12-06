@@ -1,6 +1,6 @@
 {
   "baselineUrl": "https://e2e.tupaia.org",
-  "compareUrl": "",
+  "compareUrl": "https://release-2021-49-e2e.tupaia.org",
   "dashboardReports": {
     "allowEmptyResponse": false,
     "snapshotTypes": ["responseData"],
