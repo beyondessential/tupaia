@@ -38,6 +38,6 @@ def tear_down_tupaia_deployment(event):
 
     for instance in instances:
       teardown_instance(instance)
-      teardown_db_instance(deployment_name)
+      teardown_db_instance(deployment_name, 'tupaia')
 
     print('Finished tearing down clone')

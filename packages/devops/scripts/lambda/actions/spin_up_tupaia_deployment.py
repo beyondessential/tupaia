@@ -92,7 +92,6 @@ def spin_up_tupaia_deployment(event):
         deployment_name,
         branch,
         instance_type,
-        extra_tags=extra_tags + [{ 'Key': 'DeploymentComponent', 'Value': 'app-server' }],
         image_code=image_code,
         security_group_code=security_group_code,
     )
@@ -103,6 +102,7 @@ def spin_up_tupaia_deployment(event):
     # the server first tries to connect
     create_db_instance_from_snapshot(
         deployment_name,
+        'tupaia',
         clone_db_from,
         db_instance_type,
         security_group_code

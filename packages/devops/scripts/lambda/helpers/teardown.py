@@ -60,10 +60,12 @@ def teardown_instance(instance):
     terminate_instance(instance)
 
 def teardown_db_instance(
-  instance_name
+  deployment_name,
+  deployment_type
 ):
+    db_instance_id = deployment_type + '-' + deployment_name
     deleted_instance = rds.delete_db_instance(
-        DBInstanceIdentifier=instance_name,
+        DBInstanceIdentifier=db_instance_id,
         SkipFinalSnapshot=True,
         DeleteAutomatedBackups=True
     )

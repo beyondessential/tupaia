@@ -54,16 +54,6 @@ def get_instance_creation_config(
 
     instance_name = deployment_type + ': ' + deployment_name
 
-    # TODO delete deployment component stuff after db on RDS
-    if extra_tags:
-      try:
-        deployment_component = [
-            t.get('Value') for t in extra_tags
-            if t['Key'] == 'DeploymentComponent'][0]
-        instance_name = deployment_type + '-' + deployment_component + ': ' + deployment_name
-      except IndexError:
-        pass # no deployment component to add to instance name
-
     tags = [
       { 'Key': 'Name', 'Value': instance_name },
       { 'Key': 'DeploymentName', 'Value': deployment_name },
@@ -121,7 +111,6 @@ def create_instance(
   instance_type,
   branch=None,
   cloned_from=None,
-  extra_tags=None,
   iam_role_arn=None,
   image_id=None,
   security_group_code=None,
@@ -137,7 +126,6 @@ def create_instance(
       instance_type,
       branch=branch,
       cloned_from=cloned_from,
-      extra_tags=extra_tags,
       iam_role_arn=iam_role_arn,
       image_id=image_id,
       security_group_code=security_group_code,
@@ -169,18 +157,20 @@ def create_instance(
     return new_instance_object
 
 def create_db_instance_from_snapshot(
-  instance_name,
+  deployment_name,
+  deployment_type,
   snapshot_name,
   instance_type,
   security_group_code=None,
   security_group_id=None,
 ):
+    db_instance_id = deployment_type + '-' + deployment_name
     security_group_ids = get_security_group_ids_config(security_group_code, security_group_id)
 
     snapshot_id = get_latest_db_snapshot(snapshot_name)
     print('Starting to clone db instance from snapshot')
     rds.restore_db_instance_from_db_snapshot(
-        DBInstanceIdentifier=instance_name,
+        DBInstanceIdentifier=db_instance_id,
         DBSnapshotIdentifier=snapshot_id,
         DBInstanceClass=instance_type,
         Port=5432,
@@ -189,20 +179,24 @@ def create_db_instance_from_snapshot(
         Tags=[
             {
                 'Key': 'DeploymentName',
-                'Value': instance_name
+                'Value': deployment_name
+            },
+            {
+                'Key': 'DeploymentType',
+                'Value': deployment_type
             },
         ],
     )
     
     print('Successfully cloned new db instance from snapshot')
     waiter = rds.get_waiter('db_instance_available')
-    waiter.wait(DBInstanceIdentifier=instance_name)
-    instance = rds.describe_db_instances(DBInstanceIdentifier=instance_name)['DBInstances'][0]
+    waiter.wait(DBInstanceIdentifier=db_instance_id)
+    instance = rds.describe_db_instances(DBInstanceIdentifier=db_instance_id)['DBInstances'][0]
 
     add_subdomains_to_route53(
         domain='tupaia.org', 
         subdomains=['db'], 
-        deployment_name=instance_name, 
+        deployment_name=deployment_name, 
         dns_url=instance['Endpoint']['Address']
     )
 
