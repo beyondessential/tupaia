@@ -58,7 +58,7 @@ export class GETAccessRequests extends GETHandler {
     const dbOptions = {
       ...options,
       distinct: true,
-      sort: ['user_account.email asc'],
+      sort: null,
     };
 
     return { dbConditions, dbOptions };
