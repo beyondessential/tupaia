@@ -102,7 +102,7 @@ const LocationField = ({
     loading={isLoadingLocations}
     onInputChange={debounce(
       (event, newValue) => {
-        setLocationSearch(newValue.name);
+        setLocationSearch(newValue);
       },
       [200],
     )}

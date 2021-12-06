@@ -77,31 +77,37 @@ export class ArithmeticConfigCellBuilder extends KeyValueCellBuilder {
   // We have to override the base class' build method because
   // translateAnswerDisplayText needs the question ids from the 'formula'
   async build(jsonStringOrObject) {
-    if (!jsonStringOrObject) {
-      return '';
+    try {
+      if (!jsonStringOrObject) {
+        return '';
+      }
+      const fullObject =
+        typeof jsonStringOrObject === 'string'
+          ? JSON.parse(jsonStringOrObject)
+          : jsonStringOrObject;
+      const config = this.extractRelevantObject(fullObject) || {};
+      const { formula, defaultValues, valueTranslation, answerDisplayText } = config;
+
+      const questionIds = getDollarPrefixedExpressionVariables(formula);
+
+      const translatedConfig = {
+        formula: await replaceQuestionIdsWithCodes(this.models, formula, questionIds, {
+          useDollarPrefixes: true,
+        }),
+        defaultValues: defaultValues && (await this.translateDefaultValues(defaultValues)),
+        valueTranslation:
+          valueTranslation && (await this.translateValueTranslation(valueTranslation)),
+        answerDisplayText:
+          answerDisplayText &&
+          (await this.translateAnswerDisplayText(answerDisplayText, questionIds)),
+      };
+
+      return Object.entries(translatedConfig)
+        .filter(([_, value]) => value !== undefined)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join('\r\n');
+    } catch {
+      return `Error building config for export, prebuilt config was: ${jsonStringOrObject}`;
     }
-    const fullObject =
-      typeof jsonStringOrObject === 'string' ? JSON.parse(jsonStringOrObject) : jsonStringOrObject;
-    const config = this.extractRelevantObject(fullObject) || {};
-    const { formula, defaultValues, valueTranslation, answerDisplayText } = config;
-
-    const questionIds = getDollarPrefixedExpressionVariables(formula);
-
-    const translatedConfig = {
-      formula: await replaceQuestionIdsWithCodes(this.models, formula, questionIds, {
-        useDollarPrefixes: true,
-      }),
-      defaultValues: defaultValues && (await this.translateDefaultValues(defaultValues)),
-      valueTranslation:
-        valueTranslation && (await this.translateValueTranslation(valueTranslation)),
-      answerDisplayText:
-        answerDisplayText &&
-        (await this.translateAnswerDisplayText(answerDisplayText, questionIds)),
-    };
-
-    return Object.entries(translatedConfig)
-      .filter(([_, value]) => value !== undefined)
-      .map(([key, value]) => `${key}: ${value}`)
-      .join('\r\n');
   }
 }
