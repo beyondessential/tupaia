@@ -84,7 +84,8 @@ const USER_COLUMNS = [
     type: 'bulkEdit',
     width: 150,
     actionConfig: {
-      editEndpoint: `users/{user_id}/${ACCESS_REQUESTS_ENDPOINT}`,
+      bulkGetEndpoint: `users/{user_id}/${ACCESS_REQUESTS_ENDPOINT}`,
+      bulkUpdateEndpoint: `${ACCESS_REQUESTS_ENDPOINT}`,
       baseFilter: { approved: null },
       fields: [
         {
@@ -182,12 +183,10 @@ export const AccessRequestsPage = ({ getHeaderEl }) => (
       title: 'Edit & Approve Access Request',
     }}
     getHeaderEl={getHeaderEl}
-    onProcessDataForSave={(editedFields, recordData) => {
-      const data = recordData.map(record => {
-        return { ...record, ...editedFields };
-      });
-      return data;
-    }}
+    onProcessDataForSave={
+      // Return an array of records for bulk editing on the server
+      (editedFields, recordData) => recordData.map(record => ({ ...record, ...editedFields }))
+    }
   />
 );
 

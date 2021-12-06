@@ -20,7 +20,8 @@ export const BulkEditButtonComponent = ({ dispatch, value: recordId, actionConfi
 
 BulkEditButtonComponent.propTypes = {
   actionConfig: PropTypes.PropTypes.shape({
-    editEndpoint: PropTypes.string,
+    bulkGetEndpoint: PropTypes.string,
+    bulkUpdateEndpoint: PropTypes.string,
     fields: PropTypes.array,
   }).isRequired,
   dispatch: PropTypes.func.isRequired,

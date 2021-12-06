@@ -18,11 +18,21 @@ export class EditHandler extends CRUDHandler {
 
   async handleRequest() {
     await this.validate();
-    await this.editRecord();
+
+    if (Array.isArray(this.updatedFields)) {
+      await Promise.all(this.updatedFields.map(r => this.editRecord(r.id, r)));
+    } else {
+      await this.editRecord();
+    }
+
     respond(this.res, { message: `Successfully updated ${this.resource}` });
   }
 
   async validate() {
+    if (Array.isArray(this.updatedFields)) {
+      return this.updatedFields.map(r => this.validateRecordExists(r.id));
+    }
+
     return this.validateRecordExists();
   }
 

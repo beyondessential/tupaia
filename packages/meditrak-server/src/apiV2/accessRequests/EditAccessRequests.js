@@ -27,19 +27,7 @@ export class EditAccessRequests extends EditHandler {
     );
   }
 
-  async validate() {
-    if (Array.isArray(this.updatedFields)) {
-      return this.updatedFields.map(r => this.validateRecordExists(r.id));
-    }
-
-    return this.validateRecordExists();
-  }
-
   async editRecord(recordId = this.recordId, updatedFields = this.updatedFields) {
-    if (Array.isArray(updatedFields)) {
-      return updatedFields.map(r => this.editRecord(r.id, r));
-    }
-
     const accessRequest = await this.models.accessRequest.findById(recordId);
     // Check Permissions
     const accessRequestChecker = accessPolicy =>

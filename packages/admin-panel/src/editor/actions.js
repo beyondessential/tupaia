@@ -18,25 +18,21 @@ import { convertSearchTermToFilter, makeSubstitutionsInString } from '../utiliti
 const STATIC_FIELD_TYPES = ['link'];
 
 export const openBulkEditModal = (
-  { editEndpoint, fields, baseFilter },
+  { bulkGetEndpoint, bulkUpdateEndpoint, fields, baseFilter },
   recordId,
   rowData,
 ) => async (dispatch, getState, { api }) => {
   if (recordId) {
-    const endpoint = `${editEndpoint}`;
-    const newEndpoint = makeSubstitutionsInString(endpoint, rowData);
     dispatch({
       type: EDITOR_DATA_FETCH_BEGIN,
       fields,
-      endpoint: 'accessRequests',
+      endpoint: bulkUpdateEndpoint,
     });
-    // todo: add update endpoint
-
     // Set up filter
     const filterString = JSON.stringify(convertSearchTermToFilter({ ...baseFilter }));
 
     try {
-      const response = await api.get(newEndpoint, {
+      const response = await api.get(makeSubstitutionsInString(bulkGetEndpoint, rowData), {
         filter: filterString.length > 0 ? filterString : undefined,
         columns: JSON.stringify(
           fields
@@ -75,7 +71,7 @@ export const openBulkEditModal = (
       type: EDITOR_OPEN_CREATOR,
       fields,
       recordData: {},
-      endpoint: editEndpoint,
+      endpoint: bulkUpdateEndpoint,
     });
   }
 };
