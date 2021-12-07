@@ -27,7 +27,7 @@ for PACKAGE in ${PACKAGES[@]}; do
 
             # ensure db master password is set correctly
             echo "Setting RDS master password for ${DEPLOYMENT_NAME}"
-            source packages/data-api/.env && aws rds modify-db-instance --db-instance-identifier tupaia-$DEPLOYMENT_NAME --master-user-password $DB_PG_PASSWORD
+            yarn workspace @tupaia/database set-rds-master-password --db-instance-identifier tupaia-$DEPLOYMENT_NAME
 
             # ensure that the analytics table is fully built
             echo "Building analytics table"
