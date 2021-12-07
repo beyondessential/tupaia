@@ -1,8 +1,16 @@
-import { generateTestId } from '@tupaia/database';
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ */
 
 /**
  * Note: this file includes data that are referenced or used in import spreadsheets
  */
+
+import { findOrCreateRecords, generateTestId } from '@tupaia/database';
+import { upperFirst } from '@tupaia/utils';
+
+const ID_LENGTH = 24;
 
 export const VALIDATION_SURVEY = {
   id: generateTestId(),
@@ -88,101 +96,105 @@ export const FACILITY_FUNDAMENTALS_SURVEY = {
       type: 'FreeText',
     },
     {
-      id: 'tff_facility_type___test',
-      code: 'TFF_Facility_type',
-      type: 'Radio',
-      options: ['1', '2', '3'],
-    },
-    {
-      id: 'tff_urban_rural_____test',
-      code: 'TFF_Urban_rural',
-      type: 'Radio',
-      options: ['Urban', 'Rural'],
-    },
-    {
-      id: 'tff_inpatient_fac___test',
-      code: 'TFF_Inpatient_fac',
-      type: 'Binary',
-    },
-    {
       id: 'tff_catchment_pop___test',
       code: 'TFF_Catchment_pop',
       type: 'Number',
     },
-    {
-      id: 'tff_catchment_acc___test',
-      code: 'TFF_Catchment_acc',
-      type: 'Radio',
-      options: ['Estimate', 'Fairly Confident', 'Very confident'],
-    },
-    {
-      id: 'tff_management______test',
-      code: 'TFF_Management',
-      type: 'Radio',
-      options: ['Public (Government)', 'Church'],
-    },
-    {
-      id: 'tff_main_supply_____test',
-      code: 'TFF_Main_supply',
-      type: 'FreeText',
-    },
-    {
-      id: 'tff_facility_gps____test',
-      code: 'TFF_Facility_gps',
-      type: 'Geolocate',
-    },
-    {
-      id: 'tff_photo___________test',
-      code: 'TFF_Photo',
-      type: 'Photo',
-    },
-    {
-      id: 'tff_open_space_gps__test',
-      code: 'TFF_Open_space_gps',
-      type: 'Geolocate',
-    },
   ],
 };
 
-export const VALIDATION_RESPONSE_IDS = [
-  'duplicate_quest_id1_test',
-  'duplicate_quest_id2_test',
-  'invalid_binary1_____test',
-  'invalid_binary2_____test',
-  'invalid_number1_____test',
-  'invalid_number2_____test',
-  'invalid_radio1______test',
-  'invalid_radio2______test',
-  'missing_id_column1__test',
-  'missing_id_column2__test',
-  'missing_quest_id1___test',
-  'missing_quest_id2___test',
-  'missing_response_id_test',
-  'missing_type_col1___test',
-  'missing_type_col2___test',
-  'nonexist_quest_id1__test',
-  'nonexist_quest_id2__test',
-];
+export const createPeriodicSurvey = periodGranularity => ({
+  id: generateTestId(),
+  code: `Test_${upperFirst(periodGranularity)}`, // Test_Yearly
+  name: `Test ${upperFirst(periodGranularity)}`, // Test Yearly
+  period_granularity: periodGranularity,
+  questions: ['bird', 'cat', 'dog'].map(baseName => {
+    const baseId = `${periodGranularity}_${baseName}_test`;
+    const idChars = baseId.split('');
+    idChars.splice(-5, 0, '_'.repeat(ID_LENGTH - baseId.length)); // fill with '_' in the middle
 
-export const CLINIC_DATA_RESPONSE_IDS = [
-  'tcd_change_answer___test',
-  'tcd_delete_answer___test',
-  'tcd_delete_response_test',
-  'tcd_basic___________test',
-  'tcd_change_ans_tab__test',
-];
+    return {
+      id: idChars.join(''), // yearly_bird_________test
+      code: `Test_${upperFirst(periodGranularity)}_${upperFirst(baseName)}`, //  Test_Yearly_Bird
+      type: 'FreeText',
+    };
+  }),
+});
 
-export const FACILITY_FUNDAMENTALS_RESPONSE_IDS = [
-  'tff_dl1_____________test',
-  'tff_dl2_____________test',
-  'tff_dl3_____________test',
-  'tff_dl4_____________test',
-  'tff_dl5_____________test',
-  'tff_dl6_____________test',
-  'tff_dl8_____________test',
-  'tff_dl9_____________test',
-  'tff_dl10____________test',
-];
+export const YEARLY_SURVEY = createPeriodicSurvey('yearly');
+export const QUARTERLY_SURVEY = createPeriodicSurvey('quarterly');
+export const MONTHLY_SURVEY = createPeriodicSurvey('monthly');
+export const WEEKLY_SURVEY = createPeriodicSurvey('weekly');
+export const DAILY_SURVEY = createPeriodicSurvey('daily');
+
+export const createSurveyResponses = async (models, responseIdsBySurvey) => {
+  const user = await models.user.findOne();
+  const entity = await models.entity.findOne();
+  const responseRecords = Object.entries(responseIdsBySurvey)
+    .map(([surveyId, responseIds]) =>
+      responseIds.map(id => ({
+        id,
+        survey_id: surveyId,
+        user_id: user.id,
+        entity_id: entity.id,
+      })),
+    )
+    .flat();
+
+  await findOrCreateRecords(models, { surveyResponse: responseRecords });
+};
+
+export const VALIDATION_RESPONSE_IDS = {
+  [VALIDATION_SURVEY.id]: [
+    'duplicate_quest_id1_test',
+    'duplicate_quest_id2_test',
+    'invalid_binary1_____test',
+    'invalid_binary2_____test',
+    'invalid_number1_____test',
+    'invalid_number2_____test',
+    'invalid_radio1______test',
+    'invalid_radio2______test',
+    'missing_id_column1__test',
+    'missing_id_column2__test',
+    'missing_quest_id1___test',
+    'missing_quest_id2___test',
+    'missing_response_id_test',
+    'missing_type_col1___test',
+    'missing_type_col2___test',
+    'nonexist_quest_id1__test',
+    'nonexist_quest_id2__test',
+  ],
+};
+
+export const BASELINE_RESPONSE_IDS = {
+  [CLINIC_DATA_SURVEY.id]: [
+    'tcd_change_answer___test',
+    'tcd_delete_answer___test',
+    'tcd_delete_response_test',
+    'tcd_basic___________test',
+    'tcd_change_ans_tab__test',
+    'tcd_update_dl1_a____test',
+    'tcd_update_dl1_b____test',
+    'tcd_update_dl5_a____test',
+    'tcd_update_dl5_b____test',
+    'tcd_merge_dl1_a_____test',
+    'tcd_merge_dl1_b_____test',
+    'tcd_merge_dl5_a_____test',
+    'tcd_merge_dl5_b_____test',
+  ],
+  [FACILITY_FUNDAMENTALS_SURVEY.id]: ['tff_same_answers____test', 'tff_change_answer___test'],
+};
+
+export const PERIODIC_RESPONSE_IDS = {
+  [YEARLY_SURVEY.id]: [
+    '2020_dl1_untouched__test',
+    '2020_dl1_update_____test',
+    '2021_dl1_merge______test',
+    '2020_dl5_override___test',
+    '2021_dl5_merge______test',
+    '2020_dl5_update_____test',
+  ],
+};
 
 /**
  * Describes data changes from responseBaseline.xlsx to responseUpdates.xlsx
@@ -215,7 +227,7 @@ export const RESPONSE_UPDATES = {
     },
     {
       // Another tab
-      surveyResponseId: 'tff_dl9_____________test',
+      surveyResponseId: 'tff_change_answer___test',
       questionId: 'tff_other_names_____test',
       newAnswer: 'Thorno',
     },
