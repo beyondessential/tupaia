@@ -34,7 +34,9 @@ const updateForeignKey = async (db, tableName, columnName, oldFKTable, newFKTabl
 
     ALTER TABLE ${tableName}
     ADD FOREIGN KEY (${columnName})
-    REFERENCES ${newFKTable}(id);
+    REFERENCES ${newFKTable}(id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE;
   `);
 };
 
