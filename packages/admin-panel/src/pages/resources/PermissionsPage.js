@@ -64,8 +64,9 @@ const EDIT_CONFIG = {
 
 const CREATE_CONFIG = {
   title: 'Give User Permission',
+  bulkCreate: true,
   actionConfig: {
-    editEndpoint: PERMISSIONS_ENDPOINT,
+    bulkUpdateEndpoint: PERMISSIONS_ENDPOINT,
     fields: [
       {
         Header: 'User Email',
@@ -73,11 +74,61 @@ const CREATE_CONFIG = {
         editConfig: {
           optionsEndpoint: 'users',
           optionLabelKey: 'email',
+          allowMultipleValues: true,
         },
       },
-      ...PERMISSIONS_COLUMNS,
+      {
+        Header: 'Entity',
+        source: 'entity.name',
+        editConfig: {
+          optionsEndpoint: 'entities',
+          baseFilter: { type: 'country' },
+          allowMultipleValues: true,
+        },
+      },
+      {
+        Header: 'Permission Group',
+        source: 'permission_group.name',
+        editConfig: {
+          optionsEndpoint: 'permissionGroups',
+          allowMultipleValues: true,
+        },
+      },
     ],
   },
+};
+
+// {
+//   entity_id: ['1', '2'];
+//   permission_group_id: ['1', '2'];
+//   user_id: ['1', '2'];
+// }
+
+// Return an array of records for bulk editing on the server
+const processDataForSave = fieldsToSave => {
+  const records = [];
+
+  const getRecordValues = (partialRecord, values) => {
+    const [firstKey] = Object.keys(values);
+    const { [firstKey]: ids, ...remainingRows } = values;
+
+    ids.forEach(id => {
+      const record = {
+        ...partialRecord,
+        [firstKey]: id,
+      };
+
+      if (Object.entries(remainingRows).length > 0) {
+        getRecordValues(record, remainingRows);
+      } else {
+        records.push(record);
+      }
+    });
+  };
+
+  getRecordValues({}, fieldsToSave);
+
+  return records;
 };
 
 export const PermissionsPage = ({ getHeaderEl }) => (
@@ -88,6 +139,7 @@ export const PermissionsPage = ({ getHeaderEl }) => (
     editConfig={EDIT_CONFIG}
     createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
+    onProcessDataForSave={processDataForSave}
   />
 );
 

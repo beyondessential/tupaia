@@ -34,6 +34,8 @@ export class CreateUserEntityPermissions extends CreateHandler {
       assertAnyPermissions([assertBESAdminAccess, userEntityPermissionsChecker]),
     );
 
+    throw new Error('Bulk Requests Under Construction');
+
     return this.insertRecord();
   }
 }

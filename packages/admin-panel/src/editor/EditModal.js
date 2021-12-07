@@ -129,6 +129,7 @@ const mergeProps = (
       if (onProcessDataForSave) {
         fieldValuesToSave = onProcessDataForSave(fieldValuesToSave, recordData);
       }
+      console.log('endpoint', endpoint);
       dispatch(saveEdits(endpoint, fieldValuesToSave, isNew));
     },
   };
