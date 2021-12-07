@@ -95,7 +95,7 @@ const updateMeasureConfigs = (mapOverlayHierarchy, code, overlayConfig) => {
   return { updated, updatedMapOverlayHierarchy };
 };
 
-export const selectMapOverlayGroupByCode = (mapOverlayHierarchy, code, overlayConfig) => {
+export const updatedMapOverlayHierarchyConfig = (mapOverlayHierarchy, code, overlayConfig) => {
   const { updatedMapOverlayHierarchy } = updateMeasureConfigs(
     mapOverlayHierarchy,
     code,
