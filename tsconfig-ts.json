@@ -9,7 +9,6 @@
     "strict": true,
     "target": "ES2019",
     "resolveJsonModule": true,
-    "sourceMap": true,
-    "baseUrl": "./packages"
+    "sourceMap": true
   }
 }
