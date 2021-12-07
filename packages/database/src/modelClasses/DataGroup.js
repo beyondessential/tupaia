@@ -92,7 +92,7 @@ export class DataGroupModel extends MaterializedViewLogDatabaseModel {
       },
       {
         joinWith: TYPES.DATA_ELEMENT_DATA_GROUP,
-        joinCondition: ['dataGroup.id', 'data_element_data_group.data_group_id'],
+        joinCondition: ['data_group.id', 'data_element_data_group.data_group_id'],
       },
     );
   };
