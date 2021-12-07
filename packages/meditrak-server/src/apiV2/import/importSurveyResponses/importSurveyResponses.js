@@ -45,6 +45,18 @@ const ANSWER_TRANSFORMERS = {
   },
 };
 
+const IMPORT_MODES = {
+  // A new response will be created
+  NEW: 'NEW',
+
+  // Find the most recent response in the specified period and update it using the imported answers.
+  // Fill any empty answers using the existing response
+  UPDATE: 'UPDATE',
+
+  // Same as 'UPDATE_PREVIOUS_FILL_EMPTY, but create a new response instead of updating the existing
+  MERGE: 'MERGE',
+};
+
 /**
  * Creates or updates survey responses by importing the new answers from an Excel file, and either
  * updating or creating each answer as appropriate
@@ -89,7 +101,7 @@ export async function importSurveyResponses(req, res) {
       const surveyResponseIds = [];
       for (let columnIndex = minSurveyResponseIndex; columnIndex <= maxColumnIndex; columnIndex++) {
         const columnHeader = getColumnHeader(sheet, columnIndex);
-        if (checkIsNewSurveyResponse(columnHeader)) {
+        if (getImportMode(columnHeader) === IMPORT_MODES.NEW) {
           surveyResponseIds[columnIndex] = generateId();
         } else {
           surveyResponseIds[columnIndex] = columnHeader;
@@ -99,7 +111,9 @@ export async function importSurveyResponses(req, res) {
 
       for (let columnIndex = minSurveyResponseIndex; columnIndex <= maxColumnIndex; columnIndex++) {
         const columnHeader = getColumnHeader(sheet, columnIndex);
-        if (checkIsNewSurveyResponse(columnHeader)) {
+        validateColumnHeader(columnHeader, columnIndex, tabName);
+
+        if (getImportMode(columnHeader) === IMPORT_MODES.NEW) {
           const surveyResponseId = surveyResponseIds[columnIndex];
           const surveyResponseDetails = await constructNewSurveyResponseDetails(
             models,
@@ -109,18 +123,6 @@ export async function importSurveyResponses(req, res) {
             { id: surveyResponseId, ...config },
           );
           updatePersistor.createSurveyResponse(surveyResponseId, surveyResponseDetails);
-        } else {
-          try {
-            // Validate that every header takes id form, i.e. is an existing or deleted response
-            await hasContent(columnHeader);
-            await takesIdForm(columnHeader);
-          } catch (error) {
-            throw new ImportValidationError(
-              `Invalid column header ${columnHeader} causing message: ${error.message} at column ${
-                columnIndex + 1
-              } on tab ${tabName} (should be a survey response id or "NEW" for new responses)`,
-            );
-          }
         }
       }
 
@@ -378,9 +380,30 @@ function getColumnHeader(sheet, columnIndex) {
   return getCellContents(sheet, columnIndex, 0);
 }
 
-// Helper to check whether a given column header represents a new survey response to be added
-function checkIsNewSurveyResponse(columnHeader) {
-  return columnHeader && columnHeader.startsWith('NEW');
+function getImportMode(columnHeader) {
+  return Object.values(IMPORT_MODES).find(importMode => columnHeader.startsWith(importMode));
+}
+
+function validateColumnHeader(columnHeader, columnIndex, tabName) {
+  const importMode = getImportMode(columnHeader);
+  if (importMode) {
+    // An import mode is used as a header, header is valid
+    return;
+  }
+
+  try {
+    // Validate that every header takes id form, i.e. is an existing or deleted response
+    hasContent(columnHeader);
+    takesIdForm(columnHeader);
+  } catch (error) {
+    const importModeDescription = Object.values(IMPORT_MODES).map(mode => `"${mode}"`);
+    const errorMessage = `Invalid column header ${columnHeader} causing message: ${
+      error.message
+    } at column ${
+      columnIndex + 1
+    } on tab ${tabName} (should be a survey response id or ${importModeDescription.join('/')})`;
+    throw new ImportValidationError(errorMessage);
+  }
 }
 
 // Helper to extract the content of a cell within a sheet, given the 0 based column and row indices

@@ -162,6 +162,7 @@
       "oucode",
       "outdater",
       "parameterise",
+      "Persistor",
       "postgresql",
       "preaggregate",
       "preaggregated",
