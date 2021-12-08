@@ -60,7 +60,9 @@ class SurveyEditor {
       return;
     }
 
-    const dataElements = await this.models.dataGroup.getDataElementsInEvent(this.dataGroup.code);
+    const dataElements = await this.models.dataGroup.getDataElementsInDataGroup(
+      this.dataGroup.code,
+    );
     const updateDataElement = async dataElement => {
       await assertCanAddDataElementInGroup(
         this.models,

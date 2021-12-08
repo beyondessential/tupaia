@@ -59,7 +59,7 @@ export const createDataElementModelsStub = () => ({
 
 export const createDataGroupModelsStub = () => ({
   find: async specs => Object.values(DATA_GROUPS).filter(({ code }) => specs.code.includes(code)),
-  getDataElementsInEvent: async groupCode => DATA_ELEMENTS_BY_GROUP[groupCode],
+  getDataElementsInDataGroup: async groupCode => DATA_ELEMENTS_BY_GROUP[groupCode],
 });
 
 /**

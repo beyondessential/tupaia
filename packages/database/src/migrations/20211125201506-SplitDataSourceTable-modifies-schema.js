@@ -65,7 +65,9 @@ const updateAndRenameForeignKey = async (
 
     ALTER TABLE ${tableName}
     ADD FOREIGN KEY (${newFKColumn})
-    REFERENCES ${newFKTable}(id);
+    REFERENCES ${newFKTable}(id)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE;
 
     ALTER TABLE ${tableName}
     ALTER COLUMN ${newFKColumn} SET NOT NULL;
