@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { RespondingError } from '@tupaia/utils';
+import { RespondingError, UnauthenticatedError } from '@tupaia/utils';
 import { Route } from '../Route';
 import { WEEKLY_SURVEY_COUNTRY, WEEKLY_SURVEY_SITE } from '../../constants';
 import { validateIsNumber } from '../../utils';
@@ -16,13 +16,15 @@ type WeeklyReportAnswer = {
 
 export class SaveWeeklyReportRoute extends Route {
   async buildResponse() {
+    if (!this.meditrakConnection) throw new UnauthenticatedError('Unauthenticated');
+
     const { week } = this.req.query;
     const { countryCode, siteCode } = this.req.params;
 
     const isSiteSurvey = !!siteCode;
     const answers = mapReqBodyToAnswers(this.req.body, isSiteSurvey);
 
-    return this.meditrakConnection?.updateOrCreateSurveyResponse(
+    return this.meditrakConnection.updateOrCreateSurveyResponse(
       isSiteSurvey ? WEEKLY_SURVEY_SITE : WEEKLY_SURVEY_COUNTRY,
       isSiteSurvey ? siteCode : countryCode,
       week,
