@@ -5,13 +5,15 @@
 
 import '@babel/polyfill';
 
-import {} from 'dotenv/config'; // Load the environment variables into process.env
+import * as dotenv from 'dotenv';
 import http from 'http';
 import { TupaiaDatabase } from '@tupaia/database';
 
 import { createApp } from './app';
 import winston from './log';
 import { PsssSessionModel } from './models';
+
+dotenv.config(); // Load the environment variables into process.env
 
 /**
  * Set up database
