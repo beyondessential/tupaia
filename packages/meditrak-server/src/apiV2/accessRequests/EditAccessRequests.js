@@ -4,7 +4,7 @@
  */
 
 import { ValidationError } from '@tupaia/utils';
-import { EditHandler } from '../EditHandler';
+import { BulkEditHandler } from '../EditHandler';
 import {
   assertAnyPermissions,
   assertBESAdminAccess,
@@ -17,7 +17,7 @@ import { assertAccessRequestEditPermissions } from './assertAccessRequestPermiss
  * - /accessRequests/:accessRequestId
  */
 
-export class EditAccessRequests extends EditHandler {
+export class EditAccessRequests extends BulkEditHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
@@ -27,11 +27,11 @@ export class EditAccessRequests extends EditHandler {
     );
   }
 
-  async editRecord(recordId = this.recordId, updatedFields = this.updatedFields) {
-    const accessRequest = await this.models.accessRequest.findById(recordId);
+  async editRecord(models, recordId, updatedFields) {
+    const accessRequest = await models.accessRequest.findById(recordId);
     // Check Permissions
     const accessRequestChecker = accessPolicy =>
-      assertAccessRequestEditPermissions(accessPolicy, this.models, this.recordId, updatedFields);
+      assertAccessRequestEditPermissions(accessPolicy, models, this.recordId, updatedFields);
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, accessRequestChecker]),
     );
@@ -42,7 +42,7 @@ export class EditAccessRequests extends EditHandler {
       throw new ValidationError(`AccessRequest has already been processed`);
     }
 
-    return this.models.accessRequest.updateById(recordId, {
+    return models.accessRequest.updateById(recordId, {
       ...updatedFields,
       processed_by: this.req.userId,
       processed_date: new Date(),

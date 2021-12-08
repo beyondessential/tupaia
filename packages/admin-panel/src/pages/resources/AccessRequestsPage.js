@@ -183,10 +183,14 @@ export const AccessRequestsPage = ({ getHeaderEl }) => (
       title: 'Edit & Approve Access Request',
     }}
     getHeaderEl={getHeaderEl}
-    onProcessDataForSave={
+    onProcessDataForSave={(editedFields, recordData) => {
+      if (!Array.isArray(recordData)) {
+        return editedFields;
+      }
+
       // Return an array of records for bulk editing on the server
-      (editedFields, recordData) => recordData.map(record => ({ ...record, ...editedFields }))
-    }
+      return recordData.map(record => ({ ...record, ...editedFields }));
+    }}
   />
 );
 

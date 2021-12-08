@@ -18,21 +18,11 @@ export class EditHandler extends CRUDHandler {
 
   async handleRequest() {
     await this.validate();
-
-    if (Array.isArray(this.updatedFields)) {
-      await Promise.all(this.updatedFields.map(r => this.editRecord(r.id, r)));
-    } else {
-      await this.editRecord();
-    }
-
+    await this.editRecord();
     respond(this.res, { message: `Successfully updated ${this.resource}` });
   }
 
   async validate() {
-    if (Array.isArray(this.updatedFields)) {
-      return this.updatedFields.map(r => this.validateRecordExists(r.id));
-    }
-
     return this.validateRecordExists();
   }
 
@@ -46,12 +36,12 @@ export class EditHandler extends CRUDHandler {
       .updateById(this.recordId, this.updatedFields);
   }
 
-  async validateRecordExists(recordId = this.recordId) {
+  async validateRecordExists() {
     const validationCriteria = {
       id: [constructRecordExistsWithId(this.database, this.recordType)],
     };
 
     const validator = new ObjectValidator(validationCriteria);
-    return validator.validate({ id: recordId }); // Will throw an error if not valid
+    return validator.validate({ id: this.recordId }); // Will throw an error if not valid
   }
 }
