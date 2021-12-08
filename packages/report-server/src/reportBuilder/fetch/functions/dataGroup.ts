@@ -5,7 +5,7 @@
 
 import { yup } from '@tupaia/utils';
 
-import { Aggregator } from '../../../aggregator';
+import { ReportServerAggregator } from '../../../aggregator';
 import { Aggregation, FetchReportQuery, ReportConfig } from '../../../types';
 import { FetchResponse } from '../types';
 
@@ -20,7 +20,7 @@ type DataGroupFetchParams = {
 };
 
 const fetchEvents = async (
-  aggregator: Aggregator,
+  aggregator: ReportServerAggregator,
   query: FetchReportQuery,
   params: DataGroupFetchParams,
 ): Promise<FetchResponse> => {
@@ -65,6 +65,6 @@ const buildParams = (params: DataGroupParams): DataGroupFetchParams => {
 
 export const buildDataGroupFetch = (params: DataGroupParams) => {
   const builtDataGroupsFetchParams = buildParams(params);
-  return (aggregator: Aggregator, query: FetchReportQuery) =>
+  return (aggregator: ReportServerAggregator, query: FetchReportQuery) =>
     fetchEvents(aggregator, query, builtDataGroupsFetchParams);
 };

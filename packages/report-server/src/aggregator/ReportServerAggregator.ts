@@ -7,7 +7,7 @@ import { Aggregator as BaseAggregator } from '@tupaia/aggregator';
 
 import { Aggregation, Event, PeriodParams } from '../types';
 
-export class Aggregator extends BaseAggregator {
+export class ReportServerAggregator extends BaseAggregator {
   aggregationToAggregationConfig = (aggregation: Aggregation) =>
     typeof aggregation === 'string'
       ? {

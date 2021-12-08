@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { Aggregator } from '../aggregator';
+import { ReportServerAggregator } from '../aggregator';
 import { FetchReportQuery, ReportConfig } from '../types';
 import { configValidator } from './configValidator';
 import { buildContext, ReqContext } from './context';
@@ -39,7 +39,10 @@ export class ReportBuilder {
     return this;
   };
 
-  public build = async (aggregator: Aggregator, query: FetchReportQuery): Promise<BuiltReport> => {
+  public build = async (
+    aggregator: ReportServerAggregator,
+    query: FetchReportQuery,
+  ): Promise<BuiltReport> => {
     if (!this.config) {
       throw new Error('Report requires a config be set');
     }
