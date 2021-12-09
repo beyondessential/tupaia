@@ -49,11 +49,8 @@ class RootScreen extends Component {
           <HeaderBar />
           {this.renderPage()}
           {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
-          <ExportDialog />
           <Footer />
           {isUserLoggedIn && <OverlayDiv />}
-          {/* <EnlargedDialog /> */}
-          <ExportDialog />
         </div>
       </StyleRoot>
     );
