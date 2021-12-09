@@ -69,9 +69,16 @@ const Text = styled(Typography)`
   color: #333;
 `;
 
-const makeCustomTooltip = ({ valueType, labelType }) => {
+const getFormattedValue = (viewContent, data) => {
+  const { valueType, labelType } = viewContent;
   const valueTypeForLabel = labelType || valueType;
+  const { name, value, originalItem } = data;
+  const metadata = originalItem[`${name}_metadata`];
 
+  return formatDataValueByType({ value, metadata }, valueTypeForLabel);
+};
+
+const makeCustomTooltip = viewContent => {
   return props => {
     const { active, payload } = props;
 
@@ -80,18 +87,24 @@ const makeCustomTooltip = ({ valueType, labelType }) => {
     }
 
     const data = payload[0].payload;
-    const { name, value, originalItem, fill } = data;
-    const metadata = originalItem[`${name}_metadata`];
+    const { name, fill } = data;
 
     return (
       <TooltipContainer>
         <Heading>{name}</Heading>
         <Item>
           <Box style={{ background: fill }} />
-          <Text>{formatDataValueByType({ value, metadata }, valueTypeForLabel)}</Text>
+          <Text>{getFormattedValue(viewContent, data)}</Text>
         </Item>
       </TooltipContainer>
     );
+  };
+};
+
+const makeLabel = viewContent => {
+  return props => {
+    const { payload } = props;
+    return getFormattedValue(viewContent, payload.payload);
   };
 };
 
@@ -99,13 +112,21 @@ const chartColorAtIndex = (colorArray, index) => {
   return colorArray[index % colorArray.length];
 };
 
+const getHeight = (isExporting, isEnlarged) => {
+  if (isExporting) {
+    return 420;
+  }
+  return isEnlarged && isMobile() ? 320 : undefined;
+};
+
 export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, legendPosition }) => {
   const [activeIndex, setActiveIndex] = useState(-1);
+  const { presentationOptions, data } = viewContent;
+  // eslint-disable-next-line no-unused-vars
+  const [_, setLoaded] = useState(false);
 
   // Trigger rendering of the chart to fix an issue with the legend overlapping the chart.
   // This is a work around for a recharts bug. @see https://github.com/recharts/recharts/issues/511
-  // eslint-disable-next-line no-unused-vars
-  const [_, setLoaded] = useState(false);
   useEffect(() => {
     setTimeout(() => {
       setLoaded(true);
@@ -121,13 +142,10 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
   };
 
   const getPresentationOption = (key, option) => {
-    const { presentationOptions } = viewContent;
     return presentationOptions && presentationOptions[key] && presentationOptions[key][option];
   };
 
   const getValidData = () => {
-    const { data } = viewContent;
-
     return data
       .filter(element => element.value > 0)
       .map(item => {
@@ -154,7 +172,7 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
   // (and just looks a bit weird). So, bump it up by 20px.
   const offsetStyle = isEnlarged && !isMobile() && !isExporting ? { position: 'relative' } : null;
   const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
-  const height = isExporting || (isEnlarged && isMobile()) ? 320 : undefined;
+  const height = getHeight(isExporting, isEnlarged);
 
   return (
     <ResponsiveContainer width="100%" height={height} aspect={responsiveStyle}>
@@ -167,7 +185,9 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
           onClick={item => {
             onItemClick(item.originalItem);
           }}
-          label={isExporting}
+          label={
+            isExporting && presentationOptions?.exportWithLabels ? makeLabel(viewContent) : null
+          }
           startAngle={360 + 90}
           endAngle={90}
         >

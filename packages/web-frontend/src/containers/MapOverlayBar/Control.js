@@ -59,13 +59,15 @@ const OverlayLibrary = styled(FlexSpaceBetween)`
   color: ${({ $expanded }) => ($expanded ? LIGHT_GREY : DARK_GREY)};
   font-size: 12px;
   font-weight: 500;
-  padding: 8px 0px 8px 18px;
+  padding: 10px 0 10px 18px;
+  border-bottom-left-radius: ${({ $expanded }) => (!$expanded ? '5px' : '0')};
+  border-bottom-right-radius: ${({ $expanded }) => (!$expanded ? '5px' : '0')};
+  transition: color 0.2s ease;
+
   &:hover {
     cursor: pointer;
     color: ${LIGHT_GREY};
   }
-  border-bottom-left-radius: ${({ $expanded }) => (!$expanded ? '5px' : '0')};
-  border-bottom-right-radius: ${({ $expanded }) => (!$expanded ? '5px' : '0')};
 `;
 
 const StyledPrimaryComponent = styled(Typography)`
@@ -88,7 +90,7 @@ const LayersIcon = styled(MuiLayersIcon)`
 
 const DownArrowIconWrapper = styled.div`
   display: flex;
-  padding: 8px 14px 0 5px;
+  padding: 0 14px 0 5px;
   .MuiSvgIcon-root {
     transition: transform 0.3s ease;
     transform: rotate(${({ $expanded }) => ($expanded ? '180deg' : '0deg')});
