@@ -18,49 +18,56 @@ import { CRUDHandler } from '../CRUDHandler';
 export class BulkEditHandler extends CRUDHandler {
   constructor(req, res) {
     super(req, res);
-    this.updatedFields = this.req.body;
+    this.updatedRecords = this.req.body;
   }
 
   async handleRequest() {
-    if (Array.isArray(this.updatedFields)) {
-      await this.editRecords();
+    if (this.recordId) {
+      // This is a single record update
+      if (Array.isArray(this.updatedRecords)) {
+        throw new Error('Edit with record id must submit an object as payload');
+      }
+
+      const record = { ...this.updatedRecords, id: this.recordId };
+      await this.editRecords(this.models, [record]);
     } else {
-      await this.validate(this.recordId, this.updatedFields);
-      await this.editRecord(this.models, this.recordId, this.updatedFields);
+      // This should be an array of records
+      if (!Array.isArray(this.updatedRecords)) {
+        throw new Error('Bulk edit without recordId must submit an array as payload');
+      }
+
+      try {
+        await this.models.wrapInTransaction(async transactingModels => {
+          await this.editRecords(transactingModels, this.updatedRecords);
+        });
+      } catch (error) {
+        if (error.respond) {
+          throw error; // Already a custom error with a responder
+        } else {
+          throw new DatabaseError('Error updating records', error);
+        }
+      }
     }
 
     respond(this.res, { message: `Successfully updated ${this.resource}` });
   }
 
-  async editRecords() {
-    try {
-      await this.models.wrapInTransaction(async transactingModels => {
-        for (const updatedFields of this.updatedFields) {
-          await this.validate(updatedFields.id, updatedFields);
-          await this.editRecord(transactingModels, updatedFields.id, updatedFields);
-        }
-      });
-    } catch (error) {
-      if (error.respond) {
-        throw error; // Already a custom error with a responder
-      } else {
-        throw new DatabaseError('Error editing records', error);
-      }
+  // eslint-disable-next-line no-unused-vars
+  async editRecords(transactingModels, updatedRecords) {
+    throw new Error('Any EditHandler must implement editRecords()');
+  }
+
+  async updateRecords(transactingModels, updatedRecords) {
+    const model = transactingModels.getModelForDatabaseType(this.recordType);
+    for (const record of updatedRecords) {
+      await model.updateById(record.id, record);
     }
   }
 
-  async editRecord() {
-    throw new Error('Any EditHandler must implement editRecord()');
-  }
-
-  async updateRecord() {
-    await this.models
-      .getModelForDatabaseType(this.recordType)
-      .updateById(this.recordId, this.updatedFields);
-  }
-
-  async validate(recordId, updatedFields) {
-    return this.validateRecordExists(recordId, updatedFields);
+  async validateRecords(updatedRecords) {
+    for (const record of updatedRecords) {
+      await this.validateRecordExists(record.id);
+    }
   }
 
   async validateRecordExists(recordId) {

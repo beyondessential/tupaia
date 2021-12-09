@@ -27,11 +27,28 @@ export class EditAccessRequests extends BulkEditHandler {
     );
   }
 
-  async editRecord(models, recordId, updatedFields) {
+  async editRecords(transactingModels, updatedRecords) {
+    await this.validateRecords(updatedRecords);
+
+    for (const record of updatedRecords) {
+      await this.checkPermissionForRecord(transactingModels, record.id, record);
+    }
+
+    await this.updateRecords(
+      transactingModels,
+      updatedRecords.map(record => ({
+        ...record,
+        processed_by: this.req.userId,
+        processed_date: new Date(),
+      })),
+    );
+  }
+
+  async checkPermissionForRecord(models, recordId, updatedRecord) {
     const accessRequest = await models.accessRequest.findById(recordId);
     // Check Permissions
     const accessRequestChecker = accessPolicy =>
-      assertAccessRequestEditPermissions(accessPolicy, models, this.recordId, updatedFields);
+      assertAccessRequestEditPermissions(accessPolicy, models, recordId, updatedRecord);
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, accessRequestChecker]),
     );
@@ -41,11 +58,5 @@ export class EditAccessRequests extends BulkEditHandler {
     if (approved !== null) {
       throw new ValidationError(`AccessRequest has already been processed`);
     }
-
-    return models.accessRequest.updateById(recordId, {
-      ...updatedFields,
-      processed_by: this.req.userId,
-      processed_date: new Date(),
-    });
   }
 }
