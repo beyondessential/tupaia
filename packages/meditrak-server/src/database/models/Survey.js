@@ -68,12 +68,12 @@ const onChangeUpdateDataGroup = async (
 ) => {
   switch (changeType) {
     case 'update': {
-      const { code, data_element_id: dataElementId } = newRecord;
-      return models.dataGroup.updateById(dataElementId, { code });
+      const { code, data_group_id: dataGroupId } = newRecord;
+      return models.dataGroup.updateById(dataGroupId, { code });
     }
     case 'delete': {
-      const { data_element_id: dataElementId } = oldRecord;
-      return models.dataGroup.deleteById(dataElementId);
+      const { data_group_id: dataGroupId } = oldRecord;
+      return models.dataGroup.deleteById(dataGroupId);
     }
     default:
       throw new Error(`Non supported change type: ${changeType}`);

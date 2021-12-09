@@ -70,9 +70,6 @@ const updateAndRenameForeignKey = async (
     ON UPDATE CASCADE;
 
     ALTER TABLE ${tableName}
-    ALTER COLUMN ${newFKColumn} SET NOT NULL;
-
-    ALTER TABLE ${tableName}
     DROP COLUMN ${oldFKColumn};
   `);
 };
