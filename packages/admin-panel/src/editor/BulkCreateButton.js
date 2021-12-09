@@ -15,7 +15,7 @@ export const BulkCreateButtonComponent = ({ dispatch, label, actionConfig }) => 
     startIcon={<AddCircleIcon />}
     onClick={() => dispatch(openBulkEditModal(actionConfig))}
   >
-    Bulk {label}
+    {label}
   </LightOutlinedButton>
 );
 

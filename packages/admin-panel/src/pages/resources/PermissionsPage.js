@@ -35,6 +35,11 @@ const FIELDS = [
     editable: false,
   },
   {
+    Header: 'Email',
+    source: 'user.email',
+    editable: false,
+  },
+  {
     source: 'user.last_name',
     show: false,
   },
@@ -97,12 +102,6 @@ const CREATE_CONFIG = {
     ],
   },
 };
-
-// {
-//   entity_id: ['1', '2'];
-//   permission_group_id: ['1', '2'];
-//   user_id: ['1', '2'];
-// }
 
 // Return an array of records for bulk editing on the server
 const processDataForSave = fieldsToSave => {

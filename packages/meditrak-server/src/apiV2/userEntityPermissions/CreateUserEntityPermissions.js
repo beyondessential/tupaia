@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { CreateHandler } from '../CreateHandler';
+import { BulkCreateHandler } from '../CreateHandler';
 import {
   assertAnyPermissions,
   assertBESAdminAccess,
@@ -16,7 +16,7 @@ import { assertUserEntityPermissionUpsertPermissions } from './assertUserEntityP
  * - /userEntityPermissions
  */
 
-export class CreateUserEntityPermissions extends CreateHandler {
+export class CreateUserEntityPermissions extends BulkCreateHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
@@ -26,16 +26,19 @@ export class CreateUserEntityPermissions extends CreateHandler {
     );
   }
 
-  async createRecord() {
-    // Check Permissions
+  async createRecords(transactingModels, newRecordData) {
+    for (const recordData of newRecordData) {
+      await this.checkPermissions(transactingModels, recordData);
+    }
+
+    return this.insertRecords(transactingModels, newRecordData);
+  }
+
+  async checkPermissions(models, newRecord) {
     const userEntityPermissionsChecker = accessPolicy =>
-      assertUserEntityPermissionUpsertPermissions(accessPolicy, this.models, this.newRecordData);
+      assertUserEntityPermissionUpsertPermissions(accessPolicy, models, newRecord);
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, userEntityPermissionsChecker]),
     );
-
-    throw new Error('Bulk Requests Under Construction');
-
-    return this.insertRecord();
   }
 }
