@@ -91,19 +91,19 @@ const USER_COLUMNS = [
         {
           Header: 'Entity',
           source: 'entity.name',
-          bulkAccessor: rows => {
-            return rows.map(row => row['entity.name']).join(', ');
-          },
+          bulkAccessor: rows => rows.map(row => row['entity.name'] ?? 'blank').join(', '),
           editable: false,
         },
         {
           Header: 'Project Code',
           source: 'project.code',
+          bulkAccessor: rows => rows.map(row => row['project.code'] ?? 'blank').join(', '),
           editable: false,
         },
         {
           Header: 'Message',
           source: 'message',
+          bulkAccessor: rows => rows.map(row => (row.message ? row.message : 'blank')).join(', '),
           type: 'tooltip',
           editable: false,
         },
