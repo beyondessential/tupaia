@@ -67,9 +67,9 @@ export const DataTable = ({ columns, data, className, rowLimit }) => {
               </TableRow>
             );
           })}
-          {hasLimitedRows ? <div>{limitedRowsMessage}</div> : null}
         </TableBody>
       </StyledTable>
+      {hasLimitedRows ? <div>{limitedRowsMessage}</div> : null}
     </TableContainer>
   );
 };
