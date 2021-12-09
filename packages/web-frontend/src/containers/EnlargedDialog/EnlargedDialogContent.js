@@ -30,6 +30,7 @@ const StyledAlert = styled(Alert)`
 `;
 
 const ExportDateText = styled.div`
+  padding-top: 15px;
   padding-bottom: 5px;
   text-align: center;
   font-size: 12px;
@@ -120,6 +121,7 @@ export class EnlargedDialogContent extends PureComponent {
         color={isExporting ? DARK_BLUE : WHITE}
         renderPeriodSelector={this.renderPeriodSelector}
         reference={reference}
+        isExporting={isExporting}
       />
     );
   }
@@ -284,6 +286,7 @@ export class EnlargedDialogContent extends PureComponent {
     };
 
     const getBodyStyle = () => {
+      if (isExporting) return {};
       if (isMatrix) return styles.matrixContent;
       if (viewContent.chartType) return styles.chartContent;
       return {}; // No custom styling for other types of dialog content
@@ -318,7 +321,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    height: 390,
+    minHeight: 390,
   },
   matrixContent: {
     height: '80vh',

@@ -14,6 +14,7 @@ const EXCLUDED_TABLES_FROM_TRIGGER_CREATION = [
   'userSession',
   'spatial_ref_sys', // Reference table provided by postgis
   'legacy_report',
+  'report',
   'ancestor_descendant_relation',
   'psss_session',
   'lesmis_session',
