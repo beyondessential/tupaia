@@ -143,7 +143,7 @@ export class ApiBuilder {
   }
 
   addRoute<T extends ExpressRequest<T> = Request>(
-    method: 'get' | 'post' | 'put',
+    method: 'get' | 'post' | 'put' | 'delete',
     path: string,
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
@@ -174,6 +174,13 @@ export class ApiBuilder {
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
     return this.addRoute('put', path, ...handlers);
+  }
+
+  delete<T extends ExpressRequest<T> = Request>(
+    path: string,
+    ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
+  ) {
+    return this.addRoute('delete', path, ...handlers);
   }
 
   build() {
