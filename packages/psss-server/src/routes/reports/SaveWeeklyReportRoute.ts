@@ -3,10 +3,19 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { Request } from 'express';
 import { RespondingError, UnauthenticatedError } from '@tupaia/utils';
 import { Route } from '../Route';
+
 import { WEEKLY_SURVEY_COUNTRY, WEEKLY_SURVEY_SITE } from '../../constants';
 import { validateIsNumber } from '../../utils';
+
+export type SaveWeeklyReportRequest = Request<
+  { countryCode: string; siteCode: string },
+  any,
+  Record<string, unknown>,
+  { week: string }
+>;
 
 type WeeklyReportAnswer = {
   type: string;
@@ -14,7 +23,7 @@ type WeeklyReportAnswer = {
   value: number;
 };
 
-export class SaveWeeklyReportRoute extends Route {
+export class SaveWeeklyReportRoute extends Route<SaveWeeklyReportRequest> {
   async buildResponse() {
     if (!this.meditrakConnection) throw new UnauthenticatedError('Unauthenticated');
 

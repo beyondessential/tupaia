@@ -13,6 +13,7 @@ import {
   CONFIRMED_WEEKLY_SURVEY_COUNTRY,
   ALERT_SURVEY,
 } from '../../constants';
+import { Request } from 'express';
 
 const WEEKLY_REPORT_CODE = 'PSSS_Weekly_Cases';
 const ACTIVE_ALERTS_REPORT_CODE = 'PSSS_Active_Alerts';
@@ -32,7 +33,14 @@ type AlertResponseData = {
   alertsArchived: boolean;
 };
 
-export class ConfirmWeeklyReportRoute extends Route {
+export type ConfirmWeeklyReportRequest = Request<
+  { countryCode: string },
+  any,
+  Record<string, unknown>,
+  { week: string }
+  >;
+
+export class ConfirmWeeklyReportRoute extends Route<ConfirmWeeklyReportRequest> {
   async buildResponse() {
     const { week } = this.req.query;
     const { countryCode } = this.req.params;
@@ -130,7 +138,7 @@ export class ConfirmWeeklyReportRoute extends Route {
       // and now for the selected week, the threshold is no longer crossed (because of reconfirming changed data),
       // archive the existing alert triggered in the selected week
       if (currentWeekSyndromeAlert && result[`${syndromeCode} Threshold Crossed`] === false) {
-        await this.archiveAlert(currentWeekSyndromeAlert.id, countryCode, week);
+        await this.archiveAlert(currentWeekSyndromeAlert.id as string, countryCode, week);
         response.alertsArchived = true;
       }
     }

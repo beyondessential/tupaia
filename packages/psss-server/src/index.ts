@@ -15,16 +15,16 @@ import { PsssSessionModel } from './models';
 
 dotenv.config(); // Load the environment variables into process.env
 
-/**
- * Set up database
- */
-const database = new TupaiaDatabase();
-const sessionModel = new PsssSessionModel(database);
+// /**
+//  * Set up database
+//  */
+// const database = new TupaiaDatabase();
+// const sessionModel = new PsssSessionModel(database);
 
 /**
  * Set up app with routes etc.
  */
-const app = createApp(sessionModel);
+const app = createApp();
 
 /**
  * Start the server

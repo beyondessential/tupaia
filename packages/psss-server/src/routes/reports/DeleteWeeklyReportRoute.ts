@@ -6,8 +6,16 @@
 import { WEEKLY_SURVEY_COUNTRY, WEEKLY_SURVEY_SITE } from '../../constants';
 import { Route } from '../Route';
 import { UnauthenticatedError } from '@tupaia/utils';
+import { Request } from 'express';
 
-export class DeleteWeeklyReportRoute extends Route {
+export type DeleteWeeklyReportRequest = Request<
+  { countryCode: string; siteCode: string; },
+  any,
+  Record<string, unknown>,
+  { week: string }
+  >;
+
+export class DeleteWeeklyReportRoute extends Route<DeleteWeeklyReportRequest> {
   async buildResponse() {
     if (!this.meditrakConnection) throw new UnauthenticatedError('Unauthenticated');
 

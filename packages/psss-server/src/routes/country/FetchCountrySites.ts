@@ -5,8 +5,16 @@
 
 import { getSortByKey, UnauthenticatedError } from '@tupaia/utils';
 import { Route } from '../Route';
+import { Request } from 'express';
 
-export class FetchCountrySites extends Route {
+export type FetchCountrySitesRequest = Request<
+  { countryCode: string },
+  any,
+  Record<string, unknown>,
+  {}
+  >;
+
+export class FetchCountrySites extends Route<FetchCountrySitesRequest> {
   async buildResponse() {
     if (!this.entityConnection) throw new UnauthenticatedError('Unauthenticated');
 

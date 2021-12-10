@@ -2,20 +2,13 @@
   "extends": "../../tsconfig-ts.json",
 
   "compilerOptions": {
+    "typeRoots": ["src/@types", "node_modules/@types", "../../node_modules/@types"],
     "outDir": "dist",
     "strict": true,
     "declaration": true,
-    "noEmit": false,
-
-
-    "allowUnreachableCode": false,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "CommonJS",
-    "skipLibCheck": true,
-    "target": "ES2019"
+    "noEmit": false
   },
 
   "include": ["src/**/*"],
-  "exclude": ["src/__tests__"]
+  "exclude": ["src/__tests__", "src/@types"]
 }

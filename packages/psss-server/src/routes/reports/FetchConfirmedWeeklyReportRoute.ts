@@ -4,9 +4,17 @@
  */
 import { Route } from '../Route';
 import { validateSyndrome } from './helpers';
-import { UnauthenticatedError } from '@tupaia/utils';
+import { UnauthenticatedError, ValidationError } from '@tupaia/utils';
+import { Request } from 'express';
 
-export class FetchConfirmedWeeklyReportRoute extends Route {
+export type FetchConfirmedWeeklyReportRequest = Request<
+  { countryCode: string },
+  any,
+  Record<string, unknown>,
+  { startWeek: string; endWeek: string; orgUnitCodes: string; syndrome: string }
+>;
+
+export class FetchConfirmedWeeklyReportRoute extends Route<FetchConfirmedWeeklyReportRequest> {
   async buildResponse() {
     if (!this.reportConnection) throw new UnauthenticatedError('Unauthenticated');
 

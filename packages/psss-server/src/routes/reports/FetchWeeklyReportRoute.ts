@@ -6,19 +6,28 @@
 import { Route } from '../Route';
 import { validateSyndrome } from './helpers';
 import { UnauthenticatedError } from '@tupaia/utils';
+import { Request } from 'express';
 
-export class FetchWeeklyReportRoute extends Route {
+export type FetchWeeklyReportRequest = Request<
+  { countryCode: string, sites: 'sites' | undefined },
+  any,
+  Record<string, unknown>,
+  { startWeek: string; endWeek: string; syndrome: string; }
+  >;
+
+export class FetchWeeklyReportRoute extends Route<FetchWeeklyReportRequest> {
   async buildResponse() {
     if (!this.reportConnection) throw new UnauthenticatedError('Unauthenticated');
+    if (!this.entityConnection) throw new UnauthenticatedError('Unauthenticated');
 
     const { startWeek, endWeek, syndrome } = this.req.query;
-    const { countryCode } = this.req.params;
+    const { countryCode, sites } = this.req.params;
 
     if (syndrome) {
       validateSyndrome(syndrome);
     }
 
-    const entityCodes = this.req.useSites
+    const entityCodes = sites
       ? await this.entityConnection.fetchSiteCodes(countryCode)
       : [countryCode];
     const report = syndrome ? `PSSS_${syndrome}_Weekly_Report` : 'PSSS_Weekly_Report';

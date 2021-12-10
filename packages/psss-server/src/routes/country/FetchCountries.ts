@@ -6,13 +6,21 @@
 import { getSortByKey, UnauthenticatedError } from '@tupaia/utils';
 import { PSSS_PERMISSION_GROUP } from '../../constants';
 import { Route } from '../Route';
+import { Request } from 'express';
 
-export class FetchCountries extends Route {
-  async buildResponse() {
+export type FetchCountriesRequest = Request<
+  {},
+  any,
+  Record<string, unknown>,
+  {}
+  >;
+
+export class FetchCountries extends Route<FetchCountriesRequest> {
+  async buildResponse(): Promise<any> {
     if (!this.entityConnection) throw new UnauthenticatedError('Unauthenticated');
 
     const countries = await this.entityConnection.fetchCountries();
-    const { accessPolicy } = await this.getSession();
+    const { accessPolicy } = await this.req.session;
     const allowedEntities = accessPolicy.getEntitiesAllowed(PSSS_PERMISSION_GROUP);
 
     // TODO get sorted response from `entityConnection`:

@@ -5,6 +5,7 @@
 
 import { RespondingError, UnauthenticatedError } from '@tupaia/utils';
 import { Route } from '../Route';
+import { Request } from 'express';
 
 const ACTION_TO_ANSWER = {
   archive: 'Yes',
@@ -20,7 +21,15 @@ function validateAction(action: string): asserts action is AlertAction {
   }
 }
 
-export class ProcessAlertActionRoute extends Route {
+
+export type ProcessAlertActionRequest = Request<
+  { alertId: string; action: string },
+  any,
+  Record<string, unknown>,
+  {  }
+  >;
+
+export class ProcessAlertActionRoute extends Route<ProcessAlertActionRequest> {
   async buildResponse() {
     if (!this.meditrakConnection) throw new UnauthenticatedError('Unauthenticated');
 
