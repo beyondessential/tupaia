@@ -8,7 +8,7 @@
  */
 
 import { findOrCreateRecords, generateTestId } from '@tupaia/database';
-import { upperFirst } from '@tupaia/utils';
+import { reduceToDictionary, upperFirst } from '@tupaia/utils';
 
 const ID_LENGTH = 24;
 
@@ -77,11 +77,6 @@ export const CLINIC_DATA_SURVEY = {
       code: 'TCD_Contact_number',
       type: 'Number',
     },
-    {
-      id: 'tcd_major_damage____test',
-      code: 'TCD_major_damage',
-      type: 'FreeText',
-    },
   ],
 };
 
@@ -127,16 +122,23 @@ export const MONTHLY_SURVEY = createPeriodicSurvey('monthly');
 export const WEEKLY_SURVEY = createPeriodicSurvey('weekly');
 export const DAILY_SURVEY = createPeriodicSurvey('daily');
 
-export const createSurveyResponses = async (models, responseIdsBySurvey) => {
+export const createSurveyResponses = async (models, responsesBySurvey) => {
   const user = await models.user.findOne();
-  const entity = await models.entity.findOne();
-  const responseRecords = Object.entries(responseIdsBySurvey)
-    .map(([surveyId, responseIds]) =>
-      responseIds.map(id => ({
+  const entityCodes = Object.values(responsesBySurvey)
+    .flat()
+    .map(r => r.entityCode);
+  const entities = await models.entity.find({ code: entityCodes });
+  const surveys = await models.survey.find({ code: Object.keys(responsesBySurvey) });
+  const entityCodeToId = reduceToDictionary(entities, 'code', 'id');
+  const surveyCodeToId = reduceToDictionary(surveys, 'code', 'id');
+
+  const responseRecords = Object.entries(responsesBySurvey)
+    .map(([surveyCode, responses]) =>
+      responses.map(({ id, entityCode }) => ({
         id,
-        survey_id: surveyId,
+        survey_id: surveyCodeToId[surveyCode],
         user_id: user.id,
-        entity_id: entity.id,
+        entity_id: entityCodeToId[entityCode],
       })),
     )
     .flat();
@@ -144,115 +146,357 @@ export const createSurveyResponses = async (models, responseIdsBySurvey) => {
   await findOrCreateRecords(models, { surveyResponse: responseRecords });
 };
 
-export const VALIDATION_RESPONSE_IDS = {
-  [VALIDATION_SURVEY.id]: [
-    'duplicate_quest_id1_test',
-    'duplicate_quest_id2_test',
-    'invalid_binary1_____test',
-    'invalid_binary2_____test',
-    'invalid_number1_____test',
-    'invalid_number2_____test',
-    'invalid_radio1______test',
-    'invalid_radio2______test',
-    'missing_id_column1__test',
-    'missing_id_column2__test',
-    'missing_quest_id1___test',
-    'missing_quest_id2___test',
-    'missing_response_id_test',
-    'missing_type_col1___test',
-    'missing_type_col2___test',
-    'nonexist_quest_id1__test',
-    'nonexist_quest_id2__test',
-  ],
-};
-
-export const BASELINE_RESPONSE_IDS = {
-  [CLINIC_DATA_SURVEY.id]: [
-    'tcd_change_answer___test',
-    'tcd_delete_answer___test',
-    'tcd_delete_response_test',
-    'tcd_basic___________test',
-    'tcd_change_ans_tab__test',
-    'tcd_update_dl1_a____test',
-    'tcd_update_dl1_b____test',
-    'tcd_update_dl5_a____test',
-    'tcd_update_dl5_b____test',
-    'tcd_merge_dl1_a_____test',
-    'tcd_merge_dl1_b_____test',
-    'tcd_merge_dl5_a_____test',
-    'tcd_merge_dl5_b_____test',
-  ],
-  [FACILITY_FUNDAMENTALS_SURVEY.id]: ['tff_same_answers____test', 'tff_change_answer___test'],
-};
-
-export const PERIODIC_RESPONSE_IDS = {
-  [YEARLY_SURVEY.id]: [
-    '2020_dl1_untouched__test',
-    '2020_dl1_update_____test',
-    '2021_dl1_merge______test',
-    '2020_dl5_override___test',
-    '2021_dl5_merge______test',
-    '2020_dl5_update_____test',
-  ],
-};
-
-/**
- * Describes data changes from responseBaseline.xlsx to responseUpdates.xlsx
- */
-export const RESPONSE_UPDATES = {
-  answersChanged: [
+export const NON_PERIODIC_RESPONSES_AFTER_UPDATES = {
+  notAffected: [
     {
-      // Radio
-      surveyResponseId: 'tcd_change_answer___test',
-      questionId: 'tcd_facility_open___test',
-      newAnswer: 'Permanently Closed',
-    },
-    {
-      // FreeText
-      surveyResponseId: 'tcd_change_answer___test',
-      questionId: 'tcd_major_damage____test',
-      newAnswer: 'Testing',
-    },
-    {
-      // Number
-      surveyResponseId: 'tcd_change_answer___test',
-      questionId: 'tcd_contact_number__test',
-      newAnswer: '3000',
-    },
-    {
-      // Binary
-      surveyResponseId: 'tcd_change_answer___test',
-      questionId: 'tcd_func_landline___test',
-      newAnswer: 'Yes',
-    },
-    {
-      // Another tab
-      surveyResponseId: 'tff_change_answer___test',
-      questionId: 'tff_other_names_____test',
-      newAnswer: 'Thorno',
-    },
-  ],
-  answerDeleted: {
-    surveyResponseId: 'tcd_delete_answer___test',
-    questionId: 'tcd_func_landline___test',
-  },
-  responsesAdded: [
-    {
-      entityCode: 'TEST_NR_1',
-      date: '2017-06-28T01:40:00.000Z',
+      id: 'tcd_basic___________test',
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2019-01-01T14:00:00.000Z',
       answers: {
         tcd_facility_open___test: 'Fully Operational',
-        tcd_contact_number__test: '1.5',
+        tcd_func_landline___test: 'Yes',
+        tcd_best_network____test: 'Telecom',
+      },
+    },
+    {
+      id: 'tcd_untouched_dl1___test',
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2020-01-05T14:00:00.000Z',
+      answers: {
         tcd_func_landline___test: 'No',
       },
     },
     {
-      entityCode: 'TEST_NR_2',
-      date: '2017-06-28T02:37:00.000Z',
+      id: 'tcd_merge_dl1_a_____test',
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2020-01-18T14:00:00.000Z',
       answers: {
         tcd_facility_open___test: 'Fully Operational',
-        tcd_contact_number__test: '0.4',
+        tcd_func_landline___test: 'Yes',
+        tcd_best_network____test: 'Telecom',
+      },
+    },
+    {
+      id: 'tcd_merge_dl1_b_____test',
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2020-06-08T14:00:00.000Z',
+      answers: {
+        tcd_best_network____test: 'Optus',
+      },
+    },
+    {
+      id: 'tcd_untouched_dl5___test',
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_5',
+      date: '2020-01-05T14:00:00.000Z',
+      answers: {
         tcd_func_landline___test: 'No',
+      },
+    },
+    {
+      id: 'tcd_merge_dl5_a_____test',
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_5',
+      date: '2020-01-18T14:00:00.000Z',
+      answers: {
+        tcd_facility_open___test: 'Operational but closed this week',
+        tcd_func_landline___test: 'No',
+        tcd_best_network____test: 'Telstra',
+      },
+    },
+    {
+      id: 'tcd_merge_dl5_b_____test',
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_5',
+      date: '2020-06-08T14:00:00.000Z',
+      answers: {
+        tcd_func_landline___test: 'No',
+        tcd_best_network____test: 'Other',
+      },
+    },
+    {
+      id: 'tff_same_answers____test',
+      surveyCode: FACILITY_FUNDAMENTALS_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2020-06-10T14:00:00.000Z',
+      answers: {
+        tff_other_names_____test: 'FNQ',
+        tff_catchment_pop___test: '7500',
+      },
+    },
+  ],
+  deleted: [{ id: 'tcd_delete_response_test' }],
+  updated: [
+    {
+      id: 'tcd_change_answer___test',
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_7',
+      date: '2019-03-10T14:00:00.000Z',
+      answers: {
+        tcd_facility_open___test: 'Permanently Closed',
+        tcd_func_landline___test: 'Yes',
+        tcd_best_network____test: 'Telecom',
+        tcd_contact_number__test: '3000',
+      },
+    },
+    {
+      id: 'tcd_delete_answer___test',
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_9',
+      date: '2019-06-10T14:00:00.000Z',
+      answers: {
+        tcd_facility_open___test: 'Operational but closed this week',
+        tcd_best_network____test: 'Optus',
+        tcd_contact_number__test: '1234567',
+      },
+    },
+    {
+      id: 'tcd_update_dl1_a____test',
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2020-01-15T14:00:00.000Z',
+      answers: {
+        tcd_facility_open___test: 'Fully Operational',
+        tcd_func_landline___test: 'Yes',
+        tcd_best_network____test: 'Telecom',
+        tcd_contact_number__test: '12345',
+      },
+    },
+    {
+      id: 'tcd_update_dl1_b____test',
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2020-06-05T14:00:00.000Z',
+      answers: {
+        tcd_func_landline___test: 'No',
+        tcd_best_network____test: 'Optus',
+      },
+    },
+    {
+      id: 'tcd_update_dl5_a____test',
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_5',
+      date: '2020-01-17T15:30:00.000Z',
+      answers: {
+        tcd_facility_open___test: 'Operational but closed this week',
+        tcd_func_landline___test: 'No',
+        tcd_best_network____test: 'Telstra',
+        tcd_contact_number__test: '6789',
+      },
+    },
+    {
+      id: 'tcd_update_dl5_b____test',
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_5',
+      date: '2020-06-07T09:00:00.000Z',
+      answers: {
+        tcd_func_landline___test: 'Yes',
+        tcd_best_network____test: 'Other',
+      },
+    },
+    {
+      id: 'tff_change_answer___test',
+      surveyCode: FACILITY_FUNDAMENTALS_SURVEY.code,
+      entityCode: 'DL_9',
+      date: '2020-06-15T14:00:00.000Z',
+      answers: {
+        tff_other_names_____test: 'Thorno',
+        tff_catchment_pop___test: '8000',
+      },
+    },
+  ],
+  created: [
+    // NEW
+    {
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2019-09-01T14:30:00.000Z',
+      answers: {
+        tcd_facility_open___test: 'Fully Operational',
+        tcd_func_landline___test: 'No',
+        tcd_contact_number__test: '1.5',
+      },
+    },
+    {
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_5',
+      date: '2019-09-15T06:15:00.000Z',
+      answers: {
+        tcd_facility_open___test: 'Fully Operational',
+        tcd_func_landline___test: 'No',
+        tcd_contact_number__test: '0.4',
+      },
+    },
+    // UPDATE (when a matching report is not found, a new one is created)
+    {
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2016-12-31T14:00:00.000Z',
+      answers: {
+        tcd_func_landline___test: 'No',
+        tcd_best_network____test: 'Did not find a report to update',
+      },
+    },
+    // MERGE
+    {
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2020-01-20T15:00:00.000Z',
+      answers: {
+        tcd_facility_open___test: 'Fully Operational',
+        tcd_func_landline___test: 'Yes',
+        tcd_best_network____test: 'Telecom',
+        tcd_contact_number__test: '12345',
+      },
+    },
+    {
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2020-06-10T15:00:00.000Z',
+      answers: {
+        tcd_func_landline___test: 'No',
+        tcd_best_network____test: 'Optus',
+      },
+    },
+    {
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_5',
+      date: '2020-01-20T15:00:00.000Z',
+      answers: {
+        tcd_facility_open___test: 'Operational but closed this week',
+        tcd_func_landline___test: 'No',
+        tcd_best_network____test: 'Telstra',
+        tcd_contact_number__test: '6789',
+      },
+    },
+    {
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_5',
+      date: '2020-06-10T15:00:00.000Z',
+      answers: {
+        tcd_func_landline___test: 'Yes',
+        tcd_best_network____test: 'Other',
+      },
+    },
+    {
+      surveyCode: CLINIC_DATA_SURVEY.code,
+      entityCode: 'DL_5',
+      date: '2016-12-31T14:00:00.000Z',
+      answers: {
+        tcd_func_landline___test: 'Yes',
+        tcd_best_network____test: 'Did not find a report to merge',
+        tcd_contact_number__test: '5678',
+      },
+    },
+  ],
+};
+
+export const PERIODIC_RESPONSES_AFTER_UPDATES = {
+  notAffected: [
+    {
+      id: '2020_dl1_untouched__test',
+      surveyCode: YEARLY_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2020-01-15T14:00:00.000Z',
+      answers: {
+        yearly_bird_________test: '2020_dl1_bird_untouched',
+        yearly_cat__________test: '2020_dl1_cat_untouched',
+      },
+    },
+    {
+      id: '2021_dl1_merge______test',
+      surveyCode: YEARLY_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2021-01-15T14:00:00.000Z',
+      answers: {
+        yearly_bird_________test: '2021_dl1_bird_existing',
+        yearly_dog__________test: '2021_dl1_dog_existing',
+      },
+    },
+    {
+      id: '2020_dl5_merge______test',
+      surveyCode: YEARLY_SURVEY.code,
+      entityCode: 'DL_5',
+      date: '2020-06-15T14:00:00.000Z',
+      answers: {
+        yearly_cat__________test: '2020_dl5_cat_existing',
+      },
+    },
+  ],
+  deleted: [{ id: '2017_dl1_delete_____test' }],
+  updated: [
+    {
+      id: '2020_dl1_update_____test',
+      surveyCode: YEARLY_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2020-02-20T16:00:00.000Z',
+      answers: {
+        yearly_bird_________test: '2020_dl1_bird_new',
+        yearly_cat__________test: '2020_dl1_cat_existing',
+        yearly_dog__________test: '2020_dl1_dog_new',
+      },
+    },
+    {
+      id: '2020_dl5_override___test',
+      surveyCode: YEARLY_SURVEY.code,
+      entityCode: 'DL_5',
+      date: '2020-03-16T15:00:00.000Z',
+      answers: {
+        yearly_bird_________test: '2020_dl5_bird_override_new',
+        yearly_dog__________test: '2020_dl5_dog_override_new',
+      },
+    },
+    {
+      id: '2021_dl5_update_____test',
+      surveyCode: YEARLY_SURVEY.code,
+      entityCode: 'DL_5',
+      date: '2021-09-05T11:00:00.000Z',
+      answers: {
+        yearly_bird_________test: '2021_dl5_bird_new',
+        yearly_cat__________test: '2021_dl5_cat_new',
+      },
+    },
+  ],
+  created: [
+    // UPDATE (when a matching report is not found, a new one is created)
+    {
+      surveyCode: YEARLY_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2016-12-31T14:00:00.000Z',
+      answers: {
+        yearly_bird_________test: '2016_dl1_bird_no_report_to_update',
+      },
+    },
+    // MERGE
+    {
+      surveyCode: YEARLY_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2021-03-25T14:00:00.000Z',
+      answers: {
+        yearly_bird_________test: '2021_dl1_bird_existing',
+        yearly_cat__________test: '2021_dl1_cat_new',
+        yearly_dog__________test: '2021_dl1_dog_existing',
+      },
+    },
+    {
+      surveyCode: YEARLY_SURVEY.code,
+      entityCode: 'DL_5',
+      date: '2020-01-05T14:00:00.000Z',
+      answers: {
+        yearly_bird_________test: '2020_dl5_bird_new',
+        yearly_cat__________test: '2020_dl5_cat_new',
+      },
+    },
+    {
+      surveyCode: YEARLY_SURVEY.code,
+      entityCode: 'DL_5',
+      date: '2016-12-31T14:00:00.000Z',
+      answers: {
+        yearly_bird_________test: '2016_d5_bird_no_report_to_merge',
       },
     },
   ],

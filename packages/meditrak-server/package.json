@@ -50,6 +50,7 @@
     "lodash.clonedeep": "^4.5.0",
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0",
+    "lodash.pick": "^4.4.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.25",
     "morgan": "^1.9.0",
