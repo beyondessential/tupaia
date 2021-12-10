@@ -7,12 +7,10 @@ import { RespondingError, UnauthenticatedError } from '@tupaia/utils';
 import { Route } from '../Route';
 import { Request } from 'express';
 
-export type DeleteAlertRequest = Request<
-  { alertId: string },
+export type DeleteAlertRequest = Request<{ alertId: string },
   any,
   Record<string, unknown>,
-  {  }
-  >;
+  {}>;
 
 export class DeleteAlertRoute extends Route<DeleteAlertRequest> {
   async buildResponse() {

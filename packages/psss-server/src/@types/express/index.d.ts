@@ -11,6 +11,7 @@ declare global {
       session: PsssSessionType;
     }
 
-    export interface Response {}
+    export interface Response {
+    }
   }
 }

@@ -33,12 +33,10 @@ type AlertResponseData = {
   alertsArchived: boolean;
 };
 
-export type ConfirmWeeklyReportRequest = Request<
-  { countryCode: string },
+export type ConfirmWeeklyReportRequest = Request<{ countryCode: string },
   any,
   Record<string, unknown>,
-  { week: string }
-  >;
+  { week: string }>;
 
 export class ConfirmWeeklyReportRoute extends Route<ConfirmWeeklyReportRequest> {
   async buildResponse() {

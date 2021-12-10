@@ -10,12 +10,10 @@ import { Route } from '../Route';
 import { WEEKLY_SURVEY_COUNTRY, WEEKLY_SURVEY_SITE } from '../../constants';
 import { validateIsNumber } from '../../utils';
 
-export type SaveWeeklyReportRequest = Request<
-  { countryCode: string; siteCode: string },
+export type SaveWeeklyReportRequest = Request<{ countryCode: string; siteCode: string },
   any,
   Record<string, unknown>,
-  { week: string }
->;
+  { week: string }>;
 
 type WeeklyReportAnswer = {
   type: string;

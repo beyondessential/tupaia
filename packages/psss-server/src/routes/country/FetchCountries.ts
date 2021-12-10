@@ -8,12 +8,10 @@ import { PSSS_PERMISSION_GROUP } from '../../constants';
 import { Route } from '../Route';
 import { Request } from 'express';
 
-export type FetchCountriesRequest = Request<
-  {},
+export type FetchCountriesRequest = Request<{},
   any,
   Record<string, unknown>,
-  {}
-  >;
+  {}>;
 
 export class FetchCountries extends Route<FetchCountriesRequest> {
   async buildResponse(): Promise<any> {

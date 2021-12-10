@@ -27,12 +27,10 @@ function validateStatus(category: string): asserts category is AlertCategory {
   }
 }
 
-export type FetchAlertsRequest = Request<
-  { category: string },
+export type FetchAlertsRequest = Request<{ category: string },
   any,
   Record<string, unknown>,
-  { startWeek: string, endWeek: string, orgUnitCodes: string }
-  >;
+  { startWeek: string, endWeek: string, orgUnitCodes: string }>;
 
 export class FetchAlertsRoute extends Route<FetchAlertsRequest> {
   async buildResponse() {

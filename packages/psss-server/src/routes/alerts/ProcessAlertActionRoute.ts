@@ -22,12 +22,10 @@ function validateAction(action: string): asserts action is AlertAction {
 }
 
 
-export type ProcessAlertActionRequest = Request<
-  { alertId: string; action: string },
+export type ProcessAlertActionRequest = Request<{ alertId: string; action: string },
   any,
   Record<string, unknown>,
-  {  }
-  >;
+  {}>;
 
 export class ProcessAlertActionRoute extends Route<ProcessAlertActionRequest> {
   async buildResponse() {

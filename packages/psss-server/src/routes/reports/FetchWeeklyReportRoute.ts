@@ -8,12 +8,10 @@ import { validateSyndrome } from './helpers';
 import { UnauthenticatedError } from '@tupaia/utils';
 import { Request } from 'express';
 
-export type FetchWeeklyReportRequest = Request<
-  { countryCode: string, sites: 'sites' | undefined },
+export type FetchWeeklyReportRequest = Request<{ countryCode: string, sites: 'sites' | undefined },
   any,
   Record<string, unknown>,
-  { startWeek: string; endWeek: string; syndrome: string; }
-  >;
+  { startWeek: string; endWeek: string; syndrome: string; }>;
 
 export class FetchWeeklyReportRoute extends Route<FetchWeeklyReportRequest> {
   async buildResponse() {
