@@ -10,11 +10,7 @@ import {
 } from '@tupaia/database';
 import { expectError as baseExpectError, TestableApp } from '../../../testUtilities';
 import { importFile } from './helpers';
-import {
-  createSurveyResponses,
-  VALIDATION_SURVEY,
-  VALIDATION_RESPONSE_IDS,
-} from './importSurveyResponses.fixtures';
+import { VALIDATION_SURVEY } from './importSurveyResponses.fixtures';
 
 export const testValidation = async () => {
   const app = new TestableApp();
@@ -30,7 +26,6 @@ export const testValidation = async () => {
     await findOrCreateRecords(models, {
       entity: ['DL_7', 'DL_9', 'DL_10', 'DL_11'].map(code => ({ code, country_code: 'DL' })),
     });
-    await createSurveyResponses(models, VALIDATION_RESPONSE_IDS);
   });
 
   after(() => {
