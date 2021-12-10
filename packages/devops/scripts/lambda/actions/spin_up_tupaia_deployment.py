@@ -92,6 +92,7 @@ def spin_up_tupaia_deployment(event):
         deployment_name,
         branch,
         instance_type,
+        extra_tags=extra_tags,
         image_code=image_code,
         security_group_code=security_group_code,
     )
