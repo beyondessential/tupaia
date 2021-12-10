@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { ImportModal } from '../importExport';
-import { CreateButton } from '../editor';
+import { CreateButton, BulkCreateButton } from '../editor';
 
 const HeaderButtonContainer = styled.div`
   display: grid;
@@ -43,7 +43,11 @@ export const Header = ({
         <Typography variant="h1">{title}</Typography>
         <HeaderButtonContainer>
           {importConfig && <ImportModal {...importConfig} />}
-          {createConfig && <CreateButton {...createConfig} />}
+          {createConfig && createConfig.bulkCreate ? (
+            <BulkCreateButton {...createConfig} />
+          ) : (
+            <CreateButton {...createConfig} />
+          )}
           {ExportModalComponent && <ExportModalComponent />}
           {LinksComponent && <LinksComponent />}
         </HeaderButtonContainer>

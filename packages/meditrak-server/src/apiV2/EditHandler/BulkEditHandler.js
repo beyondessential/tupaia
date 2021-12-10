@@ -49,12 +49,12 @@ export class BulkEditHandler extends CRUDHandler {
       }
     }
 
-    respond(this.res, { message: `Successfully updated ${this.resource}` });
+    respond(this.res, { message: `Successfully updated ${this.resource}` }, 200);
   }
 
   // eslint-disable-next-line no-unused-vars
   async editRecords(transactingModels, updatedRecords) {
-    throw new Error('Any EditHandler must implement editRecords()');
+    throw new Error('Any BulkEditHandler must implement editRecords()');
   }
 
   async updateRecords(transactingModels, updatedRecords) {
