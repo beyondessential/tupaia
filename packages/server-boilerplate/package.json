@@ -27,7 +27,6 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "@tupaia/access-policy": "3.0.0",
-    "@tupaia/api-client": "2.1.1",
     "@tupaia/auth": "1.0.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/utils": "1.0.0",
