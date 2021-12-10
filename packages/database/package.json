@@ -14,7 +14,7 @@
   "scripts": {
     "build": "run-p \"build:* {@}\" --",
     "build:src": "babel src --out-dir dist --source-maps --ignore \"**/migrations\",\"src/tests/**\" --config-file \"../../babel.config.json\"",
-    "build:types": "tsc; echo Done TODO fix type errors",
+    "build:types": "tsc",
     "dump-database": "./scripts/dumpDatabase.sh",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",

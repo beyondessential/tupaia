@@ -14,7 +14,7 @@
   "scripts": {
     "build": "rm -rf dist && run-p -c \"build:* {@}\" --",
     "build:src": "babel src -s --out-dir dist --source-maps --ignore \"**src/database/migrations\",\"src/tests/**\" --copy-files --no-copy-ignored --config-file \"../../babel.config.json\"",
-    "build:types": "tsc; echo Done TODO fix type errors",
+    "build:types": "tsc",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
     "prestart": "npm run -s build",
