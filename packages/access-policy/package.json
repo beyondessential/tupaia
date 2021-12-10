@@ -12,7 +12,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "run-p \"build:* {@}\" --",
+   "build": "rm -rf dist && run-p \"build:* {@}\" --",
     "build:src": "babel src --out-dir dist --source-maps --config-file \"../../babel.config.json\"",
     "build:types": "tsc",
     "lint": "eslint --ignore-path ../../.gitignore .",
