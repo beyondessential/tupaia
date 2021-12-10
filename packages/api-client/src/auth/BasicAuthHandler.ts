@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { AuthHandler } from './types';
+import { AuthHandler } from '../types';
 
 
 export class BasicAuthHandler implements AuthHandler {
