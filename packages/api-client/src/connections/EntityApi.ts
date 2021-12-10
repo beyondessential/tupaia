@@ -12,12 +12,9 @@ import type {
   ExtendedEntityFieldName,
   FlattenedEntity,
   EntityResponseObject,
-} from '@tupaia/entity-server/src/type-exports';
+} from '@tupaia/entity-server';
 
-import type {
-  FilterCriteria,
-  AdvancedFilterValue,
-} from '@tupaia/server-boilerplate/src/type-exports';
+import type { FilterCriteria, AdvancedFilterValue } from '@tupaia/server-boilerplate';
 
 import { BaseApi } from './BaseApi';
 
