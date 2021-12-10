@@ -12,6 +12,8 @@ import http from 'http';
 import { createApp } from './app';
 import winston from './log';
 
+export * from './type-exports';
+
 dotenv.config(); // Load the environment variables into process.env
 
 /**
