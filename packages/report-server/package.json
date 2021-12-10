@@ -35,6 +35,7 @@
     "@tupaia/database": "1.0.0",
     "@tupaia/expression-parser": "1.0.0",
     "@tupaia/server-boilerplate": "1.0.0",
+    "@tupaia/api-client": "2.1.1",
     "@tupaia/utils": "1.0.0",
     "api-error-handler": "^1.0.0",
     "body-parser": "^1.18.3",
