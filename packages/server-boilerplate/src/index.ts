@@ -5,7 +5,7 @@
  */
 
 export { ApiConnection, AuthHandler } from './connections';
-export { Route, TranslatableRoute } from './routes';
+export { Route, TranslatableRoute, ExpressRequest, ExpressResponse } from './routes';
 export { handleWith, handleError, useForwardUnhandledRequests } from './utils';
 export {
   ApiBuilder as MicroServiceApiBuilder,
@@ -20,11 +20,6 @@ export {
   attachSession,
 } from './orchestrator';
 export { QueryParameters, RequestBody } from './types';
-export {
-  Model,
-  DbFilter,
-  FilterCriteria,
-  Joined,
-  PartialOrArray,
-  QueryConjunctions,
-} from './models';
+export { Model, DbFilter, Joined, PartialOrArray, QueryConjunctions } from './models';
+
+export * from './type-exports';
