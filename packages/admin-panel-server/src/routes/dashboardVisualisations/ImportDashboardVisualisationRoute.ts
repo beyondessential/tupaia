@@ -19,7 +19,7 @@ import {
   draftDashboardItemValidator,
   legacyDashboardItemValidator,
   draftReportValidator,
-  legacyReportValidator,
+  legacyReportValidator, NewDashboard, UpsertDashboard, UpsertDashboardRelation, NewDashboardRelation,
 } from '../../viz-builder';
 import type {
   Dashboard,
@@ -130,8 +130,8 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
 
   private upsertDashboardsAndRelations = async (
     vizId: string,
-    dashboards: Dashboard[],
-    dashboardRelations: DashboardRelation[],
+    dashboards: UpsertDashboard[],
+    dashboardRelations: UpsertDashboardRelation[],
   ) => {
     await this.upsertDashboards(dashboards.map(d => snakeKeys(d)));
     const dashboardRecords = await this.meditrakConnection.fetchResources('dashboards', {
