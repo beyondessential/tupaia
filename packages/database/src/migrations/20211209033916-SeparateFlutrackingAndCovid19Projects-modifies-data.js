@@ -32,11 +32,13 @@ const FLUTRACKING_PROJECT = {
   code: PROJECT_CODE,
   description: 'Online health surveillance system used to detect the potential spread of influenza',
   sort_order: 1,
-  image_url: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/',
+  image_url:
+    'https://tupaia.s3.ap-southeast-2.amazonaws.com/thumbnails/uploads/flu_tracking_project_image.png',
   default_measure: 'AU_FLUTRACKING_LGA_Fever_And_Cough',
   dashboard_group_name: 'FluTracking',
   permission_groups: `{FluTracking Public}`,
-  logo_url: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/',
+  logo_url:
+    'https://tupaia.s3.ap-southeast-2.amazonaws.com/thumbnails/uploads/flu_tracking_logo.png',
 };
 
 exports.up = async function (db) {
