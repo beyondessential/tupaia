@@ -15,7 +15,7 @@ import {
   draftMapOverlayValidator,
   draftReportValidator,
   PreviewMode,
-  VIZ_TYPE_PARAM,
+  VIZ_TYPE_PARAM, VizType,
 } from '../viz-builder';
 import { MapOverlayVisualisationExtractor } from '../viz-builder/mapOverlayVisualisation/MapOverlayVisualisationExtractor';
 
@@ -23,11 +23,10 @@ export type FetchReportPreviewDataRequest = Request<
   Record<string, never>,
   Record<string, unknown>,
   {
-    previewConfig?: Record<string, unknown>;
+    previewConfig: Record<string, unknown>;
     testData?: unknown[];
-    vizType?: keyof typeof VIZ_TYPE_PARAM;
   },
-  { entityCode?: string; hierarchy?: string; previewMode?: PreviewMode }
+  { entityCode: string; hierarchy: string; previewMode?: PreviewMode, vizType: VizType; }
 >;
 
 export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataRequest> {
@@ -85,19 +84,19 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
 
     extractor.setReportValidatorContext({ testData });
 
-    return extractor.getReport(previewMode as PreviewMode).config;
+    return extractor.getReport(previewMode).config;
   };
 
-  private getVizExtractor = (vizType, previewConfig) => {
+  private getVizExtractor = (vizType: VizType, previewConfig: Record<string, unknown>) => {
     if (vizType === VIZ_TYPE_PARAM.DASHBOARD_ITEM) {
       return new DashboardVisualisationExtractor(
-        previewConfig as Record<string, unknown>,
+        previewConfig,
         draftDashboardItemValidator,
         draftReportValidator,
       );
     } else if (vizType === VIZ_TYPE_PARAM.MAP_OVERLAY) {
       return new MapOverlayVisualisationExtractor(
-        previewConfig as Record<string, unknown>,
+        previewConfig,
         draftMapOverlayValidator,
         draftReportValidator,
       );
