@@ -15,19 +15,27 @@ import { upload, verifyBESAdminAccess } from '../middleware';
 import {
   ExportDashboardVisualisationRequest,
   ExportDashboardVisualisationRoute,
+  ExportMapOverlayVisualisationRequest,
+  ExportMapOverlayVisualisationRoute,
   FetchDashboardVisualisationRequest,
   FetchDashboardVisualisationRoute,
   FetchHierarchyEntitiesRequest,
   FetchHierarchyEntitiesRoute,
+  FetchMapOverlayVisualisationRequest,
+  FetchMapOverlayVisualisationRoute,
   FetchReportPreviewDataRequest,
   FetchReportPreviewDataRoute,
   ImportDashboardVisualisationRequest,
   ImportDashboardVisualisationRoute,
   SaveDashboardVisualisationRequest,
   SaveDashboardVisualisationRoute,
+  SaveMapOverlayVisualisationRequest,
+  SaveMapOverlayVisualisationRoute,
   UploadTestDataRequest,
   UploadTestDataRoute,
   UserRoute,
+  ImportMapOverlayVisualisationRequest,
+  ImportMapOverlayVisualisationRoute,
 } from '../routes';
 
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
@@ -60,6 +68,16 @@ export function createApp() {
       verifyBESAdminAccess,
       handleWith(SaveDashboardVisualisationRoute),
     )
+    .post<SaveMapOverlayVisualisationRequest>(
+      '/v1/mapOverlayVisualisation',
+      verifyBESAdminAccess,
+      handleWith(SaveMapOverlayVisualisationRoute),
+    )
+    .put<SaveMapOverlayVisualisationRequest>(
+      '/v1/mapOverlayVisualisation/:mapOverlayVisualisationId',
+      verifyBESAdminAccess,
+      handleWith(SaveMapOverlayVisualisationRoute),
+    )
     .get<FetchDashboardVisualisationRequest>(
       '/v1/dashboardVisualisation/:dashboardVisualisationId',
       verifyBESAdminAccess,
@@ -70,10 +88,20 @@ export function createApp() {
       verifyBESAdminAccess,
       handleWith(ExportDashboardVisualisationRoute),
     )
+    .get(
+      '/v1/export/mapOverlayVisualisation/:mapOverlayVisualisationId',
+      verifyBESAdminAccess,
+      handleWith(ExportMapOverlayVisualisationRoute),
+    )
     .post<ExportDashboardVisualisationRequest>(
       '/v1/export/dashboardVisualisation',
       verifyBESAdminAccess,
       handleWith(ExportDashboardVisualisationRoute),
+    )
+    .post<ExportMapOverlayVisualisationRequest>(
+      '/v1/export/mapOverlayVisualisation',
+      verifyBESAdminAccess,
+      handleWith(ExportMapOverlayVisualisationRoute),
     )
     .post<ImportDashboardVisualisationRequest>(
       '/v1/import/dashboardVisualisations',
@@ -81,11 +109,22 @@ export function createApp() {
       upload.single('dashboardVisualisations'),
       handleWith(ImportDashboardVisualisationRoute),
     )
+    .post<ImportMapOverlayVisualisationRequest>(
+      '/v1/import/mapOverlayVisualisations',
+      verifyBESAdminAccess,
+      upload.single('mapOverlayVisualisations'),
+      handleWith(ImportMapOverlayVisualisationRoute),
+    )
     .post<UploadTestDataRequest>(
       '/v1/uploadTestData',
       verifyBESAdminAccess,
       upload.single('testData'),
       handleWith(UploadTestDataRoute),
+    )
+    .get<FetchMapOverlayVisualisationRequest>(
+      '/v1/mapOverlayVisualisation/:mapOverlayVisualisationId',
+      verifyBESAdminAccess,
+      handleWith(FetchMapOverlayVisualisationRoute),
     )
     .build();
 

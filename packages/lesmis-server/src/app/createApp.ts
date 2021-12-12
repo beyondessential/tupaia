@@ -17,6 +17,7 @@ import {
   RegisterRoute,
   ReportRoute,
   UserRoute,
+  VerifyEmailRoute,
   UpdateSurveyResponseRoute,
 } from '../routes';
 import { attachSession } from '../session';
@@ -41,6 +42,7 @@ export function createApp() {
     .get('/v1/map-overlays/:entityCode', handleWith(MapOverlaysRoute))
     .get('/v1/entity/:entityCode', handleWith(EntityRoute))
     .get('/v1/report/:entityCode/:reportCode', handleWith(ReportRoute))
+    .get('/v1/verify/:emailToken', handleWith(VerifyEmailRoute))
     .put('/v1/survey-response/:id', handleWith(UpdateSurveyResponseRoute))
     .post('/v1/register', handleWith(RegisterRoute))
     .post('/v1/report/:entityCode/:reportCode', handleWith(ReportRoute))

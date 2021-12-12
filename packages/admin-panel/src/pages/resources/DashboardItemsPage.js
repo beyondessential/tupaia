@@ -6,6 +6,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
+import { LightOutlinedButton } from '@tupaia/ui-components';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  &:focus,
+  &:hover,
+  &:visited,
+  &:link,
+  &:active {
+    text-decoration: none;
+  }
+`;
 
 export const DASHBOARD_ITEMS_ENDPOINT = 'dashboardItems';
 
@@ -42,6 +57,12 @@ const IMPORT_CONFIG = {
   },
 };
 
+const renderNewDashboardVizButton = () => (
+  <StyledLink to="/viz-builder/dashboard-item/new">
+    <LightOutlinedButton startIcon={<AddCircleIcon />}>New</LightOutlinedButton>
+  </StyledLink>
+);
+
 export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
   const extraEditFields = [
     // ID field for constructing viz-builder path only, not for showing or editing
@@ -57,7 +78,7 @@ export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
       editConfig: {
         type: 'link',
         linkOptions: {
-          path: '/viz-builder/:id',
+          path: '/viz-builder/dashboard-item/:id',
           parameters: { id: 'id' },
         },
         visibilityCriteria: {
@@ -106,6 +127,7 @@ export const DashboardItemsPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
       editConfig={{
         title: 'Edit Dashboard Item',
       }}
+      LinksComponent={renderNewDashboardVizButton}
       getHeaderEl={getHeaderEl}
       {...props}
     />

@@ -61,7 +61,11 @@ const processColumns = viewContent => {
 
   const configColumns = Object.keys(chartDataConfig).map(columnKey => {
     return {
-      Header: columnKey,
+      id: columnKey,
+      Header: props => {
+        const columnId = props.column.id;
+        return chartConfig[columnId]?.label || columnId;
+      },
       accessor: row => {
         const rowValue = row[columnKey];
         const columnConfig = chartConfig[columnKey];
