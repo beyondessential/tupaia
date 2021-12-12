@@ -31,7 +31,7 @@ const matchingFields = [
 
 const REFRESH_DEBOUNCE_TIME = 100; // short debounce time so tests run more quickly
 
-describe('AnalyticsRefresher', () => {
+describe.only('AnalyticsRefresher', () => {
   const models = getTestModels();
   const analyticsRefresher = new AnalyticsRefresher(models);
   analyticsRefresher.setDebounceTime(REFRESH_DEBOUNCE_TIME);
@@ -259,7 +259,7 @@ describe('AnalyticsRefresher', () => {
     // Update an answer, make sure analytic is updated
     await models.dataElement.update(
       {
-        id: 'dataSource001_test',
+        id: 'dataElement001_test',
       },
       { service_type: 'dhis' },
     );
