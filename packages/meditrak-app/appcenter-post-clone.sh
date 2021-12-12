@@ -15,7 +15,7 @@ env | grep "USER-DEFINED_.*" | awk -F "USER-DEFINED_" '{print $2}' > .env
 cd ../..
 
 # install root dependencies
-SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
+SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --ignore-engines
 
 # move to meditrak folder
 cd packages/meditrak-app

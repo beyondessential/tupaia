@@ -186,7 +186,7 @@ export const PreviewSection = () => {
               isNoData={!reportData.length}
               noDataMessage="No Data Found"
             >
-              <StyledTable columns={columns} data={data} />
+              <StyledTable columns={columns} data={data} rowLimit={100} />
             </FetchLoader>
           ) : (
             <IdleMessage />

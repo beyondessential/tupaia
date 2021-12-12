@@ -93,7 +93,7 @@ const getAxisWidth = (data, dataKeys, valueType) => {
 };
 
 const YAxis = ({ config = {}, viewContent, chartDataConfig, isExporting, isEnlarged }) => {
-  const fillColor = getContrastTextColor();
+  const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
 
   const {
     yAxisId = DEFAULT_Y_AXIS.id,
@@ -129,7 +129,7 @@ const YAxis = ({ config = {}, viewContent, chartDataConfig, isExporting, isEnlar
         )
       }
       interval={isExporting ? 0 : 'preserveStartEnd'}
-      stroke={isExporting ? DARK_BLUE : fillColor}
+      stroke={fillColor}
     />
   );
 };
