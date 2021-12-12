@@ -1,33 +1,16 @@
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ */
+
 import { respond, UnverifiedError, FormValidationError } from '@tupaia/utils';
-import { encryptPassword } from '@tupaia/auth';
-
-import { sendEmail } from '../utilities';
 import { allowNoPermissions } from '../permissions';
+import { sendEmailVerification, verifyEmailHelper } from './utilities/emailVerification';
 
-export const sendVerifyEmail = async (req, userId) => {
-  const { models } = req;
-  const user = await models.user.findById(userId);
-
-  sendEmailVerification(user);
-};
-
-const sendEmailVerification = async user => {
-  const verifyHash = encryptPassword(user.email + user.password_hash, user.password_salt);
-  const resetUrl = process.env.VERIFY_EMAIL_URL.replace('{token}', verifyHash);
-
-  const emailBody = `Thank you for registering with tupaia.org
-                    Please click on the following link to register your email address
-
-                    ${resetUrl}
-
-                    If you believe this email was sent to you in error, please contact us immediately at
-                    admin@tupaia.org.
-                    `;
-
-  sendEmail(user.email, 'Tupaia email verification', emailBody);
-};
-
-export async function verifyEmail(req, res) {
+/**
+ * Endpoint handler for verifying user email
+ */
+export const verifyEmail = async (req, res) => {
   const { models } = req;
   const { token } = req.body;
   const { UNVERIFIED, NEW_USER, VERIFIED } = models.user.emailVerifiedStatuses;
@@ -44,21 +27,14 @@ export async function verifyEmail(req, res) {
     await models.user.updateById(verifiedUser.id, verifiedUser);
 
     respond(res, { emailVerified: 'true' });
-  } else throw new UnverifiedError('Email address could not be verified');
-}
+  } else {
+    throw new UnverifiedError('Email address could not be verified');
+  }
+};
 
-async function verifyEmailHelper(models, searchCondition, token) {
-  const users = await models.user.find({
-    verified_email: searchCondition,
-  });
-
-  const verifiedUser = users.find(
-    x => encryptPassword(x.email + x.password_hash, x.password_salt) === token,
-  );
-
-  return verifiedUser;
-}
-
+/**
+ * Endpoint handler for when a user requests another verification email
+ */
 export const requestResendEmail = async (req, res) => {
   const { body, models } = req;
   const { emailAddress } = body;

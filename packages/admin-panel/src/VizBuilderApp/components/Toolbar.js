@@ -54,6 +54,8 @@ const ButtonContainer = styled(FlexSpaceBetween)`
 export const Toolbar = () => {
   const [{ project, visualisation }] = useVizConfig();
 
+  const permissionGroup = visualisation.permissionGroup ?? visualisation.mapOverlayPermissionGroup;
+
   return (
     <Wrapper>
       <Container maxWidth="xl">
@@ -61,7 +63,7 @@ export const Toolbar = () => {
           <DocumentIcon />
           <MuiBox ml={2}>
             <SubTitle variant="h4">
-              Project: {project} • {visualisation.permissionGroup}
+              Project: {project} • {permissionGroup}
             </SubTitle>
             <Title variant="h2">{visualisation.name}</Title>
           </MuiBox>

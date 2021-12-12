@@ -24,6 +24,7 @@ export const ResourcePage = ({
   expansionTabs,
   importConfig,
   ExportModalComponent,
+  LinksComponent,
   ConfirmDeleteModalComponent,
   onProcessDataForSave,
   baseFilter,
@@ -38,6 +39,7 @@ export const ResourcePage = ({
       importConfig={importConfig}
       createConfig={createConfig}
       ExportModalComponent={ExportModalComponent}
+      LinksComponent={LinksComponent}
     />,
     getHeaderEl,
   );
@@ -80,6 +82,7 @@ ResourcePage.propTypes = {
   ),
   importConfig: PropTypes.object,
   ExportModalComponent: PropTypes.elementType,
+  LinksComponent: PropTypes.elementType,
   title: PropTypes.string.isRequired,
   baseFilter: PropTypes.object,
   defaultSorting: PropTypes.array,
@@ -93,6 +96,7 @@ ResourcePage.defaultProps = {
   expansionTabs: null,
   importConfig: null,
   ExportModalComponent: null,
+  LinksComponent: null,
   onProcessDataForSave: null,
   baseFilter: {},
   defaultSorting: [],

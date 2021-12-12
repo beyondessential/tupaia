@@ -30,7 +30,7 @@ export const App = ({ user, isBESAdmin }) => {
         <LogoutPage />
       </Route>
       <PrivateRoute path="/">
-        <Navbar links={ROUTES} user={user} isBESAdmin={isBESAdmin} />
+        <Navbar links={ROUTES} user={user} />
         <div ref={headerEl} />
         <Switch>
           {[...ROUTES, ...PROFILE_ROUTES].map(route => (

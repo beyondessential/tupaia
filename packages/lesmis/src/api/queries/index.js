@@ -5,6 +5,7 @@
  */
 export * from './useDashboardData';
 export * from './useDashboardReportData';
+export * from './useEmailVerification';
 export * from './useEntitiesData';
 export * from './useEntityData';
 export * from './useMapOverlaysData';

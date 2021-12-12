@@ -5,8 +5,25 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { ResourcePage } from './ResourcePage';
 import { prettyArray } from '../../utilities';
+import { LightOutlinedButton } from '@tupaia/ui-components';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import { Link } from 'react-router-dom';
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  &:focus,
+  &:hover,
+  &:visited,
+  &:link,
+  &:active {
+    text-decoration: none;
+  }
+`;
+
+export const MAP_OVERLAYS_ENDPOINT = 'mapOverlays';
 
 const FIELDS = [
   {
@@ -37,7 +54,7 @@ const FIELDS = [
     width: 160,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
-      optionsEndpoint: 'mapOverlays',
+      optionsEndpoint: MAP_OVERLAYS_ENDPOINT,
       optionLabelKey: 'id',
       sourceKey: 'linked_measures',
       allowMultipleValues: true,
@@ -91,31 +108,95 @@ const FIELDS = [
   },
 ];
 
-const COLUMNS = [
-  ...FIELDS,
-  {
-    Header: 'Edit',
-    type: 'edit',
-    source: 'id',
-    actionConfig: {
-      editEndpoint: 'mapOverlays',
-      fields: [...FIELDS],
-    },
+const IMPORT_CONFIG = {
+  title: 'Import Map Overlay Visualisation',
+  subtitle: 'Please upload a .json file with the visualisation to be imported:',
+  actionConfig: {
+    importEndpoint: 'mapOverlayVisualisations',
   },
-];
+};
 
-export const MapOverlaysPage = ({ getHeaderEl }) => (
-  <ResourcePage
-    title="Map Overlays"
-    endpoint="mapOverlays"
-    columns={COLUMNS}
-    getHeaderEl={getHeaderEl}
-    editConfig={{
-      title: 'Edit Map Overlay',
-    }}
-  />
+const renderNewMapOverlayVizButton = () => (
+  <StyledLink to="/viz-builder/map-overlay/new">
+    <LightOutlinedButton startIcon={<AddCircleIcon />}>New</LightOutlinedButton>
+  </StyledLink>
 );
+
+export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin }) => {
+  const extraEditFields = [
+    // ID field for constructing viz-builder path only, not for showing or editing
+    {
+      Header: 'ID',
+      source: 'id',
+      show: false,
+    },
+    {
+      Header: 'Edit using Visualisation Builder',
+      type: 'link',
+      show: isBESAdmin,
+      editConfig: {
+        type: 'link',
+        linkOptions: {
+          path: '/viz-builder/map-overlay/:id',
+          parameters: { id: 'id' },
+        },
+        visibilityCriteria: {
+          legacy: false,
+        },
+      },
+    },
+  ];
+
+  const COLUMNS = [
+    ...FIELDS,
+    {
+      Header: 'Export',
+      source: 'id',
+      type: 'export',
+      actionConfig: {
+        exportEndpoint: 'mapOverlayVisualisation',
+        fileName: '{code}',
+      },
+    },
+    {
+      Header: 'Edit',
+      type: 'edit',
+      source: 'id',
+      actionConfig: {
+        editEndpoint: MAP_OVERLAYS_ENDPOINT,
+        fields: [...FIELDS, ...extraEditFields],
+      },
+    },
+    {
+      Header: 'Delete',
+      source: 'id',
+      type: 'delete',
+      actionConfig: {
+        endpoint: MAP_OVERLAYS_ENDPOINT,
+      },
+    },
+  ];
+
+  return (
+    <ResourcePage
+      title="Map Overlays"
+      endpoint="mapOverlays"
+      columns={COLUMNS}
+      importConfig={IMPORT_CONFIG}
+      LinksComponent={renderNewMapOverlayVizButton}
+      getHeaderEl={getHeaderEl}
+      editConfig={{
+        title: 'Edit Map Overlay',
+      }}
+    />
+  );
+};
 
 MapOverlaysPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
+  isBESAdmin: PropTypes.bool,
+};
+
+MapOverlaysPage.defaultProps = {
+  isBESAdmin: false,
 };
