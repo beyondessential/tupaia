@@ -17,6 +17,7 @@ export const assertCanAddDataElementInGroup = async (
 ) => {
   const { service_type: newServiceType, config: newConfig = {} } = updatedFields;
 
+  const dataElement = await models.dataElement.findOne({ code: dataElementCode });
   const dataGroups = await models.dataGroup.getDataGroupsThatIncludeElement({
     code: dataElementCode,
   });
@@ -24,7 +25,11 @@ export const assertCanAddDataElementInGroup = async (
   otherDataGroups.forEach(otherDataGroup => {
     const { service_type: serviceType, config } = otherDataGroup;
 
-    if (areBothDefinedAndDifferent(serviceType, newServiceType)) {
+    // Tupaia data elements can be in either dhis or tupaia data groups
+    if (
+      dataElement.service_type !== 'tupaia' &&
+      areBothDefinedAndDifferent(serviceType, newServiceType)
+    ) {
       throw new Error(
         constructErrorMessage({
           property: 'service type',

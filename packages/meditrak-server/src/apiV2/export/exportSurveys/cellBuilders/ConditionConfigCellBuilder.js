@@ -98,22 +98,28 @@ export class ConditionConfigCellBuilder extends KeyValueCellBuilder {
   // We have to override the base class' build method because
   // 'conditions' and 'defaultValues' have to be built together
   async build(jsonStringOrObject) {
-    if (!jsonStringOrObject) {
-      return '';
+    try {
+      if (!jsonStringOrObject) {
+        return '';
+      }
+      const fullObject =
+        typeof jsonStringOrObject === 'string'
+          ? JSON.parse(jsonStringOrObject)
+          : jsonStringOrObject;
+      const config = this.extractRelevantObject(fullObject);
+      const { conditions } = config;
+
+      const translatedConfig = {
+        conditions: await this.getExcelConditionConfig(conditions),
+        defaultValues: await this.getExcelDefaultValues(conditions),
+      };
+
+      return Object.entries(translatedConfig)
+        .filter(([_, value]) => value !== undefined)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join('\r\n');
+    } catch {
+      return `Error building config for export, prebuilt config was: ${jsonStringOrObject}`;
     }
-    const fullObject =
-      typeof jsonStringOrObject === 'string' ? JSON.parse(jsonStringOrObject) : jsonStringOrObject;
-    const config = this.extractRelevantObject(fullObject) || {};
-    const { conditions } = config;
-
-    const translatedConfig = {
-      conditions: await this.getExcelConditionConfig(conditions),
-      defaultValues: await this.getExcelDefaultValues(conditions),
-    };
-
-    return Object.entries(translatedConfig)
-      .filter(([_, value]) => value !== undefined)
-      .map(([key, value]) => `${key}: ${value}`)
-      .join('\r\n');
   }
 }

@@ -28,4 +28,8 @@ export class MeditrakConnection extends SessionHandlingApiConnection {
   registerUser(userData: RequestBody) {
     return this.post('user', {}, userData);
   }
+
+  async verifyEmail(token: string) {
+    return this.post('auth/verifyEmail', {}, { token });
+  }
 }

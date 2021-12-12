@@ -3,11 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-/**
- * Wrapper for recharts XAxis that dynamically calculates heights based
- * on label heights and supports vertical labels.
- */
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 const truncate = (str, num, ellipsis = false) => {
@@ -17,32 +13,19 @@ const truncate = (str, num, ellipsis = false) => {
   return ellipsis ? `${str.slice(0, num)}...` : str.slice(0, num);
 };
 
-export const VerticalTick = ({ x, y, payload, onHeight }) => {
-  useEffect(() => {
-    onHeight(() => 90); // set a fixed height for consistent exporting
-  }, [onHeight]);
-
+export const VerticalTick = ({ x, y, payload }) => {
   return (
-    <foreignObject x={x} y={y} style={{ overflow: 'visible' }}>
-      <div
-        xmlns="http://www.w3.org/1999/xhtml"
-        style={{
-          position: 'relative',
-          wordBreak: 'break-all',
-          textAlign: 'right',
-          left: '-6px',
-          top: '135px',
-          width: '135px',
-          color: 'black',
-          transform: 'rotate(-90deg)',
-          transformOrigin: '0 0',
-          fontSize: '12px',
-          lineHeight: '1',
-        }}
+    <g transform={`translate(${x - 5},${y + 3})`}>
+      <text
+        fontSize="13px"
+        transform="rotate(305)"
+        textAnchor="end"
+        fill="#333"
+        className="recharts-text recharts-cartesian-axis-tick-value"
       >
-        {truncate(payload.value, 45, true)}
-      </div>
-    </foreignObject>
+        {truncate(payload.value, 25, true)}
+      </text>
+    </g>
   );
 };
 
@@ -50,9 +33,4 @@ VerticalTick.propTypes = {
   x: PropTypes.number.isRequired,
   y: PropTypes.number.isRequired,
   payload: PropTypes.object.isRequired,
-  onHeight: PropTypes.func,
-};
-
-VerticalTick.defaultProps = {
-  onHeight: () => {},
 };
