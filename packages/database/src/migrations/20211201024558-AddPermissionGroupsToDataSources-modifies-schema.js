@@ -1,7 +1,7 @@
 'use strict';
 
 import { ExpressionParser } from '@tupaia/expression-parser';
-import { arrayToDbString, codeToId, updateValues } from '../utilities';
+import { arrayToDbString, nameToId, updateValues } from '../utilities';
 
 var dbm;
 var type;
@@ -39,19 +39,19 @@ const getAllDataElements = async (db, parser, indicator) => {
 exports.up = async function (db) {
   // Add column
   await db.runSql(`
-    ALTER TABLE "data_element"
+    ALTER TABLE data_element
       ADD COLUMN permission_groups TEXT[] NOT NULL DEFAULT '{}'
   `);
 
   // Fill out permissions based on the surveys a data element is connected to (via questions)
   await db.runSql(`
-    UPDATE "data_element"
+    UPDATE data_element
       SET permission_groups = sub_query.permission_groups
       FROM (
           SELECT data_element_id, array_agg(survey.permission_group_id) as permission_groups
           FROM data_element_data_group
           INNER JOIN survey
-            ON survey.event_id = data_element_data_group.event_id
+            ON survey.data_group_id = data_element_data_group.data_group_id
           GROUP BY data_element_id
         ) AS sub_query
       WHERE data_element.id = sub_query.data_element_id
@@ -61,7 +61,7 @@ exports.up = async function (db) {
   const parser = new ExpressionParser();
   const indicators = (
     await db.runSql(`
-    SELECT * from "data_element"
+    SELECT * from data_element
       INNER JOIN indicator
       ON data_element.code = indicator.code
     WHERE data_element.service_type = 'indicator'
@@ -91,20 +91,20 @@ exports.up = async function (db) {
     }
   }
 
-  // Update to wildcard if the value is in any sort of public group
+  // Update to wildcard if the value is in public permission group
   // or if we haven't found any permissions so far
-  const publicPermissionId = await codeToId(db, 'permission_group', 'Public');
+  const publicPermissionId = await nameToId(db, 'permission_group', 'Public');
   await db.runSql(`
-    UPDATE "data_element"
+    UPDATE data_element
       SET permission_groups = '{"*"}'
-      WHERE ${publicPermissionId} = ANY(permission_groups)
+      WHERE '${publicPermissionId}' = ANY(permission_groups)
       OR permission_groups = '{}'
   `);
 };
 
 exports.down = async function (db) {
   await db.runSql(`
-    ALTER TABLE "data_element"
+    ALTER TABLE data_element
       DROP COLUMN permission_groups
   `);
 };
