@@ -31,7 +31,7 @@ const matchingFields = [
 
 const REFRESH_DEBOUNCE_TIME = 100; // short debounce time so tests run more quickly
 
-describe.only('AnalyticsRefresher', () => {
+describe('AnalyticsRefresher', () => {
   const models = getTestModels();
   const analyticsRefresher = new AnalyticsRefresher(models);
   analyticsRefresher.setDebounceTime(REFRESH_DEBOUNCE_TIME);
