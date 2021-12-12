@@ -19,3 +19,4 @@ export { DatabaseChangeChannel } from './DatabaseChangeChannel';
 export { DatabaseModel } from './DatabaseModel';
 export { DatabaseType } from './DatabaseType';
 export * from './testUtilities';
+export { getConnectionConfig } from  './getConnectionConfig';
