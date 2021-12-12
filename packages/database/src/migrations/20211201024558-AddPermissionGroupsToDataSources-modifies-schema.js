@@ -1,7 +1,7 @@
 'use strict';
 
 import { ExpressionParser } from '@tupaia/expression-parser';
-import { arrayToDbString, updateValues } from '../utilities';
+import { arrayToDbString, codeToId, updateValues } from '../utilities';
 
 var dbm;
 var type;
@@ -39,13 +39,13 @@ const getAllDataElements = async (db, parser, indicator) => {
 exports.up = async function (db) {
   // Add column
   await db.runSql(`
-    ALTER TABLE "data_source"
+    ALTER TABLE "data_element"
       ADD COLUMN permission_groups TEXT[] NOT NULL DEFAULT '{}'
   `);
 
   // Fill out permissions based on the surveys a data element is connected to (via questions)
   await db.runSql(`
-    UPDATE "data_source"
+    UPDATE "data_element"
       SET permission_groups = sub_query.permission_groups
       FROM (
           SELECT data_element_id, array_agg(survey.permission_group_id) as permission_groups
@@ -53,28 +53,30 @@ exports.up = async function (db) {
           INNER JOIN survey
             ON survey.event_id = data_element_data_group.event_id
           GROUP BY data_element_id
-        ) as sub_query
-      where data_source.id = sub_query.data_element_id
+        ) AS sub_query
+      WHERE data_element.id = sub_query.data_element_id
   `);
 
   // For indicators, process with the expression parser and use the same permissions as the data elements
   const parser = new ExpressionParser();
   const indicators = (
     await db.runSql(`
-    SELECT * from "data_source"
+    SELECT * from "data_element"
       INNER JOIN indicator
-      ON data_source.code = indicator.code
-    WHERE data_source.service_type = 'indicator'
+      ON data_element.code = indicator.code
+    WHERE data_element.service_type = 'indicator'
   `)
   ).rows;
 
   for (const indicator of indicators) {
     const variables = await getAllDataElements(db, parser, indicator);
-    if (variables.length <= 0) { continue; }
+    if (variables.length <= 0) {
+      continue;
+    }
     const permissions = (
       await db.runSql(`
         SELECT array_agg(distinct(permissions)) AS permission_groups
-          FROM data_source, unnest(permission_groups) AS permissions
+          FROM data_element, unnest(permission_groups) AS permissions
         WHERE code IN (${arrayToDbString(variables)})
       `)
     ).rows[0];
@@ -82,17 +84,27 @@ exports.up = async function (db) {
     if (permissions.permission_groups) {
       await updateValues(
         db,
-        'data_source',
+        'data_element',
         { permission_groups: permissions.permission_groups || [] },
         { code: indicator.code },
       );
     }
   }
+
+  // Update to wildcard if the value is in any sort of public group
+  // or if we haven't found any permissions so far
+  const publicPermissionId = await codeToId(db, 'permission_group', 'Public');
+  await db.runSql(`
+    UPDATE "data_element"
+      SET permission_groups = '{"*"}'
+      WHERE ${publicPermissionId} = ANY(permission_groups)
+      OR permission_groups = '{}'
+  `);
 };
 
 exports.down = async function (db) {
   await db.runSql(`
-    ALTER TABLE "data_source"
+    ALTER TABLE "data_element"
       DROP COLUMN permission_groups
   `);
 };
