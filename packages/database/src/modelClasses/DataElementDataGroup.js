@@ -10,19 +10,15 @@ import { TYPES } from '../types';
 class DataElementDataGroupType extends DatabaseType {
   static databaseType = TYPES.DATA_ELEMENT_DATA_GROUP;
 
-  get dataSourceTypes() {
-    return this.otherModels.dataSource.getTypes();
-  }
-
   async dataElement() {
-    return this.otherModels.dataSource.findOne({
+    return this.otherModels.dataElement.findOne({
       id: this.data_element_id,
     });
   }
 
   async dataGroup() {
-    return this.otherModels.event.findOne({
-      id: this.event_id,
+    return this.otherModels.dataGroup.findOne({
+      id: this.data_group_id,
     });
   }
 }

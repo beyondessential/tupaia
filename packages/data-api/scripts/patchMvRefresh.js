@@ -6,6 +6,7 @@
 import DBMigrate from 'db-migrate';
 import * as dotenv from 'dotenv';
 import { requireEnv, getEnvVarOrDefault } from '@tupaia/utils';
+import { getConnectionConfig } from '@tupaia/database';
 
 dotenv.config(); // Load the environment variables into process.env
 
@@ -22,19 +23,8 @@ const migrationInstance = DBMigrate.getInstance(
       defaultEnv: 'tupaia',
       tupaia: {
         driver: 'pg',
-        host: requireEnv('DB_URL'),
-        port: getEnvVarOrDefault('DB_PORT', 5432),
-        user: requireEnv('DB_MV_USER'),
-        password: requireEnv('DB_MV_PASSWORD'),
-        database: requireEnv('DB_NAME'),
         schema: requireEnv('DB_MV_USER'),
-        ssl:
-          process.env.DB_ENABLE_SSL === 'true'
-            ? {
-                // Test server cannot turn on ssl, so sets the env to disable it
-                rejectUnauthorized: false,
-              }
-            : null,
+        ...getConnectionConfig(),
       },
     },
   },

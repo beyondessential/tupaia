@@ -42,12 +42,12 @@ export const createServiceStub = serviceData => {
   return createJestMockInstance('@tupaia/data-broker/src/services/Service', 'Service', { pull });
 };
 
-export const createModelsStub = (dataSources, events) => ({
-  dataSource: {
-    find: spec => dataSources.filter(({ code }) => spec.code.includes(code)),
-    getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
+export const createModelsStub = (dataElements, dataGroups) => ({
+  dataElement: {
+    find: spec => dataElements.filter(({ code }) => spec.code.includes(code)),
+    getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup', SYNC_GROUP: 'syncGroup' }),
   },
-  event: {
-    find: spec => events.filter(({ code }) => spec.code.includes(code)),
+  dataGroup: {
+    find: spec => dataGroups.filter(({ code }) => spec.code.includes(code)),
   },
 });

@@ -5,24 +5,24 @@
 
 import { expect } from 'chai';
 
-import { EventModel, EventType } from '../../modelClasses/Event';
+import { DataGroupModel, DataGroupType } from '../../modelClasses/DataGroup';
 
-describe('Event', () => {
+describe('DataGroup', () => {
   describe('sanitizeConfig()', () => {
     const database = {
       fetchSchemaForTable: () => {},
     };
 
-    const createEvent = ({ serviceType = 'tupaia', config }) =>
-      new EventType(new EventModel(database), {
+    const createDataGroup = ({ serviceType = 'tupaia', config }) =>
+      new DataGroupType(new DataGroupModel(database), {
         service_type: serviceType,
         config,
       });
 
     const assertConfigIsSanitized = ({ serviceType }, config, expectedConfig) => {
-      const event = createEvent({ serviceType, config });
-      event.sanitizeConfig();
-      expect(event.config).to.deep.equal(expectedConfig);
+      const dataGroup = createDataGroup({ serviceType, config });
+      dataGroup.sanitizeConfig();
+      expect(dataGroup.config).to.deep.equal(expectedConfig);
     };
 
     it('dhis service', () => {

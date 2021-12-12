@@ -7,7 +7,6 @@ import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-// TODO: Move this out to something shared
 const SERVICE_TYPES = {
   DHIS: 'dhis',
   TUPAIA: 'tupaia',
@@ -22,8 +21,8 @@ const CONFIG_SCHEMA_BY_SERVICE = {
   [SERVICE_TYPES.INDICATOR]: {},
 };
 
-export class EventType extends DatabaseType {
-  static databaseType = TYPES.EVENT;
+export class DataGroupType extends DatabaseType {
+  static databaseType = TYPES.DATA_GROUP;
 
   sanitizeConfig() {
     const configSchema = CONFIG_SCHEMA_BY_SERVICE[this.service_type];
@@ -54,35 +53,35 @@ export class EventType extends DatabaseType {
   attachDataElement = async dataElementId => {
     await this.otherModels.dataElementDataGroup.findOrCreate({
       data_element_id: dataElementId,
-      event_id: this.id,
+      data_group_id: this.id,
     });
   };
 }
 
-export class EventModel extends MaterializedViewLogDatabaseModel {
+export class DataGroupModel extends MaterializedViewLogDatabaseModel {
   get DatabaseTypeClass() {
-    return EventType;
+    return DataGroupType;
   }
 
-  async getDataElementsInEvent(eventCode) {
-    const event = await this.findOne({
-      code: eventCode,
+  async getDataElementsInDataGroup(dataGroupCode) {
+    const dataGroup = await this.findOne({
+      code: dataGroupCode,
     });
 
     // if the data group is not a defined data source, default to an empty array of elements
-    if (!event) return [];
+    if (!dataGroup) return [];
 
     const dataElements = await this.otherModels.dataElementDataGroup.find({
-      event_id: event.id,
+      data_group_id: dataGroup.id,
     });
 
-    return this.otherModels.dataSource.find({
+    return this.otherModels.dataElement.find({
       id: dataElements.map(({ data_element_id: dataElementId }) => dataElementId),
     });
   }
 
-  getEventsThatIncludeElement = async elementConditions => {
-    const dataElement = await this.otherModels.dataSource.findOne({ ...elementConditions });
+  getDataGroupsThatIncludeElement = async elementConditions => {
+    const dataElement = await this.otherModels.dataElement.findOne({ ...elementConditions });
     if (!dataElement) {
       return [];
     }
@@ -93,7 +92,7 @@ export class EventModel extends MaterializedViewLogDatabaseModel {
       },
       {
         joinWith: TYPES.DATA_ELEMENT_DATA_GROUP,
-        joinCondition: ['event.id', 'data_element_data_group.event_id'],
+        joinCondition: ['data_group.id', 'data_element_data_group.data_group_id'],
       },
     );
   };

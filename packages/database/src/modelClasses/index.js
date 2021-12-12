@@ -14,14 +14,14 @@ import { DashboardModel } from './Dashboard';
 import { DashboardItemModel } from './DashboardItem';
 import { DashboardRelationModel } from './DashboardRelation';
 import { DataElementDataGroupModel } from './DataElementDataGroup';
-import { DataSourceModel } from './DataSource';
+import { DataElementModel } from './DataElement';
+import { DataGroupModel } from './DataGroup';
 import { DataServiceSyncGroupModel } from './DataServiceSyncGroup';
 import { DisasterModel } from './Disaster';
 import { DisasterEventModel } from './DisasterEvent';
 import { EntityModel } from './Entity';
 import { EntityHierarchyModel } from './EntityHierarchy';
 import { EntityRelationModel } from './EntityRelation';
-import { EventModel } from './Event';
 import { FacilityModel } from './Facility';
 import { GeographicalAreaModel } from './GeographicalArea';
 import { IndicatorModel } from './Indicator';
@@ -61,7 +61,8 @@ export const modelClasses = {
   DashboardItem: DashboardItemModel,
   DashboardRelation: DashboardRelationModel,
   DataElementDataGroup: DataElementDataGroupModel,
-  DataSource: DataSourceModel,
+  DataElement: DataElementModel,
+  DataGroup: DataGroupModel,
   DataServiceEntity: DataServiceEntityModel,
   DataServiceSyncGroup: DataServiceSyncGroupModel,
   Disaster: DisasterModel,
@@ -69,7 +70,6 @@ export const modelClasses = {
   Entity: EntityModel,
   EntityHierarchy: EntityHierarchyModel,
   EntityRelation: EntityRelationModel,
-  Event: EventModel,
   Facility: FacilityModel,
   GeographicalArea: GeographicalAreaModel,
   Indicator: IndicatorModel,
@@ -104,11 +104,11 @@ export {
 } from './AncestorDescendantRelation';
 export { CommentModel } from './Comment';
 export { CountryModel } from './Country';
-export { DataSourceModel, DataSourceType } from './DataSource';
+export { DataElementModel, DataElementType } from './DataElement';
+export { DataGroupModel, DataGroupType } from './DataGroup';
 export { EntityModel, EntityType } from './Entity';
 export { EntityHierarchyModel, EntityHierarchyType } from './EntityHierarchy';
 export { EntityRelationModel } from './EntityRelation';
-export { EventModel, EventType } from './Event';
 export { FacilityModel } from './Facility';
 export { GeographicalAreaModel } from './GeographicalArea';
 export { MeditrakDeviceModel } from './MeditrakDevice';

@@ -136,14 +136,14 @@ export class EventBuilder {
 
     const questions = await this.models.question.find({ id: questionIds });
 
-    const dataSourceIds = questions.map(question => question.data_source_id);
+    const dataElementIds = questions.map(question => question.data_element_id);
 
-    const dataSources = await this.models.dataSource.find({ id: dataSourceIds });
+    const dataElements = await this.models.dataElement.find({ id: dataElementIds });
 
     const serviceTypes = {};
 
-    for (const dataSource of dataSources) {
-      serviceTypes[dataSource.service_type] = true;
+    for (const dataElement of dataElements) {
+      serviceTypes[dataElement.service_type] = true;
     }
 
     if (Object.keys(serviceTypes).length > 1) {

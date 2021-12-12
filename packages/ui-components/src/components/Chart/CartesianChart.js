@@ -83,6 +83,25 @@ const getLegendAlignment = (legendPosition, isExporting) => {
   return { verticalAlign: 'top', align: 'left' };
 };
 
+const getHeight = (isExporting, isEnlarged, hasLegend) => {
+  if (isExporting) {
+    return 500;
+  }
+  return isEnlarged && hasLegend && isMobile() ? 320 : undefined;
+};
+
+const getMargin = (isExporting, isEnlarged) => {
+  if (isExporting) {
+    return { left: 20, right: 20, top: 20, bottom: 60 };
+  }
+
+  if (isEnlarged) {
+    return { left: 0, right: 0, top: 0, bottom: 20 };
+  }
+
+  return { left: 0, right: 0, top: 0, bottom: 0 };
+};
+
 /**
  * Cartesian Chart types using recharts
  * @see https://recharts.org
@@ -160,7 +179,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
     Object.keys(chartConfig).length > 0 ? chartConfig : { [DEFAULT_DATA_KEY]: {} };
   const hasLegend = hasDataSeries || renderLegendForOneItem;
   const aspect = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
-  const height = isExporting || (isEnlarged && hasLegend && isMobile()) ? 320 : undefined;
+  const height = getHeight(isExporting, isEnlarged, hasLegend);
 
   /**
    * Unfortunately, recharts does not work with wrapped components called as jsx for some reason,
@@ -170,11 +189,8 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
     <ResponsiveContainer width="100%" height={height} aspect={aspect}>
       <ChartContainer
         data={filterDisabledData(data)}
-        margin={
-          isExporting
-            ? { left: 20, right: 20, top: 20, bottom: 20 }
-            : { left: 0, right: 0, top: 0, bottom: 20 }
-        }
+        margin={getMargin(isExporting, isEnlarged)}
+        reverseStackOrder={isExporting === true}
       >
         {referenceAreas && referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />)}
         {XAxisComponent({ isEnlarged, isExporting, viewContent })}
@@ -220,6 +236,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
               isEnlarged,
               yAxisId,
               data,
+              exportWithLabels: presentationOptions?.exportWithLabels,
             });
           })}
         {ReferenceLines({ viewContent, isExporting, isEnlarged })}

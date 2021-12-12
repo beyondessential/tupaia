@@ -17,20 +17,25 @@ export const assertCanAddDataElementInGroup = async (
 ) => {
   const { service_type: newServiceType, config: newConfig = {} } = updatedFields;
 
-  const events = await models.event.getEventsThatIncludeElement({
+  const dataElement = await models.dataElement.findOne({ code: dataElementCode });
+  const dataGroups = await models.dataGroup.getDataGroupsThatIncludeElement({
     code: dataElementCode,
   });
-  const otherEvents = events.filter(({ code }) => code !== dataGroupCode);
-  otherEvents.forEach(otherEvent => {
-    const { service_type: serviceType, config } = otherEvent;
+  const otherDataGroups = dataGroups.filter(({ code }) => code !== dataGroupCode);
+  otherDataGroups.forEach(otherDataGroup => {
+    const { service_type: serviceType, config } = otherDataGroup;
 
-    if (areBothDefinedAndDifferent(serviceType, newServiceType)) {
+    // Tupaia data elements can be in either dhis or tupaia data groups
+    if (
+      dataElement.service_type !== 'tupaia' &&
+      areBothDefinedAndDifferent(serviceType, newServiceType)
+    ) {
       throw new Error(
         constructErrorMessage({
           property: 'service type',
           value: newServiceType,
           dataElementCode,
-          otherGroupCode: otherEvent.code,
+          otherGroupCode: otherDataGroup.code,
         }),
       );
     }
@@ -41,7 +46,7 @@ export const assertCanAddDataElementInGroup = async (
           property: 'DHIS server',
           value: `${config.isDataRegional ? '' : 'non '}regional`,
           dataElementCode,
-          otherGroupCode: otherEvent.code,
+          otherGroupCode: otherDataGroup.code,
         }),
       );
     }

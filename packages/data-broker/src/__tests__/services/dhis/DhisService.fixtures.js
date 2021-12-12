@@ -16,7 +16,7 @@ export const DATA_SOURCES = {
   }),
 };
 
-export const EVENTS = {
+export const DATA_GROUPS = {
   POP01_GROUP: createDataSource({
     code: 'POP01', // intentionally the same as `POP01` data element, as their type should differentiate them
   }),

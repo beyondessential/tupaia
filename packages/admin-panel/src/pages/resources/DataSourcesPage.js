@@ -39,7 +39,7 @@ const getButtonsConfig = fields => [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'dataSources',
+      editEndpoint: 'dataElements',
       fields,
     },
   },
@@ -48,7 +48,7 @@ const getButtonsConfig = fields => [
     source: 'id',
     type: 'delete',
     actionConfig: {
-      endpoint: 'dataSources',
+      endpoint: 'dataElements',
     },
   },
 ];
@@ -114,13 +114,13 @@ const DATA_GROUP_FIELDS = [
 export const DataGroupsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Data Groups"
-    endpoint="events"
+    endpoint="dataGroups"
     reduxId="dataGroups"
     columns={[...DATA_GROUP_FIELDS, ...getButtonsConfig(DATA_GROUP_FIELDS)]}
     expansionTabs={[
       {
         title: 'Data Elements',
-        endpoint: 'events/{id}/dataSources',
+        endpoint: 'dataGroups/{id}/dataElements',
         columns: [...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS)],
       },
     ]}
@@ -128,7 +128,7 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
     createConfig={{
       title: 'New Data Group',
       actionConfig: {
-        editEndpoint: 'dataSources',
+        editEndpoint: 'dataElements',
         fields: [...DATA_GROUP_FIELDS],
       },
     }}
@@ -143,14 +143,14 @@ DataGroupsPage.propTypes = {
 export const DataElementsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Data Elements"
-    endpoint="dataSources"
+    endpoint="dataElements"
     reduxId="dataElements"
     columns={[...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS)]}
     editConfig={{ title: 'Edit Data Source' }}
     createConfig={{
       title: 'New Data Element',
       actionConfig: {
-        editEndpoint: 'dataSources',
+        editEndpoint: 'dataElements',
         fields: [...DATA_ELEMENT_FIELDS],
       },
     }}

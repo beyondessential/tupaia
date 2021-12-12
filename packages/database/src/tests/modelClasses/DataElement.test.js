@@ -5,37 +5,37 @@
 
 import { expect } from 'chai';
 
-import { DataSourceModel, DataSourceType } from '../../modelClasses/DataSource';
+import { DataElementModel, DataElementType } from '../../modelClasses/DataElement';
 
-describe('DataSource', () => {
+describe('DataElement', () => {
   describe('sanitizeConfig()', () => {
     const database = {
       fetchSchemaForTable: () => {},
     };
 
-    const createDataSource = ({ serviceType = 'tupaia', config }) =>
-      new DataSourceType(new DataSourceModel(database), {
+    const createDataElement = ({ serviceType = 'tupaia', config }) =>
+      new DataElementType(new DataElementModel(database), {
         service_type: serviceType,
         config,
       });
 
     const assertConfigIsSanitized = ({ serviceType }, config, expectedConfig) => {
-      const dataSource = createDataSource({ serviceType, config });
-      dataSource.sanitizeConfig();
-      expect(dataSource.config).to.deep.equal(expectedConfig);
+      const dataElement = createDataElement({ serviceType, config });
+      dataElement.sanitizeConfig();
+      expect(dataElement.config).to.deep.equal(expectedConfig);
     };
 
     it('empty config', () => {
       [undefined, null, {}].forEach(emptyConfig => {
-        const dataSource = createDataSource({ config: emptyConfig });
-        dataSource.sanitizeConfig();
-        expect(dataSource.config).be.an('object');
+        const dataElement = createDataElement({ config: emptyConfig });
+        dataElement.sanitizeConfig();
+        expect(dataElement.config).be.an('object');
       });
     });
 
     it('unknown service', () => {
-      const dataSource = createDataSource({ serviceType: 'random', config: {} });
-      expect(() => dataSource.sanitizeConfig()).to.throw(/config schema .*service/);
+      const dataElement = createDataElement({ serviceType: 'random', config: {} });
+      expect(() => dataElement.sanitizeConfig()).to.throw(/config schema .*service/);
     });
 
     describe('dhis service', () => {
