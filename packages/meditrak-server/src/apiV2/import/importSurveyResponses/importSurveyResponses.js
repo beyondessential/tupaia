@@ -4,20 +4,24 @@
  */
 
 import xlsx from 'xlsx';
+import keyBy from 'lodash.keyby';
 import moment from 'moment';
 import { generateId } from '@tupaia/database';
 import {
   constructIsOneOf,
   constructRecordExistsWithId,
   DatabaseError,
+  getDateRangeForGranularity,
   hasContent,
   ImportValidationError,
   ObjectValidator,
   respond,
   takesIdForm,
   UploadError,
+  reduceToDictionary,
   stripTimezoneFromDate,
 } from '@tupaia/utils';
+
 import { getArrayQueryParameter, extractTabNameFromQuery } from '../../utilities';
 import { ANSWER_TYPES } from '../../../database/models/Answer';
 import { constructAnswerValidator } from '../../utilities/constructAnswerValidator';
@@ -72,7 +76,6 @@ export async function importSurveyResponses(req, res) {
     if (!timeZone) {
       throw new Error(`Timezone is required`);
     }
-    const config = { timeZone, userId, surveyNames };
     const updatePersistor = new SurveyResponseUpdatePersistor(models);
     const workbook = xlsx.readFile(req.file.path);
     // Go through each sheet in the workbook and process the updated survey responses
@@ -81,6 +84,9 @@ export async function importSurveyResponses(req, res) {
       workbook.Sheets,
       surveyNames,
     );
+    const entityCodes = Object.values(entitiesBySurveyName).flat();
+    const entities = await models.entity.find({ code: entityCodes });
+    const entityCodeToId = reduceToDictionary(entities, 'code', 'id');
 
     const importSurveyResponsePermissionsChecker = async accessPolicy => {
       await assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyName);
@@ -94,15 +100,56 @@ export async function importSurveyResponses(req, res) {
       const [tabName, sheet] = surveySheets;
       const deletedResponseIds = new Set();
       const questionIds = [];
+      let survey;
 
       // extract response ids and set up update batcher
       const { maxColumnIndex, maxRowIndex } = getMaxRowColumnIndex(sheet);
       const minSurveyResponseIndex = INFO_COLUMN_HEADERS.length;
       const surveyResponseIds = [];
+      const isGeneratedIdByColumnIndex = [];
+      const existingResponseDataByColumnIndex = [];
+
+      const getExistingResponseData = async columnIndex => {
+        if (!(columnIndex in existingResponseDataByColumnIndex)) {
+          const criteria = {
+            entityId: entityCodeToId[getInfoForColumn(sheet, columnIndex, 'Entity Code')],
+            date: getDateStringForColumn(sheet, columnIndex),
+          };
+          const responseData = await findExistingResponseData(models, survey, criteria);
+          existingResponseDataByColumnIndex[columnIndex] = responseData;
+        }
+
+        return existingResponseDataByColumnIndex[columnIndex];
+      };
+
       for (let columnIndex = minSurveyResponseIndex; columnIndex <= maxColumnIndex; columnIndex++) {
         const columnHeader = getColumnHeader(sheet, columnIndex);
-        if (getImportMode(columnHeader) === IMPORT_MODES.NEW) {
+        const importMode = getImportMode(columnHeader);
+
+        // For import modes where an existing response id is not specified,
+        // we need to detect a survey and use it to look for existing responses
+        const shouldDetectSurvey = [
+          IMPORT_MODES.NEW,
+          IMPORT_MODES.UPDATE,
+          IMPORT_MODES.MERGE,
+        ].includes(importMode);
+        if (!survey && shouldDetectSurvey) {
+          survey = await findTabSurvey(models, tabName, surveyNames);
+        }
+
+        if ([IMPORT_MODES.NEW, IMPORT_MODES.MERGE].includes(importMode)) {
           surveyResponseIds[columnIndex] = generateId();
+          isGeneratedIdByColumnIndex[columnIndex] = true;
+        } else if (importMode === IMPORT_MODES.UPDATE) {
+          const { surveyResponseId } = await getExistingResponseData(columnIndex);
+
+          if (surveyResponseId) {
+            surveyResponseIds[columnIndex] = surveyResponseId;
+          } else {
+            // An matching existing response was not found, generate a new id
+            surveyResponseIds[columnIndex] = generateId();
+            isGeneratedIdByColumnIndex[columnIndex] = true;
+          }
         } else {
           surveyResponseIds[columnIndex] = columnHeader;
         }
@@ -113,14 +160,30 @@ export async function importSurveyResponses(req, res) {
         const columnHeader = getColumnHeader(sheet, columnIndex);
         validateColumnHeader(columnHeader, columnIndex, tabName);
 
-        if (getImportMode(columnHeader) === IMPORT_MODES.NEW) {
+        if (isGeneratedIdByColumnIndex[columnIndex]) {
           const surveyResponseId = surveyResponseIds[columnIndex];
           const surveyResponseDetails = await constructNewSurveyResponseDetails(
             models,
-            tabName,
             sheet,
             columnIndex,
-            { id: surveyResponseId, ...config },
+            { id: surveyResponseId, survey, timeZone, userId },
+          );
+          updatePersistor.createSurveyResponse(surveyResponseId, surveyResponseDetails);
+        }
+      }
+
+      for (let columnIndex = minSurveyResponseIndex; columnIndex <= maxColumnIndex; columnIndex++) {
+        const columnHeader = getColumnHeader(sheet, columnIndex);
+        validateColumnHeader(columnHeader, columnIndex, tabName);
+        const importMode = getImportMode(columnHeader);
+
+        if ([IMPORT_MODES.NEW, IMPORT_MODES.MERGE].includes(importMode)) {
+          const surveyResponseId = surveyResponseIds[columnIndex];
+          const surveyResponseDetails = await constructNewSurveyResponseDetails(
+            models,
+            sheet,
+            columnIndex,
+            { id: surveyResponseId, survey, timeZone, userId },
           );
           updatePersistor.createSurveyResponse(surveyResponseId, surveyResponseDetails);
         }
@@ -163,6 +226,7 @@ export async function importSurveyResponses(req, res) {
           columnIndex++
         ) {
           const columnHeader = getColumnHeader(sheet, columnIndex);
+          const importMode = getImportMode(columnHeader);
           const surveyResponseId = surveyResponseIds[columnIndex];
           const answerValue = getCellContents(sheet, columnIndex, rowIndex);
           const transformedAnswerValue = answerTransformer
@@ -170,6 +234,10 @@ export async function importSurveyResponses(req, res) {
             : answerValue;
           // If we already deleted this survey response wholesale, no need to check specific rows
           if (surveyResponseId && !deletedResponseIds.has(surveyResponseId)) {
+            const shouldFillEmptyAnswers = [IMPORT_MODES.UPDATE, IMPORT_MODES.MERGE].includes(
+              importMode,
+            );
+
             if (answerValidator) {
               const constructImportValidationError = message =>
                 new ImportValidationError(message, excelRowNumber, columnHeader, tabName);
@@ -178,6 +246,7 @@ export async function importSurveyResponses(req, res) {
                 constructImportValidationError,
               );
             }
+
             if (questionId === 'N/A') {
               // Info row (e.g. entity name): if no content delete the survey response wholesale
               if (checkIsCellEmpty(transformedAnswerValue)) {
@@ -195,7 +264,7 @@ export async function importSurveyResponses(req, res) {
                   updatePersistor.updateDataTime(surveyResponseId, newDataTime);
                 }
               }
-            } else if (checkIsCellEmpty(transformedAnswerValue)) {
+            } else if (!shouldFillEmptyAnswers && checkIsCellEmpty(transformedAnswerValue)) {
               // Empty question row: delete any matching answer
               updatePersistor.deleteAnswer(surveyResponseId, { questionId });
             } else if (
@@ -213,13 +282,22 @@ export async function importSurveyResponses(req, res) {
                 updatePersistor.updateDataTime(surveyResponseId, newDataTime);
               }
             } else {
-              // Normal question row with content: update or create an answer
-              updatePersistor.upsertAnswer(surveyResponseId, {
-                surveyResponseId,
-                questionId,
-                text: transformedAnswerValue.toString(),
-                type: rowType,
-              });
+              let answerText = transformedAnswerValue.toString();
+              if (shouldFillEmptyAnswers && checkIsCellEmpty(transformedAnswerValue)) {
+                // Use an answer from an existing response to fill the empty answer
+                const { answerTextsByQuestionId } = await getExistingResponseData(columnIndex);
+                answerText = answerTextsByQuestionId?.[questionId];
+              }
+
+              if (answerText) {
+                // Normal question row with content: update or create an answer
+                updatePersistor.upsertAnswer(surveyResponseId, {
+                  surveyResponseId,
+                  questionId,
+                  text: answerText,
+                  type: rowType,
+                });
+              }
             }
           }
         }
@@ -230,7 +308,7 @@ export async function importSurveyResponses(req, res) {
     const message =
       failures.length > 0
         ? `Not all responses were successfully processed:
-${failures.map(getFailureMessage).join('\n')}`
+  ${failures.map(getFailureMessage).join('\n')}`
         : null;
     respond(res, { message, failures });
   } catch (error) {
@@ -242,28 +320,73 @@ ${failures.map(getFailureMessage).join('\n')}`
   }
 }
 
-const constructNewSurveyResponseDetails = async (models, tabName, sheet, columnIndex, config) => {
-  const { id, surveyNames, userId, timeZone } = config;
+const findTabSurvey = async (models, tabName, surveyNames) => {
   if (!surveyNames) {
     throw new Error(
       'When importing new survey responses, you must specify the names of the surveys they are for',
     );
   }
+
   const surveyName = extractTabNameFromQuery(tabName, surveyNames);
   const survey = await models.survey.findOne({ name: surveyName });
   if (!survey) {
     throw new Error(`No survey named ${surveyName}`);
   }
-  let approvalStatus = models.surveyResponse.approvalStatusTypes.NOT_REQUIRED;
-  if (survey.requires_approval) {
-    approvalStatus = models.surveyResponse.approvalStatusTypes.PENDING;
+
+  return survey;
+};
+
+const findExistingResponseData = async (models, survey, criteria) => {
+  const { entityId, date } = criteria;
+
+  const surveyId = survey.id;
+
+  const surveyResponse = await models.surveyResponse.findOne(
+    {
+      survey_id: surveyId,
+      entity_id: entityId,
+      data_time: getDataTimeCondition(date, survey.period_granularity),
+    },
+    { sort: ['data_time desc', 'id desc'] },
+  );
+
+  const answers = surveyResponse ? await surveyResponse.getAnswers() : [];
+
+  return {
+    surveyResponseId: surveyResponse?.id,
+    answerTextsByQuestionId: reduceToDictionary(answers, 'question_id', 'text'),
+  };
+};
+
+const getDataTimeCondition = (date, periodGranularity) => {
+  if (!periodGranularity) {
+    return {
+      comparator: '<=',
+      comparisonValue: date,
+    };
   }
+
+  const { startDate, endDate } = getDateRangeForGranularity(date, periodGranularity);
+  return {
+    comparator: 'between',
+    comparisonValue: [startDate, endDate],
+  };
+};
+
+const constructNewSurveyResponseDetails = async (models, tabName, sheet, columnIndex, config) => {
+  const { id, survey, userId, timeZone } = config;
   const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
   const entity = await models.entity.findOne({ code: entityCode });
   if (!entity) {
     throw new Error(`No entity with code ${entityCode}`);
   }
   const user = await models.user.findById(userId);
+
+  let approvalStatus = models.surveyResponse.approvalStatusTypes.NOT_REQUIRED;
+  if (survey.requires_approval) {
+    approvalStatus = models.surveyResponse.approvalStatusTypes.PENDING;
+  }
+
   // 'Date of Data' is pulled from spreadsheet, 'Date of Survey' is current time
   if (!getInfoForColumn(sheet, columnIndex, 'Date')) {
     throw new Error('No date of data provided');
