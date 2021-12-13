@@ -16,13 +16,13 @@ import {
   MapOverlayGroupRelationsPage,
   MapOverlayGroupsPage,
   MapOverlaysPage,
-  PermissionsPage,
   UsersPage,
   AdminPanelDataProviders,
 } from '@tupaia/admin-panel/lib';
 import { LesmisAdminRoute } from './LesmisAdminRoute';
 import { useUser } from '../api/queries';
 import { getApiUrl } from '../utils/getApiUrl';
+import { PermissionsView } from '../views/AdminPanel/PermissionsView';
 import { DashboardItemsView } from '../views/AdminPanel/DashboardItemsView';
 import {
   ApprovedSurveyResponsesView,
@@ -30,23 +30,9 @@ import {
   RejectedSurveyResponsesView,
   NonApprovalSurveyResponsesView,
 } from '../views/AdminPanel/SurveyResponsesView';
-import { LESMIS_PERMISSION_GROUPS } from '../constants';
 
 // Only show users who signed up through lesmis
 const UsersView = props => <UsersPage {...props} baseFilter={{ primary_platform: 'lesmis' }} />;
-
-// Only show lesmis permission groups
-const PermissionsView = props => (
-  <PermissionsPage
-    {...props}
-    baseFilter={{
-      'permission_group.name': {
-        comparator: 'in',
-        comparisonValue: Object.values(LESMIS_PERMISSION_GROUPS),
-      },
-    }}
-  />
-);
 
 // Hide the new button until there is a viz builder in lesmis
 const MapOverlaysView = props => <MapOverlaysPage {...props} LinksComponent={null} />;
