@@ -346,7 +346,7 @@ const findExistingResponseData = async (models, survey, criteria) => {
       entity_id: entityId,
       data_time: getDataTimeCondition(date, survey.period_granularity),
     },
-    { sort: ['data_time desc', 'id desc'] },
+    { sort: ['end_time desc', 'id desc'] },
   );
 
   const answers = surveyResponse ? await surveyResponse.getAnswers() : [];
