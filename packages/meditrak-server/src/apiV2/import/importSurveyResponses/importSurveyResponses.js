@@ -4,7 +4,6 @@
  */
 
 import xlsx from 'xlsx';
-import keyBy from 'lodash.keyby';
 import moment from 'moment';
 import { generateId } from '@tupaia/database';
 import {
@@ -57,7 +56,7 @@ const IMPORT_MODES = {
   // Fill any empty answers using the existing response
   UPDATE: 'UPDATE',
 
-  // Same as 'UPDATE_PREVIOUS_FILL_EMPTY, but create a new response instead of updating the existing
+  // Same as 'UPDATE, but create a new response instead of updating the existing one
   MERGE: 'MERGE',
 };
 
