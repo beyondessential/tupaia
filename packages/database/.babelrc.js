@@ -6,7 +6,7 @@ const env = {
 
 const includedDateOffset = 90 * 24 * 60 * 60 * 1000; // include migrations up to 90 days old
 const includedMigrationsDate = new Date().setTime(Date.now() - includedDateOffset);
-const checkMigrationWithinIncludedRange = function (migrationName) {
+const checkMigrationOutdated = function (migrationName) {
   const yearPart = migrationName.substring(0, 4);
   const monthPart = migrationName.substring(4, 6);
   const dayPart = migrationName.substring(6, 8);
@@ -22,14 +22,14 @@ const ignore = [
       filepathComponents.length > 2 ? filepathComponents[filepathComponents.length - 2] : null;
     if (directory === 'migrations' || directory === 'migrationData') {
       const filename = filepathComponents[filepathComponents.length - 1];
-      return checkMigrationWithinIncludedRange(filename);
+      return checkMigrationOutdated(filename);
     }
     const parentDirectory =
       filepathComponents.length > 3 ? filepathComponents[filepathComponents.length - 3] : null;
     if (parentDirectory === 'migrationData') {
       // Some migration data is broken into separate subfiles within a folder named with the
       // same name as the migration
-      return checkMigrationWithinIncludedRange(directory);
+      return checkMigrationOutdated(directory);
     }
     return false;
   },
