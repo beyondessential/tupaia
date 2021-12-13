@@ -18,17 +18,17 @@ const ignore = [
   'src/tests/**',
   function (filepath) {
     const filepathComponents = filepath.split('/');
-    const directory =
-      filepathComponents.length > 2 ? filepathComponents[filepathComponents.length - 2] : null;
+    const filename = filepathComponents.pop();
+    const directory = filepathComponents.pop();
+    const parentDirectory = filepathComponents.pop();
+
     if (directory === 'migrations' || directory === 'migrationData') {
-      const filename = filepathComponents[filepathComponents.length - 1];
       return checkMigrationOutdated(filename);
     }
-    const parentDirectory =
-      filepathComponents.length > 3 ? filepathComponents[filepathComponents.length - 3] : null;
+
+    // Some migration data is broken into separate subfiles within a folder named with the
+    // same name as the migration, be sure to ignore that if it's outdated too
     if (parentDirectory === 'migrationData') {
-      // Some migration data is broken into separate subfiles within a folder named with the
-      // same name as the migration
       return checkMigrationOutdated(directory);
     }
     return false;
