@@ -128,6 +128,11 @@ exports.up = async function (db) {
     ALTER TABLE question
     RENAME COLUMN data_source_id TO data_element_id
   `);
+  // Drop the now incorrectly named trigger
+  // A new one will be automatically created post migration
+  await db.runSql(`
+    DROP TRIGGER IF EXISTS data_source_trigger ON data_element
+  `);
 
   await updateAnalytics(db, 'data_element', 'data_source');
 };
@@ -142,6 +147,11 @@ exports.down = async function (db) {
   await db.runSql(`
     ALTER TABLE question
     RENAME COLUMN data_element_id TO data_source_id
+  `);
+  // Drop the now incorrectly named trigger
+  // A new one will be automatically created post migration
+  await db.runSql(`
+    DROP TRIGGER IF EXISTS data_element_trigger ON data_source
   `);
 
   // Add type column back into data_source table
@@ -293,9 +303,7 @@ const updateAnalytics = async (db, newTableName, oldTableName) => {
   `);
 
   // Force rebuild is required to integrate this change with the analytics table
-  await db.runSql(
-    `SELECT mv$renameMaterializedViewLog('${oldTableName}', '${newTableName}')`,
-  );
+  await db.runSql(`SELECT mv$renameMaterializedViewLog('${oldTableName}', '${newTableName}')`);
   await db.runSql('SELECT build_analytics_table(true);');
   await db.runSql('SELECT create_analytics_table_indexes();');
 };

@@ -96,6 +96,7 @@ exports.up = async function (db) {
         tRenameLogTableSqlStatement             TEXT;
         tUpdateMViewLogsTableSqlStatement       TEXT;
         tUpdateMViewTableColumns                TEXT;
+        tUpdateTriggerName                      TEXT;
     BEGIN
     
         rConst   := mv$buildAllConstants();
@@ -125,10 +126,12 @@ exports.up = async function (db) {
                                                     || rConst.OPEN_BRACKET || 'log_array' || rConst.COMMA_CHARACTER
                                                     || rConst.SINGLE_QUOTE_CHARACTER || 'log$_' || pOldTableName || rConst.SINGLE_QUOTE_CHARACTER || rConst.COMMA_CHARACTER
                                                     || rConst.SINGLE_QUOTE_CHARACTER || 'log$_' || pNewTableName || rConst.SINGLE_QUOTE_CHARACTER || rConst.CLOSE_BRACKET;
+        tUpdateTriggerName                  := 'ALTER TRIGGER ' || 'trig$_' || pOldTableName || rConst.ON_COMMAND || pNewTableName || rConst.RENAME_TO_COMMAND || 'trig$_' || pNewTableName;
     
         EXECUTE tRenameLogTableSqlStatement;
         EXECUTE tUpdateMViewLogsTableSqlStatement;
         EXECUTE tUpdateMViewTableColumns;
+        EXECUTE tUpdateTriggerName;
     
         RETURN;
     
