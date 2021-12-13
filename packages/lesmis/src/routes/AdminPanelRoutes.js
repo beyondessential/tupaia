@@ -16,9 +16,8 @@ import {
   MapOverlayGroupRelationsPage,
   MapOverlayGroupsPage,
   MapOverlaysPage,
-  AccessRequestsPage,
   PermissionsPage,
-  UsersPage as BaseUsersPage,
+  UsersPage,
   AdminPanelDataProviders,
 } from '@tupaia/admin-panel/lib';
 import { LesmisAdminRoute } from './LesmisAdminRoute';
@@ -33,7 +32,10 @@ import {
 } from '../views/AdminPanel/SurveyResponsesView';
 
 // Only show users who signed up through lesmis
-const UsersPage = props => <BaseUsersPage {...props} baseFilter={{ primary_platform: 'lesmis' }} />;
+const UsersView = props => <UsersPage {...props} baseFilter={{ primary_platform: 'lesmis' }} />;
+
+// Hide the new button until there is a viz builder in lesmis
+const MapOverlaysView = props => <MapOverlaysPage {...props} LinksComponent={null} />;
 
 export const ROUTES = [
   {
@@ -108,7 +110,7 @@ export const ROUTES = [
       {
         label: 'Map Overlays',
         to: '/map-overlays',
-        component: MapOverlaysPage,
+        component: MapOverlaysView,
       },
       {
         label: 'Map Overlay Groups',
@@ -130,7 +132,7 @@ export const ROUTES = [
       {
         label: 'Users',
         to: '',
-        component: UsersPage,
+        component: UsersView,
       },
       {
         label: 'Permissions',
