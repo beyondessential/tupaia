@@ -17,9 +17,8 @@ import {
   MapOverlayGroupsPage,
   MapOverlaysPage,
   AccessRequestsPage,
-  PermissionGroupsPage,
   PermissionsPage,
-  UsersPage,
+  UsersPage as BaseUsersPage,
   AdminPanelDataProviders,
 } from '@tupaia/admin-panel/lib';
 import { LesmisAdminRoute } from './LesmisAdminRoute';
@@ -32,6 +31,9 @@ import {
   RejectedSurveyResponsesView,
   NonApprovalSurveyResponsesView,
 } from '../views/AdminPanel/SurveyResponsesView';
+
+// Only show users who signed up through lesmis
+const UsersPage = props => <BaseUsersPage {...props} baseFilter={{ primary_platform: 'lesmis' }} />;
 
 export const ROUTES = [
   {
@@ -134,16 +136,6 @@ export const ROUTES = [
         label: 'Permissions',
         to: '/permissions',
         component: PermissionsPage,
-      },
-      {
-        label: 'Permission Groups',
-        to: '/permission-groups',
-        component: PermissionGroupsPage,
-      },
-      {
-        label: 'Access Requests',
-        to: '/access-requests',
-        component: AccessRequestsPage,
       },
     ],
   },

@@ -2,13 +2,15 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import {
   hasBESAdminAccess,
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../permissions';
 import { getAdminPanelAllowedEntityIds, getAdminPanelAllowedCountryCodes } from '../utilities';
+
+const { RAW } = QUERY_CONJUNCTIONS;
 
 export const assertUserEntityPermissionPermissions = async (
   accessPolicy,
@@ -77,9 +79,23 @@ export const createUserEntityPermissionDBFilter = async (accessPolicy, models, c
     return criteria;
   }
   // If we don't have BES Admin access, add a filter to the SQL query
-  const dbConditions = {
-    'user_entity_permission.entity_id': await getAdminPanelAllowedEntityIds(accessPolicy, models),
-    ...criteria,
+
+  const dbConditions = { ...criteria };
+  const accessibleCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
+
+  const entities = await models.entity.find({
+    code: accessibleCountryCodes,
+  });
+
+  const entityIds = entities.map(e => e.id);
+  // Checks list of entity ids the user has access to is contained within the list of entity ids
+  // the accessPolicy permits (plus Demo Land)
+
+  dbConditions[RAW] = {
+    sql: `array(select entity_id from user_entity_permission uep where uep.user_id = user_account.id) <@ array[${entityIds
+      .map(() => '?')
+      .join(',')}]`,
+    parameters: entityIds,
   };
 
   return dbConditions;
