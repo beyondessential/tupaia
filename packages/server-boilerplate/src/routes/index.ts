@@ -6,4 +6,4 @@
 
 export { Route, ExpressRequest, ExpressResponse } from './Route';
 export { TestRoute } from './TestRoute';
-export { TranslatableRoute } from './TranslatableRoute';
+export * from './TranslatableRoute';
