@@ -219,6 +219,22 @@ export async function importSurveyResponses(req, res) {
           answerTransformer = ANSWER_TRANSFORMERS[question.type];
         }
 
+        const getAnswerText = async (answerValue, surveyResponseId, columnIndex, importMode) => {
+          const shouldFillEmptyAnswer = importMode === IMPORT_MODES.MERGE;
+
+          if (checkIsCellEmpty(answerValue) && shouldFillEmptyAnswer) {
+            const { dataTime, answerTextsByQuestionId } = await getExistingResponseData(
+              columnIndex,
+            );
+            // Use data from an existing response to fill the empty answer
+            return isDateAnswer(rowType) ? dataTime : answerTextsByQuestionId?.[questionId];
+          }
+
+          return isDateAnswer(rowType)
+            ? getNewDataTimeIfRequired(models, surveyResponseId, answerValue)
+            : answerValue;
+        };
+
         for (
           let columnIndex = minSurveyResponseIndex;
           columnIndex <= maxColumnIndex;
@@ -233,7 +249,7 @@ export async function importSurveyResponses(req, res) {
             : answerValue;
           // If we already deleted this survey response wholesale, no need to check specific rows
           if (surveyResponseId && !deletedResponseIds.has(surveyResponseId)) {
-            const shouldFillEmptyAnswers = [IMPORT_MODES.UPDATE, IMPORT_MODES.MERGE].includes(
+            const shouldDeleteEmptyAnswer = ![IMPORT_MODES.UPDATE, IMPORT_MODES.MERGE].includes(
               importMode,
             );
 
@@ -263,39 +279,31 @@ export async function importSurveyResponses(req, res) {
                   updatePersistor.updateDataTime(surveyResponseId, newDataTime);
                 }
               }
-            } else if (!shouldFillEmptyAnswers && checkIsCellEmpty(transformedAnswerValue)) {
+            } else if (checkIsCellEmpty(transformedAnswerValue) && shouldDeleteEmptyAnswer) {
               // Empty question row: delete any matching answer
               updatePersistor.deleteAnswer(surveyResponseId, { questionId });
-            } else if (
-              rowType === ANSWER_TYPES.DATE_OF_DATA ||
-              rowType === ANSWER_TYPES.SUBMISSION_DATE
-            ) {
-              // Don't save an answer for date of data rows, instead update the date_time of the
-              // survey response. Note that this will override what is in the Date info row
-              const newDataTime = await getNewDataTimeIfRequired(
-                models,
-                surveyResponseId,
-                transformedAnswerValue.toString(),
-              );
-              if (newDataTime) {
-                updatePersistor.updateDataTime(surveyResponseId, newDataTime);
-              }
             } else {
-              let answerText = transformedAnswerValue.toString();
-              if (shouldFillEmptyAnswers && checkIsCellEmpty(transformedAnswerValue)) {
-                // Use an answer from an existing response to fill the empty answer
-                const { answerTextsByQuestionId } = await getExistingResponseData(columnIndex);
-                answerText = answerTextsByQuestionId?.[questionId];
-              }
+              const answerText = await getAnswerText(
+                transformedAnswerValue.toString(),
+                surveyResponseId,
+                columnIndex,
+                importMode,
+              );
 
-              if (answerText) {
-                // Normal question row with content: update or create an answer
-                updatePersistor.upsertAnswer(surveyResponseId, {
-                  surveyResponseId,
-                  questionId,
-                  text: answerText,
-                  type: rowType,
-                });
+              if (!checkIsCellEmpty(answerText)) {
+                if (isDateAnswer(rowType)) {
+                  // Don't save an answer for date of data rows, instead update the date_time of the
+                  // survey response. Note that this will override what is in the Date info row
+                  updatePersistor.updateDataTime(surveyResponseId, answerText);
+                } else {
+                  // Normal question row with content: update or create an answer
+                  updatePersistor.upsertAnswer(surveyResponseId, {
+                    surveyResponseId,
+                    questionId,
+                    text: answerText,
+                    type: rowType,
+                  });
+                }
               }
             }
           }
@@ -352,6 +360,7 @@ const findExistingResponseData = async (models, survey, criteria) => {
   const answers = surveyResponse ? await surveyResponse.getAnswers() : [];
 
   return {
+    dataTime: surveyResponse?.data_time,
     surveyResponseId: surveyResponse?.id,
     answerTextsByQuestionId: reduceToDictionary(answers, 'question_id', 'text'),
   };
@@ -450,7 +459,14 @@ const getMaxRowColumnIndex = sheet => {
   return { maxColumnIndex, maxRowIndex };
 };
 
+const isDateAnswer = answerType =>
+  answerType === ANSWER_TYPES.DATE_OF_DATA || answerType === ANSWER_TYPES.SUBMISSION_DATE;
+
 async function getNewDataTimeIfRequired(models, surveyResponseId, newDataTime) {
+  if (checkIsCellEmpty(newDataTime)) {
+    return null;
+  }
+
   const surveyResponse = await models.surveyResponse.findById(surveyResponseId);
   if (!surveyResponse) return null; // probably in the process of being created, no need to update
   const currentDataTime = surveyResponse.data_time;
