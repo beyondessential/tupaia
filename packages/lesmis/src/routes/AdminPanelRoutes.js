@@ -30,9 +30,23 @@ import {
   RejectedSurveyResponsesView,
   NonApprovalSurveyResponsesView,
 } from '../views/AdminPanel/SurveyResponsesView';
+import { LESMIS_PERMISSION_GROUPS } from '../constants';
 
 // Only show users who signed up through lesmis
 const UsersView = props => <UsersPage {...props} baseFilter={{ primary_platform: 'lesmis' }} />;
+
+// Only show lesmis permission groups
+const PermissionsView = props => (
+  <PermissionsPage
+    {...props}
+    baseFilter={{
+      'permission_group.name': {
+        comparator: 'in',
+        comparisonValue: Object.values(LESMIS_PERMISSION_GROUPS),
+      },
+    }}
+  />
+);
 
 // Hide the new button until there is a viz builder in lesmis
 const MapOverlaysView = props => <MapOverlaysPage {...props} LinksComponent={null} />;
@@ -137,7 +151,7 @@ export const ROUTES = [
       {
         label: 'Permissions',
         to: '/permissions',
-        component: PermissionsPage,
+        component: PermissionsView,
       },
     ],
   },
