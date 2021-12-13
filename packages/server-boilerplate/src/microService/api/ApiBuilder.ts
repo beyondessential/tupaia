@@ -7,6 +7,7 @@ import express, { Express, NextFunction, Request, Response, RequestHandler } fro
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
+// @ts-expect-error no types
 import morgan from 'morgan';
 
 import { Authenticator } from '@tupaia/auth';
