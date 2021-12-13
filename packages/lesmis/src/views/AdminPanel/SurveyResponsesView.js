@@ -58,7 +58,16 @@ export const DraftSurveyResponsesView = props => (
   />
 );
 
-const NON_APPROVAL_COLUMNS = [...COLUMNS.filter(column => column.source !== 'approval_status')];
+// Don't include the approval column for the non-approval survey responses
+const EDIT_CONFIG = COLUMNS.find(column => column.type === 'edit');
+const EDIT_COLUMN = {
+  ...EDIT_CONFIG,
+  actionConfig: {
+    ...EDIT_CONFIG.actionConfig,
+    fields: EDIT_CONFIG.actionConfig.fields.filter(f => f.source !== 'approval_status'),
+  },
+};
+const NON_APPROVAL_COLUMNS = [...COLUMNS.filter(column => column.type !== 'edit'), EDIT_COLUMN];
 
 export const NonApprovalSurveyResponsesView = props => (
   <SurveyResponsesPage
