@@ -117,10 +117,7 @@ export const createPeriodicSurvey = periodGranularity => ({
 });
 
 export const YEARLY_SURVEY = createPeriodicSurvey('yearly');
-export const QUARTERLY_SURVEY = createPeriodicSurvey('quarterly');
-export const MONTHLY_SURVEY = createPeriodicSurvey('monthly');
 export const WEEKLY_SURVEY = createPeriodicSurvey('weekly');
-export const DAILY_SURVEY = createPeriodicSurvey('daily');
 
 export const createSurveyResponses = async (models, responsesBySurvey) => {
   const user = await models.user.findOne();
@@ -397,6 +394,7 @@ export const NON_PERIODIC_RESPONSES_AFTER_UPDATES = {
 
 export const PERIODIC_RESPONSES_AFTER_UPDATES = {
   notAffected: [
+    // Yearly
     {
       id: '2020_dl1_untouched__test',
       surveyCode: YEARLY_SURVEY.code,
@@ -426,9 +424,49 @@ export const PERIODIC_RESPONSES_AFTER_UPDATES = {
         yearly_cat__________test: '2020_dl5_cat_existing',
       },
     },
+
+    // Weekly
+    {
+      id: '2020W2_dl1_untouch__test',
+      surveyCode: WEEKLY_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2020-01-06T14:00:00.000Z',
+      answers: {
+        weekly_bird_________test: '2020W2_dl1_bird_untouched',
+        weekly_cat__________test: '2020W2_dl1_cat_untouched',
+      },
+    },
+    {
+      id: '2020W3_dl1_merge____test',
+      surveyCode: WEEKLY_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2020-01-13T14:00:00.000Z',
+      answers: {
+        weekly_bird_________test: '2020W3_dl1_bird_existing',
+        weekly_dog__________test: '2020W3_dl1_dog_existing',
+      },
+    },
+    {
+      id: '2020W2_dl5_merge____test',
+      surveyCode: WEEKLY_SURVEY.code,
+      entityCode: 'DL_5',
+      date: '2020-01-10T14:00:00.000Z',
+      answers: {
+        weekly_cat__________test: '2020W2_dl5_cat_existing',
+      },
+    },
   ],
-  deleted: [{ id: '2017_dl1_delete_____test' }],
+  deleted: [
+    // Yearly
+    {
+      id: '2017_dl1_delete_____test',
+    },
+
+    // Weekly
+    { id: '2017W1_dl1_delete___test' },
+  ],
   updated: [
+    // Yearly
     {
       id: '2020_dl1_update_____test',
       surveyCode: YEARLY_SURVEY.code,
@@ -460,8 +498,42 @@ export const PERIODIC_RESPONSES_AFTER_UPDATES = {
         yearly_cat__________test: '2021_dl5_cat_new',
       },
     },
+
+    // Weekly
+    {
+      id: '2020W2_dl1_update___test',
+      surveyCode: WEEKLY_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2020-01-12T16:00:00.000Z',
+      answers: {
+        weekly_bird_________test: '2020W2_dl1_bird_new',
+        weekly_cat__________test: '2020W2_dl1_cat_existing',
+        weekly_dog__________test: '2020W2_dl1_dog_new',
+      },
+    },
+    {
+      id: '2020W2_dl5_override_test',
+      surveyCode: WEEKLY_SURVEY.code,
+      entityCode: 'DL_5',
+      date: '2020-01-09T15:00:00.000Z',
+      answers: {
+        weekly_bird_________test: '2020W2_dl5_bird_override_new',
+        weekly_dog__________test: '2020W2_dl5_dog_override_new',
+      },
+    },
+    {
+      id: '2020W3_dl5_update___test',
+      surveyCode: WEEKLY_SURVEY.code,
+      entityCode: 'DL_5',
+      date: '2020-01-19T11:00:00.000Z',
+      answers: {
+        weekly_bird_________test: '2020W3_dl5_bird_new',
+        weekly_cat__________test: '2020W3_dl5_cat_new',
+      },
+    },
   ],
   created: [
+    // Yearly
     // UPDATE (when a matching report is not found, a new one is created)
     {
       surveyCode: YEARLY_SURVEY.code,
@@ -497,6 +569,45 @@ export const PERIODIC_RESPONSES_AFTER_UPDATES = {
       date: '2016-12-31T14:00:00.000Z',
       answers: {
         yearly_bird_________test: '2016_d5_bird_no_report_to_merge',
+      },
+    },
+
+    // Monthly
+    // UPDATE (when a matching report is not found, a new one is created)
+    {
+      surveyCode: WEEKLY_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2016-12-26T14:00:00.000Z',
+      answers: {
+        weekly_bird_________test: '2016W52_dl1_bird_no_report_to_update',
+      },
+    },
+    // MERGE
+    {
+      surveyCode: WEEKLY_SURVEY.code,
+      entityCode: 'DL_1',
+      date: '2020-01-18T14:00:00.000Z',
+      answers: {
+        weekly_bird_________test: '2020W3_dl1_bird_existing',
+        weekly_cat__________test: '2020W3_dl1_cat_new',
+        weekly_dog__________test: '2020W3_dl1_dog_existing',
+      },
+    },
+    {
+      surveyCode: WEEKLY_SURVEY.code,
+      entityCode: 'DL_5',
+      date: '2020-01-06T14:00:00.000Z',
+      answers: {
+        weekly_bird_________test: '2020W2_dl5_bird_new',
+        weekly_cat__________test: '2020W2_dl5_cat_new',
+      },
+    },
+    {
+      surveyCode: WEEKLY_SURVEY.code,
+      entityCode: 'DL_5',
+      date: '2016-12-26T14:00:00.000Z',
+      answers: {
+        weekly_bird_________test: '2016W52_d5_bird_no_report_to_merge',
       },
     },
   ],

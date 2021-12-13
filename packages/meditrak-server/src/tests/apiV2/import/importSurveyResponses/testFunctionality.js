@@ -18,11 +18,8 @@ import { importValidFile } from './helpers';
 import {
   createSurveyResponses,
   CLINIC_DATA_SURVEY,
-  DAILY_SURVEY,
   FACILITY_FUNDAMENTALS_SURVEY,
-  MONTHLY_SURVEY,
   NON_PERIODIC_RESPONSES_AFTER_UPDATES,
-  QUARTERLY_SURVEY,
   PERIODIC_RESPONSES_AFTER_UPDATES,
   WEEKLY_SURVEY,
   YEARLY_SURVEY,
@@ -198,7 +195,7 @@ export const testFunctionality = async () => {
   });
 
   describe('periodic surveys', () => {
-    const surveys = [YEARLY_SURVEY, QUARTERLY_SURVEY, MONTHLY_SURVEY, WEEKLY_SURVEY, DAILY_SURVEY];
+    const surveys = [YEARLY_SURVEY, WEEKLY_SURVEY];
 
     before(async () => {
       await buildAndInsertSurveys(models, surveys);
@@ -213,7 +210,10 @@ export const testFunctionality = async () => {
         ),
       );
       await importValidFile(app, 'functionality/periodicBaseline.xlsx');
-      await importValidFile(app, 'functionality/periodicUpdates.xlsx', ['Test Yearly']);
+      await importValidFile(app, 'functionality/periodicUpdates.xlsx', [
+        'Test Yearly',
+        'Test Weekly',
+      ]);
     });
 
     it('does not change responses that are not targeted by updates', async () => {
