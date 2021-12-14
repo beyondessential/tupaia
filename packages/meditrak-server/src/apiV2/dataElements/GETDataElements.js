@@ -4,23 +4,20 @@
  */
 
 import { TYPES } from '@tupaia/database';
-import { GETHandler } from './GETHandler';
-import { assertBESAdminAccess } from '../permissions';
-import { mergeMultiJoin } from './utilities';
+import { GETHandler } from '../GETHandler';
+import { mergeMultiJoin } from '../utilities';
+import { createDataElementDBFilter } from './assertDataElementPermissions';
 
 export class GETDataElements extends GETHandler {
   permissionsFilteredInternally = true;
 
-  async assertUserHasAccess() {
-    await this.assertPermissions(assertBESAdminAccess);
-  }
-
   async getPermissionsFilter(criteria, options) {
-    return { dbConditions: criteria, dbOptions: options };
+    const dbConditions = await createDataElementDBFilter(this.accessPolicy, this.models, criteria);
+    return { dbConditions, dbOptions: options };
   }
 
   async getPermissionsViaParentFilter(criteria, options) {
-    const dbConditions = { ...criteria };
+    const dbConditions = await createDataElementDBFilter(this.accessPolicy, this.models, criteria);
     const dbOptions = { ...options };
     dbConditions[`${TYPES.DATA_ELEMENT_DATA_GROUP}.data_group_id`] = this.parentRecordId;
     dbOptions.multiJoin = mergeMultiJoin(
