@@ -10,7 +10,7 @@ import { getBrowserTimeZone } from '@tupaia/utils';
 import { ResourcePage } from './ResourcePage';
 import { SurveyResponsesExportModal } from '../../importExport';
 
-const APPROVAL_STATUS_TYPES = [
+export const APPROVAL_STATUS_TYPES = [
   { label: 'Not Required', value: 'not_required' },
   { label: 'Pending', value: 'pending' },
   { label: 'Rejected', value: 'rejected' },
@@ -92,7 +92,7 @@ export const SURVEY_RESPONSE_COLUMNS = [
   },
 ];
 
-const COLUMNS = [
+export const SURVEY_RESPONSE_PAGE_COLUMNS = [
   entityName,
   ...SURVEY_RESPONSE_COLUMNS,
   {
@@ -199,7 +199,7 @@ export const SurveyResponsesPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
     title="Survey Responses"
     endpoint="surveyResponses"
-    columns={COLUMNS}
+    columns={SURVEY_RESPONSE_PAGE_COLUMNS}
     defaultFilters={[{ id: 'outdated', value: false }]}
     defaultSorting={[{ id: 'data_time', desc: true }]}
     expansionTabs={EXPANSION_CONFIG}

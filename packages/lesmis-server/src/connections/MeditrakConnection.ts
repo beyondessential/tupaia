@@ -29,6 +29,10 @@ export class MeditrakConnection extends SessionHandlingApiConnection {
     return this.post('user', {}, userData);
   }
 
+  updateSurveyResponse(id: string, changes: RequestBody) {
+    return this.put(`surveyResponses/${id}`, {}, changes);
+  }
+
   async verifyEmail(token: string) {
     return this.post('auth/verifyEmail', {}, { token });
   }

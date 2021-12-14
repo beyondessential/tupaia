@@ -19,7 +19,6 @@ import {
   AccessRequestsPage,
   PermissionGroupsPage,
   PermissionsPage,
-  SurveyResponsesPage,
   UsersPage,
   AdminPanelDataProviders,
 } from '@tupaia/admin-panel/lib';
@@ -27,43 +26,44 @@ import { LesmisAdminRoute } from './LesmisAdminRoute';
 import { useUser } from '../api/queries';
 import { getApiUrl } from '../utils/getApiUrl';
 import { DashboardItemsView } from '../views/AdminPanel/DashboardItemsView';
-
-/* eslint-disable */
 import {
   ApprovedSurveyResponsesView,
   DraftSurveyResponsesView,
+  RejectedSurveyResponsesView,
+  NonApprovalSurveyResponsesView,
 } from '../views/AdminPanel/SurveyResponsesView';
 
-const ADMIN_URL = '/admin';
-
-// Todo: Replace SurveyResponsesPage with ApprovedSurveyResponsesView and DraftSurveyResponsesView
-// @see WAI-832
 export const ROUTES = [
   {
     label: 'Survey Data',
-    to: `${ADMIN_URL}/survey-responses`,
+    to: '/survey-responses',
     icon: <Assignment />,
     tabs: [
-      // {
-      //   label: 'Review',
-      //   to: '',
-      //   component: DraftSurveyResponsesView,
-      // },
-      // {
-      //   label: 'Approved',
-      //   to: '/approved',
-      //   component: ApprovedSurveyResponsesView,
-      // },
       {
-        label: 'Survey Responses',
+        label: 'Review',
         to: '',
-        component: SurveyResponsesPage,
+        component: DraftSurveyResponsesView,
+      },
+      {
+        label: 'Approved',
+        to: '/approved',
+        component: ApprovedSurveyResponsesView,
+      },
+      {
+        label: 'Rejected',
+        to: '/rejected',
+        component: RejectedSurveyResponsesView,
+      },
+      {
+        label: 'Approval Not Required',
+        to: '/non-approval',
+        component: NonApprovalSurveyResponsesView,
       },
     ],
   },
   {
     label: 'Surveys',
-    to: `${ADMIN_URL}/surveys`,
+    to: '/surveys',
     icon: <Assignment />,
     tabs: [
       {
@@ -85,7 +85,7 @@ export const ROUTES = [
   },
   {
     label: 'Visualisations',
-    to: `${ADMIN_URL}/visualisations`,
+    to: '/visualisations',
     icon: <InsertChart />,
     tabs: [
       {
@@ -122,7 +122,7 @@ export const ROUTES = [
   },
   {
     label: 'Users & Permissions',
-    to: `${ADMIN_URL}/users`,
+    to: '/users',
     icon: <PeopleAlt />,
     tabs: [
       {
@@ -183,7 +183,7 @@ const AdminPanelRoutes = () => {
               </Switch>
             </LesmisAdminRoute>
           ))}
-          <Redirect to={`${path}${ADMIN_URL}/survey-responses`} />
+          <Redirect to={`${path}/survey-responses`} />
         </Switch>
       </div>
     </AdminPanelDataProviders>

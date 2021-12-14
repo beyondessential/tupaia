@@ -3,41 +3,33 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { SurveyResponsesPage, SURVEY_RESPONSE_COLUMNS } from '@tupaia/admin-panel/lib';
-import { ConfirmModal } from '@tupaia/ui-components';
-import { ApproveButton } from '../../components';
+import { SurveyResponsesPage, SURVEY_RESPONSE_PAGE_COLUMNS } from '@tupaia/admin-panel/lib';
+import { ApproveButton, RejectButton } from '../../components';
 
-// Todo: Replace base filter with real filter @see WAI-832
+const COLUMNS = SURVEY_RESPONSE_PAGE_COLUMNS.filter(
+  column => column.source !== 'outdated' && column.source !== 'approval_status',
+);
+
 export const ApprovedSurveyResponsesView = props => (
   <SurveyResponsesPage
     title="Approved Survey Responses"
-    baseFilter={{ 'survey.code': { comparator: 'ILIKE', comparisonValue: '%_Confirmed_WNR' } }}
+    baseFilter={{ approval_status: { comparisonValue: 'approved' } }}
+    columns={[...COLUMNS.filter(column => column.type !== 'delete')]}
     {...props}
   />
 );
 
-const entityName = {
-  Header: 'Entity',
-  source: 'entity.name',
-  editConfig: {
-    optionsEndpoint: 'entities',
-  },
-};
+export const RejectedSurveyResponsesView = props => (
+  <SurveyResponsesPage
+    title="Rejected Survey Responses"
+    baseFilter={{ approval_status: { comparisonValue: 'rejected' } }}
+    columns={[...COLUMNS.filter(column => column.type !== 'delete')]}
+    {...props}
+  />
+);
 
-const { surveyName, assessorName, date, dateOfData } = SURVEY_RESPONSE_COLUMNS;
-
-const COLUMNS = [
-  entityName,
-  ...SURVEY_RESPONSE_COLUMNS,
-  {
-    Header: 'Edit',
-    type: 'edit',
-    source: 'id',
-    actionConfig: {
-      editEndpoint: 'surveyResponses',
-      fields: [entityName, surveyName, assessorName, date, dateOfData],
-    },
-  },
+const DRAFT_COLUMNS = [
+  ...COLUMNS.filter(column => column.type !== 'delete'),
   {
     Header: 'Approve',
     source: 'id',
@@ -49,6 +41,7 @@ const COLUMNS = [
   {
     Header: 'Reject',
     source: 'id',
+    Cell: RejectButton,
     type: 'delete',
     actionConfig: {
       endpoint: 'surveyResponses',
@@ -56,30 +49,31 @@ const COLUMNS = [
   },
 ];
 
-// eslint-disable-next-line react/prop-types
-const ConfirmRejectModal = ({ isOpen, onConfirm, onCancel }) => {
-  return (
-    <ConfirmModal
-      onClose={onCancel}
-      isOpen={isOpen}
-      handleAction={onConfirm}
-      isLoading={false}
-      title="Reject Survey Response"
-      mainText="Are you sure you want to reject this Survey Response?"
-      description="Rejecting a Survey Response will also delete it. Once deleted this can’t be undone."
-      actionText="Yes, Reject and Delete"
-      loadingText="Saving"
-    />
-  );
-};
-
-// Todo: Replace base filter with real filter @see WAI-832
 export const DraftSurveyResponsesView = props => (
   <SurveyResponsesPage
     {...props}
     title="Survey Responses For Review"
-    baseFilter={{ 'survey.code': { comparator: 'NOT ILIKE', comparisonValue: '%_Confirmed_WNR' } }}
-    columns={COLUMNS}
-    ConfirmDeleteModalComponent={ConfirmRejectModal}
+    baseFilter={{ approval_status: { comparisonValue: 'pending' } }}
+    columns={DRAFT_COLUMNS}
+  />
+);
+
+// Don't include the approval column for the non-approval survey responses
+const EDIT_CONFIG = COLUMNS.find(column => column.type === 'edit');
+const EDIT_COLUMN = {
+  ...EDIT_CONFIG,
+  actionConfig: {
+    ...EDIT_CONFIG.actionConfig,
+    fields: EDIT_CONFIG.actionConfig.fields.filter(f => f.source !== 'approval_status'),
+  },
+};
+const NON_APPROVAL_COLUMNS = [...COLUMNS.filter(column => column.type !== 'edit'), EDIT_COLUMN];
+
+export const NonApprovalSurveyResponsesView = props => (
+  <SurveyResponsesPage
+    {...props}
+    title="Approval Not Required Survey Responses"
+    baseFilter={{ approval_status: { comparisonValue: 'not_required' } }}
+    columns={NON_APPROVAL_COLUMNS}
   />
 );
