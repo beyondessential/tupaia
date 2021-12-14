@@ -78,9 +78,7 @@ export function checkIfApplyDotStyle(presentationOptions) {
 }
 
 export function getIsUsingDots(presentationOptions) {
-  return (
-    Object.keys(presentationOptions).length > 0 && presentationOptions.conditions !== undefined
-  );
+  return Object.keys(presentationOptions).length > 0;
 }
 
 export const transformDataForViewType = viewContent => {
