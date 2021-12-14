@@ -20,7 +20,8 @@ import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Ro
 import { sessionCookie } from './sessionCookie';
 import { SessionModel } from '../models';
 
-const i18n = require('i18n')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const i18n = require('i18n');
 
 type Middleware = (req: Request, res: Response, next: NextFunction) => void;
 
@@ -35,7 +36,7 @@ export class ApiBuilder {
 
   private verifyAuthMiddleware?: Middleware;
 
-  private translatorConfigured: boolean = false;
+  private translatorConfigured = false;
 
   constructor(transactingConnection: TupaiaDatabase) {
     this.database = transactingConnection;
@@ -94,19 +95,19 @@ export class ApiBuilder {
         directory,
         queryParameter,
         objectNotation: true, // Allow locale files to use x.y notation
-        updateFiles: false,   // Don't update locale files while running
+        updateFiles: false, // Don't update locale files while running
         api: {
           // Rename translation functions
           __: 'translate',
-          __n: 'translaten'
-        }
+          __n: 'translaten',
+        },
       });
       this.translatorConfigured = true;
     }
     // Add translation to req/res locals
     this.app.use(i18n.init);
     return this;
-  };
+  }
 
   verifyAuth(verify: (accessPolicy: AccessPolicy) => void) {
     this.verifyAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
