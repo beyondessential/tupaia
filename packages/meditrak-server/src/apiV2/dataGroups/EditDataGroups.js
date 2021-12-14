@@ -28,6 +28,11 @@ export class EditDataGroups extends EditHandler {
   }
 
   async editRecord() {
+    const dataGroupEditPermissionChecker = accessPolicy =>
+      assertDataGroupPermissions(accessPolicy, this.models, this.recordId);
+    await this.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, dataGroupEditPermissionChecker]),
+    );
     return this.updateRecord();
   }
 }

@@ -28,6 +28,11 @@ export class EditDataElements extends EditHandler {
   }
 
   async editRecord() {
+    const dataElementEditPermissionChecker = accessPolicy =>
+      assertDataElementPermissions(accessPolicy, this.models, this.recordId);
+    await this.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, dataElementEditPermissionChecker]),
+    );
     return this.updateRecord();
   }
 }
