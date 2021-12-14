@@ -14,11 +14,6 @@ PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 cd ${TUPAIA_DIR}
 yarn install --non-interactive --frozen-lockfile
 
-# Inject environment variables from LastPass
-LASTPASS_EMAIL=$($DIR/fetchParameterStoreValue.sh LASTPASS_EMAIL)
-LASTPASS_PASSWORD=$($DIR/fetchParameterStoreValue.sh LASTPASS_PASSWORD)
-LASTPASS_EMAIL=$LASTPASS_EMAIL LASTPASS_PASSWORD=$LASTPASS_PASSWORD yarn download-env-vars $DEPLOYMENT_NAME
-
 # Build each package
 for PACKAGE in ${PACKAGES[@]}; do
     echo "Building ${PACKAGE}"
