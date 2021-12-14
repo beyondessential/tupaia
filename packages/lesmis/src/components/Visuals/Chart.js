@@ -10,7 +10,7 @@ import BarChartIcon from '@material-ui/icons/BarChart';
 import GridOnIcon from '@material-ui/icons/GridOn';
 import { Chart as ChartComponent, Table, getIsChartData } from '@tupaia/ui-components/lib/chart';
 import { FetchLoader } from '../FetchLoader';
-import { FlexEnd } from '../Layout';
+import { FlexStart, FlexEnd, FlexColumn } from '../Layout';
 import { ToggleButton } from '../ToggleButton';
 import { VisualHeader } from './VisualHeader';
 import * as COLORS from '../../constants';
@@ -19,6 +19,14 @@ const Wrapper = styled.div`
   flex: 1;
   display: flex;
   overflow: auto;
+`;
+
+const ExportContainer = styled(FlexColumn)`
+  justify-content: flex-start;
+
+  .recharts-surface {
+    overflow: visible;
+  }
 `;
 
 const ChartWrapper = styled(Wrapper)`
@@ -63,14 +71,47 @@ const Toggle = ({ value, onChange }) => (
   </ToggleButtonGroup>
 );
 
-// eslint-disable-next-line react/prop-types
-const ChartTable = ({ viewContent, isLoading, isError, error, selectedTab, isExporting }) => {
+/* eslint-disable react/prop-types */
+const ChartTable = ({
+  viewContent,
+  exportOptions,
+  isLoading,
+  isError,
+  error,
+  selectedTab,
+  isExporting,
+}) => {
+  const newViewContent = {
+    ...viewContent,
+    presentationOptions: {
+      ...viewContent?.presentationOptions,
+      ...exportOptions,
+    },
+  };
+
+  if (isExporting) {
+    return (
+      <ExportContainer>
+        <ChartComponent
+          viewContent={newViewContent}
+          legendPosition="top"
+          isExporting={isExporting}
+        />
+        {exportOptions?.exportWithTable && (
+          <FlexStart my={5}>
+            <Table viewContent={viewContent} />
+          </FlexStart>
+        )}
+      </ExportContainer>
+    );
+  }
+
   return (
     <FetchLoader isLoading={isLoading} isError={isError} error={error}>
       {selectedTab === TABS.CHART ? (
         <ChartWrapper>
           <ChartComponent
-            viewContent={viewContent}
+            viewContent={newViewContent}
             legendPosition="top"
             isExporting={isExporting}
           />
@@ -86,6 +127,7 @@ const ChartTable = ({ viewContent, isLoading, isError, error, selectedTab, isExp
 
 export const Chart = ({
   name,
+  exportOptions,
   viewContent,
   isLoading,
   isFetching,
@@ -121,6 +163,7 @@ export const Chart = ({
         error={error}
         selectedTab={isExporting ? TABS.CHART : selectedTab}
         isExporting={isExporting}
+        exportOptions={exportOptions}
       />
     </>
   ) : (
@@ -144,6 +187,7 @@ export const Chart = ({
 
 Chart.propTypes = {
   viewContent: PropTypes.object,
+  exportOptions: PropTypes.object,
   isLoading: PropTypes.bool,
   isFetching: PropTypes.bool,
   isEnlarged: PropTypes.bool,
@@ -155,6 +199,7 @@ Chart.propTypes = {
 
 Chart.defaultProps = {
   viewContent: null,
+  exportOptions: null,
   isLoading: false,
   isFetching: false,
   isEnlarged: false,
