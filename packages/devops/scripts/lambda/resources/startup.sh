@@ -35,8 +35,7 @@ mkdir -m 777 -p $LOGS_DIR
 
 # Add preaggregation cron job if production
 if [[ $DEPLOYMENT_NAME == "production" ]]; then
-  echo PATH=$PATH > tmp.cron
-  echo "10 13 * * * /home/ubuntu/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do printf '\%s \%s\\n' \"\$(date)\" \"\$line\"; done > /home/ubuntu/logs/preaggregation.txt" >> tmp.cron
+  echo "10 13 * * * PATH=$PATH /home/ubuntu/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do printf '\%s \%s\\n' \"\$(date)\" \"\$line\"; done > /home/ubuntu/logs/preaggregation.txt" > tmp.cron
   sudo -u ubuntu crontab -l >> tmp.cron || echo "" >> tmp.cron
   sudo -u ubuntu crontab tmp.cron
   rm tmp.cron
