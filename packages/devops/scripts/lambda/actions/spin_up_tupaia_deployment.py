@@ -36,7 +36,7 @@
 
 from datetime import datetime, timedelta
 
-from helpers.clone import clone_instance
+from helpers.creation import create_db_instance_from_snapshot
 from helpers.create_from_image import create_tupaia_instance_from_image
 from helpers.utilities import find_instances
 
@@ -60,6 +60,7 @@ def spin_up_tupaia_deployment(event):
 
     # get manual input parameters, or default for any not provided
     instance_type = event.get('InstanceType', 't3a.medium')
+    db_instance_type = event.get('DbInstanceType', 't4g.medium')
     image_code = event.get('ImageCode', 'tupaia-gold-master') # Use AMI tagged with code
     security_group_code = event.get('SecurityGroupCode', 'tupaia-dev-sg') # Use security group tagged with code
     clone_db_from = event.get('CloneDbFrom', 'production') # Use volume snapshot tagged with deployment name
@@ -91,23 +92,21 @@ def spin_up_tupaia_deployment(event):
         deployment_name,
         branch,
         instance_type,
-        extra_tags=extra_tags + [{ 'Key': 'DeploymentComponent', 'Value': 'app-server' }],
+        extra_tags=extra_tags,
         image_code=image_code,
         security_group_code=security_group_code,
     )
 
-    # clone db instance
-    # do this after the server has started because it will take a while to run its startup script, so
-    # we might as well be cloning the db instance at the same time, so long is it is available before
+    # create db instance from a snapshot
+    # do this after the server has started because it will take a while to populate the db from the snapshot, 
+    # so we might as well be cloning the db instance at the same time, so long is it is available before
     # the server first tries to connect
-    deployment_type='tupaia'
-    clone_instance(
-        deployment_type,
-        clone_db_from,
+    create_db_instance_from_snapshot(
         deployment_name,
-        instance_type,
-        extra_tags=extra_tags + [{ 'Key': 'DeploymentComponent', 'Value': 'db' }],
-        security_group_code=security_group_code,
+        'tupaia',
+        clone_db_from,
+        db_instance_type,
+        security_group_code
     )
 
     print('Successfully deployed branch ' + branch)
