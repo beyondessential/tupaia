@@ -867,6 +867,7 @@ function* watchFetchMoreSearchResults() {
  */
 function* fetchMeasureInfo(mapOverlayCodes, displayedMapOverlays) {
   const state = yield select();
+  const { maxSelectedOverlays } = state.map;
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
   const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
@@ -921,7 +922,7 @@ function* fetchMeasureInfo(mapOverlayCodes, displayedMapOverlays) {
     }
   }
 
-  if (mapOverlayCodes.length === 1) {
+  if (maxSelectedOverlays === 1) {
     yield put(setDisplayedMapOverlays(mapOverlayCodes));
   } else if (displayedMapOverlays) {
     yield put(setDisplayedMapOverlays(updatedDisplayedMapOverlays));
