@@ -34,12 +34,9 @@ mkdir -m 777 -p $LOGS_DIR
 # fi
 
 # Add preaggregation cron job if production
-if [[ $DEPLOYMENT_NAME == "test-crontab-2" ]]; then
+if [[ $DEPLOYMENT_NAME == "production" ]]; then
   set +e # Temporarily allow non 0 exit, as crontab probably doesn't exist yet
-  echo "running"
   (sudo -u ubuntu crontab -l ; echo "10 13 * * * /home/ubuntu/tupaia/packages/web-config-server/run_preaggregation.sh |& while IFS= read -r line; do printf '\%s \%s\\n' \"\$(date)\" \"\$line\"; done > /home/ubuntu/logs/preaggregation.txt") | sudo -u ubuntu crontab -
-  echo $?
-  echo "done"
   set -e
 fi
 
