@@ -5,6 +5,7 @@
 
 export { CreateButton } from './CreateButton';
 export { DATA_CHANGE_ACTIONS } from './constants';
+export { DataChangeAction } from './DataChangeAction';
 export { EditButton } from './EditButton';
 export { EditModal } from './EditModal';
 export { reducer } from './reducer';
