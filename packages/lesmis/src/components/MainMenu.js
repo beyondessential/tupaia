@@ -161,8 +161,7 @@ export const MainMenu = () => {
             </ListItemIcon>
             <ListItemText primary={<I18n t="home.contactUs" />} />
           </LocaleListItemLink>
-          {/*// Todo: Display admin-panel links @see WAI-832*/}
-          {/*{isLesmisAdmin && <AdminPanelLinks />}*/}
+          {isLesmisAdmin && <AdminPanelLinks />}
           <Subheader component="div">
             <I18n t="home.onlineQuestionnaires" />
           </Subheader>

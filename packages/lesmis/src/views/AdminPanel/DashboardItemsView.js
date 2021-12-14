@@ -9,6 +9,10 @@ import { DashboardItemsPage } from '@tupaia/admin-panel/lib';
 // admin-panel-server and not meditrak-server
 export const DashboardItemsView = props => {
   const dashboardItemColumns = DashboardItemsPage(props).props.columns;
-  const columns = dashboardItemColumns.filter(column => column.type !== 'export');
-  return <DashboardItemsPage columns={columns} importConfig={null} {...props} />;
+  const columns = dashboardItemColumns.filter(
+    column => column.type !== 'export' && column.type !== 'export',
+  );
+  return (
+    <DashboardItemsPage columns={columns} importConfig={null} LinksComponent={null} {...props} />
+  );
 };

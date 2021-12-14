@@ -16,15 +16,13 @@ import {
   MapOverlayGroupRelationsPage,
   MapOverlayGroupsPage,
   MapOverlaysPage,
-  AccessRequestsPage,
-  PermissionGroupsPage,
-  PermissionsPage,
   UsersPage,
   AdminPanelDataProviders,
 } from '@tupaia/admin-panel/lib';
 import { LesmisAdminRoute } from './LesmisAdminRoute';
 import { useUser } from '../api/queries';
 import { getApiUrl } from '../utils/getApiUrl';
+import { PermissionsView } from '../views/AdminPanel/PermissionsView';
 import { DashboardItemsView } from '../views/AdminPanel/DashboardItemsView';
 import {
   ApprovedSurveyResponsesView,
@@ -32,6 +30,12 @@ import {
   RejectedSurveyResponsesView,
   NonApprovalSurveyResponsesView,
 } from '../views/AdminPanel/SurveyResponsesView';
+
+// Only show users who signed up through lesmis
+const UsersView = props => <UsersPage {...props} baseFilter={{ primary_platform: 'lesmis' }} />;
+
+// Hide the new button until there is a viz builder in lesmis
+const MapOverlaysView = props => <MapOverlaysPage {...props} LinksComponent={null} />;
 
 export const ROUTES = [
   {
@@ -106,7 +110,7 @@ export const ROUTES = [
       {
         label: 'Map Overlays',
         to: '/map-overlays',
-        component: MapOverlaysPage,
+        component: MapOverlaysView,
       },
       {
         label: 'Map Overlay Groups',
@@ -128,22 +132,12 @@ export const ROUTES = [
       {
         label: 'Users',
         to: '',
-        component: UsersPage,
+        component: UsersView,
       },
       {
         label: 'Permissions',
         to: '/permissions',
-        component: PermissionsPage,
-      },
-      {
-        label: 'Permission Groups',
-        to: '/permission-groups',
-        component: PermissionGroupsPage,
-      },
-      {
-        label: 'Access Requests',
-        to: '/access-requests',
-        component: AccessRequestsPage,
+        component: PermissionsView,
       },
     ],
   },

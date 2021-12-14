@@ -80,7 +80,7 @@ const CREATE_CONFIG = {
   },
 };
 
-export const PermissionsPage = ({ getHeaderEl }) => (
+export const PermissionsPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
     title="Permissions"
     endpoint={PERMISSIONS_ENDPOINT}
@@ -88,6 +88,7 @@ export const PermissionsPage = ({ getHeaderEl }) => (
     editConfig={EDIT_CONFIG}
     createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
+    {...props}
   />
 );
 

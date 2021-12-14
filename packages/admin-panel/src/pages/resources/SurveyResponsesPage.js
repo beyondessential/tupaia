@@ -10,8 +10,9 @@ import { getBrowserTimeZone } from '@tupaia/utils';
 import { ResourcePage } from './ResourcePage';
 import { SurveyResponsesExportModal } from '../../importExport';
 
+// Don't include not_required as an editable option because it can lead to
+// mis-matches between surveys and survey responses
 export const APPROVAL_STATUS_TYPES = [
-  { label: 'Not Required', value: 'not_required' },
   { label: 'Pending', value: 'pending' },
   { label: 'Rejected', value: 'rejected' },
   { label: 'Approved', value: 'approved' },
