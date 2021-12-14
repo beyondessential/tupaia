@@ -8,10 +8,12 @@ import { Route } from '@tupaia/server-boilerplate';
 import { sleep } from '@tupaia/utils';
 import { MeditrakConnection } from '../connections';
 
-export class ApproveSurveyResponse extends Route {
+export type ApproveSurveyResponseRequest = Request<{ id: string }, any, any, any>;
+
+export class ApproveSurveyResponse extends Route<ApproveSurveyResponseRequest> {
   private readonly meditrakConnection: MeditrakConnection;
 
-  constructor(req: Request, res: Response, next: NextFunction) {
+  constructor(req: ApproveSurveyResponseRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.meditrakConnection = new MeditrakConnection(req.session);
