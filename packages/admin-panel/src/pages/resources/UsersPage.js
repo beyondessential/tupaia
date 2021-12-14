@@ -40,10 +40,6 @@ const FIELDS = [
     source: 'position',
   },
   {
-    Header: 'Platform',
-    source: 'primary_platform',
-  },
-  {
     Header: 'Employer',
     source: 'employer',
     type: 'tooltip',
