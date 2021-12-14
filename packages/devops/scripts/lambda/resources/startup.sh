@@ -25,7 +25,7 @@ BRANCH=$(${DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh Branch)
 echo "Starting up ${DEPLOYMENT_NAME} (${BRANCH})"
 
 # Create a directory for logs to go
-mkdir -p $LOGS_DIR
+mkdir -m 777 -p $LOGS_DIR
 
 # Turn on cloudwatch agent for prod and dev (can be turned on manually if needed on feature instances)
 # TODO currently broken
