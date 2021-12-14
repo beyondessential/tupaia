@@ -18,6 +18,7 @@
     ]
   },
   "scripts": {
+    "build": "yarn workspaces run build",
     "build-admin-panel": "yarn workspace @tupaia/admin-panel build",
     "build-internal-dependencies": "./scripts/bash/buildInternalDependencies.sh",
     "build-web-frontend": "yarn workspace @tupaia/web-frontend build",
