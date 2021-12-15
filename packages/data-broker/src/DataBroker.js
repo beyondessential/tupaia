@@ -20,10 +20,20 @@ const getModelRegistry = () => {
   return modelRegistry;
 };
 
+const getPermissionIdListWithWildcard = async (accessPolicy, models) => {
+  // Get the users permission groups as a list of ids
+  const userPermissionGroupNames = accessPolicy.getPermissionGroups();
+  const userPermissionGroups = await models.permissionGroup.find({
+    name: userPermissionGroupNames,
+  });
+  return ['*', ...userPermissionGroups.map(permission => permission.id)];
+};
+
 export class DataBroker {
   constructor(context = {}) {
     this.context = context;
     this.models = getModelRegistry();
+    this.userPermissions = getPermissionIdListWithWildcard(this.context.accessPolicy, this.models);
     this.resultMergers = {
       [this.getDataSourceTypes().DATA_ELEMENT]: this.mergeAnalytics,
       [this.getDataSourceTypes().DATA_GROUP]: this.mergeEvents,
@@ -33,6 +43,11 @@ export class DataBroker {
       [this.getDataSourceTypes().DATA_ELEMENT]: this.fetchFromDataElementTable,
       [this.getDataSourceTypes().DATA_GROUP]: this.fetchFromDataGroupTable,
       [this.getDataSourceTypes().SYNC_GROUP]: this.fetchFromSyncGroupTable,
+    };
+    this.permissionCheckers = {
+      [this.getDataSourceTypes().DATA_ELEMENT]: this.checkDataElementPermissions,
+      [this.getDataSourceTypes().DATA_GROUP]: this.checkDataGroupPermissions,
+      [this.getDataSourceTypes().SYNC_GROUP]: this.checkSyncGroupPermissions,
     };
   }
 
@@ -56,6 +71,32 @@ export class DataBroker {
     // Add 'type' field to output to keep object layout consistent between tables
     const syncGroups = await this.models.dataServiceSyncGroup.find({ code: dataSourceSpec.code });
     return syncGroups.map(sg => ({ ...sg, type: this.getDataSourceTypes().SYNC_GROUP }));
+  };
+
+  checkDataElementPermissions = async dataElements => {
+    for (const element of dataElements) {
+      if (element.permission_groups.every(id => this.userPermissions.includes(id))) {
+        continue;
+      }
+      return false;
+    }
+    return true;
+  };
+
+  checkDataGroupPermissions = async dataGroups => {
+    for (const group of dataGroups) {
+      const dataElements = this.models.dataGroup.getDataElementsInDataGroup(group.code);
+      if (this.checkDataElementPermissions(dataElements)) {
+        continue;
+      }
+      return false;
+    }
+    return true;
+  };
+
+  // No check for syncGroups currently
+  checkSyncGroupPermissions = () => {
+    return true;
   };
 
   async fetchDataSources(dataSourceSpec) {
@@ -123,6 +164,11 @@ export class DataBroker {
 
   pullForServiceAndType = async (dataSources, options, type) => {
     const { service_type: serviceType } = dataSources[0];
+    const permissionChecker = this.permissionCheckers[type];
+    const userHasPermission = await permissionChecker(dataSources);
+    if (!userHasPermission) {
+      throw new Error(`Missing permissions for some or all ${type}s for ${serviceType}`);
+    }
     const service = this.createService(serviceType);
     return service.pull(dataSources, type, options);
   };
