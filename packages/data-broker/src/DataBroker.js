@@ -33,7 +33,9 @@ export class DataBroker {
   constructor(context = {}) {
     this.context = context;
     this.models = getModelRegistry();
-    this.userPermissions = getPermissionIdListWithWildcard(this.context.accessPolicy, this.models);
+    this.userPermissions = this.context.accessPolicy
+      ? getPermissionIdListWithWildcard(this.context.accessPolicy, this.models)
+      : ['*'];
     this.resultMergers = {
       [this.getDataSourceTypes().DATA_ELEMENT]: this.mergeAnalytics,
       [this.getDataSourceTypes().DATA_GROUP]: this.mergeEvents,
