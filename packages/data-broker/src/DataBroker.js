@@ -22,6 +22,9 @@ const getModelRegistry = () => {
 
 const getPermissionIdListWithWildcard = async (accessPolicy, models) => {
   // Get the users permission groups as a list of ids
+  if (!accessPolicy) {
+    return ['*'];
+  }
   const userPermissionGroupNames = accessPolicy.getPermissionGroups();
   const userPermissionGroups = await models.permissionGroup.find({
     name: userPermissionGroupNames,
@@ -33,9 +36,6 @@ export class DataBroker {
   constructor(context = {}) {
     this.context = context;
     this.models = getModelRegistry();
-    this.userPermissions = this.context.accessPolicy
-      ? getPermissionIdListWithWildcard(this.context.accessPolicy, this.models)
-      : ['*'];
     this.resultMergers = {
       [this.getDataSourceTypes().DATA_ELEMENT]: this.mergeAnalytics,
       [this.getDataSourceTypes().DATA_GROUP]: this.mergeEvents,
@@ -51,6 +51,16 @@ export class DataBroker {
       [this.getDataSourceTypes().DATA_GROUP]: this.checkDataGroupPermissions,
       [this.getDataSourceTypes().SYNC_GROUP]: this.checkSyncGroupPermissions,
     };
+  }
+
+  async getUserPermissions() {
+    if (!this.userPermissions) {
+      this.userPermissions = await getPermissionIdListWithWildcard(
+        this.context.accessPolicy,
+        this.models,
+      );
+    }
+    return this.userPermissions;
   }
 
   async close() {
@@ -76,8 +86,9 @@ export class DataBroker {
   };
 
   checkDataElementPermissions = async dataElements => {
+    const userPermissions = await this.getUserPermissions();
     for (const element of dataElements) {
-      if (element.permission_groups.every(id => this.userPermissions.includes(id))) {
+      if (element.permission_groups.every(id => userPermissions.includes(id))) {
         continue;
       }
       return false;
@@ -87,7 +98,7 @@ export class DataBroker {
 
   checkDataGroupPermissions = async dataGroups => {
     for (const group of dataGroups) {
-      const dataElements = this.models.dataGroup.getDataElementsInDataGroup(group.code);
+      const dataElements = await this.models.dataGroup.getDataElementsInDataGroup(group.code);
       if (this.checkDataElementPermissions(dataElements)) {
         continue;
       }
