@@ -318,7 +318,7 @@ const EnlargedDialogComponent = ({
         <EnlargedDialogContent
           exportRef={exportRef}
           onCloseOverlay={onCloseOverlay}
-          viewContent={viewContentWithExportOptions}
+          viewContent={isMatrix ? viewContent : viewContentWithExportOptions}
           drillDownContent={drillDownState.drillDownLevel === 0 ? null : drillDownContent}
           organisationUnitName={organisationUnitName}
           onDrillDown={onDrillDown}
