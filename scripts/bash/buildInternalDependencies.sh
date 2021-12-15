@@ -4,12 +4,11 @@ DIR=$(dirname "$0")
 
 CONCURRENT_BUILD_BATCH_SIZE=2
 
-USAGE="Usage: buildInternalDependencies.sh [--watch] [--withTypes] [--packagePath]"
+USAGE="Usage: buildInternalDependencies.sh [--watch] [--packagePath]"
 
 OUT_DIR="dist"
 
 watch=false
-with_types=false
 package_path=""
 while [ "$1" != "" ]; do
     case $1 in
