@@ -171,23 +171,6 @@ export async function importSurveyResponses(req, res) {
         }
       }
 
-      for (let columnIndex = minSurveyResponseIndex; columnIndex <= maxColumnIndex; columnIndex++) {
-        const columnHeader = getColumnHeader(sheet, columnIndex);
-        validateColumnHeader(columnHeader, columnIndex, tabName);
-        const importMode = getImportMode(columnHeader);
-
-        if ([IMPORT_MODES.NEW, IMPORT_MODES.MERGE].includes(importMode)) {
-          const surveyResponseId = surveyResponseIds[columnIndex];
-          const surveyResponseDetails = await constructNewSurveyResponseDetails(
-            models,
-            sheet,
-            columnIndex,
-            { id: surveyResponseId, survey, timeZone, userId },
-          );
-          updatePersistor.createSurveyResponse(surveyResponseId, surveyResponseDetails);
-        }
-      }
-
       const infoValidator = new ObjectValidator(constructInfoColumnValidators(models));
       const ignoredRowTypes = [ANSWER_TYPES.INSTRUCTION, ANSWER_TYPES.PRIMARY_ENTITY];
       for (let rowIndex = 1; rowIndex <= maxRowIndex; rowIndex++) {
