@@ -867,10 +867,12 @@ function* watchFetchMoreSearchResults() {
  */
 function* fetchMeasureInfo(mapOverlayCodes, displayedMapOverlays) {
   const state = yield select();
+  const { maxSelectedOverlays } = state.map;
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
   const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
   const activeProjectCode = selectCurrentProjectCode(state);
+  const updatedDisplayedMapOverlays = [];
 
   if (!organisationUnitCode) {
     yield put(cancelFetchMeasureData());
@@ -902,13 +904,28 @@ function* fetchMeasureInfo(mapOverlayCodes, displayedMapOverlays) {
     try {
       const measureInfoResponse = yield call(request, requestResourceUrl);
       const measureInfo = processMeasureInfo(measureInfoResponse);
+      const { measureData, serieses } = measureInfo;
+      const { values = [] } = (serieses && serieses[0]) || {};
+      // Any non-visible map overlay need to have its orange toggle turned off
+      const hasMeasureData = measureData && measureData.length > 0;
+      const hasNullValues = values.find(({ value }) => !value || value === 'null');
+      if (
+        (hasNullValues || hasMeasureData) &&
+        displayedMapOverlays &&
+        displayedMapOverlays.includes(mapOverlayCode)
+      ) {
+        updatedDisplayedMapOverlays.push(mapOverlayCode);
+      }
       yield put(fetchMeasureInfoSuccess(measureInfo, countryCode));
     } catch (error) {
       yield put(fetchMeasureInfoError(error));
     }
   }
-  if (displayedMapOverlays) {
-    yield put(setDisplayedMapOverlays(displayedMapOverlays));
+
+  if (maxSelectedOverlays === 1) {
+    yield put(setDisplayedMapOverlays(mapOverlayCodes));
+  } else if (displayedMapOverlays) {
+    yield put(setDisplayedMapOverlays(updatedDisplayedMapOverlays));
   }
   yield put(fetchAllMeasureInfoSuccess(mapOverlayCodes));
 }
