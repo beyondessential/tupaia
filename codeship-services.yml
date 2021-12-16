@@ -2,7 +2,7 @@
 # .env files for each package and copy them to the environment_variables volume for use in later steps
 lastpass:
   build:
-    dockerfile: ./packages/devops/ci/tupaia-ci-cd.Dockerfile
+    dockerfile: ./packages/devops/ci/lastpass.Dockerfile
   encrypted_env_file: ./packages/devops/ci/lastpass.env.encrypted # lastpass credentials to fetch env vars
   cached: true
   default_cache_branch: 'dev'

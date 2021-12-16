@@ -4,6 +4,11 @@ DIR=$(dirname "$0")
 
 PACKAGES=$(${DIR}/../../../../scripts/bash/getPackagesWithEnvFiles.sh)
 
+# make dirs for downloaded .env files to go to
+for PACKAGE in $PACKAGES; do
+    mkdir -p "./packages/${PACKAGE}"
+done
+
 # download environment variables
 ${DIR}/../../../../scripts/bash/downloadEnvironmentVariables.sh ${CI_BRANCH} ${PACKAGES}
 

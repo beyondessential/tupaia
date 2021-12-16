@@ -46,9 +46,6 @@ if [[ $watch == "true" ]]; then
     eval "yarn concurrently ${build_commands[@]}"
 else
     echo "Concurrently building internal dependencies in batches of ${CONCURRENT_BUILD_BATCH_SIZE}"
-    total_build_commands=${#build_commands[@]}
-    for ((start_index = 0; start_index < ${total_build_commands}; start_index += ${CONCURRENT_BUILD_BATCH_SIZE})); do
-        echo "yarn concurrently ${build_commands[@]:${start_index}:${CONCURRENT_BUILD_BATCH_SIZE}}"
-        eval "yarn concurrently ${build_commands[@]:${start_index}:${CONCURRENT_BUILD_BATCH_SIZE}}"
-    done
+    echo "yarn concurrently -m $CONCURRENT_BUILD_BATCH_SIZE --prefix -k ${build_commands[*]}"
+    eval "yarn concurrently -m $CONCURRENT_BUILD_BATCH_SIZE --prefix -k ${build_commands[*]}"
 fi

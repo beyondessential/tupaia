@@ -23,7 +23,7 @@ COPY packages/ui-components/package.json ./packages/ui-components
 RUN mkdir -p ./packages/utils
 COPY packages/utils/package.json ./packages/utils
 
-RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
+RUN yarn install --ignore-scripts
 
 # Copy TS config used in internal dependencies
 COPY tsconfig-js.json ./
