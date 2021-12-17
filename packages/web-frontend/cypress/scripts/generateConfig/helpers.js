@@ -3,11 +3,27 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { uniq } from 'lodash';
+import { keyBy, uniq } from 'lodash';
 import moment from 'moment';
 
-import { compareAsc, readJsonFile, yup, yupUtils } from '@tupaia/utils';
+import { compareAsc, hasIntersection, readJsonFile, toArray, yup, yupUtils } from '@tupaia/utils';
 import { convertDateRangeToUrlPeriodString } from '../../../src/historyNavigation/utils';
+
+export const VIZ_TYPES = {
+  DASHBOARD_REPORT: 'dashboardReport',
+  MAP_OVERLAY: 'mapOverlay',
+};
+
+const VIZ_TYPE_CONFIG = {
+  [VIZ_TYPES.DASHBOARD_REPORT]: {
+    name: 'Dashboard report',
+    key: 'code',
+  },
+  [VIZ_TYPES.MAP_OVERLAY]: {
+    name: 'Map overlay',
+    key: 'id',
+  },
+};
 
 export const buildUrlsUsingConfig = async (db, config, generateUrls) => {
   const { urlFiles = [], urls = [], urlGenerationOptions = {} } = config;
@@ -44,4 +60,31 @@ export const buildVizPeriod = (startDate, endDate) => {
     startDate: moment(startDate),
     endDate: moment(endDate),
   });
+};
+
+export const filterObjectUrls = (objectUrls, filter, vizType) => {
+  if (Object.keys(filter).length === 0) {
+    return objectUrls;
+  }
+
+  const { key, name: vizTypeName } = VIZ_TYPE_CONFIG[vizType];
+  const objectUrlsByKey = keyBy(objectUrls, key);
+
+  const filterUrl = url =>
+    Object.entries(filter).some(([filterKey, targetValue]) => {
+      const objectUrl = objectUrlsByKey[url[key]];
+      if (!objectUrl) {
+        throw new Error(`${vizTypeName} with ${key} "${url[key]}" was not found in the database`);
+      }
+
+      // skip all urls that do not have the filter key
+      if (objectUrl[filterKey] === undefined || objectUrl[filterKey] === null) {
+        return false;
+      }
+
+      const value = url[filterKey];
+      return hasIntersection(toArray(targetValue), toArray(value));
+    });
+
+  return objectUrls.filter(filterUrl);
 };

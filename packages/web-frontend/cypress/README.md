@@ -23,8 +23,7 @@ Our e2e tests support Tupaia-specific configuration specified in [config.json](c
       "code": ["report_code1", "report_code2"],
       "project": ["covidau", "strive"],
       "orgUnit": "PG",
-      "dashboard": "Dashboard1",
-      "dataBuilder": ["tableOfEvents", "sumAll"]
+      "dashboard": "Dashboard1"
     }
   },
   "mapOverlays": {
@@ -39,8 +38,7 @@ Our e2e tests support Tupaia-specific configuration specified in [config.json](c
     "filter": {
       "id": "id",
       "project": "covidau",
-      "orgUnit": "TO",
-      "measureBuilder": "valueForOrgGroup"
+      "orgUnit": "TO"
     }
   }
 }
@@ -122,19 +120,15 @@ Use any of the fields below to specify test urls. You can use multiple fields in
 
 #### Filter
 
-⚠️ This field is **not** currently available in CI/CD test runs
-
-You can optionally specify a `filter` that will be applied to the tested visualisations. For example, to test all "Fanafana" project overlays that use the "valueForOrgGroup" data builder in Tonga and Vanuatu:
+You can optionally specify a `filter` that will be applied to the selected visualisations:
 
 ```json
 {
   "mapOverlays": {
-    "urlGenerationOptions": {
-      "project": "fanafana"
-    },
+    "urlFiles": ["cypress/config/mapOverlayUrls/default.json"],
     "filter": {
-      "orgUnit": ["TO", "VU"],
-      "measureBuilder": "valueForOrgGroup"
+      "project": "fanafana",
+      "orgUnit": ["TO", "VU"]
     }
   }
 }

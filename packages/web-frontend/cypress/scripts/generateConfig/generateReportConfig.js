@@ -7,8 +7,14 @@
 
 import { stringifyQuery, yup } from '@tupaia/utils';
 import config from '../../config.json';
-import { buildUrlSchema, buildUrlsUsingConfig, buildVizPeriod, sortUrls } from './helpers';
-import { DashboardReportFilter } from './VisualisationFilter';
+import {
+  buildUrlSchema,
+  buildUrlsUsingConfig,
+  buildVizPeriod,
+  filterObjectUrls,
+  sortUrls,
+  VIZ_TYPES,
+} from './helpers';
 
 const urlSchema = buildUrlSchema({
   regex: new RegExp('^/[^/]+/[^/]+/[^/]+?.*report=.+'),
@@ -67,7 +73,7 @@ export const generateReportConfig = async db => {
 
   const urls = await buildUrlsUsingConfig(db, reportConfig);
   const objectUrls = urls.map(parseUrl);
-  const filteredObjectUrls = await new DashboardReportFilter(db, filter).apply(objectUrls);
+  const filteredObjectUrls = filterObjectUrls(objectUrls, filter, VIZ_TYPES.DASHBOARD_REPORT);
 
   return {
     allowEmptyResponse: reportConfig.allowEmptyResponse,

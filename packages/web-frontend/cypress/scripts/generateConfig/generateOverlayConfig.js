@@ -7,8 +7,14 @@ import { groupBy } from 'lodash';
 
 import { getUniqueEntries, mapKeys, stringifyQuery, toArray, yup, yupUtils } from '@tupaia/utils';
 import config from '../../config.json';
-import { buildUrlSchema, buildUrlsUsingConfig, buildVizPeriod, sortUrls } from './helpers';
-import { MapOverlayFilter } from './VisualisationFilter';
+import {
+  buildUrlSchema,
+  buildUrlsUsingConfig,
+  buildVizPeriod,
+  filterObjectUrls,
+  sortUrls,
+  VIZ_TYPES,
+} from './helpers';
 
 const { oneOrArrayOf } = yupUtils;
 
@@ -132,7 +138,7 @@ export const generateOverlayConfig = async db => {
 
   const urls = await buildUrlsUsingConfig(db, overlayConfig, generateUrls);
   const objectUrls = removeRedundantObjectUrls(urls.map(parseUrl));
-  const filteredObjectUrls = await new MapOverlayFilter(db, filter).apply(objectUrls);
+  const filteredObjectUrls = filterObjectUrls(objectUrls, filter, VIZ_TYPES.MAP_OVERLAY);
 
   return {
     allowEmptyResponse: overlayConfig.allowEmptyResponse,
