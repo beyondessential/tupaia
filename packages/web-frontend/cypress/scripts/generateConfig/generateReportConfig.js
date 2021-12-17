@@ -67,11 +67,11 @@ const parseUrl = url => {
   };
 };
 
-export const generateReportConfig = async db => {
+export const generateReportConfig = async () => {
   const { dashboardReports: reportConfig } = config;
   const { filter = {} } = reportConfig;
 
-  const urls = await buildUrlsUsingConfig(db, reportConfig);
+  const urls = await buildUrlsUsingConfig(reportConfig);
   const objectUrls = urls.map(parseUrl);
   const filteredObjectUrls = filterObjectUrls(objectUrls, filter, VIZ_TYPES.DASHBOARD_REPORT);
 

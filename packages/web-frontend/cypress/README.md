@@ -29,11 +29,6 @@ Our e2e tests support Tupaia-specific configuration specified in [config.json](c
   "mapOverlays": {
     "allowEmptyResponse": false,
     "snapshotTypes": ["responseData"],
-    "urlGenerationOptions": {
-      "id": "overlay_id",
-      "orgUnit": ["TO", "VU"],
-      "project": "unfpa"
-    },
     "urls": ["/covidau/AU?overlay=AU_FLUTRACKING_Fever_And_Cough"],
     "filter": {
       "id": "id",
@@ -105,16 +100,7 @@ Use any of the fields below to specify test urls. You can use multiple fields in
   "urlFiles": [
     "cypress/config/dashboardReportUrls/default.json",
     "cypress/config/dashboardReportUrls/covidau.json"
-  ],
-
-  // ⚠️ This field is not currently available in CI/CD test runs
-  //
-  // Dynamically generate urls (available for `mapOverlays`)
-  // If the same overlay id is selected for the same country across projects, only the first
-  // project will be used, since the overlay will be the same in all these cases
-  "urlGenerationOptions": {
-    "project": ["strive", "covidau"]
-  }
+  ]
 }
 ```
 

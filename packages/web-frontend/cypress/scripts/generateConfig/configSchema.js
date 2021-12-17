@@ -49,11 +49,6 @@ export const configSchema = shape({
     }),
     snapshotTypes: arrayOf([SNAPSHOT_TYPES.RESPONSE_DATA]).min(1).required(),
     urlFiles: strings,
-    urlGenerationOptions: shape({
-      id: stringOrStrings,
-      project: stringOrStrings,
-      orgUnit: stringOrStrings,
-    }),
     urls: stringsOrObjects,
   }),
 });
