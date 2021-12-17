@@ -33,6 +33,7 @@
     "@tupaia/database": "1.0.0",
     "@tupaia/server-boilerplate": "1.0.0",
     "@tupaia/utils": "1.0.0",
+    "@tupaia/report-server": "0.0.0",
     "api-error-handler": "^1.0.0",
     "body-parser": "^1.18.3",
     "camelcase-keys": "^7.0.0",

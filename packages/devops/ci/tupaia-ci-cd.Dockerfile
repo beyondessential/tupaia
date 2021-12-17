@@ -113,6 +113,7 @@ COPY packages/ui-components/. ./packages/ui-components
 COPY packages/weather-api/. ./packages/weather-api
 COPY packages/server-boilerplate/. ./packages/server-boilerplate
 COPY packages/kobo-api/. ./packages/kobo-api
+COPY ./tsconfig* ./
 
 ## build internal dependencies
 RUN yarn build:internal-dependencies

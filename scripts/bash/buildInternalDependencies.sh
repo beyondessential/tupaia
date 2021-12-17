@@ -2,7 +2,7 @@
 
 DIR=$(dirname "$0")
 
-CONCURRENT_BUILD_BATCH_SIZE=2
+CONCURRENT_BUILD_BATCH_SIZE=1
 
 USAGE="Usage: buildInternalDependencies.sh [--watch] [--packagePath]"
 
@@ -34,18 +34,20 @@ done
 [[ $watch = "true" ]] && build_ts_args="--watch --preserveWatchOutput" || build_ts_args=""
 
 build_commands=()
+build_prefixes=()
 
 # Build dependencies
 for PACKAGE in $(${DIR}/getInternalDependencies.sh ${package_path}); do
     build_commands+=("\"yarn workspace @tupaia/${PACKAGE} build $build_args\"")
+    build_prefixes+=("${PACKAGE},")
 done
 
 if [[ $watch == "true" ]]; then
     echo "Concurrently building and watching all internal dependencies"
-    echo "yarn concurrently ${build_commands[@]}"
-    eval "yarn concurrently ${build_commands[@]}"
+    echo "yarn concurrently --names \"${build_prefixes[*]}\" ${build_commands[@]}"
+    eval "yarn concurrently --names \"${build_prefixes[*]}\" ${build_commands[@]}"
 else
     echo "Concurrently building internal dependencies in batches of ${CONCURRENT_BUILD_BATCH_SIZE}"
-    echo "yarn concurrently -m $CONCURRENT_BUILD_BATCH_SIZE --prefix -k ${build_commands[*]}"
-    eval "yarn concurrently -m $CONCURRENT_BUILD_BATCH_SIZE --prefix -k ${build_commands[*]}"
+    echo "yarn concurrently -m $CONCURRENT_BUILD_BATCH_SIZE --names \"${build_prefixes[*]}\" -k ${build_commands[*]}"
+    eval "yarn concurrently -m $CONCURRENT_BUILD_BATCH_SIZE --names \"${build_prefixes[*]}\" -k ${build_commands[*]}"
 fi
