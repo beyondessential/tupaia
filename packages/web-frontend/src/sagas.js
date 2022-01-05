@@ -865,7 +865,7 @@ function* watchFetchMoreSearchResults() {
  * Fetches data for a measure and write it to map state by calling fetchMeasureSuccess.
  *
  */
-function* fetchMeasureInfo(mapOverlayCodes, displayedMapOverlays) {
+function* fetchMeasureInfo({ mapOverlayCodes, displayedMapOverlays, overlayConfigs }) {
   const state = yield select();
   const { maxSelectedOverlays } = state.map;
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
@@ -885,12 +885,15 @@ function* fetchMeasureInfo(mapOverlayCodes, displayedMapOverlays) {
       yield put(cancelFetchMeasureData());
       return;
     }
-
+    const overlayConfig = overlayConfigs && overlayConfigs[mapOverlayCode];
     // If the view should be constrained to a date range and isn't, constrain it
-    const { startDate, endDate } =
-      mapOverlayParams.startDate || mapOverlayParams.endDate
-        ? mapOverlayParams
-        : getDefaultDates(mapOverlayParams);
+    let { startDate, endDate } = overlayConfig || mapOverlayParams;
+    if (!startDate || !endDate) {
+      const defaultDates = getDefaultDates(mapOverlayParams);
+      startDate = defaultDates.startDate;
+      endDate = defaultDates.endDate;
+    }
+
     const urlParameters = {
       mapOverlayCode,
       organisationUnitCode,
@@ -942,18 +945,18 @@ function* watchSetMapOverlayChange() {
     );
     const newSelectedMapOverlays = mapOverlayCodes.filter(code => !measureInfo[code]);
 
-    yield fetchMeasureInfo(mapOverlayCodes, [
-      ...previousDisplayedOverlays,
-      ...newSelectedMapOverlays,
-    ]);
+    yield fetchMeasureInfo({
+      mapOverlayCodes,
+      displayedMapOverlays: [...previousDisplayedOverlays, ...newSelectedMapOverlays],
+    });
   });
 }
 
 function* watchOverlayPeriodChange() {
-  yield takeLatest(UPDATE_OVERLAY_CONFIGS, function* _() {
+  yield takeLatest(UPDATE_OVERLAY_CONFIGS, function* _(action) {
     const state = yield select();
     const mapOverlayCodes = selectCurrentMapOverlayCodes(state);
-    yield fetchMeasureInfo(mapOverlayCodes);
+    yield fetchMeasureInfo({ mapOverlayCodes, overlayConfigs: action.overlayConfigs });
   });
 }
 
@@ -983,7 +986,10 @@ function* watchSetMapOverlaysOnceHierarchyLoads() {
     }
 
     yield put(setOverlayConfigs(overlayConfigs));
-    yield fetchMeasureInfo(currentOverlayCodes, currentOverlayCodes);
+    yield fetchMeasureInfo({
+      mapOverlayCodes: currentOverlayCodes,
+      displayedMapOverlays: currentOverlayCodes,
+    });
   });
 }
 
