@@ -131,6 +131,7 @@ export const SET_PROJECT_ADDITIONAL_ACCESS = 'SET_PROJECT_ADDITIONAL_ACCESS';
 export const UPDATE_HISTORY_LOCATION = 'UPDATE_HISTORY_LOCATION';
 export const SET_MAP_OVERLAYS_ONCE_HIERARCHY_LOADS = 'SET_MAP_OVERLAYS_ONCE_HIERARCHY_LOADS';
 export const LOCATION_CHANGE = 'LOCATION_CHANGE';
+export const SET_MAX_SELECTED_OVERLAYS = 'SET_MAX_SELECTED_OVERLAYS';
 
 /**
  * Attempt password change using old password, new password and new password
@@ -545,6 +546,17 @@ export function setDisplayedMapOverlays(mapOverlayCodes) {
   return {
     type: SET_DISPLAYED_MAP_OVERLAY,
     mapOverlayCodes,
+  };
+}
+
+/**
+ * Set maximum number of overlays that can be selected.
+ * @param {number} maxNum
+ */
+export function setMaxSelectedOverlays(maxNum) {
+  return {
+    type: SET_MAX_SELECTED_OVERLAYS,
+    maxNum,
   };
 }
 

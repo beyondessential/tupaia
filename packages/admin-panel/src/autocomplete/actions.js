@@ -27,6 +27,7 @@ export const changeSearchTerm = (
   valueColumn,
   searchTerm,
   parentRecord,
+  baseFilter = {},
 ) => async (dispatch, getState, { api }) => {
   const fetchId = generateId();
   dispatch({
@@ -36,7 +37,7 @@ export const changeSearchTerm = (
     fetchId,
   });
   try {
-    const filter = convertSearchTermToFilter({ [labelColumn]: searchTerm });
+    const filter = convertSearchTermToFilter({ ...baseFilter, [labelColumn]: searchTerm });
     const response = await api.get(makeSubstitutionsInString(endpoint, parentRecord), {
       filter: JSON.stringify(filter),
       pageSize: MAX_AUTOCOMPLETE_RESULTS,

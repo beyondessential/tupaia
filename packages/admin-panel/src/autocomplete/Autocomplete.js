@@ -153,6 +153,7 @@ const mapDispatchToProps = (
     onChange,
     parentRecord = {},
     allowMultipleValues,
+    baseFilter,
   },
 ) => ({
   onChangeSelection: (event, newSelection, reason) => {
@@ -186,6 +187,7 @@ const mapDispatchToProps = (
         optionValueKey,
         newSearchTerm,
         parentRecord,
+        baseFilter,
       ),
     ),
   onClearState: () => dispatch(clearState(reduxId)),

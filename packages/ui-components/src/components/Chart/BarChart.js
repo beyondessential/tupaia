@@ -19,6 +19,7 @@ export const BarChart = ({
   isEnlarged,
   isExporting,
   chartConfig,
+  exportWithLabels,
 }) => {
   const getBarSize = () => {
     if (chartConfig.chartType === CHART_TYPES.COMPOSED || data.length === 1) {
@@ -37,7 +38,7 @@ export const BarChart = ({
       isAnimationActive={isEnlarged && !isExporting}
       barSize={getBarSize()}
     >
-      {isExporting && !stackId && (
+      {isExporting && exportWithLabels && (
         <LabelList
           dataKey={dataKey}
           position="insideTop"
@@ -59,10 +60,12 @@ BarChart.propTypes = {
   isExporting: PropTypes.bool,
   isEnlarged: PropTypes.bool,
   data: PropTypes.array.isRequired,
+  exportWithLabels: PropTypes.bool,
 };
 
 BarChart.defaultProps = {
   color: BLUE,
+  exportWithLabels: true,
   isExporting: false,
   isEnlarged: false,
 };

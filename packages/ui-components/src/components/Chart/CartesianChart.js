@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash.get';
 import {
@@ -83,6 +83,25 @@ const getLegendAlignment = (legendPosition, isExporting) => {
   return { verticalAlign: 'top', align: 'left' };
 };
 
+const getHeight = (isExporting, isEnlarged, hasLegend) => {
+  if (isExporting) {
+    return 500;
+  }
+  return isEnlarged && hasLegend && isMobile() ? 320 : undefined;
+};
+
+const getMargin = (isExporting, isEnlarged) => {
+  if (isExporting) {
+    return { left: 20, right: 20, top: 20, bottom: 60 };
+  }
+
+  if (isEnlarged) {
+    return { left: 0, right: 0, top: 0, bottom: 20 };
+  }
+
+  return { left: 0, right: 0, top: 0, bottom: 0 };
+};
+
 /**
  * Cartesian Chart types using recharts
  * @see https://recharts.org
@@ -90,6 +109,16 @@ const getLegendAlignment = (legendPosition, isExporting) => {
 export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPosition }) => {
   const [chartConfig, setChartConfig] = useState(viewContent.chartConfig || {});
   const [activeDataKeys, setActiveDataKeys] = useState([]);
+  // eslint-disable-next-line no-unused-vars
+  const [_, setLoaded] = useState(false);
+
+  // Trigger rendering of the chart to fix an issue with the legend overlapping the chart.
+  // This is a work around for a recharts bug. @see https://github.com/recharts/recharts/issues/511
+  useEffect(() => {
+    setTimeout(() => {
+      setLoaded(true);
+    }, 50);
+  }, []);
 
   const {
     chartType: defaultChartType,
@@ -160,7 +189,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
     Object.keys(chartConfig).length > 0 ? chartConfig : { [DEFAULT_DATA_KEY]: {} };
   const hasLegend = hasDataSeries || renderLegendForOneItem;
   const aspect = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
-  const height = isExporting || (isEnlarged && hasLegend && isMobile()) ? 320 : undefined;
+  const height = getHeight(isExporting, isEnlarged, hasLegend);
 
   /**
    * Unfortunately, recharts does not work with wrapped components called as jsx for some reason,
@@ -170,11 +199,8 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
     <ResponsiveContainer width="100%" height={height} aspect={aspect}>
       <ChartContainer
         data={filterDisabledData(data)}
-        margin={
-          isExporting
-            ? { left: 20, right: 20, top: 20, bottom: 20 }
-            : { left: 0, right: 0, top: 0, bottom: 20 }
-        }
+        margin={getMargin(isExporting, isEnlarged)}
+        reverseStackOrder={isExporting === true}
       >
         {referenceAreas && referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />)}
         {XAxisComponent({ isEnlarged, isExporting, viewContent })}
@@ -220,6 +246,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPos
               isEnlarged,
               yAxisId,
               data,
+              exportWithLabels: presentationOptions?.exportWithLabels,
             });
           })}
         {ReferenceLines({ viewContent, isExporting, isEnlarged })}

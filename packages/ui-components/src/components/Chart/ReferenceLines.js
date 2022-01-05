@@ -6,8 +6,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ReferenceLine } from 'recharts';
-import { TUPAIA_ORANGE, CHART_TYPES } from './constants';
 import { formatDataValueByType } from '@tupaia/utils';
+import { TUPAIA_ORANGE, CHART_TYPES } from './constants';
 import { ReferenceLabel } from './ReferenceLabel';
 
 const ReferenceLineLabel = ({ referenceLineLabel, isExporting }) => {
@@ -114,9 +114,17 @@ AverageReferenceLine.defaultProps = {
   isEnlarged: false,
 };
 
+const BarReferenceLine = ({ viewContent, isExporting, isEnlarged }) => {
+  const { referenceLines } = viewContent.presentationOptions || {};
+  if (referenceLines) {
+    return ValueReferenceLine({ viewContent: { chartConfig: { ...referenceLines } }, isExporting });
+  }
+  return AverageReferenceLine({ viewContent, isExporting, isEnlarged });
+};
+
 export const ReferenceLines = ({ viewContent, isExporting, isEnlarged }) => {
   if (viewContent.chartType === CHART_TYPES.BAR) {
-    return AverageReferenceLine({ viewContent, isExporting, isEnlarged });
+    return BarReferenceLine({ viewContent, isExporting, isEnlarged });
   }
   return ValueReferenceLine({ viewContent, isExporting, isEnlarged });
 };
