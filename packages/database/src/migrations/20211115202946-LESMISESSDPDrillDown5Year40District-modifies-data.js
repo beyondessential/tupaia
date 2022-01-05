@@ -41,7 +41,7 @@ const AVERAGE_INDICATOR = {
               type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
               config: {
                 dataSourceEntityType: 'sub_district',
-                aggregationEntityType: 'country',
+                aggregationEntityType: 'requested',
                 dataSourceEntityFilter: {
                   attributes_type: 'LESMIS_Target_District',
                 },
@@ -60,7 +60,7 @@ const AVERAGE_INDICATOR = {
               type: 'COUNT_PER_PERIOD_PER_ORG_GROUP',
               config: {
                 dataSourceEntityType: 'sub_district',
-                aggregationEntityType: 'country',
+                aggregationEntityType: 'requested',
                 dataSourceEntityFilter: {
                   attributes_type: 'LESMIS_Target_District',
                 },
@@ -209,20 +209,20 @@ const removeIndicators = async db => {
 const EXTRA_LIST_ITEMS = [
   {
     transform: 'updateColumns',
-    where: '=exists($er_priority_district_ece_5_summary)',
+    where: '=and(exists($er_priority_district_ece_5_summary), eq($organisationUnit, "LA"))', // Only display this entry at country level
     insert: {
       code: 'ECEPriorityTarget5',
       label:
         'TARGET: Enrolment rate of 5-year-old children (including children with disabilities) in 40 districts – 2025 target of 83%',
       parent: 'IO1_2',
       statistic: '=$er_priority_district_ece_5_summary',
-      sort_order: '4',
+      sort_order: '5',
     },
     exclude: '*',
   },
   {
     transform: 'insertRows',
-    where: '=eq(@index, 1)',
+    where: '=eq($sort_order, "5")', // If this doesn't have children the statistic formula errors, so use info we know about
     position: 'before',
     columns: {
       code: 'IO1_2',
@@ -231,10 +231,16 @@ const EXTRA_LIST_ITEMS = [
       parent: 'HLO1',
       statistic:
         '=eq(max(where(f($otherRow) = equalText($otherRow.parent ? $otherRow.parent : "", "IO1_2")).statistic), min(where(f($otherRow) = equalText($otherRow.parent ? $otherRow.parent : "", "IO1_2")).statistic)) ? last(where(f($otherRow) = equalText($otherRow.parent ? $otherRow.parent : "", "IO1_2")).statistic) : 0',
-      sort_order: '3',
+      sort_order: '4',
     },
   },
 ];
+
+const PRE_SORT_FILTER = {
+  // Filter out the previous two rows if they weren't processed (i.e. at non-country level)
+  transform: 'excludeRows',
+  where: '=notExists($sort_order)',
+};
 
 const addDrillDownToListVisual = async db => {
   // Add drillDown to dashboard_item config
@@ -257,6 +263,11 @@ const addDrillDownToListVisual = async db => {
   });
   listReport.config.fetch.dataElements.push('er_priority_district_ece_5_summary');
   listReport.config.transform.splice(1, 0, ...EXTRA_LIST_ITEMS);
+  listReport.config.transform.splice(
+    listReport.config.transform.findIndex(x => x.transform && x.transform === 'sortRows'),
+    0,
+    PRE_SORT_FILTER,
+  );
   await updateValues(
     db,
     'report',
@@ -288,7 +299,8 @@ const removeDrillDownFromListVisual = async db => {
   listReport.config.transform = listReport.config.transform.filter(
     x =>
       !(x.insert && x.insert.code === 'ECEPriorityTarget5') &&
-      !(x.columns && x.columns.code === 'IO1_2'),
+      !(x.columns && x.columns.code === 'IO1_2') &&
+      !(x.transform && x.transform === 'excludeRows'),
   );
   await updateValues(
     db,
