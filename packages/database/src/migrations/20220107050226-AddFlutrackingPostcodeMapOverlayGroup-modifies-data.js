@@ -20,7 +20,7 @@ const PARENT_OVERLAY_GROUP_CODE = 'Root';
 const OVERLAY_GROUP = {
   id: generateId(),
   name: 'FluTracking (Postcode level)',
-  code: 'Flutracking_Australia_Postcode_Level',
+  code: 'flutracking_au_postcode_level',
 };
 
 exports.up = async function (db) {
