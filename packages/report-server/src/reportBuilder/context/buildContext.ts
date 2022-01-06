@@ -60,7 +60,7 @@ const buildFacilityCountByOrgUnit = async (reqContext: ReqContext, data: FetchRe
   const facilityCountByOrgUnit = Object.fromEntries(
     Object.entries(facilitiesByOrgUnitCode).map(([orgUnit, facilities]) => [
       orgUnit,
-      facilities.length,
+      (facilities as any[]).length,
     ]),
   );
 
