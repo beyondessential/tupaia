@@ -59,3 +59,47 @@ export function flattenMapOverlayHierarchy(mapOverlayHierarchy) {
 
 export const isMapOverlayHierarchyEmpty = mapOverlayHierarchy =>
   flattenMapOverlayHierarchy(mapOverlayHierarchy).length === 0;
+
+const updateMeasureConfigs = (mapOverlayHierarchy, code, overlayConfig) => {
+  const updatedMapOverlayHierarchy = mapOverlayHierarchy;
+  let updated = false;
+
+  mapOverlayHierarchy.forEach((mapOverlay, index) => {
+    if (updated) {
+      return;
+    }
+    const { mapOverlayCode, children } = mapOverlay;
+    if (mapOverlayCode === code) {
+      updatedMapOverlayHierarchy[index] = {
+        ...mapOverlay,
+        ...overlayConfig,
+      };
+      updated = true;
+    }
+
+    if (!updated && children) {
+      const {
+        updated: newUpdated,
+        updatedMapOverlayHierarchy: newMapOverlayHierarchy,
+      } = updateMeasureConfigs(children, code, overlayConfig);
+      if (newUpdated) {
+        updated = newUpdated;
+        updatedMapOverlayHierarchy[index] = {
+          ...mapOverlayHierarchy[index],
+          children: newMapOverlayHierarchy,
+        };
+      }
+    }
+  });
+
+  return { updated, updatedMapOverlayHierarchy };
+};
+
+export const updatedMapOverlayHierarchyConfig = (mapOverlayHierarchy, code, overlayConfig) => {
+  const { updatedMapOverlayHierarchy } = updateMeasureConfigs(
+    mapOverlayHierarchy,
+    code,
+    overlayConfig,
+  );
+  return updatedMapOverlayHierarchy;
+};

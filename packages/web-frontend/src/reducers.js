@@ -24,7 +24,6 @@ import { isMobile, getUniqueViewId } from './utils';
 import { LANDING } from './containers/OverlayDiv/constants';
 import { EMAIL_VERIFIED_STATUS } from './containers/EmailVerification';
 import { getInitialLocation } from './historyNavigation';
-import { selectMapOverlayGroupByCode } from './selectors';
 
 // Import Action Types
 import {
@@ -102,6 +101,7 @@ import {
   SET_OVERLAY_CONFIGS,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
+import { updatedMapOverlayHierarchyConfig } from './utils/mapOverlays';
 
 function authentication(
   state = {
@@ -601,17 +601,13 @@ function mapOverlayBar(
       };
     case SET_OVERLAY_CONFIGS:
     case UPDATE_OVERLAY_CONFIGS: {
-      const mapOverlayHierarchy = [...state.mapOverlayHierarchy];
+      let mapOverlayHierarchy;
       Object.entries(action.overlayConfigs).forEach(([mapOverlayCode, overlayConfig]) => {
-        const { groupIndex, mapOverlay, mapOverlayGroupIndex } = selectMapOverlayGroupByCode(
-          { mapOverlayBar: state },
+        mapOverlayHierarchy = updatedMapOverlayHierarchyConfig(
+          state.mapOverlayHierarchy,
           mapOverlayCode,
+          overlayConfig,
         );
-
-        mapOverlayHierarchy[groupIndex].children[mapOverlayGroupIndex] = {
-          ...mapOverlay,
-          ...overlayConfig,
-        };
       });
 
       return {
