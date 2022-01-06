@@ -3,12 +3,8 @@ FROM node:12.18.3-alpine3.11
 # install features not available in base alpine distro
 RUN apk --no-cache add \
   bash \
-  curl \
-  git \
-  lastpass-cli \
-  openssh \
   postgresql-client \
-  rsync
+  git
 
 # -----------------------------------------
 # ---- Stage: with-package-jsons ----------
