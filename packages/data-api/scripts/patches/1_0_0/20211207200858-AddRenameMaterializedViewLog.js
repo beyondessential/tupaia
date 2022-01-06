@@ -15,49 +15,6 @@ exports.setup = function (options, seedLink) {
 exports.up = async function (db) {
   await db.runSql(`
     CREATE OR REPLACE
-    FUNCTION    mv$version()
-    RETURNS TEXT
-    AS
-    $BODY$
-    /* ---------------------------------------------------------------------------------------------------------------------------------
-    Routine Name: mv$help
-    Author:       Rohan Port
-    Date:         18/10/2021
-    ------------------------------------------------------------------------------------------------------------------------------------
-    Revision History    Push Down List
-    ------------------------------------------------------------------------------------------------------------------------------------
-    Date        | Name          | Description
-    ------------+---------------+-------------------------------------------------------------------------------------------------------
-                |               |
-    ------------+---------------+-------------------------------------------------------------------------------------------------------
-    Description:    Displays the version
-    
-    Arguments:      IN      None
-    Returns:                TEXT    The version
-    
-    ************************************************************************************************************************************
-    Copyright 2021 Beyond Essential Systems Pty Ltd
-    ***********************************************************************************************************************************/
-    DECLARE
-    
-    BEGIN
-    
-        RETURN '1_0_1';
-    
-        EXCEPTION
-        WHEN OTHERS
-        THEN
-            RAISE INFO      'Exception in function mv$help';
-            RAISE INFO      'Error %:- %:',     SQLSTATE, SQLERRM;
-            RAISE EXCEPTION '%',                SQLSTATE;
-    
-    END;
-    $BODY$
-    LANGUAGE    plpgsql
-    SECURITY    DEFINER;
-  `);
-  await db.runSql(`
-    CREATE OR REPLACE
     FUNCTION    mv$renameMaterializedViewLog
                 (
                     pOldTableName           IN      TEXT,
