@@ -58,6 +58,7 @@ import {
   DeleteMapOverlayGroups,
   EditMapOverlayGroups,
   GETMapOverlayGroups,
+  CreateMapOverlayGroups,
 } from './mapOverlayGroups';
 import {
   DeleteMapOverlayGroupRelations,
@@ -219,6 +220,7 @@ apiV2.post('/surveyResponses', catchAsyncErrors(surveyResponse));
 apiV2.post('/countries', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataSources', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dashboards', useRouteHandler(CreateDashboard));
+apiV2.post('/mapOverlayGroups', useRouteHandler(CreateMapOverlayGroups));
 apiV2.post('/disasters', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/feedItems', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/indicators', useRouteHandler(BESAdminCreateHandler));
