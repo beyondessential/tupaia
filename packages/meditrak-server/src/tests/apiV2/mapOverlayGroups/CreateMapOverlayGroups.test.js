@@ -10,7 +10,7 @@ import {
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
-describe.only('Permissions checker for CreateDashboards', async () => {
+describe('Permissions checker for CreateDashboards', async () => {
   const SUFFICIENT_TUPAIA_ADMIN_PANEL_PERMISSION_GROUP_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP],
@@ -107,7 +107,7 @@ describe.only('Permissions checker for CreateDashboards', async () => {
           expect(result).to.have.keys('error');
         });
 
-        it.only('Throw a input validation error if mapOverlayGroups with the same code already exists', async () => {
+        it('Throw a input validation error if mapOverlayGroups with the same code already exists', async () => {
           await app.grantAccess(SUFFICIENT_BES_ADMIN_POLICY);
           const code = 'same_code_twice';
           const firstName = 'First';
