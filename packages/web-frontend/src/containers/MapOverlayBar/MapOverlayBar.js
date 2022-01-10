@@ -24,6 +24,7 @@ import {
   clearMeasure,
   toggleMeasureExpand,
   setDisplayedMapOverlays,
+  setMaxSelectedOverlays,
 } from '../../actions';
 import { HierarchyItem } from '../../components/HierarchyItem';
 import {
@@ -51,14 +52,15 @@ const MapOverlayBarComponent = ({
   onSetMapOverlay,
   onSetDisplayedMapOverlays,
   onClearMeasure,
+  maxSelectedOverlays,
+  onSetMaxSelectedOverlays,
 }) => {
   const [hasNeverBeenChanged, setHasNeverBeenChanged] = useState(true);
-  const [maxSelectedOverlays, setMaxSelectedOverlays] = useState(1);
   const [pinnedOverlay, setPinnedOverlay] = useReducer(pinnedOverlayCodeReducer, null);
   useEffect(() => {
     const { length } = currentMapOverlayCodes;
     if (length > maxSelectedOverlays) {
-      setMaxSelectedOverlays(length);
+      onSetMaxSelectedOverlays(length);
     }
     if (!currentMapOverlayCodes.includes(pinnedOverlay)) {
       setPinnedOverlay(null);
@@ -124,7 +126,7 @@ const MapOverlayBarComponent = ({
 
   const changeMaxSelectedOverlays = selectedIndex => {
     const maxNumOfSelectedOverlays = selectedIndex + 1;
-    setMaxSelectedOverlays(maxNumOfSelectedOverlays);
+    onSetMaxSelectedOverlays(maxNumOfSelectedOverlays);
   };
 
   const renderDefaultMapOverlay = () => {
@@ -229,10 +231,12 @@ MapOverlayBarComponent.propTypes = {
   currentMapOverlayCodes: PropTypes.arrayOf(PropTypes.string),
   currentMapOverlays: PropTypes.arrayOf(MapOverlayShape),
   mapOverlayHierarchy: PropTypes.array.isRequired,
+  maxSelectedOverlays: PropTypes.number.isRequired,
   isExpanded: PropTypes.bool.isRequired,
   onSetMapOverlay: PropTypes.func.isRequired,
   onClearMeasure: PropTypes.func.isRequired,
   onSetDisplayedMapOverlays: PropTypes.func.isRequired,
+  onSetMaxSelectedOverlays: PropTypes.func.isRequired,
   currentOrganisationUnitName: PropTypes.string,
   defaultMapOverlay: MapOverlayShape,
 };
@@ -246,6 +250,7 @@ MapOverlayBarComponent.defaultProps = {
 
 const mapStateToProps = state => {
   const { mapOverlayHierarchy, isExpanded } = state.mapOverlayBar;
+  const { maxSelectedOverlays } = state.map;
 
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
   const currentMapOverlays = selectCurrentMapOverlays(state);
@@ -261,6 +266,7 @@ const mapStateToProps = state => {
     isExpanded,
     currentOrganisationUnitName: currentOrganisationUnit.name,
     defaultMapOverlay,
+    maxSelectedOverlays,
   };
 };
 
@@ -271,6 +277,7 @@ const mapDispatchToProps = dispatch => {
     onSetDisplayedMapOverlays: mapOverlayCodes =>
       dispatch(setDisplayedMapOverlays(mapOverlayCodes)),
     onClearMeasure: () => dispatch(clearMeasure()),
+    onSetMaxSelectedOverlays: newMaxNum => dispatch(setMaxSelectedOverlays(newMaxNum)),
     dispatch,
   };
 };

@@ -91,12 +91,6 @@ export const TitleAndDatePickerComponent = ({
   setPinnedOverlay,
   maxSelectedOverlays,
 }) => {
-  const [isSwitchedOn, setIsSwitchedOn] = useState(true);
-
-  useEffect(() => {
-    setIsSwitchedOn(displayedMapOverlays.includes(mapOverlay.mapOverlayCode));
-  }, [JSON.stringify(displayedMapOverlays)]);
-
   const { periodGranularity, isTimePeriodEditable = true, name, mapOverlayCode } = mapOverlay;
   const defaultDates = getDefaultDates(mapOverlay);
   const datePickerLimits = getLimits(periodGranularity, mapOverlay.datePickerLimits);
@@ -107,13 +101,12 @@ export const TitleAndDatePickerComponent = ({
   const endDate = mapOverlay.endDate || defaultDates.endDate;
   const isPinned = pinnedOverlay === mapOverlayCode;
   const isMultiOverlays = maxSelectedOverlays > 1;
-
+  const isSwitchedOn = displayedMapOverlays.includes(mapOverlayCode) || !isMultiOverlays;
   const handleSwitchChange = () => {
     const newDisplayedOverlays = isSwitchedOn
       ? displayedMapOverlays.filter(code => code !== mapOverlayCode)
       : [...displayedMapOverlays, mapOverlayCode];
     onSetDisplayedMapOverlay(newDisplayedOverlays);
-    setIsSwitchedOn(!isSwitchedOn);
   };
 
   const updateMeasurePeriod = (_startDate, _endDate) => {
