@@ -14,7 +14,7 @@
 #          command: './packages/devops/scripts/ci/validateBranchName.sh'
 #        - name: Validate tests
 #          command: './packages/devops/scripts/ci/validateTests.sh'
-    - type: parallel
+    - type: serial
       name: Test
       service: testing
       steps:
