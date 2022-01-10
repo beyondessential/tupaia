@@ -38,7 +38,7 @@ export const createDataElementDBFilter = async (accessPolicy, models, criteria) 
   // Permission groups on the data element overlap with our permission groups
   // Wildcard is added to our list so it will be included
   dbConditions.permission_groups = {
-    comparator: '&&',
+    comparator: '&&', // Checks two array have any elements in common
     comparisonValue: userPermissions,
   };
   return dbConditions;
