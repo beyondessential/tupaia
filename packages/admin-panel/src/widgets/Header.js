@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { ImportModal } from '../importExport';
-import { CreateButton, BulkCreateButton } from '../editor';
+import { CreateButton as SingleCreateButton, BulkCreateButton } from '../editor';
 
 const HeaderButtonContainer = styled.div`
   display: grid;
@@ -36,25 +36,26 @@ export const Header = ({
   createConfig,
   ExportModalComponent,
   LinksComponent,
-}) => (
-  <HeaderMain>
-    <MuiContainer maxWidth="xl">
-      <HeaderInner>
-        <Typography variant="h1">{title}</Typography>
-        <HeaderButtonContainer>
-          {importConfig && <ImportModal {...importConfig} />}
-          {createConfig && createConfig.bulkCreate ? (
-            <BulkCreateButton {...createConfig} />
-          ) : (
-            <CreateButton {...createConfig} />
-          )}
-          {ExportModalComponent && <ExportModalComponent />}
-          {LinksComponent && <LinksComponent />}
-        </HeaderButtonContainer>
-      </HeaderInner>
-    </MuiContainer>
-  </HeaderMain>
-);
+}) => {
+  const CreateButton =
+    createConfig && createConfig.bulkCreate ? BulkCreateButton : SingleCreateButton;
+
+  return (
+    <HeaderMain>
+      <MuiContainer maxWidth="xl">
+        <HeaderInner>
+          <Typography variant="h1">{title}</Typography>
+          <HeaderButtonContainer>
+            {importConfig && <ImportModal {...importConfig} />}
+            {createConfig && <CreateButton {...createConfig} />}
+            {ExportModalComponent && <ExportModalComponent />}
+            {LinksComponent && <LinksComponent />}
+          </HeaderButtonContainer>
+        </HeaderInner>
+      </MuiContainer>
+    </HeaderMain>
+  );
+};
 
 Header.propTypes = {
   title: PropTypes.string.isRequired,
