@@ -83,7 +83,7 @@
     ]
   },
   "scripts": {
-    "build": "Built externally",
+    "build": "echo Built externally",
     "bugsnag-sourcemaps-upload": "scripts/uploadSourcemaps.sh",
     "bump-minor": "npm-bump minor; ios/version-sync.sh",
     "bump-patch": "npm-bump patch; ios/version-sync.sh",
