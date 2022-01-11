@@ -74,26 +74,3 @@ export const selectPeriodGranularityByCode = createSelector(
   [selectMapOverlayByCode],
   mapOverlay => mapOverlay?.periodGranularity,
 );
-
-export const selectMapOverlayGroupByCode = createSelector(
-  [state => state.mapOverlayBar.mapOverlayHierarchy, (_, code) => code],
-  (mapOverlayHierarchy, code) => {
-    let mapOverlayGroup = {};
-
-    mapOverlayHierarchy.forEach(({ name, children }, groupIndex) => {
-      const selectedMapOverlayIndex = children.findIndex(
-        mapOverlay => mapOverlay.mapOverlayCode === code,
-      );
-      if (selectedMapOverlayIndex > -1) {
-        mapOverlayGroup = {
-          name,
-          groupIndex,
-          mapOverlayGroupIndex: selectedMapOverlayIndex,
-          mapOverlay: children[selectedMapOverlayIndex],
-        };
-      }
-    });
-
-    return mapOverlayGroup;
-  },
-);

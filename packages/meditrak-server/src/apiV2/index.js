@@ -96,6 +96,8 @@ import { getCountryAccessList } from './getCountryAccessList';
 import { surveyResponse } from './surveyResponse';
 import { verifyEmail, requestResendEmail } from './verifyEmail';
 import { manualKoBoSync } from '../kobo';
+import { GETReports } from './reports';
+import { GETDataElementDataGroups } from './dataElementDataGroups';
 import {
   CreateMapOverlayVisualisation,
   EditMapOverlayVisualisation,
@@ -194,12 +196,14 @@ apiV2.get(
 apiV2.get('/accessRequests/:recordId?', useRouteHandler(GETAccessRequests));
 apiV2.get('/dataSources/:recordId?', useRouteHandler(GETDataSources));
 apiV2.get('/dataSources/:parentRecordId/dataSources', useRouteHandler(GETDataSources));
+apiV2.get('/dataElementDataGroups', useRouteHandler(GETDataElementDataGroups));
 apiV2.get('/entities/:recordId?', useRouteHandler(GETEntities));
 apiV2.get('/entities/:parentRecordId/surveyResponses', useRouteHandler(GETSurveyResponses));
 apiV2.get('/countries/:recordId?', useRouteHandler(GETCountries));
 apiV2.get('/clinics/:recordId?', useRouteHandler(GETClinics));
 apiV2.get('/facilities/:recordId?', useRouteHandler(GETClinics));
 apiV2.get('/geographicalAreas/:recordId?', useRouteHandler(GETGeographicalAreas));
+apiV2.get('/reports/:recordId?', useRouteHandler(GETReports));
 
 /**
  * POST routes
