@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 import { respond, FormValidationError, DatabaseError, isValidPassword } from '@tupaia/utils';
-import { hashAndSaltPassword } from '@tupaia/auth';
+import { hashAndSaltPassword, checkPassword } from '@tupaia/auth';
 import { allowNoPermissions } from '../permissions';
 
 export async function changePassword(req, res, next) {
@@ -38,7 +38,7 @@ export async function changePassword(req, res, next) {
     if (!isTokenValid) {
       throw new FormValidationError('One time login is invalid');
     }
-  } else if (!user.checkPassword(oldPassword)) {
+  } else if (!checkPassword(oldPassword, user.password_salt, user.password_hash)) {
     throw new FormValidationError('Incorrect current password.', ['oldPassword']);
   }
 
@@ -55,6 +55,6 @@ export async function changePassword(req, res, next) {
   await models.user.updateById(userId, {
     ...hashAndSaltPassword(passwordParam),
   });
-  
+
   respond(res, { message: 'Successfully updated password' });
 }

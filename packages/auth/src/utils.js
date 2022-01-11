@@ -21,3 +21,10 @@ export function hashAndSaltPassword(password) {
   const encryptedPassword = encryptPassword(password, salt);
   return { password_hash: encryptedPassword, password_salt: salt };
 }
+
+/**
+ * Checks if the raw password matches the encrypted password hash
+ */
+export const checkPassword = (password, salt, hash) => {
+  return encryptPassword(password, salt) === hash;
+};

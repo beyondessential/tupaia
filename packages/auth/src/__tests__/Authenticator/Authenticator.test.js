@@ -11,6 +11,12 @@ import { testAuthenticateRefreshToken } from './testAuthenticateRefreshToken';
 jest.mock('rand-token');
 randomToken.generate.mockReturnValue(refreshToken);
 
+jest.mock('../../utils', () => ({
+  checkPassword: password => {
+    return password === 'validPassword';
+  },
+}));
+
 describe('Authenticator', () => {
   describe('authenticatePassword', testAuthenticatePassword);
 

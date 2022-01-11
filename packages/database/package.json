@@ -28,7 +28,6 @@
     "update-test-data": "bash -c 'source .env && pg_dump -s -U $DB_USER -O $DB_NAME > src/tests/testData/testDataDump.sql && pg_dump -t migrations -c -U $DB_USER -O $DB_NAME >> src/tests/testData/testDataDump.sql'"
   },
   "dependencies": {
-    "@tupaia/auth": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "db-migrate": "^0.11.5",
     "db-migrate-pg": "^1.2.2",

@@ -8,7 +8,7 @@ import compareVersions from 'semver-compare';
 import { DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
 import { AccessPolicyBuilder } from './AccessPolicyBuilder';
 import { mergeAccessPolicies } from './mergeAccessPolicies';
-import { encryptPassword } from './utils';
+import { checkPassword, encryptPassword } from './utils';
 import { getTokenClaims } from './userAuth';
 
 const REFRESH_TOKEN_LENGTH = 40;
@@ -136,7 +136,7 @@ export class Authenticator {
     }
 
     // Check password hash matches that in db
-    if (!user.checkPassword(password)) {
+    if (!checkPassword(password, user.password_salt, user.password_hash)) {
       throw new UnauthenticatedError('Incorrect email or password');
     }
 
