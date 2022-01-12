@@ -24,7 +24,7 @@ const migrationInstance = DBMigrate.getInstance(
       tupaia: {
         driver: 'pg',
         schema: requireEnv('DB_MV_USER'),
-        ...getConnectionConfig(),
+        ...getConnectionConfig({ userEnv: 'DB_MV_USER', passEnv: 'DB_MV_PASSWORD' }),
       },
     },
   },
