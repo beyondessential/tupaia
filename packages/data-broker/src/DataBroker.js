@@ -46,6 +46,8 @@ export class DataBroker {
       [this.getDataSourceTypes().DATA_GROUP]: this.fetchFromDataGroupTable,
       [this.getDataSourceTypes().SYNC_GROUP]: this.fetchFromSyncGroupTable,
     };
+    // Run permission checks in data broker so we only expose data the user is allowed to see
+    // It's a good centralised place for it
     this.permissionCheckers = {
       [this.getDataSourceTypes().DATA_ELEMENT]: this.checkDataElementPermissions,
       [this.getDataSourceTypes().DATA_GROUP]: this.checkDataGroupPermissions,
