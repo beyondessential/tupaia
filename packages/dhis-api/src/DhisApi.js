@@ -184,9 +184,15 @@ export class DhisApi {
   }
 
   async postDataSetCompletion(data) {
-    const response = await this.postData(DATA_SET_COMPLETION, {
-      completeDataSetRegistrations: [data],
-    });
+    const response = await this.postData(
+      DATA_SET_COMPLETION,
+      {
+        completeDataSetRegistrations: [data],
+      },
+      {
+        idScheme: 'id',
+      },
+    );
     return getDiagnosticsFromResponse(response);
   }
 
