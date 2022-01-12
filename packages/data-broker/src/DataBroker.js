@@ -87,24 +87,33 @@ export class DataBroker {
 
   checkDataElementPermissions = async dataElements => {
     const userPermissions = await this.getUserPermissions();
+    const missingPermissions = [];
     for (const element of dataElements) {
       if (element.permission_groups.every(id => userPermissions.includes(id))) {
         continue;
       }
-      return false;
+      missingPermissions.push(element.code);
     }
-    return true;
+    if (missingPermissions.length === 0) {
+      return true;
+    }
+    throw new Error(`Missing permissions to the following data elements: ${missingPermissions}`);
   };
 
   checkDataGroupPermissions = async dataGroups => {
+    const missingPermissions = [];
     for (const group of dataGroups) {
       const dataElements = await this.models.dataGroup.getDataElementsInDataGroup(group.code);
-      if (this.checkDataElementPermissions(dataElements)) {
-        continue;
+      try {
+        await this.checkDataElementPermissions(dataElements);
+      } catch {
+        missingPermissions.push(group.code);
       }
-      return false;
     }
-    return true;
+    if (missingPermissions.length === 0) {
+      return true;
+    }
+    throw new Error(`Missing permissions to the following data groups: ${missingPermissions}`);
   };
 
   // No check for syncGroups currently
@@ -178,10 +187,8 @@ export class DataBroker {
   pullForServiceAndType = async (dataSources, options, type) => {
     const { service_type: serviceType } = dataSources[0];
     const permissionChecker = this.permissionCheckers[type];
-    const userHasPermission = await permissionChecker(dataSources);
-    if (!userHasPermission) {
-      throw new Error(`Missing permissions for some or all ${type}s for ${serviceType}`);
-    }
+    // Permission checkers will throw if they fail
+    await permissionChecker(dataSources);
     const service = this.createService(serviceType);
     return service.pull(dataSources, type, options);
   };
