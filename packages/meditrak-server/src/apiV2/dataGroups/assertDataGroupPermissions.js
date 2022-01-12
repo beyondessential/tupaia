@@ -17,19 +17,33 @@ const getPermissionIdListWithWildcard = async (accessPolicy, models) => {
   return ['*', ...userPermissionGroups.map(permission => permission.id)];
 };
 
-export const assertDataGroupPermissions = async (accessPolicy, models, dataGroupId) => {
+export const assertDataGroupGETPermissions = async (accessPolicy, models, dataGroupId) => {
+  if (await assertDataGroupPermissions(accessPolicy, models, dataGroupId, 'some')) {
+    return true;
+  }
+  throw new Error('Viewing a data group requires access to all the data elements within');
+};
+
+export const assertDataGroupEditPermissions = async (accessPolicy, models, dataGroupId) => {
+  if (await assertDataGroupPermissions(accessPolicy, models, dataGroupId, 'every')) {
+    return true;
+  }
+  throw new Error('Editing a data group requires full access to all the data elements within');
+};
+
+const assertDataGroupPermissions = async (accessPolicy, models, dataGroupId, test) => {
   const dataGroup = await models.dataGroup.findById(dataGroupId);
   if (!dataGroup) {
     throw new Error(`No data group exists with id ${dataGroupId}`);
   }
   const userPermissions = await getPermissionIdListWithWildcard(accessPolicy, models);
   const dataElements = await models.dataGroup.getDataElementsInDataGroup(dataGroup.code);
-  // Loop through child data elements and check we have all of the permissions for it
+  // Loop through child data elements and check we have any/all of the permissions for it
   for (const element of dataElements) {
-    if (element.permission_groups.every(id => userPermissions.includes(id))) {
+    if (element.permission_groups[test](id => userPermissions.includes(id))) {
       continue;
     }
-    throw new Error('Editing a data group requires access to all the data elements within');
+    return false;
   }
   return true;
 };

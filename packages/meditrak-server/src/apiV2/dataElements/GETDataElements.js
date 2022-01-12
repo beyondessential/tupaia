@@ -6,10 +6,24 @@
 import { TYPES } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import { mergeMultiJoin } from '../utilities';
-import { createDataElementDBFilter } from './assertDataElementPermissions';
+import {
+  assertDataElementGETPermissions,
+  createDataElementDBFilter,
+} from './assertDataElementPermissions';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 export class GETDataElements extends GETHandler {
   permissionsFilteredInternally = true;
+
+  async findSingleRecord(dataElementId, options) {
+    const dataElementPermissionChecker = accessPolicy =>
+      assertDataElementGETPermissions(accessPolicy, this.models, dataElementId);
+    await this.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, dataElementPermissionChecker]),
+    );
+
+    return super.findSingleRecord(dataElementId, options);
+  }
 
   async getPermissionsFilter(criteria, options) {
     const dbConditions = await createDataElementDBFilter(this.accessPolicy, this.models, criteria);
