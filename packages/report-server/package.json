@@ -31,6 +31,7 @@
     "@babel/polyfill": "^7.0.0",
     "@tupaia/access-policy": "3.0.0",
     "@tupaia/aggregator": "1.0.0",
+    "@tupaia/data-broker": "1.0.0",
     "@tupaia/auth": "1.0.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/expression-parser": "1.0.0",

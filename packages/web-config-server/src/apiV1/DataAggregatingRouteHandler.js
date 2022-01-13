@@ -7,6 +7,7 @@ import { createAggregator } from '@tupaia/aggregator';
 import { filterEntities } from '@tupaia/utils';
 import { RouteHandler } from './RouteHandler';
 import { Aggregator } from '/aggregator';
+import { DataBroker } from '@tupaia/data-broker';
 
 /**
  * Interface class for handling routes that fetch data from an aggregator
@@ -15,7 +16,7 @@ import { Aggregator } from '/aggregator';
 export class DataAggregatingRouteHandler extends RouteHandler {
   constructor(req, res) {
     super(req, res);
-    this.aggregator = createAggregator(Aggregator, {}, this.models, this);
+    this.aggregator = createAggregator(new DataBroker(), Aggregator, this.models, this);
   }
 
   // Builds the list of entities data should be fetched from, using org unit descendants of the

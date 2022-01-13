@@ -21,7 +21,6 @@
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
-    "@tupaia/data-broker": "1.0.0",
     "@tupaia/server-boilerplate": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "lodash.groupby": "^4.6.0",

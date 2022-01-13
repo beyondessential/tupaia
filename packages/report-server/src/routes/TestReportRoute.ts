@@ -7,6 +7,7 @@ import { Request } from 'express';
 
 import { createAggregator } from '@tupaia/aggregator';
 import { Route } from '@tupaia/server-boilerplate';
+import { DataBroker } from '@tupaia/data-broker';
 
 import { ReportServerAggregator } from '../aggregator';
 import { ReportBuilder, Row, BuiltReport } from '../reportBuilder';
@@ -51,7 +52,7 @@ export class TestReportRoute extends Route<TestReportRequest> {
       ...restOfBody,
     };
 
-    const aggregator = new ReportServerAggregator(createAggregator(undefined, this.req.ctx));
+    const aggregator = new ReportServerAggregator(createAggregator(new DataBroker(this.req.ctx)));
     return reportBuilder.build(aggregator, reportQuery);
   }
 }

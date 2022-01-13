@@ -5,8 +5,8 @@
 
 import MockDate from 'mockdate';
 
-import { arrayToAnalytics } from '@tupaia/data-broker';
 import { sumAcrossPeriods } from '../../../../analytics/aggregateAnalytics/aggregations/sumAcrossPeriods';
+import { arrayToAnalytics } from '../../../../utils';
 
 describe('sumAcrossPeriods', () => {
   const ANALYTICS = arrayToAnalytics([
