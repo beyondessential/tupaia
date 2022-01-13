@@ -20,7 +20,6 @@
   },
   "dependencies": {
     "@tupaia/aggregator": "1.0.0",
-    "@tupaia/data-broker": "1.0.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/expression-parser": "1.0.0",
     "@tupaia/utils": "1.0.0",

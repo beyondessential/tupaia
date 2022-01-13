@@ -5,7 +5,7 @@
 
 /* eslint-disable jest/expect-expect */
 
-import { DataBroker } from '@tupaia/data-broker';
+import { createJestMockInstance } from '@tupaia/utils';
 import { getTestModels, setupTest } from '@tupaia/database';
 import { IndicatorApi } from '../../IndicatorApi';
 import { Analytic, FetchOptions } from '../../types';
@@ -25,8 +25,9 @@ interface TestCase {
 }
 
 const models = getTestModels();
-const dataBroker = new DataBroker();
-const api = new IndicatorApi(models, dataBroker);
+// FIXME: possibly use createAggregator test util fn
+const mockAggregator = createJestMockInstance('@tupaia/aggregator', 'Aggregator');
+const api = new IndicatorApi(models, mockAggregator);
 
 const runTestCase = async (testCase: TestCase) => {
   const { input, expected, throws } = testCase;
@@ -40,10 +41,6 @@ const runTestCase = async (testCase: TestCase) => {
 };
 
 describe('Integration tests', () => {
-  afterAll(async () => {
-    await dataBroker.close();
-  });
-
   describe('Indicator API features', () => {
     const { setup, testCases } = indicatorApiFixtures;
 

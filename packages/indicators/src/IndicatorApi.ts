@@ -4,7 +4,6 @@
  */
 
 import { Aggregator } from '@tupaia/aggregator';
-import { DataBroker } from '@tupaia/data-broker';
 import { getSortByKey } from '@tupaia/utils';
 import { Builder, createBuilder } from './Builder';
 import { Analytic, FetchOptions, ModelRegistry } from './types';
@@ -14,9 +13,9 @@ export class IndicatorApi {
 
   private readonly aggregator: Aggregator;
 
-  constructor(models: ModelRegistry, dataBroker: DataBroker) {
+  constructor(models: ModelRegistry, aggregator: Aggregator) {
     this.models = models;
-    this.aggregator = new Aggregator(dataBroker);
+    this.aggregator = aggregator;
   }
 
   public getAggregator = () => this.aggregator;
