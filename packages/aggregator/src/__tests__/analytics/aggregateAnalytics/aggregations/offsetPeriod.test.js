@@ -3,11 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { arrayToAnalytics } from '@tupaia/data-broker';
 import {
   getDateRangeForOffsetPeriod,
   offsetPeriod,
 } from '../../../../analytics/aggregateAnalytics/aggregations/offsetPeriod';
+import { arrayToAnalytics } from '../../../../utils';
 
 describe('offsetPeriod', () => {
   const testConfigValidation = () => {

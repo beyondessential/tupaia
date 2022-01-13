@@ -3,12 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { arrayToAnalytics } from '@tupaia/data-broker';
 import { PERIOD_TYPES } from '@tupaia/utils';
 import {
   getDateRangeForSumPreviousPerPeriod,
   sumPreviousPerPeriod,
 } from '../../../../analytics/aggregateAnalytics/aggregations/sumPreviousPerPeriod';
+import { arrayToAnalytics } from '../../../../utils';
 
 const { DAY } = PERIOD_TYPES;
 const { YEAR } = PERIOD_TYPES;

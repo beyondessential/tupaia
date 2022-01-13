@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { arrayToAnalytics } from '@tupaia/data-broker';
 import { Analytic } from '../../../types';
+import { arrayToAnalytics } from '@tupaia/aggregator';
 
 /**
  * Code format: `valueHint_orgUnits_periods`
