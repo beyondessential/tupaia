@@ -8,7 +8,6 @@ import builtins from 'rollup-plugin-node-builtins';
 import fg from 'fast-glob';
 import { terser } from 'rollup-plugin-terser';
 import commonjs from '@rollup/plugin-commonjs';
-import analyze from 'rollup-plugin-analyzer';
 import babel from '@rollup/plugin-babel';
 import external from 'rollup-plugin-peer-deps-external';
 import del from 'rollup-plugin-delete';
@@ -40,7 +39,6 @@ const plugins = [
     babelHelpers: 'bundled',
   }),
   commonjs(),
-  analyze({ summaryOnly: true }),
 ];
 
 // https://stackoverflow.com/questions/63373804/rollup-watch-include-directory
