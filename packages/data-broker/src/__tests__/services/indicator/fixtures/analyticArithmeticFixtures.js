@@ -3,13 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  ArraySurveyResponse,
-  ArrayTestCase,
-  arrayToSurveyResponse,
-  arrayToTestCase,
-  entriesToArithmeticIndicators,
-} from './helpers';
+import { arrayToSurveyResponse, arrayToTestCase, entriesToArithmeticIndicators } from './helpers';
 
 const ENTITIES = [
   { code: 'GR', name: 'Greece', type: 'country' },
@@ -27,7 +21,7 @@ const SURVEYS = [
   },
 ];
 
-const ARRAY_SURVEY_RESPONSES: ArraySurveyResponse[] = [
+const ARRAY_SURVEY_RESPONSES = [
   // GR
   ['Births', 'GR', '2019-01-01', { Female: '1', Male: '2' }],
   ['Births', 'GR', '2020-11-30', { Female: '3', Male: '4' }],
@@ -49,7 +43,7 @@ const ARRAY_SURVEY_RESPONSES: ArraySurveyResponse[] = [
   ['Births', 'ES', '2020-02-02', { Female: '150', Male: '200' }],
 ];
 
-const ARITHMETIC_INDICATOR_ENTRIES: Record<string, Record<string, unknown>> = {
+const ARITHMETIC_INDICATOR_ENTRIES = {
   EmptyConfig: {},
   MonthlyBirths: {
     formula: 'Female + Male',
@@ -123,7 +117,7 @@ const ARITHMETIC_INDICATOR_ENTRIES: Record<string, Record<string, unknown>> = {
   },
 };
 
-const ARRAY_TEST_CASES: ArrayTestCase[] = [
+const ARRAY_TEST_CASES = [
   [
     'Throws if config is empty',
     ['EmptyConfig'],

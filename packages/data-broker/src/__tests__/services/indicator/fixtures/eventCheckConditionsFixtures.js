@@ -4,8 +4,6 @@
  */
 
 import {
-  ArraySurveyResponse,
-  ArrayTestCase,
   arrayToSurveyResponse,
   arrayToTestCase,
   entriesToEventCheckConditionsIndicators,
@@ -27,7 +25,7 @@ const SURVEYS = [
   },
 ];
 
-const ARRAY_SURVEY_RESPONSES: ArraySurveyResponse[] = [
+const ARRAY_SURVEY_RESPONSES = [
   // AU
   ['Covid_19_Cases', 'AU', '2020-03-01', { Quarantine_Place: 'Hotel', Positive: 'Yes', Age: '20' }],
   ['Covid_19_Cases', 'AU', '2020-04-30', { Quarantine_Place: 'Home', Positive: 'No', Age: '25' }],
@@ -39,7 +37,7 @@ const ARRAY_SURVEY_RESPONSES: ArraySurveyResponse[] = [
   ['Covid_19_Cases', 'NZ', '2020-04-30', { Quarantine_Place: 'Home', Age: '23' }], // Missing Positive
 ];
 
-const EVENT_CHECK_CONDITIONS_INDICATOR_ENTRIES: Record<string, Record<string, unknown>> = {
+const EVENT_CHECK_CONDITIONS_INDICATOR_ENTRIES = {
   EventCheckConditionsEmptyConfig: {},
   EventCheckConditionsNoProgramCodeConfig: {
     formula: "equalText(Quarantine_Place, 'Home')",
@@ -62,7 +60,7 @@ const EVENT_CHECK_CONDITIONS_INDICATOR_ENTRIES: Record<string, Record<string, un
   },
 };
 
-const ARRAY_TEST_CASES: ArrayTestCase[] = [
+const ARRAY_TEST_CASES = [
   [
     'Throws if config is empty',
     ['EventCheckConditionsEmptyConfig'],

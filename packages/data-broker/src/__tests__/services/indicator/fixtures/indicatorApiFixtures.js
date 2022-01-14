@@ -3,7 +3,8 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { ArrayTestCase, arrayToTestCase } from './helpers';
+import { arrayToTestCase } from './helpers';
+// import { Analytic } from '../../../types';
 
 const SURVEYS = [
   {
@@ -109,7 +110,8 @@ const INDICATORS = [
   },
 ];
 
-const ARRAY_TEST_CASES: ArrayTestCase[] = [
+// description, indicatorCodes, arrayFetchOptions, expected
+const ARRAY_TEST_CASES = [
   [
     'fetches data for multiple analytic arithmetic indicators',
     ['AllColours', 'RedAgainstBlue'],

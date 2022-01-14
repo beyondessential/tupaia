@@ -6,29 +6,29 @@
 import { arrayToAnalytics } from '@tupaia/aggregator';
 
 // surveyCode, entityCode, data_time, answers
-export type ArraySurveyResponse = [string, string, string, Record<string, string>];
+// export type ArraySurveyResponse = [string, string, string, Record<string, string>];
 
-export const arrayToSurveyResponse = (arrayResponse: ArraySurveyResponse) => {
+export const arrayToSurveyResponse = arrayResponse => {
   const [surveyCode, entityCode, date, answers] = arrayResponse;
   return { surveyCode, entityCode, data_time: `${date}T15:00:00`, answers };
 };
 
 // startDate, endDate, organisationUnitCodes
-type ArrayFetchOptions = [string, string, string[]];
+// type ArrayFetchOptions = [string, string, string[]];
 
-const arrayToFetchOptions = ([startDate, endDate, organisationUnitCodes]: ArrayFetchOptions) => ({
+const arrayToFetchOptions = ([startDate, endDate, organisationUnitCodes]) => ({
   startDate,
   endDate,
   organisationUnitCodes,
 });
 
 // dataElement, organisationUnit, period, value
-type ArrayAnalytic = [string, string, string, number];
+// type ArrayAnalytic = [string, string, string, number];
 
 // description, indicatorCodes, arrayFetchOptions, expected
-export type ArrayTestCase = [string, string[], ArrayFetchOptions, string | ArrayAnalytic[]];
+// export type ArrayTestCase = [string, string[], ArrayFetchOptions, string | ArrayAnalytic[]];
 
-export const arrayToTestCase = (arrayTestCase: ArrayTestCase) => {
+export const arrayToTestCase = arrayTestCase => {
   const [description, indicatorCodes, arrayFetchOptions, expected] = arrayTestCase;
   // `expected` can be either a string (error message) or an array (expected analytics)
   const throws = typeof expected === 'string';
@@ -44,18 +44,18 @@ export const arrayToTestCase = (arrayTestCase: ArrayTestCase) => {
   };
 };
 
-type IndicatorEntries = Record<string, Record<string, unknown>>;
+// type IndicatorEntries = Record<string, Record<string, unknown>>;
 
-export const entriesToArithmeticIndicators = (entries: IndicatorEntries) =>
+export const entriesToArithmeticIndicators = entries =>
   Object.entries(entries).map(([code, config]) => {
     const newConfig = { ...config };
     if (config.parameters) {
-      newConfig.parameters = entriesToArithmeticIndicators(config.parameters as IndicatorEntries);
+      newConfig.parameters = entriesToArithmeticIndicators(config.parameters);
     }
     return { code, builder: 'analyticArithmetic', config: newConfig };
   });
 
-export const entriesToEventCheckConditionsIndicators = (entries: IndicatorEntries) =>
+export const entriesToEventCheckConditionsIndicators = entries =>
   Object.entries(entries).map(([code, config]) => ({
     code,
     builder: 'eventCheckConditions',
