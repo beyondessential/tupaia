@@ -21,7 +21,7 @@
     "lint:fix": "yarn lint --fix",
     "start": "react-scripts start",
     "start-dev": "npm run start",
-    "test": "react-scripts test --env=jsdom --passWithNoTests"
+    "test": "SKIP_PREFLIGHT_CHECK=true react-scripts test --env=jsdom --passWithNoTests --watchAll=false"
   },
   "browserslist": [
     "defaults"

@@ -28,7 +28,7 @@
     "start-mobile": "REACT_APP_APP_TYPE=mobile PORT=8089 PORT=8088 react-scripts start",
     "start-server": "yarn workspace @tupaia/web-config-server start",
     "storybook": "start-storybook -s public -p 6007",
-    "test": "node scripts/test.js --env=jsdom",
+    "test": "SKIP_PREFLIGHT_CHECK=true node scripts/test.js --env=jsdom --watchAll=false",
     "test-e2e": "yarn run:babel cypress/scripts/testE2e"
   },
   "resolutions": {

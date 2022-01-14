@@ -25,10 +25,10 @@
     "start-entity-server": "yarn workspace @tupaia/entity-server start-dev -s",
     "start-meditrak-server": "yarn workspace @tupaia/meditrak-server start-dev -s",
     "start-report-server": "yarn workspace @tupaia/report-server start-dev -s",
-    "test": "npm run test:jest",
+    "test": "yarn run test:jest",
     "test:cypress:open": "start-server-and-test start-fullstack 3000 cypress:open",
     "test:cypress:run": "start-server-and-test start-fullstack 3000 cypress:run",
-    "test:jest": "react-scripts test --env=jsdom"
+    "test:jest": "SKIP_PREFLIGHT_CHECK=true react-scripts test --env=jsdom --watchAll=false"
   },
   "browserslist": [
     "defaults"

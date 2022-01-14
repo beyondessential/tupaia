@@ -20,7 +20,7 @@
     "start-meditrak-server": "yarn workspace @tupaia/meditrak-server start-dev -s",
     "start-web-config-server": "yarn workspace @tupaia/web-config-server start-dev -s",
     "test": "npm run test:jest",
-    "test:jest": "react-scripts test --env=jsdom"
+    "test:jest": "SKIP_PREFLIGHT_CHECK=true react-scripts test --env=jsdom --watchAll=false"
   },
   "browserslist": [
     "defaults"
