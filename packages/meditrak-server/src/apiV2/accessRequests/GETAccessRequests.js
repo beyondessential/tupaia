@@ -54,6 +54,13 @@ export class GETAccessRequests extends GETHandler {
       this.models,
       criteria,
     );
-    return { dbConditions, dbOptions: options };
+
+    const dbOptions = {
+      ...options,
+      distinct: true,
+      sort: null,
+    };
+
+    return { dbConditions, dbOptions };
   }
 }

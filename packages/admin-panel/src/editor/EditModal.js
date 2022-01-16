@@ -84,7 +84,7 @@ EditModalComponent.propTypes = {
   onDismiss: PropTypes.func.isRequired,
   onEditField: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
-  recordData: PropTypes.object,
+  recordData: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   title: PropTypes.string,
   fields: PropTypes.arrayOf(PropTypes.shape({})),
   isUnchanged: PropTypes.bool,
@@ -120,25 +120,40 @@ const mapDispatchToProps = dispatch => ({
   dispatch,
 });
 
+const processRecordData = (recordData, fields) => {
+  if (Array.isArray(recordData)) {
+    const [firstRecord] = recordData;
+    return fields.reduce((obj, field) => {
+      const value = field.bulkAccessor ? field.bulkAccessor(recordData) : firstRecord[field.source];
+      return { [field.source]: value, ...obj };
+    }, {});
+  }
+
+  return recordData;
+};
+
 const mergeProps = (
   { endpoint, editedFields, recordData, ...stateProps },
   { dispatch, ...dispatchProps },
   { onProcessDataForSave, ...ownProps },
-) => ({
-  ...ownProps,
-  ...stateProps,
-  ...dispatchProps,
-  recordData: { ...recordData, ...editedFields }, // Include edits in visible record data
-  onSave: () => {
-    // If there is no record data, this is a new record
-    const isNew = Object.keys(recordData).length === 0;
-    const fieldValuesToSave = { ...editedFields };
-    if (onProcessDataForSave) {
-      onProcessDataForSave(fieldValuesToSave);
-    }
-    dispatch(saveEdits(endpoint, fieldValuesToSave, isNew));
-  },
-});
+) => {
+  return {
+    ...ownProps,
+    ...stateProps,
+    ...dispatchProps,
+    editedFields,
+    recordData: { ...processRecordData(recordData, stateProps.fields), ...editedFields }, // Include edits in visible record data
+    onSave: () => {
+      // If there is no record data, this is a new record
+      const isNew = Object.keys(recordData).length === 0;
+      let fieldValuesToSave = { ...editedFields };
+      if (onProcessDataForSave) {
+        fieldValuesToSave = onProcessDataForSave(fieldValuesToSave, recordData);
+      }
+      dispatch(saveEdits(endpoint, fieldValuesToSave, isNew));
+    },
+  };
+};
 
 export const EditModal = connect(
   mapStateToProps,

@@ -189,6 +189,7 @@ apiV2.get('/optionSets/:recordId?', useRouteHandler(GETOptionSets));
 apiV2.get('/optionSets/:parentRecordId/options', useRouteHandler(GETOptions));
 apiV2.get('/projects/:recordId?', useRouteHandler(GETProjects));
 apiV2.get('/users/:recordId?', useRouteHandler(GETUserAccounts));
+apiV2.get('/users/:parentRecordId?/accessRequests/:recordId?', useRouteHandler(GETUserAccounts));
 apiV2.get('/userEntityPermissions/:recordId?', useRouteHandler(GETUserEntityPermissions));
 apiV2.get(
   '/users/:parentRecordId/userEntityPermissions/:recordId?',
@@ -240,7 +241,7 @@ apiV2.post('/syncFromService', allowAnyone(manualKoBoSync));
  */
 apiV2.put('/users/:recordId', useRouteHandler(EditUserAccounts));
 apiV2.put('/userEntityPermissions/:recordId', useRouteHandler(EditUserEntityPermissions));
-apiV2.put('/accessRequests/:recordId', useRouteHandler(EditAccessRequests));
+apiV2.put('/accessRequests/:recordId?', useRouteHandler(EditAccessRequests));
 apiV2.put('/surveys/:recordId', useRouteHandler(EditSurveys));
 apiV2.put('/surveyResponses/:recordId', useRouteHandler(EditSurveyResponses));
 apiV2.put('/surveyScreenComponents/:recordId', useRouteHandler(EditSurveyScreenComponents));
