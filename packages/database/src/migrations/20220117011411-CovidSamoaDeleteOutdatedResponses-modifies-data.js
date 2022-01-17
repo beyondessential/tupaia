@@ -17,6 +17,9 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = async function (db) {
+  await db.runSql('ALTER TABLE answer DISABLE TRIGGER answer_trigger;'); // Prevents this trigger from setting off automatic refreshes
+  await db.runSql('ALTER TABLE survey_response DISABLE TRIGGER survey_response_trigger;');
+
   // Deleting a lot of data, we need to do it month by month
   let d = moment('2021-04-01');
   const max = moment('2022-01-10');
@@ -32,8 +35,13 @@ exports.up = async function (db) {
       `delete from survey_response where survey_id = (select id from survey where code = 'COVIDVac_WS') and outdated = true and data_time < '${formatted}';`,
     );
 
+    await db.runSql(`SELECT mv$refreshMaterializedView('analytics', 'public', true);`); // Perform fast refresh to integrate changes
+
     d = d.add(1, 'month');
   }
+
+  await db.runSql('ALTER TABLE answer ENABLE TRIGGER answer_trigger;');
+  await db.runSql('ALTER TABLE survey_response ENABLE TRIGGER survey_response_trigger;');
 };
 
 exports.down = function (db) {
