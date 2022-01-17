@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import CircularProgress from 'material-ui/CircularProgress';
-import moment from 'moment';
+import { periodToMoment } from '@tupaia/utils';
 import { CHART_TYPES } from '@tupaia/ui-components/lib/chart';
 import { VIEW_STYLES } from '../../styles';
 import { NoDataMessage } from './NoDataMessage';
@@ -69,7 +69,7 @@ const getContainerStyle = (baseStyle, viewContent) => {
 };
 
 const formatDate = value => {
-  return `Latest available data: ${moment(value).format('DD/MM/YY')}`;
+  return `Latest available data: ${periodToMoment(value).format('DD/MM/YY')}`;
 };
 
 const formatPeriodRange = period => {

@@ -8,7 +8,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { periodToDisplayString } from '@tupaia/utils';
+import { periodToMoment } from '@tupaia/utils';
 
 import { VIEW_STYLES } from '../../styles';
 import { selectCurrentMapOverlayCodes } from '../../selectors';
@@ -16,7 +16,7 @@ import { selectCurrentMapOverlayCodes } from '../../selectors';
 class LastUpdated extends Component {
   getFormattedDate = () => {
     const { latestAvailable } = this.props;
-    return `Latest overlay data: ${periodToDisplayString(latestAvailable)}`;
+    return `Latest overlay data: ${periodToMoment(latestAvailable).format('DD/MM/YYYY')}`;
   };
 
   shouldRender = () => !!this.props.latestAvailable;
