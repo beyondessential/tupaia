@@ -187,6 +187,10 @@ def create_db_instance_from_snapshot(
                 'Key': 'DeploymentType',
                 'Value': deployment_type
             },
+            {
+                'Key': 'ClonedFrom',
+                'Value': snapshot_name
+            },
         ],
     )
     
