@@ -21,7 +21,7 @@ exports.up = async function (db) {
   await db.runSql('ALTER TABLE survey_response DISABLE TRIGGER survey_response_trigger;');
 
   // Deleting a lot of data, we need to do it month by month
-  let d = moment('2021-04-01');
+  let d = moment('2021-09-03');
   const max = moment('2022-01-10');
 
   while (d.isBefore(max)) {
@@ -29,15 +29,15 @@ exports.up = async function (db) {
     console.log(`Deleting data pre ${formatted}`);
 
     await db.runSql(
-      `delete from answer where survey_response_id in (select id from survey_response where survey_id = (select id from survey where code = 'COVIDVac_WS') and outdated = true and data_time < '${formatted}');`,
+      `delete from answer where survey_response_id in (select id from survey_response where survey_id = (select id from survey where code = 'COVIDVac_WS') and outdated = true and start_time < '${formatted}');`,
     );
     await db.runSql(
-      `delete from survey_response where survey_id = (select id from survey where code = 'COVIDVac_WS') and outdated = true and data_time < '${formatted}';`,
+      `delete from survey_response where survey_id = (select id from survey where code = 'COVIDVac_WS') and outdated = true and start_time < '${formatted}';`,
     );
 
     await db.runSql(`SELECT mv$refreshMaterializedView('analytics', 'public', true);`); // Perform fast refresh to integrate changes
 
-    d = d.add(1, 'month');
+    d = d.add(1, 'day');
   }
 
   await db.runSql('ALTER TABLE answer ENABLE TRIGGER answer_trigger;');
