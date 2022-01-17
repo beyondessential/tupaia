@@ -26,10 +26,10 @@ exports.up = async function (db) {
     console.log(`Deleting data pre ${formatted}`);
 
     await db.runSql(
-      `delete from answer where survey_response_id in (select id from survey_response where survey_id = (select id from survey where code = 'COVIDVac_WS') and data_time < '${formatted}');`,
+      `delete from answer where survey_response_id in (select id from survey_response where survey_id = (select id from survey where code = 'COVIDVac_WS') and outdated = true and data_time < '${formatted}');`,
     );
     await db.runSql(
-      `delete from survey_response where survey_id = (select id from survey where code = 'COVIDVac_WS') and data_time < '${formatted}';`,
+      `delete from survey_response where survey_id = (select id from survey where code = 'COVIDVac_WS') and outdated = true and data_time < '${formatted}';`,
     );
 
     d = d.add(1, 'month');
