@@ -1,9 +1,20 @@
 import boto3
 
-from helpers.networking import add_subdomains_to_route53
-
 resource_group_tagging_api = boto3.client('resourcegroupstaggingapi')
 rds = boto3.client('rds')
+
+def get_db_instance(db_id):
+    instances_response = rds.describe_db_instances(
+        DBInstanceIdentifier=db_id
+    )
+
+    if 'DBInstances' not in instances_response or len(instances_response['DBInstances']) == 0:
+        raise Exception('No instance found')
+
+    if len(instances_response['DBInstances']) > 1:
+        raise Exception('Multiple instances found')
+
+    return instances_response['DBInstances'][0]
 
 def get_latest_db_snapshot(source_db_id):
     snapshots_response = rds.describe_db_snapshots(

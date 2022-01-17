@@ -3,6 +3,7 @@ from actions.delete_old_deployments import delete_old_deployments
 from actions.delete_old_snapshots import delete_old_snapshots
 from actions.refresh_cloned_instances import refresh_cloned_instances
 from actions.redeploy_tupaia_server import redeploy_tupaia_server
+from actions.redeploy_tupaia_database import redeploy_tupaia_database
 from actions.spin_up_dhis_deployment import spin_up_dhis_deployment
 from actions.spin_up_tupaia_deployment import spin_up_tupaia_deployment
 from actions.start_tagged_instances import start_tagged_instances
@@ -17,6 +18,7 @@ actions = {
   'delete_old_snapshots': delete_old_snapshots,
   'refresh_cloned_instances': refresh_cloned_instances,
   'redeploy_tupaia_server': redeploy_tupaia_server,
+  'redeploy_tupaia_database': redeploy_tupaia_database,
   'spin_up_dhis_deployment': spin_up_dhis_deployment,
   'spin_up_tupaia_deployment': spin_up_tupaia_deployment,
   'start_tagged_instances': start_tagged_instances,
