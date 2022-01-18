@@ -1,7 +1,10 @@
 import boto3
+import asyncio
+import functools
 
 resource_group_tagging_api = boto3.client('resourcegroupstaggingapi')
 rds = boto3.client('rds')
+loop = asyncio.get_event_loop()
 
 def get_db_instance(db_id):
     instances_response = rds.describe_db_instances(
@@ -27,3 +30,7 @@ def get_latest_db_snapshot(source_db_id):
     latest_snapshot_id = sorted(snapshots_response['DBSnapshots'], key=lambda k: k['SnapshotCreateTime'], reverse=True)[0]['DBSnapshotIdentifier']
     print('Found snapshot with id ' + latest_snapshot_id)
     return latest_snapshot_id
+
+async def wait_for_db_instance(instance_id, to_be):
+    waiter = rds.get_waiter('db_instance_' + to_be)
+    await loop.run_in_executor(None, functools.partial(waiter.wait, DBInstanceIdentifier=instance_id))

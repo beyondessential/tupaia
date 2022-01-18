@@ -9,9 +9,13 @@
 # }
 #
 
+import asyncio
+
 from helpers.creation import create_db_instance_from_snapshot
 from helpers.teardown import teardown_db_instance
-from helpers.rds import get_db_instance
+from helpers.rds import get_db_instance, wait_for_db_instance
+
+loop = asyncio.get_event_loop()
 
 def redeploy_tupaia_database(event):
     # validate input config
@@ -19,14 +23,16 @@ def redeploy_tupaia_database(event):
         raise Exception('You must include the key "DeploymentName" in the lambda config, e.g. "dev".')
     deployment_name = event['DeploymentName']
 
-    original_instance = get_db_instance('tupaia-' + deployment_name)
+    db_id = 'tupaia-' + deployment_name
+    db_instance = get_db_instance(db_id)
     # get manual input parameters, or default for any not provided
-    db_instance_type = original_instance['DBInstanceClass']
-    security_group_id = original_instance['VpcSecurityGroups'][0]['VpcSecurityGroupId']
-    clone_db_from = original_instance['TagList']['ClonedFrom']
+    db_instance_type = db_instance['DBInstanceClass']
+    security_group_id = db_instance['VpcSecurityGroups'][0]['VpcSecurityGroupId']
+    clone_db_from = next(filter(lambda item: item['Key'] == 'ClonedFrom', db_instance['TagList']))['Value']
 
-    # delete existing db
-    teardown_db_instance(deployment_name, 'tupaia') 
+    # rename then delete existing db
+    teardown_db_instance(deployment_name, 'tupaia')
+    loop.run_until_complete(wait_for_db_instance(db_id, 'deleted'))
 
     # recreate db instance from a snapshot
     create_db_instance_from_snapshot(

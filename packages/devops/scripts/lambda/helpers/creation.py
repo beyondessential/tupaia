@@ -16,6 +16,7 @@ def allocate_elastic_ip(instance_id):
 def get_security_group_ids_config(
   security_group_code=None,
   security_group_id=None,
+  security_group_ids=None,
 ):
     if security_group_code:
         # Get the security group tagged with the key matching this code
@@ -27,12 +28,14 @@ def get_security_group_ids_config(
         ).get(
           'SecurityGroups', []
         )
-        security_group_ids = [security_group['GroupId'] for security_group in security_groups]
+        ids_to_use = [security_group['GroupId'] for security_group in security_groups]
         print('Found security group ids')
+    elif security_group_ids:
+          ids_to_use = security_group_ids
     else:
-        security_group_ids = [security_group_id]
+        ids_to_use = [security_group_id]
 
-    return security_group_ids
+    return ids_to_use
 
 def get_instance_creation_config(
   deployment_name,
@@ -165,9 +168,10 @@ def create_db_instance_from_snapshot(
   instance_type,
   security_group_code=None,
   security_group_id=None,
+  security_group_ids=None,
 ):
     db_instance_id = deployment_type + '-' + deployment_name
-    security_group_ids = get_security_group_ids_config(security_group_code, security_group_id)
+    security_group_ids = get_security_group_ids_config(security_group_code, security_group_id, security_group_ids)
 
     snapshot_id = get_latest_db_snapshot(snapshot_name)
     print('Starting to clone db instance from snapshot')
