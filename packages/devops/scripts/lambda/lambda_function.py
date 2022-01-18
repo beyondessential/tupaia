@@ -1,14 +1,14 @@
 from actions.backup_instances import backup_instances
 from actions.delete_old_deployments import delete_old_deployments
 from actions.delete_old_snapshots import delete_old_snapshots
-from actions.refresh_cloned_instances import refresh_cloned_instances
+from actions.refresh_cloned_servers import refresh_cloned_servers
 from actions.redeploy_tupaia_server import redeploy_tupaia_server
 from actions.redeploy_tupaia_database import redeploy_tupaia_database
 from actions.spin_up_dhis_deployment import spin_up_dhis_deployment
 from actions.spin_up_tupaia_deployment import spin_up_tupaia_deployment
 from actions.spin_up_tupaia_database import spin_up_tupaia_database
-from actions.start_tagged_instances import start_tagged_instances
-from actions.stop_tagged_instances import stop_tagged_instances
+from actions.start_tagged_servers import start_tagged_servers
+from actions.stop_tagged_servers import stop_tagged_servers
 from actions.swap_out_tupaia_server import swap_out_tupaia_server
 from actions.tear_down_tupaia_deployment import tear_down_tupaia_deployment
 from actions.tear_down_dhis_deployment import tear_down_dhis_deployment
@@ -17,14 +17,14 @@ actions = {
   'backup_instances': backup_instances,
   'delete_old_deployments': delete_old_deployments,
   'delete_old_snapshots': delete_old_snapshots,
-  'refresh_cloned_instances': refresh_cloned_instances,
+  'refresh_cloned_servers': refresh_cloned_servers,
   'redeploy_tupaia_server': redeploy_tupaia_server,
   'redeploy_tupaia_database': redeploy_tupaia_database,
   'spin_up_dhis_deployment': spin_up_dhis_deployment,
   'spin_up_tupaia_deployment': spin_up_tupaia_deployment,
   'spin_up_tupaia_database': spin_up_tupaia_database,
-  'start_tagged_instances': start_tagged_instances,
-  'stop_tagged_instances': stop_tagged_instances,
+  'start_tagged_servers': start_tagged_servers,
+  'stop_tagged_servers': stop_tagged_servers,
   'swap_out_tupaia_server': swap_out_tupaia_server,
   'tear_down_tupaia_deployment': tear_down_tupaia_deployment,
   'tear_down_dhis_deployment': tear_down_dhis_deployment,

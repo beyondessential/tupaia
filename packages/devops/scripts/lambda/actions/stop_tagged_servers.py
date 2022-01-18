@@ -1,9 +1,9 @@
-# Stops any instance tagged with "StopAtUTC" that is currently running, and due to be stopped
+# Stops any server tagged with "StopAtUTC" that is currently running, and due to be stopped
 # within the last hour
 #
 # Example config
 # {
-#   "Action": "stop_tagged_instances",
+#   "Action": "stop_tagged_servers",
 #   "User": "edwin"
 # }
 
@@ -13,7 +13,7 @@ from helpers.utilities import find_instances, stop_instance
 
 loop = asyncio.get_event_loop()
 
-def stop_tagged_instances(event):
+def stop_tagged_servers(event):
     hour = time.strftime("%H:00")
     instances = find_instances([
         { 'Name': 'tag:StopAtUTC', 'Values': [hour] },
