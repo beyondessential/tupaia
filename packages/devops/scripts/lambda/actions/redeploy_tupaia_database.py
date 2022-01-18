@@ -13,7 +13,8 @@ import asyncio
 
 from helpers.creation import create_db_instance_from_snapshot
 from helpers.teardown import teardown_db_instance
-from helpers.rds import get_db_instance, wait_for_db_instance
+from helpers.rds import get_db_instance, wait_for_db_instance, set_db_instance_master_password
+from helpers.secrets import get_db_master_password
 
 loop = asyncio.get_event_loop()
 
@@ -42,3 +43,6 @@ def redeploy_tupaia_database(event):
         db_instance_type,
         security_group_id
     )
+
+    # set master password
+    set_db_instance_master_password(db_id, get_db_master_password())

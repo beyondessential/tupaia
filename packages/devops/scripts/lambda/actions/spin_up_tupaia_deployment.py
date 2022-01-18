@@ -39,6 +39,8 @@ from datetime import datetime, timedelta
 from helpers.creation import create_db_instance_from_snapshot
 from helpers.create_from_image import create_tupaia_instance_from_image
 from helpers.utilities import find_instances
+from helpers.rds import set_db_instance_master_password
+from helpers.secrets import get_db_master_password
 
 def spin_up_tupaia_deployment(event):
     # validate input config
@@ -108,5 +110,7 @@ def spin_up_tupaia_deployment(event):
         db_instance_type,
         security_group_code
     )
+    # set master password
+    set_db_instance_master_password('tupaia-' + deployment_name, get_db_master_password())
 
     print('Successfully deployed branch ' + branch)

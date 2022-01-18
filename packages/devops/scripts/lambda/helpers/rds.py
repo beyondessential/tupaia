@@ -19,6 +19,13 @@ def get_db_instance(db_id):
 
     return instances_response['DBInstances'][0]
 
+def set_db_instance_master_password(db_id, password):
+    rds.modify_db_instance(
+        DBInstanceIdentifier=db_id,
+        MasterUserPassword=password,
+        ApplyImmediately=True
+    )
+
 def get_latest_db_snapshot(source_db_id):
     snapshots_response = rds.describe_db_snapshots(
         DBInstanceIdentifier=source_db_id
