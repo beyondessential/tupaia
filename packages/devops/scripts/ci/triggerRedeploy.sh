@@ -22,7 +22,7 @@ fi
 echo "At least one running deployment, triggering redeploy of any tagged with Branch ${CI_BRANCH}"
 RESPONSE_FILE=lambda_redeploy_response.json
 AWS_MAX_ATTEMPTS=1 aws lambda invoke \
-  --function-name testRDS \
+  --function-name testRDS \ # TODO: Set the 'testRDS' to a correct name before merging rn-195-epic
   --payload "{\"Action\": \"redeploy_tupaia_server\", \"User\": \"${CI_COMMITTER_NAME} via codeship\", \"Branch\": \"$CI_BRANCH\" }" \
   --no-cli-pager \
   --cli-binary-format raw-in-base64-out \
@@ -61,7 +61,7 @@ for DEPLOYMENT_BASE64 in $DEPLOYMENTS; do
       echo "New instance ${NEW_INSTANCE_ID} is ready, swapping over ELB"
       SWAP_OUT_RESPONSE_FILE=lambda_swap_out_response.json
       AWS_MAX_ATTEMPTS=1 aws lambda invoke \
-        --function-name testRDS \
+        --function-name testRDS \ # TODO: Set the 'testRDS' to a correct name before merging rn-195-epic
         --payload "{\"Action\": \"swap_out_tupaia_server\", \"User\": \"${CI_COMMITTER_NAME} via codeship\", \"DeploymentName\": \"$DEPLOYMENT_NAME\", \"NewInstanceId\": \"$NEW_INSTANCE_ID\" }" \
         --no-cli-pager \
         --cli-binary-format raw-in-base64-out \
