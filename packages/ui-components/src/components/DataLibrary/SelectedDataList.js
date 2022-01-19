@@ -6,15 +6,21 @@
 import { SelectedDataCard } from './options';
 import styled from 'styled-components';
 import React from 'react';
+import { Droppable } from 'react-beautiful-dnd';
 
 const StyledSelectedDataList = styled.div`
   padding-top: 10px;
 `;
 
 export const SelectedDataList = ({ value, onRemove }) => (
-  <StyledSelectedDataList>
-    {value.map((option, index) => {
-      return <SelectedDataCard key={index} option={option} onRemove={onRemove} />;
-    })}
-  </StyledSelectedDataList>
+  <Droppable droppableId="droppable list">
+    {provided => (
+      <StyledSelectedDataList ref={provided.innerRef} {...provided.droppableProps}>
+        {value.map((option, index) => (
+          <SelectedDataCard key={option.code} option={option} onRemove={onRemove} index={index} />
+        ))}
+        {provided.placeholder}
+      </StyledSelectedDataList>
+    )}
+  </Droppable>
 );
