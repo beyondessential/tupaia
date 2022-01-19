@@ -5,7 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormControlLabel, Switch } from '@material-ui/core';
-import { useEditPanel } from '../context';
+import { useJsonEditor } from '../context';
 
 const ControlLabel = styled(FormControlLabel)`
   color: ${props => (props.jsonToggleEnabled ? props.theme.palette.primary.main : 'grey')};
@@ -17,7 +17,7 @@ const ControlLabel = styled(FormControlLabel)`
 `;
 
 export const JsonToggleButton = () => {
-  const { jsonToggleEnabled, setJsonToggleEnabled } = useEditPanel();
+  const { jsonToggleEnabled, setJsonToggleEnabled } = useJsonEditor();
 
   const handleClick = () => {
     setJsonToggleEnabled(!jsonToggleEnabled);

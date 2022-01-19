@@ -6,20 +6,20 @@
 import PropTypes from 'prop-types';
 import React, { createContext, useContext, useState } from 'react';
 
-const EditPanelContext = createContext(null);
+const JsonEditorContext = createContext(null);
 
-export const EditPanelProvider = ({ children }) => {
+export const JsonEditorProvider = ({ children }) => {
   const [jsonToggleEnabled, setJsonToggleEnabled] = useState(false);
 
   return (
-    <EditPanelContext.Provider value={{ jsonToggleEnabled, setJsonToggleEnabled }}>
+    <JsonEditorContext.Provider value={{ jsonToggleEnabled, setJsonToggleEnabled }}>
       {children}
-    </EditPanelContext.Provider>
+    </JsonEditorContext.Provider>
   );
 };
 
-export const useEditPanel = () => useContext(EditPanelContext);
+export const useJsonEditor = () => useContext(JsonEditorContext);
 
-EditPanelProvider.propTypes = {
+JsonEditorProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
