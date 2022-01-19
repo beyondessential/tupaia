@@ -13,7 +13,12 @@ import { FlexColumn, SmallAlert } from '@tupaia/ui-components';
 
 import { useDashboardVisualisation } from '../api';
 import { Toolbar, Panel, PreviewSection, PreviewOptions } from '../components';
-import { PreviewDataProvider, VizConfigErrorProvider, useVizConfig } from '../context';
+import {
+  PreviewDataProvider,
+  VizConfigErrorProvider,
+  useVizConfig,
+  EditPanelProvider,
+} from '../context';
 import { useMapOverlayVisualisation } from '../api/queries/useMapOverlayVisualisation';
 import { VIZ_TYPE_PARAM } from '../constants';
 
@@ -88,7 +93,9 @@ export const Main = () => {
         <Toolbar />
         <Container maxWidth="xl">
           <PreviewDataProvider>
-            <Panel />
+            <EditPanelProvider>
+              <Panel />
+            </EditPanelProvider>
             <RightCol>
               <PreviewOptions />
               <PreviewSection />

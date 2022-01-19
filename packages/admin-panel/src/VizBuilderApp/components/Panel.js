@@ -11,7 +11,8 @@ import { FlexColumn, FlexSpaceBetween } from '@tupaia/ui-components';
 import { TabPanel } from './TabPanel';
 import { JsonEditor } from './JsonEditor';
 import { PlayButton } from './PlayButton';
-import { useVizConfig, useVizConfigError } from '../context';
+import { JsonToggleButton } from './JsonToggleButton';
+import { useEditPanel, useVizConfig, useVizConfigError } from '../context';
 import { DataElementDataLibrary } from './DataLibrary';
 
 const Container = styled(FlexColumn)`
@@ -73,7 +74,9 @@ const PanelTabPanel = styled.div`
 
 export const Panel = () => {
   const { hasDataError, setDataError } = useVizConfigError();
+  const { jsonToggleEnabled } = useEditPanel();
   const [tab, setTab] = useState(0);
+  // const [jsonToggle, setJsonToggle] = useState(false);
   const [
     {
       visualisation: { data: dataConfig },
@@ -116,22 +119,27 @@ export const Panel = () => {
           <Tab disabled={isTabDisabled(1)} label="Aggregate" icon={<ChevronRight />} />
           <Tab disabled={isTabDisabled(2)} label="Transform" />
         </Tabs>
+
+        <JsonToggleButton />
         <PlayButton />
       </PanelNav>
       <TabPanel isSelected={tab === 0} Panel={PanelTabPanel}>
-        <DataElementDataLibrary
-          fetch={fetch}
-          onFetchChange={value => {
-            setTabValue('fetch', value);
-            setFetchJsonEditorKey(fetchJsonEditorKey + 1);
-          }}
-        />
-        <JsonEditor
-          key={fetchJsonEditorKey}
-          value={fetch}
-          onChange={value => setTabValue('fetch', value)}
-          onInvalidChange={handleInvalidChange}
-        />
+        {jsonToggleEnabled ? (
+          <JsonEditor
+            key={fetchJsonEditorKey}
+            value={fetch}
+            onChange={value => setTabValue('fetch', value)}
+            onInvalidChange={handleInvalidChange}
+          />
+        ) : (
+          <DataElementDataLibrary
+            fetch={fetch}
+            onFetchChange={value => {
+              setTabValue('fetch', value);
+              setFetchJsonEditorKey(fetchJsonEditorKey + 1);
+            }}
+          />
+        )}
       </TabPanel>
       <TabPanel isSelected={tab === 1} Panel={PanelTabPanel}>
         <JsonEditor
