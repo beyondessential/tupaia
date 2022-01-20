@@ -8,6 +8,8 @@ import { TupaiaDatabase } from '@tupaia/database';
 import {
   FetchReportRequest,
   FetchReportRoute,
+  FetchAggregationOptionsRequest,
+  FetchAggregationOptionsRoute,
   TestReportRequest,
   TestReportRoute,
 } from '../routes';
@@ -19,6 +21,10 @@ export function createApp() {
   return new MicroServiceApiBuilder(new TupaiaDatabase())
     .useBasicBearerAuth('report-server')
     .get<FetchReportRequest>('fetchReport/:reportCode', handleWith(FetchReportRoute))
+    .get<FetchAggregationOptionsRequest>(
+      'fetchAggregationOptions/:searchText?',
+      handleWith(FetchAggregationOptionsRoute),
+    )
     .post<FetchReportRequest>('fetchReport/:reportCode', handleWith(FetchReportRoute))
     .post<TestReportRequest>('testReport', handleWith(TestReportRoute))
     .build();
