@@ -130,6 +130,7 @@ const YAxis = ({ config = {}, viewContent, chartDataConfig, isExporting, isEnlar
       }
       interval={isExporting ? 0 : 'preserveStartEnd'}
       stroke={fillColor}
+      padding={{ top: 10 }}
     />
   );
 };

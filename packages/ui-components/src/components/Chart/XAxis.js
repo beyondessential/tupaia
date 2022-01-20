@@ -124,7 +124,7 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
       return { left: padding, right: padding };
     }
 
-    return { left: 0, right: 0 };
+    return { left: 0, right: 10 };
   };
 
   const renderVerticalTick = tickProps => {

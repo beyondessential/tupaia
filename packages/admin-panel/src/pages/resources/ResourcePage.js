@@ -31,6 +31,7 @@ export const ResourcePage = ({
   getHeaderEl,
   defaultFilters,
   defaultSorting,
+  displayUsedBy,
 }) => {
   const HeaderPortal = usePortalWithCallback(
     <Header
@@ -56,7 +57,11 @@ export const ResourcePage = ({
           defaultSorting={defaultSorting}
         />
       </Container>
-      <EditModal {...editConfig} onProcessDataForSave={onProcessDataForSave} />
+      <EditModal
+        {...editConfig}
+        onProcessDataForSave={onProcessDataForSave}
+        displayUsedBy={displayUsedBy}
+      />
     </>
   );
 };
@@ -85,6 +90,7 @@ ResourcePage.propTypes = {
   baseFilter: PropTypes.object,
   defaultSorting: PropTypes.array,
   defaultFilters: PropTypes.array,
+  displayUsedBy: PropTypes.bool,
 };
 
 ResourcePage.defaultProps = {
@@ -100,4 +106,5 @@ ResourcePage.defaultProps = {
   defaultSorting: [],
   defaultFilters: [],
   reduxId: null,
+  displayUsedBy: false,
 };

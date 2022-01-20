@@ -7,6 +7,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
+const MAP_OVERLAY_GROUPS_ENDPOINT = 'mapOverlayGroups';
+
 const EDIT_FIELDS = [
   {
     Header: 'Code',
@@ -100,13 +102,22 @@ const EXPANSION_CONFIG = [
   },
 ];
 
+const CREATE_CONFIG = {
+  title: 'Create a new Map overlay group',
+  actionConfig: {
+    editEndpoint: MAP_OVERLAY_GROUPS_ENDPOINT,
+    fields: EDIT_FIELDS,
+  },
+};
+
 export const MapOverlayGroupsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Map Overlay Groups"
-    endpoint="mapOverlayGroups"
+    endpoint={MAP_OVERLAY_GROUPS_ENDPOINT}
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     getHeaderEl={getHeaderEl}
+    createConfig={CREATE_CONFIG}
     editConfig={{
       title: 'Edit Map Overlay Group',
     }}
