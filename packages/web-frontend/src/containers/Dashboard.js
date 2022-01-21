@@ -25,6 +25,7 @@ import {
   selectCurrentDashboardName,
   selectCurrentOrgUnit,
   selectCurrentOrgUnitBounds,
+  selectCurrentProject,
 } from '../selectors';
 import { DEFAULT_BOUNDS } from '../defaults';
 
@@ -256,6 +257,7 @@ const mapStateToProps = state => {
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
   const currentOrganisationUnitBounds = selectCurrentOrgUnitBounds(state);
   const currentDashboardName = selectCurrentDashboardName(state);
+  const currentProject = selectCurrentProject(state);
 
   const dashboardNames = [];
   // sort group names based on current project
@@ -266,6 +268,11 @@ const mapStateToProps = state => {
       dashboardNames.push(dashboardName);
     }
   });
+
+  if (currentOrganisationUnit.type === 'Project') {
+    currentOrganisationUnit.name =
+      currentProject?.config?.projectDashboardHeader || currentOrganisationUnit.name;
+  }
 
   const currentGroupDashboard = dashboards.find(d => d.dashboardName === currentDashboardName);
 
