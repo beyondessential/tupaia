@@ -77,30 +77,8 @@ COPY packages/web-frontend/package.json ./packages/web-frontend
 ## run yarn without building, so we can cache node_modules without code changes invalidating this layer
 RUN yarn install --ignore-scripts --non-interactive --frozen-lockfile
 
-## add content of all internal dependency packages ready for internal dependencies to be built
-COPY packages/access-policy/. ./packages/access-policy
-COPY packages/admin-panel/. ./packages/admin-panel
-COPY packages/aggregator/. ./packages/aggregator
-COPY packages/api-client/. ./packages/api-client
-COPY packages/auth/. ./packages/auth
-COPY packages/database/. ./packages/database
-COPY packages/data-api/. ./packages/data-api
-COPY packages/data-broker/. ./packages/data-broker
-COPY packages/dhis-api/. ./packages/dhis-api
-COPY packages/expression-parser/. ./packages/expression-parser
-COPY packages/indicators/. ./packages/indicators
-COPY packages/utils/. ./packages/utils
-COPY packages/ui-components/. ./packages/ui-components
-COPY packages/weather-api/. ./packages/weather-api
-COPY packages/server-boilerplate/. ./packages/server-boilerplate
-COPY packages/kobo-api/. ./packages/kobo-api
-COPY ./tsconfig* ./
-
-## build internal dependencies
-RUN yarn build:internal-dependencies
-
-# copy everything else from the repo
+# Copy everything else from the repo
 COPY . ./
 
 # Make sure all packages build
-RUN yarn build:non-internal-dependencies
+RUN yarn build
