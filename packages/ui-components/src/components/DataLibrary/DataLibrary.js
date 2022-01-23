@@ -14,6 +14,7 @@ import { ResultsList } from './ResultsList';
 import { useAutocomplete } from '@material-ui/lab';
 import { SelectedDataList } from './SelectedDataList';
 import { DataTypeTabs } from './DataTypeTabs';
+import { ALICE_BLUE } from './constant';
 
 /*
  * A DataLibrary is similar to an Autocomplete but shows the options below for easier browsing,
@@ -45,7 +46,7 @@ const LeftColHeader = styled(ColHeader)`
 `;
 
 const RightColHeader = styled(ColHeader)`
-  background: #e8f6ff;
+  background: ${ALICE_BLUE};
 `;
 
 const CreateNewFolderIcon = styled(CreateNewFolder)`

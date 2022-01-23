@@ -7,6 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Done, Close, ChevronRight } from '@material-ui/icons';
 import { Draggable } from 'react-beautiful-dnd';
+import { ALICE_BLUE } from './constant';
 
 const StyledOption = styled.div`
   border-radius: 3px;
@@ -53,7 +54,7 @@ const StyledSelectedDataCard = styled(StyledOption)`
   .icon-wrapper {
     cursor: pointer;
   }
-  background-color: ${props => (props.isDragging ? 'lightgreen' : 'default')};
+  background-color: ${props => (props.isDragging ? ALICE_BLUE : 'default')};
 `;
 
 const OptionText = styled.div`
