@@ -17,7 +17,7 @@ import {
   PreviewDataProvider,
   VizConfigErrorProvider,
   useVizConfig,
-  JsonEditorProvider,
+  TabPanelProvider,
 } from '../context';
 import { useMapOverlayVisualisation } from '../api/queries/useMapOverlayVisualisation';
 import { VIZ_TYPE_PARAM } from '../constants';
@@ -93,9 +93,9 @@ export const Main = () => {
         <Toolbar />
         <Container maxWidth="xl">
           <PreviewDataProvider>
-            <JsonEditorProvider>
+            <TabPanelProvider>
               <Panel />
-            </JsonEditorProvider>
+            </TabPanelProvider>
             <RightCol>
               <PreviewOptions />
               <PreviewSection />

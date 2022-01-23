@@ -6,20 +6,20 @@
 import PropTypes from 'prop-types';
 import React, { createContext, useContext, useState } from 'react';
 
-const JsonEditorContext = createContext(null);
+const UseTabPanelContext = createContext(null);
 
-export const JsonEditorProvider = ({ children }) => {
+export const TabPanelProvider = ({ children }) => {
   const [jsonToggleEnabled, setJsonToggleEnabled] = useState(false);
 
   return (
-    <JsonEditorContext.Provider value={{ jsonToggleEnabled, setJsonToggleEnabled }}>
+    <UseTabPanelContext.Provider value={{ jsonToggleEnabled, setJsonToggleEnabled }}>
       {children}
-    </JsonEditorContext.Provider>
+    </UseTabPanelContext.Provider>
   );
 };
 
-export const useJsonEditor = () => useContext(JsonEditorContext);
+export const useTabPanel = () => useContext(UseTabPanelContext);
 
-JsonEditorProvider.propTypes = {
+TabPanelProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };

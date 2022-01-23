@@ -12,7 +12,7 @@ import { TabPanel } from './TabPanel';
 import { JsonEditor } from './JsonEditor';
 import { PlayButton } from './PlayButton';
 import { JsonToggleButton } from './JsonToggleButton';
-import { useJsonEditor, useVizConfig, useVizConfigError } from '../context';
+import { useTabPanel, useVizConfig, useVizConfigError } from '../context';
 import { DataElementDataLibrary } from './DataLibrary';
 
 const Container = styled(FlexColumn)`
@@ -74,9 +74,8 @@ const PanelTabPanel = styled.div`
 
 export const Panel = () => {
   const { hasDataError, setDataError } = useVizConfigError();
-  const { jsonToggleEnabled } = useJsonEditor();
+  const { jsonToggleEnabled } = useTabPanel();
   const [tab, setTab] = useState(0);
-  // const [jsonToggle, setJsonToggle] = useState(false);
   const [
     {
       visualisation: { data: dataConfig },
