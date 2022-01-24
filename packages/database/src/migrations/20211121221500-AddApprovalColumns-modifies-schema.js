@@ -15,6 +15,9 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = async function (db) {
+  // Disable survey_response analytics table trigger
+  await db.runSql(`ALTER TABLE survey_response DISABLE TRIGGER "trig$_survey_response"`);
+
   await db.runSql(
     `CREATE TYPE approval_status AS ENUM('not_required', 'pending', 'rejected', 'approved')`,
   );
@@ -26,6 +29,9 @@ exports.up = async function (db) {
     type: 'boolean',
     defaultValue: 'false',
   });
+
+  // Enable trigger again
+  await db.runSql('ALTER TABLE survey_response ENABLE TRIGGER "trig$_survey_response"');
 };
 
 exports.down = async function (db) {
