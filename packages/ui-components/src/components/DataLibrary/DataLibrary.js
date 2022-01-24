@@ -7,12 +7,14 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import { CreateNewFolder } from '@material-ui/icons';
+import { DragDropContext } from 'react-beautiful-dnd';
 import { FlexColumn } from '../Layout';
 import { InputField } from './InputField';
 import { ResultsList } from './ResultsList';
 import { useAutocomplete } from '@material-ui/lab';
 import { SelectedDataList } from './SelectedDataList';
 import { DataTypeTabs } from './DataTypeTabs';
+import { ALICE_BLUE } from './constant';
 
 /*
  * A DataLibrary is similar to an Autocomplete but shows the options below for easier browsing,
@@ -44,7 +46,7 @@ const LeftColHeader = styled(ColHeader)`
 `;
 
 const RightColHeader = styled(ColHeader)`
-  background: #e8f6ff;
+  background: ${ALICE_BLUE};
 `;
 
 const CreateNewFolderIcon = styled(CreateNewFolder)`
@@ -92,6 +94,23 @@ export const DataLibrary = ({
     onInputChange,
   });
 
+  const onDragEnd = event => {
+    const { destination, source } = event;
+    if (!destination) {
+      return;
+    }
+    if (destination.droppableId === source.droppableId && destination.index === source.index) {
+      return;
+    }
+
+    const newValue = Array.from(value);
+    const currentIndex = source.index;
+    newValue.splice(currentIndex, 1);
+    newValue.splice(destination.index, 0, value[currentIndex]);
+
+    onChange(event, newValue);
+  };
+
   return (
     <Container>
       <Col>
@@ -121,15 +140,17 @@ export const DataLibrary = ({
       <Col>
         <RightColHeader>Selected Data</RightColHeader>
         <RightColContents>
-          <SelectedDataList
-            value={value}
-            onRemove={(event, option) => {
-              onChange(
-                event,
-                value.filter(item => option !== item),
-              );
-            }}
-          />
+          <DragDropContext onDragEnd={onDragEnd}>
+            <SelectedDataList
+              value={value}
+              onRemove={(event, option) => {
+                onChange(
+                  event,
+                  value.filter(item => option !== item),
+                );
+              }}
+            />
+          </DragDropContext>
         </RightColContents>
       </Col>
     </Container>
@@ -158,7 +179,7 @@ DataLibrary.defaultProps = {
 
 DataLibrary.propTypes = {
   // options: either an array of options if single data type or map of dataType -> options
-  options: PropTypes.oneOf([PropTypes.object, PropTypes.arrayOf(optionPropType)]).isRequired,
+  options: PropTypes.oneOfType([PropTypes.object, PropTypes.arrayOf(optionPropType)]).isRequired,
   value: PropTypes.arrayOf(optionPropType),
   onChange: PropTypes.func,
   allowAddMultipleTimes: PropTypes.bool,

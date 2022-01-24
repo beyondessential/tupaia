@@ -44,12 +44,16 @@ export const ResultsList = ({
 
             if (allowAddMultipleTimes) {
               return (
-                <SelectableMultipleTimesOption key={index} option={option} onSelect={onSelect} />
+                <SelectableMultipleTimesOption
+                  key={option.code}
+                  option={option}
+                  onSelect={onSelect}
+                />
               );
             } else {
               return (
                 <SelectableOption
-                  key={index}
+                  key={option.code}
                   option={option}
                   isSelected={isSelected}
                   onSelect={onSelect}
