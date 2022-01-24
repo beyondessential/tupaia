@@ -33,7 +33,7 @@ const DataSourceConfigView = row => {
   return <dl>{entries}</dl>;
 };
 
-const getButtonsConfig = fields => [
+const getButtonsConfig = (fields, recordType) => [
   {
     Header: 'Edit',
     type: 'edit',
@@ -41,6 +41,8 @@ const getButtonsConfig = fields => [
     actionConfig: {
       editEndpoint: 'dataElements',
       fields,
+      displayUsedBy: true,
+      recordType,
     },
   },
   {
@@ -116,12 +118,12 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
     title="Data Groups"
     endpoint="dataGroups"
     reduxId="dataGroups"
-    columns={[...DATA_GROUP_FIELDS, ...getButtonsConfig(DATA_GROUP_FIELDS)]}
+    columns={[...DATA_GROUP_FIELDS, ...getButtonsConfig(DATA_GROUP_FIELDS, 'dataGroup')]}
     expansionTabs={[
       {
         title: 'Data Elements',
         endpoint: 'dataGroups/{id}/dataElements',
-        columns: [...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS)],
+        columns: [...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS, 'dataGroup')],
       },
     ]}
     editConfig={{ title: 'Edit Data Source' }}
@@ -133,6 +135,7 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
       },
     }}
     getHeaderEl={getHeaderEl}
+    displayUsedBy
   />
 );
 
@@ -145,7 +148,7 @@ export const DataElementsPage = ({ getHeaderEl }) => (
     title="Data Elements"
     endpoint="dataElements"
     reduxId="dataElements"
-    columns={[...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS)]}
+    columns={[...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement')]}
     editConfig={{ title: 'Edit Data Source' }}
     createConfig={{
       title: 'New Data Element',
@@ -155,6 +158,7 @@ export const DataElementsPage = ({ getHeaderEl }) => (
       },
     }}
     getHeaderEl={getHeaderEl}
+    displayUsedBy
   />
 );
 

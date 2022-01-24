@@ -182,6 +182,11 @@ export const constructForSingle = (models, recordType) => {
         report_code: [hasContent],
         legacy: [hasContent, isBoolean],
       };
+    case TYPES.MAP_OVERLAY_GROUP:
+      return {
+        code: [hasContent],
+        name: [hasContent],
+      };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);
   }

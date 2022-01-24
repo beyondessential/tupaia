@@ -108,7 +108,9 @@ class SurveyEditor {
       await validateSurveyFields(this.models, {
         code: model.code,
         periodGranularity: model.period_granularity,
-        serviceType: this.updatedFieldsByResource[RESOURCE_TYPES.DATA_GROUP].service_type,
+        serviceType:
+          this.updatedFieldsByResource[RESOURCE_TYPES.DATA_GROUP].service_type ||
+          this.dataGroup.service_type,
       });
     }
 

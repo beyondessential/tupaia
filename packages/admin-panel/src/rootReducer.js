@@ -8,6 +8,7 @@ import { reducer as tables } from './table';
 import { reducer as autocomplete } from './autocomplete/reducer'; // Needs to be imported from reducer file or console shows autocomplete not found error
 import { reducer as editor } from './editor';
 import { reducer as dataChangeListener } from './dataChangeListener';
+import { reducer as usedBy } from './usedBy';
 
 const appReducer = combineReducers({
   authentication,
@@ -15,6 +16,7 @@ const appReducer = combineReducers({
   autocomplete,
   editor,
   dataChangeListener,
+  usedBy,
 });
 
 export const rootReducer = (state, action) => {

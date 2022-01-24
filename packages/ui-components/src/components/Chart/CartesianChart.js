@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash.get';
 import {
@@ -109,6 +109,16 @@ const getMargin = (isExporting, isEnlarged) => {
 export const CartesianChart = ({ viewContent, isEnlarged, isExporting, legendPosition }) => {
   const [chartConfig, setChartConfig] = useState(viewContent.chartConfig || {});
   const [activeDataKeys, setActiveDataKeys] = useState([]);
+  // eslint-disable-next-line no-unused-vars
+  const [_, setLoaded] = useState(false);
+
+  // Trigger rendering of the chart to fix an issue with the legend overlapping the chart.
+  // This is a work around for a recharts bug. @see https://github.com/recharts/recharts/issues/511
+  useEffect(() => {
+    setTimeout(() => {
+      setLoaded(true);
+    }, 50);
+  }, []);
 
   const {
     chartType: defaultChartType,

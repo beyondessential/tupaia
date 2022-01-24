@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { SmallAlert, ConfirmDeleteModal } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { IndeterminateCheckBox, AddBox } from '@material-ui/icons';
+import queryString from 'query-string';
 import { Tabs } from '../widgets';
 import { TableHeadCell } from './TableHeadCell';
 import { ColumnFilter } from './ColumnFilter';
@@ -46,7 +47,14 @@ const ExpandRowIcon = styled(AddBox)`
 
 class DataFetchingTableComponent extends React.Component {
   componentWillMount() {
-    this.props.initialiseTable();
+    if (this.props.nestingLevel === 0) {
+      // Page-level filters only apply to top-level data tables
+      const params = queryString.parse(location.search); // set filters from query params
+      const filters = params.filters ? JSON.parse(params.filters) : undefined;
+      this.props.initialiseTable(filters);
+    } else {
+      this.props.initialiseTable();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -101,6 +109,7 @@ class DataFetchingTableComponent extends React.Component {
       resizedColumns,
       expansionTabStates,
       onExpandedTabChange,
+      nestingLevel,
     } = this.props;
 
     return (
@@ -153,6 +162,7 @@ class DataFetchingTableComponent extends React.Component {
                   endpoint={makeSubstitutionsInString(endpoint, rowData)}
                   key={expansionTab} // Triggers refresh of data.
                   {...restOfProps}
+                  nestingLevel={nestingLevel + 1}
                 />
               </ExpansionContainer>
             );
@@ -218,6 +228,7 @@ DataFetchingTableComponent.propTypes = {
   sorting: PropTypes.array.isRequired,
   expansionTabStates: PropTypes.object.isRequired,
   onExpandedTabChange: PropTypes.func.isRequired,
+  nestingLevel: PropTypes.number,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -227,6 +238,7 @@ DataFetchingTableComponent.defaultProps = {
   data: [],
   errorMessage: '',
   numberOfPages: 0,
+  nestingLevel: 0,
 };
 
 const mapStateToProps = (state, { columns, reduxId }) => ({
@@ -262,9 +274,9 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => {
   } = ownProps;
   const onRefreshData = () =>
     dispatch(refreshData(reduxId, endpoint, columns, baseFilter, stateProps));
-  const initialiseTable = () => {
+  const initialiseTable = (filters = defaultFilters) => {
     dispatch(changeSorting(reduxId, defaultSorting));
-    dispatch(changeFilters(reduxId, defaultFilters)); // will trigger a data fetch afterwards
+    dispatch(changeFilters(reduxId, filters)); // will trigger a data fetch afterwards
   };
   return {
     reduxId,

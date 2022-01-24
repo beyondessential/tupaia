@@ -59,6 +59,7 @@ import {
   DeleteMapOverlayGroups,
   EditMapOverlayGroups,
   GETMapOverlayGroups,
+  CreateMapOverlayGroups,
 } from './mapOverlayGroups';
 import {
   DeleteMapOverlayGroupRelations,
@@ -97,6 +98,8 @@ import { getCountryAccessList } from './getCountryAccessList';
 import { surveyResponse } from './surveyResponse';
 import { verifyEmail, requestResendEmail } from './verifyEmail';
 import { manualKoBoSync } from '../kobo';
+import { GETReports } from './reports';
+import { GETDataElementDataGroups } from './dataElementDataGroups';
 import {
   CreateMapOverlayVisualisation,
   EditMapOverlayVisualisation,
@@ -187,6 +190,7 @@ apiV2.get('/optionSets/:recordId?', useRouteHandler(GETOptionSets));
 apiV2.get('/optionSets/:parentRecordId/options', useRouteHandler(GETOptions));
 apiV2.get('/projects/:recordId?', useRouteHandler(GETProjects));
 apiV2.get('/users/:recordId?', useRouteHandler(GETUserAccounts));
+apiV2.get('/users/:parentRecordId?/accessRequests/:recordId?', useRouteHandler(GETUserAccounts));
 apiV2.get('/userEntityPermissions/:recordId?', useRouteHandler(GETUserEntityPermissions));
 apiV2.get(
   '/users/:parentRecordId/userEntityPermissions/:recordId?',
@@ -196,12 +200,14 @@ apiV2.get('/accessRequests/:recordId?', useRouteHandler(GETAccessRequests));
 apiV2.get('/dataElements/:recordId?', useRouteHandler(GETDataElements));
 apiV2.get('/dataGroups/:parentRecordId/dataElements', useRouteHandler(GETDataElements));
 apiV2.get('/dataGroups/:recordId?', useRouteHandler(GETDataGroups));
+apiV2.get('/dataElementDataGroups', useRouteHandler(GETDataElementDataGroups));
 apiV2.get('/entities/:recordId?', useRouteHandler(GETEntities));
 apiV2.get('/entities/:parentRecordId/surveyResponses', useRouteHandler(GETSurveyResponses));
 apiV2.get('/countries/:recordId?', useRouteHandler(GETCountries));
 apiV2.get('/clinics/:recordId?', useRouteHandler(GETClinics));
 apiV2.get('/facilities/:recordId?', useRouteHandler(GETClinics));
 apiV2.get('/geographicalAreas/:recordId?', useRouteHandler(GETGeographicalAreas));
+apiV2.get('/reports/:recordId?', useRouteHandler(GETReports));
 
 /**
  * POST routes
@@ -222,6 +228,7 @@ apiV2.post('/countries', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataElements', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataGroups', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dashboards', useRouteHandler(CreateDashboard));
+apiV2.post('/mapOverlayGroups', useRouteHandler(CreateMapOverlayGroups));
 apiV2.post('/disasters', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/feedItems', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/indicators', useRouteHandler(BESAdminCreateHandler));
@@ -237,7 +244,7 @@ apiV2.post('/syncFromService', allowAnyone(manualKoBoSync));
  */
 apiV2.put('/users/:recordId', useRouteHandler(EditUserAccounts));
 apiV2.put('/userEntityPermissions/:recordId', useRouteHandler(EditUserEntityPermissions));
-apiV2.put('/accessRequests/:recordId', useRouteHandler(EditAccessRequests));
+apiV2.put('/accessRequests/:recordId?', useRouteHandler(EditAccessRequests));
 apiV2.put('/surveys/:recordId', useRouteHandler(EditSurveys));
 apiV2.put('/surveyResponses/:recordId', useRouteHandler(EditSurveyResponses));
 apiV2.put('/surveyScreenComponents/:recordId', useRouteHandler(EditSurveyScreenComponents));
