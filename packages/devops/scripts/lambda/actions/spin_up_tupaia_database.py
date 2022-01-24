@@ -26,8 +26,8 @@ def spin_up_tupaia_database(event):
 
     # create db instance from a snapshot
     # do this after the server has started because it will take a while to populate the db from the snapshot, 
-    # so we might as well be cloning the db instance at the same time, so long is it is available before
-    # the server first tries to connect
+    # so we might as well be cloning the db instance at the same time as the app-server's build scripts are running, 
+    # so long is it is available before the server first tries to connect
     create_db_instance_from_snapshot(
         deployment_name,
         'tupaia',
