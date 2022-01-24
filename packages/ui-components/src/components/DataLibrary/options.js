@@ -6,6 +6,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Done, Close, ChevronRight } from '@material-ui/icons';
+import { Draggable } from 'react-beautiful-dnd';
+import { ALICE_BLUE } from './constant';
 
 const StyledOption = styled.div`
   border-radius: 3px;
@@ -52,6 +54,7 @@ const StyledSelectedDataCard = styled(StyledOption)`
   .icon-wrapper {
     cursor: pointer;
   }
+  background-color: ${props => (props.isDragging ? ALICE_BLUE : 'default')};
 `;
 
 const OptionText = styled.div`
@@ -120,14 +123,29 @@ export const SelectableMultipleTimesOption = ({ option, onSelect }) => (
   </StyledSelectableMultipleTimesOption>
 );
 
-export const SelectedDataCard = ({ option, onRemove }) => (
-  <StyledSelectedDataCard>
-    <OptionText>
-      <OptionCode>{option.code}</OptionCode>
-      <OptionName>{option.name}</OptionName>
-    </OptionText>
-    <IconWrapper onClick={event => onRemove(event, option)} className="icon-wrapper">
-      <Close />
-    </IconWrapper>
-  </StyledSelectedDataCard>
-);
+export const SelectedDataCard = ({ option, onRemove, index }) => {
+  const [isDragging, setIsDragging] = React.useState(false);
+
+  return (
+    <Draggable draggableId={option.code} index={index}>
+      {(provided, snapshot) => (
+        <StyledSelectedDataCard
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          ref={provided.innerRef}
+          isDragging={snapshot.isDragging || isDragging}
+          onMouseOver={() => setIsDragging(true)}
+          onMouseLeave={() => setIsDragging(false)}
+        >
+          <OptionText>
+            <OptionCode>{option.code}</OptionCode>
+            <OptionName>{option.name}</OptionName>
+          </OptionText>
+          <IconWrapper onClick={event => onRemove(event, option)} className="icon-wrapper">
+            <Close />
+          </IconWrapper>
+        </StyledSelectedDataCard>
+      )}
+    </Draggable>
+  );
+};
