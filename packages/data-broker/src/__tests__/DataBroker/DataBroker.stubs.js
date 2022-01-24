@@ -45,9 +45,14 @@ export const createServiceStub = serviceData => {
 export const createModelsStub = (dataElements, dataGroups) => ({
   dataElement: {
     find: spec => dataElements.filter(({ code }) => spec.code.includes(code)),
-    getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup', SYNC_GROUP: 'syncGroup' }),
+    getTypes: () => ({
+      DATA_ELEMENT: 'dataElement',
+      DATA_GROUP: 'dataGroup',
+      SYNC_GROUP: 'syncGroup',
+    }),
   },
   dataGroup: {
     find: spec => dataGroups.filter(({ code }) => spec.code.includes(code)),
+    getDataElementsInDataGroup: () => [],
   },
 });

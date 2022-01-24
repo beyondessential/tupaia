@@ -10,14 +10,14 @@ import {
   assertBESAdminAccess,
   assertAdminPanelAccess,
 } from '../../permissions';
-import { assertDataGroupPermissions } from './assertDataGroupPermissions';
+import { assertDataGroupEditPermissions } from './assertDataGroupPermissions';
 
 export class EditDataGroups extends EditHandler {
   async assertUserHasAccess() {
     // User has access to all child data_elements of the data_group, plus tupaia admin panel
     // Or is a BES admin
     const dataGroupPermissionChecker = accessPolicy =>
-      assertDataGroupPermissions(accessPolicy, this.models, this.recordId);
+      assertDataGroupEditPermissions(accessPolicy, this.models, this.recordId);
 
     await this.assertPermissions(
       assertAnyPermissions([
@@ -28,11 +28,6 @@ export class EditDataGroups extends EditHandler {
   }
 
   async editRecord() {
-    const dataGroupEditPermissionChecker = accessPolicy =>
-      assertDataGroupPermissions(accessPolicy, this.models, this.recordId);
-    await this.assertPermissions(
-      assertAnyPermissions([assertBESAdminAccess, dataGroupEditPermissionChecker]),
-    );
     return this.updateRecord();
   }
 }

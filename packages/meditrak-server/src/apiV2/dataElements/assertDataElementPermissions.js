@@ -14,18 +14,35 @@ const getPermissionIdListWithWildcard = async (accessPolicy, models) => {
   return ['*', ...userPermissionGroups.map(permission => permission.id)];
 };
 
-export const assertDataElementPermissions = async (accessPolicy, models, dataElementId) => {
-  const dataElement = await models.dataElement.findById(dataElementId);
-  if (!dataElement) {
-    throw new Error(`No data element exists with id ${dataElementId}`);
+export const assertDataElementGETPermissions = async (accessPolicy, models, dataElementId) => {
+  // User requires access to any permission group
+  if (await assertDataElementPermissions(accessPolicy, models, dataElementId, 'some')) {
+    return true;
   }
-  const userPermissions = await getPermissionIdListWithWildcard(accessPolicy, models);
-  if (dataElement.permission_groups.every(id => userPermissions.includes(id))) {
+  throw new Error('You do not have permission to view this data element');
+};
+
+export const assertDataElementEditPermissions = async (accessPolicy, models, dataElementId) => {
+  // User requires access to all permission groups
+  if (await assertDataElementPermissions(accessPolicy, models, dataElementId, 'every')) {
     return true;
   }
   throw new Error(
     'You require access to all of a data elements permission groups to perform this action',
   );
+};
+
+const assertDataElementPermissions = async (accessPolicy, models, dataElementId, test) => {
+  const dataElement = await models.dataElement.findById(dataElementId);
+  if (!dataElement) {
+    throw new Error(`No data element exists with id ${dataElementId}`);
+  }
+  const userPermissions = await getPermissionIdListWithWildcard(accessPolicy, models);
+  // Test if user has access to any or all permission groups against the data element
+  if (dataElement.permission_groups[test](id => userPermissions.includes(id))) {
+    return true;
+  }
+  return false;
 };
 
 export const createDataElementDBFilter = async (accessPolicy, models, criteria) => {
@@ -38,7 +55,7 @@ export const createDataElementDBFilter = async (accessPolicy, models, criteria) 
   // Permission groups on the data element overlap with our permission groups
   // Wildcard is added to our list so it will be included
   dbConditions.permission_groups = {
-    comparator: '&&',
+    comparator: '&&', // Checks two array have any elements in common
     comparisonValue: userPermissions,
   };
   return dbConditions;
