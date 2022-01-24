@@ -29,7 +29,7 @@ export class TestReportRoute extends Route<TestReportRequest> {
   async buildResponse() {
     const { query, body } = this.req;
     const { testData, testConfig, ...restOfBody } = body;
-    const { hierarchy = 'explore', organisationUnitCodes = 'explore', ...restOfQuery } = query;
+    const { hierarchy = 'explore', organisationUnitCodes, ...restOfQuery } = query;
 
     const reqContext = {
       hierarchy,
