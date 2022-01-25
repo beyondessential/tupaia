@@ -39,22 +39,23 @@ export class ReportBuilder {
     return this;
   };
 
+  private fetch = async (config: ReportConfig, aggregator: Aggregator, query: FetchReportQuery) => {
+    if (this.testData) {
+      return { results: this.testData } as FetchResponse;
+    }
+    const builtQuery = await new QueryBuilder(this.reqContext, config, query).build();
+    return buildFetch(config.fetch)(aggregator, builtQuery);
+  };
+
   public build = async (aggregator: Aggregator, query: FetchReportQuery): Promise<BuiltReport> => {
     if (!this.config) {
       throw new Error('Report requires a config be set');
     }
 
-    const fetch = this.testData
-      ? () => ({ results: this.testData } as FetchResponse)
-      : async () => {
-          const builtQuery = await new QueryBuilder(this.reqContext, this.config, query).build();
-          return buildFetch(this.config?.fetch)(aggregator, builtQuery);
-        };
-    const data = await fetch();
-    const context = await buildContext(this.config.transform, this.reqContext, data);
+    const fetchData = await this.fetch(this.config, aggregator, query);
+    const context = await buildContext(this.config.transform, this.reqContext, fetchData);
     const transform = buildTransform(this.config.transform, context);
-    const transformedData = transform(data.results);
-
+    const transformedData = transform(fetchData.results);
     const output = buildOutput(this.config.output);
     const outputData = output(transformedData);
 
