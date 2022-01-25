@@ -19,6 +19,18 @@ def get_db_instance(db_id):
 
     return instances_response['DBInstances'][0]
 
+def find_db_instances(filters):
+    tagged_resources_response = resource_group_tagging_api.get_resources(
+        TagFilters=filters,
+        ResourceTypeFilters=['rds']
+    )
+
+    if 'ResourceTagMappingList' not in tagged_resources_response or len(tagged_resources_response['ResourceTagMappingList']) == 0:
+        return []
+    
+    db_arns = map(lambda x: x['ResourceARN'], tagged_resources_response['ResourceTagMappingList'])
+    return list(map(lambda x: get_db_instance(x), db_arns))
+
 def set_db_instance_master_password(db_id, password):
     rds.modify_db_instance(
         DBInstanceIdentifier=db_id,

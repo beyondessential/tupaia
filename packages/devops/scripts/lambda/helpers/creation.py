@@ -2,7 +2,7 @@ import boto3
 
 from helpers.networking import add_subdomains_to_route53, setup_subdomains_via_dns, setup_subdomains_via_gateway
 from helpers.utilities import get_instance_by_id
-from helpers.rds import get_latest_db_snapshot
+from helpers.rds import get_latest_db_snapshot, wait_for_db_instance
 
 ec2 = boto3.resource('ec2')
 ec = boto3.client('ec2')
@@ -158,7 +158,7 @@ def create_instance(
 
     return new_instance_object
 
-def create_db_instance_from_snapshot(
+def clone_db_from_snapshot(
   deployment_name,
   deployment_type,
   snapshot_name,
@@ -170,7 +170,6 @@ def create_db_instance_from_snapshot(
     security_group_ids = get_security_group_ids_config(security_group_code, security_group_id)
 
     snapshot_id = get_latest_db_snapshot(snapshot_name)
-    print('Starting to clone db instance from snapshot')
     rds.restore_db_instance_from_db_snapshot(
         DBInstanceIdentifier=db_instance_id,
         DBSnapshotIdentifier=snapshot_id,
@@ -193,17 +192,64 @@ def create_db_instance_from_snapshot(
             },
         ],
     )
-    
-    print('Successfully cloned new db instance from snapshot')
-    waiter = rds.get_waiter('db_instance_available')
-    waiter.wait(DBInstanceIdentifier=db_instance_id)
-    instance = rds.describe_db_instances(DBInstanceIdentifier=db_instance_id)['DBInstances'][0]
 
+    print('Successfully cloned new db (' + db_instance_id + ') from snapshot')
+
+    return db_instance_id
+
+def setup_db_route53_entries(deployment_name, db_instance):
     add_subdomains_to_route53(
         domain='tupaia.org', 
         subdomains=['db'], 
         deployment_name=deployment_name, 
-        dns_url=instance['Endpoint']['Address']
+        dns_url=db_instance['Endpoint']['Address']
     )
 
+def create_db_instance_from_snapshot(
+  deployment_name,
+  deployment_type,
+  snapshot_name,
+  instance_type,
+  security_group_code=None,
+  security_group_id=None,
+):
+    db_instance_id = clone_db_from_snapshot(
+      deployment_name,
+      deployment_type,
+      snapshot_name,
+      instance_type,
+      security_group_code,
+      security_group_id
+    )
+    
+    waiter = rds.get_waiter('db_instance_available')
+    waiter.wait(DBInstanceIdentifier=db_instance_id)
+    instance = rds.describe_db_instances(DBInstanceIdentifier=db_instance_id)['DBInstances'][0]
+
+    setup_db_route53_entries(deployment_name, instance)
+
+    return instance
+
+async def create_db_instance_from_snapshot_async(
+  deployment_name,
+  deployment_type,
+  snapshot_name,
+  instance_type,
+  security_group_code=None,
+  security_group_id=None,
+):
+    db_instance_id = clone_db_from_snapshot(
+      deployment_name,
+      deployment_type,
+      snapshot_name,
+      instance_type,
+      security_group_code,
+      security_group_id
+    )
+    
+    await wait_for_db_instance(db_instance_id, 'available')
+    instance = rds.describe_db_instances(DBInstanceIdentifier=db_instance_id)['DBInstances'][0]
+
+    setup_db_route53_entries(deployment_name, instance)
+    
     return instance
