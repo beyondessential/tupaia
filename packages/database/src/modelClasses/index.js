@@ -111,7 +111,7 @@ export { GeographicalAreaModel } from './GeographicalArea';
 export { MeditrakDeviceModel } from './MeditrakDevice';
 export { PermissionGroupModel } from './PermissionGroup';
 export { ProjectModel } from './Project';
-export { ReportModel, ReportType } from './Report';
+export { ReportModel, ReportType, AGGREGATION_TYPES } from './Report';
 export { SurveyScreenComponentModel } from './SurveyScreenComponent';
 export { SurveyScreenModel } from './SurveyScreen';
 export { UserEntityPermissionModel } from './UserEntityPermission';

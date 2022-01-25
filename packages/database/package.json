@@ -15,6 +15,7 @@
    "build": "rm -rf dist && run-p \"build:* {@}\" --",
     "build:src": "babel src --out-dir dist --source-maps --ignore \"**/migrations\",\"src/tests/**\" --config-file \"../../babel.config.json\"",
     "build:types": "tsc",
+    "build:schemas": "yarn typescript-json-schema src/modelClasses/Report.types.ts Report --ignoreErrors --out dist/schemas.json",
     "dump-database": "./scripts/dumpDatabase.sh",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
@@ -44,6 +45,7 @@
     "pg-pubsub": "0.6.1",
     "rand-token": "^1.0.1",
     "react-autobind": "1.0.6",
+    "typescript-json-schema": "^0.53.0",
     "winston": "3.3.3"
   },
   "devDependencies": {

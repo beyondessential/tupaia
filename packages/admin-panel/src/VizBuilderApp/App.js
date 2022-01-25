@@ -11,6 +11,7 @@ import { Main } from './views/Main';
 import { CreateNew } from './views/CreateNew';
 import { useUser } from './api/queries';
 import { VizConfigProvider as StateProvider } from './context';
+import { AGGREGATION_TYPES } from '@tupaia/database';
 
 const Container = styled.main`
   display: flex;
@@ -45,6 +46,12 @@ export const App = ({ Navbar, Footer }) => {
           </Route>
         </Switch>
         {Footer && <Footer />}
+        <>
+          { // https://www.petermorlion.com/iterating-a-typescript-enum
+            Object.values(AGGREGATION_TYPES).forEach((type) => (
+            <>Hi ${type}</>
+          )}
+        </>
       </Container>
     </StateProvider>
   );

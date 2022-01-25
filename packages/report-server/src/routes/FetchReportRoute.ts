@@ -5,6 +5,7 @@
 
 import { Request } from 'express';
 
+import type { Report } from '@tupaia/database';
 import { createAggregator } from '@tupaia/aggregator';
 import { Route } from '@tupaia/server-boilerplate';
 
@@ -24,6 +25,12 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
   async findReport() {
     const { models, params } = this.req;
     const { reportCode } = params;
+
+    // report server imports types from @tupaia/database
+    // This is something I will do in RN-202/colocating-types-typescript,
+    // not really something you will need to do
+    let reportConfig: Report.config;
+
     const report = await models.report.findOne({ code: reportCode });
     if (!report) {
       throw new Error(`No report found with code ${reportCode}`);

@@ -72,6 +72,7 @@
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-multi-entry": "^4.0.0",
     "@tupaia/utils": "1.0.0",
+    "@tupaia/database": "1.0.0",
     "cypress-file-upload": "^5.0.8",
     "rollup": "^2.44.0",
     "rollup-plugin-analyzer": "^4.0.0",
