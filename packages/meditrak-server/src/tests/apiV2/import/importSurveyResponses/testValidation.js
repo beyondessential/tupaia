@@ -39,7 +39,7 @@ export const testValidation = async () => {
       [
         'invalid header',
         'invalidHeader.xlsx',
-        /should be a survey response id or "NEW"\/"UPDATE"\/"MERGE"/,
+        /should be a survey response id or "DEFAULT"\/"NEW"\/"UPDATE"\/"MERGE"/,
       ],
       ['invalid number answer', 'invalidNumberAnswer.xlsx', /Should contain a number/],
       ['invalid radio answer', 'invalidRadioAnswer.xlsx', /not an accepted value/],

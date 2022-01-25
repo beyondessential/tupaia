@@ -49,6 +49,8 @@ const ANSWER_TRANSFORMERS = {
 };
 
 const IMPORT_MODES = {
+  DEFAULT: 'DEFAULT',
+
   // A new response will be created
   NEW: 'NEW',
 
@@ -58,6 +60,37 @@ const IMPORT_MODES = {
 
   // Same as 'UPDATE, but create a new response instead of updating the existing one
   MERGE: 'MERGE',
+};
+
+const IMPORT_BEHAVIOURS = {
+  [IMPORT_MODES.DEFAULT]: {
+    shouldDetectSurvey: false,
+    shouldGenerateIds: false,
+    shouldUpdateExistingResponses: false,
+    shouldDeleteEmptyAnswer: true,
+    shouldFillEmptyAnswer: false,
+  },
+  [IMPORT_MODES.NEW]: {
+    shouldDetectSurvey: true,
+    shouldGenerateIds: true,
+    shouldUpdateExistingResponses: false,
+    shouldDeleteEmptyAnswer: true,
+    shouldFillEmptyAnswer: false,
+  },
+  [IMPORT_MODES.UPDATE]: {
+    shouldDetectSurvey: true,
+    shouldGenerateIds: false,
+    shouldUpdateExistingResponses: true,
+    shouldDeleteEmptyAnswer: false,
+    shouldFillEmptyAnswer: false,
+  },
+  [IMPORT_MODES.MERGE]: {
+    shouldDetectSurvey: true,
+    shouldGenerateIds: true,
+    shouldUpdateExistingResponses: false,
+    shouldDeleteEmptyAnswer: false,
+    shouldFillEmptyAnswer: true,
+  },
 };
 
 /**
@@ -127,25 +160,20 @@ export async function importSurveyResponses(req, res) {
 
         // For import modes where an existing response id is not specified,
         // we need to detect a survey and use it to look for existing responses
-        const shouldDetectSurvey = [
-          IMPORT_MODES.NEW,
-          IMPORT_MODES.UPDATE,
-          IMPORT_MODES.MERGE,
-        ].includes(importMode);
-        if (!survey && shouldDetectSurvey) {
+        if (!survey && IMPORT_BEHAVIOURS[importMode].shouldDetectSurvey) {
           survey = await findTabSurvey(models, tabName, surveyNames);
         }
 
-        if ([IMPORT_MODES.NEW, IMPORT_MODES.MERGE].includes(importMode)) {
+        if (IMPORT_BEHAVIOURS[importMode].shouldGenerateIds) {
           surveyResponseIds[columnIndex] = generateId();
           isGeneratedIdByColumnIndex[columnIndex] = true;
-        } else if (importMode === IMPORT_MODES.UPDATE) {
+        } else if (IMPORT_BEHAVIOURS[importMode].shouldUpdateExistingResponses) {
           const { surveyResponseId } = await getExistingResponseData(columnIndex);
 
           if (surveyResponseId) {
             surveyResponseIds[columnIndex] = surveyResponseId;
           } else {
-            // An matching existing response was not found, generate a new id
+            // A matching existing response was not found, generate a new id
             surveyResponseIds[columnIndex] = generateId();
             isGeneratedIdByColumnIndex[columnIndex] = true;
           }
@@ -203,9 +231,10 @@ export async function importSurveyResponses(req, res) {
         }
 
         const getAnswerText = async (answerValue, surveyResponseId, columnIndex, importMode) => {
-          const shouldFillEmptyAnswer = importMode === IMPORT_MODES.MERGE;
-
-          if (checkIsCellEmpty(answerValue) && shouldFillEmptyAnswer) {
+          if (
+            checkIsCellEmpty(answerValue) &&
+            IMPORT_BEHAVIOURS[importMode].shouldFillEmptyAnswer
+          ) {
             const { dataTime, answerTextsByQuestionId } = await getExistingResponseData(
               columnIndex,
             );
@@ -232,10 +261,6 @@ export async function importSurveyResponses(req, res) {
             : answerValue;
           // If we already deleted this survey response wholesale, no need to check specific rows
           if (surveyResponseId && !deletedResponseIds.has(surveyResponseId)) {
-            const shouldDeleteEmptyAnswer = ![IMPORT_MODES.UPDATE, IMPORT_MODES.MERGE].includes(
-              importMode,
-            );
-
             if (answerValidator) {
               const constructImportValidationError = message =>
                 new ImportValidationError(message, excelRowNumber, columnHeader, tabName);
@@ -262,7 +287,10 @@ export async function importSurveyResponses(req, res) {
                   updatePersistor.updateDataTime(surveyResponseId, newDataTime);
                 }
               }
-            } else if (checkIsCellEmpty(transformedAnswerValue) && shouldDeleteEmptyAnswer) {
+            } else if (
+              checkIsCellEmpty(transformedAnswerValue) &&
+              IMPORT_BEHAVIOURS[importMode].shouldDeleteEmptyAnswer
+            ) {
               // Empty question row: delete any matching answer
               updatePersistor.deleteAnswer(surveyResponseId, { questionId });
             } else {
@@ -502,13 +530,16 @@ function getColumnHeader(sheet, columnIndex) {
 }
 
 function getImportMode(columnHeader) {
-  return Object.values(IMPORT_MODES).find(importMode => columnHeader.startsWith(importMode));
+  const importMode = Object.values(IMPORT_MODES).find(importMode =>
+    columnHeader.startsWith(importMode),
+  );
+  return importMode || IMPORT_MODES.DEFAULT;
 }
 
 function validateColumnHeader(columnHeader, columnIndex, tabName) {
   const importMode = getImportMode(columnHeader);
-  if (importMode) {
-    // An import mode is used as a header, header is valid
+  if (importMode !== IMPORT_MODES.DEFAULT) {
+    // A special import mode is used as a header, header is valid
     return;
   }
 
