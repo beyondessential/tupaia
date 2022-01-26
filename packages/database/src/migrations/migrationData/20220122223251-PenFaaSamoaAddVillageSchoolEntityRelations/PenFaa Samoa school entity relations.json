@@ -1,0 +1,958 @@
+﻿{
+    "schoolRelations": [
+        {
+            "parent_code": "WS_002_Taga",
+            "code": "WS_sch001",
+            "name": "Taga PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_002_Salailua",
+            "code": "WS_sch002",
+            "name": "Salailua PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_002_Fogasavaii",
+            "code": "WS_sch003",
+            "name": "Gagaemalae Fogasavaii PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_002_Sagone",
+            "code": "WS_sch004",
+            "name": "Sagone PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_002_Vaipua",
+            "code": "WS_sch005",
+            "name": "Vaipua & Fogasavaii PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_002_Faiaai",
+            "code": "WS_sch006",
+            "name": "Faiaai & Fogatuli PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_002_Samata_I_Uta",
+            "code": "WS_sch007",
+            "name": "Samata I uta PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_002_Samata_I_Tai",
+            "code": "WS_sch008",
+            "name": "Samata I tai & Fagafau PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_011_Falelima",
+            "code": "WS_sch009",
+            "name": "Falelima PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_011_Neiafu_Tai",
+            "code": "WS_sch010",
+            "name": "Neiafu PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_011_Tufutafoe",
+            "code": "WS_sch011",
+            "name": "Tufutafoe PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_011_Falealupo",
+            "code": "WS_sch012",
+            "name": "Falealupo PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_011_Papa_Uta",
+            "code": "WS_sch013",
+            "name": "Papa PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_011_Sataua",
+            "code": "WS_sch014",
+            "name": "Sataua & Fagasa PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_011_Vaisala",
+            "code": "WS_sch015",
+            "name": "Vaisala PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_011_Auala",
+            "code": "WS_sch016",
+            "name": "Auala PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_011_Matavai_(Asau)",
+            "code": "WS_sch017",
+            "name": "Asau Baptist & Christian Academy PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_003_Lotofaga",
+            "code": "WS_sch018",
+            "name": "Asau PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_003_Matatufu",
+            "code": "WS_sch019",
+            "name": "Matatufu PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_003_Lotofaga",
+            "code": "WS_sch020",
+            "name": "Lotofaga PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_003_Aufaga",
+            "code": "WS_sch021",
+            "name": "Aufaga PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_003_Lepa",
+            "code": "WS_sch022",
+            "name": "Lepa PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_003_Saleapaga",
+            "code": "WS_sch023",
+            "name": "Saleapaga PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_003_Lalomanu",
+            "code": "WS_sch024",
+            "name": "Lalomanu PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_003_Vailoa_Lalomanu",
+            "code": "WS_sch025",
+            "name": "Vailoa PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_003_Ulutogia",
+            "code": "WS_sch026",
+            "name": "Ulutogia PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_003_Satitoa",
+            "code": "WS_sch027",
+            "name": "Satitoa PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_003_Lotopue",
+            "code": "WS_sch028",
+            "name": "Lotopue PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_003_Saleaaumua",
+            "code": "WS_sch029",
+            "name": "Saleaaumua PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_003_Samusu",
+            "code": "WS_sch030",
+            "name": "Samusu PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_003_Tiavea",
+            "code": "WS_sch031",
+            "name": "Tiavea PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_007_Salesatele",
+            "code": "WS_sch032",
+            "name": "Salesatele PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_007_Salani",
+            "code": "WS_sch033",
+            "name": "Salani PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_007_Sapoe",
+            "code": "WS_sch034",
+            "name": "Sapoe PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_005_Uafato",
+            "code": "WS_sch035",
+            "name": "Uafato PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_005_Lona",
+            "code": "WS_sch036",
+            "name": "Lona PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_005_Taelefaga",
+            "code": "WS_sch037",
+            "name": "Taelefaga PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_005_Sauano",
+            "code": "WS_sch038",
+            "name": "Sauano PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_005_Falevao",
+            "code": "WS_sch039",
+            "name": "Falevao PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_005_Lalomauga",
+            "code": "WS_sch040",
+            "name": "Lalomauga PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_005_Falefa",
+            "code": "WS_sch041",
+            "name": "St Peters PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_005_Falefa",
+            "code": "WS_sch042",
+            "name": "Falefa PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_005_Manunu",
+            "code": "WS_sch043",
+            "name": "Sauniatu PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_005_Lufilufi",
+            "code": "WS_sch044",
+            "name": "Lufilufi PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_005_Salelesi",
+            "code": "WS_sch045",
+            "name": "Salelesi PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_005_Solosolo",
+            "code": "WS_sch046",
+            "name": "Solosolo PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Laulii",
+            "code": "WS_sch047",
+            "name": "Lauli'i PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Letogo",
+            "code": "WS_sch048",
+            "name": "Letogo PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Vailele_Uta",
+            "code": "WS_sch049",
+            "name": "Samoa PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Vailele_Tai",
+            "code": "WS_sch050",
+            "name": "Vailele PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Fagalii",
+            "code": "WS_sch051",
+            "name": "Fagali'i PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Moataa",
+            "code": "WS_sch052",
+            "name": "Moata'a PS ",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Vaivase_Uta",
+            "code": "WS_sch053",
+            "name": "Vaivase PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Magiagi_Uta",
+            "code": "WS_sch054",
+            "name": "Magiagi PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Aai_o_Niue",
+            "code": "WS_sch055",
+            "name": "All Saint Anglican PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Maluafou",
+            "code": "WS_sch056",
+            "name": "Manumalo Baptist PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Malifa",
+            "code": "WS_sch057",
+            "name": "Apia PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Tanugamanono",
+            "code": "WS_sch058",
+            "name": "Tanugamanono PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Vailima",
+            "code": "WS_sch059",
+            "name": "Vailima PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Avele",
+            "code": "WS_sch060",
+            "name": "Vaiala Beach PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Malolelei",
+            "code": "WS_sch061",
+            "name": "Divine Mercy PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Matafele",
+            "code": "WS_sch062",
+            "name": "Marist Brother PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Fugalei",
+            "code": "WS_sch063",
+            "name": "Peach Chapel PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Saleufi",
+            "code": "WS_sch064",
+            "name": "Vaimea PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Moamoa_Fou",
+            "code": "WS_sch065",
+            "name": "St Peter Chanel PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Vaimoso",
+            "code": "WS_sch066",
+            "name": "Vaimoso PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Pesega",
+            "code": "WS_sch067",
+            "name": "LDS Meddle PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Vaitoloa",
+            "code": "WS_sch068",
+            "name": "AH Mu Academy PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Lotopa",
+            "code": "WS_sch069",
+            "name": "Robert Louise PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Alafua",
+            "code": "WS_sch070",
+            "name": "Lepea PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Tulaele",
+            "code": "WS_sch071",
+            "name": "St Theresa Apia PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Vaiusu",
+            "code": "WS_sch072",
+            "name": "Vaiusu PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Vaigaga",
+            "code": "WS_sch073",
+            "name": "Vaigaga PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Vaitele_Fou",
+            "code": "WS_sch074",
+            "name": "Aoga Faamasani Amosa PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Vaitele_Uta",
+            "code": "WS_sch075",
+            "name": "Vaitele PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Toamua",
+            "code": "WS_sch076",
+            "name": "Saina & Toamua PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Aleisa_East",
+            "code": "WS_sch077",
+            "name": "Aleisa PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Aele_Fou",
+            "code": "WS_sch078",
+            "name": "Aele PS ",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Nuu",
+            "code": "WS_sch079",
+            "name": "George Brown PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_004_Faleula",
+            "code": "WS_sch080",
+            "name": "Faleula PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_008_Matafaa",
+            "code": "WS_sch081",
+            "name": "Matautu PS ",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_008_Safaatoa",
+            "code": "WS_sch082",
+            "name": "Safa'ato'a PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_008_Savaia",
+            "code": "WS_sch083",
+            "name": "Savaia PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_008_Salamumu_Tai",
+            "code": "WS_sch084",
+            "name": "Salamumu PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_008_Saanapu_Uta",
+            "code": "WS_sch085",
+            "name": "Sa'anapu PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_008_Sataoa_Uta",
+            "code": "WS_sch086",
+            "name": "Sataoa PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_008_Vaiee",
+            "code": "WS_sch087",
+            "name": "Vaie'e PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_008_Fusi",
+            "code": "WS_sch088",
+            "name": "Fusi Safata PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_008_Fausaga",
+            "code": "WS_sch089",
+            "name": "Sapo'e PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_008_Tafitoala",
+            "code": "WS_sch090",
+            "name": "Tafitoala PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_008_Mulivai_Saanapu",
+            "code": "WS_sch091",
+            "name": "Mulivai PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_001_Satapuala",
+            "code": "WS_sch092",
+            "name": "Satapuala PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_001_Apolima_Fou",
+            "code": "WS_sch093",
+            "name": "Apolima - Uta PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_001_Manono_Uta",
+            "code": "WS_sch094",
+            "name": "Manono PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_001_Faleu",
+            "code": "WS_sch095",
+            "name": "Faleu PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_001_Satuilagi",
+            "code": "WS_sch096",
+            "name": "Nene PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_001_Salua",
+            "code": "WS_sch097",
+            "name": "Salua PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_001_Pata",
+            "code": "WS_sch098",
+            "name": "Falelatai PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_001_Samatau",
+            "code": "WS_sch099",
+            "name": "Samatau PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_001_Siufaga",
+            "code": "WS_sch100",
+            "name": "Siufaga PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_001_Nefunefu",
+            "code": "WS_sch101",
+            "name": "Mulifanua PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_004_Malie",
+            "code": "WS_sch102",
+            "name": "Malie PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_004_Afega",
+            "code": "WS_sch103",
+            "name": "Afega PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_004_Tuanai",
+            "code": "WS_sch104",
+            "name": "Tuanai PS ",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_004_Leauvaa",
+            "code": "WS_sch105",
+            "name": "Leauva'a PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_004_Leulumoega",
+            "code": "WS_sch106",
+            "name": "St Joan of Arc PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_004_Alamutu",
+            "code": "WS_sch107",
+            "name": "St Joseph PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Levili",
+            "code": "WS_sch108",
+            "name": "Levi PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_004_Salepouae",
+            "code": "WS_sch109",
+            "name": "Saleimoa PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_004_Utualii",
+            "code": "WS_sch110",
+            "name": "Utuali'i PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Moamoa",
+            "code": "WS_sch111",
+            "name": "Maomoa/Tauao'o PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_006_Sapulu",
+            "code": "WS_sch112",
+            "name": "Faleasiu PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_004_Fasitoouta",
+            "code": "WS_sch113",
+            "name": "Fasito'outa PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_004_Nofoalii",
+            "code": "WS_sch114",
+            "name": "Nofoali'i PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_004_Leulumoega",
+            "code": "WS_sch115",
+            "name": "Leulumoega PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_004_Fasitoo_Tai",
+            "code": "WS_sch116",
+            "name": "Fasito'otai PS ",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_004_Vailuutai",
+            "code": "WS_sch117",
+            "name": "Vailu'utai PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_004_Faleatiu",
+            "code": "WS_sch118",
+            "name": "Faleatiu PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_006_Fataloa",
+            "code": "WS_sch119",
+            "name": "Salelelologa PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_006_Sapulu",
+            "code": "WS_sch120",
+            "name": "Manumalo PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_006_Salelavalu_Uta",
+            "code": "WS_sch121",
+            "name": "Salelavalu PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_006_Tino_I_Iva",
+            "code": "WS_sch122",
+            "name": "Iva PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_006_Lalomalava",
+            "code": "WS_sch123",
+            "name": "Lalomalava PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_006_Sapapalii",
+            "code": "WS_sch124",
+            "name": "Sapapalii PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_006_Fusi",
+            "code": "WS_sch125",
+            "name": "Safotulafai PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_006_Fatausi",
+            "code": "WS_sch126",
+            "name": "St Theresa Fatausi PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_006_Tapueleele",
+            "code": "WS_sch127",
+            "name": "Vaiola PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_006_Siufaga_Savaii",
+            "code": "WS_sch128",
+            "name": "Faga PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_006_Sapini",
+            "code": "WS_sch129",
+            "name": "SDA Siufaga PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_006_Saasaai",
+            "code": "WS_sch130",
+            "name": "Sasaai PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_006_Saipipi",
+            "code": "WS_sch131",
+            "name": "Saipipi PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_006_Lano",
+            "code": "WS_sch132",
+            "name": "Lano PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_006_Asaga",
+            "code": "WS_sch133",
+            "name": "Asaga PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_006_Puapua",
+            "code": "WS_sch134",
+            "name": "Puapua PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_012_Vaitoomuli",
+            "code": "WS_sch135",
+            "name": "Palauli PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_012_Gataivai",
+            "code": "WS_sch136",
+            "name": "Gataivai PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_012_Gautavai",
+            "code": "WS_sch137",
+            "name": "Gautavai PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_012_Sili",
+            "code": "WS_sch138",
+            "name": "Sili PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_012_Puleia",
+            "code": "WS_sch139",
+            "name": "Puleia PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_012_Papa",
+            "code": "WS_sch140",
+            "name": "Papa Sataua PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_012_Tafua",
+            "code": "WS_sch141",
+            "name": "Tafua PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_012_Vaega",
+            "code": "WS_sch142",
+            "name": "Satupaitea PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_014_Vailoa_apia",
+            "code": "WS_sch159",
+            "name": "Salani PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_009_Patamea",
+            "code": "WS_sch144",
+            "name": "Patamea PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_009_Samalaeulu",
+            "code": "WS_sch145",
+            "name": "Samalaeulu PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_009_Saleaula",
+            "code": "WS_sch146",
+            "name": "Saleaula PS ",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_009_Avao",
+            "code": "WS_sch147",
+            "name": "Laumoli PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_009_Manase",
+            "code": "WS_sch148",
+            "name": "Sacred Heart PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_009_Safotu",
+            "code": "WS_sch149",
+            "name": "Safotu PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_009_Paia",
+            "code": "WS_sch150",
+            "name": "Paia PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_009_Samauga",
+            "code": "WS_sch151",
+            "name": "Samauga PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_009_Sasina",
+            "code": "WS_sch152",
+            "name": "Sasina PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_009_Letui",
+            "code": "WS_sch153",
+            "name": "Letui PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_009_Aopo",
+            "code": "WS_sch154",
+            "name": "Aopo PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_007_Saleilua",
+            "code": "WS_sch155",
+            "name": "Saleilua PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_007_Vaovai",
+            "code": "WS_sch156",
+            "name": "Vaovai PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_007_Satalo",
+            "code": "WS_sch157",
+            "name": "Satalo PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_007_Sapunaoa",
+            "code": "WS_sch158",
+            "name": "Sapunoa PS",
+            "entity_type": "school"
+        },
+        {
+            "parent_code": "WS_007_Poutasi",
+            "code": "WS_sch160",
+            "name": "Sapoe PS",
+            "entity_type": "school"
+        }
+    ]
+}
