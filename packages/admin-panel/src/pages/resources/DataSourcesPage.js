@@ -39,7 +39,7 @@ const getButtonsConfig = (fields, recordType) => [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'dataElements',
+      editEndpoint: `${recordType}s`,
       fields,
       displayUsedBy: true,
       recordType,
@@ -50,7 +50,7 @@ const getButtonsConfig = (fields, recordType) => [
     source: 'id',
     type: 'delete',
     actionConfig: {
-      endpoint: 'dataElements',
+      endpoint: `${recordType}s`,
     },
   },
 ];
@@ -123,7 +123,7 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
       {
         title: 'Data Elements',
         endpoint: 'dataGroups/{id}/dataElements',
-        columns: [...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS, 'dataGroup')],
+        columns: [...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement')],
       },
     ]}
     editConfig={{ title: 'Edit Data Source' }}
