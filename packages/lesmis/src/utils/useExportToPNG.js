@@ -11,7 +11,7 @@ import { sleep, toFilename } from '@tupaia/utils';
 const exportToPng = (node, filename) => {
   return new Promise(resolve => {
     const file = `${filename}.png`;
-    domtoimage.toPng(node).then(async dataUrl => {
+    domtoimage.toPng(node, { bgcolor: 'white' }).then(async dataUrl => {
       downloadJs(dataUrl, file);
       resolve();
     });

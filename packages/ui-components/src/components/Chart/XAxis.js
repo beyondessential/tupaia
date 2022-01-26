@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Text, XAxis as XAxisComponent } from 'recharts';
 import { CHART_TYPES, DARK_BLUE } from './constants';
@@ -32,12 +32,36 @@ const X_AXIS_PADDING = {
   },
 };
 
-export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
-  const [xAxisHeight, setXAxisHeight] = useState(0);
-  const fillColor = getContrastTextColor();
+const renderXAxisLabel = (label, fillColor, isEnlarged, isExporting) => {
+  if (label && isEnlarged && !isExporting)
+    return {
+      value: label,
+      fill: fillColor,
+      offset: -5,
+      position: 'insideBottom',
+    };
+  return null;
+};
 
+const BASE_H = 40;
+
+const calculateXAxisHeight = (data, isExporting) => {
+  if (getIsTimeSeries(data)) {
+    return BASE_H;
+  }
+
+  if (isExporting) {
+    return Math.min(BASE_H + Math.max(...data.map(item => item.name?.length)) || 5 * 6, 190);
+  }
+  return BASE_H;
+};
+
+export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
+  const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
   const { BAR, COMPOSED } = CHART_TYPES;
   const { chartType, chartConfig = {}, data } = viewContent;
+  const axisHeight = calculateXAxisHeight(data, isExporting);
+  const isTimeSeries = getIsTimeSeries(data);
 
   /*
     If set 0, all the ticks will be shown.
@@ -46,6 +70,10 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
   */
   const getXAxisTickInterval = () => {
     if (chartType === BAR || chartType === COMPOSED) {
+      if (isTimeSeries) {
+        return 'preserveStartEnd';
+      }
+
       return isExporting ? 0 : 'preserveStartEnd';
     }
 
@@ -56,7 +84,7 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
     const { periodGranularity, presentationOptions = {} } = viewContent;
     const { periodTickFormat } = presentationOptions;
 
-    return getIsTimeSeries(data)
+    return isTimeSeries
       ? formatTimestampForChart(tickData, periodGranularity, periodTickFormat)
       : tickData;
   };
@@ -89,14 +117,14 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
       chartType === BAR ||
       Object.values(chartConfig).some(({ chartType: composedType }) => composedType === BAR);
 
-    if (hasBars && data.length > 1 && getIsTimeSeries(data)) {
+    if (hasBars && data.length > 1 && isTimeSeries) {
       const paddingKey = isEnlarged ? 'enlarged' : 'preview';
       const { dataLengthThreshold, base, offset, minimum } = X_AXIS_PADDING[paddingKey];
       const padding = Math.max(minimum, (dataLengthThreshold - data.length) * base + offset);
       return { left: padding, right: padding };
     }
 
-    return { left: 0, right: 0 };
+    return { left: 0, right: 10 };
   };
 
   const renderVerticalTick = tickProps => {
@@ -106,14 +134,6 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
       <VerticalTick
         {...restOfProps}
         viewContent={viewContent}
-        onHeight={height => {
-          if (xAxisHeight < height) {
-            setXAxisHeight(height);
-            // State isn't fast enough at updating to compare against
-            // so always set the instance variable for comparison.
-            // xAxisHeight = height;
-          }
-        }}
         payload={{
           ...payload,
           value: formatXAxisTick(payload.value),
@@ -125,15 +145,15 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
   return (
     <XAxisComponent
       dataKey="name"
-      label={data.xName}
+      label={renderXAxisLabel(viewContent?.xName, fillColor, isEnlarged, isExporting)}
       stroke={isExporting ? DARK_BLUE : fillColor}
-      height={isExporting ? xAxisHeight + 20 : undefined}
+      height={axisHeight}
       interval={getXAxisTickInterval()}
       tick={getXAxisTickMethod()}
       tickFormatter={formatXAxisTick}
       padding={getXAxisPadding()}
       tickSize={6}
-      {...(getIsTimeSeries(data) ? AXIS_TIME_PROPS : {})}
+      {...(isTimeSeries ? AXIS_TIME_PROPS : {})}
     />
   );
 };

@@ -75,8 +75,8 @@ for DEPLOYMENT_BASE64 in $DEPLOYMENTS; do
       echo "ELB for ${DEPLOYMENT_NAME} now points to ${NEW_INSTANCE_ID}"
       break
     else
-      if [ "$WAIT_ATTEMPTS" -ge 10 ]; then
-        echo "Build failed! Waited 10 times, but new instance is still not reachable"
+      if [ "$WAIT_ATTEMPTS" -ge 75 ]; then # 75 * 200 seconds = 4.16 hours, sitting within codeship's 5 hour timeout
+        echo "Build failed! Waited 75 times, but new instance is still not reachable"
         exit 1
       else
         echo "Still waiting for ${DEPLOYMENT_NAME} startup build to complete. To watch detailed progress, connect to instance ${NEW_INSTANCE_ID} and run tail -f logs/deployment_log.txt"

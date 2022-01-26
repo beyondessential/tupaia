@@ -28,6 +28,7 @@ import {
   UPDATE_OVERLAY_CONFIGS,
   SET_PROJECT,
   SET_DISPLAYED_MAP_OVERLAY,
+  SET_MAX_SELECTED_OVERLAYS,
 } from '../actions';
 
 import { DEFAULT_BOUNDS } from '../defaults';
@@ -126,6 +127,15 @@ function displayedMapOverlays(state = [], action) {
   switch (action.type) {
     case SET_DISPLAYED_MAP_OVERLAY:
       return action.mapOverlayCodes;
+    default:
+      return state;
+  }
+}
+
+function maxSelectedOverlays(state = 1, action) {
+  switch (action.type) {
+    case SET_MAX_SELECTED_OVERLAYS:
+      return action.maxNum;
     default:
       return state;
   }
@@ -248,4 +258,5 @@ export default combineReducers({
   displayedMapOverlays,
   currentCountry,
   hiddenMeasures,
+  maxSelectedOverlays,
 });
