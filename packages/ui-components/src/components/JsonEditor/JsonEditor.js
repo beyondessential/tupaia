@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import JSONEditor from 'jsoneditor/dist/jsoneditor-minimalist';
+import JSONEditor from 'jsoneditor/dist/jsoneditor';
 import 'jsoneditor/dist/jsoneditor.css';
 import Ace from 'ace-builds/src-noconflict/ace';
 import 'ace-builds/webpack-resolver';
