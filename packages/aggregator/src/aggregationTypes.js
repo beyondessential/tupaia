@@ -32,41 +32,203 @@ const SUM_PREVIOUS_EACH_DAY = 'SUM_PREVIOUS_EACH_DAY';
 const SUM_UNTIL_CURRENT_DAY = 'SUM_UNTIL_CURRENT_DAY';
 const SUM = 'SUM';
 
+const BASIC_SCHEMA_CONFIG = {
+  type: 'object',
+  dataSourceEntityType: {
+    type: 'string',
+  },
+  aggregationEntityType: {
+    type: 'string',
+  },
+};
+
+const GROUP_SCHEMA = {
+  required: ['dataSourceEntityType', 'aggregationEntityType'],
+};
+
+const DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA = {
+  required: ['dataSourceEntityType'],
+};
+
+const OFFSET_PERIOD_SCHEMA = {
+  offset: {
+    type: 'number',
+  },
+  periodType: {
+    type: 'string',
+  },
+  required: ['dataSourceEntityType', 'offset', 'periodType'],
+};
+
+const getSchema = (aggregationType, otherConfigs = {}) => {
+  const config = { ...BASIC_SCHEMA_CONFIG, ...otherConfigs };
+  return {
+    additionalProperties: false,
+    properties: {
+      type: { const: aggregationType },
+      config,
+    },
+  };
+};
+
 export const AGGREGATION_TYPES_META_DATA = [
-  { code: COUNT_PER_ORG_GROUP, description: 'COUNT_PER_ORG_GROUP' },
-  { code: COUNT_PER_PERIOD_PER_ORG_GROUP, description: 'COUNT_PER_PERIOD_PER_ORG_GROUP' },
-  { code: FINAL_EACH_DAY_FILL_EMPTY_DAYS, description: 'FINAL_EACH_DAY_FILL_EMPTY_DAYS' },
-  { code: FINAL_EACH_DAY, description: 'FINAL_EACH_DAY' },
-  { code: FINAL_EACH_MONTH_FILL_EMPTY_MONTHS, description: 'FINAL_EACH_MONTH_FILL_EMPTY_MONTHS' },
+  {
+    code: COUNT_PER_ORG_GROUP,
+    description:
+      'Count the number of data in child entities within selected period, then sum and group by ancestor entities (aggregationEntityType)',
+    schema: getSchema(COUNT_PER_ORG_GROUP, GROUP_SCHEMA),
+  },
+  {
+    code: COUNT_PER_PERIOD_PER_ORG_GROUP,
+    description:
+      'Count the number of data in child entities within selected period, then sum and group by ancestor entities (aggregationEntityType) and period',
+    schema: getSchema(COUNT_PER_PERIOD_PER_ORG_GROUP, GROUP_SCHEMA),
+  },
+  {
+    code: FINAL_EACH_DAY_FILL_EMPTY_DAYS,
+    description:
+      'Get the latest response for each day within selected period, fill each day with the latest value till current date',
+    schema: getSchema(FINAL_EACH_DAY_FILL_EMPTY_DAYS, DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA),
+  },
+  {
+    code: FINAL_EACH_DAY,
+    description: 'Get the latest response for each day within selected period',
+    schema: getSchema(FINAL_EACH_DAY, DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA),
+  },
+  {
+    code: FINAL_EACH_MONTH_FILL_EMPTY_MONTHS,
+    description:
+      'Get the latest response for each month within selected period, fill each month with the latest value till current month',
+    schema: getSchema(FINAL_EACH_MONTH_FILL_EMPTY_MONTHS, DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA),
+  },
   {
     code: FINAL_EACH_MONTH_PREFER_DAILY_PERIOD,
-    description: 'FINAL_EACH_MONTH_PREFER_DAILY_PERIOD',
+    description: 'Only used by preaggregation',
+    schema: getSchema(
+      FINAL_EACH_MONTH_PREFER_DAILY_PERIOD,
+      DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA,
+    ),
   },
-  { code: FINAL_EACH_MONTH, description: 'FINAL_EACH_MONTH' },
+  {
+    code: FINAL_EACH_MONTH,
+    description: 'Get the latest response for each month within selected period',
+    schema: getSchema(FINAL_EACH_MONTH, DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA),
+  },
   {
     code: FINAL_EACH_QUARTER_FILL_EMPTY_QUARTERS,
-    description: 'FINAL_EACH_QUARTER_FILL_EMPTY_QUARTERS',
+    description:
+      'Get the latest response for each quarter within selected period, fill each quarter with the latest value till current quarter',
+    schema: getSchema(
+      FINAL_EACH_QUARTER_FILL_EMPTY_QUARTERS,
+      DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA,
+    ),
   },
-  { code: FINAL_EACH_QUARTER, description: 'FINAL_EACH_QUARTER' },
-  { code: FINAL_EACH_WEEK_FILL_EMPTY_WEEKS, description: 'FINAL_EACH_WEEK_FILL_EMPTY_WEEKS' },
-  { code: FINAL_EACH_WEEK, description: 'FINAL_EACH_WEEK' },
-  { code: FINAL_EACH_YEAR_FILL_EMPTY_YEARS, description: 'FINAL_EACH_YEAR_FILL_EMPTY_YEARS' },
-  { code: FINAL_EACH_YEAR, description: 'FINAL_EACH_YEAR' },
-  { code: MOST_RECENT_PER_ORG_GROUP, description: 'MOST_RECENT_PER_ORG_GROUP' },
-  { code: MOST_RECENT, description: 'MOST_RECENT' },
-  { code: OFFSET_PERIOD, description: 'OFFSET_PERIOD' },
-  { code: RAW, description: 'RAW' },
-  { code: REPLACE_ORG_UNIT_WITH_ORG_GROUP, description: 'REPLACE_ORG_UNIT_WITH_ORG_GROUP' },
-  { code: SUM_EACH_QUARTER, description: 'SUM_EACH_QUARTER' },
-  { code: SUM_EACH_YEAR, description: 'SUM_EACH_YEAR' },
-  { code: SUM_EACH_MONTH, description: 'SUM_EACH_MONTH' },
-  { code: SUM_EACH_WEEK, description: 'SUM_EACH_WEEK' },
-  { code: SUM_MOST_RECENT_PER_FACILITY, description: 'SUM_MOST_RECENT_PER_FACILITY' },
-  { code: SUM_PER_ORG_GROUP, description: 'SUM_PER_ORG_GROUP' },
-  { code: SUM_PER_PERIOD_PER_ORG_GROUP, description: 'SUM_PER_PERIOD_PER_ORG_GROUP' },
-  { code: SUM_PREVIOUS_EACH_DAY, description: 'SUM_PREVIOUS_EACH_DAY' },
-  { code: SUM_UNTIL_CURRENT_DAY, description: 'SUM_UNTIL_CURRENT_DAY' },
-  { code: SUM, description: 'SUM' },
+  {
+    code: FINAL_EACH_QUARTER,
+    description: 'Get the latest response for each quarter within selected period',
+    schema: getSchema(FINAL_EACH_QUARTER, DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA),
+  },
+  {
+    code: FINAL_EACH_WEEK_FILL_EMPTY_WEEKS,
+    description:
+      'Get the latest response for each week within selected period, fill each week with the latest value till current week',
+    schema: getSchema(FINAL_EACH_WEEK_FILL_EMPTY_WEEKS, DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA),
+  },
+  {
+    code: FINAL_EACH_WEEK,
+    description: 'Get the latest response for each week within selected period',
+    schema: getSchema(FINAL_EACH_WEEK, DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA),
+  },
+  {
+    code: FINAL_EACH_YEAR_FILL_EMPTY_YEARS,
+    description:
+      'Get the latest response for each year within selected period, fill each year with the latest value till current year',
+    schema: getSchema(FINAL_EACH_YEAR_FILL_EMPTY_YEARS, DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA),
+  },
+  {
+    code: FINAL_EACH_YEAR,
+    description: 'Get the latest response for each year within selected period',
+    schema: getSchema(FINAL_EACH_YEAR, DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA),
+  },
+  {
+    code: MOST_RECENT_PER_ORG_GROUP,
+    description: 'Legacy aggregation type, only used in legacy data builder',
+    schema: getSchema(MOST_RECENT_PER_ORG_GROUP),
+  },
+  {
+    code: MOST_RECENT,
+    description: 'Get the latest data within selected period',
+    schema: getSchema(MOST_RECENT, DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA),
+  },
+  {
+    code: OFFSET_PERIOD,
+    description: 'Modify the period from the data',
+    schema: getSchema(OFFSET_PERIOD, OFFSET_PERIOD, OFFSET_PERIOD_SCHEMA),
+  },
+  {
+    code: RAW,
+    description: 'Raw data',
+    schema: getSchema(RAW, DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA),
+  },
+  {
+    code: REPLACE_ORG_UNIT_WITH_ORG_GROUP,
+    description:
+      'Get the raw data for child entities (dataSourceEntityType) within selected period, then replace the orgunit code with the requested org unit code (aggregationEntityType)',
+    schema: getSchema(REPLACE_ORG_UNIT_WITH_ORG_GROUP, GROUP_SCHEMA),
+  },
+  {
+    code: SUM_EACH_QUARTER,
+    description: 'Sum all data for each quarter within selected period',
+    schema: getSchema(SUM_EACH_QUARTER, DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA),
+  },
+  {
+    code: SUM_EACH_YEAR,
+    description: 'Sum all data for each year within selected period',
+    schema: getSchema(SUM_EACH_YEAR, DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA),
+  },
+  {
+    code: SUM_EACH_MONTH,
+    description: 'Sum all data for each month within selected period',
+    schema: getSchema(SUM_EACH_MONTH, DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA),
+  },
+  {
+    code: SUM_EACH_WEEK,
+    description: 'Sum all data for each week within selected period',
+    schema: getSchema(SUM_EACH_WEEK, DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA),
+  },
+  {
+    code: SUM_MOST_RECENT_PER_FACILITY,
+    description: 'Legacy aggregation type, only used in legacy data builder',
+    schema: getSchema(SUM_MOST_RECENT_PER_FACILITY),
+  },
+  {
+    code: SUM_PER_ORG_GROUP,
+    description:
+      'Group and sum data by ancestor entities (aggregationEntityType) within selected period',
+    schema: getSchema(SUM_PER_ORG_GROUP, GROUP_SCHEMA),
+  },
+  {
+    code: SUM_PER_PERIOD_PER_ORG_GROUP,
+    description:
+      'Group and sum data within selected period by ancestor entities (aggregationEntityType) and period',
+    schema: getSchema(SUM_PER_PERIOD_PER_ORG_GROUP, GROUP_SCHEMA),
+  },
+  {
+    code: SUM_PREVIOUS_EACH_DAY,
+    description:
+      'Sum data including previous data (prior to the date range selected in date picker)',
+    schema: getSchema(SUM_PREVIOUS_EACH_DAY, DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA),
+  },
+  {
+    code: SUM_UNTIL_CURRENT_DAY,
+    description: 'Sum data till current day ( even after the date range selected in date picker)',
+    schema: getSchema(SUM_UNTIL_CURRENT_DAY, DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA),
+  },
+  {
+    code: SUM,
+    description: 'Sum all data',
+    schema: getSchema(SUM, DATA_SOURCE_ENTITY_TYPE_REQUIRED_SCHEMA),
+  },
 ];
 
 export const AGGREGATION_TYPES = Object.fromEntries(

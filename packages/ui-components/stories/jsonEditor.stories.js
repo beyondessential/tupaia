@@ -48,7 +48,7 @@ const schema = {
     dataElements: {
       type: 'array',
       items: {
-        type: 'string',
+        const: 'abc',
       },
       minItems: 1,
       uniqueItems: true,
