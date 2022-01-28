@@ -38,7 +38,7 @@ const plugins = [
     configFile: './.babelrc.js',
     babelHelpers: 'bundled',
   }),
-  commonjs(),
+  commonjs({ sourceMap: false }),
 ];
 
 // https://stackoverflow.com/questions/63373804/rollup-watch-include-directory
