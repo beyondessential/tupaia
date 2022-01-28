@@ -27,7 +27,7 @@ import asyncio
 
 from helpers.creation import create_db_instance_from_snapshot_async
 from helpers.teardown import teardown_db_instance
-from helpers.rds import find_db_instances, wait_for_db_instance, set_db_instance_master_password
+from helpers.rds import find_db_instances, get_all_db_instances, wait_for_db_instance, rename_db_instance, set_db_instance_master_password
 from helpers.secrets import get_db_master_password
 
 loop = asyncio.get_event_loop()
@@ -65,14 +65,26 @@ def refresh_cloned_databases(event):
 
 async def delete_db(db_instance):
     db_id = db_instance['DBInstanceIdentifier']
-    deployment_name = next(filter(lambda item: item['Key'] == 'DeploymentName', db_instance['TagList']))['Value']
 
     print('starting delete of: ' + db_id)
 
-    # delete existing db
-    teardown_db_instance(deployment_name, 'tupaia')
-    await wait_for_db_instance(db_id, 'deleted')
-    print('deleted: ' + db_id)
+    # we rename, then delete, as it allows us to create the new instance faster
+    temp_id = 'old-' + db_id
+    rename_db_instance(db_id, temp_id)
+
+    rename_complete=False
+    attempts = 0
+    max_attempts = 20
+    while(not rename_complete and attempts < max_attempts):
+        all_instances = get_all_db_instances()
+        rename_complete = any(instance['DBInstanceIdentifier'] == temp_id for instance in all_instances)
+        if (not rename_complete):
+            attempts = attempts + 1
+            await asyncio.sleep(5)
+        else:
+            print('rename complete: ' + db_id + ' -> ' + temp_id)
+
+    teardown_db_instance(db_id=temp_id)
 
 async def recreate_db(db_instance):
     db_id = db_instance['DBInstanceIdentifier']
@@ -89,7 +101,7 @@ async def recreate_db(db_instance):
         'tupaia',
         clone_db_from,
         db_instance_type,
-        security_group_id
+        security_group_id=security_group_id
     )
 
     # set master password

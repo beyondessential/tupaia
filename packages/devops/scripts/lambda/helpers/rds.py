@@ -19,6 +19,10 @@ def get_db_instance(db_id):
 
     return instances_response['DBInstances'][0]
 
+def get_all_db_instances():
+    instances_response = rds.describe_db_instances()
+    return instances_response['DBInstances']
+
 def find_db_instances(filters):
     tagged_resources_response = resource_group_tagging_api.get_resources(
         TagFilters=filters,
@@ -35,6 +39,13 @@ def set_db_instance_master_password(db_id, password):
     rds.modify_db_instance(
         DBInstanceIdentifier=db_id,
         MasterUserPassword=password,
+        ApplyImmediately=True
+    )
+
+def rename_db_instance(db_id, new_db_id):
+    rds.modify_db_instance(
+        DBInstanceIdentifier=db_id,
+        NewDBInstanceIdentifier=new_db_id,
         ApplyImmediately=True
     )
 
