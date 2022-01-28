@@ -1,0 +1,32 @@
+#### Copied from .gitignore
+
+**.env*
+!*.env.example*
+.DS_Store
+**/node_modules
+**/coverage
+**/builds
+**/build
+**/dist
+**/lib
+*.log*
+.nyc_output
+*.aes
+*.pem
+codeship_deploy_key.pub
+codeship_deploy_key
+dump.sql
+db/dump.sql
+*.todo
+**/cypress/screenshots
+**/cypress/videos
+/snapshots.js
+.idea
+dockercfg
+packages/.vscode/settings.json
+**/testRequests/*.http
+
+
+#### Other
+
+**/node_modules
