@@ -82,4 +82,4 @@ RUN yarn install --ignore-scripts --non-interactive --frozen-lockfile
 COPY . ./
 
 # Make sure all packages build
-RUN yarn build
+RUN yarn build --concurrency 1
