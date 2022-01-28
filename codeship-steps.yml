@@ -15,7 +15,7 @@
       service: testing
       steps:
         - name: Test admin-panel-server
-          command: 'yarn test'
+          command: 'yarn test --concurrency 1'
 
 - name: Deploy changes
   service: deployment
