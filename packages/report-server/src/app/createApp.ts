@@ -22,7 +22,7 @@ export function createApp() {
     .useBasicBearerAuth('report-server')
     .get<FetchReportRequest>('fetchReport/:reportCode', handleWith(FetchReportRoute))
     .get<FetchAggregationOptionsRequest>(
-      'fetchAggregationOptions/:searchText?',
+      'fetchAggregationOptions',
       handleWith(FetchAggregationOptionsRoute),
     )
     .post<FetchReportRequest>('fetchReport/:reportCode', handleWith(FetchReportRoute))

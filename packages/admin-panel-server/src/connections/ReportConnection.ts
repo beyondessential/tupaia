@@ -17,8 +17,7 @@ export class ReportConnection extends ApiConnection {
     return this.post('testReport', query, body);
   }
 
-  async fetchAggregationOptions(query: QueryParameters) {
-    const { searchText } = query;
-    return this.get(`fetchAggregationOptions/${searchText}`);
+  async fetchAggregationOptions() {
+    return this.get('fetchAggregationOptions');
   }
 }

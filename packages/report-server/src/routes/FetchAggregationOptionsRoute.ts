@@ -22,11 +22,6 @@ export type FetchAggregationOptionsRequest = Request<
 
 export class FetchAggregationOptionsRoute extends Route<FetchAggregationOptionsRequest> {
   async buildResponse() {
-    const { params } = this.req;
-    const { searchText } = params;
-    if (!searchText) {
-      return aggregationTypesMetaData;
-    }
-    return aggregationTypesMetaData.filter(({ code }) => code.toLowerCase().includes(searchText));
+    return aggregationTypesMetaData;
   }
 }

@@ -13,8 +13,7 @@ import { ReportConnection } from '../connections';
 export type FetchAggregationOptionsRequest = Request<
   Record<string, never>,
   Record<string, unknown>[],
-  Record<string, never>,
-  { searchText?: string }
+  Record<string, never>
 >;
 
 export class FetchAggregationOptionsRoute extends Route<FetchAggregationOptionsRequest> {
@@ -27,10 +26,6 @@ export class FetchAggregationOptionsRoute extends Route<FetchAggregationOptionsR
   }
 
   async buildResponse() {
-    const { searchText } = this.req.query;
-
-    return this.reportConnection.fetchAggregationOptions({
-      searchText: searchText as string,
-    });
+    return this.reportConnection.fetchAggregationOptions({});
   }
 }
