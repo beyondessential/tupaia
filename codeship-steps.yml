@@ -15,31 +15,7 @@
       service: testing
       steps:
         - name: Test admin-panel-server
-          command: './packages/devops/scripts/ci/testBackend.sh admin-panel-server'
-        - name: Test lesmis-server
-          command: './packages/devops/scripts/ci/testBackend.sh lesmis-server'
-        - name: Test meditrak-server
-          command: './packages/devops/scripts/ci/testBackend.sh meditrak-server'
-        - name: Test web-config-server
-          command: './packages/devops/scripts/ci/testBackend.sh web-config-server'
-        - name: Test psss-server
-          command: './packages/devops/scripts/ci/testBackend.sh psss-server'
-        - name: Test report-server
-          command: './packages/devops/scripts/ci/testBackend.sh report-server'
-        - name: Test entity-server
-          command: './packages/devops/scripts/ci/testBackend.sh entity-server'
-        - name: Test database
-          command: './packages/devops/scripts/ci/testBackend.sh database'
-        - name: Test data-api
-          command: './packages/devops/scripts/ci/testBackend.sh data-api'
-        - name: Test auth
-          command: './packages/devops/scripts/ci/testBackend.sh auth'
-        - name: Test indicators
-          command: './packages/devops/scripts/ci/testBackend.sh indicators'
-        - name: Test internal-dependencies
-          command: './packages/devops/scripts/ci/testInternalDependencies.sh'
-        - name: Test web-frontend
-          command: './packages/devops/scripts/ci/testFrontend.sh web-frontend'
+          command: 'yarn test'
 
 - name: Deploy changes
   service: deployment
