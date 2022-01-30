@@ -14,6 +14,8 @@ import {
 import {
   FetchReportRequest,
   FetchReportRoute,
+  FetchAggregationOptionsRequest,
+  FetchAggregationOptionsRoute,
   TestReportRequest,
   TestReportRoute,
 } from '../routes';
@@ -39,6 +41,10 @@ export function createApp() {
       next();
     })
     .get<FetchReportRequest>('fetchReport/:reportCode', handleWith(FetchReportRoute))
+    .get<FetchAggregationOptionsRequest>(
+      'fetchAggregationOptions',
+      handleWith(FetchAggregationOptionsRoute),
+    )
     .post<FetchReportRequest>('fetchReport/:reportCode', handleWith(FetchReportRoute))
     .post<TestReportRequest>('testReport', handleWith(TestReportRoute))
     .build();

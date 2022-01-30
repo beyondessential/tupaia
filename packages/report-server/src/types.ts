@@ -57,3 +57,8 @@ export interface Event {
   orgUnit: string;
   dataValues?: Record<string, string | number>;
 }
+
+export interface AggregationType {
+  code: string;
+  description: string;
+}
