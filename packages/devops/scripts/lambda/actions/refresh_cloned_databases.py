@@ -27,7 +27,7 @@ import asyncio
 
 from helpers.creation import create_db_instance_from_snapshot_async
 from helpers.teardown import teardown_db_instance
-from helpers.rds import find_db_instances, get_all_db_instances, wait_for_db_instance, rename_db_instance, set_db_instance_master_password
+from helpers.rds import find_db_instances, get_all_db_instances, rename_db_instance, set_db_instance_master_password
 from helpers.secrets import get_db_master_password
 
 loop = asyncio.get_event_loop()
@@ -74,16 +74,18 @@ async def delete_db(db_instance):
 
     rename_complete=False
     attempts = 0
-    max_attempts = 20
+    max_attempts = 30
+    delay = 10
     while(not rename_complete and attempts < max_attempts):
+        await asyncio.sleep(delay)
         all_instances = get_all_db_instances()
         rename_complete = any(instance['DBInstanceIdentifier'] == temp_id for instance in all_instances)
-        if (not rename_complete):
-            attempts = attempts + 1
-            await asyncio.sleep(5)
-        else:
-            print('rename complete: ' + db_id + ' -> ' + temp_id)
-
+        attempts = attempts + 1
+        
+    if (not rename_complete):
+        raise Exception('Timed out waiting for rename of ' + db_id + ' after ' + str(attempts * delay) + 's')
+    
+    print('rename complete: ' + db_id + ' -> ' + temp_id + ' after (' + str(attempts) + ') attempts')
     teardown_db_instance(db_id=temp_id)
 
 async def recreate_db(db_instance):
