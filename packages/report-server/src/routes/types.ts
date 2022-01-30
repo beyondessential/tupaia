@@ -18,3 +18,7 @@ export type ReportRouteBody = {
   startDate?: string;
   endDate?: string;
 };
+
+export type AggregationOptionsRouteQuery = {
+  searchText?: string;
+};

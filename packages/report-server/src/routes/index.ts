@@ -4,4 +4,8 @@
  */
 
 export { FetchReportRoute, FetchReportRequest } from './FetchReportRoute';
+export {
+  FetchAggregationOptionsRoute,
+  FetchAggregationOptionsRequest,
+} from './FetchAggregationOptionsRoute';
 export { TestReportRoute, TestReportRequest } from './TestReportRoute';
