@@ -16,7 +16,7 @@ const aggregateToValue = aggregate =>
 
 const valueToAggregate = value => value.map(({ code, config }) => ({ type: code, config }));
 
-export const AggregationDataLibrary = ({ aggregate, onAggregatehange }) => {
+export const AggregationDataLibrary = ({ aggregate, onAggregatchange }) => {
   const [inputValue, setInputValue] = useState('');
   const value = aggregateToValue(aggregate);
   const debouncedInputValue = useDebounce(inputValue, 200);
@@ -33,7 +33,7 @@ export const AggregationDataLibrary = ({ aggregate, onAggregatehange }) => {
     <DataLibrary
       options={options}
       value={value}
-      onChange={(event, newValue) => onAggregatehange(valueToAggregate(newValue))}
+      onChange={(event, newValue) => onAggregatchange(valueToAggregate(newValue))}
       inputValue={inputValue}
       onInputChange={(event, newInputValue) => (event ? setInputValue(newInputValue) : false)}
       isLoading={isFetching}
@@ -52,5 +52,5 @@ AggregationDataLibrary.propTypes = {
     ),
     PropTypes.string,
   ]).isRequired,
-  onAggregatehange: PropTypes.func.isRequired,
+  onAggregatchange: PropTypes.func.isRequired,
 };

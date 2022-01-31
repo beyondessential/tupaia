@@ -149,7 +149,7 @@ export const Panel = () => {
         ) : (
           <AggregationDataLibrary
             aggregate={aggregate}
-            onAggregatehange={value => {
+            onAggregatchange={value => {
               setTabValue('aggregate', value);
               setFetchJsonEditorKey(fetchJsonEditorKey + 2);
             }}
