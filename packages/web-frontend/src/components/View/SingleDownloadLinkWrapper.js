@@ -22,11 +22,15 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { VIEW_STYLES } from '../../styles';
+import { getAbsoluteApiRequestUri } from '../../utils/request';
 
 class SingleDownloadLinkWrapperComponent extends PureComponent {
   render() {
     const { name, value } = this.props.viewContent;
     const { isUserLoggedIn } = this.props;
+
+    // if url already fully qualified, use it, otherwise fetch against config server api
+    const downloadUrl = value.startsWith('http') ? value : getAbsoluteApiRequestUri(value);
 
     return (
       <div style={VIEW_STYLES.viewContainer}>
@@ -36,7 +40,7 @@ class SingleDownloadLinkWrapperComponent extends PureComponent {
           <a
             style={VIEW_STYLES.downloadLink}
             rel="noreferrer noopener"
-            href={value}
+            href={downloadUrl}
             download
             target="_blank"
           >
