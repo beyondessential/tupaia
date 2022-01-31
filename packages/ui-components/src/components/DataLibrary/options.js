@@ -113,6 +113,8 @@ const OptionTextWithTooltips = ({ option }) => {
           {description}
         </>
       }
+      enterDelay="700"
+      enterNextDelay="700"
     >
       <OptionText>
         <OptionCode>{code}</OptionCode>
