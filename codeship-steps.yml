@@ -10,12 +10,10 @@
           command: './packages/devops/scripts/ci/validateBranchName.sh'
         - name: Validate tests
           command: './packages/devops/scripts/ci/validateTests.sh'
-    - type: parallel
-      name: Test
-      service: testing
-      steps:
-        - name: Test admin-panel-server
-          command: 'yarn test --concurrency 1'
+    - name: Test
+      # Because we need to set up the database, and our service linking to the db using depends_on re-creates the
+      # container for each step, we have to set up and test in a single step.
+      command: './packages/devops/scripts/ci/test.sh'
 
 - name: Deploy changes
   service: deployment
