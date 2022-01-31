@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { Done, Close, ChevronRight } from '@material-ui/icons';
 import { Draggable } from 'react-beautiful-dnd';
 import { ALICE_BLUE } from './constant';
+import { Tooltip } from '../Tooltip';
 
 const StyledOption = styled.div`
   border-radius: 3px;
@@ -73,7 +74,13 @@ const OptionCode = styled.div`
   min-width: 0;
 `;
 
-const OptionName = styled.div`
+const OptionTitle = styled.div`
+  font-size: 14px;
+  color: white;
+  line-height: 140%;
+`;
+
+const OptionDescription = styled.div`
   font-size: 12px;
   line-height: 140%;
   color: #5d676c;
@@ -81,7 +88,7 @@ const OptionName = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* number of lines to show */
+  -webkit-line-clamp: 1; /* number of lines to show */
   line-clamp: 2;
   -webkit-box-orient: vertical;
 `;
@@ -95,16 +102,33 @@ const IconWrapper = styled.div`
   }
 `;
 
+const OptionTextWithTooltips = ({ option }) => {
+  const { code, description } = option;
+
+  return (
+    <Tooltip
+      title={
+        <>
+          <OptionTitle>{code}</OptionTitle>
+          {description}
+        </>
+      }
+    >
+      <OptionText>
+        <OptionCode>{code}</OptionCode>
+        <OptionDescription>{description}</OptionDescription>
+      </OptionText>
+    </Tooltip>
+  );
+};
+
 export const SelectableOption = ({ option, isSelected, onSelect, ...restProps }) => (
   <StyledSelectableOption
     onClick={onSelect}
     className={isSelected ? 'selected' : ''}
     {...restProps}
   >
-    <OptionText>
-      <OptionCode>{option.code}</OptionCode>
-      <OptionName>{option.name}</OptionName>
-    </OptionText>
+    <OptionTextWithTooltips option={option} />
     <IconWrapper>
       <Done />
     </IconWrapper>
@@ -113,10 +137,7 @@ export const SelectableOption = ({ option, isSelected, onSelect, ...restProps })
 
 export const SelectableMultipleTimesOption = ({ option, onSelect }) => (
   <StyledSelectableMultipleTimesOption onClick={onSelect}>
-    <OptionText>
-      <OptionCode>{option.code}</OptionCode>
-      <OptionName>{option.name}</OptionName>
-    </OptionText>
+    <OptionTextWithTooltips option={option} />
     <IconWrapper>
       <ChevronRight />
     </IconWrapper>
@@ -137,10 +158,7 @@ export const SelectedDataCard = ({ option, onRemove, index }) => {
           onMouseOver={() => setIsDragging(true)}
           onMouseLeave={() => setIsDragging(false)}
         >
-          <OptionText>
-            <OptionCode>{option.code}</OptionCode>
-            <OptionName>{option.name}</OptionName>
-          </OptionText>
+          <OptionTextWithTooltips option={option} />
           <IconWrapper onClick={event => onRemove(event, option)} className="icon-wrapper">
             <Close />
           </IconWrapper>

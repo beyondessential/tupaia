@@ -157,11 +157,11 @@ export const DataLibrary = ({
   );
 };
 
-// FIXME: del id, name not needed
+// FIXME: del id not needed
 const optionPropType = PropTypes.shape({
   id: PropTypes.string,
   code: PropTypes.string,
-  name: PropTypes.string,
+  description: PropTypes.string,
 });
 
 DataLibrary.defaultProps = {
