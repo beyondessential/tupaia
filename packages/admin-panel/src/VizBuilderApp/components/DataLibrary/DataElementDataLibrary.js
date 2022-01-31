@@ -4,9 +4,9 @@
  */
 
 import React, { useState } from 'react';
-import { useSearchDataSources } from '../../api';
 import { DataLibrary } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
+import { useSearchDataSources, getQueryFnFromDatabase } from '../../api';
 import { useDebounce } from '../../../utilities';
 
 const DATA_TYPES = {
@@ -66,6 +66,7 @@ export const DataElementDataLibrary = ({ fetch, onFetchChange }) => {
     data: dataElementSearchResults = [],
     isFetching: isFetchingDataElements,
   } = useSearchDataSources({
+    getQueryFn: getQueryFnFromDatabase,
     search: debouncedInputValue,
     type: 'dataElement',
     maxResults: MAX_RESULTS,
@@ -74,6 +75,7 @@ export const DataElementDataLibrary = ({ fetch, onFetchChange }) => {
     data: dataGroupSearchResults = [],
     isFetching: isFetchingDataGroups,
   } = useSearchDataSources({
+    getQueryFn: getQueryFnFromDatabase,
     search: debouncedInputValue,
     type: 'dataGroup',
     maxResults: MAX_RESULTS,
@@ -103,7 +105,7 @@ export const DataElementDataLibrary = ({ fetch, onFetchChange }) => {
 DataElementDataLibrary.propTypes = {
   fetch: PropTypes.shape({
     dataElements: PropTypes.arrayOf(PropTypes.string).isRequired,
-    dataGroups: PropTypes.arrayOf(PropTypes.string).isRequired,
+    dataGroups: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
   onFetchChange: PropTypes.func.isRequired,
 };

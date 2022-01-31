@@ -13,7 +13,7 @@ import { JsonEditor } from './JsonEditor';
 import { PlayButton } from './PlayButton';
 import { JsonToggleButton } from './JsonToggleButton';
 import { useTabPanel, useVizConfig, useVizConfigError } from '../context';
-import { DataElementDataLibrary } from './DataLibrary';
+import { DataElementDataLibrary, AggregationDataLibrary } from './DataLibrary';
 
 const Container = styled(FlexColumn)`
   position: relative;
@@ -140,11 +140,21 @@ export const Panel = () => {
         )}
       </TabPanel>
       <TabPanel isSelected={tab === 1} Panel={PanelTabPanel}>
-        <JsonEditor
-          value={aggregate}
-          onChange={value => setTabValue('aggregate', value)}
-          onInvalidChange={handleInvalidChange}
-        />
+        {jsonToggleEnabled ? (
+          <JsonEditor
+            value={aggregate}
+            onChange={value => setTabValue('aggregate', value)}
+            onInvalidChange={handleInvalidChange}
+          />
+        ) : (
+          <AggregationDataLibrary
+            aggregate={aggregate}
+            onAggregatehange={value => {
+              setTabValue('aggregate', value);
+              setFetchJsonEditorKey(fetchJsonEditorKey + 2);
+            }}
+          />
+        )}
       </TabPanel>
       <TabPanel isSelected={tab === 2} Panel={PanelTabPanel}>
         <JsonEditor
