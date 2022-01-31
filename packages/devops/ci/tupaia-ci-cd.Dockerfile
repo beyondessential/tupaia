@@ -82,5 +82,4 @@ RUN yarn install --ignore-scripts --non-interactive --frozen-lockfile
 COPY . ./
 
 # Make sure all packages build
-# CI fails silently with unknown error if we build in parallel
-RUN yarn build --concurrency 1
+RUN yarn build
