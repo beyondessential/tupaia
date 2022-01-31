@@ -2,6 +2,6 @@
 
 DIR=$(dirname "$0")
 
-${DIR}/setupTestDatabasez.sh
+${DIR}/setupTestDatabase.sh
 
 yarn test
