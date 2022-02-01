@@ -74,27 +74,6 @@ API connect for Tupaia App server
 
 Deals with oauth2 authentication and request from dhis2
 
-## Exporting charts and Lambda
-
-In order to export charts from a local instance of the config server you'll need to
-get an AWS API access key set up for your user account. Then, in `startConfigServer.sh` you'll need to add the following lines:
-
-```
-AWS_ACCESS_KEY_ID='[YOUR KEY ID]' \
-AWS_SECRET_ACCESS_KEY='[YOUR ACCESS KEY]' \
-```
-
-In order for our Lambda method to export a chart it needs to have access to the front-end it's exporting from. You can't do this locally however you can add the following lines to `startConfigServer.sh` to export charts from the dev server:
-
-```
-EXPORT_URL=https://dev-config.tupaia.org \
-EXPORT_COOKIE_URL=dev-config.tupaia.org \
-```
-
-Note: The `EXPORT_COOKIE_URL` should not contain a http or https prefix.
-
-There's one exception however, authentication cookies will not work so you'll only be able to export publicly accessible charts (though you'll still need to log in in order for the config server to know which email address to send the export to).
-
 ## Debugging
 
 ### Visual Studio Code

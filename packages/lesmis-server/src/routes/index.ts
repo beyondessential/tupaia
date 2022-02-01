@@ -10,5 +10,5 @@ export { MapOverlaysRoute } from './MapOverlaysRoute';
 export { RegisterRoute } from './RegisterRoute';
 export { ReportRoute } from './ReportRoute';
 export { UserRoute } from './UserRoute';
-export { ApproveSurveyResponse } from './ApproveSurveyResponse';
+export { UpdateSurveyResponseRoute } from './UpdateSurveyResponseRoute';
 export { VerifyEmailRoute } from './VerifyEmailRoute';

@@ -5,10 +5,9 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { sleep } from '@tupaia/utils';
 import { MeditrakConnection } from '../connections';
 
-export class ApproveSurveyResponse extends Route {
+export class UpdateSurveyResponseRoute extends Route {
   private readonly meditrakConnection: MeditrakConnection;
 
   constructor(req: Request, res: Response, next: NextFunction) {
@@ -19,8 +18,7 @@ export class ApproveSurveyResponse extends Route {
 
   async buildResponse() {
     const { id } = this.req.params;
-    console.log('Approve Survey Response. Id: ', id);
-    await sleep(2000);
-    return true;
+    const { status } = this.req.body;
+    return this.meditrakConnection.updateSurveyResponse(id, { approval_status: status });
   }
 }
