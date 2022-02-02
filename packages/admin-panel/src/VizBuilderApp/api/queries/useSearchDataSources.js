@@ -2,10 +2,10 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
+import { stringifyQuery } from '@tupaia/utils';
 import { useQuery } from 'react-query';
 import { get } from '../api';
 import { DEFAULT_REACT_QUERY_OPTIONS } from '../constants';
-import { stringifyQuery } from '@tupaia/utils';
 
 export const useSearchDataSources = ({ search, type = 'dataElement', maxResults = 100 }) =>
   useQuery(

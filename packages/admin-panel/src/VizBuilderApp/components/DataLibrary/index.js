@@ -4,3 +4,4 @@
  */
 
 export * from './DataElementDataLibrary';
+export * from './AggregationDataLibrary';
