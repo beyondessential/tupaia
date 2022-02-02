@@ -17,8 +17,8 @@ import {
   RegisterRoute,
   ReportRoute,
   UserRoute,
-  ApproveSurveyResponse,
   VerifyEmailRoute,
+  UpdateSurveyResponseRoute,
 } from '../routes';
 import { attachSession } from '../session';
 import { hasLesmisAccess } from '../utils';
@@ -43,8 +43,8 @@ export function createApp() {
     .get('/v1/entity/:entityCode', handleWith(EntityRoute))
     .get('/v1/report/:entityCode/:reportCode', handleWith(ReportRoute))
     .get('/v1/verify/:emailToken', handleWith(VerifyEmailRoute))
+    .put('/v1/survey-response/:id', handleWith(UpdateSurveyResponseRoute))
     .post('/v1/register', handleWith(RegisterRoute))
-    .post('/v1/approveSurveyResponse/:id', handleWith(ApproveSurveyResponse))
     .post('/v1/report/:entityCode/:reportCode', handleWith(ReportRoute))
     .build();
 

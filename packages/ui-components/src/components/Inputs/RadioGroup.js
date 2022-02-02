@@ -17,6 +17,7 @@ const FormControl = styled(MuiFormControl)`
 `;
 
 const FormLabel = styled(MuiFormLabel)`
+  position: relative;
   font-size: 0.9375rem;
   line-height: 1.125rem;
   margin-bottom: 0.25rem;

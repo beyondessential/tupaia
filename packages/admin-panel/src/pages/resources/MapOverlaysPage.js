@@ -122,7 +122,7 @@ const renderNewMapOverlayVizButton = () => (
   </StyledLink>
 );
 
-export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin }) => {
+export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, ...props }) => {
   const extraEditFields = [
     // ID field for constructing viz-builder path only, not for showing or editing
     {
@@ -188,6 +188,7 @@ export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin }) => {
       editConfig={{
         title: 'Edit Map Overlay',
       }}
+      {...props}
     />
   );
 };

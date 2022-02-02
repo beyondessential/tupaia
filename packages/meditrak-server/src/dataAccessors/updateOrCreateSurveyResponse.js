@@ -64,6 +64,7 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
   try {
     await createEntities(models, entitiesCreated, surveyResponseObject.survey_id);
     await createOptions(models, optionsCreated);
+    const survey = await models.survey.findById(surveyResponseObject.survey_id);
 
     // Ensure entity_id is populated, supporting legacy versions of MediTrak
     if (clinicId) {
@@ -74,12 +75,19 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
     // Ensure data_time is populated, supporting legacy versions of MediTrak
     surveyResponseProperties.data_time = getDataTime(surveyResponseObject);
 
+    // If the response is for a survey where approval is required, set approval to pending
+    let approvalStatus = models.surveyResponse.approvalStatusTypes.NOT_REQUIRED;
+    if (survey.requires_approval) {
+      approvalStatus = models.surveyResponse.approvalStatusTypes.PENDING;
+    }
+
     surveyResponse = await models.surveyResponse.updateOrCreate(
       {
         id: surveyResponseId,
       },
       {
         id: surveyResponseId,
+        approval_status: approvalStatus,
         ...surveyResponseProperties,
       },
     );

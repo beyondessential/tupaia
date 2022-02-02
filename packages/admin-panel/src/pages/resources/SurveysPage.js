@@ -52,6 +52,14 @@ const SURVEY_FIELDS = [
       type: 'boolean',
     },
   },
+  {
+    Header: 'Requires Approval',
+    source: 'requires_approval',
+    type: 'boolean',
+    editConfig: {
+      type: 'boolean',
+    },
+  },
 ];
 
 const SURVEY_COLUMNS = [
@@ -406,6 +414,13 @@ const IMPORT_CONFIG = {
         'Select a reporting period if new responses should overwrite previous ones within the same period',
       parameterKey: 'periodGranularity',
       options: PERIOD_GRANULARITIES,
+    },
+    {
+      label: 'Requires Approval',
+      secondaryLabel:
+        'Select whether survey responses require approval before their data appear in visualisations',
+      parameterKey: 'requiresApproval',
+      type: 'boolean',
     },
     {
       label: 'Data service',

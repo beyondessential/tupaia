@@ -34,7 +34,6 @@ export const getAdminPanelAllowedCountryCodes = accessPolicy => {
     throw new Error('You do not have Tupaia Admin Panel access to any entities');
   }
 
-  accessibleCountryCodes.push('DL'); // If we have admin panel anywhere, we can also view Demo Land
   return accessibleCountryCodes;
 };
 
