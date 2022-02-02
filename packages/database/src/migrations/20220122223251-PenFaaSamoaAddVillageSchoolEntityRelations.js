@@ -73,6 +73,11 @@ exports.up = async function (db) {
   // remove existing sub_district school relations
   await removeExistingSchoolRelations(db, hierarchyId);
 
+  // remove school from hierarchy canonical_types
+  await db.runSql(`
+    update entity_hierarchy set canonical_types = '{country,district}' where name = 'penfaa_samoa';
+  `);
+
   // get samoa school and village ids
   const schoolIds = await getEntityIdsByType(db, 'school', 'WS');
   const villageIds = await getEntityIdsByType(db, 'village', 'WS');
