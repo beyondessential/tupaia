@@ -243,7 +243,7 @@ const updateAnalytics = async (db, newTableName, oldTableName) => {
           question ON question.id = answer.question_id
         INNER JOIN
           ${newTableName} ON ${newTableName}.id = question.${newTableName}_id
-        WHERE ${newTableName}.service_type = ''tupaia'' AND survey_response.outdated IS FALSE';
+        WHERE ${newTableName}.service_type = ''tupaia'' AND survey_response.outdated IS FALSE AND survey_response.approval_status IN (''not_required'', ''approved'')';
     
     begin
       RAISE NOTICE 'Creating Materialized View Logs...';
