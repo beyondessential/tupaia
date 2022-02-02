@@ -4,36 +4,33 @@
  */
 
 import React, { useState } from 'react';
-import { useSearchDataSources, getQueryFnFromReportServer } from '../../api';
-import { DataLibrary } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
+import { DataLibrary } from '@tupaia/ui-components';
+import { useSearchAggregationOptions } from '../../api';
 import { useDebounce } from '../../../utilities';
 
 const MAX_RESULTS = 10;
 
+// Converts internal value array to Viz config.aggregate data structure
 const aggregateToValue = aggregate =>
   aggregate.map(({ type, config }) => ({ code: type, type: 'aggregationOption', config }));
 
 const valueToAggregate = value => value.map(({ code, config }) => ({ type: code, config }));
 
-export const AggregationDataLibrary = ({ aggregate, onAggregatchange }) => {
+export const AggregationDataLibrary = ({ aggregate, onAggregateChange }) => {
   const [inputValue, setInputValue] = useState('');
-  const value = aggregateToValue(aggregate);
   const debouncedInputValue = useDebounce(inputValue, 200);
-
-  const { data: aggregationOptionSearchResults, isFetching } = useSearchDataSources({
-    getQueryFn: getQueryFnFromReportServer,
+  const value = aggregateToValue(aggregate);
+  const { data: aggregationOptionSearchResults, isFetching } = useSearchAggregationOptions({
     search: debouncedInputValue,
-    type: 'aggregateOption',
   });
-
   const options = inputValue ? aggregationOptionSearchResults : [];
 
   return (
     <DataLibrary
       options={options}
       value={value}
-      onChange={(event, newValue) => onAggregatchange(valueToAggregate(newValue))}
+      onChange={(event, newValue) => onAggregateChange(valueToAggregate(newValue))}
       inputValue={inputValue}
       onInputChange={(event, newInputValue) => (event ? setInputValue(newInputValue) : false)}
       isLoading={isFetching}
@@ -52,5 +49,5 @@ AggregationDataLibrary.propTypes = {
     ),
     PropTypes.string,
   ]).isRequired,
-  onAggregatchange: PropTypes.func.isRequired,
+  onAggregateChange: PropTypes.func.isRequired,
 };

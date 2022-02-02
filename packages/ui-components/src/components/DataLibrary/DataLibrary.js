@@ -88,7 +88,7 @@ export const DataLibrary = ({
     multiple: true,
     freeSolo: true,
     value,
-    getOptionLabel: option => `${option.code} ${option.name}`, // filter on both code and name
+    getOptionLabel: option => `${option.code} ${option.description}`, // filter on both code and description
     onChange,
     inputValue,
     onInputChange,

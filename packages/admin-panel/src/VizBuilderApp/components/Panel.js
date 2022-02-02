@@ -102,8 +102,6 @@ export const Panel = () => {
     return tab !== tabId && hasDataError;
   };
 
-  const [fetchJsonEditorKey, setFetchJsonEditorKey] = useState(0);
-
   return (
     <Container>
       <PanelNav>
@@ -124,7 +122,6 @@ export const Panel = () => {
       <TabPanel isSelected={tab === 0} Panel={PanelTabPanel}>
         {jsonToggleEnabled ? (
           <JsonEditor
-            key={fetchJsonEditorKey}
             value={fetch}
             onChange={value => setTabValue('fetch', value)}
             onInvalidChange={handleInvalidChange}
@@ -134,7 +131,6 @@ export const Panel = () => {
             fetch={fetch}
             onFetchChange={value => {
               setTabValue('fetch', value);
-              setFetchJsonEditorKey(fetchJsonEditorKey + 1);
             }}
           />
         )}
@@ -149,9 +145,8 @@ export const Panel = () => {
         ) : (
           <AggregationDataLibrary
             aggregate={aggregate}
-            onAggregatchange={value => {
+            onAggregateChange={value => {
               setTabValue('aggregate', value);
-              setFetchJsonEditorKey(fetchJsonEditorKey + 2);
             }}
           />
         )}
