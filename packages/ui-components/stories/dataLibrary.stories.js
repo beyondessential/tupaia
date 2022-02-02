@@ -3,9 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, useCallback } from 'react';
-import Typography from '@material-ui/core/Typography';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import {
+  BaseSelectedOption,
+  SelectedOptionWithJsonEditor,
+} from '../src/components/DataLibrary/options';
 import { DataLibrary } from '../src/components/DataLibrary';
 
 export default {
@@ -68,6 +71,7 @@ export const Simple = () => {
           onChange={(event, newValue) => setValue(newValue)}
           inputValue={inputValue}
           onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
+          OptionComponent={BaseSelectedOption}
         />
       </Container>
     </OuterContainer>
@@ -83,6 +87,7 @@ export const AllowAddMultipleTimes = () => {
           options={options}
           value={value}
           onChange={(event, newValue) => setValue(newValue)}
+          OptionComponent={BaseSelectedOption}
           allowAddMultipleTimes
         />
       </Container>
@@ -110,6 +115,7 @@ export const Tabs = () => {
           dataTypes={['Cats', 'Dogs']}
           dataType={dataType}
           onChangeDataType={(event, newValue) => setDataType(newValue)}
+          OptionComponent={BaseSelectedOption}
         />
       </Container>
     </OuterContainer>
@@ -120,7 +126,7 @@ export const Loading = () => {
   return (
     <OuterContainer>
       <Container>
-        <DataLibrary options={options} isLoading />
+        <DataLibrary options={options} isLoading OptionComponent={BaseSelectedOption} />
       </Container>
     </OuterContainer>
   );
@@ -130,7 +136,26 @@ export const MaxNumResults = () => {
   return (
     <OuterContainer>
       <Container>
-        <DataLibrary options={options} searchPageSize={12} />
+        <DataLibrary options={options} OptionComponent={BaseSelectedOption} searchPageSize={12} />
+      </Container>
+    </OuterContainer>
+  );
+};
+
+export const WithJsonEditor = () => {
+  const [value, setValue] = useState([options[1]]);
+  const [inputValue, setInputValue] = useState('');
+  return (
+    <OuterContainer>
+      <Container>
+        <DataLibrary
+          options={options}
+          value={value}
+          onChange={(event, newValue) => setValue(newValue)}
+          inputValue={inputValue}
+          onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
+          OptionComponent={SelectedOptionWithJsonEditor}
+        />
       </Container>
     </OuterContainer>
   );

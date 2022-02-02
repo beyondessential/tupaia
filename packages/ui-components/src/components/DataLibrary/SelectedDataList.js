@@ -12,12 +12,18 @@ const StyledSelectedDataList = styled.div`
   padding-top: 10px;
 `;
 
-export const SelectedDataList = ({ value, onRemove }) => (
+export const SelectedDataList = ({ value, onRemove, OptionComponent }) => (
   <Droppable droppableId="droppable list">
     {provided => (
       <StyledSelectedDataList ref={provided.innerRef} {...provided.droppableProps}>
         {value.map((option, index) => (
-          <SelectedDataCard key={option.code} option={option} onRemove={onRemove} index={index} />
+          <SelectedDataCard
+            key={option.code}
+            option={option}
+            onRemove={onRemove}
+            OptionComponent={OptionComponent}
+            index={index}
+          />
         ))}
         {provided.placeholder}
       </StyledSelectedDataList>

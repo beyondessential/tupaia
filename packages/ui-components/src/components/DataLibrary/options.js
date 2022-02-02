@@ -3,18 +3,25 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Done, Close, ChevronRight } from '@material-ui/icons';
+import DownArrow from '@material-ui/icons/ArrowDropDown';
 import { Draggable } from 'react-beautiful-dnd';
 import { ALICE_BLUE } from './constant';
-import { Tooltip } from '../Tooltip';
+import { Tooltip as BaseTooltip } from '../Tooltip';
+import { JsonEditor } from '../JsonEditor';
+import { FlexSpaceBetween as MuiFlexSpaceBetween } from '../Layout';
+
+const FlexSpaceBetween = styled(MuiFlexSpaceBetween)`
+  width: 100%;
+`;
 
 const StyledOption = styled.div`
   border-radius: 3px;
-  padding: 5px 10px;
+  padding: 15px 10px;
   margin: 0 5px;
-  height: 64px;
+  height: auto;
   display: flex;
 
   min-width: 0;
@@ -64,6 +71,13 @@ const OptionText = styled.div`
   overflow: hidden;
 `;
 
+const OptionPanelWithJsonEditor = styled(OptionText)`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: auto;
+`;
+
 const OptionCode = styled.div`
   font-size: 14px;
   line-height: 140%;
@@ -102,25 +116,102 @@ const IconWrapper = styled.div`
   }
 `;
 
-const OptionTextWithTooltips = ({ option }) => {
-  const { code, description } = option;
+const JsonEditorPanel = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 
+  > div {
+    width: 100%;
+    height: 100px;
+  }
+
+  .jsoneditor {
+    border: none;
+    cursor: text;
+  }
+`;
+
+const DownArrowIconWrapper = styled.div`
+  display: flex;
+  .MuiSvgIcon-root {
+    transition: transform 0.3s ease;
+    transform: rotate(${({ $expanded }) => ($expanded ? '0deg' : '-90deg')});
+  }
+`;
+
+const Panel = styled.div`
+  width: 100%;
+`;
+
+const Option = ({ option }) => {
+  const { code, description } = option;
   return (
-    <Tooltip
+    <OptionText>
+      <OptionCode>{code}</OptionCode>
+      <OptionDescription>{description}</OptionDescription>
+    </OptionText>
+  );
+};
+
+const Tooltip = ({ option, children }) => {
+  return (
+    <BaseTooltip
       title={
         <>
-          <OptionTitle>{code}</OptionTitle>
-          {description}
+          <OptionTitle>{option.code}</OptionTitle>
+          {option.description}
         </>
       }
-      enterDelay="700"
-      enterNextDelay="700"
+      enterDelay={700}
+      enterNextDelay={700}
     >
-      <OptionText>
-        <OptionCode>{code}</OptionCode>
-        <OptionDescription>{description}</OptionDescription>
-      </OptionText>
+      {children}
+    </BaseTooltip>
+  );
+};
+
+export const BaseSelectedOption = ({ option, onRemove }) => {
+  return (
+    <Tooltip option={option}>
+      <FlexSpaceBetween>
+        <Option option={option} />
+        <IconWrapper onClick={event => onRemove(event, option)} className="icon-wrapper">
+          <Close />
+        </IconWrapper>
+      </FlexSpaceBetween>
     </Tooltip>
+  );
+};
+
+export const SelectedOptionWithJsonEditor = ({ option, onRemove, setEdittingOption }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <OptionPanelWithJsonEditor>
+      <DownArrowIconWrapper $expanded={isExpanded} onClick={() => setIsExpanded(!isExpanded)}>
+        <DownArrow />
+      </DownArrowIconWrapper>
+      <Panel>
+        <BaseSelectedOption option={option} onRemove={onRemove} />
+        {isExpanded && (
+          <JsonEditorPanel
+            onMouseOver={() => setEdittingOption(option.code)}
+            onMouseLeave={() => setEdittingOption(null)}
+          >
+            <JsonEditor
+              value={{
+                type: 'RAW',
+                config: { dataSourceEntityType: 'school' },
+              }}
+              mode="code"
+              mainMenuBar={false}
+              statusBar={false}
+            />
+          </JsonEditorPanel>
+        )}
+      </Panel>
+    </OptionPanelWithJsonEditor>
   );
 };
 
@@ -130,7 +221,11 @@ export const SelectableOption = ({ option, isSelected, onSelect, ...restProps })
     className={isSelected ? 'selected' : ''}
     {...restProps}
   >
-    <OptionTextWithTooltips option={option} />
+    <Tooltip option={option}>
+      <FlexSpaceBetween>
+        <Option option={option} />
+      </FlexSpaceBetween>
+    </Tooltip>
     <IconWrapper>
       <Done />
     </IconWrapper>
@@ -139,18 +234,27 @@ export const SelectableOption = ({ option, isSelected, onSelect, ...restProps })
 
 export const SelectableMultipleTimesOption = ({ option, onSelect }) => (
   <StyledSelectableMultipleTimesOption onClick={onSelect}>
-    <OptionTextWithTooltips option={option} />
+    <Tooltip option={option}>
+      <FlexSpaceBetween>
+        <Option option={option} />
+      </FlexSpaceBetween>
+    </Tooltip>
     <IconWrapper>
       <ChevronRight />
     </IconWrapper>
   </StyledSelectableMultipleTimesOption>
 );
 
-export const SelectedDataCard = ({ option, onRemove, index }) => {
+export const SelectedDataCard = ({ option, onRemove, index, OptionComponent }) => {
   const [isDragging, setIsDragging] = React.useState(false);
+  const [edittingOption, setEdittingOption] = React.useState(null);
 
   return (
-    <Draggable draggableId={option.code} index={index}>
+    <Draggable
+      draggableId={option.code}
+      index={index}
+      isDragDisabled={edittingOption === option.code}
+    >
       {(provided, snapshot) => (
         <StyledSelectedDataCard
           {...provided.draggableProps}
@@ -160,10 +264,11 @@ export const SelectedDataCard = ({ option, onRemove, index }) => {
           onMouseOver={() => setIsDragging(true)}
           onMouseLeave={() => setIsDragging(false)}
         >
-          <OptionTextWithTooltips option={option} />
-          <IconWrapper onClick={event => onRemove(event, option)} className="icon-wrapper">
-            <Close />
-          </IconWrapper>
+          <OptionComponent
+            option={option}
+            onRemove={onRemove}
+            setEdittingOption={setEdittingOption}
+          />
         </StyledSelectedDataCard>
       )}
     </Draggable>
