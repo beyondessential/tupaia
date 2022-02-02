@@ -25,7 +25,6 @@ export const ResourcePage = ({
   importConfig,
   ExportModalComponent,
   LinksComponent,
-  ConfirmDeleteModalComponent,
   onProcessDataForSave,
   baseFilter,
   title,
@@ -56,7 +55,6 @@ export const ResourcePage = ({
           baseFilter={baseFilter}
           defaultFilters={defaultFilters}
           defaultSorting={defaultSorting}
-          ConfirmDeleteModalComponent={ConfirmDeleteModalComponent}
         />
       </Container>
       <EditModal

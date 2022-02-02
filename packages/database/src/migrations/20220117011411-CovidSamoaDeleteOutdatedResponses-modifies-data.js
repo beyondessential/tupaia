@@ -22,7 +22,7 @@ exports.up = async function (db) {
 
   // Deleting a lot of data, we need to do it month by month
   let d = moment('2021-09-03');
-  const max = moment('2022-01-10');
+  const max = moment('2022-01-22');
 
   while (d.isBefore(max)) {
     const formatted = d.format('YYYY-MM-DD');

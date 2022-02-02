@@ -14,6 +14,7 @@ const EXCLUDED_USERS = [
   "'geoffreyfisher@hotmail.com'", // Geoff F
   "'josh@sussol.net'", // mSupply API Client
   "'unicef.laos.edu@gmail.com'", // Laos Schools Data Collector
+  "'tamanu-server@tupaia.org'", // Tamanu Server
 ];
 const INTERNAL_EMAIL = '@beyondessential.com.au';
 

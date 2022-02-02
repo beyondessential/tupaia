@@ -223,6 +223,9 @@ export async function importSurveys(req, res) {
         if (req.query.periodGranularity) {
           fieldsToForceUpdate.period_granularity = req.query.periodGranularity;
         }
+        if (req.query.requiresApproval) {
+          fieldsToForceUpdate.requires_approval = req.query.requiresApproval;
+        }
         // Update the survey based on the fields to force update
         if (Object.keys(fieldsToForceUpdate).length > 0) {
           await transactingModels.survey.update({ id: survey.id }, fieldsToForceUpdate);

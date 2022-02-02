@@ -135,7 +135,7 @@ const CREATE_CONFIG = {
   },
 };
 
-export const UsersPage = ({ getHeaderEl }) => (
+export const UsersPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
     title="Users"
     endpoint="users"
@@ -145,6 +145,7 @@ export const UsersPage = ({ getHeaderEl }) => (
     editConfig={EDIT_CONFIG}
     createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
+    {...props}
   />
 );
 
