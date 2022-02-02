@@ -26,16 +26,3 @@ export const useSearchDataSources = ({ search, type = 'dataElement', maxResults 
       keepPreviousData: true,
     },
   );
-
-export const useSearchAggregationOptions = ({ search }) =>
-  useQuery(
-    ['aggregationOptions', search],
-    async () => {
-      const endpoint = stringifyQuery(undefined, 'fetchAggregationOptions', {});
-      return get(endpoint);
-    },
-    {
-      ...DEFAULT_REACT_QUERY_OPTIONS,
-      keepPreviousData: true,
-    },
-  );
