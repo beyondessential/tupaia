@@ -4,9 +4,9 @@
  */
 
 import React, { useState } from 'react';
-import { useSearchDataSources } from '../../api';
 import { DataLibrary } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
+import { useSearchDataSources } from '../../api';
 import { useDebounce } from '../../../utilities';
 
 const DATA_TYPES = {
@@ -103,7 +103,7 @@ export const DataElementDataLibrary = ({ fetch, onFetchChange }) => {
 DataElementDataLibrary.propTypes = {
   fetch: PropTypes.shape({
     dataElements: PropTypes.arrayOf(PropTypes.string).isRequired,
-    dataGroups: PropTypes.arrayOf(PropTypes.string).isRequired,
+    dataGroups: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
   onFetchChange: PropTypes.func.isRequired,
 };

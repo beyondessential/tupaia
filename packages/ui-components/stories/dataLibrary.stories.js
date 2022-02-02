@@ -23,26 +23,35 @@ const Container = styled.div`
 `;
 
 const options = [
-  { id: '1', code: 'ABC_1', name: 'Sentinel Site One' },
-  { id: '2', code: 'ABC_2', name: 'Sentinel Site Two' },
-  { id: '3', code: 'ABC_3', name: 'Sentinel Site Three' },
-  { id: '4', code: 'ABC_4', name: 'Sentinel Site Four' },
-  { id: '5', code: 'ABC_5', name: 'Sentinel Site Five' },
-  { id: '6', code: 'ABC_6', name: 'Sentinel Site Six' },
-  { id: '7', code: 'ABC_7', name: 'Sentinel Site Seven' },
-  { id: '8', code: 'ABC_8', name: 'Sentinel Site Eight' },
-  { id: '9', code: 'ABC_9', name: 'Sentinel Site Nine' },
-  { id: '10', code: 'ABC_10_LONG_CODE_HOW_NOW_BROWN_COW_HEY_HEY', name: 'Sentinel Site Ten' },
+  {
+    id: '1',
+    code: 'ABC_1',
+    description:
+      'Count the number of data in child entities within selected period, then sum and group by ancestor entities (aggregationEntityType)',
+  },
+  { id: '2', code: 'ABC_2', description: 'Sentinel Site Two' },
+  { id: '3', code: 'ABC_3', description: 'Sentinel Site Three' },
+  { id: '4', code: 'ABC_4', description: 'Sentinel Site Four' },
+  { id: '5', code: 'ABC_5', description: 'Sentinel Site Five' },
+  { id: '6', code: 'ABC_6', description: 'Sentinel Site Six' },
+  { id: '7', code: 'ABC_7', description: 'Sentinel Site Seven' },
+  { id: '8', code: 'ABC_8', description: 'Sentinel Site Eight' },
+  { id: '9', code: 'ABC_9', description: 'Sentinel Site Nine' },
+  {
+    id: '10',
+    code: 'ABC_10_LONG_CODE_HOW_NOW_BROWN_COW_HEY_HEY',
+    description: 'Sentinel Site Ten',
+  },
   {
     id: '11',
     code: 'ABC_11',
-    name:
+    description:
       'Sentinel Site Eleven long name how now brown cow and the quick brown fox as well jumped over the lazy dog',
   },
   {
     id: '12',
     code: 'ABC_12',
-    name:
+    description:
       'Sentinel Site Twelve long name how now brown cow and the quick brown fox as well jumped over the lazy dog',
   },
 ];

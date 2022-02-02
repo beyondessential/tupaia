@@ -13,7 +13,7 @@ import { JsonEditor } from './JsonEditor';
 import { PlayButton } from './PlayButton';
 import { JsonToggleButton } from './JsonToggleButton';
 import { useTabPanel, useVizConfig, useVizConfigError } from '../context';
-import { DataElementDataLibrary } from './DataLibrary';
+import { DataElementDataLibrary, AggregationDataLibrary } from './DataLibrary';
 
 const Container = styled(FlexColumn)`
   position: relative;
@@ -102,8 +102,6 @@ export const Panel = () => {
     return tab !== tabId && hasDataError;
   };
 
-  const [fetchJsonEditorKey, setFetchJsonEditorKey] = useState(0);
-
   return (
     <Container>
       <PanelNav>
@@ -124,7 +122,6 @@ export const Panel = () => {
       <TabPanel isSelected={tab === 0} Panel={PanelTabPanel}>
         {jsonToggleEnabled ? (
           <JsonEditor
-            key={fetchJsonEditorKey}
             value={fetch}
             onChange={value => setTabValue('fetch', value)}
             onInvalidChange={handleInvalidChange}
@@ -134,17 +131,25 @@ export const Panel = () => {
             fetch={fetch}
             onFetchChange={value => {
               setTabValue('fetch', value);
-              setFetchJsonEditorKey(fetchJsonEditorKey + 1);
             }}
           />
         )}
       </TabPanel>
       <TabPanel isSelected={tab === 1} Panel={PanelTabPanel}>
-        <JsonEditor
-          value={aggregate}
-          onChange={value => setTabValue('aggregate', value)}
-          onInvalidChange={handleInvalidChange}
-        />
+        {jsonToggleEnabled ? (
+          <JsonEditor
+            value={aggregate}
+            onChange={value => setTabValue('aggregate', value)}
+            onInvalidChange={handleInvalidChange}
+          />
+        ) : (
+          <AggregationDataLibrary
+            aggregate={aggregate}
+            onAggregateChange={value => {
+              setTabValue('aggregate', value);
+            }}
+          />
+        )}
       </TabPanel>
       <TabPanel isSelected={tab === 2} Panel={PanelTabPanel}>
         <JsonEditor
