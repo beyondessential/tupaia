@@ -82,15 +82,28 @@ exports.up = async function (db) {
   const schoolIds = await getEntityIdsByType(db, 'school', 'WS');
   const villageIds = await getEntityIdsByType(db, 'village', 'WS');
 
+  const mappedSchools = schoolRelations.map(school => ({
+    code: school.code,
+    parentId: villageIds[school.parent_code],
+    id: schoolIds[school.code],
+  }));
+
+  const schoolOrVillageNotFound = mappedSchools.filter(
+    school => school.id === undefined || school.parentId === undefined,
+  );
+  console.log('School Or Village Not Found:', schoolOrVillageNotFound);
+
   await Promise.all(
-    schoolRelations.map(school =>
-      insertObject(db, 'entity_relation', {
-        id: generateId(),
-        parent_id: villageIds[school.parent_code],
-        child_id: schoolIds[school.code],
-        entity_hierarchy_id: hierarchyId,
-      }),
-    ),
+    mappedSchools
+      .filter(school => school.id !== undefined && school.parentId !== undefined)
+      .map(school =>
+        insertObject(db, 'entity_relation', {
+          id: generateId(),
+          parent_id: school.parentId,
+          child_id: school.id,
+          entity_hierarchy_id: hierarchyId,
+        }),
+      ),
   );
 };
 
