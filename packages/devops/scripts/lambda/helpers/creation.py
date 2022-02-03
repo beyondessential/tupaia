@@ -167,9 +167,10 @@ def clone_db_from_snapshot(
   security_group_id=None,
 ):
     db_instance_id = deployment_type + '-' + deployment_name
+    snapshot_db_instance_id = deployment_type + '-' + snapshot_name
     security_group_ids = get_security_group_ids_config(security_group_code, security_group_id)
 
-    snapshot_id = get_latest_db_snapshot(snapshot_name)
+    snapshot_id = get_latest_db_snapshot(snapshot_db_instance_id)
     rds.restore_db_instance_from_db_snapshot(
         DBInstanceIdentifier=db_instance_id,
         DBSnapshotIdentifier=snapshot_id,
