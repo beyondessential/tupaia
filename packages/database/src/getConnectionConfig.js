@@ -14,9 +14,9 @@ const getServerConfig = () => ({
   ssl:
     process.env.DB_ENABLE_SSL === 'true'
       ? {
-        // Test server cannot turn on ssl, so sets the env to disable it
-        rejectUnauthorized: false,
-      }
+          // Test server cannot turn on ssl, so sets the env to disable it
+          rejectUnauthorized: false,
+        }
       : null,
 });
 
