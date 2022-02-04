@@ -6,11 +6,6 @@ RUN apk --no-cache add \
   postgresql-client \
   git
 
-# -----------------------------------------
-# ---- Stage: with-package-jsons ----------
-# -----------------------------------------
-#FROM base AS with-package-jsons
-
 # set the workdir so that all following commands run within /tupaia
 WORKDIR /tupaia
 
@@ -79,18 +74,8 @@ COPY packages/web-config-server/package.json ./packages/web-config-server
 RUN mkdir -p ./packages/web-frontend
 COPY packages/web-frontend/package.json ./packages/web-frontend
 
-# -----------------------------------------
-# ---- Stage: with-node-modules -----------
-# -----------------------------------------
-#FROM with-package-jsons AS with-node-modules
-
 ## run yarn without building, so we can cache node_modules without code changes invalidating this layer
 RUN yarn install --ignore-scripts --non-interactive --frozen-lockfile
-
-# -----------------------------------------
-# ---- Stage: with-built-internal-deps ----
-# -----------------------------------------
-#FROM with-node-modules AS with-built-internal-deps
 
 ## add content of all internal dependency packages ready for internal dependencies to be built
 COPY packages/access-policy/. ./packages/access-policy
@@ -113,11 +98,6 @@ COPY ./tsconfig* ./
 
 ## build internal dependencies
 RUN yarn build:internal-dependencies
-
-# -----------------------------------------
-# ---- Stage: main ----------------------
-# -----------------------------------------
-#FROM with-built-internal-deps AS main
 
 # copy everything else from the repo
 COPY . ./
