@@ -4,3 +4,4 @@
  */
 
 export * from './DataLibrary';
+export { BaseSelectedOption } from './options';

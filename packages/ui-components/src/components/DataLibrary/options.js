@@ -3,14 +3,12 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Done, Close, ChevronRight } from '@material-ui/icons';
-import DownArrow from '@material-ui/icons/ArrowDropDown';
 import { Draggable } from 'react-beautiful-dnd';
 import { ALICE_BLUE } from './constant';
 import { Tooltip as BaseTooltip } from '../Tooltip';
-import { JsonEditor } from '../JsonEditor';
 import { FlexSpaceBetween as MuiFlexSpaceBetween } from '../Layout';
 
 const FlexSpaceBetween = styled(MuiFlexSpaceBetween)`
@@ -68,14 +66,8 @@ const StyledSelectedDataCard = styled(StyledOption)`
 const OptionText = styled.div`
   flex: 1;
   min-width: 0;
+  width: 100px;
   overflow: hidden;
-`;
-
-const OptionPanelWithJsonEditor = styled(OptionText)`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  height: auto;
 `;
 
 const OptionCode = styled.div`
@@ -114,34 +106,6 @@ const IconWrapper = styled.div`
   & .MuiSvgIcon-root {
     width: 15px;
   }
-`;
-
-const JsonEditorPanel = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-
-  > div {
-    width: 100%;
-    height: 100px;
-  }
-
-  .jsoneditor {
-    border: none;
-    cursor: text;
-  }
-`;
-
-const DownArrowIconWrapper = styled.div`
-  display: flex;
-  .MuiSvgIcon-root {
-    transition: transform 0.3s ease;
-    transform: rotate(${({ $expanded }) => ($expanded ? '0deg' : '-90deg')});
-  }
-`;
-
-const Panel = styled.div`
-  width: 100%;
 `;
 
 const Option = ({ option }) => {
@@ -184,37 +148,6 @@ export const BaseSelectedOption = ({ option, onRemove }) => {
   );
 };
 
-export const SelectedOptionWithJsonEditor = ({ option, onRemove, setEdittingOption }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  return (
-    <OptionPanelWithJsonEditor>
-      <DownArrowIconWrapper $expanded={isExpanded} onClick={() => setIsExpanded(!isExpanded)}>
-        <DownArrow />
-      </DownArrowIconWrapper>
-      <Panel>
-        <BaseSelectedOption option={option} onRemove={onRemove} />
-        {isExpanded && (
-          <JsonEditorPanel
-            onMouseOver={() => setEdittingOption(option.code)}
-            onMouseLeave={() => setEdittingOption(null)}
-          >
-            <JsonEditor
-              value={{
-                type: 'RAW',
-                config: { dataSourceEntityType: 'school' },
-              }}
-              mode="code"
-              mainMenuBar={false}
-              statusBar={false}
-            />
-          </JsonEditorPanel>
-        )}
-      </Panel>
-    </OptionPanelWithJsonEditor>
-  );
-};
-
 export const SelectableOption = ({ option, isSelected, onSelect, ...restProps }) => (
   <StyledSelectableOption
     onClick={onSelect}
@@ -245,7 +178,7 @@ export const SelectableMultipleTimesOption = ({ option, onSelect }) => (
   </StyledSelectableMultipleTimesOption>
 );
 
-export const SelectedDataCard = ({ option, onRemove, index, OptionComponent }) => {
+export const SelectedDataCard = ({ option, onChange, onRemove, index, optionComponent }) => {
   const [isDragging, setIsDragging] = React.useState(false);
   const [edittingOption, setEdittingOption] = React.useState(null);
 
@@ -264,11 +197,11 @@ export const SelectedDataCard = ({ option, onRemove, index, OptionComponent }) =
           onMouseOver={() => setIsDragging(true)}
           onMouseLeave={() => setIsDragging(false)}
         >
-          <OptionComponent
-            option={option}
-            onRemove={onRemove}
-            setEdittingOption={setEdittingOption}
-          />
+          {optionComponent ? (
+            optionComponent(option, onRemove, index, setEdittingOption)
+          ) : (
+            <BaseSelectedOption option={option} onRemove={onRemove} />
+          )}
         </StyledSelectedDataCard>
       )}
     </Draggable>

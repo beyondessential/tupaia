@@ -67,7 +67,15 @@ const schema = {
 export const SchemaValidation = () => {
   return (
     <PanelTabPanel>
-      <JsonEditor value={value} mode="code" mainMenuBar={false} schema={schema} />
+      <JsonEditor
+        value={value}
+        mode="code"
+        mainMenuBar={false}
+        schema={schema}
+        onValidationError={error => {
+          console.log(error);
+        }}
+      />
     </PanelTabPanel>
   );
 };

@@ -4,12 +4,10 @@
  */
 
 import React, { useState } from 'react';
+import DownArrow from '@material-ui/icons/ArrowDropDown';
 import styled from 'styled-components';
-import {
-  BaseSelectedOption,
-  SelectedOptionWithJsonEditor,
-} from '../src/components/DataLibrary/options';
-import { DataLibrary } from '../src/components/DataLibrary';
+import { DataLibrary, BaseSelectedOption } from '../src/components/DataLibrary';
+import { JsonEditor } from '../src/components/JsonEditor';
 
 export default {
   title: 'Inputs/DataLibrary',
@@ -25,12 +23,54 @@ const Container = styled.div`
   background: white;
 `;
 
+const DownArrowIconWrapper = styled.div`
+  display: flex;
+  .MuiSvgIcon-root {
+    transition: transform 0.3s ease;
+    transform: rotate(${({ $expanded }) => ($expanded ? '0deg' : '-90deg')});
+  }
+`;
+
+const Panel = styled.div`
+  width: 100%;
+`;
+
+const JsonEditorPanel = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  > div {
+    width: 100%;
+    height: 100px;
+  }
+
+  .jsoneditor {
+    border: none;
+    cursor: text;
+  }
+`;
+
+const OptionPanelWithJsonEditor = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: auto;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+`;
+
 const options = [
   {
     id: '1',
-    code: 'ABC_1',
+    code: 'ABC_1ABC_1ABC_1ABC_1ABC_1ABC_1ABC_1ABC_1',
     description:
       'Count the number of data in child entities within selected period, then sum and group by ancestor entities (aggregationEntityType)',
+    config: {
+      type: 'COUNT_PER_GROUP',
+      config: { dataSourceEntityType: 'school', aggregationEntityType: 'district' },
+    },
   },
   { id: '2', code: 'ABC_2', description: 'Sentinel Site Two' },
   { id: '3', code: 'ABC_3', description: 'Sentinel Site Three' },
@@ -69,9 +109,14 @@ export const Simple = () => {
           options={options}
           value={value}
           onChange={(event, newValue) => setValue(newValue)}
+          onRemove={(event, option) => {
+            setValue(
+              event,
+              value.filter(item => option !== item),
+            );
+          }}
           inputValue={inputValue}
           onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
-          OptionComponent={BaseSelectedOption}
         />
       </Container>
     </OuterContainer>
@@ -87,7 +132,12 @@ export const AllowAddMultipleTimes = () => {
           options={options}
           value={value}
           onChange={(event, newValue) => setValue(newValue)}
-          OptionComponent={BaseSelectedOption}
+          onRemove={(event, option) => {
+            setValue(
+              event,
+              value.filter(item => option !== item),
+            );
+          }}
           allowAddMultipleTimes
         />
       </Container>
@@ -112,10 +162,15 @@ export const Tabs = () => {
           options={{ Cats: options, Dogs: dogs }}
           value={value}
           onChange={(event, newValue) => setValue(newValue)}
+          onRemove={(event, option) => {
+            setValue(
+              event,
+              value.filter(item => option !== item),
+            );
+          }}
           dataTypes={['Cats', 'Dogs']}
           dataType={dataType}
           onChangeDataType={(event, newValue) => setDataType(newValue)}
-          OptionComponent={BaseSelectedOption}
         />
       </Container>
     </OuterContainer>
@@ -126,7 +181,7 @@ export const Loading = () => {
   return (
     <OuterContainer>
       <Container>
-        <DataLibrary options={options} isLoading OptionComponent={BaseSelectedOption} />
+        <DataLibrary options={options} isLoading />
       </Container>
     </OuterContainer>
   );
@@ -136,9 +191,32 @@ export const MaxNumResults = () => {
   return (
     <OuterContainer>
       <Container>
-        <DataLibrary options={options} OptionComponent={BaseSelectedOption} searchPageSize={12} />
+        <DataLibrary options={options} searchPageSize={12} />
       </Container>
     </OuterContainer>
+  );
+};
+
+const SelectedOptionWithJsonEditor = ({ option, onRemove, setEdittingOption }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <OptionPanelWithJsonEditor>
+      <DownArrowIconWrapper $expanded={isExpanded} onClick={() => setIsExpanded(!isExpanded)}>
+        <DownArrow />
+      </DownArrowIconWrapper>
+      <Panel>
+        <BaseSelectedOption option={option} onRemove={onRemove} />
+        {isExpanded && (
+          <JsonEditorPanel
+            onMouseOver={() => setEdittingOption(option.code)}
+            onMouseLeave={() => setEdittingOption(null)}
+          >
+            <JsonEditor value={option} mode="code" mainMenuBar={false} statusBar={false} />
+          </JsonEditorPanel>
+        )}
+      </Panel>
+    </OptionPanelWithJsonEditor>
   );
 };
 
@@ -152,9 +230,21 @@ export const WithJsonEditor = () => {
           options={options}
           value={value}
           onChange={(event, newValue) => setValue(newValue)}
+          onRemove={(event, option) => {
+            setValue(
+              event,
+              value.filter(item => option !== item),
+            );
+          }}
           inputValue={inputValue}
           onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
-          OptionComponent={SelectedOptionWithJsonEditor}
+          optionComponent={(option, onRemove, setEdittingOption) => (
+            <SelectedOptionWithJsonEditor
+              option={option}
+              onRemove={onRemove}
+              setEdittingOption={setEdittingOption}
+            />
+          )}
         />
       </Container>
     </OuterContainer>

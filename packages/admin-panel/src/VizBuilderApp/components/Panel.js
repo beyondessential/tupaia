@@ -148,6 +148,7 @@ export const Panel = () => {
             onAggregateChange={value => {
               setTabValue('aggregate', value);
             }}
+            onInvalidChange={handleInvalidChange}
           />
         )}
       </TabPanel>

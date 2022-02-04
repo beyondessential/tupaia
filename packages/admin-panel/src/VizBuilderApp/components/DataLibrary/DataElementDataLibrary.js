@@ -84,6 +84,8 @@ export const DataElementDataLibrary = ({ fetch, onFetchChange }) => {
     [DATA_TYPES.DATA_GROUP]: inputValue ? dataGroupSearchResults : [],
   };
 
+  const onChange = (event, newValue) => onFetchChange(valueToFetch(newValue));
+
   return (
     <DataLibrary
       options={options}
@@ -91,7 +93,13 @@ export const DataElementDataLibrary = ({ fetch, onFetchChange }) => {
       dataType={dataType}
       onChangeDataType={(event, newValue) => setDataType(newValue)}
       value={value}
-      onChange={(event, newValue) => onFetchChange(valueToFetch(newValue))}
+      onRemove={(event, option) => {
+        onChange(
+          event,
+          value.filter(item => option !== item),
+        );
+      }}
+      onChange={onChange}
       inputValue={inputValue}
       onInputChange={(event, newInputValue) => (event ? setInputValue(newInputValue) : false)}
       isLoading={isFetchingDataElements || isFetchingDataGroups}

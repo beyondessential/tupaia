@@ -3,19 +3,23 @@
  *  Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 import { stringifyQuery } from '@tupaia/utils';
-import { useQuery } from 'react-query';
+import { useQuery, QueryClient } from 'react-query';
 import { get } from '../api';
 import { DEFAULT_REACT_QUERY_OPTIONS } from '../constants';
 
-export const useSearchAggregationOptions = ({ search }) =>
-  useQuery(
-    ['aggregationOptions', search],
-    async () => {
-      const endpoint = stringifyQuery(undefined, 'fetchAggregationOptions', {});
-      return get(endpoint);
-    },
-    {
-      ...DEFAULT_REACT_QUERY_OPTIONS,
-      keepPreviousData: true,
-    },
-  );
+const queryClient = new QueryClient();
+
+const getAggregationOptions = async () => {
+  const endpoint = stringifyQuery(undefined, 'fetchAggregationOptions', {});
+  return get(endpoint);
+};
+
+export const prefetchAggregationOptions = async () => {
+  await queryClient.prefetchQuery(['aggregationOptions'], getAggregationOptions);
+};
+
+export const useSearchAggregationOptions = () =>
+  useQuery(['aggregationOptions'], getAggregationOptions, {
+    ...DEFAULT_REACT_QUERY_OPTIONS,
+    keepPreviousData: true,
+  });
