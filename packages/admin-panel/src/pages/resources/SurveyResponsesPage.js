@@ -10,6 +10,14 @@ import { getBrowserTimeZone } from '@tupaia/utils';
 import { ResourcePage } from './ResourcePage';
 import { SurveyResponsesExportModal } from '../../importExport';
 
+// Don't include not_required as an editable option because it can lead to
+// mis-matches between surveys and survey responses
+export const APPROVAL_STATUS_TYPES = [
+  { label: 'Pending', value: 'pending' },
+  { label: 'Rejected', value: 'rejected' },
+  { label: 'Approved', value: 'approved' },
+];
+
 const surveyName = {
   Header: 'Survey',
   source: 'survey.name',
@@ -50,6 +58,12 @@ const outdated = {
   type: 'boolean',
 };
 
+const approvalStatus = {
+  Header: 'Approval Status',
+  source: 'approval_status',
+  type: 'tooltip',
+};
+
 const entityName = {
   Header: 'Entity',
   source: 'entity.name',
@@ -64,6 +78,7 @@ export const SURVEY_RESPONSE_COLUMNS = [
   date,
   dateOfData,
   outdated,
+  approvalStatus,
   {
     Header: 'Export',
     source: 'id',
@@ -78,7 +93,7 @@ export const SURVEY_RESPONSE_COLUMNS = [
   },
 ];
 
-const COLUMNS = [
+export const SURVEY_RESPONSE_PAGE_COLUMNS = [
   entityName,
   ...SURVEY_RESPONSE_COLUMNS,
   {
@@ -87,7 +102,20 @@ const COLUMNS = [
     source: 'id',
     actionConfig: {
       editEndpoint: 'surveyResponses',
-      fields: [entityName, surveyName, assessorName, date, dateOfData],
+      fields: [
+        entityName,
+        surveyName,
+        assessorName,
+        date,
+        dateOfData,
+        {
+          Header: 'Approval Status',
+          source: 'approval_status',
+          editConfig: {
+            options: APPROVAL_STATUS_TYPES,
+          },
+        },
+      ],
     },
   },
   {
@@ -172,7 +200,7 @@ export const SurveyResponsesPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
     title="Survey Responses"
     endpoint="surveyResponses"
-    columns={COLUMNS}
+    columns={SURVEY_RESPONSE_PAGE_COLUMNS}
     defaultFilters={[{ id: 'outdated', value: false }]}
     defaultSorting={[{ id: 'data_time', desc: true }]}
     expansionTabs={EXPANSION_CONFIG}

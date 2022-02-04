@@ -17,8 +17,8 @@ import {
   RegisterRoute,
   ReportRoute,
   UserRoute,
-  ApproveSurveyResponse,
   VerifyEmailRoute,
+  UpdateSurveyResponseRoute,
 } from '../routes';
 import { attachSession } from '../session';
 import { hasLesmisAccess } from '../utils';
@@ -30,7 +30,7 @@ import { EntityRequest } from '../routes/EntityRoute';
 import { ReportRequest } from '../routes/ReportRoute';
 import { VerifyEmailRequest } from '../routes/VerifyEmailRoute';
 import { RegisterRequest } from '../routes/RegisterRoute';
-import { ApproveSurveyResponseRequest } from '../routes/ApproveSurveyResponse';
+import { UpdateSurveyResponseRequest } from '../routes/UpdateSurveyResponseRoute';
 
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
 
@@ -63,11 +63,12 @@ export function createApp() {
      */
 
     .post<RegisterRequest>('/v1/register', handleWith(RegisterRoute))
-    .post<ApproveSurveyResponseRequest>(
-      '/v1/approveSurveyResponse/:id',
-      handleWith(ApproveSurveyResponse),
-    )
     .post<ReportRequest>('/v1/report/:entityCode/:reportCode', handleWith(ReportRoute))
+
+    /**
+     * PUT
+     */
+    .put<UpdateSurveyResponseRequest>('/v1/survey-response/:id', handleWith(UpdateSurveyResponseRoute))
 
     .build();
 
