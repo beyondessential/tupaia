@@ -37,6 +37,9 @@ const getAllDataElements = async (db, parser, indicator) => {
 };
 
 exports.up = async function (db) {
+  // Disable data_element trigger
+  await db.runSql(`ALTER TABLE data_element DISABLE TRIGGER "trig$_data_element"`);
+
   // Add column
   await db.runSql(`
     ALTER TABLE data_element
@@ -100,6 +103,8 @@ exports.up = async function (db) {
       WHERE '${publicPermissionId}' = ANY(permission_groups)
       OR permission_groups = '{}'
   `);
+  // Enable data_element trigger
+  await db.runSql(`ALTER TABLE data_element ENABLE TRIGGER "trig$_data_element"`);
 };
 
 exports.down = async function (db) {
