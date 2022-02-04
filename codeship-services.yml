@@ -1,14 +1,14 @@
-## 'validation' service checks:
-##  - branch name
-##  - that there are no exclusive tests
-##    - TODO: strip this down to a tiny image that just checks branch name, and use eslint no-exclusive-tests flag
-##      at lint step after RN-201
-#validation:
-#  build:
-#    dockerfile: ./packages/devops/ci/validation.Dockerfile
-#  cached: true
-#  default_cache_branch: 'dev'
-#  encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
+# 'validation' service checks:
+#  - branch name
+#  - that there are no exclusive tests
+#    - TODO: strip this down to a tiny image that just checks branch name, and use eslint no-exclusive-tests flag
+#      at lint step after RN-201
+validation:
+  build:
+    dockerfile: ./packages/devops/ci/validation.Dockerfile
+  cached: true
+  default_cache_branch: 'dev'
+  encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
 
 testing:
   build:
@@ -20,18 +20,18 @@ testing:
   encrypted_env_file: ./packages/devops/ci/testing.env.encrypted # test db env vars
   encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
 
-## 'e2e' service includes a base cypress container, plus code and node_module dependencies
-## required by e2e tests in web-frontend
-#e2e:
-#  build:
-#    dockerfile: ./packages/devops/ci/e2e.Dockerfile
-#  encrypted_env_file: ./packages/devops/ci/e2e.env.encrypted
-#  cached: true
-#  default_cache_branch: 'e2e'
-#  encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
-#  volumes:
-#    # see https://docs.cloudbees.com/docs/cloudbees-codeship/latest/pro-continuous-integration/browser-testing#_chrome_crashing
-#    - /dev/shm:/dev/shm
+# 'e2e' service includes a base cypress container, plus code and node_module dependencies
+# required by e2e tests in web-frontend
+e2e:
+  build:
+    dockerfile: ./packages/devops/ci/e2e.Dockerfile
+  encrypted_env_file: ./packages/devops/ci/e2e.env.encrypted
+  cached: true
+  default_cache_branch: 'e2e'
+  encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
+  volumes:
+    # see https://docs.cloudbees.com/docs/cloudbees-codeship/latest/pro-continuous-integration/browser-testing#_chrome_crashing
+    - /dev/shm:/dev/shm
 
 # 'db' service provides a postgres db with postgis
 db:

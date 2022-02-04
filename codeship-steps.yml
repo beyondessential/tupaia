@@ -1,19 +1,15 @@
-#- name: Fetch environment variables
-#  service: lastpass
-#  command: './packages/devops/scripts/ci/setupEnvironmentVariables.sh'
-
-- type: parallel
-  name: Validate and test
+- name: Validate and test
+  type: parallel
   exclude: -e2e$
   steps:
-#    - type: parallel
-#      name: Validate
-#      service: validation
-#      steps:
-#        - name: Validate branch name
-#          command: './packages/devops/scripts/ci/validateBranchName.sh'
-#        - name: Validate tests
-#          command: './packages/devops/scripts/ci/validateTests.sh'
+    - type: parallel
+      name: Validate
+      service: validation
+      steps:
+        - name: Validate branch name
+          command: './packages/devops/scripts/ci/validateBranchName.sh'
+        - name: Validate tests
+          command: './packages/devops/scripts/ci/validateTests.sh'
     - type: parallel
       name: Test
       service: testing
@@ -49,10 +45,10 @@
   service: deployment
   command: './triggerRedeploy.sh'
 
-#- type: parallel
-#  name: E2E test
-#  service: e2e
-#  tag: -e2e$
-#  steps:
-#    - name: E2E test web-frontend
-#      command: './packages/devops/scripts/ci/testE2e.sh web-frontend'
+- name: E2E test
+  type: parallel
+  service: e2e
+  tag: -e2e$
+  steps:
+    - name: E2E test web-frontend
+      command: './packages/devops/scripts/ci/testE2e.sh web-frontend'
