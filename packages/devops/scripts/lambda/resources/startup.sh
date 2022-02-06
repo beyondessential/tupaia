@@ -51,11 +51,11 @@ else
   echo "${BRANCH} does not exist, defaulting to dev"
   BRANCH_TO_USE="dev"
 fi
-git remote set-branches --add origin ${BRANCH_TO_USE}
-git fetch --all --prune
-git reset --hard # clear out any manual changes that have been made, which would cause checkout to fail
-git checkout ${BRANCH_TO_USE}
-git reset --hard origin/${BRANCH_TO_USE}
+sudo -Hu ubuntu git remote set-branches --add origin ${BRANCH_TO_USE}
+sudo -Hu ubuntu git fetch --all --prune
+sudo -Hu ubuntu git reset --hard # clear out any manual changes that have been made, which would cause checkout to fail
+sudo -Hu ubuntu git checkout ${BRANCH_TO_USE}
+sudo -Hu ubuntu git reset --hard origin/${BRANCH_TO_USE}
 
 # Deploy each package, including injecting environment variables from LastPass
 sudo -Hu ubuntu $DEPLOYMENT_SCRIPTS/buildDeployablePackages.sh $DEPLOYMENT_NAME |& while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
