@@ -21,6 +21,7 @@ const SCHOOL_CODES = ['WS_sch143', 'WS_sch160'];
 exports.up = async function (db) {
   for (const code of SCHOOL_CODES) {
     const schoolId = await codeToId(db, 'entity', code);
+    await deleteObject(db, 'entity_relation', { child_id: schoolId });
     await deleteObject(db, 'survey_response', { entity_id: schoolId });
     await deleteObject(db, 'entity', { id: schoolId });
   }
