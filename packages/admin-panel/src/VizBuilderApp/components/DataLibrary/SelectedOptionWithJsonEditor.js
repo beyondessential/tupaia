@@ -36,6 +36,10 @@ const OptionPanelWithJsonEditor = styled.div`
 
 const DownArrowIconWrapper = styled.div`
   display: flex;
+
+  .icon-wrapper {
+    cursor: pointer;
+  }
   .MuiSvgIcon-root {
     transition: transform 0.3s ease;
     transform: rotate(${({ $expanded }) => ($expanded ? '0deg' : '-90deg')});
@@ -62,7 +66,11 @@ export const SelectedOptionWithJsonEditor = ({
   return (
     <OptionPanelWithJsonEditor>
       <FlexBetweenPanel>
-        <DownArrowIconWrapper $expanded={isExpanded} onClick={() => setIsExpanded(!isExpanded)}>
+        <DownArrowIconWrapper
+          $expanded={isExpanded}
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="icon-wrapper"
+        >
           <DownArrow />
         </DownArrowIconWrapper>
         <BaseSelectedOption option={{ ...optionMetaData, ...option }} onRemove={onRemove} />
