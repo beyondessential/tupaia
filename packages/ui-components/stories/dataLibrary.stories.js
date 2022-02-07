@@ -104,10 +104,7 @@ export const Simple = () => {
   const [inputValue, setInputValue] = useState('');
 
   const onRemove = (event, option) => {
-    setValue(
-      event,
-      value.filter(item => option !== item),
-    );
+    setValue(value.filter(item => option.code !== item.code));
   };
 
   return (
@@ -130,10 +127,7 @@ export const AllowAddMultipleTimes = () => {
   const [value, setValue] = useState([options[1]]);
 
   const onRemove = (event, option) => {
-    setValue(
-      event,
-      value.filter(item => option !== item),
-    );
+    setValue(value.filter(item => option.code !== item.code));
   };
 
   return (
@@ -162,10 +156,7 @@ export const Tabs = () => {
   ];
 
   const onRemove = (event, option) => {
-    setValue(
-      event,
-      value.filter(item => option !== item),
-    );
+    setValue(value.filter(item => option.code !== item.code));
   };
 
   return (
@@ -233,10 +224,7 @@ export const WithJsonEditor = () => {
   const [inputValue, setInputValue] = useState('');
 
   const onRemove = (event, option) => {
-    setValue(
-      event,
-      value.filter(item => option !== item),
-    );
+    setValue(value.filter(item => option.code !== item.code));
   };
 
   return (
