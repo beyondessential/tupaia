@@ -2,20 +2,19 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import DownArrow from '@material-ui/icons/ArrowDropDown';
 import styled from 'styled-components';
-import { BaseSelectedOption, JsonEditor } from '@tupaia/ui-components/';
+import { BaseSelectedOption, FlexSpaceBetween, JsonEditor } from '@tupaia/ui-components/';
 
-const Panel = styled.div`
+const FlexBetweenPanel = styled(FlexSpaceBetween)`
   width: 100%;
 `;
 
 const JsonEditorPanel = styled.div`
   flex: 1;
   display: flex;
-  flex-direction: column;
+  width: 100%;
 
   > div {
     width: 100%;
-    height: 250px;
   }
 
   .jsoneditor {
@@ -27,6 +26,7 @@ const JsonEditorPanel = styled.div`
 const OptionPanelWithJsonEditor = styled.div`
   display: flex;
   justify-content: space-between;
+  flex-direction: column;
   align-items: flex-start;
   height: auto;
   flex: 1;
@@ -61,32 +61,32 @@ export const SelectedOptionWithJsonEditor = ({
 
   return (
     <OptionPanelWithJsonEditor>
-      <DownArrowIconWrapper $expanded={isExpanded} onClick={() => setIsExpanded(!isExpanded)}>
-        <DownArrow />
-      </DownArrowIconWrapper>
-      <Panel>
+      <FlexBetweenPanel>
+        <DownArrowIconWrapper $expanded={isExpanded} onClick={() => setIsExpanded(!isExpanded)}>
+          <DownArrow />
+        </DownArrowIconWrapper>
         <BaseSelectedOption option={{ ...optionMetaData, ...option }} onRemove={onRemove} />
-        {isExpanded && (
-          <JsonEditorPanel
-            onMouseOver={() => setEdittingOption(option.code)}
-            onMouseLeave={() => setEdittingOption(null)}
-          >
-            <JsonEditor
-              value={currentValue}
-              mode="code"
-              mainMenuBar={false}
-              onChange={onChange}
-              schema={optionMetaData?.schema || {}}
-              onInvalidChange={onInvalidChange}
-              onValidationError={err => {
-                if (err.length > 0) {
-                  onInvalidChange(err[0].message);
-                }
-              }}
-            />
-          </JsonEditorPanel>
-        )}
-      </Panel>
+      </FlexBetweenPanel>
+      {isExpanded && (
+        <JsonEditorPanel
+          onMouseOver={() => setEdittingOption(option.code)}
+          onMouseLeave={() => setEdittingOption(null)}
+        >
+          <JsonEditor
+            value={currentValue}
+            mode="code"
+            mainMenuBar={false}
+            onChange={onChange}
+            schema={optionMetaData?.schema || {}}
+            onInvalidChange={onInvalidChange}
+            onValidationError={err => {
+              if (err.length > 0) {
+                onInvalidChange(err[0].message);
+              }
+            }}
+          />
+        </JsonEditorPanel>
+      )}
     </OptionPanelWithJsonEditor>
   );
 };
