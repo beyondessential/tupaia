@@ -102,6 +102,14 @@ const options = [
 export const Simple = () => {
   const [value, setValue] = useState([options[1]]);
   const [inputValue, setInputValue] = useState('');
+
+  const onRemove = (event, option) => {
+    setValue(
+      event,
+      value.filter(item => option !== item),
+    );
+  };
+
   return (
     <OuterContainer>
       <Container>
@@ -109,14 +117,9 @@ export const Simple = () => {
           options={options}
           value={value}
           onChange={(event, newValue) => setValue(newValue)}
-          onRemove={(event, option) => {
-            setValue(
-              event,
-              value.filter(item => option !== item),
-            );
-          }}
           inputValue={inputValue}
           onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
+          optionComponent={option => <BaseSelectedOption option={option} onRemove={onRemove} />}
         />
       </Container>
     </OuterContainer>
@@ -125,6 +128,14 @@ export const Simple = () => {
 
 export const AllowAddMultipleTimes = () => {
   const [value, setValue] = useState([options[1]]);
+
+  const onRemove = (event, option) => {
+    setValue(
+      event,
+      value.filter(item => option !== item),
+    );
+  };
+
   return (
     <OuterContainer>
       <Container>
@@ -132,12 +143,7 @@ export const AllowAddMultipleTimes = () => {
           options={options}
           value={value}
           onChange={(event, newValue) => setValue(newValue)}
-          onRemove={(event, option) => {
-            setValue(
-              event,
-              value.filter(item => option !== item),
-            );
-          }}
+          optionComponent={option => <BaseSelectedOption option={option} onRemove={onRemove} />}
           allowAddMultipleTimes
         />
       </Container>
@@ -155,6 +161,13 @@ export const Tabs = () => {
     { id: '3', code: 'DOG_3', name: 'Dog Three' },
   ];
 
+  const onRemove = (event, option) => {
+    setValue(
+      event,
+      value.filter(item => option !== item),
+    );
+  };
+
   return (
     <OuterContainer>
       <Container>
@@ -162,12 +175,7 @@ export const Tabs = () => {
           options={{ Cats: options, Dogs: dogs }}
           value={value}
           onChange={(event, newValue) => setValue(newValue)}
-          onRemove={(event, option) => {
-            setValue(
-              event,
-              value.filter(item => option !== item),
-            );
-          }}
+          optionComponent={option => <BaseSelectedOption option={option} onRemove={onRemove} />}
           dataTypes={['Cats', 'Dogs']}
           dataType={dataType}
           onChangeDataType={(event, newValue) => setDataType(newValue)}
@@ -223,6 +231,14 @@ const SelectedOptionWithJsonEditor = ({ option, onRemove, setEdittingOption }) =
 export const WithJsonEditor = () => {
   const [value, setValue] = useState([options[1]]);
   const [inputValue, setInputValue] = useState('');
+
+  const onRemove = (event, option) => {
+    setValue(
+      event,
+      value.filter(item => option !== item),
+    );
+  };
+
   return (
     <OuterContainer>
       <Container>
@@ -230,15 +246,9 @@ export const WithJsonEditor = () => {
           options={options}
           value={value}
           onChange={(event, newValue) => setValue(newValue)}
-          onRemove={(event, option) => {
-            setValue(
-              event,
-              value.filter(item => option !== item),
-            );
-          }}
           inputValue={inputValue}
           onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
-          optionComponent={(option, onRemove, setEdittingOption) => (
+          optionComponent={(option, setEdittingOption) => (
             <SelectedOptionWithJsonEditor
               option={option}
               onRemove={onRemove}

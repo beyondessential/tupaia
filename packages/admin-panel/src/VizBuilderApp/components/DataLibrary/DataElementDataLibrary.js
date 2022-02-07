@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { DataLibrary } from '@tupaia/ui-components';
+import { BaseSelectedOption, DataLibrary } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
 import { useSearchDataSources } from '../../api';
 import { useDebounce } from '../../../utilities';
@@ -85,6 +85,12 @@ export const DataElementDataLibrary = ({ fetch, onFetchChange }) => {
   };
 
   const onChange = (event, newValue) => onFetchChange(valueToFetch(newValue));
+  const onRemove = (event, option) => {
+    onChange(
+      event,
+      value.filter(item => option !== item),
+    );
+  };
 
   return (
     <DataLibrary
@@ -93,17 +99,12 @@ export const DataElementDataLibrary = ({ fetch, onFetchChange }) => {
       dataType={dataType}
       onChangeDataType={(event, newValue) => setDataType(newValue)}
       value={value}
-      onRemove={(event, option) => {
-        onChange(
-          event,
-          value.filter(item => option !== item),
-        );
-      }}
       onChange={onChange}
       inputValue={inputValue}
       onInputChange={(event, newInputValue) => (event ? setInputValue(newInputValue) : false)}
       isLoading={isFetchingDataElements || isFetchingDataGroups}
       searchPageSize={MAX_RESULTS}
+      optionComponent={option => <BaseSelectedOption option={option} onRemove={onRemove} />}
     />
   );
 };

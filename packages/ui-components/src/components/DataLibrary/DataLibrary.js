@@ -69,7 +69,6 @@ export const DataLibrary = ({
   options,
   value,
   onChange,
-  onRemove,
   allowAddMultipleTimes,
   dataTypes,
   dataType,
@@ -143,7 +142,7 @@ export const DataLibrary = ({
         <RightColHeader>Selected Data</RightColHeader>
         <RightColContents>
           <DragDropContext onDragEnd={onDragEnd}>
-            <SelectedDataList value={value} onRemove={onRemove} optionComponent={optionComponent} />
+            <SelectedDataList value={value} optionComponent={optionComponent} />
           </DragDropContext>
         </RightColContents>
       </Col>
@@ -160,7 +159,6 @@ const optionPropType = PropTypes.shape({
 
 DataLibrary.defaultProps = {
   onChange: () => {},
-  onRemove: () => {},
   allowAddMultipleTimes: false,
   dataTypes: [],
   dataType: '',
@@ -170,7 +168,6 @@ DataLibrary.defaultProps = {
   onInputChange: () => {},
   isLoading: false,
   searchPageSize: null,
-  optionComponent: null,
 };
 
 DataLibrary.propTypes = {
@@ -178,7 +175,6 @@ DataLibrary.propTypes = {
   options: PropTypes.oneOfType([PropTypes.object, PropTypes.arrayOf(optionPropType)]).isRequired,
   value: PropTypes.arrayOf(optionPropType),
   onChange: PropTypes.func,
-  onRemove: PropTypes.func,
   allowAddMultipleTimes: PropTypes.bool,
   dataTypes: PropTypes.arrayOf(PropTypes.string),
   dataType: PropTypes.string,
@@ -188,5 +184,5 @@ DataLibrary.propTypes = {
   isLoading: PropTypes.bool,
   // searchPageSize: used in combination with options (current page) to know if there are more pages
   searchPageSize: PropTypes.number,
-  optionComponent: PropTypes.func,
+  optionComponent: PropTypes.func.isRequired,
 };

@@ -7,6 +7,8 @@ import { useQuery, QueryClient } from 'react-query';
 import { get } from '../api';
 import { DEFAULT_REACT_QUERY_OPTIONS } from '../constants';
 
+const QUERY_KEY = ['aggregationOptions'];
+
 const queryClient = new QueryClient();
 
 const getAggregationOptions = async () => {
@@ -15,11 +17,11 @@ const getAggregationOptions = async () => {
 };
 
 export const prefetchAggregationOptions = async () => {
-  await queryClient.prefetchQuery(['aggregationOptions'], getAggregationOptions);
+  await queryClient.prefetchQuery(QUERY_KEY, getAggregationOptions);
 };
 
 export const useSearchAggregationOptions = () =>
-  useQuery(['aggregationOptions'], getAggregationOptions, {
+  useQuery(QUERY_KEY, getAggregationOptions, {
     ...DEFAULT_REACT_QUERY_OPTIONS,
     keepPreviousData: true,
   });

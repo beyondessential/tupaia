@@ -23,33 +23,33 @@ export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalid
   const { data: options, isFetching } = useSearchAggregationOptions();
 
   const onChange = (event, newValue) => onAggregateChange(valueToAggregate(newValue));
+  const onRemove = (event, option) => {
+    onChange(
+      event,
+      value.filter(item => option.code !== item.code),
+    );
+  };
 
   return (
     <DataLibrary
       options={options || []}
       value={value}
       onChange={onChange}
-      onRemove={(event, option) => {
-        onChange(
-          event,
-          value.filter(item => option.code !== item.code),
-        );
-      }}
       inputValue={inputValue}
       onInputChange={(event, newInputValue) => (event ? setInputValue(newInputValue) : false)}
       isLoading={isFetching}
       searchPageSize={MAX_RESULTS}
       onMouseEnter={prefetchAggregationOptions}
-      optionComponent={(option, onRemove, index, setEdittingOption) => (
+      optionComponent={(option, index, setEdittingOption) => (
         <SelectedOptionWithJsonEditor
           option={option}
           optionMetaData={options && options.find(({ code }) => code === option.code)}
-          onRemove={onRemove}
           onChange={newValue => {
             const newSelectedAggregations = Array.from(value);
             newSelectedAggregations[index].config = newValue.config;
             onAggregateChange(valueToAggregate(newSelectedAggregations));
           }}
+          onRemove={onRemove}
           setEdittingOption={setEdittingOption}
           onInvalidChange={onInvalidChange}
         />

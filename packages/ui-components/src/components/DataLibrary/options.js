@@ -178,7 +178,7 @@ export const SelectableMultipleTimesOption = ({ option, onSelect }) => (
   </StyledSelectableMultipleTimesOption>
 );
 
-export const SelectedDataCard = ({ option, onChange, onRemove, index, optionComponent }) => {
+export const SelectedDataCard = ({ option, index, optionComponent }) => {
   const [isDragging, setIsDragging] = React.useState(false);
   const [edittingOption, setEdittingOption] = React.useState(null);
 
@@ -197,11 +197,7 @@ export const SelectedDataCard = ({ option, onChange, onRemove, index, optionComp
           onMouseOver={() => setIsDragging(true)}
           onMouseLeave={() => setIsDragging(false)}
         >
-          {optionComponent ? (
-            optionComponent(option, onRemove, index, setEdittingOption)
-          ) : (
-            <BaseSelectedOption option={option} onRemove={onRemove} />
-          )}
+          {optionComponent(option, index, setEdittingOption)}
         </StyledSelectedDataCard>
       )}
     </Draggable>

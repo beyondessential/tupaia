@@ -77,10 +77,10 @@ export const SelectedOptionWithJsonEditor = ({
               mainMenuBar={false}
               onChange={onChange}
               schema={optionMetaData?.schema || {}}
-              onValidationError={error => {
-                console.log(error);
-                if (error.length !== 0) {
-                  onInvalidChange();
+              onInvalidChange={onInvalidChange}
+              onValidationError={err => {
+                if (err.length > 0) {
+                  onInvalidChange(err[0].message);
                 }
               }}
             />
