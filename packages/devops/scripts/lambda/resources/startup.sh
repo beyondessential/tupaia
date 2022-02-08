@@ -24,6 +24,17 @@ DEPLOYMENT_NAME=$(${DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh DeploymentN
 BRANCH=$(${DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh Branch)
 echo "Starting up ${DEPLOYMENT_NAME} (${BRANCH})"
 
+# Set bash prompt to have deployment name in it
+if [[ $DEPLOYMENT_NAME == "production" ]]; then
+  BASH_PROMPT_NAME="PROD"
+  BASH_PROMPT_COLOR="31"
+else
+  BASH_PROMPT_NAME="${DEPLOYMENT_NAME}"
+  BASH_PROMPT_COLOR="36"
+fi
+BASH_PROMPT="\\[\\e]0;\\u@${BASH_PROMPT_NAME}: \\w\\a\\]\\\${debian_chroot:+(\\\$debian_chroot)}\\[\\033[01;32m\\]\\u@\\033[01;${BASH_PROMPT_COLOR}m\\]${BASH_PROMPT_NAME}\\[\\033[00m\\]:\\[\\033[01;34m\\]\\w\\[\\033[00m\\]\\$ "
+echo "PS1=\"${BASH_PROMPT}\"" >> $HOME_DIR/.bashrc
+
 # Create a directory for logs to go
 mkdir -m 777 -p $LOGS_DIR
 
