@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import DownArrow from '@material-ui/icons/ArrowDropDown';
+import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
+import { Checkbox as MuiCheckbox } from '@material-ui/core';
 import styled from 'styled-components';
 import { BaseSelectedOption, FlexSpaceBetween, JsonEditor } from '@tupaia/ui-components/';
 
@@ -46,6 +48,24 @@ const DownArrowIconWrapper = styled.div`
   }
 `;
 
+const Checkbox = styled(MuiCheckbox)`
+  width: 20px;
+
+  height: 20px;
+  :hover {
+    background-color: rgba(0, 0, 0, 0);
+  }
+  &.Mui-checked {
+    &:hover {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  }
+  & svg {
+    color: ${({ checked }) => (checked ? '#3884b8' : 'default')};
+    border-radius: 20%;
+  }
+`;
+
 export const SelectedOptionWithJsonEditor = ({
   option,
   onChange,
@@ -66,6 +86,17 @@ export const SelectedOptionWithJsonEditor = ({
   return (
     <OptionPanelWithJsonEditor>
       <FlexBetweenPanel>
+        <Checkbox
+          checkedIcon={<CheckBoxOutlinedIcon />}
+          checked={!option.isDisable}
+          onChange={() => {
+            const newOption = { ...option };
+            newOption.isDisable = !option.isDisable;
+            onChange(newOption);
+          }}
+          disableRipple
+          size="small"
+        />
         <DownArrowIconWrapper
           $expanded={isExpanded}
           onClick={() => setIsExpanded(!isExpanded)}
@@ -107,6 +138,7 @@ SelectedOptionWithJsonEditor.propTypes = {
   option: PropTypes.shape({
     code: PropTypes.string.isRequired,
     config: PropTypes.object,
+    isDisable: PropTypes.bool,
   }).isRequired,
   onRemove: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,

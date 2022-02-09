@@ -13,9 +13,15 @@ const MAX_RESULTS = 10;
 
 // Converts internal value array to Viz config.aggregate data structure
 const aggregateToValue = aggregate =>
-  aggregate.map(({ type, config }) => ({ code: type, type: 'aggregationOption', config }));
+  aggregate.map(({ type, config, isDisable }) => ({
+    code: type,
+    type: 'aggregationOption',
+    config,
+    isDisable,
+  }));
 
-const valueToAggregate = value => value.map(({ code, config }) => ({ type: code, config }));
+const valueToAggregate = value =>
+  value.map(({ code, config, isDisable = false }) => ({ type: code, config, isDisable }));
 
 export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalidChange }) => {
   const [inputValue, setInputValue] = useState('');
@@ -46,7 +52,9 @@ export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalid
           optionMetaData={options && options.find(({ code }) => code === option.code)}
           onChange={newValue => {
             const newSelectedAggregations = Array.from(value);
+            // Rest of configs do not apply
             newSelectedAggregations[index].config = newValue.config;
+            newSelectedAggregations[index].isDisable = newValue.isDisable;
             onAggregateChange(valueToAggregate(newSelectedAggregations));
           }}
           onRemove={onRemove}

@@ -116,18 +116,36 @@ const useConfigStore = () => {
   ];
 };
 
+const VisualisationContext = createContext(initialConfigState.visualisation);
+
+// Filter those unchecked aggregation and transform steps
+const getVisualisation = visualisation => {
+  const { data } = { ...visualisation };
+  const { aggregate, transform } = { ...data };
+  const newAggregate = aggregate.map(({ isDisable, ...restOfConfig }) => ({ ...restOfConfig }));
+  const newTransform = transform.map(({ isDisable, ...restOfConfig }) => ({ ...restOfConfig }));
+  const newData = { ...data, aggregate: newAggregate, transform: newTransform };
+  return { ...visualisation, data: newData };
+};
+
 const VizBuilderConfigContext = createContext(initialConfigState);
-const { Provider } = VizBuilderConfigContext;
 
 // eslint-disable-next-line react/prop-types
 const VizConfigProvider = ({ children }) => {
   const store = useConfigStore();
+  const { visualisation } = store[0];
 
   return (
-    <Provider value={store} displayName="VizBuilder">
-      {children}
-    </Provider>
+    <VisualisationContext.Provider value={getVisualisation(visualisation)}>
+      <VizBuilderConfigContext.Provider value={store} displayName="VizBuilder">
+        {children}
+      </VizBuilderConfigContext.Provider>
+    </VisualisationContext.Provider>
   );
+};
+
+const useVisualisation = () => {
+  return useContext(VisualisationContext);
 };
 
 const useVizConfig = () => {
@@ -136,4 +154,4 @@ const useVizConfig = () => {
 
 // Note: the store can be debugged in dev tools using a chrome plugin.
 // https://chrome.google.com/webstore/detail/react-context-devtool/oddhnidmicpefilikhgeagedibnefkcf?hl=en
-export { useVizConfig, VizConfigProvider };
+export { useVisualisation, useVizConfig, VizConfigProvider };
