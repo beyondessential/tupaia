@@ -77,6 +77,7 @@ export const DataLibrary = ({
   onInputChange,
   isLoading,
   searchPageSize,
+  optionComponent,
 }) => {
   if (dataTypes.length > 1 && Array.isArray(options)) {
     throw new Error('Must specify options as a map when using multiple data types');
@@ -141,15 +142,7 @@ export const DataLibrary = ({
         <RightColHeader>Selected Data</RightColHeader>
         <RightColContents>
           <DragDropContext onDragEnd={onDragEnd}>
-            <SelectedDataList
-              value={value}
-              onRemove={(event, option) => {
-                onChange(
-                  event,
-                  value.filter(item => option !== item),
-                );
-              }}
-            />
+            <SelectedDataList value={value} optionComponent={optionComponent} />
           </DragDropContext>
         </RightColContents>
       </Col>
@@ -191,4 +184,5 @@ DataLibrary.propTypes = {
   isLoading: PropTypes.bool,
   // searchPageSize: used in combination with options (current page) to know if there are more pages
   searchPageSize: PropTypes.number,
+  optionComponent: PropTypes.func.isRequired,
 };

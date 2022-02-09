@@ -17,7 +17,7 @@ import { DataElementDataLibrary, AggregationDataLibrary } from './DataLibrary';
 
 const Container = styled(FlexColumn)`
   position: relative;
-  width: 440px;
+  width: 540px;
   background: white;
   border-right: 1px solid ${({ theme }) => theme.palette.grey['400']};
   border-left: 1px solid ${({ theme }) => theme.palette.grey['400']};
@@ -148,6 +148,7 @@ export const Panel = () => {
             onAggregateChange={value => {
               setTabValue('aggregate', value);
             }}
+            onInvalidChange={handleInvalidChange}
           />
         )}
       </TabPanel>

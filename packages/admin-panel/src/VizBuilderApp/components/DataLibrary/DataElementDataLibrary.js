@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { DataLibrary } from '@tupaia/ui-components';
+import { BaseSelectedOption, DataLibrary } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
 import { useSearchDataSources } from '../../api';
 import { useDebounce } from '../../../utilities';
@@ -84,6 +84,14 @@ export const DataElementDataLibrary = ({ fetch, onFetchChange }) => {
     [DATA_TYPES.DATA_GROUP]: inputValue ? dataGroupSearchResults : [],
   };
 
+  const onChange = (event, newValue) => onFetchChange(valueToFetch(newValue));
+  const onRemove = (event, option) => {
+    onChange(
+      event,
+      value.filter(item => option !== item),
+    );
+  };
+
   return (
     <DataLibrary
       options={options}
@@ -91,11 +99,12 @@ export const DataElementDataLibrary = ({ fetch, onFetchChange }) => {
       dataType={dataType}
       onChangeDataType={(event, newValue) => setDataType(newValue)}
       value={value}
-      onChange={(event, newValue) => onFetchChange(valueToFetch(newValue))}
+      onChange={onChange}
       inputValue={inputValue}
       onInputChange={(event, newInputValue) => (event ? setInputValue(newInputValue) : false)}
       isLoading={isFetchingDataElements || isFetchingDataGroups}
       searchPageSize={MAX_RESULTS}
+      optionComponent={option => <BaseSelectedOption option={option} onRemove={onRemove} />}
     />
   );
 };

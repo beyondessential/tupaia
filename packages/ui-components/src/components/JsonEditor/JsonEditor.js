@@ -170,7 +170,7 @@ export class JsonEditor extends Component {
     this.jsonEditor.set(value);
   }
 
-  handleChange() {
+  async handleChange() {
     if (this.props.onChange) {
       try {
         this.err = null;
@@ -181,6 +181,10 @@ export class JsonEditor extends Component {
 
         const currentJson = this.jsonEditor.get();
         if (this.props.value !== currentJson) {
+          const validationError = await this.jsonEditor.validate();
+          if (validationError.length > 0) {
+            throw new Error(validationError[0].message);
+          }
           this.props.onChange(currentJson);
         }
       } catch (err) {
