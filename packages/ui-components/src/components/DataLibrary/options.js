@@ -8,13 +8,18 @@ import styled from 'styled-components';
 import { Done, Close, ChevronRight } from '@material-ui/icons';
 import { Draggable } from 'react-beautiful-dnd';
 import { ALICE_BLUE } from './constant';
-import { Tooltip } from '../Tooltip';
+import { Tooltip as BaseTooltip } from '../Tooltip';
+import { FlexSpaceBetween as MuiFlexSpaceBetween } from '../Layout';
+
+const FlexSpaceBetween = styled(MuiFlexSpaceBetween)`
+  width: 100%;
+`;
 
 const StyledOption = styled.div`
   border-radius: 3px;
-  padding: 5px 10px;
+  padding: 15px 10px;
   margin: 0 5px;
-  height: 64px;
+  height: auto;
   display: flex;
 
   min-width: 0;
@@ -61,6 +66,7 @@ const StyledSelectedDataCard = styled(StyledOption)`
 const OptionText = styled.div`
   flex: 1;
   min-width: 0;
+  width: 100px;
   overflow: hidden;
 `;
 
@@ -102,24 +108,42 @@ const IconWrapper = styled.div`
   }
 `;
 
-const OptionTextWithTooltips = ({ option }) => {
+const Option = ({ option }) => {
   const { code, description } = option;
-
   return (
-    <Tooltip
+    <OptionText>
+      <OptionCode>{code}</OptionCode>
+      <OptionDescription>{description}</OptionDescription>
+    </OptionText>
+  );
+};
+
+const Tooltip = ({ option, children }) => {
+  return (
+    <BaseTooltip
       title={
         <>
-          <OptionTitle>{code}</OptionTitle>
-          {description}
+          <OptionTitle>{option.code}</OptionTitle>
+          {option.description}
         </>
       }
-      enterDelay="700"
-      enterNextDelay="700"
+      enterDelay={700}
+      enterNextDelay={700}
     >
-      <OptionText>
-        <OptionCode>{code}</OptionCode>
-        <OptionDescription>{description}</OptionDescription>
-      </OptionText>
+      {children}
+    </BaseTooltip>
+  );
+};
+
+export const BaseSelectedOption = ({ option, onRemove }) => {
+  return (
+    <Tooltip option={option}>
+      <FlexSpaceBetween>
+        <Option option={option} />
+        <IconWrapper onClick={event => onRemove(event, option)} className="icon-wrapper">
+          <Close />
+        </IconWrapper>
+      </FlexSpaceBetween>
     </Tooltip>
   );
 };
@@ -130,7 +154,11 @@ export const SelectableOption = ({ option, isSelected, onSelect, ...restProps })
     className={isSelected ? 'selected' : ''}
     {...restProps}
   >
-    <OptionTextWithTooltips option={option} />
+    <Tooltip option={option}>
+      <FlexSpaceBetween>
+        <Option option={option} />
+      </FlexSpaceBetween>
+    </Tooltip>
     <IconWrapper>
       <Done />
     </IconWrapper>
@@ -139,18 +167,27 @@ export const SelectableOption = ({ option, isSelected, onSelect, ...restProps })
 
 export const SelectableMultipleTimesOption = ({ option, onSelect }) => (
   <StyledSelectableMultipleTimesOption onClick={onSelect}>
-    <OptionTextWithTooltips option={option} />
+    <Tooltip option={option}>
+      <FlexSpaceBetween>
+        <Option option={option} />
+      </FlexSpaceBetween>
+    </Tooltip>
     <IconWrapper>
       <ChevronRight />
     </IconWrapper>
   </StyledSelectableMultipleTimesOption>
 );
 
-export const SelectedDataCard = ({ option, onRemove, index }) => {
+export const SelectedDataCard = ({ option, index, optionComponent }) => {
   const [isDragging, setIsDragging] = React.useState(false);
+  const [edittingOption, setEdittingOption] = React.useState(null);
 
   return (
-    <Draggable draggableId={option.code} index={index}>
+    <Draggable
+      draggableId={option.code}
+      index={index}
+      isDragDisabled={edittingOption === option.code}
+    >
       {(provided, snapshot) => (
         <StyledSelectedDataCard
           {...provided.draggableProps}
@@ -160,10 +197,7 @@ export const SelectedDataCard = ({ option, onRemove, index }) => {
           onMouseOver={() => setIsDragging(true)}
           onMouseLeave={() => setIsDragging(false)}
         >
-          <OptionTextWithTooltips option={option} />
-          <IconWrapper onClick={event => onRemove(event, option)} className="icon-wrapper">
-            <Close />
-          </IconWrapper>
+          {optionComponent(option, index, setEdittingOption)}
         </StyledSelectedDataCard>
       )}
     </Draggable>
