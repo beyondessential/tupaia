@@ -57,6 +57,23 @@ const EDIT_FIELDS = [
   },
   ...FIELDS,
   {
+    Header: 'Verified',
+    source: 'verified_email',
+    type: 'tooltip',
+    editConfig: {
+      options: [
+        {
+          label: 'Unverified',
+          value: 'new_user',
+        },
+        {
+          label: 'Verified',
+          value: 'verified',
+        },
+      ],
+    },
+  },
+  {
     Header: 'Password',
     source: 'password',
     hideValue: true,
