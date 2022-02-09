@@ -39,7 +39,7 @@ export class DataLakeEventsFetchQuery {
     const aliasedColumns = [
       'date',
       'entity_code AS "entityCode"',
-      'entity_code AS "entityName"',
+      `'' AS "entityName"`,
       'event_id as "eventId"',
       `'Number' as "type"`,
       'value',

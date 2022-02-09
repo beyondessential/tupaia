@@ -28,20 +28,12 @@ export class DataLakeDatabase {
     return this.connection.destroy();
   }
 
-  async waitUntilConnected() {
-    await this.connectionPromise;
-  }
-
   /**
    * Runs an arbitrary SQL query against the database.
    *
    * Use only for situations in which Knex is not able to assemble a query.
    */
   async executeSql(sqlString, parametersToBind) {
-    if (!this.connection) {
-      await this.waitUntilConnected();
-    }
-
     const result = await this.connection.raw(sqlString, parametersToBind);
     return result.rows;
   }
