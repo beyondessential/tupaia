@@ -21,7 +21,7 @@ const PROJECT = {
   description: 'COVID-19 case surveillance and data visualisations in Kiribati',
   sort_order: 16,
   image_url: 'https://tupaia.s3.ap-southeast-2.amazonaws.com/thumbnails/uploads/covid_kiribati_background.jpeg',
-  default_measure: 'https://tupaia.s3.ap-southeast-2.amazonaws.com/thumbnails/uploads/covid_kiribati_logo.png',
+  default_measure: 'https://tupaia.s3.ap-southeast-2.amazonaws.com/thumbnails/uploads/covid_kiribati_logo.jpeg',
   dashboard_group_name: 'General',
   permission_groups: '{COVID-19 Kiribati Admin,COVID-19 Kiribati}',
   logo_url: '',
