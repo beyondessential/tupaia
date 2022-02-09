@@ -1,10 +1,15 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ */
+
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import DownArrow from '@material-ui/icons/ArrowDropDown';
 import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
-import { Checkbox as MuiCheckbox } from '@material-ui/core';
 import styled from 'styled-components';
 import { BaseSelectedOption, FlexSpaceBetween, JsonEditor } from '@tupaia/ui-components/';
+import { Checkbox } from './Checkbox';
 
 const FlexBetweenPanel = styled(FlexSpaceBetween)`
   width: 100%;
@@ -45,24 +50,6 @@ const DownArrowIconWrapper = styled.div`
   .MuiSvgIcon-root {
     transition: transform 0.3s ease;
     transform: rotate(${({ $expanded }) => ($expanded ? '0deg' : '-90deg')});
-  }
-`;
-
-const Checkbox = styled(MuiCheckbox)`
-  width: 20px;
-
-  height: 20px;
-  :hover {
-    background-color: rgba(0, 0, 0, 0);
-  }
-  &.Mui-checked {
-    &:hover {
-      background-color: rgba(0, 0, 0, 0);
-    }
-  }
-  & svg {
-    color: ${({ checked }) => (checked ? '#3884b8' : 'default')};
-    border-radius: 20%;
   }
 `;
 

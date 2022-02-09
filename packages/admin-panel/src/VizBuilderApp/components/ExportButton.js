@@ -7,17 +7,17 @@ import React from 'react';
 
 import IconButton from '@material-ui/core/IconButton';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import { useParams } from 'react-router-dom';
 
 import {
   useExportDashboardVisualisation,
   useExportMapOverlayVisualisation,
 } from '../api/mutations';
-import { useVizConfig, useVizConfigError } from '../context';
-import { useParams } from 'react-router-dom';
+import { useVisualisation, useVizConfigError } from '../context';
 import { VIZ_TYPE_PARAM } from '../constants';
 
 export const ExportButton = () => {
-  const [{ visualisation }] = useVizConfig();
+  const { visualisation } = useVisualisation();
 
   const { vizType } = useParams();
 

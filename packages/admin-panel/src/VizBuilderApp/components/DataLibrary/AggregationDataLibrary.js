@@ -5,9 +5,23 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { DataLibrary } from '@tupaia/ui-components';
+import LibraryAddCheckOutlinedIcon from '@material-ui/icons/LibraryAddCheckOutlined';
 import { prefetchAggregationOptions, useSearchAggregationOptions } from '../../api';
-import { SelectedOptionWithJsonEditor } from './SelectedOptionWithJsonEditor';
+import { SelectedOptionWithJsonEditor } from './component/SelectedOptionWithJsonEditor';
+import { Checkbox } from './component/Checkbox';
+
+const ColHeader = styled.div`
+  display: flex;
+  align-items: center;
+  height: 40px;
+  font-size: 12px;
+  box-shadow: inset 0px -1px 0px #dedee0;
+  padding: 15px;
+  color: #2c3236;
+  background: #e8f6ff;
+`;
 
 const MAX_RESULTS = 10;
 
@@ -25,6 +39,9 @@ const valueToAggregate = value =>
 
 export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalidChange }) => {
   const [inputValue, setInputValue] = useState('');
+  const [isDisableAll, setIsDisableAll] = useState(
+    value ? !value.some(option => !option.isDisable) : false,
+  );
   const value = aggregateToValue(aggregate);
   const { data: options, isFetching } = useSearchAggregationOptions();
 
@@ -62,6 +79,26 @@ export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalid
           onInvalidChange={onInvalidChange}
         />
       )}
+      header={
+        <ColHeader>
+          <Checkbox
+            checkedIcon={<LibraryAddCheckOutlinedIcon />}
+            checked={!isDisableAll}
+            onChange={() => {
+              const newSelectedAggregations = Array.from(value).map(v => {
+                const newV = { ...v };
+                newV.isDisable = !isDisableAll;
+                return newV;
+              });
+              onAggregateChange(valueToAggregate(newSelectedAggregations));
+              setIsDisableAll(!isDisableAll);
+            }}
+            disableRipple
+            size="small"
+          />
+          <div style={{ paddingLeft: '25px' }}>Selected Data</div>
+        </ColHeader>
+      }
     />
   );
 };
@@ -72,6 +109,7 @@ AggregationDataLibrary.propTypes = {
       PropTypes.shape({
         type: PropTypes.string.isRequired,
         config: PropTypes.object,
+        isDisable: PropTypes.bool,
       }),
     ),
     PropTypes.string,

@@ -118,12 +118,22 @@ const useConfigStore = () => {
 
 const VisualisationContext = createContext(initialConfigState.visualisation);
 
-// Filter those unchecked aggregation and transform steps
-const getVisualisation = visualisation => {
+// Remove IsDisable config in aggregation and transform steps
+const removeIsDisableConfig = visualisation => {
   const { data } = { ...visualisation };
   const { aggregate, transform } = { ...data };
   const newAggregate = aggregate.map(({ isDisable, ...restOfConfig }) => ({ ...restOfConfig }));
   const newTransform = transform.map(({ isDisable, ...restOfConfig }) => ({ ...restOfConfig }));
+  const newData = { ...data, aggregate: newAggregate, transform: newTransform };
+  return { ...visualisation, data: newData };
+};
+
+// Filter those unchecked aggregation or transform steps
+const filterDisableSteps = visualisation => {
+  const { data } = { ...visualisation };
+  const { aggregate, transform } = { ...data };
+  const newAggregate = aggregate.filter(({ isDisable }) => !isDisable);
+  const newTransform = transform.filter(({ isDisable }) => !isDisable);
   const newData = { ...data, aggregate: newAggregate, transform: newTransform };
   return { ...visualisation, data: newData };
 };
@@ -133,10 +143,15 @@ const VizBuilderConfigContext = createContext(initialConfigState);
 // eslint-disable-next-line react/prop-types
 const VizConfigProvider = ({ children }) => {
   const store = useConfigStore();
-  const { visualisation } = store[0];
+  const [{ visualisation }] = store;
 
   return (
-    <VisualisationContext.Provider value={getVisualisation(visualisation)}>
+    <VisualisationContext.Provider
+      value={{
+        visualisationForFetchingData: removeIsDisableConfig(filterDisableSteps(visualisation)),
+        visualisation: removeIsDisableConfig(visualisation),
+      }}
+    >
       <VizBuilderConfigContext.Provider value={store} displayName="VizBuilder">
         {children}
       </VizBuilderConfigContext.Provider>

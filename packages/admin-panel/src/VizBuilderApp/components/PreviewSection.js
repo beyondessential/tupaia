@@ -125,15 +125,7 @@ export const PreviewSection = () => {
   const { hasPresentationError, setPresentationError } = useVizConfigError();
 
   const [{ project, location, testData }, { setPresentation }] = useVizConfig();
-  const visualisation = useMemo(() => {
-    const visualisationWithIsDisableConfig = useVisualisation();
-    const { data } = { ...visualisationWithIsDisableConfig };
-    const { aggregate, transform } = { ...data };
-    const newAggregate = aggregate.filter(({ isDisable }) => !isDisable);
-    const newTransform = transform.filter(({ isDisable }) => !isDisable);
-    const newData = { ...data, aggregate: newAggregate, transform: newTransform };
-    return { ...visualisationWithIsDisableConfig, data: newData };
-  });
+  const { visualisationForFetchingData: visualisation } = useVisualisation();
 
   const [viewContent, setViewContent] = useState(null);
 
