@@ -63,11 +63,11 @@ const EDIT_FIELDS = [
     editConfig: {
       options: [
         {
-          label: 'Unverified',
+          label: 'No',
           value: 'new_user',
         },
         {
-          label: 'Verified',
+          label: 'Yes',
           value: 'verified',
         },
       ],
