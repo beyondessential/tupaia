@@ -85,7 +85,6 @@ export const SURVEY_RESPONSE_COLUMNS = [
     type: 'export',
     actionConfig: {
       exportEndpoint: 'surveyResponses',
-      fileName: 'Survey Response',
       extraQueryParameters: {
         timeZone: getBrowserTimeZone(),
       },
