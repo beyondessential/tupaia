@@ -82,7 +82,7 @@ exports.up = async function (db) {
 
     await db.runSql(
       `UPDATE data_element SET permission_groups = ARRAY(SELECT DISTINCT UNNEST(permission_groups || '{${permissionGroups
-        .map(group => group.id)
+        .map(group => group.name)
         .join(',')}}')) WHERE data_element.id = '${element.id}'`,
     );
   }
