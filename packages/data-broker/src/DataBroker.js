@@ -20,16 +20,13 @@ const getModelRegistry = () => {
   return modelRegistry;
 };
 
-const getPermissionIdListWithWildcard = async (accessPolicy, models) => {
-  // Get the users permission groups as a list of ids
+const getPermissionListWithWildcard = async accessPolicy => {
+  // Get the users permission groups as a list of codes
   if (!accessPolicy) {
     return ['*'];
   }
-  const userPermissionGroupNames = accessPolicy.getPermissionGroups();
-  const userPermissionGroups = await models.permissionGroup.find({
-    name: userPermissionGroupNames,
-  });
-  return ['*', ...userPermissionGroups.map(permission => permission.id)];
+  const userPermissionGroups = accessPolicy.getPermissionGroups();
+  return ['*', ...userPermissionGroups];
 };
 
 export class DataBroker {
@@ -57,10 +54,7 @@ export class DataBroker {
 
   async getUserPermissions() {
     if (!this.userPermissions) {
-      this.userPermissions = await getPermissionIdListWithWildcard(
-        this.context.accessPolicy,
-        this.models,
-      );
+      this.userPermissions = await getPermissionListWithWildcard(this.context.accessPolicy);
     }
     return this.userPermissions;
   }
@@ -91,7 +85,7 @@ export class DataBroker {
     const userPermissions = await this.getUserPermissions();
     const missingPermissions = [];
     for (const element of dataElements) {
-      if (element.permission_groups.every(id => userPermissions.includes(id))) {
+      if (element.permission_groups.every(code => userPermissions.includes(code))) {
         continue;
       }
       missingPermissions.push(element.code);

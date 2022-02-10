@@ -5,13 +5,9 @@
 
 import { hasBESAdminAccess } from '../../permissions';
 
-const getPermissionIdListWithWildcard = async (accessPolicy, models) => {
-  // Get the users permission groups as a list of ids
-  const userPermissionGroupNames = accessPolicy.getPermissionGroups();
-  const userPermissionGroups = await models.permissionGroup.find({
-    name: userPermissionGroupNames,
-  });
-  return ['*', ...userPermissionGroups.map(permission => permission.id)];
+const getPermissionListWithWildcard = async accessPolicy => {
+  const userPermissionGroups = accessPolicy.getPermissionGroups();
+  return ['*', ...userPermissionGroups];
 };
 
 export const assertDataElementGETPermissions = async (accessPolicy, models, dataElementId) => {
@@ -37,9 +33,9 @@ const assertDataElementPermissions = async (accessPolicy, models, dataElementId,
   if (!dataElement) {
     throw new Error(`No data element exists with id ${dataElementId}`);
   }
-  const userPermissions = await getPermissionIdListWithWildcard(accessPolicy, models);
+  const userPermissions = await getPermissionListWithWildcard(accessPolicy);
   // Test if user has access to any or all permission groups against the data element
-  if (dataElement.permission_groups[test](id => userPermissions.includes(id))) {
+  if (dataElement.permission_groups[test](code => userPermissions.includes(code))) {
     return true;
   }
   return false;
@@ -50,7 +46,7 @@ export const createDataElementDBFilter = async (accessPolicy, models, criteria) 
     return criteria;
   }
   const dbConditions = { ...criteria };
-  const userPermissions = await getPermissionIdListWithWildcard(accessPolicy, models);
+  const userPermissions = await getPermissionListWithWildcard(accessPolicy);
 
   // Permission groups on the data element overlap with our permission groups
   // Wildcard is added to our list so it will be included

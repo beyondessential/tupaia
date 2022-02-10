@@ -62,7 +62,7 @@ describe('Permissions checker for GETDataElements', async () => {
         service_type: 'tupaia',
       },
       {
-        permission_groups: [adminPermissionGroup.id, lesmisAdminPermissionGroup.id],
+        permission_groups: [adminPermissionGroup.name, lesmisAdminPermissionGroup.name],
       },
     );
     publicElement = await findOrCreateDummyRecord(
@@ -72,7 +72,7 @@ describe('Permissions checker for GETDataElements', async () => {
         service_type: 'tupaia',
       },
       {
-        permission_groups: [publicPermissionGroup.id],
+        permission_groups: [publicPermissionGroup.name],
       },
     );
     besAdminElement = await findOrCreateDummyRecord(
@@ -82,7 +82,7 @@ describe('Permissions checker for GETDataElements', async () => {
         service_type: 'tupaia',
       },
       {
-        permission_groups: [besPermissionGroup.id],
+        permission_groups: [besPermissionGroup.name],
       },
     );
   });

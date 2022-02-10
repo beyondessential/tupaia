@@ -57,7 +57,7 @@ describe('Permissions checker for EditDataGroups', async () => {
         service_type: 'tupaia',
       },
       {
-        permission_groups: [publicPermissionGroup.id],
+        permission_groups: [publicPermissionGroup.name],
       },
     );
     const adminElement = await findOrCreateDummyRecord(
@@ -67,7 +67,7 @@ describe('Permissions checker for EditDataGroups', async () => {
         service_type: 'tupaia',
       },
       {
-        permission_groups: [adminPermissionGroup.id, lesmisAdminPermissionGroup.id],
+        permission_groups: [adminPermissionGroup.name, lesmisAdminPermissionGroup.name],
       },
     );
 

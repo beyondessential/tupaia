@@ -20,6 +20,12 @@ exports.up = async function (db) {
   // Disable data_element trigger
   await db.runSql(`ALTER TABLE data_element DISABLE TRIGGER "trig$_data_element"`);
 
+  // Swap out permission_group ids for names
+  // This also drops the wildcard, so we need to recalc it at the end of this migration
+  await db.runSql(
+    `UPDATE data_element SET permission_groups = ARRAY(SELECT name FROM permission_group WHERE id = ANY(data_element.permission_groups))`,
+  );
+
   const { rows: dataElements } = await db.runSql(`SELECT * FROM data_element`);
 
   for (const element of dataElements) {
@@ -80,6 +86,15 @@ exports.up = async function (db) {
         .join(',')}}')) WHERE data_element.id = '${element.id}'`,
     );
   }
+
+  // Recalculate wildcards
+  // Any data element with the public permission group, or with no permission groups
+  await db.runSql(`
+    UPDATE data_element
+      SET permission_groups = array_append(permission_groups, '*')
+      WHERE 'Public' = ANY(permission_groups)
+      OR permission_groups = '{}'
+  `);
 
   // Enable data_element trigger
   await db.runSql(`ALTER TABLE data_element ENABLE TRIGGER "trig$_data_element"`);

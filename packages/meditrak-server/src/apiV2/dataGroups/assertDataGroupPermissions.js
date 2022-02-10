@@ -8,13 +8,9 @@ import { hasBESAdminAccess } from '../../permissions';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
-const getPermissionIdListWithWildcard = async (accessPolicy, models) => {
-  // Get the users permission groups as a list of ids
-  const userPermissionGroupNames = accessPolicy.getPermissionGroups();
-  const userPermissionGroups = await models.permissionGroup.find({
-    name: userPermissionGroupNames,
-  });
-  return ['*', ...userPermissionGroups.map(permission => permission.id)];
+const getPermissionListWithWildcard = async accessPolicy => {
+  const userPermissionGroups = accessPolicy.getPermissionGroups();
+  return ['*', ...userPermissionGroups];
 };
 
 export const assertDataGroupGETPermissions = async (accessPolicy, models, dataGroupId) => {
@@ -36,11 +32,11 @@ const assertDataGroupPermissions = async (accessPolicy, models, dataGroupId, tes
   if (!dataGroup) {
     throw new Error(`No data group exists with id ${dataGroupId}`);
   }
-  const userPermissions = await getPermissionIdListWithWildcard(accessPolicy, models);
+  const userPermissions = await getPermissionListWithWildcard(accessPolicy);
   const dataElements = await models.dataGroup.getDataElementsInDataGroup(dataGroup.code);
   // Loop through child data elements and check we have any/all of the permissions for it
   for (const element of dataElements) {
-    if (element.permission_groups[test](id => userPermissions.includes(id))) {
+    if (element.permission_groups[test](code => userPermissions.includes(code))) {
       continue;
     }
     return false;
@@ -53,7 +49,7 @@ export const createDataGroupDBFilter = async (accessPolicy, models, criteria) =>
     return criteria;
   }
   const dbConditions = { ...criteria };
-  const userPermissions = await getPermissionIdListWithWildcard(accessPolicy, models);
+  const userPermissions = await getPermissionListWithWildcard(accessPolicy);
 
   // Fetch data_groups where all child data_element.permission_groups have overlap with our permissions
   dbConditions[RAW] = {
