@@ -92,6 +92,14 @@ const DATA_ELEMENT_FIELDS = [
       ],
     },
   },
+  {
+    Header: 'Permission Groups',
+    source: 'permission_groups',
+    type: 'tooltip',
+    editConfig: {
+      type: 'jsonArray',
+    },
+  },
 ];
 const DATA_GROUP_FIELDS = [
   ...DATA_SOURCE_FIELDS,
