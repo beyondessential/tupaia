@@ -3,24 +3,29 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export class SqlQuery {
-  static array = arr => `(${arr.map(() => '?').join(',')})`;
+import { DataLakeDatabase } from './DataLakeDatabase';
 
-  static values = rows =>
+export class SqlQuery {
+  private readonly query: string;
+  private readonly parameters: string[];
+
+  static array = (arr: any[]) => `(${arr.map(() => '?').join(',')})`;
+
+  static values = (rows: any[][]) =>
     `VALUES (${rows.map(values => values.map(() => `?`).join(',')).join('), (')})`;
 
-  static innerJoin = (baseTable, columnName, values) => `
+  static innerJoin = (baseTable: string, columnName: string, values: any[]) => `
     INNER JOIN (
       ${SqlQuery.values(values.map(c => [c]))}
     ) ${columnName}s(code) ON ${columnName}s.code = ${baseTable}.${columnName}
   `;
 
-  constructor(baseQuery, baseParameters = []) {
+  constructor(baseQuery: string, baseParameters: string[] = []) {
     this.query = baseQuery;
     this.parameters = baseParameters;
   }
 
-  async executeOnDatabase(database) {
+  async executeOnDatabase(database: DataLakeDatabase) {
     return database.executeSql(this.query, this.parameters);
   }
 

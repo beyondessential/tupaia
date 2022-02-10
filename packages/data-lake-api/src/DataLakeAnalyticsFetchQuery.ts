@@ -3,10 +3,24 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { DataLakeDatabase } from './DataLakeDatabase';
 import { SqlQuery } from './SqlQuery';
 
+export type AnalyticsFetchOptions = {
+  dataElementCodes: string[];
+  organisationUnitCodes: string[];
+  startDate?: string;
+  endDate?: string;
+};
+
 export class DataLakeAnalyticsFetchQuery {
-  constructor(database, options) {
+  private readonly database: DataLakeDatabase;
+  private readonly dataElementCodes: string[];
+  private readonly entityCodes: string[];
+  private readonly startDate?: string;
+  private readonly endDate?: string;
+
+  constructor(database: DataLakeDatabase, options: AnalyticsFetchOptions) {
     this.database = database;
 
     const { dataElementCodes, organisationUnitCodes, startDate, endDate } = options;

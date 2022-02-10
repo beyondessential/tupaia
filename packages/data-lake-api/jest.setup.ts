@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { clearTestData, getTestDatabase } from '@tupaia/database';
+import { getTestDatabase, clearTestData } from '@tupaia/database';
 
 afterAll(async () => {
   const database = getTestDatabase();

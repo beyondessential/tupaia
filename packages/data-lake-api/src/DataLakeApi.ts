@@ -7,8 +7,8 @@ import groupBy from 'lodash.groupby';
 
 import moment from 'moment';
 import { getSortByKey } from '@tupaia/utils';
-import { DataLakeAnalyticsFetchQuery } from './DataLakeAnalyticsFetchQuery';
-import { DataLakeEventsFetchQuery } from './DataLakeEventsFetchQuery';
+import { DataLakeAnalyticsFetchQuery, AnalyticsFetchOptions } from './DataLakeAnalyticsFetchQuery';
+import { DataLakeEventsFetchQuery, EventsFetchOptions } from './DataLakeEventsFetchQuery';
 import { validateEventOptions, validateAnalyticsOptions } from './validation';
 import { sanitizeAnalyticsTableValue } from './sanitizeAnalyticsTableValue';
 import { sanitiseFetchDataOptions } from './sanitiseFetchDataOptions';
@@ -25,7 +25,7 @@ const buildEventDataValues = resultsForEvent =>
     {},
   );
 
-let dataLakeDatabase;
+let dataLakeDatabase: DataLakeDatabase;
 
 const getDatabase = () => {
   if (!dataLakeDatabase) {
@@ -35,9 +35,9 @@ const getDatabase = () => {
 };
 
 export class DataLakeApi {
-  async fetchEvents(optionsInput) {
+  async fetchEvents(optionsInput: Record<string, any>) {
     await validateEventOptions(optionsInput);
-    const options = sanitiseFetchDataOptions(optionsInput);
+    const options = sanitiseFetchDataOptions(optionsInput as EventsFetchOptions);
     const results = await new DataLakeEventsFetchQuery(getDatabase(), options).fetch();
     const resultsByEventId = groupBy(results, 'eventId');
     const hasElements = options.dataElementCodes.length > 0;
@@ -55,9 +55,9 @@ export class DataLakeApi {
       .sort(getSortByKey('eventDate'));
   }
 
-  async fetchAnalytics(optionsInput) {
+  async fetchAnalytics(optionsInput: Record<string, any>) {
     await validateAnalyticsOptions(optionsInput);
-    const options = sanitiseFetchDataOptions(optionsInput);
+    const options = sanitiseFetchDataOptions(optionsInput as AnalyticsFetchOptions);
     const { analytics, numAggregationsProcessed } = await new DataLakeAnalyticsFetchQuery(
       getDatabase(),
       options,

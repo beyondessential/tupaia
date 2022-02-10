@@ -72,10 +72,10 @@ export class TupaiaDatabase {
     const connectToDatabase = async () => {
       this.connection =
         transactingConnection ||
-        (await knex({
+        knex({
           client: 'pg',
           connection: getConnectionConfig(),
-        }));
+        });
       return true;
     };
     this.connectionPromise = connectToDatabase();

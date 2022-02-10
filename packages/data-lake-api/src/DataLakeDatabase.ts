@@ -4,7 +4,7 @@
  */
 
 import { types as pgTypes } from 'pg';
-import knex from 'knex';
+import knex, { Knex } from 'knex';
 
 import { getConnectionConfig } from './getConnectionConfig';
 
@@ -13,15 +13,13 @@ import { getConnectionConfig } from './getConnectionConfig';
 pgTypes.setTypeParser(pgTypes.builtins.TIMESTAMP, val => val);
 
 export class DataLakeDatabase {
+  private connection: Knex;
+
   constructor() {
-    const connectToDatabase = async () => {
-      this.connection = await knex({
-        client: 'pg',
-        connection: getConnectionConfig(),
-      });
-      return true;
-    };
-    this.connectionPromise = connectToDatabase();
+    this.connection = knex({
+      client: 'pg',
+      connection: getConnectionConfig(),
+    });
   }
 
   async closeConnections() {
@@ -33,7 +31,7 @@ export class DataLakeDatabase {
    *
    * Use only for situations in which Knex is not able to assemble a query.
    */
-  async executeSql(sqlString, parametersToBind) {
+  async executeSql(sqlString: string, parametersToBind: string[]) {
     const result = await this.connection.raw(sqlString, parametersToBind);
     return result.rows;
   }

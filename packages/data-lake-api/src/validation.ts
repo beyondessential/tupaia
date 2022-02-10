@@ -29,7 +29,7 @@ const EVENT_OPTIONS = {
   eventId: [constructIsEmptyOr(takesIdForm)],
 };
 
-export const validateEventOptions = async options => {
+export const validateEventOptions = async (options: Record<string, any>) => {
   if (!options) {
     throw new Error('Please provide options when fetching events');
   }
@@ -37,7 +37,7 @@ export const validateEventOptions = async options => {
   return validator.validate(options);
 };
 
-export const validateAnalyticsOptions = async options => {
+export const validateAnalyticsOptions = async (options: Record<string, any>) => {
   if (!options) {
     throw new Error('Please provide options when fetching analytics');
   }
