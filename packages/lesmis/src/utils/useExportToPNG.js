@@ -22,7 +22,7 @@ export const useExportToPNG = filename => {
   const exportRef = useRef(null);
   const [isExporting, setIsExporting] = useState(false);
   const [isExportLoading, setIsExportLoading] = useState(false);
-  const sanitisedFileName = toFilename(filename);
+  const sanitisedFileName = toFilename(filename, true);
 
   const exportToPNG = async () => {
     const node = exportRef.current;
