@@ -103,7 +103,7 @@ export async function importSurveyResponses(req, res) {
       throw new UploadError();
     }
     const { models, query, userId } = req;
-    const surveyNames = getArrayQueryParameter(query.surveyNames);
+    const surveyCodes = getArrayQueryParameter(query.surveyCodes);
     const { timeZone } = query;
     if (!timeZone) {
       throw new Error(`Timezone is required`);
@@ -111,17 +111,17 @@ export async function importSurveyResponses(req, res) {
     const updatePersistor = new SurveyResponseUpdatePersistor(models);
     const workbook = xlsx.readFile(req.file.path);
     // Go through each sheet in the workbook and process the updated survey responses
-    const entitiesBySurveyName = await getEntitiesBySurveyName(
+    const entitiesBySurveyCode = await getEntitiesBySurveyCode(
       models,
       workbook.Sheets,
-      surveyNames,
+      surveyCodes,
     );
-    const entityCodes = Object.values(entitiesBySurveyName).flat();
+    const entityCodes = Object.values(entitiesBySurveyCode).flat();
     const entities = await models.entity.find({ code: entityCodes });
     const entityCodeToId = reduceToDictionary(entities, 'code', 'id');
 
     const importSurveyResponsePermissionsChecker = async accessPolicy => {
-      await assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyName);
+      await assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyCode);
     };
 
     await req.assertPermissions(
@@ -161,7 +161,7 @@ export async function importSurveyResponses(req, res) {
         // For import modes where an existing response id is not specified,
         // we need to detect a survey and use it to look for existing responses
         if (!survey && IMPORT_BEHAVIOURS[importMode].shouldDetectSurvey) {
-          survey = await findTabSurvey(models, tabName, surveyNames);
+          survey = await findTabSurvey(models, tabName, surveyCodes);
         }
 
         if (IMPORT_BEHAVIOURS[importMode].shouldGenerateIds) {
@@ -338,17 +338,17 @@ export async function importSurveyResponses(req, res) {
   }
 }
 
-const findTabSurvey = async (models, tabName, surveyNames) => {
-  if (!surveyNames) {
+const findTabSurvey = async (models, tabName, surveyCodes) => {
+  if (!surveyCodes) {
     throw new Error(
-      'When importing new survey responses, you must specify the names of the surveys they are for',
+      'When importing new survey responses, you must specify the codes of the surveys they are for',
     );
   }
 
-  const surveyName = extractTabNameFromQuery(tabName, surveyNames);
-  const survey = await models.survey.findOne({ name: surveyName });
+  const surveyCode = extractTabNameFromQuery(tabName, surveyCodes);
+  const survey = await models.survey.findOne({ code: surveyCode });
   if (!survey) {
-    throw new Error(`No survey named ${surveyName}`);
+    throw new Error(`No survey found with code ${surveyCode}`);
   }
 
   return survey;
@@ -427,20 +427,20 @@ const constructNewSurveyResponseDetails = async (models, sheet, columnIndex, con
 };
 
 /**
- * Return all the entitites of the submitted survey responses, grouped by the survey name (sheet name) that the survey responses belong to
+ * Return all the entitites of the submitted survey responses, grouped by the survey code (sheet name) that the survey responses belong to
  * @param {*} models
  * @param {*} sheets
- * @param {*} surveyNames
+ * @param {*} surveyCodes
  */
-const getEntitiesBySurveyName = async (models, sheets, surveyNames) => {
-  const entitiesGroupedBySurveyName = {};
+const getEntitiesBySurveyCode = async (models, sheets, surveyCodes) => {
+  const entitiesGroupedBySurveyCode = {};
 
   for (const surveySheet of Object.entries(sheets)) {
     const [tabName, sheet] = surveySheet;
     const { maxColumnIndex } = getMaxRowColumnIndex(sheet);
-    const surveyName = surveyNames
-      ? extractTabNameFromQuery(tabName, surveyNames) // when users submit new survey responses
-      : (await getSurveyFromSheet(models, sheet)).name; // when users update existing survey responses
+    const surveyCode = surveyCodes
+      ? extractTabNameFromQuery(tabName, surveyCodes) // when users submit new survey responses
+      : (await getSurveyFromSheet(models, sheet)).code; // when users update existing survey responses
 
     for (let columnIndex = 0; columnIndex <= maxColumnIndex; columnIndex++) {
       const columnHeader = getColumnHeader(sheet, columnIndex);
@@ -448,18 +448,18 @@ const getEntitiesBySurveyName = async (models, sheets, surveyNames) => {
       if (!isInfoColumn(columnIndex)) {
         const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
 
-        if (!entitiesGroupedBySurveyName[surveyName]) {
-          entitiesGroupedBySurveyName[surveyName] = [];
+        if (!entitiesGroupedBySurveyCode[surveyCode]) {
+          entitiesGroupedBySurveyCode[surveyCode] = [];
         }
 
-        entitiesGroupedBySurveyName[surveyName].push(entityCode);
+        entitiesGroupedBySurveyCode[surveyCode].push(entityCode);
       } else if (columnHeader !== INFO_COLUMN_HEADERS[columnIndex]) {
         throw new ImportValidationError(`Missing ${INFO_COLUMN_HEADERS[columnIndex]} column`);
       }
     }
   }
 
-  return entitiesGroupedBySurveyName;
+  return entitiesGroupedBySurveyCode;
 };
 
 const isInfoColumn = columnIndex => columnIndex < INFO_COLUMN_HEADERS.length;
