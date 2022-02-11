@@ -51,6 +51,7 @@ export class EventsFetchQuery {
   }
 
   getInnerJoinsAndParams() {
+    // We use INNER JOINs here as it's more performant than a large WHERE IN clause (https://dba.stackexchange.com/questions/91247/optimizing-a-postgres-query-with-a-large-in)
     let params = this.entityCodes;
     const joins = [SqlQuery.innerJoin('analytics', 'entity_code', this.entityCodes)];
     if (this.hasDataElements) {

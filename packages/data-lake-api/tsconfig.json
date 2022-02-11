@@ -3,6 +3,5 @@
   "compilerOptions": {
     "outDir": "dist"
   },
-  "include": ["src/**/*.js"],
   "exclude": ["src/__tests__"]
 }

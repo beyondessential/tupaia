@@ -216,6 +216,7 @@ export class AnalyticsFetchQuery {
     );
 
     const { clause: whereClause, params: whereParams } = this.getBaseWhereClauseAndParams();
+    // We use INNER JOINs here as it's more performant than a large WHERE IN clause (https://dba.stackexchange.com/questions/91247/optimizing-a-postgres-query-with-a-large-in)
     const baseAnalytics = `(SELECT *, day_period as period from analytics
       ${SqlQuery.innerJoin('analytics', 'entity_code', this.entityCodes)}
       ${SqlQuery.innerJoin('analytics', 'data_element_code', this.dataElementCodes)}
