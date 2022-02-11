@@ -100,7 +100,7 @@ export const testOutdatedStatusUpdate = () => {
     const response = await importFile(
       app,
       'outdatedStatus.xlsx',
-      Object.values(SURVEYS).map(s => s.name),
+      Object.values(SURVEYS).map(s => s.code),
     );
 
     expect(response.statusCode).to.equal(200, response.error.text);

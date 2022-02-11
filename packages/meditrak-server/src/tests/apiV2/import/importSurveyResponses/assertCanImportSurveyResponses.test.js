@@ -93,13 +93,13 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
 
   it('Sufficient permissions: Should allow importing survey responses when users have permission group access to the countries of the survey (single survey)', async () => {
     // Has Admin access to KI.
-    const entitiesBySurveyName = {
-      [SURVEY_NAME_1]: ['KI_1_test', 'KI_2_test', 'KI_3_test'],
+    const entitiesBySurveyCode = {
+      [SURVEY_CODE_1]: ['KI_1_test', 'KI_2_test', 'KI_3_test'],
     };
     const result = await assertCanImportSurveyResponses(
       defaultAccessPolicy,
       models,
-      entitiesBySurveyName,
+      entitiesBySurveyCode,
     );
 
     expect(result).to.true;
@@ -107,14 +107,14 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
 
   it('Sufficient permissions: Should allow importing survey responses when users have permission group access to the countries of the survey (multiple surveys)', async () => {
     // Has Admin access to KI. Has Donor Access to VU
-    const entitiesBySurveyName = {
-      [SURVEY_NAME_1]: ['KI_1_test', 'KI_2_test', 'KI_3_test'],
-      [SURVEY_NAME_2]: ['VU_1_test', 'VU_2_test', 'VU_3_test'],
+    const entitiesBySurveyCode = {
+      [SURVEY_CODE_1]: ['KI_1_test', 'KI_2_test', 'KI_3_test'],
+      [SURVEY_CODE_2]: ['VU_1_test', 'VU_2_test', 'VU_3_test'],
     };
     const result = await assertCanImportSurveyResponses(
       defaultAccessPolicy,
       models,
-      entitiesBySurveyName,
+      entitiesBySurveyCode,
     );
 
     expect(result).to.true;
@@ -122,11 +122,11 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
 
   it('Insufficient permissions: Should not allow importing survey responses against entities that do not belong to any survey countries', async () => {
     // No Admin access to any VU entities
-    const entitiesBySurveyName = {
-      [SURVEY_NAME_2]: ['LA_1_test', 'VU_2_test', 'VU_3_test'],
+    const entitiesBySurveyCode = {
+      [SURVEY_CODE_2]: ['LA_1_test', 'VU_2_test', 'VU_3_test'],
     };
 
-    expect(() => assertCanImportSurveyResponses(defaultAccessPolicy, models, entitiesBySurveyName))
+    expect(() => assertCanImportSurveyResponses(defaultAccessPolicy, models, entitiesBySurveyCode))
       .to.throw;
   });
 
@@ -141,11 +141,11 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
     const accessPolicy = new AccessPolicy(ACCESS_POLICY);
 
     // No Admin access to any VU entities
-    const entitiesBySurveyName = {
-      [SURVEY_NAME_2]: ['VU_1_test', 'VU_2_test', 'VU_3_test'],
+    const entitiesBySurveyCode = {
+      [SURVEY_CODE_2]: ['VU_1_test', 'VU_2_test', 'VU_3_test'],
     };
 
-    expect(() => assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyName)).to
+    expect(() => assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyCode)).to
       .throw;
   });
 
@@ -160,12 +160,12 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
     const accessPolicy = new AccessPolicy(ACCESS_POLICY);
 
     // No Admin/Donor access to any SB entities
-    const entitiesBySurveyName = {
-      [SURVEY_NAME_1]: ['KI_1_test', 'KI_2_test', 'KI_3_test'],
-      [SURVEY_NAME_2]: ['VU_1_test', 'VU_2_test', 'VU_3_test'],
+    const entitiesBySurveyCode = {
+      [SURVEY_CODE_1]: ['KI_1_test', 'KI_2_test', 'KI_3_test'],
+      [SURVEY_CODE_2]: ['VU_1_test', 'VU_2_test', 'VU_3_test'],
     };
 
-    expect(() => assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyName)).to
+    expect(() => assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyCode)).to
       .throw;
   });
 });

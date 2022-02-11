@@ -8,7 +8,7 @@ import { testFunctionality } from './testFunctionality';
 import { testOutdatedStatusUpdate } from './testOutdatedStatusUpdate';
 import { testValidation } from './testValidation';
 
-describe('importSurveyResponses(): POST import/surveyResponses', () => {
+describe.only('importSurveyResponses(): POST import/surveyResponses', () => {
   describe('Test permissions when importing survey responses', testPermissions);
 
   describe('Test import validation', testValidation);
