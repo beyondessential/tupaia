@@ -35,7 +35,10 @@ const assertDataElementPermissions = async (accessPolicy, models, dataElementId,
   }
   const userPermissions = await getPermissionListWithWildcard(accessPolicy);
   // Test if user has access to any or all permission groups against the data element
-  if (dataElement.permission_groups[test](code => userPermissions.includes(code))) {
+  if (
+    dataElement.permission_groups.length <= 0 ||
+    dataElement.permission_groups[test](code => userPermissions.includes(code))
+  ) {
     return true;
   }
   return false;

@@ -85,7 +85,10 @@ export class DataBroker {
     const userPermissions = await this.getUserPermissions();
     const missingPermissions = [];
     for (const element of dataElements) {
-      if (element.permission_groups.some(code => userPermissions.includes(code))) {
+      if (
+        element.permission_groups.length <= 0 ||
+        element.permission_groups.some(code => userPermissions.includes(code))
+      ) {
         continue;
       }
       missingPermissions.push(element.code);

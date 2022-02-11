@@ -36,7 +36,10 @@ const assertDataGroupPermissions = async (accessPolicy, models, dataGroupId, tes
   const dataElements = await models.dataGroup.getDataElementsInDataGroup(dataGroup.code);
   // Loop through child data elements and check we have any/all of the permissions for it
   for (const element of dataElements) {
-    if (element.permission_groups[test](code => userPermissions.includes(code))) {
+    if (
+      element.permission_groups.length <= 0 ||
+      element.permission_groups[test](code => userPermissions.includes(code))
+    ) {
       continue;
     }
     return false;
