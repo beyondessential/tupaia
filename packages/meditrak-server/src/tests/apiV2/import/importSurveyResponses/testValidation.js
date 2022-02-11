@@ -8,9 +8,14 @@ import {
   findOrCreateDummyCountryEntity,
   findOrCreateRecords,
 } from '@tupaia/database';
+import { expect } from 'chai';
 import { expectError as baseExpectError, TestableApp } from '../../../testUtilities';
 import { importFile } from './helpers';
-import { VALIDATION_SURVEY } from './importSurveyResponses.fixtures';
+import {
+  createSurveyResponses,
+  VALIDATION_SURVEY,
+  YEARLY_SURVEY,
+} from './importSurveyResponses.fixtures';
 
 export const testValidation = async () => {
   const app = new TestableApp();
@@ -32,8 +37,13 @@ export const testValidation = async () => {
     app.revokeAccess();
   });
 
-  describe('survey names are specified', () => {
-    const testData = [
+  describe('validate contents', () => {
+    it('passes valid import', async () => {
+      const response = await importFile(app, `validation/valid.xlsx`, ['Test_Import_Validation']);
+      expect(response.status).to.equal(200);
+    });
+
+    const invalidTestData = [
       ['duplicate question id', 'duplicateQuestionId.xlsx', /not unique/],
       ['invalid binary answer', 'invalidBinaryAnswer.xlsx', /not an accepted value/],
       [
@@ -55,7 +65,7 @@ export const testValidation = async () => {
       ],
     ];
 
-    testData.forEach(([description, file, expectedError]) => {
+    invalidTestData.forEach(([description, file, expectedError]) => {
       it(description, async () => {
         const response = await importFile(app, `validation/${file}`, ['Test_Import_Validation']);
         expectError(response, expectedError);
@@ -63,25 +73,12 @@ export const testValidation = async () => {
     });
   });
 
-  describe('survey names are not specified', () => {
-    const testData = [
-      [
-        'header row is missing',
-        'missingHeaderRow.xlsx',
-        /Each tab of the import file must have at least one previously submitted survey as the first entry/,
-      ],
-      [
-        'a response id is missing',
-        'missingResponseId.xlsx',
-        /Each tab of the import file must have at least one previously submitted survey as the first entry/,
-      ],
-    ];
-
-    testData.forEach(([description, file, expectedError]) => {
-      it(description, async () => {
-        const response = await importFile(app, `validation/${file}`);
-        expectError(response, expectedError);
-      });
+  describe('validate tab names', () => {
+    it('requires tab names to match query', async () => {
+      const response = await importFile(app, `validation/valid.xlsx`, [
+        'A_Survey_Code_That_Is_Not_Specified_In_Spreadsheet_Tabs',
+      ]);
+      expectError(response, /specified in import but there is no tab named/);
     });
   });
 };
