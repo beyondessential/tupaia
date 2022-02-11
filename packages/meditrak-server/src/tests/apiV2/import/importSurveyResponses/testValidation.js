@@ -57,7 +57,7 @@ export const testValidation = async () => {
 
     testData.forEach(([description, file, expectedError]) => {
       it(description, async () => {
-        const response = await importFile(app, `validation/${file}`, ['Test Import Validation']);
+        const response = await importFile(app, `validation/${file}`, ['Test_Import_Validation']);
         expectError(response, expectedError);
       });
     });

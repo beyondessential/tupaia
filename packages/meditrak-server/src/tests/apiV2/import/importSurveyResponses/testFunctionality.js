@@ -139,8 +139,8 @@ export const testFunctionality = async () => {
       );
       await importValidFile(app, 'functionality/nonPeriodicBaseline.xlsx');
       await importValidFile(app, 'functionality/nonPeriodicUpdates.xlsx', [
-        'Test Clinic Data',
-        'Test Facility Fundamentals',
+        'Test_Clinic_Data',
+        'Test_Facility_Fundamentals',
       ]);
     });
 
@@ -211,8 +211,8 @@ export const testFunctionality = async () => {
       );
       await importValidFile(app, 'functionality/periodicBaseline.xlsx');
       await importValidFile(app, 'functionality/periodicUpdates.xlsx', [
-        'Test Yearly',
-        'Test Weekly',
+        'Test_Yearly',
+        'Test_Weekly',
       ]);
     });
 
