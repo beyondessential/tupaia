@@ -34,7 +34,8 @@ loop = asyncio.get_event_loop()
 
 def refresh_cloned_databases(event):
     filters = [
-        { 'Key': 'ClonedFrom' }
+        { 'Key': 'ClonedFrom' },
+        { 'Key': 'DeploymentType', 'Values': ['tupaia'] }
     ]
     if 'ClonedFrom' in event:
       print('Refreshing databases cloned from ' + event['ClonedFrom'])
