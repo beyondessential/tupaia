@@ -12,6 +12,8 @@
 # }
 
 from helpers.creation import create_db_instance_from_snapshot
+from helpers.rds import set_db_instance_master_password
+from helpers.secrets import get_db_master_password
 
 def spin_up_tupaia_database(event):
     # validate input config
@@ -25,9 +27,6 @@ def spin_up_tupaia_database(event):
     clone_db_from = event.get('CloneDbFrom', 'production') # Use volume snapshot tagged with deployment name
 
     # create db instance from a snapshot
-    # do this after the server has started because it will take a while to populate the db from the snapshot, 
-    # so we might as well be cloning the db instance at the same time as the app-server's build scripts are running, 
-    # so long is it is available before the server first tries to connect
     create_db_instance_from_snapshot(
         deployment_name,
         'tupaia',
@@ -35,3 +34,6 @@ def spin_up_tupaia_database(event):
         db_instance_type,
         security_group_code
     )
+
+    # set master password
+    set_db_instance_master_password('tupaia-' + deployment_name, get_db_master_password())
