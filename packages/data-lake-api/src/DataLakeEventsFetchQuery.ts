@@ -4,9 +4,29 @@
  */
 
 import { SqlQuery } from './SqlQuery';
+import { DataLakeDatabase } from './DataLakeDatabase';
 
-export class EventsFetchQuery {
-  constructor(database, options) {
+export type EventsFetchOptions = {
+  organisationUnitCodes: string[];
+  startDate?: string;
+  endDate?: string;
+  eventId?: string;
+  dataGroupCode: string;
+  dataElementCodes?: string[];
+};
+
+export class DataLakeEventsFetchQuery {
+  private readonly database: DataLakeDatabase;
+
+  private readonly entityCodes: string[];
+  private readonly startDate?: string;
+  private readonly endDate?: string;
+  private readonly eventId?: string;
+  private readonly dataGroupCode: string;
+  private readonly dataElementCodes?: string[];
+  private readonly hasDataElements: boolean;
+
+  constructor(database: DataLakeDatabase, options: EventsFetchOptions) {
     this.database = database;
 
     const {
@@ -39,10 +59,10 @@ export class EventsFetchQuery {
     const aliasedColumns = [
       'date',
       'entity_code AS "entityCode"',
-      'entity_name AS "entityName"',
+      `'' AS "entityName"`,
       'event_id as "eventId"',
+      `'Number' as "type"`,
       'value',
-      'type',
     ];
     if (this.hasDataElements) {
       aliasedColumns.push('data_element_code AS "dataElementCode"');
@@ -83,7 +103,7 @@ export class EventsFetchQuery {
     }
 
     if (conditions.length === 0) {
-      return '';
+      return { clause: '', params: [] };
     }
 
     return { clause: `WHERE ${conditions.join(' AND ')}`, params };
