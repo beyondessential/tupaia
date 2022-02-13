@@ -4,7 +4,7 @@
  */
 
 import { types as pgTypes } from 'pg';
-import knex, { Knex } from 'knex';
+import knex from 'knex';
 
 import { getConnectionConfig } from './getConnectionConfig';
 
@@ -13,7 +13,7 @@ import { getConnectionConfig } from './getConnectionConfig';
 pgTypes.setTypeParser(pgTypes.builtins.TIMESTAMP, val => val);
 
 export class DataLakeDatabase {
-  private connection: Knex;
+  private connection: any;
 
   constructor() {
     this.connection = knex({
