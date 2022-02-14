@@ -37,7 +37,7 @@ export const fetchAnalytics = async (
     Object.entries(aggregationJsonToElements).map(async ([aggregationJson, elements]) => {
       const aggregations = JSON.parse(aggregationJson);
       const { results } = await aggregator.fetchAnalytics(elements, fetchOptions, { aggregations });
-      analytics = [...analytics, ...results];
+      analytics = analytics.concat(results);
     }),
   );
 
