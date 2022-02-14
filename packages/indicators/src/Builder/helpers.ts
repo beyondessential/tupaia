@@ -32,12 +32,12 @@ export const fetchAnalytics = async (
   // Group data elements per aggregationList to minimise aggregator calls
   const aggregationJsonToElements = groupKeysByValueJson(aggregationLisByElement);
 
-  const analytics: Analytic[] = [];
+  let analytics: Analytic[] = [];
   await Promise.all(
     Object.entries(aggregationJsonToElements).map(async ([aggregationJson, elements]) => {
       const aggregations = JSON.parse(aggregationJson);
       const { results } = await aggregator.fetchAnalytics(elements, fetchOptions, { aggregations });
-      analytics.push(...results);
+      analytics = [...analytics, ...results];
     }),
   );
 
