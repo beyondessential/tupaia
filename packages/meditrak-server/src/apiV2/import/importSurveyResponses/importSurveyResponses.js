@@ -108,19 +108,22 @@ export async function importSurveyResponses(req, res) {
 
     const workbook = xlsx.readFile(req.file.path);
     const tabNames = Object.keys(workbook.Sheets);
-    const surveyCodes = getArrayQueryParameter(query.surveyCodes);
-    for (const surveyCode of surveyCodes) {
-      if (!tabNames.includes(surveyCode)) {
-        throw new ImportValidationError(
-          `Survey with code ${surveyCode} specified in import but there is no tab named ${surveyCode} in the spreadsheet.`,
-        );
+    const querySurveyCodes = getArrayQueryParameter(query.surveyCodes);
+
+    if (querySurveyCodes) {
+      for (const querySurveyCode of querySurveyCodes) {
+        if (!tabNames.includes(querySurveyCode)) {
+          throw new ImportValidationError(
+            `Survey with code ${querySurveyCode} specified in import but there is no tab named ${querySurveyCode} in the spreadsheet.`,
+          );
+        }
       }
     }
 
     const entitiesBySurveyCode = await getEntitiesBySurveyCode(
       models,
       workbook.Sheets,
-      surveyCodes,
+      querySurveyCodes,
     );
     const entityCodes = Object.values(entitiesBySurveyCode).flat();
     const entities = await models.entity.find({ code: entityCodes });
@@ -134,13 +137,11 @@ export async function importSurveyResponses(req, res) {
       assertAnyPermissions([assertBESAdminAccess, importSurveyResponsePermissionsChecker]),
     );
 
-    const surveys = await models.survey.find({ code: surveyCodes });
-
     for (const surveySheets of Object.entries(workbook.Sheets)) {
       const [tabName, sheet] = surveySheets;
       const deletedResponseIds = new Set();
       const questionIds = [];
-      const survey = surveys.find(survey => survey.code === tabName);
+      const survey = await models.survey.findOne({ code: tabName });
 
       // extract response ids and set up update batcher
       const { maxColumnIndex, maxRowIndex } = getMaxRowColumnIndex(sheet);
