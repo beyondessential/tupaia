@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@tupaia/data-api": "1.0.0",
+    "@tupaia/data-lake-api": "1.0.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/dhis-api": "1.0.0",
     "@tupaia/indicators": "1.0.0",
