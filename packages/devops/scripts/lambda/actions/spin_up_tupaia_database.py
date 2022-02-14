@@ -22,7 +22,7 @@ def spin_up_tupaia_database(event):
     deployment_name = event['DeploymentName']
 
     # get manual input parameters, or default for any not provided
-    db_instance_type = event.get('DbInstanceType', 'db.t4g.medium')
+    db_instance_type = event.get('DbInstanceType', 'db.t4g.large')
     security_group_code = event.get('SecurityGroupCode', 'tupaia-dev-sg') # Use security group tagged with code
     clone_db_from = event.get('CloneDbFrom', 'production') # Use volume snapshot tagged with deployment name
 
