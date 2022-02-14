@@ -24,6 +24,17 @@ DEPLOYMENT_NAME=$(${DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh DeploymentN
 BRANCH=$(${DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh Branch)
 echo "Starting up ${DEPLOYMENT_NAME} (${BRANCH})"
 
+# Set bash prompt to have deployment name in it
+if [[ $DEPLOYMENT_NAME == "production" ]]; then
+  BASH_PROMPT_NAME="PROD"
+  BASH_PROMPT_COLOR="31"
+else
+  BASH_PROMPT_NAME="${DEPLOYMENT_NAME}"
+  BASH_PROMPT_COLOR="36"
+fi
+BASH_PROMPT="\\[\\e]0;\\u@${BASH_PROMPT_NAME}: \\w\\a\\]\\\${debian_chroot:+(\\\$debian_chroot)}\\[\\033[01;32m\\]\\u@\\033[01;${BASH_PROMPT_COLOR}m\\]${BASH_PROMPT_NAME}\\[\\033[00m\\]:\\[\\033[01;34m\\]\\w\\[\\033[00m\\]\\$ "
+echo "PS1=\"${BASH_PROMPT}\"" >> $HOME_DIR/.bashrc
+
 # Create a directory for logs to go
 mkdir -m 777 -p $LOGS_DIR
 
@@ -35,7 +46,8 @@ mkdir -m 777 -p $LOGS_DIR
 
 # Add preaggregation cron job if production
 if [[ $DEPLOYMENT_NAME == "production" ]]; then
-  echo "10 13 * * * PATH=$PATH /home/ubuntu/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do printf '\%s \%s\\n' \"\$(date)\" \"\$line\"; done > /home/ubuntu/logs/preaggregation.txt" > tmp.cron
+  \. "$HOME_DIR/.nvm/nvm.sh" # Load nvm so node is available on $PATH
+  sudo -u ubuntu echo "10 13 * * * PATH=$PATH $HOME_DIR/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do printf '\%s \%s\\n' \"\$(date)\" \"\$line\"; done > $LOGS_DIR/preaggregation.txt" > tmp.cron
   sudo -u ubuntu crontab -l >> tmp.cron || echo "" >> tmp.cron
   sudo -u ubuntu crontab tmp.cron
   rm tmp.cron

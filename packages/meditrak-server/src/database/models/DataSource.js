@@ -8,7 +8,7 @@ import {
   DataSourceModel as CommonDataSourceModel,
 } from '@tupaia/database';
 
-export const DATA_SOURCE_SERVICE_TYPES = ['dhis', 'tupaia'];
+export const DATA_SOURCE_SERVICE_TYPES = ['dhis', 'tupaia', 'data-lake'];
 
 const getSurveyDateCode = surveyCode => `${surveyCode}SurveyDate`;
 
