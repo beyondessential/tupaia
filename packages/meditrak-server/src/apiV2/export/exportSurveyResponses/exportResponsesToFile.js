@@ -80,8 +80,8 @@ export async function exportResponsesToFile(
   let currentWorkbook = getBlankWorkbook();
   const firstSurveyName = surveys[0].name;
 
-  const addDataToSheet = (surveyName, exportData) => {
-    const sheetName = surveyName.substring(0, 31); // stay within excel limit on sheet name length
+  const addDataToSheet = (surveyCode, exportData) => {
+    const sheetName = surveyCode.substring(0, 31); // stay within excel limit on sheet name length
     currentWorkbook.Sheets[sheetName] = xlsx.utils.aoa_to_sheet(exportData);
     currentWorkbook.SheetNames.push(sheetName);
   };
@@ -285,7 +285,7 @@ export async function exportResponsesToFile(
 
   const addResponsesToSheet = async (surveyResponses, survey, questions) => {
     const exportData = await getExportDataForResponses(surveyResponses, survey, questions);
-    addDataToSheet(survey.name, exportData);
+    addDataToSheet(survey.code, exportData);
   };
 
   /** Main body of the function below this point, everything above is helper functions */
@@ -299,7 +299,7 @@ export async function exportResponsesToFile(
   );
   surveysWithoutAccess.forEach(survey => {
     const exportData = [[`You do not have export access to ${survey.name}`]];
-    addDataToSheet(survey.name, exportData);
+    addDataToSheet(survey.code, exportData);
   });
 
   for (const survey of surveysWithAccess) {
