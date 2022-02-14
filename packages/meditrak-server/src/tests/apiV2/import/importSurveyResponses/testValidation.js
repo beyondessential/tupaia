@@ -80,5 +80,10 @@ export const testValidation = async () => {
       ]);
       expectError(response, /specified in import but there is no tab named/);
     });
+
+    it('detects survey codes via tab names if not present in query', async () => {
+      const response = await importFile(app, `validation/valid.xlsx`, []); // surveyCodes empty
+      expect(response.status).to.equal(200);
+    });
   });
 };
