@@ -1,0 +1,7 @@
+{
+  "extends": "../../tsconfig-js.json",
+  "compilerOptions": {
+    "outDir": "dist"
+  },
+  "exclude": ["src/__tests__"]
+}
