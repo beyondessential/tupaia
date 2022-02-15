@@ -68,5 +68,16 @@ export const testGeneral = async () => {
       const response = await importFile(app, `general/basic.xlsx`, []); // surveyCodes empty
       expect(response.status).to.equal(200);
     });
+
+    it('only imports against surveys present in query', async () => {
+      const response = await importFile(app, `general/basic.xlsx`, ['Test_Basic_Survey_A']);
+      expect(response.status).to.equal(200);
+
+      const surveyResponsesA = await app.models.surveyResponse.find({ survey_id: basicSurveyA.id });
+      const surveyResponsesB = await app.models.surveyResponse.find({ survey_id: basicSurveyB.id });
+
+      expect(surveyResponsesA.length).to.equal(1);
+      expect(surveyResponsesB.length).to.equal(0);
+    });
   });
 };

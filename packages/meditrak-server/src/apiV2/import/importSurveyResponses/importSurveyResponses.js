@@ -139,6 +139,9 @@ export async function importSurveyResponses(req, res) {
 
     for (const surveySheets of Object.entries(workbook.Sheets)) {
       const [tabName, sheet] = surveySheets;
+
+      if (querySurveyCodes && !querySurveyCodes.includes(tabName)) continue;
+
       const deletedResponseIds = new Set();
       const questionIds = [];
       const survey = await models.survey.findOne({ code: tabName });
