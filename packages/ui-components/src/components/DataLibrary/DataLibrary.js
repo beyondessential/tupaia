@@ -144,8 +144,8 @@ export const DataLibrary = ({
         </ColContents>
       </Col>
       <Col>
-        {headerConfig ? (
-          <RightColHeader>
+        <RightColHeader>
+          {headerConfig && (
             <Checkbox
               checkedIcon={<LibraryAddCheckOutlinedIcon />}
               checked={!isDisabledAll}
@@ -160,13 +160,11 @@ export const DataLibrary = ({
               }}
               disableRipple
               size="small"
+              style={{ paddingRight: '35px' }}
             />
-            <div style={{ paddingLeft: '25px' }}>Selected Data</div>
-          </RightColHeader>
-        ) : (
-          <RightColHeader>Selected Data</RightColHeader>
-        )}
-
+          )}
+          Selected Data
+        </RightColHeader>
         <RightColContents>
           <DragDropContext onDragEnd={onDragEnd}>
             <SelectedDataList value={value} optionComponent={optionComponent} />
