@@ -27,20 +27,20 @@ const MAX_RESULTS = 10;
 
 // Converts internal value array to Viz config.aggregate data structure
 const aggregateToValue = aggregate =>
-  aggregate.map(({ type, config, isDisable }) => ({
+  aggregate.map(({ type, config, isDisabled }) => ({
     code: type,
     type: 'aggregationOption',
     config,
-    isDisable,
+    isDisabled,
   }));
 
 const valueToAggregate = value =>
-  value.map(({ code, config, isDisable = false }) => ({ type: code, config, isDisable }));
+  value.map(({ code, config, isDisabled = false }) => ({ type: code, config, isDisabled }));
 
 export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalidChange }) => {
   const [inputValue, setInputValue] = useState('');
-  const [isDisableAll, setIsDisableAll] = useState(
-    value ? !value.some(option => !option.isDisable) : false,
+  const [isDisabledAll, setIsDisabledAll] = useState(
+    value ? !value.some(option => !option.isDisabled) : false,
   );
   const value = aggregateToValue(aggregate);
   const { data: options, isFetching } = useSearchAggregationOptions();
@@ -71,7 +71,7 @@ export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalid
             const newSelectedAggregations = Array.from(value);
             // Rest of configs do not apply
             newSelectedAggregations[index].config = newValue.config;
-            newSelectedAggregations[index].isDisable = newValue.isDisable;
+            newSelectedAggregations[index].isDisabled = newValue.isDisabled;
             onAggregateChange(valueToAggregate(newSelectedAggregations));
           }}
           onRemove={onRemove}
@@ -79,19 +79,20 @@ export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalid
           onInvalidChange={onInvalidChange}
         />
       )}
+      headerConfig={{ isDisabledAll, setIsDisabledAll }}
       header={
         <ColHeader>
           <Checkbox
             checkedIcon={<LibraryAddCheckOutlinedIcon />}
-            checked={!isDisableAll}
+            checked={!isDisabledAll}
             onChange={() => {
-              const newSelectedAggregations = Array.from(value).map(v => {
-                const newV = { ...v };
-                newV.isDisable = !isDisableAll;
-                return newV;
+              const newSelectedAggregations = Array.from(value).map(baseValue => {
+                const filteredValue = { ...baseValue };
+                filteredValue.isDisabled = !isDisabledAll;
+                return filteredValue;
               });
               onAggregateChange(valueToAggregate(newSelectedAggregations));
-              setIsDisableAll(!isDisableAll);
+              setIsDisabledAll(!isDisabledAll);
             }}
             disableRipple
             size="small"
@@ -109,7 +110,7 @@ AggregationDataLibrary.propTypes = {
       PropTypes.shape({
         type: PropTypes.string.isRequired,
         config: PropTypes.object,
-        isDisable: PropTypes.bool,
+        isDisabled: PropTypes.bool,
       }),
     ),
     PropTypes.string,

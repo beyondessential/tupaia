@@ -118,24 +118,28 @@ const useConfigStore = () => {
 
 const VisualisationContext = createContext(initialConfigState.visualisation);
 
-// Remove IsDisable config in aggregation and transform steps
-const removeIsDisableConfig = visualisation => {
+// Remove IsDisabled config in aggregation and transform steps
+const removeIsDisabledConfig = visualisation => {
   const { data } = { ...visualisation };
   const { aggregate, transform } = { ...data };
-  const newAggregate = aggregate.map(({ isDisable, ...restOfConfig }) => ({ ...restOfConfig }));
-  const newTransform = transform.map(({ isDisable, ...restOfConfig }) => ({ ...restOfConfig }));
-  const newData = { ...data, aggregate: newAggregate, transform: newTransform };
-  return { ...visualisation, data: newData };
+  const filteredAggregate = aggregate.map(({ isDisabled, ...restOfConfig }) => ({
+    ...restOfConfig,
+  }));
+  const filteredTransform = transform.map(({ isDisabled, ...restOfConfig }) => ({
+    ...restOfConfig,
+  }));
+  const filteredData = { ...data, aggregate: filteredAggregate, transform: filteredTransform };
+  return { ...visualisation, data: filteredData };
 };
 
 // Filter those unchecked aggregation or transform steps
 const filterDisableSteps = visualisation => {
   const { data } = { ...visualisation };
   const { aggregate, transform } = { ...data };
-  const newAggregate = aggregate.filter(({ isDisable }) => !isDisable);
-  const newTransform = transform.filter(({ isDisable }) => !isDisable);
-  const newData = { ...data, aggregate: newAggregate, transform: newTransform };
-  return { ...visualisation, data: newData };
+  const filteredAggregate = aggregate.filter(({ isDisabled }) => !isDisabled);
+  const filteredTransform = transform.filter(({ isDisabled }) => !isDisabled);
+  const filteredData = { ...data, aggregate: filteredAggregate, transform: filteredTransform };
+  return { ...visualisation, data: filteredData };
 };
 
 const VizBuilderConfigContext = createContext(initialConfigState);
@@ -148,8 +152,8 @@ const VizConfigProvider = ({ children }) => {
   return (
     <VisualisationContext.Provider
       value={{
-        visualisationForFetchingData: removeIsDisableConfig(filterDisableSteps(visualisation)),
-        visualisation: removeIsDisableConfig(visualisation),
+        visualisationForFetchingData: removeIsDisabledConfig(filterDisableSteps(visualisation)),
+        visualisation: removeIsDisabledConfig(visualisation),
       }}
     >
       <VizBuilderConfigContext.Provider value={store} displayName="VizBuilder">

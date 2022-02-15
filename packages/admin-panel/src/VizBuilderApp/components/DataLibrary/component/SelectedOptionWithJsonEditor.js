@@ -75,10 +75,10 @@ export const SelectedOptionWithJsonEditor = ({
       <FlexBetweenPanel>
         <Checkbox
           checkedIcon={<CheckBoxOutlinedIcon />}
-          checked={!option.isDisable}
+          checked={!option.isDisabled}
           onChange={() => {
             const newOption = { ...option };
-            newOption.isDisable = !option.isDisable;
+            newOption.isDisabled = !option.isDisabled;
             onChange(newOption);
           }}
           disableRipple
@@ -125,7 +125,7 @@ SelectedOptionWithJsonEditor.propTypes = {
   option: PropTypes.shape({
     code: PropTypes.string.isRequired,
     config: PropTypes.object,
-    isDisable: PropTypes.bool,
+    isDisabled: PropTypes.bool,
   }).isRequired,
   onRemove: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
