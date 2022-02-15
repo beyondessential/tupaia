@@ -5,23 +5,9 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import { DataLibrary } from '@tupaia/ui-components';
-import LibraryAddCheckOutlinedIcon from '@material-ui/icons/LibraryAddCheckOutlined';
 import { prefetchAggregationOptions, useSearchAggregationOptions } from '../../api';
 import { SelectedOptionWithJsonEditor } from './component/SelectedOptionWithJsonEditor';
-import { Checkbox } from './component/Checkbox';
-
-const ColHeader = styled.div`
-  display: flex;
-  align-items: center;
-  height: 40px;
-  font-size: 12px;
-  box-shadow: inset 0px -1px 0px #dedee0;
-  padding: 15px;
-  color: #2c3236;
-  background: #e8f6ff;
-`;
 
 const MAX_RESULTS = 10;
 
@@ -80,26 +66,6 @@ export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalid
         />
       )}
       headerConfig={{ isDisabledAll, setIsDisabledAll }}
-      header={
-        <ColHeader>
-          <Checkbox
-            checkedIcon={<LibraryAddCheckOutlinedIcon />}
-            checked={!isDisabledAll}
-            onChange={() => {
-              const newSelectedAggregations = Array.from(value).map(baseValue => {
-                const filteredValue = { ...baseValue };
-                filteredValue.isDisabled = !isDisabledAll;
-                return filteredValue;
-              });
-              onAggregateChange(valueToAggregate(newSelectedAggregations));
-              setIsDisabledAll(!isDisabledAll);
-            }}
-            disableRipple
-            size="small"
-          />
-          <div style={{ paddingLeft: '25px' }}>Selected Data</div>
-        </ColHeader>
-      }
     />
   );
 };

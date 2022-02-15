@@ -6,6 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
+import LibraryAddCheckOutlinedIcon from '@material-ui/icons/LibraryAddCheckOutlined';
 import { CreateNewFolder } from '@material-ui/icons';
 import { useAutocomplete } from '@material-ui/lab';
 import { DragDropContext } from 'react-beautiful-dnd';
@@ -15,6 +16,7 @@ import { ResultsList } from './ResultsList';
 import { SelectedDataList } from './SelectedDataList';
 import { DataTypeTabs } from './DataTypeTabs';
 import { ALICE_BLUE } from './constant';
+import { Checkbox } from './Checkbox';
 
 /*
  * A DataLibrary is similar to an Autocomplete but shows the options below for easier browsing,
@@ -78,8 +80,10 @@ export const DataLibrary = ({
   isLoading,
   searchPageSize,
   optionComponent,
-  header,
+  headerConfig,
 }) => {
+  const { isDisabledAll, setIsDisabledAll } = headerConfig || {};
+
   if (dataTypes.length > 1 && Array.isArray(options)) {
     throw new Error('Must specify options as a map when using multiple data types');
   }
@@ -140,7 +144,29 @@ export const DataLibrary = ({
         </ColContents>
       </Col>
       <Col>
-        {header || <RightColHeader>Selected Data</RightColHeader>}
+        {headerConfig ? (
+          <RightColHeader>
+            <Checkbox
+              checkedIcon={<LibraryAddCheckOutlinedIcon />}
+              checked={!isDisabledAll}
+              onChange={() => {
+                const newSelectedAggregations = Array.from(value).map(baseValue => {
+                  const filteredValue = { ...baseValue };
+                  filteredValue.isDisabled = !isDisabledAll;
+                  return filteredValue;
+                });
+                onChange(undefined, newSelectedAggregations);
+                setIsDisabledAll(!isDisabledAll);
+              }}
+              disableRipple
+              size="small"
+            />
+            <div style={{ paddingLeft: '25px' }}>Selected Data</div>
+          </RightColHeader>
+        ) : (
+          <RightColHeader>Selected Data</RightColHeader>
+        )}
+
         <RightColContents>
           <DragDropContext onDragEnd={onDragEnd}>
             <SelectedDataList value={value} optionComponent={optionComponent} />
@@ -169,7 +195,7 @@ DataLibrary.defaultProps = {
   onInputChange: () => {},
   isLoading: false,
   searchPageSize: null,
-  header: null,
+  headerConfig: null,
 };
 
 DataLibrary.propTypes = {
@@ -187,5 +213,8 @@ DataLibrary.propTypes = {
   // searchPageSize: used in combination with options (current page) to know if there are more pages
   searchPageSize: PropTypes.number,
   optionComponent: PropTypes.func.isRequired,
-  header: PropTypes.node,
+  headerConfig: PropTypes.shape({
+    isDisabledAll: PropTypes.bool,
+    setIsDisabledAll: PropTypes.func,
+  }),
 };

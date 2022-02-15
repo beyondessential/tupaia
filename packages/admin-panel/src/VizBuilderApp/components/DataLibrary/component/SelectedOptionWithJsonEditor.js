@@ -5,11 +5,11 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { Checkbox } from '@tupaia/ui-components/src/components/DataLibrary/Checkbox';
 import DownArrow from '@material-ui/icons/ArrowDropDown';
 import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
 import styled from 'styled-components';
 import { BaseSelectedOption, FlexSpaceBetween, JsonEditor } from '@tupaia/ui-components/';
-import { Checkbox } from './Checkbox';
 
 const FlexBetweenPanel = styled(FlexSpaceBetween)`
   width: 100%;
