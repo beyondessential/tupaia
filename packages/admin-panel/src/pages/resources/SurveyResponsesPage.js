@@ -177,20 +177,13 @@ const IMPORT_CONFIG = {
   },
   queryParameters: [
     {
-      label: 'Will this import create new survey responses?',
-      secondaryLabel: 'Leave unchecked if it will only update existing responses',
-      parameterKey: 'createNew',
-      type: 'boolean',
-    },
-    {
-      label: 'Survey Names',
+      label: 'Surveys',
       secondaryLabel:
-        'Please enter the names of the surveys for the responses to be imported against. These should match the tab names in the file.',
-      parameterKey: 'surveyNames',
+        'Please enter the surveys for the responses to be imported against. Each tab in the file should be a matching survey code. Leave blank to import all tabs.',
+      parameterKey: 'surveyCodes',
       optionsEndpoint: 'surveys',
-      optionValueKey: 'name',
+      optionValueKey: 'code',
       allowMultipleValues: true,
-      visibilityCriteria: { createNew: true },
     },
   ],
 };
