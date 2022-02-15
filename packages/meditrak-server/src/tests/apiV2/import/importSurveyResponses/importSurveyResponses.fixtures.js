@@ -98,6 +98,42 @@ export const FACILITY_FUNDAMENTALS_SURVEY = {
   ],
 };
 
+export const BASIC_SURVEY_A = {
+  id: generateTestId(),
+  code: 'Test_Basic_Survey_A',
+  name: 'Test_Basic Survey A',
+  questions: [
+    {
+      id: 'basic_survey_a_q1___test',
+      code: 'basic_survey_a_q1',
+      type: 'FreeText',
+    },
+    {
+      id: 'basic_survey_a_q2___test',
+      code: 'basic_survey_a_q2',
+      type: 'FreeText',
+    },
+  ],
+};
+
+export const BASIC_SURVEY_B = {
+  id: generateTestId(),
+  code: 'Test_Basic_Survey_B',
+  name: 'Test_Basic Survey B',
+  questions: [
+    {
+      id: 'basic_survey_b_q1___test',
+      code: 'basic_survey_b_q1',
+      type: 'FreeText',
+    },
+    {
+      id: 'basic_survey_b_q2___test',
+      code: 'basic_survey_b_q2',
+      type: 'FreeText',
+    },
+  ],
+};
+
 export const createPeriodicSurvey = periodGranularity => ({
   id: generateTestId(),
   code: `Test_${upperFirst(periodGranularity)}`, // Test_Yearly

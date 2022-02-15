@@ -8,14 +8,9 @@ import {
   findOrCreateDummyCountryEntity,
   findOrCreateRecords,
 } from '@tupaia/database';
-import { expect } from 'chai';
 import { expectError as baseExpectError, TestableApp } from '../../../testUtilities';
 import { importFile } from './helpers';
-import {
-  createSurveyResponses,
-  VALIDATION_SURVEY,
-  YEARLY_SURVEY,
-} from './importSurveyResponses.fixtures';
+import { VALIDATION_SURVEY } from './importSurveyResponses.fixtures';
 
 export const testValidation = async () => {
   const app = new TestableApp();
@@ -37,53 +32,32 @@ export const testValidation = async () => {
     app.revokeAccess();
   });
 
-  describe('validate contents', () => {
-    it('passes valid import', async () => {
-      const response = await importFile(app, `validation/valid.xlsx`, ['Test_Import_Validation']);
-      expect(response.status).to.equal(200);
-    });
+  const testData = [
+    ['duplicate question id', 'duplicateQuestionId.xlsx', /not unique/],
+    ['invalid binary answer', 'invalidBinaryAnswer.xlsx', /not an accepted value/],
+    [
+      'invalid header',
+      'invalidHeader.xlsx',
+      /should be a survey response id or "DEFAULT"\/"NEW"\/"UPDATE"\/"MERGE"/,
+    ],
+    ['invalid number answer', 'invalidNumberAnswer.xlsx', /Should contain a number/],
+    ['invalid radio answer', 'invalidRadioAnswer.xlsx', /not an accepted value/],
+    ['header row is missing', 'missingHeaderRow.xlsx', /Missing Id column/],
+    ['id column is missing', 'missingIdColumn.xlsx', /Missing Id column/],
+    ['a question id is missing', 'missingQuestionId.xlsx', /Should not be empty/],
+    ['a response id is missing', 'missingResponseId.xlsx', /Invalid column header/],
+    ['type column is missing', 'missingTypeColumn.xlsx', /Missing Type column/],
+    [
+      'a question id does not match an existing question',
+      'nonExistentQuestionId.xlsx',
+      /No question with id/,
+    ],
+  ];
 
-    const invalidTestData = [
-      ['duplicate question id', 'duplicateQuestionId.xlsx', /not unique/],
-      ['invalid binary answer', 'invalidBinaryAnswer.xlsx', /not an accepted value/],
-      [
-        'invalid header',
-        'invalidHeader.xlsx',
-        /should be a survey response id or "DEFAULT"\/"NEW"\/"UPDATE"\/"MERGE"/,
-      ],
-      ['invalid number answer', 'invalidNumberAnswer.xlsx', /Should contain a number/],
-      ['invalid radio answer', 'invalidRadioAnswer.xlsx', /not an accepted value/],
-      ['header row is missing', 'missingHeaderRow.xlsx', /Missing Id column/],
-      ['id column is missing', 'missingIdColumn.xlsx', /Missing Id column/],
-      ['a question id is missing', 'missingQuestionId.xlsx', /Should not be empty/],
-      ['a response id is missing', 'missingResponseId.xlsx', /Invalid column header/],
-      ['type column is missing', 'missingTypeColumn.xlsx', /Missing Type column/],
-      [
-        'a question id does not match an existing question',
-        'nonExistentQuestionId.xlsx',
-        /No question with id/,
-      ],
-    ];
-
-    invalidTestData.forEach(([description, file, expectedError]) => {
-      it(description, async () => {
-        const response = await importFile(app, `validation/${file}`, ['Test_Import_Validation']);
-        expectError(response, expectedError);
-      });
-    });
-  });
-
-  describe('validate tab names', () => {
-    it('requires tab names to match query', async () => {
-      const response = await importFile(app, `validation/valid.xlsx`, [
-        'A_Survey_Code_That_Is_Not_Specified_In_Spreadsheet_Tabs',
-      ]);
-      expectError(response, /specified in import but there is no tab named/);
-    });
-
-    it('detects survey codes via tab names if not present in query', async () => {
-      const response = await importFile(app, `validation/valid.xlsx`, []); // surveyCodes empty
-      expect(response.status).to.equal(200);
+  testData.forEach(([description, file, expectedError]) => {
+    it(description, async () => {
+      const response = await importFile(app, `validation/${file}`, ['Test_Import_Validation']);
+      expectError(response, expectedError);
     });
   });
 };
