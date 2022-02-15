@@ -171,8 +171,6 @@ export const testPermissions = async () => {
     ]);
     const { statusCode } = response;
 
-    console.log(response.body);
-
     expect(statusCode).to.equal(200);
   });
 
