@@ -120,11 +120,7 @@ export async function importSurveyResponses(req, res) {
       }
     }
 
-    const entitiesBySurveyCode = await getEntitiesBySurveyCode(
-      models,
-      workbook.Sheets,
-      querySurveyCodes,
-    );
+    const entitiesBySurveyCode = await getEntitiesBySurveyCode(models, workbook.Sheets);
     const entityCodes = Object.values(entitiesBySurveyCode).flat();
     const entities = await models.entity.find({ code: entityCodes });
     const entityCodeToId = reduceToDictionary(entities, 'code', 'id');
@@ -420,9 +416,8 @@ const constructNewSurveyResponseDetails = async (models, sheet, columnIndex, con
  * Return all the entitites of the submitted survey responses, grouped by the survey code (sheet name) that the survey responses belong to
  * @param {*} models
  * @param {*} sheets
- * @param {*} surveyCodes
  */
-const getEntitiesBySurveyCode = async (models, sheets, surveyCodes) => {
+const getEntitiesBySurveyCode = async (models, sheets) => {
   const entitiesGroupedBySurveyCode = {};
 
   for (const surveySheet of Object.entries(sheets)) {
