@@ -34,17 +34,34 @@ exports.up = async function (db) {
       `SELECT * from data_group WHERE id IN
        (SELECT data_group_id FROM data_element_data_group WHERE data_element_id = '${element.id}')`,
     );
+    // Recursively fetch all indicators that use the data element
+    const { rows: indicators } = await db.runSql(
+      `WITH RECURSIVE parent_indicator AS (
+        SELECT * FROM indicator
+        WHERE
+          config::TEXT ILIKE '%${element.code}%'
+        UNION
+          SELECT i.* FROM indicator i
+          INNER JOIN parent_indicator pi
+          ON
+            i.config::TEXT ILIKE '%' || pi.code || '%'
+      ) SELECT * FROM parent_indicator`,
+    );
 
-    // Fetch reports that contain either the data element or its parent groups
+    // Fetch reports that contain either the data element, data group, or indicators
     const { rows: reports } = await db.runSql(
       `SELECT * from report WHERE text(report.config) SIMILAR TO '%(${
         element.code
-      }|${dataGroups.map(group => group.code).join('|')})%'`,
+      }|${dataGroups.map(group => group.code).join('|')}|${indicators
+        .map(ind => ind.code)
+        .join('|')})%'`,
     );
     const { rows: legacyReports } = await db.runSql(
       `SELECT * from legacy_report WHERE text(legacy_report.data_builder_config) SIMILAR TO '%(${
         element.code
-      }|${dataGroups.map(group => group.code).join('|')})%'`,
+      }|${dataGroups.map(group => group.code).join('|')}|${indicators
+        .map(ind => ind.code)
+        .join('|')})%'`,
     );
 
     const jointReportCodes = reports
