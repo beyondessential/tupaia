@@ -13,6 +13,11 @@ import { expectError, TestableApp } from '../../../testUtilities';
 import { importFile } from './helpers';
 import { BASIC_SURVEY_A, BASIC_SURVEY_B } from './importSurveyResponses.fixtures';
 
+const expectNumResponses = async (models, surveyId, expectedNumResponses) => {
+  const surveyResponses = await models.surveyResponse.find({ survey_id: surveyId });
+  expect(surveyResponses.length).to.equal(expectedNumResponses);
+};
+
 export const testGeneral = async () => {
   const app = new TestableApp();
   const { models } = app;
@@ -47,6 +52,8 @@ export const testGeneral = async () => {
     it('imports specified tab', async () => {
       const response = await importFile(app, `general/basic.xlsx`, ['Test_Basic_Survey_A']);
       expect(response.status).to.equal(200);
+      await expectNumResponses(models, basicSurveyA.id, 1);
+      await expectNumResponses(models, basicSurveyB.id, 0);
     });
 
     it('imports multiple specified tabs', async () => {
@@ -55,6 +62,8 @@ export const testGeneral = async () => {
         'Test_Basic_Survey_B',
       ]);
       expect(response.status).to.equal(200);
+      await expectNumResponses(models, basicSurveyA.id, 1);
+      await expectNumResponses(models, basicSurveyB.id, 1);
     });
 
     it('makes sure tabs exist matching the survey codes specified', async () => {
@@ -67,17 +76,8 @@ export const testGeneral = async () => {
     it('detects survey codes via tab names if not present in query', async () => {
       const response = await importFile(app, `general/basic.xlsx`, []); // surveyCodes empty
       expect(response.status).to.equal(200);
-    });
-
-    it('only imports against surveys present in query', async () => {
-      const response = await importFile(app, `general/basic.xlsx`, ['Test_Basic_Survey_A']);
-      expect(response.status).to.equal(200);
-
-      const surveyResponsesA = await app.models.surveyResponse.find({ survey_id: basicSurveyA.id });
-      const surveyResponsesB = await app.models.surveyResponse.find({ survey_id: basicSurveyB.id });
-
-      expect(surveyResponsesA.length).to.equal(1);
-      expect(surveyResponsesB.length).to.equal(0);
+      await expectNumResponses(models, basicSurveyA.id, 1);
+      await expectNumResponses(models, basicSurveyB.id, 1);
     });
   });
 };
