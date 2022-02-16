@@ -26,8 +26,8 @@ const DEFAULT_POLICY = {
 const SURVEY_NAME_1 = 'Test Survey Response Permission Survey 1';
 const SURVEY_NAME_2 = 'Test Survey Response Permission Survey 2';
 
-const SURVEY_CODE_1 = 'TEST_SURVEY_RESPONSE_PERMISSION_SURVEY_1';
-const SURVEY_CODE_2 = 'TEST_SURVEY_RESPONSE_PERMISSION_SURVEY_2';
+const SURVEY_CODE_1 = 'TEST_PERMISSION_SURVEY_1';
+const SURVEY_CODE_2 = 'TEST_PERMISSION_SURVEY_2';
 
 describe('assertCanImportSurveyResponses(): Permissions checker for Importing Survey Responses', async () => {
   const models = getModels();
