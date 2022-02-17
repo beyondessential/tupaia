@@ -25,13 +25,13 @@ export const ResourcePage = ({
   importConfig,
   ExportModalComponent,
   LinksComponent,
-  ConfirmDeleteModalComponent,
   onProcessDataForSave,
   baseFilter,
   title,
   getHeaderEl,
   defaultFilters,
   defaultSorting,
+  displayUsedBy,
 }) => {
   const HeaderPortal = usePortalWithCallback(
     <Header
@@ -55,10 +55,13 @@ export const ResourcePage = ({
           baseFilter={baseFilter}
           defaultFilters={defaultFilters}
           defaultSorting={defaultSorting}
-          ConfirmDeleteModalComponent={ConfirmDeleteModalComponent}
         />
       </Container>
-      <EditModal {...editConfig} onProcessDataForSave={onProcessDataForSave} />
+      <EditModal
+        {...editConfig}
+        onProcessDataForSave={onProcessDataForSave}
+        displayUsedBy={displayUsedBy}
+      />
     </>
   );
 };
@@ -87,6 +90,7 @@ ResourcePage.propTypes = {
   baseFilter: PropTypes.object,
   defaultSorting: PropTypes.array,
   defaultFilters: PropTypes.array,
+  displayUsedBy: PropTypes.bool,
 };
 
 ResourcePage.defaultProps = {
@@ -102,4 +106,5 @@ ResourcePage.defaultProps = {
   defaultSorting: [],
   defaultFilters: [],
   reduxId: null,
+  displayUsedBy: false,
 };

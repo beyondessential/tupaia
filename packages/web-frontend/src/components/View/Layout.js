@@ -6,10 +6,10 @@
 import styled from 'styled-components';
 import { isMobile } from '../../utils';
 
-export const ChartContainer = styled.div(
+export const ChartContainer = styled.div(props =>
   isMobile()
     ? {
-        height: 200,
+        height: props.$isExporting ? 500 : 201,
         textAlign: 'center',
         position: 'relative',
       }

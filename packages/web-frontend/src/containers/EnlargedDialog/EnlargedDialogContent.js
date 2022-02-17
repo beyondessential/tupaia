@@ -9,6 +9,7 @@ import IconButton from 'material-ui/IconButton';
 import DownloadIcon from 'material-ui/svg-icons/file/file-download';
 import BackIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
 import DefaultCloseIcon from 'material-ui/svg-icons/navigation/close';
+import { periodToMoment } from '@tupaia/utils';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
@@ -30,6 +31,7 @@ const StyledAlert = styled(Alert)`
 `;
 
 const ExportDateText = styled.div`
+  padding-top: 15px;
   padding-bottom: 5px;
   text-align: center;
   font-size: 12px;
@@ -120,6 +122,7 @@ export class EnlargedDialogContent extends PureComponent {
         color={isExporting ? DARK_BLUE : WHITE}
         renderPeriodSelector={this.renderPeriodSelector}
         reference={reference}
+        isExporting={isExporting}
       />
     );
   }
@@ -249,7 +252,7 @@ export class EnlargedDialogContent extends PureComponent {
     return (
       <DialogContentText style={styles.periodRange}>
         {'Latest available data: '}
-        {moment(period.latestAvailable).format('DD/MM/YY')}
+        {periodToMoment(period.latestAvailable).format('DD/MM/YY')}
       </DialogContentText>
     );
   }
@@ -284,6 +287,7 @@ export class EnlargedDialogContent extends PureComponent {
     };
 
     const getBodyStyle = () => {
+      if (isExporting) return {};
       if (isMatrix) return styles.matrixContent;
       if (viewContent.chartType) return styles.chartContent;
       return {}; // No custom styling for other types of dialog content
@@ -318,7 +322,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    height: 390,
+    minHeight: 390,
   },
   matrixContent: {
     height: '80vh',

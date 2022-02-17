@@ -161,7 +161,7 @@ export async function exportResponsesToFile(
 
     const allEntityIds = entities.map(entity => entity.id);
     const sortAndLimitSurveyResponses =
-      latest === 'true' ? { sort: ['end_time DESC'], limit: 1 } : { sort: ['end_time ASC'] };
+      latest === 'true' ? { sort: ['data_time DESC'], limit: 1 } : { sort: ['data_time ASC'] };
 
     // to support a large number of entities (e.g. all schools in Laos), 'findManyByColumn' will
     // break the query into batches, using a subset of entities each time

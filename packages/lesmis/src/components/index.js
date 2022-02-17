@@ -5,6 +5,7 @@
 
 export * from './ApproveButton';
 export * from './Breadcrumbs';
+export * from './DashboardReport';
 export * from './EntityMenu';
 export * from './EntityVitalsItem';
 export * from './FetchLoader';
@@ -20,7 +21,7 @@ export * from './MapOverlaysPanel';
 export * from './MiniMap';
 export * from './NavBar';
 export * from './PageHeader';
-export * from './DashboardReport';
+export * from './RejectButton';
 export * from './SearchBar';
 export * from './Tabs';
 export * from './ThemeTest';

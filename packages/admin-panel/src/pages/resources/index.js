@@ -7,7 +7,12 @@ export { CountriesPage } from './CountriesPage';
 export { EntitiesPage } from './EntitiesPage';
 export { PermissionsPage } from './PermissionsPage';
 export { PermissionGroupsPage } from './PermissionGroupsPage';
-export { SurveyResponsesPage, SURVEY_RESPONSE_COLUMNS } from './SurveyResponsesPage';
+export {
+  SurveyResponsesPage,
+  SURVEY_RESPONSE_COLUMNS,
+  SURVEY_RESPONSE_PAGE_COLUMNS,
+  APPROVAL_STATUS_TYPES,
+} from './SurveyResponsesPage';
 export { SurveysPage } from './SurveysPage';
 export { QuestionsPage } from './QuestionsPage';
 export { OptionSetsPage } from './OptionSetsPage';

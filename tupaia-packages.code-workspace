@@ -37,6 +37,10 @@
       "path": "packages/data-broker"
     },
     {
+      "name": "data-lake-api",
+      "path": "packages/data-lake-api"
+    },
+    {
       "name": "database",
       "path": "packages/database"
     },
