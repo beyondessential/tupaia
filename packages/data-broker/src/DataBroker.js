@@ -11,6 +11,8 @@ import { countDistinct, toArray } from '@tupaia/utils';
 import { createService } from './services';
 import { DATA_SOURCE_TYPES } from './utils';
 
+export const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
+
 let modelRegistry;
 
 const getModelRegistry = () => {
@@ -83,6 +85,9 @@ export class DataBroker {
 
   checkDataElementPermissions = async dataElements => {
     const userPermissions = await this.getUserPermissions();
+    if (userPermissions.includes(BES_ADMIN_PERMISSION_GROUP)) {
+      return true;
+    }
     const missingPermissions = [];
     for (const element of dataElements) {
       if (
