@@ -103,8 +103,15 @@ const CREATE_CONFIG = {
   },
 };
 
-// Return an array of records for bulk editing on the server
-const processDataForSave = fieldsToSave => {
+// When creating, return an array of records for bulk editing on the server
+// When editing, just process a single record as normal
+const processDataForSave = (fieldsToSave, recordData) => {
+  const isEditingSingle = Object.keys(recordData).length > 0;
+  if (isEditingSingle) {
+    return fieldsToSave;
+  }
+
+  // Creating new records in bulk
   const records = [];
 
   const getRecordValues = (partialRecord, values) => {
