@@ -16,32 +16,33 @@ const checkMigrationOutdated = function (migrationName) {
 };
 
 const getIgnore = api => {
-  if (api.caller(caller => caller.name === '@babel/node')) {
-    // babel-node compiles on the fly so the many migrations are not an issue
-    return [];
+  if (api.caller(caller => caller.name === '@babel/cli')) {
+    // When building @tupaia/database, babel-cli compiles in advance, so we only want it to bother
+    // with the last 90 days of migrations, otherwise it takes too long
+    return [
+      'src/tests/**',
+      function (filepath) {
+        const filepathComponents = filepath.split('/');
+        const filename = filepathComponents.pop();
+        const directory = filepathComponents.pop();
+        const parentDirectory = filepathComponents.pop();
+
+        if (directory === 'migrations' || directory === 'migrationData') {
+          return checkMigrationOutdated(filename);
+        }
+
+        // Some migration data is broken into separate subfiles within a folder named with the
+        // same name as the migration, be sure to ignore that if it's outdated too
+        if (parentDirectory === 'migrationData') {
+          return checkMigrationOutdated(directory);
+        }
+        return false;
+      },
+    ];
   }
-  // babel-cli compiles in advance, so we only want it to bother with the last 90 days of migrations,
-  // otherwise it takes too long
-  return [
-    'src/tests/**',
-    function (filepath) {
-      const filepathComponents = filepath.split('/');
-      const filename = filepathComponents.pop();
-      const directory = filepathComponents.pop();
-      const parentDirectory = filepathComponents.pop();
-
-      if (directory === 'migrations' || directory === 'migrationData') {
-        return checkMigrationOutdated(filename);
-      }
-
-      // Some migration data is broken into separate subfiles within a folder named with the
-      // same name as the migration, be sure to ignore that if it's outdated too
-      if (parentDirectory === 'migrationData') {
-        return checkMigrationOutdated(directory);
-      }
-      return false;
-    },
-  ];
+  // During migrations and testing, we use babel-node and babel-register, and want them to process
+  // all files, so don't ignore anything
+  return [];
 };
 
 module.exports = function (api) {
