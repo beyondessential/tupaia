@@ -14,7 +14,7 @@ type SortParams = {
   direction: 'asc' | 'desc' | ('asc' | 'desc')[];
 };
 
-const paramsValidator = yup.object().shape({
+export const paramsValidator = yup.object().shape({
   by: starSingleOrMultipleColumnsValidator,
   direction: yup.lazy((value: unknown) => {
     const ascOrDescValidator = yup.mixed<'asc' | 'desc'>().oneOf(['asc', 'desc']);

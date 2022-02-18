@@ -8,4 +8,5 @@ export {
   FetchAggregationOptionsRoute,
   FetchAggregationOptionsRequest,
 } from './FetchAggregationOptionsRoute';
+export { FetchTransformSchemaRoute } from './FetchTransformSchemaRoute';
 export { TestReportRoute, TestReportRequest } from './TestReportRoute';

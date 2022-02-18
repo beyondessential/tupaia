@@ -23,7 +23,7 @@ const positioners = {
   start: (index: number, insertCount: number) => insertCount,
 };
 
-const paramsValidator = yup.object().shape({
+export const paramsValidator = yup.object().shape({
   columns: mapStringToStringValidator,
   where: yup.string(),
   position: yup
