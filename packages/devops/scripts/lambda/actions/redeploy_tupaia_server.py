@@ -77,7 +77,15 @@ def redeploy_tupaia_server(event):
         ]
         delete_after = get_tag(existing_instance, 'DeleteAfter')
         if delete_after != '':
-            extra_tags.append({ 'Key': 'DeleteAfter', 'Value': delete_after }),
+            extra_tags.append({ 'Key': 'DeleteAfter', 'Value': delete_after })
+
+        start_at_utc = get_tag(existing_instance, 'StartAtUTC')
+        if start_at_utc != '':
+            extra_tags.append({ 'Key': 'StartAtUTC', 'Value': start_at_utc })
+
+        stop_at_utc = get_tag(existing_instance, 'StopAtUTC')
+        if stop_at_utc != '':
+            extra_tags.append({ 'Key': 'StopAtUTC', 'Value': stop_at_utc })
 
         # launch server instance based on gold master AMI
         # original instance will be deleted by lambda script "swap_out_tupaia_server" once new instance is running
