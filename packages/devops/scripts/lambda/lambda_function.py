@@ -7,7 +7,9 @@ from actions.redeploy_tupaia_server import redeploy_tupaia_server
 from actions.spin_up_dhis_deployment import spin_up_dhis_deployment
 from actions.spin_up_tupaia_deployment import spin_up_tupaia_deployment
 from actions.spin_up_tupaia_database import spin_up_tupaia_database
+from actions.start_tagged_databases import start_tagged_databases
 from actions.start_tagged_servers import start_tagged_servers
+from actions.stop_tagged_databases import stop_tagged_databases
 from actions.stop_tagged_servers import stop_tagged_servers
 from actions.swap_out_tupaia_server import swap_out_tupaia_server
 from actions.tear_down_tupaia_deployment import tear_down_tupaia_deployment
@@ -23,7 +25,9 @@ actions = {
   'spin_up_dhis_deployment': spin_up_dhis_deployment,
   'spin_up_tupaia_deployment': spin_up_tupaia_deployment,
   'spin_up_tupaia_database': spin_up_tupaia_database,
+  'start_tagged_databases': start_tagged_databases,
   'start_tagged_servers': start_tagged_servers,
+  'stop_tagged_databases': stop_tagged_databases,
   'stop_tagged_servers': stop_tagged_servers,
   'swap_out_tupaia_server': swap_out_tupaia_server,
   'tear_down_tupaia_deployment': tear_down_tupaia_deployment,

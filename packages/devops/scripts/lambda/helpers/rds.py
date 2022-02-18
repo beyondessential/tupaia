@@ -49,6 +49,16 @@ def rename_db_instance(db_id, new_db_id):
         ApplyImmediately=True
     )
 
+def start_db_instance(db_id):
+    rds.start_db_instance(
+        DBInstanceIdentifier=db_id
+    )
+
+def stop_db_instance(db_id):
+    rds.stop_db_instance(
+        DBInstanceIdentifier=db_id
+    )
+
 def get_latest_db_snapshot(source_db_id):
     snapshots_response = rds.describe_db_snapshots(
         DBInstanceIdentifier=source_db_id
