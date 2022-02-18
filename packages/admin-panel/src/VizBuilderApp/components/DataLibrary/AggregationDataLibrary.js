@@ -25,9 +25,7 @@ const valueToAggregate = value =>
 
 export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalidChange }) => {
   const [inputValue, setInputValue] = useState('');
-  const [isDisabledAll, setIsDisabledAll] = useState(
-    value ? !value.some(option => !option.isDisabled) : false,
-  );
+
   const value = aggregateToValue(aggregate);
   const { data: options, isFetching } = useSearchAggregationOptions();
 
@@ -65,7 +63,7 @@ export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalid
           onInvalidChange={onInvalidChange}
         />
       )}
-      headerConfig={{ isDisabledAll, setIsDisabledAll }}
+      supportsDisableAll
     />
   );
 };

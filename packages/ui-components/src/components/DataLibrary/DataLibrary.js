@@ -6,17 +6,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
-import LibraryAddCheckOutlinedIcon from '@material-ui/icons/LibraryAddCheckOutlined';
 import { CreateNewFolder } from '@material-ui/icons';
 import { useAutocomplete } from '@material-ui/lab';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { FlexColumn } from '../Layout';
 import { InputField } from './InputField';
 import { ResultsList } from './ResultsList';
+import { SelectedDataHeader } from './SelectedDataHeader';
 import { SelectedDataList } from './SelectedDataList';
 import { DataTypeTabs } from './DataTypeTabs';
-import { ALICE_BLUE } from './constant';
-import { Checkbox } from './Checkbox';
+import { ColHeader } from './styles';
 
 /*
  * A DataLibrary is similar to an Autocomplete but shows the options below for easier browsing,
@@ -33,22 +32,8 @@ const Col = styled(FlexColumn)`
   width: 50%;
 `;
 
-const ColHeader = styled.div`
-  display: flex;
-  align-items: center;
-  height: 40px;
-  font-size: 12px;
-  box-shadow: inset 0px -1px 0px #dedee0;
-  padding: 15px;
-  color: #2c3236;
-`;
-
 const LeftColHeader = styled(ColHeader)`
   background: #f9f9f9;
-`;
-
-const RightColHeader = styled(ColHeader)`
-  background: ${ALICE_BLUE};
 `;
 
 const CreateNewFolderIcon = styled(CreateNewFolder)`
@@ -80,10 +65,8 @@ export const DataLibrary = ({
   isLoading,
   searchPageSize,
   optionComponent,
-  headerConfig,
+  supportsDisableAll,
 }) => {
-  const { isDisabledAll, setIsDisabledAll } = headerConfig || {};
-
   if (dataTypes.length > 1 && Array.isArray(options)) {
     throw new Error('Must specify options as a map when using multiple data types');
   }
@@ -144,27 +127,11 @@ export const DataLibrary = ({
         </ColContents>
       </Col>
       <Col>
-        <RightColHeader>
-          {headerConfig && (
-            <Checkbox
-              checkedIcon={<LibraryAddCheckOutlinedIcon />}
-              checked={!isDisabledAll}
-              onChange={() => {
-                const newSelectedAggregations = Array.from(value).map(baseValue => {
-                  const filteredValue = { ...baseValue };
-                  filteredValue.isDisabled = !isDisabledAll;
-                  return filteredValue;
-                });
-                onChange(undefined, newSelectedAggregations);
-                setIsDisabledAll(!isDisabledAll);
-              }}
-              disableRipple
-              size="small"
-              style={{ paddingRight: '35px' }}
-            />
-          )}
-          Selected Data
-        </RightColHeader>
+        <SelectedDataHeader
+          onChange={onChange}
+          selectedData={value}
+          supportsDisableAll={supportsDisableAll}
+        />
         <RightColContents>
           <DragDropContext onDragEnd={onDragEnd}>
             <SelectedDataList value={value} optionComponent={optionComponent} />
@@ -193,7 +160,7 @@ DataLibrary.defaultProps = {
   onInputChange: () => {},
   isLoading: false,
   searchPageSize: null,
-  headerConfig: null,
+  supportsDisableAll: false,
 };
 
 DataLibrary.propTypes = {
@@ -211,8 +178,5 @@ DataLibrary.propTypes = {
   // searchPageSize: used in combination with options (current page) to know if there are more pages
   searchPageSize: PropTypes.number,
   optionComponent: PropTypes.func.isRequired,
-  headerConfig: PropTypes.shape({
-    isDisabledAll: PropTypes.bool,
-    setIsDisabledAll: PropTypes.func,
-  }),
+  supportsDisableAll: PropTypes.bool,
 };
