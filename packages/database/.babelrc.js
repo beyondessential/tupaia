@@ -1,5 +1,5 @@
-const getPlugins = isDevEnvironment => {
-  if (isDevEnvironment) {
+const getPlugins = api => {
+  if (api.env(['development', 'test'])) {
     return ['istanbul'];
   }
   return [];
@@ -15,10 +15,13 @@ const checkMigrationOutdated = function (migrationName) {
   return migrationDate < includedMigrationsDate;
 };
 
-const getIgnore = isDevEnvironment => {
-  if (isDevEnvironment) {
-    return ['src/migrations/**'];
+const getIgnore = api => {
+  if (api.caller(caller => caller.name === '@babel/node')) {
+    // babel-node compiles on the fly so the many migrations are not an issue
+    return [];
   }
+  // babel-cli compiles in advance, so we only want it to bother with the last 90 days of migrations,
+  // otherwise it takes too long
   return [
     'src/tests/**',
     function (filepath) {
@@ -42,8 +45,7 @@ const getIgnore = isDevEnvironment => {
 };
 
 module.exports = function (api) {
-  const isDevEnvironment = api.env(['development', 'test']);
-  const plugins = getPlugins(isDevEnvironment);
-  const ignore = getIgnore(isDevEnvironment);
+  const plugins = getPlugins(api);
+  const ignore = getIgnore(api);
   return { plugins, ignore };
 };
