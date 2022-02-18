@@ -222,6 +222,7 @@ const SelectedOptionWithJsonEditor = ({ option, onRemove, setEdittingOption }) =
 export const WithJsonEditor = () => {
   const [value, setValue] = useState([options[1]]);
   const [inputValue, setInputValue] = useState('');
+  const [isDisabledAll, setIsDisabledAll] = useState(false);
 
   const onRemove = (event, option) => {
     setValue(value.filter(item => option.code !== item.code));
@@ -243,6 +244,7 @@ export const WithJsonEditor = () => {
               setEdittingOption={setEdittingOption}
             />
           )}
+          headerConfig={{ isDisabledAll, setIsDisabledAll }}
         />
       </Container>
     </OuterContainer>

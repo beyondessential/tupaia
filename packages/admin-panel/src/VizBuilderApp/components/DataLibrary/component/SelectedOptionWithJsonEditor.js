@@ -1,6 +1,13 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ */
+
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { Checkbox } from '@tupaia/ui-components/src/components/DataLibrary/Checkbox';
 import DownArrow from '@material-ui/icons/ArrowDropDown';
+import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
 import styled from 'styled-components';
 import { BaseSelectedOption, FlexSpaceBetween, JsonEditor } from '@tupaia/ui-components/';
 
@@ -66,6 +73,17 @@ export const SelectedOptionWithJsonEditor = ({
   return (
     <OptionPanelWithJsonEditor>
       <FlexBetweenPanel>
+        <Checkbox
+          checkedIcon={<CheckBoxOutlinedIcon />}
+          checked={!option.isDisabled}
+          onChange={() => {
+            const newOption = { ...option };
+            newOption.isDisabled = !option.isDisabled;
+            onChange(newOption);
+          }}
+          disableRipple
+          size="small"
+        />
         <DownArrowIconWrapper
           $expanded={isExpanded}
           onClick={() => setIsExpanded(!isExpanded)}
@@ -107,6 +125,7 @@ SelectedOptionWithJsonEditor.propTypes = {
   option: PropTypes.shape({
     code: PropTypes.string.isRequired,
     config: PropTypes.object,
+    isDisabled: PropTypes.bool,
   }).isRequired,
   onRemove: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,

@@ -7,18 +7,25 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { DataLibrary } from '@tupaia/ui-components';
 import { prefetchAggregationOptions, useSearchAggregationOptions } from '../../api';
-import { SelectedOptionWithJsonEditor } from './SelectedOptionWithJsonEditor';
+import { SelectedOptionWithJsonEditor } from './component/SelectedOptionWithJsonEditor';
 
 const MAX_RESULTS = 10;
 
 // Converts internal value array to Viz config.aggregate data structure
 const aggregateToValue = aggregate =>
-  aggregate.map(({ type, config }) => ({ code: type, type: 'aggregationOption', config }));
+  aggregate.map(({ type, config, isDisabled }) => ({
+    code: type,
+    type: 'aggregationOption',
+    config,
+    isDisabled,
+  }));
 
-const valueToAggregate = value => value.map(({ code, config }) => ({ type: code, config }));
+const valueToAggregate = value =>
+  value.map(({ code, config, isDisabled = false }) => ({ type: code, config, isDisabled }));
 
 export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalidChange }) => {
   const [inputValue, setInputValue] = useState('');
+
   const value = aggregateToValue(aggregate);
   const { data: options, isFetching } = useSearchAggregationOptions();
 
@@ -46,7 +53,9 @@ export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalid
           optionMetaData={options && options.find(({ code }) => code === option.code)}
           onChange={newValue => {
             const newSelectedAggregations = Array.from(value);
+            // Rest of configs do not apply
             newSelectedAggregations[index].config = newValue.config;
+            newSelectedAggregations[index].isDisabled = newValue.isDisabled;
             onAggregateChange(valueToAggregate(newSelectedAggregations));
           }}
           onRemove={onRemove}
@@ -54,6 +63,7 @@ export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalid
           onInvalidChange={onInvalidChange}
         />
       )}
+      supportsDisableAll
     />
   );
 };
@@ -64,6 +74,7 @@ AggregationDataLibrary.propTypes = {
       PropTypes.shape({
         type: PropTypes.string.isRequired,
         config: PropTypes.object,
+        isDisabled: PropTypes.bool,
       }),
     ),
     PropTypes.string,
