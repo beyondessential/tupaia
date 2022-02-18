@@ -27,21 +27,17 @@ const PROJECT = {
   description: 'COVID-19 case surveillance and data visualisations in Kiribati',
   sort_order: 16,
   image_url:
-    'https://tupaia.s3.ap-southeast-2.amazonaws.com/thumbnails/uploads/covid_kiribati_background.jpeg',
+    'https://tupaia.s3.ap-southeast-2.amazonaws.com/uploads/covid_kiribati_background.jpeg',
   default_measure: '126,171',
   dashboard_group_name: DASHBOARD_NAME,
   permission_groups: '{COVID-19 Kiribati Admin,COVID-19 Kiribati}',
-  logo_url:
-    'https://tupaia.s3.ap-southeast-2.amazonaws.com/thumbnails/uploads/covid_kiribati_logo.jpeg',
+  logo_url: 'https://tupaia.s3.ap-southeast-2.amazonaws.com/uploads/covid_kiribati_logo.jpeg',
 };
 const ENTITY = {
   code: PROJECT_CODE,
   name: PROJECT_NAME,
   type: 'project',
 };
-
-const getWorldBounds = async db =>
-  db.runSql(`select bounds from entity where code = 'World' limit 1;`);
 
 const addDashboard = async db => {
   await insertObject(db, 'dashboard', {
@@ -72,11 +68,9 @@ const addMapOverlayGroup = async db => {
 
 const addEntity = async db => {
   const id = generateId();
-  const { bounds } = (await getWorldBounds(db)).rows[0];
   const parentId = await codeToId(db, 'entity', 'World');
   await insertObject(db, 'entity', {
     id,
-    bounds,
     parent_id: parentId,
     ...ENTITY,
   });
