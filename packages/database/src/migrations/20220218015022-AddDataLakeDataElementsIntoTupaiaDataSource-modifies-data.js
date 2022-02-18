@@ -17,7 +17,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = function asnyc(db) {
+exports.up = async function (db) {
   const formattedValues = DATA_ELEMENT_CODES.dataElementCodes
     .map(code => `('${generateId()}', '${code}','dataElement','data-lake')`)
     .join(',');
@@ -30,7 +30,7 @@ exports.up = function asnyc(db) {
   `);
 };
 
-exports.down = function asnyc(db) {
+exports.down = async function (db) {
   return null;
 };
 
