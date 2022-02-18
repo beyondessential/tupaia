@@ -116,18 +116,55 @@ const useConfigStore = () => {
   ];
 };
 
+const VisualisationContext = createContext(initialConfigState.visualisation);
+
+// Remove IsDisabled config in aggregation and transform steps
+const removeIsDisabledConfig = visualisation => {
+  const { data } = { ...visualisation };
+  const { aggregate, transform } = { ...data };
+  const filteredAggregate = aggregate.map(({ isDisabled, ...restOfConfig }) => ({
+    ...restOfConfig,
+  }));
+  const filteredTransform = transform.map(({ isDisabled, ...restOfConfig }) => ({
+    ...restOfConfig,
+  }));
+  const filteredData = { ...data, aggregate: filteredAggregate, transform: filteredTransform };
+  return { ...visualisation, data: filteredData };
+};
+
+// Filter those unchecked aggregation or transform steps
+const filterDisableSteps = visualisation => {
+  const { data } = { ...visualisation };
+  const { aggregate, transform } = { ...data };
+  const filteredAggregate = aggregate.filter(({ isDisabled }) => !isDisabled);
+  const filteredTransform = transform.filter(({ isDisabled }) => !isDisabled);
+  const filteredData = { ...data, aggregate: filteredAggregate, transform: filteredTransform };
+  return { ...visualisation, data: filteredData };
+};
+
 const VizBuilderConfigContext = createContext(initialConfigState);
-const { Provider } = VizBuilderConfigContext;
 
 // eslint-disable-next-line react/prop-types
 const VizConfigProvider = ({ children }) => {
   const store = useConfigStore();
+  const [{ visualisation }] = store;
 
   return (
-    <Provider value={store} displayName="VizBuilder">
-      {children}
-    </Provider>
+    <VisualisationContext.Provider
+      value={{
+        visualisationForFetchingData: removeIsDisabledConfig(filterDisableSteps(visualisation)),
+        visualisation: removeIsDisabledConfig(visualisation),
+      }}
+    >
+      <VizBuilderConfigContext.Provider value={store} displayName="VizBuilder">
+        {children}
+      </VizBuilderConfigContext.Provider>
+    </VisualisationContext.Provider>
   );
+};
+
+const useVisualisation = () => {
+  return useContext(VisualisationContext);
 };
 
 const useVizConfig = () => {
@@ -136,4 +173,4 @@ const useVizConfig = () => {
 
 // Note: the store can be debugged in dev tools using a chrome plugin.
 // https://chrome.google.com/webstore/detail/react-context-devtool/oddhnidmicpefilikhgeagedibnefkcf?hl=en
-export { useVizConfig, VizConfigProvider };
+export { useVisualisation, useVizConfig, VizConfigProvider };
