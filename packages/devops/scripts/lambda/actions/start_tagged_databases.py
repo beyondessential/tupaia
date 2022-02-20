@@ -17,7 +17,8 @@ loop = asyncio.get_event_loop()
 def start_tagged_databases(event):
   hour = time.strftime("%H:00")
   tagged_instances = find_db_instances([
-      { 'Key': 'StartAtUTC', 'Values': [hour] }
+      { 'Key': 'StartAtUTC', 'Values': [hour] },
+      { 'Key': 'DeploymentType', 'Values': ['tupaia'] }
   ])
 
   stopped_instances = list(filter(lambda x: x['DBInstanceStatus'] == 'stopped', tagged_instances))
