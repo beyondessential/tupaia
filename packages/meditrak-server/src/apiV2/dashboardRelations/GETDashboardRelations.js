@@ -41,6 +41,19 @@ export class GETDashboardRelations extends GETHandler {
     return dashboardRelation;
   }
 
+  async findRecords(...args) {
+    try {
+      const records = await super.findRecords(...args);
+      return records;
+    } catch (error) {
+      // Improve error message when trying to filter entity_type using an invalid value
+      if (error.message.includes('invalid input value for enum entity_type')) {
+        throw new Error('Can only filter using valid entity types');
+      }
+      throw error;
+    }
+  }
+
   getPermissionsFilter(criteria, options) {
     const dbConditions = createDashboardRelationsDBFilter(this.accessPolicy, criteria);
     return { dbConditions, dbOptions: options };
