@@ -86,14 +86,15 @@ export async function exportResponsesToFile(
     currentWorkbook.SheetNames.push(sheetName);
   };
 
-  const saveCurrentWorkbook = batchNumber => {
+  const saveCurrentWorkbook = () => {
     const fileNumber = files.length + 1;
+    const prettyFileNumber = fileNumber === 1 ? '' : fileNumber;
 
     // If exporting a single survey, use human friendly name in filename
     const fileName =
       surveys.length === 1
-        ? `${firstSurveyName} - Survey Responses${batchNumber}.xlsx`
-        : `${FILE_PREFIX}_${exportDate}_${fileNumber}.xlsx`;
+        ? `${firstSurveyName} - Survey Responses${prettyFileNumber}.xlsx`
+        : `${FILE_PREFIX}_${exportDate}_${prettyFileNumber}.xlsx`;
 
     const filePath = `${getExportPathForUser(userId)}/${toFilename(fileName)}`;
 
