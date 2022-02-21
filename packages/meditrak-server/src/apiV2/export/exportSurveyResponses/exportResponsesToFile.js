@@ -86,13 +86,13 @@ export async function exportResponsesToFile(
     currentWorkbook.SheetNames.push(sheetName);
   };
 
-  const saveCurrentWorkbook = () => {
+  const saveCurrentWorkbook = batchNumber => {
     const fileNumber = files.length + 1;
 
     // If exporting a single survey, use human friendly name in filename
     const fileName =
       surveys.length === 1
-        ? `${firstSurveyName} - Survey Responses.xlsx`
+        ? `${firstSurveyName} - Survey Responses${batchNumber}.xlsx`
         : `${FILE_PREFIX}_${exportDate}_${fileNumber}.xlsx`;
 
     const filePath = `${getExportPathForUser(userId)}/${toFilename(fileName)}`;
@@ -312,9 +312,11 @@ export async function exportResponsesToFile(
       const surveyResponses = await findResponsesForSurvey(survey);
       const responseBatches = chunk(surveyResponses, MAX_RESPONSES_PER_FILE);
       if (responseBatches.length > 1) {
+        let batchNumber = 1;
         for (const batchOfResponses of responseBatches) {
           await addResponsesToSheet(batchOfResponses, survey, questions);
-          saveCurrentWorkbook();
+          saveCurrentWorkbook(batchNumber);
+          batchNumber++;
         }
       } else {
         await addResponsesToSheet(surveyResponses, survey, questions);
