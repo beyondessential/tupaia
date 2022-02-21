@@ -50,9 +50,6 @@ export const DASHBOARD_RELATION_COLUMNS = [
     source: 'entity_types',
     Filter: ArrayFilter,
     Cell: ({ value }) => prettyArray(value),
-    filterConfig: {
-      castAs: 'entity_type[]',
-    },
     editConfig: {
       type: 'autocomplete',
       allowMultipleValues: true,

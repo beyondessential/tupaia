@@ -83,7 +83,7 @@ const StyledAutocomplete = styled(Autocomplete)`
   flex: 1;
 `;
 
-export const ArrayFilter = React.memo(({ column, onChange }) => {
+export const ArrayFilter = React.memo(({ onChange }) => {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [selection, setSelection] = React.useState([]);
 
@@ -95,7 +95,7 @@ export const ArrayFilter = React.memo(({ column, onChange }) => {
         : {
             comparator: '@>',
             comparisonValue: `{${newSelection.join(',')}}`,
-            castAs: column.filterConfig?.castAs || 'text[]',
+            castAs: 'text[]',
           },
     );
   };
@@ -125,10 +125,5 @@ export const ArrayFilter = React.memo(({ column, onChange }) => {
 });
 
 ArrayFilter.propTypes = {
-  column: PropTypes.shape({
-    filterConfig: PropTypes.shape({
-      castAs: PropTypes.string,
-    }),
-  }).isRequired,
   onChange: PropTypes.func.isRequired,
 };
