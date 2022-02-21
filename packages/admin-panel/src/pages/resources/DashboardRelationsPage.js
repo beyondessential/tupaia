@@ -6,6 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
+import { prettyArray } from '../../utilities';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 
 // export for use on users page
@@ -35,6 +36,7 @@ export const DASHBOARD_RELATION_COLUMNS = [
     Header: 'Permission Groups',
     source: 'permission_groups',
     Filter: ArrayFilter,
+    Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
@@ -47,6 +49,7 @@ export const DASHBOARD_RELATION_COLUMNS = [
     Header: 'Entity Types',
     source: 'entity_types',
     Filter: ArrayFilter,
+    Cell: ({ value }) => prettyArray(value),
     filterConfig: {
       castAs: 'entity_type[]',
     },
@@ -63,6 +66,7 @@ export const DASHBOARD_RELATION_COLUMNS = [
     Header: 'Project Codes',
     source: 'project_codes',
     Filter: ArrayFilter,
+    Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'projects',
       optionLabelKey: 'code',
