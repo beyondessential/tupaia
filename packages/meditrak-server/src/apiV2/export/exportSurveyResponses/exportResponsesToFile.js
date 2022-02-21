@@ -94,7 +94,7 @@ export async function exportResponsesToFile(
     const fileName =
       surveys.length === 1
         ? `${firstSurveyName} - Survey Responses${prettyFileNumber}.xlsx`
-        : `${FILE_PREFIX}_${exportDate}_${prettyFileNumber}.xlsx`;
+        : `${FILE_PREFIX}_${exportDate}_${fileNumber}.xlsx`;
 
     const filePath = `${getExportPathForUser(userId)}/${toFilename(fileName)}`;
 
