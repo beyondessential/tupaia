@@ -6,6 +6,7 @@
 export * from './modelClasses';
 export { MaterializedViewLogDatabaseModel } from './analytics';
 export * from './changeHandlers';
+export { getDbMigrator } from './getDbMigrator';
 export {
   generateId,
   getHighestPossibleIdForGivenTime,

@@ -97,8 +97,10 @@ export const formatMatrixDataForExcel = (
       formattedData.push(...formattedRowData);
     });
   } else {
-    // This table has no row categories, just one set of rows
-    formattedData.push(...rows.map(formatRowData));
+    // This table has no explictly defined categories, but may have implicitly defined categories
+    // where each row has a categoryId (can be nested)
+    const nestedCategorisedData = formatNestedCategories(rows, headersRow.length, formatRowData);
+    formattedData.push(...nestedCategorisedData);
   }
 
   // Add export date and origin to the bottom of the sheet
@@ -151,4 +153,26 @@ const addValueOrEmpty = (value, valueType) => {
   }
 
   return value;
+};
+
+const formatNestedCategories = (rows, rowLength, formatRowData) => {
+  const data = [];
+
+  function recursivelyFormatNestedCategories(parentCategoryId) {
+    const rowsInCategory = rows.filter(r => r.categoryId === parentCategoryId);
+    rowsInCategory.forEach(row => {
+      const { category } = row;
+      if (category) {
+        // This is a category header
+        data.push([category].fill('', 1, rowLength - 1));
+        recursivelyFormatNestedCategories(category);
+      } else {
+        data.push(formatRowData(row));
+      }
+    });
+  }
+
+  recursivelyFormatNestedCategories(undefined);
+
+  return data;
 };
