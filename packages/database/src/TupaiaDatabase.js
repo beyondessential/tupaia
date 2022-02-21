@@ -45,7 +45,7 @@ export const JOIN_TYPES = {
 };
 
 // list valid behaviour so we can validate against sql injection
-const VALID_CAST_TYPES = ['text', 'text[]', 'date'];
+const VALID_CAST_TYPES = ['text', 'text[]', 'date', 'entity_type[]'];
 const VALID_COMPARISON_TYPES = ['where', 'whereBetween', 'whereIn', 'orWhere'];
 
 // no math here, just hand-tuned to be as low as possible while

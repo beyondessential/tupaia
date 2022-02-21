@@ -46,6 +46,10 @@ export const DASHBOARD_RELATION_COLUMNS = [
   {
     Header: 'Entity Types',
     source: 'entity_types',
+    Filter: ArrayFilter,
+    filterConfig: {
+      castAs: 'entity_type[]',
+    },
     editConfig: {
       type: 'autocomplete',
       allowMultipleValues: true,
