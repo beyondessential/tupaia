@@ -6,6 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
+import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 
 // export for use on users page
 export const DASHBOARD_RELATION_ENDPOINT = 'dashboardRelations';
@@ -33,6 +34,7 @@ export const DASHBOARD_RELATION_COLUMNS = [
   {
     Header: 'Permission Groups',
     source: 'permission_groups',
+    Filter: ArrayFilter,
     editConfig: {
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
@@ -56,6 +58,7 @@ export const DASHBOARD_RELATION_COLUMNS = [
   {
     Header: 'Project Codes',
     source: 'project_codes',
+    Filter: ArrayFilter,
     editConfig: {
       optionsEndpoint: 'projects',
       optionLabelKey: 'code',
