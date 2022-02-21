@@ -392,7 +392,7 @@ const getDataTimeCondition = (date, periodGranularity) => {
   };
 };
 
-const constructNewSurveyResponseDetails = async (models, tabName, sheet, columnIndex, config) => {
+const constructNewSurveyResponseDetails = async (models, sheet, columnIndex, config) => {
   const { id, survey, userId, timeZone } = config;
   const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
   const entity = await models.entity.findOne({ code: entityCode });
