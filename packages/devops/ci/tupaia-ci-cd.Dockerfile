@@ -37,6 +37,8 @@ RUN mkdir -p ./packages/data-api
 COPY packages/data-api/package.json ./packages/data-api
 RUN mkdir -p ./packages/data-broker
 COPY packages/data-broker/package.json ./packages/data-broker
+RUN mkdir -p ./packages/data-lake-api
+COPY packages/data-lake-api/package.json ./packages/data-lake-api
 RUN mkdir -p ./packages/database
 COPY packages/database/package.json ./packages/database
 RUN mkdir -p ./packages/dhis-api
@@ -86,6 +88,7 @@ COPY packages/auth/. ./packages/auth
 COPY packages/database/. ./packages/database
 COPY packages/data-api/. ./packages/data-api
 COPY packages/data-broker/. ./packages/data-broker
+COPY packages/data-lake-api/. ./packages/data-lake-api
 COPY packages/dhis-api/. ./packages/dhis-api
 COPY packages/expression-parser/. ./packages/expression-parser
 COPY packages/indicators/. ./packages/indicators

@@ -14,6 +14,7 @@ import {
   ModelRegistry,
   SurveyResponseOutdater,
   TupaiaDatabase,
+  getDbMigrator,
 } from '@tupaia/database';
 
 import { createMeditrakSyncQueue } from './database';
@@ -84,14 +85,16 @@ startSyncWithKoBo(models);
 startFeedScraper(models);
 
 /**
- * Notify PM2 that we are ready
+ * If running via PM2, run migrations then notify that we are ready
  */
 if (process.send) {
   (async () => {
     try {
       await database.waitForChangeChannel();
       winston.info('Successfully connected to pubsub service');
-      process.send('ready');
+      const dbMigrator = getDbMigrator();
+      await dbMigrator.up();
+      winston.info('Database migrations complete');
     } catch (error) {
       winston.error(error.message);
     }
