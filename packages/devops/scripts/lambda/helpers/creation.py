@@ -1,15 +1,38 @@
 import boto3
 
-from helpers.networking import setup_subdomains_via_dns, setup_subdomains_via_gateway
+from helpers.networking import add_subdomains_to_route53, setup_subdomains_via_dns, setup_subdomains_via_gateway
 from helpers.utilities import get_instance_by_id
+from helpers.rds import get_latest_db_snapshot, wait_for_db_instance
 
 ec2 = boto3.resource('ec2')
 ec = boto3.client('ec2')
+rds = boto3.client('rds')
 
 def allocate_elastic_ip(instance_id):
     elastic_ip = ec.allocate_address(Domain='Vpc')
     ec.associate_address(AllocationId=elastic_ip['AllocationId'],InstanceId=instance_id)
     return elastic_ip['PublicIp']
+
+def get_security_group_ids_config(
+  security_group_code=None,
+  security_group_id=None,
+):
+    if security_group_code:
+        # Get the security group tagged with the key matching this code
+        security_group_filters = [
+          {'Name': 'tag:Code', 'Values': [security_group_code]}
+        ]
+        security_groups = ec.describe_security_groups(
+          Filters=security_group_filters
+        ).get(
+          'SecurityGroups', []
+        )
+        security_group_ids = [security_group['GroupId'] for security_group in security_groups]
+        print('Found security group ids')
+    else:
+        security_group_ids = [security_group_id]
+
+    return security_group_ids
 
 def get_instance_creation_config(
   deployment_name,
@@ -27,32 +50,9 @@ def get_instance_creation_config(
   user_data=None,
   volume_size=None,
 ):
-    if security_group_code:
-      # Get the security group tagged with the key matching this code
-      security_group_filters = [
-        {'Name': 'tag:Code', 'Values': [security_group_code]}
-      ]
-      security_groups = ec.describe_security_groups(
-        Filters=security_group_filters
-      ).get(
-        'SecurityGroups', []
-      )
-      security_group_ids = [security_group['GroupId'] for security_group in security_groups]
-      print('Found security group ids')
-    else:
-      security_group_ids = [security_group_id]
+    security_group_ids = get_security_group_ids_config(security_group_code, security_group_id)
 
     instance_name = deployment_type + ': ' + deployment_name
-
-    # TODO delete deployment component stuff after db on RDS
-    if extra_tags:
-      try:
-        deployment_component = [
-            t.get('Value') for t in extra_tags
-            if t['Key'] == 'DeploymentComponent'][0]
-        instance_name = deployment_type + '-' + deployment_component + ': ' + deployment_name
-      except IndexError:
-        pass # no deployment component to add to instance name
 
     tags = [
       { 'Key': 'Name', 'Value': instance_name },
@@ -126,8 +126,8 @@ def create_instance(
       deployment_type,
       instance_type,
       branch=branch,
-      cloned_from=cloned_from,
       extra_tags=extra_tags,
+      cloned_from=cloned_from,
       iam_role_arn=iam_role_arn,
       image_id=image_id,
       security_group_code=security_group_code,
@@ -157,3 +157,110 @@ def create_instance(
         setup_subdomains_via_gateway(deployment_type, new_instance_object, subdomains_via_gateway, deployment_name)
 
     return new_instance_object
+
+def clone_db_from_snapshot(
+  deployment_name,
+  deployment_type,
+  snapshot_name,
+  instance_type,
+  extra_tags=[],
+  security_group_code=None,
+  security_group_id=None,
+):
+    db_instance_id = deployment_type + '-' + deployment_name
+    snapshot_db_instance_id = deployment_type + '-' + snapshot_name
+    security_group_ids = get_security_group_ids_config(security_group_code, security_group_id)
+    required_tags = [
+        {
+            'Key': 'DeploymentName',
+            'Value': deployment_name
+        },
+        {
+            'Key': 'DeploymentType',
+            'Value': deployment_type
+        },
+        {
+            'Key': 'ClonedFrom',
+            'Value': snapshot_name
+        },
+    ];
+
+    required_tags_keys = list(map(lambda required_tag: required_tag['Key'], required_tags))
+    non_repeating_extra_tags = list(filter(lambda item: item['Key'] not in required_tags_keys, extra_tags))
+    all_tags = required_tags + non_repeating_extra_tags
+
+    snapshot_id = get_latest_db_snapshot(snapshot_db_instance_id)
+    rds.restore_db_instance_from_db_snapshot(
+        DBInstanceIdentifier=db_instance_id,
+        DBSnapshotIdentifier=snapshot_id,
+        DBInstanceClass=instance_type,
+        Port=5432,
+        PubliclyAccessible=True,
+        VpcSecurityGroupIds=security_group_ids,
+        Tags=all_tags,
+    )
+
+    print('Successfully cloned new db (' + db_instance_id + ') from snapshot')
+
+    return db_instance_id
+
+def setup_db_route53_entries(deployment_name, db_instance):
+    add_subdomains_to_route53(
+        domain='tupaia.org', 
+        subdomains=['db'], 
+        deployment_name=deployment_name, 
+        dns_url=db_instance['Endpoint']['Address']
+    )
+
+def create_db_instance_from_snapshot(
+  deployment_name,
+  deployment_type,
+  snapshot_name,
+  instance_type,
+  extra_tags=[],
+  security_group_code=None,
+  security_group_id=None,
+):
+    db_instance_id = clone_db_from_snapshot(
+      deployment_name,
+      deployment_type,
+      snapshot_name,
+      instance_type,
+      extra_tags,
+      security_group_code,
+      security_group_id
+    )
+    
+    waiter = rds.get_waiter('db_instance_available')
+    waiter.wait(DBInstanceIdentifier=db_instance_id)
+    instance = rds.describe_db_instances(DBInstanceIdentifier=db_instance_id)['DBInstances'][0]
+
+    setup_db_route53_entries(deployment_name, instance)
+
+    return instance
+
+async def create_db_instance_from_snapshot_async(
+  deployment_name,
+  deployment_type,
+  snapshot_name,
+  instance_type,
+  extra_tags=[],
+  security_group_code=None,
+  security_group_id=None,
+):
+    db_instance_id = clone_db_from_snapshot(
+      deployment_name,
+      deployment_type,
+      snapshot_name,
+      instance_type,
+      extra_tags,
+      security_group_code,
+      security_group_id
+    )
+    
+    await wait_for_db_instance(db_instance_id, 'available')
+    instance = rds.describe_db_instances(DBInstanceIdentifier=db_instance_id)['DBInstances'][0]
+
+    setup_db_route53_entries(deployment_name, instance)
+    
+    return instance
