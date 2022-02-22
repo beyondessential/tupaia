@@ -22,9 +22,10 @@ const FirstColumnCell = styled.span`
   text-align: left;
 `;
 
-const makeFirstColumn = (header, accessor) => ({
+const makeFirstColumn = (header, accessor, sortRows) => ({
   Header: header,
   accessor,
+  sortType: sortRows,
   // eslint-disable-next-line react/prop-types
   Cell: ({ value }) => <FirstColumnCell>{String(value)}</FirstColumnCell>,
 });
@@ -34,7 +35,7 @@ const makeFirstColumn = (header, accessor) => ({
  * Use the keys in chartConfig to determine which columns to render, and if chartConfig doesn't exist
  * use value as the only column
  */
-const processColumns = viewContent => {
+const processColumns = (viewContent, sortByTimestamp) => {
   if (!viewContent?.data) {
     return [];
   }
@@ -49,8 +50,10 @@ const processColumns = viewContent => {
   }
 
   if (hasTimeSeriesData) {
-    firstColumn = makeFirstColumn(xName || 'Date', row =>
-      formatTimestampForChart(row.timestamp, periodGranularity),
+    firstColumn = makeFirstColumn(
+      xName || 'Date',
+      row => formatTimestampForChart(row.timestamp, periodGranularity),
+      sortByTimestamp,
     );
   }
 
@@ -92,7 +95,15 @@ const processData = viewContent => {
 };
 
 export const getChartTableData = viewContent => {
-  const columns = useMemo(() => processColumns(viewContent), [JSON.stringify(viewContent)]);
+  // Because react-table wants its sort function to be memoized, it needs to live here, outside of
+  // the other useMemo hooks
+  const sortByTimestamp = useMemo(() => (rowA, rowB) => {
+    const rowAMoreRecent = rowA.original.timestamp > rowB.original.timestamp;
+    return rowAMoreRecent ? 1 : -1;
+  });
+  const columns = useMemo(() => processColumns(viewContent, sortByTimestamp), [
+    JSON.stringify(viewContent),
+  ]);
   const data = useMemo(() => processData(viewContent), [JSON.stringify(viewContent)]);
   return {
     columns,
