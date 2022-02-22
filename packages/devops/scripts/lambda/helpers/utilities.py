@@ -31,6 +31,9 @@ def get_tag(instance, tag_name):
         tag_value = ''
     return tag_value
 
+def get_db_tag(db_instance, tag_name):
+    return next(filter(lambda item: item['Key'] == tag_name, db_instance['TagList']))['Value']
+
 def add_tag(instance_id, tag_name, tag_value):
     ec.create_tags(
         Resources=[instance_id],

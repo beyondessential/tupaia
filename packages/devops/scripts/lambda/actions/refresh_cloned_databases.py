@@ -29,6 +29,7 @@ from helpers.creation import create_db_instance_from_snapshot_async
 from helpers.teardown import teardown_db_instance
 from helpers.rds import find_db_instances, get_all_db_instances, rename_db_instance, set_db_instance_master_password
 from helpers.secrets import get_db_master_password
+from helpers.utilities import get_db_tag
 
 loop = asyncio.get_event_loop()
 
@@ -93,8 +94,8 @@ async def recreate_db(db_instance):
     db_id = db_instance['DBInstanceIdentifier']
     db_instance_type = db_instance['DBInstanceClass']
     security_group_id = db_instance['VpcSecurityGroups'][0]['VpcSecurityGroupId']
-    clone_db_from = next(filter(lambda item: item['Key'] == 'ClonedFrom', db_instance['TagList']))['Value']
-    deployment_name = next(filter(lambda item: item['Key'] == 'DeploymentName', db_instance['TagList']))['Value']
+    clone_db_from = get_db_tag(db_instance, 'ClonedFrom')
+    deployment_name = get_db_tag(db_instance, 'DeploymentName')
 
     print('starting recreate of: ' + db_id)
 

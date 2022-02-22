@@ -1,4 +1,5 @@
 from actions.backup_instances import backup_instances
+from actions.delete_old_databases import delete_old_databases
 from actions.delete_old_servers import delete_old_servers
 from actions.delete_old_snapshots import delete_old_snapshots
 from actions.refresh_cloned_servers import refresh_cloned_servers
@@ -17,6 +18,7 @@ from actions.tear_down_dhis_deployment import tear_down_dhis_deployment
 
 actions = {
   'backup_instances': backup_instances,
+  'delete_old_databases': delete_old_databases,
   'delete_old_servers': delete_old_servers,
   'delete_old_snapshots': delete_old_snapshots,
   'refresh_cloned_servers': refresh_cloned_servers,
