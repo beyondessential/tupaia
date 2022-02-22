@@ -15,6 +15,16 @@ export type EventsFetchOptions = {
   dataElementCodes?: string[];
 };
 
+export type Event = {
+  date: string;
+  entityCode: string;
+  entityName: '';
+  eventId: string;
+  type: string;
+  value: any;
+  dataElementCode?: string;
+}
+
 export class DataLakeEventsFetchQuery {
   private readonly database: DataLakeDatabase;
 
@@ -44,10 +54,10 @@ export class DataLakeEventsFetchQuery {
     this.endDate = endDate;
     this.eventId = eventId;
     this.dataGroupCode = dataGroupCode;
-    this.hasDataElements = dataElementCodes && dataElementCodes.length > 0;
+    this.hasDataElements = dataElementCodes ? dataElementCodes.length > 0 : false;
   }
 
-  async fetch() {
+  async fetch(): Promise<Event[]> {
     const { query, params } = this.buildQueryAndParams();
 
     const sqlQuery = new SqlQuery(query, params);
@@ -75,8 +85,8 @@ export class DataLakeEventsFetchQuery {
     let params = this.entityCodes;
     const joins = [SqlQuery.innerJoin('analytics', 'entity_code', this.entityCodes)];
     if (this.hasDataElements) {
-      params = params.concat(this.dataElementCodes);
-      joins.push(SqlQuery.innerJoin('analytics', 'data_element_code', this.dataElementCodes));
+      params = params.concat(this.dataElementCodes as string[]);
+      joins.push(SqlQuery.innerJoin('analytics', 'data_element_code', this.dataElementCodes as string[]));
     }
     return { joins: joins.join('\n'), params };
   }

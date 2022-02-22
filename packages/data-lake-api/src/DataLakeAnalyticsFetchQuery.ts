@@ -13,6 +13,19 @@ export type AnalyticsFetchOptions = {
   endDate?: string;
 };
 
+export type AnalyticsFetchResult = {
+  analytics: Analytic[],
+  numAggregationsProcessed: number,
+}
+
+export type Analytic = {
+  period: string;
+  entityCode: string;
+  type: string;
+  value: any;
+  dataElementCode: string;
+}
+
 export class DataLakeAnalyticsFetchQuery {
   private readonly database: DataLakeDatabase;
   private readonly dataElementCodes: string[];
@@ -30,7 +43,7 @@ export class DataLakeAnalyticsFetchQuery {
     this.endDate = endDate;
   }
 
-  async fetch() {
+  async fetch(): Promise<AnalyticsFetchResult> {
     const { query, params } = this.buildQueryAndParams();
 
     const sqlQuery = new SqlQuery(query, params);
