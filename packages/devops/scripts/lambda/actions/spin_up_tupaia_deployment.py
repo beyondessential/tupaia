@@ -34,11 +34,9 @@
 # N.B. example 3 is unusual and generally just used for debugging the redeploy process itself. If
 # used, you need to tag the AMI and security groups with the codes you specify
 
-from datetime import datetime, timedelta
-
 from helpers.creation import create_db_instance_from_snapshot
 from helpers.create_from_image import create_tupaia_instance_from_image
-from helpers.utilities import find_instances
+from helpers.utilities import find_instances, build_extra_tags
 from helpers.rds import set_db_instance_master_password
 from helpers.secrets import get_db_master_password
 
@@ -66,28 +64,7 @@ def spin_up_tupaia_deployment(event):
     image_code = event.get('ImageCode', 'tupaia-gold-master') # Use AMI tagged with code
     security_group_code = event.get('SecurityGroupCode', 'tupaia-dev-sg') # Use security group tagged with code
     clone_db_from = event.get('CloneDbFrom', 'production') # Use volume snapshot tagged with deployment name
-
-    extra_tags = [
-        { 'Key': 'DeployedBy', 'Value': event['User'] }
-    ]
-    if 'HoursOfLife' in event:
-        delete_after = datetime.now() + timedelta(hours=event['HoursOfLife'])
-        extra_tags.append({ 'Key': 'DeleteAfter', 'Value': format(delete_after, "%Y-%m-%d %H:%M") })
-
-    if deployment_name == 'production':
-        if 'StartAtUTC' in event or 'StopAtUTC' in event:
-            raise Exception('Production deployment cannot have StartAtUTC/StopAtUTC')
-    else:
-        if 'StartAtUTC' in event:
-            extra_tags.append({ 'Key': 'StartAtUTC', 'Value': event['StartAtUTC'] })
-        else:
-            extra_tags.append({ 'Key': 'StartAtUTC', 'Value': '18:00'}) # 6pm UTC is 4am AEST, 5am AEDT, 6am NZST, 7am NZDT
-
-        if 'StopAtUTC' in event:
-            extra_tags.append({ 'Key': 'StopAtUTC', 'Value': event['StopAtUTC'] })
-        else:
-            extra_tags.append({ 'Key': 'StopAtUTC', 'Value': '09:00'}) # 9am UTC is 7pm AEST, 8pm AEDT, 9pm NZST, 10pm NZDT
-
+    extra_tags = build_extra_tags(event)
 
     # launch server instance based on gold master AMI
     create_tupaia_instance_from_image(
@@ -108,7 +85,8 @@ def spin_up_tupaia_deployment(event):
         'tupaia',
         clone_db_from,
         db_instance_type,
-        security_group_code
+        extra_tags=extra_tags,
+        security_group_code=security_group_code
     )
     # set master password
     set_db_instance_master_password('tupaia-' + deployment_name, get_db_master_password())

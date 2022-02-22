@@ -3,6 +3,8 @@ import asyncio
 import functools
 import re
 
+from datetime import datetime, timedelta
+
 ec2 = boto3.resource('ec2')
 ec = boto3.client('ec2')
 iam = boto3.client('iam')
@@ -97,3 +99,27 @@ async def start_instance(instance):
     print('Starting instance ' + instance_object.id)
     await wait_for_instance(instance_object.id, 'running')
     print('Started instance with id ' + instance_object.id)
+
+def build_extra_tags(event):
+    extra_tags = [
+        { 'Key': 'DeployedBy', 'Value': event['User'] }
+    ]
+    if 'HoursOfLife' in event:
+        delete_after = datetime.now() + timedelta(hours=event['HoursOfLife'])
+        extra_tags.append({ 'Key': 'DeleteAfter', 'Value': format(delete_after, "%Y-%m-%d %H:%M") })
+
+    if event['DeploymentName'] == 'production':
+        if 'StartAtUTC' in event or 'StopAtUTC' in event:
+            raise Exception('Production deployment cannot have StartAtUTC/StopAtUTC')
+    else:
+        if 'StartAtUTC' in event:
+            extra_tags.append({ 'Key': 'StartAtUTC', 'Value': event['StartAtUTC'] })
+        else:
+            extra_tags.append({ 'Key': 'StartAtUTC', 'Value': '18:00'}) # 6pm UTC is 4am AEST, 5am AEDT, 6am NZST, 7am NZDT
+
+        if 'StopAtUTC' in event:
+            extra_tags.append({ 'Key': 'StopAtUTC', 'Value': event['StopAtUTC'] })
+        else:
+            extra_tags.append({ 'Key': 'StopAtUTC', 'Value': '09:00'}) # 9am UTC is 7pm AEST, 8pm AEDT, 9pm NZST, 10pm NZDT
+    
+    return extra_tags

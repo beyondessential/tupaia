@@ -163,12 +163,31 @@ def clone_db_from_snapshot(
   deployment_type,
   snapshot_name,
   instance_type,
+  extra_tags=[],
   security_group_code=None,
   security_group_id=None,
 ):
     db_instance_id = deployment_type + '-' + deployment_name
     snapshot_db_instance_id = deployment_type + '-' + snapshot_name
     security_group_ids = get_security_group_ids_config(security_group_code, security_group_id)
+    required_tags = [
+        {
+            'Key': 'DeploymentName',
+            'Value': deployment_name
+        },
+        {
+            'Key': 'DeploymentType',
+            'Value': deployment_type
+        },
+        {
+            'Key': 'ClonedFrom',
+            'Value': snapshot_name
+        },
+    ];
+
+    required_tags_keys = list(map(lambda required_tag: required_tag['Key'], required_tags))
+    non_repeating_extra_tags = list(filter(lambda item: item['Key'] not in required_tags_keys, extra_tags))
+    all_tags = required_tags + non_repeating_extra_tags
 
     snapshot_id = get_latest_db_snapshot(snapshot_db_instance_id)
     rds.restore_db_instance_from_db_snapshot(
@@ -178,20 +197,7 @@ def clone_db_from_snapshot(
         Port=5432,
         PubliclyAccessible=True,
         VpcSecurityGroupIds=security_group_ids,
-        Tags=[
-            {
-                'Key': 'DeploymentName',
-                'Value': deployment_name
-            },
-            {
-                'Key': 'DeploymentType',
-                'Value': deployment_type
-            },
-            {
-                'Key': 'ClonedFrom',
-                'Value': snapshot_name
-            },
-        ],
+        Tags=all_tags,
     )
 
     print('Successfully cloned new db (' + db_instance_id + ') from snapshot')
@@ -211,6 +217,7 @@ def create_db_instance_from_snapshot(
   deployment_type,
   snapshot_name,
   instance_type,
+  extra_tags=[],
   security_group_code=None,
   security_group_id=None,
 ):
@@ -219,6 +226,7 @@ def create_db_instance_from_snapshot(
       deployment_type,
       snapshot_name,
       instance_type,
+      extra_tags,
       security_group_code,
       security_group_id
     )
@@ -236,6 +244,7 @@ async def create_db_instance_from_snapshot_async(
   deployment_type,
   snapshot_name,
   instance_type,
+  extra_tags=[],
   security_group_code=None,
   security_group_id=None,
 ):
@@ -244,6 +253,7 @@ async def create_db_instance_from_snapshot_async(
       deployment_type,
       snapshot_name,
       instance_type,
+      extra_tags,
       security_group_code,
       security_group_id
     )

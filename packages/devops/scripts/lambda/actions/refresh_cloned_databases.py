@@ -104,7 +104,8 @@ async def recreate_db(db_instance):
         'tupaia',
         clone_db_from,
         db_instance_type,
-        security_group_id=security_group_id
+        extra_tags=db_instance['TagList'],
+        security_group_id=security_group_id,
     )
 
     # set master password

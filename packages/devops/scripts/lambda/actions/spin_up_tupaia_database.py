@@ -14,6 +14,7 @@
 from helpers.creation import create_db_instance_from_snapshot
 from helpers.rds import set_db_instance_master_password
 from helpers.secrets import get_db_master_password
+from helpers.utilities import build_extra_tags
 
 def spin_up_tupaia_database(event):
     # validate input config
@@ -25,6 +26,7 @@ def spin_up_tupaia_database(event):
     db_instance_type = event.get('DbInstanceType', 'db.t4g.large')
     security_group_code = event.get('SecurityGroupCode', 'tupaia-dev-sg') # Use security group tagged with code
     clone_db_from = event.get('CloneDbFrom', 'production') # Use volume snapshot tagged with deployment name
+    extra_tags = build_extra_tags(event)
 
     # create db instance from a snapshot
     create_db_instance_from_snapshot(
@@ -32,7 +34,8 @@ def spin_up_tupaia_database(event):
         'tupaia',
         clone_db_from,
         db_instance_type,
-        security_group_code
+        extra_tags=extra_tags,
+        security_group_code=security_group_code
     )
 
     # set master password
