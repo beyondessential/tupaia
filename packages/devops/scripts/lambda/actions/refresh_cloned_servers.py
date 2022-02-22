@@ -1,23 +1,23 @@
-# Replaces the volume of any cloned instance with the latest snapshot from the original clone volume
+# Replaces the volume of any cloned application servers with the latest snapshot from the original clone volume
 #
 # Example configs
 #
-# 1. Refresh all cloned instances (i.e. those with the tag "ClonedFrom")
+# 1. Refresh all cloned servers (i.e. those with the tag "ClonedFrom")
 # {
-#   "Action": "refresh_cloned_instances",
+#   "Action": "refresh_cloned_servers",
 #   "User": "edwin"
 # }
 #
-# 2. Refresh all instances cloned from a specific base, e.g. all tupaia-db instances
+# 2. Refresh all servers cloned from a specific base, e.g. all tupaia-db instances
 # {
-#   "Action": "refresh_cloned_instances",
+#   "Action": "refresh_cloned_servers",
 #   "User": "edwin",
 #   "ClonedFrom": "tupaia-db"
 # }
 #
-# 3. Refresh a specific instance
+# 3. Refresh a specific server
 # {
-#   "Action": "refresh_cloned_instances",
+#   "Action": "refresh_cloned_servers",
 #   "User": "edwin",
 #   "DeploymentName": "edwin-test"
 # }
@@ -30,7 +30,7 @@ from helpers.utilities import find_instances, get_tag, start_instance, stop_inst
 
 loop = asyncio.get_event_loop()
 
-def refresh_cloned_instances(event):
+def refresh_cloned_servers(event):
     filters = [
         { 'Name': 'tag-key', 'Values': ['ClonedFrom'] }
     ]

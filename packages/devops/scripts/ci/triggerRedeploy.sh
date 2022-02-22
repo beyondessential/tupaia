@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 STOPPED_INSTANCES=$(aws ec2 describe-instances \
-      --filters Name=tag:Branch,Values=${CI_BRANCH} Name=tag:DeploymentType,Values=tupaia Name=tag:DeploymentComponent,Values=app-server Name=instance-state-name,Values=stopped \
+      --filters Name=tag:Branch,Values=${CI_BRANCH} Name=tag:DeploymentType,Values=tupaia Name=instance-state-name,Values=stopped \
       --no-cli-pager)
 
 if [[ $STOPPED_INSTANCES == *"Instances"* ]]; then
@@ -11,7 +11,7 @@ fi
 
 
 RUNNING_INSTANCES=$(aws ec2 describe-instances \
-      --filters Name=tag:Branch,Values=${CI_BRANCH} Name=tag:DeploymentType,Values=tupaia Name=tag:DeploymentComponent,Values=app-server Name=instance-state-name,Values=running \
+      --filters Name=tag:Branch,Values=${CI_BRANCH} Name=tag:DeploymentType,Values=tupaia Name=instance-state-name,Values=running \
       --no-cli-pager)
 
 if [[ $RUNNING_INSTANCES != *"Instances"* ]]; then
@@ -21,8 +21,9 @@ fi
 
 echo "At least one running deployment, triggering redeploy of any tagged with Branch ${CI_BRANCH}"
 RESPONSE_FILE=lambda_redeploy_response.json
+# TODO: Set the 'testRDS' to a correct name before merging rn-195-epic
 AWS_MAX_ATTEMPTS=1 aws lambda invoke \
-  --function-name deployment \
+  --function-name testRDS \
   --payload "{\"Action\": \"redeploy_tupaia_server\", \"User\": \"${CI_COMMITTER_NAME} via codeship\", \"Branch\": \"$CI_BRANCH\" }" \
   --no-cli-pager \
   --cli-binary-format raw-in-base64-out \
@@ -60,8 +61,9 @@ for DEPLOYMENT_BASE64 in $DEPLOYMENTS; do
       fi
       echo "New instance ${NEW_INSTANCE_ID} is ready, swapping over ELB"
       SWAP_OUT_RESPONSE_FILE=lambda_swap_out_response.json
+      # TODO: Set the 'testRDS' to a correct name before merging rn-195-epic
       AWS_MAX_ATTEMPTS=1 aws lambda invoke \
-        --function-name deployment \
+        --function-name testRDS \
         --payload "{\"Action\": \"swap_out_tupaia_server\", \"User\": \"${CI_COMMITTER_NAME} via codeship\", \"DeploymentName\": \"$DEPLOYMENT_NAME\", \"NewInstanceId\": \"$NEW_INSTANCE_ID\" }" \
         --no-cli-pager \
         --cli-binary-format raw-in-base64-out \
