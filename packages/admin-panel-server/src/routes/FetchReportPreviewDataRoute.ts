@@ -15,7 +15,8 @@ import {
   draftMapOverlayValidator,
   draftReportValidator,
   PreviewMode,
-  VIZ_TYPE_PARAM, VizType,
+  VIZ_TYPE_PARAM,
+  VizType,
 } from '../viz-builder';
 import { MapOverlayVisualisationExtractor } from '../viz-builder/mapOverlayVisualisation/MapOverlayVisualisationExtractor';
 
