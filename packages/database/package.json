@@ -13,7 +13,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && run-p \"build:* {@}\" --",
-    "build:src": "babel src --out-dir dist --source-maps --config-file \"../../babel.config.json\"",
+    "build:src": "babel src --out-dir dist --source-maps --config-file \"../../babel.config.json\" --copy-files --no-copy-ignored",
     "build:types": "tsc",
     "dump-database": "./scripts/dumpDatabase.sh",
     "lint": "eslint --ignore-path ../../.gitignore .",
