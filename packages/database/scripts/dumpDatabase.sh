@@ -5,9 +5,9 @@ function print_help() {
 dumpDatabase.sh <identity_file>
 
 Options:
-  -h, --help     Show help                                                       [boolean]
-  -s, --server   Stage name of the EC2 instance that will be used (default: dev) [string]
-  -t, --target   Directory to store the dump under                               [string]
+  -h, --help     Show help                                                              [boolean]
+  -s, --server   Deployment name of the DB instance that will be used (default: dev)    [string]
+  -t, --target   Directory to store the dump under                                      [string]
 EOF
 }
 
@@ -50,29 +50,12 @@ if [ "$identity_file" == "" ]; then
     exit 1
 fi
 
-domain=$server-db.tupaia.org
-host="ubuntu@$domain"
-dump_file_path="/var/lib/postgresql/$DUMP_FILE_NAME"
-
-echo "Creating dump file in $domain..."
-ssh -o StrictHostKeyChecking=no -i $identity_file $host \
-    "sudo -u postgres bash -c \"pg_dump tupaia > $dump_file_path\""
-
-echo "Compressing dump file"
-ssh -o StrictHostKeyChecking=no -i $identity_file $host \
-    "sudo gzip -f $dump_file_path"
-
+host=$server-db.tupaia.org
 target_path="$(
     cd "$target_dir"
     pwd
-)/$DUMP_FILE_NAME.gz"
-echo "Downloading dump file into '$target_path'..."
-scp -i $identity_file "$host:$dump_file_path.gz" $target_dir
+)/$DUMP_FILE_NAME"
 
-echo "Deleting temporary dump file in the server..."
-ssh -i $identity_file $host "sudo rm $dump_file_path.gz"
-
-echo "Unzipping local copy"
-gzip -d -f $target_path
+pg_dump "host=$host user=postgres dbname=tupaia sslmode=require sslkey=$identity_file" -f $target_path
 
 echo "Done!"
