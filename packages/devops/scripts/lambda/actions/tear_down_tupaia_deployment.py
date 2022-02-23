@@ -27,6 +27,7 @@ def tear_down_tupaia_deployment(event):
     deployment_name = event['DeploymentName']
     instance_filters = [
       { 'Name': 'tag:DeploymentName', 'Values': [deployment_name] },
+      { 'Name': 'tag:DeploymentType', 'Values': ['tupaia'] },
       { 'Name': 'instance-state-name', 'Values': ['running', 'stopped']} # ignore terminated instances
     ]
     instances = find_instances(instance_filters)

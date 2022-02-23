@@ -52,6 +52,7 @@ def spin_up_tupaia_deployment(event):
     # find current instances
     existing_instances = find_instances([
         { 'Name': 'tag:DeploymentName', 'Values': [deployment_name] },
+        { 'Name': 'tag:DeploymentType', 'Values': ['tupaia'] },
         { 'Name': 'instance-state-name', 'Values': ['running', 'stopped'] } # ignore terminated instances
     ])
 
