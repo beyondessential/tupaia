@@ -27,7 +27,7 @@ const mergeStrategyNameValidator = optionalMergeStrategyNameValidator.required()
 
 export const paramsValidator = yup.object().shape({
   groupBy: starSingleOrMultipleColumnsValidator,
-  using: yupUtils.customLazy(
+  using: yupUtils.lazy(
     (value: unknown) => {
       if (value === undefined) {
         return optionalMergeStrategyNameValidator;

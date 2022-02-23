@@ -165,14 +165,14 @@ class CustomLazy extends Lazy {
   }
 }
 
-const customLazy = (builder, yupSchemas) => {
+const lazy = (builder, yupSchemas) => {
   return new CustomLazy(builder, yupSchemas);
 };
 
 export const yupUtils = {
   oneOfType,
   oneOrArrayOf,
-  customLazy,
+  lazy,
   polymorphic,
   testSync,
 };
