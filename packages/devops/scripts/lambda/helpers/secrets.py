@@ -3,8 +3,7 @@ import base64
 import json
 
 def get_db_master_password():
-    # TODO: Set the 'testRDS' to a correct name before merging rn-195-epic
-    secret_string = get_secret("testRDS/masterPassword", "ap-southeast-2")
+    secret_string = get_secret("tupaiaRDS/master-password", "ap-southeast-2")
     secret_dict = json.loads(secret_string)
     return secret_dict['password']
 
