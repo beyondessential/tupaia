@@ -6,7 +6,7 @@
 /* eslint-disable no-template-curly-in-string */
 
 import * as yup from 'yup';
-
+import Lazy from 'yup/lib/Lazy';
 import { toArray } from '../array';
 import { getUniqueEntries } from '../getUniqueEntries';
 
@@ -127,9 +127,52 @@ const testSync = (schema, createError) =>
     },
   });
 
+class CustomLazy extends Lazy {
+  constructor(builder, yupSchemas) {
+    super(builder);
+    this.yupSchemas = yupSchemas;
+  }
+
+  describe() {
+    // Convert yup schema to json schema
+    const schemas = [];
+    schemas.push(...this.yupSchemas.map(yupSchema => yupSchema.describe()));
+    const convertedSchema = schemas.map(schema => {
+      const { oneOf, type, innerType } = schema;
+      if (oneOf.length > 0) {
+        return {
+          oneOf: oneOf.map(value => ({ type: typeof value, const: value })),
+        };
+      }
+      if (type === 'array' && innerType && innerType.oneOf.length > 0) {
+        return {
+          type,
+          items: { oneOf: innerType.oneOf.map(value => ({ type: typeof value, const: value })) },
+        };
+      }
+      return {
+        type,
+      };
+    });
+
+    if (convertedSchema.length === 1) {
+      return convertedSchema[0];
+    }
+
+    return {
+      oneOf: convertedSchema,
+    };
+  }
+}
+
+const customLazy = (builder, yupSchemas) => {
+  return new CustomLazy(builder, yupSchemas);
+};
+
 export const yupUtils = {
   oneOfType,
   oneOrArrayOf,
+  customLazy,
   polymorphic,
   testSync,
 };

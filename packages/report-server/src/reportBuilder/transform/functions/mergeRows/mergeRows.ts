@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { yup } from '@tupaia/utils';
+import { yup, yupUtils } from '@tupaia/utils';
 
 import { Context } from '../../../context';
 import { TransformParser } from '../../parser';
@@ -20,32 +20,36 @@ type MergeRowsParams = {
   where: (parser: TransformParser) => boolean;
 };
 
+const optionalMergeStrategyNameValidator = yup
+  .mixed<keyof typeof mergeStrategies>()
+  .oneOf(Object.keys(mergeStrategies) as (keyof typeof mergeStrategies)[]);
+const mergeStrategyNameValidator = optionalMergeStrategyNameValidator.required();
+
 export const paramsValidator = yup.object().shape({
   groupBy: starSingleOrMultipleColumnsValidator,
-  using: yup.lazy((value: unknown) => {
-    const optionalMergeStrategyNameValidator = yup
-      .mixed<keyof typeof mergeStrategies>()
-      .oneOf(Object.keys(mergeStrategies) as (keyof typeof mergeStrategies)[]);
-    if (value === undefined) {
-      return optionalMergeStrategyNameValidator;
-    }
+  using: yupUtils.customLazy(
+    (value: unknown) => {
+      if (value === undefined) {
+        return optionalMergeStrategyNameValidator;
+      }
 
-    const mergeStrategyNameValidator = optionalMergeStrategyNameValidator.required();
-    if (typeof value === 'string') {
-      return mergeStrategyNameValidator;
-    }
+      if (typeof value === 'string') {
+        return mergeStrategyNameValidator;
+      }
 
-    if (typeof value === 'object' && value !== null) {
-      const mergeStrategyMapValidator = Object.fromEntries(
-        Object.entries(value).map(([columnName]) => [columnName, mergeStrategyNameValidator]),
+      if (typeof value === 'object' && value !== null) {
+        const mergeStrategyMapValidator = Object.fromEntries(
+          Object.entries(value).map(([columnName]) => [columnName, mergeStrategyNameValidator]),
+        );
+        return yup.object().shape(mergeStrategyMapValidator);
+      }
+
+      throw new yup.ValidationError(
+        'mergeUsing must be either a single merge strategy, or a mapping between columns and merge strategies',
       );
-      return yup.object().shape(mergeStrategyMapValidator);
-    }
-
-    throw new yup.ValidationError(
-      'mergeUsing must be either a single merge strategy, or a mapping between columns and merge strategies',
-    );
-  }),
+    },
+    [optionalMergeStrategyNameValidator, yup.object().shape({})],
+  ),
   where: yup.string(),
 });
 

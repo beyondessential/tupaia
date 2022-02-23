@@ -26,10 +26,10 @@ export class FetchTransformSchemaRoute extends Route<FetchTransformSchemaRequest
         return {
           name: transformKey,
           code: transformKey,
-          ...fields,
-          where: {
-            type: 'string',
-            optional: true,
+          schema: {
+            properties: {
+              ...fields,
+            },
           },
         };
       },
