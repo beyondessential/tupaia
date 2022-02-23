@@ -17,9 +17,17 @@ exports.setup = function (options, seedLink) {
 };
 
 const NEW_VALUE = 'village';
+const REMOVE_VALUE = 'facility';
 const PROJECT_NAME = 'covid_kiribati';
 
 exports.up = async function (db) {
+  await removeArrayValue(
+    db,
+    'entity_hierarchy',
+    'canonical_types',
+    REMOVE_VALUE,
+    `"name" = '${PROJECT_NAME}'`,
+  );
   await addArrayValue(
     db,
     'entity_hierarchy',
@@ -35,6 +43,13 @@ exports.down = async function (db) {
     'entity_hierarchy',
     'canonical_types',
     NEW_VALUE,
+    `"name" = '${PROJECT_NAME}'`,
+  );
+  await addArrayValue(
+    db,
+    'entity_hierarchy',
+    'canonical_types',
+    REMOVE_VALUE,
     `"name" = '${PROJECT_NAME}'`,
   );
 };
