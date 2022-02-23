@@ -3,9 +3,9 @@ from datetime import datetime
 from helpers.utilities import find_instances, get_tag
 from helpers.teardown import teardown_instance
 
-# Deletes all deployments with an expired "DeleteAfter" tag
+# Deletes all servers with an expired "DeleteAfter" tag
 
-def delete_old_deployments(event):
+def delete_old_servers(event):
     current_datetime = datetime.now()
     current_date = time.strftime("%Y-%m-%d")
     filters = [
