@@ -188,6 +188,7 @@ def clone_db_from_snapshot(
     required_tags_keys = list(map(lambda required_tag: required_tag['Key'], required_tags))
     non_repeating_extra_tags = list(filter(lambda item: item['Key'] not in required_tags_keys, extra_tags))
     all_tags = required_tags + non_repeating_extra_tags
+    deletion_protection = deployment_name == 'production' # ensure prod database cannot be deleted
 
     snapshot_id = get_latest_db_snapshot(snapshot_db_instance_id)
     rds.restore_db_instance_from_db_snapshot(
@@ -198,6 +199,7 @@ def clone_db_from_snapshot(
         PubliclyAccessible=True,
         VpcSecurityGroupIds=security_group_ids,
         Tags=all_tags,
+        DeletionProtection=deletion_protection
     )
 
     print('Successfully cloned new db (' + db_instance_id + ') from snapshot')
