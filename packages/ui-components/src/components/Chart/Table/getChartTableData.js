@@ -22,13 +22,19 @@ const FirstColumnCell = styled.span`
   text-align: left;
 `;
 
-const makeFirstColumn = (header, accessor, sortRows) => ({
-  Header: header,
-  accessor,
-  sortType: sortRows,
-  // eslint-disable-next-line react/prop-types
-  Cell: ({ value }) => <FirstColumnCell>{String(value)}</FirstColumnCell>,
-});
+const makeFirstColumn = (header, accessor, sortRows) => {
+  const firstColumn = {
+    Header: header,
+    accessor,
+    // eslint-disable-next-line react/prop-types
+    Cell: ({ value }) => <FirstColumnCell>{String(value)}</FirstColumnCell>,
+  };
+  if (sortRows) {
+    firstColumn.sortType = sortRows;
+  }
+
+  return firstColumn;
+};
 
 /**
  * Get columns to render in table
