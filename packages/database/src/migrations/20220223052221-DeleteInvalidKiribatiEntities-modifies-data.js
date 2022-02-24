@@ -29,7 +29,6 @@ exports.up = async function (db) {
   for (const code of ENTITY_CODES) {
     const entityId = await codeToId(db, 'entity', code);
     await deleteObject(db, 'entity_relation', { child_id: entityId });
-    await deleteObject(db, 'survey_response', { entity_id: entityId });
     await deleteObject(db, 'entity', { id: entityId });
   }
 };
