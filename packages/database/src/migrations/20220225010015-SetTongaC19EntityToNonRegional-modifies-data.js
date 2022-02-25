@@ -22,8 +22,8 @@ exports.up = function (db) {
       SELECT entity.id FROM entity
       JOIN survey_response ON entity.id = survey_response.entity_id
       JOIN survey ON survey.id = survey_response.survey_id
-      WHERE survey.code IN ('CCRF', 'CCLF', 'CCFU');
-    )
+      WHERE survey.code IN ('CCRF', 'CCLF', 'CCFU')
+    );
   `);
 };
 
