@@ -91,7 +91,6 @@ export const constructForSingle = (models, recordType) => {
     case TYPES.DATA_GROUP:
       return {
         code: [hasContent],
-        type: [hasContent],
         service_type: [constructIsOneOf(SERVICE_TYPES)],
         config: [hasContent],
       };
