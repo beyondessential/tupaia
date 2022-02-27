@@ -5,6 +5,7 @@ from helpers.utilities import get_tag
 
 ec = boto3.client('ec2')
 route53 = boto3.client('route53')
+rds = boto3.client('rds')
 
 def terminate_instance(instance):
     # Release elastic ip
@@ -25,10 +26,14 @@ def teardown_instance(instance):
     deployment_type = get_tag(instance, 'DeploymentType')
     deployment_name = get_tag(instance, 'DeploymentName')
 
+    # Build list of route53 entries to delete
+    record_set_deletions = []
+
     # Delete DNS subdomains
-    subdomains_via_dns = get_tag(instance, 'SubdomainsViaGateway')
-    public_dns_url = instance['PublicDnsName']
-    record_set_deletions = [build_record_set_deletion('tupaia.org', subdomain, deployment_name, dns_url=public_dns_url) for subdomain in subdomains_via_dns.split(',')]
+    subdomains_via_dns = get_tag(instance, 'SubdomainsViaDns')
+    if subdomains_via_dns != '':
+      public_dns_url = instance['PublicDnsName']
+      record_set_deletions = [build_record_set_deletion('tupaia.org', subdomain, deployment_name, dns_url=public_dns_url) for subdomain in subdomains_via_dns.split(',')]
 
     # Delete gateway subdomains
     subdomains_via_gateway = get_tag(instance, 'SubdomainsViaGateway')
@@ -38,7 +43,9 @@ def teardown_instance(instance):
 
     # Filter out deletions for record sets that don't actually exist
     hosted_zone_id = route53.list_hosted_zones_by_name(DNSName='tupaia.org')['HostedZones'][0]['Id']
-    all_record_sets = route53.list_resource_record_sets(HostedZoneId=hosted_zone_id)['ResourceRecordSets']
+    record_set_paginator = route53.get_paginator('list_resource_record_sets')
+    record_set_response = record_set_paginator.paginate(HostedZoneId=hosted_zone_id).build_full_result()
+    all_record_sets = record_set_response['ResourceRecordSets']
     all_record_set_names = [record_set['Name'] for record_set in all_record_sets]
     valid_record_set_deletions = [deletion for deletion in record_set_deletions if deletion['ResourceRecordSet']['Name'] in all_record_set_names]
     print('Generated {} record set changes'.format(len(record_set_deletions)))
@@ -57,3 +64,22 @@ def teardown_instance(instance):
       delete_gateway(deployment_type, deployment_name)
 
     terminate_instance(instance)
+
+def teardown_db_instance(
+  deployment_name=None,
+  deployment_type=None,
+  db_id=None
+):
+    if db_id:
+      db_instance_id = db_id
+    else:
+      db_instance_id = deployment_type + '-' + deployment_name
+          
+    deleted_instance = rds.delete_db_instance(
+        DBInstanceIdentifier=db_instance_id,
+        SkipFinalSnapshot=True,
+        DeleteAutomatedBackups=True
+    )
+    print('Successfully deleted db instance: ' + db_instance_id)
+
+    return deleted_instance

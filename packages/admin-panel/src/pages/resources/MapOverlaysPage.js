@@ -11,6 +11,7 @@ import { prettyArray } from '../../utilities';
 import { LightOutlinedButton } from '@tupaia/ui-components';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Link } from 'react-router-dom';
+import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -53,6 +54,7 @@ const FIELDS = [
     source: 'linked_measures',
     width: 160,
     Cell: ({ value }) => prettyArray(value),
+    Filter: ArrayFilter,
     editConfig: {
       optionsEndpoint: MAP_OVERLAYS_ENDPOINT,
       optionLabelKey: 'id',
@@ -72,6 +74,7 @@ const FIELDS = [
     source: 'country_codes',
     width: 140,
     Cell: ({ value }) => prettyArray(value),
+    Filter: ArrayFilter,
     editConfig: {
       optionsEndpoint: 'entities',
       optionLabelKey: 'code',
@@ -85,6 +88,7 @@ const FIELDS = [
     source: 'project_codes',
     width: 140,
     Cell: ({ value }) => prettyArray(value),
+    Filter: ArrayFilter,
     editConfig: {
       optionsEndpoint: 'projects',
       optionLabelKey: 'code',

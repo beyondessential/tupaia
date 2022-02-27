@@ -7,8 +7,8 @@ import { respond } from '@tupaia/utils';
 import { CRUDHandler } from '../CRUDHandler';
 import {
   getQueryOptionsForColumns,
+  fullyQualifyColumnSelector,
   processColumns,
-  processColumnSelector,
   processColumnSelectorKeys,
   generateLinkHeader,
 } from './helpers';
@@ -79,7 +79,7 @@ export class GETHandler extends CRUDHandler {
     if (sortString) {
       const sortKeys = JSON.parse(sortString);
       const fullyQualifiedSortKeys = sortKeys.map(sortKey =>
-        processColumnSelector(this.models, sortKey, this.recordType),
+        fullyQualifyColumnSelector(this.models, sortKey, this.recordType),
       );
       // if 'distinct', we can't order by any columns that aren't included in the distinct selection
       if (distinct) {

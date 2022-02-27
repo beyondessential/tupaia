@@ -11,11 +11,17 @@ env | grep "USER-DEFINED_.*" | awk -F "USER-DEFINED_" '{print $2}' > .env
 ## To manage that, we here manually install external deps, build internal deps, then redirect the
 ## package.json entries to the internal filesystem
 
+# workaround to override the v8 alias (see https://intercom.help/appcenter/en/articles/1592748-react-native-builds-fail-with-the-engine-node-is-incompatible-with-this-module-expected-version-x-x-x-error-found-incompatible-module)
+npm config delete prefix
+. ~/.bashrc
+nvm install
+nvm use
+
 # move to the root folder
 cd ../..
 
 # install root dependencies
-SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --ignore-engines
+SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
 
 # move to meditrak folder
 cd packages/meditrak-app
