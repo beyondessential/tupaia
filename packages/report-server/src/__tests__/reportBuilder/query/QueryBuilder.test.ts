@@ -239,13 +239,13 @@ describe('QueryBuilder', () => {
           {
             config: { fetch: { startDate: { unit: 'year', offset: '-2' } } },
             query: inputQuery({
-              startDate: '2020-05-06', // will be ignored - (offset is applied on top of endDate)
+              startDate: '2020-05-01',
               endDate: '2020-10-01',
             }),
           },
           outputQuery({
-            period: `${getPeriodString([2018, 10], [2020, 9])};20201001`,
-            startDate: '2018-10-01',
+            period: `${getPeriodString([2018, 5], [2020, 9])};20201001`,
+            startDate: '2018-05-01',
             endDate: '2020-10-01',
           }),
         ],
