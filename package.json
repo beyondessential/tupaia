@@ -20,7 +20,7 @@
   "scripts": {
     "build": "yarn build:full",
     "build:full": "yarn lerna run build --stream --reject-cycles",
-    "build:quick": "yarn build:full --since dev",
+    "build:dev": "yarn lerna run build:dev --stream --reject-cycles --since dev",
     "test": "yarn test:full",
     "test:full": "yarn lerna run test  --concurrency 1 --stream",
     "test:quick": "yarn test:full  --concurrency 1 --since dev",

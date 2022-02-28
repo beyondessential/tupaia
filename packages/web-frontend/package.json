@@ -12,7 +12,7 @@
   "main": "dist/index.js",
   "scripts": {
     "analyze": "source-map-explorer build/static/js/main.*",
-    "build": "rm -rf dist && run-p \"build:* {@}\" --",
+    "build": "rm -rf dist && run-p build:desktop build:mobile",
     "build:desktop": "SKIP_PREFLIGHT_CHECK=true BUILD_PATH='./build/desktop/' GENERATE_SOURCEMAP=false react-scripts build",
     "build:mobile": "SKIP_PREFLIGHT_CHECK=true BUILD_PATH='./build/mobile/' GENERATE_SOURCEMAP=false REACT_APP_APP_TYPE=mobile react-scripts build",
     "cypress:config": "yarn run:babel cypress/scripts/generateConfig",

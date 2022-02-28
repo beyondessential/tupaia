@@ -13,6 +13,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
+    "build:dev": "yarn build",
     "lint": "eslint . --ext .ts",
     "lint:fix": "yarn lint --fix",
     "test": "jest --runInBand",

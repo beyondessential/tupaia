@@ -12,9 +12,10 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-   "build": "rm -rf dist && run-p \"build:* {@}\" --",
+   "build": "rm -rf dist && run-p build:src build:types",
     "build:src": "babel src --out-dir dist --source-maps --ignore \"src/tests/**\" --config-file \"../../babel.config.json\"",
     "build:types": "tsc",
+    "build:dev": "yarn build",
     "test": "nyc --reporter=lcov mocha",
     "test-coverage": "cross-env NODE_ENV=test nyc mocha"
   },
