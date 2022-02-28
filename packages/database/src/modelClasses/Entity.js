@@ -31,8 +31,8 @@ const PROJECT = 'project';
 const CITY = 'city';
 const POSTCODE = 'postcode';
 
-// Note: if a new type is not included in `ORG_UNIT_ENTITY_TYPES`,
-// a corresponding tracked entity type must be created in DHIS
+// Note: if a new type is not included in `ORG_UNIT_ENTITY_TYPES`, but data is to be stored against
+// it on DHIS2, a corresponding tracked entity type must be created in DHIS2
 const ENTITY_TYPES = {
   CASE,
   CASE_CONTACT,
