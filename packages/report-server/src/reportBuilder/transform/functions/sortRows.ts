@@ -18,7 +18,7 @@ const ascOrDescValidator = yup.mixed<'asc' | 'desc'>().oneOf(['asc', 'desc']);
 
 export const paramsValidator = yup.object().shape({
   by: starSingleOrMultipleColumnsValidator,
-  direction: yupUtils.lazy(
+  direction: yupUtils.describableLazy(
     (value: unknown) => {
       if (typeof value === 'string' || value === undefined) {
         return ascOrDescValidator;

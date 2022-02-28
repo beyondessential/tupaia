@@ -5,7 +5,7 @@
 
 import { yup, yupUtils } from '@tupaia/utils';
 
-export const starSingleOrMultipleColumnsValidator = yupUtils.lazy(
+export const starSingleOrMultipleColumnsValidator = yupUtils.describableLazy(
   (value: unknown) => {
     if (typeof value === 'string' || value === undefined) {
       return yup.string();
@@ -22,7 +22,7 @@ export const starSingleOrMultipleColumnsValidator = yupUtils.lazy(
   [yup.string(), yup.array().of(yup.string().required())],
 );
 
-export const mapStringToStringValidator = yupUtils.lazy(
+export const mapStringToStringValidator = yupUtils.describableLazy(
   (value: unknown) => {
     if ((typeof value === 'object' && value !== null) || value === undefined) {
       const stringToStringMapValidator = Object.fromEntries(

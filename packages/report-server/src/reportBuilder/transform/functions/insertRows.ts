@@ -28,7 +28,7 @@ const positionValidator = yup.string().oneOf(['before', 'after', 'start']).defau
 export const paramsValidator = yup.object().shape({
   columns: mapStringToStringValidator,
   where: yup.string(),
-  position: yupUtils.lazy(() => {
+  position: yupUtils.describableLazy(() => {
     return positionValidator;
   }, [positionValidator]),
 });
