@@ -19,7 +19,7 @@
   },
   "scripts": {
     "build": "yarn build:full",
-    "build:full": "yarn ultra -r build",
+    "build:full": "yarn lerna run build --stream --reject-cycles",
     "build:dev": "yarn ultra -r build:dev",
     "build:dev:watch": "yarn ultra -r --no-pretty --concurrency 20 build:dev:watch",
     "test": "yarn test:full",
