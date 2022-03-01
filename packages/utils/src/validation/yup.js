@@ -6,9 +6,9 @@
 /* eslint-disable no-template-curly-in-string */
 
 import * as yup from 'yup';
-
 import { toArray } from '../array';
 import { getUniqueEntries } from '../getUniqueEntries';
+import { DescribableLazy } from './DescribableLazy';
 
 class InvalidSchemaError extends Error {
   constructor(receivedSchema) {
@@ -127,9 +127,14 @@ const testSync = (schema, createError) =>
     },
   });
 
+const describableLazy = (builder, yupSchemas) => {
+  return new DescribableLazy(builder, yupSchemas);
+};
+
 export const yupUtils = {
   oneOfType,
   oneOrArrayOf,
+  describableLazy,
   polymorphic,
   testSync,
 };

@@ -62,3 +62,9 @@ export interface AggregationType {
   code: string;
   description: string;
 }
+
+export interface TransformSchema {
+  name: string;
+  alias?: boolean;
+  string?: Record<string, string | boolean | string[]> | null;
+}

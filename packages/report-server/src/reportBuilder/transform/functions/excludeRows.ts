@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { yup } from '@tupaia/utils';
 import { TransformParser } from '../parser';
 import { buildWhere } from './where';
 import { Context } from '../../context';
@@ -11,6 +12,10 @@ import { Row } from '../../types';
 type ExcludeRowsParams = {
   where: (parser: TransformParser) => boolean;
 };
+
+export const paramsValidator = yup.object().shape({
+  where: yup.string(),
+});
 
 const excludeRows = (rows: Row[], params: ExcludeRowsParams, context: Context): Row[] => {
   const parser = new TransformParser(rows, context);
@@ -22,6 +27,7 @@ const excludeRows = (rows: Row[], params: ExcludeRowsParams, context: Context): 
 };
 
 const buildParams = (params: unknown): ExcludeRowsParams => {
+  paramsValidator.validateSync(params);
   return { where: buildWhere(params) };
 };
 

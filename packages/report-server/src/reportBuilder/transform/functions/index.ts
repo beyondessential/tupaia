@@ -6,13 +6,22 @@
 import { Context } from '../../context';
 import { Row } from '../../types';
 
-import { buildInsertColumns } from './insertColumns';
-import { buildExcludeColumns } from './excludeColumns';
-import { buildUpdateColumns } from './updateColumns';
-import { buildMergeRows } from './mergeRows';
-import { buildSortRows } from './sortRows';
-import { buildExcludeRows } from './excludeRows';
-import { buildInsertRows } from './insertRows';
+import {
+  buildInsertColumns,
+  paramsValidator as insertColumnsParamsValidator,
+} from './insertColumns';
+import {
+  buildExcludeColumns,
+  paramsValidator as excludeColumnsParamsValidator,
+} from './excludeColumns';
+import {
+  buildUpdateColumns,
+  paramsValidator as updateColumnsParamsValidator,
+} from './updateColumns';
+import { buildMergeRows, paramsValidator as mergeRowsParamsValidator } from './mergeRows';
+import { buildSortRows, paramsValidator as sortRowsParamsValidator } from './sortRows';
+import { buildExcludeRows, paramsValidator as excludeRowsParamsValidator } from './excludeRows';
+import { buildInsertRows, paramsValidator as insertRowsParamsValidator } from './insertRows';
 
 type TransformBuilder = (params: unknown, context: Context) => (rows: Row[]) => Row[];
 
@@ -24,4 +33,20 @@ export const transformBuilders: Record<string, TransformBuilder> = {
   sortRows: buildSortRows,
   excludeRows: buildExcludeRows,
   insertRows: buildInsertRows,
+};
+
+export const transformSchemas: Record<
+  string,
+  {
+    type: string;
+    fields: Record<string, unknown>;
+  }
+> = {
+  insertColumns: insertColumnsParamsValidator.describe(),
+  excludeColumns: excludeColumnsParamsValidator.describe(),
+  updateColumns: updateColumnsParamsValidator.describe(),
+  mergeRows: mergeRowsParamsValidator.describe(),
+  sortRows: sortRowsParamsValidator.describe(),
+  excludeRows: excludeRowsParamsValidator.describe(),
+  insertRows: insertRowsParamsValidator.describe(),
 };
