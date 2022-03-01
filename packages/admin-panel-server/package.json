@@ -17,6 +17,7 @@
   "scripts": {
     "build": "tsc",
     "build:dev": "yarn build",
+    "build:dev:watch": "yarn build --watch",
     "lint": "eslint . --ext .ts",
     "lint:all": "yarn run lint \"src/**/*.{ts,jsx}\"",
     "lint:fix": "yarn lint --fix",

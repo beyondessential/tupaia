@@ -15,6 +15,7 @@
     "build:src": "SKIP_PREFLIGHT_CHECK=true GENERATE_SOURCEMAP=false react-scripts build",
     "build:library": "rollup -c",
     "build:dev": "yarn build:library",
+    "build:dev:watch": "yarn build:library --watch",
     "cypress:open": "cross-env NODE_ENV=test yarn cypress open",
     "cypress:run": "cross-env NODE_ENV=test yarn cypress run",
     "eject": "react-scripts eject",

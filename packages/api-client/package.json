@@ -8,6 +8,7 @@
   "scripts": {
     "build": "tsc",
     "build:dev": "yarn build",
+    "build:dev:watch": "yarn build --watch",
     "lint": "eslint . --ext .ts",
     "lint:fix": "yarn lint --fix",
     "test": "jest --runInBand",

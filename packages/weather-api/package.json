@@ -16,6 +16,7 @@
     "build:src": "babel src --out-dir dist --source-maps --ignore \"src/tests/**\" --config-file \"../../babel.config.json\"",
     "build:types": "tsc",
     "build:dev": "yarn build",
+    "build:dev:watch": "run-p \"build:src --watch\" \"build:types --watch\"",
     "test": "nyc --reporter=lcov mocha",
     "test-coverage": "cross-env NODE_ENV=test nyc mocha"
   },

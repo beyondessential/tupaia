@@ -16,6 +16,7 @@
     "build:src": "babel src --out-dir dist --source-maps --ignore \"**/migrations\",\"src/tests/**\" --config-file \"../../babel.config.json\"",
     "build:types": "tsc",
     "build:dev": "yarn build",
+    "build:dev:watch": "run-p \"build:src --watch\" \"build:types --watch\"",
     "dump-database": "./scripts/dumpDatabase.sh",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",

@@ -16,6 +16,7 @@
     "build:src": "babel src --out-dir dist --source-maps --ignore \"src/__tests__/**\" --config-file \"../../babel.config.json\"",
     "build:types": "tsc",
     "build:dev": "yarn build",
+    "build:dev:watch": "yarn build",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
     "test": "jest",
