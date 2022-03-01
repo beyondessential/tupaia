@@ -16,7 +16,6 @@ COPY yarn.lock ./
 COPY babel.config.json ./
 COPY .babelrc-ts.js ./
 COPY tsconfig-js.json ./
-COPY lerna.json ./
 RUN mkdir ./scripts
 COPY scripts/. ./scripts
 

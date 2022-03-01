@@ -19,9 +19,9 @@
   },
   "scripts": {
     "build": "yarn build:full",
-    "build:full": "yarn lerna run build --stream --reject-cycles",
-    "build:dev": "yarn lerna run build:dev --stream --reject-cycles --since dev",
-    "build:dev:watch": "yarn lerna run build:dev:watch --parallel",
+    "build:full": "yarn ultra -r build",
+    "build:dev": "yarn ultra -r build:dev",
+    "build:dev:watch": "yarn ultra -r build:dev:watch",
     "test": "yarn test:full",
     "test:full": "yarn lerna run test  --concurrency 1 --stream",
     "test:quick": "yarn test:full  --concurrency 1 --since dev",
@@ -103,6 +103,7 @@
     "start-server-and-test": "^1.11.0",
     "supertest": "^3.1.0",
     "typescript": "^4.2.0",
+    "ultra-runner": "^3.10.5",
     "winston": "^3.3.3",
     "yargs": "^16.0.3"
   },
