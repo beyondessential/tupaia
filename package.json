@@ -21,7 +21,7 @@
     "build": "yarn build:full",
     "build:full": "yarn ultra -r build",
     "build:dev": "yarn ultra -r build:dev",
-    "build:dev:watch": "yarn ultra -r build:dev:watch",
+    "build:dev:watch": "yarn ultra -r --no-pretty --concurrency 20 build:dev:watch",
     "test": "yarn test:full",
     "test:full": "yarn lerna run test  --concurrency 1 --stream",
     "test:quick": "yarn test:full  --concurrency 1 --since dev",
