@@ -16,7 +16,7 @@ type InsertColumnsParams = {
   where: (parser: TransformParser) => boolean;
 };
 
-const paramsValidator = yup.object().shape({
+export const paramsValidator = yup.object().shape({
   columns: mapStringToStringValidator,
   where: yup.string(),
 });

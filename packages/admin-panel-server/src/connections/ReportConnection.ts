@@ -20,4 +20,8 @@ export class ReportConnection extends ApiConnection {
   async fetchAggregationOptions() {
     return this.get('fetchAggregationOptions');
   }
+
+  async fetchTransformSchemas() {
+    return this.get('fetchTransformSchemas');
+  }
 }

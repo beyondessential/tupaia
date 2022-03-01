@@ -10,22 +10,22 @@ import { Route } from '@tupaia/server-boilerplate';
 
 import { ReportConnection } from '../connections';
 
-export type FetchAggregationOptionsRequest = Request<
+export type FetchTransformSchemasRequest = Request<
   Record<string, never>,
   Record<string, unknown>[],
   Record<string, never>
 >;
 
-export class FetchAggregationOptionsRoute extends Route<FetchAggregationOptionsRequest> {
+export class FetchTransformSchemasRoute extends Route<FetchTransformSchemasRequest> {
   private readonly reportConnection: ReportConnection;
 
-  constructor(req: FetchAggregationOptionsRequest, res: Response, next: NextFunction) {
+  constructor(req: FetchTransformSchemasRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.reportConnection = new ReportConnection(req.session);
   }
 
   async buildResponse() {
-    return this.reportConnection.fetchAggregationOptions();
+    return this.reportConnection.fetchTransformSchemas();
   }
 }
