@@ -20,20 +20,10 @@ describe('DescribableLazy', () => {
     );
     expect(paramsValidator.describe()).toStrictEqual({
       oneOf: [
-        {
-          oneOf: [
-            { const: 'human', type: 'string' },
-            { const: 'zombie', type: 'string' },
-          ],
-        },
+        { enum: ['human', 'zombie'] },
         {
           type: 'array',
-          items: {
-            oneOf: [
-              { const: 'human', type: 'string' },
-              { const: 'zombie', type: 'string' },
-            ],
-          },
+          items: { enum: ['human', 'zombie'] },
         },
       ],
     });
