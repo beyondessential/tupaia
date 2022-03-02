@@ -17,15 +17,17 @@
 #   "DeploymentName": "wai-965"
 # }
 
-from helpers.teardown import teardown_instance
+from helpers.teardown import teardown_instance, teardown_db_instance
 from helpers.utilities import find_instances, get_tag
 
 def tear_down_tupaia_deployment(event):
     if 'DeploymentName' not in event:
         raise Exception('You must include "DeploymentName" in the lambda config, which is the subdomain of tupaia.org you want to tear down (e.g. "dev").')
 
+    deployment_name = event['DeploymentName']
     instance_filters = [
-      { 'Name': 'tag:DeploymentName', 'Values': [event['DeploymentName']] },
+      { 'Name': 'tag:DeploymentName', 'Values': [deployment_name] },
+      { 'Name': 'tag:DeploymentType', 'Values': ['tupaia'] },
       { 'Name': 'instance-state-name', 'Values': ['running', 'stopped']} # ignore terminated instances
     ]
     instances = find_instances(instance_filters)
@@ -37,5 +39,6 @@ def tear_down_tupaia_deployment(event):
 
     for instance in instances:
       teardown_instance(instance)
+      teardown_db_instance(deployment_name, 'tupaia')
 
     print('Finished tearing down clone')

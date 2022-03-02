@@ -42,16 +42,12 @@ export const generateLinkHeader = (resource, pageString, lastPage, originalQuery
   return formatLinkHeader(linkHeader);
 };
 
-export const processColumnSelector = (models, unprocessedColumnSelector, baseRecordType) => {
+export const fullyQualifyColumnSelector = (models, unprocessedColumnSelector, baseRecordType) => {
   const [resource, column] = unprocessedColumnSelector.includes('.')
     ? unprocessedColumnSelector.split('.')
     : [baseRecordType, unprocessedColumnSelector];
-
   const recordType = resourceToRecordType(resource);
-  const model = models.getModelForDatabaseType(recordType);
-  const customSelector = model?.customColumnSelectors?.[column];
-  const selector = `${recordType}.${column}`;
-  return customSelector ? customSelector(selector) : selector;
+  return `${recordType}.${column}`;
 };
 
 // Make sure all column keys have the table specified to avoid ambiguous column errors,
@@ -59,9 +55,21 @@ export const processColumnSelector = (models, unprocessedColumnSelector, baseRec
 export const processColumnSelectorKeys = (models, object, recordType) => {
   const processedObject = {};
   Object.entries(object).forEach(([columnSelector, value]) => {
-    processedObject[processColumnSelector(models, columnSelector, recordType)] = value;
+    processedObject[fullyQualifyColumnSelector(models, columnSelector, recordType)] = value;
   });
   return processedObject;
+};
+
+export const processColumnSelector = (models, unprocessedColumnSelector, baseRecordType) => {
+  const fullyQualifiedSelector = fullyQualifyColumnSelector(
+    models,
+    unprocessedColumnSelector,
+    baseRecordType,
+  );
+  const [recordType, column] = fullyQualifiedSelector.split('.');
+  const model = models.getModelForDatabaseType(recordType);
+  const customSelector = model?.customColumnSelectors?.[column];
+  return customSelector ? customSelector(fullyQualifiedSelector) : fullyQualifiedSelector;
 };
 
 export const processColumns = (models, unprocessedColumns, recordType) => {
