@@ -14,9 +14,9 @@ export type AnalyticsFetchOptions = {
 };
 
 export type AnalyticsFetchResult = {
-  analytics: Analytic[],
-  numAggregationsProcessed: number,
-}
+  analytics: Analytic[];
+  numAggregationsProcessed: number;
+};
 
 export type Analytic = {
   period: string;
@@ -24,13 +24,17 @@ export type Analytic = {
   type: string;
   value: any;
   dataElementCode: string;
-}
+};
 
 export class DataLakeAnalyticsFetchQuery {
   private readonly database: DataLakeDatabase;
+
   private readonly dataElementCodes: string[];
+
   private readonly entityCodes: string[];
+
   private readonly startDate?: string;
+
   private readonly endDate?: string;
 
   constructor(database: DataLakeDatabase, options: AnalyticsFetchOptions) {

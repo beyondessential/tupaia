@@ -23,17 +23,23 @@ export type Event = {
   type: string;
   value: any;
   dataElementCode?: string;
-}
+};
 
 export class DataLakeEventsFetchQuery {
   private readonly database: DataLakeDatabase;
 
   private readonly entityCodes: string[];
+
   private readonly startDate?: string;
+
   private readonly endDate?: string;
+
   private readonly eventId?: string;
+
   private readonly dataGroupCode: string;
+
   private readonly dataElementCodes?: string[];
+
   private readonly hasDataElements: boolean;
 
   constructor(database: DataLakeDatabase, options: EventsFetchOptions) {
@@ -86,7 +92,9 @@ export class DataLakeEventsFetchQuery {
     const joins = [SqlQuery.innerJoin('analytics', 'entity_code', this.entityCodes)];
     if (this.hasDataElements) {
       params = params.concat(this.dataElementCodes as string[]);
-      joins.push(SqlQuery.innerJoin('analytics', 'data_element_code', this.dataElementCodes as string[]));
+      joins.push(
+        SqlQuery.innerJoin('analytics', 'data_element_code', this.dataElementCodes as string[]),
+      );
     }
     return { joins: joins.join('\n'), params };
   }
