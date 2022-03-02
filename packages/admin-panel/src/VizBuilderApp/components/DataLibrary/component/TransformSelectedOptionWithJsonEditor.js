@@ -53,21 +53,22 @@ const DownArrowIconWrapper = styled.div`
   }
 `;
 
-export const SelectedOptionWithJsonEditor = ({
+export const TransformSelectedOptionWithJsonEditor = ({
   option,
+  optionMetaData,
   onChange,
   onRemove,
   setEdittingOption,
-  optionMetaData,
   onInvalidChange,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { id, code, schema, isDisabled, ...restOfConfig } = option;
+  const defaultValueFromSchema =
+    schema && Object.fromEntries(Object.keys(schema.properties).map(key => [key, null]));
   const currentValue = {
-    type: option.code,
-    config: option?.config || {
-      dataSourceEntityType: '',
-      aggregationEntityType: '',
-    },
+    ...defaultValueFromSchema,
+    transform: code,
+    ...restOfConfig,
   };
 
   return (
@@ -91,11 +92,11 @@ export const SelectedOptionWithJsonEditor = ({
         >
           <DownArrow />
         </DownArrowIconWrapper>
-        <BaseSelectedOption option={{ ...optionMetaData, ...option }} onRemove={onRemove} />
+        <BaseSelectedOption option={option} onRemove={onRemove} />
       </FlexBetweenPanel>
       {isExpanded && (
         <JsonEditorPanel
-          onMouseOver={() => setEdittingOption(option.code)}
+          onMouseOver={() => setEdittingOption(option.id)}
           onMouseLeave={() => setEdittingOption(null)}
         >
           <JsonEditor
@@ -103,7 +104,7 @@ export const SelectedOptionWithJsonEditor = ({
             mode="code"
             mainMenuBar={false}
             onChange={onChange}
-            schema={optionMetaData?.schema || {}}
+            schema={optionMetaData?.schema}
             onInvalidChange={onInvalidChange}
             onValidationError={err => {
               if (err.length > 0) {
@@ -117,23 +118,21 @@ export const SelectedOptionWithJsonEditor = ({
   );
 };
 
-SelectedOptionWithJsonEditor.defaultProps = {
-  optionMetaData: {},
-};
+TransformSelectedOptionWithJsonEditor.defaultProps = { optionMetaData: null };
 
-SelectedOptionWithJsonEditor.propTypes = {
+TransformSelectedOptionWithJsonEditor.propTypes = {
   option: PropTypes.shape({
+    id: PropTypes.string.isRequired,
     code: PropTypes.string.isRequired,
-    config: PropTypes.object,
+    schema: PropTypes.object,
     isDisabled: PropTypes.bool,
   }).isRequired,
-  onRemove: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
   optionMetaData: PropTypes.shape({
     code: PropTypes.string,
     schema: PropTypes.object,
-    description: PropTypes.string,
   }),
+  onRemove: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
   setEdittingOption: PropTypes.func.isRequired,
   onInvalidChange: PropTypes.func.isRequired,
 };

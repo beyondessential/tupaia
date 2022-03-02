@@ -183,11 +183,7 @@ export const SelectedDataCard = ({ option, index, optionComponent }) => {
   const [edittingOption, setEdittingOption] = React.useState(null);
 
   return (
-    <Draggable
-      draggableId={option.code}
-      index={index}
-      isDragDisabled={edittingOption === option.code}
-    >
+    <Draggable draggableId={option.id} index={index} isDragDisabled={edittingOption === option.id}>
       {(provided, snapshot) => (
         <StyledSelectedDataCard
           {...provided.draggableProps}
@@ -197,7 +193,7 @@ export const SelectedDataCard = ({ option, index, optionComponent }) => {
           onMouseOver={() => setIsDragging(true)}
           onMouseLeave={() => setIsDragging(false)}
         >
-          {optionComponent(option, index, setEdittingOption)}
+          {optionComponent(option, setEdittingOption)}
         </StyledSelectedDataCard>
       )}
     </Draggable>

@@ -3,25 +3,28 @@
  *  Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+import generateId from 'uuid/v1';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { DataLibrary } from '@tupaia/ui-components';
 import { prefetchAggregationOptions, useSearchAggregationOptions } from '../../api';
-import { SelectedOptionWithJsonEditor } from './component/SelectedOptionWithJsonEditor';
-
-const MAX_RESULTS = 10;
+import { AggregateSelectedOptionWithJsonEditor } from './component';
 
 // Converts internal value array to Viz config.aggregate data structure
 const aggregateToValue = aggregate =>
-  aggregate.map(({ type, config, isDisabled }) => ({
+  aggregate.map(({ id, type, ...restOfConfig }) => ({
+    id: id || generateId(),
     code: type,
-    type: 'aggregationOption',
-    config,
-    isDisabled,
+    ...restOfConfig,
   }));
 
 const valueToAggregate = value =>
-  value.map(({ code, config, isDisabled = false }) => ({ type: code, config, isDisabled }));
+  value.map(({ id, code, isDisabled = false, ...restOfConfig }) => ({
+    id: id || generateId(),
+    type: code,
+    isDisabled,
+    ...restOfConfig,
+  }));
 
 export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalidChange }) => {
   const [inputValue, setInputValue] = useState('');
@@ -29,11 +32,13 @@ export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalid
   const value = aggregateToValue(aggregate);
   const { data: options, isFetching } = useSearchAggregationOptions();
 
-  const onChange = (event, newValue) => onAggregateChange(valueToAggregate(newValue));
+  const onChange = (event, newValue) => {
+    onAggregateChange(valueToAggregate(newValue));
+  };
   const onRemove = (event, option) => {
     onChange(
       event,
-      value.filter(item => option.code !== item.code),
+      value.filter(item => option.id !== item.id),
     );
   };
 
@@ -45,17 +50,20 @@ export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalid
       inputValue={inputValue}
       onInputChange={(event, newInputValue) => (event ? setInputValue(newInputValue) : false)}
       isLoading={isFetching}
-      searchPageSize={MAX_RESULTS}
       onMouseEnter={prefetchAggregationOptions}
-      optionComponent={(option, index, setEdittingOption) => (
-        <SelectedOptionWithJsonEditor
+      optionComponent={(option, setEdittingOption) => (
+        <AggregateSelectedOptionWithJsonEditor
           option={option}
           optionMetaData={options && options.find(({ code }) => code === option.code)}
           onChange={newValue => {
             const newSelectedAggregations = Array.from(value);
-            // Rest of configs do not apply
-            newSelectedAggregations[index].config = newValue.config;
-            newSelectedAggregations[index].isDisabled = newValue.isDisabled;
+            const index = newSelectedAggregations.findIndex(
+              aggregation => aggregation.id === option.id,
+            );
+            newSelectedAggregations[index] = {
+              ...newSelectedAggregations[index],
+              ...newValue,
+            };
             onAggregateChange(valueToAggregate(newSelectedAggregations));
           }}
           onRemove={onRemove}
@@ -63,6 +71,7 @@ export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalid
           onInvalidChange={onInvalidChange}
         />
       )}
+      allowAddMultipleTimes
       supportsDisableAll
     />
   );

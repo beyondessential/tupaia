@@ -5,3 +5,4 @@
 
 export * from './DataElementDataLibrary';
 export * from './AggregationDataLibrary';
+export * from './TransformDataLibrary';

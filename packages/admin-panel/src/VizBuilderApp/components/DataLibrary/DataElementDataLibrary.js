@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import generateId from 'uuid/v1';
 import { BaseSelectedOption, DataLibrary } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
 import { useSearchDataSources } from '../../api';
@@ -40,13 +41,17 @@ const fetchToValue = fetch => {
   if (fetch.dataElements) {
     newValue = [
       ...newValue,
-      ...fetch.dataElements.map(deCode => ({ code: deCode, type: 'dataElement' })),
+      ...fetch.dataElements.map(deCode => ({
+        id: generateId(),
+        code: deCode,
+        type: 'dataElement',
+      })),
     ];
   }
   if (fetch.dataGroups) {
     newValue = [
       ...newValue,
-      ...fetch.dataGroups.map(dgCode => ({ code: dgCode, type: 'dataGroup' })),
+      ...fetch.dataGroups.map(dgCode => ({ id: generateId(), code: dgCode, type: 'dataGroup' })),
     ];
   }
 

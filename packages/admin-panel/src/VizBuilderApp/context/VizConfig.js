@@ -118,22 +118,30 @@ const useConfigStore = () => {
 
 const VisualisationContext = createContext(initialConfigState.visualisation);
 
-// Remove IsDisabled config in aggregation and transform steps
-const removeIsDisabledConfig = visualisation => {
+const amendStepsToBaseConfig = visualisation => {
   const { data } = { ...visualisation };
   const { aggregate, transform } = { ...data };
-  const filteredAggregate = aggregate.map(({ isDisabled, ...restOfConfig }) => ({
+  // Remove frontend config (isDisabled, id, schema) in aggregation steps.
+  const filteredAggregate = aggregate.map(({ isDisabled, id, schema, ...restOfConfig }) => ({
     ...restOfConfig,
   }));
-  const filteredTransform = transform.map(({ isDisabled, ...restOfConfig }) => ({
-    ...restOfConfig,
-  }));
+
+  // Remove frontend configs (isDisabled, id, schema) in transform steps. If it is an alias return as a string.
+  const filteredTransform = transform.map(({ isDisabled, id, schema, ...restOfConfig }) => {
+    if (restOfConfig.alias) {
+      return restOfConfig.transform;
+    }
+    return {
+      ...restOfConfig,
+    };
+  });
+
   const filteredData = { ...data, aggregate: filteredAggregate, transform: filteredTransform };
   return { ...visualisation, data: filteredData };
 };
 
 // Filter those unchecked aggregation or transform steps
-const filterDisableSteps = visualisation => {
+const filterDisabledSteps = visualisation => {
   const { data } = { ...visualisation };
   const { aggregate, transform } = { ...data };
   const filteredAggregate = aggregate.filter(({ isDisabled }) => !isDisabled);
@@ -152,8 +160,8 @@ const VizConfigProvider = ({ children }) => {
   return (
     <VisualisationContext.Provider
       value={{
-        visualisationForFetchingData: removeIsDisabledConfig(filterDisableSteps(visualisation)),
-        visualisation: removeIsDisabledConfig(visualisation),
+        visualisationForFetchingData: amendStepsToBaseConfig(filterDisabledSteps(visualisation)),
+        visualisation: amendStepsToBaseConfig(visualisation),
       }}
     >
       <VizBuilderConfigContext.Provider value={store} displayName="VizBuilder">
