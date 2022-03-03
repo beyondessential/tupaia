@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 
 import List from '../../../components/mobile/List';
 import Overlay from '../../../components/mobile/Overlay';
+import EntityHierarchy from '../EntityHierarchy';
 import { changeSearch, setOrgUnit } from '../../../actions';
 import { DARK_BLUE, WHITE } from '../../../styles';
 
@@ -27,18 +28,22 @@ const SearchOverlay = ({
     titleElement={renderTitleElement(searchString, isLoading, onChangeSearch)}
     onClose={onClose}
   >
-    <List
-      title={getSearchResponseMessage(searchString, searchResponse, isLoading)}
-      items={searchResponse.map(({ displayName, organisationUnitCode }) => ({
-        title: displayName,
-        key: organisationUnitCode,
-        data: organisationUnitCode,
-      }))}
-      onSelectItem={organisationUnitCode => {
-        onChangeOrgUnit(organisationUnitCode);
-        onClose();
-      }}
-    />
+    {searchString === '' ? (
+      <EntityHierarchy />
+    ) : (
+      <List
+        title={getSearchResponseMessage(searchString, searchResponse, isLoading)}
+        items={searchResponse.map(({ displayName, organisationUnitCode }) => ({
+          title: displayName,
+          key: organisationUnitCode,
+          data: organisationUnitCode,
+        }))}
+        onSelectItem={organisationUnitCode => {
+          onChangeOrgUnit(organisationUnitCode);
+          onClose();
+        }}
+      />
+    )}
   </Overlay>
 );
 

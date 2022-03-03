@@ -15,13 +15,16 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { isNull } from 'lodash';
 import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
 import styled from 'styled-components';
 import SearchIcon from 'material-ui/svg-icons/action/search';
 import Button from '@material-ui/core/Button';
 import CircularProgress from 'material-ui/CircularProgress';
 import { List, ListItem } from 'material-ui/List';
-import { selectOrgUnitChildren, selectCurrentProjectCode } from '../../selectors';
+import {
+  selectOrgUnitChildren,
+  selectCurrentProjectCode,
+  selectCodeFromOrgUnit,
+} from '../../selectors';
 import { ControlBar } from '../../components/ControlBar';
 import {
   changeSearch,
@@ -215,15 +218,6 @@ export class SearchBar extends PureComponent {
   }
 }
 
-const sortOrgUnitsAlphabeticallyByName = orgUnits => {
-  // Sort countries alphabetically, this may not be the case if one country was loaded first
-  return orgUnits.concat().sort((data1, data2) => {
-    if (data1.name > data2.name) return 1;
-    if (data1.name < data2.name) return -1;
-    return 0;
-  });
-};
-
 SearchBar.propTypes = {
   onExpandClick: PropTypes.func.isRequired,
   onOrgUnitClick: PropTypes.func.isRequired,
@@ -254,10 +248,6 @@ SearchBar.defaultProps = {
   onSearchFocus: undefined,
   onSearchBlur: undefined,
 };
-
-const selectCodeFromOrgUnit = createSelector([orgUnits => orgUnits], orgUnits =>
-  sortOrgUnitsAlphabeticallyByName(orgUnits).map(orgUnit => orgUnit.organisationUnitCode),
-);
 
 const mapStateToProps = state => {
   const {
