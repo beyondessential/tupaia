@@ -70,6 +70,11 @@ if [ "$identity_file" == "" ]; then
     exit 1
 fi
 
+if [ "$DB_PG_USER" == "" ] || [ "$DB_PG_PASSWORD" == "" ]; then
+    echo "Missing postgres user credential env vars in @tupaia/database .env file. Check Lastpass for variables and add them to the .env file"
+    exit 1
+fi
+
 host=$server-db.tupaia.org
 target_path="$(
     cd "$target_dir"
@@ -77,7 +82,7 @@ target_path="$(
 )/$DUMP_FILE_NAME"
 target_zip_path="$target_path.gz"
 
-show_loading_spinner "Dumping database to $target_zip_path" "PGPASSWORD=$DB_PG_PASSWORD pg_dump \"host=$host user=postgres dbname=tupaia sslmode=require sslkey=$identity_file\" -Z1 -f $target_zip_path"
+show_loading_spinner "Dumping database to $target_zip_path" "PGPASSWORD=$DB_PG_PASSWORD pg_dump \"host=$host user=$DB_PG_USER dbname=tupaia sslmode=require sslkey=$identity_file\" -Z1 -f $target_zip_path"
 show_loading_spinner "Unzipping $target_zip_path" "gunzip -f $target_zip_path"
 
 echo "Dump file available at $target_path"
