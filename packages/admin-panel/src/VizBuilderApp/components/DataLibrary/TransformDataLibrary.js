@@ -17,14 +17,14 @@ const DATA_TYPES = {
 
 const transformToValue = transform =>
   transform.map(({ id, name, transform: code, ...restOfConfig }) => ({
-    id: id || generateId(),
+    id: id || generateId(), // transform config in existing report does not have id.
     code,
     ...restOfConfig,
   }));
 
 const valueToTransform = value =>
   value.map(({ id, code, isDisabled = false, ...restOfConfig }) => ({
-    id: id || generateId(),
+    id: id || generateId(), // option from selectable options does not have id.
     transform: code,
     isDisabled,
     ...restOfConfig,

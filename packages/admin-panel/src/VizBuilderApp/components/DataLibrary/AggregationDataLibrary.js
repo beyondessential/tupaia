@@ -13,14 +13,14 @@ import { AggregateSelectedOptionWithJsonEditor } from './component';
 // Converts internal value array to Viz config.aggregate data structure
 const aggregateToValue = aggregate =>
   aggregate.map(({ id, type, ...restOfConfig }) => ({
-    id: id || generateId(),
+    id: id || generateId(), // aggregation config in existing report does not have id.
     code: type,
     ...restOfConfig,
   }));
 
 const valueToAggregate = value =>
   value.map(({ id, code, isDisabled = false, ...restOfConfig }) => ({
-    id: id || generateId(),
+    id: id || generateId(), // option from selectable options does not have id.
     type: code,
     isDisabled,
     ...restOfConfig,
@@ -32,9 +32,8 @@ export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalid
   const value = aggregateToValue(aggregate);
   const { data: options, isFetching } = useSearchAggregationOptions();
 
-  const onChange = (event, newValue) => {
-    onAggregateChange(valueToAggregate(newValue));
-  };
+  const onChange = (event, newValue) => onAggregateChange(valueToAggregate(newValue));
+
   const onRemove = (event, option) => {
     onChange(
       event,

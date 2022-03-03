@@ -51,7 +51,11 @@ const fetchToValue = fetch => {
   if (fetch.dataGroups) {
     newValue = [
       ...newValue,
-      ...fetch.dataGroups.map(dgCode => ({ id: generateId(), code: dgCode, type: 'dataGroup' })),
+      ...fetch.dataGroups.map(dgCode => ({
+        id: generateId(),
+        code: dgCode,
+        type: 'dataGroup',
+      })),
     ];
   }
 
