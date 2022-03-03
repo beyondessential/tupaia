@@ -70,6 +70,11 @@ export const TransformSelectedOptionWithJsonEditor = ({
     transform: code,
     ...restOfConfig,
   };
+  const basicOption = {
+    id: option.id,
+    code: option.title || option.code,
+    description: option.description || '',
+  };
 
   return (
     <OptionPanelWithJsonEditor>
@@ -92,7 +97,7 @@ export const TransformSelectedOptionWithJsonEditor = ({
         >
           <DownArrow />
         </DownArrowIconWrapper>
-        <BaseSelectedOption option={option} onRemove={onRemove} />
+        <BaseSelectedOption option={basicOption} onRemove={onRemove} />
       </FlexBetweenPanel>
       {isExpanded && (
         <JsonEditorPanel
@@ -126,6 +131,8 @@ TransformSelectedOptionWithJsonEditor.propTypes = {
     code: PropTypes.string.isRequired,
     schema: PropTypes.object,
     isDisabled: PropTypes.bool,
+    title: PropTypes.string,
+    description: PropTypes.string,
   }).isRequired,
   optionMetaData: PropTypes.shape({
     code: PropTypes.string,
