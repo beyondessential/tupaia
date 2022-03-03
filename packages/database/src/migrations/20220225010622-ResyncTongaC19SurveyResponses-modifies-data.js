@@ -14,8 +14,16 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = function (db) {
-  return db.runSql(`
+exports.up = async function (db) {
+  await db.runSql(`
+    DELETE FROM answer
+    WHERE question_id IN (
+      SELECT id FROM question WHERE type='SubmissionDate'
+      AND code IN ('LRF15', 'TO_C19CRF15')
+    );
+  `);
+
+  await db.runSql(`
     UPDATE survey_response
     SET end_time = end_time + interval '1 second'
     WHERE id IN (
