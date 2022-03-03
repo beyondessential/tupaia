@@ -3,11 +3,17 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { Aggregator as BaseAggregator } from '@tupaia/aggregator';
+import { Aggregator } from '@tupaia/aggregator';
 
 import { Aggregation, Event, PeriodParams } from '../types';
 
-export class Aggregator extends BaseAggregator {
+export class ReportServerAggregator {
+  private aggregator: Aggregator;
+
+  constructor(aggregator: Aggregator) {
+    this.aggregator = aggregator;
+  }
+
   aggregationToAggregationConfig = (aggregation: Aggregation) =>
     typeof aggregation === 'string'
       ? {
@@ -27,7 +33,7 @@ export class Aggregator extends BaseAggregator {
       ? aggregationList.map(this.aggregationToAggregationConfig)
       : [{ type: 'RAW' }];
 
-    return super.fetchAnalytics(
+    return this.aggregator.fetchAnalytics(
       dataElementCodes,
       {
         organisationUnitCodes,
@@ -53,7 +59,7 @@ export class Aggregator extends BaseAggregator {
     const aggregations = aggregationList
       ? aggregationList.map(this.aggregationToAggregationConfig)
       : [{ type: 'RAW' }];
-    return super.fetchEvents(
+    return this.aggregator.fetchEvents(
       programCode,
       {
         organisationUnitCodes,

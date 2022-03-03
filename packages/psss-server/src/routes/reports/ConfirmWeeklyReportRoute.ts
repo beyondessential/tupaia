@@ -4,7 +4,7 @@
  */
 
 import groupBy from 'lodash.groupby';
-import { RespondingError, dateStringToPeriod } from '@tupaia/utils';
+import { RespondingError, dateStringToPeriod, UnauthenticatedError } from '@tupaia/utils';
 import { Route } from '../Route';
 import { validateIsNumber } from '../../utils';
 import {
@@ -13,6 +13,7 @@ import {
   CONFIRMED_WEEKLY_SURVEY_COUNTRY,
   ALERT_SURVEY,
 } from '../../constants';
+import { Request } from 'express';
 
 const WEEKLY_REPORT_CODE = 'PSSS_Weekly_Cases';
 const ACTIVE_ALERTS_REPORT_CODE = 'PSSS_Active_Alerts';
@@ -29,10 +30,15 @@ type AlertResponseData = {
     id: string;
     title: string;
   }[];
-  alertsArchived: boolean,
+  alertsArchived: boolean;
 };
 
-export class ConfirmWeeklyReportRoute extends Route {
+export type ConfirmWeeklyReportRequest = Request<{ countryCode: string },
+  any,
+  Record<string, unknown>,
+  { week: string }>;
+
+export class ConfirmWeeklyReportRoute extends Route<ConfirmWeeklyReportRequest> {
   async buildResponse() {
     const { week } = this.req.query;
     const { countryCode } = this.req.params;
@@ -43,7 +49,10 @@ export class ConfirmWeeklyReportRoute extends Route {
   }
 
   async confirmData(countryCode: string, week: string) {
-    const report = await this.reportConnection?.fetchReport(
+    if (!this.reportConnection) throw new UnauthenticatedError('Unauthenticated');
+    if (!this.meditrakConnection) throw new UnauthenticatedError('Unauthenticated');
+
+    const report = await this.reportConnection.fetchReport(
       WEEKLY_REPORT_CODE,
       [countryCode],
       [week],
@@ -58,7 +67,7 @@ export class ConfirmWeeklyReportRoute extends Route {
 
     const answers = mapUnconfirmedReportToConfirmedAnswers(report.results[0]);
 
-    return this.meditrakConnection?.updateOrCreateSurveyResponse(
+    return this.meditrakConnection.updateOrCreateSurveyResponse(
       CONFIRMED_WEEKLY_SURVEY_COUNTRY,
       countryCode,
       week,
@@ -67,7 +76,9 @@ export class ConfirmWeeklyReportRoute extends Route {
   }
 
   async updateAlerts(countryCode: string, week: string) {
-    const report = await this.reportConnection?.fetchReport(
+    if (!this.reportConnection) throw new UnauthenticatedError('Unauthenticated');
+
+    const report = await this.reportConnection.fetchReport(
       CONFIRMED_WEEKLY_REPORT_CODE,
       [countryCode],
       [week],
@@ -86,7 +97,7 @@ export class ConfirmWeeklyReportRoute extends Route {
       alertsArchived: false,
     };
     const startWeek = dateStringToPeriod(MIN_DATE, 'WEEK');
-    const activeAlertsData = await this.reportConnection?.fetchReport(
+    const activeAlertsData = await this.reportConnection.fetchReport(
       ACTIVE_ALERTS_REPORT_CODE,
       [countryCode],
       [startWeek, week],
@@ -102,7 +113,7 @@ export class ConfirmWeeklyReportRoute extends Route {
 
     const { results: alerts } = activeAlertsData;
     const alertsBySyndrome = groupBy(alerts, 'syndrome');
-  
+
     for (const syndromeCode of SYNDROME_CODES) {
       const syndromeAlerts = alertsBySyndrome[syndromeCode];
 
@@ -125,7 +136,7 @@ export class ConfirmWeeklyReportRoute extends Route {
       // and now for the selected week, the threshold is no longer crossed (because of reconfirming changed data),
       // archive the existing alert triggered in the selected week
       if (currentWeekSyndromeAlert && result[`${syndromeCode} Threshold Crossed`] === false) {
-        await this.archiveAlert(currentWeekSyndromeAlert.id, countryCode, week);
+        await this.archiveAlert(currentWeekSyndromeAlert.id as string, countryCode, week);
         response.alertsArchived = true;
       }
     }
@@ -134,14 +145,18 @@ export class ConfirmWeeklyReportRoute extends Route {
   }
 
   async createAlert(countryCode: string, week: string, syndromeCode: string) {
-    return this.meditrakConnection?.createSurveyResponse(ALERT_SURVEY, countryCode, week, [
+    if (!this.meditrakConnection) throw new UnauthenticatedError('Unauthenticated');
+
+    return this.meditrakConnection.createSurveyResponse(ALERT_SURVEY, countryCode, week, [
       { code: 'PSSS_Alert_Syndrome', type: 'Radio', value: syndromeCode },
       { code: 'PSSS_Alert_Archived', type: 'Binary', value: 'No' },
     ]);
   }
 
   async archiveAlert(alertId: string, countryCode: string, week: string) {
-    return this.meditrakConnection?.updateSurveyResponse(alertId, countryCode, ALERT_SURVEY, week, [
+    if (!this.meditrakConnection) throw new UnauthenticatedError('Unauthenticated');
+
+    return this.meditrakConnection.updateSurveyResponse(alertId, countryCode, ALERT_SURVEY, week, [
       { code: 'PSSS_Alert_Archived', type: 'Binary', value: 'Yes' },
     ]);
   }

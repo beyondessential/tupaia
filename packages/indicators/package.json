@@ -10,9 +10,10 @@
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "babel src --out-dir dist --ignore \"src/__tests__/**\" --extensions .ts --config-file \"../../.babelrc-ts.js\"",
-    "lint": "tsc; eslint . --ext .ts",
+    "build": "tsc",
+    "lint": "eslint . --ext .ts",
     "lint:fix": "yarn lint --fix",
     "test": "jest --runInBand",
     "test:coverage": "yarn test --coverage"

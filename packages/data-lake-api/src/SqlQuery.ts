@@ -7,12 +7,13 @@ import { DataLakeDatabase } from './DataLakeDatabase';
 
 export class SqlQuery {
   private readonly query: string;
+
   private readonly parameters: string[];
 
   static array = (arr: any[]) => `(${arr.map(() => '?').join(',')})`;
 
   static values = (rows: any[][]) =>
-    `VALUES (${rows.map(values => values.map(() => `?`).join(',')).join('), (')})`;
+    `VALUES (${rows.map(values => values.map(() => '?').join(',')).join('), (')})`;
 
   static innerJoin = (baseTable: string, columnName: string, values: any[]) => `
     INNER JOIN (

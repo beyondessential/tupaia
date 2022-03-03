@@ -12,6 +12,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"No tests specified\" && exit 0",
+    "build": "echo \"Nothing to build\" && exit 0",
     "validate-branch-name": "./scripts/ci/validateBranchName.sh",
     "validate-tests": "./scripts/ci/validateTests.sh"
   }
