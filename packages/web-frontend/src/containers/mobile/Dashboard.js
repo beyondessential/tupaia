@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import CircularProgress from 'material-ui/CircularProgress';
 
-import { getFacilityThumbnailUrl } from '../../utils';
+import { getOrgUnitPhotoUrl } from '../../utils';
 import { toggleDashboardSelectExpand, setDashboardGroup } from '../../actions';
 import { selectCurrentDashboardName, selectCurrentOrgUnit } from '../../selectors';
 import { DashboardGroup } from '../DashboardGroup';
@@ -70,7 +70,7 @@ export const DashboardComponent = ({
   isLoading,
 }) => {
   const { name } = orgUnit;
-  const photoUrl = getFacilityThumbnailUrl(orgUnit);
+  const photoUrl = getOrgUnitPhotoUrl(orgUnit);
 
   const filterItems = dashboards.map(({ dashboardName }) => ({
     label: dashboardName,
