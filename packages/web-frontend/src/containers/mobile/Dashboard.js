@@ -39,34 +39,24 @@ const Container = styled.div`
 `;
 
 const OrgUnitImageWrapper = styled.div`
-  position: 'relative';
-  min-height: 280;
-  background: '#666';
-  z-index: 2,
-  overflow: 'hidden';
-  display: 'flex';
-  align-items: 'center';
-  justify-content: 'center';
+  min-height: 280px;
 `;
 
 const OrgUnitImage = styled.img`
-  display: 'block';
-  width: '100%';
-  height: 'auto';
-  background-color: ${DARK_BLUE};
+  width: 100%;
 `;
 
 const SpinnerContainer = styled.div`
-  background: 'rgba(0,0,0,0.5)';
-  position: 'absolute';
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
-  padding: 40;
-  display: 'flex';
-  align-items: 'center';
-  justify-content: 'center';
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 2;
 `;
 
