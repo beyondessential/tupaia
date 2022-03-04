@@ -3,21 +3,29 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { PropTypes } from 'prop-types';
 import { StyleRoot } from 'radium';
 import { connect } from 'react-redux';
 import { EnvBanner } from '@tupaia/ui-components';
 import styled from 'styled-components';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 import HeaderBar from '../../../containers/mobile/HeaderBar';
 import { LoadingScreen } from '../../LoadingScreen';
 import Footer from '../../../components/mobile/Footer';
 import OverlayDiv from '../../../containers/OverlayDiv';
-import { selectCurrentOrgUnit, selectIsEnlargedDialogVisible } from '../../../selectors';
+import {
+  selectCurrentOrgUnit,
+  selectIsEnlargedDialogVisible,
+  selectMobileTab,
+} from '../../../selectors';
 import { EnlargedDialog } from '../../../containers/EnlargedDialog';
+import { TUPAIA_ORANGE } from '../../../styles';
 import { SearchBar } from '../../../containers/mobile/SearchBar';
 import { Dashboard } from '../../../containers/mobile/Dashboard';
+import { setMobileTab } from '../../../actions';
 
 const EntityName = styled.p`
   text-align: center;
@@ -26,21 +34,66 @@ const EntityName = styled.p`
   color: white;
 `;
 
-const RootScreen = ({ orgUnit, isLoading, isUserLoggedIn, enlargedDialogIsVisible }) => (
-  <StyleRoot>
-    <EnvBanner />
-    <LoadingScreen isLoading={isLoading} />
-    <div>
-      <HeaderBar />
-      <EntityName>{orgUnit.name}</EntityName>
-      <SearchBar />
-      <Dashboard />
-      {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
-      <Footer />
-      {isUserLoggedIn && <OverlayDiv />}
-    </div>
-  </StyleRoot>
-);
+const StyledTabs = styled(Tabs)`
+  .MuiTabs-scroller.MuiTabs-indicator {
+    display: none;
+  }
+`;
+
+const StyledTab = styled(Tab)`
+  flex: 1;
+  color: white;
+  background-color: ${({ selected }) => (selected ? TUPAIA_ORANGE : 'transparent')};
+  border: ${({ selected }) => (selected ? 'none' : `1px ${TUPAIA_ORANGE} solid`)};
+  text-transform: none;
+  opacity: 1;
+  max-width: none;
+`;
+
+const ComingSoon = styled.p`
+  color: white;
+  font-size: 32px;
+  text-align: center;
+  width: 100%;
+`;
+
+const RootScreen = ({
+  orgUnit,
+  isLoading,
+  isUserLoggedIn,
+  enlargedDialogIsVisible,
+  selectedTab,
+  setSelectedTab,
+}) => {
+  const handleChangeSelectedTab = (event, newValue) => setSelectedTab(newValue);
+
+  return (
+    <StyleRoot>
+      <EnvBanner />
+      <LoadingScreen isLoading={isLoading} />
+      <div>
+        <HeaderBar />
+        <EntityName>{orgUnit.name}</EntityName>
+        <StyledTabs
+          value={selectedTab}
+          onChange={handleChangeSelectedTab}
+          TabIndicatorProps={{
+            style: { display: 'none' },
+          }}
+        >
+          <StyledTab label="Dashboard" value="dashboard" disableRipple />
+          <StyledTab label="Map" value="map" disableRipple />
+        </StyledTabs>
+        <SearchBar />
+        {selectedTab === 'dashboard' && <Dashboard />}
+        {selectedTab === 'map' && <ComingSoon>Coming soon</ComingSoon>}
+        {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
+        <Footer />
+        {isUserLoggedIn && <OverlayDiv />}
+      </div>
+    </StyleRoot>
+  );
+};
 
 RootScreen.propTypes = {
   orgUnit: PropTypes.shape({
@@ -49,19 +102,25 @@ RootScreen.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   isUserLoggedIn: PropTypes.bool.isRequired,
   enlargedDialogIsVisible: PropTypes.bool,
+  selectedTab: PropTypes.oneOf(['dashboard', 'map']),
+  setSelectedTab: PropTypes.func.isRequired,
 };
 
 RootScreen.defaultProps = {
   enlargedDialogIsVisible: false,
+  selectedTab: 'dashboard',
 };
 
-const mapStateToProps = state => {
-  return {
-    orgUnit: selectCurrentOrgUnit(state),
-    isLoading: state.global.isLoadingOrganisationUnit,
-    isUserLoggedIn: state.authentication.isUserLoggedIn,
-    enlargedDialogIsVisible: !!selectIsEnlargedDialogVisible(state),
-  };
-};
+const mapStateToProps = state => ({
+  orgUnit: selectCurrentOrgUnit(state),
+  isLoading: state.global.isLoadingOrganisationUnit,
+  isUserLoggedIn: state.authentication.isUserLoggedIn,
+  enlargedDialogIsVisible: !!selectIsEnlargedDialogVisible(state),
+  selectedTab: selectMobileTab(state),
+});
 
-export default connect(mapStateToProps)(RootScreen);
+const mapDispatchToProps = dispatch => ({
+  setSelectedTab: tab => dispatch(setMobileTab(tab)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RootScreen);

@@ -35,6 +35,7 @@ export const CHANGE_SIDE_BAR_CONTRACTED_WIDTH = 'CHANGE_SIDE_BAR_CONTRACTED_WIDT
 export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
 export const CLEAR_MAP_OVERLAY_HIERARCHY = 'CLEAR_MAP_OVERLAY_HIERARCHY';
 export const SET_MAP_OVERLAYS = 'SET_MAP_OVERLAYS';
+export const SET_MOBILE_TAB = 'SET_MOBILE_TAB';
 export const SET_DISPLAYED_MAP_OVERLAY = 'SET_DISPLAYED_MAP_OVERLAY';
 export const SET_OVERLAY_CONFIGS = 'SET_OVERLAY_CONFIGS';
 export const UPDATE_OVERLAY_CONFIGS = 'UPDATE_OVERLAY_CONFIGS';
@@ -1112,4 +1113,8 @@ export function updateEnlargedDialogError(errorMessage) {
 
 export function updateHistoryLocation(location) {
   return { type: UPDATE_HISTORY_LOCATION, location };
+}
+
+export function setMobileTab(tab) {
+  return { type: SET_MOBILE_TAB, tab };
 }

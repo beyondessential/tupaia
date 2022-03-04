@@ -18,6 +18,7 @@ import {
   SET_DASHBOARD_GROUP,
   SET_ENLARGED_DIALOG_DATE_RANGE,
   SET_MAP_OVERLAYS,
+  SET_MOBILE_TAB,
   SET_ORG_UNIT,
   SET_PROJECT,
   updateHistoryLocation,
@@ -125,6 +126,12 @@ export const historyMiddleware = store => next => action => {
 
       dispatchLocationUpdate(store, {
         [URL_COMPONENTS.OVERLAY_PERIOD]: currentOverlayPeriods.join(','),
+      });
+      break;
+    }
+    case SET_MOBILE_TAB: {
+      dispatchLocationUpdate(store, {
+        [URL_COMPONENTS.MOBILE_TAB]: action.tab,
       });
       break;
     }

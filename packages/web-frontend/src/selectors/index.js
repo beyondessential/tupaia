@@ -74,3 +74,5 @@ export {
   selectDefaultMapOverlay,
   selectPeriodGranularityByCode,
 } from './mapOverlaySelectors';
+
+export { selectMobileTab } from './navigationSelectors';
