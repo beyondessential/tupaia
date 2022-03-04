@@ -30,13 +30,8 @@ describe('AccessPolicyBuilder', () => {
     },
   };
   const userId = 'xxx';
-  let buildAccessPolicyMock;
-  let buildLegacyAccessPolicyMock;
-
-  beforeAll(() => {
-    buildAccessPolicyMock = buildAccessPolicy.mockResolvedValue({});
-    buildLegacyAccessPolicyMock = buildLegacyAccessPolicy.mockResolvedValue({});
-  });
+  let buildAccessPolicyMock = buildAccessPolicy.mockResolvedValue({});
+  let buildLegacyAccessPolicyMock = buildLegacyAccessPolicy.mockResolvedValue({});
 
   it('throws error when userId is undefined', () => {
     const builder = new AccessPolicyBuilder(models);
