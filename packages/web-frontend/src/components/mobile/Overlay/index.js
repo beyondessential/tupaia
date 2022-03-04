@@ -13,13 +13,15 @@ import Radium from 'radium';
 
 import { DARK_BLUE, MOBILE_HEADER_HEIGHT, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
 
-const Overlay = ({ titleText, titleElement, children, onClose, contentStyle }) => (
+const Overlay = ({ titleText, titleElement, closeElement, children, onClose, contentStyle }) => (
   <div style={styles.overlay}>
     <div style={styles.header}>
       {titleElement || <div style={styles.title}>{titleText}</div>}
-      <button type="button" style={styles.closeButton} onClick={onClose}>
-        <CloseIcon />
-      </button>
+      {closeElement || (
+        <button type="button" style={styles.closeButton} onClick={onClose}>
+          <CloseIcon />
+        </button>
+      )}
     </div>
     <div style={[styles.content, contentStyle]}>{children}</div>
   </div>
@@ -67,6 +69,7 @@ const styles = {
 Overlay.propTypes = {
   titleText: PropTypes.string,
   titleElement: PropTypes.node,
+  closeElement: PropTypes.node,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   onClose: PropTypes.func.isRequired,
   contentStyle: PropTypes.object,
@@ -75,6 +78,7 @@ Overlay.propTypes = {
 Overlay.defaultProps = {
   titleText: '',
   titleElement: null,
+  closeElement: null,
   children: null,
   contentStyle: {},
 };

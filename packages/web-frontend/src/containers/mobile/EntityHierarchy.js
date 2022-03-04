@@ -14,7 +14,6 @@ import {
   selectOrgUnitChildren,
   selectCurrentProjectCode,
 } from '../../selectors';
-import { setOrgUnit } from '../../actions';
 import { SearchBarItem } from '../../components/SearchBarItem';
 
 const StyledList = styled(List)`
@@ -22,13 +21,13 @@ const StyledList = styled(List)`
   height: 100%;
 `;
 
-const EntityHierarchy = ({ hierarchyData, orgUnitFetchError }) => {
+const EntityHierarchy = ({ hierarchyData, orgUnitFetchError, onClick }) => {
   if (isNull(hierarchyData)) return <p>Loading countries...</p>;
   if (orgUnitFetchError) return <h2>Server error, try refresh</h2>;
   if (hierarchyData.length < 1) return null;
 
   const hierarchy = hierarchyData.map(item => (
-    <SearchBarItem key={item} organisationUnitCode={item} nestedMargin="0px" />
+    <SearchBarItem key={item} organisationUnitCode={item} onClick={onClick} separateExpander />
   ));
   return <StyledList>{hierarchy}</StyledList>;
 };
@@ -36,6 +35,7 @@ const EntityHierarchy = ({ hierarchyData, orgUnitFetchError }) => {
 EntityHierarchy.propTypes = {
   hierarchyData: PropTypes.array,
   orgUnitFetchError: PropTypes.string,
+  onClick: PropTypes.func.isRequired,
 };
 
 EntityHierarchy.defaultProps = {
@@ -55,10 +55,4 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  onChangeOrgUnit: organisationUnitCode => {
-    dispatch(setOrgUnit(organisationUnitCode));
-  },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(EntityHierarchy);
+export default connect(mapStateToProps)(EntityHierarchy);
