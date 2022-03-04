@@ -24,12 +24,9 @@ const SearchOverlay = ({
   onChangeSearch,
   onChangeOrgUnit,
 }) => (
-  <Overlay
-    titleElement={renderTitleElement(searchString, isLoading, onChangeSearch)}
-    onClose={onClose}
-  >
+  <Overlay titleElement={renderTitleElement(searchString, isLoading, onChangeSearch)}>
     {searchString === '' ? (
-      <EntityHierarchy />
+      <EntityHierarchy onClick={onClose} />
     ) : (
       <List
         title={getSearchResponseMessage(searchString, searchResponse, isLoading)}
@@ -132,12 +129,16 @@ const mapDispatchToProps = dispatch => ({
   dispatch,
 });
 
-const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
+const mergeProps = (stateProps, { dispatch, ...dispatchProps }, { onClose, ...ownProps }) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
   onChangeOrgUnit: organisationUnitCode => {
     dispatch(setOrgUnit(organisationUnitCode));
+  },
+  onClose: () => {
+    dispatch(changeSearch(''));
+    onClose();
   },
 });
 
