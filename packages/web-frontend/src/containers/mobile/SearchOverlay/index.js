@@ -24,7 +24,10 @@ const SearchOverlay = ({
   onChangeSearch,
   onChangeOrgUnit,
 }) => (
-  <Overlay titleElement={renderTitleElement(searchString, isLoading, onChangeSearch)}>
+  <Overlay
+    titleElement={renderTitleElement(searchString, isLoading, onChangeSearch)}
+    onClose={onClose}
+  >
     {searchString === '' ? (
       <EntityHierarchy onClick={onClose} />
     ) : (
