@@ -88,7 +88,7 @@ const Expansion = styled.div`
 const TopBarExpansion = styled.div`
   color: ${WHITE};
   padding-bottom: 10px;
-  background: rgba(255, 255, 255, 0.1);
+  background: black;
   margin: 1px;
   padding-left: ${wrapperPadding}px;
   padding-right: ${wrapperPadding}px;

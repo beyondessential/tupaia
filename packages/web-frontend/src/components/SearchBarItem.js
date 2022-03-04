@@ -30,7 +30,7 @@ const Row = styled.div`
   align-items: center;
   padding: 0px 15px;
   background: black;
-  border-bottom: 1px solid ${DARK_BLUE};
+  border-bottom: ${p => (p.$hideBottomBorder ? 'none' : `1px solid ${DARK_BLUE}`)};
 `;
 
 const StyledButton = styled(Button)`
@@ -42,6 +42,7 @@ const StyledButton = styled(Button)`
 
   .MuiButton-label {
     justify-content: flex-start;
+    text-align: left;
   }
 `;
 
@@ -68,15 +69,17 @@ const SearchBarItemComponent = ({
   onClick,
   onClickExpand,
   nestedMargin,
+  isFinalRow,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const nestedItems = organisationUnitChildren.map(child => (
+  const nestedItems = organisationUnitChildren.map((child, index) => (
     <SearchBarItem
       key={child}
       organisationUnitCode={child}
       onClick={onClick}
       nestedMargin={nestedMargin + 24}
+      isFinalRow={isFinalRow && index === organisationUnitChildren.length - 1}
     />
   ));
   // always show an expander for country org units, which lazy load their children
@@ -86,7 +89,7 @@ const SearchBarItemComponent = ({
 
   return (
     <Container key={organisationUnitCode}>
-      <Row>
+      <Row $hideBottomBorder={isFinalRow && !isOpen}>
         <StyledButton onClick={() => onClick(organisationUnitCode)} $nestedMargin={nestedMargin}>
           {name}
           {Icon && <Icon style={{ opacity: 0.7 }} />}
@@ -116,6 +119,7 @@ SearchBarItemComponent.propTypes = {
   onClick: PropTypes.func.isRequired,
   onClickExpand: PropTypes.func.isRequired,
   nestedMargin: PropTypes.number,
+  isFinalRow: PropTypes.bool.isRequired,
 };
 
 SearchBarItemComponent.defaultProps = {

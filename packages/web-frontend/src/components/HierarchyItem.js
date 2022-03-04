@@ -115,9 +115,9 @@ HierarchyItem.propTypes = {
 HierarchyItem.defaultProps = {
   nestedMargin: '24px',
   label: null,
-  nestedItems: [],
-  isSelected: false,
-  isCheckBox: false,
+  nestedItems: null,
+  isSelected: null,
+  isCheckBox: null,
   info: null,
   onClick: null,
 };

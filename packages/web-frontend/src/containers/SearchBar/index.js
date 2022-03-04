@@ -182,8 +182,12 @@ export class SearchBar extends PureComponent {
     if (orgUnitFetchError) return <h2>Server error, try refresh</h2>;
     if (hierarchyData.length < 1) return null;
 
-    const hierarchy = hierarchyData.map(item => (
-      <SearchBarItem key={item} organisationUnitCode={item} nestedMargin="0px" />
+    const hierarchy = hierarchyData.map((item, index) => (
+      <SearchBarItem
+        key={item}
+        organisationUnitCode={item}
+        isFinalRow={index === hierarchyData.length - 1}
+      />
     ));
     return <List style={styles.hierarchyItem}>{hierarchy}</List>;
   }

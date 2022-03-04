@@ -26,8 +26,13 @@ const EntityHierarchy = ({ hierarchyData, orgUnitFetchError, onClick }) => {
   if (orgUnitFetchError) return <h2>Server error, try refresh</h2>;
   if (hierarchyData.length < 1) return null;
 
-  const hierarchy = hierarchyData.map(item => (
-    <SearchBarItem key={item} organisationUnitCode={item} onClick={onClick} separateExpander />
+  const hierarchy = hierarchyData.map((item, index) => (
+    <SearchBarItem
+      key={item}
+      organisationUnitCode={item}
+      onClick={onClick}
+      isFinalRow={index === hierarchyData.length - 1}
+    />
   ));
   return <StyledList>{hierarchy}</StyledList>;
 };
