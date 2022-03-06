@@ -159,6 +159,7 @@ class MapComponent extends Component {
       tileSetUrl,
       measureOrgUnits,
       permanentLabels,
+      isMobile,
     } = this.props;
 
     // Only show data with valid coordinates. Note: this also removes region data
@@ -186,7 +187,7 @@ class MapComponent extends Component {
         onPositionChanged={this.onPositionChanged}
       >
         <TileLayer tileSetUrl={tileSetUrl} />
-        <ZoomControl sidePanelWidth={sidePanelWidth} />
+        {!isMobile && <ZoomControl sidePanelWidth={sidePanelWidth} />}
         <DemoLand />
         {currentOrganisationUnit && organisationUnitIsArea(currentOrganisationUnit) && (
           <InteractivePolygon
@@ -250,6 +251,7 @@ MapComponent.propTypes = {
   sidePanelWidth: PropTypes.number.isRequired,
   tileSetUrl: PropTypes.string.isRequired,
   permanentLabels: PropTypes.bool,
+  isMobile: PropTypes.bool,
 };
 
 MapComponent.defaultProps = {
@@ -261,6 +263,7 @@ MapComponent.defaultProps = {
   multiOverlaySerieses: [],
   currentParent: null,
   permanentLabels: undefined,
+  isMobile: false,
 };
 
 const selectMeasureDataWithCoordinates = createSelector([measureData => measureData], measureData =>

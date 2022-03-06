@@ -14,6 +14,7 @@ const SearchBarContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
+  margin: 10px 0px;
 `;
 
 const SearchBarButton = styled(Button)`

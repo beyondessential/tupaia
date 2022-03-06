@@ -32,7 +32,7 @@ const styles = {
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: 5, // Above title header.
+    zIndex: 401, // above leaflet map
     display: 'flex',
     flexDirection: 'column',
     animation: 'x 0.3s',

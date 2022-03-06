@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { PropTypes } from 'prop-types';
 import { StyleRoot } from 'radium';
 import { connect } from 'react-redux';
@@ -16,6 +16,7 @@ import HeaderBar from '../../../containers/mobile/HeaderBar';
 import { LoadingScreen } from '../../LoadingScreen';
 import Footer from '../../../components/mobile/Footer';
 import OverlayDiv from '../../../containers/OverlayDiv';
+import { Map } from '../../../containers/Map';
 import {
   selectCurrentOrgUnit,
   selectIsEnlargedDialogVisible,
@@ -50,13 +51,6 @@ const StyledTab = styled(Tab)`
   max-width: none;
 `;
 
-const ComingSoon = styled.p`
-  color: white;
-  font-size: 32px;
-  text-align: center;
-  width: 100%;
-`;
-
 const RootScreen = ({
   orgUnit,
   isLoading,
@@ -86,11 +80,11 @@ const RootScreen = ({
         </StyledTabs>
         <SearchBar />
         {selectedTab === 'dashboard' && <Dashboard />}
-        {selectedTab === 'map' && <ComingSoon>Coming soon</ComingSoon>}
+        {selectedTab === 'map' && <Map />}
         {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
         <Footer />
-        {isUserLoggedIn && <OverlayDiv />}
       </div>
+      {isUserLoggedIn && <OverlayDiv />}
     </StyleRoot>
   );
 };
