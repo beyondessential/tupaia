@@ -899,7 +899,7 @@ function* fetchMeasureInfo({ mapOverlayCodes, displayedMapOverlays, overlayConfi
       organisationUnitCode,
       startDate: formatDateForApi(startDate),
       endDate: formatDateForApi(endDate),
-      shouldShowAllParentCountryResults: !isMobile() && countryCode !== activeProjectCode,
+      shouldShowAllParentCountryResults: countryCode !== activeProjectCode,
       projectCode: activeProjectCode,
     };
     const requestResourceUrl = `measureData?${queryString.stringify(urlParameters)}`;
