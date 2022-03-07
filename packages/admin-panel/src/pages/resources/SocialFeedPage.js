@@ -115,9 +115,7 @@ export const SocialFeedPage = ({ getHeaderEl }) => (
     columns={SOCIAL_FEED_COLUMNS}
     editConfig={EDIT_CONFIG}
     createConfig={CREATE_CONFIG}
-    onProcessDataForSave={data => {
-      data.type = 'markdown'; // eslint-disable-line no-param-reassign
-    }}
+    onProcessDataForSave={data => ({ ...data, type: 'markdown' })}
     getHeaderEl={getHeaderEl}
   />
 );

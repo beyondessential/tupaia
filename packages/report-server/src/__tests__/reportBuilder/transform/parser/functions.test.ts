@@ -76,11 +76,30 @@ describe('functions', () => {
   });
 
   describe('context', () => {
+    describe('orgUnitIdToCode', () => {
+      const context = {
+        orgUnits: [
+          { id: '1234', code: 'FJ', name: 'Fiji' },
+          { id: '5678', code: 'TO', name: 'Tonga' },
+        ],
+      };
+
+      it('converts given org unit id to code', () => {
+        const parser = new TransformParser(undefined, context);
+        expect(parser.evaluate("=orgUnitIdToCode('1234')")).toBe('FJ');
+      });
+
+      it('returns undefined if the org unit id is not found', () => {
+        const parser = new TransformParser(undefined, context);
+        expect(parser.evaluate("=orgUnitIdToCode('abcd')")).toBe(undefined);
+      });
+    });
+
     describe('orgUnitCodeToName', () => {
       const context = {
         orgUnits: [
-          { code: 'FJ', name: 'Fiji' },
-          { code: 'TO', name: 'Tonga' },
+          { id: '1234', code: 'FJ', name: 'Fiji' },
+          { id: '5678', code: 'TO', name: 'Tonga' },
         ],
       };
 
@@ -169,6 +188,23 @@ describe('functions', () => {
 
       it('returns undefined if all values are undefined', () =>
         expect(new TransformParser().evaluate('=undefined + undefined')).toBe(undefined));
+
+      it('returns string if both values are strings', () =>
+        expect(new TransformParser().evaluate("='cat' + 'dog'")).toBe('catdog'));
+
+      it('returns string if first value is string and second is number', () =>
+        expect(new TransformParser().evaluate("='age ' + 5")).toBe('age 5'));
+
+      it('returns string if first value is number and second is string', () =>
+        expect(new TransformParser().evaluate("=5 + ' cats'")).toBe('5 cats'));
+
+      it('returns string if two operations of two numbers and a string', () =>
+        expect(new TransformParser().evaluate("=5 + ' cats and ' + 4")).toBe('5 cats and 4'));
+
+      it('returns string if four operations of numbers and strings', () =>
+        expect(new TransformParser().evaluate("=5 + ' cats and ' + 4 + ' hello ' + 5")).toBe(
+          '5 cats and 4 hello 5',
+        ));
     });
 
     describe('divide', () => {

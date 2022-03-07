@@ -35,6 +35,7 @@
       "files": [
         "packages/admin-panel-server/**",
         "packages/api-client/**",
+        "packages/data-lake-api/**",
         "packages/entity-server/**",
         "packages/indicators/**",
         "packages/lesmis-server/**",
@@ -56,6 +57,7 @@
     {
       "files": [
         "packages/admin-panel/**",
+        "packages/lesmis/**",
         "packages/psss/**",
         "packages/ui-components/**",
         "packages/web-frontend/**"

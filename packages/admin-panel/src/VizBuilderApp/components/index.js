@@ -4,7 +4,7 @@
  */
 
 export * from './JsonEditor';
-export * from './MetadataForm';
+export * from './Dashboard';
 export * from './Toolbar';
 export * from './Panel';
 export * from './PreviewSection';

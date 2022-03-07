@@ -6,15 +6,17 @@
  */
 
 import { combineReducers } from 'redux';
+import { pick } from 'lodash';
 
 import {
-  SET_MAP_OVERLAY,
+  SET_MAP_OVERLAYS,
   SET_ORG_UNIT,
   CHANGE_POSITION,
   CHANGE_BOUNDS,
   CHANGE_TILE_SET,
   FETCH_MEASURE_DATA_ERROR,
   FETCH_MEASURE_DATA_SUCCESS,
+  FETCH_ALL_MEASURE_DATA_SUCCESS,
   CANCEL_FETCH_MEASURE_DATA,
   CHANGE_ORG_UNIT_SUCCESS,
   SET_MAP_IS_ANIMATING,
@@ -23,11 +25,12 @@ import {
   HIDE_MAP_MEASURE,
   UNHIDE_MAP_MEASURE,
   CLEAR_MEASURE,
-  UPDATE_MEASURE_CONFIG,
+  UPDATE_OVERLAY_CONFIGS,
   SET_PROJECT,
+  SET_DISPLAYED_MAP_OVERLAY,
+  SET_MAX_SELECTED_OVERLAYS,
 } from '../actions';
 
-import { MARKER_TYPES } from '../constants';
 import { DEFAULT_BOUNDS } from '../defaults';
 
 function position(state = { bounds: DEFAULT_BOUNDS }, action) {
@@ -78,48 +81,29 @@ function measureInfo(state = {}, action) {
     case CLEAR_MEASURE:
       return {};
     case FETCH_MEASURE_DATA_SUCCESS: {
-      const currentCountry = action.countryCode;
-      // remove measure units with no coordinates
-      let { measureData } = action.response;
-      // for circle heatmap remove empty values or values that are not of positive float type
-      if (action.response.displayType === MARKER_TYPES.CIRCLE_HEATMAP) {
-        measureData = measureData.filter(({ value }) => {
-          if (!value || value === '') return false;
-          const parsedValue = parseFloat(value);
-          return !Number.isNaN(parsedValue) && parsedValue >= 0;
-        });
-      }
+      const {
+        mapOverlayCode,
+        hiddenMeasures: _, // --- remove hiddenMeasures and serieses-
+        serieses, // ------------------------------------------------
+        measureLevel,
+        ...restOfResponse
+      } = action.response;
 
       return {
-        ...action.response,
-        // Combine default hiddenMeasures (action.response.hiddenMeasures) and hiddenMeasures in the state so that default hiddenMeasures are populated
-        // If hiddenMeasures in the state has the same value, override the default hiddenMeasures.
-        hiddenMeasures: {
-          ...action.response.hiddenMeasures,
-          ...state.hiddenMeasures,
+        ...state,
+        [mapOverlayCode]: {
+          ...restOfResponse,
+          measureLevel: measureLevel.split(','),
         },
-        currentCountry,
-        measureData,
       };
     }
+    // Remove previous selected measure info.
+    case FETCH_ALL_MEASURE_DATA_SUCCESS:
+      return {
+        ...pick(state, action.mapOverlayCodes),
+      };
     case FETCH_MEASURE_DATA_ERROR:
       return action.error;
-    case HIDE_MAP_MEASURE:
-      return {
-        ...state,
-        hiddenMeasures: {
-          ...state.hiddenMeasures,
-          [action.key]: { ...state.hiddenMeasures[action.key], [action.value]: true },
-        },
-      };
-    case UNHIDE_MAP_MEASURE:
-      return {
-        ...state,
-        hiddenMeasures: {
-          ...state.hiddenMeasures,
-          [action.key]: { ...state.hiddenMeasures[action.key], [action.value]: false },
-        },
-      };
     default:
       return state;
   }
@@ -127,13 +111,67 @@ function measureInfo(state = {}, action) {
 
 function isMeasureLoading(state = false, action) {
   switch (action.type) {
-    case UPDATE_MEASURE_CONFIG:
-    case SET_MAP_OVERLAY:
+    case UPDATE_OVERLAY_CONFIGS:
+    case SET_MAP_OVERLAYS:
       return true;
     case FETCH_MEASURE_DATA_ERROR:
-    case FETCH_MEASURE_DATA_SUCCESS:
+    case FETCH_ALL_MEASURE_DATA_SUCCESS:
     case CANCEL_FETCH_MEASURE_DATA:
       return false;
+    default:
+      return state;
+  }
+}
+
+function displayedMapOverlays(state = [], action) {
+  switch (action.type) {
+    case SET_DISPLAYED_MAP_OVERLAY:
+      return action.mapOverlayCodes;
+    default:
+      return state;
+  }
+}
+
+function maxSelectedOverlays(state = 1, action) {
+  switch (action.type) {
+    case SET_MAX_SELECTED_OVERLAYS:
+      return action.maxNum;
+    default:
+      return state;
+  }
+}
+
+function currentCountry(state = null, action) {
+  switch (action.type) {
+    case FETCH_MEASURE_DATA_SUCCESS:
+      return action.countryCode;
+    case CLEAR_MEASURE:
+      return null;
+    default:
+      return state;
+  }
+}
+
+function hiddenMeasures(state = {}, action) {
+  switch (action.type) {
+    case FETCH_MEASURE_DATA_SUCCESS: {
+      const { hiddenMeasures: newHiddenMeasures } = action.response;
+      // Combine default hiddenMeasures (action.response.hiddenMeasures) and hiddenMeasures in the state so that default hiddenMeasures are populated
+      return {
+        ...state,
+        ...newHiddenMeasures,
+      };
+    }
+    case HIDE_MAP_MEASURE:
+      return {
+        ...state,
+        [action.key]: { ...state[action.key], [action.value]: true },
+      };
+    case UNHIDE_MAP_MEASURE:
+      return {
+        ...state,
+        [action.key]: { ...state[action.key], [action.value]: false },
+      };
     default:
       return state;
   }
@@ -217,4 +255,8 @@ export default combineReducers({
   popup,
   shouldSnapToPosition,
   isMeasureLoading,
+  displayedMapOverlays,
+  currentCountry,
+  hiddenMeasures,
+  maxSelectedOverlays,
 });

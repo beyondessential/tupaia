@@ -17,7 +17,7 @@ import {
   OutlinedButton,
 } from '@tupaia/ui-components';
 import { ModalContentProvider, InputField } from '../widgets';
-import { api } from '../api';
+import { useApi } from '../utilities/ApiProvider';
 import { DATA_CHANGE_REQUEST, DATA_CHANGE_SUCCESS, DATA_CHANGE_ERROR } from '../table/constants';
 
 const STATUS = {
@@ -40,6 +40,7 @@ export const ImportModalComponent = React.memo(
     changeSuccess,
     changeError,
   }) => {
+    const api = useApi();
     const [status, setStatus] = useState(STATUS.IDLE);
     const [finishedMessage, setFinishedMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);

@@ -8,8 +8,8 @@ import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { NAVBAR_HEIGHT } from '../constants';
-import { SearchBar, FlexEnd, FlexStart } from '../components';
+import { SearchBar, FlexEnd, FlexStart, I18n, LocaleMenu } from '../components';
+import { NAVBAR_HEIGHT, YELLOW } from '../constants';
 import { useProjectEntitiesData } from '../api/queries';
 
 const Wrapper = styled.div`
@@ -30,7 +30,20 @@ const Container = styled(MuiContainer)`
 
   @media screen and (min-width: 600px) {
     padding-left: 50px;
-    padding-right: 50px;
+  }
+`;
+
+const LightLocaleMenu = styled(LocaleMenu)`
+  position: absolute;
+  right: 24px;
+  top: 1rem;
+  padding: 6px 15px;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  z-index: 1;
+
+  .MuiSvgIcon-root {
+    color: rgba(255, 255, 255, 0.9);
   }
 `;
 
@@ -41,7 +54,7 @@ const Main = styled.div`
   left: 0;
 
   @media screen and (max-width: 600px) {
-    padding-top: 3rem;
+    padding-top: 4rem;
   }
 `;
 
@@ -55,7 +68,7 @@ const Title = styled(Typography)`
 `;
 
 const YellowTitle = styled.span`
-  color: ${props => props.theme.palette.secondary.main};
+  color: ${YELLOW};
 `;
 
 const Info = styled(FlexStart)`
@@ -107,40 +120,53 @@ const FooterInner = styled(FlexEnd)`
 
 const INFO_LINK = 'https://info.tupaia.org';
 
-export const HomeView = React.memo(() => {
+// Don't wrap HomeView with React.memo as it will prevent the useProjectEntitiesData hooking
+// running and the loading state will not display correctly
+export const HomeView = () => {
   const { isLoading } = useProjectEntitiesData();
 
   return (
     // The background image is applied here instead of the styled component as it creates a flicker when added there
     <Wrapper style={{ backgroundImage: "url('/images/home-cover.png')" }}>
       <Container maxWidth="xl">
+        <LightLocaleMenu />
         <Main>
           <Title variant="h1">
-            Find a location <br />
-            to <YellowTitle>start viewing data</YellowTitle>
+            <I18n t="home.findALocation" />
+            <br />
+            <I18n t="home.to" />{' '}
+            <YellowTitle>
+              <I18n t="home.startViewingData" />
+            </YellowTitle>
           </Title>
           {isLoading && <CircularProgress size={60} />}
           <SearchBar />
         </Main>
         <Info>
           <InfoSection>
-            <InfoHeading variant="h5">About LESMIS</InfoHeading>
+            <InfoHeading variant="h5">
+              <I18n t="home.aboutLesmis" />
+            </InfoHeading>
             <InfoText>
-              The Lao PDR Education and Sports Management Information System (LESMIS) is a
-              GIS-enabled data aggregation, analysis and visualization platform for improved data
-              management and utilization for monitoring and planning.
+              <I18n t="home.aboutText" />
             </InfoText>
           </InfoSection>
           <InfoSection>
-            <InfoHeading variant="h5">Contact us</InfoHeading>
-            <InfoText>Ph: +856 20 55617710</InfoText>
-            <InfoText>Website: www.moes.edu.la</InfoText>
+            <InfoHeading variant="h5">
+              <I18n t="home.contactUs" />
+            </InfoHeading>
+            <InfoText>
+              <I18n t="home.ph" />: +856 20 54 015 004
+            </InfoText>
+            <InfoText>
+              <I18n t="home.website" />: www.moes.edu.la
+            </InfoText>
           </InfoSection>
         </Info>
         <Footer maxWidth="xl">
           <FooterInner>
             <Typography>
-              Powered by{' '}
+              <I18n t="home.poweredBy" />{' '}
               <Link href={INFO_LINK} color="inherit" underline="always">
                 Tupaia
               </Link>
@@ -150,4 +176,4 @@ export const HomeView = React.memo(() => {
       </Container>
     </Wrapper>
   );
-});
+};

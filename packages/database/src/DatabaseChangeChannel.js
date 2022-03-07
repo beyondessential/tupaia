@@ -43,9 +43,9 @@ export class DatabaseChangeChannel extends PGPubSub {
   /**
    * Sends a ping request out to the database and listens for a response
    * @param {number} timeout - default 250ms
-   * @param {number} retries - default 4
+   * @param {number} retries - default 240 (i.e. 1 minute total wait time). Set to 0 for unlimited retries
    */
-  async ping(timeout = 250, retries = 4) {
+  async ping(timeout = 250, retries = 240) {
     return new Promise((resolve, reject) => {
       let tries = 0;
       let nextRequest;
@@ -58,7 +58,7 @@ export class DatabaseChangeChannel extends PGPubSub {
 
       const pingRequest = () => {
         this.publish('ping', true);
-        if (tries < retries) {
+        if (retries === 0 || tries < retries) {
           nextRequest = setTimeout(pingRequest, timeout);
         } else {
           delete this.pingListeners[id];

@@ -8,7 +8,7 @@
 import createCachedSelector from 're-reselect';
 import { createSelector } from 'reselect';
 import { getMeasureDisplayInfo } from '@tupaia/ui-components/lib/map';
-import { calculateRadiusScaleFactor, POLYGON_MEASURE_TYPES } from '../utils/measures';
+import { POLYGON_MEASURE_TYPES } from '../utils/measures';
 import {
   selectActiveProjectCountries,
   selectAllOrgUnitsInCountry,
@@ -32,22 +32,165 @@ const displayInfoCache = createCachedSelector(
     return {
       organisationUnitCode,
       ...data,
-      ...getMeasureDisplayInfo({ ...data }, options, hiddenMeasures),
+      ...getMeasureDisplayInfo(data, options, hiddenMeasures),
     };
   },
 )((_, __, ___, organisationUnitCode) => organisationUnitCode);
 
-const getOrgUnitFromMeasureData = (measureData, code) =>
+const getMeasureDataByOrgUnit = (measureData, code) =>
   measureData.find(val => val.organisationUnitCode === code);
 
 const selectDisplayInfo = (measureOptions, hiddenMeasures, measureData, organisationUnitCode) =>
   safeGet(displayInfoCache, [measureOptions, hiddenMeasures, measureData, organisationUnitCode]);
 
+export const selectMeasureOptions = createSelector(
+  [state => state.map.measureInfo, (_, mapOverlayCodes) => mapOverlayCodes],
+  (measureInfo = {}, mapOverlayCodes) => {
+    const selectedMeasureOptions = mapOverlayCodes.reduce((results, mapOverlayCode) => {
+      const { measureOptions = [] } = measureInfo[mapOverlayCode] || {};
+      return [...results, ...measureOptions];
+    }, []);
+
+    const measureOptionsByKey = selectedMeasureOptions.reduce((results, measureOption) => {
+      const { key } = measureOption;
+      return results[key] ? results : { ...results, [key]: measureOption };
+    }, {});
+
+    const filteredMeasureOptions = Object.values(measureOptionsByKey);
+    return filteredMeasureOptions.length > 0 ? filteredMeasureOptions : undefined;
+  },
+);
+
+export const selectMeasureData = createSelector(
+  [state => state.map.measureInfo, (_, mapOverlayCodes) => mapOverlayCodes],
+  (measureInfo, mapOverlayCodes) => {
+    if (!measureInfo || mapOverlayCodes.length === 0) {
+      return [];
+    }
+
+    const measureData = {};
+    mapOverlayCodes.forEach(mapOverlayCode => {
+      const selectedMeasureData = measureInfo[mapOverlayCode]?.measureData;
+      if (selectedMeasureData) {
+        selectedMeasureData.forEach(measure => {
+          measureData[measure.organisationUnitCode] = Object.assign(
+            measureData[measure.organisationUnitCode] || {},
+            measure,
+          );
+        });
+      }
+    });
+    return Object.keys(measureData).length === 0 ? [] : Object.values(measureData);
+  },
+);
+
+const selectMeasureLevel = createSelector(
+  [state => state.map.measureInfo, (_, mapOverlayCodes) => mapOverlayCodes],
+  (measureInfo, mapOverlayCodes) => {
+    let measureLevelArray = [];
+
+    mapOverlayCodes.forEach(mapOverlayCode => {
+      const { measureLevel: selectedMeasureLevel = [] } = measureInfo[mapOverlayCode] || {};
+      measureLevelArray = [...measureLevelArray, ...selectedMeasureLevel];
+    });
+
+    return [...new Set(measureLevelArray)];
+  },
+);
+
+export const selectHasPolygonMeasure = createSelector(
+  [state => state.map.measureInfo, state => state.map.displayedMapOverlays],
+  (measureInfo = {}, displayedMapOverlays) => {
+    for (const displayedMapOverlayCode of displayedMapOverlays) {
+      if (
+        measureInfo[displayedMapOverlayCode]?.measureOptions &&
+        measureInfo[displayedMapOverlayCode].measureOptions.some(option =>
+          POLYGON_MEASURE_TYPES.includes(option.type),
+        )
+      ) {
+        return true;
+      }
+    }
+    return false;
+  },
+);
+
+export const selectMeasuresWithDisplayInfo = createSelector(
+  [
+    selectActiveProjectCountries,
+    selectCurrentProjectCode,
+    state => selectCountryHierarchy(state, state.map.currentCountry),
+    selectMeasureData,
+    selectMeasureOptions,
+    selectMeasureLevel,
+    state => state.map.hiddenMeasures,
+    state => state.map.currentCountry,
+  ],
+  (
+    projectCountries,
+    projectCode,
+    country,
+    measureData,
+    measureOptions,
+    measureLevel,
+    hiddenMeasures,
+    currentCountry,
+  ) => {
+    if (!currentCountry || !country) {
+      return [];
+    }
+
+    const allOrgUnitsOfLevel =
+      currentCountry === projectCode
+        ? projectCountries
+        : selectAllOrgUnitsInCountry(country).filter(orgUnit =>
+            measureLevel.includes(orgUnit.type),
+          );
+
+    return allOrgUnitsOfLevel.map(orgUnit =>
+      selectDisplayInfo(
+        measureOptions,
+        hiddenMeasures,
+        getMeasureDataByOrgUnit(measureData, orgUnit.organisationUnitCode),
+        orgUnit.organisationUnitCode,
+      ),
+    );
+  },
+);
+
+const selectMeasuresWithDisplayAndOrgUnitData = createSelector(
+  [
+    state => selectCountryHierarchy(state, state.map.currentCountry),
+    selectMeasuresWithDisplayInfo,
+    state => selectCountriesAsOrgUnits(state),
+  ],
+  (country, measureData, countries) => {
+    const type = country && country[country.countryCode]?.type;
+
+    if (type === 'Project') {
+      return measureData.map(data => {
+        const countryData = countries.find(
+          c => c.organisationUnitCode === data.organisationUnitCode,
+        );
+        return {
+          ...data,
+          ...countryData,
+        };
+      });
+    }
+
+    return measureData.map(data => ({
+      ...data,
+      ...getOrgUnitFromCountry(country, data.organisationUnitCode),
+    }));
+  },
+);
+
 const selectDisplayLevelAncestor = createSelector(
   [
     state => selectCountryHierarchy(state, selectCurrentOrgUnitCode(state)),
     selectCurrentOrgUnitCode,
-    state => state.map.measureInfo.measureOptions,
+    state => selectMeasureOptions(state, state.map.displayedMapOverlays),
   ],
   (country, currentOrganisationUnitCode, measureOptions) => {
     if (!country || !currentOrganisationUnitCode || !measureOptions) {
@@ -65,98 +208,18 @@ const selectDisplayLevelAncestor = createSelector(
   },
 );
 
-export const selectHasPolygonMeasure = createSelector(
-  [state => state.map.measureInfo],
-  (measureInfo = {}) => {
-    return (
-      measureInfo.measureOptions &&
-      measureInfo.measureOptions.some(option => POLYGON_MEASURE_TYPES.includes(option.type))
-    );
-  },
-);
-
-export const selectAllMeasuresWithDisplayInfo = createSelector(
-  [
-    state => selectActiveProjectCountries(state),
-    state => selectCurrentProjectCode(state),
-    state => selectCountryHierarchy(state, state.map.measureInfo.currentCountry),
-    state => state.map.measureInfo.measureData,
-    state => state.map.measureInfo.measureOptions,
-    state => state.map.measureInfo.hiddenMeasures,
-    state => state.map.measureInfo.currentCountry,
-    state => state.map.measureInfo.measureLevel,
-  ],
-  (
-    projectCountries,
-    projectCode,
-    country,
-    measureData,
-    measureOptions,
-    hiddenMeasures,
-    currentCountry,
-    measureLevel,
-  ) => {
-    if (!currentCountry || !measureData || !country) {
-      return [];
-    }
-
-    const listOfMeasureLevels = measureLevel.split(',');
-    let allOrgUnitsOfLevel = selectAllOrgUnitsInCountry(country).filter(orgUnit => {
-      return listOfMeasureLevels.includes(orgUnit.type);
-    });
-    if (currentCountry === projectCode) allOrgUnitsOfLevel = projectCountries;
-    return allOrgUnitsOfLevel.map(orgUnit =>
-      selectDisplayInfo(
-        measureOptions,
-        hiddenMeasures,
-        getOrgUnitFromMeasureData(measureData, orgUnit.organisationUnitCode),
-        orgUnit.organisationUnitCode,
-      ),
-    );
-  },
-);
-
-export const selectAllMeasuresWithDisplayAndOrgUnitData = createSelector(
-  [
-    state => selectCountryHierarchy(state, state.map.measureInfo.currentCountry),
-    selectAllMeasuresWithDisplayInfo,
-    state => selectCountriesAsOrgUnits(state),
-  ],
-  (country, allMeasureData, countries) => {
-    const type = country && country[country.countryCode]?.type;
-
-    if (type === 'Project') {
-      return allMeasureData.map(data => {
-        const countryData = countries.find(
-          c => c.organisationUnitCode === data.organisationUnitCode,
-        );
-        return {
-          ...data,
-          ...countryData,
-        };
-      });
-    }
-
-    return allMeasureData.map(data => ({
-      ...data,
-      ...getOrgUnitFromCountry(country, data.organisationUnitCode),
-    }));
-  },
-);
-
 export const selectRenderedMeasuresWithDisplayInfo = createSelector(
   [
     state => selectCountryHierarchy(state, selectCurrentOrgUnitCode(state)),
-    selectAllMeasuresWithDisplayAndOrgUnitData,
+    selectMeasuresWithDisplayAndOrgUnitData,
     selectDisplayLevelAncestor,
-    state => state.map.measureInfo.measureOptions,
-    state => selectCountriesAsOrgUnits(state),
+    selectMeasureOptions,
   ],
-  (country, allMeasuresWithMeasureInfo, displaylevelAncestor, measureOptions = []) => {
+  (country, measures, displaylevelAncestor, measureOptions = []) => {
     const displayOnLevel = measureOptions.map(option => option.displayOnLevel).find(level => level);
 
     if (!displayOnLevel) {
-      return allMeasuresWithMeasureInfo;
+      return measures;
     }
 
     if (!displaylevelAncestor) {
@@ -168,13 +231,8 @@ export const selectRenderedMeasuresWithDisplayInfo = createSelector(
       displaylevelAncestor.organisationUnitCode,
     ).map(descendant => descendant.organisationUnitCode);
 
-    return allMeasuresWithMeasureInfo.filter(measure =>
+    return measures.filter(measure =>
       allDescendantCodesOfAncestor.includes(measure.organisationUnitCode),
     );
   },
-);
-
-export const selectRadiusScaleFactor = createSelector(
-  [selectAllMeasuresWithDisplayInfo],
-  calculateRadiusScaleFactor,
 );

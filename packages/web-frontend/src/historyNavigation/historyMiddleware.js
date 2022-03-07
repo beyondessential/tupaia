@@ -17,20 +17,25 @@ import {
   OPEN_ENLARGED_DIALOG,
   SET_DASHBOARD_GROUP,
   SET_ENLARGED_DIALOG_DATE_RANGE,
-  SET_MAP_OVERLAY,
+  SET_MAP_OVERLAYS,
   SET_ORG_UNIT,
   SET_PROJECT,
   updateHistoryLocation,
-  UPDATE_MEASURE_CONFIG,
+  UPDATE_OVERLAY_CONFIGS,
   LOCATION_CHANGE,
 } from '../actions';
-import { selectCurrentPeriodGranularity, selectMapOverlayById } from '../selectors';
-import { URL_COMPONENTS } from './constants';
+import {
+  selectCurrentMapOverlayCodes,
+  selectCurrentMapOverlayPeriods,
+  selectPeriodGranularityByCode,
+  selectMapOverlayByCodes,
+} from '../selectors';
+import { DEFAULT_PERIOD, URL_COMPONENTS } from './constants';
 import {
   addPopStateListener,
   attemptPushHistory,
   clearLocation,
-  setLocationComponent,
+  setLocationComponents,
 } from './historyNavigation';
 import { convertDateRangeToUrlPeriodString } from './utils';
 
@@ -41,14 +46,16 @@ export const historyMiddleware = store => next => action => {
   switch (action.type) {
     // Actions that modify the path
     case SET_PROJECT:
-      dispatchLocationUpdate(store, URL_COMPONENTS.PROJECT, action.projectCode);
+      dispatchLocationUpdate(store, { [URL_COMPONENTS.PROJECT]: action.projectCode });
       break;
     case SET_ORG_UNIT:
-      dispatchLocationUpdate(store, URL_COMPONENTS.ORG_UNIT, action.organisationUnitCode);
-      dispatchLocationUpdate(store, URL_COMPONENTS.DASHBOARD, '');
+      dispatchLocationUpdate(store, { [URL_COMPONENTS.ORG_UNIT]: action.organisationUnitCode });
+      dispatchLocationUpdate(store, { [URL_COMPONENTS.DASHBOARD]: '' });
       break;
     case SET_DASHBOARD_GROUP:
-      dispatchLocationUpdate(store, URL_COMPONENTS.DASHBOARD, encodeURIComponent(action.name));
+      dispatchLocationUpdate(store, {
+        [URL_COMPONENTS.DASHBOARD]: encodeURIComponent(action.name),
+      });
       break;
     case GO_HOME:
       // Completely clear location, explore project will be set in a saga.
@@ -57,55 +64,70 @@ export const historyMiddleware = store => next => action => {
 
     // Actions that modify search params
     case OPEN_ENLARGED_DIALOG:
-      dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, action.itemCode);
+      dispatchLocationUpdate(store, { [URL_COMPONENTS.REPORT]: action.itemCode });
       break;
     case SET_ENLARGED_DIALOG_DATE_RANGE:
       // Drill down dates are handled in normal redux state
       if (action.drillDownLevel === 0) {
-        dispatchLocationUpdate(
-          store,
-          URL_COMPONENTS.REPORT_PERIOD,
-          convertDateRangeToUrlPeriodString({
+        dispatchLocationUpdate(store, {
+          [URL_COMPONENTS.REPORT_PERIOD]: convertDateRangeToUrlPeriodString({
             startDate: moment(action.startDate),
             endDate: moment(action.endDate),
           }),
-        );
+        });
       }
       break;
     case CLOSE_ENLARGED_DIALOG:
-      dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, null);
-      dispatchLocationUpdate(store, URL_COMPONENTS.REPORT_PERIOD, null);
+      dispatchLocationUpdate(store, { [URL_COMPONENTS.REPORT]: null });
+      dispatchLocationUpdate(store, { [URL_COMPONENTS.REPORT_PERIOD]: null });
       break;
-    case SET_MAP_OVERLAY: {
-      // TODO: ADD MAP OVERLAY instead of override
-      const mapOverlay = selectMapOverlayById(state, action.mapOverlayId);
-      if (!mapOverlay) {
+    case SET_MAP_OVERLAYS: {
+      const currentMapOverlayCodes = action.mapOverlayCodes.split(',');
+      const mapOverlays = selectMapOverlayByCodes(state, currentMapOverlayCodes);
+      if (mapOverlays.length === 0) {
         break;
       }
-      const { startDate, endDate, periodGranularity } = mapOverlay;
+      const currentOverlayPeriods = [];
+      currentMapOverlayCodes.forEach(mapOverlayCode => {
+        const { startDate, endDate, periodGranularity } =
+          mapOverlays.find(mapOverlay => mapOverlay.mapOverlayCode === mapOverlayCode) || {};
+        const overlayPeriod = convertDateRangeToUrlPeriodString(
+          { startDate, endDate },
+          periodGranularity,
+        );
+        currentOverlayPeriods.push(overlayPeriod || DEFAULT_PERIOD);
+      });
 
-      dispatchLocationUpdate(store, URL_COMPONENTS.MAP_OVERLAY, action.mapOverlayId);
-      dispatchLocationUpdate(
-        store,
-        URL_COMPONENTS.MEASURE_PERIOD,
-        convertDateRangeToUrlPeriodString({ startDate, endDate }, periodGranularity),
-      );
+      dispatchLocationUpdate(store, {
+        [URL_COMPONENTS.MAP_OVERLAY]: action.mapOverlayCodes,
+        [URL_COMPONENTS.OVERLAY_PERIOD]: currentOverlayPeriods.join(','),
+      });
       break;
     }
     case CLEAR_MEASURE:
-      dispatchLocationUpdate(store, URL_COMPONENTS.MAP_OVERLAY, null);
-      dispatchLocationUpdate(store, URL_COMPONENTS.MEASURE_PERIOD, null);
+      dispatchLocationUpdate(store, {
+        [URL_COMPONENTS.MAP_OVERLAY]: null,
+        [URL_COMPONENTS.OVERLAY_PERIOD]: null,
+      });
       break;
-    case UPDATE_MEASURE_CONFIG:
-      dispatchLocationUpdate(
-        store,
-        URL_COMPONENTS.MEASURE_PERIOD,
-        convertDateRangeToUrlPeriodString(
-          action.measureConfig,
-          selectCurrentPeriodGranularity(state),
-        ),
-      );
+    case UPDATE_OVERLAY_CONFIGS: {
+      const currentOverlayCodes = selectCurrentMapOverlayCodes(state);
+      const currentOverlayPeriods = selectCurrentMapOverlayPeriods(state);
+
+      Object.entries(action.overlayConfigs).forEach(([mapOverlayCode, overlayConfig]) => {
+        const targetedOverlayIndex = currentOverlayCodes.findIndex(code => code === mapOverlayCode);
+        const newOverlayPeriod = convertDateRangeToUrlPeriodString(
+          overlayConfig,
+          selectPeriodGranularityByCode(state, mapOverlayCode),
+        );
+        currentOverlayPeriods[targetedOverlayIndex] = newOverlayPeriod || DEFAULT_PERIOD;
+      });
+
+      dispatchLocationUpdate(store, {
+        [URL_COMPONENTS.OVERLAY_PERIOD]: currentOverlayPeriods.join(','),
+      });
       break;
+    }
     default:
   }
 
@@ -131,11 +153,11 @@ export const initHistoryDispatcher = store => {
   });
 };
 
-const dispatchLocationUpdate = (store, component, value) => {
+const dispatchLocationUpdate = (store, newComponents) => {
   const { dispatch } = store;
   const { routing } = store.getState();
 
-  const newLocation = setLocationComponent(routing, component, value);
+  const newLocation = setLocationComponents(routing, newComponents);
   dispatch(updateHistoryLocation(newLocation));
 };
 

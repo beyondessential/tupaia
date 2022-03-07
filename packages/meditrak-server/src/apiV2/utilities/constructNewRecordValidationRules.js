@@ -172,6 +172,20 @@ export const constructForSingle = (models, recordType) => {
         ],
         sort_order: [constructIsEmptyOr(isNumber)],
       };
+    case TYPES.MAP_OVERLAY:
+      return {
+        code: [constructRecordNotExistsWithField(models.mapOverlay, 'code')],
+        name: [hasContent],
+        permission_group: [constructRecordExistsWithField(models.permissionGroup, 'name')],
+        config: [hasContent],
+        report_code: [hasContent],
+        legacy: [hasContent, isBoolean],
+      };
+    case TYPES.MAP_OVERLAY_GROUP:
+      return {
+        code: [hasContent],
+        name: [hasContent],
+      };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);
   }

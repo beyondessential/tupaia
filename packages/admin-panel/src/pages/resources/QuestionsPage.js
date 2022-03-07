@@ -56,6 +56,8 @@ const QUESTION_COLUMNS = [
     actionConfig: {
       editEndpoint: 'questions',
       fields: QUESTION_FIELDS,
+      displayUsedBy: true,
+      recordType: 'question',
     },
   },
 ];
@@ -108,6 +110,7 @@ export const QuestionsPage = ({ getHeaderEl }) => (
     expansionTabs={EXPANSION_CONFIG}
     editConfig={EDIT_CONFIG}
     getHeaderEl={getHeaderEl}
+    displayUsedBy
   />
 );
 

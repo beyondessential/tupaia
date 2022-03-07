@@ -5,7 +5,7 @@
 
 import { ValidationError } from '@tupaia/utils';
 import { JsonFieldValidator } from '../JsonFieldValidator';
-import { getExpressionQuestionCodes } from '../../../../utilities';
+import { getDollarPrefixedExpressionVariables } from '../../../../utilities';
 import { isEmpty, convertCellToJson } from '../../utilities';
 
 /**
@@ -29,7 +29,7 @@ export class CalculatedConfigValidator extends JsonFieldValidator {
   }
 
   getOptionalQuestionsInFormula(formula, rowIndex) {
-    const codes = getExpressionQuestionCodes(formula);
+    const codes = getDollarPrefixedExpressionVariables(formula);
 
     return codes.filter(code => {
       const validationCriteriaCell = this.getPrecedingQuestionField(

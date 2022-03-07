@@ -56,7 +56,7 @@ describe('Permissions checker for CreateDashboards', async () => {
         await findOrCreateDummyRecord(models.entity, {
           code: entityCode,
         });
-        const { body: result } = await app.post(`userEntityPermissions`, {
+        const { body: result } = await app.post(`dashboards`, {
           body: {
             code: 'no_access_to_entity',
             name: 'No access to Entity',
@@ -69,7 +69,7 @@ describe('Permissions checker for CreateDashboards', async () => {
 
       it('Throw an exception when trying to create a dashboard to an entity when we lack Tupaia Admin Panel access to that entity', async () => {
         await app.grantAccess(DEFAULT_POLICY);
-        const { body: result } = await app.post(`userEntityPermissions`, {
+        const { body: result } = await app.post(`dashboards`, {
           body: {
             code: 'no_tupaia_admin_panel_access_to_entity',
             name: 'No Tupaia Admin Panel access to entity',

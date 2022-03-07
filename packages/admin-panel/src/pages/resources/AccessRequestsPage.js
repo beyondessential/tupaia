@@ -7,16 +7,52 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
-const FIELDS = [
+export const ACCESS_REQUESTS_ENDPOINT = 'accessRequests';
+
+const USER_FIELDS = [
   {
-    Header: 'User',
-    source: 'user.email',
-    editable: false,
+    Header: 'Email Address',
+    source: 'user_account.email',
+    type: 'tooltip',
   },
+  {
+    Header: 'First Name',
+    source: 'user.first_name',
+  },
+  {
+    Header: 'Last Name',
+    source: 'user.last_name',
+  },
+  {
+    Header: 'Employer',
+    source: 'user.employer',
+  },
+  {
+    Header: 'Phone',
+    source: 'user.mobile_number',
+  },
+  {
+    Header: 'Approved',
+    source: 'approved',
+    show: false,
+  },
+  {
+    Header: 'user_id',
+    source: 'user_id',
+    show: false,
+  },
+];
+
+const ACCESS_REQUEST_FIELDS = [
   {
     Header: 'Entity',
     source: 'entity.name',
-    editConfig: { optionsEndpoint: 'entities' },
+    editConfig: { optionsEndpoint: 'entities', baseFilter: { type: 'country' } },
+  },
+  {
+    Header: 'Project Code',
+    source: 'project.code',
+    editable: false,
   },
   {
     Header: 'Message',
@@ -25,9 +61,9 @@ const FIELDS = [
     editable: false,
   },
   {
-    Header: 'Project Code',
-    source: 'project.code',
-    editable: false,
+    Header: 'Note',
+    source: 'note',
+    editConfig: { type: 'textarea' },
   },
   {
     Header: 'Permission Group',
@@ -40,16 +76,51 @@ const FIELDS = [
   },
 ];
 
-const COLUMNS = [
-  ...FIELDS,
+const USER_COLUMNS = [
+  ...USER_FIELDS,
   {
-    Header: 'Approve/Decline',
-    type: 'edit',
-    source: 'id',
+    Header: 'Edit',
+    source: 'user_id',
+    type: 'bulkEdit',
+    width: 150,
     actionConfig: {
-      editEndpoint: 'accessRequests',
+      bulkGetEndpoint: `users/{user_id}/${ACCESS_REQUESTS_ENDPOINT}`,
+      bulkUpdateEndpoint: `${ACCESS_REQUESTS_ENDPOINT}`,
+      baseFilter: { approved: null },
       fields: [
-        ...FIELDS,
+        {
+          Header: 'Entity',
+          source: 'entity.name',
+          bulkAccessor: rows => rows.map(row => row['entity.name'] ?? 'blank').join(', '),
+          editable: false,
+        },
+        {
+          Header: 'Project Code',
+          source: 'project.code',
+          bulkAccessor: rows => rows.map(row => row['project.code'] ?? 'blank').join(', '),
+          editable: false,
+        },
+        {
+          Header: 'Message',
+          source: 'message',
+          bulkAccessor: rows => rows.map(row => (row.message ? row.message : 'blank')).join(', '),
+          type: 'tooltip',
+          editable: false,
+        },
+        {
+          Header: 'id',
+          source: 'id',
+          show: false,
+        },
+        {
+          Header: 'Permission Group',
+          source: 'permission_group.name',
+          editConfig: {
+            optionsEndpoint: 'permissionGroups',
+            secondaryLabel:
+              'If a default is shown here, it will give the user access to the project they requested, but please review carefully as some projects have several permission levels.',
+          },
+        },
         {
           Header: 'Approved',
           source: 'approved',
@@ -68,16 +139,58 @@ const COLUMNS = [
   },
 ];
 
+const EXPANSION_COLUMNS = [
+  ...ACCESS_REQUEST_FIELDS,
+  {
+    Header: 'Approve/Decline',
+    width: 140,
+    type: 'edit',
+    source: 'id',
+    actionConfig: {
+      editEndpoint: 'accessRequests',
+      fields: [
+        ...ACCESS_REQUEST_FIELDS,
+        {
+          Header: 'Approved',
+          source: 'approved',
+          type: 'boolean',
+          editConfig: {
+            type: 'boolean',
+          },
+        },
+      ],
+    },
+  },
+];
+
+const EXPANSION_CONFIG = [
+  {
+    title: 'Access Requests',
+    endpoint: `users/{user_id}/${ACCESS_REQUESTS_ENDPOINT}`,
+    columns: EXPANSION_COLUMNS,
+    baseFilter: { approved: null },
+  },
+];
+
 export const AccessRequestsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Access Requests"
     endpoint="accessRequests"
-    columns={COLUMNS}
+    columns={USER_COLUMNS}
+    expansionTabs={EXPANSION_CONFIG}
+    baseFilter={{ approved: null }}
     editConfig={{
       title: 'Edit & Approve Access Request',
     }}
-    baseFilter={{ approved: null }}
     getHeaderEl={getHeaderEl}
+    onProcessDataForSave={(editedFields, recordData) => {
+      if (!Array.isArray(recordData)) {
+        return editedFields;
+      }
+
+      // Return an array of records for bulk editing on the server
+      return recordData.map(record => ({ ...record, ...editedFields }));
+    }}
   />
 );
 

@@ -5,11 +5,31 @@ function print_help() {
 dumpDatabase.sh <identity_file>
 
 Options:
-  -h, --help     Show help                                                       [boolean]
-  -s, --server   Stage name of the EC2 instance that will be used (default: dev) [string]
-  -t, --target   Directory to store the dump under                               [string]
+  -h, --help     Show help                                                              [boolean]
+  -s, --server   Deployment name of the DB instance that will be used (default: dev)    [string]
+  -t, --target   Directory to store the dump under                                      [string]
 EOF
 }
+
+# https://stackoverflow.com/questions/12498304/using-bash-to-display-a-progress-indicator
+function show_loading_spinner() {
+    eval $2 2>/dev/null &
+    pid=$! # Process Id of the previous running command
+
+    spin='-\|/'
+
+    i=0
+    while kill -0 $pid 2>/dev/null
+    do
+    i=$(( (i+1) %4 ))
+    printf "\r$1 ${spin:$i:1}"
+    sleep .5
+    done
+    printf "\r$1  "
+    echo "" # reset prompt
+}
+
+source ".env"
 
 DUMP_FILE_NAME="dump.sql"
 
@@ -50,29 +70,21 @@ if [ "$identity_file" == "" ]; then
     exit 1
 fi
 
-domain=$server-ssh.tupaia.org
-host="ubuntu@$domain"
-dump_file_path="/var/lib/postgresql/$DUMP_FILE_NAME"
+if [ "$DB_PG_USER" == "" ] || [ "$DB_PG_PASSWORD" == "" ]; then
+    echo "Missing postgres user credential env vars in @tupaia/database .env file. Check Lastpass for variables and add them to the .env file"
+    exit 1
+fi
 
-echo "Creating dump file in $domain..."
-ssh -o StrictHostKeyChecking=no -i $identity_file $host \
-    "sudo -u postgres bash -c \"pg_dump tupaia > $dump_file_path\""
-
-echo "Compressing dump file"
-ssh -o StrictHostKeyChecking=no -i $identity_file $host \
-    "sudo gzip -f $dump_file_path"
-
+host=$server-db.tupaia.org
 target_path="$(
     cd "$target_dir"
     pwd
-)/$DUMP_FILE_NAME.gz"
-echo "Downloading dump file into '$target_path'..."
-scp -i $identity_file "$host:$dump_file_path.gz" $target_dir
+)/$DUMP_FILE_NAME"
+target_zip_path="$target_path.gz"
 
-echo "Deleting temporary dump file in the server..."
-ssh -i $identity_file $host "sudo rm $dump_file_path.gz"
+show_loading_spinner "Dumping database to $target_zip_path" "PGPASSWORD=$DB_PG_PASSWORD pg_dump \"host=$host user=$DB_PG_USER dbname=tupaia sslmode=require sslkey=$identity_file\" -Z1 -f $target_zip_path"
+show_loading_spinner "Unzipping $target_zip_path" "gunzip -f $target_zip_path"
 
-echo "Unzipping local copy"
-gzip -d -f $target_path
+echo "Dump file available at $target_path"
 
 echo "Done!"

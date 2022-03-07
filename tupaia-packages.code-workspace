@@ -37,6 +37,10 @@
       "path": "packages/data-broker"
     },
     {
+      "name": "data-lake-api",
+      "path": "packages/data-lake-api"
+    },
+    {
       "name": "database",
       "path": "packages/database"
     },
@@ -120,21 +124,15 @@
   "settings": {
     "cSpell.language": "en-GB",
     "cSpell.words": [
-      "Clazz",
-      "Codeship",
-      "Lesmis",
-      "MediTrak",
-      "Microservice",
-      "PSSS",
-      "Tongatapu",
-      "Tupaia",
       "analytics",
       "asyncio",
       "beyondessential",
       "boto",
       "cacheable",
       "cachers",
+      "Clazz",
       "cleanup",
+      "Codeship",
       "ctes",
       "debouncing",
       "deleters",
@@ -146,6 +144,7 @@
       "eqeqeq",
       "eventdate",
       "flattable",
+      "Flutracking",
       "geojson",
       "groupby",
       "heatmap",
@@ -154,6 +153,9 @@
       "isequal",
       "jsonb",
       "keyby",
+      "Lesmis",
+      "MediTrak",
+      "Microservice",
       "middlewares",
       "migrator",
       "originalname",
@@ -169,10 +171,13 @@
       "preaggregators",
       "prestart",
       "promisify",
+      "PSSS",
       "singularise",
       "spec",
       "specs",
       "testid",
+      "Tongatapu",
+      "Tupaia",
       "updaters",
       "upsert",
       "vars"

@@ -7,6 +7,11 @@ import { ModelRegistry } from '@tupaia/database';
 import { ReportModel } from './models';
 
 import type { DateSpecs } from './reportBuilder';
+import { TupaiaApiClient } from '@tupaia/api-client';
+
+export type RequestContext = {
+  services: TupaiaApiClient;
+}
 
 export interface ReportServerModelRegistry extends ModelRegistry {
   readonly report: ReportModel;

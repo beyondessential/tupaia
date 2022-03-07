@@ -39,6 +39,7 @@ export const PRIMARY_BLUE = '#2196f3';
 export const BLUE = '#22c7fc';
 export const LIGHT_BLUE = '#cde9ff';
 export const DARKENED_BLUE = '#0296c5';
+export const DARK_GREY = 'rgba(255, 255, 255, 0.6)';
 export const GREY = '#c7c7c7';
 export const LIGHT_GREY = '#EFEFF0';
 export const ERROR = red[500];
@@ -49,7 +50,6 @@ export const MOBILE_HEADER_HEIGHT = 55;
 const MATERIAL_UI_POPOVER_INDEX = 1300; // Taken from material-ui source code
 export const DIALOG_Z_INDEX = MATERIAL_UI_POPOVER_INDEX - 1;
 export const EXPORT_CHART_PADDING = 20;
-export const DASHBOARD_VIEW_MARGIN = 4;
 export const DASHBOARD_META_MARGIN = 15;
 export const TOP_BAR_HEIGHT = 60;
 export const CONTROL_BAR_WIDTH = 340;
@@ -173,6 +173,7 @@ export const BUTTON_COLORS = {
 export const MAP_OVERLAY_SELECTOR = {
   background: 'rgb(7, 40, 73)',
   border: '1px solid #2196f3',
+  subBackground: '#203e5c',
 };
 
 export const MARKER_POPUP_STYLE = {
@@ -302,7 +303,6 @@ export const VIEW_STYLES = {
         transition: 'min-height 0.3s',
         width: '100%',
         maxWidth: '100%',
-        marginBottom: DASHBOARD_VIEW_MARGIN,
         backgroundColor: '#272832',
         boxSizing: 'border-box',
         flex: '1 0 auto', // fill left over space
@@ -313,13 +313,7 @@ export const VIEW_STYLES = {
         height: '100%',
       }
     : {
-        minHeight: 250,
-        height: 'min-content',
-        maxWidth: 450,
-        minWidth: 300,
         padding: '15px 15px 15px 10px',
-        margin: '0.5%',
-        width: '24%',
         border: '1px solid #1f2038',
         boxShadow: '0px 0px 15px rgba(0,0,0,0.3)',
       },

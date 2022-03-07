@@ -28,35 +28,28 @@ PopupDataItem.propTypes = {
   measureName: PropTypes.string.isRequired,
 };
 
-export const PopupDataItemList = ({ measureOptions, data, showNoDataLabel }) => {
-  const popupList = data
-    ? measureOptions
-        .filter(measureOption => !measureOption.hideFromPopup)
-        .map(measureOption => {
-          const { key, name, organisationUnit, ...otherConfigs } = measureOption;
-          const metadata = getMetadata(data, key);
-          const { formattedValue, valueInfo } = getFormattedInfo(data, measureOption, {
-            key,
-            metadata,
-            ...otherConfigs,
-          });
-          return valueInfo.hideFromPopup ? null : (
-            <PopupDataItem key={name} measureName={name} value={formattedValue} />
-          );
-        })
-        .filter(popupItem => popupItem !== null)
-    : [];
-
-  const { name, key } = measureOptions[0];
-
-  return popupList.length === 0 && showNoDataLabel
-    ? [<PopupDataItem key={name || key} measureName={name || key} value="No Data" />]
-    : popupList;
+export const PopupDataItemList = ({ serieses, data }) => {
+  return serieses
+    .filter(series => !series.hideFromPopup)
+    .sort((measure1, measure2) => measure1.sortOrder - measure2.sortOrder)
+    .map(series => {
+      const { key, name, organisationUnit, ...otherConfigs } = series;
+      const metadata = getMetadata(data, key);
+      const { formattedValue, valueInfo } = getFormattedInfo(data, series, {
+        key,
+        metadata,
+        ...otherConfigs,
+      });
+      return valueInfo.hideFromPopup ? null : (
+        <PopupDataItem key={name} measureName={name} value={formattedValue} />
+      );
+    })
+    .filter(popupItem => popupItem !== null);
 };
 
 PopupDataItemList.propTypes = {
   data: PropTypes.object.isRequired,
-  measureOptions: PropTypes.arrayOf(
+  serieses: PropTypes.arrayOf(
     PropTypes.shape({
       key: PropTypes.string.isRequired,
       name: PropTypes.string,
@@ -65,5 +58,6 @@ PopupDataItemList.propTypes = {
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     }),
   ).isRequired,
-  showNoDataLabel: PropTypes.bool,
 };
+
+PopupDataItemList.defaultTypes = { data: {} };

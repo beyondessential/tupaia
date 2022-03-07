@@ -11,7 +11,7 @@ import { FlexColumn, FlexSpaceBetween } from '@tupaia/ui-components';
 import { TabPanel } from './TabPanel';
 import { JsonEditor } from './JsonEditor';
 import { PlayButton } from './PlayButton';
-import { useVizBuilderConfig } from '../context';
+import { useVizConfig, useVizConfigError } from '../context';
 
 const Container = styled(FlexColumn)`
   position: relative;
@@ -68,25 +68,32 @@ const PanelTabPanel = styled.div`
 `;
 
 export const Panel = () => {
+  const { hasDataError, setDataError } = useVizConfigError();
   const [tab, setTab] = useState(0);
   const [
     {
       visualisation: { data: dataConfig },
     },
-    { setDataConfig, setFetchConfig },
-  ] = useVizBuilderConfig();
+    { setDataConfig },
+  ] = useVizConfig();
 
-  const { dataElements, dataGroups, startDate, endDate, aggregations, transform } = dataConfig;
+  const { fetch, aggregate, transform } = dataConfig;
 
   const handleChange = (event, newValue) => {
     setTab(newValue);
   };
 
-  const fetchValue = {
-    dataElements,
-    dataGroups,
-    startDate,
-    endDate,
+  const handleInvalidChange = errMsg => {
+    setDataError(errMsg);
+  };
+
+  const setTabValue = (tabName, value) => {
+    setDataConfig(tabName, value);
+    setDataError(null);
+  };
+
+  const isTabDisabled = tabId => {
+    return tab !== tabId && hasDataError;
   };
 
   return (
@@ -99,20 +106,32 @@ export const Panel = () => {
           textColor="primary"
           onChange={handleChange}
         >
-          <Tab label="Fetch" icon={<ChevronRight />} />
-          <Tab label="Aggregate" icon={<ChevronRight />} />
-          <Tab label="Transform" />
+          <Tab disabled={isTabDisabled(0)} label="Fetch" icon={<ChevronRight />} />
+          <Tab disabled={isTabDisabled(1)} label="Aggregate" icon={<ChevronRight />} />
+          <Tab disabled={isTabDisabled(2)} label="Transform" />
         </Tabs>
         <PlayButton />
       </PanelNav>
       <TabPanel isSelected={tab === 0} Panel={PanelTabPanel}>
-        <JsonEditor value={fetchValue} onChange={value => setFetchConfig(value)} />
+        <JsonEditor
+          value={fetch}
+          onChange={value => setTabValue('fetch', value)}
+          onInvalidChange={handleInvalidChange}
+        />
       </TabPanel>
       <TabPanel isSelected={tab === 1} Panel={PanelTabPanel}>
-        <JsonEditor value={aggregations} onChange={value => setDataConfig('aggregations', value)} />
+        <JsonEditor
+          value={aggregate}
+          onChange={value => setTabValue('aggregate', value)}
+          onInvalidChange={handleInvalidChange}
+        />
       </TabPanel>
       <TabPanel isSelected={tab === 2} Panel={PanelTabPanel}>
-        <JsonEditor value={transform} onChange={value => setDataConfig('transform', value)} />
+        <JsonEditor
+          value={transform}
+          onChange={value => setTabValue('transform', value)}
+          onInvalidChange={handleInvalidChange}
+        />
       </TabPanel>
     </Container>
   );

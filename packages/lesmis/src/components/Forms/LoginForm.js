@@ -10,9 +10,19 @@ import Typography from '@material-ui/core/Typography';
 import { useForm } from 'react-hook-form';
 import * as COLORS from '../../constants';
 import { useLogin } from '../../api/mutations';
+import { I18n, useI18n } from '../../utils';
+import { useEmailVerification } from '../../api';
 
-const ErrorMessage = styled.p`
+const ErrorMessage = styled(Typography)`
+  text-align: center;
   color: ${COLORS.RED};
+  margin: -1rem 0 1rem;
+`;
+
+const SuccessMessage = styled(Typography)`
+  text-align: center;
+  color: ${COLORS.GREEN};
+  margin: -1rem 0 1rem;
 `;
 
 const Heading = styled(Typography)`
@@ -29,17 +39,31 @@ const StyledButton = styled(Button)`
   padding-bottom: 1rem;
 `;
 
+const VerifyEmail = () => {
+  const { isSuccess, isError } = useEmailVerification();
+
+  return (
+    <>
+      {isSuccess && <SuccessMessage>Your e-mail was successfully verified</SuccessMessage>}
+      {isError && <ErrorMessage>Your email address could not be verified</ErrorMessage>}
+    </>
+  );
+};
+
 export const LoginForm = () => {
+  const { translate } = useI18n();
   const { handleSubmit, register, errors } = useForm();
   const { mutate: login, user, isError, isLoading, isSuccess, error } = useLogin();
 
   return (
     <form onSubmit={handleSubmit(({ email, password }) => login({ email, password }))} noValidate>
-      <Heading variant="h4">Enter your email and password</Heading>
-      {isError && <ErrorMessage>{error.message}</ErrorMessage>}
+      <Heading variant="h4">
+        <I18n t="login.enterYourEmailAndPassword" />
+      </Heading>
+      {isError ? <ErrorMessage>{error.message}</ErrorMessage> : <VerifyEmail />}
       <TextField
         name="email"
-        placeholder="Email"
+        placeholder={translate('login.email')}
         type="email"
         defaultValue={user?.email}
         error={!!errors.email}
@@ -55,7 +79,7 @@ export const LoginForm = () => {
       <TextField
         name="password"
         type="password"
-        placeholder="Password"
+        placeholder={translate('login.password')}
         error={!!errors.password}
         helperText={errors.password && errors.password.message}
         inputRef={register({
@@ -71,7 +95,7 @@ export const LoginForm = () => {
       {/*  defaultValue={false} */}
       {/* /> */}
       <StyledButton type="submit" fullWidth isLoading={isLoading || isSuccess}>
-        Login to your account
+        <I18n t="login.loginToYourAccount" />
       </StyledButton>
     </form>
   );

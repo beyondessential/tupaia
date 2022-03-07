@@ -8,7 +8,7 @@ import { CalculatedConfigValidator } from './CalculatedConfigValidator';
 import {
   splitStringOn,
   splitStringOnComma,
-  getExpressionQuestionCodes,
+  getDollarPrefixedExpressionVariables,
 } from '../../../../utilities';
 import { isEmpty } from '../../utilities';
 import { ANSWER_TYPES } from '../../../../../database/models/Answer';
@@ -116,7 +116,7 @@ export class ArithmeticConfigValidator extends CalculatedConfigValidator {
    * @param {*} rowIndex
    */
   getNonNumericQuestionsInFormula(formula, rowIndex) {
-    const codes = getExpressionQuestionCodes(formula);
+    const codes = getDollarPrefixedExpressionVariables(formula);
 
     return codes.filter(code => {
       const questionType = this.getPrecedingQuestionField(code, rowIndex, 'type');
@@ -126,7 +126,7 @@ export class ArithmeticConfigValidator extends CalculatedConfigValidator {
 
   constructFormulaPointsToOtherQuestions(rowIndex) {
     return value => {
-      const codes = getExpressionQuestionCodes(value);
+      const codes = getDollarPrefixedExpressionVariables(value);
 
       for (const code of codes) {
         this.assertPointingToPrecedingQuestion(

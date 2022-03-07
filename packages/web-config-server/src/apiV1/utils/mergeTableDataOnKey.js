@@ -36,19 +36,15 @@ import { getSortByKey } from '@tupaia/utils';
  *
  *  */
 export const mergeTableDataOnKey = (tableData, name) => {
-  let mergedTableData = {};
+  const mergedTableData = { data: { columns: [], rows: [] } };
   const compareByMergeValue = getSortByKey('mergeCompareValue');
 
   Object.keys(tableData).forEach(table => {
-    if (!mergedTableData.data) {
-      mergedTableData = { ...tableData[table] };
-    } else {
-      mergedTableData.data = mergeInData(
-        mergedTableData.data,
-        tableData[table].data,
-        compareByMergeValue,
-      );
-    }
+    mergedTableData.data = mergeInData(
+      mergedTableData.data,
+      tableData[table].data,
+      compareByMergeValue,
+    );
   });
 
   return { [name]: mergedTableData };
@@ -97,7 +93,7 @@ const mergeInData = (currentData, newData, comparator) => {
   };
 
   const currentColumns = currentData.columns;
-  const newColumns = newData.columns;
+  const newColumns = newData.columns.sort(comparator);
 
   // assume both columns are sorted by mergeCompareValue
   // compare each head column.mergeCompareValue

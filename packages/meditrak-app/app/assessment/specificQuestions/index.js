@@ -5,7 +5,7 @@
 
 export { BinaryQuestion } from './BinaryQuestion';
 export { CheckboxQuestion } from './CheckboxQuestion';
-export { DateQuestion } from './DateQuestion';
+export { DateQuestion, DateTimeQuestion } from './DateQuestion';
 export { FreeTextQuestion } from './FreeTextQuestion';
 export { GeolocateQuestion } from './GeolocateQuestion';
 export { AutocompleteQuestion } from './AutocompleteQuestion';

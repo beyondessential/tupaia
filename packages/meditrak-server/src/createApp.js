@@ -7,9 +7,9 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
+import morgan from 'morgan';
 
 import { Authenticator } from '@tupaia/auth';
-
 import { apiV2 } from './apiV2';
 
 /**
@@ -24,6 +24,13 @@ export function createApp(database, models) {
   app.use(cors());
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(errorHandler());
+
+  /**
+   * Access logs
+   */
+  if (process.env.NODE_ENV !== 'production') {
+    app.use(morgan('dev'));
+  }
 
   /**
    * Add singletons to be attached to req for every route

@@ -16,15 +16,58 @@ import { ChartContainer, ChartViewContainer } from './Layout';
 import { FlexEnd } from '../Flexbox';
 
 const CustomChartContainer = styled(ChartContainer)`
+  flex-direction: column;
   // recharts components doesn't pass nested styles so they need to be added on a wrapping component
   li.recharts-legend-item {
     white-space: nowrap; // ensure there are no line breaks on the export legends
   }
 `;
 
+const EnlargedChartContainer = styled(CustomChartContainer)`
+  .recharts-responsive-container {
+    min-height: 360px;
+  }
+`;
+
+const GREY_DE = '#DEDEE0';
+const GREY_FB = '#FBF9F9';
+const TEXT_DARKGREY = '#414D55';
+
 const StyledTable = styled(Table)`
   overflow: auto;
   border-bottom: 1px solid rgb(82, 82, 88);
+
+  &.exporting {
+    max-width: 100%;
+    background: white;
+    padding: 30px 0;
+    border-bottom: none;
+
+    table {
+      border: 1px solid ${GREY_DE};
+    }
+
+    // table head
+    thead {
+      border: 1px solid ${GREY_DE};
+      background: none;
+    }
+
+    // table body
+    tbody {
+      tr {
+        &:nth-of-type(odd) {
+          background: ${GREY_FB};
+        }
+      }
+    }
+
+    th,
+    td {
+      color: ${TEXT_DARKGREY};
+      border-color: ${GREY_DE};
+    }
+  }
 `;
 
 const ToggleButton = styled(ToggleButtonComponent)`
@@ -60,7 +103,7 @@ export const ChartWrapper = ({ viewContent, isEnlarged, isExporting, onItemClick
     }
   };
 
-  if (!isEnlarged || isExporting) {
+  if (!isEnlarged) {
     return (
       <CustomChartContainer>
         <Chart
@@ -70,6 +113,23 @@ export const ChartWrapper = ({ viewContent, isEnlarged, isExporting, onItemClick
           onItemClick={onItemClick}
         />
       </CustomChartContainer>
+    );
+  }
+
+  if (isExporting) {
+    const { exportWithTable } = viewContent?.presentationOptions;
+    return (
+      <EnlargedChartContainer $isExporting={isExporting}>
+        <Chart
+          isEnlarged={isEnlarged}
+          isExporting={isExporting}
+          viewContent={viewContent}
+          onItemClick={onItemClick}
+        />
+        {exportWithTable && (
+          <StyledTable viewContent={viewContent} className={isExporting && 'exporting'} />
+        )}
+      </EnlargedChartContainer>
     );
   }
 
@@ -86,14 +146,14 @@ export const ChartWrapper = ({ viewContent, isEnlarged, isExporting, onItemClick
         </ToggleButtonGroup>
       </FlexEnd>
       {selectedTab === TABS.CHART ? (
-        <CustomChartContainer>
+        <EnlargedChartContainer>
           <Chart
             isEnlarged={isEnlarged}
             isExporting={isExporting}
             viewContent={viewContent}
             onItemClick={onItemClick}
           />
-        </CustomChartContainer>
+        </EnlargedChartContainer>
       ) : (
         <StyledTable viewContent={viewContent} />
       )}

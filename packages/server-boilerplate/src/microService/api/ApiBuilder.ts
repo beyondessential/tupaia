@@ -3,20 +3,20 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import express, { Express, Request, Response, NextFunction, RequestHandler } from 'express';
+import express, { Express, NextFunction, Request, Response, RequestHandler } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
+// @ts-expect-error no types
+import morgan from 'morgan';
 
 import { Authenticator } from '@tupaia/auth';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
-import { TupaiaApiClient, getBaseUrlsForHost } from '@tupaia/api-client';
 
 import { handleWith, handleError } from '../../utils';
 import { buildBasicBearerAuthMiddleware } from '../auth';
 import { TestRoute } from '../../routes';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
-import { RequestContext } from '../types';
 
 export class ApiBuilder {
   private readonly app: Express;
@@ -30,6 +30,13 @@ export class ApiBuilder {
     this.app = express();
 
     this.version = 'v[0-9]'; // Default version
+
+    /**
+     * Access logs
+     */
+    if (process.env.NODE_ENV !== 'production') {
+      this.app.use(morgan('dev'));
+    }
 
     /**
      * Add middleware
@@ -49,19 +56,9 @@ export class ApiBuilder {
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       req.models = this.models;
 
-      const microServiceAuthHandler = {
-        getAuthHeader: async () => req.headers.authorization || '',
-      };
-
-      const baseUrls = getBaseUrlsForHost(req.hostname);
-
-      const context: RequestContext = {
-        services: new TupaiaApiClient(microServiceAuthHandler, baseUrls),
-      };
-
-      // context is shared between request and response
-      req.ctx = context;
-      res.ctx = context;
+      const ctx = {};
+      req.ctx = ctx;
+      res.ctx = ctx;
 
       next();
     });
@@ -82,6 +79,11 @@ export class ApiBuilder {
     ...middlewares: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
     this.app.use(this.formatPath(path), ...middlewares);
+    return this;
+  }
+
+  middleware(middleware: RequestHandler) {
+    this.app.use(middleware);
     return this;
   }
 

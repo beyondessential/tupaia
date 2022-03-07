@@ -3,8 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+export * from './ApproveButton';
 export * from './Breadcrumbs';
-export * from './DataGrid';
+export * from './DashboardReport';
 export * from './EntityMenu';
 export * from './EntityVitalsItem';
 export * from './FetchLoader';
@@ -13,13 +14,14 @@ export * from './Footer';
 export * from './FormBackButton';
 export * from './FullPageLoader';
 export * from './Layout';
+export * from './LocaleMenu';
 export * from './LocationHeader';
-export * from './MainMenu';
+export * from '../utils/I18n';
 export * from './MapOverlaysPanel';
 export * from './MiniMap';
 export * from './NavBar';
 export * from './PageHeader';
-export * from './DashboardReport';
+export * from './RejectButton';
 export * from './SearchBar';
 export * from './Tabs';
 export * from './ThemeTest';

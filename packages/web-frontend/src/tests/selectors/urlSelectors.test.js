@@ -8,7 +8,7 @@
 import {
   selectCurrentOrgUnitCode,
   selectCurrentProjectCode,
-  selectCurrentMapOverlayId,
+  selectCurrentMapOverlayCodes,
   selectCurrentExpandedViewCode,
 } from '../../selectors';
 import { selectCurrentDashboardNameFromLocation } from '../../selectors/dashboardSelectors';
@@ -24,7 +24,7 @@ describe('urlSelectors', () => {
     expect(selectCurrentProjectCode(testState)).toEqual(undefined);
     expect(selectCurrentOrgUnitCode(testState)).toEqual(undefined);
     expect(selectCurrentDashboardNameFromLocation(testState)).toEqual(undefined);
-    expect(selectCurrentMapOverlayId(testState)).toEqual(undefined);
+    expect(selectCurrentMapOverlayCodes(testState)).toEqual([]);
     expect(selectCurrentExpandedViewCode(testState)).toEqual(undefined);
   });
 
@@ -39,7 +39,7 @@ describe('urlSelectors', () => {
     expect(selectCurrentOrgUnitCode(testState)).toEqual('AN_ORG_UNIT');
     expect(selectCurrentDashboardNameFromLocation(testState)).toEqual('A_DASHBOARD');
     expect(selectCurrentExpandedViewCode(testState)).toEqual('report1');
-    expect(selectCurrentMapOverlayId(testState)).toEqual('2');
+    expect(selectCurrentMapOverlayCodes(testState)).toEqual(['2']);
   });
 
   it('should select from a reset-password url', () => {
@@ -52,7 +52,7 @@ describe('urlSelectors', () => {
     expect(selectCurrentProjectCode(testState)).toEqual(undefined);
     expect(selectCurrentOrgUnitCode(testState)).toEqual(undefined);
     expect(selectCurrentDashboardNameFromLocation(testState)).toEqual(undefined);
-    expect(selectCurrentMapOverlayId(testState)).toEqual(undefined);
+    expect(selectCurrentMapOverlayCodes(testState)).toEqual([]);
     expect(selectCurrentExpandedViewCode(testState)).toEqual(undefined);
   });
 
@@ -66,7 +66,7 @@ describe('urlSelectors', () => {
     expect(selectCurrentProjectCode(testState)).toEqual(undefined);
     expect(selectCurrentOrgUnitCode(testState)).toEqual(undefined);
     expect(selectCurrentDashboardNameFromLocation(testState)).toEqual(undefined);
-    expect(selectCurrentMapOverlayId(testState)).toEqual(undefined);
+    expect(selectCurrentMapOverlayCodes(testState)).toEqual([]);
     expect(selectCurrentExpandedViewCode(testState)).toEqual(undefined);
   });
 });

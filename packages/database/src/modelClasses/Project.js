@@ -11,7 +11,7 @@ class ProjectType extends DatabaseType {
   static databaseType = TYPES.PROJECT;
 
   async permissionGroups() {
-    return this.otherModels.permissionGroup.find({ name: this.user_groups });
+    return this.otherModels.permissionGroup.find({ name: this.permission_groups });
   }
 
   async entity() {
@@ -29,7 +29,7 @@ export class ProjectModel extends DatabaseModel {
       select p.id, p.code,
             to_json(sub.child_id) AS entity_ids,
             e."name", e."code" as entity_code, p.description,
-            p.sort_order, p.user_groups,
+            p.sort_order, p.permission_groups,
             p.entity_id, p.image_url,
             p.logo_url, p.dashboard_group_name,
             p.default_measure, p.config
