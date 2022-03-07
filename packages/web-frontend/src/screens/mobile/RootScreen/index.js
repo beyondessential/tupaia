@@ -28,6 +28,21 @@ import { SearchBar } from '../../../containers/mobile/SearchBar';
 import { Dashboard } from '../../../containers/mobile/Dashboard';
 import { setMobileTab } from '../../../actions';
 
+const Container = styled(StyleRoot)`
+  position: relative;
+  width: 100%;
+  z-index: 401;
+  background: black;
+`;
+
+const MapContainer = styled.div`
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+`;
+
 const EntityName = styled.p`
   text-align: center;
   font-size: 14pt;
@@ -62,30 +77,36 @@ const RootScreen = ({
   const handleChangeSelectedTab = (event, newValue) => setSelectedTab(newValue);
 
   return (
-    <StyleRoot>
-      <EnvBanner />
-      <LoadingScreen isLoading={isLoading} />
-      <div>
-        <HeaderBar />
-        <EntityName>{orgUnit.name}</EntityName>
-        <StyledTabs
-          value={selectedTab}
-          onChange={handleChangeSelectedTab}
-          TabIndicatorProps={{
-            style: { display: 'none' },
-          }}
-        >
-          <StyledTab label="Dashboard" value="dashboard" disableRipple />
-          <StyledTab label="Map" value="map" disableRipple />
-        </StyledTabs>
-        <SearchBar />
-        {selectedTab === 'dashboard' && <Dashboard />}
-        {selectedTab === 'map' && <Map />}
-        {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
-        <Footer />
-      </div>
-      {isUserLoggedIn && <OverlayDiv />}
-    </StyleRoot>
+    <>
+      <Container>
+        <EnvBanner />
+        <LoadingScreen isLoading={isLoading} />
+        <div>
+          <HeaderBar />
+          <EntityName>{orgUnit.name}</EntityName>
+          <StyledTabs
+            value={selectedTab}
+            onChange={handleChangeSelectedTab}
+            TabIndicatorProps={{
+              style: { display: 'none' },
+            }}
+          >
+            <StyledTab label="Dashboard" value="dashboard" disableRipple />
+            <StyledTab label="Map" value="map" disableRipple />
+          </StyledTabs>
+          <SearchBar />
+          {selectedTab === 'dashboard' && <Dashboard />}
+          {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
+          {selectedTab === 'dashboard' && <Footer />}
+        </div>
+        {isUserLoggedIn && <OverlayDiv />}
+      </Container>
+      {selectedTab === 'map' && (
+        <MapContainer>
+          <Map isMobile />
+        </MapContainer>
+      )}
+    </>
   );
 };
 
