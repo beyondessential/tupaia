@@ -7,6 +7,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { SelectedOptionWithJsonEditor } from './SelectedOptionWithJsonEditor';
 
+const getDefaultValueByType = type => {
+  switch (type) {
+    case 'string':
+      return '';
+    case 'array':
+      return [];
+    case 'object':
+      return {};
+    default:
+      return null;
+  }
+};
+
 export const TransformSelectedOptionWithJsonEditor = ({
   option,
   optionMetaData,
@@ -17,7 +30,19 @@ export const TransformSelectedOptionWithJsonEditor = ({
 }) => {
   const { id, code, schema, isDisabled, ...restOfConfig } = option;
   const defaultValueFromSchema =
-    schema && Object.fromEntries(Object.keys(schema.properties).map(key => [key, null]));
+    schema &&
+    Object.fromEntries(
+      Object.entries(schema.properties).map(([key, value]) => {
+        const type =
+          value.type ||
+          (value.oneOf && value.oneOf[0].type) ||
+          (value.enum && typeof value.enum[0]) ||
+          (value.oneOf && typeof value.oneOf[0].enum[0]);
+        const defaultValue = getDefaultValueByType(type);
+
+        return [key, defaultValue];
+      }),
+    );
   const currentValue = {
     ...defaultValueFromSchema,
     transform: code,
