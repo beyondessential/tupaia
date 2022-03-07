@@ -13,7 +13,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && run-p \"build:* {@}\" --",
-    "build:src": "babel src --out-dir dist --source-maps --ignore \"src/__tests__/**\" --config-file \"../../babel.config.json\"",
+    "build:src": "babel src --out-dir dist --ignore \"src/__tests__/**\" --extensions .ts --config-file \"../../.babelrc-ts.js\"",
     "build:types": "tsc",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",

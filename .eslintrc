@@ -35,6 +35,7 @@
       "files": [
         "packages/admin-panel-server/**",
         "packages/api-client/**",
+        "packages/data-api/**",
         "packages/data-lake-api/**",
         "packages/entity-server/**",
         "packages/indicators/**",
@@ -43,10 +44,10 @@
         "packages/report-server/**",
         "packages/server-boilerplate/**"
       ],
-      "extends": "@beyondessential/ts",
-      "parserOptions": {
-        "project": "tsconfig.json"
-      }
+      "extends": "@beyondessential/ts"
+      // "parserOptions": {
+      //   "project": "tsconfig.json"
+      // }
     },
     // Packages using jest
     {
