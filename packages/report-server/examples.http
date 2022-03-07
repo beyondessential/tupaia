@@ -6,6 +6,12 @@
 # see: https://marketplace.visualstudio.com/items?itemName=humao.rest-client#environment-variables
 @authorization  = Basic {{email}}:{{password}}
 
+
+### Test
+GET {{baseUrl}}/test HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
 ### Fetch PSSS Weekly Report
 GET {{baseUrl}}/fetchReport/PSSS_Weekly_Report?organisationUnitCodes=TO&hierarchy=psss&period=2020 HTTP/1.1
 content-type: {{contentType}}
