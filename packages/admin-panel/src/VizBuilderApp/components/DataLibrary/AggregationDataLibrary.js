@@ -50,7 +50,7 @@ export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalid
       onInputChange={(event, newInputValue) => (event ? setInputValue(newInputValue) : false)}
       isLoading={isFetching}
       onMouseEnter={prefetchAggregationOptions}
-      optionComponent={(option, setEdittingOption) => (
+      optionComponent={(option, setIsDragDisabled) => (
         <AggregateSelectedOptionWithJsonEditor
           option={option}
           optionMetaData={options && options.find(({ code }) => code === option.code)}
@@ -66,7 +66,7 @@ export const AggregationDataLibrary = ({ aggregate, onAggregateChange, onInvalid
             onAggregateChange(valueToAggregate(newSelectedAggregations));
           }}
           onRemove={onRemove}
-          setEdittingOption={setEdittingOption}
+          setIsDragDisabled={setIsDragDisabled}
           onInvalidChange={onInvalidChange}
         />
       )}

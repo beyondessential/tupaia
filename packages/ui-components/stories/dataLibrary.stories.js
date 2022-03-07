@@ -196,7 +196,7 @@ export const MaxNumResults = () => {
   );
 };
 
-const SelectedOptionWithJsonEditor = ({ option, onRemove, setEdittingOption }) => {
+const SelectedOptionWithJsonEditor = ({ option, onRemove, setIsDragDisabled }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -208,8 +208,8 @@ const SelectedOptionWithJsonEditor = ({ option, onRemove, setEdittingOption }) =
         <BaseSelectedOption option={option} onRemove={onRemove} />
         {isExpanded && (
           <JsonEditorPanel
-            onMouseOver={() => setEdittingOption(option.code)}
-            onMouseLeave={() => setEdittingOption(null)}
+            onMouseOver={() => setIsDragDisabled(true)}
+            onMouseLeave={() => setIsDragDisabled(false)}
           >
             <JsonEditor value={option} mode="code" mainMenuBar={false} statusBar={false} />
           </JsonEditorPanel>
@@ -237,11 +237,11 @@ export const WithJsonEditor = () => {
           onChange={(event, newValue) => setValue(newValue)}
           inputValue={inputValue}
           onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
-          optionComponent={(option, setEdittingOption) => (
+          optionComponent={(option, setIsDragDisabled) => (
             <SelectedOptionWithJsonEditor
               option={option}
               onRemove={onRemove}
-              setEdittingOption={setEdittingOption}
+              setIsDragDisabled={setIsDragDisabled}
             />
           )}
           headerConfig={{ isDisabledAll, setIsDisabledAll }}

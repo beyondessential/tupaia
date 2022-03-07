@@ -180,10 +180,10 @@ export const SelectableMultipleTimesOption = ({ option, onSelect }) => (
 
 export const SelectedDataCard = ({ option, index, optionComponent }) => {
   const [isDragging, setIsDragging] = React.useState(false);
-  const [edittingOption, setEdittingOption] = React.useState(null);
+  const [isDragDisabled, setIsDragDisabled] = React.useState(true);
 
   return (
-    <Draggable draggableId={option.id} index={index} isDragDisabled={edittingOption === option.id}>
+    <Draggable draggableId={option.id} index={index} isDragDisabled={isDragDisabled}>
       {(provided, snapshot) => (
         <StyledSelectedDataCard
           {...provided.draggableProps}
@@ -193,7 +193,7 @@ export const SelectedDataCard = ({ option, index, optionComponent }) => {
           onMouseOver={() => setIsDragging(true)}
           onMouseLeave={() => setIsDragging(false)}
         >
-          {optionComponent(option, setEdittingOption)}
+          {optionComponent(option, setIsDragDisabled)}
         </StyledSelectedDataCard>
       )}
     </Draggable>

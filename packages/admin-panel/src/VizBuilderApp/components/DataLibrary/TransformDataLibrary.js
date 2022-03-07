@@ -35,9 +35,6 @@ export const TransformDataLibrary = ({ transform, onTransformChange, onInvalidCh
 
   const [dataType, setDataType] = useState(DATA_TYPES.TRANSFORM);
   const [inputValue, setInputValue] = useState('');
-  const [isDisabledAll, setIsDisabledAll] = useState(
-    value ? !value.some(option => !option.isDisabled) : false,
-  );
 
   const { data, isFetching } = useSearchTransformSchemas();
   const options = {
@@ -75,7 +72,7 @@ export const TransformDataLibrary = ({ transform, onTransformChange, onInvalidCh
       onInputChange={(event, newInputValue) => (event ? setInputValue(newInputValue) : false)}
       isLoading={isFetching}
       onMouseEnter={prefetchTransformSchemas}
-      optionComponent={(option, setEdittingOption) => {
+      optionComponent={(option, setIsDragDisabled) => {
         const optionWithMetaData = {
           ...Object.values(options)
             .flat()
@@ -93,12 +90,11 @@ export const TransformDataLibrary = ({ transform, onTransformChange, onInvalidCh
             optionMetaData={optionWithMetaData}
             onChange={newValue => onChangeInOption(newValue, option)}
             onRemove={onRemove}
-            setEdittingOption={setEdittingOption}
+            setIsDragDisabled={setIsDragDisabled}
             onInvalidChange={onInvalidChange}
           />
         );
       }}
-      headerConfig={{ isDisabledAll, setIsDisabledAll }}
       allowAddMultipleTimes
       supportsDisableAll
     />
