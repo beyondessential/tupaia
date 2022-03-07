@@ -5,21 +5,15 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import LibraryAddCheckOutlinedIcon from '@material-ui/icons/LibraryAddCheckOutlined';
 import { Checkbox } from './Checkbox';
 import { ColHeader } from './styles';
-import { ALICE_BLUE } from './constant';
-
-const SelectedDataColHeader = styled(ColHeader)`
-  background: ${ALICE_BLUE};
-`;
 
 export const SelectedDataHeader = ({ selectedData, onChange, supportsDisableAll }) => {
   const isDisabledAll =
     selectedData.length > 0 ? !selectedData.some(option => !option.isDisabled) : false;
   return (
-    <SelectedDataColHeader>
+    <ColHeader>
       {supportsDisableAll && (
         <Checkbox
           checkedIcon={<LibraryAddCheckOutlinedIcon />}
@@ -37,14 +31,12 @@ export const SelectedDataHeader = ({ selectedData, onChange, supportsDisableAll 
         />
       )}
       Selected Data
-    </SelectedDataColHeader>
+    </ColHeader>
   );
 };
 
 SelectedDataHeader.propTypes = {
-  selectedData: PropTypes.arrayOf({
-    isDisabled: PropTypes.bool,
-  }),
+  selectedData: PropTypes.array,
   supportsDisableAll: PropTypes.bool,
   onChange: PropTypes.func,
 };
