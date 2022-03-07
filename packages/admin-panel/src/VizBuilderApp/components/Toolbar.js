@@ -12,7 +12,7 @@ import { ExportButton } from './ExportButton';
 import { SaveButton } from './SaveButton';
 import { DocumentIcon } from './DocumentIcon';
 import { EditModal } from './Modal';
-import { useVizBuilderConfig } from '../context';
+import { useVizConfig } from '../context';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -52,7 +52,9 @@ const ButtonContainer = styled(FlexSpaceBetween)`
 `;
 
 export const Toolbar = () => {
-  const [{ project, visualisation }] = useVizBuilderConfig();
+  const [{ project, visualisation }] = useVizConfig();
+
+  const permissionGroup = visualisation.permissionGroup ?? visualisation.mapOverlayPermissionGroup;
 
   return (
     <Wrapper>
@@ -61,7 +63,7 @@ export const Toolbar = () => {
           <DocumentIcon />
           <MuiBox ml={2}>
             <SubTitle variant="h4">
-              Project: {project} • {visualisation.permissionGroup}
+              Project: {project} • {permissionGroup}
             </SubTitle>
             <Title variant="h2">{visualisation.name}</Title>
           </MuiBox>

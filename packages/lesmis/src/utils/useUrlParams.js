@@ -7,8 +7,10 @@ import { useRouteMatch } from 'react-router-dom';
 
 export const useUrlParams = () => {
   const { params } = useRouteMatch();
-  const { entityCode, view } = params;
+  const { locale, entityCode, view } = params;
+
   return {
+    locale,
     entityCode,
     view,
   };

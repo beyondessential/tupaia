@@ -5,25 +5,18 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-/**
- * MapOverlayBar
- *
- * Similar to LocationBar, provides measures in a grouped listing. Measures from redux state.
- * Updates redux state with action when a measure is selected. Map listens to this part of state
- * and renders appropriately.
- */
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import moment from 'moment';
+import { periodToMoment } from '@tupaia/utils';
 
 import { VIEW_STYLES } from '../../styles';
+import { selectCurrentMapOverlayCodes } from '../../selectors';
 
 class LastUpdated extends Component {
   getFormattedDate = () => {
     const { latestAvailable } = this.props;
-    return `Latest overlay data: ${moment(latestAvailable).format('DD/MM/YYYY')}`;
+    return `Latest overlay data: ${periodToMoment(latestAvailable).format('DD/MM/YYYY')}`;
   };
 
   shouldRender = () => !!this.props.latestAvailable;
@@ -45,9 +38,13 @@ LastUpdated.defaultProps = {
 
 const mapStateToProps = state => {
   const { measureInfo = {} } = state.map;
+  const currentMapOverlayCodes = selectCurrentMapOverlayCodes(state);
+  if (currentMapOverlayCodes.length > 1) {
+    return {};
+  }
 
-  const latestAvailable = measureInfo.period && measureInfo.period.latestAvailable;
-  return { latestAvailable };
+  const measureData = measureInfo[currentMapOverlayCodes[0]] || {};
+  return { latestAvailable: measureData.period && measureData.period.latestAvailable };
 };
 
 export default connect(mapStateToProps)(LastUpdated);

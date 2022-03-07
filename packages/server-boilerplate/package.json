@@ -13,9 +13,10 @@
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "babel src --out-dir dist --source-maps --ignore \"src/__tests__/**\" --extensions .ts --config-file \"../../.babelrc-ts.js\"",
-    "lint": "tsc; eslint . --ext .ts",
+    "build": "tsc",
+    "lint": "eslint . --ext .ts",
     "lint:all": "yarn run lint \"src/**/*.{ts,jsx}\"",
     "lint:fix": "yarn lint --fix",
     "prestart": "npm run -s build",
@@ -26,7 +27,6 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "@tupaia/access-policy": "3.0.0",
-    "@tupaia/api-client": "2.0.6",
     "@tupaia/auth": "1.0.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/utils": "1.0.0",
@@ -35,6 +35,9 @@
     "client-sessions": "^0.8.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
-    "express": "^4.16.2"
+    "i18n": "^0.13.3",
+    "express": "^4.16.2",
+    "http-proxy-middleware": "^2.0.1",
+    "morgan": "^1.9.0"
   }
 }

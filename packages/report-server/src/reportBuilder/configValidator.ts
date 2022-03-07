@@ -55,7 +55,7 @@ export const configValidator = yup.object().shape({
     {
       dataElements: dataElementValidator,
       dataGroups: dataGroupValidator,
-      aggregations: yup.array().of(aggregationValidator),
+      aggregations: yup.array().of(aggregationValidator as any), // https://github.com/jquense/yup/issues/1283#issuecomment-786559444
       organisationUnits: yup.array().of(yup.string().required()),
       startDate: dateSpecsValidator,
       endDate: dateSpecsValidator,

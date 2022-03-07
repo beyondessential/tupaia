@@ -161,7 +161,7 @@ export async function exportResponsesToFile(
 
     const allEntityIds = entities.map(entity => entity.id);
     const sortAndLimitSurveyResponses =
-      latest === 'true' ? { sort: ['end_time DESC'], limit: 1 } : { sort: ['end_time ASC'] };
+      latest === 'true' ? { sort: ['data_time DESC'], limit: 1 } : { sort: ['data_time ASC'] };
 
     // to support a large number of entities (e.g. all schools in Laos), 'findManyByColumn' will
     // break the query into batches, using a subset of entities each time
@@ -171,6 +171,20 @@ export async function exportResponsesToFile(
       surveyResponseFindConditions,
       sortAndLimitSurveyResponses,
     );
+  };
+
+  const getAnswerTextForExport = async answer => {
+    if (answer === undefined) {
+      return '';
+    }
+    if (answer.type === ANSWER_TYPES.ENTITY) {
+      const entity = await models.entity.findById(answer.text);
+      if (!entity) {
+        return `Could not find entity with id ${answer.text}`;
+      }
+      return entity.code;
+    }
+    return answer.text;
   };
 
   const getMetadataCellsForResponse = response => {
@@ -240,22 +254,16 @@ export async function exportResponsesToFile(
     const responseIdToIndex = Object.fromEntries(
       surveyResponses.map((response, index) => [response.id, index]),
     );
-    answers
+    const answerTasks = answers
       .filter(answer => questionIdToIndex[answer['question.id']] !== undefined) // filter out answers for a non-exported question, e.g. DateOfData
-      .forEach(answer => {
+      .map(async answer => {
         const surveyResponseIndex = responseIdToIndex[answer['survey_response.id']];
         const questionIndex = questionIdToIndex[answer['question.id']];
         const exportRow = preQuestionRowCount + questionIndex;
         const exportColumn = infoColumnKeys.length + surveyResponseIndex;
-        exportData[exportRow][exportColumn] = answer?.text || '';
+        exportData[exportRow][exportColumn] = await getAnswerTextForExport(answer);
       });
-
-    // If there is no data, add a message at the top
-    if (answers.length === 0) {
-      exportData.unshift([
-        `No data for ${survey.name} ${getExportDatesString(startDate, endDate)}`,
-      ]);
-    }
+    await Promise.all(answerTasks);
 
     if (easyReadingMode) {
       return addExportedDateAndOriginAtTheSheetBottom(exportData, timeZone);

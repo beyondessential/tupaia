@@ -27,9 +27,11 @@ export class DateQuestion extends PureComponent {
   }
 
   onDateChange(date) {
-    const { onChangeAnswer } = this.props;
-    onChangeAnswer(formatDate(date));
-    this.setState({ isDatePickerOpen: false });
+    // set to closed before changing answer, per https://github.com/mmazzarolo/react-native-modal-datetime-picker#the-picker-shows-up-twice-on-android
+    this.setState({ isDatePickerOpen: false }, () => {
+      const { onChangeAnswer } = this.props;
+      onChangeAnswer(formatDate(date));
+    });
   }
 
   onOpenDatePicker() {
@@ -66,7 +68,7 @@ export class DateQuestion extends PureComponent {
   }
 
   render() {
-    const { answer, questionText, maximumDate } = this.props;
+    const { answer, datePickerMode, questionText, maximumDate } = this.props;
     const hasAnswer = answer === 0 || !!answer;
 
     return (
@@ -94,6 +96,7 @@ export class DateQuestion extends PureComponent {
           onCancel={() => this.onCloseDatePicker()}
           date={hasAnswer ? new Date(answer) : new Date()}
           maximumDate={maximumDate}
+          mode={datePickerMode}
         />
       </View>
     );
@@ -102,6 +105,7 @@ export class DateQuestion extends PureComponent {
 
 DateQuestion.propTypes = {
   answer: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  datePickerMode: PropTypes.oneOf(['date', 'time', 'datetime']),
   onChangeAnswer: PropTypes.func.isRequired,
   questionText: PropTypes.string,
   maximumDate: PropTypes.instanceOf(Date),
@@ -109,6 +113,7 @@ DateQuestion.propTypes = {
 
 DateQuestion.defaultProps = {
   answer: '',
+  datePickerMode: 'date',
   questionText: null,
   maximumDate: undefined,
 };
@@ -143,3 +148,9 @@ const localStyles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+export class DateTimeQuestion extends PureComponent {
+  render() {
+    return <DateQuestion datePickerMode="datetime" {...this.props} />;
+  }
+}

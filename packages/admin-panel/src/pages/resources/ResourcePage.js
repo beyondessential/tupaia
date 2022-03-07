@@ -24,12 +24,14 @@ export const ResourcePage = ({
   expansionTabs,
   importConfig,
   ExportModalComponent,
+  LinksComponent,
   onProcessDataForSave,
   baseFilter,
   title,
   getHeaderEl,
   defaultFilters,
   defaultSorting,
+  displayUsedBy,
 }) => {
   const HeaderPortal = usePortalWithCallback(
     <Header
@@ -37,6 +39,7 @@ export const ResourcePage = ({
       importConfig={importConfig}
       createConfig={createConfig}
       ExportModalComponent={ExportModalComponent}
+      LinksComponent={LinksComponent}
     />,
     getHeaderEl,
   );
@@ -54,7 +57,11 @@ export const ResourcePage = ({
           defaultSorting={defaultSorting}
         />
       </Container>
-      <EditModal {...editConfig} onProcessDataForSave={onProcessDataForSave} />
+      <EditModal
+        {...editConfig}
+        onProcessDataForSave={onProcessDataForSave}
+        displayUsedBy={displayUsedBy}
+      />
     </>
   );
 };
@@ -62,6 +69,7 @@ export const ResourcePage = ({
 ResourcePage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
   columns: PropTypes.array.isRequired,
+  ConfirmDeleteModalComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
   createConfig: PropTypes.object,
   editConfig: PropTypes.object,
   onProcessDataForSave: PropTypes.func,
@@ -77,21 +85,26 @@ ResourcePage.propTypes = {
   ),
   importConfig: PropTypes.object,
   ExportModalComponent: PropTypes.elementType,
+  LinksComponent: PropTypes.elementType,
   title: PropTypes.string.isRequired,
   baseFilter: PropTypes.object,
   defaultSorting: PropTypes.array,
   defaultFilters: PropTypes.array,
+  displayUsedBy: PropTypes.bool,
 };
 
 ResourcePage.defaultProps = {
+  ConfirmDeleteModalComponent: undefined,
   createConfig: null,
   editConfig: null,
   expansionTabs: null,
   importConfig: null,
   ExportModalComponent: null,
+  LinksComponent: null,
   onProcessDataForSave: null,
   baseFilter: {},
   defaultSorting: [],
   defaultFilters: [],
   reduxId: null,
+  displayUsedBy: false,
 };

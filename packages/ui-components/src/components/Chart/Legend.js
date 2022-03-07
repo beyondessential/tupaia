@@ -13,8 +13,14 @@ import { isMobile } from './utils';
 const LegendContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: ${props => (props.position === 'bottom' ? 'center' : 'flex-start')};
-  padding: ${props => (props.position === 'bottom' ? '1rem 0 0 3.5rem' : '0 0 2rem 0')};
+  justify-content: ${props => (props.$position === 'bottom' ? 'center' : 'flex-start')};
+  // Add more padding at the bottom for exports
+  padding: ${props => {
+    if (props.$isExporting) {
+      return props.$position === 'bottom' ? '1rem 0 3rem 3.5rem' : '0 0 3rem 0';
+    }
+    return props.$position === 'bottom' ? '1rem 0 0 3.5rem' : '0 0 2rem 0';
+  }};
 `;
 
 const PieLegendContainer = styled(LegendContainer)`
@@ -105,7 +111,7 @@ export const getPieLegend = ({
   legendPosition,
   viewContent,
 }) => ({ payload }) => (
-  <PieLegendContainer position={legendPosition}>
+  <PieLegendContainer $position={legendPosition}>
     {payload.map(({ color, value, payload: item }) => {
       const displayValue = getPieLegendDisplayValue(
         chartConfig,
@@ -142,7 +148,7 @@ export const getCartesianLegend = ({
   isExporting,
   legendPosition,
 }) => ({ payload }) => (
-  <LegendContainer position={legendPosition}>
+  <LegendContainer $position={legendPosition} $isExporting={isExporting}>
     {payload.map(({ color, value, dataKey }) => {
       const displayValue = chartConfig[value]?.label || value;
 

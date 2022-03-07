@@ -10,11 +10,14 @@ import Typography from '@material-ui/core/Typography';
 import MuiToggleButton from '@material-ui/lab/ToggleButton';
 import MuiToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import MuiContainer from '@material-ui/core/Container';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import { GetApp, Phone, Email, Map, Dashboard } from '@material-ui/icons';
 import ButtonComponent from '@material-ui/core/Button';
 import { FlexStart, FlexEnd } from './Layout';
-import { useEntityData } from '../api';
-import { useUrlParams, makeEntityLink } from '../utils';
+import { useEntityData, useMapOverlayReportData } from '../api';
+import { I18n, useUrlParams, makeEntityLink, useUrlSearchParam } from '../utils';
+import { MapTableModal } from './MapTableModal';
+import { DEFAULT_DATA_YEAR } from '../constants';
 
 const Wrapper = styled.section`
   padding-top: 1rem;
@@ -91,10 +94,23 @@ const ToggleButton = styled(MuiToggleButton)`
   }
 `;
 
+const getExportTitle = (entityData, currentMapOverlay) => {
+  const name = entityData?.name ? entityData?.name : '';
+  const overlayName = currentMapOverlay ? `, ${currentMapOverlay}` : '';
+  return `${name}${overlayName}`;
+};
+
 export const LocationHeader = () => {
   const { entityCode, view } = useUrlParams();
   const { search } = useLocation();
+  const [selectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
+  const { data: overlayReportData, selectedOverlayName } = useMapOverlayReportData({
+    entityCode,
+    year: selectedYear,
+  });
+
   const { data: entityData } = useEntityData(entityCode);
+  const exportTitle = getExportTitle(entityData, selectedOverlayName);
 
   return (
     <Wrapper>
@@ -116,7 +132,21 @@ export const LocationHeader = () => {
           <FlexStart>
             {/* Todo: add exports @see */}
             {/* https://app.zenhub.com/workspaces/active-sprints-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/2511 */}
-            <IconButton startIcon={<GetApp />}>Export</IconButton>
+            {view === 'map' ? (
+              <MapTableModal
+                title={exportTitle}
+                overlayReportData={overlayReportData}
+                Button={props => (
+                  <IconButton {...props} startIcon={<AssignmentIcon />}>
+                    <I18n t="dashboards.export" />
+                  </IconButton>
+                )}
+              />
+            ) : (
+              <IconButton startIcon={<GetApp />}>
+                <I18n t="dashboards.export" />
+              </IconButton>
+            )}
             {/* Todo: add favourites @see https://app.zenhub.com/workspaces/active-sprints-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/2493 */}
             {/* <IconButton startIcon={<StarBorder />}>Add</IconButton> */}
           </FlexStart>
@@ -127,7 +157,7 @@ export const LocationHeader = () => {
               to={`${makeEntityLink(entityCode, 'dashboard')}${search}`}
               aria-label="dashboard"
             >
-              <Dashboard /> Dashboard
+              <Dashboard /> <I18n t="dashboards.dashboard" />
             </ToggleButton>
             <ToggleButton
               value="map"
@@ -135,7 +165,7 @@ export const LocationHeader = () => {
               to={`${makeEntityLink(entityCode, 'map')}${search}`}
               aria-label="map"
             >
-              <Map /> Map
+              <Map /> <I18n t="dashboards.map" />
             </ToggleButton>
           </ToggleButtonGroup>
         </FlexEnd>

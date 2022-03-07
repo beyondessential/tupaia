@@ -12,15 +12,22 @@ import { ReportConnection } from '../connections';
 import {
   DashboardVisualisationExtractor,
   draftDashboardItemValidator,
+  draftMapOverlayValidator,
   draftReportValidator,
   PreviewMode,
+  VIZ_TYPE_PARAM,
+  VizType,
 } from '../viz-builder';
+import { MapOverlayVisualisationExtractor } from '../viz-builder/mapOverlayVisualisation/MapOverlayVisualisationExtractor';
 
 export type FetchReportPreviewDataRequest = Request<
-  { dashboardVisualisationId: string },
+  Record<string, never>,
   Record<string, unknown>,
-  { previewConfig?: Record<string, unknown>; testData?: unknown[] },
-  { entityCode?: string; hierarchy?: string; previewMode?: PreviewMode }
+  {
+    previewConfig: Record<string, unknown>;
+    testData?: unknown[];
+  },
+  { entityCode: string; hierarchy: string; previewMode?: PreviewMode, vizType: VizType; }
 >;
 
 export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataRequest> {
@@ -71,16 +78,33 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
   };
 
   private getReportConfig = () => {
-    const { previewMode } = this.req.query;
+    const { previewMode, vizType } = this.req.query;
     const { previewConfig, testData } = this.req.body;
 
-    const extractor = new DashboardVisualisationExtractor(
-      previewConfig as Record<string, unknown>,
-      draftDashboardItemValidator,
-      draftReportValidator,
-    );
+    const extractor = this.getVizExtractor(vizType, previewConfig);
+
     extractor.setReportValidatorContext({ testData });
 
-    return extractor.getReport(previewMode as PreviewMode).config;
+    return extractor.getReport(previewMode).config;
+  };
+
+  private getVizExtractor = (vizType: VizType, previewConfig: Record<string, unknown>) => {
+    if (vizType === VIZ_TYPE_PARAM.DASHBOARD_ITEM) {
+      return new DashboardVisualisationExtractor(
+        previewConfig,
+        draftDashboardItemValidator,
+        draftReportValidator,
+      );
+    } else if (vizType === VIZ_TYPE_PARAM.MAP_OVERLAY) {
+      return new MapOverlayVisualisationExtractor(
+        previewConfig,
+        draftMapOverlayValidator,
+        draftReportValidator,
+      );
+    } else {
+      throw new Error(
+        `Unknown viz type: ${vizType}, must be one of: [${Object.values(VIZ_TYPE_PARAM)}]`,
+      );
+    }
   };
 }

@@ -4,19 +4,6 @@
  *
  */
 
-import type {
-  EntityFields,
-  GroupByAncestorRelationshipsResponseBody,
-  GroupByDescendantRelationshipsResponseBody,
-  FlattableEntityFieldName,
-  ExtendedEntityFieldName,
-  FlattenedEntity,
-  EntityResponseObject,
-} from '@tupaia/entity-server/src/type-exports';
-
-import type { FilterCriteria, AdvancedFilterValue } from '@tupaia/server-boilerplate/src/type-exports';
-
-import { ApiConnection } from './ApiConnection';
 import { BaseApi } from './BaseApi';
 
 const CLAUSE_DELIMITER = ';';
@@ -32,27 +19,9 @@ const comparatorToOperator = {
 
 type ValueOf<T> = T extends Record<string, any> ? T[keyof T] : never;
 
-type NonNullableFields<T> = {
-  [field in keyof T]: NonNullable<T[field]>;
-};
-
-type EntityApiFilter = FilterCriteria<NonNullableFields<EntityFields>>;
-
-type EntityApiQueryOptions = {
-  field?: FlattableEntityFieldName;
-  fields?: ExtendedEntityFieldName[];
-  filter?: EntityApiFilter;
-};
-
-type RelationshipsSubQueryOptions = Omit<EntityApiQueryOptions, 'fields'>;
-
-type EntityApiResponse<T extends ExtendedEntityFieldName[]> = Required<
-  Pick<EntityResponseObject, T[number]>
->;
-
 const isAdvancedFilter = (
-  filter: EntityApiFilter | ValueOf<EntityApiFilter>,
-): filter is AdvancedFilterValue<any> =>
+  filter: any,
+): boolean =>
   typeof filter === 'object' &&
   filter !== null &&
   Object.keys(filter).length === 2 &&
@@ -60,7 +29,7 @@ const isAdvancedFilter = (
   'comparisonValue' in filter;
 
 const recurseFilter = (
-  filter: EntityApiFilter | ValueOf<EntityApiFilter>,
+  filter: any,
   filterArray: [string[], ValueOf<typeof comparatorToOperator>, string[]][] = [],
   nestedKeys: string[] = [],
 ) => {
@@ -68,6 +37,7 @@ const recurseFilter = (
     const value = filter.comparisonValue;
     filterArray.push([
       nestedKeys,
+      // @ts-ignore
       comparatorToOperator[filter.comparator],
       Array.isArray(value) ? value : [value],
     ]);
@@ -100,25 +70,24 @@ type Prefix<T, P extends string> = {
 };
 
 export class EntityApi extends BaseApi {
-
-  private stringifyFields(fields?: ExtendedEntityFieldName[]) {
+  private stringifyFields(fields?: string[]) {
     return fields ? fields.join(',') : undefined;
   }
 
-  private stringifyFilter(filter?: EntityApiFilter) {
+  private stringifyFilter(filter?: any) {
     return filter
       ? recurseFilter(filter)
-          .map(
-            ([keys, operator, values]) =>
-              `${keys.join(NESTED_FIELD_DELIMITER)}${operator}${values.join(
-                MULTIPLE_VALUES_DELIMITER,
-              )}`,
-          )
-          .join(CLAUSE_DELIMITER)
+        .map(
+          ([keys, operator, values]) =>
+            `${keys.join(NESTED_FIELD_DELIMITER)}${operator}${values.join(
+              MULTIPLE_VALUES_DELIMITER,
+            )}`,
+        )
+        .join(CLAUSE_DELIMITER)
       : undefined;
   }
 
-  private stringifyQueryParameters(queryOptions?: EntityApiQueryOptions) {
+  private stringifyQueryParameters(queryOptions?: any) {
     if (!queryOptions) {
       return undefined;
     }
@@ -128,7 +97,7 @@ export class EntityApi extends BaseApi {
   }
 
   private stringifyRelationshipsSubQueryParameters<Pref extends 'ancestor' | 'descendant'>(
-    queryOptions: RelationshipsSubQueryOptions | undefined,
+    queryOptions: any | undefined,
     prefix: Pref,
   ) {
     const stringifiedParameters = this.stringifyQueryParameters(queryOptions);
@@ -147,25 +116,9 @@ export class EntityApi extends BaseApi {
     hierarchyName: string,
     entityCode: string,
     queryOptions?: {
-      field: FlattableEntityFieldName;
-      filter?: EntityApiFilter;
-    },
-  ): Promise<FlattenedEntity>;
-  public async getEntity<T extends ExtendedEntityFieldName[]>(
-    hierarchyName: string,
-    entityCode: string,
-    queryOptions?: {
-      fields: T;
-      filter?: EntityApiFilter;
-    },
-  ): Promise<EntityApiResponse<T>>;
-  public async getEntity<T extends ExtendedEntityFieldName[]>(
-    hierarchyName: string,
-    entityCode: string,
-    queryOptions?: {
-      field?: FlattableEntityFieldName;
-      fields?: T;
-      filter?: EntityApiFilter;
+      field?: string;
+      fields?: string[];
+      filter?: any;
     },
   ) {
     return this.connection.get(`hierarchy/${hierarchyName}/${entityCode}`, {
@@ -177,25 +130,9 @@ export class EntityApi extends BaseApi {
     hierarchyName: string,
     entityCodes: string[],
     queryOptions?: {
-      field: FlattableEntityFieldName;
-      filter?: EntityApiFilter;
-    },
-  ): Promise<FlattenedEntity[]>;
-  public async getEntities<T extends ExtendedEntityFieldName[]>(
-    hierarchyName: string,
-    entityCodes: string[],
-    queryOptions?: {
-      fields: T;
-      filter?: EntityApiFilter;
-    },
-  ): Promise<EntityApiResponse<T>[]>;
-  public async getEntities<T extends ExtendedEntityFieldName[]>(
-    hierarchyName: string,
-    entityCodes: string[],
-    queryOptions?: {
-      field?: FlattableEntityFieldName;
-      fields?: T;
-      filter?: EntityApiFilter;
+      field?: string;
+      fields?: string[];
+      filter?: any;
     },
   ) {
     return this.connection.post(
@@ -213,27 +150,9 @@ export class EntityApi extends BaseApi {
     hierarchyName: string,
     entityCode: string,
     queryOptions?: {
-      field: FlattableEntityFieldName;
-      filter?: EntityApiFilter;
-    },
-    includeRootEntity?: boolean,
-  ): Promise<FlattenedEntity[]>;
-  public async getDescendantsOfEntity<T extends ExtendedEntityFieldName[]>(
-    hierarchyName: string,
-    entityCode: string,
-    queryOptions?: {
-      fields: T;
-      filter?: EntityApiFilter;
-    },
-    includeRootEntity?: boolean,
-  ): Promise<EntityApiResponse<T>[]>;
-  public async getDescendantsOfEntity<T extends ExtendedEntityFieldName[]>(
-    hierarchyName: string,
-    entityCode: string,
-    queryOptions?: {
-      field?: FlattableEntityFieldName;
-      fields?: T;
-      filter?: EntityApiFilter;
+      field?: string;
+      fields?: string[];
+      filter?: any;
     },
     includeRootEntity = false,
   ) {
@@ -247,27 +166,9 @@ export class EntityApi extends BaseApi {
     hierarchyName: string,
     entityCodes: string[],
     queryOptions?: {
-      field: FlattableEntityFieldName;
-      filter?: EntityApiFilter;
-    },
-    includeRootEntity?: boolean,
-  ): Promise<FlattenedEntity[]>;
-  public async getDescendantsOfEntities<T extends ExtendedEntityFieldName[]>(
-    hierarchyName: string,
-    entityCodes: string[],
-    queryOptions?: {
-      fields: T;
-      filter?: EntityApiFilter;
-    },
-    includeRootEntity?: boolean,
-  ): Promise<EntityApiResponse<T>[]>;
-  public async getDescendantsOfEntities<T extends ExtendedEntityFieldName[]>(
-    hierarchyName: string,
-    entityCodes: string[],
-    queryOptions?: {
-      field?: FlattableEntityFieldName;
-      fields?: T;
-      filter?: EntityApiFilter;
+      field?: string;
+      fields?: string[];
+      filter?: any;
     },
     includeRootEntity = false,
   ) {
@@ -287,25 +188,9 @@ export class EntityApi extends BaseApi {
     hierarchyName: string,
     entityCode: string,
     queryOptions?: {
-      field: FlattableEntityFieldName;
-      filter?: EntityApiFilter;
-    },
-  ): Promise<FlattenedEntity[]>;
-  public async getRelativesOfEntity<T extends ExtendedEntityFieldName[]>(
-    hierarchyName: string,
-    entityCode: string,
-    queryOptions?: {
-      fields: T;
-      filter?: EntityApiFilter;
-    },
-  ): Promise<EntityApiResponse<T>[]>;
-  public async getRelativesOfEntity<T extends ExtendedEntityFieldName[]>(
-    hierarchyName: string,
-    entityCode: string,
-    queryOptions?: {
-      field?: FlattableEntityFieldName;
-      fields?: T;
-      filter?: EntityApiFilter;
+      field?: string;
+      fields?: string[];
+      filter?: any;
     },
   ) {
     return this.connection.get(`hierarchy/${hierarchyName}/${entityCode}/relatives`, {
@@ -317,25 +202,9 @@ export class EntityApi extends BaseApi {
     hierarchyName: string,
     entityCodes: string[],
     queryOptions?: {
-      field: FlattableEntityFieldName;
-      filter?: EntityApiFilter;
-    },
-  ): Promise<FlattenedEntity[]>;
-  public async getRelativesOfEntities<T extends ExtendedEntityFieldName[]>(
-    hierarchyName: string,
-    entityCodes: string[],
-    queryOptions?: {
-      fields: T;
-      filter?: EntityApiFilter;
-    },
-  ): Promise<EntityApiResponse<T>[]>;
-  public async getRelativesOfEntities<T extends ExtendedEntityFieldName[]>(
-    hierarchyName: string,
-    entityCodes: string[],
-    queryOptions?: {
-      field?: FlattableEntityFieldName;
-      fields?: T;
-      filter?: EntityApiFilter;
+      field?: string;
+      fields?: string[];
+      filter?: any;
     },
   ) {
     return this.connection.post(
@@ -352,26 +221,10 @@ export class EntityApi extends BaseApi {
   public async getRelationshipsOfEntity(
     hierarchyName: string,
     entityCode: string,
-    groupBy: 'ancestor',
-    queryOptions?: EntityApiQueryOptions,
-    ancestorQueryOptions?: RelationshipsSubQueryOptions,
-    descendantQueryOptions?: RelationshipsSubQueryOptions,
-  ): Promise<GroupByAncestorRelationshipsResponseBody>;
-  public async getRelationshipsOfEntity(
-    hierarchyName: string,
-    entityCode: string,
-    groupBy: 'descendant',
-    queryOptions?: EntityApiQueryOptions,
-    ancestorQueryOptions?: RelationshipsSubQueryOptions,
-    descendantQueryOptions?: RelationshipsSubQueryOptions,
-  ): Promise<GroupByDescendantRelationshipsResponseBody>;
-  public async getRelationshipsOfEntity(
-    hierarchyName: string,
-    entityCode: string,
     groupBy: 'ancestor' | 'descendant',
-    queryOptions?: EntityApiQueryOptions,
-    ancestorQueryOptions?: RelationshipsSubQueryOptions,
-    descendantQueryOptions?: RelationshipsSubQueryOptions,
+    queryOptions?: any,
+    ancestorQueryOptions?: any,
+    descendantQueryOptions?: any,
   ) {
     return this.connection.get(`hierarchy/${hierarchyName}/${entityCode}/relationships`, {
       ...this.stringifyQueryParameters(queryOptions),
@@ -384,27 +237,10 @@ export class EntityApi extends BaseApi {
   public async getRelationshipsOfEntities(
     hierarchyName: string,
     entityCodes: string[],
-    groupBy: 'ancestor',
-    queryOptions?: EntityApiQueryOptions,
-    ancestorQueryOptions?: RelationshipsSubQueryOptions,
-    descendantQueryOptions?: RelationshipsSubQueryOptions,
-  ): Promise<GroupByAncestorRelationshipsResponseBody>;
-
-  public async getRelationshipsOfEntities(
-    hierarchyName: string,
-    entityCodes: string[],
-    groupBy: 'descendant',
-    queryOptions?: EntityApiQueryOptions,
-    ancestorQueryOptions?: RelationshipsSubQueryOptions,
-    descendantQueryOptions?: RelationshipsSubQueryOptions,
-  ): Promise<GroupByDescendantRelationshipsResponseBody>;
-  public async getRelationshipsOfEntities(
-    hierarchyName: string,
-    entityCodes: string[],
     groupBy: 'ancestor' | 'descendant',
-    queryOptions?: EntityApiQueryOptions,
-    ancestorQueryOptions?: RelationshipsSubQueryOptions,
-    descendantQueryOptions?: RelationshipsSubQueryOptions,
+    queryOptions?: any,
+    ancestorQueryOptions?: any,
+    descendantQueryOptions?: any,
   ) {
     return this.connection.post(
       `hierarchy/${hierarchyName}/relationships`,

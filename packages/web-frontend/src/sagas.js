@@ -38,6 +38,7 @@ import {
   fetchEmailVerifyError,
   fetchMeasureInfoError,
   fetchMeasureInfoSuccess,
+  fetchAllMeasureInfoSuccess,
   fetchMeasuresError,
   fetchMeasuresSuccess,
   fetchOrgUnit,
@@ -75,27 +76,28 @@ import {
   OPEN_USER_DIALOG,
   REQUEST_ORG_UNIT,
   REQUEST_PROJECT_ACCESS,
-  setMapOverlay,
+  setMapOverlays,
   setOverlayComponent,
   FETCH_ENLARGED_DIALOG_DATA,
-  SET_MAP_OVERLAY,
+  SET_MAP_OVERLAYS,
   SET_ORG_UNIT,
   SET_VERIFY_EMAIL_TOKEN,
   updateEnlargedDialog,
   updateEnlargedDialogError,
-  updateMeasureConfig,
-  UPDATE_MEASURE_CONFIG,
-  UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
+  setOverlayConfigs,
+  UPDATE_OVERLAY_CONFIGS,
+  SET_MAP_OVERLAYS_ONCE_HIERARCHY_LOADS,
   FETCH_INITIAL_DATA,
   setPasswordResetToken,
   DIALOG_PAGE_ONE_TIME_LOGIN,
   setVerifyEmailToken,
   setOrgUnit,
   openEnlargedDialog,
-  updateCurrentMeasureConfigOnceHierarchyLoads,
+  setMapOverlaysOnceHierarchyLoads,
   LOCATION_CHANGE,
   goHome,
   setDashboardGroup,
+  setDisplayedMapOverlays,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 import {
@@ -109,21 +111,22 @@ import {
   convertUrlPeriodStringToDateRange,
   getInitialLocation,
   URL_COMPONENTS,
+  DEFAULT_PERIOD,
 } from './historyNavigation';
 import { setProject, setRequestingAccess } from './projects/actions';
 import {
   selectCurrentInfoViewKey,
-  selectCurrentMapOverlayId,
+  selectCurrentMapOverlayCodes,
+  selectCurrentMapOverlayPeriods,
   selectCurrentOrgUnitCode,
   selectShouldUseDashboardData,
-  selectCurrentPeriodGranularity,
+  selectPeriodGranularityByCode,
   selectCurrentProjectCode,
   selectCurrentExpandedViewConfig,
   selectCurrentExpandedViewContent,
-  selectDefaultMapOverlayId,
-  selectIsMapOverlayInHierarchy,
+  selectDefaultMapOverlayCode,
   selectIsProject,
-  selectMapOverlayById,
+  selectMapOverlayByCode,
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitCountry,
@@ -138,6 +141,7 @@ import {
   processMeasureInfo,
   getInfoFromInfoViewKey,
   getBrowserTimeZone,
+  checkHierarchyIncludesMapOverlayCodes,
 } from './utils';
 import { getDefaultDates, getDefaultDrillDownDates } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
@@ -201,9 +205,8 @@ function* handleUserPage(userPage, initialComponents) {
 const URL_REFRESH_COMPONENTS = {
   [URL_COMPONENTS.PROJECT]: setProject,
   [URL_COMPONENTS.ORG_UNIT]: setOrgUnit,
-  [URL_COMPONENTS.MAP_OVERLAY]: setMapOverlay,
+  [URL_COMPONENTS.MAP_OVERLAY]: setMapOverlaysOnceHierarchyLoads,
   [URL_COMPONENTS.REPORT]: openEnlargedDialog,
-  [URL_COMPONENTS.MEASURE_PERIOD]: updateCurrentMeasureConfigOnceHierarchyLoads,
 };
 
 function* handleLocationChange({ location, previousLocation }) {
@@ -372,7 +375,7 @@ function* attemptUserLogin(action) {
   } catch (error) {
     const errorMessage = error.response ? yield error.response.json() : {};
     if (errorMessage?.error === 'Email address not yet verified') {
-      yield put(displayUnverified());
+      yield put(displayUnverified(action.emailAddress));
     } else yield put(error.errorFunction(errorMessage));
   }
 }
@@ -862,105 +865,146 @@ function* watchFetchMoreSearchResults() {
  * Fetches data for a measure and write it to map state by calling fetchMeasureSuccess.
  *
  */
-function* fetchMeasureInfo(mapOverlayId) {
+function* fetchMeasureInfo({ mapOverlayCodes, displayedMapOverlays, overlayConfigs }) {
   const state = yield select();
+  const { maxSelectedOverlays } = state.map;
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
-  const measureParams = selectMapOverlayById(state, mapOverlayId);
+  const country = selectOrgUnitCountry(state, organisationUnitCode);
+  const countryCode = country ? country.organisationUnitCode : undefined;
+  const activeProjectCode = selectCurrentProjectCode(state);
+  const updatedDisplayedMapOverlays = [];
 
-  if (!mapOverlayId || !organisationUnitCode || !measureParams) {
-    // Don't try and fetch null measures
+  if (!organisationUnitCode) {
     yield put(cancelFetchMeasureData());
-
     return;
   }
 
-  const country = selectOrgUnitCountry(state, organisationUnitCode);
-  const countryCode = country ? country.organisationUnitCode : undefined;
+  for (const mapOverlayCode of mapOverlayCodes) {
+    const mapOverlayParams = selectMapOverlayByCode(state, mapOverlayCode);
+    if (!mapOverlayParams) {
+      yield put(cancelFetchMeasureData());
+      return;
+    }
+    const overlayConfig = overlayConfigs && overlayConfigs[mapOverlayCode];
+    // If the view should be constrained to a date range and isn't, constrain it
+    let { startDate, endDate } = overlayConfig || mapOverlayParams;
+    if (!startDate || !endDate) {
+      const defaultDates = getDefaultDates(mapOverlayParams);
+      startDate = defaultDates.startDate;
+      endDate = defaultDates.endDate;
+    }
 
-  const activeProjectCode = selectCurrentProjectCode(state);
+    const urlParameters = {
+      mapOverlayCode,
+      organisationUnitCode,
+      startDate: formatDateForApi(startDate),
+      endDate: formatDateForApi(endDate),
+      shouldShowAllParentCountryResults: !isMobile() && countryCode !== activeProjectCode,
+      projectCode: activeProjectCode,
+    };
+    const requestResourceUrl = `measureData?${queryString.stringify(urlParameters)}`;
 
-  // If the view should be constrained to a date range and isn't, constrain it
-  const { startDate, endDate } =
-    measureParams.startDate || measureParams.endDate
-      ? measureParams
-      : getDefaultDates(measureParams);
-
-  const urlParameters = {
-    mapOverlayId,
-    organisationUnitCode,
-    startDate: formatDateForApi(startDate),
-    endDate: formatDateForApi(endDate),
-    shouldShowAllParentCountryResults: !isMobile() && countryCode !== activeProjectCode,
-    projectCode: activeProjectCode,
-  };
-  const requestResourceUrl = `measureData?${queryString.stringify(urlParameters)}`;
-
-  try {
-    const measureInfoResponse = yield call(request, requestResourceUrl);
-    const measureInfo = processMeasureInfo(measureInfoResponse);
-
-    yield put(fetchMeasureInfoSuccess(measureInfo, countryCode));
-  } catch (error) {
-    yield put(fetchMeasureInfoError(error));
+    try {
+      const measureInfoResponse = yield call(request, requestResourceUrl);
+      const measureInfo = processMeasureInfo(measureInfoResponse);
+      const { measureData, serieses } = measureInfo;
+      const { values = [] } = (serieses && serieses[0]) || {};
+      // Any non-visible map overlay need to have its orange toggle turned off
+      const hasMeasureData = measureData && measureData.length > 0;
+      const hasNullValues = values.find(({ value }) => !value || value === 'null');
+      if (
+        (hasNullValues || hasMeasureData) &&
+        displayedMapOverlays &&
+        displayedMapOverlays.includes(mapOverlayCode)
+      ) {
+        updatedDisplayedMapOverlays.push(mapOverlayCode);
+      }
+      yield put(fetchMeasureInfoSuccess(measureInfo, countryCode));
+    } catch (error) {
+      yield put(fetchMeasureInfoError(error));
+    }
   }
+
+  if (maxSelectedOverlays === 1) {
+    yield put(setDisplayedMapOverlays(mapOverlayCodes));
+  } else if (displayedMapOverlays) {
+    yield put(setDisplayedMapOverlays(updatedDisplayedMapOverlays));
+  }
+  yield put(fetchAllMeasureInfoSuccess(mapOverlayCodes));
 }
 
-function* fetchMeasureInfoForMeasureChange(action) {
-  yield fetchMeasureInfo(action.mapOverlayId);
+function* watchSetMapOverlayChange() {
+  yield takeLatest(SET_MAP_OVERLAYS, function* _() {
+    const state = yield select();
+    const mapOverlayCodes = selectCurrentMapOverlayCodes(state);
+    const { displayedMapOverlays, measureInfo } = state.map;
+
+    // We need to make sure previous hidden or unhidden overlays stay the same way as they did.
+    const previousDisplayedOverlays = displayedMapOverlays.filter(code =>
+      mapOverlayCodes.includes(code),
+    );
+    const newSelectedMapOverlays = mapOverlayCodes.filter(code => !measureInfo[code]);
+
+    yield fetchMeasureInfo({
+      mapOverlayCodes,
+      displayedMapOverlays: [...previousDisplayedOverlays, ...newSelectedMapOverlays],
+    });
+  });
 }
 
-function* watchMeasureChange() {
-  yield takeLatest(SET_MAP_OVERLAY, fetchMeasureInfoForMeasureChange);
+function* watchOverlayPeriodChange() {
+  yield takeLatest(UPDATE_OVERLAY_CONFIGS, function* _(action) {
+    const state = yield select();
+    const mapOverlayCodes = selectCurrentMapOverlayCodes(state);
+    yield fetchMeasureInfo({ mapOverlayCodes, overlayConfigs: action.overlayConfigs });
+  });
 }
 
-function* watchMeasurePeriodChange() {
-  yield takeLatest(UPDATE_MEASURE_CONFIG, fetchMeasureInfoForMeasureChange);
-}
+function* watchSetMapOverlaysOnceHierarchyLoads() {
+  yield takeLatest(SET_MAP_OVERLAYS_ONCE_HIERARCHY_LOADS, function* _() {
+    yield take(FETCH_MEASURES_SUCCESS);
+    const state = yield select();
+    const currentOverlayCodes = selectCurrentMapOverlayCodes(state);
+    const currentOverlayPeriods = selectCurrentMapOverlayPeriods(state);
+    const overlayConfigs = {};
 
-function* watchTryUpdateMeasureConfigAndWaitForHierarchyLoad() {
-  yield takeLatest(
-    UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
-    updateMapOverlayDateRangeOnceHierarchyLoads,
-  );
-}
+    for (let index = 0; index < currentOverlayCodes.length; index++) {
+      const currentOverlayCode = currentOverlayCodes[index];
+      const currentOverlayPeriod = currentOverlayPeriods[index];
 
-function* updateMapOverlayOnceHierarchyLoads() {
-  yield take(FETCH_MEASURES_SUCCESS);
-  const state = yield select();
-  const currentMapOverlayId = selectCurrentMapOverlayId(state);
-  yield put(setMapOverlay(currentMapOverlayId));
-}
+      if (currentOverlayPeriod === DEFAULT_PERIOD) {
+        overlayConfigs[currentOverlayCode] = {};
+        continue;
+      }
 
-function* updateMapOverlayDateRangeOnceHierarchyLoads(action) {
-  yield take(FETCH_MEASURES_SUCCESS);
-  const state = yield select();
-  const periodGranularity = selectCurrentPeriodGranularity(state);
-  const { startDate, endDate } = convertUrlPeriodStringToDateRange(
-    action.periodString,
-    periodGranularity,
-  );
-  yield put(updateMeasureConfig(selectCurrentMapOverlayId(state), { startDate, endDate }));
+      const periodGranularity = selectPeriodGranularityByCode(state, currentOverlayCode);
+      const { startDate, endDate } = convertUrlPeriodStringToDateRange(
+        currentOverlayPeriod,
+        periodGranularity,
+      );
+      overlayConfigs[currentOverlayCode] = { startDate, endDate };
+    }
+
+    yield put(setOverlayConfigs(overlayConfigs));
+    yield fetchMeasureInfo({
+      mapOverlayCodes: currentOverlayCodes,
+      displayedMapOverlays: currentOverlayCodes,
+    });
+  });
 }
 
 function* fetchCurrentMeasureInfo() {
   const state = yield select();
   const currentOrganisationUnitCode = selectCurrentOrgUnitCode(state);
   const { mapOverlayHierarchy } = state.mapOverlayBar;
-  const selectedMapOverlayId = selectCurrentMapOverlayId(state);
+  const selectedMapOverlayCodes = selectCurrentMapOverlayCodes(state);
 
   if (currentOrganisationUnitCode) {
-    const isHierarchyPopulated = !!mapOverlayHierarchy.length;
-    // TODO refactor the logic
-    if (!isHierarchyPopulated) {
-      /** Ensure measure is selected if there is a current measure selected in the case
-       * it is not selected through the mapOverlayBar UI
-       * i.e. page reloaded when on org with measure selected
-       */
-      yield put(setMapOverlay(selectedMapOverlayId));
-    } else if (!selectIsMapOverlayInHierarchy(state, selectedMapOverlayId)) {
-      // Update to the default measure ID if the current measure id isn't in the hierarchy
-      const newMapOverlayId = selectDefaultMapOverlayId(state);
-      yield put(setMapOverlay(newMapOverlayId));
+    if (!checkHierarchyIncludesMapOverlayCodes(mapOverlayHierarchy, selectedMapOverlayCodes)) {
+      const defaultMapOverlayCode = selectDefaultMapOverlayCode(state);
+      yield put(setMapOverlays(defaultMapOverlayCode));
+    } else {
+      yield put(setMapOverlays(selectedMapOverlayCodes.join(',')));
     }
   }
 }
@@ -979,15 +1023,15 @@ function* watchFetchMeasureSuccess() {
 function* fetchMeasureInfoForNewOrgUnit(action) {
   const { countryCode } = action.organisationUnit;
   const state = yield select();
-  const mapOverlayId = selectCurrentMapOverlayId(state);
-  const oldOrgUnitCountry = state.map.measureInfo.currentCountry;
+  const mapOverlayCodes = selectCurrentMapOverlayCodes(state);
+  const oldOrgUnitCountry = state.map.currentCountry;
   if (oldOrgUnitCountry === countryCode) {
     // We are in the same country as before, no need to refetch measureData
     return;
   }
 
-  if (mapOverlayId) {
-    yield put(setMapOverlay(mapOverlayId));
+  if (mapOverlayCodes.length > 0) {
+    yield put(setMapOverlays(mapOverlayCodes.join(',')));
   }
 }
 
@@ -996,12 +1040,12 @@ function* watchOrgUnitChangeAndFetchMeasureInfo() {
 }
 
 /**
- * fetchMeasures
+ * fetchMapOverlayMetadata
  *
- * Fetches the measures for current orgUnit for the current user. Written to mapOverlayBar State.
+ * Fetch map overlay metadata for current orgUnit for the current user. Written to mapOverlayBar State.
  *
  */
-function* fetchMeasures(action) {
+function* fetchMapOverlayMetadata(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
   if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
@@ -1018,7 +1062,7 @@ function* fetchMeasures(action) {
 }
 
 function* watchOrgUnitChangeAndFetchMeasures() {
-  yield takeLatest(CHANGE_ORG_UNIT_SUCCESS, fetchMeasures);
+  yield takeLatest(CHANGE_ORG_UNIT_SUCCESS, fetchMapOverlayMetadata);
 }
 
 /**
@@ -1185,7 +1229,7 @@ export default [
   watchViewFetchRequests,
   watchSearchChange,
   watchFetchMoreSearchResults,
-  watchMeasureChange,
+  watchSetMapOverlayChange,
   watchOrgUnitChangeAndFetchMeasures,
   watchFindUserCurrentLoggedIn,
   watchFetchNewEnlargedDialogData,
@@ -1200,8 +1244,7 @@ export default [
   watchRequestProjectAccess,
   watchGoHomeAndResetToProjectSplash,
   watchFetchResetTokenLoginSuccess,
-  watchMeasurePeriodChange,
-  watchTryUpdateMeasureConfigAndWaitForHierarchyLoad,
+  watchOverlayPeriodChange,
+  watchSetMapOverlaysOnceHierarchyLoads,
   watchHandleLocationChange,
-  updateMapOverlayOnceHierarchyLoads,
 ];

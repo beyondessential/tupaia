@@ -4,7 +4,6 @@
  */
 
 export * from './array';
-export { AsyncTaskQueue } from './AsyncTaskQueue';
 export { DEFAULT_BINARY_OPTIONS, DEFAULT_BINARY_OPTIONS_OBJECT } from './constant';
 export * from './compare';
 export * from './createBasicHeader';

@@ -4,49 +4,76 @@
  */
 
 import { AccessPolicy } from '@tupaia/access-policy';
-import { MicroServiceRequestContext } from '@tupaia/server-boilerplate';
 import { getUniqueEntries } from '@tupaia/utils';
 
 import { FetchResponse } from '../fetch';
-import { extractContextProps } from './extractContextProps';
-import { Context, ContextProp } from './types';
+import { detectDependencies } from './detectDependencies';
+import { Context, ContextDependency } from './types';
+import { RequestContext } from '../../types';
 
 export type ReqContext = {
   hierarchy: string;
   permissionGroup: string;
-  services: MicroServiceRequestContext['services'];
+  services: RequestContext['services'];
   accessPolicy: AccessPolicy;
 };
 
-type ContextBuilder<K extends ContextProp> = (
+type ContextBuilder<K extends ContextDependency> = (
   reqContext: ReqContext,
   data: FetchResponse,
 ) => Promise<Context[K]>;
 
 const isEventResponse = (data: FetchResponse) => data.results.some(result => 'event' in result);
 
-const buildOrgUnits = async (reqContext: ReqContext, data: FetchResponse) => {
-  const orgUnitCodes = isEventResponse(data)
-    ? data.results.map(d => d.orgUnit)
-    : data.results.map(d => d.organisationUnit);
-
-  return reqContext.services.entity.getEntities(
-    reqContext.hierarchy,
-    getUniqueEntries(orgUnitCodes),
-    { fields: ['code', 'name'] },
+const getOrgUnitCodesFromData = (data: FetchResponse) => {
+  return getUniqueEntries(
+    isEventResponse(data)
+      ? data.results.map(d => d.orgUnit)
+      : data.results.map(d => d.organisationUnit),
   );
+};
+
+const buildOrgUnits = async (reqContext: ReqContext, data: FetchResponse) => {
+  const orgUnitCodes = getOrgUnitCodesFromData(data);
+
+  return reqContext.services.entity.getEntities(reqContext.hierarchy, orgUnitCodes, {
+    fields: ['code', 'name', 'id'],
+  });
 };
 
 const buildDataElementCodeToName = async (reqContext: ReqContext, data: FetchResponse) => {
   return data.metadata?.dataElementCodeToName || {};
 };
 
-const contextBuilders: Record<ContextProp, ContextBuilder<ContextProp>> = {
-  orgUnits: buildOrgUnits,
-  dataElementCodeToName: buildDataElementCodeToName,
+const buildFacilityCountByOrgUnit = async (reqContext: ReqContext, data: FetchResponse) => {
+  const orgUnitCodes = getOrgUnitCodesFromData(data);
+
+  const facilitiesByOrgUnitCode = await reqContext.services.entity.getRelationshipsOfEntities(
+    reqContext.hierarchy,
+    orgUnitCodes,
+    'ancestor',
+    {},
+    {},
+    { filter: { type: 'facility' } },
+  );
+
+  const facilityCountByOrgUnit = Object.fromEntries(
+    Object.entries(facilitiesByOrgUnitCode).map(([orgUnit, facilities]) => [
+      orgUnit,
+      (facilities as any[]).length,
+    ]),
+  );
+
+  return facilityCountByOrgUnit;
 };
 
-function validateContextProp(key: string): asserts key is keyof typeof contextBuilders {
+const contextBuilders: Record<ContextDependency, ContextBuilder<ContextDependency>> = {
+  orgUnits: buildOrgUnits,
+  dataElementCodeToName: buildDataElementCodeToName,
+  facilityCountByOrgUnit: buildFacilityCountByOrgUnit,
+};
+
+function validateDependency(key: string): asserts key is keyof typeof contextBuilders {
   if (!(key in contextBuilders)) {
     throw new Error(
       `Invalid context dependency: ${key}, must be one of ${Object.keys(contextBuilders)}`,
@@ -54,7 +81,7 @@ function validateContextProp(key: string): asserts key is keyof typeof contextBu
   }
 }
 
-const setContextValue = <Key extends ContextProp>(
+const setContextValue = <Key extends ContextDependency>(
   context: Context,
   key: Key,
   value: Context[Key],
@@ -67,12 +94,12 @@ export const buildContext = async (
   reqContext: ReqContext,
   data: FetchResponse,
 ): Promise<Context> => {
-  const contextProps = extractContextProps(transform);
+  const dependencies = detectDependencies(transform);
 
   const context: Context = {};
 
-  for (const key of contextProps) {
-    validateContextProp(key);
+  for (const key of dependencies) {
+    validateDependency(key);
     setContextValue(context, key, await contextBuilders[key](reqContext, data));
   }
 

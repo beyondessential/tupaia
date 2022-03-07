@@ -10,7 +10,7 @@ import {
   ATTEMPT_LOGIN,
   FETCH_LOGIN_SUCCESS,
   SET_ORG_UNIT,
-  SET_MAP_OVERLAY,
+  SET_MAP_OVERLAYS,
   CHANGE_TILE_SET,
   TOGGLE_INFO_PANEL,
   SET_OVERLAY_COMPONENT,
@@ -54,8 +54,8 @@ export const gaMiddleware = () => next => action => {
         gaEvent('Organisation Unit', 'Change', action.organisationUnitCode);
         break;
 
-      case SET_MAP_OVERLAY:
-        gaEvent('Map Overlay', 'Change', action.mapOverlayId);
+      case SET_MAP_OVERLAYS:
+        gaEvent('Map Overlays', 'Change', action.mapOverlayCode);
         break;
 
       case CHANGE_TILE_SET:

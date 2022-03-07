@@ -53,6 +53,7 @@ export const registerInputFields = () => {
       disabled={props.disabled}
       allowMultipleValues={props.allowMultipleValues}
       parentRecord={props.parentRecord}
+      baseFilter={props.baseFilter}
     />
   ));
   registerInputField('json', props => (
@@ -93,7 +94,7 @@ export const registerInputFields = () => {
       value={props.value}
       onChange={props.onChange}
       helperText={props.secondaryLabel}
-      stringify={props.false}
+      stringify={false}
     />
   ));
   registerInputField('boolean', props => (

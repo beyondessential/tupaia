@@ -17,6 +17,18 @@ export const MULTIPLE_ANALYTICS = [
   { period: '20200103', organisationUnit: 'TO', dataElement: 'BCD1', value: 5 },
 ];
 
+export const TRANSFORMED_SUMMARY_BINARY = [
+  { dataElement: 'Male condoms', TO: 'N', FJ: 'N', NR: 'Y', KI: 'N' },
+  { dataElement: 'Female condoms', TO: 'N', FJ: 'Y', NR: 'Y', KI: 'Y' },
+  { dataElement: 'Injectable contraceptives', TO: 'Y', FJ: 'Y' },
+];
+
+export const TRANSFORMED_SUMMARY_VARIOUS = [
+  { dataElement: 'Male condoms', TO: 'Yes', FJ: 'N', NR: 'Y', KI: 'N' },
+  { dataElement: 'Female condoms', TO: 'N', FJ: 'Y', NR: 'Y', KI: 'Y' },
+  { dataElement: 'Injectable contraceptives', TO: 'Y', FJ: 'Y' },
+];
+
 export const MERGEABLE_ANALYTICS = [
   { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
   { period: '20200102', organisationUnit: 'TO', BCD1: 2 },

@@ -14,7 +14,7 @@ export const exportToPng = (node, filename) => {
 
     gaEvent('Export', file, 'Attempt');
 
-    domtoimage.toPng(node).then(async dataUrl => {
+    domtoimage.toPng(node, { bgcolor: 'white' }).then(async dataUrl => {
       downloadJs(dataUrl, file);
       gaEvent('Export', file, 'Success');
       resolve();

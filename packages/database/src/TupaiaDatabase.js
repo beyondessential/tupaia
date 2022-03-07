@@ -72,10 +72,10 @@ export class TupaiaDatabase {
     const connectToDatabase = async () => {
       this.connection =
         transactingConnection ||
-        (await knex({
+        knex({
           client: 'pg',
           connection: getConnectionConfig(),
-        }));
+        });
       return true;
     };
     this.connectionPromise = connectToDatabase();
@@ -99,7 +99,7 @@ export class TupaiaDatabase {
     if (!this.changeChannel) {
       this.changeChannel = new DatabaseChangeChannel();
       this.changeChannel.addDataChangeHandler(this.notifyChangeHandlers);
-      this.changeChannelPromise = this.changeChannel.ping();
+      this.changeChannelPromise = this.changeChannel.ping(undefined, 0);
     }
     return this.changeChannel;
   }

@@ -4,13 +4,12 @@
  *
  */
 
-export { ApiConnection, AuthHandler } from './connections';
-export { Route } from './routes';
-export { handleWith, handleError } from './utils';
+export * from './connections';
+export * from './routes';
+export * from './utils';
 export {
   ApiBuilder as MicroServiceApiBuilder,
   buildBasicBearerAuthMiddleware,
-  RequestContext as MicroServiceRequestContext,
 } from './microService';
 export {
   ApiBuilder as OrchestratorApiBuilder,
@@ -19,12 +18,6 @@ export {
   SessionCookie,
   attachSession,
 } from './orchestrator';
-export { QueryParameters, RequestBody } from './types';
-export {
-  Model,
-  DbFilter,
-  FilterCriteria,
-  Joined,
-  PartialOrArray,
-  QueryConjunctions,
-} from './models';
+export * from './types';
+export * from './models';
+export * from './type-exports';

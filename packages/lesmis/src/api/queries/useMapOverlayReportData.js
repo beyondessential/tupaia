@@ -28,19 +28,19 @@ const getMeasureDataFromResponse = (overlay, measureDataResponse) => {
     return measureDataResponse;
   }
 
-  const { measureId, measureLevel, displayType, dataElementCode, ...restOfOverlay } = overlay;
+  const { measureCode, measureLevel, displayType, dataElementCode, ...restOfOverlay } = overlay;
 
   const measureOptions = [
     {
       measureLevel,
       type: displayType,
-      key: dataElementCode,
+      key: dataElementCode || 'value',
       ...restOfOverlay,
     },
   ];
 
   return {
-    measureId,
+    measureCode,
     measureLevel,
     measureOptions,
     serieses: measureOptions,
@@ -123,6 +123,7 @@ const processMeasureData = ({
         ...measure,
         isHidden,
         radius,
+        organisationUnit: entity.code,
         coordinates: entity.point,
         region: entity.region,
         color,
@@ -221,6 +222,7 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
     hiddenValues,
     setValueHidden,
     selectedOverlay,
+    selectedOverlayName: overlay?.name,
     setSelectedOverlay,
   };
 };

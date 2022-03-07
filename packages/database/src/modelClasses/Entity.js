@@ -31,8 +31,8 @@ const PROJECT = 'project';
 const CITY = 'city';
 const POSTCODE = 'postcode';
 
-// Note: if a new type is not included in `ORG_UNIT_ENTITY_TYPES`,
-// a corresponding tracked entity type must be created in DHIS
+// Note: if a new type is not included in `ORG_UNIT_ENTITY_TYPES`, but data is to be stored against
+// it on DHIS2, a corresponding tracked entity type must be created in DHIS2
 const ENTITY_TYPES = {
   CASE,
   CASE_CONTACT,
@@ -431,7 +431,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
         ? ['ancestor_id', 'descendant_id']
         : ['descendant_id', 'ancestor_id'];
 
-    const relationData = await this.runCachedFunction(cacheKey, async () => {
+    const entityRecords = await this.runCachedFunction(cacheKey, async () => {
       const relations = await this.find(
         {
           ...criteria,
@@ -443,11 +443,11 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           sort: ['generational_distance ASC'],
         },
       );
-      return Promise.all(relations.map(async r => r.getData()));
+      const relationData = await Promise.all(relations.map(async r => r.getData()));
+      const uniqueEntities = Object.values(keyBy(relationData, 'id'));
+      return uniqueEntities;
     });
-
-    const uniqueEntities = Object.values(keyBy(relationData, 'id'));
-    return Promise.all(uniqueEntities.map(async r => this.generateInstance(r)));
+    return Promise.all(entityRecords.map(async r => this.generateInstance(r)));
   }
 
   async getAncestorsOfEntities(hierarchyId, entityIds, criteria) {

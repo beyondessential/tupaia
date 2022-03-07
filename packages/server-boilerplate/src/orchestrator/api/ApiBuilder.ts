@@ -20,6 +20,9 @@ import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Ro
 import { sessionCookie } from './sessionCookie';
 import { SessionModel } from '../models';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const i18n = require('i18n');
+
 type Middleware = (req: Request, res: Response, next: NextFunction) => void;
 
 export class ApiBuilder {
@@ -32,6 +35,8 @@ export class ApiBuilder {
   private attachVerifyLogin?: (req: LoginRequest, res: Response, next: NextFunction) => void;
 
   private verifyAuthMiddleware?: Middleware;
+
+  private translatorConfigured = false;
 
   constructor(transactingConnection: TupaiaDatabase) {
     this.database = transactingConnection;
@@ -82,6 +87,28 @@ export class ApiBuilder {
     return this;
   }
 
+  useTranslation(locales: string[], directory: string, queryParameter: string) {
+    // Configure only once
+    if (!this.translatorConfigured) {
+      i18n.configure({
+        locales,
+        directory,
+        queryParameter,
+        objectNotation: true, // Allow locale files to use x.y notation
+        updateFiles: false, // Don't update locale files while running
+        api: {
+          // Rename translation functions
+          __: 'translate',
+          __n: 'translaten',
+        },
+      });
+      this.translatorConfigured = true;
+    }
+    // Add translation to req/res locals
+    this.app.use(i18n.init);
+    return this;
+  }
+
   verifyAuth(verify: (accessPolicy: AccessPolicy) => void) {
     this.verifyAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -117,7 +144,7 @@ export class ApiBuilder {
   }
 
   addRoute<T extends ExpressRequest<T> = Request>(
-    method: 'get' | 'post' | 'put',
+    method: 'get' | 'post' | 'put' | 'delete',
     path: string,
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
@@ -148,6 +175,13 @@ export class ApiBuilder {
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
     return this.addRoute('put', path, ...handlers);
+  }
+
+  delete<T extends ExpressRequest<T> = Request>(
+    path: string,
+    ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
+  ) {
+    return this.addRoute('delete', path, ...handlers);
   }
 
   build() {

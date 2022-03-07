@@ -13,14 +13,25 @@ describe('buildContext', () => {
   const HIERARCHY = 'test_hierarchy';
   const ENTITIES = {
     test_hierarchy: [
-      { id: 'ouId1', code: 'AU', name: 'Australia' },
-      { id: 'ouId2', code: 'FJ', name: 'Fiji' },
-      { id: 'ouId3', code: 'KI', name: 'Kiribati' },
-      { id: 'ouId4', code: 'TO', name: 'Tonga' },
+      { id: 'ouId1', code: 'AU', name: 'Australia', type: 'country' },
+      { id: 'ouId2', code: 'FJ', name: 'Fiji', type: 'country' },
+      { id: 'ouId3', code: 'KI', name: 'Kiribati', type: 'country' },
+      { id: 'ouId4', code: 'TO', name: 'Tonga', type: 'country' },
+      { id: 'ouId5', code: 'TO_Facility1', name: 'Tonga Facility 1', type: 'facility' },
+      { id: 'ouId6', code: 'TO_Facility2', name: 'Tonga Facility 2', type: 'facility' },
+      { id: 'ouId7', code: 'FJ_Facility', name: 'Fiji Facility', type: 'facility' },
     ],
   };
 
-  const apiMock = entityApiMock(ENTITIES);
+  const RELATIONS = {
+    test_hierarchy: [
+      { parent: 'TO', child: 'TO_Facility1' },
+      { parent: 'TO', child: 'TO_Facility2' },
+      { parent: 'FJ', child: 'FJ_Facility' },
+    ],
+  };
+
+  const apiMock = entityApiMock(ENTITIES, RELATIONS);
 
   const reqContext: ReqContext = {
     hierarchy: HIERARCHY,
@@ -50,8 +61,8 @@ describe('buildContext', () => {
       const context = await buildContext(transform, reqContext, data);
       const expectedContext = {
         orgUnits: [
-          { code: 'FJ', name: 'Fiji' },
-          { code: 'TO', name: 'Tonga' },
+          { id: 'ouId2', code: 'FJ', name: 'Fiji' },
+          { id: 'ouId4', code: 'TO', name: 'Tonga' },
         ],
       };
       expect(context).toStrictEqual(expectedContext);
@@ -75,8 +86,8 @@ describe('buildContext', () => {
       const context = await buildContext(transform, reqContext, data);
       const expectedContext = {
         orgUnits: [
-          { code: 'FJ', name: 'Fiji' },
-          { code: 'TO', name: 'Tonga' },
+          { id: 'ouId2', code: 'FJ', name: 'Fiji' },
+          { id: 'ouId4', code: 'TO', name: 'Tonga' },
         ],
       };
       expect(context).toStrictEqual(expectedContext);
@@ -149,6 +160,61 @@ describe('buildContext', () => {
 
       const context = await buildContext(transform, reqContext, data);
       const expectedContext = { dataElementCodeToName: {} };
+      expect(context).toStrictEqual(expectedContext);
+    });
+  });
+
+  describe('facilityCountByOrgUnit', () => {
+    it('builds facilityCountByOrgUnit using fetched analytics', async () => {
+      const transform = ['insertNumberOfFacilitiesColumn'];
+
+      const analytics = [
+        { dataElement: 'BCD1', organisationUnit: 'TO', period: '20210101', value: 1 },
+        { dataElement: 'BCD1', organisationUnit: 'FJ', period: '20210101', value: 2 },
+        { dataElement: 'BCD1', organisationUnit: 'AU', period: '20210101', value: 2 },
+      ];
+      const data = { results: analytics };
+
+      const context = await buildContext(transform, reqContext, data);
+      const expectedContext = {
+        facilityCountByOrgUnit: {
+          TO: 2,
+          FJ: 1,
+          AU: 0,
+        },
+      };
+      expect(context).toStrictEqual(expectedContext);
+    });
+
+    it('builds facilityCountByOrgUnit using fetched events', async () => {
+      const transform = ['insertNumberOfFacilitiesColumn'];
+      const events = [
+        { event: 'evId1', eventDate: '2021-01-01T12:00:00', orgUnit: 'TO', orgUnitName: 'Tonga' },
+        { event: 'evId2', eventDate: '2021-01-01T12:00:00', orgUnit: 'FJ', orgUnitName: 'Fiji' },
+      ];
+      const data = { results: events };
+
+      const context = await buildContext(transform, reqContext, data);
+      const expectedContext = {
+        facilityCountByOrgUnit: {
+          TO: 2,
+          FJ: 1,
+        },
+      };
+      expect(context).toStrictEqual(expectedContext);
+    });
+
+    it('ignores unknown entities', async () => {
+      const transform = ['insertNumberOfFacilitiesColumn'];
+      const analytics = [
+        { dataElement: 'BCD1', organisationUnit: 'Unknown_entity', period: '20210101', value: 1 },
+      ];
+      const data = { results: analytics };
+
+      const context = await buildContext(transform, reqContext, data);
+      const expectedContext = {
+        facilityCountByOrgUnit: {},
+      };
       expect(context).toStrictEqual(expectedContext);
     });
   });

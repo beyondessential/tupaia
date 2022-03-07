@@ -14,6 +14,7 @@ import { MapOverlaysLoader } from './MapOverlaysLoader';
 import { FlexStart } from '../Layout';
 import { MapOverlaysPanelContainer as Container } from './MapOverlaysPanelContainer';
 import { ErrorBoundary } from '../ErrorBoundary';
+import { I18n } from '../../utils';
 
 const Header = styled.div`
   padding: 1.25rem 1.875rem 2rem;
@@ -35,7 +36,7 @@ const Box = styled(MuiBox)`
 
 const searchOverlays = (result, child, path, selectedOverlay) => {
   if (!child.children) {
-    if (child.mapOverlayId === selectedOverlay) {
+    if (child.mapOverlayCode === selectedOverlay) {
       return path;
     }
 
@@ -74,7 +75,7 @@ export const MapOverlaysPanel = ({
       <Container>
         <Header>
           <Typography variant="h5" gutterBottom>
-            Select Period:
+            <I18n t="dashboards.selectPeriod" />:
           </Typography>
           <FlexStart>
             {YearSelector}

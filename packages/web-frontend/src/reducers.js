@@ -24,7 +24,6 @@ import { isMobile, getUniqueViewId } from './utils';
 import { LANDING } from './containers/OverlayDiv/constants';
 import { EMAIL_VERIFIED_STATUS } from './containers/EmailVerification';
 import { getInitialLocation } from './historyNavigation';
-import { selectMapOverlayGroupById } from './selectors';
 
 // Import Action Types
 import {
@@ -36,8 +35,8 @@ import {
   ATTEMPT_REQUEST_COUNTRY_ACCESS,
   CHANGE_SIDE_BAR_CONTRACTED_WIDTH,
   CHANGE_SIDE_BAR_EXPANDED_WIDTH,
-  SET_MAP_OVERLAY,
-  UPDATE_MEASURE_CONFIG,
+  SET_MAP_OVERLAYS,
+  UPDATE_OVERLAY_CONFIGS,
   CLEAR_MAP_OVERLAY_HIERARCHY,
   SET_ORG_UNIT,
   CHANGE_SEARCH,
@@ -99,8 +98,10 @@ import {
   SET_PROJECT,
   FETCH_RESET_TOKEN_LOGIN_ERROR,
   SET_ENLARGED_DIALOG_DATE_RANGE,
+  SET_OVERLAY_CONFIGS,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
+import { updatedMapOverlayHierarchyConfig } from './utils/mapOverlays';
 
 function authentication(
   state = {
@@ -160,6 +161,7 @@ function authentication(
         isUserLoggedIn: false,
         isRequestingLogin: false,
         emailVerified: EMAIL_VERIFIED_STATUS.NEW_USER,
+        currentUserEmail: action.emailAddress,
       };
     case FETCH_LOGIN_ERROR:
       return {
@@ -592,23 +594,21 @@ function mapOverlayBar(
   switch (action.type) {
     case CLEAR_MAP_OVERLAY_HIERARCHY:
       return { ...state, mapOverlayHierarchy: [] };
-    case SET_MAP_OVERLAY:
+    case SET_MAP_OVERLAYS:
       return {
         ...state,
         hiddenMeasures: {},
       };
-    case UPDATE_MEASURE_CONFIG: {
-      const { groupIndex, mapOverlay, mapOverlayGroupIndex } = selectMapOverlayGroupById(
-        { mapOverlayBar: state },
-        action.mapOverlayId,
-      );
-
-      const mapOverlayHierarchy = [...state.mapOverlayHierarchy];
-
-      mapOverlayHierarchy[groupIndex].children[mapOverlayGroupIndex] = {
-        ...mapOverlay,
-        ...action.measureConfig,
-      };
+    case SET_OVERLAY_CONFIGS:
+    case UPDATE_OVERLAY_CONFIGS: {
+      let mapOverlayHierarchy;
+      Object.entries(action.overlayConfigs).forEach(([mapOverlayCode, overlayConfig]) => {
+        mapOverlayHierarchy = updatedMapOverlayHierarchyConfig(
+          state.mapOverlayHierarchy,
+          mapOverlayCode,
+          overlayConfig,
+        );
+      });
 
       return {
         ...state,
@@ -633,7 +633,7 @@ function mapOverlayBar(
 function global(
   state = {
     isSidePanelExpanded: false,
-    mapOverlayId: null,
+    mapOverlayCode: null,
     dashboards: [],
     viewConfigs: {},
     isLoadingOrganisationUnit: false,
@@ -647,7 +647,7 @@ function global(
       return {
         ...state,
         isSidePanelExpanded: false,
-        mapOverlayId: !isMobile() && LANDING,
+        mapOverlayCode: !isMobile() && LANDING,
       };
     case SHOW_TUPAIA_INFO:
       return {

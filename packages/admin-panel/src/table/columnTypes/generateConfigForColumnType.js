@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { EditButton } from '../../editor';
+import { EditButton, BulkEditButton } from '../../editor';
 import { DeleteButton } from './DeleteButton';
 import { ExportButton } from '../../importExport';
 import { BooleanSelectFilter } from './columnFilters';
@@ -22,6 +22,7 @@ const BUTTON_COLUMN_OPTIONS = {
 };
 
 const CUSTOM_CELL_COMPONENTS = {
+  bulkEdit: BulkEditButton,
   edit: EditButton,
   export: ExportButton,
   delete: DeleteButton,

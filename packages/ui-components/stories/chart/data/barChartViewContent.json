@@ -41,5 +41,12 @@
   "type": "chart",
   "chartType": "bar",
   "periodGranularity": "month",
-  "presentationOptions": { "hideAverage": true }
+  "presentationOptions": {
+    "referenceLines": {
+      "targetLine": {
+        "referenceLabel": "Target Line (30)",
+        "referenceValue": 30
+      }
+    }
+  }
 }

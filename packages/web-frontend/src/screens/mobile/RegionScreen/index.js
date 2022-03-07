@@ -16,7 +16,7 @@ import { Dashboard } from '../../../components/mobile/Dashboard';
 import { filterShape } from '../../../components/mobile/FilterSelect';
 import {
   setOrgUnit,
-  setMapOverlay,
+  setMapOverlays,
   toggleMeasureExpand,
   toggleDashboardSelectExpand,
   setDashboardGroup,
@@ -29,7 +29,7 @@ import {
   selectCurrentDashboardName,
   selectCurrentOrgUnit,
   selectOrgUnitChildren,
-  selectCurrentMapOverlay,
+  selectCurrentMapOverlays,
 } from '../../../selectors';
 
 const MAP_WIDTH = 420;
@@ -240,7 +240,7 @@ const getMeasureFiltersForHierarchy = mapOverlayHierarchy => {
     } else {
       const mapOverlay = {
         label: measureObject.name,
-        id: measureObject.mapOverlayId,
+        code: measureObject.mapOverlayCode,
         value: measureObject,
       };
 
@@ -256,7 +256,8 @@ const mapStateToProps = state => {
   const { mapOverlayHierarchy, isExpanded } = state.mapOverlayBar;
   const { measureInfo, isMeasureLoading } = state.map;
   const { isGroupSelectExpanded } = state.dashboard;
-  const currentMapOverlay = selectCurrentMapOverlay(state) || {};
+  const currentMapOverlays = selectCurrentMapOverlays(state);
+  const currentMapOverlay = currentMapOverlays.length > 0 ? currentMapOverlays[0] : {};
   const orgUnit = selectCurrentOrgUnit(state);
 
   const mobileListItems = getListItemsFromOrganisationUnitChildren(
@@ -271,8 +272,8 @@ const mapStateToProps = state => {
 
   const measureFilters = getMeasureFiltersForHierarchy(mapOverlayHierarchy);
 
-  const selectedFilter = currentMapOverlay.mapOverlayId
-    ? { label: currentMapOverlay.name, id: `${currentMapOverlay.mapOverlayId.toString()}` }
+  const selectedFilter = currentMapOverlay.mapOverlayCode
+    ? { label: currentMapOverlay.name, code: `${currentMapOverlay.mapOverlayCode.toString()}` }
     : { label: '' };
 
   return {
@@ -291,7 +292,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onChangeMapOverlay: mapOverlayId => dispatch(setMapOverlay(mapOverlayId)),
+  onChangeMapOverlay: mapOverlayCode => dispatch(setMapOverlays(mapOverlayCode)),
   onClearMeasure: () => dispatch(clearMeasure()),
   onToggleMeasureExpand: () => dispatch(toggleMeasureExpand()),
   onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),
@@ -307,7 +308,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...dispatchProps,
     ...ownProps,
     onChangeMapOverlay: mapOverlay =>
-      mapOverlay ? onChangeMapOverlay(mapOverlay.mapOverlayId) : onClearMeasure(),
+      mapOverlay ? onChangeMapOverlay(mapOverlay.mapOverlayCode) : onClearMeasure(),
   };
 };
 

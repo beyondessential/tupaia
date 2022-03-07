@@ -3,6 +3,7 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React, { useState, useEffect, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiTab from '@material-ui/core/Tab';
 import MuiTabs from '@material-ui/core/Tabs';
@@ -10,7 +11,7 @@ import { Chart } from '@tupaia/ui-components/lib/chart';
 import { FlexSpaceBetween, FetchLoader, DataTable } from '@tupaia/ui-components';
 import { TabPanel } from './TabPanel';
 import { useReportPreview } from '../api';
-import { usePreviewData, useVizBuilderConfig } from '../context';
+import { usePreviewData, useVizConfig, useVizConfigError } from '../context';
 import { JsonEditor } from './JsonEditor';
 import { IdleMessage } from './IdleMessage';
 
@@ -121,11 +122,12 @@ const getColumns = data => {
 
 export const PreviewSection = () => {
   const { fetchEnabled, setFetchEnabled, showData } = usePreviewData();
-  const [
-    { project, location, visualisation, testData },
-    { setPresentation },
-  ] = useVizBuilderConfig();
+  const { hasPresentationError, setPresentationError } = useVizConfigError();
+
+  const [{ project, location, visualisation, testData }, { setPresentation }] = useVizConfig();
   const [viewContent, setViewContent] = useState(null);
+
+  const { vizType } = useParams();
 
   const { data: reportData = [], isLoading, isFetching, isError, error } = useReportPreview({
     visualisation,
@@ -136,11 +138,21 @@ export const PreviewSection = () => {
     onSettled: () => {
       setFetchEnabled(false);
     },
+    vizType,
   });
   const [tab, setTab] = useState(0);
 
   const handleChange = (event, newValue) => {
     setTab(newValue);
+  };
+
+  const handleInvalidPresentationChange = errMsg => {
+    setPresentationError(errMsg);
+  };
+
+  const setPresentationValue = value => {
+    setPresentation(value);
+    setPresentationError(null);
   };
 
   const columns = useMemo(() => getColumns(reportData), [reportData]);
@@ -161,7 +173,7 @@ export const PreviewSection = () => {
         textColor="primary"
         onChange={handleChange}
       >
-        <PreviewTab label="Data Preview" />
+        <PreviewTab label="Data Preview" disabled={hasPresentationError} />
         <PreviewTab label="Chart Preview" />
       </PreviewTabs>
       <TabPanel isSelected={tab === 0} Panel={PanelTabPanel}>
@@ -174,7 +186,7 @@ export const PreviewSection = () => {
               isNoData={!reportData.length}
               noDataMessage="No Data Found"
             >
-              <StyledTable columns={columns} data={data} />
+              <StyledTable columns={columns} data={data} rowLimit={100} />
             </FetchLoader>
           ) : (
             <IdleMessage />
@@ -193,7 +205,11 @@ export const PreviewSection = () => {
             )}
           </ChartContainer>
           <EditorContainer>
-            <JsonEditor value={visualisation.presentation} onChange={setPresentation} />
+            <JsonEditor
+              value={visualisation.presentation}
+              onChange={setPresentationValue}
+              onInvalidChange={handleInvalidPresentationChange}
+            />
           </EditorContainer>
         </Container>
       </TabPanel>

@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/meditrak-app",
-  "version": "1.11.114",
+  "version": "1.11.116",
   "private": true,
   "description": "Android and iOS app for surveying medical facilities",
   "repository": {
@@ -83,6 +83,7 @@
     ]
   },
   "scripts": {
+    "build": "Built externally",
     "bugsnag-sourcemaps-upload": "scripts/uploadSourcemaps.sh",
     "bump-minor": "npm-bump minor; ios/version-sync.sh",
     "bump-patch": "npm-bump patch; ios/version-sync.sh",

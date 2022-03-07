@@ -57,18 +57,19 @@ export {
 
 export {
   selectHasPolygonMeasure,
-  selectAllMeasuresWithDisplayInfo,
-  selectAllMeasuresWithDisplayAndOrgUnitData,
+  selectMeasuresWithDisplayInfo,
+  selectMeasureOptions,
+  selectMeasureData,
   selectRenderedMeasuresWithDisplayInfo,
-  selectRadiusScaleFactor,
 } from './measureSelectors';
 
 export {
-  selectMapOverlayById,
-  selectCurrentMapOverlay,
-  selectCurrentMapOverlayId,
-  selectCurrentPeriodGranularity,
-  selectIsMapOverlayInHierarchy,
-  selectDefaultMapOverlayId,
-  selectMapOverlayGroupById,
+  selectMapOverlayByCode,
+  selectMapOverlayByCodes,
+  selectCurrentMapOverlayCodes,
+  selectCurrentMapOverlayPeriods,
+  selectCurrentMapOverlays,
+  selectDefaultMapOverlayCode,
+  selectDefaultMapOverlay,
+  selectPeriodGranularityByCode,
 } from './mapOverlaySelectors';

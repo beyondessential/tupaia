@@ -58,7 +58,7 @@ export const buildPeriodParams = (
 
   // Apply date offset if date specs is object
   if (typeof startDateSpecs === 'object') {
-    startDate = buildDateUsingSpecs(endDate, startDateSpecs);
+    startDate = buildDateUsingSpecs(startDate, startDateSpecs);
   }
   if (typeof endDateSpecs === 'object') {
     endDate = buildDateUsingSpecs(endDate, endDateSpecs);

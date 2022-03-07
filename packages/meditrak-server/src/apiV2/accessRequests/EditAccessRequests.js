@@ -4,7 +4,7 @@
  */
 
 import { ValidationError } from '@tupaia/utils';
-import { EditHandler } from '../EditHandler';
+import { BulkEditHandler } from '../EditHandler';
 import {
   assertAnyPermissions,
   assertBESAdminAccess,
@@ -17,7 +17,7 @@ import { assertAccessRequestEditPermissions } from './assertAccessRequestPermiss
  * - /accessRequests/:accessRequestId
  */
 
-export class EditAccessRequests extends EditHandler {
+export class EditAccessRequests extends BulkEditHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
@@ -27,16 +27,28 @@ export class EditAccessRequests extends EditHandler {
     );
   }
 
-  async editRecord() {
+  async editRecords(transactingModels, updatedRecords) {
+    await this.validateRecords(updatedRecords);
+
+    for (const record of updatedRecords) {
+      await this.checkPermissionForRecord(transactingModels, record.id, record);
+    }
+
+    await this.updateRecords(
+      transactingModels,
+      updatedRecords.map(record => ({
+        ...record,
+        processed_by: this.req.userId,
+        processed_date: new Date(),
+      })),
+    );
+  }
+
+  async checkPermissionForRecord(models, recordId, updatedRecord) {
+    const accessRequest = await models.accessRequest.findById(recordId);
     // Check Permissions
-    const accessRequest = await this.models.accessRequest.findById(this.recordId);
     const accessRequestChecker = accessPolicy =>
-      assertAccessRequestEditPermissions(
-        accessPolicy,
-        this.models,
-        this.recordId,
-        this.updatedFields,
-      );
+      assertAccessRequestEditPermissions(accessPolicy, models, recordId, updatedRecord);
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, accessRequestChecker]),
     );
@@ -46,10 +58,5 @@ export class EditAccessRequests extends EditHandler {
     if (approved !== null) {
       throw new ValidationError(`AccessRequest has already been processed`);
     }
-    return this.models.accessRequest.updateById(this.recordId, {
-      ...this.updatedFields,
-      processed_by: this.req.userId,
-      processed_date: new Date(),
-    });
   }
 }

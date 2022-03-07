@@ -4,21 +4,52 @@
  *
  */
 
-import { Request, Response, NextFunction } from 'express';
-import { Route } from '@tupaia/server-boilerplate';
+import { Request, NextFunction } from 'express';
+import { TranslatableResponse, TranslatableRoute } from '@tupaia/server-boilerplate';
 import { ReportConnection, WebConfigConnection } from '../connections';
 import { LESMIS_PROJECT_NAME, LESMIS_HIERARCHY_NAME } from '../constants';
 
-export class ReportRoute extends Route {
+export type ReportRequest = Request<
+  { entityCode: string; reportCode: 'dashboard' | 'mapOverlay' },
+  any,
+  any,
+  any
+>;
+
+export class ReportRoute extends TranslatableRoute<
+  ReportRequest,
+  TranslatableResponse<ReportRequest>
+> {
   private readonly reportConnection: ReportConnection;
 
   private readonly webConfigConnection: WebConfigConnection;
 
-  constructor(req: Request, res: Response, next: NextFunction) {
+  constructor(req: ReportRequest, res: TranslatableResponse<ReportRequest>, next: NextFunction) {
     super(req, res, next);
 
     this.reportConnection = new ReportConnection(req.session);
     this.webConfigConnection = new WebConfigConnection(req.session);
+    this.translationSchema = {
+      domain: 'lesmis',
+      layout: {
+        type: 'array',
+        items: {
+          type: 'object',
+          keysToTranslate: '*',
+          valuesToTranslate: ['label', 'name'],
+        },
+      },
+    };
+  }
+
+  // Check for _metadata keys and only translate the first part
+  // Lets us use the same translation entry for regular and _metadata keys
+  translateKey(value: string): string {
+    if (value.endsWith('_metadata')) {
+      const key = this.translateString(value.slice(0, -'_metadata'.length));
+      return `${key}_metadata`;
+    }
+    return this.translateString(value);
   }
 
   async buildResponse() {
@@ -37,12 +68,14 @@ export class ReportRoute extends Route {
         }
         case 'mapOverlay': {
           return this.webConfigConnection.fetchMapOverlayData({
-            mapOverlayId: reportCode,
+            mapOverlayCode: reportCode,
             organisationUnitCode: entityCode,
             projectCode: LESMIS_PROJECT_NAME,
             ...this.req.query,
           });
         }
+        default:
+          throw new Error('Unknown type');
       }
     }
     // Otherwise just pull from report server

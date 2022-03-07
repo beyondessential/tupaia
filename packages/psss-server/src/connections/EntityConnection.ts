@@ -38,8 +38,8 @@ interface RelationOptions {
 type ResponseEntity<T extends EntityOptions> = T['field'] extends string
   ? string
   : T['fields'] extends Array<unknown>
-  ? Pick<Entity, T['fields'][number]>
-  : Entity;
+    ? Pick<Entity, T['fields'][number]>
+    : Entity;
 
 const getFieldsParam = (fields?: (keyof Entity)[]) => fields && fields.join(',');
 
