@@ -10,19 +10,18 @@ import { TYPES } from '../types';
 const DATA_ELEMENT = 'dataElement';
 const DATA_GROUP = 'dataGroup';
 const SYNC_GROUP = 'syncGroup';
-const DATA_LAKE = 'data_lake';
 
 const DATA_SOURCE_TYPES = {
   DATA_ELEMENT,
   DATA_GROUP,
   SYNC_GROUP,
-  DATA_LAKE,
 };
 
 const SERVICE_TYPES = {
   DHIS: 'dhis',
   TUPAIA: 'tupaia',
   INDICATOR: 'indicator',
+  DATA_LAKE: 'data-lake',
 };
 
 const CONFIG_SCHEMA_BY_TYPE_AND_SERVICE = {

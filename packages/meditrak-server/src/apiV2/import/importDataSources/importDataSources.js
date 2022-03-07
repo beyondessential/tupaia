@@ -9,7 +9,7 @@ import { respond, DatabaseError, UploadError } from '@tupaia/utils';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
 import { createDataSources } from './createDataSources';
 
-export const extractDataSourceFromSheets = filePath => {
+const extractDataSourceFromSheets = filePath => {
   const extension = path.extname(filePath);
   if (extension !== '.xlsx') {
     throw new Error(`Unsupported file type: ${extension}`);
@@ -38,7 +38,7 @@ export async function importDataSources(req, res) {
     await models.wrapInTransaction(async transactingModels => {
       await createDataSources(transactingModels, dataSources);
     });
-    respond(res, { message: 'Importind data sources' });
+    respond(res, { message: 'Imported data sources' });
   } catch (error) {
     if (error.respond) {
       throw error; // Already a custom error with a responder
