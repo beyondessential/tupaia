@@ -22,28 +22,20 @@ const extractDataSourceFromSheets = filePath => {
  * Responds to POST requests to the /import/dataSources endpoint
  */
 export async function importDataSources(req, res) {
+  const { models } = req;
+
+  let dataSources;
+
   try {
-    const { models } = req;
-
-    let dataSources;
-
-    try {
-      dataSources = extractDataSourceFromSheets(req.file.path);
-    } catch (error) {
-      throw new UploadError(error);
-    }
-
-    await req.assertPermissions(assertAnyPermissions([assertBESAdminAccess]));
-
-    await models.wrapInTransaction(async transactingModels => {
-      await createDataSources(transactingModels, dataSources);
-    });
-    respond(res, { message: 'Imported data sources' });
+    dataSources = extractDataSourceFromSheets(req.file.path);
   } catch (error) {
-    if (error.respond) {
-      throw error; // Already a custom error with a responder
-    } else {
-      throw new DatabaseError('importing data sources', error);
-    }
+    throw new UploadError(error);
   }
+
+  await req.assertPermissions(assertAnyPermissions([assertBESAdminAccess]));
+
+  await models.wrapInTransaction(async transactingModels => {
+    await createDataSources(transactingModels, dataSources);
+  });
+  respond(res, { message: 'Imported data sources' });
 }
