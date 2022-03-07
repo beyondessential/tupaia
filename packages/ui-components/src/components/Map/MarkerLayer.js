@@ -41,7 +41,7 @@ export const MarkerLayer = ({
   serieses,
   multiOverlayMeasureData,
   multiOverlaySerieses,
-  onChangeOrgUnit,
+  onSeeOrgUnitDashboard,
 }) => {
   if (!measureData || !serieses) return null;
 
@@ -77,7 +77,7 @@ export const MarkerLayer = ({
             <MeasurePopup
               markerData={markerData}
               serieses={serieses}
-              onOrgUnitClick={onChangeOrgUnit}
+              onSeeOrgUnitDashboard={onSeeOrgUnitDashboard}
               multiOverlaySerieses={multiOverlaySerieses}
             />
           </MeasureMarker>
@@ -97,7 +97,7 @@ MarkerLayer.propTypes = {
     }),
   ),
   multiOverlaySerieses: PropTypes.array,
-  onChangeOrgUnit: PropTypes.func,
+  onSeeOrgUnitDashboard: PropTypes.func,
 };
 
 MarkerLayer.defaultProps = {
@@ -105,5 +105,5 @@ MarkerLayer.defaultProps = {
   multiOverlayMeasureData: null,
   serieses: null,
   multiOverlaySerieses: null,
-  onChangeOrgUnit: null,
+  onSeeOrgUnitDashboard: null,
 };

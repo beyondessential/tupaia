@@ -31,7 +31,7 @@ import {
   selectAreRegionLabelsPermanent,
   selectMeasureData,
 } from '../../selectors';
-import { changePosition, closeDropdownOverlays, setOrgUnit } from '../../actions';
+import { changePosition, closeDropdownOverlays, setOrgUnit, setMobileTab } from '../../actions';
 import { TRANS_BLACK, TRANS_BLACK_LESS } from '../../styles';
 
 const CHANGE_TO_PARENT_PERCENTAGE = 0.6;
@@ -150,6 +150,7 @@ class MapComponent extends Component {
       getChildren,
       measureData,
       onChangeOrgUnit,
+      onSeeOrgUnitDashboard,
       serieses,
       multiOverlayMeasureData,
       multiOverlaySerieses,
@@ -217,7 +218,7 @@ class MapComponent extends Component {
         <MarkerLayer
           measureData={processedData}
           serieses={serieses || null}
-          onChangeOrgUnit={onChangeOrgUnit}
+          onSeeOrgUnitDashboard={onSeeOrgUnitDashboard}
           multiOverlayMeasureData={multiOverlayMeasureData}
           multiOverlaySerieses={multiOverlaySerieses}
         />
@@ -247,6 +248,7 @@ MapComponent.propTypes = {
     zoom: PropTypes.number,
   }).isRequired,
   onChangeOrgUnit: PropTypes.func.isRequired,
+  onSeeOrgUnitDashboard: PropTypes.func.isRequired,
   shouldSnapToPosition: PropTypes.bool.isRequired,
   sidePanelWidth: PropTypes.number.isRequired,
   tileSetUrl: PropTypes.string.isRequired,
@@ -337,6 +339,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   onChangeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
     dispatch(setOrgUnit(organisationUnitCode, shouldChangeMapBounds));
+  },
+  onSeeOrgUnitDashboard: organisationUnitCode => {
+    dispatch(setOrgUnit(organisationUnitCode, true));
+    dispatch(setMobileTab('dashboard'));
   },
   onChangePosition: (center, zoom) => dispatch(changePosition(center, zoom)),
   onCloseDropdownOverlays: () => dispatch(closeDropdownOverlays()),
