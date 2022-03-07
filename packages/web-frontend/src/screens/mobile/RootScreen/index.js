@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { PropTypes } from 'prop-types';
 import { StyleRoot } from 'radium';
 import { connect } from 'react-redux';
@@ -28,19 +28,14 @@ import { SearchBar } from '../../../containers/mobile/SearchBar';
 import { Dashboard } from '../../../containers/mobile/Dashboard';
 import { setMobileTab } from '../../../actions';
 
-const Container = styled(StyleRoot)`
-  position: relative;
+const Container = styled.div`
   width: 100%;
   z-index: 401;
   background: black;
 `;
 
 const MapContainer = styled.div`
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  height: calc(100vh - ${p => p.$topOffset}px);
 `;
 
 const EntityName = styled.p`
@@ -76,12 +71,22 @@ const RootScreen = ({
 }) => {
   const handleChangeSelectedTab = (event, newValue) => setSelectedTab(newValue);
 
+  // maintain the main container height in state, so the map can sit below it
+  const containerRef = useRef();
+  const [containerHeight, setContainerHeight] = useState();
+  const updateContainerHeight = () => {
+    setContainerHeight(containerRef.current.clientHeight);
+  };
+  useEffect(() => {
+    updateContainerHeight(); // set once on mount
+  });
+
   return (
-    <>
-      <Container>
-        <EnvBanner />
-        <LoadingScreen isLoading={isLoading} />
-        <div>
+    <StyleRoot>
+      <EnvBanner />
+      <LoadingScreen isLoading={isLoading} />
+      <div>
+        <Container ref={containerRef}>
           <HeaderBar />
           <EntityName>{orgUnit.name}</EntityName>
           <StyledTabs
@@ -95,18 +100,18 @@ const RootScreen = ({
             <StyledTab label="Map" value="map" disableRipple />
           </StyledTabs>
           <SearchBar />
-          {selectedTab === 'dashboard' && <Dashboard />}
-          {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
-          {selectedTab === 'dashboard' && <Footer />}
-        </div>
-        {isUserLoggedIn && <OverlayDiv />}
-      </Container>
-      {selectedTab === 'map' && (
-        <MapContainer>
-          <Map isMobile />
-        </MapContainer>
-      )}
-    </>
+        </Container>
+        {selectedTab === 'dashboard' && <Dashboard />}
+        {selectedTab === 'map' && containerHeight && (
+          <MapContainer $topOffset={containerHeight}>
+            <Map showZoomControl={false} />
+          </MapContainer>
+        )}
+        {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
+        {selectedTab === 'dashboard' && <Footer />}
+      </div>
+      {isUserLoggedIn && <OverlayDiv />}
+    </StyleRoot>
   );
 };
 

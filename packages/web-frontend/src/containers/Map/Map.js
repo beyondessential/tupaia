@@ -12,11 +12,12 @@ import {
   MarkerLayer,
   LeafletMap,
   InteractivePolygon,
+  ZoomControl,
 } from '@tupaia/ui-components/lib/map';
+
 import { checkBoundsDifference, organisationUnitIsArea } from '../../utils';
 import { DemoLand } from './DemoLand';
 import { DisasterLayer } from './DisasterLayer';
-import { ZoomControl } from './ZoomControl';
 import {
   selectActiveTileSet,
   selectMeasuresWithDisplayInfo,
@@ -37,15 +38,14 @@ import { TRANS_BLACK, TRANS_BLACK_LESS } from '../../styles';
 const CHANGE_TO_PARENT_PERCENTAGE = 0.6;
 
 const StyledMap = styled(LeafletMap)`
-  height: 100vh;
+  height: 100%;
   width: 100%;
 
   .leaflet-control-zoom {
     z-index: 1;
     border: none;
     top: -50px;
-    right: 350px;
-    transition: right 0.5s ease;
+    right: 3px;
 
     a {
       background: ${TRANS_BLACK_LESS};
@@ -80,7 +80,6 @@ class MapComponent extends Component {
       measureData,
       position,
       tileSetUrl,
-      sidePanelWidth,
     } = this.props;
 
     if (JSON.stringify(nextProps.mapOverlayCodes) !== JSON.stringify(mapOverlayCodes)) {
@@ -101,8 +100,6 @@ class MapComponent extends Component {
     }
 
     if (nextProps.tileSetUrl !== tileSetUrl) return true;
-
-    if (nextProps.sidePanelWidth !== sidePanelWidth) return true;
 
     if (JSON.stringify(nextProps.position) !== JSON.stringify(position)) return true;
 
@@ -156,11 +153,10 @@ class MapComponent extends Component {
       multiOverlaySerieses,
       position,
       shouldSnapToPosition,
-      sidePanelWidth,
       tileSetUrl,
       measureOrgUnits,
       permanentLabels,
-      isMobile,
+      showZoomControl,
     } = this.props;
 
     // Only show data with valid coordinates. Note: this also removes region data
@@ -184,11 +180,10 @@ class MapComponent extends Component {
         zoom={position.zoom}
         center={position.center}
         shouldSnapToPosition={shouldSnapToPosition}
-        rightPadding={sidePanelWidth}
         onPositionChanged={this.onPositionChanged}
       >
         <TileLayer tileSetUrl={tileSetUrl} />
-        {!isMobile && <ZoomControl sidePanelWidth={sidePanelWidth} />}
+        {showZoomControl && <ZoomControl position="bottomright" />}
         <DemoLand />
         {currentOrganisationUnit && organisationUnitIsArea(currentOrganisationUnit) && (
           <InteractivePolygon
@@ -250,10 +245,9 @@ MapComponent.propTypes = {
   onChangeOrgUnit: PropTypes.func.isRequired,
   onSeeOrgUnitDashboard: PropTypes.func.isRequired,
   shouldSnapToPosition: PropTypes.bool.isRequired,
-  sidePanelWidth: PropTypes.number.isRequired,
   tileSetUrl: PropTypes.string.isRequired,
   permanentLabels: PropTypes.bool,
-  isMobile: PropTypes.bool,
+  showZoomControl: PropTypes.bool,
 };
 
 MapComponent.defaultProps = {
@@ -265,7 +259,7 @@ MapComponent.defaultProps = {
   multiOverlaySerieses: [],
   currentParent: null,
   permanentLabels: undefined,
-  isMobile: false,
+  showZoomControl: true,
 };
 
 const selectMeasureDataWithCoordinates = createSelector([measureData => measureData], measureData =>
@@ -279,8 +273,6 @@ const selectMeasureDataWithCoordinates = createSelector([measureData => measureD
 const mapStateToProps = state => {
   const { isAnimating, shouldSnapToPosition, position, displayedMapOverlays } = state.map;
   const mapOverlayCodes = selectCurrentMapOverlayCodes(state);
-  const { isSidePanelExpanded } = state.global;
-  const { contractedWidth, expandedWidth } = state.dashboard;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
   const currentParent = selectOrgUnit(state, currentOrganisationUnit.parent);
   const currentChildren =
@@ -331,7 +323,6 @@ const mapStateToProps = state => {
     tileSetUrl: selectActiveTileSet(state).url,
     isAnimating,
     shouldSnapToPosition,
-    sidePanelWidth: isSidePanelExpanded ? expandedWidth : contractedWidth,
     permanentLabels,
   };
 };
