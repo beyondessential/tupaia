@@ -21,7 +21,7 @@ nvm use
 cd ../..
 
 # install root dependencies
-yarn install --ignore-scripts
+yarn install
 
 # move to meditrak folder
 cd packages/meditrak-app
