@@ -6,13 +6,18 @@
 import { MicroServiceApiBuilder, handleWith } from '@tupaia/server-boilerplate';
 import { TupaiaDatabase } from '@tupaia/database';
 import {
+  ForwardingAuthHandler,
+  getBaseUrlsForHost,
+  LOCALHOST_BASE_URLS,
+  TupaiaApiClient,
+} from '@tupaia/api-client';
+import {
   FetchReportRequest,
   FetchReportRoute,
   TestReportRequest,
   TestReportRoute,
 } from '../routes';
 import { RequestContext } from '../types';
-import { ForwardingAuthHandler, getBaseUrlsForHost, LOCALHOST_BASE_URLS, TupaiaApiClient } from '@tupaia/api-client';
 
 /**
  * Set up express server
@@ -31,6 +36,7 @@ export function createApp() {
       };
       req.ctx = context;
       res.ctx = context;
+      next();
     })
     .get<FetchReportRequest>('fetchReport/:reportCode', handleWith(FetchReportRoute))
     .post<FetchReportRequest>('fetchReport/:reportCode', handleWith(FetchReportRoute))
