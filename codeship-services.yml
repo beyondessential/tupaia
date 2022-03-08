@@ -1,16 +1,8 @@
-# 'lastpass' service has lastpass credentials in an encrypted file, which allows it to retrieve the
-# .env files for each package and copy them to the environment_variables volume for use in later steps
-lastpass:
-  build:
-    dockerfile: ./packages/devops/ci/tupaia-ci-cd.Dockerfile
-  encrypted_env_file: ./packages/devops/ci/lastpass.env.encrypted # lastpass credentials to fetch env vars
-  cached: true
-  default_cache_branch: 'dev'
-  encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
-  volumes:
-    - ./tmp:/environment_variables
-
-# 'validation' service just uses the tupaia-ci-cd image to check that some conventions are followed
+# 'validation' service checks:
+#  - branch name
+#  - that there are no exclusive tests
+#    - TODO: strip this down to a tiny image that just checks branch name, and use eslint no-exclusive-tests flag
+#      at lint step after RN-201
 validation:
   build:
     dockerfile: ./packages/devops/ci/tupaia-ci-cd.Dockerfile
@@ -18,8 +10,6 @@ validation:
   default_cache_branch: 'dev'
   encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
 
-# 'testing' service uses mounts the environment_variables volume to retrieve .env files, and additionally
-# depends on the db service and encrypted db connection env vars to run integration tests
 testing:
   build:
     dockerfile: ./packages/devops/ci/tupaia-ci-cd.Dockerfile
@@ -29,8 +19,6 @@ testing:
     - db
   encrypted_env_file: ./packages/devops/ci/testing.env.encrypted # test db env vars
   encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
-  volumes:
-    - ./tmp:/environment_variables
 
 # 'e2e' service includes a base cypress container, plus code and node_module dependencies
 # required by e2e tests in web-frontend

@@ -26,7 +26,11 @@ def spin_up_tupaia_database(event):
     db_instance_type = event.get('DbInstanceType', 'db.t4g.large')
     security_group_code = event.get('SecurityGroupCode', 'tupaia-dev-sg') # Use security group tagged with code
     clone_db_from = event.get('CloneDbFrom', 'production') # Use volume snapshot tagged with deployment name
-    extra_tags = build_extra_tags(event)
+    extra_tags = build_extra_tags(
+        event,
+        # Turn off overnight, but come back online an hour before the server so db is available
+        { 'StopAtUTC': '09:00', 'StartAtUTC': '18:00' }
+    )
 
     # create db instance from a snapshot
     create_db_instance_from_snapshot(

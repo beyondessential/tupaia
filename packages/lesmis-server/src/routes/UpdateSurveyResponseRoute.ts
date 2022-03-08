@@ -7,10 +7,12 @@ import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { MeditrakConnection } from '../connections';
 
-export class UpdateSurveyResponseRoute extends Route {
+export type UpdateSurveyResponseRequest = Request<{ id: string }, any, any, any>;
+
+export class UpdateSurveyResponseRoute extends Route<UpdateSurveyResponseRequest> {
   private readonly meditrakConnection: MeditrakConnection;
 
-  constructor(req: Request, res: Response, next: NextFunction) {
+  constructor(req: UpdateSurveyResponseRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.meditrakConnection = new MeditrakConnection(req.session);
