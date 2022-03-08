@@ -68,7 +68,8 @@ const StyledMap = styled(LeafletMap)`
  */
 class MapComponent extends Component {
   componentWillMount() {
-    window.addEventListener('resize', () => this.forceUpdate());
+    // ensure leaflet updates after 0.5 second resize animation has finished
+    window.addEventListener('resize', () => setTimeout(() => this.map?.invalidateSize(), 500));
   }
 
   shouldComponentUpdate(nextProps) {
@@ -109,6 +110,10 @@ class MapComponent extends Component {
 
     return false;
   }
+
+  captureMap = map => {
+    this.map = map;
+  };
 
   onPositionChanged = (center, bounds, zoom) => {
     const { position, onChangePosition } = this.props;
@@ -181,6 +186,7 @@ class MapComponent extends Component {
         center={position.center}
         shouldSnapToPosition={shouldSnapToPosition}
         onPositionChanged={this.onPositionChanged}
+        whenCreated={this.captureMap}
       >
         <TileLayer tileSetUrl={tileSetUrl} />
         {showZoomControl && <ZoomControl position="bottomright" />}

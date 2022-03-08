@@ -78,7 +78,7 @@ const RootScreen = ({
     setContainerHeight(containerRef.current.clientHeight);
   };
   useEffect(() => {
-    updateContainerHeight(); // set once on mount
+    updateContainerHeight();
   });
 
   return (
