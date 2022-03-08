@@ -51,14 +51,4 @@ export class GETUserAccounts extends GETHandler {
 
     return { dbConditions, dbOptions: options };
   }
-
-  async getPermissionsViaParentFilter(criteria, options) {
-    // Add additional filter by user id
-    const dbConditions = {
-      'access_request.user_id': this.parentRecordId,
-      ...criteria,
-    };
-
-    return this.getPermissionsFilter(dbConditions, options);
-  }
 }
