@@ -28,7 +28,7 @@ import { SearchBar } from '../../../containers/mobile/SearchBar';
 import { Dashboard } from '../../../containers/mobile/Dashboard';
 import { setMobileTab } from '../../../actions';
 
-const Container = styled.div`
+const TopSection = styled.div`
   width: 100%;
   z-index: 401;
   background: black;
@@ -71,14 +71,14 @@ const RootScreen = ({
 }) => {
   const handleChangeSelectedTab = (event, newValue) => setSelectedTab(newValue);
 
-  // maintain the main container height in state, so the map can sit below it
-  const containerRef = useRef();
-  const [containerHeight, setContainerHeight] = useState();
-  const updateContainerHeight = () => {
-    setContainerHeight(containerRef.current.clientHeight);
+  // maintain the top section height in state, so the map can sit below it
+  const topSectionRef = useRef();
+  const [topSectionHeight, setTopSectionHeight] = useState();
+  const updateTopSectionHeight = () => {
+    setTopSectionHeight(topSectionRef.current.clientHeight);
   };
   useEffect(() => {
-    updateContainerHeight();
+    updateTopSectionHeight();
   });
 
   return (
@@ -86,7 +86,7 @@ const RootScreen = ({
       <EnvBanner />
       <LoadingScreen isLoading={isLoading} />
       <div>
-        <Container ref={containerRef}>
+        <TopSection ref={topSectionRef}>
           <HeaderBar />
           <EntityName>{orgUnit.name}</EntityName>
           <StyledTabs
@@ -100,10 +100,10 @@ const RootScreen = ({
             <StyledTab label="Map" value="map" disableRipple />
           </StyledTabs>
           <SearchBar />
-        </Container>
+        </TopSection>
         {selectedTab === 'dashboard' && <Dashboard />}
-        {selectedTab === 'map' && containerHeight && (
-          <MapContainer $topOffset={containerHeight}>
+        {selectedTab === 'map' && topSectionHeight && (
+          <MapContainer $topOffset={topSectionHeight}>
             <Map showZoomControl={false} />
           </MapContainer>
         )}
