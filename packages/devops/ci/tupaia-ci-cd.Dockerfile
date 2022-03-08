@@ -77,7 +77,7 @@ RUN mkdir -p ./packages/web-frontend
 COPY packages/web-frontend/package.json ./packages/web-frontend
 
 ## run yarn without building, so we can cache node_modules without code changes invalidating this layer
-RUN yarn install --non-interactive --frozen-lockfile
+RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --non-interactive --frozen-lockfile
 
 ## add content of all internal dependency packages ready for internal dependencies to be built
 COPY packages/access-policy/. ./packages/access-policy
