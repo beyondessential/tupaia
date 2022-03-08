@@ -22,10 +22,7 @@ export async function createDataSources(transactingModels, dataSources) {
 
     const exsitingDataSource = await transactingModels.dataSource.find({ code });
     if (exsitingDataSource.length > 0) {
-      throw new ImportValidationError(
-        `Data source code '${code}' already exists`,
-        excelRowNumber.toFixed,
-      );
+      throw new ImportValidationError(`Data source code '${code}' already exists`, excelRowNumber);
     }
 
     await transactingModels.dataSource.create(dataSource);
