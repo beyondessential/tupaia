@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
@@ -34,12 +34,14 @@ const SearchBarButton = styled(Button)`
 export const SearchBar = () => {
   const [isSearchActive, setIsSearchActive] = useState(false);
 
+  const onClose = useCallback(() => setIsSearchActive(false), []);
+
   return (
     <SearchBarContainer>
       <SearchBarButton startIcon={<SearchIcon />} onClick={() => setIsSearchActive(true)}>
         Search location
       </SearchBarButton>
-      {isSearchActive && <SearchOverlay onClose={() => setIsSearchActive(false)} />}
+      {isSearchActive && <SearchOverlay onClose={onClose} />}
     </SearchBarContainer>
   );
 };

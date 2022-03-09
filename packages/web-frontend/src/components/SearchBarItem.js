@@ -6,7 +6,7 @@
  */
 
 import FacilityIcon from 'material-ui/svg-icons/maps/local-hospital';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
@@ -73,15 +73,20 @@ const SearchBarItemComponent = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const nestedItems = organisationUnitChildren.map((child, index) => (
-    <SearchBarItem
-      key={child}
-      organisationUnitCode={child}
-      onClick={onClick}
-      nestedMargin={nestedMargin + 24}
-      isFinalRow={isFinalRow && index === organisationUnitChildren.length - 1}
-    />
-  ));
+  const nestedItems = useMemo(
+    () =>
+      isOpen &&
+      organisationUnitChildren.map((child, index) => (
+        <SearchBarItem
+          key={child}
+          organisationUnitCode={child}
+          onClick={onClick}
+          nestedMargin={nestedMargin + 24}
+          isFinalRow={isFinalRow && index === organisationUnitChildren.length - 1}
+        />
+      )),
+    [organisationUnitChildren, isFinalRow, onClick, nestedMargin, isOpen],
+  );
   // always show an expander for country org units, which lazy load their children
   const hasNestedItems = type === 'Country' || organisationUnitChildren.length > 0;
 
@@ -106,7 +111,7 @@ const SearchBarItemComponent = ({
           </OpenCloseButton>
         )}
       </Row>
-      {isOpen && nestedItems}
+      {nestedItems}
     </Container>
   );
 };
