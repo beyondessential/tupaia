@@ -20,7 +20,7 @@ import {
   ValidationError,
 } from '@tupaia/utils';
 import { FEED_ITEM_TYPES } from '../../database/models/FeedItem';
-import { SERVICE_TYPES } from '../../database/models/DataElement';
+import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataSource';
 
 export const constructForParent = (models, recordType, parentRecordType) => {
   const combinedRecordType = `${parentRecordType}/${recordType}`;
@@ -91,7 +91,7 @@ export const constructForSingle = (models, recordType) => {
     case TYPES.DATA_GROUP:
       return {
         code: [hasContent],
-        service_type: [constructIsOneOf(SERVICE_TYPES)],
+        service_type: [constructIsOneOf(DATA_SOURCE_SERVICE_TYPES)],
         config: [hasContent],
       };
     case TYPES.INDICATOR:
