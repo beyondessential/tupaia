@@ -50,7 +50,8 @@ export const TransformSelectedOptionWithJsonEditor = ({
   };
   const basicOption = {
     id: option.id,
-    code: option.title || option.code,
+    code: option.code,
+    title: option.title,
     description: option.description || '',
   };
 

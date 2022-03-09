@@ -9,7 +9,7 @@ import { Checkbox } from '@tupaia/ui-components/src/components/DataLibrary/Check
 import DownArrow from '@material-ui/icons/ArrowDropDown';
 import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
 import styled from 'styled-components';
-import { BaseSelectedOption, FlexSpaceBetween, JsonEditor } from '@tupaia/ui-components/';
+import { EditableSelectedOption, FlexSpaceBetween, JsonEditor } from '@tupaia/ui-components/';
 
 const FlexBetweenPanel = styled(FlexSpaceBetween)`
   width: 100%;
@@ -64,6 +64,9 @@ export const SelectedOptionWithJsonEditor = ({
   currentValue,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const onTitleChange = title => {
+    onChange({ ...option, title });
+  };
 
   return (
     <OptionPanelWithJsonEditor>
@@ -86,7 +89,11 @@ export const SelectedOptionWithJsonEditor = ({
         >
           <DownArrow />
         </DownArrowIconWrapper>
-        <BaseSelectedOption option={basicOption} onRemove={onRemove} />
+        <EditableSelectedOption
+          option={basicOption}
+          onRemove={onRemove}
+          onTitleChange={onTitleChange}
+        />
       </FlexBetweenPanel>
       {isExpanded && (
         <JsonEditorPanel
