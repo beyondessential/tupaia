@@ -7,7 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { isNull } from 'lodash';
-import { List } from 'material-ui/List';
+import List from '@material-ui/core/List';
 import styled from 'styled-components';
 import {
   selectCodeFromOrgUnit,
@@ -17,8 +17,9 @@ import {
 import { SearchBarItem } from '../../components/SearchBarItem';
 
 const StyledList = styled(List)`
-  background: rgba(38, 40, 52);
+  background: black;
   height: 100%;
+  padding: 0;
 `;
 
 const EntityHierarchy = ({ hierarchyData, orgUnitFetchError, onClick }) => {

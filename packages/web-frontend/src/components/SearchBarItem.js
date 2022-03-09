@@ -47,7 +47,7 @@ const StyledButton = styled(Button)`
 `;
 
 const OpenCloseButton = styled(IconButton)`
-  opacity: ${p => (p.isOpen ? 1 : 0.5)};
+  opacity: ${p => (p.$isOpen ? 1 : 0.5)};
   color: white;
   font-size: 16pt;
   padding: 3px;
@@ -100,7 +100,7 @@ const SearchBarItemComponent = ({
               setIsOpen(!isOpen);
               onClickExpand(organisationUnitCode);
             }}
-            isOpen={isOpen}
+            $isOpen={isOpen}
           >
             {isOpen ? <RemoveCircleIcon /> : <AddCircleIcon />}
           </OpenCloseButton>
