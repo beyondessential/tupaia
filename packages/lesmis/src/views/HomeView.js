@@ -8,7 +8,14 @@ import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { SearchBar, FlexEnd, FlexStart, I18n, LocaleMenu } from '../components';
+import {
+  SearchBar,
+  FlexSpaceBetween,
+  FlexStart,
+  I18n,
+  LocaleMenu,
+  FooterLogos,
+} from '../components';
 import { NAVBAR_HEIGHT, YELLOW } from '../constants';
 import { useProjectEntitiesData } from '../api/queries';
 
@@ -107,11 +114,15 @@ const Footer = styled(MuiContainer)`
   right: 0;
 `;
 
-const FooterInner = styled(FlexEnd)`
+const FooterInner = styled(FlexSpaceBetween)`
   color: white;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 1rem;
   padding-bottom: 1rem;
+
+  @media screen and (min-width: 600px) {
+    padding-left: 1.5rem;
+  }
 
   .MuiTypography-root {
     font-size: 0.85rem;
@@ -165,6 +176,7 @@ export const HomeView = () => {
         </Info>
         <Footer maxWidth="xl">
           <FooterInner>
+            <FooterLogos />
             <Typography>
               <I18n t="home.poweredBy" />{' '}
               <Link href={INFO_LINK} color="inherit" underline="always">
