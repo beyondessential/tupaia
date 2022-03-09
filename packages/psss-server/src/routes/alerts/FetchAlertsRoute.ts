@@ -3,8 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { getCurrentPeriod } from '@tupaia/utils';
+import { getCurrentPeriod, UnauthenticatedError } from '@tupaia/utils';
 import { Route } from '../Route';
+import { Request } from 'express';
 
 const CATEGORY_TO_REPORT = {
   archive: 'PSSS_Archived_Alerts',
@@ -26,7 +27,12 @@ function validateStatus(category: string): asserts category is AlertCategory {
   }
 }
 
-export class FetchAlertsRoute extends Route {
+export type FetchAlertsRequest = Request<{ category: string },
+  any,
+  Record<string, unknown>,
+  { startWeek: string, endWeek: string, orgUnitCodes: string }>;
+
+export class FetchAlertsRoute extends Route<FetchAlertsRequest> {
   async buildResponse() {
     const { startWeek, endWeek } = this.req.query;
 
@@ -46,6 +52,8 @@ export class FetchAlertsRoute extends Route {
   }
 
   private fetchAlertData = async () => {
+    if (!this.reportConnection) throw new UnauthenticatedError('Unauthenticated');
+
     const { startWeek, endWeek, orgUnitCodes } = this.req.query;
     const { category } = this.req.params;
 
@@ -61,6 +69,8 @@ export class FetchAlertsRoute extends Route {
   };
 
   private fetchConfirmedDataForAlert = async (alert: AlertReportRow) => {
+    if (!this.reportConnection) throw new UnauthenticatedError('Unauthenticated');
+
     const { organisationUnit, period, syndrome } = alert;
     const { results } = await this.reportConnection.fetchReport(
       `PSSS_${syndrome}_Confirmed_Report`,

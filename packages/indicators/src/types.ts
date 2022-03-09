@@ -29,7 +29,7 @@ export interface Event {
 export interface AnalyticCluster {
   readonly organisationUnit: Analytic['organisationUnit'];
   readonly period: Analytic['period'];
-  readonly dataValues: Record<Analytic['dataElement'], Analytic['value']>;
+  readonly dataValues: Record<Analytic['dataElement'], Analytic['value'] | string>;
 }
 
 type DbValue = string | number | boolean | null | DbValue[] | { [key: string]: DbValue };

@@ -26,6 +26,7 @@ import type {
   MapOverlayGroupRelation,
   MapOverlayGroupRelationRecord,
 } from '../../viz-builder';
+import { ValidationError } from '@tupaia/utils';
 
 const importFileSchema = yup.object().shape(
   {
@@ -63,14 +64,14 @@ export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVi
       ...visualisation
     } = this.readFileContents();
 
-    const [mapOverlayValidator, reportValidator] = visualisation?.legacy
-      ? // ? [legacyMapOverlayValidator, legacyReportValidator]
-        [null, null] // FIXME: support legacy
-      : [draftMapOverlayValidator, draftReportValidator];
+    if (visualisation.legacy) {
+      throw new ValidationError('Legacy viz not supported');
+    }
+
     const extractor = new MapOverlayVisualisationExtractor(
       visualisation,
-      mapOverlayValidator,
-      reportValidator,
+      draftMapOverlayValidator,
+      draftReportValidator,
     );
     const extractedViz = extractor.getMapOverlayVisualisationResource();
     const existingId = await this.findExistingVisualisationId(visualisation);

@@ -4,17 +4,17 @@
  */
 
 import { AccessPolicy } from '@tupaia/access-policy';
-import { MicroServiceRequestContext } from '@tupaia/server-boilerplate';
 import { getUniqueEntries } from '@tupaia/utils';
 
 import { FetchResponse } from '../fetch';
 import { detectDependencies } from './detectDependencies';
 import { Context, ContextDependency } from './types';
+import { RequestContext } from '../../types';
 
 export type ReqContext = {
   hierarchy: string;
   permissionGroup: string;
-  services: MicroServiceRequestContext['services'];
+  services: RequestContext['services'];
   accessPolicy: AccessPolicy;
 };
 
@@ -60,7 +60,7 @@ const buildFacilityCountByOrgUnit = async (reqContext: ReqContext, data: FetchRe
   const facilityCountByOrgUnit = Object.fromEntries(
     Object.entries(facilitiesByOrgUnitCode).map(([orgUnit, facilities]) => [
       orgUnit,
-      facilities.length,
+      (facilities as any[]).length,
     ]),
   );
 

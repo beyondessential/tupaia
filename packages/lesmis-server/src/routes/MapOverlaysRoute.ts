@@ -9,10 +9,12 @@ import { Route } from '@tupaia/server-boilerplate';
 import { WebConfigConnection } from '../connections';
 import { LESMIS_PROJECT_NAME } from '../constants';
 
-export class MapOverlaysRoute extends Route {
+export type MapOverlaysRequest = Request<{ entityCode: string }, any, any, any>;
+
+export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
   private readonly webConfigConnection: WebConfigConnection;
 
-  constructor(req: Request, res: Response, next: NextFunction) {
+  constructor(req: MapOverlaysRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.webConfigConnection = new WebConfigConnection(req.session);
