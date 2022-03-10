@@ -30,13 +30,13 @@ export const AggregateSelectedOptionWithJsonEditor = ({
   return (
     <SelectedOptionWithJsonEditor
       option={option}
-      currentValue={currentValue}
       basicOption={basicOption}
-      onChange={onChange}
       onRemove={onRemove}
       setIsDragDisabled={setIsDragDisabled}
-      onInvalidChange={onInvalidChange}
       optionMetaData={optionMetaData}
+      currentValue={currentValue}
+      onInvalidChange={onInvalidChange}
+      onChange={onChange}
     />
   );
 };

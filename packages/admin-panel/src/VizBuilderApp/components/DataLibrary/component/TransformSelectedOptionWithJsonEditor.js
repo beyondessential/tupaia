@@ -58,13 +58,14 @@ export const TransformSelectedOptionWithJsonEditor = ({
   return (
     <SelectedOptionWithJsonEditor
       option={option}
-      currentValue={currentValue}
       basicOption={basicOption}
-      onChange={onChange}
+      supportsTitleEditing
       onRemove={onRemove}
+      currentValue={currentValue}
       setIsDragDisabled={setIsDragDisabled}
-      onInvalidChange={onInvalidChange}
       optionMetaData={optionMetaData}
+      onInvalidChange={onInvalidChange}
+      onChange={onChange}
     />
   );
 };
