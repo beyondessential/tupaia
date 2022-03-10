@@ -1,7 +1,11 @@
 {
-  "extends": "../../tsconfig-js.json",
+  "extends": "../../tsconfig-ts.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "strict": true,
+    "declaration": true,
+    "noEmit": false
   },
+  "include": ["src/**/*"],
   "exclude": ["src/__tests__"]
 }

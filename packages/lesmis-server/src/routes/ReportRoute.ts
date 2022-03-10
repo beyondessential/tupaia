@@ -4,17 +4,27 @@
  *
  */
 
-import { Request, Response, NextFunction } from 'express';
-import { TranslatableRoute } from '@tupaia/server-boilerplate';
+import { Request, NextFunction } from 'express';
+import { TranslatableResponse, TranslatableRoute } from '@tupaia/server-boilerplate';
 import { ReportConnection, WebConfigConnection } from '../connections';
 import { LESMIS_PROJECT_NAME, LESMIS_HIERARCHY_NAME } from '../constants';
 
-export class ReportRoute extends TranslatableRoute {
+export type ReportRequest = Request<
+  { entityCode: string; reportCode: 'dashboard' | 'mapOverlay' },
+  any,
+  any,
+  any
+>;
+
+export class ReportRoute extends TranslatableRoute<
+  ReportRequest,
+  TranslatableResponse<ReportRequest>
+> {
   private readonly reportConnection: ReportConnection;
 
   private readonly webConfigConnection: WebConfigConnection;
 
-  constructor(req: Request, res: Response, next: NextFunction) {
+  constructor(req: ReportRequest, res: TranslatableResponse<ReportRequest>, next: NextFunction) {
     super(req, res, next);
 
     this.reportConnection = new ReportConnection(req.session);
@@ -27,8 +37,8 @@ export class ReportRoute extends TranslatableRoute {
           type: 'object',
           keysToTranslate: '*',
           valuesToTranslate: ['label', 'name'],
-        }
-      }
+        },
+      },
     };
   }
 
@@ -36,7 +46,7 @@ export class ReportRoute extends TranslatableRoute {
   // Lets us use the same translation entry for regular and _metadata keys
   translateKey(value: string): string {
     if (value.endsWith('_metadata')) {
-      const key = this.translateString(value.slice(0, -('_metadata'.length)));
+      const key = this.translateString(value.slice(0, -'_metadata'.length));
       return `${key}_metadata`;
     }
     return this.translateString(value);
@@ -64,6 +74,8 @@ export class ReportRoute extends TranslatableRoute {
             ...this.req.query,
           });
         }
+        default:
+          throw new Error('Unknown type');
       }
     }
     // Otherwise just pull from report server

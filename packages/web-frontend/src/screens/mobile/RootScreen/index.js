@@ -97,7 +97,7 @@ const RootScreen = ({
 
 RootScreen.propTypes = {
   orgUnit: PropTypes.shape({
-    name: PropTypes.string.isRequired,
+    name: PropTypes.string,
   }).isRequired,
   isLoading: PropTypes.bool.isRequired,
   isUserLoggedIn: PropTypes.bool.isRequired,

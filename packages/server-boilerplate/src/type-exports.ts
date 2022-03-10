@@ -4,4 +4,3 @@
  */
 
 export { FilterCriteria, AdvancedFilterValue } from './models/types';
-
