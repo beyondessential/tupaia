@@ -3,11 +3,11 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { isNull } from 'lodash';
-import { List } from 'material-ui/List';
+import List from '@material-ui/core/List';
 import styled from 'styled-components';
 import {
   selectCodeFromOrgUnit,
@@ -17,8 +17,9 @@ import {
 import { SearchBarItem } from '../../components/SearchBarItem';
 
 const StyledList = styled(List)`
-  background: rgba(38, 40, 52);
+  background: black;
   height: 100%;
+  padding: 0;
 `;
 
 const EntityHierarchy = ({ hierarchyData, orgUnitFetchError, onClick }) => {
@@ -26,14 +27,18 @@ const EntityHierarchy = ({ hierarchyData, orgUnitFetchError, onClick }) => {
   if (orgUnitFetchError) return <h2>Server error, try refresh</h2>;
   if (hierarchyData.length < 1) return null;
 
-  const hierarchy = hierarchyData.map((item, index) => (
-    <SearchBarItem
-      key={item}
-      organisationUnitCode={item}
-      onClick={onClick}
-      isFinalRow={index === hierarchyData.length - 1}
-    />
-  ));
+  const hierarchy = useMemo(
+    () =>
+      hierarchyData.map((item, index) => (
+        <SearchBarItem
+          key={item}
+          organisationUnitCode={item}
+          onClick={onClick}
+          isFinalRow={index === hierarchyData.length - 1}
+        />
+      )),
+    [hierarchyData, onClick],
+  );
   return <StyledList>{hierarchy}</StyledList>;
 };
 

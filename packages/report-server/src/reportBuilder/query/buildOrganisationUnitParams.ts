@@ -17,7 +17,7 @@ const fetchEntityObjects = async (ctx: ReqContext, hierarchy: string, codes: str
 
   const countryOrLowerEntities = (
     await Promise.all(
-      entities.map(async entity => {
+      entities.map(async (entity: any) => {
         if (entity.type !== 'project') {
           return entity;
         }
@@ -72,7 +72,7 @@ export const buildOrganisationUnitParams = async (
     );
   }
 
-  const fetchedEntities = await fetchEntityObjects(ctx, hierarchy, codesToFetch);
+  const fetchedEntities: any[] = await fetchEntityObjects(ctx, hierarchy, codesToFetch);
 
   const codesWithAccess = fetchedEntities
     .filter(({ country_code }) => country_code !== null)

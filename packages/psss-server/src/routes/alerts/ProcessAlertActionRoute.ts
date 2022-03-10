@@ -3,8 +3,9 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { RespondingError } from '@tupaia/utils';
+import { RespondingError, UnauthenticatedError } from '@tupaia/utils';
 import { Route } from '../Route';
+import { Request } from 'express';
 
 const ACTION_TO_ANSWER = {
   archive: 'Yes',
@@ -20,19 +21,27 @@ function validateAction(action: string): asserts action is AlertAction {
   }
 }
 
-export class ProcessAlertActionRoute extends Route {
+
+export type ProcessAlertActionRequest = Request<{ alertId: string; action: string },
+  any,
+  Record<string, unknown>,
+  {}>;
+
+export class ProcessAlertActionRoute extends Route<ProcessAlertActionRequest> {
   async buildResponse() {
+    if (!this.meditrakConnection) throw new UnauthenticatedError('Unauthenticated');
+
     const { alertId, action } = this.req.params;
 
     validateAction(action);
 
-    const alertSurveyResponse = await this.meditrakConnection?.findSurveyResponseById(alertId);
+    const alertSurveyResponse = await this.meditrakConnection.findSurveyResponseById(alertId);
 
     if (!alertSurveyResponse) {
       throw new RespondingError('Alert cannot be found', 500);
     }
 
-    return this.meditrakConnection?.updateSurveyResponseByObject(alertSurveyResponse, [
+    return this.meditrakConnection.updateSurveyResponseByObject(alertSurveyResponse, [
       {
         type: 'Binary',
         code: 'PSSS_Alert_Archived',

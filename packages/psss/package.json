@@ -11,7 +11,7 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "build": "SKIP_PREFLIGHT_CHECK=true GENERATE_SOURCEMAP=false react-scripts build",
     "cypress:open": "cross-env NODE_ENV=test cypress open",
     "cypress:run": "cross-env NODE_ENV=test cypress run",
     "cypress:config": "NODE_ENV=development  babel-node cypress/scripts/generateConfig --config-file \"../../babel.config.json\"",
