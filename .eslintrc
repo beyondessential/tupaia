@@ -44,10 +44,19 @@
         "packages/report-server/**",
         "packages/server-boilerplate/**"
       ],
-      "extends": "@beyondessential/ts"
-      // "parserOptions": {
-      //   "project": "tsconfig.json"
-      // }
+      "extends": "@beyondessential/ts",
+      "parserOptions": {
+        "project": "tsconfig.json"
+      },
+      "rules": {
+        "import/no-extraneous-dependencies": [
+          "error",
+          {
+            "devDependencies": ["jest.setup.ts", "global.d.ts"],
+            "packageDir": ["../../", "."]
+          }
+        ]
+      }
     },
     // Packages using jest
     {

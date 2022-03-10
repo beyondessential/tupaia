@@ -62,7 +62,10 @@ const AGGREGATION_SWITCHES: Record<string, AggregationSwitch> = {
   },
 };
 
-const supportsConfig = (aggregationSwitch: AggregationSwitch, config: Record<string, unknown>) => {
+const supportsConfig = (
+  aggregationSwitch: AggregationSwitch,
+  config: Record<string, unknown> | undefined,
+) => {
   if (!config) {
     return true;
   }
@@ -78,7 +81,7 @@ export type AnalyticsFetchOptions = {
   organisationUnitCodes: string[];
   startDate?: string;
   endDate?: string;
-  aggregations: { type?: string; config: Record<string, unknown> }[] | undefined;
+  aggregations: (string | { type?: string; config?: Record<string, unknown> })[] | undefined;
 };
 
 export type Analytic = {
@@ -126,6 +129,10 @@ export class AnalyticsFetchQuery {
     if (options.aggregations) {
       for (let i = 0; i < options.aggregations.length; i++) {
         const aggregation = options.aggregations[i];
+        if (typeof aggregation === 'string') {
+          break;
+        }
+
         const { type, config } = aggregation;
 
         const aggregationSwitch = type ? AGGREGATION_SWITCHES[type] : undefined;
@@ -134,7 +141,7 @@ export class AnalyticsFetchQuery {
           break; // We only support chaining aggregations up to the last supported type
         }
 
-        const entityMap = buildEntityMap(aggregation.config.orgUnitMap);
+        const entityMap = buildEntityMap(config?.orgUnitMap);
 
         const queryAggregation = {
           switch: aggregationSwitch,

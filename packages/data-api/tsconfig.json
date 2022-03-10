@@ -6,6 +6,5 @@
     "declaration": true,
     "noEmit": false
   },
-  "include": ["src/**/*"],
-  "exclude": ["src/__tests__"]
+  "include": ["src/**/*", "jest.config.ts", "jest.setup.ts", "global.d.ts"]
 }

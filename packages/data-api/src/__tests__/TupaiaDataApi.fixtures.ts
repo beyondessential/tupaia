@@ -302,7 +302,15 @@ export const KITTY_RESPONSE_AUCKLAND_MORNING_20220608W23 = {
   },
 };
 
-export const SURVEY_RESPONSES = [
+export type SurveyResponse = {
+  id: string;
+  surveyCode: string;
+  entityCode: string;
+  data_time: string;
+  answers: Record<string, string>;
+};
+
+export const SURVEY_RESPONSES: SurveyResponse[] = [
   BCD_RESPONSE_AUCKLAND,
   BCD_RESPONSE_WELLINGTON,
   CROP_RESPONSE_WELLINGTON_2019,

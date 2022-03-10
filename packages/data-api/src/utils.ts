@@ -36,7 +36,7 @@ export const sanitizeAnalyticsTableValue = (value: string, type: string) => {
 
 // TODO: Move these to ts-utils package
 const isObject = <X extends any>(value: X): value is X & Record<PropertyKey, unknown> =>
-  typeof value !== 'object' || value === null;
+  typeof value === 'object' && value !== null;
 
 export const isDefined = <T>(val: T): val is Exclude<T, undefined | null> =>
   val !== undefined && val !== null;

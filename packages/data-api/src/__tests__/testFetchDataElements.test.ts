@@ -6,13 +6,8 @@ import { getTestDatabase } from '@tupaia/database';
 
 import { TupaiaDataApi } from '../TupaiaDataApi';
 
-export const testFetchDataElements = () => {
+describe('fetchDataElements()', () => {
   const api = new TupaiaDataApi(getTestDatabase());
-
-  it('throws an error with invalid parameters', async () => {
-    await expect(api.fetchDataElements()).toBeRejectedWith(/data element codes/);
-    await expect(api.fetchDataElements(null)).toBeRejectedWith(/data element codes/);
-  });
 
   it('returns a single data element in the correct format', async () => {
     await expect(
@@ -104,4 +99,4 @@ export const testFetchDataElements = () => {
       },
     ]);
   });
-};
+});

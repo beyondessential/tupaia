@@ -17,7 +17,7 @@
     "build:types": "tsc",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
-    "test": "jest",
+    "test": "jest --runInBand",
     "test:coverage": "yarn test --coverage",
     "install-mv-refresh": "scripts/installMvRefreshModule.sh",
     "uninstall-mv-refresh": "scripts/uninstallMvRefreshModule.sh",
