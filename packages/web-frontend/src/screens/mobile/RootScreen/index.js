@@ -16,7 +16,6 @@ import HeaderBar from '../../../containers/mobile/HeaderBar';
 import { LoadingScreen } from '../../LoadingScreen';
 import Footer from '../../../components/mobile/Footer';
 import OverlayDiv from '../../../containers/OverlayDiv';
-import { Map } from '../../../containers/Map';
 import {
   selectCurrentOrgUnit,
   selectIsEnlargedDialogVisible,
@@ -27,15 +26,12 @@ import { TUPAIA_ORANGE } from '../../../styles';
 import { SearchBar } from '../../../containers/mobile/SearchBar';
 import { Dashboard } from '../../../containers/mobile/Dashboard';
 import { setMobileTab } from '../../../actions';
+import { MapSection } from '../../../containers/mobile/MapSection';
 
-const Container = styled.div`
+const TopSection = styled.div`
   width: 100%;
   z-index: 401;
   background: black;
-`;
-
-const MapContainer = styled.div`
-  height: calc(100vh - ${p => p.$topOffset}px);
 `;
 
 const EntityName = styled.p`
@@ -71,14 +67,14 @@ const RootScreen = ({
 }) => {
   const handleChangeSelectedTab = (event, newValue) => setSelectedTab(newValue);
 
-  // maintain the main container height in state, so the map can sit below it
-  const containerRef = useRef();
-  const [containerHeight, setContainerHeight] = useState();
-  const updateContainerHeight = () => {
-    setContainerHeight(containerRef.current.clientHeight);
+  // maintain the top section height in state, so the map section can sit below it
+  const topSectionRef = useRef();
+  const [topSectionHeight, setTopSectionHeight] = useState();
+  const updateTopSectionHeight = () => {
+    setTopSectionHeight(topSectionRef.current.clientHeight);
   };
   useEffect(() => {
-    updateContainerHeight();
+    updateTopSectionHeight();
   });
 
   return (
@@ -86,7 +82,7 @@ const RootScreen = ({
       <EnvBanner />
       <LoadingScreen isLoading={isLoading} />
       <div>
-        <Container ref={containerRef}>
+        <TopSection ref={topSectionRef}>
           <HeaderBar />
           <EntityName>{orgUnit.name}</EntityName>
           <StyledTabs
@@ -100,13 +96,9 @@ const RootScreen = ({
             <StyledTab label="Map" value="map" disableRipple />
           </StyledTabs>
           <SearchBar />
-        </Container>
+        </TopSection>
         {selectedTab === 'dashboard' && <Dashboard />}
-        {selectedTab === 'map' && containerHeight && (
-          <MapContainer $topOffset={containerHeight}>
-            <Map showZoomControl={false} />
-          </MapContainer>
-        )}
+        {selectedTab === 'map' && topSectionHeight && <MapSection topOffset={topSectionHeight} />}
         {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
         {selectedTab === 'dashboard' && <Footer />}
       </div>
