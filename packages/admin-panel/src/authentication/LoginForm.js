@@ -8,7 +8,13 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getEmailAddress, getErrorMessage, getPassword, getRememberMe } from './selectors';
+import {
+  getEmailAddress,
+  getErrorMessage,
+  getIsLoading,
+  getPassword,
+  getRememberMe,
+} from './selectors';
 import { changeEmailAddress, changePassword, login, changeRememberMe } from './actions';
 
 const ErrorMessage = styled.p`
@@ -34,6 +40,7 @@ const LoginFormComponent = ({
   password,
   rememberMe,
   errorMessage,
+  isLoading,
   onChangeEmailAddress,
   onChangePassword,
   onChangeRememberMe,
@@ -64,7 +71,7 @@ const LoginFormComponent = ({
         checked={rememberMe}
         onChange={onChangeRememberMe}
       />
-      <StyledButton type="submit" fullWidth>
+      <StyledButton type="submit" fullWidth isLoading={isLoading}>
         Login to your account
       </StyledButton>
     </form>
@@ -76,6 +83,7 @@ LoginFormComponent.propTypes = {
   password: PropTypes.string.isRequired,
   rememberMe: PropTypes.bool,
   errorMessage: PropTypes.string,
+  isLoading: PropTypes.bool,
   onChangeEmailAddress: PropTypes.func.isRequired,
   onChangePassword: PropTypes.func.isRequired,
   onChangeRememberMe: PropTypes.func.isRequired,
@@ -84,6 +92,7 @@ LoginFormComponent.propTypes = {
 
 LoginFormComponent.defaultProps = {
   errorMessage: null,
+  isLoading: false,
   rememberMe: false,
 };
 
@@ -92,6 +101,7 @@ const mapStateToProps = state => ({
   password: getPassword(state),
   rememberMe: getRememberMe(state),
   errorMessage: getErrorMessage(state),
+  isLoading: getIsLoading(state),
 });
 
 const mergeProps = (stateProps, { dispatch }, ownProps) => ({

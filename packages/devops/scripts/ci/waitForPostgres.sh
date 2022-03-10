@@ -2,7 +2,7 @@
 RETRIES=50
 
 args=(
-    --host "$CI_TEST_DB_URL"
+    --host "$DB_URL"
     --username "postgres"
     --dbname "postgres"
     --quiet --no-align --tuples-only

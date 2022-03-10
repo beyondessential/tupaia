@@ -103,7 +103,7 @@ export class MeditrakConnection extends ApiConnection {
       'entity.code': entityCode,
       'survey.code': surveyCode,
       data_time: stripTimezoneFromDate(new Date(endDate).toISOString()),
-    }
+    };
 
     return this.updateSurveyResponseByObject(surveyResponse, answers);
   }
@@ -113,7 +113,7 @@ export class MeditrakConnection extends ApiConnection {
     const newAnswers = existingAnswers
       .map(existingAnswer => {
         const questionCode = existingAnswer['question.code'];
-        const answer = answers.find(a => a.code === questionCode)
+        const answer = answers.find(a => a.code === questionCode);
         return {
           id: existingAnswer.id,
           type: existingAnswer.type,
@@ -151,7 +151,7 @@ export class MeditrakConnection extends ApiConnection {
   ) {
     const [_, endDate] = convertPeriodStringToDateRange(period);
 
-    const newAnswers = answers.map(({type, code, value}) => ({
+    const newAnswers = answers.map(({ type, code, value }) => ({
       id: generateId(),
       type,
       question_code: code,

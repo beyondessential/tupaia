@@ -49,7 +49,8 @@ export const useForwardUnhandledRequests = (
     onProxyRes: (proxyRes: IncomingMessage, req: IncomingMessage, res: ServerResponse) => {
       // To get around CORS because Admin Panel has credentials: true in fetch for session cookies
       // eslint-disable-next-line no-param-reassign
-      proxyRes.headers['Access-Control-Allow-Origin'] = res.get('Access-Control-Allow-Origin');
+      const cors = res.getHeader('Access-Control-Allow-Origin')
+      proxyRes.headers['Access-Control-Allow-Origin'] = typeof cors === 'number' ? undefined : cors;
     },
   };
 

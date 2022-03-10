@@ -8,7 +8,7 @@ import groupBy from 'lodash.groupby';
 import moment from 'moment';
 import { getSortByKey } from '@tupaia/utils';
 import { DataLakeAnalyticsFetchQuery, AnalyticsFetchOptions } from './DataLakeAnalyticsFetchQuery';
-import { DataLakeEventsFetchQuery, EventsFetchOptions } from './DataLakeEventsFetchQuery';
+import { DataLakeEventsFetchQuery, Event, EventsFetchOptions } from './DataLakeEventsFetchQuery';
 import { validateEventOptions, validateAnalyticsOptions } from './validation';
 import { sanitizeAnalyticsTableValue } from './sanitizeAnalyticsTableValue';
 import { sanitiseFetchDataOptions } from './sanitiseFetchDataOptions';
@@ -16,11 +16,11 @@ import { DataLakeDatabase } from './DataLakeDatabase';
 
 const EVENT_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 
-const buildEventDataValues = resultsForEvent =>
+const buildEventDataValues = (resultsForEvent: Event[]) =>
   resultsForEvent.reduce(
     (values, { dataElementCode, type, value }) => ({
       ...values,
-      [dataElementCode]: sanitizeAnalyticsTableValue(value, type),
+      [dataElementCode ?? '']: sanitizeAnalyticsTableValue(value, type),
     }),
     {},
   );
@@ -38,8 +38,8 @@ export class DataLakeApi {
   async fetchEvents(optionsInput: Record<string, any>) {
     await validateEventOptions(optionsInput);
     const options = sanitiseFetchDataOptions(optionsInput as EventsFetchOptions);
-    const results = await new DataLakeEventsFetchQuery(getDatabase(), options).fetch();
-    const resultsByEventId = groupBy(results, 'eventId');
+    const results: Event[] = await new DataLakeEventsFetchQuery(getDatabase(), options).fetch();
+    const resultsByEventId: { [key: string]: Event[] } = groupBy(results, 'eventId');
     const hasElements = options.dataElementCodes.length > 0;
     return Object.values(resultsByEventId)
       .map(resultsForEvent => {
