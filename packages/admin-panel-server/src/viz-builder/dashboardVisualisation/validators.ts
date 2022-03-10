@@ -23,13 +23,13 @@ export const dashboardValidator = yup.object().shape({
   code: yup.string().required(),
   name: yup.string().required(),
   rootEntityCode: yup.string().required(),
-  sortOrder: yup.number().nullable(true),
+  sortOrder: yup.number(),
 });
 
 export const dashboardRelationObjectValidator = yup.object().shape({
   dashboardCode: yup.string().required(),
-  entityTypes: yup.array().of(yup.string()).required(),
-  projectCodes: yup.array().of(yup.string()).required(),
-  permissionGroups: yup.array().of(yup.string()).required(),
-  sortOrder: yup.number().nullable(true),
+  entityTypes: yup.array().of(yup.string().required()).required(),
+  projectCodes: yup.array().of(yup.string().required()).required(),
+  permissionGroups: yup.array().of(yup.string().required()).required(),
+  sortOrder: yup.number(),
 });

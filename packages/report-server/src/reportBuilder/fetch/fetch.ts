@@ -4,18 +4,18 @@
  */
 
 import { FetchReportQuery, ReportConfig } from '../../types';
-import { Aggregator } from '../../aggregator';
+import { ReportServerAggregator } from '../../aggregator';
 import { FetchResponse } from './types';
 import { fetchBuilders } from './functions';
 
 type FetchConfig = ReportConfig['fetch'];
 
 type FetchParams = {
-  call: (aggregator: Aggregator, query: FetchReportQuery) => Promise<FetchResponse>;
+  call: (aggregator: ReportServerAggregator, query: FetchReportQuery) => Promise<FetchResponse>;
 };
 
 const fetch = (
-  aggregator: Aggregator,
+  aggregator: ReportServerAggregator,
   query: FetchReportQuery,
   fetcher: FetchParams,
 ): Promise<FetchResponse> => {
@@ -32,5 +32,6 @@ const buildParams = (params: FetchConfig): FetchParams => {
 
 export const buildFetch = (params: FetchConfig) => {
   const builtParams = buildParams(params);
-  return (aggregator: Aggregator, query: FetchReportQuery) => fetch(aggregator, query, builtParams);
+  return (aggregator: ReportServerAggregator, query: FetchReportQuery) =>
+    fetch(aggregator, query, builtParams);
 };

@@ -40,7 +40,7 @@ export const DEFAULT_DATA_YEAR = `${new Date().getFullYear()}`;
 // Layout Constants
 export const NAVBAR_HEIGHT_INT = 70;
 export const NAVBAR_HEIGHT = `${NAVBAR_HEIGHT_INT}px`;
-export const FOOTER_HEIGHT = '48px';
+export const FOOTER_HEIGHT = '60px';
 
 // Map Constants
 export const MAPBOX_TOKEN =

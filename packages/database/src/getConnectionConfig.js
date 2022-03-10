@@ -20,15 +20,7 @@ const getServerConfig = () => ({
       : null,
 });
 
-const getCiConfig = () => ({
-  host: requireEnv('CI_TEST_DB_URL'),
-  user: requireEnv('CI_TEST_DB_USER'),
-  password: requireEnv('CI_TEST_DB_PASSWORD'),
-  database: requireEnv('CI_TEST_DB_NAME'),
-  ssl: null,
-});
-
 export const getConnectionConfig = () => {
   // Note: Must use functions to guarantee environment variables have loaded
-  return process.env.CI_NAME === 'codeship' ? getCiConfig() : getServerConfig();
+  return getServerConfig();
 };
