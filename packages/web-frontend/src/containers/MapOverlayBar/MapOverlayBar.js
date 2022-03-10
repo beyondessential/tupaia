@@ -31,8 +31,6 @@ import {
   selectCurrentOrgUnit,
   selectCurrentMapOverlays,
   selectCurrentMapOverlayCodes,
-  selectCurrentProject,
-  selectMapOverlayByCode,
 } from '../../selectors';
 
 const pinnedOverlayCodeReducer = (currentOverlayCode, newOverlayCode) => {
@@ -47,7 +45,6 @@ const MapOverlayBarComponent = ({
   currentMapOverlays,
   currentOrganisationUnitName,
   mapOverlayHierarchy,
-  defaultMapOverlay,
   currentMapOverlayCodes,
   onSetMapOverlay,
   onSetDisplayedMapOverlays,
@@ -129,23 +126,6 @@ const MapOverlayBarComponent = ({
     onSetMaxSelectedOverlays(maxNumOfSelectedOverlays);
   };
 
-  const renderDefaultMapOverlay = () => {
-    if (!defaultMapOverlay) {
-      return null;
-    }
-    const isSelected = currentMapOverlayCodes.includes(defaultMapOverlay.mapOverlayCode);
-
-    return (
-      <HierarchyItem
-        nestedMargin="0px"
-        label={defaultMapOverlay.name}
-        isCheckBox={isCheckBox}
-        isSelected={isSelected}
-        onClick={() => handleSelectMapOverlay(defaultMapOverlay, isSelected)}
-      />
-    );
-  };
-
   const renderNestedHierarchyItems = children =>
     children.map(childObject => {
       let nestedItems;
@@ -192,14 +172,7 @@ const MapOverlayBarComponent = ({
       );
     });
 
-    if (items.length === 0) return null;
-
-    return (
-      <>
-        {defaultMapOverlay?.mapOverlayCode ? renderDefaultMapOverlay() : null}
-        {items}
-      </>
-    );
+    return items.length > 0 ? items : null;
   };
 
   const orgName = currentOrganisationUnitName || 'Your current selection';
@@ -238,13 +211,11 @@ MapOverlayBarComponent.propTypes = {
   onSetDisplayedMapOverlays: PropTypes.func.isRequired,
   onSetMaxSelectedOverlays: PropTypes.func.isRequired,
   currentOrganisationUnitName: PropTypes.string,
-  defaultMapOverlay: MapOverlayShape,
 };
 
 MapOverlayBarComponent.defaultProps = {
   currentMapOverlayCodes: [],
   currentOrganisationUnitName: '',
-  defaultMapOverlay: null,
   currentMapOverlays: [],
 };
 
@@ -255,9 +226,6 @@ const mapStateToProps = state => {
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
   const currentMapOverlays = selectCurrentMapOverlays(state);
   const currentMapOverlayCodes = selectCurrentMapOverlayCodes(state);
-  const activeProject = selectCurrentProject(state);
-
-  const defaultMapOverlay = selectMapOverlayByCode(state, activeProject.defaultMeasure);
 
   return {
     currentMapOverlays,
@@ -265,7 +233,6 @@ const mapStateToProps = state => {
     mapOverlayHierarchy,
     isExpanded,
     currentOrganisationUnitName: currentOrganisationUnit.name,
-    defaultMapOverlay,
     maxSelectedOverlays,
   };
 };
