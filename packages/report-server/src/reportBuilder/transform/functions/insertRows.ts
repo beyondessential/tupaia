@@ -23,6 +23,8 @@ const positioners = {
   start: (index: number, insertCount: number) => insertCount,
 };
 
+type Position = 'before' | 'after' | 'start';
+
 const positionValidator = yup.string().oneOf(['before', 'after', 'start']).default('after');
 
 export const paramsValidator = yup.object().shape({
@@ -63,7 +65,7 @@ const insertRows = (rows: Row[], params: InsertParams, context: Context): Row[] 
 const buildParams = (params: unknown): InsertParams => {
   const validatedParams = paramsValidator.validateSync(params);
 
-  const { position, columns } = validatedParams;
+  const { position, columns } : { position: Position, columns: InsertParams['columns'] } = validatedParams;
 
   if (columns === undefined) {
     throw new Error('columns key must be defined for insertRows');
