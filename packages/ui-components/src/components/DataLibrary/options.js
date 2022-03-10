@@ -127,15 +127,15 @@ const Option = ({ option, onDoubleClick }) => {
   );
 };
 
-const EditableOption = ({ option, isEditting, setIsEditting, title, setTitle }) => {
+const EditableOption = ({ option, isEditing, setIsEditing, title, setTitle }) => {
   const onDoubleClick = () => {
-    setIsEditting(true);
+    setIsEditing(true);
   };
   const handleChange = event => {
     setTitle(event.target.value);
   };
 
-  if (!isEditting) {
+  if (!isEditing) {
     return <Option option={option} onDoubleClick={onDoubleClick} />;
   }
 
@@ -180,7 +180,7 @@ export const BaseSelectedOption = ({ option, onRemove }) => {
 };
 
 export const EditableSelectedOption = ({ option, onRemove, onTitleChange }) => {
-  const [isEditting, setIsEditting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(option.title || option.code);
 
   const useOutsideAlerter = ref => {
@@ -189,9 +189,9 @@ export const EditableSelectedOption = ({ option, onRemove, onTitleChange }) => {
        * Alert if clicked on outside of element
        */
       const handleClickOutside = event => {
-        if (ref.current && !ref.current.contains(event.target) && isEditting) {
+        if (ref.current && !ref.current.contains(event.target) && isEditing) {
           onTitleChange(title);
-          setIsEditting(false);
+          setIsEditing(false);
         }
       };
 
@@ -201,7 +201,7 @@ export const EditableSelectedOption = ({ option, onRemove, onTitleChange }) => {
         // Unbind the event listener on clean up
         document.removeEventListener('mousedown', handleClickOutside);
       };
-    }, [ref, title, isEditting]); // states need to be dependencies
+    }, [ref, title, isEditing]); // states need to be dependencies
   };
 
   const wrapperRef = useRef(null);
@@ -212,8 +212,8 @@ export const EditableSelectedOption = ({ option, onRemove, onTitleChange }) => {
       <FlexSpaceBetween ref={wrapperRef}>
         <EditableOption
           option={option}
-          isEditting={isEditting}
-          setIsEditting={setIsEditting}
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
           title={title}
           setTitle={setTitle}
         />
