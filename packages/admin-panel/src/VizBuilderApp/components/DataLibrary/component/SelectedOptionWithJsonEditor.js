@@ -9,7 +9,12 @@ import { Checkbox } from '@tupaia/ui-components/src/components/DataLibrary/Check
 import DownArrow from '@material-ui/icons/ArrowDropDown';
 import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
 import styled from 'styled-components';
-import { BaseSelectedOption, FlexSpaceBetween, JsonEditor } from '@tupaia/ui-components/';
+import {
+  BaseSelectedOption,
+  EditableSelectedOption,
+  FlexSpaceBetween,
+  JsonEditor,
+} from '@tupaia/ui-components/';
 
 const FlexBetweenPanel = styled(FlexSpaceBetween)`
   width: 100%;
@@ -54,21 +59,17 @@ const DownArrowIconWrapper = styled.div`
 `;
 
 export const SelectedOptionWithJsonEditor = ({
-  option,
+  option, // **************************************************
+  basicOption, // Option panel configs (title, description etc)
+  supportsTitleEditing,
+  onRemove, // ************************************************
+  setIsDragDisabled, // Json editor configs
+  optionMetaData, //
+  currentValue, //
+  onInvalidChange, // *****************************************
   onChange,
-  onRemove,
-  setEdittingOption,
-  optionMetaData,
-  onInvalidChange,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const currentValue = {
-    type: option.code,
-    config: option?.config || {
-      dataSourceEntityType: '',
-      aggregationEntityType: '',
-    },
-  };
 
   return (
     <OptionPanelWithJsonEditor>
@@ -91,19 +92,29 @@ export const SelectedOptionWithJsonEditor = ({
         >
           <DownArrow />
         </DownArrowIconWrapper>
-        <BaseSelectedOption option={{ ...optionMetaData, ...option }} onRemove={onRemove} />
+        {supportsTitleEditing ? (
+          <EditableSelectedOption
+            option={basicOption}
+            onRemove={onRemove}
+            onTitleChange={title => {
+              onChange({ ...option, title });
+            }}
+          />
+        ) : (
+          <BaseSelectedOption option={basicOption} onRemove={onRemove} />
+        )}
       </FlexBetweenPanel>
       {isExpanded && (
         <JsonEditorPanel
-          onMouseOver={() => setEdittingOption(option.code)}
-          onMouseLeave={() => setEdittingOption(null)}
+          onMouseOver={() => setIsDragDisabled(true)}
+          onMouseLeave={() => setIsDragDisabled(false)}
         >
           <JsonEditor
             value={currentValue}
             mode="code"
             mainMenuBar={false}
             onChange={onChange}
-            schema={optionMetaData?.schema || {}}
+            schema={optionMetaData?.schema}
             onInvalidChange={onInvalidChange}
             onValidationError={err => {
               if (err.length > 0) {
@@ -117,23 +128,25 @@ export const SelectedOptionWithJsonEditor = ({
   );
 };
 
-SelectedOptionWithJsonEditor.defaultProps = {
-  optionMetaData: {},
-};
+SelectedOptionWithJsonEditor.defaultProps = { optionMetaData: null, supportsTitleEditing: false };
 
 SelectedOptionWithJsonEditor.propTypes = {
   option: PropTypes.shape({
+    id: PropTypes.string.isRequired,
     code: PropTypes.string.isRequired,
     config: PropTypes.object,
     isDisabled: PropTypes.bool,
   }).isRequired,
   onRemove: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
+  supportsTitleEditing: PropTypes.bool,
   optionMetaData: PropTypes.shape({
     code: PropTypes.string,
     schema: PropTypes.object,
     description: PropTypes.string,
   }),
-  setEdittingOption: PropTypes.func.isRequired,
+  setIsDragDisabled: PropTypes.func.isRequired,
   onInvalidChange: PropTypes.func.isRequired,
+  basicOption: PropTypes.object.isRequired,
+  currentValue: PropTypes.object.isRequired,
 };

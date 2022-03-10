@@ -19,13 +19,13 @@ export class DescribableLazy extends Lazy {
       const { oneOf, type, innerType } = schema;
       if (oneOf.length > 0) {
         return {
-          oneOf: oneOf.map(value => ({ type: typeof value, const: value })),
+          enum: oneOf,
         };
       }
       if (type === 'array' && innerType && innerType.oneOf.length > 0) {
         return {
           type,
-          items: { oneOf: innerType.oneOf.map(value => ({ type: typeof value, const: value })) },
+          items: { enum: innerType.oneOf },
         };
       }
       return {

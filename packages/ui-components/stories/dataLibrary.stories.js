@@ -6,7 +6,11 @@
 import React, { useState } from 'react';
 import DownArrow from '@material-ui/icons/ArrowDropDown';
 import styled from 'styled-components';
-import { DataLibrary, BaseSelectedOption } from '../src/components/DataLibrary';
+import {
+  DataLibrary,
+  BaseSelectedOption,
+  EditableSelectedOption,
+} from '../src/components/DataLibrary';
 import { JsonEditor } from '../src/components/JsonEditor';
 
 export default {
@@ -196,7 +200,7 @@ export const MaxNumResults = () => {
   );
 };
 
-const SelectedOptionWithJsonEditor = ({ option, onRemove, setEdittingOption }) => {
+const SelectedOptionWithJsonEditor = ({ option, onRemove, setIsDragDisabled }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -208,8 +212,8 @@ const SelectedOptionWithJsonEditor = ({ option, onRemove, setEdittingOption }) =
         <BaseSelectedOption option={option} onRemove={onRemove} />
         {isExpanded && (
           <JsonEditorPanel
-            onMouseOver={() => setEdittingOption(option.code)}
-            onMouseLeave={() => setEdittingOption(null)}
+            onMouseOver={() => setIsDragDisabled(true)}
+            onMouseLeave={() => setIsDragDisabled(false)}
           >
             <JsonEditor value={option} mode="code" mainMenuBar={false} statusBar={false} />
           </JsonEditorPanel>
@@ -237,14 +241,51 @@ export const WithJsonEditor = () => {
           onChange={(event, newValue) => setValue(newValue)}
           inputValue={inputValue}
           onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
-          optionComponent={(option, setEdittingOption) => (
+          optionComponent={(option, setIsDragDisabled) => (
             <SelectedOptionWithJsonEditor
               option={option}
               onRemove={onRemove}
-              setEdittingOption={setEdittingOption}
+              setIsDragDisabled={setIsDragDisabled}
             />
           )}
           headerConfig={{ isDisabledAll, setIsDisabledAll }}
+        />
+      </Container>
+    </OuterContainer>
+  );
+};
+
+export const EditableTitle = () => {
+  const [value, setValue] = useState([options[1]]);
+  const [inputValue, setInputValue] = useState('');
+
+  const onRemove = (event, option) => {
+    setValue(value.filter(item => option.code !== item.code));
+  };
+
+  const onTitleChange = option => {
+    const optionIndex = value.findIndex(item => option.id === item.id);
+    const newValue = [...value];
+    newValue[optionIndex] = option;
+    setValue(newValue);
+  };
+
+  return (
+    <OuterContainer>
+      <Container>
+        <DataLibrary
+          options={options}
+          value={value}
+          onChange={(event, newValue) => setValue(newValue)}
+          inputValue={inputValue}
+          onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
+          optionComponent={option => (
+            <EditableSelectedOption
+              option={option}
+              onRemove={onRemove}
+              onTitleChange={onTitleChange}
+            />
+          )}
         />
       </Container>
     </OuterContainer>

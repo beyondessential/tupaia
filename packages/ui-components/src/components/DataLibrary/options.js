@@ -3,9 +3,10 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Done, Close, ChevronRight } from '@material-ui/icons';
+import { Input as MuiInput } from '@material-ui/core';
 import { Draggable } from 'react-beautiful-dnd';
 import { ALICE_BLUE } from './constant';
 import { Tooltip as BaseTooltip } from '../Tooltip';
@@ -13,6 +14,14 @@ import { FlexSpaceBetween as MuiFlexSpaceBetween } from '../Layout';
 
 const FlexSpaceBetween = styled(MuiFlexSpaceBetween)`
   width: 100%;
+`;
+
+const Input = styled(MuiInput)`
+  .MuiInputBase-input {
+    font-size: 14px;
+    padding: 0;
+    height: auto;
+  }
 `;
 
 const StyledOption = styled.div`
@@ -108,12 +117,34 @@ const IconWrapper = styled.div`
   }
 `;
 
-const Option = ({ option }) => {
-  const { code, description } = option;
+const Option = ({ option, onDoubleClick }) => {
+  const { code, title, description } = option;
   return (
     <OptionText>
-      <OptionCode>{code}</OptionCode>
+      <OptionCode onDoubleClick={onDoubleClick}>{title || code}</OptionCode>
       <OptionDescription>{description}</OptionDescription>
+    </OptionText>
+  );
+};
+
+const EditableOption = ({ option, isEditing, setIsEditing, title, setTitle }) => {
+  const onDoubleClick = () => {
+    setIsEditing(true);
+  };
+  const handleChange = event => {
+    setTitle(event.target.value);
+  };
+
+  if (!isEditing) {
+    return <Option option={option} onDoubleClick={onDoubleClick} />;
+  }
+
+  return (
+    <OptionText>
+      <OptionCode onDoubleClick={onDoubleClick}>
+        <Input value={title} onChange={handleChange} />
+      </OptionCode>
+      <OptionDescription>{option.description}</OptionDescription>
     </OptionText>
   );
 };
@@ -123,7 +154,7 @@ const Tooltip = ({ option, children }) => {
     <BaseTooltip
       title={
         <>
-          <OptionTitle>{option.code}</OptionTitle>
+          <OptionTitle>{option.title || option.code}</OptionTitle>
           {option.description}
         </>
       }
@@ -140,6 +171,52 @@ export const BaseSelectedOption = ({ option, onRemove }) => {
     <Tooltip option={option}>
       <FlexSpaceBetween>
         <Option option={option} />
+        <IconWrapper onClick={event => onRemove(event, option)} className="icon-wrapper">
+          <Close />
+        </IconWrapper>
+      </FlexSpaceBetween>
+    </Tooltip>
+  );
+};
+
+export const EditableSelectedOption = ({ option, onRemove, onTitleChange }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [title, setTitle] = useState(option.title || option.code);
+
+  const useOutsideAlerter = ref => {
+    useEffect(() => {
+      /**
+       * Alert if clicked on outside of element
+       */
+      const handleClickOutside = event => {
+        if (ref.current && !ref.current.contains(event.target) && isEditing) {
+          onTitleChange(title);
+          setIsEditing(false);
+        }
+      };
+
+      // Bind the event listener
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        // Unbind the event listener on clean up
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, [ref, title, isEditing]); // states need to be dependencies
+  };
+
+  const wrapperRef = useRef(null);
+  useOutsideAlerter(wrapperRef);
+
+  return (
+    <Tooltip option={option}>
+      <FlexSpaceBetween ref={wrapperRef}>
+        <EditableOption
+          option={option}
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
+          title={title}
+          setTitle={setTitle}
+        />
         <IconWrapper onClick={event => onRemove(event, option)} className="icon-wrapper">
           <Close />
         </IconWrapper>
@@ -180,14 +257,10 @@ export const SelectableMultipleTimesOption = ({ option, onSelect }) => (
 
 export const SelectedDataCard = ({ option, index, optionComponent }) => {
   const [isDragging, setIsDragging] = React.useState(false);
-  const [edittingOption, setEdittingOption] = React.useState(null);
+  const [isDragDisabled, setIsDragDisabled] = React.useState(true);
 
   return (
-    <Draggable
-      draggableId={option.code}
-      index={index}
-      isDragDisabled={edittingOption === option.code}
-    >
+    <Draggable draggableId={option.id} index={index} isDragDisabled={isDragDisabled}>
       {(provided, snapshot) => (
         <StyledSelectedDataCard
           {...provided.draggableProps}
@@ -197,7 +270,7 @@ export const SelectedDataCard = ({ option, index, optionComponent }) => {
           onMouseOver={() => setIsDragging(true)}
           onMouseLeave={() => setIsDragging(false)}
         >
-          {optionComponent(option, index, setEdittingOption)}
+          {optionComponent(option, setIsDragDisabled)}
         </StyledSelectedDataCard>
       )}
     </Draggable>

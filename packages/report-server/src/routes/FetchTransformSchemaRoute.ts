@@ -20,15 +20,32 @@ export type FetchTransformSchemaRequest = Request<
 
 export class FetchTransformSchemaRoute extends Route<FetchTransformSchemaRequest> {
   async buildResponse() {
+    const removeRedundantConfigs = (fields: Record<string, any | any[]> | any[]) => {
+      if (typeof fields !== 'object' || Array.isArray(fields)) {
+        return fields;
+      }
+      const updatedFields = { ...fields };
+      Object.entries(fields).forEach(([key, value]) => {
+        if (typeof value === 'object') {
+          updatedFields[key] = removeRedundantConfigs(value);
+        }
+        const isEmptyArray = Array.isArray(value) && value.length === 0;
+        if (isEmptyArray) {
+          delete updatedFields[key];
+        }
+      });
+      return updatedFields;
+    };
+
     const formattedTransformSchema = Object.entries(transformSchemas).map(
       ([transformKey, config]) => {
         const { fields } = config;
         return {
-          name: transformKey,
           code: transformKey,
           schema: {
             properties: {
-              ...fields,
+              transform: { type: 'string', const: transformKey },
+              ...removeRedundantConfigs(fields),
             },
           },
         };
@@ -37,7 +54,6 @@ export class FetchTransformSchemaRoute extends Route<FetchTransformSchemaRequest
 
     const formattedAliasesSchema = Object.entries(aliases).map(([aliasesKey]) => {
       return {
-        name: aliasesKey,
         code: aliasesKey,
         alias: true,
       };

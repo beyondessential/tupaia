@@ -18,7 +18,7 @@ export const SelectedDataList = ({ value, optionComponent }) => (
       <StyledSelectedDataList ref={provided.innerRef} {...provided.droppableProps}>
         {value.map((option, index) => (
           <SelectedDataCard
-            key={option.code}
+            key={option.id}
             option={option}
             optionComponent={optionComponent}
             index={index}

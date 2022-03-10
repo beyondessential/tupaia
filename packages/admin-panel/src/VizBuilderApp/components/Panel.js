@@ -12,8 +12,12 @@ import { TabPanel } from './TabPanel';
 import { JsonEditor } from './JsonEditor';
 import { PlayButton } from './PlayButton';
 import { JsonToggleButton } from './JsonToggleButton';
-import { useTabPanel, useVizConfig, useVizConfigError } from '../context';
-import { DataElementDataLibrary, AggregationDataLibrary } from './DataLibrary';
+import { useTabPanel, useVizConfig, useVisualisation, useVizConfigError } from '../context';
+import {
+  DataElementDataLibrary,
+  AggregationDataLibrary,
+  TransformDataLibrary,
+} from './DataLibrary';
 
 const Container = styled(FlexColumn)`
   position: relative;
@@ -78,12 +82,14 @@ export const Panel = () => {
   const [tab, setTab] = useState(0);
   const [
     {
-      visualisation: { data: dataConfig },
+      visualisation: { data: dataWithConfig },
     },
     { setDataConfig },
   ] = useVizConfig();
 
-  const { fetch, aggregate, transform } = dataConfig;
+  const {
+    visualisation: { data: finalData },
+  } = useVisualisation();
 
   const handleChange = (event, newValue) => {
     setTab(newValue);
@@ -122,13 +128,13 @@ export const Panel = () => {
       <TabPanel isSelected={tab === 0} Panel={PanelTabPanel}>
         {jsonToggleEnabled ? (
           <JsonEditor
-            value={fetch}
+            value={finalData.fetch}
             onChange={value => setTabValue('fetch', value)}
             onInvalidChange={handleInvalidChange}
           />
         ) : (
           <DataElementDataLibrary
-            fetch={fetch}
+            fetch={dataWithConfig.fetch}
             onFetchChange={value => {
               setTabValue('fetch', value);
             }}
@@ -138,13 +144,13 @@ export const Panel = () => {
       <TabPanel isSelected={tab === 1} Panel={PanelTabPanel}>
         {jsonToggleEnabled ? (
           <JsonEditor
-            value={aggregate}
+            value={finalData.aggregate}
             onChange={value => setTabValue('aggregate', value)}
             onInvalidChange={handleInvalidChange}
           />
         ) : (
           <AggregationDataLibrary
-            aggregate={aggregate}
+            aggregate={dataWithConfig.aggregate}
             onAggregateChange={value => {
               setTabValue('aggregate', value);
             }}
@@ -153,11 +159,21 @@ export const Panel = () => {
         )}
       </TabPanel>
       <TabPanel isSelected={tab === 2} Panel={PanelTabPanel}>
-        <JsonEditor
-          value={transform}
-          onChange={value => setTabValue('transform', value)}
-          onInvalidChange={handleInvalidChange}
-        />
+        {jsonToggleEnabled ? (
+          <JsonEditor
+            value={finalData.transform}
+            onChange={value => setTabValue('transform', value)}
+            onInvalidChange={handleInvalidChange}
+          />
+        ) : (
+          <TransformDataLibrary
+            transform={dataWithConfig.transform}
+            onTransformChange={value => {
+              setTabValue('transform', value);
+            }}
+            onInvalidChange={handleInvalidChange}
+          />
+        )}
       </TabPanel>
     </Container>
   );

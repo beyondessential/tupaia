@@ -64,7 +64,7 @@ export interface AggregationType {
 }
 
 export interface TransformSchema {
-  name: string;
+  code: string;
   alias?: boolean;
   string?: Record<string, string | boolean | string[]> | null;
 }
