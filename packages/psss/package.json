@@ -19,7 +19,7 @@
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
     "pretest:test:cypress:run": "npm run build",
-    "start-dev": "react-scripts start",
+    "start-dev": "SKIP_PREFLIGHT_CHECK=true react-scripts start",
     "start-fullstack": "npm-run-all -c -l -p start-psss-server start-entity-server start-meditrak-server start-report-server  start-dev",
     "start-psss-server": "yarn workspace @tupaia/psss-server start-dev -s",
     "start-entity-server": "yarn workspace @tupaia/entity-server start-dev -s",

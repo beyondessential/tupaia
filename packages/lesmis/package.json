@@ -15,7 +15,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
-    "start-dev": "PORT=3003 react-scripts start",
+    "start-dev": "SKIP_PREFLIGHT_CHECK=true PORT=3003 react-scripts start",
     "start-fullstack": "npm-run-all -c -l -p start-meditrak-server start-web-config-server start-dev",
     "start-meditrak-server": "yarn workspace @tupaia/meditrak-server start-dev -s",
     "start-web-config-server": "yarn workspace @tupaia/web-config-server start-dev -s",
