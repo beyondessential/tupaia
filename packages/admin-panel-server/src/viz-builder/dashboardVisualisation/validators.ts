@@ -23,7 +23,7 @@ export const dashboardValidator = yup.object().shape({
   code: yup.string().required(),
   name: yup.string().required(),
   rootEntityCode: yup.string().required(),
-  sortOrder: yup.number(),
+  sortOrder: yup.number().nullable(true),
 });
 
 export const dashboardRelationObjectValidator = yup.object().shape({
@@ -31,5 +31,5 @@ export const dashboardRelationObjectValidator = yup.object().shape({
   entityTypes: yup.array().of(yup.string().required()).required(),
   projectCodes: yup.array().of(yup.string().required()).required(),
   permissionGroups: yup.array().of(yup.string().required()).required(),
-  sortOrder: yup.number(),
+  sortOrder: yup.number().nullable(true),
 });
