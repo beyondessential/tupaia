@@ -73,7 +73,7 @@ const RightArrowIconWrapper = styled.div`
   padding: 0 14px 0 5px;
 `;
 
-const MapOverlayBarComponent = ({ emptyMessage, currentMapOverlay, isMeasureLoading }) => {
+const MapOverlayBarComponent = ({ emptyMessage, currentMapOverlay, isLoading }) => {
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
 
   const openLibrary = useCallback(() => setIsLibraryOpen(true), []);
@@ -87,7 +87,7 @@ const MapOverlayBarComponent = ({ emptyMessage, currentMapOverlay, isMeasureLoad
       <Content>
         <TitleContainer>
           <Title>Map Overlay</Title>
-          {isMeasureLoading && <LoadingSpinner size={16} />}
+          {isLoading && <LoadingSpinner size={16} />}
         </TitleContainer>
         <SelectedLabel>
           {currentMapOverlay ? (
@@ -112,17 +112,9 @@ const MapOverlayBarComponent = ({ emptyMessage, currentMapOverlay, isMeasureLoad
 MapOverlayBarComponent.propTypes = {
   currentMapOverlay: PropTypes.shape({
     name: PropTypes.string,
-    periodGranularity: PropTypes.string,
-    isTimePeriodEditable: PropTypes.bool,
-    datePickerLimits: PropTypes.shape({
-      startDate: PropTypes.object,
-      endDate: PropTypes.object,
-    }),
-    startDate: PropTypes.shape({}),
-    endDate: PropTypes.shape({}),
   }),
   emptyMessage: PropTypes.string.isRequired,
-  isMeasureLoading: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
 };
 
 MapOverlayBarComponent.defaultProps = {
@@ -133,6 +125,7 @@ const mapStateToProps = state => {
   const { isMeasureLoading } = state.map;
   const { isLoadingOrganisationUnit } = state.global;
 
+  // limited to one currently selected overlay on mobile
   const currentMapOverlays = selectCurrentMapOverlays(state);
   const currentMapOverlay = currentMapOverlays.length > 0 ? currentMapOverlays[0] : null;
 
@@ -141,7 +134,7 @@ const mapStateToProps = state => {
   const emptyMessage = `Select an area with valid data. ${orgName} has no map overlays available.`;
 
   return {
-    isMeasureLoading: isMeasureLoading || isLoadingOrganisationUnit,
+    isLoading: isMeasureLoading || isLoadingOrganisationUnit,
     currentMapOverlay,
     emptyMessage,
   };

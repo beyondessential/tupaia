@@ -26,7 +26,7 @@ import {
   setDisplayedMapOverlays,
   setMaxSelectedOverlays,
 } from '../../actions';
-import { HierarchyItem } from '../../components/HierarchyItem';
+import { MapOverlayHierarchy } from '../../components/MapOverlayHierarchy';
 import {
   selectCurrentOrgUnit,
   selectCurrentMapOverlays,
@@ -44,7 +44,7 @@ const pinnedOverlayCodeReducer = (currentOverlayCode, newOverlayCode) => {
 const MapOverlayBarComponent = ({
   currentMapOverlays,
   currentOrganisationUnitName,
-  mapOverlayHierarchy,
+  hierarchyData,
   currentMapOverlayCodes,
   onSetMapOverlay,
   onSetDisplayedMapOverlays,
@@ -126,55 +126,6 @@ const MapOverlayBarComponent = ({
     onSetMaxSelectedOverlays(maxNumOfSelectedOverlays);
   };
 
-  const renderNestedHierarchyItems = children =>
-    children.map(childObject => {
-      let nestedItems;
-      if (childObject.children && childObject.children.length) {
-        nestedItems = renderNestedHierarchyItems(childObject.children);
-      }
-
-      const isSelected = childObject.children
-        ? null
-        : currentMapOverlayCodes.includes(childObject.mapOverlayCode);
-
-      let onClick = null;
-      if (!childObject.children) {
-        onClick = () => handleSelectMapOverlay(childObject, isSelected);
-      }
-
-      return (
-        <HierarchyItem
-          label={childObject.name}
-          info={childObject.info}
-          isCheckBox={isCheckBox}
-          isSelected={isSelected}
-          key={childObject.mapOverlayCode}
-          onClick={onClick}
-          nestedItems={nestedItems}
-        />
-      );
-    });
-
-  const renderHierarchy = () => {
-    const items = mapOverlayHierarchy.map(({ name: groupName, children, info }) => {
-      if (!Array.isArray(children)) return null;
-      const nestedItems = renderNestedHierarchyItems(children);
-      if (nestedItems.length === 0) return null;
-
-      return (
-        <HierarchyItem
-          nestedMargin="0px"
-          label={groupName}
-          info={info}
-          nestedItems={nestedItems}
-          key={groupName}
-        />
-      );
-    });
-
-    return items.length > 0 ? items : null;
-  };
-
   const orgName = currentOrganisationUnitName || 'Your current selection';
   const emptyMessage = `Select an area with valid data. ${orgName} has no map overlays available.`;
 
@@ -187,7 +138,12 @@ const MapOverlayBarComponent = ({
       pinnedOverlay={pinnedOverlay}
       setPinnedOverlay={setPinnedOverlay}
     >
-      {renderHierarchy()}
+      <MapOverlayHierarchy
+        currentMapOverlayCodes={currentMapOverlayCodes}
+        hierarchyData={hierarchyData}
+        onSelectMapOverlay={handleSelectMapOverlay}
+        isCheckBox={isCheckBox}
+      />
     </Control>
   );
 };
@@ -203,9 +159,8 @@ const MapOverlayShape = PropTypes.shape({
 MapOverlayBarComponent.propTypes = {
   currentMapOverlayCodes: PropTypes.arrayOf(PropTypes.string),
   currentMapOverlays: PropTypes.arrayOf(MapOverlayShape),
-  mapOverlayHierarchy: PropTypes.array.isRequired,
+  hierarchyData: PropTypes.array.isRequired,
   maxSelectedOverlays: PropTypes.number.isRequired,
-  isExpanded: PropTypes.bool.isRequired,
   onSetMapOverlay: PropTypes.func.isRequired,
   onClearMeasure: PropTypes.func.isRequired,
   onSetDisplayedMapOverlays: PropTypes.func.isRequired,
@@ -220,7 +175,7 @@ MapOverlayBarComponent.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const { mapOverlayHierarchy, isExpanded } = state.mapOverlayBar;
+  const { mapOverlayHierarchy } = state.mapOverlayBar;
   const { maxSelectedOverlays } = state.map;
 
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
@@ -230,8 +185,7 @@ const mapStateToProps = state => {
   return {
     currentMapOverlays,
     currentMapOverlayCodes,
-    mapOverlayHierarchy,
-    isExpanded,
+    hierarchyData: mapOverlayHierarchy,
     currentOrganisationUnitName: currentOrganisationUnit.name,
     maxSelectedOverlays,
   };
