@@ -147,6 +147,13 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
   />
 );
 
+const IMPORT_CONFIG = {
+  title: 'Import Data Elements',
+  actionConfig: {
+    importEndpoint: 'dataElements',
+  },
+};
+
 DataGroupsPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
 };
@@ -157,7 +164,9 @@ export const DataElementsPage = ({ getHeaderEl }) => (
     endpoint="dataElements"
     reduxId="dataElements"
     columns={[...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement')]}
-    editConfig={{ title: 'Edit Data Source' }}
+    editConfig={{ title: 'Edit Data Element' }}
+    baseFilter={{ type: { comparisonValue: 'dataElement' } }}
+    importConfig={IMPORT_CONFIG}
     createConfig={{
       title: 'New Data Element',
       actionConfig: {

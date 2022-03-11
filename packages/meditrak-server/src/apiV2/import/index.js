@@ -16,6 +16,7 @@ import { importUsers } from './importUsers';
 import { importSurveyResponses, constructImportEmail } from './importSurveyResponses';
 import { importDisaster } from './importDisaster';
 import { getTempDirectory } from '../../utilities';
+import { importDataElements } from './importDataElements';
 
 // create upload handler
 const upload = multer({
@@ -30,6 +31,11 @@ const upload = multer({
 const importRoutes = express.Router();
 
 importRoutes.post('/entities', upload.single('entities'), catchAsyncErrors(importEntities));
+importRoutes.post(
+  '/dataElements',
+  upload.single('dataElements'),
+  catchAsyncErrors(importDataElements),
+);
 importRoutes.post(
   '/striveLabResults',
   upload.single('striveLabResults'),
