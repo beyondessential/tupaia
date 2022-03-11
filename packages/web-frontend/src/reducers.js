@@ -82,7 +82,6 @@ import {
   TOGGLE_INFO_PANEL,
   OPEN_USER_DIALOG,
   CLOSE_USER_DIALOG,
-  TOGGLE_MEASURE_EXPAND,
   TOGGLE_SEARCH_EXPAND,
   SET_OVERLAY_COMPONENT,
   OPEN_ENLARGED_DIALOG,
@@ -585,7 +584,6 @@ function searchBar(
 
 function mapOverlayBar(
   state = {
-    isExpanded: false,
     mapOverlayHierarchy: [],
     error: null,
   },
@@ -615,8 +613,6 @@ function mapOverlayBar(
         mapOverlayHierarchy,
       };
     }
-    case TOGGLE_MEASURE_EXPAND:
-      return { ...state, isExpanded: !state.isExpanded };
     case FETCH_MEASURES_SUCCESS:
       return {
         ...state,

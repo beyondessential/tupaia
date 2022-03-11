@@ -16,7 +16,6 @@ import {
   SET_OVERLAY_COMPONENT,
   SET_DASHBOARD_GROUP,
   CHANGE_SEARCH,
-  TOGGLE_MEASURE_EXPAND,
   TOGGLE_SEARCH_EXPAND,
   GO_HOME,
   CLOSE_DROPDOWN_OVERLAYS,
@@ -84,10 +83,6 @@ export const gaMiddleware = () => next => action => {
 
       case CHANGE_SEARCH:
         gaEvent('Search', 'Change Search');
-        break;
-
-      case TOGGLE_MEASURE_EXPAND:
-        gaEvent('Measure', 'Toggle Expand');
         break;
 
       case TOGGLE_SEARCH_EXPAND:

@@ -22,7 +22,6 @@ import { Control } from './Control';
 import {
   setMapOverlays,
   clearMeasure,
-  toggleMeasureExpand,
   setDisplayedMapOverlays,
   setMaxSelectedOverlays,
 } from '../../actions';
@@ -193,7 +192,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onExpandClick: () => dispatch(toggleMeasureExpand()),
     onSetMapOverlay: mapOverlayCodes => dispatch(setMapOverlays(mapOverlayCodes.join(','))),
     onSetDisplayedMapOverlays: mapOverlayCodes =>
       dispatch(setDisplayedMapOverlays(mapOverlayCodes)),
