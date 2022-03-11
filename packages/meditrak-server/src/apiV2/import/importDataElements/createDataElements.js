@@ -20,8 +20,8 @@ export async function createDataElements(transactingModels, dataElements) {
     }
     codes.push(code);
 
-    const exsitingDataElements = await transactingModels.dataElement.find({ code });
-    if (exsitingDataElements.length > 0) {
+    const existingDataElements = await transactingModels.dataElement.find({ code });
+    if (existingDataElements.length > 0) {
       throw new ImportValidationError(`Data element code '${code}' already exists`, excelRowNumber);
     }
 
