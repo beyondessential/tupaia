@@ -11,9 +11,9 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
+    "build": "run-p -c \"build:* {@}\" --",
+    "build:src": "SKIP_PREFLIGHT_CHECK=true GENERATE_SOURCEMAP=false react-scripts build",
     "build:library": "rollup -c",
-    "watch:library": "rollup -c -w",
-    "build": "test -n \"$BUILD_LIBRARY\" && npm run build:library || GENERATE_SOURCEMAP=false react-scripts build",
     "cypress:open": "cross-env NODE_ENV=test yarn cypress open",
     "cypress:run": "cross-env NODE_ENV=test yarn cypress run",
     "eject": "react-scripts eject",

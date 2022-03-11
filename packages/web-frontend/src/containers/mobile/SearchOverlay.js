@@ -10,11 +10,11 @@ import PropTypes from 'prop-types';
 import CircularProgress from 'material-ui/CircularProgress';
 import { connect } from 'react-redux';
 
-import List from '../../../components/mobile/List';
-import Overlay from '../../../components/mobile/Overlay';
-import EntityHierarchy from '../EntityHierarchy';
-import { changeSearch, setOrgUnit } from '../../../actions';
-import { DARK_BLUE, WHITE } from '../../../styles';
+import List from '../../components/mobile/List';
+import Overlay from '../../components/mobile/Overlay';
+import EntityHierarchy from './EntityHierarchy';
+import { changeSearch, setOrgUnit } from '../../actions';
+import { DARK_BLUE, WHITE } from '../../styles';
 
 const SearchOverlay = ({
   isLoading,
