@@ -10,9 +10,10 @@ import { connect } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { FlexSpaceBetween } from '@tupaia/ui-components';
 import RightArrow from '@material-ui/icons/ArrowForwardIos';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
-import { MAP_OVERLAY_SELECTOR } from '../../styles';
-import { ExpandedContent } from './Content';
+import Button from '@material-ui/core/Button';
+import { MAP_OVERLAY_SELECTOR, LEAFLET_Z_INDEX } from '../../styles';
 
 export const MOBILE_CONTROL_HEIGHT = 90;
 
@@ -71,12 +72,41 @@ const RightArrowIconWrapper = styled.div`
 `;
 
 const LibraryContainer = styled.div`
-  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: ${LEAFLET_Z_INDEX + 1};
+  background: black;
+`;
+
+const LibraryContent = styled.div`
+  padding: 10px 24px;
+`;
+
+const LibraryHeader = styled(Button)`
+  background: ${MAP_OVERLAY_SELECTOR.subBackground};
+  border-radius: 0;
+  width: 100%;
+  text-transform: none;
+  font-size: 18px;
+  font-weight: 500;
+  padding: 16px;
+`;
+
+const BackIcon = styled(ArrowBackIcon)`
+  position: absolute;
+  left: 22px;
 `;
 
 const Library = ({ children, onClose }) => (
-  <LibraryContainer onClick={onClose}>
-    <ExpandedContent>{children}</ExpandedContent>
+  <LibraryContainer>
+    <LibraryHeader onClick={onClose}>
+      <BackIcon />
+      Overlay Library
+    </LibraryHeader>
+    <LibraryContent>{children}</LibraryContent>
   </LibraryContainer>
 );
 

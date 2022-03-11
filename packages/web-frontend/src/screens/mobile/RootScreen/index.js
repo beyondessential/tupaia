@@ -22,7 +22,7 @@ import {
   selectMobileTab,
 } from '../../../selectors';
 import { EnlargedDialog } from '../../../containers/EnlargedDialog';
-import { TUPAIA_ORANGE } from '../../../styles';
+import { TUPAIA_ORANGE, LEAFLET_Z_INDEX } from '../../../styles';
 import { SearchBar } from '../../../containers/mobile/SearchBar';
 import { Dashboard } from '../../../containers/mobile/Dashboard';
 import { setMobileTab } from '../../../actions';
@@ -30,7 +30,7 @@ import { MapSection } from '../../../containers/mobile/MapSection';
 
 const TopSection = styled.div`
   width: 100%;
-  z-index: 401;
+  z-index: ${LEAFLET_Z_INDEX + 1};
   background: black;
 `;
 
