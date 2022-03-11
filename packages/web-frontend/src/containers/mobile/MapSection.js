@@ -6,11 +6,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Map } from '../Map';
-import { MapOverlayBar } from '../MapOverlayBar/MapOverlayBar';
-import { MobileControl, MOBILE_CONTROL_HEIGHT } from '../MapOverlayBar/MobileControl';
+import { MapOverlayBar, MAP_OVERLAY_BAR_HEIGHT } from './MapOverlayBar/MapOverlayBar';
 
 const MapContainer = styled.div`
-  height: calc(100vh - ${p => p.$topOffset}px - ${MOBILE_CONTROL_HEIGHT}px);
+  height: calc(100vh - ${p => p.$topOffset}px - ${MAP_OVERLAY_BAR_HEIGHT}px);
 `;
 
 export const MapSection = ({ topOffset }) => {
@@ -18,7 +17,7 @@ export const MapSection = ({ topOffset }) => {
     <>
       <MapContainer $topOffset={topOffset}>
         <Map showZoomControl={false} />
-        <MapOverlayBar Control={MobileControl} />
+        <MapOverlayBar />
       </MapContainer>
     </>
   );

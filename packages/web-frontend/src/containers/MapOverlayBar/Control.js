@@ -113,7 +113,7 @@ const DatePickerWrapper = styled.div`
   border-bottom-right-radius: ${props => (props.$hasChildren ? '0px' : '5px')};
 `;
 
-export const DesktopControl = ({
+export const Control = ({
   emptyMessage,
   selectedMapOverlays,
   children,
@@ -195,7 +195,7 @@ export const DesktopControl = ({
   );
 };
 
-DesktopControl.propTypes = {
+Control.propTypes = {
   selectedMapOverlays: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
@@ -217,7 +217,7 @@ DesktopControl.propTypes = {
   setPinnedOverlay: PropTypes.func.isRequired,
 };
 
-DesktopControl.defaultProps = {
+Control.defaultProps = {
   selectedMapOverlays: [],
   pinnedOverlay: null,
   children: null,

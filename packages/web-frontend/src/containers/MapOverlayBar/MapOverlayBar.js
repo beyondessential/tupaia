@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import shallowEqual from 'shallowequal';
 
-import { DesktopControl } from './DesktopControl';
+import { Control } from './Control';
 import {
   setMapOverlays,
   clearMeasure,
@@ -42,7 +42,6 @@ const pinnedOverlayCodeReducer = (currentOverlayCode, newOverlayCode) => {
 };
 
 const MapOverlayBarComponent = ({
-  Control,
   currentMapOverlays,
   currentOrganisationUnitName,
   mapOverlayHierarchy,
@@ -202,7 +201,6 @@ const MapOverlayShape = PropTypes.shape({
 });
 
 MapOverlayBarComponent.propTypes = {
-  Control: PropTypes.node,
   currentMapOverlayCodes: PropTypes.arrayOf(PropTypes.string),
   currentMapOverlays: PropTypes.arrayOf(MapOverlayShape),
   mapOverlayHierarchy: PropTypes.array.isRequired,
@@ -216,7 +214,6 @@ MapOverlayBarComponent.propTypes = {
 };
 
 MapOverlayBarComponent.defaultProps = {
-  Control: DesktopControl,
   currentMapOverlayCodes: [],
   currentOrganisationUnitName: '',
   currentMapOverlays: [],

@@ -5,24 +5,26 @@
 
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { FlexSpaceBetween } from '@tupaia/ui-components';
 import RightArrow from '@material-ui/icons/ArrowForwardIos';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
-import Button from '@material-ui/core/Button';
-import { MAP_OVERLAY_SELECTOR, LEAFLET_Z_INDEX } from '../../styles';
 
-export const MOBILE_CONTROL_HEIGHT = 90;
+import { setMapOverlays, clearMeasure } from '../../../actions';
+import { selectCurrentMapOverlays, selectCurrentOrgUnit } from '../../../selectors';
+import { MAP_OVERLAY_SELECTOR } from '../../../styles';
+import { MapOverlayLibrary } from './MapOverlayLibrary';
+
+export const MAP_OVERLAY_BAR_HEIGHT = 90;
 
 const CollapsedContainer = styled(FlexSpaceBetween)`
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
-  height: ${MOBILE_CONTROL_HEIGHT}px;
+  height: ${MAP_OVERLAY_BAR_HEIGHT}px;
   color: white;
   background: ${MAP_OVERLAY_SELECTOR.subBackground};
 `;
@@ -33,7 +35,7 @@ const Content = styled.div`
   margin-left: 18px;
   margin-right: 18px;
   margin-top: 18px;
-  height: ${MOBILE_CONTROL_HEIGHT - 18}px;
+  height: ${MAP_OVERLAY_BAR_HEIGHT - 18}px;
 `;
 
 const TitleContainer = styled.div`
@@ -71,60 +73,14 @@ const RightArrowIconWrapper = styled.div`
   padding: 0 14px 0 5px;
 `;
 
-const LibraryContainer = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: ${LEAFLET_Z_INDEX + 1};
-  background: black;
-`;
-
-const LibraryContent = styled.div`
-  padding: 10px 24px;
-`;
-
-const LibraryHeader = styled(Button)`
-  background: ${MAP_OVERLAY_SELECTOR.subBackground};
-  border-radius: 0;
-  width: 100%;
-  text-transform: none;
-  font-size: 18px;
-  font-weight: 500;
-  padding: 16px;
-`;
-
-const BackIcon = styled(ArrowBackIcon)`
-  position: absolute;
-  left: 22px;
-`;
-
-const Library = ({ children, onClose }) => (
-  <LibraryContainer>
-    <LibraryHeader onClick={onClose}>
-      <BackIcon />
-      Overlay Library
-    </LibraryHeader>
-    <LibraryContent>{children}</LibraryContent>
-  </LibraryContainer>
-);
-
-const MobileControlComponent = ({
-  emptyMessage,
-  selectedMapOverlays,
-  children,
-  isMeasureLoading,
-}) => {
+const MapOverlayBarComponent = ({ emptyMessage, currentMapOverlay, isMeasureLoading }) => {
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
-  const selectedMapOverlay = selectedMapOverlays?.length > 0 ? selectedMapOverlays[0] : null;
-  const hasChildren = !!children;
 
   const openLibrary = useCallback(() => setIsLibraryOpen(true), []);
   const closeLibrary = useCallback(() => setIsLibraryOpen(false), []);
 
-  if (isLibraryOpen && hasChildren) {
-    return <Library onClose={closeLibrary}>{children}</Library>;
+  if (isLibraryOpen) {
+    return <MapOverlayLibrary onClose={closeLibrary} />;
   }
   return (
     <CollapsedContainer onClick={openLibrary}>
@@ -134,17 +90,17 @@ const MobileControlComponent = ({
           {isMeasureLoading && <LoadingSpinner size={16} />}
         </TitleContainer>
         <SelectedLabel>
-          {selectedMapOverlay ? (
+          {currentMapOverlay ? (
             <>
               <RadioButtonCheckedIcon fontSize="inherit" />
-              <SelectedText>{selectedMapOverlay.name}</SelectedText>
+              <SelectedText>{currentMapOverlay.name}</SelectedText>
             </>
           ) : (
             <EmptyText>{emptyMessage}</EmptyText>
           )}
         </SelectedLabel>
       </Content>
-      {selectedMapOverlay && (
+      {currentMapOverlay && (
         <RightArrowIconWrapper>
           <RightArrow />
         </RightArrowIconWrapper>
@@ -153,34 +109,50 @@ const MobileControlComponent = ({
   );
 };
 
-MobileControlComponent.propTypes = {
-  selectedMapOverlays: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string,
-      periodGranularity: PropTypes.string,
-      isTimePeriodEditable: PropTypes.bool,
-      datePickerLimits: PropTypes.shape({
-        startDate: PropTypes.object,
-        endDate: PropTypes.object,
-      }),
-      startDate: PropTypes.shape({}),
-      endDate: PropTypes.shape({}),
+MapOverlayBarComponent.propTypes = {
+  currentMapOverlay: PropTypes.shape({
+    name: PropTypes.string,
+    periodGranularity: PropTypes.string,
+    isTimePeriodEditable: PropTypes.bool,
+    datePickerLimits: PropTypes.shape({
+      startDate: PropTypes.object,
+      endDate: PropTypes.object,
     }),
-  ),
+    startDate: PropTypes.shape({}),
+    endDate: PropTypes.shape({}),
+  }),
   emptyMessage: PropTypes.string.isRequired,
-  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   isMeasureLoading: PropTypes.bool.isRequired,
 };
 
-MobileControlComponent.defaultProps = {
-  selectedMapOverlays: [],
-  children: null,
+MapOverlayBarComponent.defaultProps = {
+  currentMapOverlay: null,
 };
 
 const mapStateToProps = state => {
   const { isMeasureLoading } = state.map;
   const { isLoadingOrganisationUnit } = state.global;
-  return { isMeasureLoading: isMeasureLoading || isLoadingOrganisationUnit };
+
+  const currentMapOverlays = selectCurrentMapOverlays(state);
+  const currentMapOverlay = currentMapOverlays.length > 0 ? currentMapOverlays[0] : null;
+
+  const currentOrganisationUnit = selectCurrentOrgUnit(state);
+  const orgName = currentOrganisationUnit?.name || 'Your current selection';
+  const emptyMessage = `Select an area with valid data. ${orgName} has no map overlays available.`;
+
+  return {
+    isMeasureLoading: isMeasureLoading || isLoadingOrganisationUnit,
+    currentMapOverlay,
+    emptyMessage,
+  };
 };
 
-export const MobileControl = connect(mapStateToProps)(MobileControlComponent);
+const mapDispatchToProps = dispatch => ({
+  onSetMapOverlay: mapOverlayCode => dispatch(setMapOverlays(mapOverlayCode)),
+  onClearMeasure: () => dispatch(clearMeasure()),
+});
+
+export const MapOverlayBar = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(React.memo(MapOverlayBarComponent));
