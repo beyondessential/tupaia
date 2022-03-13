@@ -34,11 +34,6 @@ const RootContainer = styled(StyleRoot)`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-`;
-
-const TopSection = styled.div`
-  width: 100%;
-  z-index: 401;
   background: black;
 `;
 
@@ -81,21 +76,19 @@ const RootScreen = ({
     <RootContainer>
       <EnvBanner />
       <LoadingScreen isLoading={isLoading} />
-      <TopSection>
-        <HeaderBar />
-        <EntityName>{orgUnit.name}</EntityName>
-        <StyledTabs
-          value={selectedTab}
-          onChange={handleChangeSelectedTab}
-          TabIndicatorProps={{
-            style: { display: 'none' },
-          }}
-        >
-          <StyledTab label="Dashboard" value="dashboard" disableRipple />
-          <StyledTab label="Map" value="map" disableRipple />
-        </StyledTabs>
-        <SearchBar />
-      </TopSection>
+      <HeaderBar />
+      <EntityName>{orgUnit.name}</EntityName>
+      <StyledTabs
+        value={selectedTab}
+        onChange={handleChangeSelectedTab}
+        TabIndicatorProps={{
+          style: { display: 'none' },
+        }}
+      >
+        <StyledTab label="Dashboard" value="dashboard" disableRipple />
+        <StyledTab label="Map" value="map" disableRipple />
+      </StyledTabs>
+      <SearchBar />
       {selectedTab === 'dashboard' && <Dashboard />}
       {selectedTab === 'map' && <Map showZoomControl={false} />}
       {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
