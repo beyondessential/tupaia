@@ -17,14 +17,8 @@ import { selectCurrentMapOverlays, selectCurrentOrgUnit } from '../../../selecto
 import { MAP_OVERLAY_SELECTOR } from '../../../styles';
 import { MapOverlayLibrary } from './MapOverlayLibrary';
 
-export const MAP_OVERLAY_BAR_HEIGHT = 90;
-
 const CollapsedContainer = styled(FlexSpaceBetween)`
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: ${MAP_OVERLAY_BAR_HEIGHT}px;
+  width: 100%;
   color: white;
   background: ${MAP_OVERLAY_SELECTOR.subBackground};
 `;
@@ -35,7 +29,7 @@ const Content = styled.div`
   margin-left: 18px;
   margin-right: 18px;
   margin-top: 18px;
-  height: ${MAP_OVERLAY_BAR_HEIGHT - 18}px;
+  height: 72px;
 `;
 
 const TitleContainer = styled.div`

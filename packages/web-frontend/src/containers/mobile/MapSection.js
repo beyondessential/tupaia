@@ -3,26 +3,21 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Map } from '../Map';
-import { MapOverlayBar, MAP_OVERLAY_BAR_HEIGHT } from './MapOverlayBar/MapOverlayBar';
+import { MapOverlayBar } from './MapOverlayBar/MapOverlayBar';
 
-const MapContainer = styled.div`
-  height: calc(100vh - ${p => p.$topOffset}px - ${MAP_OVERLAY_BAR_HEIGHT}px);
+const MapSectionContainer = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 `;
 
-export const MapSection = ({ topOffset }) => {
+export const MapSection = () => {
   return (
-    <>
-      <MapContainer $topOffset={topOffset}>
-        <Map showZoomControl={false} />
-        <MapOverlayBar />
-      </MapContainer>
-    </>
+    <MapSectionContainer>
+      <Map showZoomControl={false} />
+      <MapOverlayBar />
+    </MapSectionContainer>
   );
-};
-
-MapSection.propTypes = {
-  topOffset: PropTypes.number.isRequired,
 };
