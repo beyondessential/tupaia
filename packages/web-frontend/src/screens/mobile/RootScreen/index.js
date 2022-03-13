@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { PropTypes } from 'prop-types';
 import { StyleRoot } from 'radium';
 import { connect } from 'react-redux';
@@ -28,14 +28,16 @@ import { SearchBar } from '../../../containers/mobile/SearchBar';
 import { Dashboard } from '../../../containers/mobile/Dashboard';
 import { setMobileTab } from '../../../actions';
 
+const RootContainer = styled(StyleRoot)`
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+`;
+
 const TopSection = styled.div`
   width: 100%;
   z-index: 401;
   background: black;
-`;
-
-const MapContainer = styled.div`
-  height: calc(100vh - ${p => p.$topOffset}px);
 `;
 
 const EntityName = styled.p`
@@ -69,49 +71,35 @@ const RootScreen = ({
   selectedTab,
   setSelectedTab,
 }) => {
-  const handleChangeSelectedTab = (event, newValue) => setSelectedTab(newValue);
-
-  // maintain the top section height in state, so the map can sit below it
-  const topSectionRef = useRef();
-  const [topSectionHeight, setTopSectionHeight] = useState();
-  const updateTopSectionHeight = () => {
-    setTopSectionHeight(topSectionRef.current.clientHeight);
-  };
-  useEffect(() => {
-    updateTopSectionHeight();
-  });
+  const handleChangeSelectedTab = useCallback((event, newValue) => setSelectedTab(newValue), [
+    setSelectedTab,
+  ]);
 
   return (
-    <StyleRoot>
+    <RootContainer>
       <EnvBanner />
       <LoadingScreen isLoading={isLoading} />
-      <div>
-        <TopSection ref={topSectionRef}>
-          <HeaderBar />
-          <EntityName>{orgUnit.name}</EntityName>
-          <StyledTabs
-            value={selectedTab}
-            onChange={handleChangeSelectedTab}
-            TabIndicatorProps={{
-              style: { display: 'none' },
-            }}
-          >
-            <StyledTab label="Dashboard" value="dashboard" disableRipple />
-            <StyledTab label="Map" value="map" disableRipple />
-          </StyledTabs>
-          <SearchBar />
-        </TopSection>
-        {selectedTab === 'dashboard' && <Dashboard />}
-        {selectedTab === 'map' && topSectionHeight && (
-          <MapContainer $topOffset={topSectionHeight}>
-            <Map showZoomControl={false} />
-          </MapContainer>
-        )}
-        {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
-        {selectedTab === 'dashboard' && <Footer />}
-      </div>
+      <TopSection>
+        <HeaderBar />
+        <EntityName>{orgUnit.name}</EntityName>
+        <StyledTabs
+          value={selectedTab}
+          onChange={handleChangeSelectedTab}
+          TabIndicatorProps={{
+            style: { display: 'none' },
+          }}
+        >
+          <StyledTab label="Dashboard" value="dashboard" disableRipple />
+          <StyledTab label="Map" value="map" disableRipple />
+        </StyledTabs>
+        <SearchBar />
+      </TopSection>
+      {selectedTab === 'dashboard' && <Dashboard />}
+      {selectedTab === 'map' && <Map showZoomControl={false} />}
+      {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
+      {selectedTab === 'dashboard' && <Footer />}
       {isUserLoggedIn && <OverlayDiv />}
-    </StyleRoot>
+    </RootContainer>
   );
 };
 
