@@ -12,6 +12,8 @@ import styled from 'styled-components';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
+import './mobile-styles.css';
+
 import HeaderBar from '../../../containers/mobile/HeaderBar';
 import { LoadingScreen } from '../../LoadingScreen';
 import Footer from '../../../components/mobile/Footer';
