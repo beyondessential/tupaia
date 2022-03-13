@@ -40,6 +40,7 @@ const CHANGE_TO_PARENT_PERCENTAGE = 0.6;
 const StyledMap = styled(LeafletMap)`
   height: 100%;
   width: 100%;
+  flex: 1;
 
   .leaflet-control-zoom {
     z-index: 1;
