@@ -24,7 +24,7 @@ import {
   selectMobileTab,
 } from '../../../selectors';
 import { EnlargedDialog } from '../../../containers/EnlargedDialog';
-import { TUPAIA_ORANGE, LEAFLET_Z_INDEX } from '../../../styles';
+import { TUPAIA_ORANGE } from '../../../styles';
 import { SearchBar } from '../../../containers/mobile/SearchBar';
 import { Dashboard } from '../../../containers/mobile/Dashboard';
 import { setMobileTab } from '../../../actions';
@@ -34,11 +34,6 @@ const RootContainer = styled(StyleRoot)`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-`;
-
-const TopSection = styled.div`
-  width: 100%;
-  z-index: ${LEAFLET_Z_INDEX + 1};
   background: black;
 `;
 
@@ -81,21 +76,19 @@ const RootScreen = ({
     <RootContainer>
       <EnvBanner />
       <LoadingScreen isLoading={isLoading} />
-      <TopSection>
-        <HeaderBar />
-        <EntityName>{orgUnit.name}</EntityName>
-        <StyledTabs
-          value={selectedTab}
-          onChange={handleChangeSelectedTab}
-          TabIndicatorProps={{
-            style: { display: 'none' },
-          }}
-        >
-          <StyledTab label="Dashboard" value="dashboard" disableRipple />
-          <StyledTab label="Map" value="map" disableRipple />
-        </StyledTabs>
-        <SearchBar />
-      </TopSection>
+      <HeaderBar />
+      <EntityName>{orgUnit.name}</EntityName>
+      <StyledTabs
+        value={selectedTab}
+        onChange={handleChangeSelectedTab}
+        TabIndicatorProps={{
+          style: { display: 'none' },
+        }}
+      >
+        <StyledTab label="Dashboard" value="dashboard" disableRipple />
+        <StyledTab label="Map" value="map" disableRipple />
+      </StyledTabs>
+      <SearchBar />
       {selectedTab === 'dashboard' && <Dashboard />}
       {selectedTab === 'map' && <MapSection />}
       {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
