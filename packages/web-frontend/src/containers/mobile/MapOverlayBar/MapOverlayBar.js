@@ -73,33 +73,33 @@ const MapOverlayBarComponent = ({ emptyMessage, currentMapOverlay, isLoading }) 
   const openLibrary = useCallback(() => setIsLibraryOpen(true), []);
   const closeLibrary = useCallback(() => setIsLibraryOpen(false), []);
 
-  if (isLibraryOpen) {
-    return <MapOverlayLibrary onClose={closeLibrary} />;
-  }
   return (
-    <CollapsedContainer onClick={openLibrary}>
-      <Content>
-        <TitleContainer>
-          <Title>Map Overlay</Title>
-          {isLoading && <LoadingSpinner size={16} />}
-        </TitleContainer>
-        <SelectedLabel>
-          {currentMapOverlay ? (
-            <>
-              <RadioButtonCheckedIcon fontSize="inherit" />
-              <SelectedText>{currentMapOverlay.name}</SelectedText>
-            </>
-          ) : (
-            <EmptyText>{emptyMessage}</EmptyText>
-          )}
-        </SelectedLabel>
-      </Content>
-      {currentMapOverlay && (
-        <RightArrowIconWrapper>
-          <RightArrow />
-        </RightArrowIconWrapper>
-      )}
-    </CollapsedContainer>
+    <>
+      <CollapsedContainer onClick={openLibrary}>
+        <Content>
+          <TitleContainer>
+            <Title>Map Overlay</Title>
+            {isLoading && <LoadingSpinner size={16} />}
+          </TitleContainer>
+          <SelectedLabel>
+            {currentMapOverlay ? (
+              <>
+                <RadioButtonCheckedIcon fontSize="inherit" />
+                <SelectedText>{currentMapOverlay.name}</SelectedText>
+              </>
+            ) : (
+              <EmptyText>{emptyMessage}</EmptyText>
+            )}
+          </SelectedLabel>
+        </Content>
+        {currentMapOverlay && (
+          <RightArrowIconWrapper>
+            <RightArrow />
+          </RightArrowIconWrapper>
+        )}
+      </CollapsedContainer>
+      {isLibraryOpen && <MapOverlayLibrary onClose={closeLibrary} />}
+    </>
   );
 };
 
