@@ -21,7 +21,7 @@ const LegendFrame = styled.div`
   display: flex;
   width: fit-content;
   padding: 0.6rem;
-  margin: 0.6rem auto;
+  margin: ${p => p.$spaceBetween || '0.6rem'} auto;
   cursor: auto;
   color: ${props => props.theme.palette.text.primary};
   background-color: ${({ theme }) =>
@@ -63,6 +63,7 @@ export const Legend = React.memo(
     currentMapOverlayCodes,
     displayedMapOverlayCodes,
     seriesesKey,
+    spaceBetween,
   }) => {
     if (Object.keys(baseMeasureInfo).length === 0) {
       return null;
@@ -95,13 +96,19 @@ export const Legend = React.memo(
           const hasIconLayer = baseSerieses.some(l => l.type === MEASURE_TYPE_ICON);
           const hasRadiusLayer = baseSerieses.some(l => l.type === MEASURE_TYPE_RADIUS);
           const hasColorLayer = baseSerieses.some(l => coloredMeasureTypes.includes(l.type));
-          const isDisplayed = displayedMapOverlayCodes.includes(mapOverlayCode);
+          const isDisplayed =
+            !displayedMapOverlayCodes || displayedMapOverlayCodes.includes(mapOverlayCode);
 
           return serieses.map(series => {
             const { type } = series;
             const LegendComponent = getLegendComponent(type);
             return (
-              <LegendFrame key={series.key} className={className} isDisplayed={isDisplayed}>
+              <LegendFrame
+                key={series.key}
+                className={className}
+                isDisplayed={isDisplayed}
+                $spaceBetween={spaceBetween}
+              >
                 {legendsHaveSameType && <LegendName>{`${series.name}: `}</LegendName>}
                 <LegendComponent
                   key={series.key}
@@ -126,14 +133,17 @@ Legend.propTypes = {
   className: PropTypes.string,
   hiddenValues: PropTypes.object,
   setValueHidden: PropTypes.func,
-  displayedMapOverlayCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  displayedMapOverlayCodes: PropTypes.arrayOf(PropTypes.string),
   currentMapOverlayCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
   seriesesKey: PropTypes.string,
+  spaceBetween: PropTypes.number,
 };
 
 Legend.defaultProps = {
   className: null,
+  displayedMapOverlayCodes: null,
   hiddenValues: {},
   setValueHidden: null,
   seriesesKey: 'serieses',
+  spaceBetween: null,
 };

@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Map } from '../Map';
 import { MapOverlayBar } from './MapOverlayBar/MapOverlayBar';
+import { MapOverlayLegend } from './MapOverlayLegend';
 
 const MapSectionContainer = styled.div`
   flex: 1;
@@ -14,10 +15,20 @@ const MapSectionContainer = styled.div`
   flex-direction: column;
 `;
 
+const InnerMapContainer = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+`;
+
 export const MapSection = ({ appHeaderHeight }) => {
   return (
     <MapSectionContainer>
-      <Map showZoomControl={false} />
+      <InnerMapContainer>
+        <Map showZoomControl={false} />
+        <MapOverlayLegend />
+      </InnerMapContainer>
       <MapOverlayBar appHeaderHeight={appHeaderHeight} />
     </MapSectionContainer>
   );
