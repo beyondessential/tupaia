@@ -18,7 +18,6 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 8px;
-  border-bottom: 1px solid #000;
 `;
 
 const Toolbar = styled.div`

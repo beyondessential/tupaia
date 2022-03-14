@@ -3,37 +3,38 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import CloseIcon from '@material-ui/icons/Close';
 import { Legend } from '@tupaia/ui-components/lib/map';
 import { selectCurrentMapOverlayCodes } from '../../selectors';
-import { LEAFLET_Z_INDEX } from '../../styles';
+import { LEAFLET_Z_INDEX, MOBILE_BACKGROUND_COLOR } from '../../styles';
 
 const BottomRight = styled.div`
   position: absolute;
   bottom: 0;
-  right: 0;
   padding: 10px;
+  width: calc(100vw - 20px);
   z-index: ${LEAFLET_Z_INDEX + 1};
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  justify-content: flex-end;
 `;
 
 const CollapsedContainer = styled(Button)`
   border-radius: 5px;
-  background: black;
+  background: ${MOBILE_BACKGROUND_COLOR};
   text-transform: none;
   font-size: 11px;
   font-weight: 500;
   padding: 4px 14px 4px 8px;
 
   &.MuiButton-root:hover {
-    background-color: black;
+    background-color: ${MOBILE_BACKGROUND_COLOR};
   }
 `;
 
@@ -50,7 +51,33 @@ const CollapsedIcon = styled(ExpandLessIcon)`
 const LegendContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 0.2rem;
+  width: 100%;
+  min-height: 50px;
+  border-radius: 5px;
+  background: ${MOBILE_BACKGROUND_COLOR};
+  position: relative;
+  padding-top: 4px;
+`;
+
+const SeriesContainer = styled.div`
+  padding: 0.6rem 1rem;
+  margin: auto 0;
+  color: white;
+`;
+
+const SeriesDivider = styled.div`
+  height: 0px;
+  border: 1px solid white;
+  width: 90%;
+  margin: auto;
+`;
+
+const CloseButton = styled(IconButton)`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 0;
+  font-size: 21px;
 `;
 
 export const MapOverlayLegendComponent = ({
@@ -61,14 +88,23 @@ export const MapOverlayLegendComponent = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  if (
+    currentMapOverlayCodes.length === 0 ||
+    currentMapOverlayCodes.some(code => !measureInfo[code])
+  ) {
+    return null;
+  }
+
   return (
     <BottomRight>
-      <CollapsedContainer onClick={() => setIsExpanded(!isExpanded)}>
-        <CollapsedIconContainer>
-          <CollapsedIcon fontSize="inherit" />
-        </CollapsedIconContainer>
-        Map Legend
-      </CollapsedContainer>
+      {!isExpanded && (
+        <CollapsedContainer onClick={() => setIsExpanded(true)}>
+          <CollapsedIconContainer>
+            <CollapsedIcon fontSize="inherit" />
+          </CollapsedIconContainer>
+          Map Legend
+        </CollapsedContainer>
+      )}
       {isExpanded && (
         <LegendContainer>
           <Legend
@@ -77,8 +113,12 @@ export const MapOverlayLegendComponent = ({
             measureInfo={measureInfo}
             currentMapOverlayCodes={currentMapOverlayCodes}
             seriesesKey="measureOptions"
-            spaceBetween="0.2rem"
+            SeriesContainer={SeriesContainer}
+            SeriesDivider={SeriesDivider}
           />
+          <CloseButton onClick={() => setIsExpanded(false)}>
+            <CloseIcon fontSize="inherit" />
+          </CloseButton>
         </LegendContainer>
       )}
     </BottomRight>

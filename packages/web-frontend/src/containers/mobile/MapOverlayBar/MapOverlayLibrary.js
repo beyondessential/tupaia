@@ -13,7 +13,7 @@ import Button from '@material-ui/core/Button';
 
 import { setMapOverlays, clearMeasure } from '../../../actions';
 import { selectCurrentMapOverlayCodes } from '../../../selectors';
-import { MAP_OVERLAY_SELECTOR, LEAFLET_Z_INDEX } from '../../../styles';
+import { MAP_OVERLAY_SELECTOR, MOBILE_BACKGROUND_COLOR, LEAFLET_Z_INDEX } from '../../../styles';
 import { MapOverlayHierarchy } from '../../../components/MapOverlayHierarchy';
 
 const LibraryContainer = styled.div`
@@ -23,7 +23,7 @@ const LibraryContainer = styled.div`
   right: 0;
   min-height: calc(100vh - ${p => p.$appHeaderHeight}px);
   z-index: ${LEAFLET_Z_INDEX + 1};
-  background: black;
+  background: ${MOBILE_BACKGROUND_COLOR};
 `;
 
 const LibraryContent = styled.div`

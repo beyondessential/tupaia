@@ -20,6 +20,10 @@ const FlexCenter = styled(MuiBox)`
   justify-content: center;
 `;
 
+const SpectrumContainer = styled.div`
+  max-width: ${p => (p.$hasNoData ? '70%' : '100%')};
+`;
+
 const SpectrumSliver = styled.div`
   width: 2px;
   height: 15px;
@@ -117,7 +121,9 @@ export const SpectrumLegend = React.memo(({ series, setValueHidden, hiddenValues
 
   return (
     <FlexCenter>
-      {renderSpectrum({ min, max, scaleType, scaleColorScheme, valueType })}
+      <SpectrumContainer $hasNoData={!!noDataColour}>
+        {renderSpectrum({ min, max, scaleType, scaleColorScheme, valueType })}
+      </SpectrumContainer>
       {noDataColour && (
         <LegendEntry
           marker={getMarkerForOption(LEGEND_SHADING_ICON, noDataColour)}

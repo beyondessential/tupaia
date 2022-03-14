@@ -44,6 +44,7 @@ export const GREY = '#c7c7c7';
 export const LIGHT_GREY = '#EFEFF0';
 export const ERROR = red[500];
 export const FORM_BLUE = '#34abd0';
+export const MOBILE_BACKGROUND_COLOR = '#313236';
 
 export const MOBILE_MARGIN_SIZE = 16;
 export const MOBILE_HEADER_HEIGHT = 55;

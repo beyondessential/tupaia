@@ -12,7 +12,8 @@ const Button = styled(MuiButton)`
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 0.2rem 0.3rem;
+  min-width: 0;
+  padding: 0.2rem 0.5rem;
   font-weight: 400;
   letter-spacing: 0;
   pointer-events: auto;

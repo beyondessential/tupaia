@@ -80,7 +80,7 @@ const MapOverlayBarComponent = ({
 
   return (
     <>
-      <CollapsedContainer onClick={openLibrary}>
+      <CollapsedContainer onClick={currentMapOverlay ? openLibrary : undefined}>
         <Content>
           <TitleContainer>
             <Title>Map Overlay</Title>
@@ -133,7 +133,9 @@ const mapStateToProps = state => {
 
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
   const orgName = currentOrganisationUnit?.name || 'Your current selection';
-  const emptyMessage = `Select an area with valid data. ${orgName} has no map overlays available.`;
+  const emptyMessage = currentMapOverlay
+    ? null
+    : `Select an area with valid data. ${orgName} has no map overlays available.`;
 
   return {
     isLoading: isMeasureLoading || isLoadingOrganisationUnit,

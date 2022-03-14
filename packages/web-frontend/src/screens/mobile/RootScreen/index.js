@@ -24,7 +24,7 @@ import {
   selectMobileTab,
 } from '../../../selectors';
 import { EnlargedDialog } from '../../../containers/EnlargedDialog';
-import { TUPAIA_ORANGE } from '../../../styles';
+import { MOBILE_BACKGROUND_COLOR, TUPAIA_ORANGE } from '../../../styles';
 import { SearchBar } from '../../../containers/mobile/SearchBar';
 import { Dashboard } from '../../../containers/mobile/Dashboard';
 import { setMobileTab } from '../../../actions';
@@ -34,7 +34,7 @@ const RootContainer = styled(StyleRoot)`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: black;
+  background: ${MOBILE_BACKGROUND_COLOR};
 `;
 
 const EntityName = styled.p`

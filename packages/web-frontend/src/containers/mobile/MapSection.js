@@ -20,6 +20,7 @@ const InnerMapContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+  min-height: 270px;
 `;
 
 export const MapSection = ({ appHeaderHeight }) => {

@@ -21,7 +21,7 @@ const LegendFrame = styled.div`
   display: flex;
   width: fit-content;
   padding: 0.6rem;
-  margin: ${p => p.$spaceBetween || '0.6rem'} auto;
+  margin: 0.6rem auto;
   cursor: auto;
   color: ${props => props.theme.palette.text.primary};
   background-color: ${({ theme }) =>
@@ -63,7 +63,8 @@ export const Legend = React.memo(
     currentMapOverlayCodes,
     displayedMapOverlayCodes,
     seriesesKey,
-    spaceBetween,
+    SeriesContainer,
+    SeriesDivider,
   }) => {
     if (Object.keys(baseMeasureInfo).length === 0) {
       return null;
@@ -99,27 +100,25 @@ export const Legend = React.memo(
           const isDisplayed =
             !displayedMapOverlayCodes || displayedMapOverlayCodes.includes(mapOverlayCode);
 
-          return serieses.map(series => {
+          return serieses.map((series, index) => {
             const { type } = series;
             const LegendComponent = getLegendComponent(type);
             return (
-              <LegendFrame
-                key={series.key}
-                className={className}
-                isDisplayed={isDisplayed}
-                $spaceBetween={spaceBetween}
-              >
-                {legendsHaveSameType && <LegendName>{`${series.name}: `}</LegendName>}
-                <LegendComponent
-                  key={series.key}
-                  hasIconLayer={hasIconLayer}
-                  hasRadiusLayer={hasRadiusLayer}
-                  hasColorLayer={hasColorLayer}
-                  series={series}
-                  setValueHidden={setValueHidden}
-                  hiddenValues={hiddenValues}
-                />
-              </LegendFrame>
+              <>
+                <SeriesContainer key={series.key} className={className} isDisplayed={isDisplayed}>
+                  {legendsHaveSameType && <LegendName>{`${series.name}: `}</LegendName>}
+                  <LegendComponent
+                    key={series.key}
+                    hasIconLayer={hasIconLayer}
+                    hasRadiusLayer={hasRadiusLayer}
+                    hasColorLayer={hasColorLayer}
+                    series={series}
+                    setValueHidden={setValueHidden}
+                    hiddenValues={hiddenValues}
+                  />
+                </SeriesContainer>
+                {index < serieses.length - 1 && SeriesDivider && <SeriesDivider />}
+              </>
             );
           });
         })}
@@ -136,7 +135,8 @@ Legend.propTypes = {
   displayedMapOverlayCodes: PropTypes.arrayOf(PropTypes.string),
   currentMapOverlayCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
   seriesesKey: PropTypes.string,
-  spaceBetween: PropTypes.number,
+  SeriesContainer: PropTypes.node,
+  SeriesDivider: PropTypes.node,
 };
 
 Legend.defaultProps = {
@@ -145,5 +145,6 @@ Legend.defaultProps = {
   hiddenValues: {},
   setValueHidden: null,
   seriesesKey: 'serieses',
-  spaceBetween: null,
+  SeriesContainer: LegendFrame,
+  SeriesDivider: null,
 };
