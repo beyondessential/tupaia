@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
@@ -14,14 +13,17 @@ import Button from '@material-ui/core/Button';
 
 import { setMapOverlays, clearMeasure } from '../../../actions';
 import { selectCurrentMapOverlayCodes } from '../../../selectors';
-import { MAP_OVERLAY_SELECTOR } from '../../../styles';
+import { MAP_OVERLAY_SELECTOR, LEAFLET_Z_INDEX } from '../../../styles';
 import { MapOverlayHierarchy } from '../../../components/MapOverlayHierarchy';
 
 const LibraryContainer = styled.div`
-  height: 100%;
+  position: absolute;
+  top: ${p => p.$appHeaderHeight}px;
+  left: 0;
+  right: 0;
+  min-height: calc(100vh - ${p => p.$appHeaderHeight}px);
+  z-index: ${LEAFLET_Z_INDEX + 1}px;
   background: black;
-  pointer-events: all;
-  flex: 1;
 `;
 
 const LibraryContent = styled.div`
@@ -44,6 +46,7 @@ const BackIcon = styled(ArrowBackIcon)`
 `;
 
 const MapOverlayLibraryComponent = ({
+  appHeaderHeight,
   currentMapOverlayCodes,
   hierarchyData,
   onSetMapOverlay,
@@ -59,30 +62,25 @@ const MapOverlayLibraryComponent = ({
     onClose();
   };
 
-  const modalContainer = document.getElementById('modal-container');
-
   return (
-    modalContainer &&
-    ReactDOM.createPortal(
-      <LibraryContainer>
-        <LibraryHeader onClick={onClose}>
-          <BackIcon />
-          Overlay Library
-        </LibraryHeader>
-        <LibraryContent>
-          <MapOverlayHierarchy
-            hierarchyData={hierarchyData}
-            onSelectMapOverlay={handleSelectMapOverlay}
-            currentMapOverlayCodes={currentMapOverlayCodes}
-          />
-        </LibraryContent>
-      </LibraryContainer>,
-      modalContainer,
-    )
+    <LibraryContainer $appHeaderHeight={appHeaderHeight}>
+      <LibraryHeader onClick={onClose}>
+        <BackIcon />
+        Overlay Library
+      </LibraryHeader>
+      <LibraryContent>
+        <MapOverlayHierarchy
+          hierarchyData={hierarchyData}
+          onSelectMapOverlay={handleSelectMapOverlay}
+          currentMapOverlayCodes={currentMapOverlayCodes}
+        />
+      </LibraryContent>
+    </LibraryContainer>
   );
 };
 
 MapOverlayLibraryComponent.propTypes = {
+  appHeaderHeight: PropTypes.number.isRequired,
   currentMapOverlayCodes: PropTypes.arrayOf(PropTypes.string),
   hierarchyData: PropTypes.array.isRequired,
   onSetMapOverlay: PropTypes.func.isRequired,

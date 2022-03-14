@@ -67,7 +67,12 @@ const RightArrowIconWrapper = styled.div`
   padding: 0 14px 0 5px;
 `;
 
-const MapOverlayBarComponent = ({ emptyMessage, currentMapOverlay, isLoading }) => {
+const MapOverlayBarComponent = ({
+  emptyMessage,
+  currentMapOverlay,
+  isLoading,
+  appHeaderHeight,
+}) => {
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
 
   const openLibrary = useCallback(() => setIsLibraryOpen(true), []);
@@ -98,12 +103,15 @@ const MapOverlayBarComponent = ({ emptyMessage, currentMapOverlay, isLoading }) 
           </RightArrowIconWrapper>
         )}
       </CollapsedContainer>
-      {isLibraryOpen && <MapOverlayLibrary onClose={closeLibrary} />}
+      {isLibraryOpen && (
+        <MapOverlayLibrary onClose={closeLibrary} appHeaderHeight={appHeaderHeight} />
+      )}
     </>
   );
 };
 
 MapOverlayBarComponent.propTypes = {
+  appHeaderHeight: PropTypes.number.isRequired,
   currentMapOverlay: PropTypes.shape({
     name: PropTypes.string,
   }),

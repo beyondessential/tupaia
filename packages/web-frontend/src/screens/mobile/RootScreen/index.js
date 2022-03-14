@@ -24,7 +24,7 @@ import {
   selectMobileTab,
 } from '../../../selectors';
 import { EnlargedDialog } from '../../../containers/EnlargedDialog';
-import { TUPAIA_ORANGE, LEAFLET_Z_INDEX } from '../../../styles';
+import { TUPAIA_ORANGE } from '../../../styles';
 import { SearchBar } from '../../../containers/mobile/SearchBar';
 import { Dashboard } from '../../../containers/mobile/Dashboard';
 import { setMobileTab } from '../../../actions';
@@ -35,17 +35,6 @@ const RootContainer = styled(StyleRoot)`
   display: flex;
   flex-direction: column;
   background: black;
-`;
-
-const ModalContainer = styled.div`
-  position: absolute;
-  top: ${p => p.$topOffset}px;
-  min-height: calc(100vh - ${p => p.$topOffset}px);
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  pointer-events: none;
-  z-index: ${LEAFLET_Z_INDEX + 1};
 `;
 
 const EntityName = styled.p`
@@ -113,10 +102,9 @@ const RootScreen = ({
       </StyledTabs>
       <SearchBar />
       {selectedTab === 'dashboard' && <Dashboard />}
-      {selectedTab === 'map' && <MapSection />}
+      {selectedTab === 'map' && <MapSection appHeaderHeight={headerHeight} />}
       {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
       {selectedTab === 'dashboard' && <Footer />}
-      <ModalContainer id="modal-container" $topOffset={headerHeight} />
       {isUserLoggedIn && <OverlayDiv />}
     </RootContainer>
   );
