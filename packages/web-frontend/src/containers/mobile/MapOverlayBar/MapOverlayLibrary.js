@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
@@ -13,17 +14,14 @@ import Button from '@material-ui/core/Button';
 
 import { setMapOverlays, clearMeasure } from '../../../actions';
 import { selectCurrentMapOverlayCodes } from '../../../selectors';
-import { MAP_OVERLAY_SELECTOR, LEAFLET_Z_INDEX } from '../../../styles';
+import { MAP_OVERLAY_SELECTOR } from '../../../styles';
 import { MapOverlayHierarchy } from '../../../components/MapOverlayHierarchy';
 
 const LibraryContainer = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: ${LEAFLET_Z_INDEX + 1};
+  height: 100%;
   background: black;
+  pointer-events: all;
+  flex: 1;
 `;
 
 const LibraryContent = styled.div`
@@ -61,20 +59,26 @@ const MapOverlayLibraryComponent = ({
     onClose();
   };
 
+  const modalContainer = document.getElementById('modal-container');
+
   return (
-    <LibraryContainer>
-      <LibraryHeader onClick={onClose}>
-        <BackIcon />
-        Overlay Library
-      </LibraryHeader>
-      <LibraryContent>
-        <MapOverlayHierarchy
-          hierarchyData={hierarchyData}
-          onSelectMapOverlay={handleSelectMapOverlay}
-          currentMapOverlayCodes={currentMapOverlayCodes}
-        />
-      </LibraryContent>
-    </LibraryContainer>
+    modalContainer &&
+    ReactDOM.createPortal(
+      <LibraryContainer>
+        <LibraryHeader onClick={onClose}>
+          <BackIcon />
+          Overlay Library
+        </LibraryHeader>
+        <LibraryContent>
+          <MapOverlayHierarchy
+            hierarchyData={hierarchyData}
+            onSelectMapOverlay={handleSelectMapOverlay}
+            currentMapOverlayCodes={currentMapOverlayCodes}
+          />
+        </LibraryContent>
+      </LibraryContainer>,
+      modalContainer,
+    )
   );
 };
 

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { PropTypes } from 'prop-types';
 import { StyleRoot } from 'radium';
 import { connect } from 'react-redux';
@@ -24,7 +24,7 @@ import {
   selectMobileTab,
 } from '../../../selectors';
 import { EnlargedDialog } from '../../../containers/EnlargedDialog';
-import { TUPAIA_ORANGE } from '../../../styles';
+import { TUPAIA_ORANGE, LEAFLET_Z_INDEX } from '../../../styles';
 import { SearchBar } from '../../../containers/mobile/SearchBar';
 import { Dashboard } from '../../../containers/mobile/Dashboard';
 import { setMobileTab } from '../../../actions';
@@ -35,6 +35,17 @@ const RootContainer = styled(StyleRoot)`
   display: flex;
   flex-direction: column;
   background: black;
+`;
+
+const ModalContainer = styled.div`
+  position: absolute;
+  top: ${p => p.$topOffset}px;
+  min-height: calc(100vh - ${p => p.$topOffset}px);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  z-index: ${LEAFLET_Z_INDEX + 1};
 `;
 
 const EntityName = styled.p`
@@ -72,11 +83,23 @@ const RootScreen = ({
     setSelectedTab,
   ]);
 
+  // maintain the header height in state, so the overlay div can sit below it
+  const headerRef = useRef();
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const updateHeaderHeight = () => {
+    setHeaderHeight(headerRef.current.clientHeight);
+  };
+  useEffect(() => {
+    updateHeaderHeight();
+  });
+
   return (
     <RootContainer>
       <EnvBanner />
       <LoadingScreen isLoading={isLoading} />
-      <HeaderBar />
+      <div ref={headerRef}>
+        <HeaderBar />
+      </div>
       <EntityName>{orgUnit.name}</EntityName>
       <StyledTabs
         value={selectedTab}
@@ -93,6 +116,7 @@ const RootScreen = ({
       {selectedTab === 'map' && <MapSection />}
       {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
       {selectedTab === 'dashboard' && <Footer />}
+      <ModalContainer id="modal-container" $topOffset={headerHeight} />
       {isUserLoggedIn && <OverlayDiv />}
     </RootContainer>
   );
