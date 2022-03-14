@@ -103,7 +103,7 @@ async def start_instance(instance):
     await wait_for_instance(instance_object.id, 'running')
     print('Started instance with id ' + instance_object.id)
 
-def build_extra_tags(event):
+def build_extra_tags(event, defaults):
     extra_tags = [
         { 'Key': 'DeployedBy', 'Value': event['User'] }
     ]
@@ -118,11 +118,11 @@ def build_extra_tags(event):
         if 'StartAtUTC' in event:
             extra_tags.append({ 'Key': 'StartAtUTC', 'Value': event['StartAtUTC'] })
         else:
-            extra_tags.append({ 'Key': 'StartAtUTC', 'Value': '18:00'}) # 6pm UTC is 4am AEST, 5am AEDT, 6am NZST, 7am NZDT
+            extra_tags.append({ 'Key': 'StartAtUTC', 'Value': defaults['StartAtUTC'] })
 
         if 'StopAtUTC' in event:
             extra_tags.append({ 'Key': 'StopAtUTC', 'Value': event['StopAtUTC'] })
         else:
-            extra_tags.append({ 'Key': 'StopAtUTC', 'Value': '09:00'}) # 9am UTC is 7pm AEST, 8pm AEDT, 9pm NZST, 10pm NZDT
-    
+            extra_tags.append({ 'Key': 'StopAtUTC', 'Value': defaults['StopAtUTC']})
+
     return extra_tags

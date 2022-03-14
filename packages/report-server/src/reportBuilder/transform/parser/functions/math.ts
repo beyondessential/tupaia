@@ -19,7 +19,7 @@ export const add = typed('add', {
   'undefined, undefined': (undef: undefined, undef2: undefined) => undefined,
   'string, string': (string1: string, string2: string) => string1 + string2,
   'string, number': (string: string, num: number) => string + num,
-  'number, string': (num: number, string: string) => num.toString() + string
+  'number, string': (num: number, string: string) => num.toString() + string,
 });
 
 const enforceIsNumber = (value: unknown) => {
@@ -29,17 +29,19 @@ const enforceIsNumber = (value: unknown) => {
   return value;
 };
 
+const sumArray = (arr: unknown[]) =>
+  arr.every(item => item === undefined)
+    ? undefined
+    : arr
+        .filter(item => item !== undefined)
+        .map(enforceIsNumber)
+        .reduce((total, item) => total + item, 0);
+
 export const sum = typed('sum', {
   '...': function (args: unknown[]) {
-    return this(args); // 'this' is bound by mathjs to allow recursive function calls to other typed function implementations
+    return sumArray(args); // 'this' is bound by mathjs to allow recursive function calls to other typed function implementations
   },
   number: (num: number) => num,
   undefined: (undef: undefined) => undefined,
-  Array: (arr: unknown[]) =>
-    arr.every(item => item === undefined)
-      ? undefined
-      : arr
-          .filter(item => item !== undefined)
-          .map(enforceIsNumber)
-          .reduce((total, item) => total + item, 0),
+  Array: sumArray,
 });

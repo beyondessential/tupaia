@@ -11,6 +11,26 @@ Options:
 EOF
 }
 
+# https://stackoverflow.com/questions/12498304/using-bash-to-display-a-progress-indicator
+function show_loading_spinner() {
+    eval $2 2>/dev/null &
+    pid=$! # Process Id of the previous running command
+
+    spin='-\|/'
+
+    i=0
+    while kill -0 $pid 2>/dev/null
+    do
+    i=$(( (i+1) %4 ))
+    printf "\r$1 ${spin:$i:1}"
+    sleep .5
+    done
+    printf "\r$1  "
+    echo "" # reset prompt
+}
+
+source ".env"
+
 DUMP_FILE_NAME="dump.sql"
 
 identity_file=""
@@ -50,12 +70,21 @@ if [ "$identity_file" == "" ]; then
     exit 1
 fi
 
+if [ "$DB_PG_USER" == "" ] || [ "$DB_PG_PASSWORD" == "" ]; then
+    echo "Missing postgres user credential env vars in @tupaia/database .env file. Check Lastpass for variables and add them to the .env file"
+    exit 1
+fi
+
 host=$server-db.tupaia.org
 target_path="$(
     cd "$target_dir"
     pwd
 )/$DUMP_FILE_NAME"
+target_zip_path="$target_path.gz"
 
-pg_dump "host=$host user=postgres dbname=tupaia sslmode=require sslkey=$identity_file" -f $target_path
+show_loading_spinner "Dumping database to $target_zip_path" "PGPASSWORD=$DB_PG_PASSWORD pg_dump \"host=$host user=$DB_PG_USER dbname=tupaia sslmode=require sslkey=$identity_file\" -Z1 -f $target_zip_path"
+show_loading_spinner "Unzipping $target_zip_path" "gunzip -f $target_zip_path"
+
+echo "Dump file available at $target_path"
 
 echo "Done!"

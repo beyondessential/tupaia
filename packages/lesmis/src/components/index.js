@@ -11,6 +11,7 @@ export * from './EntityVitalsItem';
 export * from './FetchLoader';
 export * from './Forms';
 export * from './Footer';
+export * from './FooterLogos';
 export * from './FormBackButton';
 export * from './FullPageLoader';
 export * from './Layout';

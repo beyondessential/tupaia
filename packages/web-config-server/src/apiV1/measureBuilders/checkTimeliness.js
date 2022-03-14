@@ -1,6 +1,6 @@
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { getDateRange } from '/apiV1/utils';
-import { periodToMoment } from '@tupaia/utils/dist/period/period';
+import { periodToMoment } from '@tupaia/utils';
 
 class CheckTimelinessMeasureBuilder extends DataBuilder {
   async build() {

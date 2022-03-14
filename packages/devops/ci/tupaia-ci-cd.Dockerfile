@@ -3,12 +3,8 @@ FROM node:12.18.3-alpine3.11
 # install features not available in base alpine distro
 RUN apk --no-cache add \
   bash \
-  curl \
-  git \
-  lastpass-cli \
-  openssh \
   postgresql-client \
-  rsync
+  git
 
 # set the workdir so that all following commands run within /tupaia
 WORKDIR /tupaia
@@ -80,8 +76,7 @@ COPY packages/web-config-server/package.json ./packages/web-config-server
 RUN mkdir -p ./packages/web-frontend
 COPY packages/web-frontend/package.json ./packages/web-frontend
 
-## run yarn without building internal dependencies, so we can cache that layer without code changes
-## within internal dependencies invalidating it
+## run yarn without building, so we can cache node_modules without code changes invalidating this layer
 RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --non-interactive --frozen-lockfile
 
 ## add content of all internal dependency packages ready for internal dependencies to be built
@@ -102,9 +97,13 @@ COPY packages/ui-components/. ./packages/ui-components
 COPY packages/weather-api/. ./packages/weather-api
 COPY packages/server-boilerplate/. ./packages/server-boilerplate
 COPY packages/kobo-api/. ./packages/kobo-api
+COPY ./tsconfig* ./
 
 ## build internal dependencies
-RUN yarn build-internal-dependencies
+RUN yarn build:internal-dependencies
 
 # copy everything else from the repo
 COPY . ./
+
+# Make sure all packages build
+RUN yarn build:non-internal-dependencies

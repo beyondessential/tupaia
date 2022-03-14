@@ -10,9 +10,6 @@
     "target": "ES2019",
     "resolveJsonModule": true,
     "sourceMap": true,
-    "baseUrl": "./packages",
-    "paths": {
-      "@tupaia/*": ["*/src"]
-    }
+    "allowJs": false,
   }
 }

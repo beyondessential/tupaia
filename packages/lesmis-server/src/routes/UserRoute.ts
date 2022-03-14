@@ -8,7 +8,9 @@ import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { MeditrakConnection } from '../connections';
 
-export class UserRoute extends Route {
+export type UserRequest = Request;
+
+export class UserRoute extends Route<UserRequest> {
   private readonly meditrakConnection: MeditrakConnection;
 
   constructor(req: Request, res: Response, next: NextFunction) {

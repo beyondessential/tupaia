@@ -15,6 +15,18 @@ import TableBody from '@material-ui/core/TableBody';
 import { StyledTable } from './StyledTable';
 import { FlexStart } from '../Layout';
 
+const getColumnId = ({ id, accessor, Header }) => {
+  if (id) {
+    return id;
+  }
+
+  if (typeof accessor === 'string') {
+    return accessor;
+  }
+
+  return Header;
+};
+
 export const DataTable = ({ columns, data, className, rowLimit }) => {
   const {
     getTableProps,
@@ -27,6 +39,13 @@ export const DataTable = ({ columns, data, className, rowLimit }) => {
     {
       columns,
       data,
+      initialState: {
+        sortBy: [
+          {
+            id: getColumnId(columns[0]),
+          },
+        ],
+      },
     },
     useSortBy,
   );

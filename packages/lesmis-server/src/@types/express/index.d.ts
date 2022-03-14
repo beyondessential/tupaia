@@ -15,6 +15,7 @@ declare global {
     export interface Response {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ctx: any;
+      translate: (...args: any[]) => any;
     }
   }
 }

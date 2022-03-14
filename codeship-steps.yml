@@ -1,9 +1,5 @@
-- name: Fetch environment variables
-  service: lastpass
-  command: './packages/devops/scripts/ci/setupEnvironmentVariables.sh'
-
-- type: parallel
-  name: Validate and test
+- name: Validate and test
+  type: parallel
   exclude: -e2e$
   steps:
     - type: parallel
@@ -49,8 +45,8 @@
   service: deployment
   command: './triggerRedeploy.sh'
 
-- type: parallel
-  name: E2E test
+- name: E2E test
+  type: parallel
   service: e2e
   tag: -e2e$
   steps:

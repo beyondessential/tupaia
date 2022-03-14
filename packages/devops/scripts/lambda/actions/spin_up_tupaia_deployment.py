@@ -65,28 +65,37 @@ def spin_up_tupaia_deployment(event):
     image_code = event.get('ImageCode', 'tupaia-gold-master') # Use AMI tagged with code
     security_group_code = event.get('SecurityGroupCode', 'tupaia-dev-sg') # Use security group tagged with code
     clone_db_from = event.get('CloneDbFrom', 'production') # Use volume snapshot tagged with deployment name
-    extra_tags = build_extra_tags(event)
 
     # launch server instance based on gold master AMI
+    server_extra_tags = build_extra_tags(
+        event,
+        # Default to turning off between 7pm AEST and 8am NZDT, i.e. all work hours throughout the year
+        { 'StopAtUTC': '09:00', 'StartAtUTC': '19:00' }
+    )
     create_tupaia_instance_from_image(
         deployment_name,
         branch,
         instance_type,
-        extra_tags=extra_tags,
+        extra_tags=server_extra_tags,
         image_code=image_code,
         security_group_code=security_group_code,
     )
 
     # create db instance from a snapshot
-    # do this after the server has started because it will take a while to populate the db from the snapshot, 
+    # do this after the server has started because it will take a while to populate the db from the snapshot,
     # so we might as well be cloning the db instance at the same time, so long is it is available before
     # the server first tries to connect
+    db_extra_tags = build_extra_tags(
+        event,
+        # Turn off overnight, but come back online an hour before the server so db is available
+        { 'StopAtUTC': '09:00', 'StartAtUTC': '18:00' }
+    )
     create_db_instance_from_snapshot(
         deployment_name,
         'tupaia',
         clone_db_from,
         db_instance_type,
-        extra_tags=extra_tags,
+        extra_tags=db_extra_tags,
         security_group_code=security_group_code
     )
     # set master password

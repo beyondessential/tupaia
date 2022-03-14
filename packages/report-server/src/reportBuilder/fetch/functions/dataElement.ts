@@ -5,7 +5,7 @@
 
 import { yup } from '@tupaia/utils';
 
-import { Aggregator } from '../../../aggregator';
+import { ReportServerAggregator } from '../../../aggregator';
 import { Aggregation, FetchReportQuery, ReportConfig } from '../../../types';
 import { FetchResponse } from '../types';
 
@@ -19,7 +19,7 @@ type DataElementFetchParams = {
 const dataElementsValidator = yup.array().of(yup.string().required()).min(1).required();
 
 const fetchAnalytics = async (
-  aggregator: Aggregator,
+  aggregator: ReportServerAggregator,
   query: FetchReportQuery,
   params: DataElementFetchParams,
 ): Promise<FetchResponse> => {
@@ -48,6 +48,6 @@ const buildParams = (params: DataElementParams): DataElementFetchParams => {
 
 export const buildDataElementFetch = (params: DataElementParams) => {
   const builtDataElementsFetchParams = buildParams(params);
-  return (aggregator: Aggregator, query: FetchReportQuery) =>
+  return (aggregator: ReportServerAggregator, query: FetchReportQuery) =>
     fetchAnalytics(aggregator, query, builtDataElementsFetchParams);
 };

@@ -99,7 +99,7 @@ export class TupaiaDatabase {
     if (!this.changeChannel) {
       this.changeChannel = new DatabaseChangeChannel();
       this.changeChannel.addDataChangeHandler(this.notifyChangeHandlers);
-      this.changeChannelPromise = this.changeChannel.ping();
+      this.changeChannelPromise = this.changeChannel.ping(undefined, 0);
     }
     return this.changeChannel;
   }
