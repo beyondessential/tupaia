@@ -22,7 +22,7 @@ const LibraryContainer = styled.div`
   left: 0;
   right: 0;
   min-height: calc(100vh - ${p => p.$appHeaderHeight}px);
-  z-index: ${LEAFLET_Z_INDEX + 1}px;
+  z-index: ${LEAFLET_Z_INDEX + 1};
   background: black;
 `;
 
