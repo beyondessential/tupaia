@@ -3,7 +3,9 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { yup, yupUtils } from '../../validation';
+import { yup } from '@tupaia/utils';
+
+import { yupUtils } from '../../validation';
 
 describe('DescribableLazy', () => {
   it('works with array and string schemas', () => {
