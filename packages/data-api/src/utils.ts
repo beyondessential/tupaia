@@ -34,43 +34,6 @@ export const sanitizeAnalyticsTableValue = (value: string, type: string) => {
   }
 };
 
-// TODO: Move these to ts-utils package
-const isObject = <X extends any>(value: X): value is X & Record<PropertyKey, unknown> =>
-  typeof value === 'object' && value !== null;
-
+// TODO: Move to ts-utils package
 export const isDefined = <T>(val: T): val is Exclude<T, undefined | null> =>
   val !== undefined && val !== null;
-
-export const hasOwnProperties = <
-  Obj extends Record<string, unknown>,
-  T extends string,
-  Props extends [T, ...T[]]
->(
-  obj: Obj,
-  props: Props,
-): obj is Obj & { [Prop in Props[number]]: Obj[Prop] } => {
-  return props.every(prop => obj.hasOwnProperty(prop));
-};
-
-export const hasOwnProperty = <Obj extends Record<string, unknown>, Prop extends string>(
-  obj: Obj,
-  prop: Prop,
-): obj is Obj & Record<Prop, Obj[Prop]> => {
-  return hasOwnProperties(obj, [prop]);
-};
-
-export const buildEntityMap = (orgUnitMap: unknown = {}) => {
-  if (!isObject(orgUnitMap)) {
-    throw new Error('Invalid org unit map');
-  }
-
-  return Object.fromEntries(
-    Object.entries(orgUnitMap).map(([key, value]) => {
-      if (!isObject(value) || !hasOwnProperty(value, 'code') || typeof value.code !== 'string') {
-        throw new Error('Invalid org unit map item');
-      }
-
-      return [key, value.code];
-    }),
-  );
-};

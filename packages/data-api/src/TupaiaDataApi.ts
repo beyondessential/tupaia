@@ -7,16 +7,11 @@ import groupBy from 'lodash.groupby';
 
 import moment from 'moment';
 import { TupaiaDatabase } from '@tupaia/database';
-import { getSortByKey, DEFAULT_BINARY_OPTIONS } from '@tupaia/utils';
+import { getSortByKey, DEFAULT_BINARY_OPTIONS, yup } from '@tupaia/utils';
 import { SqlQuery } from './SqlQuery';
 import { AnalyticsFetchOptions, AnalyticsFetchQuery } from './AnalyticsFetchQuery';
 import { EventsFetchQuery, EventAnswer, EventsFetchOptions } from './EventsFetchQuery';
-import {
-  sanitizeMetadataValue,
-  sanitizeAnalyticsTableValue,
-  isDefined,
-  hasOwnProperties,
-} from './utils';
+import { sanitizeMetadataValue, sanitizeAnalyticsTableValue, isDefined } from './utils';
 import { validateEventOptions, validateAnalyticsOptions } from './validation';
 import { sanitiseFetchDataOptions } from './sanitiseFetchDataOptions';
 
@@ -97,7 +92,7 @@ export class TupaiaDataApi {
 
   async fetchDataGroup(
     dataGroupCode: string | undefined,
-    dataElementCodes: string[] | undefined,
+    dataElementCodes?: string[],
     options: { includeOptions?: boolean } = {},
   ) {
     const { includeOptions = true } = options;
@@ -162,7 +157,7 @@ export class TupaiaDataApi {
     return dataGroupMetadata;
   }
 
-  async fetchDataElementsMetadataFromSqlQuery(
+  private async fetchDataElementsMetadataFromSqlQuery(
     sqlQuery: SqlQuery<{ option_set_id: string | undefined; type: string; options: string[] }[]>,
     includeOptions: boolean,
   ) {
@@ -200,7 +195,7 @@ export class TupaiaDataApi {
     );
   }
 
-  async getOptionsGroupedBySetId(optionSetIds: string[]) {
+  private async getOptionsGroupedBySetId(optionSetIds: string[]) {
     if (optionSetIds.length === 0) {
       return {};
     }
@@ -219,7 +214,7 @@ export class TupaiaDataApi {
     return groupBy(options, 'option_set_id');
   }
 
-  buildOptionsMetadata = (
+  private buildOptionsMetadata = (
     options: (string | { value: string; label: string | undefined })[] = [],
     type: string,
   ) => {
@@ -230,31 +225,26 @@ export class TupaiaDataApi {
     }
 
     const optionsMetadata: Record<string, string> = {};
+    const optionsObjectValidator = yup.object({
+      value: yup.string().required(),
+      label: yup.string(),
+    });
 
     optionList.forEach(option => {
       if (typeof option === 'string') {
         try {
           // options coming from question.options are JSON format strings
           // options coming from option_set are actual JSON objects
-          const optionObject = JSON.parse(option) as Record<string, unknown>;
-          if (hasOwnProperties(optionObject, ['value', 'label'])) {
-            const { value, label } = optionObject;
-            if (typeof value !== 'string') {
-              throw new Error(`Incorrect type of 'value', should be string, but got: ${value}`);
-            }
-
-            if (label !== undefined || typeof label !== 'string') {
-              throw new Error(
-                `Incorrect type of 'label', should be string or undefined, but got: ${value}`,
-              );
-            }
-
-            optionsMetadata[sanitizeMetadataValue(value, type)] = label || value;
-          }
+          const optionObject = optionsObjectValidator.validateSync(JSON.parse(option));
+          const { value, label } = optionObject;
+          optionsMetadata[sanitizeMetadataValue(value, type)] = label || value;
         } catch (error) {
           // Exception is thrown when option is a plain string
           optionsMetadata[sanitizeMetadataValue(option, type)] = option;
         }
+      } else {
+        const { value, label } = option;
+        optionsMetadata[sanitizeMetadataValue(value, type)] = label || value;
       }
     });
 

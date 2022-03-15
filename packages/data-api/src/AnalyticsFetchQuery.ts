@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { yup } from '@tupaia/utils';
 import { TupaiaDatabase } from '@tupaia/database';
 import { SqlQuery } from './SqlQuery';
-import { buildEntityMap } from './utils';
 
 const VALUE_AGGREGATION_FUNCTIONS = {
   SUM: 'sum(value::numeric)::text',
@@ -76,6 +76,30 @@ const supportsConfig = (
   );
 };
 
+const orgUnitMapValidator = yup.lazy((entityMap: unknown) => {
+  const validatedMap = yup.object().required().validateSync(entityMap);
+  const fieldValidator = yup.object().shape({ code: yup.string().required() });
+  return yup.object().shape(
+    Object.keys(validatedMap).reduce<Record<string, typeof fieldValidator>>(
+      (mapValidator, key: string) => ({
+        ...mapValidator,
+        [key]: fieldValidator,
+      }),
+      {},
+    ),
+  );
+});
+
+export const buildEntityMap = (orgUnitMap: unknown = {}) => {
+  const validatedMap = orgUnitMapValidator.validateSync(orgUnitMap);
+
+  return Object.fromEntries(
+    Object.entries(validatedMap).map(([key, value]) => {
+      return [key, value.code];
+    }),
+  );
+};
+
 export type AnalyticsFetchOptions = {
   dataElementCodes: string[];
   organisationUnitCodes: string[];
@@ -105,15 +129,10 @@ type QueryAggregation = {
 
 export class AnalyticsFetchQuery {
   private readonly database: TupaiaDatabase;
-
   private readonly dataElementCodes: string[];
-
   private readonly entityCodes: string[];
-
   private readonly startDate?: string;
-
   private readonly endDate?: string;
-
   private readonly aggregations: QueryAggregation[];
 
   constructor(database: TupaiaDatabase, options: AnalyticsFetchOptions) {
