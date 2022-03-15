@@ -72,6 +72,8 @@ export {
   selectCurrentMapOverlays,
   selectDefaultMapOverlayCode,
   selectDefaultMapOverlay,
+  selectHasMapOverlays,
+  selectMapOverlayEmptyMessage,
   selectPeriodGranularityByCode,
 } from './mapOverlaySelectors';
 

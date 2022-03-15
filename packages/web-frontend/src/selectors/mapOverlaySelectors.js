@@ -16,6 +16,7 @@ import {
 } from '../utils';
 
 import { selectCurrentProject } from './projectSelectors';
+import { selectCurrentOrgUnit } from './orgUnitSelectors';
 import { selectLocation } from './utils';
 
 export const selectMapOverlayByCodes = createSelector(
@@ -44,6 +45,27 @@ export const selectCurrentMapOverlayPeriods = createSelector([selectLocation], l
 export const selectCurrentMapOverlays = createSelector(
   [state => state, selectCurrentMapOverlayCodes],
   selectMapOverlayByCodes,
+);
+
+export const selectHasMapOverlays = createSelector(
+  [state => state.mapOverlayBar.mapOverlayHierarchy],
+  mapOverlayHierarchy => mapOverlayHierarchy.length > 0,
+);
+
+export const selectMapOverlayEmptyMessage = createSelector(
+  [selectHasMapOverlays, selectCurrentMapOverlays, selectCurrentOrgUnit],
+  (hasMapOverlays, currentMapOverlays, orgUnit) => {
+    if (!hasMapOverlays) {
+      const orgName = orgUnit?.name || 'Your current selection';
+      return `Select an area with valid data. ${orgName} has no map overlays available.`;
+    }
+
+    if (currentMapOverlays.length === 0) {
+      return 'No map overlay selected';
+    }
+
+    return null;
+  },
 );
 
 export const selectDefaultMapOverlayCode = createSelector(

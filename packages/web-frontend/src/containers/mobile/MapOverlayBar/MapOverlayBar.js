@@ -13,7 +13,11 @@ import RightArrow from '@material-ui/icons/ArrowForwardIos';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 
 import { setMapOverlays, clearMeasure } from '../../../actions';
-import { selectCurrentMapOverlays, selectCurrentOrgUnit } from '../../../selectors';
+import {
+  selectCurrentMapOverlays,
+  selectMapOverlayEmptyMessage,
+  selectHasMapOverlays,
+} from '../../../selectors';
 import { MAP_OVERLAY_SELECTOR } from '../../../styles';
 import { MapOverlayLibrary } from './MapOverlayLibrary';
 
@@ -69,6 +73,7 @@ const RightArrowIconWrapper = styled.div`
 
 const MapOverlayBarComponent = ({
   emptyMessage,
+  hasMapOverlays,
   currentMapOverlay,
   isLoading,
   appHeaderHeight,
@@ -80,7 +85,7 @@ const MapOverlayBarComponent = ({
 
   return (
     <>
-      <CollapsedContainer onClick={currentMapOverlay ? openLibrary : undefined}>
+      <CollapsedContainer onClick={hasMapOverlays && openLibrary}>
         <Content>
           <TitleContainer>
             <Title>Map Overlay</Title>
@@ -97,7 +102,7 @@ const MapOverlayBarComponent = ({
             )}
           </SelectedLabel>
         </Content>
-        {currentMapOverlay && (
+        {hasMapOverlays && (
           <RightArrowIconWrapper>
             <RightArrow />
           </RightArrowIconWrapper>
@@ -131,16 +136,11 @@ const mapStateToProps = state => {
   const currentMapOverlays = selectCurrentMapOverlays(state);
   const currentMapOverlay = currentMapOverlays.length > 0 ? currentMapOverlays[0] : null;
 
-  const currentOrganisationUnit = selectCurrentOrgUnit(state);
-  const orgName = currentOrganisationUnit?.name || 'Your current selection';
-  const emptyMessage = currentMapOverlay
-    ? null
-    : `Select an area with valid data. ${orgName} has no map overlays available.`;
-
   return {
     isLoading: isMeasureLoading || isLoadingOrganisationUnit,
     currentMapOverlay,
-    emptyMessage,
+    emptyMessage: selectMapOverlayEmptyMessage(state),
+    hasMapOverlays: selectHasMapOverlays(state),
   };
 };
 
