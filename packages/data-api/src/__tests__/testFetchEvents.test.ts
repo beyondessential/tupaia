@@ -3,60 +3,73 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { getTestDatabase } from '@tupaia/database';
-import { dateStringToPeriod } from '@tupaia/utils';
 
 import { TupaiaDataApi } from '../TupaiaDataApi';
 import {
+  SurveyResponse,
   BCD_RESPONSE_AUCKLAND,
   BCD_RESPONSE_WELLINGTON,
   CROP_RESPONSE_AUCKLAND_2019,
   CROP_RESPONSE_AUCKLAND_2020,
   CROP_RESPONSE_WELLINGTON_2019,
 } from './TupaiaDataApi.fixtures';
-import { testFetchAnalyticsAggregations } from './aggregations';
 
-const getAnalyticsFromResponses = (responses, dataElementsToInclude, periodType) => {
-  const analytics = [];
-  responses.forEach(r => {
-    Object.entries(r.answers)
-      .filter(([questionCode]) => dataElementsToInclude.includes(questionCode))
-      .forEach(([questionCode, answer]) => {
-        analytics.push({
-          dataElement: questionCode,
-          organisationUnit: r.entityCode,
-          value: isNaN(answer) ? answer : parseFloat(answer),
-          period: dateStringToPeriod(r.data_time, periodType),
-        });
-      });
-  });
-  return analytics;
-};
+const getEventsFromResponses = (
+  responses: SurveyResponse[],
+  dataElementsToInclude: string[] = [],
+) =>
+  responses.map(r => ({
+    event: r.id,
+    orgUnit: r.entityCode,
+    orgUnitName: r.entityCode === 'NZ_AK' ? 'Auckland' : 'Wellington',
+    eventDate: r.data_time,
+    dataValues: Object.entries(r.answers)
+      .filter(([code]) => dataElementsToInclude.includes(code))
+      .reduce(
+        (values, [code, answer]) => ({
+          ...values,
+          [code]: isNaN(answer as any) ? answer : parseFloat(answer),
+        }),
+        {},
+      ),
+  }));
 
-export const testFetchAnalytics = () => {
+describe('fetchEvents()', () => {
   const api = new TupaiaDataApi(getTestDatabase());
 
-  const assertCorrectResponse = async (
-    options,
-    responses,
-    expectedNumAggregationsProcessed = 0,
-    expectedPeriodType = 'DAY',
-  ) => {
-    const { analytics, numAggregationsProcessed } = await api.fetchAnalytics(options);
-    expect(analytics).toIncludeSameMembers(
-      getAnalyticsFromResponses(responses, options.dataElementCodes, expectedPeriodType),
+  const assertCorrectResponse = async (options: Record<string, any>, responses: SurveyResponse[]) =>
+    expect(api.fetchEvents(options)).resolves.toStrictEqual(
+      getEventsFromResponses(responses, options.dataElementCodes),
     );
-    expect(numAggregationsProcessed).toEqual(expectedNumAggregationsProcessed);
-  };
 
   it('throws an error with invalid parameters', async () => {
-    const testData = [
-      [undefined, /provide options/],
-      [null, /provide options/],
+    const testData: [Record<string, any>, RegExp][] = [
       [{}, /Invalid content/],
-      [{ dataElementCodes: ['BCD1TEST', 'BCD325TEST'] }, /Invalid content.*organisationUnitCodes/], // no organisationUnitCodes
-      [{ organisationUnitCodes: ['NZ_AK', 'NZ_WG'] }, /Invalid content.*dataElementCodes/], // no dataElementCodes
       [
         {
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
+        },
+        /Invalid content.*dataGroupCode/,
+      ], // no dataGroupCode
+      [
+        {
+          dataGroupCode: 'BCDTEST',
+          dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
+        },
+        /Invalid content.*organisationUnitCodes/,
+      ], // no organisationUnitCodes
+      [
+        {
+          dataGroupCode: 'BCDTEST',
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['BCD1TEST', 1],
+        },
+        /Invalid content.*dataElementCodes/,
+      ], // data element code is not a string
+      [
+        {
+          dataGroupCode: 'BCDTEST',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
           startDate: 'January first, 2020',
@@ -64,15 +77,17 @@ export const testFetchAnalytics = () => {
         /Invalid content.*startDate/,
       ], // invalid startDate format
     ];
-    for (const [options, expectedError] of testData) {
-      await expect(api.fetchAnalytics(options)).toBeRejectedWith(expectedError);
+
+    for (const [options, expectedRegexp] of testData) {
+      await expect(api.fetchEvents(options)).toBeRejectedWith(expectedRegexp);
     }
   });
 
-  it('returns results in the correct format', async () => {
-    const testData = [
+  it('returns results in the correct format, sorted by event date', async () => {
+    const testData: [Record<string, any>, SurveyResponse[]][] = [
       [
         {
+          dataGroupCode: 'BCDTEST',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
         },
@@ -80,22 +95,32 @@ export const testFetchAnalytics = () => {
       ],
       [
         {
+          dataGroupCode: 'CROP',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['CROP_1', 'CROP_2'],
         },
-        [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_AUCKLAND_2020, CROP_RESPONSE_WELLINGTON_2019],
+        [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_WELLINGTON_2019, CROP_RESPONSE_AUCKLAND_2020],
       ],
     ];
-
     for (const [options, responses] of testData) {
       await assertCorrectResponse(options, responses);
     }
   });
 
+  it('includes empty data values if no data elements are specified', async () => {
+    const options = {
+      dataGroupCode: 'BCDTEST',
+      organisationUnitCodes: ['NZ_AK'],
+    };
+    const responses = [BCD_RESPONSE_AUCKLAND];
+    await assertCorrectResponse(options, responses);
+  });
+
   it('should limit results by data element codes', async () => {
-    const testData = [
+    const testData: [Record<string, any>, SurveyResponse[]][] = [
       [
         {
+          dataGroupCode: 'BCDTEST',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['BCD1TEST'],
         },
@@ -103,22 +128,23 @@ export const testFetchAnalytics = () => {
       ],
       [
         {
+          dataGroupCode: 'CROP',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['CROP_2'],
         },
-        [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_AUCKLAND_2020, CROP_RESPONSE_WELLINGTON_2019],
+        [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_WELLINGTON_2019, CROP_RESPONSE_AUCKLAND_2020],
       ],
     ];
-
     for (const [options, responses] of testData) {
       await assertCorrectResponse(options, responses);
     }
   });
 
   it('should limit results by organisation unit codes', async () => {
-    const testData = [
+    const testData: [Record<string, any>, SurveyResponse[]][] = [
       [
         {
+          dataGroupCode: 'BCDTEST',
           organisationUnitCodes: ['NZ_AK'],
           dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
         },
@@ -126,23 +152,24 @@ export const testFetchAnalytics = () => {
       ],
       [
         {
+          dataGroupCode: 'CROP',
           organisationUnitCodes: ['NZ_WG'],
           dataElementCodes: ['CROP_1', 'CROP_2'],
         },
         [CROP_RESPONSE_WELLINGTON_2019],
       ],
     ];
-
     for (const [options, responses] of testData) {
       await assertCorrectResponse(options, responses);
     }
   });
 
   it('should limit results by start and end dates', async () => {
-    const testData = [
+    const testData: [Record<string, any>, SurveyResponse[]][] = [
       // start date only
       [
         {
+          dataGroupCode: 'CROP',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['CROP_1', 'CROP_2'],
           startDate: '2020-01-01',
@@ -152,6 +179,7 @@ export const testFetchAnalytics = () => {
       // end date only
       [
         {
+          dataGroupCode: 'CROP',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['CROP_1', 'CROP_2'],
           endDate: '2019-12-31',
@@ -161,6 +189,7 @@ export const testFetchAnalytics = () => {
       // start and end dates
       [
         {
+          dataGroupCode: 'CROP',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['CROP_1', 'CROP_2'],
           startDate: '2019-12-01',
@@ -171,6 +200,7 @@ export const testFetchAnalytics = () => {
       // start and end dates, check inclusivity of start date
       [
         {
+          dataGroupCode: 'CROP',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['CROP_1', 'CROP_2'],
           startDate: '2019-11-21',
@@ -181,6 +211,7 @@ export const testFetchAnalytics = () => {
       // start and end dates, check inclusivity of end date
       [
         {
+          dataGroupCode: 'CROP',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['CROP_1', 'CROP_2'],
           startDate: '2019-12-01',
@@ -189,15 +220,27 @@ export const testFetchAnalytics = () => {
         [CROP_RESPONSE_WELLINGTON_2019, CROP_RESPONSE_AUCKLAND_2020],
       ],
     ];
-
     for (const [options, responses] of testData) {
       await assertCorrectResponse(options, responses);
     }
   });
 
+  it('should limit results when an event id is passed in', async () => {
+    await assertCorrectResponse(
+      {
+        dataGroupCode: 'CROP',
+        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+        dataElementCodes: ['CROP_1', 'CROP_2'],
+        eventId: CROP_RESPONSE_AUCKLAND_2019.id,
+      },
+      [CROP_RESPONSE_AUCKLAND_2019],
+    );
+  });
+
   it('should limit results by a combination of parameters', async () => {
     await assertCorrectResponse(
       {
+        dataGroupCode: 'CROP',
         organisationUnitCodes: ['NZ_AK'],
         dataElementCodes: ['CROP_1'],
         startDate: '2019-01-01',
@@ -206,6 +249,4 @@ export const testFetchAnalytics = () => {
       [CROP_RESPONSE_AUCKLAND_2019],
     );
   });
-
-  describe('aggregation', testFetchAnalyticsAggregations(assertCorrectResponse));
-};
+});

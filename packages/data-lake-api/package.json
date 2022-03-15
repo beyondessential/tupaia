@@ -11,10 +11,9 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rm -rf dist && run-p \"build:* {@}\" --",
-    "build:src": "babel src --out-dir dist --ignore \"src/__tests__/**\" --extensions .ts --config-file \"../../.babelrc-ts.js\"",
-    "build:types": "tsc",
+    "build": "tsc",
     "lint": "eslint . --ext .ts",
+    "lint:all": "yarn run lint \"src/**/*.{ts,jsx}\"",
     "lint:fix": "yarn lint --fix",
     "test": "jest --passWithNoTests",
     "test:coverage": "yarn test --coverage"
