@@ -231,20 +231,21 @@ export class TupaiaDataApi {
     });
 
     optionList.forEach(option => {
-      if (typeof option === 'string') {
-        try {
-          // options coming from question.options are JSON format strings
-          // options coming from option_set are actual JSON objects
-          const optionObject = optionsObjectValidator.validateSync(JSON.parse(option));
-          const { value, label } = optionObject;
-          optionsMetadata[sanitizeMetadataValue(value, type)] = label || value;
-        } catch (error) {
-          // Exception is thrown when option is a plain string
-          optionsMetadata[sanitizeMetadataValue(option, type)] = option;
-        }
-      } else {
+      if (typeof option !== 'string') {
         const { value, label } = option;
         optionsMetadata[sanitizeMetadataValue(value, type)] = label || value;
+        return;
+      }
+
+      try {
+        // options coming from question.options are JSON format strings
+        // options coming from option_set are actual JSON objects
+        const optionObject = optionsObjectValidator.validateSync(JSON.parse(option));
+        const { value, label } = optionObject;
+        optionsMetadata[sanitizeMetadataValue(value, type)] = label || value;
+      } catch (error) {
+        // Exception is thrown when option is a plain string
+        optionsMetadata[sanitizeMetadataValue(option, type)] = option;
       }
     });
 
