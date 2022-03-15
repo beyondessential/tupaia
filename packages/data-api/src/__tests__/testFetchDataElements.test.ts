@@ -39,6 +39,25 @@ describe('fetchDataElements()', () => {
     ]);
   });
 
+  it('returns a single data element with options label/value metadata included', async () => {
+    await expect(
+      api.fetchDataElements(['BCD902TEST'], { includeOptions: true }),
+    ).resolves.toStrictEqual([
+      {
+        code: 'BCD902TEST',
+        name: 'Terrain',
+        options: {
+          rock: 'Rocky terrain',
+          sea: 'The Ocean',
+          Fire: 'Fire',
+          Space: 'Space',
+          Earth: 'Earth',
+          Other: 'Other',
+        },
+      },
+    ]);
+  });
+
   it('returns multiple data elements in the correct format', async () => {
     await expect(
       api.fetchDataElements(['BCD1TEST', 'BCD57TEST', 'CROP_1', 'CROP_2'], {
