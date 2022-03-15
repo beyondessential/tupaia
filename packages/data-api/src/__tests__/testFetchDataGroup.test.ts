@@ -9,6 +9,10 @@ import { TupaiaDataApi } from '../TupaiaDataApi';
 describe('fetchDataGroup()', () => {
   const api = new TupaiaDataApi(getTestDatabase());
 
+  it('throws an error with invalid parameters', async () => {
+    await expect(api.fetchDataGroup()).toBeRejectedWith(/data group code/);
+  });
+
   it('returns a data group in the correct format', async () => {
     await expect(api.fetchDataGroup('BCDTEST')).resolves.toStrictEqual({
       code: 'BCDTEST',

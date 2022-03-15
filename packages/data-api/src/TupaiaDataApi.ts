@@ -71,27 +71,33 @@ export class TupaiaDataApi {
     };
   }
 
-  async fetchDataElements(dataElementCodes: string[], options: { includeOptions?: boolean } = {}) {
+  async fetchDataElements(dataElementCodes?: unknown, options: { includeOptions?: boolean } = {}) {
+    const validationErrorMessage = 'Please provide an array of data element codes';
+    const dataElementCodesValidator = yup
+      .array()
+      .of(yup.string().required())
+      .required(validationErrorMessage)
+      .typeError(validationErrorMessage);
+
+    const validatedDataElementCodes = dataElementCodesValidator.validateSync(dataElementCodes);
     const { includeOptions = true } = options;
-    if (!dataElementCodes || !Array.isArray(dataElementCodes)) {
-      throw new Error('Please provide an array of data element codes');
-    }
+
     const sqlQuery = new SqlQuery<
       { code: string; name: string; options: string[]; option_set_id: string; type: string }[]
     >(
       `
        SELECT code, name, options, option_set_id, type
        FROM question
-       WHERE code IN ${SqlQuery.array(dataElementCodes)};
+       WHERE code IN ${SqlQuery.array(validatedDataElementCodes)};
      `,
-      dataElementCodes,
+      validatedDataElementCodes,
     );
 
     return this.fetchDataElementsMetadataFromSqlQuery(sqlQuery, includeOptions);
   }
 
   async fetchDataGroup(
-    dataGroupCode: string | undefined,
+    dataGroupCode?: string,
     dataElementCodes?: string[],
     options: { includeOptions?: boolean } = {},
   ) {
