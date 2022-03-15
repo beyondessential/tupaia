@@ -4,13 +4,13 @@
  */
 
 import { DhisApi } from '@tupaia/dhis-api';
-import { getDhisConfig, createClassExtendingProxy } from '@tupaia/utils';
+import { legacy_getDhisConfig, createClassExtendingProxy } from '@tupaia/utils';
 import { DhisInputSchemeResolvingApiProxy } from './DhisInputSchemeResolvingApiProxy';
 
 const instances = {};
 
 export const getDhisApiInstance = (options, models) => {
-  const { serverName, serverUrl, serverReadOnly } = getDhisConfig(options);
+  const { serverName, serverUrl, serverReadOnly } = legacy_getDhisConfig(options);
   if (!instances[serverName]) {
     // Having a subclass of DhisApi causes some sort of circular dependency issue here, so we
     // have to extend it using an object proxy, which intercepts overridden method calls and passes

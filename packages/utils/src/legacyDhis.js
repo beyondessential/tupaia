@@ -51,6 +51,9 @@ const getServerName = (entityCode, isDataRegional) => {
 };
 
 /**
+ * @deprecated Used for migrating to new DataService based method. This file will be used for migrating data in a release,
+ * after which the next release will delete this file.
+ *
  * Returns configuration for creating an api instance connected to the dhis server.
  * The country containing the given entityCode will be used. If either none is passed in or the data
  * is regional, the regional dhis server will be used.
@@ -61,14 +64,14 @@ const getServerName = (entityCode, isDataRegional) => {
  * @param {boolean} options.isDataRegional  Along with entityCode, determines which dhis instance to use
  * @param {string}  options.serverName      If provided, the server name will take this value rather
  */
-export const getDhisConfig = ({
+export const legacy_getDhisConfig = ({
   serverName: serverNameInput,
   entityCode = '',
   entityCodes,
   isDataRegional = true,
 } = {}) => {
   if (entityCodes) {
-    const configs = entityCodes.map(code => getDhisConfig({ entityCode: code, isDataRegional }));
+    const configs = entityCodes.map(code => legacy_getDhisConfig({ entityCode: code, isDataRegional }));
     if (configs.some(config => config.serverName !== configs[0].serverName)) {
       throw new Error('All entities must use the same DHIS2 instance');
     }
