@@ -41,7 +41,8 @@
         "packages/lesmis-server/**",
         "packages/psss-server/**",
         "packages/report-server/**",
-        "packages/server-boilerplate/**"
+        "packages/server-boilerplate/**",
+        "packages/tsutils/**"
       ],
       "extends": "@beyondessential/ts",
       "parserOptions": {
