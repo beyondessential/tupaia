@@ -30,6 +30,7 @@ import {
   selectCurrentOrgUnit,
   selectCurrentMapOverlays,
   selectCurrentMapOverlayCodes,
+  selectMapOverlayEmptyMessage,
 } from '../../selectors';
 
 const pinnedOverlayCodeReducer = (currentOverlayCode, newOverlayCode) => {
@@ -42,7 +43,7 @@ const pinnedOverlayCodeReducer = (currentOverlayCode, newOverlayCode) => {
 
 const MapOverlayBarComponent = ({
   currentMapOverlays,
-  currentOrganisationUnitName,
+  emptyMessage,
   hierarchyData,
   currentMapOverlayCodes,
   onSetMapOverlay,
@@ -125,9 +126,6 @@ const MapOverlayBarComponent = ({
     onSetMaxSelectedOverlays(maxNumOfSelectedOverlays);
   };
 
-  const orgName = currentOrganisationUnitName || 'Your current selection';
-  const emptyMessage = `Select an area with valid data. ${orgName} has no map overlays available.`;
-
   return (
     <Control
       emptyMessage={emptyMessage}
@@ -158,19 +156,19 @@ const MapOverlayShape = PropTypes.shape({
 MapOverlayBarComponent.propTypes = {
   currentMapOverlayCodes: PropTypes.arrayOf(PropTypes.string),
   currentMapOverlays: PropTypes.arrayOf(MapOverlayShape),
+  emptyMessage: PropTypes.string,
   hierarchyData: PropTypes.array.isRequired,
   maxSelectedOverlays: PropTypes.number.isRequired,
   onSetMapOverlay: PropTypes.func.isRequired,
   onClearMeasure: PropTypes.func.isRequired,
   onSetDisplayedMapOverlays: PropTypes.func.isRequired,
   onSetMaxSelectedOverlays: PropTypes.func.isRequired,
-  currentOrganisationUnitName: PropTypes.string,
 };
 
 MapOverlayBarComponent.defaultProps = {
   currentMapOverlayCodes: [],
-  currentOrganisationUnitName: '',
   currentMapOverlays: [],
+  emptyMessage: null,
 };
 
 const mapStateToProps = state => {
@@ -184,6 +182,7 @@ const mapStateToProps = state => {
   return {
     currentMapOverlays,
     currentMapOverlayCodes,
+    emptyMessage: selectMapOverlayEmptyMessage(state),
     hierarchyData: mapOverlayHierarchy,
     currentOrganisationUnitName: currentOrganisationUnit.name,
     maxSelectedOverlays,
