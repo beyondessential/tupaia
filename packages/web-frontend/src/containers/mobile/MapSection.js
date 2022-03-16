@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { Map } from '../Map';
 import { MapOverlayBar } from './MapOverlayBar/MapOverlayBar';
 import { MapOverlayLegend } from './MapOverlayLegend';
+import { MapAttribution } from '../../components/mobile/MapAttribution';
 
 const MapSectionContainer = styled.div`
   flex: 1;
@@ -27,7 +28,8 @@ export const MapSection = ({ appHeaderHeight }) => {
   return (
     <MapSectionContainer>
       <InnerMapContainer>
-        <Map showZoomControl={false} />
+        <Map showZoomControl={false} showAttribution={false} />
+        <MapAttribution />
         <MapOverlayLegend />
       </InnerMapContainer>
       <MapOverlayBar appHeaderHeight={appHeaderHeight} />

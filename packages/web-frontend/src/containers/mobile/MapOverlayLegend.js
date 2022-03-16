@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
@@ -17,9 +17,8 @@ import { LEAFLET_Z_INDEX, MOBILE_BACKGROUND_COLOR } from '../../styles';
 
 const BottomRight = styled.div`
   position: absolute;
-  bottom: 0;
-  padding: 10px;
-  width: calc(100vw - 20px);
+  bottom: 10px;
+  right: 10px;
   z-index: ${LEAFLET_Z_INDEX + 1};
   display: flex;
   justify-content: flex-end;
@@ -51,7 +50,7 @@ const CollapsedIcon = styled(ExpandLessIcon)`
 const LegendContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: calc(100vw - 20px);
   min-height: 50px;
   border-radius: 5px;
   background: ${MOBILE_BACKGROUND_COLOR};
