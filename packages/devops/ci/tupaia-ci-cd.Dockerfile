@@ -3,12 +3,8 @@ FROM node:12.18.3-alpine3.11
 # install features not available in base alpine distro
 RUN apk --no-cache add \
   bash \
-  curl \
-  git \
-  lastpass-cli \
-  openssh \
   postgresql-client \
-  rsync
+  git
 
 # set the workdir so that all following commands run within /tupaia
 WORKDIR /tupaia
@@ -20,6 +16,7 @@ COPY yarn.lock ./
 COPY babel.config.json ./
 COPY .babelrc-ts.js ./
 COPY tsconfig-js.json ./
+COPY jest.config-ts.json ./
 RUN mkdir ./scripts
 COPY scripts/. ./scripts
 
@@ -41,6 +38,8 @@ RUN mkdir -p ./packages/data-api
 COPY packages/data-api/package.json ./packages/data-api
 RUN mkdir -p ./packages/data-broker
 COPY packages/data-broker/package.json ./packages/data-broker
+RUN mkdir -p ./packages/data-lake-api
+COPY packages/data-lake-api/package.json ./packages/data-lake-api
 RUN mkdir -p ./packages/database
 COPY packages/database/package.json ./packages/database
 RUN mkdir -p ./packages/dhis-api
@@ -78,8 +77,7 @@ COPY packages/web-config-server/package.json ./packages/web-config-server
 RUN mkdir -p ./packages/web-frontend
 COPY packages/web-frontend/package.json ./packages/web-frontend
 
-## run yarn without building internal dependencies, so we can cache that layer without code changes
-## within internal dependencies invalidating it
+## run yarn without building, so we can cache node_modules without code changes invalidating this layer
 RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --non-interactive --frozen-lockfile
 
 ## add content of all internal dependency packages ready for internal dependencies to be built
@@ -91,6 +89,7 @@ COPY packages/auth/. ./packages/auth
 COPY packages/database/. ./packages/database
 COPY packages/data-api/. ./packages/data-api
 COPY packages/data-broker/. ./packages/data-broker
+COPY packages/data-lake-api/. ./packages/data-lake-api
 COPY packages/dhis-api/. ./packages/dhis-api
 COPY packages/expression-parser/. ./packages/expression-parser
 COPY packages/indicators/. ./packages/indicators
@@ -99,9 +98,13 @@ COPY packages/ui-components/. ./packages/ui-components
 COPY packages/weather-api/. ./packages/weather-api
 COPY packages/server-boilerplate/. ./packages/server-boilerplate
 COPY packages/kobo-api/. ./packages/kobo-api
+COPY ./tsconfig* ./
 
 ## build internal dependencies
-RUN yarn build-internal-dependencies
+RUN yarn build:internal-dependencies
 
 # copy everything else from the repo
 COPY . ./
+
+# Make sure all packages build
+RUN yarn build:non-internal-dependencies

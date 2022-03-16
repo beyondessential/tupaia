@@ -1,42 +1,95 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import express from 'express';
-import cors from 'cors';
-import bodyParser from 'body-parser';
-import errorHandler from 'api-error-handler';
-
-import { addRoutesToApp } from './addRoutesToApp';
-import { sessionCookie } from './sessionCookie';
-import { attachSessionModel } from './attachSessionModel';
+import { OrchestratorApiBuilder, handleWith } from '@tupaia/server-boilerplate';
+import { TupaiaDatabase } from '@tupaia/database';
+import {
+  SaveWeeklyReportRequest,
+  SaveWeeklyReportRoute,
+  FetchAlertsRoute,
+  FetchAlertsRequest,
+  FetchConfirmedWeeklyReportRoute,
+  FetchConfirmedWeeklyReportRequest,
+  FetchCountries,
+  FetchCountriesRequest,
+  FetchCountrySites,
+  FetchCountrySitesRequest,
+  FetchWeeklyReportRoute,
+  FetchWeeklyReportRequest,
+  ConfirmWeeklyReportRoute,
+  ConfirmWeeklyReportRequest,
+  ProcessAlertActionRoute,
+  ProcessAlertActionRequest,
+  DeleteWeeklyReportRoute,
+  DeleteWeeklyReportRequest,
+  DeleteAlertRoute,
+  DeleteAlertRequest,
+} from '../routes';
 import { PsssSessionModel } from '../models';
+import { hasPSSSAccess } from '../utils';
 
 /**
  * Set up express server with middleware,
  */
-export function createApp(sessionModel: PsssSessionModel) {
-  const app = express();
+export function createApp(db = new TupaiaDatabase()) {
+  return (
+    new OrchestratorApiBuilder(db)
+      .useSessionModel(PsssSessionModel)
+      .verifyLogin(hasPSSSAccess)
 
-  /**
-   * Add middleware
-   */
-  app.use(
-    cors({
-      origin: true,
-      credentials: true, // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
-    }),
+      /**
+       * GET routes
+       */
+      .get<FetchAlertsRequest>('/v1/alerts/:category', handleWith(FetchAlertsRoute))
+      .get<FetchConfirmedWeeklyReportRequest>(
+        '/v1/confirmedWeeklyReport/:countryCode?',
+        handleWith(FetchConfirmedWeeklyReportRoute),
+      )
+      .get<FetchCountriesRequest>('/v1/country', handleWith(FetchCountries))
+      .get<FetchCountrySitesRequest>(
+        '/v1/country/:countryCode/sites',
+        handleWith(FetchCountrySites),
+      )
+      .get<FetchWeeklyReportRequest>(
+        '/v1/weeklyReport/:countryCode',
+        handleWith(FetchWeeklyReportRoute),
+      )
+      .get<FetchWeeklyReportRequest>(
+        '/v1/weeklyReport/:countryCode/:sites?',
+        handleWith(FetchWeeklyReportRoute),
+      )
+
+      /**
+       * POST routes
+       */
+      .post<ConfirmWeeklyReportRequest>(
+        '/v1/confirmedWeeklyReport/:countryCode',
+        handleWith(ConfirmWeeklyReportRoute),
+      )
+
+      /**
+       * PUT routes
+       */
+      .put<SaveWeeklyReportRequest>(
+        '/v1/weeklyReport/:countryCode/:siteCode?',
+        handleWith(SaveWeeklyReportRoute),
+      )
+      .put<ProcessAlertActionRequest>(
+        '/v1/alerts/:alertId/:action',
+        handleWith(ProcessAlertActionRoute),
+      )
+
+      /**
+       * DELETE routes
+       */
+      .delete<DeleteWeeklyReportRequest>(
+        '/v1/weeklyReport/:countryCode/:siteCode?',
+        handleWith(DeleteWeeklyReportRoute),
+      )
+      .delete<DeleteAlertRequest>('/v1/alerts/:alertId', handleWith(DeleteAlertRoute))
+
+      .build()
   );
-  app.use(bodyParser.json({ limit: '50mb' }));
-  app.use(errorHandler());
-  app.use(sessionCookie());
-  app.use(attachSessionModel(sessionModel));
-
-  /**
-   * Add all routes to the app
-   */
-  addRoutesToApp(app);
-
-  return app;
 }

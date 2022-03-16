@@ -8,6 +8,13 @@ import moment from 'moment';
 
 import { MaterializedViewLogDatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 
+export const SURVEY_RESPONSE_APPROVAL_STATUS = {
+  NOT_REQUIRED: 'not_required',
+  PENDING: 'pending',
+  REJECTED: 'rejected',
+  APPROVED: 'approved',
+};
+
 class SurveyResponseType extends DatabaseType {
   static databaseType = TYPES.SURVEY_RESPONSE;
 
@@ -96,6 +103,8 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
     if (result.length === 0) return false;
     return result[0].count === '1';
   }
+
+  approvalStatusTypes = SURVEY_RESPONSE_APPROVAL_STATUS;
 }
 
 const onChangeMarkAnswersChanged = async (

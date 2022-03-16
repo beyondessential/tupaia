@@ -3,6 +3,8 @@ import asyncio
 import functools
 import re
 
+from datetime import datetime, timedelta
+
 ec2 = boto3.resource('ec2')
 ec = boto3.client('ec2')
 iam = boto3.client('iam')
@@ -28,6 +30,9 @@ def get_tag(instance, tag_name):
     except IndexError:
         tag_value = ''
     return tag_value
+
+def get_db_tag(db_instance, tag_name):
+    return next(filter(lambda item: item['Key'] == tag_name, db_instance['TagList']))['Value']
 
 def add_tag(instance_id, tag_name, tag_value):
     ec.create_tags(
@@ -97,3 +102,27 @@ async def start_instance(instance):
     print('Starting instance ' + instance_object.id)
     await wait_for_instance(instance_object.id, 'running')
     print('Started instance with id ' + instance_object.id)
+
+def build_extra_tags(event, defaults):
+    extra_tags = [
+        { 'Key': 'DeployedBy', 'Value': event['User'] }
+    ]
+    if 'HoursOfLife' in event:
+        delete_after = datetime.now() + timedelta(hours=event['HoursOfLife'])
+        extra_tags.append({ 'Key': 'DeleteAfter', 'Value': format(delete_after, "%Y-%m-%d %H:%M") })
+
+    if event['DeploymentName'] == 'production':
+        if 'StartAtUTC' in event or 'StopAtUTC' in event:
+            raise Exception('Production deployment cannot have StartAtUTC/StopAtUTC')
+    else:
+        if 'StartAtUTC' in event:
+            extra_tags.append({ 'Key': 'StartAtUTC', 'Value': event['StartAtUTC'] })
+        else:
+            extra_tags.append({ 'Key': 'StartAtUTC', 'Value': defaults['StartAtUTC'] })
+
+        if 'StopAtUTC' in event:
+            extra_tags.append({ 'Key': 'StopAtUTC', 'Value': event['StopAtUTC'] })
+        else:
+            extra_tags.append({ 'Key': 'StopAtUTC', 'Value': defaults['StopAtUTC']})
+
+    return extra_tags

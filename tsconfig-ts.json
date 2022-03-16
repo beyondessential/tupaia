@@ -4,15 +4,11 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "module": "CommonJS",
-    "noEmit": true,
     "skipLibCheck": true,
     "strict": true,
     "target": "ES2019",
     "resolveJsonModule": true,
     "sourceMap": true,
-    "baseUrl": "./packages",
-    "paths": {
-      "@tupaia/*": ["*/src"]
-    }
+    "allowJs": false
   }
 }

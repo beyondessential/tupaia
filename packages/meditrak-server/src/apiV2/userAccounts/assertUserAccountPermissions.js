@@ -4,7 +4,11 @@
  */
 
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
+import {
+  hasBESAdminAccess,
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  LESMIS_ADMIN_PERMISSION_GROUP,
+} from '../../permissions';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
@@ -33,9 +37,10 @@ export const createUserAccountDBFilter = async (accessPolicy, models, criteria) 
   }
   // If we don't have BES Admin access, add a filter to the SQL query
   const dbConditions = { ...criteria };
-  const accessibleCountryCodes = accessPolicy.getEntitiesAllowed(
-    TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-  );
+  const accessibleCountryCodes = [
+    ...accessPolicy.getEntitiesAllowed(TUPAIA_ADMIN_PANEL_PERMISSION_GROUP),
+    ...accessPolicy.getEntitiesAllowed(LESMIS_ADMIN_PERMISSION_GROUP),
+  ];
   accessibleCountryCodes.push('DL'); // If we have admin panel anywhere, we can also view Demo Land
   const entities = await models.entity.find({
     code: accessibleCountryCodes,

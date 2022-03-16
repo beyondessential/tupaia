@@ -9,6 +9,7 @@ import IconButton from 'material-ui/IconButton';
 import DownloadIcon from 'material-ui/svg-icons/file/file-download';
 import BackIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
 import DefaultCloseIcon from 'material-ui/svg-icons/navigation/close';
+import { periodToMoment } from '@tupaia/utils';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
@@ -251,7 +252,7 @@ export class EnlargedDialogContent extends PureComponent {
     return (
       <DialogContentText style={styles.periodRange}>
         {'Latest available data: '}
-        {moment(period.latestAvailable).format('DD/MM/YY')}
+        {periodToMoment(period.latestAvailable).format('DD/MM/YY')}
       </DialogContentText>
     );
   }

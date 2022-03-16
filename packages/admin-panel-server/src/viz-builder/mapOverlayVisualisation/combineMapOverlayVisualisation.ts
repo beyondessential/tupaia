@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { ValidationError } from '@tupaia/utils';
 import { LegacyReport, Report} from '../types';
 import { MapOverlay, MapOverlayViz, MapOverlayVizResource } from './types';
 
@@ -12,12 +13,6 @@ const getData = (report: Report) => {
   const { fetch, transform } = config;
   const { aggregations, ...restOfFetch } = fetch;
   return { fetch: restOfFetch, aggregate: aggregations, transform };
-};
-
-// TODO: DRY
-const getLegacyData = (report: LegacyReport) => {
-  const { dataBuilder, config, dataServices } = report;
-  return { dataBuilder, config, dataServices };
 };
 
 const getPresentation = (mapOverlay: MapOverlay, report: Report | LegacyReport) => {
@@ -34,22 +29,22 @@ const getPresentation = (mapOverlay: MapOverlay, report: Report | LegacyReport) 
 
 export function combineMapOverlayVisualisation(visualisationResource: MapOverlayVizResource): MapOverlayViz {
   const { mapOverlay, report } = visualisationResource;
+
+  if (mapOverlay.legacy) {
+    throw new ValidationError('Legacy map overlay viz not supported');
+  }
+
   const { config, permissionGroup: mapOverlayPermissionGroup, ...rest } = mapOverlay;
-  const data = mapOverlay.legacy
-    ? getLegacyData(report as LegacyReport)
-    : getData(report as Report);
+  const data = getData(report);
   const presentation = getPresentation(mapOverlay, report);
 
   const visualisation: Record<string, unknown> = {
     mapOverlayPermissionGroup,
     data,
     presentation,
+    reportPermissionGroup: (report as Report).permissionGroup,
     ...rest,
   };
-  // TODO: the whole viz builder app: why are we supporting legacy vizes at all? Can't do anything with them in viz builder
-  if (!mapOverlay.legacy) {
-    visualisation.reportPermissionGroup = (report as Report).permissionGroup;
-  }
 
   return visualisation as MapOverlayViz;
 }

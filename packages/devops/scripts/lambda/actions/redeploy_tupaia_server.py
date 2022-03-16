@@ -77,7 +77,15 @@ def redeploy_tupaia_server(event):
         ]
         delete_after = get_tag(existing_instance, 'DeleteAfter')
         if delete_after != '':
-            extra_tags.append({ 'Key': 'DeleteAfter', 'Value': delete_after }),
+            extra_tags.append({ 'Key': 'DeleteAfter', 'Value': delete_after })
+
+        start_at_utc = get_tag(existing_instance, 'StartAtUTC')
+        if start_at_utc != '':
+            extra_tags.append({ 'Key': 'StartAtUTC', 'Value': start_at_utc })
+
+        stop_at_utc = get_tag(existing_instance, 'StopAtUTC')
+        if stop_at_utc != '':
+            extra_tags.append({ 'Key': 'StopAtUTC', 'Value': stop_at_utc })
 
         # launch server instance based on gold master AMI
         # original instance will be deleted by lambda script "swap_out_tupaia_server" once new instance is running
@@ -85,8 +93,8 @@ def redeploy_tupaia_server(event):
             deployment_name=get_tag(existing_instance, 'DeploymentName'),
             branch=get_tag(existing_instance, 'Branch'),
             instance_type=event.get('InstanceType', existing_instance['InstanceType']),
-            extra_tags=extra_tags + [{ 'Key': 'DeploymentComponent', 'Value': 'app-server' }], # TODO remove deployment component stuff after move to RDS
             image_code=event.get('ImageCode', None), # will use id below if not defined in the event
+            extra_tags=extra_tags,
             image_id=existing_instance['ImageId'],
             security_group_code=event.get('SecurityGroupCode', None), # will use id below if not defined in the event
             security_group_id=existing_instance['SecurityGroups'][0]['GroupId'],
