@@ -5,13 +5,13 @@
 
 import { yup } from '@tupaia/utils';
 
-import { yupUtils } from '../../validation';
+import { yupTsUtils } from '../../validation';
 
 describe('DescribableLazy', () => {
   it('works with array and string schemas', () => {
     const humanValidator = yup.string().oneOf(['human', 'zombie']);
     const groupOfHumanValidator = yup.array().of(humanValidator);
-    const paramsValidator = yupUtils.describableLazy(
+    const paramsValidator = yupTsUtils.describableLazy(
       value => {
         if (typeof value === 'string') {
           return humanValidator;

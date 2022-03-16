@@ -40,7 +40,7 @@ export class DescribableLazy<T extends AnySchema<any, any, any>> extends Lazy<T,
       if (type === 'array') {
         validateArraySchema(schema);
         const { oneOf: arrayOneOf } = schema.innerType;
-        if (oneOf.length > 0) {
+        if (arrayOneOf.length > 0) {
           return {
             type,
             items: { enum: arrayOneOf },
