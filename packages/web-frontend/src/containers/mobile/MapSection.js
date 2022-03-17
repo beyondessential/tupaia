@@ -14,15 +14,15 @@ const MapSectionContainer = styled.div`
   flex-direction: column;
 `;
 
-export const MapSection = ({ appHeaderHeight }) => {
+export const MapSection = ({ useModal }) => {
   return (
     <MapSectionContainer>
       <Map showZoomControl={false} />
-      <MapOverlayBar appHeaderHeight={appHeaderHeight} />
+      <MapOverlayBar useModal={useModal} />
     </MapSectionContainer>
   );
 };
 
 MapSection.propTypes = {
-  appHeaderHeight: PropTypes.number.isRequired,
+  useModal: PropTypes.func.isRequired,
 };

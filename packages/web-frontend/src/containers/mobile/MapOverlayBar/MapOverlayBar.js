@@ -76,12 +76,14 @@ const MapOverlayBarComponent = ({
   hasMapOverlays,
   currentMapOverlay,
   isLoading,
-  appHeaderHeight,
+  useModal,
 }) => {
-  const [isLibraryOpen, setIsLibraryOpen] = useState(false);
+  const [createModalPortal, setIsModalOpen] = useModal();
 
-  const openLibrary = useCallback(() => setIsLibraryOpen(true), []);
-  const closeLibrary = useCallback(() => setIsLibraryOpen(false), []);
+  const openLibrary = useCallback(() => setIsModalOpen(true), []);
+  const closeLibrary = useCallback(() => setIsModalOpen(false), []);
+
+  const ModalPortal = createModalPortal(<MapOverlayLibrary onClose={closeLibrary} />);
 
   return (
     <>
@@ -108,15 +110,13 @@ const MapOverlayBarComponent = ({
           </RightArrowIconWrapper>
         )}
       </CollapsedContainer>
-      {isLibraryOpen && (
-        <MapOverlayLibrary onClose={closeLibrary} appHeaderHeight={appHeaderHeight} />
-      )}
+      {ModalPortal}
     </>
   );
 };
 
 MapOverlayBarComponent.propTypes = {
-  appHeaderHeight: PropTypes.number.isRequired,
+  useModal: PropTypes.func.isRequired,
   currentMapOverlay: PropTypes.shape({
     name: PropTypes.string,
   }),
