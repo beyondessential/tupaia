@@ -70,16 +70,36 @@ export const legacy_getDhisConfig = ({
   entityCodes,
   isDataRegional = true,
 } = {}) => {
+  const serverName = legacy_getDhisServerName({
+    serverName,
+    entityCode,
+    entityCodes,
+    isDataRegional,
+  });
+  const serverUrl = getServerUrlFromName(serverName);
+  const serverReadOnly = READ_ONLY_SERVERS.has(serverName);
+
+  return { serverName, serverUrl, serverReadOnly };
+};
+
+/**
+ * Convenience function that allows us to only get the server name, same input as above.
+ */
+export const legacy_getDhisServerName = ({
+  serverName: serverNameInput,
+  entityCode = '',
+  entityCodes,
+  isDataRegional = true,
+}) => {
   if (entityCodes) {
-    const configs = entityCodes.map(code => legacy_getDhisConfig({ entityCode: code, isDataRegional }));
+    const configs = entityCodes.map(code =>
+      legacy_getDhisConfig({ entityCode: code, isDataRegional }),
+    );
     if (configs.some(config => config.serverName !== configs[0].serverName)) {
       throw new Error('All entities must use the same DHIS2 instance');
     }
     return configs[0];
   }
   const serverName = serverNameInput || getServerName(entityCode, isDataRegional);
-  const serverUrl = getServerUrlFromName(serverName);
-  const serverReadOnly = READ_ONLY_SERVERS.has(serverName);
-
-  return { serverName, serverUrl, serverReadOnly };
+  return serverName;
 };
