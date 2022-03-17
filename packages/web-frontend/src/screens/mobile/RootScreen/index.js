@@ -72,7 +72,8 @@ const RootScreen = ({
     setSelectedTab,
   ]);
 
-  // maintain the header height in state, so the overlay div can sit below it
+  // maintain the header height in state, so the overlay div can fill (but not overfill!) the screen
+  // below it
   const headerRef = useRef();
   const [headerHeight, setHeaderHeight] = useState(0);
   const updateHeaderHeight = () => {

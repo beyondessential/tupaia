@@ -21,7 +21,9 @@ const LibraryContainer = styled.div`
   top: ${p => p.$appHeaderHeight}px;
   left: 0;
   right: 0;
-  min-height: calc(100vh - ${p => p.$appHeaderHeight}px);
+  min-height: calc(
+    100vh - ${p => p.$appHeaderHeight}px
+  ); /* subtract header so library doesn't overflow the screen and become unnecessarily scrollable */
   z-index: ${LEAFLET_Z_INDEX + 1};
   background: black;
 `;
