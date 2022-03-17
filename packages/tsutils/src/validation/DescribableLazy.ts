@@ -6,23 +6,24 @@
 import { AnySchema, ArraySchema } from 'yup';
 import Lazy, { LazyBuilder } from 'yup/lib/Lazy';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// type YupSchemas<T> = AnySchema<T>[];
-
 function validateArraySchema(schema: any): asserts schema is ArraySchema<any> {
   if (!schema || !schema.innerType || !schema.innerType.oneOf) {
     throw new Error(`schema: ${schema} is not an array`);
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class DescribableLazy<T extends AnySchema<any, any, any>> extends Lazy<T, any> {
-  yupSchemas: [...T[]];
+// yupSchemas: tuple of Schema type, eg. [StringSchema, NumberSchema]
+// builder: LazyBuilder<union of Schema Types>, eg. LazyBuilder<StringSchema | NumberSchema>
+// We want the union type to be all the schemas in the tuple
+export class DescribableLazy<
+  TupleOfSchemas extends [...AnySchema<any, any, any>[]],
+  UnionOfSchemas extends TupleOfSchemas[number] = TupleOfSchemas[number]
+> extends Lazy<UnionOfSchemas, any> {
+  yupSchemas: TupleOfSchemas;
 
-  constructor(builder: LazyBuilder<T>, yupSchemas: T[]) {
+  constructor(builder: LazyBuilder<UnionOfSchemas>, yupSchemas: TupleOfSchemas) {
     super(builder);
-    const arrayToTuple = <R extends unknown[]>(arrayInput: [...R]) => arrayInput;
-    this.yupSchemas = arrayToTuple(yupSchemas);
+    this.yupSchemas = yupSchemas;
   }
 
   describe() {
@@ -62,9 +63,12 @@ export class DescribableLazy<T extends AnySchema<any, any, any>> extends Lazy<T,
   }
 }
 
-export const describableLazy = <T extends AnySchema<any, any, any>>(
-  builder: LazyBuilder<T>,
-  yupSchemas: T[],
+export const describableLazy = <
+  ArrayOfSchemas extends AnySchema<any, any, any>[],
+  UnionOfSchemas extends ArrayOfSchemas[number] = ArrayOfSchemas[number]
+>(
+  builder: LazyBuilder<UnionOfSchemas>,
+  yupSchemas: [...ArrayOfSchemas],
 ) => {
   return new DescribableLazy(builder, yupSchemas);
 };
