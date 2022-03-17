@@ -12,7 +12,7 @@ describe('DescribableLazy', () => {
     const humanValidator = yup.string().oneOf(['human', 'zombie']);
     const groupOfHumanValidator = yup.array().of(humanValidator);
     const paramsValidator = yupTsUtils.describableLazy(
-      value => {
+      (value: unknown) => {
         if (typeof value === 'string') {
           return humanValidator;
         }

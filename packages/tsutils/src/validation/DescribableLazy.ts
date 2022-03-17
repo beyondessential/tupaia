@@ -15,13 +15,10 @@ function validateArraySchema(schema: any): asserts schema is ArraySchema<any> {
 // yupSchemas: tuple of Schema type, eg. [StringSchema, NumberSchema]
 // builder: LazyBuilder<union of Schema Types>, eg. LazyBuilder<StringSchema | NumberSchema>
 // We want the union type to be all the schemas in the tuple
-export class DescribableLazy<
-  TupleOfSchemas extends [...AnySchema<any, any, any>[]],
-  UnionOfSchemas extends TupleOfSchemas[number] = TupleOfSchemas[number]
-> extends Lazy<UnionOfSchemas, any> {
-  yupSchemas: TupleOfSchemas;
+export class DescribableLazy<Schema extends AnySchema<any, any, any>> extends Lazy<Schema, any> {
+  yupSchemas: Schema[];
 
-  constructor(builder: LazyBuilder<UnionOfSchemas>, yupSchemas: TupleOfSchemas) {
+  constructor(builder: LazyBuilder<Schema>, yupSchemas: Array<Schema>) {
     super(builder);
     this.yupSchemas = yupSchemas;
   }
@@ -63,12 +60,14 @@ export class DescribableLazy<
   }
 }
 
+type ExactMatch<T, Matcher> = T extends Matcher ? (Matcher extends T ? T : never) : never;
+
 export const describableLazy = <
-  ArrayOfSchemas extends AnySchema<any, any, any>[],
-  UnionOfSchemas extends ArrayOfSchemas[number] = ArrayOfSchemas[number]
+  TypesInBuilder extends AnySchema<any, any, any>,
+  TypesInArray extends AnySchema<any, any, any>
 >(
-  builder: LazyBuilder<UnionOfSchemas>,
-  yupSchemas: [...ArrayOfSchemas],
+  builder: LazyBuilder<ExactMatch<TypesInBuilder, TypesInArray>>,
+  yupSchemas: Array<ExactMatch<TypesInArray, TypesInBuilder>>,
 ) => {
-  return new DescribableLazy(builder, yupSchemas);
+  return new DescribableLazy(builder, yupSchemas as TypesInBuilder[]);
 };
