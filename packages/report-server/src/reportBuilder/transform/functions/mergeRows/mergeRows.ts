@@ -42,7 +42,7 @@ export const paramsValidator = yup.object().shape({
         const mergeStrategyMapValidator = Object.fromEntries(
           Object.entries(value).map(([columnName]) => [columnName, mergeStrategyNameValidator]),
         );
-        return yup.object().shape(mergeStrategyMapValidator);
+        return yup.object().shape(mergeStrategyMapValidator).required();
       }
 
       throw new yup.ValidationError(
