@@ -29,7 +29,7 @@ export const mapStringToStringValidator = yupTsUtils.describableLazy(
       const stringToStringMapValidator = Object.fromEntries(
         Object.entries(value || {}).map(([field]) => [field, yup.string().required()]),
       );
-      return yup.object().shape(stringToStringMapValidator).required();
+      return yup.object().shape(stringToStringMapValidator).notRequired();
     }
 
     throw new yup.ValidationError('Input must be a string to string mapping');
