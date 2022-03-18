@@ -34,29 +34,33 @@ exports.up = async function (db) {
   const [supplyChainFijiHierarchyResult] = selectSupplyChainFijiHierarchyId.rows;
   const supplyChainFijiHierarchyId = supplyChainFijiHierarchyResult.id;
 
-  entityRelationsToUpdate.forEach(async entity => {
-    const oldEntityId = await codeToId(db, 'entity', entity.oldEntityCode);
-    const newEntityId = await codeToId(db, 'entity', entity.newEntityCode);
-    await db.runSql(`
-      UPDATE entity_relation
-      SET child_id = '${newEntityId}'
-      WHERE child_id = '${oldEntityId}' AND entity_hierarchy_id = '${supplyChainFijiHierarchyId}';
-    `);
-  });
+  await Promise.all(
+    entityRelationsToUpdate.map(async entity => {
+      const oldEntityId = await codeToId(db, 'entity', entity.oldEntityCode);
+      const newEntityId = await codeToId(db, 'entity', entity.newEntityCode);
+      await db.runSql(`
+        UPDATE entity_relation
+        SET child_id = '${newEntityId}'
+        WHERE child_id = '${oldEntityId}' AND entity_hierarchy_id = '${supplyChainFijiHierarchyId}';
+      `);
+    }),
+  );
 
-  facilitiesToDelete.forEach(async facility => {
-    const entityId = await codeToId(db, 'entity', facility);
-    const clinicId = await codeToId(db, 'clinic', facility);
-    await db.runSql(`
-      DELETE FROM entity_relation WHERE child_id = '${entityId}';
-    `);
-    await db.runSql(`
-      DELETE FROM entity WHERE id = '${entityId}';
-    `);
-    await db.runSql(`
-      DELETE FROM clinic WHERE id = '${clinicId}';
-    `);
-  });
+  await Promise.all(
+    facilitiesToDelete.map(async facility => {
+      const entityId = await codeToId(db, 'entity', facility);
+      const clinicId = await codeToId(db, 'clinic', facility);
+      await db.runSql(`
+        DELETE FROM entity_relation WHERE child_id = '${entityId}';
+      `);
+      await db.runSql(`
+        DELETE FROM entity WHERE id = '${entityId}';
+      `);
+      await db.runSql(`
+        DELETE FROM clinic WHERE id = '${clinicId}';
+      `);
+    }),
+  );
 
   const weirdClinicId = await codeToId(db, 'clinic', clinicWithWeirdCodeToDelete);
   await db.runSql(`
