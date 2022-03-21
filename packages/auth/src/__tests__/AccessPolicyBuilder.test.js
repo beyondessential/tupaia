@@ -9,8 +9,6 @@ import { buildLegacyAccessPolicy } from '../buildLegacyAccessPolicy';
 
 jest.mock('../buildAccessPolicy');
 jest.mock('../buildLegacyAccessPolicy');
-const buildAccessPolicyMock = buildAccessPolicy.mockResolvedValue({});
-const buildLegacyAccessPolicyMock = buildLegacyAccessPolicy.mockResolvedValue({});
 
 describe('AccessPolicyBuilder', () => {
   let notifyPermissionsChange;
@@ -32,6 +30,8 @@ describe('AccessPolicyBuilder', () => {
     },
   };
   const userId = 'xxx';
+  let buildAccessPolicyMock = buildAccessPolicy.mockResolvedValue({});
+  let buildLegacyAccessPolicyMock = buildLegacyAccessPolicy.mockResolvedValue({});
 
   it('throws error when userId is undefined', () => {
     const builder = new AccessPolicyBuilder(models);
@@ -68,6 +68,32 @@ describe('AccessPolicyBuilder', () => {
   });
 
   describe('handles caching and cache invalidation', () => {
+    beforeEach(() => {
+      buildAccessPolicyMock = buildAccessPolicy.mockResolvedValue({});
+      buildLegacyAccessPolicyMock = buildLegacyAccessPolicy.mockResolvedValue({});
+    });
+
+    it('does not cache the policy if the response throws an error', async () => {
+      buildAccessPolicyMock = buildAccessPolicy.mockRejectedValue(
+        new Error('Could not build access policy'),
+      );
+
+      const builder = new AccessPolicyBuilder(models);
+      try {
+        await builder.getPolicyForUser(userId); // built once
+      } catch (error) {
+        // Error expected
+      }
+
+      try {
+        await builder.getPolicyForUser(userId); // built second time since it fails to build
+      } catch (error) {
+        // Error expected
+      }
+
+      expect(buildAccessPolicyMock).toHaveBeenCalledTimes(2);
+    });
+
     it('avoids rebuilding the policy for the same user', async () => {
       const builder = new AccessPolicyBuilder(models);
       await builder.getPolicyForUser(userId);

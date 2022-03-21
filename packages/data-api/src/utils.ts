@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export const sanitizeMetadataValue = (value, type) => {
+export const sanitizeMetadataValue = (value: string, type: string) => {
   switch (type) {
     case 'Number': {
       const sanitizedValue = parseFloat(value);
@@ -21,7 +21,7 @@ export const sanitizeMetadataValue = (value, type) => {
  * Analytics table values have already been partially sanitized
  * see: `build_analytics_table()` database function
  */
-export const sanitizeAnalyticsTableValue = (value, type) => {
+export const sanitizeAnalyticsTableValue = (value: string, type: string) => {
   switch (type) {
     case 'Binary':
     case 'Checkbox':
@@ -33,3 +33,7 @@ export const sanitizeAnalyticsTableValue = (value, type) => {
       return value;
   }
 };
+
+// TODO: Move to ts-utils package
+export const isDefined = <T>(val: T): val is Exclude<T, undefined | null> =>
+  val !== undefined && val !== null;

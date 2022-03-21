@@ -19,6 +19,8 @@ export const LineChart = ({
   opacity,
   connectNulls,
   exportWithLabels,
+  strokeDasharray,
+  dot,
 }) => {
   const defaultColor = isExporting ? DARK_BLUE : BLUE;
 
@@ -34,6 +36,8 @@ export const LineChart = ({
       fill={color || defaultColor}
       connectNulls={connectNulls}
       isAnimationActive={isEnlarged && !isExporting}
+      strokeDasharray={strokeDasharray}
+      dot={dot}
     >
       {isExporting && exportWithLabels && (
         <LabelList
@@ -58,6 +62,8 @@ LineChart.propTypes = {
   isEnlarged: PropTypes.bool,
   connectNulls: PropTypes.bool,
   exportWithLabels: PropTypes.bool,
+  strokeDasharray: PropTypes.string,
+  dot: PropTypes.bool,
 };
 
 LineChart.defaultProps = {
@@ -67,4 +73,6 @@ LineChart.defaultProps = {
   opacity: null,
   connectNulls: false,
   exportWithLabels: true,
+  strokeDasharray: undefined,
+  dot: true,
 };

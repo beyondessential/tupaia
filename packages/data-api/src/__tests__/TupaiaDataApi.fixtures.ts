@@ -34,6 +34,7 @@ const BCD1 = {
   code: 'BCD1TEST',
   name: 'Facility Status',
   type: 'Radio',
+  text: 'What the status of the facility?',
   options: [],
 };
 
@@ -41,6 +42,7 @@ const BCD325 = {
   code: 'BCD325TEST',
   name: 'Days of operation',
   type: 'Number',
+  text: 'How many days has the facility been operational?',
   options: [],
 };
 
@@ -48,6 +50,7 @@ const BCD57 = {
   code: 'BCD57TEST',
   name: 'Foundation',
   type: 'Radio',
+  text: 'What foundations is it built on?',
   options: [
     'Concrete slab',
     'Concrete stumps',
@@ -58,10 +61,25 @@ const BCD57 = {
   ],
 };
 
+const BCD902 = {
+  code: 'BCD902TEST',
+  name: 'Terrain',
+  type: 'Radio',
+  text: 'What kind of terrain?',
+  options: [
+    { value: 'rock', label: 'Rocky terrain' },
+    '{ "value": "sea", "label": "The Ocean" }',
+    { value: 'Fire' },
+    '{ "value": "Space" }',
+    'Earth',
+    'Other',
+  ],
+};
+
 const BCD_SURVEY = {
   code: 'BCDTEST',
   name: 'Basic Clinic Data Test',
-  questions: [BCD1, BCD325, BCD57],
+  questions: [BCD1, BCD325, BCD57, BCD902],
 };
 
 const CROP_1 = {
@@ -302,7 +320,15 @@ export const KITTY_RESPONSE_AUCKLAND_MORNING_20220608W23 = {
   },
 };
 
-export const SURVEY_RESPONSES = [
+export type SurveyResponse = {
+  id: string;
+  surveyCode: string;
+  entityCode: string;
+  data_time: string;
+  answers: Record<string, string>;
+};
+
+export const SURVEY_RESPONSES: SurveyResponse[] = [
   BCD_RESPONSE_AUCKLAND,
   BCD_RESPONSE_WELLINGTON,
   CROP_RESPONSE_WELLINGTON_2019,

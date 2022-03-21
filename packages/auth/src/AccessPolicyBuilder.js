@@ -47,11 +47,17 @@ export class AccessPolicyBuilder {
     }
 
     const cacheKey = getCacheKey(userId, useLegacyFormat);
-    if (!this.cachedPolicyPromises[cacheKey]) {
-      this.cachedPolicyPromises[cacheKey] = useLegacyFormat
-        ? buildLegacyAccessPolicy(this.models, userId)
-        : buildAccessPolicy(this.models, userId);
+    if (this.cachedPolicyPromises[cacheKey]) {
+      return this.cachedPolicyPromises[cacheKey];
     }
-    return this.cachedPolicyPromises[cacheKey];
+
+    const policyPromise = useLegacyFormat
+      ? buildLegacyAccessPolicy(this.models, userId)
+      : buildAccessPolicy(this.models, userId);
+    this.cachedPolicyPromises[cacheKey] = policyPromise;
+    policyPromise.catch(() => {
+      this.resetCachesForUser(userId); // Remove from cache if the request fails
+    });
+    return policyPromise;
   }
 }

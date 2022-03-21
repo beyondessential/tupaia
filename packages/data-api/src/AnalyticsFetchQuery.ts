@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { yup } from '@tupaia/utils';
+import { TupaiaDatabase } from '@tupaia/database';
 import { SqlQuery } from './SqlQuery';
 
 const VALUE_AGGREGATION_FUNCTIONS = {
@@ -12,7 +14,13 @@ const VALUE_AGGREGATION_FUNCTIONS = {
 
 const COMMONLY_SUPPORTED_CONFIG_KEYS = ['dataSourceEntityType', 'dataSourceEntityFilter'];
 
-const AGGREGATION_SWITCHES = {
+type AggregationSwitch = {
+  groupByPeriodField?: string;
+  aggregationFunction?: string;
+  aggregateEntities?: boolean;
+  supportedConfigKeys?: string[];
+};
+const AGGREGATION_SWITCHES: Record<string, AggregationSwitch> = {
   FINAL_EACH_DAY: {
     groupByPeriodField: 'day_period',
     aggregationFunction: VALUE_AGGREGATION_FUNCTIONS.MOST_RECENT,
@@ -54,7 +62,10 @@ const AGGREGATION_SWITCHES = {
   },
 };
 
-const supportsConfig = (aggregationSwitch, config) => {
+const supportsConfig = (
+  aggregationSwitch: AggregationSwitch,
+  config: Record<string, unknown> | undefined,
+) => {
   if (!config) {
     return true;
   }
@@ -65,8 +76,66 @@ const supportsConfig = (aggregationSwitch, config) => {
   );
 };
 
+const orgUnitMapValidator = yup.lazy((entityMap: unknown) => {
+  const validatedMap = yup.object().required().validateSync(entityMap);
+  const fieldValidator = yup.object().shape({ code: yup.string().required() });
+  return yup.object().shape(
+    Object.keys(validatedMap).reduce<Record<string, typeof fieldValidator>>(
+      (mapValidator, key: string) => ({
+        ...mapValidator,
+        [key]: fieldValidator,
+      }),
+      {},
+    ),
+  );
+});
+
+export const buildEntityMap = (orgUnitMap: unknown = {}) => {
+  const validatedMap = orgUnitMapValidator.validateSync(orgUnitMap);
+
+  return Object.fromEntries(
+    Object.entries(validatedMap).map(([key, value]) => {
+      return [key, value.code];
+    }),
+  );
+};
+
+export type AnalyticsFetchOptions = {
+  dataElementCodes: string[];
+  organisationUnitCodes: string[];
+  startDate?: string;
+  endDate?: string;
+  aggregations: (string | { type?: string; config?: Record<string, unknown> })[] | undefined;
+};
+
+export type Analytic = {
+  period: string;
+  entityCode: string;
+  type: string;
+  value: string;
+  dataElementCode: string;
+};
+
+export type AnalyticsFetchResult = {
+  analytics: Analytic[];
+  numAggregationsProcessed: number;
+};
+
+type QueryAggregation = {
+  config: { entityMap: Record<string, string> } & Record<string, unknown>;
+  switch: AggregationSwitch;
+  stackId: number;
+};
+
 export class AnalyticsFetchQuery {
-  constructor(database, options) {
+  private readonly database: TupaiaDatabase;
+  private readonly dataElementCodes: string[];
+  private readonly entityCodes: string[];
+  private readonly startDate?: string;
+  private readonly endDate?: string;
+  private readonly aggregations: QueryAggregation[];
+
+  constructor(database: TupaiaDatabase, options: AnalyticsFetchOptions) {
     this.database = database;
 
     const { dataElementCodes, organisationUnitCodes, startDate, endDate } = options;
@@ -79,19 +148,29 @@ export class AnalyticsFetchQuery {
     if (options.aggregations) {
       for (let i = 0; i < options.aggregations.length; i++) {
         const aggregation = options.aggregations[i];
-        const aggregationSwitch = AGGREGATION_SWITCHES[aggregation?.type];
-        if (!aggregationSwitch || !supportsConfig(aggregationSwitch, aggregation?.config)) {
+        if (typeof aggregation === 'string') {
+          break;
+        }
+
+        const { type, config } = aggregation;
+
+        const aggregationSwitch = type ? AGGREGATION_SWITCHES[type] : undefined;
+
+        if (!type || !aggregationSwitch || !supportsConfig(aggregationSwitch, config)) {
           break; // We only support chaining aggregations up to the last supported type
         }
-        const dbAggregation = { type: aggregation?.type };
-        dbAggregation.switch = AGGREGATION_SWITCHES[aggregation?.type]; // add internal switch
-        dbAggregation.config = aggregation?.config; // add external config, supplied by client
-        dbAggregation.stackId = i + 1;
-        this.aggregations.push(dbAggregation);
+
+        const entityMap = buildEntityMap(config?.orgUnitMap);
+
+        const queryAggregation = {
+          switch: aggregationSwitch,
+          config: { entityMap, ...config },
+          stackId: i + 1,
+        };
+
+        this.aggregations.push(queryAggregation);
       }
     }
-
-    this.isAggregating = this.aggregations.length > 0;
 
     this.validate();
   }
@@ -99,7 +178,7 @@ export class AnalyticsFetchQuery {
   async fetch() {
     const { query, params } = this.buildQueryAndParams();
 
-    const sqlQuery = new SqlQuery(query, params);
+    const sqlQuery = new SqlQuery<Analytic[]>(query, params);
 
     return {
       analytics: await sqlQuery.executeOnDatabase(this.database),
@@ -109,25 +188,27 @@ export class AnalyticsFetchQuery {
 
   validate() {
     this.aggregations.forEach(aggregation => {
-      if (aggregation.switch.aggregateEntities && !aggregation.config?.orgUnitMap) {
+      if (
+        aggregation.switch.aggregateEntities &&
+        Object.keys(aggregation.config.entityMap).length === 0
+      ) {
         throw new Error('When using entity aggregation you must provide an org unit map');
       }
     });
   }
 
-  getEntityCodeField(aggregation) {
+  getEntityCodeField(aggregation: QueryAggregation) {
     return aggregation.switch.aggregateEntities ? 'aggregation_entity_code' : 'entity_code';
   }
 
-  getCtesAndParams(aggregation) {
+  getCtesAndParams(aggregation: QueryAggregation) {
     if (!aggregation.switch.aggregateEntities) {
       return { cte: '', params: [] };
     }
 
     // if mapping from one set of entities to another, include the mapped codes as "aggregation_entity_code"
-    const entityMap = aggregation.config.orgUnitMap;
     const columns = ['code', 'aggregation_entity_code'];
-    const rows = Object.entries(entityMap).map(([key, value]) => [key, value.code]);
+    const rows = Object.entries(aggregation.config.entityMap);
     const cte = `
       WITH entity_relations_a${aggregation.stackId} (${columns.join(', ')})
       AS (${SqlQuery.values(rows)})
@@ -138,7 +219,7 @@ export class AnalyticsFetchQuery {
 
   getAliasedColumns() {
     return [
-      `entity_code AS "entityCode"`,
+      'entity_code AS "entityCode"',
       'data_element_code AS "dataElementCode"',
       'period',
       'value',
@@ -146,7 +227,7 @@ export class AnalyticsFetchQuery {
     ].join(', ');
   }
 
-  getAggregationSelect(aggregation) {
+  getAggregationSelect(aggregation: QueryAggregation) {
     const { aggregationFunction, groupByPeriodField = 'period' } = aggregation.switch;
 
     const fields = [
@@ -189,7 +270,7 @@ export class AnalyticsFetchQuery {
     return { clause: `WHERE ${periodConditions.join(' AND ')}`, params: periodParams };
   }
 
-  getAggregationJoin(aggregation) {
+  getAggregationJoin(aggregation: QueryAggregation) {
     if (!aggregation.switch.aggregateEntities) {
       return '';
     }
@@ -199,7 +280,7 @@ export class AnalyticsFetchQuery {
     return `INNER JOIN ${relationsTableName} on ${relationsTableName}.code = ${previousTableName}.entity_code`;
   }
 
-  getAggregationGroupByClause(aggregation) {
+  getAggregationGroupByClause(aggregation: QueryAggregation) {
     const groupByFields = [this.getEntityCodeField(aggregation), 'data_element_code'];
     const { groupByPeriodField } = aggregation.switch;
     if (groupByPeriodField) groupByFields.push(groupByPeriodField);
@@ -207,7 +288,10 @@ export class AnalyticsFetchQuery {
   }
 
   buildQueryAndParams() {
-    const { ctes: ctesClause, params: ctesParams } = this.aggregations.reduce(
+    const { ctes: ctesClause, params: ctesParams } = this.aggregations.reduce<{
+      ctes: string;
+      params: string[];
+    }>(
       ({ ctes, params }, aggregation) => {
         const { cte, params: cteParams } = this.getCtesAndParams(aggregation);
         return { ctes: `${ctes}\n${cte}`, params: params.concat(cteParams) };
@@ -223,7 +307,7 @@ export class AnalyticsFetchQuery {
       ${whereClause}) as base_analytics`;
     const baseAnalyticsParams = this.entityCodes.concat(this.dataElementCodes).concat(whereParams);
 
-    const wrapAnalyticsInAggregation = (analytics, aggregation) =>
+    const wrapAnalyticsInAggregation = (analytics: string, aggregation: QueryAggregation) =>
       `(${this.getAggregationSelect(aggregation)} 
       FROM 
       ${analytics}
