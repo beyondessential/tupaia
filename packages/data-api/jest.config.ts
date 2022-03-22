@@ -9,5 +9,4 @@ module.exports = async () => ({
   ...baseConfig,
   rootDir: '.',
   setupFilesAfterEnv: ['../../jest.setup.js', './jest.setup.ts'],
-  preset: 'ts-jest',
 });
