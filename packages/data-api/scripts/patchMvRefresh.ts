@@ -3,13 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+// @ts-ignore
 import DBMigrate from 'db-migrate';
 import * as dotenv from 'dotenv';
 import { requireEnv, getEnvVarOrDefault } from '@tupaia/utils';
 
 dotenv.config(); // Load the environment variables into process.env
 
-const exitWithError = error => {
+const exitWithError = (error: Error) => {
   console.error(error.message);
   process.exit(1);
 };
@@ -38,7 +39,7 @@ const migrationInstance = DBMigrate.getInstance(
       },
     },
   },
-  async (migrator, internals, originalError, migrationError) => {
+  async (migrator: any, internals: any, originalError: Error, migrationError: Error) => {
     if (originalError) {
       exitWithError(new Error(`db-migrate error: ${migrationError.message}`));
     }
@@ -50,7 +51,7 @@ const migrationInstance = DBMigrate.getInstance(
     try {
       driver.close();
     } catch (err) {
-      exitWithError(err);
+      exitWithError(err as Error);
     }
   },
 );

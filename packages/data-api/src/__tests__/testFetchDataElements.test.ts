@@ -6,7 +6,7 @@ import { getTestDatabase } from '@tupaia/database';
 
 import { TupaiaDataApi } from '../TupaiaDataApi';
 
-export const testFetchDataElements = () => {
+describe('fetchDataElements()', () => {
   const api = new TupaiaDataApi(getTestDatabase());
 
   it('throws an error with invalid parameters', async () => {
@@ -37,6 +37,25 @@ export const testFetchDataElements = () => {
           'Concrete stumps': 'Concrete stumps',
           'Timber stumps': 'Timber stumps',
           'Timber on ground': 'Timber on ground',
+          Earth: 'Earth',
+          Other: 'Other',
+        },
+      },
+    ]);
+  });
+
+  it('returns a single data element with options label/value metadata included', async () => {
+    await expect(
+      api.fetchDataElements(['BCD902TEST'], { includeOptions: true }),
+    ).resolves.toStrictEqual([
+      {
+        code: 'BCD902TEST',
+        name: 'Terrain',
+        options: {
+          rock: 'Rocky terrain',
+          sea: 'The Ocean',
+          Fire: 'Fire',
+          Space: 'Space',
           Earth: 'Earth',
           Other: 'Other',
         },
@@ -104,4 +123,4 @@ export const testFetchDataElements = () => {
       },
     ]);
   });
-};
+});

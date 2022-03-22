@@ -3,10 +3,39 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { TupaiaDatabase } from '@tupaia/database';
 import { SqlQuery } from './SqlQuery';
 
+export type EventsFetchOptions = {
+  organisationUnitCodes: string[];
+  startDate?: string;
+  endDate?: string;
+  eventId: string | undefined;
+  dataGroupCode: string;
+  dataElementCodes?: string[];
+};
+
+export type EventAnswer = {
+  date: string;
+  entityCode: string;
+  entityName: '';
+  eventId: string;
+  type: string;
+  value: any;
+  dataElementCode: string;
+};
+
 export class EventsFetchQuery {
-  constructor(database, options) {
+  private readonly database: TupaiaDatabase;
+  private readonly entityCodes: string[];
+  private readonly startDate?: string;
+  private readonly endDate?: string;
+  private readonly eventId?: string;
+  private readonly dataGroupCode: string;
+  private readonly dataElementCodes: string[];
+  private readonly hasDataElements: boolean;
+
+  constructor(database: TupaiaDatabase, options: EventsFetchOptions) {
     this.database = database;
 
     const {
@@ -15,7 +44,7 @@ export class EventsFetchQuery {
       endDate,
       eventId,
       dataGroupCode,
-      dataElementCodes,
+      dataElementCodes = [],
     } = options;
 
     this.dataElementCodes = dataElementCodes;
@@ -24,13 +53,13 @@ export class EventsFetchQuery {
     this.endDate = endDate;
     this.eventId = eventId;
     this.dataGroupCode = dataGroupCode;
-    this.hasDataElements = dataElementCodes && dataElementCodes.length > 0;
+    this.hasDataElements = dataElementCodes.length > 0;
   }
 
   async fetch() {
     const { query, params } = this.buildQueryAndParams();
 
-    const sqlQuery = new SqlQuery(query, params);
+    const sqlQuery = new SqlQuery<EventAnswer[]>(query, params);
 
     return sqlQuery.executeOnDatabase(this.database);
   }
@@ -83,7 +112,7 @@ export class EventsFetchQuery {
     }
 
     if (conditions.length === 0) {
-      return '';
+      return { clause: '', params };
     }
 
     return { clause: `WHERE ${conditions.join(' AND ')}`, params };

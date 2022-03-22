@@ -6,18 +6,19 @@
 import groupBy from 'lodash.groupby';
 
 import moment from 'moment';
-import { getSortByKey, DEFAULT_BINARY_OPTIONS } from '@tupaia/utils';
+import { TupaiaDatabase } from '@tupaia/database';
+import { getSortByKey, DEFAULT_BINARY_OPTIONS, yup } from '@tupaia/utils';
 import { SqlQuery } from './SqlQuery';
-import { AnalyticsFetchQuery } from './AnalyticsFetchQuery';
-import { EventsFetchQuery } from './EventsFetchQuery';
-import { sanitizeMetadataValue, sanitizeAnalyticsTableValue } from './utils';
+import { AnalyticsFetchOptions, AnalyticsFetchQuery } from './AnalyticsFetchQuery';
+import { EventsFetchQuery, EventAnswer, EventsFetchOptions } from './EventsFetchQuery';
+import { sanitizeMetadataValue, sanitizeAnalyticsTableValue, isDefined } from './utils';
 import { validateEventOptions, validateAnalyticsOptions } from './validation';
 import { sanitiseFetchDataOptions } from './sanitiseFetchDataOptions';
 
 const EVENT_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 
-const buildEventDataValues = resultsForEvent =>
-  resultsForEvent.reduce(
+const buildDataValuesFromAnswers = (answersForEvent: EventAnswer[]) =>
+  answersForEvent.reduce<Record<string, string | number>>(
     (values, { dataElementCode, type, value }) => ({
       ...values,
       [dataElementCode]: sanitizeAnalyticsTableValue(value, type),
@@ -26,17 +27,19 @@ const buildEventDataValues = resultsForEvent =>
   );
 
 export class TupaiaDataApi {
-  constructor(database) {
+  private readonly database: TupaiaDatabase;
+
+  constructor(database: TupaiaDatabase) {
     this.database = database;
   }
 
-  async fetchEvents(optionsInput) {
+  async fetchEvents(optionsInput: Record<string, unknown>) {
     await validateEventOptions(optionsInput);
-    const options = sanitiseFetchDataOptions(optionsInput);
+    const options = sanitiseFetchDataOptions(optionsInput as EventsFetchOptions);
     const results = await new EventsFetchQuery(this.database, options).fetch();
-    const resultsByEventId = groupBy(results, 'eventId');
+    const answersByEventId = groupBy(results, 'eventId');
     const hasElements = options.dataElementCodes.length > 0;
-    return Object.values(resultsByEventId)
+    return Object.values(answersByEventId)
       .map(resultsForEvent => {
         const [{ eventId, date, entityCode, entityName }] = resultsForEvent;
         return {
@@ -44,15 +47,15 @@ export class TupaiaDataApi {
           eventDate: moment(date).format(EVENT_DATE_FORMAT),
           orgUnit: entityCode,
           orgUnitName: entityName,
-          dataValues: hasElements ? buildEventDataValues(resultsForEvent) : {},
+          dataValues: hasElements ? buildDataValuesFromAnswers(resultsForEvent) : {},
         };
       })
       .sort(getSortByKey('eventDate'));
   }
 
-  async fetchAnalytics(optionsInput) {
+  async fetchAnalytics(optionsInput: Record<string, unknown>) {
     await validateAnalyticsOptions(optionsInput);
-    const options = sanitiseFetchDataOptions(optionsInput);
+    const options = sanitiseFetchDataOptions(optionsInput as AnalyticsFetchOptions);
     const { analytics, numAggregationsProcessed } = await new AnalyticsFetchQuery(
       this.database,
       options,
@@ -68,30 +71,42 @@ export class TupaiaDataApi {
     };
   }
 
-  async fetchDataElements(dataElementCodes, options = {}) {
+  async fetchDataElements(dataElementCodes?: unknown, options: { includeOptions?: boolean } = {}) {
+    const validationErrorMessage = 'Please provide an array of data element codes';
+    const dataElementCodesValidator = yup
+      .array()
+      .of(yup.string().required())
+      .required(validationErrorMessage)
+      .typeError(validationErrorMessage);
+
+    const validatedDataElementCodes = dataElementCodesValidator.validateSync(dataElementCodes);
     const { includeOptions = true } = options;
-    if (!dataElementCodes || !Array.isArray(dataElementCodes)) {
-      throw new Error('Please provide an array of data element codes');
-    }
-    const sqlQuery = new SqlQuery(
+
+    const sqlQuery = new SqlQuery<
+      { code: string; name: string; options: string[]; option_set_id: string; type: string }[]
+    >(
       `
        SELECT code, name, options, option_set_id, type
        FROM question
-       WHERE code IN ${SqlQuery.array(dataElementCodes)};
+       WHERE code IN ${SqlQuery.array(validatedDataElementCodes)};
      `,
-      dataElementCodes,
+      validatedDataElementCodes,
     );
 
     return this.fetchDataElementsMetadataFromSqlQuery(sqlQuery, includeOptions);
   }
 
-  async fetchDataGroup(dataGroupCode, dataElementCodes, options = {}) {
+  async fetchDataGroup(
+    dataGroupCode?: string,
+    dataElementCodes?: string[],
+    options: { includeOptions?: boolean } = {},
+  ) {
     const { includeOptions = true } = options;
     if (!dataGroupCode) {
       throw new Error('Please provide a data group code');
     }
 
-    const dataGroups = await new SqlQuery(
+    const dataGroups = await new SqlQuery<{ code: string; name: string }[]>(
       `
        SELECT code, name
        FROM survey
@@ -105,13 +120,22 @@ export class TupaiaDataApi {
       throw new Error(`Cannot find Survey: ${dataGroupCode}`);
     }
 
-    let dataGroupMetadata = {
+    let dataGroupMetadata: { code: string; name: string; dataElements?: any[] } = {
       ...dataGroup,
     };
 
     // dataElementCodes metadata can be optional
     if (dataElementCodes && Array.isArray(dataElementCodes)) {
-      const sqlQuery = await new SqlQuery(
+      const sqlQuery = new SqlQuery<
+        {
+          code: string;
+          name: string;
+          text: string;
+          options: string[];
+          option_set_id: string;
+          type: string;
+        }[]
+      >(
         `
          SELECT question.code, question.name, question.text, question.options, question.option_set_id, question.type
          FROM question
@@ -139,14 +163,17 @@ export class TupaiaDataApi {
     return dataGroupMetadata;
   }
 
-  async fetchDataElementsMetadataFromSqlQuery(sqlQuery, includeOptions) {
+  private async fetchDataElementsMetadataFromSqlQuery(
+    sqlQuery: SqlQuery<{ option_set_id: string | undefined; type: string; options: string[] }[]>,
+    includeOptions: boolean,
+  ) {
     const dataElementsMetadata = await sqlQuery.executeOnDatabase(this.database);
 
     // includeOptions = true, should also fetch metadata for options from both question.options and question.option_set_id
     if (includeOptions) {
       // Get all possible option_set_ids from questions
       const optionSetIds = [
-        ...new Set(dataElementsMetadata.filter(d => !!d.option_set_id).map(d => d.option_set_id)),
+        ...new Set(dataElementsMetadata.map(d => d.option_set_id).filter(isDefined)),
       ];
       // Get all the options from the option sets and grouped by set ids.
       const optionsGroupedBySetId = await this.getOptionsGroupedBySetId(optionSetIds);
@@ -154,7 +181,10 @@ export class TupaiaDataApi {
       return dataElementsMetadata.map(
         ({ options, type, option_set_id: optionSetId, ...restOfMetadata }) => {
           // In reality, the options can only come from either question.options or question.option_set_id
-          const allOptions = [...options, ...(optionsGroupedBySetId[optionSetId] || [])];
+          const allOptions = [
+            ...options,
+            ...(optionSetId ? optionsGroupedBySetId[optionSetId] : []),
+          ];
           return {
             options: this.buildOptionsMetadata(allOptions, type),
             ...restOfMetadata,
@@ -171,12 +201,14 @@ export class TupaiaDataApi {
     );
   }
 
-  async getOptionsGroupedBySetId(optionSetIds) {
-    if (!optionSetIds || !optionSetIds.length) {
+  private async getOptionsGroupedBySetId(optionSetIds: string[]) {
+    if (optionSetIds.length === 0) {
       return {};
     }
 
-    const options = await new SqlQuery(
+    const options = await new SqlQuery<
+      { value: string; label: string | undefined; option_set_id: string }[]
+    >(
       `
        SELECT option.value, option.label, option.option_set_id
        FROM option
@@ -188,20 +220,33 @@ export class TupaiaDataApi {
     return groupBy(options, 'option_set_id');
   }
 
-  buildOptionsMetadata = (options = [], type) => {
+  private buildOptionsMetadata = (
+    options: (string | { value: string; label: string | undefined })[] = [],
+    type: string,
+  ) => {
     const optionList = options.length === 0 && type === 'Binary' ? DEFAULT_BINARY_OPTIONS : options;
 
     if (!optionList.length) {
       return undefined;
     }
 
-    const optionsMetadata = {};
+    const optionsMetadata: Record<string, string> = {};
+    const optionsObjectValidator = yup.object({
+      value: yup.string().required(),
+      label: yup.string(),
+    });
 
     optionList.forEach(option => {
+      if (typeof option !== 'string') {
+        const { value, label } = option;
+        optionsMetadata[sanitizeMetadataValue(value, type)] = label || value;
+        return;
+      }
+
       try {
         // options coming from question.options are JSON format strings
         // options coming from option_set are actual JSON objects
-        const optionObject = typeof option === 'string' ? JSON.parse(option) : option;
+        const optionObject = optionsObjectValidator.validateSync(JSON.parse(option));
         const { value, label } = optionObject;
         optionsMetadata[sanitizeMetadataValue(value, type)] = label || value;
       } catch (error) {
