@@ -9,8 +9,6 @@ import { yup } from '@tupaia/utils';
 import {
   draftDashboardItemValidator,
   legacyDashboardItemValidator,
-
-
 } from '../../../viz-builder/dashboardVisualisation/validators';
 import { PreviewMode } from '../../../viz-builder/types';
 import { DashboardVisualisationExtractor } from '../../../viz-builder/dashboardVisualisation/DashboardVisualisationExtractor';
