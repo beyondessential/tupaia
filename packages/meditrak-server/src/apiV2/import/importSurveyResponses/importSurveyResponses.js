@@ -141,6 +141,9 @@ export async function importSurveyResponses(req, res) {
       const deletedResponseIds = new Set();
       const questionIds = [];
       const survey = await models.survey.findOne({ code: tabName });
+      if (!survey) {
+        throw new Error(`Tab name "${tabName}" does not match an existing survey code`);
+      }
 
       // extract response ids and set up update batcher
       const { maxColumnIndex, maxRowIndex } = getMaxRowColumnIndex(sheet);
