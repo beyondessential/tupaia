@@ -104,27 +104,29 @@ export const Legend = React.memo(
           const isDisplayed =
             !displayedMapOverlayCodes || displayedMapOverlayCodes.includes(mapOverlayCode);
 
-          return serieses.map((series, index) => {
-            const { type } = series;
-            const LegendComponent = getLegendComponent(type);
-            return (
-              <>
-                <SeriesContainer key={series.key} className={className} isDisplayed={isDisplayed}>
-                  {legendsHaveSameType && <LegendName>{`${series.name}: `}</LegendName>}
-                  <LegendComponent
-                    key={series.key}
-                    hasIconLayer={hasIconLayer}
-                    hasRadiusLayer={hasRadiusLayer}
-                    hasColorLayer={hasColorLayer}
-                    series={series}
-                    setValueHidden={setValueHidden}
-                    hiddenValues={hiddenValues}
-                  />
-                </SeriesContainer>
-                {index < serieses.length - 1 && SeriesDivider && <SeriesDivider />}
-              </>
-            );
-          });
+          return serieses
+            .sort(a => (a.type === MEASURE_TYPE_COLOR ? -1 : 1)) // color series should sit at the top
+            .map((series, index) => {
+              const { type } = series;
+              const LegendComponent = getLegendComponent(type);
+              return (
+                <>
+                  <SeriesContainer key={series.key} className={className} isDisplayed={isDisplayed}>
+                    {legendsHaveSameType && <LegendName>{`${series.name}: `}</LegendName>}
+                    <LegendComponent
+                      key={series.key}
+                      hasIconLayer={hasIconLayer}
+                      hasRadiusLayer={hasRadiusLayer}
+                      hasColorLayer={hasColorLayer}
+                      series={series}
+                      setValueHidden={setValueHidden}
+                      hiddenValues={hiddenValues}
+                    />
+                  </SeriesContainer>
+                  {index < serieses.length - 1 && SeriesDivider && <SeriesDivider />}
+                </>
+              );
+            });
         })}
       </>
     );
