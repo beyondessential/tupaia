@@ -3,7 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { yup, yupUtils } from '@tupaia/utils';
+import { yup } from '@tupaia/utils';
+import { yupTsUtils } from '@tupaia/tsutils';
 
 import { Context } from '../../../context';
 import { TransformParser } from '../../parser';
@@ -27,7 +28,7 @@ const mergeStrategyNameValidator = optionalMergeStrategyNameValidator.required()
 
 export const paramsValidator = yup.object().shape({
   groupBy: starSingleOrMultipleColumnsValidator,
-  using: yupUtils.describableLazy(
+  using: yupTsUtils.describableLazy(
     (value: unknown) => {
       if (value === undefined) {
         return optionalMergeStrategyNameValidator;
@@ -41,7 +42,7 @@ export const paramsValidator = yup.object().shape({
         const mergeStrategyMapValidator = Object.fromEntries(
           Object.entries(value).map(([columnName]) => [columnName, mergeStrategyNameValidator]),
         );
-        return yup.object().shape(mergeStrategyMapValidator);
+        return yup.object().shape(mergeStrategyMapValidator).required();
       }
 
       throw new yup.ValidationError(

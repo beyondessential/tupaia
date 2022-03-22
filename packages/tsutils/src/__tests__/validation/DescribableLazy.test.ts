@@ -3,14 +3,16 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { yup, yupUtils } from '../../validation';
+import { yup } from '@tupaia/utils';
+
+import { yupTsUtils } from '../../validation';
 
 describe('DescribableLazy', () => {
   it('works with array and string schemas', () => {
     const humanValidator = yup.string().oneOf(['human', 'zombie']);
     const groupOfHumanValidator = yup.array().of(humanValidator);
-    const paramsValidator = yupUtils.describableLazy(
-      value => {
+    const paramsValidator = yupTsUtils.describableLazy(
+      (value: unknown) => {
         if (typeof value === 'string') {
           return humanValidator;
         }

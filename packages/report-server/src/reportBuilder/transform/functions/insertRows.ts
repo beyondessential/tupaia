@@ -3,7 +3,8 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { yup, yupUtils } from '@tupaia/utils';
+import { yup } from '@tupaia/utils';
+import { yupTsUtils } from '@tupaia/tsutils';
 
 import { Row } from '../../types';
 import { Context } from '../../context';
@@ -23,12 +24,15 @@ const positioners = {
   start: (index: number, insertCount: number) => insertCount,
 };
 
-const positionValidator = yup.string().oneOf(['before', 'after', 'start']).default('after');
+const positionValidator = yup
+  .mixed<'before' | 'after' | 'start'>()
+  .oneOf(['before', 'after', 'start'])
+  .default('after');
 
 export const paramsValidator = yup.object().shape({
   columns: mapStringToStringValidator,
   where: yup.string(),
-  position: yupUtils.describableLazy(() => {
+  position: yupTsUtils.describableLazy(() => {
     return positionValidator;
   }, [positionValidator]),
 });

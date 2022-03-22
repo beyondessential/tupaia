@@ -3,7 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { yup, orderBy, yupUtils } from '@tupaia/utils';
+import { yup, orderBy } from '@tupaia/utils';
+import { yupTsUtils } from '@tupaia/tsutils';
 
 import { TransformParser } from '../parser';
 import { Row } from '../../types';
@@ -18,7 +19,7 @@ const ascOrDescValidator = yup.mixed<'asc' | 'desc'>().oneOf(['asc', 'desc']);
 
 export const paramsValidator = yup.object().shape({
   by: starSingleOrMultipleColumnsValidator,
-  direction: yupUtils.describableLazy(
+  direction: yupTsUtils.describableLazy(
     (value: unknown) => {
       if (typeof value === 'string' || value === undefined) {
         return ascOrDescValidator;
