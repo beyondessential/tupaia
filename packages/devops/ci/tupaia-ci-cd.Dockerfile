@@ -14,7 +14,6 @@ WORKDIR /tupaia
 COPY package.json ./
 COPY yarn.lock ./
 COPY babel.config.json ./
-COPY .babelrc-ts.js ./
 COPY tsconfig-js.json ./
 COPY jest.config-ts.json ./
 RUN mkdir ./scripts
