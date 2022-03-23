@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import IconButton from '@material-ui/core/IconButton';
+import Link from '@material-ui/core/Link';
 import InfoIcon from '@material-ui/icons/Info';
 import CloseIcon from '@material-ui/icons/Close';
 import CopyrightIcon from '@material-ui/icons/Copyright';
@@ -17,20 +18,21 @@ const Container = styled.div`
   position: absolute;
   left: 10px;
   bottom: 10px;
-  z-index: ${LEAFLET_Z_INDEX + 1};
+  z-index: ${LEAFLET_Z_INDEX + 2};
   display: flex;
   align-items: center;
-  opacity: 0.8;
 `;
 
 const Watermark = styled(MapWatermark)`
   position: relative;
+  z-index: ${LEAFLET_Z_INDEX + 2};
+  opacity: 0.8;
 `;
 
 const InfoButton = styled(IconButton)`
   font-size: 18px;
   padding: 0 10px;
-  opacity: 0.9;
+  opacity: 0.7;
 `;
 
 const AttributionsContainer = styled.div`
@@ -43,6 +45,8 @@ const AttributionsContainer = styled.div`
   border-radius: 5px;
   background: white;
   padding-top: 4px;
+  z-index: ${LEAFLET_Z_INDEX + 3};
+  opacity: 0.92;
 `;
 
 const CloseButton = styled(IconButton)`
@@ -54,11 +58,22 @@ const CloseButton = styled(IconButton)`
   color: ${MOBILE_BACKGROUND_COLOR};
 `;
 
-const Attribution = styled.div`
+const AttributionLink = styled(Link)`
   display: flex;
+  align-items: center;
+  padding: 10px;
+  justify-content: center;
 `;
 
-const AttributionLink = styled.a``;
+const StyledCopyrightIcon = styled(CopyrightIcon)`
+  margin-right: 4px;
+`;
+
+const Divider = styled.div`
+  height: 0px;
+  border: 1px solid black;
+  opacity: 0.3;
+`;
 
 export const MapAttribution = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -71,28 +86,23 @@ export const MapAttribution = () => {
       </InfoButton>
       {isExpanded && (
         <AttributionsContainer>
-          <Attribution>
-            <AttributionLink href="https://leafletjs.com/" target="_blank">
-              Leaflet
-            </AttributionLink>
-          </Attribution>
-          <Attribution>
-            <CopyrightIcon />
-            <AttributionLink href="https://www.mapbox.com/about/maps/" target="_blank">
-              Mapbox
-            </AttributionLink>
-          </Attribution>
-          <Attribution>
-            <CopyrightIcon />
-            <AttributionLink href="http://www.openstreetmap.org/copyright" target="_blank">
-              OpenStreetMap
-            </AttributionLink>
-          </Attribution>
-          <Attribution>
-            <AttributionLink href="https://www.mapbox.com/map-feedback/" target="_blank">
-              Improve this map
-            </AttributionLink>
-          </Attribution>
+          <AttributionLink href="https://leafletjs.com/" target="_blank">
+            Leaflet
+          </AttributionLink>
+          <Divider />
+          <AttributionLink href="https://www.mapbox.com/about/maps/" target="_blank">
+            <StyledCopyrightIcon fontSize="inherit" />
+            Mapbox
+          </AttributionLink>
+          <Divider />
+          <AttributionLink href="http://www.openstreetmap.org/copyright" target="_blank">
+            <StyledCopyrightIcon fontSize="inherit" />
+            OpenStreetMap
+          </AttributionLink>
+          <Divider />
+          <AttributionLink href="https://www.mapbox.com/map-feedback/" target="_blank">
+            Improve this map
+          </AttributionLink>
           <CloseButton onClick={() => setIsExpanded(false)}>
             <CloseIcon fontSize="inherit" />
           </CloseButton>

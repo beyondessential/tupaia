@@ -19,12 +19,12 @@ const BottomRight = styled.div`
   position: absolute;
   bottom: 10px;
   right: 10px;
-  z-index: ${LEAFLET_Z_INDEX + 1};
   display: flex;
   justify-content: flex-end;
 `;
 
 const CollapsedContainer = styled(Button)`
+  z-index: ${LEAFLET_Z_INDEX + 1};
   border-radius: 5px;
   background: ${MOBILE_BACKGROUND_COLOR};
   text-transform: none;
@@ -56,6 +56,7 @@ const LegendContainer = styled.div`
   background: ${MOBILE_BACKGROUND_COLOR};
   position: relative;
   padding-top: 4px;
+  z-index: ${LEAFLET_Z_INDEX + 3};
 `;
 
 const SeriesContainer = styled.div`
