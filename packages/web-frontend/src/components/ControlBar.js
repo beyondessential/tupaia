@@ -27,7 +27,7 @@ import OpenIcon from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import CloseIcon from 'material-ui/svg-icons/navigation/arrow-drop-up';
 import SearchIcon from 'material-ui/svg-icons/action/search';
 import TextField from 'material-ui/TextField';
-import { TRANS_BLACK, CONTROL_BAR_WIDTH, WHITE } from '../styles';
+import { TRANS_BLACK_MORE, CONTROL_BAR_WIDTH, WHITE } from '../styles';
 
 const wrapperPadding = 14;
 
@@ -36,7 +36,7 @@ const Container = styled.div`
   flex-grow: ${props => (props.expanded ? 1 : 0)};
   flex-shrink: ${props => (props.expanded ? 1 : 0)};
   flex-basis: ${props => (props.expanded ? '160px' : '50px')};
-  background-color: ${TRANS_BLACK};
+  background-color: ${TRANS_BLACK_MORE};
   border-radius: 8px;
   width: ${CONTROL_BAR_WIDTH}px;
   flex-direction: column;

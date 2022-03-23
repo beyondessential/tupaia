@@ -5,9 +5,6 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-/**
- * SearchBar
- */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { isNull } from 'lodash';
@@ -49,7 +46,7 @@ const styles = {
     flexShrink: 1,
     flexBasis: '0%',
     overflowY: 'auto',
-    maxHeight: '200px',
+    maxHeight: '350px',
   },
   searchResultItem: {
     display: 'flex',
