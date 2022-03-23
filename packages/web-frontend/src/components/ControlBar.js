@@ -8,7 +8,7 @@
 /**
  * ControlBar
  *
- * This is the base component for the search bar and measure bar. Children in JSX will be rendered
+ * This is the base component for the search bar. Children in JSX will be rendered
  * on expansion.
  *
  * @prop {string} value The value being typed into the bar for search
@@ -25,9 +25,9 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import OpenIcon from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import CloseIcon from 'material-ui/svg-icons/navigation/arrow-drop-up';
-import Marker from 'material-ui/svg-icons/maps/add-location';
+import SearchIcon from 'material-ui/svg-icons/action/search';
 import TextField from 'material-ui/TextField';
-import { TRANS_BLACK, CONTROL_BAR_WIDTH, MAP_OVERLAY_SELECTOR, WHITE } from '../styles';
+import { TRANS_BLACK, CONTROL_BAR_WIDTH, WHITE } from '../styles';
 
 const wrapperPadding = 14;
 
@@ -44,7 +44,6 @@ const Container = styled.div`
   cursor: auto;
   transition: 0.5s;
   min-height: 0; /* firefox vertical scroll */
-  ${props => props.style};
 `;
 
 const TopBar = styled.div`
@@ -57,38 +56,9 @@ const TopBar = styled.div`
   padding-right: ${wrapperPadding}px;
 `;
 
-const Text = styled.div`
-  display: flex;
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-basis: 0%;
-  padding-left: 2px;
-  margin: 3px;
-  color: ${WHITE};
-  font-size: 16px;
-  align-items: center;
-  align-self: stretch;
-`;
-
 const Expansion = styled.div`
-  display: flex;
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-basis: 0%;
-  flex-direction: column;
   color: ${WHITE};
   padding-bottom: 10px;
-  background: rgba(255, 255, 255, 0.1);
-  margin: 1px;
-  padding-left: ${wrapperPadding}px;
-  padding-right: ${wrapperPadding}px;
-  overflow: hidden;
-`;
-
-const TopBarExpansion = styled.div`
-  color: ${WHITE};
-  padding-bottom: 10px;
-  background: black;
   margin: 1px;
   padding-left: ${wrapperPadding}px;
   padding-right: ${wrapperPadding}px;
@@ -105,19 +75,7 @@ const IconContainer = styled.div`
 
 export class ControlBar extends PureComponent {
   render() {
-    const {
-      value,
-      isExpanded,
-      onSearchChange,
-      onExpandClick,
-      icon,
-      hintText,
-      children,
-      inTopBar,
-      style,
-    } = this.props;
-
-    const ExpansionDiv = inTopBar ? TopBarExpansion : Expansion;
+    const { isExpanded, onSearchChange, onExpandClick, hintText, children } = this.props;
 
     const searchChange = !isExpanded
       ? event => {
@@ -137,38 +95,29 @@ export class ControlBar extends PureComponent {
         <OpenIcon {...props} onClick={onExpandClick} />
       );
 
-    const text = !onSearchChange ? (
-      <Text
-        style={{ marginRight: 14, borderRight: MAP_OVERLAY_SELECTOR.border }}
-        onClick={onExpandClick}
-      >
-        {value || 'Select your map data'}
-      </Text>
-    ) : (
-      <TextField
-        name="ControlBarField"
-        onChange={searchChange}
-        onFocus={searchFocus}
-        hintText={hintText}
-        underlineShow={false}
-        autoComplete="off"
-        style={{
-          flexGrow: 1,
-          flexShrink: 1,
-          flexBasis: '0%',
-          paddingLeft: 6,
-        }}
-      />
-    );
-
     return (
-      <Container onBlur={this.props.onControlBlur} expanded={isExpanded} style={style}>
+      <Container onBlur={this.props.onControlBlur} expanded={isExpanded}>
         <TopBar>
-          <IconContainer>{icon}</IconContainer>
-          {text}
+          <IconContainer>
+            <SearchIcon />
+          </IconContainer>
+          <TextField
+            name="ControlBarField"
+            onChange={searchChange}
+            onFocus={searchFocus}
+            hintText={hintText}
+            underlineShow={false}
+            autoComplete="off"
+            style={{
+              flexGrow: 1,
+              flexShrink: 1,
+              flexBasis: '0%',
+              paddingLeft: 6,
+            }}
+          />
           <ExpandIcon />
         </TopBar>
-        {isExpanded ? <ExpansionDiv>{children}</ExpansionDiv> : null}
+        {isExpanded ? <Expansion>{children}</Expansion> : null}
       </Container>
     );
   }
@@ -178,20 +127,13 @@ ControlBar.propTypes = {
   ...TextField.propTypes,
   value: PropTypes.string,
   isExpanded: PropTypes.bool,
-  onSearchChange: PropTypes.func,
-  onSearchFocus: PropTypes.func,
+  onSearchChange: PropTypes.func.isRequired,
   onExpandClick: PropTypes.func.isRequired,
-  inTopBar: PropTypes.bool,
-  icon: PropTypes.node,
   hintText: PropTypes.string,
 };
 
 ControlBar.defaultProps = {
   value: '',
   isExpanded: false,
-  icon: <Marker />,
-  inTopBar: false,
   hintText: '',
-  onSearchFocus: undefined,
-  onSearchChange: undefined,
 };
