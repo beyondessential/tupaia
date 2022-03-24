@@ -21,21 +21,19 @@ const InnerMapContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  min-height: 270px;
+  min-height: 230px;
 `;
 
-export const MapSection = ({ appHeaderHeight }) => {
-  return (
-    <MapSectionContainer>
-      <InnerMapContainer>
-        <Map showZoomControl={false} showAttribution={false} />
-        <MapAttribution />
-        <MapOverlayLegend />
-      </InnerMapContainer>
-      <MapOverlayBar appHeaderHeight={appHeaderHeight} />
-    </MapSectionContainer>
-  );
-};
+export const MapSection = ({ appHeaderHeight }) => (
+  <MapSectionContainer>
+    <InnerMapContainer>
+      <Map showZoomControl={false} showAttribution={false} />
+      <MapAttribution />
+      <MapOverlayLegend />
+    </InnerMapContainer>
+    <MapOverlayBar appHeaderHeight={appHeaderHeight} />
+  </MapSectionContainer>
+);
 
 MapSection.propTypes = {
   appHeaderHeight: PropTypes.number.isRequired,

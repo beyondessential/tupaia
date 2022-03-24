@@ -53,9 +53,11 @@ const ArrowButton = styled(MuiIconButton)`
   margin-left: 5px;
   transition: color 0.2s ease;
 
-  &:hover {
-    background: rgba(0, 0, 0, 0.2);
-    color: ${PRIMARY_BLUE};
+  @media (hover: hover) {
+    &:hover {
+      background: rgba(0, 0, 0, 0.2);
+      color: ${PRIMARY_BLUE};
+    }
   }
 `;
 
