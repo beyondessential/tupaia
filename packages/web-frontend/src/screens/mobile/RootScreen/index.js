@@ -9,6 +9,7 @@ import { StyleRoot } from 'radium';
 import { connect } from 'react-redux';
 import { EnvBanner } from '@tupaia/ui-components';
 import styled from 'styled-components';
+import Portal from '@material-ui/core/Portal';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
@@ -24,7 +25,7 @@ import {
   selectMobileTab,
 } from '../../../selectors';
 import { EnlargedDialog } from '../../../containers/EnlargedDialog';
-import { MOBILE_BACKGROUND_COLOR, TUPAIA_ORANGE } from '../../../styles';
+import { MOBILE_BACKGROUND_COLOR, TUPAIA_ORANGE, LEAFLET_Z_INDEX } from '../../../styles';
 import { SearchBar } from '../../../containers/mobile/SearchBar';
 import { Dashboard } from '../../../containers/mobile/Dashboard';
 import { setMobileTab } from '../../../actions';
@@ -60,6 +61,28 @@ const StyledTab = styled(Tab)`
   max-width: none;
 `;
 
+const ModalDiv = styled.div`
+  ${p =>
+    p.$isOpen
+      ? `
+        top: ${p.$appHeaderHeight}px;
+        min-height: calc(
+          100vh - ${p.$appHeaderHeight}px
+        ); /* subtract header so modal doesn't overflow the screen/become unnecessarily scrollable */
+        `
+      : `
+        top: 100vh;
+        min-height: 0;
+        height: 0;
+        overflow: hidden;
+        `}
+  transition: top 0.2s ease;
+  position: absolute;
+  width: 100%;
+  z-index: ${LEAFLET_Z_INDEX + 1};
+  background: ${MOBILE_BACKGROUND_COLOR};
+`;
+
 const RootScreen = ({
   orgUnit,
   isLoading,
@@ -72,7 +95,18 @@ const RootScreen = ({
     setSelectedTab,
   ]);
 
-  // maintain the header height in state, so the overlay div can sit below it
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalElement, setModalElement] = useState(null);
+  const useModal = useCallback(
+    () => [
+      ({ children }) => modalElement && <Portal container={modalElement}>{children}</Portal>,
+      setIsModalOpen,
+    ],
+    [modalElement],
+  );
+
+  // maintain the header height in state, so the modal div can fill the screen below it, but not
+  // overfill and become scrollable
   const headerRef = useRef();
   const [headerHeight, setHeaderHeight] = useState(0);
   const updateHeaderHeight = () => {
@@ -102,9 +136,10 @@ const RootScreen = ({
       </StyledTabs>
       <SearchBar />
       {selectedTab === 'dashboard' && <Dashboard />}
-      {selectedTab === 'map' && <MapSection appHeaderHeight={headerHeight} />}
+      {selectedTab === 'map' && <MapSection useModal={useModal} />}
       {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
       {selectedTab === 'dashboard' && <Footer />}
+      <ModalDiv ref={setModalElement} $appHeaderHeight={headerHeight} $isOpen={isModalOpen} />
       {isUserLoggedIn && <OverlayDiv />}
     </RootContainer>
   );

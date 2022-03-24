@@ -85,13 +85,6 @@ export const selectDefaultMapOverlayCode = createSelector(
   },
 );
 
-export const selectDefaultMapOverlay = createSelector(
-  [state => state, state => selectDefaultMapOverlayCode(state)],
-  (state, defaultMapOverlayCode) => {
-    return selectMapOverlayByCode(state, defaultMapOverlayCode);
-  },
-);
-
 export const selectPeriodGranularityByCode = createSelector(
   [selectMapOverlayByCode],
   mapOverlay => mapOverlay?.periodGranularity,

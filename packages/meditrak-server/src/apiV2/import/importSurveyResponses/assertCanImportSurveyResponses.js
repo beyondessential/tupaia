@@ -58,23 +58,20 @@ export const assertCanImportSurveyResponses = async (
   return true;
 };
 
-const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse) => {
-  // If we're creating a new entity we don't have a currently valid entity_code
-  // So instead, check our permissions against the new entity's parent
-  if (surveyResponse.entities_created) {
-    const newEntity = surveyResponse.entities_created.find(e => e.id === surveyResponse.entity_id);
-    if (newEntity) {
-      const parentEntity = await models.entity.findById(newEntity.parent_id);
-      return parentEntity.code;
-    }
-  }
-
+const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, entitiesCreated) => {
   // There are three valid ways to refer to the entity in a batch change:
   // entity_code, entity_id, clinic_id
   if (surveyResponse.entity_code) {
     return surveyResponse.entity_code;
   }
   if (surveyResponse.entity_id) {
+    // If we're submitting a response against a new entity, it won't yet have a valid entity_code in
+    // the server db. Instead, check our permissions against the new entity's parent
+    const newEntity = entitiesCreated.find(e => e.id === surveyResponse.entity_id);
+    if (newEntity) {
+      const parentEntity = await models.entity.findById(newEntity.parent_id);
+      return parentEntity.code;
+    }
     const entity = await models.entity.findById(surveyResponse.entity_id);
     return entity.code;
   }
@@ -95,8 +92,17 @@ export const assertCanSubmitSurveyResponses = async (accessPolicy, models, surve
   const surveys = await models.survey.findManyById(surveyIds);
   const surveyNamesById = reduceToDictionary(surveys, 'id', 'name');
 
+  const entitiesCreated = surveyResponses
+    .filter(sr => !!sr.entities_created)
+    .map(sr => sr.entities_created)
+    .flat();
+
   for (const response of surveyResponses) {
-    const entityCode = await getEntityCodeFromSurveyResponseChange(models, response);
+    const entityCode = await getEntityCodeFromSurveyResponseChange(
+      models,
+      response,
+      entitiesCreated,
+    );
     const surveyName = surveyNamesById[response.survey_id];
 
     if (!entitiesBySurveyName[surveyName]) {

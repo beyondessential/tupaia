@@ -137,7 +137,6 @@ import {
 } from './selectors';
 import {
   formatDateForApi,
-  isMobile,
   processMeasureInfo,
   getInfoFromInfoViewKey,
   getBrowserTimeZone,
