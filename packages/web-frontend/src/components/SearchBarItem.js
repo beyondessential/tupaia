@@ -29,7 +29,6 @@ const Row = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 0px 15px;
-  background: black;
   border-bottom: ${p => (p.$hideBottomBorder ? 'none' : `1px solid ${DARK_BLUE}`)};
 `;
 
