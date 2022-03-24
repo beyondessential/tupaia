@@ -120,12 +120,14 @@ MapOverlayBarComponent.propTypes = {
   currentMapOverlay: PropTypes.shape({
     name: PropTypes.string,
   }),
-  emptyMessage: PropTypes.string.isRequired,
+  emptyMessage: PropTypes.string,
+  hasMapOverlays: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
 };
 
 MapOverlayBarComponent.defaultProps = {
   currentMapOverlay: null,
+  emptyMessage: null,
 };
 
 const mapStateToProps = state => {

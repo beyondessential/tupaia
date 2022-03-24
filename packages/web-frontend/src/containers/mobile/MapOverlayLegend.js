@@ -50,7 +50,7 @@ const CollapsedIcon = styled(ExpandLessIcon)`
 const LegendContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: calc(100vw - 20px);
+  max-width: calc(100vw - 20px);
   min-height: 50px;
   border-radius: 5px;
   background: ${MOBILE_BACKGROUND_COLOR};

@@ -24,6 +24,12 @@ const SpectrumContainer = styled.div`
   max-width: ${p => (p.$hasNoData ? '70%' : '100%')};
 `;
 
+const SpectrumDivsContainer = styled.div`
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+`;
+
 const SpectrumSliver = styled.div`
   width: 2px;
   height: 15px;
@@ -99,7 +105,7 @@ const renderSpectrum = ({ min, max, scaleType, scaleColorScheme, valueType }) =>
   return (
     <FlexCenter>
       <LabelLeft>{labels.left}</LabelLeft>
-      {spectrumDivs}
+      <SpectrumDivsContainer>{spectrumDivs}</SpectrumDivsContainer>
       <LabelRight>{labels.right}</LabelRight>
     </FlexCenter>
   );
@@ -126,7 +132,7 @@ export const SpectrumLegend = React.memo(({ series, setValueHidden, hiddenValues
       </SpectrumContainer>
       {noDataColour && (
         <LegendEntry
-          marker={getMarkerForOption(LEGEND_SHADING_ICON, noDataColour)}
+          marker={getMarkerForOption(LEGEND_SHADING_ICON, noDataColour, 'none')}
           label="No data"
           dataKey={dataKey}
           hiddenValues={hiddenValues}
