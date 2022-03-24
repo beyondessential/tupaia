@@ -78,12 +78,10 @@ const MapOverlayBarComponent = ({
   isLoading,
   useModal,
 }) => {
-  const [createModalPortal, setIsModalOpen] = useModal();
+  const [Modal, setIsModalOpen] = useModal();
 
   const openLibrary = useCallback(() => setIsModalOpen(true), []);
   const closeLibrary = useCallback(() => setIsModalOpen(false), []);
-
-  const ModalPortal = createModalPortal(<MapOverlayLibrary onClose={closeLibrary} />);
 
   return (
     <>
@@ -110,7 +108,9 @@ const MapOverlayBarComponent = ({
           </RightArrowIconWrapper>
         )}
       </CollapsedContainer>
-      {ModalPortal}
+      <Modal>
+        <MapOverlayLibrary onClose={closeLibrary} />
+      </Modal>
     </>
   );
 };

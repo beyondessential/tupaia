@@ -4,12 +4,12 @@
  */
 
 import React, { useCallback, useRef, useState, useEffect } from 'react';
-import ReactDOM from 'react-dom';
 import { PropTypes } from 'prop-types';
 import { StyleRoot } from 'radium';
 import { connect } from 'react-redux';
 import { EnvBanner } from '@tupaia/ui-components';
 import styled from 'styled-components';
+import Portal from '@material-ui/core/Portal';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
@@ -99,7 +99,7 @@ const RootScreen = ({
   const [modalElement, setModalElement] = useState(null);
   const useModal = useCallback(
     () => [
-      ChildComponent => modalElement && ReactDOM.createPortal(ChildComponent, modalElement),
+      ({ children }) => modalElement && <Portal container={modalElement}>{children}</Portal>,
       setIsModalOpen,
     ],
     [modalElement],
