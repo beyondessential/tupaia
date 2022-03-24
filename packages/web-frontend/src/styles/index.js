@@ -31,6 +31,7 @@ export const WHITE = '#ffffff';
 export const OFF_WHITE = '#eeeeee';
 export const TRANS_BLACK = 'rgba(43, 45, 56, 0.94)';
 export const TRANS_BLACK_LESS = 'rgba(43, 45, 56, 0.8)';
+export const TRANS_BLACK_MORE = 'rgba(43, 45, 56, 0.97)';
 export const DARK_BLUE = '#262834';
 export const LIGHTENED_DARK_BLUE = '#2e3040';
 export const TRANSPARENT = 'rgba(0,0,0,0)';

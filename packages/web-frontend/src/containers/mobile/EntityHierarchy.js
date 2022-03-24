@@ -18,7 +18,7 @@ import { SearchBarItem } from '../../components/SearchBarItem';
 
 const StyledList = styled(List)`
   background: black;
-  height: 100%;
+  min-height: 100%;
   padding: 0;
 `;
 
