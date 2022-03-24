@@ -13,20 +13,8 @@ import Button from '@material-ui/core/Button';
 
 import { setMapOverlays, clearMeasure } from '../../../actions';
 import { selectCurrentMapOverlayCodes } from '../../../selectors';
-import { MAP_OVERLAY_SELECTOR, LEAFLET_Z_INDEX } from '../../../styles';
+import { MAP_OVERLAY_SELECTOR } from '../../../styles';
 import { MapOverlayHierarchy } from '../../../components/MapOverlayHierarchy';
-
-const LibraryContainer = styled.div`
-  position: absolute;
-  top: ${p => p.$appHeaderHeight}px;
-  left: 0;
-  right: 0;
-  min-height: calc(
-    100vh - ${p => p.$appHeaderHeight}px
-  ); /* subtract header so library doesn't overflow the screen and become unnecessarily scrollable */
-  z-index: ${LEAFLET_Z_INDEX + 1};
-  background: black;
-`;
 
 const LibraryContent = styled.div`
   padding: 10px 24px;
@@ -48,7 +36,6 @@ const BackIcon = styled(ArrowBackIcon)`
 `;
 
 const MapOverlayLibraryComponent = ({
-  appHeaderHeight,
   currentMapOverlayCodes,
   hierarchyData,
   onSetMapOverlay,
@@ -65,7 +52,7 @@ const MapOverlayLibraryComponent = ({
   };
 
   return (
-    <LibraryContainer $appHeaderHeight={appHeaderHeight}>
+    <>
       <LibraryHeader onClick={onClose}>
         <BackIcon />
         Overlay Library
@@ -77,12 +64,11 @@ const MapOverlayLibraryComponent = ({
           currentMapOverlayCodes={currentMapOverlayCodes}
         />
       </LibraryContent>
-    </LibraryContainer>
+    </>
   );
 };
 
 MapOverlayLibraryComponent.propTypes = {
-  appHeaderHeight: PropTypes.number.isRequired,
   currentMapOverlayCodes: PropTypes.arrayOf(PropTypes.string),
   hierarchyData: PropTypes.array.isRequired,
   onSetMapOverlay: PropTypes.func.isRequired,
