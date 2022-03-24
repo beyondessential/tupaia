@@ -188,10 +188,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   onSetMapOverlay: mapOverlayCode => dispatch(setMapOverlays(mapOverlayCode)),
   onClearMeasure: () => dispatch(clearMeasure()),
-  onUpdateOverlayPeriod: (mapOverlayCode, overlayConfig) => {
-    console.log('Updating', overlayConfig);
-    dispatch(updateOverlayConfigs({ [mapOverlayCode]: overlayConfig }));
-  },
+  onUpdateOverlayPeriod: (mapOverlayCode, overlayConfig) =>
+    dispatch(updateOverlayConfigs({ [mapOverlayCode]: overlayConfig })),
 });
 
 export const MapOverlayBar = connect(
