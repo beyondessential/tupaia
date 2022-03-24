@@ -93,7 +93,7 @@ def redeploy_tupaia_server(event):
             deployment_name=get_tag(existing_instance, 'DeploymentName'),
             branch=get_tag(existing_instance, 'Branch'),
             instance_type=event.get('InstanceType', existing_instance['InstanceType']),
-            image_code=event.get('ImageCode', None), # will use id below if not defined in the event
+            image_code=event.get('ImageCode', 'tupaia-gold-master'), # will use tupaia-gold-master by default if not defined in the event
             extra_tags=extra_tags,
             security_group_code=event.get('SecurityGroupCode', None), # will use id below if not defined in the event
             security_group_id=existing_instance['SecurityGroups'][0]['GroupId'],
