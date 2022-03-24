@@ -69,11 +69,11 @@ export const GaugeChart = props => {
   const { elements, cellComponents } = useMemo(() => generateElements(), [data]);
   const height = useMemo(() => getHeight(isExporting, isEnlarged), [isExporting, isEnlarged]);
 
-  const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1 : 1.5;
+  const responsiveStyle = isEnlarged || isMobile() || isExporting ? 1.5 : 1;
   const innerRadius = 60 * responsiveStyle;
   const outerRadius = innerRadius * 1.4;
 
-  const getContent = useCallback(({ value, x, y, fontSize }) => {
+  const getLabelContent = useCallback(({ value, x, y, fontSize }) => {
     const positioningProps = {
       x,
       y,
@@ -110,7 +110,7 @@ export const GaugeChart = props => {
           {/* Value label on the center */}
           <Label
             content={props =>
-              getContent({
+              getLabelContent({
                 x: props.viewBox.cx,
                 y: props.viewBox.cy,
                 value: formatDataValueByType({ value: elements[0].value }, 'percentage'),
@@ -122,7 +122,7 @@ export const GaugeChart = props => {
           <Label
             content={props => {
               const fontSize = 15;
-              return getContent({
+              return getLabelContent({
                 x: props.viewBox.cx - outerRadius + (outerRadius - innerRadius) / 2,
                 y: props.viewBox.cy + fontSize,
                 value: 0,
@@ -130,11 +130,11 @@ export const GaugeChart = props => {
               });
             }}
           />
-          {/* 100% label on the left */}
+          {/* 100% label on the right */}
           <Label
             content={props => {
               const fontSize = 15;
-              return getContent({
+              return getLabelContent({
                 x: props.viewBox.cx + outerRadius - (outerRadius - innerRadius) / 2,
                 y: props.viewBox.cy + fontSize,
                 value: '100%',
