@@ -8,11 +8,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { FlexSpaceBetween } from '@tupaia/ui-components';
+import { FlexColumn, FlexSpaceBetween } from '@tupaia/ui-components';
 import RightArrow from '@material-ui/icons/ArrowForwardIos';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 
-import { setMapOverlays, clearMeasure } from '../../../actions';
+import { DateRangePicker } from '../../../components/DateRangePicker';
+import { setMapOverlays, clearMeasure, updateOverlayConfigs } from '../../../actions';
 import {
   selectCurrentMapOverlays,
   selectMapOverlayEmptyMessage,
@@ -20,10 +21,19 @@ import {
 } from '../../../selectors';
 import { MAP_OVERLAY_SELECTOR } from '../../../styles';
 import { MapOverlayLibrary } from './MapOverlayLibrary';
+import { useOverlayDates } from '../../MapOverlayBar/useOverlayDates';
 
-const CollapsedContainer = styled(FlexSpaceBetween)`
+const ControlContainer = styled(FlexColumn)`
   width: 100%;
   color: white;
+`;
+
+const DatePickerContainer = styled.div`
+  background: ${MAP_OVERLAY_SELECTOR.mobileDatePickerBackground};
+  padding: 18px;
+`;
+
+const CollapsedContainer = styled(FlexSpaceBetween)`
   background: ${MAP_OVERLAY_SELECTOR.subBackground};
 `;
 
@@ -77,37 +87,63 @@ const MapOverlayBarComponent = ({
   currentMapOverlay,
   isLoading,
   appHeaderHeight,
+  onUpdateOverlayPeriod,
 }) => {
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
 
   const openLibrary = useCallback(() => setIsLibraryOpen(true), []);
   const closeLibrary = useCallback(() => setIsLibraryOpen(false), []);
 
+  const {
+    showDatePicker,
+    startDate,
+    endDate,
+    minStartDate,
+    maxEndDate,
+    setDates,
+    periodGranularity,
+  } = useOverlayDates(currentMapOverlay, onUpdateOverlayPeriod);
+
   return (
     <>
-      <CollapsedContainer onClick={hasMapOverlays && openLibrary}>
-        <Content>
-          <TitleContainer>
-            <Title>Map Overlay</Title>
-            {isLoading && <LoadingSpinner size={16} />}
-          </TitleContainer>
-          <SelectedLabel>
-            {currentMapOverlay ? (
-              <>
-                <RadioButtonCheckedIcon fontSize="inherit" />
-                <SelectedText>{currentMapOverlay.name}</SelectedText>
-              </>
-            ) : (
-              <EmptyText>{emptyMessage}</EmptyText>
-            )}
-          </SelectedLabel>
-        </Content>
-        {hasMapOverlays && (
-          <RightArrowIconWrapper>
-            <RightArrow />
-          </RightArrowIconWrapper>
+      <ControlContainer>
+        {showDatePicker && (
+          <DatePickerContainer>
+            <DateRangePicker
+              granularity={periodGranularity}
+              startDate={startDate}
+              endDate={endDate}
+              min={minStartDate}
+              max={maxEndDate}
+              onSetDates={setDates}
+              isLoading={isLoading}
+            />
+          </DatePickerContainer>
         )}
-      </CollapsedContainer>
+        <CollapsedContainer onClick={hasMapOverlays && openLibrary}>
+          <Content>
+            <TitleContainer>
+              <Title>Map Overlay</Title>
+              {isLoading && <LoadingSpinner size={16} />}
+            </TitleContainer>
+            <SelectedLabel>
+              {currentMapOverlay ? (
+                <>
+                  <RadioButtonCheckedIcon fontSize="inherit" />
+                  <SelectedText>{currentMapOverlay.name}</SelectedText>
+                </>
+              ) : (
+                <EmptyText>{emptyMessage}</EmptyText>
+              )}
+            </SelectedLabel>
+          </Content>
+          {hasMapOverlays && (
+            <RightArrowIconWrapper>
+              <RightArrow />
+            </RightArrowIconWrapper>
+          )}
+        </CollapsedContainer>
+      </ControlContainer>
       {isLibraryOpen && (
         <MapOverlayLibrary onClose={closeLibrary} appHeaderHeight={appHeaderHeight} />
       )}
@@ -119,10 +155,13 @@ MapOverlayBarComponent.propTypes = {
   appHeaderHeight: PropTypes.number.isRequired,
   currentMapOverlay: PropTypes.shape({
     name: PropTypes.string,
+    periodGranularity: PropTypes.string,
+    isTimePeriodEditable: PropTypes.bool,
   }),
   emptyMessage: PropTypes.string,
   hasMapOverlays: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
+  onUpdateOverlayPeriod: PropTypes.func.isRequired,
 };
 
 MapOverlayBarComponent.defaultProps = {
@@ -149,6 +188,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   onSetMapOverlay: mapOverlayCode => dispatch(setMapOverlays(mapOverlayCode)),
   onClearMeasure: () => dispatch(clearMeasure()),
+  onUpdateOverlayPeriod: (mapOverlayCode, overlayConfig) => {
+    console.log('Updating', overlayConfig);
+    dispatch(updateOverlayConfigs({ [mapOverlayCode]: overlayConfig }));
+  },
 });
 
 export const MapOverlayBar = connect(
