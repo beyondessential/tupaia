@@ -15,7 +15,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig-build.json",
     "lint": "eslint . --ext .ts",
     "lint:all": "yarn run lint \"src/**/*.{ts,jsx}\"",
     "lint:fix": "yarn lint --fix",

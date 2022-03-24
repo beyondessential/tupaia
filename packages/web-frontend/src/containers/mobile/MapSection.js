@@ -24,17 +24,17 @@ const InnerMapContainer = styled.div`
   min-height: 230px;
 `;
 
-export const MapSection = ({ appHeaderHeight }) => (
+export const MapSection = ({ useModal }) => (
   <MapSectionContainer>
     <InnerMapContainer>
       <Map showZoomControl={false} showAttribution={false} />
       <MapAttribution />
       <MapOverlayLegend />
     </InnerMapContainer>
-    <MapOverlayBar appHeaderHeight={appHeaderHeight} />
+    <MapOverlayBar useModal={useModal} />
   </MapSectionContainer>
 );
 
 MapSection.propTypes = {
-  appHeaderHeight: PropTypes.number.isRequired,
+  useModal: PropTypes.func.isRequired,
 };

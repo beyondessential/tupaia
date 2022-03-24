@@ -41,7 +41,7 @@ export type Dashboard = {
   code: string;
   name: string;
   rootEntityCode: string;
-  sortOrder?: number;
+  sortOrder?: number | null;
 };
 export type NewDashboard = Omit<Dashboard, 'id'>;
 export type UpsertDashboard = NewDashboard | Dashboard;
@@ -60,7 +60,7 @@ export type DashboardRelation = {
   entityTypes: string[];
   projectCodes: string[];
   permissionGroups: string[];
-  sortOrder?: number;
+  sortOrder?: number | null;
 };
 export type NewDashboardRelation = Omit<DashboardRelation, 'id'>;
 export type UpsertDashboardRelation = DashboardRelation | NewDashboardRelation;

@@ -5,7 +5,6 @@ WORKDIR /tupaia
 COPY package.json ./
 COPY yarn.lock ./
 COPY babel.config.json ./
-COPY .babelrc-ts.js ./
 
 # Copy the packages needed by cypress in web-frontend
 RUN mkdir -p ./packages/access-policy
