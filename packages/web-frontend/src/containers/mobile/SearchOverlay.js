@@ -93,6 +93,7 @@ const styles = {
     flexGrow: 1,
     boxSizing: 'border-box',
     borderRadius: 2,
+    fontSize: 16,
   },
   searchInputLoader: {
     position: 'absolute',

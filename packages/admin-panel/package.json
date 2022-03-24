@@ -19,7 +19,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
-    "start": "react-scripts start",
+    "start": "SKIP_PREFLIGHT_CHECK=true react-scripts start",
     "start-dev": "npm run start",
     "test": "react-scripts test --env=jsdom --passWithNoTests"
   },

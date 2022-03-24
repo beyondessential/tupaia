@@ -22,7 +22,7 @@ const defaultState = {
   emailAddress: '',
   password: '',
   user: null,
-  isLoggingIn: false,
+  isLoading: false,
   rememberMe: false,
   errorMessage: null,
 };
@@ -61,7 +61,7 @@ const stateChanges = {
       isBESAdmin: isBESAdmin(payload.user.accessPolicy),
     };
   },
-  [LOGIN_REQUEST]: () => ({ isLoggingIn: true }),
+  [LOGIN_REQUEST]: () => ({ isLoading: true }),
   [LOGIN_ERROR]: logoutStateUpdater,
   [LOGOUT]: logoutStateUpdater,
   [PROFILE_SUCCESS]: (user, currentState) => ({

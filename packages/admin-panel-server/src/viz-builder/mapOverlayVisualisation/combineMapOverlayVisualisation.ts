@@ -42,6 +42,7 @@ export function combineMapOverlayVisualisation(visualisationResource: MapOverlay
     mapOverlayPermissionGroup,
     data,
     presentation,
+    reportPermissionGroup: (report as Report).permissionGroup,
     ...rest,
   };
 
