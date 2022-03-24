@@ -21,7 +21,7 @@ import {
   draftReportValidator,
   legacyReportValidator,
   NewDashboard,
-  UpsertDashboard, 
+  UpsertDashboard,
   UpsertDashboardRelation,
   NewDashboardRelation,
 } from '../../viz-builder';
