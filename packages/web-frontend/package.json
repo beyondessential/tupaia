@@ -22,7 +22,7 @@
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
     "run:babel": "babel-node --config-file \"../../babel.config.json\"",
-    "start": "PORT=8088 react-scripts start",
+    "start": "SKIP_PREFLIGHT_CHECK=true PORT=8088 react-scripts start",
     "start-dev": "npm run start",
     "start-fullstack": "npm-run-all -c -l -p start-server start",
     "start-mobile": "REACT_APP_APP_TYPE=mobile PORT=8089 PORT=8088 react-scripts start",

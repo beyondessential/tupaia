@@ -22,11 +22,10 @@ def create_instance_from_image(
     deployment_name,
     deployment_type,
     instance_type,
+    image_code,
     branch=None,
     extra_tags=None,
     iam_role_arn=None,
-    image_code=None,
-    image_id=None,
     security_group_code=None,
     security_group_id=None,
     subdomains_via_dns=None,
@@ -37,10 +36,7 @@ def create_instance_from_image(
     print('Creating ' + deployment_name + ' as ' + instance_type)
 
     # get ami to create instance from
-    if image_code:
-        image_id = get_latest_image_id(image_code)
-    else:
-        image_id = image_id
+    image_id = get_latest_image_id(image_code)
 
     instance_object = create_instance(
         deployment_name,
@@ -64,9 +60,8 @@ def create_tupaia_instance_from_image(
     deployment_name,
     branch,
     instance_type,
+    image_code,
     extra_tags=None,
-    image_code=None,
-    image_id=None,
     security_group_code=None,
     security_group_id=None,
     setup_gateway=True,
@@ -81,11 +76,10 @@ def create_tupaia_instance_from_image(
         deployment_name,
         deployment_type,
         instance_type,
+        image_code,
         branch=branch,
         extra_tags=extra_tags,
         iam_role_arn=tupaia_server_iam_role_arn,
-        image_code=image_code,
-        image_id=image_id,
         security_group_code=security_group_code,
         security_group_id=security_group_id,
         subdomains_via_gateway=tupaia_subdomains,
