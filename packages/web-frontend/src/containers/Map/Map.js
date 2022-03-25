@@ -55,9 +55,22 @@ class MapComponent extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const { mapOverlayCodes, position, sidePanelWidth, tileSetUrl } = this.props;
+    const {
+      mapOverlayCodes,
+      position,
+      sidePanelWidth,
+      tileSetUrl,
+      displayedMapOverlayCodes,
+    } = this.props;
 
     if (JSON.stringify(nextProps.mapOverlayCodes) !== JSON.stringify(mapOverlayCodes)) {
+      return true;
+    }
+
+    if (
+      JSON.stringify(nextProps.displayedMapOverlayCodes) !==
+      JSON.stringify(displayedMapOverlayCodes)
+    ) {
       return true;
     }
 
@@ -101,7 +114,14 @@ class MapComponent extends Component {
   }
 
   render() {
-    const { onCloseDropdownOverlays, position, shouldSnapToPosition, tileSetUrl } = this.props;
+    const {
+      displayedMapOverlayCodes,
+      onCloseDropdownOverlays,
+      position,
+      shouldSnapToPosition,
+      sidePanelWidth,
+      tileSetUrl,
+    } = this.props;
 
     return (
       <StyledMap
@@ -116,7 +136,11 @@ class MapComponent extends Component {
         <TileLayer tileSetUrl={tileSetUrl} showAttribution={showAttribution} />
         {showZoomControl && <ZoomControl position="bottomright" />}
         <DemoLand />
-        <DataVisualsLayer />
+        {displayedMapOverlayCodes.map(displayedMapOverlayCode => (
+          <DataVisualsLayer displayedMapOverlayCode={displayedMapOverlayCode} />
+        ))}
+        {/* if no displayed map overlay code is specified, only render basic polygon */}
+        {displayedMapOverlayCodes.length === 0 && <DataVisualsLayer />}
         <DisasterLayer />
       </StyledMap>
     );
@@ -128,6 +152,7 @@ MapComponent.propTypes = {
   onChangePosition: PropTypes.func.isRequired,
   currentParent: PropTypes.object,
   mapOverlayCodes: PropTypes.array.isRequired,
+  displayedMapOverlayCodes: PropTypes.array.isRequired,
   position: PropTypes.shape({
     center: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     bounds: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
@@ -144,13 +169,14 @@ MapComponent.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const { shouldSnapToPosition, position } = state.map;
+  const { shouldSnapToPosition, position, displayedMapOverlays } = state.map;
   const mapOverlayCodes = selectCurrentMapOverlayCodes(state);
   const { isSidePanelExpanded } = state.global;
   const { contractedWidth, expandedWidth } = state.dashboard;
 
   return {
     mapOverlayCodes,
+    displayedMapOverlayCodes: displayedMapOverlays,
     position,
     tileSetUrl: selectActiveTileSet(state).url,
     shouldSnapToPosition,

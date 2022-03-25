@@ -5,9 +5,10 @@
 
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
-import { MarkerLayer } from '@tupaia/ui-components/lib/map';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
+
+import { MarkerLayer } from './MarkerLayer';
 
 import {
   selectCurrentMapOverlayCodes,
@@ -21,28 +22,24 @@ import { InteractivePolygonLayer } from './InteractivePolygonLayer';
 export const DataVisualsLayerComponent = props => {
   const {
     measureData,
-    hasMeasureData,
+    displayedMapOverlayCode,
     onChangeOrgUnit,
-    serieses,
     multiOverlayMeasureData,
     multiOverlaySerieses,
   } = props;
-  // Only show data with valid coordinates. Note: this also removes region data
-  const processedData = measureData.filter(
-    ({ coordinates }) => coordinates && coordinates.length === 2,
-  );
 
   return (
     <>
       <InteractivePolygonLayer
-        hasMeasureData={hasMeasureData}
+        hasMeasureData={measureData && measureData.length > 0}
+        displayedMapOverlayCode={displayedMapOverlayCode}
         onChangeOrgUnit={onChangeOrgUnit}
         multiOverlayMeasureData={multiOverlayMeasureData}
         multiOverlaySerieses={multiOverlaySerieses}
       />
       <MarkerLayer
-        measureData={processedData}
-        serieses={serieses || null}
+        measureData={measureData}
+        displayedMapOverlayCode={displayedMapOverlayCode}
         onChangeOrgUnit={onChangeOrgUnit}
         multiOverlayMeasureData={multiOverlayMeasureData}
         multiOverlaySerieses={multiOverlaySerieses}
@@ -53,8 +50,7 @@ export const DataVisualsLayerComponent = props => {
 
 DataVisualsLayerComponent.propTypes = {
   measureData: PropTypes.array,
-  hasMeasureData: PropTypes.bool,
-  serieses: PropTypes.array,
+  displayedMapOverlayCode: PropTypes.string.isRequired,
   multiOverlayMeasureData: PropTypes.array,
   multiOverlaySerieses: PropTypes.array,
   onChangeOrgUnit: PropTypes.func.isRequired,
@@ -62,8 +58,6 @@ DataVisualsLayerComponent.propTypes = {
 
 DataVisualsLayerComponent.defaultProps = {
   measureData: [],
-  hasMeasureData: false,
-  serieses: [],
   multiOverlayMeasureData: [],
   multiOverlaySerieses: [],
 };
@@ -76,22 +70,18 @@ const selectMeasureDataWithCoordinates = createSelector([measureData => measureD
   })),
 );
 
-const mapStateToProps = state => {
-  const { displayedMapOverlays } = state.map;
+const mapStateToProps = (state, ownProps) => {
+  const { displayedMapOverlayCode } = ownProps;
   const mapOverlayCodes = selectCurrentMapOverlayCodes(state);
   const measureData = selectMeasureDataWithCoordinates(
-    selectRenderedMeasuresWithDisplayInfo(state, displayedMapOverlays),
+    selectRenderedMeasuresWithDisplayInfo(state, [displayedMapOverlayCode]),
   );
-  const hasMeasureData = measureData && measureData.length > 0;
-  const serieses = selectMeasureOptions(state, displayedMapOverlays);
   // orginal data
   const multiOverlayMeasureData = selectMeasureData(state, mapOverlayCodes);
   const multiOverlaySerieses = selectMeasureOptions(state, mapOverlayCodes);
 
   return {
     measureData,
-    hasMeasureData,
-    serieses,
     multiOverlayMeasureData,
     multiOverlaySerieses,
   };
@@ -104,11 +94,10 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const propsAreEqual = (prevProps, nextProps) => {
-  if (JSON.stringify(prevProps.serieses) !== JSON.stringify(nextProps.serieses)) return true;
-
-  if (JSON.stringify(prevProps.measureData) !== JSON.stringify(nextProps.measureData)) return true;
-
-  return false;
+  return (
+    JSON.stringify(prevProps.measureData) === JSON.stringify(nextProps.measureData) &&
+    prevProps.displayedMapOverlayCode === nextProps.displayedMapOverlayCode
+  );
 };
 
 export const DataVisualsLayer = memo(

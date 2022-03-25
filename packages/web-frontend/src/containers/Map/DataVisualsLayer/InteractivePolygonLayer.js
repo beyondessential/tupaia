@@ -95,8 +95,8 @@ InteractivePolygonLayerComponent.defaultProps = {
   permanentLabels: undefined,
 };
 
-const mapStateToProps = state => {
-  const { displayedMapOverlays } = state.map;
+const mapStateToProps = (state, ownProps) => {
+  const { displayedMapOverlayCode } = ownProps;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
   const currentChildren =
     selectOrgUnitChildren(state, currentOrganisationUnit.organisationUnitCode) || [];
@@ -108,7 +108,7 @@ const mapStateToProps = state => {
   let measureOrgUnits = [];
 
   if (selectHasPolygonMeasure(state)) {
-    measureOrgUnits = selectMeasuresWithDisplayInfo(state, displayedMapOverlays);
+    measureOrgUnits = selectMeasuresWithDisplayInfo(state, [displayedMapOverlayCode]);
     const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
     const grandchildren = currentChildren
       .map(area => selectOrgUnitChildren(state, area.organisationUnitCode))
@@ -136,20 +136,13 @@ const mapStateToProps = state => {
 };
 
 const propsAreEqual = (prevProps, nextProps) => {
-  // Only updates/re-renders when the measure has changed or the orgUnit has changed.
-  // These are the only cases where polygons or area tooltips should rerender.
-  if (JSON.stringify(prevProps.displayedChildren) !== JSON.stringify(nextProps.displayedChildren)) {
-    return true;
-  }
-
-  if (
-    prevProps.currentOrganisationUnit?.organisationUnitCode !==
-    nextProps.currentOrganisationUnit?.organisationUnitCode
-  ) {
-    return true;
-  }
-
-  return false;
+  return (
+    // Only updates/re-renders when the measure has changed or the orgUnit has changed.
+    // These are the only cases where polygons or area tooltips should rerender.
+    JSON.stringify(prevProps.displayedChildren) === JSON.stringify(nextProps.displayedChildren) &&
+    prevProps.currentOrganisationUnit?.organisationUnitCode ===
+      nextProps.currentOrganisationUnit?.organisationUnitCode
+  );
 };
 
 export const InteractivePolygonLayer = memo(
