@@ -4,7 +4,6 @@
  */
 
 import React, { useState } from 'react';
-import generateId from 'uuid/v1';
 import PropTypes from 'prop-types';
 import { DataLibrary } from '@tupaia/ui-components';
 import { prefetchTransformSchemas, useSearchTransformSchemas } from '../../api';
@@ -15,27 +14,27 @@ const DATA_TYPES = {
   ALIAS: 'Aliases',
 };
 
+// Converts internal value array to Viz config.transform data structure.
 const transformToValue = transform =>
-  transform.map(({ id, name, transform: code, ...restOfConfig }) => ({
-    id: id || generateId(), // transform config in existing report does not have id.
+  transform.map(({ id, name, transform: code, ...restOfConfig }, index) => ({
+    id: `${code}-${index}`, // id used by drag and drop function
     code,
     ...restOfConfig,
   }));
 
 const valueToTransform = value =>
-  value.map(({ id, code, isDisabled = false, ...restOfConfig }) => ({
-    id: id || generateId(), // option from selectable options does not have id.
+  value.map(({ id, code, isDisabled = false, ...restOfConfig }, index) => ({
+    id: `${code}-${index}`, // option from selectable options does not have id.
     transform: code,
     isDisabled,
     ...restOfConfig,
   }));
 
 export const TransformDataLibrary = ({ transform, onTransformChange, onInvalidChange }) => {
-  const value = transformToValue(transform);
-
   const [dataType, setDataType] = useState(DATA_TYPES.TRANSFORM);
   const [inputValue, setInputValue] = useState('');
 
+  const value = transformToValue(transform);
   const { data, isFetching } = useSearchTransformSchemas();
   const options = {
     [DATA_TYPES.TRANSFORM]: data ? data.filter(({ alias }) => !alias) : [],
