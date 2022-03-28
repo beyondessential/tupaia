@@ -35,6 +35,7 @@
       "files": [
         "packages/admin-panel-server/**",
         "packages/api-client/**",
+        "packages/data-api/**",
         "packages/data-lake-api/**",
         "packages/entity-server/**",
         "packages/indicators/**",
@@ -47,6 +48,15 @@
       "extends": "@beyondessential/ts",
       "parserOptions": {
         "project": "tsconfig.json"
+      },
+      "rules": {
+        "import/no-extraneous-dependencies": [
+          "error",
+          {
+            "devDependencies": ["jest.setup.ts", "global.d.ts"],
+            "packageDir": ["../../", "."]
+          }
+        ]
       }
     },
     // Packages using jest
