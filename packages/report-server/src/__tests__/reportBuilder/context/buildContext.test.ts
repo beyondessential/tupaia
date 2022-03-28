@@ -113,6 +113,41 @@ describe('buildContext', () => {
       };
       expect(context).toStrictEqual(expectedContext);
     });
+
+    it('builds orgUnits using orgUnitIdToCode function', async () => {
+      const transform = [
+        {
+          insert: {
+            orgUnitCode: '=orgUnitIdToCode($value)',
+          },
+          transform: 'updateColumns',
+        },
+      ];
+      const analytics = [
+        {
+          dataElement: 'BCD1',
+          organisationUnit: 'TO',
+          period: '20210101',
+          value: 'ouId5',
+        },
+        {
+          dataElement: 'BCD1',
+          organisationUnit: 'TO',
+          period: '20210101',
+          value: 'ouId6',
+        },
+      ];
+      const data = { results: analytics };
+
+      const context = await buildContext(transform, reqContext, data);
+      const expectedContext = {
+        orgUnits: [
+          { id: 'ouId2', code: 'TO', orgUnitCode: 'TO_Facility1' },
+          { id: 'ouId4', code: 'TO', orgUnitCode: 'TO_Facility2' },
+        ],
+      };
+      expect(context).toStrictEqual(expectedContext);
+    });
   });
 
   describe('dataElementCodeToName', () => {
