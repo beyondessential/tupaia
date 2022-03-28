@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { Map } from '../Map';
 import { MapOverlayBar } from './MapOverlayBar/MapOverlayBar';
 import { MapOverlayLegend } from './MapOverlayLegend';
+import { MapAttribution } from '../../components/mobile/MapAttribution';
 
 const MapSectionContainer = styled.div`
   flex: 1;
@@ -20,20 +21,19 @@ const InnerMapContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  min-height: 270px;
+  min-height: 230px;
 `;
 
-export const MapSection = ({ useModal }) => {
-  return (
-    <MapSectionContainer>
-      <InnerMapContainer>
-        <Map showZoomControl={false} />
-        <MapOverlayLegend />
-      </InnerMapContainer>
-      <MapOverlayBar useModal={useModal} />
-    </MapSectionContainer>
-  );
-};
+export const MapSection = ({ useModal }) => (
+  <MapSectionContainer>
+    <InnerMapContainer>
+      <Map showZoomControl={false} showAttribution={false} />
+      <MapAttribution />
+      <MapOverlayLegend />
+    </InnerMapContainer>
+    <MapOverlayBar useModal={useModal} />
+  </MapSectionContainer>
+);
 
 MapSection.propTypes = {
   useModal: PropTypes.func.isRequired,
