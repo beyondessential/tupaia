@@ -14,10 +14,11 @@ const LegendContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: ${props => (props.$position === 'bottom' ? 'center' : 'flex-start')};
+  flex-direction: ${props => (props.$isExporting ? 'column' : 'row')};
   // Add more padding at the bottom for exports
   padding: ${props => {
     if (props.$isExporting) {
-      return props.$position === 'bottom' ? '1rem 0 3rem 3.5rem' : '0 0 3rem 0';
+      return '1em';
     }
     return props.$position === 'bottom' ? '1rem 0 0 3.5rem' : '0 0 2rem 0';
   }};
@@ -47,8 +48,12 @@ const LegendItem = styled(({ isExporting, ...props }) => <MuiButton {...props} /
 
   .MuiButton-label {
     display: flex;
-    align-items: center;
+    white-space: nowrap;
+    align-items: ${isExporting => (isExporting ? 'left' : 'center')};
     color: ${({ theme, isExporting }) => getLegendTextColor(theme, isExporting)};
+    > div {
+      width: ${isExporting => (isExporting ? '100%' : '')};
+    }
   }
 
   &.Mui-disabled {
