@@ -12,11 +12,12 @@ import {
   MarkerLayer,
   LeafletMap,
   InteractivePolygon,
+  ZoomControl,
 } from '@tupaia/ui-components/lib/map';
+
 import { checkBoundsDifference, organisationUnitIsArea } from '../../utils';
 import { DemoLand } from './DemoLand';
 import { DisasterLayer } from './DisasterLayer';
-import { ZoomControl } from './ZoomControl';
 import {
   selectActiveTileSet,
   selectMeasuresWithDisplayInfo,
@@ -31,21 +32,21 @@ import {
   selectAreRegionLabelsPermanent,
   selectMeasureData,
 } from '../../selectors';
-import { changePosition, closeDropdownOverlays, setOrgUnit } from '../../actions';
+import { changePosition, closeDropdownOverlays, setOrgUnit, setMobileTab } from '../../actions';
 import { TRANS_BLACK, TRANS_BLACK_LESS } from '../../styles';
 
 const CHANGE_TO_PARENT_PERCENTAGE = 0.6;
 
 const StyledMap = styled(LeafletMap)`
-  height: 100vh;
+  height: 100%;
   width: 100%;
+  flex: 1;
 
   .leaflet-control-zoom {
     z-index: 1;
     border: none;
     top: -50px;
-    right: 350px;
-    transition: right 0.5s ease;
+    right: 3px;
 
     a {
       background: ${TRANS_BLACK_LESS};
@@ -68,7 +69,8 @@ const StyledMap = styled(LeafletMap)`
  */
 class MapComponent extends Component {
   componentWillMount() {
-    window.addEventListener('resize', () => this.forceUpdate());
+    // ensure leaflet updates after 0.5 second resize animation has finished
+    window.addEventListener('resize', () => setTimeout(() => this.map?.invalidateSize(), 500));
   }
 
   shouldComponentUpdate(nextProps) {
@@ -80,7 +82,6 @@ class MapComponent extends Component {
       measureData,
       position,
       tileSetUrl,
-      sidePanelWidth,
     } = this.props;
 
     if (JSON.stringify(nextProps.mapOverlayCodes) !== JSON.stringify(mapOverlayCodes)) {
@@ -102,8 +103,6 @@ class MapComponent extends Component {
 
     if (nextProps.tileSetUrl !== tileSetUrl) return true;
 
-    if (nextProps.sidePanelWidth !== sidePanelWidth) return true;
-
     if (JSON.stringify(nextProps.position) !== JSON.stringify(position)) return true;
 
     if (JSON.stringify(nextProps.serieses) !== JSON.stringify(serieses)) return true;
@@ -112,6 +111,10 @@ class MapComponent extends Component {
 
     return false;
   }
+
+  captureMap = map => {
+    this.map = map;
+  };
 
   onPositionChanged = (center, bounds, zoom) => {
     const { position, onChangePosition } = this.props;
@@ -150,15 +153,17 @@ class MapComponent extends Component {
       getChildren,
       measureData,
       onChangeOrgUnit,
+      onSeeOrgUnitDashboard,
       serieses,
       multiOverlayMeasureData,
       multiOverlaySerieses,
       position,
       shouldSnapToPosition,
-      sidePanelWidth,
       tileSetUrl,
       measureOrgUnits,
       permanentLabels,
+      showAttribution,
+      showZoomControl,
     } = this.props;
 
     // Only show data with valid coordinates. Note: this also removes region data
@@ -182,11 +187,11 @@ class MapComponent extends Component {
         zoom={position.zoom}
         center={position.center}
         shouldSnapToPosition={shouldSnapToPosition}
-        rightPadding={sidePanelWidth}
         onPositionChanged={this.onPositionChanged}
+        whenCreated={this.captureMap}
       >
-        <TileLayer tileSetUrl={tileSetUrl} />
-        <ZoomControl sidePanelWidth={sidePanelWidth} />
+        <TileLayer tileSetUrl={tileSetUrl} showAttribution={showAttribution} />
+        {showZoomControl && <ZoomControl position="bottomright" />}
         <DemoLand />
         {currentOrganisationUnit && organisationUnitIsArea(currentOrganisationUnit) && (
           <InteractivePolygon
@@ -216,7 +221,7 @@ class MapComponent extends Component {
         <MarkerLayer
           measureData={processedData}
           serieses={serieses || null}
-          onChangeOrgUnit={onChangeOrgUnit}
+          onSeeOrgUnitDashboard={onSeeOrgUnitDashboard}
           multiOverlayMeasureData={multiOverlayMeasureData}
           multiOverlaySerieses={multiOverlaySerieses}
         />
@@ -246,10 +251,12 @@ MapComponent.propTypes = {
     zoom: PropTypes.number,
   }).isRequired,
   onChangeOrgUnit: PropTypes.func.isRequired,
+  onSeeOrgUnitDashboard: PropTypes.func.isRequired,
   shouldSnapToPosition: PropTypes.bool.isRequired,
-  sidePanelWidth: PropTypes.number.isRequired,
   tileSetUrl: PropTypes.string.isRequired,
   permanentLabels: PropTypes.bool,
+  showZoomControl: PropTypes.bool,
+  showAttribution: PropTypes.bool,
 };
 
 MapComponent.defaultProps = {
@@ -261,6 +268,8 @@ MapComponent.defaultProps = {
   multiOverlaySerieses: [],
   currentParent: null,
   permanentLabels: undefined,
+  showZoomControl: true,
+  showAttribution: true,
 };
 
 const selectMeasureDataWithCoordinates = createSelector([measureData => measureData], measureData =>
@@ -274,8 +283,6 @@ const selectMeasureDataWithCoordinates = createSelector([measureData => measureD
 const mapStateToProps = state => {
   const { isAnimating, shouldSnapToPosition, position, displayedMapOverlays } = state.map;
   const mapOverlayCodes = selectCurrentMapOverlayCodes(state);
-  const { isSidePanelExpanded } = state.global;
-  const { contractedWidth, expandedWidth } = state.dashboard;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
   const currentParent = selectOrgUnit(state, currentOrganisationUnit.parent);
   const currentChildren =
@@ -326,7 +333,6 @@ const mapStateToProps = state => {
     tileSetUrl: selectActiveTileSet(state).url,
     isAnimating,
     shouldSnapToPosition,
-    sidePanelWidth: isSidePanelExpanded ? expandedWidth : contractedWidth,
     permanentLabels,
   };
 };
@@ -334,6 +340,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   onChangeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
     dispatch(setOrgUnit(organisationUnitCode, shouldChangeMapBounds));
+  },
+  onSeeOrgUnitDashboard: organisationUnitCode => {
+    dispatch(setOrgUnit(organisationUnitCode, true));
+    dispatch(setMobileTab('dashboard'));
   },
   onChangePosition: (center, zoom) => dispatch(changePosition(center, zoom)),
   onCloseDropdownOverlays: () => dispatch(closeDropdownOverlays()),

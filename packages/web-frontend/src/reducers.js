@@ -82,7 +82,6 @@ import {
   TOGGLE_INFO_PANEL,
   OPEN_USER_DIALOG,
   CLOSE_USER_DIALOG,
-  TOGGLE_MEASURE_EXPAND,
   TOGGLE_SEARCH_EXPAND,
   SET_OVERLAY_COMPONENT,
   OPEN_ENLARGED_DIALOG,
@@ -101,7 +100,7 @@ import {
   SET_OVERLAY_CONFIGS,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
-import { updatedMapOverlayHierarchyConfig } from './utils/mapOverlays';
+import { updateOverlayConfigs } from './utils/mapOverlays';
 
 function authentication(
   state = {
@@ -585,7 +584,6 @@ function searchBar(
 
 function mapOverlayBar(
   state = {
-    isExpanded: false,
     mapOverlayHierarchy: [],
     error: null,
   },
@@ -601,22 +599,16 @@ function mapOverlayBar(
       };
     case SET_OVERLAY_CONFIGS:
     case UPDATE_OVERLAY_CONFIGS: {
-      let mapOverlayHierarchy;
-      Object.entries(action.overlayConfigs).forEach(([mapOverlayCode, overlayConfig]) => {
-        mapOverlayHierarchy = updatedMapOverlayHierarchyConfig(
-          state.mapOverlayHierarchy,
-          mapOverlayCode,
-          overlayConfig,
-        );
-      });
+      const mapOverlayHierarchy = updateOverlayConfigs(
+        state.mapOverlayHierarchy,
+        action.overlayConfigs,
+      );
 
       return {
         ...state,
         mapOverlayHierarchy,
       };
     }
-    case TOGGLE_MEASURE_EXPAND:
-      return { ...state, isExpanded: !state.isExpanded };
     case FETCH_MEASURES_SUCCESS:
       return {
         ...state,
