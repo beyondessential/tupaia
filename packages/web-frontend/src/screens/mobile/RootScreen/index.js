@@ -25,7 +25,7 @@ import {
   selectMobileTab,
 } from '../../../selectors';
 import { EnlargedDialog } from '../../../containers/EnlargedDialog';
-import { TUPAIA_ORANGE, LEAFLET_Z_INDEX } from '../../../styles';
+import { MOBILE_BACKGROUND_COLOR, TUPAIA_ORANGE, LEAFLET_Z_INDEX } from '../../../styles';
 import { SearchBar } from '../../../containers/mobile/SearchBar';
 import { Dashboard } from '../../../containers/mobile/Dashboard';
 import { setMobileTab } from '../../../actions';
@@ -35,7 +35,7 @@ const RootContainer = styled(StyleRoot)`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: black;
+  background: ${MOBILE_BACKGROUND_COLOR};
 `;
 
 const EntityName = styled.p`
@@ -79,8 +79,8 @@ const ModalDiv = styled.div`
   transition: top 0.2s ease;
   position: absolute;
   width: 100%;
-  z-index: ${LEAFLET_Z_INDEX + 1};
-  background: black;
+  z-index: ${LEAFLET_Z_INDEX + 3};
+  background: ${MOBILE_BACKGROUND_COLOR};
 `;
 
 const RootScreen = ({

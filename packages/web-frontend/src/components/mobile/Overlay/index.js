@@ -38,7 +38,7 @@ const styles = {
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: LEAFLET_Z_INDEX + 1, // above leaflet map
+    zIndex: LEAFLET_Z_INDEX + 2, // above leaflet map
     display: 'flex',
     flexDirection: 'column',
     animation: 'x 0.3s',

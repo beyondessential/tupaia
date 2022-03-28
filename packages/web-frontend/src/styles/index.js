@@ -45,6 +45,7 @@ export const GREY = '#c7c7c7';
 export const LIGHT_GREY = '#EFEFF0';
 export const ERROR = red[500];
 export const FORM_BLUE = '#34abd0';
+export const MOBILE_BACKGROUND_COLOR = '#313236';
 
 export const MOBILE_MARGIN_SIZE = 16;
 export const MOBILE_HEADER_HEIGHT = 55;
@@ -176,6 +177,7 @@ export const MAP_OVERLAY_SELECTOR = {
   background: 'rgb(7, 40, 73)',
   border: '1px solid #2196f3',
   subBackground: '#203e5c',
+  mobileDatePickerBackground: '#0F2847',
 };
 
 export const MARKER_POPUP_STYLE = {
