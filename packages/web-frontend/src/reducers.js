@@ -100,7 +100,7 @@ import {
   SET_OVERLAY_CONFIGS,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
-import { updatedMapOverlayHierarchyConfig } from './utils/mapOverlays';
+import { updateOverlayConfigs } from './utils/mapOverlays';
 
 function authentication(
   state = {
@@ -599,14 +599,10 @@ function mapOverlayBar(
       };
     case SET_OVERLAY_CONFIGS:
     case UPDATE_OVERLAY_CONFIGS: {
-      let mapOverlayHierarchy;
-      Object.entries(action.overlayConfigs).forEach(([mapOverlayCode, overlayConfig]) => {
-        mapOverlayHierarchy = updatedMapOverlayHierarchyConfig(
-          state.mapOverlayHierarchy,
-          mapOverlayCode,
-          overlayConfig,
-        );
-      });
+      const mapOverlayHierarchy = updateOverlayConfigs(
+        state.mapOverlayHierarchy,
+        action.overlayConfigs,
+      );
 
       return {
         ...state,

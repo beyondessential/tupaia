@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
-import DateRangeIcon from '@material-ui/icons/DateRange';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { FlexEnd } from '@tupaia/ui-components/src/components/Layout/Flexbox';
@@ -53,9 +53,11 @@ const ArrowButton = styled(MuiIconButton)`
   margin-left: 5px;
   transition: color 0.2s ease;
 
-  &:hover {
-    background: rgba(0, 0, 0, 0.2);
-    color: ${PRIMARY_BLUE};
+  @media (hover: hover) {
+    &:hover {
+      background: rgba(0, 0, 0, 0.2);
+      color: ${PRIMARY_BLUE};
+    }
   }
 `;
 
@@ -179,7 +181,7 @@ export const DateRangePicker = ({
         <div>
           <LabelContainer>
             <IconButton onClick={() => setIsOpen(true)} aria-label="open">
-              <DateRangeIcon />
+              <CalendarTodayIcon />
             </IconButton>
             <Label aria-label="active-date">{labelText}</Label>
           </LabelContainer>
