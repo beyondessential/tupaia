@@ -257,7 +257,7 @@ export const SelectableMultipleTimesOption = ({ option, onSelect }) => (
 
 export const SelectedDataCard = ({ option, index, optionComponent }) => {
   const [isDragging, setIsDragging] = React.useState(false);
-  const [isDragDisabled, setIsDragDisabled] = React.useState(true);
+  const [isDragDisabled, setIsDragDisabled] = React.useState(false);
 
   return (
     <Draggable draggableId={option.id} index={index} isDragDisabled={isDragDisabled}>
