@@ -3,7 +3,7 @@
 DIR=$(dirname "$0")
 . ${DIR}/utils.sh
 
-INVALID_CHARS=('/' '\' '.' '&' '?')
+INVALID_CHARS=('/' '\' '.' '&' '?' '_')
 SUBDOMAIN_SUFFIXES=(admin admin-api aggregation api config db export lesmis lesmis-api mobile psss psss-api report report-api ssh entity entity-api tonga-aggregation www)
 
 # Branch names are used in AWS EC2 deployments. They are combined with standard suffixes
