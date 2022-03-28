@@ -12,7 +12,8 @@ const Button = styled(MuiButton)`
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 0.2rem 0.3rem;
+  min-width: 0;
+  padding: 0.2rem 0.5rem;
   font-weight: 400;
   letter-spacing: 0;
   pointer-events: auto;
@@ -20,10 +21,17 @@ const Button = styled(MuiButton)`
   cursor: pointer;
   opacity: ${props => (props.hidden ? '0.5' : '1')};
   text-transform: none;
+
+  ${p => p.theme.breakpoints.down('sm')} {
+    padding: 0.05rem 0.5rem;
+  }
 `;
 
 const Label = styled.div`
   font-size: 0.9375rem;
+  ${p => p.theme.breakpoints.down('sm')} {
+    font-size: 0.75rem;
+  }
 `;
 
 export const LegendEntry = React.memo(

@@ -8,12 +8,12 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import FlatButton from 'material-ui/FlatButton';
-import ClosedIcon from 'material-ui/svg-icons/navigation/chevron-right';
-import OpenIcon from 'material-ui/svg-icons/navigation/expand-more';
-import SelectedRadioIcon from 'material-ui/svg-icons/toggle/radio-button-checked';
-import UnSelectedRadioIcon from 'material-ui/svg-icons/toggle/radio-button-unchecked';
-import SelectedCheckBoxIcon from 'material-ui/svg-icons/toggle/check-box';
-import UnSelectedCheckBoxIcon from 'material-ui/svg-icons/toggle/check-box-outline-blank';
+import ClosedIcon from '@material-ui/icons/ChevronRight';
+import OpenIcon from '@material-ui/icons/ExpandMore';
+import SelectedRadioIcon from '@material-ui/icons/RadioButtonChecked';
+import UnSelectedRadioIcon from '@material-ui/icons/RadioButtonUnchecked';
+import SelectedCheckBoxIcon from '@material-ui/icons/CheckBox';
+import UnSelectedCheckBoxIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import { ReferenceTooltip } from '@tupaia/ui-components';
 
 export const HierarchyItem = React.memo(
@@ -41,9 +41,9 @@ export const HierarchyItem = React.memo(
       const SelectedIcon = isCheckBox ? SelectedCheckBoxIcon : SelectedRadioIcon;
       const UnSelectedIcon = isCheckBox ? UnSelectedCheckBoxIcon : UnSelectedRadioIcon;
       return isSelected ? (
-        <SelectedIcon style={styles.buttonIcon} />
+        <SelectedIcon style={styles.selectionIcon} />
       ) : (
-        <UnSelectedIcon style={styles.buttonIcon} />
+        <UnSelectedIcon style={styles.selectionIcon} />
       );
     };
 
@@ -84,7 +84,7 @@ const styles = {
     flexBasis: '0%',
     flexDirection: 'row',
     flexWrap: 'no-wrap',
-    alignItems: 'top',
+    alignItems: 'center',
   },
   buttonLabel: {
     padding: '2px 5px',
@@ -94,6 +94,10 @@ const styles = {
   },
   buttonIcon: {
     flexShrink: 0,
+  },
+  selectionIcon: {
+    fontSize: '14px',
+    padding: '0px 5px',
   },
   spacer: {
     flexGrow: 1,

@@ -162,6 +162,7 @@ class MapComponent extends Component {
       tileSetUrl,
       measureOrgUnits,
       permanentLabels,
+      showAttribution,
       showZoomControl,
     } = this.props;
 
@@ -189,7 +190,7 @@ class MapComponent extends Component {
         onPositionChanged={this.onPositionChanged}
         whenCreated={this.captureMap}
       >
-        <TileLayer tileSetUrl={tileSetUrl} />
+        <TileLayer tileSetUrl={tileSetUrl} showAttribution={showAttribution} />
         {showZoomControl && <ZoomControl position="bottomright" />}
         <DemoLand />
         {currentOrganisationUnit && organisationUnitIsArea(currentOrganisationUnit) && (
@@ -255,6 +256,7 @@ MapComponent.propTypes = {
   tileSetUrl: PropTypes.string.isRequired,
   permanentLabels: PropTypes.bool,
   showZoomControl: PropTypes.bool,
+  showAttribution: PropTypes.bool,
 };
 
 MapComponent.defaultProps = {
@@ -267,6 +269,7 @@ MapComponent.defaultProps = {
   currentParent: null,
   permanentLabels: undefined,
   showZoomControl: true,
+  showAttribution: true,
 };
 
 const selectMeasureDataWithCoordinates = createSelector([measureData => measureData], measureData =>
