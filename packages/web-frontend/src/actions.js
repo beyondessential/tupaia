@@ -98,7 +98,6 @@ export const TOGGLE_INFO_PANEL = 'TOGGLE_INFO_PANEL';
 export const TOGGLE_LOCATION_ITEM_EXPANDED = 'TOGGLE_LOCATION_ITEM_EXPANDED';
 export const OPEN_USER_DIALOG = 'OPEN_USER_DIALOG';
 export const CLOSE_USER_DIALOG = 'CLOSE_USER_DIALOG';
-export const TOGGLE_MEASURE_EXPAND = 'TOGGLE_MEASURE_EXPAND';
 export const TOGGLE_SEARCH_EXPAND = 'TOGGLE_SEARCH_EXPAND';
 export const SET_OVERLAY_COMPONENT = 'SET_OVERLAY_COMPONENT';
 export const OPEN_MAP_POPUP = 'OPEN_MAP_POPUP';
@@ -921,15 +920,6 @@ export function fetchSearchError(error) {
   return {
     type: FETCH_SEARCH_ERROR,
     error,
-  };
-}
-
-/**
- * Toggles the expanded state.
- */
-export function toggleMeasureExpand() {
-  return {
-    type: TOGGLE_MEASURE_EXPAND,
   };
 }
 

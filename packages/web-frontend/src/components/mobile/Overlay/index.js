@@ -11,7 +11,13 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import modalSlideTransition from 'react-animations/lib/fade-in-up';
 import Radium from 'radium';
 
-import { DARK_BLUE, MOBILE_HEADER_HEIGHT, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
+import {
+  DARK_BLUE,
+  LEAFLET_Z_INDEX,
+  MOBILE_HEADER_HEIGHT,
+  MOBILE_MARGIN_SIZE,
+  WHITE,
+} from '../../../styles';
 
 const Overlay = ({ titleText, titleElement, children, onClose, contentStyle }) => (
   <div style={styles.overlay}>
@@ -32,7 +38,7 @@ const styles = {
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: 5, // Above title header.
+    zIndex: LEAFLET_Z_INDEX + 2, // above leaflet map
     display: 'flex',
     flexDirection: 'column',
     animation: 'x 0.3s',
