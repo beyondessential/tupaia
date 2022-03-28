@@ -21,14 +21,7 @@ export const useOverlayDates = (mapOverlay, onUpdateOverlayPeriod) => {
   const startDate = mapOverlay.startDate || defaultDates.startDate;
   const endDate = mapOverlay.endDate || defaultDates.endDate;
 
-  console.log('using overlay dates', startDate, endDate);
-
   const setDates = (_startDate, _endDate) => {
-    const j = {
-      startDate: moment(_startDate).startOf(period),
-      endDate: moment(_endDate).endOf(period),
-    };
-    console.log('Setting', j.startDate, j.endDate);
     const period = GRANULARITY_CONFIG[periodGranularity].momentUnit;
     onUpdateOverlayPeriod(mapOverlayCode, {
       startDate: moment(_startDate).startOf(period),
