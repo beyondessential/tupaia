@@ -8,7 +8,7 @@ import { FormControlLabel, Switch } from '@material-ui/core';
 import { useTabPanel } from '../context';
 
 const ControlLabel = styled(FormControlLabel)`
-  color: ${props => (props.jsonToggleEnabled ? props.theme.palette.primary.main : 'grey')};
+  color: ${props => (props.$jsonToggleEnabled ? props.theme.palette.primary.main : 'grey')};
   margin-bottom: -10px;
   .MuiFormControlLabel-label {
     font-size: 10px;
@@ -30,7 +30,7 @@ export const JsonToggleButton = () => {
       label="JSON"
       onChange={handleClick}
       labelPlacement="top"
-      jsonToggleEnabled={jsonToggleEnabled}
+      $jsonToggleEnabled={jsonToggleEnabled}
     />
   );
 };
