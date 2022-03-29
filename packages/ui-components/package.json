@@ -50,7 +50,7 @@
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-multi-entry": "^4.0.0",
     "@tupaia/utils": "1.0.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "faker": "^4.1.0",
     "fast-glob": "^3.2.5",
     "jsoneditor": "^9.0.0",
