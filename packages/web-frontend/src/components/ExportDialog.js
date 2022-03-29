@@ -116,6 +116,10 @@ const ExportControls = styled.div`
   flex: 1;
 `;
 
+const StyledOptionsTitle = styled(Typography)`
+  margin-top: 1em;
+`;
+
 export const STATUS = {
   CLOSED: 'closed',
   IDLE: 'idle',
@@ -132,6 +136,10 @@ const formatHasPreview = {
   png: true,
 };
 
+const formatHasOptions = {
+  png: true,
+};
+
 export const ExportDialog = ({
   status,
   isOpen,
@@ -144,7 +152,6 @@ export const ExportDialog = ({
 }) => {
   const formats = isMatrix ? ['xlsx'] : ['png', 'xlsx'];
   const [selectedFormat, setSelectedFormat] = useState(formats[0]);
-  const [expanded, setExpanded] = useState(false);
 
   const { exportWithLabels, exportWithTable, exportWithTableDisabled } = exportOptions;
 
@@ -159,10 +166,6 @@ export const ExportDialog = ({
       ...exportOptions,
       ...newExportOptions,
     });
-  };
-
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
   };
 
   const loading = status === STATUS.EXPORTING;
@@ -208,42 +211,37 @@ export const ExportDialog = ({
                   ))}
                 </StyledRadioGroup>
               </FormControl>
-              {selectedFormat === 'png' && (
+              {formatHasOptions[selectedFormat] && (
                 <>
-                  <OptionsButton onClick={handleExpandClick}>
-                    <Typography>Advanced Options</Typography>
-                    <ExpandMore />
-                  </OptionsButton>
-                  <Collapse in={expanded} timeout="auto" unmountOnExit>
+                  <StyledOptionsTitle>Display Options</StyledOptionsTitle>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={exportWithLabels}
+                        onChange={event =>
+                          onChangeExportOptions({ exportWithLabels: event.target.checked })
+                        }
+                        name="exportWithLabels"
+                      />
+                    }
+                    label="Export With Labels"
+                  />
+                  {!exportWithTableDisabled && (
                     <FormControlLabel
                       control={
                         <Checkbox
                           color="primary"
-                          checked={exportWithLabels}
+                          checked={exportWithTable}
                           onChange={event =>
-                            onChangeExportOptions({ exportWithLabels: event.target.checked })
+                            onChangeExportOptions({ exportWithTable: event.target.checked })
                           }
-                          name="exportWithLabels"
+                          name="exportWithTable"
                         />
                       }
-                      label="Export With Labels"
+                      label="Export With Table"
                     />
-                    {!exportWithTableDisabled && (
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            color="primary"
-                            checked={exportWithTable}
-                            onChange={event =>
-                              onChangeExportOptions({ exportWithTable: event.target.checked })
-                            }
-                            name="exportWithTable"
-                          />
-                        }
-                        label="Export With Table"
-                      />
-                    )}
-                  </Collapse>
+                  )}
                 </>
               )}
             </ExportControls>
