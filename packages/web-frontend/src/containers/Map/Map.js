@@ -15,6 +15,7 @@ import { selectActiveTileSet, selectCurrentMapOverlayCodes } from '../../selecto
 import { changePosition, closeDropdownOverlays, setOrgUnit } from '../../actions';
 import { TRANS_BLACK, TRANS_BLACK_LESS } from '../../styles';
 import { DataVisualsLayer } from './DataVisualsLayer/DataVisualsLayer';
+import { selectAreMeasuresOnTheSameEntityLevel } from '../../selectors/measureSelectors';
 
 const CHANGE_TO_PARENT_PERCENTAGE = 0.6;
 
@@ -121,6 +122,7 @@ class MapComponent extends Component {
       shouldSnapToPosition,
       sidePanelWidth,
       tileSetUrl,
+      areMeasuresOnTheSameEntityLevel,
     } = this.props;
 
     return (
@@ -136,11 +138,19 @@ class MapComponent extends Component {
         <TileLayer tileSetUrl={tileSetUrl} showAttribution={showAttribution} />
         {showZoomControl && <ZoomControl position="bottomright" />}
         <DemoLand />
-        {displayedMapOverlayCodes.map(displayedMapOverlayCode => (
-          <DataVisualsLayer displayedMapOverlayCode={displayedMapOverlayCode} />
-        ))}
-        {/* if no displayed map overlay code is specified, only render basic polygon */}
-        {displayedMapOverlayCodes.length === 0 && <DataVisualsLayer />}
+        {areMeasuresOnTheSameEntityLevel ? (
+          <DataVisualsLayer displayedMapOverlayCodes={displayedMapOverlayCodes} />
+        ) : (
+          <>
+            {displayedMapOverlayCodes.map(displayedMapOverlayCode => (
+              <DataVisualsLayer displayedMapOverlayCodes={[displayedMapOverlayCode]} />
+            ))}
+            {/* if no displayed map overlay codes are specified, only render basic polygon */}
+            {displayedMapOverlayCodes.length === 0 && (
+              <DataVisualsLayer displayedMapOverlayCodes={displayedMapOverlayCodes} />
+            )}
+          </>
+        )}
         <DisasterLayer />
       </StyledMap>
     );
@@ -162,6 +172,7 @@ MapComponent.propTypes = {
   onSeeOrgUnitDashboard: PropTypes.func.isRequired,
   shouldSnapToPosition: PropTypes.bool.isRequired,
   tileSetUrl: PropTypes.string.isRequired,
+  areMeasuresOnTheSameEntityLevel: PropTypes.bool.isRequired,
 };
 
 MapComponent.defaultProps = {
@@ -170,16 +181,16 @@ MapComponent.defaultProps = {
 
 const mapStateToProps = state => {
   const { shouldSnapToPosition, position, displayedMapOverlays } = state.map;
-  const mapOverlayCodes = selectCurrentMapOverlayCodes(state);
   const { isSidePanelExpanded } = state.global;
   const { contractedWidth, expandedWidth } = state.dashboard;
 
   return {
-    mapOverlayCodes,
+    mapOverlayCodes: selectCurrentMapOverlayCodes(state),
     displayedMapOverlayCodes: displayedMapOverlays,
     position,
     tileSetUrl: selectActiveTileSet(state).url,
     shouldSnapToPosition,
+    areMeasuresOnTheSameEntityLevel: selectAreMeasuresOnTheSameEntityLevel(state),
     sidePanelWidth: isSidePanelExpanded ? expandedWidth : contractedWidth,
   };
 };

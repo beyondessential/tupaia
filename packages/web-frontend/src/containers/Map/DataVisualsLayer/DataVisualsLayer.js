@@ -22,7 +22,7 @@ import { InteractivePolygonLayer } from './InteractivePolygonLayer';
 export const DataVisualsLayerComponent = props => {
   const {
     measureData,
-    displayedMapOverlayCode,
+    displayedMapOverlayCodes,
     onChangeOrgUnit,
     multiOverlayMeasureData,
     multiOverlaySerieses,
@@ -32,14 +32,14 @@ export const DataVisualsLayerComponent = props => {
     <>
       <InteractivePolygonLayer
         hasMeasureData={measureData && measureData.length > 0}
-        displayedMapOverlayCode={displayedMapOverlayCode}
+        displayedMapOverlayCodes={displayedMapOverlayCodes}
         onChangeOrgUnit={onChangeOrgUnit}
         multiOverlayMeasureData={multiOverlayMeasureData}
         multiOverlaySerieses={multiOverlaySerieses}
       />
       <MarkerLayer
         measureData={measureData}
-        displayedMapOverlayCode={displayedMapOverlayCode}
+        displayedMapOverlayCodes={displayedMapOverlayCodes}
         onChangeOrgUnit={onChangeOrgUnit}
         multiOverlayMeasureData={multiOverlayMeasureData}
         multiOverlaySerieses={multiOverlaySerieses}
@@ -50,7 +50,7 @@ export const DataVisualsLayerComponent = props => {
 
 DataVisualsLayerComponent.propTypes = {
   measureData: PropTypes.array,
-  displayedMapOverlayCode: PropTypes.string.isRequired,
+  displayedMapOverlayCodes: PropTypes.array,
   multiOverlayMeasureData: PropTypes.array,
   multiOverlaySerieses: PropTypes.array,
   onChangeOrgUnit: PropTypes.func.isRequired,
@@ -60,6 +60,7 @@ DataVisualsLayerComponent.defaultProps = {
   measureData: [],
   multiOverlayMeasureData: [],
   multiOverlaySerieses: [],
+  displayedMapOverlayCodes: [],
 };
 
 const selectMeasureDataWithCoordinates = createSelector([measureData => measureData], measureData =>
@@ -71,10 +72,10 @@ const selectMeasureDataWithCoordinates = createSelector([measureData => measureD
 );
 
 const mapStateToProps = (state, ownProps) => {
-  const { displayedMapOverlayCode } = ownProps;
+  const { displayedMapOverlayCodes } = ownProps;
   const mapOverlayCodes = selectCurrentMapOverlayCodes(state);
   const measureData = selectMeasureDataWithCoordinates(
-    selectRenderedMeasuresWithDisplayInfo(state, [displayedMapOverlayCode]),
+    selectRenderedMeasuresWithDisplayInfo(state, displayedMapOverlayCodes),
   );
   // orginal data
   const multiOverlayMeasureData = selectMeasureData(state, mapOverlayCodes);
@@ -96,7 +97,7 @@ const mapDispatchToProps = dispatch => ({
 const propsAreEqual = (prevProps, nextProps) => {
   return (
     JSON.stringify(prevProps.measureData) === JSON.stringify(nextProps.measureData) &&
-    prevProps.displayedMapOverlayCode === nextProps.displayedMapOverlayCode
+    prevProps.displayedMapOverlayCodes.toString() === nextProps.displayedMapOverlayCodes.toString()
   );
 };
 

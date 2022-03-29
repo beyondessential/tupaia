@@ -96,7 +96,7 @@ InteractivePolygonLayerComponent.defaultProps = {
 };
 
 const mapStateToProps = (state, ownProps) => {
-  const { displayedMapOverlayCode } = ownProps;
+  const { displayedMapOverlayCodes } = ownProps;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
   const currentChildren =
     selectOrgUnitChildren(state, currentOrganisationUnit.organisationUnitCode) || [];
@@ -108,7 +108,7 @@ const mapStateToProps = (state, ownProps) => {
   let measureOrgUnits = [];
 
   if (selectHasPolygonMeasure(state)) {
-    measureOrgUnits = selectMeasuresWithDisplayInfo(state, [displayedMapOverlayCode]);
+    measureOrgUnits = selectMeasuresWithDisplayInfo(state, displayedMapOverlayCodes);
     const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
     const grandchildren = currentChildren
       .map(area => selectOrgUnitChildren(state, area.organisationUnitCode))

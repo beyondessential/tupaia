@@ -14,13 +14,13 @@ export const MarkerLayerComponent = props => {
   const {
     measureData,
     serieses,
-    displayedMapOverlayCode,
+    displayedMapOverlayCodes,
     multiOverlayMeasureData,
     multiOverlaySerieses,
     onChangeOrgUnit,
   } = props;
 
-  if (!displayedMapOverlayCode) {
+  if (!displayedMapOverlayCodes) {
     return null;
   }
 
@@ -43,7 +43,7 @@ export const MarkerLayerComponent = props => {
 MarkerLayerComponent.propTypes = {
   measureData: PropTypes.array,
   serieses: PropTypes.array,
-  displayedMapOverlayCode: PropTypes.array,
+  displayedMapOverlayCodes: PropTypes.array,
   multiOverlayMeasureData: PropTypes.array,
   multiOverlaySerieses: PropTypes.array,
   onChangeOrgUnit: PropTypes.func.isRequired,
@@ -52,14 +52,14 @@ MarkerLayerComponent.propTypes = {
 MarkerLayerComponent.defaultProps = {
   measureData: [],
   serieses: [],
-  displayedMapOverlayCode: null,
+  displayedMapOverlayCodes: null,
   multiOverlayMeasureData: [],
   multiOverlaySerieses: [],
 };
 
 const mapStateToProps = (state, ownProps) => {
-  const { displayedMapOverlayCode } = ownProps;
-  const serieses = selectMeasureOptions(state, [displayedMapOverlayCode]);
+  const { displayedMapOverlayCodes } = ownProps;
+  const serieses = selectMeasureOptions(state, displayedMapOverlayCodes);
   return {
     serieses,
   };
@@ -67,7 +67,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const propsAreEqual = (prevProps, nextProps) => {
   return (
-    prevProps.displayedMapOverlayCode === nextProps.displayedMapOverlayCode &&
     JSON.stringify(prevProps.serieses) === JSON.stringify(nextProps.serieses) &&
     JSON.stringify(prevProps.measureData) === JSON.stringify(nextProps.measureData)
   );
