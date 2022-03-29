@@ -28,3 +28,5 @@ export const getTimezoneNameFromTimestamp = timestamp =>
  * @returns {Moment}
  */
 export const utcMoment = (...args) => moment.utc(...args);
+
+export const now = () => moment();

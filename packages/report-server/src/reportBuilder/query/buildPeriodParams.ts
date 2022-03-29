@@ -10,30 +10,29 @@ import {
   getDefaultPeriod,
   momentToDateString,
   utcMoment,
+  now,
 } from '@tupaia/utils';
 
 import { FetchReportQuery, PeriodParams, ReportConfig } from '../../types';
 import { DateOffset } from './types';
 
 const buildDateUsingSpecs = (date: string | undefined, dateOffset: DateOffset) => {
-  const moment = addMomentOffset(utcMoment(date), dateOffset);
+  const { from } = dateOffset;
+  const baseDate = from === 'today' ? now() : date;
+  const moment = addMomentOffset(utcMoment(baseDate), dateOffset);
   return momentToDateString(moment);
 };
 
-const matchesOriginalQuery = (
-  subQuery: Record<string, unknown>,
-  originalQuery: FetchReportQuery,
-) => {
-  return Object.entries(subQuery).every(
+const matchesOriginalQuery = (subQuery: Record<string, unknown>, originalQuery: FetchReportQuery) =>
+  Object.entries(subQuery).every(
     ([key, value]) => originalQuery[key as keyof FetchReportQuery] === value,
   );
-};
 
 export const buildPeriodParams = (
   query: FetchReportQuery,
   config: ReportConfig,
 ): Required<PeriodParams> => {
-  let { period = getDefaultPeriod(), startDate, endDate } = query;
+  let { period = getDefaultPeriod('day'), startDate, endDate } = query;
   const { startDate: startDateSpecs, endDate: endDateSpecs } = config.fetch;
 
   // Use specific date if date specs is string

@@ -8,7 +8,7 @@ export { DEFAULT_BINARY_OPTIONS, DEFAULT_BINARY_OPTIONS_OBJECT } from './constan
 export * from './compare';
 export * from './createBasicHeader';
 export * from './cypress';
-export { getTimezoneNameFromTimestamp, utcMoment } from './datetime';
+export { getTimezoneNameFromTimestamp, utcMoment, now } from './datetime';
 export { getDhisConfig } from './dhis';
 export * from './errors';
 export { Multilock } from './Multilock';
