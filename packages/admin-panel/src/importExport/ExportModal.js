@@ -126,12 +126,13 @@ export const ExportModal = React.memo(({ title, exportEndpoint, fileName, values
 ExportModal.propTypes = {
   children: PropTypes.node.isRequired,
   exportEndpoint: PropTypes.string.isRequired,
-  fileName: PropTypes.string.isRequired,
+  fileName: PropTypes.string,
   title: PropTypes.string,
   values: PropTypes.object,
 };
 
 ExportModal.defaultProps = {
+  fileName: null,
   title: 'Export',
   values: {},
 };
