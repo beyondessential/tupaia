@@ -19,8 +19,19 @@ import {
 import { EntityItem, ITEM_HEIGHT } from './EntityItem';
 
 const SEARCH_BOX_HEIGHT = 40;
+const DEBOUNCE_TIME = 500;
+const MAX_RESULTS = 100;
 
 export class EntityList extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      searchTerm: '',
+      searchResults: null,
+    };
+    this.debounceTimeout = null;
+  }
+
   componentDidMount() {
     const { onMount } = this.props;
     if (onMount) {
@@ -28,8 +39,8 @@ export class EntityList extends PureComponent {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.searchTerm !== this.props.searchTerm && this.listComponent) {
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.searchTerm !== this.state.searchTerm && this.listComponent) {
       this.listComponent.scrollToIndex({
         index: 0,
         viewPosition: 0,
@@ -38,23 +49,53 @@ export class EntityList extends PureComponent {
     }
   }
 
-  getListData = () => {
-    const { searchTerm, filteredEntities } = this.props;
-    const lowerCaseSearchTerm = searchTerm ? searchTerm.toLowerCase() : '';
-
-    if (!lowerCaseSearchTerm) {
-      return filteredEntities;
+  componentWillUnmount() {
+    if (this.debounceTimeout) {
+      clearTimeout(this.debounceTimeout);
     }
+  }
 
-    return filteredEntities.sort(({ name: a }, { name: b }) => {
-      // Send entity names that start with the search term to the top.
-      const checkMatchesAtStart = name => name.toLowerCase().startsWith(lowerCaseSearchTerm);
-      if (checkMatchesAtStart(a) !== checkMatchesAtStart(b)) {
-        return checkMatchesAtStart(a) ? -1 : 1;
+  handleSearchChange = searchTerm => {
+    this.setState({ searchTerm });
+
+    if (!searchTerm) {
+      this.setState({
+        searchTerm: '',
+        searchResults: null,
+      });
+    } else {
+      this.setState({
+        searchTerm,
+      });
+      if (this.debounceTimeout) {
+        clearTimeout(this.debounceTimeout);
       }
+      this.debounceTimeout = setTimeout(() => this.updateListData(searchTerm), DEBOUNCE_TIME);
+    }
+  };
 
-      // Sort alphabetically
-      return a.localeCompare(b);
+  updateListData = searchTerm => {
+    const { filteredEntities } = this.props;
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+
+    const searchResults = filteredEntities
+      .filter(
+        ({ name, parent_name: parentName }) =>
+          name.toLowerCase().includes(lowerCaseSearchTerm) ||
+          (parentName && parentName.toLowerCase().includes(lowerCaseSearchTerm)),
+      )
+      .sort(({ name: a }, { name: b }) => {
+        // Send entity names that start with the search term to the top.
+        const checkMatchesAtStart = name => name.toLowerCase().startsWith(lowerCaseSearchTerm);
+        if (checkMatchesAtStart(a) !== checkMatchesAtStart(b)) {
+          return checkMatchesAtStart(a) ? -1 : 1;
+        }
+
+        // Sort alphabetically
+        return a.localeCompare(b);
+      });
+    this.setState({
+      searchResults,
     });
   };
 
@@ -65,9 +106,9 @@ export class EntityList extends PureComponent {
   };
 
   render() {
-    const { searchTerm, onChangeSearchTerm } = this.props;
-    const isSearching = searchTerm.length > 0;
-    const listData = this.getListData();
+    const { filteredEntities } = this.props;
+    const { searchTerm, searchResults } = this.state;
+    const listData = (searchResults || filteredEntities).slice(0, MAX_RESULTS);
 
     return (
       <View style={localStyles.container}>
@@ -84,21 +125,21 @@ export class EntityList extends PureComponent {
             placeholder="Search"
             placeholderTextColor={getGreyShade(0.1)}
             value={searchTerm}
-            onChangeText={onChangeSearchTerm}
+            onChangeText={this.handleSearchChange}
           />
           {searchTerm.length > 0 && (
             <TouchableOpacity
               analyticsLabel="Clinic List: Search box close"
               style={localStyles.searchBoxCloseButton}
-              onPress={() => onChangeSearchTerm('')}
+              onPress={() => this.handleSearchChange('')}
             >
               <Icon name="close" library="Material" size={16} color={THEME_COLOR_ONE} />
             </TouchableOpacity>
           )}
         </View>
-        {listData.length === 0 ? (
+        {!listData || listData.length === 0 ? (
           <Text style={localStyles.noResultsText}>
-            {isSearching ? `No clinics matching '${searchTerm}'.` : 'Loading...'}
+            {listData.length === 0 ? `No entities matching '${searchTerm}'.` : 'Loading...'}
           </Text>
         ) : (
           <FlatList
@@ -108,7 +149,7 @@ export class EntityList extends PureComponent {
             keyboardShouldPersistTaps="always"
             initialNumToRender={50}
             maxToRenderPerBatch={50}
-            windowSize={50}
+            windowSize={3}
             // This allows fast scrolling of the entire list, without getting the layout the
             // list (especially on slower devices) will stop scrolling before the end is reached
             // and the device will take a moment to increase the scroll height before continuing.
@@ -130,10 +171,8 @@ export class EntityList extends PureComponent {
 
 EntityList.propTypes = {
   filteredEntities: PropTypes.array.isRequired,
-  searchTerm: PropTypes.string.isRequired,
   selectedEntityId: PropTypes.string,
   onRowPress: PropTypes.func.isRequired,
-  onChangeSearchTerm: PropTypes.func.isRequired,
   onMount: PropTypes.func,
 };
 
