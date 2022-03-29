@@ -111,8 +111,8 @@ const useExports = viewContent => {
   const config = viewContent?.presentationOptions;
 
   const [exportOptions, setExportOptions] = useState({
-    exportWithLabels: true,
-    exportWithTable: false,
+    exportWithLabels: false,
+    exportWithTable: true,
     exportWithTableDisabled: false,
   });
   const [exportStatus, setExportStatus] = useState(STATUS.CLOSED);
