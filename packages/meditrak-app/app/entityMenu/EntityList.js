@@ -149,7 +149,7 @@ export class EntityList extends PureComponent {
             keyboardShouldPersistTaps="always"
             initialNumToRender={50}
             maxToRenderPerBatch={50}
-            windowSize={3}
+            windowSize={50}
             // This allows fast scrolling of the entire list, without getting the layout the
             // list (especially on slower devices) will stop scrolling before the end is reached
             // and the device will take a moment to increase the scroll height before continuing.
