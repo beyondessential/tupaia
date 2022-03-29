@@ -19,7 +19,6 @@ import {
 import { EntityItem, ITEM_HEIGHT } from './EntityItem';
 
 const SEARCH_BOX_HEIGHT = 40;
-const DEBOUNCE_TIME = 500;
 const MAX_RESULTS = 100;
 
 export class EntityList extends PureComponent {
@@ -29,7 +28,6 @@ export class EntityList extends PureComponent {
       searchTerm: '',
       searchResults: null,
     };
-    this.debounceTimeout = null;
   }
 
   componentDidMount() {
@@ -49,12 +47,6 @@ export class EntityList extends PureComponent {
     }
   }
 
-  componentWillUnmount() {
-    if (this.debounceTimeout) {
-      clearTimeout(this.debounceTimeout);
-    }
-  }
-
   handleSearchChange = searchTerm => {
     this.setState({ searchTerm });
 
@@ -63,18 +55,9 @@ export class EntityList extends PureComponent {
         searchTerm: '',
         searchResults: null,
       });
-    } else {
-      this.setState({
-        searchTerm,
-      });
-      if (this.debounceTimeout) {
-        clearTimeout(this.debounceTimeout);
-      }
-      this.debounceTimeout = setTimeout(() => this.updateListData(searchTerm), DEBOUNCE_TIME);
+      return;
     }
-  };
 
-  updateListData = searchTerm => {
     const { filteredEntities } = this.props;
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
 
@@ -95,6 +78,7 @@ export class EntityList extends PureComponent {
         return a.localeCompare(b);
       });
     this.setState({
+      searchTerm,
       searchResults,
     });
   };
