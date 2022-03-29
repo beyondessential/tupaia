@@ -48,8 +48,6 @@ export class EntityList extends PureComponent {
   }
 
   handleSearchChange = searchTerm => {
-    this.setState({ searchTerm });
-
     if (!searchTerm) {
       this.setState({
         searchTerm: '',
