@@ -32,7 +32,7 @@ export const MarkerLayerComponent = props => {
   return (
     <UIMarkerLayer
       measureData={processedData}
-      serieses={serieses || null}
+      serieses={serieses}
       onChangeOrgUnit={onChangeOrgUnit}
       multiOverlayMeasureData={multiOverlayMeasureData}
       multiOverlaySerieses={multiOverlaySerieses}

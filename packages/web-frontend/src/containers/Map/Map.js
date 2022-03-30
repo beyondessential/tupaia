@@ -143,9 +143,11 @@ class MapComponent extends Component {
         ) : (
           <>
             {displayedMapOverlayCodes.map(displayedMapOverlayCode => (
-              <DataVisualsLayer displayedMapOverlayCodes={[displayedMapOverlayCode]} />
+              <DataVisualsLayer
+                key={displayedMapOverlayCode}
+                displayedMapOverlayCodes={[displayedMapOverlayCode]}
+              />
             ))}
-            {/* if no displayed map overlay codes are specified, only render basic polygon */}
             {displayedMapOverlayCodes.length === 0 && (
               <DataVisualsLayer displayedMapOverlayCodes={displayedMapOverlayCodes} />
             )}
