@@ -6,10 +6,9 @@
 
 import assert from 'assert';
 import { Request, Response, NextFunction } from 'express';
-import fs from 'fs';
 
 import { Route } from '@tupaia/server-boilerplate';
-import { readJsonFile, reduceToDictionary, snakeKeys, UploadError, yup } from '@tupaia/utils';
+import { ValidationError, reduceToDictionary, snakeKeys, UploadError, yup } from '@tupaia/utils';
 
 import { MeditrakConnection } from '../../connections';
 import {
@@ -26,12 +25,13 @@ import type {
   MapOverlayGroupRelation,
   MapOverlayGroupRelationRecord,
 } from '../../viz-builder';
-import { ValidationError } from '@tupaia/utils';
+import { readAndValidateFiles } from '../../utils';
 
 const importFileSchema = yup.object().shape(
   {
     mapOverlayGroups: yup.array().of(mapOverlayGroupValidator.required()),
     mapOverlayGroupRelations: yup.array().of(mapOverlayGroupRelationsValidator.required()),
+    legacy: yup.bool(),
     // ...the rest of the fields belong to the visualisation object and are validated separately
   },
   [['mapOverlayGroups', 'mapOverlayGroupRelations']],
@@ -39,10 +39,16 @@ const importFileSchema = yup.object().shape(
 
 export type ImportMapOverlayVisualisationRequest = Request<
   Record<string, never>,
-  { id: string; message: string },
+  { importedVizes: { id: string; code: string }[]; message: string },
   Record<string, never>,
   Record<string, never>
 >;
+
+type ImportFileContent = {
+  mapOverlayGroups?: MapOverlayGroup[];
+  mapOverlayGroupRelations?: MapOverlayGroupRelation[];
+  legacy?: boolean;
+} & Record<string, unknown>;
 
 export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVisualisationRequest> {
   private readonly meditrakConnection: MeditrakConnection;
@@ -54,15 +60,40 @@ export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVi
   }
 
   public async buildResponse() {
-    if (!this.req.file) {
+    const { files } = this.req;
+    if (!files) {
       throw new UploadError();
     }
 
-    const {
-      mapOverlayGroups = [],
-      mapOverlayGroupRelations = [],
-      ...visualisation
-    } = this.readFileContents();
+    const validatedFiles = Object.entries(readAndValidateFiles(files, importFileSchema));
+
+    const importedVizes: { id: string; code: string }[] = [];
+    const errors: [string, string][] = [];
+    for (let i = 0; i < validatedFiles.length; i++) {
+      const [fileName, file] = validatedFiles[i];
+      try {
+        importedVizes.push(await this.importViz(file));
+      } catch (error: any) {
+        errors.push([fileName, error.message]);
+      }
+    }
+
+    if (errors.length > 0) {
+      throw new UploadError(
+        new Error(errors.map(([fileName, errorMsg]) => `\n  ${fileName}: ${errorMsg}`).join('')),
+      );
+    }
+
+    return {
+      importedVizes,
+      message: `${importedVizes.length} mapOverlay visualisation${
+        importedVizes.length !== 1 ? 's' : ''
+      } imported successfully`,
+    };
+  }
+
+  private async importViz(fileContent: ImportFileContent) {
+    const { mapOverlayGroups = [], mapOverlayGroupRelations = [], ...visualisation } = fileContent;
 
     if (visualisation.legacy) {
       throw new ValidationError('Legacy viz not supported');
@@ -82,17 +113,8 @@ export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVi
 
     await this.upsertMapOverlayGroupsAndRelations(id, mapOverlayGroups, mapOverlayGroupRelations);
 
-    const action = existingId ? 'updated' : 'created';
-    return { id, message: `Visualisation ${action} successfully` };
+    return { id, code: extractedViz.mapOverlay.code };
   }
-
-  private readFileContents = () => {
-    const { path } = this.req.file as { path: string };
-    const fileContents = readJsonFile<Record<string, unknown>>(path);
-    fs.unlinkSync(path);
-
-    return importFileSchema.validateSync(fileContents);
-  };
 
   private findExistingVisualisationId = async (visualisation: Record<string, unknown>) => {
     const { id, code } = visualisation;

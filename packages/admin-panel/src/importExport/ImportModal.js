@@ -38,6 +38,7 @@ export const ImportModalComponent = React.memo(
     subtitle,
     queryParameters,
     actionConfig,
+    multiple,
     changeRequest,
     changeSuccess,
     changeError,
@@ -49,7 +50,7 @@ export const ImportModalComponent = React.memo(
     const [errorMessage, setErrorMessage] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [values, setValues] = useState({});
-    const [file, setFile] = useState(null);
+    const [files, setFiles] = useState([]);
     const [fileName, setFileName] = useState(noFileMessage);
 
     const handleOpen = () => setIsOpen(true);
@@ -65,9 +66,7 @@ export const ImportModalComponent = React.memo(
       setStatus(STATUS.IDLE);
       setErrorMessage(null);
       setFinishedMessage(null);
-      // Deselect file when dismissing an error, this avoids an error when editing selected files
-      // @see https://github.com/beyondessential/tupaia-backlog/issues/1211
-      setFile(null);
+      setFiles([]);
       setFileName(noFileMessage);
     };
 
@@ -77,7 +76,7 @@ export const ImportModalComponent = React.memo(
       setFinishedMessage(null);
       setIsOpen(false);
       setValues({});
-      setFile(null);
+      setFiles([]);
       setFileName(noFileMessage);
     };
 
@@ -92,7 +91,7 @@ export const ImportModalComponent = React.memo(
       const endpoint = `import/${recordType}`;
 
       try {
-        const { body: response } = await api.upload(endpoint, recordType, file, {
+        const { body: response } = await api.upload(endpoint, recordType, files, {
           ...values,
           ...actionConfig.extraQueryParameters,
         });
@@ -148,7 +147,7 @@ export const ImportModalComponent = React.memo(
               <OutlinedButton onClick={handleClose}>Cancel</OutlinedButton>
               <Button
                 type="submit"
-                disabled={!file}
+                disabled={files.length === 0}
                 isLoading={status === STATUS.LOADING}
                 onClick={handleSubmit}
               >
@@ -157,7 +156,7 @@ export const ImportModalComponent = React.memo(
             </>
           );
       }
-    }, [status, file, handleDismiss, handleClose, handleSubmit]);
+    }, [status, files, handleDismiss, handleClose, handleSubmit]);
 
     return (
       <>
@@ -198,10 +197,11 @@ export const ImportModalComponent = React.memo(
                   <FileUploadField
                     onChange={({ target }, newName) => {
                       setFileName(newName);
-                      setFile(target.files[0]);
+                      setFiles(Array.from(target.files));
                     }}
                     name="file-upload"
                     fileName={fileName}
+                    multiple={multiple}
                   />
                 </>
               )}
@@ -222,6 +222,7 @@ ImportModalComponent.propTypes = {
   subtitle: PropTypes.string,
   queryParameters: PropTypes.array,
   actionConfig: PropTypes.object,
+  multiple: PropTypes.bool,
   changeRequest: PropTypes.func.isRequired,
   changeSuccess: PropTypes.func.isRequired,
   changeError: PropTypes.func.isRequired,
@@ -232,6 +233,7 @@ ImportModalComponent.defaultProps = {
   title: null,
   queryParameters: [],
   actionConfig: {},
+  multiple: false,
   subtitle: '',
   getFinishedMessage: defaultFinishedMessage, // response => react element
 };

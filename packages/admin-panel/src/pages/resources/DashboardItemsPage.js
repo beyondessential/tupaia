@@ -58,11 +58,15 @@ const IMPORT_CONFIG = {
   getFinishedMessage: response => (
     <>
       <span>{response.message}</span>
-      <p>
-        <Link to={`/viz-builder/dashboard-item/${response.id}`}>View in Visualisation Builder</Link>
-      </p>
+      {response.importedVizes.map(({ code, id }) => (
+        <p>
+          <span>{`${code}: `}</span>
+          <Link to={`/viz-builder/dashboard-item/${id}`}>View in Visualisation Builder</Link>
+        </p>
+      ))}
     </>
   ),
+  multiple: true,
 };
 
 const renderNewDashboardVizButton = () => (
