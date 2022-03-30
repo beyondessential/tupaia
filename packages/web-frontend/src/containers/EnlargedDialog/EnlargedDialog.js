@@ -273,6 +273,7 @@ const EnlargedDialogComponent = ({
 
     const filename = toFilename(
       `export-${organisationUnitName}-${viewContentWithExportOptions.name}`,
+      true,
     );
 
     try {

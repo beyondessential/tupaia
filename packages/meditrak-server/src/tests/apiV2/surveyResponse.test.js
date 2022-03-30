@@ -1,7 +1,12 @@
 import { expect } from 'chai';
 import moment from 'moment';
 
-import { buildAndInsertSurveys, generateId, generateTestId, upsertDummyRecord } from '@tupaia/database';
+import {
+  buildAndInsertSurveys,
+  generateId,
+  generateTestId,
+  upsertDummyRecord,
+} from '@tupaia/database';
 import { oneSecondSleep } from '@tupaia/utils';
 import {
   expectErrors,
@@ -77,7 +82,7 @@ describe('surveyResponse endpoint', () => {
     const [{ survey }] = await buildAndInsertSurveys(models, [
       {
         id: surveyId,
-        code: 'TEST_SURVEY_' + generateId(), // prevent test cross-pollination
+        code: 'TEST_SURVEY_RESP_CRUD',
         questions: [
           { code: questionCode(1), type: 'FreeText' },
           { code: questionCode(2), type: 'FreeText' },

@@ -4,6 +4,8 @@
  */
 
 import { expect } from 'chai';
+import groupBy from 'lodash.groupby';
+import pick from 'lodash.pick';
 import moment from 'moment';
 
 import {
@@ -11,140 +13,256 @@ import {
   findOrCreateDummyCountryEntity,
   findOrCreateRecords,
 } from '@tupaia/database';
-import { oneSecondSleep } from '@tupaia/utils';
-import { setupDummySyncQueue, TestableApp } from '../../../testUtilities';
-import { importFile } from './helpers';
+import { resetTestData, TestableApp } from '../../../testUtilities';
+import { importValidFile } from './helpers';
 import {
-  CLINIC_DATA_RESPONSE_IDS,
+  createSurveyResponses,
   CLINIC_DATA_SURVEY,
-  FACILITY_FUNDAMENTALS_RESPONSE_IDS,
   FACILITY_FUNDAMENTALS_SURVEY,
-  RESPONSE_UPDATES,
+  NON_PERIODIC_RESPONSES_AFTER_UPDATES,
+  PERIODIC_RESPONSES_AFTER_UPDATES,
+  WEEKLY_SURVEY,
+  YEARLY_SURVEY,
 } from './importSurveyResponses.fixtures';
 
+const DATA_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
+
 export const testFunctionality = async () => {
+  const assertResponseAnswersAreCorrect = async (surveyResponseId, expectedData) => {
+    const { answers, ...surveyResponseData } = expectedData;
+
+    const surveyResponse = await models.surveyResponse.findById(surveyResponseId);
+    const foundAnswers = await surveyResponse.getAnswers();
+    const foundAnswerObject = Object.fromEntries(foundAnswers.map(a => [a.question_id, a.text]));
+    const fieldDescription = JSON.stringify(surveyResponseData, undefined, 2);
+    const answerError = `Survey response with fields ${fieldDescription} has wrong answers`;
+
+    expect(foundAnswerObject).to.deep.equal(answers, answerError);
+  };
+
+  const buildUniqueResponseNotFoundError = async (responseData, responseFields, foundLength) => {
+    const { surveyCode } = responseData;
+    const fieldDescription = JSON.stringify(responseData, undefined, 2);
+    const survey = await models.survey.findOne({ code: surveyCode });
+    const responsesForSurvey = await models.surveyResponse.find({ survey_id: survey.id });
+
+    const errorParts = [
+      `Expected exactly one survey_response record with data ${fieldDescription}`,
+    ];
+    if (foundLength === 0) {
+      errorParts.push(
+        `but ${foundLength} were found. Other responses for survey '${surveyCode}':`,
+        ...responsesForSurvey.map(r => JSON.stringify(pick(r, Object.keys(responseFields)))),
+      );
+    } else {
+      errorParts.push(`but ${foundLength} were found.`);
+    }
+    errorParts.push('');
+
+    return errorParts.join('\n');
+  };
+
+  /**
+   * Asserts that a survey response with the specified fields exists in the db
+   * Returns the response, if found
+   */
+  const assertResponseRecordExists = async expectedData => {
+    const { id, answers, ...surveyResponseData } = expectedData;
+    const { surveyCode, entityCode, date } = surveyResponseData;
+
+    const survey = await models.survey.findOne({ code: surveyCode });
+    const entity = await models.entity.findOne({ code: entityCode });
+    const expectedFields = {
+      id,
+      survey_id: survey.id,
+      entity_id: entity.id,
+      data_time: moment.utc(date).format(DATA_TIME_FORMAT),
+    };
+
+    let surveyResponse;
+    if (id) {
+      surveyResponse = await models.surveyResponse.findById(id);
+      expect(surveyResponse, `Expect to find a survey response with id '${id}'`).to.exist;
+      const foundFields = pick(surveyResponse, Object.keys(expectedFields));
+      expect(foundFields).to.deep.equal(expectedFields);
+    } else {
+      const surveyResponses = await models.surveyResponse.find(expectedFields);
+      const errorMessage =
+        surveyResponses.length !== 1
+          ? await buildUniqueResponseNotFoundError(
+              surveyResponseData,
+              expectedFields,
+              surveyResponses.length,
+            )
+          : '';
+      expect(surveyResponses).to.have.length(1, errorMessage);
+
+      [surveyResponse] = surveyResponses;
+    }
+
+    return surveyResponse;
+  };
+
   const app = new TestableApp();
   const { models } = app;
-  const syncQueue = setupDummySyncQueue(models);
-
-  let answersToBeDeletedCount;
 
   before(async () => {
     await app.grantFullAccess();
 
-    const user = await models.user.findOne();
-    const entity = await models.entity.findOne();
-    const createSurveyResponse = ({ id, surveyId }) => ({
-      id,
-      survey_id: surveyId,
-      user_id: user.id,
-      entity_id: entity.id,
-    });
-
-    await buildAndInsertSurveys(models, [CLINIC_DATA_SURVEY, FACILITY_FUNDAMENTALS_SURVEY]);
     await findOrCreateDummyCountryEntity(models, { code: 'DL', name: 'Demo Land' });
-    await findOrCreateRecords(models, {
-      entity: ['DL_7', 'DL_9', 'DL_10', 'DL_11', 'TEST_NR_1', 'TEST_NR_2'].map(code => ({
-        code,
-        country_code: 'DL',
-      })),
-      surveyResponse: [
-        ...CLINIC_DATA_RESPONSE_IDS.map(id =>
-          createSurveyResponse({ id, surveyId: CLINIC_DATA_SURVEY.id }),
-        ),
-        ...FACILITY_FUNDAMENTALS_RESPONSE_IDS.map(id =>
-          createSurveyResponse({ id, surveyId: FACILITY_FUNDAMENTALS_SURVEY.id }),
-        ),
-      ],
-    });
-
-    const baselineResponse = await importFile(app, 'responseBaseline.xlsx');
-    expect(baselineResponse.statusCode).to.equal(200);
-
-    // We test deleting a whole response, plus one individually deleted answer
-    answersToBeDeletedCount =
-      (await models.answer.count({ survey_response_id: 'tcd_delete_response_test' })) + 1;
-    await models.database.waitForAllChangeHandlers();
-    await syncQueue.clear();
-
-    const updatedResponse = await importFile(app, 'responseUpdates.xlsx', [
-      'Test Clinic Data',
-      'Test Facility Fundamentals',
-    ]);
-    expect(updatedResponse.statusCode).to.equal(200);
+    const entities = ['DL_1', 'DL_5', 'DL_7', 'DL_9'].map(code => ({
+      code,
+      country_code: 'DL',
+    }));
+    await findOrCreateRecords(models, { entity: entities });
   });
 
-  after(() => {
+  after(async () => {
+    await resetTestData(models.database);
     app.revokeAccess();
   });
 
-  it('changes answer text', async () => {
-    // Check all changed answers have been updated to reflect their new values
-    for (const changedAnswer of RESPONSE_UPDATES.answersChanged) {
-      const answer = await models.answer.findOne({
-        survey_response_id: changedAnswer.surveyResponseId,
-        question_id: changedAnswer.questionId,
-      });
-      expect(answer.text).to.equal(changedAnswer.newAnswer);
-    }
-  });
+  describe('non periodic surveys', () => {
+    const surveys = [CLINIC_DATA_SURVEY, FACILITY_FUNDAMENTALS_SURVEY];
 
-  it('adds new survey responses', async () => {
-    // Check all added survey responses and their answers now exist
-    for (const addedResponse of RESPONSE_UPDATES.responsesAdded) {
-      const entity = await models.entity.findOne({ code: addedResponse.entityCode });
-      const surveyResponse = await models.surveyResponse.findOne({
-        entity_id: entity.id,
-        data_time: moment.utc(addedResponse.date).format('YYYY-MM-DD HH:mm:ss'),
-      });
-      expect(surveyResponse, 'added survey response').to.exist;
+    before(async () => {
+      await buildAndInsertSurveys(models, surveys);
+      await createSurveyResponses(
+        models,
+        groupBy(
+          [
+            ...NON_PERIODIC_RESPONSES_AFTER_UPDATES.notAffected,
+            ...NON_PERIODIC_RESPONSES_AFTER_UPDATES.updated,
+          ],
+          'surveyCode',
+        ),
+      );
+      await importValidFile(app, 'functionality/nonPeriodicBaseline.xlsx');
+      await importValidFile(app, 'functionality/nonPeriodicUpdates.xlsx', [
+        'Test_Clinic_Data',
+        'Test_Facility_Fundamentals',
+      ]);
+    });
 
-      for (const [questionId, answerValue] of Object.entries(addedResponse.answers)) {
-        const answer = await models.answer.findOne({
-          survey_response_id: surveyResponse.id,
-          question_id: questionId,
-        });
-        expect(answer, `added answer ${answerValue} for ${questionId}`).to.exist;
-        expect(answer.text, `added answer text ${answerValue} for ${questionId}`).to.equal(
-          answerValue,
-        );
+    it('does not change responses that are not targeted by updates', async () => {
+      for (const responseData of NON_PERIODIC_RESPONSES_AFTER_UPDATES.notAffected) {
+        const { id } = await assertResponseRecordExists(responseData);
+        await assertResponseAnswersAreCorrect(id, responseData);
       }
-    }
-  });
-
-  it('deletes survey responses', async () => {
-    // Check deleted survey responses and answers are no longer in the models
-    const deletedSurveyResponse = await models.surveyResponse.findById('tcd_delete_response_test');
-    expect(deletedSurveyResponse).to.not.exist;
-    const answersDeletedWithSurveyResponse = await models.answer.find({
-      survey_response_id: 'tcd_delete_response_test',
     });
-    expect(answersDeletedWithSurveyResponse.length).to.equal(0);
-  });
 
-  it('deletes a single answer', async () => {
-    const individuallyDeletedAnswer = await models.answer.findOne({
-      survey_response_id: RESPONSE_UPDATES.answerDeleted.surveyResponseId,
-      question_id: RESPONSE_UPDATES.answerDeleted.questionId,
+    it('deletes the specified responses', async () => {
+      for (const responseData of NON_PERIODIC_RESPONSES_AFTER_UPDATES.deleted) {
+        const deletedResponse = await models.surveyResponse.findById(responseData.id);
+        expect(deletedResponse).to.not.exist;
+      }
     });
-    expect(individuallyDeletedAnswer).to.not.exist;
+
+    it('updates the specified responses', async () => {
+      for (const responseData of NON_PERIODIC_RESPONSES_AFTER_UPDATES.updated) {
+        const { id } = await assertResponseRecordExists(responseData);
+        await assertResponseAnswersAreCorrect(id, responseData);
+      }
+    });
+
+    it('creates the specified responses', async () => {
+      const { created, ...nonCreatedResponses } = NON_PERIODIC_RESPONSES_AFTER_UPDATES;
+      const existingIds = Object.values(nonCreatedResponses)
+        .flat()
+        .map(r => r.id);
+
+      for (const responseData of NON_PERIODIC_RESPONSES_AFTER_UPDATES.created) {
+        const { id } = await assertResponseRecordExists(responseData);
+        await assertResponseAnswersAreCorrect(id, responseData);
+
+        existingIds.forEach(existingId => {
+          expect(existingId).to.not.equal(
+            id,
+            `Expected a survey response to be created, but instead an existing id was used: ${existingId}`,
+          );
+        });
+      }
+    });
+
+    it('no other responses are created', async () => {
+      const foundResponses = await models.surveyResponse.find({
+        survey_id: surveys.map(s => s.id),
+      });
+      const { deleted, ...nonDeletedResponses } = NON_PERIODIC_RESPONSES_AFTER_UPDATES;
+      const expectedResponses = Object.values(nonDeletedResponses).flat();
+      expect(foundResponses).to.have.length(expectedResponses.length);
+    });
   });
 
-  it('adds changes to the sync queue', async () => {
-    await oneSecondSleep();
+  describe('periodic surveys', () => {
+    const surveys = [YEARLY_SURVEY, WEEKLY_SURVEY];
 
-    expect(syncQueue.count(models.surveyResponse.databaseType, 'delete')).to.equal(1);
-    expect(syncQueue.count(models.answer.databaseType, 'delete')).to.equal(answersToBeDeletedCount);
-    expect(syncQueue.count(models.surveyResponse.databaseType, 'update')).to.equal(
-      RESPONSE_UPDATES.responsesAdded.length,
-    );
+    before(async () => {
+      await buildAndInsertSurveys(models, surveys);
+      await createSurveyResponses(
+        models,
+        groupBy(
+          [
+            ...PERIODIC_RESPONSES_AFTER_UPDATES.notAffected,
+            ...PERIODIC_RESPONSES_AFTER_UPDATES.updated,
+          ],
+          'surveyCode',
+        ),
+      );
+      await importValidFile(app, 'functionality/periodicBaseline.xlsx');
+      await importValidFile(app, 'functionality/periodicUpdates.xlsx', [
+        'Test_Yearly',
+        'Test_Weekly',
+      ]);
+    });
 
-    const changedAnswerCount =
-      RESPONSE_UPDATES.answersChanged.length +
-      RESPONSE_UPDATES.responsesAdded.map(r => Object.values(r.answers)).flat().length;
+    it('does not change responses that are not targeted by updates', async () => {
+      for (const responseData of PERIODIC_RESPONSES_AFTER_UPDATES.notAffected) {
+        const { id } = await assertResponseRecordExists(responseData);
+        await assertResponseAnswersAreCorrect(id, responseData);
+      }
+    });
 
-    expect(syncQueue.count(models.answer.databaseType, 'update'), 'answers updated').to.equal(
-      changedAnswerCount,
-    );
+    it('deletes the specified responses', async () => {
+      for (const responseData of PERIODIC_RESPONSES_AFTER_UPDATES.deleted) {
+        const deletedResponse = await models.surveyResponse.findById(responseData.id);
+        expect(deletedResponse).to.not.exist;
+      }
+    });
+
+    it('updates the specified responses', async () => {
+      for (const responseData of PERIODIC_RESPONSES_AFTER_UPDATES.updated) {
+        const { id } = await assertResponseRecordExists(responseData);
+        await assertResponseAnswersAreCorrect(id, responseData);
+      }
+    });
+
+    it('creates the specified responses', async () => {
+      const { created, ...nonCreatedResponses } = PERIODIC_RESPONSES_AFTER_UPDATES;
+      const existingIds = Object.values(nonCreatedResponses)
+        .flat()
+        .map(r => r.id);
+
+      for (const responseData of PERIODIC_RESPONSES_AFTER_UPDATES.created) {
+        const { id } = await assertResponseRecordExists(responseData);
+        await assertResponseAnswersAreCorrect(id, responseData);
+
+        existingIds.forEach(existingId => {
+          expect(existingId).to.not.equal(
+            id,
+            `Expected a survey response to be created, but instead an existing id was used: ${existingId}`,
+          );
+        });
+      }
+    });
+
+    it('no other responses are created', async () => {
+      const foundResponses = await models.surveyResponse.find({
+        survey_id: surveys.map(s => s.id),
+      });
+      const { deleted, ...nonDeletedResponses } = PERIODIC_RESPONSES_AFTER_UPDATES;
+      const expectedResponses = Object.values(nonDeletedResponses).flat();
+      expect(foundResponses).to.have.length(expectedResponses.length);
+    });
   });
 };

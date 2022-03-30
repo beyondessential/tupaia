@@ -7,11 +7,16 @@ import assert from 'assert';
 import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
 import orderBy from 'lodash.orderby';
-import moment from 'moment';
 
-import { getUniqueEntries, getUniqueObjects, haveSameFields, max, min } from '@tupaia/utils';
+import {
+  getDateRangeForGranularity,
+  getUniqueEntries,
+  getUniqueObjects,
+  haveSameFields,
+  max,
+  min,
+} from '@tupaia/utils';
 import { ChangeHandler } from './ChangeHandler';
-import { PERIOD_GRANULARITIES, PERIOD_GRANULARITY_TO_MOMENT_UNIT } from '../modelClasses/Survey';
 import { isMarkedChange } from '../utilities';
 
 /**
@@ -33,58 +38,7 @@ import { isMarkedChange } from '../utilities';
  * @typedef { surveyId, entityId, startDate, endDate } ResponseDimensionCombo
  */
 
-const DATE_FORMAT = 'YYYY-MM-DD';
-const DATETIME_FORMAT = `${DATE_FORMAT} HH:mm:ss`;
-
 const MAX_DEBUGGING_INFO_ITEMS = 1000;
-
-/**
- * Cache of period ranges keyed by requested period granularity first, then date
- *
- * ```js
- * {
- *   yearly: {
- *     "2021-05-05": { startDate: '2021-01-01', endDate: '2021-12-31' }
- *   }
- *   monthly: {
- *     "2021-07-06": { startDate: '2021-07-01', endDate: '2021-07-31' }
- *   }
- * }
- * ```
- */
-const periodRangeCache = Object.fromEntries(
-  Object.values(PERIOD_GRANULARITIES).map(granularity => [granularity, {}]),
-);
-
-/**
- * @param {Date|string} datetime
- * @returns {string}
- */
-const extractDateString = datetime => {
-  const datetimeString = typeof datetime === 'string' ? datetime : datetime.toISOString();
-  return datetimeString.substring(0, DATE_FORMAT.length);
-};
-
-/**
- */
-const getPeriodRange = (periodGranularity, datetime) => {
-  // None of the existing granularities depends on time, so we can just use the date part
-  // to cache/retrieve date ranges
-  const date = extractDateString(datetime);
-  const existingRange = periodRangeCache?.[periodGranularity]?.[date];
-  if (existingRange) {
-    return existingRange;
-  }
-
-  const momentUnit = PERIOD_GRANULARITY_TO_MOMENT_UNIT[periodGranularity];
-  const range = {
-    startDate: moment(datetime).startOf(momentUnit).format(DATETIME_FORMAT),
-    endDate: moment(datetime).endOf(momentUnit).format(DATETIME_FORMAT),
-  };
-  periodRangeCache[periodGranularity][date] = range;
-
-  return range;
-};
 
 const getIdOfMostRecentResponse = surveyResponses => {
   assert.notStrictEqual(surveyResponses.length, 0);
@@ -106,7 +60,7 @@ const getIdOfMostRecentResponse = surveyResponses => {
 const getDimensionCombo = (surveyResponse, survey) => {
   const { period_granularity: periodGranularity } = survey;
   const { data_time: dataTime } = surveyResponse;
-  const { startDate, endDate } = getPeriodRange(periodGranularity, dataTime);
+  const { startDate, endDate } = getDateRangeForGranularity(dataTime, periodGranularity);
 
   return {
     surveyId: survey.id,

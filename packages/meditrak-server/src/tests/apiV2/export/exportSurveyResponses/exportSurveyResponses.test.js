@@ -24,9 +24,9 @@ const DEFAULT_POLICY = {
   LA: ['Admin'],
 };
 
-const TEST_SURVEY_1_CODE = 'TEST_SURVEY_EXPORT_SURVEY_RESPONSES_1';
+const TEST_SURVEY_1_CODE = 'TEST_EXPORT_SURVEY_RESPONSES_1';
 const TEST_SURVEY_1_NAME = 'Export Survey SR 1';
-const TEST_SURVEY_2_CODE = 'TEST_SURVEY_EXPORT_SURVEY_RESPONSES_2';
+const TEST_SURVEY_2_CODE = 'TEST_EXPORT_SURVEY_RESPONSES_2';
 const TEST_SURVEY_2_NAME = 'Export Survey SR 2';
 
 const expectAccessibleExportDataHeaderRow = exportData => {
