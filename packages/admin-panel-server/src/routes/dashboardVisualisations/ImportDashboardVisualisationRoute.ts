@@ -27,7 +27,7 @@ import type {
   DashboardRelationRecord,
   DashboardVizResource,
 } from '../../viz-builder';
-import { readAndValidateFiles } from '../../utils';
+import { readFileContent } from '../../utils';
 
 const importFileSchema = yup.object().shape(
   {
@@ -61,18 +61,18 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
 
   public async buildResponse() {
     const { files } = this.req;
-    if (!files) {
+    if (!files || !Array.isArray(files)) {
       throw new UploadError();
     }
 
-    const validatedFiles = Object.entries(readAndValidateFiles(files, importFileSchema));
-
     const importedVizes: { id: string; code: string }[] = [];
     const errors: [string, string][] = [];
-    for (let i = 0; i < validatedFiles.length; i++) {
-      const [fileName, file] = validatedFiles[i];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const { originalname: fileName } = file;
       try {
-        importedVizes.push(await this.importViz(file));
+        const fileContent = importFileSchema.validateSync(readFileContent(file));
+        importedVizes.push(await this.importViz(fileContent));
       } catch (error: any) {
         errors.push([fileName, error.message]);
       }

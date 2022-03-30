@@ -6,4 +6,4 @@
 
 export { hasTupaiaAdminPanelAccess } from './hasTupaiaAdminPanelAccess';
 export { hasBESAdminAccess } from './hasBESAdminAccess';
-export { readAndValidateFiles } from './readAndValidateFiles';
+export { readFileContent } from './readFileContent';
