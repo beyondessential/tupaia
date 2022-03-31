@@ -54,6 +54,7 @@ const IMPORT_CONFIG = {
   subtitle: 'Please upload a .json file with the visualisation to be imported:',
   actionConfig: {
     importEndpoint: 'dashboardVisualisations',
+    multiple: true,
   },
   getFinishedMessage: response => (
     <>
@@ -66,7 +67,6 @@ const IMPORT_CONFIG = {
       ))}
     </>
   ),
-  multiple: true,
 };
 
 const renderNewDashboardVizButton = () => (

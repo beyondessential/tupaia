@@ -38,7 +38,6 @@ export const ImportModalComponent = React.memo(
     subtitle,
     queryParameters,
     actionConfig,
-    multiple,
     changeRequest,
     changeSuccess,
     changeError,
@@ -201,7 +200,7 @@ export const ImportModalComponent = React.memo(
                     }}
                     name="file-upload"
                     fileName={fileName}
-                    multiple={multiple}
+                    multiple={actionConfig.multiple}
                   />
                 </>
               )}
@@ -222,7 +221,6 @@ ImportModalComponent.propTypes = {
   subtitle: PropTypes.string,
   queryParameters: PropTypes.array,
   actionConfig: PropTypes.object,
-  multiple: PropTypes.bool,
   changeRequest: PropTypes.func.isRequired,
   changeSuccess: PropTypes.func.isRequired,
   changeError: PropTypes.func.isRequired,
@@ -233,7 +231,6 @@ ImportModalComponent.defaultProps = {
   title: null,
   queryParameters: [],
   actionConfig: {},
-  multiple: false,
   subtitle: '',
   getFinishedMessage: defaultFinishedMessage, // response => react element
 };

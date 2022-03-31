@@ -41,7 +41,7 @@ const importFileSchema = yup.object().shape(
 export type ImportDashboardVisualisationRequest = Request<
   Record<string, never>,
   { importedVizes: { id: string; code: string }[]; message: string },
-  { dashboardVisualisations?: FileList },
+  Record<string, never>,
   Record<string, never>
 >;
 
