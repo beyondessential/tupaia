@@ -138,6 +138,7 @@ class MapComponent extends Component {
         <TileLayer tileSetUrl={tileSetUrl} showAttribution={showAttribution} />
         {showZoomControl && <ZoomControl position="bottomright" />}
         <DemoLand />
+        {/* There are some useful cases we want to use existing logic to combine two measures on the same entity levels (eg. a coloured radius) */}
         {areMeasuresOnTheSameEntityLevel ? (
           <DataVisualsLayer displayedMapOverlayCodes={displayedMapOverlayCodes} />
         ) : (
