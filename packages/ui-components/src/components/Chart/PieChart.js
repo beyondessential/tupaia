@@ -69,6 +69,16 @@ const Text = styled(Typography)`
   color: #333;
 `;
 
+const getLegendAlignment = (legendPosition, isExporting) => {
+  if (isExporting) {
+    return { verticalAlign: 'top', align: 'right', layout: 'vertical' };
+  }
+  if (legendPosition === 'bottom') {
+    return { verticalAlign: 'bottom', align: 'center' };
+  }
+  return { verticalAlign: 'top', align: 'left' };
+};
+
 const getFormattedValue = (viewContent, data) => {
   const { valueType, labelType } = viewContent;
   const valueTypeForLabel = labelType || valueType;
@@ -78,39 +88,33 @@ const getFormattedValue = (viewContent, data) => {
   return formatDataValueByType({ value, metadata }, valueTypeForLabel);
 };
 
-const makeCustomTooltip = viewContent => {
-  return props => {
-    const { active, payload } = props;
+const makeCustomTooltip = viewContent => props => {
+  const { active, payload } = props;
 
-    if (!active || !payload || !payload.length) {
-      return null;
-    }
+  if (!active || !payload || !payload.length) {
+    return null;
+  }
 
-    const data = payload[0].payload;
-    const { name, fill } = data;
+  const data = payload[0].payload;
+  const { name, fill } = data;
 
-    return (
-      <TooltipContainer>
-        <Heading>{name}</Heading>
-        <Item>
-          <Box style={{ background: fill }} />
-          <Text>{getFormattedValue(viewContent, data)}</Text>
-        </Item>
-      </TooltipContainer>
-    );
-  };
+  return (
+    <TooltipContainer>
+      <Heading>{name}</Heading>
+      <Item>
+        <Box style={{ background: fill }} />
+        <Text>{getFormattedValue(viewContent, data)}</Text>
+      </Item>
+    </TooltipContainer>
+  );
 };
 
-const makeLabel = viewContent => {
-  return props => {
-    const { payload } = props;
-    return getFormattedValue(viewContent, payload.payload);
-  };
+const makeLabel = viewContent => props => {
+  const { payload } = props;
+  return getFormattedValue(viewContent, payload.payload);
 };
 
-const chartColorAtIndex = (colorArray, index) => {
-  return colorArray[index % colorArray.length];
-};
+const chartColorAtIndex = (colorArray, index) => colorArray[index % colorArray.length];
 
 const getHeight = (isExporting, isEnlarged) => {
   if (isExporting) {
@@ -141,12 +145,11 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
     setActiveIndex(-1);
   };
 
-  const getPresentationOption = (key, option) => {
-    return presentationOptions && presentationOptions[key] && presentationOptions[key][option];
-  };
+  const getPresentationOption = (key, option) =>
+    presentationOptions && presentationOptions[key] && presentationOptions[key][option];
 
-  const getValidData = () => {
-    return data
+  const getValidData = () =>
+    data
       .filter(element => element.value > 0)
       .map(item => {
         const { name, ...otherKeyValues } = item;
@@ -161,7 +164,6 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
         };
       })
       .sort((a, b) => b.value - a.value);
-  };
 
   const chartColors = Object.values(CHART_COLOR_PALETTE);
   const validData = getValidData();
@@ -200,6 +202,7 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
         </Pie>
         <Tooltip content={makeCustomTooltip(viewContent)} />
         <Legend
+          {...getLegendAlignment(legendPosition, isExporting)}
           content={getPieLegend({
             chartConfig: viewContent.chartConfig,
             isEnlarged,
@@ -209,8 +212,6 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick, le
           })}
           onMouseOver={handleMouseEnter}
           onMouseOut={handleMouseOut}
-          verticalAlign={legendPosition === 'bottom' ? 'bottom' : 'top'}
-          align={legendPosition === 'bottom' ? 'center' : 'left'}
         />
       </BasePieChart>
     </ResponsiveContainer>

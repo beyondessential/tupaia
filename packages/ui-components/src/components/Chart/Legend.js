@@ -116,7 +116,7 @@ export const getPieLegend = ({
   legendPosition,
   viewContent,
 }) => ({ payload }) => (
-  <PieLegendContainer $position={legendPosition}>
+  <PieLegendContainer $position={legendPosition} $isExporting={isExporting}>
     {payload.map(({ color, value, payload: item }) => {
       const displayValue = getPieLegendDisplayValue(
         chartConfig,
