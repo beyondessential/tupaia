@@ -10,10 +10,12 @@ import {
   periodFromAnalytics,
 } from './analytics';
 import { aggregateEvents } from './events';
-import { AGGREGATION_TYPES } from './aggregationTypes';
+import { AGGREGATION_TYPES, AGGREGATION_TYPES_META_DATA } from './aggregationTypes';
 
 export class Aggregator {
   static aggregationTypes = AGGREGATION_TYPES;
+
+  static aggregationTypesMetaData = AGGREGATION_TYPES_META_DATA;
 
   constructor(dataBroker) {
     this.dataBroker = dataBroker;
@@ -26,6 +28,10 @@ export class Aggregator {
 
   get aggregationTypes() {
     return Aggregator.aggregationTypes;
+  }
+
+  get aggregationTypesMetaData() {
+    return Aggregator.aggregationTypesMetaData;
   }
 
   get dataSourceTypes() {
