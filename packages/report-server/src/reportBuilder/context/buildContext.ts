@@ -25,13 +25,12 @@ type ContextBuilder<K extends ContextDependency> = (
 
 const isEventResponse = (data: FetchResponse) => data.results.some(result => 'event' in result);
 
-const getOrgUnitCodesFromData = (data: FetchResponse) => {
-  return getUniqueEntries(
+const getOrgUnitCodesFromData = (data: FetchResponse) =>
+  getUniqueEntries(
     isEventResponse(data)
       ? data.results.map(d => d.orgUnit)
       : data.results.map(d => d.organisationUnit),
   );
-};
 
 const buildOrgUnits = async (reqContext: ReqContext, data: FetchResponse) => {
   const orgUnitCodes = getOrgUnitCodesFromData(data);
@@ -41,9 +40,8 @@ const buildOrgUnits = async (reqContext: ReqContext, data: FetchResponse) => {
   });
 };
 
-const buildDataElementCodeToName = async (reqContext: ReqContext, data: FetchResponse) => {
-  return data.metadata?.dataElementCodeToName || {};
-};
+const buildDataElementCodeToName = async (reqContext: ReqContext, data: FetchResponse) =>
+  data.metadata?.dataElementCodeToName || {};
 
 const buildFacilityCountByOrgUnit = async (reqContext: ReqContext, data: FetchResponse) => {
   const orgUnitCodes = getOrgUnitCodesFromData(data);

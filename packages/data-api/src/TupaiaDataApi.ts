@@ -8,6 +8,7 @@ import groupBy from 'lodash.groupby';
 import moment from 'moment';
 import { TupaiaDatabase } from '@tupaia/database';
 import { getSortByKey, DEFAULT_BINARY_OPTIONS, yup } from '@tupaia/utils';
+import { valuesIn } from 'lodash';
 import { SqlQuery } from './SqlQuery';
 import { AnalyticsFetchOptions, AnalyticsFetchQuery } from './AnalyticsFetchQuery';
 import { EventsFetchQuery, EventAnswer, EventsFetchOptions } from './EventsFetchQuery';
@@ -60,6 +61,33 @@ export class TupaiaDataApi {
       this.database,
       options,
     ).fetch();
+
+    const analyticsWithEntityType = analytics.filter(({ type }) => type === 'entity');
+    if (analyticsWithEntityType.length > 0) {
+      const entityIds = new Set<string>();
+      analyticsWithEntityType
+        .map(({ value }) => value)
+        .forEach(id => {
+          entityIds.add(id);
+        });
+      const entityIdsToCodes = await new SqlQuery<{ code: string; id: string }[]>(
+        `
+       SELECT code, id
+       FROM entity
+       WHERE id IN ${SqlQuery.array(Array.from(entityIds))};
+     `,
+        Array.from(entityIds),
+      ).executeOnDatabase(this.database);
+
+      for (const { code, id } of entityIdsToCodes) {
+        const changeArray = analytics
+          .map(({ value }, index) => [value, index])
+          .filter(([value]) => value === id);
+        changeArray.forEach(([, analyticsIndex]) => {
+          analytics[Number(analyticsIndex)].value = code;
+        });
+      }
+    }
     return {
       analytics: analytics.map(({ entityCode, dataElementCode, period, type, value }) => ({
         organisationUnit: entityCode,
