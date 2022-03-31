@@ -24,17 +24,17 @@ const DEFAULT_POLICY = {
 const TEST_DATA_FOLDER = 'src/tests/testData';
 const SURVEY_NAME_1 = 'Test Import Survey Response 1';
 const SURVEY_NAME_2 = 'Test Import Survey Response 2';
-const SURVEY_CODE_1 = 'TEST_IMPORT_SURVEY_RESPONSES_1_test';
-const SURVEY_CODE_2 = 'TEST_IMPORT_SURVEY_RESPONSES_2_test';
+const SURVEY_CODE_1 = 'TEST_IMPORT_SURVEY_RESP_1_test';
+const SURVEY_CODE_2 = 'TEST_IMPORT_SURVEY_RESP_2_test';
 
 export const testPermissions = async () => {
   const app = new TestableApp();
   const { models } = app;
 
-  const importFile = (filename, surveyNames) => {
-    const surveyNamesParam = surveyNames.map(s => `surveyNames=${s}`).join('&');
+  const importFile = (filename, surveyCodes) => {
+    const surveyCodesParam = surveyCodes.map(s => `surveyCodes=${s}`).join('&');
     return app
-      .post(`import/surveyResponses?${surveyNamesParam}&timeZone=Australia%2FMelbourne`)
+      .post(`import/surveyResponses?${surveyCodesParam}&timeZone=Australia%2FMelbourne`)
       .attach('surveyResponses', `${TEST_DATA_FOLDER}/surveyResponses/${filename}`);
   };
 
@@ -157,7 +157,7 @@ export const testPermissions = async () => {
 
   it('Sufficient permissions: Should pass permissions check when importing survey responses from 1 survey', async () => {
     await app.grantAccess(DEFAULT_POLICY);
-    const response = await importFile('importResponsesFromSingleSurvey.xlsx', [SURVEY_NAME_1]);
+    const response = await importFile('importResponsesFromSingleSurvey.xlsx', [SURVEY_CODE_1]);
     const { statusCode } = response;
 
     expect(statusCode).to.equal(200);
@@ -166,8 +166,8 @@ export const testPermissions = async () => {
   it('Sufficient permissions: Should pass permissions check when importing survey responses from multiple surveys', async () => {
     await app.grantAccess(DEFAULT_POLICY);
     const response = await importFile('importResponsesFromMultipleSurveys.xlsx', [
-      SURVEY_NAME_1,
-      SURVEY_NAME_2,
+      SURVEY_CODE_1,
+      SURVEY_CODE_2,
     ]);
     const { statusCode } = response;
 
@@ -184,7 +184,7 @@ export const testPermissions = async () => {
       LA: ['Admin'],
     };
     await app.grantAccess(policy);
-    const response = await importFile('importResponsesFromSingleSurvey.xlsx', [SURVEY_NAME_1]);
+    const response = await importFile('importResponsesFromSingleSurvey.xlsx', [SURVEY_CODE_1]);
 
     expectPermissionError(
       response,
@@ -203,8 +203,8 @@ export const testPermissions = async () => {
     };
     await app.grantAccess(policy);
     const response = await importFile('importResponsesFromMultipleSurveys.xlsx', [
-      SURVEY_NAME_1,
-      SURVEY_NAME_2,
+      SURVEY_CODE_1,
+      SURVEY_CODE_2,
     ]);
 
     expectPermissionError(
