@@ -82,17 +82,15 @@ describe('QueryBuilder', () => {
   const outputQuery = (input: Partial<FetchReportQuery> = {}) => ({
     hierarchy: HIERARCHY,
     organisationUnitCodes: ['TO'],
-    period: getPeriodString([2017, 1], [2020, 12], 15),
+    period: getPeriodString([2017, 1], [2020, 12, 15]),
     startDate: '2017-01-01',
     endDate: '2020-12-15',
     ...input,
   });
 
   const getPeriodString = (
-    [startYear, startMonth]: [number, number],
-    [endYear, endMonth]: [number, number],
-    endDay?: number,
-    startDay?: number,
+    [startYear, startMonth, startDay = 1]: [number, number, number?],
+    [endYear, endMonth, endDay = 1]: [number, number, number?],
   ) => {
     const periods = [];
 
@@ -100,8 +98,8 @@ describe('QueryBuilder', () => {
       const currentStartMonth = year === startYear ? startMonth : 1;
       const currentEndMonth = year === endYear ? endMonth : 12;
       for (let month = currentStartMonth; month <= currentEndMonth; month++) {
-        if (month === currentEndMonth && year === endYear && endDay) {
-          for (let day = startDay || 1; day <= endDay; day++) {
+        if (month === currentEndMonth && year === endYear && endDay > 1) {
+          for (let day = startDay; day <= endDay; day++) {
             periods.push(
               `${year}${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}`,
             );
@@ -165,7 +163,7 @@ describe('QueryBuilder', () => {
           'endDate is empty, period is empty - uses default end period',
           { query: inputQuery({ startDate: '2020-01-01' }) },
           outputQuery({
-            period: getPeriodString([2020, 1], [2020, 12], 15),
+            period: getPeriodString([2020, 1], [2020, 12, 15]),
             startDate: '2020-01-01',
             endDate: '2020-12-15',
           }),
@@ -203,7 +201,7 @@ describe('QueryBuilder', () => {
             query: inputQuery(),
           },
           outputQuery({
-            period: getPeriodString([2020, 1], [2020, 12], 15),
+            period: getPeriodString([2020, 1], [2020, 12, 15]),
             startDate: '2020-01-01',
             endDate: '2020-12-15',
           }),
@@ -215,7 +213,7 @@ describe('QueryBuilder', () => {
             query: inputQuery({ startDate: '2020-03-05' }),
           },
           outputQuery({
-            period: getPeriodString([2020, 1], [2020, 12], 15),
+            period: getPeriodString([2020, 1], [2020, 12, 15]),
             startDate: '2020-01-01',
             endDate: '2020-12-15',
           }),
@@ -316,7 +314,7 @@ describe('QueryBuilder', () => {
           },
           outputQuery({
             endDate: '2020-12-14',
-            period: `${getPeriodString([2017, 1], [2020, 12], 14)}`,
+            period: `${getPeriodString([2017, 1], [2020, 12, 14])}`,
           }),
         ],
         [
@@ -339,7 +337,7 @@ describe('QueryBuilder', () => {
           },
           outputQuery({
             endDate: '2020-12-14',
-            period: `${getPeriodString([2020, 12], [2020, 12], 14, 14)}`,
+            period: `${getPeriodString([2020, 12, 14], [2020, 12, 14])}`,
             startDate: '2020-12-14',
           }),
         ],
