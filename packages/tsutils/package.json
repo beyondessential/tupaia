@@ -1,0 +1,25 @@
+{
+  "name": "@tupaia/tsutils",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Utility functions that are helpful across multiple packages (typescript)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/tsutils"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint:fix": "yarn lint --fix",
+    "test": "jest --passWithNoTests",
+    "test:coverage": "yarn test --coverage"
+  },
+  "dependencies": {
+    "@tupaia/utils": "1.0.0",
+    "yup": "^0.32.9"
+  }
+}

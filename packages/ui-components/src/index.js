@@ -14,6 +14,7 @@ export * from './components/ConfirmDeleteModal';
 export * from './components/DataTable';
 export * from './components/DateRangePicker';
 export * from './components/Dialog';
+export * from './components/DataLibrary';
 export * from './components/EnvBanner';
 export * from './components/ErrorBoundary';
 export * from './components/FetchLoader';

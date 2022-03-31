@@ -36,6 +36,10 @@ import {
   UserRoute,
   ImportMapOverlayVisualisationRequest,
   ImportMapOverlayVisualisationRoute,
+  FetchAggregationOptionsRequest,
+  FetchAggregationOptionsRoute,
+  FetchTransformSchemasRequest,
+  FetchTransformSchemasRoute,
 } from '../routes';
 
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
@@ -125,6 +129,16 @@ export function createApp() {
       '/v1/mapOverlayVisualisation/:mapOverlayVisualisationId',
       verifyBESAdminAccess,
       handleWith(FetchMapOverlayVisualisationRoute),
+    )
+    .get<FetchAggregationOptionsRequest>(
+      '/v1/fetchAggregationOptions',
+      verifyBESAdminAccess,
+      handleWith(FetchAggregationOptionsRoute),
+    )
+    .get<FetchTransformSchemasRequest>(
+      '/v1/fetchTransformSchemas',
+      verifyBESAdminAccess,
+      handleWith(FetchTransformSchemasRoute),
     )
     .build();
 

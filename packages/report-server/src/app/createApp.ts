@@ -14,10 +14,14 @@ import {
 import {
   FetchReportRequest,
   FetchReportRoute,
+  FetchAggregationOptionsRequest,
+  FetchAggregationOptionsRoute,
+  FetchTransformSchemaRoute,
   TestReportRequest,
   TestReportRoute,
 } from '../routes';
 import { RequestContext } from '../types';
+import { FetchTransformSchemaRequest } from '../routes/FetchTransformSchemaRoute';
 
 /**
  * Set up express server
@@ -39,6 +43,14 @@ export function createApp() {
       next();
     })
     .get<FetchReportRequest>('fetchReport/:reportCode', handleWith(FetchReportRoute))
+    .get<FetchAggregationOptionsRequest>(
+      'fetchAggregationOptions',
+      handleWith(FetchAggregationOptionsRoute),
+    )
+    .get<FetchTransformSchemaRequest>(
+      'fetchTransformSchemas',
+      handleWith(FetchTransformSchemaRoute),
+    )
     .post<FetchReportRequest>('fetchReport/:reportCode', handleWith(FetchReportRoute))
     .post<TestReportRequest>('testReport', handleWith(TestReportRoute))
     .build();

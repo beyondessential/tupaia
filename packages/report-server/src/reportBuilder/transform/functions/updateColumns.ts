@@ -21,7 +21,7 @@ type UpdateColumnsParams = {
   where: (parser: TransformParser) => boolean;
 };
 
-const paramsValidator = yup.object().shape({
+export const paramsValidator = yup.object().shape({
   insert: mapStringToStringValidator,
   include: starSingleOrMultipleColumnsValidator,
   exclude: starSingleOrMultipleColumnsValidator,
