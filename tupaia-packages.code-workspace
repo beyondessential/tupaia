@@ -109,6 +109,10 @@
       "path": "packages/utils"
     },
     {
+      "name": "tsutils",
+      "path": "packages/tsutils"
+    },
+    {
       "name": "weather-api",
       "path": "packages/weather-api"
     },
@@ -162,6 +166,7 @@
       "oucode",
       "outdater",
       "parameterise",
+      "Persistor",
       "postgresql",
       "preaggregate",
       "preaggregated",

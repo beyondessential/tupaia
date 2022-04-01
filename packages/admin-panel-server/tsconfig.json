@@ -1,13 +1,8 @@
 {
   "extends": "../../tsconfig-ts.json",
-
   "compilerOptions": {
-    "outDir": "dist",
-    "strict": true,
-    "declaration": true,
-    "noEmit": false
+    "typeRoots": ["src/@types", "node_modules/@types", "../../node_modules/@types"],
+    "noEmit": true
   },
-
-  "include": ["src/**/*"],
-  "exclude": ["src/__tests__"]
+  "include": ["src/**/*", "jest.config.ts"]
 }

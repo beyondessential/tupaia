@@ -44,23 +44,32 @@ const createImporter = models => {
   return new SurveyResponseImporter(models, responseExtractors);
 };
 
-const getEntitiesGroupedBySurveyName = async (models, inputsPerSurvey) => {
-  const entitiesGroupedBySurveyName = {};
+const getEntitiesGroupedBySurveyCode = async (models, inputsPerSurvey) => {
+  const entitiesGroupedBySurveyCode = {};
+
+  const surveys = await models.survey.find({ name: Object.keys(inputsPerSurvey) });
 
   for (const entry of Object.entries(inputsPerSurvey)) {
     const [surveyName, surveyResponses] = entry;
+
+    const survey = surveys.find(survey => survey.name === surveyName);
+    if (!survey) {
+      throw new Error(`No survey found with name '${surveyName}'`);
+    }
+    const surveyCode = survey.code;
+
     surveyResponses.forEach(surveyResponse => {
       const { entityCode } = surveyResponse;
 
-      if (!entitiesGroupedBySurveyName[surveyName]) {
-        entitiesGroupedBySurveyName[surveyName] = [];
+      if (!entitiesGroupedBySurveyCode[surveyCode]) {
+        entitiesGroupedBySurveyCode[surveyCode] = [];
       }
 
-      entitiesGroupedBySurveyName[surveyName].push(entityCode);
+      entitiesGroupedBySurveyCode[surveyCode].push(entityCode);
     });
   }
 
-  return entitiesGroupedBySurveyName;
+  return entitiesGroupedBySurveyCode;
 };
 
 export const importStriveLabResults = async (req, res) => {
@@ -72,10 +81,10 @@ export const importStriveLabResults = async (req, res) => {
   const parser = createWorkBookParser();
   const workBook = xlsx.readFile(file.path);
   const inputsPerSurvey = await parser.parse(workBook);
-  const entitiesGroupedBySurveyName = await getEntitiesGroupedBySurveyName(models, inputsPerSurvey);
+  const entitiesGroupedBySurveyCode = await getEntitiesGroupedBySurveyCode(models, inputsPerSurvey);
 
   const importSurveyResponsePermissionsChecker = async accessPolicy => {
-    await assertCanImportSurveyResponses(accessPolicy, models, entitiesGroupedBySurveyName);
+    await assertCanImportSurveyResponses(accessPolicy, models, entitiesGroupedBySurveyCode);
   };
 
   await req.assertPermissions(

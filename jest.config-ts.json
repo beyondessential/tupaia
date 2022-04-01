@@ -6,5 +6,6 @@
   "setupFilesAfterEnv": ["../../jest.setup.js"],
   "transformIgnorePatterns": ["/node_modules/"],
   "testEnvironment": "node",
-  "testTimeout": 30000
+  "testTimeout": 30000,
+  "preset": "ts-jest"
 }

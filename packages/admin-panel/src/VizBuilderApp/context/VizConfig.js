@@ -116,18 +116,63 @@ const useConfigStore = () => {
   ];
 };
 
+const VisualisationContext = createContext(initialConfigState.visualisation);
+
+const amendStepsToBaseConfig = visualisation => {
+  const { data } = { ...visualisation };
+  const { aggregate, transform } = { ...data };
+  // Remove frontend config (isDisabled, id, schema) in aggregation steps.
+  const filteredAggregate = aggregate.map(({ isDisabled, id, schema, ...restOfConfig }) => ({
+    ...restOfConfig,
+  }));
+
+  // Remove frontend configs (isDisabled, id, schema) in transform steps. If it is an alias return as a string.
+  const filteredTransform = transform.map(({ isDisabled, id, schema, ...restOfConfig }) => {
+    if (restOfConfig.alias) {
+      return restOfConfig.transform;
+    }
+    return {
+      ...restOfConfig,
+    };
+  });
+
+  const filteredData = { ...data, aggregate: filteredAggregate, transform: filteredTransform };
+  return { ...visualisation, data: filteredData };
+};
+
+// Filter those unchecked aggregation or transform steps
+const filterDisabledSteps = visualisation => {
+  const { data } = { ...visualisation };
+  const { aggregate, transform } = { ...data };
+  const filteredAggregate = aggregate.filter(({ isDisabled }) => !isDisabled);
+  const filteredTransform = transform.filter(({ isDisabled }) => !isDisabled);
+  const filteredData = { ...data, aggregate: filteredAggregate, transform: filteredTransform };
+  return { ...visualisation, data: filteredData };
+};
+
 const VizBuilderConfigContext = createContext(initialConfigState);
-const { Provider } = VizBuilderConfigContext;
 
 // eslint-disable-next-line react/prop-types
 const VizConfigProvider = ({ children }) => {
   const store = useConfigStore();
+  const [{ visualisation }] = store;
 
   return (
-    <Provider value={store} displayName="VizBuilder">
-      {children}
-    </Provider>
+    <VisualisationContext.Provider
+      value={{
+        visualisationForFetchingData: amendStepsToBaseConfig(filterDisabledSteps(visualisation)),
+        visualisation: amendStepsToBaseConfig(visualisation),
+      }}
+    >
+      <VizBuilderConfigContext.Provider value={store} displayName="VizBuilder">
+        {children}
+      </VizBuilderConfigContext.Provider>
+    </VisualisationContext.Provider>
   );
+};
+
+const useVisualisation = () => {
+  return useContext(VisualisationContext);
 };
 
 const useVizConfig = () => {
@@ -136,4 +181,4 @@ const useVizConfig = () => {
 
 // Note: the store can be debugged in dev tools using a chrome plugin.
 // https://chrome.google.com/webstore/detail/react-context-devtool/oddhnidmicpefilikhgeagedibnefkcf?hl=en
-export { useVizConfig, VizConfigProvider };
+export { useVisualisation, useVizConfig, VizConfigProvider };
