@@ -21,10 +21,13 @@ export class ReportRoute extends TranslatableRoute<
   TranslatableResponse<ReportRequest>
 > {
   private readonly reportConnection: ReportConnection;
-
   private readonly webConfigConnection: WebConfigConnection;
 
-  constructor(req: ReportRequest, res: TranslatableResponse<ReportRequest>, next: NextFunction) {
+  public constructor(
+    req: ReportRequest,
+    res: TranslatableResponse<ReportRequest>,
+    next: NextFunction,
+  ) {
     super(req, res, next);
 
     this.reportConnection = new ReportConnection(req.session);
@@ -44,7 +47,7 @@ export class ReportRoute extends TranslatableRoute<
 
   // Check for _metadata keys and only translate the first part
   // Lets us use the same translation entry for regular and _metadata keys
-  translateKey(value: string): string {
+  protected translateKey(value: string): string {
     if (value.endsWith('_metadata')) {
       const key = this.translateString(value.slice(0, -'_metadata'.length));
       return `${key}_metadata`;
@@ -52,7 +55,7 @@ export class ReportRoute extends TranslatableRoute<
     return this.translateString(value);
   }
 
-  async buildResponse() {
+  public async buildResponse() {
     const { entityCode, reportCode } = this.req.params;
     const { type, legacy } = this.req.query;
     // We only care about the difference between dashboards and mapOverlays if we're requesting legacy reports

@@ -27,25 +27,20 @@ interface SessionFields {
 }
 
 export class SessionType extends DatabaseType {
-  id: string;
+  public static databaseType = 'session';
+  public readonly id: string;
+  public email: string;
 
-  email: string;
+  private readonly authConnection: AuthConnection;
 
-  access_policy: AccessPolicyObject;
+  private access_policy: AccessPolicyObject;
+  private access_token: string;
+  private access_token_expiry: number;
+  private refresh_token: string;
 
-  access_token: string;
+  private refreshAccessTokenPromise: Promise<void> | null;
 
-  access_token_expiry: number;
-
-  refresh_token: string;
-
-  authConnection: AuthConnection;
-
-  refreshAccessTokenPromise: Promise<void> | null;
-
-  static databaseType = 'session';
-
-  constructor(model: SessionModel, fieldValues: SessionFields) {
+  public constructor(model: SessionModel, fieldValues: SessionFields) {
     super(model, fieldValues);
 
     // explicitly reassign all field values to satisfy typescript
@@ -61,22 +56,22 @@ export class SessionType extends DatabaseType {
     this.refreshAccessTokenPromise = null;
   }
 
-  get accessPolicy() {
+  public get accessPolicy() {
     return new AccessPolicy(this.access_policy);
   }
 
-  isAccessTokenExpired() {
+  private isAccessTokenExpired() {
     return this.access_token_expiry <= Date.now();
   }
 
-  async getAuthHeader() {
+  public async getAuthHeader() {
     if (this.isAccessTokenExpired()) {
       await this.refreshAccessToken();
     }
     return `Bearer ${this.access_token}`;
   }
 
-  async refreshAccessToken(): Promise<void> {
+  public async refreshAccessToken(): Promise<void> {
     // Set up a single promise to avoid setting off multiple parallel refresh requests
     if (!this.refreshAccessTokenPromise) {
       const refreshAndUpdate = async () => {
@@ -89,7 +84,7 @@ export class SessionType extends DatabaseType {
     return this.refreshAccessTokenPromise;
   }
 
-  async updateSessionDetails({ accessToken, accessPolicy }: SessionDetails) {
+  private async updateSessionDetails({ accessToken, accessPolicy }: SessionDetails) {
     this.access_token = accessToken;
     this.access_token_expiry = getTokenExpiry(accessToken);
     this.access_policy = accessPolicy;
@@ -98,11 +93,11 @@ export class SessionType extends DatabaseType {
 }
 
 export class SessionModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  public get DatabaseTypeClass() {
     return SessionType;
   }
 
-  async createSession(sessionDetails: SessionDetails) {
+  public async createSession(sessionDetails: SessionDetails) {
     const { email, accessPolicy, accessToken, refreshToken } = sessionDetails;
     const accessTokenExpiry = getTokenExpiry(accessToken);
 

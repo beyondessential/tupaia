@@ -10,27 +10,27 @@ export class SqlQuery {
 
   private readonly parameters: string[];
 
-  static array = (arr: any[]) => `(${arr.map(() => '?').join(',')})`;
+  public static array = (arr: any[]) => `(${arr.map(() => '?').join(',')})`;
 
-  static values = (rows: any[][]) =>
+  public static values = (rows: any[][]) =>
     `VALUES (${rows.map(values => values.map(() => '?').join(',')).join('), (')})`;
 
-  static innerJoin = (baseTable: string, columnName: string, values: any[]) => `
+  public static innerJoin = (baseTable: string, columnName: string, values: any[]) => `
     INNER JOIN (
       ${SqlQuery.values(values.map(c => [c]))}
     ) ${columnName}s(code) ON ${columnName}s.code = ${baseTable}.${columnName}
   `;
 
-  constructor(baseQuery: string, baseParameters: string[] = []) {
+  public constructor(baseQuery: string, baseParameters: string[] = []) {
     this.query = baseQuery;
     this.parameters = baseParameters;
   }
 
-  async executeOnDatabase(database: DataLakeDatabase) {
+  public async executeOnDatabase(database: DataLakeDatabase) {
     return database.executeSql(this.query, this.parameters);
   }
 
-  loggableQuery() {
+  public loggableQuery() {
     const replacementIterator = this.parameters
       .map(param => param.replace(/'/g, "''"))
       [Symbol.iterator]();

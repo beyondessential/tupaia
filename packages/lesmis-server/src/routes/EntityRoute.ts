@@ -16,7 +16,11 @@ export class EntityRoute extends TranslatableRoute<
 > {
   private readonly entityConnection: EntityConnection;
 
-  constructor(req: EntityRequest, res: TranslatableResponse<EntityRequest>, next: NextFunction) {
+  public constructor(
+    req: EntityRequest,
+    res: TranslatableResponse<EntityRequest>,
+    next: NextFunction,
+  ) {
     super(req, res, next);
 
     this.entityConnection = new EntityConnection(req.session);
@@ -29,7 +33,7 @@ export class EntityRoute extends TranslatableRoute<
     };
   }
 
-  async buildResponse() {
+  public async buildResponse() {
     const { entityCode } = this.req.params;
     return this.entityConnection.getEntity(entityCode);
   }

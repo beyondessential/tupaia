@@ -12,13 +12,13 @@ export type VerifyEmailRequest = Request<{ emailToken: string }, any, any, any>;
 export class VerifyEmailRoute extends Route<VerifyEmailRequest> {
   private readonly meditrakConnection: MeditrakConnection;
 
-  constructor(req: VerifyEmailRequest, res: Response, next: NextFunction) {
+  public constructor(req: VerifyEmailRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.meditrakConnection = new MeditrakConnection(req.session);
   }
 
-  async buildResponse() {
+  public async buildResponse() {
     const { emailToken } = this.req.params;
     return this.meditrakConnection.verifyEmail(emailToken);
   }

@@ -8,7 +8,7 @@ import { RelationshipsRequest } from './types';
 import { ResponseBuilder } from './ResponseBuilder';
 
 export class EntityRelationshipsRoute extends Route<RelationshipsRequest> {
-  async buildResponse() {
+  public async buildResponse() {
     return new ResponseBuilder(
       this.req.models,
       { ...this.req.ctx, entities: [this.req.ctx.entity] },

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-// @ts-ignore
+// @ts-expect-error db-migrate has no types unfortunately
 import DBMigrate from 'db-migrate';
 import * as dotenv from 'dotenv';
 import { requireEnv, getEnvVarOrDefault } from '@tupaia/utils';

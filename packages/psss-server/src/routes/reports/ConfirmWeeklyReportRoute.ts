@@ -3,8 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 import groupBy from 'lodash.groupby';
 import { RespondingError, dateStringToPeriod, UnauthenticatedError } from '@tupaia/utils';
+import { Request } from 'express';
 import { Route } from '../Route';
 import { validateIsNumber } from '../../utils';
 import {
@@ -13,7 +15,6 @@ import {
   CONFIRMED_WEEKLY_SURVEY_COUNTRY,
   ALERT_SURVEY,
 } from '../../constants';
-import { Request } from 'express';
 
 const WEEKLY_REPORT_CODE = 'PSSS_Weekly_Cases';
 const ACTIVE_ALERTS_REPORT_CODE = 'PSSS_Active_Alerts';
@@ -33,13 +34,15 @@ type AlertResponseData = {
   alertsArchived: boolean;
 };
 
-export type ConfirmWeeklyReportRequest = Request<{ countryCode: string },
+export type ConfirmWeeklyReportRequest = Request<
+  { countryCode: string },
   any,
   Record<string, unknown>,
-  { week: string }>;
+  { week: string }
+>;
 
 export class ConfirmWeeklyReportRoute extends Route<ConfirmWeeklyReportRequest> {
-  async buildResponse() {
+  public async buildResponse() {
     const { week } = this.req.query;
     const { countryCode } = this.req.params;
     const confirmedData = await this.confirmData(countryCode, week);
@@ -48,7 +51,7 @@ export class ConfirmWeeklyReportRoute extends Route<ConfirmWeeklyReportRequest> 
     return { confirmedData, alertData };
   }
 
-  async confirmData(countryCode: string, week: string) {
+  private async confirmData(countryCode: string, week: string) {
     if (!this.reportConnection) throw new UnauthenticatedError('Unauthenticated');
     if (!this.meditrakConnection) throw new UnauthenticatedError('Unauthenticated');
 
@@ -75,7 +78,7 @@ export class ConfirmWeeklyReportRoute extends Route<ConfirmWeeklyReportRequest> 
     );
   }
 
-  async updateAlerts(countryCode: string, week: string) {
+  private async updateAlerts(countryCode: string, week: string) {
     if (!this.reportConnection) throw new UnauthenticatedError('Unauthenticated');
 
     const report = await this.reportConnection.fetchReport(
@@ -144,7 +147,7 @@ export class ConfirmWeeklyReportRoute extends Route<ConfirmWeeklyReportRequest> 
     return response;
   }
 
-  async createAlert(countryCode: string, week: string, syndromeCode: string) {
+  private async createAlert(countryCode: string, week: string, syndromeCode: string) {
     if (!this.meditrakConnection) throw new UnauthenticatedError('Unauthenticated');
 
     return this.meditrakConnection.createSurveyResponse(ALERT_SURVEY, countryCode, week, [
@@ -153,7 +156,7 @@ export class ConfirmWeeklyReportRoute extends Route<ConfirmWeeklyReportRequest> 
     ]);
   }
 
-  async archiveAlert(alertId: string, countryCode: string, week: string) {
+  private async archiveAlert(alertId: string, countryCode: string, week: string) {
     if (!this.meditrakConnection) throw new UnauthenticatedError('Unauthenticated');
 
     return this.meditrakConnection.updateSurveyResponse(alertId, countryCode, ALERT_SURVEY, week, [
