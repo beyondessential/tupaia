@@ -1,12 +1,11 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
 /* eslint-disable no-template-curly-in-string */
 
 import * as yup from 'yup';
-
 import { toArray } from '../array';
 import { getUniqueEntries } from '../getUniqueEntries';
 

@@ -11,11 +11,17 @@ import { FlexColumn, FlexSpaceBetween } from '@tupaia/ui-components';
 import { TabPanel } from './TabPanel';
 import { JsonEditor } from './JsonEditor';
 import { PlayButton } from './PlayButton';
-import { useVizConfig, useVizConfigError } from '../context';
+import { JsonToggleButton } from './JsonToggleButton';
+import { useTabPanel, useVizConfig, useVisualisation, useVizConfigError } from '../context';
+import {
+  DataElementDataLibrary,
+  AggregationDataLibrary,
+  TransformDataLibrary,
+} from './DataLibrary';
 
 const Container = styled(FlexColumn)`
   position: relative;
-  width: 440px;
+  width: 540px;
   background: white;
   border-right: 1px solid ${({ theme }) => theme.palette.grey['400']};
   border-left: 1px solid ${({ theme }) => theme.palette.grey['400']};
@@ -56,6 +62,8 @@ const Tab = styled(MuiTab)`
 
 const PanelTabPanel = styled.div`
   flex: 1;
+  display: flex;
+  flex-direction: column;
 
   > div {
     width: 100%;
@@ -64,20 +72,24 @@ const PanelTabPanel = styled.div`
 
   .jsoneditor {
     border: none;
+    min-height: 500px;
   }
 `;
 
 export const Panel = () => {
   const { hasDataError, setDataError } = useVizConfigError();
+  const { jsonToggleEnabled } = useTabPanel();
   const [tab, setTab] = useState(0);
   const [
     {
-      visualisation: { data: dataConfig },
+      visualisation: { data: dataWithConfig },
     },
     { setDataConfig },
   ] = useVizConfig();
 
-  const { fetch, aggregate, transform } = dataConfig;
+  const {
+    visualisation: { data: finalData },
+  } = useVisualisation();
 
   const handleChange = (event, newValue) => {
     setTab(newValue);
@@ -110,28 +122,58 @@ export const Panel = () => {
           <Tab disabled={isTabDisabled(1)} label="Aggregate" icon={<ChevronRight />} />
           <Tab disabled={isTabDisabled(2)} label="Transform" />
         </Tabs>
+        <JsonToggleButton />
         <PlayButton />
       </PanelNav>
       <TabPanel isSelected={tab === 0} Panel={PanelTabPanel}>
-        <JsonEditor
-          value={fetch}
-          onChange={value => setTabValue('fetch', value)}
-          onInvalidChange={handleInvalidChange}
-        />
+        {jsonToggleEnabled ? (
+          <JsonEditor
+            value={finalData.fetch}
+            onChange={value => setTabValue('fetch', value)}
+            onInvalidChange={handleInvalidChange}
+          />
+        ) : (
+          <DataElementDataLibrary
+            fetch={dataWithConfig.fetch}
+            onFetchChange={value => {
+              setTabValue('fetch', value);
+            }}
+          />
+        )}
       </TabPanel>
       <TabPanel isSelected={tab === 1} Panel={PanelTabPanel}>
-        <JsonEditor
-          value={aggregate}
-          onChange={value => setTabValue('aggregate', value)}
-          onInvalidChange={handleInvalidChange}
-        />
+        {jsonToggleEnabled ? (
+          <JsonEditor
+            value={finalData.aggregate}
+            onChange={value => setTabValue('aggregate', value)}
+            onInvalidChange={handleInvalidChange}
+          />
+        ) : (
+          <AggregationDataLibrary
+            aggregate={dataWithConfig.aggregate}
+            onAggregateChange={value => {
+              setTabValue('aggregate', value);
+            }}
+            onInvalidChange={handleInvalidChange}
+          />
+        )}
       </TabPanel>
       <TabPanel isSelected={tab === 2} Panel={PanelTabPanel}>
-        <JsonEditor
-          value={transform}
-          onChange={value => setTabValue('transform', value)}
-          onInvalidChange={handleInvalidChange}
-        />
+        {jsonToggleEnabled ? (
+          <JsonEditor
+            value={finalData.transform}
+            onChange={value => setTabValue('transform', value)}
+            onInvalidChange={handleInvalidChange}
+          />
+        ) : (
+          <TransformDataLibrary
+            transform={dataWithConfig.transform}
+            onTransformChange={value => {
+              setTabValue('transform', value);
+            }}
+            onInvalidChange={handleInvalidChange}
+          />
+        )}
       </TabPanel>
     </Container>
   );
