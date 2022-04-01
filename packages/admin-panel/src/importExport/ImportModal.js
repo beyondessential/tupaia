@@ -30,6 +30,10 @@ const STATUS = {
 
 const noFileMessage = 'No file chosen';
 
+const defaultFinishedMessage = response => (
+  <span>Your import has been successfully processed.</span>
+);
+
 export const ImportModalComponent = React.memo(
   ({
     title,
@@ -39,6 +43,7 @@ export const ImportModalComponent = React.memo(
     changeRequest,
     changeSuccess,
     changeError,
+    getFinishedMessage,
   }) => {
     const api = useApi();
     const [status, setStatus] = useState(STATUS.IDLE);
@@ -100,7 +105,7 @@ export const ImportModalComponent = React.memo(
           );
         } else {
           setStatus(STATUS.SUCCESS);
-          setFinishedMessage('Your import has been successfully processed.');
+          setFinishedMessage(getFinishedMessage(response));
         }
         changeSuccess();
       } catch (error) {
@@ -170,7 +175,7 @@ export const ImportModalComponent = React.memo(
               isLoading={status === STATUS.LOADING}
             >
               {finishedMessage ? (
-                <p>{finishedMessage}</p>
+                <>{finishedMessage}</>
               ) : (
                 <>
                   <p>{subtitle}</p>
@@ -222,6 +227,7 @@ ImportModalComponent.propTypes = {
   changeRequest: PropTypes.func.isRequired,
   changeSuccess: PropTypes.func.isRequired,
   changeError: PropTypes.func.isRequired,
+  getFinishedMessage: PropTypes.func,
 };
 
 ImportModalComponent.defaultProps = {
@@ -229,6 +235,7 @@ ImportModalComponent.defaultProps = {
   queryParameters: [],
   actionConfig: {},
   subtitle: '',
+  getFinishedMessage: defaultFinishedMessage,
 };
 
 const mapDispatchToProps = dispatch => ({
