@@ -4,6 +4,7 @@
  */
 
 import { yup, orderBy } from '@tupaia/utils';
+import { yupTsUtils } from '@tupaia/tsutils';
 
 import { TransformParser } from '../parser';
 import { Row } from '../../types';
@@ -14,22 +15,26 @@ type SortParams = {
   direction: 'asc' | 'desc' | ('asc' | 'desc')[];
 };
 
-const paramsValidator = yup.object().shape({
+const ascOrDescValidator = yup.mixed<'asc' | 'desc'>().oneOf(['asc', 'desc']);
+
+export const paramsValidator = yup.object().shape({
   by: starSingleOrMultipleColumnsValidator,
-  direction: yup.lazy((value: unknown) => {
-    const ascOrDescValidator = yup.mixed<'asc' | 'desc'>().oneOf(['asc', 'desc']);
-    if (typeof value === 'string' || value === undefined) {
-      return ascOrDescValidator;
-    }
+  direction: yupTsUtils.describableLazy(
+    (value: unknown) => {
+      if (typeof value === 'string' || value === undefined) {
+        return ascOrDescValidator;
+      }
 
-    if (Array.isArray(value)) {
-      return yup.array().of(ascOrDescValidator.required());
-    }
+      if (Array.isArray(value)) {
+        return yup.array().of(ascOrDescValidator.required());
+      }
 
-    throw new yup.ValidationError(
-      'Input must be either be asc, desc, or an array of [asc or desc]',
-    );
-  }),
+      throw new yup.ValidationError(
+        'Input must be either be asc, desc, or an array of [asc or desc]',
+      );
+    },
+    [ascOrDescValidator, yup.array().of(ascOrDescValidator.required())],
+  ),
 });
 
 const getCustomRowSortFunction = (expression: string, direction: 'asc' | 'desc') => {
