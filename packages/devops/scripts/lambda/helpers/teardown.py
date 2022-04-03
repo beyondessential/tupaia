@@ -73,16 +73,22 @@ def teardown_db_instance(
   deployment_type=None,
   db_id=None
 ):
-    if db_id:
+    if db_id: 
       db_instance_id = db_id
     else:
       db_instance_id = deployment_type + '-' + deployment_name
           
+    db_instance = rds.describe_db_instances(DBInstanceIdentifier=db_instance_id)                                 
+    db_instance_public_dns_url = db_instance['DBInstances'][0]['Endpoint']['Address']
+
     deleted_instance = rds.delete_db_instance(
         DBInstanceIdentifier=db_instance_id,
         SkipFinalSnapshot=True,
         DeleteAutomatedBackups=True
     )
     print('Successfully deleted db instance: ' + db_instance_id)
+
+    record_set_deletions = [build_record_set_deletion('tupaia.org', 'db', deployment_name, dns_url=db_instance_public_dns_url)]
+    delete_route53_record_sets(deployment_name, record_set_deletions)
 
     return deleted_instance
