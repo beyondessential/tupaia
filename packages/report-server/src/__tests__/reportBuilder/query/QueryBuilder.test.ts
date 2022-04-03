@@ -90,27 +90,74 @@ describe('QueryBuilder', () => {
 
   const getPeriodString = (
     [startYear, startMonth, startDay = 1]: [number, number, number?],
-    [endYear, endMonth, endDay = 1]: [number, number, number?],
+    [endYear, endMonth, endDay]: [number, number, number?],
   ) => {
-    const periods = [];
+    const daysInMonth = (month: number, year: number) => {
+      return new Date(year, month, 0).getDate();
+    };
+    // When the start and end days are in the same month and year, only create days
+    if (startYear === endYear && startMonth === endMonth) {
+      const days = [];
+      const lastDay = endDay || daysInMonth;
+      if (startDay === 1 && lastDay === daysInMonth) {
+        return `${startYear}${startMonth.toString().padStart(2, '0')}`;
+      }
+      for (let day = startDay; day <= lastDay; day++) {
+        days.push(
+          `${endYear}${endMonth.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}`,
+        );
+      }
+      return days.join(';');
+    }
 
-    for (let year = startYear; year <= endYear; year++) {
-      const currentStartMonth = year === startYear ? startMonth : 1;
-      const currentEndMonth = year === endYear ? endMonth : 12;
-      for (let month = currentStartMonth; month <= currentEndMonth; month++) {
-        if (month === currentEndMonth && year === endYear && endDay > 1) {
-          for (let day = startDay; day <= endDay; day++) {
-            periods.push(
-              `${year}${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}`,
-            );
-          }
-        } else {
+    const handleMiddleMonths = (): string[] => {
+      const periods = [];
+      for (let year = startYear; year <= endYear; year++) {
+        for (let month = 1; month <= 12; month++) {
           periods.push(`${year}${month.toString().padStart(2, '0')}`);
         }
       }
-    }
+      periods.splice(0, startMonth);
+      for (let i = 0; i <= 12 - endMonth; i++) {
+        periods.pop();
+      }
+      return periods;
+    };
+    const handleStartMonth = (): string[] => {
+      const periods = [];
+      if (startDay === 1) {
+        const singlePeriodString = `${startYear}${startMonth.toString().padStart(2, '0')}`;
+        return [singlePeriodString];
+      }
 
-    return periods.join(';');
+      for (let day = startDay; day <= daysInMonth(startMonth, startYear); day++) {
+        periods.push(
+          `${startYear}${startMonth.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}`,
+        );
+      }
+      return periods;
+    };
+    const handleEndMonth = (): string[] => {
+      const periods = [];
+      if (endDay === daysInMonth(endYear, endMonth) || endDay === undefined) {
+        const singlePeriodString = `${endYear}${endMonth.toString().padStart(2, '0')}`;
+        return [singlePeriodString];
+      }
+
+      for (let day = 1; day <= endDay; day++) {
+        periods.push(
+          `${endYear}${endMonth.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}`,
+        );
+      }
+      return periods;
+    };
+
+    const middleMonths = handleMiddleMonths();
+    const startMonthPeriod = handleStartMonth();
+    const endMonthPeriod = handleEndMonth();
+    const periodString = startMonthPeriod.concat(middleMonths, endMonthPeriod).join(';');
+
+    return periodString;
   };
 
   it('handles all supported params', async () => {
@@ -145,7 +192,7 @@ describe('QueryBuilder', () => {
           'startDate and endDate are provided - period is adjusted to them',
           { query: inputQuery({ startDate: '2020-01-01', endDate: '2020-06-02' }) },
           outputQuery({
-            period: `${getPeriodString([2020, 1], [2020, 5])};20200601;20200602`,
+            period: `${getPeriodString([2020, 1], [2020, 6, 2])}`,
             startDate: '2020-01-01',
             endDate: '2020-06-02',
           }),
@@ -154,7 +201,7 @@ describe('QueryBuilder', () => {
           'startDate is empty, period is empty - uses default start period',
           { query: inputQuery({ endDate: '2020-06-02' }) },
           outputQuery({
-            period: `${getPeriodString([2017, 1], [2020, 5])};20200601;20200602`,
+            period: `${getPeriodString([2017, 1], [2020, 6, 2])}`,
             startDate: '2017-01-01',
             endDate: '2020-06-02',
           }),
@@ -175,6 +222,15 @@ describe('QueryBuilder', () => {
             period: getPeriodString([2020, 1], [2020, 6]),
             startDate: '2020-01-01',
             endDate: '2020-06-30',
+          }),
+        ],
+        [
+          'startDate and endDates are different days in different months of the same year',
+          { query: inputQuery({ startDate: '2020-01-13', endDate: '2020-09-30' }) },
+          outputQuery({
+            period: getPeriodString([2020, 1, 13], [2020, 9, 30]),
+            startDate: '2020-01-13',
+            endDate: '2020-09-30',
           }),
         ],
       ];
