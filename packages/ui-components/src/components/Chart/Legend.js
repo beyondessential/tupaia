@@ -12,7 +12,7 @@ import { isMobile } from './utils';
 
 const LegendContainer = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: ${props => (props.$isExporting ? 'nowrap' : 'wrap')};
   justify-content: ${props => (props.$position === 'bottom' ? 'center' : 'flex-start')};
   flex-direction: ${props => (props.$isExporting ? 'column' : 'row')};
   // Add more padding at the bottom for exports
