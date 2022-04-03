@@ -7,6 +7,25 @@ ec = boto3.client('ec2')
 route53 = boto3.client('route53')
 rds = boto3.client('rds')
 
+def delete_route53_record_sets(deployment_name, record_set_deletions):
+    # Filter out deletions for record sets that don't actually exist
+    hosted_zone_id = route53.list_hosted_zones_by_name(DNSName='tupaia.org')['HostedZones'][0]['Id']
+    record_set_paginator = route53.get_paginator('list_resource_record_sets')
+    record_set_response = record_set_paginator.paginate(HostedZoneId=hosted_zone_id).build_full_result()
+    all_record_sets = record_set_response['ResourceRecordSets']
+    all_record_set_names = [record_set['Name'] for record_set in all_record_sets]
+    valid_record_set_deletions = [deletion for deletion in record_set_deletions if deletion['ResourceRecordSet']['Name'] in all_record_set_names]
+    print('Generated {} record set changes'.format(len(record_set_deletions)))
+    if len(valid_record_set_deletions) > 0:
+      route53.change_resource_record_sets(
+          HostedZoneId=hosted_zone_id,
+          ChangeBatch={
+              'Comment': 'Deleting subdomains for ' + deployment_name,
+              'Changes': valid_record_set_deletions
+          }
+      )
+      print('Submitted {} deletions to hosted zone'.format(len(record_set_deletions)))
+
 def terminate_instance(instance):
     # Release elastic ip
     public_ip_address = instance['PublicIpAddress']
@@ -41,23 +60,7 @@ def teardown_instance(instance):
       gateway_elb = get_gateway_elb(deployment_type, deployment_name)
       record_set_deletions = record_set_deletions + [build_record_set_deletion('tupaia.org', subdomain, deployment_name, gateway=gateway_elb) for subdomain in subdomains_via_gateway.split(',')]
 
-    # Filter out deletions for record sets that don't actually exist
-    hosted_zone_id = route53.list_hosted_zones_by_name(DNSName='tupaia.org')['HostedZones'][0]['Id']
-    record_set_paginator = route53.get_paginator('list_resource_record_sets')
-    record_set_response = record_set_paginator.paginate(HostedZoneId=hosted_zone_id).build_full_result()
-    all_record_sets = record_set_response['ResourceRecordSets']
-    all_record_set_names = [record_set['Name'] for record_set in all_record_sets]
-    valid_record_set_deletions = [deletion for deletion in record_set_deletions if deletion['ResourceRecordSet']['Name'] in all_record_set_names]
-    print('Generated {} record set changes'.format(len(record_set_deletions)))
-    if len(valid_record_set_deletions) > 0:
-      route53.change_resource_record_sets(
-          HostedZoneId=hosted_zone_id,
-          ChangeBatch={
-              'Comment': 'Deleting subdomains for ' + deployment_name,
-              'Changes': valid_record_set_deletions
-          }
-      )
-      print('Submitted {} deletions to hosted zone'.format(len(record_set_deletions)))
+    delete_route53_record_sets(deployment_name, record_set_deletions)
 
     # Delete gateway
     if subdomains_via_gateway != '':
