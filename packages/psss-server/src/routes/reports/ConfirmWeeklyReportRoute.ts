@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-// eslint-disable-next-line import/no-extraneous-dependencies
 import groupBy from 'lodash.groupby';
 import { RespondingError, dateStringToPeriod, UnauthenticatedError } from '@tupaia/utils';
 import { Request } from 'express';
