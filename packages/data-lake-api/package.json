@@ -11,7 +11,7 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig-build.json",
     "lint": "eslint . --ext .ts",
     "lint:all": "yarn run lint \"src/**/*.{ts,jsx}\"",
     "lint:fix": "yarn lint --fix",

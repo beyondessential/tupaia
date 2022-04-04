@@ -13,6 +13,7 @@ import {
   getExportDatesString,
   getUniqueEntries,
   truncateString,
+  toFilename,
 } from '@tupaia/utils';
 import { TYPES } from '@tupaia/database';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../../database/models/Answer';
@@ -64,6 +65,10 @@ export async function exportResponsesToFile(
     timeZone,
   },
 ) {
+  if (surveys.length === 0) {
+    throw new Error('No surveys specified');
+  }
+
   const exportDate = Date.now();
   const entitiesById = keyBy(entities, 'id');
   const infoColumns = easyReadingMode
@@ -73,18 +78,25 @@ export async function exportResponsesToFile(
   const infoColumnHeaders = Object.values(infoColumns);
   const files = [];
   let currentWorkbook = getBlankWorkbook();
+  const firstSurveyName = surveys[0].name;
 
-  const addDataToSheet = (surveyName, exportData) => {
-    const sheetName = surveyName.substring(0, 31); // stay within excel limit on sheet name length
+  const addDataToSheet = (surveyCode, exportData) => {
+    const sheetName = surveyCode.substring(0, 31); // stay within excel limit on sheet name length
     currentWorkbook.Sheets[sheetName] = xlsx.utils.aoa_to_sheet(exportData);
     currentWorkbook.SheetNames.push(sheetName);
   };
 
   const saveCurrentWorkbook = () => {
     const fileNumber = files.length + 1;
-    const filePath = `${getExportPathForUser(
-      userId,
-    )}/${FILE_PREFIX}_${exportDate}_${fileNumber}.xlsx`;
+    const prettyFileNumber = fileNumber === 1 ? '' : fileNumber;
+
+    // If exporting a single survey, use human friendly name in filename
+    const fileName =
+      surveys.length === 1
+        ? `${firstSurveyName} - Survey Responses${prettyFileNumber}`
+        : `${FILE_PREFIX}_${exportDate}_${fileNumber}`;
+
+    const filePath = `${getExportPathForUser(userId)}/${toFilename(fileName)}.xlsx`;
 
     xlsx.writeFile(currentWorkbook, filePath);
     files.push(filePath);
@@ -274,7 +286,7 @@ export async function exportResponsesToFile(
 
   const addResponsesToSheet = async (surveyResponses, survey, questions) => {
     const exportData = await getExportDataForResponses(surveyResponses, survey, questions);
-    addDataToSheet(survey.name, exportData);
+    addDataToSheet(survey.code, exportData);
   };
 
   /** Main body of the function below this point, everything above is helper functions */
@@ -288,7 +300,7 @@ export async function exportResponsesToFile(
   );
   surveysWithoutAccess.forEach(survey => {
     const exportData = [[`You do not have export access to ${survey.name}`]];
-    addDataToSheet(survey.name, exportData);
+    addDataToSheet(survey.code, exportData);
   });
 
   for (const survey of surveysWithAccess) {
@@ -301,9 +313,11 @@ export async function exportResponsesToFile(
       const surveyResponses = await findResponsesForSurvey(survey);
       const responseBatches = chunk(surveyResponses, MAX_RESPONSES_PER_FILE);
       if (responseBatches.length > 1) {
+        let batchNumber = 1;
         for (const batchOfResponses of responseBatches) {
           await addResponsesToSheet(batchOfResponses, survey, questions);
-          saveCurrentWorkbook();
+          saveCurrentWorkbook(batchNumber);
+          batchNumber++;
         }
       } else {
         await addResponsesToSheet(surveyResponses, survey, questions);
@@ -311,6 +325,7 @@ export async function exportResponsesToFile(
     }
   }
 
+  // Note: in the typical case of a single survey with normal amount of responses, files.length will be 0 at this point
   return files.length > 0
     ? zipMultipleFiles(getExportPathForUser(userId), files)
     : saveCurrentWorkbook();

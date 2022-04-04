@@ -10,3 +10,6 @@ export * from './useUser';
 export * from './useDashboardVisualisation';
 export * from './useMapOverlays';
 export * from './useCountries';
+export * from './useSearchDataSources';
+export * from './useSearchAggregationOptions';
+export * from './useSearchTransformSchemas';
