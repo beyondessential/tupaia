@@ -57,3 +57,14 @@ export interface Event {
   orgUnit: string;
   dataValues?: Record<string, string | number>;
 }
+
+export interface AggregationType {
+  code: string;
+  description: string;
+}
+
+export interface TransformSchema {
+  code: string;
+  alias?: boolean;
+  string?: Record<string, string | boolean | string[]> | null;
+}

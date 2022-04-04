@@ -266,7 +266,6 @@ export class EnlargedDialogContent extends PureComponent {
       <div style={styles.drillDownWrapper}>
         <EnlargedDialogContent
           {...this.props}
-          exportRef={null} // Drilled down overlays can't export at the moment
           viewContent={drillDownContent}
           drillDownContent={null}
           isDrillDownContent
@@ -279,7 +278,7 @@ export class EnlargedDialogContent extends PureComponent {
     if (!this.props.viewContent) return <LoadingIndicator />;
 
     const isMatrix = getIsMatrix(this.props.viewContent);
-    const { isExporting, exportRef, viewContent } = this.props;
+    const { isExporting, viewContent } = this.props;
 
     const contentStyle = {
       overflowY: isExporting ? 'visible' : 'auto',
@@ -296,7 +295,6 @@ export class EnlargedDialogContent extends PureComponent {
     return (
       <div
         data-testid="enlarged-dialog"
-        ref={exportRef}
         style={{ backgroundColor: isExporting ? WHITE : DARK_BLUE }}
       >
         {this.renderToolbar()}
@@ -408,7 +406,6 @@ EnlargedDialogContent.propTypes = {
   isLoading: PropTypes.bool,
   errorMessage: PropTypes.string,
   isExporting: PropTypes.bool,
-  exportRef: PropTypes.object,
   isDrilledDown: PropTypes.bool,
   isDrillDownContent: PropTypes.bool,
   onUnDrillDown: PropTypes.func,
@@ -425,7 +422,6 @@ EnlargedDialogContent.defaultProps = {
   onOpenExportDialog: null,
   viewContent: null,
   drillDownContent: null,
-  exportRef: null,
   isDrilledDown: false,
   isDrillDownContent: false,
 };

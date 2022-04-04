@@ -38,12 +38,12 @@ const StyledTable = styled(Table)`
   border-bottom: 1px solid rgb(82, 82, 88);
 
   &.exporting {
-    max-width: 100%;
     background: white;
     padding: 30px 0;
     border-bottom: none;
 
     table {
+      width: auto; // as small as possible
       border: 1px solid ${GREY_DE};
     }
 

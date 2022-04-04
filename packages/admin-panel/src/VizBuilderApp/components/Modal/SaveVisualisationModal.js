@@ -21,7 +21,7 @@ import {
 } from '@tupaia/ui-components';
 
 import { MODAL_STATUS, VIZ_TYPE_PARAM } from '../../constants';
-import { useVizConfig } from '../../context';
+import { useVizConfig, useVisualisation } from '../../context';
 import { useSaveDashboardVisualisation, useSaveMapOverlayVisualisation } from '../../api';
 
 const TickIcon = styled(CheckCircle)`
@@ -37,7 +37,9 @@ const SuccessText = styled(Typography)`
 
 export const SaveVisualisationModal = ({ isOpen, onClose }) => {
   const [status, setStatus] = useState(MODAL_STATUS.INITIAL);
-  const [{ visualisation }, { setVisualisationValue }] = useVizConfig();
+  // eslint-disable-next-line no-unused-vars
+  const [_, { setVisualisationValue }] = useVizConfig();
+  const { visualisation } = useVisualisation();
 
   const { vizType } = useParams();
 

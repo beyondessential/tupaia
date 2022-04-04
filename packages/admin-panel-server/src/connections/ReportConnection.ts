@@ -16,4 +16,12 @@ export class ReportConnection extends ApiConnection {
   async testReport(query: QueryParameters, body: RequestBody) {
     return this.post('testReport', query, body);
   }
+
+  async fetchAggregationOptions() {
+    return this.get('fetchAggregationOptions');
+  }
+
+  async fetchTransformSchemas() {
+    return this.get('fetchTransformSchemas');
+  }
 }

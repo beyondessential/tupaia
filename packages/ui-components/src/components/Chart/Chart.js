@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 import { CartesianChart } from './CartesianChart';
 import { PieChart } from './PieChart';
+import { GaugeChart } from './GaugeChart';
 import { CHART_TYPES } from './constants';
 import { parseChartConfig } from './parseChartConfig';
 import { getIsTimeSeries, isDataKey, getIsChartData, getNoDataString } from './utils';
@@ -65,6 +66,17 @@ const getViewContent = viewContent => {
     : { ...viewContent, data: massagedData };
 };
 
+const getChartComponent = chartType => {
+  switch (chartType) {
+    case CHART_TYPES.PIE:
+      return PieChart;
+    case CHART_TYPES.GAUGE:
+      return GaugeChart;
+    default:
+      return CartesianChart;
+  }
+};
+
 export const Chart = ({ viewContent, isExporting, isEnlarged, onItemClick, legendPosition }) => {
   const { chartType } = viewContent;
 
@@ -81,7 +93,7 @@ export const Chart = ({ viewContent, isExporting, isEnlarged, onItemClick, legen
   }
 
   const viewContentConfig = getViewContent(viewContent);
-  const ChartComponent = chartType === CHART_TYPES.PIE ? PieChart : CartesianChart;
+  const ChartComponent = getChartComponent(chartType);
 
   return (
     <ChartComponent
