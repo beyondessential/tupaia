@@ -88,75 +88,42 @@ describe('QueryBuilder', () => {
     ...input,
   });
 
+  const daysInMonth = (month: number, year: number) => {
+    return new Date(year, month, 0).getDate();
+  };
+
   const getPeriodString = (
     [startYear, startMonth, startDay = 1]: [number, number, number?],
-    [endYear, endMonth, endDay]: [number, number, number?],
+    [endYear, endMonth, endDay = daysInMonth(endMonth, endYear)]: [number, number, number?],
   ) => {
-    const daysInMonth = (month: number, year: number) => {
-      return new Date(year, month, 0).getDate();
-    };
-    // When the start and end days are in the same month and year, only create days
-    if (startYear === endYear && startMonth === endMonth) {
-      const days = [];
-      const lastDay = endDay || daysInMonth;
-      if (startDay === 1 && lastDay === daysInMonth) {
-        return `${startYear}${startMonth.toString().padStart(2, '0')}`;
-      }
-      for (let day = startDay; day <= lastDay; day++) {
-        days.push(
-          `${endYear}${endMonth.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}`,
-        );
-      }
-      return days.join(';');
-    }
+    const periods = [];
 
-    const handleMiddleMonths = (): string[] => {
-      const periods = [];
-      for (let year = startYear; year <= endYear; year++) {
-        for (let month = 1; month <= 12; month++) {
+    for (let year = startYear; year <= endYear; year++) {
+      const isStartYear = year === startYear;
+      const isEndYear = year === endYear;
+      for (
+        let month = year === startYear ? startMonth : 1;
+        month <= (year === endYear ? endMonth : 12);
+        month++
+      ) {
+        const isStartMonth = isStartYear && month === startMonth && startDay > 1;
+        const isEndMonth =
+          isEndYear && month === endMonth && endDay < daysInMonth(endMonth, endYear);
+        if (isStartMonth || isEndMonth) {
+          for (
+            let day = isStartMonth ? startDay : 1;
+            day <= (isEndMonth ? endDay : daysInMonth(month, year));
+            day++
+          )
+            periods.push(
+              `${year}${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}`,
+            );
+        } else {
           periods.push(`${year}${month.toString().padStart(2, '0')}`);
         }
       }
-      periods.splice(0, startMonth);
-      for (let i = 0; i <= 12 - endMonth; i++) {
-        periods.pop();
-      }
-      return periods;
-    };
-    const handleStartMonth = (): string[] => {
-      const periods = [];
-      if (startDay === 1) {
-        const singlePeriodString = `${startYear}${startMonth.toString().padStart(2, '0')}`;
-        return [singlePeriodString];
-      }
-
-      for (let day = startDay; day <= daysInMonth(startMonth, startYear); day++) {
-        periods.push(
-          `${startYear}${startMonth.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}`,
-        );
-      }
-      return periods;
-    };
-    const handleEndMonth = (): string[] => {
-      const periods = [];
-      if (endDay === daysInMonth(endYear, endMonth) || endDay === undefined) {
-        const singlePeriodString = `${endYear}${endMonth.toString().padStart(2, '0')}`;
-        return [singlePeriodString];
-      }
-
-      for (let day = 1; day <= endDay; day++) {
-        periods.push(
-          `${endYear}${endMonth.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}`,
-        );
-      }
-      return periods;
-    };
-
-    const middleMonths = handleMiddleMonths();
-    const startMonthPeriod = handleStartMonth();
-    const endMonthPeriod = handleEndMonth();
-    const periodString = startMonthPeriod.concat(middleMonths, endMonthPeriod).join(';');
-
+    }
+    const periodString = periods.join(';');
     return periodString;
   };
 
