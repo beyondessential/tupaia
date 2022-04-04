@@ -73,7 +73,7 @@ def teardown_db_instance(
   deployment_type=None,
   db_id=None
 ):
-    if db_id: 
+    if db_id:
       db_instance_id = db_id
     else:
       db_instance_id = deployment_type + '-' + deployment_name
