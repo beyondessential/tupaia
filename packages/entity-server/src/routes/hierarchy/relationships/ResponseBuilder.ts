@@ -18,14 +18,23 @@ type Pair = {
   ancestor: string;
 };
 
+const isDefaultFilter = (filter: EntityFilter) => {
+  const keys = Object.keys(filter);
+  const key = keys[0];
+
+  return (
+    keys.length === 1 &&
+    key === QueryConjunctions.AND &&
+    filter[QueryConjunctions.AND]?.country_code !== undefined
+  );
+};
+
 export class ResponseBuilder {
   private readonly models: EntityServerModelRegistry;
-
   private readonly ctx: MultiEntityRelationshipsContext & { ancestor: { type: string } };
-
   private readonly groupBy: 'ancestor' | 'descendant';
 
-  constructor(
+  public constructor(
     models: EntityServerModelRegistry,
     ctx: MultiEntityRelationshipsContext,
     groupBy: 'ancestor' | 'descendant' = 'ancestor',
@@ -137,23 +146,12 @@ export class ResponseBuilder {
     return formattedEntitiesByCode;
   }
 
-  isDefaultFilter = (filter: EntityFilter) => {
-    const keys = Object.keys(filter);
-    const key = keys[0];
-
-    return (
-      keys.length === 1 &&
-      key === QueryConjunctions.AND &&
-      filter[QueryConjunctions.AND]?.country_code !== undefined
-    );
-  };
-
   private shouldPerformFastResponse() {
     const { field: ancestorField, filter: ancestorFilter } = this.ctx.ancestor;
     const { field: descendantField } = this.ctx.descendant;
 
     return (
-      ancestorField === 'code' && descendantField === 'code' && this.isDefaultFilter(ancestorFilter)
+      ancestorField === 'code' && descendantField === 'code' && isDefaultFilter(ancestorFilter)
     );
   }
 
@@ -163,7 +161,7 @@ export class ResponseBuilder {
       : reduceToDictionary(pairs, 'descendant', 'ancestor');
   }
 
-  async build() {
+  public async build() {
     const { entities, hierarchyId } = this.ctx;
     const { type: descendantType, filter } = this.ctx.descendant;
 

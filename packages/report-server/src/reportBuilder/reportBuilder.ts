@@ -19,13 +19,11 @@ export interface BuiltReport {
 }
 
 export class ReportBuilder {
-  reqContext: ReqContext;
+  private readonly reqContext: ReqContext;
+  private config?: ReportConfig;
+  private testData?: Row[];
 
-  config?: ReportConfig;
-
-  testData?: Row[];
-
-  constructor(reqContext: ReqContext) {
+  public constructor(reqContext: ReqContext) {
     this.reqContext = reqContext;
   }
 

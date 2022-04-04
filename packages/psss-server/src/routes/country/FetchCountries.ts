@@ -3,18 +3,20 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { Request } from 'express';
 import { getSortByKey, UnauthenticatedError } from '@tupaia/utils';
 import { PSSS_PERMISSION_GROUP } from '../../constants';
 import { Route } from '../Route';
-import { Request } from 'express';
 
-export type FetchCountriesRequest = Request<{},
+export type FetchCountriesRequest = Request<
+  Record<string, never>,
   any,
   Record<string, unknown>,
-  {}>;
+  Record<string, never>
+>;
 
 export class FetchCountries extends Route<FetchCountriesRequest> {
-  async buildResponse(): Promise<any> {
+  public async buildResponse(): Promise<any> {
     if (!this.entityConnection) throw new UnauthenticatedError('Unauthenticated');
 
     const countries = await this.entityConnection.fetchCountries();

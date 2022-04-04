@@ -27,9 +27,9 @@ type ReportObject = {
  * @deprecated use @tupaia/api-client
  */
 export class ReportConnection extends ApiConnection {
-  baseUrl = REPORT_API_URL;
+  public baseUrl = REPORT_API_URL;
 
-  async fetchReport(
+  public async fetchReport(
     reportCode: string,
     orgUnitCodes: string[],
     periods: string[] = [],

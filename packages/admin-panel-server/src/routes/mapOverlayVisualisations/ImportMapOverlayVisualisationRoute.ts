@@ -47,7 +47,7 @@ export type ImportMapOverlayVisualisationRequest = Request<
 export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVisualisationRequest> {
   private readonly meditrakConnection: MeditrakConnection;
 
-  constructor(req: ImportMapOverlayVisualisationRequest, res: Response, next: NextFunction) {
+  public constructor(req: ImportMapOverlayVisualisationRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.meditrakConnection = new MeditrakConnection(req.session);

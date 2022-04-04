@@ -35,7 +35,7 @@ export class EventsFetchQuery {
   private readonly dataElementCodes: string[];
   private readonly hasDataElements: boolean;
 
-  constructor(database: TupaiaDatabase, options: EventsFetchOptions) {
+  public constructor(database: TupaiaDatabase, options: EventsFetchOptions) {
     this.database = database;
 
     const {
@@ -56,7 +56,7 @@ export class EventsFetchQuery {
     this.hasDataElements = dataElementCodes.length > 0;
   }
 
-  async fetch() {
+  public async fetch() {
     const { query, params } = this.buildQueryAndParams();
 
     const sqlQuery = new SqlQuery<EventAnswer[]>(query, params);
@@ -64,7 +64,7 @@ export class EventsFetchQuery {
     return sqlQuery.executeOnDatabase(this.database);
   }
 
-  getAliasedColumns() {
+  private getAliasedColumns() {
     const aliasedColumns = [
       'date',
       'entity_code AS "entityCode"',
@@ -79,7 +79,7 @@ export class EventsFetchQuery {
     return aliasedColumns.join(', ');
   }
 
-  getInnerJoinsAndParams() {
+  private getInnerJoinsAndParams() {
     // We use INNER JOINs here as it's more performant than a large WHERE IN clause (https://dba.stackexchange.com/questions/91247/optimizing-a-postgres-query-with-a-large-in)
     let params = this.entityCodes;
     const joins = [SqlQuery.innerJoin('analytics', 'entity_code', this.entityCodes)];
@@ -90,7 +90,7 @@ export class EventsFetchQuery {
     return { joins: joins.join('\n'), params };
   }
 
-  getWhereClauseAndParams() {
+  private getWhereClauseAndParams() {
     const conditions = [];
     const params = [];
 
@@ -118,7 +118,7 @@ export class EventsFetchQuery {
     return { clause: `WHERE ${conditions.join(' AND ')}`, params };
   }
 
-  buildQueryAndParams() {
+  private buildQueryAndParams() {
     const { joins, params: joinsParams } = this.getInnerJoinsAndParams();
     const { clause: whereClause, params: whereParams } = this.getWhereClauseAndParams();
     const query = `

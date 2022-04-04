@@ -20,12 +20,10 @@ import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Ro
 
 export class ApiBuilder {
   private readonly app: Express;
-
   private readonly models: ModelRegistry;
-
   private version: string;
 
-  constructor(transactingConnection: TupaiaDatabase) {
+  public constructor(transactingConnection: TupaiaDatabase) {
     this.models = new ModelRegistry(transactingConnection);
     this.app = express();
 
@@ -64,17 +62,17 @@ export class ApiBuilder {
     });
   }
 
-  setVersion(version: string) {
+  public setVersion(version: string) {
     this.version = version;
   }
 
-  useBasicBearerAuth(apiName: string) {
+  public useBasicBearerAuth(apiName: string) {
     const authenticator = new Authenticator(this.models);
     this.app.use(buildBasicBearerAuthMiddleware(apiName, authenticator));
     return this;
   }
 
-  use<T extends ExpressRequest<T> = Request>(
+  public use<T extends ExpressRequest<T> = Request>(
     path: string,
     ...middlewares: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
@@ -82,12 +80,12 @@ export class ApiBuilder {
     return this;
   }
 
-  middleware(middleware: RequestHandler) {
+  public middleware(middleware: RequestHandler) {
     this.app.use(middleware);
     return this;
   }
 
-  get<T extends ExpressRequest<T> = Request>(
+  public get<T extends ExpressRequest<T> = Request>(
     path: string,
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
@@ -95,7 +93,7 @@ export class ApiBuilder {
     return this;
   }
 
-  post<T extends ExpressRequest<T> = Request>(
+  public post<T extends ExpressRequest<T> = Request>(
     path: string,
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
@@ -103,7 +101,7 @@ export class ApiBuilder {
     return this;
   }
 
-  build() {
+  public build() {
     /**
      * Test Route
      */

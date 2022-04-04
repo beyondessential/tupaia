@@ -29,11 +29,11 @@ const buildDataValuesFromAnswers = (answersForEvent: EventAnswer[]) =>
 export class TupaiaDataApi {
   private readonly database: TupaiaDatabase;
 
-  constructor(database: TupaiaDatabase) {
+  public constructor(database: TupaiaDatabase) {
     this.database = database;
   }
 
-  async fetchEvents(optionsInput: Record<string, unknown>) {
+  public async fetchEvents(optionsInput: Record<string, unknown>) {
     await validateEventOptions(optionsInput);
     const options = sanitiseFetchDataOptions(optionsInput as EventsFetchOptions);
     const results = await new EventsFetchQuery(this.database, options).fetch();
@@ -53,7 +53,7 @@ export class TupaiaDataApi {
       .sort(getSortByKey('eventDate'));
   }
 
-  async fetchAnalytics(optionsInput: Record<string, unknown>) {
+  public async fetchAnalytics(optionsInput: Record<string, unknown>) {
     await validateAnalyticsOptions(optionsInput);
     const options = sanitiseFetchDataOptions(optionsInput as AnalyticsFetchOptions);
     const { analytics, numAggregationsProcessed } = await new AnalyticsFetchQuery(
@@ -71,7 +71,10 @@ export class TupaiaDataApi {
     };
   }
 
-  async fetchDataElements(dataElementCodes?: unknown, options: { includeOptions?: boolean } = {}) {
+  public async fetchDataElements(
+    dataElementCodes?: unknown,
+    options: { includeOptions?: boolean } = {},
+  ) {
     const validationErrorMessage = 'Please provide an array of data element codes';
     const dataElementCodesValidator = yup
       .array()
@@ -96,7 +99,7 @@ export class TupaiaDataApi {
     return this.fetchDataElementsMetadataFromSqlQuery(sqlQuery, includeOptions);
   }
 
-  async fetchDataGroup(
+  public async fetchDataGroup(
     dataGroupCode?: string,
     dataElementCodes?: string[],
     options: { includeOptions?: boolean } = {},

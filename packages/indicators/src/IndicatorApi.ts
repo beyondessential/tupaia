@@ -11,10 +11,9 @@ import { Analytic, FetchOptions, ModelRegistry } from './types';
 
 export class IndicatorApi {
   private readonly models: ModelRegistry;
-
   private readonly aggregator: Aggregator;
 
-  constructor(models: ModelRegistry, dataBroker: DataBroker) {
+  public constructor(models: ModelRegistry, dataBroker: DataBroker) {
     this.models = models;
     this.aggregator = new Aggregator(dataBroker);
   }
