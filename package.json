@@ -32,8 +32,8 @@
     "postinstall": "test -n \"$SKIP_BUILD_INTERNAL_DEPENDENCIES\" || yarn build:internal-dependencies",
     "refresh-database": "yarn workspace @tupaia/database refresh-database --root ../../",
     "test-all": "node ./scripts/node/testAll --silent",
-    "update-codeship-env-vars": "./packages/devops/scripts/ci/updateCiEnvVars.sh",
-    "validate": "./scripts/bash/validate.sh"
+    "validate": "./scripts/bash/validate.sh",
+    "setup-test-database": "bash -c 'source .env && . ./packages/devops/scripts/ci/setupTestDatabase.sh'"
   },
   "resolutions": {
     "@typescript-eslint/eslint-plugin": "^4.18.0"
