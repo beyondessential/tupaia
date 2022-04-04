@@ -18,7 +18,7 @@
     "start": "node dist",
     "start-dev": "../../scripts/bash/backendStartDev.sh 9997",
     "start-verbose": "LOG_LEVEL=debug npm run start-dev",
-    "test": "mocha",
+    "test": "USE_TEST_DB=true mocha",
     "test:coverage": "cross-env NODE_ENV=test nyc mocha"
   },
   "dependencies": {

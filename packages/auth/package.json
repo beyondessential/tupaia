@@ -17,7 +17,7 @@
     "build:types": "tsc",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
-    "test": "jest --runInBand",
+    "test": "USE_TEST_DB=true jest --runInBand",
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {

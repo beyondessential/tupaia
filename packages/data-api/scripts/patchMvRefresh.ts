@@ -27,7 +27,8 @@ const migrationInstance = DBMigrate.getInstance(
         port: getEnvVarOrDefault('DB_PORT', 5432),
         user: requireEnv('DB_MV_USER'),
         password: requireEnv('DB_MV_PASSWORD'),
-        database: requireEnv('DB_NAME'),
+        database:
+          process.env.USE_TEST_DB === 'true' ? requireEnv('TEST_DB_NAME') : requireEnv('DB_NAME'),
         schema: requireEnv('DB_MV_USER'),
         ssl:
           process.env.DB_ENABLE_SSL === 'true'
