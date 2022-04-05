@@ -10,7 +10,9 @@ echo "Connected to postgres server: $DB_URL, starting to setup database"
 PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U postgres -d postgres -c "CREATE ROLE $DB_USER LOGIN SUPERUSER PASSWORD '$DB_PASSWORD'"
 PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U postgres -d postgres -c "DROP DATABASE IF EXISTS $TEST_DB_NAME"
 PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U postgres -d postgres -c "CREATE DATABASE $TEST_DB_NAME WITH OWNER $DB_USER"
+PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U postgres -d postgres -c "ALTER USER $DB_USER WITH SUPERUSER"
 PGPASSWORD=$DB_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_USER -d $TEST_DB_NAME -f ./packages/database/src/tests/testData/testDataDump.sql
+PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U postgres -d postgres -c "ALTER USER $DB_USER WITH NOSUPERUSER"
 
 echo "Installing mvrefresh"
 USE_TEST_DB=true yarn workspace @tupaia/data-api install-mv-refresh
