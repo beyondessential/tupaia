@@ -31,6 +31,9 @@ export const assertCanImportSurveyResponses = async (
       'code',
       surveyResponseCountryCodes,
     );
+    if (surveyResponseCountries.length !== surveyResponseCountryCodes.length) {
+      throw new Error(`Could not find all countries`, surveyResponseCountryCodes);
+    }
     const entitiesByCountryCode = groupBy(responseEntities, 'country_code');
 
     for (const surveyResponseCountry of surveyResponseCountries) {
