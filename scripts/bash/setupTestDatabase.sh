@@ -1,11 +1,7 @@
 #!/bin/bash -e
-DIR=$(dirname "$0")
-${DIR}/waitForPostgres.sh
 
 # Set default port in case it wasn't in .env
 : "${DB_PORT:=5432}"
-
-echo "Connected to postgres server: $DB_URL, starting to setup database"
 
 PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U postgres -d postgres -c "CREATE ROLE $DB_USER LOGIN SUPERUSER PASSWORD '$DB_PASSWORD'"
 PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U postgres -d postgres -c "DROP DATABASE IF EXISTS $TEST_DB_NAME"
