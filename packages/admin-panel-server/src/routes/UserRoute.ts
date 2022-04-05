@@ -10,12 +10,12 @@ import { MeditrakConnection } from '../connections';
 export class UserRoute extends Route {
   private readonly meditrakConnection: MeditrakConnection;
 
-  constructor(req: Request, res: Response, next: NextFunction) {
+  public constructor(req: Request, res: Response, next: NextFunction) {
     super(req, res, next);
     this.meditrakConnection = new MeditrakConnection(req.session);
   }
 
-  async buildResponse() {
+  public async buildResponse() {
     return this.meditrakConnection.getUser();
   }
 }

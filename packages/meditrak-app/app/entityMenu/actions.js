@@ -3,12 +3,8 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  ENTITY_SEARCH_TERM_CHANGE,
-  ENTITY_RECEIVE_PRIMARY_ENTITIES,
-  ENTITY_RECEIVE_ENTITIES,
-} from './constants';
-import { getEntityQuestionState, getAnswerForQuestion, getQuestion } from '../assessment/selectors';
+import { ENTITY_RECEIVE_PRIMARY_ENTITIES, ENTITY_RECEIVE_ENTITIES } from './constants';
+import { getAnswerForQuestion, getQuestion } from '../assessment/selectors';
 
 const getPermsCheckFunction = (database, surveyId) => {
   const currentUser = database.getCurrentUser();
@@ -62,16 +58,13 @@ export const loadEntitiesFromDatabase = (isPrimaryEntity, questionId) => (
   const state = getState();
   const { assessment } = state;
 
-  // get search term
-  const { searchTerm } = getEntityQuestionState(state, questionId);
-
   // check permissions - only for the PrimaryEntity questions
   const { surveyId } = assessment;
   const permsCheck = isPrimaryEntity ? getPermsCheckFunction(database, surveyId) : () => true;
   const checkMatchesAttributeFilters = getEntityAttributeFilters(state, questionId);
 
   const filters = getEntityDatabaseFilters(state, database, questionId);
-  const entities = database.getEntities(searchTerm, filters);
+  const entities = database.getEntities(filters);
 
   const filteredEntities = entities
     .filter(permsCheck)
@@ -83,13 +76,4 @@ export const loadEntitiesFromDatabase = (isPrimaryEntity, questionId) => (
     filteredEntities,
     questionId,
   });
-};
-
-export const changeSearchTerm = (isPrimaryEntity, questionId, searchTerm) => async dispatch => {
-  dispatch({
-    type: ENTITY_SEARCH_TERM_CHANGE,
-    searchTerm,
-    questionId,
-  });
-  dispatch(loadEntitiesFromDatabase(isPrimaryEntity, questionId));
 };

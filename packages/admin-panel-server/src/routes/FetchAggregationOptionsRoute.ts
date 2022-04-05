@@ -19,13 +19,13 @@ export type FetchAggregationOptionsRequest = Request<
 export class FetchAggregationOptionsRoute extends Route<FetchAggregationOptionsRequest> {
   private readonly reportConnection: ReportConnection;
 
-  constructor(req: FetchAggregationOptionsRequest, res: Response, next: NextFunction) {
+  public constructor(req: FetchAggregationOptionsRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.reportConnection = new ReportConnection(req.session);
   }
 
-  async buildResponse() {
+  public async buildResponse() {
     return this.reportConnection.fetchAggregationOptions();
   }
 }

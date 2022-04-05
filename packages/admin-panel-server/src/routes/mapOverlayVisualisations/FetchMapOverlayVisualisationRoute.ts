@@ -21,13 +21,13 @@ export type FetchMapOverlayVisualisationRequest = Request<
 export class FetchMapOverlayVisualisationRoute extends Route<FetchMapOverlayVisualisationRequest> {
   private readonly meditrakConnection: MeditrakConnection;
 
-  constructor(req: FetchMapOverlayVisualisationRequest, res: Response, next: NextFunction) {
+  public constructor(req: FetchMapOverlayVisualisationRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.meditrakConnection = new MeditrakConnection(req.session);
   }
 
-  async buildResponse() {
+  public async buildResponse() {
     const { mapOverlayVisualisationId } = this.req.params;
     const visualisationResource = await this.meditrakConnection.fetchResources(
       `mapOverlayVisualisations/${mapOverlayVisualisationId}`,

@@ -19,13 +19,13 @@ export type FetchTransformSchemasRequest = Request<
 export class FetchTransformSchemasRoute extends Route<FetchTransformSchemasRequest> {
   private readonly reportConnection: ReportConnection;
 
-  constructor(req: FetchTransformSchemasRequest, res: Response, next: NextFunction) {
+  public constructor(req: FetchTransformSchemasRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.reportConnection = new ReportConnection(req.session);
   }
 
-  async buildResponse() {
+  public async buildResponse() {
     return this.reportConnection.fetchTransformSchemas();
   }
 }

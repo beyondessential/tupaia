@@ -13,6 +13,7 @@ import {
   TYPES,
   buildAndInsertSurveys,
   upsertDummyRecord,
+  findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
 
 import { TEST_IMAGE_DATA } from '../testData';
@@ -103,6 +104,11 @@ describe('POST /changes', async () => {
   describe('SubmitSurveyResponse', () => {
     before(async () => {
       await app.grantAccess({ DL: ['TEST_PERMISSION_GROUP'] });
+
+      await findOrCreateDummyCountryEntity(models, {
+        code: 'DL',
+        name: 'Demo Land',
+      });
 
       for (let i = 0; i < 20; i++) {
         await upsertQuestion({ id: getQuestionId(i), code: `TEST_QUESTION_${i}` });

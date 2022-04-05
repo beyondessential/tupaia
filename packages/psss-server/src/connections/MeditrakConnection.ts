@@ -32,9 +32,9 @@ type Answer = {
  * @deprecated use @tupaia/api-client
  */
 export class MeditrakConnection extends ApiConnection {
-  baseUrl = MEDITRAK_API_URL;
+  public baseUrl = MEDITRAK_API_URL;
 
-  async updateOrCreateSurveyResponse(
+  public async updateOrCreateSurveyResponse(
     surveyCode: string,
     orgUnitCode: string,
     period: string,
@@ -49,7 +49,7 @@ export class MeditrakConnection extends ApiConnection {
     return this.createSurveyResponse(surveyCode, orgUnitCode, period, answers);
   }
 
-  async findSurveyResponses(
+  private async findSurveyResponses(
     surveyCode: string,
     orgUnitCode: string,
     period: string,
@@ -73,31 +73,31 @@ export class MeditrakConnection extends ApiConnection {
     })) as SurveyResponseObject[];
   }
 
-  async findSurveyResponse(surveyCode: string, orgUnitCode: string, period: string) {
+  public async findSurveyResponse(surveyCode: string, orgUnitCode: string, period: string) {
     const results = await this.findSurveyResponses(surveyCode, orgUnitCode, period, '1');
     return results.length > 0 ? results[0] : undefined;
   }
 
-  async findSurveyResponseById(surveyResponseId: string) {
+  public async findSurveyResponseById(surveyResponseId: string) {
     return this.get(`surveyResponses/${surveyResponseId}`, {
       columns: `["entity.code","survey.code","data_time","id"]`,
     });
   }
 
-  async findAnswers(surveyResponseId: string) {
+  private async findAnswers(surveyResponseId: string) {
     return (await this.get(`surveyResponses/${surveyResponseId}/answers`, {
       columns: `["question.code","type","id"]`,
     })) as AnswerObject[];
   }
 
-  async updateSurveyResponse(
+  public async updateSurveyResponse(
     id: string,
     entityCode: string,
     surveyCode: string,
     period: string,
     answers: Answer[],
   ) {
-    const [_, endDate] = convertPeriodStringToDateRange(period);
+    const [, endDate] = convertPeriodStringToDateRange(period);
     const surveyResponse = {
       id,
       'entity.code': entityCode,
@@ -108,7 +108,10 @@ export class MeditrakConnection extends ApiConnection {
     return this.updateSurveyResponseByObject(surveyResponse, answers);
   }
 
-  async updateSurveyResponseByObject(surveyResponse: SurveyResponseObject, answers: Answer[]) {
+  public async updateSurveyResponseByObject(
+    surveyResponse: SurveyResponseObject,
+    answers: Answer[],
+  ) {
     const existingAnswers = await this.findAnswers(surveyResponse.id);
     const newAnswers = existingAnswers
       .map(existingAnswer => {
@@ -143,13 +146,13 @@ export class MeditrakConnection extends ApiConnection {
     ]);
   }
 
-  async createSurveyResponse(
+  public async createSurveyResponse(
     surveyCode: string,
     organisationUnitCode: string,
     period: string,
     answers: Answer[],
   ) {
-    const [_, endDate] = convertPeriodStringToDateRange(period);
+    const [, endDate] = convertPeriodStringToDateRange(period);
 
     const newAnswers = answers.map(({ type, code, value }) => ({
       id: generateId(),
@@ -180,7 +183,7 @@ export class MeditrakConnection extends ApiConnection {
     return { surveyResponseId, ...response };
   }
 
-  async deleteSurveyResponse(surveyResponseId: string) {
+  public async deleteSurveyResponse(surveyResponseId: string) {
     return this.delete(`surveyResponses/${surveyResponseId}`, { waitForAnalyticsRebuild: 'true' });
   }
 }

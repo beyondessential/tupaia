@@ -35,7 +35,7 @@ const getDatabase = () => {
 };
 
 export class DataLakeApi {
-  async fetchEvents(optionsInput: Record<string, any>) {
+  public async fetchEvents(optionsInput: Record<string, any>) {
     await validateEventOptions(optionsInput);
     const options = sanitiseFetchDataOptions(optionsInput as EventsFetchOptions);
     const results: Event[] = await new DataLakeEventsFetchQuery(getDatabase(), options).fetch();
@@ -55,7 +55,7 @@ export class DataLakeApi {
       .sort(getSortByKey('eventDate'));
   }
 
-  async fetchAnalytics(optionsInput: Record<string, any>) {
+  public async fetchAnalytics(optionsInput: Record<string, any>) {
     await validateAnalyticsOptions(optionsInput);
     const options = sanitiseFetchDataOptions(optionsInput as AnalyticsFetchOptions);
     const { analytics, numAggregationsProcessed } = await new DataLakeAnalyticsFetchQuery(

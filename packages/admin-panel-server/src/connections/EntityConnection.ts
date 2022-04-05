@@ -12,9 +12,9 @@ const { ENTITY_API_URL = 'http://localhost:8050/v1' } = process.env;
  * @deprecated use @tupaia/api-client
  */
 export class EntityConnection extends ApiConnection {
-  baseUrl = ENTITY_API_URL;
+  public baseUrl = ENTITY_API_URL;
 
-  async getEntities(
+  public async getEntities(
     hierarchyName: string,
     entityCode: string,
     queryParameters: QueryParameters = {},
