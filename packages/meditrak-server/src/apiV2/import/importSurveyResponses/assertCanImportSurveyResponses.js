@@ -85,12 +85,12 @@ const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, ent
 
 export const assertCanSubmitSurveyResponses = async (accessPolicy, models, surveyResponses) => {
   // Assumes the data has already been validated
-  const entitiesBySurveyName = {};
+  const entitiesBySurveyCode = {};
 
   // Pre-fetch unique surveys
   const surveyIds = getUniqueEntries(surveyResponses.map(sr => sr.survey_id));
   const surveys = await models.survey.findManyById(surveyIds);
-  const surveyNamesById = reduceToDictionary(surveys, 'id', 'name');
+  const surveyCodesById = reduceToDictionary(surveys, 'id', 'code');
 
   const entitiesCreated = surveyResponses
     .filter(sr => !!sr.entities_created)
@@ -103,13 +103,13 @@ export const assertCanSubmitSurveyResponses = async (accessPolicy, models, surve
       response,
       entitiesCreated,
     );
-    const surveyName = surveyNamesById[response.survey_id];
+    const surveyCode = surveyCodesById[response.survey_id];
 
-    if (!entitiesBySurveyName[surveyName]) {
-      entitiesBySurveyName[surveyName] = [];
+    if (!entitiesBySurveyCode[surveyCode]) {
+      entitiesBySurveyCode[surveyCode] = [];
     }
-    entitiesBySurveyName[surveyName].push(entityCode);
+    entitiesBySurveyCode[surveyCode].push(entityCode);
   }
 
-  return assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyName);
+  return assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyCode);
 };
