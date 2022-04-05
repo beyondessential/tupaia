@@ -173,6 +173,7 @@ export class DumbSurveyScreen extends React.Component {
                 }}
                 style={localStyles.scrollView}
                 scrollEnabled={!isChildScrolling}
+                nestedScrollEnabled
               >
                 {screenIndexForThisContent === surveyScreens.length ? (
                   <SubmitScreen />
@@ -235,7 +236,7 @@ DumbSurveyScreen.propTypes = {
   onPressSubmit: PropTypes.func,
   onPressRepeat: PropTypes.func,
   onSelectSurveyScreen: PropTypes.func,
-  releaseScrollControl: PropTypes.func,
+  releaseScrollControl: PropTypes.func.isRequired,
   surveyName: PropTypes.string.isRequired,
   surveyProgress: PropTypes.number.isRequired,
   isSubmitting: PropTypes.bool,

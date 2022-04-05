@@ -37,6 +37,7 @@ class DumbQuestionScreen extends React.Component {
 
   render() {
     const { questions, answers, screenIndex, database } = this.props;
+    const isOnlyQuestionOnScreen = questions.length === 1;
     return questions.map((question, index) => {
       const isVisible = question.checkVisibility(answers);
       if (!TABBABLE_QUESTION_TYPES.includes(question.type)) {
@@ -46,6 +47,7 @@ class DumbQuestionScreen extends React.Component {
             realmDatabase={database}
             screenIndex={screenIndex}
             isVisible={isVisible}
+            isOnlyQuestionOnScreen={isOnlyQuestionOnScreen}
             {...question}
           />
         );
@@ -58,6 +60,7 @@ class DumbQuestionScreen extends React.Component {
           realmDatabase={database}
           screenIndex={screenIndex}
           isVisible={isVisible}
+          isOnlyQuestionOnScreen={isOnlyQuestionOnScreen}
           {...question}
           textInputProps={{
             inputRef: textInputRef => {

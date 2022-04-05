@@ -6,6 +6,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { EntityList } from '../../entityMenu';
+import { takeScrollControl, releaseScrollControl } from '../actions';
 import { loadEntitiesFromDatabase } from '../../entityMenu/actions';
 import { getEntityQuestionState } from '../selectors';
 import { CodeGeneratorQuestion } from './CodeGeneratorQuestion';
@@ -26,25 +27,33 @@ export const PrimaryEntityQuestion = connect(
     return {
       filteredEntities,
       selectedEntityId,
+      hasScrollControl: state.assessment.isChildScrolling,
     };
   },
   (dispatch, { id: questionId, onChangeAnswer }) => ({
     onMount: () => dispatch(loadEntitiesFromDatabase(true, questionId)),
     onRowPress: entity => onChangeAnswer(entity.id),
+    onClear: () => onChangeAnswer(null),
+    takeScrollControl: () => dispatch(takeScrollControl()),
+    releaseScrollControl: () => dispatch(releaseScrollControl()),
   }),
 )(DumbEntityQuestion);
 
 export const EntityQuestion = connect(
   (state, { id: questionId, answer: selectedEntityId }) => {
-    const { filteredEntities = [] } = getEntityQuestionState(state, questionId);
+    const { filteredEntities } = getEntityQuestionState(state, questionId);
 
     return {
       filteredEntities,
       selectedEntityId,
+      hasScrollControl: state.assessment.isChildScrolling,
     };
   },
   (dispatch, { id: questionId, onChangeAnswer }) => ({
     onMount: () => dispatch(loadEntitiesFromDatabase(false, questionId)),
     onRowPress: entity => onChangeAnswer(entity.id),
+    onClear: () => onChangeAnswer(null),
+    takeScrollControl: () => dispatch(takeScrollControl()),
+    releaseScrollControl: () => dispatch(releaseScrollControl()),
   }),
 )(DumbEntityQuestion);
