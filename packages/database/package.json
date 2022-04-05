@@ -25,7 +25,8 @@
     "test": "USE_TEST_DB=true mocha",
     "test:coverage": "cross-env NODE_ENV=test nyc mocha",
     "test:debug": "mocha --inspect-brk",
-    "update-test-data": "bash -c 'source .env && pg_dump -s -U $DB_USER -O $DB_NAME > src/tests/testData/testDataDump.sql && pg_dump -t migrations -c -U $DB_USER -O $DB_NAME >> src/tests/testData/testDataDump.sql'"
+    "update-test-data": "bash -c 'source .env && pg_dump -s -U $DB_USER -O $DB_NAME > src/tests/testData/testDataDump.sql && pg_dump -t migrations -c -U $DB_USER -O $DB_NAME >> src/tests/testData/testDataDump.sql'",
+    "setup-test-database": "./scripts/setupTestDatabase.sh"
   },
   "dependencies": {
     "@tupaia/auth": "1.0.0",
