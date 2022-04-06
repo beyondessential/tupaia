@@ -13,13 +13,13 @@ export type RegisterRequest = Request;
 export class RegisterRoute extends Route<RegisterRequest> {
   private readonly meditrakConnection: MeditrakConnection;
 
-  constructor(req: Request, res: Response, next: NextFunction) {
+  public constructor(req: Request, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.meditrakConnection = new MeditrakConnection(req.session);
   }
 
-  buildResponse() {
+  public buildResponse() {
     return this.meditrakConnection.registerUser(this.req.body);
   }
 }

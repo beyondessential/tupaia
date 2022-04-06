@@ -30,28 +30,26 @@ export class Route<
   Req extends ExpressRequest<Req> = Request,
   Res extends ExpressResponse<Req> = Response<ResBody<Req>>
 > {
-  readonly req: Req;
-
-  readonly res: Res;
-
-  readonly next: NextFunction;
+  protected readonly req: Req;
+  protected readonly res: Res;
+  protected readonly next: NextFunction;
 
   /**
    * Override in child classes to specify the route type
    */
   protected type: RouteType = 'default';
 
-  constructor(req: Req, res: Res, next: NextFunction) {
+  public constructor(req: Req, res: Res, next: NextFunction) {
     this.req = req;
     this.res = res;
     this.next = next;
   }
 
-  respond(responseBody: ResBody<Req>, statusCode: number) {
+  protected respond(responseBody: ResBody<Req>, statusCode: number) {
     respond(this.res, responseBody, statusCode);
   }
 
-  async handle() {
+  public async handle() {
     // All routes will be wrapped with an error catcher that simply passes the error to the next()
     // function, causing error handling middleware to be fired. Otherwise, async errors will be
     // swallowed.
@@ -81,7 +79,7 @@ export class Route<
     });
   };
 
-  async buildResponse(): Promise<ResBody<Req>> {
+  public async buildResponse(): Promise<ResBody<Req>> {
     throw new Error('Any Route must implement "buildResponse"');
   }
 }

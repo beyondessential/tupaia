@@ -4,20 +4,20 @@
  *
  */
 import nodeFetch from 'node-fetch';
-import { QueryParameters, AuthHandler } from '../types';
 import type { RequestInit, HeadersInit, Response } from 'node-fetch';
 import { stringify } from 'qs';
+import { QueryParameters, AuthHandler } from '../types';
 
 type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 
 type FetchHeaders = HeadersInit & {
   Authorization: string;
   'Content-Type'?: string;
-}
+};
 
 type FetchConfig = RequestInit & {
   headers: FetchHeaders;
-}
+};
 
 const DEFAULT_MAX_WAIT_TIME = 45 * 1000; // 45 seconds in milliseconds
 
@@ -26,24 +26,32 @@ export class ApiConnection {
 
   private readonly baseUrl: string;
 
-  constructor(authHandler: AuthHandler, baseUrl: string) {
+  public constructor(authHandler: AuthHandler, baseUrl: string) {
     this.authHandler = authHandler;
     this.baseUrl = baseUrl;
   }
 
-  async get(endpoint: string, queryParameters?: QueryParameters | null) {
+  public async get(endpoint: string, queryParameters?: QueryParameters | null) {
     return this.request('GET', endpoint, queryParameters);
   }
 
-  async post(endpoint: string, queryParameters?: QueryParameters | null, body?: RequestBody | null) {
+  public async post(
+    endpoint: string,
+    queryParameters?: QueryParameters | null,
+    body?: RequestBody | null,
+  ) {
     return this.request('POST', endpoint, queryParameters, body);
   }
 
-  async put(endpoint: string, queryParameters?: QueryParameters | null, body?: RequestBody | null) {
+  public async put(
+    endpoint: string,
+    queryParameters?: QueryParameters | null,
+    body?: RequestBody | null,
+  ) {
     return this.request('PUT', endpoint, queryParameters, body);
   }
 
-  async delete(endpoint: string) {
+  public async delete(endpoint: string) {
     return this.request('DELETE', endpoint);
   }
 
@@ -53,7 +61,7 @@ export class ApiConnection {
     queryParameters?: QueryParameters | null,
     body?: RequestBody | null,
   ) {
-    const queryUrl = this.stringifyQuery(this.baseUrl, endpoint, queryParameters ? queryParameters : {});
+    const queryUrl = this.stringifyQuery(this.baseUrl, endpoint, queryParameters || {});
     const fetchConfig: FetchConfig = {
       method: requestMethod || 'GET',
       headers: {
@@ -70,8 +78,12 @@ export class ApiConnection {
     return response.json();
   }
 
-  private async fetchWithTimeout(url: string, config: RequestInit, timeout: number = DEFAULT_MAX_WAIT_TIME): Promise<Response> {
-    return nodeFetch(url, {...config, timeout } );
+  private async fetchWithTimeout(
+    url: string,
+    config: RequestInit,
+    timeout: number = DEFAULT_MAX_WAIT_TIME,
+  ): Promise<Response> {
+    return nodeFetch(url, { ...config, timeout });
   }
 
   private async verifyResponse(response: Response): Promise<void> {
@@ -82,21 +94,19 @@ export class ApiConnection {
         (response.status < 200 || response.status >= 300) &&
         !responseJson.error
       ) {
-        throw new Error(`API error ${response.status}: ${responseJson.message}`)
+        throw new Error(`API error ${response.status}: ${responseJson.message}`);
       }
       if (responseJson.error) {
-        throw new Error(`API error ${response.status}: ${responseJson.error}`)
+        throw new Error(`API error ${response.status}: ${responseJson.error}`);
       }
     }
-  };
+  }
 
-  private stringifyQuery(baseUrl: string = '', endpoint: string, queryParams: QueryParameters): string {
+  private stringifyQuery(baseUrl = '', endpoint: string, queryParams: QueryParameters): string {
     const urlAndEndpoint = baseUrl ? `${baseUrl}/${endpoint}` : endpoint;
 
     const queryString = stringify(queryParams);
 
-    return queryString
-      ? `${urlAndEndpoint}?${queryString}`
-      : `${urlAndEndpoint}`;
-  };
+    return queryString ? `${urlAndEndpoint}?${queryString}` : `${urlAndEndpoint}`;
+  }
 }

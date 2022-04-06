@@ -20,7 +20,7 @@ export type DescendantsRequest = SingleEntityRequest<
   EntityRequestQuery & { includeRootEntity?: string }
 >;
 export class EntityDescendantsRoute extends Route<DescendantsRequest> {
-  async buildResponse() {
+  public async buildResponse() {
     const { hierarchyId, entity, fields, field, filter } = this.req.ctx;
     const { includeRootEntity: includeRootEntityString = 'false' } = this.req.query;
     const includeRootEntity = includeRootEntityString?.toLowerCase() === 'true';

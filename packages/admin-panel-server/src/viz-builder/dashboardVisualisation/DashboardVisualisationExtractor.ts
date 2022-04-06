@@ -17,14 +17,11 @@ export class DashboardVisualisationExtractor<
   ReportValidator extends yup.AnyObjectSchema
 > {
   private readonly visualisation: ExpandType<yup.InferType<typeof baseVisualisationValidator>>;
-
   private readonly dashboardItemValidator: DashboardItemValidator;
-
   private readonly reportValidator: ReportValidator;
-
   private reportValidatorContext: Record<string, unknown> = {};
 
-  constructor(
+  public constructor(
     visualisation: Record<string, unknown>,
     dashboardItemValidator: DashboardItemValidator,
     reportValidator: ReportValidator,

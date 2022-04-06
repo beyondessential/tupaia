@@ -9,7 +9,7 @@ import { Route } from '../../routes';
 import { EmptyObject } from '../../types';
 
 export class LogoutRoute extends Route<Request<EmptyObject, { success: boolean }>> {
-  async buildResponse() {
+  public async buildResponse() {
     const { sessionCookie } = this.req;
     const sessionId = sessionCookie?.id;
 

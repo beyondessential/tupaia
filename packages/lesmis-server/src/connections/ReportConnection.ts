@@ -16,9 +16,9 @@ type ReportObject = {
  * @deprecated use @tupaia/api-client
  */
 export class ReportConnection extends SessionHandlingApiConnection {
-  baseUrl = REPORT_API_URL;
+  public baseUrl = REPORT_API_URL;
 
-  async fetchReport(reportCode: string, query: QueryParameters): Promise<ReportObject> {
+  public async fetchReport(reportCode: string, query: QueryParameters): Promise<ReportObject> {
     return this.get(`fetchReport/${reportCode}`, query);
   }
 }

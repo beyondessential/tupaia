@@ -1,47 +1,46 @@
-/**
- * Tupaia Web
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
- * This source code is licensed under the AGPL-3.0 license
- * found in the LICENSE file in the root directory of this source tree.
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
-/**
- * SingleValueWrapper
- *
- * Renders view with single value from data provided by viewContent object
- * @prop {object} viewContent An object with the following structure
-   {
-    "type": "view",
-    "viewType": "singleValue",
-    "name": "Total Stock On Hand",
-    "value": 24063409.4
-  }
- * @return {React Component} a view with one value and its title
- */
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { VIEW_STYLES } from '../../styles';
-import { formatDataValue } from '../../utils';
+import styled, { css } from 'styled-components';
+import { VIEW_CONTENT_SHAPE } from './propTypes';
 import { ViewTitle } from './Typography';
+import { VIEW_STYLES, WHITE } from '../../styles';
+import { formatDataValue, isMobile } from '../../utils';
 
-export class SingleValueWrapper extends PureComponent {
-  render() {
-    const { name, valueType, value, total, value_metadata: valueMetadata } = this.props.viewContent;
-    const metadata = valueMetadata || this.props.viewContent[`${name}_metadata`];
-    const { style } = this.props;
+const DataWrapper = styled.div`
+  font-size: 50px;
+  font-weight: bold;
+  text-align: center;
+  color: ${WHITE};
 
-    return (
-      <div style={VIEW_STYLES.viewContainer}>
-        <ViewTitle>{name}</ViewTitle>
-        <div style={{ ...VIEW_STYLES.data, ...(style || {}) }}>
-          {formatDataValue(value, valueType, { ...metadata, total })}
-        </div>
-      </div>
-    );
-  }
-}
+  ${!isMobile() &&
+  css`
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: auto;
+    white-space: pre-line;
+  `}
+`;
+
+export const SingleValueWrapper = ({ viewContent, style }) => {
+  const { name, valueType, dataColor, value, total, value_metadata: valueMetadata } = viewContent;
+  const metadata = valueMetadata || viewContent[`${name}_metadata`];
+
+  return (
+    <div style={VIEW_STYLES.viewContainer}>
+      <ViewTitle>{name}</ViewTitle>
+      <DataWrapper style={{ color: dataColor, ...style }}>
+        {formatDataValue(value, valueType, { ...metadata, total })}
+      </DataWrapper>
+    </div>
+  );
+};
 
 SingleValueWrapper.propTypes = {
-  viewContent: PropTypes.object.isRequired,
+  viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE).isRequired,
   style: PropTypes.object,
 };
 

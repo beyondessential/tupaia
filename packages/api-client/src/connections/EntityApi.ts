@@ -19,9 +19,7 @@ const comparatorToOperator = {
 
 type ValueOf<T> = T extends Record<string, any> ? T[keyof T] : never;
 
-const isAdvancedFilter = (
-  filter: any,
-): boolean =>
+const isAdvancedFilter = (filter: any): boolean =>
   typeof filter === 'object' &&
   filter !== null &&
   Object.keys(filter).length === 2 &&
@@ -37,7 +35,7 @@ const recurseFilter = (
     const value = filter.comparisonValue;
     filterArray.push([
       nestedKeys,
-      // @ts-ignore
+      // @ts-expect-error For now this is unsafe, but will be fixed once entity server types are back
       comparatorToOperator[filter.comparator],
       Array.isArray(value) ? value : [value],
     ]);
@@ -77,13 +75,13 @@ export class EntityApi extends BaseApi {
   private stringifyFilter(filter?: any) {
     return filter
       ? recurseFilter(filter)
-        .map(
-          ([keys, operator, values]) =>
-            `${keys.join(NESTED_FIELD_DELIMITER)}${operator}${values.join(
-              MULTIPLE_VALUES_DELIMITER,
-            )}`,
-        )
-        .join(CLAUSE_DELIMITER)
+          .map(
+            ([keys, operator, values]) =>
+              `${keys.join(NESTED_FIELD_DELIMITER)}${operator}${values.join(
+                MULTIPLE_VALUES_DELIMITER,
+              )}`,
+          )
+          .join(CLAUSE_DELIMITER)
       : undefined;
   }
 

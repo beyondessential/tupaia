@@ -28,16 +28,12 @@ export type Analytic = {
 
 export class DataLakeAnalyticsFetchQuery {
   private readonly database: DataLakeDatabase;
-
   private readonly dataElementCodes: string[];
-
   private readonly entityCodes: string[];
-
   private readonly startDate?: string;
-
   private readonly endDate?: string;
 
-  constructor(database: DataLakeDatabase, options: AnalyticsFetchOptions) {
+  public constructor(database: DataLakeDatabase, options: AnalyticsFetchOptions) {
     this.database = database;
 
     const { dataElementCodes, organisationUnitCodes, startDate, endDate } = options;
@@ -47,7 +43,7 @@ export class DataLakeAnalyticsFetchQuery {
     this.endDate = endDate;
   }
 
-  async fetch(): Promise<AnalyticsFetchResult> {
+  public async fetch(): Promise<AnalyticsFetchResult> {
     const { query, params } = this.buildQueryAndParams();
 
     const sqlQuery = new SqlQuery(query, params);
@@ -58,7 +54,7 @@ export class DataLakeAnalyticsFetchQuery {
     };
   }
 
-  getPeriodConditionsAndParams() {
+  private getPeriodConditionsAndParams() {
     const periodConditions = [];
     const periodParams = [];
     if (this.startDate) {
@@ -72,7 +68,7 @@ export class DataLakeAnalyticsFetchQuery {
     return { periodConditions, periodParams };
   }
 
-  getBaseWhereClauseAndParams() {
+  private getBaseWhereClauseAndParams() {
     const { periodConditions, periodParams } = this.getPeriodConditionsAndParams();
 
     if (periodConditions.length === 0) {
@@ -82,7 +78,7 @@ export class DataLakeAnalyticsFetchQuery {
     return { clause: `WHERE ${periodConditions.join(' AND ')}`, params: periodParams };
   }
 
-  buildQueryAndParams() {
+  private buildQueryAndParams() {
     const { clause: whereClause, params: whereParams } = this.getBaseWhereClauseAndParams();
 
     // We use INNER JOINs here as it's more performant than a large WHERE IN clause (https://dba.stackexchange.com/questions/91247/optimizing-a-postgres-query-with-a-large-in)
