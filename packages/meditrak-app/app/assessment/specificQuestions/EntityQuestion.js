@@ -3,6 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { EntityList } from '../../entityMenu';
@@ -12,10 +13,23 @@ import { getEntityQuestionState } from '../selectors';
 import { CodeGeneratorQuestion } from './CodeGeneratorQuestion';
 
 const DumbEntityQuestion = props => {
-  const { config } = props;
+  const { config, isOnlyQuestionOnScreen } = props;
   const shouldGenerateCode = config && config.entity && config.entity.createNew;
 
-  return shouldGenerateCode ? <CodeGeneratorQuestion {...props} /> : <EntityList {...props} />;
+  return shouldGenerateCode ? (
+    <CodeGeneratorQuestion {...props} />
+  ) : (
+    <EntityList startOpen={isOnlyQuestionOnScreen} {...props} />
+  );
+};
+
+DumbEntityQuestion.propTypes = {
+  config: PropTypes.object,
+  isOnlyQuestionOnScreen: PropTypes.bool.isRequired,
+};
+
+DumbEntityQuestion.defaultProps = {
+  config: null,
 };
 
 // This is presented as a question, but instead of tracking its answer it just
@@ -46,7 +60,6 @@ export const EntityQuestion = connect(
     return {
       filteredEntities,
       selectedEntityId,
-      hasScrollControl: state.assessment.isChildScrolling,
     };
   },
   (dispatch, { id: questionId, onChangeAnswer }) => ({

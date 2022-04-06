@@ -25,19 +25,18 @@ export class EntityList extends PureComponent {
     this.state = {
       searchTerm: '',
       searchResults: null,
+      isOpen: props.startOpen,
     };
   }
 
   componentDidMount() {
-    const { onMount, isOnlyQuestionOnScreen } = this.props;
+    const { onMount, startOpen } = this.props;
     if (onMount) {
       onMount(); // E.g. pull database records into the redux store to populate the clinic list
     }
 
-    // if the entity list is the only question on the screen, we can safely take scroll control
-    // from the outer scroll view, so that the user gets to scroll through all possible entities
-    // immediately
-    if (isOnlyQuestionOnScreen) {
+    // if starting open, the user gets to scroll through all possible entities immediately
+    if (startOpen) {
       this.props.takeScrollControl();
     }
   }
@@ -50,26 +49,30 @@ export class EntityList extends PureComponent {
         animated: false,
       });
     }
-
-    // once we've selected an entity, no need for scroll control
-    if (!prevProps.selectedEntityId && this.props.selectedEntityId) {
-      this.props.releaseScrollControl();
-    }
-
-    // if the user is clearing the entity selection, and the entity list is the only question on
-    // screen, we can safely take scroll control from the outer scroll view
-    if (
-      prevProps.selectedEntityId &&
-      !this.props.selectedEntityId &&
-      this.props.isOnlyQuestionOnScreen
-    ) {
-      this.props.takeScrollControl();
-    }
   }
 
   componentWillUnmount() {
     this.props.releaseScrollControl();
   }
+
+  openResults = () => {
+    // if opening results, take scroll control from outer scroll view
+    this.props.takeScrollControl();
+    this.setState({
+      isOpen: true,
+    });
+  };
+
+  selectRow = row => {
+    // once a row is selected, release scroll control to the outer scroll view
+    this.props.releaseScrollControl();
+    this.setState({
+      searchTerm: '',
+      searchResults: null,
+      isOpen: false,
+    });
+    this.props.onRowPress(row);
+  };
 
   handleSearchChange = searchTerm => {
     if (!searchTerm) {
@@ -106,18 +109,12 @@ export class EntityList extends PureComponent {
   };
 
   renderEntityCell = ({ item, onDeselect }) => {
-    const { onRowPress, selectedEntityId } = this.props;
+    const { selectedEntityId } = this.props;
     const isSelected = item.id === selectedEntityId;
     return (
       <EntityItem
         entity={item}
-        onPress={row => {
-          this.setState({
-            searchTerm: '',
-            searchResults: null,
-          });
-          onRowPress(row);
-        }}
+        onPress={this.selectRow}
         isSelected={isSelected}
         onDeselect={onDeselect}
       />
@@ -125,8 +122,8 @@ export class EntityList extends PureComponent {
   };
 
   renderResults() {
-    const { filteredEntities, hasScrollControl } = this.props;
-    const { searchTerm, searchResults } = this.state;
+    const { filteredEntities } = this.props;
+    const { searchTerm, searchResults, isOpen } = this.state;
 
     // while filteredEntities is null, we're still loading from the database
     if (!filteredEntities) {
@@ -149,9 +146,7 @@ export class EntityList extends PureComponent {
       );
     }
 
-    // show results list only if the component has scroll control, i.e. outer scroll view is
-    // disabled, so that FlatList can be scrolled
-    if (hasScrollControl) {
+    if (isOpen) {
       return (
         <FlatList
           data={searchResults || filteredEntities}
@@ -181,7 +176,7 @@ export class EntityList extends PureComponent {
   }
 
   render() {
-    const { takeScrollControl, filteredEntities, selectedEntityId, onClear } = this.props;
+    const { filteredEntities, selectedEntityId, onClear } = this.props;
     const { searchTerm } = this.state;
 
     if (filteredEntities && selectedEntityId) {
@@ -209,9 +204,7 @@ export class EntityList extends PureComponent {
             placeholderTextColor={getGreyShade(0.1)}
             value={searchTerm}
             onChangeText={this.handleSearchChange}
-            onFocus={() => {
-              takeScrollControl();
-            }}
+            onFocus={this.openResults}
           />
           {searchTerm.length > 0 && (
             <TouchableOpacity
@@ -235,8 +228,7 @@ EntityList.propTypes = {
   onRowPress: PropTypes.func.isRequired,
   onClear: PropTypes.func.isRequired,
   onMount: PropTypes.func,
-  isOnlyQuestionOnScreen: PropTypes.bool.isRequired,
-  hasScrollControl: PropTypes.bool,
+  startOpen: PropTypes.bool.isRequired,
   takeScrollControl: PropTypes.func.isRequired,
   releaseScrollControl: PropTypes.func.isRequired,
 };
@@ -245,7 +237,6 @@ EntityList.defaultProps = {
   filteredEntities: null,
   selectedEntityId: '',
   onMount: null,
-  hasScrollControl: false,
 };
 
 const localStyles = StyleSheet.create({
