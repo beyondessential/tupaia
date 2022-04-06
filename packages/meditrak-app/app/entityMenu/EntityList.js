@@ -74,6 +74,14 @@ export class EntityList extends PureComponent {
     this.props.onRowPress(row);
   };
 
+  deselectRow = () => {
+    this.props.onClear();
+    // if we started with the results open, open them back up after clearing the entity
+    if (this.props.startOpen) {
+      this.openResults();
+    }
+  };
+
   handleSearchChange = searchTerm => {
     if (!searchTerm) {
       this.setState({
@@ -176,14 +184,14 @@ export class EntityList extends PureComponent {
   }
 
   render() {
-    const { filteredEntities, selectedEntityId, onClear } = this.props;
+    const { filteredEntities, selectedEntityId } = this.props;
     const { searchTerm } = this.state;
 
     if (filteredEntities && selectedEntityId) {
       const selectedEntity = filteredEntities.find(i => i.id === selectedEntityId);
       return (
         <View style={localStyles.container}>
-          {this.renderEntityCell({ item: selectedEntity, onDeselect: onClear })}
+          {this.renderEntityCell({ item: selectedEntity, onDeselect: this.deselectRow })}
         </View>
       );
     }
