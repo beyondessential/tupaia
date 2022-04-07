@@ -164,6 +164,13 @@ export const momentToDateString = (date, granularity, format) =>
  * @param {*} periodGranularity
  * @param {*} defaultTimePeriod
  */
+
+const validateDateString = date => {
+  if (!moment(date).isValid()) {
+    throw new Error('Date string is not in the correct format');
+  }
+};
+
 const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTimePeriod) => {
   let startDate = moment();
   let endDate = startDate;
@@ -176,6 +183,9 @@ const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTim
     // Eg: {defaultTimePeriod: {start: {unit: 'month', offset: -1}, end: {unit: 'month', offset: -1}}}
     if (defaultTimePeriod.start || defaultTimePeriod.end) {
       singleDateConfig = defaultTimePeriod.start || defaultTimePeriod.end;
+      if (typeof singleDateConfig === 'string') {
+        validateDateString(singleDateConfig);
+      }
     } else {
       // else, assume defaultTimePeriod is the period config. Eg: {defaultTimePeriod: {unit: 'month', offset: -1}}
       singleDateConfig = defaultTimePeriod;
@@ -224,9 +234,11 @@ const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeri
       endDate = addMomentOffset(moment(), defaultTimePeriod.end);
     }
     if (typeof defaultTimePeriod.start === 'string') {
+      validateDateString(defaultTimePeriod.start);
       startDate = moment(defaultTimePeriod.start);
     }
     if (typeof defaultTimePeriod.end === 'string') {
+      validateDateString(defaultTimePeriod.end);
       endDate = moment(defaultTimePeriod.end);
     }
     if (moment(startDate).isAfter(endDate)) {

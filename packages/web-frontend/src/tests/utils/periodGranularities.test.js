@@ -171,6 +171,18 @@ describe('periodGranularities', () => {
         expect(functionCall).toThrow('Start date must be earlier than the end date');
       });
 
+      it('throws if the date string is in an unacceptable format', () => {
+        const functionCall = () => {
+          getDefaultDates({
+            periodGranularity: 'day',
+            defaultTimePeriod: {
+              start: '2019-13-01',
+            },
+          });
+        };
+        expect(functionCall).toThrow('Date string is not in the correct format');
+      });
+
       it('shorthand syntax', () => {
         /*
          * Equivalent to:
