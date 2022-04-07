@@ -30,9 +30,7 @@ const STATUS = {
 
 const noFileMessage = 'No file chosen';
 
-const defaultFinishedMessage = response => (
-  <span>Your import has been successfully processed.</span>
-);
+const defaultFinishedMessage = () => <span>Your import has been successfully processed.</span>;
 
 export const ImportModalComponent = React.memo(
   ({
@@ -235,7 +233,7 @@ ImportModalComponent.defaultProps = {
   queryParameters: [],
   actionConfig: {},
   subtitle: '',
-  getFinishedMessage: defaultFinishedMessage,
+  getFinishedMessage: defaultFinishedMessage, // response => react element
 };
 
 const mapDispatchToProps = dispatch => ({
