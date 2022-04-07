@@ -96,7 +96,25 @@ class SurveyDataExportBuilder extends DataBuilder {
     }
 
     const { results } = await reportConnection.fetchReport(reportCode, requestQuery);
-    return Array.isArray(results) ? { data: results } : { ...results };
+
+    // Add data element names to columns
+    // TODO: Do it in report server
+    const dataElementsMetadata = (
+      await Promise.all(
+        surveyCodes.split(',').map(async surveyCode => {
+          const { dataElements } = await this.fetchDataGroup(surveyCode);
+          return dataElements.map(dataElement => ({
+            key: dataElement.code,
+            title: dataElement.text,
+          }));
+        }),
+      )
+    ).flat();
+    const keysFromMetadata = dataElementsMetadata.map(({ key }) => key);
+    // Entity code, Entity Name, Date or other added columns
+    const restOfColumns = results.columns.filter(column => !keysFromMetadata.includes(column.key));
+
+    return { ...results, columns: [...restOfColumns, ...dataElementsMetadata] };
   };
 
   async fetchDataGroup(code) {
