@@ -17,110 +17,112 @@ exports.setup = function (options, seedLink) {
 exports.up = async function (db) {
   console.log(`Starting query at ${new Date()}`);
   await db.runSql(`
-    CREATE OR REPLACE FUNCTION build_analytics_table(force BOOLEAN default FALSE) RETURNS void AS $$
-    declare
-      tStartTime TIMESTAMP;
-      source_table TEXT;
-      source_tables_array TEXT[] := array['answer', 'survey_response', 'entity', 'survey', 'question', 'data_source'];
-      pSqlStatement TEXT := '
-        SELECT
-          entity.code as entity_code,
-          entity.name as entity_name,
-          question.code as data_element_code,
-          survey.code as data_group_code,
-          survey_response.id as event_id,
-          CASE
-            WHEN question.type = ''Binary'' OR question.type = ''Checkbox''
-            THEN CASE
-              WHEN answer.text = ''Yes'' THEN ''1''
-              ELSE ''0''
-              END
-            WHEN question.type = ''Entity'' 
-            THEN entity_answers.name
-            ELSE answer.text
-          END as value,
-          question.type as type,
-          to_char(survey_response.data_time, ''YYYYMMDD'') as "day_period",
-          concat(
-            extract (isoyear from survey_response.data_time),
-            ''W'',
-            to_char(extract (week from survey_response.data_time), ''FM09''))
-          as "week_period",
-          to_char(survey_response.data_time, ''YYYYMM'') as "month_period",
-          to_char(survey_response.data_time, ''YYYY'') as "year_period",
-          survey_response.data_time as "date"
-        FROM
-          survey_response
-        INNER JOIN
-          answer ON answer.survey_response_id = survey_response.id
-        INNER JOIN
-          entity ON entity.id = survey_response.entity_id
-        INNER JOIN
-          entity as entity_answers ON entity_answers.id = answer.text
-        INNER JOIN
-          survey ON survey.id = survey_response.survey_id
-        INNER JOIN
-          question ON question.id = answer.question_id
-        INNER JOIN
-          data_source ON data_source.id = question.data_source_id
-        WHERE data_source.service_type = ''tupaia'' AND survey_response.outdated IS FALSE AND survey_response.approval_status IN (''not_required'', ''approved'')';
+  CREATE OR REPLACE FUNCTION build_analytics_table(force BOOLEAN default FALSE) RETURNS void AS $$
+  declare
+    tStartTime TIMESTAMP;
+    source_table TEXT;
+    source_tables_array TEXT[] := array['answer', 'survey_response', 'entity', 'survey', 'question', 'data_source'];
+    pSqlStatement TEXT := '
+      SELECT
+        entity.code as entity_code,
+        entity.name as entity_name,
+        question.code as data_element_code,
+        survey.code as data_group_code,
+        survey_response.id as event_id,
+        CASE
+          WHEN question.type = ''Binary'' OR question.type = ''Checkbox''
+          THEN CASE
+            WHEN answer.text = ''Yes'' THEN ''1''
+            ELSE ''0''
+            END
+          WHEN question.type = ''Entity'' 
+          THEN (
+            SELECT e.name 
+            FROM entity e
+            WHERE e.id = answer.text 
+          )
+          ELSE answer.text
+        END as value,
+        question.type as type,
+        to_char(survey_response.data_time, ''YYYYMMDD'') as "day_period",
+        concat(
+          extract (isoyear from survey_response.data_time),
+          ''W'',
+          to_char(extract (week from survey_response.data_time), ''FM09''))
+        as "week_period",
+        to_char(survey_response.data_time, ''YYYYMM'') as "month_period",
+        to_char(survey_response.data_time, ''YYYY'') as "year_period",
+        survey_response.data_time as "date"
+      FROM
+        survey_response
+      INNER JOIN
+        answer ON answer.survey_response_id = survey_response.id
+      INNER JOIN
+        entity ON entity.id = survey_response.entity_id
+      INNER JOIN
+        survey ON survey.id = survey_response.survey_id
+      INNER JOIN
+        question ON question.id = answer.question_id
+      INNER JOIN
+        data_source ON data_source.id = question.data_source_id
+      WHERE data_source.service_type = ''tupaia'' AND survey_response.outdated IS FALSE AND survey_response.approval_status IN (''not_required'', ''approved'')';
 
-    begin
-      RAISE NOTICE 'Creating Materialized View Logs...';
+  begin
+    RAISE NOTICE 'Creating Materialized View Logs...';
 
-      FOREACH source_table IN ARRAY source_tables_array LOOP
-        IF (SELECT NOT EXISTS (
-          SELECT FROM pg_tables
-          WHERE schemaname = 'public'
-          AND tablename   = 'log$_' || source_table
-        ))
-        THEN
-          EXECUTE 'ALTER TABLE ' || source_table || ' DISABLE TRIGGER ' || source_table || '_trigger';
-          tStartTime := clock_timestamp();
-          PERFORM mv$createMaterializedViewlog(source_table, 'public');
-          RAISE NOTICE 'Created Materialized View Log for % table, took %', source_table, clock_timestamp() - tStartTime;
-          EXECUTE 'ALTER TABLE ' || source_table || ' ENABLE TRIGGER ' || source_table || '_trigger';
-        ELSE
-          RAISE NOTICE 'Materialized View Log for % table already exists, skipping', source_table;
-        END IF;
-      END LOOP;
-
-
-      RAISE NOTICE 'Creating analytics materialized view...';
+    FOREACH source_table IN ARRAY source_tables_array LOOP
       IF (SELECT NOT EXISTS (
         SELECT FROM pg_tables
         WHERE schemaname = 'public'
-        AND tablename   = 'analytics'
+        AND tablename   = 'log$_' || source_table
       ))
       THEN
+        EXECUTE 'ALTER TABLE ' || source_table || ' DISABLE TRIGGER ' || source_table || '_trigger';
+        tStartTime := clock_timestamp();
+        PERFORM mv$createMaterializedViewlog(source_table, 'public');
+        RAISE NOTICE 'Created Materialized View Log for % table, took %', source_table, clock_timestamp() - tStartTime;
+        EXECUTE 'ALTER TABLE ' || source_table || ' ENABLE TRIGGER ' || source_table || '_trigger';
+      ELSE
+        RAISE NOTICE 'Materialized View Log for % table already exists, skipping', source_table;
+      END IF;
+    END LOOP;
+
+
+    RAISE NOTICE 'Creating analytics materialized view...';
+    IF (SELECT NOT EXISTS (
+      SELECT FROM pg_tables
+      WHERE schemaname = 'public'
+      AND tablename   = 'analytics'
+    ))
+    THEN
+      tStartTime := clock_timestamp();
+      PERFORM mv$createMaterializedView(
+          pViewName           => 'analytics',
+          pSelectStatement    =>  pSqlStatement,
+          pOwner              => 'public',
+          pFastRefresh        =>  TRUE
+      );
+      RAISE NOTICE 'Created analytics table, took %', clock_timestamp() - tStartTime;
+    ELSE
+      IF (force)
+      THEN
+      RAISE NOTICE 'Force rebuilding analytics table';
         tStartTime := clock_timestamp();
         PERFORM mv$createMaterializedView(
-            pViewName           => 'analytics',
+            pViewName           => 'analytics_tmp',
             pSelectStatement    =>  pSqlStatement,
             pOwner              => 'public',
             pFastRefresh        =>  TRUE
         );
         RAISE NOTICE 'Created analytics table, took %', clock_timestamp() - tStartTime;
+        PERFORM mv$removeMaterializedView('analytics', 'public');
+        PERFORM mv$renameMaterializedView('analytics_tmp', 'analytics', 'public');
       ELSE
-        IF (force)
-        THEN
-        RAISE NOTICE 'Force rebuilding analytics table';
-          tStartTime := clock_timestamp();
-          PERFORM mv$createMaterializedView(
-              pViewName           => 'analytics_tmp',
-              pSelectStatement    =>  pSqlStatement,
-              pOwner              => 'public',
-              pFastRefresh        =>  TRUE
-          );
-          RAISE NOTICE 'Created analytics table, took %', clock_timestamp() - tStartTime;
-          PERFORM mv$removeMaterializedView('analytics', 'public');
-          PERFORM mv$renameMaterializedView('analytics_tmp', 'analytics', 'public');
-        ELSE
-          RAISE NOTICE 'Analytics Materialized View already exists, skipping';
-        END IF;
+        RAISE NOTICE 'Analytics Materialized View already exists, skipping';
       END IF;
-    end $$ LANGUAGE plpgsql
-  `);
+    END IF;
+  end $$ LANGUAGE plpgsql
+`);
   console.log(`Finished query at ${new Date()}`);
   console.log(`Starting table rebuild at ${new Date()}`);
 
