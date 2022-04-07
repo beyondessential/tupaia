@@ -25,6 +25,9 @@ export const BarChart = ({
     if (chartConfig.chartType === CHART_TYPES.COMPOSED || data.length === 1) {
       return isEnlarged ? 100 : 50;
     }
+    // Too many stacks will automatically set bar size to 0.
+    if (chartConfig && Object.keys(chartConfig).length > 10 && !isExporting && isEnlarged) return 1;
+
     return undefined;
   };
 
