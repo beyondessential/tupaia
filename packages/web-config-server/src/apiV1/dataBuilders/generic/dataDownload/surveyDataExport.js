@@ -99,7 +99,7 @@ class SurveyDataExportBuilder extends DataBuilder {
     await Promise.all(
       surveys.map(async survey => {
         const { reportCode, name: surveyName, codes, code } = survey;
-        if (surveys.includes(codes.tostring() && surveys.includes(code))) {
+        if (surveys.includes(codes.toString() && surveys.includes(code))) {
           return;
         }
         const { results } = await reportConnection.fetchReport(reportCode, requestQuery);
