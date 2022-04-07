@@ -49,9 +49,8 @@ class SurveyDataExportBuilder extends DataBuilder {
       dataBuilderConfig: exportDataBuilderConfig,
     } = this.config.exportDataBuilder;
 
-    if (exportDataBuilderName === 'report') {
-      const result = await this.buildReportData();
-      return { data: { [surveys[0].name]: { data: result } } };
+    if (exportDataBuilderName === 'reportServer') {
+      return this.buildReportData();
     }
     const buildData = getDataBuilder(exportDataBuilderName);
 
@@ -76,7 +75,8 @@ class SurveyDataExportBuilder extends DataBuilder {
   fetchHierarchyId = async () => (await this.fetchAndCacheProject()).entity_hierarchy_id;
 
   buildReportData = async () => {
-    const { itemCode: reportCode, startDate, endDate, surveyCodes } = this.query;
+    const { surveys } = this.config;
+    const { startDate, endDate, surveyCodes } = this.query;
 
     const reportConnection = new ReportConnection(this.req);
     const hierarchyId = await this.fetchHierarchyId();
@@ -95,26 +95,45 @@ class SurveyDataExportBuilder extends DataBuilder {
       requestQuery.endDate = endDate;
     }
 
-    const { results } = await reportConnection.fetchReport(reportCode, requestQuery);
+    const surveyData = {};
+    await Promise.all(
+      surveys.map(async survey => {
+        const { reportCode, name: surveyName, codes, code } = survey;
+        if (surveys.includes(codes.tostring() && surveys.includes(code))) {
+          return;
+        }
+        const { results } = await reportConnection.fetchReport(reportCode, requestQuery);
 
-    // Add data element names to columns
-    // TODO: Do it in report server
-    const dataElementsMetadata = (
-      await Promise.all(
-        surveyCodes.split(',').map(async surveyCode => {
-          const { dataElements } = await this.fetchDataGroup(surveyCode);
-          return dataElements.map(dataElement => ({
-            key: dataElement.code,
-            title: dataElement.text,
-          }));
-        }),
-      )
-    ).flat();
-    const keysFromMetadata = dataElementsMetadata.map(({ key }) => key);
-    // Entity code, Entity Name, Date or other added columns
-    const restOfColumns = results.columns.filter(column => !keysFromMetadata.includes(column.key));
+        // Add data element names to columns
+        // TODO: Do it in report server
+        const dataElementsMetadata = (
+          await Promise.all(
+            surveyCodes.split(',').map(async surveyCode => {
+              const { dataElements } = await this.fetchDataGroup(surveyCode);
+              return dataElements.map(dataElement => ({
+                key: dataElement.code,
+                title: dataElement.text,
+              }));
+            }),
+          )
+        ).flat();
 
-    return { ...results, columns: [...restOfColumns, ...dataElementsMetadata] };
+        const keysFromMetadata = dataElementsMetadata.map(({ key }) => key);
+        // Entity code, Entity Name, Date or other added columns
+        const restOfColumns = results.columns.filter(
+          column => !keysFromMetadata.includes(column.key),
+        );
+
+        surveyData[surveyName] = {
+          data: {
+            ...results,
+            columns: [...restOfColumns, ...dataElementsMetadata],
+          },
+        };
+      }),
+    );
+
+    return { data: surveyData };
   };
 
   async fetchDataGroup(code) {
