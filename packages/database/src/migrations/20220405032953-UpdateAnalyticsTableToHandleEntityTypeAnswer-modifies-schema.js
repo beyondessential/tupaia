@@ -15,6 +15,7 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = async function (db) {
+  console.log(`Starting query at ${new Date()}`);
   await db.runSql(`
     CREATE OR REPLACE FUNCTION build_analytics_table(force BOOLEAN default FALSE) RETURNS void AS $$
     declare
@@ -35,11 +36,7 @@ exports.up = async function (db) {
               ELSE ''0''
               END
             WHEN question.type = ''Entity'' 
-            THEN (
-              SELECT e.name 
-              FROM entity e
-              WHERE e.id = answer.text 
-            )
+            THEN entity_answers.name
             ELSE answer.text
           END as value,
           question.type as type,
@@ -58,6 +55,8 @@ exports.up = async function (db) {
           answer ON answer.survey_response_id = survey_response.id
         INNER JOIN
           entity ON entity.id = survey_response.entity_id
+        INNER JOIN
+          entity as entity_answers ON entity_answers.id = answer.text
         INNER JOIN
           survey ON survey.id = survey_response.survey_id
         INNER JOIN
@@ -122,10 +121,15 @@ exports.up = async function (db) {
       END IF;
     end $$ LANGUAGE plpgsql
   `);
+  console.log(`Finished query at ${new Date()}`);
+  console.log(`Starting table rebuild at ${new Date()}`);
 
   // Force rebuild is required to integrate this change with the analytics table
   await db.runSql('SELECT build_analytics_table(true);');
+  console.log(`Finished table rebuild at ${new Date()}`);
+  console.log(`Starting to create table indexes at ${new Date()}`);
   await db.runSql('SELECT create_analytics_table_indexes();');
+  console.log(`Finished table indexes at ${new Date()}`);
   return null;
 };
 
