@@ -36,7 +36,7 @@ exports.up = async function (db) {
               ELSE ''0''
               END
             WHEN question.type = ''Entity'' 
-            THEN entity_answers.name
+            THEN answer_entity.name
             ELSE answer.text
           END as value,
           question.type as type,
@@ -55,8 +55,8 @@ exports.up = async function (db) {
           answer ON answer.survey_response_id = survey_response.id
         INNER JOIN
           entity ON entity.id = survey_response.entity_id
-        INNER JOIN
-          entity as entity_answers ON entity_answers.id = answer.text
+        LEFT JOIN
+          entity answer_entity ON answer_entity.id = answer.text
         INNER JOIN
           survey ON survey.id = survey_response.survey_id
         INNER JOIN
