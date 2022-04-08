@@ -96,7 +96,19 @@ const useConfigStore = () => {
   const setLocation = value => dispatch({ type: SET_LOCATION, value });
   const setProject = value => dispatch({ type: SET_PROJECT, value });
   const setTestData = value => dispatch({ type: SET_TEST_DATA, value });
-  const setVisualisation = value => dispatch({ type: SET_VISUALISATION, value });
+  const setVisualisation = value => {
+    const { transform } = value.data;
+    const sanitisedTransform = transform.map(conf =>
+      typeof conf === 'string' ? { transform: conf, alias: true } : conf,
+    );
+    const sanitisedData = { ...value.data, transform: sanitisedTransform };
+    const sanitisedValue = {
+      ...value,
+      data: sanitisedData,
+    };
+
+    return dispatch({ type: SET_VISUALISATION, value: sanitisedValue });
+  };
   const setVisualisationValue = (key, value) =>
     dispatch({ type: SET_VISUALISATION_VALUE, key, value });
   const setPresentation = value => dispatch({ type: SET_PRESENTATION_CONFIG, value });
