@@ -11,7 +11,12 @@ import { checkBoundsDifference } from '../../utils';
 import { DemoLand } from './DemoLand';
 import { DisasterLayer } from './DisasterLayer';
 import { ZoomControl } from './ZoomControl';
-import { selectActiveTileSet, selectCurrentMapOverlayCodes } from '../../selectors';
+import {
+  selectActiveTileSet,
+  selectCurrentMapOverlayCodes,
+  selectCurrentOrgUnit,
+  selectOrgUnit,
+} from '../../selectors';
 import { changePosition, closeDropdownOverlays, setOrgUnit } from '../../actions';
 import { TRANS_BLACK, TRANS_BLACK_LESS } from '../../styles';
 import { DataVisualsLayer } from './DataVisualsLayer/DataVisualsLayer';
@@ -186,8 +191,11 @@ const mapStateToProps = state => {
   const { shouldSnapToPosition, position, displayedMapOverlays } = state.map;
   const { isSidePanelExpanded } = state.global;
   const { contractedWidth, expandedWidth } = state.dashboard;
+  const currentOrganisationUnit = selectCurrentOrgUnit(state);
+  const currentParent = selectOrgUnit(state, currentOrganisationUnit.parent);
 
   return {
+    currentParent,
     mapOverlayCodes: selectCurrentMapOverlayCodes(state),
     displayedMapOverlayCodes: displayedMapOverlays,
     position,
