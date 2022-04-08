@@ -72,6 +72,7 @@ const selectMeasureDataWithCoordinates = createSelector([measureData => measureD
 );
 
 const mapStateToProps = (state, ownProps) => {
+  const { isMeasureLoading } = state.map;
   const { displayedMapOverlayCodes } = ownProps;
   const mapOverlayCodes = selectCurrentMapOverlayCodes(state);
   const measureData = selectMeasureDataWithCoordinates(
@@ -82,6 +83,7 @@ const mapStateToProps = (state, ownProps) => {
   const multiOverlaySerieses = selectMeasureOptions(state, mapOverlayCodes);
 
   return {
+    isMeasureLoading,
     measureData,
     multiOverlayMeasureData,
     multiOverlaySerieses,
@@ -96,6 +98,7 @@ const mapDispatchToProps = dispatch => ({
 
 const propsAreEqual = (prevProps, nextProps) => {
   return (
+    prevProps.isMeasureLoading === nextProps.isMeasureLoading &&
     JSON.stringify(prevProps.measureData) === JSON.stringify(nextProps.measureData) &&
     JSON.stringify(prevProps.displayedMapOverlayCodes) ===
       JSON.stringify(nextProps.displayedMapOverlayCodes)
