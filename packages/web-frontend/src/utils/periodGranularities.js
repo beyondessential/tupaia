@@ -166,7 +166,7 @@ export const momentToDateString = (date, granularity, format) =>
  */
 
 const validateDateString = date => {
-  if (!moment(date).isValid()) {
+  if (!moment(date, 'YYYY-MM-DD', true).isValid()) {
     throw new Error('Date string is not in the correct format');
   }
 };
