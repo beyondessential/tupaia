@@ -25,7 +25,7 @@ export class EntityList extends PureComponent {
     this.state = {
       searchTerm: '',
       searchResults: null,
-      isOpen: props.startOpen,
+      isOpen: false,
     };
   }
 
@@ -35,9 +35,8 @@ export class EntityList extends PureComponent {
       onMount(); // E.g. pull database records into the redux store to populate the clinic list
     }
 
-    // if starting open, the user gets to scroll through all possible entities immediately
     if (startOpen) {
-      this.props.takeScrollControl();
+      this.openResults();
     }
   }
 
@@ -57,10 +56,15 @@ export class EntityList extends PureComponent {
 
   openResults = () => {
     // if opening results, take scroll control from outer scroll view
-    this.props.takeScrollControl();
-    this.setState({
-      isOpen: true,
-    });
+    this.setState(
+      {
+        isOpen: true,
+      },
+      () => {
+        this.props.takeScrollControl();
+        this.props.scrollIntoFocus();
+      },
+    );
   };
 
   selectRow = row => {
