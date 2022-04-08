@@ -15,7 +15,6 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = async function (db) {
-  console.log(`Starting query at ${new Date()}`);
   await db.runSql(`
     CREATE OR REPLACE FUNCTION build_analytics_table(force BOOLEAN default FALSE) RETURNS void AS $$
     declare
@@ -121,15 +120,10 @@ exports.up = async function (db) {
       END IF;
     end $$ LANGUAGE plpgsql
   `);
-  console.log(`Finished query at ${new Date()}`);
-  console.log(`Starting table rebuild at ${new Date()}`);
 
   // Force rebuild is required to integrate this change with the analytics table
   await db.runSql('SELECT build_analytics_table(true);');
-  console.log(`Finished table rebuild at ${new Date()}`);
-  console.log(`Starting to create table indexes at ${new Date()}`);
   await db.runSql('SELECT create_analytics_table_indexes();');
-  console.log(`Finished table indexes at ${new Date()}`);
   return null;
 };
 
