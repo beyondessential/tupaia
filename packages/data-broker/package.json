@@ -35,7 +35,7 @@
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0",
     "lodash.pickby": "^4.6.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "winston": "^3.3.3"
   }
 }

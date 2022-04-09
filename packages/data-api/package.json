@@ -32,6 +32,6 @@
     "deep-equal-in-any-order": "^1.0.27",
     "dotenv": "^8.2.0",
     "lodash.groupby": "^4.6.0",
-    "moment": "^2.24.0"
+    "moment": "^2.29.2"
   }
 }
