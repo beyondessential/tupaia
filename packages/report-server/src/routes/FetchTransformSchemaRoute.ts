@@ -19,7 +19,7 @@ export type FetchTransformSchemaRequest = Request<
 >;
 
 export class FetchTransformSchemaRoute extends Route<FetchTransformSchemaRequest> {
-  async buildResponse() {
+  public async buildResponse() {
     const removeRedundantConfigs = (fields: Record<string, any | any[]> | any[]) => {
       if (typeof fields !== 'object' || Array.isArray(fields)) {
         return fields;

@@ -39,6 +39,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.16.2",
+    "lodash.groupby": "^4.6.0",
     "winston": "^3.2.1"
   }
 }

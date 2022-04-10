@@ -12,7 +12,7 @@ export type MultiEntityRelativesRequest = MultiEntityRequest<
   EntityResponse[]
 >;
 export class MultiEntityRelativesRoute extends Route<MultiEntityRelativesRequest> {
-  async buildResponse() {
+  public async buildResponse() {
     const { hierarchyId, entities, fields, field, filter } = this.req.ctx;
 
     const relatives = await this.req.models.entity.getRelativesOfEntities(

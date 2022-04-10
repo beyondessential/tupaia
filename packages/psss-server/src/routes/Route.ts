@@ -8,15 +8,15 @@ import { Route as BaseRoute, ExpressRequest, ExpressResponse } from '@tupaia/ser
 import { UnauthenticatedError } from '@tupaia/utils';
 import { EntityConnection, MeditrakConnection, ReportConnection } from '../connections';
 
-export class Route<Req extends ExpressRequest<Req> = Request,
-  Res extends ExpressResponse<Req> = Response> extends BaseRoute<Req, Res> {
+export class Route<
+  Req extends ExpressRequest<Req> = Request,
+  Res extends ExpressResponse<Req> = Response
+> extends BaseRoute<Req, Res> {
   protected entityConnection?: EntityConnection;
-
   protected meditrakConnection?: MeditrakConnection;
-
   protected reportConnection?: ReportConnection;
 
-  handle() {
+  public handle() {
     try {
       const { session } = this.req;
       this.entityConnection = new EntityConnection(session);

@@ -21,13 +21,13 @@ export type FetchDashboardVisualisationRequest = Request<
 export class FetchDashboardVisualisationRoute extends Route<FetchDashboardVisualisationRequest> {
   private readonly meditrakConnection: MeditrakConnection;
 
-  constructor(req: FetchDashboardVisualisationRequest, res: Response, next: NextFunction) {
+  public constructor(req: FetchDashboardVisualisationRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.meditrakConnection = new MeditrakConnection(req.session);
   }
 
-  async buildResponse() {
+  public async buildResponse() {
     const { dashboardVisualisationId } = this.req.params;
     const visualisationResource = await this.meditrakConnection.fetchResources(
       `dashboardVisualisations/${dashboardVisualisationId}`,

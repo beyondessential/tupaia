@@ -7,21 +7,21 @@ import { Aggregator } from '@tupaia/aggregator';
 
 import { Aggregation, Event, PeriodParams } from '../types';
 
+const aggregationToAggregationConfig = (aggregation: Aggregation) =>
+  typeof aggregation === 'string'
+    ? {
+        type: aggregation,
+      }
+    : aggregation;
+
 export class ReportServerAggregator {
   private aggregator: Aggregator;
 
-  constructor(aggregator: Aggregator) {
+  public constructor(aggregator: Aggregator) {
     this.aggregator = aggregator;
   }
 
-  aggregationToAggregationConfig = (aggregation: Aggregation) =>
-    typeof aggregation === 'string'
-      ? {
-          type: aggregation,
-        }
-      : aggregation;
-
-  async fetchAnalytics(
+  public async fetchAnalytics(
     dataElementCodes: string[],
     aggregationList: Aggregation[] | undefined,
     organisationUnitCodes: string[],
@@ -30,7 +30,7 @@ export class ReportServerAggregator {
   ) {
     const { period, startDate, endDate } = periodParams;
     const aggregations = aggregationList
-      ? aggregationList.map(this.aggregationToAggregationConfig)
+      ? aggregationList.map(aggregationToAggregationConfig)
       : [{ type: 'RAW' }];
 
     return this.aggregator.fetchAnalytics(
@@ -47,7 +47,7 @@ export class ReportServerAggregator {
     );
   }
 
-  async fetchEvents(
+  public async fetchEvents(
     programCode: string,
     aggregationList: Aggregation[] | undefined,
     organisationUnitCodes: string[],
@@ -57,7 +57,7 @@ export class ReportServerAggregator {
   ): Promise<Event[]> {
     const { period, startDate, endDate } = periodParams;
     const aggregations = aggregationList
-      ? aggregationList.map(this.aggregationToAggregationConfig)
+      ? aggregationList.map(aggregationToAggregationConfig)
       : [{ type: 'RAW' }];
     return this.aggregator.fetchEvents(
       programCode,

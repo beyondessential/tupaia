@@ -6,12 +6,12 @@
 import { TupaiaDatabase } from '@tupaia/database';
 
 export class SqlQuery<Result = unknown> {
-  static array = (arr: unknown[]) => `(${arr.map(() => '?').join(',')})`;
+  public static array = (arr: unknown[]) => `(${arr.map(() => '?').join(',')})`;
 
-  static values = (rows: unknown[][]) =>
+  public static values = (rows: unknown[][]) =>
     `VALUES (${rows.map(values => values.map(() => '?').join(',')).join('), (')})`;
 
-  static innerJoin = (baseTable: string, columnName: string, values: unknown[]) => `
+  public static innerJoin = (baseTable: string, columnName: string, values: unknown[]) => `
     INNER JOIN (
       ${SqlQuery.values(values.map(c => [c]))}
     ) ${columnName}s(code) ON ${columnName}s.code = ${baseTable}.${columnName}
@@ -20,16 +20,16 @@ export class SqlQuery<Result = unknown> {
   private readonly query: string;
   private readonly parameters: string[];
 
-  constructor(baseQuery: string, baseParameters: string[] = []) {
+  public constructor(baseQuery: string, baseParameters: string[] = []) {
     this.query = baseQuery;
     this.parameters = baseParameters;
   }
 
-  async executeOnDatabase(database: TupaiaDatabase) {
+  public async executeOnDatabase(database: TupaiaDatabase) {
     return database.executeSql(this.query, this.parameters) as Promise<Result>;
   }
 
-  loggableQuery() {
+  public loggableQuery() {
     const replacementIterator = this.parameters
       .map(param => param.replace(/'/g, "''"))
       [Symbol.iterator]();

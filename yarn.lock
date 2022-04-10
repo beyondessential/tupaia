@@ -1780,10 +1780,10 @@
     prop-types "^15.0"
     react "^16.13.1"
 
-"@beyondessential/eslint-config-ts@^1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@beyondessential/eslint-config-ts/-/eslint-config-ts-1.3.1.tgz#80c8c5ffba099e6f5d3a3ead08cc142ed7a89787"
-  integrity sha512-QdyJ7u43eEsfIG2n1dB+iI4Vpi3REvW9HXxITV5S9vyiXLkgNgQMMBG1/vdr7hrOO1GF0O2isRy2/8Mkgmk7cg==
+"@beyondessential/eslint-config-ts@^1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@beyondessential/eslint-config-ts/-/eslint-config-ts-1.3.2.tgz#5170aea0222516ac9958911b178be49a38ca1433"
+  integrity sha512-cBL038Tg51MrZQJ9SuX9Rn0f2qhAadzP9n/u6jtV6gXEOgxmQYRzq5ThKQTKcC0cR57lLR23JNWGOm0BZZTZ5Q==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^4.18.0"
     "@typescript-eslint/parser" "^4.18.0"

@@ -20,13 +20,13 @@ export interface LoginRequest extends Request<EmptyObject, AuthResponse, Credent
 export class LoginRoute extends Route<LoginRequest> {
   private authConnection: AuthConnection;
 
-  constructor(req: LoginRequest, res: Response, next: NextFunction) {
+  public constructor(req: LoginRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.authConnection = new AuthConnection();
   }
 
-  async buildResponse() {
+  public async buildResponse() {
     const credentials = this.req.body;
 
     const response = await this.authConnection.login(credentials);

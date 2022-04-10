@@ -52,7 +52,7 @@
     "@babel/runtime-corejs3": "^7.11.2",
     "@beyondessential/eslint-config-jest": "^1.0.0",
     "@beyondessential/eslint-config-js": "^1.1.1",
-    "@beyondessential/eslint-config-ts": "^1.3.1",
+    "@beyondessential/eslint-config-ts": "^1.3.2",
     "@sambego/storybook-state": "^2.0.1",
     "@storybook/addon-essentials": "^6.3.9",
     "@storybook/react": "^6.3.9",
