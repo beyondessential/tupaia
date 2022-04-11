@@ -66,22 +66,22 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
     }
 
     const importedVizes: { id: string; code: string }[] = [];
-    const errors: [string, string][] = [];
+    const successes: string[] = [];
+    const errors: { fileName: string; message: string }[] = [];
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const { originalname: fileName } = file;
       try {
         const fileContent = importFileSchema.validateSync(readFileContent(file));
         importedVizes.push(await this.importViz(fileContent));
+        successes.push(fileName);
       } catch (error: any) {
-        errors.push([fileName, error.message]);
+        errors.push({ fileName, message: error.message });
       }
     }
 
     if (errors.length > 0) {
-      throw new UploadError(
-        new Error(errors.map(([fileName, errorMsg]) => `\n  ${fileName}: ${errorMsg}`).join('')),
-      );
+      throw new UploadError(errors, successes);
     }
 
     return {

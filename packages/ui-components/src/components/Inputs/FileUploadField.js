@@ -53,7 +53,7 @@ export const FileUploadField = ({ onChange, name, fileName, multiple }) => {
         multiple={multiple}
       />
       <GreyButton component="span" startIcon={<SaveAlt />}>
-        Choose file
+        Choose file{multiple ? 's' : ''}
       </GreyButton>
       {fileName && <FileName>{fileName}</FileName>}
     </FlexStart>

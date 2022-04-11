@@ -51,7 +51,7 @@ const FIELDS = [
 
 const IMPORT_CONFIG = {
   title: 'Import Dashboard Visualisation',
-  subtitle: 'Please upload a .json file with the visualisation to be imported:',
+  subtitle: 'Please upload one or more .json files with visualisations to be imported:',
   actionConfig: {
     importEndpoint: 'dashboardVisualisations',
     multiple: true,
