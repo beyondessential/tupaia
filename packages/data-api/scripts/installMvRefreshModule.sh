@@ -4,7 +4,7 @@ DIR=$(dirname "$0")
 
 # Use whatever existing .env vars have been specified
 curenv=$(declare -p -x)
-source .env
+test -f .env && source .env
 eval "$curenv"
 
 # Set default port in case it wasn't in .env
