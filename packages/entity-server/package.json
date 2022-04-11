@@ -23,7 +23,7 @@
     "start": "node dist",
     "start-dev": "../../scripts/bash/backendStartDev.sh 9996 -ts",
     "start-verbose": "LOG_LEVEL=debug npm run start-dev",
-    "test": "DB_NAME=tupaia_test jest --runInBand",
+    "test": "yarn workspace @tupaia/database check-test-database-exists && DB_NAME=tupaia_test jest --runInBand",
     "test:coverage": "yarn test --coverage",
     "test:watch": "yarn test --watch"
   },
