@@ -5,11 +5,11 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ResourcePage } from './ResourcePage';
 import { LightOutlinedButton } from '@tupaia/ui-components';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { ResourcePage } from './ResourcePage';
 
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -55,6 +55,14 @@ const IMPORT_CONFIG = {
   actionConfig: {
     importEndpoint: 'dashboardVisualisations',
   },
+  getFinishedMessage: response => (
+    <>
+      <span>{response.message}</span>
+      <p>
+        <Link to={`/viz-builder/dashboard-item/${response.id}`}>View in Visualisation Builder</Link>
+      </p>
+    </>
+  ),
 };
 
 const renderNewDashboardVizButton = () => (
