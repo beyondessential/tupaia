@@ -15,7 +15,7 @@
     "build": "tsc -p tsconfig-build.json",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
-    "test": "USE_TEST_DB=true jest --runInBand",
+    "test": "DB_NAME=tupaia_test jest --runInBand",
     "test:coverage": "yarn test --coverage",
     "install-mv-refresh": "scripts/installMvRefreshModule.sh",
     "uninstall-mv-refresh": "scripts/uninstallMvRefreshModule.sh",

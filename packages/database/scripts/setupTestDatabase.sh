@@ -1,9 +1,10 @@
 #!/bin/bash -e
 
-# if env vars are not already defined (e.g. by script caller during CI/CD), pull them in from .env
-if [ "$DB_URL" == "" ]; then
-    source .env
-fi
+# Use whatever existing .env vars have been specified
+curenv=$(declare -p -x)
+source .env
+eval "$curenv"
+
 # Set default port in case it wasn't in .env
 : "${DB_PORT:=5432}"
 
@@ -13,18 +14,18 @@ if [ -z "$TUPAIA_USER_EXISTS" ]; then
     PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "CREATE ROLE $DB_USER LOGIN SUPERUSER PASSWORD '$DB_PASSWORD'"
 fi
 
-PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "DROP DATABASE IF EXISTS $TEST_DB_NAME"
-PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "CREATE DATABASE $TEST_DB_NAME WITH OWNER $DB_USER"
+PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "DROP DATABASE IF EXISTS $DB_NAME"
+PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "CREATE DATABASE $DB_NAME WITH OWNER $DB_USER"
 PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "ALTER USER $DB_USER WITH SUPERUSER"
-PGPASSWORD=$DB_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_USER -d $TEST_DB_NAME -f ./src/tests/testData/testDataDump.sql
+PGPASSWORD=$DB_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_USER -d $DB_NAME -f ./src/tests/testData/testDataDump.sql
 PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "ALTER USER $DB_USER WITH NOSUPERUSER"
 
 echo "Installing mvrefresh"
-USE_TEST_DB=true yarn workspace @tupaia/data-api install-mv-refresh
+DB_NAME=$DB_NAME yarn workspace @tupaia/data-api install-mv-refresh
 echo "Patching mvrefresh"
-USE_TEST_DB=true yarn workspace @tupaia/data-api patch-mv-refresh up
+DB_NAME=$DB_NAME yarn workspace @tupaia/data-api patch-mv-refresh up
 echo "Installing Analytics table"
-USE_TEST_DB=true yarn workspace @tupaia/data-api build-analytics-table
+DB_NAME=$DB_NAME yarn workspace @tupaia/data-api build-analytics-table
 
 echo "Deleting migrations that target data modifications, as there is no data to migrate on the test database"
 rm ./src/migrations/*modifies-data.js

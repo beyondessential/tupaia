@@ -22,11 +22,11 @@
     "migrate-create": "read -p \"Enter migration name: \" MIGRATION_NAME && read -p \"Enter the scope of this migration ('schema' or 'data'): \" MIGRATION_SCOPE && babel-node ./src/migrate.js create ${MIGRATION_NAME}-modifies-${MIGRATION_SCOPE} --migrations-dir ./src/migrations -v --config-file \"../../babel.config.json\"",
     "migrate-down": "babel-node ./src/migrate.js  down --migrations-dir ./src/migrations -v --config-file \"../../babel.config.json\"",
     "refresh-database": "node ./scripts/refreshDatabase.js",
-    "test": "USE_TEST_DB=true mocha",
+    "test": "DB_NAME=tupaia_test mocha",
     "test:coverage": "cross-env NODE_ENV=test nyc mocha",
     "test:debug": "mocha --inspect-brk",
     "update-test-data": "bash -c 'source .env && pg_dump -s -U $DB_USER -O $DB_NAME > src/tests/testData/testDataDump.sql && pg_dump -t migrations -c -U $DB_USER -O $DB_NAME >> src/tests/testData/testDataDump.sql'",
-    "setup-test-database": "scripts/setupTestDatabase.sh"
+    "setup-test-database": "DB_NAME=tupaia_test scripts/setupTestDatabase.sh"
   },
   "dependencies": {
     "@tupaia/auth": "1.0.0",

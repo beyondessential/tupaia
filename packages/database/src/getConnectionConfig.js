@@ -10,7 +10,7 @@ const getServerConfig = () => ({
   port: getEnvVarOrDefault('DB_PORT', 5432),
   user: requireEnv('DB_USER'),
   password: requireEnv('DB_PASSWORD'),
-  database: process.env.USE_TEST_DB === 'true' ? requireEnv('TEST_DB_NAME') : requireEnv('DB_NAME'),
+  database: requireEnv('DB_NAME'),
   ssl:
     process.env.DB_ENABLE_SSL === 'true'
       ? {

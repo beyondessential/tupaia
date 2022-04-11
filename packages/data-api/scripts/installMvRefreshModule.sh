@@ -2,14 +2,13 @@
 DIR=$(dirname "$0")
 
 
-# if env vars are not already defined (e.g. by script caller during CI/CD), pull them in from .env
-if [ "$DB_URL" == "" ]; then
-    source .env
-fi
+# Use whatever existing .env vars have been specified
+curenv=$(declare -p -x)
+source .env
+eval "$curenv"
 
 # Set default port in case it wasn't in .env
 : "${DB_PORT:=5432}"
-DB_NAME="$DB_NAME" && [[ "$USE_TEST_DB" != "" ]] && DB_NAME=$TEST_DB_NAME
 
 export PGPASSWORD=$DB_PG_PASSWORD
 MV_REFRESH_EXISTS=`psql -p $DB_PORT -X -A -h $DB_URL -d $DB_NAME -U $DB_PG_USER -t -c "SELECT schema_name FROM information_schema.schemata WHERE schema_name = '$DB_MV_USER'"`

@@ -1,13 +1,12 @@
 #!/bin/bash -e
 
-# if env vars are not already defined (e.g. by script caller during CI/CD), pull them in from .env
-if [ "$DB_URL" == "" ]; then
-    source .env
-fi
+# Use whatever existing .env vars have been specified
+curenv=$(declare -p -x)
+source .env
+eval "$curenv"
 
 # Set default port in case it wasn't in .env
 : "${DB_PORT:=5432}"
-DB_NAME="$DB_NAME" && [[ "$USE_TEST_DB" != "" ]] && DB_NAME=$TEST_DB_NAME
 
 cd scripts
 export PGPASSWORD=$DB_PASSWORD
