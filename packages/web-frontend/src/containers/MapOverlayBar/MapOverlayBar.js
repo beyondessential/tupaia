@@ -134,6 +134,7 @@ const MapOverlayBarComponent = ({
       changeMaxSelectedOverlays={changeMaxSelectedOverlays}
       pinnedOverlay={pinnedOverlay}
       setPinnedOverlay={setPinnedOverlay}
+      hasOverlays={hierarchyData.length > 0}
     >
       <MapOverlayHierarchy
         currentMapOverlayCodes={currentMapOverlayCodes}
