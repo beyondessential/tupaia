@@ -35,8 +35,9 @@ e2e:
 
 # 'db' service provides a postgres db with postgis
 db:
-  image: mdillon/postgis:10-alpine
+  image: postgis/postgis:13-3.2-alpine
   encrypted_dockercfg_path: ./packages/devops/ci/dockercfg.encrypted
+  encrypted_env_file: ./packages/devops/ci/db.env.encrypted
 
 # the 'deployment' service has the aws cli, and credentials for an IAM role to trigger the lambda
 # script that redeploys tupaia
