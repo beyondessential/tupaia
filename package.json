@@ -20,8 +20,18 @@
   "scripts": {
     "build": "yarn build:full",
     "build:full": "yarn lerna run build --stream --reject-cycles",
-    "build:dev": "yarn ultra -r build:dev",
-    "build:dev:watch": "yarn ultra -r --no-pretty --concurrency 20 build:dev:watch",
+    "build:dev": "yarn ultra -r --build build:dev",
+    "build:dev:watch": "yarn lerna run build:dev:watch --concurrency 50 --parallel",
+    "dev:servers": "yarn ultra -r --no-pretty --filter \"@tupaia/*+(server)\" start-dev -i",
+    "dev:libs": "yarn ultra -r --filter \"@tupaia/!(*server|*app|devops|web-*|admin-panel|psss|lesmis)\" build:dev:watch",
+
+    "list:servers": "yarn --silent ultra -r --raw --filter \"@tupaia/*+(server)\" pwd",
+
+
+    "foo": "echo 'it works'",
+    "abc": "yarn --silent foo",
+    "list:libs": "yarn ultra -r --filter \"@tupaia/!(*server|*app|devops|web-*|admin-panel|psss|lesmis)\"",
+
     "test": "yarn test:full",
     "test:full": "yarn lerna run test  --concurrency 1 --stream",
     "test:quick": "yarn test:full  --concurrency 1 --since dev",
