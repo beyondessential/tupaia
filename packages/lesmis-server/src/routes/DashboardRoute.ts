@@ -17,7 +17,7 @@ export class DashboardRoute extends TranslatableRoute<
 > {
   private readonly webConfigConnection: WebConfigConnection;
 
-  constructor(
+  public constructor(
     req: DashboardRequest,
     res: TranslatableResponse<DashboardRequest>,
     next: NextFunction,
@@ -65,7 +65,7 @@ export class DashboardRoute extends TranslatableRoute<
     };
   }
 
-  async buildResponse() {
+  public async buildResponse() {
     const { entityCode } = this.req.params;
     const response = await this.webConfigConnection.fetchDashboard({
       organisationUnitCode: entityCode,

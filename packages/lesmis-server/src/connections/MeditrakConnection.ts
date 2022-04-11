@@ -14,9 +14,9 @@ type RequestBody = Record<string, unknown> | Record<string, unknown>[];
  * @deprecated use @tupaia/api-client
  */
 export class MeditrakConnection extends SessionHandlingApiConnection {
-  baseUrl = MEDITRAK_API_URL;
+  public baseUrl = MEDITRAK_API_URL;
 
-  async getUser() {
+  public async getUser() {
     // if user is not logged in, return null rather than fetching the api client user details
     if (!this.hasSession) {
       return {};
@@ -25,15 +25,15 @@ export class MeditrakConnection extends SessionHandlingApiConnection {
     return { ...camelcaseKeys(user), isLesmisAdmin: isLesmisAdmin(user.accessPolicy) };
   }
 
-  registerUser(userData: RequestBody) {
+  public registerUser(userData: RequestBody) {
     return this.post('user', {}, userData);
   }
 
-  updateSurveyResponse(id: string, changes: RequestBody) {
+  public updateSurveyResponse(id: string, changes: RequestBody) {
     return this.put(`surveyResponses/${id}`, {}, changes);
   }
 
-  async verifyEmail(token: string) {
+  public async verifyEmail(token: string) {
     return this.post('auth/verifyEmail', {}, { token });
   }
 }

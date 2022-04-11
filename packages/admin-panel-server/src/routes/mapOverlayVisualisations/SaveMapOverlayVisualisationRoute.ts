@@ -25,13 +25,13 @@ export type SaveMapOverlayVisualisationRequest = Request<
 export class SaveMapOverlayVisualisationRoute extends Route<SaveMapOverlayVisualisationRequest> {
   private readonly meditrakConnection: MeditrakConnection;
 
-  constructor(req: SaveMapOverlayVisualisationRequest, res: Response, next: NextFunction) {
+  public constructor(req: SaveMapOverlayVisualisationRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.meditrakConnection = new MeditrakConnection(req.session);
   }
 
-  async buildResponse() {
+  public async buildResponse() {
     const { visualisation } = this.req.body;
     const { mapOverlayVisualisationId } = this.req.params;
 

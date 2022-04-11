@@ -27,19 +27,19 @@ export type FetchReportPreviewDataRequest = Request<
     previewConfig: Record<string, unknown>;
     testData?: unknown[];
   },
-  { entityCode: string; hierarchy: string; previewMode?: PreviewMode, vizType: VizType; }
+  { entityCode: string; hierarchy: string; previewMode?: PreviewMode; vizType: VizType }
 >;
 
 export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataRequest> {
   private readonly reportConnection: ReportConnection;
 
-  constructor(req: FetchReportPreviewDataRequest, res: Response, next: NextFunction) {
+  public constructor(req: FetchReportPreviewDataRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.reportConnection = new ReportConnection(req.session);
   }
 
-  async buildResponse() {
+  public async buildResponse() {
     this.validate();
 
     const { entityCode, hierarchy } = this.req.query;
@@ -95,16 +95,18 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
         draftDashboardItemValidator,
         draftReportValidator,
       );
-    } else if (vizType === VIZ_TYPE_PARAM.MAP_OVERLAY) {
+    }
+
+    if (vizType === VIZ_TYPE_PARAM.MAP_OVERLAY) {
       return new MapOverlayVisualisationExtractor(
         previewConfig,
         draftMapOverlayValidator,
         draftReportValidator,
       );
-    } else {
-      throw new Error(
-        `Unknown viz type: ${vizType}, must be one of: [${Object.values(VIZ_TYPE_PARAM)}]`,
-      );
     }
+
+    throw new Error(
+      `Unknown viz type: ${vizType}, must be one of: [${Object.values(VIZ_TYPE_PARAM)}]`,
+    );
   };
 }

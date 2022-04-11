@@ -7,7 +7,12 @@
 
 import { expect } from 'chai';
 
-import { buildAndInsertSurveys, generateTestId, SurveyResponseOutdater } from '@tupaia/database';
+import {
+  buildAndInsertSurveys,
+  findOrCreateDummyCountryEntity,
+  generateTestId,
+  SurveyResponseOutdater,
+} from '@tupaia/database';
 import { TestableApp } from '../../../testUtilities';
 import { importFile } from './helpers';
 
@@ -74,6 +79,8 @@ export const testOutdatedStatusUpdate = () => {
   before(async () => {
     await app.grantFullAccess();
     await buildAndInsertSurveys(models, Object.values(SURVEYS));
+    await findOrCreateDummyCountryEntity(models, { code: 'TO' });
+    await findOrCreateDummyCountryEntity(models, { code: 'VU' });
   });
 
   beforeEach(async () => {
@@ -93,10 +100,10 @@ export const testOutdatedStatusUpdate = () => {
     const response = await importFile(
       app,
       'outdatedStatus.xlsx',
-      Object.values(SURVEYS).map(s => s.name),
+      Object.values(SURVEYS).map(s => s.code),
     );
 
-    expect(response.statusCode).to.equal(200);
+    expect(response.statusCode).to.equal(200, response.error.text);
 
     await models.database.waitForAllChangeHandlers();
     // Statuses listed in the same order as the corresponding survey responses in the import spreadsheet

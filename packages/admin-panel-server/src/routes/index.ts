@@ -8,5 +8,7 @@ export * from './dashboardVisualisations';
 export * from './mapOverlayVisualisations';
 export * from './FetchHierarchyEntitiesRoute';
 export * from './FetchReportPreviewDataRoute';
+export * from './FetchAggregationOptionsRoute';
+export * from './FetchReportSchemasRoute';
 export * from './UploadTestDataRoute';
 export * from './UserRoute';

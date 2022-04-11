@@ -15,12 +15,8 @@ export class DatabaseAccess extends SyncingDatabase {
     return this.objects('Survey').filter(survey => survey.isAvailableInCountry(countryId));
   }
 
-  getEntities(searchTerm, where) {
+  getEntities(where) {
     const filters = conditionsToClauses(where);
-    if (searchTerm) {
-      filters.push(`name CONTAINS[c] "${searchTerm}" || parent.name CONTAINS[c] "${searchTerm}"`);
-    }
-
     let query = this.objects('Entity').sorted('name');
     if (filters) {
       query = query.filtered(combineClauses(filters, 'AND'));

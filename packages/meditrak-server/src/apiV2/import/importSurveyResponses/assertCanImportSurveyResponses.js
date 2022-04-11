@@ -9,28 +9,31 @@ import { getUniqueEntries, reduceToDictionary } from '@tupaia/utils';
 export const assertCanImportSurveyResponses = async (
   accessPolicy,
   models,
-  entitiesBySurveyName,
+  entitiesBySurveyCode,
 ) => {
-  const allEntityCodes = flattenDeep(Object.values(entitiesBySurveyName));
-  const surveyNames = Object.keys(entitiesBySurveyName);
+  const allEntityCodes = flattenDeep(Object.values(entitiesBySurveyCode));
+  const surveyCodes = Object.keys(entitiesBySurveyCode);
   const allEntities = await models.entity.findManyByColumn('code', allEntityCodes);
-  const surveys = await models.survey.findManyByColumn('name', surveyNames);
-  const nameToSurvey = keyBy(surveys, 'name');
+  const surveys = await models.survey.findManyByColumn('code', surveyCodes);
+  const codeToSurvey = keyBy(surveys, 'code');
   const surveyPermissionGroupIds = surveys.map(s => s.permission_group_id);
   const surveyPermissionGroups = await models.permissionGroup.findManyById(
     surveyPermissionGroupIds,
   );
   const idToPermissionGroupName = reduceToDictionary(surveyPermissionGroups, 'id', 'name');
 
-  for (const entry of Object.entries(entitiesBySurveyName)) {
-    const [surveyName, entityCodes] = entry;
-    const survey = nameToSurvey[surveyName];
+  for (const entry of Object.entries(entitiesBySurveyCode)) {
+    const [surveyCode, entityCodes] = entry;
+    const survey = codeToSurvey[surveyCode];
     const responseEntities = allEntities.filter(e => entityCodes.includes(e.code));
     const surveyResponseCountryCodes = [...new Set(responseEntities.map(e => e.country_code))];
     const surveyResponseCountries = await models.country.findManyByColumn(
       'code',
       surveyResponseCountryCodes,
     );
+    if (surveyResponseCountries.length !== surveyResponseCountryCodes.length) {
+      throw new Error(`Could not find all countries`, surveyResponseCountryCodes);
+    }
     const entitiesByCountryCode = groupBy(responseEntities, 'country_code');
 
     for (const surveyResponseCountry of surveyResponseCountries) {
@@ -41,7 +44,7 @@ export const assertCanImportSurveyResponses = async (
         const entityCodesString = entities.map(e => e.code).join(', ');
         const surveyCountryNamesString = surveyCountries.map(s => s.name).join(', ');
         throw new Error(
-          `Some survey response(s) are submitted against entity code(s) (${entityCodesString}) that do not belong to the countries (${surveyCountryNamesString}) of the survey '${survey.name}'`,
+          `Some survey response(s) are submitted against entity code(s) (${entityCodesString}) that do not belong to the countries (${surveyCountryNamesString}) of the survey '${survey.name}' (${survey.code})`,
         );
       }
 
@@ -85,12 +88,12 @@ const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, ent
 
 export const assertCanSubmitSurveyResponses = async (accessPolicy, models, surveyResponses) => {
   // Assumes the data has already been validated
-  const entitiesBySurveyName = {};
+  const entitiesBySurveyCode = {};
 
   // Pre-fetch unique surveys
   const surveyIds = getUniqueEntries(surveyResponses.map(sr => sr.survey_id));
   const surveys = await models.survey.findManyById(surveyIds);
-  const surveyNamesById = reduceToDictionary(surveys, 'id', 'name');
+  const surveyCodesById = reduceToDictionary(surveys, 'id', 'code');
 
   const entitiesCreated = surveyResponses
     .filter(sr => !!sr.entities_created)
@@ -103,13 +106,13 @@ export const assertCanSubmitSurveyResponses = async (accessPolicy, models, surve
       response,
       entitiesCreated,
     );
-    const surveyName = surveyNamesById[response.survey_id];
+    const surveyCode = surveyCodesById[response.survey_id];
 
-    if (!entitiesBySurveyName[surveyName]) {
-      entitiesBySurveyName[surveyName] = [];
+    if (!entitiesBySurveyCode[surveyCode]) {
+      entitiesBySurveyCode[surveyCode] = [];
     }
-    entitiesBySurveyName[surveyName].push(entityCode);
+    entitiesBySurveyCode[surveyCode].push(entityCode);
   }
 
-  return assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyName);
+  return assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyCode);
 };

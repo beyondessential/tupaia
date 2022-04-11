@@ -10,12 +10,10 @@ import { buildOrganisationUnitParams } from './buildOrganisationUnitParams';
 
 export class QueryBuilder {
   private readonly ctx: ReqContext;
-
   private readonly config: ReportConfig;
-
   private readonly query: FetchReportQuery;
 
-  constructor(context: ReqContext, config: ReportConfig, query: FetchReportQuery) {
+  public constructor(context: ReqContext, config: ReportConfig, query: FetchReportQuery) {
     this.ctx = context;
     this.config = config;
     this.query = query;

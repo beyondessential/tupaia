@@ -7,7 +7,7 @@
 import { Route } from './Route';
 
 export class TestRoute extends Route {
-  async buildResponse() {
+  public async buildResponse() {
     return { hello: 'world' };
   }
 }

@@ -35,7 +35,7 @@ export const ExportButton = ({ actionConfig, row }) => {
         const endpoint = `export/${exportEndpoint}${
           !queryParameters && row.id ? `/${row.id}` : ''
         }`;
-        const processedFileName = makeSubstitutionsInString(fileName, row);
+        const processedFileName = fileName ? makeSubstitutionsInString(fileName, row) : null;
         await api.download(
           endpoint,
           { queryParameters, ...extraQueryParameters },

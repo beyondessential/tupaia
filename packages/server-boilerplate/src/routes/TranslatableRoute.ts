@@ -44,19 +44,19 @@ export class TranslatableRoute<
   Req extends ExpressRequest<Req> = Request,
   Res extends TranslatableResponse<Req> = TranslatableResponse<Req>
 > extends Route<Req, Res> {
-  translationSchema: TranslationSchema = {
+  protected translationSchema: TranslationSchema = {
     domain: '',
     layout: { type: 'string' },
   };
 
-  respond(responseBody: ResBody<Req>, statusCode: number) {
+  protected respond(responseBody: ResBody<Req>, statusCode: number) {
     const translatedResponse = this.translateResponse(this.translationSchema.layout, responseBody);
     if (translatedResponse !== undefined) {
       super.respond(translatedResponse, statusCode);
     }
   }
 
-  translateString(value: string): string {
+  protected translateString(value: string): string {
     // Object notation format: "domain.key:default"
     // Find the translation for the string, or return the string itself
     // i18n doesn't allow escaping the delimiter characters, so strip them out for now
@@ -66,11 +66,11 @@ export class TranslatableRoute<
   }
 
   // Overwritable for more specific handling
-  translateKey(value: string): string {
+  protected translateKey(value: string): string {
     return this.translateString(value);
   }
 
-  translateResponse(translationKey: TranslationKey, translationValue: any): any {
+  private translateResponse(translationKey: TranslationKey, translationValue: any): any {
     if (!this.checkSchema(translationKey, translationValue)) {
       return translationValue;
     }
@@ -128,7 +128,7 @@ export class TranslatableRoute<
     }
   }
 
-  checkSchema(translationKey: TranslationKey, translationValue: TranslationValue): boolean {
+  private checkSchema(translationKey: TranslationKey, translationValue: TranslationValue): boolean {
     if (!translationValue) {
       return false;
     }

@@ -24,26 +24,25 @@ interface FetchConfig {
  */
 export class ApiConnection {
   public authHandler: AuthHandler;
-
   public baseUrl!: string;
 
-  constructor(authHandler: AuthHandler) {
+  public constructor(authHandler: AuthHandler) {
     this.authHandler = authHandler;
   }
 
-  async get(endpoint: string, queryParameters: QueryParameters = {}) {
+  protected async get(endpoint: string, queryParameters: QueryParameters = {}) {
     return this.request('GET', endpoint, queryParameters);
   }
 
-  async post(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
+  protected async post(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
     return this.request('POST', endpoint, queryParameters, body);
   }
 
-  async put(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
+  protected async put(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
     return this.request('PUT', endpoint, queryParameters, body);
   }
 
-  async delete(endpoint: string) {
+  protected async delete(endpoint: string) {
     return this.request('DELETE', endpoint);
   }
 

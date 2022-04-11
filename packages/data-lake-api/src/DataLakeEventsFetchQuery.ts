@@ -27,22 +27,15 @@ export type Event = {
 
 export class DataLakeEventsFetchQuery {
   private readonly database: DataLakeDatabase;
-
   private readonly entityCodes: string[];
-
   private readonly startDate?: string;
-
   private readonly endDate?: string;
-
   private readonly eventId?: string;
-
   private readonly dataGroupCode: string;
-
   private readonly dataElementCodes?: string[];
-
   private readonly hasDataElements: boolean;
 
-  constructor(database: DataLakeDatabase, options: EventsFetchOptions) {
+  public constructor(database: DataLakeDatabase, options: EventsFetchOptions) {
     this.database = database;
 
     const {
@@ -63,7 +56,7 @@ export class DataLakeEventsFetchQuery {
     this.hasDataElements = dataElementCodes ? dataElementCodes.length > 0 : false;
   }
 
-  async fetch(): Promise<Event[]> {
+  public async fetch(): Promise<Event[]> {
     const { query, params } = this.buildQueryAndParams();
 
     const sqlQuery = new SqlQuery(query, params);
@@ -71,7 +64,7 @@ export class DataLakeEventsFetchQuery {
     return sqlQuery.executeOnDatabase(this.database);
   }
 
-  getAliasedColumns() {
+  private getAliasedColumns() {
     const aliasedColumns = [
       'date',
       'entity_code AS "entityCode"',
@@ -86,7 +79,7 @@ export class DataLakeEventsFetchQuery {
     return aliasedColumns.join(', ');
   }
 
-  getInnerJoinsAndParams() {
+  private getInnerJoinsAndParams() {
     // We use INNER JOINs here as it's more performant than a large WHERE IN clause (https://dba.stackexchange.com/questions/91247/optimizing-a-postgres-query-with-a-large-in)
     let params = this.entityCodes;
     const joins = [SqlQuery.innerJoin('analytics', 'entity_code', this.entityCodes)];
@@ -99,7 +92,7 @@ export class DataLakeEventsFetchQuery {
     return { joins: joins.join('\n'), params };
   }
 
-  getWhereClauseAndParams() {
+  private getWhereClauseAndParams() {
     const conditions = [];
     const params = [];
 
@@ -127,7 +120,7 @@ export class DataLakeEventsFetchQuery {
     return { clause: `WHERE ${conditions.join(' AND ')}`, params };
   }
 
-  buildQueryAndParams() {
+  private buildQueryAndParams() {
     const { joins, params: joinsParams } = this.getInnerJoinsAndParams();
     const { clause: whereClause, params: whereParams } = this.getWhereClauseAndParams();
     const query = `

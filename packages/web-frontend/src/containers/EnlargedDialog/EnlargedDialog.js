@@ -111,12 +111,11 @@ const useExports = viewContent => {
   const config = viewContent?.presentationOptions;
 
   const [exportOptions, setExportOptions] = useState({
-    exportWithLabels: true,
-    exportWithTable: false,
+    exportWithLabels: false,
+    exportWithTable: true,
     exportWithTableDisabled: false,
   });
   const [exportStatus, setExportStatus] = useState(STATUS.CLOSED);
-  const exportRef = useRef(null);
 
   // Set default export options from config if they are set
   useEffect(() => {
@@ -137,7 +136,6 @@ const useExports = viewContent => {
   }, [JSON.stringify(config), setExportOptions]);
 
   return {
-    exportRef,
     exportOptions,
     setExportOptions,
     exportStatus,
@@ -169,7 +167,7 @@ const EnlargedDialogComponent = ({
     viewContent,
   } = useDrillDownState(contentByLevel);
 
-  const { exportRef, exportOptions, setExportOptions, exportStatus, setExportStatus } = useExports(
+  const { exportOptions, setExportOptions, exportStatus, setExportStatus } = useExports(
     viewContent,
   );
 
@@ -266,13 +264,12 @@ const EnlargedDialogComponent = ({
 
   const { doExport } = useChartDataExport(viewContentWithExportOptions, exportTitle);
 
-  const onExport = async format => {
-    setExportStatus(STATUS.ANIMATING);
-    await sleep(100); // allow some time for the chart transition to finish before hiding the loader
+  const onExport = async (format, exportRef) => {
     setExportStatus(STATUS.EXPORTING);
 
     const filename = toFilename(
       `export-${organisationUnitName}-${viewContentWithExportOptions.name}`,
+      true,
     );
 
     try {
@@ -295,52 +292,57 @@ const EnlargedDialogComponent = ({
         doExport();
       }
 
-      setExportStatus(STATUS.ANIMATING);
-      await sleep(1000); // allow some time for the chart transition to finish before hiding the loader
       setExportStatus(STATUS.IDLE);
     } catch (error) {
       setExportStatus(STATUS.ERROR);
     }
   };
 
-  const showLoader = exportStatus === STATUS.EXPORTING || exportStatus === STATUS.ANIMATING;
+  const buildContent = isExporting => (
+    <EnlargedDialogContent
+      onCloseOverlay={onCloseOverlay}
+      viewContent={isMatrix ? viewContent : viewContentWithExportOptions}
+      drillDownContent={drillDownState.drillDownLevel === 0 ? null : drillDownContent}
+      organisationUnitName={organisationUnitName}
+      onDrillDown={onDrillDown}
+      onOpenExportDialog={() => setExportStatus(STATUS.IDLE)}
+      onSetDateRange={onSetDateRange(drillDownState.drillDownLevel)}
+      isLoading={isLoading}
+      isExporting={isExporting}
+      errorMessage={errorMessage}
+      isDrillDownContent={false}
+      onUnDrillDown={onUnDrillDown}
+      isDrilledDown={drillDownState.drillDownLevel > 0}
+    />
+  );
+
+  const isExportDialogOpen = exportStatus !== STATUS.CLOSED;
 
   return (
     <>
-      <Dialog
-        open
-        style={styles.dialog}
-        onClose={onCloseOverlay}
-        scroll={isMobile() ? 'body' : 'paper'}
-        PaperProps={{ style: getDialogStyle() }}
-      >
-        {showLoader && <Loader>Exporting...</Loader>}
-        <EnlargedDialogContent
-          exportRef={exportRef}
-          onCloseOverlay={onCloseOverlay}
-          viewContent={isMatrix ? viewContent : viewContentWithExportOptions}
-          drillDownContent={drillDownState.drillDownLevel === 0 ? null : drillDownContent}
-          organisationUnitName={organisationUnitName}
-          onDrillDown={onDrillDown}
-          onOpenExportDialog={() => setExportStatus(STATUS.IDLE)}
-          onSetDateRange={onSetDateRange(drillDownState.drillDownLevel)}
-          isLoading={isLoading}
-          isExporting={exportStatus === STATUS.EXPORTING}
-          errorMessage={errorMessage}
-          isDrillDownContent={false}
-          onUnDrillDown={onUnDrillDown}
-          isDrilledDown={drillDownState.drillDownLevel > 0}
+      {!isExportDialogOpen && (
+        <Dialog
+          open
+          style={styles.dialog}
+          onClose={onCloseOverlay}
+          scroll={isMobile() ? 'body' : 'paper'}
+          PaperProps={{ style: getDialogStyle() }}
+        >
+          {buildContent(false)}
+        </Dialog>
+      )}
+      {isExportDialogOpen && (
+        <ExportDialog
+          status={exportStatus}
+          isOpen={isExportDialogOpen}
+          onClose={() => setExportStatus(STATUS.CLOSED)}
+          isMatrix={isMatrix}
+          exportOptions={exportOptions}
+          setExportOptions={setExportOptions}
+          onExport={onExport}
+          exportContent={buildContent(true)}
         />
-      </Dialog>
-      <ExportDialog
-        status={exportStatus}
-        isOpen={exportStatus !== STATUS.CLOSED}
-        onClose={() => setExportStatus(STATUS.CLOSED)}
-        isMatrix={isMatrix}
-        exportOptions={exportOptions}
-        setExportOptions={setExportOptions}
-        onExport={onExport}
-      />
+      )}
     </>
   );
 };

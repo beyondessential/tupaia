@@ -20,13 +20,13 @@ export type FetchHierarchyEntitiesRequest = Request<
 export class FetchHierarchyEntitiesRoute extends Route<FetchHierarchyEntitiesRequest> {
   private readonly entityConnection: EntityConnection;
 
-  constructor(req: FetchHierarchyEntitiesRequest, res: Response, next: NextFunction) {
+  public constructor(req: FetchHierarchyEntitiesRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.entityConnection = new EntityConnection(req.session);
   }
 
-  async buildResponse() {
+  public async buildResponse() {
     const { hierarchyName, entityCode } = this.req.params;
     const { fields, search } = this.req.query;
     const queryParams: QueryParameters = {};
