@@ -79,7 +79,7 @@ const ModalDiv = styled.div`
   transition: top 0.2s ease;
   position: absolute;
   width: 100%;
-  z-index: ${LEAFLET_Z_INDEX + 3};
+  z-index: ${LEAFLET_Z_INDEX + 4};
   background: ${MOBILE_BACKGROUND_COLOR};
 `;
 
