@@ -12,6 +12,8 @@ import {
   generateValueOfType,
   TYPES,
   buildAndInsertSurveys,
+  upsertDummyRecord,
+  findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
 
 import { TEST_IMAGE_DATA } from '../testData';
@@ -64,6 +66,16 @@ const generateDummyAnswer = questionNumber => ({
   question_id: getQuestionId(questionNumber),
 });
 
+const generateDummyEntityDetails = () => ({
+  id: generateTestId(),
+  name: generateValueOfType('text'),
+  country_code: 'DL',
+  parent_id: entityId,
+  code: generateValueOfType('text'),
+  type: 'case',
+  attributes: {},
+});
+
 const BUCKET_URL = 'https://s3-ap-southeast-2.amazonaws.com';
 
 const PSQL_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
@@ -91,13 +103,23 @@ describe('POST /changes', async () => {
 
   describe('SubmitSurveyResponse', () => {
     before(async () => {
-      await app.grantFullAccess();
+      await app.grantAccess({ DL: ['TEST_PERMISSION_GROUP'] });
+
+      await findOrCreateDummyCountryEntity(models, {
+        code: 'DL',
+        name: 'Demo Land',
+      });
 
       for (let i = 0; i < 20; i++) {
         await upsertQuestion({ id: getQuestionId(i), code: `TEST_QUESTION_${i}` });
       }
 
-      await buildAndInsertSurveys(models, [{ id: surveyId, code: 'TEST_SURVEY' }]);
+      const permissionGroup = await upsertDummyRecord(models.permissionGroup, {
+        name: 'TEST_PERMISSION_GROUP',
+      });
+      await buildAndInsertSurveys(models, [
+        { id: surveyId, code: 'TEST_SURVEY', permission_group_id: permissionGroup.id },
+      ]);
       await upsertEntity({ id: entityId, code: 'TEST_ENTITY' });
 
       const user = await models.user.findOne();
@@ -445,6 +467,69 @@ describe('POST /changes', async () => {
         const imageBuffer = await imageResponse.buffer();
         const imageString = imageBuffer.toString('base64');
         expect(imageString).to.equal(TEST_IMAGE_DATA);
+      });
+    });
+
+    describe('Survey responses creating entities', () => {
+      it('adds created entities to the database', async () => {
+        const entitiesCreated = new Array(5).fill(0).map(() => generateDummyEntityDetails());
+        const surveyResponseObject = generateDummySurveyResponse({
+          entities_created: entitiesCreated,
+        });
+        const syncAction = {
+          action: 'SubmitSurveyResponse',
+          payload: surveyResponseObject,
+        };
+        const syncResponse = await app.post('changes', { body: [syncAction] });
+        expect(syncResponse.statusCode).to.equal(200);
+
+        const entities = await models.entity.find({ id: entitiesCreated.map(e => e.id) });
+        expect(entities.length).to.equal(entitiesCreated.length);
+      });
+
+      it('can use a created entity as the primary entity of the same response', async () => {
+        const entitiesCreated = new Array(5).fill(0).map(() => generateDummyEntityDetails());
+        const primaryEntityId = entitiesCreated[0].id;
+        const surveyResponseObject = generateDummySurveyResponse({
+          entities_created: entitiesCreated,
+          entity_id: primaryEntityId,
+        });
+        const syncAction = {
+          action: 'SubmitSurveyResponse',
+          payload: surveyResponseObject,
+        };
+        const syncResponse = await app.post('changes', { body: [syncAction] });
+        expect(syncResponse.statusCode).to.equal(200);
+
+        const surveyResponse = await models.surveyResponse.findById(surveyResponseObject.id);
+        expect(surveyResponse.entity_id).to.equal(primaryEntityId);
+      });
+
+      it('can use a created entity as the primary entity of a different response in the same batch', async () => {
+        const entitiesCreated = new Array(5).fill(0).map(() => generateDummyEntityDetails());
+        const primaryEntityId = entitiesCreated[0].id;
+        const surveyResponseObjectOne = generateDummySurveyResponse({
+          entities_created: entitiesCreated,
+        });
+        const syncActionOne = {
+          action: 'SubmitSurveyResponse',
+          payload: surveyResponseObjectOne,
+        };
+        const surveyResponseObjectTwo = generateDummySurveyResponse({
+          entity_id: primaryEntityId,
+        });
+        const syncActionTwo = {
+          action: 'SubmitSurveyResponse',
+          payload: surveyResponseObjectTwo,
+        };
+        const syncResponse = await app.post('changes', { body: [syncActionOne, syncActionTwo] });
+        expect(syncResponse.statusCode).to.equal(200);
+
+        const surveyResponseOne = await models.surveyResponse.findById(surveyResponseObjectOne.id);
+        expect(surveyResponseOne.entity_id).to.equal(entityId);
+
+        const surveyResponseTwo = await models.surveyResponse.findById(surveyResponseObjectTwo.id);
+        expect(surveyResponseTwo.entity_id).to.equal(primaryEntityId);
       });
     });
 

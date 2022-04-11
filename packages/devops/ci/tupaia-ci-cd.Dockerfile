@@ -14,8 +14,8 @@ WORKDIR /tupaia
 COPY package.json ./
 COPY yarn.lock ./
 COPY babel.config.json ./
-COPY .babelrc-ts.js ./
 COPY tsconfig-js.json ./
+COPY jest.config-ts.json ./
 RUN mkdir ./scripts
 COPY scripts/. ./scripts
 
@@ -69,6 +69,8 @@ RUN mkdir -p ./packages/ui-components
 COPY packages/ui-components/package.json ./packages/ui-components
 RUN mkdir -p ./packages/utils
 COPY packages/utils/package.json ./packages/utils
+RUN mkdir -p ./packages/tsutils
+COPY packages/tsutils/package.json ./packages/tsutils
 RUN mkdir -p ./packages/weather-api
 COPY packages/weather-api/package.json ./packages/weather-api
 RUN mkdir -p ./packages/web-config-server
@@ -93,6 +95,7 @@ COPY packages/dhis-api/. ./packages/dhis-api
 COPY packages/expression-parser/. ./packages/expression-parser
 COPY packages/indicators/. ./packages/indicators
 COPY packages/utils/. ./packages/utils
+COPY packages/tsutils/. ./packages/tsutils
 COPY packages/ui-components/. ./packages/ui-components
 COPY packages/weather-api/. ./packages/weather-api
 COPY packages/server-boilerplate/. ./packages/server-boilerplate

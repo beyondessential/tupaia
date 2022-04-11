@@ -15,7 +15,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig-build.json",
     "lint": "eslint . --ext .ts",
     "lint:all": "yarn run lint \"src/**/*.{ts,jsx}\"",
     "lint:fix": "yarn lint --fix",
@@ -39,6 +39,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.16.2",
+    "lodash.groupby": "^4.6.0",
     "winston": "^3.2.1"
   }
 }

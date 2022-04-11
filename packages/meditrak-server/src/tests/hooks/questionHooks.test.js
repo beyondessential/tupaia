@@ -11,7 +11,7 @@ const ENTITY_CREATION_SURVEY_ID = generateTestId();
 const SURVEYS = [
   {
     id: GENERIC_SURVEY_ID,
-    code: 'test-generic-hook-survey',
+    code: 'test-generic-hook',
     questions: [
       { code: 'TEST_test', type: 'Text', hook: 'testHook' },
       { code: 'TEST_geo', type: 'Geolocate', hook: 'entityCoordinates' },
@@ -23,7 +23,7 @@ const SURVEYS = [
   },
   {
     id: ENTITY_CREATION_SURVEY_ID,
-    code: 'test-entity-creation-hook-survey',
+    code: 'test-entity-creation-hook',
     questions: [
       // Hooks already registered by the app
       { code: 'TEST_create-code', type: 'Text', hook: 'entityCreate' },
@@ -52,6 +52,7 @@ describe('Question hooks', () => {
 
   before(async () => {
     await app.authenticate();
+    await app.grantFullAccess();
 
     const country = await upsertDummyRecord(models.country);
     const geographicalArea = await upsertDummyRecord(models.geographicalArea, {

@@ -12,10 +12,10 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig-build.json",
     "lint": "eslint . --ext .ts",
     "lint:fix": "yarn lint --fix",
-    "test": "jest --runInBand",
+    "test": "yarn workspace @tupaia/database check-test-database-exists && DB_NAME=tupaia_test jest --runInBand",
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {

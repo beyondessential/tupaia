@@ -25,13 +25,13 @@ export type SaveDashboardVisualisationRequest = Request<
 export class SaveDashboardVisualisationRoute extends Route<SaveDashboardVisualisationRequest> {
   private readonly meditrakConnection: MeditrakConnection;
 
-  constructor(req: SaveDashboardVisualisationRequest, res: Response, next: NextFunction) {
+  public constructor(req: SaveDashboardVisualisationRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.meditrakConnection = new MeditrakConnection(req.session);
   }
 
-  async buildResponse() {
+  public async buildResponse() {
     const { visualisation } = this.req.body;
     const { dashboardVisualisationId } = this.req.params;
 

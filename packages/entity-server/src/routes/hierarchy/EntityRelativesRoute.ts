@@ -20,7 +20,7 @@ export type RelativesRequest = SingleEntityRequest<
   EntityRequestQuery
 >;
 export class EntityRelativesRoute extends Route<RelativesRequest> {
-  async buildResponse() {
+  public async buildResponse() {
     const { hierarchyId, entity, fields, field, filter } = this.req.ctx;
 
     const responseEntities = await entity.getRelatives(hierarchyId, filter);

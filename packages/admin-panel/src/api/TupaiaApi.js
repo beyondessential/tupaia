@@ -4,6 +4,7 @@
  */
 
 import { saveAs } from 'file-saver';
+import { parse } from 'content-disposition-header';
 
 import { verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
 
@@ -70,7 +71,13 @@ export class TupaiaApi {
     return this.requestJson(endpoint, null, fetchConfig);
   }
 
-  async download(endpoint, queryParameters, fileName) {
+  /**
+   * @param endpoint
+   * @param queryParameters
+   * @param {string?} fileName if provided, overrides the fileName returned from the server
+   * @return {Promise<{}|{headers, body: ({emailTimeoutHit}|*)}>}
+   */
+  async download(endpoint, queryParameters, fileName = null) {
     const response = await this.request(endpoint, queryParameters, this.buildFetchConfig('GET'));
 
     // Check if this is an early response indicating it will be emailed
@@ -81,8 +88,19 @@ export class TupaiaApi {
       }
     }
 
+    let resolvedFileName = fileName;
+    if (!fileName) {
+      const contentDisposition = response.headers.get('Content-Disposition');
+      if (contentDisposition) {
+        const parsedContentDisposition = parse(contentDisposition);
+        resolvedFileName = parsedContentDisposition.parameters.filename;
+      } else {
+        resolvedFileName = 'Download';
+      }
+    }
+
     const responseBlob = await response.blob();
-    saveAs(responseBlob, fileName);
+    saveAs(responseBlob, resolvedFileName);
     return {};
   }
 

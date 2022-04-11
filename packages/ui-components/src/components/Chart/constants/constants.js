@@ -15,18 +15,13 @@ export const VALUE_TYPES = {
   ONE_DECIMAL_PLACE: 'oneDecimalPlace',
 };
 
-const AREA = 'area';
-const BAR = 'bar';
-const COMPOSED = 'composed';
-const LINE = 'line';
-const PIE = 'pie';
-
 export const CHART_TYPES = {
-  AREA,
-  BAR,
-  COMPOSED,
-  LINE,
-  PIE,
+  AREA: 'area',
+  BAR: 'bar',
+  COMPOSED: 'composed',
+  LINE: 'line',
+  PIE: 'pie',
+  GAUGE: 'gauge',
 };
 
 export const DEFAULT_DATA_KEY = 'value';

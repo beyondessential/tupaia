@@ -21,7 +21,7 @@
     "start": "node dist",
     "start-dev": "../../scripts/bash/backendStartDev.sh 9999",
     "start-verbose": "LOG_LEVEL=debug npm run start-dev",
-    "test": "mocha",
+    "test": "yarn workspace @tupaia/database check-test-database-exists && DB_NAME=tupaia_test mocha",
     "test:coverage": "cross-env NODE_ENV=test nyc mocha"
   },
   "dependencies": {
@@ -53,6 +53,7 @@
     "lodash.clonedeep": "^4.5.0",
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0",
+    "lodash.pick": "^4.4.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.25",
     "morgan": "^1.9.0",

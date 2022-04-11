@@ -48,7 +48,6 @@ const indicatorToBuilderConfig = (indicatorConfig: AnalyticArithmeticConfig): Bu
 
 export class AnalyticArithmeticBuilder extends Builder {
   private configCache: BuilderConfig | null = null;
-
   private paramBuildersByCodeCache: Record<string, Builder> | null = null;
 
   private get config() {

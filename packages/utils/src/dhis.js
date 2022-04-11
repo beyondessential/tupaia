@@ -10,7 +10,13 @@ import { getCountryNameFromCode } from './getCountryNameFromCode';
 const REGIONAL_SERVER_NAME = 'regional';
 const TONGA_SERVER_NAME = 'tonga';
 const LAOS_DHIS_SERVER_NAME = 'lao-peoples-democratic-republic';
-const SERVER_NAMES = new Set([REGIONAL_SERVER_NAME, TONGA_SERVER_NAME, LAOS_DHIS_SERVER_NAME]);
+const PALAU_DHIS_SERVER_NAME = 'palau';
+const SERVER_NAMES = new Set([
+  REGIONAL_SERVER_NAME,
+  TONGA_SERVER_NAME,
+  LAOS_DHIS_SERVER_NAME,
+  PALAU_DHIS_SERVER_NAME,
+]);
 const READ_ONLY_SERVERS = new Set([LAOS_DHIS_SERVER_NAME]);
 
 const getServerUrlFromName = serverName => {

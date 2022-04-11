@@ -27,12 +27,7 @@ export const SurveyResponsesExportModal = () => {
   };
 
   return (
-    <ExportModal
-      title="Export Survey Responses"
-      values={values}
-      exportEndpoint="surveyResponses"
-      fileName="Survey Responses"
-    >
+    <ExportModal title="Export Survey Responses" values={values} exportEndpoint="surveyResponses">
       <Autocomplete
         label="Surveys to Include"
         helperText="Please enter the names of the surveys to be exported."

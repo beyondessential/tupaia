@@ -15,31 +15,30 @@ interface AuthHandler {
  * @deprecated use @tupaia/api-client
  */
 export class ApiConnection {
-  authHandler: AuthHandler;
+  protected authHandler: AuthHandler;
+  public baseUrl!: string;
 
-  baseUrl!: string;
-
-  constructor(authHandler: AuthHandler) {
+  public constructor(authHandler: AuthHandler) {
     this.authHandler = authHandler;
   }
 
-  get(endpoint: string, queryParameters?: QueryParameters) {
+  protected get(endpoint: string, queryParameters?: QueryParameters) {
     return this.request('GET', endpoint, queryParameters);
   }
 
-  post(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
+  protected post(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
     return this.request('POST', endpoint, queryParameters, body);
   }
 
-  put(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
+  protected put(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
     return this.request('PUT', endpoint, queryParameters, body);
   }
 
-  delete(endpoint: string, queryParameters: QueryParameters) {
+  protected delete(endpoint: string, queryParameters: QueryParameters) {
     return this.request('DELETE', endpoint, queryParameters);
   }
 
-  async request(
+  private async request(
     requestMethod: string,
     endpoint: string,
     queryParameters: QueryParameters = {},

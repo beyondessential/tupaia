@@ -21,7 +21,7 @@ import {
   draftReportValidator,
   legacyReportValidator,
   NewDashboard,
-  UpsertDashboard, 
+  UpsertDashboard,
   UpsertDashboardRelation,
   NewDashboardRelation,
 } from '../../viz-builder';
@@ -52,7 +52,7 @@ export type ImportDashboardVisualisationRequest = Request<
 export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisualisationRequest> {
   private readonly meditrakConnection: MeditrakConnection;
 
-  constructor(req: ImportDashboardVisualisationRequest, res: Response, next: NextFunction) {
+  public constructor(req: ImportDashboardVisualisationRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.meditrakConnection = new MeditrakConnection(req.session);

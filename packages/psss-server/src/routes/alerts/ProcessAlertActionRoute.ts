@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { Request } from 'express';
 import { RespondingError, UnauthenticatedError } from '@tupaia/utils';
 import { Route } from '../Route';
-import { Request } from 'express';
 
 const ACTION_TO_ANSWER = {
   archive: 'Yes',
@@ -21,14 +21,15 @@ function validateAction(action: string): asserts action is AlertAction {
   }
 }
 
-
-export type ProcessAlertActionRequest = Request<{ alertId: string; action: string },
+export type ProcessAlertActionRequest = Request<
+  { alertId: string; action: string },
   any,
   Record<string, unknown>,
-  {}>;
+  Record<string, never>
+>;
 
 export class ProcessAlertActionRoute extends Route<ProcessAlertActionRequest> {
-  async buildResponse() {
+  public async buildResponse() {
     if (!this.meditrakConnection) throw new UnauthenticatedError('Unauthenticated');
 
     const { alertId, action } = this.req.params;

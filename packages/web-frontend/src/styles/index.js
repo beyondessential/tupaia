@@ -385,23 +385,6 @@ export const VIEW_STYLES = {
     lineHeight: '16px',
     textAlign: 'left',
   },
-  data: isMobile()
-    ? {
-        fontSize: '50px',
-        fontWeight: 'bold',
-        textAlign: 'center',
-        color: WHITE,
-      }
-    : {
-        flexGrow: 1,
-        flexShrink: 1,
-        flexBasis: 'auto',
-        fontSize: '50px',
-        fontWeight: 'bold',
-        textAlign: 'center',
-        color: WHITE,
-        whiteSpace: 'pre-line',
-      },
   downloadLink: {
     flex: 1,
     marginTop: '10px',

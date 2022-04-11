@@ -27,18 +27,15 @@ type Middleware = (req: Request, res: Response, next: NextFunction) => void;
 
 export class ApiBuilder {
   private readonly app: Express;
-
   private readonly database: TupaiaDatabase;
 
   private attachSession: Middleware;
-
   private attachVerifyLogin?: (req: LoginRequest, res: Response, next: NextFunction) => void;
-
   private verifyAuthMiddleware?: Middleware;
 
   private translatorConfigured = false;
 
-  constructor(transactingConnection: TupaiaDatabase) {
+  public constructor(transactingConnection: TupaiaDatabase) {
     this.database = transactingConnection;
     this.app = express();
     this.attachSession = defaultAttachSession;
@@ -50,6 +47,7 @@ export class ApiBuilder {
       cors({
         origin: true,
         credentials: true, // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
+        exposedHeaders: ['Content-Disposition'], // needed for getting download filename
       }),
     );
     this.app.use(bodyParser.json({ limit: '50mb' }));
@@ -73,12 +71,12 @@ export class ApiBuilder {
     this.app.get('/v1/test', handleWith(TestRoute));
   }
 
-  useAttachSession(attachSession: Middleware) {
+  public useAttachSession(attachSession: Middleware) {
     this.attachSession = attachSession;
     return this;
   }
 
-  useSessionModel(SessionModelClass: new (database: TupaiaDatabase) => SessionModel) {
+  public useSessionModel(SessionModelClass: new (database: TupaiaDatabase) => SessionModel) {
     const sessionModel = new SessionModelClass(this.database);
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       req.sessionModel = sessionModel;
@@ -87,7 +85,7 @@ export class ApiBuilder {
     return this;
   }
 
-  useTranslation(locales: string[], directory: string, queryParameter: string) {
+  public useTranslation(locales: string[], directory: string, queryParameter: string) {
     // Configure only once
     if (!this.translatorConfigured) {
       i18n.configure({
@@ -109,7 +107,7 @@ export class ApiBuilder {
     return this;
   }
 
-  verifyAuth(verify: (accessPolicy: AccessPolicy) => void) {
+  public verifyAuth(verify: (accessPolicy: AccessPolicy) => void) {
     this.verifyAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
       try {
         const { session } = req;
@@ -127,7 +125,7 @@ export class ApiBuilder {
     return this;
   }
 
-  verifyLogin(verify: (accessPolicy: AccessPolicy) => void) {
+  public verifyLogin(verify: (accessPolicy: AccessPolicy) => void) {
     this.attachVerifyLogin = (req: LoginRequest, res: Response, next: NextFunction) => {
       req.ctx.verifyLogin = verify;
       next();
@@ -135,7 +133,7 @@ export class ApiBuilder {
     return this;
   }
 
-  use<T extends ExpressRequest<T> = Request>(
+  public use<T extends ExpressRequest<T> = Request>(
     path: string,
     middleware: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
   ) {
@@ -143,7 +141,7 @@ export class ApiBuilder {
     return this;
   }
 
-  addRoute<T extends ExpressRequest<T> = Request>(
+  private addRoute<T extends ExpressRequest<T> = Request>(
     method: 'get' | 'post' | 'put' | 'delete',
     path: string,
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
@@ -156,35 +154,35 @@ export class ApiBuilder {
     return this;
   }
 
-  get<T extends ExpressRequest<T> = Request>(
+  public get<T extends ExpressRequest<T> = Request>(
     path: string,
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
     return this.addRoute('get', path, ...handlers);
   }
 
-  post<T extends ExpressRequest<T> = Request>(
+  public post<T extends ExpressRequest<T> = Request>(
     path: string,
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
     return this.addRoute('post', path, ...handlers);
   }
 
-  put<T extends ExpressRequest<T> = Request>(
+  public put<T extends ExpressRequest<T> = Request>(
     path: string,
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
     return this.addRoute('put', path, ...handlers);
   }
 
-  delete<T extends ExpressRequest<T> = Request>(
+  public delete<T extends ExpressRequest<T> = Request>(
     path: string,
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
     return this.addRoute('delete', path, ...handlers);
   }
 
-  build() {
+  public build() {
     if (this.attachVerifyLogin) {
       this.app.post('/v1/login', this.attachVerifyLogin, handleWith(LoginRoute));
     } else {

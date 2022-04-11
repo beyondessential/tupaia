@@ -33,12 +33,10 @@ type RequestOptions = { headers?: Record<string, any>; query?: Record<string, an
 
 export class TestableEntityServer {
   private readonly app: Express;
-
   private readonly email: string;
-
   private readonly password: string;
 
-  constructor(email: string, password: string) {
+  public constructor(email: string, password: string) {
     this.email = email;
     this.password = password;
     this.app = createApp(getTestDatabase());

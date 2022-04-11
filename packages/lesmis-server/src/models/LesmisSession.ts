@@ -6,11 +6,11 @@
 import { SessionType, SessionModel } from '@tupaia/server-boilerplate';
 
 export class LesmisSessionType extends SessionType {
-  static databaseType = 'lesmis_session';
+  public static databaseType = 'lesmis_session';
 }
 
 export class LesmisSessionModel extends SessionModel {
-  get DatabaseTypeClass() {
+  public get DatabaseTypeClass() {
     return LesmisSessionType;
   }
 }

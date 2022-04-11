@@ -26,7 +26,7 @@ export type TestReportRequest = Request<
 const BES_DATA_ADMIN_PERMISSION_GROUP_NAME = 'BES Data Admin';
 
 export class TestReportRoute extends Route<TestReportRequest> {
-  async buildResponse() {
+  public async buildResponse() {
     const { query, body } = this.req;
     const { testData, testConfig, ...restOfBody } = body;
     const { hierarchy = 'explore', organisationUnitCodes, ...restOfQuery } = query;

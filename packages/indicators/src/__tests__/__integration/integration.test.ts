@@ -8,7 +8,7 @@
 import { DataBroker } from '@tupaia/data-broker';
 import { getTestModels, setupTest } from '@tupaia/database';
 import { IndicatorApi } from '../../IndicatorApi';
-import { Analytic, FetchOptions } from '../../types';
+import { Analytic, FetchOptions, ModelRegistry } from '../../types';
 import {
   arithmeticAnalyticFixtures,
   eventCheckConditionsFixtures,
@@ -24,7 +24,7 @@ interface TestCase {
   throws?: boolean;
 }
 
-const models = getTestModels();
+const models = (getTestModels() as unknown) as ModelRegistry;
 const dataBroker = new DataBroker();
 const api = new IndicatorApi(models, dataBroker);
 
