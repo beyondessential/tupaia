@@ -2,10 +2,8 @@
 DIR=$(dirname "$0")
 
 
-# Use whatever existing .env vars have been specified
-curenv=$(declare -p -x)
-test -f .env && source .env
-eval "$curenv"
+DIR=$(pwd "$0")
+source $DIR/../../scripts/bash/mergeCurrentEnvWithEnvFile.sh 
 
 # Set default port in case it wasn't in .env
 : "${DB_PORT:=5432}"
