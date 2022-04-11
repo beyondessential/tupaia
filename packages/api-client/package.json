@@ -9,7 +9,7 @@
     "build": "tsc -p tsconfig-build.json",
     "lint": "eslint . --ext .ts",
     "lint:fix": "yarn lint --fix",
-    "test": "yarn workspace @tupaia/database check-test-database-exists && DB_NAME=tupaia_test jest --runInBand",
+    "test": "jest --runInBand",
     "test:coverage": "yarn test --coverage",
     "publish:run": "yarn publish --no-git-tag-version --access public",
     "prepublish:strict": "yarn lint && yarn build",
