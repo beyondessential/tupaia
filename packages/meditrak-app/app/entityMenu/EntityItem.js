@@ -30,7 +30,7 @@ export class EntityItem extends PureComponent {
 
     return (
       <Container
-        analyticsLabel={`Clinic List: ${entity.name} (${entity.area})`}
+        analyticsLabel={`Entity List: ${entity.name} (${entity.parentName})`}
         style={isSelected ? localStyles.selectedRow : localStyles.row}
         onPress={this.onPress}
       >
@@ -41,7 +41,7 @@ export class EntityItem extends PureComponent {
         />
         <View style={localStyles.rowContent}>
           <Text style={localStyles.entityCellText}>{entity.name}</Text>
-          <Text style={localStyles.entityCellSubText}>{entity.area}</Text>
+          <Text style={localStyles.entityCellSubText}>{entity.parentName}</Text>
         </View>
         {onDeselect && (
           <TouchableOpacity analyticsLabel="Selected Entity: Clear" onPress={onDeselect}>

@@ -96,7 +96,7 @@ export class EntityList extends PureComponent {
 
     const searchResults = filteredEntities
       .filter(
-        ({ name, parent_name: parentName }) =>
+        ({ name, parentName }) =>
           name.toLowerCase().includes(lowerCaseSearchTerm) ||
           (parentName && parentName.toLowerCase().includes(lowerCaseSearchTerm)),
       )
