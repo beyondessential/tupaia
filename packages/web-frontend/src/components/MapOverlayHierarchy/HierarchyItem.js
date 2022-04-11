@@ -96,7 +96,7 @@ const styles = {
     flexShrink: 0,
   },
   selectionIcon: {
-    fontSize: '14px',
+    fontSize: '18px',
     padding: '0px 5px',
   },
   spacer: {
