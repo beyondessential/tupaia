@@ -1,9 +1,7 @@
 #!/bin/bash -e
 
-# if env vars are not already defined (e.g. by script caller during CI/CD), pull them in from .env
-if [ "$DB_URL" == "" ]; then
-    source .env
-fi
+DIR=$(pwd "$0")
+source $DIR/../../scripts/bash/mergeCurrentEnvWithEnvFile.sh 
 
 # Set default port in case it wasn't in .env
 : "${DB_PORT:=5432}"
