@@ -1,6 +1,6 @@
 #!/usr/bin/env bash -e
 
-# See https://medium.com/@andr3wjack/versioning-react-native-apps-407469707661
+# See http://web.archive.org/web/20170111215845/https://medium.com/@andr3wjack/versioning-react-native-apps-407469707661
 
 PROJECT_DIR="./ios/TupaiaMediTrak"
 INFOPLIST_FILE="Info.plist"
