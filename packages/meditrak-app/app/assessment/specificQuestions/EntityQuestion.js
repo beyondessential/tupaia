@@ -36,10 +36,10 @@ DumbEntityQuestion.defaultProps = {
 // speaks directly to redux and is sent as part of the metadata of the request.
 export const PrimaryEntityQuestion = connect(
   (state, { id: questionId, answer: selectedEntityId }) => {
-    const { filteredEntities = [] } = getEntityQuestionState(state, questionId);
+    const { entities = [] } = getEntityQuestionState(state, questionId);
 
     return {
-      filteredEntities,
+      entities,
       selectedEntityId,
       hasScrollControl: state.assessment.isChildScrolling,
     };
@@ -55,10 +55,10 @@ export const PrimaryEntityQuestion = connect(
 
 export const EntityQuestion = connect(
   (state, { id: questionId, answer: selectedEntityId }) => {
-    const { filteredEntities } = getEntityQuestionState(state, questionId);
+    const { entities } = getEntityQuestionState(state, questionId);
 
     return {
-      filteredEntities,
+      entities,
       selectedEntityId,
     };
   },

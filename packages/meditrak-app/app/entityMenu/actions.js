@@ -58,22 +58,21 @@ export const loadEntitiesFromDatabase = (isPrimaryEntity, questionId) => (
   const state = getState();
   const { assessment } = state;
 
-  // check permissions - only for the PrimaryEntity questions
-  const { surveyId } = assessment;
-  const permsCheck = isPrimaryEntity ? getPermsCheckFunction(database, surveyId) : () => true;
-  const checkMatchesAttributeFilters = getEntityAttributeFilters(state, questionId);
-
   const filters = getEntityDatabaseFilters(state, database, questionId);
   const entities = database.getEntities(filters);
 
-  const filteredEntities = entities
-    .filter(permsCheck)
-    .filter(checkMatchesAttributeFilters)
-    .map(thisEntity => thisEntity.getReduxStoreData());
+  // check permissions - only for the PrimaryEntity questions
+  const { surveyId } = assessment;
+  const permsCheck = isPrimaryEntity ? getPermsCheckFunction(database, surveyId) : () => true;
+  const allowedEntities = entities.filter(permsCheck);
+
+  // filter on attributes
+  const checkMatchesAttributeFilters = getEntityAttributeFilters(state, questionId);
+  const filteredEntities = allowedEntities.filter(checkMatchesAttributeFilters);
 
   dispatch({
     type: isPrimaryEntity ? ENTITY_RECEIVE_PRIMARY_ENTITIES : ENTITY_RECEIVE_ENTITIES,
-    filteredEntities,
+    entities: filteredEntities.map(thisEntity => thisEntity.getReduxStoreData()),
     questionId,
   });
 };
