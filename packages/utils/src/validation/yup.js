@@ -126,11 +126,27 @@ const testSync = (schema, createError) =>
     },
   });
 
+/**
+ * Wrap a test function that throws an error upon failure for using in yup
+ * @param {(...args: any[]) => any} testFunction
+ * @returns
+ */
+const yupTest = testFunction => (...args) => {
+  try {
+    testFunction(...args);
+  } catch (error) {
+    return new yup.ValidationError(error.message);
+  }
+
+  return true;
+};
+
 export const yupUtils = {
   oneOfType,
   oneOrArrayOf,
   polymorphic,
   testSync,
+  yupTest,
 };
 
 export * as yup from 'yup';

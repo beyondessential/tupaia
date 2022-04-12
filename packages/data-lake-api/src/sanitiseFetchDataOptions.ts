@@ -19,19 +19,14 @@ export const sanitiseFetchDataOptions = <
 >(
   options: Options,
 ) => {
-  const {
-    dataElementCodes = [],
-    startDate: startDateInput,
-    endDate: endDateInput,
-    ...restOfOptions
-  } = options;
+  const { dataElementCodes = [], startDate: startDateInput, endDate: endDateInput } = options;
 
   const { startDate, endDate } = getAdjustedDates(startDateInput, endDateInput);
 
   return {
+    ...options,
     dataElementCodes,
     startDate,
     endDate,
-    ...restOfOptions,
   };
 };
