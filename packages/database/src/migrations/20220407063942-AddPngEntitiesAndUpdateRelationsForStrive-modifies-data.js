@@ -23,32 +23,32 @@ const ENTITIES_TO_ADD = [
   {
     name: 'Central Province vector collection sites',
     code: 'PG_VC_01',
-    Latitude: -9.1889,
-    Longitude: 147.0053,
+    latitude: -9.1889,
+    longitude: 147.0053,
   },
   {
     name: 'East New Britain vector collection sites',
     code: 'PG_VC_02',
-    Latitude: -4.304,
-    Longitude: 152.1352,
+    latitude: -4.304,
+    longitude: 152.1352,
   },
   {
     name: 'East Sepik vector collection sites',
     code: 'PG_VC_03',
-    Latitude: -3.6244,
-    Longitude: 143.5958,
+    latitude: -3.6244,
+    longitude: 143.5958,
   },
   {
     name: 'North Coast vector collection sites ',
     code: 'PG_VC_04',
-    Latitude: -4.8525,
-    Longitude: 145.7731,
+    latitude: -4.8525,
+    longitude: 145.7731,
   },
   {
     name: 'Lihir Island vector collection sites ',
     code: 'PG_VC_05',
-    Latitude: -3.1213,
-    Longitude: 152.5987,
+    latitude: -3.1213,
+    longitude: 152.5987,
   },
 ];
 
