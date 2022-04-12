@@ -32,9 +32,9 @@ const createImporter = models => {
     const getEntityId = async () => {
       try {
         const { id } = await models.entity.findOne({ code: entityCode });
-        return await id;
+        return id;
       } catch {
-        throw new UploadError({ message: `No Entity Id found with code '${entityCode}'` });
+        throw new UploadError({ message: `No entity found with code '${entityCode}'` });
       }
     };
     const entityId = await getEntityId(entityCode);
