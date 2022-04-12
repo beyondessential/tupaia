@@ -4,8 +4,7 @@
  */
 
 import { yup } from '@tupaia/utils';
-import { TupaiaDatabase } from '@tupaia/database';
-import { SqlQuery } from './SqlQuery';
+import { TupaiaDatabase, SqlQuery } from '@tupaia/database';
 
 const VALUE_AGGREGATION_FUNCTIONS = {
   SUM: 'sum(value::numeric)::text',

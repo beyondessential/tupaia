@@ -3,8 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { TupaiaDatabase } from '@tupaia/database';
-import { SqlQuery } from './SqlQuery';
+import { TupaiaDatabase, SqlQuery } from '@tupaia/database';
 
 export type EventsFetchOptions = {
   organisationUnitCodes: string[];
