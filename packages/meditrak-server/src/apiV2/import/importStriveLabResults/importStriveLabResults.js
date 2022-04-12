@@ -29,7 +29,15 @@ const createWorkBookParser = () => {
 const createImporter = models => {
   const constructResponseExtractor = () => async input => {
     const entityCode = input[ENTITY_CODE_KEY];
-    const { id: entityId } = await models.entity.findOne({ code: entityCode });
+    const getEntityId = async () => {
+      try {
+        const { id } = await models.entity.findOne({ code: entityCode });
+        return await id;
+      } catch {
+        throw new UploadError({ message: `No Entity Id found with code '${entityCode}'` });
+      }
+    };
+    const entityId = await getEntityId(entityCode);
 
     const answers = { ...input };
     delete answers[ENTITY_CODE_KEY];
@@ -54,7 +62,7 @@ const getEntitiesGroupedBySurveyCode = async (models, inputsPerSurvey) => {
 
     const survey = surveys.find(survey => survey.name === surveyName);
     if (!survey) {
-      throw new Error(`No survey found with name '${surveyName}'`);
+      throw new UploadError({ message: `No survey found with name '${surveyName}'` });
     }
     const surveyCode = survey.code;
 
