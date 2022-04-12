@@ -12,9 +12,9 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
-import { setOrgUnit, openMapPopup } from '../actions';
+import ArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import ArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import { requestOrgUnit, setOrgUnit, openMapPopup } from '../actions';
 import { selectOrgUnit, selectOrgUnitChildren, selectCodeFromOrgUnit } from '../selectors';
 import { DARK_BLUE } from '../styles';
 
@@ -94,7 +94,13 @@ const SearchBarItemComponent = ({
   return (
     <Container key={organisationUnitCode}>
       <Row $hideBottomBorder={isFinalRow && !isOpen}>
-        <StyledButton onClick={() => onClick(organisationUnitCode)} $nestedMargin={nestedMargin}>
+        <StyledButton
+          onClick={() => {
+            onClick(organisationUnitCode);
+            setIsOpen(!isOpen);
+          }}
+          $nestedMargin={nestedMargin}
+        >
           {name}
           {Icon && <Icon style={{ opacity: 0.7 }} />}
         </StyledButton>
@@ -106,7 +112,7 @@ const SearchBarItemComponent = ({
             }}
             $isOpen={isOpen}
           >
-            {isOpen ? <RemoveCircleIcon /> : <AddCircleIcon />}
+            {isOpen ? <ArrowDownIcon /> : <ArrowRightIcon />}
           </OpenCloseButton>
         )}
       </Row>
@@ -153,7 +159,7 @@ const mergeProps = (stateProps, { dispatch }, { onClick, ...ownProps }) => ({
     }
   },
   onClickExpand: organisationUnitCode => {
-    dispatch(setOrgUnit(organisationUnitCode));
+    dispatch(requestOrgUnit(organisationUnitCode));
   },
 });
 
