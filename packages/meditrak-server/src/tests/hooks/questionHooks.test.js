@@ -52,6 +52,7 @@ describe('Question hooks', () => {
 
   before(async () => {
     await app.authenticate();
+    await app.grantFullAccess();
 
     const country = await upsertDummyRecord(models.country);
     const geographicalArea = await upsertDummyRecord(models.geographicalArea, {
