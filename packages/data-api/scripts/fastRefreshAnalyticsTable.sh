@@ -1,7 +1,8 @@
 #!/bin/bash -e
 echo "Fast refreshing analytics table"
 
-source .env
+DIR=$(pwd "$0")
+source $DIR/../../scripts/bash/mergeCurrentEnvWithEnvFile.sh 
 
 # Set default port in case it wasn't in .env
 : "${DB_PORT:=5432}"
