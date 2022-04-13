@@ -7,12 +7,7 @@ import { connect } from 'react-redux';
 
 import { DumbSurveyScreen } from './DumbSurveyScreen';
 
-import {
-  moveSurveyScreens,
-  moveToSurveyScreen,
-  submitSurvey,
-  releaseScrollControl,
-} from './actions';
+import { moveSurveyScreens, moveToSurveyScreen, submitSurvey } from './actions';
 import {
   getSurveyName,
   getSurveyScreenIndex,
@@ -22,15 +17,7 @@ import {
 
 function mapStateToProps(state) {
   const { assessment } = state;
-  const {
-    assessorId,
-    isSubmitting,
-    screens,
-    questions,
-    startTime,
-    surveyId,
-    isChildScrolling,
-  } = assessment;
+  const { assessorId, isSubmitting, screens, questions, startTime, surveyId } = assessment;
   const screenIndex = getSurveyScreenIndex(state);
   return {
     assessorId,
@@ -43,7 +30,6 @@ function mapStateToProps(state) {
     startTime,
     surveyId,
     surveyName: getSurveyName(state),
-    isChildScrolling,
   };
 }
 
@@ -59,7 +45,6 @@ function mergeProps(stateProps, { dispatch }, ownProps) {
     startTime,
     surveyId,
     surveyName,
-    isChildScrolling,
     ...otherStateProps
   } = stateProps;
   const isSubmitScreen = screenIndex === screens.length;
@@ -77,13 +62,11 @@ function mergeProps(stateProps, { dispatch }, ownProps) {
     onPressRepeat: isSubmitScreen && canRepeat ? () => dispatchSubmitSurvey(true) : null,
     onPressSubmit: isSubmitScreen ? () => dispatchSubmitSurvey(false) : null,
     onSelectSurveyScreen: newScreenIndex => dispatch(moveToSurveyScreen(newScreenIndex)),
-    releaseScrollControl: () => dispatch(releaseScrollControl()),
     screenIndex,
     surveyProgress,
     surveyName,
     surveyScreens: screens,
     questions,
-    isChildScrolling,
   };
 }
 
