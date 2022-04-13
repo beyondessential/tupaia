@@ -21,7 +21,7 @@
     "start": "node dist",
     "start-dev": "../../scripts/bash/backendStartDev.sh 9999",
     "start-verbose": "LOG_LEVEL=debug npm run start-dev",
-    "test": "mocha",
+    "test": "yarn workspace @tupaia/database check-test-database-exists && DB_NAME=tupaia_test mocha",
     "test:coverage": "cross-env NODE_ENV=test nyc mocha"
   },
   "dependencies": {
