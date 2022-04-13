@@ -95,10 +95,10 @@ export class EntityList extends PureComponent {
       return;
     }
 
-    const { filteredEntities } = this.props;
+    const { entities } = this.props;
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
 
-    const searchResults = filteredEntities
+    const searchResults = entities
       .filter(
         ({ name, parentName }) =>
           name.toLowerCase().includes(lowerCaseSearchTerm) ||
@@ -134,16 +134,16 @@ export class EntityList extends PureComponent {
   };
 
   renderResults() {
-    const { filteredEntities } = this.props;
+    const { entities } = this.props;
     const { searchTerm, searchResults, isOpen } = this.state;
 
-    // while filteredEntities is null, we're still loading from the database
-    if (!filteredEntities) {
+    // while entities is null, we're still loading from the database
+    if (!entities) {
       return <Text style={localStyles.noResultsText}>Loading...</Text>;
     }
 
-    // if filteredEntities is not null, but empty, the survey is probably misconfigured
-    if (filteredEntities.length === 0) {
+    // if entities is not null, but empty, the survey is probably misconfigured
+    if (entities.length === 0) {
       return (
         <Text style={localStyles.noResultsText}>
           No valid entities for this question, please contact your survey administrator.
@@ -161,7 +161,7 @@ export class EntityList extends PureComponent {
     if (isOpen) {
       return (
         <FlatList
-          data={searchResults || filteredEntities}
+          data={searchResults || entities}
           renderItem={this.renderEntityCell}
           keyExtractor={item => item.id}
           keyboardShouldPersistTaps="always"
@@ -188,11 +188,11 @@ export class EntityList extends PureComponent {
   }
 
   render() {
-    const { filteredEntities, selectedEntityId } = this.props;
+    const { entities, selectedEntityId } = this.props;
     const { searchTerm } = this.state;
 
-    if (filteredEntities && selectedEntityId) {
-      const selectedEntity = filteredEntities.find(i => i.id === selectedEntityId);
+    if (entities && selectedEntityId) {
+      const selectedEntity = entities.find(i => i.id === selectedEntityId);
       return (
         <View style={localStyles.container}>
           {this.renderEntityCell({ item: selectedEntity, onDeselect: this.deselectRow })}
@@ -235,7 +235,7 @@ export class EntityList extends PureComponent {
 }
 
 EntityList.propTypes = {
-  filteredEntities: PropTypes.array,
+  entities: PropTypes.array,
   selectedEntityId: PropTypes.string,
   onRowPress: PropTypes.func.isRequired,
   onClear: PropTypes.func.isRequired,
@@ -246,7 +246,7 @@ EntityList.propTypes = {
 };
 
 EntityList.defaultProps = {
-  filteredEntities: null,
+  entities: null,
   selectedEntityId: '',
   onMount: null,
 };
