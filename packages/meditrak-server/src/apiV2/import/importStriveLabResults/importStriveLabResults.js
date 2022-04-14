@@ -60,7 +60,7 @@ const getEntitiesGroupedBySurveyCode = async (models, inputsPerSurvey) => {
   for (const entry of Object.entries(inputsPerSurvey)) {
     const [surveyName, surveyResponses] = entry;
 
-    const survey = surveys.find(survey => survey.name === surveyName);
+    const survey = surveys.find(s => s.name === surveyName);
     if (!survey) {
       throw new UploadError({ message: `No survey found with name '${surveyName}'` });
     }
