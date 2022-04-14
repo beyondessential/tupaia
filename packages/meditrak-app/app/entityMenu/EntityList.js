@@ -243,6 +243,7 @@ EntityList.propTypes = {
   startOpen: PropTypes.bool.isRequired,
   takeScrollControl: PropTypes.func.isRequired,
   releaseScrollControl: PropTypes.func.isRequired,
+  scrollIntoFocus: PropTypes.func.isRequired,
 };
 
 EntityList.defaultProps = {

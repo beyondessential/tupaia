@@ -50,7 +50,11 @@ class DumbQuestionScreen extends React.Component {
   }
 
   scrollTo = questionId => {
-    this.scrollViewRef.scrollTo({ y: this.questionLayouts[questionId].y });
+    const layout = this.questionLayouts[questionId];
+    if (!layout) {
+      return;
+    }
+    this.scrollViewRef.scrollTo({ y: layout.y });
   };
 
   renderQuestions(questions) {
