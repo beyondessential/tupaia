@@ -191,7 +191,7 @@ export class EntityList extends PureComponent {
     const { entities, selectedEntityId } = this.props;
     const { searchTerm } = this.state;
 
-    if (entities && selectedEntityId) {
+    if (entities && entities.length > 0 && selectedEntityId) {
       const selectedEntity = entities.find(i => i.id === selectedEntityId);
       return (
         <View style={localStyles.container}>
