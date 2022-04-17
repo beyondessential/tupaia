@@ -153,9 +153,24 @@ export const momentToDateString = (date, granularity, format) =>
  *        end: {unit: 'month', offset: -1}
  *    }
  * }
+ *
+ * Long version with date string instead of config object:
+ * {
+ *    defaultTimePeriod: {
+ *        start: '2019-08-02'
+ *    }
+ * }
+ *
  * @param {*} periodGranularity
  * @param {*} defaultTimePeriod
  */
+
+const validateDateString = date => {
+  if (!moment(date, 'YYYY-MM-DD', true).isValid()) {
+    throw new Error('Date string is not in the correct format');
+  }
+};
+
 const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTimePeriod) => {
   let startDate = moment();
   let endDate = startDate;
@@ -168,20 +183,26 @@ const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTim
     // Eg: {defaultTimePeriod: {start: {unit: 'month', offset: -1}, end: {unit: 'month', offset: -1}}}
     if (defaultTimePeriod.start || defaultTimePeriod.end) {
       singleDateConfig = defaultTimePeriod.start || defaultTimePeriod.end;
+      if (typeof singleDateConfig === 'string') {
+        validateDateString(singleDateConfig);
+      }
     } else {
       // else, assume defaultTimePeriod is the period config. Eg: {defaultTimePeriod: {unit: 'month', offset: -1}}
       singleDateConfig = defaultTimePeriod;
     }
 
     const validDateOffsetUnit = GRANULARITIES_WITH_ONE_DATE_VALID_OFFSET_UNIT[periodGranularity];
-    if (singleDateConfig.unit !== validDateOffsetUnit) {
+    if (singleDateConfig.unit !== validDateOffsetUnit && typeof singleDateConfig !== 'string') {
       throw new Error(
         `defaultTimePeriod unit must match periodGranularity (periodGranularity: ${periodGranularity}, valid unit: ${validDateOffsetUnit}, given: ${singleDateConfig.unit})`,
       );
     }
 
-    // Grab all the details and get a single default date used for both start/end period.
-    startDate = addMomentOffset(moment(), singleDateConfig);
+    // Grab all the details and get a single default date used for both start/end period. If start or end is a string value, grab that directly.
+    startDate =
+      typeof singleDateConfig === 'string'
+        ? moment(singleDateConfig)
+        : addMomentOffset(moment(), singleDateConfig);
     endDate = startDate;
   }
 
@@ -211,6 +232,17 @@ const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeri
     }
     if (defaultTimePeriod.end) {
       endDate = addMomentOffset(moment(), defaultTimePeriod.end);
+    }
+    if (typeof defaultTimePeriod.start === 'string') {
+      validateDateString(defaultTimePeriod.start);
+      startDate = moment(defaultTimePeriod.start);
+    }
+    if (typeof defaultTimePeriod.end === 'string') {
+      validateDateString(defaultTimePeriod.end);
+      endDate = moment(defaultTimePeriod.end);
+    }
+    if (moment(startDate).isAfter(endDate)) {
+      throw new Error(`Start date must be earlier than the end date`);
     }
 
     return roundStartEndDates(periodGranularity, startDate, endDate);
