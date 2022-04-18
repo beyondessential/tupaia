@@ -82,27 +82,49 @@ describe('QueryBuilder', () => {
   const outputQuery = (input: Partial<FetchReportQuery> = {}) => ({
     hierarchy: HIERARCHY,
     organisationUnitCodes: ['TO'],
-    period: getPeriodString([2017, 1], [2020, 12]),
+    period: getPeriodString([2017, 1], [2020, 12, 15]),
     startDate: '2017-01-01',
-    endDate: '2020-12-31',
+    endDate: '2020-12-15',
     ...input,
   });
 
+  const daysInMonth = (month: number, year: number) => {
+    return new Date(year, month, 0).getDate();
+  };
+
   const getPeriodString = (
-    [startYear, startMonth]: [number, number],
-    [endYear, endMonth]: [number, number],
+    [startYear, startMonth, startDay = 1]: [number, number, number?],
+    [endYear, endMonth, endDay = daysInMonth(endMonth, endYear)]: [number, number, number?],
   ) => {
     const periods = [];
 
     for (let year = startYear; year <= endYear; year++) {
-      const currentStartMonth = year === startYear ? startMonth : 1;
-      const currentEndMonth = year === endYear ? endMonth : 12;
-      for (let month = currentStartMonth; month <= currentEndMonth; month++) {
-        periods.push(`${year}${month.toString().padStart(2, '0')}`);
+      const isStartYear = year === startYear;
+      const isEndYear = year === endYear;
+      for (
+        let month = year === startYear ? startMonth : 1;
+        month <= (year === endYear ? endMonth : 12);
+        month++
+      ) {
+        const isStartMonth = isStartYear && month === startMonth && startDay > 1;
+        const isEndMonth =
+          isEndYear && month === endMonth && endDay < daysInMonth(endMonth, endYear);
+        if (isStartMonth || isEndMonth) {
+          for (
+            let day = isStartMonth ? startDay : 1;
+            day <= (isEndMonth ? endDay : daysInMonth(month, year));
+            day++
+          )
+            periods.push(
+              `${year}${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}`,
+            );
+        } else {
+          periods.push(`${year}${month.toString().padStart(2, '0')}`);
+        }
       }
     }
-
-    return periods.join(';');
+    const periodString = periods.join(';');
+    return periodString;
   };
 
   it('handles all supported params', async () => {
@@ -137,7 +159,7 @@ describe('QueryBuilder', () => {
           'startDate and endDate are provided - period is adjusted to them',
           { query: inputQuery({ startDate: '2020-01-01', endDate: '2020-06-02' }) },
           outputQuery({
-            period: `${getPeriodString([2020, 1], [2020, 5])};20200601;20200602`,
+            period: `${getPeriodString([2020, 1], [2020, 6, 2])}`,
             startDate: '2020-01-01',
             endDate: '2020-06-02',
           }),
@@ -146,7 +168,7 @@ describe('QueryBuilder', () => {
           'startDate is empty, period is empty - uses default start period',
           { query: inputQuery({ endDate: '2020-06-02' }) },
           outputQuery({
-            period: `${getPeriodString([2017, 1], [2020, 5])};20200601;20200602`,
+            period: `${getPeriodString([2017, 1], [2020, 6, 2])}`,
             startDate: '2017-01-01',
             endDate: '2020-06-02',
           }),
@@ -155,9 +177,9 @@ describe('QueryBuilder', () => {
           'endDate is empty, period is empty - uses default end period',
           { query: inputQuery({ startDate: '2020-01-01' }) },
           outputQuery({
-            period: getPeriodString([2020, 1], [2020, 12]),
+            period: getPeriodString([2020, 1], [2020, 12, 15]),
             startDate: '2020-01-01',
-            endDate: '2020-12-31',
+            endDate: '2020-12-15',
           }),
         ],
         [
@@ -167,6 +189,15 @@ describe('QueryBuilder', () => {
             period: getPeriodString([2020, 1], [2020, 6]),
             startDate: '2020-01-01',
             endDate: '2020-06-30',
+          }),
+        ],
+        [
+          'startDate and endDates are different days in different months of the same year',
+          { query: inputQuery({ startDate: '2020-01-13', endDate: '2020-09-30' }) },
+          outputQuery({
+            period: getPeriodString([2020, 1, 13], [2020, 9, 30]),
+            startDate: '2020-01-13',
+            endDate: '2020-09-30',
           }),
         ],
       ];
@@ -193,9 +224,9 @@ describe('QueryBuilder', () => {
             query: inputQuery(),
           },
           outputQuery({
-            period: getPeriodString([2020, 1], [2020, 12]),
+            period: getPeriodString([2020, 1], [2020, 12, 15]),
             startDate: '2020-01-01',
-            endDate: '2020-12-31',
+            endDate: '2020-12-15',
           }),
         ],
         [
@@ -205,9 +236,9 @@ describe('QueryBuilder', () => {
             query: inputQuery({ startDate: '2020-03-05' }),
           },
           outputQuery({
-            period: getPeriodString([2020, 1], [2020, 12]),
+            period: getPeriodString([2020, 1], [2020, 12, 15]),
             startDate: '2020-01-01',
-            endDate: '2020-12-31',
+            endDate: '2020-12-15',
           }),
         ],
         [
@@ -289,6 +320,48 @@ describe('QueryBuilder', () => {
             period: `${getPeriodString([2017, 1], [2019, 12])}`,
             startDate: '2017-01-01',
             endDate: '2019-12-31',
+          }),
+        ],
+        [
+          'endDate is end of yesterday',
+          {
+            config: {
+              fetch: {
+                endDate: {
+                  unit: 'day',
+                  offset: '-1',
+                },
+              },
+            },
+            query: inputQuery(),
+          },
+          outputQuery({
+            endDate: '2020-12-14',
+            period: `${getPeriodString([2017, 1], [2020, 12, 14])}`,
+          }),
+        ],
+        [
+          'endDate and startDate are yesterday',
+          {
+            config: {
+              fetch: {
+                startDate: {
+                  from: 'today',
+                  unit: 'day',
+                  offset: '-1',
+                },
+                endDate: {
+                  unit: 'day',
+                  offset: '-1',
+                },
+              },
+            },
+            query: inputQuery({}),
+          },
+          outputQuery({
+            endDate: '2020-12-14',
+            period: `${getPeriodString([2020, 12, 14], [2020, 12, 14])}`,
+            startDate: '2020-12-14',
           }),
         ],
       ];
