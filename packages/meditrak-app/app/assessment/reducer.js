@@ -26,6 +26,7 @@ const defaultState = {
   screens: null,
   isSubmitting: false,
   isSurveyInProgress: false,
+  primaryEntityQuestionId: null,
   questions: {},
   answers: {},
   isChildScrolling: false, // question controlling scroll as opposed to DumbSurveyScreen
@@ -66,11 +67,20 @@ const stateChanges = {
     screens[screenIndex].errorMessage = message;
     return { screens };
   },
-  [SURVEY_SELECT]: ({ answers, assessorId, surveyId, screens, startTime, questions }) => ({
+  [SURVEY_SELECT]: ({
+    answers,
+    assessorId,
+    primaryEntityQuestionId,
+    surveyId,
+    screens,
+    startTime,
+    questions,
+  }) => ({
     answers,
     assessorId,
     surveyId,
     screens,
+    primaryEntityQuestionId,
     questions,
     startTime,
     isSubmitting: false,

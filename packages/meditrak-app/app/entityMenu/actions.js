@@ -5,6 +5,7 @@
 
 import { ENTITY_RECEIVE_PRIMARY_ENTITIES, ENTITY_RECEIVE_ENTITIES } from './constants';
 import { getAnswerForQuestion, getQuestion } from '../assessment/selectors';
+import { getRecentEntityIds } from '../assessment/helpers';
 
 const getEntityDatabaseFilters = (state, database, questionId) => {
   // filtering for entities within the currently selected country also has the byproduct
@@ -46,6 +47,29 @@ const getEntityAttributeFilters = (state, questionId) => {
       : true;
 };
 
+const getRecentEntities = (database, state, entityFilters) => {
+  const { questions, primaryEntityQuestionId, assessorId } = state.assessment;
+  const entityTypes = questions[primaryEntityQuestionId].config.entity.type;
+  const recentEntityIds = getRecentEntityIds(
+    database,
+    assessorId,
+    entityTypes,
+    state.country.selectedCountryId,
+  );
+  if (recentEntityIds.length === 0) {
+    return [];
+  }
+
+  const recentEntities = database.getEntities({ ...entityFilters, id: recentEntityIds });
+
+  // sort database results to match our saved array of recent entity ids
+  const sortedRecentEntities = recentEntities
+    .slice() // need to slice to convert from RealmResults to standard array for sorting
+    .sort((a, b) => recentEntityIds.indexOf(a.id) - recentEntityIds.indexOf(b.id));
+
+  return sortedRecentEntities;
+};
+
 export const loadEntitiesFromDatabase = (isPrimaryEntity, questionId) => (
   dispatch,
   getState,
@@ -60,9 +84,12 @@ export const loadEntitiesFromDatabase = (isPrimaryEntity, questionId) => (
   const checkMatchesAttributeFilters = getEntityAttributeFilters(state, questionId);
   const filteredEntities = entities.filter(checkMatchesAttributeFilters);
 
+  const recentEntities = getRecentEntities(database, state, filters);
+
   dispatch({
     type: isPrimaryEntity ? ENTITY_RECEIVE_PRIMARY_ENTITIES : ENTITY_RECEIVE_ENTITIES,
-    entities: filteredEntities.map(thisEntity => thisEntity.getReduxStoreData()),
+    entities: filteredEntities.map(e => e.getReduxStoreData()),
+    recentEntities,
     questionId,
   });
 };
