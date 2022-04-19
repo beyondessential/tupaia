@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { SqlQuery } from './SqlQuery';
+import { SqlQuery } from '@tupaia/database';
 import { DataLakeDatabase } from './DataLakeDatabase';
 
 export type EventsFetchOptions = {
@@ -56,10 +56,10 @@ export class DataLakeEventsFetchQuery {
     this.hasDataElements = dataElementCodes ? dataElementCodes.length > 0 : false;
   }
 
-  public async fetch(): Promise<Event[]> {
+  public async fetch() {
     const { query, params } = this.buildQueryAndParams();
 
-    const sqlQuery = new SqlQuery(query, params);
+    const sqlQuery = new SqlQuery<Event[]>(query, params);
 
     return sqlQuery.executeOnDatabase(this.database);
   }
