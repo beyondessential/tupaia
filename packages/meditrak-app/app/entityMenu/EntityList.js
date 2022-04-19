@@ -128,7 +128,7 @@ export class EntityList extends PureComponent {
     }
 
     const { entities, recentEntities } = this.props;
-    if (recentEntities && recentEntities.length > 0) {
+    if (recentEntities?.length > 0) {
       return [
         { title: 'Recently used', data: recentEntities },
         { title: 'All entities', data: entities },
