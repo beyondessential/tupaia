@@ -47,6 +47,29 @@ const getEntityAttributeFilters = (state, questionId) => {
       : true;
 };
 
+const getRecentEntities = (database, state, entityFilters) => {
+  const { questions, primaryEntityQuestionId, assessorId } = state.assessment;
+  const entityTypes = questions[primaryEntityQuestionId].config.entity.type;
+  const recentEntityIds = getRecentEntityIds(
+    database,
+    assessorId,
+    entityTypes,
+    state.country.selectedCountryId,
+  );
+  if (recentEntityIds.length === 0) {
+    return [];
+  }
+
+  const recentEntities = database.getEntities({ ...entityFilters, id: recentEntityIds });
+
+  // sort database results to match our saved array of recent entity ids
+  const sortedRecentEntities = recentEntities
+    .slice() // need to slice to convert from RealmResults to standard array for sorting
+    .sort((a, b) => recentEntityIds.indexOf(a.id) - recentEntityIds.indexOf(b.id));
+
+  return sortedRecentEntities;
+};
+
 export const loadEntitiesFromDatabase = (isPrimaryEntity, questionId) => (
   dispatch,
   getState,
@@ -61,25 +84,7 @@ export const loadEntitiesFromDatabase = (isPrimaryEntity, questionId) => (
   const checkMatchesAttributeFilters = getEntityAttributeFilters(state, questionId);
   const filteredEntities = entities.filter(checkMatchesAttributeFilters);
 
-  const { questions, primaryEntityQuestionId, assessorId } = state.assessment;
-  const entityTypes = questions[primaryEntityQuestionId].config.entity.type;
-  const recentEntityIds = getRecentEntityIds(
-    database,
-    assessorId,
-    entityTypes,
-    state.country.selectedCountryId,
-  );
-  const recentEntityIdToIndex = {};
-  recentEntityIds.forEach((id, index) => {
-    recentEntityIdToIndex[id] = index;
-  });
-  const recentEntities =
-    recentEntityIds.length === 0
-      ? []
-      : database
-          .getEntities({ ...filters, id: recentEntityIds })
-          .slice()
-          .sort((a, b) => recentEntityIdToIndex[a.id] - recentEntityIdToIndex[b.id]);
+  const recentEntities = getRecentEntities(database, state, filters);
 
   dispatch({
     type: isPrimaryEntity ? ENTITY_RECEIVE_PRIMARY_ENTITIES : ENTITY_RECEIVE_ENTITIES,
