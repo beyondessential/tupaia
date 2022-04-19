@@ -16,18 +16,16 @@ import { FetchReportQuery, PeriodParams, ReportConfig } from '../../types';
 import { DateOffset } from './types';
 
 const buildDateUsingSpecs = (date: string | undefined, dateOffset: DateOffset) => {
-  const moment = addMomentOffset(utcMoment(date), dateOffset);
+  const { from } = dateOffset;
+  const baseDate = from === 'today' ? utcMoment() : date;
+  const moment = addMomentOffset(utcMoment(baseDate), dateOffset);
   return momentToDateString(moment);
 };
 
-const matchesOriginalQuery = (
-  subQuery: Record<string, unknown>,
-  originalQuery: FetchReportQuery,
-) => {
-  return Object.entries(subQuery).every(
+const matchesOriginalQuery = (subQuery: Record<string, unknown>, originalQuery: FetchReportQuery) =>
+  Object.entries(subQuery).every(
     ([key, value]) => originalQuery[key as keyof FetchReportQuery] === value,
   );
-};
 
 export const buildPeriodParams = (
   query: FetchReportQuery,
