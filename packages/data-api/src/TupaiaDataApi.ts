@@ -6,9 +6,8 @@
 import groupBy from 'lodash.groupby';
 
 import moment from 'moment';
-import { TupaiaDatabase } from '@tupaia/database';
+import { TupaiaDatabase, SqlQuery } from '@tupaia/database';
 import { getSortByKey, DEFAULT_BINARY_OPTIONS, yup } from '@tupaia/utils';
-import { SqlQuery } from './SqlQuery';
 import { AnalyticsFetchOptions, AnalyticsFetchQuery } from './AnalyticsFetchQuery';
 import { EventsFetchQuery, EventAnswer, EventsFetchOptions } from './EventsFetchQuery';
 import { sanitizeMetadataValue, sanitizeAnalyticsTableValue, isDefined } from './utils';
