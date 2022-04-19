@@ -44,20 +44,20 @@ describe('fetchEvents()', () => {
 
   it('throws an error with invalid parameters', async () => {
     const testData: [Record<string, any>, RegExp][] = [
-      [{}, /Invalid content/],
+      [{}, /dataGroupCode is a required field/],
       [
         {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
         },
-        /Invalid content.*dataGroupCode/,
+        /dataGroupCode is a required field/,
       ], // no dataGroupCode
       [
         {
           dataGroupCode: 'BCDTEST',
           dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
         },
-        /Invalid content.*organisationUnitCodes/,
+        /organisationUnitCodes is a required field/,
       ], // no organisationUnitCodes
       [
         {
@@ -65,7 +65,7 @@ describe('fetchEvents()', () => {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['BCD1TEST', 1],
         },
-        /Invalid content.*dataElementCodes/,
+        /dataElementCodes*/,
       ], // data element code is not a string
       [
         {
@@ -74,7 +74,7 @@ describe('fetchEvents()', () => {
           dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
           startDate: 'January first, 2020',
         },
-        /Invalid content.*startDate/,
+        /startDate should be in ISO 8601 format/,
       ], // invalid startDate format
     ];
 
