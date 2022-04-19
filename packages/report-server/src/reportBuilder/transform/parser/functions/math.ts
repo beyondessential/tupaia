@@ -5,7 +5,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { typed } from 'mathjs';
+import { typed, mean as mathjsMean } from 'mathjs';
 
 export const divide = typed('divide', {
   'number, undefined': (num: number, undef: undefined) => undefined,
@@ -39,9 +39,26 @@ const sumArray = (arr: unknown[]) =>
 
 export const sum = typed('sum', {
   '...': function (args: unknown[]) {
-    return sumArray(args); // 'this' is bound by mathjs to allow recursive function calls to other typed function implementations
+    return sumArray(args);
   },
   number: (num: number) => num,
   undefined: (undef: undefined) => undefined,
   Array: sumArray,
+});
+
+const calculateMean = (arr: unknown[]) => {
+  const numbersArray = arr.every(item => item === undefined)
+    ? undefined
+    : arr.filter(item => item !== undefined).map(enforceIsNumber);
+  if (numbersArray === undefined) {
+    return undefined;
+  }
+  return mathjsMean(numbersArray);
+};
+
+export const mean = typed('mean', {
+  '...': (args: unknown[]) => {
+    return calculateMean(args);
+  },
+  Array: calculateMean,
 });

@@ -249,5 +249,31 @@ describe('functions', () => {
       it('returns sum of all defined inputs', () =>
         expect(new TransformParser().evaluate('=sum(1, 2, 3, undefined, 4)')).toBe(10));
     });
+
+    describe('mean', () => {
+      it('calculates the average of multiple numerical arguments', () =>
+        expect(new TransformParser().evaluate('=mean(2,4,6)')).toBe(4));
+
+      it('calculates the average of numerical arguments, ignoring undefined arguments', () =>
+        expect(new TransformParser().evaluate('=mean(2,4,6,undefined)')).toBe(4));
+
+      it('calculates the average of multiple numerical elements within an array', () =>
+        expect(new TransformParser().evaluate('=mean([2,4,6])')).toBe(4));
+
+      it('calculates the average of multiple numerical elements within an array, ignoring undefined elements', () =>
+        expect(new TransformParser().evaluate('=mean([2,4,6,undefined])')).toBe(4));
+
+      it('returns undefined for single or multiple undefined arguments', () =>
+        expect(new TransformParser().evaluate('=mean([undefined,undefined])')).toBe(undefined));
+
+      it('returns a number for one numerical argument', () =>
+        expect(new TransformParser().evaluate('=mean(3)')).toBe(3));
+
+      it('returns undefined for one undefined argument', () =>
+        expect(new TransformParser().evaluate('=mean(undefined)')).toBe(undefined));
+
+      it('throws an error if there is one string as an argument', () =>
+        expect(() => new TransformParser().evaluate("=mean(3,6,'cat')")).toThrow());
+    });
   });
 });
