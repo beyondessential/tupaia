@@ -11,8 +11,9 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
-import ArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import ArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import ArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { requestOrgUnit, setOrgUnit, openMapPopup } from '../actions';
 import { selectOrgUnit, selectOrgUnitChildren, selectCodeFromOrgUnit } from '../selectors';
@@ -54,6 +55,14 @@ const OpenCloseButton = styled(IconButton)`
   &:hover {
     opacity: 1;
   }
+`;
+
+const LoadingSpinnerContainer = styled.div`
+  display: flex;
+`;
+
+const LoadingSpinner = styled(CircularProgress)`
+  color: white;
 `;
 
 const ICON_BY_ORG_UNIT_TYPE = {
@@ -104,6 +113,11 @@ const SearchBarItemComponent = ({
           {name}
           {Icon && <Icon style={{ opacity: 0.7 }} />}
         </StyledButton>
+        {isOpen && nestedItems.length === 0 && (
+          <LoadingSpinnerContainer>
+            <LoadingSpinner size={18} />
+          </LoadingSpinnerContainer>
+        )}
         {hasNestedItems && (
           <OpenCloseButton
             onClick={() => {
@@ -112,7 +126,7 @@ const SearchBarItemComponent = ({
             }}
             $isOpen={isOpen}
           >
-            {isOpen ? <ArrowDownIcon /> : <ArrowRightIcon />}
+            {isOpen ? <ArrowUpIcon /> : <ArrowDownIcon />}
           </OpenCloseButton>
         )}
       </Row>
