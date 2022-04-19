@@ -5,6 +5,7 @@
 
 import { ENTITY_RECEIVE_PRIMARY_ENTITIES, ENTITY_RECEIVE_ENTITIES } from './constants';
 import { getAnswerForQuestion, getQuestion } from '../assessment/selectors';
+import { getRecentEntityIds } from '../assessment/helpers';
 
 const getEntityDatabaseFilters = (state, database, questionId) => {
   // filtering for entities within the currently selected country also has the byproduct
@@ -60,9 +61,27 @@ export const loadEntitiesFromDatabase = (isPrimaryEntity, questionId) => (
   const checkMatchesAttributeFilters = getEntityAttributeFilters(state, questionId);
   const filteredEntities = entities.filter(checkMatchesAttributeFilters);
 
+  const { questions, primaryEntityQuestionId, assessorId } = state.assessment;
+  const entityTypes = questions[primaryEntityQuestionId].config.entity.type;
+  const recentEntityIds = getRecentEntityIds(
+    database,
+    assessorId,
+    entityTypes,
+    state.country.selectedCountryId,
+  );
+  const recentEntityIdToIndex = {};
+  recentEntityIds.forEach((id, index) => {
+    recentEntityIdToIndex[id] = index;
+  });
+  const recentEntities = database
+    .getEntities({ ...filters, id: recentEntityIds })
+    .slice()
+    .sort((a, b) => recentEntityIdToIndex[a.id] - recentEntityIdToIndex[b.id]);
+
   dispatch({
     type: isPrimaryEntity ? ENTITY_RECEIVE_PRIMARY_ENTITIES : ENTITY_RECEIVE_ENTITIES,
-    entities: filteredEntities.map(thisEntity => thisEntity.getReduxStoreData()),
+    entities: filteredEntities.map(e => e.getReduxStoreData()),
+    recentEntities,
     questionId,
   });
 };

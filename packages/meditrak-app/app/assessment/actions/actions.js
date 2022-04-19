@@ -29,11 +29,7 @@ import {
 import { openSurvey, openSurveyGroup } from '../../navigation/actions';
 import { watchUserLocation, stopWatchingUserLocation } from '../../utilities/userLocation';
 import { validateAnswer } from '../validation';
-import {
-  doesScreenHaveValidationErrors,
-  getDefaultEntitySettingKey,
-  getEntityCreationQuestions,
-} from '../helpers';
+import { doesScreenHaveValidationErrors, getEntityCreationQuestions } from '../helpers';
 
 const DEFAULT_PRIMARY_QUESTION_ID = 'selected-entity';
 const DEFAULT_PRIMARY_ENTITY_QUESTION = {
@@ -155,22 +151,15 @@ export const selectSurvey = (surveyId, isRepeating = false) => (
   };
 
   const answers = {};
-  // If the user has previously submitted a survey for the same primary entity type, default to that
   const userId = database.getCurrentUser().id;
-  const entityTypes = questions[primaryEntityQuestionId].config.entity.type;
-  const state = getState();
-  const defaultEntityId = database.getSetting(
-    getDefaultEntitySettingKey(userId, entityTypes, state.country.selectedCountryId),
-  );
-  if (defaultEntityId) {
-    answers[primaryEntityQuestionId] = defaultEntityId;
-  }
+
   const entityCreationQuestionIds = getEntityCreationQuestions(Object.values(questions)).map(
     ({ id }) => id,
   );
   entityCreationQuestionIds.forEach(questionId => {
     answers[questionId] = generateUUID().toString();
   });
+
   dispatch({
     type: SURVEY_SELECT,
     assessorId: userId,
@@ -180,6 +169,7 @@ export const selectSurvey = (surveyId, isRepeating = false) => (
     hasCustomEntitySelector: !!customPrimaryEntityQuestion,
     startTime: new Date().toISOString(),
     answers,
+    primaryEntityQuestionId,
   });
 
   if (!isRepeating) {

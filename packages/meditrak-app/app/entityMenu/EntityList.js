@@ -5,7 +5,7 @@
 
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Dimensions, FlatList, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, SectionList, StyleSheet, Text, View } from 'react-native';
 
 import { Icon, TextInput, TouchableOpacity } from '../widgets';
 import {
@@ -42,8 +42,9 @@ export class EntityList extends PureComponent {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.searchTerm !== this.state.searchTerm && this.listComponent) {
-      this.listComponent.scrollToIndex({
-        index: 0,
+      this.listComponent.scrollToLocation({
+        sectionIndex: 0,
+        itemIndex: 0,
         viewPosition: 0,
         animated: false,
       });
@@ -120,6 +121,22 @@ export class EntityList extends PureComponent {
     });
   };
 
+  getListSections = () => {
+    const { searchResults } = this.state;
+    if (searchResults) {
+      return [{ data: searchResults }];
+    }
+
+    const { entities, recentEntities } = this.props;
+    if (recentEntities && recentEntities.length > 0) {
+      return [
+        { title: 'Recently used', data: recentEntities },
+        { title: 'All entities', data: entities },
+      ];
+    }
+    return [{ data: entities }];
+  };
+
   renderEntityCell = ({ item, onDeselect }) => {
     const { selectedEntityId } = this.props;
     const isSelected = item.id === selectedEntityId;
@@ -131,6 +148,13 @@ export class EntityList extends PureComponent {
         onDeselect={onDeselect}
       />
     );
+  };
+
+  renderSectionHeader = ({ section }) => {
+    if (!section.title) {
+      return null;
+    }
+    return <Text style={localStyles.sectionHeaderText}>{section.title}</Text>;
   };
 
   renderResults() {
@@ -160,9 +184,10 @@ export class EntityList extends PureComponent {
 
     if (isOpen) {
       return (
-        <FlatList
-          data={searchResults || entities}
+        <SectionList
+          sections={this.getListSections()}
           renderItem={this.renderEntityCell}
+          renderSectionHeader={this.renderSectionHeader}
           keyExtractor={item => item.id}
           keyboardShouldPersistTaps="always"
           initialNumToRender={10}
@@ -236,6 +261,7 @@ export class EntityList extends PureComponent {
 
 EntityList.propTypes = {
   entities: PropTypes.array,
+  recentEntities: PropTypes.array,
   selectedEntityId: PropTypes.string,
   onRowPress: PropTypes.func.isRequired,
   onClear: PropTypes.func.isRequired,
@@ -248,6 +274,7 @@ EntityList.propTypes = {
 
 EntityList.defaultProps = {
   entities: null,
+  recentEntities: null,
   selectedEntityId: '',
   onMount: null,
 };
@@ -302,6 +329,11 @@ const localStyles = StyleSheet.create({
     opacity: 0.8,
     // This marginBottom is to prevent the bottom of text being clipped off by the row paddingVertical on Android.
     marginBottom: -10,
+  },
+  sectionHeaderText: {
+    color: THEME_TEXT_COLOR_ONE,
+    fontSize: THEME_FONT_SIZE_ONE * 0.8,
+    opacity: 0.8,
   },
   row: {
     flexDirection: 'row',

@@ -13,7 +13,7 @@ const defaultState = {
   questions: {},
 };
 
-function updateEntities({ entities, questionId }, { questions }) {
+function updateEntities({ entities, recentEntities, questionId }, { questions }) {
   const question = questions[questionId] || {};
   return {
     questions: {
@@ -21,6 +21,7 @@ function updateEntities({ entities, questionId }, { questions }) {
       [questionId]: {
         ...question,
         entities,
+        recentEntities,
       },
     },
   };
