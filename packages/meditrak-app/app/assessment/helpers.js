@@ -46,7 +46,7 @@ export const getRecentEntityIds = (database, userId, entityTypes, countryId) =>
   JSON.parse(
     database.getSetting(getRecentEntitiesSettingKey(userId, entityTypes, countryId)) || '[]',
   );
-const MAX_RECENT_ENTITIES = 5;
+const MAX_RECENT_ENTITIES = 3;
 export const addRecentEntityId = (database, userId, entityTypes, countryId, entityId) => {
   const recentEntityIds = getRecentEntityIds(database, userId, entityTypes, countryId);
   const updatedRecentEntityIds = [entityId, ...recentEntityIds.filter(id => id !== entityId)].slice(
