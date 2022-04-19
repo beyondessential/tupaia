@@ -73,10 +73,13 @@ export const loadEntitiesFromDatabase = (isPrimaryEntity, questionId) => (
   recentEntityIds.forEach((id, index) => {
     recentEntityIdToIndex[id] = index;
   });
-  const recentEntities = database
-    .getEntities({ ...filters, id: recentEntityIds })
-    .slice()
-    .sort((a, b) => recentEntityIdToIndex[a.id] - recentEntityIdToIndex[b.id]);
+  const recentEntities =
+    recentEntityIds.length === 0
+      ? []
+      : database
+          .getEntities({ ...filters, id: recentEntityIds })
+          .slice()
+          .sort((a, b) => recentEntityIdToIndex[a.id] - recentEntityIdToIndex[b.id]);
 
   dispatch({
     type: isPrimaryEntity ? ENTITY_RECEIVE_PRIMARY_ENTITIES : ENTITY_RECEIVE_ENTITIES,
