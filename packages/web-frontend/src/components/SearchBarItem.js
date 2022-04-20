@@ -112,7 +112,7 @@ const SearchBarItemComponent = ({
           $nestedMargin={nestedMargin}
         >
           {name}
-          {Icon && <Icon style={{ opacity: 0.7 }} />}
+          {Icon && <Icon style={{ opacity: 0.7, marginLeft: 5 }} />}
         </StyledButton>
         {isOpen && nestedItems.length === 0 && (
           <LoadingSpinnerContainer>
