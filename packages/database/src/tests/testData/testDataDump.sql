@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.17 (Ubuntu 10.17-1.pgdg18.04+1)
--- Dumped by pg_dump version 10.17 (Ubuntu 10.17-1.pgdg18.04+1)
+-- Dumped from database version 13.5 (Ubuntu 13.5-1.pgdg18.04+1)
+-- Dumped by pg_dump version 13.5 (Ubuntu 13.5-1.pgdg18.04+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -17,20 +17,6 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
-
---
 -- Name: postgis; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -42,6 +28,18 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 --
 
 COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
+
+
+--
+-- Name: approval_status; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.approval_status AS ENUM (
+    'not_required',
+    'pending',
+    'rejected',
+    'approved'
+);
 
 
 --
@@ -120,6 +118,16 @@ CREATE TYPE public.period_granularity AS ENUM (
 
 
 --
+-- Name: primary_platform; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.primary_platform AS ENUM (
+    'tupaia',
+    'lesmis'
+);
+
+
+--
 -- Name: service_type; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -128,7 +136,8 @@ CREATE TYPE public.service_type AS ENUM (
     'tupaia',
     'indicator',
     'weather',
-    'kobo'
+    'kobo',
+    'data-lake'
 );
 
 
@@ -171,10 +180,21 @@ CREATE FUNCTION public.build_analytics_table(force boolean DEFAULT false) RETURN
           question.code as data_element_code,
           survey.code as data_group_code,
           survey_response.id as event_id,
-          answer.text as value,
+          CASE
+            WHEN question.type = ''Binary'' OR question.type = ''Checkbox''
+            THEN CASE
+              WHEN answer.text = ''Yes'' THEN ''1''
+              ELSE ''0''
+            END
+            ELSE answer.text
+          END as value,
           question.type as type,
           to_char(survey_response.data_time, ''YYYYMMDD'') as "day_period",
-          concat(extract (year from survey_response.data_time), ''W'', to_char(extract (week from survey_response.data_time), ''FM09'')) as "week_period",
+          concat(
+            extract (isoyear from survey_response.data_time),
+            ''W'',
+            to_char(extract (week from survey_response.data_time), ''FM09''))
+          as "week_period",
           to_char(survey_response.data_time, ''YYYYMM'') as "month_period",
           to_char(survey_response.data_time, ''YYYY'') as "year_period",
           survey_response.data_time as "date"
@@ -190,11 +210,11 @@ CREATE FUNCTION public.build_analytics_table(force boolean DEFAULT false) RETURN
           question ON question.id = answer.question_id
         INNER JOIN
           data_source ON data_source.id = question.data_source_id
-        WHERE data_source.service_type = ''tupaia'' AND survey_response.outdated IS FALSE';
-    
+        WHERE data_source.service_type = ''tupaia'' AND survey_response.outdated IS FALSE AND survey_response.approval_status IN (''not_required'', ''approved'')';
+
     begin
       RAISE NOTICE 'Creating Materialized View Logs...';
-    
+
       FOREACH source_table IN ARRAY source_tables_array LOOP
         IF (SELECT NOT EXISTS (
           SELECT FROM pg_tables
@@ -211,8 +231,8 @@ CREATE FUNCTION public.build_analytics_table(force boolean DEFAULT false) RETURN
           RAISE NOTICE 'Materialized View Log for % table already exists, skipping', source_table;
         END IF;
       END LOOP;
-    
-    
+
+
       RAISE NOTICE 'Creating analytics materialized view...';
       IF (SELECT NOT EXISTS (
         SELECT FROM pg_tables
@@ -683,7 +703,7 @@ CREATE AGGREGATE public.most_recent(text, timestamp without time zone) (
 
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+SET default_table_access_method = heap;
 
 --
 -- Name: access_request; Type: TABLE; Schema: public; Owner: -
@@ -1106,21 +1126,21 @@ CREATE TABLE public.lesmis_session (
 
 
 --
--- Name: mapOverlay; Type: TABLE; Schema: public; Owner: -
+-- Name: map_overlay; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public."mapOverlay" (
-    id text NOT NULL,
+CREATE TABLE public.map_overlay (
+    code text NOT NULL,
     name text NOT NULL,
-    "userGroup" text NOT NULL,
-    "dataElementCode" text NOT NULL,
-    "isDataRegional" boolean DEFAULT true,
-    "linkedMeasures" text[],
-    "measureBuilderConfig" jsonb,
-    "measureBuilder" character varying,
-    "presentationOptions" jsonb DEFAULT '{}'::jsonb NOT NULL,
-    "countryCodes" text[],
-    "projectCodes" text[] DEFAULT '{}'::text[]
+    permission_group text NOT NULL,
+    linked_measures text[],
+    config jsonb DEFAULT '{}'::jsonb NOT NULL,
+    country_codes text[],
+    project_codes text[] DEFAULT '{}'::text[],
+    report_code text,
+    legacy boolean DEFAULT false NOT NULL,
+    data_services jsonb DEFAULT '[{"isDataRegional": true}]'::jsonb,
+    id text DEFAULT public.generate_object_id() NOT NULL
 );
 
 
@@ -1140,7 +1160,7 @@ CREATE SEQUENCE public."mapOverlay_id_seq"
 -- Name: mapOverlay_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE public."mapOverlay_id_seq" OWNED BY public."mapOverlay".id;
+ALTER SEQUENCE public."mapOverlay_id_seq" OWNED BY public.map_overlay.code;
 
 
 --
@@ -1317,7 +1337,7 @@ CREATE TABLE public.project (
     image_url text,
     default_measure text DEFAULT '126,171'::text,
     dashboard_group_name text DEFAULT 'General'::text,
-    user_groups text[],
+    permission_groups text[],
     logo_url text,
     entity_id text,
     entity_hierarchy_id text,
@@ -1409,7 +1429,8 @@ CREATE TABLE public.survey (
     survey_group_id text,
     integration_metadata jsonb DEFAULT '{}'::jsonb,
     data_source_id text NOT NULL,
-    period_granularity public.period_granularity
+    period_granularity public.period_granularity,
+    requires_approval boolean DEFAULT false
 );
 
 
@@ -1438,7 +1459,8 @@ CREATE TABLE public.survey_response (
     timezone text DEFAULT 'Pacific/Auckland'::text,
     entity_id text NOT NULL,
     data_time timestamp without time zone,
-    outdated boolean DEFAULT false
+    outdated boolean DEFAULT false,
+    approval_status public.approval_status DEFAULT 'not_required'::public.approval_status
 );
 
 
@@ -1540,7 +1562,8 @@ CREATE TABLE public.user_account (
     password_hash text NOT NULL,
     password_salt text NOT NULL,
     verified_email public.verified_email DEFAULT 'new_user'::public.verified_email,
-    profile_image text
+    profile_image text,
+    primary_platform public.primary_platform DEFAULT 'tupaia'::public.primary_platform
 );
 
 
@@ -1948,11 +1971,19 @@ ALTER TABLE ONLY public.lesmis_session
 
 
 --
--- Name: mapOverlay mapOverlay_id_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: map_overlay mapOverlay_id_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public."mapOverlay"
-    ADD CONSTRAINT "mapOverlay_id_key" UNIQUE (id);
+ALTER TABLE ONLY public.map_overlay
+    ADD CONSTRAINT "mapOverlay_id_key" UNIQUE (code);
+
+
+--
+-- Name: map_overlay_group map_overlay_group_code_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.map_overlay_group
+    ADD CONSTRAINT map_overlay_group_code_key UNIQUE (code);
 
 
 --
@@ -1969,6 +2000,14 @@ ALTER TABLE ONLY public.map_overlay_group
 
 ALTER TABLE ONLY public.map_overlay_group_relation
     ADD CONSTRAINT map_overlay_group_relation_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: map_overlay map_overlay_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.map_overlay
+    ADD CONSTRAINT map_overlay_pkey PRIMARY KEY (id);
 
 
 --
@@ -2648,343 +2687,350 @@ CREATE INDEX user_entity_permission_user_id_idx ON public.user_entity_permission
 -- Name: access_request access_request_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER access_request_trigger AFTER INSERT OR DELETE OR UPDATE ON public.access_request FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER access_request_trigger AFTER INSERT OR DELETE OR UPDATE ON public.access_request FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: ancestor_descendant_relation ancestor_descendant_relation_immutable_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER ancestor_descendant_relation_immutable_trigger AFTER UPDATE ON public.ancestor_descendant_relation FOR EACH ROW EXECUTE PROCEDURE public.immutable_table();
+CREATE TRIGGER ancestor_descendant_relation_immutable_trigger AFTER UPDATE ON public.ancestor_descendant_relation FOR EACH ROW EXECUTE FUNCTION public.immutable_table();
 
 
 --
 -- Name: answer answer_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER answer_trigger AFTER INSERT OR DELETE OR UPDATE ON public.answer FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER answer_trigger AFTER INSERT OR DELETE OR UPDATE ON public.answer FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: api_client api_client_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER api_client_trigger AFTER INSERT OR DELETE OR UPDATE ON public.api_client FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER api_client_trigger AFTER INSERT OR DELETE OR UPDATE ON public.api_client FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: clinic clinic_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER clinic_trigger AFTER INSERT OR DELETE OR UPDATE ON public.clinic FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER clinic_trigger AFTER INSERT OR DELETE OR UPDATE ON public.clinic FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: comment comment_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.comment FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.comment FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: country country_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER country_trigger AFTER INSERT OR DELETE OR UPDATE ON public.country FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER country_trigger AFTER INSERT OR DELETE OR UPDATE ON public.country FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: dashboard_item dashboard_item_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER dashboard_item_trigger AFTER INSERT OR DELETE OR UPDATE ON public.dashboard_item FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER dashboard_item_trigger AFTER INSERT OR DELETE OR UPDATE ON public.dashboard_item FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: dashboard_relation dashboard_relation_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER dashboard_relation_trigger AFTER INSERT OR DELETE OR UPDATE ON public.dashboard_relation FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER dashboard_relation_trigger AFTER INSERT OR DELETE OR UPDATE ON public.dashboard_relation FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: dashboard dashboard_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER dashboard_trigger AFTER INSERT OR DELETE OR UPDATE ON public.dashboard FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER dashboard_trigger AFTER INSERT OR DELETE OR UPDATE ON public.dashboard FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: data_element_data_group data_element_data_group_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER data_element_data_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_element_data_group FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER data_element_data_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_element_data_group FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: data_service_entity data_service_entity_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER data_service_entity_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_service_entity FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER data_service_entity_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_service_entity FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: data_service_sync_group data_service_sync_group_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER data_service_sync_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_service_sync_group FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER data_service_sync_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_service_sync_group FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: data_source data_source_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER data_source_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_source FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER data_source_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_source FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: dhis_sync_queue dhis_sync_queue_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER dhis_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.dhis_sync_queue FOR EACH ROW EXECUTE PROCEDURE public.update_change_time();
+CREATE TRIGGER dhis_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.dhis_sync_queue FOR EACH ROW EXECUTE FUNCTION public.update_change_time();
 
 
 --
 -- Name: disaster disaster_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER disaster_trigger AFTER INSERT OR DELETE OR UPDATE ON public.disaster FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER disaster_trigger AFTER INSERT OR DELETE OR UPDATE ON public.disaster FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: disasterEvent disasterevent_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER disasterevent_trigger AFTER INSERT OR DELETE OR UPDATE ON public."disasterEvent" FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER disasterevent_trigger AFTER INSERT OR DELETE OR UPDATE ON public."disasterEvent" FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: entity_hierarchy entity_hierarchy_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER entity_hierarchy_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity_hierarchy FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER entity_hierarchy_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity_hierarchy FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: entity_relation entity_relation_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER entity_relation_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity_relation FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER entity_relation_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity_relation FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: entity entity_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER entity_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER entity_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: geographical_area geographical_area_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER geographical_area_trigger AFTER INSERT OR DELETE OR UPDATE ON public.geographical_area FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER geographical_area_trigger AFTER INSERT OR DELETE OR UPDATE ON public.geographical_area FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: indicator indicator_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER indicator_trigger AFTER INSERT OR DELETE OR UPDATE ON public.indicator FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER indicator_trigger AFTER INSERT OR DELETE OR UPDATE ON public.indicator FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: meditrak_device install_id_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER install_id_trigger AFTER INSERT OR DELETE OR UPDATE ON public.meditrak_device FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER install_id_trigger AFTER INSERT OR DELETE OR UPDATE ON public.meditrak_device FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: map_overlay_group_relation map_overlay_group_relation_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER map_overlay_group_relation_trigger AFTER INSERT OR DELETE OR UPDATE ON public.map_overlay_group_relation FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER map_overlay_group_relation_trigger AFTER INSERT OR DELETE OR UPDATE ON public.map_overlay_group_relation FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: map_overlay_group map_overlay_group_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER map_overlay_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.map_overlay_group FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER map_overlay_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.map_overlay_group FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
--- Name: mapOverlay mapoverlay_trigger; Type: TRIGGER; Schema: public; Owner: -
+-- Name: map_overlay map_overlay_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER mapoverlay_trigger AFTER INSERT OR DELETE OR UPDATE ON public."mapOverlay" FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER map_overlay_trigger AFTER INSERT OR DELETE OR UPDATE ON public.map_overlay FOR EACH ROW EXECUTE FUNCTION public.notification();
+
+
+--
+-- Name: map_overlay mapoverlay_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER mapoverlay_trigger AFTER INSERT OR DELETE OR UPDATE ON public.map_overlay FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: meditrak_device meditrak_device_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER meditrak_device_trigger AFTER INSERT OR DELETE OR UPDATE ON public.meditrak_device FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER meditrak_device_trigger AFTER INSERT OR DELETE OR UPDATE ON public.meditrak_device FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: meditrak_sync_queue meditrak_sync_queue_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER meditrak_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.meditrak_sync_queue FOR EACH ROW EXECUTE PROCEDURE public.update_change_time();
+CREATE TRIGGER meditrak_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.meditrak_sync_queue FOR EACH ROW EXECUTE FUNCTION public.update_change_time();
 
 
 --
 -- Name: ms1_sync_log ms1_sync_log_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER ms1_sync_log_trigger AFTER INSERT OR DELETE OR UPDATE ON public.ms1_sync_log FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER ms1_sync_log_trigger AFTER INSERT OR DELETE OR UPDATE ON public.ms1_sync_log FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: ms1_sync_queue ms1_sync_queue_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER ms1_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.ms1_sync_queue FOR EACH ROW EXECUTE PROCEDURE public.update_change_time();
+CREATE TRIGGER ms1_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.ms1_sync_queue FOR EACH ROW EXECUTE FUNCTION public.update_change_time();
 
 
 --
 -- Name: one_time_login one_time_login_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER one_time_login_trigger AFTER INSERT OR DELETE OR UPDATE ON public.one_time_login FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER one_time_login_trigger AFTER INSERT OR DELETE OR UPDATE ON public.one_time_login FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: option_set option_set_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER option_set_trigger AFTER INSERT OR DELETE OR UPDATE ON public.option_set FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER option_set_trigger AFTER INSERT OR DELETE OR UPDATE ON public.option_set FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: option option_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER option_trigger AFTER INSERT OR DELETE OR UPDATE ON public.option FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER option_trigger AFTER INSERT OR DELETE OR UPDATE ON public.option FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: permission_group permission_group_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER permission_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.permission_group FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER permission_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.permission_group FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: project project_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER project_trigger AFTER INSERT OR DELETE OR UPDATE ON public.project FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER project_trigger AFTER INSERT OR DELETE OR UPDATE ON public.project FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: question question_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER question_trigger AFTER INSERT OR DELETE OR UPDATE ON public.question FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER question_trigger AFTER INSERT OR DELETE OR UPDATE ON public.question FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: refresh_token refresh_token_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER refresh_token_trigger AFTER INSERT OR DELETE OR UPDATE ON public.refresh_token FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER refresh_token_trigger AFTER INSERT OR DELETE OR UPDATE ON public.refresh_token FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: report report_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER report_trigger AFTER INSERT OR DELETE OR UPDATE ON public.report FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER report_trigger AFTER INSERT OR DELETE OR UPDATE ON public.report FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: setting setting_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER setting_trigger AFTER INSERT OR DELETE OR UPDATE ON public.setting FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER setting_trigger AFTER INSERT OR DELETE OR UPDATE ON public.setting FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: survey_group survey_group_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER survey_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_group FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER survey_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_group FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: survey_response_comment survey_response_comment_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER survey_response_comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_response_comment FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER survey_response_comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_response_comment FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: survey_response survey_response_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER survey_response_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_response FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER survey_response_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_response FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: survey_screen_component survey_screen_component_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER survey_screen_component_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_screen_component FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER survey_screen_component_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_screen_component FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: survey_screen survey_screen_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER survey_screen_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_screen FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER survey_screen_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_screen FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: survey survey_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER survey_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER survey_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: sync_service_log sync_service_log_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER sync_service_log_trigger AFTER INSERT OR DELETE OR UPDATE ON public.sync_service_log FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER sync_service_log_trigger AFTER INSERT OR DELETE OR UPDATE ON public.sync_service_log FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: sync_service sync_service_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER sync_service_trigger AFTER INSERT OR DELETE OR UPDATE ON public.sync_service FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER sync_service_trigger AFTER INSERT OR DELETE OR UPDATE ON public.sync_service FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: user_account user_account_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER user_account_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_account FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER user_account_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_account FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: user_entity_permission user_entity_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER user_entity_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_entity_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER user_entity_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_entity_permission FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
@@ -3449,6 +3495,7 @@ ALTER TABLE ONLY public.user_entity_permission
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
 GRANT ALL ON SCHEMA public TO tupaia;
+GRANT ALL ON SCHEMA public TO mvrefresh;
 
 
 --
@@ -3456,7 +3503,7 @@ GRANT ALL ON SCHEMA public TO tupaia;
 --
 
 CREATE EVENT TRIGGER schema_change_trigger ON ddl_command_end
-   EXECUTE PROCEDURE public.schema_change_notification();
+   EXECUTE FUNCTION public.schema_change_notification();
 
 
 --
@@ -3467,8 +3514,8 @@ CREATE EVENT TRIGGER schema_change_trigger ON ddl_command_end
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.17 (Ubuntu 10.17-1.pgdg18.04+1)
--- Dumped by pg_dump version 10.17 (Ubuntu 10.17-1.pgdg18.04+1)
+-- Dumped from database version 13.5 (Ubuntu 13.5-1.pgdg18.04+1)
+-- Dumped by pg_dump version 13.5 (Ubuntu 13.5-1.pgdg18.04+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -3487,7 +3534,7 @@ DROP SEQUENCE public.migrations_id_seq;
 DROP TABLE public.migrations;
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+SET default_table_access_method = heap;
 
 --
 -- Name: migrations; Type: TABLE; Schema: public; Owner: -
@@ -4613,6 +4660,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 1083	/20210211041322-AddSubFacilityEntityType-modifies-schema	2021-03-16 02:28:33.266
 1084	/20210212033659-AddMissingLaosGeographicalAreas-modifies-data	2021-03-16 02:28:35.158
 1085	/20210215023211-FixLaosEntityHierarchy-modifies-data	2021-03-16 02:28:35.346
+1341	/20210705232632-AddECEGoalsDrillDowns-modifies-data	2021-08-27 01:20:23.562
 1086	/20210222124639-UpdateLaosEntitiesPushMetadata-modifies-data	2021-03-16 02:28:41.483
 1087	/20210222204800-UpdateEntityDhisIdToTrackEntityInstanceId-modifies-data	2021-03-16 02:28:45.189
 1088	/20210316013933-DeleteFijiEntities-modifies-data	2021-03-16 03:31:53.903
@@ -4854,21 +4902,116 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 1324	/20210728004659-RenameAnswerForOneOptionFromQuestion-modifies-data	2021-08-12 22:18:42.143
 1325	/20210809024412-AddConfigForSumTillLatest-modifies-data	2021-08-12 22:18:42.346
 1326	/20210809034325-CreateLarvaeHabitatsEntityType-modifies-schema	2021-08-12 22:18:43.051
-1327	/20210720001222-AddKoBoToDataServiceTypes-modifies-schema	2021-08-18 15:13:37.517
-1328	/20210727041905-AddSyncCursorTable-modifies-schema	2021-08-18 15:13:37.866
-1329	/20210727042329-AddKoBoSyncCursor-modifies-data	2021-08-18 15:13:37.934
-1330	/20210728015657-AddDataServiceSyncGroupTable-modifies-schema	2021-08-18 15:13:37.985
-1331	/20210728020128-AddFQSSurveySyncGroups-modifies-data	2021-08-18 15:13:38.474
-1332	/20210804234015-AddKoBoDataSourceEntities-modifies-data	2021-08-18 15:13:41.866
-1333	/20210805212932-AddSyncServiceLogTable-modifies-schema	2021-08-18 15:13:55.61
-1334	/20210809040122-PmosIndicators-modifies-data	2021-08-18 15:13:55.837
-1335	/20210813034157-SOL149DeleteFacility-modifies-data	2021-08-18 15:14:06.622
-1336	/20210816014247-AddConnectNullsToViewConfig-modifies-data	2021-08-18 15:14:06.91
-1337	/20210816014347-AddConnectNullsToViewConfigAtOtherLevels-modifies-data	2021-08-18 15:14:07.017
-1338	/20210811234228-AddLESMISTargetDistricts-modifies-data	2021-08-19 17:36:54.96
-1339	/20210816012839-AddProjectPacmossi-modifies-data	2021-08-19 17:36:55.208
-1340	/20210816230203-MoveAnalyticsTableUtilityFunctionsToDatabaseFunctions-modifies-schema	2021-08-19 17:44:12.462
-1341	/20210819000200-AddGeneralDashboardsToNauruEHealth-modifies-data	2021-08-19 17:44:13.128
+1327	/20210720001222-AddKoBoToDataServiceTypes-modifies-schema	2021-08-19 22:25:00.154
+1328	/20210727041905-AddSyncCursorTable-modifies-schema	2021-08-19 22:25:00.525
+1329	/20210727042329-AddKoBoSyncCursor-modifies-data	2021-08-19 22:25:00.569
+1330	/20210728015657-AddDataServiceSyncGroupTable-modifies-schema	2021-08-19 22:25:00.617
+1331	/20210728020128-AddFQSSurveySyncGroups-modifies-data	2021-08-19 22:25:00.908
+1332	/20210804234015-AddKoBoDataSourceEntities-modifies-data	2021-08-19 22:25:02.337
+1333	/20210805212932-AddSyncServiceLogTable-modifies-schema	2021-08-19 22:25:10.348
+1334	/20210809040122-PmosIndicators-modifies-data	2021-08-19 22:25:10.427
+1335	/20210811234228-AddLESMISTargetDistricts-modifies-data	2021-08-19 22:25:10.608
+1336	/20210813034157-SOL149DeleteFacility-modifies-data	2021-08-19 22:25:10.859
+1337	/20210816012839-AddProjectPacmossi-modifies-data	2021-08-19 22:25:11.292
+1338	/20210816014247-AddConnectNullsToViewConfig-modifies-data	2021-08-19 22:25:11.419
+1339	/20210816014347-AddConnectNullsToViewConfigAtOtherLevels-modifies-data	2021-08-19 22:25:11.521
+1340	/20210819000200-AddGeneralDashboardsToNauruEHealth-modifies-data	2021-08-19 22:25:12.342
+1342	/20210708023241-LESMISListVisualSummaryReport-modifies-data	2021-08-27 01:20:23.688
+1343	/20210714053110-FirstNationWithILIGraph-modifies-data	2021-08-27 01:20:23.779
+1344	/20210727021539-UpdateReportFlutrackerFirstNationIli-modifies-data	2021-08-27 01:20:23.82
+1345	/20210810040153-FQSVisualsInLESMIS-modifies-data	2021-08-27 01:20:23.967
+1346	/20210812035000-AddSomeUsefulLESMISIndicators-modifies-data	2021-08-27 01:20:24.025
+1347	/20210812035022-ICTAmenitiesAvailability-modifies-data	2021-08-27 01:20:24.166
+1348	/20210813012332-DeleteImmsProjectAndVizes-modifies-data	2021-08-27 01:20:24.565
+1349	/20210816230203-MoveAnalyticsTableUtilityFunctionsToDatabaseFunctions-modifies-schema	2021-08-27 01:31:00.99
+1350	/20210822232521-LESMISVisualSchoolLevelAmenities-modifies-data	2021-08-27 01:31:01.95
+1351	/20210823022418-LESMISTeachersInPublicSchoolsVisual-modifies-data	2021-08-27 01:31:02.582
+1352	/20210823024448-AddPacMOSSIMosquitoOccurenceDashboard-modifies-data	2021-08-27 01:31:03.12
+1353	/20210825225206-SwitchSumInReportServerToAcceptingManyArgs-modifies-data	2021-08-27 01:31:03.271
+1354	/20210827024648-UpdateAnalyticsTableToHandleYesNoAnswers-modifies-schema	2021-08-27 08:19:53.367
+1355	/20210831004115-RemoveAndUpdateCovidSamoaVailoaPalauliEntities-modifies-data	2021-08-31 11:24:02.213
+1356	/20210831043801-AddEntitiesRelationToSamoaForPenfaaSamoa-modifies-data	2021-08-31 11:24:02.313
+1357	/20210831074805-AddSubDistrictParentsSamoa-modifies-data	2021-08-31 11:24:02.466
+1358	/20210812034759-AdultMosquitoOccurrenceByFieldStation-modifies-data	2021-09-02 22:28:42.119
+1359	/20210823032403-LESMISChildrenOverAgeForGradeVisual-modifies-data	2021-09-02 22:28:42.269
+1360	/20210824005652-LESMISNumberOfPublicPrivateClassrooms-modifies-data	2021-09-02 22:28:42.376
+1361	/20210804054649-CovidSamoaReinstateHouseholdOverlay-modifies-data	2021-09-05 23:15:40.369
+1362	/20210805035710-CovidSamoaAddHouseholdPointdata-modifies-data	2021-09-05 23:16:30.493
+1363	/20210902055844-UpdateUNFPASbRawDataDownloadSurvey-modifies-data	2021-09-05 23:16:30.864
+1364	/20210810063133-AddFijiCOVIDDashboardCasesVsDeaths-modifies-data	2021-09-10 02:20:46.503
+1365	/20210824045814-AddPacMossiRawDataDownload-modifies-data	2021-09-10 02:20:46.623
+1366	/20210825230542-LESMISProvinceNationalDropOutRates-modifies-data	2021-09-10 02:20:46.764
+1367	/20210902032838-AddPacMossiOverlayOccurranceGenusDistrictCountry-modifies-data	2021-09-10 02:20:46.887
+1368	/20210824064634-CreateMapOverlayGroupForPacmosss-modifies-data	2021-09-17 00:28:08.643
+1369	/20210824231816-DistributionOfSpeciesPacmoss-modifies-data	2021-09-17 00:28:08.77
+1370	/20210901021333-MosquitoSpeciesPacMossiMapOverlay-modifies-data	2021-09-17 00:28:08.884
+1371	/20210901022638-AddReportForMosquitoSpeciesPacmossi-modifies-data	2021-09-17 00:28:08.928
+1372	/20210905222526-ESSDPAddHLODashboardHeaders-modifies-data	2021-09-17 00:28:09.047
+1373	/20210905333536-ESSDPListVisualNumberOfStudentsDrillDowns-modifies-data	2021-09-17 00:28:09.139
+1374	/20210906025641-ESSDPListVisualNumberOfStudents-modifies-data	2021-09-17 00:28:09.418
+1375	/20210908210327-LESMISListVisual-water-supply-modifies-data	2021-09-17 00:28:09.479
+1376	/20210909220543-NumberOfStudentsUpdateReportConfigs-modifies-data	2021-09-17 00:28:09.598
+1377	/20210910022500-ConvertExistingReportsToNewTransformSyntax-modifies-data	2021-09-17 00:28:10.898
+1378	/20210913013108-AddFijiCOVIDDashboardTestsByDay-modifies-data	2021-09-17 00:28:11.058
+1379	/20210914232504-UpdateUNFPAWsRawDataDownloadSurvey-modifies-data	2021-09-17 00:28:11.553
+1380	/20210907111655-LESMISNonTargetDistricts-modifies-data	2021-09-28 03:29:24.906
+1381	/20210907222655-LESMISPrimaryEducationCohortSurvivalRate-modifies-data	2021-09-28 03:29:25.125
+1382	/20210912223650-LESMISVitalsUseEntityAggregation-modifies-data	2021-09-28 03:29:25.337
+1383	/20210914035116-AddLegacyOptionsToMapOverlayTable-modifies-schema	2021-10-04 22:58:35.605
+1384	/20210914044208-LESMIS-GER-Map-Overlays-modifies-data	2021-10-04 22:58:36.649
+1385	/20210920050147-NetEnrolmentRatesMapOverlayLaos-modifies-data	2021-10-04 22:58:37.331
+1386	/20210920234840-DefaultMeasureOnlyUseMainMapOverlayId-modifies-data	2021-10-04 22:58:37.375
+1387	/20210921051858-LESMISRepititionRatesDistrict-modifies-data	2021-10-04 22:58:37.459
+1388	/20210921183003-remove-laos-schools-map-overlay-modifies-data	2021-10-04 22:58:37.562
+1389	/20210921211920-LESMIS-GIR-map-overlays-modifies-data	2021-10-04 22:58:37.758
+1390	/20210922211939-LESMIS-number-of-schools-overlays-modifies-data	2021-10-04 22:58:37.929
+1391	/20210923011806-LESMISEnrolmentRateMapOverlays-modifies-data	2021-10-04 22:58:38.077
+1392	/20210923024807-LESMISDropOutRateDistrictOverlay-modifies-data	2021-10-04 22:58:38.163
+1393	/20210924030256-lesmis-number-of-students-overlays-modifies-data	2021-10-04 22:58:38.412
+1394	/20211010204857-UpdateTongaPermissionGroup-modifies-data	2021-10-11 20:54:32.261
+1395	/20211011020420-UpdateDashboardRelationsForPermissionGroupNameChange-modifies-data	2021-10-11 20:54:32.28
+1396	/20210818014247-AddFijiCovid7DayPositivityIndicator-modifies-data	2021-10-18 23:11:22.874
+1397	/20210913030808-AddCovidFiji7DayPositivityRateReport-modifies-data	2021-10-18 23:11:22.974
+1398	/20210913042439-Add7DayPositivityMapOverlayCovidFiji-modifies-data	2021-10-18 23:11:23.105
+1399	/20210927003701-LESMIS5YearOldEnrolmentRateMapOverlays-modifies-data	2021-10-18 23:11:23.237
+1400	/20211006023659-LESMISDropOutRateProvinceOverlay-modifies-data	2021-10-18 23:11:23.379
+1401	/20211006024728-LESMISRemoveProvinceOverlayGroupRelationRepetitionRates-modifies-data	2021-10-18 23:11:23.504
+1402	/20211013004912-DeleteOldTestAccounts-modifies-data	2021-10-18 23:11:23.561
+1403	/20211014051346-LowerCaseMapOverlayTable-modifies-schema	2021-10-18 23:11:31.583
+1404	/20211014062930-SplitMapOverlayLegacyReportsOut-modifies-schema	2021-10-18 23:11:32.933
+1405	/20211015225954-updateOverlayRelationsToUseIds-modifies-data	2021-10-18 23:11:33.106
+1406	/20211018050629-SUPPLYCHAINFJAddMapOverlayLaboratoryItemAvailability-modifies-data	2021-10-26 02:22:33.95
+1407	/20211027200821-lesmis-update-reporting-on-sdgs-dashboards-modifies-data	2021-10-27 20:41:14.568
+1408	/20211101040146-WAI-1021-TongaContactTracingVisual-modifies-data	2021-11-02 00:29:03.579
+1409	/20211102023345-TongaContactTracingCustomRawDataDownload-modifies-data	2021-11-03 06:40:45.893
+1410	/20211004024719-AddReportsVaccineMapOverlaysCappedFJ-modifies-data	2021-11-08 20:48:15.85
+1411	/20211006084738-AddReportsVaccineMapOverlaysCappedWS-modifies-data	2021-11-08 20:48:16.019
+1412	/20211019223410-ConvertFanfanaOlaHpuOverlaysToReportServer-modifies-data	2021-11-08 20:48:16.221
+1413	/20211025212049-DeleteSamoaVillageEntityAlafou-modifies-data	2021-11-08 20:48:16.99
+1414	/20211117221003-AddVillageParentsForCovidSamoaHierarchy-modifies-data	2021-11-18 01:41:32.673
+1415	/20211110233036-TongaCovid19TestLocations-modifies-data	2021-11-22 21:42:35.669
+1416	/20211123053316-AddProjectPenFaaSamoa-modifies-data	2021-11-29 21:50:09.083
+1417	/20211123223023-DeleteAccidentalTestCountry-modifies-data	2021-11-29 21:50:09.257
+1418	/20211124053026-AddMapOverlayGroupForNcd-modifies-data	2021-11-29 21:50:09.325
+1475	/20220119005332-UpdateTongaCovidPermissions-modifies-data	2022-01-24 22:49:16.616
+1426	/20211125021151-ChangePermissionForPenFaa-modifies-data	2021-12-02 07:56:58.451
+1446	/20211126004049-AddPrimaryPlatformToUsersTable-modifies-schema	2021-12-06 21:03:19.715
+1447	/20211130040028-UpdateFacilityNamesSolomonIslands-modifies-data	2021-12-06 21:03:20.95
+1448	/20211201030947-SamoaDeleteDuplicateSchool-modifies-data	2021-12-06 21:03:22.821
+1449	/20211201052040-AddPhiPermissionGroup-modifies-data	2021-12-06 21:03:22.882
+1450	/20211201223600-DeleteCovid19SurveillanceDashbaord-modifies-data	2021-12-06 21:03:22.907
+1467	/20211201090124-MergeFlutrackingResponses-modifies-data	2021-12-07 22:16:24.794
+1468	/20211207002048-DropNotificationTriggerFromReportTable-modifies-schema	2021-12-14 01:26:05.852
+1469	/20211209033916-SeparateFlutrackingAndCovid19Projects-modifies-data	2021-12-14 01:26:07.046
+1470	/20211115202946-LESMISESSDPDrillDown5Year40District-modifies-data	2022-01-20 01:09:44.778
+1471	/20220105040520-AddIndividualToFanafanaEntityHierarchy-modifies-data	2022-01-20 01:09:44.993
+1472	/20220107050226-AddFlutrackingPostcodeMapOverlayGroup-modifies-data	2022-01-20 01:09:45.154
+1473	/20220107061813-SetMapOverlayGroupCodeAsUniqueKey-modifies-schema	2022-01-20 01:09:45.35
+1474	/20220117011411-CovidSamoaDeleteOutdatedResponses-modifies-data	2022-01-20 04:20:56.496
+1476	/20211121221500-AddApprovalColumns-modifies-schema	2022-02-03 17:24:21.927
+1477	/20211125004704-UpdateAnalyticsTableForApprovalStatus-modifies-schema	2022-02-03 17:57:18.406
+1479	/20220203064851-AddDataLakeServiceType-modifies-schema	2022-02-04 11:44:29.918
+1480	/20220122223251-PenFaaSamoaAddVillageSchoolEntityRelations	2022-03-31 12:32:41.54
 \.
 
 
@@ -4876,7 +5019,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 1341, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 1480, true);
 
 
 --

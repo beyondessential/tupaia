@@ -16,15 +16,15 @@ const DATA_TYPES = {
 
 // Converts internal value array to Viz config.transform data structure.
 const transformToValue = transform =>
-  transform.map(({ id, name, transform: code, ...restOfConfig }, index) => ({
-    id: `${code}-${index}`, // id used by drag and drop function
+  transform.map(({ id, transform: code, ...restOfConfig }, index) => ({
+    id: id || `${code}-${index}`, // id used by drag and drop function
     code,
     ...restOfConfig,
   }));
 
 const valueToTransform = value =>
   value.map(({ id, code, isDisabled = false, ...restOfConfig }, index) => ({
-    id: `${code}-${index}`, // option from selectable options does not have id.
+    id: id || `${code}-${index}`, // option from selectable options does not have id.
     transform: code,
     isDisabled,
     ...restOfConfig,
@@ -100,6 +100,10 @@ export const TransformDataLibrary = ({ transform, onTransformChange, onInvalidCh
   );
 };
 
+TransformDataLibrary.defaultProps = {
+  transform: [],
+};
+
 TransformDataLibrary.propTypes = {
   transform: PropTypes.oneOfType([
     PropTypes.arrayOf(
@@ -108,7 +112,7 @@ TransformDataLibrary.propTypes = {
       }),
     ),
     PropTypes.string,
-  ]).isRequired,
+  ]),
   onTransformChange: PropTypes.func.isRequired,
   onInvalidChange: PropTypes.func.isRequired,
 };
