@@ -47,10 +47,11 @@ export class ReportServerAggregator {
     );
   }
 
-  private async getDateElementCodes(programCode: string, organisationUnitCodes: string[]) {
-    const { dataElements } = (await this.aggregator.fetchDataGroup(programCode, {
-      organisationUnitCodes,
-    })) as EventMetaData;
+  private async getDateElementCodes(programCode: string) {
+    const { dataElements } = (await this.aggregator.fetchDataGroup(
+      programCode,
+      {},
+    )) as EventMetaData;
     return dataElements.map(({ code }) => code);
   }
 
@@ -66,7 +67,7 @@ export class ReportServerAggregator {
 
     const dataElementCodes =
       ((!dataElementCodesInConfig || dataElementCodesInConfig.length === 0) &&
-        (await this.getDateElementCodes(programCode, organisationUnitCodes))) ||
+        (await this.getDateElementCodes(programCode))) ||
       dataElementCodesInConfig;
 
     const aggregations = aggregationList
@@ -85,5 +86,9 @@ export class ReportServerAggregator {
       },
       { aggregations },
     );
+  }
+
+  public async fetchDataGroup(code: string) {
+    return this.aggregator.fetchDataGroup(code, {});
   }
 }

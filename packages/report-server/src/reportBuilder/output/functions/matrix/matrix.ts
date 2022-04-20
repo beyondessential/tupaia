@@ -5,6 +5,7 @@
 
 import { yup } from '@tupaia/utils';
 
+import { ReportServerAggregator } from '../../../../aggregator';
 import { Row } from '../../../types';
 import { MatrixBuilder } from './matrixBuilder';
 import { Matrix, MatrixParams } from './types';
@@ -51,17 +52,28 @@ const paramsValidator = yup.object().shape(
             )
           : schema,
       ),
+    dataGroups: yup.array().of(yup.string()).notRequired(),
   },
   [['rowField', 'categoryField']],
 );
 
-const matrix = (rows: Row[], params: MatrixParams): Matrix => {
-  return new MatrixBuilder(rows, params).build();
+export const matrix = async (
+  rows: Row[],
+  params: MatrixParams,
+  aggregator: ReportServerAggregator,
+): Promise<Matrix> => {
+  return new MatrixBuilder(rows, params, aggregator).build();
 };
 
-const buildParams = (params: unknown): MatrixParams => {
+export const buildParams = (params: unknown): MatrixParams => {
   const validatedParams = paramsValidator.validateSync(params);
-  const { columns = '*', categoryField, rowField } = validatedParams;
+  const {
+    columns = '*',
+    categoryField,
+    rowField,
+    attachAllDataElementsToColumns,
+    ...restOfConfigs
+  } = validatedParams;
   const includeFields = columns === '*' ? ['*'] : columns;
 
   const excludeFields = categoryField ? [categoryField, rowField] : [rowField];
@@ -69,10 +81,12 @@ const buildParams = (params: unknown): MatrixParams => {
   return {
     columns: { includeFields, excludeFields },
     rows: { categoryField, rowField },
+    attachAllDataElementsToColumns,
+    ...restOfConfigs,
   };
 };
 
 export const buildMatrix = (params: unknown) => {
   const builtParams = buildParams(params);
-  return (rows: Row[]) => matrix(rows, builtParams);
+  return (rows: Row[], aggregator: ReportServerAggregator) => matrix(rows, builtParams, aggregator);
 };

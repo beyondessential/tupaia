@@ -5,6 +5,7 @@
 
 import { yup } from '@tupaia/utils';
 
+import { ReportServerAggregator } from '../../aggregator';
 import { Row } from '../types';
 import { outputBuilders } from './functions/outputBuilders';
 
@@ -19,11 +20,11 @@ const paramsValidator = yup.object().shape({
     .oneOf(Object.keys(outputBuilders) as (keyof typeof outputBuilders)[]),
 });
 
-const output = (rows: Row[], params: OutputParams) => {
+const output = (rows: Row[], params: OutputParams, aggregator: ReportServerAggregator) => {
   const { type, config } = params;
 
   const outputBuilder = outputBuilders[type](config);
-  return outputBuilder(rows);
+  return outputBuilder(rows, aggregator);
 };
 
 const buildParams = (params: unknown): OutputParams => {
@@ -34,5 +35,5 @@ const buildParams = (params: unknown): OutputParams => {
 
 export const buildOutput = (params: unknown) => {
   const builtParams = buildParams(params);
-  return (rows: Row[]) => output(rows, builtParams);
+  return (rows: Row[], aggregator: ReportServerAggregator) => output(rows, builtParams, aggregator);
 };

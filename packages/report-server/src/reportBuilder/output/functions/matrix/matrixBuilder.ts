@@ -1,4 +1,6 @@
+import { yup } from '@tupaia/utils';
 import pick from 'lodash.pick';
+import { ReportServerAggregator } from '../../../../aggregator';
 import { Row } from '../../../types';
 import { MatrixParams, Matrix } from './types';
 
@@ -13,18 +15,21 @@ export class MatrixBuilder {
   private rows: Row[];
   private matrixData: Matrix;
   private params: MatrixParams;
+  private aggregator: ReportServerAggregator;
 
-  public constructor(rows: Row[], params: MatrixParams) {
+  public constructor(rows: Row[], params: MatrixParams, aggregator: ReportServerAggregator) {
     this.rows = rows;
     this.params = params;
+    this.aggregator = aggregator;
     this.matrixData = { columns: [], rows: [] };
   }
 
-  public build() {
+  public async build() {
     this.buildColumns();
     this.buildRows();
     this.adjustRowsToUseIncludedColumns();
     this.buildCategories();
+    await this.attachAllDataElementsToColumns();
     return this.matrixData;
   }
 
@@ -117,5 +122,41 @@ export class MatrixBuilder {
     }
 
     this.matrixData.rows = newRows;
+  }
+
+  private async attachAllDataElementsToColumns() {
+    const dataElementValidator = yup
+      .array()
+      .of(
+        yup.object().shape({
+          code: yup.string().required(),
+          text: yup.string().required(),
+        }),
+      )
+      .required();
+    if (!this.params.attachAllDataElementsToColumns || !this.params.dataGroups) {
+      return;
+    }
+    const { dataGroups } = this.params;
+
+    const dataElementsMetadata = (
+      await Promise.all(
+        dataGroups.map(async surveyCode => {
+          const { dataElements } = await this.aggregator.fetchDataGroup(surveyCode);
+          const validatedDataElements = dataElementValidator.validateSync(dataElements);
+
+          return validatedDataElements.map(dataElement => ({
+            key: dataElement.code,
+            title: dataElement.text,
+          }));
+        }),
+      )
+    ).flat();
+    const keysFromMetadata = dataElementsMetadata.map(({ key }) => key);
+    // Entity code, Entity Name, Date or other added columns
+    const restOfColumns = this.matrixData.columns.filter(
+      column => !keysFromMetadata.includes(column.key),
+    );
+    this.matrixData.columns = [...restOfColumns, ...dataElementsMetadata];
   }
 }

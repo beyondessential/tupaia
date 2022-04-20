@@ -77,6 +77,7 @@ class SurveyDataExportBuilder extends DataBuilder {
   buildReportData = async () => {
     const { surveys } = this.config;
     const { startDate, endDate, surveyCodes } = this.query;
+    const selectedSurveyCodes = surveyCodes.split(',');
 
     const reportConnection = new ReportConnection(this.req);
     const hierarchyId = await this.fetchHierarchyId();
@@ -96,56 +97,25 @@ class SurveyDataExportBuilder extends DataBuilder {
     }
 
     const surveyData = {};
+
     await Promise.all(
       surveys.map(async survey => {
         const { reportCode, name: surveyName, codes, code } = survey;
-        if (surveys.includes(codes.toString() && surveys.includes(code))) {
+        if (
+          codes.some(c => !selectedSurveyCodes.includes(c)) &&
+          !selectedSurveyCodes.includes(code)
+        ) {
           return;
         }
         const { results } = await reportConnection.fetchReport(reportCode, requestQuery);
-
-        // Add data element names to columns
-        // TODO: Do it in report server
-        const dataElementsMetadata = (
-          await Promise.all(
-            surveyCodes.split(',').map(async surveyCode => {
-              const { dataElements } = await this.fetchDataGroup(surveyCode);
-              return dataElements.map(dataElement => ({
-                key: dataElement.code,
-                title: dataElement.text,
-              }));
-            }),
-          )
-        ).flat();
-
-        const keysFromMetadata = dataElementsMetadata.map(({ key }) => key);
-        // Entity code, Entity Name, Date or other added columns
-        const restOfColumns = results.columns.filter(
-          column => !keysFromMetadata.includes(column.key),
-        );
-
         surveyData[surveyName] = {
-          data: {
-            ...results,
-            columns: [...restOfColumns, ...dataElementsMetadata],
-          },
+          data: results,
         };
       }),
     );
 
     return { data: surveyData };
   };
-
-  async fetchDataGroup(code) {
-    const { dataServices } = this.config;
-    const { organisationUnitCode } = this.query;
-
-    return this.aggregator.fetchDataGroup(code, {
-      organisationUnitCode,
-      dataServices,
-      includeOptions: true,
-    });
-  }
 }
 
 export const surveyDataExport = async (
