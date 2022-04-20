@@ -8,7 +8,7 @@ import { AuthHandler } from '../types';
 export class TokenAuthHandler implements AuthHandler {
   private readonly authHeader: string;
 
-  constructor(token = '') {
+  public constructor(token = '') {
     this.authHeader = `Authorization ${token}`;
   }
 

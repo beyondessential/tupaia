@@ -13,7 +13,7 @@ export class TupaiaApiClient {
 
   public readonly meditrak: MeditrakApi;
 
-  constructor(authHandler: AuthHandler, baseUrls: ServiceBaseUrlSet = PRODUCTION_BASE_URLS) {
+  public constructor(authHandler: AuthHandler, baseUrls: ServiceBaseUrlSet = PRODUCTION_BASE_URLS) {
     this.entity = new EntityApi(new ApiConnection(authHandler, baseUrls.entity));
     this.meditrak = new MeditrakApi(new ApiConnection(authHandler, baseUrls.meditrak));
   }

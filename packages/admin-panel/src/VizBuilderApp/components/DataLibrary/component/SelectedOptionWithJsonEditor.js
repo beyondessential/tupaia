@@ -71,6 +71,15 @@ export const SelectedOptionWithJsonEditor = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  const handleToggleExpanded = newIsExpanded => {
+    if (!newIsExpanded) {
+      // When collapsing, any invalid state is thrown away. To tell our parents
+      // this we have to trigger an onChange event
+      onChange(option);
+    }
+    setIsExpanded(newIsExpanded);
+  };
+
   return (
     <OptionPanelWithJsonEditor>
       <FlexBetweenPanel>
@@ -87,7 +96,7 @@ export const SelectedOptionWithJsonEditor = ({
         />
         <DownArrowIconWrapper
           $expanded={isExpanded}
-          onClick={() => setIsExpanded(!isExpanded)}
+          onClick={() => handleToggleExpanded(!isExpanded)}
           className="icon-wrapper"
         >
           <DownArrow />

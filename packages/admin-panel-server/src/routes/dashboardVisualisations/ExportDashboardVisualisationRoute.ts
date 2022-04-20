@@ -33,13 +33,13 @@ export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisu
 
   private readonly meditrakConnection: MeditrakConnection;
 
-  constructor(req: ExportDashboardVisualisationRequest, res: Response, next: NextFunction) {
+  public constructor(req: ExportDashboardVisualisationRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.meditrakConnection = new MeditrakConnection(req.session);
   }
 
-  async buildResponse() {
+  public async buildResponse() {
     this.validate();
 
     const { visualisation: builtVisualisation } = this.req.body;

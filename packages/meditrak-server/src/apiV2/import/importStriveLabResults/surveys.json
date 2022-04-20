@@ -1,5 +1,6 @@
 {
   "STRIVE Barcoding": {
+    "Date": "STR_PCR01",
     "Well": "STR_BAR01",
     "Sample": "entityCode",
     "CQ": "STR_BAR03",
@@ -7,6 +8,7 @@
     "Positive result": "STR_BAR05"
   },
   "STRIVE Flanking": {
+    "Date": "STR_PCR01",
     "Well": "STR_FLA01",
     "Sample": "entityCode",
     "CQ": "STR_FLA03",
@@ -14,6 +16,7 @@
     "Positive result": "STR_FLA05"
   },
   "STRIVE Hrp": {
+    "Date": "STR_PCR01",
     "Well": "STR_HRP01",
     "Sample": "entityCode",
     "CQ": "STR_HRP03",
@@ -21,6 +24,7 @@
     "Positive result": "STR_HRP05"
   },
   "STRIVE K13 C580Y": {
+    "Date": "STR_PCR01",
     "Well": "STR_K13C01",
     "Sample": "entityCode",
     "CQ": "STR_K13C03",
@@ -31,6 +35,7 @@
     "Sequence result other": "STR_K13C08"
   },
   "STRIVE PCR Pf": {
+    "Date": "STR_PCR01",
     "Well": "STR_PF01",
     "Sample": "entityCode",
     "CQ": "STR_PF03",
@@ -38,6 +43,7 @@
     "Positive result": "STR_PF05"
   },
   "STRIVE PCR Pv": {
+    "Date": "STR_PCR01",
     "Well": "STR_PV01",
     "Sample": "entityCode",
     "CQ": "STR_PV03",
@@ -45,6 +51,7 @@
     "Positive result": "STR_PV05"
   },
   "STRIVE PCR Po": {
+    "Date": "STR_PCR01",
     "Well": "STR_PO01",
     "Sample": "entityCode",
     "CQ": "STR_PO03",
@@ -52,6 +59,7 @@
     "Positive result": "STR_PO05"
   },
   "STRIVE PCR Pm": {
+    "Date": "STR_PCR01",
     "Well": "STR_PM01",
     "Sample": "entityCode",
     "CQ": "STR_PM03",
@@ -59,6 +67,7 @@
     "Positive result": "STR_PM05"
   },
   "STRIVE QMAL": {
+    "Date": "STR_PCR01",
     "Well": "STR_QMAL01",
     "Sample": "entityCode",
     "CQ": "STR_QMAL03",
@@ -132,6 +141,34 @@
     "corrected_mortality":	"STRVEC_AN-IR10",
     "resistance":	"STRVEC_AN-IR11"
   },
+  "IMRVEC_AE-IR": {
+    "ec5_parent_uuid":	"STRVEC_AE-IR01",
+    "10_insecticide":	"STRVEC_AE-IR02",
+    "3_sentinel_site": 	"entityCode",
+    "sample_alive":	"STRVEC_AE-IR03",
+    "sample.x":	"STRVEC_AE-IR04",
+    "observed_control_livetality":	"STRVEC_AE-IR05",
+    "observed_control_mortality":	"STRVEC_AE-IR06",
+    "sample_dead":	"STRVEC_AE-IR07",
+    "sample.y":	"STRVEC_AE-IR08",
+    "observed_replicate_mortality":	"STRVEC_AE-IR09",
+    "corrected_mortality":	"STRVEC_AE-IR10",
+    "resistance":	"STRVEC_AE-IR11"
+  },
+  "IMRVEC_AN-IR": {
+    "ec5_parent_uuid":	"STRVEC_AN-IR01",
+    "10_insecticide":	"STRVEC_AN-IR02",
+    "3_sentinel_site": 	"entityCode",
+    "sample_alive":	"STRVEC_AN-IR03",
+    "sample.x":	"STRVEC_AN-IR04",
+    "observed_control_livetality":	"STRVEC_AN-IR05",
+    "observed_control_mortality":	"STRVEC_AN-IR06",
+    "sample_dead":	"STRVEC_AN-IR07",
+    "sample.y":	"STRVEC_AN-IR08",
+    "observed_replicate_mortality":	"STRVEC_AN-IR09",
+    "corrected_mortality":	"STRVEC_AN-IR10",
+    "resistance":	"STRVEC_AN-IR11"
+  },
   "STRVEC_LHS": {
     "ec5_parent_uuid":	"STRVEC_LHS01",
     "ec5_uuid":	"STRVEC_LHS02",
@@ -178,5 +215,101 @@
     "33_species":	"STRVEC_LHS13",
     "34_sex":	"STRVEC_LHS53",
     "35_number_in_pool_tu":	"STRVEC_LHS54"
+  },
+  "STRIVE PCR DENV1": {
+    "Date": "STR_PCR01",
+    "Well": "STR_DENV101",
+    "Sample": "entityCode",
+    "CQ": "STR_DENV103",
+    "SQ": "STR_DENV104",
+    "Positive result": "STR_DENV105"
+  },
+  "STRIVE PCR DENV2": {
+    "Date": "STR_PCR01",
+    "Well": "STR_DENV201",
+    "Sample": "entityCode",
+    "CQ": "STR_DENV203",
+    "SQ": "STR_DENV204",
+    "Positive result": "STR_DENV205"
+  },
+  "STRIVE PCR DENV3": {
+    "Date": "STR_PCR01",
+    "Well": "STR_DENV301",
+    "Sample": "entityCode",
+    "CQ": "STR_DENV303",
+    "SQ": "STR_DENV304",
+    "Positive result": "STR_DENV305"
+  },
+  "STRIVE PCR DENV4": {
+    "Date": "STR_PCR01",
+    "Well": "STR_DENV401",
+    "Sample": "entityCode",
+    "CQ": "STR_DENV403",
+    "SQ": "STR_DENV404",
+    "Positive result": "STR_DENV405"
+  },
+  "STRIVE PCR DENV3NC": {
+    "Date": "STR_PCR01",
+    "Well": "STR_DENV3NC01",
+    "Sample": "entityCode",
+    "CQ": "STR_DENV3NC03",
+    "SQ": "STR_DENV3NC04",
+    "Positive result": "STR_DENV3NC05"
+  },
+  "STRIVE PCR MVEV": {
+    "Date": "STR_PCR01",
+    "Well": "STR_MVEV01",
+    "Sample": "entityCode",
+    "CQ": "STR_MVEV03",
+    "SQ": "STR_MVEV04",
+    "Positive result": "STR_MVEV05"
+  },
+  "STRIVE PCR RRV": {
+    "Date": "STR_PCR01",
+    "Well": "STR_RRV01",
+    "Sample": "entityCode",
+    "CQ": "STR_RRV03",
+    "SQ": "STR_RRV04",
+    "Positive result": "STR_RRV05"
+  },
+  "STRIVE PCR BFV": {
+    "Date": "STR_PCR01",
+    "Well": "STR_BFV01",
+    "Sample": "entityCode",
+    "CQ": "STR_BFV03",
+    "SQ": "STR_BFV04",
+    "Positive result": "STR_BFV05"
+  },
+  "STRIVE PCR CHIKV": {
+    "Date": "STR_PCR01",
+    "Well": "STR_CHIKV01",
+    "Sample": "entityCode",
+    "CQ": "STR_CHIKV03",
+    "SQ": "STR_CHIKV04",
+    "Positive result": "STR_CHIKV05"
+  },
+  "STRIVE PCR ZIKV": {
+    "Date": "STR_PCR01",
+    "Well": "STR_ZIKV01",
+    "Sample": "entityCode",
+    "CQ": "STR_ZIKV03",
+    "SQ": "STR_ZIKV04",
+    "Positive result": "STR_ZIKV05"
+  },
+  "STRIVE PCR WNV": {
+    "Date": "STR_PCR01",
+    "Well": "STR_WNV01",
+    "Sample": "entityCode",
+    "CQ": "STR_WNV03",
+    "SQ": "STR_WNV04",
+    "Positive result": "STR_WNV05"
+  },
+  "STRIVE PCR JEV": {
+    "Date": "STR_PCR01",
+    "Well": "STR_JEV01",
+    "Sample": "entityCode",
+    "CQ": "STR_JEV03",
+    "SQ": "STR_JEV04",
+    "Positive result": "STR_JEV05"
   }
 }

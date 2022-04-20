@@ -8,7 +8,7 @@ import { formatEntitiesForResponse } from './format';
 import { MultiEntityRequest } from './types';
 
 export class MultiEntityRoute extends Route<MultiEntityRequest> {
-  async buildResponse() {
+  public async buildResponse() {
     const { entities, field, fields } = this.req.ctx;
     return formatEntitiesForResponse(this.req.models, this.req.ctx, entities, field || fields);
   }

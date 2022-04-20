@@ -2,18 +2,20 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+import { Request } from 'express';
+import { UnauthenticatedError } from '@tupaia/utils';
 import { Route } from '../Route';
 import { validateSyndrome } from './helpers';
-import { UnauthenticatedError, ValidationError } from '@tupaia/utils';
-import { Request } from 'express';
 
-export type FetchConfirmedWeeklyReportRequest = Request<{ countryCode: string },
+export type FetchConfirmedWeeklyReportRequest = Request<
+  { countryCode: string },
   any,
   Record<string, unknown>,
-  { startWeek: string; endWeek: string; orgUnitCodes: string; syndrome: string }>;
+  { startWeek: string; endWeek: string; orgUnitCodes: string; syndrome: string }
+>;
 
 export class FetchConfirmedWeeklyReportRoute extends Route<FetchConfirmedWeeklyReportRequest> {
-  async buildResponse() {
+  public async buildResponse() {
     if (!this.reportConnection) throw new UnauthenticatedError('Unauthenticated');
 
     const { startWeek, endWeek, orgUnitCodes, syndrome } = this.req.query;

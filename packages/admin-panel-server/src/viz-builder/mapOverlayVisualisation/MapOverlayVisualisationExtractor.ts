@@ -17,14 +17,11 @@ export class MapOverlayVisualisationExtractor<
   ReportValidator extends yup.AnyObjectSchema
 > {
   private readonly visualisation: ExpandType<yup.InferType<typeof baseVisualisationValidator>>;
-
   private readonly mapOverlayValidator: MapOverlayValidator;
-
   private readonly reportValidator: ReportValidator;
-
   private reportValidatorContext: Record<string, unknown> = {};
 
-  constructor(
+  public constructor(
     visualisation: Record<string, unknown>,
     mapOverlayValidator: MapOverlayValidator,
     reportValidator: ReportValidator,

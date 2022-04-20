@@ -16,14 +16,14 @@ function validateArraySchema(schema: any): asserts schema is ArraySchema<any> {
 // builder: LazyBuilder<union of Schema Types>, eg. LazyBuilder<StringSchema | NumberSchema>
 // We want the union type to be all the schemas in the tuple
 export class DescribableLazy<Schema extends AnySchema<any, any, any>> extends Lazy<Schema, any> {
-  yupSchemas: Schema[];
+  private readonly yupSchemas: Schema[];
 
-  constructor(builder: LazyBuilder<Schema>, yupSchemas: Array<Schema>) {
+  public constructor(builder: LazyBuilder<Schema>, yupSchemas: Array<Schema>) {
     super(builder);
     this.yupSchemas = yupSchemas;
   }
 
-  describe() {
+  public describe() {
     // Convert yup schema to json schema
     const schemas = [];
     schemas.push(...this.yupSchemas.map(yupSchema => yupSchema.describe()));

@@ -10,10 +10,12 @@ import { Route } from '../Route';
 import { WEEKLY_SURVEY_COUNTRY, WEEKLY_SURVEY_SITE } from '../../constants';
 import { validateIsNumber } from '../../utils';
 
-export type SaveWeeklyReportRequest = Request<{ countryCode: string; siteCode: string },
+export type SaveWeeklyReportRequest = Request<
+  { countryCode: string; siteCode: string },
   any,
   Record<string, unknown>,
-  { week: string }>;
+  { week: string }
+>;
 
 type WeeklyReportAnswer = {
   type: string;
@@ -22,7 +24,7 @@ type WeeklyReportAnswer = {
 };
 
 export class SaveWeeklyReportRoute extends Route<SaveWeeklyReportRequest> {
-  async buildResponse() {
+  public async buildResponse() {
     if (!this.meditrakConnection) throw new UnauthenticatedError('Unauthenticated');
 
     const { week } = this.req.query;

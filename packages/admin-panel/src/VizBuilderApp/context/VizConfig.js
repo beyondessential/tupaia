@@ -96,7 +96,19 @@ const useConfigStore = () => {
   const setLocation = value => dispatch({ type: SET_LOCATION, value });
   const setProject = value => dispatch({ type: SET_PROJECT, value });
   const setTestData = value => dispatch({ type: SET_TEST_DATA, value });
-  const setVisualisation = value => dispatch({ type: SET_VISUALISATION, value });
+  const setVisualisation = value => {
+    const { transform } = value.data;
+    const sanitisedTransform = transform.map(conf =>
+      typeof conf === 'string' ? { transform: conf, alias: true } : conf,
+    );
+    const sanitisedData = { ...value.data, transform: sanitisedTransform };
+    const sanitisedValue = {
+      ...value,
+      data: sanitisedData,
+    };
+
+    return dispatch({ type: SET_VISUALISATION, value: sanitisedValue });
+  };
   const setVisualisationValue = (key, value) =>
     dispatch({ type: SET_VISUALISATION_VALUE, key, value });
   const setPresentation = value => dispatch({ type: SET_PRESENTATION_CONFIG, value });
@@ -122,19 +134,23 @@ const amendStepsToBaseConfig = visualisation => {
   const { data } = { ...visualisation };
   const { aggregate, transform } = { ...data };
   // Remove frontend config (isDisabled, id, schema) in aggregation steps.
-  const filteredAggregate = aggregate.map(({ isDisabled, id, schema, ...restOfConfig }) => ({
-    ...restOfConfig,
-  }));
+  const filteredAggregate = Array.isArray(aggregate)
+    ? aggregate.map(({ isDisabled, id, schema, ...restOfConfig }) => ({
+        ...restOfConfig,
+      }))
+    : aggregate;
 
   // Remove frontend configs (isDisabled, id, schema) in transform steps. If it is an alias return as a string.
-  const filteredTransform = transform.map(({ isDisabled, id, schema, ...restOfConfig }) => {
-    if (restOfConfig.alias) {
-      return restOfConfig.transform;
-    }
-    return {
-      ...restOfConfig,
-    };
-  });
+  const filteredTransform = Array.isArray(transform)
+    ? transform.map(({ isDisabled, id, schema, ...restOfConfig }) => {
+        if (restOfConfig.alias) {
+          return restOfConfig.transform;
+        }
+        return {
+          ...restOfConfig,
+        };
+      })
+    : transform;
 
   const filteredData = { ...data, aggregate: filteredAggregate, transform: filteredTransform };
   return { ...visualisation, data: filteredData };
@@ -144,8 +160,12 @@ const amendStepsToBaseConfig = visualisation => {
 const filterDisabledSteps = visualisation => {
   const { data } = { ...visualisation };
   const { aggregate, transform } = { ...data };
-  const filteredAggregate = aggregate.filter(({ isDisabled }) => !isDisabled);
-  const filteredTransform = transform.filter(({ isDisabled }) => !isDisabled);
+  const filteredAggregate = Array.isArray(aggregate)
+    ? aggregate.filter(({ isDisabled }) => !isDisabled)
+    : aggregate;
+  const filteredTransform = Array.isArray(transform)
+    ? transform.filter(({ isDisabled }) => !isDisabled)
+    : transform;
   const filteredData = { ...data, aggregate: filteredAggregate, transform: filteredTransform };
   return { ...visualisation, data: filteredData };
 };

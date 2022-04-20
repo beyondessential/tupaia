@@ -6,11 +6,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { ResourcePage } from './ResourcePage';
-import { prettyArray } from '../../utilities';
 import { LightOutlinedButton } from '@tupaia/ui-components';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Link } from 'react-router-dom';
+import { prettyArray } from '../../utilities';
+import { ResourcePage } from './ResourcePage';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 
 const StyledLink = styled(Link)`
@@ -118,6 +118,14 @@ const IMPORT_CONFIG = {
   actionConfig: {
     importEndpoint: 'mapOverlayVisualisations',
   },
+  getFinishedMessage: response => (
+    <>
+      <span>{response.message}</span>
+      <p>
+        <Link to={`/viz-builder/map-overlay/${response.id}`}>View in Visualisation Builder</Link>
+      </p>
+    </>
+  ),
 };
 
 const renderNewMapOverlayVizButton = () => (

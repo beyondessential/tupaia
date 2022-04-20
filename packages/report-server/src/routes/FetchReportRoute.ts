@@ -21,7 +21,7 @@ export type FetchReportRequest = Request<
 >;
 
 export class FetchReportRoute extends Route<FetchReportRequest> {
-  async findReport() {
+  private async findReport() {
     const { models, params } = this.req;
     const { reportCode } = params;
     const report = await models.report.findOne({ code: reportCode });
@@ -32,7 +32,7 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     return report;
   }
 
-  async buildResponse() {
+  public async buildResponse() {
     const { query, body } = this.req;
     const { organisationUnitCodes, hierarchy = 'explore', ...restOfParams } = { ...query, ...body };
 

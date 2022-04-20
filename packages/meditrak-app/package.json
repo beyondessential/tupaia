@@ -85,8 +85,6 @@
   "scripts": {
     "build": "Built externally",
     "bugsnag-sourcemaps-upload": "scripts/uploadSourcemaps.sh",
-    "bump-minor": "npm-bump minor; ios/version-sync.sh",
-    "bump-patch": "npm-bump patch; ios/version-sync.sh",
     "flow": "node_modules/.bin/flow",
     "flow-stop": "node_modules/.bin/flow stop",
     "lint": "eslint --ignore-path ../../.gitignore .",

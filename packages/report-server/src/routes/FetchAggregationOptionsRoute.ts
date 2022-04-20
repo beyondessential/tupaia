@@ -21,7 +21,7 @@ export type FetchAggregationOptionsRequest = Request<
 >;
 
 export class FetchAggregationOptionsRoute extends Route<FetchAggregationOptionsRequest> {
-  async buildResponse() {
+  public async buildResponse() {
     return aggregationTypesMetaData;
   }
 }

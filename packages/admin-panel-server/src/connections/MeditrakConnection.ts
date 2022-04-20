@@ -26,30 +26,42 @@ const translateParams = (queryParameters?: Record<string, unknown>) => {
  * @deprecated use @tupaia/api-client
  */
 export class MeditrakConnection extends ApiConnection {
-  baseUrl = MEDITRAK_API_URL;
+  public baseUrl = MEDITRAK_API_URL;
 
-  async getUser() {
+  public async getUser() {
     const user = await this.get('me');
     return { ...camelcaseKeys(user), isBESAdmin: isBESAdmin(user.accessPolicy) };
   }
 
-  async fetchResources(endpoint: string, params?: Record<string, unknown>) {
+  public async fetchResources(endpoint: string, params?: Record<string, unknown>) {
     return this.get(endpoint, translateParams(params));
   }
 
-  async createResource(endpoint: string, params: Record<string, unknown>, body: RequestBody) {
+  public async createResource(
+    endpoint: string,
+    params: Record<string, unknown>,
+    body: RequestBody,
+  ) {
     return this.post(endpoint, translateParams(params), body);
   }
 
-  async updateResource(endpoint: string, params: Record<string, unknown>, body: RequestBody) {
+  public async updateResource(
+    endpoint: string,
+    params: Record<string, unknown>,
+    body: RequestBody,
+  ) {
     return this.put(endpoint, translateParams(params), body);
   }
 
-  async deleteResource(endpoint: string) {
+  public async deleteResource(endpoint: string) {
     return this.delete(endpoint);
   }
 
-  async upsertResource(endpoint: string, params: Record<string, unknown>, body: RequestBody) {
+  public async upsertResource(
+    endpoint: string,
+    params: Record<string, unknown>,
+    body: RequestBody,
+  ) {
     const results = await this.fetchResources(endpoint, params);
 
     if (results.length > 1) {
