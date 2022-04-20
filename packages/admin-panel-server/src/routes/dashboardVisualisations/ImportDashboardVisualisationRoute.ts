@@ -6,10 +6,9 @@
 
 import assert from 'assert';
 import { Request, Response, NextFunction } from 'express';
-import fs from 'fs';
 
 import { Route } from '@tupaia/server-boilerplate';
-import { readJsonFile, reduceToDictionary, snakeKeys, UploadError, yup } from '@tupaia/utils';
+import { reduceToDictionary, snakeKeys, UploadError, yup } from '@tupaia/utils';
 
 import { MeditrakConnection } from '../../connections';
 import {
@@ -20,18 +19,15 @@ import {
   legacyDashboardItemValidator,
   draftReportValidator,
   legacyReportValidator,
-  NewDashboard,
   UpsertDashboard,
   UpsertDashboardRelation,
-  NewDashboardRelation,
 } from '../../viz-builder';
 import type {
-  Dashboard,
   DashboardRecord,
-  DashboardRelation,
   DashboardRelationRecord,
   DashboardVizResource,
 } from '../../viz-builder';
+import { readFileContent } from '../../utils';
 
 const importFileSchema = yup.object().shape(
   {
@@ -44,10 +40,15 @@ const importFileSchema = yup.object().shape(
 
 export type ImportDashboardVisualisationRequest = Request<
   Record<string, never>,
-  { id: string; message: string },
+  { importedVizes: { id: string; code: string }[]; message: string },
   Record<string, never>,
   Record<string, never>
 >;
+
+type ImportFileContent = {
+  dashboards?: UpsertDashboard[];
+  dashboardRelations?: UpsertDashboardRelation[];
+} & Record<string, unknown>;
 
 export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisualisationRequest> {
   private readonly meditrakConnection: MeditrakConnection;
@@ -59,11 +60,40 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
   }
 
   public async buildResponse() {
-    if (!this.req.file) {
+    const { files } = this.req;
+    if (!files || !Array.isArray(files)) {
       throw new UploadError();
     }
 
-    const { dashboards = [], dashboardRelations = [], ...visualisation } = this.readFileContents();
+    const importedVizes: { id: string; code: string }[] = [];
+    const successes: string[] = [];
+    const errors: { fileName: string; message: string }[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const { originalname: fileName } = file;
+      try {
+        const fileContent = importFileSchema.validateSync(readFileContent(file));
+        importedVizes.push(await this.importViz(fileContent));
+        successes.push(fileName);
+      } catch (error: any) {
+        errors.push({ fileName, message: error.message });
+      }
+    }
+
+    if (errors.length > 0) {
+      throw new UploadError(errors, successes);
+    }
+
+    return {
+      importedVizes,
+      message: `${importedVizes.length} dashboard visualisation${
+        importedVizes.length !== 1 ? 's' : ''
+      } imported successfully`,
+    };
+  }
+
+  private async importViz(vizConfig: ImportFileContent) {
+    const { dashboards = [], dashboardRelations = [], ...visualisation } = vizConfig;
 
     const [dashboardItemValidator, reportValidator] = visualisation?.legacy
       ? [legacyDashboardItemValidator, legacyReportValidator]
@@ -82,17 +112,8 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
 
     await this.upsertDashboardsAndRelations(id, dashboards, dashboardRelations);
 
-    const action = existingId ? 'updated' : 'created';
-    return { id, message: `Visualisation ${action} successfully` };
+    return { id, code: extractedViz.dashboardItem.code };
   }
-
-  private readFileContents = () => {
-    const { path } = this.req.file as { path: string };
-    const fileContents = readJsonFile<Record<string, unknown>>(path);
-    fs.unlinkSync(path);
-
-    return importFileSchema.validateSync(fileContents);
-  };
 
   private findExistingVisualisationId = async (visualisation: Record<string, unknown>) => {
     const { id, code } = visualisation;

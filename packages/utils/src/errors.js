@@ -70,10 +70,66 @@ export class PermissionsError extends RespondingError {
 
 export class UploadError extends RespondingError {
   /**
-   * @param {{ message: string}} [originalError]
+   * @param {{ message: string, fileName: string}[]} [errors]
+   * @param {string[]} [successes]
    */
-  constructor(originalError) {
-    super(`File upload failed${originalError ? `: ${originalError.message}` : ''}`, 500);
+  static multiFileErrorMessage(errors, successes) {
+    const errorPart = errors
+      .map(({ fileName, message: errorMsg }) => `\n  ${fileName}: ${errorMsg}`)
+      .join('');
+    if (successes.length === 0) {
+      return errorPart;
+    }
+
+    const successPart = successes.map(fileName => `\n  ${fileName}`).join('');
+    return `\n\nFailures:${errorPart}\n\nSuccesses:${successPart}`;
+  }
+
+  /**
+   * Error response for a web request to upload file(s)
+   * Can be used in a few ways:
+   *  1. Rethrow existing error
+   *    try {
+   *      ...
+   *    } catch (error) {
+   *      throw new UploadError(error);
+   *    }
+   *
+   *  2. Throw a specified error message
+   *    throw new UploadError({ message: 'Invalid JSON file' });
+   *
+   *  3. Throw a specified error per file
+   *    throw new UploadError([
+   *      { message: 'Invalid JSON file', fileName: 'file1' },
+   *      { message: 'Age cannot be less that 0', fileName: 'file2' },
+   *    ]);
+   *
+   *  4. Throw a message for some files, but also list files that did not fail (useful when importing multiple files and allowing some to import without others)
+   *    throw new UploadError([
+   *      { message: 'Invalid JSON file', fileName: 'badFile1' },
+   *      { message: 'Age cannot be less that 0', fileName: 'badFile2' },
+   *    ],
+   *    [
+   *      'goodFile1',
+   *      'goodFile2',
+   *    ]);
+   *
+   * @param {{ message: string } | { message: string, fileName: string}[]} [errors]
+   * @param {string[]} [successes]
+   */
+  constructor(errors, successes = []) {
+    if (!errors) {
+      super(`File upload failed`, 500);
+      return;
+    }
+
+    // Just a single error
+    if (!Array.isArray(errors)) {
+      super(`File upload failed: ${errors.message}`, 500);
+      return;
+    }
+
+    super(`File upload failed: ${UploadError.multiFileErrorMessage(errors, successes)}`, 500);
   }
 }
 
