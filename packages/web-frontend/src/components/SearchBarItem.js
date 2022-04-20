@@ -59,6 +59,7 @@ const OpenCloseButton = styled(IconButton)`
 
 const LoadingSpinnerContainer = styled.div`
   display: flex;
+  margin-right: 10px;
 `;
 
 const LoadingSpinner = styled(CircularProgress)`
