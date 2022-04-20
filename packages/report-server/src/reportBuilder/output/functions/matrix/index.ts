@@ -4,4 +4,4 @@
  */
 
 export { buildMatrix } from './matrix';
-export { buildExcel } from './excel';
+export { buildRawDataExport } from './rawDataExport';

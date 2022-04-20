@@ -7,7 +7,7 @@ import { ReportServerAggregator } from '../../../../aggregator';
 import { Row } from '../../../types';
 import { buildParams, matrix } from './matrix';
 
-export const buildExcel = (params: unknown) => {
+export const buildRawDataExport = (params: unknown) => {
   const builtParams = buildParams(params);
   return (rows: Row[], aggregator: ReportServerAggregator) =>
     matrix(rows, { ...builtParams, attachAllDataElementsToColumns: true }, aggregator);

@@ -4,7 +4,7 @@
  */
 
 import { buildDefault } from './default';
-import { buildMatrix, buildExcel } from './matrix';
+import { buildMatrix, buildRawDataExport } from './matrix';
 
 type Await<T> = T extends PromiseLike<infer U> ? U : T;
 
@@ -14,6 +14,6 @@ export type OutputType = Await<
 
 export const outputBuilders = {
   matrix: buildMatrix,
-  excel: buildExcel,
+  rawDataExport: buildRawDataExport,
   default: buildDefault,
 };
