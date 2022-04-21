@@ -80,21 +80,26 @@ class AutocompleteComponent extends PureComponent {
     if (handleEndReached) handleEndReached();
   };
 
-  renderRightButton = () => {
+  getRightButtonProps = () => {
+    // use an "x" to represent clear if an option is selected or a search term entered
     if (this.props.selectedOption || this.state.searchTerm) {
-      return (
-        <Icon name="times" size={20} style={localStyles.clearIcon} onPress={this.clearSelection} />
-      );
+      return {
+        name: 'times',
+        onPress: this.clearSelection,
+      };
     }
 
+    // otherwise show up/down arrows to open/close the full set of results
     if (this.state.isOpen) {
-      return (
-        <Icon name="caret-up" size={20} style={localStyles.clearIcon} onPress={this.closeResults} />
-      );
+      return {
+        name: 'caret-up',
+        onPress: this.closeResults,
+      };
     }
-    return (
-      <Icon name="caret-down" size={20} style={localStyles.clearIcon} onPress={this.openResults} />
-    );
+    return {
+      name: 'caret-down',
+      onPress: this.openResults,
+    };
   };
 
   render() {
@@ -127,7 +132,7 @@ class AutocompleteComponent extends PureComponent {
             isFocused ? localStyles.textInputFocussed : {},
           ]}
         />
-        {this.renderRightButton()}
+        <Icon size={20} style={localStyles.rightButton} {...this.getRightButtonProps()} />
         {!selectedOption && options.length > 0 && isOpen && (
           <View style={{ flex: 1 }}>
             <FlatList
@@ -209,7 +214,7 @@ const localStyles = StyleSheet.create({
     height: Dimensions.get('window').height, // fixed height so FlatList optimisations work within the outer ScrollView
     flex: 1,
   },
-  clearIcon: {
+  rightButton: {
     position: 'absolute',
     padding: 10,
     right: 0,
