@@ -77,17 +77,43 @@ describe('fetchAnalytics()', () => {
   };
 
   it('throws an error with invalid parameters', async () => {
-    const testData: [Record<string, string | string[]>, RegExp][] = [
-      [{}, /Invalid content/],
-      [{ dataElementCodes: ['BCD1TEST', 'BCD325TEST'] }, /Invalid content.*organisationUnitCodes/], // no organisationUnitCodes
-      [{ organisationUnitCodes: ['NZ_AK', 'NZ_WG'] }, /Invalid content.*dataElementCodes/], // no dataElementCodes
+    const testData: [Record<string, unknown>, RegExp][] = [
+      [{}, /dataElementCodes is a required field/],
+      [
+        { dataElementCodes: ['BCD1TEST', 'BCD325TEST'] },
+        /organisationUnitCodes is a required field/,
+      ], // no organisationUnitCodes
+      [{ organisationUnitCodes: ['NZ_AK', 'NZ_WG'] }, /dataElementCodes is a required field/], // no dataElementCodes
       [
         {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
           startDate: 'January first, 2020',
         },
-        /Invalid content.*startDate/,
+        /startDate should be in ISO 8601 format/,
+      ],
+      [
+        {
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['BCD1TEST', 'BCD325TEST', 1],
+        },
+        /dataElementCodes*/,
+      ],
+      [
+        {
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
+          aggregations: ['FINAL_EACH_DAY', 1],
+        },
+        /aggregations\[1\]*/,
+      ],
+      [
+        {
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
+          aggregations: ['FINAL_EACH_DAY', { type: 1 }],
+        },
+        /aggregations\[1\]*/,
       ],
     ];
     for (const [options, expectedError] of testData) {
