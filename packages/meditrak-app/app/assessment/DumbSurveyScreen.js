@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { ActivityIndicator, Animated, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Animated, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { database } from '../database';
@@ -39,24 +39,14 @@ export class DumbSurveyScreen extends React.Component {
       screenIndexAnimation: new Animated.Value(props.screenIndex),
       lastScreenIndex: null,
     };
-    this.scrollViewRefs = [null, null];
   }
 
   componentDidMount() {
     this.updateHeaderLabel(this.props.surveyName);
   }
 
-  componentWillUnmount() {
-    this.props.releaseScrollControl();
-  }
-
   componentWillReceiveProps(nextProps) {
-    // During transition, make sure the incoming screen is set to the top
     if (nextProps.screenIndex !== this.props.screenIndex) {
-      const scrollViewRef = this.scrollViewRefs[nextProps.screenIndex % 2];
-      if (scrollViewRef) {
-        scrollViewRef.scrollTo({ x: 0, y: 0, animated: false });
-      }
       this.setState({
         lastScreenIndex: this.props.screenIndex,
       });
@@ -80,7 +70,6 @@ export class DumbSurveyScreen extends React.Component {
     if (this.props.screenIndex !== nextProps.screenIndex) return true;
     if (this.props.isSubmitting !== nextProps.isSubmitting) return true;
     if (this.props.errorMessage !== nextProps.errorMessage) return true;
-    if (this.props.isChildScrolling !== nextProps.isChildScrolling) return true;
     if (this.state !== nextState) return true;
     return false;
   }
@@ -141,7 +130,6 @@ export class DumbSurveyScreen extends React.Component {
       surveyName,
       surveyProgress,
       isSubmitting,
-      isChildScrolling,
       surveyScreens,
       screenIndex,
       questions,
@@ -167,19 +155,13 @@ export class DumbSurveyScreen extends React.Component {
               {isCurrentContent && !!errorMessage && (
                 <StatusMessage type={STATUS_MESSAGE_ERROR} message={errorMessage} />
               )}
-              <ScrollView
-                ref={scrollViewRef => {
-                  this.scrollViewRefs[index] = scrollViewRef;
-                }}
-                style={localStyles.scrollView}
-                scrollEnabled={!isChildScrolling}
-              >
-                {screenIndexForThisContent === surveyScreens.length ? (
-                  <SubmitScreen />
-                ) : (
-                  <QuestionScreen database={database} screenIndex={screenIndexForThisContent} />
-                )}
-                {isSubmitting && <ActivityIndicator color={THEME_COLOR_ONE} size="large" />}
+              {screenIndexForThisContent === surveyScreens.length ? (
+                <SubmitScreen />
+              ) : (
+                <QuestionScreen database={database} screenIndex={screenIndexForThisContent} />
+              )}
+              {isSubmitting && <ActivityIndicator color={THEME_COLOR_ONE} size="large" />}
+              {(onPressSubmit || onPressRepeat) && (
                 <View style={localStyles.buttonContainerContainer}>
                   {isCurrentContent && onPressSubmit !== null && !isSubmitting && (
                     <Button
@@ -196,7 +178,7 @@ export class DumbSurveyScreen extends React.Component {
                     />
                   )}
                 </View>
-              </ScrollView>
+              )}
             </Animated.View>
           );
         })}
@@ -235,11 +217,9 @@ DumbSurveyScreen.propTypes = {
   onPressSubmit: PropTypes.func,
   onPressRepeat: PropTypes.func,
   onSelectSurveyScreen: PropTypes.func,
-  releaseScrollControl: PropTypes.func,
   surveyName: PropTypes.string.isRequired,
   surveyProgress: PropTypes.number.isRequired,
   isSubmitting: PropTypes.bool,
-  isChildScrolling: PropTypes.bool,
   surveyScreens: PropTypes.array.isRequired,
   screenIndex: PropTypes.number.isRequired,
 };
@@ -250,7 +230,6 @@ DumbSurveyScreen.defaultProps = {
   onPressSubmit: null,
   onPressRepeat: null,
   isSubmitting: false,
-  isChildScrolling: false,
   onSelectSurveyScreen: null,
 };
 
@@ -265,10 +244,6 @@ const localStyles = StyleSheet.create({
   },
   submitButton: {
     margin: 5,
-  },
-  scrollView: {
-    flex: 1,
-    padding: 15,
   },
   actionBar: {
     position: 'relative',

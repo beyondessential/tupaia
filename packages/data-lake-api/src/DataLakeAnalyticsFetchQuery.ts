@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { SqlQuery } from '@tupaia/database';
 import { DataLakeDatabase } from './DataLakeDatabase';
-import { SqlQuery } from './SqlQuery';
 
 export type AnalyticsFetchOptions = {
   dataElementCodes: string[];
@@ -43,10 +43,10 @@ export class DataLakeAnalyticsFetchQuery {
     this.endDate = endDate;
   }
 
-  public async fetch(): Promise<AnalyticsFetchResult> {
+  public async fetch() {
     const { query, params } = this.buildQueryAndParams();
 
-    const sqlQuery = new SqlQuery(query, params);
+    const sqlQuery = new SqlQuery<Analytic[]>(query, params);
 
     return {
       analytics: await sqlQuery.executeOnDatabase(this.database),

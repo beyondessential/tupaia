@@ -110,13 +110,13 @@ export function createApp() {
     .post<ImportDashboardVisualisationRequest>(
       '/v1/import/dashboardVisualisations',
       verifyBESAdminAccess,
-      upload.single('dashboardVisualisations'),
+      upload.array('dashboardVisualisations'),
       handleWith(ImportDashboardVisualisationRoute),
     )
     .post<ImportMapOverlayVisualisationRequest>(
       '/v1/import/mapOverlayVisualisations',
       verifyBESAdminAccess,
-      upload.single('mapOverlayVisualisations'),
+      upload.array('mapOverlayVisualisations'),
       handleWith(ImportMapOverlayVisualisationRoute),
     )
     .post<UploadTestDataRequest>(

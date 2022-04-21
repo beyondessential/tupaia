@@ -104,9 +104,9 @@ export class TupaiaApi {
     return {};
   }
 
-  upload(endpoint, fileName, file, queryParameters) {
+  upload(endpoint, fileName, files, queryParameters) {
     const body = new FormData();
-    body.append(fileName, file);
+    files.forEach(file => body.append(fileName, file));
     const fetchConfig = this.buildFetchConfig('POST', null, body, false);
     return this.requestJson(endpoint, queryParameters, fetchConfig);
   }

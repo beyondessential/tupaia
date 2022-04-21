@@ -100,6 +100,89 @@ describe('periodGranularities', () => {
         expect(endDate.format()).toEqual('2019-02-03T23:59:59+11:00');
       });
 
+      it('works when only end date provided, with range granularity', () => {
+        const { startDate, endDate } = getDefaultDates({
+          periodGranularity: 'one_week_at_a_time',
+          defaultTimePeriod: {
+            end: { unit: 'week', offset: -2 },
+          },
+        });
+        expect(startDate.format()).toEqual('2019-01-21T00:00:00+11:00');
+        expect(endDate.format()).toEqual('2019-01-27T23:59:59+11:00');
+      });
+
+      it('rounds to closest week when start is a date string', () => {
+        const { startDate, endDate } = getDefaultDates({
+          periodGranularity: 'week',
+          defaultTimePeriod: {
+            start: '2019-01-15',
+          },
+        });
+        expect(startDate.format()).toEqual('2019-01-14T00:00:00+11:00');
+        expect(endDate.format()).toEqual('2019-02-10T23:59:59+11:00');
+      });
+
+      it('works when start is a date string with daily granularity', () => {
+        const { startDate, endDate } = getDefaultDates({
+          periodGranularity: 'one_day_at_a_time',
+          defaultTimePeriod: {
+            start: '2019-01-15',
+          },
+        });
+        expect(startDate.format()).toEqual('2019-01-15T00:00:00+11:00');
+        expect(endDate.format()).toEqual('2019-01-15T23:59:59+11:00');
+      });
+
+      it('rounds to closest week when start and end are date strings', () => {
+        const { startDate, endDate } = getDefaultDates({
+          periodGranularity: 'week',
+          defaultTimePeriod: {
+            start: '2018-05-05',
+            end: '2019-01-01',
+          },
+        });
+        expect(startDate.format()).toEqual('2018-04-30T00:00:00+10:00');
+        expect(endDate.format()).toEqual('2019-01-06T23:59:59+11:00');
+      });
+
+      it('throws if the end date is chronologically before the start date, with date strings', () => {
+        const functionCall = () => {
+          getDefaultDates({
+            periodGranularity: 'day',
+            defaultTimePeriod: {
+              start: '2018-05-05',
+              end: '2018-01-01',
+            },
+          });
+        };
+        expect(functionCall).toThrow('Start date must be earlier than the end date');
+      });
+
+      it('throws if the end date is chronologically before the start date, with offset', () => {
+        const functionCall = () => {
+          getDefaultDates({
+            periodGranularity: 'day',
+            defaultTimePeriod: {
+              start: { unit: 'day', offset: -1 },
+              end: { unit: 'day', offset: -2 },
+            },
+          });
+        };
+        expect(functionCall).toThrow('Start date must be earlier than the end date');
+      });
+
+      it('throws if the date string is in an unacceptable format', () => {
+        const functionCall = () => {
+          getDefaultDates({
+            periodGranularity: 'day',
+            defaultTimePeriod: {
+              start: '2019-13-01',
+            },
+          });
+        };
+        expect(functionCall).toThrow('Date string is not in the correct format');
+      });
+
       it('shorthand syntax', () => {
         /*
          * Equivalent to:
