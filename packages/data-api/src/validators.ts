@@ -24,7 +24,7 @@ export const eventOptionsValidator = yup.object().shape({
 
 const aggregationStringValidator = yup.string().strict().required();
 const aggregationObjectValidator = yup.object().shape({
-  type: aggregationStringValidator,
+  type: yup.string().strict(),
   config: yup.object(),
 });
 

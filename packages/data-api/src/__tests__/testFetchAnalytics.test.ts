@@ -99,6 +99,22 @@ describe('fetchAnalytics()', () => {
         },
         /dataElementCodes*/,
       ],
+      [
+        {
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
+          aggregations: ['FINAL_EACH_DAY', 1],
+        },
+        /aggregations\[1\]*/,
+      ],
+      [
+        {
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
+          aggregations: ['FINAL_EACH_DAY', { type: 1 }],
+        },
+        /aggregations\[1\]*/,
+      ],
     ];
     for (const [options, expectedError] of testData) {
       await expect(api.fetchAnalytics(options)).toBeRejectedWith(expectedError);
