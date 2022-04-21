@@ -6,7 +6,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { View, StyleSheet, FlatList, TextInput, Platform, Text } from 'react-native';
+import { Dimensions, View, StyleSheet, FlatList, TextInput, Platform, Text } from 'react-native';
 import { takeScrollControl, releaseScrollControl } from '../../assessment/actions';
 import {
   THEME_FONT_FAMILY,
@@ -23,14 +23,31 @@ class AutocompleteComponent extends PureComponent {
 
     this.state = {
       isFocused: false,
+      isOpen: false,
       searchTerm: '',
     };
   }
+
+  openResults = () => {
+    this.props.takeScrollControl();
+    this.props.scrollIntoFocus();
+    this.setState({
+      isOpen: true,
+    });
+  };
+
+  closeResults = () => {
+    this.props.releaseScrollControl();
+    this.setState({
+      isOpen: false,
+    });
+  };
 
   handleFocus = () => {
     this.setState({
       isFocused: true,
     });
+    this.openResults();
   };
 
   handleBlur = () => {
@@ -55,6 +72,7 @@ class AutocompleteComponent extends PureComponent {
 
   onOptionPress = option => {
     this.props.handleSelectOption(option);
+    this.closeResults();
   };
 
   onEndReached = () => {
@@ -62,16 +80,26 @@ class AutocompleteComponent extends PureComponent {
     if (handleEndReached) handleEndReached();
   };
 
+  renderRightButton = () => {
+    if (this.props.selectedOption || this.state.searchTerm) {
+      return (
+        <Icon name="times" size={20} style={localStyles.clearIcon} onPress={this.clearSelection} />
+      );
+    }
+
+    if (this.state.isOpen) {
+      return (
+        <Icon name="caret-up" size={20} style={localStyles.clearIcon} onPress={this.closeResults} />
+      );
+    }
+    return (
+      <Icon name="caret-down" size={20} style={localStyles.clearIcon} onPress={this.openResults} />
+    );
+  };
+
   render() {
-    const { searchTerm, isFocused } = this.state;
-    const {
-      placeholder,
-      selectedOption,
-      options,
-      endReachedOffset,
-      takeScrollControl,
-      releaseScrollControl,
-    } = this.props;
+    const { searchTerm, isFocused, isOpen } = this.state;
+    const { placeholder, selectedOption, options, endReachedOffset } = this.props;
     return (
       <View style={localStyles.wrapper}>
         <Icon
@@ -85,11 +113,9 @@ class AutocompleteComponent extends PureComponent {
           value={selectedOption || searchTerm}
           selectTextOnFocus
           onFocus={() => {
-            takeScrollControl();
             this.handleFocus();
           }}
           onBlur={() => {
-            releaseScrollControl();
             this.handleBlur();
           }}
           placeholder={placeholder}
@@ -101,8 +127,8 @@ class AutocompleteComponent extends PureComponent {
             isFocused ? localStyles.textInputFocussed : {},
           ]}
         />
-        <Icon name="times" size={20} style={localStyles.clearIcon} onPress={this.clearSelection} />
-        {!selectedOption && options.length > 0 && (
+        {this.renderRightButton()}
+        {!selectedOption && options.length > 0 && isOpen && (
           <View style={{ flex: 1 }}>
             <FlatList
               data={options}
@@ -136,8 +162,9 @@ Autocomplete.propTypes = {
   handleSelectOption: PropTypes.func.isRequired,
   handleChangeInput: PropTypes.func.isRequired,
   handleEndReached: PropTypes.func,
-  takeScrollControl: PropTypes.func,
-  releaseScrollControl: PropTypes.func,
+  takeScrollControl: PropTypes.func.isRequired,
+  releaseScrollControl: PropTypes.func.isRequired,
+  scrollIntoFocus: PropTypes.func.isRequired,
   endReachedOffset: PropTypes.number,
   options: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
@@ -179,7 +206,7 @@ const localStyles = StyleSheet.create({
     height: 40,
   },
   optionList: {
-    height: 200,
+    height: Dimensions.get('window').height, // fixed height so FlatList optimisations work within the outer ScrollView
     flex: 1,
   },
   clearIcon: {
