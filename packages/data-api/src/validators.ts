@@ -46,6 +46,6 @@ export const analyticsOptionsValidator = yup.object().shape({
     .of<typeof aggregationStringValidator | typeof aggregationObjectValidator>(
       yup.lazy((value: unknown) =>
         typeof value === 'string' ? aggregationStringValidator : aggregationObjectValidator,
-      ) as any,
+      ) as any, // TODO: Upgrade to yup to avoid having to cast as 'any' here: https://github.com/jquense/yup/issues/1190
     ),
 });
