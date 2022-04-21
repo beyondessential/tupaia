@@ -79,6 +79,7 @@ const SearchBarItemComponent = ({
   onClickExpand,
   nestedMargin,
   isFinalRow,
+  isLoading,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -114,7 +115,7 @@ const SearchBarItemComponent = ({
           {name}
           {Icon && <Icon style={{ opacity: 0.7, marginLeft: 5 }} />}
         </StyledButton>
-        {isOpen && nestedItems.length === 0 && (
+        {isLoading && (
           <LoadingSpinnerContainer>
             <LoadingSpinner size={18} />
           </LoadingSpinnerContainer>
@@ -145,6 +146,7 @@ SearchBarItemComponent.propTypes = {
   onClickExpand: PropTypes.func.isRequired,
   nestedMargin: PropTypes.number,
   isFinalRow: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
 };
 
 SearchBarItemComponent.defaultProps = {
@@ -154,11 +156,11 @@ SearchBarItemComponent.defaultProps = {
 
 const mapStateToProps = (state, props) => {
   const orgUnit = selectOrgUnit(state, props.organisationUnitCode);
-  const { name, type } = orgUnit;
+  const { name, type, isLoading } = orgUnit;
   const organisationUnitChildren = selectCodeFromOrgUnit(
     selectOrgUnitChildren(state, props.organisationUnitCode),
   );
-  return { name, type, organisationUnitChildren };
+  return { name, type, isLoading, organisationUnitChildren };
 };
 
 const mapDispatchToProps = dispatch => ({ dispatch });
