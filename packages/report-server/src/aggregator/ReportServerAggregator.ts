@@ -65,9 +65,9 @@ export class ReportServerAggregator {
   ): Promise<Event[]> {
     const { period, startDate, endDate } = periodParams;
 
+    const noCodesInConfig = !dataElementCodesInConfig || dataElementCodesInConfig.length === 0;
     const dataElementCodes =
-      ((!dataElementCodesInConfig || dataElementCodesInConfig.length === 0) &&
-        (await this.getDateElementCodes(programCode))) ||
+      (noCodesInConfig && (await this.getDateElementCodes(programCode))) ||
       dataElementCodesInConfig;
 
     const aggregations = aggregationList
