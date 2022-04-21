@@ -32,6 +32,8 @@
           command: './packages/devops/scripts/ci/testBackend.sh database'
         - name: Test data-api
           command: './packages/devops/scripts/ci/testBackend.sh data-api'
+        - name: Test data-lake-api
+          command: './packages/devops/scripts/ci/testBackend.sh data-lake-api'
         - name: Test auth
           command: './packages/devops/scripts/ci/testBackend.sh auth'
         - name: Test indicators
