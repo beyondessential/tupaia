@@ -10,6 +10,7 @@ export type DateOffset = {
   offset?: number;
   modifier?: 'start_of' | 'end_of';
   modifierUnit?: PeriodType;
+  from?: string;
 };
 
 export type DateSpecs = string | DateOffset;

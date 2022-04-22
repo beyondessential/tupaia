@@ -39,8 +39,25 @@ export const checkAnswerPreconditionsAreMet = (answers, visibilityCriteria) => {
 export const doesScreenHaveValidationErrors = screen =>
   screen && screen.components.some(({ validationErrorMessage }) => !!validationErrorMessage);
 
-export const getDefaultEntitySettingKey = (userId, entityTypes, countryId) =>
-  `DEFAULT_ENTITY_${userId}_${countryId}_${entityTypes.join('_')}`;
+export const getRecentEntitiesSettingKey = (userId, entityTypes, countryId) =>
+  `RECENT_ENTITIES_${userId}_${countryId}_${entityTypes.join('_')}`;
+
+export const getRecentEntityIds = (database, userId, entityTypes, countryId) =>
+  JSON.parse(
+    database.getSetting(getRecentEntitiesSettingKey(userId, entityTypes, countryId)) || '[]',
+  );
+const MAX_RECENT_ENTITIES = 3;
+export const addRecentEntityId = (database, userId, entityTypes, countryId, entityId) => {
+  const recentEntityIds = getRecentEntityIds(database, userId, entityTypes, countryId);
+  const updatedRecentEntityIds = [entityId, ...recentEntityIds.filter(id => id !== entityId)].slice(
+    0,
+    MAX_RECENT_ENTITIES,
+  );
+  database.setSetting(
+    getRecentEntitiesSettingKey(userId, entityTypes, countryId),
+    JSON.stringify(updatedRecentEntityIds),
+  );
+};
 
 export const getEntityCreationQuestions = questions =>
   questions.filter(({ config }) => config.entity && config.entity.createNew);

@@ -17,7 +17,7 @@ import { getAnswers, getScreens, getValidQuestions } from '../selectors';
 import { changeAnswer, selectSurvey, validateScreen } from './actions';
 import {
   doesScreenHaveValidationErrors,
-  getDefaultEntitySettingKey,
+  addRecentEntityId,
   getEntityCreationQuestions,
   getOptionCreationAutocompleteQuestions,
 } from '../helpers';
@@ -108,11 +108,15 @@ const processQuestions = async (dispatch, getState, database, userId, questions)
       case 'DateOfData':
         responseFields.dataTime = moment(answer).toISOString();
         break;
-      case 'PrimaryEntity': {
-        const { type } = question.config.entity;
+      case 'PrimaryEntity':
+      case 'Entity': {
+        const { type: entityTypes } = question.config.entity;
         responseFields.entityId = answer;
-        database.setSetting(
-          getDefaultEntitySettingKey(userId, type, getState().country.selectedCountryId),
+        addRecentEntityId(
+          database,
+          userId,
+          entityTypes,
+          getState().country.selectedCountryId,
           answer,
         );
         break;

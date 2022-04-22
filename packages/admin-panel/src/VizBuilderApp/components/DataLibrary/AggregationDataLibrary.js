@@ -12,14 +12,14 @@ import { AggregateSelectedOptionWithJsonEditor } from './component';
 // Converts internal value array to Viz config.aggregate data structure
 const aggregateToValue = aggregate =>
   aggregate.map(({ id, type: code, ...restOfConfig }, index) => ({
-    id: `${code}-${index}`, // id used by drag and drop function
+    id: id || `${code}-${index}`, // id used by drag and drop function
     code,
     ...restOfConfig,
   }));
 
 const valueToAggregate = value =>
   value.map(({ id, code, isDisabled = false, ...restOfConfig }, index) => ({
-    id: `${code}-${index}`, // option from selectable options does not have id.
+    id: id || `${code}-${index}`, // option from selectable options does not have id.
     type: code,
     isDisabled,
     ...restOfConfig,
