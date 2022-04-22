@@ -21,6 +21,7 @@
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
-    "mathjs": "^9.4.0"
+    "mathjs": "^9.4.0",
+    "date-fns": "^2.12.0"
   }
 }
