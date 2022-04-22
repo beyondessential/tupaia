@@ -63,6 +63,7 @@ class MapComponent extends Component {
   shouldComponentUpdate(nextProps) {
     const {
       mapOverlayCodes,
+      isMeasureLoading,
       position,
       sidePanelWidth,
       tileSetUrl,
@@ -72,7 +73,9 @@ class MapComponent extends Component {
     if (JSON.stringify(nextProps.mapOverlayCodes) !== JSON.stringify(mapOverlayCodes)) {
       return true;
     }
-
+    if (isMeasureLoading && !nextProps.isMeasureLoading) {
+      return true;
+    }
     if (
       JSON.stringify(nextProps.displayedMapOverlayCodes) !==
       JSON.stringify(displayedMapOverlayCodes)
@@ -188,7 +191,7 @@ MapComponent.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const { shouldSnapToPosition, position, displayedMapOverlays } = state.map;
+  const { shouldSnapToPosition, position, isMeasureLoading, displayedMapOverlays } = state.map;
   const { isSidePanelExpanded } = state.global;
   const { contractedWidth, expandedWidth } = state.dashboard;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
@@ -196,6 +199,7 @@ const mapStateToProps = state => {
 
   return {
     currentParent,
+    isMeasureLoading,
     mapOverlayCodes: selectCurrentMapOverlayCodes(state),
     displayedMapOverlayCodes: displayedMapOverlays,
     position,

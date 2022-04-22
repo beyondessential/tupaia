@@ -98,7 +98,6 @@ const mapDispatchToProps = dispatch => ({
 
 const propsAreEqual = (prevProps, nextProps) => {
   return (
-    prevProps.isMeasureLoading === nextProps.isMeasureLoading &&
     JSON.stringify(prevProps.measureData) === JSON.stringify(nextProps.measureData) &&
     JSON.stringify(prevProps.displayedMapOverlayCodes) ===
       JSON.stringify(nextProps.displayedMapOverlayCodes)
