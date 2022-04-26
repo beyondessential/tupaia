@@ -4,7 +4,8 @@
  */
 
 import { buildDefault } from './default';
-import { buildMatrix, buildRawDataExport } from './matrix';
+import { buildMatrix } from './matrix';
+import { buildRawDataExport } from './rawDataExport';
 
 type Await<T> = T extends PromiseLike<infer U> ? U : T;
 

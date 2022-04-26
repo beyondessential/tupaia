@@ -67,13 +67,7 @@ export const matrix = async (
 
 export const buildParams = (params: unknown): MatrixParams => {
   const validatedParams = paramsValidator.validateSync(params);
-  const {
-    columns = '*',
-    categoryField,
-    rowField,
-    attachAllDataElementsToColumns,
-    ...restOfConfigs
-  } = validatedParams;
+  const { columns = '*', categoryField, rowField, ...restOfConfigs } = validatedParams;
   const includeFields = columns === '*' ? ['*'] : columns;
 
   const excludeFields = categoryField ? [categoryField, rowField] : [rowField];
@@ -81,7 +75,6 @@ export const buildParams = (params: unknown): MatrixParams => {
   return {
     columns: { includeFields, excludeFields },
     rows: { categoryField, rowField },
-    attachAllDataElementsToColumns,
     ...restOfConfigs,
   };
 };

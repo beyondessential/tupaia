@@ -53,32 +53,26 @@ describe('rawDataExport', () => {
       rows: [
         {
           EntityName: 'clinic',
-          dataElement: undefined,
           dataElement_A: 3,
           dataElement_B: 0,
         },
         {
           EntityName: 'hospital',
-          dataElement: undefined,
           dataElement_A: 4,
           dataElement_B: 9,
         },
         {
           EntityName: 'park',
-          dataElement: undefined,
           dataElement_B: 0,
         },
         {
           EntityName: 'others',
-          dataElement: undefined,
           dataElement_B: 5,
         },
       ],
     };
     const output = buildOutput({
       type: 'rawDataExport',
-      columns: '*',
-      rowField: '*',
       dataGroups: ['dataGroupCode'], // required
     });
 

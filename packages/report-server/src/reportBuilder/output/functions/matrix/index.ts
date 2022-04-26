@@ -4,4 +4,3 @@
  */
 
 export { buildMatrix } from './matrix';
-export { buildRawDataExport } from './rawDataExport';
