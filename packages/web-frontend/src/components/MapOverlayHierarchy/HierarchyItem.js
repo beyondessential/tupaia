@@ -84,7 +84,7 @@ const styles = {
     flexBasis: '0%',
     flexDirection: 'row',
     flexWrap: 'no-wrap',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   buttonLabel: {
     padding: '2px 5px',
@@ -97,7 +97,7 @@ const styles = {
   },
   selectionIcon: {
     fontSize: '18px',
-    padding: '0px 5px',
+    padding: '3px 5px',
   },
   spacer: {
     flexGrow: 1,
