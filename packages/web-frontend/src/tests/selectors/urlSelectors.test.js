@@ -14,7 +14,7 @@ import {
 import { selectCurrentDashboardNameFromLocation } from '../../selectors/dashboardSelectors';
 import { DEFAULT_PROJECT_CODE } from '../../defaults';
 
-describe.only('urlSelectors', () => {
+describe('urlSelectors', () => {
   it('should select from an empty url', () => {
     const testState = {
       routing: {
