@@ -12,8 +12,9 @@ import {
   selectCurrentExpandedViewCode,
 } from '../../selectors';
 import { selectCurrentDashboardNameFromLocation } from '../../selectors/dashboardSelectors';
+import { DEFAULT_PROJECT_CODE } from '../../defaults';
 
-describe('urlSelectors', () => {
+describe.only('urlSelectors', () => {
   it('should select from an empty url', () => {
     const testState = {
       routing: {
@@ -21,7 +22,7 @@ describe('urlSelectors', () => {
         search: '',
       },
     };
-    expect(selectCurrentProjectCode(testState)).toEqual(undefined);
+    expect(selectCurrentProjectCode(testState)).toEqual(DEFAULT_PROJECT_CODE);
     expect(selectCurrentOrgUnitCode(testState)).toEqual(undefined);
     expect(selectCurrentDashboardNameFromLocation(testState)).toEqual(undefined);
     expect(selectCurrentMapOverlayCodes(testState)).toEqual([]);
@@ -49,7 +50,7 @@ describe('urlSelectors', () => {
         search: '?password-reset-token=abc123',
       },
     };
-    expect(selectCurrentProjectCode(testState)).toEqual(undefined);
+    expect(selectCurrentProjectCode(testState)).toEqual(DEFAULT_PROJECT_CODE);
     expect(selectCurrentOrgUnitCode(testState)).toEqual(undefined);
     expect(selectCurrentDashboardNameFromLocation(testState)).toEqual(undefined);
     expect(selectCurrentMapOverlayCodes(testState)).toEqual([]);
@@ -63,7 +64,7 @@ describe('urlSelectors', () => {
         search: '?verify-email-token=abc123',
       },
     };
-    expect(selectCurrentProjectCode(testState)).toEqual(undefined);
+    expect(selectCurrentProjectCode(testState)).toEqual(DEFAULT_PROJECT_CODE);
     expect(selectCurrentOrgUnitCode(testState)).toEqual(undefined);
     expect(selectCurrentDashboardNameFromLocation(testState)).toEqual(undefined);
     expect(selectCurrentMapOverlayCodes(testState)).toEqual([]);
