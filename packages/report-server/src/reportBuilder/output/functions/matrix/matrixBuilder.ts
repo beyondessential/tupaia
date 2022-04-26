@@ -1,6 +1,5 @@
-import { yup } from '@tupaia/utils';
 import pick from 'lodash.pick';
-import { ReportServerAggregator } from '../../../../aggregator';
+
 import { Row } from '../../../types';
 import { MatrixParams, Matrix } from './types';
 
@@ -15,16 +14,14 @@ export class MatrixBuilder {
   private rows: Row[];
   private matrixData: Matrix;
   private params: MatrixParams;
-  private aggregator: ReportServerAggregator;
 
-  public constructor(rows: Row[], params: MatrixParams, aggregator: ReportServerAggregator) {
+  public constructor(rows: Row[], params: MatrixParams) {
     this.rows = rows;
     this.params = params;
-    this.aggregator = aggregator;
     this.matrixData = { columns: [], rows: [] };
   }
 
-  public async build() {
+  public build() {
     this.buildColumns();
     this.buildRows();
     this.adjustRowsToUseIncludedColumns();

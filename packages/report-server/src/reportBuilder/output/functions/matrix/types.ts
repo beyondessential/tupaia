@@ -3,7 +3,6 @@ import { Row } from '../../../types';
 export type MatrixParams = {
   columns: { includeFields: string[]; excludeFields: string[] };
   rows: { rowField: string; categoryField: string | undefined };
-  dataGroups?: string[];
 };
 
 export type Matrix = {

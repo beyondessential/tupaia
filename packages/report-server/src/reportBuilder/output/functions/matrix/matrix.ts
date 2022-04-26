@@ -5,7 +5,6 @@
 
 import { yup } from '@tupaia/utils';
 
-import { ReportServerAggregator } from '../../../../aggregator';
 import { Row } from '../../../types';
 import { MatrixBuilder } from './matrixBuilder';
 import { Matrix, MatrixParams } from './types';
@@ -57,12 +56,8 @@ const paramsValidator = yup.object().shape(
   [['rowField', 'categoryField']],
 );
 
-export const matrix = async (
-  rows: Row[],
-  params: MatrixParams,
-  aggregator: ReportServerAggregator,
-): Promise<Matrix> => {
-  return new MatrixBuilder(rows, params, aggregator).build();
+export const matrix = (rows: Row[], params: MatrixParams): Matrix => {
+  return new MatrixBuilder(rows, params).build();
 };
 
 export const buildParams = (params: unknown): MatrixParams => {
@@ -81,5 +76,5 @@ export const buildParams = (params: unknown): MatrixParams => {
 
 export const buildMatrix = (params: unknown) => {
   const builtParams = buildParams(params);
-  return (rows: Row[], aggregator: ReportServerAggregator) => matrix(rows, builtParams, aggregator);
+  return (rows: Row[]) => matrix(rows, builtParams);
 };
