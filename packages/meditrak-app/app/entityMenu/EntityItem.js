@@ -7,7 +7,12 @@ import PropTypes from 'prop-types';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Icon, TouchableOpacity } from '../widgets';
-import { DEFAULT_PADDING, THEME_TEXT_COLOR_ONE, THEME_FONT_SIZE_ONE } from '../globalStyles';
+import {
+  DEFAULT_PADDING,
+  THEME_COLOR_ONE,
+  THEME_TEXT_COLOR_ONE,
+  THEME_FONT_SIZE_ONE,
+} from '../globalStyles';
 
 export const ITEM_HEIGHT = 55;
 
@@ -20,12 +25,12 @@ export class EntityItem extends PureComponent {
   };
 
   render() {
-    const { isSelected, entity, onPress } = this.props;
+    const { isSelected, entity, onPress, onDeselect } = this.props;
     const Container = onPress && !isSelected ? TouchableOpacity : View;
 
     return (
       <Container
-        analyticsLabel={`Clinic List: ${entity.name} (${entity.area})`}
+        analyticsLabel={`Entity List: ${entity.name} (${entity.parentName})`}
         style={isSelected ? localStyles.selectedRow : localStyles.row}
         onPress={this.onPress}
       >
@@ -36,8 +41,13 @@ export class EntityItem extends PureComponent {
         />
         <View style={localStyles.rowContent}>
           <Text style={localStyles.entityCellText}>{entity.name}</Text>
-          <Text style={localStyles.entityCellSubText}>{entity.area}</Text>
+          <Text style={localStyles.entityCellSubText}>{entity.parentName}</Text>
         </View>
+        {onDeselect && (
+          <TouchableOpacity analyticsLabel="Selected Entity: Clear" onPress={onDeselect}>
+            <Icon name="close" size={32} color={THEME_COLOR_ONE} library="Material" />
+          </TouchableOpacity>
+        )}
       </Container>
     );
   }
@@ -47,10 +57,12 @@ EntityItem.propTypes = {
   onPress: PropTypes.func.isRequired,
   entity: PropTypes.shape({}).isRequired,
   isSelected: PropTypes.bool,
+  onDeselect: PropTypes.func,
 };
 
 EntityItem.defaultProps = {
   isSelected: false,
+  onDeselect: null,
 };
 
 const localStyles = StyleSheet.create({
