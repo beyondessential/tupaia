@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import * as fns from 'date-fns';
-
 // We use the `'undefined'` string to indicate a missing value in cases where the
 // actual `undefined` JS type cannot be used, e.g. in json config persisted in the DB
 const isUndefined = value => value !== undefined && value !== 'undefined';
@@ -32,12 +30,9 @@ const translate = (value, translations) => {
 
 const date = (...argumentList) => new Date(...argumentList);
 
-const dateUtils = () => fns; // Support all FNS date modification functions. https://date-fns.org/v2.16.1/docs/Getting-Started
-
 export const customFunctions = {
   avg: average,
   firstExistingValue,
   translate,
   date,
-  dateUtils,
 };

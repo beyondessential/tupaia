@@ -37,12 +37,12 @@ describe('ExpressionParser', () => {
       ["firstExistingValue - ignores `'undefined'`", "firstExistingValue('undefined', 1)", 1],
       [
         'dateUtils - differenceInYears',
-        `dateUtils().differenceInYears(date(), date('1993-12-18'))`,
+        `dateUtils.differenceInYears(date(), date('1993-12-18'))`,
         26,
       ],
       [
         'dateUtils - differenceInCalendarYears',
-        `dateUtils().differenceInCalendarYears(date(), date('1993-12-18'))`,
+        `dateUtils.differenceInCalendarYears(date(), date('1993-12-18'))`,
         27,
       ], // More dateUtils functions from https://date-fns.org/v2.16.1/docs/Getting-Started
     ];
