@@ -32,7 +32,7 @@ const translate = (value, translations) => {
 
 const date = (...argumentList) => new Date(...argumentList);
 
-const dateUtils = () => fns;
+const dateUtils = () => fns; // Support all FNS date modification functions. https://date-fns.org/v2.16.1/docs/Getting-Started
 
 export const customFunctions = {
   avg: average,
