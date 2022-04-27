@@ -29,6 +29,7 @@ export class DumbQuestion extends React.Component {
       text,
       SpecificQuestion,
       validationErrorMessage,
+      onLayout,
       ...questionProps
     } = this.props;
     return (
@@ -37,6 +38,7 @@ export class DumbQuestion extends React.Component {
           ...localStyles.container,
           display: questionProps.isVisible ? 'flex' : 'none',
         }}
+        onLayout={onLayout}
       >
         {imageData && imageData.length > 0 ? (
           <Image source={getImageSourceFromData(imageData)} style={localStyles.image} />
@@ -63,6 +65,7 @@ DumbQuestion.propTypes = {
   text: PropTypes.string,
   validationErrorMessage: PropTypes.string,
   SpecificQuestion: PropTypes.any.isRequired,
+  onLayout: PropTypes.func.isRequired,
 };
 
 DumbQuestion.defaultProps = {
