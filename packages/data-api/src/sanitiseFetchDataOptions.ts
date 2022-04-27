@@ -4,8 +4,6 @@
  */
 
 import { utcMoment, stripTimezoneFromDate } from '@tupaia/utils';
-import { AnalyticsFetchOptions } from './AnalyticsFetchQuery';
-import { EventsFetchOptions } from './EventsFetchQuery';
 
 const getAdjustedDates = (startDate?: string, endDate?: string) => {
   const adjustMoment = (moment: any) => stripTimezoneFromDate(moment.toISOString());
@@ -17,22 +15,18 @@ const getAdjustedDates = (startDate?: string, endDate?: string) => {
 };
 
 export const sanitiseFetchDataOptions = <
-  Options extends AnalyticsFetchOptions | EventsFetchOptions
+  Options extends { dataElementCodes?: string[]; startDate?: string; endDate?: string }
 >(
   options: Options,
 ) => {
-  const {
-    dataElementCodes = [],
-    startDate: startDateInput,
-    endDate: endDateInput,
-    ...restOfOptions
-  } = options;
+  const { dataElementCodes = [], startDate: startDateInput, endDate: endDateInput } = options;
+
   const { startDate, endDate } = getAdjustedDates(startDateInput, endDateInput);
 
   return {
+    ...options,
     dataElementCodes,
     startDate,
     endDate,
-    ...restOfOptions,
   };
 };
