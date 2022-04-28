@@ -33,7 +33,7 @@ const buildParams = (params: unknown): OutputParams => {
   return { type, config: restOfParams };
 };
 
-export const buildOutput = (params: unknown) => {
+export const buildOutput = (params: unknown, aggregator: ReportServerAggregator) => {
   const builtParams = buildParams(params);
-  return (rows: Row[], aggregator: ReportServerAggregator) => output(rows, builtParams, aggregator);
+  return (rows: Row[]) => output(rows, builtParams, aggregator);
 };

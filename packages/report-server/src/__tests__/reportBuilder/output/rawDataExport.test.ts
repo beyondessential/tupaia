@@ -71,16 +71,16 @@ describe('rawDataExport', () => {
         },
       ],
     };
-    const output = buildOutput({
-      type: 'rawDataExport',
-      dataGroups: ['dataGroupCode'], // required
-    });
-
     const reportServerAggregator = new ReportServerAggregator(aggregator);
-    const results = await output(
-      MULTIPLE_TRANSFORMED_DATA_FOR_RAW_DATA_EXPORT,
+    const output = buildOutput(
+      {
+        type: 'rawDataExport',
+        dataGroups: ['dataGroupCode'], // required
+      },
       reportServerAggregator,
     );
+
+    const results = await output(MULTIPLE_TRANSFORMED_DATA_FOR_RAW_DATA_EXPORT);
     expect(results).toEqual(expectedData);
   });
 });
