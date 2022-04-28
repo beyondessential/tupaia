@@ -4,9 +4,9 @@
  */
 
 import { create, all } from 'mathjs';
-import * as fns from 'date-fns';
 
 import { customFunctions } from './customFunctions';
+import { customNamespaces } from './customNamespaces';
 
 /**
  * @typedef {Object} Scope
@@ -50,7 +50,7 @@ export class ExpressionParser {
     this.math.import(this.getFunctionExtensions());
     this.math.import(this.getFunctionOverrides(), { wrap: true, override: true });
     this.validExpressionCache = new Set();
-    this.set('dateUtils', fns); // Support all FNS date modification functions. https://date-fns.org/v2.16.1/docs/Getting-Started
+    this.setAll(customNamespaces);
   }
 
   /**
