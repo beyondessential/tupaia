@@ -56,11 +56,11 @@ const paramsValidator = yup.object().shape(
   [['rowField', 'categoryField']],
 );
 
-export const matrix = (rows: Row[], params: MatrixParams): Matrix => {
+const matrix = (rows: Row[], params: MatrixParams): Matrix => {
   return new MatrixBuilder(rows, params).build();
 };
 
-export const buildParams = (params: unknown): MatrixParams => {
+const buildParams = (params: unknown): MatrixParams => {
   const validatedParams = paramsValidator.validateSync(params);
   const { columns = '*', categoryField, rowField, ...restOfConfigs } = validatedParams;
   const includeFields = columns === '*' ? ['*'] : columns;

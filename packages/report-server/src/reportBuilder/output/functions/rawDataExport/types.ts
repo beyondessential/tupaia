@@ -5,7 +5,7 @@
 
 import { Row } from '../../../types';
 
-export type RawDataExportParams = {
+export type RawDataExportContext = {
   dataGroups: string[];
 };
 

@@ -6,17 +6,24 @@
 import { yup } from '@tupaia/utils';
 import { ReportServerAggregator } from '../../../../aggregator';
 import { Row } from '../../../types';
-import { RawDataExportParams, RawDataExport } from './types';
+import { RawDataExportContext, RawDataExport } from './types';
 
 export class RawDataExportBuilder {
   private rows: Row[];
   private matrixData: RawDataExport;
-  private params: RawDataExportParams;
+  private params: unknown;
+  private outputContext: RawDataExportContext;
   private aggregator: ReportServerAggregator;
 
-  public constructor(rows: Row[], params: RawDataExportParams, aggregator: ReportServerAggregator) {
+  public constructor(
+    rows: Row[],
+    params: unknown,
+    outputContext: RawDataExportContext,
+    aggregator: ReportServerAggregator,
+  ) {
     this.rows = rows;
     this.params = params;
+    this.outputContext = outputContext;
     this.aggregator = aggregator;
     this.matrixData = { columns: [], rows: [] };
   }
@@ -50,10 +57,10 @@ export class RawDataExportBuilder {
         }),
       )
       .required();
-    if (!this.params.dataGroups) {
+    if (!this.outputContext.dataGroups) {
       return;
     }
-    const { dataGroups } = this.params;
+    const { dataGroups } = this.outputContext;
 
     const dataElementsMetadata = (
       await Promise.all(

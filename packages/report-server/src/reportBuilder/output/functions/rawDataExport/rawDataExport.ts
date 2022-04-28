@@ -7,29 +7,36 @@ import { yup } from '@tupaia/utils';
 
 import { ReportServerAggregator } from '../../../../aggregator';
 import { Row } from '../../../types';
+import { OutputContext } from '../../types';
 import { RawDataExportBuilder } from './rawDataExportBuilder';
-import { RawDataExport, RawDataExportParams } from './types';
+import { RawDataExport, RawDataExportContext } from './types';
 
-const paramsValidator = yup.object().shape({
+const contextValidator = yup.object().shape({
   dataGroups: yup.array().of(yup.string().required()).required().min(1),
 });
 
-export const rawDataExport = async (
+const rawDataExport = async (
   rows: Row[],
-  params: RawDataExportParams,
+  params: unknown,
+  outputContext: RawDataExportContext,
   aggregator: ReportServerAggregator,
 ): Promise<RawDataExport> => {
-  return new RawDataExportBuilder(rows, params, aggregator).build();
+  return new RawDataExportBuilder(rows, params, outputContext, aggregator).build();
 };
 
-export const buildParams = (params: unknown): RawDataExportParams => {
-  const validatedParams = paramsValidator.validateSync(params);
-  return { dataGroups: validatedParams.dataGroups };
+const buildParams = (params: unknown): unknown => {
+  return params;
 };
 
-export const buildRawDataExport = (params: unknown) => {
+const buildContext = (outputContext: OutputContext): RawDataExportContext => {
+  const validatedContext = contextValidator.validateSync(outputContext);
+  return { dataGroups: validatedContext.dataGroups };
+};
+
+export const buildRawDataExport = (params: unknown, outputContext: OutputContext) => {
   const builtParams = buildParams(params);
+  const builtOutputContext = buildContext(outputContext);
 
   return (rows: Row[], aggregator: ReportServerAggregator) =>
-    rawDataExport(rows, builtParams, aggregator);
+    rawDataExport(rows, builtParams, builtOutputContext, aggregator);
 };

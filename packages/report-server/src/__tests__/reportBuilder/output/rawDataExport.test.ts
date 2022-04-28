@@ -71,14 +71,14 @@ describe('rawDataExport', () => {
         },
       ],
     };
+    const config = {
+      type: 'rawDataExport',
+    };
+    const context = {
+      dataGroups: ['dataGroupCode'], // required
+    };
     const reportServerAggregator = new ReportServerAggregator(aggregator);
-    const output = buildOutput(
-      {
-        type: 'rawDataExport',
-        dataGroups: ['dataGroupCode'], // required
-      },
-      reportServerAggregator,
-    );
+    const output = buildOutput(config, context, reportServerAggregator);
 
     const results = await output(MULTIPLE_TRANSFORMED_DATA_FOR_RAW_DATA_EXPORT);
     expect(results).toEqual(expectedData);
