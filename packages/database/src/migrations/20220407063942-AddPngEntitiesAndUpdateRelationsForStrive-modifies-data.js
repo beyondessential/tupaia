@@ -98,7 +98,7 @@ const insertEntity = async (db, entity) => {
   });
 };
 
-const updatePoint = (db, entity) => {
+const updatePoint = async (db, entity) => {
   const point = JSON.stringify({ type: 'Point', coordinates: [entity.Longitude, entity.Latitude] });
   return db.runSql(`
     update entity 
