@@ -18,7 +18,6 @@ import {
 import { LATEST_SERVER_SYNC_TIMESTAMP } from '../settings';
 import { loadSocialFeedLatest } from '../social';
 import { getSyncMigrations } from './syncMigrations';
-import { Change } from '../database/types';
 
 YellowBox.ignoreWarnings(['Setting a timer']);
 
@@ -211,32 +210,28 @@ export class Synchroniser {
    * @return {Promise} Resolves if successful, or passes up any error thrown
    */
   async push(setProgress, total, progress = 0) {
-    try {
-      if (progress >= total) {
-        return; // Done recursing through changes
-      }
-      setProgress(this.synchroniserProgress);
-
-      // Get batch of outgoing changes and send them
-      const changes = this.changeQueue.nextWithinThreshold(this.batchSize);
-      const { requestDuration } = await this.pushChanges(changes.map(({ payload }) => payload));
-
-      // Take the successfully sent batch of changes off the queue requiring sync
-      this.changeQueue.use(changes.map(({ change }) => change));
-
-      const batchCount = changes.length;
-
-      this.synchroniserProgress += batchCount;
-
-      const currentProgress = progress + batchCount;
-
-      this.setBatchSize(requestDuration);
-
-      // Recurse to send the next batch of changes to the server
-      await this.push(setProgress, total, currentProgress);
-    } catch (error) {
-      throw error; // Throw error up
+    if (progress >= total) {
+      return; // Done recursing through changes
     }
+    setProgress(this.synchroniserProgress);
+
+    // Get batch of outgoing changes and send them
+    const changes = this.changeQueue.nextWithinThreshold(this.batchSize);
+    const { requestDuration } = await this.pushChanges(changes.map(({ payload }) => payload));
+
+    // Take the successfully sent batch of changes off the queue requiring sync
+    this.changeQueue.use(changes.map(({ change }) => change));
+
+    const batchCount = changes.length;
+
+    this.synchroniserProgress += batchCount;
+
+    const currentProgress = progress + batchCount;
+
+    this.setBatchSize(requestDuration);
+
+    // Recurse to send the next batch of changes to the server
+    await this.push(setProgress, total, currentProgress);
   }
 
   /**
@@ -246,19 +241,15 @@ export class Synchroniser {
    */
   async pushChanges(changesSyncJson) {
     const startTime = new Date().getTime();
-    try {
-      const responseJson = await this.api.post(API_ENDPOINT, {}, JSON.stringify(changesSyncJson));
-      if (responseJson.error && responseJson.error.length > 0) {
-        throw new Error(responseJson.error);
-      }
-
-      const endTime = new Date().getTime();
-      return {
-        requestDuration: endTime - startTime,
-      };
-    } catch (error) {
-      throw error; // Throw error up
+    const responseJson = await this.api.post(API_ENDPOINT, {}, JSON.stringify(changesSyncJson));
+    if (responseJson.error && responseJson.error.length > 0) {
+      throw new Error(responseJson.error);
     }
+
+    const endTime = new Date().getTime();
+    return {
+      requestDuration: endTime - startTime,
+    };
   }
 
   /**
@@ -266,41 +257,34 @@ export class Synchroniser {
    * @return {Promise} Resolves if successful, or passes up any error thrown
    */
   async pull(setProgress, total, since, numberChangesPulled = 0) {
-    try {
-      if (numberChangesPulled >= total) {
-        return; // Done recursing through changes
-      }
-      setProgress(this.synchroniserProgress);
-
-      // Get a batch of changes and integrate them
-      const { changes, requestDuration } = await this.getIncomingChanges(
-        since,
-        numberChangesPulled,
-      );
-      if (!changes || changes.length === 0) {
-        throw new Error(`Expected ${total - numberChangesPulled} more changes, but received none`);
-      }
-
-      this.database.integrateChanges(changes);
-
-      // Save the current timestamp we are in sync with on the server
-      const latestChangeTimestamp = changes.reduce(
-        (currentLatestTimestamp, change) => Math.max(change.timestamp, currentLatestTimestamp),
-        parseFloat(this.getLastSyncTime()),
-      );
-      this.database.setSetting(LATEST_SERVER_SYNC_TIMESTAMP, latestChangeTimestamp);
-
-      this.synchroniserProgress += changes.length;
-
-      const newNumberPulled = numberChangesPulled + changes.length;
-
-      this.setBatchSize(requestDuration);
-
-      // Recurse to get the next batch of changes from the server
-      await this.pull(setProgress, total, since, newNumberPulled);
-    } catch (error) {
-      throw error; // Throw error up
+    if (numberChangesPulled >= total) {
+      return; // Done recursing through changes
     }
+    setProgress(this.synchroniserProgress);
+
+    // Get a batch of changes and integrate them
+    const { changes, requestDuration } = await this.getIncomingChanges(since, numberChangesPulled);
+    if (!changes || changes.length === 0) {
+      throw new Error(`Expected ${total - numberChangesPulled} more changes, but received none`);
+    }
+
+    this.database.integrateChanges(changes);
+
+    // Save the current timestamp we are in sync with on the server
+    const latestChangeTimestamp = changes.reduce(
+      (currentLatestTimestamp, change) => Math.max(change.timestamp, currentLatestTimestamp),
+      parseFloat(this.getLastSyncTime()),
+    );
+    this.database.setSetting(LATEST_SERVER_SYNC_TIMESTAMP, latestChangeTimestamp);
+
+    this.synchroniserProgress += changes.length;
+
+    const newNumberPulled = numberChangesPulled + changes.length;
+
+    this.setBatchSize(requestDuration);
+
+    // Recurse to get the next batch of changes from the server
+    await this.pull(setProgress, total, since, newNumberPulled);
   }
 
   getLastSyncTime = () => this.database.getSetting(LATEST_SERVER_SYNC_TIMESTAMP) || 0;
@@ -310,18 +294,14 @@ export class Synchroniser {
    * @return {Promise} Resolves with the change count, or passes up any error thrown
    */
   async getIncomingChangeCount(since, filters = {}) {
-    try {
-      const responseJson = await this.api.get(`${API_ENDPOINT}/count`, { since, ...filters });
-      if (responseJson.error && responseJson.error.length > 0) {
-        throw new Error(responseJson.error);
-      }
-      if (typeof responseJson.changeCount !== 'number') {
-        throw new Error('Unexpected response from server');
-      }
-      return responseJson.changeCount;
-    } catch (error) {
-      throw error; // Throw error up
+    const responseJson = await this.api.get(`${API_ENDPOINT}/count`, { since, ...filters });
+    if (responseJson.error && responseJson.error.length > 0) {
+      throw new Error(responseJson.error);
     }
+    if (typeof responseJson.changeCount !== 'number') {
+      throw new Error('Unexpected response from server');
+    }
+    return responseJson.changeCount;
   }
 
   /**
@@ -332,25 +312,21 @@ export class Synchroniser {
   async getIncomingChanges(since, offset, filters = {}) {
     const startTime = new Date().getTime();
 
-    try {
-      const responseJson = await this.api.get(API_ENDPOINT, {
-        since,
-        offset,
-        limit: this.batchSize,
-        ...filters,
-      });
-      if (responseJson.error && responseJson.error.length > 0) {
-        throw new Error(responseJson.error);
-      }
-      const endTime = new Date().getTime();
-
-      return {
-        changes: responseJson,
-        requestDuration: endTime - startTime,
-      };
-    } catch (error) {
-      throw error; // Throw error up
+    const responseJson = await this.api.get(API_ENDPOINT, {
+      since,
+      offset,
+      limit: this.batchSize,
+      ...filters,
+    });
+    if (responseJson.error && responseJson.error.length > 0) {
+      throw new Error(responseJson.error);
     }
+    const endTime = new Date().getTime();
+
+    return {
+      changes: responseJson,
+      requestDuration: endTime - startTime,
+    };
   }
 
   async runMigrations(setProgressMessage) {
