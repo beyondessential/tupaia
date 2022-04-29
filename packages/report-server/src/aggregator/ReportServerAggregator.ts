@@ -4,6 +4,7 @@
  */
 
 import { Aggregator } from '@tupaia/aggregator';
+import { yup } from '@tupaia/utils';
 
 import { Aggregation, Event, PeriodParams, EventMetaData } from '../types';
 
@@ -89,6 +90,18 @@ export class ReportServerAggregator {
   }
 
   public async fetchDataGroup(code: string) {
-    return this.aggregator.fetchDataGroup(code, {});
+    const validator = yup.object().shape({
+      dataElements: yup
+        .array()
+        .of(
+          yup.object().shape({
+            code: yup.string().required(),
+            text: yup.string().required(),
+          }),
+        )
+        .required(),
+    });
+    const result = await this.aggregator.fetchDataGroup(code, {});
+    return validator.validateSync(result);
   }
 }

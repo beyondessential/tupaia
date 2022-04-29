@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { yup } from '@tupaia/utils';
 import { ReportServerAggregator } from '../../../../aggregator';
 import { Row } from '../../../types';
 import { RawDataExportContext, RawDataExport } from './types';
@@ -48,15 +47,6 @@ export class RawDataExportBuilder {
   }
 
   private async attachAllDataElementsToColumns() {
-    const dataElementValidator = yup
-      .array()
-      .of(
-        yup.object().shape({
-          code: yup.string().required(),
-          text: yup.string().required(),
-        }),
-      )
-      .required();
     if (!this.outputContext.dataGroups) {
       return;
     }
@@ -66,9 +56,7 @@ export class RawDataExportBuilder {
       await Promise.all(
         dataGroups.map(async surveyCode => {
           const { dataElements } = await this.aggregator.fetchDataGroup(surveyCode);
-          const validatedDataElements = dataElementValidator.validateSync(dataElements);
-
-          return validatedDataElements.map(dataElement => ({
+          return dataElements.map(dataElement => ({
             key: dataElement.code,
             title: dataElement.text,
           }));
