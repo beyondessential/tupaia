@@ -9,7 +9,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 In the project directory, you can run:
 
 - `yarn start` Runs the app in the development mode
-- `yarn start-server` Starts meditrak-server
+- `yarn start-server` Starts central-server
 - `yarn start-dev` Runs start and start-server
 - `yarn test` Launches the test runner in the interactive watch mode.
 - `yarn test:cypress:open` Launches cypress in interactive watch mode.

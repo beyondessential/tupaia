@@ -9,7 +9,7 @@ import { QueryParameters, RequestBody, ApiConnection } from '@tupaia/server-boil
 
 import { BES_ADMIN_PERMISSION_GROUP } from '../constants';
 
-const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
+const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
 
 const isBESAdmin = (policy: Record<string, string[]>) => {
   return new AccessPolicy(policy).allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
@@ -25,8 +25,8 @@ const translateParams = (queryParameters?: Record<string, unknown>) => {
 /**
  * @deprecated use @tupaia/api-client
  */
-export class MeditrakConnection extends ApiConnection {
-  public baseUrl = MEDITRAK_API_URL;
+export class CentralConnection extends ApiConnection {
+  public baseUrl = CENTRAL_API_URL;
 
   public async getUser() {
     const user = await this.get('me');

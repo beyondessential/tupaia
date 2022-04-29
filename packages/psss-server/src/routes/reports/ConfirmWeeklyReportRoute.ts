@@ -52,7 +52,7 @@ export class ConfirmWeeklyReportRoute extends Route<ConfirmWeeklyReportRequest> 
 
   private async confirmData(countryCode: string, week: string) {
     if (!this.reportConnection) throw new UnauthenticatedError('Unauthenticated');
-    if (!this.meditrakConnection) throw new UnauthenticatedError('Unauthenticated');
+    if (!this.centralConnection) throw new UnauthenticatedError('Unauthenticated');
 
     const report = await this.reportConnection.fetchReport(
       WEEKLY_REPORT_CODE,
@@ -69,7 +69,7 @@ export class ConfirmWeeklyReportRoute extends Route<ConfirmWeeklyReportRequest> 
 
     const answers = mapUnconfirmedReportToConfirmedAnswers(report.results[0]);
 
-    return this.meditrakConnection.updateOrCreateSurveyResponse(
+    return this.centralConnection.updateOrCreateSurveyResponse(
       CONFIRMED_WEEKLY_SURVEY_COUNTRY,
       countryCode,
       week,
@@ -147,18 +147,18 @@ export class ConfirmWeeklyReportRoute extends Route<ConfirmWeeklyReportRequest> 
   }
 
   private async createAlert(countryCode: string, week: string, syndromeCode: string) {
-    if (!this.meditrakConnection) throw new UnauthenticatedError('Unauthenticated');
+    if (!this.centralConnection) throw new UnauthenticatedError('Unauthenticated');
 
-    return this.meditrakConnection.createSurveyResponse(ALERT_SURVEY, countryCode, week, [
+    return this.centralConnection.createSurveyResponse(ALERT_SURVEY, countryCode, week, [
       { code: 'PSSS_Alert_Syndrome', type: 'Radio', value: syndromeCode },
       { code: 'PSSS_Alert_Archived', type: 'Binary', value: 'No' },
     ]);
   }
 
   private async archiveAlert(alertId: string, countryCode: string, week: string) {
-    if (!this.meditrakConnection) throw new UnauthenticatedError('Unauthenticated');
+    if (!this.centralConnection) throw new UnauthenticatedError('Unauthenticated');
 
-    return this.meditrakConnection.updateSurveyResponse(alertId, countryCode, ALERT_SURVEY, week, [
+    return this.centralConnection.updateSurveyResponse(alertId, countryCode, ALERT_SURVEY, week, [
       { code: 'PSSS_Alert_Archived', type: 'Binary', value: 'Yes' },
     ]);
   }

@@ -1,12 +1,12 @@
 {
-  "name": "@tupaia/meditrak-server",
+  "name": "@tupaia/central-server",
   "version": "1.0.0",
   "private": true,
-  "description": "REST API for Meditrak",
+  "description": "Central server for handling all miscellaneous Tupaia/Meditrak behaviour",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia.git",
-    "directory": "packages/meditrak-server"
+    "directory": "packages/central-server"
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "handler.js",

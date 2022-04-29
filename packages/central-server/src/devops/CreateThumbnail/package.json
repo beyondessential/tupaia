@@ -6,7 +6,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia.git",
-    "directory": "packages/meditrak-server/src/devops/CreateThumbnail"
+    "directory": "packages/central-server/src/devops/CreateThumbnail"
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "index.js",

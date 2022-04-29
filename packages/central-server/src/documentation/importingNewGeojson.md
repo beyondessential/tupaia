@@ -22,6 +22,6 @@ _Note: if the district has already been imported into our system then skip to Ca
 
 - This is similar to the previous case but with a few extra steps beforehand
 - In the database we need to first go into the 'entity' table, find the district we want to update and delete whatever is in the 'region' column (so it now says NULL)
-- Then we need to delete the cache'd geojson. To do this ssh into meditrak-server, go to uploads/geojson/Laos (or whatever the country you want to update is)
+- Then we need to delete the cache'd geojson. To do this ssh into central-server, go to uploads/geojson/Laos (or whatever the country you want to update is)
 - Typing 'ls' should list the documents in this folder. Find the districts you want to update and delete their cache'd geojson with 'rm LA_Xayabury.geojson' (except with whatever the district you want to replace is called)
 - Once this is done you can use the importer like in Case 1.1

@@ -7,7 +7,7 @@ import { generateId } from '@tupaia/database';
 import { convertPeriodStringToDateRange, stripTimezoneFromDate } from '@tupaia/utils';
 import { ApiConnection } from './ApiConnection';
 
-const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
+const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
 
 type SurveyResponseObject = {
   'entity.code': string;
@@ -31,8 +31,8 @@ type Answer = {
 /**
  * @deprecated use @tupaia/api-client
  */
-export class MeditrakConnection extends ApiConnection {
-  public baseUrl = MEDITRAK_API_URL;
+export class CentralConnection extends ApiConnection {
+  public baseUrl = CENTRAL_API_URL;
 
   public async updateOrCreateSurveyResponse(
     surveyCode: string,

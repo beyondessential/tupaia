@@ -8,7 +8,7 @@ const DEFAULT_AUTH_HEADER = createBasicHeader(
 );
 
 /**
- * Send request to Meditrak server and handle responses.
+ * Send request to Central server and handle responses.
  *
  * @param {string} endpoint
  *   The api endpoint path eg 'auth' or 'user'.
@@ -19,7 +19,7 @@ const DEFAULT_AUTH_HEADER = createBasicHeader(
  * @param {object} authHeader
  *   To overwrite the default Authorization header, e.g. if using an access token
  */
-export const fetchFromMediTrakServer = async (
+export const fetchFromCentralServer = async (
   endpoint,
   payload,
   queryParameters,
@@ -65,7 +65,7 @@ export const fetchFromMediTrakServer = async (
 };
 
 // Send request to the Tupaia App server using access/refresh tokens
-export const fetchFromMeditrakServerUsingTokens = async (
+export const fetchFromCentralServerUsingTokens = async (
   models,
   endpoint,
   payload,
@@ -74,7 +74,7 @@ export const fetchFromMeditrakServerUsingTokens = async (
 ) => {
   const UNAUTHORIZED_STATUS_CODE = 401;
   const fetchWithAccessToken = async token =>
-    fetchFromMediTrakServer(endpoint, payload, queryParameters, `Bearer ${token}`);
+    fetchFromCentralServer(endpoint, payload, queryParameters, `Bearer ${token}`);
 
   const refreshAccessAndFetch = async refreshToken => {
     const newAccessToken = await refreshAndSaveAccessToken(models, refreshToken, userName);

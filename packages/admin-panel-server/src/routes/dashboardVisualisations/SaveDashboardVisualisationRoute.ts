@@ -8,7 +8,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 
-import { MeditrakConnection } from '../../connections';
+import { CentralConnection } from '../../connections';
 import {
   DashboardVisualisationExtractor,
   draftDashboardItemValidator,
@@ -23,12 +23,12 @@ export type SaveDashboardVisualisationRequest = Request<
 >;
 
 export class SaveDashboardVisualisationRoute extends Route<SaveDashboardVisualisationRequest> {
-  private readonly meditrakConnection: MeditrakConnection;
+  private readonly centralConnection: CentralConnection;
 
   public constructor(req: SaveDashboardVisualisationRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
-    this.meditrakConnection = new MeditrakConnection(req.session);
+    this.centralConnection = new CentralConnection(req.session);
   }
 
   public async buildResponse() {
@@ -50,13 +50,13 @@ export class SaveDashboardVisualisationRoute extends Route<SaveDashboardVisualis
 
     // Update visualisation if id exists
     if (dashboardVisualisationId) {
-      result = await this.meditrakConnection.updateResource(
+      result = await this.centralConnection.updateResource(
         `dashboardVisualisations/${dashboardVisualisationId}`,
         {},
         body,
       );
     } else {
-      result = await this.meditrakConnection.createResource('dashboardVisualisations', {}, body);
+      result = await this.centralConnection.createResource('dashboardVisualisations', {}, body);
     }
 
     return {

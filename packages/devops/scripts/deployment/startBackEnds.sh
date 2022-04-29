@@ -20,7 +20,7 @@ for PACKAGE in ${PACKAGES[@]}; do
         fi
         pm2 start --name $PACKAGE dist --wait-ready --listen-timeout 15000 --time $REPLICATION_PM2_CONFIG
 
-        if [[ $PACKAGE == 'meditrak-server' ]]; then
+        if [[ $PACKAGE == 'central-server' ]]; then
             # reset cwd back to `/tupaia`
             cd ${TUPAIA_DIR}
 

@@ -33,6 +33,8 @@ RUN mkdir -p ./packages/api-client
 COPY packages/api-client/package.json ./packages/api-client
 RUN mkdir -p ./packages/auth
 COPY packages/auth/package.json ./packages/auth
+RUN mkdir -p ./packages/central-server
+COPY packages/central-server/package.json ./packages/central-server
 RUN mkdir -p ./packages/data-api
 COPY packages/data-api/package.json ./packages/data-api
 RUN mkdir -p ./packages/data-broker
@@ -55,8 +57,6 @@ RUN mkdir -p ./packages/lesmis
 COPY packages/lesmis/package.json ./packages/lesmis
 RUN mkdir -p ./packages/lesmis-server
 COPY packages/lesmis-server/package.json ./packages/lesmis-server
-RUN mkdir -p ./packages/meditrak-server
-COPY packages/meditrak-server/package.json ./packages/meditrak-server
 RUN mkdir -p ./packages/psss
 COPY packages/psss/package.json ./packages/psss
 RUN mkdir -p ./packages/psss-server

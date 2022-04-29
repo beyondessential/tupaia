@@ -5,17 +5,17 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { MeditrakConnection } from '../connections';
+import { CentralConnection } from '../connections';
 
 export class UserRoute extends Route {
-  private readonly meditrakConnection: MeditrakConnection;
+  private readonly centralConnection: CentralConnection;
 
   public constructor(req: Request, res: Response, next: NextFunction) {
     super(req, res, next);
-    this.meditrakConnection = new MeditrakConnection(req.session);
+    this.centralConnection = new CentralConnection(req.session);
   }
 
   public async buildResponse() {
-    return this.meditrakConnection.getUser();
+    return this.centralConnection.getUser();
   }
 }

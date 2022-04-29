@@ -1,4 +1,4 @@
-# meditrak-server
+# central-server
 
 Backend for the MediTrak health facility survey and mapping software
 

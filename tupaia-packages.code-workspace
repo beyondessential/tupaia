@@ -29,6 +29,10 @@
       "path": "packages/auth"
     },
     {
+      "name": "central-server",
+      "path": "packages/central-server"
+    },
+    {
       "name": "data-api",
       "path": "packages/data-api"
     },
@@ -79,10 +83,6 @@
     {
       "name": "meditrak-app",
       "path": "packages/meditrak-app"
-    },
-    {
-      "name": "meditrak-server",
-      "path": "packages/meditrak-server"
     },
     {
       "name": "psss",

@@ -2,7 +2,7 @@
   "name": "@tupaia/auth",
   "version": "1.0.0",
   "private": true,
-  "description": "Back-end authentication used internally by web-config-server and meditrak-server to authenticate a user's credentials against the database, and build their access policy.",
+  "description": "Back-end authentication used internally by web-config-server and central-server to authenticate a user's credentials against the database, and build their access policy.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia.git",
