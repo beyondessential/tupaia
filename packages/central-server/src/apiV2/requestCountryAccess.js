@@ -25,7 +25,7 @@ const getUserName = async (userId, models) => {
 };
 
 const sendRequest = (userName, countryNames, message, project) => {
-  const { COUNTRY_REQUEST_EMAIL_ADDRESS } = process.env;
+  const { TUPAIA_ADMIN_EMAIL_ADDRESS } = process.env;
 
   const emailText = `
 ${userName} has requested access to countries:
@@ -41,7 +41,7 @@ For the project ${project.code} (linked to permission groups: ${project.permissi
 }
 With the message: '${message}'
 `;
-  return sendEmail(COUNTRY_REQUEST_EMAIL_ADDRESS, 'Tupaia Country Access Request', emailText);
+  return sendEmail(TUPAIA_ADMIN_EMAIL_ADDRESS, 'Tupaia Country Access Request', emailText);
 };
 
 const createAccessRequests = async (models, userId, entities, message, project) => {
