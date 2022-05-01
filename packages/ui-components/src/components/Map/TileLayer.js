@@ -12,7 +12,7 @@ import { TileLayer as LeafletTileLayer, LayerGroup, AttributionControl } from 'r
 const attribution =
   '<a href="https://leafletjs.com/">Leaflet</a> © <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>';
 
-export const TileLayer = ({ tileSetUrl }) => {
+export const TileLayer = ({ tileSetUrl, showAttribution }) => {
   const tileLayer = useRef(null);
 
   useEffect(() => {
@@ -24,15 +24,21 @@ export const TileLayer = ({ tileSetUrl }) => {
   return (
     <LayerGroup>
       <AttributionControl position="bottomleft" prefix="" />
-      <LeafletTileLayer url={tileSetUrl} attribution={attribution} ref={tileLayer} />
+      <LeafletTileLayer
+        url={tileSetUrl}
+        attribution={showAttribution && attribution}
+        ref={tileLayer}
+      />
     </LayerGroup>
   );
 };
 
 TileLayer.propTypes = {
+  showAttribution: PropTypes.bool,
   tileSetUrl: PropTypes.string,
 };
 
 TileLayer.defaultProps = {
+  showAttribution: true,
   tileSetUrl: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
 };

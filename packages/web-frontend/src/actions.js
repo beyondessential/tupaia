@@ -35,6 +35,7 @@ export const CHANGE_SIDE_BAR_CONTRACTED_WIDTH = 'CHANGE_SIDE_BAR_CONTRACTED_WIDT
 export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
 export const CLEAR_MAP_OVERLAY_HIERARCHY = 'CLEAR_MAP_OVERLAY_HIERARCHY';
 export const SET_MAP_OVERLAYS = 'SET_MAP_OVERLAYS';
+export const SET_MOBILE_TAB = 'SET_MOBILE_TAB';
 export const SET_DISPLAYED_MAP_OVERLAY = 'SET_DISPLAYED_MAP_OVERLAY';
 export const SET_OVERLAY_CONFIGS = 'SET_OVERLAY_CONFIGS';
 export const UPDATE_OVERLAY_CONFIGS = 'UPDATE_OVERLAY_CONFIGS';
@@ -97,7 +98,6 @@ export const TOGGLE_INFO_PANEL = 'TOGGLE_INFO_PANEL';
 export const TOGGLE_LOCATION_ITEM_EXPANDED = 'TOGGLE_LOCATION_ITEM_EXPANDED';
 export const OPEN_USER_DIALOG = 'OPEN_USER_DIALOG';
 export const CLOSE_USER_DIALOG = 'CLOSE_USER_DIALOG';
-export const TOGGLE_MEASURE_EXPAND = 'TOGGLE_MEASURE_EXPAND';
 export const TOGGLE_SEARCH_EXPAND = 'TOGGLE_SEARCH_EXPAND';
 export const SET_OVERLAY_COMPONENT = 'SET_OVERLAY_COMPONENT';
 export const OPEN_MAP_POPUP = 'OPEN_MAP_POPUP';
@@ -926,15 +926,6 @@ export function fetchSearchError(error) {
 /**
  * Toggles the expanded state.
  */
-export function toggleMeasureExpand() {
-  return {
-    type: TOGGLE_MEASURE_EXPAND,
-  };
-}
-
-/**
- * Toggles the expanded state.
- */
 export function toggleDashboardSelectExpand() {
   return {
     type: TOGGLE_DASHBOARD_SELECT_EXPAND,
@@ -1112,4 +1103,8 @@ export function updateEnlargedDialogError(errorMessage) {
 
 export function updateHistoryLocation(location) {
   return { type: UPDATE_HISTORY_LOCATION, location };
+}
+
+export function setMobileTab(tab) {
+  return { type: SET_MOBILE_TAB, tab };
 }

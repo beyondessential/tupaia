@@ -5,7 +5,7 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-export const getFacilityThumbnailUrl = orgUnit => {
+export const getOrgUnitPhotoUrl = orgUnit => {
   const { photoUrl } = orgUnit;
 
   if (!photoUrl) {

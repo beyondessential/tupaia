@@ -120,7 +120,7 @@ const DottedCircle = ({ color, scale }) => (
   </IconContainer>
 );
 
-const SquareIcon = ({ color, scale }) => (
+const SquareIcon = ({ color, scale, stroke = color }) => (
   <IconContainer scale={scale}>
     <rect
       width="800"
@@ -130,8 +130,11 @@ const SquareIcon = ({ color, scale }) => (
       strokeWidth="100"
       fill={color}
       fillOpacity="0.6"
-      stroke={color}
+      stroke={stroke}
       strokeOpacity="1"
+      strokeLinejoin="round"
+      rx="15%"
+      ry="15%"
     />
   </IconContainer>
 );
@@ -335,10 +338,10 @@ function toLeaflet(icon, color, scale) {
 }
 
 // Returns jsx version of marker (for Legend rendering)
-export function getMarkerForOption(iconKey, colorName) {
+export function getMarkerForOption(iconKey, colorName, stroke) {
   const icon = icons[iconKey] || icons.pin;
   const color = BREWER_PALETTE[colorName] || colorName;
-  return <icon.Component color={color} />;
+  return <icon.Component color={color} stroke={stroke} />;
 }
 
 // Return html version of marker (for Map rendering)

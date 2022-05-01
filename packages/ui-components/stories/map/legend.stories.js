@@ -60,7 +60,7 @@ export const SimpleLegend = LegendStory.bind({});
 
 SimpleLegend.args = {
   measureInfo: {
-    [mapOverlayCodeA]: { serieses: spectrumMapOverlaySeries },
+    [mapOverlayCodeA]: { serieses: mapOverlaySerieses },
   },
   currentMapOverlayCodes: [mapOverlayCodeA],
   displayedMapOverlayCodes: [mapOverlayCodeA],
@@ -70,7 +70,7 @@ export const SpectrumLegend = LegendStory.bind({});
 
 SpectrumLegend.args = {
   measureInfo: {
-    [mapOverlayCodeA]: { serieses: mapOverlaySerieses },
+    [mapOverlayCodeA]: { serieses: spectrumMapOverlaySeries },
   },
   currentMapOverlayCodes: [mapOverlayCodeA],
   displayedMapOverlayCodes: [mapOverlayCodeA],

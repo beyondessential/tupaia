@@ -17,6 +17,7 @@ const PASSWORD_RESET_TOKEN = 'PASSWORD_RESET_TOKEN';
 const VERIFY_EMAIL_TOKEN = 'VERIFY_EMAIL_TOKEN';
 const OVERLAY_PERIOD = 'OVERLAY_PERIOD';
 const REPORT_PERIOD = 'REPORT_PERIOD';
+const MOBILE_TAB = 'MOBILE_TAB';
 
 export const URL_COMPONENTS = {
   // Path components
@@ -31,6 +32,7 @@ export const URL_COMPONENTS = {
   VERIFY_EMAIL_TOKEN,
   OVERLAY_PERIOD,
   REPORT_PERIOD,
+  MOBILE_TAB,
 };
 
 export const PATH_COMPONENTS = [PROJECT, ORG_UNIT, DASHBOARD];
@@ -41,12 +43,14 @@ export const SEARCH_COMPONENTS = [
   VERIFY_EMAIL_TOKEN,
   OVERLAY_PERIOD,
   REPORT_PERIOD,
+  MOBILE_TAB,
 ];
 
 export const LEGACY_PATH_PREFIXES = ['country', 'facility'];
 
 export const SEARCH_PARAM_KEY_MAP = {
   [MAP_OVERLAY]: 'overlay',
+  [MOBILE_TAB]: 'tab',
   [OVERLAY_PERIOD]: 'overlayPeriod',
   [REPORT]: 'report',
   [REPORT_PERIOD]: 'reportPeriod',

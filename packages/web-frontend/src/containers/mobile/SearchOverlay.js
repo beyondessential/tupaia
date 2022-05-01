@@ -10,40 +10,40 @@ import PropTypes from 'prop-types';
 import CircularProgress from 'material-ui/CircularProgress';
 import { connect } from 'react-redux';
 
-import List from '../../../components/mobile/List';
-import Overlay from '../../../components/mobile/Overlay';
-import {
-  changeSearch,
-  toggleSearchExpand,
-  setOrgUnit,
-  setOverlayComponent,
-} from '../../../actions';
-import { DARK_BLUE, WHITE } from '../../../styles';
+import List from '../../components/mobile/List';
+import Overlay from '../../components/mobile/Overlay';
+import EntityHierarchy from './EntityHierarchy';
+import { changeSearch, setOrgUnit } from '../../actions';
+import { DARK_BLUE, WHITE } from '../../styles';
 
 const SearchOverlay = ({
   isLoading,
   searchString,
   searchResponse,
-  onToggleSearchExpand,
+  onClose,
   onChangeSearch,
   onChangeOrgUnit,
 }) => (
   <Overlay
     titleElement={renderTitleElement(searchString, isLoading, onChangeSearch)}
-    onClose={onToggleSearchExpand}
+    onClose={onClose}
   >
-    <List
-      title={getSearchResponseMessage(searchString, searchResponse, isLoading)}
-      items={searchResponse.map(({ displayName, organisationUnitCode }) => ({
-        title: displayName,
-        key: organisationUnitCode,
-        data: organisationUnitCode,
-      }))}
-      onSelectItem={organisationUnitCode => {
-        onToggleSearchExpand();
-        onChangeOrgUnit(organisationUnitCode);
-      }}
-    />
+    {searchString === '' ? (
+      <EntityHierarchy onClick={onClose} />
+    ) : (
+      <List
+        title={getSearchResponseMessage(searchString, searchResponse, isLoading)}
+        items={searchResponse.map(({ displayName, organisationUnitCode }) => ({
+          title: displayName,
+          key: organisationUnitCode,
+          data: organisationUnitCode,
+        }))}
+        onSelectItem={organisationUnitCode => {
+          onChangeOrgUnit(organisationUnitCode);
+          onClose();
+        }}
+      />
+    )}
   </Overlay>
 );
 
@@ -93,6 +93,7 @@ const styles = {
     flexGrow: 1,
     boxSizing: 'border-box',
     borderRadius: 2,
+    fontSize: 16,
   },
   searchInputLoader: {
     position: 'absolute',
@@ -110,7 +111,6 @@ SearchOverlay.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   searchString: PropTypes.string.isRequired,
   searchResponse: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  onToggleSearchExpand: PropTypes.func.isRequired,
   onChangeSearch: PropTypes.func.isRequired,
   onChangeOrgUnit: PropTypes.func.isRequired,
 };
@@ -129,26 +129,20 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onToggleSearchExpand: () => dispatch(toggleSearchExpand()),
   onChangeSearch: searchString => dispatch(changeSearch(searchString)),
   dispatch,
 });
 
-const mergeProps = (
-  { isOverlayOpen, ...stateProps },
-  { dispatch, ...dispatchProps },
-  ownProps,
-) => ({
+const mergeProps = (stateProps, { dispatch, ...dispatchProps }, { onClose, ...ownProps }) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
   onChangeOrgUnit: organisationUnitCode => {
     dispatch(setOrgUnit(organisationUnitCode));
-
-    // Close any pages that are open.
-    if (isOverlayOpen) {
-      dispatch(setOverlayComponent(null));
-    }
+  },
+  onClose: () => {
+    dispatch(changeSearch(''));
+    onClose();
   },
 });
 

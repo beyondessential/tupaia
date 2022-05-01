@@ -9,7 +9,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
 import UserIcon from '@material-ui/icons/AccountCircle';
 
 import { WHITE } from '../../../styles';
@@ -19,7 +18,6 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 8px;
-  border-bottom: 1px solid #000;
 `;
 
 const Toolbar = styled.div`
@@ -48,7 +46,6 @@ const ToolbarButton = styled.button`
 export const TopBar = ({
   currentUserUsername,
   isUserLoggedIn,
-  onToggleSearchExpand,
   toggleMenuExpanded,
   toggleUserMenuExpand,
 }) => {
@@ -58,9 +55,6 @@ export const TopBar = ({
         <img src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" width="70" height="30" />
       </a>
       <Toolbar>
-        <ToolbarButton onClick={onToggleSearchExpand}>
-          <SearchIcon />
-        </ToolbarButton>
         {isUserLoggedIn ? (
           <ToolbarButton onClick={toggleUserMenuExpand}>
             {currentUserUsername}
@@ -80,7 +74,6 @@ export const TopBar = ({
 TopBar.propTypes = {
   currentUserUsername: PropTypes.string.isRequired,
   isUserLoggedIn: PropTypes.bool.isRequired,
-  onToggleSearchExpand: PropTypes.func.isRequired,
   toggleMenuExpanded: PropTypes.func.isRequired,
   toggleUserMenuExpand: PropTypes.func.isRequired,
 };
