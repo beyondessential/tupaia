@@ -12,7 +12,7 @@ import {
   periodToDisplayString,
   formatAsFractionAndPercentage,
 } from './utils';
-import { add, divide, sum } from './math';
+import { add, divide, sum, mean } from './math';
 
 /**
  * Custom functions to be imported into mathjs
@@ -60,4 +60,5 @@ export const functionExtensions = {
  */
 export const functionOverrides = {
   sum,
+  mean,
 };

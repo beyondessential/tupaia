@@ -51,16 +51,20 @@ const FIELDS = [
 
 const IMPORT_CONFIG = {
   title: 'Import Dashboard Visualisation',
-  subtitle: 'Please upload a .json file with the visualisation to be imported:',
+  subtitle: 'Please upload one or more .json files with visualisations to be imported:',
   actionConfig: {
     importEndpoint: 'dashboardVisualisations',
+    multiple: true,
   },
   getFinishedMessage: response => (
     <>
       <span>{response.message}</span>
-      <p>
-        <Link to={`/viz-builder/dashboard-item/${response.id}`}>View in Visualisation Builder</Link>
-      </p>
+      {response.importedVizes.map(({ code, id }) => (
+        <p>
+          <span>{`${code}: `}</span>
+          <Link to={`/viz-builder/dashboard-item/${id}`}>View in Visualisation Builder</Link>
+        </p>
+      ))}
     </>
   ),
 };
