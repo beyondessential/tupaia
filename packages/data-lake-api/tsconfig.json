@@ -3,5 +3,5 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": ["src/**/*", "jest.config.ts", "jest.setup.ts"]
+  "include": ["src/**/*", "jest.config.ts", "jest.setup.ts", "global.d.ts"]
 }
