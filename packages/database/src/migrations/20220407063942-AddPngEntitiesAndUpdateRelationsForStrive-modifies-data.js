@@ -99,7 +99,7 @@ const insertEntity = async (db, entity) => {
 };
 
 const updatePoint = async (db, entity) => {
-  const point = JSON.stringify({ type: 'Point', coordinates: [entity.Longitude, entity.Latitude] });
+  const point = JSON.stringify({ type: 'Point', coordinates: [entity.longitude, entity.latitude] });
   return db.runSql(`
     update entity 
     set point = ST_Force2D(ST_GeomFromGeoJSON('${point}')),
