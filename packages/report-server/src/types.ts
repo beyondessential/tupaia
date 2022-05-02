@@ -58,6 +58,12 @@ export interface Event {
   dataValues?: Record<string, string | number>;
 }
 
+export interface EventMetaData {
+  code: string;
+  name: string;
+  dataElements: { code: string; name: string; text: string }[];
+}
+
 export interface AggregationType {
   code: string;
   description: string;
