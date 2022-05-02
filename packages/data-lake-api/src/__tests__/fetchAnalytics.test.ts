@@ -59,7 +59,7 @@ describe('fetchAnalytics', () => {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['BCD1TEST', 'BCD325TEST', 1],
         },
-        /dataElementCodes*/,
+        /dataElementCodes\[2\] must be a `string` type, but the final value was: `1`*/,
       ],
     ];
 

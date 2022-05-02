@@ -11,5 +11,5 @@ then
     exit 0
 fi
 
-echo -e "Error: $DATA_LAKE_DB_NAME database does not exist!\n\nTo create it, please run:\nyarn workspace @tupaia/data-lake-api setup-test-data-lake\n"
+echo -e "Error: $DATA_LAKE_DB_NAME database does not exist!\n\nTo create it, please get the .env file from lastpass then run:\nyarn workspace @tupaia/data-lake-api setup-test-data-lake\n"
 exit 1

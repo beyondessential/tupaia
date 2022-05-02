@@ -82,8 +82,8 @@ describe('fetchEvents', () => {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['BCD1TEST', 1],
         },
-        /dataElementCodes*/,
-      ], // data element code is not a string
+        /dataElementCodes\[1\] must be a `string` type, but the final value was: `1`*/,
+      ],
       [
         {
           dataGroupCode: 'BCDTEST',
