@@ -181,7 +181,6 @@ MapComponent.propTypes = {
     zoom: PropTypes.number,
   }).isRequired,
   onChangeOrgUnit: PropTypes.func.isRequired,
-  onSeeOrgUnitDashboard: PropTypes.func.isRequired,
   shouldSnapToPosition: PropTypes.bool.isRequired,
   tileSetUrl: PropTypes.string.isRequired,
   areMeasuresOnTheSameEntityLevel: PropTypes.bool.isRequired,
@@ -220,10 +219,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   onChangeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
     dispatch(setOrgUnit(organisationUnitCode, shouldChangeMapBounds));
-  },
-  onSeeOrgUnitDashboard: organisationUnitCode => {
-    dispatch(setOrgUnit(organisationUnitCode, true));
-    dispatch(setMobileTab('dashboard'));
   },
   onChangePosition: (center, zoom) => dispatch(changePosition(center, zoom)),
   onCloseDropdownOverlays: () => dispatch(closeDropdownOverlays()),
