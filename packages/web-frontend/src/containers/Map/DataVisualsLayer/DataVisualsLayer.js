@@ -16,7 +16,7 @@ import {
   selectRenderedMeasuresWithDisplayInfo,
   selectMeasureData,
 } from '../../../selectors';
-import { setOrgUnit } from '../../../actions';
+import { setMobileTab, setOrgUnit } from '../../../actions';
 import { InteractivePolygonLayer } from './InteractivePolygonLayer';
 
 export const DataVisualsLayerComponent = props => {
@@ -24,6 +24,7 @@ export const DataVisualsLayerComponent = props => {
     measureData,
     displayedMapOverlayCodes,
     onChangeOrgUnit,
+    onSeeOrgUnitDashboard,
     multiOverlayMeasureData,
     multiOverlaySerieses,
   } = props;
@@ -41,6 +42,7 @@ export const DataVisualsLayerComponent = props => {
         measureData={measureData}
         displayedMapOverlayCodes={displayedMapOverlayCodes}
         onChangeOrgUnit={onChangeOrgUnit}
+        onSeeOrgUnitDashboard={onSeeOrgUnitDashboard}
         multiOverlayMeasureData={multiOverlayMeasureData}
         multiOverlaySerieses={multiOverlaySerieses}
       />
@@ -54,6 +56,7 @@ DataVisualsLayerComponent.propTypes = {
   multiOverlayMeasureData: PropTypes.array,
   multiOverlaySerieses: PropTypes.array,
   onChangeOrgUnit: PropTypes.func.isRequired,
+  onSeeOrgUnitDashboard: PropTypes.func.isRequired,
 };
 
 DataVisualsLayerComponent.defaultProps = {
@@ -93,6 +96,10 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = dispatch => ({
   onChangeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
     dispatch(setOrgUnit(organisationUnitCode, shouldChangeMapBounds));
+  },
+  onSeeOrgUnitDashboard: organisationUnitCode => {
+    dispatch(setOrgUnit(organisationUnitCode, true));
+    dispatch(setMobileTab('dashboard'));
   },
 });
 

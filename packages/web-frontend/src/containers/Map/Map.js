@@ -6,11 +6,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { TileLayer, LeafletMap } from '@tupaia/ui-components/lib/map';
+import { TileLayer, LeafletMap, ZoomControl } from '@tupaia/ui-components/lib/map';
+
 import { checkBoundsDifference } from '../../utils';
 import { DemoLand } from './DemoLand';
 import { DisasterLayer } from './DisasterLayer';
-import { ZoomControl } from './ZoomControl';
 import {
   selectActiveTileSet,
   selectCurrentMapOverlayCodes,
@@ -65,7 +65,6 @@ class MapComponent extends Component {
       mapOverlayCodes,
       isMeasureLoading,
       position,
-      sidePanelWidth,
       tileSetUrl,
       displayedMapOverlayCodes,
     } = this.props;
@@ -128,9 +127,10 @@ class MapComponent extends Component {
       onCloseDropdownOverlays,
       position,
       shouldSnapToPosition,
-      sidePanelWidth,
       tileSetUrl,
       areMeasuresOnTheSameEntityLevel,
+      showAttribution,
+      showZoomControl,
     } = this.props;
 
     return (
@@ -184,10 +184,16 @@ MapComponent.propTypes = {
   shouldSnapToPosition: PropTypes.bool.isRequired,
   tileSetUrl: PropTypes.string.isRequired,
   areMeasuresOnTheSameEntityLevel: PropTypes.bool.isRequired,
+  isMeasureLoading: PropTypes.bool,
+  showZoomControl: PropTypes.bool,
+  showAttribution: PropTypes.bool,
 };
 
 MapComponent.defaultProps = {
   currentParent: null,
+  isMeasureLoading: false,
+  showZoomControl: true,
+  showAttribution: true,
 };
 
 const mapStateToProps = state => {
