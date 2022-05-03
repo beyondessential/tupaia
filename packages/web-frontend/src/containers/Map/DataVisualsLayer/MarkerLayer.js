@@ -18,6 +18,7 @@ export const MarkerLayerComponent = props => {
     multiOverlayMeasureData,
     multiOverlaySerieses,
     onChangeOrgUnit,
+    onSeeOrgUnitDashboard,
   } = props;
 
   if (!displayedMapOverlayCodes) {
@@ -34,6 +35,7 @@ export const MarkerLayerComponent = props => {
       measureData={processedData}
       serieses={serieses}
       onChangeOrgUnit={onChangeOrgUnit}
+      onSeeOrgUnitDashboard={onSeeOrgUnitDashboard}
       multiOverlayMeasureData={multiOverlayMeasureData}
       multiOverlaySerieses={multiOverlaySerieses}
     />
@@ -47,6 +49,7 @@ MarkerLayerComponent.propTypes = {
   multiOverlayMeasureData: PropTypes.array,
   multiOverlaySerieses: PropTypes.array,
   onChangeOrgUnit: PropTypes.func.isRequired,
+  onSeeOrgUnitDashboard: PropTypes.func.isRequired,
 };
 
 MarkerLayerComponent.defaultProps = {

@@ -72,6 +72,7 @@ class MapComponent extends Component {
     if (JSON.stringify(nextProps.mapOverlayCodes) !== JSON.stringify(mapOverlayCodes)) {
       return true;
     }
+    // Do not rerender if measure data is loading
     if (isMeasureLoading && !nextProps.isMeasureLoading) {
       return true;
     }

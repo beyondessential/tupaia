@@ -29,22 +29,23 @@ export const DataVisualsLayerComponent = props => {
     multiOverlaySerieses,
   } = props;
 
+  const sharedProps = {
+    onChangeOrgUnit,
+    displayedMapOverlayCodes,
+    multiOverlayMeasureData,
+    multiOverlaySerieses,
+  };
+
   return (
     <>
       <InteractivePolygonLayer
         hasMeasureData={measureData && measureData.length > 0}
-        displayedMapOverlayCodes={displayedMapOverlayCodes}
-        onChangeOrgUnit={onChangeOrgUnit}
-        multiOverlayMeasureData={multiOverlayMeasureData}
-        multiOverlaySerieses={multiOverlaySerieses}
+        {...sharedProps}
       />
       <MarkerLayer
         measureData={measureData}
-        displayedMapOverlayCodes={displayedMapOverlayCodes}
-        onChangeOrgUnit={onChangeOrgUnit}
         onSeeOrgUnitDashboard={onSeeOrgUnitDashboard}
-        multiOverlayMeasureData={multiOverlayMeasureData}
-        multiOverlaySerieses={multiOverlaySerieses}
+        {...sharedProps}
       />
     </>
   );
