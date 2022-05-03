@@ -21,6 +21,7 @@ This opens all packages as roots in the workspace, and means linting etc. will w
 - [lesmis](https://github.com/beyondessential/tupaia/blob/dev/packages/lesmis/README.md)
 - [lesmis-server](https://github.com/beyondessential/tupaia/blob/dev/packages/lesmis-server/README.md)
 - [meditrak-app](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-app/README.md)
+- [meditrak-app-server](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-app-server/README.md)
 - [psss](https://github.com/beyondessential/tupaia/blob/dev/packages/psss/README.md)
 - [psss-server](https://github.com/beyondessential/tupaia/blob/dev/packages/psss-server/README.md)
 - [web-config-server](https://github.com/beyondessential/tupaia/blob/dev/packages/web-config-server/README.md)

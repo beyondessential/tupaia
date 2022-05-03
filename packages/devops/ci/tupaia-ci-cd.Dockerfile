@@ -57,6 +57,8 @@ RUN mkdir -p ./packages/lesmis
 COPY packages/lesmis/package.json ./packages/lesmis
 RUN mkdir -p ./packages/lesmis-server
 COPY packages/lesmis-server/package.json ./packages/lesmis-server
+RUN mkdir -p ./packages/meditrak-app-server
+COPY packages/meditrak-app-server/package.json ./packages/meditrak-app-server
 RUN mkdir -p ./packages/psss
 COPY packages/psss/package.json ./packages/psss
 RUN mkdir -p ./packages/psss-server

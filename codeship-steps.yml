@@ -21,27 +21,29 @@
               command: './packages/devops/scripts/ci/testBackend.sh admin-panel-server'
             - name: Test central-server
               command: './packages/devops/scripts/ci/testBackend.sh central-server'
+            - name: Test entity-server
+              command: './packages/devops/scripts/ci/testBackend.sh entity-server'
             - name: Test lesmis-server
               command: './packages/devops/scripts/ci/testBackend.sh lesmis-server'
-            - name: Test web-config-server
-              command: './packages/devops/scripts/ci/testBackend.sh web-config-server'
+            - name: Test meditrak-app-server
+              command: './packages/devops/scripts/ci/testBackend.sh meditrak-app-server'
             - name: Test psss-server
               command: './packages/devops/scripts/ci/testBackend.sh psss-server'
             - name: Test report-server
               command: './packages/devops/scripts/ci/testBackend.sh report-server'
-            - name: Test entity-server
-              command: './packages/devops/scripts/ci/testBackend.sh entity-server'
+            - name: Test web-config-server
+              command: './packages/devops/scripts/ci/testBackend.sh web-config-server'
         - type: parallel
           name: Test batch 2
           steps:
-            - name: Test database
-              command: './packages/devops/scripts/ci/testBackend.sh database'
+            - name: Test auth
+              command: './packages/devops/scripts/ci/testBackend.sh auth'
             - name: Test data-api
               command: './packages/devops/scripts/ci/testBackend.sh data-api'
             - name: Test data-lake-api
               command: './packages/devops/scripts/ci/testBackend.sh data-lake-api'
-            - name: Test auth
-              command: './packages/devops/scripts/ci/testBackend.sh auth'
+            - name: Test database
+              command: './packages/devops/scripts/ci/testBackend.sh database'
             - name: Test indicators
               command: './packages/devops/scripts/ci/testBackend.sh indicators'
             - name: Test internal-dependencies

@@ -1,0 +1,9 @@
+@hostname = localhost
+@port = 8090
+@host = {{hostname}}:{{port}}
+@version = v1
+@contentType = application/json
+
+### /test
+GET http://{{host}}/{{version}}/test HTTP/2.0
+
