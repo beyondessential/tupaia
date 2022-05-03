@@ -23,3 +23,10 @@ export const MULTIPLE_TRANSFORMED_DATA_FOR_SPECIFIED_COLUMNS = [
   { InfrastructureType: 'others', FacilityType: 'park', Tonga: 0 },
   { InfrastructureType: 'others', FacilityType: 'library', Tonga: 5 },
 ];
+
+export const MULTIPLE_TRANSFORMED_DATA_FOR_RAW_DATA_EXPORT = [
+  { EntityName: 'clinic', dataElement_A: 3, dataElement_B: 0 },
+  { EntityName: 'hospital', dataElement_A: 4, dataElement_B: 9 },
+  { EntityName: 'park', dataElement_B: 0 },
+  { EntityName: 'others', dataElement_B: 5 },
+];

@@ -21,13 +21,17 @@ const LegendFrame = styled.div`
   display: flex;
   width: fit-content;
   padding: 0.6rem;
-  margin: 0.6rem auto;
   cursor: auto;
   color: ${props => props.theme.palette.text.primary};
   background-color: ${({ theme }) =>
     theme.palette.type === 'light' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(43, 45, 56, 0.85)'};
   border-radius: 3px;
   opacity: ${props => (props.isDisplayed ? '100%' : '20%')};
+  margin: 0.6rem auto;
+
+  ${p => p.theme.breakpoints.down('sm')} {
+    margin: 0.6rem;
+  }
 `;
 
 const LegendName = styled.div`
@@ -63,6 +67,8 @@ export const Legend = React.memo(
     currentMapOverlayCodes,
     displayedMapOverlayCodes,
     seriesesKey,
+    SeriesContainer,
+    SeriesDivider,
   }) => {
     if (Object.keys(baseMeasureInfo).length === 0) {
       return null;
@@ -95,26 +101,32 @@ export const Legend = React.memo(
           const hasIconLayer = baseSerieses.some(l => l.type === MEASURE_TYPE_ICON);
           const hasRadiusLayer = baseSerieses.some(l => l.type === MEASURE_TYPE_RADIUS);
           const hasColorLayer = baseSerieses.some(l => coloredMeasureTypes.includes(l.type));
-          const isDisplayed = displayedMapOverlayCodes.includes(mapOverlayCode);
+          const isDisplayed =
+            !displayedMapOverlayCodes || displayedMapOverlayCodes.includes(mapOverlayCode);
 
-          return serieses.map(series => {
-            const { type } = series;
-            const LegendComponent = getLegendComponent(type);
-            return (
-              <LegendFrame key={series.key} className={className} isDisplayed={isDisplayed}>
-                {legendsHaveSameType && <LegendName>{`${series.name}: `}</LegendName>}
-                <LegendComponent
-                  key={series.key}
-                  hasIconLayer={hasIconLayer}
-                  hasRadiusLayer={hasRadiusLayer}
-                  hasColorLayer={hasColorLayer}
-                  series={series}
-                  setValueHidden={setValueHidden}
-                  hiddenValues={hiddenValues}
-                />
-              </LegendFrame>
-            );
-          });
+          return serieses
+            .sort(a => (a.type === MEASURE_TYPE_COLOR ? -1 : 1)) // color series should sit at the top
+            .map((series, index) => {
+              const { type } = series;
+              const LegendComponent = getLegendComponent(type);
+              return (
+                <>
+                  <SeriesContainer key={series.key} className={className} isDisplayed={isDisplayed}>
+                    {legendsHaveSameType && <LegendName>{`${series.name}: `}</LegendName>}
+                    <LegendComponent
+                      key={series.key}
+                      hasIconLayer={hasIconLayer}
+                      hasRadiusLayer={hasRadiusLayer}
+                      hasColorLayer={hasColorLayer}
+                      series={series}
+                      setValueHidden={setValueHidden}
+                      hiddenValues={hiddenValues}
+                    />
+                  </SeriesContainer>
+                  {index < serieses.length - 1 && SeriesDivider && <SeriesDivider />}
+                </>
+              );
+            });
         })}
       </>
     );
@@ -126,14 +138,19 @@ Legend.propTypes = {
   className: PropTypes.string,
   hiddenValues: PropTypes.object,
   setValueHidden: PropTypes.func,
-  displayedMapOverlayCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  displayedMapOverlayCodes: PropTypes.arrayOf(PropTypes.string),
   currentMapOverlayCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
   seriesesKey: PropTypes.string,
+  SeriesContainer: PropTypes.node,
+  SeriesDivider: PropTypes.node,
 };
 
 Legend.defaultProps = {
   className: null,
+  displayedMapOverlayCodes: null,
   hiddenValues: {},
   setValueHidden: null,
   seriesesKey: 'serieses',
+  SeriesContainer: LegendFrame,
+  SeriesDivider: null,
 };

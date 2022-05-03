@@ -19,7 +19,7 @@ import StaticMap from '../components/StaticMap';
 import { DASHBOARD_STYLES, DASHBOARD_META_MARGIN } from '../styles';
 import { setDashboardGroup, closeDropdownOverlays } from '../actions';
 import { DashboardGroup } from './DashboardGroup';
-import { getFacilityThumbnailUrl } from '../utils';
+import { getOrgUnitPhotoUrl } from '../utils';
 import { DropDownMenu } from '../components/DropDownMenu';
 import {
   selectCurrentDashboardName,
@@ -99,7 +99,7 @@ export class Dashboard extends Component {
     const { currentOrganisationUnit } = this.props;
     return (
       <img
-        src={getFacilityThumbnailUrl(currentOrganisationUnit)}
+        src={getOrgUnitPhotoUrl(currentOrganisationUnit)}
         alt={currentOrganisationUnit.name}
         style={{ ...DASHBOARD_STYLES.metaImage, display: visible ? 'block' : 'none' }}
         onClick={() => this.setState({ isPhotoEnlarged: true })}
@@ -122,7 +122,7 @@ export class Dashboard extends Component {
         style={DASHBOARD_STYLES.metaImageDialog}
       >
         <img
-          src={getFacilityThumbnailUrl(currentOrganisationUnit)}
+          src={getOrgUnitPhotoUrl(currentOrganisationUnit)}
           style={DASHBOARD_STYLES.metaImageDialogImage}
           alt={currentOrganisationUnit.name}
         />

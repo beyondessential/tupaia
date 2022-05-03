@@ -6,13 +6,12 @@
 import groupBy from 'lodash.groupby';
 
 import moment from 'moment';
-import { TupaiaDatabase } from '@tupaia/database';
+import { TupaiaDatabase, SqlQuery } from '@tupaia/database';
 import { getSortByKey, DEFAULT_BINARY_OPTIONS, yup } from '@tupaia/utils';
-import { SqlQuery } from './SqlQuery';
-import { AnalyticsFetchOptions, AnalyticsFetchQuery } from './AnalyticsFetchQuery';
-import { EventsFetchQuery, EventAnswer, EventsFetchOptions } from './EventsFetchQuery';
+import { AnalyticsFetchQuery } from './AnalyticsFetchQuery';
+import { EventsFetchQuery, EventAnswer } from './EventsFetchQuery';
 import { sanitizeMetadataValue, sanitizeAnalyticsTableValue, isDefined } from './utils';
-import { validateEventOptions, validateAnalyticsOptions } from './validation';
+import { eventOptionsValidator, analyticsOptionsValidator } from './validators';
 import { sanitiseFetchDataOptions } from './sanitiseFetchDataOptions';
 
 const EVENT_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
@@ -34,11 +33,11 @@ export class TupaiaDataApi {
   }
 
   public async fetchEvents(optionsInput: Record<string, unknown>) {
-    await validateEventOptions(optionsInput);
-    const options = sanitiseFetchDataOptions(optionsInput as EventsFetchOptions);
-    const results = await new EventsFetchQuery(this.database, options).fetch();
+    const validatedOptions = eventOptionsValidator.validateSync(optionsInput);
+    const sanitizedOptions = sanitiseFetchDataOptions(validatedOptions);
+    const results = await new EventsFetchQuery(this.database, sanitizedOptions).fetch();
     const answersByEventId = groupBy(results, 'eventId');
-    const hasElements = options.dataElementCodes.length > 0;
+    const hasElements = sanitizedOptions.dataElementCodes.length > 0;
     return Object.values(answersByEventId)
       .map(resultsForEvent => {
         const [{ eventId, date, entityCode, entityName }] = resultsForEvent;
@@ -54,11 +53,11 @@ export class TupaiaDataApi {
   }
 
   public async fetchAnalytics(optionsInput: Record<string, unknown>) {
-    await validateAnalyticsOptions(optionsInput);
-    const options = sanitiseFetchDataOptions(optionsInput as AnalyticsFetchOptions);
+    const validatedOptions = analyticsOptionsValidator.validateSync(optionsInput);
+    const sanitizedOptions = sanitiseFetchDataOptions(validatedOptions);
     const { analytics, numAggregationsProcessed } = await new AnalyticsFetchQuery(
       this.database,
-      options,
+      sanitizedOptions,
     ).fetch();
     return {
       analytics: analytics.map(({ entityCode, dataElementCode, period, type, value }) => ({

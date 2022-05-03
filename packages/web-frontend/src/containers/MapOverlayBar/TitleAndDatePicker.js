@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { FlexSpaceBetween as FlexSpaceBetweenCenter } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import moment from 'moment';
 import {
   CircularProgress as MuiCircularProgress,
   Box as MuiBox,
@@ -11,12 +10,12 @@ import {
 } from '@material-ui/core';
 import { Skeleton as MuiSkeleton } from '@material-ui/lab';
 import { DateRangePicker } from '../../components/DateRangePicker';
-import { getDefaultDates, getLimits, GRANULARITY_CONFIG } from '../../utils/periodGranularities';
 import { Content, ContentText } from './Content';
 import { MAP_OVERLAY_SELECTOR, TUPAIA_ORANGE } from '../../styles';
 import { setDisplayedMapOverlays, updateOverlayConfigs } from '../../actions';
 import { Pin } from './Pin';
 import { Tooltip } from '../../components/Tooltip';
+import { useOverlayDates } from './useOverlayDates';
 
 const FlexSpaceBetween = styled(FlexSpaceBetweenCenter)`
   align-items: flex-start;
@@ -91,14 +90,17 @@ export const TitleAndDatePickerComponent = ({
   setPinnedOverlay,
   maxSelectedOverlays,
 }) => {
-  const { periodGranularity, isTimePeriodEditable = true, name, mapOverlayCode } = mapOverlay;
-  const defaultDates = getDefaultDates(mapOverlay);
-  const datePickerLimits = getLimits(periodGranularity, mapOverlay.datePickerLimits);
-  const showDatePicker = !!(isTimePeriodEditable && periodGranularity);
-  // Map overlays always have initial dates, so DateRangePicker always has dates on initialisation,
-  // and uses those rather than calculating it's own defaults
-  const startDate = mapOverlay.startDate || defaultDates.startDate;
-  const endDate = mapOverlay.endDate || defaultDates.endDate;
+  const { name, mapOverlayCode } = mapOverlay;
+  const {
+    showDatePicker,
+    startDate,
+    endDate,
+    minStartDate,
+    maxEndDate,
+    periodGranularity,
+    setDates,
+  } = useOverlayDates(mapOverlay, onUpdateOverlayPeriod);
+
   const isPinned = pinnedOverlay === mapOverlayCode;
   const isMultiOverlays = maxSelectedOverlays > 1;
   const isSwitchedOn = displayedMapOverlays.includes(mapOverlayCode) || !isMultiOverlays;
@@ -107,14 +109,6 @@ export const TitleAndDatePickerComponent = ({
       ? displayedMapOverlays.filter(code => code !== mapOverlayCode)
       : [...displayedMapOverlays, mapOverlayCode];
     onSetDisplayedMapOverlay(newDisplayedOverlays);
-  };
-
-  const updateMeasurePeriod = (_startDate, _endDate) => {
-    const period = GRANULARITY_CONFIG[periodGranularity].momentUnit;
-    onUpdateOverlayPeriod(mapOverlayCode, {
-      startDate: moment(_startDate).startOf(period),
-      endDate: moment(_endDate).endOf(period),
-    });
   };
 
   const handlePinChange = () => {
@@ -163,9 +157,9 @@ export const TitleAndDatePickerComponent = ({
               granularity={periodGranularity}
               startDate={startDate}
               endDate={endDate}
-              min={datePickerLimits.startDate}
-              max={datePickerLimits.endDate}
-              onSetDates={updateMeasurePeriod}
+              min={minStartDate}
+              max={maxEndDate}
+              onSetDates={setDates}
               isLoading={isMeasureLoading}
             />
           )}

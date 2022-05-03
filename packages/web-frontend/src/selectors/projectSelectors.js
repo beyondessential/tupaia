@@ -9,11 +9,13 @@ import { createSelector } from 'reselect';
 import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
 import { selectLocation } from './utils';
 import { TILE_SETS } from '../constants';
+import { DEFAULT_PROJECT_CODE } from '../defaults';
 
 const selectAllProjects = state => state.project.projects;
 
-export const selectCurrentProjectCode = createSelector([selectLocation], location =>
-  getLocationComponentValue(location, URL_COMPONENTS.PROJECT),
+export const selectCurrentProjectCode = createSelector(
+  [selectLocation],
+  location => getLocationComponentValue(location, URL_COMPONENTS.PROJECT) || DEFAULT_PROJECT_CODE,
 );
 
 export const selectIsProject = createSelector(
