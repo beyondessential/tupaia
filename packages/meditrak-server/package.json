@@ -1,0 +1,36 @@
+{
+  "name": "@tupaia/meditrak-server",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Backend server for Meditrak-app",
+  "homepage": "https://github.com/beyondessential/tupaia",
+  "bugs": {
+    "url": "https://github.com/beyondessential/tupaia/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig-build.json",
+    "lint": "eslint . --ext .ts",
+    "lint:all": "yarn run lint \"src/**/*.{ts,jsx}\"",
+    "lint:fix": "yarn lint --fix",
+    "prestart": "npm run -s build",
+    "start": "node dist",
+    "start-dev": "LOG_LEVEL=debug ../../scripts/bash/backendStartDev.sh 9998 -ts",
+    "start-verbose": "LOG_LEVEL=debug npm run start-dev",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "@tupaia/database": "1.0.0",
+    "@tupaia/server-boilerplate": "1.0.0",
+    "dotenv": "^8.2.0",
+    "winston": "^3.2.1"
+  }
+}
