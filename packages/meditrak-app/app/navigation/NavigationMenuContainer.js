@@ -12,6 +12,7 @@ import {
   REALM_EXPLORER_SCREEN,
   REQUEST_COUNTRY_ACCESS_SCREEN,
   CHANGE_PASSWORD_SCREEN,
+  DELETE_ACCOUNT_REQUEST_SCREEN,
 } from './constants';
 
 const DEVELOPER_EMAIL_ADDRESSES = [
@@ -49,6 +50,12 @@ function mapStateToProps({ sideMenu, authentication, nav, rewards }) {
         label: 'Change password',
         icon: 'lock',
       },
+      {
+        key: DELETE_ACCOUNT_REQUEST_SCREEN,
+        label: 'Delete my account',
+        icon: 'remove',
+      },
+
       {
         key: 'logout',
         label: 'Log out',

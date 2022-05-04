@@ -6,7 +6,7 @@
 import React from 'react';
 import { StyleSheet, View, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import { Text } from './Text';
 import {
@@ -23,11 +23,11 @@ export const STATUS_MESSAGE_ERROR = 'ERROR';
 export const getMessageIconName = type => {
   switch (type) {
     case STATUS_MESSAGE_SUCCESS:
-      return 'check';
+      return 'checkmark-circle';
 
     case STATUS_MESSAGE_ERROR:
     default:
-      return 'exclamation-triangle';
+      return 'warning';
   }
 };
 
@@ -42,10 +42,10 @@ export const getMessageStyle = type => {
   }
 };
 
-export const StatusMessage = ({ message, style, type }) => (
+export const StatusMessage = ({ message, style, type, textStyle, iconStyle }) => (
   <View style={[localStyles.message, getMessageStyle(type), style]}>
-    <Icon name={getMessageIconName(type)} style={localStyles.icon} color={THEME_COLOR_ONE} />
-    <Text style={localStyles.messageText}>{message}</Text>
+    <Icon name={getMessageIconName(type)} style={StyleSheet.compose(localStyles.icon, iconStyle)} />
+    <Text style={[localStyles.messageText, textStyle]}>{message}</Text>
   </View>
 );
 
@@ -53,12 +53,16 @@ StatusMessage.propTypes = {
   message: PropTypes.string,
   type: PropTypes.oneOf([STATUS_MESSAGE_ERROR, STATUS_MESSAGE_SUCCESS]),
   style: ViewPropTypes.style,
+  textStyle: ViewPropTypes.style,
+  iconStyle: ViewPropTypes.style,
 };
 
 StatusMessage.defaultProps = {
   message: '',
   type: STATUS_MESSAGE_ERROR,
   style: null,
+  textStyle: null,
+  iconStyle: null,
 };
 
 const localStyles = StyleSheet.create({
@@ -84,5 +88,7 @@ const localStyles = StyleSheet.create({
   icon: {
     marginRight: 10,
     marginVertical: 3,
+    fontSize: 14,
+    color: 'white',
   },
 });
