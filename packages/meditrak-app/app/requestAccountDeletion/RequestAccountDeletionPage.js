@@ -95,7 +95,7 @@ export class RequestAccountDeletionPage extends PureComponent {
               <View style={localStyles.actionsContainer}>
                 <Button
                   style={localStyles.deleteButton}
-                  textStyle={{ color: 'white', fontWeight: 'bold' }}
+                  textStyle={localStyles.deleteButtonText}
                   title="Delete Account"
                   isDisabled={isLoading || isRequestSent}
                   onPress={() => onSubmit()}
@@ -199,4 +199,5 @@ const localStyles = StyleSheet.create({
     width: '100%',
     backgroundColor: THEME_COLOR_THREE,
   },
+  deleteButtonText: { color: 'white', fontWeight: 'bold' },
 });
