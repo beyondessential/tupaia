@@ -55,7 +55,7 @@ const renderSuccessMessage = messageText => (
 
 export class RequestAccountDeletionPage extends PureComponent {
   static navigationOptions = {
-    headerTitle: 'Delete your account',
+    headerTitle: 'Delete account',
     headerMode: 'screen',
   };
 

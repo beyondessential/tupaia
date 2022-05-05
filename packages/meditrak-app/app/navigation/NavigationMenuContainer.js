@@ -52,7 +52,7 @@ function mapStateToProps({ sideMenu, authentication, nav, rewards }) {
       },
       {
         key: DELETE_ACCOUNT_REQUEST_SCREEN,
-        label: 'Delete my account',
+        label: 'Delete account',
         icon: 'remove',
       },
 
