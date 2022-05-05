@@ -2,9 +2,10 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
-import { respond, DatabaseError, UnauthenticatedError, ValidationError } from '@tupaia/utils';
+import { respond, UnauthenticatedError, ValidationError } from '@tupaia/utils';
 import { getTokenClaimsFromBearerAuth } from '@tupaia/auth';
 import { sendEmail } from '../utilities';
+import { getUserInfoInString } from './utilities';
 
 const checkUserPermission = (req, userId) => {
   const authHeader = req.headers.authorization;
@@ -12,15 +13,6 @@ const checkUserPermission = (req, userId) => {
 
   if (tokenClaims.userId !== userId) {
     throw new UnauthenticatedError('Permission to request access for given user is not available.');
-  }
-};
-
-const getUserName = async (userId, models) => {
-  try {
-    const user = await models.user.findById(userId);
-    return `${user.first_name} ${user.last_name} (${user.email} - ${user.id}), ${user.position} at ${user.employer}, `;
-  } catch (error) {
-    throw new DatabaseError('finding user', error);
   }
 };
 
@@ -84,7 +76,7 @@ export const requestCountryAccess = async (req, res) => {
   } catch (error) {
     throw new UnauthenticatedError(error.message);
   }
-  const userName = await getUserName(userId, models);
+  const userName = await getUserInfoInString(userId, models);
 
   const project = projectCode && (await models.project.findOne({ code: projectCode }));
   await createAccessRequests(models, userId, entities, message, project);
