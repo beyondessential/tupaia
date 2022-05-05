@@ -28,6 +28,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@tupaia/api-client": "3.1.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/server-boilerplate": "1.0.0",
     "dotenv": "^8.2.0",
