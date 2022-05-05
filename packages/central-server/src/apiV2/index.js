@@ -88,7 +88,7 @@ import {
 import { EditAccessRequests, GETAccessRequests } from './accessRequests';
 import { postChanges } from './postChanges';
 import { changePassword } from './changePassword';
-import { deleteMyAccount } from './deleteMyAccount';
+import { deleteAccount } from './deleteAccount';
 import { editUser } from './editUser';
 import { requestCountryAccess } from './requestCountryAccess';
 import { getSocialFeed } from './getSocialFeed';
@@ -220,7 +220,7 @@ apiV2.post('/user', useRouteHandler(RegisterUserAccounts)); // used for user reg
 apiV2.post('/users', useRouteHandler(CreateUserAccounts)); // used by admin panel to directly create users
 apiV2.post('/userEntityPermissions', useRouteHandler(CreateUserEntityPermissions));
 apiV2.post('/me/requestCountryAccess', allowAnyone(requestCountryAccess));
-apiV2.post('/me/deleteMyAccount', allowAnyone(deleteMyAccount));
+apiV2.post('/me/deleteAccount', allowAnyone(deleteAccount));
 apiV2.post('/me/changePassword', catchAsyncErrors(changePassword));
 apiV2.post('/surveyResponse', catchAsyncErrors(surveyResponse)); // used by mSupply to directly submit data
 apiV2.post('/surveyResponses', catchAsyncErrors(surveyResponse));
