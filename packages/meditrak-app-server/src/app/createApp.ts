@@ -3,13 +3,14 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import { TupaiaDatabase } from '@tupaia/database';
-import { MicroServiceApiBuilder } from '@tupaia/server-boilerplate';
+import { handleWith, MicroServiceApiBuilder } from '@tupaia/server-boilerplate';
 import {
   ForwardingAuthHandler,
   getBaseUrlsForHost,
   LOCALHOST_BASE_URLS,
   TupaiaApiClient,
 } from '@tupaia/api-client';
+import { AuthRequest, AuthRoute } from '../routes';
 
 /**
  * Set up express server with middleware,
@@ -29,6 +30,7 @@ export function createApp() {
       res.ctx = context;
       next();
     })
+    .post<AuthRequest>('auth', handleWith(AuthRoute))
     .build();
 
   return app;
