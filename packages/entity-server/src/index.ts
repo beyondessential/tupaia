@@ -9,11 +9,11 @@ import * as dotenv from 'dotenv';
 
 import http from 'http';
 
+import winston from 'winston';
+import { configureWinston } from '@tupaia/server-boilerplate';
 import { createApp } from './app';
-import winston from './log';
 
-export * from './type-exports';
-
+configureWinston();
 dotenv.config(); // Load the environment variables into process.env
 
 /**
