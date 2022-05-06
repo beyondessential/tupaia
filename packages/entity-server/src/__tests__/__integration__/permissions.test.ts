@@ -3,19 +3,22 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { TestableEntityServer, setupTestApp, tearDownTestApp } from '../testUtilities';
+import { clearTestData, getTestDatabase } from '@tupaia/database';
+import { TestableServer } from '@tupaia/server-boilerplate';
+import { grantAccessToCountries, revokeCountryAccess, setup } from '../testUtilities';
 import { getEntitiesWithFields } from './fixtures';
 
 describe('permissions', () => {
-  let app: TestableEntityServer;
+  let app: TestableServer;
 
   beforeAll(async () => {
-    app = await setupTestApp();
-    app.grantAccessToCountries(['JOHTO']);
+    app = await setup();
+    grantAccessToCountries(['JOHTO']);
   });
 
   afterAll(async () => {
-    await tearDownTestApp(app);
+    await clearTestData(getTestDatabase());
+    revokeCountryAccess();
   });
 
   describe('no access', () => {

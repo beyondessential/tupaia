@@ -4,22 +4,27 @@
  */
 
 import { hashAndSaltPassword } from '@tupaia/auth';
+import { TestableServer } from '@tupaia/server-boilerplate';
 
 import {
   findOrCreateDummyRecord,
   buildAndInsertProjectsAndHierarchies,
   getTestModels,
   EntityHierarchyCacher,
+  getTestDatabase,
 } from '@tupaia/database';
 
 import { TestModelRegistry } from '../types';
-import { TestableEntityServer } from './TestableEntityServer';
 import { PROJECTS, ENTITIES, ENTITY_RELATIONS } from '../__integration__/fixtures';
+import { createApp } from '../../app';
 
 const models = getTestModels() as TestModelRegistry;
 const hierarchyCacher = new EntityHierarchyCacher(models);
 
-export const setupTestApp = async () => {
+const userAccountEmail = 'ash-ketchum@pokemon.org';
+const userAccountPassword = 'test';
+
+export const setupTestData = async () => {
   const projectsForInserting = PROJECTS.map(project => {
     const relationsInProject = ENTITY_RELATIONS.filter(
       relation => relation.hierarchy === project.code,
@@ -37,8 +42,6 @@ export const setupTestApp = async () => {
   );
 
   const { VERIFIED } = models.user.emailVerifiedStatuses;
-  const userAccountEmail = 'ash-ketchum@pokemon.org';
-  const userAccountPassword = 'test';
 
   await findOrCreateDummyRecord(
     models.user,
@@ -52,5 +55,18 @@ export const setupTestApp = async () => {
       verified_email: VERIFIED,
     },
   );
-  return new TestableEntityServer(userAccountEmail, userAccountPassword);
+};
+
+export const setupTestApp = async () => {
+  const app = new TestableServer(createApp(getTestDatabase()));
+  app.setDefaultHeader(
+    'Authorization',
+    `Basic ${Buffer.from(`${userAccountEmail}:${userAccountPassword}`).toString('base64')}`,
+  );
+  return app;
+};
+
+export const setup = async () => {
+  await setupTestData();
+  return setupTestApp();
 };
