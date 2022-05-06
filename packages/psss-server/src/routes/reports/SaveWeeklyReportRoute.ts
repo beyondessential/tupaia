@@ -25,7 +25,7 @@ type WeeklyReportAnswer = {
 
 export class SaveWeeklyReportRoute extends Route<SaveWeeklyReportRequest> {
   public async buildResponse() {
-    if (!this.meditrakConnection) throw new UnauthenticatedError('Unauthenticated');
+    if (!this.centralConnection) throw new UnauthenticatedError('Unauthenticated');
 
     const { week } = this.req.query;
     const { countryCode, siteCode } = this.req.params;
@@ -33,7 +33,7 @@ export class SaveWeeklyReportRoute extends Route<SaveWeeklyReportRequest> {
     const isSiteSurvey = !!siteCode;
     const answers = mapReqBodyToAnswers(this.req.body, isSiteSurvey);
 
-    return this.meditrakConnection.updateOrCreateSurveyResponse(
+    return this.centralConnection.updateOrCreateSurveyResponse(
       isSiteSurvey ? WEEKLY_SURVEY_SITE : WEEKLY_SURVEY_COUNTRY,
       isSiteSurvey ? siteCode : countryCode,
       week,

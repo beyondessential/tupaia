@@ -80,7 +80,7 @@ startSyncWithMs1(models);
 startSyncWithKoBo(models);
 
 /**
- * Regularly sync actions that have happened on meditrak with the social feed.
+ * Regularly sync actions that have happened on server with the app social feed.
  */
 startFeedScraper(models);
 

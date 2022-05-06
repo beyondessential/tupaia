@@ -10,7 +10,7 @@ import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { reduceToDictionary, snakeKeys, UploadError, yup } from '@tupaia/utils';
 
-import { MeditrakConnection } from '../../connections';
+import { CentralConnection } from '../../connections';
 import {
   dashboardValidator,
   dashboardRelationObjectValidator,
@@ -51,12 +51,12 @@ type ImportFileContent = {
 } & Record<string, unknown>;
 
 export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisualisationRequest> {
-  private readonly meditrakConnection: MeditrakConnection;
+  private readonly centralConnection: CentralConnection;
 
   public constructor(req: ImportDashboardVisualisationRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
-    this.meditrakConnection = new MeditrakConnection(req.session);
+    this.centralConnection = new CentralConnection(req.session);
   }
 
   public async buildResponse() {
@@ -118,7 +118,7 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
   private findExistingVisualisationId = async (visualisation: Record<string, unknown>) => {
     const { id, code } = visualisation;
 
-    const [viz] = await this.meditrakConnection.fetchResources('dashboardVisualisations', {
+    const [viz] = await this.centralConnection.fetchResources('dashboardVisualisations', {
       filter: {
         id: id ?? undefined,
         code,
@@ -128,8 +128,8 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
   };
 
   private createVisualisation = async (visualisation: DashboardVizResource) => {
-    await this.meditrakConnection.createResource('dashboardVisualisations', {}, visualisation);
-    const [viz]: DashboardVizResource[] = await this.meditrakConnection.fetchResources(
+    await this.centralConnection.createResource('dashboardVisualisations', {}, visualisation);
+    const [viz]: DashboardVizResource[] = await this.centralConnection.fetchResources(
       'dashboardVisualisations',
       {
         filter: {
@@ -145,7 +145,7 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
   };
 
   private updateVisualisation = async (vizId: string, visualisation: Record<string, unknown>) => {
-    await this.meditrakConnection.updateResource(
+    await this.centralConnection.updateResource(
       `dashboardVisualisations/${vizId}`,
       {},
       visualisation,
@@ -159,7 +159,7 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
     dashboardRelations: UpsertDashboardRelation[],
   ) => {
     await this.upsertDashboards(dashboards.map(d => snakeKeys(d)));
-    const dashboardRecords = await this.meditrakConnection.fetchResources('dashboards', {
+    const dashboardRecords = await this.centralConnection.fetchResources('dashboards', {
       filter: {
         code: dashboardRelations.map(dr => dr.dashboardCode),
       },
@@ -181,7 +181,7 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
   private upsertDashboards = async (dashboards: DashboardRecord[]) =>
     Promise.all(
       dashboards.map(dashboard =>
-        this.meditrakConnection.upsertResource(
+        this.centralConnection.upsertResource(
           'dashboards',
           {
             filter: {
@@ -196,7 +196,7 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
   private upsertDashboardRelations = async (dashboardRelations: DashboardRelationRecord[]) =>
     Promise.all(
       dashboardRelations.map(relation =>
-        this.meditrakConnection.upsertResource(
+        this.centralConnection.upsertResource(
           'dashboardRelations',
           {
             filter: {

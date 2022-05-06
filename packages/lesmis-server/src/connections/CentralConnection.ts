@@ -6,15 +6,15 @@ import camelcaseKeys from 'camelcase-keys';
 import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
 import { isLesmisAdmin } from '../utils';
 
-const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
+const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
 
 type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 
 /**
  * @deprecated use @tupaia/api-client
  */
-export class MeditrakConnection extends SessionHandlingApiConnection {
-  public baseUrl = MEDITRAK_API_URL;
+export class CentralConnection extends SessionHandlingApiConnection {
+  public baseUrl = CENTRAL_API_URL;
 
   public async getUser() {
     // if user is not logged in, return null rather than fetching the api client user details

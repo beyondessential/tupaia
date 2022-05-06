@@ -9,7 +9,7 @@ import { keyBy } from 'lodash';
 
 import { camelKeys } from '@tupaia/utils';
 import { Route } from '@tupaia/server-boilerplate';
-import { MeditrakConnection } from '../../connections';
+import { CentralConnection } from '../../connections';
 import { combineDashboardVisualisation } from '../../viz-builder';
 import type {
   Dashboard,
@@ -31,12 +31,12 @@ export type ExportDashboardVisualisationRequest = Request<
 export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisualisationRequest> {
   protected readonly type = 'download';
 
-  private readonly meditrakConnection: MeditrakConnection;
+  private readonly centralConnection: CentralConnection;
 
   public constructor(req: ExportDashboardVisualisationRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
-    this.meditrakConnection = new MeditrakConnection(req.session);
+    this.centralConnection = new CentralConnection(req.session);
   }
 
   public async buildResponse() {
@@ -86,7 +86,7 @@ export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisu
     const { dashboardVisualisationId } = this.req.params;
 
     if (dashboardVisualisationId) {
-      const dashboardItem = await this.meditrakConnection.fetchResources(
+      const dashboardItem = await this.centralConnection.fetchResources(
         `dashboardItems/${dashboardVisualisationId}`,
       );
       if (!dashboardItem) {
@@ -97,7 +97,7 @@ export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisu
     }
 
     const { code } = this.req.body.visualisation;
-    const [dashboardItem] = await this.meditrakConnection.fetchResources('dashboardItems', {
+    const [dashboardItem] = await this.centralConnection.fetchResources('dashboardItems', {
       filter: {
         code,
       },
@@ -106,7 +106,7 @@ export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisu
   };
 
   private buildDashboardItemVisualisation = async (dashboardItem: DashboardItemRecord) => {
-    const vizResource: DashboardVizResource = await this.meditrakConnection.fetchResources(
+    const vizResource: DashboardVizResource = await this.centralConnection.fetchResources(
       `dashboardVisualisations/${dashboardItem.id}`,
     );
     return combineDashboardVisualisation(vizResource);
@@ -117,11 +117,11 @@ export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisu
       return { dashboards: [], dashboardRelations: [] };
     }
 
-    const relationRecords: DashboardRelationRecord[] = await this.meditrakConnection.fetchResources(
+    const relationRecords: DashboardRelationRecord[] = await this.centralConnection.fetchResources(
       `dashboardItems/${dashboardItem.id}/dashboardRelations`,
     );
     const dashboardIds = relationRecords.map(dr => dr.dashboard_id);
-    const dashboardRecords: DashboardRecord[] = await this.meditrakConnection.fetchResources(
+    const dashboardRecords: DashboardRecord[] = await this.centralConnection.fetchResources(
       'dashboards',
       {
         filter: {

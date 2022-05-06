@@ -77,7 +77,7 @@ exports.up = async function (db) {
   try {
     // publish changes for every survey response and answer that isn't already in
     // the sync queue since Release 70
-    // n.b. this requires a meditrak-server instance to be running and listening for the changes
+    // n.b. this requires a central-server instance to be running and listening for the changes
     const surveyResponses = await selectSurveyResponsesForResync(db);
     await markRecordsForResync(changeChannel, 'survey_response', surveyResponses);
     const answers = await selectAnswersForResync(db);

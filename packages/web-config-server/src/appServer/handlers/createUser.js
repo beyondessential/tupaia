@@ -1,4 +1,4 @@
-import { fetchFromMediTrakServer } from '/appServer/requestHelpers';
+import { fetchFromCentralServer } from '/appServer/requestHelpers';
 
 /*
  * Function will attempt to create a new user on the TupaiaApp server
@@ -20,7 +20,7 @@ import { fetchFromMediTrakServer } from '/appServer/requestHelpers';
  * }
  */
 export const createUser = async userFields => {
-  const result = await fetchFromMediTrakServer('user', userFields);
+  const result = await fetchFromCentralServer('user', userFields);
   if (result.error) {
     throw new Error(result.error);
   } else if (!result.userId) {

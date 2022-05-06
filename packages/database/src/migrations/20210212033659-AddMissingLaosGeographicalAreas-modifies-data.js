@@ -16,7 +16,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-// Modified copy from packages/meditrak-server/src/routes/importEntities/getOrCreateParentEntity.js
+// Modified copy from packages/central-server/src/routes/importEntities/getOrCreateParentEntity.js
 const getGeographicalAreaCode = (name, countryCode) => {
   return `${countryCode}_${name.replace("'", '')}`;
 };

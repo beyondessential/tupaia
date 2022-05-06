@@ -19,7 +19,7 @@ const ACCESS_TOKEN_KEY = 'AccessToken';
 const REFRESH_TOKEN_KEY = 'RefreshToken';
 const SOCIAL_FEED_ENDPOINT = 'socialFeed';
 const CURRENT_USER_REWARDS_ENDPOINT = 'me/rewards';
-const DEV_BASE_URL = 'https://dev-api.tupaia.org/v2'; // Change this to 'http://[your-local-ip]:8090/v2' if running meditrak-server locally
+const DEV_BASE_URL = 'https://dev-api.tupaia.org/v2'; // Change this to 'http://[your-local-ip]:8090/v2' if running central-server locally
 const PRODUCTION_BASE_URL = `https://${isBeta ? `${betaBranch}-` : ''}api.tupaia.org/v2`;
 export const BASE_URL = __DEV__ ? DEV_BASE_URL : PRODUCTION_BASE_URL;
 

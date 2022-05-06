@@ -19,10 +19,10 @@
           steps:
             - name: Test admin-panel-server
               command: './packages/devops/scripts/ci/testBackend.sh admin-panel-server'
+            - name: Test central-server
+              command: './packages/devops/scripts/ci/testBackend.sh central-server'
             - name: Test lesmis-server
               command: './packages/devops/scripts/ci/testBackend.sh lesmis-server'
-            - name: Test meditrak-server
-              command: './packages/devops/scripts/ci/testBackend.sh meditrak-server'
             - name: Test web-config-server
               command: './packages/devops/scripts/ci/testBackend.sh web-config-server'
             - name: Test psss-server

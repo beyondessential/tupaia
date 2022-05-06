@@ -3,11 +3,11 @@ import {
   TupaiaAppCommunicationError,
   getTokenExpiry,
 } from '@tupaia/utils';
-import { fetchFromMediTrakServer } from '/appServer/requestHelpers';
+import { fetchFromCentralServer } from '/appServer/requestHelpers';
 
 export const refreshAndSaveAccessToken = async (models, refreshToken, userName) => {
   try {
-    const response = await fetchFromMediTrakServer(
+    const response = await fetchFromCentralServer(
       'auth',
       { refreshToken },
       { grantType: 'refresh_token' },

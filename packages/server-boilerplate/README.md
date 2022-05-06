@@ -40,9 +40,9 @@ The following environment variables need to be added to the server implementaion
 
 - For the sessionCookie util, you will need to add the following environment variable:
   - `SESSION_COOKIE_SECRET`
-- For the auth connection you will need to add the following meditrak api credentials as environment variables:
-  - `MEDITRAK_API_CLIENT_NAME`
-  - `MEDITRAK_API_CLIENT_PASSWORD`
-  - `MEDITRAK_API_URL`
-- You will also need to include any environment variables associated with any additional connections that are added. 
+- For the auth connection you will need to add the following api credentials as environment variables:
+  - `API_CLIENT_NAME`
+  - `API_CLIENT_PASSWORD`
+  - `CENTRAL_API_URL`
+- You will also need to include any environment variables associated with any additional connections that are added.
   See `.env.example`

@@ -36,8 +36,6 @@ const addLatestSurveyFeedItems = async models => {
     ? latestSurveyFeedItem.creation_date
     : minimumDateOfSurveyToAddToFeed;
 
-  // @todo Add organisation unit level permissions.
-  // https://github.com/beyondessential/meditrak-server/issues/89
   const publicPermissionGroup = await models.permissionGroup.findOne({ name: 'Public' });
   const publicLevelSurveys = await models.survey.find({
     permission_group_id: publicPermissionGroup.id,

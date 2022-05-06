@@ -16,7 +16,7 @@ export type Answers = {
   [key: string]: string; // question_code -> value
 };
 
-export class MeditrakApi extends BaseApi {
+export class CentralApi extends BaseApi {
   public async createSurveyResponses(responses: SurveyResponse[]): Promise<void> {
     const BATCH_SIZE = 500;
     for (let i = 0; i < responses.length; i += BATCH_SIZE) {
