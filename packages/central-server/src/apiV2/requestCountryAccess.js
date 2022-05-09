@@ -16,11 +16,11 @@ const checkUserPermission = (req, userId) => {
   }
 };
 
-const sendRequest = (userName, countryNames, message, project) => {
+const sendRequest = (userInfo, countryNames, message, project) => {
   const { TUPAIA_ADMIN_EMAIL_ADDRESS } = process.env;
 
   const emailText = `
-${userName} has requested access to countries:
+${userInfo} has requested access to countries:
 ${countryNames.map(n => `  -  ${n}`).join('\n')}
 ${
   project
@@ -76,13 +76,13 @@ export const requestCountryAccess = async (req, res) => {
   } catch (error) {
     throw new UnauthenticatedError(error.message);
   }
-  const userName = await getUserInfoInString(userId, models);
+  const userInfo = await getUserInfoInString(userId, models);
 
   const project = projectCode && (await models.project.findOne({ code: projectCode }));
   await createAccessRequests(models, userId, entities, message, project);
 
   const countryNames = entities.map(e => e.name);
-  await sendRequest(userName, countryNames, message, project);
+  await sendRequest(userInfo, countryNames, message, project);
 
   respond(res, { message: 'Country access requested.' }, 200);
 };
