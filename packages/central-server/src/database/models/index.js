@@ -6,7 +6,6 @@
 export { AccessRequestModel as AccessRequest } from './AccessRequest';
 export { AnswerModel as Answer } from './Answer';
 export { ApiRequestLogModel as ApiRequestLog } from './ApiRequestLog';
-export { CommentModel as Comment } from './Comment';
 export { CountryModel as Country } from './Country';
 export { DataSourceModel as DataSource } from './DataSource';
 export { DhisSyncLogModel as DhisSyncLog } from './DhisSyncLog';

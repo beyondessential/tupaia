@@ -25,6 +25,4 @@ export class FeedItemModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return FeedItemType;
   }
-
-  isDeletableViaApi = true;
 }
