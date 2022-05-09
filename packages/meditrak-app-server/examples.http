@@ -52,3 +52,9 @@ Authorization: {{authorization}}
     "employer": "Boss",
     "position": "Cat"
 }
+
+### Get Social Feed
+
+GET http://{{host}}/{{version}}/socialFeed?countryId=5948b9e245eaeb1d6ea882f9 HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{authorization}}
