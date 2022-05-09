@@ -4,4 +4,4 @@
  */
 
 export { grantAccessToCountries, revokeCountryAccess } from './grantAccessToCountries';
-export { setup, setupTestData, setupTestApp } from './setup';
+export { setupTestData, setupTestApp } from './setup';

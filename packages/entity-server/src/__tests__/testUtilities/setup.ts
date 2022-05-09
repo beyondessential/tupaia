@@ -65,8 +65,3 @@ export const setupTestApp = async () => {
   );
   return app;
 };
-
-export const setup = async () => {
-  await setupTestData();
-  return setupTestApp();
-};
