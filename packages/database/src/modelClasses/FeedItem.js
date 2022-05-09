@@ -5,7 +5,9 @@
 
 import moment from 'moment';
 
-import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import { DatabaseModel } from '../DatabaseModel';
+import { DatabaseType } from '../DatabaseType';
+import { TYPES } from '../types';
 
 export const FEED_ITEM_TYPES = ['SurveyResponse', 'markdown'];
 

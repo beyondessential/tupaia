@@ -12,7 +12,6 @@ export { DhisSyncLogModel as DhisSyncLog } from './DhisSyncLog';
 export { DhisSyncQueueModel as DhisSyncQueue } from './DhisSyncQueue';
 export { EntityModel as Entity } from './Entity';
 export { FacilityModel as Facility } from './Facility';
-export { FeedItemModel as FeedItem } from './FeedItem';
 export { GeographicalAreaModel as GeographicalArea } from './GeographicalArea';
 export { MeditrakDeviceModel as MeditrakDevice } from './MeditrakDevice';
 export { MeditrakSyncQueueModel as MeditrakSyncQueue } from './MeditrakSyncQueue';

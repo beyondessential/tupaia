@@ -22,6 +22,7 @@ import { EntityModel } from './Entity';
 import { EntityHierarchyModel } from './EntityHierarchy';
 import { EntityRelationModel } from './EntityRelation';
 import { FacilityModel } from './Facility';
+import { FeedItemModel } from './FeedItem';
 import { GeographicalAreaModel } from './GeographicalArea';
 import { IndicatorModel } from './Indicator';
 import { LegacyReportModel } from './LegacyReport';
@@ -69,6 +70,7 @@ export const modelClasses = {
   EntityHierarchy: EntityHierarchyModel,
   EntityRelation: EntityRelationModel,
   Facility: FacilityModel,
+  FeedItem: FeedItemModel,
   GeographicalArea: GeographicalAreaModel,
   Indicator: IndicatorModel,
   LegacyReport: LegacyReportModel,
