@@ -810,7 +810,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tupaia.meditrak;
 				PRODUCT_NAME = TupaiaMediTrak;
-				PROVISIONING_PROFILE_SPECIFIER = "Tupaia Distribution Profile 2022 - 2023";
+				PROVISIONING_PROFILE_SPECIFIER = "Tupaia Distribution Profile 2022 - 2023 full";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
