@@ -24,7 +24,6 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.0.0",
     "@tupaia/access-policy": "3.0.0",
     "@tupaia/auth": "1.0.0",
     "@tupaia/database": "1.0.0",
@@ -37,6 +36,7 @@
     "i18n": "^0.13.3",
     "express": "^4.16.2",
     "http-proxy-middleware": "^2.0.1",
-    "morgan": "^1.9.0"
+    "morgan": "^1.9.0",
+    "winston": "^3.2.1"
   }
 }

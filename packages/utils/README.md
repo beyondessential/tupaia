@@ -16,7 +16,7 @@ Handily, yarn workspaces is able to treat this as a package being pulled from np
 actually have to publish it. In order to use it in other packages, simply run (for example)
 
 ```
-yarn workspace @tupaia/meditrak-server add @tupaia/utils@1.0.0
+yarn workspace @tupaia/central-server add @tupaia/utils@1.0.0
 ```
 
 and then import from @tupaia/utils as though it were any other dependency.

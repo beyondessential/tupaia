@@ -68,7 +68,7 @@ Patch versions follow a `major_minor_patch` syntax.
 
 ### Refreshing the Analytics table
 
-The analytics table will be automatically updated ('refreshed') by the meditrak-server whenever changes come in to the answer, or survey_response tables. However, there may be times when you wish to refresh the analytics table yourself. To do this you have a couple of options:
+The analytics table will be automatically updated ('refreshed') by the central-server whenever changes come in to the answer, or survey_response tables. However, there may be times when you wish to refresh the analytics table yourself. To do this you have a couple of options:
 
 - `yarn workspace @tupaia/data-api refresh-analytics-table` - Performs a 'fast refresh' which update the table with the latest deltas. This is usually what you want.
 

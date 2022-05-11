@@ -101,18 +101,6 @@ export class LeafletMap extends Component {
     }
   };
 
-  adjustPointToAccountForMargin = (point, zoom) => {
-    const { rightPadding = 0 } = this.props;
-    const projectedPoint = this.map.project(point, zoom).add([rightPadding / 2, 0]);
-    return this.map.unproject(projectedPoint, zoom);
-  };
-
-  adjustPointToRemoveMargin = (point, zoom) => {
-    const { rightPadding = 0 } = this.props;
-    const projectedPoint = this.map.project(point, zoom).add([-rightPadding / 2, 0]);
-    return this.map.unproject(projectedPoint, zoom);
-  };
-
   attachEvents = map => {
     map.on('movestart', event => {
       this.onMoveStart(event);
@@ -169,13 +157,7 @@ export class LeafletMap extends Component {
   onPositionChanged = () => {
     if (this.isAnimating()) return;
 
-    const { lat, lng } = this.adjustPointToRemoveMargin(
-      {
-        lat: this.lat,
-        lng: this.lng,
-      },
-      this.zoom,
-    );
+    const { lat, lng } = this;
 
     if (this.lastSentZoom !== this.zoom || this.lastSentLat !== lat || this.lastSentLng !== lng) {
       this.lastSentLat = lat;
@@ -193,16 +175,13 @@ export class LeafletMap extends Component {
 
   flyToPoint = (center, zoom) => {
     if (!center) return;
-    const coordinate = this.adjustPointToAccountForMargin(center, zoom);
-    this.map.setView(coordinate, zoom, { animate: true });
+    this.map.setView(center, zoom, { animate: true });
   };
 
   flyToBounds = bounds => {
     if (!areBoundsValid(bounds)) return;
-    const { rightPadding = 0 } = this.props;
     this.map.fitBounds(bounds, {
       animate: true,
-      paddingBottomRight: [rightPadding, 0],
     });
   };
 
@@ -245,6 +224,9 @@ export class LeafletMap extends Component {
         whenCreated={map => {
           this.captureMap(map);
           this.attachEvents(map);
+          if (this.props.whenCreated) {
+            this.props.whenCreated(map);
+          }
         }}
         onClick={onClick}
         // these must be frozen to initial values as updates to them will
@@ -265,9 +247,9 @@ LeafletMap.propTypes = {
   children: PropTypes.node.isRequired,
   onClick: PropTypes.func,
   onPositionChanged: PropTypes.func,
-  rightPadding: PropTypes.number,
   shouldSnapToPosition: PropTypes.bool,
   zoom: PropTypes.number,
+  whenCreated: PropTypes.func,
 };
 
 LeafletMap.defaultProps = {
@@ -275,7 +257,7 @@ LeafletMap.defaultProps = {
   center: null,
   onClick: () => {},
   onPositionChanged: () => {},
-  rightPadding: 0,
   zoom: null,
   shouldSnapToPosition: false,
+  whenCreated: null,
 };

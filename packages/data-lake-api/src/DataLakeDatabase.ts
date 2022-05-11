@@ -17,10 +17,10 @@ pgTypes.setTypeParser(pgTypes.builtins.TIMESTAMP, (val: any) => val);
 export class DataLakeDatabase {
   private connection: any;
 
-  public constructor() {
+  public constructor(config = getConnectionConfig()) {
     this.connection = knex({
       client: 'pg',
-      connection: getConnectionConfig(),
+      connection: config,
     });
   }
 

@@ -109,14 +109,15 @@ for (let i = 1; i <= MAX_MAP_OVERLAYS; i++) {
 
 const DatePickerWrapper = styled.div`
   background: ${MAP_OVERLAY_SELECTOR.background};
-  border-bottom-left-radius: ${props => (props.$hasChildren ? '0px' : '5px')};
-  border-bottom-right-radius: ${props => (props.$hasChildren ? '0px' : '5px')};
+  border-bottom-left-radius: ${props => (props.$hasOverlays ? '0px' : '5px')};
+  border-bottom-right-radius: ${props => (props.$hasOverlays ? '0px' : '5px')};
 `;
 
 export const Control = ({
   emptyMessage,
   selectedMapOverlays,
   children,
+  hasOverlays,
   maxSelectedOverlays,
   changeMaxSelectedOverlays,
   pinnedOverlay,
@@ -124,7 +125,6 @@ export const Control = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const isMapOverlaySelected = selectedMapOverlays.length > 0;
-  const hasChildren = !!children;
 
   const toggleMeasures = useCallback(() => {
     setIsExpanded(!isExpanded);
@@ -152,7 +152,7 @@ export const Control = ({
         />
         <MapTableModal />
       </Header>
-      <DatePickerWrapper $hasChildren={hasChildren}>
+      <DatePickerWrapper $hasOverlays={hasOverlays}>
         {isMapOverlaySelected ? (
           reorderedSelectedMapOverlays.map((mapOverlay, index) => (
             <div key={mapOverlay.mapOverlayCode}>
@@ -171,7 +171,7 @@ export const Control = ({
           </Content>
         )}
       </DatePickerWrapper>
-      {hasChildren && (
+      {hasOverlays && (
         <OverlayLibrary $expanded={isExpanded} onClick={toggleMeasures}>
           <FlexStart>
             <LayersIcon $expanded={isExpanded} />
@@ -215,6 +215,7 @@ Control.propTypes = {
   changeMaxSelectedOverlays: PropTypes.func.isRequired,
   pinnedOverlay: PropTypes.string,
   setPinnedOverlay: PropTypes.func.isRequired,
+  hasOverlays: PropTypes.bool.isRequired,
 };
 
 Control.defaultProps = {

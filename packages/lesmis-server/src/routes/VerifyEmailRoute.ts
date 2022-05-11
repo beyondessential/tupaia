@@ -5,21 +5,21 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { MeditrakConnection } from '../connections';
+import { CentralConnection } from '../connections';
 
 export type VerifyEmailRequest = Request<{ emailToken: string }, any, any, any>;
 
 export class VerifyEmailRoute extends Route<VerifyEmailRequest> {
-  private readonly meditrakConnection: MeditrakConnection;
+  private readonly centralConnection: CentralConnection;
 
   public constructor(req: VerifyEmailRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
-    this.meditrakConnection = new MeditrakConnection(req.session);
+    this.centralConnection = new CentralConnection(req.session);
   }
 
   public async buildResponse() {
     const { emailToken } = this.req.params;
-    return this.meditrakConnection.verifyEmail(emailToken);
+    return this.centralConnection.verifyEmail(emailToken);
   }
 }

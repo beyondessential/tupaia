@@ -1,0 +1,24 @@
+{
+  "name": "tupaia-resize-images",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Based off of Amazon documentation at http://docs.aws.amazon.com/lambda/latest/dg/with-s3-example-deployment-pkg.html",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/central-server/src/devops/CreateThumbnail"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "main": "index.js",
+  "scripts": {
+    "package-for-lambda": "rm -f CreateThumbnail.zip && zip -r CreateThumbnail.zip ./ && echo \"Uploading to AWS...\" && aws lambda update-function-code --function-name CreateThumbnail --zip-file fileb://CreateThumbnail.zip",
+    "test": "echo \"No tests specified\" && exit 0",
+    "test-lambda": "lambda-local -l CreateThumbnail.js -h handler -e ./testEvent.json -t 20"
+  },
+  "dependencies": {
+    "async": "^2.5.0",
+    "file-type": "^7.2.0",
+    "jimp": "^0.2.28",
+    "png-to-jpeg": "^1.0.1"
+  }
+}

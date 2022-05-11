@@ -42,7 +42,7 @@ import {
   FetchTransformSchemasRoute,
 } from '../routes';
 
-const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
+const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
 
 /**
  * Set up express server with middleware,
@@ -142,7 +142,7 @@ export function createApp() {
     )
     .build();
 
-  useForwardUnhandledRequests(app, MEDITRAK_API_URL);
+  useForwardUnhandledRequests(app, CENTRAL_API_URL);
 
   return app;
 }

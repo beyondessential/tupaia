@@ -32,7 +32,7 @@ import { VerifyEmailRequest } from '../routes/VerifyEmailRoute';
 import { RegisterRequest } from '../routes/RegisterRoute';
 import { UpdateSurveyResponseRequest } from '../routes/UpdateSurveyResponseRoute';
 
-const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
+const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path');
@@ -68,12 +68,15 @@ export function createApp() {
     /**
      * PUT
      */
-    .put<UpdateSurveyResponseRequest>('/v1/survey-response/:id', handleWith(UpdateSurveyResponseRoute))
+    .put<UpdateSurveyResponseRequest>(
+      '/v1/survey-response/:id',
+      handleWith(UpdateSurveyResponseRoute),
+    )
 
     .build();
 
-  // Forward any unhandled request to meditrak-server
-  useForwardUnhandledRequests(app, MEDITRAK_API_URL, '/admin', attachSession);
+  // Forward any unhandled request to central-server
+  useForwardUnhandledRequests(app, CENTRAL_API_URL, '/admin', attachSession);
 
   return app;
 }

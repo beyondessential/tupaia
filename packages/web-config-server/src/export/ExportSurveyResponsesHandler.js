@@ -1,4 +1,4 @@
-import { fetchFromMeditrakServerUsingTokens } from '/appServer/requestHelpers';
+import { fetchFromCentralServerUsingTokens } from '/appServer/requestHelpers';
 import { RouteHandler } from '/apiV1/RouteHandler';
 import { ExportSurveyResponsesPermissionsChecker } from '/apiV1/permissions';
 
@@ -17,7 +17,7 @@ export class ExportSurveyResponsesHandler extends RouteHandler {
       itemCode,
       easyReadingMode,
     } = this.query;
-    const meditrakServerEndpoint = 'export/surveyResponses';
+    const centralServerEndpoint = 'export/surveyResponses';
     const {
       config: { name: reportName },
     } = itemCode && (await this.models.dashboardItem.findOne({ code: itemCode }));
@@ -39,9 +39,9 @@ export class ExportSurveyResponsesHandler extends RouteHandler {
       queryParameters.entityCode = organisationUnitCode;
     }
 
-    const response = await fetchFromMeditrakServerUsingTokens(
+    const response = await fetchFromCentralServerUsingTokens(
       this.models,
-      meditrakServerEndpoint,
+      centralServerEndpoint,
       null,
       queryParameters,
       this.req.session.userJson.userName,

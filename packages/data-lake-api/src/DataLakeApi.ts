@@ -27,7 +27,7 @@ const buildEventDataValues = (resultsForEvent: Event[]) =>
 
 let dataLakeDatabase: DataLakeDatabase;
 
-const getDatabase = () => {
+export const getDatabase = () => {
   if (!dataLakeDatabase) {
     dataLakeDatabase = new DataLakeDatabase();
   }

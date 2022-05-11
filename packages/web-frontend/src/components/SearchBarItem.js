@@ -6,13 +6,65 @@
  */
 
 import FacilityIcon from 'material-ui/svg-icons/maps/local-hospital';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { createSelector } from 'reselect';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { HierarchyItem } from './HierarchyItem';
-import { setOrgUnit, openMapPopup } from '../actions';
-import { selectOrgUnit, selectOrgUnitChildren } from '../selectors';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import IconButton from '@material-ui/core/IconButton';
+import ArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import ArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import { requestOrgUnit, setOrgUnit, openMapPopup } from '../actions';
+import { selectOrgUnit, selectOrgUnitChildren, selectCodeFromOrgUnit } from '../selectors';
+import { DARK_BLUE } from '../styles';
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 15px;
+  border-bottom: ${p => (p.$hideBottomBorder ? 'none' : `1px solid ${DARK_BLUE}`)};
+`;
+
+const StyledButton = styled(Button)`
+  margin-left: ${p => p.$nestedMargin}px;
+  padding: 0px;
+  height: 55px;
+  width: 100%;
+  text-transform: none;
+
+  .MuiButton-label {
+    justify-content: flex-start;
+    text-align: left;
+  }
+`;
+
+const OpenCloseButton = styled(IconButton)`
+  opacity: ${p => (p.$isOpen ? 1 : 0.5)};
+  color: white;
+  font-size: 16pt;
+  padding: 3px;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
+const LoadingSpinnerContainer = styled.div`
+  display: flex;
+  margin-right: 10px;
+`;
+
+const LoadingSpinner = styled(CircularProgress)`
+  color: white;
+`;
 
 const ICON_BY_ORG_UNIT_TYPE = {
   Facility: FacilityIcon,
@@ -22,32 +74,66 @@ const SearchBarItemComponent = ({
   organisationUnitCode,
   name,
   organisationUnitChildren,
-  isLoading,
   type,
   onClick,
+  onClickExpand,
   nestedMargin,
+  isFinalRow,
+  isLoading,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const nestedItems = isExpanded
-    ? organisationUnitChildren.map(child => (
-        <SearchBarItem key={child} organisationUnitCode={child} />
-      ))
-    : [];
+  const nestedItems = useMemo(
+    () =>
+      isOpen &&
+      organisationUnitChildren.map((child, index) => (
+        <SearchBarItem
+          key={child}
+          organisationUnitCode={child}
+          onClick={onClick}
+          nestedMargin={nestedMargin + 24}
+          isFinalRow={isFinalRow && index === organisationUnitChildren.length - 1}
+        />
+      )),
+    [organisationUnitChildren, isFinalRow, onClick, nestedMargin, isOpen],
+  );
+  // always show an expander for country org units, which lazy load their children
+  const hasNestedItems = type === 'Country' || organisationUnitChildren.length > 0;
+
+  const Icon = ICON_BY_ORG_UNIT_TYPE[type];
+
   return (
-    <HierarchyItem
-      key={organisationUnitCode}
-      label={name}
-      nestedMargin={nestedMargin}
-      nestedItems={nestedItems}
-      hasNestedItems={type === 'Country' || organisationUnitChildren.length > 0}
-      isLoading={isLoading}
-      Icon={ICON_BY_ORG_UNIT_TYPE[type]}
-      onClick={() => {
-        setIsExpanded(!isExpanded);
-        onClick(organisationUnitCode);
-      }}
-    />
+    <Container key={organisationUnitCode}>
+      <Row $hideBottomBorder={isFinalRow && !isOpen}>
+        <StyledButton
+          onClick={() => {
+            onClick(organisationUnitCode);
+            setIsOpen(!isOpen);
+          }}
+          $nestedMargin={nestedMargin}
+        >
+          {name}
+          {Icon && <Icon style={{ opacity: 0.7, marginLeft: 5 }} />}
+        </StyledButton>
+        {isLoading && (
+          <LoadingSpinnerContainer>
+            <LoadingSpinner size={18} />
+          </LoadingSpinnerContainer>
+        )}
+        {hasNestedItems && (
+          <OpenCloseButton
+            onClick={() => {
+              setIsOpen(!isOpen);
+              onClickExpand(organisationUnitCode);
+            }}
+            $isOpen={isOpen}
+          >
+            {isOpen ? <ArrowUpIcon /> : <ArrowDownIcon />}
+          </OpenCloseButton>
+        )}
+      </Row>
+      {nestedItems}
+    </Container>
   );
 };
 
@@ -55,47 +141,47 @@ SearchBarItemComponent.propTypes = {
   organisationUnitCode: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
-  isLoading: PropTypes.bool,
   organisationUnitChildren: PropTypes.arrayOf(PropTypes.string),
   onClick: PropTypes.func.isRequired,
-  nestedMargin: PropTypes.string,
+  onClickExpand: PropTypes.func.isRequired,
+  nestedMargin: PropTypes.number,
+  isFinalRow: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
 };
 
 SearchBarItemComponent.defaultProps = {
   organisationUnitChildren: [],
-  isLoading: false,
-  nestedMargin: undefined,
+  nestedMargin: 0,
 };
-
-const sortOrgUnitsAlphabeticallyByName = orgUnits => {
-  // Sort countries alphabetically, this may not be the case if one country was loaded first
-  return orgUnits.concat().sort((data1, data2) => {
-    if (data1.name > data2.name) return 1;
-    if (data1.name < data2.name) return -1;
-    return 0;
-  });
-};
-
-const selectCodeFromOrgUnit = createSelector([orgUnits => orgUnits], orgUnits =>
-  sortOrgUnitsAlphabeticallyByName(orgUnits).map(orgUnit => orgUnit.organisationUnitCode),
-);
 
 const mapStateToProps = (state, props) => {
   const orgUnit = selectOrgUnit(state, props.organisationUnitCode);
-  const { name, isLoading, type } = orgUnit;
+  const { name, type, isLoading } = orgUnit;
   const organisationUnitChildren = selectCodeFromOrgUnit(
     selectOrgUnitChildren(state, props.organisationUnitCode),
   );
-  return { name, isLoading, type, organisationUnitChildren };
+  return { name, type, isLoading, organisationUnitChildren };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onClick: organisationUnitCode => {
-      dispatch(setOrgUnit(organisationUnitCode));
-      dispatch(openMapPopup(organisationUnitCode));
-    },
-  };
-};
+const mapDispatchToProps = dispatch => ({ dispatch });
 
-export const SearchBarItem = connect(mapStateToProps, mapDispatchToProps)(SearchBarItemComponent);
+const mergeProps = (stateProps, { dispatch }, { onClick, ...ownProps }) => ({
+  ...stateProps,
+  ...ownProps,
+  onClick: organisationUnitCode => {
+    dispatch(setOrgUnit(organisationUnitCode));
+    dispatch(openMapPopup(organisationUnitCode));
+    if (onClick) {
+      onClick(organisationUnitCode);
+    }
+  },
+  onClickExpand: organisationUnitCode => {
+    dispatch(requestOrgUnit(organisationUnitCode));
+  },
+});
+
+export const SearchBarItem = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps,
+)(SearchBarItemComponent);

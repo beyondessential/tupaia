@@ -1,4 +1,5 @@
 import pick from 'lodash.pick';
+
 import { Row } from '../../../types';
 import { MatrixParams, Matrix } from './types';
 

@@ -5,10 +5,16 @@
 
 import { buildDefault } from './default';
 import { buildMatrix } from './matrix';
+import { buildRawDataExport } from './rawDataExport';
 
-export type OutputType = ReturnType<ReturnType<typeof outputBuilders[keyof typeof outputBuilders]>>;
+type Await<T> = T extends PromiseLike<infer U> ? U : T;
+
+export type OutputType = Await<
+  ReturnType<ReturnType<typeof outputBuilders[keyof typeof outputBuilders]>>
+>;
 
 export const outputBuilders = {
   matrix: buildMatrix,
+  rawDataExport: buildRawDataExport,
   default: buildDefault,
 };
