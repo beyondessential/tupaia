@@ -63,3 +63,9 @@ Authorization: {{client-authorization}}
 GET http://{{host}}/{{version}}/socialFeed?countryId=5948b9e245eaeb1d6ea882f9 HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
+
+### Get User Rewards
+
+GET http://{{host}}/{{version}}/me/rewards HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}

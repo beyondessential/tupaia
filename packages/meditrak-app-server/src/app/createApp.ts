@@ -11,6 +11,8 @@ import {
   RegisterUserRoute,
   SocialFeedRequest,
   SocialFeedRoute,
+  UserRewardsRequest,
+  UserRewardsRoute,
 } from '../routes';
 import { authHandlerProvider, buildAuthMiddleware } from '../auth';
 
@@ -25,6 +27,7 @@ export function createApp() {
     .post<AuthRequest>('auth', handleWith(AuthRoute))
     .post<RegisterUserRequest>('user', handleWith(RegisterUserRoute))
     .get<SocialFeedRequest>('socialFeed', authMiddleware, handleWith(SocialFeedRoute))
+    .get<UserRewardsRequest>('me/rewards', authMiddleware, handleWith(UserRewardsRoute))
     .build();
 
   return app;
