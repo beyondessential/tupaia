@@ -7,19 +7,8 @@ import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 import { Resolved } from '@tupaia/tsutils';
+import { yup } from '@tupaia/utils';
 import { TupaiaApiClient } from '@tupaia/api-client';
-
-type RefreshTokenBody = {
-  refreshToken: string;
-};
-
-type ReAuthenticateBody = {
-  emailAddress: string;
-  password: string;
-  deviceName: string;
-  devicePlatform: string;
-  installId: string;
-};
 
 export type AuthRequest = Request<
   {
@@ -27,20 +16,30 @@ export type AuthRequest = Request<
   },
   | Resolved<ReturnType<TupaiaApiClient['auth']['login']>>
   | Resolved<ReturnType<TupaiaApiClient['auth']['refreshAccessToken']>>,
-  ReAuthenticateBody | RefreshTokenBody
+  Record<string, unknown>
 >;
 
-const hasRefreshToken = (body: ReAuthenticateBody | RefreshTokenBody): body is RefreshTokenBody =>
-  'refreshToken' in body;
+const reAuthValidator = yup.object().shape({
+  refreshToken: yup.string().required(),
+});
+
+const loginValidator = yup.object().shape({
+  emailAddress: yup.string().required(),
+  password: yup.string().required(),
+  deviceName: yup.string().required(),
+  devicePlatform: yup.string().required(),
+  installId: yup.string().required(),
+});
 
 export class AuthRoute extends Route<AuthRequest> {
   public async buildResponse() {
-    const { body } = this.req;
-    if (hasRefreshToken(body)) {
-      const { refreshToken } = body;
+    const { query, body } = this.req;
+    if (query.grantType === 'refresh_token') {
+      const { refreshToken } = reAuthValidator.validateSync(body);
       return this.req.ctx.services.auth.refreshAccessToken(refreshToken);
     }
 
-    return this.req.ctx.services.auth.login(body);
+    const userFields = loginValidator.validateSync(body);
+    return this.req.ctx.services.auth.login(userFields);
   }
 }
