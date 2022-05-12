@@ -3,20 +3,20 @@
 @host = {{hostname}}:{{port}}
 @version = v1
 
-@authorization  = Basic meditrak_client:{{meditrak-client-password}}
+@client-authorization  = Basic meditrak_client:{{meditrak-client-password}}
 
 @contentType = application/json
 
 ### /test
 GET http://{{host}}/{{version}}/test HTTP/2.0
 content-type: {{contentType}}
-Authorization: {{authorization}}
+Authorization: {{client-authorization}}
 
 ### Login
-
+# @name login
 POST http://{{host}}/{{version}}/auth HTTP/2.0
 content-type: {{contentType}}
-Authorization: {{authorization}}
+Authorization: {{client-authorization}}
 
 {
     "emailAddress": "{{email}}",
@@ -30,7 +30,7 @@ Authorization: {{authorization}}
 
 POST http://{{host}}/{{version}}/auth?grantType=refresh_token HTTP/2.0
 content-type: {{contentType}}
-Authorization: {{authorization}}
+Authorization: {{client-authorization}}
 
 {
     "refreshToken": "1234"
@@ -40,7 +40,7 @@ Authorization: {{authorization}}
 
 POST http://{{host}}/{{version}}/user HTTP/2.0
 content-type: {{contentType}}
-Authorization: {{authorization}}
+Authorization: {{client-authorization}}
 
 {
     "firstName": "Bob",
@@ -53,8 +53,13 @@ Authorization: {{authorization}}
     "position": "Cat"
 }
 
+### Set tokens
+
+@accessToken = {{login.response.body.accessToken}}
+@user-authorization = Bearer {{accessToken}}
+
 ### Get Social Feed
 
 GET http://{{host}}/{{version}}/socialFeed?countryId=5948b9e245eaeb1d6ea882f9 HTTP/2.0
 content-type: {{contentType}}
-Authorization: {{authorization}}
+Authorization: {{user-authorization}}
