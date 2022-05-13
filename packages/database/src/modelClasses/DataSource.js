@@ -29,7 +29,7 @@ const CONFIG_SCHEMA_BY_TYPE_AND_SERVICE = {
     [SERVICE_TYPES.DHIS]: {
       categoryOptionCombo: {},
       dataElementCode: {},
-      isDataRegional: { default: true },
+      dhisInstanceCode: { default: 'regional' },
     },
     [SERVICE_TYPES.TUPAIA]: {},
     [SERVICE_TYPES.INDICATOR]: {},
@@ -37,7 +37,7 @@ const CONFIG_SCHEMA_BY_TYPE_AND_SERVICE = {
   },
   [DATA_SOURCE_TYPES.DATA_GROUP]: {
     [SERVICE_TYPES.DHIS]: {
-      isDataRegional: { default: true },
+      dhisInstanceCode: { default: 'regional' },
     },
     [SERVICE_TYPES.TUPAIA]: {},
     [SERVICE_TYPES.INDICATOR]: {},

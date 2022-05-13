@@ -40,11 +40,11 @@ export const assertCanAddDataElementInGroup = async (
       );
     }
 
-    if (areBothDefinedAndDifferent(config.isDataRegional, newConfig.isDataRegional)) {
+    if (areBothDefinedAndDifferent(config.dhisInstanceCode, newConfig.dhisInstanceCode)) {
       throw new Error(
         constructErrorMessage({
           property: 'DHIS server',
-          value: `${config.isDataRegional ? '' : 'non '}regional`,
+          value: config.dhisInstanceCode,
           dataElementCode,
           otherGroupCode: otherDataGroup.code,
         }),

@@ -28,7 +28,7 @@ export class DataSourceType extends CommonDataSourceType {
       },
       {
         service_type: 'dhis',
-        config: { isDataRegional: this.config.isDataRegional },
+        config: { dhisInstanceCode: this.config.dhisInstanceCode },
       },
     );
     await this.attachDataElement(dataElementId);

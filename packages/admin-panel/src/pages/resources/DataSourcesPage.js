@@ -77,9 +77,8 @@ const DATA_ELEMENT_FIELDS = [
       default: '{}',
       getJsonFieldSchema: () => [
         {
-          label: 'Regional Server (Choose "No" if stored on country specific server)',
-          fieldName: 'isDataRegional',
-          type: 'boolean',
+          label: 'DHIS Server',
+          fieldName: 'dhisInstanceCode',
         },
         {
           label: 'Data element code',
@@ -104,9 +103,8 @@ const DATA_GROUP_FIELDS = [
       default: '{}',
       getJsonFieldSchema: () => [
         {
-          label: 'Regional Server (Choose "No" if stored on country specific server)',
-          fieldName: 'isDataRegional',
-          type: 'boolean',
+          label: 'DHIS Server',
+          fieldName: 'dhisInstanceCode',
         },
       ],
     },

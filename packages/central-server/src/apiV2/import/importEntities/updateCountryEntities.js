@@ -43,7 +43,7 @@ export async function updateCountryEntities(
     type: transactingModels.entity.types.WORLD,
   });
   const defaultMetadata = {
-    dhis: { isDataRegional: true },
+    dhis: { dhisInstanceCode: 'regional' },
   };
   const countryEntityMetadata = await getEntityMetadata(
     transactingModels,
