@@ -28,7 +28,7 @@ Authorization: {{authorization}}
 
 ### /auth (refresh token)
 
-POST http://{{host}}/{{version}}/auth HTTP/2.0
+POST http://{{host}}/{{version}}/auth?grantType=refresh_token HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{authorization}}
 

@@ -11,12 +11,13 @@ import { yup } from '@tupaia/utils';
 import { TupaiaApiClient } from '@tupaia/api-client';
 
 export type AuthRequest = Request<
-  {
-    grantType?: 'refresh_token';
-  },
+  Record<string, never>,
   | Resolved<ReturnType<TupaiaApiClient['auth']['login']>>
   | Resolved<ReturnType<TupaiaApiClient['auth']['refreshAccessToken']>>,
-  Record<string, unknown>
+  Record<string, never>,
+  {
+    grantType?: 'refresh_token';
+  }
 >;
 
 const reAuthValidator = yup.object().shape({
