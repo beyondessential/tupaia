@@ -21,8 +21,7 @@ import { authHandlerProvider, buildAuthMiddleware } from '../auth';
 /**
  * Set up express server with middleware,
  */
-export function createApp() {
-  const database = new TupaiaDatabase();
+export function createApp(database = new TupaiaDatabase()) {
   const authMiddleware = buildAuthMiddleware(database);
   const app = new MicroServiceApiBuilder(database)
     .attachApiClientToContext(authHandlerProvider)
