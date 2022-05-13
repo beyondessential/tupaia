@@ -32,6 +32,7 @@
     "@tupaia/auth": "1.0.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/server-boilerplate": "1.0.0",
+    "@tupaia/tsutils": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.16.2",

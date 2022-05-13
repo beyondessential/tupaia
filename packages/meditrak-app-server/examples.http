@@ -2,8 +2,36 @@
 @port = 8020
 @host = {{hostname}}:{{port}}
 @version = v1
+
+@authorization  = Basic meditrak_client:{{meditrak-client-password}}
+
 @contentType = application/json
 
 ### /test
 GET http://{{host}}/{{version}}/test HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{authorization}}
 
+### /auth (login)
+
+POST http://{{host}}/{{version}}/auth HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "emailAddress": "{{email}}",
+    "password": "{{password}}",
+    "deviceName": "test",
+    "devicePlatform": "android",
+    "installId": "1234"
+}
+
+### /auth (refresh token)
+
+POST http://{{host}}/{{version}}/auth?grantType=refresh_token HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "refreshToken": "1234"
+}
