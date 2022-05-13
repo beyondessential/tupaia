@@ -19,6 +19,7 @@ export const TYPES = {
   DATA_SOURCE: 'data_source',
   DATA_SERVICE_ENTITY: 'data_service_entity',
   DATA_SERVICE_SYNC_GROUP: 'data_service_sync_group',
+  DHIS_INSTANCE: 'dhis_instance',
   DHIS_SYNC_LOG: 'dhis_sync_log',
   DHIS_SYNC_QUEUE: 'dhis_sync_queue',
   DISASTER: 'disaster',

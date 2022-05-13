@@ -46,6 +46,7 @@ import { UserEntityPermissionModel } from './UserEntityPermission';
 import { UserModel } from './User';
 import { UserSessionModel } from './UserSession';
 import { DataServiceEntityModel } from './DataServiceEntity';
+import { DhisInstanceModel } from './DhisInstance';
 
 // export all models to be used in constructing a ModelRegistry
 export const modelClasses = {
@@ -63,6 +64,7 @@ export const modelClasses = {
   DataSource: DataSourceModel,
   DataServiceEntity: DataServiceEntityModel,
   DataServiceSyncGroup: DataServiceSyncGroupModel,
+  DhisInstance: DhisInstanceModel,
   Disaster: DisasterModel,
   DisasterEvent: DisasterEventModel,
   Entity: EntityModel,
@@ -102,6 +104,7 @@ export {
 } from './AncestorDescendantRelation';
 export { CommentModel } from './Comment';
 export { CountryModel } from './Country';
+export { DhisInstanceModel, DhisInstanceType } from './DhisInstance';
 export { DataSourceModel, DataSourceType } from './DataSource';
 export { EntityModel, EntityType } from './Entity';
 export { EntityHierarchyModel, EntityHierarchyType } from './EntityHierarchy';
