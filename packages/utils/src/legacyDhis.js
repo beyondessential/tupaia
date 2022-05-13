@@ -51,8 +51,7 @@ const getServerName = (entityCode, isDataRegional) => {
 };
 
 /**
- * @deprecated Used for migrating to new DataService based method. This file will be used for migrating data in a release,
- * after which the next release will delete this file.
+ * @deprecated Use data-broker instead
  *
  * Returns configuration for creating an api instance connected to the dhis server.
  * The country containing the given entityCode will be used. If either none is passed in or the data
@@ -83,6 +82,8 @@ export const legacy_getDhisConfig = ({
 };
 
 /**
+ * @deprecated Use data-broker instead
+ *
  * Convenience function that allows us to only get the server name, same input as above.
  */
 export const legacy_getDhisServerName = ({
@@ -92,14 +93,31 @@ export const legacy_getDhisServerName = ({
   isDataRegional = true,
 }) => {
   if (entityCodes) {
-    const configs = entityCodes.map(code =>
-      legacy_getDhisConfig({ entityCode: code, isDataRegional }),
+    const serverNames = entityCodes.map(code =>
+      legacy_getDhisServerName({ entityCode: code, isDataRegional }),
     );
-    if (configs.some(config => config.serverName !== configs[0].serverName)) {
+    if (serverNames.some(serverName => serverName !== serverNames[0])) {
       throw new Error('All entities must use the same DHIS2 instance');
     }
-    return configs[0];
+    return serverNames[0];
   }
   const serverName = serverNameInput || getServerName(entityCode, isDataRegional);
   return serverName;
+};
+
+/**
+ * @deprecated Use data-broker instead
+ *
+ * Legacy to modern config mapping function. Clean up after legacy reports are all migrated.
+ *
+ * Note: some parts of Tupaia will not function correctly in deployments where a DHIS Instance
+ * with code 'regional' does not exist
+ *
+ * @param {{ isDataRegional: boolean}} legacyConfig
+ * @return {string|undefined} DhisInstance code
+ */
+export const legacy_configToDhisInstanceCode = legacyConfig => {
+  const { isDataRegional = true } = legacyConfig;
+  if (isDataRegional) return 'regional';
+  return undefined;
 };
