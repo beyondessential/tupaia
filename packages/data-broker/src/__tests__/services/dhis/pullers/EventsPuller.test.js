@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { createModelsStub, stubDhisApi } from '../DhisService.stubs';
+import { createMockDhisApi, createModelsStub, stubGetDhisApi } from '../DhisService.stubs';
 import { DATA_SOURCES } from '../DhisService.fixtures';
 import * as BuildEvents from '../../../../services/dhis/buildAnalytics/buildEventsFromDhisEventAnalytics';
 import { EventsPuller } from '../../../../services/dhis/pullers';
@@ -17,7 +17,8 @@ describe('EventsPuller', () => {
     const models = createModelsStub();
     const translator = new DhisTranslator(models);
     eventsPuller = new EventsPuller(models.dataSource, translator);
-    dhisApi = stubDhisApi();
+    dhisApi = createMockDhisApi();
+    stubGetDhisApi(dhisApi);
   });
 
   it('throws an error if multiple data groups are provided', async () =>
@@ -85,8 +86,8 @@ describe('EventsPuller', () => {
 
     beforeAll(() => {
       buildEventsMock = jest
-      .spyOn(BuildEvents, 'buildEventsFromDhisEventAnalytics')
-      .mockReturnValue([]);
+        .spyOn(BuildEvents, 'buildEventsFromDhisEventAnalytics')
+        .mockReturnValue([]);
     });
 
     describe('buildEventsFromDhisEventAnalytics() invocation', () => {
@@ -105,7 +106,8 @@ describe('EventsPuller', () => {
           },
           rows: [],
         };
-        dhisApi = stubDhisApi({ getEventAnalyticsResponse });
+        dhisApi = createMockDhisApi({ getEventAnalyticsResponse });
+        stubGetDhisApi(dhisApi);
         const dataElementCodes = ['POP01', 'POP02'];
 
         await eventsPuller.pull([dhisApi], [DATA_SOURCES.POP01_GROUP], { dataElementCodes });
@@ -138,7 +140,8 @@ describe('EventsPuller', () => {
           },
           rows: [],
         };
-        dhisApi = stubDhisApi({ getEventAnalyticsResponse });
+        dhisApi = createMockDhisApi({ getEventAnalyticsResponse });
+        stubGetDhisApi(dhisApi);
 
         const dataElementCodes = ['DIF01'];
         await eventsPuller.pull([dhisApi], [DATA_SOURCES.POP01_GROUP], { dataElementCodes });
@@ -169,5 +172,4 @@ describe('EventsPuller', () => {
       ).resolves.toStrictEqual(events);
     });
   });
-
 });

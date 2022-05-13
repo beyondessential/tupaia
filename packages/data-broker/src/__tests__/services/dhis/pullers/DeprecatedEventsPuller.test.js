@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { createModelsStub, stubDhisApi } from '../DhisService.stubs';
+import { createMockDhisApi, createModelsStub, stubGetDhisApi } from '../DhisService.stubs';
 import { DATA_SOURCES } from '../DhisService.fixtures';
 import { DeprecatedEventsPuller } from '../../../../services/dhis/pullers';
 import { DhisTranslator } from '../../../../services/dhis/DhisTranslator';
@@ -16,12 +16,17 @@ describe('DeprecatedEventsPuller', () => {
     const models = createModelsStub();
     const translator = new DhisTranslator(models);
     deprecatedEventsPuller = new DeprecatedEventsPuller(models.dataSource, translator);
-    dhisApi = stubDhisApi();
+    dhisApi = createMockDhisApi();
+    stubGetDhisApi(dhisApi);
   });
 
   it('throws an error if multiple data groups are provided', async () =>
     expect(
-      deprecatedEventsPuller.pull([dhisApi], [DATA_SOURCES.POP01_GROUP, DATA_SOURCES.DIFF_GROUP], {}),
+      deprecatedEventsPuller.pull(
+        [dhisApi],
+        [DATA_SOURCES.POP01_GROUP, DATA_SOURCES.DIFF_GROUP],
+        {},
+      ),
     ).toBeRejectedWith(/Cannot .*multiple programs/));
 
   describe('DHIS API invocation', () => {
@@ -57,7 +62,9 @@ describe('DeprecatedEventsPuller', () => {
     it('`organisationUnitCodes` can be empty', async () => {
       const assertErrorIsNotThrown = async organisationUnitCodes =>
         expect(
-          deprecatedEventsPuller.pull([dhisApi], [DATA_SOURCES.POP01_GROUP], { organisationUnitCodes }),
+          deprecatedEventsPuller.pull([dhisApi], [DATA_SOURCES.POP01_GROUP], {
+            organisationUnitCodes,
+          }),
         ).toResolve();
 
       return Promise.all([undefined, []].map(assertErrorIsNotThrown));
@@ -94,7 +101,8 @@ describe('DeprecatedEventsPuller', () => {
       expectedResults,
       getEventsResponse,
     }) => {
-      dhisApi = stubDhisApi({ getEventsResponse });
+      dhisApi = createMockDhisApi({ getEventsResponse });
+      stubGetDhisApi(dhisApi);
       return expect(
         deprecatedEventsPuller.pull([dhisApi], dataSources, options),
       ).resolves.toStrictEqual(expectedResults);

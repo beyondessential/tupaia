@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import * as GetDhisApiInstance from '../../../services/dhis/getDhisApiInstance';
+import * as GetDhisApi from '../../../services/dhis/getDhisApi';
 import {
   DATA_ELEMENTS_BY_GROUP,
   DATA_ELEMENTS,
@@ -20,12 +20,13 @@ const defaultAnalytics = {
   rows: [],
 };
 
-export const stubDhisApi = ({
+export const createMockDhisApi = ({
   getAnalyticsResponse = defaultAnalytics,
   getEventsResponse = [],
   getEventAnalyticsResponse = defaultAnalytics,
+  serverName = SERVER_NAME,
 } = {}) => {
-  const dhisApi = createJestMockInstance('@tupaia/dhis-api', 'DhisApi', {
+  return createJestMockInstance('@tupaia/dhis-api', 'DhisApi', {
     getAnalytics: jest.fn().mockResolvedValue(getAnalyticsResponse),
     getEvents: jest.fn().mockResolvedValue(getEventsResponse),
     getEventAnalytics: jest.fn().mockResolvedValue(getEventAnalyticsResponse),
@@ -34,12 +35,17 @@ export const stubDhisApi = ({
       .mockImplementation(async codes =>
         codes.map(code => ({ code, id: DATA_ELEMENTS[code].uid, valueType: 'NUMBER' }), {}),
       ),
-    getServerName: jest.fn().mockReturnValue(SERVER_NAME),
     getResourceTypes: jest.fn().mockReturnValue({ DATA_ELEMENT: 'dataElement' }),
+    serverName,
   });
-  jest.spyOn(GetDhisApiInstance, 'getDhisApiInstance').mockReturnValue(dhisApi);
+};
 
-  return dhisApi;
+export const stubGetDhisApi = mockDhisApi => {
+  // Mock return value of all getDhisApi functions to return this mock api
+  jest.spyOn(GetDhisApi, 'getApiForValue').mockReturnValue(mockDhisApi);
+  jest.spyOn(GetDhisApi, 'getApisForDataSources').mockReturnValue([mockDhisApi]);
+  jest.spyOn(GetDhisApi, 'getApisForLegacyDataSourceConfig').mockReturnValue([mockDhisApi]);
+  jest.spyOn(GetDhisApi, 'getApiFromServerName').mockReturnValue(mockDhisApi);
 };
 
 export const createModelsStub = () => ({
