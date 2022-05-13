@@ -47,6 +47,17 @@ const getEntityAttributeFilters = (state, questionId) => {
       : true;
 };
 
+const filterOnAttributes = (entities, state, questionId) => {
+  const question = getQuestion(state, questionId);
+  const { attributes } = question.config.entity;
+  if (!attributes) {
+    return entities;
+  }
+
+  const checkMatchesAttributeFilters = getEntityAttributeFilters(state, attributes);
+  return entities.filter(checkMatchesAttributeFilters);
+};
+
 const getRecentEntities = (database, state, entityFilters) => {
   const { questions, primaryEntityQuestionId, assessorId } = state.assessment;
   const entityTypes = questions[primaryEntityQuestionId].config.entity.type;
@@ -81,14 +92,15 @@ export const loadEntitiesFromDatabase = (isPrimaryEntity, questionId) => (
   const entities = database.getEntities(filters);
 
   // filter on attributes
-  const checkMatchesAttributeFilters = getEntityAttributeFilters(state, questionId);
-  const filteredEntities = entities.filter(checkMatchesAttributeFilters);
+  const filteredEntities = filterOnAttributes(entities, state, questionId);
 
   const recentEntities = getRecentEntities(database, state, filters);
 
+  const entityData = filteredEntities.map(e => e.getReduxStoreData());
+
   dispatch({
     type: isPrimaryEntity ? ENTITY_RECEIVE_PRIMARY_ENTITIES : ENTITY_RECEIVE_ENTITIES,
-    entities: filteredEntities.map(e => e.getReduxStoreData()),
+    entities: entityData,
     recentEntities,
     questionId,
   });
