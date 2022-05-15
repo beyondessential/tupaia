@@ -15,7 +15,6 @@ import { reducer as web } from './web';
 import { reducer as userLocation } from './utilities/userLocation';
 import { reducer as rewards } from './rewards';
 import { reducer as messages } from './messages';
-import { reducer as entity } from './entityMenu';
 import { reducer as changePassword } from './changePassword';
 
 export const reducers = {
@@ -32,6 +31,5 @@ export const reducers = {
   userLocation,
   rewards,
   messages,
-  entity,
   changePassword,
 };

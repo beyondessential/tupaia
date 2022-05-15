@@ -17,12 +17,15 @@ import {
   getGreyShade,
 } from '../globalStyles';
 import { EntityItem, ITEM_HEIGHT } from './EntityItem';
+import { fetchEntities } from './helpers';
 
 const SEARCH_BOX_HEIGHT = 40;
+const ENOUGH_SEARCH_RESULTS = 20;
 export class EntityList extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      entities: [],
       searchTerm: '',
       searchResults: null,
       isOpen: false,
@@ -30,14 +33,20 @@ export class EntityList extends PureComponent {
   }
 
   componentDidMount() {
-    const { onMount, startOpen } = this.props;
-    if (onMount) {
-      onMount(); // E.g. pull database records into the redux store to populate the clinic list
-    }
+    const { startOpen } = this.props;
 
     if (startOpen) {
       this.openResults();
     }
+
+    const entities = fetchEntities(
+      this.props.realmDatabase,
+      this.props.baseEntityFilters,
+      this.props.checkEntityAttributes,
+    );
+    this.setState({
+      entities,
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -96,29 +105,29 @@ export class EntityList extends PureComponent {
       return;
     }
 
-    const { entities } = this.props;
-    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    const { entities } = this.state;
 
-    const searchResults = entities
-      .filter(
-        ({ name, parentName }) =>
-          name.toLowerCase().includes(lowerCaseSearchTerm) ||
-          (parentName && parentName.toLowerCase().includes(lowerCaseSearchTerm)),
-      )
-      .sort(({ name: a }, { name: b }) => {
-        // Send entity names that start with the search term to the top.
-        const checkMatchesAtStart = name => name.toLowerCase().startsWith(lowerCaseSearchTerm);
-        if (checkMatchesAtStart(a) !== checkMatchesAtStart(b)) {
-          return checkMatchesAtStart(a) ? -1 : 1;
-        }
-
-        // Sort alphabetically
-        return a.localeCompare(b);
+    const primarySearchResults = entities.filtered(`name BEGINSWITH[c] $0`, searchTerm);
+    if (primarySearchResults.length >= ENOUGH_SEARCH_RESULTS) {
+      this.setState({
+        searchTerm,
+        searchResults: primarySearchResults,
       });
-    this.setState({
-      searchTerm,
-      searchResults,
-    });
+    } else {
+      // if there aren't enough search results for the user to look through, try including
+      // matches later in the name, or matches on the parent entity
+      const secondarySearchResults = entities.filtered(
+        `(NOT name BEGINSWITH[c] $0) AND (name CONTAINS[c] $0 OR parent.name BEGINSWITH[c] $0) LIMIT(${
+          ENOUGH_SEARCH_RESULTS - primarySearchResults.length
+        })`,
+        searchTerm,
+      );
+      const searchResults = [...primarySearchResults, ...secondarySearchResults];
+      this.setState({
+        searchTerm,
+        searchResults,
+      });
+    }
   };
 
   getListSections = () => {
@@ -127,7 +136,8 @@ export class EntityList extends PureComponent {
       return [{ data: searchResults }];
     }
 
-    const { entities, recentEntities } = this.props;
+    const { entities } = this.state;
+    const { recentEntities } = this.props;
     if (recentEntities?.length > 0) {
       return [
         { title: 'Recently used', data: recentEntities },
@@ -158,8 +168,7 @@ export class EntityList extends PureComponent {
   };
 
   renderResults() {
-    const { entities } = this.props;
-    const { searchTerm, searchResults, isOpen } = this.state;
+    const { entities, searchTerm, searchResults, isOpen } = this.state;
 
     // while entities is null, we're still loading from the database
     if (!entities) {
@@ -213,8 +222,8 @@ export class EntityList extends PureComponent {
   }
 
   render() {
-    const { entities, selectedEntityId } = this.props;
-    const { searchTerm } = this.state;
+    const { selectedEntityId } = this.props;
+    const { entities, searchTerm } = this.state;
 
     if (entities && entities.length > 0 && selectedEntityId) {
       const selectedEntity = entities.find(i => i.id === selectedEntityId);
@@ -260,12 +269,13 @@ export class EntityList extends PureComponent {
 }
 
 EntityList.propTypes = {
-  entities: PropTypes.array,
-  recentEntities: PropTypes.array,
+  realmDatabase: PropTypes.object.isRequired,
+  baseEntityFilters: PropTypes.object.isRequired,
+  checkEntityAttributes: PropTypes.func.isRequired,
+  recentEntities: PropTypes.array.isRequired,
   selectedEntityId: PropTypes.string,
   onRowPress: PropTypes.func.isRequired,
   onClear: PropTypes.func.isRequired,
-  onMount: PropTypes.func,
   startOpen: PropTypes.bool.isRequired,
   takeScrollControl: PropTypes.func.isRequired,
   releaseScrollControl: PropTypes.func.isRequired,
@@ -273,10 +283,7 @@ EntityList.propTypes = {
 };
 
 EntityList.defaultProps = {
-  entities: null,
-  recentEntities: null,
   selectedEntityId: '',
-  onMount: null,
 };
 
 const localStyles = StyleSheet.create({

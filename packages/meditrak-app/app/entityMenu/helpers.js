@@ -3,11 +3,10 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { ENTITY_RECEIVE_PRIMARY_ENTITIES, ENTITY_RECEIVE_ENTITIES } from './constants';
 import { getAnswerForQuestion, getQuestion } from '../assessment/selectors';
 import { getRecentEntityIds } from '../assessment/helpers';
 
-const getEntityDatabaseFilters = (state, database, questionId) => {
+export const getEntityBaseFilters = (state, database, questionId) => {
   // filtering for entities within the currently selected country also has the byproduct
   // of only including entities for which the user has permission - to be filling in a survey in a
   // country, they must have the associated permission group in that country
@@ -27,38 +26,36 @@ const getEntityDatabaseFilters = (state, database, questionId) => {
   return filters;
 };
 
-const getEntityAttributeFilters = (state, questionId) => {
-  const question = getQuestion(state, questionId);
-  const { attributes } = question.config.entity;
-
-  return entity =>
-    attributes
-      ? Object.entries(attributes).every(([key, config]) => {
-          const attributeValue = getAnswerForQuestion(state, config.questionId);
-
-          // No answer was selected for the question to filter, return all
-          if (attributeValue === undefined) {
-            return true;
-          }
-
-          const { attributes: entityAttributes } = entity.toJson();
-          return entityAttributes[key] === attributeValue;
-        })
-      : true;
-};
-
-const filterOnAttributes = (entities, state, questionId) => {
+export const getEntityAttributeChecker = (state, questionId) => {
   const question = getQuestion(state, questionId);
   const { attributes } = question.config.entity;
   if (!attributes) {
+    return null;
+  }
+
+  return entity =>
+    Object.entries(JSON.parse(attributes)).every(([key, config]) => {
+      const attributeValue = getAnswerForQuestion(state, config.questionId);
+
+      // No answer was selected for the question to filter, return all
+      if (attributeValue === undefined) {
+        return true;
+      }
+
+      const { attributes: entityAttributes } = entity.toJson();
+      return entityAttributes[key] === attributeValue;
+    });
+};
+
+const filterOnAttributes = (entities, checkEntityAttributes) => {
+  if (!checkEntityAttributes) {
     return entities;
   }
 
-  const checkMatchesAttributeFilters = getEntityAttributeFilters(state, attributes);
-  return entities.filter(checkMatchesAttributeFilters);
+  return entities.filter(checkEntityAttributes);
 };
 
-const getRecentEntities = (database, state, entityFilters) => {
+export const getRecentEntities = (database, state, baseFilters) => {
   const { questions, primaryEntityQuestionId, assessorId } = state.assessment;
   const entityTypes = questions[primaryEntityQuestionId].config.entity.type;
   const recentEntityIds = getRecentEntityIds(
@@ -71,7 +68,7 @@ const getRecentEntities = (database, state, entityFilters) => {
     return [];
   }
 
-  const recentEntities = database.getEntities({ ...entityFilters, id: recentEntityIds });
+  const recentEntities = database.getEntities({ ...baseFilters, id: recentEntityIds });
 
   // sort database results to match our saved array of recent entity ids
   const sortedRecentEntities = recentEntities
@@ -81,27 +78,7 @@ const getRecentEntities = (database, state, entityFilters) => {
   return sortedRecentEntities;
 };
 
-export const loadEntitiesFromDatabase = (isPrimaryEntity, questionId) => (
-  dispatch,
-  getState,
-  { database },
-) => {
-  const state = getState();
-
-  const filters = getEntityDatabaseFilters(state, database, questionId);
-  const entities = database.getEntities(filters);
-
-  // filter on attributes
-  const filteredEntities = filterOnAttributes(entities, state, questionId);
-
-  const recentEntities = getRecentEntities(database, state, filters);
-
-  const entityData = filteredEntities.map(e => e.getReduxStoreData());
-
-  dispatch({
-    type: isPrimaryEntity ? ENTITY_RECEIVE_PRIMARY_ENTITIES : ENTITY_RECEIVE_ENTITIES,
-    entities: entityData,
-    recentEntities,
-    questionId,
-  });
+export const fetchEntities = (database, baseFilters, checkEntityAttributes) => {
+  const entities = database.getEntities(baseFilters);
+  return filterOnAttributes(entities, checkEntityAttributes);
 };
