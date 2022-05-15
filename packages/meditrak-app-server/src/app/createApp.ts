@@ -10,7 +10,7 @@ import {
   LOCALHOST_BASE_URLS,
   TupaiaApiClient,
 } from '@tupaia/api-client';
-import { AuthRequest, AuthRoute } from '../routes';
+import { AuthRequest, AuthRoute, RegisterUserRequest, RegisterUserRoute } from '../routes';
 
 /**
  * Set up express server with middleware,
@@ -31,6 +31,7 @@ export function createApp() {
       next();
     })
     .post<AuthRequest>('auth', handleWith(AuthRoute))
+    .post<RegisterUserRequest>('user', handleWith(RegisterUserRoute))
     .build();
 
   return app;

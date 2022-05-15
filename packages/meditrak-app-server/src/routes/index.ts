@@ -4,3 +4,4 @@
  */
 
 export { AuthRequest, AuthRoute } from './AuthRoute';
+export { RegisterUserRequest, RegisterUserRoute } from './RegisterUserRoute';
