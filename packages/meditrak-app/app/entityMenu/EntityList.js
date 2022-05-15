@@ -20,7 +20,7 @@ import { EntityItem, ITEM_HEIGHT } from './EntityItem';
 import { fetchEntities } from './helpers';
 
 const SEARCH_BOX_HEIGHT = 40;
-const ENOUGH_SEARCH_RESULTS = 20;
+const ENOUGH_SEARCH_RESULTS = 500;
 export class EntityList extends PureComponent {
   constructor(props) {
     super(props);
