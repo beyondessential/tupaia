@@ -60,7 +60,15 @@ export class RequestAccountDeletionPage extends PureComponent {
   };
 
   render() {
-    const { onSubmit, isRequestSent, isLoading, emailAddress, name, pigs, coconuts } = this.props;
+    const {
+      onSubmit,
+      isRequestedAccountDeletion,
+      isLoading,
+      emailAddress,
+      name,
+      pigs,
+      coconuts,
+    } = this.props;
 
     return (
       <MenuContext style={localStyles.menuContainer}>
@@ -91,13 +99,13 @@ export class RequestAccountDeletionPage extends PureComponent {
                   </View>
                 </View>
               </View>
-              {isRequestSent && renderSuccessMessage('Your request has been sent')}
+              {isRequestedAccountDeletion && renderSuccessMessage('Your request has been sent')}
               <View style={localStyles.actionsContainer}>
                 <Button
                   style={localStyles.deleteButton}
                   textStyle={localStyles.deleteButtonText}
                   title="Delete Account"
-                  isDisabled={isLoading || isRequestSent}
+                  isDisabled={isLoading || isRequestedAccountDeletion}
                   onPress={() => onSubmit()}
                 />
               </View>
@@ -120,7 +128,7 @@ RequestAccountDeletionPage.propTypes = {
   pigs: PropTypes.number.isRequired,
   coconuts: PropTypes.number.isRequired,
   isLoading: PropTypes.bool.isRequired,
-  isRequestSent: PropTypes.bool.isRequired,
+  isRequestedAccountDeletion: PropTypes.bool.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };
 

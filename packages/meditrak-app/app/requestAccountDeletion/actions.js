@@ -13,7 +13,7 @@ const deleteAccountError = () => ({
   type: DELETE_ACCOUNT_REQUEST_FAILURE,
 });
 
-export const submit = () => async (dispatch, getState, { api }) => {
+export const submit = () => async (dispatch, getState, { api, database }) => {
   dispatch({ type: DELETE_ACCOUNT_REQUEST });
   let response;
   try {
@@ -21,6 +21,10 @@ export const submit = () => async (dispatch, getState, { api }) => {
     if (response.error) {
       throw new Error(response.error);
     }
+
+    const { authentication } = getState();
+    const { currentUserId } = authentication;
+    database.updateUser({ id: currentUserId, isRequestedAccountDeletion: true });
   } catch (error) {
     dispatch(deleteAccountError());
     return;

@@ -7,19 +7,21 @@ import { connect } from 'react-redux';
 
 import { RequestAccountDeletionPage } from './RequestAccountDeletionPage';
 import { submit } from './actions';
+import { database } from '../database';
 
 function mapStateToProps(state) {
   const { authentication, rewards, requestAccountDeletion } = state;
-  const { isRequestSent, isLoading } = requestAccountDeletion;
+  const { isLoading } = requestAccountDeletion;
   const { emailAddress, name } = authentication;
   const { pigs, coconuts } = rewards;
-
+  const user = database.getUser(emailAddress);
+  const { isRequestedAccountDeletion } = user;
   return {
     emailAddress,
     name,
     pigs,
     coconuts,
-    isRequestSent,
+    isRequestedAccountDeletion,
     isLoading,
   };
 }

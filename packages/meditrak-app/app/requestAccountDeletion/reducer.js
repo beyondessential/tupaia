@@ -13,14 +13,13 @@ import {
 
 const defaultState = {
   isLoading: false,
-  isRequestSent: false,
 };
 
 const stateChanges = {
   [DELETE_ACCOUNT_REQUEST]: () => ({
     isLoading: true,
   }),
-  [DELETE_ACCOUNT_REQUEST_SUCCESS]: () => ({ isLoading: false, isRequestSent: true }),
+  [DELETE_ACCOUNT_REQUEST_SUCCESS]: () => ({ isLoading: false }),
   [DELETE_ACCOUNT_REQUEST_FAILURE]: () => defaultState,
   [LOGOUT]: () => defaultState,
 };
