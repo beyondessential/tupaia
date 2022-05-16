@@ -102,10 +102,10 @@ exports.up = async function (db) {
       AND (config->'isDataRegional' is null or config->'isDataRegional' = 'true')
   `);
   // Non-regional
-  //   - this is our detect-dhis, so dhisInstanceCode is not added
+  //   - this is our detect-dhis, dhisInstanceCode is null
   await db.runSql(`
     UPDATE data_source 
-    SET config = config #- '{isDataRegional}'
+    SET config = (config || '{"dhisInstanceCode": null}') #- '{isDataRegional}'
     WHERE service_type = 'dhis' 
       AND config->'isDataRegional' = 'false'
   `);
@@ -129,9 +129,9 @@ exports.down = async function (db) {
   // - Non-regional
   await db.runSql(`
     UPDATE data_source 
-    SET config = config || '{"isDataRegional": false}'
+    SET config = config || '{"isDataRegional": false}' #- '{dhisInstanceCode}'
     WHERE service_type = 'dhis' 
-      AND config->'dhisInstanceCode' is null
+      AND config->'dhisInstanceCode' = 'null'
   `);
 
   await db.runSql('ALTER TABLE data_source ENABLE TRIGGER data_source_trigger;');

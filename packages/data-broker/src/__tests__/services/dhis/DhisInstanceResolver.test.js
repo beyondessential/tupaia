@@ -37,7 +37,7 @@ describe('DhisInstanceResolver', () => {
   });
 
   it('throws if given nothing', async () => {
-    return expect(resolver.get({ dataSourceDhisInstanceCode: '' })).toBeRejectedWith(
+    return expect(resolver.get({ dataSourceDhisInstanceCode: null })).toBeRejectedWith(
       'No DHIS Instance specified on dataSource, and entityBasedDhisResolution not used',
     );
   });

@@ -30,7 +30,7 @@ const STUBBED_MODEL_DATA = {
     },
     {
       id: 'survey_is_not_regional_dataGroup',
-      config: {},
+      config: { dhisInstanceCode: null },
     },
   ],
   entity: [

@@ -5,13 +5,10 @@
 
 const areBothDefinedAndDifferent = (a, b) => a !== undefined && b !== undefined && a !== b;
 
-const areDifferentAllowingBlank = (a, b) => {
-  // blank/undefined is considered a valid value, test against other value
-  const aSet = a !== '' && a !== undefined;
-  const bSet = b !== '' && b !== undefined;
-  if (!aSet && !bSet) return false;
-  if (!aSet && bSet) return true;
-  if (aSet && !bSet) return true;
+const areDifferentAllowingNull = (a, b) => {
+  if (a === null && b === null) return false;
+  if (a === null && b !== null) return true;
+  if (a !== null && b === null) return true;
   return a !== b;
 };
 
@@ -56,7 +53,7 @@ export const assertCanAddDataElementInGroup = async (
       );
     }
 
-    if (areDifferentAllowingBlank(otherConfig.dhisInstanceCode, newConfig.dhisInstanceCode)) {
+    if (areDifferentAllowingNull(otherConfig.dhisInstanceCode, newConfig.dhisInstanceCode)) {
       throw new Error(
         constructErrorMessage({
           property: 'DHIS server',
