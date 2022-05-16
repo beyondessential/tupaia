@@ -3,11 +3,26 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-const areBothDefinedAndDifferent = (oldValue, newValue) =>
-  oldValue !== undefined && newValue !== undefined && oldValue !== newValue;
+const areBothDefinedAndDifferent = (a, b) => a !== undefined && b !== undefined && a !== b;
 
-const constructErrorMessage = ({ property, value, dataElementCode, otherGroupCode }) =>
-  `Cannot set ${property} to '${value}': data element '${dataElementCode}' is included in data group '${otherGroupCode}', which uses another ${property}`;
+const areDifferentAllowingBlank = (a, b) => {
+  // blank/undefined is considered a valid value, test against other value
+  const aSet = a !== '' && a !== undefined;
+  const bSet = b !== '' && b !== undefined;
+  if (!aSet && !bSet) return false;
+  if (!aSet && bSet) return true;
+  if (aSet && !bSet) return true;
+  return a !== b;
+};
+
+const constructErrorMessage = ({
+  property,
+  newValue,
+  dataElementCode,
+  otherGroupCode,
+  otherValue,
+}) =>
+  `Cannot set ${property} to '${newValue}': data element '${dataElementCode}' is included in data group '${otherGroupCode}', which has ${property}: '${otherValue}'. These must match.`;
 
 export const assertCanAddDataElementInGroup = async (
   models,
@@ -23,30 +38,32 @@ export const assertCanAddDataElementInGroup = async (
   });
   const otherDataGroups = dataGroups.filter(({ code }) => code !== dataGroupCode);
   otherDataGroups.forEach(otherDataGroup => {
-    const { service_type: serviceType, config } = otherDataGroup;
+    const { service_type: otherServiceType, config: otherConfig } = otherDataGroup;
 
     // Tupaia data elements can be in either dhis or tupaia data groups
     if (
       dataElement.service_type !== 'tupaia' &&
-      areBothDefinedAndDifferent(serviceType, newServiceType)
+      areBothDefinedAndDifferent(otherServiceType, newServiceType)
     ) {
       throw new Error(
         constructErrorMessage({
           property: 'service type',
-          value: newServiceType,
+          newValue: newServiceType,
           dataElementCode,
           otherGroupCode: otherDataGroup.code,
+          otherValue: otherServiceType,
         }),
       );
     }
 
-    if (areBothDefinedAndDifferent(config.dhisInstanceCode, newConfig.dhisInstanceCode)) {
+    if (areDifferentAllowingBlank(otherConfig.dhisInstanceCode, newConfig.dhisInstanceCode)) {
       throw new Error(
         constructErrorMessage({
           property: 'DHIS server',
-          value: config.dhisInstanceCode,
+          newValue: newConfig.dhisInstanceCode,
           dataElementCode,
           otherGroupCode: otherDataGroup.code,
+          otherValue: otherConfig.dhisInstanceCode,
         }),
       );
     }
