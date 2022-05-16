@@ -3,20 +3,16 @@
 @host = {{hostname}}:{{port}}
 @version = v1
 
-@client-authorization  = Basic meditrak_client:{{meditrak-client-password}}
-
 @contentType = application/json
 
 ### /test
 GET http://{{host}}/{{version}}/test HTTP/2.0
 content-type: {{contentType}}
-Authorization: {{client-authorization}}
 
 ### Login
 # @name login
 POST http://{{host}}/{{version}}/auth HTTP/2.0
 content-type: {{contentType}}
-Authorization: {{client-authorization}}
 
 {
     "emailAddress": "{{email}}",
@@ -30,7 +26,6 @@ Authorization: {{client-authorization}}
 
 POST http://{{host}}/{{version}}/auth?grantType=refresh_token HTTP/2.0
 content-type: {{contentType}}
-Authorization: {{client-authorization}}
 
 {
     "refreshToken": "1234"
@@ -40,7 +35,6 @@ Authorization: {{client-authorization}}
 
 POST http://{{host}}/{{version}}/user HTTP/2.0
 content-type: {{contentType}}
-Authorization: {{client-authorization}}
 
 {
     "firstName": "Bob",
