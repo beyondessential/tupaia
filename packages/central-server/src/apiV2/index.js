@@ -104,7 +104,6 @@ import {
   EditMapOverlayVisualisation,
   GETMapOverlayVisualisations,
 } from './mapOverlayVisualisations';
-import { GETDhisInstances } from './GETDhisInstances';
 
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
@@ -207,7 +206,7 @@ apiV2.get('/clinics/:recordId?', useRouteHandler(GETClinics));
 apiV2.get('/facilities/:recordId?', useRouteHandler(GETClinics));
 apiV2.get('/geographicalAreas/:recordId?', useRouteHandler(GETGeographicalAreas));
 apiV2.get('/reports/:recordId?', useRouteHandler(GETReports));
-apiV2.get('/dhisInstances/:recordId?', useRouteHandler(GETDhisInstances));
+apiV2.get('/dhisInstances/:recordId?', useRouteHandler(BESAdminGETHandler));
 
 /**
  * POST routes
