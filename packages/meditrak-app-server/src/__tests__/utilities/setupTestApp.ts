@@ -9,6 +9,7 @@ import { getTestDatabase } from '@tupaia/database';
 import { createApp } from '../../app';
 import { TEST_DATA } from '../__integration__/fixtures';
 import { AuthApiMock } from './AuthApiMock';
+import { CentralApiMock } from './CentralApiMock';
 
 jest.mock('@tupaia/api-client', () => {
   const original = jest.requireActual('@tupaia/api-client'); // Step 2.
@@ -17,6 +18,7 @@ jest.mock('@tupaia/api-client', () => {
     TupaiaApiClient: jest.fn().mockImplementation(() => {
       return {
         auth: new AuthApiMock(TEST_DATA),
+        central: new CentralApiMock(),
       };
     }),
   };
