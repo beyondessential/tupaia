@@ -20,7 +20,11 @@ import { EntityItem, ITEM_HEIGHT } from './EntityItem';
 import { fetchEntities } from './helpers';
 
 const SEARCH_BOX_HEIGHT = 40;
+// if we don't have enough primary search results (i.e. on the start of the entity's name), we add
+// secondary search results (matches within the entity name or on the start of the parent's name)
+// until we have enough for them to get bored scrolling through, or run out of matches
 const ENOUGH_SEARCH_RESULTS = 500;
+
 export class EntityList extends PureComponent {
   constructor(props) {
     super(props);
