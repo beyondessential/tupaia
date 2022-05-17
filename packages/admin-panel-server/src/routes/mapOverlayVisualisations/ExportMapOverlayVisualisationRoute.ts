@@ -9,7 +9,7 @@ import { keyBy } from 'lodash';
 
 import { camelKeys } from '@tupaia/utils';
 import { Route } from '@tupaia/server-boilerplate';
-import { MeditrakConnection } from '../../connections';
+import { CentralConnection } from '../../connections';
 import { combineMapOverlayVisualisation } from '../../viz-builder';
 import type {
   MapOverlayRecord,
@@ -31,12 +31,12 @@ export type ExportMapOverlayVisualisationRequest = Request<
 export class ExportMapOverlayVisualisationRoute extends Route<ExportMapOverlayVisualisationRequest> {
   protected readonly type = 'download';
 
-  private readonly meditrakConnection: MeditrakConnection;
+  private readonly centralConnection: CentralConnection;
 
   public constructor(req: ExportMapOverlayVisualisationRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
-    this.meditrakConnection = new MeditrakConnection(req.session);
+    this.centralConnection = new CentralConnection(req.session);
   }
 
   public async buildResponse() {
@@ -86,7 +86,7 @@ export class ExportMapOverlayVisualisationRoute extends Route<ExportMapOverlayVi
     const { mapOverlayVisualisationId } = this.req.params;
 
     if (mapOverlayVisualisationId) {
-      const mapOverlay = await this.meditrakConnection.fetchResources(
+      const mapOverlay = await this.centralConnection.fetchResources(
         `mapOverlays/${mapOverlayVisualisationId}`,
       );
       if (!mapOverlay) {
@@ -97,7 +97,7 @@ export class ExportMapOverlayVisualisationRoute extends Route<ExportMapOverlayVi
     }
 
     const { code } = this.req.body.visualisation;
-    const [mapOverlay] = await this.meditrakConnection.fetchResources('mapOverlays', {
+    const [mapOverlay] = await this.centralConnection.fetchResources('mapOverlays', {
       filter: {
         code,
       },
@@ -106,7 +106,7 @@ export class ExportMapOverlayVisualisationRoute extends Route<ExportMapOverlayVi
   };
 
   private buildMapOverlayVisualisation = async (mapOverlay: MapOverlayRecord) => {
-    const vizResource: MapOverlayVizResource = await this.meditrakConnection.fetchResources(
+    const vizResource: MapOverlayVizResource = await this.centralConnection.fetchResources(
       `mapOverlayVisualisations/${mapOverlay.id}`,
     );
     return combineMapOverlayVisualisation(vizResource);
@@ -117,11 +117,11 @@ export class ExportMapOverlayVisualisationRoute extends Route<ExportMapOverlayVi
       return { mapOverlays: [], mapOverlayGroupRelations: [] };
     }
 
-    const relationRecords: MapOverlayGroupRelationRecord[] = await this.meditrakConnection.fetchResources(
+    const relationRecords: MapOverlayGroupRelationRecord[] = await this.centralConnection.fetchResources(
       `mapOverlays/${mapOverlay.id}/mapOverlayGroupRelations`,
     );
     const mapOverlayGroupIds = relationRecords.map(mogr => mogr.map_overlay_group_id);
-    const mapOverlayGroupRecords: MapOverlayGroupRecord[] = await this.meditrakConnection.fetchResources(
+    const mapOverlayGroupRecords: MapOverlayGroupRecord[] = await this.centralConnection.fetchResources(
       'mapOverlayGroups',
       {
         filter: {

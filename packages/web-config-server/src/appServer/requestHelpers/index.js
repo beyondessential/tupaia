@@ -1,4 +1,4 @@
 export {
-  fetchFromMediTrakServer,
-  fetchFromMeditrakServerUsingTokens,
-} from './fetchFromMediTrakServer';
+  fetchFromCentralServer,
+  fetchFromCentralServerUsingTokens,
+} from './fetchFromCentralServer';

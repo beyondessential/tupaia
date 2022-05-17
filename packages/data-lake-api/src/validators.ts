@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { hasNoContent, takesDateForm, takesIdForm, yup, yupUtils } from '@tupaia/utils';
+import { hasNoContent, takesDateForm, yup, yupUtils } from '@tupaia/utils';
 
 export const eventOptionsValidator = yup.object().shape({
   organisationUnitCodes: yup.array().of(yup.string().required()).strict().required(),
@@ -19,7 +19,7 @@ export const eventOptionsValidator = yup.object().shape({
     ),
   dataElementCodes: yup.array().of(yup.string().required()).strict(),
   dataGroupCode: yup.string().strict().required(),
-  eventId: yup.string().test(yupUtils.yupTestAny([hasNoContent, takesIdForm])),
+  eventId: yup.string().strict(),
 });
 
 export const analyticsOptionsValidator = yup.object().shape({

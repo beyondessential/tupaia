@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -41,7 +41,7 @@ const markRecordsForResync = async (changeChannel, recordType, records) => {
   }
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   const changeChannel = new DatabaseChangeChannel();
   try {
     // delete all Tonga specific sync log records, as the data has been manually deleted from dhis2
@@ -64,7 +64,7 @@ exports.up = async function(db) {
 
     // publish changes for every tonga specific survey response and answer that isn't already in
     // the sync queue
-    // n.b. this requires a meditrak-server instance to be running and listening for the changes
+    // n.b. this requires a central-server instance to be running and listening for the changes
     const surveyResponsesNotAlreadyInSyncQueue = (
       await db.runSql(`
     SELECT survey_response.*
@@ -124,7 +124,7 @@ exports.up = async function(db) {
   }
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return null;
 };
 

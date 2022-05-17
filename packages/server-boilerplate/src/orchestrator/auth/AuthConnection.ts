@@ -10,9 +10,9 @@ import { ApiConnection } from '../../connections';
 
 const basicAuthHandler = {
   getAuthHeader: async () => {
-    const { MEDITRAK_API_CLIENT_NAME, MEDITRAK_API_CLIENT_PASSWORD } = process.env;
-    const MEDITRAK_API_CREDENTIALS = `${MEDITRAK_API_CLIENT_NAME}:${MEDITRAK_API_CLIENT_PASSWORD}`;
-    return `Basic ${Buffer.from(MEDITRAK_API_CREDENTIALS).toString('base64')}`;
+    const { API_CLIENT_NAME, API_CLIENT_PASSWORD } = process.env;
+    const API_CLIENT_CREDENTIALS = `${API_CLIENT_NAME}:${API_CLIENT_PASSWORD}`;
+    return `Basic ${Buffer.from(API_CLIENT_CREDENTIALS).toString('base64')}`;
   },
 };
 
@@ -26,7 +26,7 @@ export interface AuthResponse {
 }
 
 export class AuthConnection extends ApiConnection {
-  public baseUrl = process.env.MEDITRAK_API_URL || 'http://localhost:8090/v2'; // auth server is actually just meditrak server
+  public baseUrl = process.env.CENTRAL_API_URL || 'http://localhost:8090/v2'; // auth server is actually just central server
 
   public constructor() {
     super(basicAuthHandler);

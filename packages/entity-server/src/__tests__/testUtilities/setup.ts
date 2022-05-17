@@ -1,0 +1,67 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ */
+
+import { hashAndSaltPassword } from '@tupaia/auth';
+import { TestableServer } from '@tupaia/server-boilerplate';
+
+import {
+  findOrCreateDummyRecord,
+  buildAndInsertProjectsAndHierarchies,
+  getTestModels,
+  EntityHierarchyCacher,
+  getTestDatabase,
+} from '@tupaia/database';
+
+import { TestModelRegistry } from '../types';
+import { PROJECTS, ENTITIES, ENTITY_RELATIONS } from '../__integration__/fixtures';
+import { createApp } from '../../app';
+
+const models = getTestModels() as TestModelRegistry;
+const hierarchyCacher = new EntityHierarchyCacher(models);
+
+const userAccountEmail = 'ash-ketchum@pokemon.org';
+const userAccountPassword = 'test';
+
+export const setupTestData = async () => {
+  const projectsForInserting = PROJECTS.map(project => {
+    const relationsInProject = ENTITY_RELATIONS.filter(
+      relation => relation.hierarchy === project.code,
+    );
+    const entityCodesInProject = relationsInProject.map(relation => relation.child);
+    const entitiesInProject = entityCodesInProject.map(entityCode =>
+      ENTITIES.find(entity => entity.code === entityCode),
+    );
+    return { ...project, entities: entitiesInProject, relations: relationsInProject };
+  });
+
+  const insertedProjects = await buildAndInsertProjectsAndHierarchies(models, projectsForInserting);
+  await hierarchyCacher.buildAndCacheHierarchies(
+    insertedProjects.map(insertedProject => insertedProject.entityHierarchy.id),
+  );
+
+  const { VERIFIED } = models.user.emailVerifiedStatuses;
+
+  await findOrCreateDummyRecord(
+    models.user,
+    {
+      email: userAccountEmail,
+    },
+    {
+      first_name: 'Ash',
+      last_name: 'Ketchum',
+      ...hashAndSaltPassword(userAccountPassword),
+      verified_email: VERIFIED,
+    },
+  );
+};
+
+export const setupTestApp = async () => {
+  const app = new TestableServer(createApp(getTestDatabase()));
+  app.setDefaultHeader(
+    'Authorization',
+    `Basic ${Buffer.from(`${userAccountEmail}:${userAccountPassword}`).toString('base64')}`,
+  );
+  return app;
+};
