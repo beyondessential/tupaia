@@ -80,7 +80,7 @@ const addEntityHierarchy = async db => {
   await insertObject(db, 'entity_hierarchy', {
     id: generateId(),
     name: PROJECT_CODE,
-    canonical_types: '{country,district,sub_district,local_gov,facility}',
+    canonical_types: '{country,district,sub_district,local_government,facility}',
   });
 };
 
