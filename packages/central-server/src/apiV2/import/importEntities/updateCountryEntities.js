@@ -28,6 +28,45 @@ function getDefaultTypeDetails(type) {
   return { categoryCode, typeName };
 }
 
+async function attemptFacilityUpsert(
+  transactingModels,
+  {
+    parentEntity,
+    parentGeographicalArea,
+    facilityType,
+    typeName,
+    categoryCode,
+    code,
+    name,
+    country,
+  },
+) {
+  if (!parentGeographicalArea)
+    console.warn(
+      `Parent entity of facility has no geographical area, skipping facility creation for ${code}, parent entity code: ${parentEntity.code}`,
+    );
+  const defaultTypeDetails = getDefaultTypeDetails(facilityType);
+  const facilityToUpsert = {
+    type: facilityType,
+    type_name: typeName || undefined, // Ensure empty string is treated as undefined
+    category_code: categoryCode || undefined, // Ensure empty string is treated as undefined
+    code,
+    name,
+    geographical_area_id: parentGeographicalArea.id,
+  };
+  const newFacility = await transactingModels.facility.updateOrCreate(
+    { code },
+    { country_id: country.id, ...facilityToUpsert },
+  );
+  if (!newFacility.type_name) {
+    newFacility.type_name = defaultTypeDetails.typeName;
+  }
+  if (!newFacility.category_code) {
+    newFacility.category_code = defaultTypeDetails.categoryCode;
+  }
+  await newFacility.save();
+}
+
 export async function updateCountryEntities(
   transactingModels,
   countryName,
@@ -96,30 +135,16 @@ export async function updateCountryEntities(
     const { parentGeographicalArea, parentEntity } =
       (await getOrCreateParentEntity(transactingModels, entityObject, country, pushToDhis)) || {};
     if (entityType === transactingModels.entity.types.FACILITY) {
-      if (!parentGeographicalArea)
-        throw new Error(
-          `Parent entity of facility must have geographical area, parent entity code: ${parentEntity.code}`,
-        );
-      const defaultTypeDetails = getDefaultTypeDetails(facilityType);
-      const facilityToUpsert = {
-        type: facilityType,
-        type_name: typeName || undefined, // Ensure empty string is treated as undefined
-        category_code: categoryCode || undefined, // Ensure empty string is treated as undefined
+      await attemptFacilityUpsert(transactingModels, {
+        parentEntity,
+        parentGeographicalArea,
+        facilityType,
+        typeName,
+        categoryCode,
         code,
         name,
-        geographical_area_id: parentGeographicalArea.id,
-      };
-      const newFacility = await transactingModels.facility.updateOrCreate(
-        { code },
-        { country_id: country.id, ...facilityToUpsert },
-      );
-      if (!newFacility.type_name) {
-        newFacility.type_name = defaultTypeDetails.typeName;
-      }
-      if (!newFacility.category_code) {
-        newFacility.category_code = defaultTypeDetails.categoryCode;
-      }
-      await newFacility.save();
+        country,
+      });
     }
     if (dataServiceEntity) {
       const dataServiceEntityToUpsert = {
