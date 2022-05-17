@@ -41,10 +41,12 @@ async function attemptFacilityUpsert(
     country,
   },
 ) {
-  if (!parentGeographicalArea)
+  if (!parentGeographicalArea) {
     console.warn(
       `Parent entity of facility has no geographical area, skipping facility creation for ${code}, parent entity code: ${parentEntity.code}`,
     );
+    return;
+  }
   const defaultTypeDetails = getDefaultTypeDetails(facilityType);
   const facilityToUpsert = {
     type: facilityType,
