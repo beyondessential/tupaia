@@ -15,10 +15,13 @@ import {
   THEME_COLOR_ONE,
   THEME_COLOR_THREE,
   THEME_COLOR_FIVE,
+  THEME_TEXT_COLOR_FOUR,
 } from '../globalStyles';
 
 export const STATUS_MESSAGE_SUCCESS = 'SUCCESS';
 export const STATUS_MESSAGE_ERROR = 'ERROR';
+const PRIMARY = 'primary';
+const SECONDARY = 'secondary';
 
 export const getMessageIconName = type => {
   switch (type) {
@@ -42,10 +45,32 @@ export const getMessageStyle = type => {
   }
 };
 
-export const StatusMessage = ({ message, style, type, textStyle, iconStyle }) => (
+const getIconStyle = theme => {
+  switch (theme) {
+    case SECONDARY:
+      return iconStyles[SECONDARY];
+
+    case PRIMARY:
+    default:
+      return iconStyles[PRIMARY];
+  }
+};
+
+const getTextStyles = theme => {
+  switch (theme) {
+    case SECONDARY:
+      return textStyles[SECONDARY];
+
+    case PRIMARY:
+    default:
+      return textStyles[PRIMARY];
+  }
+};
+
+export const StatusMessage = ({ message, style, type, theme }) => (
   <View style={[localStyles.message, getMessageStyle(type), style]}>
-    <Icon name={getMessageIconName(type)} style={StyleSheet.compose(localStyles.icon, iconStyle)} />
-    <Text style={[localStyles.messageText, textStyle]}>{message}</Text>
+    <Icon name={getMessageIconName(type)} style={getIconStyle(theme)} />
+    <Text style={getTextStyles(theme)}>{message}</Text>
   </View>
 );
 
@@ -53,16 +78,14 @@ StatusMessage.propTypes = {
   message: PropTypes.string,
   type: PropTypes.oneOf([STATUS_MESSAGE_ERROR, STATUS_MESSAGE_SUCCESS]),
   style: ViewPropTypes.style,
-  textStyle: ViewPropTypes.style,
-  iconStyle: ViewPropTypes.style,
+  theme: PropTypes.string,
 };
 
 StatusMessage.defaultProps = {
   message: '',
   type: STATUS_MESSAGE_ERROR,
   style: null,
-  textStyle: null,
-  iconStyle: null,
+  theme: PRIMARY,
 };
 
 const localStyles = StyleSheet.create({
@@ -81,14 +104,20 @@ const localStyles = StyleSheet.create({
   successMessage: {
     backgroundColor: THEME_COLOR_FIVE,
   },
-  messageText: {
-    color: THEME_COLOR_ONE,
-    flex: 1,
-  },
-  icon: {
-    marginRight: 10,
-    marginVertical: 3,
+});
+
+const baseIconStyles = { marginRight: 10, marginVertical: 3 };
+const iconStyles = StyleSheet.create({
+  [PRIMARY]: {
+    ...baseIconStyles,
     fontSize: 14,
     color: 'white',
   },
+  [SECONDARY]: { ...baseIconStyles, fontSize: 26, color: '#32B032' },
+});
+
+const baseTextStyles = { flex: 1 };
+const textStyles = StyleSheet.create({
+  [PRIMARY]: { ...baseTextStyles, color: THEME_COLOR_ONE },
+  [SECONDARY]: { ...baseTextStyles, color: THEME_TEXT_COLOR_FOUR, fontWeight: '500' },
 });

@@ -47,9 +47,8 @@ const renderSuccessMessage = messageText => (
   <StatusMessage
     type={STATUS_MESSAGE_SUCCESS}
     message={messageText}
+    theme="secondary"
     style={localStyles.renderSuccessMessage}
-    textStyle={localStyles.renderSuccessMessageText}
-    iconStyle={localStyles.renderSuccessMessageIcon}
   />
 );
 
@@ -198,11 +197,6 @@ const localStyles = StyleSheet.create({
     backgroundColor: '#E0F1DC',
     alignItems: 'center',
   },
-  renderSuccessMessageText: {
-    color: THEME_TEXT_COLOR_FOUR,
-    fontWeight: '500',
-  },
-  renderSuccessMessageIcon: { fontSize: 26, color: '#32B032' },
   deleteButton: {
     width: '100%',
     backgroundColor: THEME_COLOR_THREE,
