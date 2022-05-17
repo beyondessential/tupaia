@@ -36,6 +36,7 @@
         "packages/admin-panel-server/**",
         "packages/api-client/**",
         "packages/data-api/**",
+        "packages/data-broker/**",
         "packages/data-lake-api/**",
         "packages/entity-server/**",
         "packages/indicators/**",

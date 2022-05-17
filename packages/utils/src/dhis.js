@@ -56,10 +56,8 @@ const getServerName = (entityCode, isDataRegional) => {
  * is regional, the regional dhis server will be used.
  * Can also pass the `serverName` directly, to specify exactly which instance to use.
  *
- * @param {Object}  options
- * @param {string}  options.entityCode      Along with isDataRegional, determines which dhis instance to use
- * @param {boolean} options.isDataRegional  Along with entityCode, determines which dhis instance to use
- * @param {string}  options.serverName      If provided, the server name will take this value rather
+ * @param {{ serverName?: string, entityCode?: string, entityCodes?: string[], isDataRegional?: boolean }}}
+ * @returns {{ serverName: string, serverUrl: string, serverReadOnly: boolean }}
  */
 export const getDhisConfig = ({
   serverName: serverNameInput,

@@ -12,10 +12,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && run-p \"build:* {@}\" --",
-    "build:src": "babel src --out-dir dist --source-maps --ignore \"src/__tests__/**\" --config-file \"../../babel.config.json\"",
-    "build:types": "tsc",
-    "lint": "eslint --ignore-path ../../.gitignore .",
+    "build": "tsc -p tsconfig-build.json",
+    "lint": "eslint src --ext .ts",
     "lint:fix": "yarn lint --fix",
     "test": "jest",
     "test:coverage": "yarn test --coverage",

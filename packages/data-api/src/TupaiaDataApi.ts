@@ -16,6 +16,27 @@ import { sanitiseFetchDataOptions } from './sanitiseFetchDataOptions';
 
 const EVENT_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 
+type DataElementMetadata = {
+  code: string;
+  name: string;
+  options?: Record<string, string>;
+};
+
+type DataGroupMetadata = {
+  code: string;
+  name: string;
+  dataElements?: DataElementMetadata[];
+};
+
+type DataElementMetadataQueryFields = {
+  code: string;
+  name: string;
+  text?: string;
+  options: string[];
+  option_set_id: string;
+  type: string;
+};
+
 const buildDataValuesFromAnswers = (answersForEvent: EventAnswer[]) =>
   answersForEvent.reduce<Record<string, string | number>>(
     (values, { dataElementCode, type, value }) => ({
@@ -102,7 +123,7 @@ export class TupaiaDataApi {
     dataGroupCode?: string,
     dataElementCodes?: string[],
     options: { includeOptions?: boolean } = {},
-  ) {
+  ): Promise<DataGroupMetadata> {
     const { includeOptions = true } = options;
     if (!dataGroupCode) {
       throw new Error('Please provide a data group code');
@@ -122,22 +143,11 @@ export class TupaiaDataApi {
       throw new Error(`Cannot find Survey: ${dataGroupCode}`);
     }
 
-    let dataGroupMetadata: { code: string; name: string; dataElements?: any[] } = {
-      ...dataGroup,
-    };
+    let dataGroupMetadata: DataGroupMetadata = { ...dataGroup };
 
     // dataElementCodes metadata can be optional
     if (dataElementCodes && Array.isArray(dataElementCodes)) {
-      const sqlQuery = new SqlQuery<
-        {
-          code: string;
-          name: string;
-          text: string;
-          options: string[];
-          option_set_id: string;
-          type: string;
-        }[]
-      >(
+      const sqlQuery = new SqlQuery<DataElementMetadataQueryFields[]>(
         `
          SELECT question.code, question.name, question.text, question.options, question.option_set_id, question.type
          FROM question
@@ -166,9 +176,9 @@ export class TupaiaDataApi {
   }
 
   private async fetchDataElementsMetadataFromSqlQuery(
-    sqlQuery: SqlQuery<{ option_set_id: string | undefined; type: string; options: string[] }[]>,
+    sqlQuery: SqlQuery<DataElementMetadataQueryFields[]>,
     includeOptions: boolean,
-  ) {
+  ): Promise<DataElementMetadata[]> {
     const dataElementsMetadata = await sqlQuery.executeOnDatabase(this.database);
 
     // includeOptions = true, should also fetch metadata for options from both question.options and question.option_set_id

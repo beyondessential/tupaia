@@ -421,6 +421,7 @@ export class DhisApi {
   }
 
   /**
+   * @returns {{ headers: any, metaData: any, rows: string[][] }}
    * @private
    */
   async fetchAnalyticsQueries(queries, endpoint) {
@@ -632,6 +633,9 @@ export class DhisApi {
     }
   }
 
+  /**
+   * @param {{ dataElement: string; period: string; orgUnit: string; categoryOptionCombo?: string}} data
+   */
   async deleteDataValue({
     dataElement: dataElementCode,
     period,
