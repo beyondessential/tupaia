@@ -45,8 +45,6 @@ export class DataSourceType extends CommonDataSourceType {
 }
 
 export class DataSourceModel extends CommonDataSourceModel {
-  isDeletableViaApi = true;
-
   get DatabaseTypeClass() {
     return DataSourceType;
   }

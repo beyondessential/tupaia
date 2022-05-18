@@ -10,7 +10,14 @@ import {
   LOCALHOST_BASE_URLS,
   TupaiaApiClient,
 } from '@tupaia/api-client';
-import { AuthRequest, AuthRoute, RegisterUserRequest, RegisterUserRoute } from '../routes';
+import {
+  AuthRequest,
+  AuthRoute,
+  RegisterUserRequest,
+  RegisterUserRoute,
+  SocialFeedRequest,
+  SocialFeedRoute,
+} from '../routes';
 
 /**
  * Set up express server with middleware,
@@ -32,6 +39,7 @@ export function createApp() {
     })
     .post<AuthRequest>('auth', handleWith(AuthRoute))
     .post<RegisterUserRequest>('user', handleWith(RegisterUserRoute))
+    .get<SocialFeedRequest>('socialFeed', handleWith(SocialFeedRoute))
     .build();
 
   return app;
