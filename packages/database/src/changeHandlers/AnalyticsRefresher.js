@@ -33,5 +33,7 @@ export class AnalyticsRefresher extends ChangeHandler {
     }
   };
 
-  handleChanges = () => AnalyticsRefresher.refreshAnalytics(this.models.database);
+  handleChanges() {
+    AnalyticsRefresher.refreshAnalytics(this.models.database);
+  }
 }
