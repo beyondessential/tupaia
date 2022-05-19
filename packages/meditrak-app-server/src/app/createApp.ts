@@ -7,6 +7,8 @@ import { handleWith, MicroServiceApiBuilder } from '@tupaia/server-boilerplate';
 import {
   AuthRequest,
   AuthRoute,
+  ChangePasswordRequest,
+  ChangePasswordRoute,
   RegisterUserRequest,
   RegisterUserRoute,
   SocialFeedRequest,
@@ -28,6 +30,11 @@ export function createApp() {
     .post<RegisterUserRequest>('user', handleWith(RegisterUserRoute))
     .get<SocialFeedRequest>('socialFeed', authMiddleware, handleWith(SocialFeedRoute))
     .get<UserRewardsRequest>('me/rewards', authMiddleware, handleWith(UserRewardsRoute))
+    .get<ChangePasswordRequest>(
+      'me/changePassword',
+      authMiddleware,
+      handleWith(ChangePasswordRoute),
+    )
     .build();
 
   return app;
