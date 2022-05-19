@@ -284,7 +284,7 @@ const Logo = styled.div`
   height: 100%;
 `;
 
-const VITALS_VIEWS = {
+export const VITALS_VIEWS = {
   country: CountryView,
   district: ProvinceView,
   sub_district: DistrictView,

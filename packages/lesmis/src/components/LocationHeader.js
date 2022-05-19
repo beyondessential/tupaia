@@ -18,6 +18,7 @@ import { useEntityData, useMapOverlayReportData } from '../api';
 import { I18n, useUrlParams, makeEntityLink, useUrlSearchParam } from '../utils';
 import { MapTableModal } from './MapTableModal';
 import { DEFAULT_DATA_YEAR } from '../constants';
+import { DashboardExportModal } from './exports';
 
 const Wrapper = styled.section`
   padding-top: 1rem;
@@ -143,9 +144,14 @@ export const LocationHeader = () => {
                 )}
               />
             ) : (
-              <IconButton startIcon={<GetApp />}>
-                <I18n t="dashboards.export" />
-              </IconButton>
+              <DashboardExportModal
+                title={exportTitle}
+                Button={props => (
+                  <IconButton {...props} startIcon={<GetApp />}>
+                    <I18n t="dashboards.export" />
+                  </IconButton>
+                )}
+              />
             )}
             {/* Todo: add favourites @see https://app.zenhub.com/workspaces/active-sprints-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/2493 */}
             {/* <IconButton startIcon={<StarBorder />}>Add</IconButton> */}
