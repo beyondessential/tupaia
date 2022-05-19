@@ -5,11 +5,13 @@
 
 import moment from 'moment';
 
-import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import { DatabaseModel } from '../DatabaseModel';
+import { DatabaseType } from '../DatabaseType';
+import { TYPES } from '../types';
 
 export const FEED_ITEM_TYPES = ['SurveyResponse', 'markdown'];
 
-class FeedItemType extends DatabaseType {
+export class FeedItemType extends DatabaseType {
   static databaseType = TYPES.FEED_ITEM;
 
   constructor(...args) {
@@ -25,6 +27,4 @@ export class FeedItemModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return FeedItemType;
   }
-
-  isDeletableViaApi = true;
 }

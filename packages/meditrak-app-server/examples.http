@@ -2,8 +2,59 @@
 @port = 8020
 @host = {{hostname}}:{{port}}
 @version = v1
+
+@authorization  = Basic meditrak_client:{{meditrak-client-password}}
+
 @contentType = application/json
 
 ### /test
 GET http://{{host}}/{{version}}/test HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{authorization}}
 
+### Login
+
+POST http://{{host}}/{{version}}/auth HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "emailAddress": "{{email}}",
+    "password": "{{password}}",
+    "deviceName": "test",
+    "devicePlatform": "android",
+    "installId": "1234"
+}
+
+### Refresh Token
+
+POST http://{{host}}/{{version}}/auth?grantType=refresh_token HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "refreshToken": "1234"
+}
+
+### Register User
+
+POST http://{{host}}/{{version}}/user HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "firstName": "Bob",
+    "lastName": "Burger",
+    "emailAddress": "bob_burger@test.com",
+    "password": "test_test",
+    "passwordConfirm": "test_test",
+    "contactNumber": "12345678",
+    "employer": "Boss",
+    "position": "Cat"
+}
+
+### Get Social Feed
+
+GET http://{{host}}/{{version}}/socialFeed?countryId=5948b9e245eaeb1d6ea882f9 HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{authorization}}

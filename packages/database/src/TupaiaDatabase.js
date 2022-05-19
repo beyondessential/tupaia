@@ -411,6 +411,9 @@ export class TupaiaDatabase {
    * Runs an arbitrary SQL query against the database.
    *
    * Use only for situations in which Knex is not able to assemble a query.
+   *
+   * @template Result
+   * @returns {Promise<Result>} execution result
    */
   async executeSql(sqlString, parametersToBind) {
     if (!this.connection) {
