@@ -55,8 +55,9 @@ export class ReportBuilder {
     const transform = buildTransform(this.config.transform, context);
     const transformedData = transform(data.results);
 
-    const output = buildOutput(this.config.output);
-    const outputData = output(transformedData);
+    const outputContext = { ...this.config.fetch };
+    const output = buildOutput(this.config.output, outputContext, aggregator);
+    const outputData = await output(transformedData);
 
     return { results: outputData };
   };

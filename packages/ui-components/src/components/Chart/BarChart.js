@@ -25,6 +25,20 @@ export const BarChart = ({
     if (chartConfig.chartType === CHART_TYPES.COMPOSED || data.length === 1) {
       return isEnlarged ? 100 : 50;
     }
+    // Too many stacks will automatically set bar size to 0.
+    if (chartConfig && !isExporting && isEnlarged) {
+      const chartConfigHasTooManyKeys = Object.keys(chartConfig).length > 10;
+      const stacks = Object.values(chartConfig)
+        .map(({ stackId: id }) => id)
+        .filter(id => id !== undefined);
+
+      const stackSize = new Set(stacks).size;
+      const chartConfigHasTooManyStacks = stackSize > 10;
+
+      if ((chartConfigHasTooManyKeys && stackSize === 0) || chartConfigHasTooManyStacks) {
+        return 1;
+      }
+    }
     return undefined;
   };
 

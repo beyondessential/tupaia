@@ -36,7 +36,7 @@ export class DashboardVisualisationExtractor<
   };
 
   public getDashboardVisualisationResource = () => {
-    // Resources (like the ones passed to meditrak-server for upsert) use snake_case keys
+    // Resources (like the ones passed to central-server for upsert) use snake_case keys
     const dashboardItem = this.getDashboardItem();
     const report = this.getReport(PreviewMode.PRESENTATION); // always fetch full report when building resource
 

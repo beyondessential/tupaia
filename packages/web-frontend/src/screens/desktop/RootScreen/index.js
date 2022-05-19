@@ -47,7 +47,13 @@ const ContentContainer = styled.div`
   overflow: hidden;
 `;
 
-export const RootScreen = ({ enlargedDialogIsVisible, isLoading }) => {
+const MapContainer = styled.div`
+  height: 100vh;
+  width: calc(100vw - ${p => p.$rightOffset}px);
+  transition: width 0.5s ease;
+`;
+
+export const RootScreen = ({ enlargedDialogIsVisible, isLoading, sidePanelWidth }) => {
   return (
     <>
       {/* The order here matters, Map must be added to the DOM body after FlexContainer */}
@@ -63,7 +69,9 @@ export const RootScreen = ({ enlargedDialogIsVisible, isLoading }) => {
         {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
         <LoadingScreen isLoading={isLoading} />
       </Container>
-      <Map />
+      <MapContainer $rightOffset={sidePanelWidth}>
+        <Map />
+      </MapContainer>
     </>
   );
 };
@@ -71,6 +79,7 @@ export const RootScreen = ({ enlargedDialogIsVisible, isLoading }) => {
 RootScreen.propTypes = {
   enlargedDialogIsVisible: PropTypes.bool,
   isLoading: PropTypes.bool,
+  sidePanelWidth: PropTypes.number.isRequired,
 };
 
 RootScreen.defaultProps = {
@@ -78,9 +87,15 @@ RootScreen.defaultProps = {
   isLoading: false,
 };
 
-const mapStateToProps = state => ({
-  enlargedDialogIsVisible: !!selectIsEnlargedDialogVisible(state),
-  isLoading: state.global.isLoadingOrganisationUnit,
-});
+const mapStateToProps = state => {
+  const { isSidePanelExpanded } = state.global;
+  const { contractedWidth, expandedWidth } = state.dashboard;
+
+  return {
+    enlargedDialogIsVisible: !!selectIsEnlargedDialogVisible(state),
+    isLoading: state.global.isLoadingOrganisationUnit,
+    sidePanelWidth: isSidePanelExpanded ? expandedWidth : contractedWidth,
+  };
+};
 
 export default connect(mapStateToProps)(RootScreen);

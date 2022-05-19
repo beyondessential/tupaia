@@ -3,6 +3,7 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { buildExportUrl } from '/export';
 
 import { getDataBuilder } from '/apiV1/dataBuilders/getDataBuilder';
+import { ReportConnection } from '/connections';
 
 class SurveyDataExportBuilder extends DataBuilder {
   constructor(req, ...superClassArgs) {
@@ -48,6 +49,9 @@ class SurveyDataExportBuilder extends DataBuilder {
       dataBuilderConfig: exportDataBuilderConfig,
     } = this.config.exportDataBuilder;
 
+    if (exportDataBuilderName === 'reportServer') {
+      return this.buildReportData();
+    }
     const buildData = getDataBuilder(exportDataBuilderName);
 
     return buildData(
@@ -60,6 +64,57 @@ class SurveyDataExportBuilder extends DataBuilder {
       this.aggregator,
       this.dhisApi,
     );
+  };
+
+  fetchAndCacheProject = async () => {
+    return this.models.project.findOne({
+      code: this.query.projectCode || 'explore',
+    });
+  };
+
+  fetchHierarchyId = async () => (await this.fetchAndCacheProject()).entity_hierarchy_id;
+
+  buildReportData = async () => {
+    const { surveys } = this.config;
+    const { startDate, endDate, surveyCodes } = this.query;
+    const selectedSurveyCodes = surveyCodes.split(',');
+
+    const reportConnection = new ReportConnection(this.req);
+    const hierarchyId = await this.fetchHierarchyId();
+    const hierarchyName = (await this.models.entityHierarchy.findById(hierarchyId)).name;
+
+    const requestQuery = {
+      organisationUnitCodes: [this.entity.code],
+      hierarchy: hierarchyName,
+    };
+
+    if (startDate) {
+      requestQuery.startDate = startDate;
+    }
+
+    if (endDate) {
+      requestQuery.endDate = endDate;
+    }
+
+    const surveyData = {};
+
+    await Promise.all(
+      surveys.map(async survey => {
+        const { reportCode, name: surveyName, codes, code } = survey;
+        if (
+          codes.some(c => !selectedSurveyCodes.includes(c)) &&
+          !selectedSurveyCodes.includes(code)
+        ) {
+          return;
+        }
+        const { results } = await reportConnection.fetchReport(reportCode, requestQuery);
+        surveyData[surveyName] = {
+          data: results,
+        };
+      }),
+    );
+
+    return { data: surveyData };
   };
 }
 

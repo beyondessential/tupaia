@@ -2,13 +2,12 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { toFilename } from '@tupaia/utils';
-import styled from 'styled-components';
 import { useChartDataExport } from '@tupaia/ui-components/lib/chart';
 import {
   fetchEnlargedDialogData,
@@ -18,7 +17,7 @@ import {
 import { ExportDialog, STATUS } from '../../components/ExportDialog';
 import { getIsDataDownload, getIsMatrix } from '../../components/View';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
-import { isMobile, sleep, getBrowserTimeZone, getUniqueViewId } from '../../utils';
+import { isMobile, getBrowserTimeZone, getUniqueViewId } from '../../utils';
 import {
   selectCurrentInfoViewKey,
   selectCurrentOrgUnit,
@@ -26,23 +25,8 @@ import {
   selectCurrentExpandedDates,
   selectCurrentDashboardCodeForExpandedReport,
 } from '../../selectors';
-import { DARK_BLUE, DIALOG_Z_INDEX } from '../../styles';
+import { DIALOG_Z_INDEX } from '../../styles';
 import { exportToExcel, exportToPng } from '../../utils/exports';
-
-const Loader = styled.div`
-  display: block;
-  position: absolute;
-  top: 0;
-  height: 100%;
-  left: 0;
-  right: 0;
-  background: ${DARK_BLUE};
-  color: white;
-  z-index: 100;
-  padding-top: 45px;
-  text-align: center;
-  font-size: 18px;
-`;
 
 const getDatesForCurrentLevel = (
   drillDownLevel,

@@ -5,7 +5,7 @@
 
 export const DATA_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
-type ServiceName = 'entity' | 'meditrak' | 'report';
+type ServiceName = 'auth' | 'entity' | 'central' | 'report';
 export type ServiceBaseUrlSet = Record<ServiceName, string>;
 
 const productionSubdomains = [
@@ -15,6 +15,7 @@ const productionSubdomains = [
   'lesmis',
   'lesmis-api',
   'mobile',
+  'meditrak-api',
   'psss',
   'psss-api',
   'report-api',
@@ -26,12 +27,17 @@ const productionSubdomains = [
 const productionSubdomainSet = new Set(productionSubdomains);
 
 const SERVICES = {
+  auth: {
+    subdomain: 'api',
+    version: 'v2',
+    localPort: '8090',
+  },
   entity: {
     subdomain: 'entity-api',
     version: 'v1',
     localPort: '8050',
   },
-  meditrak: {
+  central: {
     subdomain: 'api',
     version: 'v2',
     localPort: '8090',
@@ -46,8 +52,9 @@ const SERVICES = {
 const getLocalUrl = (service: ServiceName): string =>
   `http://localhost:${SERVICES[service].localPort}/${SERVICES[service].version}`;
 export const LOCALHOST_BASE_URLS: ServiceBaseUrlSet = {
+  auth: getLocalUrl('auth'),
   entity: getLocalUrl('entity'),
-  meditrak: getLocalUrl('meditrak'),
+  central: getLocalUrl('central'),
   report: getLocalUrl('report'),
 };
 
@@ -58,14 +65,16 @@ const getServiceUrl = (service: ServiceName, subdomainPrefix?: string): string =
 };
 
 export const DEV_BASE_URLS: ServiceBaseUrlSet = {
+  auth: getServiceUrl('auth', 'dev'),
   entity: getServiceUrl('entity', 'dev'),
-  meditrak: getServiceUrl('meditrak', 'dev'),
+  central: getServiceUrl('central', 'dev'),
   report: getServiceUrl('report', 'dev'),
 };
 
 export const PRODUCTION_BASE_URLS: ServiceBaseUrlSet = {
+  auth: getServiceUrl('auth'),
   entity: getServiceUrl('entity'),
-  meditrak: getServiceUrl('meditrak'),
+  central: getServiceUrl('central'),
   report: getServiceUrl('report'),
 };
 
@@ -100,17 +109,19 @@ const getDefaultBaseUrls = (hostname: string): ServiceBaseUrlSet => {
 
   // any other subdomain should prepend that same subdomain
   return {
+    auth: getServiceUrlForSubdomain('auth', subdomain),
     entity: getServiceUrlForSubdomain('entity', subdomain),
-    meditrak: getServiceUrlForSubdomain('meditrak', subdomain),
+    central: getServiceUrlForSubdomain('central', subdomain),
     report: getServiceUrlForSubdomain('report', subdomain),
   };
 };
 
 export const getBaseUrlsForHost = (hostname: string): ServiceBaseUrlSet => {
-  const { entity, meditrak, report } = getDefaultBaseUrls(hostname);
+  const { auth, entity, central, report } = getDefaultBaseUrls(hostname);
   return {
+    auth: process.env.AUTH_API_URL || auth,
     entity: process.env.ENTITY_API_URL || entity,
-    meditrak: process.env.MEDITRAK_API_URL || meditrak,
+    central: process.env.CENTRAL_API_URL || central,
     report: process.env.REPORT_API_URL || report,
   };
 };

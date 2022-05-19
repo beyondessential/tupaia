@@ -16,17 +16,17 @@ export type DeleteAlertRequest = Request<
 
 export class DeleteAlertRoute extends Route<DeleteAlertRequest> {
   public async buildResponse() {
-    if (!this.meditrakConnection) throw new UnauthenticatedError('Unauthenticated');
+    if (!this.centralConnection) throw new UnauthenticatedError('Unauthenticated');
 
     const { alertId } = this.req.params;
 
     // Just to validate if the alert exists
-    const surveyResponse = await this.meditrakConnection.findSurveyResponseById(alertId);
+    const surveyResponse = await this.centralConnection.findSurveyResponseById(alertId);
 
     if (!surveyResponse) {
       throw new RespondingError('Alert cannot be found', 500);
     }
 
-    return this.meditrakConnection.deleteSurveyResponse(surveyResponse.id);
+    return this.centralConnection.deleteSurveyResponse(surveyResponse.id);
   }
 }

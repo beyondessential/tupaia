@@ -8,7 +8,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 
-import { MeditrakConnection } from '../../connections';
+import { CentralConnection } from '../../connections';
 import { combineDashboardVisualisation, DashboardViz } from '../../viz-builder';
 
 export type FetchDashboardVisualisationRequest = Request<
@@ -19,17 +19,17 @@ export type FetchDashboardVisualisationRequest = Request<
 >;
 
 export class FetchDashboardVisualisationRoute extends Route<FetchDashboardVisualisationRequest> {
-  private readonly meditrakConnection: MeditrakConnection;
+  private readonly centralConnection: CentralConnection;
 
   public constructor(req: FetchDashboardVisualisationRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
-    this.meditrakConnection = new MeditrakConnection(req.session);
+    this.centralConnection = new CentralConnection(req.session);
   }
 
   public async buildResponse() {
     const { dashboardVisualisationId } = this.req.params;
-    const visualisationResource = await this.meditrakConnection.fetchResources(
+    const visualisationResource = await this.centralConnection.fetchResources(
       `dashboardVisualisations/${dashboardVisualisationId}`,
     );
     const visualisation = combineDashboardVisualisation(visualisationResource);

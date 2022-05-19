@@ -30,19 +30,19 @@ export type ProcessAlertActionRequest = Request<
 
 export class ProcessAlertActionRoute extends Route<ProcessAlertActionRequest> {
   public async buildResponse() {
-    if (!this.meditrakConnection) throw new UnauthenticatedError('Unauthenticated');
+    if (!this.centralConnection) throw new UnauthenticatedError('Unauthenticated');
 
     const { alertId, action } = this.req.params;
 
     validateAction(action);
 
-    const alertSurveyResponse = await this.meditrakConnection.findSurveyResponseById(alertId);
+    const alertSurveyResponse = await this.centralConnection.findSurveyResponseById(alertId);
 
     if (!alertSurveyResponse) {
       throw new RespondingError('Alert cannot be found', 500);
     }
 
-    return this.meditrakConnection.updateSurveyResponseByObject(alertSurveyResponse, [
+    return this.centralConnection.updateSurveyResponseByObject(alertSurveyResponse, [
       {
         type: 'Binary',
         code: 'PSSS_Alert_Archived',

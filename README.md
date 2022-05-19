@@ -6,7 +6,7 @@
 
 It is set up using `yarn workspaces`, meaning any command you would normally run inside a package can
 be run from the root directory using `yarn workspace @tupaia/package-name command`, e.g.
-`yarn workspace @tupaia/meditrak-server start-dev`
+`yarn workspace @tupaia/central-server start-dev`
 
 ## Packages
 
@@ -17,10 +17,11 @@ This opens all packages as roots in the workspace, and means linting etc. will w
 
 - [admin-panel](https://github.com/beyondessential/tupaia/blob/dev/packages/admin-panel/README.md)
 - [admin-panel-server](https://github.com/beyondessential/tupaia/blob/dev/packages/admin-panel-server/README.md)
+- [central-server](https://github.com/beyondessential/tupaia/blob/dev/packages/central-server/README.md)
 - [lesmis](https://github.com/beyondessential/tupaia/blob/dev/packages/lesmis/README.md)
 - [lesmis-server](https://github.com/beyondessential/tupaia/blob/dev/packages/lesmis-server/README.md)
 - [meditrak-app](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-app/README.md)
-- [meditrak-server](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-server/README.md)
+- [meditrak-app-server](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-app-server/README.md)
 - [psss](https://github.com/beyondessential/tupaia/blob/dev/packages/psss/README.md)
 - [psss-server](https://github.com/beyondessential/tupaia/blob/dev/packages/psss-server/README.md)
 - [web-config-server](https://github.com/beyondessential/tupaia/blob/dev/packages/web-config-server/README.md)
@@ -65,7 +66,7 @@ root, and it will install dependencies everywhere.
 
 ## CI/CD
 
-We use codeship for the admin-panel, meditrak-server, web-config-server, and web-frontend packages.
+We use codeship for the CI/CD
 
 🔑 **BES internal:** [CI/CD using Codeship](https://beyond-essential.slab.com/posts/ci-cd-using-codeship-uzxspw8z)
 

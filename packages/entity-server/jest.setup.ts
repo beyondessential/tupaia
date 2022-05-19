@@ -4,6 +4,11 @@
  */
 
 import { getTestDatabase, clearTestData } from '@tupaia/database';
+import { setupTestData } from './src/__tests__/testUtilities';
+
+beforeAll(async () => {
+  await setupTestData();
+});
 
 afterAll(async () => {
   const database = getTestDatabase();

@@ -23,6 +23,7 @@ import { EntityModel } from './Entity';
 import { EntityHierarchyModel } from './EntityHierarchy';
 import { EntityRelationModel } from './EntityRelation';
 import { FacilityModel } from './Facility';
+import { FeedItemModel } from './FeedItem';
 import { GeographicalAreaModel } from './GeographicalArea';
 import { IndicatorModel } from './Indicator';
 import { LegacyReportModel } from './LegacyReport';
@@ -71,6 +72,7 @@ export const modelClasses = {
   EntityHierarchy: EntityHierarchyModel,
   EntityRelation: EntityRelationModel,
   Facility: FacilityModel,
+  FeedItem: FeedItemModel,
   GeographicalArea: GeographicalAreaModel,
   Indicator: IndicatorModel,
   LegacyReport: LegacyReportModel,
@@ -110,6 +112,7 @@ export { EntityModel, EntityType } from './Entity';
 export { EntityHierarchyModel, EntityHierarchyType } from './EntityHierarchy';
 export { EntityRelationModel } from './EntityRelation';
 export { FacilityModel } from './Facility';
+export { FeedItemModel, FeedItemType } from './FeedItem';
 export { GeographicalAreaModel } from './GeographicalArea';
 export { MeditrakDeviceModel } from './MeditrakDevice';
 export { PermissionGroupModel } from './PermissionGroup';

@@ -5,23 +5,19 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-/**
- * SearchBar
- *
- * Container providing all the controls for user: login, logout, info, account
- */
-
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { isNull } from 'lodash';
 import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
 import styled from 'styled-components';
-import SearchIcon from 'material-ui/svg-icons/action/search';
 import Button from '@material-ui/core/Button';
 import CircularProgress from 'material-ui/CircularProgress';
 import { List, ListItem } from 'material-ui/List';
-import { selectOrgUnitChildren, selectCurrentProjectCode } from '../../selectors';
+import {
+  selectOrgUnitChildren,
+  selectCurrentProjectCode,
+  selectCodeFromOrgUnit,
+} from '../../selectors';
 import { ControlBar } from '../../components/ControlBar';
 import {
   changeSearch,
@@ -50,7 +46,7 @@ const styles = {
     flexShrink: 1,
     flexBasis: '0%',
     overflowY: 'auto',
-    maxHeight: '200px',
+    maxHeight: '350px',
   },
   searchResultItem: {
     display: 'flex',
@@ -71,9 +67,6 @@ const styles = {
     flexBasis: '0%',
     flexDirection: 'column',
     overflowY: 'auto',
-  },
-  controlBar: {
-    marginBottom: '10px',
   },
   loadingContainer: {
     marginTop: '10px',
@@ -179,28 +172,28 @@ export class SearchBar extends PureComponent {
     if (orgUnitFetchError) return <h2>Server error, try refresh</h2>;
     if (hierarchyData.length < 1) return null;
 
-    const hierarchy = hierarchyData.map(item => (
-      <SearchBarItem key={item} organisationUnitCode={item} nestedMargin="0px" />
+    const hierarchy = hierarchyData.map((item, index) => (
+      <SearchBarItem
+        key={item}
+        organisationUnitCode={item}
+        isFinalRow={index === hierarchyData.length - 1}
+      />
     ));
     return <List style={styles.hierarchyItem}>{hierarchy}</List>;
   }
 
   render() {
-    const { isExpanded, onSearchChange, onSearchFocus, onSearchBlur, onExpandClick } = this.props;
+    const { isExpanded, onSearchChange, onSearchBlur, onExpandClick } = this.props;
     const { isSafeToCloseResults } = this.state;
     const SearchResultsComponent = isExpanded && this.renderSearchResults();
     return (
       <div style={styles.menuOption}>
         <ControlBar
           onSearchChange={onSearchChange}
-          onSearchFocus={onSearchFocus}
           onControlBlur={() => onSearchBlur(isExpanded, isSafeToCloseResults)}
           isExpanded={isExpanded}
           onExpandClick={() => onExpandClick()}
           hintText="Search Location"
-          style={styles.controlBar}
-          icon={<SearchIcon />}
-          inTopBar
         >
           <div
             onMouseLeave={() => this.setState({ isSafeToCloseResults: true })}
@@ -215,15 +208,6 @@ export class SearchBar extends PureComponent {
   }
 }
 
-const sortOrgUnitsAlphabeticallyByName = orgUnits => {
-  // Sort countries alphabetically, this may not be the case if one country was loaded first
-  return orgUnits.concat().sort((data1, data2) => {
-    if (data1.name > data2.name) return 1;
-    if (data1.name < data2.name) return -1;
-    return 0;
-  });
-};
-
 SearchBar.propTypes = {
   onExpandClick: PropTypes.func.isRequired,
   onOrgUnitClick: PropTypes.func.isRequired,
@@ -235,9 +219,8 @@ SearchBar.propTypes = {
   hierarchyData: PropTypes.arrayOf(PropTypes.string),
   searchString: PropTypes.string,
   orgUnitFetchError: PropTypes.string,
-  onSearchChange: PropTypes.func,
+  onSearchChange: PropTypes.func.isRequired,
   onLoadMoreSearchResults: PropTypes.func,
-  onSearchFocus: PropTypes.func,
   onSearchBlur: PropTypes.func,
 };
 
@@ -249,15 +232,9 @@ SearchBar.defaultProps = {
   hierarchyData: null,
   searchString: '',
   orgUnitFetchError: '',
-  onSearchChange: undefined,
   onLoadMoreSearchResults: undefined,
-  onSearchFocus: undefined,
   onSearchBlur: undefined,
 };
-
-const selectCodeFromOrgUnit = createSelector([orgUnits => orgUnits], orgUnits =>
-  sortOrgUnitsAlphabeticallyByName(orgUnits).map(orgUnit => orgUnit.organisationUnitCode),
-);
 
 const mapStateToProps = state => {
   const {
@@ -286,7 +263,6 @@ const mapDispatchToProps = dispatch => {
   return {
     onSearchChange: event => dispatch(changeSearch(event.target.value)),
     onLoadMoreSearchResults: () => dispatch(fetchMoreSearchResults(true)),
-    onSearchFocus: () => dispatch(toggleSearchExpand(true)),
     onExpandClick: () => dispatch(toggleSearchExpand()),
     onSearchBlur: (isExpanded, isSafeToCloseResults) =>
       isExpanded && isSafeToCloseResults && dispatch(toggleSearchExpand()),

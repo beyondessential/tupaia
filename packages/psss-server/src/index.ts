@@ -3,14 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import '@babel/polyfill';
-
 import * as dotenv from 'dotenv';
 import http from 'http';
 
+import winston from 'winston';
+import { configureWinston } from '@tupaia/server-boilerplate';
 import { createApp } from './app';
-import winston from './log';
 
+configureWinston();
 dotenv.config(); // Load the environment variables into process.env
 
 /**

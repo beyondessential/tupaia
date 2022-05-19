@@ -36,7 +36,7 @@ export class MapOverlayVisualisationExtractor<
   };
 
   public getMapOverlayVisualisationResource = () => {
-    // Resources (like the ones passed to meditrak-server for upsert) use snake_case keys
+    // Resources (like the ones passed to central-server for upsert) use snake_case keys
     const mapOverlay = this.getMapOverlay();
     const report = this.getReport(PreviewMode.PRESENTATION); // always fetch full report when building resource
 
