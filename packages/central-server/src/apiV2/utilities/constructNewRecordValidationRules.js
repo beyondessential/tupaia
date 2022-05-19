@@ -20,12 +20,8 @@ import {
   isNumber,
   ValidationError,
 } from '@tupaia/utils';
-<<<<<<< HEAD:packages/meditrak-server/src/apiV2/utilities/constructNewRecordValidationRules.js
 import { FEED_ITEM_TYPES } from '../../database/models/FeedItem';
 import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataElement';
-=======
-import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataSource';
->>>>>>> dev:packages/central-server/src/apiV2/utilities/constructNewRecordValidationRules.js
 
 export const constructForParent = (models, recordType, parentRecordType) => {
   const combinedRecordType = `${parentRecordType}/${recordType}`;

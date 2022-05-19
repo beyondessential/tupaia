@@ -44,13 +44,9 @@ export class DataElementType extends CommonDataElementType {
   };
 }
 
-<<<<<<< HEAD:packages/meditrak-server/src/database/models/DataElement.js
 export class DataElementModel extends CommonDataElementModel {
   isDeletableViaApi = true;
 
-=======
-export class DataSourceModel extends CommonDataSourceModel {
->>>>>>> dev:packages/central-server/src/database/models/DataSource.js
   get DatabaseTypeClass() {
     return DataElementType;
   }
