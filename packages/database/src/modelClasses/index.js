@@ -39,6 +39,7 @@ import { QuestionModel } from './Question';
 import { ReportModel } from './Report';
 import { RefreshTokenModel } from './RefreshToken';
 import { SurveyModel } from './Survey';
+import { SurveyGroupModel } from './SurveyGroup';
 import { SurveyResponseModel } from './SurveyResponse';
 import { SurveyResponseCommentModel } from './SurveyResponseComment';
 import { SurveyScreenComponentModel } from './SurveyScreenComponent';
@@ -89,6 +90,7 @@ export const modelClasses = {
   RefreshToken: RefreshTokenModel,
   Report: ReportModel,
   Survey: SurveyModel,
+  SurveyGroup: SurveyGroupModel,
   SurveyResponse: SurveyResponseModel,
   SurveyResponseComment: SurveyResponseCommentModel,
   SurveyScreen: SurveyScreenModel,
@@ -121,6 +123,7 @@ export { MeditrakSyncQueueModel, MeditrakSyncQueueType } from './MeditrakSyncQue
 export { PermissionGroupModel } from './PermissionGroup';
 export { ProjectModel } from './Project';
 export { ReportModel, ReportType } from './Report';
+export { SurveyGroupModel } from './SurveyGroup';
 export { SurveyScreenComponentModel } from './SurveyScreenComponent';
 export { SurveyScreenModel } from './SurveyScreen';
 export { UserEntityPermissionModel } from './UserEntityPermission';
