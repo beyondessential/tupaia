@@ -22,6 +22,7 @@ export async function changePassword(req, res, next) {
 
   // Support both alternatives so that users using versions
   // of meditrak-app prior to 1.9.109 can still change their passwords
+  // TODO: Remove as part of RN-502
   const passwordParam = password || newPassword;
   const passwordConfirmParam = passwordConfirm || newPasswordConfirm;
 
@@ -55,6 +56,6 @@ export async function changePassword(req, res, next) {
   await models.user.updateById(userId, {
     ...hashAndSaltPassword(passwordParam),
   });
-  
+
   respond(res, { message: 'Successfully updated password' });
 }
