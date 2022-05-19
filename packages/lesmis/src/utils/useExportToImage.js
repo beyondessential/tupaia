@@ -8,29 +8,40 @@ import downloadJs from 'downloadjs';
 import domtoimage from 'dom-to-image';
 import { sleep, toFilename } from '@tupaia/utils';
 
-const exportToPng = (node, filename) => {
+const getFormatter = formate => {
+  switch (formate) {
+    case 'svg':
+      return domtoimage.toSvg;
+    case 'png':
+    default:
+      return domtoimage.toPng;
+  }
+};
+
+const exportToImage = (node, filename, formate = 'png') => {
+  const formatter = getFormatter(formate);
   return new Promise(resolve => {
-    const file = `${filename}.png`;
-    domtoimage.toPng(node, { bgcolor: 'white' }).then(async dataUrl => {
+    const file = `${filename}.${formate}`;
+    formatter(node, { bgcolor: 'white' }).then(async dataUrl => {
       downloadJs(dataUrl, file);
       resolve();
     });
   });
 };
 
-export const useExportToPNG = filename => {
+export const useExportToImage = (filename, formate) => {
   const exportRef = useRef(null);
   const [isExporting, setIsExporting] = useState(false);
   const [isExportLoading, setIsExportLoading] = useState(false);
   const sanitisedFileName = toFilename(filename, true);
 
-  const exportToPNG = async () => {
+  const exportToImg = async () => {
     const node = exportRef.current;
 
     setIsExporting(true);
     setIsExportLoading(true);
 
-    await exportToPng(node, sanitisedFileName);
+    await exportToImage(node, sanitisedFileName, formate);
     setIsExporting(false);
 
     // Allow some time for the chart to resize
@@ -38,5 +49,5 @@ export const useExportToPNG = filename => {
     setIsExportLoading(false);
   };
 
-  return { isExporting, isExportLoading, exportRef, exportToPNG };
+  return { isExporting, isExportLoading, exportRef, exportToImg };
 };
