@@ -84,7 +84,19 @@ export type Joined<T, U extends string> = {
   [field in keyof T as field extends string ? `${U}.${field}` : never]: T[field];
 };
 
-export type Model<BaseModel extends DatabaseModel, Fields, Type extends DatabaseType> = {
-  find: (filter: DbFilter<Fields>) => Promise<Type[]>;
-  findOne: (filter: DbFilter<Fields>) => Promise<Type>;
-} & BaseModel;
+export type QueryOptions = {
+  limit?: number;
+  offset?: number;
+  sort?: string[];
+};
+
+type BaseModelOverrides<Fields = unknown, Type = unknown> = {
+  find: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<Type[]>;
+  findOne: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<Type>;
+};
+
+export type Model<BaseModel extends DatabaseModel, Fields, Type extends DatabaseType> = Omit<
+  BaseModel,
+  keyof BaseModelOverrides
+> &
+  BaseModelOverrides<Fields, Type>;

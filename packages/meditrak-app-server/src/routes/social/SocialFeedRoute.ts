@@ -24,7 +24,7 @@ type SocialFeedResponse = {
 };
 
 type SocialFeedQuery = {
-  countryId: string;
+  countryId?: string;
   earliestCreationDate?: string;
   page?: string;
   numberPerPage?: string;
@@ -65,7 +65,7 @@ export class SocialFeedRoute extends Route<SocialFeedRequest> {
     models: MeditrakAppServerModelRegistry,
   ) {
     if (page === 0) {
-      // Add leaderboard to second item in feed.
+      // Add leaderboard to third item in feed.
       const leaderboardItem = await this.getLeaderboardFeedItem(models);
       feedItems.splice(2, 0, leaderboardItem);
     }
@@ -115,7 +115,7 @@ export class SocialFeedRoute extends Route<SocialFeedRequest> {
     });
 
     const hasMorePages = feedItems.length > numberPerPage;
-    const items = await Promise.all(feedItems.slice(0, numberPerPage - 1).map(f => f.getData()));
+    const items = await Promise.all(feedItems.slice(0, numberPerPage).map(f => f.getData()));
 
     await this.intersperseDynamicFeedItems(items, pageNumber, models);
 
