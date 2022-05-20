@@ -33,6 +33,7 @@ import { MapOverlayModel } from './MapOverlay';
 import { MeditrakDeviceModel } from './MeditrakDevice';
 import { MeditrakSyncQueueModel } from './MeditrakSyncQueue';
 import { OneTimeLoginModel } from './OneTimeLogin';
+import { OptionModel } from './Option';
 import { PermissionGroupModel } from './PermissionGroup';
 import { ProjectModel } from './Project';
 import { QuestionModel } from './Question';
@@ -84,6 +85,7 @@ export const modelClasses = {
   MeditrakDevice: MeditrakDeviceModel,
   MeditrakSyncQueue: MeditrakSyncQueueModel,
   OneTimeLogin: OneTimeLoginModel,
+  Option: OptionModel,
   PermissionGroup: PermissionGroupModel,
   Project: ProjectModel,
   Question: QuestionModel,
@@ -120,6 +122,7 @@ export { FeedItemModel, FeedItemType } from './FeedItem';
 export { GeographicalAreaModel } from './GeographicalArea';
 export { MeditrakDeviceModel } from './MeditrakDevice';
 export { MeditrakSyncQueueModel, MeditrakSyncQueueType } from './MeditrakSyncQueue';
+export { OptionModel } from './Option';
 export { PermissionGroupModel } from './PermissionGroup';
 export { ProjectModel } from './Project';
 export { ReportModel, ReportType } from './Report';
