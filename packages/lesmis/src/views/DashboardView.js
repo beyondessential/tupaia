@@ -10,13 +10,13 @@ import MuiBox from '@material-ui/core/Box';
 import { useIsFetching } from 'react-query';
 import { Select } from '@tupaia/ui-components';
 import { VitalsView } from './VitalsView';
-import { DashboardReportTabView } from './DashboardReportTabView';
 import { TabPanel, TabBar, TabBarSection, YearSelector } from '../components';
-import { useUrlParams, useUrlSearchParams, useUrlSearchParam, useI18n } from '../utils';
+import { useUrlParams, useUrlSearchParams, useUrlSearchParam } from '../utils';
 import { useEntityData } from '../api/queries';
-import { DEFAULT_DATA_YEAR, SUB_DASHBOARD_OPTIONS } from '../constants';
+import { DEFAULT_DATA_YEAR } from '../constants';
 import { DashboardReportModal } from '../components/DashboardReportModal';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import { useDashboardDropdownOptions } from '../utils/useDashboardDropdownOptions';
 
 const StyledSelect = styled(Select)`
   margin: 0 1rem 0 0;
@@ -41,64 +41,6 @@ const TabTemplate = ({ TabBarLeftSection, Body }) => (
 TabTemplate.propTypes = {
   TabBarLeftSection: PropTypes.func.isRequired,
   Body: PropTypes.string.isRequired,
-};
-
-const useDashboardDropdownOptions = () => {
-  const { entityCode } = useUrlParams();
-  const { getProfileLabel, translate } = useI18n();
-  const { data: entityData } = useEntityData(entityCode);
-  const [params] = useUrlSearchParams();
-  const selectedDashboard = params.dashboard;
-
-  const dropdownOptions = [
-    {
-      value: 'profile',
-      label: getProfileLabel(entityData?.type),
-      TabComponent: DashboardReportTabView,
-      useYearSelector: true,
-      componentProps: {
-        // those not included anywhere else
-        filterSubDashboards: ({ dashboardCode }) =>
-          !Object.values(SUB_DASHBOARD_OPTIONS).some(({ code }) =>
-            dashboardCode.startsWith(`LESMIS_${code}`),
-          ),
-      },
-    },
-    {
-      value: 'indicators',
-      label: translate('dashboards.freeIndicatorSelection'),
-      TabComponent: TabTemplate,
-      componentProps: {
-        Body: 'Free Indicator Selection',
-      },
-    },
-    {
-      value: 'ESSDP_Plan',
-      label: translate('dashboards.essdpPlan202125M&eFramework'),
-      TabComponent: TabTemplate,
-      componentProps: {
-        Body: '9th Education Sector and Sports Development Plan 2021-25 M&E Framework',
-        filterSubDashboards: ({ dashboardCode }) => dashboardCode.startsWith('LESMIS_ESSDP_Plan'),
-      },
-    },
-    ...SUB_DASHBOARD_OPTIONS.map(dashboard => ({
-      value: dashboard.code,
-      label: translate(dashboard.label),
-      TabComponent: DashboardReportTabView,
-      componentProps: {
-        filterSubDashboards: ({ dashboardCode }) =>
-          dashboardCode.startsWith(`LESMIS_${dashboard.code}`),
-      },
-    })),
-  ];
-
-  const selectedOption =
-    selectedDashboard && dropdownOptions.find(option => option.value === selectedDashboard);
-
-  return {
-    dropdownOptions,
-    selectedOption: selectedOption || dropdownOptions[0],
-  };
 };
 
 export const DashboardView = React.memo(() => {
