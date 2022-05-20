@@ -20,7 +20,6 @@ import {
   isNumber,
   ValidationError,
 } from '@tupaia/utils';
-import { FEED_ITEM_TYPES } from '../../database/models/FeedItem';
 import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataElement';
 
 export const constructForParent = (models, recordType, parentRecordType) => {
