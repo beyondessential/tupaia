@@ -112,7 +112,7 @@ exports.up = async function (db) {
   // Any data element with the public permission group, or with no permission groups
   await db.runSql(`
     UPDATE data_element
-      SET permission_groups = array_append(permission_groups, '*')
+      SET permission_groups = array_prepend('*', permission_groups)
       WHERE 'Public' = ANY(permission_groups)
       OR permission_groups = '{}'
   `);
