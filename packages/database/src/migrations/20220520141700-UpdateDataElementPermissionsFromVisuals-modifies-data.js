@@ -50,17 +50,21 @@ exports.up = async function (db) {
 
     // Fetch reports that contain either the data element, data group, or indicators
     const { rows: reports } = await db.runSql(
-      `SELECT * from report WHERE text(report.config) SIMILAR TO '%(${
-        element.code
-      }|${dataGroups.map(group => group.code).join('|')}|${indicators
-        .map(ind => ind.code)
+      `SELECT * from report WHERE text(report.config) SIMILAR TO '%(${[
+        element,
+        ...dataGroups,
+        ...indicators,
+      ]
+        .map(x => x.code)
         .join('|')})%'`,
     );
     const { rows: legacyReports } = await db.runSql(
-      `SELECT * from legacy_report WHERE text(legacy_report.data_builder_config) SIMILAR TO '%(${
-        element.code
-      }|${dataGroups.map(group => group.code).join('|')}|${indicators
-        .map(ind => ind.code)
+      `SELECT * from legacy_report WHERE text(legacy_report.data_builder_config) SIMILAR TO '%(${[
+        element,
+        ...dataGroups,
+        ...indicators,
+      ]
+        .map(x => x.code)
         .join('|')})%'`,
     );
 
