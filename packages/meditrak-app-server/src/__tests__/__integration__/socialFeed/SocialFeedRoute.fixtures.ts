@@ -20,21 +20,21 @@ export const FEED_ITEMS = [
   {
     country: MORDOR.code,
     type: 'SurveyResponse',
-    creation_date: '2020-01-04 00:00:00.000+1100',
+    creation_date: new Date('2020-01-04').toJSON(),
   },
   {
     country: GONDOR.code,
     type: 'SurveyResponse',
-    creation_date: '2020-01-03 00:00:00.000+1100',
+    creation_date: new Date('2020-01-03').toJSON(),
   },
   {
     country: GONDOR.code,
     type: 'markdown',
-    creation_date: '2020-01-02 00:00:00.000+1100',
+    creation_date: new Date('2020-01-02').toJSON(),
   },
   {
     country: null,
     type: 'SurveyResponse',
-    creation_date: '2020-01-01 00:00:00.000+1100',
+    creation_date: new Date('2020-01-01').toJSON(),
   },
 ];

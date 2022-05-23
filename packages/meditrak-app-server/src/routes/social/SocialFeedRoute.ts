@@ -115,7 +115,9 @@ export class SocialFeedRoute extends Route<SocialFeedRequest> {
     });
 
     const hasMorePages = feedItems.length > numberPerPage;
-    const items = await Promise.all(feedItems.slice(0, numberPerPage).map(f => f.getData()));
+    const items = (
+      await Promise.all(feedItems.slice(0, numberPerPage).map(f => f.getData()))
+    ).map(item => ({ ...item, creation_date: new Date(item.creation_date).toJSON() }));
 
     await this.intersperseDynamicFeedItems(items, pageNumber, models);
 
