@@ -118,4 +118,4 @@ export { ReportModel, ReportType } from './Report';
 export { SurveyScreenComponentModel } from './SurveyScreenComponent';
 export { SurveyScreenModel } from './SurveyScreen';
 export { UserEntityPermissionModel } from './UserEntityPermission';
-export { UserModel } from './User';
+export { UserModel, UserType } from './User';

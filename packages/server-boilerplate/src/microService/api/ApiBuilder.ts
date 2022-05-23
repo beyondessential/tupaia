@@ -10,6 +10,12 @@ import errorHandler from 'api-error-handler';
 // @ts-expect-error no types
 import morgan from 'morgan';
 
+import {
+  AuthHandler,
+  getBaseUrlsForHost,
+  LOCALHOST_BASE_URLS,
+  TupaiaApiClient,
+} from '@tupaia/api-client';
 import { Authenticator } from '@tupaia/auth';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 
@@ -72,16 +78,26 @@ export class ApiBuilder {
     return this;
   }
 
+  public attachApiClientToContext(authHandlerProvider: (req: Request) => AuthHandler) {
+    return this.use('*', (req, res, next) => {
+      try {
+        const baseUrls =
+          process.env.NODE_ENV === 'test' ? LOCALHOST_BASE_URLS : getBaseUrlsForHost(req.hostname);
+        const apiClient = new TupaiaApiClient(authHandlerProvider(req), baseUrls);
+        req.ctx.services = apiClient;
+        res.ctx.services = apiClient;
+        next();
+      } catch (err) {
+        next(err);
+      }
+    });
+  }
+
   public use<T extends ExpressRequest<T> = Request>(
     path: string,
     ...middlewares: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
     this.app.use(this.formatPath(path), ...middlewares);
-    return this;
-  }
-
-  public middleware(middleware: RequestHandler) {
-    this.app.use(middleware);
     return this;
   }
 

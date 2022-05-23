@@ -6,3 +6,4 @@
 export { AuthRequest, AuthRoute } from './AuthRoute';
 export { RegisterUserRequest, RegisterUserRoute } from './RegisterUserRoute';
 export { SocialFeedRequest, SocialFeedRoute } from './social';
+export { UserRewardsRequest, UserRewardsRoute } from './UserRewardsRoute';
