@@ -55,7 +55,16 @@ describe('socialFeed', () => {
       countryCodeToId[country.code] = country.id;
     });
 
-    const feedItemsToInsert = replaceItemsCountryWithCountryId(FEED_ITEMS, countryCodeToId);
+    const databaseTimezone = await models.database.getTimezone();
+    const timezoneConvertedFeedItems = FEED_ITEMS.map(feedItem => ({
+      ...feedItem,
+      creation_date: new Date(feedItem.creation_date).toLocaleString(databaseTimezone), // Adjust for timezone so tests work regardless of db timezone
+    }));
+
+    const feedItemsToInsert = replaceItemsCountryWithCountryId(
+      timezoneConvertedFeedItems,
+      countryCodeToId,
+    );
     await Promise.all(
       feedItemsToInsert.map(async feedItem => {
         await findOrCreateDummyRecord(models.feedItem, feedItem, {});

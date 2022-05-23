@@ -181,6 +181,13 @@ export class TupaiaDatabase {
   }
 
   /**
+   * @returns {string} The database's timezone
+   */
+  async getTimezone() {
+    return (await this.executeSql('show timezone'))[0];
+  }
+
+  /**
    * Builds a query on the database, which can be awaited to reveal the result.
    * Implementation notes: If the connection is available, it will return the knex built query
    * without a wrapping Promise. This is necessary for nested queries to function correctly. If the
