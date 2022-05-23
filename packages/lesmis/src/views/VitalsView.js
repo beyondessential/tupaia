@@ -16,7 +16,6 @@ import { useUrlParams } from '../utils';
 
 const Heading = styled(Typography)`
   font-weight: 600;
-  font-size: 18px;
   line-height: 140%;
   text-transform: capitalize;
   color: ${props => props.theme.palette.primary.main};
@@ -24,7 +23,6 @@ const Heading = styled(Typography)`
 
 const SubHeading = styled(Heading)`
   font-weight: 500;
-  font-size: 16px;
 `;
 
 const HorizontalDivider = styled(MuiDivider)`
@@ -53,9 +51,9 @@ const VitalsContainer = styled.div`
 /* eslint-disable react/prop-types */
 // Vitals data is essentially unstructured so no point checking prop types
 
-const CountryView = ({ vitals }) => (
+const CountryView = ({ vitals, variant }) => (
   <VitalsContainer>
-    <Heading variant="h4">
+    <Heading variant={variant || 'h4'}>
       <I18n t="dashboards.countryDetails" />
     </Heading>
     <TwoColGrid>
@@ -73,9 +71,9 @@ const CountryView = ({ vitals }) => (
   </VitalsContainer>
 );
 
-const ProvinceView = ({ vitals }) => (
+const ProvinceView = ({ vitals, variant }) => (
   <VitalsContainer>
-    <Heading variant="h4">
+    <Heading variant={variant || 'h4'}>
       <I18n t="dashboards.provinceDetails" />
     </Heading>
     <ThreeColGrid>
@@ -103,9 +101,9 @@ const ProvinceView = ({ vitals }) => (
   </VitalsContainer>
 );
 
-const DistrictView = ({ vitals }) => (
+const DistrictView = ({ vitals, variant }) => (
   <VitalsContainer>
-    <Heading variant="h4">
+    <Heading variant={variant || 'h4'}>
       <I18n t="dashboards.districtDetails" />
     </Heading>
     <ThreeColGrid>
@@ -137,7 +135,7 @@ const DistrictView = ({ vitals }) => (
     </ThreeColGrid>
     <HorizontalDivider />
     <MuiBox mt={2}>
-      <SubHeading variant="h4">
+      <SubHeading variant={variant || 'h4'}>
         <I18n t="dashboards.provinceDetails" />
       </SubHeading>
       <FlexStart mt={1} mb={4}>
@@ -156,9 +154,9 @@ const DistrictView = ({ vitals }) => (
   </VitalsContainer>
 );
 
-const SchoolView = ({ vitals }) => (
+const SchoolView = ({ vitals, variant }) => (
   <VitalsContainer>
-    <Heading variant="h4">
+    <Heading variant={variant || 'h4'}>
       <I18n t="dashboards.schoolDetails" />
     </Heading>
     <ThreeColGrid>
@@ -195,7 +193,7 @@ const SchoolView = ({ vitals }) => (
     </ThreeColGrid>
     <HorizontalDivider />
     <MuiBox mt={2}>
-      <SubHeading variant="h4">District Details</SubHeading>
+      <SubHeading variant={variant || 'h4'}>District Details</SubHeading>
       <FlexStart mt={1} mb={4}>
         <EntityVitalsItem name="Name of District" value={vitals.parentVitals?.name} mr={4} />
         <EntityVitalsItem
