@@ -275,7 +275,7 @@ export class EntityList extends PureComponent {
 EntityList.propTypes = {
   realmDatabase: PropTypes.object.isRequired,
   baseEntityFilters: PropTypes.object.isRequired,
-  checkEntityAttributes: PropTypes.func.isRequired,
+  checkEntityAttributes: PropTypes.func,
   recentEntities: PropTypes.array.isRequired,
   selectedEntityId: PropTypes.string,
   onRowPress: PropTypes.func.isRequired,
@@ -287,6 +287,7 @@ EntityList.propTypes = {
 };
 
 EntityList.defaultProps = {
+  checkEntityAttributes: null,
   selectedEntityId: '',
 };
 

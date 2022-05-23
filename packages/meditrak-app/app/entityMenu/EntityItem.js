@@ -2,7 +2,7 @@
  * Tupaia MediTrak
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -16,7 +16,15 @@ import {
 
 export const ITEM_HEIGHT = 55;
 
-export class EntityItem extends PureComponent {
+export class EntityItem extends Component {
+  shouldComponentUpdate(nextProps) {
+    const { entity, ...otherProps } = this.props;
+    return (
+      entity?.code !== nextProps.entity?.code ||
+      Object.keys(otherProps).some(key => this.props[key] !== nextProps[key])
+    );
+  }
+
   onPress = () => {
     const { onPress, entity } = this.props;
     if (onPress) {
