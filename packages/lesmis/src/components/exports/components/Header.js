@@ -25,13 +25,13 @@ const SubHeading = styled(Typography)`
 
 const Header = () => {
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', padding: '50px' }}>
       <Logo alt="logo" src="/lesmis-logo-black.svg" />
       <FlexColumn>
         <Heading variant="h1">
           <I18n t="dashboards.districtProfile" />
         </Heading>
-        <SubHeading variant="h3">2021</SubHeading>
+        <SubHeading variant="h2">2021</SubHeading>
       </FlexColumn>
     </div>
   );
