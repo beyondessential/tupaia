@@ -6,11 +6,19 @@
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { setupTestApp } from '../utilities';
 
+const mockResponseMsg = 'Successfully created user';
+
 describe('auth', () => {
   let app: TestableServer;
 
   beforeAll(async () => {
-    app = await setupTestApp();
+    app = await setupTestApp({
+      central: {
+        async registerUserAccount(userFields: Record<string, unknown>) {
+          return { message: mockResponseMsg, id: userFields.id };
+        },
+      },
+    });
   });
 
   describe('/user (register user)', () => {
@@ -21,7 +29,7 @@ describe('auth', () => {
         body: user,
       });
 
-      expect(response.body).toEqual({ message: 'Successfully created user', id: userId });
+      expect(response.body).toEqual({ message: mockResponseMsg, id: userId });
     });
   });
 });

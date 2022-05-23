@@ -4,3 +4,4 @@
  */
 
 export { setupTestApp } from './setupTestApp';
+export { AuthApiMock } from './AuthApiMock';

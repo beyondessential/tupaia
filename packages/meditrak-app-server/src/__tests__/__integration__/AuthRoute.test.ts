@@ -4,14 +4,14 @@
  */
 
 import { TestableServer } from '@tupaia/server-boilerplate';
-import { setupTestApp } from '../utilities';
-import { CAT_USER, CAT_USER_SESSION } from './fixtures';
+import { AuthApiMock, setupTestApp } from '../utilities';
+import { CAT_USER, CAT_USER_SESSION, TEST_DATA } from './fixtures';
 
 describe('auth', () => {
   let app: TestableServer;
 
   beforeAll(async () => {
-    app = await setupTestApp();
+    app = await setupTestApp({ auth: new AuthApiMock(TEST_DATA) });
   });
 
   describe('/auth (login)', () => {
@@ -42,6 +42,7 @@ describe('auth', () => {
         },
       });
 
+      expect(response.statusCode).toEqual(200);
       expect(response.body).toEqual(CAT_USER);
     });
   });
@@ -65,6 +66,7 @@ describe('auth', () => {
         query: { grantType: 'refresh_token' },
       });
 
+      expect(response.statusCode).toEqual(200);
       expect(response.body).toEqual(CAT_USER);
     });
   });

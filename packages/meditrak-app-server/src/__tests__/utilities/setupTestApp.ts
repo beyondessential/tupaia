@@ -7,24 +7,26 @@ import { TestableServer } from '@tupaia/server-boilerplate';
 import { getTestDatabase } from '@tupaia/database';
 
 import { createApp } from '../../app';
-import { TEST_DATA } from '../__integration__/fixtures';
-import { AuthApiMock } from './AuthApiMock';
-import { CentralApiMock } from './CentralApiMock';
+
+type ApiClientMocks = { auth?: any; central?: any };
+
+const apiClientMocks: ApiClientMocks = {};
 
 jest.mock('@tupaia/api-client', () => {
-  const original = jest.requireActual('@tupaia/api-client'); // Step 2.
+  const original = jest.requireActual('@tupaia/api-client');
   return {
     ...original,
     TupaiaApiClient: jest.fn().mockImplementation(() => {
-      return {
-        auth: new AuthApiMock(TEST_DATA),
-        central: new CentralApiMock(),
-      };
+      return apiClientMocks;
     }),
   };
 });
 
-export const setupTestApp = async () => {
+export const setupTestApp = async (newApiClientMocks: ApiClientMocks = {}) => {
+  Object.entries(newApiClientMocks).forEach(([service, mock]) => {
+    apiClientMocks[service as keyof ApiClientMocks] = mock;
+  });
+
   const app = new TestableServer(createApp(getTestDatabase()));
 
   return app;
