@@ -63,3 +63,27 @@ Authorization: {{user-authorization}}
 GET http://{{host}}/{{version}}/me/rewards HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
+
+### Change User Password
+
+GET http://{{host}}/{{version}}/me/changePassword HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
+{
+    "oldPassword": "{{password}}",
+    "password": "test_test",
+    "passwordConfirm": "test_test"
+}
+
+### Change User Password (back)
+
+GET http://{{host}}/{{version}}/me/changePassword HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
+{
+    "oldPassword": "test_test",
+    "password": "{{password}}",
+    "passwordConfirm": "{{password}}"
+}
