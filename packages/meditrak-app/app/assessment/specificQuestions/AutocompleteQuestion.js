@@ -113,7 +113,7 @@ export class AutocompleteQuestionComponent extends React.Component {
 
   render() {
     const { optionList } = this.state;
-    const { answer, onChangeAnswer } = this.props;
+    const { answer, onChangeAnswer, scrollIntoFocus } = this.props;
     return (
       <View>
         <Autocomplete
@@ -123,6 +123,7 @@ export class AutocompleteQuestionComponent extends React.Component {
           options={optionList}
           handleEndReached={this.fetchMoreResults}
           handleChangeInput={this.filterOptionList}
+          scrollIntoFocus={scrollIntoFocus}
           endReachedOffset={0.3}
         />
       </View>
@@ -137,6 +138,7 @@ AutocompleteQuestionComponent.propTypes = {
   onChangeAnswer: PropTypes.func.isRequired,
   optionSetId: PropTypes.string.isRequired,
   realmDatabase: PropTypes.any.isRequired,
+  scrollIntoFocus: PropTypes.func.isRequired,
 };
 
 AutocompleteQuestionComponent.defaultProps = {
