@@ -19,9 +19,9 @@ exports.setup = function (options, seedLink) {
 const PROJECT_NAME = 'Mass Drug Administration';
 const PROJECT_CODE = 'mass_drug_admin';
 const DASHBOARD_CODE = 'mass_drug_admin';
-const DASHBOARD_NAME = 'Mass Drug Administration (MDA)';
+const DASHBOARD_NAME = 'MDA';
 const MAP_OVERLAY_GROUP_CODE = 'mass_drug_admin';
-const MAP_OVERLAY_GROUP_NAME = 'Mass Drug Administration (MDA)';
+const MAP_OVERLAY_GROUP_NAME = 'MDA';
 const PROJECT = {
   code: PROJECT_CODE,
   description:
