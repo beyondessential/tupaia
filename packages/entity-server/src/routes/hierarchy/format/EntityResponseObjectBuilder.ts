@@ -9,11 +9,11 @@ import { EntityResponseObject, ExtendedEntityFieldName } from '../types';
 export class EntityResponseObjectBuilder {
   private readonly responseObject: Writable<EntityResponseObject> = {};
 
-  set<T extends ExtendedEntityFieldName>(field: T, value: EntityResponseObject[T]) {
+  public set<T extends ExtendedEntityFieldName>(field: T, value: EntityResponseObject[T]) {
     this.responseObject[field] = value;
   }
 
-  build() {
+  public build() {
     return this.responseObject as EntityResponseObject;
   }
 }

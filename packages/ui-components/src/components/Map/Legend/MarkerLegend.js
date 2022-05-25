@@ -26,11 +26,16 @@ import {
 } from '../utils';
 import { LegendEntry } from './LegendEntry';
 
-const FlexStart = styled(MuiBox)`
+const Container = styled(MuiBox)`
   display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
+
+  ${p => p.theme.breakpoints.down('sm')} {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 /**
@@ -167,10 +172,10 @@ export const MarkerLegend = React.memo(
     }
 
     return (
-      <FlexStart>
+      <Container>
         {keys}
         {nullKey}
-      </FlexStart>
+      </Container>
     );
   },
 );

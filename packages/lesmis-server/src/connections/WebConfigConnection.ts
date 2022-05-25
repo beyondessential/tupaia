@@ -12,21 +12,21 @@ const { WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1' } = process.env;
  * @deprecated use @tupaia/api-client
  */
 export class WebConfigConnection extends SessionHandlingApiConnection {
-  baseUrl = WEB_CONFIG_API_URL;
+  public baseUrl = WEB_CONFIG_API_URL;
 
-  async fetchDashboard(query: QueryParameters) {
+  public async fetchDashboard(query: QueryParameters) {
     return this.get('dashboards', query);
   }
 
-  async fetchDashboardReport(reportCode: string, query: QueryParameters) {
+  public async fetchDashboardReport(reportCode: string, query: QueryParameters) {
     return this.get(`report/${reportCode}`, query);
   }
 
-  async fetchMapOverlayData(query: QueryParameters) {
+  public async fetchMapOverlayData(query: QueryParameters) {
     return this.get('measureData', query);
   }
 
-  async fetchMapOverlays(query: QueryParameters) {
+  public async fetchMapOverlays(query: QueryParameters) {
     const response = await this.get('measures', query);
     return response.measures;
   }

@@ -33,6 +33,8 @@ RUN mkdir -p ./packages/api-client
 COPY packages/api-client/package.json ./packages/api-client
 RUN mkdir -p ./packages/auth
 COPY packages/auth/package.json ./packages/auth
+RUN mkdir -p ./packages/central-server
+COPY packages/central-server/package.json ./packages/central-server
 RUN mkdir -p ./packages/data-api
 COPY packages/data-api/package.json ./packages/data-api
 RUN mkdir -p ./packages/data-broker
@@ -55,8 +57,8 @@ RUN mkdir -p ./packages/lesmis
 COPY packages/lesmis/package.json ./packages/lesmis
 RUN mkdir -p ./packages/lesmis-server
 COPY packages/lesmis-server/package.json ./packages/lesmis-server
-RUN mkdir -p ./packages/meditrak-server
-COPY packages/meditrak-server/package.json ./packages/meditrak-server
+RUN mkdir -p ./packages/meditrak-app-server
+COPY packages/meditrak-app-server/package.json ./packages/meditrak-app-server
 RUN mkdir -p ./packages/psss
 COPY packages/psss/package.json ./packages/psss
 RUN mkdir -p ./packages/psss-server
@@ -69,6 +71,8 @@ RUN mkdir -p ./packages/ui-components
 COPY packages/ui-components/package.json ./packages/ui-components
 RUN mkdir -p ./packages/utils
 COPY packages/utils/package.json ./packages/utils
+RUN mkdir -p ./packages/tsutils
+COPY packages/tsutils/package.json ./packages/tsutils
 RUN mkdir -p ./packages/weather-api
 COPY packages/weather-api/package.json ./packages/weather-api
 RUN mkdir -p ./packages/web-config-server
@@ -93,6 +97,7 @@ COPY packages/dhis-api/. ./packages/dhis-api
 COPY packages/expression-parser/. ./packages/expression-parser
 COPY packages/indicators/. ./packages/indicators
 COPY packages/utils/. ./packages/utils
+COPY packages/tsutils/. ./packages/tsutils
 COPY packages/ui-components/. ./packages/ui-components
 COPY packages/weather-api/. ./packages/weather-api
 COPY packages/server-boilerplate/. ./packages/server-boilerplate

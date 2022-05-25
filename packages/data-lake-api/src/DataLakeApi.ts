@@ -7,9 +7,9 @@ import groupBy from 'lodash.groupby';
 
 import moment from 'moment';
 import { getSortByKey } from '@tupaia/utils';
-import { DataLakeAnalyticsFetchQuery, AnalyticsFetchOptions } from './DataLakeAnalyticsFetchQuery';
-import { DataLakeEventsFetchQuery, Event, EventsFetchOptions } from './DataLakeEventsFetchQuery';
-import { validateEventOptions, validateAnalyticsOptions } from './validation';
+import { DataLakeAnalyticsFetchQuery } from './DataLakeAnalyticsFetchQuery';
+import { DataLakeEventsFetchQuery, Event } from './DataLakeEventsFetchQuery';
+import { analyticsOptionsValidator, eventOptionsValidator } from './validators';
 import { sanitizeAnalyticsTableValue } from './sanitizeAnalyticsTableValue';
 import { sanitiseFetchDataOptions } from './sanitiseFetchDataOptions';
 import { DataLakeDatabase } from './DataLakeDatabase';
@@ -27,7 +27,7 @@ const buildEventDataValues = (resultsForEvent: Event[]) =>
 
 let dataLakeDatabase: DataLakeDatabase;
 
-const getDatabase = () => {
+export const getDatabase = () => {
   if (!dataLakeDatabase) {
     dataLakeDatabase = new DataLakeDatabase();
   }
@@ -35,12 +35,15 @@ const getDatabase = () => {
 };
 
 export class DataLakeApi {
-  async fetchEvents(optionsInput: Record<string, any>) {
-    await validateEventOptions(optionsInput);
-    const options = sanitiseFetchDataOptions(optionsInput as EventsFetchOptions);
-    const results: Event[] = await new DataLakeEventsFetchQuery(getDatabase(), options).fetch();
+  public async fetchEvents(optionsInput: Record<string, any>) {
+    const validatedOptions = eventOptionsValidator.validateSync(optionsInput);
+    const sanitizedOptions = sanitiseFetchDataOptions(validatedOptions);
+    const results: Event[] = await new DataLakeEventsFetchQuery(
+      getDatabase(),
+      sanitizedOptions,
+    ).fetch();
     const resultsByEventId: { [key: string]: Event[] } = groupBy(results, 'eventId');
-    const hasElements = options.dataElementCodes.length > 0;
+    const hasElements = sanitizedOptions.dataElementCodes.length > 0;
     return Object.values(resultsByEventId)
       .map(resultsForEvent => {
         const [{ eventId, date, entityCode, entityName }] = resultsForEvent;
@@ -55,9 +58,9 @@ export class DataLakeApi {
       .sort(getSortByKey('eventDate'));
   }
 
-  async fetchAnalytics(optionsInput: Record<string, any>) {
-    await validateAnalyticsOptions(optionsInput);
-    const options = sanitiseFetchDataOptions(optionsInput as AnalyticsFetchOptions);
+  public async fetchAnalytics(optionsInput: Record<string, any>) {
+    const validatedOptions = analyticsOptionsValidator.validateSync(optionsInput);
+    const options = sanitiseFetchDataOptions(validatedOptions);
     const { analytics, numAggregationsProcessed } = await new DataLakeAnalyticsFetchQuery(
       getDatabase(),
       options,

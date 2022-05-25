@@ -29,6 +29,10 @@
       "path": "packages/auth"
     },
     {
+      "name": "central-server",
+      "path": "packages/central-server"
+    },
+    {
       "name": "data-api",
       "path": "packages/data-api"
     },
@@ -81,8 +85,8 @@
       "path": "packages/meditrak-app"
     },
     {
-      "name": "meditrak-server",
-      "path": "packages/meditrak-server"
+      "name": "meditrak-app-server",
+      "path": "packages/meditrak-app-server"
     },
     {
       "name": "psss",
@@ -107,6 +111,10 @@
     {
       "name": "utils",
       "path": "packages/utils"
+    },
+    {
+      "name": "tsutils",
+      "path": "packages/tsutils"
     },
     {
       "name": "weather-api",

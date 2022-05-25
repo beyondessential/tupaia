@@ -96,7 +96,19 @@ const useConfigStore = () => {
   const setLocation = value => dispatch({ type: SET_LOCATION, value });
   const setProject = value => dispatch({ type: SET_PROJECT, value });
   const setTestData = value => dispatch({ type: SET_TEST_DATA, value });
-  const setVisualisation = value => dispatch({ type: SET_VISUALISATION, value });
+  const setVisualisation = value => {
+    const { transform } = value.data;
+    const sanitisedTransform = transform.map(conf =>
+      typeof conf === 'string' ? { transform: conf, alias: true } : conf,
+    );
+    const sanitisedData = { ...value.data, transform: sanitisedTransform };
+    const sanitisedValue = {
+      ...value,
+      data: sanitisedData,
+    };
+
+    return dispatch({ type: SET_VISUALISATION, value: sanitisedValue });
+  };
   const setVisualisationValue = (key, value) =>
     dispatch({ type: SET_VISUALISATION_VALUE, key, value });
   const setPresentation = value => dispatch({ type: SET_PRESENTATION_CONFIG, value });
@@ -116,18 +128,71 @@ const useConfigStore = () => {
   ];
 };
 
+const VisualisationContext = createContext(initialConfigState.visualisation);
+
+const amendStepsToBaseConfig = visualisation => {
+  const { data } = { ...visualisation };
+  const { aggregate, transform } = { ...data };
+  // Remove frontend config (isDisabled, id, schema) in aggregation steps.
+  const filteredAggregate = Array.isArray(aggregate)
+    ? aggregate.map(({ isDisabled, id, schema, ...restOfConfig }) => ({
+        ...restOfConfig,
+      }))
+    : aggregate;
+
+  // Remove frontend configs (isDisabled, id, schema) in transform steps. If it is an alias return as a string.
+  const filteredTransform = Array.isArray(transform)
+    ? transform.map(({ isDisabled, id, schema, ...restOfConfig }) => {
+        if (restOfConfig.alias) {
+          return restOfConfig.transform;
+        }
+        return {
+          ...restOfConfig,
+        };
+      })
+    : transform;
+
+  const filteredData = { ...data, aggregate: filteredAggregate, transform: filteredTransform };
+  return { ...visualisation, data: filteredData };
+};
+
+// Filter those unchecked aggregation or transform steps
+const filterDisabledSteps = visualisation => {
+  const { data } = { ...visualisation };
+  const { aggregate, transform } = { ...data };
+  const filteredAggregate = Array.isArray(aggregate)
+    ? aggregate.filter(({ isDisabled }) => !isDisabled)
+    : aggregate;
+  const filteredTransform = Array.isArray(transform)
+    ? transform.filter(({ isDisabled }) => !isDisabled)
+    : transform;
+  const filteredData = { ...data, aggregate: filteredAggregate, transform: filteredTransform };
+  return { ...visualisation, data: filteredData };
+};
+
 const VizBuilderConfigContext = createContext(initialConfigState);
-const { Provider } = VizBuilderConfigContext;
 
 // eslint-disable-next-line react/prop-types
 const VizConfigProvider = ({ children }) => {
   const store = useConfigStore();
+  const [{ visualisation }] = store;
 
   return (
-    <Provider value={store} displayName="VizBuilder">
-      {children}
-    </Provider>
+    <VisualisationContext.Provider
+      value={{
+        visualisationForFetchingData: amendStepsToBaseConfig(filterDisabledSteps(visualisation)),
+        visualisation: amendStepsToBaseConfig(visualisation),
+      }}
+    >
+      <VizBuilderConfigContext.Provider value={store} displayName="VizBuilder">
+        {children}
+      </VizBuilderConfigContext.Provider>
+    </VisualisationContext.Provider>
   );
+};
+
+const useVisualisation = () => {
+  return useContext(VisualisationContext);
 };
 
 const useVizConfig = () => {
@@ -136,4 +201,4 @@ const useVizConfig = () => {
 
 // Note: the store can be debugged in dev tools using a chrome plugin.
 // https://chrome.google.com/webstore/detail/react-context-devtool/oddhnidmicpefilikhgeagedibnefkcf?hl=en
-export { useVizConfig, VizConfigProvider };
+export { useVisualisation, useVizConfig, VizConfigProvider };

@@ -43,11 +43,8 @@ export class TransformParser extends ExpressionParser {
   private static readonly EXPRESSION_PREFIX = '=';
 
   private currentRow = 0;
-
   private rows: Row[];
-
   private lookups: Lookups;
-
   // eslint-disable-next-line react/static-property-placement
   private context?: Context;
 

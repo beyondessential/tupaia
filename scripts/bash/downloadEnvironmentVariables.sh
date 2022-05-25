@@ -27,7 +27,7 @@ for PACKAGE in $PACKAGES; do
 
     if [[ "${DEPLOYMENT_NAME}" == *-e2e || "${DEPLOYMENT_NAME}" == e2e ]]; then
         # Update e2e environment variables
-        if [[ ${PACKAGE} == "meditrak-server" || ${PACKAGE} == "web-config-server" ]]; then
+        if [[ ${PACKAGE} == "central-server" || ${PACKAGE} == "web-config-server" ]]; then
             sed -i -E 's/^AGGREGATION_URL_PREFIX="?dev-"?$/AGGREGATION_URL_PREFIX=e2e-/g' ${ENV_FILE_PATH}
         fi
     fi

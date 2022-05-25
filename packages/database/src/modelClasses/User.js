@@ -8,7 +8,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class UserType extends DatabaseType {
+export class UserType extends DatabaseType {
   static databaseType = TYPES.USER_ACCOUNT;
 
   get fullName() {

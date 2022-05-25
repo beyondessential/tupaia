@@ -3,21 +3,14 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  ENTITY_SEARCH_TERM_CHANGE,
-  ENTITY_RECEIVE_PRIMARY_ENTITIES,
-  ENTITY_RECEIVE_ENTITIES,
-} from './constants';
-import { getEntityQuestionState, getAnswerForQuestion, getQuestion } from '../assessment/selectors';
-
-const getPermsCheckFunction = (database, surveyId) => {
-  const currentUser = database.getCurrentUser();
-  const survey = database.findOne('Survey', surveyId);
-
-  return entity => currentUser.hasAccessToSurveyInEntity(survey, entity);
-};
+import { ENTITY_RECEIVE_PRIMARY_ENTITIES, ENTITY_RECEIVE_ENTITIES } from './constants';
+import { getAnswerForQuestion, getQuestion } from '../assessment/selectors';
+import { getRecentEntityIds } from '../assessment/helpers';
 
 const getEntityDatabaseFilters = (state, database, questionId) => {
+  // filtering for entities within the currently selected country also has the byproduct
+  // of only including entities for which the user has permission - to be filling in a survey in a
+  // country, they must have the associated permission group in that country
   const { code: countryCode } = database.getCountry(state.country.selectedCountryId);
   const filters = { countryCode };
 
@@ -54,42 +47,49 @@ const getEntityAttributeFilters = (state, questionId) => {
       : true;
 };
 
+const getRecentEntities = (database, state, entityFilters) => {
+  const { questions, primaryEntityQuestionId, assessorId } = state.assessment;
+  const entityTypes = questions[primaryEntityQuestionId].config.entity.type;
+  const recentEntityIds = getRecentEntityIds(
+    database,
+    assessorId,
+    entityTypes,
+    state.country.selectedCountryId,
+  );
+  if (recentEntityIds.length === 0) {
+    return [];
+  }
+
+  const recentEntities = database.getEntities({ ...entityFilters, id: recentEntityIds });
+
+  // sort database results to match our saved array of recent entity ids
+  const sortedRecentEntities = recentEntities
+    .slice() // need to slice to convert from RealmResults to standard array for sorting
+    .sort((a, b) => recentEntityIds.indexOf(a.id) - recentEntityIds.indexOf(b.id));
+
+  return sortedRecentEntities;
+};
+
 export const loadEntitiesFromDatabase = (isPrimaryEntity, questionId) => (
   dispatch,
   getState,
   { database },
 ) => {
   const state = getState();
-  const { assessment } = state;
-
-  // get search term
-  const { searchTerm } = getEntityQuestionState(state, questionId);
-
-  // check permissions - only for the PrimaryEntity questions
-  const { surveyId } = assessment;
-  const permsCheck = isPrimaryEntity ? getPermsCheckFunction(database, surveyId) : () => true;
-  const checkMatchesAttributeFilters = getEntityAttributeFilters(state, questionId);
 
   const filters = getEntityDatabaseFilters(state, database, questionId);
-  const entities = database.getEntities(searchTerm, filters);
+  const entities = database.getEntities(filters);
 
-  const filteredEntities = entities
-    .filter(permsCheck)
-    .filter(checkMatchesAttributeFilters)
-    .map(thisEntity => thisEntity.getReduxStoreData());
+  // filter on attributes
+  const checkMatchesAttributeFilters = getEntityAttributeFilters(state, questionId);
+  const filteredEntities = entities.filter(checkMatchesAttributeFilters);
+
+  const recentEntities = getRecentEntities(database, state, filters);
 
   dispatch({
     type: isPrimaryEntity ? ENTITY_RECEIVE_PRIMARY_ENTITIES : ENTITY_RECEIVE_ENTITIES,
-    filteredEntities,
+    entities: filteredEntities.map(e => e.getReduxStoreData()),
+    recentEntities,
     questionId,
   });
-};
-
-export const changeSearchTerm = (isPrimaryEntity, questionId, searchTerm) => async dispatch => {
-  dispatch({
-    type: ENTITY_SEARCH_TERM_CHANGE,
-    searchTerm,
-    questionId,
-  });
-  dispatch(loadEntitiesFromDatabase(isPrimaryEntity, questionId));
 };

@@ -51,6 +51,7 @@ const paramsValidator = yup.object().shape(
             )
           : schema,
       ),
+    dataGroups: yup.array().of(yup.string()).notRequired(),
   },
   [['rowField', 'categoryField']],
 );
@@ -61,7 +62,7 @@ const matrix = (rows: Row[], params: MatrixParams): Matrix => {
 
 const buildParams = (params: unknown): MatrixParams => {
   const validatedParams = paramsValidator.validateSync(params);
-  const { columns = '*', categoryField, rowField } = validatedParams;
+  const { columns = '*', categoryField, rowField, ...restOfConfigs } = validatedParams;
   const includeFields = columns === '*' ? ['*'] : columns;
 
   const excludeFields = categoryField ? [categoryField, rowField] : [rowField];
@@ -69,6 +70,7 @@ const buildParams = (params: unknown): MatrixParams => {
   return {
     columns: { includeFields, excludeFields },
     rows: { categoryField, rowField },
+    ...restOfConfigs,
   };
 };
 

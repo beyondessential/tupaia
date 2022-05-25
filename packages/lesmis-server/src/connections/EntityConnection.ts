@@ -14,9 +14,9 @@ const { ENTITY_API_URL = 'http://localhost:8050/v1' } = process.env;
  * @deprecated use @tupaia/api-client
  */
 export class EntityConnection extends SessionHandlingApiConnection {
-  baseUrl = ENTITY_API_URL;
+  public baseUrl = ENTITY_API_URL;
 
-  async getEntities(entityCode: string, queryParameters: QueryParameters = {}) {
+  public async getEntities(entityCode: string, queryParameters: QueryParameters = {}) {
     const response = await this.get(
       `hierarchy/${LESMIS_PROJECT_NAME}/${entityCode}/descendants`,
       queryParameters,
@@ -24,7 +24,7 @@ export class EntityConnection extends SessionHandlingApiConnection {
     return camelcaseKeys(response);
   }
 
-  async getEntity(entityCode: string) {
+  public async getEntity(entityCode: string) {
     const response = await this.get(`hierarchy/${LESMIS_PROJECT_NAME}/${entityCode}`);
     return camelcaseKeys(response);
   }

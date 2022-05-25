@@ -4,8 +4,7 @@
  */
 
 import { yup } from '@tupaia/utils';
-import { TupaiaDatabase } from '@tupaia/database';
-import { SqlQuery } from './SqlQuery';
+import { TupaiaDatabase, SqlQuery } from '@tupaia/database';
 
 const VALUE_AGGREGATION_FUNCTIONS = {
   SUM: 'sum(value::numeric)::text',
@@ -135,7 +134,7 @@ export class AnalyticsFetchQuery {
   private readonly endDate?: string;
   private readonly aggregations: QueryAggregation[];
 
-  constructor(database: TupaiaDatabase, options: AnalyticsFetchOptions) {
+  public constructor(database: TupaiaDatabase, options: AnalyticsFetchOptions) {
     this.database = database;
 
     const { dataElementCodes, organisationUnitCodes, startDate, endDate } = options;
@@ -175,7 +174,7 @@ export class AnalyticsFetchQuery {
     this.validate();
   }
 
-  async fetch() {
+  public async fetch() {
     const { query, params } = this.buildQueryAndParams();
 
     const sqlQuery = new SqlQuery<Analytic[]>(query, params);
@@ -186,7 +185,7 @@ export class AnalyticsFetchQuery {
     };
   }
 
-  validate() {
+  private validate() {
     this.aggregations.forEach(aggregation => {
       if (
         aggregation.switch.aggregateEntities &&
@@ -197,11 +196,11 @@ export class AnalyticsFetchQuery {
     });
   }
 
-  getEntityCodeField(aggregation: QueryAggregation) {
+  private getEntityCodeField(aggregation: QueryAggregation) {
     return aggregation.switch.aggregateEntities ? 'aggregation_entity_code' : 'entity_code';
   }
 
-  getCtesAndParams(aggregation: QueryAggregation) {
+  private getCtesAndParams(aggregation: QueryAggregation) {
     if (!aggregation.switch.aggregateEntities) {
       return { cte: '', params: [] };
     }
@@ -217,7 +216,7 @@ export class AnalyticsFetchQuery {
     return { cte, params: rows.flat() };
   }
 
-  getAliasedColumns() {
+  private getAliasedColumns() {
     return [
       'entity_code AS "entityCode"',
       'data_element_code AS "dataElementCode"',
@@ -227,7 +226,7 @@ export class AnalyticsFetchQuery {
     ].join(', ');
   }
 
-  getAggregationSelect(aggregation: QueryAggregation) {
+  private getAggregationSelect(aggregation: QueryAggregation) {
     const { aggregationFunction, groupByPeriodField = 'period' } = aggregation.switch;
 
     const fields = [
@@ -246,7 +245,7 @@ export class AnalyticsFetchQuery {
     return `SELECT ${fields.join(', ')}`;
   }
 
-  getPeriodConditionsAndParams() {
+  private getPeriodConditionsAndParams() {
     const periodConditions = [];
     const periodParams = [];
     if (this.startDate) {
@@ -260,7 +259,7 @@ export class AnalyticsFetchQuery {
     return { periodConditions, periodParams };
   }
 
-  getBaseWhereClauseAndParams() {
+  private getBaseWhereClauseAndParams() {
     const { periodConditions, periodParams } = this.getPeriodConditionsAndParams();
 
     if (periodConditions.length === 0) {
@@ -270,7 +269,7 @@ export class AnalyticsFetchQuery {
     return { clause: `WHERE ${periodConditions.join(' AND ')}`, params: periodParams };
   }
 
-  getAggregationJoin(aggregation: QueryAggregation) {
+  private getAggregationJoin(aggregation: QueryAggregation) {
     if (!aggregation.switch.aggregateEntities) {
       return '';
     }
@@ -280,14 +279,14 @@ export class AnalyticsFetchQuery {
     return `INNER JOIN ${relationsTableName} on ${relationsTableName}.code = ${previousTableName}.entity_code`;
   }
 
-  getAggregationGroupByClause(aggregation: QueryAggregation) {
+  private getAggregationGroupByClause(aggregation: QueryAggregation) {
     const groupByFields = [this.getEntityCodeField(aggregation), 'data_element_code'];
     const { groupByPeriodField } = aggregation.switch;
     if (groupByPeriodField) groupByFields.push(groupByPeriodField);
     return `GROUP BY ${groupByFields.join(', ')}`;
   }
 
-  buildQueryAndParams() {
+  private buildQueryAndParams() {
     const { ctes: ctesClause, params: ctesParams } = this.aggregations.reduce<{
       ctes: string;
       params: string[];

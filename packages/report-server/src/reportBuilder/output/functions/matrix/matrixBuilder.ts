@@ -1,4 +1,5 @@
 import pick from 'lodash.pick';
+
 import { Row } from '../../../types';
 import { MatrixParams, Matrix } from './types';
 
@@ -11,12 +12,10 @@ const NON_COLUMNS_KEYS = [CATEGORY_FIELD_KEY, ROW_FIELD_KEY];
 
 export class MatrixBuilder {
   private rows: Row[];
-
   private matrixData: Matrix;
-
   private params: MatrixParams;
 
-  constructor(rows: Row[], params: MatrixParams) {
+  public constructor(rows: Row[], params: MatrixParams) {
     this.rows = rows;
     this.params = params;
     this.matrixData = { columns: [], rows: [] };

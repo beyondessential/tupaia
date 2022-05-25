@@ -16,7 +16,7 @@ type ExcludeColumnsParams = {
   where: (parser: TransformParser) => boolean;
 };
 
-const paramsValidator = yup.object().shape({
+export const paramsValidator = yup.object().shape({
   columns: starSingleOrMultipleColumnsValidator,
   where: yup.string(),
 });

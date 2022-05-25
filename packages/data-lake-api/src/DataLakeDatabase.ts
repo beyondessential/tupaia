@@ -3,9 +3,9 @@
  * Copyright (c) 2017-2020 Beyond Essential Systems Pty Ltd
  */
 
-// @ts-ignore
+// @ts-expect-error pg has no types
 import { types as pgTypes } from 'pg';
-// @ts-ignore TODO: upgrade knex to get types
+// @ts-expect-error must upgrade knex to get types. Note: last upgrade attempt broke json field querying
 import knex from 'knex';
 
 import { getConnectionConfig } from './getConnectionConfig';
@@ -17,14 +17,14 @@ pgTypes.setTypeParser(pgTypes.builtins.TIMESTAMP, (val: any) => val);
 export class DataLakeDatabase {
   private connection: any;
 
-  constructor() {
+  public constructor(config = getConnectionConfig()) {
     this.connection = knex({
       client: 'pg',
-      connection: getConnectionConfig(),
+      connection: config,
     });
   }
 
-  async closeConnections() {
+  public async closeConnections() {
     return this.connection.destroy();
   }
 
@@ -33,7 +33,7 @@ export class DataLakeDatabase {
    *
    * Use only for situations in which Knex is not able to assemble a query.
    */
-  async executeSql(sqlString: string, parametersToBind: string[]) {
+  public async executeSql(sqlString: string, parametersToBind: string[]) {
     const result = await this.connection.raw(sqlString, parametersToBind);
     return result.rows;
   }

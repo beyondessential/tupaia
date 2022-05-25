@@ -11,7 +11,6 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 
-import SearchOverlay from '../SearchOverlay';
 import { LoginForm } from '../../LoginForm';
 import UserMenuOverlay from '../UserMenuOverlay';
 import { ChangePasswordForm } from '../../ChangePasswordForm';
@@ -21,7 +20,6 @@ import { TopBar } from './TopBar';
 import { delayMobileTapCallback } from '../../../utils';
 import {
   findLoggedIn,
-  toggleSearchExpand,
   openUserPage,
   DIALOG_PAGE_USER_MENU,
   DIALOG_PAGE_CHANGE_PASSWORD,
@@ -56,7 +54,6 @@ const MobileFormHeading = styled(Typography)`
 const HeaderBar = React.memo(props => {
   const {
     isUserLoggedIn,
-    searchIsExpanded,
     onToggleUserMenuExpand,
     userMenuIsExpanded,
     isOneTimeLoginExpanded,
@@ -66,7 +63,6 @@ const HeaderBar = React.memo(props => {
     dialogPage,
     isRequestingLogin,
     currentUserUsername,
-    onToggleSearchExpand,
   } = props;
   const [isSignupOpen, openSignupOverlay] = React.useState(false);
   const [isLoginExpanded, toggleMenuExpanded] = React.useState(false);
@@ -86,7 +82,6 @@ const HeaderBar = React.memo(props => {
       <TopBar
         currentUserUsername={currentUserUsername}
         isUserLoggedIn={isUserLoggedIn}
-        onToggleSearchExpand={onToggleSearchExpand}
         toggleUserMenuExpand={onToggleUserMenuExpand}
         toggleMenuExpanded={handleToggleUserMenuExpand}
       />
@@ -109,7 +104,6 @@ const HeaderBar = React.memo(props => {
         </>
       )}
       {isSignupOpen && <SignupOverlay closeSignupOverlay={handleCloseSignupOverlay} />}
-      {searchIsExpanded && <SearchOverlay />}
       {userMenuIsExpanded && <UserMenuOverlay />}
       {changePasswordIsExpanded && (
         <>
@@ -137,7 +131,6 @@ const HeaderBar = React.memo(props => {
 });
 
 HeaderBar.propTypes = {
-  searchIsExpanded: PropTypes.bool,
   userMenuIsExpanded: PropTypes.bool,
   isOneTimeLoginExpanded: PropTypes.bool,
   changePasswordIsExpanded: PropTypes.bool,
@@ -145,7 +138,6 @@ HeaderBar.propTypes = {
   requestCountryAccessIsExpanded: PropTypes.bool,
   currentUserUsername: PropTypes.string,
   isUserLoggedIn: PropTypes.bool,
-  onToggleSearchExpand: PropTypes.func.isRequired,
   onToggleUserMenuExpand: PropTypes.func.isRequired,
   onRefreshCurrentUser: PropTypes.func.isRequired,
   dialogPage: PropTypes.string.isRequired,
@@ -153,7 +145,6 @@ HeaderBar.propTypes = {
 };
 
 HeaderBar.defaultProps = {
-  searchIsExpanded: false,
   userMenuIsExpanded: false,
   isOneTimeLoginExpanded: false,
   changePasswordIsExpanded: false,
@@ -165,8 +156,6 @@ HeaderBar.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const { isExpanded } = state.searchBar;
-
   const {
     currentUserUsername,
     isUserLoggedIn,
@@ -176,7 +165,6 @@ const mapStateToProps = state => {
   } = state.authentication;
 
   return {
-    searchIsExpanded: isExpanded,
     userMenuIsExpanded: isDialogVisible && dialogPage === DIALOG_PAGE_USER_MENU,
     isOneTimeLoginExpanded: isDialogVisible && dialogPage === DIALOG_PAGE_ONE_TIME_LOGIN,
     changePasswordIsExpanded:
@@ -193,7 +181,6 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onToggleSearchExpand: () => delayMobileTapCallback(() => dispatch(toggleSearchExpand())),
   onToggleUserMenuExpand: () =>
     delayMobileTapCallback(() => dispatch(openUserPage(DIALOG_PAGE_USER_MENU))),
   onUserMenuCollapse: () => dispatch(closeUserPage()),

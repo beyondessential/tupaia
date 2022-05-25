@@ -6,11 +6,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { ResourcePage } from './ResourcePage';
-import { prettyArray } from '../../utilities';
 import { LightOutlinedButton } from '@tupaia/ui-components';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Link } from 'react-router-dom';
+import { prettyArray } from '../../utilities';
+import { ResourcePage } from './ResourcePage';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 
 const StyledLink = styled(Link)`
@@ -114,10 +114,22 @@ const FIELDS = [
 
 const IMPORT_CONFIG = {
   title: 'Import Map Overlay Visualisation',
-  subtitle: 'Please upload a .json file with the visualisation to be imported:',
+  subtitle: 'Please upload one or more .json files with visualisations to be imported:',
   actionConfig: {
     importEndpoint: 'mapOverlayVisualisations',
+    multiple: true,
   },
+  getFinishedMessage: response => (
+    <>
+      <span>{response.message}</span>
+      {response.importedVizes.map(({ code, id }) => (
+        <p>
+          <span>{`${code}: `}</span>
+          <Link to={`/viz-builder/dashboard-item/${id}`}>View in Visualisation Builder</Link>
+        </p>
+      ))}
+    </>
+  ),
 };
 
 const renderNewMapOverlayVizButton = () => (

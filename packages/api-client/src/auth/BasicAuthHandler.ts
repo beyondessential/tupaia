@@ -8,7 +8,7 @@ import { AuthHandler } from '../types';
 export class BasicAuthHandler implements AuthHandler {
   private readonly authHeader: string;
 
-  constructor(username: string, password: string) {
+  public constructor(username: string, password: string) {
     this.authHeader = this.buildAuthHeader(username, password);
   }
 

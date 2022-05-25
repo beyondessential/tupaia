@@ -5,7 +5,7 @@
 
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, SectionList, StyleSheet, Text, View } from 'react-native';
 
 import { Icon, TextInput, TouchableOpacity } from '../widgets';
 import {
@@ -19,55 +19,211 @@ import {
 import { EntityItem, ITEM_HEIGHT } from './EntityItem';
 
 const SEARCH_BOX_HEIGHT = 40;
-
 export class EntityList extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      searchTerm: '',
+      searchResults: null,
+      isOpen: false,
+    };
+  }
+
   componentDidMount() {
-    const { onMount } = this.props;
+    const { onMount, startOpen } = this.props;
     if (onMount) {
       onMount(); // E.g. pull database records into the redux store to populate the clinic list
     }
+
+    if (startOpen) {
+      this.openResults();
+    }
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.searchTerm !== this.props.searchTerm && this.listComponent) {
-      this.listComponent.scrollToIndex({
-        index: 0,
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.searchTerm !== this.state.searchTerm && this.listComponent) {
+      this.listComponent.scrollToLocation({
+        sectionIndex: 0,
+        itemIndex: 0,
         viewPosition: 0,
         animated: false,
       });
     }
   }
 
-  getListData = () => {
-    const { searchTerm, filteredEntities } = this.props;
-    const lowerCaseSearchTerm = searchTerm ? searchTerm.toLowerCase() : '';
+  componentWillUnmount() {
+    this.props.releaseScrollControl();
+  }
 
-    if (!lowerCaseSearchTerm) {
-      return filteredEntities;
+  openResults = () => {
+    // if opening results, take scroll control from outer scroll view
+    this.setState(
+      {
+        isOpen: true,
+      },
+      () => {
+        this.props.takeScrollControl();
+        this.props.scrollIntoFocus();
+      },
+    );
+  };
+
+  selectRow = row => {
+    // once a row is selected, release scroll control to the outer scroll view
+    this.props.releaseScrollControl();
+    this.setState({
+      searchTerm: '',
+      searchResults: null,
+      isOpen: false,
+    });
+    this.props.onRowPress(row);
+  };
+
+  deselectRow = () => {
+    this.props.onClear();
+    // if we started with the results open, open them back up after clearing the entity
+    if (this.props.startOpen) {
+      this.openResults();
+    }
+  };
+
+  handleSearchChange = searchTerm => {
+    if (!searchTerm) {
+      this.setState({
+        searchTerm: '',
+        searchResults: null,
+      });
+      return;
     }
 
-    return filteredEntities.sort(({ name: a }, { name: b }) => {
-      // Send entity names that start with the search term to the top.
-      const checkMatchesAtStart = name => name.toLowerCase().startsWith(lowerCaseSearchTerm);
-      if (checkMatchesAtStart(a) !== checkMatchesAtStart(b)) {
-        return checkMatchesAtStart(a) ? -1 : 1;
-      }
+    const { entities } = this.props;
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
 
-      // Sort alphabetically
-      return a.localeCompare(b);
+    const searchResults = entities
+      .filter(
+        ({ name, parentName }) =>
+          name.toLowerCase().includes(lowerCaseSearchTerm) ||
+          (parentName && parentName.toLowerCase().includes(lowerCaseSearchTerm)),
+      )
+      .sort(({ name: a }, { name: b }) => {
+        // Send entity names that start with the search term to the top.
+        const checkMatchesAtStart = name => name.toLowerCase().startsWith(lowerCaseSearchTerm);
+        if (checkMatchesAtStart(a) !== checkMatchesAtStart(b)) {
+          return checkMatchesAtStart(a) ? -1 : 1;
+        }
+
+        // Sort alphabetically
+        return a.localeCompare(b);
+      });
+    this.setState({
+      searchTerm,
+      searchResults,
     });
   };
 
-  renderEntityCell = ({ item }) => {
-    const { onRowPress, selectedEntityId } = this.props;
-    const isSelected = item.id === selectedEntityId;
-    return <EntityItem entity={item} onPress={onRowPress} isSelected={isSelected} />;
+  getListSections = () => {
+    const { searchResults } = this.state;
+    if (searchResults) {
+      return [{ data: searchResults }];
+    }
+
+    const { entities, recentEntities } = this.props;
+    if (recentEntities?.length > 0) {
+      return [
+        { title: 'Recently used', data: recentEntities },
+        { title: 'All entities', data: entities },
+      ];
+    }
+    return [{ data: entities }];
   };
 
+  renderEntityCell = ({ item, onDeselect }) => {
+    const { selectedEntityId } = this.props;
+    const isSelected = item.id === selectedEntityId;
+    return (
+      <EntityItem
+        entity={item}
+        onPress={this.selectRow}
+        isSelected={isSelected}
+        onDeselect={onDeselect}
+      />
+    );
+  };
+
+  renderSectionHeader = ({ section }) => {
+    if (!section.title) {
+      return null;
+    }
+    return <Text style={localStyles.sectionHeaderText}>{section.title}</Text>;
+  };
+
+  renderResults() {
+    const { entities } = this.props;
+    const { searchTerm, searchResults, isOpen } = this.state;
+
+    // while entities is null, we're still loading from the database
+    if (!entities) {
+      return <Text style={localStyles.noResultsText}>Loading...</Text>;
+    }
+
+    // if entities is not null, but empty, the survey is probably misconfigured
+    if (entities.length === 0) {
+      return (
+        <Text style={localStyles.noResultsText}>
+          No valid entities for this question, please contact your survey administrator.
+        </Text>
+      );
+    }
+
+    // if searchResults is not null, but empty, there are no entities matching their search
+    if (searchResults && searchResults.length === 0) {
+      return (
+        <Text style={localStyles.noResultsText}>{`No entities matching '${searchTerm}'.`}</Text>
+      );
+    }
+
+    if (isOpen) {
+      return (
+        <SectionList
+          sections={this.getListSections()}
+          renderItem={this.renderEntityCell}
+          renderSectionHeader={this.renderSectionHeader}
+          keyExtractor={item => item.id}
+          keyboardShouldPersistTaps="always"
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={2}
+          // This allows fast scrolling of the entire list, without getting the layout the
+          // list (especially on slower devices) will stop scrolling before the end is reached
+          // and the device will take a moment to increase the scroll height before continuing.
+          getItemLayout={(data, index) => ({
+            length: ITEM_HEIGHT,
+            offset: ITEM_HEIGHT * index,
+            index,
+          })}
+          ref={listComponent => {
+            this.listComponent = listComponent;
+          }}
+          style={localStyles.resultsContainer}
+        />
+      );
+    }
+
+    return null;
+  }
+
   render() {
-    const { searchTerm, onChangeSearchTerm } = this.props;
-    const isSearching = searchTerm.length > 0;
-    const listData = this.getListData();
+    const { entities, selectedEntityId } = this.props;
+    const { searchTerm } = this.state;
+
+    if (entities && entities.length > 0 && selectedEntityId) {
+      const selectedEntity = entities.find(i => i.id === selectedEntityId);
+      return (
+        <View style={localStyles.container}>
+          {this.renderEntityCell({ item: selectedEntity, onDeselect: this.deselectRow })}
+        </View>
+      );
+    }
 
     return (
       <View style={localStyles.container}>
@@ -84,60 +240,41 @@ export class EntityList extends PureComponent {
             placeholder="Search"
             placeholderTextColor={getGreyShade(0.1)}
             value={searchTerm}
-            onChangeText={onChangeSearchTerm}
+            onChangeText={this.handleSearchChange}
+            onFocus={this.openResults}
           />
           {searchTerm.length > 0 && (
             <TouchableOpacity
               analyticsLabel="Clinic List: Search box close"
               style={localStyles.searchBoxCloseButton}
-              onPress={() => onChangeSearchTerm('')}
+              onPress={() => this.handleSearchChange('')}
             >
               <Icon name="close" library="Material" size={16} color={THEME_COLOR_ONE} />
             </TouchableOpacity>
           )}
         </View>
-        {listData.length === 0 ? (
-          <Text style={localStyles.noResultsText}>
-            {isSearching ? `No clinics matching '${searchTerm}'.` : 'Loading...'}
-          </Text>
-        ) : (
-          <FlatList
-            data={listData}
-            renderItem={this.renderEntityCell}
-            keyExtractor={item => item.id}
-            keyboardShouldPersistTaps="always"
-            initialNumToRender={50}
-            maxToRenderPerBatch={50}
-            windowSize={50}
-            // This allows fast scrolling of the entire list, without getting the layout the
-            // list (especially on slower devices) will stop scrolling before the end is reached
-            // and the device will take a moment to increase the scroll height before continuing.
-            getItemLayout={(data, index) => ({
-              length: ITEM_HEIGHT,
-              offset: ITEM_HEIGHT * index,
-              index,
-            })}
-            ref={listComponent => {
-              this.listComponent = listComponent;
-            }}
-            style={localStyles.container}
-          />
-        )}
+        {this.renderResults()}
       </View>
     );
   }
 }
 
 EntityList.propTypes = {
-  filteredEntities: PropTypes.array.isRequired,
-  searchTerm: PropTypes.string.isRequired,
+  entities: PropTypes.array,
+  recentEntities: PropTypes.array,
   selectedEntityId: PropTypes.string,
   onRowPress: PropTypes.func.isRequired,
-  onChangeSearchTerm: PropTypes.func.isRequired,
+  onClear: PropTypes.func.isRequired,
   onMount: PropTypes.func,
+  startOpen: PropTypes.bool.isRequired,
+  takeScrollControl: PropTypes.func.isRequired,
+  releaseScrollControl: PropTypes.func.isRequired,
+  scrollIntoFocus: PropTypes.func.isRequired,
 };
 
 EntityList.defaultProps = {
+  entities: null,
+  recentEntities: null,
   selectedEntityId: '',
   onMount: null,
 };
@@ -145,6 +282,9 @@ EntityList.defaultProps = {
 const localStyles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  resultsContainer: {
+    height: Dimensions.get('window').height, // fixed height so FlatList optimisations work within the outer ScrollView
   },
   searchBox: {
     borderColor: getThemeColorOneFaded(0.7),
@@ -189,6 +329,11 @@ const localStyles = StyleSheet.create({
     opacity: 0.8,
     // This marginBottom is to prevent the bottom of text being clipped off by the row paddingVertical on Android.
     marginBottom: -10,
+  },
+  sectionHeaderText: {
+    color: THEME_TEXT_COLOR_ONE,
+    fontSize: THEME_FONT_SIZE_ONE * 0.8,
+    opacity: 0.8,
   },
   row: {
     flexDirection: 'row',

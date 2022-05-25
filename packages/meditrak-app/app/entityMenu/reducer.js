@@ -6,38 +6,22 @@
 import { createReducer } from '../utilities';
 import { COUNTRY_SELECT } from '../country/constants';
 import { SURVEY_SELECT } from '../assessment/constants';
-import {
-  ENTITY_RECEIVE_ENTITIES,
-  ENTITY_RECEIVE_PRIMARY_ENTITIES,
-  ENTITY_SEARCH_TERM_CHANGE,
-} from './constants';
+import { ENTITY_RECEIVE_ENTITIES, ENTITY_RECEIVE_PRIMARY_ENTITIES } from './constants';
 import { LOGIN_REQUEST } from '../authentication';
 
 const defaultState = {
   questions: {},
 };
 
-function updateSearchTerm({ searchTerm, questionId }, { questions }) {
+function updateEntities({ entities, recentEntities, questionId }, { questions }) {
   const question = questions[questionId] || {};
   return {
     questions: {
       ...questions,
       [questionId]: {
         ...question,
-        searchTerm,
-      },
-    },
-  };
-}
-
-function updateEntities({ filteredEntities, questionId }, { questions }) {
-  const question = questions[questionId] || {};
-  return {
-    questions: {
-      ...questions,
-      [questionId]: {
-        ...question,
-        filteredEntities,
+        entities,
+        recentEntities,
       },
     },
   };
@@ -46,11 +30,9 @@ function updateEntities({ filteredEntities, questionId }, { questions }) {
 const stateChanges = {
   [ENTITY_RECEIVE_ENTITIES]: updateEntities,
   [ENTITY_RECEIVE_PRIMARY_ENTITIES]: updateEntities,
-  [ENTITY_SEARCH_TERM_CHANGE]: updateSearchTerm,
   // reset all questions but not primary entity
-  [SURVEY_SELECT]: (payload, { filteredEntities, searchTerm }) => ({
-    filteredEntities,
-    searchTerm,
+  [SURVEY_SELECT]: (payload, { entities }) => ({
+    entities,
     questions: {},
   }),
   // complete reset

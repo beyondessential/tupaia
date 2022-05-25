@@ -36,9 +36,13 @@ import {
   UserRoute,
   ImportMapOverlayVisualisationRequest,
   ImportMapOverlayVisualisationRoute,
+  FetchAggregationOptionsRequest,
+  FetchAggregationOptionsRoute,
+  FetchTransformSchemasRequest,
+  FetchTransformSchemasRoute,
 } from '../routes';
 
-const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
+const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
 
 /**
  * Set up express server with middleware,
@@ -106,13 +110,13 @@ export function createApp() {
     .post<ImportDashboardVisualisationRequest>(
       '/v1/import/dashboardVisualisations',
       verifyBESAdminAccess,
-      upload.single('dashboardVisualisations'),
+      upload.array('dashboardVisualisations'),
       handleWith(ImportDashboardVisualisationRoute),
     )
     .post<ImportMapOverlayVisualisationRequest>(
       '/v1/import/mapOverlayVisualisations',
       verifyBESAdminAccess,
-      upload.single('mapOverlayVisualisations'),
+      upload.array('mapOverlayVisualisations'),
       handleWith(ImportMapOverlayVisualisationRoute),
     )
     .post<UploadTestDataRequest>(
@@ -126,9 +130,19 @@ export function createApp() {
       verifyBESAdminAccess,
       handleWith(FetchMapOverlayVisualisationRoute),
     )
+    .get<FetchAggregationOptionsRequest>(
+      '/v1/fetchAggregationOptions',
+      verifyBESAdminAccess,
+      handleWith(FetchAggregationOptionsRoute),
+    )
+    .get<FetchTransformSchemasRequest>(
+      '/v1/fetchTransformSchemas',
+      verifyBESAdminAccess,
+      handleWith(FetchTransformSchemasRoute),
+    )
     .build();
 
-  useForwardUnhandledRequests(app, MEDITRAK_API_URL);
+  useForwardUnhandledRequests(app, CENTRAL_API_URL);
 
   return app;
 }

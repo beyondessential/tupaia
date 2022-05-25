@@ -21,7 +21,7 @@ const buildHeaderText = (markerData, popupHeaderFormat) => {
 };
 
 export const MeasurePopup = React.memo(
-  ({ markerData, serieses, onOrgUnitClick, multiOverlaySerieses }) => {
+  ({ markerData, serieses, onSeeOrgUnitDashboard, multiOverlaySerieses }) => {
     const { coordinates, organisationUnitCode } = markerData;
     const { popupHeaderFormat = '{name}' } = serieses.reduce((all, mo) => ({ ...all, ...mo }), {});
     return (
@@ -29,7 +29,9 @@ export const MeasurePopup = React.memo(
         headerText={buildHeaderText(markerData, popupHeaderFormat)}
         buttonText="See Dashboard"
         coordinates={coordinates}
-        onDetailButtonClick={onOrgUnitClick ? () => onOrgUnitClick(organisationUnitCode) : null}
+        onDetailButtonClick={
+          onSeeOrgUnitDashboard ? () => onSeeOrgUnitDashboard(organisationUnitCode) : null
+        }
       >
         <PopupDataItemList serieses={multiOverlaySerieses || serieses} data={markerData} />
       </PopupMarker>
@@ -53,10 +55,10 @@ MeasurePopup.propTypes = {
     }),
   ).isRequired,
   multiOverlaySerieses: PropTypes.array,
-  onOrgUnitClick: PropTypes.func,
+  onSeeOrgUnitDashboard: PropTypes.func,
 };
 
 MeasurePopup.defaultProps = {
-  onOrgUnitClick: null,
+  onSeeOrgUnitDashboard: null,
   multiOverlaySerieses: null,
 };

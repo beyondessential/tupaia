@@ -16,7 +16,7 @@ export const getDefaultPeriod = () => {
   const startDateToUse =
     EARLIEST_DATA_DATE > minimumStartDate ? EARLIEST_DATA_DATE : minimumStartDate;
   const startDate = startDateToUse.date(1);
-  const endDate = utcMoment().endOf('month');
+  const endDate = utcMoment();
 
   return convertDateRangeToPeriods(startDate, endDate).join(';');
 };

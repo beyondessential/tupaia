@@ -75,7 +75,7 @@ const getRealDataKeys = chartConfig =>
 
 const getLegendAlignment = (legendPosition, isExporting) => {
   if (isExporting) {
-    return { verticalAlign: 'top', align: 'center' };
+    return { verticalAlign: 'top', align: 'right', layout: 'vertical' };
   }
   if (legendPosition === 'bottom') {
     return { verticalAlign: 'bottom', align: 'center' };

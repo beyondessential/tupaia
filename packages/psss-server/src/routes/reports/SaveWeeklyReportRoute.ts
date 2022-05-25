@@ -10,10 +10,12 @@ import { Route } from '../Route';
 import { WEEKLY_SURVEY_COUNTRY, WEEKLY_SURVEY_SITE } from '../../constants';
 import { validateIsNumber } from '../../utils';
 
-export type SaveWeeklyReportRequest = Request<{ countryCode: string; siteCode: string },
+export type SaveWeeklyReportRequest = Request<
+  { countryCode: string; siteCode: string },
   any,
   Record<string, unknown>,
-  { week: string }>;
+  { week: string }
+>;
 
 type WeeklyReportAnswer = {
   type: string;
@@ -22,8 +24,8 @@ type WeeklyReportAnswer = {
 };
 
 export class SaveWeeklyReportRoute extends Route<SaveWeeklyReportRequest> {
-  async buildResponse() {
-    if (!this.meditrakConnection) throw new UnauthenticatedError('Unauthenticated');
+  public async buildResponse() {
+    if (!this.centralConnection) throw new UnauthenticatedError('Unauthenticated');
 
     const { week } = this.req.query;
     const { countryCode, siteCode } = this.req.params;
@@ -31,7 +33,7 @@ export class SaveWeeklyReportRoute extends Route<SaveWeeklyReportRequest> {
     const isSiteSurvey = !!siteCode;
     const answers = mapReqBodyToAnswers(this.req.body, isSiteSurvey);
 
-    return this.meditrakConnection.updateOrCreateSurveyResponse(
+    return this.centralConnection.updateOrCreateSurveyResponse(
       isSiteSurvey ? WEEKLY_SURVEY_SITE : WEEKLY_SURVEY_COUNTRY,
       isSiteSurvey ? siteCode : countryCode,
       week,

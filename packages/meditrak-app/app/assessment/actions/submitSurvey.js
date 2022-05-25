@@ -17,7 +17,7 @@ import { getAnswers, getScreens, getValidQuestions } from '../selectors';
 import { changeAnswer, selectSurvey, validateScreen } from './actions';
 import {
   doesScreenHaveValidationErrors,
-  getDefaultEntitySettingKey,
+  addRecentEntityId,
   getEntityCreationQuestions,
   getOptionCreationAutocompleteQuestions,
 } from '../helpers';
@@ -102,6 +102,18 @@ const processQuestions = async (dispatch, getState, database, userId, questions)
       continue;
     }
 
+    // Save any entities used in the recent list
+    if (['PrimaryEntity', 'Entity'].includes(question.type)) {
+      const { type: entityTypes } = question.config.entity;
+      addRecentEntityId(
+        database,
+        userId,
+        entityTypes,
+        getState().country.selectedCountryId,
+        answer,
+      );
+    }
+
     // Handle special question types
     switch (question.type) {
       case 'SubmissionDate':
@@ -109,12 +121,7 @@ const processQuestions = async (dispatch, getState, database, userId, questions)
         responseFields.dataTime = moment(answer).toISOString();
         break;
       case 'PrimaryEntity': {
-        const { type } = question.config.entity;
         responseFields.entityId = answer;
-        database.setSetting(
-          getDefaultEntitySettingKey(userId, type, getState().country.selectedCountryId),
-          answer,
-        );
         break;
       }
       default:

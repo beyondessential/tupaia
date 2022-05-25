@@ -22,24 +22,12 @@ export class User extends RealmObject {
 
   /**
    * Whether this survey is available to the given user. Checks whether that user has access to the
-   * permission group required by this survey.
+   * permission group required by this survey, in the selected country.
    */
-  hasAccessToSurveyInEntity(survey, entity) {
+  hasAccessToSurveyInCountry(survey, country) {
     const { permissionGroup } = survey;
     if (!permissionGroup) return false; // this survey is not fully synced yet, don't show it
-    return this.hasEntityAccess(entity, permissionGroup.name);
-  }
-
-  // User has access if they have access to the entity itself, or some ancestor entity
-  hasEntityAccess(entity, permissionGroupName = '') {
-    const entities = [];
-    let currentEntity = entity;
-    while (currentEntity && currentEntity.type !== 'world') {
-      entities.push(currentEntity.code);
-      currentEntity = currentEntity.parent;
-    }
-
-    return this.accessPolicy.allowsSome(entities, permissionGroupName);
+    return this.accessPolicy.allows(country.code, permissionGroup.name);
   }
 }
 

@@ -10,6 +10,12 @@ import errorHandler from 'api-error-handler';
 // @ts-expect-error no types
 import morgan from 'morgan';
 
+import {
+  AuthHandler,
+  getBaseUrlsForHost,
+  LOCALHOST_BASE_URLS,
+  TupaiaApiClient,
+} from '@tupaia/api-client';
 import { Authenticator } from '@tupaia/auth';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 
@@ -20,12 +26,10 @@ import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Ro
 
 export class ApiBuilder {
   private readonly app: Express;
-
   private readonly models: ModelRegistry;
-
   private version: string;
 
-  constructor(transactingConnection: TupaiaDatabase) {
+  public constructor(transactingConnection: TupaiaDatabase) {
     this.models = new ModelRegistry(transactingConnection);
     this.app = express();
 
@@ -64,17 +68,32 @@ export class ApiBuilder {
     });
   }
 
-  setVersion(version: string) {
+  public setVersion(version: string) {
     this.version = version;
   }
 
-  useBasicBearerAuth(apiName: string) {
+  public useBasicBearerAuth(apiName: string) {
     const authenticator = new Authenticator(this.models);
     this.app.use(buildBasicBearerAuthMiddleware(apiName, authenticator));
     return this;
   }
 
-  use<T extends ExpressRequest<T> = Request>(
+  public attachApiClientToContext(authHandlerProvider: (req: Request) => AuthHandler) {
+    return this.use('*', (req, res, next) => {
+      try {
+        const baseUrls =
+          process.env.NODE_ENV === 'test' ? LOCALHOST_BASE_URLS : getBaseUrlsForHost(req.hostname);
+        const apiClient = new TupaiaApiClient(authHandlerProvider(req), baseUrls);
+        req.ctx.services = apiClient;
+        res.ctx.services = apiClient;
+        next();
+      } catch (err) {
+        next(err);
+      }
+    });
+  }
+
+  public use<T extends ExpressRequest<T> = Request>(
     path: string,
     ...middlewares: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
@@ -82,12 +101,7 @@ export class ApiBuilder {
     return this;
   }
 
-  middleware(middleware: RequestHandler) {
-    this.app.use(middleware);
-    return this;
-  }
-
-  get<T extends ExpressRequest<T> = Request>(
+  public get<T extends ExpressRequest<T> = Request>(
     path: string,
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
@@ -95,7 +109,7 @@ export class ApiBuilder {
     return this;
   }
 
-  post<T extends ExpressRequest<T> = Request>(
+  public post<T extends ExpressRequest<T> = Request>(
     path: string,
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
@@ -103,7 +117,7 @@ export class ApiBuilder {
     return this;
   }
 
-  build() {
+  public build() {
     /**
      * Test Route
      */

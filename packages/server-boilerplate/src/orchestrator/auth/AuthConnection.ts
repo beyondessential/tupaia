@@ -10,9 +10,9 @@ import { ApiConnection } from '../../connections';
 
 const basicAuthHandler = {
   getAuthHeader: async () => {
-    const { MEDITRAK_API_CLIENT_NAME, MEDITRAK_API_CLIENT_PASSWORD } = process.env;
-    const MEDITRAK_API_CREDENTIALS = `${MEDITRAK_API_CLIENT_NAME}:${MEDITRAK_API_CLIENT_PASSWORD}`;
-    return `Basic ${Buffer.from(MEDITRAK_API_CREDENTIALS).toString('base64')}`;
+    const { API_CLIENT_NAME, API_CLIENT_PASSWORD } = process.env;
+    const API_CLIENT_CREDENTIALS = `${API_CLIENT_NAME}:${API_CLIENT_PASSWORD}`;
+    return `Basic ${Buffer.from(API_CLIENT_CREDENTIALS).toString('base64')}`;
   },
 };
 
@@ -26,13 +26,13 @@ export interface AuthResponse {
 }
 
 export class AuthConnection extends ApiConnection {
-  baseUrl = process.env.MEDITRAK_API_URL || 'http://localhost:8090/v2'; // auth server is actually just meditrak server
+  public baseUrl = process.env.CENTRAL_API_URL || 'http://localhost:8090/v2'; // auth server is actually just central server
 
-  constructor() {
+  public constructor() {
     super(basicAuthHandler);
   }
 
-  async login({ emailAddress, password, deviceName }: Credentials) {
+  public async login({ emailAddress, password, deviceName }: Credentials) {
     const response = await this.post(
       'auth',
       { grantType: 'password' },
@@ -41,7 +41,7 @@ export class AuthConnection extends ApiConnection {
     return this.parseAuthResponse(response);
   }
 
-  async refreshAccessToken(refreshToken: string) {
+  public async refreshAccessToken(refreshToken: string) {
     const response = await this.post(
       'auth',
       {
@@ -54,7 +54,7 @@ export class AuthConnection extends ApiConnection {
     return this.parseAuthResponse(response);
   }
 
-  parseAuthResponse(response: AuthResponse) {
+  private parseAuthResponse(response: AuthResponse) {
     const { accessToken, refreshToken, user } = response;
     if (!accessToken || !refreshToken || !user) {
       throw new Error('Invalid response from auth server');

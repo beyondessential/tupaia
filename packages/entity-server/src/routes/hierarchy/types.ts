@@ -4,9 +4,9 @@
  */
 
 import { Request } from 'express';
+import { Resolved } from '@tupaia/tsutils';
 import { EntityFields, EntityType, EntityFilter } from '../../models';
 import { extendedFieldFunctions } from './extendedFieldFunctions';
-import { Resolved } from '../../types';
 
 export interface SingleEntityRequestParams {
   hierarchyName: string;

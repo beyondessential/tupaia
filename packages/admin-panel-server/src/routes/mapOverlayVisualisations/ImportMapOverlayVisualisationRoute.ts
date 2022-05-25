@@ -6,12 +6,11 @@
 
 import assert from 'assert';
 import { Request, Response, NextFunction } from 'express';
-import fs from 'fs';
 
 import { Route } from '@tupaia/server-boilerplate';
-import { readJsonFile, reduceToDictionary, snakeKeys, UploadError, yup } from '@tupaia/utils';
+import { ValidationError, reduceToDictionary, snakeKeys, UploadError, yup } from '@tupaia/utils';
 
-import { MeditrakConnection } from '../../connections';
+import { CentralConnection } from '../../connections';
 import {
   MapOverlayVisualisationExtractor,
   draftReportValidator,
@@ -26,12 +25,13 @@ import type {
   MapOverlayGroupRelation,
   MapOverlayGroupRelationRecord,
 } from '../../viz-builder';
-import { ValidationError } from '@tupaia/utils';
+import { readFileContent } from '../../utils';
 
 const importFileSchema = yup.object().shape(
   {
     mapOverlayGroups: yup.array().of(mapOverlayGroupValidator.required()),
     mapOverlayGroupRelations: yup.array().of(mapOverlayGroupRelationsValidator.required()),
+    legacy: yup.bool(),
     // ...the rest of the fields belong to the visualisation object and are validated separately
   },
   [['mapOverlayGroups', 'mapOverlayGroupRelations']],
@@ -39,30 +39,61 @@ const importFileSchema = yup.object().shape(
 
 export type ImportMapOverlayVisualisationRequest = Request<
   Record<string, never>,
-  { id: string; message: string },
+  { importedVizes: { id: string; code: string }[]; message: string },
   Record<string, never>,
   Record<string, never>
 >;
 
-export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVisualisationRequest> {
-  private readonly meditrakConnection: MeditrakConnection;
+type ImportFileContent = {
+  mapOverlayGroups?: MapOverlayGroup[];
+  mapOverlayGroupRelations?: MapOverlayGroupRelation[];
+  legacy?: boolean;
+} & Record<string, unknown>;
 
-  constructor(req: ImportMapOverlayVisualisationRequest, res: Response, next: NextFunction) {
+export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVisualisationRequest> {
+  private readonly centralConnection: CentralConnection;
+
+  public constructor(req: ImportMapOverlayVisualisationRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
-    this.meditrakConnection = new MeditrakConnection(req.session);
+    this.centralConnection = new CentralConnection(req.session);
   }
 
   public async buildResponse() {
-    if (!this.req.file) {
+    const { files } = this.req;
+    if (!files || !Array.isArray(files)) {
       throw new UploadError();
     }
 
-    const {
-      mapOverlayGroups = [],
-      mapOverlayGroupRelations = [],
-      ...visualisation
-    } = this.readFileContents();
+    const importedVizes: { id: string; code: string }[] = [];
+    const successes: string[] = [];
+    const errors: { fileName: string; message: string }[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const { originalname: fileName } = file;
+      try {
+        const fileContent = importFileSchema.validateSync(readFileContent(file));
+        importedVizes.push(await this.importViz(fileContent));
+        successes.push(fileName);
+      } catch (error: any) {
+        errors.push({ fileName, message: error.message });
+      }
+    }
+
+    if (errors.length > 0) {
+      throw new UploadError(errors, successes);
+    }
+
+    return {
+      importedVizes,
+      message: `${importedVizes.length} mapOverlay visualisation${
+        importedVizes.length !== 1 ? 's' : ''
+      } imported successfully`,
+    };
+  }
+
+  private async importViz(fileContent: ImportFileContent) {
+    const { mapOverlayGroups = [], mapOverlayGroupRelations = [], ...visualisation } = fileContent;
 
     if (visualisation.legacy) {
       throw new ValidationError('Legacy viz not supported');
@@ -82,22 +113,13 @@ export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVi
 
     await this.upsertMapOverlayGroupsAndRelations(id, mapOverlayGroups, mapOverlayGroupRelations);
 
-    const action = existingId ? 'updated' : 'created';
-    return { id, message: `Visualisation ${action} successfully` };
+    return { id, code: extractedViz.mapOverlay.code };
   }
-
-  private readFileContents = () => {
-    const { path } = this.req.file as { path: string };
-    const fileContents = readJsonFile<Record<string, unknown>>(path);
-    fs.unlinkSync(path);
-
-    return importFileSchema.validateSync(fileContents);
-  };
 
   private findExistingVisualisationId = async (visualisation: Record<string, unknown>) => {
     const { id, code } = visualisation;
 
-    const [viz] = await this.meditrakConnection.fetchResources('mapOverlayVisualisations', {
+    const [viz] = await this.centralConnection.fetchResources('mapOverlayVisualisations', {
       filter: {
         id: id ?? undefined,
         code,
@@ -107,8 +129,8 @@ export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVi
   };
 
   private createVisualisation = async (visualisation: MapOverlayVizResource) => {
-    await this.meditrakConnection.createResource('mapOverlayVisualisations', {}, visualisation);
-    const [viz]: MapOverlayVizResource[] = await this.meditrakConnection.fetchResources(
+    await this.centralConnection.createResource('mapOverlayVisualisations', {}, visualisation);
+    const [viz]: MapOverlayVizResource[] = await this.centralConnection.fetchResources(
       'mapOverlayVisualisations',
       {
         filter: {
@@ -124,7 +146,7 @@ export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVi
   };
 
   private updateVisualisation = async (vizId: string, visualisation: Record<string, unknown>) => {
-    await this.meditrakConnection.updateResource(
+    await this.centralConnection.updateResource(
       `mapOverlayVisualisations/${vizId}`,
       {},
       visualisation,
@@ -138,14 +160,11 @@ export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVi
     mapOverlayGroupRelations: MapOverlayGroupRelation[],
   ) => {
     await this.upsertMapOverlayGroups(mapOverlayGroups.map(mog => snakeKeys(mog)));
-    const mapOverlayGroupRecords = await this.meditrakConnection.fetchResources(
-      'mapOverlayGroups',
-      {
-        filter: {
-          code: mapOverlayGroupRelations.map(mogr => mogr.mapOverlayGroupCode),
-        },
+    const mapOverlayGroupRecords = await this.centralConnection.fetchResources('mapOverlayGroups', {
+      filter: {
+        code: mapOverlayGroupRelations.map(mogr => mogr.mapOverlayGroupCode),
       },
-    );
+    });
     const mapOverlayGroupCodeToId = reduceToDictionary(mapOverlayGroupRecords, 'code', 'id');
 
     const relationsToUpsert = mapOverlayGroupRelations.map(
@@ -168,7 +187,7 @@ export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVi
   private upsertMapOverlayGroups = async (mapOverlayGroups: MapOverlayGroupRecord[]) =>
     Promise.all(
       mapOverlayGroups.map(mapOverlayGroup =>
-        this.meditrakConnection.upsertResource(
+        this.centralConnection.upsertResource(
           'mapOverlayGroups',
           {
             filter: {
@@ -185,7 +204,7 @@ export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVi
   ) =>
     Promise.all(
       mapOverlayGroupRelations.map(relation =>
-        this.meditrakConnection.upsertResource(
+        this.centralConnection.upsertResource(
           'mapOverlayGroupRelations',
           {
             filter: {

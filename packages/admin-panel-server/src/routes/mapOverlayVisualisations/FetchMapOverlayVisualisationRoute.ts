@@ -8,7 +8,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 
-import { MeditrakConnection } from '../../connections';
+import { CentralConnection } from '../../connections';
 import { combineMapOverlayVisualisation, MapOverlayViz } from '../../viz-builder';
 
 export type FetchMapOverlayVisualisationRequest = Request<
@@ -19,17 +19,17 @@ export type FetchMapOverlayVisualisationRequest = Request<
 >;
 
 export class FetchMapOverlayVisualisationRoute extends Route<FetchMapOverlayVisualisationRequest> {
-  private readonly meditrakConnection: MeditrakConnection;
+  private readonly centralConnection: CentralConnection;
 
-  constructor(req: FetchMapOverlayVisualisationRequest, res: Response, next: NextFunction) {
+  public constructor(req: FetchMapOverlayVisualisationRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
-    this.meditrakConnection = new MeditrakConnection(req.session);
+    this.centralConnection = new CentralConnection(req.session);
   }
 
-  async buildResponse() {
+  public async buildResponse() {
     const { mapOverlayVisualisationId } = this.req.params;
-    const visualisationResource = await this.meditrakConnection.fetchResources(
+    const visualisationResource = await this.centralConnection.fetchResources(
       `mapOverlayVisualisations/${mapOverlayVisualisationId}`,
     );
     const visualisation = combineMapOverlayVisualisation(visualisationResource);

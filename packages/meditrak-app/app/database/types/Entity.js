@@ -13,8 +13,7 @@ export class Entity extends RealmObject {
       code,
       id,
       type,
-      parent: '',
-      area: parent && parent.name,
+      parentName: parent && parent.name,
       countryCode,
       attributes: attributes ? JSON.parse(attributes) : {},
     };

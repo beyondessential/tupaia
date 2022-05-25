@@ -23,16 +23,16 @@
     "start": "node dist",
     "start-dev": "../../scripts/bash/backendStartDev.sh 9996 -ts",
     "start-verbose": "LOG_LEVEL=debug npm run start-dev",
-    "test": "jest --runInBand",
+    "test": "yarn workspace @tupaia/database check-test-database-exists && DB_NAME=tupaia_test jest --runInBand",
     "test:coverage": "yarn test --coverage",
     "test:watch": "yarn test --watch"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.0.0",
     "@tupaia/access-policy": "3.0.0",
     "@tupaia/auth": "1.0.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/server-boilerplate": "1.0.0",
+    "@tupaia/tsutils": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.16.2",

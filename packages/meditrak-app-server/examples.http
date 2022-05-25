@@ -1,0 +1,89 @@
+@hostname = localhost
+@port = 8020
+@host = {{hostname}}:{{port}}
+@version = v1
+
+@contentType = application/json
+
+### /test
+GET http://{{host}}/{{version}}/test HTTP/2.0
+content-type: {{contentType}}
+
+### Login
+# @name login
+POST http://{{host}}/{{version}}/auth HTTP/2.0
+content-type: {{contentType}}
+
+{
+    "emailAddress": "{{email}}",
+    "password": "{{password}}",
+    "deviceName": "test",
+    "devicePlatform": "android",
+    "installId": "1234"
+}
+
+### Refresh Token
+
+POST http://{{host}}/{{version}}/auth?grantType=refresh_token HTTP/2.0
+content-type: {{contentType}}
+
+{
+    "refreshToken": "1234"
+}
+
+### Register User
+
+POST http://{{host}}/{{version}}/user HTTP/2.0
+content-type: {{contentType}}
+
+{
+    "firstName": "Bob",
+    "lastName": "Burger",
+    "emailAddress": "bob_burger@test.com",
+    "password": "test_test",
+    "passwordConfirm": "test_test",
+    "contactNumber": "12345678",
+    "employer": "Boss",
+    "position": "Cat"
+}
+
+### Set tokens
+
+@accessToken = {{login.response.body.accessToken}}
+@user-authorization = Bearer {{accessToken}}
+
+### Get Social Feed
+
+GET http://{{host}}/{{version}}/socialFeed?countryId=5948b9e245eaeb1d6ea882f9 HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
+### Get User Rewards
+
+GET http://{{host}}/{{version}}/me/rewards HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
+### Change User Password
+
+GET http://{{host}}/{{version}}/me/changePassword HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
+{
+    "oldPassword": "{{password}}",
+    "password": "test_test",
+    "passwordConfirm": "test_test"
+}
+
+### Change User Password (back)
+
+GET http://{{host}}/{{version}}/me/changePassword HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
+{
+    "oldPassword": "test_test",
+    "password": "{{password}}",
+    "passwordConfirm": "{{password}}"
+}

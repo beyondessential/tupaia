@@ -8,7 +8,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 
-import { MeditrakConnection } from '../../connections';
+import { CentralConnection } from '../../connections';
 import {
   MapOverlayVisualisationExtractor,
   draftMapOverlayValidator,
@@ -23,15 +23,15 @@ export type SaveMapOverlayVisualisationRequest = Request<
 >;
 
 export class SaveMapOverlayVisualisationRoute extends Route<SaveMapOverlayVisualisationRequest> {
-  private readonly meditrakConnection: MeditrakConnection;
+  private readonly centralConnection: CentralConnection;
 
-  constructor(req: SaveMapOverlayVisualisationRequest, res: Response, next: NextFunction) {
+  public constructor(req: SaveMapOverlayVisualisationRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
-    this.meditrakConnection = new MeditrakConnection(req.session);
+    this.centralConnection = new CentralConnection(req.session);
   }
 
-  async buildResponse() {
+  public async buildResponse() {
     const { visualisation } = this.req.body;
     const { mapOverlayVisualisationId } = this.req.params;
 
@@ -50,13 +50,13 @@ export class SaveMapOverlayVisualisationRoute extends Route<SaveMapOverlayVisual
 
     // Update visualisation if id exists
     if (mapOverlayVisualisationId) {
-      result = await this.meditrakConnection.updateResource(
+      result = await this.centralConnection.updateResource(
         `mapOverlayVisualisations/${mapOverlayVisualisationId}`,
         {},
         body,
       );
     } else {
-      result = await this.meditrakConnection.createResource('mapOverlayVisualisations', {}, body);
+      result = await this.centralConnection.createResource('mapOverlayVisualisations', {}, body);
     }
 
     return {

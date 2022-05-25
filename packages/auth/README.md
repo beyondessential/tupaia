@@ -2,7 +2,7 @@
 
 Back-end authentication
 
-Used internally by web-config-server and meditrak-server to authenticate a user's credentials against
+Used internally by web-config-server and central-server to authenticate a user's credentials against
 the database, and build their access policy.
 
 An access policy is a representation of the users permissions, listing out each entity they have

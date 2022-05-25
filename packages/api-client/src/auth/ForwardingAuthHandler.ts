@@ -8,7 +8,7 @@ import { AuthHandler } from '../types';
 export class ForwardingAuthHandler implements AuthHandler {
   private readonly authHeader: string;
 
-  constructor(authHeader = '') {
+  public constructor(authHeader = '') {
     this.authHeader = authHeader;
   }
 
