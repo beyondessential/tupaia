@@ -29,7 +29,7 @@ const PROJECT = {
   image_url: 'https://tupaia.s3.ap-southeast-2.amazonaws.com/uploads/covid_solomon_image.jpeg',
   default_measure: '126,171',
   dashboard_group_name: DASHBOARD_NAME,
-  permission_groups: '{IMPACT Health,IMPACT Health Admin}',
+  permission_groups: '{COVID-19 Solomon Islands,COVID-19 Solomon Islands Admin}',
   logo_url: 'https://tupaia.s3.ap-southeast-2.amazonaws.com/uploads/covid_solomon_logo.jpeg',
 };
 const ENTITY = {
