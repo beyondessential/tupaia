@@ -13,7 +13,7 @@ import {
   validateConfig,
   convertBooleanToNumber,
   replaceDataValuesWithDefaults,
-  isValidDataValues,
+  isValidIndicatorValue,
 } from '../helpers';
 
 type BuilderConfig = {
@@ -76,6 +76,6 @@ export class EventCheckConditionsBuilder extends Builder {
         period: momentToPeriod(utcMoment(eventDate), PERIOD_TYPES.DAY),
         value: convertBooleanToNumber(parser, formula, dataValues),
       }))
-      .filter(({ value }) => isValidDataValues(value));
+      .filter(({ value }) => isValidIndicatorValue(value));
   };
 }

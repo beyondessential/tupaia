@@ -16,7 +16,7 @@ import {
   validateConfig,
   convertBooleanToNumber,
   replaceDataValuesWithDefaults,
-  isValidDataValues,
+  isValidIndicatorValue,
 } from '../helpers';
 import {
   AnalyticArithmeticConfig,
@@ -139,6 +139,6 @@ export class AnalyticArithmeticBuilder extends Builder {
         period,
         value: convertBooleanToNumber(parser, this.config.formula, dataValues),
       }))
-      .filter(({ value }) => isValidDataValues(value));
+      .filter(({ value }) => isValidIndicatorValue(value));
   };
 }
