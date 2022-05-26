@@ -37,16 +37,6 @@ const ENTITY = {
   name: PROJECT_NAME,
   type: 'project',
 };
-const PERMISSION_GROUPS = [
-  {
-    name: 'COVID-19 Solomon Islands Admin',
-    parentName: 'BES Data Admin',
-  },
-  {
-    name: 'COVID-19 Solomon Islands',
-    parentName: 'COVID-19 Solomon Islands Admin',
-  },
-];
 
 const addDashboard = async db => {
   await insertObject(db, 'dashboard', {
@@ -116,15 +106,6 @@ const addProject = async db => {
   });
 };
 
-const addPermissionGroup = async (db, permissionGroup) => {
-  const parentId = await nameToId(db, 'permission_group', permissionGroup.parentName);
-  return insertObject(db, 'permission_group', {
-    id: generateId(),
-    name: permissionGroup.name,
-    parent_id: parentId,
-  });
-};
-
 exports.up = async function (db) {
   await addEntity(db);
   await addDashboard(db);
@@ -132,9 +113,6 @@ exports.up = async function (db) {
   await addEntityHierarchy(db);
   await addEntityRelation(db);
   await addProject(db);
-  for (const group of PERMISSION_GROUPS) {
-    await addPermissionGroup(db, group);
-  }
 };
 
 exports.down = async function (db) {
@@ -148,10 +126,6 @@ exports.down = async function (db) {
   await db.runSql(`DELETE FROM entity_relation WHERE entity_hierarchy_id = '${hierarchyId}'`);
   await db.runSql(`DELETE FROM entity_hierarchy WHERE name = '${PROJECT_CODE}'`);
   await db.runSql(`DELETE FROM entity WHERE code = '${PROJECT_CODE}'`);
-  const permissionGroupsAsArray = PERMISSION_GROUPS.map(g => g.name);
-  await db.runSql(
-    `DELETE FROM permission_group WHERE name IN (${arrayToDbString(permissionGroupsAsArray)})`,
-  );
 };
 
 exports._meta = {
