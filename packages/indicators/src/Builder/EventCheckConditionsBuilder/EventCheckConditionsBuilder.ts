@@ -9,7 +9,12 @@ import { Builder } from '../Builder';
 import { FetchOptions, Event } from '../../types';
 import { getExpressionParserInstance } from '../../getExpressionParserInstance';
 import { EventCheckConditionsConfig, DefaultValue, configValidators } from './config';
-import { validateConfig, evaluateFormulaToNumber, replaceDataValuesWithDefaults } from '../helpers';
+import {
+  validateConfig,
+  convertBooleanToNumber,
+  replaceDataValuesWithDefaults,
+  isValidDataValues,
+} from '../helpers';
 
 type BuilderConfig = {
   readonly formula: string;
@@ -69,8 +74,8 @@ export class EventCheckConditionsBuilder extends Builder {
       .map(({ orgUnit, eventDate, dataValues }) => ({
         organisationUnit: orgUnit,
         period: momentToPeriod(utcMoment(eventDate), PERIOD_TYPES.DAY),
-        value: evaluateFormulaToNumber(parser, formula, dataValues),
+        value: convertBooleanToNumber(parser, formula, dataValues),
       }))
-      .filter(({ value }) => isFinite(value));
+      .filter(({ value }) => isValidDataValues(value));
   };
 }
