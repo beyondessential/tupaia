@@ -37,6 +37,9 @@ const ENTITY = {
   name: PROJECT_NAME,
   type: 'project',
 };
+const projectConfig = {
+  frontendExcludedTypes: ['individual'],
+};
 
 const addDashboard = async db => {
   await insertObject(db, 'dashboard', {
@@ -113,6 +116,11 @@ exports.up = async function (db) {
   await addEntityHierarchy(db);
   await addEntityRelation(db);
   await addProject(db);
+  return db.runSql(`
+    update "project" 
+    set "config" = "config"::jsonb || '${JSON.stringify(projectConfig)}'::jsonb
+    where "code" = '${PROJECT_CODE}'
+  `);
 };
 
 exports.down = async function (db) {
@@ -126,6 +134,11 @@ exports.down = async function (db) {
   await db.runSql(`DELETE FROM entity_relation WHERE entity_hierarchy_id = '${hierarchyId}'`);
   await db.runSql(`DELETE FROM entity_hierarchy WHERE name = '${PROJECT_CODE}'`);
   await db.runSql(`DELETE FROM entity WHERE code = '${PROJECT_CODE}'`);
+  return db.runSql(`
+    update "project" 
+    set "config" = "config"::jsonb #- '{frontend_excluded_types}'
+    where "code" = '${PROJECT_CODE}'
+  `);
 };
 
 exports._meta = {
