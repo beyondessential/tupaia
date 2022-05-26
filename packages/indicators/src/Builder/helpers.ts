@@ -50,9 +50,12 @@ export const convertBooleanToNumber = (
   dataValues: DataValues,
 ) => {
   parser.setAll(dataValues);
-  const value = parser.evaluateToNumber(formula);
+  const result = parser.evaluate(formula);
   parser.clearScope();
-  return value;
+  if (typeof result === 'boolean') {
+    return result ? 1 : 0;
+  }
+  return result;
 };
 
 export const isValidDataValues = (value: string | number) =>

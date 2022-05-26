@@ -39,6 +39,8 @@ export const testBuildAnalytics = () => {
       ['division with zero', 'One / (One + Two - Three)', []],
       ['some data elements are undefined in the orgUnit/period combo', 'One + Undefined', []],
       ['string data should be returned', 'Covid_Test_Type', ['PCR Tests']],
+      ['converts true to 1', 'One < Two', [1]],
+      ['converts false to 0', 'One > Two', [0]],
     ];
 
     it.each(testData)('%s', async (_, formula, expectedValues) => {
