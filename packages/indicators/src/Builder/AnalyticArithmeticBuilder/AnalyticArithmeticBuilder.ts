@@ -138,6 +138,6 @@ export class AnalyticArithmeticBuilder extends Builder {
         period,
         value: evaluateFormulaToNumber(parser, this.config.formula, dataValues),
       }))
-      .filter(({ value }) => isFinite(value));
+      .filter(({ value }) => isFinite(value) && typeof value !== 'string');
   };
 }
