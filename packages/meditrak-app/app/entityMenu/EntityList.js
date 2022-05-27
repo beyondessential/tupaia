@@ -22,6 +22,7 @@ import { fetchEntities } from './helpers';
 const SEARCH_BOX_HEIGHT = 40;
 const INITIAL_NUMBER_TO_SHOW = 1000; // will load more if they scroll to the bottom of the list
 const LOADING_MESSAGE_SECTION = { title: 'Loading more results...', data: [] }; // slightly hacky way of showing a loading message at the bottom of the list until more lazily load
+const NO_RESULTS_SECTION = { title: 'No results', data: [] };
 
 export class EntityList extends PureComponent {
   constructor(props) {
@@ -122,12 +123,15 @@ export class EntityList extends PureComponent {
     const { primarySearchResults, secondarySearchResults, numberToShow } = this.state;
 
     if (primarySearchResults || secondarySearchResults) {
+      const totalResultsAvailable = primarySearchResults.length + secondarySearchResults.length;
+      if (totalResultsAvailable === 0) {
+        return { noResults: true };
+      }
       const data = [
         ...primarySearchResults.slice(0, numberToShow),
         ...secondarySearchResults.slice(0, numberToShow - primarySearchResults.length),
       ];
-      const moreAvailable =
-        data.length < primarySearchResults.length + secondarySearchResults.length;
+      const moreAvailable = data.length < totalResultsAvailable;
       return { sections: [{ data }], moreAvailable };
     }
 
@@ -147,7 +151,10 @@ export class EntityList extends PureComponent {
   };
 
   getListSections = () => {
-    const { sections, moreAvailable } = this.getListData();
+    const { sections, moreAvailable, noResults } = this.getListData();
+    if (noResults) {
+      return [NO_RESULTS_SECTION];
+    }
     if (moreAvailable) {
       return [...sections, LOADING_MESSAGE_SECTION]; // slightly hacky way to show loading message
     }
@@ -175,7 +182,7 @@ export class EntityList extends PureComponent {
   };
 
   renderResults() {
-    const { searchTerm, primarySearchResults, isOpen, numberToShow } = this.state;
+    const { isOpen, numberToShow } = this.state;
 
     // if base query is empty, the survey is probably misconfigured
     if (this.baseQuery.length === 0) {
@@ -183,13 +190,6 @@ export class EntityList extends PureComponent {
         <Text style={localStyles.noResultsText}>
           No valid entities for this question, please contact your survey administrator.
         </Text>
-      );
-    }
-
-    // if primarySearchResults is not null, but empty, there are no entities matching their search
-    if (primarySearchResults && primarySearchResults.length === 0) {
-      return (
-        <Text style={localStyles.noResultsText}>{`No entities matching '${searchTerm}'.`}</Text>
       );
     }
 
