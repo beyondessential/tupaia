@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import jwt from 'jsonwebtoken';
-import { createBasicHeader } from '@tupaia/utils';
+import { createBasicHeader, createBearerHeader } from '@tupaia/utils';
 import {
   getUserAndPassFromBasicAuth,
   getTokenClaimsFromBearerAuth,
@@ -51,7 +51,7 @@ describe('userAuth', () => {
       const apiClientUserId = 'apiClient1';
 
       const accessToken = constructAccessToken({ userId, refreshToken, apiClientUserId });
-      const authHeader = `Bearer ${accessToken}`;
+      const authHeader = createBearerHeader(accessToken);
       const {
         userId: decryptedUserId,
         refreshToken: decryptedRefreshToken,
@@ -73,7 +73,7 @@ describe('userAuth', () => {
       const accessToken = jwt.sign({ test: 'test' }, process.env.JWT_SECRET, {
         expiresIn: 0,
       });
-      const authHeader = `Bearer ${accessToken}`;
+      const authHeader = createBearerHeader(accessToken);
 
       return expect(() => getTokenClaimsFromBearerAuth(authHeader)).toThrow(
         'Authorization token has expired, please log in again',

@@ -9,7 +9,7 @@ import sinon from 'sinon';
 
 import { Authenticator } from '@tupaia/auth';
 import { generateTestId } from '@tupaia/database';
-import { createBasicHeader } from '@tupaia/utils';
+import { createBasicHeader, createBearerHeader } from '@tupaia/utils';
 
 import { BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 import { createApp } from '../../createApp';
@@ -91,7 +91,7 @@ export class TestableApp {
 
   addOptionsToRequest(request, { headers, query, body } = {}) {
     if (this.authToken) {
-      request.set('Authorization', `Bearer ${this.authToken}`);
+      request.set('Authorization', createBearerHeader(this.authToken));
     }
     if (headers) {
       Object.entries(headers).forEach(([key, value]) => request.set(key, value));

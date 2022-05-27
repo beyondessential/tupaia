@@ -1,4 +1,10 @@
-import { CustomError, fetchWithTimeout, stringifyQuery, createBasicHeader } from '@tupaia/utils';
+import {
+  CustomError,
+  fetchWithTimeout,
+  stringifyQuery,
+  createBasicHeader,
+  createBearerHeader,
+} from '@tupaia/utils';
 import { refreshAndSaveAccessToken } from './refreshAndSaveAccessToken';
 
 const { MICROSERVICE_CLIENT_USERNAME, MICROSERVICE_CLIENT_SECRET } = process.env;
@@ -74,7 +80,7 @@ export const fetchFromCentralServerUsingTokens = async (
 ) => {
   const UNAUTHORIZED_STATUS_CODE = 401;
   const fetchWithAccessToken = async token =>
-    fetchFromCentralServer(endpoint, payload, queryParameters, `Bearer ${token}`);
+    fetchFromCentralServer(endpoint, payload, queryParameters, createBearerHeader(token));
 
   const refreshAccessAndFetch = async refreshToken => {
     const newAccessToken = await refreshAndSaveAccessToken(models, refreshToken, userName);
