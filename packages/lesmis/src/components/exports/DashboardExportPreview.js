@@ -59,6 +59,7 @@ export const DashboardExportPreview = ({ addToRefs, subDashboards, currentPage }
     return (
       <A4Page
         key={dashboard.dashboardName}
+        addToRefs={addToRefs}
         <DashboardTitleContainer>
           <Typography variant="h2">{dashboard.dashboardName}</Typography>
           <Divider />
@@ -84,4 +85,6 @@ export const DashboardExportPreview = ({ addToRefs, subDashboards, currentPage }
 
 DashboardExportPreview.propTypes = {
   subDashboards: PropTypes.array.isRequired,
+  addToRefs: PropTypes.func.isRequired,
+  currentPage: PropTypes.number.isRequired,
 };
