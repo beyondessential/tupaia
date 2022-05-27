@@ -6,6 +6,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import MockDate from 'mockdate';
 
+import { constructAccessToken } from '@tupaia/auth';
 import {
   findOrCreateDummyRecord,
   findOrCreateDummyCountryEntity,
@@ -14,14 +15,16 @@ import {
   getTestDatabase,
 } from '@tupaia/database';
 import { TestableServer } from '@tupaia/server-boilerplate';
+import { createBearerHeader } from '@tupaia/utils';
 import { TestModelRegistry } from '../../types';
-import { setupTestApp } from '../../utilities';
+import { setupTestApp, setupTestUser } from '../../utilities';
 import {
   addLeaderboardAsThirdItem,
   filterItemFields,
   replaceItemsCountryWithCountryId,
 } from './helper';
 import { COUNTRIES, FEED_ITEMS, GONDOR } from './SocialFeedRoute.fixtures';
+import { CAT_USER_SESSION } from '../fixtures';
 
 describe('socialFeed', () => {
   const CURRENT_DATE_STUB = '2020-12-15T00:00:00.000Z';
@@ -40,6 +43,7 @@ describe('socialFeed', () => {
   const countryCodeToId: Record<string, string> = {};
 
   let app: TestableServer;
+  let authHeader: string;
 
   beforeAll(async () => {
     MockDate.set(CURRENT_DATE_STUB);
@@ -72,6 +76,14 @@ describe('socialFeed', () => {
     );
 
     app = await setupTestApp();
+    const user = await setupTestUser();
+    authHeader = createBearerHeader(
+      constructAccessToken({
+        userId: user.id,
+        refreshToken: CAT_USER_SESSION.refresh_token,
+        apiClientUserId: undefined,
+      }),
+    );
   });
 
   afterAll(async () => {
@@ -80,8 +92,19 @@ describe('socialFeed', () => {
   });
 
   describe('/socialFeed', () => {
-    it('it returns the social feed with the leaderboard', async () => {
+    it('it returns 500 if no auth header provided', async () => {
       const response = await app.get('socialFeed');
+
+      expect(response.statusCode).toBe(500);
+      expect(response.body.error).toMatch(/.*Authorization header required.*/);
+    });
+
+    it('it returns the social feed with the leaderboard', async () => {
+      const response = await app.get('socialFeed', {
+        headers: {
+          Authorization: authHeader,
+        },
+      });
 
       const { hasMorePages, items, pageNumber } = response.body;
 
@@ -94,6 +117,9 @@ describe('socialFeed', () => {
 
     it('it filters by countryId', async () => {
       const response = await app.get('socialFeed', {
+        headers: {
+          Authorization: authHeader,
+        },
         query: { countryId: countryCodeToId[GONDOR.code] },
       });
 
@@ -112,6 +138,9 @@ describe('socialFeed', () => {
     it('it filters by earliestCreationDate', async () => {
       const earliestCreationDate = '2020-01-02';
       const response = await app.get('socialFeed', {
+        headers: {
+          Authorization: authHeader,
+        },
         query: { earliestCreationDate },
       });
 
@@ -129,6 +158,9 @@ describe('socialFeed', () => {
 
     it('it can paginate', async () => {
       const firstPageResponse = await app.get('socialFeed', {
+        headers: {
+          Authorization: authHeader,
+        },
         query: { page: 0, numberPerPage: 2 },
       });
 
@@ -148,6 +180,9 @@ describe('socialFeed', () => {
       expect(filterItemFields(firstPageItems)).toEqual(firstPageExpectedItems);
 
       const secondPageResponse = await app.get('socialFeed', {
+        headers: {
+          Authorization: authHeader,
+        },
         query: { page: 1, numberPerPage: 2 },
       });
 
