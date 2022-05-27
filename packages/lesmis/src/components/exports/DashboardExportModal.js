@@ -5,12 +5,13 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/GetApp';
-import Pagination from '@material-ui/lab/Pagination';
-import { Dialog, DialogHeader, DialogContent, FlexCenter } from '@tupaia/ui-components';
+import { Dialog, DialogHeader, DialogContent } from '@tupaia/ui-components';
 import MuiIconButton from '@material-ui/core/IconButton';
 import { DashboardExportPreview } from './DashboardExportPreview';
+import { OptionsBar } from './components';
 import { exportImagesToPDF, useGetImages } from '../../utils';
 import { useSubDashboards } from './utils/useSubDashboards';
+import { ExportOptionsProvider } from './context/ExportOptionsContext';
 
 export const DashboardExportModal = ({ Button, title }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,18 +43,14 @@ export const DashboardExportModal = ({ Button, title }) => {
           </MuiIconButton>
         </DialogHeader>
         <DialogContent>
-          <FlexCenter>
-            <Pagination
-              count={totalPage}
-              shape="rounded"
-              onChange={(event, value) => setPage(value)}
+          <ExportOptionsProvider>
+            <OptionsBar totalPage={totalPage} setPage={setPage} />
+            <DashboardExportPreview
+              subDashboards={subDashboards}
+              addToRefs={addToRefs}
+              currentPage={page}
             />
-          </FlexCenter>
-          <DashboardExportPreview
-            subDashboards={subDashboards}
-            addToRefs={addToRefs}
-            currentPage={page}
-          />
+          </ExportOptionsProvider>
         </DialogContent>
       </Dialog>
       <Button onClick={() => setIsOpen(true)} />

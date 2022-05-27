@@ -7,6 +7,7 @@ import { Typography } from '@material-ui/core';
 import { EntityDetails, A4Page } from './components';
 import { yearToApiDates } from '../../api/queries/utils';
 import { DashboardReport } from '../DashboardReport';
+import { useExportOptions } from './context/ExportOptionsContext';
 
 const InfoAlert = styled(SmallAlert)`
   margin: auto;
@@ -28,6 +29,7 @@ const Divider = styled.hr`
 
 export const DashboardExportPreview = ({ addToRefs, subDashboards, currentPage }) => {
   const { startDate, endDate } = yearToApiDates('2021');
+  const { exportWithLabels, exportWithTable } = useExportOptions();
   let page = 0;
   const getNextPage = () => {
     page++;
@@ -57,8 +59,8 @@ export const DashboardExportPreview = ({ addToRefs, subDashboards, currentPage }
                 startDate={startDate}
                 endDate={endDate}
                 exportOptions={{
-                  exportWithLabels: true,
-                  exportWithTable: true,
+                  exportWithLabels,
+                  exportWithTable,
                 }}
                 isExporting
                 isEnlarged
