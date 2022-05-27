@@ -28,6 +28,11 @@ const Divider = styled.hr`
 
 export const DashboardExportPreview = ({ addToRefs, subDashboards, currentPage }) => {
   const { startDate, endDate } = yearToApiDates('2021');
+  let page = 0;
+  const getNextPage = () => {
+    page++;
+    return page;
+  };
 
   const getChildren = dashboard => {
     const { items } = dashboard;
@@ -37,6 +42,8 @@ export const DashboardExportPreview = ({ addToRefs, subDashboards, currentPage }
           <A4Page
             key={item.code}
             addToRefs={addToRefs}
+            page={getNextPage()}
+            currentPage={currentPage}
           >
             <FlexColumn>
               <DashboardTitleContainer>
@@ -60,6 +67,9 @@ export const DashboardExportPreview = ({ addToRefs, subDashboards, currentPage }
       <A4Page
         key={dashboard.dashboardName}
         addToRefs={addToRefs}
+        page={getNextPage()}
+        currentPage={currentPage}
+      >
         <DashboardTitleContainer>
           <Typography variant="h2">{dashboard.dashboardName}</Typography>
           <Divider />
