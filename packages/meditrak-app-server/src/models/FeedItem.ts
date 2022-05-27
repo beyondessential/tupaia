@@ -8,6 +8,7 @@ import {
   FeedItemType as BaseFeedItemType,
 } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
+import { NullableKeysToOptional } from '@tupaia/tsutils';
 
 export type FeedItemFields = Readonly<{
   id: string;
@@ -23,6 +24,8 @@ export type FeedItemFields = Readonly<{
 
 export interface FeedItemType
   extends FeedItemFields,
-    Omit<BaseFeedItemType, 'id' | 'creation_date'> {} // Omit base `id: any` type as we explicity define as a string here
+    Omit<BaseFeedItemType, 'id' | 'creation_date'> {
+  getData: () => Promise<NullableKeysToOptional<FeedItemFields>>;
+}
 
 export interface FeedItemModel extends Model<BaseFeedItemModel, FeedItemFields, FeedItemType> {}

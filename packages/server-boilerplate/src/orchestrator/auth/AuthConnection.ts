@@ -4,6 +4,7 @@
  *
  */
 
+import { createBasicHeader } from '@tupaia/utils';
 import { AccessPolicyObject } from '../../types';
 import { Credentials } from '../types';
 import { ApiConnection } from '../../connections';
@@ -11,8 +12,7 @@ import { ApiConnection } from '../../connections';
 const basicAuthHandler = {
   getAuthHeader: async () => {
     const { API_CLIENT_NAME, API_CLIENT_PASSWORD } = process.env;
-    const API_CLIENT_CREDENTIALS = `${API_CLIENT_NAME}:${API_CLIENT_PASSWORD}`;
-    return `Basic ${Buffer.from(API_CLIENT_CREDENTIALS).toString('base64')}`;
+    return createBasicHeader(API_CLIENT_NAME, API_CLIENT_PASSWORD);
   },
 };
 
