@@ -5,7 +5,8 @@
 import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/GetApp';
-import { Dialog, DialogHeader, DialogContent } from '@tupaia/ui-components';
+import Pagination from '@material-ui/lab/Pagination';
+import { Dialog, DialogHeader, DialogContent, FlexCenter } from '@tupaia/ui-components';
 import MuiIconButton from '@material-ui/core/IconButton';
 import { DashboardExportPreview } from './DashboardExportPreview';
 import { useDashboardDropdownOptions } from '../../utils/useDashboardDropdownOptions';
@@ -31,10 +32,19 @@ const useSubDashboards = () => {
 
 export const DashboardExportModal = ({ Button, title }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [page, setPage] = useState(1);
   const subDashboards = useSubDashboards();
   const { addToRefs, getImgs } = useGetImages('html2canvas');
   const fileName = `${title}-dashboards-export`;
-  const { exportRef, exportToImg } = useExportToImage(fileName);
+
+  const totalPage =
+    subDashboards &&
+    subDashboards
+      .map(subDashboard => {
+        const { items } = subDashboard;
+        return items.length > 0 ? items.length : 1;
+      })
+      .reduce((totalNum, numOfdashboardItems) => totalNum + numOfdashboardItems, 1);
 
   const handleClickExport = async () => {
     const pageScreenshots = await getImgs();
@@ -50,9 +60,17 @@ export const DashboardExportModal = ({ Button, title }) => {
           </MuiIconButton>
         </DialogHeader>
         <DialogContent>
+          <FlexCenter>
+            <Pagination
+              count={totalPage}
+              shape="rounded"
+              onChange={(event, value) => setPage(value)}
+            />
+          </FlexCenter>
           <DashboardExportPreview
             subDashboards={subDashboards}
             addToRefs={addToRefs}
+            currentPage={page}
           />
         </DialogContent>
       </Dialog>
