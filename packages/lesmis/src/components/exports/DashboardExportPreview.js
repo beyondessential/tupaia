@@ -56,7 +56,13 @@ export const DashboardExportPreview = ({ addToRefs, subDashboards, currentPage }
                 name={item.name}
                 startDate={startDate}
                 endDate={endDate}
-                />
+                exportOptions={{
+                  exportWithLabels: true,
+                  exportWithTable: true,
+                }}
+                isExporting
+                isEnlarged
+              />
             </FlexColumn>
           </A4Page>
         );
