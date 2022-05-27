@@ -30,20 +30,7 @@ const Divider = styled.hr`
   border-top: 3px solid #d13333;
 `;
 
-export const DashboardExportPreview = () => {
-  const { entityCode } = useUrlParams();
-  const { dropdownOptions } = useDashboardDropdownOptions();
-  const profileDropDownOptions = dropdownOptions.find(({ value }) => value === 'profile');
-  const { filterSubDashboards } = profileDropDownOptions.componentProps;
-  const { data, isLoading, isError, error } = useDashboardData({
-    entityCode,
-    includeDrillDowns: false,
-  });
-  const subDashboards = useMemo(() => data?.filter(filterSubDashboards), [
-    data,
-    filterSubDashboards,
-  ]);
-  console.log(data, isLoading, isError, error);
+export const DashboardExportPreview = ({ addToRefs, subDashboards, currentPage }) => {
   const { startDate, endDate } = yearToApiDates('2021');
 
   return (
