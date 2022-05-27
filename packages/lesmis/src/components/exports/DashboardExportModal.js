@@ -32,11 +32,13 @@ const useSubDashboards = () => {
 export const DashboardExportModal = ({ Button, title }) => {
   const [isOpen, setIsOpen] = useState(false);
   const subDashboards = useSubDashboards();
+  const { addToRefs, getImgs } = useGetImages('html2canvas');
   const fileName = `${title}-dashboards-export`;
   const { exportRef, exportToImg } = useExportToImage(fileName);
 
   const handleClickExport = async () => {
-    await exportToImg();
+    const pageScreenshots = await getImgs();
+    await exportImagesToPDF(pageScreenshots, fileName);
   };
 
   return (
@@ -48,9 +50,10 @@ export const DashboardExportModal = ({ Button, title }) => {
           </MuiIconButton>
         </DialogHeader>
         <DialogContent>
-          <div ref={exportRef}>
-            <DashboardExportPreview />
-          </div>
+          <DashboardExportPreview
+            subDashboards={subDashboards}
+            addToRefs={addToRefs}
+          />
         </DialogContent>
       </Dialog>
       <Button onClick={() => setIsOpen(true)} />
