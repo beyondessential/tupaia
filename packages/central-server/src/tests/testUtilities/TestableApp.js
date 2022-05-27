@@ -9,6 +9,7 @@ import sinon from 'sinon';
 
 import { Authenticator } from '@tupaia/auth';
 import { generateTestId } from '@tupaia/database';
+import { createBasicHeader } from '@tupaia/utils';
 
 import { BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 import { createApp } from '../../createApp';
@@ -19,8 +20,7 @@ const getVersionedEndpoint = (endpoint, apiVersion = DEFAULT_API_VERSION) =>
   `/v${apiVersion}/${endpoint}`;
 
 export const getAuthorizationHeader = () => {
-  const credentials = `${process.env.CLIENT_USERNAME}:${process.env.CLIENT_SECRET}`;
-  return `Basic ${Buffer.from(credentials).toString('base64')}`;
+  return createBasicHeader(process.env.CLIENT_USERNAME, process.env.CLIENT_SECRET);
 };
 
 const translateQuery = query =>

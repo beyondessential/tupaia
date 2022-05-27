@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import jwt from 'jsonwebtoken';
+import { createBasicHeader } from '@tupaia/utils';
 import {
   getUserAndPassFromBasicAuth,
   getTokenClaimsFromBearerAuth,
@@ -81,9 +82,6 @@ describe('userAuth', () => {
   });
 
   describe('getUserAndPassFromBasicAuth', () => {
-    const createBasicHeader = (username, password) =>
-      `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-
     it('returns username and password for basic auth header', async () => {
       const username = 'user';
       const password = 'pass';
