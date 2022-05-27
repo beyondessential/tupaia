@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import { I18n } from '../../../utils';
 
 const Logo = styled.img`
-  top: -10px;
-  left: 0px;
+  top: 30px;
+  left: 50px;
   position: absolute;
 `;
 
