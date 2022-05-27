@@ -13,4 +13,4 @@ export * from './useStickyBar';
 export * from './useUrlParams';
 export * from './useUrlSearchParams';
 export * from './useEntityBreadcrumbs';
-export * from './useExportToImage';
+export * from './useImages';

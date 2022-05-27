@@ -5,24 +5,14 @@
 
 import { useRef, useState } from 'react';
 import downloadJs from 'downloadjs';
-import domtoimage from 'dom-to-image';
-import { sleep, toFilename } from '@tupaia/utils';
 
-const getFormatter = formate => {
-  switch (formate) {
-    case 'svg':
-      return domtoimage.toSvg;
-    case 'png':
-    default:
-      return domtoimage.toPng;
-  }
-};
+import { sleep, toFilename } from '@tupaia/utils';
+import { getImage } from './getImage';
 
 const exportToImage = (node, filename, formate = 'png') => {
-  const formatter = getFormatter(formate);
   return new Promise(resolve => {
     const file = `${filename}.${formate}`;
-    formatter(node, { bgcolor: 'white' }).then(async dataUrl => {
+    getImage(node, formate).then(async dataUrl => {
       downloadJs(dataUrl, file);
       resolve();
     });
@@ -34,10 +24,9 @@ export const useExportToImage = (filename, formate) => {
   const [isExporting, setIsExporting] = useState(false);
   const [isExportLoading, setIsExportLoading] = useState(false);
   const sanitisedFileName = toFilename(filename, true);
+  const node = exportRef.current;
 
   const exportToImg = async () => {
-    const node = exportRef.current;
-
     setIsExporting(true);
     setIsExportLoading(true);
 
