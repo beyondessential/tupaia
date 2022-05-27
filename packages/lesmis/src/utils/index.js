@@ -14,3 +14,4 @@ export * from './useUrlParams';
 export * from './useUrlSearchParams';
 export * from './useEntityBreadcrumbs';
 export * from './useImages';
+export * from './exportImagesToPDF';
