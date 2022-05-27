@@ -1,17 +1,12 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
-// import { Document, Page, Text, PDFViewer } from '@react-pdf/renderer';
-import { FlexCenter, SmallAlert } from '@tupaia/ui-components';
+import { FlexColumn, SmallAlert } from '@tupaia/ui-components';
 import { Typography } from '@material-ui/core';
-
-import { useDashboardData } from '../../api';
+import { EntityDetails, A4Page } from './components';
 import { yearToApiDates } from '../../api/queries/utils';
-import { useUrlParams } from '../../utils';
-import { EntityDetails } from './components/EntityDetails';
 import { DashboardReport } from '../DashboardReport';
-import Header from './components/Header';
-import { useDashboardDropdownOptions } from '../../utils/useDashboardDropdownOptions';
 
 const InfoAlert = styled(SmallAlert)`
   margin: auto;
@@ -19,11 +14,12 @@ const InfoAlert = styled(SmallAlert)`
 
 const DashboardTitleContainer = styled.div`
   text-align: start;
-  margin-bottom: 20px;
+  margin-bottom: 50px;
 `;
 
-const DashboardReportContainer = styled(FlexCenter)`
-  min-width: 100%;
+const Container = styled.div`
+  position: relative;
+  height: 1600px;
 `;
 
 const Divider = styled.hr`
@@ -33,36 +29,59 @@ const Divider = styled.hr`
 export const DashboardExportPreview = ({ addToRefs, subDashboards, currentPage }) => {
   const { startDate, endDate } = yearToApiDates('2021');
 
-  return (
-    <>
-      <Header />
-      <EntityDetails />
-      {subDashboards?.map(dashboard => (
-        <div>
-          <DashboardTitleContainer>
-            <Typography variant="h2">{dashboard.dashboardName}</Typography>
-            <Divider />
-          </DashboardTitleContainer>
-
-          {dashboard.items.length > 0 ? (
-            dashboard.items.map(item => (
-              <DashboardReportContainer>
-                <DashboardReport
-                  key={item.code}
-                  reportCode={item.reportCode}
-                  name={item.name}
-                  startDate={startDate}
-                  endDate={endDate}
+  const getChildren = dashboard => {
+    const { items } = dashboard;
+    if (items.length > 0) {
+      return dashboard.items.map(item => {
+        return (
+          <A4Page
+            key={item.code}
+            addToRefs={addToRefs}
+          >
+            <FlexColumn>
+              <DashboardTitleContainer>
+                <Typography variant="h2">{dashboard.dashboardName}</Typography>
+                <Divider />
+                <Typography variant="h5">{item.name}</Typography>
+              </DashboardTitleContainer>
+              <DashboardReport
+                reportCode={item.reportCode}
+                name={item.name}
+                startDate={startDate}
+                endDate={endDate}
                 />
-              </DashboardReportContainer>
-            ))
-          ) : (
-            <InfoAlert key={dashboard.dashboardName} severity="info" variant="standard">
-              There are no reports available for this dashboard
-            </InfoAlert>
-          )}
-        </div>
-      ))}
-    </>
+            </FlexColumn>
+          </A4Page>
+        );
+      });
+    }
+
+    return (
+      <A4Page
+        key={dashboard.dashboardName}
+        <DashboardTitleContainer>
+          <Typography variant="h2">{dashboard.dashboardName}</Typography>
+          <Divider />
+        </DashboardTitleContainer>
+        <InfoAlert severity="info" variant="standard">
+          There are no reports available for this dashboard
+        </InfoAlert>
+      </A4Page>
+    );
+  };
+
+  return (
+    <Container>
+      {/* First page for profile */}
+      <A4Page addToRefs={addToRefs} page={getNextPage()} currentPage={currentPage}>
+        <EntityDetails />
+      </A4Page>
+      {/* Sub dashboards */}
+      {subDashboards?.map(dashboard => getChildren(dashboard))}
+    </Container>
   );
+};
+
+DashboardExportPreview.propTypes = {
+  subDashboards: PropTypes.array.isRequired,
 };
