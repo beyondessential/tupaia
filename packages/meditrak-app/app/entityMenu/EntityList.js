@@ -230,7 +230,7 @@ export class EntityList extends PureComponent {
     const { searchTerm } = this.state;
 
     if (this.baseQuery.length > 0 && selectedEntityId) {
-      const selectedEntity = this.baseQuery.filtered(`id = ${selectedEntityId}`)[0];
+      const selectedEntity = this.baseQuery.filtered(`id = "${selectedEntityId}"`)[0];
       return (
         <View style={localStyles.container}>
           {this.renderEntityCell({ item: selectedEntity, onDeselect: this.deselectRow })}
