@@ -102,6 +102,23 @@
     "email": "Email",
     "enterYourEmailAndPassword": "Enter your email and password",
     "loginToYourAccount": "Login to your account",
-    "password": "Password"
+    "password": "Password",
+    "dontHaveAccess": "Don't have access?",
+    "registerHere": "Register here"
+  },
+  "register": {
+    "forAnAccount": "Register for an account",
+    "accountNow": "Register account now",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "emailAddress": "Email Address",
+    "contactNumber": "Contact Number",
+    "employer": "Employer",
+    "position": "Position",
+    "confirmPassword": "confirmPassword",
+    "agreeToTerms": "I agree to the terms and conditions",
+    "password": "Password *",
+    "confirmPassword": "Confirm Password *"
+
   }
 }
