@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogContent,
   FlexSpaceBetween as BaseFlexSpaceBetween,
+  LoadingContainer,
 } from '@tupaia/ui-components';
 import { Button as MuiIconButton } from '@material-ui/core';
 import { DashboardExportPreview } from './DashboardExportPreview';
@@ -29,6 +30,7 @@ const MuiButton = styled(MuiIconButton)`
 
 export const DashboardExportModal = ({ Button, title }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const [page, setPage] = useState(1);
   const subDashboards = useSubDashboards();
   const { addToRefs, getImgs } = useCustomGetImages();
@@ -44,8 +46,10 @@ export const DashboardExportModal = ({ Button, title }) => {
       .reduce((totalNum, numOfdashboardItems) => totalNum + numOfdashboardItems, 1);
 
   const handleClickExport = async () => {
+    setIsExporting(true);
     const pageScreenshots = await getImgs();
     await exportImagesToPDF(pageScreenshots, fileName);
+    setIsExporting(false);
   };
 
   return (
@@ -66,11 +70,13 @@ export const DashboardExportModal = ({ Button, title }) => {
             </FlexSpaceBetween>
           </DialogHeader>
           <DialogContent>
-            <DashboardExportPreview
-              subDashboards={subDashboards}
-              addToRefs={addToRefs}
-              currentPage={page}
-            />
+            <LoadingContainer heading="Exporting charts to PDF" isLoading={isExporting}>
+              <DashboardExportPreview
+                subDashboards={subDashboards}
+                addToRefs={addToRefs}
+                currentPage={page}
+              />
+            </LoadingContainer>
           </DialogContent>
         </ExportOptionsProvider>
       </Dialog>
