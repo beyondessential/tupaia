@@ -3,5 +3,5 @@
  *  Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-export { useGetImages } from './useGetImages';
+export { useCustomGetImages } from './useCustomGetImages';
 export { useExportToImage } from './useExportToImage';
