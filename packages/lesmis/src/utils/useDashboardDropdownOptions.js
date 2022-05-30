@@ -38,6 +38,7 @@ export const useDashboardDropdownOptions = () => {
       label: getProfileLabel(entityData?.type),
       TabComponent: DashboardReportTabView,
       useYearSelector: true,
+      exportToPDF: true,
       componentProps: {
         // those not included anywhere else
         filterSubDashboards: ({ dashboardCode }) =>
@@ -50,8 +51,10 @@ export const useDashboardDropdownOptions = () => {
       value: 'indicators',
       label: translate('dashboards.freeIndicatorSelection'),
       TabComponent: TabTemplate,
+      exportToPDF: true,
       componentProps: {
         Body: 'Free Indicator Selection',
+        filterSubDashboards: () => false,
       },
     },
     {
@@ -66,6 +69,7 @@ export const useDashboardDropdownOptions = () => {
     ...SUB_DASHBOARD_OPTIONS.map(dashboard => ({
       value: dashboard.code,
       label: translate(dashboard.label),
+      exportToPDF: dashboard.exportToPDF,
       TabComponent: DashboardReportTabView,
       componentProps: {
         filterSubDashboards: ({ dashboardCode }) =>

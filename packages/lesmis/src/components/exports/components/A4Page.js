@@ -15,12 +15,12 @@ const Content = styled.div`
   margin: 0px 150px;
 `;
 
-export const A4Page = ({ addToRefs, children, page, currentPage }) => {
+export const A4Page = ({ addToRefs, children, dashboardLabel, page, currentPage }) => {
   const isSelected = page === currentPage;
 
   return (
     <A4Container ref={addToRefs} $isSelected={isSelected}>
-      <Header />
+      <Header dashboardLabel={dashboardLabel} />
       <Content> {children}</Content>
     </A4Container>
   );
@@ -29,6 +29,7 @@ export const A4Page = ({ addToRefs, children, page, currentPage }) => {
 A4Page.propTypes = {
   children: PropTypes.node.isRequired,
   addToRefs: PropTypes.func.isRequired,
+  dashboardLabel: PropTypes.string.isRequired,
   page: PropTypes.number.isRequired,
   currentPage: PropTypes.number.isRequired,
 };

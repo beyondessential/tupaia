@@ -1,8 +1,8 @@
-import { Typography } from '@material-ui/core';
-import { FlexColumn } from '@tupaia/ui-components';
 import React from 'react';
 import styled from 'styled-components';
-import { I18n } from '../../../utils';
+import PropTypes from 'prop-types';
+import { Typography } from '@material-ui/core';
+import { FlexColumn } from '@tupaia/ui-components';
 
 const Logo = styled.img`
   top: 30px;
@@ -23,18 +23,20 @@ const SubHeading = styled(Typography)`
   text-transform: capitalize;
 `;
 
-const Header = () => {
+const Header = ({ dashboardLabel }) => {
   return (
     <div style={{ position: 'relative', padding: '50px' }}>
       <Logo alt="logo" src="/lesmis-logo-black.svg" />
       <FlexColumn>
-        <Heading variant="h1">
-          <I18n t="dashboards.districtProfile" />
-        </Heading>
+        <Heading variant="h1">{dashboardLabel}</Heading>
         <SubHeading variant="h2">2021</SubHeading>
       </FlexColumn>
     </div>
   );
+};
+
+Header.propTypes = {
+  dashboardLabel: PropTypes.string.isRequired,
 };
 
 export default Header;
