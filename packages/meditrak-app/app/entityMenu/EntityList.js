@@ -129,7 +129,7 @@ export class EntityList extends PureComponent {
       }
       const data = [
         ...primarySearchResults.slice(0, numberToShow),
-        ...secondarySearchResults.slice(0, numberToShow - primarySearchResults.length),
+        ...secondarySearchResults.slice(0, Math.max(0, numberToShow - primarySearchResults.length)),
       ];
       const moreAvailable = data.length < totalResultsAvailable;
       return { sections: [{ data }], moreAvailable };
