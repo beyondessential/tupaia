@@ -2,12 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { FlexColumn, SmallAlert } from '@tupaia/ui-components';
+import { SmallAlert } from '@tupaia/ui-components';
 import { Typography } from '@material-ui/core';
 import { EntityDetails, A4Page } from './components';
 import { yearToApiDates } from '../../api/queries/utils';
 import { DashboardReport } from '../DashboardReport';
 import { useExportOptions } from './context/ExportOptionsContext';
+import { DEFAULT_DATA_YEAR } from '../../constants';
 
 const InfoAlert = styled(SmallAlert)`
   margin: auto;
@@ -28,44 +29,42 @@ const Divider = styled.hr`
 `;
 
 export const DashboardExportPreview = ({ addToRefs, subDashboards, currentPage }) => {
-  const { startDate, endDate } = yearToApiDates('2021');
   const { exportWithLabels, exportWithTable } = useExportOptions();
   let page = 0;
   const getNextPage = () => {
     page++;
     return page;
   };
-  const getChildren = subDashboard => {
-    const { items, dashboardLabel } = subDashboard;
+  const getChildren = (subDashboard, isFirstPageProfile) => {
+    const { items, useYearSelector, ...configs } = subDashboard;
+    const { startDate, endDate } = useYearSelector ? yearToApiDates(DEFAULT_DATA_YEAR) : {};
+
     if (items.length > 0) {
-      return subDashboard.items.map(item => {
+      return subDashboard.items.map((item, index) => {
         return (
           <A4Page
             key={item.code}
-            dashboardLabel={dashboardLabel}
-            addToRefs={addToRefs}
             page={getNextPage()}
-            currentPage={currentPage}
+            {...{ ...configs, useYearSelector, addToRefs, currentPage }}
           >
-            <FlexColumn>
-              <DashboardTitleContainer>
-                <Typography variant="h2">{subDashboard.dashboardName}</Typography>
-                <Divider />
-                <Typography variant="h5">{item.name}</Typography>
-              </DashboardTitleContainer>
-              <DashboardReport
-                reportCode={item.reportCode}
-                name={item.name}
-                startDate={startDate}
-                endDate={endDate}
-                exportOptions={{
-                  exportWithLabels,
-                  exportWithTable,
-                }}
-                isExporting
-                isEnlarged
-              />
-            </FlexColumn>
+            {isFirstPageProfile && index === 0 && <EntityDetails />}
+            <DashboardTitleContainer>
+              <Typography variant="h2">{subDashboard.dashboardName}</Typography>
+              <Divider />
+              <Typography variant="h5">{item.name}</Typography>
+            </DashboardTitleContainer>
+            <DashboardReport
+              reportCode={item.reportCode}
+              name={item.name}
+              startDate={startDate}
+              endDate={endDate}
+              exportOptions={{
+                exportWithLabels,
+                exportWithTable,
+              }}
+              isExporting
+              isEnlarged
+            />
           </A4Page>
         );
       });
@@ -74,11 +73,10 @@ export const DashboardExportPreview = ({ addToRefs, subDashboards, currentPage }
     return (
       <A4Page
         key={subDashboard.dashboardName}
-        dashboardLabel={dashboardLabel}
-        addToRefs={addToRefs}
         page={getNextPage()}
-        currentPage={currentPage}
+        {...{ ...configs, useYearSelector, addToRefs, currentPage }}
       >
+        {isFirstPageProfile && <EntityDetails />}
         <DashboardTitleContainer>
           <Typography variant="h2">{subDashboard.dashboardName}</Typography>
           <Divider />
@@ -92,12 +90,10 @@ export const DashboardExportPreview = ({ addToRefs, subDashboards, currentPage }
 
   return (
     <Container>
-      {/* First page for profile */}
-      <A4Page addToRefs={addToRefs} page={getNextPage()} currentPage={currentPage}>
-        <EntityDetails />
-      </A4Page>
-      {/* Sub dashboards */}
-      {subDashboards?.map(subDashboard => getChildren(subDashboard))}
+      {subDashboards?.map((subDashboard, index) => {
+        const isFirstPageProfile = index === 0;
+        return getChildren(subDashboard, isFirstPageProfile);
+      })}
     </Container>
   );
 };

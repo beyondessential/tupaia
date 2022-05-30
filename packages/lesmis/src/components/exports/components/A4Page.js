@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { FlexColumn } from '@tupaia/ui-components';
 
 import Header from './Header';
 
@@ -11,16 +12,16 @@ const A4Container = styled.div`
   z-index: ${props => (props.$isSelected ? 0 : -1)};
 `;
 
-const Content = styled.div`
+const Content = styled(FlexColumn)`
   margin: 0px 150px;
 `;
 
-export const A4Page = ({ addToRefs, children, dashboardLabel, page, currentPage }) => {
+export const A4Page = ({ addToRefs, children, page, currentPage, ...configs }) => {
   const isSelected = page === currentPage;
 
   return (
     <A4Container ref={addToRefs} $isSelected={isSelected}>
-      <Header dashboardLabel={dashboardLabel} />
+      <Header {...configs} />
       <Content> {children}</Content>
     </A4Container>
   );
@@ -29,7 +30,6 @@ export const A4Page = ({ addToRefs, children, dashboardLabel, page, currentPage 
 A4Page.propTypes = {
   children: PropTypes.node.isRequired,
   addToRefs: PropTypes.func.isRequired,
-  dashboardLabel: PropTypes.string.isRequired,
   page: PropTypes.number.isRequired,
   currentPage: PropTypes.number.isRequired,
 };
