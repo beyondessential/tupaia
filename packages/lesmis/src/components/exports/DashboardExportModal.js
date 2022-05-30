@@ -12,7 +12,7 @@ import {
   DialogContent,
   FlexSpaceBetween as BaseFlexSpaceBetween,
 } from '@tupaia/ui-components';
-import MuiIconButton from '@material-ui/core/IconButton';
+import { Button as MuiIconButton } from '@material-ui/core';
 import { DashboardExportPreview } from './DashboardExportPreview';
 import { OptionsBar } from './components';
 import { exportImagesToPDF, useCustomGetImages } from '../../utils';
@@ -21,6 +21,10 @@ import { ExportOptionsProvider } from './context/ExportOptionsContext';
 
 const FlexSpaceBetween = styled(BaseFlexSpaceBetween)`
   width: 95%;
+`;
+
+const MuiButton = styled(MuiIconButton)`
+  margin: 0px 20px;
 `;
 
 export const DashboardExportModal = ({ Button, title }) => {
@@ -50,9 +54,14 @@ export const DashboardExportModal = ({ Button, title }) => {
         <ExportOptionsProvider>
           <DialogHeader onClose={() => setIsOpen(false)} title={title}>
             <FlexSpaceBetween>
-              <MuiIconButton>
-                <DownloadIcon onClick={handleClickExport} />
-              </MuiIconButton>
+              <MuiButton
+                startIcon={<DownloadIcon />}
+                variant="contained"
+                color="primary"
+                onClick={handleClickExport}
+              >
+                Download
+              </MuiButton>
               <OptionsBar totalPage={totalPage} setPage={setPage} />
             </FlexSpaceBetween>
           </DialogHeader>
