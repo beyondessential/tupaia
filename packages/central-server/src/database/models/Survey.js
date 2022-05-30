@@ -58,8 +58,6 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   meditrakConfig = {
     minAppVersion: '0.0.1',
   };
-
-  isDeletableViaApi = true;
 }
 
 const onChangeUpdateDataGroup = async (

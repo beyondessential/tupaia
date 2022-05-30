@@ -14,8 +14,9 @@ import { createBuilder } from '../createBuilder';
 import {
   fetchAnalytics,
   validateConfig,
-  evaluateFormulaToNumber,
+  convertBooleanToNumber,
   replaceDataValuesWithDefaults,
+  isValidIndicatorValue,
 } from '../helpers';
 import {
   AnalyticArithmeticConfig,
@@ -136,8 +137,8 @@ export class AnalyticArithmeticBuilder extends Builder {
       .map(({ organisationUnit, period, dataValues }) => ({
         organisationUnit,
         period,
-        value: evaluateFormulaToNumber(parser, this.config.formula, dataValues),
+        value: convertBooleanToNumber(parser, this.config.formula, dataValues),
       }))
-      .filter(({ value }) => isFinite(value));
+      .filter(({ value }) => isValidIndicatorValue(value));
   };
 }

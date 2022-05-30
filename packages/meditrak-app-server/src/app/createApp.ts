@@ -5,33 +5,35 @@
 import { TupaiaDatabase } from '@tupaia/database';
 import { handleWith, MicroServiceApiBuilder } from '@tupaia/server-boilerplate';
 import {
-  ForwardingAuthHandler,
-  getBaseUrlsForHost,
-  LOCALHOST_BASE_URLS,
-  TupaiaApiClient,
-} from '@tupaia/api-client';
-import { AuthRequest, AuthRoute, RegisterUserRequest, RegisterUserRoute } from '../routes';
+  AuthRequest,
+  AuthRoute,
+  ChangePasswordRequest,
+  ChangePasswordRoute,
+  RegisterUserRequest,
+  RegisterUserRoute,
+  SocialFeedRequest,
+  SocialFeedRoute,
+  UserRewardsRequest,
+  UserRewardsRoute,
+} from '../routes';
+import { authHandlerProvider, buildAuthMiddleware } from '../auth';
 
 /**
  * Set up express server with middleware,
  */
-export function createApp() {
-  const app = new MicroServiceApiBuilder(new TupaiaDatabase())
-    .middleware((req, res, next) => {
-      const baseUrls =
-        process.env.NODE_ENV === 'test' ? LOCALHOST_BASE_URLS : getBaseUrlsForHost(req.hostname);
-      const context = {
-        services: new TupaiaApiClient(
-          new ForwardingAuthHandler(req.headers.authorization),
-          baseUrls,
-        ),
-      };
-      req.ctx = context;
-      res.ctx = context;
-      next();
-    })
+export function createApp(database = new TupaiaDatabase()) {
+  const authMiddleware = buildAuthMiddleware(database);
+  const app = new MicroServiceApiBuilder(database)
+    .attachApiClientToContext(authHandlerProvider)
     .post<AuthRequest>('auth', handleWith(AuthRoute))
     .post<RegisterUserRequest>('user', handleWith(RegisterUserRoute))
+    .get<SocialFeedRequest>('socialFeed', authMiddleware, handleWith(SocialFeedRoute))
+    .get<UserRewardsRequest>('me/rewards', authMiddleware, handleWith(UserRewardsRoute))
+    .post<ChangePasswordRequest>(
+      'me/changePassword',
+      authMiddleware,
+      handleWith(ChangePasswordRoute),
+    )
     .build();
 
   return app;

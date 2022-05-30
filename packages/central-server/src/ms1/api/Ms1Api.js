@@ -2,7 +2,7 @@
  * Tupaia MediTrak
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import { fetchWithTimeout, HttpError } from '@tupaia/utils';
+import { fetchWithTimeout, HttpError, createBearerHeader } from '@tupaia/utils';
 
 export class Ms1Api {
   constructor() {
@@ -35,7 +35,7 @@ export class Ms1Api {
     const fetchConfig = {
       method: 'GET', // Acts as default http method, will be overridden if method passed in config
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: createBearerHeader(accessToken),
         'Content-Type': 'application/json',
       },
       ...config,

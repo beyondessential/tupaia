@@ -10,6 +10,7 @@ import { allowNoPermissions } from '../permissions';
 
 const DEFAULT_NUMBER_PER_PAGE = 20;
 
+// TODO: Remove as part of RN-502
 export const getSocialFeed = async (req, res) => {
   const { query, models } = req;
   const {

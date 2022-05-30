@@ -11,6 +11,7 @@ import {
   hasContent,
   isEmail,
   isBoolean,
+  isAString,
   isPlainObject,
   constructIsEmptyOr,
   constructIsOneOf,
@@ -19,7 +20,6 @@ import {
   isNumber,
   ValidationError,
 } from '@tupaia/utils';
-import { FEED_ITEM_TYPES } from '../../database/models/FeedItem';
 import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataSource';
 
 export const constructForParent = (models, recordType, parentRecordType) => {
@@ -79,7 +79,7 @@ export const constructForSingle = (models, recordType) => {
           // Always require a permission group ID, by default an item should at least be public.
           constructRecordExistsWithId(models.permissionGroup),
         ],
-        type: [constructIsOneOf(FEED_ITEM_TYPES)],
+        type: [isAString],
         template_variables: [constructIsEmptyOr(isPlainObject)],
       };
     case TYPES.PERMISSION_GROUP:

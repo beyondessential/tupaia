@@ -13,6 +13,7 @@ import {
   EntityHierarchyCacher,
   getTestDatabase,
 } from '@tupaia/database';
+import { createBasicHeader } from '@tupaia/utils';
 
 import { TestModelRegistry } from '../types';
 import { PROJECTS, ENTITIES, ENTITY_RELATIONS } from '../__integration__/fixtures';
@@ -59,9 +60,6 @@ export const setupTestData = async () => {
 
 export const setupTestApp = async () => {
   const app = new TestableServer(createApp(getTestDatabase()));
-  app.setDefaultHeader(
-    'Authorization',
-    `Basic ${Buffer.from(`${userAccountEmail}:${userAccountPassword}`).toString('base64')}`,
-  );
+  app.setDefaultHeader('Authorization', createBasicHeader(userAccountEmail, userAccountPassword));
   return app;
 };
