@@ -21,8 +21,7 @@ import { authHandlerProvider, buildAuthMiddleware } from '../auth';
 /**
  * Set up express server with middleware,
  */
-export function createApp() {
-  const database = new TupaiaDatabase();
+export function createApp(database = new TupaiaDatabase()) {
   const authMiddleware = buildAuthMiddleware(database);
   const app = new MicroServiceApiBuilder(database)
     .attachApiClientToContext(authHandlerProvider)
@@ -30,7 +29,7 @@ export function createApp() {
     .post<RegisterUserRequest>('user', handleWith(RegisterUserRoute))
     .get<SocialFeedRequest>('socialFeed', authMiddleware, handleWith(SocialFeedRoute))
     .get<UserRewardsRequest>('me/rewards', authMiddleware, handleWith(UserRewardsRoute))
-    .get<ChangePasswordRequest>(
+    .post<ChangePasswordRequest>(
       'me/changePassword',
       authMiddleware,
       handleWith(ChangePasswordRoute),

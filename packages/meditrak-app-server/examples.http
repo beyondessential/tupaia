@@ -66,7 +66,7 @@ Authorization: {{user-authorization}}
 
 ### Change User Password
 
-GET http://{{host}}/{{version}}/me/changePassword HTTP/2.0
+POST http://{{host}}/{{version}}/me/changePassword HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
 
@@ -78,7 +78,7 @@ Authorization: {{user-authorization}}
 
 ### Change User Password (back)
 
-GET http://{{host}}/{{version}}/me/changePassword HTTP/2.0
+POST http://{{host}}/{{version}}/me/changePassword HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
 

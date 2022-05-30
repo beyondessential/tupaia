@@ -4,7 +4,7 @@
  */
 
 import { ApiConnection } from '@tupaia/server-boilerplate';
-import { createBasicHeader } from '@tupaia/utils';
+import { createBasicHeader, createBearerHeader } from '@tupaia/utils';
 import { refreshAndSaveAccessToken } from '/appServer/requestHelpers/refreshAndSaveAccessToken';
 
 const { MICROSERVICE_CLIENT_USERNAME, MICROSERVICE_CLIENT_SECRET } = process.env;
@@ -44,7 +44,7 @@ export class ReportConnection extends ApiConnection {
           ? accessToken
           : await refreshAndSaveAccessToken(req.models, refreshToken, userName);
 
-      return `Bearer ${validAccessToken}`;
+      return createBearerHeader(validAccessToken);
     };
 
     super({ getAuthHeader });

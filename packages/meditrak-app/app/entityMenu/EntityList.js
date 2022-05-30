@@ -17,23 +17,32 @@ import {
   getGreyShade,
 } from '../globalStyles';
 import { EntityItem, ITEM_HEIGHT } from './EntityItem';
+import { fetchEntities } from './helpers';
 
 const SEARCH_BOX_HEIGHT = 40;
+const INITIAL_NUMBER_TO_SHOW = 1000; // will load more if they scroll to the bottom of the list
+const LOADING_MESSAGE_SECTION = { title: 'Loading more results...', data: [] }; // slightly hacky way of showing a loading message at the bottom of the list until more lazily load
+const NO_RESULTS_SECTION = { title: 'No results', data: [] };
+
 export class EntityList extends PureComponent {
   constructor(props) {
     super(props);
+    this.allEntitiesQuery = fetchEntities(
+      this.props.realmDatabase,
+      this.props.baseEntityFilters,
+      this.props.checkEntityAttributes,
+    );
     this.state = {
       searchTerm: '',
-      searchResults: null,
+      primarySearchResults: null,
+      secondarySearchResults: null,
       isOpen: false,
+      numberToShow: INITIAL_NUMBER_TO_SHOW,
     };
   }
 
   componentDidMount() {
-    const { onMount, startOpen } = this.props;
-    if (onMount) {
-      onMount(); // E.g. pull database records into the redux store to populate the clinic list
-    }
+    const { startOpen } = this.props;
 
     if (startOpen) {
       this.openResults();
@@ -73,7 +82,8 @@ export class EntityList extends PureComponent {
     this.props.releaseScrollControl();
     this.setState({
       searchTerm: '',
-      searchResults: null,
+      primarySearchResults: null,
+      secondarySearchResults: null,
       isOpen: false,
     });
     this.props.onRowPress(row);
@@ -91,50 +101,67 @@ export class EntityList extends PureComponent {
     if (!searchTerm) {
       this.setState({
         searchTerm: '',
-        searchResults: null,
+        primarySearchResults: null,
+        secondarySearchResults: null,
       });
       return;
     }
 
-    const { entities } = this.props;
-    const lowerCaseSearchTerm = searchTerm.toLowerCase();
-
-    const searchResults = entities
-      .filter(
-        ({ name, parentName }) =>
-          name.toLowerCase().includes(lowerCaseSearchTerm) ||
-          (parentName && parentName.toLowerCase().includes(lowerCaseSearchTerm)),
-      )
-      .sort(({ name: a }, { name: b }) => {
-        // Send entity names that start with the search term to the top.
-        const checkMatchesAtStart = name => name.toLowerCase().startsWith(lowerCaseSearchTerm);
-        if (checkMatchesAtStart(a) !== checkMatchesAtStart(b)) {
-          return checkMatchesAtStart(a) ? -1 : 1;
-        }
-
-        // Sort alphabetically
-        return a.localeCompare(b);
-      });
+    const primarySearchResults = this.allEntitiesQuery.filtered(
+      `name BEGINSWITH[c] $0`,
+      searchTerm,
+    );
+    const secondarySearchResults = this.allEntitiesQuery.filtered(
+      `(NOT name BEGINSWITH[c] $0) AND (name CONTAINS[c] $0 OR parent.name BEGINSWITH[c] $0)`,
+      searchTerm,
+    );
     this.setState({
       searchTerm,
-      searchResults,
+      primarySearchResults,
+      secondarySearchResults,
     });
   };
 
-  getListSections = () => {
-    const { searchResults } = this.state;
-    if (searchResults) {
-      return [{ data: searchResults }];
+  getListData = () => {
+    const { primarySearchResults, secondarySearchResults, numberToShow } = this.state;
+
+    if (primarySearchResults || secondarySearchResults) {
+      const totalResultsAvailable = primarySearchResults.length + secondarySearchResults.length;
+      if (totalResultsAvailable === 0) {
+        return { noResults: true };
+      }
+      const data = [
+        ...primarySearchResults.slice(0, numberToShow),
+        ...secondarySearchResults.slice(0, Math.max(0, numberToShow - primarySearchResults.length)),
+      ];
+      const moreAvailable = data.length < totalResultsAvailable;
+      return { sections: [{ data }], moreAvailable };
     }
 
-    const { entities, recentEntities } = this.props;
+    const { recentEntities } = this.props;
+    const allEntities = this.allEntitiesQuery.slice(0, numberToShow);
+    const moreAvailable = allEntities.length < this.allEntitiesQuery.length;
     if (recentEntities?.length > 0) {
-      return [
-        { title: 'Recently used', data: recentEntities },
-        { title: 'All entities', data: entities },
-      ];
+      return {
+        sections: [
+          { title: 'Recently used', data: recentEntities },
+          { title: 'All entities', data: allEntities },
+        ],
+        moreAvailable,
+      };
     }
-    return [{ data: entities }];
+    return { sections: [{ data: allEntities }], moreAvailable };
+  };
+
+  getListSections = () => {
+    const { sections, moreAvailable, noResults } = this.getListData();
+    if (noResults) {
+      return [NO_RESULTS_SECTION];
+    }
+    if (moreAvailable) {
+      return [...sections, LOADING_MESSAGE_SECTION]; // slightly hacky way to show loading message
+    }
+    return sections;
   };
 
   renderEntityCell = ({ item, onDeselect }) => {
@@ -158,27 +185,14 @@ export class EntityList extends PureComponent {
   };
 
   renderResults() {
-    const { entities } = this.props;
-    const { searchTerm, searchResults, isOpen } = this.state;
+    const { isOpen, numberToShow } = this.state;
 
-    // while entities is null, we're still loading from the database
-    if (!entities) {
-      return <Text style={localStyles.noResultsText}>Loading...</Text>;
-    }
-
-    // if entities is not null, but empty, the survey is probably misconfigured
-    if (entities.length === 0) {
+    // if base query is empty, the survey is probably misconfigured
+    if (this.allEntitiesQuery.length === 0) {
       return (
         <Text style={localStyles.noResultsText}>
           No valid entities for this question, please contact your survey administrator.
         </Text>
-      );
-    }
-
-    // if searchResults is not null, but empty, there are no entities matching their search
-    if (searchResults && searchResults.length === 0) {
-      return (
-        <Text style={localStyles.noResultsText}>{`No entities matching '${searchTerm}'.`}</Text>
       );
     }
 
@@ -190,9 +204,11 @@ export class EntityList extends PureComponent {
           renderSectionHeader={this.renderSectionHeader}
           keyExtractor={item => item.id}
           keyboardShouldPersistTaps="always"
-          initialNumToRender={10}
-          maxToRenderPerBatch={10}
-          windowSize={2}
+          onEndReached={() => {
+            this.setState({
+              numberToShow: numberToShow + INITIAL_NUMBER_TO_SHOW,
+            });
+          }}
           // This allows fast scrolling of the entire list, without getting the layout the
           // list (especially on slower devices) will stop scrolling before the end is reached
           // and the device will take a moment to increase the scroll height before continuing.
@@ -213,11 +229,11 @@ export class EntityList extends PureComponent {
   }
 
   render() {
-    const { entities, selectedEntityId } = this.props;
+    const { selectedEntityId } = this.props;
     const { searchTerm } = this.state;
 
-    if (entities && entities.length > 0 && selectedEntityId) {
-      const selectedEntity = entities.find(i => i.id === selectedEntityId);
+    if (this.allEntitiesQuery.length > 0 && selectedEntityId) {
+      const selectedEntity = this.allEntitiesQuery.filtered(`id = "${selectedEntityId}"`)[0];
       return (
         <View style={localStyles.container}>
           {this.renderEntityCell({ item: selectedEntity, onDeselect: this.deselectRow })}
@@ -260,12 +276,13 @@ export class EntityList extends PureComponent {
 }
 
 EntityList.propTypes = {
-  entities: PropTypes.array,
-  recentEntities: PropTypes.array,
+  realmDatabase: PropTypes.object.isRequired,
+  baseEntityFilters: PropTypes.object.isRequired,
+  checkEntityAttributes: PropTypes.func,
+  recentEntities: PropTypes.array.isRequired,
   selectedEntityId: PropTypes.string,
   onRowPress: PropTypes.func.isRequired,
   onClear: PropTypes.func.isRequired,
-  onMount: PropTypes.func,
   startOpen: PropTypes.bool.isRequired,
   takeScrollControl: PropTypes.func.isRequired,
   releaseScrollControl: PropTypes.func.isRequired,
@@ -273,10 +290,8 @@ EntityList.propTypes = {
 };
 
 EntityList.defaultProps = {
-  entities: null,
-  recentEntities: null,
+  checkEntityAttributes: null,
   selectedEntityId: '',
-  onMount: null,
 };
 
 const localStyles = StyleSheet.create({
