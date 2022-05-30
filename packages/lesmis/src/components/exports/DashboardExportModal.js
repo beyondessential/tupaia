@@ -9,7 +9,7 @@ import { Dialog, DialogHeader, DialogContent } from '@tupaia/ui-components';
 import MuiIconButton from '@material-ui/core/IconButton';
 import { DashboardExportPreview } from './DashboardExportPreview';
 import { OptionsBar } from './components';
-import { exportImagesToPDF, useGetImages } from '../../utils';
+import { exportImagesToPDF, useCustomGetImages } from '../../utils';
 import { useSubDashboards } from './utils/useSubDashboards';
 import { ExportOptionsProvider } from './context/ExportOptionsContext';
 
@@ -17,7 +17,7 @@ export const DashboardExportModal = ({ Button, title }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(1);
   const subDashboards = useSubDashboards();
-  const { addToRefs, getImgs } = useGetImages('html2canvas');
+  const { addToRefs, getImgs } = useCustomGetImages();
   const fileName = `${title}-dashboards-export`;
 
   const totalPage =

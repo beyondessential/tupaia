@@ -7,7 +7,8 @@ import { useRef, useState } from 'react';
 
 import { getImage } from './getImage';
 
-export const useGetImages = formate => {
+// Customised for dashboards pdf export
+export const useCustomGetImages = () => {
   const [isExporting, setIsExporting] = useState(false);
   const refs = useRef([]);
   refs.current = [];
@@ -21,8 +22,11 @@ export const useGetImages = formate => {
     setIsExporting(true);
     const imgs = [];
 
-    for (const node of refs.current) {
-      const image = await getImage(node, formate);
+    for (let i = 0; i < refs.current.length; i++) {
+      // Hacky way to take screenshot for the first profile page with `html2canvas` as `domtoimage` can't access material-ui css file.
+      // More on this, `html2canvas` can return a better resolution screenshots than `domtoimage`, but it requires much longer time.
+      const formate = i === 0 ? 'html2canvas' : 'png';
+      const image = await getImage(refs.current[i], formate);
       imgs.push(image);
     }
 
