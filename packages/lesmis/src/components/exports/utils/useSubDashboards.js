@@ -15,11 +15,11 @@ export const useSubDashboards = () => {
   const subDashboards = useMemo(
     () =>
       profileDropDownOptions
-        .map(({ componentProps, label }) => {
+        .map(({ componentProps, label, useYearSelector }) => {
           const { filterSubDashboards } = componentProps;
           return data
             ?.filter(filterSubDashboards)
-            .map(configs => ({ ...configs, dashboardLabel: label }));
+            .map(configs => ({ ...configs, dashboardLabel: label, useYearSelector }));
         })
         .flat()
         .filter(subDashboard => subDashboard),
