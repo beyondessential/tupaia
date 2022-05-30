@@ -7,7 +7,7 @@ import React from 'react';
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import PropTypes from 'prop-types';
-import { FlexSpaceBetween } from '@tupaia/ui-components';
+import { FlexEnd } from '@tupaia/ui-components';
 import Pagination from '@material-ui/lab/Pagination';
 import { useExportOptions } from '../context/ExportOptionsContext';
 
@@ -20,7 +20,7 @@ export const OptionsBar = ({ totalPage, setPage }) => {
   } = useExportOptions();
 
   return (
-    <FlexSpaceBetween>
+    <FlexEnd>
       <FormControlLabel
         control={
           <Switch checked={exportWithLabels} onChange={toggleExportWithLabels} color="primary" />
@@ -34,7 +34,7 @@ export const OptionsBar = ({ totalPage, setPage }) => {
         label="Table"
       />
       <Pagination count={totalPage} shape="rounded" onChange={(event, value) => setPage(value)} />
-    </FlexSpaceBetween>
+    </FlexEnd>
   );
 };
 

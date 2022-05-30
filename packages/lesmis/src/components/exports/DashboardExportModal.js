@@ -4,14 +4,24 @@
  */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import DownloadIcon from '@material-ui/icons/GetApp';
-import { Dialog, DialogHeader, DialogContent } from '@tupaia/ui-components';
+import {
+  Dialog,
+  DialogHeader,
+  DialogContent,
+  FlexSpaceBetween as BaseFlexSpaceBetween,
+} from '@tupaia/ui-components';
 import MuiIconButton from '@material-ui/core/IconButton';
 import { DashboardExportPreview } from './DashboardExportPreview';
 import { OptionsBar } from './components';
 import { exportImagesToPDF, useCustomGetImages } from '../../utils';
 import { useSubDashboards } from './utils/useSubDashboards';
 import { ExportOptionsProvider } from './context/ExportOptionsContext';
+
+const FlexSpaceBetween = styled(BaseFlexSpaceBetween)`
+  width: 95%;
+`;
 
 export const DashboardExportModal = ({ Button, title }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,21 +47,23 @@ export const DashboardExportModal = ({ Button, title }) => {
   return (
     <>
       <Dialog onClose={() => setIsOpen(false)} open={isOpen} maxWidth="lg">
-        <DialogHeader onClose={() => setIsOpen(false)} title={title}>
-          <MuiIconButton>
-            <DownloadIcon onClick={handleClickExport} />
-          </MuiIconButton>
-        </DialogHeader>
-        <DialogContent>
-          <ExportOptionsProvider>
-            <OptionsBar totalPage={totalPage} setPage={setPage} />
+        <ExportOptionsProvider>
+          <DialogHeader onClose={() => setIsOpen(false)} title={title}>
+            <FlexSpaceBetween>
+              <MuiIconButton>
+                <DownloadIcon onClick={handleClickExport} />
+              </MuiIconButton>
+              <OptionsBar totalPage={totalPage} setPage={setPage} />
+            </FlexSpaceBetween>
+          </DialogHeader>
+          <DialogContent>
             <DashboardExportPreview
               subDashboards={subDashboards}
               addToRefs={addToRefs}
               currentPage={page}
             />
-          </ExportOptionsProvider>
-        </DialogContent>
+          </DialogContent>
+        </ExportOptionsProvider>
       </Dialog>
       <Button onClick={() => setIsOpen(true)} />
     </>
