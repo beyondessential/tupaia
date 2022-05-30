@@ -35,21 +35,21 @@ export const DashboardExportPreview = ({ addToRefs, subDashboards, currentPage }
     page++;
     return page;
   };
-
-  const getChildren = dashboard => {
-    const { items } = dashboard;
+  const getChildren = subDashboard => {
+    const { items, dashboardLabel } = subDashboard;
     if (items.length > 0) {
-      return dashboard.items.map(item => {
+      return subDashboard.items.map(item => {
         return (
           <A4Page
             key={item.code}
+            dashboardLabel={dashboardLabel}
             addToRefs={addToRefs}
             page={getNextPage()}
             currentPage={currentPage}
           >
             <FlexColumn>
               <DashboardTitleContainer>
-                <Typography variant="h2">{dashboard.dashboardName}</Typography>
+                <Typography variant="h2">{subDashboard.dashboardName}</Typography>
                 <Divider />
                 <Typography variant="h5">{item.name}</Typography>
               </DashboardTitleContainer>
@@ -73,13 +73,14 @@ export const DashboardExportPreview = ({ addToRefs, subDashboards, currentPage }
 
     return (
       <A4Page
-        key={dashboard.dashboardName}
+        key={subDashboard.dashboardName}
+        dashboardLabel={dashboardLabel}
         addToRefs={addToRefs}
         page={getNextPage()}
         currentPage={currentPage}
       >
         <DashboardTitleContainer>
-          <Typography variant="h2">{dashboard.dashboardName}</Typography>
+          <Typography variant="h2">{subDashboard.dashboardName}</Typography>
           <Divider />
         </DashboardTitleContainer>
         <InfoAlert severity="info" variant="standard">
@@ -96,7 +97,7 @@ export const DashboardExportPreview = ({ addToRefs, subDashboards, currentPage }
         <EntityDetails />
       </A4Page>
       {/* Sub dashboards */}
-      {subDashboards?.map(dashboard => getChildren(dashboard))}
+      {subDashboards?.map(subDashboard => getChildren(subDashboard))}
     </Container>
   );
 };
