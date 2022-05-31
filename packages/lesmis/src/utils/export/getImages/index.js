@@ -4,4 +4,4 @@
  */
 
 export { useCustomGetImages } from './useCustomGetImages';
-export { useExportToImage } from './useExportToImage';
+export { getImage } from './getImage';

@@ -7,7 +7,7 @@ import { useRef, useState } from 'react';
 import downloadJs from 'downloadjs';
 
 import { sleep, toFilename } from '@tupaia/utils';
-import { getImage } from './getImage';
+import { getImage } from './getImages';
 
 const exportToImage = (node, filename, formate = 'png') => {
   return new Promise(resolve => {
