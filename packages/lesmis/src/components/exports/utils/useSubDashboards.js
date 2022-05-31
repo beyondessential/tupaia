@@ -26,5 +26,17 @@ export const useSubDashboards = () => {
     [data, JSON.stringify(profileDropDownOptions)],
   );
 
-  return subDashboards;
+  const totalPage = useMemo(
+    () =>
+      subDashboards &&
+      subDashboards
+        .map(subDashboard => {
+          const { items } = subDashboard;
+          return items.length > 0 ? items.length : 1;
+        })
+        .reduce((totalNum, numOfdashboardItems) => totalNum + numOfdashboardItems, 1),
+    [JSON.stringify(subDashboards)],
+  );
+
+  return { subDashboards, totalPage };
 };
