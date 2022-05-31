@@ -18,7 +18,7 @@ import { useEntityData, useMapOverlayReportData } from '../api';
 import { I18n, useUrlParams, makeEntityLink, useUrlSearchParam } from '../utils';
 import { MapTableModal } from './MapTableModal';
 import { DEFAULT_DATA_YEAR } from '../constants';
-import { DashboardExportModal } from './exports';
+import { DashboardExportModal } from './DashboardExportModal';
 
 const Wrapper = styled.section`
   padding-top: 1rem;
