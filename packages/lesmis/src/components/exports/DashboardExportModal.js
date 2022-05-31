@@ -16,7 +16,7 @@ import {
 import { Button as MuiIconButton } from '@material-ui/core';
 import { DashboardExportPreview } from './DashboardExportPreview';
 import { OptionsBar } from './components';
-import { exportImagesToPDF, useCustomGetImages } from '../../utils';
+import { useExportToPDF } from '../../utils';
 import { useSubDashboards } from './utils/useSubDashboards';
 import { ExportOptionsProvider } from './context/ExportOptionsContext';
 
@@ -29,8 +29,9 @@ const MuiButton = styled(MuiIconButton)`
 `;
 
 export const DashboardExportModal = ({ Button, title }) => {
+  const fileName = `${title}-dashboards-export`;
+  const { addToRefs, isExporting, exportToPDF } = useExportToPDF(fileName);
   const [isOpen, setIsOpen] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
   const [page, setPage] = useState(1);
   const subDashboards = useSubDashboards();
   const { addToRefs, getImgs } = useCustomGetImages();
@@ -46,10 +47,7 @@ export const DashboardExportModal = ({ Button, title }) => {
       .reduce((totalNum, numOfdashboardItems) => totalNum + numOfdashboardItems, 1);
 
   const handleClickExport = async () => {
-    setIsExporting(true);
-    const pageScreenshots = await getImgs();
-    await exportImagesToPDF(pageScreenshots, fileName);
-    setIsExporting(false);
+    await exportToPDF();
   };
 
   return (
