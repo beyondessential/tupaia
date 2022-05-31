@@ -13,10 +13,6 @@ const html2canvasToImg = async node => {
 
 const getFormatter = formate => {
   switch (formate) {
-    case 'svg':
-      return domtoimage.toSvg;
-    case 'jpeg':
-      return domtoimage.toJpeg;
     case 'html2canvas':
       return html2canvasToImg;
     case 'png':
