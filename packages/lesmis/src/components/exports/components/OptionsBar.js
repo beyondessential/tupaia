@@ -11,7 +11,7 @@ import { FlexEnd } from '@tupaia/ui-components';
 import Pagination from '@material-ui/lab/Pagination';
 import { useExportOptions } from '../context/ExportOptionsContext';
 
-export const OptionsBar = ({ totalPage, setPage }) => {
+export const OptionsBar = ({ totalPage, setPage, isExporting }) => {
   const {
     exportWithLabels,
     toggleExportWithLabels,
@@ -23,13 +23,23 @@ export const OptionsBar = ({ totalPage, setPage }) => {
     <FlexEnd>
       <FormControlLabel
         control={
-          <Switch checked={exportWithLabels} onChange={toggleExportWithLabels} color="primary" />
+          <Switch
+            checked={exportWithLabels}
+            onChange={toggleExportWithLabels}
+            color="primary"
+            disabled={isExporting}
+          />
         }
         label="Labels"
       />
       <FormControlLabel
         control={
-          <Switch checked={exportWithTable} onChange={toggleExportWithTable} color="primary" />
+          <Switch
+            checked={exportWithTable}
+            onChange={toggleExportWithTable}
+            color="primary"
+            disabled={isExporting}
+          />
         }
         label="Table"
       />
@@ -40,5 +50,6 @@ export const OptionsBar = ({ totalPage, setPage }) => {
 
 OptionsBar.propTypes = {
   totalPage: PropTypes.number.isRequired,
+  isExporting: PropTypes.bool.isRequired,
   setPage: PropTypes.func.isRequired,
 };

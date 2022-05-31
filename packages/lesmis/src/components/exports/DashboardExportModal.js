@@ -50,10 +50,11 @@ export const DashboardExportModal = ({ Button, title }) => {
                 variant="contained"
                 color="primary"
                 onClick={handleClickExport}
+                disabled={isExporting}
               >
                 Download
               </MuiButton>
-              <OptionsBar totalPage={totalPage} setPage={setPage} />
+              <OptionsBar totalPage={totalPage} setPage={setPage} isExporting={isExporting} />
             </FlexSpaceBetween>
           </DialogHeader>
           <DialogContent>
