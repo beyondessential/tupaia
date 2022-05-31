@@ -29,7 +29,7 @@ export function createApp(database = new TupaiaDatabase()) {
     .post<RegisterUserRequest>('user', handleWith(RegisterUserRoute))
     .get<SocialFeedRequest>('socialFeed', authMiddleware, handleWith(SocialFeedRoute))
     .get<UserRewardsRequest>('me/rewards', authMiddleware, handleWith(UserRewardsRoute))
-    .get<ChangePasswordRequest>(
+    .post<ChangePasswordRequest>(
       'me/changePassword',
       authMiddleware,
       handleWith(ChangePasswordRoute),

@@ -8,7 +8,7 @@ import { setupTestApp } from '../utilities';
 
 const mockResponseMsg = 'Successfully created user';
 
-describe('auth', () => {
+describe('user', () => {
   let app: TestableServer;
 
   beforeAll(async () => {
