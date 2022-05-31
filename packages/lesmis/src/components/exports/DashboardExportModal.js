@@ -33,18 +33,7 @@ export const DashboardExportModal = ({ Button, title }) => {
   const { addToRefs, isExporting, exportToPDF } = useExportToPDF(fileName);
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(1);
-  const subDashboards = useSubDashboards();
-  const { addToRefs, getImgs } = useCustomGetImages();
-  const fileName = `${title}-dashboards-export`;
-
-  const totalPage =
-    subDashboards &&
-    subDashboards
-      .map(subDashboard => {
-        const { items } = subDashboard;
-        return items.length > 0 ? items.length : 1;
-      })
-      .reduce((totalNum, numOfdashboardItems) => totalNum + numOfdashboardItems, 1);
+  const { subDashboards, totalPage } = useSubDashboards();
 
   const handleClickExport = async () => {
     await exportToPDF();
