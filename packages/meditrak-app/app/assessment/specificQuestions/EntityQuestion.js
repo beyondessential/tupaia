@@ -8,9 +8,12 @@ import { connect } from 'react-redux';
 
 import { EntityList } from '../../entityMenu';
 import { takeScrollControl, releaseScrollControl } from '../actions';
-import { loadEntitiesFromDatabase } from '../../entityMenu/actions';
-import { getEntityQuestionState } from '../selectors';
 import { CodeGeneratorQuestion } from './CodeGeneratorQuestion';
+import {
+  getEntityAttributeChecker,
+  getEntityBaseFilters,
+  getRecentEntities,
+} from '../../entityMenu/helpers';
 
 const DumbEntityQuestion = props => {
   const { config, isOnlyQuestionOnScreen } = props;
@@ -32,42 +35,27 @@ DumbEntityQuestion.defaultProps = {
   config: null,
 };
 
-// This is presented as a question, but instead of tracking its answer it just
-// speaks directly to redux and is sent as part of the metadata of the request.
-export const PrimaryEntityQuestion = connect(
-  (state, { id: questionId, answer: selectedEntityId }) => {
-    const { entities = [], recentEntities = [] } = getEntityQuestionState(state, questionId);
+const mapStateToProps = (
+  state,
+  { id: questionId, answer: selectedEntityId, realmDatabase: database },
+) => {
+  const baseEntityFilters = getEntityBaseFilters(state, database, questionId);
+  const recentEntities = getRecentEntities(database, state, baseEntityFilters);
+  const checkEntityAttributes = getEntityAttributeChecker(state, questionId);
 
-    return {
-      entities,
-      recentEntities,
-      selectedEntityId,
-      hasScrollControl: state.assessment.isChildScrolling,
-    };
-  },
-  (dispatch, { id: questionId, onChangeAnswer }) => ({
-    onMount: () => dispatch(loadEntitiesFromDatabase(true, questionId)),
-    onRowPress: entity => onChangeAnswer(entity.id),
-    onClear: () => onChangeAnswer(null),
-    takeScrollControl: () => dispatch(takeScrollControl()),
-    releaseScrollControl: () => dispatch(releaseScrollControl()),
-  }),
-)(DumbEntityQuestion);
+  return {
+    baseEntityFilters,
+    checkEntityAttributes,
+    recentEntities,
+    selectedEntityId,
+  };
+};
 
-export const EntityQuestion = connect(
-  (state, { id: questionId, answer: selectedEntityId }) => {
-    const { entities } = getEntityQuestionState(state, questionId);
+const mapDispatchToProps = (dispatch, { onChangeAnswer }) => ({
+  onRowPress: entity => onChangeAnswer(entity.id),
+  onClear: () => onChangeAnswer(null),
+  takeScrollControl: () => dispatch(takeScrollControl()),
+  releaseScrollControl: () => dispatch(releaseScrollControl()),
+});
 
-    return {
-      entities,
-      selectedEntityId,
-    };
-  },
-  (dispatch, { id: questionId, onChangeAnswer }) => ({
-    onMount: () => dispatch(loadEntitiesFromDatabase(false, questionId)),
-    onRowPress: entity => onChangeAnswer(entity.id),
-    onClear: () => onChangeAnswer(null),
-    takeScrollControl: () => dispatch(takeScrollControl()),
-    releaseScrollControl: () => dispatch(releaseScrollControl()),
-  }),
-)(DumbEntityQuestion);
+export const EntityQuestion = connect(mapStateToProps, mapDispatchToProps)(DumbEntityQuestion);

@@ -6,20 +6,6 @@
 import { Object as RealmObject } from 'realm';
 
 export class Entity extends RealmObject {
-  getReduxStoreData() {
-    const { name, code = '', id, countryCode, parent, type, attributes } = this;
-    const reduxStoreData = {
-      name,
-      code,
-      id,
-      type,
-      parentName: parent && parent.name,
-      countryCode,
-      attributes: attributes ? JSON.parse(attributes) : {},
-    };
-    return reduxStoreData;
-  }
-
   toJson() {
     return {
       id: this.id,

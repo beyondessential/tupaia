@@ -17,6 +17,7 @@ export class BasicAuthHandler implements AuthHandler {
   }
 
   private buildAuthHeader(username: string, password: string): string {
+    // TODO: Replace with @tupaia/utils createBasicHeader() when we unpublish
     return `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
   }
 }
