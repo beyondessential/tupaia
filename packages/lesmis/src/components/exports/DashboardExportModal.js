@@ -13,7 +13,7 @@ import {
   FlexSpaceBetween as BaseFlexSpaceBetween,
   LoadingContainer,
 } from '@tupaia/ui-components';
-import { Button as MuiIconButton } from '@material-ui/core';
+import MuiIconButton from '@material-ui/core/Button';
 import { DashboardExportPreview } from './DashboardExportPreview';
 import { OptionsBar } from './components';
 import { useExportToPDF } from '../../utils';
@@ -26,6 +26,8 @@ const FlexSpaceBetween = styled(BaseFlexSpaceBetween)`
 
 const MuiButton = styled(MuiIconButton)`
   margin: 0px 20px;
+  background-color: transparent;
+  color: #666666;
 `;
 
 export const DashboardExportModal = ({ Button, title }) => {
@@ -47,9 +49,9 @@ export const DashboardExportModal = ({ Button, title }) => {
             <FlexSpaceBetween>
               <MuiButton
                 startIcon={<DownloadIcon />}
-                variant="contained"
-                color="primary"
+                variant="outlined"
                 onClick={handleClickExport}
+                disableElevation
                 disabled={isExporting}
               >
                 Download
