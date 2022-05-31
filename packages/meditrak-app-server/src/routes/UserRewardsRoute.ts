@@ -22,8 +22,10 @@ export class UserRewardsRoute extends Route<UserRewardsRequest> {
     const [{ coconuts, pigs }] = await models.database.executeSql<
       [{ coconuts: number; pigs: number }]
     >(
+      // The COUNT(*)::int is required here, since pg serializes count to string
+      // (https://stackoverflow.com/questions/47843370/postgres-sequelize-raw-query-to-get-count-returns-string-value)
       `
-        SELECT user_id, COUNT(*) as coconuts, FLOOR(COUNT(*) / 100) as pigs
+        SELECT user_id, COUNT(*)::int as coconuts, FLOOR(COUNT(*) / 100) as pigs
         FROM survey_response
         WHERE user_id = ?
         GROUP BY user_id;

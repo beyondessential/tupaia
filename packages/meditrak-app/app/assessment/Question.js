@@ -49,7 +49,7 @@ const QUESTION_TYPES = {
   SubmissionDate: DateQuestion,
   DateOfData: DateQuestion,
   Entity: EntityQuestion,
-  PrimaryEntity: PrimaryEntityQuestion,
+  PrimaryEntity: EntityQuestion,
   CodeGenerator: CodeGeneratorQuestion,
   Arithmetic: ArithmeticQuestion,
   Condition: ConditionQuestion,

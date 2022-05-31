@@ -7,7 +7,7 @@ import { Aggregator } from '@tupaia/aggregator';
 import { ObjectValidator } from '@tupaia/utils';
 import { ExpressionParser } from '@tupaia/expression-parser';
 import groupBy from 'lodash.groupby';
-import { Aggregation, Analytic, DataValues, FetchOptions } from '../types';
+import { Aggregation, Analytic, AnalyticCluster, Event, DataValues, FetchOptions } from '../types';
 
 export function validateConfig<T extends Record<string, unknown>>(
   config: Record<string, unknown>,
@@ -44,16 +44,22 @@ export const fetchAnalytics = async (
   return analytics;
 };
 
-export const evaluateFormulaToNumber = (
+export const convertBooleanToNumber = (
   parser: ExpressionParser,
   formula: string,
   dataValues: DataValues,
 ) => {
   parser.setAll(dataValues);
-  const value = parser.evaluateToNumber(formula);
+  const result = parser.evaluate(formula);
   parser.clearScope();
-  return value;
+  if (typeof result === 'boolean') {
+    return result ? 1 : 0;
+  }
+  return result;
 };
+
+export const isValidIndicatorValue = (value: string | number) =>
+  typeof value === 'string' || isFinite(value); // Should be either string, finite number or boolean as a number
 
 export const replaceDataValuesWithDefaults = (
   dataValues: DataValues,

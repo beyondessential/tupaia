@@ -67,9 +67,11 @@ const buildAndInsertSurveyResponse = async (
  */
 export const buildAndInsertSurveyResponses = async (models, surveyResponses) => {
   const user = await upsertDummyRecord(models.user);
-  return Promise.all(
-    surveyResponses.map(async surveyResponse =>
-      buildAndInsertSurveyResponse(models, user, surveyResponse),
-    ),
-  );
+  const builtResponses = [];
+  for (let i = 0; i < surveyResponses.length; i++) {
+    const surveyResponse = surveyResponses[i];
+    const builtResponse = await buildAndInsertSurveyResponse(models, user, surveyResponse);
+    builtResponses.push(builtResponse);
+  }
+  return builtResponses;
 };
