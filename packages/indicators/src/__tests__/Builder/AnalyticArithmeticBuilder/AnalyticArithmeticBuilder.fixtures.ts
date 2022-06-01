@@ -21,6 +21,7 @@ export const AGGREGATOR_ANALYTICS = arrayToAnalytics([
   ['Four', 'TO', '2019', 4],
   ['Five', 'TO', '2019', 5],
   ['Covid_Test_Type', 'TO', '2019', 'PCR Tests'],
+  ['Covid_Test_Type', 'TO', '2019', 'Rapid Tests'],
 
   ['A_ToPg_20192020', 'TO', '2019', 1],
   ['A_ToPg_20192020', 'TO', '2020', 10],

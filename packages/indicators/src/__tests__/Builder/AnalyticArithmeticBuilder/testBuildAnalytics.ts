@@ -38,7 +38,7 @@ export const testBuildAnalytics = () => {
       ['complex expression', '((One + Two) * Three) / (Four - Five)', [((1 + 2) * 3) / (4 - 5)]],
       ['division with zero', 'One / (One + Two - Three)', []],
       ['some data elements are undefined in the orgUnit/period combo', 'One + Undefined', []],
-      ['string data should be returned', 'Covid_Test_Type', ['PCR Tests']],
+      ['string data should be returned', 'Covid_Test_Type', ['PCR Tests', 'Rapid Tests']],
       ['converts true to 1', 'One < Two', [1]],
       ['converts false to 0', 'One > Two', [0]],
     ];
