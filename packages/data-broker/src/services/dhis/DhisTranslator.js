@@ -9,6 +9,7 @@ import { translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
 import { mapKeys, reduceToDictionary } from '@tupaia/utils';
 import { InboundAnalyticsTranslator } from './InboundAnalyticsTranslator';
 import { parseValueForDhis } from './parseValueForDhis';
+import { DATA_SOURCE_TYPES } from '../../utils';
 
 export class DhisTranslator {
   constructor(models) {
@@ -18,7 +19,7 @@ export class DhisTranslator {
   }
 
   get dataSourceTypes() {
-    return this.models.dataSource.getTypes();
+    return DATA_SOURCE_TYPES;
   }
 
   getOutboundValue = (dataElement, value) => {
@@ -105,9 +106,8 @@ export class DhisTranslator {
   };
 
   async translateOutboundEventDataValues(api, dataValues) {
-    const dataSources = await this.models.dataSource.find({
+    const dataSources = await this.models.dataElement.find({
       code: dataValues.map(({ code }) => code),
-      type: this.dataSourceTypes.DATA_ELEMENT,
     });
     const dataElementsByCode = await this.fetchOutboundDataElementsByCode(api, dataSources);
     const outboundDataValues = await this.translateOutboundDataValues(api, dataValues, dataSources);
@@ -134,7 +134,9 @@ export class DhisTranslator {
   };
 
   async translateInboundEvents(events, dataGroupCode) {
-    const dataElementsInGroup = await this.models.dataSource.getDataElementsInGroup(dataGroupCode);
+    const dataElementsInGroup = await this.models.dataGroup.getDataElementsInDataGroup(
+      dataGroupCode,
+    );
     const dataElementToSourceCode = reduceToDictionary(
       dataElementsInGroup,
       'dataElementCode',
