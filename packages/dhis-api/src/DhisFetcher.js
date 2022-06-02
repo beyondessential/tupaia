@@ -5,7 +5,7 @@
 
 import winston from 'winston';
 
-import { fetchWithTimeout } from '@tupaia/utils';
+import { fetchWithTimeout, createBearerHeader } from '@tupaia/utils';
 import { authenticateWithDhis } from './authenticateWithDhis';
 import { checkIsImportResponse } from './responseUtils';
 import { stringifyDhisQuery } from './stringifyDhisQuery';
@@ -85,7 +85,7 @@ export class DhisFetcher {
     const fetchConfig = {
       method: 'GET', // Acts as default http method, will be overridden if method passed in config
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: createBearerHeader(accessToken),
         'Content-Type': 'application/json',
       },
       ...config,

@@ -23,6 +23,12 @@ export class CentralApi extends BaseApi {
     return this.connection.post('user', null, userFields);
   }
 
+  public async changeUserPassword(
+    passwordChangeFields: Record<string, unknown>,
+  ): Promise<{ message: string }> {
+    return this.connection.post('me/changePassword', null, passwordChangeFields);
+  }
+
   public async createSurveyResponses(responses: SurveyResponse[]): Promise<void> {
     const BATCH_SIZE = 500;
     for (let i = 0; i < responses.length; i += BATCH_SIZE) {

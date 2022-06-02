@@ -6,14 +6,13 @@
 export { AccessRequestModel as AccessRequest } from './AccessRequest';
 export { AnswerModel as Answer } from './Answer';
 export { ApiRequestLogModel as ApiRequestLog } from './ApiRequestLog';
-export { CommentModel as Comment } from './Comment';
 export { CountryModel as Country } from './Country';
-export { DataSourceModel as DataSource } from './DataSource';
+export { DataElementModel as DataElement } from './DataElement';
 export { DhisSyncLogModel as DhisSyncLog } from './DhisSyncLog';
 export { DhisSyncQueueModel as DhisSyncQueue } from './DhisSyncQueue';
 export { EntityModel as Entity } from './Entity';
+export { DataGroupModel as DataGroup } from './DataGroup';
 export { FacilityModel as Facility } from './Facility';
-export { FeedItemModel as FeedItem } from './FeedItem';
 export { GeographicalAreaModel as GeographicalArea } from './GeographicalArea';
 export { MeditrakDeviceModel as MeditrakDevice } from './MeditrakDevice';
 export { MeditrakSyncQueueModel as MeditrakSyncQueue } from './MeditrakSyncQueue';
