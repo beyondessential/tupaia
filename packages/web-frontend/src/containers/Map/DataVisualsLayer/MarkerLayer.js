@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import React, { memo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { MarkerLayer as UIMarkerLayer } from '@tupaia/ui-components/lib/map';
 import { connect } from 'react-redux';
@@ -68,11 +68,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const propsAreEqual = (prevProps, nextProps) => {
-  return (
-    JSON.stringify(prevProps.serieses) === JSON.stringify(nextProps.serieses) &&
-    JSON.stringify(prevProps.measureData) === JSON.stringify(nextProps.measureData)
-  );
-};
-
-export const MarkerLayer = memo(connect(mapStateToProps)(MarkerLayerComponent), propsAreEqual);
+export const MarkerLayer = connect(mapStateToProps)(MarkerLayerComponent);

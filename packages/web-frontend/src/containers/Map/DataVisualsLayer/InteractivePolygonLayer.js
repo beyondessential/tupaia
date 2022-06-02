@@ -4,7 +4,7 @@
  *
  */
 
-import React, { memo } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -135,21 +135,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const propsAreEqual = (prevProps, nextProps) => {
-  return (
-    // Only updates/re-renders when the measure has changed or the orgUnit has changed.
-    // These are the only cases where polygons or area tooltips should rerender.
-    JSON.stringify(prevProps.displayedMapOverlayCodes) ===
-      JSON.stringify(nextProps.displayedMapOverlayCodes) &&
-    JSON.stringify(prevProps.displayedChildren) === JSON.stringify(nextProps.displayedChildren) &&
-    JSON.stringify(prevProps.measureOrgUnits) === JSON.stringify(nextProps.measureOrgUnits) &&
-    prevProps.currentOrganisationUnit?.organisationUnitCode ===
-      nextProps.currentOrganisationUnit?.organisationUnitCode &&
-    prevProps.hasMeasureData === nextProps.hasMeasureData
-  );
-};
-
-export const InteractivePolygonLayer = memo(
-  connect(mapStateToProps)(InteractivePolygonLayerComponent),
-  propsAreEqual,
-);
+export const InteractivePolygonLayer = connect(mapStateToProps)(InteractivePolygonLayerComponent);
