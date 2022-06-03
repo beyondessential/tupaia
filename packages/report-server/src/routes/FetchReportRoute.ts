@@ -53,7 +53,7 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
       ...restOfParams,
     };
 
-    const aggregator = new ReportServerAggregator(createAggregator(undefined, this.req.ctx));
+    const aggregator = new ReportServerAggregator(createAggregator(undefined, reqContext));
     return reportBuilder.build(aggregator, reportQuery);
   }
 }

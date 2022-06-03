@@ -315,7 +315,7 @@ export const FQS_PAGE = {
               ສຳລັບທຸກໆຊັ້ນຮຽນ
             </ListItem>
           </List>
-          <Image src="/images/fqs-overview-diagram.png" />
+          <Image src="/images/fqs-overview-diagram-la.png" />
         </Box>
         <Box mb={3}>
           <Typography variant="h2" gutterBottom>
@@ -326,7 +326,7 @@ export const FQS_PAGE = {
             ແມ່ນຄວາມຮັບຜິດຊອບຂອງທຸກພາກສ່ວນທີ່ກ່ຽວຂ້ອງ, ລວມທັງພໍ່ແມ່, ຊຸມຊົນ, ສຶກສາເມືອງ ແລະ
             ກຸ່ມໂຮງຮຽນ.
           </Typography>
-          <Image src="/images/fqs-school-improvement-diagram.png" />
+          <Image src="/images/fqs-school-improvement-diagram-la.png" />
         </Box>
         <Box mb={3}>
           <Typography variant="h2" gutterBottom>
@@ -339,7 +339,7 @@ export const FQS_PAGE = {
             ຢ່າງໜ້ອຍໃຫ້ທັນແຈ້ງເຂົ້າແຜນການປະຕິບັດລາຍຈ່າຍປະຈຳປີຂອງຫ້ອງການສຶກສາທິການ ແລະ ກິລາ ຂັ້ນເມືອງ
             (ACEP).
           </Typography>
-          <Image src="/images/fqs-planning-diagram.png" />
+          <Image src="/images/fqs-planning-diagram-la.png" />
         </Box>
         <Box mb={3} id="school-support-categories">
           <Typography variant="h2" gutterBottom>
