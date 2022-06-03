@@ -44,7 +44,8 @@ mkdir -p /home/ubuntu/.local/share/lpass
 
 # clone our repo
 cd /home/ubuntu
-sudo -Hu ubuntu git clone https://github.com/beyondessential/tupaia.git
+# TODO: Remove this once RN-508 is released
+sudo -Hu ubuntu git clone -b rn-508-upgrade-node-to-14 https://github.com/beyondessential/tupaia.git
 
 # install node and yarn
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
