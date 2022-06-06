@@ -8,23 +8,23 @@ import { ImportValidationError } from '@tupaia/utils';
 export async function createDataElements(transactingModels, dataElements) {
   const codes = [];
   for (let i = 0; i < dataElements.length; i++) {
-    const dataElement = dataElements[i];
+    const dataSource = dataElements[i];
     const excelRowNumber = i + 2;
-    const { code } = dataElement;
+    const { code } = dataSource;
 
     if (codes.includes(code)) {
       throw new ImportValidationError(
-        `Data element code '${code}' is not unique in the uploaded file`,
+        `Data source code '${code}' is not unique in the uploaded file`,
         excelRowNumber,
       );
     }
     codes.push(code);
 
-    const existingDataElements = await transactingModels.dataElement.find({ code });
-    if (existingDataElements.length > 0) {
-      throw new ImportValidationError(`Data element code '${code}' already exists`, excelRowNumber);
+    const exsitingDataSource = await transactingModels.dataSource.find({ code });
+    if (exsitingDataSource.length > 0) {
+      await transactingModels.dataSource.update({ code }, dataSource);
+    } else {
+      await transactingModels.dataSource.create(dataSource);
     }
-
-    await transactingModels.dataElement.create(dataElement);
   }
 }
