@@ -20,11 +20,11 @@ export async function createDataElements(transactingModels, dataElements) {
     }
     codes.push(code);
 
-    const existingDataElements = await transactingModels.dataElement.find({ code });
-    if (existingDataElements.length > 0) {
-      throw new ImportValidationError(`Data element code '${code}' already exists`, excelRowNumber);
+    const existingDataElement = await transactingModels.dataElement.find({ code });
+    if (existingDataElement.length > 0) {
+      await transactingModels.dataElement.update({ code }, dataElement);
+    } else {
+      await transactingModels.dataElement.create(dataElement);
     }
-
-    await transactingModels.dataElement.create(dataElement);
   }
 }
