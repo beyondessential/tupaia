@@ -51,9 +51,9 @@ const VitalsContainer = styled.div`
 /* eslint-disable react/prop-types */
 // Vitals data is essentially unstructured so no point checking prop types
 
-const CountryView = ({ vitals, variant }) => (
+const CountryView = ({ vitals }) => (
   <VitalsContainer>
-    <Heading variant={variant || 'h4'}>
+    <Heading variant="h4">
       <I18n t="dashboards.countryDetails" />
     </Heading>
     <TwoColGrid>
@@ -71,9 +71,9 @@ const CountryView = ({ vitals, variant }) => (
   </VitalsContainer>
 );
 
-const ProvinceView = ({ vitals, variant }) => (
+const ProvinceView = ({ vitals }) => (
   <VitalsContainer>
-    <Heading variant={variant || 'h4'}>
+    <Heading variant="h4">
       <I18n t="dashboards.provinceDetails" />
     </Heading>
     <ThreeColGrid>
@@ -101,9 +101,9 @@ const ProvinceView = ({ vitals, variant }) => (
   </VitalsContainer>
 );
 
-const DistrictView = ({ vitals, variant }) => (
+const DistrictView = ({ vitals }) => (
   <VitalsContainer>
-    <Heading variant={variant || 'h4'}>
+    <Heading variant="h4">
       <I18n t="dashboards.districtDetails" />
     </Heading>
     <ThreeColGrid>
@@ -135,7 +135,7 @@ const DistrictView = ({ vitals, variant }) => (
     </ThreeColGrid>
     <HorizontalDivider />
     <MuiBox mt={2}>
-      <SubHeading variant={variant || 'h4'}>
+      <SubHeading variant="h4">
         <I18n t="dashboards.provinceDetails" />
       </SubHeading>
       <FlexStart mt={1} mb={4}>
@@ -154,9 +154,9 @@ const DistrictView = ({ vitals, variant }) => (
   </VitalsContainer>
 );
 
-const SchoolView = ({ vitals, variant }) => (
+const SchoolView = ({ vitals }) => (
   <VitalsContainer>
-    <Heading variant={variant || 'h4'}>
+    <Heading variant="h4">
       <I18n t="dashboards.schoolDetails" />
     </Heading>
     <ThreeColGrid>
@@ -193,7 +193,7 @@ const SchoolView = ({ vitals, variant }) => (
     </ThreeColGrid>
     <HorizontalDivider />
     <MuiBox mt={2}>
-      <SubHeading variant={variant || 'h4'}>District Details</SubHeading>
+      <SubHeading variant="h4">District Details</SubHeading>
       <FlexStart mt={1} mb={4}>
         <EntityVitalsItem name="Name of District" value={vitals.parentVitals?.name} mr={4} />
         <EntityVitalsItem
