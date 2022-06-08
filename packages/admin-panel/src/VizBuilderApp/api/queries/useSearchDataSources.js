@@ -7,14 +7,13 @@ import { useQuery } from 'react-query';
 import { get } from '../api';
 import { DEFAULT_REACT_QUERY_OPTIONS } from '../constants';
 
-export const useSearchDataSources = ({ search, type = 'dataElement', maxResults = 100 }) =>
-  useQuery(
-    ['dataSources', type, search],
+export const useSearchDataSources = ({ search, type = 'dataElement', maxResults = 100 }) => {
+  const result = useQuery(
+    [`${type}s`, search],
     async () => {
-      const endpoint = stringifyQuery(undefined, 'dataSources', {
-        columns: JSON.stringify(['code', 'type']),
+      const endpoint = stringifyQuery(undefined, `${type}s`, {
+        columns: JSON.stringify(['code']),
         filter: JSON.stringify({
-          type,
           code: { comparator: 'ilike', comparisonValue: `${search}%`, castAs: 'text' },
         }),
         pageSize: maxResults,
@@ -26,3 +25,9 @@ export const useSearchDataSources = ({ search, type = 'dataElement', maxResults 
       keepPreviousData: true,
     },
   );
+  const mappedData = result?.data?.map(value => ({ ...value, type }));
+  return {
+    ...result,
+    data: mappedData,
+  };
+};
