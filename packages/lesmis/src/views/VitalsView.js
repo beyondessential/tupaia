@@ -199,7 +199,9 @@ const SchoolView = ({ vitals }) => (
     </ThreeColGrid>
     <HorizontalDivider />
     <MuiBox mt={2}>
-      <SubHeading variant="h4">District Details</SubHeading>
+      <SubHeading variant="h4">
+        <I18n t="dashboards.districtDetails" />
+      </SubHeading>
       <FlexStart mt={1} mb={4}>
         <EntityVitalsItem
           name={<I18n t="dashboards.nameOfDistrict" />}
