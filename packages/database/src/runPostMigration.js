@@ -91,6 +91,7 @@ export const runPostMigration = async driver => {
   );
 
   // Refresh analytics in case they've been impacted by migrations
+  console.log(`Migrations complete, refreshing analytics...`);
   const start = Date.now();
   await driver.runSql(`SELECT mv$refreshMaterializedView('analytics', 'public', true);`);
   const end = Date.now();

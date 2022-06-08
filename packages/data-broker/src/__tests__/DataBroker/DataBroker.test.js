@@ -7,8 +7,9 @@ import { DataBroker } from '../../DataBroker';
 import { DATA_BY_SERVICE, DATA_ELEMENTS, DATA_GROUPS } from './DataBroker.fixtures';
 import { stubCreateService, createModelsStub, createServiceStub } from './DataBroker.stubs';
 
-const dataSources = Object.values(DATA_ELEMENTS).concat(Object.values(DATA_GROUPS));
-const mockModels = createModelsStub(dataSources);
+const dataElements = Object.values(DATA_ELEMENTS);
+const dataGroups = Object.values(DATA_GROUPS);
+const mockModels = createModelsStub(dataElements, dataGroups);
 
 jest.mock('@tupaia/database', () => ({
   modelClasses: {
@@ -31,7 +32,7 @@ describe('DataBroker', () => {
   const options = { ignoreErrors: true, organisationUnitCode: 'TO' };
 
   it('getDataSourceTypes()', () => {
-    expect(new DataBroker().getDataSourceTypes()).toStrictEqual(mockModels.dataSource.getTypes());
+    expect(new DataBroker().getDataSourceTypes()).toStrictEqual(mockModels.dataElement.getTypes());
   });
 
   describe('push()', () => {
@@ -48,7 +49,9 @@ describe('DataBroker', () => {
       const dataBroker = new DataBroker();
       await dataBroker.push({ code: 'TEST_01', type: 'dataElement' }, data);
       expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
-      expect(SERVICES.test.push).toHaveBeenCalledOnceWith([DATA_ELEMENTS.TEST_01], data);
+      expect(SERVICES.test.push).toHaveBeenCalledOnceWith([DATA_ELEMENTS.TEST_01], data, {
+        type: 'dataElement',
+      });
     });
 
     it('multiple codes', async () => {
@@ -59,6 +62,7 @@ describe('DataBroker', () => {
       expect(SERVICES.test.push).toHaveBeenCalledOnceWith(
         [DATA_ELEMENTS.TEST_01, DATA_ELEMENTS.TEST_02],
         data,
+        { type: 'dataElement' },
       );
     });
   });
@@ -68,7 +72,10 @@ describe('DataBroker', () => {
     const dataBroker = new DataBroker();
     await dataBroker.delete({ code: 'TEST_01', type: 'dataElement' }, data, options);
     expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
-    expect(SERVICES.test.delete).toHaveBeenCalledOnceWith(DATA_ELEMENTS.TEST_01, data, options);
+    expect(SERVICES.test.delete).toHaveBeenCalledOnceWith(DATA_ELEMENTS.TEST_01, data, {
+      type: 'dataElement',
+      ...options,
+    });
   });
 
   describe('pull()', () => {
@@ -183,7 +190,7 @@ describe('DataBroker', () => {
       });
     });
 
-    describe('events', () => {
+    describe('dataGroups', () => {
       const assertServicePulledEventsOnce = (service, dataElements) =>
         expect(service.pull).toHaveBeenCalledOnceWith(dataElements, 'dataGroup', options);
 

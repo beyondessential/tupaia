@@ -6,6 +6,8 @@
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 import { expect } from 'chai';
 
+import { createBearerHeader } from '@tupaia/utils';
+
 import { getAuthorizationHeader, randomEmail, randomString, TestableApp } from '../testUtilities';
 
 describe('Reset Password', () => {
@@ -87,7 +89,7 @@ describe('Reset Password', () => {
       const password = randomString();
       const changePassword = await app.post('me/changePassword', {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: createBearerHeader(accessToken),
         },
         body: {
           oneTimeLoginToken: oneTimeLogin.token,

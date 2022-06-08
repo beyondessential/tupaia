@@ -1,18 +1,18 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
 import {
-  DataSourceType as CommonDataSourceType,
-  DataSourceModel as CommonDataSourceModel,
+  DataElementType as CommonDataElementType,
+  DataElementModel as CommonDataElementModel,
 } from '@tupaia/database';
 
 export const DATA_SOURCE_SERVICE_TYPES = ['dhis', 'tupaia', 'data-lake'];
 
 const getSurveyDateCode = surveyCode => `${surveyCode}SurveyDate`;
 
-export class DataSourceType extends CommonDataSourceType {
+export class DataElementType extends CommonDataElementType {
   upsertSurveyDateElement = async () => {
     this.assertFnCalledByDataGroup(this.upsertSurveyDateElement.name);
 
@@ -44,10 +44,10 @@ export class DataSourceType extends CommonDataSourceType {
   };
 }
 
-export class DataSourceModel extends CommonDataSourceModel {
+export class DataElementModel extends CommonDataElementModel {
   isDeletableViaApi = true;
 
   get DatabaseTypeClass() {
-    return DataSourceType;
+    return DataElementType;
   }
 }

@@ -1,0 +1,2171 @@
+[
+    {
+     "parent_code": "PG_lg007",
+     "name": "Kairak Clinic",
+     "code": "PG_f0059",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_lg019",
+     "name": "Kassi CHP",
+     "code": "PG_f0164",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_lg019",
+     "name": "Monokam CHP",
+     "code": "PG_f0166",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_lg022",
+     "name": "Porea CHP",
+     "code": "PG_f0174",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_lg022",
+     "name": "Tukusenda CHP",
+     "code": "PG_f0176",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_lg023",
+     "name": "Tumundan CHP",
+     "code": "PG_f0177",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_lg028",
+     "name": "Yango SC",
+     "code": "PG_f0184",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_lg030",
+     "name": "Kungumanda SC",
+     "code": "PG_f0187",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_lg034",
+     "name": "Kaipores HC",
+     "code": "PG_f0198",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_lg001",
+     "name": "Nonga General Hospital - Rabaul Provincial Hospital",
+     "code": "PG_f0001",
+     "entity_type": "facility",
+     "facility_type": 5,
+     "latitude": -4.154391,
+     "longitude": 152.149109
+    },
+    {
+     "parent_code": "PG_lg001",
+     "name": "Warena Aidpost",
+     "code": "PG_f0002",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.484537,
+     "longitude": 152.302099
+    },
+    {
+     "parent_code": "PG_lg002",
+     "name": "Bilur Aidpost",
+     "code": "PG_f0003",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.416648,
+     "longitude": 152.351978
+    },
+    {
+     "parent_code": "PG_lg002",
+     "name": "Bitapaka Day Clinic - Tapo Health Centre",
+     "code": "PG_f0004",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -4.401833,
+     "longitude": 152.303861
+    },
+    {
+     "parent_code": "PG_lg002",
+     "name": "Malakuna Aidpost",
+     "code": "PG_f0005",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.378042,
+     "longitude": 152.361195
+    },
+    {
+     "parent_code": "PG_lg002",
+     "name": "Mope Community Health Post",
+     "code": "PG_f0006",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -4.478505,
+     "longitude": 152.333729
+    },
+    {
+     "parent_code": "PG_lg002",
+     "name": "Tabuna Aidpost",
+     "code": "PG_f0007",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.439828,
+     "longitude": 152.280172
+    },
+    {
+     "parent_code": "PG_lg002",
+     "name": "Tapo Health Centre",
+     "code": "PG_f0008",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -4.394388,
+     "longitude": 152.321456
+    },
+    {
+     "parent_code": "PG_lg002",
+     "name": "Ulaveo Aidpost",
+     "code": "PG_f0009",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.341927,
+     "longitude": 152.335446
+    },
+    {
+     "parent_code": "PG_lg003",
+     "name": "Kerevat Rural Hospital",
+     "code": "PG_f0010",
+     "entity_type": "facility",
+     "facility_type": 4,
+     "latitude": -4.351256,
+     "longitude": 152.041649
+    },
+    {
+     "parent_code": "PG_lg003",
+     "name": "Napapar Health Centre",
+     "code": "PG_f0011",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -4.337728,
+     "longitude": 152.118427
+    },
+    {
+     "parent_code": "PG_lg003",
+     "name": "NARI Clinic",
+     "code": "PG_f0012",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -4.322536,
+     "longitude": 152.021783
+    },
+    {
+     "parent_code": "PG_lg003",
+     "name": "Rakunai Aidpost",
+     "code": "PG_f0013",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.274908,
+     "longitude": 152.114737
+    },
+    {
+     "parent_code": "PG_lg003",
+     "name": "St Mary's Vuvu Secondary School Clinic",
+     "code": "PG_f0014",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -4.31599,
+     "longitude": 152.129929
+    },
+    {
+     "parent_code": "PG_lg003",
+     "name": "ToKiala Aidpost",
+     "code": "PG_f0015",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.308121,
+     "longitude": 152.039933
+    },
+    {
+     "parent_code": "PG_lg003",
+     "name": "UNRE Institutional Clinic",
+     "code": "PG_f0016",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -4.349496,
+     "longitude": 152.008994
+    },
+    {
+     "parent_code": "PG_lg004",
+     "name": "Bago Aidpost",
+     "code": "PG_f0017",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.173401,
+     "longitude": 151.357512
+    },
+    {
+     "parent_code": "PG_lg004",
+     "name": "Bovalpun Aidpost",
+     "code": "PG_f0018",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.557603,
+     "longitude": 151.613973
+    },
+    {
+     "parent_code": "PG_lg004",
+     "name": "Galuve Aidpost",
+     "code": "PG_f0019",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.517622,
+     "longitude": 151.483854
+    },
+    {
+     "parent_code": "PG_lg004",
+     "name": "Kapkena Aidpost",
+     "code": "PG_f0020",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.289645,
+     "longitude": 151.51956
+    },
+    {
+     "parent_code": "PG_lg004",
+     "name": "Kawa Aidpost",
+     "code": "PG_f0021",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.510104,
+     "longitude": 151.721089
+    },
+    {
+     "parent_code": "PG_lg004",
+     "name": "Lakiri Aidpost",
+     "code": "PG_f0022",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.317676,
+     "longitude": 151.698087
+    },
+    {
+     "parent_code": "PG_lg004",
+     "name": "Malakur Aidpost",
+     "code": "PG_f0023",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.569221,
+     "longitude": 151.443342
+    },
+    {
+     "parent_code": "PG_lg004",
+     "name": "Marevu Aidpost",
+     "code": "PG_f0024",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.226911,
+     "longitude": 151.455273
+    },
+    {
+     "parent_code": "PG_lg004",
+     "name": "Masuari Aidpost",
+     "code": "PG_f0025",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.180924,
+     "longitude": 151.459822
+    },
+    {
+     "parent_code": "PG_lg004",
+     "name": "Matong Health Centre",
+     "code": "PG_f0026",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -5.558628,
+     "longitude": 151.758167
+    },
+    {
+     "parent_code": "PG_lg004",
+     "name": "Mile Aidpost",
+     "code": "PG_f0027",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.330666,
+     "longitude": 151.378798
+    },
+    {
+     "parent_code": "PG_lg004",
+     "name": "Muela Health Centre",
+     "code": "PG_f0028",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -5.246569,
+     "longitude": 151.418623
+    },
+    {
+     "parent_code": "PG_lg004",
+     "name": "Nutuve Health Centre",
+     "code": "PG_f0029",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -5.334768,
+     "longitude": 151.659635
+    },
+    {
+     "parent_code": "PG_lg004",
+     "name": "Olaipun Aidpost",
+     "code": "PG_f0030",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.507712,
+     "longitude": 151.541875
+    },
+    {
+     "parent_code": "PG_lg004",
+     "name": "Pakia Aidpost",
+     "code": "PG_f0031",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.350493,
+     "longitude": 151.398024
+    },
+    {
+     "parent_code": "PG_lg004",
+     "name": "Pomio Health Centre",
+     "code": "PG_f0032",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -5.51318,
+     "longitude": 151.512007
+    },
+    {
+     "parent_code": "PG_lg004",
+     "name": "Pulpul Aidpost",
+     "code": "PG_f0033",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.540859,
+     "longitude": 151.896182
+    },
+    {
+     "parent_code": "PG_lg004",
+     "name": "Tokai Aidpost",
+     "code": "PG_f0034",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.510104,
+     "longitude": 151.721089
+    },
+    {
+     "parent_code": "PG_lg004",
+     "name": "Tuke Aidpost",
+     "code": "PG_f0035",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.236996,
+     "longitude": 151.481966
+    },
+    {
+     "parent_code": "PG_lg005",
+     "name": "Inolo Aidpost",
+     "code": "PG_f0036",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.198348,
+     "longitude": 152.47832
+    },
+    {
+     "parent_code": "PG_lg005",
+     "name": "Kababiai Aidpost",
+     "code": "PG_f0037",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.170785,
+     "longitude": 152.470767
+    },
+    {
+     "parent_code": "PG_lg005",
+     "name": "Kabatirai (Inolo) Aidpost",
+     "code": "PG_f0038",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.210332,
+     "longitude": 152.470252
+    },
+    {
+     "parent_code": "PG_lg005",
+     "name": "Karawara Aidpost",
+     "code": "PG_f0039",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.24166,
+     "longitude": 152.419441
+    },
+    {
+     "parent_code": "PG_lg005",
+     "name": "Makada Aidpost",
+     "code": "PG_f0040",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.118223,
+     "longitude": 152.419784
+    },
+    {
+     "parent_code": "PG_lg005",
+     "name": "Milmile Aidpost",
+     "code": "PG_f0041",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.209134,
+     "longitude": 152.457034
+    },
+    {
+     "parent_code": "PG_lg005",
+     "name": "Mioko Palpal Aidpost",
+     "code": "PG_f0042",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.23019,
+     "longitude": 152.457034
+    },
+    {
+     "parent_code": "PG_lg005",
+     "name": "Molot Health Centre",
+     "code": "PG_f0043",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -4.131407,
+     "longitude": 152.453772
+    },
+    {
+     "parent_code": "PG_lg005",
+     "name": "Nakukur Aidpost",
+     "code": "PG_f0044",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.162225,
+     "longitude": 152.415149
+    },
+    {
+     "parent_code": "PG_lg005",
+     "name": "Vatnabara Health Centre",
+     "code": "PG_f0045",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -4.206908,
+     "longitude": 152.410514
+    },
+    {
+     "parent_code": "PG_lg005",
+     "name": "Watara Aidpost",
+     "code": "PG_f0046",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.165135,
+     "longitude": 152.49394
+    },
+    {
+     "parent_code": "PG_lg006",
+     "name": "Awatka Company Clinic",
+     "code": "PG_f0047",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -4.954491,
+     "longitude": 151.976273
+    },
+    {
+     "parent_code": "PG_lg006",
+     "name": "Guma Health Centre",
+     "code": "PG_f0048",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -5.278364,
+     "longitude": 152.089128
+    },
+    {
+     "parent_code": "PG_lg006",
+     "name": "Hoiya Health Cente",
+     "code": "PG_f0049",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -5.138396,
+     "longitude": 151.944713
+    },
+    {
+     "parent_code": "PG_lg006",
+     "name": "Korpun Aidpost",
+     "code": "PG_f0050",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.458158,
+     "longitude": 152.032137
+    },
+    {
+     "parent_code": "PG_lg006",
+     "name": "Milim Aidpost",
+     "code": "PG_f0051",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.193788,
+     "longitude": 151.989345
+    },
+    {
+     "parent_code": "PG_lg006",
+     "name": "Mu Aidpost",
+     "code": "PG_f0052",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.248792,
+     "longitude": 152.069731
+    },
+    {
+     "parent_code": "PG_lg006",
+     "name": "Sampun Aidpost",
+     "code": "PG_f0053",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.354937,
+     "longitude": 152.129984
+    },
+    {
+     "parent_code": "PG_lg006",
+     "name": "Spango Aidpost",
+     "code": "PG_f0054",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.031189,
+     "longitude": 151.952094
+    },
+    {
+     "parent_code": "PG_lg007",
+     "name": "Alakasam Aidpost",
+     "code": "PG_f0055",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.483727,
+     "longitude": 151.837374
+    },
+    {
+     "parent_code": "PG_lg007",
+     "name": "CIS Clinic",
+     "code": "PG_f0056",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -4.427201,
+     "longitude": 152.053282
+    },
+    {
+     "parent_code": "PG_lg007",
+     "name": "Gaulim Health Centre",
+     "code": "PG_f0057",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -4.439571,
+     "longitude": 152.093491
+    },
+    {
+     "parent_code": "PG_lg007",
+     "name": "Kadaulung Aidpost",
+     "code": "PG_f0058",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.454632,
+     "longitude": 152.119927
+    },
+    {
+     "parent_code": "PG_lg007",
+     "name": "Kamanakam Aidpost",
+     "code": "PG_f0060",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.365292,
+     "longitude": 151.93007
+    },
+    {
+     "parent_code": "PG_lg007",
+     "name": "Komgi Aidpost",
+     "code": "PG_f0061",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.373506,
+     "longitude": 151.736095
+    },
+    {
+     "parent_code": "PG_lg007",
+     "name": "Malasaet Community Health Post",
+     "code": "PG_f0062",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -4.463532,
+     "longitude": 151.890931
+    },
+    {
+     "parent_code": "PG_lg007",
+     "name": "Mandress 1 Aidpost",
+     "code": "PG_f0063",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.339617,
+     "longitude": 151.913591
+    },
+    {
+     "parent_code": "PG_lg007",
+     "name": "Mandress 2 Aidpost",
+     "code": "PG_f0064",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.313941,
+     "longitude": 151.883378
+    },
+    {
+     "parent_code": "PG_lg007",
+     "name": "Ramandu Plantation Aidpost",
+     "code": "PG_f0065",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.243414,
+     "longitude": 151.85042
+    },
+    {
+     "parent_code": "PG_lg007",
+     "name": "Raunsepna Health Centre",
+     "code": "PG_f0066",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -4.458055,
+     "longitude": 151.783473
+    },
+    {
+     "parent_code": "PG_lg007",
+     "name": "Sen Magi Aidpost",
+     "code": "PG_f0067",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.476195,
+     "longitude": 152.069116
+    },
+    {
+     "parent_code": "PG_lg007",
+     "name": "Utmei Community Health Post",
+     "code": "PG_f0068",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -4.365292,
+     "longitude": 151.93007
+    },
+    {
+     "parent_code": "PG_lg007",
+     "name": "Vunapalading 1 Aidpost",
+     "code": "PG_f0069",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.378642,
+     "longitude": 151.970925
+    },
+    {
+     "parent_code": "PG_lg007",
+     "name": "Vunga Aidpost",
+     "code": "PG_f0070",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.506999,
+     "longitude": 152.061562
+    },
+    {
+     "parent_code": "PG_lg007",
+     "name": "Yalam Aidpost",
+     "code": "PG_f0071",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.411503,
+     "longitude": 151.747767
+    },
+    {
+     "parent_code": "PG_lg008",
+     "name": "Butuwin Urban Clinic",
+     "code": "PG_f0072",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -4.329003,
+     "longitude": 152.242492
+    },
+    {
+     "parent_code": "PG_lg008",
+     "name": "Gunanur Aidpost",
+     "code": "PG_f0073",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.370768,
+     "longitude": 152.271332
+    },
+    {
+     "parent_code": "PG_lg008",
+     "name": "OLSH Vunapope Secondary School Clinic",
+     "code": "PG_f0074",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -4.344746,
+     "longitude": 152.274122
+    },
+    {
+     "parent_code": "PG_lg008",
+     "name": "Ramale Aidpost",
+     "code": "PG_f0075",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.398495,
+     "longitude": 152.270302
+    },
+    {
+     "parent_code": "PG_lg008",
+     "name": "Sonama College Clinic",
+     "code": "PG_f0076",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -4.426348,
+     "longitude": 152.237555
+    },
+    {
+     "parent_code": "PG_lg008",
+     "name": "Takabur Aidpost",
+     "code": "PG_f0077",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.38446,
+     "longitude": 152.217773
+    },
+    {
+     "parent_code": "PG_lg008",
+     "name": "Ulagunan Aidpost",
+     "code": "PG_f0078",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.371452,
+     "longitude": 152.249016
+    },
+    {
+     "parent_code": "PG_lg008",
+     "name": "Vunapope Mission District Hospital",
+     "code": "PG_f0079",
+     "entity_type": "facility",
+     "facility_type": 4,
+     "latitude": -4.349202,
+     "longitude": 152.288497
+    },
+    {
+     "parent_code": "PG_lg009",
+     "name": "Clifton Aidpost",
+     "code": "PG_f0080",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.459208,
+     "longitude": 152.243048
+    },
+    {
+     "parent_code": "PG_lg009",
+     "name": "Gelagela Health Centre",
+     "code": "PG_f0081",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -4.402245,
+     "longitude": 152.236185
+    },
+    {
+     "parent_code": "PG_lg009",
+     "name": "Matupit Aidpost",
+     "code": "PG_f0082",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.240117,
+     "longitude": 152.184898
+    },
+    {
+     "parent_code": "PG_lg010",
+     "name": "Kipka Community Health Post",
+     "code": "PG_f0083",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -4.245126,
+     "longitude": 151.773173
+    },
+    {
+     "parent_code": "PG_lg010",
+     "name": "Konako Aidpost",
+     "code": "PG_f0084",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.573395,
+     "longitude": 151.632411
+    },
+    {
+     "parent_code": "PG_lg010",
+     "name": "Lassul Bay Health Centre",
+     "code": "PG_f0085",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -4.220605,
+     "longitude": 151.715288
+    },
+    {
+     "parent_code": "PG_lg010",
+     "name": "Mandarabit Aidpost",
+     "code": "PG_f0086",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.734225,
+     "longitude": 151.7615
+    },
+    {
+     "parent_code": "PG_lg010",
+     "name": "Matanakunai Aidpost",
+     "code": "PG_f0087",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.863545,
+     "longitude": 151.688029
+    },
+    {
+     "parent_code": "PG_lg010",
+     "name": "New Toriu Aidpost",
+     "code": "PG_f0088",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.717801,
+     "longitude": 151.659877
+    },
+    {
+     "parent_code": "PG_lg010",
+     "name": "Open Bay Health Centre",
+     "code": "PG_f0089",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -4.805388,
+     "longitude": 151.693522
+    },
+    {
+     "parent_code": "PG_lg010",
+     "name": "Poiniar Aidpost",
+     "code": "PG_f0090",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.522632,
+     "longitude": 151.628916
+    },
+    {
+     "parent_code": "PG_lg010",
+     "name": "Puktas Aidpost",
+     "code": "PG_f0091",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.245469,
+     "longitude": 151.779352
+    },
+    {
+     "parent_code": "PG_lg010",
+     "name": "Takis Aidpost",
+     "code": "PG_f0092",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.206779,
+     "longitude": 151.505039
+    },
+    {
+     "parent_code": "PG_lg010",
+     "name": "Vunamarita Aidpost",
+     "code": "PG_f0093",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.213627,
+     "longitude": 151.800638
+    },
+    {
+     "parent_code": "PG_lg010",
+     "name": "Walmetki Aidpost",
+     "code": "PG_f0094",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.370769,
+     "longitude": 151.555164
+    },
+    {
+     "parent_code": "PG_lg011",
+     "name": "Kaoro Aidpost",
+     "code": "PG_f0095",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.948042,
+     "longitude": 151.158302
+    },
+    {
+     "parent_code": "PG_lg011",
+     "name": "Kenmininga Aidpost",
+     "code": "PG_f0096",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.896478,
+     "longitude": 151.013077
+    },
+    {
+     "parent_code": "PG_lg011",
+     "name": "Lopan-Wala Aidpost",
+     "code": "PG_f0097",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.946336,
+     "longitude": 150.704773
+    },
+    {
+     "parent_code": "PG_lg011",
+     "name": "Maso Aidpost",
+     "code": "PG_f0098",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.991749,
+     "longitude": 151.051529
+    },
+    {
+     "parent_code": "PG_lg011",
+     "name": "Pilematana Aidpost",
+     "code": "PG_f0099",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.976725,
+     "longitude": 150.977029
+    },
+    {
+     "parent_code": "PG_lg011",
+     "name": "Rano Company Clinic",
+     "code": "PG_f0100",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.950167,
+     "longitude": 151.159859
+    },
+    {
+     "parent_code": "PG_lg011",
+     "name": "Tangolo Aidpost",
+     "code": "PG_f0101",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -6.002335,
+     "longitude": 150.816696
+    },
+    {
+     "parent_code": "PG_lg011",
+     "name": "Tavolo Aidpost",
+     "code": "PG_f0102",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -6.006091,
+     "longitude": 150.907848
+    },
+    {
+     "parent_code": "PG_lg011",
+     "name": "Uvol Health Centre",
+     "code": "PG_f0103",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -6.016333,
+     "longitude": 151.001748
+    },
+    {
+     "parent_code": "PG_lg012",
+     "name": "Maltech Secondary School Clinic",
+     "code": "PG_f0104",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -4.200185,
+     "longitude": 152.16372
+    },
+    {
+     "parent_code": "PG_lg012",
+     "name": "Rabaul Urban Clinic",
+     "code": "PG_f0105",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -4.197188,
+     "longitude": 152.184683
+    },
+    {
+     "parent_code": "PG_lg013",
+     "name": "Bitabaur Community Health Post",
+     "code": "PG_f0106",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -4.316336,
+     "longitude": 152.206101
+    },
+    {
+     "parent_code": "PG_lg014",
+     "name": "George Brown High School Aidpost",
+     "code": "PG_f0107",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.269815,
+     "longitude": 152.031911
+    },
+    {
+     "parent_code": "PG_lg014",
+     "name": "Kabaira Aidpost",
+     "code": "PG_f0108",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.236947,
+     "longitude": 152.009252
+    },
+    {
+     "parent_code": "PG_lg014",
+     "name": "Livuan Day Clinic",
+     "code": "PG_f0109",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -4.193035,
+     "longitude": 152.031254
+    },
+    {
+     "parent_code": "PG_lg014",
+     "name": "Lungalunga Aidpost",
+     "code": "PG_f0110",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.206732,
+     "longitude": 151.983504
+    },
+    {
+     "parent_code": "PG_lg014",
+     "name": "Rababat Aidpost",
+     "code": "PG_f0111",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.192609,
+     "longitude": 152.027619
+    },
+    {
+     "parent_code": "PG_lg014",
+     "name": "Ramalmal Aidpost",
+     "code": "PG_f0112",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.228067,
+     "longitude": 152.10067
+    },
+    {
+     "parent_code": "PG_lg014",
+     "name": "Rarongo Theological College Aidpost",
+     "code": "PG_f0113",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.262967,
+     "longitude": 152.033541
+    },
+    {
+     "parent_code": "PG_lg014",
+     "name": "Vunairoto Aidpost",
+     "code": "PG_f0114",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.198559,
+     "longitude": 152.093917
+    },
+    {
+     "parent_code": "PG_lg014",
+     "name": "Vunalir Aidpost",
+     "code": "PG_f0115",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.207631,
+     "longitude": 152.056372
+    },
+    {
+     "parent_code": "PG_lg014",
+     "name": "Vunapaka Health Centre",
+     "code": "PG_f0116",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -4.24855,
+     "longitude": 152.082848
+    },
+    {
+     "parent_code": "PG_lg015",
+     "name": "Arabam Aidpost",
+     "code": "PG_f0117",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.59979,
+     "longitude": 152.111995
+    },
+    {
+     "parent_code": "PG_lg015",
+     "name": "Kambubu Secondary School Clinic",
+     "code": "PG_f0118",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -4.58131,
+     "longitude": 152.36468
+    },
+    {
+     "parent_code": "PG_lg015",
+     "name": "Karong Aidpost",
+     "code": "PG_f0119",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.962444,
+     "longitude": 152.226665
+    },
+    {
+     "parent_code": "PG_lg015",
+     "name": "Marambu Aidpost",
+     "code": "PG_f0120",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.63538,
+     "longitude": 152.265117
+    },
+    {
+     "parent_code": "PG_lg015",
+     "name": "Marunga Health Centre",
+     "code": "PG_f0121",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -4.965181,
+     "longitude": 152.043331
+    },
+    {
+     "parent_code": "PG_lg015",
+     "name": "Mungou Health Centre",
+     "code": "PG_f0122",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -4.693551,
+     "longitude": 152.369487
+    },
+    {
+     "parent_code": "PG_lg015",
+     "name": "Nongia Aidpost",
+     "code": "PG_f0123",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.825616,
+     "longitude": 152.328974
+    },
+    {
+     "parent_code": "PG_lg015",
+     "name": "Putput Aidpost",
+     "code": "PG_f0124",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.559408,
+     "longitude": 152.35232
+    },
+    {
+     "parent_code": "PG_lg015",
+     "name": "Raigel Aidpost",
+     "code": "PG_f0125",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.677811,
+     "longitude": 152.158
+    },
+    {
+     "parent_code": "PG_lg015",
+     "name": "Rieit Aidpost",
+     "code": "PG_f0126",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.547087,
+     "longitude": 152.107875
+    },
+    {
+     "parent_code": "PG_lg015",
+     "name": "Sanbam Aidpost",
+     "code": "PG_f0127",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.588839,
+     "longitude": 152.230098
+    },
+    {
+     "parent_code": "PG_lg015",
+     "name": "Sikut 1 Aidpost",
+     "code": "PG_f0128",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.498569,
+     "longitude": 152.233779
+    },
+    {
+     "parent_code": "PG_lg015",
+     "name": "Sikut 2 Aidpost",
+     "code": "PG_f0129",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.48351,
+     "longitude": 152.219359
+    },
+    {
+     "parent_code": "PG_lg015",
+     "name": "Sikut Talvat Aidpost",
+     "code": "PG_f0130",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.479402,
+     "longitude": 152.254378
+    },
+    {
+     "parent_code": "PG_lg015",
+     "name": "Toll Growth Centre Health Centre",
+     "code": "PG_f0131",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -4.978863,
+     "longitude": 152.00577
+    },
+    {
+     "parent_code": "PG_lg015",
+     "name": "Warangoi Rural Hospital",
+     "code": "PG_f0132",
+     "entity_type": "facility",
+     "facility_type": 4,
+     "latitude": -4.495921,
+     "longitude": 152.154567
+    },
+    {
+     "parent_code": "PG_lg016",
+     "name": "Malabunga Seconday School Aidpost",
+     "code": "PG_f0133",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.396441,
+     "longitude": 152.099328
+    },
+    {
+     "parent_code": "PG_lg016",
+     "name": "Navunaram Day Clinic",
+     "code": "PG_f0134",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -4.289706,
+     "longitude": 152.129318
+    },
+    {
+     "parent_code": "PG_lg016",
+     "name": "NGI Regional Specialist Referral Hospital",
+     "code": "PG_f0135",
+     "entity_type": "facility",
+     "facility_type": 5,
+     "latitude": -4.415885,
+     "longitude": 152.205039
+    },
+    {
+     "parent_code": "PG_lg016",
+     "name": "Paparatava Health Centre",
+     "code": "PG_f0136",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -4.388654,
+     "longitude": 152.168257
+    },
+    {
+     "parent_code": "PG_lg016",
+     "name": "Paparatava Health Centre",
+     "code": "PG_f0137",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -4.379417,
+     "longitude": 152.175762
+    },
+    {
+     "parent_code": "PG_lg016",
+     "name": "Rabagi Aidpost",
+     "code": "PG_f0138",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.38446,
+     "longitude": 152.127823
+    },
+    {
+     "parent_code": "PG_lg016",
+     "name": "Rapitok Aidpost",
+     "code": "PG_f0139",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.364948,
+     "longitude": 152.119927
+    },
+    {
+     "parent_code": "PG_lg016",
+     "name": "Tamanairik Aidpost",
+     "code": "PG_f0140",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.389937,
+     "longitude": 152.14499
+    },
+    {
+     "parent_code": "PG_lg016",
+     "name": "Tapipipi Health Centre",
+     "code": "PG_f0141",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -4.356732,
+     "longitude": 152.162155
+    },
+    {
+     "parent_code": "PG_lg016",
+     "name": "Viviran Aidpost",
+     "code": "PG_f0142",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.418007,
+     "longitude": 152.163529
+    },
+    {
+     "parent_code": "PG_lg016",
+     "name": "Vunakaur Aidpost",
+     "code": "PG_f0143",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.406026,
+     "longitude": 152.151169
+    },
+    {
+     "parent_code": "PG_lg016",
+     "name": "Wairiki Aidpost",
+     "code": "PG_f0144",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.41253,
+     "longitude": 152.185158
+    },
+    {
+     "parent_code": "PG_lg017",
+     "name": "Rakival Aidpost",
+     "code": "PG_f0145",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.093286,
+     "longitude": 152.077695
+    },
+    {
+     "parent_code": "PG_lg017",
+     "name": "Rau Aidpost",
+     "code": "PG_f0146",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.109636,
+     "longitude": 152.074519
+    },
+    {
+     "parent_code": "PG_lg017",
+     "name": "Valaur Aidpost",
+     "code": "PG_f0147",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -4.10313,
+     "longitude": 152.057483
+    },
+    {
+     "parent_code": "PG_lg018",
+     "name": "Aona Health Centre",
+     "code": "PG_f0148",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -5.745513,
+     "longitude": 151.036422
+    },
+    {
+     "parent_code": "PG_lg018",
+     "name": "Bili Aidpost",
+     "code": "PG_f0149",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.665573,
+     "longitude": 151.094786
+    },
+    {
+     "parent_code": "PG_lg018",
+     "name": "Kaiton Aidpost",
+     "code": "PG_f0150",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.690513,
+     "longitude": 151.434503
+    },
+    {
+     "parent_code": "PG_lg018",
+     "name": "Lau Aidpost",
+     "code": "PG_f0151",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.822025,
+     "longitude": 151.33288
+    },
+    {
+     "parent_code": "PG_lg018",
+     "name": "Makaen Aidpost",
+     "code": "PG_f0152",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.630725,
+     "longitude": 151.466174
+    },
+    {
+     "parent_code": "PG_lg018",
+     "name": "Malo Aidpost",
+     "code": "PG_f0153",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.655153,
+     "longitude": 151.398969
+    },
+    {
+     "parent_code": "PG_lg018",
+     "name": "Malupa-Kangilona Aidpost",
+     "code": "PG_f0154",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.910821,
+     "longitude": 151.215293
+    },
+    {
+     "parent_code": "PG_lg018",
+     "name": "Mapuna Aidpost",
+     "code": "PG_f0155",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.755077,
+     "longitude": 151.082427
+    },
+    {
+     "parent_code": "PG_lg018",
+     "name": "Palmalmal Rural Hospital",
+     "code": "PG_f0156",
+     "entity_type": "facility",
+     "facility_type": 4,
+     "latitude": -5.633458,
+     "longitude": 151.493639
+    },
+    {
+     "parent_code": "PG_lg018",
+     "name": "Pulipuna Aidpost",
+     "code": "PG_f0157",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.74073,
+     "longitude": 150.996596
+    },
+    {
+     "parent_code": "PG_lg018",
+     "name": "Rali Aidpost",
+     "code": "PG_f0158",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.699395,
+     "longitude": 151.413045
+    },
+    {
+     "parent_code": "PG_lg018",
+     "name": "Serenguna Aidpost",
+     "code": "PG_f0159",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.738681,
+     "longitude": 151.223189
+    },
+    {
+     "parent_code": "PG_lg018",
+     "name": "Sivauna Health Centre",
+     "code": "PG_f0160",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -5.862327,
+     "longitude": 151.098906
+    },
+    {
+     "parent_code": "PG_lg018",
+     "name": "Viosopuna Health Centre",
+     "code": "PG_f0161",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -5.707253,
+     "longitude": 151.131865
+    },
+    {
+     "parent_code": "PG_lg018",
+     "name": "Yauyau Aidpost",
+     "code": "PG_f0162",
+     "entity_type": "facility",
+     "facility_type": 1,
+     "latitude": -5.635508,
+     "longitude": 150.960204
+    },
+    {
+     "parent_code": "PG_lg019",
+     "name": "Anditale SC",
+     "code": "PG_f0163",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.410085,
+     "longitude": 143.66659
+    },
+    {
+     "parent_code": "PG_lg019",
+     "name": "Londor SC",
+     "code": "PG_f0165",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.356631,
+     "longitude": 143.593324
+    },
+    {
+     "parent_code": "PG_lg019",
+     "name": "Yampu HC",
+     "code": "PG_f0167",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -5.463467,
+     "longitude": 143.741255
+    },
+    {
+     "parent_code": "PG_lg020",
+     "name": "Kandep District Hospital",
+     "code": "PG_f0168",
+     "entity_type": "facility",
+     "facility_type": 4,
+     "latitude": -5.84097,
+     "longitude": 143.50655
+    },
+    {
+     "parent_code": "PG_lg020",
+     "name": "Walupim SC",
+     "code": "PG_f0169",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.6381,
+     "longitude": 143.457786
+    },
+    {
+     "parent_code": "PG_lg020",
+     "name": "Yapum SC",
+     "code": "PG_f0170",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -5.217092,
+     "longitude": 143.216961
+    },
+    {
+     "parent_code": "PG_lg021",
+     "name": "Kompiam Hospital",
+     "code": "PG_f0171",
+     "entity_type": "facility",
+     "facility_type": 4,
+     "latitude": -5.38678,
+     "longitude": 143.920277
+    },
+    {
+     "parent_code": "PG_lg021",
+     "name": "Marambe SC",
+     "code": "PG_f0172",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.392422,
+     "longitude": 144.007962
+    },
+    {
+     "parent_code": "PG_lg022",
+     "name": "Laiagam Hospital",
+     "code": "PG_f0173",
+     "entity_type": "facility",
+     "facility_type": 4,
+     "latitude": -5.376726,
+     "longitude": 143.449883
+    },
+    {
+     "parent_code": "PG_lg022",
+     "name": "Tambitanis SC",
+     "code": "PG_f0175",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.414179,
+     "longitude": 143.555787
+    },
+    {
+     "parent_code": "PG_lg024",
+     "name": "Maramuni SC",
+     "code": "PG_f0178",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.126415,
+     "longitude": 143.478139
+    },
+    {
+     "parent_code": "PG_lg025",
+     "name": "Kambia CHP",
+     "code": "PG_f0179",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.894452,
+     "longitude": 143.569988
+    },
+    {
+     "parent_code": "PG_lg025",
+     "name": "Tinjikaka CHP",
+     "code": "PG_f0180",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.82109,
+     "longitude": 143.6157
+    },
+    {
+     "parent_code": "PG_lg026",
+     "name": "Mulitaka HC",
+     "code": "PG_f0181",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -5.37518,
+     "longitude": 143.379374
+    },
+    {
+     "parent_code": "PG_lg027",
+     "name": "Paiela SC",
+     "code": "PG_f0182",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.361139,
+     "longitude": 142.994053
+    },
+    {
+     "parent_code": "PG_lg028",
+     "name": "Kepelam SC",
+     "code": "PG_f0183",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.57839,
+     "longitude": 143.555527
+    },
+    {
+     "parent_code": "PG_lg029",
+     "name": "Paiam Hospital",
+     "code": "PG_f0185",
+     "entity_type": "facility",
+     "facility_type": 4,
+     "latitude": -5.464372,
+     "longitude": 143.147824
+    },
+    {
+     "parent_code": "PG_lg029",
+     "name": "Porgera UC",
+     "code": "PG_f0186",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.469569,
+     "longitude": 143.147138
+    },
+    {
+     "parent_code": "PG_lg030",
+     "name": "Pumakos SC",
+     "code": "PG_f0188",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.658867,
+     "longitude": 143.834736
+    },
+    {
+     "parent_code": "PG_lg030",
+     "name": "Topaka SC",
+     "code": "PG_f0189",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.694543,
+     "longitude": 143.863661
+    },
+    {
+     "parent_code": "PG_lg031",
+     "name": "Lakopenda SC",
+     "code": "PG_f0190",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.573638,
+     "longitude": 143.787041
+    },
+    {
+     "parent_code": "PG_lg032",
+     "name": "Sangurap UC",
+     "code": "PG_f0191",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.449021,
+     "longitude": 143.65111
+    },
+    {
+     "parent_code": "PG_lg032",
+     "name": "Sopas Hospital",
+     "code": "PG_f0192",
+     "entity_type": "facility",
+     "facility_type": 4,
+     "latitude": -5.467717,
+     "longitude": 143.666897
+    },
+    {
+     "parent_code": "PG_lg032",
+     "name": "Wabag Hospital",
+     "code": "PG_f0193",
+     "entity_type": "facility",
+     "facility_type": 5,
+     "latitude": -5.496921,
+     "longitude": 143.724487
+    },
+    {
+     "parent_code": "PG_lg033",
+     "name": "Longap Health Centre",
+     "code": "PG_f0194",
+     "entity_type": "facility",
+     "facility_type": 3,
+     "latitude": -5.724881,
+     "longitude": 143.389209
+    },
+    {
+     "parent_code": "PG_lg033",
+     "name": "Tiptip Health Centre",
+     "code": "PG_f0195",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.830851,
+     "longitude": 143.443353
+    },
+    {
+     "parent_code": "PG_lg034",
+     "name": "Aiyokos  SC",
+     "code": "PG_f0196",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.388016,
+     "longitude": 143.945073
+    },
+    {
+     "parent_code": "PG_lg034",
+     "name": "Araguli SC",
+     "code": "PG_f0197",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.304579,
+     "longitude": 143.80107
+    },
+    {
+     "parent_code": "PG_lg035",
+     "name": "Mambisanda Hospital",
+     "code": "PG_f0199",
+     "entity_type": "facility",
+     "facility_type": 4,
+     "latitude": -5.633129,
+     "longitude": 143.909767
+    },
+    {
+     "parent_code": "PG_lg035",
+     "name": "Unda SC",
+     "code": "PG_f0200",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.716501,
+     "longitude": 143.929569
+    },
+    {
+     "parent_code": "PG_lg035",
+     "name": "Wapenamanda UC",
+     "code": "PG_f0201",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.635378,
+     "longitude": 143.891732
+    },
+    {
+     "parent_code": "PG_lg035",
+     "name": "Yaibos SC",
+     "code": "PG_f0202",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.567898,
+     "longitude": 143.833686
+    },
+    {
+     "parent_code": "PG_lg035",
+     "name": "Yalis HC",
+     "code": "PG_f0203",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.597434,
+     "longitude": 143.981271
+    },
+    {
+     "parent_code": "PG_lg036",
+     "name": "Lapalama SC",
+     "code": "PG_f0204",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.310163,
+     "longitude": 143.977328
+    },
+    {
+     "parent_code": "PG_lg036",
+     "name": "Yangisa SC",
+     "code": "PG_f0205",
+     "entity_type": "facility",
+     "facility_type": 2,
+     "latitude": -5.115271,
+     "longitude": 143.923068
+    },
+    {
+     "parent_code": "PG_ENewBritain_Rabaul",
+     "name": "Balanataman Rural",
+     "code": "PG_lg001",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_ENewBritain_Kokopo",
+     "name": "Bitapaka Rural",
+     "code": "PG_lg002",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_ENewBritain_Gazelle",
+     "name": "Central Gazelle Rural",
+     "code": "PG_lg003",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_ENewBritain_Pomio",
+     "name": "Central Inland Pomio Rural",
+     "code": "PG_lg004",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_ENewBritain_Kokopo",
+     "name": "Duke of York Rural",
+     "code": "PG_lg005",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_ENewBritain_Pomio",
+     "name": "East Pomio Rural",
+     "code": "PG_lg006",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_ENewBritain_Gazelle",
+     "name": "Inland Baining Rural",
+     "code": "PG_lg007",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_ENewBritain_Kokopo",
+     "name": "Kokopo-Vunamami Urban",
+     "code": "PG_lg008",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_ENewBritain_Rabaul",
+     "name": "Kombiu Rural",
+     "code": "PG_lg009",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_ENewBritain_Gazelle",
+     "name": "Lassul Baining Rural",
+     "code": "PG_lg010",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_ENewBritain_Pomio",
+     "name": "Melkoi Rural",
+     "code": "PG_lg011",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_ENewBritain_Rabaul",
+     "name": "Rabaul Urban",
+     "code": "PG_lg012",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_ENewBritain_Kokopo",
+     "name": "Raluana Rural",
+     "code": "PG_lg013",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_ENewBritain_Gazelle",
+     "name": "Reimber-Livuan Rural",
+     "code": "PG_lg014",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_ENewBritain_Pomio",
+     "name": "Sinivit Rural",
+     "code": "PG_lg015",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_ENewBritain_Gazelle",
+     "name": "Toma-Vunadidir Rural",
+     "code": "PG_lg016",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_ENewBritain_Rabaul",
+     "name": "Watom Rural",
+     "code": "PG_lg017",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_ENewBritain_Pomio",
+     "name": "West Pomio-Mamusi Rural",
+     "code": "PG_lg018",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_Enga_Kompiam",
+     "name": "Ambum",
+     "code": "PG_lg019",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_Enga_Kandep",
+     "name": "Kandep",
+     "code": "PG_lg020",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_Enga_Kompiam",
+     "name": "Kompiam",
+     "code": "PG_lg021",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_Enga_Lagaip-Pogera",
+     "name": "Lagaip",
+     "code": "PG_lg022",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_Enga_Lagaip-Pogera",
+     "name": "Maip mulitaka",
+     "code": "PG_lg023",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_Enga_Wabag",
+     "name": "Maramuni",
+     "code": "PG_lg024",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_Enga_Kandep",
+     "name": "Marian ",
+     "code": "PG_lg025",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_Enga_Lagaip-Pogera",
+     "name": "Mulitaka",
+     "code": "PG_lg026",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_Enga_Lagaip-Pogera",
+     "name": "Paiela ewa",
+     "code": "PG_lg027",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_Enga_Lagaip-Pogera",
+     "name": "Pilikambi",
+     "code": "PG_lg028",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_Enga_Lagaip-Pogera",
+     "name": "Porgera ",
+     "code": "PG_lg029",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_Enga_Wapenamanda",
+     "name": "Tsak",
+     "code": "PG_lg030",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_Enga_Wabag",
+     "name": "Wabag Rural ",
+     "code": "PG_lg031",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_Enga_Wabag",
+     "name": "Wabag Urban",
+     "code": "PG_lg032",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_Enga_Kandep",
+     "name": "Wage",
+     "code": "PG_lg033",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_Enga_Kompiam",
+     "name": "Walitarua",
+     "code": "PG_lg034",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_Enga_Wapenamanda",
+     "name": "Wapenamandan ",
+     "code": "PG_lg035",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    },
+    {
+     "parent_code": "PG_Enga_Kompiam",
+     "name": "Yangis",
+     "code": "PG_lg036",
+     "entity_type": "local_government",
+     "facility_type": null,
+     "latitude": null,
+     "longitude": null
+    }
+   ]
