@@ -4,13 +4,11 @@
  *
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import MuiBox from '@material-ui/core/Box';
 import { useIsFetching } from 'react-query';
 import { Select } from '@tupaia/ui-components';
 import { VitalsView } from './VitalsView';
-import { TabPanel, TabBar, TabBarSection, YearSelector } from '../components';
+import { TabPanel, TabBarSection, YearSelector } from '../components';
 import { useUrlParams, useUrlSearchParams, useUrlSearchParam } from '../utils';
 import { useEntityData } from '../api/queries';
 import { DEFAULT_DATA_YEAR } from '../constants';
