@@ -11,8 +11,8 @@ const html2canvasToImg = async node => {
   return canvas.toDataURL('image/png');
 };
 
-const getFormatter = formate => {
-  switch (formate) {
+const getFormatter = format => {
+  switch (format) {
     case 'html2canvas':
       return html2canvasToImg;
     case 'png':
@@ -21,7 +21,7 @@ const getFormatter = formate => {
   }
 };
 
-export const getImage = async (node, formate) => {
-  const formatter = getFormatter(formate);
+export const getImage = async (node, format) => {
+  const formatter = getFormatter(format);
   return formatter(node, { bgcolor: 'white' });
 };

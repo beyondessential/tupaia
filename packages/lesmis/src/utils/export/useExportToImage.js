@@ -9,17 +9,17 @@ import downloadJs from 'downloadjs';
 import { sleep, toFilename } from '@tupaia/utils';
 import { getImage } from './getImages';
 
-const exportToImage = (node, filename, formate = 'png') => {
+const exportToImage = (node, filename, format = 'png') => {
   return new Promise(resolve => {
-    const file = `${filename}.${formate}`;
-    getImage(node, formate).then(async dataUrl => {
+    const file = `${filename}.${format}`;
+    getImage(node, format).then(async dataUrl => {
       downloadJs(dataUrl, file);
       resolve();
     });
   });
 };
 
-export const useExportToImage = (filename, formate) => {
+export const useExportToImage = (filename, format) => {
   const exportRef = useRef(null);
   const [isExporting, setIsExporting] = useState(false);
   const [isExportLoading, setIsExportLoading] = useState(false);
@@ -30,7 +30,7 @@ export const useExportToImage = (filename, formate) => {
     setIsExporting(true);
     setIsExportLoading(true);
 
-    await exportToImage(node, sanitisedFileName, formate);
+    await exportToImage(node, sanitisedFileName, format);
     setIsExporting(false);
 
     // Allow some time for the chart to resize

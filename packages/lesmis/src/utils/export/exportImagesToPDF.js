@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import downloadJs from 'downloadjs';
 import { Document, Page, Image, pdf } from '@react-pdf/renderer';
 
-const CostomPDFDocument = ({ pageScreenshots }) => {
+const CustomPDFDocument = ({ pageScreenshots }) => {
   return (
     <Document>
       {pageScreenshots.map(pageScreenshot => (
@@ -15,12 +15,12 @@ const CostomPDFDocument = ({ pageScreenshots }) => {
   );
 };
 
-CostomPDFDocument.propTypes = {
+CustomPDFDocument.propTypes = {
   pageScreenshots: PropTypes.array.isRequired,
 };
 
 export const exportImagesToPDF = async (pageScreenshots, title) => {
-  const doc = <CostomPDFDocument pageScreenshots={pageScreenshots} />;
+  const doc = <CustomPDFDocument pageScreenshots={pageScreenshots} />;
   const asPdf = pdf([]); // {} is important, throws without an argument
   asPdf.updateContainer([doc]);
   const blob = await asPdf.toBlob();

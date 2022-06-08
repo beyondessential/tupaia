@@ -23,8 +23,8 @@ export const useCustomGetImages = () => {
     for (let i = 0; i < refs.current.length; i++) {
       // Hacky way to take screenshot for the first profile page with `html2canvas` as `domtoimage` can't access material-ui css file.
       // More on this, `html2canvas` can return a better resolution screenshots than `domtoimage`, but it requires much longer time.
-      const formate = i === 0 ? 'html2canvas' : 'png';
-      const image = await getImage(refs.current[i], formate);
+      const format = i === 0 ? 'html2canvas' : 'png';
+      const image = await getImage(refs.current[i], format);
       imgs.push(image);
     }
 
