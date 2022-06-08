@@ -24,25 +24,6 @@ const StyledSelect = styled(Select)`
   text-transform: capitalize;
 `;
 
-/**
- * Placeholder template until all the real templates are done
- */
-const TabTemplate = ({ TabBarLeftSection, Body }) => (
-  <>
-    <TabBar>
-      <TabBarLeftSection />
-    </TabBar>
-    <MuiBox p={5} minHeight={600}>
-      {Body}
-    </MuiBox>
-  </>
-);
-
-TabTemplate.propTypes = {
-  TabBarLeftSection: PropTypes.func.isRequired,
-  Body: PropTypes.string.isRequired,
-};
-
 export const DashboardView = React.memo(() => {
   const isFetching = useIsFetching('dashboardReport');
   const { entityCode } = useUrlParams();
