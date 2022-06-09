@@ -43,7 +43,12 @@ export const OptionsBar = ({ totalPage, setPage, isExporting }) => {
         }
         label="Table"
       />
-      <Pagination count={totalPage} shape="rounded" onChange={(event, value) => setPage(value)} />
+      <Pagination
+        count={totalPage}
+        shape="rounded"
+        onChange={(event, value) => setPage(value)}
+        disabled={isExporting}
+      />
     </FlexEnd>
   );
 };
