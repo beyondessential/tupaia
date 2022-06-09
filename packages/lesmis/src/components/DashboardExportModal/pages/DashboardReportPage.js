@@ -2,9 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Divider, Typography } from '@material-ui/core';
 
-import { A4Page, EntityDetails } from '../components';
+import { A4Page, EntityDetails, DashboardTitleContainer } from '../components';
 import { DashboardReport } from '../../DashboardReport';
-import { DashboardTitleContainer } from './styles';
 
 export const DashboardReportPage = ({
   item,
