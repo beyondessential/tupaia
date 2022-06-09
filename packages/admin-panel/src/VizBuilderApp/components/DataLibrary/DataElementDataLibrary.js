@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import generateId from 'uuid/v1';
 import { BaseSelectedOption, DataLibrary } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
-import { useSearchDataSources } from '../../api';
+import { useSearchDataElements, useSearchDataGroups } from '../../api';
 import { useDebounce } from '../../../utilities';
 
 const DATA_TYPES = {
@@ -74,17 +74,15 @@ export const DataElementDataLibrary = ({ fetch, onFetchChange }) => {
   const {
     data: dataElementSearchResults = [],
     isFetching: isFetchingDataElements,
-  } = useSearchDataSources({
+  } = useSearchDataElements({
     search: debouncedInputValue,
-    type: 'dataElement',
     maxResults: MAX_RESULTS,
   });
   const {
     data: dataGroupSearchResults = [],
     isFetching: isFetchingDataGroups,
-  } = useSearchDataSources({
+  } = useSearchDataGroups({
     search: debouncedInputValue,
-    type: 'dataGroup',
     maxResults: MAX_RESULTS,
   });
 

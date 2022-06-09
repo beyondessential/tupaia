@@ -7,19 +7,19 @@ import { useQuery } from 'react-query';
 import { get } from '../api';
 import { DEFAULT_REACT_QUERY_OPTIONS } from '../constants';
 
-export const useSearchDataSources = ({ search, type = 'dataElement', maxResults = 100 }) =>
+export const useSearchDataElements = ({ search, maxResults = 100 }) =>
   useQuery(
-    ['dataSources', type, search],
+    ['dataElements', search],
     async () => {
-      const endpoint = stringifyQuery(undefined, 'dataSources', {
-        columns: JSON.stringify(['code', 'type']),
+      const endpoint = stringifyQuery(undefined, 'dataElements', {
+        columns: JSON.stringify(['code']),
         filter: JSON.stringify({
-          type,
           code: { comparator: 'ilike', comparisonValue: `${search}%`, castAs: 'text' },
         }),
         pageSize: maxResults,
       });
-      return get(endpoint);
+      const response = await get(endpoint);
+      return response.map(item => ({ ...item, type: 'dataElement' }));
     },
     {
       ...DEFAULT_REACT_QUERY_OPTIONS,
