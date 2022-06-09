@@ -4,8 +4,7 @@ import PropTypes from 'prop-types';
 import { Typography } from '@material-ui/core';
 import { SmallAlert } from '@tupaia/ui-components';
 
-import { A4Page, EntityDetails } from '../components';
-import { DashboardTitleContainer } from './styles';
+import { A4Page, EntityDetails, DashboardTitleContainer } from '../components';
 
 const InfoAlert = styled(SmallAlert)`
   margin: auto;
