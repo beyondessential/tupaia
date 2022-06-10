@@ -38,7 +38,11 @@ const Header = ({ dashboardLabel, useYearSelector }) => {
 
 Header.propTypes = {
   dashboardLabel: PropTypes.string.isRequired,
-  useYearSelector: PropTypes.bool.isRequired,
+  useYearSelector: PropTypes.bool,
+};
+
+Header.defaultProps = {
+  useYearSelector: false,
 };
 
 export default Header;

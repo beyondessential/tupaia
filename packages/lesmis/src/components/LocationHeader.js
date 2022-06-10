@@ -4,6 +4,7 @@
  *
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
@@ -18,7 +19,6 @@ import { useEntityData, useMapOverlayReportData } from '../api';
 import { I18n, useUrlParams, makeEntityLink, useUrlSearchParam } from '../utils';
 import { MapTableModal } from './MapTableModal';
 import { DEFAULT_DATA_YEAR } from '../constants';
-import { DashboardExportModal } from './DashboardExportModal';
 
 const Wrapper = styled.section`
   padding-top: 1rem;
@@ -101,7 +101,7 @@ const getExportTitle = (entityData, currentMapOverlay) => {
   return `${name}${overlayName}`;
 };
 
-export const LocationHeader = () => {
+export const LocationHeader = ({ setIsOpen }) => {
   const { entityCode, view } = useUrlParams();
   const { search } = useLocation();
   const [selectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
@@ -144,14 +144,9 @@ export const LocationHeader = () => {
                 )}
               />
             ) : (
-              <DashboardExportModal
-                title={exportTitle}
-                Button={props => (
-                  <IconButton {...props} startIcon={<GetApp />}>
-                    <I18n t="dashboards.export" />
-                  </IconButton>
-                )}
-              />
+              <IconButton onClick={() => setIsOpen(true)} startIcon={<GetApp />}>
+                <I18n t="dashboards.export" />
+              </IconButton>
             )}
             {/* Todo: add favourites @see https://app.zenhub.com/workspaces/active-sprints-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/2493 */}
             {/* <IconButton startIcon={<StarBorder />}>Add</IconButton> */}
@@ -178,4 +173,8 @@ export const LocationHeader = () => {
       </Container>
     </Wrapper>
   );
+};
+
+LocationHeader.propTypes = {
+  setIsOpen: PropTypes.func.isRequired,
 };

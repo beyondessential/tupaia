@@ -12,7 +12,7 @@ const Container = styled.div`
   height: 1600px;
 `;
 
-export const DashboardExportPreview = ({ addToRefs, subDashboards, currentPage }) => {
+export const DashboardExportPreview = ({ addToRefs, exportableDashboards, currentPage }) => {
   const exportOptions = useExportOptions();
   let page = 0;
   const getNextPage = () => {
@@ -36,6 +36,7 @@ export const DashboardExportPreview = ({ addToRefs, subDashboards, currentPage }
       subDashboard.items.map((item, index) => {
         return (
           <DashboardReportPage
+            key={item.code}
             item={item}
             startDate={startDate}
             endDate={endDate}
@@ -46,13 +47,17 @@ export const DashboardExportPreview = ({ addToRefs, subDashboards, currentPage }
         );
       })
     ) : (
-      <NoReportPage isEntityDetailsRequired={isFirstPageProfile} {...baseConfigs} />
+      <NoReportPage
+        key={subDashboard.dashboardName}
+        isEntityDetailsRequired={isFirstPageProfile}
+        {...baseConfigs}
+      />
     );
   };
 
   return (
     <Container>
-      {subDashboards?.map((subDashboard, index) => {
+      {exportableDashboards?.map((subDashboard, index) => {
         const isFirstPageProfile = index === 0;
         return getChildren(subDashboard, isFirstPageProfile);
       })}
@@ -61,7 +66,11 @@ export const DashboardExportPreview = ({ addToRefs, subDashboards, currentPage }
 };
 
 DashboardExportPreview.propTypes = {
-  subDashboards: PropTypes.array.isRequired,
+  exportableDashboards: PropTypes.array,
   addToRefs: PropTypes.func.isRequired,
   currentPage: PropTypes.number.isRequired,
+};
+
+DashboardExportPreview.defaultProps = {
+  exportableDashboards: [],
 };
