@@ -17,7 +17,6 @@ import MuiIconButton from '@material-ui/core/Button';
 import { DashboardExportPreview } from './DashboardExportPreview';
 import { OptionsBar } from './components';
 import { useExportToPDF } from '../../utils';
-import { useSubDashboards } from './utils/useSubDashboards';
 import { ExportOptionsProvider } from './context/ExportOptionsContext';
 
 const FlexSpaceBetween = styled(BaseFlexSpaceBetween)`
@@ -30,57 +29,62 @@ const MuiButton = styled(MuiIconButton)`
   color: #666666;
 `;
 
-export const DashboardExportModal = ({ Button, title }) => {
+export const DashboardExportModal = ({
+  title,
+  exportableDashboards,
+  totalPage,
+  isOpen,
+  setIsOpen,
+}) => {
   const fileName = `${title}-dashboards-export`;
   const { addToRefs, isExporting, exportToPDF } = useExportToPDF(fileName);
-  const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(1);
-  const { subDashboards, totalPage } = useSubDashboards();
 
   const handleClickExport = async () => {
     await exportToPDF();
   };
 
   return (
-    <>
-      <Dialog onClose={() => setIsOpen(false)} open={isOpen} maxWidth="lg">
-        <ExportOptionsProvider>
-          <DialogHeader onClose={() => setIsOpen(false)} title={title}>
-            <FlexSpaceBetween>
-              <MuiButton
-                startIcon={<DownloadIcon />}
-                variant="outlined"
-                onClick={handleClickExport}
-                disableElevation
-                disabled={isExporting}
-              >
-                Download
-              </MuiButton>
-              <OptionsBar totalPage={totalPage} setPage={setPage} isExporting={isExporting} />
-            </FlexSpaceBetween>
-          </DialogHeader>
-          <DialogContent>
-            <LoadingContainer heading="Exporting charts to PDF" isLoading={isExporting}>
-              <DashboardExportPreview
-                subDashboards={subDashboards}
-                addToRefs={addToRefs}
-                currentPage={page}
-              />
-            </LoadingContainer>
-          </DialogContent>
-        </ExportOptionsProvider>
-      </Dialog>
-      <Button onClick={() => setIsOpen(true)} />
-    </>
+    <Dialog onClose={() => setIsOpen(false)} open={isOpen} maxWidth="lg">
+      <ExportOptionsProvider>
+        <DialogHeader onClose={() => setIsOpen(false)} title={title}>
+          <FlexSpaceBetween>
+            <MuiButton
+              startIcon={<DownloadIcon />}
+              variant="outlined"
+              onClick={handleClickExport}
+              disableElevation
+              disabled={isExporting}
+            >
+              Download
+            </MuiButton>
+            <OptionsBar totalPage={totalPage} setPage={setPage} isExporting={isExporting} />
+          </FlexSpaceBetween>
+        </DialogHeader>
+        <DialogContent>
+          <LoadingContainer heading="Exporting charts to PDF" isLoading={isExporting}>
+            <DashboardExportPreview
+              exportableDashboards={exportableDashboards}
+              addToRefs={addToRefs}
+              currentPage={page}
+            />
+          </LoadingContainer>
+        </DialogContent>
+      </ExportOptionsProvider>
+    </Dialog>
   );
 };
 
 DashboardExportModal.propTypes = {
   title: PropTypes.string,
-  Button: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+  totalPage: PropTypes.number,
+  exportableDashboards: PropTypes.array,
+  isOpen: PropTypes.bool.isRequired,
+  setIsOpen: PropTypes.func.isRequired,
 };
 
 DashboardExportModal.defaultProps = {
   title: null,
-  Button: null,
+  totalPage: 1,
+  exportableDashboards: [],
 };

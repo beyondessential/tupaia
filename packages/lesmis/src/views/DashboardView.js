@@ -4,17 +4,24 @@
  *
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useIsFetching } from 'react-query';
 import { Select } from '@tupaia/ui-components';
 import { VitalsView } from './VitalsView';
 import { TabPanel, TabBarSection, YearSelector } from '../components';
-import { useUrlParams, useUrlSearchParams, useUrlSearchParam } from '../utils';
+import {
+  useUrlParams,
+  useUrlSearchParams,
+  useUrlSearchParam,
+  getExportableDashboards,
+} from '../utils';
 import { useEntityData } from '../api/queries';
 import { DEFAULT_DATA_YEAR } from '../constants';
 import { DashboardReportModal } from '../components/DashboardReportModal';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useDashboardDropdownOptions } from '../utils/useDashboardDropdownOptions';
+import { DashboardExportModal } from '../components/DashboardExportModal';
 
 const StyledSelect = styled(Select)`
   margin: 0 1rem 0 0;
@@ -22,7 +29,7 @@ const StyledSelect = styled(Select)`
   text-transform: capitalize;
 `;
 
-export const DashboardView = React.memo(() => {
+export const DashboardView = React.memo(({ isOpen, setIsOpen }) => {
   const isFetching = useIsFetching('dashboardReport');
   const { entityCode } = useUrlParams();
   const { data: entityData } = useEntityData(entityCode);
@@ -31,6 +38,8 @@ export const DashboardView = React.memo(() => {
   const [selectedYear, setSelectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
 
   const { dropdownOptions, selectedOption } = useDashboardDropdownOptions();
+  const profileDropDownOptions = dropdownOptions.filter(({ exportToPDF }) => exportToPDF);
+  const { exportableDashboards, totalPage } = getExportableDashboards(profileDropDownOptions);
 
   const handleDashboardChange = event => {
     setParams({ dashboard: event.target.value, subDashboard: null });
@@ -70,6 +79,18 @@ export const DashboardView = React.memo(() => {
         </TabPanel>
       ))}
       <DashboardReportModal />
+      <DashboardExportModal
+        title={entityData?.name ? entityData?.name : ''}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        exportableDashboards={exportableDashboards}
+        totalPage={totalPage}
+      />
     </ErrorBoundary>
   );
 });
+
+DashboardView.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  setIsOpen: PropTypes.func.isRequired,
+};
