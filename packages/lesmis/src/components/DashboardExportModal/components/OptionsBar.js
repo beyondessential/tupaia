@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import { FlexEnd } from '@tupaia/ui-components';
 import Pagination from '@material-ui/lab/Pagination';
 import { useExportOptions } from '../context/ExportOptionsContext';
+import { I18n } from '../../../utils';
 
 export const OptionsBar = ({ totalPage, setPage, isExporting }) => {
   const {
@@ -30,7 +31,7 @@ export const OptionsBar = ({ totalPage, setPage, isExporting }) => {
             disabled={isExporting}
           />
         }
-        label="Labels"
+        label={I18n({ t: 'dashboards.labels' })}
       />
       <FormControlLabel
         control={
@@ -41,7 +42,7 @@ export const OptionsBar = ({ totalPage, setPage, isExporting }) => {
             disabled={isExporting}
           />
         }
-        label="Table"
+        label={I18n({ t: 'dashboards.table' })}
       />
       <Pagination
         count={totalPage}
