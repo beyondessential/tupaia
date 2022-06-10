@@ -16,7 +16,7 @@ import {
 import MuiIconButton from '@material-ui/core/Button';
 import { DashboardExportPreview } from './DashboardExportPreview';
 import { OptionsBar } from './components';
-import { useExportToPDF } from '../../utils';
+import { I18n, useExportToPDF } from '../../utils';
 import { ExportOptionsProvider } from './context/ExportOptionsContext';
 
 const FlexSpaceBetween = styled(BaseFlexSpaceBetween)`
@@ -56,13 +56,17 @@ export const DashboardExportModal = ({
               disableElevation
               disabled={isExporting}
             >
-              Download
+              <I18n t="dashboards.download" />
             </MuiButton>
             <OptionsBar totalPage={totalPage} setPage={setPage} isExporting={isExporting} />
           </FlexSpaceBetween>
         </DialogHeader>
         <DialogContent>
-          <LoadingContainer heading="Exporting charts to PDF" isLoading={isExporting}>
+          <LoadingContainer
+            heading={I18n({ t: 'dashboards.exportingChartsToPDF' })}
+            text={I18n({ t: 'dashboards.pleaseDoNotRefreshTheBrowserOrCloseThisPage' })}
+            isLoading={isExporting}
+          >
             <DashboardExportPreview
               exportableDashboards={exportableDashboards}
               addToRefs={addToRefs}
