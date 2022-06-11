@@ -7,6 +7,7 @@ import { ModelRegistry, modelClasses } from '@tupaia/database';
 
 export interface TestModelRegistry extends ModelRegistry {
   readonly dataElement: modelClasses.DataElement;
+  readonly entity: modelClasses.Entity;
   readonly feedItem: modelClasses.FeedItem;
   readonly meditrakSyncQueue: modelClasses.MeditrakSyncQueue;
   readonly user: modelClasses.User;

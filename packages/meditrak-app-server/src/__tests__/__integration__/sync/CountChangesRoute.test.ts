@@ -4,7 +4,7 @@
  */
 
 import { constructAccessToken } from '@tupaia/auth';
-import { getTestModels, upsertDummyRecord } from '@tupaia/database';
+import { clearTestData, getTestDatabase, getTestModels, upsertDummyRecord } from '@tupaia/database';
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { oneSecondSleep, randomIntBetween, createBearerHeader } from '@tupaia/utils';
 import { ServerChangeEnqueuer } from '../../../sync';
@@ -48,6 +48,7 @@ describe('changes/count', () => {
 
   afterAll(async () => {
     serverChangeEnqueuer.stopListeningForChanges();
+    await clearTestData(getTestDatabase());
   });
 
   it('throws an error if no auth header provided', async () => {
@@ -73,16 +74,15 @@ describe('changes/count', () => {
         Authorization: authHeader,
       },
     });
-    expect(response.body.changeCount).toEqual(correctChangeCount);
+    expect(response.body).toEqual({ changeCount: correctChangeCount });
   });
 
   it('should return the correct number of changes since "since" if updates are made', async () => {
     const since = Date.now();
     const numberOfQuestionsToAdd = randomIntBetween(1, 20);
-    const newQuestions = [];
     await oneSecondSleep();
     for (let i = 0; i < numberOfQuestionsToAdd; i++) {
-      newQuestions[i] = await upsertQuestion(models);
+      await upsertQuestion(models);
     }
 
     // Wait for the triggers to have properly added the changes to the queue
@@ -95,7 +95,7 @@ describe('changes/count', () => {
         since,
       },
     });
-    expect(response.body.changeCount).toEqual(numberOfQuestionsToAdd);
+    expect(response.body).toEqual({ changeCount: numberOfQuestionsToAdd });
   });
 
   it('should return the correct number of changes since "since" if updates and deletes are made', async () => {
@@ -106,7 +106,6 @@ describe('changes/count', () => {
     // overlap due to ids not being very fine grained
 
     // Add some questions
-    await oneSecondSleep();
     const timestampBeforeFirstUpdate = Date.now();
     await oneSecondSleep();
     const numberOfQuestionsToAddInFirstUpdate = randomIntBetween(1, 20);
@@ -167,7 +166,7 @@ describe('changes/count', () => {
         since: timestampBeforeFirstUpdate,
       },
     });
-    expect(response.body.changeCount).toEqual(netNewRecords);
+    expect(response.body).toEqual({ changeCount: netNewRecords });
 
     // If syncing from after both the updates but before the deletes, the changes needed will be all
     // of the deletes
@@ -179,7 +178,7 @@ describe('changes/count', () => {
         since: timestampBeforeFirstDelete,
       },
     });
-    expect(response.body.changeCount).toEqual(totalDeletes);
+    expect(response.body).toEqual({ changeCount: totalDeletes });
 
     // If syncing from after the first update, but before the second, need to sync all deletes for
     // records from the first update, plus the net number of records that need to be added from the
@@ -196,7 +195,7 @@ describe('changes/count', () => {
         since: timestampBeforeSecondUpdate,
       },
     });
-    expect(response.body.changeCount).toEqual(netChangesSinceBeforeSecondUpdate);
+    expect(response.body).toEqual({ changeCount: netChangesSinceBeforeSecondUpdate });
 
     // If syncing from after the first delete but before the second, just need to sync all deletes
     // that happen in the second round of deletes
@@ -208,6 +207,93 @@ describe('changes/count', () => {
         since: timestampBeforeSecondDelete,
       },
     });
-    expect(response.body.changeCount).toEqual(numberOfQuestionsToDeleteFromSecondUpdate);
+    expect(response.body).toEqual({ changeCount: numberOfQuestionsToDeleteFromSecondUpdate });
+  });
+
+  it('should return the correct number of changes based on the models the appVersion supports', async () => {
+    const since = Date.now();
+    await oneSecondSleep();
+
+    const numberOfEntitiesToAdd = randomIntBetween(1, 20);
+    const entitySupportedAppVersion = '1.7.102';
+    const entityUnsupportedAppVersion = '1.7.101';
+
+    for (let i = 0; i < numberOfEntitiesToAdd; i++) {
+      await upsertDummyRecord(models.entity, {});
+    }
+
+    // Wait for the triggers to have properly added the changes to the queue
+    await models.database.waitForAllChangeHandlers();
+    const entitySupportedResponse = await app.get('changes/count', {
+      headers: {
+        Authorization: authHeader,
+      },
+      query: {
+        since,
+        appVersion: entitySupportedAppVersion,
+      },
+    });
+    const entityUnsupportedResponse = await app.get('changes/count', {
+      headers: {
+        Authorization: authHeader,
+      },
+      query: {
+        since,
+        appVersion: entityUnsupportedAppVersion,
+      },
+    });
+    expect(entitySupportedResponse.body).toEqual({ changeCount: numberOfEntitiesToAdd });
+    expect(entityUnsupportedResponse.body).toEqual({ changeCount: 0 });
+  });
+
+  it('should return the correct number of changes based on the requested record types', async () => {
+    const since = Date.now();
+    await oneSecondSleep();
+
+    const numberOfEntitiesToAdd = randomIntBetween(1, 20);
+    const numberOfQuestionsToAdd = randomIntBetween(1, 20);
+
+    for (let i = 0; i < numberOfEntitiesToAdd; i++) {
+      await upsertDummyRecord(models.entity, {});
+    }
+
+    for (let i = 0; i < numberOfQuestionsToAdd; i++) {
+      await upsertQuestion(models);
+    }
+
+    // Wait for the triggers to have properly added the changes to the queue
+    await models.database.waitForAllChangeHandlers();
+    const entityChangesResponse = await app.get('changes/count', {
+      headers: {
+        Authorization: authHeader,
+      },
+      query: {
+        since,
+        recordTypes: 'entity',
+      },
+    });
+    const questionChangesResponse = await app.get('changes/count', {
+      headers: {
+        Authorization: authHeader,
+      },
+      query: {
+        since,
+        recordTypes: 'question',
+      },
+    });
+    const entityAndQuestionChangesResponse = await app.get('changes/count', {
+      headers: {
+        Authorization: authHeader,
+      },
+      query: {
+        since,
+        recordTypes: 'entity,question',
+      },
+    });
+    expect(entityChangesResponse.body).toEqual({ changeCount: numberOfEntitiesToAdd });
+    expect(questionChangesResponse.body).toEqual({ changeCount: numberOfQuestionsToAdd });
+    expect(entityAndQuestionChangesResponse.body).toEqual({
+      changeCount: numberOfEntitiesToAdd + numberOfQuestionsToAdd,
+    });
   });
 });
