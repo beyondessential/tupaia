@@ -61,6 +61,9 @@ export class DatabaseModel {
     return this.schemaPromise;
   }
 
+  /**
+   * @returns {Promise<string[]>} fields of the model
+   */
   async fetchFieldNames() {
     if (!this.fieldNames) {
       const schema = await this.fetchSchema();
