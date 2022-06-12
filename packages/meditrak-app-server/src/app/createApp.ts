@@ -17,6 +17,7 @@ import {
   UserRewardsRoute,
 } from '../routes';
 import { authHandlerProvider, buildAuthMiddleware } from '../auth';
+import { checkAppVersion } from '../middleware';
 
 /**
  * Set up express server with middleware,
@@ -25,6 +26,7 @@ export function createApp(database = new TupaiaDatabase()) {
   const authMiddleware = buildAuthMiddleware(database);
   const app = new MicroServiceApiBuilder(database)
     .attachApiClientToContext(authHandlerProvider)
+    .use('*', checkAppVersion)
     .post<AuthRequest>('auth', handleWith(AuthRoute))
     .post<RegisterUserRequest>('user', handleWith(RegisterUserRoute))
     .get<SocialFeedRequest>('socialFeed', authMiddleware, handleWith(SocialFeedRoute))
