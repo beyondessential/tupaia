@@ -12,16 +12,7 @@ import { MeditrakAppServerModelRegistry } from '../../../types';
 import { TestModelRegistry } from '../../types';
 import { setupTestApp, setupTestUser } from '../../utilities';
 import { CAT_USER_SESSION } from '../fixtures';
-
-const upsertQuestion = async (models: TestModelRegistry) => {
-  const dataElement = await upsertDummyRecord(models.dataElement, {
-    service_type: 'tupaia',
-  });
-  return upsertDummyRecord(models.question, {
-    code: dataElement.code,
-    data_element_id: dataElement.id,
-  });
-};
+import { upsertDummyQuestion } from './upsertDummyQuestion';
 
 describe('changes/count', () => {
   let app: TestableServer;
@@ -68,13 +59,18 @@ describe('changes/count', () => {
   });
 
   it('should return the total number of update changes with no "since"', async () => {
-    const correctChangeCount = await models.meditrakSyncQueue.count({ type: 'update' });
+    await upsertDummyQuestion(models);
+    const questionCreateAndDeleted = await upsertDummyQuestion(models);
+    await models.database.waitForAllChangeHandlers();
+    await models.question.deleteById(questionCreateAndDeleted.id);
+    await models.database.waitForAllChangeHandlers();
+
     const response = await app.get('changes/count', {
       headers: {
         Authorization: authHeader,
       },
     });
-    expect(response.body).toEqual({ changeCount: correctChangeCount });
+    expect(response.body).toEqual({ changeCount: 1 });
   });
 
   it('should return the correct number of changes since "since" if updates are made', async () => {
@@ -82,7 +78,7 @@ describe('changes/count', () => {
     const numberOfQuestionsToAdd = randomIntBetween(1, 20);
     await oneSecondSleep();
     for (let i = 0; i < numberOfQuestionsToAdd; i++) {
-      await upsertQuestion(models);
+      await upsertDummyQuestion(models);
     }
 
     // Wait for the triggers to have properly added the changes to the queue
@@ -111,7 +107,7 @@ describe('changes/count', () => {
     const numberOfQuestionsToAddInFirstUpdate = randomIntBetween(1, 20);
     const newQuestionsInFirstUpdate = [];
     for (let i = 0; i < numberOfQuestionsToAddInFirstUpdate; i++) {
-      newQuestionsInFirstUpdate[i] = await upsertQuestion(models);
+      newQuestionsInFirstUpdate[i] = await upsertDummyQuestion(models);
     }
 
     // Add some more questions
@@ -121,7 +117,7 @@ describe('changes/count', () => {
     const numberOfQuestionsToAddInSecondUpdate = randomIntBetween(1, 20);
     const newQuestionsInSecondUpdate = [];
     for (let i = 0; i < numberOfQuestionsToAddInSecondUpdate; i++) {
-      newQuestionsInSecondUpdate[i] = await upsertQuestion(models);
+      newQuestionsInSecondUpdate[i] = await upsertDummyQuestion(models);
     }
 
     // Delete some of the questions added in the first update
@@ -258,7 +254,7 @@ describe('changes/count', () => {
     }
 
     for (let i = 0; i < numberOfQuestionsToAdd; i++) {
-      await upsertQuestion(models);
+      await upsertDummyQuestion(models);
     }
 
     // Wait for the triggers to have properly added the changes to the queue
