@@ -14,7 +14,7 @@ export type MeditrakSyncQueueFields = Readonly<{
   type: 'update' | 'delete';
   record_type: string;
   record_id: string;
-  changeTime: number;
+  change_time: number;
 }>;
 
 export interface MeditrakSyncQueueType
