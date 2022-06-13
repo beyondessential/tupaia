@@ -9,6 +9,8 @@ import {
   AuthRoute,
   ChangePasswordRequest,
   ChangePasswordRoute,
+  CountChangesRequest,
+  CountChangesRoute,
   RegisterUserRequest,
   RegisterUserRoute,
   SocialFeedRequest,
@@ -36,6 +38,7 @@ export function createApp(database = new TupaiaDatabase()) {
       authMiddleware,
       handleWith(ChangePasswordRoute),
     )
+    .get<CountChangesRequest>('changes/count', authMiddleware, handleWith(CountChangesRoute))
     .build();
 
   return app;

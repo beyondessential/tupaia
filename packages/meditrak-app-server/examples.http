@@ -93,3 +93,9 @@ Authorization: {{user-authorization}}
     "password": "{{password}}",
     "passwordConfirm": "{{password}}"
 }
+
+### Count changes
+
+GET http://{{host}}/{{version}}/changes/count?since=1503986686475.5&appVersion={{appVersion}} HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
