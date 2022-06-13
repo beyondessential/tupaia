@@ -16,6 +16,7 @@ import {
   TupaiaDatabase,
   getDbMigrator,
 } from '@tupaia/database';
+import { isFeatureEnabled } from '@tupaia/utils';
 
 import { createMeditrakSyncQueue } from './database';
 import * as modelClasses from './database/models';
@@ -36,7 +37,9 @@ const models = new ModelRegistry(database, modelClasses, true);
 /**
  * Set up change handlers e.g. for syncing
  */
-createMeditrakSyncQueue(models);
+if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
+  createMeditrakSyncQueue(models);
+}
 
 // Pre-cache entity hierarchy details
 const entityHierarchyCacher = new EntityHierarchyCacher(models);
