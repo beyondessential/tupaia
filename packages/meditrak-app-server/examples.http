@@ -105,3 +105,25 @@ Authorization: {{user-authorization}}
 GET http://{{host}}/{{version}}/changes?since=1503986686475.5&appVersion={{appVersion}} HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
+
+### Push changes
+
+POST http://{{host}}/{{version}}/changes?appVersion={{appVersion}} HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
+[
+    {
+        "action": "SubmitSurveyResponse",
+        "payload": {
+            "id": "1234",
+            "assessor_name": "Tim",
+            "entity_id": "5678",
+            "start_time": "2010-01-01",
+            "end_time": "2010-01-02",
+            "survey_id": "qwer",
+            "user_id": "tyui",
+            "answers": []
+        }
+    }
+]
