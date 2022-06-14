@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { getIsProductionEnvironment } from '../devops';
+import { getIsProductionEnvironment } from '../getIsProductionEnvironment';
 
 export const BUCKET_NAME = 'tupaia';
 export const BUCKET_PATH = `https://s3-ap-southeast-2.amazonaws.com/${BUCKET_NAME}/`;
