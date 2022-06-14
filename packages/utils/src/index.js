@@ -30,6 +30,7 @@ export * from './request';
 export { replaceValues } from './replaceValues';
 export { respond, respondWithDownload } from './respond';
 export * from './runScript';
+export * from './s3';
 export * from './Script';
 export * from './string';
 export * from './validation';
