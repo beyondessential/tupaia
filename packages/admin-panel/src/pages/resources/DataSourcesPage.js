@@ -77,7 +77,7 @@ const DATA_ELEMENT_FIELDS = [
       default: '{}',
       getJsonFieldSchema: () => [
         {
-          label: 'DHIS Server (Leave blank if stored on country specific server)',
+          label: 'DHIS Server',
           fieldName: 'dhisInstanceCode',
           optionsEndpoint: 'dhisInstances',
           optionLabelKey: 'dhisInstances.code',
@@ -106,7 +106,7 @@ const DATA_GROUP_FIELDS = [
       default: '{}',
       getJsonFieldSchema: () => [
         {
-          label: 'DHIS Server (Leave blank if stored on country specific server)',
+          label: 'DHIS Server',
           fieldName: 'dhisInstanceCode',
           optionsEndpoint: 'dhisInstances',
           optionLabelKey: 'dhisInstances.code',

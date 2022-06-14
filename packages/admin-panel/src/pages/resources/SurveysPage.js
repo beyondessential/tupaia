@@ -109,7 +109,7 @@ const SURVEY_COLUMNS = [
               recordData['data_source.service_type'] === 'dhis'
                 ? [
                     {
-                      label: 'DHIS Server (Leave blank if stored on country specific server)',
+                      label: 'DHIS Server',
                       fieldName: 'dhisInstanceCode',
                       optionsEndpoint: 'dhisInstances',
                       optionLabelKey: 'dhisInstances.code',
