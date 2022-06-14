@@ -3,16 +3,18 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
+import AWS from 'aws-sdk';
 import momentTimezone from 'moment-timezone';
 import {
   DatabaseError,
   UploadError,
   stripTimezoneFromDate,
   reformatDateStringWithoutTz,
+  S3Client,
+  S3_BUCKET_PATH,
+  getS3ImageFilePath,
   ValidationError,
 } from '@tupaia/utils';
-import { uploadImage } from '../s3';
-import { BUCKET_PATH, getImageFilePath } from '../s3/constants';
 import { DEFAULT_DATABASE_TIMEZONE, getEntityIdFromClinicId } from '../database';
 
 async function saveAnswer(models, answer, surveyResponseId) {
@@ -26,11 +28,12 @@ async function saveAnswer(models, answer, surveyResponseId) {
     const validFileIdRegex = RegExp('^[a-f\\d]{24}$');
     if (validFileIdRegex.test(answer.body)) {
       // if this is passed a valid id in the answer body
-      answerDocument.text = `${BUCKET_PATH}${getImageFilePath()}${answer.body}.png`;
+      answerDocument.text = `${S3_BUCKET_PATH}${getS3ImageFilePath()}${answer.body}.png`;
     } else {
       // included for backwards compatibility passing base64 strings for images
       try {
-        answerDocument.text = await uploadImage(answer.body);
+        const s3Client = new S3Client(new AWS.S3());
+        answerDocument.text = await s3Client.uploadImage(answer.body);
       } catch (error) {
         throw new UploadError(error);
       }

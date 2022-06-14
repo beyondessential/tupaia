@@ -5,7 +5,13 @@
 
 import moment from 'moment';
 import { expect, assert } from 'chai';
-import { fetchWithTimeout, oneSecondSleep, randomIntBetween } from '@tupaia/utils';
+import {
+  fetchWithTimeout,
+  oneSecondSleep,
+  randomIntBetween,
+  getS3ImageFilePath,
+  S3_BUCKET_NAME,
+} from '@tupaia/utils';
 import {
   generateId,
   generateTestId,
@@ -24,7 +30,6 @@ import {
   upsertEntity,
   upsertQuestion,
 } from '../testUtilities';
-import { getImageFilePath, BUCKET_NAME } from '../../s3/constants';
 
 const clinicId = generateTestId();
 const entityId = generateTestId();
@@ -398,7 +403,7 @@ describe('POST /changes', async () => {
 
     describe('Survey responses containing images', () => {
       const imageResponseObject = { id: generateId(), data: TEST_IMAGE_DATA };
-      const IMAGE_URL = `${BUCKET_URL}/${BUCKET_NAME}/${getImageFilePath()}${
+      const IMAGE_URL = `${BUCKET_URL}/${S3_BUCKET_NAME}/${getS3ImageFilePath()}${
         imageResponseObject.id
       }.png`;
 
