@@ -20,6 +20,7 @@ export { filterEntities } from './filterEntities';
 export * from './geoJson';
 export { getCountryNameFromCode } from './getCountryNameFromCode';
 export { getCountryCode } from './getCountryCode';
+export { getIsProductionEnvironment } from './getIsProductionEnvironment';
 export { requireEnv, getEnvVarOrDefault } from './requireEnv';
 export { getUniqueEntries } from './getUniqueEntries';
 export { getLoggerInstance } from './getLoggerInstance';

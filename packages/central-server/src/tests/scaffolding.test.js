@@ -8,7 +8,7 @@ import sinonChai from 'sinon-chai';
 import winston from 'winston';
 
 import { clearTestData } from '@tupaia/database';
-import { getIsProductionEnvironment } from '../devops';
+import { getIsProductionEnvironment } from '@tupaia/utils';
 import { getModels, resetTestData } from './testUtilities';
 import * as SendEmail from '../utilities/sendEmail';
 

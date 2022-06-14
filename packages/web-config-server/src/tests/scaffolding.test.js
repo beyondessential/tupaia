@@ -9,8 +9,8 @@ import chaiLike from 'chai-like';
 import sinonChai from 'sinon-chai';
 import moment from 'moment';
 import { clearTestData } from '@tupaia/database';
+import { getIsProductionEnvironment } from '@tupaia/utils';
 import { getTestModels } from './getTestModels';
-import { getIsProductionEnvironment } from '../utils';
 
 const testStartTime = moment().format('YYYY-MM-DD HH:mm:ss');
 
