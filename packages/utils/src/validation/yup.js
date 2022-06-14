@@ -132,9 +132,9 @@ const testSync = (schema, createError) =>
  * @param {string} [message]
  * @returns
  */
-const yupTest = (testFunction, message) => (...args) => {
+const yupTest = (testFunction, message) => async (...args) => {
   try {
-    testFunction(...args);
+    await testFunction(...args);
   } catch (error) {
     return new yup.ValidationError(message || error.message);
   }
@@ -149,11 +149,11 @@ const yupTest = (testFunction, message) => (...args) => {
  * @param {string} [message]
  * @returns
  */
-const yupTestAny = (testFunctions, message) => (...args) => {
+const yupTestAny = (testFunctions, message) => async (...args) => {
   const testFailures = [];
   for (let i = 0; i < testFunctions.length; i++) {
     const testFunction = testFunctions[i];
-    const testResult = yupTest(testFunction)(...args);
+    const testResult = await yupTest(testFunction)(...args);
     if (testResult === true) {
       return true;
     }
