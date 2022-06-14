@@ -10,7 +10,7 @@ import http from 'http';
 import winston from 'winston';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { configureWinston } from '@tupaia/server-boilerplate';
-import { isFeatureEnabled } from '@tupaia/utils';
+import { FEATURE_FLAG_OFF, isFeatureEnabled } from '@tupaia/utils';
 import { createApp } from './app';
 import { MeditrakAppServerModelRegistry } from './types';
 import { ServerChangeEnqueuer } from './sync';
@@ -29,7 +29,7 @@ const app = createApp(database);
 /**
  * Set up change handler for the meditrakSyncQueue
  */
-if (isFeatureEnabled('SERVER_CHANGE_ENQUEUER')) {
+if (isFeatureEnabled('SERVER_CHANGE_ENQUEUER', FEATURE_FLAG_OFF)) {
   const serverChangeEnqueuer = new ServerChangeEnqueuer(models);
   serverChangeEnqueuer.listenForChanges();
 }
