@@ -36,4 +36,12 @@ export class CentralApi extends BaseApi {
       await this.connection.post('surveyResponse', null, chunk);
     }
   }
+
+  /**
+   * Solely for use by meditrak-app-server. Should be deprecated once RN-556 is implemented
+   * @param changes Changes from the meditrak-app sync
+   */
+  public async meditrak_only_pushChanges(changes: unknown[]): Promise<{ message: string }> {
+    return this.connection.post('changes', null, changes as any[]);
+  }
 }
