@@ -8,6 +8,7 @@ import {
   DATA_ELEMENTS_BY_GROUP,
   DATA_ELEMENTS,
   DATA_SOURCES,
+  DATA_GROUPS,
   SERVER_NAME,
 } from './DhisService.fixtures';
 import { createJestMockInstance } from '../../../../../utils/src/testUtilities';
@@ -49,17 +50,22 @@ export const stubGetDhisApi = mockDhisApi => {
 };
 
 export const createModelsStub = () => ({
-  dataSource: createDataSourceModelsStub(),
+  dataElement: createDataElementModelsStub(),
+  dataGroup: createDataGroupModelsStub(),
 });
 
-export const createDataSourceModelsStub = () => ({
+export const createDataElementModelsStub = () => ({
   find: async specs =>
     Object.values(DATA_SOURCES).filter(
       ({ code, type }) => specs.code.includes(code) && specs.type === type,
     ),
-  getDataElementsInGroup: async groupCode => DATA_ELEMENTS_BY_GROUP[groupCode],
   getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
   getDhisDataTypes: () => ({ DATA_ELEMENT: 'DataElement', INDICATOR: 'Indicator' }),
+});
+
+export const createDataGroupModelsStub = () => ({
+  find: async specs => Object.values(DATA_GROUPS).filter(({ code }) => specs.code.includes(code)),
+  getDataElementsInDataGroup: async groupCode => DATA_ELEMENTS_BY_GROUP[groupCode],
 });
 
 /**

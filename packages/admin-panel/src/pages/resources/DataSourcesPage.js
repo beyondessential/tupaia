@@ -39,7 +39,7 @@ const getButtonsConfig = (fields, recordType) => [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'dataSources',
+      editEndpoint: `${recordType}s`,
       fields,
       displayUsedBy: true,
       recordType,
@@ -50,7 +50,7 @@ const getButtonsConfig = (fields, recordType) => [
     source: 'id',
     type: 'delete',
     actionConfig: {
-      endpoint: 'dataSources',
+      endpoint: `${recordType}s`,
     },
   },
 ];
@@ -94,6 +94,14 @@ const DATA_ELEMENT_FIELDS = [
       ],
     },
   },
+  {
+    Header: 'Permission Groups',
+    source: 'permission_groups',
+    type: 'tooltip',
+    editConfig: {
+      type: 'jsonArray',
+    },
+  },
 ];
 const DATA_GROUP_FIELDS = [
   ...DATA_SOURCE_FIELDS,
@@ -120,31 +128,22 @@ const DATA_GROUP_FIELDS = [
 export const DataGroupsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Data Groups"
-    endpoint="dataSources"
+    endpoint="dataGroups"
     reduxId="dataGroups"
     columns={[...DATA_GROUP_FIELDS, ...getButtonsConfig(DATA_GROUP_FIELDS, 'dataGroup')]}
     expansionTabs={[
       {
         title: 'Data Elements',
-        endpoint: 'dataSources/{id}/dataSources',
-        columns: [...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS, 'dataGroup')],
+        endpoint: 'dataGroups/{id}/dataElements',
+        columns: [...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement')],
       },
     ]}
     editConfig={{ title: 'Edit Data Source' }}
-    baseFilter={{ type: { comparisonValue: 'dataGroup' } }}
     createConfig={{
       title: 'New Data Group',
       actionConfig: {
-        editEndpoint: 'dataSources',
-        fields: [
-          ...DATA_GROUP_FIELDS,
-          {
-            Header: 'Type',
-            source: 'type',
-            editConfig: { default: 'dataGroup' },
-            show: false,
-          },
-        ],
+        editEndpoint: 'dataGroups',
+        fields: [...DATA_GROUP_FIELDS],
       },
     }}
     getHeaderEl={getHeaderEl}
@@ -153,9 +152,9 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
 );
 
 const IMPORT_CONFIG = {
-  title: 'Import Data Sources',
+  title: 'Import Data Elements',
   actionConfig: {
-    importEndpoint: 'dataSources',
+    importEndpoint: 'dataElements',
   },
 };
 
@@ -166,25 +165,16 @@ DataGroupsPage.propTypes = {
 export const DataElementsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Data Elements"
-    endpoint="dataSources"
+    endpoint="dataElements"
     reduxId="dataElements"
     columns={[...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement')]}
-    editConfig={{ title: 'Edit Data Source' }}
-    baseFilter={{ type: { comparisonValue: 'dataElement' } }}
+    editConfig={{ title: 'Edit Data Element' }}
     importConfig={IMPORT_CONFIG}
     createConfig={{
       title: 'New Data Element',
       actionConfig: {
-        editEndpoint: 'dataSources',
-        fields: [
-          ...DATA_ELEMENT_FIELDS,
-          {
-            Header: 'Type',
-            source: 'type',
-            editConfig: { default: 'dataElement' },
-            show: false,
-          },
-        ],
+        editEndpoint: 'dataElements',
+        fields: [...DATA_ELEMENT_FIELDS],
       },
     }}
     getHeaderEl={getHeaderEl}

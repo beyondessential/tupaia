@@ -17,6 +17,18 @@ export type Answers = {
 };
 
 export class CentralApi extends BaseApi {
+  public async registerUserAccount(
+    userFields: Record<string, unknown>,
+  ): Promise<{ userId: string; message: string }> {
+    return this.connection.post('user', null, userFields);
+  }
+
+  public async changeUserPassword(
+    passwordChangeFields: Record<string, unknown>,
+  ): Promise<{ message: string }> {
+    return this.connection.post('me/changePassword', null, passwordChangeFields);
+  }
+
   public async createSurveyResponses(responses: SurveyResponse[]): Promise<void> {
     const BATCH_SIZE = 500;
     for (let i = 0; i < responses.length; i += BATCH_SIZE) {

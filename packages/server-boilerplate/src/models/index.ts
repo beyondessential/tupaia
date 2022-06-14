@@ -12,3 +12,5 @@ export {
   PartialOrArray,
   QueryConjunctions,
 } from './types';
+
+export { UserType, UserModel } from './User';

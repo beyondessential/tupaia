@@ -4,7 +4,13 @@
  */
 
 import * as GetDhisApi from '../../../services/dhis/getDhisApi';
-import { DATA_SOURCES, DATA_VALUES, DHIS_REFERENCE, SERVER_NAME } from './DhisService.fixtures';
+import {
+  DATA_SOURCES,
+  DATA_VALUES,
+  DATA_GROUPS,
+  DHIS_REFERENCE,
+  SERVER_NAME,
+} from './DhisService.fixtures';
 import { DhisService } from '../../../services/dhis';
 import { createMockDhisApi, createModelsStub, stubGetDhisApi } from './DhisService.stubs';
 
@@ -39,14 +45,14 @@ describe('DhisService', () => {
 
       describe('data element', () => {
         it('basic aggregate data element', async () => {
-          await dhisService.push([DATA_SOURCES.POP01], DATA_VALUES.POP01);
+          await dhisService.push([DATA_SOURCES.POP01], DATA_VALUES.POP01, { type: 'dataElement' });
           expect(dhisApi.postDataValueSets).toHaveBeenCalledOnceWith([
             { dataElement: 'POP01', value: '1' },
           ]);
         });
 
         it('aggregate data element with a different dhis code', async () => {
-          await dhisService.push([DATA_SOURCES.DIF01], DATA_VALUES.DIF01);
+          await dhisService.push([DATA_SOURCES.DIF01], DATA_VALUES.DIF01, { type: 'dataElement' });
           expect(dhisApi.postDataValueSets).toHaveBeenCalledOnceWith([
             { dataElement: 'DIF01_DHIS', value: '3' },
           ]);
@@ -60,7 +66,7 @@ describe('DhisService', () => {
             dataValues: [DATA_VALUES.POP01, DATA_VALUES.POP02],
           };
 
-          await dhisService.push([DATA_SOURCES.POP01_GROUP], event);
+          await dhisService.push([DATA_GROUPS.POP01_GROUP], event, { type: 'dataGroup' });
           expect(dhisApi.postEvents).toHaveBeenCalledOnceWith([
             {
               ...event,
@@ -78,7 +84,7 @@ describe('DhisService', () => {
             dataValues: [DATA_VALUES.POP01, DATA_VALUES.DIF01],
           };
 
-          await dhisService.push([DATA_SOURCES.POP01_GROUP], event);
+          await dhisService.push([DATA_GROUPS.POP01_GROUP], event, { type: 'dataGroup' });
           expect(dhisApi.postEvents).toHaveBeenCalledOnceWith([
             {
               ...event,
@@ -151,6 +157,7 @@ describe('DhisService', () => {
         it('deletes a basic aggregate data element', async () => {
           await dhisService.delete(DATA_SOURCES.POP01, DATA_VALUES.POP01, {
             serverName: SERVER_NAME,
+            type: 'dataElement',
           });
           expect(dhisApi.deleteDataValue).toHaveBeenCalledOnceWith({
             dataElement: 'POP01',
@@ -161,6 +168,7 @@ describe('DhisService', () => {
         it('deletes an aggregate data element with a different dhis code', async () => {
           await dhisService.delete(DATA_SOURCES.DIF01, DATA_VALUES.DIF01, {
             serverName: SERVER_NAME,
+            type: 'dataElement',
           });
           expect(dhisApi.deleteDataValue).toHaveBeenCalledOnceWith({
             dataElement: 'DIF01_DHIS',
@@ -175,8 +183,9 @@ describe('DhisService', () => {
             dhisReference: DHIS_REFERENCE,
           };
 
-          await dhisService.delete(DATA_SOURCES.POP01_GROUP, eventData, {
+          await dhisService.delete(DATA_GROUPS.POP01_GROUP, eventData, {
             serverName: SERVER_NAME,
+            type: 'dataGroup',
           });
           expect(dhisApi.deleteEvent).toHaveBeenCalledOnceWith(DHIS_REFERENCE);
         });
@@ -195,7 +204,7 @@ describe('DhisService', () => {
       it('allows specifying serverName', async () => {
         getApiFromServerNameSpy.mockReturnValue(createMockDhisApi());
 
-        await dhisService.delete(DATA_SOURCES.POP01, DATA_VALUES.POP01, {
+        await dhisService.delete(DATA_GROUPS.POP01, DATA_GROUPS.POP01, {
           serverName: 'some server name',
         });
 
@@ -208,12 +217,12 @@ describe('DhisService', () => {
       it('looks up the api from the given data source', async () => {
         getApiForValueSpy.mockReturnValue(createMockDhisApi());
 
-        await dhisService.delete(DATA_SOURCES.POP01, DATA_VALUES.POP01);
+        await dhisService.delete(DATA_GROUPS.POP01, DATA_GROUPS.POP01);
 
         expect(getApiForValueSpy).toHaveBeenCalledOnceWith(
           expect.anything(),
           expect.anything(),
-          DATA_SOURCES.POP01,
+          DATA_GROUPS.POP01,
           DATA_VALUES.POP01,
         );
       });
@@ -232,22 +241,22 @@ describe('DhisService', () => {
       });
 
       it('uses EventsPuller for dataGroups', async () => {
-        await dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', {});
+        await dhisService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', {});
         expect(dhisService.eventsPuller.pull).toHaveBeenCalledOnceWith(
           expect.anything(),
-          [DATA_SOURCES.POP01_GROUP],
+          [DATA_GROUPS.POP01_GROUP],
           {},
         );
       });
 
       it('uses the modern EventsPuller by default', async () => {
-        await dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', {});
+        await dhisService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', {});
         expect(dhisService.eventsPuller.pull).toHaveBeenCalledTimes(1);
         expect(dhisService.deprecatedEventsPuller.pull).not.toHaveBeenCalled();
       });
 
       it('uses the deprecated EventsPuller if flag passed', async () => {
-        await dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', { useDeprecatedApi: true });
+        await dhisService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', { useDeprecatedApi: true });
         expect(dhisService.eventsPuller.pull).not.toHaveBeenCalled();
         expect(dhisService.deprecatedEventsPuller.pull).toHaveBeenCalledTimes(1);
       });

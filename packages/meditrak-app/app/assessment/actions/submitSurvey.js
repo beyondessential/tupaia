@@ -102,23 +102,26 @@ const processQuestions = async (dispatch, getState, database, userId, questions)
       continue;
     }
 
+    // Save any entities used in the recent list
+    if (['PrimaryEntity', 'Entity'].includes(question.type)) {
+      const { type: entityTypes } = question.config.entity;
+      addRecentEntityId(
+        database,
+        userId,
+        entityTypes,
+        getState().country.selectedCountryId,
+        answer,
+      );
+    }
+
     // Handle special question types
     switch (question.type) {
       case 'SubmissionDate':
       case 'DateOfData':
         responseFields.dataTime = moment(answer).toISOString();
         break;
-      case 'PrimaryEntity':
-      case 'Entity': {
-        const { type: entityTypes } = question.config.entity;
+      case 'PrimaryEntity': {
         responseFields.entityId = answer;
-        addRecentEntityId(
-          database,
-          userId,
-          entityTypes,
-          getState().country.selectedCountryId,
-          answer,
-        );
         break;
       }
       default:

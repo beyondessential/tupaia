@@ -22,9 +22,8 @@ export const fetchAggregatedAnalyticsByDhisIds = async (
   entityAggregation,
   hierarchyId,
 ) => {
-  const dataElements = await models.dataSource.find({
+  const dataElements = await models.dataElement.find({
     code: dataElementCodes,
-    type: 'dataElement',
   });
   // Need to find all the data source org unit levels for the aggregated analytics endpoint,
   // otherwise all the data will be aggregated to the org unit
@@ -54,42 +53,57 @@ export const fetchAggregatedAnalyticsByDhisIds = async (
     entityIdToCode[mapping.config.dhis_id] = entityCode;
   }
 
-  const analyticResults = await getAggregatedAnalytics(query, dhisApi, dataElementIdToCode, entityIdToCode);
+  const analyticResults = await getAggregatedAnalytics(
+    query,
+    dhisApi,
+    dataElementIdToCode,
+    entityIdToCode,
+  );
 
   if (entityAggregation && entityAggregation.aggregationEntityType) {
     if (!hierarchyId) {
       throw new Error('Cannot perform entity aggregation without hierarchyId');
     }
 
-    //TODO: Another hacky block of code here to perform entity aggregation manually
+    // TODO: Another hacky block of code here to perform entity aggregation manually
     // since we need to perform entity aggregation for some vizes in Laos EOC
     // but we dont run through the Aggregator pipeline when fetching from DhisApi directly...
     // Will need to fix this asap...
-    const newAnalytics = await performEntityAggregation(models, analyticResults.results, entityAggregation, hierarchyId);
+    const newAnalytics = await performEntityAggregation(
+      models,
+      analyticResults.results,
+      entityAggregation,
+      hierarchyId,
+    );
     return {
       ...analyticResults,
       results: newAnalytics,
-    }
+    };
   }
 
   return analyticResults;
 };
 
 const performEntityAggregation = async (models, analytics, entityAggregation, hierarchyId) => {
-  const { aggregationType = 'REPLACE_ORG_UNIT_WITH_ORG_GROUP', aggregationEntityType } = entityAggregation;
-  const dataSourceEntityCodes = [...new Set(analytics.map(data => data.organisationUnit))]
+  const {
+    aggregationType = 'REPLACE_ORG_UNIT_WITH_ORG_GROUP',
+    aggregationEntityType,
+  } = entityAggregation;
+  const dataSourceEntityCodes = [...new Set(analytics.map(data => data.organisationUnit))];
   const entityToAncestorMap = await models.entity.fetchAncestorDetailsByDescendantCode(
     dataSourceEntityCodes,
     hierarchyId,
     aggregationEntityType,
   );
-  // Remove any analytic that does not have orgUnit in the entityToAncestorMap, 
+  // Remove any analytic that does not have orgUnit in the entityToAncestorMap,
   // which means it is not a descendent of the aggregationEntityType
-  const filteredAnalytics = analytics.filter(a => Object.keys(entityToAncestorMap).includes(a.organisationUnit));
+  const filteredAnalytics = analytics.filter(a =>
+    Object.keys(entityToAncestorMap).includes(a.organisationUnit),
+  );
   const aggregationConfig = {
     ...entityAggregation,
     orgUnitMap: entityToAncestorMap,
-  }
+  };
   return aggregateAnalytics(filteredAnalytics, aggregationType, aggregationConfig);
 };
 
@@ -110,12 +124,7 @@ const getQueryInput = (query, dataElementIds, organisationUnitIds) => {
   };
 };
 
-const getAggregatedAnalytics = async (
-  query,
-  dhisApi,
-  dataElementIdToCode,
-  entityIdToCode,
-) => {
+const getAggregatedAnalytics = async (query, dhisApi, dataElementIdToCode, entityIdToCode) => {
   const queryInput = getQueryInput(
     query,
     Object.keys(dataElementIdToCode),

@@ -7,8 +7,8 @@ import { AnalyticsPuller } from '../../../../services/dhis/pullers/AnalyticsPull
 import { DATA_SOURCES, EVENT_ANALYTICS } from '../DhisService.fixtures';
 import {
   buildDhisAnalyticsResponse,
-  createMockDhisApi,
   createModelsStub,
+  createMockDhisApi,
   stubGetDhisApi,
 } from '../DhisService.stubs';
 import { DhisTranslator } from '../../../../services/dhis/DhisTranslator';
@@ -22,11 +22,11 @@ describe('AnalyticsPuller', () => {
     const models = createModelsStub();
     const translator = new DhisTranslator(models);
     const dataElementsMetadataPuller = new DataElementsMetadataPuller(
-      models.dataSource,
+      models.dataElement,
       translator,
     );
     analyticsPuller = new AnalyticsPuller(
-      models.dataSource,
+      models.dataElement,
       translator,
       dataElementsMetadataPuller,
     );

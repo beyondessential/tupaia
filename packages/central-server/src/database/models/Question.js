@@ -9,7 +9,7 @@ import { reduceToDictionary } from '@tupaia/utils';
 class QuestionType extends DatabaseType {
   static databaseType = TYPES.QUESTION;
 
-  dataElement = async () => this.otherModels.dataSource.findById(this.data_source_id);
+  dataElement = async () => this.otherModels.dataElement.findById(this.data_element_id);
 
   async getSurveyIds() {
     const surveyScreens = await this.database.executeSql(
@@ -57,12 +57,12 @@ const onChangeUpdateDataElement = async (
 ) => {
   switch (changeType) {
     case 'update': {
-      const { code, data_source_id: dataSourceId } = newRecord;
-      return models.dataSource.updateById(dataSourceId, { code });
+      const { code, data_element_id: dataElementId } = newRecord;
+      return models.dataElement.updateById(dataElementId, { code });
     }
     case 'delete': {
-      const { data_source_id: dataSourceId } = oldRecord;
-      return models.dataSource.deleteById(dataSourceId);
+      const { data_element_id: dataElementId } = oldRecord;
+      return models.dataElement.deleteById(dataElementId);
     }
     default:
       throw new Error(`Non supported change type: ${changeType}`);

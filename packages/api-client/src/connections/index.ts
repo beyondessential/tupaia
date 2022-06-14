@@ -5,5 +5,6 @@
  */
 
 export { ApiConnection } from './ApiConnection';
+export { AuthApi } from './AuthApi';
 export { EntityApi } from './EntityApi';
 export { CentralApi } from './CentralApi';

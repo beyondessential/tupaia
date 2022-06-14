@@ -28,17 +28,17 @@ export class DhisService extends Service {
     this.translator = new DhisTranslator(this.models);
     this.dhisInstanceResolver = new DhisInstanceResolver(models);
     this.dataElementsMetadataPuller = new DataElementsMetadataPuller(
-      this.models.dataSource,
+      this.models.dataElement,
       this.translator,
     );
     this.analyticsPuller = new AnalyticsPuller(
-      this.models.dataSource,
+      this.models.dataElement,
       this.translator,
       this.dataElementsMetadataPuller,
     );
-    this.eventsPuller = new EventsPuller(this.models.dataSource, this.translator);
+    this.eventsPuller = new EventsPuller(this.models.dataElement, this.translator);
     this.deprecatedEventsPuller = new DeprecatedEventsPuller(
-      this.models.dataSource,
+      this.models.dataElement,
       this.translator,
     );
     this.pushers = this.getPushers();
@@ -97,8 +97,8 @@ export class DhisService extends Service {
     }
   }
 
-  async push(dataSources, data) {
-    const pushData = this.pushers[dataSources[0].type]; // all are of the same type
+  async push(dataSources, data, { type }) {
+    const pushData = this.pushers[type]; // all are of the same type
     const dataValues = Array.isArray(data) ? data : [data];
     await this.validatePushData(dataSources, dataValues);
     const api = await getApiForValue(
@@ -127,14 +127,14 @@ export class DhisService extends Service {
     return api.postEvents(translatedEvents);
   }
 
-  async delete(dataSource, data, { serverName } = {}) {
+  async delete(dataSource, data, { serverName, type } = {}) {
     let api;
     if (serverName) {
       api = await getApiFromServerName(this.models, serverName);
     } else {
       api = await getApiForValue(this.models, this.dhisInstanceResolver, dataSource, data);
     }
-    const deleteData = this.deleters[dataSource.type];
+    const deleteData = this.deleters[type];
     return deleteData(api, data, dataSource);
   }
 

@@ -90,23 +90,23 @@ const SURVEY_COLUMNS = [
         },
         {
           Header: 'Data Service',
-          source: 'data_source.service_type',
+          source: 'data_group.service_type',
           editConfig: {
             options: SERVICE_TYPES,
             setFieldsOnChange: (newValue, currentRecord) => {
-              const { dhisInstanceCode = 'regional' } = currentRecord['data_source.config'];
+              const { dhisInstanceCode = 'regional' } = currentRecord['data_group.config'];
               const config = newValue === 'dhis' ? { dhisInstanceCode } : {};
-              return { 'data_source.config': config };
+              return { 'data_group.config': config };
             },
           },
         },
         {
           Header: 'Data Service Configuration',
-          source: 'data_source.config',
+          source: 'data_group.config',
           editConfig: {
             type: 'json',
             getJsonFieldSchema: (_, { recordData }) =>
-              recordData['data_source.service_type'] === 'dhis'
+              recordData['data_group.service_type'] === 'dhis'
                 ? [
                     {
                       label: 'DHIS Server',

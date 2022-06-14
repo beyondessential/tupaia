@@ -10,6 +10,11 @@ export function generateSecretKey() {
   return randomize('*', 20);
 }
 
+/**
+ * 'Bearer abcd123' => 'abcd123'
+ * @param {string} authHeader
+ * @returns {string} token from header
+ */
 export function getJwtToken(authHeader) {
   const authHeaderComponents = authHeader.split(' '); // Split between Bearer and the JWT
   if (

@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@tupaia/access-policy": "3.0.0",
+    "@tupaia/api-client": "3.1.0",
     "@tupaia/auth": "1.0.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/utils": "1.0.0",

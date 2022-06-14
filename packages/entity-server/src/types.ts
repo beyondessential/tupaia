@@ -12,9 +12,6 @@ export interface EntityServerModelRegistry extends ModelRegistry {
   readonly entityHierarchy: EntityHierarchyModel;
 }
 
-// Returns resolved type if type is promise
-export type Resolved<T> = T extends Promise<infer R> ? R : T;
-
 // Extracts keys that have object-like values from type T
 export type ObjectLikeKeys<T> = {
   [K in keyof T]: T[K] extends Record<string, unknown> ? K : never;

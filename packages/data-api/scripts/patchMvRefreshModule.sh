@@ -40,5 +40,5 @@ fi
 if [[ ! -d "./scripts/patches/$VERSION" && ! "$COMMAND" == "create" ]]; then
     echo "No patches exist for version: $VERSION, skipping"
 else
-    babel-node ./scripts/patchMvRefresh.js $COMMAND:$VERSION $PATCH_NAME --migrations-dir "./scripts/patches"  --table "patches" -v --config-file "../../babel.config.json"
+    ts-node ./scripts/patchMvRefresh.ts $COMMAND:$VERSION $PATCH_NAME --migrations-dir "./scripts/patches"  --table "patches" -v --config-file "../../babel.config.json"
 fi

@@ -16,14 +16,14 @@ const STUBBED_MODEL_DATA = {
   survey: [
     {
       id: 'survey_is_regional',
-      data_source_id: 'survey_is_regional_dataGroup',
+      data_group_id: 'survey_is_regional_dataGroup',
     },
     {
       id: 'survey_is_not_regional',
-      data_source_id: 'survey_is_not_regional_dataGroup',
+      data_group_id: 'survey_is_not_regional_dataGroup',
     },
   ],
-  data_source: [
+  data_group: [
     {
       id: 'survey_is_regional_dataGroup',
       config: { dhisInstanceCode: 'regional' },
@@ -68,9 +68,9 @@ export const MODELS = {
     find: sinon
       .stub()
       .withArgs('survey', sinon.match({ 'survey.id': sinon.match.array }), {
-        joinWith: 'data_source',
-        joinCondition: ['data_source.id', 'survey.data_source.id'],
-        columns: ['survey.id', 'data_source.config'],
+        joinWith: 'data_group',
+        joinCondition: ['data_group.id', 'survey.data_group.id'],
+        columns: ['survey.id', 'data_group.config'],
       })
       .callsFake(async (t, { 'survey.id': surveyIds }) =>
         surveyIds.map(surveyId => {
@@ -78,7 +78,7 @@ export const MODELS = {
             STUBBED_MODEL_DATA[type].find(({ id }) => id === targetId);
 
           const survey = find('survey', surveyId);
-          const dataSource = find('data_source', survey.data_source_id);
+          const dataSource = find('data_group', survey.data_group_id);
           return { id: survey.id, config: dataSource.config };
         }),
       ),

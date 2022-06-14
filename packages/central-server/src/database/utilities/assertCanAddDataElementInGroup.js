@@ -29,8 +29,8 @@ export const assertCanAddDataElementInGroup = async (
 ) => {
   const { service_type: newServiceType, config: newConfig = {} } = updatedFields;
 
-  const dataElement = await models.dataSource.findOne({ code: dataElementCode });
-  const dataGroups = await models.dataSource.getDataGroupsThatIncludeElement({
+  const dataElement = await models.dataElement.findOne({ code: dataElementCode });
+  const dataGroups = await models.dataGroup.getDataGroupsThatIncludeElement({
     code: dataElementCode,
   });
   const otherDataGroups = dataGroups.filter(({ code }) => code !== dataGroupCode);
