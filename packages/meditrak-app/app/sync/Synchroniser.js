@@ -15,7 +15,11 @@ import {
   setSyncIsSyncing,
   setSyncComplete,
 } from './actions';
-import { LATEST_SERVER_SYNC_TIMESTAMP } from '../settings';
+import {
+  COUNTRIES_SYNCED,
+  LATEST_SERVER_SYNC_TIMESTAMP,
+  PERMISSION_GROUPS_SYNCED,
+} from '../settings';
 import { loadSocialFeedLatest } from '../social';
 import { getSyncMigrations } from './syncMigrations';
 
@@ -171,7 +175,11 @@ export class Synchroniser {
       const outgoingChangeCount = this.changeQueue.length;
 
       const lastSyncTime = this.getLastSyncTime();
-      const incomingChangeCount = await this.getIncomingChangeCount(lastSyncTime);
+      const {
+        changeCount: incomingChangeCount,
+        countries: incomingCountries,
+        permissionGroups: incomingPermissionGroups,
+      } = await this.getIncomingChangeMetadata(lastSyncTime);
 
       const totalCount = outgoingChangeCount + incomingChangeCount;
 
@@ -190,6 +198,7 @@ export class Synchroniser {
 
       setProgressMessage('Pulling');
       await this.pull(setProgress, incomingChangeCount, lastSyncTime);
+      this.resolveCountriesAndPermissionsSynced(incomingCountries, incomingPermissionGroups);
 
       setComplete(new Date().getTime());
       refreshFeed(); // Pull latest feed items whilst the device has an Internet connection.
@@ -293,15 +302,30 @@ export class Synchroniser {
    * Returns the number of changes left to pull
    * @return {Promise} Resolves with the change count, or passes up any error thrown
    */
-  async getIncomingChangeCount(since, filters = {}) {
-    const responseJson = await this.api.get(`${API_ENDPOINT}/count`, { since, ...filters });
+  async getIncomingChangeMetadata(since, filters = {}) {
+    const countriesSynced = this.database.getSetting(COUNTRIES_SYNCED);
+    const permissionGroupsSynced = this.database.getSetting(PERMISSION_GROUPS_SYNCED);
+    if (countriesSynced) {
+      // eslint-disable-next-line no-param-reassign
+      filters.countriesSynced = countriesSynced;
+    }
+    if (permissionGroupsSynced) {
+      // eslint-disable-next-line no-param-reassign
+      filters.permissionGroupsSynced = permissionGroupsSynced;
+    }
+    const responseJson = await this.api.get(`${API_ENDPOINT}/metadata`, { since, ...filters });
     if (responseJson.error && responseJson.error.length > 0) {
       throw new Error(responseJson.error);
     }
-    if (typeof responseJson.changeCount !== 'number') {
+    const { changeCount, countries, permissionGroups } = responseJson;
+    if (
+      typeof changeCount !== 'number' ||
+      !Array.isArray(countries) ||
+      !Array.isArray(permissionGroups)
+    ) {
       throw new Error('Unexpected response from server');
     }
-    return responseJson.changeCount;
+    return { changeCount, countries, permissionGroups };
   }
 
   /**
@@ -312,6 +336,16 @@ export class Synchroniser {
   async getIncomingChanges(since, offset, filters = {}) {
     const startTime = new Date().getTime();
 
+    const countriesSynced = this.database.getSetting(COUNTRIES_SYNCED);
+    const permissionGroupsSynced = this.database.getSetting(PERMISSION_GROUPS_SYNCED);
+    if (countriesSynced) {
+      // eslint-disable-next-line no-param-reassign
+      filters.countriesSynced = countriesSynced;
+    }
+    if (permissionGroupsSynced) {
+      // eslint-disable-next-line no-param-reassign
+      filters.permissionGroupsSynced = permissionGroupsSynced;
+    }
     const responseJson = await this.api.get(API_ENDPOINT, {
       since,
       offset,
@@ -327,6 +361,36 @@ export class Synchroniser {
       changes: responseJson,
       requestDuration: endTime - startTime,
     };
+  }
+
+  resolveCountriesAndPermissionsSynced(incomingCountries, incomingPermissionGroups) {
+    const oldCountriesSetting = this.database.getSetting(COUNTRIES_SYNCED);
+    const oldPermissionGroupsSetting = this.database.getSetting(PERMISSION_GROUPS_SYNCED);
+    const oldCountries = oldCountriesSetting ? oldCountriesSetting.split(',') : [];
+    const oldPermissionGroups = oldPermissionGroupsSetting
+      ? oldPermissionGroupsSetting.split(',')
+      : [];
+
+    // Add new incoming countries and permission groups
+    const newAndOldCountries = Array.from(new Set([...oldCountries, ...incomingCountries]));
+    const newAndOldPermissionGroups = Array.from(
+      new Set([...oldPermissionGroups, ...incomingPermissionGroups]),
+    );
+
+    // Sync may have deleted some countries or permission groups
+    // so exclude countries and permission groups that are no longer in database
+    const countriesInDatabase = this.database.getCountryCodes();
+    const countriesSynced = newAndOldCountries.filter(country =>
+      countriesInDatabase.includes(country),
+    );
+
+    const permissionGroupsInDatabase = this.database.getPermissionGroupNames();
+    const permissionGroupsSynced = newAndOldPermissionGroups.filter(permissionGroup =>
+      permissionGroupsInDatabase.includes(permissionGroup),
+    );
+
+    this.database.setSetting(COUNTRIES_SYNCED, countriesSynced.join(','));
+    this.database.setSetting(PERMISSION_GROUPS_SYNCED, permissionGroupsSynced.join(','));
   }
 
   async runMigrations(setProgressMessage) {
