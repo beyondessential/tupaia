@@ -11,6 +11,7 @@ declare global {
       sessionModel: SessionModel;
       sessionCookie?: SessionCookie;
       session?: SessionType;
+      apiRequestLogId?: string;
     }
   }
 }
