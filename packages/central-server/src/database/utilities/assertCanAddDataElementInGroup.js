@@ -5,13 +5,6 @@
 
 const areBothDefinedAndDifferent = (a, b) => a !== undefined && b !== undefined && a !== b;
 
-const areDifferentAllowingNull = (a, b) => {
-  if (a === null && b === null) return false;
-  if (a === null && b !== null) return true;
-  if (a !== null && b === null) return true;
-  return a !== b;
-};
-
 const constructErrorMessage = ({
   property,
   newValue,
@@ -53,7 +46,7 @@ export const assertCanAddDataElementInGroup = async (
       );
     }
 
-    if (areDifferentAllowingNull(otherConfig.dhisInstanceCode, newConfig.dhisInstanceCode)) {
+    if (otherConfig.dhisInstanceCode !== newConfig.dhisInstanceCode) {
       throw new Error(
         constructErrorMessage({
           property: 'DHIS server',
