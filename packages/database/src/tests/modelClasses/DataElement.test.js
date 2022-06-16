@@ -42,7 +42,6 @@ describe('DataElement', () => {
       ['', undefined, null].forEach(emptyValue => {
         assertConfigIsSanitized(
           {
-            type: 'dataElement',
             serviceType: 'dhis',
           },
           { dhisInstanceCode: 'bob', dataElementCode: emptyValue },
@@ -117,7 +116,7 @@ describe('DataElement', () => {
       ['', undefined, null].forEach(emptyValue => {
         assertConfigIsSanitized(
           {
-            serviceType: 'dhis',
+            serviceType: 'tupaia',
           },
           { dhisInstanceCode: 'bob', other: 'random' },
           {},

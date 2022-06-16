@@ -39,9 +39,6 @@ export class DataGroupType extends DatabaseType {
     // Clear invalid/empty fields
     Object.keys(this.config).forEach(key => {
       if (!configSchema[key] || isEmpty(this.config[key])) {
-        delete this.config[key];
-      }
-      if (!configSchema[key] || isEmpty(this.config[key])) {
         if (this.config[key] === null && configSchema[key].allowNull) {
           // keep as null
         } else {
@@ -50,9 +47,9 @@ export class DataGroupType extends DatabaseType {
       }
     });
     // Use default values for valid empty fields
-    Object.entries(configSchema).forEach(([key, { default: defaultValue }]) => {
+    Object.entries(configSchema).forEach(([key, { default: defaultValue, allowNull }]) => {
       if (defaultValue !== undefined && isEmpty(this.config[key])) {
-        if (this.config[key] === null && configSchema[key].allowNull) {
+        if (this.config[key] === null && allowNull) {
           // keep as null
         } else {
           // set to default
