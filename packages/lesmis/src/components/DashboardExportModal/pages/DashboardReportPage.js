@@ -4,19 +4,30 @@ import { Divider, Typography } from '@material-ui/core';
 
 import { A4Page, EntityDetails, DashboardTitleContainer } from '../components';
 import { DashboardReport } from '../../DashboardReport';
+import { yearToApiDates } from '../../../api/queries/utils';
+import { useUrlSearchParam } from '../../../utils';
+import { DEFAULT_DATA_YEAR } from '../../../constants';
 
 export const DashboardReportPage = ({
   item,
-  startDate,
-  endDate,
   getNextPage,
   isEntityDetailsRequired,
   subDashboardName,
   exportOptions,
+  useYearSelector,
   ...configs
 }) => {
+  const [selectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
+  const { startDate, endDate } = useYearSelector ? yearToApiDates(selectedYear) : {};
+
   return (
-    <A4Page key={item.code} page={getNextPage()} {...{ ...configs }}>
+    <A4Page
+      key={item.code}
+      page={getNextPage()}
+      useYearSelector={useYearSelector}
+      selectedYear={selectedYear}
+      {...configs}
+    >
       {isEntityDetailsRequired && <EntityDetails />}
       <DashboardTitleContainer>
         <Typography variant="h2">{subDashboardName}</Typography>
@@ -45,13 +56,11 @@ DashboardReportPage.propTypes = {
   addToRefs: PropTypes.func.isRequired,
   getNextPage: PropTypes.func.isRequired,
   isEntityDetailsRequired: PropTypes.bool.isRequired,
-  startDate: PropTypes.string,
-  endDate: PropTypes.string,
   subDashboardName: PropTypes.string.isRequired,
   exportOptions: PropTypes.object.isRequired,
+  useYearSelector: PropTypes.bool,
 };
 
 DashboardReportPage.defaultProps = {
-  startDate: undefined,
-  endDate: undefined,
+  useYearSelector: false,
 };

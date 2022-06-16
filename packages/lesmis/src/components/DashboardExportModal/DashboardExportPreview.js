@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import { DashboardReportPage, NoReportPage } from './pages';
-import { yearToApiDates } from '../../api/queries/utils';
-import { DEFAULT_DATA_YEAR } from '../../constants';
 import { useExportOptions } from './context/ExportOptionsContext';
 
 const Container = styled.div`
@@ -22,7 +20,6 @@ export const DashboardExportPreview = ({ addToRefs, exportableDashboards, curren
 
   const getChildren = (subDashboard, isFirstPageProfile) => {
     const { items, useYearSelector, ...configs } = subDashboard;
-    const { startDate, endDate } = useYearSelector ? yearToApiDates(DEFAULT_DATA_YEAR) : {};
     const baseConfigs = {
       addToRefs,
       currentPage,
@@ -38,8 +35,7 @@ export const DashboardExportPreview = ({ addToRefs, exportableDashboards, curren
           <DashboardReportPage
             key={item.code}
             item={item}
-            startDate={startDate}
-            endDate={endDate}
+            useYearSelector={useYearSelector}
             isEntityDetailsRequired={isFirstPageProfile && index === 0}
             exportOptions={exportOptions}
             {...baseConfigs}

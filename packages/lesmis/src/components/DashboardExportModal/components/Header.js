@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Typography } from '@material-ui/core';
 import { FlexColumn } from '@tupaia/ui-components';
-import { DEFAULT_DATA_YEAR } from '../../../constants';
 
 const Logo = styled.img`
   top: 30px;
@@ -24,13 +23,13 @@ const SubHeading = styled(Typography)`
   text-transform: capitalize;
 `;
 
-const Header = ({ dashboardLabel, useYearSelector }) => {
+const Header = ({ dashboardLabel, useYearSelector, selectedYear }) => {
   return (
     <div style={{ position: 'relative', padding: '50px' }}>
       <Logo alt="logo" src="/lesmis-logo-black.svg" />
       <FlexColumn>
         <Heading variant="h1">{dashboardLabel}</Heading>
-        {useYearSelector && <SubHeading variant="h2">{DEFAULT_DATA_YEAR}</SubHeading>}
+        {useYearSelector && <SubHeading variant="h2">{selectedYear}</SubHeading>}
       </FlexColumn>
     </div>
   );
@@ -39,6 +38,7 @@ const Header = ({ dashboardLabel, useYearSelector }) => {
 Header.propTypes = {
   dashboardLabel: PropTypes.string.isRequired,
   useYearSelector: PropTypes.bool,
+  selectedYear: PropTypes.string.isRequired,
 };
 
 Header.defaultProps = {
