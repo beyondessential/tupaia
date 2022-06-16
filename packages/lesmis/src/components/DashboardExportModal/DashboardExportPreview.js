@@ -14,7 +14,7 @@ export const DashboardExportPreview = ({
   addToRefs,
   exportableDashboards,
   currentPage,
-  isExporting,
+  isDisabled,
 }) => {
   const exportOptions = useExportOptions();
   let page = 0;
@@ -31,7 +31,7 @@ export const DashboardExportPreview = ({
       useYearSelector,
       getNextPage,
       subDashboardName: subDashboard.dashboardName,
-      isExporting,
+      isDisabled,
       ...configs,
     };
 
@@ -71,7 +71,7 @@ DashboardExportPreview.propTypes = {
   exportableDashboards: PropTypes.array,
   addToRefs: PropTypes.func.isRequired,
   currentPage: PropTypes.number.isRequired,
-  isExporting: PropTypes.bool.isRequired,
+  isDisabled: PropTypes.bool.isRequired,
 };
 
 DashboardExportPreview.defaultProps = {

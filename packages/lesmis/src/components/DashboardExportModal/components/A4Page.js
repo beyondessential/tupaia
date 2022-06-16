@@ -9,7 +9,7 @@ const A4Container = styled.div`
   width: 1300px;
   margin-top: 20px;
   position: absolute;
-  height: 2000px;
+  height: 1800px;
   z-index: ${props => (props.$isSelected ? 0 : -1)};
 `;
 
@@ -17,8 +17,8 @@ const Content = styled(FlexColumn)`
   margin: 0px 150px;
 `;
 
-export const A4Page = ({ addToRefs, children, page, currentPage, isExporting, ...configs }) => {
-  const isSelected = isExporting ? false : page === currentPage;
+export const A4Page = ({ addToRefs, children, page, currentPage, isDisabled, ...configs }) => {
+  const isSelected = isDisabled ? false : page === currentPage;
 
   return (
     <A4Container ref={addToRefs} $isSelected={isSelected}>
@@ -33,5 +33,5 @@ A4Page.propTypes = {
   addToRefs: PropTypes.func.isRequired,
   page: PropTypes.number.isRequired,
   currentPage: PropTypes.number.isRequired,
-  isExporting: PropTypes.bool.isRequired,
+  isDisabled: PropTypes.bool.isRequired,
 };

@@ -3,6 +3,7 @@
  *  Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 import React, { useState } from 'react';
+import { useIsFetching } from 'react-query';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import DownloadIcon from '@material-ui/icons/GetApp';
@@ -40,8 +41,10 @@ export const DashboardExportModal = ({
   isOpen,
   setIsOpen,
 }) => {
+  const isFetching = useIsFetching() > 0;
   const fileName = `${title}-dashboards-export`;
   const { addToRefs, isExporting, exportToPDF } = useExportToPDF(fileName);
+  const isDisabled = isExporting || isFetching;
   const [page, setPage] = useState(1);
 
   const handleClickExport = async () => {
@@ -58,24 +61,28 @@ export const DashboardExportModal = ({
               variant="outlined"
               onClick={handleClickExport}
               disableElevation
-              disabled={isExporting}
+              disabled={isDisabled}
             >
               <I18n t="dashboards.download" />
             </MuiButton>
-            <OptionsBar totalPage={totalPage} setPage={setPage} isExporting={isExporting} />
+            <OptionsBar totalPage={totalPage} setPage={setPage} isDisabled={isDisabled} />
           </FlexSpaceBetween>
         </DialogHeader>
         <DialogContent>
           <LoadingContainer
-            heading={I18n({ t: 'dashboards.exportingChartsToPDF' })}
+            heading={I18n({
+              t: isFetching
+                ? 'dashboards.fetchingAllReportsData'
+                : 'dashboards.exportingChartsToPDF',
+            })}
             text={I18n({ t: 'dashboards.pleaseDoNotRefreshTheBrowserOrCloseThisPage' })}
-            isLoading={isExporting}
+            isLoading={isDisabled}
           >
             <DashboardExportPreview
               exportableDashboards={exportableDashboards}
               addToRefs={addToRefs}
               currentPage={page}
-              isExporting={isExporting}
+              isDisabled={isDisabled}
             />
           </LoadingContainer>
         </DialogContent>
