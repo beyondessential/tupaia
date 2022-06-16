@@ -18,7 +18,7 @@ export const DashboardReportPage = ({
   ...configs
 }) => {
   const [selectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
-  const { startDate, endDate } = useYearSelector ? yearToApiDates(selectedYear) : {};
+  const { startDate, endDate } = useYearSelector ? yearToApiDates(selectedYear) : yearToApiDates();
 
   return (
     <A4Page
