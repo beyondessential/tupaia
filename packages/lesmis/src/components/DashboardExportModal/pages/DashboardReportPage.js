@@ -40,8 +40,8 @@ export const DashboardReportPage = ({
         startDate={startDate}
         endDate={endDate}
         exportOptions={exportOptions}
-        isExporting
-        isEnlarged
+        isExporting // render exporting format
+        isEnlarged // render exporting format
       />
     </A4Page>
   );

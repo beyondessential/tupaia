@@ -9,7 +9,7 @@ import DownloadIcon from '@material-ui/icons/GetApp';
 import {
   Dialog,
   DialogHeader,
-  DialogContent,
+  DialogContent as BaseDialogContent,
   FlexSpaceBetween as BaseFlexSpaceBetween,
   LoadingContainer,
 } from '@tupaia/ui-components';
@@ -21,6 +21,10 @@ import { ExportOptionsProvider } from './context/ExportOptionsContext';
 
 const FlexSpaceBetween = styled(BaseFlexSpaceBetween)`
   width: 95%;
+`;
+
+const DialogContent = styled(BaseDialogContent)`
+  background-color: white;
 `;
 
 const MuiButton = styled(MuiIconButton)`
@@ -71,6 +75,7 @@ export const DashboardExportModal = ({
               exportableDashboards={exportableDashboards}
               addToRefs={addToRefs}
               currentPage={page}
+              isExporting={isExporting}
             />
           </LoadingContainer>
         </DialogContent>

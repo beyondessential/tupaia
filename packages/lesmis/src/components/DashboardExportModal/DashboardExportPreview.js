@@ -7,10 +7,15 @@ import { useExportOptions } from './context/ExportOptionsContext';
 
 const Container = styled.div`
   position: relative;
-  height: 1600px;
+  height: 800px;
 `;
 
-export const DashboardExportPreview = ({ addToRefs, exportableDashboards, currentPage }) => {
+export const DashboardExportPreview = ({
+  addToRefs,
+  exportableDashboards,
+  currentPage,
+  isExporting,
+}) => {
   const exportOptions = useExportOptions();
   let page = 0;
   const getNextPage = () => {
@@ -26,6 +31,7 @@ export const DashboardExportPreview = ({ addToRefs, exportableDashboards, curren
       useYearSelector,
       getNextPage,
       subDashboardName: subDashboard.dashboardName,
+      isExporting,
       ...configs,
     };
 
@@ -65,6 +71,7 @@ DashboardExportPreview.propTypes = {
   exportableDashboards: PropTypes.array,
   addToRefs: PropTypes.func.isRequired,
   currentPage: PropTypes.number.isRequired,
+  isExporting: PropTypes.bool.isRequired,
 };
 
 DashboardExportPreview.defaultProps = {
