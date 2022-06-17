@@ -21,7 +21,7 @@ export const ABOUT_PAGE = {
         <Typography>
           The Lao PDR Education and Sports Management Information System (LESMIS) is a GIS-enabled
           data aggregation, analysis and visualization platform for improved data management and
-          utilization for monitoring and planning.
+          utilization for monitoring, planning and setting policy.
         </Typography>
       </>
     ),
