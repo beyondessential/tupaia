@@ -6,17 +6,16 @@
 import { buildEventsFromDhisEventAnalytics } from '../buildAnalytics';
 
 export class EventsPuller {
-  constructor(dataSourceModel, translator) {
-    this.dataSourceModel = dataSourceModel;
+  constructor(dataElementModel, translator) {
+    this.dataElementModel = dataElementModel;
     this.translator = translator;
   }
 
   pullEventsForApi = async (api, programCode, options) => {
     const { dataElementCodes = [], organisationUnitCodes, period, startDate, endDate } = options;
 
-    const dataElementSources = await this.dataSourceModel.find({
+    const dataElementSources = await this.dataElementModel.find({
       code: dataElementCodes,
-      type: this.dataSourceModel.getTypes().DATA_ELEMENT,
     });
     const dhisElementCodes = dataElementSources.map(({ dataElementCode }) => dataElementCode);
 

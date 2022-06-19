@@ -18,7 +18,7 @@ export class AnalyticsRefresher extends ChangeHandler {
       survey: () => [],
       entity: () => [],
       question: () => [],
-      dataSource: () => [],
+      dataElement: () => [],
     };
   }
 
