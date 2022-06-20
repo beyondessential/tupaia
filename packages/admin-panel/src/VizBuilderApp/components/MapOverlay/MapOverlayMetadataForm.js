@@ -6,17 +6,14 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { Autocomplete, TextField } from '@tupaia/ui-components';
-import { useCountries, usePermissionGroups, useProjects } from '../../api/queries';
-import { useVizConfig } from '../../context';
 import Chip from '@material-ui/core/Chip';
+import { useCountries, useSearchPermissionGroups, useProjects } from '../../api/queries';
+import { useVizConfig } from '../../context';
+import { useDebounce } from '../../../utilities';
 
 export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   const { handleSubmit, register, errors } = useForm();
   const [{ visualisation }, { setVisualisationValue }] = useVizConfig();
-  const {
-    data: permissionGroups = [],
-    isLoading: isLoadingPermissionGroups,
-  } = usePermissionGroups();
   const { data: allProjects = [], isLoading: isLoadingAllProjects } = useProjects();
   const { data: allCountries = [], isLoading: isLoadingAllCountries } = useCountries();
 
@@ -29,7 +26,12 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
     projectCodes: inputProjectCodes,
     countryCodes: inputCountryCodes,
   } = defaults;
-
+  const [searchInput, setSearchInput] = useState(mapOverlayPermissionGroup);
+  const debouncedSearchInput = useDebounce(searchInput, 200);
+  const {
+    data: permissionGroups = [],
+    isLoading: isLoadingPermissionGroups,
+  } = useSearchPermissionGroups({ search: debouncedSearchInput });
   const [projectCodes, setProjectCodes] = useState(inputProjectCodes);
   const [countryCodes, setCountryCodes] = useState(inputCountryCodes);
 
@@ -80,6 +82,10 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
           inputRef={register({
             required: 'Required',
           })}
+          value={searchInput}
+          onInputChange={(event, newValue) => {
+            setSearchInput(newValue);
+          }}
         />
         <Autocomplete
           id="projectCodes"

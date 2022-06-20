@@ -6,20 +6,23 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { Autocomplete, TextField } from '@tupaia/ui-components';
-import { usePermissionGroups } from '../../api/queries';
+import { useSearchPermissionGroups } from '../../api/queries';
 import { useVizConfig } from '../../context';
+import { useDebounce } from '../../../utilities';
 
 export const DashboardMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   const { handleSubmit, register, errors } = useForm();
   const [{ visualisation }, { setVisualisationValue }] = useVizConfig();
-  const {
-    data: permissionGroups = [],
-    isLoading: isLoadingPermissionGroups,
-  } = usePermissionGroups();
 
   // Save the default values here so that they are frozen from the store when the component first mounts
   const [defaults] = useState(visualisation);
   const { name, code, permissionGroup } = defaults;
+  const [searchInput, setSearchInput] = useState(permissionGroup);
+  const debouncedSearchInput = useDebounce(searchInput, 200);
+  const {
+    data: permissionGroups = [],
+    isLoading: isLoadingPermissionGroups,
+  } = useSearchPermissionGroups({ search: debouncedSearchInput });
 
   const doSubmit = data => {
     setVisualisationValue('code', data.code);
@@ -65,6 +68,10 @@ export const DashboardMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
           inputRef={register({
             required: 'Required',
           })}
+          value={searchInput}
+          onInputChange={(event, newValue) => {
+            setSearchInput(newValue);
+          }}
         />
       </Body>
       <Footer />
