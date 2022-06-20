@@ -6,7 +6,7 @@
 import { SqlQuery } from '@tupaia/database';
 import semverCompare from 'semver-compare';
 
-export const PERMISSIONS_BASED_SYNC_MIN_APP_VERSION = '1.12.123';
+export const PERMISSIONS_BASED_SYNC_MIN_APP_VERSION = '1.12.124';
 
 export const supportsPermissionsBasedSync = version =>
   semverCompare(version, PERMISSIONS_BASED_SYNC_MIN_APP_VERSION) >= 0;
