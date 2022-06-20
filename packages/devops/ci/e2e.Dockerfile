@@ -1,4 +1,7 @@
-FROM cypress/base:12.18.3
+FROM cypress/base:14.17.6
+
+# set Yarn v3
+RUN yarn set version berry
 
 WORKDIR /tupaia
 
