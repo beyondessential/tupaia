@@ -7,6 +7,41 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
+const PROJECTS_ENDPOINT = 'projects';
+
+export const NEW_PROJECT_COLUMNS = [
+  {
+    Header: 'Country code/s',
+    source: 'country.code',
+    editConfig: {
+      optionsEndpoint: 'countries',
+      optionLabelKey: 'country.code',
+      optionValueKey: 'country.id',
+      sourceKey: 'country_id',
+    },
+  },
+  {
+    Header: 'Project code',
+    source: 'project_code',
+  },
+  {
+    Header: 'Project name',
+    source: 'Description',
+  },
+  {
+    Header: 'Logo image url',
+    source: 'logo_image',
+  },
+  {
+    Header: 'Background image url',
+    source: 'logo_image',
+  },
+  {
+    Header: 'Sort Order',
+    source: 'sort_order',
+  },
+];
+
 const FIELDS = [
   {
     Header: 'Code',
@@ -77,6 +112,14 @@ const COLUMNS = [
   },
 ];
 
+const CREATE_CONFIG = {
+  title: 'Create a new project',
+  actionConfig: {
+    editEndpoint: PROJECTS_ENDPOINT,
+    fields: NEW_PROJECT_COLUMNS,
+  },
+};
+
 const EDIT_CONFIG = {
   title: 'Edit Project',
 };
@@ -84,9 +127,10 @@ const EDIT_CONFIG = {
 export const ProjectsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Projects"
-    endpoint="projects"
+    endpoint={PROJECTS_ENDPOINT}
     columns={COLUMNS}
     editConfig={EDIT_CONFIG}
+    createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
   />
 );
