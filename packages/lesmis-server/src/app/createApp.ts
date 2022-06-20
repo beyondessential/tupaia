@@ -19,6 +19,7 @@ import {
   UserRoute,
   VerifyEmailRoute,
   UpdateSurveyResponseRoute,
+  PDFExportRoute,
 } from '../routes';
 import { attachSession } from '../session';
 import { hasLesmisAccess } from '../utils';
@@ -64,6 +65,7 @@ export function createApp() {
 
     .post<RegisterRequest>('register', handleWith(RegisterRoute))
     .post<ReportRequest>('report/:entityCode/:reportCode', handleWith(ReportRoute))
+    .post<ReportRequest>('pdf', handleWith(PDFExportRoute))
 
     /**
      * PUT
