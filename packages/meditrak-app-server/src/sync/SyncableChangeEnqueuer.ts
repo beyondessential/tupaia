@@ -12,7 +12,7 @@ type Change = { record_id: string; record_type: string; type: 'update' | 'delete
 /**
  * Adds server side changes to the meditrakSyncQueue
  */
-export class ServerChangeEnqueuer extends ChangeHandler {
+export class SyncableChangeEnqueuer extends ChangeHandler {
   private readonly syncQueueModel: MeditrakSyncQueueModel;
 
   public constructor(models: MeditrakAppServerModelRegistry) {

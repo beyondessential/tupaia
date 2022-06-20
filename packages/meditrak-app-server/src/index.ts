@@ -13,7 +13,7 @@ import { configureWinston } from '@tupaia/server-boilerplate';
 import { FEATURE_FLAG_OFF, isFeatureEnabled } from '@tupaia/utils';
 import { createApp } from './app';
 import { MeditrakAppServerModelRegistry } from './types';
-import { ServerChangeEnqueuer } from './sync';
+import { SyncableChangeEnqueuer } from './sync';
 
 configureWinston();
 dotenv.config(); // Load the environment variables into process.env
@@ -30,8 +30,8 @@ const app = createApp(database);
  * Set up change handler for the meditrakSyncQueue
  */
 if (isFeatureEnabled('SERVER_CHANGE_ENQUEUER', FEATURE_FLAG_OFF)) {
-  const serverChangeEnqueuer = new ServerChangeEnqueuer(models);
-  serverChangeEnqueuer.listenForChanges();
+  const syncableChangeEnqueuer = new SyncableChangeEnqueuer(models);
+  syncableChangeEnqueuer.listenForChanges();
 }
 
 /**
