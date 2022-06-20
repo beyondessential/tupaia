@@ -26,7 +26,7 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
     projectCodes: inputProjectCodes,
     countryCodes: inputCountryCodes,
   } = defaults;
-  const [searchInput, setSearchInput] = useState(mapOverlayPermissionGroup);
+  const [searchInput, setSearchInput] = useState(mapOverlayPermissionGroup || '');
   const debouncedSearchInput = useDebounce(searchInput, 200);
   const {
     data: permissionGroups = [],

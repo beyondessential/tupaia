@@ -17,7 +17,7 @@ export const DashboardMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   // Save the default values here so that they are frozen from the store when the component first mounts
   const [defaults] = useState(visualisation);
   const { name, code, permissionGroup } = defaults;
-  const [searchInput, setSearchInput] = useState(permissionGroup);
+  const [searchInput, setSearchInput] = useState(permissionGroup || '');
   const debouncedSearchInput = useDebounce(searchInput, 200);
   const {
     data: permissionGroups = [],
