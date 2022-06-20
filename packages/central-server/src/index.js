@@ -16,7 +16,7 @@ import {
   TupaiaDatabase,
   getDbMigrator,
 } from '@tupaia/database';
-import { FEATURE_FLAG_ON, isFeatureEnabled } from '@tupaia/utils';
+import { isFeatureEnabled } from '@tupaia/utils';
 
 import { createMeditrakSyncQueue } from './database';
 import * as modelClasses from './database/models';
@@ -37,7 +37,7 @@ const models = new ModelRegistry(database, modelClasses, true);
 /**
  * Set up change handlers e.g. for syncing
  */
-if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE', FEATURE_FLAG_ON)) {
+if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
   createMeditrakSyncQueue(models);
 }
 
