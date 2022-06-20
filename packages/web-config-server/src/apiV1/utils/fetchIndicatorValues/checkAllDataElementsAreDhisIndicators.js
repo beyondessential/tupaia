@@ -8,8 +8,9 @@
 // After that remove this file and anything related to it
 
 export const checkAllDataElementsAreDhisIndicators = async (models, dataElementCodes) => {
-  const dataElements = await models.dataElement.find({
+  const dataElements = await models.dataSource.find({
     code: dataElementCodes,
+    type: 'dataElement',
   });
 
   if (dataElementCodes.length !== dataElements.length) {

@@ -5,11 +5,11 @@
 
 import { requireEnv, getEnvVarOrDefault } from '@tupaia/utils';
 
-const getServerConfig = ({ userEnv = 'DB_USER', passEnv = 'DB_PASSWORD' }) => ({
+const getServerConfig = () => ({
   host: requireEnv('DB_URL'),
   port: getEnvVarOrDefault('DB_PORT', 5432),
-  user: requireEnv(userEnv),
-  password: requireEnv(passEnv),
+  user: requireEnv('DB_USER'),
+  password: requireEnv('DB_PASSWORD'),
   database: requireEnv('DB_NAME'),
   ssl:
     process.env.DB_ENABLE_SSL === 'true'
@@ -20,7 +20,7 @@ const getServerConfig = ({ userEnv = 'DB_USER', passEnv = 'DB_PASSWORD' }) => ({
       : null,
 });
 
-export const getConnectionConfig = (user = {}) => {
+export const getConnectionConfig = () => {
   // Note: Must use functions to guarantee environment variables have loaded
-  return getServerConfig(user);
+  return getServerConfig();
 };

@@ -14,8 +14,7 @@ import { DashboardModel } from './Dashboard';
 import { DashboardItemModel } from './DashboardItem';
 import { DashboardRelationModel } from './DashboardRelation';
 import { DataElementDataGroupModel } from './DataElementDataGroup';
-import { DataElementModel } from './DataElement';
-import { DataGroupModel } from './DataGroup';
+import { DataSourceModel } from './DataSource';
 import { DataServiceSyncGroupModel } from './DataServiceSyncGroup';
 import { DisasterModel } from './Disaster';
 import { DisasterEventModel } from './DisasterEvent';
@@ -62,8 +61,7 @@ export const modelClasses = {
   DashboardItem: DashboardItemModel,
   DashboardRelation: DashboardRelationModel,
   DataElementDataGroup: DataElementDataGroupModel,
-  DataElement: DataElementModel,
-  DataGroup: DataGroupModel,
+  DataSource: DataSourceModel,
   DataServiceEntity: DataServiceEntityModel,
   DataServiceSyncGroup: DataServiceSyncGroupModel,
   Disaster: DisasterModel,
@@ -106,8 +104,7 @@ export {
 } from './AncestorDescendantRelation';
 export { CommentModel } from './Comment';
 export { CountryModel } from './Country';
-export { DataElementModel, DataElementType } from './DataElement';
-export { DataGroupModel, DataGroupType } from './DataGroup';
+export { DataSourceModel, DataSourceType } from './DataSource';
 export { EntityModel, EntityType } from './Entity';
 export { EntityHierarchyModel, EntityHierarchyType } from './EntityHierarchy';
 export { EntityRelationModel } from './EntityRelation';

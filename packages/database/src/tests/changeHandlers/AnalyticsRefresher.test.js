@@ -257,9 +257,9 @@ describe('AnalyticsRefresher', () => {
 
   it('refreshes analytics table if data sources are updated', async () => {
     // Update an answer, make sure analytic is updated
-    await models.dataElement.update(
+    await models.dataSource.update(
       {
-        id: 'dataElement001_test',
+        id: 'dataSource001_test',
       },
       { service_type: 'dhis' },
     );

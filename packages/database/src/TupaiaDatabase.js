@@ -47,10 +47,6 @@ export const JOIN_TYPES = {
 // list valid behaviour so we can validate against sql injection
 const VALID_CAST_TYPES = ['text', 'text[]', 'date'];
 const VALID_COMPARISON_TYPES = ['where', 'whereBetween', 'whereIn', 'orWhere'];
-const WHERE_SUBQUERY_CLAUSES = {
-  EXISTS: 'exists',
-  NOT_EXISTS: 'notExists',
-};
 
 // no math here, just hand-tuned to be as low as possible while
 // keeping all the tests passing
@@ -269,12 +265,8 @@ export class TupaiaDatabase {
   }
 
   async findOrCreate(recordType, where, extraFieldsIfCreating = {}) {
-    await this.create(
-      recordType,
-      { ...where, ...extraFieldsIfCreating },
-      { notExists: { queryMethod: QUERY_METHODS.SELECT, recordType, where } },
-    );
-    return this.findOne(recordType, where);
+    const record = await this.findOne(recordType, where);
+    return record || this.create(recordType, { ...where, ...extraFieldsIfCreating });
   }
 
   async count(recordType, where, options) {
@@ -283,18 +275,15 @@ export class TupaiaDatabase {
     return parseInt(result[0].count, 10);
   }
 
-  async create(recordType, record, where) {
+  async create(recordType, record) {
     if (!record.id) {
       record.id = this.generateId();
     }
-    await this.query(
-      {
-        recordType,
-        queryMethod: QUERY_METHODS.INSERT,
-        queryMethodParameter: record,
-      },
-      where,
-    );
+    await this.query({
+      recordType,
+      queryMethod: QUERY_METHODS.INSERT,
+      queryMethodParameter: record,
+    });
 
     return record;
   }
@@ -564,16 +553,6 @@ function addWhereClause(connection, baseQuery, where) {
       const { sql = value, parameters } = value;
       return querySoFar.whereRaw(sql, parameters);
     }
-    if (key === WHERE_SUBQUERY_CLAUSES.EXISTS) {
-      return querySoFar.whereExists(function () {
-        this.query(value);
-      });
-    }
-    if (key === WHERE_SUBQUERY_CLAUSES.NOT_EXISTS) {
-      return querySoFar.whereNotExists(function () {
-        this.query(value);
-      });
-    }
     if (value === undefined) {
       return querySoFar; // Ignore undefined criteria
     }
@@ -593,7 +572,6 @@ function addWhereClause(connection, baseQuery, where) {
       throw new Error(`Cannot compare using ${comparisonType}`);
     }
 
-    // TODO: Replace with knex json where functions, eg. whereJsonPath
     const columnKey = key.includes('->>') ? connection.raw(`??->>?`, key.split('->>')) : key;
     const columnSelector = castAs ? connection.raw(`??::${castAs}`, [columnKey]) : columnKey;
 

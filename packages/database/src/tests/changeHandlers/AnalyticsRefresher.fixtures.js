@@ -116,8 +116,8 @@ const SURVEY_RESPONSE = [
 ];
 
 const SURVEY = [
-  { id: 'survey001_test', code: 'S001', data_group_id: 'dataGroup001_test' },
-  { id: 'survey002_test', code: 'S002', data_group_id: 'dataGroup002_test' },
+  { id: 'survey001_test', code: 'S001', data_source_id: 'dataSource005_test' },
+  { id: 'survey002_test', code: 'S002', data_source_id: 'dataSource006_test' },
 ];
 
 const ENTITY = [
@@ -126,29 +126,25 @@ const ENTITY = [
 ];
 
 const QUESTION = [
-  { id: 'question001_test', code: 'Q001', type: 'Number', data_element_id: 'dataElement001_test' },
-  { id: 'question002_test', code: 'Q002', type: 'Number', data_element_id: 'dataElement002_test' },
-  { id: 'question003_test', code: 'Q003', type: 'Number', data_element_id: 'dataElement003_test' },
-  { id: 'question004_test', code: 'Q004', type: 'Number', data_element_id: 'dataElement004_test' },
+  { id: 'question001_test', code: 'Q001', type: 'Number', data_source_id: 'dataSource001_test' },
+  { id: 'question002_test', code: 'Q002', type: 'Number', data_source_id: 'dataSource002_test' },
+  { id: 'question003_test', code: 'Q003', type: 'Number', data_source_id: 'dataSource003_test' },
+  { id: 'question004_test', code: 'Q004', type: 'Number', data_source_id: 'dataSource004_test' },
 ];
 
-const DATA_ELEMENT = [
-  { id: 'dataElement001_test', service_type: 'tupaia' },
-  { id: 'dataElement002_test', service_type: 'tupaia' },
-  { id: 'dataElement003_test', service_type: 'tupaia' },
-  { id: 'dataElement004_test', service_type: 'tupaia' },
-];
-
-const DATA_GROUP = [
-  { id: 'dataGroup001_test', service_type: 'tupaia' },
-  { id: 'dataGroup002_test', service_type: 'tupaia' },
+const DATA_SOURCE = [
+  { id: 'dataSource001_test', type: 'dataElement', service_type: 'tupaia' },
+  { id: 'dataSource002_test', type: 'dataElement', service_type: 'tupaia' },
+  { id: 'dataSource003_test', type: 'dataElement', service_type: 'tupaia' },
+  { id: 'dataSource004_test', type: 'dataElement', service_type: 'tupaia' },
+  { id: 'dataSource005_test', type: 'dataGroup', service_type: 'tupaia' },
+  { id: 'dataSource006_test', type: 'dataGroup', service_type: 'tupaia' },
 ];
 
 export const TEST_DATA = {
   entity: ENTITY,
   user: USER,
-  dataElement: DATA_ELEMENT,
-  dataGroup: DATA_GROUP,
+  dataSource: DATA_SOURCE,
   survey: SURVEY,
   question: QUESTION,
   surveyResponse: SURVEY_RESPONSE,

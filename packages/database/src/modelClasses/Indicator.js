@@ -26,19 +26,21 @@ const onChangeUpdateDataElement = async (
   switch (changeType) {
     case 'update':
       if (oldRecord && oldRecord.code !== newRecord.code) {
-        await models.dataElement.delete({
+        await models.dataSource.delete({
           code: oldRecord.code,
+          type: models.dataSource.getTypes().DATA_ELEMENT,
         });
       }
-      return models.dataElement.findOrCreate(
+      return models.dataSource.findOrCreate(
         {
           code: newRecord.code,
-          service_type: models.dataElement.SERVICE_TYPES.INDICATOR,
+          type: models.dataSource.getTypes().DATA_ELEMENT,
+          service_type: models.dataSource.SERVICE_TYPES.INDICATOR,
         },
         {},
       );
     case 'delete':
-      return models.dataElement.delete({ code: oldRecord.code });
+      return models.dataSource.delete({ code: oldRecord.code });
     default:
       throw new Error(`Non supported change type: ${changeType}`);
   }

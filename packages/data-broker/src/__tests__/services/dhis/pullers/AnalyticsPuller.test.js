@@ -5,7 +5,11 @@
 import * as BuildAnalytics from '../../../../services/dhis/buildAnalytics/buildAnalyticsFromDhisEventAnalytics';
 import { AnalyticsPuller } from '../../../../services/dhis/pullers/AnalyticsPuller';
 import { DATA_SOURCES, EVENT_ANALYTICS } from '../DhisService.fixtures';
-import { buildDhisAnalyticsResponse, createModelsStub, stubDhisApi } from '../DhisService.stubs';
+import {
+  buildDhisAnalyticsResponse,
+  createModelsStub,
+  stubDhisApi,
+} from '../DhisService.stubs';
 import { DhisTranslator } from '../../../../services/dhis/DhisTranslator';
 import { DataElementsMetadataPuller } from '../../../../services/dhis/pullers';
 
@@ -17,14 +21,10 @@ describe('AnalyticsPuller', () => {
     const models = createModelsStub();
     const translator = new DhisTranslator(models);
     const dataElementsMetadataPuller = new DataElementsMetadataPuller(
-      models.dataElement,
+      models.dataSource,
       translator,
     );
-    analyticsPuller = new AnalyticsPuller(
-      models.dataElement,
-      translator,
-      dataElementsMetadataPuller,
-    );
+    analyticsPuller = new AnalyticsPuller(models.dataSource, translator, dataElementsMetadataPuller);
     dhisApi = stubDhisApi();
   });
 

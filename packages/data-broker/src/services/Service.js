@@ -5,8 +5,6 @@
 
 /* eslint no-unused-vars: ["error", { "args": "none" }] */
 
-import { DATA_SOURCE_TYPES } from '../utils';
-
 /**
  * @abstract
  */
@@ -16,7 +14,7 @@ export class Service {
   }
 
   get dataSourceTypes() {
-    return DATA_SOURCE_TYPES;
+    return this.models.dataSource.getTypes();
   }
 
   /**

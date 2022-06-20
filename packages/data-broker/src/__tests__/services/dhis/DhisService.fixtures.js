@@ -8,19 +8,19 @@ export const SERVER_NAME = 'test server name';
 const createDataSource = fields => ({ service_type: 'dhis', config: {}, ...fields });
 
 export const DATA_SOURCES = {
-  POP01: createDataSource({ code: 'POP01', dataElementCode: 'POP01' }),
-  POP02: createDataSource({ code: 'POP02', dataElementCode: 'POP02' }),
+  POP01: createDataSource({ type: 'dataElement', code: 'POP01', dataElementCode: 'POP01' }),
+  POP02: createDataSource({ type: 'dataElement', code: 'POP02', dataElementCode: 'POP02' }),
   DIF01: createDataSource({
+    type: 'dataElement',
     code: 'DIF01',
     dataElementCode: 'DIF01_DHIS',
   }),
-};
-
-export const DATA_GROUPS = {
   POP01_GROUP: createDataSource({
+    type: 'dataGroup',
     code: 'POP01', // intentionally the same as `POP01` data element, as their type should differentiate them
   }),
   DIFF_GROUP: createDataSource({
+    type: 'dataGroup',
     code: 'DIFF_GROUP',
   }),
 };

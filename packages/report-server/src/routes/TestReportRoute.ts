@@ -51,7 +51,7 @@ export class TestReportRoute extends Route<TestReportRequest> {
       ...restOfBody,
     };
 
-    const aggregator = new ReportServerAggregator(createAggregator(undefined, reqContext));
+    const aggregator = new ReportServerAggregator(createAggregator(undefined, this.req.ctx));
     return reportBuilder.build(aggregator, reportQuery);
   }
 }

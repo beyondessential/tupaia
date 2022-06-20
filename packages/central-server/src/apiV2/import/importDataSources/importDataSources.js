@@ -5,11 +5,11 @@
 
 import path from 'path';
 import xlsx from 'xlsx';
-import { respond, UploadError } from '@tupaia/utils';
+import { respond, DatabaseError, UploadError } from '@tupaia/utils';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
-import { createDataElements } from './createDataElements';
+import { createDataSources } from './createDataSources';
 
-const extractDataElementFromSheets = filePath => {
+const extractDataSourceFromSheets = filePath => {
   const extension = path.extname(filePath);
   if (extension !== '.xlsx') {
     throw new Error(`Unsupported file type: ${extension}`);
@@ -19,15 +19,15 @@ const extractDataElementFromSheets = filePath => {
 };
 
 /**
- * Responds to POST requests to the /import/dataElements endpoint
+ * Responds to POST requests to the /import/dataSources endpoint
  */
-export async function importDataElements(req, res) {
+export async function importDataSources(req, res) {
   const { models } = req;
 
-  let dataElements;
+  let dataSources;
 
   try {
-    dataElements = extractDataElementFromSheets(req.file.path);
+    dataSources = extractDataSourceFromSheets(req.file.path);
   } catch (error) {
     throw new UploadError(error);
   }
@@ -35,7 +35,7 @@ export async function importDataElements(req, res) {
   await req.assertPermissions(assertAnyPermissions([assertBESAdminAccess]));
 
   await models.wrapInTransaction(async transactingModels => {
-    await createDataElements(transactingModels, dataElements);
+    await createDataSources(transactingModels, dataSources);
   });
-  respond(res, { message: 'Imported data elements' });
+  respond(res, { message: 'Imported data sources' });
 }

@@ -13,7 +13,7 @@ class SurveyType extends DatabaseType {
   };
 
   async dataGroup() {
-    return this.otherModels.dataGroup.findById(this.data_group_id);
+    return this.otherModels.dataSource.findById(this.data_source_id);
   }
 
   async questions() {
@@ -66,12 +66,12 @@ const onChangeUpdateDataGroup = async (
 ) => {
   switch (changeType) {
     case 'update': {
-      const { code, data_group_id: dataGroupId } = newRecord;
-      return models.dataGroup.updateById(dataGroupId, { code });
+      const { code, data_source_id: dataSourceId } = newRecord;
+      return models.dataSource.updateById(dataSourceId, { code });
     }
     case 'delete': {
-      const { data_group_id: dataGroupId } = oldRecord;
-      return models.dataGroup.deleteById(dataGroupId);
+      const { data_source_id: dataSourceId } = oldRecord;
+      return models.dataSource.deleteById(dataSourceId);
     }
     default:
       throw new Error(`Non supported change type: ${changeType}`);

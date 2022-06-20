@@ -27,24 +27,21 @@ export const upsertFacility = async data => {
 export const upsertQuestion = async (data = {}) => {
   const { code } = data;
 
-  const dataElement = await upsertDummyRecord(models.dataElement, {
+  const dataElement = await upsertDummyRecord(models.dataSource, {
     service_type: 'tupaia',
     ...data,
     code,
+    type: 'dataElement',
   });
   return upsertDummyRecord(models.question, {
     ...data,
     code: dataElement.code,
-    data_element_id: dataElement.id,
+    data_source_id: dataElement.id,
   });
 };
 
-export const upsertDataElement = async data => {
-  return upsertDummyRecord(models.dataElement, data);
-};
-
-export const upsertDataGroup = async data => {
-  return upsertDummyRecord(models.dataGroup, data);
+export const upsertDataSource = async data => {
+  return upsertDummyRecord(models.dataSource, data);
 };
 
 export const upsertSurvey = async data => {

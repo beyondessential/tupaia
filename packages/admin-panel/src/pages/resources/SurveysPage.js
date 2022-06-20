@@ -90,23 +90,23 @@ const SURVEY_COLUMNS = [
         },
         {
           Header: 'Data Service',
-          source: 'data_group.service_type',
+          source: 'data_source.service_type',
           editConfig: {
             options: SERVICE_TYPES,
             setFieldsOnChange: (newValue, currentRecord) => {
-              const { isDataRegional = true } = currentRecord['data_group.config'];
+              const { isDataRegional = true } = currentRecord['data_source.config'];
               const config = newValue === 'dhis' ? { isDataRegional } : {};
-              return { 'data_group.config': config };
+              return { 'data_source.config': config };
             },
           },
         },
         {
           Header: 'Data Service Configuration',
-          source: 'data_group.config',
+          source: 'data_source.config',
           editConfig: {
             type: 'json',
             getJsonFieldSchema: (_, { recordData }) =>
-              recordData['data_group.service_type'] === 'dhis'
+              recordData['data_source.service_type'] === 'dhis'
                 ? [
                     {
                       label:

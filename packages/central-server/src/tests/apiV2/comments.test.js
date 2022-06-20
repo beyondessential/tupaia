@@ -9,7 +9,7 @@ import {
   resetTestData,
   TestableApp,
   upsertEntity,
-  upsertDataGroup,
+  upsertDataSource,
   upsertSurvey,
   upsertSurveyResponse,
   upsertComment,
@@ -18,15 +18,16 @@ import {
 
 const createSurveyResponse = async () => {
   const SURVEY_CODE = 'BASIC_SURVEY';
-  const { id: dataGroupId } = await upsertDataGroup({
+  const { id: dataSourceId } = await upsertDataSource({
     code: SURVEY_CODE,
+    type: 'dataGroup',
     service_type: 'tupaia',
     config: '{}',
   });
   const { id: surveyId } = await upsertSurvey({
     code: SURVEY_CODE,
     name: 'Basic Survey',
-    data_group_id: dataGroupId,
+    data_source_id: dataSourceId,
   });
 
   const entity = await upsertEntity('TEST_ENTITY');
