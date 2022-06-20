@@ -23,10 +23,10 @@ Instantiate an api for a server by using either the `MicroServiceApiBuilder` or 
 #### Adding routes to the app
 
 - Routes: Add routes to the api via the get/post/etc. methods. When adding the routes to the app, you will need to wrap the routes with the `handleWith` util for the routes to work properly.
-  eg. `new MicroServiceApiBuilder().get('/v1/test', handleWith(TestRoute)).build();`
+  eg. `new MicroServiceApiBuilder(db, apiName).get('/v1/test', handleWith(TestRoute)).build();`
 
 - Middleware: Add middleware to the api via the use method.
-  eg. `new OrchestratorApiBuilder().use('/v1', attachContext).build();`
+  eg. `new OrchestratorApiBuilder(db, apiName).use('/v1', attachContext).build();`
 
 ## Defining new Routes
 

@@ -23,17 +23,24 @@ import { handleWith, handleError } from '../../utils';
 import { buildBasicBearerAuthMiddleware } from '../auth';
 import { TestRoute } from '../../routes';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
+import { logApiRequest } from '../utils';
+import { ServerBoilerplateModelRegistry } from '../../types';
 
 export class ApiBuilder {
   private readonly app: Express;
-  private readonly models: ModelRegistry;
-  private version: string;
+  private readonly models: ServerBoilerplateModelRegistry;
+  private readonly apiName: string;
+  private version: number;
 
-  public constructor(transactingConnection: TupaiaDatabase) {
-    this.models = new ModelRegistry(transactingConnection);
+  private logApiRequestMiddleware: RequestHandler;
+
+  public constructor(transactingConnection: TupaiaDatabase, apiName: string) {
+    this.models = new ModelRegistry(transactingConnection) as ServerBoilerplateModelRegistry;
+    this.apiName = apiName;
     this.app = express();
 
-    this.version = 'v[0-9]'; // Default version
+    this.version = 1; // Default version
+    this.logApiRequestMiddleware = logApiRequest(this.models, this.apiName, this.version);
 
     /**
      * Access logs
@@ -68,13 +75,15 @@ export class ApiBuilder {
     });
   }
 
-  public setVersion(version: string) {
+  public setVersion(version: number) {
     this.version = version;
+    this.logApiRequestMiddleware = logApiRequest(this.models, this.apiName, this.version);
+    return this;
   }
 
-  public useBasicBearerAuth(apiName: string) {
+  public useBasicBearerAuth() {
     const authenticator = new Authenticator(this.models);
-    this.app.use(buildBasicBearerAuthMiddleware(apiName, authenticator));
+    this.app.use(buildBasicBearerAuthMiddleware(`${this.apiName}-server`, authenticator));
     return this;
   }
 
@@ -105,15 +114,26 @@ export class ApiBuilder {
     path: string,
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
-    this.app.get(this.formatPath(path), ...handlers);
-    return this;
+    return this.addRoute('get', path, ...handlers);
   }
 
   public post<T extends ExpressRequest<T> = Request>(
     path: string,
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
-    this.app.post(this.formatPath(path), ...handlers);
+    return this.addRoute('post', path, ...handlers);
+  }
+
+  private addRoute<T extends ExpressRequest<T> = Request>(
+    method: 'get' | 'post' | 'put' | 'delete',
+    path: string,
+    ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
+  ) {
+    this.app[method](
+      this.formatPath(path),
+      this.logApiRequestMiddleware as RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+      ...handlers,
+    );
     return this;
   }
 
@@ -128,6 +148,6 @@ export class ApiBuilder {
   }
 
   private formatPath(path: string) {
-    return `/${this.version}/${path}`;
+    return `/v${this.version}/${path}`;
   }
 }

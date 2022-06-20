@@ -8,6 +8,7 @@ import { AccessRequestModel } from './AccessRequest';
 import { AncestorDescendantRelationModel } from './AncestorDescendantRelation';
 import { AnswerModel } from './Answer';
 import { APIClientModel } from './APIClient';
+import { ApiRequestLogModel } from './ApiRequestLog';
 import { CommentModel } from './Comment';
 import { CountryModel } from './Country';
 import { DashboardModel } from './Dashboard';
@@ -56,6 +57,7 @@ export const modelClasses = {
   AncestorDescendantRelation: AncestorDescendantRelationModel,
   Answer: AnswerModel,
   ApiClient: APIClientModel,
+  ApiRequestLog: ApiRequestLogModel,
   Comment: CommentModel,
   Country: CountryModel,
   Dashboard: DashboardModel,
@@ -104,6 +106,7 @@ export {
   AncestorDescendantRelationModel,
   AncestorDescendantRelationType,
 } from './AncestorDescendantRelation';
+export { ApiRequestLogModel } from './ApiRequestLog';
 export { CommentModel } from './Comment';
 export { CountryModel } from './Country';
 export { DataElementModel, DataElementType } from './DataElement';

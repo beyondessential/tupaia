@@ -23,7 +23,7 @@ import { authHandlerProvider, buildAuthMiddleware } from '../auth';
  */
 export function createApp(database = new TupaiaDatabase()) {
   const authMiddleware = buildAuthMiddleware(database);
-  const app = new MicroServiceApiBuilder(database)
+  const app = new MicroServiceApiBuilder(database, 'meditrak')
     .attachApiClientToContext(authHandlerProvider)
     .post<AuthRequest>('auth', handleWith(AuthRoute))
     .post<RegisterUserRequest>('user', handleWith(RegisterUserRoute))
