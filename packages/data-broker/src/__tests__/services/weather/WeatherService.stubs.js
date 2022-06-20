@@ -53,22 +53,23 @@ export const createMockEntity = async fieldValues => {
 export const createMockModelsStub = responseMap => {
   const mockModels = {
     entity: new EntityModel({ fetchSchemaForTable: () => {} }), // no database
-    dataElement: {},
-    dataGroup: {},
+    dataSource: {
+      getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
+    },
   };
 
   if (responseMap && responseMap.entity && responseMap.entity.find) {
     mockModels.entity.find = jest.fn().mockResolvedValue(responseMap.entity.find);
   }
 
-  if (responseMap && responseMap.dataElement && responseMap.dataElement.find) {
-    mockModels.dataElement.find = jest.fn().mockResolvedValue(responseMap.dataElement.find);
+  if (responseMap && responseMap.dataSource && responseMap.dataSource.find) {
+    mockModels.dataSource.find = jest.fn().mockResolvedValue(responseMap.dataSource.find);
   }
 
-  if (responseMap && responseMap.dataGroup && responseMap.dataGroup.getDataElementsInDataGroup) {
-    mockModels.dataGroup.getDataElementsInDataGroup = jest
+  if (responseMap && responseMap.dataSource && responseMap.dataSource.getDataElementsInGroup) {
+    mockModels.dataSource.getDataElementsInGroup = jest
       .fn()
-      .mockResolvedValue(responseMap.dataGroup.getDataElementsInDataGroup);
+      .mockResolvedValue(responseMap.dataSource.getDataElementsInGroup);
   }
 
   return mockModels;
@@ -81,11 +82,9 @@ export const createMockModelsStubWithMockEntity = async fieldValues => {
     entity: {
       find: [mockEntity],
     },
-    dataElement: {
+    dataSource: {
       find: [{ code: 'WTHR_PRECIP', type: 'dataElement', config: {} }],
-    },
-    dataGroup: {
-      getDataElementsInDataGroup: [{ code: 'WTHR_PRECIP', type: 'dataElement', config: {} }], // the mock data group has element PRECIP
+      getDataElementsInGroup: [{ code: 'WTHR_PRECIP', type: 'dataElement', config: {} }], // the mock data group has element PRECIP
     },
   });
 

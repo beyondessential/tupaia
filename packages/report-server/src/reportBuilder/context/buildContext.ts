@@ -37,7 +37,7 @@ const buildOrgUnits = async (reqContext: ReqContext, data: FetchResponse) => {
   const orgUnitCodes = getOrgUnitCodesFromData(data);
 
   return reqContext.services.entity.getEntities(reqContext.hierarchy, orgUnitCodes, {
-    fields: ['code', 'name', 'id', 'attributes'],
+    fields: ['code', 'name', 'id'],
   });
 };
 

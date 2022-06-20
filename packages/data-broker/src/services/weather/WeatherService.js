@@ -69,7 +69,8 @@ export class WeatherService extends Service {
    */
   // eslint-disable-next-line no-unused-vars
   async pullMetadata(dataSources, type, options) {
-    const dataElements = await this.models.dataElement.find({
+    const dataElements = await this.models.dataSource.find({
+      type: 'dataElement',
       service_type: 'weather',
     });
 
@@ -113,12 +114,13 @@ export class WeatherService extends Service {
     let dataSources = null;
     if (requestType === this.dataSourceTypes.DATA_ELEMENT) {
       // single data element requested
-      dataSources = await this.models.dataElement.find({
+      dataSources = await this.models.dataSource.find({
+        type: 'dataElement',
         code: requestDataSourceCode,
       });
     } else if (requestType === this.dataSourceTypes.DATA_GROUP) {
       // data group requested
-      dataSources = await this.models.dataGroup.getDataElementsInDataGroup(requestDataSourceCode);
+      dataSources = await this.models.dataSource.getDataElementsInGroup(requestDataSourceCode);
     }
     return dataSources;
   }

@@ -5,12 +5,7 @@
 import { Service } from '../Service';
 import { getDhisApiInstance } from './getDhisApiInstance';
 import { DhisTranslator } from './DhisTranslator';
-import {
-  AnalyticsPuller,
-  EventsPuller,
-  DataElementsMetadataPuller,
-  DeprecatedEventsPuller,
-} from './pullers';
+import { AnalyticsPuller, EventsPuller, DataElementsMetadataPuller, DeprecatedEventsPuller } from './pullers';
 
 const DEFAULT_DATA_SERVICE = { isDataRegional: true };
 const DEFAULT_DATA_SERVICES = [DEFAULT_DATA_SERVICE];
@@ -21,19 +16,16 @@ export class DhisService extends Service {
 
     this.translator = new DhisTranslator(this.models);
     this.dataElementsMetadataPuller = new DataElementsMetadataPuller(
-      this.models.dataElement,
+      this.models.dataSource,
       this.translator,
     );
     this.analyticsPuller = new AnalyticsPuller(
-      this.models.dataElement,
+      this.models.dataSource,
       this.translator,
       this.dataElementsMetadataPuller,
     );
-    this.eventsPuller = new EventsPuller(this.models.dataElement, this.translator);
-    this.deprecatedEventsPuller = new DeprecatedEventsPuller(
-      this.models.dataElement,
-      this.translator,
-    );
+    this.eventsPuller = new EventsPuller(this.models.dataSource, this.translator);
+    this.deprecatedEventsPuller = new DeprecatedEventsPuller(this.models.dataSource, this.translator);
     this.pushers = this.getPushers();
     this.deleters = this.getDeleters();
     this.pullers = this.getPullers();
@@ -58,9 +50,7 @@ export class DhisService extends Service {
     return {
       [this.dataSourceTypes.DATA_ELEMENT]: this.analyticsPuller.pull.bind(this),
       [this.dataSourceTypes.DATA_GROUP]: this.eventsPuller.pull.bind(this),
-      [`${this.dataSourceTypes.DATA_GROUP}_deprecated`]: this.deprecatedEventsPuller.pull.bind(
-        this,
-      ),
+      [`${this.dataSourceTypes.DATA_GROUP}_deprecated`]: this.deprecatedEventsPuller.pull.bind(this),
     };
   }
 
@@ -87,8 +77,8 @@ export class DhisService extends Service {
     }
   }
 
-  async push(dataSources, data, { type }) {
-    const pushData = this.pushers[type]; // all are of the same type
+  async push(dataSources, data) {
+    const pushData = this.pushers[dataSources[0].type]; // all are of the same type
     const dataValues = Array.isArray(data) ? data : [data];
     this.validatePushData(dataSources, dataValues);
     const api = this.getApiForValue(dataSources[0], dataValues[0]); // all are for the same instance
@@ -112,11 +102,11 @@ export class DhisService extends Service {
     return api.postEvents(translatedEvents);
   }
 
-  async delete(dataSource, data, { serverName, type } = {}) {
+  async delete(dataSource, data, { serverName } = {}) {
     const api = serverName
       ? getDhisApiInstance({ serverName }, this.models)
       : this.getApiForValue(dataSource, data);
-    const deleteData = this.deleters[type];
+    const deleteData = this.deleters[dataSource.type];
     return deleteData(api, data, dataSource);
   }
 

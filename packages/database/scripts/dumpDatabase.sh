@@ -13,7 +13,7 @@ EOF
 
 # https://stackoverflow.com/questions/12498304/using-bash-to-display-a-progress-indicator
 function show_loading_spinner() {
-    eval $2 &
+    eval $2 2>/dev/null &
     pid=$! # Process Id of the previous running command
 
     spin='-\|/'

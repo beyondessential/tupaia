@@ -162,7 +162,7 @@ describe('WeatherService', () => {
         entity: {
           find: [mockEntity],
         },
-        dataElement: {
+        dataSource: {
           find: [
             {
               code: 'WTHR_FORECAST_PRECIP',

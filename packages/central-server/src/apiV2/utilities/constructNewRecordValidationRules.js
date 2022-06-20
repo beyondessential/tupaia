@@ -20,7 +20,7 @@ import {
   isNumber,
   ValidationError,
 } from '@tupaia/utils';
-import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataElement';
+import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataSource';
 
 export const constructForParent = (models, recordType, parentRecordType) => {
   const combinedRecordType = `${parentRecordType}/${recordType}`;
@@ -87,10 +87,10 @@ export const constructForSingle = (models, recordType) => {
         name: [hasContent],
         parent_id: [constructIsEmptyOr(constructRecordExistsWithId(models.permissionGroup))],
       };
-    case TYPES.DATA_ELEMENT:
-    case TYPES.DATA_GROUP:
+    case TYPES.DATA_SOURCE:
       return {
         code: [hasContent],
+        type: [hasContent],
         service_type: [constructIsOneOf(DATA_SOURCE_SERVICE_TYPES)],
         config: [hasContent],
       };

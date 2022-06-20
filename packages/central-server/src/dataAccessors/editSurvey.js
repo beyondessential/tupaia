@@ -28,8 +28,8 @@ class SurveyEditor {
 
   createUpdatedFieldsByResource = updatedFields => {
     const {
-      'data_group.service_type': serviceType,
-      'data_group.config': config,
+      'data_source.service_type': serviceType,
+      'data_source.config': config,
       ...surveyFields
     } = updatedFields;
     const { period_granularity: periodGranularity } = surveyFields;
@@ -60,9 +60,7 @@ class SurveyEditor {
       return;
     }
 
-    const dataElements = await this.models.dataGroup.getDataElementsInDataGroup(
-      this.dataGroup.code,
-    );
+    const dataElements = await this.models.dataSource.getDataElementsInGroup(this.dataGroup.code);
     const updateDataElement = async dataElement => {
       await assertCanAddDataElementInGroup(
         this.models,
@@ -89,9 +87,7 @@ class SurveyEditor {
    */
   updateResource = async (model, resourceType) => {
     const updatedFields = this.updatedFieldsByResource[resourceType];
-    const isDataSource =
-      model.databaseType === this.models.dataElement.databaseType ||
-      model.databaseType === this.models.dataGroup.databaseType;
+    const isDataSource = model.databaseType === this.models.dataSource.databaseType;
 
     Object.entries(updatedFields)
       .filter(([, fieldValue]) => fieldValue !== undefined)

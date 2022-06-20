@@ -6,24 +6,20 @@
 import { DhisInputSchemeResolvingApiProxy } from '../../../services/dhis/DhisInputSchemeResolvingApiProxy';
 
 const DATA_SOURCES = [
-  { code: 'EL1', config: { dhisId: 'dhisId_el1' } },
-  { code: 'EL2', config: { dhisId: 'dhisId_el2' } },
-  { code: 'EL3', config: {} },
-];
-
-const DATA_GROUPS = [
-  { code: 'G1', config: { dhisId: 'dhisId_g1' } },
-  { code: 'G2', config: {} },
+  { code: 'EL1', type: 'dataElement', config: { dhisId: 'dhisId_el1' } },
+  { code: 'EL2', type: 'dataElement', config: { dhisId: 'dhisId_el2' } },
+  { code: 'EL3', type: 'dataElement', config: {} },
+  { code: 'G1', type: 'dataGroup', config: { dhisId: 'dhisId_g1' } },
+  { code: 'G2', type: 'dataGroup', config: {} },
 ];
 
 const DATA_SERVICE_ENTITIES = [{ entity_code: 'ORG1', config: { dhis_id: 'dhisId_ou1' } }];
 
 const createModelsStub = () => ({
-  dataElement: {
-    find: async filter =>
-      DATA_SOURCES.filter(dataElement => filter.code.includes(dataElement.code)),
+  dataSource: {
+    find: async filter => DATA_SOURCES.filter(dataSource => filter.code.includes(dataSource.code)),
     findOne: async filter => {
-      const results = DATA_SOURCES.filter(dataElement => filter.code.includes(dataElement.code));
+      const results = DATA_SOURCES.filter(dataSource => filter.code.includes(dataSource.code));
       const [first] = results;
       return first;
     },
@@ -35,14 +31,6 @@ const createModelsStub = () => ({
             filter['config->>dhis_id'].includes(mapping.config.dhis_id),
           )
         : DATA_SERVICE_ENTITIES.filter(mapping => filter.entity_code.includes(mapping.entity_code)),
-  },
-  dataGroup: {
-    find: async filter => DATA_GROUPS.filter(dataGroup => filter.code.includes(dataGroup.code)),
-    findOne: async filter => {
-      const results = DATA_GROUPS.filter(dataGroup => filter.code.includes(dataGroup.code));
-      const [first] = results;
-      return first;
-    },
   },
 });
 

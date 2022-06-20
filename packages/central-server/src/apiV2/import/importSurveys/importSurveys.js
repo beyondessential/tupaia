@@ -46,7 +46,7 @@ const DEFAULT_SERVICE_TYPE = 'tupaia';
 const VIS_CRITERIA_CONJUNCTION = '_conjunction';
 
 const validateSurveyServiceType = async (models, surveyCode, serviceType) => {
-  const existingDataGroup = await models.dataGroup.findOne({ code: surveyCode });
+  const existingDataGroup = await models.dataSource.findOne({ code: surveyCode });
   if (existingDataGroup !== null) {
     if (serviceType !== existingDataGroup.service_type) {
       throw new ImportValidationError(
@@ -65,8 +65,9 @@ const validateQuestionExistence = rows => {
 };
 
 const updateOrCreateDataGroup = async (models, { surveyCode, serviceType }) => {
-  const dataGroup = await models.dataGroup.findOrCreate(
+  const dataGroup = await models.dataSource.findOrCreate(
     {
+      type: models.dataSource.getTypes().DATA_GROUP,
       code: surveyCode,
     },
     { service_type: serviceType },
@@ -86,11 +87,12 @@ const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGro
     config,
   });
 
-  let dataElement = await models.dataElement.findOne({ code: dataElementCode });
+  let dataElement = await models.dataSource.findOne({ code: dataElementCode });
 
   if (dataElement === null) {
     // Data Element doesn't exist, create it
-    dataElement = await models.dataElement.create({
+    dataElement = await models.dataSource.create({
+      type: models.dataSource.getTypes().DATA_ELEMENT,
       code: dataElementCode,
       service_type: serviceType,
     });
@@ -195,7 +197,7 @@ export async function importSurveys(req, res) {
             // If no survey with that name is found, give it a code and public permissions
             code: surveyCode,
             permission_group_id: permissionGroup.id,
-            data_group_id: dataGroup.id,
+            data_source_id: dataGroup.id,
           },
         );
         if (!survey) {
@@ -326,7 +328,7 @@ export async function importSurveys(req, res) {
             detail,
             options: processOptions(options, optionLabels, optionColors, type),
             option_set_id: await processOptionSetName(transactingModels, optionSet),
-            data_element_id: dataElement && dataElement.id,
+            data_source_id: dataElement && dataElement.id,
           };
 
           // Either create or update the question depending on if there exists a matching code

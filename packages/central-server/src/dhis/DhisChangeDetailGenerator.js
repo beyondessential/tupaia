@@ -63,9 +63,9 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
       TYPES.SURVEY,
       { [`${TYPES.SURVEY}.id`]: surveyIds },
       {
-        joinWith: TYPES.DATA_GROUP,
-        joinCondition: [`${TYPES.DATA_GROUP}.id`, `${TYPES.SURVEY}.data_group_id`],
-        columns: [`${TYPES.SURVEY}.id`, `${TYPES.DATA_GROUP}.config`],
+        joinWith: TYPES.DATA_SOURCE,
+        joinCondition: [`${TYPES.DATA_SOURCE}.id`, `${TYPES.SURVEY}.data_source_id`],
+        columns: [`${TYPES.SURVEY}.id`, `${TYPES.DATA_SOURCE}.config`],
       },
     );
 

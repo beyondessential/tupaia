@@ -23,7 +23,7 @@ export const orgUnitCodeToName: ContextFunctionConfig = {
   func: ({ getContext }) => (orgUnitCode: string) => {
     const { orgUnits } = getContext();
     if (!orgUnits) {
-      throw new Error("Missing dependency 'orgUnits' required by 'orgUnitCodeToName()'");
+      throw new Error("Missing dependency 'orgUnits' required by 'orgUnitCodeToName'");
     }
     const codeToName = reduceToDictionary(orgUnits, 'code', 'name');
     return codeToName[orgUnitCode];
@@ -36,7 +36,7 @@ export const dataElementCodeToName: ContextFunctionConfig = {
     const { dataElementCodeToName: codeToNameMap } = getContext();
     if (!codeToNameMap) {
       throw new Error(
-        "Missing dependency 'dataElementCodeToName' required by 'dataElementCodeToName()'",
+        "Missing dependency 'dataElementCodeToName' required by 'dataElementCodeToName'",
       );
     }
     return codeToNameMap[dataElementCode];
@@ -48,27 +48,9 @@ export const orgUnitIdToCode: ContextFunctionConfig = {
   func: ({ getContext }) => (orgUnitId: string) => {
     const { orgUnits } = getContext();
     if (!orgUnits) {
-      throw new Error("Missing dependency 'orgUnits' required by 'orgUnitIdToCode()'");
+      throw new Error("Missing dependency 'orgUnits' required by 'orgUnitIdToCode'");
     }
     const idToCode = reduceToDictionary(orgUnits, 'id', 'code');
     return idToCode[orgUnitId];
-  },
-};
-
-export const orgUnitAttribute: ContextFunctionConfig = {
-  dependencies: ['orgUnits'],
-  func: ({ getContext }) => (orgUnitCode: string, attributeKey: string) => {
-    const { orgUnits } = getContext();
-    if (!orgUnits) {
-      throw new Error("Missing dependency 'orgUnits' required by 'orgUnitAttribute()'");
-    }
-    if (!orgUnitCode)  throw new Error("Missing first argument 'orgUnitCode' required by 'orgUnitAttribute()'");
-    if (!attributeKey) throw new Error("Missing second argument 'attributeKey' required by 'orgUnitAttribute()'");
-    const orgUnit = orgUnits.find(orgUnit => orgUnit.code === orgUnitCode);
-    if (!orgUnit) {
-      throw new Error(`No org unit found with code "${orgUnitCode}" in orgUnitAttribute()`);
-    }
-    const { attributes = {} } = orgUnit;
-    return attributes[attributeKey];
   },
 };
