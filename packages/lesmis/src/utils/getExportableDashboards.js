@@ -26,7 +26,7 @@ export const getExportableDashboards = dropdownOptions => {
 
   const totalPage = exportableDashboards?.reduce(
     (totalNum, { items }) => totalNum + Math.max(1, items.length),
-    1,
+    0,
   );
 
   return { exportableDashboards, totalPage };
