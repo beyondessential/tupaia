@@ -9,6 +9,10 @@ import {
   AuthRoute,
   ChangePasswordRequest,
   ChangePasswordRoute,
+  CountChangesRequest,
+  CountChangesRoute,
+  PullChangesRequest,
+  PullChangesRoute,
   RegisterUserRequest,
   RegisterUserRoute,
   SocialFeedRequest,
@@ -17,6 +21,7 @@ import {
   UserRewardsRoute,
 } from '../routes';
 import { authHandlerProvider, buildAuthMiddleware } from '../auth';
+import { checkAppVersion } from '../middleware';
 
 /**
  * Set up express server with middleware,
@@ -25,6 +30,7 @@ export function createApp(database = new TupaiaDatabase()) {
   const authMiddleware = buildAuthMiddleware(database);
   const app = new MicroServiceApiBuilder(database, 'meditrak')
     .attachApiClientToContext(authHandlerProvider)
+    .use('*', checkAppVersion)
     .post<AuthRequest>('auth', handleWith(AuthRoute))
     .post<RegisterUserRequest>('user', handleWith(RegisterUserRoute))
     .get<SocialFeedRequest>('socialFeed', authMiddleware, handleWith(SocialFeedRoute))
@@ -34,6 +40,8 @@ export function createApp(database = new TupaiaDatabase()) {
       authMiddleware,
       handleWith(ChangePasswordRoute),
     )
+    .get<CountChangesRequest>('changes/count', authMiddleware, handleWith(CountChangesRoute))
+    .get<PullChangesRequest>('changes', authMiddleware, handleWith(PullChangesRoute))
     .build();
 
   return app;
