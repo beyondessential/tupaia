@@ -75,7 +75,7 @@ describe('configCellBuilders', () => {
       });
     });
 
-    it('Question code translation with substrings', async () => {
+    it('Question codes are substrings of one another', async () => {
       const config = 'formula: $baba * $ab + $bab + $abab + $abbaba + ($ba * 2) - $abbababa';
       const expectedProcessedFormula =
         '$mnbv * $zx + $kjh + $oiuy + $sdffgh + ($cv * 2) - $dfglkjyt';
