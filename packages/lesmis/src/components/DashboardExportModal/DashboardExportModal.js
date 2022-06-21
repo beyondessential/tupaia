@@ -41,20 +41,23 @@ export const DashboardExportModal = ({
   isOpen,
   setIsOpen,
 }) => {
-  const isFetching = useIsFetching() > 0;
   const fileName = `${title}-dashboards-export`;
   const { addToRefs, isExporting, exportToPDF } = useExportToPDF(fileName);
+  const isFetching = useIsFetching() > 0;
   const isDisabled = isExporting || isFetching;
   const [page, setPage] = useState(1);
 
   const handleClickExport = async () => {
     await exportToPDF();
   };
+  const onClose = () => {
+    setIsOpen(false);
+  };
 
   return (
-    <Dialog onClose={() => setIsOpen(false)} open={isOpen} maxWidth="lg">
+    <Dialog onClose={onClose} open={isOpen} maxWidth="lg">
       <ExportOptionsProvider>
-        <DialogHeader onClose={() => setIsOpen(false)} title={title}>
+        <DialogHeader onClose={onClose} title={title}>
           <FlexSpaceBetween>
             <MuiButton
               startIcon={<DownloadIcon />}
@@ -82,7 +85,7 @@ export const DashboardExportModal = ({
               exportableDashboards={exportableDashboards}
               addToRefs={addToRefs}
               currentPage={page}
-              isDisabled={isDisabled}
+              isExporting={isExporting}
             />
           </LoadingContainer>
         </DialogContent>
