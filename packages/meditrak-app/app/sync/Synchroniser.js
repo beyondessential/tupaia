@@ -27,7 +27,7 @@ const MEASURE_BATCH_IN_DATA = 'kilobytes';
 const KILOBYTE = 1024; // bytes
 
 const MIN_BATCH_RECORDS = 1;
-const MAX_BATCH_RECORDS = 500;
+const MAX_BATCH_RECORDS = 2000;
 const MIN_BATCH_PACKET = 4 * KILOBYTE;
 const MAX_BATCH_PACKET = 100 * KILOBYTE;
 
