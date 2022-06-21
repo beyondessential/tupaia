@@ -6,9 +6,9 @@
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 import { expect } from 'chai';
 
-import { createBearerHeader } from '@tupaia/utils';
+import { createBearerHeader, randomEmail, randomString } from '@tupaia/utils';
 
-import { getAuthorizationHeader, randomEmail, randomString, TestableApp } from '../testUtilities';
+import { getAuthorizationHeader, TestableApp } from '../testUtilities';
 
 describe('Reset Password', () => {
   const app = new TestableApp();

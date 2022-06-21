@@ -6,9 +6,9 @@
 import { expect } from 'chai';
 
 import { TYPES } from '@tupaia/database';
-import { oneSecondSleep } from '@tupaia/utils';
+import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import { SyncQueue } from '../../database';
-import { randomIntBetween, TestableApp, upsertQuestion } from '../testUtilities';
+import { TestableApp, upsertQuestion } from '../testUtilities';
 
 describe('GET /changes/count', async () => {
   const app = new TestableApp();

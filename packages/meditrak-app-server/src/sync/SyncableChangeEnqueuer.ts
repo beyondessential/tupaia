@@ -6,6 +6,7 @@
 import { ChangeHandler } from '@tupaia/database';
 import { MeditrakSyncQueueModel } from '../models';
 import { MeditrakAppServerModelRegistry } from '../types';
+import { getSupportedModels } from './appSupportedModels';
 
 type Change = { record_id: string; record_type: string; type: 'update' | 'delete' };
 
@@ -30,20 +31,9 @@ export class SyncableChangeEnqueuer extends ChangeHandler {
       return [{ ...restOfRecord }];
     };
 
-    this.changeTranslators = {
-      country: stripDataFromChange,
-      entity: stripDataFromChange,
-      facility: stripDataFromChange,
-      geographicalArea: stripDataFromChange,
-      option: stripDataFromChange,
-      optionSet: stripDataFromChange,
-      permissionGroup: stripDataFromChange,
-      question: stripDataFromChange,
-      survey: stripDataFromChange,
-      surveyGroup: stripDataFromChange,
-      surveyScreen: stripDataFromChange,
-      surveyScreenComponent: stripDataFromChange,
-    };
+    this.changeTranslators = Object.fromEntries(
+      getSupportedModels().map(model => [model, stripDataFromChange]),
+    );
   }
 
   private addToSyncQueue(change: Change) {
