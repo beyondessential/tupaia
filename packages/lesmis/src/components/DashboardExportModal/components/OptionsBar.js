@@ -12,7 +12,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import { useExportOptions } from '../context/ExportOptionsContext';
 import { I18n } from '../../../utils';
 
-export const OptionsBar = ({ totalPage, setPage, isDisabled }) => {
+export const OptionsBar = ({ totalPage, page, setPage, isDisabled }) => {
   const {
     exportWithLabels,
     toggleExportWithLabels,
@@ -45,6 +45,7 @@ export const OptionsBar = ({ totalPage, setPage, isDisabled }) => {
         label={I18n({ t: 'dashboards.table' })}
       />
       <Pagination
+        page={page}
         count={totalPage}
         shape="rounded"
         onChange={(event, value) => setPage(value)}
@@ -55,6 +56,7 @@ export const OptionsBar = ({ totalPage, setPage, isDisabled }) => {
 };
 
 OptionsBar.propTypes = {
+  page: PropTypes.number.isRequired,
   totalPage: PropTypes.number.isRequired,
   isDisabled: PropTypes.bool.isRequired,
   setPage: PropTypes.func.isRequired,

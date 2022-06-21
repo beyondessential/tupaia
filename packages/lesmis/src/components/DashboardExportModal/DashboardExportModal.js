@@ -68,7 +68,12 @@ export const DashboardExportModal = ({
             >
               <I18n t="dashboards.download" />
             </MuiButton>
-            <OptionsBar totalPage={totalPage} setPage={setPage} isDisabled={isDisabled} />
+            <OptionsBar
+              totalPage={totalPage}
+              page={page}
+              setPage={setPage}
+              isDisabled={isDisabled}
+            />
           </FlexSpaceBetween>
         </DialogHeader>
         <DialogContent>
