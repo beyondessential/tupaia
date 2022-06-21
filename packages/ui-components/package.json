@@ -34,7 +34,7 @@
     "react-beautiful-dnd": "^13.1.0",
     "react-leaflet": "^3.2.1",
     "react-table": "^7.7.0",
-    "recharts": "^1.8.5",
+    "recharts": "^2.1.10",
     "xlsx": "^0.17.0"
   },
   "devDependencies": {
