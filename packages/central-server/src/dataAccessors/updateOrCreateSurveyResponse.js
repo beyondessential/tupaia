@@ -4,7 +4,13 @@
  */
 
 import momentTimezone from 'moment-timezone';
-import { DatabaseError, UploadError, stripTimezoneFromDate, reformatDateStringWithoutTz, ValidationError } from '@tupaia/utils';
+import {
+  DatabaseError,
+  UploadError,
+  stripTimezoneFromDate,
+  reformatDateStringWithoutTz,
+  ValidationError,
+} from '@tupaia/utils';
 import { uploadImage } from '../s3';
 import { BUCKET_PATH, getImageFilePath } from '../s3/constants';
 import { DEFAULT_DATABASE_TIMEZONE, getEntityIdFromClinicId } from '../database';
@@ -145,12 +151,9 @@ const getDataTime = surveyResponseObject => {
   } = surveyResponseObject;
 
   if (suppliedDataTime) {
-
     if (suppliedTimezone) {
       // Timezone specified, strip it
-      return stripTimezoneFromDate(
-        momentTimezone(suppliedDataTime).tz(suppliedTimezone).format(),
-      );
+      return stripTimezoneFromDate(momentTimezone(suppliedDataTime).tz(suppliedTimezone).format());
     }
 
     // No timezone specified. We are submitting the data_time explicitly without a tz.
@@ -160,9 +163,10 @@ const getDataTime = surveyResponseObject => {
     const reformattedDataTime = reformatDateStringWithoutTz(suppliedDataTime);
     if (reformattedDataTime) {
       return reformattedDataTime;
-    } else {
-      throw new ValidationError(`Unable to parse data_time ${suppliedDataTime} against known formats without timezone. Either use a known format or specify a timezone.`);
     }
+    throw new ValidationError(
+      `Unable to parse data_time ${suppliedDataTime} against known formats without timezone. Either use a known format or specify a timezone.`,
+    );
   }
 
   // Fallback for older versions
@@ -172,7 +176,5 @@ const getDataTime = surveyResponseObject => {
 
   // Convert to the original timezone, then strip timezone suffix, so it ends up in db as it
   // appeared to the original survey submitter
-  return stripTimezoneFromDate(
-    momentTimezone(dataTime).tz(timezone).format(),
-  );
-}
+  return stripTimezoneFromDate(momentTimezone(dataTime).tz(timezone).format());
+};

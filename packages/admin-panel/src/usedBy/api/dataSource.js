@@ -6,7 +6,7 @@
 export const getDataSourceUsedBy = async (api, recordType, recordId) => {
   let usedBy = [];
   const questionsResponse = await api.get('questions', {
-    filter: JSON.stringify({ data_source_id: recordId }),
+    filter: JSON.stringify({ data_element_id: recordId }),
   });
   usedBy = [
     ...usedBy,
@@ -19,30 +19,33 @@ export const getDataSourceUsedBy = async (api, recordType, recordId) => {
     })),
   ];
 
-  const dataSource = (await api.get(`dataSources/${recordId}`)).body;
+  const dataSource = (await api.get(`${recordType}s/${recordId}`)).body;
 
-  const dataElementDataGroupResponse = await api.get('dataElementDataGroups', {
-    filter: JSON.stringify({
-      data_element_id: recordId,
-    }),
-  });
+  // Only search for data groups if we're looking at a data element
+  if (recordType === 'dataElement') {
+    const dataElementDataGroupResponse = await api.get('dataElementDataGroups', {
+      filter: JSON.stringify({
+        data_element_id: recordId,
+      }),
+    });
 
-  const dataGroupsResponse = await api.get('dataSources', {
-    filter: JSON.stringify({
-      id: dataElementDataGroupResponse.body.map(dedg => dedg.data_group_id),
-    }),
-  });
+    const dataGroupsResponse = await api.get('dataGroups', {
+      filter: JSON.stringify({
+        id: dataElementDataGroupResponse.body.map(dedg => dedg.data_group_id),
+      }),
+    });
 
-  usedBy = [
-    ...usedBy,
-    ...dataGroupsResponse.body.map(dataGroup => ({
-      type: 'dataGroup',
-      name: dataGroup.code,
-      url: `/surveys/data-groups?filters=${encodeURIComponent(
-        JSON.stringify([{ id: 'code', value: dataGroup.code }]),
-      )}`,
-    })),
-  ];
+    usedBy = [
+      ...usedBy,
+      ...dataGroupsResponse.body.map(dataGroup => ({
+        type: 'dataGroup',
+        name: dataGroup.code,
+        url: `/surveys/data-groups?filters=${encodeURIComponent(
+          JSON.stringify([{ id: 'code', value: dataGroup.code }]),
+        )}`,
+      })),
+    ];
+  }
 
   const reportsResponse = await api.get('reports', {
     filter: JSON.stringify({

@@ -2,8 +2,9 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+
 import { QUERY_CONJUNCTIONS, TYPES } from '@tupaia/database';
-import { assertSurveyEditPermissions } from '../surveys';
+import { assertDataElementEditPermissions } from '../dataElements/assertDataElementPermissions';
 import { hasBESAdminAccess } from '../../permissions';
 import { fetchCountryIdsByPermissionGroupId, mergeMultiJoin } from '../utilities';
 
@@ -14,18 +15,7 @@ export const assertQuestionEditPermissions = async (accessPolicy, models, questi
   if (!question) {
     throw new Error(`No question exists with id ${questionId}`);
   }
-
-  const surveyIds = await question.getSurveyIds();
-  for (let i = 0; i < surveyIds.length; ++i) {
-    await assertSurveyEditPermissions(
-      accessPolicy,
-      models,
-      surveyIds[i],
-      'Requires permission to all surveys the question appears in',
-    );
-  }
-
-  return true;
+  return assertDataElementEditPermissions(question.data_element_code);
 };
 
 export const createQuestionDBFilter = async (accessPolicy, models, criteria, options) => {
