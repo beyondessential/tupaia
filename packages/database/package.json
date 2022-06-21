@@ -49,6 +49,7 @@
     "winston": "3.3.3"
   },
   "devDependencies": {
+    "@babel/node": "^7.10.5",
     "deep-equal-in-any-order": "^1.0.27",
     "pluralize": "^8.0.0"
   }

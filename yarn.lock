@@ -6534,6 +6534,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/database@workspace:packages/database"
   dependencies:
+    "@babel/node": ^7.10.5
     "@tupaia/auth": 1.0.0
     "@tupaia/utils": 1.0.0
     db-migrate: ^0.11.5
