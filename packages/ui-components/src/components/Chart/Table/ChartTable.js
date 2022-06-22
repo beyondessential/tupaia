@@ -21,7 +21,7 @@ const NoData = styled(SmallAlert)`
   margin-right: auto;
 `;
 
-export const Table = ({ viewContent, className }) => {
+export const ChartTable = ({ viewContent, className }) => {
   const { columns, data } = getChartTableData(viewContent);
 
   if (!getIsChartData(viewContent)) {
@@ -39,7 +39,7 @@ export const Table = ({ viewContent, className }) => {
   );
 };
 
-Table.propTypes = {
+ChartTable.propTypes = {
   viewContent: PropTypes.shape({
     name: PropTypes.string,
     xName: PropTypes.string,
@@ -53,7 +53,7 @@ Table.propTypes = {
   className: PropTypes.string,
 };
 
-Table.defaultProps = {
+ChartTable.defaultProps = {
   viewContent: null,
   className: null,
 };

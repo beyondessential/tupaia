@@ -13,7 +13,7 @@ import {
   LeafletMap,
   InteractivePolygon,
   ZoomControl,
-} from '@tupaia/ui-components/lib/map';
+} from '@tupaia/ui-components';
 
 import { checkBoundsDifference, organisationUnitIsArea } from '../../utils';
 import { DemoLand } from './DemoLand';

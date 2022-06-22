@@ -11,7 +11,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import CloseIcon from '@material-ui/icons/Close';
-import { Legend } from '@tupaia/ui-components/lib/map';
+import { Legend } from '@tupaia/ui-components';
 import { selectCurrentMapOverlayCodes } from '../../selectors';
 import { LEAFLET_Z_INDEX, MOBILE_BACKGROUND_COLOR } from '../../styles';
 

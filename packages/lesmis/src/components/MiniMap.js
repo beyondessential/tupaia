@@ -12,7 +12,7 @@ import {
   IconMarker,
   InversePolygonMask,
   LeafletMapContainer,
-} from '@tupaia/ui-components/lib/map';
+} from '@tupaia/ui-components';
 import { TILE_SETS, RED, COUNTRY_CODE } from '../constants';
 import { useEntityData } from '../api';
 

@@ -4,16 +4,16 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { DataTable } from '@tupaia/ui-components';
 import { getMapTableData } from './getMapTableData';
+import { DataTable } from '../../DataTable';
 
-export const Table = ({ serieses, measureData, className }) => {
+export const MapTable = ({ serieses, measureData, className }) => {
   const { columns, data } = getMapTableData(serieses, measureData);
 
   return <DataTable className={className} columns={columns} data={data} />;
 };
 
-Table.propTypes = {
+MapTable.propTypes = {
   measureData: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string,
@@ -28,7 +28,7 @@ Table.propTypes = {
   className: PropTypes.string,
 };
 
-Table.defaultProps = {
+MapTable.defaultProps = {
   measureData: [],
   serieses: [],
   className: null,
