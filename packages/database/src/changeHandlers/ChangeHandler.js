@@ -47,10 +47,12 @@ export class ChangeHandler {
 
   /**
    * @abstract
+   * @protected
    */
-  handleChanges = async () => {
+  // eslint-disable-next-line no-unused-vars
+  async handleChanges(change) {
     throw new Error('Any subclass of ChangeHandler must implement the "handleChanges" method');
-  };
+  }
 
   /**
    * @protected

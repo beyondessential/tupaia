@@ -30,13 +30,13 @@ export class SessionType extends DatabaseType {
   public static databaseType = 'session';
   public readonly id: string;
   public email: string;
+  public refresh_token: string;
 
   private readonly authConnection: AuthConnection;
 
   private access_policy: AccessPolicyObject;
   private access_token: string;
   private access_token_expiry: number;
-  private refresh_token: string;
 
   private refreshAccessTokenPromise: Promise<void> | null;
 

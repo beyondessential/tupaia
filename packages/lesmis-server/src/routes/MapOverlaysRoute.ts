@@ -4,20 +4,55 @@
  *
  */
 
-import { Request, Response, NextFunction } from 'express';
-import { Route } from '@tupaia/server-boilerplate';
+import { Request, NextFunction } from 'express';
+import { TranslatableRoute, TranslatableResponse } from '@tupaia/server-boilerplate';
 import { WebConfigConnection } from '../connections';
 import { LESMIS_PROJECT_NAME } from '../constants';
 
 export type MapOverlaysRequest = Request<{ entityCode: string }, any, any, any>;
 
-export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
+export class MapOverlaysRoute extends TranslatableRoute<
+  MapOverlaysRequest,
+  TranslatableResponse<MapOverlaysRequest>
+> {
   private readonly webConfigConnection: WebConfigConnection;
 
-  public constructor(req: MapOverlaysRequest, res: Response, next: NextFunction) {
+  public constructor(
+    req: MapOverlaysRequest,
+    res: TranslatableResponse<MapOverlaysRequest>,
+    next: NextFunction,
+  ) {
     super(req, res, next);
 
     this.webConfigConnection = new WebConfigConnection(req.session);
+
+    this.translationSchema = {
+      domain: 'lesmis',
+      layout: {
+        type: 'array',
+        items: {
+          type: 'object',
+          valuesToTranslate: ['name'],
+          properties: {
+            // Object property named 'children'
+            children: {
+              type: 'array',
+              items: {
+                type: 'object',
+                // Map overlays
+                valuesToTranslate: ['name'],
+                properties: {
+                  values: {
+                    type: 'object',
+                    keysToTranslate: ['name', 'value'],
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    };
   }
 
   public async buildResponse() {
