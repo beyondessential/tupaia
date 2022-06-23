@@ -16,6 +16,24 @@ class SurveyType extends DatabaseType {
     return this.otherModels.dataGroup.findById(this.data_group_id);
   }
 
+  async surveyScreens() {
+    return this.otherModels.surveyScreen.find({ survey_id: this.id });
+  }
+
+  async surveyScreenComponents() {
+    const questions = await this.database.executeSql(
+      `
+       SELECT ssc.* FROM survey_screen_component ssc
+       JOIN survey_screen ss ON ss.id = ssc.screen_id
+       JOIN survey s ON s.id = ss.survey_id
+       WHERE s.code = ?
+     `,
+      [this.code],
+    );
+
+    return Promise.all(questions.map(this.otherModels.surveyScreenComponent.generateInstance));
+  }
+
   async questions() {
     const questions = await this.database.executeSql(
       `
@@ -29,6 +47,39 @@ class SurveyType extends DatabaseType {
     );
 
     return Promise.all(questions.map(this.otherModels.question.generateInstance));
+  }
+
+  async optionSets() {
+    const questions = await this.database.executeSql(
+      `
+       SELECT os.* FROM option_set os
+       JOIN question q on q.option_set_id = os.id
+       JOIN survey_screen_component ssc ON ssc.question_id  = q.id
+       JOIN survey_screen ss ON ss.id = ssc.screen_id
+       JOIN survey s ON s.id = ss.survey_id
+       WHERE s.code = ?
+     `,
+      [this.code],
+    );
+
+    return Promise.all(questions.map(this.otherModels.optionSet.generateInstance));
+  }
+
+  async options() {
+    const questions = await this.database.executeSql(
+      `
+       SELECT o.* FROM "option" o
+       JOIN option_set os on o.option_set_id = os.id
+       JOIN question q on q.option_set_id = os.id
+       JOIN survey_screen_component ssc ON ssc.question_id  = q.id
+       JOIN survey_screen ss ON ss.id = ssc.screen_id
+       JOIN survey s ON s.id = ss.survey_id
+       WHERE s.code = ?
+     `,
+      [this.code],
+    );
+
+    return Promise.all(questions.map(this.otherModels.option.generateInstance));
   }
 
   async getPermissionGroup() {
