@@ -11,9 +11,11 @@ export class SqlQuery {
   /**
    * @public
    * @param {unknown[]} arr
+   * @param {string} type type of array (if the array may be empty postgres requires typecasting)
    * @returns {string} SQL parameter injection string for the array of values
    */
-  static array = arr => `ARRAY[${arr.map(() => '?').join(',')}]`;
+  static array = (arr, type) =>
+    `ARRAY[${arr.map(() => '?').join(',')}]${type ? `::${type}[]` : ''}`;
 
   /**
    * @public

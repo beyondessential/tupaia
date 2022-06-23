@@ -16,7 +16,7 @@ export {
   getAdminPanelAllowedCountryCodes,
 } from './getAdminPanelAllowedEntityIds';
 export { getArrayQueryParameter } from './getArrayQueryParameter';
-export { getChangesFilter } from './getChangesFilter';
+export { getChangesFilter, getPermissionsBasedChangesFilter } from './getChangesFilter';
 export { getColumnsForMeditrakApp } from './getColumnsForMeditrakApp';
 export { hasAccessToEntityForVisualisation } from './hasAccessToEntityForVisualisation';
 export { hasTupaiaAdminAccessToEntityForVisualisation } from './hasTupaiaAdminAccessToEntityForVisualisation';
@@ -32,6 +32,7 @@ export {
   translateQuestionCodeToId,
 } from './translateQuestionDependentFields';
 export { replaceQuestionIdsWithCodes } from './replaceQuestionIdsWithCodes';
+export { supportsPermissionsBasedSync } from './permissionsBasedChangeFilter';
 export { translateExpression } from './translateExpression';
 export { getDollarPrefixedExpressionVariables } from './getDollarPrefixedExpressionVariables';
 export {
