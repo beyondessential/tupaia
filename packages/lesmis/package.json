@@ -19,8 +19,7 @@
     "start-fullstack": "npm-run-all -c -l -p start-central-server start-web-config-server start-dev",
     "start-central-server": "yarn workspace @tupaia/central-server start-dev -s",
     "start-web-config-server": "yarn workspace @tupaia/web-config-server start-dev -s",
-    "test": "npm run test:jest",
-    "test:jest": "react-scripts test --env=jsdom"
+    "test": "jest"
   },
   "browserslist": [
     "defaults"
@@ -46,5 +45,11 @@
     "react-query": "^3.9.6",
     "react-router-dom": "^5.2.0",
     "styled-components": "^5.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.9.0",
+    "jest": "^27.0.6",
+    "npm-run-all": "^4.1.5",
+    "react-scripts": "4.0.3"
   }
 }

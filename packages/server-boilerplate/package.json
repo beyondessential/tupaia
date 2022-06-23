@@ -17,7 +17,7 @@
   "scripts": {
     "build": "tsc -p tsconfig-build.json",
     "lint": "eslint . --ext .ts",
-    "lint:all": "yarn run lint \"src/**/*.{ts,jsx}\"",
+    "lint:all": "yarn lint \"src/**/*.{ts,jsx}\"",
     "lint:fix": "yarn lint --fix",
     "test": "jest",
     "test:coverage": "jest --coverage",
@@ -39,5 +39,15 @@
     "i18n": "^0.13.3",
     "morgan": "^1.9.0",
     "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/api-error-handler": "^1.0.32",
+    "@types/client-sessions": "^0.8.0",
+    "@types/cors": "^2.8.8",
+    "@types/express": "^4.17.8",
+    "@types/supertest": "^2.0.11",
+    "eslint": "^7.9.0",
+    "jest": "^27.0.6",
+    "typescript": "^4.2.0"
   }
 }

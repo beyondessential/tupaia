@@ -19,5 +19,12 @@
     "lint:fix": "yarn lint --fix",
     "test": "jest",
     "test:coverage": "yarn test --coverage"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.11.6",
+    "eslint": "^7.9.0",
+    "jest": "^27.0.6",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^4.2.0"
   }
 }
