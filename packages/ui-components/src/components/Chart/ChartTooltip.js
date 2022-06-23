@@ -149,7 +149,7 @@ const NoDataTooltip = ({ payload, periodGranularity }) => {
   );
 };
 
-export const Tooltip = props => {
+export const ChartTooltip = props => {
   const { payload, active, presentationOptions } = props;
 
   const data = payload || []; // This is to handle when recharts overrides the payload as null
@@ -167,18 +167,18 @@ export const Tooltip = props => {
   return <NoDataTooltip {...props} payload={data} />;
 };
 
-Tooltip.propTypes = {
+ChartTooltip.propTypes = {
   valueType: PropTypes.oneOf(Object.values(VALUE_TYPES)),
   presentationOptions: PropTypes.shape(PRESENTATION_OPTIONS_SHAPE),
   payload: PropTypes.array,
 };
 
-Tooltip.defaultProps = {
+ChartTooltip.defaultProps = {
   payload: [],
   valueType: null,
   presentationOptions: null,
 };
 
-SingleValueTooltip.propTypes = Tooltip.propTypes;
-MultiValueTooltip.propTypes = Tooltip.propTypes;
-NoDataTooltip.propTypes = Tooltip.propTypes;
+SingleValueTooltip.propTypes = ChartTooltip.propTypes;
+MultiValueTooltip.propTypes = ChartTooltip.propTypes;
+NoDataTooltip.propTypes = ChartTooltip.propTypes;
