@@ -15,7 +15,6 @@ import { analytics } from '../utilities';
 const AUTH_API_ENDPOINT = 'auth';
 const CREATE_USER_ENDPOINT = 'user';
 const CHANGE_USER_PASSWORD_ENDPOINT = 'me/changePassword';
-const DELETE_ACCOUNT_REQUEST_ENDPOINT = 'me/deleteAccount';
 const ACCESS_TOKEN_KEY = 'AccessToken';
 const REFRESH_TOKEN_KEY = 'RefreshToken';
 const SOCIAL_FEED_ENDPOINT = 'socialFeed';
@@ -168,10 +167,6 @@ export class TupaiaApi {
   async getIsAuthenticated() {
     const accessToken = await this.getAccessToken();
     return accessToken && this.refreshToken !== null;
-  }
-
-  async deleteAccountRequest() {
-    return this.post(DELETE_ACCOUNT_REQUEST_ENDPOINT);
   }
 
   get(...params) {

@@ -41,7 +41,7 @@ const path = require('path');
  * Set up express server with middleware,
  */
 export function createApp() {
-  const app = new OrchestratorApiBuilder(new TupaiaDatabase())
+  const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'lesmis')
     .useSessionModel(LesmisSessionModel)
     .useAttachSession(attachSession)
     .verifyLogin(hasLesmisAccess)
@@ -50,28 +50,25 @@ export function createApp() {
     /**
      * GET
      */
-    .get<DashboardRequest>('/v1/dashboard/:entityCode', handleWith(DashboardRoute))
-    .get<UserRequest>('/v1/user', handleWith(UserRoute))
-    .get<EntitiesRequest>('/v1/entities/:entityCode', handleWith(EntitiesRoute))
-    .get<MapOverlaysRequest>('/v1/map-overlays/:entityCode', handleWith(MapOverlaysRoute))
-    .get<EntityRequest>('/v1/entity/:entityCode', handleWith(EntityRoute))
-    .get<ReportRequest>('/v1/report/:entityCode/:reportCode', handleWith(ReportRoute))
-    .get<VerifyEmailRequest>('/v1/verify/:emailToken', handleWith(VerifyEmailRoute))
+    .get<DashboardRequest>('dashboard/:entityCode', handleWith(DashboardRoute))
+    .get<UserRequest>('user', handleWith(UserRoute))
+    .get<EntitiesRequest>('entities/:entityCode', handleWith(EntitiesRoute))
+    .get<MapOverlaysRequest>('map-overlays/:entityCode', handleWith(MapOverlaysRoute))
+    .get<EntityRequest>('entity/:entityCode', handleWith(EntityRoute))
+    .get<ReportRequest>('report/:entityCode/:reportCode', handleWith(ReportRoute))
+    .get<VerifyEmailRequest>('verify/:emailToken', handleWith(VerifyEmailRoute))
 
     /**
      * POST
      */
 
-    .post<RegisterRequest>('/v1/register', handleWith(RegisterRoute))
-    .post<ReportRequest>('/v1/report/:entityCode/:reportCode', handleWith(ReportRoute))
+    .post<RegisterRequest>('register', handleWith(RegisterRoute))
+    .post<ReportRequest>('report/:entityCode/:reportCode', handleWith(ReportRoute))
 
     /**
      * PUT
      */
-    .put<UpdateSurveyResponseRequest>(
-      '/v1/survey-response/:id',
-      handleWith(UpdateSurveyResponseRoute),
-    )
+    .put<UpdateSurveyResponseRequest>('survey-response/:id', handleWith(UpdateSurveyResponseRoute))
 
     .build();
 

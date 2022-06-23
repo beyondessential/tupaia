@@ -46,6 +46,14 @@ const COLUMNS = [
       fields: [...FIELDS],
     },
   },
+  {
+    Header: 'Delete',
+    source: 'id',
+    type: 'delete',
+    actionConfig: {
+      endpoint: DASHBOARDS_ENDPOINT,
+    },
+  },
 ];
 
 const RELATION_FIELDS = [

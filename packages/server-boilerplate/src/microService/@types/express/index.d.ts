@@ -12,6 +12,7 @@ declare global {
       user: UserType;
       accessPolicy: AccessPolicy;
       models: ModelRegistry;
+      apiRequestLogId: string;
     }
   }
 }
