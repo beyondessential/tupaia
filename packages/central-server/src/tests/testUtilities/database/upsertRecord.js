@@ -51,6 +51,10 @@ export const upsertSurvey = async data => {
   return upsertDummyRecord(models.survey, data);
 };
 
+export const upsertSurveyGroup = async data => {
+  return upsertDummyRecord(models.surveyGroup, data);
+};
+
 export const upsertSurveyResponse = async data => {
   const publicPermissionGroup = await models.permissionGroup.findOne({ name: 'Public' });
   const user = await models.user.findOne();
