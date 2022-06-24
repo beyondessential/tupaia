@@ -34,5 +34,8 @@
     "dotenv": "^8.2.0",
     "lodash.groupby": "^4.6.0",
     "moment": "^2.24.0"
+  },
+  "devDependencies": {
+    "ts-node": "^10.7.0"
   }
 }

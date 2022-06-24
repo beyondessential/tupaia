@@ -5074,6 +5074,7 @@ __metadata:
     dotenv: ^8.2.0
     lodash.groupby: ^4.6.0
     moment: ^2.24.0
+    ts-node: ^10.7.0
   languageName: unknown
   linkType: soft
 
