@@ -5280,6 +5280,7 @@ __metadata:
     "@tupaia/server-boilerplate": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
+    "@types/semver-compare": ^1.0.1
     dotenv: ^8.2.0
     express: ^4.16.2
     semver-compare: ^1.0.0
@@ -6401,6 +6402,13 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: e99fc7cc6265407987b30deda54c1c24bb1478803faf6037557a774b2f034c5b097ffd65847daa87e82a61a250d919f35c3588654b0fdaa816906650f596d1b0
+  languageName: node
+  linkType: hard
+
+"@types/semver-compare@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@types/semver-compare@npm:1.0.1"
+  checksum: a144766e3bad1fc6e94df2f1964f3ce84cab27bff25e7175f31c5408190e49b17f407e82c6a814b6d7f0ad9f02e7355166bca67b5eb68bd3da116ee996f40c64
   languageName: node
   linkType: hard
 

@@ -35,5 +35,8 @@
     "express": "^4.16.2",
     "semver-compare": "^1.0.0",
     "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/semver-compare": "^1.0.1"
   }
 }
