@@ -1,5 +1,5 @@
 'use strict';
-import nameToId from '../utilities';
+import { nameToId } from '../utilities';
 
 var dbm;
 var type;
