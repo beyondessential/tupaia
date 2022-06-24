@@ -19,7 +19,7 @@ sudo apt-get install -yqq postgresql-client
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-nvm install 12
+nvm install 14
 npm install --global yarn
 
 # install pm2
