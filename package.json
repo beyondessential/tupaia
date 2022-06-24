@@ -31,19 +31,42 @@
     "package-json-lint": "npmPkgJsonLint --configFile .npmpackagejsonlintrc.json .",
     "refresh-database": "yarn workspace @tupaia/database refresh-database --root ../../",
     "test-all": "node ./scripts/node/testAll --silent",
-    "validate": "./scripts/bash/validate.sh"
+    "validate": "./scripts/bash/validate.sh",
+    "package:build:ts": "cd $INIT_CWD && tsc -p tsconfig-build.json",
+    "package:build:js": "cd $INIT_CWD && babel src --out-dir dist --source-maps --config-file \"../../babel.config.json\"",
+    "package:build:react-scripts": "cd $INIT_CWD && SKIP_PREFLIGHT_CHECK=true GENERATE_SOURCEMAP=false react-scripts build",
+    "package:build:types": "cd $INIT_CWD && tsc",
+    "package:lint:js": "cd $INIT_CWD && eslint --ignore-path ../../.gitignore .",
+    "package:lint:ts": "cd $INIT_CWD && eslint --ignore-path ../../.gitignore . --ext .ts",
+    "package:test": "cd $INIT_CWD && jest",
+    "package:test:withdb": "cd $INIT_CWD && yarn workspace @tupaia/database check-test-database-exists && DB_NAME=tupaia_test jest",
+    "package:start:react-scripts": "cd $INIT_CWD && SKIP_PREFLIGHT_CHECK=true react-scripts start",
+    "package:start:backend-start-dev": "cd $INIT_CWD && LOG_LEVEL=debug ../../scripts/bash/backendStartDev.sh",
+    "package:eject": "cd $INIT_CWD && react-scripts eject"
   },
   "resolutions": {
     "@typescript-eslint/eslint-plugin": "^4.18.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.11.6",
+    "@babel/node": "^7.10.5",
     "@beyondessential/eslint-config-jest": "^1.0.0",
     "@beyondessential/eslint-config-js": "^1.1.1",
     "@beyondessential/eslint-config-ts": "^1.3.2",
     "babel-jest": "^27.0.6",
     "concurrently": "^5.2.0",
+    "cypress-dotenv": "^1.2.2",
+    "eslint": "^7.9.0",
     "eslint-plugin-cypress": "^2.11.1",
-    "jest-extended": "^0.11.5"
+    "jest": "^27.0.6",
+    "jest-extended": "^0.11.5",
+    "jest-when": "^2.7.2",
+    "nodemon": "^2.0.4",
+    "npm-package-json-lint": "5.1.0",
+    "react-scripts": "4.0.3",
+    "ts-jest": "^27.1.3",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.2.0"
   },
   "engines": {
     "node": "^14.19.3"

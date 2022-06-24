@@ -85,8 +85,8 @@
   "scripts": {
     "build": "echo Built externally",
     "bugsnag-sourcemaps-upload": "scripts/uploadSourcemaps.sh",
-    "flow": "flow",
-    "flow-stop": "flow stop",
+    "flow": "node_modules/.bin/flow",
+    "flow-stop": "node_modules/.bin/flow stop",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
     "log:android": "react-native log-android",

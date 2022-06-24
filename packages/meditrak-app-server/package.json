@@ -15,15 +15,14 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p tsconfig-build.json",
-    "lint": "eslint . --ext .ts",
-    "lint:all": "yarn lint \"src/**/*.{ts,jsx}\"",
+    "build": "yarn package:build:ts",
+    "lint": "yarn package:lint:ts",
     "lint:fix": "yarn lint --fix",
     "prestart": "yarn build",
     "start": "node dist",
-    "start-dev": "LOG_LEVEL=debug ../../scripts/bash/backendStartDev.sh 9998 -ts",
-    "start-verbose": "LOG_LEVEL=debug npm run start-dev",
-    "test": "yarn workspace @tupaia/database check-test-database-exists && DB_NAME=tupaia_test jest --runInBand"
+    "start-dev": "LOG_LEVEL=debug yarn package:start:backend-start-dev 9998 -ts",
+    "start-verbose": "LOG_LEVEL=debug yarn start-dev",
+    "test": "yarn package:test:withdb --runInBand"
   },
   "dependencies": {
     "@tupaia/api-client": "3.1.0",
@@ -36,11 +35,5 @@
     "express": "^4.16.2",
     "semver-compare": "^1.0.0",
     "winston": "^3.2.1"
-  },
-  "devDependencies": {
-    "eslint": "^7.9.0",
-    "jest": "^27.0.6",
-    "nodemon": "^2.0.4",
-    "typescript": "^4.2.0"
   }
 }

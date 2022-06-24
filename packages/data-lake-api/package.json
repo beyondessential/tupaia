@@ -11,9 +11,8 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc -p tsconfig-build.json",
-    "lint": "eslint . --ext .ts",
-    "lint:all": "yarn run lint \"src/**/*.{ts,jsx}\"",
+    "build": "yarn package:build:ts",
+    "lint": "yarn package:lint:ts",
     "lint:fix": "yarn lint --fix",
     "test": "yarn workspace @tupaia/data-lake-api check-test-data-lake-exists && DATA_LAKE_DB_NAME=data_lake_test jest --runInBand",
     "test:coverage": "yarn test --coverage",
@@ -34,8 +33,6 @@
     "pg": "8.5.1"
   },
   "devDependencies": {
-    "eslint": "^7.9.0",
-    "jest": "^27.0.6",
-    "typescript": "^4.2.0"
+    "jest": "^27.0.6"
   }
 }

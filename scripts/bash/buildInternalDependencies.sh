@@ -3,6 +3,7 @@
 DIR=$(dirname "$0")
 
 CONCURRENT_BUILD_BATCH_SIZE=1
+CONCURRENTLY_BIN="${DIR}/../../node_modules/.bin/concurrently"
 
 USAGE="Usage: buildInternalDependencies.sh [--watch] [--packagePath]"
 
@@ -44,10 +45,10 @@ done
 
 if [[ $watch == "true" ]]; then
     echo "Concurrently building and watching all internal dependencies"
-    echo "yarn concurrently --names \"${build_prefixes[*]}\" ${build_commands[@]}"
-    eval "yarn concurrently --names \"${build_prefixes[*]}\" ${build_commands[@]}"
+    echo "${CONCURRENTLY_BIN} --names \"${build_prefixes[*]}\" ${build_commands[@]}"
+    eval "${CONCURRENTLY_BIN} --names \"${build_prefixes[*]}\" ${build_commands[@]}"
 else
     echo "Concurrently building internal dependencies in batches of ${CONCURRENT_BUILD_BATCH_SIZE}"
-    echo "yarn concurrently -m $CONCURRENT_BUILD_BATCH_SIZE --names \"${build_prefixes[*]}\" -k ${build_commands[*]}"
-    eval "yarn concurrently -m $CONCURRENT_BUILD_BATCH_SIZE --names \"${build_prefixes[*]}\" -k ${build_commands[*]}"
+    echo "${CONCURRENTLY_BIN} -m $CONCURRENT_BUILD_BATCH_SIZE --names \"${build_prefixes[*]}\" -k ${build_commands[*]}"
+    eval "${CONCURRENTLY_BIN} -m $CONCURRENT_BUILD_BATCH_SIZE --names \"${build_prefixes[*]}\" -k ${build_commands[*]}"
 fi

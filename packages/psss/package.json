@@ -11,23 +11,24 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "SKIP_PREFLIGHT_CHECK=true GENERATE_SOURCEMAP=false react-scripts build",
+    "build": "yarn package:build:react-scripts",
     "cypress:open": "cross-env NODE_ENV=test cypress open",
     "cypress:run": "cross-env NODE_ENV=test cypress run",
     "cypress:config": "NODE_ENV=development  babel-node cypress/scripts/generateConfig --config-file \"../../babel.config.json\"",
-    "eject": "react-scripts eject",
-    "lint": "eslint --ignore-path ../../.gitignore .",
+    "eject": "yarn package:eject",
+    "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
     "pretest:test:cypress:run": "yarn build",
-    "start-dev": "SKIP_PREFLIGHT_CHECK=true react-scripts start",
+    "start-dev": "yarn package:start:react-scripts",
     "start-fullstack": "npm-run-all -c -l -p start-psss-server start-entity-server start-central-server start-report-server  start-dev",
     "start-psss-server": "yarn workspace @tupaia/psss-server start-dev -s",
     "start-entity-server": "yarn workspace @tupaia/entity-server start-dev -s",
     "start-central-server": "yarn workspace @tupaia/central-server start-dev -s",
     "start-report-server": "yarn workspace @tupaia/report-server start-dev -s",
-    "test": "jest --env=jsdom",
+    "test": "yarn test:jest",
     "test:cypress:open": "start-server-and-test start-fullstack 3000 cypress:open",
-    "test:cypress:run": "start-server-and-test start-fullstack 3000 cypress:run"
+    "test:cypress:run": "start-server-and-test start-fullstack 3000 cypress:run",
+    "test:jest": "yarn package:test --env=jsdom"
   },
   "browserslist": [
     "defaults"
@@ -65,23 +66,12 @@
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/node": "^7.10.5",
-    "@babel/plugin-proposal-class-properties": "^7.10.4",
-    "@babel/plugin-proposal-export-default-from": "^7.10.4",
-    "@babel/plugin-transform-runtime": "^7.11.5",
-    "@babel/preset-env": "^7.11.5",
-    "@babel/runtime-corejs3": "^7.11.2",
     "@tupaia/auth": "1.0.0",
     "@tupaia/database": "1.0.0",
-    "babel-preset-react-app": "^9.1.2",
     "cross-env": "^7.0.2",
     "cypress": "^6.6.0",
-    "eslint": "^7.9.0",
-    "eslint-import-resolver-alias": "^1.1.2",
     "faker": "^4.1.0",
-    "jest": "^27.0.6",
     "mockdate": "^3.0.5",
-    "npm-run-all": "^4.1.5",
-    "react-scripts": "4.0.3"
+    "npm-run-all": "^4.1.5"
   }
 }

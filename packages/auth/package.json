@@ -13,11 +13,11 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && run-p \"build:* {@}\" --",
-    "build:src": "babel src --out-dir dist --source-maps --ignore \"src/__tests__/**\" --config-file \"../../babel.config.json\"",
-    "build:types": "tsc",
-    "lint": "eslint --ignore-path ../../.gitignore .",
+    "build:src": "yarn package:build:js --ignore \"src/__tests__/**\"",
+    "build:types": "yarn package:build:types",
+    "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
-    "test": "yarn workspace @tupaia/database check-test-database-exists && DB_NAME=tupaia_test jest --runInBand",
+    "test": "yarn package:test:withdb --runInBand",
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
@@ -29,13 +29,9 @@
     "sha256": "^0.2.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.11.6",
     "@beyondessential/tupaia-access-policy": "^2.5.1",
     "@tupaia/access-policy": "3.0.0",
     "@tupaia/database": "1.0.0",
-    "eslint": "^7.9.0",
-    "jest": "^27.0.6",
-    "npm-run-all": "^4.1.5",
-    "typescript": "^4.2.0"
+    "npm-run-all": "^4.1.5"
   }
 }

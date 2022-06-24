@@ -13,10 +13,10 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && run-p \"build:* {@}\" --",
-    "build:src": "babel src --out-dir dist --source-maps --config-file \"../../babel.config.json\" --copy-files --no-copy-ignored",
-    "build:types": "tsc",
+    "build:src": "yarn package:build:js --copy-files --no-copy-ignored",
+    "build:types": "yarn package:build:types",
     "dump-database": "./scripts/dumpDatabase.sh",
-    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
     "migrate": "babel-node ./src/migrate.js up --migrations-dir ./src/migrations -v --config-file \"../../babel.config.json\"",
     "migrate-create": "read -p \"Enter migration name: \" MIGRATION_NAME && read -p \"Enter the scope of this migration ('schema' or 'data'): \" MIGRATION_SCOPE && babel-node ./src/migrate.js create ${MIGRATION_NAME}-modifies-${MIGRATION_SCOPE} --migrations-dir ./src/migrations -v --config-file \"../../babel.config.json\"",
@@ -49,14 +49,11 @@
     "winston": "3.3.3"
   },
   "devDependencies": {
-    "@babel/cli": "^7.11.6",
     "@babel/node": "^7.10.5",
     "cross-env": "^7.0.2",
     "deep-equal-in-any-order": "^1.0.27",
-    "eslint": "^7.9.0",
     "mocha": "^8.1.3",
     "npm-run-all": "^4.1.5",
-    "pluralize": "^8.0.0",
-    "typescript": "^4.2.0"
+    "pluralize": "^8.0.0"
   }
 }
