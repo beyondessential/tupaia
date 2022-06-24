@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { PermissionsPage } from '@tupaia/admin-panel/lib';
+import { PermissionsPage } from '@tupaia/admin-panel';
 import { LESMIS_PERMISSION_GROUPS } from '../../constants';
 
 const PERMISSIONS_ENDPOINT = 'userEntityPermissions';
