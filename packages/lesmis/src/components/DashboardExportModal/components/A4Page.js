@@ -9,9 +9,7 @@ import Header from './Header';
 const A4Container = styled.div`
   width: 1300px;
   margin-top: 20px;
-  position: absolute;
-  height: 1800px;
-  z-index: ${props => (props.$isSelected ? 0 : -1)};
+  page-break-after: always;
 `;
 
 const Content = styled(FlexColumn)`

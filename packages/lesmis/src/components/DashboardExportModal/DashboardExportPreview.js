@@ -6,7 +6,6 @@ import { DashboardReportPage, NoReportPage } from './pages';
 import { useExportOptions } from './context/ExportOptionsContext';
 
 const Container = styled.div`
-  position: relative;
   height: 800px;
 `;
 
