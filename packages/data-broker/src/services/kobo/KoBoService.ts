@@ -3,11 +3,33 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import type { KoBoApi } from '@tupaia/kobo-api';
+import {
+  DataBrokerModelRegistry,
+  DataSource,
+  DataSourceType,
+  Event,
+  SyncGroupResults,
+} from '../../types';
 import { Service } from '../Service';
 import { KoBoTranslator } from './KoBoTranslator';
+import { KoboSubmission, SyncGroup } from './types';
+
+type PullSyncGroupsOptions = Partial<{
+  startSubmissionTime: string;
+}>;
+
+type Puller = (
+  dataSources: SyncGroup[],
+  options: PullSyncGroupsOptions,
+) => Promise<Record<string, Event[]>>;
 
 export class KoBoService extends Service {
-  constructor(models, api) {
+  private readonly api: KoBoApi;
+  private readonly translator: KoBoTranslator;
+  private readonly pullers: Record<DataSourceType, Puller>;
+
+  public constructor(models: DataBrokerModelRegistry, api: KoBoApi) {
     super(models);
 
     this.api = api;
@@ -19,31 +41,46 @@ export class KoBoService extends Service {
     };
   }
 
-  async push() {
+  public async push(): Promise<never> {
     throw new Error('Data push is not supported in KoBoService');
   }
 
-  async delete() {
+  public async delete(): Promise<never> {
     throw new Error('Data deletion is not supported in KoBoService');
   }
 
-  async pull(dataSources, type, options) {
+  public async pull(
+    dataSources: SyncGroup[],
+    type: DataSourceType,
+    options: PullSyncGroupsOptions,
+  ): Promise<SyncGroupResults>;
+  public async pull(
+    dataSources: DataSource[],
+    type: DataSourceType,
+    options: Record<string, unknown>,
+  ) {
     const puller = this.pullers[type];
-    return puller(dataSources, options);
+    return puller(dataSources as any, options);
   }
 
-  pullAnalytics = () => {
+  private pullAnalytics = (): Promise<never> => {
     throw new Error('pullAnalytics is not supported in KoBoService');
   };
 
-  pullEvents = () => {
+  private pullEvents = (): Promise<never> => {
     throw new Error('pullEvents is not supported in KoBoService');
   };
 
-  pullSyncGroups = async (dataSources, options) => {
-    const resultsByInternalCode = {};
+  private pullSyncGroups = async (
+    dataSources: SyncGroup[],
+    options: PullSyncGroupsOptions,
+  ): Promise<SyncGroupResults> => {
+    const resultsByInternalCode: Record<string, Event[]> = {};
     for (const source of dataSources) {
-      const results = await this.api.fetchKoBoSubmissions(source.config?.koboSurveyCode, options);
+      const results: KoboSubmission[] = await this.api.fetchKoBoSubmissions(
+        source.config?.koboSurveyCode,
+        options,
+      );
       resultsByInternalCode[
         source.config?.internalSurveyCode
       ] = await this.translator.translateKoBoResults(
@@ -56,7 +93,7 @@ export class KoBoService extends Service {
     return resultsByInternalCode;
   };
 
-  async pullMetadata() {
+  public async pullMetadata(): Promise<never> {
     throw new Error('pullMetadata is not supported in KoBoService');
   }
 }

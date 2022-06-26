@@ -3,52 +3,47 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-/* eslint no-unused-vars: ["error", { "args": "none" }] */
+import {
+  AnalyticResults,
+  DataBrokerModelRegistry,
+  DataSource,
+  DataSourceType,
+  Diagnostics,
+  EventResults,
+  SyncGroupResults,
+} from '../types';
 
-/**
- * @abstract
- */
-export class Service {
-  constructor(models) {
+export abstract class Service {
+  protected readonly models: DataBrokerModelRegistry;
+
+  public constructor(models: DataBrokerModelRegistry) {
     this.models = models;
   }
 
-  get dataSourceTypes() {
+  public get dataSourceTypes() {
     return this.models.dataSource.getTypes();
   }
 
-  /**
-   * @abstract
-   */
-  async push(dataSources, data) {
-    throw new Error('Any subclass of Service must implement the "push" method');
-  }
+  public abstract push(
+    dataSources: DataSource[],
+    data: unknown,
+  ): Promise<{ diagnostics: Diagnostics }>;
 
-  /**
-   * @abstract
-   */
-  async delete(dataSource, data, options) {
-    throw new Error('Any subclass of Service must implement the "delete" method');
-  }
+  public abstract delete(
+    dataSource: DataSource,
+    data: unknown,
+    options?: Record<string, unknown>,
+  ): Promise<Diagnostics>;
 
-  /**
-   * @abstract
-   * @param {any} dataSources
-   * @param {string} type - one of DataSource.DATA_SOURCE_TYPES
-   * @param {any} options
-   */
-  async pull(dataSources, type, options) {
-    throw new Error('Any subclass of Service must implement the "pull" method');
-  }
+  public abstract pull(
+    dataSources: DataSource[],
+    type: DataSourceType,
+    options?: Record<string, unknown>,
+  ): Promise<AnalyticResults | EventResults | SyncGroupResults | undefined> | never;
 
-  /**
-   * @abstract
-   * @param {any[]} dataSources
-   * @param {string} type - one of DataSource.DATA_SOURCE_TYPES
-   * @param {{}} options
-   * @returns Promise<{Object.<name: string, id: string, code: string>}>
-   */
-  async pullMetadata(dataSources, type, options) {
-    throw new Error('Any subclass of Service must implement the "pullMetadata" method');
-  }
+  public abstract pullMetadata(
+    dataSources: DataSource[],
+    type: DataSourceType,
+    options?: Record<string, unknown>,
+  ): Promise<unknown>;
 }
