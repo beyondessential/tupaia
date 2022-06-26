@@ -19,10 +19,7 @@ interface DhisMetadataObject {
   name: string;
 }
 
-/**
- * Interface describing DataValue-like objects for translation purposes
- */
-interface DataValueI {
+interface OutboundDataValue {
   code: string;
   value: string;
   categoryOptionCombo?: string;
@@ -112,7 +109,7 @@ export class DhisTranslator {
   };
 
   private translateOutboundDataValue = (
-    { code, value, ...restOfDataValue }: DataValueI,
+    { code, value, ...restOfDataValue }: OutboundDataValue,
     dataSource: DataElement,
     dataElement: DataElementDescriptor,
   ) => {
@@ -133,7 +130,7 @@ export class DhisTranslator {
     return outboundDataValue;
   };
 
-  public translateOutboundDataValues = async <T extends DataValueI>(
+  public translateOutboundDataValues = async <T extends OutboundDataValue>(
     api: DhisApi,
     dataValues: T[],
     dataSources: DataElement[],

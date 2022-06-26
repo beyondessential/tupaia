@@ -27,9 +27,13 @@ type DataElementConfig = DataSourceConfig &
     };
   }>;
 
-export type DataSourceI = BaseDataSourceI & { config: DataSourceConfig };
+export type DataSource = BaseDataSourceI & { config: DataSourceConfig };
 export type DataElement = BaseDataElement & { config: DataElementConfig };
 export type DataGroup = BaseDataGroup & { config: DataSourceConfig };
+
+export type DataServiceConfig = {
+  isDataRegional: boolean;
+};
 
 export type AnalyticDimension = 'dx' | 'ou' | 'pe' | 'value';
 

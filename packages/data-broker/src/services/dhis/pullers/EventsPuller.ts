@@ -7,11 +7,12 @@ import type { DhisApi } from '@tupaia/dhis-api';
 import { DataSourceModel, Event } from '../../../types';
 import { buildEventsFromDhisEventAnalytics } from '../buildAnalytics';
 import { DhisTranslator } from '../DhisTranslator';
-import { DataElement, DataGroup } from '../types';
+import { DataElement, DataGroup, DataServiceConfig } from '../types';
 
 export interface PullEventsOptions {
   dataElementCodes?: string[];
   organisationUnitCodes: string[];
+  dataServices: DataServiceConfig[];
   period?: string;
   startDate?: string;
   endDate?: string;

@@ -76,7 +76,7 @@ export class DataLakeService extends Service {
     return pullData(dataSources as any, options);
   }
 
-  public async pullAnalytics(dataSources: DataElement[], options: PullAnalyticsOptions) {
+  private async pullAnalytics(dataSources: DataElement[], options: PullAnalyticsOptions) {
     const dataElementCodes = dataSources.map(({ code }) => code);
     const { analytics, numAggregationsProcessed } = await this.api.fetchAnalytics({
       ...translateOptionsForApi(options),
@@ -90,7 +90,7 @@ export class DataLakeService extends Service {
     };
   }
 
-  public async pullEvents(dataSources: DataGroup[], options: PullEventsOptions) {
+  private async pullEvents(dataSources: DataGroup[], options: PullEventsOptions) {
     if (dataSources.length > 1) {
       throw new Error('Cannot pull from multiple programs at the same time');
     }

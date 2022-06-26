@@ -13,13 +13,20 @@ import {
   buildAnalyticsFromDhisEventAnalytics,
 } from '../buildAnalytics';
 import { DhisTranslator } from '../DhisTranslator';
-import { DataElement, DataType, DhisAnalytics, DhisEventAnalytics } from '../types';
+import {
+  DataElement,
+  DataServiceConfig,
+  DataType,
+  DhisAnalytics,
+  DhisEventAnalytics,
+} from '../types';
 import { DataElementsMetadataPuller } from './DataElementsMetadataPuller';
 
 export type PullAnalyticsOptions = Partial<{
   programCodes?: string[];
   organisationUnitCode: string;
   organisationUnitCodes: string[];
+  dataServices: DataServiceConfig[];
   period: string;
   startDate: string;
   endDate: string;
