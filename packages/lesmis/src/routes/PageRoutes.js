@@ -16,6 +16,7 @@ import { RegisterView } from '../views/RegisterView';
 import { NotAuthorisedView } from '../views/NotAuthorisedView';
 import { VerifyEmailView } from '../views/VerifyEmailView';
 import { ABOUT_PAGE, FQS_PAGE, CONTACT_PAGE } from '../constants';
+import { PDFDownloadView } from '../views/PDFDownloadView';
 
 const AdminPanel = lazy(() => import('./AdminPanelRoutes'));
 
@@ -76,6 +77,9 @@ export const PageRoutes = React.memo(() => {
           <NavBar />
           <NotAuthorisedView />
           <Footer />
+        </Route>
+        <Route path={`${path}/pdf-export/:entityCode?`}>
+          <PDFDownloadView />
         </Route>
         <Route path={`${path}/:entityCode/:view?`}>
           <NavBar />
