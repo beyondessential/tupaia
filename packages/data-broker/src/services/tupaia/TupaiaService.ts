@@ -3,54 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import type { TupaiaDataApi } from '@tupaia/data-api';
 import { reduceToDictionary } from '@tupaia/utils';
-import {
-  AnalyticResults,
-  DataBrokerModelRegistry,
-  DataElement,
-  DataElementMetadata,
-  DataGroup,
-  DataGroupMetadata,
-  DataSource,
-  DataSourceType,
-  EventResults,
-} from '../../types';
+
 import { Service } from '../Service';
 import { translateOptionsForApi } from './translation';
 
-export type PullAnalyticsOptions = Partial<{
-  period: string;
-  startDate: string;
-  endDate: string;
-  includeOptions: boolean;
-}>;
-
-export type PullEventsOptions = Partial<{
-  period: string;
-  startDate: string;
-  endDate: string;
-}>;
-
-type PullMetadataOptions = {
-  includeOptions?: boolean;
-};
-
-type Puller =
-  | ((dataSources: DataElement[], options: PullAnalyticsOptions) => Promise<AnalyticResults>)
-  | ((dataSources: DataGroup[], options: PullEventsOptions) => Promise<EventResults>);
-
-type MetadataPuller =
-  | ((dataSources: DataElement[], options: PullMetadataOptions) => Promise<DataElementMetadata[]>)
-  | ((dataSources: DataGroup[], options: PullMetadataOptions) => Promise<DataGroupMetadata>);
-
 // used for internal Tupaia apis: TupaiaDataApi and IndicatorApi
 export class TupaiaService extends Service {
-  private readonly api: TupaiaDataApi;
-  private readonly pullers: Record<string, Puller>;
-  private readonly metadataPullers: Record<string, MetadataPuller>;
-
-  public constructor(models: DataBrokerModelRegistry, api: TupaiaDataApi) {
+  constructor(models, api) {
     super(models);
 
     this.api = api;
@@ -64,34 +24,20 @@ export class TupaiaService extends Service {
     };
   }
 
-  public async push(): Promise<never> {
+  async push() {
     throw new Error('Data push is not supported in TupaiaService');
   }
 
-  public async delete(): Promise<never> {
+  async delete() {
     throw new Error('Data deletion is not supported in TupaiaService');
   }
 
-  public async pull(
-    dataSources: DataElement[],
-    type: 'dataElement',
-    options?: PullAnalyticsOptions,
-  ): Promise<AnalyticResults>;
-  public async pull(
-    dataSources: DataGroup[],
-    type: 'dataGroup',
-    options?: PullEventsOptions,
-  ): Promise<EventResults>;
-  public async pull(
-    dataSources: DataSource[],
-    type: DataSourceType,
-    options: Record<string, unknown> = {},
-  ) {
+  async pull(dataSources, type, options = {}) {
     const pullData = this.pullers[type];
-    return pullData(dataSources as any, options);
+    return pullData(dataSources, options);
   }
 
-  private async pullAnalytics(dataSources: DataElement[], options: PullAnalyticsOptions) {
+  async pullAnalytics(dataSources, options) {
     const dataElementCodes = dataSources.map(({ code }) => code);
     const { analytics, numAggregationsProcessed } = await this.api.fetchAnalytics({
       ...translateOptionsForApi(options),
@@ -108,7 +54,7 @@ export class TupaiaService extends Service {
     };
   }
 
-  private async pullEvents(dataSources: DataGroup[], options: PullEventsOptions) {
+  async pullEvents(dataSources, options) {
     if (dataSources.length > 1) {
       throw new Error('Cannot pull from multiple programs at the same time');
     }
@@ -118,32 +64,109 @@ export class TupaiaService extends Service {
     return this.api.fetchEvents({ ...translateOptionsForApi(options), dataGroupCode });
   }
 
-  public async pullMetadata(
-    dataSources: DataElement[],
-    type: 'dataElement',
-    options?: PullMetadataOptions,
-  ): Promise<DataElementMetadata[]>;
-  public async pullMetadata(
-    dataSources: DataGroup[],
-    type: 'dataGroup',
-    options?: PullMetadataOptions,
-  ): Promise<DataGroupMetadata>;
-  public async pullMetadata(
-    dataSources: DataSource[],
-    type: DataSourceType,
-    options: PullMetadataOptions = {},
-  ) {
+  async pullMetadata(dataSources, type, options = {}) {
     const pullMetadata = this.metadataPullers[type];
-    return pullMetadata(dataSources as any, options);
+    return pullMetadata(dataSources, options);
   }
 
-  private async pullDataElementMetadata(dataSources: DataElement[], options: PullMetadataOptions) {
+  async pullDataElementMetadata(dataSources, options) {
     const { includeOptions } = options;
     const dataElementCodes = dataSources.map(({ code }) => code);
     return this.api.fetchDataElements(dataElementCodes, { includeOptions });
   }
 
-  private async pullDataGroupMetadata(dataSources: DataGroup[], options: PullMetadataOptions) {
+  async pullDataGroupMetadata(dataSources, options) {
+    if (dataSources.length > 1) {
+      throw new Error('Cannot pull metadata from multiple programs at the same time');
+    }
+    const { includeOptions } = options;
+    const [dataSource] = dataSources;
+    const { code: dataGroupCode } = dataSource;
+    const dataElementDataSources = await this.models.dataSource.getDataElementsInGroup(
+      dataGroupCode,
+    );
+    const dataElementCodes = dataElementDataSources.map(({ code }) => code);
+    return this.api.fetchDataGroup(dataGroupCode, dataElementCodes, { includeOptions });
+  }
+}
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+import { reduceToDictionary } from '@tupaia/utils';
+
+import { Service } from '../Service';
+import { translateOptionsForApi } from './translation';
+
+// used for internal Tupaia apis: TupaiaDataApi and IndicatorApi
+export class TupaiaService extends Service {
+  constructor(models, api) {
+    super(models);
+
+    this.api = api;
+    this.pullers = {
+      [this.dataSourceTypes.DATA_ELEMENT]: this.pullAnalytics.bind(this),
+      [this.dataSourceTypes.DATA_GROUP]: this.pullEvents.bind(this),
+    };
+    this.metadataPullers = {
+      [this.dataSourceTypes.DATA_ELEMENT]: this.pullDataElementMetadata.bind(this),
+      [this.dataSourceTypes.DATA_GROUP]: this.pullDataGroupMetadata.bind(this),
+    };
+  }
+
+  async push() {
+    throw new Error('Data push is not supported in TupaiaService');
+  }
+
+  async delete() {
+    throw new Error('Data deletion is not supported in TupaiaService');
+  }
+
+  async pull(dataSources, type, options = {}) {
+    const pullData = this.pullers[type];
+    return pullData(dataSources, options);
+  }
+
+  async pullAnalytics(dataSources, options) {
+    const dataElementCodes = dataSources.map(({ code }) => code);
+    const { analytics, numAggregationsProcessed } = await this.api.fetchAnalytics({
+      ...translateOptionsForApi(options),
+      dataElementCodes,
+    });
+    const dataElements = await this.pullDataElementMetadata(dataSources, options);
+
+    return {
+      results: analytics,
+      metadata: {
+        dataElementCodeToName: reduceToDictionary(dataElements, 'code', 'name'),
+      },
+      numAggregationsProcessed,
+    };
+  }
+
+  async pullEvents(dataSources, options) {
+    if (dataSources.length > 1) {
+      throw new Error('Cannot pull from multiple programs at the same time');
+    }
+    const [dataSource] = dataSources;
+    const { code: dataGroupCode } = dataSource;
+
+    return this.api.fetchEvents({ ...translateOptionsForApi(options), dataGroupCode });
+  }
+
+  async pullMetadata(dataSources, type, options = {}) {
+    const pullMetadata = this.metadataPullers[type];
+    return pullMetadata(dataSources, options);
+  }
+
+  async pullDataElementMetadata(dataSources, options) {
+    const { includeOptions } = options;
+    const dataElementCodes = dataSources.map(({ code }) => code);
+    return this.api.fetchDataElements(dataElementCodes, { includeOptions });
+  }
+
+  async pullDataGroupMetadata(dataSources, options) {
     if (dataSources.length > 1) {
       throw new Error('Cannot pull metadata from multiple programs at the same time');
     }
