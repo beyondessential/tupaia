@@ -6,6 +6,7 @@
 import { execSync } from 'child_process';
 import {} from 'dotenv/config';
 import fs from 'fs';
+import { fetch } from 'node-fetch';
 
 import { getArgs, getLoggerInstance } from '@tupaia/utils';
 import { E2E_CONFIG_PATH } from '../../constants';
@@ -68,10 +69,9 @@ const runTestsAgainstUrl = (url, options = {}) => {
   });
 };
 
-const validateUrl = (description, url) => {
-  try {
-    execSync(`curl --output /dev/null --silent --head --fail ${url}`);
-  } catch (error) {
+const validateUrl = async (description, url) => {
+  const response = await fetch.get(url);
+  if (!response.ok) {
     throw new Error(`No deployment exists for ${description} url '${url}', cancelling e2e tests`);
   }
 };
@@ -91,13 +91,13 @@ export const testE2e = async () => {
     logger.warn(`Baseline url is empty, stopping e2e tests`);
     return;
   }
-  validateUrl('baseline', baselineUrl);
+  await validateUrl('baseline', baselineUrl);
 
   if (!compareUrl) {
     logger.warn(`Compare url is empty, stopping e2e tests`);
     return;
   }
-  validateUrl('compare', compareUrl);
+  await validateUrl('compare', compareUrl);
 
   let baseError;
   try {
