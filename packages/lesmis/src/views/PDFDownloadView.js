@@ -1,18 +1,24 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
 import { DashboardExportPreview } from '../components/DashboardExportModal/DashboardExportPreview';
-
-import { getExportableDashboards } from '../utils';
+import { getExportableDashboards, useUrlSearchParams } from '../utils';
 import { useDashboardDropdownOptions } from '../utils/useDashboardDropdownOptions';
 
 export const PDFDownloadView = () => {
-  // const { locale, entityCode, view } = useUrlParams();
+  const [{ label, table }] = useUrlSearchParams();
+  const exportWithLabels = !!label;
+  const exportWithTable = !!table;
   const { dropdownOptions } = useDashboardDropdownOptions();
   const profileDropDownOptions = dropdownOptions.filter(({ exportToPDF }) => exportToPDF);
   const { exportableDashboards } = getExportableDashboards(profileDropDownOptions);
 
-  return <DashboardExportPreview exportableDashboards={exportableDashboards} />;
+  return (
+    <DashboardExportPreview
+      exportableDashboards={exportableDashboards}
+      exportOptions={{ exportWithLabels, exportWithTable }}
+    />
+  );
 };
