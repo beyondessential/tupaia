@@ -89,7 +89,7 @@ const ProvinceView = ({ vitals }) => {
         />
         <EntityVitalsItem
           name={<I18n t="dashboards.provincePopulation" />}
-          value={vitals[translate('Population')]?.toLocaleString()}
+          value={vitals[translate('dashboards.Population')]?.toLocaleString()}
           icon="Group"
         />
         <EntityVitalsItem
@@ -123,7 +123,7 @@ const DistrictView = ({ vitals }) => {
         />
         <EntityVitalsItem
           name={<I18n t="dashboards.districtPopulation" />}
-          value={vitals[translate('Population')]?.toLocaleString()}
+          value={vitals[translate('dashboards.Population')]?.toLocaleString()}
           icon="Group"
         />
         <EntityVitalsItem
@@ -160,7 +160,7 @@ const DistrictView = ({ vitals }) => {
           />
           <EntityVitalsItem
             name={<I18n t="dashboards.provincePopulation" />}
-            value={vitals.parentVitals?.[translate('Population')]?.toLocaleString()}
+            value={vitals.parentVitals?.[translate('dashboards.Population')]?.toLocaleString()}
           />
         </FlexStart>
       </MuiBox>
@@ -221,7 +221,7 @@ const SchoolView = ({ vitals }) => {
           />
           <EntityVitalsItem
             name={<I18n t="dashboards.districtPopulation" />}
-            value={vitals.parentVitals?.[translate('Population')]?.toLocaleString()}
+            value={vitals.parentVitals?.[translate('dashboards.Population')]?.toLocaleString()}
             mr={4}
           />
           <EntityVitalsItem
