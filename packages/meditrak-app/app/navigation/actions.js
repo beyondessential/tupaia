@@ -9,7 +9,6 @@ import {
   TOGGLE_SIDE_MENU,
   CHANGE_PASSWORD_SCREEN,
   CREATE_ACCOUNT_SCREEN,
-  DELETE_ACCOUNT_REQUEST_SCREEN,
   LOGIN_SCREEN,
   REALM_EXPLORER_SCREEN,
   REQUEST_COUNTRY_ACCESS_SCREEN,
@@ -130,9 +129,6 @@ const goToRoute = (routeName, dispatch) => {
 
     case CHANGE_PASSWORD_SCREEN:
       return dispatch(navigateToScreen(CHANGE_PASSWORD_SCREEN));
-
-    case DELETE_ACCOUNT_REQUEST_SCREEN:
-      return dispatch(navigateToScreen(DELETE_ACCOUNT_REQUEST_SCREEN));
 
     case 'logout':
     default:

@@ -14,6 +14,7 @@ export * from './errors';
 export { Multilock } from './Multilock';
 export * from './period';
 export * from './testUtilities';
+export * from './featureFlags';
 export * from './filesystem';
 export { filterEntities } from './filterEntities';
 export * from './geoJson';

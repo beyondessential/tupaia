@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import MuiCard from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
-import { RegisterForm, FlexCenter, FlexColumn, FormBackButton } from '../components';
+import { RegisterForm, FlexCenter, FlexColumn, FormBackButton, I18n } from '../components';
 import { LocaleLink } from '../components/LocaleLinks';
 
 const Container = styled(FlexColumn)`
@@ -53,7 +53,9 @@ export const RegisterView = () => (
       <RegisterForm />
     </StyledCard>
     <FlexCenter mb={4}>
-      <Text color="textSecondary">Already have an account?</Text>
+      <Text color="textSecondary">
+        <I18n t="register.forAnAccount" />
+      </Text>
       <StyledLocaleLink to="/login" color="primary">
         Log in
       </StyledLocaleLink>

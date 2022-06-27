@@ -10,9 +10,11 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   ? I
   : never;
 
-type FilterComparators = '!=' | 'ilike' | '=';
+type FilterComparators = '!=' | 'ilike' | '=' | '>' | '<' | '<=' | '>=' | 'in' | 'not in';
+type ComparisonTypes = 'where' | 'whereBetween' | 'whereIn' | 'orWhere';
 
 export type AdvancedFilterValue<T> = {
+  comparisonType?: ComparisonTypes;
   comparator: FilterComparators;
   comparisonValue: T | T[];
 };
