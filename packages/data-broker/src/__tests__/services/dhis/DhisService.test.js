@@ -120,6 +120,7 @@ describe('DhisService', () => {
           await dhisService.push(
             [DATA_SOURCES.POP01, DATA_SOURCES.POP02],
             [DATA_VALUES.POP01, DATA_VALUES.POP02],
+            { type: 'dataElement' },
           );
 
         return expect(run()).toBeRejectedWith(
@@ -130,7 +131,7 @@ describe('DhisService', () => {
       it('looks up the api from the given data source', async () => {
         getApiForValueSpy.mockReturnValue(createMockDhisApi());
 
-        await dhisService.push([DATA_SOURCES.POP01], [DATA_VALUES.POP01]);
+        await dhisService.push([DATA_SOURCES.POP01], [DATA_VALUES.POP01], { type: 'dataElement' });
 
         // implementation calls getApiForValue multiple times, we don't test each one as args should be the same every time
         expect(getApiForValueSpy).toHaveBeenLastCalledWith(
@@ -204,8 +205,9 @@ describe('DhisService', () => {
       it('allows specifying serverName', async () => {
         getApiFromServerNameSpy.mockReturnValue(createMockDhisApi());
 
-        await dhisService.delete(DATA_GROUPS.POP01, DATA_GROUPS.POP01, {
+        await dhisService.delete(DATA_SOURCES.POP01, DATA_VALUES.POP01, {
           serverName: 'some server name',
+          type: 'dataElement',
         });
 
         expect(getApiFromServerNameSpy).toHaveBeenCalledOnceWith(
@@ -217,12 +219,14 @@ describe('DhisService', () => {
       it('looks up the api from the given data source', async () => {
         getApiForValueSpy.mockReturnValue(createMockDhisApi());
 
-        await dhisService.delete(DATA_GROUPS.POP01, DATA_GROUPS.POP01);
+        await dhisService.delete(DATA_SOURCES.POP01, DATA_VALUES.POP01, {
+          type: 'dataElement',
+        });
 
         expect(getApiForValueSpy).toHaveBeenCalledOnceWith(
           expect.anything(),
           expect.anything(),
-          DATA_GROUPS.POP01,
+          DATA_SOURCES.POP01,
           DATA_VALUES.POP01,
         );
       });
