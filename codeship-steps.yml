@@ -60,5 +60,5 @@
   service: e2e
   tag: -e2e$
   steps:
-    - name: E2E test web-frontend
+    - name: E2E test
       command: './packages/devops/scripts/ci/testE2e.sh'
