@@ -15,10 +15,6 @@ rm -rf server-configs-nginx
 # install psql for use when installing mv refresh in the db
 sudo apt-get install -yqq postgresql-client
 
-# install pm2
-npm install --global pm2
-pm2 install pm2-logrotate
-
 # install lastpass
 sudo apt-get --no-install-recommends -yqq install \
   bash-completion \
@@ -52,6 +48,10 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 nvm install $(sudo cat tupaia/.nvmrc)
 npm install --global yarn
+
+# install pm2
+npm install --global pm2
+pm2 install pm2-logrotate
 
 # build all packages once using dev to speed up future branch-specific builds
 sudo -Hu ubuntu /home/ubuntu/tupaia/packages/devops/scripts/deployment/buildDeployablePackages.sh gold-master-image-builder
