@@ -55,6 +55,8 @@ RUN mkdir -p ./packages/devops
 COPY packages/devops/package.json ./packages/devops
 RUN mkdir -p ./packages/dhis-api
 COPY packages/dhis-api/package.json ./packages/dhis-api
+RUN mkdir -p ./packages/e2e
+COPY packages/e2e/package.json ./packages/e2e
 RUN mkdir -p ./packages/entity-server
 COPY packages/entity-server/package.json ./packages/entity-server
 RUN mkdir -p ./packages/expression-parser
@@ -106,6 +108,7 @@ COPY packages/data-api/. ./packages/data-api
 COPY packages/data-broker/. ./packages/data-broker
 COPY packages/data-lake-api/. ./packages/data-lake-api
 COPY packages/dhis-api/. ./packages/dhis-api
+COPY packages/e2e/. ./packages/e2e
 COPY packages/expression-parser/. ./packages/expression-parser
 COPY packages/indicators/. ./packages/indicators
 COPY packages/utils/. ./packages/utils
