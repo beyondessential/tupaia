@@ -87,7 +87,7 @@ export class DataLakeAnalyticsFetchQuery {
         entity_code AS "entityCode", 
         data_element_code AS "dataElementCode",
         to_char(date, 'YYYYMMDD') as period,
-        'Number' as type,
+        value_type as type,
         value
       FROM analytics
         ${SqlQuery.innerJoin('analytics', 'entity_code', this.entityCodes)}

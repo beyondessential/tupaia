@@ -65,8 +65,6 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
     return SurveyResponseType;
   }
 
-  isDeletableViaApi = true;
-
   getOrgUnitEntityTypes = () => {
     const orgUnitEntityTypes = Object.values(this.otherModels.entity.orgUnitEntityTypes);
     return `(${orgUnitEntityTypes.map(t => `'${t}'`).join(',')})`;

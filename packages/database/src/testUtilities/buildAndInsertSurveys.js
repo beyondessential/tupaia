@@ -15,7 +15,7 @@ const buildAndInsertQuestion = async (
   const question = await findOrCreateDummyRecord(
     models.question,
     { code },
-    { ...questionFields, data_source_id: dataElement.id },
+    { ...questionFields, data_element_id: dataElement.id },
   );
   const surveyScreenComponent = await findOrCreateDummyRecord(
     models.surveyScreenComponent,
@@ -31,8 +31,8 @@ const buildAndInsertQuestion = async (
 const buildAndInsertDataGroup = async (models, fields) => {
   const { code, type, ...createFields } = fields;
   return findOrCreateDummyRecord(
-    models.dataSource,
-    { code, type: 'dataGroup' },
+    models.dataGroup,
+    { code },
     { service_type: 'tupaia', ...createFields },
   );
 };
@@ -40,8 +40,8 @@ const buildAndInsertDataGroup = async (models, fields) => {
 const buildAndInsertDataElement = async (models, fields) => {
   const { code, type, ...createFields } = fields;
   return findOrCreateDummyRecord(
-    models.dataSource,
-    { code, type: 'dataElement' },
+    models.dataElement,
+    { code },
     { service_type: 'tupaia', ...createFields },
   );
 };
@@ -55,7 +55,7 @@ const buildAndInsertSurvey = async (
   const survey = await findOrCreateDummyRecord(
     models.survey,
     { code },
-    { ...surveyFields, data_source_id: dataGroup.id },
+    { ...surveyFields, data_group_id: dataGroup.id },
   );
   const surveyScreen = await findOrCreateDummyRecord(
     models.surveyScreen,

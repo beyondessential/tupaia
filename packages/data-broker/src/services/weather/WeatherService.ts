@@ -124,7 +124,7 @@ export class WeatherService extends Service {
       })) as DataElement[];
     } else if (requestType === this.dataSourceTypes.DATA_GROUP) {
       // data group requested
-      dataSources = await this.models.dataSource.getDataElementsInGroup(requestDataSourceCode);
+      dataSources = await this.models.dataGroup.getDataElementsInDataGroup(requestDataSourceCode);
     }
     return dataSources as DataElement[];
   }

@@ -6,7 +6,7 @@
 export * from './array';
 export { DEFAULT_BINARY_OPTIONS, DEFAULT_BINARY_OPTIONS_OBJECT } from './constant';
 export * from './compare';
-export * from './createBasicHeader';
+export * from './authHeaderBuilders';
 export * from './cypress';
 export { getTimezoneNameFromTimestamp, utcMoment } from './datetime';
 export { getDhisConfig } from './dhis';
@@ -14,6 +14,7 @@ export * from './errors';
 export { Multilock } from './Multilock';
 export * from './period';
 export * from './testUtilities';
+export * from './featureFlags';
 export * from './filesystem';
 export { filterEntities } from './filterEntities';
 export * from './geoJson';

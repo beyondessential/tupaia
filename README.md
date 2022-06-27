@@ -72,7 +72,7 @@ We use codeship for the CI/CD
 
 ## Tests
 
-Most of the packages support the following scripts for testing:
+Most of the packages support the following scripts for testing: 
 
 ```
 

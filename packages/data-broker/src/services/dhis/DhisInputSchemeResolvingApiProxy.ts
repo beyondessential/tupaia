@@ -246,7 +246,6 @@ export class DhisInputSchemeResolvingApiProxy {
   private allDataElementsHaveDhisId = async (dataElementCodes: string[]) => {
     const dataElements = await this.models.dataSource.find({
       code: dataElementCodes,
-      type: 'dataElement',
     });
 
     for (const dataElementCode of dataElementCodes) {
@@ -305,7 +304,7 @@ export class DhisInputSchemeResolvingApiProxy {
 
       if (!dataElement) {
         throw new Error(
-          'DataElement not found in data_source, attempted to replace its code with an id',
+          'DataElement not found in data_group, attempted to replace its code with an id',
         );
       }
 
@@ -428,7 +427,7 @@ export class DhisInputSchemeResolvingApiProxy {
 
       if (!dataGroup) {
         throw new Error(
-          `Program/DataGroup ${programCode} not found in data_source, attempted to replace its code with an id`,
+          `Program/DataGroup ${programCode} not found in data_group, attempted to replace its code with an id`,
         );
       }
 

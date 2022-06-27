@@ -5135,6 +5135,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/semver-compare@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@types/semver-compare/-/semver-compare-1.0.1.tgz#17d1dc62c516c133ab01efb7803a537ee6eaf3d5"
+  integrity sha512-wx2LQVvKlEkhXp/HoKIZ/aSL+TvfJdKco8i0xJS3aR877mg4qBHzNT6+B5a61vewZHo79EdZavskGnRXEC2H6A==
+
 "@types/serve-static@*":
   version "1.13.5"
   resolved "https://registry.yarnpkg.com/@types/serve-static/-/serve-static-1.13.5.tgz#3d25d941a18415d3ab092def846e135a08bbcf53"

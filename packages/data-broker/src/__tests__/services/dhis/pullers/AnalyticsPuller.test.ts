@@ -23,7 +23,7 @@ describe('AnalyticsPuller', () => {
     const models = createModelsStub();
     const translator = new DhisTranslator(models);
     const dataElementsMetadataPuller = new DataElementsMetadataPuller(
-      models.dataSource,
+      models.dataElement,
       translator,
     );
     analyticsPuller = new AnalyticsPuller(

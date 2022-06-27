@@ -8,11 +8,14 @@ import { DhisInputSchemeResolvingApiProxy } from '../../../services/dhis/DhisInp
 import { DataBrokerModelRegistry } from '../../../types';
 
 const DATA_SOURCES = [
-  { code: 'EL1', type: 'dataElement', config: { dhisId: 'dhisId_el1' } },
-  { code: 'EL2', type: 'dataElement', config: { dhisId: 'dhisId_el2' } },
-  { code: 'EL3', type: 'dataElement', config: {} },
-  { code: 'G1', type: 'dataGroup', config: { dhisId: 'dhisId_g1' } },
-  { code: 'G2', type: 'dataGroup', config: {} },
+  { code: 'EL1', config: { dhisId: 'dhisId_el1' } },
+  { code: 'EL2', config: { dhisId: 'dhisId_el2' } },
+  { code: 'EL3', config: {} },
+];
+
+const DATA_GROUPS = [
+  { code: 'G1', config: { dhisId: 'dhisId_g1' } },
+  { code: 'G2', config: {} },
 ];
 
 const DATA_SERVICE_ENTITIES = [{ entity_code: 'ORG1', config: { dhis_id: 'dhisId_ou1' } }];

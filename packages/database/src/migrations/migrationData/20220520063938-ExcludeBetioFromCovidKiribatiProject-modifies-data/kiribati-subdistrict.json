@@ -1,0 +1,152 @@
+[
+ {
+   "id": "5d3f8844d35c9d31bf35f1af",
+   "code": "KI_Gilbert Islands_Tarawa Teinainano",
+   "parent_id": "5d3f88441dee9e31bfccaa40",
+   "name": "Tarawa Teinainano"
+ },
+ {
+   "id": "5d3f884491fcd131bfb6e449",
+   "code": "KI_Gilbert Islands_Kuria",
+   "parent_id": "5d3f88441dee9e31bfccaa40",
+   "name": "Kuria"
+ },
+ {
+   "id": "5d3f8844f52af131bf642b3a",
+   "code": "KI_Gilbert Islands_Aranuka",
+   "parent_id": "5d3f88441dee9e31bfccaa40",
+   "name": "Aranuka"
+ },
+ {
+   "id": "5d3f88447da8a631bfa58d7d",
+   "code": "KI_Gilbert Islands_Abemama",
+   "parent_id": "5d3f88441dee9e31bfccaa40",
+   "name": "Abemama"
+ },
+ {
+   "id": "5d3f88444f3b1231bf633866",
+   "code": "KI_Gilbert Islands_Arorae",
+   "parent_id": "5d3f88441dee9e31bfccaa40",
+   "name": "Arorae"
+ },
+ {
+   "id": "5d3f8844487df831bf456fe7",
+   "code": "KI_Gilbert Islands_Nonouti",
+   "parent_id": "5d3f88441dee9e31bfccaa40",
+   "name": "Nonouti"
+ },
+ {
+   "id": "5d3f8844e2e22231bf8217cf",
+   "code": "KI_Gilbert Islands_Banaba",
+   "parent_id": "5d3f88441dee9e31bfccaa40",
+   "name": "Banaba"
+ },
+ {
+   "id": "5d3f8844532e8031bf366bc4",
+   "code": "KI_Gilbert Islands_Marakei",
+   "parent_id": "5d3f88441dee9e31bfccaa40",
+   "name": "Marakei"
+ },
+ {
+   "id": "5d3f8844078f0f31bf4d56e8",
+   "code": "KI_Gilbert Islands_Tamana",
+   "parent_id": "5d3f88441dee9e31bfccaa40",
+   "name": "Tamana"
+ },
+ {
+   "id": "5d3f88449a394b31bf85166f",
+   "code": "KI_Gilbert Islands_Beru",
+   "parent_id": "5d3f88441dee9e31bfccaa40",
+   "name": "Beru"
+ },
+ {
+   "id": "5d3f88445ebdc231bfb619ed",
+   "code": "KI_Gilbert Islands_Betio",
+   "parent_id": "5d3f88441dee9e31bfccaa40",
+   "name": "Betio"
+ },
+ {
+   "id": "5d3f884438775631bf817806",
+   "code": "KI_Gilbert Islands_Tarawa Ieta",
+   "parent_id": "5d3f88441dee9e31bfccaa40",
+   "name": "Tarawa Ieta"
+ },
+ {
+   "id": "5d3f8844bbd0e031bfdabd77",
+   "code": "KI_Gilbert Islands_Makin",
+   "parent_id": "5d3f88441dee9e31bfccaa40",
+   "name": "Makin"
+ },
+ {
+   "id": "5d3f8844d73a0331bf242afc",
+   "code": "KI_Gilbert Islands_Tabiteuea South",
+   "parent_id": "5d3f88441dee9e31bfccaa40",
+   "name": "Tabiteuea South"
+ },
+ {
+   "id": "5d3f8844e9170b31bfdad7c0",
+   "code": "KI_Gilbert Islands_Nikunau",
+   "parent_id": "5d3f88441dee9e31bfccaa40",
+   "name": "Nikunau"
+ },
+ {
+   "id": "5d3f8844143b4b31bf82e476",
+   "code": "KI_Gilbert Islands_Onotoa",
+   "parent_id": "5d3f88441dee9e31bfccaa40",
+   "name": "Onotoa"
+ },
+ {
+   "id": "5d3f8844cc844c31bf65ae98",
+   "code": "KI_Gilbert Islands_Abaiang",
+   "parent_id": "5d3f88441dee9e31bfccaa40",
+   "name": "Abaiang"
+ },
+ {
+   "id": "5d3f884483b20731bf011145",
+   "code": "KI_Gilbert Islands_Tabiteuea North",
+   "parent_id": "5d3f88441dee9e31bfccaa40",
+   "name": "Tabiteuea North"
+ },
+ {
+   "id": "5d3f884440842c31bf0b5b5c",
+   "code": "KI_Gilbert Islands_Maiana",
+   "parent_id": "5d3f88441dee9e31bfccaa40",
+   "name": "Maiana"
+ },
+ {
+   "id": "6035939061f76a42af029e51",
+   "code": "KI_Line Islands_Kiritimati",
+   "parent_id": "5d3f884491e09f31bf655970",
+   "name": "Kiritimati"
+ },
+ {
+   "id": "6035939061f76a42af029e52",
+   "code": "KI_Line Islands_Tabuaeran",
+   "parent_id": "5d3f884491e09f31bf655970",
+   "name": "Tabuaeran"
+ },
+ {
+   "id": "6035939061f76a42af029e53",
+   "code": "KI_Line Islands_Teraina",
+   "parent_id": "5d3f884491e09f31bf655970",
+   "name": "Teraina"
+ },
+ {
+   "id": "6035939061f76a42af029e54",
+   "code": "KI_Phoenix Islands_Kanton",
+   "parent_id": "5d3f8844ecd5f831bf54558d",
+   "name": "Kanton"
+ },
+ {
+   "id": "5d3f884495cba231bfab93ed",
+   "code": "KI_Gilbert Islands_Butaritari",
+   "parent_id": "5d3f88441dee9e31bfccaa40",
+   "name": "Butaritari"
+ },
+ {
+   "id": "624cf7787739903cc2031766",
+   "code": "KI_UnknownIslands_Unknown",
+   "parent_id": "624cf7577739903cc2031705",
+   "name": "Unknown"
+ }
+]

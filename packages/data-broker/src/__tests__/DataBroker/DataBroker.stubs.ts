@@ -29,7 +29,6 @@ export const createServiceStub = (serviceData: ServiceResult[]) => {
   const pull = (dataSources: DataSource[]) => {
     const dataSourceCodes = dataSources.map(({ code }) => code);
     // Service specs require that data must be pulled for a specific type each time
-    const { type } = dataSources[0];
     const filteredServiceData = serviceData.filter(
       ({ code, type: currentType }) => dataSourceCodes.includes(code) && currentType === type,
     );

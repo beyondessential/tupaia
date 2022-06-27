@@ -6,7 +6,7 @@
 
 import { DatabaseModel, DatabaseType } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { getTokenExpiry } from '@tupaia/utils';
+import { createBearerHeader, getTokenExpiry } from '@tupaia/utils';
 import { AccessPolicyObject } from '../../types';
 import { AuthConnection } from '../auth';
 
@@ -30,13 +30,13 @@ export class SessionType extends DatabaseType {
   public static databaseType = 'session';
   public readonly id: string;
   public email: string;
+  public refresh_token: string;
 
   private readonly authConnection: AuthConnection;
 
   private access_policy: AccessPolicyObject;
   private access_token: string;
   private access_token_expiry: number;
-  private refresh_token: string;
 
   private refreshAccessTokenPromise: Promise<void> | null;
 
@@ -68,7 +68,7 @@ export class SessionType extends DatabaseType {
     if (this.isAccessTokenExpired()) {
       await this.refreshAccessToken();
     }
-    return `Bearer ${this.access_token}`;
+    return createBearerHeader(this.access_token);
   }
 
   public async refreshAccessToken(): Promise<void> {

@@ -8,13 +8,15 @@ import { AccessRequestModel } from './AccessRequest';
 import { AncestorDescendantRelationModel } from './AncestorDescendantRelation';
 import { AnswerModel } from './Answer';
 import { APIClientModel } from './APIClient';
+import { ApiRequestLogModel } from './ApiRequestLog';
 import { CommentModel } from './Comment';
 import { CountryModel } from './Country';
 import { DashboardModel } from './Dashboard';
 import { DashboardItemModel } from './DashboardItem';
 import { DashboardRelationModel } from './DashboardRelation';
 import { DataElementDataGroupModel } from './DataElementDataGroup';
-import { DataSourceModel } from './DataSource';
+import { DataElementModel } from './DataElement';
+import { DataGroupModel } from './DataGroup';
 import { DataServiceSyncGroupModel } from './DataServiceSyncGroup';
 import { DisasterModel } from './Disaster';
 import { DisasterEventModel } from './DisasterEvent';
@@ -22,6 +24,7 @@ import { EntityModel } from './Entity';
 import { EntityHierarchyModel } from './EntityHierarchy';
 import { EntityRelationModel } from './EntityRelation';
 import { FacilityModel } from './Facility';
+import { FeedItemModel } from './FeedItem';
 import { GeographicalAreaModel } from './GeographicalArea';
 import { IndicatorModel } from './Indicator';
 import { LegacyReportModel } from './LegacyReport';
@@ -29,13 +32,17 @@ import { MapOverlayGroupModel } from './MapOverlayGroup';
 import { MapOverlayGroupRelationModel } from './MapOverlayGroupRelation';
 import { MapOverlayModel } from './MapOverlay';
 import { MeditrakDeviceModel } from './MeditrakDevice';
+import { MeditrakSyncQueueModel } from './MeditrakSyncQueue';
 import { OneTimeLoginModel } from './OneTimeLogin';
+import { OptionModel } from './Option';
+import { OptionSetModel } from './OptionSet';
 import { PermissionGroupModel } from './PermissionGroup';
 import { ProjectModel } from './Project';
 import { QuestionModel } from './Question';
 import { ReportModel } from './Report';
 import { RefreshTokenModel } from './RefreshToken';
 import { SurveyModel } from './Survey';
+import { SurveyGroupModel } from './SurveyGroup';
 import { SurveyResponseModel } from './SurveyResponse';
 import { SurveyResponseCommentModel } from './SurveyResponseComment';
 import { SurveyScreenComponentModel } from './SurveyScreenComponent';
@@ -54,13 +61,15 @@ export const modelClasses = {
   AncestorDescendantRelation: AncestorDescendantRelationModel,
   Answer: AnswerModel,
   ApiClient: APIClientModel,
+  ApiRequestLog: ApiRequestLogModel,
   Comment: CommentModel,
   Country: CountryModel,
   Dashboard: DashboardModel,
   DashboardItem: DashboardItemModel,
   DashboardRelation: DashboardRelationModel,
   DataElementDataGroup: DataElementDataGroupModel,
-  DataSource: DataSourceModel,
+  DataElement: DataElementModel,
+  DataGroup: DataGroupModel,
   DataServiceEntity: DataServiceEntityModel,
   DataServiceSyncGroup: DataServiceSyncGroupModel,
   Disaster: DisasterModel,
@@ -69,6 +78,7 @@ export const modelClasses = {
   EntityHierarchy: EntityHierarchyModel,
   EntityRelation: EntityRelationModel,
   Facility: FacilityModel,
+  FeedItem: FeedItemModel,
   GeographicalArea: GeographicalAreaModel,
   Indicator: IndicatorModel,
   LegacyReport: LegacyReportModel,
@@ -76,13 +86,17 @@ export const modelClasses = {
   MapOverlayGroup: MapOverlayGroupModel,
   MapOverlayGroupRelation: MapOverlayGroupRelationModel,
   MeditrakDevice: MeditrakDeviceModel,
+  MeditrakSyncQueue: MeditrakSyncQueueModel,
   OneTimeLogin: OneTimeLoginModel,
+  Option: OptionModel,
+  OptionSet: OptionSetModel,
   PermissionGroup: PermissionGroupModel,
   Project: ProjectModel,
   Question: QuestionModel,
   RefreshToken: RefreshTokenModel,
   Report: ReportModel,
   Survey: SurveyModel,
+  SurveyGroup: SurveyGroupModel,
   SurveyResponse: SurveyResponseModel,
   SurveyResponseComment: SurveyResponseCommentModel,
   SurveyScreen: SurveyScreenModel,
@@ -100,19 +114,26 @@ export {
   AncestorDescendantRelationModel,
   AncestorDescendantRelationType,
 } from './AncestorDescendantRelation';
+export { ApiRequestLogModel } from './ApiRequestLog';
 export { CommentModel } from './Comment';
 export { CountryModel } from './Country';
-export { DataSourceModel, DataSourceType } from './DataSource';
+export { DataElementModel, DataElementType } from './DataElement';
+export { DataGroupModel, DataGroupType } from './DataGroup';
 export { EntityModel, EntityType } from './Entity';
 export { EntityHierarchyModel, EntityHierarchyType } from './EntityHierarchy';
 export { EntityRelationModel } from './EntityRelation';
 export { FacilityModel } from './Facility';
+export { FeedItemModel, FeedItemType } from './FeedItem';
 export { GeographicalAreaModel } from './GeographicalArea';
 export { MeditrakDeviceModel } from './MeditrakDevice';
+export { MeditrakSyncQueueModel, MeditrakSyncQueueType } from './MeditrakSyncQueue';
+export { OptionModel } from './Option';
+export { OptionSetModel } from './OptionSet';
 export { PermissionGroupModel } from './PermissionGroup';
 export { ProjectModel } from './Project';
 export { ReportModel, ReportType } from './Report';
+export { SurveyGroupModel } from './SurveyGroup';
 export { SurveyScreenComponentModel } from './SurveyScreenComponent';
 export { SurveyScreenModel } from './SurveyScreen';
 export { UserEntityPermissionModel } from './UserEntityPermission';
-export { UserModel } from './User';
+export { UserModel, UserType } from './User';

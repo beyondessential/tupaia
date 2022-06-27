@@ -27,7 +27,9 @@ describe('ChangeHandler', () => {
       return `Failed ids: ${changes}`;
     };
 
-    handleChanges = sinon.stub().resolves();
+    handleChanges() {
+      sinon.stub().resolves();
+    }
 
     resetMocks = () => {
       this.changeTranslators = {

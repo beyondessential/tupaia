@@ -47,6 +47,10 @@ export const JOIN_TYPES = {
 // list valid behaviour so we can validate against sql injection
 const VALID_CAST_TYPES = ['text', 'text[]', 'date'];
 const VALID_COMPARISON_TYPES = ['where', 'whereBetween', 'whereIn', 'orWhere'];
+const WHERE_SUBQUERY_CLAUSES = {
+  EXISTS: 'exists',
+  NOT_EXISTS: 'notExists',
+};
 
 // no math here, just hand-tuned to be as low as possible while
 // keeping all the tests passing
@@ -181,6 +185,13 @@ export class TupaiaDatabase {
   }
 
   /**
+   * @returns {string} The database's timezone
+   */
+  async getTimezone() {
+    return (await this.executeSql('show timezone'))[0];
+  }
+
+  /**
    * Builds a query on the database, which can be awaited to reveal the result.
    * Implementation notes: If the connection is available, it will return the knex built query
    * without a wrapping Promise. This is necessary for nested queries to function correctly. If the
@@ -258,8 +269,12 @@ export class TupaiaDatabase {
   }
 
   async findOrCreate(recordType, where, extraFieldsIfCreating = {}) {
-    const record = await this.findOne(recordType, where);
-    return record || this.create(recordType, { ...where, ...extraFieldsIfCreating });
+    await this.create(
+      recordType,
+      { ...where, ...extraFieldsIfCreating },
+      { notExists: { queryMethod: QUERY_METHODS.SELECT, recordType, where } },
+    );
+    return this.findOne(recordType, where);
   }
 
   async count(recordType, where, options) {
@@ -268,15 +283,18 @@ export class TupaiaDatabase {
     return parseInt(result[0].count, 10);
   }
 
-  async create(recordType, record) {
+  async create(recordType, record, where) {
     if (!record.id) {
       record.id = this.generateId();
     }
-    await this.query({
-      recordType,
-      queryMethod: QUERY_METHODS.INSERT,
-      queryMethodParameter: record,
-    });
+    await this.query(
+      {
+        recordType,
+        queryMethod: QUERY_METHODS.INSERT,
+        queryMethodParameter: record,
+      },
+      where,
+    );
 
     return record;
   }
@@ -411,6 +429,9 @@ export class TupaiaDatabase {
    * Runs an arbitrary SQL query against the database.
    *
    * Use only for situations in which Knex is not able to assemble a query.
+   *
+   * @template Result
+   * @returns {Promise<Result>} execution result
    */
   async executeSql(sqlString, parametersToBind) {
     if (!this.connection) {
@@ -543,6 +564,16 @@ function addWhereClause(connection, baseQuery, where) {
       const { sql = value, parameters } = value;
       return querySoFar.whereRaw(sql, parameters);
     }
+    if (key === WHERE_SUBQUERY_CLAUSES.EXISTS) {
+      return querySoFar.whereExists(function () {
+        this.query(value);
+      });
+    }
+    if (key === WHERE_SUBQUERY_CLAUSES.NOT_EXISTS) {
+      return querySoFar.whereNotExists(function () {
+        this.query(value);
+      });
+    }
     if (value === undefined) {
       return querySoFar; // Ignore undefined criteria
     }
@@ -562,6 +593,7 @@ function addWhereClause(connection, baseQuery, where) {
       throw new Error(`Cannot compare using ${comparisonType}`);
     }
 
+    // TODO: Replace with knex json where functions, eg. whereJsonPath
     const columnKey = key.includes('->>') ? connection.raw(`??->>?`, key.split('->>')) : key;
     const columnSelector = castAs ? connection.raw(`??::${castAs}`, [columnKey]) : columnKey;
 

@@ -55,6 +55,15 @@ const getModelRegistry = () => {
   return modelRegistry;
 };
 
+const getPermissionListWithWildcard = async accessPolicy => {
+  // Get the users permission groups as a list of codes
+  if (!accessPolicy) {
+    return ['*'];
+  }
+  const userPermissionGroups = accessPolicy.getPermissionGroups();
+  return ['*', ...userPermissionGroups];
+};
+
 export class DataBroker {
   private readonly context: Record<string, unknown>;
   private readonly models: DataBrokerModelRegistry;
@@ -70,10 +79,24 @@ export class DataBroker {
       [this.getDataSourceTypes().SYNC_GROUP]: this.mergeSyncGroups,
     };
     this.fetchers = {
-      [this.getDataSourceTypes().DATA_ELEMENT]: this.fetchFromDataSourceTable,
-      [this.getDataSourceTypes().DATA_GROUP]: this.fetchFromDataSourceTable,
+      [this.getDataSourceTypes().DATA_ELEMENT]: this.fetchFromDataElementTable,
+      [this.getDataSourceTypes().DATA_GROUP]: this.fetchFromDataGroupTable,
       [this.getDataSourceTypes().SYNC_GROUP]: this.fetchFromSyncGroupTable,
     };
+    // Run permission checks in data broker so we only expose data the user is allowed to see
+    // It's a good centralised place for it
+    this.permissionCheckers = {
+      [this.getDataSourceTypes().DATA_ELEMENT]: this.checkDataElementPermissions,
+      [this.getDataSourceTypes().DATA_GROUP]: this.checkDataGroupPermissions,
+      [this.getDataSourceTypes().SYNC_GROUP]: this.checkSyncGroupPermissions,
+    };
+  }
+
+  async getUserPermissions() {
+    if (!this.userPermissions) {
+      this.userPermissions = await getPermissionListWithWildcard(this.context.accessPolicy);
+    }
+    return this.userPermissions;
   }
 
   public async close() {
@@ -102,7 +125,7 @@ export class DataBroker {
       throw new Error('Please provide at least one existing data source code');
     }
     const fetcher = this.fetchers[type];
-    const dataSources = await fetcher(dataSourceSpec);
+    const dataSources = await fetcher(restOfSpec);
     const typeDescription = `${lower(type)}s`;
     if (dataSources.length === 0) {
       throw new Error(`None of the following ${typeDescription} exist: ${code}`);
@@ -129,7 +152,7 @@ export class DataBroker {
       throw new Error('Cannot push data belonging to different services');
     }
     const service = this.createService(dataSources[0].service_type);
-    return service.push(dataSources, data);
+    return service.push(dataSources, data, { type: dataSourceSpec.type });
   }
 
   public async delete(
@@ -140,7 +163,7 @@ export class DataBroker {
     const dataSources = await this.fetchDataSources(dataSourceSpec);
     const [dataSource] = dataSources;
     const service = this.createService(dataSource.service_type);
-    return service.delete(dataSource, data, options);
+    return service.delete(dataSource, data, { type: dataSourceSpec.type, ...options });
   }
 
   public async pull(
@@ -157,18 +180,16 @@ export class DataBroker {
   ): Promise<SyncGroupResults>;
   public async pull(dataSourceSpec: DataSourceSpec, options?: Record<string, unknown>) {
     const dataSources = await this.fetchDataSources(dataSourceSpec);
-    if (countDistinct(dataSources, 'type') > 1) {
-      throw new Error('Cannot pull multiple types of data in one call');
-    }
+    const { type } = dataSourceSpec;
 
     const dataSourcesByService = groupBy(dataSources, 'service_type');
     const dataSourceFetches = Object.values(dataSourcesByService);
     const nestedResults = await Promise.all(
       dataSourceFetches.map(dataSourceForFetch =>
-        this.pullForServiceAndType(dataSourceForFetch, options),
+        this.pullForServiceAndType(dataSourceForFetch, options, type),
       ),
     );
-    const mergeResults = this.resultMergers[dataSources[0].type];
+    const mergeResults = this.resultMergers[type];
 
     return nestedResults.reduce(
       (results, resultsForService) => mergeResults(results as any, resultsForService as any),
@@ -240,7 +261,7 @@ export class DataBroker {
     }
     const service = this.createService(dataSources[0].service_type);
     // `dataSourceSpec` is defined  for a single `type`
-    const { type } = dataSources[0];
+    const { type } = dataSourceSpec;
     return service.pullMetadata(dataSources, type, options);
   }
 }

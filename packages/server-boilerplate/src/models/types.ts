@@ -10,9 +10,11 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   ? I
   : never;
 
-type FilterComparators = '!=' | 'ilike' | '=';
+type FilterComparators = '!=' | 'ilike' | '=' | '>' | '<' | '<=' | '>=' | 'in' | 'not in';
+type ComparisonTypes = 'where' | 'whereBetween' | 'whereIn' | 'orWhere';
 
 export type AdvancedFilterValue<T> = {
+  comparisonType?: ComparisonTypes;
   comparator: FilterComparators;
   comparisonValue: T | T[];
 };
@@ -84,7 +86,19 @@ export type Joined<T, U extends string> = {
   [field in keyof T as field extends string ? `${U}.${field}` : never]: T[field];
 };
 
-export type Model<BaseModel extends DatabaseModel, Fields, Type extends DatabaseType> = {
-  find: (filter: DbFilter<Fields>) => Promise<Type[]>;
-  findOne: (filter: DbFilter<Fields>) => Promise<Type>;
-} & BaseModel;
+export type QueryOptions = {
+  limit?: number;
+  offset?: number;
+  sort?: string[];
+};
+
+type BaseModelOverrides<Fields = unknown, Type = unknown> = {
+  find: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<Type[]>;
+  findOne: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<Type>;
+};
+
+export type Model<BaseModel extends DatabaseModel, Fields, Type extends DatabaseType> = Omit<
+  BaseModel,
+  keyof BaseModelOverrides
+> &
+  BaseModelOverrides<Fields, Type>;
