@@ -3,12 +3,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Typography } from '@material-ui/core';
 import { FlexCenter as BaseFlexCenter, FlexColumn as BaseFlexColumn } from '@tupaia/ui-components';
-
-const Logo = styled.img`
-  top: 30px;
-  left: 50px;
-  position: absolute;
-`;
+import { Logo } from './Logo';
 
 const FlexCenter = styled(BaseFlexCenter)`
   position: relative;
@@ -35,7 +30,7 @@ const SubHeading = styled(Typography)`
 const Header = ({ dashboardLabel, useYearSelector, selectedYear }) => {
   return (
     <FlexCenter>
-      <Logo alt="logo" src="/lesmis-logo-black.svg" />
+      <Logo />
       <FlexColumn>
         <Heading variant="h1">{dashboardLabel}</Heading>
         {useYearSelector && <SubHeading variant="h2">{selectedYear}</SubHeading>}
