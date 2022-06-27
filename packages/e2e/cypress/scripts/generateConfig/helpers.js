@@ -7,7 +7,6 @@ import { uniq } from 'lodash';
 import moment from 'moment';
 
 import { compareAsc, readJsonFile, yup, yupUtils } from '@tupaia/utils';
-import { convertDateRangeToUrlPeriodString } from '../../../src/historyNavigation/utils';
 
 export const buildUrlsUsingConfig = async (db, config, generateUrls) => {
   const { urlFiles = [], urls = [], urlGenerationOptions = {} } = config;
@@ -40,8 +39,10 @@ export const buildVizPeriod = (startDate, endDate) => {
   if (!startDate || !endDate) {
     return undefined;
   }
-  return convertDateRangeToUrlPeriodString({
-    startDate: moment(startDate),
-    endDate: moment(endDate),
-  });
+  const format = 'Do_MMM_YYYY';
+
+  const formattedStartDate = moment(startDate).format(format);
+  const formattedEndDate = moment(endDate).format(format);
+
+  return `${formattedStartDate}-${formattedEndDate}`;
 };

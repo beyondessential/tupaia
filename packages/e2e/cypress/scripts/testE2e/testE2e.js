@@ -63,7 +63,7 @@ const runTestsAgainstUrl = (url, options = {}) => {
     command = `${command} --parallel --ci-build-id ${ciBuildId}`;
   }
 
-  execSync(`CYPRESS_BASE_URL=${url} yarn workspace @tupaia/web-frontend ${command}`, {
+  execSync(`CYPRESS_BASE_URL=${url} yarn workspace @tupaia/e2e ${command}`, {
     stdio: 'inherit',
   });
 };
@@ -80,7 +80,7 @@ export const testE2e = async () => {
   const { ciBuildId } = getArgs(scriptConfig);
 
   const logger = getLoggerInstance();
-  logger.success('Running e2e tests for web-frontend');
+  logger.success('Running e2e');
 
   await generateConfig();
   const { baselineUrl, compareUrl } = JSON.parse(
