@@ -44,6 +44,7 @@
     "nameOfProvince": "Name of Province",
     "numberOfSchools": "Number of Schools",
     "numberOfStudents": "Number of Students",
+    "Population": "Population",
     "preSchool": "Pre School",
     "primary": "Primary",
     "priorityDistrict": "Priority District",
@@ -119,6 +120,5 @@
     "agreeToTerms": "I agree to the terms and conditions",
     "password": "Password *",
     "confirmPassword": "Confirm Password *"
-
   }
 }
