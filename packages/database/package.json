@@ -15,6 +15,7 @@
     "build": "rm -rf dist && run-p \"build:* {@}\" --",
     "build:src": "yarn package:build:js --copy-files --no-copy-ignored",
     "build:types": "yarn package:build:types",
+    "build-dev": "yarn build",
     "dump-database": "./scripts/dumpDatabase.sh",
     "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",

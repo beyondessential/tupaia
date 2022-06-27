@@ -14,6 +14,7 @@
     "build": "run-p -c \"build:* {@}\" --",
     "build:src": "yarn package:build:react-scripts",
     "build:library": "yarn package:build:js",
+    "build-dev": "yarn build:library",
     "cypress:open": "cross-env NODE_ENV=test yarn cypress open",
     "cypress:run": "cross-env NODE_ENV=test yarn cypress run",
     "eject": "yarn package:eject",

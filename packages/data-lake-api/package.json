@@ -12,6 +12,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "yarn package:build:ts",
+    "build-dev": "yarn build",
     "lint": "yarn package:lint:ts",
     "lint:fix": "yarn lint --fix",
     "test": "yarn workspace @tupaia/data-lake-api check-test-data-lake-exists && DATA_LAKE_DB_NAME=data_lake_test jest --runInBand",

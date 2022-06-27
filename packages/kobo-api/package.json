@@ -15,6 +15,7 @@
     "build": "rm -rf dist && run-p \"build:* {@}\" --",
     "build:src": "yarn package:build:js --ignore \"src/tests/**\"",
     "build:types": "yarn package:build:types",
+    "build-dev": "yarn build",
     "test": "nyc --reporter=lcov mocha",
     "test-coverage": "cross-env NODE_ENV=test nyc mocha"
   },

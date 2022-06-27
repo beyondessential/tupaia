@@ -13,6 +13,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && tsc",
+    "build-dev": "yarn build",
     "lint": "yarn package:lint:ts",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test --passWithNoTests",

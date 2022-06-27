@@ -16,6 +16,7 @@
   "private": true,
   "scripts": {
     "build": "yarn package:build:ts",
+    "build-dev": "yarn build-dev",
     "lint": "yarn package:lint:ts",
     "lint:fix": "yarn lint --fix",
     "prestart": "yarn build",

@@ -15,6 +15,7 @@
     "build": "rm -rf dist && run-p -c \"build:* {@}\" --",
     "build:src": "yarn package:build:js --ignore \"**src/database/migrations\",\"src/tests/**\" --copy-files --no-copy-ignored",
     "build:types": "yarn package:build:types",
+    "build-dev": "yarn build",
     "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
     "prestart": "yarn build",

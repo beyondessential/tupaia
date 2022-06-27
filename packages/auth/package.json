@@ -15,6 +15,7 @@
     "build": "rm -rf dist && run-p \"build:* {@}\" --",
     "build:src": "yarn package:build:js --ignore \"src/__tests__/**\"",
     "build:types": "yarn package:build:types",
+    "build-dev": "yarn build",
     "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test:withdb --runInBand",

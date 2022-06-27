@@ -16,6 +16,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "yarn package:build:ts",
+    "build-dev": "yarn build",
     "lint": "yarn package:lint:ts",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test",
