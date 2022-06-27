@@ -1,21 +1,15 @@
 import React from 'react';
-import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import { DashboardReportPage, NoReportPage } from './pages';
-import { useExportOptions } from './context/ExportOptionsContext';
-
-const Container = styled.div`
-  height: 800px;
-`;
 
 export const DashboardExportPreview = ({
   addToRefs,
   exportableDashboards,
   currentPage,
   isExporting,
+  exportOptions,
 }) => {
-  const exportOptions = useExportOptions();
   let page = 0;
   const getNextPage = React.useCallback(() => {
     page++;
@@ -57,12 +51,12 @@ export const DashboardExportPreview = ({
   };
 
   return (
-    <Container>
+    <div>
       {exportableDashboards?.map((subDashboard, index) => {
         const isFirstPageProfile = index === 0;
         return getChildren(subDashboard, isFirstPageProfile);
       })}
-    </Container>
+    </div>
   );
 };
 
@@ -71,6 +65,7 @@ DashboardExportPreview.propTypes = {
   addToRefs: PropTypes.func.isRequired,
   currentPage: PropTypes.number.isRequired,
   isExporting: PropTypes.bool.isRequired,
+  exportOptions: PropTypes.object.isRequired,
 };
 
 DashboardExportPreview.defaultProps = {
