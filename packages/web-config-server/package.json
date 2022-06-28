@@ -11,12 +11,12 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "yarn package:build:js",
-    "lint": "yarn package:lint:js",
-    "lint:fix": "yarn lint --fix",
-    "prestart": "yarn build",
+    "build": "npm run --prefix ../../ package:build:js",
+    "lint": "npm run --prefix ../../ package:lint:js",
+    "lint:fix": "npm run lint --fix",
+    "prestart": "npm run build",
     "start": "node dist",
-    "start-dev": "yarn package:start:backend-start-dev 9997",
+    "start-dev": "npm run --prefix ../../ package:start:backend-start-dev 9997",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
     "test": "yarn workspace @tupaia/database check-test-database-exists && DB_NAME=tupaia_test mocha",
     "test:coverage": "cross-env NODE_ENV=test nyc mocha"

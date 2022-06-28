@@ -15,13 +15,13 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "yarn package:build:ts",
-    "build-dev": "yarn build",
-    "lint": "yarn package:lint:ts",
-    "lint:fix": "yarn lint --fix",
-    "test": "yarn package:test",
-    "test:coverage": "yarn test --coverage",
-    "test:watch": "yarn test --watch"
+    "build": "npm run --prefix ../../ package:build:ts",
+    "build-dev": "npm run build",
+    "lint": "npm run --prefix ../../ package:lint:ts",
+    "lint:fix": "npm run lint --fix",
+    "test": "npm run --prefix ../../ package:test",
+    "test:coverage": "npm run test --coverage",
+    "test:watch": "npm run test --watch"
   },
   "dependencies": {
     "@tupaia/access-policy": "3.0.0",

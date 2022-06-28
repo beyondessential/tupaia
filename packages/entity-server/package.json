@@ -15,17 +15,17 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "yarn package:build:ts",
-    "build-dev": "yarn build",
-    "lint": "yarn package:lint:ts",
-    "lint:fix": "yarn lint --fix",
-    "prestart": "yarn build",
+    "build": "npm run --prefix ../../ package:build:ts",
+    "build-dev": "npm run build",
+    "lint": "npm run --prefix ../../ package:lint:ts",
+    "lint:fix": "npm run lint --fix",
+    "prestart": "npm run build",
     "start": "node dist",
-    "start-dev": "yarn package:start:backend-start-dev 9996 -ts",
+    "start-dev": "npm run --prefix ../../ package:start:backend-start-dev 9996 -ts",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
-    "test": "yarn package:test:withdb --runInBand",
-    "test:coverage": "yarn test --coverage",
-    "test:watch": "yarn test --watch"
+    "test": "npm run --prefix ../../ package:test:withdb --runInBand",
+    "test:coverage": "npm run test --coverage",
+    "test:watch": "npm run test --watch"
   },
   "dependencies": {
     "@tupaia/access-policy": "3.0.0",

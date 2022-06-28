@@ -13,9 +13,9 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && run-p \"build:* {@}\" --",
-    "build:src": "yarn package:build:js --ignore \"src/tests/**\"",
-    "build:types": "yarn package:build:types",
-    "build-dev": "yarn build",
+    "build:src": "npm run --prefix ../../ package:build:js --ignore \"src/tests/**\"",
+    "build:types": "npm run --prefix ../../ package:build:types",
+    "build-dev": "npm run build",
     "test": "nyc --reporter=lcov mocha",
     "test-coverage": "cross-env NODE_ENV=test nyc mocha"
   },

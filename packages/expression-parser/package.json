@@ -13,13 +13,13 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && run-p \"build:* {@}\" --",
-    "build:src": "yarn package:build:js",
-    "build:types": "yarn package:build:types",
-    "build-dev": "yarn build",
-    "lint": "yarn package:lint:js",
-    "lint:fix": "yarn lint --fix",
-    "test": "yarn package:test",
-    "test:coverage": "yarn test --coverage"
+    "build:src": "npm run --prefix ../../ package:build:js",
+    "build:types": "npm run --prefix ../../ package:build:types",
+    "build-dev": "npm run build",
+    "lint": "npm run --prefix ../../ package:lint:js",
+    "lint:fix": "npm run lint --fix",
+    "test": "npm run --prefix ../../ package:test",
+    "test:coverage": "npm run test --coverage"
   },
   "dependencies": {
     "date-fns": "^2.16.1",

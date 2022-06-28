@@ -11,24 +11,24 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "yarn package:build:react-scripts",
+    "build": "npm run --prefix ../../ package:build:react-scripts",
     "cypress:open": "cross-env NODE_ENV=test cypress open",
     "cypress:run": "cross-env NODE_ENV=test cypress run",
     "cypress:config": "NODE_ENV=development  babel-node cypress/scripts/generateConfig --config-file \"../../babel.config.json\"",
-    "eject": "yarn package:eject",
-    "lint": "yarn package:lint:js",
-    "lint:fix": "yarn lint --fix",
-    "pretest:test:cypress:run": "yarn build",
-    "start-dev": "yarn package:start:react-scripts",
+    "eject": "npm run --prefix ../../ package:eject",
+    "lint": "npm run --prefix ../../ package:lint:js",
+    "lint:fix": "npm run lint --fix",
+    "pretest:test:cypress:run": "npm run build",
+    "start-dev": "npm run --prefix ../../ package:start:react-scripts",
     "start-fullstack": "npm-run-all -c -l -p start-psss-server start-entity-server start-central-server start-report-server  start-dev",
     "start-psss-server": "yarn workspace @tupaia/psss-server start-dev -s",
     "start-entity-server": "yarn workspace @tupaia/entity-server start-dev -s",
     "start-central-server": "yarn workspace @tupaia/central-server start-dev -s",
     "start-report-server": "yarn workspace @tupaia/report-server start-dev -s",
-    "test": "yarn test:jest",
+    "test": "npm run test:jest",
     "test:cypress:open": "start-server-and-test start-fullstack 3000 cypress:open",
     "test:cypress:run": "start-server-and-test start-fullstack 3000 cypress:run",
-    "test:jest": "yarn package:test --env=jsdom"
+    "test:jest": "npm run --prefix ../../ package:test --env=jsdom"
   },
   "browserslist": [
     "defaults"
