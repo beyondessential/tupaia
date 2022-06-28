@@ -14,12 +14,12 @@
   "scripts": {
     "build": "npm run --prefix ../../ package:build:js",
     "build-dev": "npm run build",
-    "lint": "npm run --prefix ../../ package:lint:js",
-    "lint:fix": "npm run lint --fix",
+    "lint": "yarn package:lint:js",
+    "lint:fix": "yarn lint --fix",
     "storybook": "start-storybook -s public -p 6006",
     "test": "yarn package:test --env=jsdom",
-    "test:coverage": "npm run test --coverage",
-    "test:watch": "npm run test --watch"
+    "test:coverage": "yarn test --coverage",
+    "test:watch": "yarn test --watch"
   },
   "dependencies": {
     "@date-io/date-fns": "1.x",

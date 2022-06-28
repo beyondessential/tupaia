@@ -14,10 +14,10 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "build-dev": "npm run build",
-    "lint": "npm run --prefix ../../ package:lint:ts",
-    "lint:fix": "npm run lint --fix",
-    "test": "npm run --prefix ../../ package:test --passWithNoTests",
-    "test:coverage": "npm run test --coverage"
+    "lint": "yarn package:lint:ts",
+    "lint:fix": "yarn lint --fix",
+    "test": "yarn package:test --passWithNoTests",
+    "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
     "@tupaia/utils": "1.0.0",

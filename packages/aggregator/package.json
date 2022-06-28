@@ -16,10 +16,10 @@
     "build:src": "npm run --prefix ../../ package:build:js --ignore \"src/__tests__/**\"",
     "build:types": "npm run --prefix ../../ package:build:types",
     "build-dev": "npm run build",
-    "lint": "npm run --prefix ../../ package:lint:js",
-    "lint:fix": "npm run lint --fix",
-    "test": "npm run --prefix ../../ package:test",
-    "test:coverage": "npm run test --coverage"
+    "lint": "yarn package:lint:js",
+    "lint:fix": "yarn lint --fix",
+    "test": "yarn package:test",
+    "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
     "@tupaia/data-broker": "1.0.0",

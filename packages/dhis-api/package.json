@@ -16,9 +16,9 @@
     "build:src": "npm run --prefix ../../ package:build:js",
     "build:types": "npm run --prefix ../../ package:build:types",
     "build-dev": "npm run build",
-    "lint": "npm run --prefix ../../ package:lint:js",
-    "lint:fix": "npm run lint --fix",
-    "test": "npm run --prefix ../../ package:test",
+    "lint": "yarn package:lint:js",
+    "lint:fix": "yarn lint --fix",
+    "test": "yarn package:test",
     "test:coverage": "jest --coverage"
   },
   "dependencies": {

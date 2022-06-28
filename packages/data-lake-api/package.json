@@ -13,10 +13,10 @@
   "scripts": {
     "build": "npm run --prefix ../../ package:build:ts",
     "build-dev": "npm run build",
-    "lint": "npm run --prefix ../../ package:lint:ts",
-    "lint:fix": "npm run lint --fix",
+    "lint": "yarn package:lint:ts",
+    "lint:fix": "yarn lint --fix",
     "test": "yarn workspace @tupaia/data-lake-api check-test-data-lake-exists && DATA_LAKE_DB_NAME=data_lake_test jest --runInBand",
-    "test:coverage": "npm run test --coverage",
+    "test:coverage": "yarn test --coverage",
     "update-test-data": "bash -c 'source .env && pg_dump -s -h data-lake-db.tupaia.org -U $DATA_LAKE_DB_USER -O $DATA_LAKE_DB_NAME -t analytics > src/__tests__/testData/testDataDump.sql'",
     "setup-test-data-lake": "DATA_LAKE_DB_NAME=data_lake_test scripts/setupTestDataLake.sh",
     "check-test-data-lake-exists": "DATA_LAKE_DB_NAME=data_lake_test scripts/checkTestDataLakeExists.sh"

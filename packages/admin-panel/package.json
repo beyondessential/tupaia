@@ -17,11 +17,11 @@
     "build-dev": "npm run build:library",
     "cypress:open": "cross-env NODE_ENV=test yarn cypress open",
     "cypress:run": "cross-env NODE_ENV=test yarn cypress run",
-    "eject": "npm run --prefix ../../ package:eject",
-    "lint": "npm run --prefix ../../ package:lint:js",
-    "lint:fix": "npm run lint --fix",
-    "start": "npm run --prefix ../../ package:start:react-scripts",
-    "start-dev": "npm run start",
+    "eject": "yarn package:eject",
+    "lint": "yarn package:lint:js",
+    "lint:fix": "yarn lint --fix",
+    "start": "yarn package:start:react-scripts",
+    "start-dev": "yarn start",
     "test": "echo No tests"
   },
   "browserslist": [

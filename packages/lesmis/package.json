@@ -12,14 +12,14 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "npm run --prefix ../../ package:build:react-scripts",
-    "eject": "npm run --prefix ../../ package:eject",
-    "lint": "npm run --prefix ../../ package:lint:js",
-    "lint:fix": "npm run lint --fix",
-    "start-dev": "PORT=3003 npm run --prefix ../../ package:start:react-scripts",
+    "eject": "yarn package:eject",
+    "lint": "yarn package:lint:js",
+    "lint:fix": "yarn lint --fix",
+    "start-dev": "PORT=3003 yarn package:start:react-scripts",
     "start-fullstack": "npm-run-all -c -l -p start-central-server start-web-config-server start-dev",
     "start-central-server": "yarn workspace @tupaia/central-server start-dev -s",
     "start-web-config-server": "yarn workspace @tupaia/web-config-server start-dev -s",
-    "test": "npm run --prefix ../../ package:test"
+    "test": "yarn package:test"
   },
   "browserslist": [
     "defaults"

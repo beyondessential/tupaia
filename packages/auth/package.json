@@ -16,10 +16,10 @@
     "build:src": "npm run --prefix ../../ package:build:js --ignore \"src/__tests__/**\"",
     "build:types": "npm run --prefix ../../ package:build:types",
     "build-dev": "npm run build",
-    "lint": "npm run --prefix ../../ package:lint:js",
-    "lint:fix": "npm run lint --fix",
+    "lint": "yarn package:lint:js",
+    "lint:fix": "yarn lint --fix",
     "test": "yarn package:test:withdb --runInBand",
-    "test:coverage": "npm run test --coverage"
+    "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
     "@tupaia/utils": "1.0.0",
