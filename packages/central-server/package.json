@@ -13,7 +13,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && run-p -c \"build:* {@}\" --",
-    "build:src": "npm run --prefix ../../ package:build:js --ignore \"**src/database/migrations\",\"src/tests/**\" --copy-files --no-copy-ignored",
+    "build:src": "yarn package:build:js --ignore \"**src/database/migrations\",\"src/tests/**\" --copy-files --no-copy-ignored",
     "build:types": "npm run --prefix ../../ package:build:types",
     "build-dev": "npm run build",
     "lint": "npm run --prefix ../../ package:lint:js",
