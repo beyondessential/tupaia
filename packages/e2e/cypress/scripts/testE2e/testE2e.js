@@ -70,7 +70,7 @@ const runTestsAgainstUrl = (url, options = {}) => {
 };
 
 const validateUrl = async (description, url) => {
-  const response = await fetch.get(url);
+  const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`No deployment exists for ${description} url '${url}', cancelling e2e tests`);
   }
