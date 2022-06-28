@@ -31,6 +31,10 @@ import { DataElement, DataGroup, DataServiceConfig, DataSource } from './types';
 const DEFAULT_DATA_SERVICE = { isDataRegional: true };
 const DEFAULT_DATA_SERVICES = [DEFAULT_DATA_SERVICE];
 
+type PushOptions = {
+  type: DataSourceType;
+};
+
 type PullOptions = Partial<{
   organisationUnitCode: string;
   organisationUnitCodes: string[];
@@ -41,6 +45,7 @@ type PullOptions = Partial<{
 
 type DeleteOptions = Partial<{
   serverName: string;
+  type: DataSourceType;
 }>;
 
 type PullMetadataOptions = Partial<{
@@ -101,17 +106,17 @@ export class DhisService extends Service {
 
     this.translator = new DhisTranslator(this.models);
     this.dataElementsMetadataPuller = new DataElementsMetadataPuller(
-      this.models.dataSource,
+      this.models.dataElement,
       this.translator,
     );
     this.analyticsPuller = new AnalyticsPuller(
-      this.models.dataSource,
+      this.models.dataElement,
       this.translator,
       this.dataElementsMetadataPuller,
     );
-    this.eventsPuller = new EventsPuller(this.models.dataSource, this.translator);
+    this.eventsPuller = new EventsPuller(this.models.dataElement, this.translator);
     this.deprecatedEventsPuller = new DeprecatedEventsPuller(
-      this.models.dataSource,
+      this.models.dataElement,
       this.translator,
     );
     this.pushers = this.getPushers();
@@ -170,10 +175,19 @@ export class DhisService extends Service {
   public async push(
     dataSources: DataElement[],
     data: DataValue | DataValue[],
+    { type }: PushOptions,
   ): Promise<PushResults>;
-  public async push(dataSources: DataGroup[], data: Event | Event[]): Promise<PushResults>;
-  public async push(dataSources: DataSource[], data: unknown): Promise<PushResults> {
-    const pushData = this.pushers[dataSources[0].type]; // all are of the same type
+  public async push(
+    dataSources: DataGroup[],
+    data: Event | Event[],
+    { type }: PushOptions,
+  ): Promise<PushResults>;
+  public async push(
+    dataSources: DataSource[],
+    data: unknown,
+    { type }: PushOptions,
+  ): Promise<PushResults> {
+    const pushData = this.pushers[type]; // all are of the same type
     const dataValues = Array.isArray(data) ? data : [data];
     this.validatePushData(dataSources, dataValues);
     const api = this.getApiForValue(dataSources[0], dataValues[0]); // all are for the same instance
@@ -214,12 +228,12 @@ export class DhisService extends Service {
   public async delete(
     dataSource: DataSource,
     data: DataValue | DeleteEventData,
-    { serverName }: DeleteOptions = {},
+    { serverName, type }: DeleteOptions = {},
   ): Promise<Diagnostics> {
     const api = serverName
       ? getDhisApiInstance({ serverName }, this.models)
       : this.getApiForValue(dataSource, data);
-    const deleteData = this.deleters[dataSource.type];
+    const deleteData = this.deleters[type];
     return deleteData(api, data as any, dataSource as any);
   }
 

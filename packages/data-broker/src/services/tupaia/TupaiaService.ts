@@ -150,7 +150,7 @@ export class TupaiaService extends Service {
     const { includeOptions } = options;
     const [dataSource] = dataSources;
     const { code: dataGroupCode } = dataSource;
-    const dataElementDataSources = await this.models.dataSource.getDataElementsInGroup(
+    const dataElementDataSources = await this.models.dataGroup.getDataElementsInDataGroup(
       dataGroupCode,
     );
     const dataElementCodes = dataElementDataSources.map(({ code }) => code);

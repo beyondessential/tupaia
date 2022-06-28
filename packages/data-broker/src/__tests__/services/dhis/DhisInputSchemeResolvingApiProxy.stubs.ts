@@ -22,11 +22,11 @@ const DATA_SERVICE_ENTITIES = [{ entity_code: 'ORG1', config: { dhis_id: 'dhisId
 
 const createModelsStub = () =>
   ({
-    dataSource: {
+    dataElement: {
       find: async filter =>
-        DATA_SOURCES.filter(dataSource => filter.code.includes(dataSource.code)),
+        DATA_SOURCES.filter(dataElement => filter.code.includes(dataElement.code)),
       findOne: async filter => {
-        const results = DATA_SOURCES.filter(dataSource => filter.code.includes(dataSource.code));
+        const results = DATA_SOURCES.filter(dataElement => filter.code.includes(dataElement.code));
         const [first] = results;
         return first;
       },
@@ -40,6 +40,14 @@ const createModelsStub = () =>
           : DATA_SERVICE_ENTITIES.filter(mapping =>
               filter.entity_code.includes(mapping.entity_code),
             ),
+    },
+    dataGroup: {
+      find: async filter => DATA_GROUPS.filter(dataGroup => filter.code.includes(dataGroup.code)),
+      findOne: async filter => {
+        const results = DATA_GROUPS.filter(dataGroup => filter.code.includes(dataGroup.code));
+        const [first] = results;
+        return first;
+      },
     },
   } as DataBrokerModelRegistry);
 

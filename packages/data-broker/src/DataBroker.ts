@@ -8,6 +8,7 @@
 import { lower } from 'case';
 import groupBy from 'lodash.groupby';
 
+import type { AccessPolicy } from '@tupaia/access-policy';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { countDistinct, toArray } from '@tupaia/utils';
 import { createService } from './services';
@@ -15,17 +16,27 @@ import {
   Analytic,
   AnalyticResults as RawAnalyticResults,
   DataBrokerModelRegistry,
+  DataElement,
   DataSource,
   DataSourceType,
   EventResults,
   ServiceType,
   SyncGroupResults,
 } from './types';
+import { DATA_SOURCE_TYPES } from './utils';
+
+export const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
+
+type Context = {
+  accessPolicy?: AccessPolicy;
+};
 
 export interface DataSourceSpec<T extends DataSourceType = DataSourceType> {
   code: string | string[];
   type: T;
 }
+
+type FetchConditions = { code: string | string[] };
 
 interface AnalyticResults {
   results: {
@@ -44,7 +55,9 @@ type ResultMerger =
   | Merger<EventResults>
   | Merger<SyncGroupResults>;
 
-type Fetcher = (DataSourceSpec: DataSourceSpec) => Promise<DataSource[]>;
+type Fetcher = (dataSourceSpec: FetchConditions) => Promise<DataSource[]>;
+
+type PermissionChecker = ((dataSources: DataSource[]) => Promise<boolean>) | (() => boolean);
 
 let modelRegistry: DataBrokerModelRegistry;
 
@@ -55,7 +68,7 @@ const getModelRegistry = () => {
   return modelRegistry;
 };
 
-const getPermissionListWithWildcard = async accessPolicy => {
+const getPermissionListWithWildcard = async (accessPolicy?: AccessPolicy) => {
   // Get the users permission groups as a list of codes
   if (!accessPolicy) {
     return ['*'];
@@ -65,10 +78,12 @@ const getPermissionListWithWildcard = async accessPolicy => {
 };
 
 export class DataBroker {
-  private readonly context: Record<string, unknown>;
+  private readonly context: Context;
   private readonly models: DataBrokerModelRegistry;
   private readonly resultMergers: Record<DataSourceType, ResultMerger>;
   private readonly fetchers: Record<DataSourceType, Fetcher>;
+  private readonly permissionCheckers: Record<DataSourceType, PermissionChecker>;
+  private userPermissions: string[] | undefined;
 
   public constructor(context = {}) {
     this.context = context;
@@ -92,7 +107,7 @@ export class DataBroker {
     };
   }
 
-  async getUserPermissions() {
+  private async getUserPermissions() {
     if (!this.userPermissions) {
       this.userPermissions = await getPermissionListWithWildcard(this.context.accessPolicy);
     }
@@ -104,23 +119,74 @@ export class DataBroker {
   }
 
   public getDataSourceTypes() {
-    return this.models.dataSource.getTypes();
+    return DATA_SOURCE_TYPES as {
+      DATA_ELEMENT: 'dataElement';
+      DATA_GROUP: 'dataGroup';
+      SYNC_GROUP: 'syncGroup';
+    };
   }
 
-  private fetchFromDataSourceTable = async (dataSourceSpec: DataSourceSpec) => {
-    return this.models.dataSource.find(dataSourceSpec);
+  private fetchFromDataElementTable = async (dataSourceSpec: FetchConditions) => {
+    return this.models.dataElement.find(dataSourceSpec);
+  };
+
+  private fetchFromDataGroupTable = async (dataSourceSpec: FetchConditions) => {
+    return this.models.dataGroup.find(dataSourceSpec);
   };
 
   private fetchFromSyncGroupTable = async (
-    dataSourceSpec: DataSourceSpec,
+    dataSourceSpec: FetchConditions,
   ): Promise<DataSource[]> => {
     // Add 'type' field to output to keep object layout consistent between tables
     const syncGroups = await this.models.dataServiceSyncGroup.find({ code: dataSourceSpec.code });
     return syncGroups.map(sg => ({ ...sg, type: this.getDataSourceTypes().SYNC_GROUP }));
   };
 
+  private checkDataElementPermissions = async (dataElements: DataSource[]) => {
+    const userPermissions = await this.getUserPermissions();
+    if (userPermissions.includes(BES_ADMIN_PERMISSION_GROUP)) {
+      return true;
+    }
+    const missingPermissions = [];
+    for (const element of dataElements as DataElement[]) {
+      if (
+        element.permission_groups.length <= 0 ||
+        element.permission_groups.some(code => userPermissions.includes(code))
+      ) {
+        continue;
+      }
+      missingPermissions.push(element.code);
+    }
+    if (missingPermissions.length === 0) {
+      return true;
+    }
+    throw new Error(`Missing permissions to the following data elements: ${missingPermissions}`);
+  };
+
+  private checkDataGroupPermissions = async (dataGroups: DataSource[]) => {
+    const missingPermissions = [];
+    for (const group of dataGroups) {
+      const dataElements = await this.models.dataGroup.getDataElementsInDataGroup(group.code);
+      try {
+        await this.checkDataElementPermissions(dataElements);
+      } catch {
+        missingPermissions.push(group.code);
+      }
+    }
+    if (missingPermissions.length === 0) {
+      return true;
+    }
+    throw new Error(`Missing permissions to the following data groups: ${missingPermissions}`);
+  };
+
+  // No check for syncGroups currently
+  private checkSyncGroupPermissions = () => {
+    return true;
+  };
+
   private async fetchDataSources(dataSourceSpec: DataSourceSpec) {
-    const { code, type } = dataSourceSpec;
+    const { code } = dataSourceSpec;
+    const { type, ...restOfSpec } = dataSourceSpec;
     if (!code || (Array.isArray(code) && code.length === 0)) {
       throw new Error('Please provide at least one existing data source code');
     }
@@ -200,8 +266,12 @@ export class DataBroker {
   private pullForServiceAndType = async (
     dataSources: DataSource[],
     options?: Record<string, unknown>,
+    type: DataSourceType,
   ) => {
-    const { type, service_type: serviceType } = dataSources[0];
+    const { service_type: serviceType } = dataSources[0];
+    const permissionChecker = this.permissionCheckers[type];
+    // Permission checkers will throw if they fail
+    await permissionChecker(dataSources);
     const service = this.createService(serviceType);
     return service.pull(dataSources, type, options);
   };

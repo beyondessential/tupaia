@@ -12,6 +12,7 @@ import {
   EventResults,
   SyncGroupResults,
 } from '../types';
+import { DATA_SOURCE_TYPES } from '../utils';
 
 export abstract class Service {
   protected readonly models: DataBrokerModelRegistry;
@@ -21,12 +22,17 @@ export abstract class Service {
   }
 
   public get dataSourceTypes() {
-    return this.models.dataSource.getTypes();
+    return DATA_SOURCE_TYPES as {
+      DATA_ELEMENT: 'dataElement';
+      DATA_GROUP: 'dataGroup';
+      SYNC_GROUP: 'syncGroup';
+    };
   }
 
   public abstract push(
     dataSources: DataSource[],
     data: unknown,
+    options: { type: DataSourceType },
   ): Promise<{ diagnostics: Diagnostics }>;
 
   public abstract delete(

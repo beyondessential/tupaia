@@ -7,10 +7,10 @@ import type { DhisApi } from '@tupaia/dhis-api';
 import * as BuildAnalytics from '../../../../services/dhis/buildAnalytics/buildAnalyticsFromDhisEventAnalytics';
 import { DhisTranslator } from '../../../../services/dhis/DhisTranslator';
 import {
-  AnalyticsPuller,
   DataElementsMetadataPuller,
   PullAnalyticsOptions,
 } from '../../../../services/dhis/pullers';
+import { AnalyticsPuller } from '../../../../services/dhis/pullers/AnalyticsPuller';
 import { AnalyticResults, DataElement } from '../../../../types';
 import { DATA_SOURCES, EVENT_ANALYTICS } from '../DhisService.fixtures';
 import { buildDhisAnalyticsResponse, createModelsStub, stubDhisApi } from '../DhisService.stubs';
@@ -27,7 +27,7 @@ describe('AnalyticsPuller', () => {
       translator,
     );
     analyticsPuller = new AnalyticsPuller(
-      models.dataSource,
+      models.dataElement,
       translator,
       dataElementsMetadataPuller,
     );

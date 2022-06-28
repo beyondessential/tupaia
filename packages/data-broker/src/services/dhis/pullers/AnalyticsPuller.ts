@@ -7,7 +7,7 @@ import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
 
 import type { DhisApi } from '@tupaia/dhis-api';
-import { AnalyticResults, DataSourceModel } from '../../../types';
+import { AnalyticResults, DataElementModel } from '../../../types';
 import {
   buildAnalyticsFromDhisAnalytics,
   buildAnalyticsFromDhisEventAnalytics,
@@ -39,7 +39,7 @@ export class AnalyticsPuller {
   private readonly dataElementsMetadataPuller;
 
   public constructor(
-    dataSourceModel: DataSourceModel,
+    dataSourceModel: DataElementModel,
     translator: DhisTranslator,
     dataElementsMetadataPuller: DataElementsMetadataPuller,
   ) {

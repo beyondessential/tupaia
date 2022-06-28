@@ -166,10 +166,10 @@ describe('DhisService', () => {
       });
 
       it('uses EventsPuller for dataGroups', async () => {
-        await dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', {});
+        await dhisService.pull([DATA_GROUPS.POP01_GROUP], 'dataGroup', {});
         expect(dhisService.eventsPuller.pull).toHaveBeenCalledOnceWith(
           [{ myDhisApi: 1 }],
-          [DATA_SOURCES.POP01_GROUP],
+          [DATA_GROUPS.POP01_GROUP],
           {},
         );
       });

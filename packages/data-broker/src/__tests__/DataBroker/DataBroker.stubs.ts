@@ -7,7 +7,16 @@ import { createJestMockInstance } from '@tupaia/utils';
 import { DataSourceSpec } from '../../DataBroker';
 import * as CreateService from '../../services/createService';
 import { Service } from '../../services/Service';
-import { Analytic, AnalyticResults, DataSource, DataSourceType, ServiceType } from '../../types';
+import {
+  Analytic,
+  AnalyticResults,
+  DataElement,
+  DataGroup,
+  DataSource,
+  DataSourceType,
+  ServiceType,
+} from '../../types';
+import { DATA_SOURCE_TYPE } from '../../utils';
 
 export interface ServiceResult {
   code: string;
@@ -26,7 +35,7 @@ export const stubCreateService = (services: Partial<Record<ServiceType, Service>
   });
 
 export const createServiceStub = (serviceData: ServiceResult[]) => {
-  const pull = (dataSources: DataSource[]) => {
+  const pull = (dataSources: DataSource[], type: DATA_SOURCE_TYPE) => {
     const dataSourceCodes = dataSources.map(({ code }) => code);
     // Service specs require that data must be pulled for a specific type each time
     const filteredServiceData = serviceData.filter(
@@ -57,10 +66,12 @@ export const createServiceStub = (serviceData: ServiceResult[]) => {
   }) as Service;
 };
 
-export const createModelsStub = (dataSources: DataSource[]) => ({
-  dataSource: {
-    find: (spec: DataSourceSpec) =>
-      dataSources.filter(({ code, type }) => spec.code.includes(code) && spec.type === type),
-    getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
+export const createModelsStub = (dataElements: DataElement[], dataGroups: DataGroup[]) => ({
+  dataElement: {
+    find: (spec: DataSourceSpec) => dataElements.filter(({ code }) => spec.code.includes(code)),
+  },
+  dataGroup: {
+    find: (spec: DataSourceSpec) => dataGroups.filter(({ code }) => spec.code.includes(code)),
+    getDataElementsInDataGroup: () => [],
   },
 });

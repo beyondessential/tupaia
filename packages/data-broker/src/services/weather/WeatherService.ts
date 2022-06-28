@@ -82,8 +82,7 @@ export class WeatherService extends Service {
     options: Record<string, unknown>,
     /* eslint-enable @typescript-eslint/no-unused-vars */
   ) {
-    const dataElements = await this.models.dataSource.find({
-      type: 'dataElement',
+    const dataElements = await this.models.dataElement.find({
       service_type: 'weather',
     });
 
@@ -118,10 +117,9 @@ export class WeatherService extends Service {
     let dataSources = null;
     if (requestType === this.dataSourceTypes.DATA_ELEMENT) {
       // single data element requested
-      dataSources = (await this.models.dataSource.find({
-        type: 'dataElement',
+      dataSources = await this.models.dataElement.find({
         code: requestDataSourceCode,
-      })) as DataElement[];
+      });
     } else if (requestType === this.dataSourceTypes.DATA_GROUP) {
       // data group requested
       dataSources = await this.models.dataGroup.getDataElementsInDataGroup(requestDataSourceCode);

@@ -11,7 +11,7 @@ import {
 import { runDatabaseFunctionInBatches } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
 import { DataBrokerModelRegistry, DataServiceEntity, RequireKeys } from '../../types';
-import { DataElement, DataGroup, DhisAnalytics, DhisEventAnalytics } from './types';
+import { DhisAnalytics, DhisEventAnalytics } from './types';
 
 interface Query {
   dataElementCodes: string[];
@@ -172,10 +172,9 @@ export class DhisInputSchemeResolvingApiProxy {
 
   private async getDataElementDhisIdToCode(dataElementCodes: string[]) {
     const dataElementIdToCode: Record<string, string> = {};
-    const dataElements = (await this.models.dataSource.find({
+    const dataElements = await this.models.dataElement.find({
       code: dataElementCodes,
-      type: 'dataElement',
-    })) as DataElement[];
+    });
 
     for (const dataElement of dataElements) {
       if (!dataElement.config.dhisId) {
@@ -244,9 +243,7 @@ export class DhisInputSchemeResolvingApiProxy {
   }
 
   private allDataElementsHaveDhisId = async (dataElementCodes: string[]) => {
-    const dataElements = await this.models.dataSource.find({
-      code: dataElementCodes,
-    });
+    const dataElements = await this.models.dataElement.find({ code: dataElementCodes });
 
     for (const dataElementCode of dataElementCodes) {
       const dataElement = dataElements.find(d => d.code === dataElementCode);
@@ -273,7 +270,7 @@ export class DhisInputSchemeResolvingApiProxy {
   };
 
   private allProgramsHaveDhisId = async (programCodes: string[]) => {
-    const dataGroups = await this.models.dataSource.find({ code: programCodes, type: 'dataGroup' });
+    const dataGroups = await this.models.dataGroup.find({ code: programCodes });
 
     for (const dataGroup of dataGroups) {
       if (!dataGroup.config.dhisId) {
@@ -294,10 +291,7 @@ export class DhisInputSchemeResolvingApiProxy {
 
     const { dataElementCodes } = query;
 
-    const dataElements = (await this.models.dataSource.find({
-      code: dataElementCodes,
-      type: 'dataElement',
-    })) as DataElement[];
+    const dataElements = await this.models.dataElement.find({ code: dataElementCodes });
 
     for (const dataElementCode of dataElementCodes) {
       const dataElement = dataElements.find(d => d.code === dataElementCode);
@@ -327,10 +321,7 @@ export class DhisInputSchemeResolvingApiProxy {
   ): Promise<DhisEventAnalytics> => {
     const dataElementIdToCode: Record<string, string> = {};
 
-    const dataElements = (await this.models.dataSource.find({
-      code: dataElementCodes,
-      type: 'dataElement',
-    })) as DataElement[];
+    const dataElements = await this.models.dataElement.find({ code: dataElementCodes });
 
     for (const dataElement of dataElements) {
       if (dataElement.config.dhisId) {
@@ -415,10 +406,7 @@ export class DhisInputSchemeResolvingApiProxy {
       throw new Error('No program codes to replace');
     }
 
-    const dataGroups = (await this.models.dataSource.find({
-      code: programCodes,
-      type: 'dataGroup',
-    })) as DataGroup[];
+    const dataGroups = await this.models.dataGroup.find({ code: programCodes });
 
     const programIds: string[] = [];
 

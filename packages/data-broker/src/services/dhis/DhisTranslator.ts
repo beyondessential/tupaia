@@ -12,6 +12,7 @@ import { DataBrokerModelRegistry, DataElementMetadata, Event, OutboundEvent } fr
 import { InboundAnalyticsTranslator } from './InboundAnalyticsTranslator';
 import { parseValueForDhis } from './parseValueForDhis';
 import { DataElement, DhisAnalytics, DhisEventAnalytics, ValueType } from './types';
+import { DATA_SOURCE_TYPES } from '../../utils';
 
 interface DhisMetadataObject {
   id: string;
@@ -52,7 +53,7 @@ export class DhisTranslator {
   }
 
   private get dataSourceTypes() {
-    return this.models.dataSource.getTypes();
+    return DATA_SOURCE_TYPES;
   }
 
   private getOutboundValue = (dataElement: DataElementDescriptor, value?: string) => {
@@ -152,10 +153,9 @@ export class DhisTranslator {
     api: DhisApi,
     dataValues: OutboundEvent['dataValues'],
   ) {
-    const dataSources = (await this.models.dataSource.find({
+    const dataSources = await this.models.dataElement.find({
       code: dataValues.map(({ code }) => code),
-      type: this.dataSourceTypes.DATA_ELEMENT,
-    })) as DataElement[];
+    });
     const dataElementsByCode = await this.fetchOutboundDataElementsByCode(api, dataSources);
     const outboundDataValues = await this.translateOutboundDataValues(api, dataValues, dataSources);
     const dataValuesWithIds = outboundDataValues.map(({ dataElement: dataElementCode, value }) => {
@@ -181,9 +181,9 @@ export class DhisTranslator {
   };
 
   public async translateInboundEvents(events: Event[], dataGroupCode: string): Promise<Event[]> {
-    const dataElementsInGroup = (await this.models.dataSource.getDataElementsInGroup(
+    const dataElementsInGroup = await this.models.dataGroup.getDataElementsInDataGroup(
       dataGroupCode,
-    )) as DataElement[];
+    );
     const dataElementToSourceCode = reduceToDictionary(
       dataElementsInGroup,
       'dataElementCode',

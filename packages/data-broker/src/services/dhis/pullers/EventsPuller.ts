@@ -4,10 +4,10 @@
  */
 
 import type { DhisApi } from '@tupaia/dhis-api';
-import { DataSourceModel, Event } from '../../../types';
+import { DataElementModel, Event } from '../../../types';
 import { buildEventsFromDhisEventAnalytics } from '../buildAnalytics';
 import { DhisTranslator } from '../DhisTranslator';
-import { DataElement, DataGroup, DataServiceConfig } from '../types';
+import { DataGroup, DataServiceConfig } from '../types';
 
 export interface PullEventsOptions {
   dataElementCodes?: string[];
@@ -19,11 +19,11 @@ export interface PullEventsOptions {
 }
 
 export class EventsPuller {
-  private readonly dataSourceModel: DataSourceModel;
+  private readonly dataElementModel: DataElementModel;
   protected readonly translator: DhisTranslator;
 
-  public constructor(dataSourceModel: DataSourceModel, translator: DhisTranslator) {
-    this.dataSourceModel = dataSourceModel;
+  public constructor(dataElementModel: DataElementModel, translator: DhisTranslator) {
+    this.dataElementModel = dataElementModel;
     this.translator = translator;
   }
 
@@ -34,10 +34,9 @@ export class EventsPuller {
   ) => {
     const { dataElementCodes = [], organisationUnitCodes, period, startDate, endDate } = options;
 
-    const dataElementSources = (await this.dataSourceModel.find({
+    const dataElementSources = await this.dataElementModel.find({
       code: dataElementCodes,
-      type: this.dataSourceModel.getTypes().DATA_ELEMENT,
-    })) as DataElement[];
+    });
     const dhisElementCodes = dataElementSources.map(({ dataElementCode }) => dataElementCode);
 
     const eventAnalytics = await api.getEventAnalytics({

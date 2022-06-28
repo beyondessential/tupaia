@@ -2,15 +2,18 @@ import { EntityModel } from '@tupaia/database';
 import { createJestMockInstance } from '@tupaia/utils';
 import { WeatherResult } from '../../../services/weather/types';
 import { PullOptions } from '../../../services/weather/WeatherService';
-import { DataBrokerModelRegistry, DataSource, DataSourceType, Entity } from '../../../types';
+import { DataSource, DataSourceType, Entity } from '../../../types';
 
 interface MockModelResponseMap {
   entity: {
     find?: Entity[];
   };
-  dataSource: {
+  dataElement: {
     find?: DataSource[];
-    getDataElementsInGroup?: DataSource[];
+  };
+  dataGroup: {
+    find?: DataSource[];
+    getDataElementsInDataGroup?: DataSource[];
   };
 }
 
@@ -74,14 +77,9 @@ export const createMockEntity = async (fieldValues?: Partial<Entity>) => {
 export const createMockModelsStub = (responseMap?: MockModelResponseMap) => {
   const mockModels = {
     entity: new EntityModel({ fetchSchemaForTable: () => {} }), // no database
-    dataSource: {
-      getTypes: () => ({
-        DATA_ELEMENT: 'dataElement',
-        DATA_GROUP: 'dataGroup',
-        SYNC_GROUP: 'syncGroup',
-      }),
-    },
-  } as DataBrokerModelRegistry;
+    dataElement: {},
+    dataGroup: {},
+  };
 
   if (responseMap && responseMap.entity && responseMap.entity.find) {
     mockModels.entity.find = jest.fn().mockResolvedValue(responseMap.entity.find);

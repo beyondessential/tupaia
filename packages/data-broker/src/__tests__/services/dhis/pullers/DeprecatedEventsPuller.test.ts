@@ -5,7 +5,7 @@
 
 import { DhisApi } from '@tupaia/dhis-api';
 import { createModelsStub, stubDhisApi } from '../DhisService.stubs';
-import { DATA_SOURCES } from '../DhisService.fixtures';
+import { DATA_GROUPS } from '../DhisService.fixtures';
 import { DeprecatedEventsPuller, PullEventsOptions } from '../../../../services/dhis/pullers';
 import { DhisTranslator } from '../../../../services/dhis/DhisTranslator';
 import { DataGroup, EventResults } from '../../../../types';
@@ -23,11 +23,7 @@ describe('DeprecatedEventsPuller', () => {
 
   it('throws an error if multiple data groups are provided', async () =>
     expect(
-      deprecatedEventsPuller.pull(
-        [dhisApi],
-        [DATA_SOURCES.POP01_GROUP, DATA_SOURCES.DIFF_GROUP],
-        {},
-      ),
+      deprecatedEventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP, DATA_GROUPS.DIFF_GROUP], {}),
     ).toBeRejectedWith(/Cannot .*multiple programs/));
 
   describe('DHIS API invocation', () => {
@@ -67,7 +63,7 @@ describe('DeprecatedEventsPuller', () => {
     it('`organisationUnitCodes` can be empty', async () => {
       const assertErrorIsNotThrown = async (organisationUnitCodes?: string[]) =>
         expect(
-          deprecatedEventsPuller.pull([dhisApi], [DATA_SOURCES.POP01_GROUP], {
+          deprecatedEventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], {
             organisationUnitCodes,
           }),
         ).toResolve();

@@ -6,7 +6,7 @@
 import groupBy from 'lodash.groupby';
 
 import type { DhisApi } from '@tupaia/dhis-api';
-import { DataSourceModel } from '../../../types';
+import { DataElementModel } from '../../../types';
 import { DataElement } from '../types';
 import { DhisTranslator } from '../DhisTranslator';
 
@@ -16,10 +16,10 @@ type PullOptions = Partial<{
 }>;
 
 export class DataElementsMetadataPuller {
-  private readonly dataSourceModel;
+  private readonly dataSourceModel: DataElementModel;
   private readonly translator: DhisTranslator;
 
-  public constructor(dataSourceModel: DataSourceModel, translator: DhisTranslator) {
+  public constructor(dataSourceModel: DataElementModel, translator: DhisTranslator) {
     this.dataSourceModel = dataSourceModel;
     this.translator = translator;
   }

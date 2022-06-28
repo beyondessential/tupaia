@@ -54,15 +54,16 @@ export const stubDhisApi = ({
 };
 
 export const createModelsStub = () =>
-  (({ dataSource: createDataSourceModelsStub() } as unknown) as DataBrokerModelRegistry);
+  ({
+    dataElement: createDataElementModelsStub(),
+    dataGroup: createDataGroupModelsStub(),
+  } as DataBrokerModelRegistry);
 
-export const createDataSourceModelsStub = () => ({
+export const createDataElementModelsStub = () => ({
   find: async (specs: DataSourceSpec) =>
     Object.values(DATA_SOURCES).filter(
       ({ code, type }) => specs.code.includes(code) && specs.type === type,
     ),
-  getDataElementsInGroup: async (groupCode: keyof typeof DATA_ELEMENTS_BY_GROUP) =>
-    DATA_ELEMENTS_BY_GROUP[groupCode],
   getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
   getDhisDataTypes: () => ({ DATA_ELEMENT: 'DataElement', INDICATOR: 'Indicator' }),
 });

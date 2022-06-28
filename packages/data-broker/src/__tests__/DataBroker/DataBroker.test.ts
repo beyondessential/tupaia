@@ -192,7 +192,7 @@ describe('DataBroker', () => {
       });
     });
 
-    describe('events', () => {
+    describe('dataGroups', () => {
       const assertServicePulledEventsOnce = (service: Service, dataElements: DataSource[]) =>
         expect(service.pull).toHaveBeenCalledOnceWith(dataElements, 'dataGroup', options);
 

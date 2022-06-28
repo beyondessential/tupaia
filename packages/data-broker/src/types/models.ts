@@ -6,8 +6,10 @@
 import type {
   DatabaseModel as BaseDatabaseModel,
   DatabaseType as BaseDatabaseType,
-  DataSourceModel as BaseDataSourceModel,
-  DataSourceType as BaseDataSourceType,
+  DataElementModel as BaseDataElementModel,
+  DataElementType as BaseDataElementType,
+  DataGroupModel as BaseDataGroupModel,
+  DataGroupType as BaseDataGroupType,
   EntityModel as BaseEntityModel,
   EntityType as BaseEntityType,
   ModelRegistry,
@@ -56,14 +58,18 @@ export type ServiceType = 'data-lake' | 'dhis' | 'indicator' | 'kobo' | 'tupaia'
 
 export type DataSource = {
   code: string;
-  type: DataSourceType;
   service_type: ServiceType;
   config: Record<string, DbValue>;
 };
 
-export type DataElement = DataSource & { type: 'dataElement'; dataElementCode: string };
-export type DataGroup = DataSource & { type: 'dataGroup' };
-export type SyncGroup = DataSource & { type: 'syncGroup' };
+export type DataElement = DataSource & {
+  permission_groups: string[];
+  dataElementCode: string;
+};
+
+export type DataGroup = DataSource;
+
+export type SyncGroup = DataSource;
 
 export type DataServiceEntity = {
   config: {
@@ -88,23 +94,26 @@ export type Entity = {
   };
 };
 
+type DataElementInstance = DatabaseType<DataElement, BaseDataElementType>;
 export type EntityInstance = DatabaseType<Entity, BaseEntityType>;
 
-export type DataSourceModel = DatabaseModel<
-  DataSource,
-  BaseDataSourceType,
+export type DataElementModel = DatabaseModel<
+  DataElement,
+  BaseDataElementType,
   Override<
-    BaseDataSourceModel,
+    BaseDataElementModel,
     {
-      getDataElementsInGroup: (
-        dataGroupCode: string,
-      ) => Promise<DatabaseType<DataSource, BaseDataSourceType>[]>;
       getDhisDataTypes: () => Record<string, 'DataElement' | 'Indicator'>;
-      getTypes: () => {
-        DATA_ELEMENT: 'dataElement';
-        DATA_GROUP: 'dataGroup';
-        SYNC_GROUP: 'syncGroup';
-      };
+    }
+  >
+>;
+type DataGroupModel = DatabaseModel<
+  DataGroup,
+  BaseDataGroupType,
+  Override<
+    BaseDataGroupModel,
+    {
+      getDataElementsInDataGroup: (dataGroupCode: string) => Promise<DataElementInstance[]>;
     }
   >
 >;
@@ -113,7 +122,8 @@ type DataServiceSyncGroupModel = DatabaseModel<DataServiceSyncGroup>;
 type EntityModel = DatabaseModel<Entity, EntityInstance, BaseEntityModel>;
 
 export interface DataBrokerModelRegistry extends ModelRegistry {
-  dataSource: DataSourceModel;
+  dataElement: DataElementModel;
+  dataGroup: DataGroupModel;
   dataServiceEntity: DataServiceEntityModel;
   dataServiceSyncGroup: DataServiceSyncGroupModel;
   entity: EntityModel;
