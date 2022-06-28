@@ -40,6 +40,7 @@ User.schema = {
     passwordHash: { type: 'string', default: 'Failed to store user details' },
     name: { type: 'string', default: 'Failed to store user details' },
     accessPolicyData: { type: 'string', default: 'Failed to store user details' },
+    isRequestedAccountDeletion: { type: 'bool', default: false },
   },
 };
 
