@@ -28,7 +28,7 @@
     "test": "npm run test:jest",
     "test:cypress:open": "start-server-and-test start-fullstack 3000 cypress:open",
     "test:cypress:run": "start-server-and-test start-fullstack 3000 cypress:run",
-    "test:jest": "npm run --prefix ../../ package:test --env=jsdom"
+    "test:jest": "yarn package:test --env=jsdom"
   },
   "browserslist": [
     "defaults"
