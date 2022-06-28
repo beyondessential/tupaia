@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import { useForm } from 'react-hook-form';
 import * as COLORS from '../../constants';
 import { useRegisterUser } from '../../api';
+import { I18n, useI18n } from '../../utils/I18n';
 
 // Lazy load the password strength library as it uses zxcvbn which is a large dependency.
 // For more about lazy loading components @see: https://reactjs.org/docs/code-splitting.html#reactlazy
@@ -55,7 +56,9 @@ const Text = styled(Typography)`
 
 const SuccessMessage = () => (
   <MuiBox>
-    <Heading variant="h4">Register for an account</Heading>
+    <Heading variant="h4">
+      <I18n t="register.forAnAccount" />
+    </Heading>
     <MuiBox mt={4}>
       <Text>
         Congratulations, you have successfully signed up to LESMIS. To activate your account please{' '}
@@ -67,6 +70,7 @@ const SuccessMessage = () => (
 );
 
 export const RegisterForm = () => {
+  const { translate } = useI18n();
   const { handleSubmit, register, errors, watch, getValues } = useForm();
   const { mutate, isError, isLoading, isSuccess, error } = useRegisterUser();
   const password = watch('password');
@@ -77,11 +81,13 @@ export const RegisterForm = () => {
 
   return (
     <form onSubmit={handleSubmit(fields => mutate(fields))} noValidate>
-      <Heading variant="h4">Register for an account</Heading>
+      <Heading variant="h4">
+        <I18n t="register.forAnAccount" />
+      </Heading>
       {isError && <ErrorMessage>{error.message}</ErrorMessage>}
       <FieldSet>
         <TextField
-          label="First Name"
+          label={translate('register.firstName')}
           name="firstName"
           type="text"
           error={!!errors.firstName}
@@ -91,7 +97,7 @@ export const RegisterForm = () => {
           })}
         />
         <TextField
-          label="Last Name"
+          label={translate('register.lastName')}
           name="lastName"
           type="text"
           error={!!errors.lastName}
@@ -101,7 +107,7 @@ export const RegisterForm = () => {
           })}
         />
         <TextField
-          label="Email address"
+          label={translate('register.emailAddress')}
           name="emailAddress"
           type="email"
           error={!!errors.emailAddress}
@@ -115,7 +121,7 @@ export const RegisterForm = () => {
           })}
         />
         <TextField
-          label="Contact Number"
+          label={translate('register.contactNumber')}
           name="contactNumber"
           type="text"
           error={!!errors.contactNumber}
@@ -125,7 +131,7 @@ export const RegisterForm = () => {
           })}
         />
         <TextField
-          label="Employer"
+          label={translate('register.employer')}
           name="employer"
           type="text"
           error={!!errors.employer}
@@ -135,7 +141,7 @@ export const RegisterForm = () => {
           })}
         />
         <TextField
-          label="Position"
+          label={translate('register.position')}
           name="position"
           type="text"
           error={!!errors.position}
@@ -146,7 +152,7 @@ export const RegisterForm = () => {
         />
       </FieldSet>
       <TextField
-        label="Password *"
+        label={translate('register.password')}
         name="password"
         type="password"
         error={!!errors.password}
@@ -157,7 +163,7 @@ export const RegisterForm = () => {
         })}
       />
       <TextField
-        label="Confirm Password *"
+        label={translate('register.confirmPassword')}
         name="passwordConfirm"
         type="password"
         error={!!errors.passwordConfirm}
@@ -178,7 +184,7 @@ export const RegisterForm = () => {
       <Checkbox
         name="terms"
         color="primary"
-        label="I agree to the terms and conditions"
+        label={translate('register.agreeToTerms')}
         defaultValue={false}
         error={!!errors.terms}
         helperText={errors?.terms?.message}
@@ -188,7 +194,7 @@ export const RegisterForm = () => {
         })}
       />
       <StyledButton type="submit" fullWidth isLoading={isLoading}>
-        Register account now
+        <I18n t="register.accountNow" />
       </StyledButton>
     </form>
   );

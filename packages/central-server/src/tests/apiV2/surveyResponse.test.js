@@ -1,17 +1,11 @@
 import { expect } from 'chai';
 import moment from 'moment';
 
-import {
-  buildAndInsertSurveys,
-  generateId,
-  generateTestId,
-  upsertDummyRecord,
-} from '@tupaia/database';
-import { oneSecondSleep } from '@tupaia/utils';
+import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
+import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import {
   expectErrors,
   expectSuccess,
-  randomIntBetween,
   setupDummySyncQueue,
   TestableApp,
   upsertEntity,

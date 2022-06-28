@@ -4,3 +4,4 @@
  */
 
 export { FeedItemModel, FeedItemFields } from './FeedItem';
+export { MeditrakSyncQueueModel } from './MeditrakSyncQueue';
