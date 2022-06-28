@@ -18,7 +18,7 @@
     "build-dev": "npm run build",
     "lint": "npm run --prefix ../../ package:lint:js",
     "lint:fix": "npm run lint --fix",
-    "test": "npm run --prefix ../../ package:test:withdb --runInBand",
+    "test": "yarn package:test:withdb --runInBand",
     "test:coverage": "npm run test --coverage"
   },
   "dependencies": {

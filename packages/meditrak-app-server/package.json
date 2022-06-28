@@ -23,7 +23,7 @@
     "start": "node dist",
     "start-dev": "LOG_LEVEL=debug npm run --prefix ../../ package:start:backend-start-dev 9998 -ts",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
-    "test": "npm run --prefix ../../ package:test:withdb --runInBand"
+    "test": "yarn package:test:withdb --runInBand"
   },
   "dependencies": {
     "@tupaia/api-client": "3.1.0",

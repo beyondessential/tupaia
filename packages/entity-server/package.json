@@ -23,7 +23,7 @@
     "start": "node dist",
     "start-dev": "npm run --prefix ../../ package:start:backend-start-dev 9996 -ts",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
-    "test": "npm run --prefix ../../ package:test:withdb --runInBand",
+    "test": "yarn package:test:withdb --runInBand",
     "test:coverage": "npm run test --coverage",
     "test:watch": "npm run test --watch"
   },
