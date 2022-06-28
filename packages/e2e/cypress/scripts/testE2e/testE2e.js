@@ -6,7 +6,7 @@
 import { execSync } from 'child_process';
 import {} from 'dotenv/config';
 import fs from 'fs';
-import { fetch } from 'node-fetch';
+import fetch from 'node-fetch';
 
 import { getArgs, getLoggerInstance } from '@tupaia/utils';
 import { E2E_CONFIG_PATH } from '../../constants';
