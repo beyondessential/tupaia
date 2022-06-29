@@ -17,7 +17,8 @@ import {
 import MuiIconButton from '@material-ui/core/Button';
 import { DashboardExportPreview } from './DashboardExportPreview';
 import { OptionsBar } from './components';
-import { I18n, useExportToPDF } from '../../utils';
+import { I18n, useDashboardItemsExportToPDF, useUrlParams, useUrlSearchParam } from '../../utils';
+import { DEFAULT_DATA_YEAR } from '../../constants';
 
 const FlexSpaceBetween = styled(BaseFlexSpaceBetween)`
   width: 95%;
@@ -42,6 +43,8 @@ export const DashboardExportModal = ({
 }) => {
   const [exportWithLabels, setExportWithLabels] = useState(false);
   const [exportWithTable, setExportWithTable] = useState(false);
+  const [selectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
+  const { locale, entityCode } = useUrlParams();
 
   const toggleExportWithLabels = () => {
     setExportWithLabels(!exportWithLabels);
@@ -51,13 +54,20 @@ export const DashboardExportModal = ({
   };
 
   const fileName = `${title}-dashboards-export`;
-  const { addToRefs, isExporting, exportToPDF } = useExportToPDF(fileName);
+  const { addToRefs, isExporting, exportToPDF } = useDashboardItemsExportToPDF({
+    exportWithLabels,
+    exportWithTable,
+    year: selectedYear,
+    locale,
+    entityCode,
+  });
+
   const isFetching = useIsFetching() > 0;
   const isDisabled = isExporting || isFetching;
   const [page, setPage] = useState(1);
 
   const handleClickExport = async () => {
-    await exportToPDF();
+    await exportToPDF(fileName);
   };
   const onClose = () => {
     setIsOpen(false);

@@ -8,9 +8,9 @@ import { getExportableDashboards, useUrlSearchParams } from '../utils';
 import { useDashboardDropdownOptions } from '../utils/useDashboardDropdownOptions';
 
 export const PDFDownloadView = () => {
-  const [{ label, table }] = useUrlSearchParams();
-  const exportWithLabels = !!label;
-  const exportWithTable = !!table;
+  let [{ exportWithLabels, exportWithTable }] = useUrlSearchParams();
+  exportWithLabels = !!exportWithLabels;
+  exportWithTable = !!exportWithTable;
   const { dropdownOptions } = useDashboardDropdownOptions();
   const profileDropDownOptions = dropdownOptions.filter(({ exportToPDF }) => exportToPDF);
   const { exportableDashboards } = getExportableDashboards(profileDropDownOptions);
