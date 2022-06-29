@@ -76,11 +76,11 @@ describe('functions', () => {
   });
 
   describe('context', () => {
-    describe('orgUnitIdToCode', () => {
+    describe('orgUnitIdToCode()', () => {
       const context = {
         orgUnits: [
-          { id: '1234', code: 'FJ', name: 'Fiji' },
-          { id: '5678', code: 'TO', name: 'Tonga' },
+          { id: '1234', code: 'FJ', name: 'Fiji', attributes: {} },
+          { id: '5678', code: 'TO', name: 'Tonga', attributes: {} },
         ],
       };
 
@@ -95,11 +95,11 @@ describe('functions', () => {
       });
     });
 
-    describe('orgUnitCodeToName', () => {
+    describe('orgUnitCodeToName()', () => {
       const context = {
         orgUnits: [
-          { id: '1234', code: 'FJ', name: 'Fiji' },
-          { id: '5678', code: 'TO', name: 'Tonga' },
+          { id: '1234', code: 'FJ', name: 'Fiji', attributes: {} },
+          { id: '5678', code: 'TO', name: 'Tonga', attributes: {} },
         ],
       };
 
@@ -114,7 +114,7 @@ describe('functions', () => {
       });
     });
 
-    describe('dataElementCodeToName', () => {
+    describe('dataElementCodeToName()', () => {
       const context = {
         dataElementCodeToName: {
           FijiBCSC93: 'Haloperidol Tablets 5mg',
@@ -132,6 +132,25 @@ describe('functions', () => {
       it('returns undefined if the data element code is not found', () => {
         const parser = new TransformParser(undefined, context);
         expect(parser.evaluate("=dataElementCodeToName('BCD1')")).toBe(undefined);
+      });
+    });
+
+    describe('orgUnitAttribute()', () => {
+      const context = {
+        orgUnits: [
+          { id: '1234', code: 'FJ', name: 'Fiji', attributes: { x: 1 }},
+          { id: '5678', code: 'TO', name: 'Tonga', attributes: { y: 2 } },
+        ],
+      };
+
+      it('gets attribute of org unit', () => {
+        const parser = new TransformParser(undefined, context);
+        expect(parser.evaluate("=orgUnitAttribute('FJ', 'x')")).toBe(1);
+      });
+
+      it('returns undefined if the attribute is not set', () => {
+        const parser = new TransformParser(undefined, context);
+        expect(parser.evaluate("=orgUnitAttribute('TO', 'x')")).toBe(undefined);
       });
     });
   });

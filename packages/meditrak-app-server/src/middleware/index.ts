@@ -3,4 +3,4 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-export { importDataSources } from './importDataSources';
+export { checkAppVersion } from './checkAppVersion';

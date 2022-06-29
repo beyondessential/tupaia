@@ -7,7 +7,8 @@ import {} from 'dotenv/config'; // Load the environment variables into process.e
 import { expect } from 'chai';
 import moment from 'moment';
 
-import { getAuthorizationHeader, randomEmail, TestableApp } from '../../testUtilities';
+import { randomEmail } from '@tupaia/utils';
+import { getAuthorizationHeader, TestableApp } from '../../testUtilities';
 
 describe('One Time Login', function () {
   const app = new TestableApp();

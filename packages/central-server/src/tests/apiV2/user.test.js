@@ -4,7 +4,8 @@
  */
 
 import { expect } from 'chai';
-import { getAuthorizationHeader, randomEmail, TestableApp } from '../testUtilities';
+import { randomEmail } from '@tupaia/utils';
+import { getAuthorizationHeader, TestableApp } from '../testUtilities';
 
 describe('/user', () => {
   const app = new TestableApp();

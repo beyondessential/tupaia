@@ -48,95 +48,95 @@ const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
  * Set up express server with middleware,
  */
 export function createApp() {
-  const app = new OrchestratorApiBuilder(new TupaiaDatabase())
+  const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'admin-panel')
     .useSessionModel(AdminPanelSessionModel)
     .verifyLogin(hasTupaiaAdminPanelAccess)
-    .get('/v1/user', handleWith(UserRoute))
+    .get('user', handleWith(UserRoute))
     .get<FetchHierarchyEntitiesRequest>(
-      '/v1/hierarchy/:hierarchyName/:entityCode',
+      'hierarchy/:hierarchyName/:entityCode',
       verifyBESAdminAccess,
       handleWith(FetchHierarchyEntitiesRoute),
     )
     .post<FetchReportPreviewDataRequest>(
-      '/v1/fetchReportPreviewData',
+      'fetchReportPreviewData',
       verifyBESAdminAccess,
       handleWith(FetchReportPreviewDataRoute),
     )
     .post<SaveDashboardVisualisationRequest>(
-      '/v1/dashboardVisualisation',
+      'dashboardVisualisation',
       verifyBESAdminAccess,
       handleWith(SaveDashboardVisualisationRoute),
     )
     .put<SaveDashboardVisualisationRequest>(
-      '/v1/dashboardVisualisation/:dashboardVisualisationId',
+      'dashboardVisualisation/:dashboardVisualisationId',
       verifyBESAdminAccess,
       handleWith(SaveDashboardVisualisationRoute),
     )
     .post<SaveMapOverlayVisualisationRequest>(
-      '/v1/mapOverlayVisualisation',
+      'mapOverlayVisualisation',
       verifyBESAdminAccess,
       handleWith(SaveMapOverlayVisualisationRoute),
     )
     .put<SaveMapOverlayVisualisationRequest>(
-      '/v1/mapOverlayVisualisation/:mapOverlayVisualisationId',
+      'mapOverlayVisualisation/:mapOverlayVisualisationId',
       verifyBESAdminAccess,
       handleWith(SaveMapOverlayVisualisationRoute),
     )
     .get<FetchDashboardVisualisationRequest>(
-      '/v1/dashboardVisualisation/:dashboardVisualisationId',
+      'dashboardVisualisation/:dashboardVisualisationId',
       verifyBESAdminAccess,
       handleWith(FetchDashboardVisualisationRoute),
     )
     .get(
-      '/v1/export/dashboardVisualisation/:dashboardVisualisationId',
+      'export/dashboardVisualisation/:dashboardVisualisationId',
       verifyBESAdminAccess,
       handleWith(ExportDashboardVisualisationRoute),
     )
     .get(
-      '/v1/export/mapOverlayVisualisation/:mapOverlayVisualisationId',
+      'export/mapOverlayVisualisation/:mapOverlayVisualisationId',
       verifyBESAdminAccess,
       handleWith(ExportMapOverlayVisualisationRoute),
     )
     .post<ExportDashboardVisualisationRequest>(
-      '/v1/export/dashboardVisualisation',
+      'export/dashboardVisualisation',
       verifyBESAdminAccess,
       handleWith(ExportDashboardVisualisationRoute),
     )
     .post<ExportMapOverlayVisualisationRequest>(
-      '/v1/export/mapOverlayVisualisation',
+      'export/mapOverlayVisualisation',
       verifyBESAdminAccess,
       handleWith(ExportMapOverlayVisualisationRoute),
     )
     .post<ImportDashboardVisualisationRequest>(
-      '/v1/import/dashboardVisualisations',
+      'import/dashboardVisualisations',
       verifyBESAdminAccess,
       upload.array('dashboardVisualisations'),
       handleWith(ImportDashboardVisualisationRoute),
     )
     .post<ImportMapOverlayVisualisationRequest>(
-      '/v1/import/mapOverlayVisualisations',
+      'import/mapOverlayVisualisations',
       verifyBESAdminAccess,
       upload.array('mapOverlayVisualisations'),
       handleWith(ImportMapOverlayVisualisationRoute),
     )
     .post<UploadTestDataRequest>(
-      '/v1/uploadTestData',
+      'uploadTestData',
       verifyBESAdminAccess,
       upload.single('testData'),
       handleWith(UploadTestDataRoute),
     )
     .get<FetchMapOverlayVisualisationRequest>(
-      '/v1/mapOverlayVisualisation/:mapOverlayVisualisationId',
+      'mapOverlayVisualisation/:mapOverlayVisualisationId',
       verifyBESAdminAccess,
       handleWith(FetchMapOverlayVisualisationRoute),
     )
     .get<FetchAggregationOptionsRequest>(
-      '/v1/fetchAggregationOptions',
+      'fetchAggregationOptions',
       verifyBESAdminAccess,
       handleWith(FetchAggregationOptionsRoute),
     )
     .get<FetchTransformSchemasRequest>(
-      '/v1/fetchTransformSchemas',
+      'fetchTransformSchemas',
       verifyBESAdminAccess,
       handleWith(FetchTransformSchemasRoute),
     )

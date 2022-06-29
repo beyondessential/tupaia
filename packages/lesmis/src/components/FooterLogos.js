@@ -18,6 +18,5 @@ export const FooterLogos = React.memo(() => (
   <FlexStart>
     <Logo src="/images/unicef-logo.png" />
     <Logo src="/images/eu-logo.png" />
-    <Logo src="/images/gpe-logo.jpg" />
   </FlexStart>
 ));

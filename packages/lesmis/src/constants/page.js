@@ -21,7 +21,7 @@ export const ABOUT_PAGE = {
         <Typography>
           The Lao PDR Education and Sports Management Information System (LESMIS) is a GIS-enabled
           data aggregation, analysis and visualization platform for improved data management and
-          utilization for monitoring and planning.
+          utilization for monitoring, planning and setting policy.
         </Typography>
       </>
     ),
@@ -35,7 +35,9 @@ export const ABOUT_PAGE = {
           ກ່ຽວກັບ LESMIS
         </Typography>
         <Typography>
-          ແມ່ນລະບົບທີ່ປັບປຸງຄຸນນະພາບ, ການຄຸ້ມຄອງ ແລະ ການນໍາໃຊ້ຂໍ້ມູນສໍາລັບ ກະຊວງສຶກສາທິການ ແລະ ກິລາ
+          ລະບົບຂໍ້ມູນຂ່າວສານການຄຸ້ມຄອງການສຶກສາ ແລະ ກິລາຂອງ ສປປ ລາວ (LESMIS)
+          ເປັນລະບົບທີ່ເປັນການລວບລວມຂໍ້ມູນ, ການວິເຄາະ ແລະ ການສ້າງພາບທີ່ນຳໃຊ້ GIS
+          ເພື່ອປັບປຸງການຄຸ້ມຄອງຂໍ້ມູນ ແລະ ນຳໃຊ້ເຂົ້າໃນການຕິດຕາມ ແລະ ວາງແຜນ
         </Typography>
       </>
     ),
@@ -313,7 +315,7 @@ export const FQS_PAGE = {
               ສຳລັບທຸກໆຊັ້ນຮຽນ
             </ListItem>
           </List>
-          <Image src="/images/fqs-overview-diagram.png" />
+          <Image src="/images/fqs-overview-diagram-la.png" />
         </Box>
         <Box mb={3}>
           <Typography variant="h2" gutterBottom>
@@ -324,7 +326,7 @@ export const FQS_PAGE = {
             ແມ່ນຄວາມຮັບຜິດຊອບຂອງທຸກພາກສ່ວນທີ່ກ່ຽວຂ້ອງ, ລວມທັງພໍ່ແມ່, ຊຸມຊົນ, ສຶກສາເມືອງ ແລະ
             ກຸ່ມໂຮງຮຽນ.
           </Typography>
-          <Image src="/images/fqs-school-improvement-diagram.png" />
+          <Image src="/images/fqs-school-improvement-diagram-la.png" />
         </Box>
         <Box mb={3}>
           <Typography variant="h2" gutterBottom>
@@ -337,7 +339,7 @@ export const FQS_PAGE = {
             ຢ່າງໜ້ອຍໃຫ້ທັນແຈ້ງເຂົ້າແຜນການປະຕິບັດລາຍຈ່າຍປະຈຳປີຂອງຫ້ອງການສຶກສາທິການ ແລະ ກິລາ ຂັ້ນເມືອງ
             (ACEP).
           </Typography>
-          <Image src="/images/fqs-planning-diagram.png" />
+          <Image src="/images/fqs-planning-diagram-la.png" />
         </Box>
         <Box mb={3} id="school-support-categories">
           <Typography variant="h2" gutterBottom>

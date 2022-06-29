@@ -14,11 +14,13 @@ export class TestableServer {
   private readonly app: Express;
   private readonly version: number;
   private readonly defaultHeaders: Record<string, string>;
+  private readonly defaultQuery: Record<string, string>;
 
   public constructor(app: Express, version = 1) {
     this.app = app;
     this.version = version;
     this.defaultHeaders = {};
+    this.defaultQuery = {};
   }
 
   private getVersionedEndpoint = (endpoint: string) => `/v${this.version}/${endpoint}`;
@@ -47,6 +49,10 @@ export class TestableServer {
     this.defaultHeaders[name] = value;
   }
 
+  public setDefaultQueryParam(name: string, value: string) {
+    this.defaultQuery[name] = value;
+  }
+
   private addOptionsToRequest(request: Test, options: RequestOptions = {}) {
     const { headers, query, body } = options;
 
@@ -57,7 +63,9 @@ export class TestableServer {
     }
 
     if (query) {
-      request.query(query);
+      request.query({ ...this.defaultQuery, ...query });
+    } else {
+      request.query(this.defaultQuery);
     }
 
     if (body) {

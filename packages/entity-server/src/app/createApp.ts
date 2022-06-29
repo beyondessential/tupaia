@@ -35,8 +35,8 @@ import { attachRelationshipsContext } from '../routes/hierarchy/relationships/mi
  */
 export function createApp(db = new TupaiaDatabase()) {
   return (
-    new MicroServiceApiBuilder(db)
-      .useBasicBearerAuth('entity-server')
+    new MicroServiceApiBuilder(db, 'entity')
+      .useBasicBearerAuth()
 
       // MultiEntity routes
       .post<MultiEntityRequest>(

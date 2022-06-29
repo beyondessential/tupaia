@@ -74,6 +74,21 @@ describe('configCellBuilders', () => {
         await runArithmeticTestCase(testCase);
       });
     });
+
+    it('Question codes are substrings of one another', async () => {
+      const config = 'formula: $baba * $ab + $bab + $abab + $abbaba + ($ba * 2) - $abbababa';
+      const expectedProcessedFormula =
+        '$mnbv * $zx + $kjh + $oiuy + $sdffgh + ($cv * 2) - $dfglkjyt';
+
+      const processedConfig = await processArithmeticConfig(modelsStub, convertCellToJson(config));
+      expect(processedConfig.formula).to.equal(expectedProcessedFormula);
+
+      const builtConfig = await arithmeticConfigCellBuilder.build({
+        arithmetic: processedConfig,
+      });
+
+      return expect(builtConfig).to.equal(config);
+    });
   });
   describe('ConditionConfigCellBuilder', () => {
     CONDITION_TEST_CASES.forEach(testCase => {

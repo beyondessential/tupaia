@@ -44,6 +44,7 @@
     "nameOfProvince": "Name of Province",
     "numberOfSchools": "Number of Schools",
     "numberOfStudents": "Number of Students",
+    "Population": "Population",
     "preSchool": "Pre School",
     "primary": "Primary",
     "priorityDistrict": "Priority District",
@@ -74,7 +75,7 @@
     "year": "Year"
   },
   "home": {
-    "aboutText": "A system to improve data quality, management and utilisation for the Ministry of Education and Sports",
+    "aboutText": "The Lao PDR Education and Sports Management Information System (LESMIS) is a GIS-enabled data aggregation, analysis and visualization platform for improved data management and utilization for monitoring, planning and setting policy.",
     "aboutLesmis": "About lesmis",
     "allLocations": "All locations",
     "contactUs": "Contact us",
@@ -102,6 +103,22 @@
     "email": "Email",
     "enterYourEmailAndPassword": "Enter your email and password",
     "loginToYourAccount": "Login to your account",
-    "password": "Password"
+    "password": "Password",
+    "dontHaveAccess": "Don't have access?",
+    "registerHere": "Register here"
+  },
+  "register": {
+    "forAnAccount": "Register for an account",
+    "accountNow": "Register account now",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "emailAddress": "Email Address",
+    "contactNumber": "Contact Number",
+    "employer": "Employer",
+    "position": "Position",
+    "confirmPassword": "confirmPassword",
+    "agreeToTerms": "I agree to the terms and conditions",
+    "password": "Password *",
+    "confirmPassword": "Confirm Password *"
   }
 }
