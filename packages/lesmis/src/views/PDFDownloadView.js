@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { DashboardExportPreview } from '../components/DashboardExportModal/DashboardExportPreview';
+import { DashboardReportPage, NoReportPage } from '../components/DashboardExportModal/pages';
 import { getExportableDashboards, useUrlSearchParams } from '../utils';
 import { useDashboardDropdownOptions } from '../utils/useDashboardDropdownOptions';
 
@@ -11,14 +11,48 @@ export const PDFDownloadView = () => {
   let [{ exportWithLabels, exportWithTable }] = useUrlSearchParams();
   exportWithLabels = !!exportWithLabels;
   exportWithTable = !!exportWithTable;
+  const exportOptions = { exportWithLabels, exportWithTable };
+
   const { dropdownOptions } = useDashboardDropdownOptions();
   const profileDropDownOptions = dropdownOptions.filter(({ exportToPDF }) => exportToPDF);
   const { exportableDashboards } = getExportableDashboards(profileDropDownOptions);
 
+  const getChildren = (subDashboard, isFirstPageProfile) => {
+    const { items, useYearSelector, ...configs } = subDashboard;
+    const baseConfigs = {
+      useYearSelector,
+      subDashboardName: subDashboard.dashboardName,
+      ...configs,
+    };
+
+    return items.length > 0 ? (
+      subDashboard.items.map((item, index) => {
+        return (
+          <DashboardReportPage
+            key={item.code}
+            item={item}
+            useYearSelector={useYearSelector}
+            isEntityDetailsRequired={isFirstPageProfile && index === 0}
+            exportOptions={exportOptions}
+            {...baseConfigs}
+          />
+        );
+      })
+    ) : (
+      <NoReportPage
+        key={subDashboard.dashboardName}
+        isEntityDetailsRequired={isFirstPageProfile}
+        {...baseConfigs}
+      />
+    );
+  };
+
   return (
-    <DashboardExportPreview
-      exportableDashboards={exportableDashboards}
-      exportOptions={{ exportWithLabels, exportWithTable }}
-    />
+    <div>
+      {exportableDashboards?.map((subDashboard, index) => {
+        const isFirstPageProfile = index === 0;
+        return getChildren(subDashboard, isFirstPageProfile);
+      })}
+    </div>
   );
 };
