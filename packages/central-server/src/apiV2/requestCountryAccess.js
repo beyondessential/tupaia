@@ -2,9 +2,10 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
-import { respond, DatabaseError, UnauthenticatedError, ValidationError } from '@tupaia/utils';
+import { respond, UnauthenticatedError, ValidationError } from '@tupaia/utils';
 import { getTokenClaimsFromBearerAuth } from '@tupaia/auth';
 import { sendEmail } from '../utilities';
+import { getUserInfoInString } from './utilities';
 
 const checkUserPermission = (req, userId) => {
   const authHeader = req.headers.authorization;
@@ -15,20 +16,11 @@ const checkUserPermission = (req, userId) => {
   }
 };
 
-const getUserName = async (userId, models) => {
-  try {
-    const user = await models.user.findById(userId);
-    return `${user.first_name} ${user.last_name} (${user.email} - ${user.id}), ${user.position} at ${user.employer}, `;
-  } catch (error) {
-    throw new DatabaseError('finding user', error);
-  }
-};
-
-const sendRequest = (userName, countryNames, message, project) => {
-  const { COUNTRY_REQUEST_EMAIL_ADDRESS } = process.env;
+const sendRequest = (userInfo, countryNames, message, project) => {
+  const { TUPAIA_ADMIN_EMAIL_ADDRESS } = process.env;
 
   const emailText = `
-${userName} has requested access to countries:
+${userInfo} has requested access to countries:
 ${countryNames.map(n => `  -  ${n}`).join('\n')}
 ${
   project
@@ -41,7 +33,7 @@ For the project ${project.code} (linked to permission groups: ${project.permissi
 }
 With the message: '${message}'
 `;
-  return sendEmail(COUNTRY_REQUEST_EMAIL_ADDRESS, 'Tupaia Country Access Request', emailText);
+  return sendEmail(TUPAIA_ADMIN_EMAIL_ADDRESS, 'Tupaia Country Access Request', emailText);
 };
 
 const createAccessRequests = async (models, userId, entities, message, project) => {
@@ -84,13 +76,13 @@ export const requestCountryAccess = async (req, res) => {
   } catch (error) {
     throw new UnauthenticatedError(error.message);
   }
-  const userName = await getUserName(userId, models);
+  const userInfo = await getUserInfoInString(userId, models);
 
   const project = projectCode && (await models.project.findOne({ code: projectCode }));
   await createAccessRequests(models, userId, entities, message, project);
 
   const countryNames = entities.map(e => e.name);
-  await sendRequest(userName, countryNames, message, project);
+  await sendRequest(userInfo, countryNames, message, project);
 
   respond(res, { message: 'Country access requested.' }, 200);
 };
