@@ -16,7 +16,7 @@ exports.setup = function (options, seedLink) {
 
 exports.up = async function (db) {
   await db.runSql(
-    `ALTER TABLE data_service_sync_group DISABLE TRIGGER data_service_sync_group_trigger`,
+    `DROP TRIGGER IF EXISTS data_service_sync_group_trigger ON data_service_sync_group`,
   );
 
   await db.runSql(`ALTER TABLE data_service_sync_group RENAME COLUMN code TO data_group_code`);
@@ -28,17 +28,9 @@ exports.up = async function (db) {
   `);
   // Note: syncGroupCode doesn't mean anything, because a Sync Group is and extension of a Data Group,
   // but we keep the old value around anyway just in case we will need it in the future
-
-  await db.runSql(
-    `ALTER TABLE data_service_sync_group ENABLE TRIGGER data_service_sync_group_trigger`,
-  );
 };
 
 exports.down = async function (db) {
-  await db.runSql(
-    `ALTER TABLE data_service_sync_group DISABLE TRIGGER data_service_sync_group_trigger`,
-  );
-
   await db.runSql(`
     UPDATE data_service_sync_group 
     SET 
@@ -46,10 +38,6 @@ exports.down = async function (db) {
       config = (config || jsonb_build_object('internalSurveyCode', data_group_code)) - 'syncGroupCode'
   `);
   await db.runSql(`ALTER TABLE data_service_sync_group RENAME COLUMN data_group_code TO code`);
-
-  await db.runSql(
-    `ALTER TABLE data_service_sync_group ENABLE TRIGGER data_service_sync_group_trigger`,
-  );
 };
 
 exports._meta = {
