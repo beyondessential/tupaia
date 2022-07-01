@@ -12,12 +12,6 @@ export const useCustomGetImages = () => {
   const refs = useRef([]);
   refs.current = [];
 
-  const addToRefs = el => {
-    if (el && !refs.current.includes(el)) {
-      refs.current.push(el);
-    }
-  };
-
   const getImgs = async () => {
     const imgs = [];
     for (let i = 0; i < refs.current.length; i++) {
@@ -31,5 +25,5 @@ export const useCustomGetImages = () => {
     return imgs;
   };
 
-  return { addToRefs, getImgs };
+  return { getImgs };
 };

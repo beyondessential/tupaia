@@ -53,7 +53,6 @@ DashboardReportPage.propTypes = {
     name: PropTypes.string,
     reportCode: PropTypes.string,
   }).isRequired,
-  addToRefs: PropTypes.func.isRequired,
   getNextPage: PropTypes.func.isRequired,
   isEntityDetailsRequired: PropTypes.bool.isRequired,
   subDashboardName: PropTypes.string.isRequired,

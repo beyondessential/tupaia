@@ -15,10 +15,10 @@ import {
   LoadingContainer,
 } from '@tupaia/ui-components';
 import MuiIconButton from '@material-ui/core/Button';
-import { DashboardExportPreview } from './DashboardExportPreview';
 import { OptionsBar } from './components';
 import { I18n, useDashboardItemsExportToPDF, useUrlParams, useUrlSearchParam } from '../../utils';
 import { DEFAULT_DATA_YEAR } from '../../constants';
+import { DashboardExportPreview } from '../../views/DashboardExportPreview';
 
 const FlexSpaceBetween = styled(BaseFlexSpaceBetween)`
   width: 95%;
@@ -54,7 +54,7 @@ export const DashboardExportModal = ({
   };
 
   const fileName = `${title}-dashboards-export`;
-  const { addToRefs, isExporting, exportToPDF } = useDashboardItemsExportToPDF({
+  const { isExporting, exportToPDF } = useDashboardItemsExportToPDF({
     exportWithLabels,
     exportWithTable,
     year: selectedYear,
@@ -110,7 +110,6 @@ export const DashboardExportModal = ({
         >
           <DashboardExportPreview
             exportableDashboards={exportableDashboards}
-            addToRefs={addToRefs}
             currentPage={page}
             isExporting={isExporting}
             useExportOptions={{
