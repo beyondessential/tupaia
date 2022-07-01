@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { DashboardReportPage, NoReportPage } from '../components/DashboardExportModal/pages';
+import { PreviewPage } from '../components/DashboardExportModal/components';
 
 export const DashboardExportPreview = ({
   exportableDashboards,
@@ -23,6 +24,7 @@ export const DashboardExportPreview = ({
       getNextPage,
       subDashboardName: subDashboard.dashboardName,
       isExporting,
+      PageContainer: PreviewPage,
       ...configs,
     };
 

@@ -3,6 +3,7 @@
  *  Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import { A4Page } from '../components/DashboardExportModal/components';
 import { DashboardReportPage, NoReportPage } from '../components/DashboardExportModal/pages';
 import { getExportableDashboards, useUrlSearchParams } from '../utils';
 import { useDashboardDropdownOptions } from '../utils/useDashboardDropdownOptions';
@@ -22,6 +23,7 @@ export const PDFDownloadView = () => {
     const baseConfigs = {
       useYearSelector,
       subDashboardName: subDashboard.dashboardName,
+      PageContainer: A4Page,
       ...configs,
     };
 
@@ -31,7 +33,6 @@ export const PDFDownloadView = () => {
           <DashboardReportPage
             key={item.code}
             item={item}
-            useYearSelector={useYearSelector}
             isEntityDetailsRequired={isFirstPageProfile && index === 0}
             exportOptions={exportOptions}
             {...baseConfigs}

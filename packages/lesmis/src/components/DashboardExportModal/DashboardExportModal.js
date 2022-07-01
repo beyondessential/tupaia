@@ -112,7 +112,7 @@ export const DashboardExportModal = ({
             exportableDashboards={exportableDashboards}
             currentPage={page}
             isExporting={isExporting}
-            useExportOptions={{
+            exportOptions={{
               exportWithLabels,
               exportWithTable,
             }}

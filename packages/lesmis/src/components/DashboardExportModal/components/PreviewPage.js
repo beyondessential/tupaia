@@ -7,15 +7,22 @@ import Header from './Header';
 
 const A4Container = styled.div`
   width: 1300px;
+  height: 1000px;
   margin-top: 20px;
-  page-break-after: always;
 `;
 
 const Content = styled(FlexColumn)`
   margin: 0px 150px;
 `;
 
-export const A4Page = ({ children, ...configs }) => {
+export const PreviewPage = ({ children, getNextPage, currentPage, isExporting, ...configs }) => {
+  const page = getNextPage();
+  const isSelected = isExporting ? false : page === currentPage;
+
+  if (!isSelected) {
+    return null;
+  }
+
   return (
     <A4Container>
       <Header {...configs} />
@@ -24,9 +31,9 @@ export const A4Page = ({ children, ...configs }) => {
   );
 };
 
-A4Page.propTypes = {
+PreviewPage.propTypes = {
   children: PropTypes.node.isRequired,
-  page: PropTypes.number.isRequired,
+  getNextPage: PropTypes.func.isRequired,
   currentPage: PropTypes.number.isRequired,
   isExporting: PropTypes.bool.isRequired,
 };

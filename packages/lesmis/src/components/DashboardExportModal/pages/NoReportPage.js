@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Typography } from '@material-ui/core';
 import { SmallAlert } from '@tupaia/ui-components';
 
-import { A4Page, EntityDetails, DashboardTitleContainer } from '../components';
+import { EntityDetails, DashboardTitleContainer } from '../components';
 
 const InfoAlert = styled(SmallAlert)`
   margin: auto;
@@ -17,11 +17,11 @@ const Divider = styled.hr`
 export const NoReportPage = ({
   subDashboardName,
   isEntityDetailsRequired,
-  getNextPage,
+  PageContainer,
   ...configs
 }) => {
   return (
-    <A4Page key={subDashboardName} page={getNextPage()} {...configs}>
+    <PageContainer {...configs}>
       {isEntityDetailsRequired && <EntityDetails />}
       <DashboardTitleContainer>
         <Typography variant="h2">{subDashboardName}</Typography>
@@ -30,7 +30,7 @@ export const NoReportPage = ({
       <InfoAlert severity="info" variant="standard">
         There are no reports available for this dashboard
       </InfoAlert>
-    </A4Page>
+    </PageContainer>
   );
 };
 
@@ -38,4 +38,5 @@ NoReportPage.propTypes = {
   getNextPage: PropTypes.func.isRequired,
   isEntityDetailsRequired: PropTypes.bool.isRequired,
   subDashboardName: PropTypes.string.isRequired,
+  PageContainer: PropTypes.node.isRequired,
 };
