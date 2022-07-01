@@ -31,17 +31,6 @@ const FIELDS = [
     editConfig: {
       type: 'jsonEditor',
       default: '{ "formula": "", "aggregation": { "" : "" } }',
-      getJsonFieldSchema: () => [
-        {
-          label: 'Formula',
-          fieldName: 'formula',
-        },
-        {
-          label: 'Aggregation',
-          fieldName: 'aggregation',
-          type: 'object',
-        },
-      ],
     },
   },
 ];
