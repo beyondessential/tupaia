@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { DashboardReportPage, NoReportPage } from './pages';
+import { DashboardReportPage, NoReportPage } from '../components/DashboardExportModal/pages';
 
 export const DashboardExportPreview = ({
-  addToRefs,
   exportableDashboards,
   currentPage,
   isExporting,
@@ -19,7 +18,6 @@ export const DashboardExportPreview = ({
   const getChildren = (subDashboard, isFirstPageProfile) => {
     const { items, useYearSelector, ...configs } = subDashboard;
     const baseConfigs = {
-      addToRefs,
       currentPage,
       useYearSelector,
       getNextPage,
@@ -62,7 +60,6 @@ export const DashboardExportPreview = ({
 
 DashboardExportPreview.propTypes = {
   exportableDashboards: PropTypes.array,
-  addToRefs: PropTypes.func.isRequired,
   currentPage: PropTypes.number.isRequired,
   isExporting: PropTypes.bool.isRequired,
   exportOptions: PropTypes.object.isRequired,
