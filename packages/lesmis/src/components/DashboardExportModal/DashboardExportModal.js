@@ -18,7 +18,7 @@ import MuiIconButton from '@material-ui/core/Button';
 import { OptionsBar } from './components';
 import { I18n, useDashboardItemsExportToPDF, useUrlParams, useUrlSearchParam } from '../../utils';
 import { DEFAULT_DATA_YEAR } from '../../constants';
-import { DashboardExportPreview } from '../../views/DashboardExportPreview';
+import { DASHBOARD_EXPORT_PREVIEW, ExportView } from '../../views/ExportView';
 
 const FlexSpaceBetween = styled(BaseFlexSpaceBetween)`
   width: 95%;
@@ -34,13 +34,7 @@ const MuiButton = styled(MuiIconButton)`
   color: #666666;
 `;
 
-export const DashboardExportModal = ({
-  title,
-  exportableDashboards,
-  totalPage,
-  isOpen,
-  setIsOpen,
-}) => {
+export const DashboardExportModal = ({ title, totalPage, isOpen, setIsOpen }) => {
   const [exportWithLabels, setExportWithLabels] = useState(false);
   const [exportWithTable, setExportWithTable] = useState(false);
   const [selectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
@@ -108,13 +102,15 @@ export const DashboardExportModal = ({
           text={I18n({ t: 'dashboards.pleaseDoNotRefreshTheBrowserOrCloseThisPage' })}
           isLoading={isDisabled}
         >
-          <DashboardExportPreview
-            exportableDashboards={exportableDashboards}
-            currentPage={page}
-            isExporting={isExporting}
-            exportOptions={{
-              exportWithLabels,
-              exportWithTable,
+          <ExportView
+            viewType={DASHBOARD_EXPORT_PREVIEW}
+            viewProps={{
+              currentPage: page,
+              isExporting,
+              exportOptions: {
+                exportWithLabels,
+                exportWithTable,
+              },
             }}
           />
         </LoadingContainer>
@@ -126,7 +122,6 @@ export const DashboardExportModal = ({
 DashboardExportModal.propTypes = {
   title: PropTypes.string,
   totalPage: PropTypes.number,
-  exportableDashboards: PropTypes.array,
   isOpen: PropTypes.bool.isRequired,
   setIsOpen: PropTypes.func.isRequired,
 };
@@ -134,5 +129,4 @@ DashboardExportModal.propTypes = {
 DashboardExportModal.defaultProps = {
   title: null,
   totalPage: 1,
-  exportableDashboards: [],
 };
