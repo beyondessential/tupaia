@@ -15,11 +15,7 @@ export { isMobile, delayMobileTapCallback } from './mobile';
 export { getCenterAndZoomForBounds } from './getCenterAndZoomForBounds';
 export { getOrgUnitPhotoUrl } from './getOrgUnitPhotoUrl';
 export { getMapUrl } from './getMapUrl';
-export {
-  processMeasureInfo,
-  getSingleFormattedValue,
-  flattenNumericalMeasureData,
-} from './measures';
+export { processMeasureInfo, flattenNumericalMeasureData } from './measures';
 export {
   getMapOverlaysFromHierarchy,
   checkHierarchyIncludesMapOverlayCodes,
