@@ -185,6 +185,25 @@ describe('measures', () => {
       const display3 = getMeasureDisplayInfo({ questionC: 0.5 }, [optionsSpectrum]);
       expect(display3).toHaveProperty('color', 'hsl(50, 100%, 50%)');
     });
+
+    it('Coloured radius choose a colour from a spectrum, and pick radius from radius', () => {
+      const questionAValue = 100;
+      const display = getMeasureDisplayInfo(
+        {
+          questionC: 0.5,
+          questionA: questionAValue,
+        },
+        [
+          {
+            ...optionsSpectrum,
+            scaleType: 'performanceDesc',
+          },
+          { ...optionsRadius, key: 'questionA' },
+        ],
+      );
+      expect(display).toHaveProperty('color', 'hsl(50, 100%, 50%)');
+      expect(display).toHaveProperty('radius', questionAValue);
+    });
   });
 
   describe('popup', () => {
