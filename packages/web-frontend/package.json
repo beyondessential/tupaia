@@ -12,7 +12,7 @@
   "scripts": {
     "build": "rm -rf dist && run-s \"build:* {@}\" --",
     "build:desktop": "BUILD_PATH='./build/desktop/' npm run --prefix ../../ package:build:react-scripts",
-    "build:mobile": "BUILD_PATH='./build/mobile/' npm run --prefix ../../ package:build:react-scripts",
+    "build:mobile": "BUILD_PATH='./build/mobile/' REACT_APP_APP_TYPE=mobile npm run --prefix ../../ package:build:react-scripts",
     "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
     "start": "PORT=8088 yarn package:start:react-scripts",
