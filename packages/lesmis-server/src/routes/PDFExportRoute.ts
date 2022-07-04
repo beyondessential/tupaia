@@ -66,6 +66,7 @@ export class PDFExportRoute extends Route<RegisterRequest> {
     });
     const protocol = body.hostname.includes('localhost') ? 'http' : 'https';
     const url = stringifyQuery(`${protocol}://${body.hostname}`, body.endpoint, body.restOfParams);
+    console.log(url);
     await page.goto(url, { waitUntil: 'networkidle0' });
     const result = await page.pdf({
       format: 'a4',

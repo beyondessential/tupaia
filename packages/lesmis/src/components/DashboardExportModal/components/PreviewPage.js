@@ -5,7 +5,7 @@ import { FlexColumn } from '@tupaia/ui-components';
 
 import Header from './Header';
 
-const A4Container = styled.div`
+const PreviewContainer = styled.div`
   margin-top: 20px;
   min-width: 900px;
 `;
@@ -23,10 +23,10 @@ export const PreviewPage = ({ children, getNextPage, currentPage, isExporting, .
   }
 
   return (
-    <A4Container>
+    <PreviewContainer>
       <Header {...configs} />
       <Content>{children}</Content>
-    </A4Container>
+    </PreviewContainer>
   );
 };
 

@@ -6,13 +6,13 @@ import { FlexColumn } from '@tupaia/ui-components';
 import Header from './Header';
 
 const A4Container = styled.div`
-  width: 1300px;
+  width: 1192px;
   margin-top: 20px;
   page-break-after: always;
 `;
 
 const Content = styled(FlexColumn)`
-  margin: 0px 150px;
+  margin: 0px 70px;
 `;
 
 export const A4Page = ({ children, ...configs }) => {
