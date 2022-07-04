@@ -26,14 +26,17 @@ export class PDFExportRoute extends Route<RegisterRequest> {
     this.type = 'download';
   }
 
-  private unloadSessionCookies = (): Cookies => {
+  private unloadSessionCookie = (): Cookies => {
     const { cookie } = this.req.headers;
-    if (!cookie || Array.isArray(cookie)) {
-      throw new Error('Array type or undefined "cookie" is not supported');
+    if (!cookie || typeof cookie !== 'string') {
+      throw new Error(`Non string type or undefined 'cookie'`);
     }
-
-    const sessionCookieName = cookie.slice(0, cookie.indexOf('='));
-    const sessionCookieValue = cookie.slice(cookie.indexOf('=') + 1);
+    const sessionCookie = cookie.split('; ').find(str => str.startsWith('sessionCookie'));
+    if (!sessionCookie || typeof sessionCookie !== 'string') {
+      throw new Error(`'sessionCookie' is not found`);
+    }
+    const sessionCookieName = sessionCookie.slice(0, sessionCookie.indexOf('='));
+    const sessionCookieValue = sessionCookie.slice(sessionCookie.indexOf('=') + 1);
 
     return { sessionCookieName, sessionCookieValue };
   };
@@ -41,10 +44,10 @@ export class PDFExportRoute extends Route<RegisterRequest> {
   private verifyBody = (body: any): Body => {
     const { endpoint, hostname, ...restOfParams } = body;
     if (!endpoint || typeof endpoint !== 'string') {
-      throw new Error(`"endpoint" should be provided in request body, got: ${endpoint}`);
+      throw new Error(`'endpoint' should be provided in request body, got: ${endpoint}`);
     }
-    if (!hostname || typeof endpoint !== 'string') {
-      throw new Error(`"host" should be provided in request body, got: ${endpoint}`);
+    if (!hostname || typeof hostname !== 'string') {
+      throw new Error(`'hostname' should be provided in request body, got: ${hostname}`);
     }
 
     return { endpoint, hostname, restOfParams };
@@ -53,7 +56,7 @@ export class PDFExportRoute extends Route<RegisterRequest> {
   private exportPDF = async (): Promise<Buffer> => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
-    const { sessionCookieName, sessionCookieValue } = this.unloadSessionCookies();
+    const { sessionCookieName, sessionCookieValue } = this.unloadSessionCookie();
     const body = this.verifyBody(this.req.body);
     await page.setCookie({
       name: sessionCookieName,
