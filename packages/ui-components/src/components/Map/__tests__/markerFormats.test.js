@@ -186,7 +186,8 @@ describe('measures', () => {
       expect(display3).toHaveProperty('color', 'hsl(50, 100%, 50%)');
     });
 
-    it('Coloured radius choose a colour from a spectrum, and pick radius from radius', () => {
+    it('should support coloured radius', () => {
+      // A coloured radius will choose colour from a spectrum option, and pick radius size from a radius option
       const questionAValue = 100;
       const display = getMeasureDisplayInfo(
         {
