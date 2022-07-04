@@ -107,6 +107,7 @@ import {
   EditMapOverlayVisualisation,
   GETMapOverlayVisualisations,
 } from './mapOverlayVisualisations';
+import { GETSyncGroups, EditSyncGroups, CreateSyncGroups, DeleteSyncGroups } from './syncGroups';
 
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
@@ -212,7 +213,7 @@ apiV2.get('/facilities/:recordId?', useRouteHandler(GETClinics));
 apiV2.get('/geographicalAreas/:recordId?', useRouteHandler(GETGeographicalAreas));
 apiV2.get('/reports/:recordId?', useRouteHandler(GETReports));
 apiV2.get('/dhisInstances/:recordId?', useRouteHandler(BESAdminGETHandler));
-apiV2.get('/dataServiceSyncGroups/:recordId?', useRouteHandler(BESAdminGETHandler));
+apiV2.get('/dataServiceSyncGroups/:recordId?', useRouteHandler(GETSyncGroups));
 
 /**
  * POST routes
@@ -244,7 +245,7 @@ apiV2.post('/dashboardVisualisations', useRouteHandler(CreateDashboardVisualisat
 apiV2.post('/mapOverlayVisualisations', useRouteHandler(CreateMapOverlayVisualisation));
 apiV2.post('/mapOverlayGroupRelations', useRouteHandler(CreateMapOverlayGroupRelation));
 apiV2.post('/syncFromService', allowAnyone(manualKoBoSync));
-apiV2.post('/dataServiceSyncGroups', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/dataServiceSyncGroups', useRouteHandler(CreateSyncGroups));
 
 /**
  * PUT routes
@@ -276,7 +277,7 @@ apiV2.put('/mapOverlayGroupRelations/:recordId', useRouteHandler(EditMapOverlayG
 apiV2.put('/indicators/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/projects/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/me', catchAsyncErrors(editUser));
-apiV2.put('/dataServiceSyncGroups/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/dataServiceSyncGroups/:recordId', useRouteHandler(EditSyncGroups));
 
 /**
  * DELETE routes
@@ -305,7 +306,7 @@ apiV2.delete(
   useRouteHandler(DeleteMapOverlayGroupRelations),
 );
 apiV2.delete('/indicators/:recordId', useRouteHandler(BESAdminDeleteHandler));
-apiV2.delete('/dataServiceSyncGroups/:recordId', useRouteHandler(BESAdminDeleteHandler));
+apiV2.delete('/dataServiceSyncGroups/:recordId', useRouteHandler(DeleteSyncGroups));
 
 apiV2.use(handleError); // error handler must come last
 
