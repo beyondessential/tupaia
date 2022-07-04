@@ -4,6 +4,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { useDashboardDropdownOptions } from '../utils/useDashboardDropdownOptions';
 import { getExportableDashboards, useUrlSearchParams } from '../utils';
 import { A4Page, PreviewPage } from '../components/DashboardExportModal/components';
@@ -11,6 +12,10 @@ import { DashboardReportPage, NoReportPage } from '../components/DashboardExport
 
 export const DASHBOARD_EXPORT_PREVIEW = 'DashboardExportPreview';
 export const PDF_DOWNLOAD_VIEW = 'PDFDownloadView';
+
+const Container = styled.div`
+  min-height: 1000px;
+`;
 
 const EXPORT_VIEWS = {
   [DASHBOARD_EXPORT_PREVIEW]: {
@@ -76,12 +81,12 @@ export const ExportView = ({ viewProps, viewType }) => {
   const { exportableDashboards } = getExportableDashboards(profileDropDownOptions);
 
   return (
-    <div>
+    <Container>
       {exportableDashboards?.map((subDashboard, index) => {
         const isFirstPageProfile = index === 0;
         return getChildren(subDashboard, isFirstPageProfile, exportViewProps, PageContainer);
       })}
-    </div>
+    </Container>
   );
 };
 

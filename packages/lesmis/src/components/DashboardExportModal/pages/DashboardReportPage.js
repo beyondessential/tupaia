@@ -56,7 +56,7 @@ DashboardReportPage.propTypes = {
   isEntityDetailsRequired: PropTypes.bool.isRequired,
   subDashboardName: PropTypes.string.isRequired,
   exportOptions: PropTypes.object.isRequired,
-  PageContainer: PropTypes.node.isRequired,
+  PageContainer: PropTypes.func.isRequired,
   useYearSelector: PropTypes.bool,
 };
 

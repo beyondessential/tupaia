@@ -6,9 +6,8 @@ import { FlexColumn } from '@tupaia/ui-components';
 import Header from './Header';
 
 const A4Container = styled.div`
-  width: 1300px;
-  height: 1000px;
   margin-top: 20px;
+  min-width: 900px;
 `;
 
 const Content = styled(FlexColumn)`
