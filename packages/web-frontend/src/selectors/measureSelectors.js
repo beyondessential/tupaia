@@ -236,3 +236,26 @@ export const selectRenderedMeasuresWithDisplayInfo = createSelector(
     );
   },
 );
+
+/**
+ * [[Facility] , [Village, Facility]] => same entity level
+ */
+export const selectAreMeasuresOnTheSameEntityLevel = createSelector(
+  [state => state.map.measureInfo],
+  measureInfo => {
+    if (!measureInfo) {
+      return false;
+    }
+
+    const measureLevelsFromMeasures = Object.values(measureInfo)
+      .map(({ measureLevel }) => measureLevel)
+      .flat();
+    if (measureLevelsFromMeasures.length <= 1) {
+      return true;
+    }
+
+    const measureLevelSet = new Set(measureLevelsFromMeasures);
+
+    return measureLevelSet.size !== measureLevelsFromMeasures.length;
+  },
+);
