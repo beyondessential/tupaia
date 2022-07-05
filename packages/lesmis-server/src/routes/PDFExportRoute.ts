@@ -54,26 +54,26 @@ export class PDFExportRoute extends Route<RegisterRequest> {
   };
 
   private exportPDF = async (): Promise<Buffer> => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
     const { sessionCookieName, sessionCookieValue } = this.unloadSessionCookie();
     const body = this.verifyBody(this.req.body);
+    const protocol = body.hostname.includes('localhost') ? 'http' : 'https';
+    const url = stringifyQuery(`${protocol}://${body.hostname}`, body.endpoint, body.restOfParams);
+
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
     await page.setCookie({
       name: sessionCookieName,
       domain: body.hostname.split(':')[0], // localhost:8030 -> localhost
       httpOnly: true,
       value: sessionCookieValue,
     });
-    const protocol = body.hostname.includes('localhost') ? 'http' : 'https';
-    const url = stringifyQuery(`${protocol}://${body.hostname}`, body.endpoint, body.restOfParams);
-    console.log(url);
     await page.goto(url, { waitUntil: 'networkidle0' });
     const result = await page.pdf({
       format: 'a4',
       printBackground: true,
     });
-    await page.setCookie({ name: sessionCookieName, value: '' });
     await browser.close();
+
     return result;
   };
 
