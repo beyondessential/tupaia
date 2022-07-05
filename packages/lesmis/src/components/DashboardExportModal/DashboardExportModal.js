@@ -85,7 +85,7 @@ export const DashboardExportModal = ({ title, totalPage, isOpen, setIsOpen }) =>
             page={page}
             setPage={setPage}
             isDisabled={isDisabled}
-            useExportOptions={{
+            exportOptions={{
               exportWithLabels,
               exportWithTable,
               toggleExportWithLabels,

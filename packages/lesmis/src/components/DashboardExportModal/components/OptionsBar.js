@@ -11,13 +11,13 @@ import { FlexEnd } from '@tupaia/ui-components';
 import Pagination from '@material-ui/lab/Pagination';
 import { I18n } from '../../../utils';
 
-export const OptionsBar = ({ totalPage, page, setPage, isDisabled, useExportOptions }) => {
+export const OptionsBar = ({ totalPage, page, setPage, isDisabled, exportOptions }) => {
   const {
     exportWithLabels,
     toggleExportWithLabels,
     exportWithTable,
     toggleExportWithTable,
-  } = useExportOptions;
+  } = exportOptions;
 
   return (
     <FlexEnd>
@@ -59,5 +59,5 @@ OptionsBar.propTypes = {
   totalPage: PropTypes.number.isRequired,
   isDisabled: PropTypes.bool.isRequired,
   setPage: PropTypes.func.isRequired,
-  useExportOptions: PropTypes.object.isRequired,
+  exportOptions: PropTypes.object.isRequired,
 };
