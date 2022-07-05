@@ -5,14 +5,14 @@
 
 import { useRef, useState } from 'react';
 import downloadJs from 'downloadjs';
+import domtoimage from 'dom-to-image';
 
 import { sleep, toFilename } from '@tupaia/utils';
-import { getImage } from './getImages';
 
-const exportToImage = (node, filename, format = 'png') => {
+const exportToImage = (node, filename) => {
   return new Promise(resolve => {
-    const file = `${filename}.${format}`;
-    getImage(node, format).then(async dataUrl => {
+    const file = `${filename}.png`;
+    domtoimage.toPng(node, { bgcolor: 'white' }).then(async dataUrl => {
       downloadJs(dataUrl, file);
       resolve();
     });
