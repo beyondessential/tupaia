@@ -113,31 +113,31 @@ exports.up = async function (db) {
         AND config->'isDataRegional' = 'false'
     `);
 
-    await db.runSql('ALTER TABLE ${table} ENABLE TRIGGER ${table}_trigger;');
+    await db.runSql(`ALTER TABLE ${table} ENABLE TRIGGER ${table}_trigger;`);
   }
 };
 
 exports.down = async function (db) {
   for (const table of TABLES) {
-    await db.runSql('ALTER TABLE ${table} DISABLE TRIGGER ${table}_trigger;');
+    await db.runSql(`ALTER TABLE ${table} DISABLE TRIGGER ${table}_trigger;`);
 
     // - Regional
     await db.runSql(`
       UPDATE ${table} 
-      SET config = (config || '{"isDataRegional": true}' #- '{dhisInstanceCode}'
+      SET config = (config || '{"isDataRegional": true}') #- '{dhisInstanceCode}'
       WHERE service_type = 'dhis' 
-        AND config->'dhisInstanceCode' = 'regional'
+        AND config->>'dhisInstanceCode' = 'regional'
     `);
 
     // - Non-regional
     await db.runSql(`
       UPDATE ${table} 
-      SET config = config || '{"isDataRegional": false}' #- '{dhisInstanceCode}'
+      SET config = (config || '{"isDataRegional": false}') #- '{dhisInstanceCode}'
       WHERE service_type = 'dhis' 
-        AND config->'dhisInstanceCode' = 'null'
+        AND config->>'dhisInstanceCode' = 'null'
     `);
 
-    await db.runSql('ALTER TABLE ${table} ENABLE TRIGGER ${table}_trigger;');
+    await db.runSql(`ALTER TABLE ${table} ENABLE TRIGGER ${table}_trigger;`);
   }
 
   await db.runSql(`TRUNCATE TABLE dhis_instance`);
