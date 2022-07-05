@@ -91,6 +91,10 @@ export const ExportView = ({ viewProps, viewType }) => {
 };
 
 ExportView.propTypes = {
-  viewProps: PropTypes.object.isRequired,
+  viewProps: PropTypes.object,
   viewType: PropTypes.oneOf([DASHBOARD_EXPORT_PREVIEW, PDF_DOWNLOAD_VIEW]).isRequired,
+};
+
+ExportView.defaultProps = {
+  viewProps: {},
 };
