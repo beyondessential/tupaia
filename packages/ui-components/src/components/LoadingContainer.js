@@ -43,10 +43,6 @@ const LoadingText = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-const ErrorHeading = styled(Typography)`
-  margin-bottom: 1rem;
-`;
-
 const ErrorText = styled(Typography)`
   margin-bottom: 1rem;
 `;
@@ -63,7 +59,6 @@ const ErrorAlert = styled(SmallAlert)`
 const ErrorScreen = ({ onReset, errorMessage }) => {
   return (
     <>
-      <ErrorHeading variant="h3">Oops...</ErrorHeading>
       <ErrorText>{errorMessage}</ErrorText>
       <GreyOutlinedButton onClick={onReset}>Start over</GreyOutlinedButton>
     </>
