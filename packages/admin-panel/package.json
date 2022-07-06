@@ -44,7 +44,7 @@
     "lodash.keyby": "^4.6.0",
     "lodash.throttle": "^4.1.1",
     "moment": "^2.22.2",
-    "parse-link-header": "^1.0.1",
+    "parse-link-header": "^2.0.0",
     "prop-types": "^15.6.0",
     "query-string": "^5.1.1",
     "react": "^16.13.1",
