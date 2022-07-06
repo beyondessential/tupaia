@@ -1,0 +1,62 @@
+[
+  {
+    "id": "CD_Measles_Age_Gte5_Cases",
+    "project": "fanafana",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "CD_Measles_Age_Lt5_Cases",
+    "project": "fanafana",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "CD_Measles_Female_Cases",
+    "project": "fanafana",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "CD_Measles_Male_Cases",
+    "project": "fanafana",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "CD_Measles_New_Cases_10kPax_Age_Gte_25",
+    "project": "fanafana",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "CD_Measles_New_Cases_10kPax_Age_In_5_24",
+    "project": "fanafana",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "CD_Measles_New_Cases_10kPax_Age_Lt_5",
+    "project": "fanafana",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "CD_Measles_Total_Cases_radius",
+    "project": "fanafana",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "CD_Measles_Total_Cases_spectrum",
+    "project": "fanafana",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "TO_HPU_Health_Talks_Training_Type_Setting_Unique",
+    "project": "fanafana",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "TO_HPU_NCD_Risk_Factory_Screening_Type_Setting_Unique",
+    "project": "fanafana",
+    "orgUnit": "TO"
+  },
+  {
+    "id": "TO_HPU_Physical_Activity_Type_Setting_Unique",
+    "project": "fanafana",
+    "orgUnit": "TO"
+  }
+]

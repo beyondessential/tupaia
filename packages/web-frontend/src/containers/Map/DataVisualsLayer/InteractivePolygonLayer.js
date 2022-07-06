@@ -8,7 +8,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { InteractivePolygon } from '@tupaia/ui-components/lib/map';
+import { InteractivePolygon } from '@tupaia/ui-components';
 
 import { organisationUnitIsArea } from '../../../utils';
 import {

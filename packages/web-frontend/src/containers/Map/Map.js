@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { TileLayer, LeafletMap, ZoomControl } from '@tupaia/ui-components/lib/map';
+import { TileLayer, LeafletMap, ZoomControl } from '@tupaia/ui-components';
 
 import { checkBoundsDifference } from '../../utils';
 import { DemoLand } from './DemoLand';
