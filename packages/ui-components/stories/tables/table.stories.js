@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import * as COLORS from '../story-utils/theme/colors';
 import { Table, LoadingContainer } from '../../src';
@@ -63,6 +63,31 @@ export const ErroredTable = () => {
   return (
     <Container>
       <LoadingContainer errorMessage="Network Error. Please try again">
+        <Table
+          columns={columns}
+          data={data}
+          loading={loading}
+          onRowClick={() => {
+            console.log('click on row...');
+          }}
+        />
+      </LoadingContainer>
+    </Container>
+  );
+};
+
+export const ErroredTableWithTryAgainButton = () => {
+  const { loading, data } = useTableData();
+  const [errorMessage, setErrorMessage] = useState('Network Error. Please try again');
+
+  return (
+    <Container>
+      <LoadingContainer
+        onReset={() => {
+          setErrorMessage(null);
+        }}
+        errorMessage={errorMessage}
+      >
         <Table
           columns={columns}
           data={data}

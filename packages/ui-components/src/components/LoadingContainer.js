@@ -8,6 +8,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { SmallAlert } from './Alert';
+import { GreyOutlinedButton } from './Button';
 
 const Container = styled.div`
   position: relative;
@@ -42,6 +43,14 @@ const LoadingText = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
+const ErrorHeading = styled(Typography)`
+  margin-bottom: 1rem;
+`;
+
+const ErrorText = styled(Typography)`
+  margin-bottom: 1rem;
+`;
+
 const ErrorAlert = styled(SmallAlert)`
   position: absolute;
   top: 30%;
@@ -51,10 +60,36 @@ const ErrorAlert = styled(SmallAlert)`
   justify-content: center;
 `;
 
+const ErrorScreen = ({ onReset, errorMessage }) => {
+  return (
+    <>
+      <ErrorHeading variant="h3">Oops...</ErrorHeading>
+      <ErrorText>{errorMessage}</ErrorText>
+      <GreyOutlinedButton onClick={onReset}>Start over</GreyOutlinedButton>
+    </>
+  );
+};
+
+ErrorScreen.propTypes = {
+  onReset: PropTypes.func.isRequired,
+  errorMessage: PropTypes.string.isRequired,
+};
+
 /**
  * Adds a loader around the children
  */
-export const LoadingContainer = ({ isLoading, heading, text, children, errorMessage }) => {
+export const LoadingContainer = ({ isLoading, heading, text, children, errorMessage, onReset }) => {
+  if (onReset && errorMessage) {
+    return (
+      <Container>
+        {children}
+        <LoadingScreen>
+          <ErrorScreen onReset={onReset} errorMessage={errorMessage} />
+        </LoadingScreen>
+      </Container>
+    );
+  }
+
   if (errorMessage) {
     return (
       <Container>
@@ -89,9 +124,11 @@ LoadingContainer.propTypes = {
   children: PropTypes.any.isRequired,
   heading: PropTypes.string,
   text: PropTypes.string,
+  onReset: PropTypes.bool,
 };
 
 LoadingContainer.defaultProps = {
   heading: 'Saving Data',
   text: 'Please do not refresh the browser or close this page',
+  onReset: null,
 };
