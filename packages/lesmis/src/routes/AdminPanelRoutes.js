@@ -18,7 +18,7 @@ import {
   MapOverlaysPage,
   UsersPage,
   AdminPanelDataProviders,
-} from '@tupaia/admin-panel/lib';
+} from '@tupaia/admin-panel';
 import { LesmisAdminRoute } from './LesmisAdminRoute';
 import { useUser } from '../api/queries';
 import { getApiUrl } from '../utils/getApiUrl';

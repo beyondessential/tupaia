@@ -74,13 +74,13 @@ export const DashboardComponent = ({
 
   const filterItems = dashboards.map(({ dashboardName }) => ({
     label: dashboardName,
-    id: dashboardName,
+    code: dashboardName,
     value: dashboardName,
   }));
 
-  const currentFilter = filterItems.find(item => item.id === currentDashboardName) || {
+  const currentFilter = filterItems.find(item => item.code === currentDashboardName) || {
     label: 'General',
-    id: 'General',
+    code: 'General',
   };
 
   return (

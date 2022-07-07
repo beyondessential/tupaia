@@ -13,9 +13,10 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "lint": "eslint --ignore-path ../../.gitignore .",
+    "build-dev": "npm run build",
+    "lint": "yarn package:lint:ts",
     "lint:fix": "yarn lint --fix",
-    "test": "jest --passWithNoTests",
+    "test": "yarn package:test --passWithNoTests",
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {

@@ -8,7 +8,11 @@ import PropTypes from 'prop-types';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import GridOnIcon from '@material-ui/icons/GridOn';
-import { Chart as ChartComponent, Table, getIsChartData } from '@tupaia/ui-components/lib/chart';
+import {
+  Chart as ChartComponent,
+  ChartTable as BaseChartTable,
+  getIsChartData,
+} from '@tupaia/ui-components';
 import { FetchLoader } from '../FetchLoader';
 import { FlexStart, FlexEnd, FlexColumn } from '../Layout';
 import { ToggleButton } from '../ToggleButton';
@@ -99,7 +103,7 @@ const ChartTable = ({
         />
         {exportOptions?.exportWithTable && (
           <FlexStart my={5}>
-            <Table viewContent={viewContent} />
+            <BaseChartTable viewContent={viewContent} />
           </FlexStart>
         )}
       </ExportContainer>
@@ -118,7 +122,7 @@ const ChartTable = ({
         </ChartWrapper>
       ) : (
         <Wrapper>
-          <Table viewContent={viewContent} />
+          <BaseChartTable viewContent={viewContent} />
         </Wrapper>
       )}
     </FetchLoader>

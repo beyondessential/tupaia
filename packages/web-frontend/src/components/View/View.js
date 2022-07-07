@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import CircularProgress from 'material-ui/CircularProgress';
 import { periodToMoment } from '@tupaia/utils';
-import { CHART_TYPES } from '@tupaia/ui-components/lib/chart';
+import { CHART_TYPES } from '@tupaia/ui-components';
 import { VIEW_STYLES } from '../../styles';
 import { NoDataMessage } from './NoDataMessage';
 import { VIEW_CONTENT_SHAPE } from './propTypes';
