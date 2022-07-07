@@ -5,7 +5,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { MarkerLayer as UIMarkerLayer } from '@tupaia/ui-components/lib/map';
+import { MarkerLayer as UIMarkerLayer } from '@tupaia/ui-components';
 import { connect } from 'react-redux';
 
 import { selectMeasureOptions } from '../../../selectors';

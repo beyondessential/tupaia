@@ -14,7 +14,7 @@ import {
   SPECTRUM_MEASURE_TYPES,
   getMeasureDisplayInfo,
   calculateRadiusScaleFactor,
-} from '@tupaia/ui-components/lib/map';
+} from '@tupaia/ui-components';
 import { useEntitiesData } from './useEntitiesData';
 import { yearToApiDates } from './utils';
 import { useUrlSearchParam } from '../../utils/useUrlSearchParams';

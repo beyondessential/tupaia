@@ -1,0 +1,10 @@
+{
+  "experimentalFetchPolyfill": true,
+  "testFiles": "*.spec.js",
+  "integrationFolder": "cypress/e2e",
+  "projectId": "pty5cc",
+  "requestTimeout": 15000,
+  "useRelativeSnapshots": true,
+  "viewportHeight": 900,
+  "viewportWidth": 1400
+}

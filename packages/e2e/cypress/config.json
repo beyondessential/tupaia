@@ -1,0 +1,16 @@
+{
+  "baselineUrl": "https://e2e.tupaia.org",
+  "compareUrl": "",
+  "dashboardReports": {
+    "allowEmptyResponse": false,
+    "snapshotTypes": ["responseData"],
+    "urlFiles": ["cypress/config/dashboardReportUrls/default.json"],
+    "urls": []
+  },
+  "mapOverlays": {
+    "allowEmptyResponse": false,
+    "snapshotTypes": ["responseData"],
+    "urlFiles": ["cypress/config/mapOverlayUrls/default.json"],
+    "urls": []
+  }
+}

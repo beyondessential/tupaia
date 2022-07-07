@@ -7,7 +7,7 @@
 
 import createCachedSelector from 're-reselect';
 import { createSelector } from 'reselect';
-import { getMeasureDisplayInfo } from '@tupaia/ui-components/lib/map';
+import { getMeasureDisplayInfo } from '@tupaia/ui-components';
 import { POLYGON_MEASURE_TYPES } from '../utils/measures';
 import {
   selectActiveProjectCountries,

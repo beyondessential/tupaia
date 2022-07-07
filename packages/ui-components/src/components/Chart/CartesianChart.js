@@ -19,7 +19,7 @@ import {
 } from 'recharts';
 
 import { CHART_BLUES, CHART_TYPES, VIEW_CONTENT_SHAPE, DEFAULT_DATA_KEY } from './constants';
-import { Tooltip as CustomTooltip } from './Tooltip';
+import { ChartTooltip as CustomTooltip } from './ChartTooltip';
 import { BarChart as BarChartComponent } from './BarChart';
 import { LineChart as LineChartComponent } from './LineChart';
 import { AreaChart as AreaChartComponent } from './AreaChart';

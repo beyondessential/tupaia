@@ -5,7 +5,7 @@
 
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { getMarkerForOption, LEGEND_COLOR_ICON } from '@tupaia/ui-components/lib/map';
+import { getMarkerForOption, LEGEND_COLOR_ICON } from '@tupaia/ui-components';
 import { CONDITIONAL_MATRIX_CONDITION_SHAPE } from '../../propTypes';
 
 const Legend = ({ legend, styles }) => {
