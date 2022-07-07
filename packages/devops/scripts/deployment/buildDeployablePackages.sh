@@ -12,7 +12,7 @@ PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 
 # Install external dependencies and build internal dependencies
 cd ${TUPAIA_DIR}
-yarn install --non-interactive --frozen-lockfile
+yarn install --frozen-lockfile
 
 # Inject environment variables from LastPass
 LASTPASS_EMAIL=$($DIR/fetchParameterStoreValue.sh LASTPASS_EMAIL)

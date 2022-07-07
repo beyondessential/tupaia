@@ -11,24 +11,24 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "SKIP_PREFLIGHT_CHECK=true GENERATE_SOURCEMAP=false react-scripts build",
+    "build": "npm run --prefix ../../ package:build:react-scripts",
     "cypress:open": "cross-env NODE_ENV=test cypress open",
     "cypress:run": "cross-env NODE_ENV=test cypress run",
     "cypress:config": "NODE_ENV=development  babel-node cypress/scripts/generateConfig --config-file \"../../babel.config.json\"",
-    "eject": "react-scripts eject",
-    "lint": "eslint --ignore-path ../../.gitignore .",
+    "eject": "yarn package:eject",
+    "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
-    "pretest:test:cypress:run": "npm run build",
-    "start-dev": "SKIP_PREFLIGHT_CHECK=true react-scripts start",
+    "pretest:test:cypress:run": "yarn build",
+    "start-dev": "yarn package:start:react-scripts",
     "start-fullstack": "npm-run-all -c -l -p start-psss-server start-entity-server start-central-server start-report-server  start-dev",
     "start-psss-server": "yarn workspace @tupaia/psss-server start-dev -s",
     "start-entity-server": "yarn workspace @tupaia/entity-server start-dev -s",
     "start-central-server": "yarn workspace @tupaia/central-server start-dev -s",
     "start-report-server": "yarn workspace @tupaia/report-server start-dev -s",
-    "test": "npm run test:jest",
+    "test": "yarn test:jest",
     "test:cypress:open": "start-server-and-test start-fullstack 3000 cypress:open",
     "test:cypress:run": "start-server-and-test start-fullstack 3000 cypress:run",
-    "test:jest": "react-scripts test --env=jsdom"
+    "test:jest": "yarn package:test --env=jsdom"
   },
   "browserslist": [
     "defaults"
@@ -39,7 +39,7 @@
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/pickers": "^3.2.10",
     "@material-ui/styles": "^4.9.10",
-    "@tupaia/ui-components": "1.0",
+    "@tupaia/ui-components": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "axios": "^0.21.0",
     "date-fns": "^2.16.1",
@@ -68,8 +68,10 @@
   "devDependencies": {
     "@tupaia/auth": "1.0.0",
     "@tupaia/database": "1.0.0",
-    "eslint-import-resolver-alias": "^1.1.2",
+    "cross-env": "^7.0.2",
+    "cypress": "^6.6.0",
     "faker": "^4.1.0",
-    "mockdate": "^3.0.5"
+    "mockdate": "^3.0.5",
+    "npm-run-all": "^4.1.5"
   }
 }

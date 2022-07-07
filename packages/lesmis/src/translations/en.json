@@ -49,6 +49,7 @@
     "numberOfSchools": "Number of Schools",
     "numberOfStudents": "Number of Students",
     "pleaseDoNotRefreshTheBrowserOrCloseThisPage": "Please do not refresh the browser or close this page",
+    "Population": "Population",
     "preSchool": "Pre School",
     "primary": "Primary",
     "priorityDistrict": "Priority District",
@@ -125,6 +126,5 @@
     "agreeToTerms": "I agree to the terms and conditions",
     "password": "Password *",
     "confirmPassword": "Confirm Password *"
-
   }
 }

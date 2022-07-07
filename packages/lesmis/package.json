@@ -11,19 +11,18 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "SKIP_PREFLIGHT_CHECK=true GENERATE_SOURCEMAP=false react-scripts build",
-    "eject": "react-scripts eject",
-    "lint": "eslint --ignore-path ../../.gitignore .",
+    "build": "npm run --prefix ../../ package:build:react-scripts",
+    "eject": "yarn package:eject",
+    "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
-    "start-dev": "SKIP_PREFLIGHT_CHECK=true PORT=3003 react-scripts start",
+    "start-dev": "PORT=3003 yarn package:start:react-scripts",
     "start-fullstack": "npm-run-all -c -l -p start-central-server start-entity-server start-report-server start-web-config-server start-lesmis-server start-dev",
     "start-central-server": "yarn workspace @tupaia/central-server start-dev",
     "start-entity-server": "yarn workspace @tupaia/entity-server start-dev",
     "start-report-server": "yarn workspace @tupaia/report-server start-dev",
     "start-web-config-server": "yarn workspace @tupaia/web-config-server start-dev",
     "start-lesmis-server": "yarn workspace @tupaia/lesmis-server start-dev",
-    "test": "npm run test:jest",
-    "test:jest": "react-scripts test --env=jsdom"
+    "test": "yarn package:test"
   },
   "browserslist": [
     "defaults"
@@ -49,5 +48,8 @@
     "react-query": "^3.9.6",
     "react-router-dom": "^5.2.0",
     "styled-components": "^5.1.0"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
   }
 }

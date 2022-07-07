@@ -16,6 +16,7 @@ import { reducer as userLocation } from './utilities/userLocation';
 import { reducer as rewards } from './rewards';
 import { reducer as messages } from './messages';
 import { reducer as changePassword } from './changePassword';
+import { reducer as requestAccountDeletion } from './requestAccountDeletion';
 
 export const reducers = {
   authentication,
@@ -32,4 +33,5 @@ export const reducers = {
   rewards,
   messages,
   changePassword,
+  requestAccountDeletion,
 };

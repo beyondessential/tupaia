@@ -25,3 +25,13 @@ dockercfg
 packages/.vscode/settings.json
 **/testRequests/*.http
 *:Zone.Identifier
+
+# yarn
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+# yarn end

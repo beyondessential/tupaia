@@ -16,6 +16,7 @@ import { HomeScreenContainer } from '../home';
 import { WebBrowserContainer } from '../web';
 import { ChangePasswordContainer } from '../changePassword';
 import { RealmExplorer } from '../database/RealmExplorer';
+import { RequestAccountDeletionContainer } from '../requestAccountDeletion';
 import { SurveyScreen, SurveysMenuScreen } from '../assessment';
 import {
   CREATE_ACCOUNT_SCREEN,
@@ -30,6 +31,7 @@ import {
   HOME_SCREEN,
   CHANGE_PASSWORD_SCREEN,
   ROUTES_WITH_INVISIBLE_HEADERS,
+  DELETE_ACCOUNT_REQUEST_SCREEN,
 } from './constants';
 import { SyncContainer } from '../sync';
 import { THEME_COLOR_ONE } from '../globalStyles';
@@ -38,6 +40,7 @@ const INITIAL_SCREEN_NAME = 'Login';
 
 const routes = {
   [CHANGE_PASSWORD_SCREEN]: { screen: ChangePasswordContainer },
+  [DELETE_ACCOUNT_REQUEST_SCREEN]: { screen: RequestAccountDeletionContainer },
   [LOGIN_SCREEN]: { screen: LoginContainer, navigationOptions: () => ({ headerShown: false }) },
   [REQUEST_COUNTRY_ACCESS_SCREEN]: { screen: RequestCountryAccessContainer },
   [WELCOME_SCREEN]: {

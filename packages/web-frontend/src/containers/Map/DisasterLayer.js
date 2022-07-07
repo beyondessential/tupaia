@@ -6,7 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { LayerGroup, IconMarker, DEFAULT_DISASTER_COLOR } from '@tupaia/ui-components/lib/map';
+import { LayerGroup, IconMarker, DEFAULT_DISASTER_COLOR } from '@tupaia/ui-components';
 import { selectDisaster } from '../../disaster/actions';
 import { selectCurrentProjectCode } from '../../selectors';
 
