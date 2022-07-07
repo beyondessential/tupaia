@@ -23,4 +23,5 @@ export const PUBLIC_COUNTRY_CODES = [
   'PW',
   'PG',
   'FJ',
+  'NU',
 ];
