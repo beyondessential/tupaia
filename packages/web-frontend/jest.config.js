@@ -14,6 +14,6 @@ module.exports = {
   transformIgnorePatterns: [`/node_modules/(?!(@?react-leaflet))`],
   moduleNameMapper: {
     '^react-native$': 'react-native-web',
-    '^@tupaia/ui-components/lib/map$': '<rootDir>/jestFileMock.js',
+    '^@tupaia/ui-components$': '<rootDir>/jestFileMock.js',
   },
 };

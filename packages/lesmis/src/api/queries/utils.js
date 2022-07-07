@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import { formatDateForApi, roundStartEndDates } from '@tupaia/ui-components/lib/chart';
+import { formatDateForApi, roundStartEndDates } from '@tupaia/ui-components';
 import { MIN_DATA_YEAR, SINGLE_YEAR_GRANULARITY } from '../../constants';
 
 /**

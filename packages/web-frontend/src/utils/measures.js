@@ -11,10 +11,9 @@ import {
   BREWER_AUTO,
   UNKNOWN_COLOR,
   UNKNOWN_ICON,
-} from '@tupaia/ui-components/lib/map';
+} from '@tupaia/ui-components';
 import { VALUE_TYPES } from '../components/View/constants';
 import { MAP_COLORS } from '../styles';
-import { formatDataValue } from './formatters';
 import { MARKER_TYPES, SCALE_TYPES } from '../constants';
 
 export const MEASURE_TYPE_ICON = 'icon';
@@ -103,27 +102,6 @@ const getNullValueMapping = type => {
 
   return baseMapping;
 };
-
-function getFormattedValue(value, type, valueInfo, scaleType, valueType, submissionDate) {
-  switch (type) {
-    case MEASURE_TYPE_SPECTRUM:
-    case MEASURE_TYPE_SHADED_SPECTRUM:
-      if (scaleType === SCALE_TYPES.TIME) {
-        return `last submission on ${submissionDate}`;
-      }
-      return formatDataValue(value, valueType);
-    case MEASURE_TYPE_RADIUS:
-    case MEASURE_TYPE_ICON:
-    case MEASURE_TYPE_COLOR:
-    case MEASURE_TYPE_SHADING:
-      if (scaleType === SCALE_TYPES.TIME) {
-        return `last submission on ${submissionDate}`;
-      }
-      return valueInfo.name || value;
-    default:
-      return value;
-  }
-}
 
 const getSpectrumScaleValues = (measureData, measureOption) => {
   const { key, scaleType, startDate, endDate } = measureOption;
@@ -221,78 +199,6 @@ export function processMeasureInfo(response) {
     measureData,
     ...rest,
   };
-}
-
-function getValueInfo(value, valueMapping, hiddenValues = {}) {
-  if (!value && typeof value !== 'number' && valueMapping.null) {
-    // use 'no data' value
-    const nullValue = hiddenValues.null || hiddenValues[valueMapping.null.value];
-
-    return {
-      ...valueMapping.null,
-      isHidden: nullValue,
-    };
-  }
-
-  const matchedValue = valueMapping[value];
-
-  if (!matchedValue) {
-    // use 'other' value
-    return {
-      ...valueMapping.other,
-      isHidden: hiddenValues.other,
-      value,
-    };
-  }
-
-  return {
-    ...matchedValue,
-    isHidden: hiddenValues[matchedValue.value],
-  };
-}
-
-export function getFormattedInfo(orgUnitData, measureOption) {
-  const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = measureOption;
-
-  const value = orgUnitData[key];
-  const valueInfo = getValueInfo(value, valueMapping);
-
-  if (
-    displayedValueKey &&
-    (orgUnitData[displayedValueKey] || orgUnitData[displayedValueKey] === 0)
-  ) {
-    return {
-      formattedValue: formatDataValue(
-        orgUnitData[displayedValueKey],
-        valueType,
-        orgUnitData.metadata,
-      ),
-      valueInfo,
-    };
-  }
-
-  // note: dont use !value here, as 0 is a valid value.
-  if (value === null || value === undefined) {
-    return { formattedValue: valueInfo.name || 'No data', valueInfo };
-  }
-
-  return {
-    formattedValue: getFormattedValue(
-      value,
-      type,
-      valueInfo,
-      scaleType,
-      valueType,
-      orgUnitData.submissionDate,
-    ),
-    valueInfo,
-  };
-}
-
-export function getSingleFormattedValue(orgUnitData, measureOptions) {
-  // For situations where we can only show one value, just show the value
-  // of the first measure.
-  return getFormattedInfo(orgUnitData, measureOptions[0]).formattedValue;
 }
 
 // Take a measureData array where the [key]: value is a number

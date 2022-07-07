@@ -10,7 +10,7 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButtonComponent from '@material-ui/lab/ToggleButton';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import GridOnIcon from '@material-ui/icons/GridOn';
-import { Chart, Table } from '@tupaia/ui-components/lib/chart';
+import { Chart, ChartTable } from '@tupaia/ui-components';
 import { VIEW_CONTENT_SHAPE } from './propTypes';
 import { ChartContainer, ChartViewContainer } from './Layout';
 import { FlexEnd } from '../Flexbox';
@@ -33,7 +33,7 @@ const GREY_DE = '#DEDEE0';
 const GREY_FB = '#FBF9F9';
 const TEXT_DARKGREY = '#414D55';
 
-const StyledTable = styled(Table)`
+const StyledTable = styled(ChartTable)`
   overflow: auto;
   border-bottom: 1px solid rgb(82, 82, 88);
 

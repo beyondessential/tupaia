@@ -40,3 +40,4 @@ export {
   translateUserEmailToIdAndAssessorName,
 } from './translateSurveyResponseFields';
 export { translateObjectFields } from './translateObjectFields';
+export { getUserInfoInString } from './getUserInfoInString';

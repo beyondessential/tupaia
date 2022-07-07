@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, FlexEnd } from '../../src';
-import { Chart, Table, useChartDataExport } from '../../src/components/Chart';
+import { Chart, ChartTable, useChartDataExport } from '../../src/components/Chart';
 
 const LightContainer = styled.div`
   width: 750px;
@@ -42,7 +42,7 @@ export const LightThemeChartTemplate = args => {
         </ChartContainer>
       </LightContainer>
       <LightContainer>
-        <Table {...args} />
+        <ChartTable {...args} />
       </LightContainer>
     </>
   );
@@ -71,7 +71,7 @@ export const DarkThemeTemplate = args => {
         </ChartContainer>
       </DarkContainer>
       <DarkContainer>
-        <Table {...args} />
+        <ChartTable {...args} />
       </DarkContainer>
     </>
   );

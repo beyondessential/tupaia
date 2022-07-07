@@ -65,6 +65,7 @@ export const MarkerLayer = ({
             </ShadedPolygon>
           );
         }
+        // Need to show all values on tooltips even though we toggle off one map overlay
         const markerData = {
           ...measure,
           ...(multiOverlayMeasureData &&
