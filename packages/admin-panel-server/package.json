@@ -15,24 +15,23 @@
   "types": "dist/index.d.ts",
   "private": true,
   "scripts": {
-    "build": "tsc -p tsconfig-build.json",
-    "lint": "eslint . --ext .ts",
-    "lint:all": "yarn run lint \"src/**/*.{ts,jsx}\"",
+    "build": "npm run --prefix ../../ package:build:ts",
+    "build-dev": "npm run build",
+    "lint": "yarn package:lint:ts",
     "lint:fix": "yarn lint --fix",
-    "prestart": "npm run -s build",
+    "prestart": "npm run build",
     "start": "node dist",
-    "start-dev": "LOG_LEVEL=debug ../../scripts/bash/backendStartDev.sh 9994 -ts",
-    "start-verbose": "LOG_LEVEL=debug npm run start-dev",
-    "test": "jest",
-    "test:coverage": "jest --coverage",
-    "test:watch": "jest --watch"
+    "start-dev": "yarn package:start:backend-start-dev 9994 -ts",
+    "test": "yarn package:test",
+    "test:coverage": "yarn test --coverage",
+    "test:watch": "yarn test --watch"
   },
   "dependencies": {
     "@tupaia/access-policy": "3.0.0",
     "@tupaia/database": "1.0.0",
+    "@tupaia/report-server": "0.0.0",
     "@tupaia/server-boilerplate": "1.0.0",
     "@tupaia/utils": "1.0.0",
-    "@tupaia/report-server": "0.0.0",
     "api-error-handler": "^1.0.0",
     "body-parser": "^1.18.3",
     "camelcase-keys": "^7.0.0",
@@ -44,5 +43,8 @@
     "lodash": "^4.17.4",
     "multer": "^1.4.3",
     "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/multer": "^1.4.7"
   }
 }

@@ -5,8 +5,14 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/GetApp';
-import { Dialog, DialogHeader, DialogContent } from '@tupaia/ui-components';
-import { Table, useMapDataExport } from '@tupaia/ui-components/lib/map';
+import {
+  Dialog,
+  DialogHeader,
+  DialogContent,
+  MapTable,
+  useMapDataExport,
+} from '@tupaia/ui-components';
+
 import MuiIconButton from '@material-ui/core/IconButton';
 
 export const MapTableModal = ({ Button, overlayReportData, title }) => {
@@ -27,7 +33,7 @@ export const MapTableModal = ({ Button, overlayReportData, title }) => {
           </MuiIconButton>
         </DialogHeader>
         <DialogContent>
-          <Table serieses={serieses} measureData={measureData} />
+          <MapTable serieses={serieses} measureData={measureData} />
         </DialogContent>
       </Dialog>
       <Button onClick={() => setIsOpen(true)} />

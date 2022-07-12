@@ -8,8 +8,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import DownloadIcon from '@material-ui/icons/GetApp';
-import { Dialog, DialogHeader, DialogContent } from '@tupaia/ui-components';
-import { Table, useMapDataExport } from '@tupaia/ui-components/lib/map';
+import {
+  Dialog,
+  DialogHeader,
+  DialogContent,
+  MapTable,
+  useMapDataExport,
+} from '@tupaia/ui-components';
+
 import MuiIconButton from '@material-ui/core/IconButton';
 import {
   selectCurrentMapOverlayCodes,
@@ -55,7 +61,7 @@ const MapTableModalComponent = ({
         </DialogHeader>
         <DialogContent>
           {isMapOverlaySelected ? (
-            <Table serieses={measureOptions} measureData={measureData} />
+            <MapTable serieses={measureOptions} measureData={measureData} />
           ) : (
             'No map overlay has been selected'
           )}

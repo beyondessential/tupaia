@@ -13,7 +13,7 @@ import {
   Legend,
   ZoomControl,
   TilePicker as TilePickerComponent,
-} from '@tupaia/ui-components/lib/map';
+} from '@tupaia/ui-components';
 import { YearSelector, MapOverlaysPanel } from '../components';
 import { useMapOverlayReportData, useMapOverlaysData } from '../api';
 import { TILE_SETS, DEFAULT_DATA_YEAR } from '../constants';
