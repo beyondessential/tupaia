@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { LayerGroup, GeoJSON } from '@tupaia/ui-components/lib/map';
+import { LayerGroup, GeoJSON } from '@tupaia/ui-components';
 import land from './demoLandLand.json';
 import rivers from './demoLandRivers.json';
 import roads from './demoLandRoads.json';

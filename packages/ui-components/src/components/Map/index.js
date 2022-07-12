@@ -11,7 +11,6 @@ export {
   LayerGroup,
   GeoJSON,
   Polygon,
-  Tooltip,
 } from 'react-leaflet';
 export * from './AreaTooltip';
 export * from './constants';

@@ -1,4 +1,3 @@
 #!/bin/bash -e
-DIR=$(dirname "$0")
-PACKAGE=$1
-yarn workspace "@tupaia/${PACKAGE}" test-e2e --ciBuildId $CI_BUILD_ID
+
+yarn workspace "@tupaia/e2e" test-e2e --ciBuildId $CI_BUILD_ID
