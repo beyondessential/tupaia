@@ -81,7 +81,7 @@ export class RouteHandler {
 
     const excludedTypes = [];
     await Promise.all(
-      frontendExcluded.map(async ({ types, exceptions }) => {
+      frontendExcluded.map(async ({ types, exceptions = {} }) => {
         const { permissionGroups = [] } = exceptions;
         const userPermissionGroups = await this.req.accessPolicy.getPermissionGroups([
           country.country_code,
