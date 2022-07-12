@@ -79,17 +79,31 @@ export class RouteHandler {
       return this.models.entity.typesExcludedFromWebFrontend;
     }
 
-    const excludedTypes = [];
+    // Users met exception criteria can view excluded entity types.
+    const frontendExcludedWithExceptions = frontendExcluded.filter(({ exceptions }) => exceptions);
+    const frontendExcludedWithoutExceptions = frontendExcluded.filter(
+      ({ exceptions }) => !exceptions,
+    );
+
+    const excludedTypes = frontendExcludedWithoutExceptions.map(({ types }) => types).flat();
+
     await Promise.all(
-      frontendExcluded.map(async ({ types, exceptions = {} }) => {
-        const { permissionGroups = [] } = exceptions;
+      frontendExcludedWithExceptions.map(async ({ types, exceptions }) => {
+        const { permissionGroups } = exceptions;
+        if (!permissionGroups) {
+          throw new Error(
+            `'frontendExcluded.exceptions' config should have 'permissionGroups' specified`,
+          );
+        }
+
         const userPermissionGroups = await this.req.accessPolicy.getPermissionGroups(
           allCountryCodes,
         );
-        const userHasAccessToExcludedTypes = !permissionGroups.every(permissionGroup =>
+        const userHasAccessToExcludedTypes = permissionGroups.every(permissionGroup =>
           userPermissionGroups.includes(permissionGroup),
         );
-        if (userHasAccessToExcludedTypes) {
+
+        if (!userHasAccessToExcludedTypes) {
           excludedTypes.push(...types);
         }
       }),
