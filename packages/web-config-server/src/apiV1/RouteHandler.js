@@ -73,7 +73,7 @@ export class RouteHandler {
 
   fetchHierarchyId = async () => (await this.fetchAndCacheProject()).entity_hierarchy_id;
 
-  fetchTypesExcludedFromWebFrontend = async (project, country) => {
+  fetchTypesExcludedFromWebFrontend = async (project, allCountryCodes) => {
     const { frontendExcluded } = project?.config;
     if (!frontendExcluded) {
       return this.models.entity.typesExcludedFromWebFrontend;
@@ -83,9 +83,9 @@ export class RouteHandler {
     await Promise.all(
       frontendExcluded.map(async ({ types, exceptions = {} }) => {
         const { permissionGroups = [] } = exceptions;
-        const userPermissionGroups = await this.req.accessPolicy.getPermissionGroups([
-          country.country_code,
-        ]);
+        const userPermissionGroups = await this.req.accessPolicy.getPermissionGroups(
+          allCountryCodes,
+        );
         const userHasAccessToExcludedTypes = !permissionGroups.every(permissionGroup =>
           userPermissionGroups.includes(permissionGroup),
         );

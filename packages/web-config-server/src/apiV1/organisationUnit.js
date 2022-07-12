@@ -46,10 +46,9 @@ export default class extends RouteHandler {
       return {};
     }
 
-    const typesExcludedFromWebFrontend = await this.fetchTypesExcludedFromWebFrontend(
-      project,
-      country,
-    );
+    const typesExcludedFromWebFrontend = await this.fetchTypesExcludedFromWebFrontend(project, [
+      country.country_code,
+    ]);
     const countryDescendants = country
       ? await country.getDescendants(project.entity_hierarchy_id, {
           type: {
