@@ -73,6 +73,42 @@ export class RouteHandler {
 
   fetchHierarchyId = async () => (await this.fetchAndCacheProject()).entity_hierarchy_id;
 
-  fetchTypesExcludedFromWebFrontend = project =>
-    project?.config?.frontendExcludedTypes ?? this.models.entity.typesExcludedFromWebFrontend;
+  fetchTypesExcludedFromWebFrontend = async (project, allCountryCodes) => {
+    const { frontendExcluded } = project?.config;
+    if (!frontendExcluded) {
+      return this.models.entity.typesExcludedFromWebFrontend;
+    }
+
+    // Users met exception criteria can view excluded entity types.
+    const frontendExcludedWithExceptions = frontendExcluded.filter(({ exceptions }) => exceptions);
+    const frontendExcludedWithoutExceptions = frontendExcluded.filter(
+      ({ exceptions }) => !exceptions,
+    );
+
+    const excludedTypes = frontendExcludedWithoutExceptions.map(({ types }) => types).flat();
+
+    await Promise.all(
+      frontendExcludedWithExceptions.map(async ({ types, exceptions }) => {
+        const { permissionGroups } = exceptions;
+        if (!permissionGroups) {
+          throw new Error(
+            `'frontendExcluded.exceptions' config should have 'permissionGroups' specified`,
+          );
+        }
+
+        const userPermissionGroups = await this.req.accessPolicy.getPermissionGroups(
+          allCountryCodes,
+        );
+        const userHasAccessToExcludedTypes = permissionGroups.every(permissionGroup =>
+          userPermissionGroups.includes(permissionGroup),
+        );
+
+        if (!userHasAccessToExcludedTypes) {
+          excludedTypes.push(...types);
+        }
+      }),
+    );
+
+    return excludedTypes;
+  };
 }
