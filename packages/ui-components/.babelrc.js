@@ -33,4 +33,5 @@ module.exports = {
       }
     ]
   ],
+  ignore: ["**/__tests__"]
 };

@@ -3,5 +3,6 @@
     "test": {
       "plugins": ["istanbul"]
     }
-  }
+  },
+  "ignore": ["src/tests/**", "**src/database/migrations"]
 }
