@@ -18,7 +18,7 @@ const HOOK = 'entityImage';
 
 exports.up = async function (db) {
   const questionId = await codeToId(db, 'question', QUESTION_CODE);
-  updateValues(db, QUESTION_TABLE, { hook: HOOK }, { id: questionId });
+  await updateValues(db, QUESTION_TABLE, { hook: HOOK }, { id: questionId });
 };
 
 exports.down = function (db) {
