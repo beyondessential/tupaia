@@ -1,0 +1,36 @@
+*.env*
+!*.env.example*
+!*.env.encrypted*
+.DS_Store
+**/node_modules
+**/coverage
+**/builds
+**/build
+**/dist
+**/lib
+*.log*
+.nyc_output
+*.aes
+*.code-workspace
+*.pem
+codeship_deploy_key.pub
+codeship_deploy_key
+dump.sql
+*.todo
+**/cypress/screenshots
+**/cypress/videos
+/snapshots.js
+.idea
+packages/.vscode/settings.json
+**/testRequests/*.http
+*:Zone.Identifier
+
+# yarn
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+# yarn end

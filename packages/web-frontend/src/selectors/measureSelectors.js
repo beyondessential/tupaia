@@ -7,7 +7,7 @@
 
 import createCachedSelector from 're-reselect';
 import { createSelector } from 'reselect';
-import { getMeasureDisplayInfo } from '@tupaia/ui-components/lib/map';
+import { getMeasureDisplayInfo } from '@tupaia/ui-components';
 import { POLYGON_MEASURE_TYPES } from '../utils/measures';
 import {
   selectActiveProjectCountries,
@@ -234,5 +234,28 @@ export const selectRenderedMeasuresWithDisplayInfo = createSelector(
     return measures.filter(measure =>
       allDescendantCodesOfAncestor.includes(measure.organisationUnitCode),
     );
+  },
+);
+
+/**
+ * [[Facility] , [Village, Facility]] => same entity level
+ */
+export const selectAreMeasuresOnTheSameEntityLevel = createSelector(
+  [state => state.map.measureInfo],
+  measureInfo => {
+    if (!measureInfo) {
+      return false;
+    }
+
+    const measureLevelsFromMeasures = Object.values(measureInfo)
+      .map(({ measureLevel }) => measureLevel)
+      .flat();
+    if (measureLevelsFromMeasures.length <= 1) {
+      return true;
+    }
+
+    const measureLevelSet = new Set(measureLevelsFromMeasures);
+
+    return measureLevelSet.size !== measureLevelsFromMeasures.length;
   },
 );

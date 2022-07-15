@@ -79,7 +79,7 @@ export class RequestAccountDeletionPage extends PureComponent {
             style={localStyles.container}
           >
             <ScrollView
-              contentContainerStyle={localStyles.formContainer}
+              contentContainerStyle={localStyles.scrollContainer}
               scrollEnabled={!isLoading}
               ref={scrollView => {
                 this.scrollView = scrollView;
@@ -139,15 +139,15 @@ const localStyles = StyleSheet.create({
     width: '100%',
     flex: 1,
   },
-  formContainer: {
+  scrollContainer: {
     padding: DEFAULT_PADDING,
     flexGrow: 1,
-    justifyContent: 'space-between',
-    maxHeight: '50%',
+    justifyContent: 'flex-start',
   },
   actionsContainer: {
     width: '100%',
     alignItems: 'center',
+    marginBottom: 10,
   },
 
   loadingOverlay: {

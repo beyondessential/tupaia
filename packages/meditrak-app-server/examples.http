@@ -5,13 +5,15 @@
 
 @contentType = application/json
 
+@appVersion = 1.11.121
+
 ### /test
-GET http://{{host}}/{{version}}/test HTTP/2.0
+GET http://{{host}}/{{version}}/test?appVersion={{appVersion}} HTTP/2.0
 content-type: {{contentType}}
 
 ### Login
 # @name login
-POST http://{{host}}/{{version}}/auth HTTP/2.0
+POST http://{{host}}/{{version}}/auth?appVersion={{appVersion}} HTTP/2.0
 content-type: {{contentType}}
 
 {
@@ -22,18 +24,22 @@ content-type: {{contentType}}
     "installId": "1234"
 }
 
+### Set refresh token
+
+@refreshToken = {{login.response.body.refreshToken}}
+
 ### Refresh Token
 
-POST http://{{host}}/{{version}}/auth?grantType=refresh_token HTTP/2.0
+POST http://{{host}}/{{version}}/auth?grantType=refresh_token&appVersion={{appVersion}} HTTP/2.0
 content-type: {{contentType}}
 
 {
-    "refreshToken": "1234"
+    "refreshToken": "{{refreshToken}}"
 }
 
 ### Register User
 
-POST http://{{host}}/{{version}}/user HTTP/2.0
+POST http://{{host}}/{{version}}/user?appVersion={{appVersion}} HTTP/2.0
 content-type: {{contentType}}
 
 {
@@ -54,19 +60,19 @@ content-type: {{contentType}}
 
 ### Get Social Feed
 
-GET http://{{host}}/{{version}}/socialFeed?countryId=5948b9e245eaeb1d6ea882f9 HTTP/2.0
+GET http://{{host}}/{{version}}/socialFeed?countryId=5948b9e245eaeb1d6ea882f9&appVersion={{appVersion}} HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
 
 ### Get User Rewards
 
-GET http://{{host}}/{{version}}/me/rewards HTTP/2.0
+GET http://{{host}}/{{version}}/me/rewards?appVersion={{appVersion}} HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
 
 ### Change User Password
 
-POST http://{{host}}/{{version}}/me/changePassword HTTP/2.0
+POST http://{{host}}/{{version}}/me/changePassword?appVersion={{appVersion}} HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
 
@@ -78,7 +84,7 @@ Authorization: {{user-authorization}}
 
 ### Change User Password (back)
 
-POST http://{{host}}/{{version}}/me/changePassword HTTP/2.0
+POST http://{{host}}/{{version}}/me/changePassword?appVersion={{appVersion}} HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
 
@@ -87,3 +93,15 @@ Authorization: {{user-authorization}}
     "password": "{{password}}",
     "passwordConfirm": "{{password}}"
 }
+
+### Count changes
+
+GET http://{{host}}/{{version}}/changes/count?since=1503986686475.5&appVersion={{appVersion}} HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
+### Get changes
+
+GET http://{{host}}/{{version}}/changes?since=1503986686475.5&appVersion={{appVersion}} HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}

@@ -5,7 +5,7 @@
 
 import moment from 'moment';
 import { expect, assert } from 'chai';
-import { fetchWithTimeout, oneSecondSleep } from '@tupaia/utils';
+import { fetchWithTimeout, oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import {
   generateId,
   generateTestId,
@@ -19,7 +19,6 @@ import {
 import { TEST_IMAGE_DATA } from '../testData';
 import {
   insertEntityAndFacility,
-  randomIntBetween,
   setupDummySyncQueue,
   TestableApp,
   upsertEntity,
