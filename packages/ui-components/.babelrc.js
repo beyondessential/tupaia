@@ -32,6 +32,5 @@ module.exports = {
         loose: true,
       }
     ]
-  ],
-  ignore: ["**/__tests__"]
+  ]
 };
