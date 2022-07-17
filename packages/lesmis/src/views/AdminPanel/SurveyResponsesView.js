@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { SurveyResponsesPage, SURVEY_RESPONSE_PAGE_COLUMNS } from '@tupaia/admin-panel/lib';
+import { SurveyResponsesPage, SURVEY_RESPONSE_PAGE_COLUMNS } from '@tupaia/admin-panel';
 import { ApproveButton, RejectButton } from '../../components';
 
 const COLUMNS = SURVEY_RESPONSE_PAGE_COLUMNS.filter(
