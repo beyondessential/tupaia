@@ -12,20 +12,31 @@ import { post } from '../../api';
 export const useDashboardItemsExportToPDF = options => {
   const { locale, entityCode, ...restOfoptions } = options;
   const [isExporting, setIsExporting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const exportToPDF = async fileName => {
     setIsExporting(true);
-    const hostname = `${window.location.protocol}//${window.location.host}`;
-    const endpoint = `${locale}/pdf-export/${entityCode}`;
+    try {
+      const hostname = `${window.location.protocol}//${window.location.host}`;
+      const endpoint = `${locale}/pdf-export/${entityCode}`;
+      const pdfPageUrl = stringifyQuery(hostname, endpoint, restOfoptions);
 
-    const pdfPageUrl = stringifyQuery(hostname, endpoint, restOfoptions);
-    const response = await post('pdf', {
-      data: { hostname, pdfPageUrl },
-      responseType: 'blob',
-    });
-    downloadJs(response, `${fileName}.pdf`);
+      const response = await post('pdf', {
+        data: { hostname, pdfPageUrl },
+        responseType: 'blob',
+      });
+      downloadJs(response, `${fileName}.pdf`);
+    } catch (e) {
+      setErrorMessage('Network Error. Please try again');
+    }
+
     setIsExporting(false);
   };
 
-  return { isExporting, exportToPDF };
+  const onReset = () => {
+    setErrorMessage(null);
+    setIsExporting(false);
+  };
+
+  return { isExporting, exportToPDF, errorMessage, onReset };
 };

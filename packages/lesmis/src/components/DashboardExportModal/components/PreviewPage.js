@@ -14,9 +14,16 @@ const Content = styled(FlexColumn)`
   margin: 0px 150px;
 `;
 
-export const PreviewPage = ({ children, getNextPage, currentPage, isExporting, ...configs }) => {
+export const PreviewPage = ({
+  children,
+  getNextPage,
+  currentPage,
+  isExporting,
+  isError,
+  ...configs
+}) => {
   const page = getNextPage();
-  const isSelected = isExporting ? false : page === currentPage;
+  const isSelected = isExporting || isError ? false : page === currentPage;
 
   if (!isSelected) {
     return null;
@@ -35,4 +42,5 @@ PreviewPage.propTypes = {
   getNextPage: PropTypes.func.isRequired,
   currentPage: PropTypes.number.isRequired,
   isExporting: PropTypes.bool.isRequired,
+  isError: PropTypes.bool.isRequired,
 };

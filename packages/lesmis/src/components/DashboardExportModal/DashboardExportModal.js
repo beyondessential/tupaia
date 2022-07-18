@@ -48,7 +48,7 @@ export const DashboardExportModal = ({ title, totalPage, isOpen, setIsOpen }) =>
   };
 
   const fileName = `${title}-dashboards-export`;
-  const { isExporting, exportToPDF } = useDashboardItemsExportToPDF({
+  const { isExporting, exportToPDF, errorMessage, onReset } = useDashboardItemsExportToPDF({
     exportWithLabels,
     exportWithTable,
     year: selectedYear,
@@ -57,7 +57,8 @@ export const DashboardExportModal = ({ title, totalPage, isOpen, setIsOpen }) =>
   });
 
   const isFetching = useIsFetching() > 0;
-  const isDisabled = isExporting || isFetching;
+  const isError = !!errorMessage;
+  const isDisabled = isError || isExporting || isFetching;
   const [page, setPage] = useState(1);
 
   const handleClickExport = async () => {
@@ -101,12 +102,15 @@ export const DashboardExportModal = ({ title, totalPage, isOpen, setIsOpen }) =>
           })}
           text={I18n({ t: 'dashboards.pleaseDoNotRefreshTheBrowserOrCloseThisPage' })}
           isLoading={isDisabled}
+          errorMessage={errorMessage}
+          onReset={onReset}
         >
           <ExportView
             viewType={DASHBOARD_EXPORT_PREVIEW}
             viewProps={{
               currentPage: page,
               isExporting,
+              isError,
               exportOptions: {
                 exportWithLabels,
                 exportWithTable,
