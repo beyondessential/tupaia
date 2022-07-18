@@ -13,4 +13,4 @@ Backend for the MediTrak health facility survey and mapping software
 
 ### Importing geojson
 
-Documentation for importing geojson can be found [here](src/documentation/importingNewGeojson.md)
+Documentation for importing geojson can be found [here](doc/importingNewGeojson.md)

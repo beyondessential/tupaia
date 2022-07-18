@@ -8,15 +8,15 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import moment from 'moment';
-import { render } from '../../../helpers/testingRenderer';
-import { DateRangePicker } from '../DateRangePicker';
+import { render } from '../../../../helpers/testingRenderer';
+import { DateRangePicker } from '../../../components/DateRangePicker';
 import {
   DEFAULT_MIN_DATE,
   GRANULARITY_CONFIG,
   GRANULARITIES_WITH_ONE_DATE,
   momentToDateString,
   GRANULARITIES,
-} from '../Chart/periodGranularities';
+} from '../../../components/Chart/periodGranularities';
 
 const MAX_MOMENT_DATE = moment();
 
