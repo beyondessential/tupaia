@@ -59,13 +59,28 @@ exports.up = async function (db) {
         .join('|')})%'`,
     );
     const { rows: legacyReports } = await db.runSql(
-      `SELECT * from legacy_report WHERE text(legacy_report.data_builder_config) SIMILAR TO '%(${[
-        element,
-        ...dataGroups,
-        ...indicators,
-      ]
-        .map(x => x.code)
-        .join('|')})%'`,
+      `SELECT * from legacy_report WHERE
+      (
+        ${
+          // If this element appears in reports, find any 'useReportServer' legacy_reports that use it
+          reports.length > 0
+            ? `legacy_report.data_builder = 'useReportServer' AND
+          text(legacy_report.data_builder_config) SIMILAR TO '%(${reports
+            .map(x => x.code)
+            .join('|')})%'`
+            : 'false'
+        }
+      )
+      OR
+      (
+        text(legacy_report.data_builder_config) SIMILAR TO '%(${[
+          element,
+          ...dataGroups,
+          ...indicators,
+        ]
+          .map(x => x.code)
+          .join('|')})%'
+      )`,
     );
 
     const jointReportCodes = reports

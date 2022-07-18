@@ -5,6 +5,11 @@
 
 import { getTestDatabase, clearTestData } from '@tupaia/database';
 
+beforeAll(async () => {
+  const database = getTestDatabase();
+  await clearTestData(database);
+});
+
 afterAll(async () => {
   const database = getTestDatabase();
   await clearTestData(database);

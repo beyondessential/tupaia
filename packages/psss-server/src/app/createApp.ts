@@ -35,29 +35,26 @@ import { hasPSSSAccess } from '../utils';
  */
 export function createApp(db = new TupaiaDatabase()) {
   return (
-    new OrchestratorApiBuilder(db)
+    new OrchestratorApiBuilder(db, 'psss')
       .useSessionModel(PsssSessionModel)
       .verifyLogin(hasPSSSAccess)
 
       /**
        * GET routes
        */
-      .get<FetchAlertsRequest>('/v1/alerts/:category', handleWith(FetchAlertsRoute))
+      .get<FetchAlertsRequest>('alerts/:category', handleWith(FetchAlertsRoute))
       .get<FetchConfirmedWeeklyReportRequest>(
-        '/v1/confirmedWeeklyReport/:countryCode?',
+        'confirmedWeeklyReport/:countryCode?',
         handleWith(FetchConfirmedWeeklyReportRoute),
       )
-      .get<FetchCountriesRequest>('/v1/country', handleWith(FetchCountries))
-      .get<FetchCountrySitesRequest>(
-        '/v1/country/:countryCode/sites',
-        handleWith(FetchCountrySites),
-      )
+      .get<FetchCountriesRequest>('country', handleWith(FetchCountries))
+      .get<FetchCountrySitesRequest>('country/:countryCode/sites', handleWith(FetchCountrySites))
       .get<FetchWeeklyReportRequest>(
-        '/v1/weeklyReport/:countryCode',
+        'weeklyReport/:countryCode',
         handleWith(FetchWeeklyReportRoute),
       )
       .get<FetchWeeklyReportRequest>(
-        '/v1/weeklyReport/:countryCode/:sites?',
+        'weeklyReport/:countryCode/:sites?',
         handleWith(FetchWeeklyReportRoute),
       )
 
@@ -65,7 +62,7 @@ export function createApp(db = new TupaiaDatabase()) {
        * POST routes
        */
       .post<ConfirmWeeklyReportRequest>(
-        '/v1/confirmedWeeklyReport/:countryCode',
+        'confirmedWeeklyReport/:countryCode',
         handleWith(ConfirmWeeklyReportRoute),
       )
 
@@ -73,11 +70,11 @@ export function createApp(db = new TupaiaDatabase()) {
        * PUT routes
        */
       .put<SaveWeeklyReportRequest>(
-        '/v1/weeklyReport/:countryCode/:siteCode?',
+        'weeklyReport/:countryCode/:siteCode?',
         handleWith(SaveWeeklyReportRoute),
       )
       .put<ProcessAlertActionRequest>(
-        '/v1/alerts/:alertId/:action',
+        'alerts/:alertId/:action',
         handleWith(ProcessAlertActionRoute),
       )
 
@@ -85,10 +82,10 @@ export function createApp(db = new TupaiaDatabase()) {
        * DELETE routes
        */
       .delete<DeleteWeeklyReportRequest>(
-        '/v1/weeklyReport/:countryCode/:siteCode?',
+        'weeklyReport/:countryCode/:siteCode?',
         handleWith(DeleteWeeklyReportRoute),
       )
-      .delete<DeleteAlertRequest>('/v1/alerts/:alertId', handleWith(DeleteAlertRoute))
+      .delete<DeleteAlertRequest>('alerts/:alertId', handleWith(DeleteAlertRoute))
 
       .build()
   );

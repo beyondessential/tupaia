@@ -22,7 +22,10 @@
 export const translateExpression = async (models, rawExpression, codes) => {
   const questionCodeToId = await models.question.findIdByCode(codes);
   let expression = rawExpression;
-  for (const code of codes) {
+
+  // We sort by string length (desc) so that we avoid replacing a substring in the regex
+  const codesOrderedByLength = codes.sort((a, b) => b.length - a.length);
+  for (const code of codesOrderedByLength) {
     const questionId = questionCodeToId[code];
     // Retain the $ prefix, as UUID often starts with a number (breaks evaluation in mathjs)
     // Using the global regular expression ensures we replace all instances

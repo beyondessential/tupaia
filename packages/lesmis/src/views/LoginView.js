@@ -7,7 +7,7 @@ import React from 'react';
 import MuiCard from '@material-ui/core/Card';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { LoginForm, FlexCenter, FlexColumn, FormBackButton } from '../components';
+import { LoginForm, FlexCenter, FlexColumn, FormBackButton, I18n } from '../components';
 import { LocaleLink } from '../components/LocaleLinks';
 
 const Container = styled(FlexColumn)`
@@ -51,9 +51,11 @@ export const LoginView = () => (
       <LoginForm />
     </StyledCard>
     <FlexCenter mb={4}>
-      <Text color="textSecondary">Don&apos;t have access?</Text>
+      <Text color="textSecondary">
+        <I18n t="login.dontHaveAccess" />
+      </Text>
       <StyledLocaleLink to="/register" color="primary">
-        Register here
+        <I18n t="login.registerHere" />
       </StyledLocaleLink>
     </FlexCenter>
   </Container>

@@ -8,6 +8,8 @@ import { getTestDatabase } from '@tupaia/database';
 
 import { createApp } from '../../app';
 
+const TEST_APP_VERSION = '1.11.121';
+
 type ApiClientMocks = { auth?: any; central?: any };
 
 const apiClientMocks: ApiClientMocks = {};
@@ -28,6 +30,7 @@ export const setupTestApp = async (newApiClientMocks: ApiClientMocks = {}) => {
   });
 
   const app = new TestableServer(createApp(getTestDatabase()));
+  app.setDefaultQueryParam('appVersion', TEST_APP_VERSION);
 
   return app;
 };

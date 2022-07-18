@@ -55,6 +55,10 @@ export class ModelRegistry {
     });
   }
 
+  /**
+   * @param {string} databaseType
+   * @returns {import('./DatabaseModel').DatabaseModel}
+   */
   getModelForDatabaseType(databaseType) {
     return Object.values(this).find(model => model.databaseType === databaseType);
   }
