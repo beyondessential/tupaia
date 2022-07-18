@@ -20,8 +20,15 @@ type Body = {
   restOfParams: Record<string, string>;
 };
 
-export class PDFExportRoute extends Route<RegisterRequest> {
-  public constructor(req: Request, res: Response, next: NextFunction) {
+export type PDFExportRequest = Request<
+  Record<string, never>,
+  { contents: Buffer },
+  Body,
+  Record<string, any>
+>;
+
+export class PDFExportRoute extends Route<PDFExportRequest> {
+  public constructor(req: PDFExportRequest, res: Response, next: NextFunction) {
     super(req, res, next);
     this.type = 'download';
   }
