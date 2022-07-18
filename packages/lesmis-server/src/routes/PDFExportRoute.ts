@@ -61,7 +61,7 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
       const page = await browser.newPage();
       await page.setCookie({
         name: sessionCookieName,
-        domain: location.hostname.split(':')[0], // localhost:8030 -> localhost
+        domain: location.hostname,
         httpOnly: true,
         value: sessionCookieValue,
       });
