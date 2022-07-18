@@ -1,6 +1,6 @@
 'use strict';
 
-import ENTITIES from './migrationData/20220617020318-UpdateIndividualEntityTypeToFetpGraduateForFETPProject.json';
+import ENTITIES from './migrationData/20220717020318-UpdateIndividualEntityTypeToFetpGraduateForFETPProject.json';
 import { updateValues, codeToId } from '../utilities';
 
 var dbm;
