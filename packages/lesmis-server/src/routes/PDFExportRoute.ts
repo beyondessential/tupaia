@@ -14,9 +14,7 @@ type SessionCookies = {
 };
 
 type Body = {
-  endpoint: string;
-  hostname: string;
-  restOfParams: Record<string, string>;
+  pdfPageUrl: string;
 };
 
 export type PDFExportRequest = Request<
@@ -39,41 +37,44 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
     if (!sessionCookieValue) {
       throw new Error(`'sessionCookie' is not found`);
     }
-    const sessionCookieName = sessionCookie.slice(0, sessionCookie.indexOf('='));
-    const sessionCookieValue = sessionCookie.slice(sessionCookie.indexOf('=') + 1);
-
     return { sessionCookieName, sessionCookieValue };
   };
 
   private verifyBody = (body: any): Body => {
-    const { endpoint, hostname, ...restOfParams } = body;
-    if (!endpoint || typeof endpoint !== 'string') {
-      throw new Error(`'endpoint' should be provided in request body, got: ${endpoint}`);
-    }
-    if (!hostname || typeof hostname !== 'string') {
-      throw new Error(`'hostname' should be provided in request body, got: ${hostname}`);
+    const { pdfPageUrl } = body;
+    if (!pdfPageUrl || typeof pdfPageUrl !== 'string') {
+      throw new Error(`'pdfPageUrl' should be provided in request body, got: ${pdfPageUrl}`);
     }
 
-    return { endpoint, hostname, restOfParams };
+    return { pdfPageUrl };
   };
 
   private exportPDF = async (): Promise<Buffer> => {
     const { sessionCookieName, sessionCookieValue } = this.extractSessionCookie();
+    const { pdfPageUrl } = this.verifyBody(this.req.body);
+    const location = new URL(pdfPageUrl);
+    let browser;
+    let result;
 
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.setCookie({
-      name: sessionCookieName,
-      domain: body.hostname.split(':')[0], // localhost:8030 -> localhost
-      httpOnly: true,
-      value: sessionCookieValue,
-    });
-    await page.goto(url, { waitUntil: 'networkidle0' });
-    const result = await page.pdf({
-      format: 'a4',
-      printBackground: true,
-    });
-    await browser.close();
+    try {
+      browser = await puppeteer.launch();
+      const page = await browser.newPage();
+      await page.setCookie({
+        name: sessionCookieName,
+        domain: location.hostname.split(':')[0], // localhost:8030 -> localhost
+        httpOnly: true,
+        value: sessionCookieValue,
+      });
+      await page.goto(pdfPageUrl, { waitUntil: 'networkidle0' });
+      result = await page.pdf({
+        format: 'a4',
+        printBackground: true,
+      });
+    } finally {
+      if (browser) {
+        await browser.close();
+      }
+    }
 
     return result;
   };
