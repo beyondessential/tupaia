@@ -15,10 +15,10 @@ import {
   LoadingContainer,
 } from '@tupaia/ui-components';
 import MuiIconButton from '@material-ui/core/Button';
-import { DashboardExportPreview } from './DashboardExportPreview';
 import { OptionsBar } from './components';
-import { I18n, useExportToPDF } from '../../utils';
-import { ExportOptionsProvider } from './context/ExportOptionsContext';
+import { I18n, useDashboardItemsExportToPDF, useUrlParams, useUrlSearchParam } from '../../utils';
+import { DEFAULT_DATA_YEAR } from '../../constants';
+import { DASHBOARD_EXPORT_PREVIEW, ExportView } from '../../views/ExportView';
 
 const FlexSpaceBetween = styled(BaseFlexSpaceBetween)`
   width: 95%;
@@ -34,21 +34,35 @@ const MuiButton = styled(MuiIconButton)`
   color: #666666;
 `;
 
-export const DashboardExportModal = ({
-  title,
-  exportableDashboards,
-  totalPage,
-  isOpen,
-  setIsOpen,
-}) => {
+export const DashboardExportModal = ({ title, totalPage, isOpen, setIsOpen }) => {
+  const [exportWithLabels, setExportWithLabels] = useState(false);
+  const [exportWithTable, setExportWithTable] = useState(false);
+  const [selectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
+  const { locale, entityCode } = useUrlParams();
+
+  const toggleExportWithLabels = () => {
+    setExportWithLabels(!exportWithLabels);
+  };
+  const toggleExportWithTable = () => {
+    setExportWithTable(!exportWithTable);
+  };
+
   const fileName = `${title}-dashboards-export`;
-  const { addToRefs, isExporting, exportToPDF } = useExportToPDF(fileName);
+  const { isExporting, exportToPDF, errorMessage, onReset } = useDashboardItemsExportToPDF({
+    exportWithLabels,
+    exportWithTable,
+    year: selectedYear,
+    locale,
+    entityCode,
+  });
+
   const isFetching = useIsFetching() > 0;
-  const isDisabled = isExporting || isFetching;
+  const isError = !!errorMessage;
+  const isDisabled = isError || isExporting || isFetching;
   const [page, setPage] = useState(1);
 
   const handleClickExport = async () => {
-    await exportToPDF();
+    await exportToPDF(fileName);
   };
   const onClose = () => {
     setIsOpen(false);
@@ -56,45 +70,55 @@ export const DashboardExportModal = ({
 
   return (
     <Dialog onClose={onClose} open={isOpen} maxWidth="lg">
-      <ExportOptionsProvider>
-        <DialogHeader onClose={onClose} title={title}>
-          <FlexSpaceBetween>
-            <MuiButton
-              startIcon={<DownloadIcon />}
-              variant="outlined"
-              onClick={handleClickExport}
-              disableElevation
-              disabled={isDisabled}
-            >
-              <I18n t="dashboards.download" />
-            </MuiButton>
-            <OptionsBar
-              totalPage={totalPage}
-              page={page}
-              setPage={setPage}
-              isDisabled={isDisabled}
-            />
-          </FlexSpaceBetween>
-        </DialogHeader>
-        <DialogContent>
-          <LoadingContainer
-            heading={I18n({
-              t: isFetching
-                ? 'dashboards.fetchingAllReportsData'
-                : 'dashboards.exportingChartsToPDF',
-            })}
-            text={I18n({ t: 'dashboards.pleaseDoNotRefreshTheBrowserOrCloseThisPage' })}
-            isLoading={isDisabled}
+      <DialogHeader onClose={onClose} title={title}>
+        <FlexSpaceBetween>
+          <MuiButton
+            startIcon={<DownloadIcon />}
+            variant="outlined"
+            onClick={handleClickExport}
+            disableElevation
+            disabled={isDisabled}
           >
-            <DashboardExportPreview
-              exportableDashboards={exportableDashboards}
-              addToRefs={addToRefs}
-              currentPage={page}
-              isExporting={isExporting}
-            />
-          </LoadingContainer>
-        </DialogContent>
-      </ExportOptionsProvider>
+            <I18n t="dashboards.download" />
+          </MuiButton>
+          <OptionsBar
+            totalPage={totalPage}
+            page={page}
+            setPage={setPage}
+            isDisabled={isDisabled}
+            exportOptions={{
+              exportWithLabels,
+              exportWithTable,
+              toggleExportWithLabels,
+              toggleExportWithTable,
+            }}
+          />
+        </FlexSpaceBetween>
+      </DialogHeader>
+      <DialogContent>
+        <LoadingContainer
+          heading={I18n({
+            t: isFetching ? 'dashboards.fetchingAllReportsData' : 'dashboards.exportingChartsToPDF',
+          })}
+          text={I18n({ t: 'dashboards.pleaseDoNotRefreshTheBrowserOrCloseThisPage' })}
+          isLoading={isDisabled}
+          errorMessage={errorMessage}
+          onReset={onReset}
+        >
+          <ExportView
+            viewType={DASHBOARD_EXPORT_PREVIEW}
+            viewProps={{
+              currentPage: page,
+              isExporting,
+              isError,
+              exportOptions: {
+                exportWithLabels,
+                exportWithTable,
+              },
+            }}
+          />
+        </LoadingContainer>
+      </DialogContent>
     </Dialog>
   );
 };
@@ -102,7 +126,6 @@ export const DashboardExportModal = ({
 DashboardExportModal.propTypes = {
   title: PropTypes.string,
   totalPage: PropTypes.number,
-  exportableDashboards: PropTypes.array,
   isOpen: PropTypes.bool.isRequired,
   setIsOpen: PropTypes.func.isRequired,
 };
@@ -110,5 +133,4 @@ DashboardExportModal.propTypes = {
 DashboardExportModal.defaultProps = {
   title: null,
   totalPage: 1,
-  exportableDashboards: [],
 };

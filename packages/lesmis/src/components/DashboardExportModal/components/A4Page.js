@@ -2,32 +2,22 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { FlexColumn } from '@tupaia/ui-components';
-import { useIsFetching } from 'react-query';
 
 import Header from './Header';
 
 const A4Container = styled.div`
-  width: 1300px;
+  width: 1192px;
   margin-top: 20px;
-  position: absolute;
-  height: 1800px;
-  z-index: ${props => (props.$isSelected ? 0 : -1)};
+  page-break-after: always;
 `;
 
 const Content = styled(FlexColumn)`
-  margin: 0px 150px;
+  margin: 0px 70px;
 `;
 
-export const A4Page = ({ addToRefs, children, page, currentPage, isExporting, ...configs }) => {
-  const isFetching = useIsFetching() > 0;
-  if (isFetching) {
-    return null;
-  }
-
-  const isSelected = isExporting ? false : page === currentPage;
-
+export const A4Page = ({ children, ...configs }) => {
   return (
-    <A4Container ref={addToRefs} $isSelected={isSelected}>
+    <A4Container>
       <Header {...configs} />
       <Content>{children}</Content>
     </A4Container>
@@ -36,7 +26,6 @@ export const A4Page = ({ addToRefs, children, page, currentPage, isExporting, ..
 
 A4Page.propTypes = {
   children: PropTypes.node.isRequired,
-  addToRefs: PropTypes.func.isRequired,
   page: PropTypes.number.isRequired,
   currentPage: PropTypes.number.isRequired,
   isExporting: PropTypes.bool.isRequired,
