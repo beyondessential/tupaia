@@ -6,10 +6,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import puppeteer from 'puppeteer';
-import { stringifyQuery } from '@tupaia/utils';
+import Cookies from 'cookies';
 
-export type RegisterRequest = Request;
-type Cookies = {
+type SessionCookies = {
   sessionCookieName: string;
   sessionCookieValue: string;
 };
@@ -33,13 +32,11 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
     this.type = 'download';
   }
 
-  private unloadSessionCookie = (): Cookies => {
-    const { cookie } = this.req.headers;
-    if (!cookie || typeof cookie !== 'string') {
-      throw new Error(`Non string type or undefined 'cookie'`);
-    }
-    const sessionCookie = cookie.split('; ').find(str => str.startsWith('sessionCookie'));
-    if (!sessionCookie || typeof sessionCookie !== 'string') {
+  private extractSessionCookie = (): SessionCookies => {
+    const cookies = new Cookies(this.req, this.res);
+    const sessionCookieName = 'sessionCookie';
+    const sessionCookieValue = cookies.get(sessionCookieName);
+    if (!sessionCookieValue) {
       throw new Error(`'sessionCookie' is not found`);
     }
     const sessionCookieName = sessionCookie.slice(0, sessionCookie.indexOf('='));
@@ -61,10 +58,7 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
   };
 
   private exportPDF = async (): Promise<Buffer> => {
-    const { sessionCookieName, sessionCookieValue } = this.unloadSessionCookie();
-    const body = this.verifyBody(this.req.body);
-    const protocol = body.hostname.includes('localhost') ? 'http' : 'https';
-    const url = stringifyQuery(`${protocol}://${body.hostname}`, body.endpoint, body.restOfParams);
+    const { sessionCookieName, sessionCookieValue } = this.extractSessionCookie();
 
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
