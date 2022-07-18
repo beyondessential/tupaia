@@ -5,6 +5,7 @@
  */
 import { useState } from 'react';
 import downloadJs from 'downloadjs';
+import { stringifyQuery } from '@tupaia/utils';
 
 import { post } from '../../api';
 
@@ -16,12 +17,12 @@ export const useDashboardItemsExportToPDF = options => {
   const exportToPDF = async fileName => {
     setIsExporting(true);
     try {
+      const hostname = `${window.location.protocol}//${window.location.host}`;
+      const endpoint = `${locale}/pdf-export/${entityCode}`;
+      const pdfPageUrl = stringifyQuery(hostname, endpoint, restOfoptions);
+
       const response = await post('pdf', {
-        data: {
-          endpoint: `${locale}/pdf-export/${entityCode}`,
-          ...restOfoptions,
-          hostname: window.location.host,
-        },
+        data: { hostname, pdfPageUrl },
         responseType: 'blob',
       });
       downloadJs(response, `${fileName}.pdf`);
