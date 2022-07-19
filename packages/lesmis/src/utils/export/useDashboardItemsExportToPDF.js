@@ -8,6 +8,7 @@ import downloadJs from 'downloadjs';
 import { stringifyQuery } from '@tupaia/utils';
 
 import { post } from '../../api';
+import { getApiUrl } from '../getApiUrl';
 
 export const useDashboardItemsExportToPDF = options => {
   const { locale, entityCode, ...restOfoptions } = options;
@@ -22,7 +23,7 @@ export const useDashboardItemsExportToPDF = options => {
       const pdfPageUrl = stringifyQuery(hostname, endpoint, restOfoptions);
 
       const response = await post('pdf', {
-        data: { hostname, pdfPageUrl },
+        data: { hostname, pdfPageUrl, apiUrl: getApiUrl() },
         responseType: 'blob',
       });
       downloadJs(response, `${fileName}.pdf`);

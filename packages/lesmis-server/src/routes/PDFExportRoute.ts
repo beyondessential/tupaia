@@ -15,6 +15,7 @@ type SessionCookies = {
 
 type Body = {
   pdfPageUrl: string;
+  apiUrl: string;
 };
 
 export type PDFExportRequest = Request<
@@ -41,18 +42,19 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
   };
 
   private verifyBody = (body: any): Body => {
-    const { pdfPageUrl } = body;
+    const { pdfPageUrl, apiUrl } = body;
     if (!pdfPageUrl || typeof pdfPageUrl !== 'string') {
       throw new Error(`'pdfPageUrl' should be provided in request body, got: ${pdfPageUrl}`);
     }
-
-    return { pdfPageUrl };
+    if (!apiUrl || typeof apiUrl !== 'string') {
+      throw new Error(`'apiUrl' should be provided in request body, got: ${apiUrl}`);
+    }
+    return { pdfPageUrl, apiUrl: apiUrl.includes('localhost') ? 'localhost' : apiUrl };
   };
 
   private exportPDF = async (): Promise<Buffer> => {
     const { sessionCookieName, sessionCookieValue } = this.extractSessionCookie();
-    const { pdfPageUrl } = this.verifyBody(this.req.body);
-    const location = new URL(pdfPageUrl);
+    const { pdfPageUrl, apiUrl } = this.verifyBody(this.req.body);
     let browser;
     let result;
 
@@ -61,7 +63,7 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
       const page = await browser.newPage();
       await page.setCookie({
         name: sessionCookieName,
-        domain: location.hostname,
+        domain: apiUrl,
         httpOnly: true,
         value: sessionCookieValue,
       });
