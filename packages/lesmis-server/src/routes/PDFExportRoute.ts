@@ -67,7 +67,7 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
         httpOnly: true,
         value: sessionCookieValue,
       });
-      await page.goto(pdfPageUrl, { waitUntil: 'networkidle0' });
+      await page.goto(pdfPageUrl, { timeout: 60000, waitUntil: 'networkidle0' });
       result = await page.pdf({
         format: 'a4',
         printBackground: true,
