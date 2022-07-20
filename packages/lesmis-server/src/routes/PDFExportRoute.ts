@@ -83,7 +83,7 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
       }
     }
 
-    return result || Buffer.from('');
+    return result;
   };
 
   public async buildResponse() {
