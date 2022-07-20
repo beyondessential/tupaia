@@ -15,7 +15,7 @@ type SessionCookies = {
 
 type Body = {
   pdfPageUrl: string;
-  apiUrl: string;
+  apiDomain: string;
 };
 
 export type PDFExportRequest = Request<
@@ -42,19 +42,19 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
   };
 
   private verifyBody = (body: any): Body => {
-    const { pdfPageUrl, apiUrl } = body;
+    const { pdfPageUrl, apiDomain } = body;
     if (!pdfPageUrl || typeof pdfPageUrl !== 'string') {
       throw new Error(`'pdfPageUrl' should be provided in request body, got: ${pdfPageUrl}`);
     }
-    if (!apiUrl || typeof apiUrl !== 'string') {
-      throw new Error(`'apiUrl' should be provided in request body, got: ${apiUrl}`);
+    if (!apiDomain || typeof apiDomain !== 'string') {
+      throw new Error(`'apiDomain' should be provided in request body, got: ${apiDomain}`);
     }
-    return { pdfPageUrl, apiUrl: apiUrl.includes('localhost') ? 'localhost' : apiUrl };
+    return { pdfPageUrl, apiDomain };
   };
 
   private exportPDF = async (): Promise<Buffer> => {
     const { sessionCookieName, sessionCookieValue } = this.extractSessionCookie();
-    const { pdfPageUrl, apiUrl } = this.verifyBody(this.req.body);
+    const { pdfPageUrl, apiDomain } = this.verifyBody(this.req.body);
     const location = new URL(pdfPageUrl);
 
     let browser;
@@ -65,7 +65,7 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
       const page = await browser.newPage();
       await page.setCookie({
         name: sessionCookieName,
-        domain: apiUrl,
+        domain: apiDomain,
         url: location.origin,
         httpOnly: true,
         value: sessionCookieValue,
@@ -75,13 +75,15 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
         format: 'a4',
         printBackground: true,
       });
+    } catch (e) {
+      throw new Error(`puppeteer error: ${(e as Error).message}`);
     } finally {
       if (browser) {
         await browser.close();
       }
     }
 
-    return result;
+    return result || Buffer.from('');
   };
 
   public async buildResponse() {

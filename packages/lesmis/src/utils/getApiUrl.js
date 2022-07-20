@@ -34,3 +34,9 @@ export const getApiUrl = () => {
   // https://dev-lesmis-api.tupaia.org
   return `https://${subdomain}-api.${domain}.${tld}`;
 };
+
+export const getApiDomain = () => {
+  const apiUrl = getApiUrl();
+  const location = new URL(apiUrl);
+  return location.hostname;
+};
