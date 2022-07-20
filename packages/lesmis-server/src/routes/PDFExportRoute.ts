@@ -55,6 +55,8 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
   private exportPDF = async (): Promise<Buffer> => {
     const { sessionCookieName, sessionCookieValue } = this.extractSessionCookie();
     const { pdfPageUrl, apiUrl } = this.verifyBody(this.req.body);
+    const location = new URL(pdfPageUrl);
+
     let browser;
     let result;
 
@@ -64,6 +66,7 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
       await page.setCookie({
         name: sessionCookieName,
         domain: apiUrl,
+        url: location.origin,
         httpOnly: true,
         value: sessionCookieValue,
       });
