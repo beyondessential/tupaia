@@ -35,9 +35,7 @@ export const SUB_DASHBOARD_OPTIONS = [
 export const SINGLE_YEAR_GRANULARITY = 'one_year_at_a_time';
 export const MIN_DATA_DATE = '20150101';
 export const MIN_DATA_YEAR = '2015';
-// TODO: Put this back when requested
-// export const DEFAULT_DATA_YEAR = `${new Date().getFullYear()}`;
-export const DEFAULT_DATA_YEAR = '2021';
+export const DEFAULT_DATA_YEAR = `${new Date().getFullYear()}`;
 
 // Layout Constants
 export const NAVBAR_HEIGHT_INT = 70;
