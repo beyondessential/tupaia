@@ -15,7 +15,6 @@ type SessionCookies = {
 
 type Body = {
   pdfPageUrl: string;
-  apiDomain: string;
 };
 
 export type PDFExportRequest = Request<
@@ -42,19 +41,21 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
   };
 
   private verifyBody = (body: any): Body => {
-    const { pdfPageUrl, apiDomain } = body;
+    const { pdfPageUrl } = body;
     if (!pdfPageUrl || typeof pdfPageUrl !== 'string') {
       throw new Error(`'pdfPageUrl' should be provided in request body, got: ${pdfPageUrl}`);
     }
-    if (!apiDomain || typeof apiDomain !== 'string') {
-      throw new Error(`'apiDomain' should be provided in request body, got: ${apiDomain}`);
+    const location = new URL(pdfPageUrl);
+    if (!location.hostname.endsWith('.tupaia.org') && !location.hostname.endsWith('localhost')) {
+      throw new Error(`'pdfPageUrl' is not valid, got: ${pdfPageUrl}`);
     }
-    return { pdfPageUrl, apiDomain };
+    return { pdfPageUrl };
   };
 
   private exportPDF = async (): Promise<Buffer> => {
     const { sessionCookieName, sessionCookieValue } = this.extractSessionCookie();
-    const { pdfPageUrl, apiDomain } = this.verifyBody(this.req.body);
+    const { pdfPageUrl } = this.verifyBody(this.req.body);
+    const { host: apiDomain } = this.req.headers;
     const location = new URL(pdfPageUrl);
 
     let browser;
