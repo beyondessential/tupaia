@@ -186,6 +186,74 @@ export const constructForSingle = (models, recordType) => {
         code: [hasContent],
         name: [hasContent],
       };
+    case TYPES.PROJECT:
+      return {
+        code: [
+          async projectCode => {
+            const projects = await models.project.find({
+              code: projectCode,
+            });
+            if (projects.length > 0) {
+              throw new Error('This project code already exists');
+            }
+            return true;
+          },
+        ],
+        name: [
+          async projectName => {
+            const projectEntities = await models.entity.find({
+              name: projectName,
+              type: 'project',
+            });
+            if (projectEntities.length > 0) {
+              throw new Error('This project name already exists');
+            }
+            return true;
+          },
+        ],
+        countries: [
+          async countries => {
+            const countryEntities = await models.country.find({
+              id: countries,
+            });
+            if (countryEntities.length !== countries.length) {
+              throw new Error('Some provided countries do not exist');
+            }
+            return true;
+          },
+        ],
+        permission_groups: [
+          hasContent,
+          async permissionGroupNames => {
+            const permissionGroups = await models.permissionGroup.find({
+              name: permissionGroupNames,
+            });
+            if (permissionGroupNames.length !== permissionGroups.length) {
+              throw new Error('Some provided permission groups do not exist');
+            }
+            return true;
+          },
+        ],
+        description: [hasContent],
+        sort_order: [constructIsEmptyOr(isNumber)],
+        image_url: [hasContent],
+        logo_url: [hasContent],
+        entityTypes: [
+          async selectedEntityTypes => {
+            if (!selectedEntityTypes) {
+              return true;
+            }
+            const entityDataTypes = await models.entity.types;
+            const filteredEntityTypes = Object.values(entityDataTypes).filter(type =>
+              selectedEntityTypes.includes(type),
+            );
+            if (selectedEntityTypes.length !== filteredEntityTypes.length) {
+              throw new Error('Some provided entity types do not exist');
+            }
+            return true;
+          },
+        ],
+      };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);
   }
