@@ -85,14 +85,14 @@ export class DhisService extends Service {
       dataValues[0],
     );
     for (let i = 0; i < dataSources.length; i++) {
-      const otherServerName = await getApiForValue(
+      const { serverName: otherServerName } = await getApiForValue(
         this.models,
         this.dhisInstanceResolver,
         dataSources[i],
         dataValues[i],
-      ).serverName;
+      );
       if (otherServerName !== serverName) {
-        throw new Error('All data being pushed must be for the same DHIS2 instance');
+        throw new Error(`All data being pushed must be for the same DHIS2 instance`);
       }
     }
   }
