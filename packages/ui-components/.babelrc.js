@@ -32,5 +32,5 @@ module.exports = {
         loose: true,
       }
     ]
-  ],
+  ]
 };

@@ -13,7 +13,7 @@
   "scripts": {
     "build": "run-p -c \"build:* {@}\" --",
     "build:src": "npm run --prefix ../../ package:build:react-scripts",
-    "build:library": "npm run --prefix ../../ package:build:js",
+    "build:library": "rm -rf dist && npm run --prefix ../../ package:build:js",
     "build-dev": "npm run build:library",
     "cypress:open": "cross-env NODE_ENV=test yarn cypress open",
     "cypress:run": "cross-env NODE_ENV=test yarn cypress run",

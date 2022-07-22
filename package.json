@@ -34,7 +34,7 @@
     "test-all": "node ./scripts/node/testAll --silent",
     "validate": "./scripts/bash/validate.sh",
     "package:build:ts": "cd $INIT_CWD && tsc -p tsconfig-build.json",
-    "package:build:js": "cd $INIT_CWD && babel src --out-dir dist --source-maps --config-file \"../../babel.config.json\"",
+    "package:build:js": "cd $INIT_CWD && babel src --out-dir dist --source-maps --config-file \"../../babel.config.json\" --copy-files --no-copy-ignored --ignore \"**/__tests__\",\"**/__mocks__\"",
     "package:build:react-scripts": "cd $INIT_CWD && SKIP_PREFLIGHT_CHECK=true GENERATE_SOURCEMAP=false react-scripts build",
     "package:build:types": "cd $INIT_CWD && tsc",
     "package:lint:js": "cd $INIT_CWD && eslint --ignore-path ../../.gitignore .",
