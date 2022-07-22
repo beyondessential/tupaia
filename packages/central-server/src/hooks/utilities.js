@@ -34,3 +34,17 @@ export function parseCoordinates(answerText) {
 
   return { latitude, longitude };
 }
+
+export function updateJsonFieldValue(currentJsonValues, newKeyValues) {
+  if (Object.keys(currentJsonValues).length > 0) {
+    const updatedKeyValues = { ...currentJsonValues };
+    const newKeys = Object.keys(newKeyValues);
+
+    newKeys.forEach(key => {
+      updatedKeyValues[key] = newKeyValues[key];
+    });
+
+    return updatedKeyValues;
+  }
+  return newKeyValues;
+}

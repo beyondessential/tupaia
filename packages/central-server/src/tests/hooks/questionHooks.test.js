@@ -5,6 +5,7 @@ import { TestableApp } from '../testUtilities';
 import { registerHook } from '../../hooks';
 
 const ENTITY_ID = generateTestId();
+const ENTITY2_ID = generateTestId();
 
 const GENERIC_SURVEY_ID = generateTestId();
 const ENTITY_CREATION_SURVEY_ID = generateTestId();
@@ -19,6 +20,7 @@ const SURVEYS = [
       { code: 'TEST_backdate-test', type: 'Text', hook: 'backdateTestHook' },
       { code: 'TEST_whole-survey-a', type: 'Text', hook: 'wholeSurvey' },
       { code: 'TEST_whole-survey-b', type: 'Text' },
+      { code: 'TEST_household', type: 'Text', hook: 'entityHouseholdHead' },
     ],
   },
   {
@@ -71,6 +73,14 @@ describe('Question hooks', () => {
       code: ENTITY_ID,
       name: 'test entity',
       type: models.entity.types.FACILITY,
+    });
+
+    await models.entity.create({
+      id: ENTITY2_ID,
+      code: ENTITY2_ID,
+      name: 'test entity',
+      type: models.entity.types.FACILITY,
+      attributes: { test_attribute: 'test_value' },
     });
 
     await buildAndInsertSurveys(models, SURVEYS);
@@ -256,6 +266,68 @@ describe('Question hooks', () => {
       const { image_url: beforeImageUrl, ...beforeData } = await beforeEntity.getData();
       const { image_url: afterImageUrl, ...afterData } = await entity.getData();
       expect(beforeData).to.deep.equal(afterData);
+    });
+
+    describe('Adding household_head attribute', () => {
+      it("Should add household_head to entity's attributes when no attributes currently exist", async () => {
+        const TEST_HOUSEHOLD_HEAD = 'Will Smith';
+
+        const beforeEntity = await models.entity.findById(ENTITY_ID);
+        expect(beforeEntity.attributes).to.be.an('object');
+
+        // submit a survey response
+        await app.post('surveyResponse', {
+          body: {
+            survey_id: GENERIC_SURVEY_ID,
+            entity_id: ENTITY_ID,
+            timestamp: 123,
+            answers: {
+              TEST_household: TEST_HOUSEHOLD_HEAD,
+            },
+          },
+        });
+
+        const newValue = { household_head: TEST_HOUSEHOLD_HEAD };
+        await database.waitForAllChangeHandlers();
+
+        const entity = await models.entity.findById(ENTITY_ID);
+        expect(entity.attributes).to.deep.equal(newValue);
+
+        // should be otherwise unchanged
+        const { attributes: beforeAttributes, ...beforeData } = await beforeEntity.getData();
+        const { attributes: afterAttributes, ...afterData } = await entity.getData();
+        expect(beforeData).to.deep.equal(afterData);
+      });
+
+      it("Should add household_head to entity's attributes when there are existing attributes", async () => {
+        const TEST_HOUSEHOLD_HEAD = 'Will Smith';
+
+        const beforeEntity = await models.entity.findById(ENTITY2_ID);
+        expect(beforeEntity.attributes).to.deep.equal({ test_attribute: 'test_value' });
+
+        // submit a survey response
+        await app.post('surveyResponse', {
+          body: {
+            survey_id: GENERIC_SURVEY_ID,
+            entity_id: ENTITY2_ID,
+            timestamp: 123,
+            answers: {
+              TEST_household: TEST_HOUSEHOLD_HEAD,
+            },
+          },
+        });
+
+        const newValue = { test_attribute: 'test_value', household_head: TEST_HOUSEHOLD_HEAD };
+        await database.waitForAllChangeHandlers();
+
+        const entity = await models.entity.findById(ENTITY2_ID);
+        expect(entity.attributes).to.deep.equal(newValue);
+
+        // should be otherwise unchanged
+        const { attributes: beforeAttributes, ...beforeData } = await beforeEntity.getData();
+        const { attributes: afterAttributes, ...afterData } = await entity.getData();
+        expect(beforeData).to.deep.equal(afterData);
+      });
     });
 
     describe('Entity creation', () => {
