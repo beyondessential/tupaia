@@ -49,13 +49,15 @@ const updateEntityRelations = async (db, codes, hierarchyId) => {
       where code in (${arrayToDbString(codes)})
       and id not in (select child_id from entity_relation where entity_hierarchy_id = '${hierarchyId}');
     `);
-  entities.map(entity =>
-    insertObject(db, 'entity_relation', {
-      id: generateId(),
-      parent_id: entity.parent_id,
-      child_id: entity.id,
-      entity_hierarchy_id: hierarchyId,
-    }),
+  await Promise.all(
+    entities.map(entity =>
+      insertObject(db, 'entity_relation', {
+        id: generateId(),
+        parent_id: entity.parent_id,
+        child_id: entity.id,
+        entity_hierarchy_id: hierarchyId,
+      }),
+    ),
   );
 };
 
