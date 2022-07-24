@@ -37,7 +37,7 @@ export const MIN_DATA_DATE = '20150101';
 export const MIN_DATA_YEAR = '2015';
 // TODO: Put this back when requested
 // export const DEFAULT_DATA_YEAR = `${new Date().getFullYear()}`;
-export const DEFAULT_DATA_YEAR = '2021';
+export const DEFAULT_DATA_YEAR = '2022';
 
 // Layout Constants
 export const NAVBAR_HEIGHT_INT = 70;

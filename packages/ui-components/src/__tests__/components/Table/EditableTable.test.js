@@ -7,10 +7,10 @@ import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
-import { render } from '../../../helpers/testingRenderer';
-import { EditableTable, EditableTableProvider } from '../Table';
-import { Button } from '../Button';
-import { useTableData } from '../../../helpers/useTableData';
+import { render } from '../../../../helpers/testingRenderer';
+import { EditableTable, EditableTableProvider } from '../../../components/Table';
+import { Button } from '../../../components/Button';
+import { useTableData } from '../../../../helpers/useTableData';
 
 const columns = [
   {

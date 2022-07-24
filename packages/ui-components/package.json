@@ -12,7 +12,7 @@
   "source": "src/index.js",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npm run --prefix ../../ package:build:js",
+    "build": "rm -rf dist && npm run --prefix ../../ package:build:js",
     "build-dev": "npm run build",
     "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",

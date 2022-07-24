@@ -6,8 +6,8 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { render } from '../../../helpers/testingRenderer';
-import { Autocomplete } from '../Inputs';
+import { render } from '../../../../helpers/testingRenderer';
+import { Autocomplete } from '../../../components/Inputs';
 
 const exampleCountry = 'Vanuatu';
 const exampleCountryRegex = /vanuatu/i;

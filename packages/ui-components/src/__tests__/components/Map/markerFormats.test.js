@@ -4,14 +4,14 @@
  *
  */
 
-import { YES_COLOR, NO_COLOR } from '../constants';
+import { YES_COLOR, NO_COLOR } from '../../../components/Map/constants';
 import {
   autoAssignColors,
   createValueMapping,
   getMeasureDisplayInfo,
   getFormattedInfo,
   flattenNumericalMeasureData,
-} from '../utils';
+} from '../../../components/Map/utils';
 
 describe('measures', () => {
   describe('processing', () => {

@@ -7,7 +7,7 @@ import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from '../../../helpers/testingRenderer';
-import { Toast } from '../Toast';
+import { Toast } from '../../components/Toast';
 
 const exampleString = 'Success Message';
 const exampleStringRegex = /success message/i;
