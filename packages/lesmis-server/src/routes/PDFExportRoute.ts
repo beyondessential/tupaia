@@ -33,10 +33,7 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
   private extractSessionCookie = (): SessionCookies => {
     const cookies = new Cookies(this.req, this.res);
     const sessionCookieName = 'sessionCookie';
-    const sessionCookieValue = cookies.get(sessionCookieName);
-    if (!sessionCookieValue) {
-      throw new Error(`'sessionCookie' is not found`);
-    }
+    const sessionCookieValue = cookies.get(sessionCookieName) || '';
     return { sessionCookieName, sessionCookieValue };
   };
 
