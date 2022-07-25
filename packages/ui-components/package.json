@@ -12,7 +12,7 @@
   "source": "src/index.js",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npm run --prefix ../../ package:build:js",
+    "build": "rm -rf dist && npm run --prefix ../../ package:build:js",
     "build-dev": "npm run build",
     "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
@@ -42,7 +42,7 @@
     "react-leaflet": "^3.2.1",
     "react-router-dom": "^5.1.2",
     "react-table": "^7.7.0",
-    "recharts": "^1.8.5",
+    "recharts": "^2.1.10",
     "styled-components": "^5.0.1",
     "xlsx": "^0.17.0"
   },

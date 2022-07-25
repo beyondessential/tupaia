@@ -6,8 +6,8 @@
 import React from 'react';
 import { screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { render } from '../../../helpers/testingRenderer';
-import { UserMessage, UserMessageHeader } from '../UserMessage';
+import { render } from '../../../../helpers/testingRenderer';
+import { UserMessage, UserMessageHeader } from '../../../components/UserMessage';
 
 const exampleUser = {
   name: 'Dr. Sarah De Jones',

@@ -4,8 +4,11 @@
  *
  */
 
-import { parseChartConfig } from '../parseChartConfig';
-import { CHART_COLOR_PALETTE, EXPANDED_CHART_COLOR_PALETTE } from '../constants';
+import { parseChartConfig } from '../../../components/Chart/parseChartConfig';
+import {
+  CHART_COLOR_PALETTE,
+  EXPANDED_CHART_COLOR_PALETTE,
+} from '../../../components/Chart/constants';
 
 const testViewJson = {
   chartType: 'bar',
