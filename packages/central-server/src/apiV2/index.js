@@ -270,6 +270,7 @@ apiV2.put('/mapOverlayGroups/:recordId', useRouteHandler(EditMapOverlayGroups));
 apiV2.put('/mapOverlayGroupRelations/:recordId', useRouteHandler(EditMapOverlayGroupRelations));
 apiV2.put('/indicators/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/projects/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/entities/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/me', catchAsyncErrors(editUser));
 
 /**
