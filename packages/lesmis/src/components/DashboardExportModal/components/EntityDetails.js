@@ -13,7 +13,7 @@ const Container = styled.div`
 
 export const EntityDetails = () => {
   const { entityCode } = useUrlParams();
-  const { data: entityData } = useEntityData(entityCode);
+  const { data: entityData = {} } = useEntityData(entityCode);
   const { data: vitals, isLoading } = useVitalsData(entityCode);
   const { type: entityType } = entityData;
 

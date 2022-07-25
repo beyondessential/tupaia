@@ -33,10 +33,7 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
   private extractSessionCookie = (): SessionCookies => {
     const cookies = new Cookies(this.req, this.res);
     const sessionCookieName = 'sessionCookie';
-    const sessionCookieValue = cookies.get(sessionCookieName);
-    if (!sessionCookieValue) {
-      throw new Error(`'sessionCookie' is not found`);
-    }
+    const sessionCookieValue = cookies.get(sessionCookieName) || '';
     return { sessionCookieName, sessionCookieValue };
   };
 
@@ -45,14 +42,19 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
     if (!pdfPageUrl || typeof pdfPageUrl !== 'string') {
       throw new Error(`'pdfPageUrl' should be provided in request body, got: ${pdfPageUrl}`);
     }
-
+    const location = new URL(pdfPageUrl);
+    if (!location.hostname.endsWith('.tupaia.org') && !location.hostname.endsWith('localhost')) {
+      throw new Error(`'pdfPageUrl' is not valid, got: ${pdfPageUrl}`);
+    }
     return { pdfPageUrl };
   };
 
   private exportPDF = async (): Promise<Buffer> => {
     const { sessionCookieName, sessionCookieValue } = this.extractSessionCookie();
     const { pdfPageUrl } = this.verifyBody(this.req.body);
+    const { host: apiDomain } = this.req.headers;
     const location = new URL(pdfPageUrl);
+
     let browser;
     let result;
 
@@ -61,15 +63,18 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
       const page = await browser.newPage();
       await page.setCookie({
         name: sessionCookieName,
-        domain: location.hostname,
+        domain: apiDomain,
+        url: location.origin,
         httpOnly: true,
         value: sessionCookieValue,
       });
-      await page.goto(pdfPageUrl, { waitUntil: 'networkidle0' });
+      await page.goto(pdfPageUrl, { timeout: 60000, waitUntil: 'networkidle0' });
       result = await page.pdf({
         format: 'a4',
         printBackground: true,
       });
+    } catch (e) {
+      throw new Error(`puppeteer error: ${(e as Error).message}`);
     } finally {
       if (browser) {
         await browser.close();

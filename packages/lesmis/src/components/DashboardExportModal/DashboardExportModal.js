@@ -35,16 +35,16 @@ const MuiButton = styled(MuiIconButton)`
 `;
 
 export const DashboardExportModal = ({ title, totalPage, isOpen, setIsOpen }) => {
-  const [exportWithLabels, setExportWithLabels] = useState(false);
-  const [exportWithTable, setExportWithTable] = useState(false);
+  const [exportWithLabels, setExportWithLabels] = useState(null);
+  const [exportWithTable, setExportWithTable] = useState(null);
   const [selectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
   const { locale, entityCode } = useUrlParams();
 
   const toggleExportWithLabels = () => {
-    setExportWithLabels(!exportWithLabels);
+    setExportWithLabels(exportWithLabels ? null : true);
   };
   const toggleExportWithTable = () => {
-    setExportWithTable(!exportWithTable);
+    setExportWithTable(exportWithTable ? null : true);
   };
 
   const fileName = `${title}-dashboards-export`;

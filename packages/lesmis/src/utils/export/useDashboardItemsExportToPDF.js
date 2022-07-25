@@ -22,7 +22,7 @@ export const useDashboardItemsExportToPDF = options => {
       const pdfPageUrl = stringifyQuery(hostname, endpoint, restOfoptions);
 
       const response = await post('pdf', {
-        data: { hostname, pdfPageUrl },
+        data: { pdfPageUrl },
         responseType: 'blob',
       });
       downloadJs(response, `${fileName}.pdf`);
