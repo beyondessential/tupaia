@@ -27,7 +27,7 @@ import * as COLORS from '../constants';
 import { FlexColumn, FlexSpaceBetween, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
 import { useDashboardReportDataWithConfig, useEntityData } from '../api/queries';
-import { useI18n, useUrlParams, useUrlSearchParams, useExportToPNG } from '../utils';
+import { useI18n, useUrlParams, useUrlSearchParams, useExportToImage } from '../utils';
 import { DashboardReport } from './DashboardReport';
 
 // Transition component for modal animation
@@ -152,7 +152,7 @@ export const DashboardReportModal = () => {
 
   // Set up PNG export
   const pngExportFilename = `export-${config?.name}-${new Date().toDateString()}`;
-  const { isExporting, isExportLoading, exportRef, exportToPNG } = useExportToPNG(
+  const { isExporting, isExportLoading, exportRef, exportToImg } = useExportToImage(
     pngExportFilename,
   );
 
@@ -166,7 +166,7 @@ export const DashboardReportModal = () => {
     if (exportId === 'xlsx') {
       await doExport();
     } else {
-      await exportToPNG();
+      await exportToImg();
     }
   };
 

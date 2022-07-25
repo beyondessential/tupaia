@@ -28,7 +28,11 @@ export const SUB_DASHBOARD_OPTIONS = [
     code: 'EmergencyInEducation',
     label: 'dashboards.emergencyInEducation',
   },
-  { code: 'International_SDGs', label: 'dashboards.internationalReportingOnSdGs' },
+  {
+    code: 'International_SDGs',
+    label: 'dashboards.internationalReportingOnSdGs',
+    exportToPDF: true,
+  },
 ];
 
 // Date Constants
