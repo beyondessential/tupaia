@@ -34,6 +34,10 @@ const MuiButton = styled(MuiIconButton)`
   color: #666666;
 `;
 
+const EmptyView = styled.div`
+  height: 50vh;
+`;
+
 export const DashboardExportModal = ({ title, totalPage, isOpen, setIsOpen }) => {
   const [exportWithLabels, setExportWithLabels] = useState(null);
   const [exportWithTable, setExportWithTable] = useState(null);
@@ -105,18 +109,22 @@ export const DashboardExportModal = ({ title, totalPage, isOpen, setIsOpen }) =>
           errorMessage={errorMessage}
           onReset={onReset}
         >
-          <ExportView
-            viewType={DASHBOARD_EXPORT_PREVIEW}
-            viewProps={{
-              currentPage: page,
-              isExporting,
-              isError,
-              exportOptions: {
-                exportWithLabels,
-                exportWithTable,
-              },
-            }}
-          />
+          {isDisabled ? (
+            <EmptyView /> // Need it to make up the height of the loading container
+          ) : (
+            <ExportView
+              viewType={DASHBOARD_EXPORT_PREVIEW}
+              viewProps={{
+                currentPage: page,
+                isExporting,
+                isError,
+                exportOptions: {
+                  exportWithLabels,
+                  exportWithTable,
+                },
+              }}
+            />
+          )}
         </LoadingContainer>
       </DialogContent>
     </Dialog>
