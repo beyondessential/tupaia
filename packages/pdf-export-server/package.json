@@ -29,10 +29,13 @@
   },
   "dependencies": {
     "@tupaia/access-policy": "3.0.0",
+    "@tupaia/api-client": "3.1.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/server-boilerplate": "1.0.0",
+    "cookies": "^0.8.0",
     "dotenv": "^8.2.0",
     "express": "^4.16.2",
+    "puppeteer": "^15.4.0",
     "winston": "^3.2.1"
   }
 }
