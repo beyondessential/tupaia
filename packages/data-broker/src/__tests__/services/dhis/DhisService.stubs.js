@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import * as GetDhisApiInstance from '../../../services/dhis/getDhisApiInstance';
 import {
   DATA_ELEMENTS_BY_GROUP,
@@ -46,24 +47,23 @@ export const stubDhisApi = ({
   return dhisApi;
 };
 
-export const createModelsStub = () => ({
-  dataElement: createDataElementModelsStub(),
-  dataGroup: createDataGroupModelsStub(),
-});
-
-export const createDataElementModelsStub = () => ({
-  find: async specs =>
-    Object.values(DATA_SOURCES).filter(
-      ({ code, type }) => specs.code.includes(code) && specs.type === type,
-    ),
-  getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
-  getDhisDataTypes: () => ({ DATA_ELEMENT: 'DataElement', INDICATOR: 'Indicator' }),
-});
-
-export const createDataGroupModelsStub = () => ({
-  find: async specs => Object.values(DATA_GROUPS).filter(({ code }) => specs.code.includes(code)),
-  getDataElementsInDataGroup: async groupCode => DATA_ELEMENTS_BY_GROUP[groupCode],
-});
+export const createModelsStub = () => {
+  return baseCreateModelsStub({
+    dataElement: {
+      records: Object.values(DATA_SOURCES),
+      extraMethods: {
+        getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
+        getDhisDataTypes: () => ({ DATA_ELEMENT: 'DataElement', INDICATOR: 'Indicator' }),
+      },
+    },
+    dataGroup: {
+      records: Object.values(DATA_GROUPS),
+      extraMethods: {
+        getDataElementsInDataGroup: async groupCode => DATA_ELEMENTS_BY_GROUP[groupCode],
+      },
+    },
+  });
+};
 
 /**
  * Reverse engineers the DHIS2 aggregate data response given the expected analytics

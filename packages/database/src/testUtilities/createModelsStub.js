@@ -23,19 +23,21 @@
  * @property {Object.<string, any>} extraMethods
  */
 
-const mockFind = (array, criteria) =>
+const mockFind = (array, criteria = {}) =>
   array.filter(currentObject => {
     for (const [key, value] of Object.entries(criteria)) {
-      if (Array.isArray(value)) {
-        if (!value.includes(currentObject[key])) return false;
-      } else if (key.includes('->>')) {
+      const comparator = Array.isArray(value)
+        ? (item, arr) => arr.includes(item)
+        : (a, b) => a === b;
+
+      if (key.includes('->>')) {
         // Special case
         const lookupPath = key.split('->>');
-        if (lookupPath.length > 2) throw new Error('Note implemented yet...');
+        if (lookupPath.length > 2) throw new Error('Not implemented yet...');
         const [colName, objProperty] = lookupPath;
-        if (!currentObject[colName]) return false;
-        if (currentObject[colName][objProperty] !== value) return false;
-      } else if (currentObject[key] !== value) {
+        if (currentObject[colName] == undefined) return false;
+        if (!comparator(currentObject[colName][objProperty], value)) return false;
+      } else if (!comparator(currentObject[key], value)) {
         return false;
       }
     }

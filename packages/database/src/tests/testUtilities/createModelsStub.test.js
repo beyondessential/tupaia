@@ -54,4 +54,9 @@ describe('createModelsStub', () => {
     expect(results.length).to.equal(1);
     expect(results[0].name).to.equal('Billy');
   });
+
+  it('supports ->> keys as array', async () => {
+    const results = await mockModels.horses.find({ 'config->>mane': ['enchanting', 'luxurious'] });
+    expect(results.length).to.equal(2);
+  });
 });
