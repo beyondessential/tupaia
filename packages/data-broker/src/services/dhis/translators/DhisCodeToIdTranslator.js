@@ -10,7 +10,7 @@ import {
 import { runDatabaseFunctionInBatches } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
 
-export class DhisInputSchemeResolvingApiProxy {
+export class DhisCodeToIdTranslator {
   constructor(models, api) {
     this.models = models;
     this.api = api;
