@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  *
  */
 
@@ -8,12 +8,13 @@ import { BaseApi } from './BaseApi';
 
 export class PDFExportApi extends BaseApi {
   public async getPDF(pdfPageUrl: string) {
-    return this.connection.post(
+    const { data: bufferObject } = await this.connection.post(
       `pdf`,
       {},
       {
         pdfPageUrl,
       },
     );
+    return { data: Buffer.from(bufferObject) };
   }
 }
