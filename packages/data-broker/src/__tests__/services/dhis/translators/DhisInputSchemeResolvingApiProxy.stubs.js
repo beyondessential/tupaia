@@ -4,7 +4,7 @@
  */
 
 import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
-import { DhisInputSchemeResolvingApiProxy } from '../../../services/dhis/DhisInputSchemeResolvingApiProxy';
+import { DhisInputSchemeResolvingApiProxy } from '../../../../services/dhis/translators/DhisInputSchemeResolvingApiProxy';
 
 const DATA_ELEMENTS = [
   { code: 'EL1', config: { dhisId: 'dhisId_el1' } },

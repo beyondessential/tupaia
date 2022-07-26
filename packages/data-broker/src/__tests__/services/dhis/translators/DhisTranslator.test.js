@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { DhisTranslator } from '../../../services/dhis/DhisTranslator';
+import { DhisTranslator } from '../../../../services/dhis/translators/DhisTranslator';
 import { createModelsStub } from './DhisTranslator.stubs';
 import { DATA_ELEMENTS, DATA_SOURCES } from './DhisTranslator.fixtures';
-import { parseValueForDhis } from '../../../services/dhis/parseValueForDhis';
+import { parseValueForDhis } from '../../../../services/dhis/translators/parseValueForDhis';
 
 jest.mock('../../../services/dhis/parseValueForDhis');
 

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { parseValueForDhis } from '../../../services/dhis/parseValueForDhis';
+import { parseValueForDhis } from '../../../../services/dhis/translators/parseValueForDhis';
 
 describe('parseValueForDhis()', () => {
   const numbers = [

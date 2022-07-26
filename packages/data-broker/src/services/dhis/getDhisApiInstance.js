@@ -5,7 +5,7 @@
 
 import { DhisApi } from '@tupaia/dhis-api';
 import { getDhisConfig, createClassExtendingProxy } from '@tupaia/utils';
-import { DhisInputSchemeResolvingApiProxy } from './DhisInputSchemeResolvingApiProxy';
+import { DhisInputSchemeResolvingApiProxy } from './translators/DhisInputSchemeResolvingApiProxy';
 
 const instances = {};
 

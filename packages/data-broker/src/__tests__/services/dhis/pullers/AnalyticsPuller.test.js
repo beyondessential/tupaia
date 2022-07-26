@@ -6,7 +6,7 @@ import * as BuildAnalytics from '../../../../services/dhis/buildAnalytics/buildA
 import { AnalyticsPuller } from '../../../../services/dhis/pullers/AnalyticsPuller';
 import { DATA_SOURCES, EVENT_ANALYTICS } from '../DhisService.fixtures';
 import { buildDhisAnalyticsResponse, createModelsStub, stubDhisApi } from '../DhisService.stubs';
-import { DhisTranslator } from '../../../../services/dhis/DhisTranslator';
+import { DhisTranslator } from '../../../../services/dhis/translators/DhisTranslator';
 import { DataElementsMetadataPuller } from '../../../../services/dhis/pullers';
 
 describe('AnalyticsPuller', () => {

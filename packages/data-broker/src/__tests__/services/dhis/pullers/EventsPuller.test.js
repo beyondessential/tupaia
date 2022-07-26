@@ -7,7 +7,7 @@ import { createModelsStub, stubDhisApi } from '../DhisService.stubs';
 import { DATA_GROUPS } from '../DhisService.fixtures';
 import { buildEventsFromDhisEventAnalytics } from '../../../../services/dhis/buildAnalytics/buildEventsFromDhisEventAnalytics';
 import { EventsPuller } from '../../../../services/dhis/pullers';
-import { DhisTranslator } from '../../../../services/dhis/DhisTranslator';
+import { DhisTranslator } from '../../../../services/dhis/translators/DhisTranslator';
 
 jest.mock('../../../../services/dhis/buildAnalytics/buildEventsFromDhisEventAnalytics');
 
