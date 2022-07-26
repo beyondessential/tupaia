@@ -31,7 +31,7 @@ export const DATA_VALUES = {
   DIF01: { code: 'DIF01', value: '3' },
 };
 
-export const DATA_ELEMENTS = {
+export const DHIS_RESPONSE_DATA_ELEMENTS = {
   POP01: { code: 'POP01', uid: 'id000POP01', name: 'Population 1' },
   POP02: { code: 'POP02', uid: 'id000POP02', name: 'Population 2' },
   DIF01_DHIS: { code: 'DIF01_DHIS', uid: 'id000DIF01_DHIS', name: 'Different 1' },

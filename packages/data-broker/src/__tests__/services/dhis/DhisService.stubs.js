@@ -6,7 +6,7 @@
 import * as GetDhisApiInstance from '../../../services/dhis/getDhisApiInstance';
 import {
   DATA_ELEMENTS_BY_GROUP,
-  DATA_ELEMENTS,
+  DHIS_RESPONSE_DATA_ELEMENTS,
   DATA_SOURCES,
   DATA_GROUPS,
   SERVER_NAME,
@@ -33,7 +33,10 @@ export const stubDhisApi = ({
     fetchDataElements: jest
       .fn()
       .mockImplementation(async codes =>
-        codes.map(code => ({ code, id: DATA_ELEMENTS[code].uid, valueType: 'NUMBER' }), {}),
+        codes.map(
+          code => ({ code, id: DHIS_RESPONSE_DATA_ELEMENTS[code].uid, valueType: 'NUMBER' }),
+          {},
+        ),
       ),
     getServerName: jest.fn().mockReturnValue(SERVER_NAME),
     getResourceTypes: jest.fn().mockReturnValue({ DATA_ELEMENT: 'dataElement' }),
@@ -76,7 +79,7 @@ export const buildDhisAnalyticsResponse = analytics => {
   const items = dataElementsInAnalytics
     .map(dataElement => {
       const { dataElementCode: dhisCode } = DATA_SOURCES[dataElement];
-      return DATA_ELEMENTS[dhisCode];
+      return DHIS_RESPONSE_DATA_ELEMENTS[dhisCode];
     })
     .reduce((itemAgg, { uid, code, name }) => {
       const newItem = { uid, code, name, dimensionItemType: 'DATA_ELEMENT' };
