@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { buildEventsFromDhisEventAnalytics } from '../buildAnalytics';
+import { buildEventsFromDhisEventAnalytics } from '../builders';
 
 export class EventsPuller {
   constructor(dataElementModel, translator) {

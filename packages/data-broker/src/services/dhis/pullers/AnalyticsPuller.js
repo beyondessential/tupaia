@@ -6,10 +6,7 @@
 import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
 
-import {
-  buildAnalyticsFromDhisAnalytics,
-  buildAnalyticsFromDhisEventAnalytics,
-} from '../buildAnalytics';
+import { buildAnalyticsFromDhisAnalytics, buildAnalyticsFromDhisEventAnalytics } from '../builders';
 
 export class AnalyticsPuller {
   constructor(dataSourceModel, translator, dataElementsMetadataPuller) {

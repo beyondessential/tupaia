@@ -4,7 +4,7 @@
  */
 import { Service } from '../Service';
 import { getDhisApiInstance } from './getDhisApiInstance';
-import { DhisTranslator } from './translators/DhisTranslator';
+import { DhisTranslator } from './translators';
 import {
   AnalyticsPuller,
   EventsPuller,

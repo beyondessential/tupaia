@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { buildAnalyticsFromDhisEventAnalytics } from '../../../../services/dhis/buildAnalytics/buildAnalyticsFromDhisEventAnalytics';
+import { buildAnalyticsFromDhisEventAnalytics } from '../../../../services/dhis/builders/buildAnalyticsFromDhisEventAnalytics';
 import { EVENT_ANALYTICS } from './buildAnalytics.fixtures';
 
 describe('buildAnalyticsFromDhisEventAnalytics', () => {

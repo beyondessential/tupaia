@@ -8,7 +8,7 @@ import { createModelsStub } from './DhisTranslator.stubs';
 import { DATA_ELEMENTS, DATA_SOURCES } from './DhisTranslator.fixtures';
 import { parseValueForDhis } from '../../../../services/dhis/translators/parseValueForDhis';
 
-jest.mock('../../../services/dhis/parseValueForDhis');
+jest.mock('../../../../services/dhis/translators/parseValueForDhis');
 
 describe('DhisTranslator', () => {
   const mockModels = createModelsStub();

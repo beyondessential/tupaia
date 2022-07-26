@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import * as BuildAnalytics from '../../../../services/dhis/buildAnalytics/buildAnalyticsFromDhisEventAnalytics';
+import * as BuildAnalytics from '../../../../services/dhis/builders/buildAnalyticsFromDhisEventAnalytics';
 import { AnalyticsPuller } from '../../../../services/dhis/pullers/AnalyticsPuller';
 import { DATA_SOURCES, EVENT_ANALYTICS } from '../DhisService.fixtures';
 import { buildDhisAnalyticsResponse, createModelsStub, stubDhisApi } from '../DhisService.stubs';

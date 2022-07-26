@@ -5,11 +5,11 @@
 
 import { createModelsStub, stubDhisApi } from '../DhisService.stubs';
 import { DATA_GROUPS } from '../DhisService.fixtures';
-import { buildEventsFromDhisEventAnalytics } from '../../../../services/dhis/buildAnalytics/buildEventsFromDhisEventAnalytics';
+import { buildEventsFromDhisEventAnalytics } from '../../../../services/dhis/builders/buildEventsFromDhisEventAnalytics';
 import { EventsPuller } from '../../../../services/dhis/pullers';
 import { DhisTranslator } from '../../../../services/dhis/translators/DhisTranslator';
 
-jest.mock('../../../../services/dhis/buildAnalytics/buildEventsFromDhisEventAnalytics');
+jest.mock('../../../../services/dhis/builders/buildEventsFromDhisEventAnalytics');
 
 describe('EventsPuller', () => {
   let eventsPuller;
