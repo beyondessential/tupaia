@@ -72,7 +72,7 @@ const getChildren = (subDashboard, isFirstPageProfile, exportViewProps, PageCont
   );
 };
 
-export const ExportView = ({ viewProps, viewType }) => {
+export const ExportView = ({ viewProps, viewType, className }) => {
   const { getExtraExportViewProps, PageContainer } = EXPORT_VIEWS[viewType];
   const exportViewProps = { ...viewProps, ...getExtraExportViewProps() };
 
@@ -81,7 +81,7 @@ export const ExportView = ({ viewProps, viewType }) => {
   const { exportableDashboards } = getExportableDashboards(profileDropDownOptions);
 
   return (
-    <Container>
+    <Container className={className}>
       {exportableDashboards?.map((subDashboard, index) => {
         const isFirstPageProfile = index === 0;
         return getChildren(subDashboard, isFirstPageProfile, exportViewProps, PageContainer);
@@ -91,10 +91,12 @@ export const ExportView = ({ viewProps, viewType }) => {
 };
 
 ExportView.propTypes = {
+  className: PropTypes.string,
   viewProps: PropTypes.object,
   viewType: PropTypes.oneOf([DASHBOARD_EXPORT_PREVIEW, PDF_DOWNLOAD_VIEW]).isRequired,
 };
 
 ExportView.defaultProps = {
+  className: null,
   viewProps: {},
 };
