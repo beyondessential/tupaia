@@ -36,7 +36,7 @@ const MuiButton = styled(MuiIconButton)`
 
 const ExportView = styled(BaseExportView)`
   ${p =>
-    p.$isLoading
+    p.$isLoading // if loading, make it smaller than user's window so loading status is centred
       ? `
         height: 50vh;
         min-height: 0;
