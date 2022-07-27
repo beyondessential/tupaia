@@ -17,7 +17,7 @@ import { sanitizers } from './sanitizers';
 import { historyMiddleware } from './historyNavigation';
 import { gaMiddleware } from './utils';
 
-import globalSagas from './global/sagas';
+import globalSagas from './sagas';
 import disasterSagas from './disaster/sagas';
 import projectSagas from './projects/sagas';
 
