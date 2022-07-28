@@ -18,7 +18,7 @@ import MuiIconButton from '@material-ui/core/Button';
 import { OptionsBar } from './components';
 import { I18n, useDashboardItemsExportToPDF, useUrlParams, useUrlSearchParam } from '../../utils';
 import { DEFAULT_DATA_YEAR } from '../../constants';
-import { DASHBOARD_EXPORT_PREVIEW, ExportView } from '../../views/ExportView';
+import { DASHBOARD_EXPORT_PREVIEW, ExportView as BaseExportView } from '../../views/ExportView';
 
 const FlexSpaceBetween = styled(BaseFlexSpaceBetween)`
   width: 95%;
@@ -32,6 +32,17 @@ const MuiButton = styled(MuiIconButton)`
   margin: 0px 20px;
   background-color: transparent;
   color: #666666;
+`;
+
+const ExportView = styled(BaseExportView)`
+  ${p =>
+    p.$isLoading // if loading, make it smaller than user's window so loading status is centred
+      ? `
+        height: 50vh;
+        min-height: 0;
+        overflow: hidden;
+        `
+      : ''}
 `;
 
 export const DashboardExportModal = ({ title, totalPage, isOpen, setIsOpen }) => {
@@ -106,6 +117,7 @@ export const DashboardExportModal = ({ title, totalPage, isOpen, setIsOpen }) =>
           onReset={onReset}
         >
           <ExportView
+            $isLoading={isDisabled}
             viewType={DASHBOARD_EXPORT_PREVIEW}
             viewProps={{
               currentPage: page,
