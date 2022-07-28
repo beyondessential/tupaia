@@ -25,7 +25,7 @@ export class DhisService extends Service {
       this.translator,
     );
     this.analyticsPuller = new AnalyticsPuller(
-      this.models.dataElement,
+      this.models,
       this.translator,
       this.dataElementsMetadataPuller,
     );
