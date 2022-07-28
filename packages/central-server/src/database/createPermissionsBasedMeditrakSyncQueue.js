@@ -5,6 +5,12 @@
 
 import { SqlQuery } from '@tupaia/database';
 
+const groupToArrayOrNull = field =>
+  `NULLIF(array(select distinct unnest(array_agg(${field}))), '{NULL}')`;
+
+const groupToFlatArrayOrNull = field =>
+  `NULLIF(array(select distinct unnest(array_concat_agg(${field}))), '{}')`;
+
 /**
  * Creates the permissions_based_meditrak_sync_queue Materialized View
  *
@@ -15,30 +21,35 @@ const query = new SqlQuery(`
 DROP MATERIALIZED VIEW IF EXISTS permissions_based_meditrak_sync_queue;
 CREATE MATERIALIZED VIEW permissions_based_meditrak_sync_queue AS 
 SELECT msq.*, 
-	max(e.country_code) AS entity_country, 
-	max(e."type") AS entity_type, 
-	max(c_co.code) AS clinic_country, 
-	max(ga_co.code) AS geographical_area_country, 
-	NULLIF(array(select distinct unnest(array_agg(s_pg."name"))), '{NULL}') AS survey_permissions, 
-	NULLIF(array(select distinct unnest(array_concat_agg(s.country_ids))), '{}') AS survey_countries, 
-	NULLIF(array(select distinct unnest(array_agg(sg_s_pg."name"))), '{NULL}') AS survey_group_permissions, 
-	NULLIF(array(select distinct unnest(array_concat_agg(sg_s.country_ids))), '{}') AS survey_group_countries,
-	NULLIF(array(select distinct unnest(array_agg(ss_s_pg."name"))), '{NULL}') AS survey_screen_permissions, 
-	NULLIF(array(select distinct unnest(array_concat_agg(ss_s.country_ids))), '{}') AS survey_screen_countries, 
-	NULLIF(array(select distinct unnest(array_agg(ssc_ss_s_pg."name"))), '{NULL}') AS survey_screen_component_permissions, 
-	NULLIF(array(select distinct unnest(array_concat_agg(ssc_ss_s.country_ids))), '{}') AS survey_screen_component_countries, 
-	NULLIF(array(select distinct unnest(array_agg(q_ssc_ss_s_pg."name"))), '{NULL}') AS question_permissions, 
-	NULLIF(array(select distinct unnest(array_concat_agg(q_ssc_ss_s.country_ids))), '{}') AS question_countries, 
-	NULLIF(array(select distinct unnest(array_agg(os_q_ssc_ss_s_pg."name"))), '{NULL}') AS option_set_permissions, 
-	NULLIF(array(select distinct unnest(array_concat_agg(os_q_ssc_ss_s.country_ids))), '{}') AS option_set_countries, 
-	NULLIF(array(select distinct unnest(array_agg(o_os_q_ssc_ss_s_pg."name"))), '{NULL}') AS option_permissions, 
-	NULLIF(array(select distinct unnest(array_concat_agg(o_os_q_ssc_ss_s.country_ids))), '{}') AS option_countries
+	max(e."type") AS entity_type,
+	
+	COALESCE(
+		${groupToArrayOrNull('e_co.id')}, 
+		${groupToArrayOrNull('c.country_id')}, 
+		${groupToArrayOrNull('ga.country_id')}, 
+		${groupToFlatArrayOrNull('s.country_ids')},
+		${groupToFlatArrayOrNull('sg_s.country_ids')},
+		${groupToFlatArrayOrNull('ss_s.country_ids')},
+		${groupToFlatArrayOrNull('ssc_ss_s.country_ids')},
+		${groupToFlatArrayOrNull('q_ssc_ss_s.country_ids')},
+		${groupToFlatArrayOrNull('os_q_ssc_ss_s.country_ids')},
+		${groupToFlatArrayOrNull('o_os_q_ssc_ss_s.country_ids')}
+	) as country_ids,
+
+	COALESCE(
+		${groupToArrayOrNull('s_pg."name"')},
+		${groupToArrayOrNull('sg_s_pg."name"')},
+		${groupToArrayOrNull('ss_s_pg."name"')},
+		${groupToArrayOrNull('ssc_ss_s_pg."name"')},
+		${groupToArrayOrNull('q_ssc_ss_s_pg."name"')},
+		${groupToArrayOrNull('os_q_ssc_ss_s_pg."name"')},
+		${groupToArrayOrNull('o_os_q_ssc_ss_s_pg."name"')}
+	) as permission_groups
 FROM meditrak_sync_queue msq 
 LEFT JOIN entity e ON msq.record_id = e.id
+LEFT JOIN country e_co ON e_co.code = e.country_code 
 LEFT JOIN clinic c ON msq.record_id = c.id
-LEFT JOIN country c_co ON c.country_id = c_co.id 
-LEFT JOIN geographical_area ga ON msq.record_id = ga.id 
-LEFT JOIN country ga_co ON ga.country_id = ga_co.id 
+LEFT JOIN geographical_area ga ON msq.record_id = ga.id
 LEFT JOIN survey s ON msq.record_id = s.id 
 LEFT JOIN permission_group s_pg ON s.permission_group_id = s_pg.id 
 LEFT JOIN survey_group sg ON msq.record_id = sg.id

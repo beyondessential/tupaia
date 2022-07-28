@@ -11,6 +11,19 @@ export const PERMISSIONS_BASED_SYNC_MIN_APP_VERSION = '1.12.123';
 export const supportsPermissionsBasedSync = version =>
   semverCompare(version, PERMISSIONS_BASED_SYNC_MIN_APP_VERSION) >= 0;
 
+/**
+ * This function determines which countries and permissions should be synced to a given meditrak app
+ * based on what previously been synced to it, and what data the user has access to
+ *
+ * Returns:
+ * {
+ *   synced: Countries/permission groups that have already been synced to the device,
+ *   unsynced: Countries/permission groups that have not yet been synced to the device but need to be (eg. for a new user log in, or if permissions for the user have changed)
+ * }
+ *
+ * synced countries/permissions should only have new updates/deletes (ie. later than 'since' timestamp) included in the changes
+ * unsynced countries/permissions should all updates/deletes synced to the device.
+ */
 export const getCountriesAndPermissionsToSync = async req => {
   const { accessPolicy } = req;
   const {
@@ -85,85 +98,34 @@ export const getCountriesAndPermissionsToSync = async req => {
 export const getPermissionsWhereClause = permissionsBasedFilter => {
   let query = '';
   const params = [];
-  const { countries, countryIds, permissionGroups } = permissionsBasedFilter;
+  const { countryIds, permissionGroups } = permissionsBasedFilter;
   const typesWithoutPermissions = ['country', 'permission_group']; // Sync all countries and permission groups (needed for requesting access)
-  const permissionsClauses = [
+  const clauses = [
     {
       query: `"type" = ? AND record_type IN ${SqlQuery.record(typesWithoutPermissions)}`,
       params: ['update', ...typesWithoutPermissions],
     },
     {
-      query: `entity_type = ?`, // Sync all country entities (needed for requesting access to countries)
+      query: `entity_type = ?`, // Sync all country entities (needed regardless of user permissions for requesting access to countries)
       params: ['country'],
     },
     {
-      query: `entity_country = ANY(${SqlQuery.array(countries, 'text')})`,
-      params: [...countries],
-    },
-    {
-      query: `clinic_country = ANY(${SqlQuery.array(countries, 'text')}::text[])`,
-      params: [...countries],
-    },
-    {
-      query: `geographical_area_country = ANY(${SqlQuery.array(countries, 'text')}::text[])`,
-      params: [...countries],
-    },
-    {
-      query: `survey_permissions && ${SqlQuery.array(
-        permissionGroups,
-        'text',
-      )}::text[] AND survey_countries && ${SqlQuery.array(countryIds, 'text')}::text[]`,
-      params: [...permissionGroups, ...countryIds],
-    },
-    {
-      query: `survey_group_permissions && ${SqlQuery.array(
-        permissionGroups,
-        'text',
-      )}::text[] AND survey_group_countries && ${SqlQuery.array(countryIds, 'text')}`,
-      params: [...permissionGroups, ...countryIds],
-    },
-    {
-      query: `survey_screen_permissions && ${SqlQuery.array(
-        permissionGroups,
-        'text',
-      )} AND survey_screen_countries && ${SqlQuery.array(countryIds, 'text')}`,
-      params: [...permissionGroups, ...countryIds],
-    },
-    {
-      query: `survey_screen_component_permissions && ${SqlQuery.array(
-        permissionGroups,
-        'text',
-      )} AND survey_screen_component_countries && ${SqlQuery.array(countryIds, 'text')}`,
-      params: [...permissionGroups, ...countryIds],
-    },
-    {
-      query: `question_permissions && ${SqlQuery.array(
-        permissionGroups,
-        'text',
-      )} AND question_countries && ${SqlQuery.array(countryIds, 'text')}`,
-      params: [...permissionGroups, ...countryIds],
-    },
-    {
-      query: `option_set_permissions && ${SqlQuery.array(
-        permissionGroups,
-        'text',
-      )} AND option_set_countries && ${SqlQuery.array(countryIds, 'text')}`,
-      params: [...permissionGroups, ...countryIds],
-    },
-    {
-      query: `option_permissions && ${SqlQuery.array(
-        permissionGroups,
-        'text',
-      )} AND option_countries && ${SqlQuery.array(countryIds, 'text')}`,
-      params: [...permissionGroups, ...countryIds],
+      // Sync updates where the country and permissions are NULL or they intersect with the allowed countries and permission groups
+      query: `"type" = ? 
+        AND (country_ids IS NULL OR country_ids && ${SqlQuery.array(countryIds, 'text')}) 
+        AND (permission_groups IS NULL OR permission_groups && ${SqlQuery.array(
+          permissionGroups,
+          'text',
+        )})`,
+      params: ['update', ...countryIds, ...permissionGroups],
     },
   ];
 
-  permissionsClauses.forEach(({ query: permClauseQuery, params: permClauseParams }, index) => {
+  clauses.forEach(({ query: clauseQuery, params: clauseParams }, index) => {
     query = query.concat(`
-            ${index !== 0 ? 'OR ' : ''}(${permClauseQuery})
+            ${index !== 0 ? 'OR ' : ''}(${clauseQuery})
           `);
-    params.push(...permClauseParams);
+    params.push(...clauseParams);
   });
 
   return { query, params };

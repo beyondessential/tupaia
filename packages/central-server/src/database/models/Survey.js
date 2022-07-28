@@ -25,10 +25,9 @@ class SurveyType extends DatabaseType {
       `
        SELECT ssc.* FROM survey_screen_component ssc
        JOIN survey_screen ss ON ss.id = ssc.screen_id
-       JOIN survey s ON s.id = ss.survey_id
-       WHERE s.code = ?
+       WHERE ss.survey_id = ?
      `,
-      [this.code],
+      [this.id],
     );
 
     return Promise.all(questions.map(this.otherModels.surveyScreenComponent.generateInstance));
@@ -40,46 +39,43 @@ class SurveyType extends DatabaseType {
        SELECT q.* FROM question q
        JOIN survey_screen_component ssc ON ssc.question_id  = q.id
        JOIN survey_screen ss ON ss.id = ssc.screen_id
-       JOIN survey s ON s.id = ss.survey_id
-       WHERE s.code = ?
+       WHERE ss.survey_id = ?
      `,
-      [this.code],
+      [this.id],
     );
 
     return Promise.all(questions.map(this.otherModels.question.generateInstance));
   }
 
   async optionSets() {
-    const questions = await this.database.executeSql(
+    const optionSets = await this.database.executeSql(
       `
        SELECT os.* FROM option_set os
        JOIN question q on q.option_set_id = os.id
        JOIN survey_screen_component ssc ON ssc.question_id  = q.id
        JOIN survey_screen ss ON ss.id = ssc.screen_id
-       JOIN survey s ON s.id = ss.survey_id
-       WHERE s.code = ?
+       WHERE ss.survey_id = ?
      `,
-      [this.code],
+      [this.id],
     );
 
-    return Promise.all(questions.map(this.otherModels.optionSet.generateInstance));
+    return Promise.all(optionSets.map(this.otherModels.optionSet.generateInstance));
   }
 
   async options() {
-    const questions = await this.database.executeSql(
+    const options = await this.database.executeSql(
       `
        SELECT o.* FROM "option" o
        JOIN option_set os on o.option_set_id = os.id
        JOIN question q on q.option_set_id = os.id
        JOIN survey_screen_component ssc ON ssc.question_id  = q.id
        JOIN survey_screen ss ON ss.id = ssc.screen_id
-       JOIN survey s ON s.id = ss.survey_id
-       WHERE s.code = ?
+       WHERE ss.survey_id = ?
      `,
-      [this.code],
+      [this.id],
     );
 
-    return Promise.all(questions.map(this.otherModels.option.generateInstance));
+    return Promise.all(options.map(this.otherModels.option.generateInstance));
   }
 
   async getPermissionGroup() {

@@ -103,16 +103,9 @@ const extractSinceValue = req => {
   return parseFloat(since);
 };
 
-export const buildMeditrakSyncQuery = async (req, { select, sort, limit, offset }) => {
-  const since = extractSinceValue(req);
-
+const getModifiers = (sort, limit, offset) => {
   let query = '';
   const params = [];
-  query = query.concat(getSelectFromClause(select));
-  const { query: whereQuery, params: whereParams } = await getWhere(req, since);
-  query = query.concat(`WHERE
-  ${whereQuery}`);
-  params.push(...whereParams);
 
   if (sort) {
     query = query.concat(`
@@ -134,9 +127,38 @@ export const buildMeditrakSyncQuery = async (req, { select, sort, limit, offset 
     params.push(offset);
   }
 
+  return { query, params };
+};
+
+export const buildMeditrakSyncQuery = async (req, { select, sort, limit, offset }) => {
+  const since = extractSinceValue(req);
+
+  let query = '';
+  const params = [];
+  query = query.concat(getSelectFromClause(select));
+  const { query: whereQuery, params: whereParams } = await getWhere(req, since);
+  query = query.concat(`WHERE
+  ${whereQuery}`);
+  params.push(...whereParams);
+
+  const { query: modifiersQuery, params: modifiersParams } = getModifiers(sort, limit, offset);
+  query = query.concat(modifiersQuery);
+  params.push(...modifiersParams);
+
   return { query: new SqlQuery(query, params) };
 };
 
+/**
+ * Sync logic for the permissions based sync:
+ *
+ * The meditrak-app sends across a list of all previously synced countries and permission groups when syncing (none if first time sync)
+ * The app then just combines these lists with the countries and permissions in the user's access policy
+ *   - For countries and permission groups that have previously been synced, just sync new changes since last sync
+ *   - For countries and permission groups that have never been synced, sync data for all time for those
+ *   - Note: all models that we sync can be filtered by countries, permission groups, or both, so no other information is needed
+ * Once the sync is complete, the app then updates the list of synced countries and permission groups
+ *
+ */
 export const buildPermissionsBasedMeditrakSyncQuery = async (
   req,
   { select, sort, limit, offset },
@@ -176,25 +198,9 @@ export const buildPermissionsBasedMeditrakSyncQuery = async (
   query = query.concat(`)
   `);
 
-  if (sort) {
-    query = query.concat(`
-    ORDER BY ${sort}
-    `);
-  }
-
-  if (limit !== undefined) {
-    query = query.concat(`
-    LIMIT ?
-    `);
-    params.push(limit);
-  }
-
-  if (offset !== undefined) {
-    query = query.concat(`
-    OFFSET ?
-    `);
-    params.push(offset);
-  }
+  const { query: modifiersQuery, params: modifiersParams } = getModifiers(sort, limit, offset);
+  query = query.concat(modifiersQuery);
+  params.push(...modifiersParams);
 
   const countriesInSync = [...(unsynced?.countries || []), ...(synced?.countries || [])];
   const permissionGroupsInSync = [

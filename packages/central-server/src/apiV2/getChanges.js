@@ -46,12 +46,11 @@ export async function getChanges(req, res) {
   await req.assertPermissions(allowNoPermissions);
 
   try {
-    const msqColumns = await models.meditrakSyncQueue.fetchFieldNames();
     const queryBuilder = supportsPermissionsBasedSync(appVersion)
       ? buildPermissionsBasedMeditrakSyncQuery
       : buildMeditrakSyncQuery;
     const { query } = await queryBuilder(req, {
-      select: msqColumns.join(', '),
+      select: (await models.meditrakSyncQueue.fetchFieldNames()).join(', '),
       sort: 'change_time ASC',
       limit,
       offset,
