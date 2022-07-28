@@ -5396,7 +5396,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/pdf-export-server@workspace:packages/pdf-export-server"
   dependencies:
-    "@tupaia/access-policy": 3.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
     cookies: ^0.8.0
