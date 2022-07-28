@@ -4,6 +4,7 @@
  *
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
@@ -100,7 +101,7 @@ const getExportTitle = (entityData, currentMapOverlay) => {
   return `${name}${overlayName}`;
 };
 
-export const LocationHeader = () => {
+export const LocationHeader = ({ setIsOpen }) => {
   const { entityCode, view } = useUrlParams();
   const { search } = useLocation();
   const [selectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
@@ -143,7 +144,7 @@ export const LocationHeader = () => {
                 )}
               />
             ) : (
-              <IconButton startIcon={<GetApp />}>
+              <IconButton onClick={() => setIsOpen(true)} startIcon={<GetApp />}>
                 <I18n t="dashboards.export" />
               </IconButton>
             )}
@@ -172,4 +173,8 @@ export const LocationHeader = () => {
       </Container>
     </Wrapper>
   );
+};
+
+LocationHeader.propTypes = {
+  setIsOpen: PropTypes.func.isRequired,
 };
