@@ -300,20 +300,23 @@ export class Synchroniser {
 
   /**
    * Returns the number of changes left to pull
+   *
+   * When syncing changes, we keep track of all countries/permission groups that have been previously synced to the database.
+   * This is because the changes the server returns to the user are filtered by the countries/permission groups that either
+   * the user has access to, or that have been previously synced. This way, we can reduce the amount of data that gets
+   * synced down to the device, greatly improving the initial sync speed.
+   *
    * @return {Promise} Resolves with the change count, or passes up any error thrown
    */
   async getIncomingChangeMetadata(since, filters = {}) {
     const countriesSynced = this.database.getSetting(COUNTRIES_SYNCED);
     const permissionGroupsSynced = this.database.getSetting(PERMISSION_GROUPS_SYNCED);
-    if (countriesSynced) {
-      // eslint-disable-next-line no-param-reassign
-      filters.countriesSynced = countriesSynced;
-    }
-    if (permissionGroupsSynced) {
-      // eslint-disable-next-line no-param-reassign
-      filters.permissionGroupsSynced = permissionGroupsSynced;
-    }
-    const responseJson = await this.api.get(`${API_ENDPOINT}/metadata`, { since, ...filters });
+    const responseJson = await this.api.get(`${API_ENDPOINT}/metadata`, {
+      since,
+      countriesSynced,
+      permissionGroupsSynced,
+      ...filters,
+    });
     if (responseJson.error && responseJson.error.length > 0) {
       throw new Error(responseJson.error);
     }
@@ -338,17 +341,12 @@ export class Synchroniser {
 
     const countriesSynced = this.database.getSetting(COUNTRIES_SYNCED);
     const permissionGroupsSynced = this.database.getSetting(PERMISSION_GROUPS_SYNCED);
-    if (countriesSynced) {
-      // eslint-disable-next-line no-param-reassign
-      filters.countriesSynced = countriesSynced;
-    }
-    if (permissionGroupsSynced) {
-      // eslint-disable-next-line no-param-reassign
-      filters.permissionGroupsSynced = permissionGroupsSynced;
-    }
+
     const responseJson = await this.api.get(API_ENDPOINT, {
       since,
       offset,
+      countriesSynced,
+      permissionGroupsSynced,
       limit: this.batchSize,
       ...filters,
     });
