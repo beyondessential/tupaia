@@ -15,6 +15,9 @@ describe('createModelsStub', () => {
           color: 'blue',
           config: {
             mane: 'luxurious',
+            group: {
+              name: 'A',
+            },
           },
         },
         {
@@ -22,6 +25,9 @@ describe('createModelsStub', () => {
           color: 'blue',
           config: {
             mane: 'enchanting',
+            group: {
+              name: 'B',
+            },
           },
         },
         {
@@ -58,5 +64,11 @@ describe('createModelsStub', () => {
   it('supports ->> keys as array', async () => {
     const results = await mockModels.horses.find({ 'config->>mane': ['enchanting', 'luxurious'] });
     expect(results.length).to.equal(2);
+  });
+
+  it('supports multi depth ->> keys', async () => {
+    const results = await mockModels.horses.find({ 'config->group->>name': 'A' });
+    expect(results.length).to.equal(1);
+    expect(results[0].name).to.equal('Rufio');
   });
 });

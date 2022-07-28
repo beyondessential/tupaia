@@ -32,11 +32,12 @@ const mockFind = (array, criteria = {}) =>
 
       if (key.includes('->>')) {
         // Special case
-        const lookupPath = key.split('->>');
-        if (lookupPath.length > 2) throw new Error('Not implemented yet...');
-        const [colName, objProperty] = lookupPath;
+        const [colName, ...nestedPropLookupPath] = key.split(/->>?/);
         if (currentObject[colName] == undefined) return false;
-        if (!comparator(currentObject[colName][objProperty], value)) return false;
+
+        const nestedPropVal = getNestedProp(nestedPropLookupPath, currentObject[colName]);
+
+        if (!comparator(nestedPropVal, value)) return false;
       } else if (!comparator(currentObject[key], value)) {
         return false;
       }
@@ -45,6 +46,15 @@ const mockFind = (array, criteria = {}) =>
   });
 
 const mockFindOne = (array, criteria) => mockFind(array, criteria)[0] || undefined;
+
+const getNestedProp = (selectorArray, obj) => {
+  const [first, ...rest] = selectorArray;
+  if (selectorArray.length > 1) {
+    if (obj[first] === undefined) return undefined;
+    return getNestedProp(rest, obj[first]);
+  }
+  return obj[first] ?? undefined;
+};
 
 /**
  * @param {MockData} mockData
