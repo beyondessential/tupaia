@@ -28,7 +28,6 @@
     "test:watch": "yarn test --watch"
   },
   "dependencies": {
-    "@tupaia/access-policy": "3.0.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/server-boilerplate": "1.0.0",
     "cookies": "^0.8.0",
