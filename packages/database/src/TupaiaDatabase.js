@@ -636,7 +636,11 @@ function getColSelector(connection, inputColStr) {
     // e.g. 'config->item->>colour' is converted to config->'item'->>'colour'
     const last = rest.slice(-1);
     const middle = rest.slice(0, rest.length - 1);
-    return connection.raw(`??${middle.map(i => '?').join('->')}->>?`, [first, ...middle, ...last]);
+    return connection.raw(`??->${middle.map(i => '?').join('->')}->>?`, [
+      first,
+      ...middle,
+      ...last,
+    ]);
   }
 
   return inputColStr;
