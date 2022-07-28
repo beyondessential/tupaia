@@ -14,7 +14,7 @@ export class EventsPuller {
   pullEventsForApi = async (api, programCode, options) => {
     const { dataElementCodes = [], organisationUnitCodes, period, startDate, endDate } = options;
 
-    const dataElementSources = await this.dataElementModel.find({
+    const dataElementSources = await this.models.dataElement.find({
       code: dataElementCodes,
     });
     const dhisElementCodes = dataElementSources.map(({ dataElementCode }) => dataElementCode);
