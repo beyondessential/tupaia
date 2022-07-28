@@ -18,7 +18,7 @@ describe('EventsPuller', () => {
   beforeEach(() => {
     const models = createModelsStub();
     const translator = new DhisTranslator(models);
-    eventsPuller = new EventsPuller(models.dataElement, translator);
+    eventsPuller = new EventsPuller(models, translator);
     dhisApi = stubDhisApi();
     buildEventsFromDhisEventAnalytics.mockReturnValue('X');
   });
@@ -114,6 +114,7 @@ describe('EventsPuller', () => {
           dataElementCodes,
         });
         expect(buildEventsFromDhisEventAnalytics).toHaveBeenCalledOnceWith(
+          expect.anything(),
           getEventAnalyticsResponse,
           dataElementCodes,
         );
@@ -149,6 +150,7 @@ describe('EventsPuller', () => {
           dataElementCodes,
         });
         expect(buildEventsFromDhisEventAnalytics).toHaveBeenCalledOnceWith(
+          expect.anything(),
           translatedEventAnalyticsResponse,
           dataElementCodes,
         );

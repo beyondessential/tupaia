@@ -6,8 +6,8 @@
 import { buildEventsFromDhisEventAnalytics } from '../builders';
 
 export class EventsPuller {
-  constructor(dataElementModel, translator) {
-    this.dataElementModel = dataElementModel;
+  constructor(models, translator) {
+    this.models = models;
     this.translator = translator;
   }
 
@@ -34,7 +34,11 @@ export class EventsPuller {
       dataElementSources,
     );
 
-    return buildEventsFromDhisEventAnalytics(translatedEventAnalytics, dataElementCodes);
+    return buildEventsFromDhisEventAnalytics(
+      this.models,
+      translatedEventAnalytics,
+      dataElementCodes,
+    );
   };
 
   pull = async (apis, dataSources, options) => {

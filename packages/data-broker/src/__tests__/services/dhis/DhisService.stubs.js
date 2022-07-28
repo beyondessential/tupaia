@@ -10,6 +10,7 @@ import {
   DHIS_RESPONSE_DATA_ELEMENTS,
   DATA_SOURCES,
   DATA_GROUPS,
+  ENTITIES,
   SERVER_NAME,
 } from './DhisService.fixtures';
 import { createJestMockInstance } from '../../../../../utils/src/testUtilities';
@@ -61,6 +62,9 @@ export const createModelsStub = () => {
       extraMethods: {
         getDataElementsInDataGroup: async groupCode => DATA_ELEMENTS_BY_GROUP[groupCode],
       },
+    },
+    entity: {
+      records: Object.values(ENTITIES),
     },
   });
 };

@@ -25,6 +25,23 @@ export const DATA_GROUPS = {
   }),
 };
 
+export const ENTITIES = {
+  DL_FACILITY_A: {
+    code: 'DL_FACILITY_A',
+    name: 'DL FACILITY A',
+    type: 'facility',
+    metadata: {},
+  },
+  DL_HOUSEHOLD_1: {
+    code: 'DL_HOUSEHOLD_1',
+    name: 'DL HOUSEHOLD 1',
+    type: 'household',
+    metadata: {
+      dhis: { isDataRegional: false, trackedEntityId: 'tracked_entity_id_dl_household_1' },
+    },
+  },
+};
+
 export const DATA_VALUES = {
   POP01: { code: 'POP01', value: '1' },
   POP02: { code: 'POP02', value: '2' },

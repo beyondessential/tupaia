@@ -29,7 +29,7 @@ export class DhisService extends Service {
       this.translator,
       this.dataElementsMetadataPuller,
     );
-    this.eventsPuller = new EventsPuller(this.models.dataElement, this.translator);
+    this.eventsPuller = new EventsPuller(this.models, this.translator);
     this.deprecatedEventsPuller = new DeprecatedEventsPuller(
       this.models.dataElement,
       this.translator,

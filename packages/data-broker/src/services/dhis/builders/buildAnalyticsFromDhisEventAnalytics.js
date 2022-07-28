@@ -8,8 +8,16 @@ import flatten from 'lodash.flatten';
 import { dateStringToPeriod } from '@tupaia/utils';
 import { buildEventsFromDhisEventAnalytics } from './buildEventsFromDhisEventAnalytics';
 
-export const buildAnalyticsFromDhisEventAnalytics = (dhisEventAnalytics, dataElementCodes = []) => {
-  const events = buildEventsFromDhisEventAnalytics(dhisEventAnalytics, dataElementCodes);
+export const buildAnalyticsFromDhisEventAnalytics = async (
+  models,
+  dhisEventAnalytics,
+  dataElementCodes = [],
+) => {
+  const events = await buildEventsFromDhisEventAnalytics(
+    models,
+    dhisEventAnalytics,
+    dataElementCodes,
+  );
 
   return {
     results: eventsToAnalytics(events),
