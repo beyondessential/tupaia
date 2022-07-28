@@ -5232,6 +5232,7 @@ __metadata:
   resolution: "@tupaia/expression-parser@workspace:packages/expression-parser"
   dependencies:
     date-fns: ^2.16.1
+    lodash.startcase: ^4.4.0
     mathjs: ^9.4.0
     npm-run-all: ^4.1.5
   languageName: unknown
@@ -22071,6 +22072,13 @@ __metadata:
   version: 4.7.0
   resolution: "lodash.sortby@npm:4.7.0"
   checksum: db170c9396d29d11fe9a9f25668c4993e0c1331bcb941ddbd48fb76f492e732add7f2a47cfdf8e9d740fa59ac41bbfaf931d268bc72aab3ab49e9f89354d718c
+  languageName: node
+  linkType: hard
+
+"lodash.startcase@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "lodash.startcase@npm:4.4.0"
+  checksum: c03a4a784aca653845fe09d0ef67c902b6e49288dc45f542a4ab345a9c406a6dc194c774423fa313ee7b06283950301c1221dd2a1d8ecb2dac8dfbb9ed5606b5
   languageName: node
   linkType: hard
 
