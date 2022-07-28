@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { DatabaseError } from '@tupaia/utils';
 import { CreateHandler } from '../CreateHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
@@ -29,74 +30,97 @@ export class CreateProject extends CreateHandler {
       permission_groups,
       countries,
       entityTypes,
+      default_measure,
+      dashboard_group_name,
     } = this.newRecordData;
 
-    await this.createProjectEntity(code, name);
-    await this.createEntityHierarchy(code, entityTypes);
-    await this.createProjectEntityRelations(code, countries);
-    await this.createProjectDashboard(name, code);
+    try {
+      await this.createProjectEntity(code, name);
+      await this.createEntityHierarchy(code, entityTypes);
+      await this.createProjectEntityRelations(code, countries);
+      await this.createProjectDashboard(dashboard_group_name, code);
 
-    const [projectEntity] = await this.models.database.find('entity', { 'entity.code': code });
-    const [projectEntityHierarchy] = await this.models.database.find('entity_hierarchy', {
-      'entity_hierarchy.name': code,
-    });
-    const defaultMapOverlayCode = '126';
-    const [dashboardGroup] = await this.database.find('dashboard', {
-      'dashboard.root_entity_code': code,
-    });
+      const { id: projectEntityId } = await this.models.entity.findOne({ 'entity.code': code });
+      const { id: projectEntityHierarchyId } = await this.models.entityHierarchy.findOne({
+        'entity_hierarchy.name': code,
+      });
 
-    await this.models.project.create({
-      code,
-      description,
-      sort_order,
-      image_url,
-      logo_url,
-      permission_groups,
-      default_measure: defaultMapOverlayCode,
-      dashboard_group_name: dashboardGroup.name,
-      entity_id: projectEntity.id,
-      entity_hierarchy_id: projectEntityHierarchy.id,
+      const { name: dashboardGroupName } = await this.models.dashboard.findOne({
+        'dashboard.root_entity_code': code,
+      });
+
+      await this.models.project.create({
+        code,
+        description,
+        sort_order,
+        image_url,
+        logo_url,
+        permission_groups,
+        default_measure,
+        dashboard_group_name: dashboardGroupName,
+        entity_id: projectEntityId,
+        entity_hierarchy_id: projectEntityHierarchyId,
+      });
+    } catch (error) {
+      await this.rollbackRecords(code);
+      throw new DatabaseError('Creating project record', error);
+    }
+  }
+
+  async rollbackRecords(projectCode) {
+    await this.models.project.delete({ code: projectCode });
+    await this.models.dashboard.delete({ root_entity_code: projectCode });
+    const projectEntity = await this.models.entity.findOne({
+      code: projectCode,
+      type: 'project',
     });
+    if (projectEntity !== null) {
+      await this.models.entityRelation.delete({ parent_id: projectEntity.id });
+      await this.models.entity.delete({ id: projectEntity.id });
+    }
+    await this.models.entityHierarchy.delete({ name: projectCode });
   }
 
   async createProjectEntity(code, name) {
     const worldCode = 'World';
-    const [world] = await this.models.database.find('entity', { 'entity.code': worldCode });
+    const { id: worldId } = await this.models.entity.findOne({ 'entity.code': worldCode });
 
     await this.models.entity.create({
       name,
       code,
-      parent_id: world.id,
+      parent_id: worldId,
       type: 'project',
     });
   }
 
   async createProjectEntityRelations(code, countries) {
-    const [projectEntity] = await this.models.database.find('entity', { 'entity.code': code });
-    const [entityHierarchy] = await this.models.database.find('entity_hierarchy', {
+    const { id: projectEntityId } = await this.models.entity.findOne({
+      'entity.code': code,
+    });
+    const { id: entityHierarchyId } = await this.models.entityHierarchy.findOne({
       'entity_hierarchy.name': code,
     });
 
     for (const countryId of countries) {
-      const [country] = await this.models.database.find('country', {
+      const { code: countryCode } = await this.models.country.findOne({
         'country.id': countryId,
       });
-      const [entity] = await this.models.database.find('entity', {
-        'entity.code': country.code,
+      const { id: entityId } = await this.models.entity.findOne({
+        'entity.code': countryCode,
         'entity.type': 'country',
       });
       await this.models.entityRelation.create({
-        parent_id: projectEntity.id,
-        child_id: entity.id,
-        entity_hierarchy_id: entityHierarchy.id,
+        parent_id: projectEntityId,
+        child_id: entityId,
+        entity_hierarchy_id: entityHierarchyId,
       });
     }
   }
 
-  async createProjectDashboard(name, code) {
+  async createProjectDashboard(dashboard_group_name, code) {
     await this.models.dashboard.create({
       code: `${code}_project`,
-      name,
+      name: dashboard_group_name,
       root_entity_code: code,
     });
   }

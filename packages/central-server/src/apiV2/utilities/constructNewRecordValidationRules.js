@@ -188,29 +188,8 @@ export const constructForSingle = (models, recordType) => {
       };
     case TYPES.PROJECT:
       return {
-        code: [
-          async projectCode => {
-            const projects = await models.project.find({
-              code: projectCode,
-            });
-            if (projects.length > 0) {
-              throw new Error('This project code already exists');
-            }
-            return true;
-          },
-        ],
-        name: [
-          async projectName => {
-            const projectEntities = await models.entity.find({
-              name: projectName,
-              type: 'project',
-            });
-            if (projectEntities.length > 0) {
-              throw new Error('This project name already exists');
-            }
-            return true;
-          },
-        ],
+        code: [constructRecordNotExistsWithField(models.project, 'code')],
+        name: [isAString],
         countries: [
           async countries => {
             const countryEntities = await models.country.find({
@@ -234,10 +213,10 @@ export const constructForSingle = (models, recordType) => {
             return true;
           },
         ],
-        description: [hasContent],
+        description: [isAString],
         sort_order: [constructIsEmptyOr(isNumber)],
-        image_url: [hasContent],
-        logo_url: [hasContent],
+        image_url: [isAString],
+        logo_url: [isAString],
         entityTypes: [
           async selectedEntityTypes => {
             if (!selectedEntityTypes) {
@@ -253,6 +232,8 @@ export const constructForSingle = (models, recordType) => {
             return true;
           },
         ],
+        dashboard_group_name: [isAString],
+        default_measure: [constructRecordExistsWithField(models.mapOverlay, 'id')],
       };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);
