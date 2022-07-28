@@ -11,10 +11,10 @@ const models = createModelsStub();
 
 describe('buildAnalyticsFromDhisEventAnalytics', () => {
   it('allows empty data element codes', () => {
-    expect(() =>
+    expect(
       buildAnalyticsFromDhisEventAnalytics(models, EVENT_ANALYTICS.withDataValues),
     ).toResolve();
-    expect(() =>
+    expect(
       buildAnalyticsFromDhisEventAnalytics(models, EVENT_ANALYTICS.withDataValues, []),
     ).toResolve();
   });

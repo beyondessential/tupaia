@@ -20,11 +20,7 @@ describe('AnalyticsPuller', () => {
       models.dataElement,
       translator,
     );
-    analyticsPuller = new AnalyticsPuller(
-      models.dataElement,
-      translator,
-      dataElementsMetadataPuller,
-    );
+    analyticsPuller = new AnalyticsPuller(models, translator, dataElementsMetadataPuller);
     dhisApi = stubDhisApi();
   });
 
@@ -301,6 +297,7 @@ describe('AnalyticsPuller', () => {
 
           await analyticsPuller.pull([dhisApi], [DATA_SOURCES.POP01], { programCodes: [] });
           expect(buildAnalyticsMock).toHaveBeenCalledOnceWith(
+            expect.anything(),
             expect.objectContaining(emptyEventAnalytics),
             dataElementCodes,
           );
@@ -316,6 +313,7 @@ describe('AnalyticsPuller', () => {
             dataElementCodes,
           });
           expect(buildAnalyticsMock).toHaveBeenCalledOnceWith(
+            expect.anything(),
             getEventAnalyticsResponse,
             dataElementCodes,
           );
@@ -349,6 +347,7 @@ describe('AnalyticsPuller', () => {
             dataElementCodes,
           });
           expect(buildAnalyticsMock).toHaveBeenCalledOnceWith(
+            expect.anything(),
             translatedEventAnalytics,
             dataElementCodes,
           );
