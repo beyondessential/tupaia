@@ -58,9 +58,11 @@ export async function createApp() {
   // Initialise sessions
   bindUserSessions(app);
 
+  // Log api requests
+  app.use(logApiRequest(modelRegistry, 'tupaia', 1));
+
   // API router
   app.use('/api/v1', getRoutesForApiV1());
-  app.use('/api/v1', logApiRequest(modelRegistry, 'tupaia', 1));
 
   // Handle errors
   app.use(handleError);
