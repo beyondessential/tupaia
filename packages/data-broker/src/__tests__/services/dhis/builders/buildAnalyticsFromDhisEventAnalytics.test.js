@@ -5,19 +5,25 @@
 
 import { buildAnalyticsFromDhisEventAnalytics } from '../../../../services/dhis/builders/buildAnalyticsFromDhisEventAnalytics';
 import { EVENT_ANALYTICS } from './buildAnalytics.fixtures';
+import { createModelsStub } from '../DhisService.stubs';
+
+const models = createModelsStub();
 
 describe('buildAnalyticsFromDhisEventAnalytics', () => {
   it('allows empty data element codes', () => {
     expect(() =>
-      buildAnalyticsFromDhisEventAnalytics(EVENT_ANALYTICS.withDataValues),
-    ).not.toThrowError();
+      buildAnalyticsFromDhisEventAnalytics(models, EVENT_ANALYTICS.withDataValues),
+    ).toResolve();
     expect(() =>
-      buildAnalyticsFromDhisEventAnalytics(EVENT_ANALYTICS.withDataValues, []),
-    ).not.toThrowError();
+      buildAnalyticsFromDhisEventAnalytics(models, EVENT_ANALYTICS.withDataValues, []),
+    ).toResolve();
   });
 
-  it('returns an object with `results` and `metadata` fields', () => {
-    const response = buildAnalyticsFromDhisEventAnalytics(EVENT_ANALYTICS.withDataValues);
+  it('returns an object with `results` and `metadata` fields', async () => {
+    const response = await buildAnalyticsFromDhisEventAnalytics(
+      models,
+      EVENT_ANALYTICS.withDataValues,
+    );
     expect(response).toContainKeys(['results', 'metadata']);
   });
 
@@ -59,18 +65,17 @@ describe('buildAnalyticsFromDhisEventAnalytics', () => {
     ];
 
     it.each(testData)('%s', (_, [eventAnalytics, dataElementCodes], value) => {
-      expect(buildAnalyticsFromDhisEventAnalytics(eventAnalytics, dataElementCodes)).toHaveProperty(
-        'results',
-        value,
-      );
+      expect(
+        buildAnalyticsFromDhisEventAnalytics(models, eventAnalytics, dataElementCodes),
+      ).resolves.toHaveProperty('results', value);
     });
   });
 
   describe('`metadata`', () => {
     it('empty data element codes', () => {
       expect(
-        buildAnalyticsFromDhisEventAnalytics(EVENT_ANALYTICS.withDataValues),
-      ).toHaveProperty('metadata', { dataElementCodeToName: {} });
+        buildAnalyticsFromDhisEventAnalytics(models, EVENT_ANALYTICS.withDataValues),
+      ).resolves.toHaveProperty('metadata', { dataElementCodeToName: {} });
     });
 
     it('non empty data element codes', () => {
@@ -81,11 +86,15 @@ describe('buildAnalyticsFromDhisEventAnalytics', () => {
       };
 
       expect(
-        buildAnalyticsFromDhisEventAnalytics(EVENT_ANALYTICS.emptyRows, dataElementCodes),
-      ).toHaveProperty('metadata', { dataElementCodeToName });
+        buildAnalyticsFromDhisEventAnalytics(models, EVENT_ANALYTICS.emptyRows, dataElementCodes),
+      ).resolves.toHaveProperty('metadata', { dataElementCodeToName });
       expect(
-        buildAnalyticsFromDhisEventAnalytics(EVENT_ANALYTICS.withDataValues, dataElementCodes),
-      ).toHaveProperty('metadata', { dataElementCodeToName });
+        buildAnalyticsFromDhisEventAnalytics(
+          models,
+          EVENT_ANALYTICS.withDataValues,
+          dataElementCodes,
+        ),
+      ).resolves.toHaveProperty('metadata', { dataElementCodeToName });
     });
   });
 });
