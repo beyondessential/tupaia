@@ -4,7 +4,7 @@
  */
 
 import { respond } from '@tupaia/utils';
-import { getPermissionsBasedChangesFilter } from './utilities';
+import { buildPermissionsBasedMeditrakSyncQuery } from './utilities';
 import { allowNoPermissions } from '../permissions';
 
 /**
@@ -21,7 +21,7 @@ export async function changesMetadata(req, res) {
 
   await req.assertPermissions(allowNoPermissions);
 
-  const { query, countries, permissionGroups } = await getPermissionsBasedChangesFilter(req, {
+  const { query, countries, permissionGroups } = await buildPermissionsBasedMeditrakSyncQuery(req, {
     select: 'count(*)',
   });
   const queryResult = await query.executeOnDatabase(models.database);

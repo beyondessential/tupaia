@@ -5,7 +5,7 @@
 
 import { getKeysSortedByValues, respond, UnauthenticatedError } from '@tupaia/utils';
 import { getUniversalTypes } from '../../database/utilities';
-import { fetchRequestingMeditrakDevice, getChangesFilter } from '../utilities';
+import { fetchRequestingMeditrakDevice, buildMeditrakSyncQuery } from '../utilities';
 
 const MAX_FAILS_BEFORE_LOG_OUT = 2;
 const MAX_FAILS_BEFORE_TYPE_EXCLUSION = 5;
@@ -136,7 +136,7 @@ export class LegacyCountChangesHandler {
 
     const universalTypes = getUniversalTypes(models);
 
-    const { query: dbQuery } = await getChangesFilter(
+    const { query: dbQuery } = await buildMeditrakSyncQuery(
       {
         ...this.req,
         query: { ...query, recordTypes: universalTypes.join(',') },
@@ -168,7 +168,7 @@ export class LegacyCountChangesHandler {
 
   async handle() {
     await this.handleSetUp();
-    const { query } = await getChangesFilter(this.req, { select: 'count(*)' });
+    const { query } = await buildMeditrakSyncQuery(this.req, { select: 'count(*)' });
     const queryResult = await query.executeOnDatabase(this.req.models.database);
     const changeCount = parseInt(queryResult[0].count);
     respond(this.res, { changeCount });

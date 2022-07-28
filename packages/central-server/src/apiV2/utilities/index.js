@@ -16,10 +16,13 @@ export {
   getAdminPanelAllowedCountryCodes,
 } from './getAdminPanelAllowedEntityIds';
 export { getArrayQueryParameter } from './getArrayQueryParameter';
-export { getChangesFilter, getPermissionsBasedChangesFilter } from './getChangesFilter';
 export { getColumnsForMeditrakApp } from './getColumnsForMeditrakApp';
 export { hasAccessToEntityForVisualisation } from './hasAccessToEntityForVisualisation';
 export { hasTupaiaAdminAccessToEntityForVisualisation } from './hasTupaiaAdminAccessToEntityForVisualisation';
+export {
+  buildMeditrakSyncQuery,
+  buildPermissionsBasedMeditrakSyncQuery,
+} from './meditrakSyncQuery';
 export { mergeFilter } from './mergeFilter';
 export { mergeMultiJoin } from './mergeMultiJoin';
 export { SurveyResponseImporter } from './SurveyResponseImporter';

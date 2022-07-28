@@ -103,7 +103,7 @@ const extractSinceValue = req => {
   return parseFloat(since);
 };
 
-export const getChangesFilter = async (req, { select, sort, limit, offset }) => {
+export const buildMeditrakSyncQuery = async (req, { select, sort, limit, offset }) => {
   const since = extractSinceValue(req);
 
   let query = '';
@@ -137,7 +137,10 @@ export const getChangesFilter = async (req, { select, sort, limit, offset }) => 
   return { query: new SqlQuery(query, params) };
 };
 
-export const getPermissionsBasedChangesFilter = async (req, { select, sort, limit, offset }) => {
+export const buildPermissionsBasedMeditrakSyncQuery = async (
+  req,
+  { select, sort, limit, offset },
+) => {
   const since = extractSinceValue(req);
   const permissionBasedFilter = await getCountriesAndPermissionsToSync(req);
 

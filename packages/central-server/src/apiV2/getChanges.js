@@ -9,8 +9,8 @@ import { respond, DatabaseError } from '@tupaia/utils';
 import { TYPES } from '@tupaia/database';
 import {
   supportsPermissionsBasedSync,
-  getChangesFilter,
-  getPermissionsBasedChangesFilter,
+  buildMeditrakSyncQuery,
+  buildPermissionsBasedMeditrakSyncQuery,
   getColumnsForMeditrakApp,
 } from './utilities';
 import { allowNoPermissions } from '../permissions';
@@ -47,10 +47,10 @@ export async function getChanges(req, res) {
 
   try {
     const msqColumns = await models.meditrakSyncQueue.fetchFieldNames();
-    const changeFilterFunction = supportsPermissionsBasedSync(appVersion)
-      ? getPermissionsBasedChangesFilter
-      : getChangesFilter;
-    const { query } = await changeFilterFunction(req, {
+    const queryBuilder = supportsPermissionsBasedSync(appVersion)
+      ? buildPermissionsBasedMeditrakSyncQuery
+      : buildMeditrakSyncQuery;
+    const { query } = await queryBuilder(req, {
       select: msqColumns.join(', '),
       sort: 'change_time ASC',
       limit,
