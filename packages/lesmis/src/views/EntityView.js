@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React from 'react';
+import React, { useState } from 'react';
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
 import { LocationHeader, Toolbar, Breadcrumbs, Footer, FlexSpaceBetween } from '../components';
 import { DashboardView } from './DashboardView';
@@ -12,6 +12,7 @@ import { useEntityBreadcrumbs, useUrlParams } from '../utils';
 import { LocaleMenu } from '../components/LocaleMenu';
 
 export const EntityView = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const match = useRouteMatch();
   const { locale, entityCode, view } = useUrlParams();
   const { breadcrumbs, isLoading } = useEntityBreadcrumbs();
@@ -24,10 +25,10 @@ export const EntityView = () => {
           <LocaleMenu />
         </FlexSpaceBetween>
       </Toolbar>
-      <LocationHeader />
+      <LocationHeader setIsOpen={setIsOpen} />
       <Switch>
         <Route path={`${match.path}/dashboard`}>
-          <DashboardView />
+          <DashboardView isOpen={isOpen} setIsOpen={setIsOpen} />
         </Route>
         <Route path={`${match.path}/map`}>
           <MapView />
