@@ -59,8 +59,6 @@ RUN mkdir -p ./packages/e2e
 COPY packages/e2e/package.json ./packages/e2e
 RUN mkdir -p ./packages/entity-server
 COPY packages/entity-server/package.json ./packages/entity-server
-RUN mkdir -p ./packages/pdf-export-server
-COPY packages/pdf-export-server/package.json ./packages/pdf-export-server
 RUN mkdir -p ./packages/expression-parser
 COPY packages/expression-parser/package.json ./packages/expression-parser
 RUN mkdir -p ./packages/indicators
@@ -75,6 +73,8 @@ RUN mkdir -p ./packages/meditrak-app
 COPY packages/meditrak-app/package.json ./packages/meditrak-app
 RUN mkdir -p ./packages/meditrak-app-server
 COPY packages/meditrak-app-server/package.json ./packages/meditrak-app-server
+RUN mkdir -p ./packages/pdf-export-server
+COPY packages/pdf-export-server/package.json ./packages/pdf-export-server
 RUN mkdir -p ./packages/psss
 COPY packages/psss/package.json ./packages/psss
 RUN mkdir -p ./packages/psss-server
