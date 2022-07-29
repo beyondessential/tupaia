@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import startCase from 'lodash.startcase';
+
 // We use the `'undefined'` string to indicate a missing value in cases where the
 // actual `undefined` JS type cannot be used, e.g. in json config persisted in the DB
 const isUndefined = value => value !== undefined && value !== 'undefined';
@@ -30,9 +32,14 @@ const translate = (value, translations) => {
 
 const date = (...argumentList) => new Date(...argumentList);
 
+const upperFirstCase = value => {
+  return startCase(value);
+};
+
 export const customFunctions = {
   avg: average,
   firstExistingValue,
   translate,
   date,
+  upperFirstCase,
 };

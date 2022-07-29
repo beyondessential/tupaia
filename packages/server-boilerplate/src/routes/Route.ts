@@ -19,7 +19,7 @@ export type ExpressResponse<Req> = Response<ResBody<Req>>;
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
 type DownloadResBody = {
-  contents: string;
+  contents: string | Buffer;
   filePath?: string;
   type?: string;
 };
