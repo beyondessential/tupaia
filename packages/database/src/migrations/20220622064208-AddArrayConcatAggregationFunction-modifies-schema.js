@@ -16,8 +16,7 @@ exports.setup = function (options, seedLink) {
 
 exports.up = function (db) {
   return db.runSql(`
-  DROP AGGREGATE IF EXISTS array_concat_agg(anyarray);
-  CREATE AGGREGATE array_concat_agg(anyarray) (
+  CREATE OR REPLACE AGGREGATE array_concat_agg(anyarray) (
     SFUNC = array_cat,
     STYPE = anyarray
   );
