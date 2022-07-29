@@ -92,13 +92,22 @@ const IMPORT_CONFIG = {
 };
 
 const EDIT_CONFIG = {
-  title: 'Edit Answer',
+  title: [
+    {
+      titleEndpoint: 'entities',
+      titleText: 'Edit Entity',
+    },
+    {
+      titleEndpoint: 'answers',
+      titleText: 'Edit Answer',
+    },
+  ],
 };
 
 export const EntitiesPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title={ENTITY_ENDPOINT}
-    endpoint="entities"
+    title="Entities"
+    endpoint={ENTITY_ENDPOINT}
     columns={FIELDS}
     editConfig={EDIT_CONFIG}
     expansionTabs={EXPANSION_CONFIG}
