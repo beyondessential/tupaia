@@ -1,7 +1,7 @@
 import {
   formatDateForDHIS2,
   formatDateTimeForDHIS2,
-} from '../../../services/dhis/formatDateForDHIS2';
+} from '../../../../services/dhis/translators/formatDateForDHIS2';
 
 describe('formatDateForDHIS2()', () => {
   it('should format the date without converting it to a different timezone', () => {

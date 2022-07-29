@@ -7,17 +7,23 @@ const MOCK_DATA_SERVICE_ENTITY = [
   {
     id: 'AAAAAAAAAAAAAAAAAAAAAAAA',
     entity_code: 'TupaiaEntityA',
-    'config->>kobo_id': 'KoBoA',
+    config: {
+      kobo_id: 'KoBoA',
+    },
   },
   {
     id: 'BBBBBBBBBBBBBBBBBBBBBBBB',
     entity_code: 'TupaiaEntityB',
-    'config->>kobo_id': 'KoBoB',
+    config: {
+      kobo_id: 'KoBoB',
+    },
   },
   {
     id: 'CCCCCCCCCCCCCCCCCCCCCCCC',
     entity_code: 'TupaiaEntityC',
-    'config->>kobo_id': 'KoBoC',
+    config: {
+      kobo_id: 'KoBoC',
+    },
   },
 ];
 
