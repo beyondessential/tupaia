@@ -1,8 +1,8 @@
 {
-  "name": "@tupaia/lesmis-server",
+  "name": "@tupaia/pdf-export-server",
   "version": "0.0.0",
   "private": true,
-  "description": "Backend server for LESMIS application",
+  "description": "Server for exporting PDF files",
   "homepage": "https://github.com/beyondessential/tupaia",
   "bugs": {
     "url": "https://github.com/beyondessential/tupaia/issues"
@@ -15,28 +15,25 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
+    "build": "npm run --prefix ../../ package:build:ts",
     "build-dev": "npm run build",
     "lint": "yarn package:lint:ts",
     "lint:fix": "yarn lint --fix",
     "prestart": "npm run build",
     "start": "node dist",
-    "start-dev": "LOG_LEVEL=debug yarn package:start:backend-start-dev 9998 -ts",
+    "start-dev": "yarn package:start:backend-start-dev 9993 -ts",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
     "test": "yarn package:test",
     "test:coverage": "yarn test --coverage",
     "test:watch": "yarn test --watch"
   },
   "dependencies": {
-    "@tupaia/access-policy": "3.0.0",
-    "@tupaia/api-client": "3.1.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/server-boilerplate": "1.0.0",
-    "@tupaia/utils": "1.0.0",
-    "camelcase-keys": "^6.2.2",
+    "cookies": "^0.8.0",
     "dotenv": "^8.2.0",
     "express": "^4.16.2",
-    "lodash.uniqby": "^4.7.0",
+    "puppeteer": "^15.4.0",
     "winston": "^3.2.1"
   }
 }

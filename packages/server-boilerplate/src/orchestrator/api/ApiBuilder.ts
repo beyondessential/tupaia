@@ -7,7 +7,12 @@ import express, { Express, Request, Response, NextFunction, RequestHandler } fro
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
-
+import {
+  AuthHandler,
+  getBaseUrlsForHost,
+  LOCALHOST_BASE_URLS,
+  TupaiaApiClient,
+} from '@tupaia/api-client';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { UnauthenticatedError } from '@tupaia/utils';
@@ -155,14 +160,29 @@ export class ApiBuilder {
     return this;
   }
 
+  public attachApiClientToContext(authHandlerProvider: (req: Request) => AuthHandler) {
+    return this.use('*', (req, res, next) => {
+      try {
+        const baseUrls =
+          process.env.NODE_ENV === 'test' ? LOCALHOST_BASE_URLS : getBaseUrlsForHost(req.hostname);
+        const apiClient = new TupaiaApiClient(authHandlerProvider(req), baseUrls);
+        req.ctx.services = apiClient;
+        res.ctx.services = apiClient;
+        next();
+      } catch (err) {
+        next(err);
+      }
+    });
+  }
+
   public use<T extends ExpressRequest<T> = Request>(
     path: string,
-    middleware: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+    ...middleware: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
     this.app.use(
       this.formatPath(path),
       this.attachSession as RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
-      middleware,
+      ...middleware,
     );
     return this;
   }
