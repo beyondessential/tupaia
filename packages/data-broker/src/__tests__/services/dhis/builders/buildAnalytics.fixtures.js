@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export const EVENT_ANALYTICS_WITH_DATA_VALUES = {
+const EVENT_ANALYTICS_WITH_DATA_VALUES = {
   headers: [
     { name: 'psi', column: 'Event', valueType: 'TEXT' },
     { name: 'eventdate', column: 'Event date', valueType: 'DATE' },
@@ -52,7 +52,7 @@ export const EVENT_ANALYTICS_WITH_DATA_VALUES = {
   ],
 };
 
-export const EVENT_ANALYTICS_NO_DATA_VALUES = {
+const EVENT_ANALYTICS_NO_DATA_VALUES = {
   headers: [
     { name: 'psi', column: 'Event', valueType: 'TEXT' },
     { name: 'eventdate', column: 'Event date', valueType: 'DATE' },
@@ -79,7 +79,7 @@ export const EVENT_ANALYTICS_NO_DATA_VALUES = {
   ],
 };
 
-export const EVENT_ANALYTICS_EMPTY_ROWS = {
+const EVENT_ANALYTICS_EMPTY_ROWS = {
   headers: [
     { name: 'psi', column: 'Event', valueType: 'TEXT' },
     { name: 'eventdate', column: 'Event date', valueType: 'DATE' },
@@ -109,8 +109,51 @@ export const EVENT_ANALYTICS_EMPTY_ROWS = {
   rows: [],
 };
 
+const EVENT_ANALYTICS_TRACKED_ENTITY_ID = {
+  headers: [
+    { name: 'psi', column: 'Event', valueType: 'TEXT' },
+    { name: 'eventdate', column: 'Event date', valueType: 'DATE' },
+    { name: 'ouname', column: 'Organisation unit name', valueType: 'TEXT' },
+    { name: 'oucode', column: 'Organisation unit code', valueType: 'TEXT' },
+    { name: 'ou', column: 'Organisation unit', valueType: 'TEXT' },
+    { name: 'tei', column: 'Tracked entity instance', valueType: 'TEXT' },
+  ],
+  metaData: {
+    items: {
+      tonga_dhisId: { name: 'Tonga' },
+      ou: { name: 'Organisation unit' },
+      program_dhisId: { name: 'BCD1 Survey' },
+    },
+    dimensions: {
+      pe: [],
+      ou: ['tonga_dhisId'],
+    },
+  },
+  width: 7,
+  height: 0,
+  rows: [
+    [
+      'event1_dhisId',
+      '2020-02-06T10:18:00.000',
+      'Nukunuku',
+      'TO_Nukuhc',
+      'nukunuku_dhisId',
+      'tracked_entity_id_dl_household_1',
+    ],
+    [
+      'event2_dhisId',
+      '2020-02-07T14:33:00.000',
+      'Haveluloto',
+      'TO_HvlMCH',
+      'houma_dhisId',
+      'tracked_entity_id_dl_household_2',
+    ],
+  ],
+};
+
 export const EVENT_ANALYTICS = {
   withDataValues: EVENT_ANALYTICS_WITH_DATA_VALUES,
   noDataValues: EVENT_ANALYTICS_NO_DATA_VALUES,
   emptyRows: EVENT_ANALYTICS_EMPTY_ROWS,
+  withTrackedEntityIds: EVENT_ANALYTICS_TRACKED_ENTITY_ID,
 };

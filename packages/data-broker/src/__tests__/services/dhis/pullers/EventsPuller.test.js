@@ -5,9 +5,11 @@
 
 import { createModelsStub, stubDhisApi } from '../DhisService.stubs';
 import { DATA_GROUPS } from '../DhisService.fixtures';
-import * as BuildEvents from '../../../../services/dhis/buildAnalytics/buildEventsFromDhisEventAnalytics';
+import { buildEventsFromDhisEventAnalytics } from '../../../../services/dhis/builders/buildEventsFromDhisEventAnalytics';
 import { EventsPuller } from '../../../../services/dhis/pullers';
-import { DhisTranslator } from '../../../../services/dhis/DhisTranslator';
+import { DhisTranslator } from '../../../../services/dhis/translators/DhisTranslator';
+
+jest.mock('../../../../services/dhis/builders/buildEventsFromDhisEventAnalytics');
 
 describe('EventsPuller', () => {
   let eventsPuller;
@@ -16,8 +18,16 @@ describe('EventsPuller', () => {
   beforeEach(() => {
     const models = createModelsStub();
     const translator = new DhisTranslator(models);
-    eventsPuller = new EventsPuller(models.dataElement, translator);
+    eventsPuller = new EventsPuller(models, translator);
     dhisApi = stubDhisApi();
+    buildEventsFromDhisEventAnalytics.mockReturnValue('X');
+  });
+
+  it('pulls', async () => {
+    const result = await eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], {
+      dataElementCodes: ['POP_01'],
+    });
+    expect(result).toEqual(['X']); // not sure why but mocked return value is wrapped into an array
   });
 
   it('throws an error if multiple data groups are provided', async () =>
@@ -81,14 +91,6 @@ describe('EventsPuller', () => {
   });
 
   describe('data building', () => {
-    let buildEventsMock;
-
-    beforeAll(() => {
-      buildEventsMock = jest
-        .spyOn(BuildEvents, 'buildEventsFromDhisEventAnalytics')
-        .mockReturnValue([]);
-    });
-
     describe('buildEventsFromDhisEventAnalytics() invocation', () => {
       it('simple data elements', async () => {
         const getEventAnalyticsResponse = {
@@ -108,8 +110,11 @@ describe('EventsPuller', () => {
         dhisApi = stubDhisApi({ getEventAnalyticsResponse });
         const dataElementCodes = ['POP01', 'POP02'];
 
-        await eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], { dataElementCodes });
-        expect(buildEventsMock).toHaveBeenCalledOnceWith(
+        await eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], {
+          dataElementCodes,
+        });
+        expect(buildEventsFromDhisEventAnalytics).toHaveBeenCalledOnceWith(
+          expect.anything(),
           getEventAnalyticsResponse,
           dataElementCodes,
         );
@@ -139,34 +144,17 @@ describe('EventsPuller', () => {
           rows: [],
         };
         dhisApi = stubDhisApi({ getEventAnalyticsResponse });
-
         const dataElementCodes = ['DIF01'];
-        await eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], { dataElementCodes });
-        expect(buildEventsMock).toHaveBeenCalledOnceWith(
+
+        await eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], {
+          dataElementCodes,
+        });
+        expect(buildEventsFromDhisEventAnalytics).toHaveBeenCalledOnceWith(
+          expect.anything(),
           translatedEventAnalyticsResponse,
           dataElementCodes,
         );
       });
-    });
-
-    it('directly returns the buildEventsFromDhisEventAnalytics() results', () => {
-      const events = [
-        {
-          event: 'event1_dhisId',
-          eventDate: '2020-02-06T10:18:00.000',
-          orgUnit: 'TO_Nukuhc',
-          orgUnitName: 'Nukunuku',
-          dataValues: {
-            POP01: 1,
-            POP02: 2,
-          },
-        },
-      ];
-      buildEventsMock.mockReturnValue(events);
-
-      return expect(
-        eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], {}),
-      ).resolves.toStrictEqual(events);
     });
   });
 });
