@@ -34,7 +34,7 @@ const SubHeading = styled(BaseHeading)`
 const Header = ({ dashboardLabel, useYearSelector, selectedYear }) => {
   const { entityCode } = useUrlParams();
   const { data: entityData } = useEntityData(entityCode);
-  const entityName = entityData?.name ? entityData?.name : '';
+  const entityName = entityData?.name || '';
 
   return (
     <FlexCenter>
