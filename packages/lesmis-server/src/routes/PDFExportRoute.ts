@@ -38,12 +38,17 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
   };
 
   private verifyBody = (body: any): Body => {
+    const legitLESMISHostnames = ['lesmis.la', 'www.lesmis.la'];
     const { pdfPageUrl } = body;
     if (!pdfPageUrl || typeof pdfPageUrl !== 'string') {
       throw new Error(`'pdfPageUrl' should be provided in request body, got: ${pdfPageUrl}`);
     }
     const location = new URL(pdfPageUrl);
-    if (!location.hostname.endsWith('.tupaia.org') && !location.hostname.endsWith('localhost')) {
+    if (
+      !location.hostname.endsWith('.tupaia.org') &&
+      !legitLESMISHostnames.includes(location.hostname) &&
+      !location.hostname.endsWith('localhost')
+    ) {
       throw new Error(`'pdfPageUrl' is not valid, got: ${pdfPageUrl}`);
     }
     return { pdfPageUrl };
