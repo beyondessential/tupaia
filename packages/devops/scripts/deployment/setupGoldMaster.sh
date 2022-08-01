@@ -39,7 +39,7 @@ rm -rf lastpass-cli
 mkdir -p /home/ubuntu/.local/share/lpass
 
 # install puppeteer dependencies https://pptr.dev/15.3.0/troubleshooting#chrome-headless-doesnt-launch-on-unix
-sudo apt-get -y install \
+sudo apt-get install -y \
 ca-certificates \
 fonts-liberation \
 libappindicator3-1 \
