@@ -51,7 +51,7 @@ export class ReportBuilder {
     const builtQuery = await new QueryBuilder(this.reqContext, this.config, query).build();
     const data = await fetch(aggregator, builtQuery);
 
-    const context = await buildContext(this.config.transform, this.reqContext, data);
+    const context = await buildContext(this.config.transform, this.reqContext, data, query);
     const transform = buildTransform(this.config.transform, context);
     const transformedData = transform(data.results);
 
