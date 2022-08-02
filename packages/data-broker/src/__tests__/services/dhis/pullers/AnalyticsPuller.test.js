@@ -2,11 +2,11 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import * as BuildAnalytics from '../../../../services/dhis/buildAnalytics/buildAnalyticsFromDhisEventAnalytics';
+import * as BuildAnalytics from '../../../../services/dhis/builders/buildAnalyticsFromDhisEventAnalytics';
 import { AnalyticsPuller } from '../../../../services/dhis/pullers/AnalyticsPuller';
 import { DATA_SOURCES, EVENT_ANALYTICS } from '../DhisService.fixtures';
 import { buildDhisAnalyticsResponse, createModelsStub, stubDhisApi } from '../DhisService.stubs';
-import { DhisTranslator } from '../../../../services/dhis/DhisTranslator';
+import { DhisTranslator } from '../../../../services/dhis/translators/DhisTranslator';
 import { DataElementsMetadataPuller } from '../../../../services/dhis/pullers';
 
 describe('AnalyticsPuller', () => {
@@ -20,11 +20,7 @@ describe('AnalyticsPuller', () => {
       models.dataElement,
       translator,
     );
-    analyticsPuller = new AnalyticsPuller(
-      models.dataElement,
-      translator,
-      dataElementsMetadataPuller,
-    );
+    analyticsPuller = new AnalyticsPuller(models, translator, dataElementsMetadataPuller);
     dhisApi = stubDhisApi();
   });
 
@@ -301,6 +297,7 @@ describe('AnalyticsPuller', () => {
 
           await analyticsPuller.pull([dhisApi], [DATA_SOURCES.POP01], { programCodes: [] });
           expect(buildAnalyticsMock).toHaveBeenCalledOnceWith(
+            expect.anything(),
             expect.objectContaining(emptyEventAnalytics),
             dataElementCodes,
           );
@@ -316,6 +313,7 @@ describe('AnalyticsPuller', () => {
             dataElementCodes,
           });
           expect(buildAnalyticsMock).toHaveBeenCalledOnceWith(
+            expect.anything(),
             getEventAnalyticsResponse,
             dataElementCodes,
           );
@@ -349,6 +347,7 @@ describe('AnalyticsPuller', () => {
             dataElementCodes,
           });
           expect(buildAnalyticsMock).toHaveBeenCalledOnceWith(
+            expect.anything(),
             translatedEventAnalytics,
             dataElementCodes,
           );

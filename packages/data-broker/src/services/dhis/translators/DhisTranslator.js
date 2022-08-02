@@ -9,7 +9,7 @@ import { translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
 import { mapKeys, reduceToDictionary } from '@tupaia/utils';
 import { InboundAnalyticsTranslator } from './InboundAnalyticsTranslator';
 import { parseValueForDhis } from './parseValueForDhis';
-import { DATA_SOURCE_TYPES } from '../../utils';
+import { DATA_SOURCE_TYPES } from '../../../utils';
 
 export class DhisTranslator {
   constructor(models) {

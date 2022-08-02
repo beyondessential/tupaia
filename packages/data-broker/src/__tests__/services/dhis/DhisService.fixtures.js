@@ -25,13 +25,30 @@ export const DATA_GROUPS = {
   }),
 };
 
+export const ENTITIES = {
+  DL_FACILITY_A: {
+    code: 'DL_FACILITY_A',
+    name: 'DL FACILITY A',
+    type: 'facility',
+    metadata: {},
+  },
+  DL_HOUSEHOLD_1: {
+    code: 'DL_HOUSEHOLD_1',
+    name: 'DL HOUSEHOLD 1',
+    type: 'household',
+    metadata: {
+      dhis: { isDataRegional: false, trackedEntityId: 'tracked_entity_id_dl_household_1' },
+    },
+  },
+};
+
 export const DATA_VALUES = {
   POP01: { code: 'POP01', value: '1' },
   POP02: { code: 'POP02', value: '2' },
   DIF01: { code: 'DIF01', value: '3' },
 };
 
-export const DATA_ELEMENTS = {
+export const DHIS_RESPONSE_DATA_ELEMENTS = {
   POP01: { code: 'POP01', uid: 'id000POP01', name: 'Population 1' },
   POP02: { code: 'POP02', uid: 'id000POP02', name: 'Population 2' },
   DIF01_DHIS: { code: 'DIF01_DHIS', uid: 'id000DIF01_DHIS', name: 'Different 1' },

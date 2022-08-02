@@ -7,7 +7,7 @@ import { expect } from 'chai';
 import { flatten } from 'lodash';
 import sinon from 'sinon';
 
-import { generateTestId } from '@tupaia/database';
+import { generateTestId, createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import { SurveyResponseImporter } from '../../../apiV2/utilities';
 import * as SurveyResponse from '../../../apiV2/surveyResponse';
 
@@ -45,24 +45,12 @@ const ALL_RESULTS = flatten(Object.values(RESULTS_BY_SURVEY_ID));
 const TIMESTAMP = 1570000000;
 const USER_ID = 'userId';
 
-const transactingModelsStub = {
-  transacting: true,
-};
-
 const createModelsStub = () => {
-  const findOneSurveyStub = sinon.stub();
-  findOneSurveyStub
-    .withArgs({ name: SURVEY1.name })
-    .returns(SURVEY1)
-    .withArgs({ name: SURVEY2.name })
-    .returns(SURVEY2);
-
-  return {
+  return baseCreateModelsStub({
     survey: {
-      findOne: findOneSurveyStub,
+      records: [SURVEY1, SURVEY2],
     },
-    wrapInTransaction: callback => callback(transactingModelsStub),
-  };
+  });
 };
 
 const createResponseExtractors = () => {
