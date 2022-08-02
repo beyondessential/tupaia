@@ -36,6 +36,24 @@ export class SyncingDatabase extends Database {
     this.synchroniser.disable();
   }
 
+  /**
+   * Used to determine which countries to be removed from sync tracking if they've been deleted
+   * @returns {string[]} list of country codes in the database
+   */
+  getCountryCodes() {
+    return this.objects('Country')
+      .filtered('name != "No Country"')
+      .map(country => country.code);
+  }
+
+  /**
+   * Used to determine which permission groups to be removed from sync tracking if they've been deleted
+   * @returns {string[]} list of permission group names in the database
+   */
+  getPermissionGroupNames() {
+    return this.objects('PermissionGroup').map(permissionGroup => permissionGroup.name);
+  }
+
   synchronise(dispatch) {
     return this.synchroniser.synchronise(dispatch);
   }

@@ -69,7 +69,7 @@ export const getSyncMigrations = async database => {
 const resyncRecordTypes = async (synchroniser, setProgressMessage, recordTypes = []) => {
   const recordTypesFilter = recordTypes.join(',');
   setProgressMessage('Getting migration record count');
-  const changeCount = await synchroniser.getIncomingChangeCount(0, {
+  const { changeCount } = await synchroniser.getIncomingChangeMetadata(0, {
     recordTypes: recordTypesFilter,
   });
 
