@@ -9,6 +9,7 @@
 const PROJECT = 'PROJECT';
 const ORG_UNIT = 'ORG_UNIT';
 const DASHBOARD = 'DASHBOARD';
+const PDF_EXPORT = 'PDF_EXPORT';
 
 // Search components
 const MAP_OVERLAY = 'MAP_OVERLAY';
@@ -24,6 +25,7 @@ export const URL_COMPONENTS = {
   PROJECT,
   ORG_UNIT,
   DASHBOARD,
+  PDF_EXPORT,
 
   // Search components
   MAP_OVERLAY,
@@ -35,7 +37,7 @@ export const URL_COMPONENTS = {
   MOBILE_TAB,
 };
 
-export const PATH_COMPONENTS = [PROJECT, ORG_UNIT, DASHBOARD];
+export const PATH_COMPONENTS = [PROJECT, ORG_UNIT, DASHBOARD, PDF_EXPORT];
 export const SEARCH_COMPONENTS = [
   MAP_OVERLAY,
   REPORT,
