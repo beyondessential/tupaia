@@ -43,10 +43,10 @@ type PullOptions = Partial<{
   useDeprecatedApi: boolean;
 }>;
 
-type DeleteOptions = Partial<{
-  serverName: string;
+type DeleteOptions = {
+  serverName?: string;
   type: DataSourceType;
-}>;
+};
 
 type PullMetadataOptions = Partial<{
   organisationUnitCode: string;
@@ -218,17 +218,17 @@ export class DhisService extends Service {
   public async delete(
     dataSource: DataElement,
     data: DataValue,
-    options?: DeleteOptions,
+    options: DeleteOptions,
   ): Promise<Diagnostics>;
   public async delete(
     dataSource: DataGroup,
     data: DeleteEventData,
-    options?: DeleteOptions,
+    options: DeleteOptions,
   ): Promise<Diagnostics>;
   public async delete(
     dataSource: DataSource,
     data: DataValue | DeleteEventData,
-    { serverName, type }: DeleteOptions = {},
+    { serverName, type }: DeleteOptions,
   ): Promise<Diagnostics> {
     const api = serverName
       ? getDhisApiInstance({ serverName }, this.models)

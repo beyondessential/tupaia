@@ -45,7 +45,7 @@ export abstract class Service {
     dataSources: DataSource[],
     type: DataSourceType,
     options?: Record<string, unknown>,
-  ): Promise<AnalyticResults | EventResults | SyncGroupResults | undefined> | never;
+  ): Promise<AnalyticResults | EventResults | SyncGroupResults> | never;
 
   public abstract pullMetadata(
     dataSources: DataSource[],

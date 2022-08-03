@@ -27,6 +27,13 @@ import { DATA_SOURCE_TYPES } from './utils';
 
 export const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
+const EMPTY_ANALYTICS_RESULTS = {
+  results: [],
+  metadata: {
+    dataElementCodeToName: {},
+  },
+};
+
 type Context = {
   accessPolicy?: AccessPolicy;
 };
@@ -234,17 +241,17 @@ export class DataBroker {
 
   public async pull(
     dataSourceSpec: DataSourceSpec<'dataElement'>,
-    options?: Record<string, unknown>,
+    options: Record<string, unknown>,
   ): Promise<RawAnalyticResults>;
   public async pull(
     dataSourceSpec: DataSourceSpec<'dataGroup'>,
-    options?: Record<string, unknown>,
+    options: Record<string, unknown>,
   ): Promise<EventResults>;
   public async pull(
     dataSourceSpec: DataSourceSpec<'syncGroup'>,
-    options?: Record<string, unknown>,
+    options: Record<string, unknown>,
   ): Promise<SyncGroupResults>;
-  public async pull(dataSourceSpec: DataSourceSpec, options?: Record<string, unknown>) {
+  public async pull(dataSourceSpec: DataSourceSpec, options: Record<string, unknown>) {
     const dataSources = await this.fetchDataSources(dataSourceSpec);
     const { type } = dataSourceSpec;
 
@@ -258,14 +265,15 @@ export class DataBroker {
     const mergeResults = this.resultMergers[type];
 
     return nestedResults.reduce(
-      (results, resultsForService) => mergeResults(results as any, resultsForService as any),
+      // @ts-expect-error Current implementation is too dynamic to fit into elegant TS types
+      (results, resultsForService) => mergeResults(results, resultsForService),
       undefined,
     );
   }
 
   private pullForServiceAndType = async (
     dataSources: DataSource[],
-    options?: Record<string, unknown>,
+    options: Record<string, unknown>,
     type: DataSourceType,
   ) => {
     const { service_type: serviceType } = dataSources[0];
@@ -277,7 +285,7 @@ export class DataBroker {
   };
 
   private mergeAnalytics = (
-    target: AnalyticResults = { results: [], metadata: {} },
+    target: AnalyticResults = EMPTY_ANALYTICS_RESULTS,
     source: RawAnalyticResults,
   ) => {
     const sourceNumAggregationsProcessed = source.numAggregationsProcessed || 0;
@@ -321,8 +329,10 @@ export class DataBroker {
 
   private mergeEvents = (target: EventResults = [], source: EventResults) => target.concat(source);
 
-  private mergeSyncGroups = (target: SyncGroupResults = [], source: SyncGroupResults) =>
-    target.concat(source);
+  private mergeSyncGroups = (target: SyncGroupResults = {}, source: SyncGroupResults) => ({
+    ...target,
+    ...source,
+  });
 
   public async pullMetadata(dataSourceSpec: DataSourceSpec, options?: Record<string, unknown>) {
     const dataSources = await this.fetchDataSources(dataSourceSpec);

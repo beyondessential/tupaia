@@ -71,6 +71,8 @@ export class WeatherService extends Service {
 
       return this.getHistoricWeather(entities, startDate, endDate, apiResultTranslator);
     }
+
+    throw new Error('At least one historic or forecast weather data element is required');
   }
 
   /**
