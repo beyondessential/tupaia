@@ -21,11 +21,11 @@ describe('transposeTable', () => {
     ]);
   });
 
-  it('can transpose table with one reserved field as string', () => {
+  it('can transpose table with one included field as string', () => {
     const transform = buildTransform([
       {
         transform: 'transposeTable',
-        reserve: 'organisationUnit',
+        include: 'organisationUnit',
       },
     ]);
     expect(transform(SINGLE_ANALYTIC)).toEqual([
@@ -35,11 +35,11 @@ describe('transposeTable', () => {
     ]);
   });
 
-  it('can transpose table with reserved fields', () => {
+  it('can transpose table with included fields', () => {
     const transform = buildTransform([
       {
         transform: 'transposeTable',
-        reserve: ['organisationUnit', 'period'],
+        include: ['organisationUnit', 'period'],
       },
     ]);
     expect(transform(SINGLE_ANALYTIC)).toEqual([
@@ -52,7 +52,7 @@ describe('transposeTable', () => {
     const transform = buildTransform([
       {
         transform: 'transposeTable',
-        reserve: ['period'],
+        include: ['period'],
       },
     ]);
     expect(transform(MULTIPLE_ANALYTICS)).toEqual([

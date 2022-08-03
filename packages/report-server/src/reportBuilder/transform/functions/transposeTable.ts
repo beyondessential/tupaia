@@ -9,29 +9,29 @@ import { getColumnMatcher } from './helpers';
 import { starSingleOrMultipleColumnsValidator } from './transformValidators';
 
 type TransposeTableParams = {
-  shouldReserveColumn: (field: string) => boolean;
+  shouldIncludeColumn: (field: string) => boolean;
 };
 
 export const paramsValidator = yup.object().shape({
-  reserve: starSingleOrMultipleColumnsValidator,
+  include: starSingleOrMultipleColumnsValidator,
 });
 
 const transposeTable = (rows: Row[], params: TransposeTableParams): Row[] => {
-  const { shouldReserveColumn } = params;
+  const { shouldIncludeColumn } = params;
 
   return rows
     .map(row => {
-      const reservedFields: Record<string, FieldValue> = {};
+      const includedFields: Record<string, FieldValue> = {};
       const transposeFields: string[] = [];
       Object.entries(row).forEach(([key, value]) => {
-        if (shouldReserveColumn(key)) {
-          reservedFields[key] = value;
+        if (shouldIncludeColumn(key)) {
+          includedFields[key] = value;
         } else {
           transposeFields.push(key);
         }
       });
 
-      return transposeFields.map(key => ({ ...reservedFields, value: row[key], type: key }));
+      return transposeFields.map(key => ({ ...includedFields, value: row[key], type: key }));
     })
     .flat();
 };
@@ -39,14 +39,14 @@ const transposeTable = (rows: Row[], params: TransposeTableParams): Row[] => {
 const buildParams = (params: unknown): TransposeTableParams => {
   const validatedParams = paramsValidator.validateSync(params);
 
-  const { reserve } = validatedParams;
-  const policyColumns = reserve || [];
+  const { include } = validatedParams;
+  const policyColumns = include || [];
 
   const columnMatcher = getColumnMatcher(policyColumns);
-  const shouldReserveColumn = (column: string) => columnMatcher(column);
+  const shouldIncludeColumn = (column: string) => columnMatcher(column);
 
   return {
-    shouldReserveColumn,
+    shouldIncludeColumn,
   };
 };
 
