@@ -6,14 +6,14 @@
 import { yup } from '@tupaia/utils';
 import { Row, FieldValue } from '../../types';
 import { getColumnMatcher } from './helpers';
-import { starSingleOrMultipleColumnsValidator } from './transformValidators';
+import { transposeTableValidator } from './transformValidators';
 
 type TransposeTableParams = {
   shouldIncludeColumn: (field: string) => boolean;
 };
 
 export const paramsValidator = yup.object().shape({
-  include: starSingleOrMultipleColumnsValidator,
+  include: transposeTableValidator,
 });
 
 const transposeTable = (rows: Row[], params: TransposeTableParams): Row[] => {
@@ -23,6 +23,7 @@ const transposeTable = (rows: Row[], params: TransposeTableParams): Row[] => {
     .map(row => {
       const includedFields: Record<string, FieldValue> = {};
       const transposeFields: string[] = [];
+
       Object.entries(row).forEach(([key, value]) => {
         if (shouldIncludeColumn(key)) {
           includedFields[key] = value;
