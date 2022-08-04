@@ -28,10 +28,7 @@ export class DataGroupMetadataPuller {
       dataGroupCode,
     );
     const dataElementCodes = dataElementDataSources.map(({ code }) => code);
-    // const dataElementMetadata = await api.fetchDataElements(dataElementCodes, {
-    //   includeOptions,
-    // });
-    // return { dataElements: dataElementMetadata };
+
     return api.fetchDataGroup(dataGroupCode, dataElementCodes, includeOptions);
   };
 }
