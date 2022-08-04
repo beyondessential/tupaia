@@ -547,6 +547,33 @@ export class DhisApi {
     return dataElements;
   }
 
+  async fetchDataGroup(dataGroupCode, dataElementCodes, includeOptions) {
+    if (!dataGroupCode) {
+      throw new Error('Please provide a data group code');
+    }
+
+    const dataGroups = await this.getRecords({
+      type: PROGRAM,
+      codes: [dataGroupCode],
+      fields: ['code', 'name'],
+    });
+
+    const dataGroup = dataGroups[0];
+
+    if (!dataGroup) {
+      throw new Error(`Cannot find Data Group: ${dataGroupCode}`);
+    }
+
+    const dataElementsMetadata = await this.fetchDataElements(dataElementCodes, { includeOptions });
+
+    const dataGroupMetadata = {
+      ...dataGroup,
+      dataElements: dataElementsMetadata,
+    };
+
+    return dataGroupMetadata;
+  }
+
   buildFetchIndicatorsQuery = queryInput => {
     const { dataElementIds, dataElementCodes } = queryInput;
 

@@ -9,6 +9,7 @@ import {
   AnalyticsPuller,
   EventsPuller,
   DataElementsMetadataPuller,
+  DataGroupMetadataPuller,
   DeprecatedEventsPuller,
 } from './pullers';
 
@@ -22,6 +23,10 @@ export class DhisService extends Service {
     this.translator = new DhisTranslator(this.models);
     this.dataElementsMetadataPuller = new DataElementsMetadataPuller(
       this.models.dataElement,
+      this.translator,
+    );
+    this.dataGroupMetadataPuller = new DataGroupMetadataPuller(
+      this.models.dataGroup,
       this.translator,
     );
     this.analyticsPuller = new AnalyticsPuller(
@@ -67,6 +72,7 @@ export class DhisService extends Service {
   getMetadataPullers() {
     return {
       [this.dataSourceTypes.DATA_ELEMENT]: this.dataElementsMetadataPuller.pull.bind(this),
+      [this.dataSourceTypes.DATA_GROUP]: this.dataGroupMetadataPuller.pull.bind(this),
     };
   }
 
@@ -164,11 +170,16 @@ export class DhisService extends Service {
   }
 
   async pullMetadata(dataSources, type, options) {
-    const { organisationUnitCode: entityCode, dataServices = DEFAULT_DATA_SERVICES } = options;
+    const { organisationUnitCodes: entityCodes, dataServices = DEFAULT_DATA_SERVICES } = options;
     const pullMetadata = this.metadataPullers[type];
     const apis = dataServices.map(({ isDataRegional }) =>
-      getDhisApiInstance({ entityCode, isDataRegional }, this.models),
+      getDhisApiInstance({ entityCode: entityCodes[0], isDataRegional }, this.models),
     );
+
+    if (type === this.dataSourceTypes.DATA_GROUP) {
+      const result = await pullMetadata(apis[0], dataSources, options);
+      return result;
+    }
 
     const results = [];
     const pullForApi = async api => {

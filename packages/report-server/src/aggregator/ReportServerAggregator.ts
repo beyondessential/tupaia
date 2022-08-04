@@ -48,11 +48,13 @@ export class ReportServerAggregator {
     );
   }
 
-  private async getDateElementCodes(programCode: string) {
-    const { dataElements } = (await this.aggregator.fetchDataGroup(
-      programCode,
-      {},
-    )) as EventMetaData;
+  private async getDateElementCodes(programCode: string, organisationUnitCodes: string[]) {
+    console.log('before fetch Data Group:');
+    const { dataElements } = (await this.aggregator.fetchDataGroup(programCode, {
+      dataServices: [{ isDataRegional: false }],
+      organisationUnitCodes,
+    })) as EventMetaData;
+    console.log('data elements from getDataElementCodes: ', dataElements);
     return dataElements.map(({ code }) => code);
   }
 
@@ -65,12 +67,14 @@ export class ReportServerAggregator {
     dataElementCodesInConfig?: string[],
   ): Promise<Event[]> {
     const { period, startDate, endDate } = periodParams;
-
+    console.log('programCode', programCode);
+    console.log('organisationUnitCodes', organisationUnitCodes);
     const noCodesInConfig = !dataElementCodesInConfig || dataElementCodesInConfig.length === 0;
+    console.log('no codes in config: ', noCodesInConfig);
     const dataElementCodes =
-      (noCodesInConfig && (await this.getDateElementCodes(programCode))) ||
+      (noCodesInConfig && (await this.getDateElementCodes(programCode, organisationUnitCodes))) ||
       dataElementCodesInConfig;
-
+    console.log('data element codes', dataElementCodes);
     const aggregations = aggregationList
       ? aggregationList.map(aggregationToAggregationConfig)
       : [{ type: 'RAW' }];
