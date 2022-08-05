@@ -1,0 +1,38 @@
+{
+  "name": "@tupaia/pdf-export-server",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Server for exporting PDF files",
+  "homepage": "https://github.com/beyondessential/tupaia",
+  "bugs": {
+    "url": "https://github.com/beyondessential/tupaia/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "npm run --prefix ../../ package:build:ts",
+    "build-dev": "npm run build",
+    "lint": "yarn package:lint:ts",
+    "lint:fix": "yarn lint --fix",
+    "start": "node dist",
+    "start-dev": "yarn package:start:backend-start-dev 9993 -ts",
+    "start-verbose": "LOG_LEVEL=debug yarn start-dev",
+    "test": "yarn package:test",
+    "test:coverage": "yarn test --coverage",
+    "test:watch": "yarn test --watch"
+  },
+  "dependencies": {
+    "@tupaia/database": "1.0.0",
+    "@tupaia/server-boilerplate": "1.0.0",
+    "cookies": "^0.8.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.16.2",
+    "puppeteer": "^15.4.0",
+    "winston": "^3.2.1"
+  }
+}

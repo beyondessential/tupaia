@@ -10,7 +10,7 @@ import {
 } from './getDhisApi';
 import { DhisInstanceResolver } from './DhisInstanceResolver';
 import { Service } from '../Service';
-import { DhisTranslator } from './DhisTranslator';
+import { DhisTranslator } from './translators';
 import {
   AnalyticsPuller,
   EventsPuller,
@@ -32,11 +32,11 @@ export class DhisService extends Service {
       this.translator,
     );
     this.analyticsPuller = new AnalyticsPuller(
-      this.models.dataElement,
+      this.models,
       this.translator,
       this.dataElementsMetadataPuller,
     );
-    this.eventsPuller = new EventsPuller(this.models.dataElement, this.translator);
+    this.eventsPuller = new EventsPuller(this.models, this.translator);
     this.deprecatedEventsPuller = new DeprecatedEventsPuller(
       this.models.dataElement,
       this.translator,

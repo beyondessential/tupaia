@@ -5,7 +5,7 @@
 
 import { DhisApi } from '@tupaia/dhis-api';
 import { createClassExtendingProxy, legacy_configToDhisInstanceCode } from '@tupaia/utils';
-import { DhisInputSchemeResolvingApiProxy } from './DhisInputSchemeResolvingApiProxy';
+import { DhisCodeToIdTranslator } from './translators';
 
 const instances = {};
 
@@ -113,7 +113,7 @@ const getDhisApiInstance = async (models, dhisInstance) => {
     // have to extend it using an object proxy, which intercepts overridden method calls and passes
     // the rest through.
     const api = new DhisApi(serverName, serverUrl, serverReadOnly);
-    const apiExtension = new DhisInputSchemeResolvingApiProxy(models, api);
+    const apiExtension = new DhisCodeToIdTranslator(models, api);
     instances[serverName] = createClassExtendingProxy(api, apiExtension);
   }
 

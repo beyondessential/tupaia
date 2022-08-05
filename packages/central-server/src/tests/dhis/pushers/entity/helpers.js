@@ -3,10 +3,10 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { keyBy } from 'lodash';
 import sinon from 'sinon';
 
 import { DhisApi, DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
+import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 
 const { ORGANISATION_UNIT, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_TYPE } = DHIS2_RESOURCE_TYPES;
 
@@ -31,17 +31,14 @@ export const createEntityStub = (
 };
 
 export const createModelsStub = ({ entityRecords, dhisSyncLogRecords } = {}) => {
-  const entitiesById = keyBy(entityRecords, 'id');
-  const syncLogsByRecordId = keyBy(dhisSyncLogRecords, 'record_id');
-
-  return {
+  return baseCreateModelsStub({
     entity: {
-      findById: id => entitiesById[id],
+      records: entityRecords || [],
     },
     dhisSyncLog: {
-      findOne: ({ record_id: recordId }) => syncLogsByRecordId[recordId],
+      records: dhisSyncLogRecords || [],
     },
-  };
+  });
 };
 
 export const createDhisApiStub = ({

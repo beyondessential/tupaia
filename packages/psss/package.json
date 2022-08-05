@@ -18,7 +18,6 @@
     "eject": "yarn package:eject",
     "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
-    "pretest:test:cypress:run": "yarn build",
     "start-dev": "yarn package:start:react-scripts",
     "start-fullstack": "npm-run-all -c -l -p start-psss-server start-entity-server start-central-server start-report-server  start-dev",
     "start-psss-server": "yarn workspace @tupaia/psss-server start-dev -s",
