@@ -19,7 +19,7 @@ import { SingleDateWrapper } from './SingleDateWrapper';
 import { SingleDownloadLinkWrapper } from './SingleDownloadLinkWrapper';
 import { SingleTickWrapper } from './SingleTickWrapper';
 import { SingleValueWrapper } from './SingleValueWrapper';
-import { ViewTitle } from './Typography';
+import { ViewTitle, PDFExportViewTitle } from './Typography';
 
 const SINGLE_VALUE_COMPONENTS = {
   singleTick: SingleTickWrapper,
@@ -51,7 +51,7 @@ export function getViewWrapper({ type, viewType }) {
       const ViewWrapper = VIEW_TYPES[viewType];
       if (!ViewWrapper) {
         return (
-          <div style={VIEW_STYLES.newChartComing}>
+          <div>
             <ViewTitle>New dashboard element coming soon</ViewTitle>
           </div>
         );
@@ -66,9 +66,11 @@ export function getExportViewWrapper({ type, viewType }) {
     case 'chart':
       return ChartWrapper;
     default: {
-      return (
-        <div style={VIEW_STYLES.newChartComing}>
-          <ViewTitle>{`'${type || viewType}' type visual does not support PDF export`}</ViewTitle>
+      return () => (
+        <div>
+          <PDFExportViewTitle>{`'${
+            type || viewType
+          }' type visual does not support PDF export`}</PDFExportViewTitle>
         </div>
       );
     }

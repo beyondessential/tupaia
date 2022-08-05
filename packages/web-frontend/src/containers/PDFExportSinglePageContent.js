@@ -11,7 +11,7 @@ import { isEmpty } from 'lodash';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Alert } from '../components/Alert';
-import { getIsMatrix, getViewWrapper, VIEW_CONTENT_SHAPE } from '../components/View';
+import { getIsMatrix, getExportViewWrapper, VIEW_CONTENT_SHAPE } from '../components/View';
 import { DARK_BLUE, WHITE } from '../styles';
 import { LoadingIndicator } from './Form/common';
 import { DialogTitleWrapper } from '../components/DialogTitleWrapper';
@@ -77,7 +77,7 @@ const PDFExportSinglePageContent = ({
   };
 
   const renderBodyContent = () => {
-    const ViewWrapper = getViewWrapper(viewContent);
+    const ViewWrapper = getExportViewWrapper(viewContent);
     const newViewContent = transformDataForViewType(viewContent);
     const viewProps = {
       viewContent: newViewContent,
@@ -123,7 +123,7 @@ const PDFExportSinglePageContent = ({
   }, []);
 
   return (
-    <div data-testid="enlarged-dialog" style={{ backgroundColor: isExporting ? WHITE : DARK_BLUE }}>
+    <div style={{ backgroundColor: WHITE }}>
       {renderTitle()}
       {renderDescription()}
       <DialogContent style={contentStyle}>
