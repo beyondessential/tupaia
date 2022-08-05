@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
 import { FlexCenter as BaseFlexCenter, FlexColumn as BaseFlexColumn } from '@tupaia/ui-components';
-import { TUPAIA_BLACK_LOGO_SRC } from '../../../constants';
+import { TUPAIA_DARK_LOGO_SRC } from '../../../constants';
 
 const FlexCenter = styled(BaseFlexCenter)`
   position: relative;
@@ -14,26 +13,32 @@ const FlexColumn = styled(BaseFlexColumn)`
   text-align: center;
 `;
 
-const Heading = styled(Typography)`
+const Heading = styled.div`
   font-weight: 600;
   line-height: 140%;
+  font-size: 26px;
   text-transform: capitalize;
-  color: ${props => props.theme.palette.primary.main};
 `;
 
-const Header = ({ dashboardLabel }) => {
+const Logo = styled.img`
+  top: 30px;
+  left: 19px;
+  position: absolute;
+`;
+
+const Header = ({ entityName }) => {
   return (
     <FlexCenter>
-      <img src={TUPAIA_BLACK_LOGO_SRC} alt="Tupaia logo" />
+      <Logo src={TUPAIA_DARK_LOGO_SRC} alt="Tupaia logo" width="74" height="30" />
       <FlexColumn>
-        <Heading variant="h1">{dashboardLabel}</Heading>
+        <Heading>{entityName}</Heading>
       </FlexColumn>
     </FlexCenter>
   );
 };
 
 Header.propTypes = {
-  dashboardLabel: PropTypes.string.isRequired,
+  entityName: PropTypes.string.isRequired,
 };
 
 Header.defaultProps = {};

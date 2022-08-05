@@ -9,6 +9,7 @@ const A4Container = styled.div`
   width: 1192px;
   margin-top: 20px;
   page-break-after: always;
+  border-style: solid;
 `;
 
 const Content = styled(FlexColumn)`
@@ -26,7 +27,5 @@ export const A4Page = ({ children, ...configs }) => {
 
 A4Page.propTypes = {
   children: PropTypes.node.isRequired,
-  page: PropTypes.number.isRequired,
-  currentPage: PropTypes.number.isRequired,
   isExporting: PropTypes.bool.isRequired,
 };
