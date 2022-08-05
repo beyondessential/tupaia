@@ -71,6 +71,10 @@ export const buildPermissionsBasedMeditrakSyncQuery = async (
   { select, sort, limit, offset },
 ) => {
   const { appVersion } = req.query;
+  if (!appVersion) {
+    throw new Error("Must provide 'appVersion' url parameter");
+  }
+
   if (!supportsPermissionsBasedSync(appVersion)) {
     throw new Error(
       `Permissions based sync is not supported for appVersion: ${appVersion}, must be ${PERMISSIONS_BASED_SYNC_MIN_APP_VERSION} or higher`,

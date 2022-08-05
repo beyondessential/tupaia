@@ -12,6 +12,10 @@ export const upsertAnswer = async data => {
   return upsertDummyRecord(models.answer, data);
 };
 
+export const upsertCountry = async data => {
+  return upsertDummyRecord(models.country, data);
+};
+
 export const upsertEntity = async data => {
   return upsertDummyRecord(models.entity, data);
 };
@@ -80,4 +84,8 @@ export const upsertSurveyScreen = async data => {
 
 export const upsertSurveyScreenComponent = async data => {
   return upsertDummyRecord(models.surveyScreenComponent, data);
+};
+
+export const upsertPermissionGroup = async data => {
+  return upsertDummyRecord(models.permissionGroup, data);
 };

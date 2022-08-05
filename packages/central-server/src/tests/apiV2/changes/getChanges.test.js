@@ -6,8 +6,8 @@
 import { expect } from 'chai';
 
 import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
-import { MeditrakSyncQueue } from '../../database';
-import { TestableApp, upsertEntity, upsertQuestion, upsertSurveyGroup } from '../testUtilities';
+import { MeditrakSyncQueue } from '../../../database';
+import { TestableApp, upsertEntity, upsertQuestion, upsertSurveyGroup } from '../../testUtilities';
 
 describe('GET /changes/count', async () => {
   const app = new TestableApp();
