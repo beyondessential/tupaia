@@ -26,11 +26,11 @@ const STUBBED_MODEL_DATA = {
   data_group: [
     {
       id: 'survey_is_regional_dataGroup',
-      config: { isDataRegional: true },
+      config: { dhisInstanceCode: 'regional' },
     },
     {
       id: 'survey_is_not_regional_dataGroup',
-      config: { isDataRegional: false },
+      config: { dhisInstanceCode: null },
     },
   ],
   entity: [

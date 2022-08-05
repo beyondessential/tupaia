@@ -51,6 +51,8 @@ const getServerName = (entityCode, isDataRegional) => {
 };
 
 /**
+ * @deprecated Use data-broker instead
+ *
  * Returns configuration for creating an api instance connected to the dhis server.
  * The country containing the given entityCode will be used. If either none is passed in or the data
  * is regional, the regional dhis server will be used.
@@ -61,22 +63,61 @@ const getServerName = (entityCode, isDataRegional) => {
  * @param {boolean} options.isDataRegional  Along with entityCode, determines which dhis instance to use
  * @param {string}  options.serverName      If provided, the server name will take this value rather
  */
-export const getDhisConfig = ({
+export const legacy_getDhisConfig = ({
   serverName: serverNameInput,
   entityCode = '',
   entityCodes,
   isDataRegional = true,
 } = {}) => {
-  if (entityCodes) {
-    const configs = entityCodes.map(code => getDhisConfig({ entityCode: code, isDataRegional }));
-    if (configs.some(config => config.serverName !== configs[0].serverName)) {
-      throw new Error('All entities must use the same DHIS2 instance');
-    }
-    return configs[0];
-  }
-  const serverName = serverNameInput || getServerName(entityCode, isDataRegional);
+  const serverName = legacy_getDhisServerName({
+    serverName,
+    entityCode,
+    entityCodes,
+    isDataRegional,
+  });
   const serverUrl = getServerUrlFromName(serverName);
   const serverReadOnly = READ_ONLY_SERVERS.has(serverName);
 
   return { serverName, serverUrl, serverReadOnly };
+};
+
+/**
+ * @deprecated Use data-broker instead
+ *
+ * Convenience function that allows us to only get the server name, same input as above.
+ */
+export const legacy_getDhisServerName = ({
+  serverName: serverNameInput,
+  entityCode = '',
+  entityCodes,
+  isDataRegional = true,
+}) => {
+  if (entityCodes) {
+    const serverNames = entityCodes.map(code =>
+      legacy_getDhisServerName({ entityCode: code, isDataRegional }),
+    );
+    if (serverNames.some(serverName => serverName !== serverNames[0])) {
+      throw new Error('All entities must use the same DHIS2 instance');
+    }
+    return serverNames[0];
+  }
+  const serverName = serverNameInput || getServerName(entityCode, isDataRegional);
+  return serverName;
+};
+
+/**
+ * @deprecated Use data-broker instead
+ *
+ * Legacy to modern config mapping function. Clean up after legacy reports are all migrated.
+ *
+ * Note: some parts of Tupaia will not function correctly in deployments where a DHIS Instance
+ * with code 'regional' does not exist
+ *
+ * @param {{ isDataRegional: boolean}} legacyConfig
+ * @return {string|undefined} DhisInstance code
+ */
+export const legacy_configToDhisInstanceCode = legacyConfig => {
+  const { isDataRegional = true } = legacyConfig;
+  if (isDataRegional) return 'regional';
+  return undefined;
 };
