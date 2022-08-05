@@ -10,7 +10,7 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButtonComponent from '@material-ui/lab/ToggleButton';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import GridOnIcon from '@material-ui/icons/GridOn';
-import { Chart, ChartTable } from '@tupaia/ui-components';
+import { Chart as ChartComponent, ChartTable } from '@tupaia/ui-components';
 import { VIEW_CONTENT_SHAPE } from './propTypes';
 import { ChartContainer, ChartViewContainer } from './Layout';
 import { FlexEnd } from '../Flexbox';
@@ -94,7 +94,13 @@ export const TABS = {
   TABLE: 'table',
 };
 
-export const ChartWrapper = ({ viewContent, isEnlarged, isExporting, onItemClick }) => {
+export const ChartWrapper = ({
+  viewContent,
+  isEnlarged,
+  isExporting,
+  isPDFExporting,
+  onItemClick,
+}) => {
   const [selectedTab, setSelectedTab] = useState(TABS.CHART);
 
   const handleTabChange = (event, newValue) => {
@@ -103,15 +109,28 @@ export const ChartWrapper = ({ viewContent, isEnlarged, isExporting, onItemClick
     }
   };
 
+  const Chart = () => (
+    <ChartComponent
+      isEnlarged={isEnlarged}
+      isExporting={isExporting}
+      viewContent={viewContent}
+      onItemClick={onItemClick}
+    />
+  );
+
+  if (isPDFExporting) {
+    return (
+      <CustomChartContainer>
+        <Chart />
+        <StyledTable viewContent={viewContent} className={isExporting && 'exporting'} />
+      </CustomChartContainer>
+    );
+  }
+
   if (!isEnlarged) {
     return (
       <CustomChartContainer>
-        <Chart
-          isEnlarged={isEnlarged}
-          isExporting={isExporting}
-          viewContent={viewContent}
-          onItemClick={onItemClick}
-        />
+        <Chart />
       </CustomChartContainer>
     );
   }
@@ -120,12 +139,7 @@ export const ChartWrapper = ({ viewContent, isEnlarged, isExporting, onItemClick
     const { exportWithTable } = viewContent?.presentationOptions;
     return (
       <EnlargedChartContainer $isExporting={isExporting}>
-        <Chart
-          isEnlarged={isEnlarged}
-          isExporting={isExporting}
-          viewContent={viewContent}
-          onItemClick={onItemClick}
-        />
+        <Chart />
         {exportWithTable && (
           <StyledTable viewContent={viewContent} className={isExporting && 'exporting'} />
         )}
@@ -147,12 +161,7 @@ export const ChartWrapper = ({ viewContent, isEnlarged, isExporting, onItemClick
       </FlexEnd>
       {selectedTab === TABS.CHART ? (
         <EnlargedChartContainer>
-          <Chart
-            isEnlarged={isEnlarged}
-            isExporting={isExporting}
-            viewContent={viewContent}
-            onItemClick={onItemClick}
-          />
+          <Chart />
         </EnlargedChartContainer>
       ) : (
         <StyledTable viewContent={viewContent} />
@@ -165,6 +174,7 @@ ChartWrapper.propTypes = {
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,
+  isPDFExporting: PropTypes.bool,
   onItemClick: PropTypes.func,
 };
 
@@ -172,5 +182,6 @@ ChartWrapper.defaultProps = {
   viewContent: null,
   isEnlarged: false,
   isExporting: false,
+  isPDFExporting: true,
   onItemClick: () => {},
 };

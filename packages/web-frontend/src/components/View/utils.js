@@ -61,6 +61,20 @@ export function getViewWrapper({ type, viewType }) {
   }
 }
 
+export function getExportViewWrapper({ type, viewType }) {
+  switch (type) {
+    case 'chart':
+      return ChartWrapper;
+    default: {
+      return (
+        <div style={VIEW_STYLES.newChartComing}>
+          <ViewTitle>{`'${type || viewType}' type visual does not support PDF export`}</ViewTitle>
+        </div>
+      );
+    }
+  }
+}
+
 export function getIsSingleValue({ viewType }) {
   return Object.keys(SINGLE_VALUE_COMPONENTS).includes(viewType);
 }
