@@ -182,6 +182,6 @@ ChartWrapper.defaultProps = {
   viewContent: null,
   isEnlarged: false,
   isExporting: false,
-  isPDFExporting: true,
+  isPDFExporting: false,
   onItemClick: () => {},
 };
