@@ -37,7 +37,7 @@ describe('buildEventsFromDhisEventAnalytics()', () => {
       },
     ]));
 
-  it('builds events from DHIS2 event analytics and sorts them by period', () =>
+  it('builds events from DHIS2 event analytics', () =>
     expect(
       buildEventsFromDhisEventAnalytics(models, EVENT_ANALYTICS.withDataValues, ['BCD1', 'BCD2']),
     ).resolves.toStrictEqual([

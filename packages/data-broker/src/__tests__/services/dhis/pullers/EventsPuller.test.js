@@ -100,91 +100,135 @@ describe('EventsPuller', () => {
       }));
   });
 
-  describe('data building', () => {
-    describe('pulling events', () => {
-      it('can pull events', async () => {
-        const getEventAnalyticsResponse = {
-          headers: [{ name: 'POP01', column: 'Population 1', valueType: 'NUMBER' }],
-          metaData: {
-            items: {
-              POP01: { name: 'Population 1' },
-            },
-            dimensions: { POP01: [] },
+  describe('pulling events', () => {
+    it('can pull events', async () => {
+      const getEventAnalyticsResponse = {
+        headers: [{ name: 'POP01', column: 'Population 1', valueType: 'NUMBER' }],
+        metaData: {
+          items: {
+            POP01: { name: 'Population 1' },
           },
-          rows: [[5], [4]],
-        };
+          dimensions: { POP01: [] },
+        },
+        rows: [[5], [4]],
+      };
 
-        dhisApi = createMockDhisApi({ getEventAnalyticsResponse });
-        stubGetDhisApi(dhisApi);
-        const dataElementCodes = ['POP01', 'POP02'];
-        const organisationUnitCodes = ['DL_FACILITY_A'];
+      dhisApi = createMockDhisApi({ getEventAnalyticsResponse });
+      stubGetDhisApi(dhisApi);
+      const dataElementCodes = ['POP01', 'POP02'];
+      const organisationUnitCodes = ['DL_FACILITY_A'];
 
-        const events = await eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], {
-          dataElementCodes,
-          organisationUnitCodes,
-        });
-
-        expect(events).toEqual([{ dataValues: { POP01: 5 } }, { dataValues: { POP01: 4 } }]);
+      const events = await eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], {
+        dataElementCodes,
+        organisationUnitCodes,
       });
 
-      it('can pull data for just the requested tracked entity instance', async () => {
-        // Return data for all children of the parent org unit
-        const getEventAnalyticsStub = ({ organisationUnitCodes }) => {
-          if (organisationUnitCodes[0] !== 'DL_FACILITY_A' || organisationUnitCodes.length !== 1) {
-            return {
-              headers: [],
-              metaData: { items: {}, dimensions: [] },
-              rows: [],
-            };
-          }
-
-          return {
-            headers: [
-              { name: 'DIF01_DHIS', column: 'Different 1', valueType: 'NUMBER' },
-              {
-                name: 'tei',
-                column: 'Tracked entity instance',
-                valueType: 'TEXT',
-                meta: true,
-              },
-            ],
-            metaData: {
-              items: {
-                DIF01_DHIS: { name: 'Different 1' },
-              },
-              dimensions: {
-                DIF01_DHIS: [],
-              },
-            },
-            rows: [
-              [7, 'tracked_entity_id_dl_household_1'],
-              [5, 'tracked_entity_id_dl_household_2'],
-            ],
-          };
-        };
-
-        dhisApi = createMockDhisApi({ getEventAnalyticsStub });
-        stubGetDhisApi(dhisApi);
-        const dataElementCodes = ['DIF01'];
-        const organisationUnitCodes = ['DL_HOUSEHOLD_1'];
-        const hierarchy = 'explore';
-
-        const events = await eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], {
-          dataElementCodes,
-          organisationUnitCodes,
-          hierarchy,
-        });
-
-        expect(events).toEqual([
-          {
-            dataValues: { DIF01: 7 },
-            trackedEntityCode: 'DL_HOUSEHOLD_1',
-            trackedEntityId: 'tracked_entity_id_dl_household_1',
-          },
-        ]);
-      });
+      expect(events).toEqual([{ dataValues: { POP01: 5 } }, { dataValues: { POP01: 4 } }]);
     });
 
+    it('sorts events by eventDate', async () => {
+      const getEventAnalyticsResponse = {
+        headers: [
+          { name: 'POP01', column: 'Population 1', valueType: 'NUMBER' },
+          { name: 'eventdate', column: 'Event Date', valueType: 'DATE' },
+        ],
+        metaData: {
+          items: {
+            POP01: { name: 'Population 1' },
+          },
+          dimensions: { POP01: [] },
+        },
+        rows: [
+          [5, '2022-08-08 08:00:00.0'],
+          [7, '2022-08-07 08:00:00.0'],
+          [3, '2022-08-06 08:00:00.0'],
+        ],
+      };
+
+      dhisApi = createMockDhisApi({ getEventAnalyticsResponse });
+      stubGetDhisApi(dhisApi);
+      const dataElementCodes = ['POP01', 'POP02'];
+      const organisationUnitCodes = ['DL_FACILITY_A'];
+
+      const events = await eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], {
+        dataElementCodes,
+        organisationUnitCodes,
+      });
+
+      expect(events).toEqual([
+        { eventDate: '2022-08-06 08:00:00.0', dataValues: { POP01: 3 } },
+        { eventDate: '2022-08-07 08:00:00.0', dataValues: { POP01: 7 } },
+        { eventDate: '2022-08-08 08:00:00.0', dataValues: { POP01: 5 } },
+      ]);
+    });
+
+    it('can pull data for just the requested tracked entity instance', async () => {
+      // Return data for all children of the parent org unit
+      const getEventAnalyticsStub = ({ organisationUnitCodes }) => {
+        // This check isn't actually necessary, but having it here to make explicit that
+        // we are pulling data for the parent org unit (and not the child tracked entity)
+        if (organisationUnitCodes[0] !== 'DL_FACILITY_A' || organisationUnitCodes.length !== 1) {
+          return {
+            headers: [],
+            metaData: { items: {}, dimensions: [] },
+            rows: [],
+          };
+        }
+
+        return {
+          headers: [
+            { name: 'DIF01_DHIS', column: 'Different 1', valueType: 'NUMBER' },
+            {
+              name: 'tei',
+              column: 'Tracked entity instance',
+              valueType: 'TEXT',
+              meta: true,
+            },
+            {
+              name: 'oucode',
+              column: 'Organisation Unit Code',
+              valueType: 'TEXT',
+            },
+          ],
+          metaData: {
+            items: {
+              DIF01_DHIS: { name: 'Different 1' },
+            },
+            dimensions: {
+              DIF01_DHIS: [],
+            },
+          },
+          rows: [
+            [7, 'tracked_entity_id_dl_household_1', 'DL_FACILITY_A'],
+            [5, 'tracked_entity_id_dl_household_2', 'DL_FACILITY_A'],
+          ],
+        };
+      };
+
+      dhisApi = createMockDhisApi({ getEventAnalyticsStub });
+      stubGetDhisApi(dhisApi);
+      const dataElementCodes = ['DIF01'];
+      const organisationUnitCodes = ['DL_HOUSEHOLD_1'];
+      const hierarchy = 'explore';
+
+      const events = await eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], {
+        dataElementCodes,
+        organisationUnitCodes,
+        hierarchy,
+      });
+
+      expect(events).toEqual([
+        {
+          dataValues: { DIF01: 7 },
+          orgUnit: 'DL_FACILITY_A',
+          trackedEntityCode: 'DL_HOUSEHOLD_1',
+          trackedEntityId: 'tracked_entity_id_dl_household_1',
+        },
+      ]);
+    });
+  });
+
+  describe('data building', () => {
     describe('buildEventsFromDhisEventAnalytics() invocation', () => {
       let buildEventsMock;
 
@@ -209,10 +253,7 @@ describe('EventsPuller', () => {
             },
             dimensions: { POP01: [], POP02: [] },
           },
-          rows: [
-            [5, 8],
-            [4, 3],
-          ],
+          rows: [],
         };
         dhisApi = createMockDhisApi({ getEventAnalyticsResponse });
         stubGetDhisApi(dhisApi);
