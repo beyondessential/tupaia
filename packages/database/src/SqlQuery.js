@@ -62,9 +62,25 @@ export class SqlQuery {
    * @param {string} baseQuery
    * @param {string[]} [baseParameters]
    */
-  constructor(baseQuery, baseParameters = []) {
+  constructor(baseQuery = '', baseParameters = []) {
     this.query = baseQuery;
     this.parameters = baseParameters;
+  }
+
+  /**
+   * Add additional sql (and parameters) to the existing query
+   * @public
+   * @param {string | { query: string, params: unknown[] }} sql
+   */
+  append(sqlOrSqlAndParams) {
+    if (typeof sqlOrSqlAndParams === 'string') {
+      this.query = this.query.concat(sqlOrSqlAndParams);
+      return;
+    }
+
+    const { query: sql, params: paramsInText = [] } = sqlOrSqlAndParams;
+    this.query = this.query.concat(sql);
+    this.parameters.push(...paramsInText);
   }
 
   /**

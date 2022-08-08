@@ -3,14 +3,6 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { SqlQuery } from '@tupaia/database';
-import semverCompare from 'semver-compare';
-
-export const PERMISSIONS_BASED_SYNC_MIN_APP_VERSION = '1.12.124';
-
-export const supportsPermissionsBasedSync = version =>
-  semverCompare(version, PERMISSIONS_BASED_SYNC_MIN_APP_VERSION) >= 0;
-
 /**
  * This function determines which countries and permissions should be synced to a given meditrak app
  * based on what previously been synced to it, and what data the user has access to
@@ -27,16 +19,9 @@ export const supportsPermissionsBasedSync = version =>
 export const getCountriesAndPermissionsToSync = async req => {
   const { accessPolicy } = req;
   const {
-    appVersion,
     countriesSynced: countriesSyncedString,
     permissionGroupsSynced: permissionGroupsSyncedString,
   } = req.query;
-
-  if (!supportsPermissionsBasedSync(appVersion)) {
-    throw new Error(
-      `Permissions based sync is not supported for appVersion: ${appVersion}, must be ${PERMISSIONS_BASED_SYNC_MIN_APP_VERSION} or higher`,
-    );
-  }
 
   const usersCountries = accessPolicy.getEntitiesAllowed();
   const usersPermissionGroups = accessPolicy.getPermissionGroups();
@@ -47,6 +32,7 @@ export const getCountriesAndPermissionsToSync = async req => {
       country => country.id,
     );
     return {
+      synced: {},
       unsynced: {
         countries: usersCountries,
         countryIds: userCountryIds,
@@ -69,6 +55,7 @@ export const getCountriesAndPermissionsToSync = async req => {
   if (unsyncedCountries.length === 0 && unsyncedPermissionGroups.length === 0) {
     // No new countries or permissionGroups, just return synced
     return {
+      unsynced: {},
       synced: {
         countries: syncedCountries,
         countryIds: syncedCountryIds,
@@ -83,9 +70,10 @@ export const getCountriesAndPermissionsToSync = async req => {
 
   return {
     unsynced: {
-      countries: unsyncedCountries,
-      countryIds: unsyncedCountryIds,
-      permissionGroups: unsyncedPermissionGroups,
+      countries: unsyncedCountries.length === 0 ? undefined : unsyncedCountries,
+      countryIds: unsyncedCountryIds.length === 0 ? undefined : unsyncedCountryIds,
+      permissionGroups:
+        unsyncedPermissionGroups.length === 0 ? undefined : unsyncedPermissionGroups,
     },
     synced: {
       countries: syncedCountries,
@@ -93,40 +81,4 @@ export const getCountriesAndPermissionsToSync = async req => {
       permissionGroups: syncedPermissionGroups,
     },
   };
-};
-
-export const getPermissionsWhereClause = permissionsBasedFilter => {
-  let query = '';
-  const params = [];
-  const { countryIds, permissionGroups } = permissionsBasedFilter;
-  const typesWithoutPermissions = ['country', 'permission_group']; // Sync all countries and permission groups (needed for requesting access)
-  const clauses = [
-    {
-      query: `"type" = ? AND record_type IN ${SqlQuery.record(typesWithoutPermissions)}`,
-      params: ['update', ...typesWithoutPermissions],
-    },
-    {
-      query: `entity_type = ?`, // Sync all country entities (needed regardless of user permissions for requesting access to countries)
-      params: ['country'],
-    },
-    {
-      // Sync updates where the country and permissions are NULL or they intersect with the allowed countries and permission groups
-      query: `"type" = ? 
-        AND (country_ids IS NULL OR country_ids && ${SqlQuery.array(countryIds, 'text')}) 
-        AND (permission_groups IS NULL OR permission_groups && ${SqlQuery.array(
-          permissionGroups,
-          'text',
-        )})`,
-      params: ['update', ...countryIds, ...permissionGroups],
-    },
-  ];
-
-  clauses.forEach(({ query: clauseQuery, params: clauseParams }, index) => {
-    query = query.concat(`
-            ${index !== 0 ? 'OR ' : ''}(${clauseQuery})
-          `);
-    params.push(...clauseParams);
-  });
-
-  return { query, params };
 };

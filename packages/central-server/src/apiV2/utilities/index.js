@@ -22,7 +22,8 @@ export { hasTupaiaAdminAccessToEntityForVisualisation } from './hasTupaiaAdminAc
 export {
   buildMeditrakSyncQuery,
   buildPermissionsBasedMeditrakSyncQuery,
-} from './meditrakSyncQuery';
+  supportsPermissionsBasedSync,
+} from './meditrakSync';
 export { mergeFilter } from './mergeFilter';
 export { mergeMultiJoin } from './mergeMultiJoin';
 export { SurveyResponseImporter } from './SurveyResponseImporter';
@@ -35,7 +36,6 @@ export {
   translateQuestionCodeToId,
 } from './translateQuestionDependentFields';
 export { replaceQuestionIdsWithCodes } from './replaceQuestionIdsWithCodes';
-export { supportsPermissionsBasedSync } from './permissionsBasedChangeFilter';
 export { translateExpression } from './translateExpression';
 export { getDollarPrefixedExpressionVariables } from './getDollarPrefixedExpressionVariables';
 export {

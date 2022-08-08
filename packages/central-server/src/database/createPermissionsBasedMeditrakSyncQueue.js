@@ -25,7 +25,7 @@ SELECT msq.*,
 	
 	COALESCE(
 		${groupToArrayOrNull('e_co.id')}, 
-		${groupToArrayOrNull('c.country_id')}, 
+		${groupToArrayOrNull('c.id')}, 
 		${groupToArrayOrNull('ga.country_id')}, 
 		${groupToFlatArrayOrNull('s.country_ids')},
 		${groupToFlatArrayOrNull('sg_s.country_ids')},
@@ -37,6 +37,7 @@ SELECT msq.*,
 	) as country_ids,
 
 	COALESCE(
+		${groupToArrayOrNull('pg."name"')},
 		${groupToArrayOrNull('s_pg."name"')},
 		${groupToArrayOrNull('sg_s_pg."name"')},
 		${groupToArrayOrNull('ss_s_pg."name"')},
@@ -50,6 +51,7 @@ LEFT JOIN entity e ON msq.record_id = e.id
 LEFT JOIN country e_co ON e_co.code = e.country_code 
 LEFT JOIN clinic c ON msq.record_id = c.id
 LEFT JOIN geographical_area ga ON msq.record_id = ga.id
+LEFT JOIN permission_group pg ON msq.record_id = pg.id
 LEFT JOIN survey s ON msq.record_id = s.id 
 LEFT JOIN permission_group s_pg ON s.permission_group_id = s_pg.id 
 LEFT JOIN survey_group sg ON msq.record_id = sg.id
