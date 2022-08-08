@@ -11,7 +11,6 @@ import {
   DataSourceType,
   DataValue,
   Diagnostics,
-  Event,
   EventResults,
   OutboundEvent,
 } from '../../types';
@@ -175,12 +174,12 @@ export class DhisService extends Service {
   public async push(
     dataSources: DataElement[],
     data: DataValue | DataValue[],
-    { type }: PushOptions,
+    { type }: { type: 'dataElement' },
   ): Promise<PushResults>;
   public async push(
     dataSources: DataGroup[],
-    data: Event | Event[],
-    { type }: PushOptions,
+    data: OutboundEvent | OutboundEvent[],
+    { type }: { type: 'dataGroup' },
   ): Promise<PushResults>;
   public async push(
     dataSources: DataSource[],

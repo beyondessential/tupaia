@@ -3,26 +3,26 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { createJestMockInstance } from '@tupaia/utils';
+import { reduceToDictionary } from '@tupaia/utils';
 import { DataSourceSpec } from '../../DataBroker';
 import * as CreateService from '../../services/createService';
 import { Service } from '../../services/Service';
 import {
   Analytic,
-  AnalyticResults,
+  DataBrokerModelRegistry,
   DataElement,
+  DataElementMetadata,
   DataGroup,
   DataSource,
   DataSourceType,
+  Event,
   ServiceType,
 } from '../../types';
-import { DATA_SOURCE_TYPE } from '../../utils';
 
-export interface ServiceResult {
-  code: string;
-  type: DataSourceType;
-  name: string;
-  value: number;
+export interface ServiceResults {
+  analytics: Analytic[];
+  eventsByProgram: Record<string, Event[]>;
+  dataElements: DataElementMetadata[];
 }
 
 export const stubCreateService = (services: Partial<Record<ServiceType, Service>>) =>
@@ -34,44 +34,61 @@ export const stubCreateService = (services: Partial<Record<ServiceType, Service>
     return service;
   });
 
-export const createServiceStub = (serviceData: ServiceResult[]) => {
-  const pull = (dataSources: DataSource[], type: DATA_SOURCE_TYPE) => {
-    const dataSourceCodes = dataSources.map(({ code }) => code);
-    // Service specs require that data must be pulled for a specific type each time
-    const filteredServiceData = serviceData.filter(
-      ({ code, type: currentType }) => dataSourceCodes.includes(code) && currentType === type,
-    );
+export const createServiceStub = (
+  models: DataBrokerModelRegistry,
+  serviceResults: ServiceResults,
+) => {
+  class MockService extends Service {
+    public pull = jest
+      .fn()
+      .mockImplementation((dataSources: DataSource[], type: DataSourceType) => {
+        const { analytics, eventsByProgram, dataElements } = serviceResults;
+        const dataSourceCodes = dataSources.map(({ code }) => code);
 
-    switch (type) {
-      case 'dataElement': {
-        const data: AnalyticResults & { metadata: Required<AnalyticResults['metadata']> } = {
-          results: [],
-          metadata: { dataElementCodeToName: {} },
-        };
-        filteredServiceData.forEach(({ code, name, value }) => {
-          data.results.push({ value } as Analytic);
-          data.metadata.dataElementCodeToName[code] = name;
-        });
-        return data;
-      }
-      case 'dataGroup':
-        return filteredServiceData.map(({ code, value }) => ({ dataValues: { [code]: value } }));
-      default:
-        throw new Error(`Invalid data source type: ${type}`);
-    }
-  };
+        switch (type) {
+          case 'dataElement': {
+            const results = analytics.filter(({ dataElement }) =>
+              dataSourceCodes.includes(dataElement),
+            );
+            const selectedDataElements = dataElements.filter(({ code }) =>
+              dataSourceCodes.includes(code),
+            );
+            const dataElementCodeToName = reduceToDictionary(selectedDataElements, 'code', 'name');
 
-  return createJestMockInstance('@tupaia/data-broker/src/services/Service', 'Service', {
-    pull,
-  }) as Service;
+            return {
+              results,
+              metadata: {
+                dataElementCodeToName,
+              },
+            };
+          }
+          case 'dataGroup': {
+            return Object.entries(eventsByProgram)
+              .filter(([program]) => dataSourceCodes.includes(program))
+              .flatMap(([, events]) => events);
+          }
+          default:
+            throw new Error(`Invalid data source type: ${type}`);
+        }
+      });
+
+    public push = jest.fn();
+
+    public delete = jest.fn();
+
+    public pullMetadata = jest.fn();
+  }
+
+  return new MockService(models);
 };
 
-export const createModelsStub = (dataElements: DataElement[], dataGroups: DataGroup[]) => ({
-  dataElement: {
-    find: (spec: DataSourceSpec) => dataElements.filter(({ code }) => spec.code.includes(code)),
-  },
-  dataGroup: {
-    find: (spec: DataSourceSpec) => dataGroups.filter(({ code }) => spec.code.includes(code)),
-    getDataElementsInDataGroup: () => [],
-  },
-});
+export const createModelsStub = (dataElements: DataElement[], dataGroups: DataGroup[]) =>
+  (({
+    dataElement: {
+      find: (spec: DataSourceSpec) => dataElements.filter(({ code }) => spec.code.includes(code)),
+    },
+    dataGroup: {
+      find: (spec: DataSourceSpec) => dataGroups.filter(({ code }) => spec.code.includes(code)),
+      getDataElementsInDataGroup: () => [],
+    },
+  } as unknown) as DataBrokerModelRegistry);

@@ -15,56 +15,28 @@ describe('KoBoTranslator', () => {
   const mockModels = createModelsStub();
   const translator = new KoBoTranslator(mockModels);
 
-  describe('fetchEntityInfoFromKoBoAnswer', () => {
-    it('Finds a tupaia entity from a kobo entity code', async () => {
-      const result = await translator.fetchEntityInfoFromKoBoAnswer('KoBoA');
-      expect(result).toStrictEqual({
-        orgUnit: 'TupaiaEntityA',
-        orgUnitName: 'Tupaia Entity A',
-      });
+  describe('translateKoBoResults', () => {
+    it('Maps KoBo metadata fields to event info fields', async () => {
+      const results = await translator.translateKoBoResults([MOCK_KOBO_RESULT], {}, 'entity');
+      expect(results).toStrictEqual([
+        {
+          event: '1234',
+          eventDate: '1954-04-11T01:23:45',
+          assessor: 'Kermit',
+          orgUnit: 'TupaiaEntityA',
+          orgUnitName: 'Tupaia Entity A',
+          dataValues: {},
+        },
+      ]);
     });
 
-    it('Returns kobo entity code if it maps to a non-existant tupaia entity', async () => {
-      const result = await translator.fetchEntityInfoFromKoBoAnswer('KoBoC');
-      expect(result).toStrictEqual({
-        orgUnit: 'KoBoC',
-        orgUnitName: 'KoBoC',
-      });
-    });
-
-    it('Returns kobo entity code if no mapping can be found', async () => {
-      const result = await translator.fetchEntityInfoFromKoBoAnswer('NotARealCode');
-      expect(result).toStrictEqual({
-        orgUnit: 'NotARealCode',
-        orgUnitName: 'NotARealCode',
-      });
-    });
-  });
-
-  describe('translateSingleKoBoResult', () => {
-    it('Map KoBo metadata fields to event info fields', async () => {
-      const translatedResult = await translator.translateSingleKoBoResult(
-        MOCK_KOBO_RESULT,
-        {},
-        'entity',
-      );
-      expect(translatedResult).toStrictEqual({
-        event: 1234,
-        eventDate: '1954-04-11T01:23:45',
-        assessor: 'Kermit',
-        orgUnit: 'TupaiaEntityA',
-        orgUnitName: 'Tupaia Entity A',
-        dataValues: {},
-      });
-    });
-
-    it('Map question codes into new data values', async () => {
-      const translatedResult = await translator.translateSingleKoBoResult(
-        MOCK_KOBO_RESULT,
+    it('Maps question codes into new data values', async () => {
+      const [result] = await translator.translateKoBoResults(
+        [MOCK_KOBO_RESULT],
         MOCK_QUESTION_MAP,
         'entity',
       );
-      expect(translatedResult.dataValues).toStrictEqual({
+      expect(result.dataValues).toStrictEqual({
         person: 'them',
         thing: 'that',
         place: 'there',
@@ -73,18 +45,42 @@ describe('KoBoTranslator', () => {
       });
     });
 
-    it('Map answer into new values', async () => {
-      const translatedResult = await translator.translateSingleKoBoResult(
-        MOCK_KOBO_RESULT,
+    it('Maps answer into new values', async () => {
+      const [result] = await translator.translateKoBoResults(
+        [MOCK_KOBO_RESULT],
         MOCK_QUESTION_ANSWER_MAP,
         'entity',
       );
-      expect(translatedResult.dataValues).toStrictEqual({
+      expect(result.dataValues).toStrictEqual({
         person: 'them',
         thing: 'those',
         place: 'here',
         time: 'now',
         reason: 'because',
+      });
+    });
+
+    it('Returns kobo entity code if it maps to a non-existant tupaia entity', async () => {
+      const [result] = await translator.translateKoBoResults(
+        [{ ...MOCK_KOBO_RESULT, entity: 'KoboC' }],
+        MOCK_QUESTION_MAP,
+        'entity',
+      );
+      expect(result).toMatchObject({
+        orgUnit: 'KoboC',
+        orgUnitName: 'KoboC',
+      });
+    });
+
+    it('Returns kobo entity code if no mapping can be found', async () => {
+      const [result] = await translator.translateKoBoResults(
+        [{ ...MOCK_KOBO_RESULT, entity: 'NotARealCode' }],
+        MOCK_QUESTION_MAP,
+        'entity',
+      );
+      expect(result).toMatchObject({
+        orgUnit: 'NotARealCode',
+        orgUnitName: 'NotARealCode',
       });
     });
   });

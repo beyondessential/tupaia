@@ -4,7 +4,6 @@
  */
 
 import { SyncGroup } from '../../../services/kobo/types';
-import { Entity } from '../../../types';
 
 export type MockDataServiceEntity = {
   id: string;
@@ -30,7 +29,7 @@ const MOCK_DATA_SERVICE_ENTITY: MockDataServiceEntity[] = [
   },
 ];
 
-const MOCK_ENTITY: Entity[] = [
+const MOCK_ENTITY = [
   {
     code: 'TupaiaEntityA',
     name: 'Tupaia Entity A',
@@ -49,7 +48,7 @@ export const MOCK_DB_DATA = {
 };
 
 export const MOCK_KOBO_RESULT = {
-  _id: 1234,
+  _id: '1234',
   _submission_time: '1954-04-11T01:23:45',
   _submitted_by: 'Kermit',
   entity: 'KoBoA',
@@ -83,6 +82,8 @@ export const MOCK_QUESTION_ANSWER_MAP = {
 };
 
 export const MOCK_DATA_SOURCE: SyncGroup = {
+  code: 'TEST_SYNC_GROUP',
+  service_type: 'kobo',
   config: {
     koboSurveyCode: 'abc',
     internalSurveyCode: 'xyz',
@@ -94,7 +95,7 @@ export const MOCK_DATA_SOURCE: SyncGroup = {
 export const TRANSLATED_DATA = {
   assessor: 'Kermit',
   dataValues: { person: 'them', place: 'here', reason: 'because', thing: 'those', time: 'now' },
-  event: 1234,
+  event: '1234',
   eventDate: '1954-04-11T01:23:45',
   orgUnit: 'TupaiaEntityA',
   orgUnitName: 'Tupaia Entity A',

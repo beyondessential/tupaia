@@ -23,19 +23,20 @@ describe('KoBoService', () => {
   describe('pull()', () => {
     describe('pullAnalytics()', () => {
       it('throws an error', () =>
-        expect(koboService.pull({}, 'dataElement')).toBeRejectedWith('not supported'));
+        expect(koboService.pull([], 'dataElement', {})).toBeRejectedWith('not supported'));
     });
 
     describe('pullEvents()', () => {
       it('throws an error', () =>
-        expect(koboService.pull({}, 'dataGroup')).toBeRejectedWith('not supported'));
+        expect(koboService.pull([], 'dataGroup', {})).toBeRejectedWith('not supported'));
     });
 
     describe('pullSyncGroups()', () => {
       it('pull and translate from api correctly', () =>
-        expect(koboService.pull([MOCK_DATA_SOURCE], 'syncGroup')).resolves.toHaveProperty('xyz', [
-          TRANSLATED_DATA,
-        ]));
+        expect(koboService.pull([MOCK_DATA_SOURCE], 'syncGroup', {})).resolves.toHaveProperty(
+          'xyz',
+          [TRANSLATED_DATA],
+        ));
     });
   });
 

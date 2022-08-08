@@ -9,7 +9,7 @@ export type QuestionMapping = Record<
   string,
   {
     koboQuestionCode: string;
-    answerMap: Record<string, string | number>;
+    answerMap?: Record<string, string | number>;
   }
 >;
 

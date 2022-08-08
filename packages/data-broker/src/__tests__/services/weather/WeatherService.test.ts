@@ -45,10 +45,7 @@ describe('WeatherService', () => {
       const actual = await service.pull(
         [
           {
-            model: {},
-            id: '12345_PRECIP',
             code: 'WTHR_PRECIP',
-            type: 'dataElement',
             service_type: 'weather',
             config: {},
           },
@@ -94,10 +91,7 @@ describe('WeatherService', () => {
       const actual = await service.pull(
         [
           {
-            model: {},
-            id: 'SOME_DATA_GROUP_ID', // mock data has the data group lookup return element codes [WTHR_PRECIP], data group id/code/name doesnt matter
             code: 'SOME_DATA_GROUP_CODE',
-            type: 'dataGroup',
             service_type: 'weather',
             config: {},
           },
@@ -139,7 +133,7 @@ describe('WeatherService', () => {
       const service = new WeatherService(mockModels, mockApi);
 
       const functionCall = async () =>
-        await service.pull(
+        service.pull(
           getMockDataSourcesArg(),
           getMockTypeArg(),
           getMockOptionsArg({
@@ -166,8 +160,10 @@ describe('WeatherService', () => {
           find: [
             {
               code: 'WTHR_FORECAST_PRECIP',
-              type: 'dataElement',
+              dataElementCode: 'WTHR_FORECAST_PRECIP',
+              service_type: 'weather',
               config: { weatherForecastData: true },
+              permission_groups: ['*'],
             },
           ],
         },

@@ -4,10 +4,13 @@
  */
 
 import { translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
+import { DhisEventAnalytics } from '../../../services/dhis/types';
 import { createApiProxyStub, createApiStub } from './DhisInputSchemeResolvingApiProxy.stubs';
 
 jest.mock('@tupaia/dhis-api');
-translateElementKeysInEventAnalytics.mockImplementation(a => a);
+
+const mockTranslateElementKeysInEventAnalytics = translateElementKeysInEventAnalytics as jest.Mock;
+mockTranslateElementKeysInEventAnalytics.mockImplementation((a: DhisEventAnalytics) => a);
 
 const api = createApiStub();
 const proxy = createApiProxyStub(api);
@@ -86,9 +89,13 @@ describe('DhisInputSchemeResolvingApiProxy', () => {
         organisationUnitCodes: ['ORG1'],
         programCode: 'G1',
       });
-      return expect(
-        translateElementKeysInEventAnalytics,
-      ).toHaveBeenCalledOnceWith(api.getEventAnalytics(), { dhisId_el1: 'EL1', dhisId_el2: 'EL2' });
+      return expect(translateElementKeysInEventAnalytics).toHaveBeenCalledOnceWith(
+        api.getEventAnalytics({}),
+        {
+          dhisId_el1: 'EL1',
+          dhisId_el2: 'EL2',
+        },
+      );
     });
 
     it('should process the response and swap orgUnit ids back to codes', async () => {
