@@ -134,10 +134,10 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
         columns: [...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement')],
       },
     ]}
-    editConfig={{ title: 'Edit Data Source' }}
     createConfig={{
       title: 'New Data Group',
       actionConfig: {
+        title: 'Edit Data Source',
         editEndpoint: 'dataGroups',
         fields: [...DATA_GROUP_FIELDS],
       },
@@ -164,11 +164,11 @@ export const DataElementsPage = ({ getHeaderEl }) => (
     endpoint="dataElements"
     reduxId="dataElements"
     columns={[...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement')]}
-    editConfig={{ title: 'Edit Data Element' }}
     importConfig={IMPORT_CONFIG}
     createConfig={{
       title: 'New Data Element',
       actionConfig: {
+        title: 'Edit Data Element',
         editEndpoint: 'dataElements',
         fields: [...DATA_ELEMENT_FIELDS],
       },

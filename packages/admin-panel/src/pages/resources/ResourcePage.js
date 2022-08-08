@@ -17,7 +17,6 @@ const Container = styled(PageBody)`
 
 export const ResourcePage = ({
   columns,
-  editConfig,
   createConfig,
   endpoint,
   reduxId,
@@ -32,6 +31,7 @@ export const ResourcePage = ({
   defaultFilters,
   defaultSorting,
   displayUsedBy,
+  ConfirmDeleteModalComponent,
 }) => {
   const HeaderPortal = usePortalWithCallback(
     <Header
@@ -55,13 +55,10 @@ export const ResourcePage = ({
           baseFilter={baseFilter}
           defaultFilters={defaultFilters}
           defaultSorting={defaultSorting}
+          ConfirmDeleteModalComponent={ConfirmDeleteModalComponent}
         />
       </Container>
-      <EditModal
-        {...editConfig}
-        onProcessDataForSave={onProcessDataForSave}
-        displayUsedBy={displayUsedBy}
-      />
+      <EditModal onProcessDataForSave={onProcessDataForSave} displayUsedBy={displayUsedBy} />
     </>
   );
 };
@@ -71,7 +68,6 @@ ResourcePage.propTypes = {
   columns: PropTypes.array.isRequired,
   ConfirmDeleteModalComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
   createConfig: PropTypes.object,
-  editConfig: PropTypes.object,
   onProcessDataForSave: PropTypes.func,
   endpoint: PropTypes.string.isRequired,
   reduxId: PropTypes.string,
@@ -96,7 +92,6 @@ ResourcePage.propTypes = {
 ResourcePage.defaultProps = {
   ConfirmDeleteModalComponent: undefined,
   createConfig: null,
-  editConfig: null,
   expansionTabs: null,
   importConfig: null,
   ExportModalComponent: null,

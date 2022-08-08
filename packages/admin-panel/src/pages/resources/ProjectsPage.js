@@ -71,24 +71,15 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
+      title: 'Edit Project',
       editEndpoint: 'projects',
       fields: FIELDS,
     },
   },
 ];
 
-const EDIT_CONFIG = {
-  title: 'Edit Project',
-};
-
 export const ProjectsPage = ({ getHeaderEl }) => (
-  <ResourcePage
-    title="Projects"
-    endpoint="projects"
-    columns={COLUMNS}
-    editConfig={EDIT_CONFIG}
-    getHeaderEl={getHeaderEl}
-  />
+  <ResourcePage title="Projects" endpoint="projects" columns={COLUMNS} getHeaderEl={getHeaderEl} />
 );
 
 ProjectsPage.propTypes = {

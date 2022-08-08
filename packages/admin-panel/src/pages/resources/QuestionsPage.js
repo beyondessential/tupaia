@@ -54,6 +54,7 @@ const QUESTION_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
+      title: 'Edit Question',
       editEndpoint: 'questions',
       fields: QUESTION_FIELDS,
       displayUsedBy: true,
@@ -98,17 +99,12 @@ const EXPANSION_CONFIG = [
   },
 ];
 
-const EDIT_CONFIG = {
-  title: 'Edit Question',
-};
-
 export const QuestionsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Questions"
     endpoint="questions"
     columns={QUESTION_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
-    editConfig={EDIT_CONFIG}
     getHeaderEl={getHeaderEl}
     displayUsedBy
   />

@@ -43,26 +43,12 @@ export const EditModalComponent = ({
   usedBy,
   usedByIsLoading,
   usedByErrorMessage,
-  endpoint,
 }) => {
   const fieldsBySource = keyBy(fields, 'source');
 
-  const getTitle = () => {
-    if (endpoint !== null && Array.isArray(title)) {
-      const { titleText: selectedTitle } = title
-        .filter(config => endpoint.includes(config.titleEndpoint))
-        .shift();
-      return selectedTitle;
-    }
-    if (endpoint === null) {
-      return 'Edit';
-    }
-    return title;
-  };
-
   return (
     <Dialog onClose={onDismiss} open={!!fields} disableBackdropClick>
-      <DialogHeader onClose={onDismiss} title={getTitle()} />
+      <DialogHeader onClose={onDismiss} title={title} />
       <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading || !fields}>
         <>
           {fields && (
@@ -99,14 +85,13 @@ EditModalComponent.propTypes = {
   onEditField: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   recordData: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  title: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  title: PropTypes.string,
   fields: PropTypes.arrayOf(PropTypes.shape({})),
   isUnchanged: PropTypes.bool,
   displayUsedBy: PropTypes.bool,
   usedBy: PropTypes.array,
   usedByIsLoading: PropTypes.bool,
   usedByErrorMessage: PropTypes.string,
-  endpoint: PropTypes.string,
 };
 
 EditModalComponent.defaultProps = {
@@ -119,7 +104,6 @@ EditModalComponent.defaultProps = {
   usedBy: null,
   usedByIsLoading: null,
   usedByErrorMessage: null,
-  endpoint: null,
 };
 
 const mapStateToProps = state => ({

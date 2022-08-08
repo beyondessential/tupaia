@@ -22,6 +22,7 @@ const defaultState = {
   recordId: null,
   recordData: null,
   fields: null,
+  title: 'Edit',
   editedFields: {},
 };
 
