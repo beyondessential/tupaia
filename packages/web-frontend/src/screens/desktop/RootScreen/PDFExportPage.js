@@ -9,14 +9,12 @@ import { selectCurrentDashboardName } from '../../../selectors';
 import { A4Page } from '../../../components/PDFExport/components/A4Page';
 
 const Main = styled.div`
-  height: 100vh;
   background: #fbfbfb;
-  overflow: auto;
 `;
 
 const DashboardTitleContainer = styled.div`
   text-align: start;
-  margin-bottom: 50px;
+  margin-bottom: 18px;
 `;
 
 const DashboardNameText = styled.div`

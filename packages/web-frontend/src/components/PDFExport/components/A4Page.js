@@ -7,9 +7,7 @@ import Header from './Header';
 
 const A4Container = styled.div`
   width: 1192px;
-  margin-top: 20px;
   page-break-after: always;
-  border-style: solid;
 `;
 
 const Content = styled(FlexColumn)`

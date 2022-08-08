@@ -36,37 +36,43 @@ const TEXT_DARKGREY = '#414D55';
 const StyledTable = styled(ChartTable)`
   overflow: auto;
   border-bottom: 1px solid rgb(82, 82, 88);
+`;
 
-  &.exporting {
-    background: white;
-    padding: 30px 0;
-    border-bottom: none;
+const ExportingStyledTable = styled(StyledTable)`
+  background: white;
+  padding: 30px 0;
+  border-bottom: none;
 
-    table {
-      width: auto; // as small as possible
-      border: 1px solid ${GREY_DE};
-    }
+  table {
+    width: auto; // as small as possible
+    border: 1px solid ${GREY_DE};
+  }
 
-    // table head
-    thead {
-      border: 1px solid ${GREY_DE};
-      background: none;
-    }
+  // table head
+  thead {
+    border: 1px solid ${GREY_DE};
+    background: none;
+  }
 
-    // table body
-    tbody {
-      tr {
-        &:nth-of-type(odd) {
-          background: ${GREY_FB};
-        }
+  // table body
+  tbody {
+    tr {
+      &:nth-of-type(odd) {
+        background: ${GREY_FB};
       }
     }
+  }
 
-    th,
-    td {
-      color: ${TEXT_DARKGREY};
-      border-color: ${GREY_DE};
-    }
+  th,
+  td {
+    color: ${TEXT_DARKGREY};
+    border-color: ${GREY_DE};
+  }
+`;
+
+const PDFExportingStyledTable = styled(ExportingStyledTable)`
+  table {
+    width: 100%;
   }
 `;
 
@@ -122,7 +128,7 @@ export const ChartWrapper = ({
     return (
       <CustomChartContainer>
         <Chart />
-        <StyledTable viewContent={viewContent} className={isExporting && 'exporting'} />
+        <PDFExportingStyledTable viewContent={viewContent} />
       </CustomChartContainer>
     );
   }
@@ -140,9 +146,7 @@ export const ChartWrapper = ({
     return (
       <EnlargedChartContainer $isExporting={isExporting}>
         <Chart />
-        {exportWithTable && (
-          <StyledTable viewContent={viewContent} className={isExporting && 'exporting'} />
-        )}
+        {exportWithTable && <ExportingStyledTable viewContent={viewContent} />}
       </EnlargedChartContainer>
     );
   }
