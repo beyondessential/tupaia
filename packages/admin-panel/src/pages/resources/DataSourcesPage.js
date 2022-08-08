@@ -26,7 +26,7 @@ const DataSourceConfigView = row => {
     .map(([key, value]) => (
       <React.Fragment key={key}>
         <dt style={localStyles.config.dt}>{key}:</dt>
-        <dd>{value.toString()}</dd>
+        <dd>{value ? value.toString() : '""'}</dd>
       </React.Fragment>
     ));
 
@@ -77,9 +77,11 @@ const DATA_ELEMENT_FIELDS = [
       default: '{}',
       getJsonFieldSchema: () => [
         {
-          label: 'Regional Server (Choose "No" if stored on country specific server)',
-          fieldName: 'isDataRegional',
-          type: 'boolean',
+          label: 'DHIS Server',
+          fieldName: 'dhisInstanceCode',
+          optionsEndpoint: 'dhisInstances',
+          optionLabelKey: 'dhisInstances.code',
+          optionValueKey: 'dhisInstances.code',
         },
         {
           label: 'Data element code',
@@ -112,9 +114,11 @@ const DATA_GROUP_FIELDS = [
       default: '{}',
       getJsonFieldSchema: () => [
         {
-          label: 'Regional Server (Choose "No" if stored on country specific server)',
-          fieldName: 'isDataRegional',
-          type: 'boolean',
+          label: 'DHIS Server',
+          fieldName: 'dhisInstanceCode',
+          optionsEndpoint: 'dhisInstances',
+          optionLabelKey: 'dhisInstances.code',
+          optionValueKey: 'dhisInstances.code',
         },
       ],
     },

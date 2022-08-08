@@ -38,6 +38,18 @@ describe('DataElement', () => {
       expect(() => dataElement.sanitizeConfig()).to.throw(/config schema .*service/);
     });
 
+    it('should remove valid fields when empty', () => {
+      ['', undefined, null].forEach(emptyValue => {
+        assertConfigIsSanitized(
+          {
+            serviceType: 'dhis',
+          },
+          { dhisInstanceCode: 'bob', dataElementCode: emptyValue },
+          { dhisInstanceCode: 'bob' },
+        );
+      });
+    });
+
     describe('dhis service', () => {
       it('data element', () => {
         assertConfigIsSanitized(
@@ -47,44 +59,43 @@ describe('DataElement', () => {
           {
             categoryOptionCombo: 'Female_50-70Years',
             dataElementCode: 'Gender_Age',
-            isDataRegional: true,
+            dhisInstanceCode: 'bob',
             other: 'random',
           },
           {
             categoryOptionCombo: 'Female_50-70Years',
             dataElementCode: 'Gender_Age',
-            isDataRegional: true,
+            dhisInstanceCode: 'bob',
           },
         );
       });
 
-      it('should default `isDataRegional` to true', () => {
+      it('should default `dhisInstanceCode` if missing', () => {
         assertConfigIsSanitized(
           {
             serviceType: 'dhis',
           },
           {},
-          { isDataRegional: true },
+          { dhisInstanceCode: 'regional' },
         );
-
-        ['', undefined, null].forEach(emptyValue => {
+        ['', undefined].forEach(emptyValue => {
           assertConfigIsSanitized(
             {
               serviceType: 'dhis',
             },
-            { isDataRegional: emptyValue },
-            { isDataRegional: true },
+            { dhisInstanceCode: emptyValue },
+            { dhisInstanceCode: 'regional' },
           );
         });
       });
 
-      it('should allow `isDataRegional` to be false', () => {
+      it('should allow `dhisInstanceCode` to be null', () => {
         assertConfigIsSanitized(
           {
             serviceType: 'dhis',
           },
-          { isDataRegional: false },
-          { isDataRegional: false },
+          { dhisInstanceCode: null },
+          { dhisInstanceCode: null },
         );
       });
     });
@@ -95,7 +106,7 @@ describe('DataElement', () => {
           {
             serviceType: 'tupaia',
           },
-          { isDataRegional: false, other: 'random' },
+          { dhisInstanceCode: 'bob', other: 'random' },
           {},
         );
       });
@@ -105,10 +116,10 @@ describe('DataElement', () => {
       ['', undefined, null].forEach(emptyValue => {
         assertConfigIsSanitized(
           {
-            serviceType: 'dhis',
+            serviceType: 'tupaia',
           },
-          { isDataRegional: true, dataElementCode: emptyValue },
-          { isDataRegional: true },
+          { dhisInstanceCode: 'bob', other: 'random' },
+          {},
         );
       });
     });

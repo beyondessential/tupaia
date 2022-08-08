@@ -4,7 +4,7 @@
  */
 
 import { translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
-import { createApiProxyStub, createApiStub } from './DhisInputSchemeResolvingApiProxy.stubs';
+import { createApiProxyStub, createApiStub } from './DhisCodeToIdTranslator.stubs';
 
 jest.mock('@tupaia/dhis-api');
 translateElementKeysInEventAnalytics.mockImplementation(a => a);
@@ -12,7 +12,7 @@ translateElementKeysInEventAnalytics.mockImplementation(a => a);
 const api = createApiStub();
 const proxy = createApiProxyStub(api);
 
-describe('DhisInputSchemeResolvingApiProxy', () => {
+describe('DhisCodeToIdTranslator', () => {
   describe('getAnalytics', () => {
     it('should swap codes for dhisId if all specified', async () => {
       await proxy.getAnalytics({
@@ -62,7 +62,7 @@ describe('DhisInputSchemeResolvingApiProxy', () => {
         dataElementIds: ['dhisId_el1', 'dhisId_el2'],
         organisationUnitIds: ['dhisId_ou1'],
         programIds: ['dhisId_g1'],
-        inputIdScheme: 'uid' // added if all data elements, org units, program swapped to ids
+        inputIdScheme: 'uid', // added if all data elements, org units, program swapped to ids
       });
     });
 

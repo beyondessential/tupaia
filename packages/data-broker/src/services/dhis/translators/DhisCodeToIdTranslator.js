@@ -10,7 +10,14 @@ import {
 import { runDatabaseFunctionInBatches } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
 
-export class DhisInputSchemeResolvingApiProxy {
+/**
+ * DhisCodeToIdTranslator can be used for data pulls from a DHIS instance where there are no codes set against
+ * the Data Elements, Org Units etc.
+ *
+ * It detects such instances, and swaps all the codes it is given to ids for the fetch, then does the same for
+ * the data coming back (swapping ids in the response data for codes).
+ */
+export class DhisCodeToIdTranslator {
   constructor(models, api) {
     this.models = models;
     this.api = api;
