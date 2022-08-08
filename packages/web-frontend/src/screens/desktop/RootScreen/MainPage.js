@@ -26,6 +26,12 @@ const Container = styled.div`
   display: flex; /* Took me ages to find this, is the magic touch */
   align-items: stretch;
   align-content: stretch;
+  overflow-y: hidden;
+  height: 100%;
+
+  svg.recharts-surface {
+    overflow: visible;
+  }
 `;
 
 const ContentContainer = styled.div`

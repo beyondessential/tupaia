@@ -32,6 +32,11 @@ const Description = styled(DialogContentText)`
   text-align: center;
 `;
 
+const Wrapper = styled.div`
+  background: WHITE;
+  margin: 0px 100px;
+`;
+
 const PDFExportSinglePageContent = ({
   viewContent,
   organisationUnitName,
@@ -123,13 +128,13 @@ const PDFExportSinglePageContent = ({
   }, []);
 
   return (
-    <div style={{ backgroundColor: WHITE }}>
+    <Wrapper>
       {renderTitle()}
       {renderDescription()}
       <DialogContent style={contentStyle}>
         <div style={getBodyStyle()}>{renderBody()}</div>
       </DialogContent>
-    </div>
+    </Wrapper>
   );
 };
 
