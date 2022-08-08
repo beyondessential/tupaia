@@ -5,7 +5,7 @@
 
 import { DataBroker } from '../../DataBroker';
 import { Service } from '../../services/Service';
-import { DataSource } from '../../types';
+import { DataElement, DataGroup } from '../../types';
 import { DATA_SOURCE_TYPES } from '../../utils';
 import { DATA_BY_SERVICE, DATA_ELEMENTS, DATA_GROUPS } from './DataBroker.fixtures';
 import { stubCreateService, createModelsStub, createServiceStub } from './DataBroker.stubs';
@@ -128,7 +128,7 @@ describe('DataBroker', () => {
     });
 
     describe('analytics', () => {
-      const assertServicePulledDataElementsOnce = (service: Service, dataElements: DataSource[]) =>
+      const assertServicePulledDataElementsOnce = (service: Service, dataElements: DataElement[]) =>
         expect(service.pull).toHaveBeenCalledOnceWith(dataElements, 'dataElement', options);
 
       it('single code', async () => {
@@ -218,8 +218,8 @@ describe('DataBroker', () => {
     });
 
     describe('dataGroups', () => {
-      const assertServicePulledEventsOnce = (service: Service, dataElements: DataSource[]) =>
-        expect(service.pull).toHaveBeenCalledOnceWith(dataElements, 'dataGroup', options);
+      const assertServicePulledEventsOnce = (service: Service, dataGroups: DataGroup[]) =>
+        expect(service.pull).toHaveBeenCalledOnceWith(dataGroups, 'dataGroup', options);
 
       it('single code', async () => {
         const dataBroker = new DataBroker();
@@ -275,7 +275,7 @@ describe('DataBroker', () => {
   describe('pullMetadata()', () => {
     const assertServicePulledDataElementMetadataOnce = (
       service: Service,
-      dataElements: DataSource[],
+      dataElements: DataElement[],
     ) =>
       expect(service.pullMetadata).toHaveBeenCalledOnceWith(dataElements, 'dataElement', options);
 

@@ -11,7 +11,7 @@ import {
   PullAnalyticsOptions,
 } from '../../../../services/dhis/pullers';
 import { AnalyticsPuller } from '../../../../services/dhis/pullers/AnalyticsPuller';
-import { AnalyticResults, DataElement } from '../../../../types';
+import { DataElement } from '../../../../types';
 import { DATA_ELEMENTS, EVENT_ANALYTICS } from '../DhisService.fixtures';
 import { buildDhisAnalyticsResponse, createModelsStub, stubDhisApi } from '../DhisService.stubs';
 
@@ -36,36 +36,28 @@ describe('AnalyticsPuller', () => {
 
   describe('from aggregate data', () => {
     describe('DHIS API invocation', () => {
-      const assertAnalyticsApiWasInvokedCorrectly = async ({
-        dataSources,
-        options = {},
-        invocationArgs,
-      }: {
-        dataSources: DataElement[];
-        options?: PullAnalyticsOptions;
-        invocationArgs: Record<string, unknown>;
-      }) => {
-        await analyticsPuller.pull([dhisApi], dataSources, options);
-        expect(dhisApi.getAnalytics).toHaveBeenCalledOnceWith(invocationArgs);
-      };
+      it('single data element', async () => {
+        await analyticsPuller.pull([dhisApi], [DATA_ELEMENTS.POP01], {});
+        expect(dhisApi.getAnalytics).toHaveBeenCalledOnceWith(
+          expect.objectContaining({ dataElementCodes: ['POP01'] }),
+        );
+      });
 
-      it('single data element', async () =>
-        assertAnalyticsApiWasInvokedCorrectly({
-          dataSources: [DATA_ELEMENTS.POP01],
-          invocationArgs: expect.objectContaining({ dataElementCodes: ['POP01'] }),
-        }));
+      it('single data element with different DHIS code', async () => {
+        await analyticsPuller.pull([dhisApi], [DATA_ELEMENTS.DIF01], {});
+        expect(dhisApi.getAnalytics).toHaveBeenCalledOnceWith(
+          expect.objectContaining({ dataElementCodes: ['DIF01_DHIS'] }),
+        );
+      });
 
-      it('single data element with different DHIS code', async () =>
-        assertAnalyticsApiWasInvokedCorrectly({
-          dataSources: [DATA_ELEMENTS.DIF01],
-          invocationArgs: expect.objectContaining({ dataElementCodes: ['DIF01_DHIS'] }),
-        }));
-
-      it('multiple data elements', async () =>
-        assertAnalyticsApiWasInvokedCorrectly({
-          dataSources: [DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02],
-          invocationArgs: expect.objectContaining({ dataElementCodes: ['POP01', 'POP02'] }),
-        }));
+      it('multiple data elements', async () => {
+        await analyticsPuller.pull([dhisApi], [DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02], {});
+        expect(dhisApi.getAnalytics).toHaveBeenCalledOnceWith(
+          expect.objectContaining({
+            dataElementCodes: ['POP01', 'POP02'],
+          }),
+        );
+      });
 
       it('supports various API options', async () => {
         const options = {
@@ -77,13 +69,10 @@ describe('AnalyticsPuller', () => {
           additionalDimensions: ['co'],
         };
 
-        return assertAnalyticsApiWasInvokedCorrectly({
-          dataSources: [DATA_ELEMENTS.POP01],
-          options,
-          invocationArgs: {
-            dataElementCodes: ['POP01'],
-            ...options,
-          },
+        await analyticsPuller.pull([dhisApi], [DATA_ELEMENTS.POP01], options);
+        expect(dhisApi.getAnalytics).toHaveBeenCalledOnceWith({
+          ...options,
+          dataElementCodes: ['POP01'],
         });
       });
     });
@@ -93,69 +82,58 @@ describe('AnalyticsPuller', () => {
         organisationUnitCodes: ['TO'],
       };
 
-      const assertPullResultsAreCorrect = ({
-        dataSources,
-        options,
-        expectedResults,
-      }: {
-        dataSources: DataElement[];
-        options: PullAnalyticsOptions;
-        expectedResults: AnalyticResults;
-      }) => {
-        dhisApi = stubDhisApi({
-          getAnalyticsResponse: buildDhisAnalyticsResponse(expectedResults.results),
-        });
-        return expect(analyticsPuller.pull([dhisApi], dataSources, options)).resolves.toStrictEqual(
-          expectedResults,
-        );
-      };
-
       it('single data element', async () => {
-        const results = [
+        const dhisAnalytics = [
           { dataElement: 'POP01', organisationUnit: 'TO', value: 1, period: '20200101' },
         ];
+        dhisApi = stubDhisApi({
+          getAnalyticsResponse: buildDhisAnalyticsResponse(dhisAnalytics),
+        });
 
-        return assertPullResultsAreCorrect({
-          dataSources: [DATA_ELEMENTS.POP01],
-          options: basicOptions,
-          expectedResults: {
-            results,
-            metadata: { dataElementCodeToName: { POP01: 'Population 1' } },
+        const results = await analyticsPuller.pull([dhisApi], [DATA_ELEMENTS.POP01], basicOptions);
+        expect(results).toStrictEqual({
+          results: dhisAnalytics,
+          metadata: {
+            dataElementCodeToName: { POP01: 'Population 1' },
           },
         });
       });
 
       it('single data element with a different DHIS code', async () => {
-        const results = [
+        const dhisAnalytics = [
           { dataElement: 'DIF01', organisationUnit: 'TO', value: 3, period: '20200103' },
         ];
+        dhisApi = stubDhisApi({
+          getAnalyticsResponse: buildDhisAnalyticsResponse(dhisAnalytics),
+        });
 
-        return assertPullResultsAreCorrect({
-          dataSources: [DATA_ELEMENTS.DIF01],
-          options: basicOptions,
-          expectedResults: {
-            results,
-            metadata: {
-              dataElementCodeToName: { DIF01: 'Different 1' },
-            },
+        const results = await analyticsPuller.pull([dhisApi], [DATA_ELEMENTS.DIF01], basicOptions);
+        expect(results).toStrictEqual({
+          results: dhisAnalytics,
+          metadata: {
+            dataElementCodeToName: { DIF01: 'Different 1' },
           },
         });
       });
 
       it('multiple data elements', async () => {
-        const results = [
+        const dhisAnalytics = [
           { dataElement: 'POP01', organisationUnit: 'TO', value: 1, period: '20200101' },
           { dataElement: 'POP02', organisationUnit: 'TO', value: 2, period: '20200102' },
         ];
+        dhisApi = stubDhisApi({
+          getAnalyticsResponse: buildDhisAnalyticsResponse(dhisAnalytics),
+        });
 
-        return assertPullResultsAreCorrect({
-          dataSources: [DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02],
-          options: basicOptions,
-          expectedResults: {
-            results,
-            metadata: {
-              dataElementCodeToName: { POP01: 'Population 1', POP02: 'Population 2' },
-            },
+        const results = await analyticsPuller.pull(
+          [dhisApi],
+          [DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02],
+          basicOptions,
+        );
+        expect(results).toStrictEqual({
+          results: dhisAnalytics,
+          metadata: {
+            dataElementCodeToName: { POP01: 'Population 1', POP02: 'Population 2' },
           },
         });
       });
@@ -238,30 +216,41 @@ describe('AnalyticsPuller', () => {
         );
       });
 
-      it('simple data elements', () =>
-        assertEventAnalyticsApiWasInvokedOnceWith({
-          dataSources: [DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02],
-          options: basicOptions,
-          invocationArgs: expect.objectContaining({
+      it('simple data elements', async () => {
+        await analyticsPuller.pull(
+          [dhisApi],
+          [DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02],
+          basicOptions,
+        );
+        expect(dhisApi.getEventAnalytics).toHaveBeenCalledOnceWith(
+          expect.objectContaining({
             dataElementCodes: ['POP01', 'POP02'],
           }),
-        }));
+        );
+      });
 
-      it('data elements with data source codes different than DHIS2 codes', () =>
-        assertEventAnalyticsApiWasInvokedOnceWith({
-          dataSources: [DATA_ELEMENTS.POP01, DATA_ELEMENTS.DIF01],
-          options: basicOptions,
-          invocationArgs: expect.objectContaining({
+      it('data elements with data source codes different than DHIS2 codes', async () => {
+        await analyticsPuller.pull(
+          [dhisApi],
+          [DATA_ELEMENTS.POP01, DATA_ELEMENTS.DIF01],
+          basicOptions,
+        );
+        expect(dhisApi.getEventAnalytics).toHaveBeenCalledOnceWith(
+          expect.objectContaining({
             dataElementCodes: ['POP01', 'DIF01_DHIS'],
           }),
-        }));
+        );
+      });
 
-      it('forces `dataElementIdScheme` option to `code`', async () =>
-        assertEventAnalyticsApiWasInvokedOnceWith({
-          dataSources: [DATA_ELEMENTS.POP01],
-          options: { ...basicOptions, dataElementIdScheme: 'id' } as PullAnalyticsOptions,
-          invocationArgs: expect.objectContaining({ dataElementIdScheme: 'code' }),
-        }));
+      it('forces `dataElementIdScheme` option to `code`', async () => {
+        await analyticsPuller.pull([dhisApi], [DATA_ELEMENTS.POP01], {
+          ...basicOptions,
+          dataElementIdScheme: 'id',
+        } as PullAnalyticsOptions);
+        expect(dhisApi.getEventAnalytics).toHaveBeenCalledOnceWith(
+          expect.objectContaining({ dataElementIdScheme: 'code' }),
+        );
+      });
 
       it('supports various API options', async () => {
         const options = {
