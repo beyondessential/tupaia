@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { FlexCenter as BaseFlexCenter, FlexColumn as BaseFlexColumn } from '@tupaia/ui-components';
-import { TUPAIA_DARK_LOGO_SRC } from '../../../constants';
+import { TUPAIA_DARK_LOGO_SRC } from '../../constants';
 
 const FlexCenter = styled(BaseFlexCenter)`
   position: relative;

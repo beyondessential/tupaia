@@ -6,7 +6,7 @@ import { Divider as BaseDivider } from '@material-ui/core';
 import { getUniqueViewId } from '../../../utils';
 import PDFExportSinglePageContent from '../../../containers/PDFExportSinglePageContent';
 import { selectCurrentDashboardName } from '../../../selectors';
-import { A4Page } from '../../../components/PDFExport/components/A4Page';
+import { A4Page } from '../../../components/PDFExport';
 
 const Main = styled.div`
   background: #fbfbfb;
