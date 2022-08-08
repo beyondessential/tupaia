@@ -42,7 +42,6 @@ export const ENTITIES = {
     metadata: {
       dhis: { isDataRegional: false, trackedEntityId: 'tracked_entity_id_dl_household_1' },
     },
-    isTrackedEntity: () => true,
     getParent: async () => DL_FACILITY_A,
   },
   DL_HOUSEHOLD_2: {
@@ -52,7 +51,6 @@ export const ENTITIES = {
     metadata: {
       dhis: { isDataRegional: false, trackedEntityId: 'tracked_entity_id_dl_household_2' },
     },
-    isTrackedEntity: () => true,
     getParent: async () => DL_FACILITY_A,
   },
 };

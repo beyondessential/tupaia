@@ -12,6 +12,9 @@ export class EventsPuller {
     this.translator = translator;
   }
 
+  /**
+   * @protected
+   */
   pullEventsForOrganisationUnits = async (api, programCode, options) => {
     const { dataElementCodes = [], organisationUnitCodes, period, startDate, endDate } = options;
 
@@ -37,11 +40,14 @@ export class EventsPuller {
     return buildEventsFromDhisEventAnalytics(this.models, orgUnitEventAnalytics, dataElementCodes);
   };
 
+  /**
+   * @private
+   */
   pullEventsForApi = async (api, programCode, options) => {
     const { organisationUnitCodes: entityCodes, hierarchy } = options;
 
     if (!entityCodes || entityCodes.length === 0) {
-      throw new Error('DHIS events pull requires at least one entity');
+      throw new Error('DHIS event analytics pull requires at least one entity');
     }
 
     const entities = await this.models.entity.find({ code: entityCodes });
@@ -60,6 +66,10 @@ export class EventsPuller {
     if (trackedEntities.length > 0) {
       // Events for tracked entities cannot be fetched directly in DHIS2, instead we must fetch for the parent organisation unit and then
       // we need to filter out the results for the siblings
+      if (!hierarchy) {
+        throw new Error('Must specify hierarchy when pulling events for tracked entity instances');
+      }
+
       const hierarchyId = (await this.models.entityHierarchy.findOne({ name: hierarchy })).id;
       const parentsOfTrackedEntities = await Promise.all(
         trackedEntities.map(trackedEntity => trackedEntity.getParent(hierarchyId)),
@@ -81,10 +91,14 @@ export class EventsPuller {
     return combinedEvents;
   };
 
+  /**
+   * @public
+   */
   pull = async (apis, dataSources, options) => {
     if (dataSources.length > 1) {
       throw new Error('Cannot pull from multiple programs at the same time');
     }
+
     const [dataSource] = dataSources;
     const { code: programCode } = dataSource;
 
