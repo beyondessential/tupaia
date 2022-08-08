@@ -37,7 +37,6 @@
     "@material-ui/styles": "^4.9.10",
     "@tupaia/ui-components": "1.0",
     "@tupaia/utils": "1.0.0",
-    "connected-react-router": "^6.9.3",
     "core-js": "^3.16.1",
     "dom-to-image": "2.6.0",
     "dotenv": "^8.2.0",
