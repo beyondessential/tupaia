@@ -1,15 +1,8 @@
 import { EntityModel } from '@tupaia/database';
 import { createJestMockInstance } from '@tupaia/utils';
-import { WeatherResult } from '../../../services/weather/types';
+import { DataElement, WeatherResult } from '../../../services/weather/types';
 import { PullOptions } from '../../../services/weather/WeatherService';
-import {
-  DataBrokerModelRegistry,
-  DataElement,
-  DataGroup,
-  DataSource,
-  DataSourceType,
-  Entity,
-} from '../../../types';
+import { DataBrokerModelRegistry, DataGroup, Entity } from '../../../types';
 
 interface MockModelResponseMap {
   entity?: {
@@ -23,11 +16,6 @@ interface MockModelResponseMap {
     getDataElementsInDataGroup?: DataElement[];
   };
 }
-
-type DataSourceInstance = DataSource & {
-  model: Record<string, unknown>;
-  id: string;
-};
 
 export const createWeatherApiStub = (
   historicDailyResponse: WeatherResult,
@@ -139,23 +127,18 @@ export const createMockModelsStubWithMockEntity = async (fieldValues?: Entity) =
   return mockModels;
 };
 
-export const getMockDataSourcesArg = (
-  overrides?: Partial<DataSourceInstance>,
-): DataSourceInstance[] => {
+export const getMockDataSourcesArg = (overrides?: Partial<DataElement>): DataElement[] => {
+  const code = overrides?.code || 'WTHR_PRECIP';
   return [
     {
-      model: {},
-      id: '123_PRECIP',
-      code: 'WTHR_PRECIP',
+      code,
+      dataElementCode: code,
       service_type: 'weather',
       config: {},
+      permission_groups: ['*'],
       ...overrides,
     },
   ];
-};
-
-export const getMockTypeArg = (): DataSourceType => {
-  return 'dataElement';
 };
 
 export const getMockOptionsArg = (overrides?: PullOptions) => {

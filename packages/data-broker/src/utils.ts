@@ -16,6 +16,13 @@ export const DATA_SOURCE_TYPES = {
   SYNC_GROUP,
 };
 
+export const EMPTY_ANALYTICS_RESULTS = {
+  results: [],
+  metadata: {
+    dataElementCodeToName: {},
+  },
+};
+
 export const arrayToAnalytics = (arrayAnalytics: ArrayAnalytic[]): Analytic[] =>
   arrayAnalytics.map(([dataElement, organisationUnit, period, value]) => ({
     dataElement,

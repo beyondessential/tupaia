@@ -23,16 +23,9 @@ import {
   ServiceType,
   SyncGroupResults,
 } from './types';
-import { DATA_SOURCE_TYPES } from './utils';
+import { DATA_SOURCE_TYPES, EMPTY_ANALYTICS_RESULTS } from './utils';
 
 export const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
-
-const EMPTY_ANALYTICS_RESULTS = {
-  results: [],
-  metadata: {
-    dataElementCodeToName: {},
-  },
-};
 
 type Context = {
   accessPolicy?: AccessPolicy;

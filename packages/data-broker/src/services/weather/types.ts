@@ -12,7 +12,6 @@ type WeatherDataSourceConfig = Partial<{
 }>;
 
 export type DataElement = BaseDataElement & {
-  code: WeatherProperty;
   config: WeatherDataSourceConfig;
 };
 
