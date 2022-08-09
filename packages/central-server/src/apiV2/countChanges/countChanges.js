@@ -4,21 +4,13 @@
  */
 
 import { respond, DatabaseError, UnauthenticatedError } from '@tupaia/utils';
-import {
-  buildMeditrakSyncQuery,
-  buildPermissionsBasedMeditrakSyncQuery,
-  supportsPermissionsBasedSync,
-} from '../utilities';
+import { buildMeditrakSyncQuery } from '../utilities';
 import { LegacyCountChangesHandler } from './LegacyCountChangesHandler';
 import { allowNoPermissions } from '../../permissions';
 
 const handleNonLegacyRequest = async (req, res) => {
   const { models } = req;
-
-  const queryBuilder = supportsPermissionsBasedSync(req.query.appVersion)
-    ? buildPermissionsBasedMeditrakSyncQuery
-    : buildMeditrakSyncQuery;
-  const { query } = await queryBuilder(req, { select: 'count(*)' });
+  const { query } = await buildMeditrakSyncQuery(req, { select: 'count(*)' });
   const queryResult = await query.executeOnDatabase(models.database);
   const changeCount = parseInt(queryResult[0].count);
   respond(res, { changeCount });
