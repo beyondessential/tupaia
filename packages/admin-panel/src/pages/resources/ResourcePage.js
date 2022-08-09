@@ -31,7 +31,6 @@ export const ResourcePage = ({
   defaultFilters,
   defaultSorting,
   displayUsedBy,
-  ConfirmDeleteModalComponent,
 }) => {
   const HeaderPortal = usePortalWithCallback(
     <Header
@@ -55,7 +54,6 @@ export const ResourcePage = ({
           baseFilter={baseFilter}
           defaultFilters={defaultFilters}
           defaultSorting={defaultSorting}
-          ConfirmDeleteModalComponent={ConfirmDeleteModalComponent}
         />
       </Container>
       <EditModal onProcessDataForSave={onProcessDataForSave} displayUsedBy={displayUsedBy} />
@@ -66,7 +64,6 @@ export const ResourcePage = ({
 ResourcePage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
   columns: PropTypes.array.isRequired,
-  ConfirmDeleteModalComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
   createConfig: PropTypes.object,
   onProcessDataForSave: PropTypes.func,
   endpoint: PropTypes.string.isRequired,
@@ -90,7 +87,6 @@ ResourcePage.propTypes = {
 };
 
 ResourcePage.defaultProps = {
-  ConfirmDeleteModalComponent: undefined,
   createConfig: null,
   expansionTabs: null,
   importConfig: null,
