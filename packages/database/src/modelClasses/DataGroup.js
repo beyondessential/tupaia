@@ -15,7 +15,7 @@ const SERVICE_TYPES = {
 
 const CONFIG_SCHEMA_BY_SERVICE = {
   [SERVICE_TYPES.DHIS]: {
-    isDataRegional: { default: true },
+    dhisInstanceCode: { default: 'regional', allowNull: true },
   },
   [SERVICE_TYPES.TUPAIA]: {},
   [SERVICE_TYPES.INDICATOR]: {},
@@ -39,13 +39,22 @@ export class DataGroupType extends DatabaseType {
     // Clear invalid/empty fields
     Object.keys(this.config).forEach(key => {
       if (!configSchema[key] || isEmpty(this.config[key])) {
-        delete this.config[key];
+        if (this.config[key] === null && configSchema[key].allowNull) {
+          // keep as null
+        } else {
+          delete this.config[key];
+        }
       }
     });
     // Use default values for valid empty fields
-    Object.entries(configSchema).forEach(([key, { default: defaultValue }]) => {
+    Object.entries(configSchema).forEach(([key, { default: defaultValue, allowNull }]) => {
       if (defaultValue !== undefined && isEmpty(this.config[key])) {
-        this.config[key] = defaultValue;
+        if (this.config[key] === null && allowNull) {
+          // keep as null
+        } else {
+          // set to default
+          this.config[key] = defaultValue;
+        }
       }
     });
   }

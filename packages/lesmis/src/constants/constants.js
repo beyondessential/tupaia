@@ -43,6 +43,10 @@ export const MIN_DATA_YEAR = '2015';
 // export const DEFAULT_DATA_YEAR = `${new Date().getFullYear()}`;
 export const DEFAULT_DATA_YEAR = '2022';
 
+// Contact Constants
+export const PHONE_CONTACT = '+856 20 55617710';
+export const WEBSITE_CONTACT = 'www.moes.edu.la';
+
 // Layout Constants
 export const NAVBAR_HEIGHT_INT = 70;
 export const NAVBAR_HEIGHT = `${NAVBAR_HEIGHT_INT}px`;

@@ -3,14 +3,20 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import { DATA_ELEMENTS } from './TupaiaService.fixtures';
 import { createJestMockInstance } from '../../../../../utils/src/testUtilities';
 
-export const createModelsStub = () => ({
-  dataSource: {
-    getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
-  },
-});
+export const createModelsStub = () => {
+  return baseCreateModelsStub({
+    dataSource: {
+      records: [],
+      extraMethods: {
+        getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
+      },
+    },
+  });
+};
 
 export const createTupaiaDataApiStub = ({
   fetchAnalyticsResponse = [],

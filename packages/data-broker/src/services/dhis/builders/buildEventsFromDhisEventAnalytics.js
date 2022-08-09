@@ -15,6 +15,7 @@ const METADATA_DIMENSION_TRANSLATION = {
   oucode: 'orgUnit',
   ouname: 'orgUnitName',
   eventdate: 'eventDate',
+  tei: 'trackedEntityId',
 };
 
 const createDimensionTranslator = dataElementCodes => dimension => {
@@ -28,7 +29,17 @@ const createDimensionTranslator = dataElementCodes => dimension => {
   return dataElementCodes.includes(dimension) ? dimension : '';
 };
 
-export const buildEventsFromDhisEventAnalytics = (dhisEventAnalytics, dataElementCodes = []) => {
+export const buildEventsFromDhisEventAnalytics = async (
+  models,
+  dhisEventAnalytics,
+  dataElementCodes = [],
+) => {
+  const events = buildEvents(dhisEventAnalytics, dataElementCodes);
+  const eventsWithTrackedEntityCodes = await addTrackedEntityCodes(models, events);
+  return eventsWithTrackedEntityCodes;
+};
+
+const buildEvents = (dhisEventAnalytics, dataElementCodes = []) => {
   const { headers, rows } = dhisEventAnalytics;
   const columnSpecs = getColumnSpecs(headers, dataElementCodes);
 
@@ -48,10 +59,8 @@ export const buildEventsFromDhisEventAnalytics = (dhisEventAnalytics, dataElemen
         event[dimension] = formattedValue;
       }
     });
-
     events.push(event);
   });
-
   return events.sort(getSortByKey(METADATA_DIMENSION_TRANSLATION.eventdate));
 };
 
@@ -67,4 +76,22 @@ const getColumnSpecs = (headers, dataElementCodes) => {
   });
 
   return columnSpecs;
+};
+
+const addTrackedEntityCodes = async (models, events) => {
+  const allTrackedEntityIds = Array.from(
+    new Set(events.filter(event => !!event.trackedEntityId).map(event => event.trackedEntityId)),
+  );
+  if (allTrackedEntityIds.length === 0) {
+    return events;
+  }
+  const entities = await models.entity.find({
+    'metadata->dhis->>trackedEntityId': allTrackedEntityIds,
+  });
+  return events.map(event => ({
+    ...event,
+    trackedEntityCode:
+      entities.find(entity => entity.metadata?.dhis?.trackedEntityId === event.trackedEntityId)
+        ?.code ?? '',
+  }));
 };

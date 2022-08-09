@@ -53,6 +53,7 @@ import { UserEntityPermissionModel } from './UserEntityPermission';
 import { UserModel } from './User';
 import { UserSessionModel } from './UserSession';
 import { DataServiceEntityModel } from './DataServiceEntity';
+import { DhisInstanceModel } from './DhisInstance';
 
 // export all models to be used in constructing a ModelRegistry
 export const modelClasses = {
@@ -72,6 +73,7 @@ export const modelClasses = {
   DataGroup: DataGroupModel,
   DataServiceEntity: DataServiceEntityModel,
   DataServiceSyncGroup: DataServiceSyncGroupModel,
+  DhisInstance: DhisInstanceModel,
   Disaster: DisasterModel,
   DisasterEvent: DisasterEventModel,
   Entity: EntityModel,
@@ -117,6 +119,7 @@ export {
 export { ApiRequestLogModel } from './ApiRequestLog';
 export { CommentModel } from './Comment';
 export { CountryModel } from './Country';
+export { DhisInstanceModel, DhisInstanceType } from './DhisInstance';
 export { DataElementModel, DataElementType } from './DataElement';
 export { DataGroupModel, DataGroupType } from './DataGroup';
 export { EntityModel, EntityType } from './Entity';
