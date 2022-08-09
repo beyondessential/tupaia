@@ -7,11 +7,12 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
+import { getBaseUrlsForHost, LOCALHOST_BASE_URLS, TupaiaApiClient } from '@tupaia/api-client';
 import { Authenticator } from '@tupaia/auth';
 import { getRoutesForApiV1 } from './apiV1';
 import { bindUserSessions } from './authSession';
 import { modelClasses } from './models';
-import { handleError, logApiRequest } from './utils';
+import { handleError, logApiRequest, authHandlerProvider } from './utils';
 
 import './log';
 
@@ -57,6 +58,20 @@ export async function createApp() {
 
   // Initialise sessions
   bindUserSessions(app);
+
+  // Add api-client
+  // TODO: Can be overrided to use api-client in context, while converting web-config-server to orchestrator server
+  app.use((req, res, next) => {
+    try {
+      const baseUrls =
+        process.env.NODE_ENV === 'test' ? LOCALHOST_BASE_URLS : getBaseUrlsForHost(req.hostname);
+      const apiClient = new TupaiaApiClient(authHandlerProvider(req), baseUrls);
+      req.ctx = { services: apiClient };
+      next();
+    } catch (err) {
+      next(err);
+    }
+  });
 
   // Log api requests
   app.use(logApiRequest(modelRegistry, 'tupaia', 1));
