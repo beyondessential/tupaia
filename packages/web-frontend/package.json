@@ -61,7 +61,7 @@
     "react-dom": "^16.13.1",
     "react-redux": "^5.0.5",
     "react-tap-event-plugin": "^3.0.3",
-    "recharts": "^2.1.10",
+    "recharts": "^1.8.5",
     "redux": "^3.6.0",
     "redux-devtools-extension": "^2.13.2",
     "redux-saga": "^1.0.0-beta.2",

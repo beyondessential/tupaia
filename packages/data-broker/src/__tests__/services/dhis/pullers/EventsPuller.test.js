@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { createModelsStub, stubDhisApi } from '../DhisService.stubs';
+import { createMockDhisApi, createModelsStub, stubGetDhisApi } from '../DhisService.stubs';
 import { DATA_GROUPS } from '../DhisService.fixtures';
 import { buildEventsFromDhisEventAnalytics } from '../../../../services/dhis/builders/buildEventsFromDhisEventAnalytics';
 import { EventsPuller } from '../../../../services/dhis/pullers';
@@ -19,7 +19,8 @@ describe('EventsPuller', () => {
     const models = createModelsStub();
     const translator = new DhisTranslator(models);
     eventsPuller = new EventsPuller(models, translator);
-    dhisApi = stubDhisApi();
+    dhisApi = createMockDhisApi();
+    stubGetDhisApi(dhisApi);
     buildEventsFromDhisEventAnalytics.mockReturnValue('X');
   });
 
@@ -107,7 +108,8 @@ describe('EventsPuller', () => {
           },
           rows: [],
         };
-        dhisApi = stubDhisApi({ getEventAnalyticsResponse });
+        dhisApi = createMockDhisApi({ getEventAnalyticsResponse });
+        stubGetDhisApi(dhisApi);
         const dataElementCodes = ['POP01', 'POP02'];
 
         await eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], {
@@ -143,7 +145,8 @@ describe('EventsPuller', () => {
           },
           rows: [],
         };
-        dhisApi = stubDhisApi({ getEventAnalyticsResponse });
+        dhisApi = createMockDhisApi({ getEventAnalyticsResponse });
+        stubGetDhisApi(dhisApi);
         const dataElementCodes = ['DIF01'];
 
         await eventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP], {

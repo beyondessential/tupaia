@@ -9,9 +9,10 @@ async function start() {
     const app = await createApp();
 
     // process.env.PORT as per run command PORT=XXXX npm run dev
-    app.server.listen(process.env.PORT || 8080);
+    const port = process.env.PORT || 8080;
+    app.server.listen(port);
     winston.debug('Logging at debug level');
-    winston.info('Server started', { port: app.server.address().port });
+    winston.info(`Running on port ${port}`);
     const aggregationDescription = process.env.AGGREGATION_URL_PREFIX || 'production';
     winston.info(`Connected to ${aggregationDescription} aggregation`);
 

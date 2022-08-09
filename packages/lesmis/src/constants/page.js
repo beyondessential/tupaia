@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
+import { PHONE_CONTACT, WEBSITE_CONTACT } from './constants';
 
 export const ABOUT_PAGE = {
   en: {
@@ -55,11 +56,11 @@ export const CONTACT_PAGE = {
         </Typography>
         <Box mb={5}>
           <Typography variant="h2">Phone</Typography>
-          <Typography>+856 20 55617710</Typography>
+          <Typography>{PHONE_CONTACT}</Typography>
         </Box>
         <Box mb={5}>
           <Typography variant="h2">Website</Typography>
-          <Typography>www.moes.edu.la</Typography>
+          <Typography>{WEBSITE_CONTACT}</Typography>
         </Box>
       </>
     ),
@@ -74,11 +75,11 @@ export const CONTACT_PAGE = {
         </Typography>
         <Box mb={5}>
           <Typography variant="h2">ໂທ</Typography>
-          <Typography>+856 20 55617710</Typography>
+          <Typography>{PHONE_CONTACT}</Typography>
         </Box>
         <Box mb={5}>
           <Typography variant="h2">ເວບໄຊ</Typography>
-          <Typography>www.moes.edu.la</Typography>
+          <Typography>{WEBSITE_CONTACT}</Typography>
         </Box>
       </>
     ),

@@ -5,7 +5,12 @@
 import * as BuildAnalytics from '../../../../services/dhis/builders/buildAnalyticsFromDhisEventAnalytics';
 import { AnalyticsPuller } from '../../../../services/dhis/pullers/AnalyticsPuller';
 import { DATA_SOURCES, EVENT_ANALYTICS } from '../DhisService.fixtures';
-import { buildDhisAnalyticsResponse, createModelsStub, stubDhisApi } from '../DhisService.stubs';
+import {
+  buildDhisAnalyticsResponse,
+  createModelsStub,
+  createMockDhisApi,
+  stubGetDhisApi,
+} from '../DhisService.stubs';
 import { DhisTranslator } from '../../../../services/dhis/translators/DhisTranslator';
 import { DataElementsMetadataPuller } from '../../../../services/dhis/pullers';
 
@@ -20,8 +25,13 @@ describe('AnalyticsPuller', () => {
       models.dataElement,
       translator,
     );
-    analyticsPuller = new AnalyticsPuller(models, translator, dataElementsMetadataPuller);
-    dhisApi = stubDhisApi();
+    analyticsPuller = new AnalyticsPuller(
+      models,
+      translator,
+      dataElementsMetadataPuller,
+    );
+    dhisApi = createMockDhisApi();
+    stubGetDhisApi(dhisApi);
   });
 
   describe('data source selection', () => {
@@ -104,9 +114,10 @@ describe('AnalyticsPuller', () => {
       };
 
       const assertPullResultsAreCorrect = ({ dataSources, options, expectedResults }) => {
-        dhisApi = stubDhisApi({
+        dhisApi = createMockDhisApi({
           getAnalyticsResponse: buildDhisAnalyticsResponse(expectedResults.results),
         });
+        stubGetDhisApi(dhisApi);
         return expect(analyticsPuller.pull([dhisApi], dataSources, options)).resolves.toStrictEqual(
           expectedResults,
         );
@@ -305,7 +316,10 @@ describe('AnalyticsPuller', () => {
 
         it('simple data elements', async () => {
           const getEventAnalyticsResponse = EVENT_ANALYTICS.sameDhisElementCodes;
-          dhisApi = stubDhisApi({ getEventAnalyticsResponse });
+          dhisApi = createMockDhisApi({
+            getEventAnalyticsResponse,
+          });
+          stubGetDhisApi(dhisApi);
           const dataElementCodes = ['POP01', 'POP02'];
 
           await analyticsPuller.pull([dhisApi], [DATA_SOURCES.POP01, DATA_SOURCES.POP02], {
@@ -340,7 +354,10 @@ describe('AnalyticsPuller', () => {
             height: 1,
             rows: [['TO_Nukuhc', '25.0']],
           };
-          dhisApi = stubDhisApi({ getEventAnalyticsResponse });
+          dhisApi = createMockDhisApi({
+            getEventAnalyticsResponse,
+          });
+          stubGetDhisApi(dhisApi);
           const dataElementCodes = ['DIF01'];
           await analyticsPuller.pull([dhisApi], [DATA_SOURCES.DIF01], {
             ...basicOptions,

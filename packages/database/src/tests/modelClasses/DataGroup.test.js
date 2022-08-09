@@ -28,25 +28,23 @@ describe('DataGroup', () => {
     it('dhis service', () => {
       assertConfigIsSanitized(
         {
-          type: 'dataGroup',
           serviceType: 'dhis',
         },
         {
           dataElementCode: 'newCode',
-          isDataRegional: true,
+          dhisInstanceCode: 'bob',
           other: 'random',
         },
-        { isDataRegional: true },
+        { dhisInstanceCode: 'bob' },
       );
     });
 
     it('tupaia service', () => {
       assertConfigIsSanitized(
         {
-          type: 'dataGroup',
           serviceType: 'tupaia',
         },
-        { isDataRegional: false, other: 'random' },
+        { dhisInstanceCode: 'bob', other: 'random' },
         {},
       );
     });
