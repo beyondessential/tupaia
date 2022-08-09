@@ -8,6 +8,7 @@ import { getUniqueViewId } from '../../../utils';
 import PDFExportSinglePageContent from '../../../containers/PDFExportSinglePageContent';
 import { selectCurrentDashboardName } from '../../../selectors';
 import PDFExportHeader from '../../../components/PDFExportHeader';
+import { decodeLocation } from '../../../historyNavigation/utils';
 
 const Main = styled.div`
   background: #fbfbfb;
@@ -29,8 +30,9 @@ const Divider = styled(BaseDivider)`
   height: 3px;
 `;
 
-const PDFExportPage = ({ currentGroupDashboard, viewResponses }) => {
+const PDFExportPage = ({ currentGroupDashboard, viewResponses, selectedDashboardItems }) => {
   if (!currentGroupDashboard) return null;
+
   const {
     dashboardCode,
     dashboardName,
@@ -48,6 +50,9 @@ const PDFExportPage = ({ currentGroupDashboard, viewResponses }) => {
     <Main>
       {items
         .filter(view => !drillDownItemCodes.includes(view.code))
+        .filter(
+          view => selectedDashboardItems.length === 0 || selectedDashboardItems.includes(view.code),
+        )
         .map(view => {
           const infoViewKey = getUniqueViewId(organisationUnitCode, dashboardCode, view.code);
           return (
@@ -81,16 +86,27 @@ const PDFExportPage = ({ currentGroupDashboard, viewResponses }) => {
 PDFExportPage.propTypes = {
   currentGroupDashboard: PropTypes.object,
   viewResponses: PropTypes.object,
+  selectedDashboardItems: PropTypes.array,
 };
 
-PDFExportPage.defaultProps = { currentGroupDashboard: null, viewResponses: {} };
+PDFExportPage.defaultProps = {
+  currentGroupDashboard: null,
+  viewResponses: {},
+  selectedDashboardItems: [],
+};
 
 const mapStateToProps = state => {
   const { dashboards } = state.global;
   const { viewResponses } = state.dashboard;
   const currentDashboardName = selectCurrentDashboardName(state);
   const currentGroupDashboard = dashboards.find(d => d.dashboardName === currentDashboardName);
-  return { currentGroupDashboard, viewResponses };
+  const { routing: location } = state;
+  const { SELECTED_DASHBOARD_ITEMS = '' } = decodeLocation(location);
+  return {
+    currentGroupDashboard,
+    viewResponses,
+    selectedDashboardItems: SELECTED_DASHBOARD_ITEMS.split(','),
+  };
 };
 
 export default connect(mapStateToProps)(PDFExportPage);
