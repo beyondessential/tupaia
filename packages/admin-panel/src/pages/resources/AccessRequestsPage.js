@@ -84,7 +84,7 @@ const USER_COLUMNS = [
     type: 'bulkEdit',
     width: 150,
     actionConfig: {
-      title: 'Edit & Approve Access Request',
+      title: 'Edit & Approve Access Requests',
       bulkGetEndpoint: `users/{user_id}/${ACCESS_REQUESTS_ENDPOINT}`,
       bulkUpdateEndpoint: `${ACCESS_REQUESTS_ENDPOINT}`,
       baseFilter: { approved: null },
