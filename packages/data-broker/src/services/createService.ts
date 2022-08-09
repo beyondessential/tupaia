@@ -33,7 +33,7 @@ export const createService = (
     case 'indicator':
       return new IndicatorService(
         models,
-        new IndicatorApi(models as IndicatorApi['models'], dataBroker as any),
+        new IndicatorApi(models as IndicatorApi['models'], dataBroker),
       );
     case 'weather':
       return new WeatherService(models, new WeatherApi());

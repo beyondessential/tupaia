@@ -10,14 +10,6 @@ export interface Analytic {
   value: string | number;
 }
 
-export interface AnalyticCluster {
-  organisationUnit: string;
-  period: string;
-  dataValues: Record<string, string | number>;
-}
-
-export type ArrayAnalytic = [string, string, string, string | number];
-
 export interface DataElementMetadata {
   code: string;
   name: string;

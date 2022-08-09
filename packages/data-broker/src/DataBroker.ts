@@ -85,7 +85,8 @@ const getPermissionListWithWildcard = async (accessPolicy?: AccessPolicy) => {
 };
 
 export class DataBroker {
-  private readonly context: Context;
+  public readonly context: Context;
+
   private readonly models: DataBrokerModelRegistry;
   private readonly resultMergers: Record<DataSourceType, ResultMerger>;
   private readonly fetchers: Record<DataSourceType, Fetcher>;
