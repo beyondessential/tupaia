@@ -19,15 +19,15 @@ const PREFIX_TO_SERVER_LIST = {
   Fa: 'tonga',
   HP: 'tonga',
   IM: 'tonga',
-  LA: 'laos',
-  MA: 'laos',
+  LA: 'lao-peoples-democratic-republic',
+  MA: 'lao-peoples-democratic-republic',
   MC: 'tonga',
-  Ma: 'laos',
-  Me: 'laos',
-  NC: 'laos',
+  Ma: 'lao-peoples-democratic-republic',
+  Me: 'lao-peoples-democratic-republic',
+  NC: 'lao-peoples-democratic-republic',
   PO: 'tonga',
   PW: 'palau',
-  SO: 'laos',
+  SO: 'lao-peoples-democratic-republic',
 };
 
 exports.setup = function (options, seedLink) {
