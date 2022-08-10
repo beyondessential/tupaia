@@ -239,33 +239,32 @@ export class Dashboard extends Component {
     const exportFileName =
       currentGroupDashboard &&
       `${currentProjectName}-${currentOrganisationUnit.name}-${currentGroupDashboard.dashboardName}-dashboard-export`;
-    const modalTitle = `Dashboard Export - ${
-      currentGroupDashboard && currentGroupDashboard.dashboardName
-    }`;
 
     return (
-      <div
-        style={{ ...DASHBOARD_STYLES.container, ...(isLoading ? DASHBOARD_STYLES.loading : {}) }}
-        onClick={onDashboardClicked}
-        onScroll={this.onScroll}
-        ref={element => {
-          this.contentScroller = element;
-        }}
-      >
-        {this.renderHeader()}
-        <div style={DASHBOARD_STYLES.content}>
-          {this.renderGroupsDropdown()}
-          {this.renderGroup(currentGroupDashboard)}
+      <>
+        <div
+          style={{ ...DASHBOARD_STYLES.container, ...(isLoading ? DASHBOARD_STYLES.loading : {}) }}
+          onClick={onDashboardClicked}
+          onScroll={this.onScroll}
+          ref={element => {
+            this.contentScroller = element;
+          }}
+        >
+          {this.renderHeader()}
+          <div style={DASHBOARD_STYLES.content}>
+            {this.renderGroupsDropdown()}
+            {this.renderGroup(currentGroupDashboard)}
+          </div>
+          {this.renderFloatingHeader()}
+          {this.renderEnlargePopup()}
         </div>
-        {this.renderFloatingHeader()}
-        {this.renderEnlargePopup()}
         <DashboardExportModal
-          title={modalTitle}
           exportFileName={exportFileName}
           isOpen={this.state.isOpen}
           setIsOpen={bool => this.setState({ isOpen: bool })}
+          currentGroupDashboard={currentGroupDashboard}
         />
-      </div>
+      </>
     );
   }
 }

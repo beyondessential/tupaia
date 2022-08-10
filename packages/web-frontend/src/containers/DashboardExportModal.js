@@ -12,30 +12,55 @@ import {
   DialogHeader,
   DialogContent as BaseDialogContent,
   FlexSpaceBetween as BaseFlexSpaceBetween,
+  TransferList,
+  LoadingContainer,
 } from '@tupaia/ui-components';
 import MuiIconButton from '@material-ui/core/Button';
 import { useDashboardItemsExportToPDF } from '../utils/useDashboardItemsExportToPDF';
+import { DARK_BLUE, PRIMARY_BLUE } from '../styles';
 
 const FlexSpaceBetween = styled(BaseFlexSpaceBetween)`
   width: 95%;
 `;
 
 const DialogContent = styled(BaseDialogContent)`
-  background-color: white;
+  .MuiCheckbox-colorSecondary.Mui-checked {
+    color: ${PRIMARY_BLUE};
+  }
+
+  .loading-screen {
+    background: ${DARK_BLUE};
+    border: 0;
+  }
 `;
 
 const MuiButton = styled(MuiIconButton)`
   margin: 0px 20px;
   background-color: transparent;
-  color: #666666;
 `;
 
-export const DashboardExportModal = ({ title, isOpen, setIsOpen, pathname, exportFileName }) => {
+export const DashboardExportModal = ({
+  isOpen,
+  setIsOpen,
+  pathname,
+  exportFileName,
+  currentGroupDashboard,
+}) => {
+  if (!currentGroupDashboard) return null;
+
+  const nameToCodeMapping = Object.fromEntries(
+    currentGroupDashboard.items.map(item => [item.name, item.code]),
+  );
+  const leftDefaultItems = Object.keys(nameToCodeMapping);
+  const [left, setLeft] = React.useState(leftDefaultItems);
+  const [right, setRight] = React.useState([]);
   const { isExporting, exportToPDF, errorMessage, onReset } = useDashboardItemsExportToPDF(
     pathname,
   );
+
   const handleClickExport = async () => {
-    await exportToPDF(exportFileName);
+    const selectedDashboardItems = right.map(itemName => nameToCodeMapping[itemName]);
+    await exportToPDF(exportFileName, { selectedDashboardItems: selectedDashboardItems.join(',') });
   };
   const onClose = () => {
     setIsOpen(false);
@@ -43,7 +68,7 @@ export const DashboardExportModal = ({ title, isOpen, setIsOpen, pathname, expor
 
   return (
     <Dialog onClose={onClose} open={isOpen} maxWidth="lg">
-      <DialogHeader onClose={onClose} title={title}>
+      <DialogHeader onClose={onClose}>
         <FlexSpaceBetween>
           <MuiButton
             startIcon={<DownloadIcon />}
@@ -56,26 +81,36 @@ export const DashboardExportModal = ({ title, isOpen, setIsOpen, pathname, expor
           </MuiButton>
         </FlexSpaceBetween>
       </DialogHeader>
-      <DialogContent>123</DialogContent>
+      <DialogContent>
+        <LoadingContainer
+          heading="Exporting charts to PDF"
+          isLoading={isExporting}
+          errorMessage={errorMessage}
+          onReset={onReset}
+        >
+          <TransferList left={left} setLeft={setLeft} right={right} setRight={setRight} />
+        </LoadingContainer>
+      </DialogContent>
     </Dialog>
   );
 };
 
 DashboardExportModal.propTypes = {
-  title: PropTypes.string,
   exportFileName: PropTypes.string.isRequired,
   pathname: PropTypes.string,
+  currentGroupDashboard: PropTypes.object,
   isOpen: PropTypes.bool.isRequired,
   setIsOpen: PropTypes.func.isRequired,
 };
 
 DashboardExportModal.defaultProps = {
-  title: null,
   pathname: '',
+  currentGroupDashboard: null,
 };
 
 const mapStateToProps = (state, ownProps) => {
   const { pathname } = state.routing;
+
   return { pathname: pathname.substring(1), ...ownProps };
 };
 

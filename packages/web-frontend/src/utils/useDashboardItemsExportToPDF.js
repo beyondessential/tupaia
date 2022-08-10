@@ -11,12 +11,12 @@ export const useDashboardItemsExportToPDF = pathname => {
   const [isExporting, setIsExporting] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const exportToPDF = async fileName => {
+  const exportToPDF = async (fileName, queryParams) => {
     setIsExporting(true);
     try {
       const hostname = `${window.location.protocol}/${window.location.host}`;
       const endpoint = `${pathname}/pdf-export`;
-      const pdfPageUrl = stringifyQuery(hostname, endpoint);
+      const pdfPageUrl = stringifyQuery(hostname, endpoint, queryParams);
 
       await download(
         'pdf',
