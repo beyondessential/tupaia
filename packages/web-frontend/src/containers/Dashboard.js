@@ -52,7 +52,7 @@ export class Dashboard extends Component {
     this.state = {
       showFloatingHeader: false,
       isPhotoEnlarged: false,
-      isOpen: true,
+      isOpen: false,
     };
 
     this.collapsibleGroupRefs = {};

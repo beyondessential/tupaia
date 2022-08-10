@@ -11,7 +11,7 @@ import PDFExportHeader from '../../../components/PDFExportHeader';
 import { decodeLocation } from '../../../historyNavigation/utils';
 
 const Main = styled.div`
-  background: #fbfbfb;
+  background: white;
 `;
 
 const DashboardTitleContainer = styled.div`
