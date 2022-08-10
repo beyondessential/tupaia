@@ -20,7 +20,7 @@ const SURVEYS = [
       { code: 'TEST_backdate-test', type: 'Text', hook: 'backdateTestHook' },
       { code: 'TEST_whole-survey-a', type: 'Text', hook: 'wholeSurvey' },
       { code: 'TEST_whole-survey-b', type: 'Text' },
-      { code: 'TEST_household', type: 'Text', hook: 'entityHouseholdHead' },
+      { code: 'TEST_attribute', type: 'Text', hook: 'entityAttributeBananaPopulation' },
     ],
   },
   {
@@ -268,9 +268,9 @@ describe('Question hooks', () => {
       expect(beforeData).to.deep.equal(afterData);
     });
 
-    describe('Adding household_head attribute', () => {
-      it("Should add household_head to entity's attributes when no attributes currently exist", async () => {
-        const TEST_HOUSEHOLD_HEAD = 'Will Smith';
+    describe('Adding an entity attribute', () => {
+      it("Should add a custom attribute to entity's attributes when no attributes currently exist", async () => {
+        const TEST_BANANA_POPULATION_VALUE = '1000';
 
         const beforeEntity = await models.entity.findById(ENTITY_ID);
         expect(beforeEntity.attributes).to.be.an('object');
@@ -282,12 +282,12 @@ describe('Question hooks', () => {
             entity_id: ENTITY_ID,
             timestamp: 123,
             answers: {
-              TEST_household: TEST_HOUSEHOLD_HEAD,
+              TEST_attribute: TEST_BANANA_POPULATION_VALUE,
             },
           },
         });
 
-        const newValue = { household_head: TEST_HOUSEHOLD_HEAD };
+        const newValue = { banana_population: TEST_BANANA_POPULATION_VALUE };
         await database.waitForAllChangeHandlers();
 
         const entity = await models.entity.findById(ENTITY_ID);
@@ -299,8 +299,8 @@ describe('Question hooks', () => {
         expect(beforeData).to.deep.equal(afterData);
       });
 
-      it("Should add household_head to entity's attributes when there are existing attributes", async () => {
-        const TEST_HOUSEHOLD_HEAD = 'Will Smith';
+      it("Should add custom attribute to entity's attributes when there are existing attributes", async () => {
+        const TEST_BANANA_POPULATION_VALUE = '2000';
 
         const beforeEntity = await models.entity.findById(ENTITY2_ID);
         expect(beforeEntity.attributes).to.deep.equal({ test_attribute: 'test_value' });
@@ -312,12 +312,15 @@ describe('Question hooks', () => {
             entity_id: ENTITY2_ID,
             timestamp: 123,
             answers: {
-              TEST_household: TEST_HOUSEHOLD_HEAD,
+              TEST_attribute: TEST_BANANA_POPULATION_VALUE,
             },
           },
         });
 
-        const newValue = { test_attribute: 'test_value', household_head: TEST_HOUSEHOLD_HEAD };
+        const newValue = {
+          test_attribute: 'test_value',
+          banana_population: TEST_BANANA_POPULATION_VALUE,
+        };
         await database.waitForAllChangeHandlers();
 
         const entity = await models.entity.findById(ENTITY2_ID);

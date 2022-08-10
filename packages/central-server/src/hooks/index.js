@@ -1,5 +1,5 @@
 import { entityImage } from './entityImage';
-import { entityHouseholdHead } from './entityHouseholdHead';
+import { entityAttribute } from './entityAttribute';
 import { entityCoordinates } from './entityCoordinates';
 import * as entityCreators from './entityCreate';
 import { deduplicateQuestion } from './deduplicateQuestion';
@@ -8,7 +8,7 @@ import { registerHook } from './registry';
 function registerAllHooks() {
   Object.entries({
     entityImage,
-    entityHouseholdHead,
+    entityAttribute,
     entityCoordinates,
     ...entityCreators,
     deduplicateQuestion,

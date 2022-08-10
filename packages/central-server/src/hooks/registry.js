@@ -5,8 +5,10 @@ export function registerHook(name, callback) {
   return callback;
 }
 
+const isEntityAttribute = name => name.substring(0, 15) === 'entityAttribute';
+
 export function getHook(name) {
-  const hook = hookRegistry[name];
+  const hook = isEntityAttribute(name) ? hookRegistry.entityAttribute : hookRegistry[name];
 
   if (!hook) {
     throw new Error('No such hook: ', name);
