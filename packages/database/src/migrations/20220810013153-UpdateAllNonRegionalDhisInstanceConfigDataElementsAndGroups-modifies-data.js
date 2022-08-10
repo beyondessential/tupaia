@@ -37,27 +37,38 @@ exports.setup = function (options, seedLink) {
 };
 
 const DHIS_INSTANCE_CODE_JSONPATH = '{dhisInstanceCode}';
+const prefixListKeyValuePairs = Object.entries(PREFIX_TO_SERVER_LIST);
 
 exports.up = async function (db) {
-  const prefixListKeyValuePairs = Object.entries(PREFIX_TO_SERVER_LIST);
-
   for (const [prefix, server] of prefixListKeyValuePairs) {
     await db.runSql(`
     UPDATE "data_group"
     SET "config" = jsonb_set("config", '${DHIS_INSTANCE_CODE_JSONPATH}', '"${server}"')
-    WHERE substring(code from 1 for 2) = '${prefix}';
+    WHERE config::text like '%"dhisInstanceCode": null%' AND substring(code from 1 for 2) = '${prefix}';
     `);
 
     await db.runSql(`
     UPDATE "data_element"
     SET "config" = jsonb_set("config", '${DHIS_INSTANCE_CODE_JSONPATH}', '"${server}"')
-    WHERE substring(code from 1 for 2) = '${prefix}';
+    WHERE config::text like '%"dhisInstanceCode": null%' AND substring(code from 1 for 2) = '${prefix}';
     `);
   }
 };
 
-exports.down = function (db) {
-  return null;
+exports.down = async function (db) {
+  for (const [prefix, server] of prefixListKeyValuePairs) {
+    await db.runSql(`
+    UPDATE "data_group"
+    SET "config" = jsonb_set("config", '${DHIS_INSTANCE_CODE_JSONPATH}', 'null')
+    WHERE config::text like '%"dhisInstanceCode": "${server}"%' AND substring(code from 1 for 2) = '${prefix}';
+    `);
+
+    await db.runSql(`
+    UPDATE "data_element"
+    SET "config" = jsonb_set("config", '${DHIS_INSTANCE_CODE_JSONPATH}', 'null')
+    WHERE config::text like '%"dhisInstanceCode": "${server}"%' AND substring(code from 1 for 2) = '${prefix}';
+    `);
+  }
 };
 
 exports._meta = {
