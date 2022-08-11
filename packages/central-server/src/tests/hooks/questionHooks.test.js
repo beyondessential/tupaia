@@ -6,6 +6,7 @@ import { registerHook } from '../../hooks';
 
 const ENTITY_ID = generateTestId();
 const ENTITY2_ID = generateTestId();
+const ENTITY3_ID = generateTestId();
 
 const GENERIC_SURVEY_ID = generateTestId();
 const ENTITY_CREATION_SURVEY_ID = generateTestId();
@@ -81,6 +82,14 @@ describe('Question hooks', () => {
       name: 'test entity',
       type: models.entity.types.FACILITY,
       attributes: { test_attribute: 'test_value' },
+    });
+
+    await models.entity.create({
+      id: ENTITY3_ID,
+      code: ENTITY3_ID,
+      name: 'test entity',
+      type: models.entity.types.FACILITY,
+      attributes: { banana_population: '1000' },
     });
 
     await buildAndInsertSurveys(models, SURVEYS);
@@ -291,6 +300,38 @@ describe('Question hooks', () => {
         await database.waitForAllChangeHandlers();
 
         const entity = await models.entity.findById(ENTITY_ID);
+        expect(entity.attributes).to.deep.equal(newValue);
+
+        // should be otherwise unchanged
+        const { attributes: beforeAttributes, ...beforeData } = await beforeEntity.getData();
+        const { attributes: afterAttributes, ...afterData } = await entity.getData();
+        expect(beforeData).to.deep.equal(afterData);
+      });
+
+      it("Should overwrite an existing attribute's value with the new value", async () => {
+        const AFTER_BANANA_POPULATION_VALUE = '5000';
+
+        const beforeEntity = await models.entity.findById(ENTITY3_ID);
+        expect(beforeEntity.attributes).to.deep.equal({ banana_population: '1000' });
+
+        // submit a survey response
+        await app.post('surveyResponse', {
+          body: {
+            survey_id: GENERIC_SURVEY_ID,
+            entity_id: ENTITY3_ID,
+            timestamp: 123,
+            answers: {
+              TEST_attribute: AFTER_BANANA_POPULATION_VALUE,
+            },
+          },
+        });
+
+        const newValue = {
+          banana_population: AFTER_BANANA_POPULATION_VALUE,
+        };
+        await database.waitForAllChangeHandlers();
+
+        const entity = await models.entity.findById(ENTITY3_ID);
         expect(entity.attributes).to.deep.equal(newValue);
 
         // should be otherwise unchanged

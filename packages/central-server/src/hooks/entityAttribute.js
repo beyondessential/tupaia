@@ -1,8 +1,5 @@
-const snakeCased = name =>
-  name
-    .split(/(?=[A-Z])/)
-    .join('_')
-    .toLowerCase();
+import { snake } from 'case';
+import { ENTITY_ATTRIBUTE_HOOK_PREFIX } from './constants';
 
 export async function entityAttribute({ answer, surveyResponse, hookName }) {
   const entity = await surveyResponse.entity();
@@ -11,7 +8,7 @@ export async function entityAttribute({ answer, surveyResponse, hookName }) {
     throw new Error('Invalid entity');
   }
 
-  const attributeKey = snakeCased(hookName.substring(15));
+  const attributeKey = snake(hookName.substring(ENTITY_ATTRIBUTE_HOOK_PREFIX.length));
   const attributeValue = answer.text;
 
   entity.attributes = { ...entity.attributes, [attributeKey]: attributeValue };
