@@ -7,14 +7,20 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
-import { getBaseUrlsForHost, LOCALHOST_BASE_URLS, TupaiaApiClient } from '@tupaia/api-client';
+import {
+  getBaseUrlsForHost,
+  LOCALHOST_BASE_URLS,
+  TupaiaApiClient,
+  BasicAuthHandler,
+} from '@tupaia/api-client';
 import { Authenticator } from '@tupaia/auth';
 import { getRoutesForApiV1 } from './apiV1';
 import { bindUserSessions } from './authSession';
 import { modelClasses } from './models';
-import { handleError, logApiRequest, authHandlerProvider } from './utils';
-
+import { handleError, logApiRequest } from './utils';
 import './log';
+
+const { MICROSERVICE_CLIENT_USERNAME, MICROSERVICE_CLIENT_SECRET } = process.env;
 
 export async function createApp() {
   const app = express();
@@ -60,12 +66,15 @@ export async function createApp() {
   bindUserSessions(app);
 
   // Add api-client
-  // TODO: Can be overrided to use api-client in context, while converting web-config-server to orchestrator server
+  // TODO: Can be overrided when pdf-export-server becomes a library.
   app.use((req, res, next) => {
     try {
       const baseUrls =
         process.env.NODE_ENV === 'test' ? LOCALHOST_BASE_URLS : getBaseUrlsForHost(req.hostname);
-      const apiClient = new TupaiaApiClient(authHandlerProvider(req), baseUrls);
+      const apiClient = new TupaiaApiClient(
+        () => new BasicAuthHandler(MICROSERVICE_CLIENT_USERNAME, MICROSERVICE_CLIENT_SECRET),
+        baseUrls,
+      );
       req.ctx = { services: apiClient };
       next();
     } catch (err) {

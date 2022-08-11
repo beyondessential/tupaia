@@ -6,12 +6,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import puppeteer from 'puppeteer';
-import Cookies from 'cookies';
-
-type SessionCookies = {
-  sessionCookieName: string;
-  sessionCookieValue: string;
-};
+import cookie from 'cookie';
 
 type Body = {
   pdfPageUrl: string;
@@ -29,12 +24,8 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
     super(req, res, next);
   }
 
-  private extractSessionCookie = (): SessionCookies => {
-    const cookies = new Cookies(this.req, this.res);
-    const sessionCookieName = 'sessionCookie';
-    const sessionCookieValue = cookies.get(sessionCookieName) || '';
-
-    return { sessionCookieName, sessionCookieValue };
+  private extractSessionCookie = (): Record<string, string> => {
+    return cookie.parse(this.req.headers.cookie || '');
   };
 
   private verifyBody = (body: any): Body => {
@@ -55,10 +46,17 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
   };
 
   private exportPDF = async (): Promise<Buffer> => {
-    const { sessionCookieName, sessionCookieValue } = this.extractSessionCookie();
+    const cookies = this.extractSessionCookie();
     const { pdfPageUrl } = this.verifyBody(this.req.body);
     const { host: apiDomain } = this.req.headers;
     const location = new URL(pdfPageUrl);
+    const finalisedCookieObjects = Object.keys(cookies).map(name => ({
+      name,
+      domain: apiDomain,
+      url: location.origin,
+      httpOnly: true,
+      value: cookies[name],
+    }));
 
     let browser;
     let result;
@@ -66,14 +64,12 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
     try {
       browser = await puppeteer.launch();
       const page = await browser.newPage();
-      await page.setCookie({
-        name: sessionCookieName,
-        domain: apiDomain,
-        url: location.origin,
-        httpOnly: true,
-        value: sessionCookieValue,
+
+      await page.setCookie(...finalisedCookieObjects);
+      await page.goto('http://localhost:8088/explore/', {
+        timeout: 60000,
+        waitUntil: 'networkidle0',
       });
-      await page.goto(pdfPageUrl, { timeout: 60000, waitUntil: 'networkidle0' });
       result = await page.pdf({
         format: 'a4',
         printBackground: true,
