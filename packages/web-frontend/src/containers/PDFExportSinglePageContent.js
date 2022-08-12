@@ -86,7 +86,9 @@ const PDFExportSinglePageContent = ({
     const newViewContent = transformDataForViewType(viewContent);
     const viewProps = {
       viewContent: newViewContent,
-      isPDFExporting: true,
+      isExporting: true,
+      exportFormat: 'pdf',
+      isEnlarged: true,
     };
     if (getIsMatrix(viewContent)) {
       viewProps.organisationUnitName = organisationUnitName;

@@ -104,7 +104,7 @@ export const ChartWrapper = ({
   viewContent,
   isEnlarged,
   isExporting,
-  isPDFExporting,
+  exportFormat,
   onItemClick,
 }) => {
   const [selectedTab, setSelectedTab] = useState(TABS.CHART);
@@ -124,15 +124,6 @@ export const ChartWrapper = ({
     />
   );
 
-  if (isPDFExporting) {
-    return (
-      <CustomChartContainer>
-        <Chart />
-        <PDFExportingStyledTable viewContent={viewContent} />
-      </CustomChartContainer>
-    );
-  }
-
   if (!isEnlarged) {
     return (
       <CustomChartContainer>
@@ -142,13 +133,25 @@ export const ChartWrapper = ({
   }
 
   if (isExporting) {
-    const { exportWithTable } = viewContent?.presentationOptions;
-    return (
-      <EnlargedChartContainer $isExporting={isExporting}>
-        <Chart />
-        {exportWithTable && <ExportingStyledTable viewContent={viewContent} />}
-      </EnlargedChartContainer>
-    );
+    switch (exportFormat) {
+      case 'pdf':
+        return (
+          <CustomChartContainer>
+            <Chart />
+            <PDFExportingStyledTable viewContent={viewContent} />
+          </CustomChartContainer>
+        );
+      case 'png':
+      default: {
+        const { exportWithTable } = viewContent?.presentationOptions;
+        return (
+          <EnlargedChartContainer $isExporting={isExporting}>
+            <Chart />
+            {exportWithTable && <ExportingStyledTable viewContent={viewContent} />}
+          </EnlargedChartContainer>
+        );
+      }
+    }
   }
 
   return (
@@ -178,7 +181,7 @@ ChartWrapper.propTypes = {
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,
-  isPDFExporting: PropTypes.bool,
+  exportFormat: PropTypes.string,
   onItemClick: PropTypes.func,
 };
 
@@ -186,6 +189,6 @@ ChartWrapper.defaultProps = {
   viewContent: null,
   isEnlarged: false,
   isExporting: false,
-  isPDFExporting: false,
+  exportFormat: 'png',
   onItemClick: () => {},
 };
