@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { FlexCenter as BaseFlexCenter, FlexColumn as BaseFlexColumn } from '@tupaia/ui-components';
-import { TUPAIA_DARK_LOGO_SRC } from '../../constants';
+import { TUPAIA_DARK_LOGO_SRC } from '../constants';
 
 const FlexCenter = styled(BaseFlexCenter)`
   position: relative;
@@ -26,7 +26,7 @@ const Logo = styled.img`
   position: absolute;
 `;
 
-const Header = ({ entityName }) => {
+const PDFExportHeader = ({ entityName }) => {
   return (
     <FlexCenter>
       <Logo src={TUPAIA_DARK_LOGO_SRC} alt="Tupaia logo" width="74" height="30" />
@@ -37,10 +37,10 @@ const Header = ({ entityName }) => {
   );
 };
 
-Header.propTypes = {
+PDFExportHeader.propTypes = {
   entityName: PropTypes.string.isRequired,
 };
 
-Header.defaultProps = {};
+PDFExportHeader.defaultProps = {};
 
-export default Header;
+export default PDFExportHeader;
