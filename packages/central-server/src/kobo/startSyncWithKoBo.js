@@ -16,31 +16,33 @@ export async function startSyncWithKoBo(models) {
     console.log('KoBo sync is disabled');
   } else {
     const dataBroker = new DataBroker();
-    const koboSyncServices = await models.syncService.find({ service_type: SERVICE_TYPE });
-    koboSyncServices.forEach(service =>
-      setInterval(() => syncWithKoBo(models, dataBroker, service.code), PERIOD_BETWEEN_SYNCS),
+    const koboDataServiceSyncGroups = await models.dataServiceSyncGroup.find({
+      service_type: SERVICE_TYPE,
+    });
+    koboDataServiceSyncGroups.forEach(dssg =>
+      setInterval(() => syncWithKoBo(models, dataBroker, dssg.code), PERIOD_BETWEEN_SYNCS),
     );
   }
 }
 
-export async function syncWithKoBo(models, dataBroker, serviceCode) {
-  const syncService = await models.syncService.findOne({
+export async function syncWithKoBo(models, dataBroker, dataServiceSyncGroupCode) {
+  const dataServiceSyncGroup = await models.dataServiceSyncGroup.findOne({
     service_type: SERVICE_TYPE,
-    code: serviceCode,
+    code: dataServiceSyncGroupCode,
   });
 
-  if (!syncService) {
-    throw new Error(`No KoBo sync service with the code ${serviceCode} exists`);
+  if (!dataServiceSyncGroup) {
+    throw new Error(`No KoBo sync service with the code ${dataServiceSyncGroupCode} exists`);
   }
 
   // Pull data from KoBo
   const koboData = await dataBroker.pull(
     {
-      code: syncService.config.koboSurveys,
+      code: dataServiceSyncGroup.config.syncGroupCode,
       type: dataBroker.getDataSourceTypes().SYNC_GROUP,
     },
     {
-      startSubmissionTime: syncService.sync_cursor,
+      startSubmissionTime: dataServiceSyncGroup.sync_cursor,
     },
   );
 
@@ -50,7 +52,7 @@ export async function syncWithKoBo(models, dataBroker, serviceCode) {
   }
 
   // Create new survey_responses
-  let newSyncTime = syncService.sync_cursor;
+  let newSyncTime = dataServiceSyncGroup.sync_cursor;
   await models.wrapInTransaction(async transactingModels => {
     for (const koboSyncResponse of koboData) {
       for (const [surveyCode, responses] of Object.entries(koboSyncResponse)) {
@@ -62,7 +64,7 @@ export async function syncWithKoBo(models, dataBroker, serviceCode) {
           }
           const entity = await transactingModels.entity.findOne({ code: responseData.orgUnit });
           if (!entity) {
-            await syncService.log(
+            await dataServiceSyncGroup.log(
               `Skipping KoBo sync for record id ${responseData.event}: unknown entity ${responseData.orgUnit}`,
             );
             continue;
@@ -99,5 +101,8 @@ export async function syncWithKoBo(models, dataBroker, serviceCode) {
   });
 
   // Update sync cursor
-  await models.syncService.update({ id: syncService.id }, { sync_cursor: newSyncTime });
+  await models.dataServiceSyncGroup.update(
+    { id: dataServiceSyncGroup.id },
+    { sync_cursor: newSyncTime },
+  );
 }
