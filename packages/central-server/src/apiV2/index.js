@@ -30,7 +30,7 @@ import { GETDisasters } from './GETDisasters';
 import { GETDataElements, EditDataElements, DeleteDataElements } from './dataElements';
 import { GETDataGroups, EditDataGroups, DeleteDataGroups } from './dataGroups';
 import { GETEntities } from './GETEntities';
-import { getEntityTypes } from './getEntityTypes';
+import { GETEntityTypes } from './GETEntityTypes';
 import { GETFeedItems } from './GETFeedItems';
 import { GETGeographicalAreas } from './GETGeographicalAreas';
 import { GETSurveyGroups } from './GETSurveyGroups';
@@ -178,7 +178,7 @@ apiV2.get('/mapOverlayGroupRelations/:recordId?', useRouteHandler(GETMapOverlayG
 apiV2.get('/surveys/:recordId?', useRouteHandler(GETSurveys));
 apiV2.get('/countries/:parentRecordId/surveys', useRouteHandler(GETSurveys));
 apiV2.get('/countries/:parentRecordId/entities', useRouteHandler(GETEntities));
-apiV2.get('/entityTypes', allowAnyone(getEntityTypes));
+apiV2.get('/entityTypes', allowAnyone(GETEntityTypes));
 apiV2.get('/surveyGroups/:recordId?', useRouteHandler(GETSurveyGroups));
 apiV2.get('/surveyResponses/:parentRecordId/answers', useRouteHandler(GETAnswers));
 apiV2.get('/surveyResponses/:recordId?', useRouteHandler(GETSurveyResponses));

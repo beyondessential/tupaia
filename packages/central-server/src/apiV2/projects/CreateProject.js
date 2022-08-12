@@ -20,7 +20,7 @@ export class CreateProject extends CreateHandler {
 
   async createRecord() {
     const {
-      code,
+      code: projectCode,
       name,
       description,
       sort_order,
@@ -34,24 +34,27 @@ export class CreateProject extends CreateHandler {
     } = this.newRecordData;
 
     await this.models.wrapInTransaction(async transactingModels => {
-      await this.createProjectEntity(transactingModels, code, name);
-      await this.createEntityHierarchy(transactingModels, code, entityTypes);
-      await this.createProjectEntityRelations(transactingModels, code, countries);
-      await this.createProjectDashboard(transactingModels, dashboard_group_name, code);
+      const { id: projectEntityId } = await this.createProjectEntity(
+        transactingModels,
+        projectCode,
+        name,
+      );
 
-      const { id: projectEntityId } = await transactingModels.entity.findOne({
-        'entity.code': code,
-      });
-      const { id: projectEntityHierarchyId } = await transactingModels.entityHierarchy.findOne({
-        'entity_hierarchy.name': code,
-      });
+      const { id: projectEntityHierarchyId } = await this.createEntityHierarchy(
+        transactingModels,
+        projectCode,
+        entityTypes,
+      );
 
-      const { name: dashboardGroupName } = await transactingModels.dashboard.findOne({
-        'dashboard.root_entity_code': code,
-      });
+      await this.createProjectEntityRelations(transactingModels, projectCode, countries);
+      const { name: dashboardGroupName } = await this.createProjectDashboard(
+        transactingModels,
+        dashboard_group_name,
+        projectCode,
+      );
 
       return transactingModels.project.create({
-        code,
+        code: projectCode,
         description,
         sort_order,
         image_url,
@@ -65,33 +68,33 @@ export class CreateProject extends CreateHandler {
     });
   }
 
-  async createProjectEntity(models, code, name) {
+  async createProjectEntity(models, projectCode, name) {
     const worldCode = 'World';
-    const { id: worldId } = await models.entity.findOne({ 'entity.code': worldCode });
+    const { id: worldId } = await models.entity.findOne({ code: worldCode });
 
-    await models.entity.create({
+    return models.entity.create({
       name,
-      code,
+      code: projectCode,
       parent_id: worldId,
       type: 'project',
     });
   }
 
-  async createProjectEntityRelations(models, code, countries) {
+  async createProjectEntityRelations(models, projectCode, countries) {
     const { id: projectEntityId } = await models.entity.findOne({
-      'entity.code': code,
+      code: projectCode,
     });
     const { id: entityHierarchyId } = await models.entityHierarchy.findOne({
-      'entity_hierarchy.name': code,
+      name: projectCode,
     });
 
     for (const countryId of countries) {
       const { code: countryCode } = await models.country.findOne({
-        'country.id': countryId,
+        id: countryId,
       });
       const { id: entityId } = await models.entity.findOne({
-        'entity.code': countryCode,
-        'entity.type': 'country',
+        code: countryCode,
+        type: 'country',
       });
       await models.entityRelation.create({
         parent_id: projectEntityId,
@@ -101,17 +104,17 @@ export class CreateProject extends CreateHandler {
     }
   }
 
-  async createProjectDashboard(models, dashboard_group_name, code) {
-    await models.dashboard.create({
-      code: `${code}_project`,
+  async createProjectDashboard(models, dashboard_group_name, projectCode) {
+    return models.dashboard.create({
+      code: `${projectCode}_project`,
       name: dashboard_group_name,
-      root_entity_code: code,
+      root_entity_code: projectCode,
     });
   }
 
-  async createEntityHierarchy(models, code, entityTypes) {
-    await models.entityHierarchy.create({
-      name: code,
+  async createEntityHierarchy(models, projectCode, entityTypes) {
+    return models.entityHierarchy.create({
+      name: projectCode,
       canonical_types: entityTypes ? `{${entityTypes.join(',')}}` : '{}',
     });
   }

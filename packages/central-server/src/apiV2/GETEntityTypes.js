@@ -5,7 +5,7 @@
 
 import { respond } from '@tupaia/utils';
 
-export const getEntityTypes = async (req, res, next) => {
+export const GETEntityTypes = async (req, res, next) => {
   const { models } = req;
   try {
     const { types } = await models.entity;
