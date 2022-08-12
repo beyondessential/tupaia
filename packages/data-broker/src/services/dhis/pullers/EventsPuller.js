@@ -3,18 +3,18 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { buildEventsFromDhisEventAnalytics } from '../buildAnalytics';
+import { buildEventsFromDhisEventAnalytics } from '../builders';
 
 export class EventsPuller {
-  constructor(dataElementModel, translator) {
-    this.dataElementModel = dataElementModel;
+  constructor(models, translator) {
+    this.models = models;
     this.translator = translator;
   }
 
   pullEventsForApi = async (api, programCode, options) => {
     const { dataElementCodes = [], organisationUnitCodes, period, startDate, endDate } = options;
 
-    const dataElementSources = await this.dataElementModel.find({
+    const dataElementSources = await this.models.dataElement.find({
       code: dataElementCodes,
     });
     const dhisElementCodes = dataElementSources.map(({ dataElementCode }) => dataElementCode);
@@ -34,7 +34,11 @@ export class EventsPuller {
       dataElementSources,
     );
 
-    return buildEventsFromDhisEventAnalytics(translatedEventAnalytics, dataElementCodes);
+    return buildEventsFromDhisEventAnalytics(
+      this.models,
+      translatedEventAnalytics,
+      dataElementCodes,
+    );
   };
 
   pull = async (apis, dataSources, options) => {

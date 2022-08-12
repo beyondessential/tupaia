@@ -18,7 +18,6 @@
     "build-dev": "npm run build",
     "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
-    "prestart": "npm run build",
     "start": "node dist",
     "start-dev": "yarn package:start:backend-start-dev 9999",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",

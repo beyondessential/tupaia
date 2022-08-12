@@ -23,7 +23,7 @@ import {
   TRUE_ONLY,
   DATE,
   DATETIME,
-} from './dhisValueTypes';
+} from '../dhisValueTypes';
 
 export function parseValueForDhis(value, valueType) {
   switch (valueType) {

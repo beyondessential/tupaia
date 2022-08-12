@@ -3,9 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { DhisInputSchemeResolvingApiProxy } from '../../../services/dhis/DhisInputSchemeResolvingApiProxy';
+import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
+import { DhisCodeToIdTranslator } from '../../../../services/dhis/translators/DhisCodeToIdTranslator';
 
-const DATA_SOURCES = [
+const DATA_ELEMENTS = [
   { code: 'EL1', config: { dhisId: 'dhisId_el1' } },
   { code: 'EL2', config: { dhisId: 'dhisId_el2' } },
   { code: 'EL3', config: {} },
@@ -18,33 +19,19 @@ const DATA_GROUPS = [
 
 const DATA_SERVICE_ENTITIES = [{ entity_code: 'ORG1', config: { dhis_id: 'dhisId_ou1' } }];
 
-const createModelsStub = () => ({
-  dataElement: {
-    find: async filter =>
-      DATA_SOURCES.filter(dataElement => filter.code.includes(dataElement.code)),
-    findOne: async filter => {
-      const results = DATA_SOURCES.filter(dataElement => filter.code.includes(dataElement.code));
-      const [first] = results;
-      return first;
+const createModelsStub = () => {
+  return baseCreateModelsStub({
+    dataElement: {
+      records: DATA_ELEMENTS,
     },
-  },
-  dataServiceEntity: {
-    find: async filter =>
-      filter['config->>dhis_id']
-        ? DATA_SERVICE_ENTITIES.filter(mapping =>
-            filter['config->>dhis_id'].includes(mapping.config.dhis_id),
-          )
-        : DATA_SERVICE_ENTITIES.filter(mapping => filter.entity_code.includes(mapping.entity_code)),
-  },
-  dataGroup: {
-    find: async filter => DATA_GROUPS.filter(dataGroup => filter.code.includes(dataGroup.code)),
-    findOne: async filter => {
-      const results = DATA_GROUPS.filter(dataGroup => filter.code.includes(dataGroup.code));
-      const [first] = results;
-      return first;
+    dataServiceEntity: {
+      records: DATA_SERVICE_ENTITIES,
     },
-  },
-});
+    dataGroup: {
+      records: DATA_GROUPS,
+    },
+  });
+};
 
 export const createApiStub = () => {
   return {
@@ -87,5 +74,5 @@ export const createApiStub = () => {
 };
 
 export const createApiProxyStub = api => {
-  return new DhisInputSchemeResolvingApiProxy(createModelsStub(), api);
+  return new DhisCodeToIdTranslator(createModelsStub(), api);
 };

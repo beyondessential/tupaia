@@ -48,6 +48,8 @@ export class Pusher {
       await this.logResults(results); // await to avoid db lock between delete/update on event push
       return results.wasSuccessful;
     } catch (error) {
+      winston.info('Error while attempting to push to DHIS');
+      winston.info(error.stack);
       await this.logResults({ errors: [error.message] });
       return false;
     }
@@ -102,9 +104,6 @@ export class Pusher {
    * @returns {Promise<>}
    */
   async logResults({ counts, errors = [], data, reference, references = [] }) {
-    if (errors.length > 0) {
-      winston.warn(errors);
-    }
     const errorString = errors.reduce((allErrors, error) => `${allErrors}\n${error}`, '');
     const logRecord = {
       record_type: this.recordType,

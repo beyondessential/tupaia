@@ -9,7 +9,7 @@ export * from './compare';
 export * from './authHeaderBuilders';
 export * from './cypress';
 export { getTimezoneNameFromTimestamp, utcMoment } from './datetime';
-export { getDhisConfig } from './dhis';
+export * from './legacyDhis';
 export * from './errors';
 export { Multilock } from './Multilock';
 export * from './period';
