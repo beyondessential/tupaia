@@ -2,11 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import { A4Page, A4PageContent } from '@tupaia/ui-components';
 import { Divider as BaseDivider } from '@material-ui/core';
 import { getUniqueViewId } from '../../../utils';
 import PDFExportSinglePageContent from '../../../containers/PDFExportSinglePageContent';
 import { selectCurrentDashboardName } from '../../../selectors';
-import { A4Page } from '../../../components/PDFExport';
+import PDFExportHeader from '../../../components/PDFExportHeader';
 
 const Main = styled.div`
   background: #fbfbfb;
@@ -50,23 +51,26 @@ const PDFExportPage = ({ currentGroupDashboard, viewResponses }) => {
         .map(view => {
           const infoViewKey = getUniqueViewId(organisationUnitCode, dashboardCode, view.code);
           return (
-            <A4Page entityName={entityName}>
-              <DashboardTitleContainer>
-                <DashboardNameText>{dashboardName}</DashboardNameText>
-                <Divider />
-              </DashboardTitleContainer>
-              <PDFExportSinglePageContent
-                viewContent={{
-                  ...view,
-                  project,
-                  dashboardCode,
-                  organisationUnitCode,
-                  ...viewResponses[infoViewKey],
-                }}
-                infoViewKey={infoViewKey}
-                key={infoViewKey}
-                isExporting
-              />
+            <A4Page>
+              <PDFExportHeader entityName={entityName} />
+              <A4PageContent>
+                <DashboardTitleContainer>
+                  <DashboardNameText>{dashboardName}</DashboardNameText>
+                  <Divider />
+                </DashboardTitleContainer>
+                <PDFExportSinglePageContent
+                  viewContent={{
+                    ...view,
+                    project,
+                    dashboardCode,
+                    organisationUnitCode,
+                    ...viewResponses[infoViewKey],
+                  }}
+                  infoViewKey={infoViewKey}
+                  key={infoViewKey}
+                  isExporting
+                />
+              </A4PageContent>
             </A4Page>
           );
         })}
