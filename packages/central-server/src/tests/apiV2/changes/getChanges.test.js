@@ -6,7 +6,7 @@
 import { expect } from 'chai';
 
 import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
-import { MeditrakSyncQueue } from '../../../database';
+import { MeditrakSyncQueue, createPermissionsBasedMeditrakSyncQueue } from '../../../database';
 import { TestableApp, upsertEntity, upsertQuestion, upsertSurveyGroup } from '../../testUtilities';
 
 describe('GET /changes/count', async () => {
@@ -18,7 +18,7 @@ describe('GET /changes/count', async () => {
     await app.grantFullAccess();
 
     // Set up real sync queue for testing the /changes endpoint
-    await meditrakSyncQueue.createPermissionsBasedView();
+    await createPermissionsBasedMeditrakSyncQueue(models.database);
     meditrakSyncQueue.setDebounceTime(100); // Faster debounce time for tests
     meditrakSyncQueue.listenForChanges();
   });

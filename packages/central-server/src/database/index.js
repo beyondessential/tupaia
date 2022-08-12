@@ -4,5 +4,6 @@
  */
 
 export { MeditrakSyncQueue } from './MeditrakSyncQueue';
+export { createPermissionsBasedMeditrakSyncQueue } from './createPermissionsBasedMeditrakSyncQueue';
 export * from './utilities';
 export * from './constants';

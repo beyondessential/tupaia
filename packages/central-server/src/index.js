@@ -40,7 +40,6 @@ import winston from './log';
    */
   if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
     const meditrakSyncQueue = new MeditrakSyncQueue(models);
-    await meditrakSyncQueue.createPermissionsBasedView(); // Ensure permissions based view has been setup
     meditrakSyncQueue.listenForChanges();
   }
 

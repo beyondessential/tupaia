@@ -6,7 +6,7 @@
 import { expect } from 'chai';
 
 import { oneSecondSleep } from '@tupaia/utils';
-import { MeditrakSyncQueue } from '../../../database';
+import { MeditrakSyncQueue, createPermissionsBasedMeditrakSyncQueue } from '../../../database';
 import { TestableApp } from '../../testUtilities';
 import { PERMISSIONS_BASED_SYNC_MIN_APP_VERSION } from '../../../apiV2/utilities/meditrakSync';
 import {
@@ -35,7 +35,7 @@ describe('GET /changes/metadata', async () => {
 
     // Set up real sync queue for testing the /changes endpoint
     testStartTime = Date.now();
-    await meditrakSyncQueue.createPermissionsBasedView();
+    await createPermissionsBasedMeditrakSyncQueue(models.database);
     meditrakSyncQueue.setDebounceTime(100); // Faster debounce time for tests
     meditrakSyncQueue.listenForChanges();
 

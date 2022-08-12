@@ -5,7 +5,6 @@
 
 import winston from 'winston';
 import { ChangeHandler } from '@tupaia/database';
-import { createPermissionsBasedMeditrakSyncQueue } from './createPermissionsBasedMeditrakSyncQueue';
 
 const modelValidator = model => {
   if (!model.meditrakConfig.minAppVersion) {
@@ -46,11 +45,6 @@ export class MeditrakSyncQueue extends ChangeHandler {
 
     // Keep all the data for surveys, as we want to check if the permissions have changed
     this.changeTranslators.survey = change => [change];
-  }
-
-  async createPermissionsBasedView() {
-    await createPermissionsBasedMeditrakSyncQueue(this.models.database);
-    winston.info(`Created permissions_based_meditrak_sync_queue`);
   }
 
   async refreshPermissionsBasedView() {
