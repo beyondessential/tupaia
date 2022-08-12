@@ -61,6 +61,7 @@ export function getViewWrapper({ type, viewType }) {
   }
 }
 
+// Other types are not supported to pdf export at the moment. Will be done by: RN-605
 export function getExportViewWrapper({ type, viewType }) {
   switch (type) {
     case 'chart':
