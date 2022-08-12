@@ -24,10 +24,6 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
     super(req, res, next);
   }
 
-  private extractSessionCookie = (): Record<string, string> => {
-    return cookie.parse(this.req.headers.cookie || '');
-  };
-
   private verifyBody = (body: any): Body => {
     const lesmisValidDomains = ['lesmis.la', 'www.lesmis.la'];
     const { pdfPageUrl } = body;
@@ -46,7 +42,7 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
   };
 
   private exportPDF = async (): Promise<Buffer> => {
-    const cookies = this.extractSessionCookie();
+    const cookies = cookie.parse(this.req.headers.cookie || '');
     const { pdfPageUrl } = this.verifyBody(this.req.body);
     const { host: apiDomain } = this.req.headers;
     const location = new URL(pdfPageUrl);
@@ -66,10 +62,7 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
       const page = await browser.newPage();
 
       await page.setCookie(...finalisedCookieObjects);
-      await page.goto('http://localhost:8088/explore/', {
-        timeout: 60000,
-        waitUntil: 'networkidle0',
-      });
+      await page.goto(pdfPageUrl, { timeout: 60000, waitUntil: 'networkidle0' });
       result = await page.pdf({
         format: 'a4',
         printBackground: true,
