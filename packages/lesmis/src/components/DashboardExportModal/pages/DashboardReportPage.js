@@ -7,6 +7,7 @@ import { DashboardReport } from '../../DashboardReport';
 import { yearToApiDates } from '../../../api/queries/utils';
 import { useUrlSearchParam } from '../../../utils';
 import { DEFAULT_DATA_YEAR } from '../../../constants';
+import Header from '../components/Header';
 
 export const DashboardReportPage = ({
   item,
@@ -15,33 +16,36 @@ export const DashboardReportPage = ({
   exportOptions,
   useYearSelector,
   PageContainer,
+  dashboardLabel,
+  PageContent,
   ...configs
 }) => {
   const [selectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
   const { startDate, endDate } = useYearSelector ? yearToApiDates(selectedYear) : yearToApiDates();
-
   return (
-    <PageContainer
-      key={item.code}
-      useYearSelector={useYearSelector}
-      selectedYear={selectedYear}
-      {...configs}
-    >
-      {isEntityDetailsRequired && <EntityDetails />}
-      <DashboardTitleContainer>
-        <Typography variant="h2">{subDashboardName}</Typography>
-        <Divider />
-        <Typography variant="h5">{item.name}</Typography>
-      </DashboardTitleContainer>
-      <DashboardReport
-        reportCode={item.reportCode}
-        name={item.name}
-        startDate={startDate}
-        endDate={endDate}
-        exportOptions={exportOptions}
-        isExporting // render exporting format
-        isEnlarged // render exporting format
+    <PageContainer {...configs}>
+      <Header
+        useYearSelector={useYearSelector}
+        selectedYear={selectedYear}
+        dashboardLabel={dashboardLabel}
       />
+      <PageContent>
+        {isEntityDetailsRequired && <EntityDetails />}
+        <DashboardTitleContainer>
+          <Typography variant="h2">{subDashboardName}</Typography>
+          <Divider />
+          <Typography variant="h5">{item.name}</Typography>
+        </DashboardTitleContainer>
+        <DashboardReport
+          reportCode={item.reportCode}
+          name={item.name}
+          startDate={startDate}
+          endDate={endDate}
+          exportOptions={exportOptions}
+          isExporting // render exporting format
+          isEnlarged // render exporting format
+        />
+      </PageContent>
     </PageContainer>
   );
 };
@@ -57,6 +61,8 @@ DashboardReportPage.propTypes = {
   subDashboardName: PropTypes.string.isRequired,
   exportOptions: PropTypes.object.isRequired,
   PageContainer: PropTypes.func.isRequired,
+  PageContent: PropTypes.object.isRequired,
+  dashboardLabel: PropTypes.string.isRequired,
   useYearSelector: PropTypes.bool,
 };
 
