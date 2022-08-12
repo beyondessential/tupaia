@@ -44,13 +44,13 @@ exports.up = async function (db) {
     await db.runSql(`
     UPDATE "data_group"
     SET "config" = jsonb_set("config", '${DHIS_INSTANCE_CODE_JSONPATH}', '"${server}"')
-    WHERE config::text like '%"dhisInstanceCode": null%' AND substring(code from 1 for 2) = '${prefix}';
+    WHERE (config->'dhisInstanceCode') is not null AND (config->>'dhisInstanceCode') is null AND substring(code from 1 for 2) = '${prefix}';
     `);
 
     await db.runSql(`
     UPDATE "data_element"
     SET "config" = jsonb_set("config", '${DHIS_INSTANCE_CODE_JSONPATH}', '"${server}"')
-    WHERE config::text like '%"dhisInstanceCode": null%' AND substring(code from 1 for 2) = '${prefix}';
+    WHERE (config->'dhisInstanceCode') is not null AND (config->>'dhisInstanceCode') is null AND substring(code from 1 for 2) = '${prefix}';
     `);
   }
 };
@@ -60,13 +60,13 @@ exports.down = async function (db) {
     await db.runSql(`
     UPDATE "data_group"
     SET "config" = jsonb_set("config", '${DHIS_INSTANCE_CODE_JSONPATH}', 'null')
-    WHERE config::text like '%"dhisInstanceCode": "${server}"%' AND substring(code from 1 for 2) = '${prefix}';
+    WHERE (config->'dhisInstanceCode') is not null AND (config->>'dhisInstanceCode') = '${server}' AND substring(code from 1 for 2) = '${prefix}';
     `);
 
     await db.runSql(`
     UPDATE "data_element"
     SET "config" = jsonb_set("config", '${DHIS_INSTANCE_CODE_JSONPATH}', 'null')
-    WHERE config::text like '%"dhisInstanceCode": "${server}"%' AND substring(code from 1 for 2) = '${prefix}';
+    WHERE (config->'dhisInstanceCode') is not null AND (config->>'dhisInstanceCode') = '${server}' AND substring(code from 1 for 2) = '${prefix}';
     `);
   }
 };
