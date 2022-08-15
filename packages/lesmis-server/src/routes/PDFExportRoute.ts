@@ -5,6 +5,7 @@
  */
 import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
+import { exportToPDF } from '@tupaia/tsutils';
 
 type Body = {
   pdfPageUrl: string;
@@ -24,9 +25,7 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
   }
 
   public async buildResponse() {
-    const { pdfPageUrl } = this.req.body;
-
-    const { data: buffer } = await this.req.ctx.services.pdfExport.getPDF(pdfPageUrl);
+    const { data: buffer } = await exportToPDF(this.req);
     this.res.set({
       'Content-Type': 'application/pdf',
       'Content-Length': buffer.length,
