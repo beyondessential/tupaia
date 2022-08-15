@@ -27,6 +27,7 @@ export class DataGroupMetadataPuller {
     const dataElementDataSources = await this.dataSourceModel.getDataElementsInDataGroup(
       dataGroupCode,
     );
+
     const dataElementCodes = dataElementDataSources.map(({ code }) => code);
 
     return api.fetchDataGroup(dataGroupCode, dataElementCodes, includeOptions);

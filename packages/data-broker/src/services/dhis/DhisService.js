@@ -155,18 +155,7 @@ export class DhisService extends Service {
 
   deleteEvent = async (api, data) => api.deleteEvent(data.dhisReference);
 
-  async pull(dataSources, type, options = {}) {
-    const {
-      organisationUnitCode,
-      organisationUnitCodes,
-      dataServices = DEFAULT_DATA_SERVICES,
-      detectDataServices = false,
-    } = options;
-
-    const entityCodes = organisationUnitCodes || [organisationUnitCode];
-
-    // TODO remove the `detectDataServices` flag after
-    // https://linear.app/bes/issue/MEL-481/detect-data-services-in-the-data-broker-level
+  async getPullApis(dataSources, entityCodes, detectDataServices, dataServices) {
     const apis = detectDataServices
       ? await getApisForDataSources(
           this.models,
@@ -181,27 +170,46 @@ export class DhisService extends Service {
           entityCodes,
         );
 
+    return apis;
+  }
+
+  async pull(dataSources, type, options = {}) {
+    const {
+      organisationUnitCode,
+      organisationUnitCodes,
+      dataServices = DEFAULT_DATA_SERVICES,
+      detectDataServices = false,
+    } = options;
+
+    const entityCodes = organisationUnitCodes || [organisationUnitCode];
+
+    // TODO remove the `detectDataServices` flag after
+    // https://linear.app/bes/issue/MEL-481/detect-data-services-in-the-data-broker-level
+
+    const apis = await this.getPullApis(dataSources, entityCodes, detectDataServices, dataServices);
+
     const { useDeprecatedApi = false } = options;
     const pullerKey = `${type}${useDeprecatedApi ? '_deprecated' : ''}`;
 
     const pullData = this.pullers[pullerKey];
-
     return pullData(apis, dataSources, options);
   }
 
   async pullMetadata(dataSources, type, options) {
-    const { organisationUnitCode: entityCode, dataServices = DEFAULT_DATA_SERVICES } = options;
-    const pullMetadata = this.metadataPullers[type];
+    const {
+      organisationUnitCode,
+      organisationUnitCodes,
+      dataServices = DEFAULT_DATA_SERVICES,
+      detectDataServices = false,
+    } = options;
 
-    const apis = await getApisForLegacyDataSourceConfig(
-      this.models,
-      this.dhisInstanceResolver,
-      dataServices,
-      [entityCode],
-    );
+    const pullMetadata = this.metadataPullers[type];
+    const entityCodes = organisationUnitCodes || [organisationUnitCode];
+    const apis = await this.getPullApis(dataSources, entityCodes, detectDataServices, dataServices);
 
     if (type === this.dataSourceTypes.DATA_GROUP) {
       const result = await pullMetadata(apis[0], dataSources, options);
+
       return result;
     }
 

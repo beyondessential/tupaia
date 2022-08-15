@@ -48,12 +48,10 @@ export class ReportServerAggregator {
     );
   }
 
-  private async getDateElementCodes(programCode: string, organisationUnitCodes: string[]) {
+  private async getDateElementCodes(programCode: string) {
     const { dataElements } = (await this.aggregator.fetchDataGroup(programCode, {
-      organisationUnitCodes,
       detectDataServices: true,
     })) as EventMetaData;
-
     return dataElements.map(({ code }) => code);
   }
 
@@ -70,7 +68,7 @@ export class ReportServerAggregator {
     const noCodesInConfig = !dataElementCodesInConfig || dataElementCodesInConfig.length === 0;
 
     const dataElementCodes =
-      (noCodesInConfig && (await this.getDateElementCodes(programCode, organisationUnitCodes))) ||
+      (noCodesInConfig && (await this.getDateElementCodes(programCode))) ||
       dataElementCodesInConfig;
 
     const aggregations = aggregationList
