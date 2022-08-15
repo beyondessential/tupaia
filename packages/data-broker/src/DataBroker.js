@@ -246,12 +246,9 @@ export class DataBroker {
     if (countDistinct(dataSources, 'service_type') > 1) {
       throw new Error('Cannot pull metadata for data sources belonging to different services');
     }
-    const { config: dataGroupConfig, service_type: serviceType } = dataSources[0];
-
-    const optionsWithConfig = { ...options, dataServices: [dataGroupConfig] };
-    const service = this.createService(serviceType);
+    const service = this.createService(dataSources[0].service_type);
     // `dataSourceSpec` is defined  for a single `type`
     const { type } = dataSourceSpec;
-    return service.pullMetadata(dataSources, type, optionsWithConfig);
+    return service.pullMetadata(dataSources, type, options);
   }
 }

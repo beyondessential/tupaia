@@ -190,7 +190,7 @@ export class DhisService extends Service {
   }
 
   async pullMetadata(dataSources, type, options) {
-    const { organisationUnitCodes: entityCodes, dataServices = DEFAULT_DATA_SERVICES } = options;
+    const { organisationUnitCode: entityCode, dataServices = DEFAULT_DATA_SERVICES } = options;
     const pullMetadata = this.metadataPullers[type];
 
     const apis = await getApisForLegacyDataSourceConfig(

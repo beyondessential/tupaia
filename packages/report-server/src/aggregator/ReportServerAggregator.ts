@@ -51,6 +51,7 @@ export class ReportServerAggregator {
   private async getDateElementCodes(programCode: string, organisationUnitCodes: string[]) {
     const { dataElements } = (await this.aggregator.fetchDataGroup(programCode, {
       organisationUnitCodes,
+      detectDataServices: true,
     })) as EventMetaData;
 
     return dataElements.map(({ code }) => code);

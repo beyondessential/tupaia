@@ -552,13 +552,11 @@ export class DhisApi {
       throw new Error('Please provide a data group code');
     }
 
-    const dataGroups = await this.getRecords({
+    const dataGroup = await this.getRecord({
       type: PROGRAM,
       codes: [dataGroupCode],
       fields: ['code', 'name'],
     });
-
-    const dataGroup = dataGroups[0];
 
     if (!dataGroup) {
       throw new Error(`Cannot find Data Group: ${dataGroupCode}`);
