@@ -4,6 +4,8 @@
  */
 
 import React from 'react';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -11,7 +13,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
+import Divider from '@material-ui/core/Divider';
 import styled from 'styled-components';
 
 const StyledRootGrid = styled(Grid)`
@@ -19,12 +21,16 @@ const StyledRootGrid = styled(Grid)`
   width
 `;
 
-const StyledPaper = styled(Paper)`
+const StyledCard = styled(Card)`
   width: 30vw;
   height: 50vh;
   max-width: 25rem;
   max-height: 30rem;
   overflow: auto;
+`;
+
+const StyledCardHeader = styled(CardHeader)`
+  text-align: left;
 `;
 
 const StyledButton = styled(Button)`
@@ -39,7 +45,11 @@ function intersection(a, b) {
   return a.filter(value => b.indexOf(value) !== -1);
 }
 
-// Reference: https://v4.mui.com/zh/components/transfer-list/#TransferList.js
+function union(a, b) {
+  return [...a, ...not(b, a)];
+}
+
+// Reference: https://v4.mui.com/components/transfer-list/#enhanced-transfer-list
 export const TransferList = ({ left, setLeft, right, setRight }) => {
   const [checked, setChecked] = React.useState([]);
   const leftChecked = intersection(checked, left);
@@ -58,9 +68,14 @@ export const TransferList = ({ left, setLeft, right, setRight }) => {
     setChecked(newChecked);
   };
 
-  const handleAllRight = () => {
-    setRight(right.concat(left));
-    setLeft([]);
+  const numberOfChecked = items => intersection(checked, items).length;
+
+  const handleToggleAll = items => () => {
+    if (numberOfChecked(items) === items.length) {
+      setChecked(not(checked, items));
+    } else {
+      setChecked(union(checked, items));
+    }
   };
 
   const handleCheckedRight = () => {
@@ -75,16 +90,25 @@ export const TransferList = ({ left, setLeft, right, setRight }) => {
     setChecked(not(checked, rightChecked));
   };
 
-  const handleAllLeft = () => {
-    setLeft(left.concat(right));
-    setRight([]);
-  };
-
-  const customList = items => (
-    <StyledPaper>
+  const customList = (title, items) => (
+    <StyledCard>
+      <StyledCardHeader
+        avatar={
+          <Checkbox
+            onClick={handleToggleAll(items)}
+            checked={numberOfChecked(items) === items.length && items.length !== 0}
+            indeterminate={numberOfChecked(items) !== items.length && numberOfChecked(items) !== 0}
+            disabled={items.length === 0}
+            inputProps={{ 'aria-label': 'all items selected' }}
+          />
+        }
+        title={title}
+        subheader={`${numberOfChecked(items)}/${items.length} selected`}
+      />
+      <Divider />
       <List dense component="div" role="list">
         {items.map(value => {
-          const labelId = `transfer-list-item-${value}-label`;
+          const labelId = `transfer-list-all-item-${value}-label`;
 
           return (
             <ListItem key={value} role="listitem" button onClick={handleToggle(value)}>
@@ -102,23 +126,14 @@ export const TransferList = ({ left, setLeft, right, setRight }) => {
         })}
         <ListItem />
       </List>
-    </StyledPaper>
+    </StyledCard>
   );
 
   return (
     <StyledRootGrid container spacing={2} alignItems="center">
-      <Grid item>{customList(left)}</Grid>
+      <Grid item>{customList('Choices', left)}</Grid>
       <Grid item>
         <Grid container direction="column" alignItems="center">
-          <StyledButton
-            variant="outlined"
-            size="small"
-            onClick={handleAllRight}
-            disabled={left.length === 0}
-            aria-label="move all right"
-          >
-            ≫
-          </StyledButton>
           <StyledButton
             variant="outlined"
             size="small"
@@ -137,18 +152,9 @@ export const TransferList = ({ left, setLeft, right, setRight }) => {
           >
             &lt;
           </StyledButton>
-          <StyledButton
-            variant="outlined"
-            size="small"
-            onClick={handleAllLeft}
-            disabled={right.length === 0}
-            aria-label="move all left"
-          >
-            ≪
-          </StyledButton>
         </Grid>
       </Grid>
-      <Grid item>{customList(right)}</Grid>
+      <Grid item>{customList('Chosen', right)}</Grid>
     </StyledRootGrid>
   );
 };
