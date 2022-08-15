@@ -1,14 +1,7 @@
-import { USER_SESSION_CONFIG } from '../authSession/authSession';
+import { exportToPDF } from '@tupaia/tsutils';
 
 export const PDFExportHandler = async (req, res) => {
-  const { pdfPageUrl } = req.body;
-  const sessionCookieName = USER_SESSION_CONFIG.cookieName;
-  const sessionCookie = req.cookies[sessionCookieName];
-
-  const { data: buffer } = await req.ctx.services.pdfExport.getPDF(
-    pdfPageUrl,
-    `${sessionCookieName}=${sessionCookie}`,
-  );
+  const { data: buffer } = await exportToPDF(req);
 
   res.set({
     'Content-Type': 'application/pdf',
