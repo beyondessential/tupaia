@@ -50,7 +50,7 @@ function union(a, b) {
 }
 
 // Reference: https://v4.mui.com/components/transfer-list/#enhanced-transfer-list
-export const TransferList = ({ left, setLeft, right, setRight }) => {
+export const TransferList = ({ left, setLeft, leftTitle, right, setRight, rightTitle }) => {
   const [checked, setChecked] = React.useState([]);
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
@@ -131,7 +131,7 @@ export const TransferList = ({ left, setLeft, right, setRight }) => {
 
   return (
     <StyledRootGrid container spacing={2} alignItems="center">
-      <Grid item>{customList('Choices', left)}</Grid>
+      <Grid item>{customList(leftTitle || 'Choices', left)}</Grid>
       <Grid item>
         <Grid container direction="column" alignItems="center">
           <StyledButton
@@ -154,7 +154,7 @@ export const TransferList = ({ left, setLeft, right, setRight }) => {
           </StyledButton>
         </Grid>
       </Grid>
-      <Grid item>{customList('Chosen', right)}</Grid>
+      <Grid item>{customList(rightTitle || 'Chosen', right)}</Grid>
     </StyledRootGrid>
   );
 };

@@ -77,7 +77,7 @@ export const DashboardExportModal = ({
             disableElevation
             disabled={isExporting}
           >
-            download
+            export
           </MuiButton>
         </FlexSpaceBetween>
       </DialogHeader>
@@ -88,7 +88,14 @@ export const DashboardExportModal = ({
           errorMessage={errorMessage}
           onReset={onReset}
         >
-          <TransferList left={left} setLeft={setLeft} right={right} setRight={setRight} />
+          <TransferList
+            left={left}
+            setLeft={setLeft}
+            right={right}
+            setRight={setRight}
+            leftTitle="Visualisations"
+            rightTitle="Selected"
+          />
         </LoadingContainer>
       </DialogContent>
     </Dialog>
