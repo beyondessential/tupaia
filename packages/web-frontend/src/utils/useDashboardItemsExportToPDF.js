@@ -12,6 +12,12 @@ export const useDashboardItemsExportToPDF = pathname => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   const exportToPDF = async (fileName, queryParams) => {
+    const { selectedDashboardItems } = queryParams;
+    if (selectedDashboardItems === '') {
+      setErrorMessage('Please select at least one report');
+      return;
+    }
+
     setIsExporting(true);
     try {
       const hostname = `${window.location.protocol}/${window.location.host}`;
