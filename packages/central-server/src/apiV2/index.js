@@ -18,6 +18,7 @@ import { useRouteHandler } from './RouteHandler';
 import { exportRoutes } from './export';
 import { importRoutes } from './import';
 import { authenticate } from './authenticate';
+import { changesMetadata } from './changesMetadata';
 import { countChanges } from './countChanges';
 import { getChanges } from './getChanges';
 import { BESAdminCreateHandler } from './CreateHandler';
@@ -142,6 +143,7 @@ apiV2.use('/import', importRoutes);
  * GET routes
  */
 apiV2.get('/changes/count', catchAsyncErrors(countChanges));
+apiV2.get('/changes/metadata', catchAsyncErrors(changesMetadata));
 apiV2.get('/changes', catchAsyncErrors(getChanges));
 apiV2.get('/socialFeed', catchAsyncErrors(getSocialFeed));
 apiV2.get('/me', useRouteHandler(GETUserForMe));
@@ -209,6 +211,7 @@ apiV2.get('/clinics/:recordId?', useRouteHandler(GETClinics));
 apiV2.get('/facilities/:recordId?', useRouteHandler(GETClinics));
 apiV2.get('/geographicalAreas/:recordId?', useRouteHandler(GETGeographicalAreas));
 apiV2.get('/reports/:recordId?', useRouteHandler(GETReports));
+apiV2.get('/dhisInstances/:recordId?', useRouteHandler(BESAdminGETHandler));
 
 /**
  * POST routes

@@ -16,7 +16,7 @@ const HomeToolbar = ({ onNavigateToSurveysMenu, onNavigateToTupaiaWebsite, style
       textStyle={localStyles.buttonText}
     />
     <BlueButton
-      title="SURVEY FACILITIES"
+      title="SURVEY"
       onPress={onNavigateToSurveysMenu}
       style={[localStyles.button, localStyles.surveyButton]}
       textStyle={localStyles.buttonText}

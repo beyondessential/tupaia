@@ -69,7 +69,10 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
       },
     );
 
-    return reduceToDictionary(surveyData, 'id', ({ config }) => config.isDataRegional);
+    return reduceToDictionary(surveyData, 'id', ({ config }) => {
+      // TODO: migrate dhis sync to use new dhisInstanceCode instead of legacy config
+      return config.dhisInstanceCode === 'regional';
+    });
   };
 
   generateDetails = async updateChanges => {
