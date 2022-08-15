@@ -5351,9 +5351,9 @@ __metadata:
   resolution: "@tupaia/lesmis-server@workspace:packages/lesmis-server"
   dependencies:
     "@tupaia/access-policy": 3.0.0
-    "@tupaia/api-client": 3.1.0
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
+    "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     camelcase-keys: ^6.2.2
     dotenv: ^8.2.0
@@ -5475,20 +5475,6 @@ __metadata:
     sha256: ^0.2.0
     sussol-utilities: ^0.4.6
     url: ^0.11.0
-  languageName: unknown
-  linkType: soft
-
-"@tupaia/pdf-export-server@workspace:packages/pdf-export-server":
-  version: 0.0.0-use.local
-  resolution: "@tupaia/pdf-export-server@workspace:packages/pdf-export-server"
-  dependencies:
-    "@tupaia/database": 1.0.0
-    "@tupaia/server-boilerplate": 1.0.0
-    cookie: ^0.5.0
-    dotenv: ^8.2.0
-    express: ^4.16.2
-    puppeteer: ^15.4.0
-    winston: ^3.2.1
   languageName: unknown
   linkType: soft
 
@@ -5616,6 +5602,8 @@ __metadata:
   resolution: "@tupaia/tsutils@workspace:packages/tsutils"
   dependencies:
     "@tupaia/utils": 1.0.0
+    cookie: ^0.5.0
+    puppeteer: ^15.4.0
     yup: ^0.32.9
   languageName: unknown
   linkType: soft
