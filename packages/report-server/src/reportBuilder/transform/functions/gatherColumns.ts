@@ -32,7 +32,7 @@ const gatherColumns = (rows: Row[], params: GatherColumnsParams): Row[] => {
         }
       });
 
-      return gatherFields.map(key => ({ ...keptFields, value: row[key], type: key }));
+      return gatherFields.map(key => ({ ...keptFields, value: row[key], columnName: key }));
     })
     .flat();
 };
