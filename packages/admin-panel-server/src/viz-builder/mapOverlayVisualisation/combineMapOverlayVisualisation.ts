@@ -4,12 +4,16 @@
  */
 
 import { ValidationError } from '@tupaia/utils';
-import { LegacyReport, Report} from '../types';
+import { LegacyReport, Report } from '../types';
 import { MapOverlay, MapOverlayViz, MapOverlayVizResource } from './types';
 
 // TODO: DRY
 const getData = (report: Report) => {
   const { config } = report;
+  if ('customReport' in config) {
+    return { customReport: config.customReport };
+  }
+
   const { fetch, transform } = config;
   const { aggregations, ...restOfFetch } = fetch;
   return { fetch: restOfFetch, aggregate: aggregations, transform };
@@ -20,14 +24,16 @@ const getPresentation = (mapOverlay: MapOverlay, report: Report | LegacyReport) 
   const { config } = mapOverlay;
 
   const presentation = config;
-  if (!mapOverlay.legacy) {
+  if (!mapOverlay.legacy && 'output' in reportConfig) {
     presentation.output = reportConfig.output;
   }
 
   return presentation;
 };
 
-export function combineMapOverlayVisualisation(visualisationResource: MapOverlayVizResource): MapOverlayViz {
+export function combineMapOverlayVisualisation(
+  visualisationResource: MapOverlayVizResource,
+): MapOverlayViz {
   const { mapOverlay, report } = visualisationResource;
 
   if (mapOverlay.legacy) {

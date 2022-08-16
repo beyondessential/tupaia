@@ -3,11 +3,15 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { LegacyReport, Report} from '../types';
+import { LegacyReport, Report } from '../types';
 import { DashboardItem, DashboardViz, DashboardVizResource } from './types';
 
 const getData = (report: Report) => {
   const { config } = report;
+  if ('customReport' in config) {
+    return { customReport: config.customReport };
+  }
+
   const { fetch, transform } = config;
   const { aggregations, ...restOfFetch } = fetch;
   return { fetch: restOfFetch, aggregate: aggregations, transform };
@@ -24,14 +28,16 @@ const getPresentation = (dashboardItem: DashboardItem, report: Report | LegacyRe
   const { type, name, ...config } = dashboardItemConfig;
 
   const presentation: Record<string, unknown> = { type, ...config };
-  if (!dashboardItem.legacy) {
+  if (!dashboardItem.legacy && 'output' in reportConfig) {
     presentation.output = reportConfig.output;
   }
 
   return presentation;
 };
 
-export function combineDashboardVisualisation(visualisationResource: DashboardVizResource): DashboardViz {
+export function combineDashboardVisualisation(
+  visualisationResource: DashboardVizResource,
+): DashboardViz {
   const { dashboardItem, report } = visualisationResource;
   const { id, code, config, legacy } = dashboardItem;
   const { name } = config;

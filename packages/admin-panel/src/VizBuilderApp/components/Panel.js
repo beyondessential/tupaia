@@ -76,6 +76,17 @@ const PanelTabPanel = styled.div`
   }
 `;
 
+const CustomReportName = styled.span`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  > div {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
 export const Panel = () => {
   const { hasDataError, setDataError } = useVizConfigError();
   const { jsonToggleEnabled } = useTabPanel();
@@ -88,7 +99,7 @@ export const Panel = () => {
   ] = useVizConfig();
 
   const {
-    visualisation: { data: finalData },
+    visualisation: { data: vizData },
   } = useVisualisation();
 
   const handleChange = (event, newValue) => {
@@ -107,6 +118,19 @@ export const Panel = () => {
   const isTabDisabled = tabId => {
     return tab !== tabId && hasDataError;
   };
+
+  const isCustomReport = 'customReport' in vizData;
+  // Custom report vizes don't support any configuration so just show the name
+  if (isCustomReport) {
+    return (
+      <Container>
+        <PanelNav>
+          <CustomReportName>Custom Report: {vizData.customReport}</CustomReportName>
+          <PlayButton />
+        </PanelNav>
+      </Container>
+    );
+  }
 
   return (
     <Container>
@@ -128,7 +152,7 @@ export const Panel = () => {
       <TabPanel isSelected={tab === 0} Panel={PanelTabPanel}>
         {jsonToggleEnabled ? (
           <JsonEditor
-            value={finalData.fetch}
+            value={vizData.fetch}
             onChange={value => setTabValue('fetch', value)}
             onInvalidChange={handleInvalidChange}
           />
@@ -144,7 +168,7 @@ export const Panel = () => {
       <TabPanel isSelected={tab === 1} Panel={PanelTabPanel}>
         {jsonToggleEnabled ? (
           <JsonEditor
-            value={finalData.aggregate}
+            value={vizData.aggregate}
             onChange={value => setTabValue('aggregate', value)}
             onInvalidChange={handleInvalidChange}
           />
@@ -161,7 +185,7 @@ export const Panel = () => {
       <TabPanel isSelected={tab === 2} Panel={PanelTabPanel}>
         {jsonToggleEnabled ? (
           <JsonEditor
-            value={finalData.transform}
+            value={vizData.transform}
             onChange={value => setTabValue('transform', value)}
             onInvalidChange={handleInvalidChange}
           />
