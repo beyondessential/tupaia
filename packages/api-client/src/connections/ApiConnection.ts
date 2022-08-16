@@ -13,6 +13,7 @@ type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 type FetchHeaders = HeadersInit & {
   Authorization: string;
   'Content-Type'?: string;
+  cookie?: string;
 };
 
 type FetchConfig = RequestInit & {
@@ -39,8 +40,9 @@ export class ApiConnection {
     endpoint: string,
     queryParameters?: QueryParameters | null,
     body?: RequestBody | null,
+    cookie?: string,
   ) {
-    return this.request('POST', endpoint, queryParameters, body);
+    return this.request('POST', endpoint, queryParameters, body, cookie);
   }
 
   public async put(
@@ -60,6 +62,7 @@ export class ApiConnection {
     endpoint: string,
     queryParameters?: QueryParameters | null,
     body?: RequestBody | null,
+    cookie?: string,
   ) {
     const queryUrl = this.stringifyQuery(this.baseUrl, endpoint, queryParameters || {});
     const fetchConfig: FetchConfig = {
@@ -69,6 +72,9 @@ export class ApiConnection {
         'Content-Type': 'application/json',
       },
     };
+    if (cookie) {
+      fetchConfig.headers.cookie = cookie;
+    }
     if (body) {
       fetchConfig.body = JSON.stringify(body);
     }

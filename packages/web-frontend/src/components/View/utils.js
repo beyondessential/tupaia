@@ -69,9 +69,9 @@ export function getExportViewWrapper({ type, viewType }) {
     default: {
       return () => (
         <div>
-          <PDFExportViewTitle>{`'${
-            type || viewType
-          }' type visual does not support PDF export`}</PDFExportViewTitle>
+          <PDFExportViewTitle>{`${
+            viewType || type
+          } visual PDF export is coming soon`}</PDFExportViewTitle>
         </div>
       );
     }
