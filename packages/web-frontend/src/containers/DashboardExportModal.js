@@ -58,7 +58,7 @@ export const DashboardExportModal = ({
     pathname,
   );
 
-  const handleClickExport = async () => {
+  const exportSelectedItems = async () => {
     const selectedDashboardItems = right.map(itemName => nameToCodeMapping[itemName]);
     await exportToPDF(exportFileName, { selectedDashboardItems: selectedDashboardItems.join(',') });
   };
@@ -73,7 +73,7 @@ export const DashboardExportModal = ({
           <MuiButton
             startIcon={<DownloadIcon />}
             variant="outlined"
-            onClick={handleClickExport}
+            onClick={exportSelectedItems}
             disableElevation
             disabled={isExporting}
           >
