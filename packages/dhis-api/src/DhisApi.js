@@ -4,8 +4,6 @@
  */
 
 import winston from 'winston';
-import keyBy from 'lodash.keyby';
-
 import { aggregateAnalytics } from '@tupaia/aggregator';
 import { CustomError, getSortByKey, reduceToDictionary, utcMoment } from '@tupaia/utils';
 import { DhisFetcher } from './DhisFetcher';

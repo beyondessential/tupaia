@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+
 import {
   getApiForValue,
   getApiFromServerName,
@@ -50,6 +51,7 @@ export class DhisService extends Service {
     this.deleters = this.getDeleters();
     this.pullers = this.getPullers();
     this.metadataPullers = this.getMetadataPullers();
+    this.metadataMergers = this.getMetadataMergers();
   }
 
   getPushers() {
@@ -80,6 +82,14 @@ export class DhisService extends Service {
     return {
       [this.dataSourceTypes.DATA_ELEMENT]: this.dataElementsMetadataPuller.pull.bind(this),
       [this.dataSourceTypes.DATA_GROUP]: this.dataGroupMetadataPuller.pull.bind(this),
+    };
+  }
+
+  getMetadataMergers() {
+    return {
+      [this.dataSourceTypes.DATA_ELEMENT]: results =>
+        results.reduce((existingResults, result) => existingResults.concat(result)),
+      [this.dataSourceTypes.DATA_GROUP]: results => results[0],
     };
   }
 
@@ -203,23 +213,18 @@ export class DhisService extends Service {
       detectDataServices = false,
     } = options;
 
-    const pullMetadata = this.metadataPullers[type];
+    const puller = this.metadataPullers[type];
     const entityCodes = organisationUnitCodes || [organisationUnitCode];
     const apis = await this.getPullApis(dataSources, entityCodes, detectDataServices, dataServices);
 
-    if (type === this.dataSourceTypes.DATA_GROUP) {
-      const result = await pullMetadata(apis[0], dataSources, options);
-
-      return result;
-    }
-
     const results = [];
     const pullForApi = async api => {
-      const newResults = await pullMetadata(api, dataSources, options);
-      results.push(...newResults);
+      const newResults = await puller(api, dataSources, options);
+      results.push(newResults);
     };
     await Promise.all(apis.map(pullForApi));
 
-    return results;
+    const mergeMetadata = this.metadataMergers[type];
+    return mergeMetadata(results);
   }
 }
