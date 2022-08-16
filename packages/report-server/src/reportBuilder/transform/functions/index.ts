@@ -23,9 +23,9 @@ import { buildSortRows, paramsValidator as sortRowsParamsValidator } from './sor
 import { buildExcludeRows, paramsValidator as excludeRowsParamsValidator } from './excludeRows';
 import { buildInsertRows, paramsValidator as insertRowsParamsValidator } from './insertRows';
 import {
-  buildTransposeTable,
-  paramsValidator as transposeTableParamsValidator,
-} from './transposeTable';
+  buildGatherColumns,
+  paramsValidator as gatherColumnsParamsValidator,
+} from './gatherColumns';
 
 type TransformBuilder = (params: unknown, context: Context) => (rows: Row[]) => Row[];
 
@@ -37,7 +37,7 @@ export const transformBuilders: Record<string, TransformBuilder> = {
   sortRows: buildSortRows,
   excludeRows: buildExcludeRows,
   insertRows: buildInsertRows,
-  transposeTable: buildTransposeTable,
+  gatherColumns: buildGatherColumns,
 };
 
 export const transformSchemas: Record<
@@ -54,5 +54,5 @@ export const transformSchemas: Record<
   sortRows: sortRowsParamsValidator.describe(),
   excludeRows: excludeRowsParamsValidator.describe(),
   insertRows: insertRowsParamsValidator.describe(),
-  transposeTable: transposeTableParamsValidator.describe(),
+  gatherColumns: gatherColumnsParamsValidator.describe(),
 };

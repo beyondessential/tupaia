@@ -6,11 +6,11 @@
 import { MULTIPLE_ANALYTICS, SINGLE_ANALYTIC } from './transform.fixtures';
 import { buildTransform } from '../../../reportBuilder/transform';
 
-describe('transposeTable', () => {
-  it('can transpose table for single analytic', () => {
+describe('gatherColumns', () => {
+  it('can gather columns for single analytic', () => {
     const transform = buildTransform([
       {
-        transform: 'transposeTable',
+        transform: 'gatherColumns',
       },
     ]);
     expect(transform(SINGLE_ANALYTIC)).toEqual([
@@ -21,11 +21,11 @@ describe('transposeTable', () => {
     ]);
   });
 
-  it('can transpose table with one included field as string', () => {
+  it('can gather columns with one included field as string', () => {
     const transform = buildTransform([
       {
-        transform: 'transposeTable',
-        include: 'organisationUnit',
+        transform: 'gatherColumns',
+        keep: 'organisationUnit',
       },
     ]);
     expect(transform(SINGLE_ANALYTIC)).toEqual([
@@ -35,11 +35,11 @@ describe('transposeTable', () => {
     ]);
   });
 
-  it('can transpose table with included fields', () => {
+  it('can gather columns with included fields', () => {
     const transform = buildTransform([
       {
-        transform: 'transposeTable',
-        include: ['organisationUnit', 'period'],
+        transform: 'gatherColumns',
+        keep: ['organisationUnit', 'period'],
       },
     ]);
     expect(transform(SINGLE_ANALYTIC)).toEqual([
@@ -48,11 +48,11 @@ describe('transposeTable', () => {
     ]);
   });
 
-  it('can transpose table for multiple analytics', () => {
+  it('can gather columns for multiple analytics', () => {
     const transform = buildTransform([
       {
-        transform: 'transposeTable',
-        include: ['period'],
+        transform: 'gatherColumns',
+        keep: ['period'],
       },
     ]);
     expect(transform(MULTIPLE_ANALYTICS)).toEqual([

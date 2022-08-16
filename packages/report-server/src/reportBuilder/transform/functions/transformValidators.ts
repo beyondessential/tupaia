@@ -23,7 +23,7 @@ export const starSingleOrMultipleColumnsValidator = yupTsUtils.describableLazy(
   [yup.string(), yup.array().of(yup.string().required())],
 );
 
-export const transposeTableValidator = yupTsUtils.describableLazy(
+export const gatherColumnsValidator = yupTsUtils.describableLazy(
   (value: unknown) => {
     if (typeof value === 'string') {
       return yup.string().required().notOneOf(['value', 'type']);
