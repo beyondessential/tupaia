@@ -6,6 +6,7 @@ import {
   fetchMeasuresSuccess,
 } from '../../actions';
 import { selectCurrentProjectCode, selectIsProject } from '../../selectors';
+import { selectIfIsPDFExporting } from '../../selectors/navigationSelectors';
 import { request } from '../../utils';
 
 /**
@@ -17,6 +18,11 @@ import { request } from '../../utils';
 function* fetchMapOverlayMetadata(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
+  const isPDFExporting = selectIfIsPDFExporting();
+  if (!isPDFExporting) {
+    return;
+  }
+
   if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
   const projectCode = selectCurrentProjectCode(state);
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;

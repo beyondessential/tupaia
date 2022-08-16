@@ -119,7 +119,7 @@ LoadingContainer.propTypes = {
   children: PropTypes.any.isRequired,
   heading: PropTypes.string,
   text: PropTypes.string,
-  onReset: PropTypes.bool,
+  onReset: PropTypes.func,
 };
 
 LoadingContainer.defaultProps = {
