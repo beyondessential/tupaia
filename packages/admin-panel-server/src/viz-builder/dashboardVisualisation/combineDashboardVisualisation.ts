@@ -4,18 +4,8 @@
  */
 
 import { LegacyReport, Report } from '../types';
+import { extractDataFromReport } from '../utils';
 import { DashboardItem, DashboardViz, DashboardVizResource } from './types';
-
-const getData = (report: Report) => {
-  const { config } = report;
-  if ('customReport' in config) {
-    return { customReport: config.customReport };
-  }
-
-  const { fetch, transform } = config;
-  const { aggregations, ...restOfFetch } = fetch;
-  return { fetch: restOfFetch, aggregate: aggregations, transform };
-};
 
 const getLegacyData = (report: LegacyReport) => {
   const { dataBuilder, config, dataServices } = report;
@@ -43,7 +33,7 @@ export function combineDashboardVisualisation(
   const { name } = config;
   const data = dashboardItem.legacy
     ? getLegacyData(report as LegacyReport)
-    : getData(report as Report);
+    : extractDataFromReport(report as Report);
   const presentation = getPresentation(dashboardItem, report);
 
   const visualisation: Record<string, unknown> = {

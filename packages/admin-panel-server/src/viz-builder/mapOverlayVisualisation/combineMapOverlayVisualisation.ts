@@ -5,19 +5,8 @@
 
 import { ValidationError } from '@tupaia/utils';
 import { LegacyReport, Report } from '../types';
+import { extractDataFromReport } from '../utils';
 import { MapOverlay, MapOverlayViz, MapOverlayVizResource } from './types';
-
-// TODO: DRY
-const getData = (report: Report) => {
-  const { config } = report;
-  if ('customReport' in config) {
-    return { customReport: config.customReport };
-  }
-
-  const { fetch, transform } = config;
-  const { aggregations, ...restOfFetch } = fetch;
-  return { fetch: restOfFetch, aggregate: aggregations, transform };
-};
 
 const getPresentation = (mapOverlay: MapOverlay, report: Report | LegacyReport) => {
   const { config: reportConfig } = report;
@@ -41,7 +30,7 @@ export function combineMapOverlayVisualisation(
   }
 
   const { config, permissionGroup: mapOverlayPermissionGroup, ...rest } = mapOverlay;
-  const data = getData(report);
+  const data = extractDataFromReport(report);
   const presentation = getPresentation(mapOverlay, report);
 
   const visualisation: Record<string, unknown> = {
