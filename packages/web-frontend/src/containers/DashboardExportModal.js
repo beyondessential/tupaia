@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogContent as BaseDialogContent,
   FlexSpaceBetween as BaseFlexSpaceBetween,
-  TransferList,
+  CheckboxList,
   LoadingContainer,
 } from '@tupaia/ui-components';
 import MuiIconButton from '@material-ui/core/Button';
@@ -48,8 +48,8 @@ export const DashboardExportModal = ({
 }) => {
   if (!currentGroupDashboard) return null;
 
-  const [left, setLeft] = React.useState([]);
-  const [right, setRight] = React.useState([]);
+  const [list, setList] = React.useState([]);
+  const [selectedItems, setSelectedItems] = React.useState([]);
   const [nameToCodeMapping, setNameToCodeMapping] = React.useState({});
 
   useEffect(() => {
@@ -58,7 +58,7 @@ export const DashboardExportModal = ({
     );
     setNameToCodeMapping(newNameToCodeMapping);
     const leftDefaultItems = Object.keys(newNameToCodeMapping);
-    setLeft(leftDefaultItems);
+    setList(leftDefaultItems);
   }, [currentGroupDashboard]);
 
   const { isExporting, exportToPDF, errorMessage, onReset } = useDashboardItemsExportToPDF(
@@ -66,7 +66,7 @@ export const DashboardExportModal = ({
   );
 
   const exportSelectedItems = async () => {
-    const selectedDashboardItems = right.map(itemName => nameToCodeMapping[itemName]);
+    const selectedDashboardItems = selectedItems.map(itemName => nameToCodeMapping[itemName]);
     await exportToPDF(exportFileName, { selectedDashboardItems: selectedDashboardItems.join(',') });
   };
   const onClose = () => {
@@ -95,13 +95,11 @@ export const DashboardExportModal = ({
           errorMessage={errorMessage}
           onReset={onReset}
         >
-          <TransferList
-            left={left}
-            setLeft={setLeft}
-            right={right}
-            setRight={setRight}
-            leftTitle="Visualisations"
-            rightTitle="Selected"
+          <CheckboxList
+            list={list}
+            selectedItems={selectedItems}
+            setSelectedItems={setSelectedItems}
+            leftTitle="Name"
           />
         </LoadingContainer>
       </DialogContent>
