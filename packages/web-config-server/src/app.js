@@ -72,7 +72,7 @@ export async function createApp() {
       const baseUrls =
         process.env.NODE_ENV === 'test' ? LOCALHOST_BASE_URLS : getBaseUrlsForHost(req.hostname);
       const apiClient = new TupaiaApiClient(
-        () => new BasicAuthHandler(MICROSERVICE_CLIENT_USERNAME, MICROSERVICE_CLIENT_SECRET),
+        new BasicAuthHandler(MICROSERVICE_CLIENT_USERNAME, MICROSERVICE_CLIENT_SECRET),
         baseUrls,
       );
       req.ctx = { services: apiClient };

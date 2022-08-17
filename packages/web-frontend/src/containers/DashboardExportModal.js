@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -48,12 +48,19 @@ export const DashboardExportModal = ({
 }) => {
   if (!currentGroupDashboard) return null;
 
-  const nameToCodeMapping = Object.fromEntries(
-    currentGroupDashboard.items.map(item => [item.name, item.code]),
-  );
-  const leftDefaultItems = Object.keys(nameToCodeMapping);
-  const [left, setLeft] = React.useState(leftDefaultItems);
+  const [left, setLeft] = React.useState([]);
   const [right, setRight] = React.useState([]);
+  const [nameToCodeMapping, setNameToCodeMapping] = React.useState({});
+
+  useEffect(() => {
+    const newNameToCodeMapping = Object.fromEntries(
+      currentGroupDashboard.items.map(item => [item.name, item.code]),
+    );
+    setNameToCodeMapping(newNameToCodeMapping);
+    const leftDefaultItems = Object.keys(newNameToCodeMapping);
+    setLeft(leftDefaultItems);
+  }, [currentGroupDashboard]);
+
   const { isExporting, exportToPDF, errorMessage, onReset } = useDashboardItemsExportToPDF(
     pathname,
   );
