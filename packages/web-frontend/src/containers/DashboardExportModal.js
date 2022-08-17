@@ -57,8 +57,9 @@ export const DashboardExportModal = ({
       currentGroupDashboard.items.map(item => [item.name, item.code]),
     );
     setNameToCodeMapping(newNameToCodeMapping);
-    const leftDefaultItems = Object.keys(newNameToCodeMapping);
-    setList(leftDefaultItems);
+    const defaultList = Object.keys(newNameToCodeMapping);
+    setList(defaultList);
+    setSelectedItems([]);
   }, [currentGroupDashboard]);
 
   const { isExporting, exportToPDF, errorMessage, onReset } = useDashboardItemsExportToPDF(
