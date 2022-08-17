@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogContent as BaseDialogContent,
   FlexSpaceBetween as BaseFlexSpaceBetween,
-  TransferList,
+  CheckboxList,
   LoadingContainer,
 } from '@tupaia/ui-components';
 import MuiIconButton from '@material-ui/core/Button';
@@ -48,18 +48,26 @@ export const DashboardExportModal = ({
 }) => {
   if (!currentGroupDashboard) return null;
 
-  const nameToCodeMapping = Object.fromEntries(
-    currentGroupDashboard.items.map(item => [item.name, item.code]),
-  );
-  const leftDefaultItems = Object.keys(nameToCodeMapping);
-  const [left, setLeft] = React.useState(leftDefaultItems);
-  const [right, setRight] = React.useState([]);
+  const [list, setList] = React.useState([]);
+  const [selectedItems, setSelectedItems] = React.useState([]);
+  const [nameToCodeMapping, setNameToCodeMapping] = React.useState({});
+
+  useEffect(() => {
+    const newNameToCodeMapping = Object.fromEntries(
+      currentGroupDashboard.items.map(item => [item.name, item.code]),
+    );
+    setNameToCodeMapping(newNameToCodeMapping);
+    const defaultList = Object.keys(newNameToCodeMapping);
+    setList(defaultList);
+    setSelectedItems([]);
+  }, [currentGroupDashboard]);
+
   const { isExporting, exportToPDF, errorMessage, onReset } = useDashboardItemsExportToPDF(
     pathname,
   );
 
-  const handleClickExport = async () => {
-    const selectedDashboardItems = right.map(itemName => nameToCodeMapping[itemName]);
+  const exportSelectedItems = async () => {
+    const selectedDashboardItems = selectedItems.map(itemName => nameToCodeMapping[itemName]);
     await exportToPDF(exportFileName, { selectedDashboardItems: selectedDashboardItems.join(',') });
   };
   const onClose = () => {
@@ -73,11 +81,11 @@ export const DashboardExportModal = ({
           <MuiButton
             startIcon={<DownloadIcon />}
             variant="outlined"
-            onClick={handleClickExport}
+            onClick={exportSelectedItems}
             disableElevation
             disabled={isExporting}
           >
-            download
+            export
           </MuiButton>
         </FlexSpaceBetween>
       </DialogHeader>
@@ -88,7 +96,12 @@ export const DashboardExportModal = ({
           errorMessage={errorMessage}
           onReset={onReset}
         >
-          <TransferList left={left} setLeft={setLeft} right={right} setRight={setRight} />
+          <CheckboxList
+            list={list}
+            selectedItems={selectedItems}
+            setSelectedItems={setSelectedItems}
+            leftTitle="Name"
+          />
         </LoadingContainer>
       </DialogContent>
     </Dialog>
