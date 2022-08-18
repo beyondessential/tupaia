@@ -18,8 +18,8 @@ import { request } from '../../utils';
 function* fetchMapOverlayMetadata(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
-  const isPDFExporting = selectIfIsPDFExporting();
-  if (!isPDFExporting) {
+  const isPDFExporting = selectIfIsPDFExporting(state);
+  if (isPDFExporting) {
     return;
   }
 
