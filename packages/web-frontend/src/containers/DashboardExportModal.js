@@ -50,14 +50,9 @@ export const DashboardExportModal = ({
 
   const [list, setList] = React.useState([]);
   const [selectedItems, setSelectedItems] = React.useState([]);
-  const [nameToCodeMapping, setNameToCodeMapping] = React.useState({});
 
   useEffect(() => {
-    const newNameToCodeMapping = Object.fromEntries(
-      currentGroupDashboard.items.map(item => [item.name, item.code]),
-    );
-    setNameToCodeMapping(newNameToCodeMapping);
-    const defaultList = Object.keys(newNameToCodeMapping);
+    const defaultList = currentGroupDashboard.items.map((item, index) => ({ ...item, index }));
     setList(defaultList);
     setSelectedItems([]);
   }, [currentGroupDashboard]);
@@ -67,7 +62,9 @@ export const DashboardExportModal = ({
   );
 
   const exportSelectedItems = async () => {
-    const selectedDashboardItems = selectedItems.map(itemName => nameToCodeMapping[itemName]);
+    const selectedDashboardItems = selectedItems
+      .sort((a, b) => a.index - b.index)
+      .map(item => item.code);
     await exportToPDF(exportFileName, { selectedDashboardItems: selectedDashboardItems.join(',') });
   };
   const onClose = () => {
@@ -100,7 +97,7 @@ export const DashboardExportModal = ({
             list={list}
             selectedItems={selectedItems}
             setSelectedItems={setSelectedItems}
-            leftTitle="Name"
+            title="Name"
           />
         </LoadingContainer>
       </DialogContent>

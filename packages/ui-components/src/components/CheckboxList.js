@@ -46,21 +46,21 @@ const StyledSubHeader = styled.span`
 `;
 
 function not(a, b) {
-  return a.filter(value => b.indexOf(value) === -1);
+  return a.filter(item => b.findIndex(i => i.code === item.code) === -1);
 }
 
 function intersection(a, b) {
-  return a.filter(value => b.indexOf(value) !== -1);
+  return a.filter(item => b.findIndex(i => i.code === item.code) !== -1);
 }
 
 function union(a, b) {
   return [...a, ...not(b, a)];
 }
 
-export const CheckboxList = ({ list, leftTitle, selectedItems, setSelectedItems }) => {
+export const CheckboxList = ({ list, title, selectedItems, setSelectedItems }) => {
   const numberOfChecked = items => intersection(selectedItems, items).length;
 
-  const handleToggleAll = items => () => {
+  const handleCheckAll = items => () => {
     if (numberOfChecked(items) === list.length) {
       setSelectedItems(not(selectedItems, items));
     } else {
@@ -68,12 +68,12 @@ export const CheckboxList = ({ list, leftTitle, selectedItems, setSelectedItems 
     }
   };
 
-  const handleToggle = value => () => {
-    const currentIndex = selectedItems.indexOf(value);
+  const handleCheck = item => () => {
+    const currentIndex = selectedItems.findIndex(selectedItem => selectedItem.code === item.code);
     const newChecked = [...selectedItems];
 
     if (currentIndex === -1) {
-      newChecked.push(value);
+      newChecked.push(item);
     } else {
       newChecked.splice(currentIndex, 1);
     }
@@ -93,7 +93,7 @@ export const CheckboxList = ({ list, leftTitle, selectedItems, setSelectedItems 
       <StyledCardHeader
         avatar={
           <Checkbox
-            onClick={handleToggleAll(items)}
+            onClick={handleCheckAll(items)}
             checked={numberOfChecked(items) === items.length && items.length !== 0}
             indeterminate={numberOfChecked(items) !== items.length && numberOfChecked(items) !== 0}
             disabled={items.length === 0}
@@ -104,20 +104,23 @@ export const CheckboxList = ({ list, leftTitle, selectedItems, setSelectedItems 
       />
       <Divider />
       <List dense component="div" role="list">
-        {items.map(value => {
-          const labelId = `transfer-list-all-item-${value}-label`;
+        {items.map(item => {
+          const { name, code } = item;
+          const labelId = `transfer-list-all-item-${name}-label`;
 
           return (
-            <ListItem key={value} role="listitem" button onClick={handleToggle(value)}>
+            <ListItem key={code} role="listitem" button onClick={handleCheck(item)}>
               <ListItemIcon>
                 <Checkbox
-                  checked={selectedItems.indexOf(value) !== -1}
+                  checked={
+                    selectedItems.findIndex(selectedItem => selectedItem.code === code) !== -1
+                  }
                   tabIndex={-1}
                   disableRipple
                   inputProps={{ 'aria-labelledby': labelId }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={value} />
+              <ListItemText id={labelId} primary={name} />
             </ListItem>
           );
         })}
@@ -128,7 +131,7 @@ export const CheckboxList = ({ list, leftTitle, selectedItems, setSelectedItems 
 
   return (
     <StyledRootGrid container spacing={2} alignItems="center">
-      <Grid item>{customList(leftTitle || 'Choices', list)}</Grid>
+      <Grid item>{customList(title || 'Choices', list)}</Grid>
     </StyledRootGrid>
   );
 };

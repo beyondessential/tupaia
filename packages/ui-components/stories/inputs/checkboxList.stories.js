@@ -12,7 +12,7 @@ export default {
 };
 
 export const checkboxList = () => {
-  const list = [0, 1, 2, 3].map(v => `List item ${v + 1}`);
+  const list = [0, 1, 2, 3, 3].map((v, index) => ({ name: `List item ${v + 1}`, code: index }));
   const [selectedItems, setSelectedItems] = React.useState([]);
 
   return (
