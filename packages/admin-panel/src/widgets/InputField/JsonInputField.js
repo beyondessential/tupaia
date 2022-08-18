@@ -39,6 +39,15 @@ const Container = styled.div`
   margin-bottom: 20px;
 `;
 
+const CardLabel = styled.label`
+  color: rgb(111, 123, 130);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 18px;
+  display: block;
+  margin-bottom: 3px;
+`;
+
 export const JsonInputField = props => {
   const {
     onChange,
@@ -61,9 +70,7 @@ export const JsonInputField = props => {
 
   return (
     <Container>
-      <Typography variant="h6" gutterBottom>
-        {label}
-      </Typography>
+      <CardLabel gutterBottom>{label}</CardLabel>
       {secondaryLabel && <Typography gutterBottom>{secondaryLabel}</Typography>}
       <CardVariant variant="outlined">
         <CardContent>
