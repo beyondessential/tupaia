@@ -37,7 +37,7 @@ describe('buildEventsFromDhisEventAnalytics()', () => {
       },
     ]));
 
-  it('builds events from DHIS2 event analytics and sorts them by period', () =>
+  it('builds events from DHIS2 event analytics', () =>
     expect(
       buildEventsFromDhisEventAnalytics(models, EVENT_ANALYTICS.withDataValues, ['BCD1', 'BCD2']),
     ).resolves.toStrictEqual([
@@ -82,7 +82,7 @@ describe('buildEventsFromDhisEventAnalytics()', () => {
         orgUnitName: 'Haveluloto',
         eventDate: '2020-02-07T14:33:00.000',
         dataValues: {},
-        trackedEntityId: 'tracked_entity_id_dl_household_2',
+        trackedEntityId: 'tracked_entity_id_dl_household_3',
         trackedEntityCode: '', // returns empty string if it cant map
       },
     ]));
