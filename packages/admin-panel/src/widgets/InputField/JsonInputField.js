@@ -10,6 +10,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { InputField } from './InputField';
+import { checkVisibilityCriteriaAreMet } from '../../utilities';
 
 const getJsonFieldValues = value => {
   if (value) {
@@ -39,7 +40,16 @@ const Container = styled.div`
 `;
 
 export const JsonInputField = props => {
-  const { onChange, value, getJsonFieldSchema, disabled, label, secondaryLabel, variant } = props;
+  const {
+    onChange,
+    value,
+    getJsonFieldSchema,
+    disabled,
+    label,
+    secondaryLabel,
+    variant,
+    recordData,
+  } = props;
   const jsonFieldValues = getJsonFieldValues(value);
   const jsonFieldSchema = getJsonFieldSchema(value, props);
   const CardVariant = variant === 'grey' ? GreyCard : Card;
@@ -57,28 +67,35 @@ export const JsonInputField = props => {
       {secondaryLabel && <Typography gutterBottom>{secondaryLabel}</Typography>}
       <CardVariant variant="outlined">
         <CardContent>
-          {jsonFieldSchema.map(
-            ({
-              label: fieldLabel,
-              fieldName,
-              secondaryLabel: fieldSecondaryLabel,
-              type = DEFAULT_FIELD_TYPE,
-              csv,
-              ...inputFieldProps
-            }) => (
-              <InputField
-                key={fieldName}
-                label={fieldLabel}
-                secondaryLabel={fieldSecondaryLabel}
-                value={jsonFieldValues[fieldName]}
-                inputKey={fieldName}
-                onChange={(inputKey, fieldValue) => onFieldValueChange(inputKey, fieldValue, csv)}
-                disabled={disabled}
-                type={type}
-                {...inputFieldProps}
-              />
-            ),
-          )}
+          {jsonFieldSchema
+            .filter(({ visibilityCriteria }) => {
+              if (visibilityCriteria) {
+                return checkVisibilityCriteriaAreMet(visibilityCriteria, recordData);
+              }
+              return true;
+            })
+            .map(
+              ({
+                label: fieldLabel,
+                fieldName,
+                secondaryLabel: fieldSecondaryLabel,
+                type = DEFAULT_FIELD_TYPE,
+                csv,
+                ...inputFieldProps
+              }) => (
+                <InputField
+                  key={fieldName}
+                  label={fieldLabel}
+                  secondaryLabel={fieldSecondaryLabel}
+                  value={jsonFieldValues[fieldName]}
+                  inputKey={fieldName}
+                  onChange={(inputKey, fieldValue) => onFieldValueChange(inputKey, fieldValue, csv)}
+                  disabled={disabled}
+                  type={type}
+                  {...inputFieldProps}
+                />
+              ),
+            )}
         </CardContent>
       </CardVariant>
     </Container>
@@ -93,6 +110,7 @@ JsonInputField.propTypes = {
   disabled: PropTypes.bool,
   secondaryLabel: PropTypes.string,
   variant: PropTypes.string,
+  recordData: PropTypes.object,
 };
 
 JsonInputField.defaultProps = {
@@ -100,4 +118,5 @@ JsonInputField.defaultProps = {
   disabled: false,
   secondaryLabel: null,
   variant: null,
+  recordData: {},
 };
