@@ -1,13 +1,8 @@
 import cookie from 'cookie';
 import puppeteer from 'puppeteer';
 
-type RequestBody = {
-  pdfPageUrl: string;
-};
-
-const verifyBody = (body: any): RequestBody => {
+const verifyPdfPageUrl = (pdfPageUrl: string): string => {
   const lesmisValidDomains = ['lesmis.la', 'www.lesmis.la'];
-  const { pdfPageUrl } = body;
   if (!pdfPageUrl || typeof pdfPageUrl !== 'string') {
     throw new Error(`'pdfPageUrl' should be provided in request body, got: ${pdfPageUrl}`);
   }
@@ -19,34 +14,43 @@ const verifyBody = (body: any): RequestBody => {
   ) {
     throw new Error(`'pdfPageUrl' is not valid, got: ${pdfPageUrl}`);
   }
-  return { pdfPageUrl };
+  return pdfPageUrl;
 };
 
-const buildParams = (req: any) => {
-  const cookies = cookie.parse(req.headers.cookie || '');
-  const { pdfPageUrl } = verifyBody(req.body);
-  const { host: apiDomain } = req.headers;
-  const location = new URL(pdfPageUrl);
+const buildParams = (pdfPageUrl: string, userCookie: string, cookieDomain: string | undefined) => {
+  const cookies = cookie.parse(userCookie || '');
+  const verifiedPdfPageUrl = verifyPdfPageUrl(pdfPageUrl);
+  const location = new URL(verifiedPdfPageUrl);
   const finalisedCookieObjects = Object.keys(cookies).map(name => ({
     name,
-    domain: apiDomain,
+    domain: cookieDomain,
     url: location.origin,
     httpOnly: true,
     value: cookies[name],
   }));
-  return { pdfPageUrl, cookies: finalisedCookieObjects };
+  return { verifiedPdfPageUrl, cookies: finalisedCookieObjects };
 };
 
-export const exportToPDF = async (req: any) => {
+/**
+ * @param pdfPageUrl the url to visit and download as a pdf
+ * @param userCookie the user's cookie to bypass auth, and ensure page renders under the correct user context
+ * @param cookieDomain the domain of cookie, required when setting up cookie in page
+ * @returns pdf buffer
+ */
+export const downloadPageAsPdf = async (
+  pdfPageUrl: string,
+  userCookie = '',
+  cookieDomain: string | undefined,
+) => {
   let browser;
   let buffer;
-  const { cookies, pdfPageUrl } = buildParams(req);
+  const { cookies, verifiedPdfPageUrl } = buildParams(pdfPageUrl, userCookie, cookieDomain);
 
   try {
     browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.setCookie(...cookies);
-    await page.goto(pdfPageUrl, { timeout: 60000, waitUntil: 'networkidle0' });
+    await page.goto(verifiedPdfPageUrl, { timeout: 60000, waitUntil: 'networkidle0' });
     buffer = await page.pdf({
       format: 'a4',
       printBackground: true,
@@ -59,5 +63,5 @@ export const exportToPDF = async (req: any) => {
     }
   }
 
-  return { data: buffer };
+  return buffer;
 };

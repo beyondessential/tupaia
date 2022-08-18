@@ -5,7 +5,7 @@
  */
 import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { exportToPDF } from '@tupaia/tsutils';
+import { downloadPageAsPdf } from '@tupaia/tsutils';
 
 type Body = {
   pdfPageUrl: string;
@@ -25,12 +25,17 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
   }
 
   public async buildResponse() {
-    const { data: buffer } = await exportToPDF(this.req);
+    const { pdfPageUrl } = this.req.body;
+    const { cookie } = this.req.headers;
+    const { host: cookieDomain } = this.req.headers;
+
+    const buffer = await downloadPageAsPdf(pdfPageUrl, cookie, cookieDomain);
     this.res.set({
       'Content-Type': 'application/pdf',
       'Content-Length': buffer.length,
       'Content-Disposition': 'attachment',
     });
+
     return { contents: buffer };
   }
 }

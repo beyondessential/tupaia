@@ -1,8 +1,11 @@
-import { exportToPDF } from '@tupaia/tsutils';
+import { downloadPageAsPdf } from '@tupaia/tsutils';
 
 export const PDFExportHandler = async (req, res) => {
-  const { data: buffer } = await exportToPDF(req);
+  const { pdfPageUrl } = req.body;
+  const { cookie } = req.headers;
+  const { host: cookieDomain } = req.headers;
 
+  const buffer = await downloadPageAsPdf(pdfPageUrl, cookie, cookieDomain);
   res.set({
     'Content-Type': 'application/pdf',
     'Content-Length': buffer.length,
