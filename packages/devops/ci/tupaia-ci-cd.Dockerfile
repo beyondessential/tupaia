@@ -67,6 +67,8 @@ RUN mkdir -p ./packages/indicators
 COPY packages/indicators/package.json ./packages/indicators
 RUN mkdir -p ./packages/kobo-api
 COPY packages/kobo-api/package.json ./packages/kobo-api
+RUN mkdir -p ./packages/superset-api
+COPY packages/superset-api/package.json ./packages/superset-api
 RUN mkdir -p ./packages/lesmis
 COPY packages/lesmis/package.json ./packages/lesmis
 RUN mkdir -p ./packages/lesmis-server
@@ -119,6 +121,7 @@ COPY packages/ui-components/. ./packages/ui-components
 COPY packages/weather-api/. ./packages/weather-api
 COPY packages/server-boilerplate/. ./packages/server-boilerplate
 COPY packages/kobo-api/. ./packages/kobo-api
+COPY packages/superset-api/. ./packages/superset-api
 COPY ./tsconfig* ./
 
 ## build internal dependencies

@@ -109,6 +109,10 @@
       "path": "packages/server-boilerplate"
     },
     {
+      "name": "superset-api",
+      "path": "packages/superset-api"
+    },
+    {
       "name": "ui-components",
       "path": "packages/ui-components"
     },
