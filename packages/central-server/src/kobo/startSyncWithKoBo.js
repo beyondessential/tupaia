@@ -83,7 +83,7 @@ export async function syncWithKoBo(models, dataBroker, syncGroupCode) {
   });
 
   if (!dataServiceSyncGroup) {
-    throw new Error(`No KoBo sync service with the code ${syncGroupCode} exists`);
+    throw new Error(`No KoBo sync group with the code ${syncGroupCode} exists`);
   }
 
   try {

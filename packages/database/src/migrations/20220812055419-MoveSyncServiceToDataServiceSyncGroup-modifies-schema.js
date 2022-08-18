@@ -25,21 +25,13 @@ exports.up = async function (db) {
   // Copy sync_cursor over to data_service_sync_group
   const syncServices = (await db.runSql('SELECT * from sync_service')).rows;
   for (let i = 0; i < syncServices.length; i++) {
-    const { sync_cursor: syncCursor, config } = syncServices[i];
-    const { koboSurveys } = config;
-    for (let j = 0; j < koboSurveys.length; j++) {
-      const surveyCode = koboSurveys[j];
-      const dataServiceSyncGroup = await findSingleRecord(db, 'data_service_sync_group', {
-        "config->>'syncGroupCode'": surveyCode,
-      });
-
-      await updateValues(
-        db,
-        'data_service_sync_group',
-        { sync_cursor: syncCursor },
-        { id: dataServiceSyncGroup.id },
-      );
-    }
+    const { sync_cursor: syncCursor, service_type: serviceType } = syncServices[i];
+    await updateValues(
+      db,
+      'data_service_sync_group',
+      { sync_cursor: syncCursor },
+      { service_type: serviceType },
+    );
   }
 
   await db.runSql(`ALTER TABLE sync_service_log RENAME TO sync_group_log;`);

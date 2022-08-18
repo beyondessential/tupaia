@@ -17,10 +17,10 @@ class DataServiceSyncGroupType extends DatabaseType {
   static databaseType = TYPES.DATA_SERVICE_SYNC_GROUP;
 
   async log(message) {
-    winston.info(`${this.config.syncGroupCode} SYNC_GROUP_LOG: ${message}`);
+    winston.info(`${this.code} SYNC_GROUP_LOG: ${message}`);
     await this.otherModels.syncGroupLog.create({
       id: generateId(),
-      sync_group_code: this.config.syncGroupCode,
+      sync_group_code: this.code,
       service_type: this.service_type,
       log_message: message,
     });
