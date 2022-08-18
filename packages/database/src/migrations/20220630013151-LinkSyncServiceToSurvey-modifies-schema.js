@@ -27,11 +27,11 @@ exports.up = async function (db) {
     SET 
       data_group_code = trim(both '"' from config->>'internalSurveyCode'),
       code = trim(both '"' from config->>'internalSurveyCode'),
-      config = (config || jsonb_build_object('syncGroupCode', code)) - 'internalSurveyCode'
+      config = (config || jsonb_build_object('historicSyncGroupCode', code)) - 'internalSurveyCode'
   `);
   // Making code and data_group_code the same as a new convention (saves needing to have a made up code)
   // not mandatory however, and can be changed to something else if wished
-  // Note: syncGroupCode doesn't mean anything, because a Sync Group is and extension of a Data Group,
+  // Note: historicSyncGroupCode doesn't mean anything, because a Sync Group is and extension of a Data Group,
   // but we keep the old value around anyway just in case we will need it in the future
 
   // Make data_group_code NOT NULL
@@ -42,8 +42,8 @@ exports.down = async function (db) {
   await db.runSql(`
     UPDATE data_service_sync_group 
     SET 
-      code = trim(both '"' from config->>'syncGroupCode'),
-      config = (config || jsonb_build_object('internalSurveyCode', data_group_code)) - 'syncGroupCode'
+      code = trim(both '"' from config->>'historicSyncGroupCode'),
+      config = (config || jsonb_build_object('internalSurveyCode', data_group_code)) - 'historicSyncGroupCode'
   `);
   await db.runSql(`ALTER TABLE data_service_sync_group DROP COLUMN data_group_code`);
 };
