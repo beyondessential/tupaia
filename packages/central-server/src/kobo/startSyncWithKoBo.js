@@ -11,7 +11,11 @@ import winston from '../log';
 const PERIOD_BETWEEN_SYNCS = 10 * 60 * 1000; // 10 minutes between syncs
 const SERVICE_TYPE = 'kobo';
 
-const writeKoboDataToTupaia = async (transactingModels, koboData, dataServiceSyncGroup) => {
+const writeKoboDataToTupaia = async (transactingModels, koboData, dataServiceSyncGroupCode) => {
+  const dataServiceSyncGroup = await transactingModels.dataServiceSyncGroup.findOne({
+    service_type: SERVICE_TYPE,
+    code: dataServiceSyncGroupCode,
+  });
   const apiUser = await transactingModels.apiClient.findOne({
     username: process.env.KOBO_API_USERNAME,
   });
@@ -94,22 +98,24 @@ export async function syncWithKoBo(models, dataBroker, dataServiceSyncGroupCode)
       },
     );
 
-    // Create new survey_responses in Tupaia
-    const {
-      newSyncTime,
-      numberOfSurveyResponsesCreated,
-    } = await models.wrapInTransaction(async transactingModels =>
-      writeKoboDataToTupaia(transactingModels, koboData, dataServiceSyncGroup),
-    );
+    await models.wrapInTransaction(async transactingModels => {
+      // Create new survey_responses in Tupaia
+      const { newSyncTime, numberOfSurveyResponsesCreated } = await writeKoboDataToTupaia(
+        transactingModels,
+        koboData,
+        dataServiceSyncGroupCode,
+      );
 
-    // Update sync cursor
-    await models.dataServiceSyncGroup.update(
-      { id: dataServiceSyncGroup.id },
-      { sync_cursor: newSyncTime },
-    );
-    await dataServiceSyncGroup.log(
-      `Sync successful, ${numberOfSurveyResponsesCreated} survey responses created`,
-    );
+      // Update sync cursor
+      await transactingModels.dataServiceSyncGroup.update(
+        { id: dataServiceSyncGroup.id },
+        { sync_cursor: newSyncTime },
+      );
+
+      await dataServiceSyncGroup.log(
+        `Sync successful, ${numberOfSurveyResponsesCreated} survey responses created`,
+      );
+    });
   } catch (e) {
     // Swallow errors when processing kobo data
     await dataServiceSyncGroup.log(`ERROR: ${e.message}`);
