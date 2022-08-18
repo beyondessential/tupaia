@@ -11,7 +11,7 @@ import { respond } from './respond';
  * this may change to saving the error info to the database, notifying the admin, or similar
  */
 class LoggedError extends Error {
-  constructor(message, originalError) {
+  constructor(message, originalError = null) {
     super(message);
     this.message = message;
     if (originalError) {
@@ -26,7 +26,7 @@ class LoggedError extends Error {
  * the appropriate http status code
  */
 export class RespondingError extends LoggedError {
-  constructor(message, statusCode, extraFields = {}, originalError) {
+  constructor(message, statusCode, extraFields = {}, originalError = null) {
     super(message, originalError);
     this.statusCode = statusCode;
     this.extraFields = extraFields;
