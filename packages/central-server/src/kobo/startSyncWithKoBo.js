@@ -11,10 +11,10 @@ import winston from '../log';
 const PERIOD_BETWEEN_SYNCS = 10 * 60 * 1000; // 10 minutes between syncs
 const SERVICE_TYPE = 'kobo';
 
-const writeKoboDataToTupaia = async (transactingModels, koboData, dataServiceSyncGroupCode) => {
+const writeKoboDataToTupaia = async (transactingModels, koboData, syncGroupCode) => {
   const dataServiceSyncGroup = await transactingModels.dataServiceSyncGroup.findOne({
     service_type: SERVICE_TYPE,
-    code: dataServiceSyncGroupCode,
+    code: syncGroupCode,
   });
   const apiUser = await transactingModels.apiClient.findOne({
     username: process.env.KOBO_API_USERNAME,
@@ -76,21 +76,21 @@ const writeKoboDataToTupaia = async (transactingModels, koboData, dataServiceSyn
   return { newSyncTime, numberOfSurveyResponsesCreated };
 };
 
-export async function syncWithKoBo(models, dataBroker, dataServiceSyncGroupCode) {
+export async function syncWithKoBo(models, dataBroker, syncGroupCode) {
   const dataServiceSyncGroup = await models.dataServiceSyncGroup.findOne({
     service_type: SERVICE_TYPE,
-    code: dataServiceSyncGroupCode,
+    code: syncGroupCode,
   });
 
   if (!dataServiceSyncGroup) {
-    throw new Error(`No KoBo sync service with the code ${dataServiceSyncGroupCode} exists`);
+    throw new Error(`No KoBo sync service with the code ${syncGroupCode} exists`);
   }
 
   try {
     // Pull data from KoBo
     const koboData = await dataBroker.pull(
       {
-        code: dataServiceSyncGroup.config.syncGroupCode,
+        code: syncGroupCode,
         type: dataBroker.getDataSourceTypes().SYNC_GROUP,
       },
       {
@@ -103,7 +103,7 @@ export async function syncWithKoBo(models, dataBroker, dataServiceSyncGroupCode)
       const { newSyncTime, numberOfSurveyResponsesCreated } = await writeKoboDataToTupaia(
         transactingModels,
         koboData,
-        dataServiceSyncGroupCode,
+        syncGroupCode,
       );
 
       // Update sync cursor
