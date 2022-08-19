@@ -351,7 +351,7 @@ export const getDatesAsString = (isSingleDate, granularity, startDate, endDate) 
 
 export const getDefaultStartDateAndEndDate = (
   isSingleDate,
-  granularity,
+  granularity = GRANULARITIES.DAY,
   minMomentDate = moment(DEFAULT_MIN_DATE),
   maxMomentDate = moment(),
 ) => {
