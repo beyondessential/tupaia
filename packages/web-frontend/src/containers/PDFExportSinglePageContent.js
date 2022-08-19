@@ -74,13 +74,17 @@ const PDFExportSinglePageContent = ({
   };
 
   const renderPeriod = () => {
-    const { periodGranularity: granularity } = viewContent;
+    const { periodGranularity: granularity, startDate, endDate } = viewContent;
+    if (!granularity) return null;
+
     const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
-    const { defaultStartDate, defaultEndDate } = getDefaultStartDateAndEndDate(
+    const { currentStartDate, currentEndDate } = getDefaultStartDateAndEndDate(
       isSingleDate,
       granularity,
+      startDate,
+      endDate,
     );
-    const labelText = getDatesAsString(isSingleDate, granularity, defaultStartDate, defaultEndDate);
+    const labelText = getDatesAsString(isSingleDate, granularity, currentStartDate, currentEndDate);
 
     return <FlexCenter>{labelText}</FlexCenter>;
   };

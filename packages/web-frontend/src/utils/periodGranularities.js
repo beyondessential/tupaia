@@ -352,6 +352,8 @@ export const getDatesAsString = (isSingleDate, granularity, startDate, endDate) 
 export const getDefaultStartDateAndEndDate = (
   isSingleDate,
   granularity = GRANULARITIES.DAY,
+  startDate,
+  endDate,
   minMomentDate = moment(DEFAULT_MIN_DATE),
   maxMomentDate = moment(),
 ) => {
@@ -367,5 +369,12 @@ export const getDefaultStartDateAndEndDate = (
   const roundedDefaults = roundStartEndDates(granularity, defaultStartDate, defaultEndDate);
   defaultStartDate = roundedDefaults.startDate;
   defaultEndDate = roundedDefaults.endDate;
-  return { defaultStartDate, defaultEndDate };
+
+  let currentStartDate = startDate ? moment(startDate) : defaultStartDate;
+  let currentEndDate = endDate ? moment(endDate) : defaultEndDate;
+  const roundedCurrent = roundStartEndDates(granularity, currentStartDate, currentEndDate);
+  currentStartDate = roundedCurrent.startDate;
+  currentEndDate = roundedCurrent.endDate;
+
+  return { defaultStartDate, defaultEndDate, currentStartDate, currentEndDate };
 };

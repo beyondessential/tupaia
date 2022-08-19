@@ -102,18 +102,19 @@ export const DateRangePicker = ({
   const minMomentDate = min ? moment(min) : moment(DEFAULT_MIN_DATE);
   const maxMomentDate = max ? moment(max) : moment();
 
-  const { defaultStartDate, defaultEndDate } = getDefaultStartDateAndEndDate(
+  const {
+    defaultStartDate,
+    defaultEndDate,
+    currentStartDate,
+    currentEndDate,
+  } = getDefaultStartDateAndEndDate(
     isSingleDate,
     granularity,
+    startDate,
+    endDate,
     minMomentDate,
     maxMomentDate,
   );
-
-  let currentStartDate = startDate ? moment(startDate) : defaultStartDate;
-  let currentEndDate = endDate ? moment(endDate) : defaultEndDate;
-  const roundedCurrent = roundStartEndDates(granularity, currentStartDate, currentEndDate);
-  currentStartDate = roundedCurrent.startDate;
-  currentEndDate = roundedCurrent.endDate;
 
   useEffect(() => {
     // Prevent set dates to the same dates
