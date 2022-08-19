@@ -5,6 +5,7 @@
 
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import { FlexCenter } from '@tupaia/ui-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
@@ -17,6 +18,11 @@ import { LoadingIndicator } from './Form/common';
 import { DialogTitleWrapper } from '../components/DialogTitleWrapper';
 import { transformDataForViewType } from '../components/View/utils';
 import { fetchDashboardItemData } from '../actions';
+import {
+  getDatesAsString,
+  getDefaultStartDateAndEndDate,
+  GRANULARITIES_WITH_ONE_DATE,
+} from '../utils/periodGranularities';
 
 const StyledAlert = styled(Alert)`
   display: inline-flex;
@@ -65,6 +71,18 @@ const PDFExportSinglePageContent = ({
         isExporting={isExporting}
       />
     );
+  };
+
+  const renderPeriod = () => {
+    const { periodGranularity: granularity } = viewContent;
+    const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
+    const { defaultStartDate, defaultEndDate } = getDefaultStartDateAndEndDate(
+      isSingleDate,
+      granularity,
+    );
+    const labelText = getDatesAsString(isSingleDate, granularity, defaultStartDate, defaultEndDate);
+
+    return <FlexCenter>{labelText}</FlexCenter>;
   };
 
   const renderBody = () => {
@@ -133,6 +151,7 @@ const PDFExportSinglePageContent = ({
     <Wrapper>
       {renderTitle()}
       {renderDescription()}
+      {renderPeriod()}
       <DialogContent style={contentStyle}>
         <div style={getBodyStyle()}>{renderBody()}</div>
       </DialogContent>

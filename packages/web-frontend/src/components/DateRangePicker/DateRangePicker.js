@@ -18,13 +18,13 @@ import { Error } from '../Error';
 import DatePickerDialog from './DatePickerDialog';
 import {
   DEFAULT_MIN_DATE,
-  momentToDateString,
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
   GRANULARITY_CONFIG,
   GRANULARITY_SHAPE,
   roundStartEndDates,
-  constrainDate,
+  getDatesAsString,
+  getDefaultStartDateAndEndDate,
 } from '../../utils/periodGranularities';
 import { FlexStart, FlexSpaceBetween } from '../Flexbox';
 import { DARK_GREY, PRIMARY_BLUE } from '../../styles';
@@ -82,17 +82,6 @@ const ResetLabel = styled(Link)`
   }
 `;
 
-const DEFAULT_GRANULARITY = GRANULARITY_CONFIG[GRANULARITIES.DAY];
-
-const getDatesAsString = (isSingleDate, granularity, startDate, endDate) => {
-  const { rangeFormat } = GRANULARITY_CONFIG[granularity] || DEFAULT_GRANULARITY;
-
-  const formattedStartDate = momentToDateString(startDate, granularity, rangeFormat);
-  const formattedEndDate = momentToDateString(endDate, granularity, rangeFormat);
-
-  return isSingleDate ? formattedEndDate : `${formattedStartDate} - ${formattedEndDate}`;
-};
-
 export const DateRangePicker = ({
   startDate,
   endDate,
@@ -113,18 +102,12 @@ export const DateRangePicker = ({
   const minMomentDate = min ? moment(min) : moment(DEFAULT_MIN_DATE);
   const maxMomentDate = max ? moment(max) : moment();
 
-  let defaultStartDate;
-  let defaultEndDate;
-  if (isSingleDate) {
-    defaultStartDate = constrainDate(moment(), minMomentDate, maxMomentDate);
-    defaultEndDate = defaultStartDate; // end date is the same, but gets rounded to the period below
-  } else {
-    defaultStartDate = minMomentDate;
-    defaultEndDate = maxMomentDate;
-  }
-  const roundedDefaults = roundStartEndDates(granularity, defaultStartDate, defaultEndDate);
-  defaultStartDate = roundedDefaults.startDate;
-  defaultEndDate = roundedDefaults.endDate;
+  const { defaultStartDate, defaultEndDate } = getDefaultStartDateAndEndDate(
+    isSingleDate,
+    granularity,
+    minMomentDate,
+    maxMomentDate,
+  );
 
   let currentStartDate = startDate ? moment(startDate) : defaultStartDate;
   let currentEndDate = endDate ? moment(endDate) : defaultEndDate;
