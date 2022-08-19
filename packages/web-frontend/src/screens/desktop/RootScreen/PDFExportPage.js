@@ -10,10 +10,6 @@ import { selectCurrentDashboardName } from '../../../selectors';
 import PDFExportHeader from '../../../components/PDFExportHeader';
 import { decodeLocation } from '../../../historyNavigation/utils';
 
-const Main = styled.div`
-  background: white;
-`;
-
 const DashboardTitleContainer = styled.div`
   text-align: start;
   margin-bottom: 18px;
@@ -32,7 +28,8 @@ const Divider = styled(BaseDivider)`
 
 const PDFExportPage = ({ currentGroupDashboard, viewResponses, selectedDashboardItems }) => {
   if (!currentGroupDashboard) return null;
-
+  // Hacky way to change default background color without touching root css.
+  document.body.style.backgroundColor = 'white';
   const {
     dashboardCode,
     dashboardName,
@@ -47,7 +44,7 @@ const PDFExportPage = ({ currentGroupDashboard, viewResponses, selectedDashboard
     .map(view => view.drillDown?.itemCode);
 
   return (
-    <Main>
+    <div>
       {items
         .filter(view => !drillDownItemCodes.includes(view.code))
         .filter(
@@ -79,7 +76,7 @@ const PDFExportPage = ({ currentGroupDashboard, viewResponses, selectedDashboard
             </A4Page>
           );
         })}
-    </Main>
+    </div>
   );
 };
 
