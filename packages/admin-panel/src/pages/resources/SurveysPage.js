@@ -94,8 +94,8 @@ const SURVEY_COLUMNS = [
           editConfig: {
             options: SERVICE_TYPES,
             setFieldsOnChange: (newValue, currentRecord) => {
-              const { isDataRegional = true } = currentRecord['data_group.config'];
-              const config = newValue === 'dhis' ? { isDataRegional } : {};
+              const { dhisInstanceCode = 'regional' } = currentRecord['data_group.config'];
+              const config = newValue === 'dhis' ? { dhisInstanceCode } : {};
               return { 'data_group.config': config };
             },
           },
@@ -109,10 +109,11 @@ const SURVEY_COLUMNS = [
               recordData['data_group.service_type'] === 'dhis'
                 ? [
                     {
-                      label:
-                        'Stored On Regional Server (Choose "No" if stored on country specific server)',
-                      fieldName: 'isDataRegional',
-                      type: 'boolean',
+                      label: 'DHIS Server',
+                      fieldName: 'dhisInstanceCode',
+                      optionsEndpoint: 'dhisInstances',
+                      optionLabelKey: 'dhisInstances.code',
+                      optionValueKey: 'dhisInstances.code',
                     },
                   ]
                 : [],

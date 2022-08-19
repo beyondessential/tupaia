@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { createModelsStub, stubDhisApi } from '../DhisService.stubs';
+import { createMockDhisApi, createModelsStub, stubGetDhisApi } from '../DhisService.stubs';
 import { DATA_GROUPS } from '../DhisService.fixtures';
 import { DeprecatedEventsPuller } from '../../../../services/dhis/pullers';
-import { DhisTranslator } from '../../../../services/dhis/DhisTranslator';
+import { DhisTranslator } from '../../../../services/dhis/translators/DhisTranslator';
 
 describe('DeprecatedEventsPuller', () => {
   let deprecatedEventsPuller;
@@ -16,12 +16,17 @@ describe('DeprecatedEventsPuller', () => {
     const models = createModelsStub();
     const translator = new DhisTranslator(models);
     deprecatedEventsPuller = new DeprecatedEventsPuller(models.dataElement, translator);
-    dhisApi = stubDhisApi();
+    dhisApi = createMockDhisApi();
+    stubGetDhisApi(dhisApi);
   });
 
   it('throws an error if multiple data groups are provided', async () =>
     expect(
-      deprecatedEventsPuller.pull([dhisApi], [DATA_GROUPS.POP01_GROUP, DATA_GROUPS.DIFF_GROUP], {}),
+      deprecatedEventsPuller.pull(
+        [dhisApi],
+        [DATA_GROUPS.POP01_GROUP, DATA_GROUPS.DIFF_GROUP],
+        {},
+      ),
     ).toBeRejectedWith(/Cannot .*multiple programs/));
 
   describe('DHIS API invocation', () => {
@@ -96,7 +101,8 @@ describe('DeprecatedEventsPuller', () => {
       expectedResults,
       getEventsResponse,
     }) => {
-      dhisApi = stubDhisApi({ getEventsResponse });
+      dhisApi = createMockDhisApi({ getEventsResponse });
+      stubGetDhisApi(dhisApi);
       return expect(
         deprecatedEventsPuller.pull([dhisApi], dataSources, options),
       ).resolves.toStrictEqual(expectedResults);

@@ -11,9 +11,18 @@ export class SqlQuery {
   /**
    * @public
    * @param {unknown[]} arr
+   * @param {string} type type of array (if the array may be empty postgres requires typecasting)
    * @returns {string} SQL parameter injection string for the array of values
    */
-  static array = arr => `(${arr.map(() => '?').join(',')})`;
+  static array = (arr, type) =>
+    `ARRAY[${arr.map(() => '?').join(',')}]${type ? `::${type}[]` : ''}`;
+
+  /**
+   * @public
+   * @param {unknown[]} arr
+   * @returns {string} SQL parameter injection string for the array of values
+   */
+  static record = arr => `(${arr.map(() => '?').join(',')})`;
 
   /**
    * @public
@@ -53,9 +62,25 @@ export class SqlQuery {
    * @param {string} baseQuery
    * @param {string[]} [baseParameters]
    */
-  constructor(baseQuery, baseParameters = []) {
+  constructor(baseQuery = '', baseParameters = []) {
     this.query = baseQuery;
     this.parameters = baseParameters;
+  }
+
+  /**
+   * Add additional sql (and parameters) to the existing query
+   * @public
+   * @param {string | { query: string, params: unknown[] }} sql
+   */
+  append(sqlOrSqlAndParams) {
+    if (typeof sqlOrSqlAndParams === 'string') {
+      this.query = this.query.concat(sqlOrSqlAndParams);
+      return;
+    }
+
+    const { query: sql, params: paramsInText = [] } = sqlOrSqlAndParams;
+    this.query = this.query.concat(sql);
+    this.parameters.push(...paramsInText);
   }
 
   /**
@@ -73,7 +98,7 @@ export class SqlQuery {
    */
   loggableQuery() {
     const replacementIterator = this.parameters
-      .map(param => param.replace(/'/g, "''"))
+      .map(param => (typeof param === 'string' ? param.replace(/'/g, "''") : param))
       [Symbol.iterator]();
     return this.query.replace(/\?/g, () => `'${replacementIterator.next().value}'`);
   }
