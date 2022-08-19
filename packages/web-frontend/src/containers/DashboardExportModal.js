@@ -97,7 +97,7 @@ export const DashboardExportModal = ({
             list={list}
             selectedItems={selectedItems}
             setSelectedItems={setSelectedItems}
-            title="Name"
+            title="Visualisation"
           />
         </LoadingContainer>
       </DialogContent>
