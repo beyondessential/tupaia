@@ -53,6 +53,7 @@ import { UserModel } from './User';
 import { UserSessionModel } from './UserSession';
 import { DataServiceEntityModel } from './DataServiceEntity';
 import { DhisInstanceModel } from './DhisInstance';
+import { DataElementDataServiceModel } from './DataElementDataService';
 import { SupersetInstanceModel } from './SupersetInstance';
 
 // export all models to be used in constructing a ModelRegistry
@@ -69,6 +70,7 @@ export const modelClasses = {
   DashboardItem: DashboardItemModel,
   DashboardRelation: DashboardRelationModel,
   DataElementDataGroup: DataElementDataGroupModel,
+  DataElementDataService: DataElementDataServiceModel,
   DataElement: DataElementModel,
   DataGroup: DataGroupModel,
   DataServiceEntity: DataServiceEntityModel,
@@ -120,6 +122,7 @@ export { ApiRequestLogModel } from './ApiRequestLog';
 export { CommentModel } from './Comment';
 export { CountryModel } from './Country';
 export { DhisInstanceModel, DhisInstanceType } from './DhisInstance';
+export { DataElementDataServiceModel } from './DataElementDataService';
 export { DataElementModel, DataElementType } from './DataElement';
 export { DataGroupModel, DataGroupType } from './DataGroup';
 export { EntityModel, EntityType } from './Entity';
