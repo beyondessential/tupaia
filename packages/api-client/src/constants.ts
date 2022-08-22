@@ -5,7 +5,7 @@
 
 export const DATA_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
-type ServiceName = 'auth' | 'entity' | 'pdfExport' | 'central' | 'report';
+type ServiceName = 'auth' | 'entity' | 'central' | 'report';
 export type ServiceBaseUrlSet = Record<ServiceName, string>;
 
 const productionSubdomains = [
@@ -18,7 +18,6 @@ const productionSubdomains = [
   'meditrak-api',
   'psss',
   'psss-api',
-  'pdf-export-api',
   'report-api',
   'entity',
   'entity-api',
@@ -38,11 +37,6 @@ const SERVICES = {
     version: 'v1',
     localPort: '8050',
   },
-  pdfExport: {
-    subdomain: 'pdf-export-api',
-    version: 'v1',
-    localPort: '8010',
-  },
   central: {
     subdomain: 'api',
     version: 'v2',
@@ -61,7 +55,6 @@ export const LOCALHOST_BASE_URLS: ServiceBaseUrlSet = {
   auth: getLocalUrl('auth'),
   entity: getLocalUrl('entity'),
   central: getLocalUrl('central'),
-  pdfExport: getLocalUrl('pdfExport'),
   report: getLocalUrl('report'),
 };
 
@@ -75,7 +68,6 @@ export const DEV_BASE_URLS: ServiceBaseUrlSet = {
   auth: getServiceUrl('auth', 'dev'),
   entity: getServiceUrl('entity', 'dev'),
   central: getServiceUrl('central', 'dev'),
-  pdfExport: getServiceUrl('pdfExport', 'dev'),
   report: getServiceUrl('report', 'dev'),
 };
 
@@ -83,7 +75,6 @@ export const PRODUCTION_BASE_URLS: ServiceBaseUrlSet = {
   auth: getServiceUrl('auth'),
   entity: getServiceUrl('entity'),
   central: getServiceUrl('central'),
-  pdfExport: getServiceUrl('pdfExport'),
   report: getServiceUrl('report'),
 };
 
@@ -121,18 +112,16 @@ const getDefaultBaseUrls = (hostname: string): ServiceBaseUrlSet => {
     auth: getServiceUrlForSubdomain('auth', subdomain),
     entity: getServiceUrlForSubdomain('entity', subdomain),
     central: getServiceUrlForSubdomain('central', subdomain),
-    pdfExport: getServiceUrlForSubdomain('pdfExport', subdomain),
     report: getServiceUrlForSubdomain('report', subdomain),
   };
 };
 
 export const getBaseUrlsForHost = (hostname: string): ServiceBaseUrlSet => {
-  const { auth, entity, central, report, pdfExport } = getDefaultBaseUrls(hostname);
+  const { auth, entity, central, report } = getDefaultBaseUrls(hostname);
   return {
     auth: process.env.AUTH_API_URL || auth,
     entity: process.env.ENTITY_API_URL || entity,
     central: process.env.CENTRAL_API_URL || central,
-    pdfExport: process.env.PDF_EXPORT_API_URL || pdfExport,
     report: process.env.REPORT_API_URL || report,
   };
 };

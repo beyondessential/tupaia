@@ -12,7 +12,6 @@ import { getRoutesForApiV1 } from './apiV1';
 import { bindUserSessions } from './authSession';
 import { modelClasses } from './models';
 import { handleError, logApiRequest } from './utils';
-
 import './log';
 
 export async function createApp() {
