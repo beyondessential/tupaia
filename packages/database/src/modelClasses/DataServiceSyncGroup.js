@@ -13,8 +13,22 @@ const SERVICE_TYPES = {
   KOBO: 'kobo',
 };
 
+const syncStatuses = {
+  syncing: 'SYNCING',
+  idle: 'IDLE',
+};
+
 class DataServiceSyncGroupType extends DatabaseType {
   static databaseType = TYPES.DATA_SERVICE_SYNC_GROUP;
+
+  async setIsSyncing(syncing) {
+    this.sync_status = syncing ? syncStatuses.syncing : syncStatuses.idle;
+    return this.save();
+  }
+
+  async isSyncing() {
+    return this.sync_status !== syncStatuses.idle;
+  }
 
   async log(message) {
     winston.info(`${this.code} SYNC_GROUP_LOG: ${message}`);
