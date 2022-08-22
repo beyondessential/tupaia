@@ -61,10 +61,6 @@
       "path": "packages/entity-server"
     },
     {
-      "name": "pdf-export-server",
-      "path": "packages/pdf-export-server"
-    },
-    {
       "name": "expression-parser",
       "path": "packages/expression-parser"
     },

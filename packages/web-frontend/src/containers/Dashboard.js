@@ -15,6 +15,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import shallowEqual from 'shallowequal';
 import Dialog from '@material-ui/core/Dialog';
+import MuiIconButton from '@material-ui/core/Button';
+import DownloadIcon from '@material-ui/icons/GetApp';
+import styled from 'styled-components';
+import { FlexSpaceBetween } from '@tupaia/ui-components';
+
 import StaticMap from '../components/StaticMap';
 import { DASHBOARD_STYLES, DASHBOARD_META_MARGIN } from '../styles';
 import { setDashboardGroup, closeDropdownOverlays } from '../actions';
@@ -28,8 +33,16 @@ import {
   selectCurrentProject,
 } from '../selectors';
 import { DEFAULT_BOUNDS } from '../defaults';
+import DashboardExportModal from './DashboardExportModal';
 
 const IMAGE_HEIGHT_RATIO = 0.5;
+
+const MuiButton = styled(MuiIconButton)`
+  font-size: 10px;
+  margin: 5px 10px 0px 10px;
+  background-color: transparent;
+  color: white;
+`;
 
 export class Dashboard extends Component {
   constructor(props) {
@@ -39,6 +52,7 @@ export class Dashboard extends Component {
     this.state = {
       showFloatingHeader: false,
       isPhotoEnlarged: false,
+      isOpen: false,
     };
 
     this.collapsibleGroupRefs = {};
@@ -199,31 +213,58 @@ export class Dashboard extends Component {
     return (
       <div style={DASHBOARD_STYLES.meta}>
         {this.renderMetaMedia()}
-        <h2 style={DASHBOARD_STYLES.title}>{currentOrganisationUnit.name}</h2>
+        <FlexSpaceBetween>
+          <h2 style={DASHBOARD_STYLES.title}>{currentOrganisationUnit.name}</h2>
+          <MuiButton
+            startIcon={<DownloadIcon style={{ fontSize: 16 }} />}
+            variant="outlined"
+            onClick={() => this.setState({ isOpen: true })}
+            disableElevation
+          >
+            export
+          </MuiButton>
+        </FlexSpaceBetween>
       </div>
     );
   }
 
   render() {
-    const { onDashboardClicked, isLoading, currentGroupDashboard } = this.props;
+    const {
+      onDashboardClicked,
+      isLoading,
+      currentGroupDashboard,
+      currentOrganisationUnit,
+      currentProjectName,
+    } = this.props;
+    const exportFileName =
+      currentGroupDashboard &&
+      `${currentProjectName}-${currentOrganisationUnit.name}-${currentGroupDashboard.dashboardName}-dashboard-export`;
 
     return (
-      <div
-        style={{ ...DASHBOARD_STYLES.container, ...(isLoading ? DASHBOARD_STYLES.loading : {}) }}
-        onClick={onDashboardClicked}
-        onScroll={this.onScroll}
-        ref={element => {
-          this.contentScroller = element;
-        }}
-      >
-        {this.renderHeader()}
-        <div style={DASHBOARD_STYLES.content}>
-          {this.renderGroupsDropdown()}
-          {this.renderGroup(currentGroupDashboard)}
+      <>
+        <div
+          style={{ ...DASHBOARD_STYLES.container, ...(isLoading ? DASHBOARD_STYLES.loading : {}) }}
+          onClick={onDashboardClicked}
+          onScroll={this.onScroll}
+          ref={element => {
+            this.contentScroller = element;
+          }}
+        >
+          {this.renderHeader()}
+          <div style={DASHBOARD_STYLES.content}>
+            {this.renderGroupsDropdown()}
+            {this.renderGroup(currentGroupDashboard)}
+          </div>
+          {this.renderFloatingHeader()}
+          {this.renderEnlargePopup()}
         </div>
-        {this.renderFloatingHeader()}
-        {this.renderEnlargePopup()}
-      </div>
+        <DashboardExportModal
+          exportFileName={exportFileName}
+          isOpen={this.state.isOpen}
+          setIsOpen={bool => this.setState({ isOpen: bool })}
+          currentGroupDashboard={currentGroupDashboard}
+        />
+      </>
     );
   }
 }
@@ -231,7 +272,9 @@ export class Dashboard extends Component {
 Dashboard.propTypes = {
   onChangeDashboardGroup: PropTypes.func.isRequired,
   currentDashboardName: PropTypes.string,
+  currentProjectName: PropTypes.string,
   currentOrganisationUnit: PropTypes.object,
+  currentGroupDashboard: PropTypes.object,
   currentOrganisationUnitBounds: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
   dashboardNames: PropTypes.arrayOf(PropTypes.string).isRequired,
   onDashboardClicked: PropTypes.func.isRequired,
@@ -243,7 +286,9 @@ Dashboard.propTypes = {
 
 Dashboard.defaultProps = {
   currentDashboardName: '',
+  currentProjectName: undefined,
   currentOrganisationUnit: {},
+  currentGroupDashboard: null,
   currentOrganisationUnitBounds: [],
   mapIsAnimating: false,
   contractedWidth: 0,
@@ -279,6 +324,7 @@ const mapStateToProps = state => {
   return {
     currentOrganisationUnit,
     currentOrganisationUnitBounds,
+    currentProjectName: currentProject.name,
     dashboardNames,
     currentGroupDashboard,
     currentDashboardName,
