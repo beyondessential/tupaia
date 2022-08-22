@@ -26,7 +26,7 @@ class DataServiceSyncGroupType extends DatabaseType {
     return this.save();
   }
 
-  async isSyncing() {
+  isSyncing() {
     return this.sync_status !== syncStatuses.idle;
   }
 

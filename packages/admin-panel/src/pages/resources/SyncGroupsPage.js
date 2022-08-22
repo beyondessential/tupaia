@@ -39,6 +39,15 @@ const FIELDS = [
 const COLUMNS = [
   ...FIELDS,
   {
+    Header: 'Sync',
+    type: 'sync',
+    source: 'sync_status',
+    actionConfig: {
+      syncStatusEndpoint: 'dataServiceSyncGroups/{id}',
+      manualSyncEndpoint: 'dataServiceSyncGroups/{id}/sync',
+    },
+  },
+  {
     Header: 'Logs',
     type: 'logs',
     source: 'id',
