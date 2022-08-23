@@ -11,6 +11,10 @@ const SERVICE_TYPES = [{ label: 'Kobo', value: 'kobo' }];
 
 const FIELDS = [
   {
+    Header: 'Code',
+    source: 'code',
+  },
+  {
     Header: 'Survey Code',
     source: 'data_group_code',
   },
@@ -34,6 +38,17 @@ const FIELDS = [
 
 const COLUMNS = [
   ...FIELDS,
+  {
+    Header: 'Logs',
+    type: 'logs',
+    source: 'id',
+    actionConfig: {
+      title: '{code} sync group logs',
+      logsCountEndpoint: 'dataServiceSyncGroups/{id}/logs/count',
+      logsEndpoint: 'dataServiceSyncGroups/{id}/logs',
+      logsPerPage: 100,
+    },
+  },
   {
     Header: 'Edit',
     type: 'edit',

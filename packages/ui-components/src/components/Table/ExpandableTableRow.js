@@ -14,6 +14,7 @@ import { AddCircle, RemoveCircle } from '@material-ui/icons';
 import { tableColumnShape } from './tableColumnShape';
 import { TableRowCells, StyledTableRow } from './TableRow';
 import { IconButton } from '../IconButton';
+import { tableRowPropsShape } from './tableRowPropsShape';
 
 const WrapperCell = styled(MuiTableCell)`
   background: white;
@@ -89,6 +90,7 @@ DefaultExpandButton.propTypes = {
 export const ExpandableTableRow = React.memo(
   ({
     columns,
+    rowProps,
     rowData,
     className,
     expandedValue,
@@ -113,6 +115,7 @@ export const ExpandableTableRow = React.memo(
       <StyledTableRow className={className}>
         <TableRowCells
           columns={columns}
+          rowProps={rowProps}
           rowData={rowData}
           ExpandButton={
             ExpandButtonComponent && (
@@ -137,6 +140,7 @@ export const ExpandableTableRow = React.memo(
 
 ExpandableTableRow.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
+  rowProps: PropTypes.shape(PropTypes.shape(tableRowPropsShape)),
   rowData: PropTypes.object.isRequired,
   SubComponent: PropTypes.any,
   className: PropTypes.string,
@@ -147,6 +151,7 @@ ExpandableTableRow.propTypes = {
 };
 
 ExpandableTableRow.defaultProps = {
+  rowProps: {},
   SubComponent: null,
   className: '',
   ExpansionContainer: TableRowExpansionContainer,
