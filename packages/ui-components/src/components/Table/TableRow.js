@@ -10,6 +10,7 @@ import { AddCircle, RemoveCircle } from '@material-ui/icons';
 import MuiTableRow from '@material-ui/core/TableRow';
 import { tableColumnShape } from './tableColumnShape';
 import { IconButton } from '../IconButton';
+import { tableRowPropsShape } from './tableRowPropsShape';
 
 export const TableCell = styled(MuiTableCell)`
   height: 70px;
@@ -24,8 +25,9 @@ export const TableCell = styled(MuiTableCell)`
   }
 `;
 
-export const TableRowCells = React.memo(({ columns, rowData, ExpandButton }) =>
-  columns.map(
+export const TableRowCells = React.memo(({ columns, rowData, rowProps, ExpandButton }) => {
+  const { height = null } = rowProps;
+  return columns.map(
     ({ key, accessor, CellComponent, width = null, align = 'center', cellColor }, index) => {
       const value = accessor ? accessor(rowData) : rowData[key];
       const displayValue = value === 0 ? '0' : value;
@@ -34,7 +36,7 @@ export const TableRowCells = React.memo(({ columns, rowData, ExpandButton }) =>
         <TableCell
           background={backgroundColor}
           key={key}
-          style={{ width, position: 'relative' }}
+          style={{ width, height, position: 'relative' }}
           align={align}
         >
           {CellComponent ? (
@@ -46,11 +48,12 @@ export const TableRowCells = React.memo(({ columns, rowData, ExpandButton }) =>
         </TableCell>
       );
     },
-  ),
-);
+  );
+});
 
 TableRowCells.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
+  rowProps: PropTypes.shape(PropTypes.shape(tableRowPropsShape)).isRequired,
   rowData: PropTypes.object.isRequired,
   ExpandButton: PropTypes.node,
 };
@@ -69,14 +72,15 @@ export const StyledTableRow = styled(MuiTableRow)`
   }
 `;
 
-export const TableRow = React.memo(({ columns, rowData, className, onRowClick }) => (
+export const TableRow = React.memo(({ columns, rowData, rowProps, className, onRowClick }) => (
   <StyledTableRow className={className} onClick={onRowClick && (e => onRowClick(e, rowData))}>
-    <TableRowCells columns={columns} rowData={rowData} />
+    <TableRowCells columns={columns} rowData={rowData} rowProps={rowProps} />
   </StyledTableRow>
 ));
 
 TableRow.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
+  rowProps: PropTypes.shape(PropTypes.shape(tableRowPropsShape)),
   rowData: PropTypes.object.isRequired,
   className: PropTypes.string,
   onRowClick: PropTypes.func,
@@ -84,6 +88,7 @@ TableRow.propTypes = {
 
 TableRow.defaultProps = {
   className: '',
+  rowProps: {},
   onRowClick: () => {},
 };
 

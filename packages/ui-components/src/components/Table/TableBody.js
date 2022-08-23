@@ -8,6 +8,7 @@ import MuiTableBody from '@material-ui/core/TableBody';
 import PropTypes from 'prop-types';
 import { CondensedTableRow, TableRow as TableRowComponent } from './TableRow';
 import { tableColumnShape } from './tableColumnShape';
+import { tableRowPropsShape } from './tableRowPropsShape';
 
 const StyledTableBody = styled(MuiTableBody)`
   pointer-events: ${props => (props.disabled ? 'none' : 'initial')};
@@ -15,12 +16,13 @@ const StyledTableBody = styled(MuiTableBody)`
 `;
 
 export const TableBody = React.memo(
-  ({ data, columns, rowIdKey, TableRow, onRowClick, isFetching, className }) => (
+  ({ data, columns, rowProps, rowIdKey, TableRow, onRowClick, isFetching, className }) => (
     <StyledTableBody disabled={isFetching} className={className}>
       {data.map((rowData, rowIndex) => {
         const key = rowData[rowIdKey] || rowData[columns[0].key];
         return (
           <TableRow
+            rowProps={rowProps}
             rowData={rowData}
             rowIndex={rowIndex}
             key={key}
@@ -35,6 +37,7 @@ export const TableBody = React.memo(
 
 TableBody.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
+  rowProps: PropTypes.arrayOf(PropTypes.shape(tableRowPropsShape)),
   data: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   TableRow: PropTypes.any,
   isFetching: PropTypes.bool,
@@ -48,6 +51,7 @@ TableBody.defaultProps = {
   isFetching: false,
   onRowClick: null,
   className: '',
+  rowProps: {},
 };
 
 export const CondensedTableBody = React.memo(({ data, rowIdKey, columns }) => (

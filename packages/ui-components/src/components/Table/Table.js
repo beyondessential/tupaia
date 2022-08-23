@@ -12,6 +12,7 @@ import { TableHeader } from './TableHeader';
 import { TableBody } from './TableBody';
 import { TableMessageProvider } from './TableMessageProvider';
 import { tableColumnShape } from './tableColumnShape';
+import { tableRowPropsShape } from './tableRowPropsShape';
 
 const StyledTable = styled(MuiTable)`
   position: relative;
@@ -26,6 +27,7 @@ export const Table = React.memo(
     Paginator,
     SubComponent,
     columns,
+    rowProps,
     data,
     errorMessage,
     noDataMessage,
@@ -39,6 +41,7 @@ export const Table = React.memo(
     order,
     page,
     rowsPerPage,
+    rowsPerPageOptions,
     rowIdKey,
     isFetching,
     className,
@@ -56,6 +59,7 @@ export const Table = React.memo(
           {...{
             data,
             columns,
+            rowProps,
             errorMessage,
             isLoading,
             isFetching,
@@ -74,6 +78,7 @@ export const Table = React.memo(
             isFetching,
             count,
             rowsPerPage,
+            rowsPerPageOptions,
             onChangePage,
             onChangeRowsPerPage,
           }}
@@ -89,6 +94,7 @@ Table.propTypes = {
   Paginator: PropTypes.any,
   SubComponent: PropTypes.any,
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
+  rowProps: PropTypes.arrayOf(PropTypes.shape(tableRowPropsShape)),
   data: PropTypes.array.isRequired,
   errorMessage: PropTypes.string,
   noDataMessage: PropTypes.string,
@@ -103,6 +109,7 @@ Table.propTypes = {
   order: PropTypes.string,
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
+  rowsPerPageOptions: PropTypes.arrayOf(PropTypes.number),
   rowIdKey: PropTypes.string,
   className: PropTypes.string,
 };
@@ -112,6 +119,7 @@ Table.defaultProps = {
   Body: TableBody,
   Paginator: TablePaginator,
   SubComponent: null,
+  rowProps: {},
   errorMessage: '',
   noDataMessage: 'No data found',
   count: 0,
@@ -125,6 +133,7 @@ Table.defaultProps = {
   order: 'asc',
   page: null,
   rowsPerPage: 10,
+  rowsPerPageOptions: null,
   rowIdKey: 'id',
   className: null,
 };
