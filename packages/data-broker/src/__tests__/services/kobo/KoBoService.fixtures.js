@@ -80,8 +80,8 @@ export const MOCK_QUESTION_ANSWER_MAP = {
 };
 
 export const MOCK_DATA_SOURCE = {
-  dataGroupCode: 'xyz',
-  serviceType: 'kobo',
+  data_group_code: 'xyz',
+  service_type: 'kobo',
   config: {
     koboSurveyCode: 'abc',
     entityQuestionCode: 'entity',
