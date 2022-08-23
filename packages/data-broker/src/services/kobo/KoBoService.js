@@ -46,7 +46,7 @@ export class KoBoService extends Service {
     for (const source of dataSources) {
       const results = await this.api.fetchKoBoSubmissions(source.config?.koboSurveyCode, options);
 
-      resultsByDataGroupCode[source.dataGroupCode] = await this.translator.translateKoBoResults(
+      resultsByDataGroupCode[source.data_group_code] = await this.translator.translateKoBoResults(
         results,
         source.config?.questionMapping,
         source.config?.entityQuestionCode,
