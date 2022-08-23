@@ -15,6 +15,7 @@ import { makeSubstitutionsInString } from '../utilities';
 const STATUSES = {
   IDLE: 'IDLE',
   SYNCING: 'SYNCING',
+  ERROR: 'ERROR',
 };
 
 const spin = keyframes`
@@ -92,9 +93,11 @@ export const SyncButton = props => {
     }
   };
 
-  if (errorMessage) {
+  if (errorMessage || status === STATUSES.ERROR) {
     return (
-      <Tooltip title={errorMessage}>
+      <Tooltip
+        title={errorMessage || 'Latest sync attempt failed, check logs for more information'}
+      >
         <ErrorIconButton onClick={performManualSync}>
           <SyncIcon />
         </ErrorIconButton>

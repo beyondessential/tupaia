@@ -92,7 +92,7 @@ export async function syncWithKoBo(models, dataBroker, syncGroupCode) {
   }
 
   try {
-    await dataServiceSyncGroup.setIsSyncing(true);
+    await dataServiceSyncGroup.setSyncStarted();
 
     // Pull data from KoBo
     const koboData = await dataBroker.pull(
@@ -123,12 +123,13 @@ export async function syncWithKoBo(models, dataBroker, syncGroupCode) {
         `Sync successful, ${numberOfSurveyResponsesCreated} survey responses created`,
       );
     });
+
+    await dataServiceSyncGroup.setSyncCompletedSuccessfully();
   } catch (e) {
     // Swallow errors when processing kobo data
     await dataServiceSyncGroup.log(`ERROR: ${e.message}`);
+    await dataServiceSyncGroup.setSyncFailed();
     winston.error(e.message);
-  } finally {
-    await dataServiceSyncGroup.setIsSyncing(false);
   }
 }
 

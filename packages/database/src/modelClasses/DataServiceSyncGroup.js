@@ -16,18 +16,29 @@ const SERVICE_TYPES = {
 const syncStatuses = {
   syncing: 'SYNCING',
   idle: 'IDLE',
+  error: 'ERROR',
 };
 
 class DataServiceSyncGroupType extends DatabaseType {
   static databaseType = TYPES.DATA_SERVICE_SYNC_GROUP;
 
-  async setIsSyncing(syncing) {
-    this.sync_status = syncing ? syncStatuses.syncing : syncStatuses.idle;
+  async setSyncStarted() {
+    this.sync_status = syncStatuses.syncing;
+    return this.save();
+  }
+
+  async setSyncCompletedSuccessfully() {
+    this.sync_status = syncStatuses.idle;
+    return this.save();
+  }
+
+  async setSyncFailed() {
+    this.sync_status = syncStatuses.error;
     return this.save();
   }
 
   isSyncing() {
-    return this.sync_status !== syncStatuses.idle;
+    return this.sync_status === syncStatuses.syncing;
   }
 
   async log(message) {
