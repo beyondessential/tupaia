@@ -19,10 +19,14 @@ exports.up = function (db) {
     CREATE TABLE user_favourite_dashboard_item (
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL,
-      dashboard_item_id TEXT NOT NULL,
+      dashboard_item_id TEXT NOT NULL,      
+      UNIQUE (user_id, dashboard_item_id),
       FOREIGN KEY (user_id) REFERENCES user_account (id) ON UPDATE CASCADE ON DELETE RESTRICT,
       FOREIGN KEY (dashboard_item_id) REFERENCES dashboard_item (id) ON UPDATE CASCADE ON DELETE RESTRICT
+
     );
+
+    CREATE INDEX user_favourite_dashboard_item_user_id_idx ON user_favourite_dashboard_item USING btree (user_id);
   `);
 };
 
