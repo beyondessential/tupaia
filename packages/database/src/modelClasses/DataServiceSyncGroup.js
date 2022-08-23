@@ -25,6 +25,35 @@ class DataServiceSyncGroupType extends DatabaseType {
       log_message: message,
     });
   }
+
+  async getLogsCount() {
+    const [{ count }] = await this.database.executeSql(
+      `
+         SELECT count(sgl.*) FROM sync_group_log sgl
+         JOIN data_service_sync_group dssg ON dssg.code = sgl.sync_group_code
+         WHERE dssg.id = ?
+       `,
+      [this.id],
+    );
+
+    return count;
+  }
+
+  async getLatestLogs(limit = 100, offset = 0) {
+    const logs = await this.database.executeSql(
+      `
+         SELECT sgl.* FROM sync_group_log sgl
+         JOIN data_service_sync_group dssg ON dssg.code = sgl.sync_group_code
+         WHERE dssg.id = ?
+         ORDER BY timestamp DESC
+         LIMIT ?
+         OFFSET ?
+       `,
+      [this.id, limit, offset],
+    );
+
+    return Promise.all(logs.map(this.otherModels.syncGroupLog.generateInstance));
+  }
 }
 
 export class DataServiceSyncGroupModel extends DatabaseModel {
