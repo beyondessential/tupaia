@@ -108,7 +108,14 @@ import {
   EditMapOverlayVisualisation,
   GETMapOverlayVisualisations,
 } from './mapOverlayVisualisations';
-import { GETSyncGroups, EditSyncGroups, CreateSyncGroups, DeleteSyncGroups } from './syncGroups';
+import {
+  GETSyncGroups,
+  EditSyncGroups,
+  CreateSyncGroups,
+  DeleteSyncGroups,
+  GETSyncGroupLogs,
+  GETSyncGroupLogsCount,
+} from './syncGroups';
 
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
@@ -215,6 +222,8 @@ apiV2.get('/geographicalAreas/:recordId?', useRouteHandler(GETGeographicalAreas)
 apiV2.get('/reports/:recordId?', useRouteHandler(GETReports));
 apiV2.get('/dhisInstances/:recordId?', useRouteHandler(BESAdminGETHandler));
 apiV2.get('/dataServiceSyncGroups/:recordId?', useRouteHandler(GETSyncGroups));
+apiV2.get('/dataServiceSyncGroups/:recordId/logs', useRouteHandler(GETSyncGroupLogs));
+apiV2.get('/dataServiceSyncGroups/:recordId/logs/count', useRouteHandler(GETSyncGroupLogsCount));
 
 /**
  * POST routes
