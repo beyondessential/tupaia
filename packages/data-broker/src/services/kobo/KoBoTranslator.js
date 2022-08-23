@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import keyBy from 'lodash.keyby';
-
 export class KoBoTranslator {
   constructor(models) {
     this.models = models;

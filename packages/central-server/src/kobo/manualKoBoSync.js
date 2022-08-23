@@ -9,10 +9,10 @@ import { syncWithKoBo } from './startSyncWithKoBo';
 
 export async function manualKoBoSync(req, res) {
   const { models } = req;
-  const { serviceCode } = req.query;
+  const { syncGroupCode } = req.query;
 
   const dataBroker = new DataBroker();
-  await syncWithKoBo(models, dataBroker, serviceCode);
+  await syncWithKoBo(models, dataBroker, syncGroupCode);
 
   respond(res, { message: 'KoBo sync triggered' });
 }
