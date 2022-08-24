@@ -16,12 +16,12 @@ export class UserFavouriteDashboardItemModel extends DatabaseModel {
     return UserFavouriteDashboardItemType;
   }
 
-  async updateRecord({ changeType, record, models }) {
+  async updateRecord({ changeType, record }) {
     switch (changeType) {
       case 'create':
-        return models.UserFavouriteDashboardItem.findOrCreate(record);
+        return this.findOrCreate(record);
       case 'delete':
-        return models.UserFavouriteDashboardItem.delete(record);
+        return this.delete(record);
       default:
         throw new Error(`Non supported change type: ${changeType}`);
     }

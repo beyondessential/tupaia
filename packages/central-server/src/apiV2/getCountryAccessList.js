@@ -19,7 +19,6 @@ const mapRequestsToEntities = (requestedEntities, projectCodeById) => {
 
 export async function getCountryAccessList(req, res, next) {
   const { userId, models } = req;
-
   try {
     const countries = await models.entity.find({ type: 'country' });
     const entityPermissions = await models.userEntityPermission.find({ user_id: userId });
