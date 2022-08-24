@@ -70,44 +70,47 @@ ErrorScreen.propTypes = {
   errorMessage: PropTypes.string.isRequired,
 };
 
+const Wrapper = ({ children: loadingScreenChildren, loadingContainerchildren }) => (
+  <Container className="loading-container">
+    {loadingContainerchildren}
+    <LoadingScreen className="loading-screen">{loadingScreenChildren}</LoadingScreen>
+  </Container>
+);
+
+Wrapper.propTypes = {
+  children: PropTypes.node.isRequired,
+  loadingContainerchildren: PropTypes.node.isRequired,
+};
+
 /**
  * Adds a loader around the children
  */
 export const LoadingContainer = ({ isLoading, heading, text, children, errorMessage, onReset }) => {
   if (onReset && errorMessage) {
     return (
-      <Container>
-        {children}
-        <LoadingScreen>
-          <ErrorScreen onReset={onReset} errorMessage={errorMessage} />
-        </LoadingScreen>
-      </Container>
+      <Wrapper loadingContainerchildren={children}>
+        <ErrorScreen onReset={onReset} errorMessage={errorMessage} />
+      </Wrapper>
     );
   }
 
   if (errorMessage) {
     return (
-      <Container>
-        {children}
-        <LoadingScreen>
-          <ErrorAlert severity="error" variant="standard">
-            {errorMessage}
-          </ErrorAlert>
-        </LoadingScreen>
-      </Container>
+      <Wrapper loadingContainerchildren={children}>
+        <ErrorAlert severity="error" variant="standard">
+          {errorMessage}
+        </ErrorAlert>
+      </Wrapper>
     );
   }
 
   if (isLoading) {
     return (
-      <Container>
-        {children}
-        <LoadingScreen>
-          <Loader />
-          <LoadingHeading variant="h5">{heading}</LoadingHeading>
-          <LoadingText variant="body2">{text}</LoadingText>
-        </LoadingScreen>
-      </Container>
+      <Wrapper loadingContainerchildren={children}>
+        <Loader />
+        <LoadingHeading variant="h5">{heading}</LoadingHeading>
+        <LoadingText variant="body2">{text}</LoadingText>
+      </Wrapper>
     );
   }
 
@@ -116,10 +119,10 @@ export const LoadingContainer = ({ isLoading, heading, text, children, errorMess
 
 LoadingContainer.propTypes = {
   isLoading: PropTypes.bool.isRequired,
-  children: PropTypes.any.isRequired,
+  children: PropTypes.node.isRequired,
   heading: PropTypes.string,
   text: PropTypes.string,
-  onReset: PropTypes.bool,
+  onReset: PropTypes.func,
 };
 
 LoadingContainer.defaultProps = {

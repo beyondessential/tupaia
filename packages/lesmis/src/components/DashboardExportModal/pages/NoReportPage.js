@@ -35,7 +35,6 @@ export const NoReportPage = ({
 };
 
 NoReportPage.propTypes = {
-  getNextPage: PropTypes.func.isRequired,
   isEntityDetailsRequired: PropTypes.bool.isRequired,
   subDashboardName: PropTypes.string.isRequired,
   PageContainer: PropTypes.func.isRequired,
