@@ -6,6 +6,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { downloadPageAsPdf } from '@tupaia/tsutils';
+import { convertToCDNHost } from '@tupaia/utils';
 
 type Body = {
   pdfPageUrl: string;
@@ -26,8 +27,8 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
 
   public async buildResponse() {
     const { pdfPageUrl } = this.req.body;
-    const { cookie } = this.req.headers;
-    const { host: cookieDomain } = this.req.headers;
+    const { cookie, host, via } = this.req.headers;
+    const cookieDomain = via && via.includes('cloudfront.net') ? convertToCDNHost(host) : host;
 
     const buffer = await downloadPageAsPdf(pdfPageUrl, cookie, cookieDomain);
     this.res.set({
