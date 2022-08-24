@@ -28,6 +28,9 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
   public async buildResponse() {
     const { pdfPageUrl } = this.req.body;
     const { cookie, host, via } = this.req.headers;
+    if (!host) {
+      throw new Error('host must be provided');
+    }
     const cookieDomain = via && via.includes('cloudfront.net') ? convertToCDNHost(host) : host;
 
     const buffer = await downloadPageAsPdf(pdfPageUrl, cookie, cookieDomain);
