@@ -26,8 +26,7 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
 
   public async buildResponse() {
     const { pdfPageUrl } = this.req.body;
-    const { cookie } = this.req.headers;
-    const { host: cookieDomain } = this.req.headers;
+    const { cookie, host: cookieDomain } = this.req.headers;
 
     const buffer = await downloadPageAsPdf(pdfPageUrl, cookie, cookieDomain);
     this.res.set({
