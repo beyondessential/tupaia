@@ -1,27 +1,24 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+/**
+ * Tupaia MediTrak
+ * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
+const SERVICE_TYPES = [{ label: 'Kobo', value: 'kobo' }];
+
 const FIELDS = [
   {
-    Header: 'Code',
-    source: 'code',
-    width: 300,
+    Header: 'Survey Code',
+    source: 'data_group_code',
   },
   {
-    Header: 'Builder',
-    source: 'builder',
-    width: 170,
+    Header: 'Service Type',
+    source: 'service_type',
     editConfig: {
-      optionsEndpoint: 'indicators',
-      optionLabelKey: 'builder',
-      optionValueKey: 'builder',
-      sourceKey: 'builder',
+      options: SERVICE_TYPES,
     },
   },
   {
@@ -30,7 +27,7 @@ const FIELDS = [
     type: 'jsonTooltip',
     editConfig: {
       type: 'jsonEditor',
-      default: '{ "formula": "", "aggregation": { "" : "" } }',
+      default: '{}',
     },
   },
 ];
@@ -41,30 +38,37 @@ const COLUMNS = [
     Header: 'Edit',
     type: 'edit',
     source: 'id',
-    width: 70,
     actionConfig: {
-      editEndpoint: 'indicators',
+      editEndpoint: 'dataServiceSyncGroups',
       fields: [...FIELDS],
+    },
+  },
+  {
+    Header: 'Delete',
+    source: 'id',
+    type: 'delete',
+    actionConfig: {
+      endpoint: 'dataServiceSyncGroups',
     },
   },
 ];
 
 const EDIT_CONFIG = {
-  title: 'Edit Indicator',
+  title: 'Edit Sync Group',
 };
 
 const CREATE_CONFIG = {
-  title: 'Add Indicator',
+  title: 'Add Sync Group',
   actionConfig: {
-    editEndpoint: 'indicators',
+    editEndpoint: 'dataServiceSyncGroups',
     fields: FIELDS,
   },
 };
 
-export const IndicatorsPage = ({ getHeaderEl }) => (
+export const SyncGroupsPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Indicators"
-    endpoint="indicators"
+    title="Sync Groups"
+    endpoint="dataServiceSyncGroups"
     columns={COLUMNS}
     editConfig={EDIT_CONFIG}
     createConfig={CREATE_CONFIG}
@@ -72,6 +76,6 @@ export const IndicatorsPage = ({ getHeaderEl }) => (
   />
 );
 
-IndicatorsPage.propTypes = {
+SyncGroupsPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
 };

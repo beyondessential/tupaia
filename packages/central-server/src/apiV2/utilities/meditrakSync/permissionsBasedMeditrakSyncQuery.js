@@ -17,12 +17,11 @@ import {
   supportsPermissionsBasedSync,
 } from './supportsPermissionsBasedSync';
 
+const recordTypesToAlwaysSync = ['country', 'permission_group'];
 /**
  * Since all countries, permission_groups, and country entities regardless of permissions
  */
 export const permissionsFreeChanges = since => {
-  const recordTypesToAlwaysSync = ['country', 'permission_group'];
-
   return {
     query: `change_time > ? AND (record_type IN ${SqlQuery.record(
       recordTypesToAlwaysSync,
@@ -32,14 +31,20 @@ export const permissionsFreeChanges = since => {
 };
 
 export const changesWithPermissions = (countryIds, permissionGroups, since) => {
-  let query = 'change_time > ? AND "type" = ?';
-  const params = [since, 'update'];
+  let query = `change_time > ? AND "type" = ? and record_type NOT IN ${SqlQuery.record(
+    recordTypesToAlwaysSync,
+  )}`;
+  const params = [since, 'update', ...recordTypesToAlwaysSync];
 
-  if (countryIds) {
-    query = query.concat(` AND country_ids && ${SqlQuery.array(countryIds, 'text')}`);
+  // When determining survey permissions, NULL countries means permission to all countries
+  if (permissionGroups) {
+    query = query.concat(
+      ` AND (country_ids IS NULL OR country_ids && ${SqlQuery.array(countryIds, 'text')})`,
+    );
     params.push(...countryIds);
   } else {
-    query = query.concat(` AND country_ids IS NULL`);
+    query = query.concat(` AND country_ids && ${SqlQuery.array(countryIds, 'text')}`);
+    params.push(...countryIds);
   }
 
   if (permissionGroups) {
@@ -89,70 +94,63 @@ export const buildPermissionsBasedMeditrakSyncQuery = async (
 
   query.append(selectFromClause(select));
   query.append(`WHERE (
-  `);
+   `);
 
   query.append('(');
   query.append(permissionsFreeChanges(since));
   query.append(')');
 
+  const addPermissionsOrClause = clause => {
+    query.append(` 
+     OR (`);
+    query.append(clause);
+    query.append(')');
+  };
+
   if (unsynced.countries) {
     // Never before synced countries due to new country permissions
-    query.append(` 
-    OR (`);
-    query.append(changesWithPermissions(unsynced.countryIds, null, 0));
-    query.append(')');
+    addPermissionsOrClause(changesWithPermissions(unsynced.countryIds, null, 0));
   }
 
   if (unsynced.countries && unsynced.permissionGroups) {
     // Never before synced surveys due to new permission groups and country permissions
-    query.append(` 
-    OR (`);
-    query.append(changesWithPermissions(unsynced.countryIds, unsynced.permissionGroups, 0));
-    query.append(')');
+    addPermissionsOrClause(
+      changesWithPermissions(unsynced.countryIds, unsynced.permissionGroups, 0),
+    );
   }
 
   if (unsynced.countries && synced.permissionGroups) {
     // Never before synced surveys due to new country permissions
-    query.append(` 
-    OR (`);
-    query.append(changesWithPermissions(unsynced.countryIds, synced.permissionGroups, 0));
-    query.append(')');
+    addPermissionsOrClause(changesWithPermissions(unsynced.countryIds, synced.permissionGroups, 0));
   }
 
   if (synced.countries && unsynced.permissionGroups) {
     // Never before synced surveys due to new permission groups
-    query.append(` 
-    OR (`);
-    query.append(changesWithPermissions(synced.countryIds, unsynced.permissionGroups, 0));
-    query.append(')');
+    addPermissionsOrClause(changesWithPermissions(synced.countryIds, unsynced.permissionGroups, 0));
   }
 
   if (synced.countries) {
     // Previously synced countries
-    query.append(` 
-    OR (`);
-    query.append(changesWithPermissions(synced.countryIds, null, since));
-    query.append(')');
+    addPermissionsOrClause(changesWithPermissions(synced.countryIds, null, since));
   }
 
   if (synced.countries && synced.permissionGroups) {
     // Previously synced surveys
-    query.append(` 
-    OR (`);
-    query.append(changesWithPermissions(synced.countryIds, synced.permissionGroups, since));
-    query.append(')');
+    addPermissionsOrClause(
+      changesWithPermissions(synced.countryIds, synced.permissionGroups, since),
+    );
   }
 
   query.append(`
-    OR (`);
+     OR (`);
   query.append(deletesSinceLastSync(since));
   query.append(`
-    ))`);
+     ))`);
 
   const filter = await recordTypeFilter(req);
   if (filter) {
     query.append(`
-      AND `);
+       AND `);
     query.append(filter);
   }
 

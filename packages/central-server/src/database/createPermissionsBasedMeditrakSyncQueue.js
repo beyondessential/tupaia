@@ -24,8 +24,9 @@ SELECT msq.*,
 	max(e."type") AS entity_type,
 	
 	COALESCE(
+		${groupToArrayOrNull('co.id')}, 
 		${groupToArrayOrNull('e_co.id')}, 
-		${groupToArrayOrNull('c.id')}, 
+		${groupToArrayOrNull('c.country_id')}, 
 		${groupToArrayOrNull('ga.country_id')}, 
 		${groupToFlatArrayOrNull('s.country_ids')},
 		${groupToFlatArrayOrNull('sg_s.country_ids')},
@@ -47,6 +48,7 @@ SELECT msq.*,
 		${groupToArrayOrNull('o_os_q_ssc_ss_s_pg."name"')}
 	) as permission_groups
 FROM meditrak_sync_queue msq 
+LEFT JOIN country co ON msq.record_id = co.id
 LEFT JOIN entity e ON msq.record_id = e.id
 LEFT JOIN country e_co ON e_co.code = e.country_code 
 LEFT JOIN clinic c ON msq.record_id = c.id
