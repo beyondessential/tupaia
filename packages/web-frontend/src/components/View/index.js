@@ -5,5 +5,5 @@
 
 export { MatrixWrapper } from './MatrixWrapper';
 export { View } from './View';
-export { getViewWrapper, getIsMatrix, getIsDataDownload } from './utils';
+export { getViewWrapper, getIsMatrix, getIsDataDownload, getExportViewWrapper } from './utils';
 export { VIEW_CONTENT_SHAPE } from './propTypes';

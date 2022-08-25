@@ -39,10 +39,11 @@ function* fetchDashboards(action) {
     // If there is no dashboard code defined, assign the default if it is valid for the user
     if (!currentDashboardName) {
       const projectDefaultDashboardName = project.dashboardGroupName;
-      const dashboard = dashboards.find(d => d.dashboardName === projectDefaultDashboardName);
-      if (dashboard) {
-        yield put(setDashboardGroup(project.dashboardGroupName));
-      }
+      const presetDefaultDashboard = dashboards.find(
+        d => d.dashboardName === projectDefaultDashboardName,
+      );
+      const defaultDashboard = presetDefaultDashboard || dashboards[0];
+      yield put(setDashboardGroup(defaultDashboard.dashboardName));
     } else {
       const dashboard = dashboards.find(d => d.dashboardName === currentDashboardName);
       // Check if the user has permission to view the dashboard

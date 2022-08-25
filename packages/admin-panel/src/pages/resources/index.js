@@ -30,3 +30,4 @@ export { DashboardItemsPage } from './DashboardItemsPage';
 export { DashboardRelationsPage } from './DashboardRelationsPage';
 export { LegacyReportsPage } from './LegacyReportsPage';
 export { ProjectsPage } from './ProjectsPage';
+export { SyncGroupsPage } from './SyncGroupsPage';

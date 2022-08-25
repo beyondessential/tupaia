@@ -11,7 +11,7 @@ import {
   EDITOR_DISMISS,
   EDITOR_ERROR,
   EDITOR_FIELD_EDIT,
-  EDITOR_OPEN_CREATOR,
+  EDITOR_OPEN,
 } from './constants';
 import { convertSearchTermToFilter, makeSubstitutionsInString } from '../utilities';
 
@@ -69,7 +69,7 @@ export const openBulkEditModal = (
     });
 
     dispatch({
-      type: EDITOR_OPEN_CREATOR,
+      type: EDITOR_OPEN,
       fields,
       recordData: {},
       endpoint: bulkUpdateEndpoint,
@@ -128,7 +128,7 @@ export const openEditModal = ({ editEndpoint, title, fields }, recordId) => asyn
     });
 
     dispatch({
-      type: EDITOR_OPEN_CREATOR,
+      type: EDITOR_OPEN,
       fields,
       recordData: {},
       endpoint: editEndpoint,

@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { getSortByKey } from '@tupaia/utils';
 import { sanitizeValue } from './sanitizeValue';
 
 /*
@@ -61,7 +60,7 @@ const buildEvents = (dhisEventAnalytics, dataElementCodes = []) => {
     });
     events.push(event);
   });
-  return events.sort(getSortByKey(METADATA_DIMENSION_TRANSLATION.eventdate));
+  return events;
 };
 
 const getColumnSpecs = (headers, dataElementCodes) => {
