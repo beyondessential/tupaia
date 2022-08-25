@@ -2,14 +2,14 @@ import cookie from 'cookie';
 import puppeteer from 'puppeteer';
 
 const verifyPdfPageUrl = (pdfPageUrl: string): string => {
-  const lesmisValidDomains = ['lesmis.la', 'www.lesmis.la'];
+  const validDomains = ['tupaia.org', 'lesmis.la', 'www.lesmis.la'];
   if (!pdfPageUrl || typeof pdfPageUrl !== 'string') {
     throw new Error(`'pdfPageUrl' should be provided in request body, got: ${pdfPageUrl}`);
   }
   const location = new URL(pdfPageUrl);
   if (
     !location.hostname.endsWith('.tupaia.org') &&
-    !lesmisValidDomains.includes(location.hostname) &&
+    !validDomains.includes(location.hostname) &&
     !location.hostname.endsWith('localhost')
   ) {
     throw new Error(`'pdfPageUrl' is not valid, got: ${pdfPageUrl}`);
