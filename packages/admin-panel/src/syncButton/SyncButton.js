@@ -59,10 +59,30 @@ const ErrorIconButton = styled(IconButton)`
   }
 `;
 
+// Bit of a hack to work around the fact that the sync button is constantly being recreated
+// in the resource page due to parent component re-rendering https://stackoverflow.com/a/33800398
+const externalState = {};
+
+const useExternalState = (key, initialState) => {
+  const [state, setState] = useState(() => {
+    if (key in externalState) {
+      return externalState[key];
+    }
+    return initialState;
+  });
+
+  const onChange = nextState => {
+    externalState[key] = nextState;
+    setState(nextState);
+  };
+
+  return [state, onChange];
+};
+
 export const SyncButton = props => {
   const { actionConfig, original } = props;
   const api = useApi();
-  const [status, setStatus] = useState(original.sync_status);
+  const [status, setStatus] = useExternalState(original.id, original.sync_status);
   const [errorMessage, setErrorMessage] = useState(null);
 
   const syncStatusEndpoint = makeSubstitutionsInString(actionConfig.syncStatusEndpoint, original);
@@ -125,5 +145,5 @@ SyncButton.propTypes = {
     syncStatusEndpoint: PropTypes.string,
     manualSyncEndpoint: PropTypes.string,
   }).isRequired,
-  original: PropTypes.shape({ sync_status: PropTypes.string }).isRequired,
+  original: PropTypes.shape({ id: PropTypes.string, sync_status: PropTypes.string }).isRequired,
 };
