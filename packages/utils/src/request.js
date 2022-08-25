@@ -22,9 +22,7 @@ export const stringifyQuery = (baseUrl, endpoint, queryParams) => {
 
   const urlAndEndpoint = baseUrl ? `${baseUrl}/${endpoint}` : endpoint;
 
-  return queryParamsString
-    ? `${urlAndEndpoint}?${queryParamsString}`
-    : `${urlAndEndpoint}`;
+  return queryParamsString ? `${urlAndEndpoint}?${queryParamsString}` : `${urlAndEndpoint}`;
 };
 
 /**
@@ -44,6 +42,13 @@ const createTimeoutPromise = maxWaitTime => {
   });
   return { promise, cleanup };
 };
+
+/**
+ * @param {string} url
+ * @param {} [config]
+ * @param {number} [maxWaitTime]
+ * @return {Promise<Response>}
+ */
 export const fetchWithTimeout = async (url, config, maxWaitTime = DEFAULT_MAX_WAIT_TIME) => {
   const { cleanup, promise: timeoutPromise } = createTimeoutPromise(maxWaitTime);
   try {

@@ -8,17 +8,6 @@ import { fetchWithTimeout, verifyResponseStatus, stringifyQuery } from '@tupaia/
 import { QueryParameters, RequestBody } from '../types';
 import { AuthHandler } from './types';
 
-interface FetchHeaders {
-  Authorization: string;
-  'Content-Type'?: string;
-}
-
-interface FetchConfig {
-  method: string;
-  headers: FetchHeaders;
-  body?: string;
-}
-
 /**
  * @deprecated use @tupaia/api-client
  */
@@ -53,7 +42,7 @@ export class ApiConnection {
     body?: RequestBody,
   ) {
     const queryUrl = stringifyQuery(this.baseUrl, endpoint, queryParameters);
-    const fetchConfig: FetchConfig = {
+    const fetchConfig: RequestInit = {
       method: requestMethod || 'GET',
       headers: {
         Authorization: await this.authHandler.getAuthHeader(),

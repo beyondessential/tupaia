@@ -7,6 +7,37 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
+const SERVICE_TYPE_OPTIONS = [
+  {
+    label: 'Data Lake',
+    value: 'data-lake',
+  },
+  {
+    label: 'DHIS',
+    value: 'dhis',
+  },
+  {
+    label: 'Indicator',
+    value: 'indicator',
+  },
+  {
+    label: 'Kobo',
+    value: 'kobo',
+  },
+  {
+    label: 'Superset',
+    value: 'superset',
+  },
+  {
+    label: 'Tupaia',
+    value: 'tupaia',
+  },
+  {
+    label: 'Weather',
+    value: 'weather',
+  },
+];
+
 const localStyles = {
   config: {
     dt: {
@@ -61,20 +92,23 @@ const DATA_SOURCE_FIELDS = [
     source: 'code',
   },
   {
-    Header: 'Service Type',
+    Header: 'Data Service',
     source: 'service_type',
-    editConfig: { default: 'dhis' },
+    editConfig: { default: 'dhis', options: SERVICE_TYPE_OPTIONS },
   },
 ];
 const DATA_ELEMENT_FIELDS = [
   ...DATA_SOURCE_FIELDS,
   {
-    Header: 'Config',
+    Header: 'Data Service Configuration',
     source: 'config',
     Cell: DataSourceConfigView,
     editConfig: {
       type: 'json',
       default: '{}',
+      visibilityCriteria: {
+        service_type: values => ['dhis', 'superset'].includes(values.service_type),
+      },
       getJsonFieldSchema: () => [
         {
           label: 'DHIS Server',
@@ -82,14 +116,22 @@ const DATA_ELEMENT_FIELDS = [
           optionsEndpoint: 'dhisInstances',
           optionLabelKey: 'dhisInstances.code',
           optionValueKey: 'dhisInstances.code',
+          visibilityCriteria: { service_type: 'dhis' },
         },
         {
           label: 'Data element code',
           fieldName: 'dataElementCode',
+          visibilityCriteria: { service_type: 'dhis' },
         },
         {
           label: 'Category option combo code',
           fieldName: 'categoryOptionCombo',
+          visibilityCriteria: { service_type: 'dhis' },
+        },
+        {
+          label: 'Superset Chart ID',
+          fieldName: 'supersetChartId',
+          visibilityCriteria: { service_type: 'superset' },
         },
       ],
     },
@@ -106,12 +148,15 @@ const DATA_ELEMENT_FIELDS = [
 const DATA_GROUP_FIELDS = [
   ...DATA_SOURCE_FIELDS,
   {
-    Header: 'Config',
+    Header: 'Data Service Configuration',
     source: 'config',
     Cell: DataSourceConfigView,
     editConfig: {
       type: 'json',
       default: '{}',
+      visibilityCriteria: {
+        service_type: 'dhis',
+      },
       getJsonFieldSchema: () => [
         {
           label: 'DHIS Server',
@@ -119,6 +164,7 @@ const DATA_GROUP_FIELDS = [
           optionsEndpoint: 'dhisInstances',
           optionLabelKey: 'dhisInstances.code',
           optionValueKey: 'dhisInstances.code',
+          visibilityCriteria: { service_type: 'dhis' },
         },
       ],
     },
@@ -138,7 +184,7 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
         columns: [...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement')],
       },
     ]}
-    editConfig={{ title: 'Edit Data Source' }}
+    editConfig={{ title: 'Edit Data Group' }}
     createConfig={{
       title: 'New Data Group',
       actionConfig: {

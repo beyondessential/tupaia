@@ -534,7 +534,7 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
     query.returning('*');
   }
 
-  if (process.env.DB_VERBOSE === 'true') {
+  if (process.env.DB_VERBOSE === 'true' || process.env.DB_VERBOSE === '1') {
     winston.info(query.toString());
   }
 
