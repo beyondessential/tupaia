@@ -1,7 +1,7 @@
 import cookie from 'cookie';
 import puppeteer from 'puppeteer';
 
-const verifyPdfPageUrl = (pdfPageUrl: string): string => {
+const verifyPDFPageUrl = (pdfPageUrl: string): string => {
   const validDomains = ['tupaia.org', 'lesmis.la', 'www.lesmis.la'];
   if (!pdfPageUrl || typeof pdfPageUrl !== 'string') {
     throw new Error(`'pdfPageUrl' should be provided in request body, got: ${pdfPageUrl}`);
@@ -19,8 +19,8 @@ const verifyPdfPageUrl = (pdfPageUrl: string): string => {
 
 const buildParams = (pdfPageUrl: string, userCookie: string, cookieDomain: string | undefined) => {
   const cookies = cookie.parse(userCookie || '');
-  const verifiedPdfPageUrl = verifyPdfPageUrl(pdfPageUrl);
-  const location = new URL(verifiedPdfPageUrl);
+  const verifiedPDFPageUrl = verifyPDFPageUrl(pdfPageUrl);
+  const location = new URL(verifiedPDFPageUrl);
   const finalisedCookieObjects = Object.keys(cookies).map(name => ({
     name,
     domain: cookieDomain,
@@ -28,7 +28,7 @@ const buildParams = (pdfPageUrl: string, userCookie: string, cookieDomain: strin
     httpOnly: true,
     value: cookies[name],
   }));
-  return { verifiedPdfPageUrl, cookies: finalisedCookieObjects };
+  return { verifiedPDFPageUrl, cookies: finalisedCookieObjects };
 };
 
 /**
@@ -37,20 +37,20 @@ const buildParams = (pdfPageUrl: string, userCookie: string, cookieDomain: strin
  * @param cookieDomain the domain of cookie, required when setting up cookie in page
  * @returns pdf buffer
  */
-export const downloadPageAsPdf = async (
+export const downloadPageAsPDF = async (
   pdfPageUrl: string,
   userCookie = '',
   cookieDomain: string | undefined,
 ) => {
   let browser;
   let buffer;
-  const { cookies, verifiedPdfPageUrl } = buildParams(pdfPageUrl, userCookie, cookieDomain);
+  const { cookies, verifiedPDFPageUrl } = buildParams(pdfPageUrl, userCookie, cookieDomain);
 
   try {
     browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.setCookie(...cookies);
-    await page.goto(verifiedPdfPageUrl, { timeout: 60000, waitUntil: 'networkidle0' });
+    await page.goto(verifiedPDFPageUrl, { timeout: 60000, waitUntil: 'networkidle0' });
     buffer = await page.pdf({
       format: 'a4',
       printBackground: true,
