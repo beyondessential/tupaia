@@ -55,11 +55,7 @@ export class SupersetService extends Service {
       for (const [chartId, chartDataSources] of Object.entries(
         this.groupByChartId(instanceDataSources),
       )) {
-        const results = await this.pullForApiForChart(
-          api,
-          chartId,
-          chartDataSources.map(de => de.code),
-        );
+        const results = await this.pullForApiForChart(api, chartId, chartDataSources);
         mergedResults = mergedResults.concat(results);
       }
     }
@@ -74,25 +70,28 @@ export class SupersetService extends Service {
   /**
    * @param {SupersetApi} api
    * @param {string} chartId
-   * @param {string[]} dataElementCodes
+   * @param {DataElement[]} dataElements
    * @return {Promise<Object[]>} analytic results
    * @private
    */
-  async pullForApiForChart(api, chartId, dataElementCodes) {
+  async pullForApiForChart(api, chartId, dataElements) {
     const response = await api.chartData(chartId);
     const { data } = response.result[0];
 
     const results = [];
     for (const datum of data) {
-      const universalCode = datum.item_code;
-      const dataElementCode = dataElementCodes.find(code => code.includes(universalCode));
-      if (!dataElementCode) continue; // unneeded data
+      const { item_code: itemCode, store_code: storeCode, value, date } = datum;
+
+      const dataElement = dataElements.find(
+        de => de.code === itemCode || de.config.supersetItemCode === itemCode,
+      );
+      if (!dataElement) continue; // unneeded data
 
       results.push({
-        dataElement: dataElementCode,
-        organisationUnit: datum.store_code,
-        period: moment(datum.date).format('YYYYMMDD'),
-        value: datum.value,
+        dataElement: dataElement.code,
+        organisationUnit: storeCode,
+        period: moment(date).format('YYYYMMDD'),
+        value,
       });
     }
     return results;
