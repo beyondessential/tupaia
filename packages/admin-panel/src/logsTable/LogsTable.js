@@ -4,13 +4,20 @@
  */
 
 import React from 'react';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Table, useTableSorting } from '@tupaia/ui-components';
+
+const StyledTable = styled(Table)`
+  .MuiTableCell-root {
+    height: 30px;
+  }
+`;
 
 export const LogsTable = ({ logs, logsCount, page, logsPerPage, onChangePage }) => {
   const { sortedData, order, orderBy, sortColumn } = useTableSorting(logs);
   return (
-    <Table
+    <StyledTable
       count={logsCount}
       page={page}
       onChangePage={onChangePage}
@@ -24,7 +31,6 @@ export const LogsTable = ({ logs, logsCount, page, logsPerPage, onChangePage }) 
         { key: 'timestamp', title: 'time', sortable: true, width: '250px', align: 'left' },
         { key: 'message', title: 'message', sortable: false, align: 'left' },
       ]}
-      rowProps={{ height: '30px' }}
     />
   );
 };
