@@ -12,7 +12,7 @@ import { Agent as HttpsAgent } from 'https';
 import winston from 'winston';
 
 const MAX_RETRIES = 1;
-const MAX_FETCH_WAIT_TIME = 30 * 1000; // 15 seconds
+const MAX_FETCH_WAIT_TIME = 45 * 1000; // 45 seconds
 
 export class SupersetApi {
   protected serverName: string;
