@@ -23,15 +23,13 @@ LogsButtonComponent.propTypes = {
   openModal: PropTypes.func.isRequired,
 };
 
-LogsButtonComponent.defaultProps = {};
-
 const mapDispatchToProps = (dispatch, { actionConfig, value: recordId, row }) => ({
   openModal: () => {
     dispatch(openLogsModal(actionConfig, recordId, row));
   },
 });
 
-const mergeProps = ({ ...stateProps }, { dispatch, ...dispatchProps }, { ...ownProps }) => {
+const mergeProps = ({ ...stateProps }, { ...dispatchProps }, { ...ownProps }) => {
   return {
     ...ownProps,
     ...stateProps,
