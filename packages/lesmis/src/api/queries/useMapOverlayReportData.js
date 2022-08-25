@@ -19,7 +19,6 @@ import { useEntitiesData } from './useEntitiesData';
 import { yearToApiDates } from './utils';
 import { useUrlSearchParam } from '../../utils/useUrlSearchParams';
 import { useMapOverlaysData, findOverlay } from './useMapOverlaysData';
-import { COUNTRY_CODE } from '../../constants';
 import { get } from '../api';
 
 const getMeasureDataFromResponse = (overlay, measureDataResponse) => {
@@ -156,9 +155,9 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
   };
 
   const { data: measureDataResponse, isLoading: measureDataLoading } = useQuery(
-    ['mapOverlay', COUNTRY_CODE, selectedOverlay, params],
+    ['mapOverlay', entityCode, selectedOverlay, params],
     () =>
-      get(`report/${COUNTRY_CODE}/${reportCode}`, {
+      get(`report/${entityCode}/${reportCode}`, {
         params,
       }),
     {
