@@ -36,7 +36,7 @@ class DataServiceSyncGroupType extends DatabaseType {
       [this.id],
     );
 
-    return count;
+    return parseInt(count);
   }
 
   async getLatestLogs(limit = 100, offset = 0) {
