@@ -25,13 +25,16 @@ export const DATA_GROUPS = {
   }),
 };
 
+const DL_FACILITY_A = {
+  code: 'DL_FACILITY_A',
+  name: 'DL FACILITY A',
+  type: 'facility',
+  metadata: {},
+  isTrackedEntity: () => false,
+};
+
 export const ENTITIES = {
-  DL_FACILITY_A: {
-    code: 'DL_FACILITY_A',
-    name: 'DL FACILITY A',
-    type: 'facility',
-    metadata: {},
-  },
+  DL_FACILITY_A,
   DL_HOUSEHOLD_1: {
     code: 'DL_HOUSEHOLD_1',
     name: 'DL HOUSEHOLD 1',
@@ -39,6 +42,25 @@ export const ENTITIES = {
     metadata: {
       dhis: { isDataRegional: false, trackedEntityId: 'tracked_entity_id_dl_household_1' },
     },
+    isTrackedEntity: () => true,
+    getParent: async () => DL_FACILITY_A,
+  },
+  DL_HOUSEHOLD_2: {
+    code: 'DL_HOUSEHOLD_2',
+    name: 'DL HOUSEHOLD 2',
+    type: 'household',
+    metadata: {
+      dhis: { isDataRegional: false, trackedEntityId: 'tracked_entity_id_dl_household_2' },
+    },
+    isTrackedEntity: () => true,
+    getParent: async () => DL_FACILITY_A,
+  },
+};
+
+export const ENTITY_HIERARCHIES = {
+  explore: {
+    name: 'explore',
+    id: '1234',
   },
 };
 

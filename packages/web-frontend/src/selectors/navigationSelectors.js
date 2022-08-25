@@ -11,3 +11,7 @@ import { selectLocation } from './utils';
 export const selectMobileTab = createSelector([selectLocation], location =>
   getLocationComponentValue(location, URL_COMPONENTS.MOBILE_TAB),
 );
+
+export const selectIfIsPDFExporting = createSelector([selectLocation], location =>
+  getLocationComponentValue(location, URL_COMPONENTS.PDF_EXPORT),
+);

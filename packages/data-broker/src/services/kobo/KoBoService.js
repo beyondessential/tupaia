@@ -41,19 +41,19 @@ export class KoBoService extends Service {
   };
 
   pullSyncGroups = async (dataSources, options) => {
-    const resultsByInternalCode = {};
+    const resultsByDataGroupCode = {};
+
     for (const source of dataSources) {
       const results = await this.api.fetchKoBoSubmissions(source.config?.koboSurveyCode, options);
-      resultsByInternalCode[
-        source.config?.internalSurveyCode
-      ] = await this.translator.translateKoBoResults(
+
+      resultsByDataGroupCode[source.data_group_code] = await this.translator.translateKoBoResults(
         results,
         source.config?.questionMapping,
         source.config?.entityQuestionCode,
       );
     }
 
-    return resultsByInternalCode;
+    return resultsByDataGroupCode;
   };
 
   async pullMetadata() {

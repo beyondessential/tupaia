@@ -146,7 +146,7 @@ const EVENT_ANALYTICS_TRACKED_ENTITY_ID = {
       'Haveluloto',
       'TO_HvlMCH',
       'houma_dhisId',
-      'tracked_entity_id_dl_household_2',
+      'tracked_entity_id_dl_household_3',
     ],
   ],
 };
