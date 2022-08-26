@@ -15,7 +15,12 @@ import {
   appResendEmail,
 } from '/appServer';
 import { login, oneTimeLogin, logout } from '/authSession';
-import { exportChartHandler, ExportSurveyResponsesHandler, ExportSurveyDataHandler } from '/export';
+import {
+  exportChartHandler,
+  ExportSurveyResponsesHandler,
+  ExportSurveyDataHandler,
+  PDFExportHandler,
+} from '/export';
 import { getUser } from './getUser';
 import MeasuresHandler from './measures';
 import MeasuresDataHandler from './measureData';
@@ -55,6 +60,7 @@ export const getRoutesForApiV1 = () => {
   api.get('/projects', catchAsyncErrors(getProjects));
   api.get('/dashboards', handleWith(DashboardsHandler)); // New style dashboards
   api.get('/report/:reportCode', handleWith(ReportHandler));
+  api.post('/pdf', catchAsyncErrors(PDFExportHandler));
 
   return api;
 };

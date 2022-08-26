@@ -7,17 +7,23 @@ const MOCK_DATA_SERVICE_ENTITY = [
   {
     id: 'AAAAAAAAAAAAAAAAAAAAAAAA',
     entity_code: 'TupaiaEntityA',
-    'config->>kobo_id': 'KoBoA',
+    config: {
+      kobo_id: 'KoBoA',
+    },
   },
   {
     id: 'BBBBBBBBBBBBBBBBBBBBBBBB',
     entity_code: 'TupaiaEntityB',
-    'config->>kobo_id': 'KoBoB',
+    config: {
+      kobo_id: 'KoBoB',
+    },
   },
   {
     id: 'CCCCCCCCCCCCCCCCCCCCCCCC',
     entity_code: 'TupaiaEntityC',
-    'config->>kobo_id': 'KoBoC',
+    config: {
+      kobo_id: 'KoBoC',
+    },
   },
 ];
 
@@ -74,9 +80,10 @@ export const MOCK_QUESTION_ANSWER_MAP = {
 };
 
 export const MOCK_DATA_SOURCE = {
+  data_group_code: 'xyz',
+  service_type: 'kobo',
   config: {
     koboSurveyCode: 'abc',
-    internalSurveyCode: 'xyz',
     entityQuestionCode: 'entity',
     questionMapping: MOCK_QUESTION_ANSWER_MAP,
   },

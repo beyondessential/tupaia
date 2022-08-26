@@ -16,7 +16,6 @@ import { useI18n, useUrlParams } from '../utils';
 
 const Heading = styled(Typography)`
   font-weight: 600;
-  font-size: 18px;
   line-height: 140%;
   text-transform: capitalize;
   color: ${props => props.theme.palette.primary.main};
@@ -24,7 +23,6 @@ const Heading = styled(Typography)`
 
 const SubHeading = styled(Heading)`
   font-weight: 500;
-  font-size: 16px;
 `;
 
 const HorizontalDivider = styled(MuiDivider)`
@@ -308,7 +306,7 @@ const Logo = styled.div`
   height: 100%;
 `;
 
-const VITALS_VIEWS = {
+export const VITALS_VIEWS = {
   country: CountryView,
   district: ProvinceView,
   sub_district: DistrictView,

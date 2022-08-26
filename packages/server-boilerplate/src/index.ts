@@ -20,4 +20,4 @@ export {
 } from './orchestrator';
 export * from './types';
 export * from './models';
-export { TestableServer } from './__tests__/utilities';
+export { TestableServer } from './testUtilities';

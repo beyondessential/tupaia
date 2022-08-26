@@ -17,6 +17,7 @@ jest.mock('@tupaia/database', () => ({
   },
   TupaiaDatabase: () => {},
   ModelRegistry: jest.fn().mockImplementation(() => mockModels),
+  createModelsStub: jest.requireActual('@tupaia/database').createModelsStub, // don't mock needed testUtility
 }));
 
 jest.mock('@tupaia/server-boilerplate', () => ({
@@ -240,8 +241,11 @@ describe('DataBroker', () => {
   });
 
   describe('pullMetadata()', () => {
-    const assertServicePulledDataElementMetadataOnce = (service, dataElements) =>
-      expect(service.pullMetadata).toHaveBeenCalledOnceWith(dataElements, 'dataElement', options);
+    const assertServicePulledDataElementMetadataOnce = (service, dataSources) =>
+      expect(service.pullMetadata).toHaveBeenCalledOnceWith(dataSources, 'dataElement', options);
+
+    const assertServicePulledDataGroupMetadataOnce = (service, dataSources) =>
+      expect(service.pullMetadata).toHaveBeenCalledOnceWith(dataSources, 'dataGroup', options);
 
     it('throws if the data sources belong to multiple services', async () => {
       const dataBroker = new DataBroker();
@@ -264,6 +268,16 @@ describe('DataBroker', () => {
       assertServicePulledDataElementMetadataOnce(SERVICES.test, [
         DATA_ELEMENTS.TEST_01,
         DATA_ELEMENTS.TEST_02,
+      ]);
+    });
+
+    it('sends data services when data source type is data group', async () => {
+      const dataBroker = new DataBroker();
+      await dataBroker.pullMetadata({ code: ['TEST_01', 'TEST_02'], type: 'dataGroup' }, options);
+      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
+      assertServicePulledDataGroupMetadataOnce(SERVICES.test, [
+        DATA_GROUPS.TEST_01,
+        DATA_GROUPS.TEST_02,
       ]);
     });
   });

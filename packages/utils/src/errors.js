@@ -11,9 +11,12 @@ import { respond } from './respond';
  * this may change to saving the error info to the database, notifying the admin, or similar
  */
 class LoggedError extends Error {
-  constructor(message) {
+  constructor(message, originalError = null) {
     super(message);
     this.message = message;
+    if (originalError) {
+      winston.error('Original error:', { stack: originalError.stack });
+    }
     winston.error(this.message, { stack: this.stack });
   }
 }
@@ -23,8 +26,8 @@ class LoggedError extends Error {
  * the appropriate http status code
  */
 export class RespondingError extends LoggedError {
-  constructor(message, statusCode, extraFields = {}) {
-    super(message);
+  constructor(message, statusCode, extraFields = {}, originalError = null) {
+    super(message, originalError);
     this.statusCode = statusCode;
     this.extraFields = extraFields;
     this.respond = res => respond(res, { error: this.message, ...extraFields }, statusCode);
@@ -46,7 +49,7 @@ export class DatabaseError extends RespondingError {
 
 export class InternalServerError extends RespondingError {
   constructor(error) {
-    super(`Internal server error: ${error.message}`, 500);
+    super(`Internal server error: ${error.message}`, 500, undefined, error);
   }
 }
 

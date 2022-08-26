@@ -534,7 +534,7 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
     query.returning('*');
   }
 
-  if (process.env.DB_VERBOSE === 'true') {
+  if (process.env.DB_VERBOSE === 'true' || process.env.DB_VERBOSE === '1') {
     winston.info(query.toString());
   }
 
@@ -593,8 +593,7 @@ function addWhereClause(connection, baseQuery, where) {
       throw new Error(`Cannot compare using ${comparisonType}`);
     }
 
-    // TODO: Replace with knex json where functions, eg. whereJsonPath
-    const columnKey = key.includes('->>') ? connection.raw(`??->>?`, key.split('->>')) : key;
+    const columnKey = getColSelector(connection, key);
     const columnSelector = castAs ? connection.raw(`??::${castAs}`, [columnKey]) : columnKey;
 
     const { args = [comparator, comparisonValue] } = value;
@@ -623,4 +622,26 @@ function addJoin(baseQuery, recordType, joinOptions) {
       joining.andOn(...joinConditions[joinConditionIndex]);
     }
   });
+}
+
+function getColSelector(connection, inputColStr) {
+  if (inputColStr.includes('->>')) {
+    // Shorthand way of querying json property
+    // TODO: Replace with knex json where functions, eg. whereJsonPath
+    const [first, ...rest] = inputColStr.split(/->>?/);
+    if (rest.length === 1) {
+      // e.g. 'config->>colour' is converted to config->>'colour'
+      return connection.raw(`??->>?`, [first, ...rest]);
+    }
+    // e.g. 'config->item->>colour' is converted to config->'item'->>'colour'
+    const last = rest.slice(-1);
+    const middle = rest.slice(0, rest.length - 1);
+    return connection.raw(`??->${middle.map(i => '?').join('->')}->>?`, [
+      first,
+      ...middle,
+      ...last,
+    ]);
+  }
+
+  return inputColStr;
 }

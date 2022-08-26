@@ -7,6 +7,37 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
+const SERVICE_TYPE_OPTIONS = [
+  {
+    label: 'Data Lake',
+    value: 'data-lake',
+  },
+  {
+    label: 'DHIS',
+    value: 'dhis',
+  },
+  {
+    label: 'Indicator',
+    value: 'indicator',
+  },
+  {
+    label: 'Kobo',
+    value: 'kobo',
+  },
+  {
+    label: 'Superset',
+    value: 'superset',
+  },
+  {
+    label: 'Tupaia',
+    value: 'tupaia',
+  },
+  {
+    label: 'Weather',
+    value: 'weather',
+  },
+];
+
 const localStyles = {
   config: {
     dt: {
@@ -26,7 +57,7 @@ const DataSourceConfigView = row => {
     .map(([key, value]) => (
       <React.Fragment key={key}>
         <dt style={localStyles.config.dt}>{key}:</dt>
-        <dd>{value.toString()}</dd>
+        <dd>{value ? value.toString() : '""'}</dd>
       </React.Fragment>
     ));
 
@@ -61,33 +92,46 @@ const DATA_SOURCE_FIELDS = [
     source: 'code',
   },
   {
-    Header: 'Service Type',
+    Header: 'Data Service',
     source: 'service_type',
-    editConfig: { default: 'dhis' },
+    editConfig: { default: 'dhis', options: SERVICE_TYPE_OPTIONS },
   },
 ];
 const DATA_ELEMENT_FIELDS = [
   ...DATA_SOURCE_FIELDS,
   {
-    Header: 'Config',
+    Header: 'Data Service Configuration',
     source: 'config',
     Cell: DataSourceConfigView,
     editConfig: {
       type: 'json',
       default: '{}',
+      visibilityCriteria: {
+        service_type: values => ['dhis', 'superset'].includes(values.service_type),
+      },
       getJsonFieldSchema: () => [
         {
-          label: 'Regional Server (Choose "No" if stored on country specific server)',
-          fieldName: 'isDataRegional',
-          type: 'boolean',
+          label: 'DHIS Server',
+          fieldName: 'dhisInstanceCode',
+          optionsEndpoint: 'dhisInstances',
+          optionLabelKey: 'dhisInstances.code',
+          optionValueKey: 'dhisInstances.code',
+          visibilityCriteria: { service_type: 'dhis' },
         },
         {
           label: 'Data element code',
           fieldName: 'dataElementCode',
+          visibilityCriteria: { service_type: 'dhis' },
         },
         {
           label: 'Category option combo code',
           fieldName: 'categoryOptionCombo',
+          visibilityCriteria: { service_type: 'dhis' },
+        },
+        {
+          label: 'Superset Chart ID',
+          fieldName: 'supersetChartId',
+          visibilityCriteria: { service_type: 'superset' },
         },
       ],
     },
@@ -104,17 +148,23 @@ const DATA_ELEMENT_FIELDS = [
 const DATA_GROUP_FIELDS = [
   ...DATA_SOURCE_FIELDS,
   {
-    Header: 'Config',
+    Header: 'Data Service Configuration',
     source: 'config',
     Cell: DataSourceConfigView,
     editConfig: {
       type: 'json',
       default: '{}',
+      visibilityCriteria: {
+        service_type: 'dhis',
+      },
       getJsonFieldSchema: () => [
         {
-          label: 'Regional Server (Choose "No" if stored on country specific server)',
-          fieldName: 'isDataRegional',
-          type: 'boolean',
+          label: 'DHIS Server',
+          fieldName: 'dhisInstanceCode',
+          optionsEndpoint: 'dhisInstances',
+          optionLabelKey: 'dhisInstances.code',
+          optionValueKey: 'dhisInstances.code',
+          visibilityCriteria: { service_type: 'dhis' },
         },
       ],
     },
@@ -134,10 +184,10 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
         columns: [...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement')],
       },
     ]}
-    editConfig={{ title: 'Edit Data Source' }}
     createConfig={{
       title: 'New Data Group',
       actionConfig: {
+        title: 'Edit Data Group',
         editEndpoint: 'dataGroups',
         fields: [...DATA_GROUP_FIELDS],
       },
@@ -164,11 +214,11 @@ export const DataElementsPage = ({ getHeaderEl }) => (
     endpoint="dataElements"
     reduxId="dataElements"
     columns={[...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement')]}
-    editConfig={{ title: 'Edit Data Element' }}
     importConfig={IMPORT_CONFIG}
     createConfig={{
       title: 'New Data Element',
       actionConfig: {
+        title: 'Edit Data Element',
         editEndpoint: 'dataElements',
         fields: [...DATA_ELEMENT_FIELDS],
       },

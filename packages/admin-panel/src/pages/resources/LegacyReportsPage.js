@@ -39,6 +39,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
+      title: 'Edit Legacy Report',
       editEndpoint: 'legacyReports',
       fields: [...FIELDS],
     },
@@ -50,9 +51,6 @@ export const LegacyReportsPage = ({ getHeaderEl }) => (
     title="Legacy Reports"
     endpoint="legacyReports"
     columns={COLUMNS}
-    editConfig={{
-      title: 'Edit Legacy Report',
-    }}
     getHeaderEl={getHeaderEl}
   />
 );

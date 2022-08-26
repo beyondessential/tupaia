@@ -25,7 +25,7 @@ export class DataGroupType extends CommonDataGroupType {
       },
       {
         service_type: 'dhis',
-        config: { isDataRegional: this.config.isDataRegional },
+        config: { dhisInstanceCode: this.config.dhisInstanceCode },
       },
     );
     await this.attachDataElement(dataElementId);

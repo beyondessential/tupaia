@@ -14,7 +14,7 @@ for PACKAGE in ${PACKAGES[@]}; do
         echo "Starting ${PACKAGE}"
         cd ${TUPAIA_DIR}/packages/$PACKAGE
         REPLICATION_PM2_CONFIG=''
-        if [ $PACKAGE == "web-config-server" ] || [ $PACKAGE == "report-server" ]; then
+        if [ $PACKAGE == "web-config-server" ] || [ $PACKAGE == "report-server" ] || [ $PACKAGE == "lesmis-server" ] ; then
             # as many replicas as cpu cores - 1
             REPLICATION_PM2_CONFIG='-i -1'
         fi
@@ -29,6 +29,9 @@ for PACKAGE in ${PACKAGES[@]}; do
             yarn workspace @tupaia/data-api install-mv-refresh
             yarn workspace @tupaia/data-api patch-mv-refresh up
             yarn workspace @tupaia/data-api build-analytics-table
+
+            # ensure that the latest permissions based meditrak sync queue has been built
+            yarn workspace @tupaia/central-server create-meditrak-sync-view
         fi
     fi
 done

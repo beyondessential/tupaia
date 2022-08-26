@@ -21,6 +21,7 @@ const OPTION_SET_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
+      title: 'Edit Option Set',
       editEndpoint: 'optionSets',
       fields: [...OPTION_SET_FIELDS],
     },
@@ -88,10 +89,6 @@ const IMPORT_CONFIG = {
   ],
 };
 
-const EDIT_CONFIG = {
-  title: 'Edit Option Set',
-};
-
 export const OptionSetsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Option Sets"
@@ -99,7 +96,6 @@ export const OptionSetsPage = ({ getHeaderEl }) => (
     columns={OPTION_SET_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
-    editConfig={EDIT_CONFIG}
     getHeaderEl={getHeaderEl}
   />
 );

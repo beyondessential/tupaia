@@ -64,7 +64,7 @@ export async function getOrCreateParentEntity(
     };
     district = await transactingModels.geographicalArea.findOrCreate(districtObject);
     const defaultMetadata = {
-      dhis: { isDataRegional: true },
+      dhis: { dhisInstanceCode: 'regional' },
       openStreetMaps: { id: districtOsmId },
     };
     const districtEntityMetadata = await getEntityMetadata(
@@ -96,7 +96,7 @@ export async function getOrCreateParentEntity(
       level_name: 'Sub District',
     };
     const defaultMetadata = {
-      dhis: { isDataRegional: true },
+      dhis: { dhisInstanceCode: 'regional' },
       openStreetMaps: { id: subDistrictOsmId },
     };
     const subDistrictEntityMetadata = await getEntityMetadata(

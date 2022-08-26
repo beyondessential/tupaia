@@ -4,6 +4,7 @@
  */
 
 import { createJestMockInstance } from '@tupaia/utils';
+import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import * as CreateService from '../../services/createService';
 
 export const stubCreateService = services =>
@@ -42,17 +43,23 @@ export const createServiceStub = serviceData => {
   return createJestMockInstance('@tupaia/data-broker/src/services/Service', 'Service', { pull });
 };
 
-export const createModelsStub = (dataElements, dataGroups) => ({
-  dataElement: {
-    find: spec => dataElements.filter(({ code }) => spec.code.includes(code)),
-    getTypes: () => ({
-      DATA_ELEMENT: 'dataElement',
-      DATA_GROUP: 'dataGroup',
-      SYNC_GROUP: 'syncGroup',
-    }),
-  },
-  dataGroup: {
-    find: spec => dataGroups.filter(({ code }) => spec.code.includes(code)),
-    getDataElementsInDataGroup: () => [],
-  },
-});
+export const createModelsStub = (dataElements, dataGroups) => {
+  return baseCreateModelsStub({
+    dataElement: {
+      records: dataElements,
+      extraMethods: {
+        getTypes: () => ({
+          DATA_ELEMENT: 'dataElement',
+          DATA_GROUP: 'dataGroup',
+          SYNC_GROUP: 'syncGroup',
+        }),
+      },
+    },
+    dataGroup: {
+      records: dataGroups,
+      extraMethods: {
+        getDataElementsInDataGroup: () => [],
+      },
+    },
+  });
+};

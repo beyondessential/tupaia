@@ -78,6 +78,7 @@ const SURVEY_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
+      title: 'Edit Survey',
       editEndpoint: 'surveys',
       fields: [
         ...SURVEY_FIELDS,
@@ -94,8 +95,8 @@ const SURVEY_COLUMNS = [
           editConfig: {
             options: SERVICE_TYPES,
             setFieldsOnChange: (newValue, currentRecord) => {
-              const { isDataRegional = true } = currentRecord['data_group.config'];
-              const config = newValue === 'dhis' ? { isDataRegional } : {};
+              const { dhisInstanceCode = 'regional' } = currentRecord['data_group.config'];
+              const config = newValue === 'dhis' ? { dhisInstanceCode } : {};
               return { 'data_group.config': config };
             },
           },
@@ -105,14 +106,18 @@ const SURVEY_COLUMNS = [
           source: 'data_group.config',
           editConfig: {
             type: 'json',
+            visibilityCriteria: {
+              'data_group.service_type': 'dhis',
+            },
             getJsonFieldSchema: (_, { recordData }) =>
               recordData['data_group.service_type'] === 'dhis'
                 ? [
                     {
-                      label:
-                        'Stored On Regional Server (Choose "No" if stored on country specific server)',
-                      fieldName: 'isDataRegional',
-                      type: 'boolean',
+                      label: 'DHIS Server',
+                      fieldName: 'dhisInstanceCode',
+                      optionsEndpoint: 'dhisInstances',
+                      optionLabelKey: 'dhisInstances.code',
+                      optionValueKey: 'dhisInstances.code',
                     },
                   ]
                 : [],
@@ -212,6 +217,7 @@ const QUESTION_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
+      title: 'Edit Question',
       editEndpoint: 'surveyScreenComponents',
       fields: [
         ...QUESTION_FIELDS,
@@ -431,10 +437,6 @@ const IMPORT_CONFIG = {
   ],
 };
 
-const EDIT_CONFIG = {
-  title: 'Edit Survey',
-};
-
 export const SurveysPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Surveys"
@@ -442,7 +444,6 @@ export const SurveysPage = ({ getHeaderEl }) => (
     columns={SURVEY_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
-    editConfig={EDIT_CONFIG}
     getHeaderEl={getHeaderEl}
   />
 );
