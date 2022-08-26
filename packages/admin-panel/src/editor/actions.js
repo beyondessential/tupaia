@@ -18,7 +18,7 @@ import { convertSearchTermToFilter, makeSubstitutionsInString } from '../utiliti
 const STATIC_FIELD_TYPES = ['link'];
 
 export const openBulkEditModal = (
-  { bulkGetEndpoint, bulkUpdateEndpoint, fields, baseFilter },
+  { bulkGetEndpoint, bulkUpdateEndpoint, fields, title, baseFilter },
   recordId,
   rowData,
 ) => async (dispatch, getState, { api }) => {
@@ -26,6 +26,7 @@ export const openBulkEditModal = (
     dispatch({
       type: EDITOR_DATA_FETCH_BEGIN,
       fields,
+      title,
       endpoint: bulkUpdateEndpoint,
     });
     // Set up filter
@@ -76,7 +77,7 @@ export const openBulkEditModal = (
   }
 };
 
-export const openEditModal = ({ editEndpoint, fields }, recordId) => async (
+export const openEditModal = ({ editEndpoint, title, fields }, recordId) => async (
   dispatch,
   getState,
   { api },
@@ -86,6 +87,7 @@ export const openEditModal = ({ editEndpoint, fields }, recordId) => async (
     dispatch({
       type: EDITOR_DATA_FETCH_BEGIN,
       fields,
+      title,
       endpoint,
       recordId,
     });

@@ -43,15 +43,12 @@ const COLUMNS = [
     source: 'id',
     width: 70,
     actionConfig: {
+      title: 'Edit Indicator',
       editEndpoint: 'indicators',
       fields: [...FIELDS],
     },
   },
 ];
-
-const EDIT_CONFIG = {
-  title: 'Edit Indicator',
-};
 
 const CREATE_CONFIG = {
   title: 'Add Indicator',
@@ -66,7 +63,6 @@ export const IndicatorsPage = ({ getHeaderEl }) => (
     title="Indicators"
     endpoint="indicators"
     columns={COLUMNS}
-    editConfig={EDIT_CONFIG}
     createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
   />
