@@ -9,7 +9,6 @@ import {
   getApisForDataSources,
   getApisForLegacyDataSourceConfig,
 } from './getDhisApi';
-import { DhisInstanceResolver } from './DhisInstanceResolver';
 import { Service } from '../Service';
 import { DhisTranslator } from './translators';
 import {
@@ -28,7 +27,6 @@ export class DhisService extends Service {
     super(models);
 
     this.translator = new DhisTranslator(this.models);
-    this.dhisInstanceResolver = new DhisInstanceResolver(models);
     this.dataElementsMetadataPuller = new DataElementsMetadataPuller(
       this.models.dataElement,
       this.translator,
@@ -94,19 +92,9 @@ export class DhisService extends Service {
   }
 
   async validatePushData(dataSources, dataValues) {
-    const { serverName } = await getApiForValue(
-      this.models,
-      this.dhisInstanceResolver,
-      dataSources[0],
-      dataValues[0],
-    );
+    const { serverName } = await getApiForValue(this.models, dataSources[0]);
     for (let i = 0; i < dataSources.length; i++) {
-      const { serverName: otherServerName } = await getApiForValue(
-        this.models,
-        this.dhisInstanceResolver,
-        dataSources[i],
-        dataValues[i],
-      );
+      const { serverName: otherServerName } = await getApiForValue(this.models, dataSources[i]);
       if (otherServerName !== serverName) {
         throw new Error(`All data being pushed must be for the same DHIS2 instance`);
       }
@@ -117,12 +105,7 @@ export class DhisService extends Service {
     const pushData = this.pushers[type]; // all are of the same type
     const dataValues = Array.isArray(data) ? data : [data];
     await this.validatePushData(dataSources, dataValues);
-    const api = await getApiForValue(
-      this.models,
-      this.dhisInstanceResolver,
-      dataSources[0],
-      dataValues[0],
-    ); // all are for the same instance
+    const api = await getApiForValue(this.models, dataSources[0]); // all are for the same instance
     const diagnostics = await pushData(api, dataValues, dataSources);
     return { diagnostics, serverName: api.getServerName() };
   }
@@ -148,7 +131,7 @@ export class DhisService extends Service {
     if (serverName) {
       api = await getApiFromServerName(this.models, serverName);
     } else {
-      api = await getApiForValue(this.models, this.dhisInstanceResolver, dataSource, data);
+      api = await getApiForValue(this.models, dataSource);
     }
     const deleteData = this.deleters[type];
     return deleteData(api, data, dataSource);
@@ -167,18 +150,8 @@ export class DhisService extends Service {
 
   async getPullApis(dataSources, entityCodes, detectDataServices, dataServices) {
     const apis = detectDataServices
-      ? await getApisForDataSources(
-          this.models,
-          this.dhisInstanceResolver,
-          dataSources,
-          entityCodes,
-        )
-      : await getApisForLegacyDataSourceConfig(
-          this.models,
-          this.dhisInstanceResolver,
-          dataServices,
-          entityCodes,
-        );
+      ? await getApisForDataSources(this.models, dataSources)
+      : await getApisForLegacyDataSourceConfig(this.models, dataServices);
 
     return apis;
   }

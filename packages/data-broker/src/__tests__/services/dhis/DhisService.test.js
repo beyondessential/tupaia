@@ -134,12 +134,7 @@ describe('DhisService', () => {
         await dhisService.push([DATA_SOURCES.POP01], [DATA_VALUES.POP01], { type: 'dataElement' });
 
         // implementation calls getApiForValue multiple times, we don't test each one as args should be the same every time
-        expect(getApiForValueSpy).toHaveBeenLastCalledWith(
-          expect.anything(),
-          expect.anything(),
-          DATA_SOURCES.POP01,
-          DATA_VALUES.POP01,
-        );
+        expect(getApiForValueSpy).toHaveBeenLastCalledWith(expect.anything(), DATA_SOURCES.POP01);
       });
     });
   });
@@ -223,12 +218,7 @@ describe('DhisService', () => {
           type: 'dataElement',
         });
 
-        expect(getApiForValueSpy).toHaveBeenCalledOnceWith(
-          expect.anything(),
-          expect.anything(),
-          DATA_SOURCES.POP01,
-          DATA_VALUES.POP01,
-        );
+        expect(getApiForValueSpy).toHaveBeenCalledOnceWith(expect.anything(), DATA_SOURCES.POP01);
       });
     });
   });
@@ -291,9 +281,7 @@ describe('DhisService', () => {
 
         expect(getApisForLegacyDataSourceConfigSpy).toHaveBeenCalledOnceWith(
           expect.anything(),
-          expect.anything(),
           [{ isDataRegional: true }], // default data service legacy config
-          ['TO'],
         );
 
         // expect those apis to be passed to pull
@@ -318,12 +306,10 @@ describe('DhisService', () => {
         await dhisService.pull(dataSources, 'dataElement', options);
 
         // expect DhisService to ask for the apis for the given data services
-        expect(getApisForLegacyDataSourceConfigSpy).toHaveBeenCalledOnceWith(
-          expect.anything(),
-          expect.anything(),
-          [{ isDataRegional: true }, { isDataRegional: false }],
-          ['TO'],
-        );
+        expect(getApisForLegacyDataSourceConfigSpy).toHaveBeenCalledOnceWith(expect.anything(), [
+          { isDataRegional: true },
+          { isDataRegional: false },
+        ]);
 
         // expect those apis to be passed to pull
         expect(dhisService.analyticsPuller.pull).toHaveBeenCalledOnceWith(
@@ -356,12 +342,7 @@ describe('DhisService', () => {
         await dhisService.pull(dataSources, 'dataElement', options);
 
         // expect DhisService to ask for the apis for the given data sources
-        expect(getApisForDataSourcesSpy).toHaveBeenCalledOnceWith(
-          expect.anything(),
-          expect.anything(),
-          dataSources,
-          ['TO'],
-        );
+        expect(getApisForDataSourcesSpy).toHaveBeenCalledOnceWith(expect.anything(), dataSources);
 
         // expect those apis to be passed to pull
         expect(dhisService.analyticsPuller.pull).toHaveBeenCalledOnceWith(
