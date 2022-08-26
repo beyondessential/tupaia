@@ -187,7 +187,7 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
     createConfig={{
       title: 'New Data Group',
       actionConfig: {
-        title: 'Edit Data Source',
+        title: 'Edit Data Group',
         editEndpoint: 'dataGroups',
         fields: [...DATA_GROUP_FIELDS],
       },
