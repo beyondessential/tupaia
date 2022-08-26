@@ -32,6 +32,7 @@
     "@tupaia/api-client": "3.1.0",
     "@tupaia/auth": "1.0.0",
     "@tupaia/database": "1.0.0",
+    "@tupaia/dhis-api": "workspace:^",
     "@tupaia/expression-parser": "1.0.0",
     "@tupaia/server-boilerplate": "1.0.0",
     "@tupaia/tsutils": "1.0.0",
