@@ -10,7 +10,7 @@ import { ExportButton } from '../../importExport';
 import { BooleanSelectFilter } from './columnFilters';
 import { Tooltip, JSONTooltip } from './Tooltip';
 import { LogsButton } from '../../logsTable';
-import { SyncButton } from '../../syncButton';
+import { SyncStatus } from '../../sync';
 
 const generateCustomCell = (CustomCell, actionConfig, reduxId) => props => (
   <CustomCell actionConfig={actionConfig} reduxId={reduxId} {...props} />
@@ -32,10 +32,10 @@ const CUSTOM_CELL_COMPONENTS = {
   tooltip: Tooltip,
   jsonTooltip: JSONTooltip,
   logs: LogsButton,
-  sync: SyncButton,
+  sync: SyncStatus,
 };
 
-const BUTTON_COLUMN_TYPES = ['edit', 'export', 'delete', 'logs', 'sync'];
+const BUTTON_COLUMN_TYPES = ['edit', 'export', 'delete', 'logs'];
 
 export const generateConfigForColumnType = (type, actionConfig, reduxId) => {
   const CustomCellComponent = CUSTOM_CELL_COMPONENTS[type];
