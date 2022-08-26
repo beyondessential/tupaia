@@ -69,6 +69,13 @@ class DataFetchingTableComponent extends React.Component {
     }
   }
 
+  shouldComponentUpdate(nextProps) {
+    if (this.props.reduxId !== nextProps.reduxId) return true;
+    if (this.props.numberOfPages !== nextProps.numberOfPages) return true;
+    if (JSON.stringify(this.props.data) !== JSON.stringify(nextProps.data)) return true;
+    return false;
+  }
+
   renderConfirmModal() {
     const {
       confirmActionMessage,
