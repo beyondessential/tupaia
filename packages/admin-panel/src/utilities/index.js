@@ -10,3 +10,4 @@ export { makeSubstitutionsInString } from './makeSubstitutionsInString';
 export { usePortalWithCallback } from './usePortalWithCallback';
 export * from './pretty';
 export * from './useDebounce';
+export { checkVisibilityCriteriaAreMet } from './visibilityCriteria';

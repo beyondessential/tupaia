@@ -106,6 +106,9 @@ const SURVEY_COLUMNS = [
           source: 'data_group.config',
           editConfig: {
             type: 'json',
+            visibilityCriteria: {
+              'data_group.service_type': 'dhis',
+            },
             getJsonFieldSchema: (_, { recordData }) =>
               recordData['data_group.service_type'] === 'dhis'
                 ? [
