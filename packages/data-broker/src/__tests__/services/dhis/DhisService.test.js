@@ -105,14 +105,14 @@ describe('DhisService', () => {
     });
 
     describe('push api resolution', () => {
-      let getApiForValueSpy;
+      let getApiForDataSourceSpy;
 
       beforeEach(() => {
-        getApiForValueSpy = jest.spyOn(GetDhisApi, 'getApiForValue');
+        getApiForDataSourceSpy = jest.spyOn(GetDhisApi, 'getApiForDataSource');
       });
 
       it('throws if data sources use different dhis instances', async () => {
-        getApiForValueSpy
+        getApiForDataSourceSpy
           .mockReturnValueOnce(createMockDhisApi({ serverName: 'myDhisApi1' }))
           .mockReturnValueOnce(createMockDhisApi({ serverName: 'myDhisApi2' }));
 
@@ -129,12 +129,15 @@ describe('DhisService', () => {
       });
 
       it('looks up the api from the given data source', async () => {
-        getApiForValueSpy.mockReturnValue(createMockDhisApi());
+        getApiForDataSourceSpy.mockReturnValue(createMockDhisApi());
 
         await dhisService.push([DATA_SOURCES.POP01], [DATA_VALUES.POP01], { type: 'dataElement' });
 
-        // implementation calls getApiForValue multiple times, we don't test each one as args should be the same every time
-        expect(getApiForValueSpy).toHaveBeenLastCalledWith(expect.anything(), DATA_SOURCES.POP01);
+        // implementation calls getApiForDataSource multiple times, we don't test each one as args should be the same every time
+        expect(getApiForDataSourceSpy).toHaveBeenLastCalledWith(
+          expect.anything(),
+          DATA_SOURCES.POP01,
+        );
       });
     });
   });
@@ -189,11 +192,11 @@ describe('DhisService', () => {
     });
 
     describe('delete api resolution', () => {
-      let getApiForValueSpy;
+      let getApiForDataSourceSpy;
       let getApiFromServerNameSpy;
 
       beforeEach(() => {
-        getApiForValueSpy = jest.spyOn(GetDhisApi, 'getApiForValue');
+        getApiForDataSourceSpy = jest.spyOn(GetDhisApi, 'getApiForDataSource');
         getApiFromServerNameSpy = jest.spyOn(GetDhisApi, 'getApiFromServerName');
       });
 
@@ -212,13 +215,16 @@ describe('DhisService', () => {
       });
 
       it('looks up the api from the given data source', async () => {
-        getApiForValueSpy.mockReturnValue(createMockDhisApi());
+        getApiForDataSourceSpy.mockReturnValue(createMockDhisApi());
 
         await dhisService.delete(DATA_SOURCES.POP01, DATA_VALUES.POP01, {
           type: 'dataElement',
         });
 
-        expect(getApiForValueSpy).toHaveBeenCalledOnceWith(expect.anything(), DATA_SOURCES.POP01);
+        expect(getApiForDataSourceSpy).toHaveBeenCalledOnceWith(
+          expect.anything(),
+          DATA_SOURCES.POP01,
+        );
       });
     });
   });

@@ -5,7 +5,7 @@
 
 import { legacy_configToDhisInstanceCode } from '@tupaia/utils';
 import {
-  getApiForValue,
+  getApiForDataSource,
   getApiFromServerName,
   getApisForDataSources,
   getApisForLegacyDataSourceConfig,
@@ -57,9 +57,9 @@ const mockModels = {
 };
 
 describe('getDhisApi', () => {
-  describe('getApiForValue()', () => {
+  describe('getApiForDataSource()', () => {
     it('resolves', async () => {
-      const api = await getApiForValue(mockModels, TEST_DATA_SOURCE_1);
+      const api = await getApiForDataSource(mockModels, TEST_DATA_SOURCE_1);
       expect(api.getServerName()).toBe('test_dhis_instance');
     });
   });

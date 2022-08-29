@@ -10,16 +10,13 @@ import { DhisCodeToIdTranslator } from './translators';
 const instances = {};
 
 /**
- * FIXME: this function is redundant, use getApisForDataSources
- *
  * @param {{}} models
  * @param {DataSource} dataSource
  * @return {Promise<DhisApi>}
  */
-export const getApiForValue = async (models, dataSource) => {
-  const { dhisInstanceCode } = dataSource.config;
-  const dhisInstance = await getDhisInstanceByCode(models, dhisInstanceCode);
-  return getDhisApiInstance(models, dhisInstance);
+export const getApiForDataSource = async (models, dataSource) => {
+  const [api] = await getApisForDataSources(models, [dataSource]);
+  return api;
 };
 
 /**
