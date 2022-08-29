@@ -5026,6 +5026,7 @@ __metadata:
     content-disposition-header: ^0.6.0
     cross-env: ^7.0.2
     cypress-file-upload: ^5.0.8
+    date-fns: ^2.29.2
     file-saver: ^1.3.3
     localforage: ^1.5.0
     lodash.debounce: ^4.0.8
@@ -12608,6 +12609,13 @@ __metadata:
   version: 2.16.1
   resolution: "date-fns@npm:2.16.1"
   checksum: f19c2b3b9bd62fdbc55b160c87b4656b3a260d79ee7a32a9cbc19107c3d61d71b569c0957351f9a07fc84c35283f74b0af5276620d4a37e36eef1898fa6c25b2
+  languageName: node
+  linkType: hard
+
+"date-fns@npm:^2.29.2":
+  version: 2.29.2
+  resolution: "date-fns@npm:2.29.2"
+  checksum: 08bebcceb0a5dbadae4c55e6592b9d5c07dbd7833433c7e9a1d4a424300db32589b8b48e5979b32863c9b00a48d9bab6663e580c2a4f9f203d46cbf9113b5664
   languageName: node
   linkType: hard
 

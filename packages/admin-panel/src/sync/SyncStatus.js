@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { formatDistance } from 'date-fns';
 import SyncIcon from '@material-ui/icons/Sync';
 import ErrorIcon from '@material-ui/icons/Error';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
@@ -91,7 +92,10 @@ const useExternalState = (key, initialState) => {
   return [state, onChange];
 };
 
-const formatLog = ({ message }) => message;
+const formatLog = ({ timestamp, message }) =>
+  `${formatDistance(new Date(timestamp.concat(' UTC')), new Date(), {
+    addSuffix: true,
+  })}: ${message}`;
 
 export const SyncStatus = props => {
   const { actionConfig, original } = props;
