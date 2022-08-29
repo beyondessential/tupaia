@@ -31,8 +31,6 @@ const StatusMessageContainer = styled.div`
   padding-left: 5px;
 `;
 
-const StatusMessage = styled.div``;
-
 const spin = keyframes`
   0% { 
       transform: rotate(360deg); 
@@ -69,8 +67,6 @@ const SyncingIconButton = styled(IconButton)`
     color: white;
   }
 `;
-
-const IdleIconButton = styled(IconButton)``;
 
 // Bit of a hack to work around the fact that the sync button is constantly being recreated
 // in the resource page due to parent component re-rendering https://stackoverflow.com/a/33800398
@@ -147,13 +143,13 @@ export const SyncStatus = props => {
   if (errorMessage) {
     return (
       <SyncStatusContainer>
-        <IdleIconButton onClick={performManualSync}>
+        <IconButton onClick={performManualSync}>
           <SyncIcon />
-        </IdleIconButton>
+        </IconButton>
         <Tooltip title={errorMessage}>
           <StatusMessageContainer>
             <SyncFailingIcon />
-            <StatusMessage>Network error</StatusMessage>
+            <div>Network error</div>
           </StatusMessageContainer>
         </Tooltip>
       </SyncStatusContainer>
@@ -163,13 +159,13 @@ export const SyncStatus = props => {
   if (status === STATUSES.ERROR) {
     return (
       <SyncStatusContainer>
-        <IdleIconButton onClick={performManualSync}>
+        <IconButton onClick={performManualSync}>
           <SyncIcon />
-        </IdleIconButton>
+        </IconButton>
         <Tooltip title={logMessage}>
           <StatusMessageContainer>
             <SyncFailingIcon />
-            <StatusMessage>Sync failing</StatusMessage>
+            <div>Sync failing</div>
           </StatusMessageContainer>
         </Tooltip>
       </SyncStatusContainer>
@@ -183,7 +179,7 @@ export const SyncStatus = props => {
           <SpinningSyncIcon />
         </SyncingIconButton>
         <StatusMessageContainer>
-          <StatusMessage>Sync in progress</StatusMessage>
+          <div>Sync in progress</div>
         </StatusMessageContainer>
       </SyncStatusContainer>
     );
@@ -191,13 +187,13 @@ export const SyncStatus = props => {
 
   return (
     <SyncStatusContainer>
-      <IdleIconButton onClick={performManualSync}>
+      <IconButton onClick={performManualSync}>
         <SyncIcon />
-      </IdleIconButton>
+      </IconButton>
       <Tooltip title={logMessage}>
         <StatusMessageContainer>
           <SyncSuccessIcon />
-          <StatusMessage>Sync online</StatusMessage>
+          <div>Sync online</div>
         </StatusMessageContainer>
       </Tooltip>
     </SyncStatusContainer>
