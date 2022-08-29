@@ -8,9 +8,13 @@ import PropTypes from 'prop-types';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import GridOnIcon from '@material-ui/icons/GridOn';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import IconButton from '@material-ui/core/IconButton';
+
 import {
   Chart as ChartComponent,
   ChartTable as BaseChartTable,
+  FlexCenter,
   getIsChartData,
 } from '@tupaia/ui-components';
 import { FetchLoader } from '../FetchLoader';
@@ -173,7 +177,17 @@ export const Chart = ({
   ) : (
     <>
       <VisualHeader name={name} isLoading={isFetchingInBackground}>
-        <Toggle onChange={handleTabChange} value={selectedTab} exclusive />
+        <FlexCenter>
+          <Toggle onChange={handleTabChange} value={selectedTab} exclusive />
+          <IconButton
+            style={{ marginLeft: '17px' }}
+            disableRipple
+            size="small"
+            aria-label="favourite-icon"
+          >
+            <FavoriteBorderIcon />
+          </IconButton>
+        </FlexCenter>
       </VisualHeader>
       <Body>
         <ChartTable

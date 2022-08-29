@@ -7,3 +7,4 @@ export * from './useLogin';
 export * from './useLogout';
 export * from './useRegisterUser';
 export * from './useUpdateSurveyResponseStatus';
+export * from './useUpdateFavouriteDashboardItem';

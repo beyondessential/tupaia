@@ -8,6 +8,9 @@ import { get } from '../api';
 import { useDashboardData } from './useDashboardData';
 import { combineQueries } from './utils';
 import { QUERY_OPTIONS } from './constants';
+import { useFavouriteDashboardItem } from './useFavouriteDashboardItem';
+import { useUser } from './useUser';
+import { DISLIKE, IDLE, LIKE } from '../../constants';
 
 const useDashboardReportData = ({ entityCode, reportCode, startDate, endDate }) => {
   const params = {
@@ -43,16 +46,31 @@ const getReportCodesByCode = dashboards => {
   }, {});
 };
 
+const getDashboardItemLikeStatus = (userFavouriteDashboardItems, userId, reportCode) => {
+  if (!userId) {
+    return IDLE;
+  }
+
+  const isFavouriteDashboardItemFound = userFavouriteDashboardItems.find(
+    ({ 'dashboard_item.code': dashboardItemCode }) => dashboardItemCode === reportCode,
+  );
+
+  return isFavouriteDashboardItemFound ? LIKE : DISLIKE;
+};
+
 export const useDashboardReportDataWithConfig = ({
   entityCode,
   reportCode,
   startDate,
   endDate,
 }) => {
+  const { userId } = useUser();
+
   const query = combineQueries({
     reportData: useDashboardReportData({ entityCode, reportCode, startDate, endDate }),
     dashboards: useDashboardData({ entityCode }),
   });
+  const favouriteDashboardItems = useFavouriteDashboardItem({ userId })?.data || [];
 
   const dashboard = query.data?.dashboards?.find(dash =>
     dash.items.find(item => item.reportCode === reportCode),
@@ -62,11 +80,17 @@ export const useDashboardReportDataWithConfig = ({
 
   const reportCodes = getReportCodesByCode(query.data?.dashboards);
 
+  const likeStatus = getDashboardItemLikeStatus(favouriteDashboardItems, reportCode, userId);
+
   return {
     ...query,
     data: {
       reportData: query.data?.reportData,
-      dashboardItemConfig: { ...dashboardItem, dashboardName: dashboard?.dashboardName },
+      dashboardItemConfig: {
+        ...dashboardItem,
+        dashboardName: dashboard?.dashboardName,
+        likeStatus,
+      },
       reportCodes,
     },
   };

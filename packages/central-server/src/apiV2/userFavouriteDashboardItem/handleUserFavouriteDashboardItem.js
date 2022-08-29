@@ -10,7 +10,7 @@ import { respond } from '@tupaia/utils';
  * - /userFavouriteDashboardItem
  */
 
-export const handleUserFavouriteDashboardItem = async (req, res) => {
+export const handleUserFavouriteDashboardItem = async (req, res, next) => {
   const { models, body, userId } = req;
   const { dashboardItemCode, changeType } = body;
 
@@ -26,6 +26,10 @@ export const handleUserFavouriteDashboardItem = async (req, res) => {
     dashboard_item_id: dashboardItemId,
   };
 
-  await models.userFavouriteDashboardItem.updateRecord({ changeType, record });
-  respond(res, { message: 'successfully modified' });
+  try {
+    await models.userFavouriteDashboardItem.updateRecord({ changeType, record });
+    respond(res, { message: 'successfully modified' });
+  } catch (error) {
+    next(error);
+  }
 };
