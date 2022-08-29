@@ -14,26 +14,38 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
+const TABLES = ['data_element', 'data_group'];
+
 exports.up = async function (db) {
-  await db.runSql(`
-    ALTER TABLE data_element
-    ADD CONSTRAINT valid_data_service_config CHECK (service_type <> 'dhis' OR config->'dhisInstanceCode'::text <> 'null');
-  `);
-  await db.runSql(`
-    ALTER TABLE data_group
-    ADD CONSTRAINT valid_data_service_config CHECK (service_type <> 'dhis' OR config->'dhisInstanceCode'::text <> 'null');
-  `);
+  for (const table of TABLES) {
+    // If any data elements or groups have not been updated to use a specific dhis instance, we set them to NOT_SET so we can add the constraint
+    await db.runSql(`
+      UPDATE ${table} SET config = (config || '{"dhisInstanceCode": "NOT_SET"}')
+      WHERE service_type = 'dhis' AND config->'dhisInstanceCode'::text = 'null';
+    `);
+
+    // Add constraint
+    await db.runSql(`
+      ALTER TABLE ${table}
+      ADD CONSTRAINT valid_data_service_config CHECK (service_type <> 'dhis' OR config->'dhisInstanceCode'::text <> 'null');
+    `);
+  }
 };
 
 exports.down = async function (db) {
-  await db.runSql(`
-    ALTER TABLE data_element
-    DROP CONSTRAINT valid_data_service_config
-  `);
-  await db.runSql(`
-    ALTER TABLE data_group
-    DROP CONSTRAINT valid_data_service_config
-  `);
+  for (const table of TABLES) {
+    // Remove constraint
+    await db.runSql(`
+      ALTER TABLE ${table}
+      DROP CONSTRAINT valid_data_service_config
+    `);
+
+    // Revert data thing
+    await db.runSql(`
+      UPDATE ${table} SET config = (config || '{"dhisInstanceCode": null}')
+      WHERE service_type = 'dhis' AND config->>'dhisInstanceCode' = 'NOT_SET';
+    `);
+  }
 };
 
 exports._meta = {
