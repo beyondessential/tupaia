@@ -15,6 +15,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+import styled from 'styled-components';
+import MenuIcon from '@material-ui/icons/Menu';
 import Button from '@material-ui/core/Button';
 import Popover from '@material-ui/core/Popover';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -27,6 +29,7 @@ import {
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
 } from '../../actions';
 import { DARK_BLUE } from '../../styles';
+import { openHelpCenter } from '../../utils';
 
 const LOG_IN_ITEM = 'LOG_IN_ITEM';
 const PROJECTS_ITEM = 'PROJECTS_ITEM';
@@ -34,27 +37,39 @@ const CHANGE_PASSWORD_ITEM = 'CHANGE_PASSWORD_ITEM';
 const REQUEST_COUNTRY_ACCESS_ITEM = 'REQUEST_COUNTRY_ACCESS_ITEM';
 const LOG_OUT_ITEM = 'LOG_OUT_ITEM';
 
+const UserMenuContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const StyledMenuButton = styled(Button)`
+  width: 32px;
+  min-width: 32px;
+`;
+
+const UsernameContainer = styled.div`
+  padding-right: 5px;
+  color: ${props => props.theme.palette.text.primary};
+`;
+
 class UserMenu extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       menuOpen: false,
-      anchorEl: null,
     };
   }
 
-  toggleUserMenu(e, isMenuOpen) {
+  toggleUserMenu(isMenuOpen) {
     this.setState({
       menuOpen: !isMenuOpen,
-      anchorEl: e.currentTarget,
     });
   }
 
   closeUserMenu() {
     this.setState({
       menuOpen: false,
-      anchorEl: null,
     });
   }
 
@@ -85,29 +100,22 @@ class UserMenu extends Component {
   }
 
   render() {
-    const { isUserLoggedIn, currentUserUsername, openLandingPage } = this.props;
+    const { isUserLoggedIn, currentUserUsername, openLandingPage, openViewProjects } = this.props;
 
-    if (!isUserLoggedIn) {
-      return (
-        <div>
-          <Button onClick={() => openLandingPage()}>Sign in / Register</Button>
-        </div>
-      );
-    }
-
-    return (
+    const Menu = ({ children: menuItems }) => (
       <div>
-        <Button
-          onClick={e => this.toggleUserMenu(e, this.state.menuOpen)}
+        <StyledMenuButton
+          onClick={() => this.toggleUserMenu(this.state.menuOpen)}
           style={styles.username}
           disableRipple
+          id="user-menu-button"
         >
-          {currentUserUsername}
-        </Button>
+          <MenuIcon />
+        </StyledMenuButton>
         <Popover
           PaperProps={{ style: { backgroundColor: DARK_BLUE } }}
           open={this.state.menuOpen}
-          anchorEl={this.state.anchorEl}
+          anchorEl={() => document.getElementById('user-menu-button')}
           onClose={() => this.closeUserMenu()}
           anchorOrigin={{
             vertical: 'bottom',
@@ -118,22 +126,61 @@ class UserMenu extends Component {
             horizontal: 'right',
           }}
         >
-          <MenuItem
-            onClick={() => {
-              openLandingPage();
-              this.closeUserMenu();
-            }}
-          >
-            View projects
-          </MenuItem>
-          <MenuItem onClick={() => this.selectMenuItem(CHANGE_PASSWORD_ITEM)}>
-            Change password
-          </MenuItem>
-          <MenuItem onClick={() => this.selectMenuItem(REQUEST_COUNTRY_ACCESS_ITEM)}>
-            Request country access
-          </MenuItem>
-          <MenuItem onClick={() => this.selectMenuItem(LOG_OUT_ITEM)}>Log out</MenuItem>
+          {menuItems}
         </Popover>
+      </div>
+    );
+
+    const ViewProjects = () => (
+      <MenuItem
+        onClick={() => {
+          openViewProjects();
+          this.closeUserMenu();
+        }}
+      >
+        View projects
+      </MenuItem>
+    );
+
+    const HelpCenter = () => (
+      <MenuItem
+        onClick={() => {
+          openHelpCenter();
+          this.closeUserMenu();
+        }}
+      >
+        Help Centre
+      </MenuItem>
+    );
+
+    if (!isUserLoggedIn) {
+      return (
+        <UserMenuContainer>
+          <Button onClick={() => openLandingPage()}>Sign in / Register</Button>
+          <Menu>
+            <ViewProjects />
+            <HelpCenter />
+          </Menu>
+        </UserMenuContainer>
+      );
+    }
+
+    return (
+      <div>
+        <UserMenuContainer>
+          <UsernameContainer>{currentUserUsername}</UsernameContainer>
+          <Menu>
+            <ViewProjects />
+            <MenuItem onClick={() => this.selectMenuItem(CHANGE_PASSWORD_ITEM)}>
+              Change password
+            </MenuItem>
+            <MenuItem onClick={() => this.selectMenuItem(REQUEST_COUNTRY_ACCESS_ITEM)}>
+              Request country access
+            </MenuItem>
+            <HelpCenter />
+            <MenuItem onClick={() => this.selectMenuItem(LOG_OUT_ITEM)}>Log out</MenuItem>
+          </Menu>
+        </UserMenuContainer>
       </div>
     );
   }
@@ -152,6 +199,7 @@ UserMenu.propTypes = {
   isUserLoggedIn: PropTypes.bool.isRequired,
   onAttemptUserLogout: PropTypes.func.isRequired,
   openLandingPage: PropTypes.func.isRequired,
+  openViewProjects: PropTypes.func.isRequired,
   currentUserUsername: PropTypes.string.isRequired,
   onToggleLoginPanel: PropTypes.func.isRequired,
   onToggleProjectsPanel: PropTypes.func.isRequired,

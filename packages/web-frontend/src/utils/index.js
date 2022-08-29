@@ -36,3 +36,4 @@ export {
 } from './getUniqueViewId';
 export { sleep } from './sleep';
 export { getLayeredOpacity } from './opacity';
+export { openHelpCenter } from './openHelpCenter';
