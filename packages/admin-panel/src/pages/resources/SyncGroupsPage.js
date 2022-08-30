@@ -39,17 +39,6 @@ const FIELDS = [
 const COLUMNS = [
   ...FIELDS,
   {
-    Header: 'Logs',
-    type: 'logs',
-    source: 'id',
-    actionConfig: {
-      title: '{code} sync group logs',
-      logsCountEndpoint: 'dataServiceSyncGroups/{id}/logs/count',
-      logsEndpoint: 'dataServiceSyncGroups/{id}/logs',
-      logsPerPage: 100,
-    },
-  },
-  {
     Header: 'Edit',
     type: 'edit',
     source: 'id',
@@ -64,6 +53,29 @@ const COLUMNS = [
     type: 'delete',
     actionConfig: {
       endpoint: 'dataServiceSyncGroups',
+    },
+  },
+  {
+    Header: 'Logs',
+    type: 'logs',
+    source: 'id',
+    actionConfig: {
+      title: '{code} sync group logs',
+      logsCountEndpoint: 'dataServiceSyncGroups/{id}/logs/count',
+      logsEndpoint: 'dataServiceSyncGroups/{id}/logs',
+      logsPerPage: 100,
+    },
+  },
+  {
+    Header: 'Sync',
+    type: 'sync',
+    source: 'sync_status',
+    filterable: false,
+    sortable: false,
+    actionConfig: {
+      syncStatusEndpoint: 'dataServiceSyncGroups/{id}',
+      latestSyncLogEndpoint: 'dataServiceSyncGroups/{id}/logs?limit=1',
+      manualSyncEndpoint: 'dataServiceSyncGroups/{id}/sync',
     },
   },
 ];

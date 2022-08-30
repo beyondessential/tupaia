@@ -86,7 +86,14 @@ export async function syncWithKoBo(models, dataBroker, syncGroupCode) {
     throw new Error(`No KoBo sync group with the code ${syncGroupCode} exists`);
   }
 
+  if (dataServiceSyncGroup.isSyncing()) {
+    winston.info(`Already syncing ${dataServiceSyncGroup.code}, skipping sync request`);
+    return;
+  }
+
   try {
+    await dataServiceSyncGroup.setSyncStarted();
+
     // Pull data from KoBo
     const koboData = await dataBroker.pull(
       {
@@ -116,9 +123,12 @@ export async function syncWithKoBo(models, dataBroker, syncGroupCode) {
         `Sync successful, ${numberOfSurveyResponsesCreated} survey responses created`,
       );
     });
+
+    await dataServiceSyncGroup.setSyncCompletedSuccessfully();
   } catch (e) {
     // Swallow errors when processing kobo data
     await dataServiceSyncGroup.log(`ERROR: ${e.message}`);
+    await dataServiceSyncGroup.setSyncFailed();
     winston.error(e.message);
   }
 }

@@ -100,7 +100,6 @@ import { requestPasswordReset } from './requestPasswordReset';
 import { getCountryAccessList } from './getCountryAccessList';
 import { surveyResponse } from './surveyResponse';
 import { verifyEmail, requestResendEmail } from './verifyEmail';
-import { manualKoBoSync } from '../kobo';
 import { GETReports } from './reports';
 import { GETDataElementDataGroups } from './dataElementDataGroups';
 import {
@@ -115,6 +114,7 @@ import {
   DeleteSyncGroups,
   GETSyncGroupLogs,
   GETSyncGroupLogsCount,
+  ManuallySyncSyncGroup,
 } from './syncGroups';
 
 // quick and dirty permission wrapper for open endpoints
@@ -254,8 +254,8 @@ apiV2.post('/dashboardRelations', useRouteHandler(CreateDashboardRelation));
 apiV2.post('/dashboardVisualisations', useRouteHandler(CreateDashboardVisualisation));
 apiV2.post('/mapOverlayVisualisations', useRouteHandler(CreateMapOverlayVisualisation));
 apiV2.post('/mapOverlayGroupRelations', useRouteHandler(CreateMapOverlayGroupRelation));
-apiV2.post('/syncFromService', allowAnyone(manualKoBoSync));
 apiV2.post('/dataServiceSyncGroups', useRouteHandler(CreateSyncGroups));
+apiV2.post('/dataServiceSyncGroups/:recordId/sync', useRouteHandler(ManuallySyncSyncGroup));
 
 /**
  * PUT routes
