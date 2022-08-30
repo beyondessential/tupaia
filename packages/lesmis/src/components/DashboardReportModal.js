@@ -45,9 +45,9 @@ const Wrapper = styled.div`
 const Container = styled(MuiContainer)`
   padding: 0 6.25rem 3rem;
   padding-bottom: 5vh;
-  height: 100%;
   display: flex;
   flex-direction: column;
+  background: ${props => (props.$isExporting ? 'none' : COLORS.GREY_F9)};
 `;
 
 const Header = styled(FlexSpaceBetween)`
@@ -222,7 +222,7 @@ export const DashboardReportModal = () => {
         </Box>
       </ExportLoader>
       <Wrapper ref={exportRef} $isExporting={isExporting}>
-        <Container maxWidth="xl">
+        <Container maxWidth="xl" $isExporting={isExporting}>
           <Header>
             <Box maxWidth={580}>
               <Heading variant="h3">{dashboardTitle}</Heading>
