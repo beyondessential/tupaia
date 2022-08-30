@@ -8,25 +8,34 @@ import PropTypes from 'prop-types';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import GridOnIcon from '@material-ui/icons/GridOn';
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import IconButton from '@material-ui/core/IconButton';
-
 import {
   Chart as ChartComponent,
   ChartTable as BaseChartTable,
-  FlexCenter,
   getIsChartData,
+  FavouriteButton as BaseFavouriteButton,
 } from '@tupaia/ui-components';
 import { FetchLoader } from '../FetchLoader';
 import { FlexStart, FlexEnd, FlexColumn } from '../Layout';
 import { ToggleButton } from '../ToggleButton';
 import { VisualHeader } from './VisualHeader';
 import * as COLORS from '../../constants';
+import { DISLIKE, IDLE, LIKE } from '../../constants';
+import { useUpdateFavouriteDashboardItem } from '../../api/mutations';
 
 const Wrapper = styled.div`
   flex: 1;
   display: flex;
   overflow: auto;
+`;
+
+const GridContainer = styled.div`
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 17px;
+`;
+
+const FavouriteButton = styled(BaseFavouriteButton)`
+  margin-left: 17px;
 `;
 
 const ExportContainer = styled(FlexColumn)`
@@ -144,7 +153,10 @@ export const Chart = ({
   isEnlarged,
   isExporting,
 }) => {
+  const mutate = useUpdateFavouriteDashboardItem();
+
   const [selectedTab, setSelectedTab] = useState(TABS.CHART);
+  const [favouriteStatus, setFavouriteStatus] = useState(viewContent.likeStatus);
 
   const handleTabChange = (event, newValue) => {
     if (newValue !== null) {
@@ -152,10 +164,18 @@ export const Chart = ({
     }
   };
 
+  const handleFavouriteStatusChange = () => {
+    const newFavouriteStatus = LIKE === favouriteStatus ? DISLIKE : LIKE;
+    mutate(newFavouriteStatus, viewContent.code);
+    setFavouriteStatus(newFavouriteStatus);
+  };
+
   // loading whole chart (i.e. show full loading spinner) if first load, or fetching in background
   // from a no data state
   const isLoadingWholeChart = isLoading || (!getIsChartData(viewContent) && isFetching);
   const isFetchingInBackground = isFetching && !isLoadingWholeChart;
+
+  const isfavourited = favouriteStatus === LIKE;
 
   return isEnlarged ? (
     <>
@@ -177,17 +197,16 @@ export const Chart = ({
   ) : (
     <>
       <VisualHeader name={name} isLoading={isFetchingInBackground}>
-        <FlexCenter>
+        <GridContainer>
           <Toggle onChange={handleTabChange} value={selectedTab} exclusive />
-          <IconButton
-            style={{ marginLeft: '17px' }}
-            disableRipple
-            size="small"
-            aria-label="favourite-icon"
-          >
-            <FavoriteBorderIcon />
-          </IconButton>
-        </FlexCenter>
+          {favouriteStatus !== IDLE && (
+            <FavouriteButton
+              isFavourited={isfavourited}
+              onChange={handleFavouriteStatusChange}
+              color={isfavourited ? 'primary' : 'default'}
+            />
+          )}
+        </GridContainer>
       </VisualHeader>
       <Body>
         <ChartTable
