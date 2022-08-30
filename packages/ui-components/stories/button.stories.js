@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import MuiBox from '@material-ui/core/Box';
 import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
 import styled from 'styled-components';
@@ -18,6 +18,7 @@ import {
   LightOutlinedButton,
   ErrorOutlinedButton,
   GreyOutlinedButton,
+  FavouriteButton,
 } from '../src';
 import * as COLORS from './story-utils/theme/colors';
 
@@ -115,3 +116,18 @@ export const loading = () => (
     <Button isLoading>Default</Button>
   </Container>
 );
+
+export const favourite = () => {
+  const [state, setState] = useState(false);
+
+  return (
+    <Container>
+      <FavouriteButton
+        isFavourited={state}
+        onChange={() => {
+          setState(!state);
+        }}
+      />
+    </Container>
+  );
+};
