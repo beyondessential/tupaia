@@ -72,7 +72,7 @@ export const TILE_SETS = [
   },
 ];
 
-// Dashboard item like button Constants
-export const LIKE = 'LIKE';
-export const DISLIKE = 'DISLIKE';
+// Dashboard item favourite button Constants
+export const IS_FAVOURITE = 'IS_FAVOURITE';
+export const IS_NOT_FAVOURITE = 'IS_NOT_FAVOURITE';
 export const IDLE = 'IDLE';

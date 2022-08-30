@@ -123,7 +123,7 @@ export const favourite = () => {
   return (
     <Container>
       <FavouriteButton
-        isFavourited={state}
+        isFavourite={state}
         onChange={() => {
           setState(!state);
         }}

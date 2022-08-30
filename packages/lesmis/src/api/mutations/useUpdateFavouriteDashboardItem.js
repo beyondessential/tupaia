@@ -5,7 +5,7 @@
 import { useMutation } from 'react-query';
 import { debounce } from '@tupaia/utils';
 
-import { DISLIKE, LIKE } from '../../constants';
+import { IS_NOT_FAVOURITE, IS_FAVOURITE } from '../../constants';
 import { post } from '../api';
 
 const useLikeDashboardItem = () =>
@@ -34,9 +34,9 @@ export const useUpdateFavouriteDashboardItem = () => {
 
   const mutate = (newFavouriteStatus, dashboardItemCode) => {
     switch (newFavouriteStatus) {
-      case LIKE:
+      case IS_FAVOURITE:
         return likeMutation.mutate(dashboardItemCode);
-      case DISLIKE:
+      case IS_NOT_FAVOURITE:
         return dislikeMutation.mutate(dashboardItemCode);
       default:
         return null;

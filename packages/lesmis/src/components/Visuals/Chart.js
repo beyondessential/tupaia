@@ -19,7 +19,7 @@ import { FlexStart, FlexEnd, FlexColumn } from '../Layout';
 import { ToggleButton } from '../ToggleButton';
 import { VisualHeader } from './VisualHeader';
 import * as COLORS from '../../constants';
-import { DISLIKE, IDLE, LIKE } from '../../constants';
+import { IS_NOT_FAVOURITE, IDLE, IS_FAVOURITE } from '../../constants';
 import { useUpdateFavouriteDashboardItem } from '../../api/mutations';
 
 const Wrapper = styled.div`
@@ -156,7 +156,7 @@ export const Chart = ({
   const mutate = useUpdateFavouriteDashboardItem();
 
   const [selectedTab, setSelectedTab] = useState(TABS.CHART);
-  const [favouriteStatus, setFavouriteStatus] = useState(viewContent.likeStatus);
+  const [favouriteStatus, setFavouriteStatus] = useState(viewContent.favouriteStatus);
 
   const handleTabChange = (event, newValue) => {
     if (newValue !== null) {
@@ -165,7 +165,7 @@ export const Chart = ({
   };
 
   const handleFavouriteStatusChange = () => {
-    const newFavouriteStatus = LIKE === favouriteStatus ? DISLIKE : LIKE;
+    const newFavouriteStatus = favouriteStatus === IS_FAVOURITE ? IS_NOT_FAVOURITE : IS_FAVOURITE;
     mutate(newFavouriteStatus, viewContent.code);
     setFavouriteStatus(newFavouriteStatus);
   };
@@ -175,7 +175,7 @@ export const Chart = ({
   const isLoadingWholeChart = isLoading || (!getIsChartData(viewContent) && isFetching);
   const isFetchingInBackground = isFetching && !isLoadingWholeChart;
 
-  const isfavourited = favouriteStatus === LIKE;
+  const isFavourite = favouriteStatus === IS_FAVOURITE;
 
   return isEnlarged ? (
     <>
@@ -201,9 +201,9 @@ export const Chart = ({
           <Toggle onChange={handleTabChange} value={selectedTab} exclusive />
           {favouriteStatus !== IDLE && (
             <FavouriteButton
-              isFavourited={isfavourited}
+              isFavourite={isFavourite}
               onChange={handleFavouriteStatusChange}
-              color={isfavourited ? 'primary' : 'default'}
+              color={isFavourite ? 'primary' : 'default'}
             />
           )}
         </GridContainer>

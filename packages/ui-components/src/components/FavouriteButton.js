@@ -9,7 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 
 import PropTypes from 'prop-types';
 
-export const FavouriteButton = ({ isFavourited, onChange, color }) => (
+export const FavouriteButton = ({ isFavourite, onChange, color }) => (
   <IconButton
     color={color}
     disableRipple
@@ -17,17 +17,17 @@ export const FavouriteButton = ({ isFavourited, onChange, color }) => (
     aria-label="favourite-icon"
     onClick={onChange}
   >
-    {isFavourited ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+    {isFavourite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
   </IconButton>
 );
 
 FavouriteButton.propTypes = {
-  isFavourited: PropTypes.bool,
+  isFavourite: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
   color: PropTypes.string,
 };
 
 FavouriteButton.defaultProps = {
-  isFavourited: false,
+  isFavourite: false,
   color: 'primary',
 };
