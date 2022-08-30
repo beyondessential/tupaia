@@ -29,7 +29,6 @@ import {
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
 } from '../../actions';
 import { DARK_BLUE } from '../../styles';
-import { openHelpCenter } from '../../utils';
 
 const LOG_IN_ITEM = 'LOG_IN_ITEM';
 const PROJECTS_ITEM = 'PROJECTS_ITEM';
@@ -42,15 +41,42 @@ const UserMenuContainer = styled.div`
   align-items: center;
 `;
 
+const SignInButton = styled(Button)`
+  text-transform: none;
+  font-size: 0.825rem;
+
+  border-color: ${props => props.theme.palette.text.primary};
+  border: 1px;
+  border-style: solid;
+  border-radius: 18px;
+
+  font-weight: 400;
+  height: 24px;
+  margin-right: 5px;
+`;
+
 const StyledMenuButton = styled(Button)`
   width: 32px;
   min-width: 32px;
+  height: 32px;
+`;
+
+const StyledMenuIcon = styled(MenuIcon)`
+  width: 28px;
+  height: 28px;
 `;
 
 const UsernameContainer = styled.div`
   padding-right: 5px;
   color: ${props => props.theme.palette.text.primary};
+  font-weight: 400;
+  font-size: 0.825rem;
 `;
+
+const openHelpCenter = () =>
+  window
+    .open('https://beyond-essential.slab.com/posts/tupaia-instruction-manuals-05nke1dm', '_blank')
+    .focus();
 
 class UserMenu extends Component {
   constructor(props) {
@@ -110,7 +136,7 @@ class UserMenu extends Component {
           disableRipple
           id="user-menu-button"
         >
-          <MenuIcon />
+          <StyledMenuIcon />
         </StyledMenuButton>
         <Popover
           PaperProps={{ style: { backgroundColor: DARK_BLUE } }}
@@ -149,14 +175,16 @@ class UserMenu extends Component {
           this.closeUserMenu();
         }}
       >
-        Help Centre
+        Help centre
       </MenuItem>
     );
 
     if (!isUserLoggedIn) {
       return (
         <UserMenuContainer>
-          <Button onClick={() => openLandingPage()}>Sign in / Register</Button>
+          <SignInButton sx={{ border: 1 }} onClick={() => openLandingPage()}>
+            Sign in / Register
+          </SignInButton>
           <Menu>
             <ViewProjects />
             <HelpCenter />
@@ -166,22 +194,20 @@ class UserMenu extends Component {
     }
 
     return (
-      <div>
-        <UserMenuContainer>
-          <UsernameContainer>{currentUserUsername}</UsernameContainer>
-          <Menu>
-            <ViewProjects />
-            <MenuItem onClick={() => this.selectMenuItem(CHANGE_PASSWORD_ITEM)}>
-              Change password
-            </MenuItem>
-            <MenuItem onClick={() => this.selectMenuItem(REQUEST_COUNTRY_ACCESS_ITEM)}>
-              Request country access
-            </MenuItem>
-            <HelpCenter />
-            <MenuItem onClick={() => this.selectMenuItem(LOG_OUT_ITEM)}>Log out</MenuItem>
-          </Menu>
-        </UserMenuContainer>
-      </div>
+      <UserMenuContainer>
+        <UsernameContainer>{currentUserUsername}</UsernameContainer>
+        <Menu>
+          <ViewProjects />
+          <MenuItem onClick={() => this.selectMenuItem(CHANGE_PASSWORD_ITEM)}>
+            Change password
+          </MenuItem>
+          <MenuItem onClick={() => this.selectMenuItem(REQUEST_COUNTRY_ACCESS_ITEM)}>
+            Request country access
+          </MenuItem>
+          <HelpCenter />
+          <MenuItem onClick={() => this.selectMenuItem(LOG_OUT_ITEM)}>Log out</MenuItem>
+        </Menu>
+      </UserMenuContainer>
     );
   }
 }
