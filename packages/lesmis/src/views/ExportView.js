@@ -38,10 +38,12 @@ const EXPORT_VIEWS = {
   },
   [PDF_DOWNLOAD_VIEW]: {
     getExtraExportViewProps: () => {
-      let [{ exportWithLabels, exportWithTable }] = useUrlSearchParams();
-      exportWithLabels = !!exportWithLabels;
-      exportWithTable = !!exportWithTable;
-      const exportOptions = { exportWithLabels, exportWithTable };
+      const [
+        { exportWithLabels: withLabels, exportWithTable: withTable, dashboard },
+      ] = useUrlSearchParams();
+      const exportWithLabels = !!withLabels;
+      const exportWithTable = !!withTable;
+      const exportOptions = { exportWithLabels, exportWithTable, dashboard };
       return { exportOptions };
     },
     PageContainer: A4Page,
@@ -87,18 +89,34 @@ const getChildren = ({
   );
 };
 
-export const ExportView = ({ viewProps, viewType, className }) => {
+const getExportableDashboardsForDownloadView = dashboardValue => {
+  const { dropdownOptions } = useDashboardDropdownOptions();
+  const profileDropDownOptions = dropdownOptions.filter(({ value }) => value === dashboardValue);
+  const { exportableDashboards } = getExportableDashboards(profileDropDownOptions);
+  return exportableDashboards;
+};
+
+export const ExportView = ({
+  viewProps,
+  viewType,
+  className,
+  previewDashboards,
+  previewDashboardValue,
+}) => {
   const { getExtraExportViewProps, PageContainer, PageContent } = EXPORT_VIEWS[viewType];
   const exportViewProps = { ...viewProps, ...getExtraExportViewProps() };
-
-  const { dropdownOptions } = useDashboardDropdownOptions();
-  const profileDropDownOptions = dropdownOptions.filter(({ exportToPDF }) => exportToPDF);
-  const { exportableDashboards } = getExportableDashboards(profileDropDownOptions);
+  const exportableDashboards =
+    viewType === DASHBOARD_EXPORT_PREVIEW
+      ? previewDashboards
+      : getExportableDashboardsForDownloadView(exportViewProps.exportOptions.dashboard);
 
   return (
     <Container className={className}>
       {exportableDashboards?.map((subDashboard, index) => {
-        const isFirstPageProfile = index === 0;
+        const isFirstPageProfile =
+          viewType === DASHBOARD_EXPORT_PREVIEW
+            ? previewDashboardValue === 'profile' && index === 0
+            : exportViewProps.exportOptions.dashboard === 'profile' && index === 0;
         return getChildren({
           subDashboard,
           isFirstPageProfile,
@@ -115,9 +133,13 @@ ExportView.propTypes = {
   className: PropTypes.string,
   viewProps: PropTypes.object,
   viewType: PropTypes.oneOf([DASHBOARD_EXPORT_PREVIEW, PDF_DOWNLOAD_VIEW]).isRequired,
+  previewDashboards: PropTypes.array,
+  previewDashboardValue: PropTypes.string,
 };
 
 ExportView.defaultProps = {
   className: null,
   viewProps: {},
+  previewDashboards: null,
+  previewDashboardValue: null,
 };

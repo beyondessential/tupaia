@@ -38,8 +38,7 @@ export const DashboardView = React.memo(({ isOpen, setIsOpen }) => {
   const [selectedYear, setSelectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
 
   const { dropdownOptions, selectedOption } = useDashboardDropdownOptions();
-  const profileDropDownOptions = dropdownOptions.filter(({ exportToPDF }) => exportToPDF);
-  const { exportableDashboards, totalPage } = getExportableDashboards(profileDropDownOptions);
+  const { exportableDashboards, totalPage } = getExportableDashboards([selectedOption]);
 
   const handleDashboardChange = event => {
     setParams({ dashboard: event.target.value, subDashboard: null });
@@ -84,6 +83,7 @@ export const DashboardView = React.memo(({ isOpen, setIsOpen }) => {
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         exportableDashboards={exportableDashboards}
+        selectedDashboard={selectedOption.value}
         totalPage={totalPage}
       />
     </ErrorBoundary>

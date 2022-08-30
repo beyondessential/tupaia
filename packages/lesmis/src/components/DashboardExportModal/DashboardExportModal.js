@@ -13,8 +13,10 @@ import {
   DialogContent as BaseDialogContent,
   FlexSpaceBetween as BaseFlexSpaceBetween,
   LoadingContainer,
+  SmallAlert,
 } from '@tupaia/ui-components';
 import MuiIconButton from '@material-ui/core/Button';
+import MuiContainer from '@material-ui/core/Container';
 import { OptionsBar } from './components';
 import { I18n, useDashboardItemsExportToPDF, useUrlParams, useUrlSearchParam } from '../../utils';
 import { DEFAULT_DATA_YEAR } from '../../constants';
@@ -45,7 +47,14 @@ const ExportView = styled(BaseExportView)`
       : ''}
 `;
 
-export const DashboardExportModal = ({ title, totalPage, isOpen, setIsOpen }) => {
+export const DashboardExportModal = ({
+  title,
+  totalPage,
+  isOpen,
+  setIsOpen,
+  selectedDashboard,
+  exportableDashboards,
+}) => {
   const [exportWithLabels, setExportWithLabels] = useState(null);
   const [exportWithTable, setExportWithTable] = useState(null);
   const [selectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
@@ -58,19 +67,22 @@ export const DashboardExportModal = ({ title, totalPage, isOpen, setIsOpen }) =>
     setExportWithTable(exportWithTable ? null : true);
   };
 
-  const fileName = `${title}-dashboards-export`;
+  const fileName = `${title}-${selectedDashboard}-dashboards-export`;
   const { isExporting, exportToPDF, errorMessage, onReset } = useDashboardItemsExportToPDF({
     exportWithLabels,
     exportWithTable,
     year: selectedYear,
     locale,
     entityCode,
+    dashboard: selectedDashboard,
   });
 
   const isFetching = useIsFetching() > 0;
   const isError = !!errorMessage;
-  const isDisabled = isError || isExporting || isFetching;
+  const isDisabled = isError || isExporting || isFetching || exportableDashboards.length === 0;
   const [page, setPage] = useState(1);
+
+  const isExportable = exportableDashboards.length > 0;
 
   const handleClickExport = async () => {
     await exportToPDF(fileName);
@@ -107,29 +119,41 @@ export const DashboardExportModal = ({ title, totalPage, isOpen, setIsOpen }) =>
         </FlexSpaceBetween>
       </DialogHeader>
       <DialogContent>
-        <LoadingContainer
-          heading={I18n({
-            t: isFetching ? 'dashboards.fetchingAllReportsData' : 'dashboards.exportingChartsToPDF',
-          })}
-          text={I18n({ t: 'dashboards.pleaseDoNotRefreshTheBrowserOrCloseThisPage' })}
-          isLoading={isDisabled}
-          errorMessage={errorMessage}
-          onReset={onReset}
-        >
-          <ExportView
-            $isLoading={isDisabled}
-            viewType={DASHBOARD_EXPORT_PREVIEW}
-            viewProps={{
-              currentPage: page,
-              isExporting,
-              isError,
-              exportOptions: {
-                exportWithLabels,
-                exportWithTable,
-              },
-            }}
-          />
-        </LoadingContainer>
+        {isExportable ? (
+          <LoadingContainer
+            heading={I18n({
+              t: isFetching
+                ? 'dashboards.fetchingAllReportsData'
+                : 'dashboards.exportingChartsToPDF',
+            })}
+            text={I18n({ t: 'dashboards.pleaseDoNotRefreshTheBrowserOrCloseThisPage' })}
+            isLoading={isDisabled}
+            errorMessage={errorMessage}
+            onReset={onReset}
+          >
+            <ExportView
+              $isLoading={isDisabled}
+              viewType={DASHBOARD_EXPORT_PREVIEW}
+              viewProps={{
+                currentPage: page,
+                isExporting,
+                isError,
+                exportOptions: {
+                  exportWithLabels,
+                  exportWithTable,
+                },
+              }}
+              previewDashboards={exportableDashboards}
+              previewDashboardValue={selectedDashboard}
+            />
+          </LoadingContainer>
+        ) : (
+          <MuiContainer maxWidth="sm">
+            <SmallAlert variant="filled" severity="error">
+              {I18n({ t: 'dashboards.thisDashboardCannotBeExported' })}
+            </SmallAlert>
+          </MuiContainer>
+        )}
       </DialogContent>
     </Dialog>
   );
@@ -140,6 +164,8 @@ DashboardExportModal.propTypes = {
   totalPage: PropTypes.number,
   isOpen: PropTypes.bool.isRequired,
   setIsOpen: PropTypes.func.isRequired,
+  selectedDashboard: PropTypes.string.isRequired,
+  exportableDashboards: PropTypes.array.isRequired,
 };
 
 DashboardExportModal.defaultProps = {
