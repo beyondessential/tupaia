@@ -119,14 +119,14 @@ export const SyncStatus = props => {
     }
   };
 
-  // First poll after 0.5 seconds, then poll each 5 seconds
+  // First poll after 0.5 seconds, then poll each 10 seconds
   useEffect(() => {
     const timeout = setTimeout(pollStatus, 500);
     return () => clearTimeout(timeout);
   }, []);
 
   useEffect(() => {
-    const timer = setInterval(pollStatus, 5000);
+    const timer = setInterval(pollStatus, 10000);
     return () => clearInterval(timer);
   }, []);
 
