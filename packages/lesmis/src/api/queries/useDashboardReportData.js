@@ -80,7 +80,7 @@ export const useDashboardReportDataWithConfig = ({
 
   const reportCodes = getReportCodesByCode(query.data?.dashboards);
 
-  const likeStatus = getDashboardItemLikeStatus(favouriteDashboardItems, reportCode, userId);
+  const likeStatus = getDashboardItemLikeStatus(favouriteDashboardItems, userId, reportCode);
 
   return {
     ...query,
