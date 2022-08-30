@@ -234,7 +234,7 @@ export const constructQuestionValidators = models => ({
   ],
   config: [
     (cell, row) => {
-      if (row.type === 'CodeGenerator' && isEmpty(cell)) {
+      if (row.type === ANSWER_TYPES.CODE_GENERATOR && isEmpty(cell)) {
         throw new Error(
           'CodeGenerator questions must have a configuration defined in the config column',
         );
