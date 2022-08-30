@@ -12,7 +12,7 @@ import {
   Chart as ChartComponent,
   ChartTable as BaseChartTable,
   getIsChartData,
-  FavouriteButton as BaseFavouriteButton,
+  FavouriteButton,
 } from '@tupaia/ui-components';
 import { FetchLoader } from '../FetchLoader';
 import { FlexStart, FlexEnd, FlexColumn } from '../Layout';
@@ -32,10 +32,6 @@ const GridContainer = styled.div`
   display: grid;
   grid-template-columns: auto auto;
   gap: 17px;
-`;
-
-const FavouriteButton = styled(BaseFavouriteButton)`
-  margin-left: 17px;
 `;
 
 const ExportContainer = styled(FlexColumn)`
