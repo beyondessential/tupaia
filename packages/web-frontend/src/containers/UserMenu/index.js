@@ -43,7 +43,6 @@ const UserMenuContainer = styled.div`
 
 const SignInButton = styled(Button)`
   text-transform: none;
-  font-size: 0.825rem;
 
   border-color: ${props => props.theme.palette.text.primary};
   border: 1px;
@@ -51,7 +50,7 @@ const SignInButton = styled(Button)`
   border-radius: 18px;
 
   font-weight: 400;
-  height: 24px;
+  height: 30px;
   margin-right: 5px;
 `;
 
@@ -70,7 +69,12 @@ const UsernameContainer = styled.div`
   padding-right: 5px;
   color: ${props => props.theme.palette.text.primary};
   font-weight: 400;
-  font-size: 0.825rem;
+  font-size: 0.875rem;
+`;
+
+const SignInContainer = styled.span`
+  padding-right: 4px;
+  padding-left: 4px;
 `;
 
 const openHelpCenter = () =>
@@ -182,8 +186,8 @@ class UserMenu extends Component {
     if (!isUserLoggedIn) {
       return (
         <UserMenuContainer>
-          <SignInButton sx={{ border: 1 }} onClick={() => openLandingPage()}>
-            Sign in / Register
+          <SignInButton onClick={() => openLandingPage()}>
+            <SignInContainer>Sign in / Register</SignInContainer>
           </SignInButton>
           <Menu>
             <ViewProjects />
