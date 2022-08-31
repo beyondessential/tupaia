@@ -9,5 +9,15 @@ export const useFavouriteDashboardItem = ({ userId }) => {
     filter: JSON.stringify({ user_id: userId }),
   });
 
-  return useQuery(['userFavouriteDashboardItems', userId], () => get(endpoint), QUERY_OPTIONS);
+  const query = useQuery(
+    ['userFavouriteDashboardItems', userId],
+    () => get(endpoint),
+    QUERY_OPTIONS,
+  );
+  const { data = [] } = query;
+  const favouriteDashboardItems = data.map(
+    ({ 'dashboard_item.code': dashboardItemCode }) => dashboardItemCode,
+  );
+
+  return { ...query, data: favouriteDashboardItems };
 };

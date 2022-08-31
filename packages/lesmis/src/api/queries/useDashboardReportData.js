@@ -52,7 +52,7 @@ const getFavouriteStatus = (userFavouriteDashboardItems, userId, reportCode) => 
   }
 
   const isFavouriteDashboardItemFound = userFavouriteDashboardItems.find(
-    ({ 'dashboard_item.code': dashboardItemCode }) => dashboardItemCode === reportCode,
+    dashboardItemCode => dashboardItemCode === reportCode,
   );
 
   return isFavouriteDashboardItemFound ? IS_FAVOURITE : IS_NOT_FAVOURITE;
@@ -70,7 +70,7 @@ export const useDashboardReportDataWithConfig = ({
     reportData: useDashboardReportData({ entityCode, reportCode, startDate, endDate }),
     dashboards: useDashboardData({ entityCode }),
   });
-  const favouriteDashboardItems = useFavouriteDashboardItem({ userId })?.data || [];
+  const favouriteDashboardItems = useFavouriteDashboardItem({ userId })?.data;
 
   const dashboard = query.data?.dashboards?.find(dash =>
     dash.items.find(item => item.reportCode === reportCode),
