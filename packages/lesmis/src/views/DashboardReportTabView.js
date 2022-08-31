@@ -8,13 +8,11 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
-import { SmallAlert } from '@tupaia/ui-components';
 import { useDashboardData, useUser } from '../api/queries';
 import {
   FetchLoader,
   TabsLoader,
   FlexColumn,
-  DashboardReport,
   TabBar,
   Tabs,
   Tab,
@@ -23,8 +21,8 @@ import {
 } from '../components';
 import { NAVBAR_HEIGHT_INT } from '../constants';
 import { useHomeUrl, useUrlSearchParam, useStickyBar } from '../utils';
-import { yearToApiDates } from '../api/queries/utils';
 import { DashboardSearch } from '../components/DashboardSearch';
+import DashboardItemsView from './DashboardItemsView';
 
 const StickyTabBarContainer = styled.div`
   position: sticky;
@@ -65,10 +63,6 @@ const PanelComponent = styled(FlexColumn)`
     height: 0;
     overflow: hidden;
   }
-`;
-
-const InfoAlert = styled(SmallAlert)`
-  margin: auto;
 `;
 
 // Gets the best default dashboard possible, and check if the selected dashboard is valid
@@ -137,8 +131,6 @@ export const DashboardReportTabView = ({
     setSearchIsActive(isActive);
   };
 
-  const { startDate, endDate } = yearToApiDates(year);
-
   return (
     <>
       <StickyTabBarContainer ref={onLoadTabBar}>
@@ -176,21 +168,12 @@ export const DashboardReportTabView = ({
               key={dashboard.dashboardId}
               isSelected={dashboard.dashboardName === activeDashboard}
             >
-              {dashboard.items.length > 0 ? (
-                dashboard.items.map(item => (
-                  <DashboardReport
-                    key={item.code}
-                    reportCode={item.reportCode}
-                    name={item.name}
-                    startDate={startDate}
-                    endDate={endDate}
-                  />
-                ))
-              ) : (
-                <InfoAlert key={dashboard.dashboardName} severity="info" variant="standard">
-                  There are no reports available for this dashboard
-                </InfoAlert>
-              )}
+              <DashboardItemsView
+                subDashboards={subDashboards}
+                searchIsActive={searchIsActive}
+                activeDashboard={activeDashboard}
+                year={year}
+              />
             </TabPanel>
           ))}
         </FetchLoader>
