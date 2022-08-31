@@ -14,7 +14,7 @@ import {
   useUrlParams,
   useUrlSearchParams,
   useUrlSearchParam,
-  getExportableDashboards,
+  getExportableSubDashboards,
 } from '../utils';
 import { useEntityData } from '../api/queries';
 import { DEFAULT_DATA_YEAR } from '../constants';
@@ -38,7 +38,7 @@ export const DashboardView = React.memo(({ isOpen, setIsOpen }) => {
   const [selectedYear, setSelectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
 
   const { dropdownOptions, selectedOption } = useDashboardDropdownOptions();
-  const { exportableDashboards, totalPage } = getExportableDashboards([selectedOption]);
+  const { totalPage } = getExportableSubDashboards([selectedOption]);
 
   const handleDashboardChange = event => {
     setParams({ dashboard: event.target.value, subDashboard: null });
@@ -82,8 +82,6 @@ export const DashboardView = React.memo(({ isOpen, setIsOpen }) => {
         title={entityData?.name ? entityData?.name : ''}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        exportableDashboards={exportableDashboards}
-        selectedDashboard={selectedOption.value}
         totalPage={totalPage}
       />
     </ErrorBoundary>

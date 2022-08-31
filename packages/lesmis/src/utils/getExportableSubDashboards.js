@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useDashboardData } from '../api';
 import { useUrlParams } from './useUrlParams';
 
-export const getExportableDashboards = dropdownOptions => {
+export const getExportableSubDashboards = dropdownOptions => {
   const { entityCode } = useUrlParams();
   const { data } = useDashboardData({
     entityCode,
@@ -10,7 +10,7 @@ export const getExportableDashboards = dropdownOptions => {
   });
   const exportableDropDownOptions = dropdownOptions.filter(({ exportToPDF }) => exportToPDF);
 
-  const exportableDashboards = useMemo(
+  const exportableSubDashboards = useMemo(
     () =>
       exportableDropDownOptions
         .map(({ componentProps, label, useYearSelector }) => {
@@ -24,10 +24,10 @@ export const getExportableDashboards = dropdownOptions => {
     [data, JSON.stringify(exportableDropDownOptions)],
   );
 
-  const totalPage = exportableDashboards?.reduce(
+  const totalPage = exportableSubDashboards?.reduce(
     (totalNum, { items }) => totalNum + Math.max(1, items.length),
     0,
   );
 
-  return { exportableDashboards, totalPage };
+  return { exportableSubDashboards, totalPage };
 };

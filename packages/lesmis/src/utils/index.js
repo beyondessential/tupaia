@@ -13,5 +13,6 @@ export * from './useStickyBar';
 export * from './useUrlParams';
 export * from './useUrlSearchParams';
 export * from './useEntityBreadcrumbs';
-export * from './getExportableDashboards';
+export * from './getExportableSubDashboards';
+export * from './getIsExportable';
 export * from './export';

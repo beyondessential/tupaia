@@ -14,9 +14,10 @@ import MuiContainer from '@material-ui/core/Container';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import { GetApp, Phone, Email, Map, Dashboard } from '@material-ui/icons';
 import ButtonComponent from '@material-ui/core/Button';
+import { Tooltip } from '@tupaia/ui-components';
 import { FlexStart, FlexEnd } from './Layout';
 import { useEntityData, useMapOverlayReportData } from '../api';
-import { I18n, useUrlParams, makeEntityLink, useUrlSearchParam } from '../utils';
+import { I18n, useUrlParams, makeEntityLink, useUrlSearchParam, getIsExportable } from '../utils';
 import { MapTableModal } from './MapTableModal';
 import { DEFAULT_DATA_YEAR } from '../constants';
 
@@ -112,6 +113,7 @@ export const LocationHeader = ({ setIsOpen }) => {
 
   const { data: entityData } = useEntityData(entityCode);
   const exportTitle = getExportTitle(entityData, selectedOverlayName);
+  const isExportable = getIsExportable();
 
   return (
     <Wrapper>
@@ -144,9 +146,17 @@ export const LocationHeader = ({ setIsOpen }) => {
                 )}
               />
             ) : (
-              <IconButton onClick={() => setIsOpen(true)} startIcon={<GetApp />}>
-                <I18n t="dashboards.export" />
-              </IconButton>
+              <Tooltip title={isExportable ? '' : <I18n t="dashboards.notExportable" />}>
+                <span>
+                  <IconButton
+                    disabled={!isExportable}
+                    onClick={() => setIsOpen(true)}
+                    startIcon={<GetApp />}
+                  >
+                    <I18n t="dashboards.export" />
+                  </IconButton>
+                </span>
+              </Tooltip>
             )}
             {/* Todo: add favourites @see https://app.zenhub.com/workspaces/active-sprints-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/2493 */}
             {/* <IconButton startIcon={<StarBorder />}>Add</IconButton> */}
