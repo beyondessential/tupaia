@@ -98,7 +98,7 @@ describe('GET /changes/metadata', async () => {
         });
 
         const { changeCount, countries, permissionGroups } = response.body;
-        expect(changeCount).to.equal(18);
+        expect(changeCount).to.equal(20);
         expect(countries.sort()).to.eql([PERM_SYNC_COUNTRY_1.code]);
         expect(permissionGroups.sort()).to.eql([PERM_SYNC_PG_PUBLIC.name]);
       });
@@ -117,7 +117,7 @@ describe('GET /changes/metadata', async () => {
         });
 
         const { changeCount, countries, permissionGroups } = response.body;
-        expect(changeCount).to.equal(27);
+        expect(changeCount).to.equal(29);
         expect(countries.sort()).to.eql([PERM_SYNC_COUNTRY_1.code, PERM_SYNC_COUNTRY_2.code]);
         expect(permissionGroups.sort()).to.eql([PERM_SYNC_PG_ADMIN.name, PERM_SYNC_PG_PUBLIC.name]);
       });
@@ -140,7 +140,7 @@ describe('GET /changes/metadata', async () => {
         });
 
         const { changeCount, countries } = response.body;
-        expect(changeCount).to.equal(8);
+        expect(changeCount).to.equal(10);
         expect(countries.sort()).to.eql([PERM_SYNC_COUNTRY_1.code, PERM_SYNC_COUNTRY_2.code]);
       });
 
