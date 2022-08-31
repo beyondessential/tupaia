@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
@@ -14,6 +14,8 @@ import * as COLORS from '../constants';
 import { useDashboardReportDataWithConfig } from '../api/queries';
 import { FlexEnd } from './Layout';
 import { I18n, useUrlParams } from '../utils';
+import { useUpdateFavouriteDashboardItem } from '../api';
+import { IS_FAVOURITE, IS_NOT_FAVOURITE } from '../constants';
 
 const Container = styled.div`
   width: 55rem;
@@ -50,6 +52,14 @@ export const DashboardReport = React.memo(
     const Wrapper = isEnlarged ? React.Fragment : Container;
     const drillDownPathname = `/${locale}/${entityCode}/dashboard`;
 
+    const [favouriteStatus, setFavouriteStatus] = useState(config.favouriteStatus);
+    const updateFavouriteDashboardItem = useUpdateFavouriteDashboardItem();
+    const handleFavouriteStatusChange = () => {
+      const newFavouriteStatus = favouriteStatus === IS_FAVOURITE ? IS_NOT_FAVOURITE : IS_FAVOURITE;
+      updateFavouriteDashboardItem(newFavouriteStatus, config.code);
+      setFavouriteStatus(newFavouriteStatus);
+    };
+
     return (
       <Wrapper>
         <Visual
@@ -64,6 +74,8 @@ export const DashboardReport = React.memo(
           drilldownPathname={drillDownPathname}
           reportCodes={reportCodes}
           isEnlarged={isEnlarged}
+          favouriteStatus={favouriteStatus}
+          handleFavouriteStatusChange={handleFavouriteStatusChange}
         />
         {!isEnlarged && (
           <Footer>

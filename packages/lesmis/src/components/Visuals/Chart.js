@@ -12,15 +12,13 @@ import {
   Chart as ChartComponent,
   ChartTable as BaseChartTable,
   getIsChartData,
-  FavouriteButton,
 } from '@tupaia/ui-components';
 import { FetchLoader } from '../FetchLoader';
 import { FlexStart, FlexEnd, FlexColumn } from '../Layout';
 import { ToggleButton } from '../ToggleButton';
 import { VisualHeader } from './VisualHeader';
 import * as COLORS from '../../constants';
-import { IS_NOT_FAVOURITE, IDLE, IS_FAVOURITE } from '../../constants';
-import { useUpdateFavouriteDashboardItem } from '../../api/mutations';
+import { FavouriteButton } from '../FavouriteButton';
 
 const Wrapper = styled.div`
   flex: 1;
@@ -148,11 +146,10 @@ export const Chart = ({
   error,
   isEnlarged,
   isExporting,
+  favouriteStatus,
+  handleFavouriteStatusChange,
 }) => {
-  const mutate = useUpdateFavouriteDashboardItem();
-
   const [selectedTab, setSelectedTab] = useState(TABS.CHART);
-  const [favouriteStatus, setFavouriteStatus] = useState(viewContent.favouriteStatus);
 
   const handleTabChange = (event, newValue) => {
     if (newValue !== null) {
@@ -160,18 +157,10 @@ export const Chart = ({
     }
   };
 
-  const handleFavouriteStatusChange = () => {
-    const newFavouriteStatus = favouriteStatus === IS_FAVOURITE ? IS_NOT_FAVOURITE : IS_FAVOURITE;
-    mutate(newFavouriteStatus, viewContent.code);
-    setFavouriteStatus(newFavouriteStatus);
-  };
-
   // loading whole chart (i.e. show full loading spinner) if first load, or fetching in background
   // from a no data state
   const isLoadingWholeChart = isLoading || (!getIsChartData(viewContent) && isFetching);
   const isFetchingInBackground = isFetching && !isLoadingWholeChart;
-
-  const isFavourite = favouriteStatus === IS_FAVOURITE;
 
   return isEnlarged ? (
     <>
@@ -195,13 +184,10 @@ export const Chart = ({
       <VisualHeader name={name} isLoading={isFetchingInBackground}>
         <GridContainer>
           <Toggle onChange={handleTabChange} value={selectedTab} exclusive />
-          {favouriteStatus !== IDLE && (
-            <FavouriteButton
-              isFavourite={isFavourite}
-              onChange={handleFavouriteStatusChange}
-              color={isFavourite ? 'primary' : 'default'}
-            />
-          )}
+          <FavouriteButton
+            favouriteStatus={favouriteStatus}
+            handleFavouriteStatusChange={handleFavouriteStatusChange}
+          />
         </GridContainer>
       </VisualHeader>
       <Body>
