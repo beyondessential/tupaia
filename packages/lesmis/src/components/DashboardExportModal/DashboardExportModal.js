@@ -16,7 +16,13 @@ import {
 } from '@tupaia/ui-components';
 import MuiIconButton from '@material-ui/core/Button';
 import { OptionsBar } from './components';
-import { I18n, useDashboardItemsExportToPDF, useUrlParams, useUrlSearchParam } from '../../utils';
+import {
+  I18n,
+  useDashboardItemsExportToPDF,
+  useUrlParams,
+  useUrlSearchParam,
+  useUrlSearchParams,
+} from '../../utils';
 import { DEFAULT_DATA_YEAR } from '../../constants';
 import { DASHBOARD_EXPORT_PREVIEW, ExportView as BaseExportView } from '../../views/ExportView';
 
@@ -49,7 +55,8 @@ export const DashboardExportModal = ({ title, totalPage, isOpen, setIsOpen }) =>
   const [exportWithLabels, setExportWithLabels] = useState(null);
   const [exportWithTable, setExportWithTable] = useState(null);
   const [selectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
-  const { locale, entityCode, dashboard } = useUrlParams();
+  const [{ dashboard }] = useUrlSearchParams();
+  const { locale, entityCode } = useUrlParams();
 
   const toggleExportWithLabels = () => {
     setExportWithLabels(exportWithLabels ? null : true);

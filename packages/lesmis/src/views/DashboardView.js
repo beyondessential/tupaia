@@ -38,7 +38,7 @@ export const DashboardView = React.memo(({ isOpen, setIsOpen }) => {
   const [selectedYear, setSelectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
 
   const { dropdownOptions, selectedOption } = useDashboardDropdownOptions();
-  const { totalPage } = getExportableSubDashboards([selectedOption]);
+  const { totalPage } = getExportableSubDashboards(selectedOption);
 
   const handleDashboardChange = event => {
     setParams({ dashboard: event.target.value, subDashboard: null });

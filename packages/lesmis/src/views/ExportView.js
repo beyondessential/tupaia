@@ -95,8 +95,8 @@ export const ExportView = ({ viewProps, viewType, className }) => {
   const exportViewProps = { ...viewProps, ...getExtraExportViewProps() };
   const { selectedDashboard } = exportViewProps;
   const { dropdownOptions } = useDashboardDropdownOptions();
-  const profileDropDownOptions = dropdownOptions.filter(({ value }) => value === selectedDashboard);
-  const { exportableSubDashboards } = getExportableSubDashboards(profileDropDownOptions);
+  const profileDropDownOption = dropdownOptions.find(({ value }) => value === selectedDashboard);
+  const { exportableSubDashboards } = getExportableSubDashboards(profileDropDownOption);
 
   return (
     <Container className={className}>
