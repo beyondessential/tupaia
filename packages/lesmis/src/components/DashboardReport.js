@@ -3,10 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
+import debounce from 'lodash.debounce';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { Chart, ListVisual } from './Visuals';
@@ -53,9 +54,19 @@ export const DashboardReport = React.memo(
 
     const [isFavourite, setIsFavourite] = useState(config.isFavourite);
     const updateFavouriteDashboardItem = useUpdateFavouriteDashboardItem();
+    /**
+     * Enable lodash.debounce in onChange function.
+     * Every time the component is re-evaluated, the local variables gets initialized again, including the timer in debounce().
+     * Use useRef() hook as value returned by useRef() does not get re-evaluated every time the functional component is executed.
+     * https://stackoverflow.com/a/64856090
+     */
+    const updateFavouriteDashboardItemDebounced = useRef(
+      debounce(updateFavouriteDashboardItem, 1000),
+    );
+
     const handleFavouriteStatusChange = () => {
       const newFavouriteStatus = !isFavourite;
-      updateFavouriteDashboardItem(newFavouriteStatus, config.code);
+      updateFavouriteDashboardItemDebounced.current(newFavouriteStatus, config.code);
       setIsFavourite(newFavouriteStatus);
     };
 
