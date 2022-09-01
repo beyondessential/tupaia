@@ -1,2 +1,2 @@
-export * from './handleUserFavouriteDashboardItem';
+export * from './POSTUpdateUserFavouriteDashboardItem';
 export * from './GETUserFavouriteDashboardItems';
