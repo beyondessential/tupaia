@@ -16,14 +16,11 @@ export class UserFavouriteDashboardItemModel extends DatabaseModel {
     return UserFavouriteDashboardItemType;
   }
 
-  async updateRecord({ changeType, record }) {
-    switch (changeType) {
-      case 'create':
-        return this.findOrCreate(record);
-      case 'delete':
-        return this.delete(record);
-      default:
-        throw new Error(`Non supported change type: ${changeType}`);
-    }
+  async favourite(userId, dashboardItemId) {
+    return this.findOrCreate({ dashboard_item_id: dashboardItemId, user_id: userId });
+  }
+
+  async unfavourite(userId, dashboardItemId) {
+    return this.delete({ dashboard_item_id: dashboardItemId, user_id: userId });
   }
 }
