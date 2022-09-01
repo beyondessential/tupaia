@@ -23,18 +23,15 @@ class DataServiceSyncGroupType extends DatabaseType {
   static databaseType = TYPES.DATA_SERVICE_SYNC_GROUP;
 
   async setSyncStarted() {
-    this.sync_status = syncStatuses.syncing;
-    return this.save();
+    return this.model.update({ id: this.id }, { sync_status: syncStatuses.syncing });
   }
 
   async setSyncCompletedSuccessfully() {
-    this.sync_status = syncStatuses.idle;
-    return this.save();
+    return this.model.update({ id: this.id }, { sync_status: syncStatuses.idle });
   }
 
   async setSyncFailed() {
-    this.sync_status = syncStatuses.error;
-    return this.save();
+    return this.model.update({ id: this.id }, { sync_status: syncStatuses.error });
   }
 
   isSyncing() {
