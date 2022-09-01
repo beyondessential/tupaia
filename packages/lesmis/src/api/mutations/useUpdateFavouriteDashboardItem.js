@@ -5,12 +5,11 @@
 import { useMutation } from 'react-query';
 import { debounce } from '@tupaia/utils';
 
-import { IS_NOT_FAVOURITE, IS_FAVOURITE } from '../../constants';
 import { post } from '../api';
 
-const useLikeDashboardItem = () =>
+const useFavouriteDashboardItem = () =>
   useMutation(dashboardItemCode =>
-    post('userFavouriteDashboardItem', {
+    post('userFavouriteDashboardItems', {
       data: {
         changeType: 'create',
         dashboardItemCode,
@@ -18,9 +17,9 @@ const useLikeDashboardItem = () =>
     }),
   );
 
-const useDislikeDashboardItem = () =>
+const useUnfavouriteDashboardItem = () =>
   useMutation(dashboardItemCode =>
-    post('userFavouriteDashboardItem', {
+    post('userFavouriteDashboardItems', {
       data: {
         changeType: 'delete',
         dashboardItemCode,
@@ -29,18 +28,12 @@ const useDislikeDashboardItem = () =>
   );
 
 export const useUpdateFavouriteDashboardItem = () => {
-  const likeMutation = useLikeDashboardItem();
-  const dislikeMutation = useDislikeDashboardItem();
+  const favouriteMutation = useFavouriteDashboardItem();
+  const unfavouriteMutation = useUnfavouriteDashboardItem();
 
   const mutate = (newFavouriteStatus, dashboardItemCode) => {
-    switch (newFavouriteStatus) {
-      case IS_FAVOURITE:
-        return likeMutation.mutate(dashboardItemCode);
-      case IS_NOT_FAVOURITE:
-        return dislikeMutation.mutate(dashboardItemCode);
-      default:
-        return null;
-    }
+    const mutation = newFavouriteStatus ? favouriteMutation : unfavouriteMutation;
+    return mutation.mutate(dashboardItemCode);
   };
 
   const debounceMutate = debounce(

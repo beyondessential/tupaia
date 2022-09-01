@@ -146,7 +146,7 @@ export const Chart = ({
   error,
   isEnlarged,
   isExporting,
-  favouriteStatus,
+  isFavourite,
   handleFavouriteStatusChange,
 }) => {
   const [selectedTab, setSelectedTab] = useState(TABS.CHART);
@@ -185,7 +185,7 @@ export const Chart = ({
         <GridContainer>
           <Toggle onChange={handleTabChange} value={selectedTab} exclusive />
           <FavouriteButton
-            favouriteStatus={favouriteStatus}
+            isFavourite={isFavourite}
             handleFavouriteStatusChange={handleFavouriteStatusChange}
           />
         </GridContainer>

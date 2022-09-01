@@ -1,28 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FavouriteButton as FavouriteButtonComponent } from '@tupaia/ui-components';
-import { IDLE, IS_FAVOURITE } from '../constants';
+import { useUser } from '../api';
 
-export const FavouriteButton = ({ favouriteStatus, handleFavouriteStatusChange }) => {
-  if (favouriteStatus === IDLE) {
+export const FavouriteButton = ({ isFavourite, handleFavouriteStatusChange }) => {
+  const { isLoggedIn } = useUser();
+  if (!isLoggedIn) {
     return null;
   }
 
-  const isFavourite = favouriteStatus === IS_FAVOURITE;
-
   return (
-    favouriteStatus !== IDLE && (
-      <FavouriteButtonComponent
-        isFavourite={isFavourite}
-        onChange={handleFavouriteStatusChange}
-        color={isFavourite ? 'primary' : 'default'}
-      />
-    )
+    <FavouriteButtonComponent
+      isFavourite={isFavourite}
+      onChange={handleFavouriteStatusChange}
+      color={isFavourite ? 'primary' : 'default'}
+    />
   );
 };
 
 FavouriteButton.propTypes = {
-  favouriteStatus: PropTypes.string.isRequired,
+  isFavourite: PropTypes.bool.isRequired,
   handleFavouriteStatusChange: PropTypes.func,
 };
 

@@ -10,7 +10,6 @@ import { combineQueries } from './utils';
 import { QUERY_OPTIONS } from './constants';
 import { useFavouriteDashboardItem } from './useFavouriteDashboardItem';
 import { useUser } from './useUser';
-import { IS_NOT_FAVOURITE, IDLE, IS_FAVOURITE } from '../../constants';
 
 const useDashboardReportData = ({ entityCode, reportCode, startDate, endDate }) => {
   const params = {
@@ -46,16 +45,12 @@ const getReportCodesByCode = dashboards => {
   }, {});
 };
 
-const getFavouriteStatus = (userFavouriteDashboardItems, userId, reportCode) => {
-  if (!userId) {
-    return IDLE;
-  }
-
+const getFavouriteStatus = (userFavouriteDashboardItems, reportCode) => {
   const isFavouriteDashboardItemFound = userFavouriteDashboardItems.find(
     dashboardItemCode => dashboardItemCode === reportCode,
   );
 
-  return isFavouriteDashboardItemFound ? IS_FAVOURITE : IS_NOT_FAVOURITE;
+  return !!isFavouriteDashboardItemFound;
 };
 
 export const useDashboardReportDataWithConfig = ({
@@ -80,7 +75,7 @@ export const useDashboardReportDataWithConfig = ({
 
   const reportCodes = getReportCodesByCode(query.data?.dashboards);
 
-  const favouriteStatus = getFavouriteStatus(favouriteDashboardItems, userId, reportCode);
+  const isFavourite = getFavouriteStatus(favouriteDashboardItems, reportCode);
 
   return {
     ...query,
@@ -89,7 +84,7 @@ export const useDashboardReportDataWithConfig = ({
       dashboardItemConfig: {
         ...dashboardItem,
         dashboardName: dashboard?.dashboardName,
-        favouriteStatus,
+        isFavourite,
       },
       reportCodes,
     },

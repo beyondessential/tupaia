@@ -71,8 +71,3 @@ export const TILE_SETS = [
     url: `https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v10/tiles/256/{z}/{x}/{y}?access_token=${MAPBOX_TOKEN}`,
   },
 ];
-
-// Dashboard item favourite button Constants
-export const IS_FAVOURITE = 'IS_FAVOURITE';
-export const IS_NOT_FAVOURITE = 'IS_NOT_FAVOURITE';
-export const IDLE = 'IDLE';
