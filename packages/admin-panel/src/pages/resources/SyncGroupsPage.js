@@ -72,6 +72,7 @@ const COLUMNS = [
     source: 'sync_status',
     filterable: false,
     sortable: false,
+    width: 180,
     actionConfig: {
       syncStatusEndpoint: 'dataServiceSyncGroups/{id}',
       latestSyncLogEndpoint: 'dataServiceSyncGroups/{id}/logs?limit=1',
