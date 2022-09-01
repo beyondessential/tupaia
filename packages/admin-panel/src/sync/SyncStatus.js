@@ -111,8 +111,12 @@ export const SyncStatus = props => {
     try {
       const statusResponse = await api.get(syncStatusEndpoint);
       const latestLogResponse = await api.get(latestSyncLogEndpoint);
+      const latestLog = latestLogResponse.body.logs[0];
+
       setStatus(statusResponse.body.sync_status);
-      setLogMessage(formatLog(latestLogResponse.body.logs[0]));
+      if (latestLog) {
+        setLogMessage(formatLog(latestLog));
+      }
       setErrorMessage(null);
     } catch (error) {
       setErrorMessage(error.message);
