@@ -120,7 +120,7 @@ export class SurveyResponseOutdater extends ChangeHandler {
   debounceTime = 250;
 
   constructor(models) {
-    super(models);
+    super(models, 'survey-response-outdater');
 
     this.changeTranslators = {
       surveyResponse: translateSurveyResponseChanges,
@@ -132,13 +132,13 @@ export class SurveyResponseOutdater extends ChangeHandler {
    * This method processes the changed records and ensures that all responses in the affected
    * dimension combos get a correct `outdated` status
    */
-  async handleChanges(changedResponses) {
-    const surveysById = await this.fetchSurveysById(changedResponses);
+  async handleChanges(transactionModels, changedResponses) {
+    const surveysById = await this.fetchSurveysById(transactionModels, changedResponses);
     const responsesBySurveyId = groupBy(changedResponses, 'survey_id');
 
     return Promise.all(
       Object.entries(responsesBySurveyId).map(([surveyId, responses]) =>
-        this.handleResponsesForSurvey(responses, surveysById[surveyId]),
+        this.handleResponsesForSurvey(transactionModels, responses, surveysById[surveyId]),
       ),
     );
   }
@@ -148,24 +148,27 @@ export class SurveyResponseOutdater extends ChangeHandler {
       ? `Could not outdate ${changedResponses.length} survey responses`
       : `Could not outdate survey responses with ids ${changedResponses.map(sr => sr.id)}`;
 
-  handleResponsesForSurvey = async (changedResponses, survey) => {
-    if (!survey?.['period_granularity']) {
+  handleResponsesForSurvey = async (transactionModels, changedResponses, survey) => {
+    if (!survey?.period_granularity) {
       // Survey responses for non periodic surveys are always "not outdated"
       const updateIds = changedResponses.filter(sr => sr.outdated).map(sr => sr.id);
-      await this.setOutdatedStatus(updateIds, false);
+      await this.setOutdatedStatus(transactionModels, updateIds, false);
       return;
     }
 
     const combos = getUniqueObjects(changedResponses.map(sr => getDimensionCombo(sr, survey)));
-    const surveyResponses = await this.findResponsesAcrossDimensionCombos(combos);
+    const surveyResponses = await this.findResponsesAcrossDimensionCombos(
+      transactionModels,
+      combos,
+    );
     const responsesGroupedByCombo = groupResponsesForSurveyByDimensionCombo(
       surveyResponses,
       survey,
     );
 
     const idsByNewStatus = this.getResponseIdsForOutdatedStatusUpdate(responsesGroupedByCombo);
-    await this.setOutdatedStatus(idsByNewStatus.true, true);
-    await this.setOutdatedStatus(idsByNewStatus.false, false);
+    await this.setOutdatedStatus(transactionModels, idsByNewStatus.true, true);
+    await this.setOutdatedStatus(transactionModels, idsByNewStatus.false, false);
   };
 
   /**
@@ -194,19 +197,19 @@ export class SurveyResponseOutdater extends ChangeHandler {
     return idsByNewStatus;
   };
 
-  fetchSurveysById = async surveyResponses => {
+  fetchSurveysById = async (transactionModels, surveyResponses) => {
     const surveyIds = getUniqueEntries(surveyResponses.map(r => r.survey_id));
-    const surveys = await this.models.survey.findManyById(surveyIds);
+    const surveys = await transactionModels.survey.findManyById(surveyIds);
     return keyBy(surveys, 'id');
   };
 
-  findResponsesAcrossDimensionCombos = async combos => {
+  findResponsesAcrossDimensionCombos = async (transactionModels, combos) => {
     const surveyIds = getUniqueEntries(combos.map(c => c.surveyId));
     const entityIds = getUniqueEntries(combos.map(c => c.entityId));
     const minStartDate = min(combos.map(c => c.startDate));
     const maxEndDate = max(combos.map(c => c.endDate));
 
-    return this.models.surveyResponse.find({
+    return transactionModels.surveyResponse.find({
       survey_id: surveyIds,
       entity_id: entityIds,
       data_time: {
@@ -216,9 +219,6 @@ export class SurveyResponseOutdater extends ChangeHandler {
     });
   };
 
-  findMostRecentResponse = async where =>
-    this.models.surveyResponse.findOne(where, { sort: ['end_time DESC'], limit: 1 });
-
-  setOutdatedStatus = async (responseIds, outdated) =>
-    this.models.surveyResponse.update({ id: getUniqueEntries(responseIds) }, { outdated });
+  setOutdatedStatus = async (transactionModels, responseIds, outdated) =>
+    transactionModels.surveyResponse.update({ id: getUniqueEntries(responseIds) }, { outdated });
 }

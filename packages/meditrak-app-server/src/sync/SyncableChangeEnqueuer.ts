@@ -4,7 +4,6 @@
  */
 
 import { ChangeHandler } from '@tupaia/database';
-import { MeditrakSyncQueueModel } from '../models';
 import { MeditrakAppServerModelRegistry } from '../types';
 import { getSupportedModels } from './appSupportedModels';
 
@@ -14,11 +13,8 @@ type Change = { record_id: string; record_type: string; type: 'update' | 'delete
  * Adds server side changes to the meditrakSyncQueue
  */
 export class SyncableChangeEnqueuer extends ChangeHandler {
-  private readonly syncQueueModel: MeditrakSyncQueueModel;
-
   public constructor(models: MeditrakAppServerModelRegistry) {
-    super(models);
-    this.syncQueueModel = models.meditrakSyncQueue;
+    super(models, 'syncable-change-enqueuer');
 
     const stripDataFromChange = (
       change: {
@@ -36,8 +32,8 @@ export class SyncableChangeEnqueuer extends ChangeHandler {
     );
   }
 
-  private addToSyncQueue(change: Change) {
-    this.syncQueueModel.updateOrCreate(
+  private addToSyncQueue(transactionModels: MeditrakAppServerModelRegistry, change: Change) {
+    return transactionModels.meditrakSyncQueue.updateOrCreate(
       {
         record_id: change.record_id,
       },
@@ -48,7 +44,10 @@ export class SyncableChangeEnqueuer extends ChangeHandler {
     );
   }
 
-  protected async handleChanges(changes: Change[]) {
-    changes.forEach(change => this.addToSyncQueue(change));
+  protected async handleChanges(
+    transactionModels: MeditrakAppServerModelRegistry,
+    changes: Change[],
+  ) {
+    await Promise.all(changes.map(change => this.addToSyncQueue(transactionModels, change)));
   }
 }

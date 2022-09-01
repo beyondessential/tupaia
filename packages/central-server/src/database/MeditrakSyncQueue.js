@@ -30,8 +30,7 @@ const arraysAreSame = (arr1, arr2) =>
  */
 export class MeditrakSyncQueue extends ChangeHandler {
   constructor(models) {
-    super(models);
-    this.syncQueueModel = models.meditrakSyncQueue;
+    super(models, 'meditrak-sync-queue');
 
     const typesToSync = models.getTypesToSyncWithMeditrak();
     const modelNamesToSync = Object.entries(models)
@@ -47,10 +46,10 @@ export class MeditrakSyncQueue extends ChangeHandler {
     this.changeTranslators.survey = change => [change];
   }
 
-  async refreshPermissionsBasedView() {
+  async refreshPermissionsBasedView(transactionModels) {
     try {
       const start = Date.now();
-      await this.models.database.executeSql(
+      await transactionModels.database.executeSql(
         `REFRESH MATERIALIZED VIEW CONCURRENTLY permissions_based_meditrak_sync_queue;`,
       );
       const end = Date.now();
@@ -64,16 +63,16 @@ export class MeditrakSyncQueue extends ChangeHandler {
    * We need to check for permissions changes when processing survey changes
    * If the permissions have changed, we need to update all related records
    */
-  async processSurveyChange(surveyChangeData) {
+  async processSurveyChange(transactionModels, surveyChangeData) {
     const { new_record: newRecord, old_record: oldRecord, ...surveyChange } = surveyChangeData;
     if (!oldRecord) {
       // New survey, so permissions cannot have changed
-      return this.addToSyncQueue(surveyChange);
+      return this.addToSyncQueue(transactionModels, surveyChange);
     }
 
     if (!newRecord) {
       // survey is deleted, no need to bother about permissions associated with it
-      return this.addToSyncQueue(surveyChange);
+      return this.addToSyncQueue(transactionModels, surveyChange);
     }
 
     if (
@@ -81,12 +80,12 @@ export class MeditrakSyncQueue extends ChangeHandler {
       arraysAreSame(newRecord.country_ids, oldRecord.country_ids)
     ) {
       // Permissions haven't changed, just queue the survey change
-      return this.addToSyncQueue(surveyChange);
+      return this.addToSyncQueue(transactionModels, surveyChange);
     }
 
     // Permissions have changed, enqueue changes for all related records
     // to ensure devices sync down those records if they now have permissions
-    const survey = await this.models.survey.findById(surveyChange.record_id);
+    const survey = await transactionModels.survey.findById(surveyChange.record_id);
     const surveyScreenChanges = (await survey.surveyScreens()).map(record => ({
       record_type: 'survey_screen',
       record_id: record.id,
@@ -122,19 +121,19 @@ export class MeditrakSyncQueue extends ChangeHandler {
       ...optionChanges,
     ];
 
-    return Promise.all(allChanges.map(change => this.addToSyncQueue(change)));
+    return Promise.all(allChanges.map(change => this.addToSyncQueue(transactionModels, change)));
   }
 
-  processChange(change) {
+  processChange(transactionModels, change) {
     if (change.record_type === 'survey') {
-      return this.processSurveyChange(change);
+      return this.processSurveyChange(transactionModels, change);
     }
 
-    return this.addToSyncQueue(change);
+    return this.addToSyncQueue(transactionModels, change);
   }
 
-  addToSyncQueue(change) {
-    return this.syncQueueModel.updateOrCreate(
+  addToSyncQueue(transactionModels, change) {
+    return transactionModels.meditrakSyncQueue.updateOrCreate(
       {
         record_id: change.record_id,
       },
@@ -145,8 +144,8 @@ export class MeditrakSyncQueue extends ChangeHandler {
     );
   }
 
-  async handleChanges(changes) {
-    await Promise.all(changes.map(change => this.processChange(change)));
-    await this.refreshPermissionsBasedView();
+  async handleChanges(transactionModels, changes) {
+    await Promise.all(changes.map(change => this.processChange(transactionModels, change)));
+    await this.refreshPermissionsBasedView(transactionModels);
   }
 }
