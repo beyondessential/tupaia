@@ -47,10 +47,11 @@ export const DashboardReport = React.memo(
 
     const { reportData, dashboardItemConfig: config, reportCodes } = data;
     const Visual = config?.type === 'list' ? ListVisual : Chart;
+    const Wrapper = isEnlarged ? React.Fragment : Container;
     const drillDownPathname = `/${locale}/${entityCode}/dashboard`;
 
     return (
-      <Container>
+      <Wrapper>
         <Visual
           viewContent={{ ...config, data: reportData, startDate, endDate }}
           isLoading={isLoading}
@@ -79,7 +80,7 @@ export const DashboardReport = React.memo(
             </Button>
           </Footer>
         )}
-      </Container>
+      </Wrapper>
     );
   },
 );
