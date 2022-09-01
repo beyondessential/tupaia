@@ -21,8 +21,8 @@ exports.up = function (db) {
       user_id TEXT NOT NULL,
       dashboard_item_id TEXT NOT NULL,      
       UNIQUE (user_id, dashboard_item_id),
-      FOREIGN KEY (user_id) REFERENCES user_account (id) ON UPDATE CASCADE ON DELETE RESTRICT,
-      FOREIGN KEY (dashboard_item_id) REFERENCES dashboard_item (id) ON UPDATE CASCADE ON DELETE RESTRICT
+      FOREIGN KEY (user_id) REFERENCES user_account (id) ON UPDATE CASCADE ON DELETE CASCADE,
+      FOREIGN KEY (dashboard_item_id) REFERENCES dashboard_item (id) ON UPDATE CASCADE ON DELETE CASCADE
 
     );
 
@@ -32,7 +32,7 @@ exports.up = function (db) {
 
 exports.down = function (db) {
   return db.runSql(`
-    DROP TABLE public.lesmis_user_favourite_dashboard_item;
+    DROP TABLE public.user_favourite_dashboard_item;
   `);
 };
 
