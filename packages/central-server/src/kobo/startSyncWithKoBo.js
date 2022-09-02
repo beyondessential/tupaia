@@ -11,6 +11,32 @@ import winston from '../log';
 const PERIOD_BETWEEN_SYNCS = 10 * 60 * 1000; // 10 minutes between syncs
 const SERVICE_TYPE = 'kobo';
 
+const validateSyncGroup = async (models, dataServiceSyncGroup) => {
+  const { data_group_code: dataGroupCode, config } = dataServiceSyncGroup;
+
+  const survey = await models.survey.findOne({ code: dataGroupCode });
+  if (!survey) {
+    throw new Error(
+      `No survey exists in Tupaia with code matching data_group_code: ${dataGroupCode}`,
+    );
+  }
+
+  const questionCodesInQuestionMapping = Object.keys(config.questionMapping || {});
+  const questions = await models.question.find({
+    code: questionCodesInQuestionMapping,
+  });
+  const questionCodes = questions.map(q => q.code);
+  const questionsNotDefinedInTupaia = questionCodesInQuestionMapping.filter(
+    q => !questionCodes.includes(q),
+  );
+
+  if (questionsNotDefinedInTupaia.length > 0) {
+    throw new Error(
+      `Question codes in sync group questionMapping do not match any existing questions in Tupaia: ${questionsNotDefinedInTupaia}`,
+    );
+  }
+};
+
 const writeKoboDataToTupaia = async (transactingModels, koboData, syncGroupCode) => {
   const dataServiceSyncGroup = await transactingModels.dataServiceSyncGroup.findOne({
     service_type: SERVICE_TYPE,
@@ -93,6 +119,8 @@ export async function syncWithKoBo(models, dataBroker, syncGroupCode) {
 
   try {
     await dataServiceSyncGroup.setSyncStarted();
+
+    await validateSyncGroup(models, dataServiceSyncGroup);
 
     // Pull data from KoBo
     const koboData = await dataBroker.pull(
