@@ -72,7 +72,7 @@ const addEntityRelation = async db => {
   await insertObject(db, 'entity_relation', {
     id: generateId(),
     parent_id: await codeToId(db, 'entity', PROJECT_CODE),
-    child_id: await codeToId(db, 'entity', 'SB'),
+    child_id: await codeToId(db, 'entity', 'TV'),
     entity_hierarchy_id: await hierarchyNameToId(db, PROJECT_CODE),
   });
 };
