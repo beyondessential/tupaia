@@ -35,13 +35,16 @@ import {
   HIERARCHY_WIND_AFTER_CANONICAL_TYPES_CHANGED,
 } from './EntityHierarchyCacher.fixtures';
 
+const TEST_DEBOUNCE_TIME = 50; // short debounce time so tests run more quickly
+
 describe('EntityHierarchyCacher', () => {
   const models = getTestModels();
   const hierarchyCacher = new EntityHierarchyCacher(models);
+  hierarchyCacher.setDebounceTime(TEST_DEBOUNCE_TIME); // short debounce time so tests run more quickly
 
   const buildAndCacheProject = async projectCode => {
     const project = await models.project.findOne({ code: projectCode });
-    await hierarchyCacher.buildAndCacheProject(project);
+    await hierarchyCacher.buildAndCacheProject(models, project);
   };
   const assertRelationsMatch = async (projectCode, relations) => {
     await models.database.waitForAllChangeHandlers();
@@ -272,6 +275,7 @@ describe('EntityHierarchyCacher', () => {
   it('batches multiple changes', async () => {
     sinon.stub(EntityHierarchyCacher.prototype, 'buildAndCacheHierarchies');
 
+    hierarchyCacher.setDebounceTime(1000);
     // make a bunch of different changes, with small delays between each to model real life
     const sleepTime = 250; // sleep for 250 ms between each change
 
@@ -300,5 +304,6 @@ describe('EntityHierarchyCacher', () => {
 
     expect(hierarchyCacher.buildAndCacheHierarchies).to.have.been.calledOnce;
     EntityHierarchyCacher.prototype.buildAndCacheHierarchies.restore();
+    hierarchyCacher.setDebounceTime(TEST_DEBOUNCE_TIME);
   });
 });

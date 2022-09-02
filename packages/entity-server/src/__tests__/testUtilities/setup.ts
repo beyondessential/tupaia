@@ -39,6 +39,7 @@ export const setupTestData = async () => {
 
   const insertedProjects = await buildAndInsertProjectsAndHierarchies(models, projectsForInserting);
   await hierarchyCacher.buildAndCacheHierarchies(
+    models,
     insertedProjects.map(insertedProject => insertedProject.entityHierarchy.id),
   );
 
