@@ -7,8 +7,12 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FlexColumn, A4PageContent, A4Page } from '@tupaia/ui-components';
 
-import { useDashboardDropdownOptions } from '../utils/useDashboardDropdownOptions';
-import { getExportableSubDashboards, useUrlSearchParams } from '../utils';
+import {
+  useDashboardDropdownOptions,
+  getExportableSubDashboards,
+  useUrlSearchParams,
+} from '../utils';
+
 import { PreviewPage } from '../components/DashboardExportModal/components';
 import { DashboardReportPage, NoReportPage } from '../components/DashboardExportModal/pages';
 
@@ -93,18 +97,14 @@ const getChildren = ({
 export const ExportView = ({ viewProps, viewType, className }) => {
   const { getExtraExportViewProps, PageContainer, PageContent } = EXPORT_VIEWS[viewType];
   const exportViewProps = { ...viewProps, ...getExtraExportViewProps() };
-  const { selectedDashboard } = exportViewProps;
-  const { dropdownOptions } = useDashboardDropdownOptions();
-  const profileDropDownOption = dropdownOptions.find(({ value }) => value === selectedDashboard);
-  const { exportableSubDashboards } = getExportableSubDashboards(profileDropDownOption);
+  const { selectedOption } = useDashboardDropdownOptions();
+  const { exportableSubDashboards } = getExportableSubDashboards(selectedOption);
+  const isProfileSelected = selectedOption.value === 'profile';
 
   return (
     <Container className={className}>
       {exportableSubDashboards?.map((subDashboard, index) => {
-        const isFirstPageProfile =
-          viewType === DASHBOARD_EXPORT_PREVIEW
-            ? selectedDashboard === 'profile' && index === 0
-            : exportViewProps.exportOptions.dashboard === 'profile' && index === 0;
+        const isFirstPageProfile = isProfileSelected && index === 0;
         return getChildren({
           subDashboard,
           isFirstPageProfile,

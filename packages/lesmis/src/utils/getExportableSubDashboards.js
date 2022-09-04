@@ -9,12 +9,12 @@ export const getExportableSubDashboards = dropdownOption => {
     includeDrillDowns: false,
   });
 
-  if (dropdownOption.exportToPDF === undefined || !dropdownOption.exportToPDF) {
-    const totalPage = 0;
-    return { totalPage };
-  }
+  const isExportable = dropdownOption.exportToPDF;
 
   const exportableSubDashboards = useMemo(() => {
+    if (!isExportable) {
+      return [];
+    }
     const { componentProps, label, useYearSelector } = dropdownOption;
     const { filterSubDashboards } = componentProps;
     return data

@@ -17,7 +17,13 @@ import ButtonComponent from '@material-ui/core/Button';
 import { Tooltip } from '@tupaia/ui-components';
 import { FlexStart, FlexEnd } from './Layout';
 import { useEntityData, useMapOverlayReportData } from '../api';
-import { I18n, useUrlParams, makeEntityLink, useUrlSearchParam, getIsExportable } from '../utils';
+import {
+  I18n,
+  useUrlParams,
+  makeEntityLink,
+  useUrlSearchParam,
+  useDashboardDropdownOptions,
+} from '../utils';
 import { MapTableModal } from './MapTableModal';
 import { DEFAULT_DATA_YEAR } from '../constants';
 
@@ -113,7 +119,8 @@ export const LocationHeader = ({ setIsOpen }) => {
 
   const { data: entityData } = useEntityData(entityCode);
   const exportTitle = getExportTitle(entityData, selectedOverlayName);
-  const isExportable = getIsExportable();
+  const { selectedOption } = useDashboardDropdownOptions();
+  const isExportable = selectedOption.exportToPDF;
 
   return (
     <Wrapper>
