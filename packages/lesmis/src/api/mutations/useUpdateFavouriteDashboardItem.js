@@ -10,7 +10,7 @@ const useFavouriteDashboardItem = () =>
   useMutation(dashboardItemCode =>
     post('userFavouriteDashboardItems', {
       data: {
-        changeType: 'create',
+        state: 'favourte',
         dashboardItemCode,
       },
     }),
@@ -20,7 +20,7 @@ const useUnfavouriteDashboardItem = () =>
   useMutation(dashboardItemCode =>
     post('userFavouriteDashboardItems', {
       data: {
-        changeType: 'delete',
+        state: 'unfavourte',
         dashboardItemCode,
       },
     }),

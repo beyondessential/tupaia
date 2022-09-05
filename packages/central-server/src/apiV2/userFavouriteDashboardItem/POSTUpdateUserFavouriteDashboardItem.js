@@ -26,7 +26,7 @@ export class POSTUpdateUserFavouriteDashboardItem extends CRUDHandler {
 
   async handleRequest() {
     const { models, body, userId } = this.req;
-    const { dashboardItemCode, changeType } = body;
+    const { dashboardItemCode, state } = body;
 
     const user = await models.user.findOne({ id: userId });
     const dashboardItemCodeToId = await models.dashboardItem.findIdByCode(dashboardItemCode);
@@ -35,10 +35,10 @@ export class POSTUpdateUserFavouriteDashboardItem extends CRUDHandler {
       throw new Error(`user or dashboard item not found`);
     }
 
-    if (changeType === 'create') {
+    if (state === 'favourite') {
       await models.userFavouriteDashboardItem.favourite(userId, dashboardItemId);
     }
-    if (changeType === 'delete') {
+    if (state === 'unfavourite') {
       await models.userFavouriteDashboardItem.unfavourite(userId, dashboardItemId);
     }
 
