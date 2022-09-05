@@ -103,21 +103,38 @@ const mapStateToProps = (state, ownProps) => {
   const permanentLabels = selectAreRegionLabelsPermanent(state);
   // orginal data
   // If the org unit's grandchildren are polygons and have a measure, display grandchildren
-  // rather than children
+  // rather than children (recursive)
   let displayedChildren = currentChildren;
   let measureOrgUnits = [];
 
   if (selectHasPolygonMeasure(state)) {
     measureOrgUnits = selectMeasuresWithDisplayInfo(state, displayedMapOverlayCodes);
     const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
-    const grandchildren = currentChildren
-      .map(area => selectOrgUnitChildren(state, area.organisationUnitCode))
-      .reduce((acc, val) => acc.concat(val), []); // equivelent to .flat(), for IE
 
-    const hasShadedGrandchildren =
-      grandchildren &&
-      grandchildren.some(child => measureOrgUnitCodes.includes(child.organisationUnitCode));
-    if (hasShadedGrandchildren) displayedChildren = grandchildren;
+    const getDisplayedDescendants = parents => {
+      if (!Array.isArray(parents) || parents.length === 0) return parents;
+
+      const children = parents
+        .map(area => selectOrgUnitChildren(state, area.organisationUnitCode))
+        .reduce((acc, val) => acc.concat(val), []); // equivelent to .flat(), for IE
+      if (children.length === 0) return null;
+
+      // if this is the measure layer return it
+      const hasShadedPolygonChildren =
+        children &&
+        children.some(
+          child =>
+            organisationUnitIsArea(child) &&
+            measureOrgUnitCodes.includes(child.organisationUnitCode),
+        );
+      if (hasShadedPolygonChildren) return children;
+
+      // otherwise look deeper
+      return getDisplayedDescendants(children);
+    };
+
+    const displayedDescendants = getDisplayedDescendants(currentChildren);
+    if (displayedDescendants) displayedChildren = displayedDescendants;
   }
 
   const getChildren = organisationUnitCode => selectOrgUnitChildren(state, organisationUnitCode);
