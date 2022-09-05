@@ -3,17 +3,51 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { TYPES } from '@tupaia/database';
+
 // Data elements and groups share the same codes on purpose, to assert that
 // `DataBroker` can still distinguish them using their type
 export const DATA_ELEMENTS = {
-  TEST_01: { code: 'TEST_01', service_type: 'test', config: {}, permission_groups: ['*'] },
-  TEST_02: { code: 'TEST_02', service_type: 'test', config: {}, permission_groups: ['*'] },
-  OTHER_01: { code: 'OTHER_01', service_type: 'other', config: {}, permission_groups: ['*'] },
+  TEST_01: {
+    code: 'TEST_01',
+    service_type: 'test',
+    config: {},
+    permission_groups: ['*'],
+    databaseType: TYPES.DATA_ELEMENT,
+  },
+  TEST_02: {
+    code: 'TEST_02',
+    service_type: 'test',
+    config: {},
+    permission_groups: ['*'],
+    databaseType: TYPES.DATA_ELEMENT,
+  },
+  OTHER_01: {
+    code: 'OTHER_01',
+    service_type: 'other',
+    config: {},
+    permission_groups: ['*'],
+    databaseType: TYPES.DATA_ELEMENT,
+  },
+  MAPPED_01: {
+    code: 'MAPPED_01',
+    service_type: 'test',
+    config: {},
+    permission_groups: ['*'],
+    databaseType: TYPES.DATA_ELEMENT,
+  },
+  MAPPED_02: {
+    code: 'MAPPED_02',
+    service_type: 'test',
+    config: {},
+    permission_groups: ['*'],
+    databaseType: TYPES.DATA_ELEMENT,
+  },
 };
 export const DATA_GROUPS = {
-  TEST_01: { code: 'TEST_01', service_type: 'test', config: {} },
-  TEST_02: { code: 'TEST_02', service_type: 'test', config: {} },
-  OTHER_01: { code: 'OTHER_01', service_type: 'other', config: {} },
+  TEST_01: { code: 'TEST_01', service_type: 'test', config: {}, databaseType: TYPES.DATA_GROUP },
+  TEST_02: { code: 'TEST_02', service_type: 'test', config: {}, databaseType: TYPES.DATA_GROUP },
+  OTHER_01: { code: 'OTHER_01', service_type: 'other', config: {}, databaseType: TYPES.DATA_GROUP },
 };
 
 export const DATA_BY_SERVICE = {
@@ -28,3 +62,23 @@ export const DATA_BY_SERVICE = {
     { code: 'OTHER_01', type: 'dataGroup', name: 'Other group 1', value: 30 },
   ],
 };
+
+export const ENTITIES = {
+  TO_FACILITY_01: { code: 'TO_FACILITY_01', country_code: 'TO' },
+  FJ_FACILITY_01: { code: 'FJ_FACILITY_01', country_code: 'FJ' },
+};
+
+export const DATA_ELEMENT_DATA_SERVICES = [
+  {
+    data_element_code: 'MAPPED_01',
+    country_code: 'FJ',
+    service_type: 'other',
+    service_config: { cow: 'moo' },
+  },
+  {
+    data_element_code: 'MAPPED_02',
+    country_code: 'FJ',
+    service_type: 'other',
+    service_config: { sheep: 'baaaa' },
+  },
+];

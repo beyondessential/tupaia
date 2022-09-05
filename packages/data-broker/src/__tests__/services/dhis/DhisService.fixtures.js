@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+import { DataServiceMapping } from '../../../services/DataServiceMapping';
 
 export const SERVER_NAME = 'test server name';
 
@@ -80,6 +81,23 @@ export const DATA_ELEMENTS_BY_GROUP = {
   POP01: [DATA_SOURCES.POP01, DATA_SOURCES.POP02],
   DIFF_GROUP: [DATA_SOURCES.POP01, DATA_SOURCES.DIF01],
 };
+
+export const DEFAULT_DATA_SERVICE_MAPPING = new DataServiceMapping(
+  [
+    Object.values(DATA_SOURCES).map(de => ({
+      dataSource: de,
+      service_type: de.service_type,
+      config: de.config,
+    })),
+  ],
+  [
+    Object.values(DATA_GROUPS).map(dg => ({
+      dataSource: dg,
+      service_type: dg.service_type,
+      config: dg.config,
+    })),
+  ],
+);
 
 export const DHIS_REFERENCE = 'XXXYYY';
 
