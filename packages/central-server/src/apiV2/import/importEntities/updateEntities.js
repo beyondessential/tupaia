@@ -7,12 +7,17 @@ import { ImportValidationError, getCountryCode } from '@tupaia/utils';
 import { getEntityObjectValidator } from './getEntityObjectValidator';
 import { getOrCreateParentEntity } from './getOrCreateParentEntity';
 import { getEntityMetadata } from './getEntityMetadata';
+import { NO_COUNTRY } from './extractEntitiesByCountryName';
 
 const DEFAULT_TYPE_NAMES = {
   1: 'Hospital',
   2: 'Community health centre',
   3: 'Clinic',
   4: 'Aid post',
+};
+
+const defaultMetadata = {
+  dhis: { dhisInstanceCode: 'regional' },
 };
 
 function getDefaultTypeDetails(type) {
@@ -69,12 +74,7 @@ async function attemptFacilityUpsert(
   await newFacility.save();
 }
 
-export async function updateCountryEntities(
-  transactingModels,
-  countryName,
-  entityObjects,
-  pushToDhis = true,
-) {
+export async function updateCountry(transactingModels, countryName, pushToDhis = true) {
   const countryCode = getCountryCode(countryName);
   const country = await transactingModels.country.findOrCreate(
     { name: countryName },
@@ -83,9 +83,6 @@ export async function updateCountryEntities(
   const { id: worldId } = await transactingModels.entity.findOne({
     type: transactingModels.entity.types.WORLD,
   });
-  const defaultMetadata = {
-    dhis: { dhisInstanceCode: 'regional' },
-  };
   const countryEntityMetadata = await getEntityMetadata(
     transactingModels,
     defaultMetadata,
@@ -102,6 +99,10 @@ export async function updateCountryEntities(
       metadata: countryEntityMetadata,
     },
   );
+  return country;
+}
+
+export async function updateEntities(transactingModels, entityObjects, country, pushToDhis = true) {
   const codes = []; // An array to hold all facility codes, allowing duplicate checking
   for (let i = 0; i < entityObjects.length; i++) {
     const entityObject = entityObjects[i];
@@ -109,7 +110,7 @@ export async function updateCountryEntities(
     const validator = getEntityObjectValidator(entityType, transactingModels);
     const excelRowNumber = i + 2;
     const constructImportValidationError = (message, field) =>
-      new ImportValidationError(message, excelRowNumber, field, countryName);
+      new ImportValidationError(message, excelRowNumber, field, country?.name || NO_COUNTRY);
     await validator.validate(entityObject, constructImportValidationError);
     const {
       code,
@@ -130,12 +131,27 @@ export async function updateCountryEntities(
         `Entity code '${code}' is not unique`,
         excelRowNumber,
         'code',
-        countryName,
+        country?.name || NO_COUNTRY,
       );
     }
     codes.push(code);
-    const { parentGeographicalArea, parentEntity } =
-      (await getOrCreateParentEntity(transactingModels, entityObject, country, pushToDhis)) || {};
+    let parentGeographicalArea;
+    let parentEntity;
+
+    // Entities without a country (ie. projects) do not have parent entities
+    if (country) {
+      const parentData = await getOrCreateParentEntity(
+        transactingModels,
+        entityObject,
+        country,
+        pushToDhis,
+      );
+      if (parentData) {
+        parentGeographicalArea = parentData.parentGeographicalArea;
+        parentEntity = parentData.parentEntity;
+      }
+    }
+
     if (entityType === transactingModels.entity.types.FACILITY) {
       await attemptFacilityUpsert(transactingModels, {
         parentEntity,
@@ -172,7 +188,7 @@ export async function updateCountryEntities(
         name,
         parent_id: parentEntity ? parentEntity.id : null,
         type: entityType,
-        country_code: country.code,
+        country_code: country ? country.code : null,
         image_url: imageUrl,
         metadata: entityMetadata,
         attributes,
@@ -192,5 +208,4 @@ export async function updateCountryEntities(
       await transactingModels.entity.updateRegionCoordinates(code, translatedGeojson);
     }
   }
-  return country;
 }

@@ -11,7 +11,7 @@ import {
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../../permissions';
 import * as PopulateCoordinatesForCountry from '../../../../apiV2/import/importEntities/populateCoordinatesForCountry';
-import * as UpdateCountryEntities from '../../../../apiV2/import/importEntities/updateCountryEntities';
+import * as UpdateEntities from '../../../../apiV2/import/importEntities/updateEntities';
 import { expectPermissionError, TestableApp } from '../../../testUtilities';
 
 const DEFAULT_POLICY = {
@@ -48,12 +48,14 @@ describe('importEntities(): POST import/entities', () => {
 
     before(() => {
       // Only test permissions part so stub these methods to avoid them being called
-      sinon.stub(UpdateCountryEntities, 'updateCountryEntities').resolves({ code: 'DL' });
+      sinon.stub(UpdateEntities, 'updateCountry').resolves({ code: 'DL' });
+      sinon.stub(UpdateEntities, 'updateEntities').resolves(undefined);
       sinon.stub(PopulateCoordinatesForCountry, 'populateCoordinatesForCountry');
     });
 
     after(() => {
-      UpdateCountryEntities.updateCountryEntities.restore();
+      UpdateEntities.updateCountry.restore();
+      UpdateEntities.updateEntities.restore();
       PopulateCoordinatesForCountry.populateCoordinatesForCountry.restore();
     });
 

@@ -10,6 +10,16 @@ import xlsx from 'xlsx';
 
 import { convertCellToJson } from '../importSurveys/utilities';
 
+export const VALID_ENTITY_TYPES_WITH_NO_COUNTRY = ['project'];
+export const NO_COUNTRY = 'No Country';
+
+const validateNoCountryEntities = entities =>
+  entities.forEach(entity => {
+    if (!VALID_ENTITY_TYPES_WITH_NO_COUNTRY.includes(entity.entity_type)) {
+      throw new Error(`Country must be specified for entity type: ${entity.entity_type}`);
+    }
+  });
+
 const geojsonParser = filePath => {
   const fileContents = fs.readFileSync(filePath, { encoding: 'utf-8' });
   const { features } = JSON.parse(fileContents);
@@ -30,12 +40,19 @@ const geojsonParser = filePath => {
     return entity;
   });
 
-  return groupBy(entities, 'country_name');
+  const { [NO_COUNTRY]: entitiesWithoutCountry = [], ...entitiesByCountry } = groupBy(
+    entities,
+    'country_name',
+  );
+  return { entitiesByCountry, entitiesWithoutCountry };
 };
 
-const processXlsxRow = (row, { countryName }) => {
-  const entity = { ...row, country_name: countryName };
+const processXlsxRow = (row, countryName) => {
+  const entity = { ...row };
   const { geojson, attributes, data_service_entity: dataServiceEntity } = row;
+  if (countryName) {
+    entity.country_name = countryName;
+  }
   if (geojson) {
     entity.geojson = JSON.parse(geojson);
   }
@@ -52,13 +69,27 @@ const processXlsxRow = (row, { countryName }) => {
 const xlsxParser = filePath => {
   const workbook = xlsx.readFile(filePath);
   return Object.entries(workbook.Sheets).reduce(
-    (entitiesByCountry, [countryName, sheet]) => ({
-      ...entitiesByCountry,
-      [countryName]: xlsx.utils
-        .sheet_to_json(sheet)
-        .map(row => processXlsxRow(row, { countryName })),
-    }),
-    {},
+    ({ entitiesByCountry, entitiesWithoutCountry }, [countryName, sheet]) => {
+      const parsedSheet = xlsx.utils.sheet_to_json(sheet);
+      if (countryName === NO_COUNTRY) {
+        return {
+          entitiesByCountry,
+          entitiesWithoutCountry: [
+            ...entitiesWithoutCountry,
+            ...parsedSheet.map(row => processXlsxRow(row)),
+          ],
+        };
+      }
+
+      return {
+        entitiesWithoutCountry,
+        entitiesByCountry: {
+          ...entitiesByCountry,
+          [countryName]: parsedSheet.map(row => processXlsxRow(row, countryName)),
+        },
+      };
+    },
+    { entitiesByCountry: {}, entitiesWithoutCountry: [] },
   );
 };
 
@@ -71,12 +102,14 @@ const EXTENSION_TO_FILE_PARSER = {
  * @param {string} filePath
  * @returns {[ string, Array ]} Entities grouped by country name
  */
-export const extractEntitiesByCountryName = filePath => {
+export const extractEntitiesByCountry = filePath => {
   const extension = path.extname(filePath);
   const parseFile = EXTENSION_TO_FILE_PARSER[extension];
   if (!parseFile) {
     throw new Error(`Unsupported file type: ${extension}`);
   }
 
-  return parseFile(filePath);
+  const { entitiesByCountry, entitiesWithoutCountry } = parseFile(filePath);
+  validateNoCountryEntities(entitiesWithoutCountry);
+  return { entitiesByCountry, entitiesWithoutCountry };
 };
