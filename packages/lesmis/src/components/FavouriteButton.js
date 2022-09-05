@@ -5,7 +5,7 @@ import { useUser } from '../api';
 
 export const FavouriteButton = ({ isFavourite, handleFavouriteStatusChange }) => {
   const { isLoggedIn } = useUser();
-  if (!isLoggedIn) {
+  if (!isLoggedIn || isFavourite === null) {
     return null;
   }
 
