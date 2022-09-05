@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { snake } from 'case';
 import { CreateHandler } from '../CreateHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
@@ -20,7 +21,7 @@ export class CreateProject extends CreateHandler {
 
   async createRecord() {
     const {
-      code: projectCode,
+      code: rawProjectCode,
       name,
       description,
       sort_order,
@@ -32,6 +33,8 @@ export class CreateProject extends CreateHandler {
       default_measure,
       dashboard_group_name,
     } = this.newRecordData;
+
+    const projectCode = snake(rawProjectCode);
 
     await this.models.wrapInTransaction(async transactingModels => {
       const { id: projectEntityId } = await this.createProjectEntity(

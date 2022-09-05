@@ -188,15 +188,39 @@ export const constructForSingle = (models, recordType) => {
       };
     case TYPES.PROJECT:
       return {
-        code: [constructRecordNotExistsWithField(models.project, 'code')],
-        name: [isAString],
+        code: [
+          constructRecordNotExistsWithField(models.project, 'code'),
+          isAString,
+          async code => {
+            if (code.trim() === '') {
+              throw new Error('The code should contain words');
+            }
+            return true;
+          },
+        ],
+        name: [
+          isAString,
+          async name => {
+            if (name.trim() === '') {
+              throw new Error('The name should contain words');
+            }
+            const entityWithName = await models.entity.findOne({
+              type: 'project',
+              name,
+            });
+            if (entityWithName) {
+              throw new Error('A project already exists with this name.');
+            }
+            return true;
+          },
+        ],
         countries: [
           async countries => {
             const countryEntities = await models.country.find({
               id: countries,
             });
             if (countryEntities.length !== countries.length) {
-              throw new Error('Some provided countries do not exist');
+              throw new Error('One or more provided countries do not exist');
             }
             return true;
           },
