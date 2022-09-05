@@ -9,6 +9,16 @@ import { TYPES } from '../types';
 
 class UserFavouriteDashboardItemType extends DatabaseType {
   static databaseType = TYPES.USER_FAVOURITE_DASHBOARD_ITEM;
+
+  static joins = [
+    {
+      fields: {
+        code: 'dashboard_item_code',
+      },
+      joinWith: TYPES.DASHBOARD_ITEM,
+      joinCondition: ['dashboard_item.id', 'user_favourite_dashboard_item.dashboard_item_id'],
+    },
+  ];
 }
 
 export class UserFavouriteDashboardItemModel extends DatabaseModel {
