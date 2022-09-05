@@ -21,13 +21,13 @@ exports.up = async function (db) {
     // If any data elements or groups have not been updated to use a specific dhis instance, we set them to NOT_SET so we can add the constraint
     await db.runSql(`
       UPDATE ${table} SET config = (config || '{"dhisInstanceCode": "NOT_SET"}')
-      WHERE service_type = 'dhis' AND config->'dhisInstanceCode'::text = 'null';
+      WHERE service_type = 'dhis' AND config->>'dhisInstanceCode'::text = 'null';
     `);
 
     // Add constraint
     await db.runSql(`
       ALTER TABLE ${table}
-      ADD CONSTRAINT valid_data_service_config CHECK (service_type <> 'dhis' OR config->'dhisInstanceCode'::text <> 'null');
+      ADD CONSTRAINT valid_data_service_config CHECK (service_type <> 'dhis' OR config->>'dhisInstanceCode'::text is not null);
     `);
   }
 };
