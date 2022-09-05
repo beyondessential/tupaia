@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+
 import {
   getApiForValue,
   getApiFromServerName,
@@ -15,6 +16,7 @@ import {
   AnalyticsPuller,
   EventsPuller,
   DataElementsMetadataPuller,
+  DataGroupMetadataPuller,
   DeprecatedEventsPuller,
 } from './pullers';
 
@@ -31,6 +33,10 @@ export class DhisService extends Service {
       this.models.dataElement,
       this.translator,
     );
+    this.dataGroupMetadataPuller = new DataGroupMetadataPuller(
+      this.models.dataGroup,
+      this.translator,
+    );
     this.analyticsPuller = new AnalyticsPuller(
       this.models,
       this.translator,
@@ -45,6 +51,7 @@ export class DhisService extends Service {
     this.deleters = this.getDeleters();
     this.pullers = this.getPullers();
     this.metadataPullers = this.getMetadataPullers();
+    this.metadataMergers = this.getMetadataMergers();
   }
 
   getPushers() {
@@ -74,6 +81,15 @@ export class DhisService extends Service {
   getMetadataPullers() {
     return {
       [this.dataSourceTypes.DATA_ELEMENT]: this.dataElementsMetadataPuller.pull.bind(this),
+      [this.dataSourceTypes.DATA_GROUP]: this.dataGroupMetadataPuller.pull.bind(this),
+    };
+  }
+
+  getMetadataMergers() {
+    return {
+      [this.dataSourceTypes.DATA_ELEMENT]: results =>
+        results.reduce((existingResults, result) => existingResults.concat(result)),
+      [this.dataSourceTypes.DATA_GROUP]: results => results[0],
     };
   }
 
@@ -149,18 +165,7 @@ export class DhisService extends Service {
 
   deleteEvent = async (api, data) => api.deleteEvent(data.dhisReference);
 
-  async pull(dataSources, type, options = {}) {
-    const {
-      organisationUnitCode,
-      organisationUnitCodes,
-      dataServices = DEFAULT_DATA_SERVICES,
-      detectDataServices = false,
-    } = options;
-
-    const entityCodes = organisationUnitCodes || [organisationUnitCode];
-
-    // TODO remove the `detectDataServices` flag after
-    // https://linear.app/bes/issue/MEL-481/detect-data-services-in-the-data-broker-level
+  async getPullApis(dataSources, entityCodes, detectDataServices, dataServices) {
     const apis = detectDataServices
       ? await getApisForDataSources(
           this.models,
@@ -175,32 +180,51 @@ export class DhisService extends Service {
           entityCodes,
         );
 
+    return apis;
+  }
+
+  async pull(dataSources, type, options = {}) {
+    const {
+      organisationUnitCode,
+      organisationUnitCodes,
+      dataServices = DEFAULT_DATA_SERVICES,
+      detectDataServices = false,
+    } = options;
+
+    const entityCodes = organisationUnitCodes || [organisationUnitCode];
+
+    // TODO remove the `detectDataServices` flag after
+    // https://linear.app/bes/issue/MEL-481/detect-data-services-in-the-data-broker-level
+
+    const apis = await this.getPullApis(dataSources, entityCodes, detectDataServices, dataServices);
+
     const { useDeprecatedApi = false } = options;
     const pullerKey = `${type}${useDeprecatedApi ? '_deprecated' : ''}`;
 
     const pullData = this.pullers[pullerKey];
-
     return pullData(apis, dataSources, options);
   }
 
   async pullMetadata(dataSources, type, options) {
-    const { organisationUnitCode: entityCode, dataServices = DEFAULT_DATA_SERVICES } = options;
-    const pullMetadata = this.metadataPullers[type];
+    const {
+      organisationUnitCode,
+      organisationUnitCodes,
+      dataServices = DEFAULT_DATA_SERVICES,
+      detectDataServices = false,
+    } = options;
 
-    const apis = await getApisForLegacyDataSourceConfig(
-      this.models,
-      this.dhisInstanceResolver,
-      dataServices,
-      [entityCode],
-    );
+    const puller = this.metadataPullers[type];
+    const entityCodes = organisationUnitCodes || [organisationUnitCode];
+    const apis = await this.getPullApis(dataSources, entityCodes, detectDataServices, dataServices);
 
     const results = [];
     const pullForApi = async api => {
-      const newResults = await pullMetadata(api, dataSources, options);
-      results.push(...newResults);
+      const newResults = await puller(api, dataSources, options);
+      results.push(newResults);
     };
     await Promise.all(apis.map(pullForApi));
 
-    return results;
+    const mergeMetadata = this.metadataMergers[type];
+    return mergeMetadata(results);
   }
 }

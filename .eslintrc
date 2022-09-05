@@ -41,10 +41,10 @@
         "packages/indicators/**",
         "packages/lesmis-server/**",
         "packages/meditrak-app-server/**",
-        "packages/pdf-export-server/**",
         "packages/psss-server/**",
         "packages/report-server/**",
         "packages/server-boilerplate/**",
+        "packages/supserset-api/**",
         "packages/tsutils/**"
       ],
       "extends": "@beyondessential/ts",

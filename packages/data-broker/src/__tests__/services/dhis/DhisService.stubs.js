@@ -12,6 +12,7 @@ import {
   DATA_GROUPS,
   ENTITIES,
   SERVER_NAME,
+  ENTITY_HIERARCHIES,
 } from './DhisService.fixtures';
 import { createJestMockInstance } from '../../../../../utils/src/testUtilities';
 
@@ -26,13 +27,16 @@ const defaultAnalytics = {
 export const createMockDhisApi = ({
   getAnalyticsResponse = defaultAnalytics,
   getEventsResponse = [],
+  getEventAnalyticsStub,
   getEventAnalyticsResponse = defaultAnalytics,
   serverName = SERVER_NAME,
 } = {}) => {
   return createJestMockInstance('@tupaia/dhis-api', 'DhisApi', {
     getAnalytics: jest.fn().mockResolvedValue(getAnalyticsResponse),
     getEvents: jest.fn().mockResolvedValue(getEventsResponse),
-    getEventAnalytics: jest.fn().mockResolvedValue(getEventAnalyticsResponse),
+    getEventAnalytics: getEventAnalyticsStub
+      ? jest.fn(getEventAnalyticsStub)
+      : jest.fn().mockResolvedValue(getEventAnalyticsResponse),
     fetchDataElements: jest
       .fn()
       .mockImplementation(async codes =>
@@ -71,6 +75,9 @@ export const createModelsStub = () => {
     },
     entity: {
       records: Object.values(ENTITIES),
+    },
+    entityHierarchy: {
+      records: Object.values(ENTITY_HIERARCHIES),
     },
   });
 };

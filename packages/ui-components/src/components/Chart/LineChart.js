@@ -23,6 +23,7 @@ export const LineChart = ({
   dot,
 }) => {
   const defaultColor = isExporting ? DARK_BLUE : BLUE;
+  const showDot = isExporting ? false : dot; // Always hide when exporting as it doesn't look nice
 
   return (
     <Line
@@ -37,7 +38,7 @@ export const LineChart = ({
       connectNulls={connectNulls}
       isAnimationActive={isEnlarged && !isExporting}
       strokeDasharray={strokeDasharray}
-      dot={dot}
+      dot={showDot}
     >
       {isExporting && exportWithLabels && (
         <LabelList

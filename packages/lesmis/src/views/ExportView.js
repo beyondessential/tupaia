@@ -5,9 +5,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { FlexColumn, A4PageContent, A4Page } from '@tupaia/ui-components';
+
 import { useDashboardDropdownOptions } from '../utils/useDashboardDropdownOptions';
 import { getExportableDashboards, useUrlSearchParams } from '../utils';
-import { A4Page, PreviewPage } from '../components/DashboardExportModal/components';
+import { PreviewPage } from '../components/DashboardExportModal/components';
 import { DashboardReportPage, NoReportPage } from '../components/DashboardExportModal/pages';
 
 export const DASHBOARD_EXPORT_PREVIEW = 'DashboardExportPreview';
@@ -15,6 +17,10 @@ export const PDF_DOWNLOAD_VIEW = 'PDFDownloadView';
 
 const Container = styled.div`
   min-height: 1000px;
+`;
+
+const PreviewPageContent = styled(FlexColumn)`
+  margin: 0px 150px;
 `;
 
 const EXPORT_VIEWS = {
@@ -28,6 +34,7 @@ const EXPORT_VIEWS = {
       return { getNextPage };
     },
     PageContainer: PreviewPage,
+    PageContent: PreviewPageContent,
   },
   [PDF_DOWNLOAD_VIEW]: {
     getExtraExportViewProps: () => {
@@ -38,15 +45,23 @@ const EXPORT_VIEWS = {
       return { exportOptions };
     },
     PageContainer: A4Page,
+    PageContent: A4PageContent,
   },
 };
 
-const getChildren = (subDashboard, isFirstPageProfile, exportViewProps, PageContainer) => {
+const getChildren = ({
+  subDashboard,
+  isFirstPageProfile,
+  exportViewProps,
+  PageContainer,
+  PageContent,
+}) => {
   const { items, useYearSelector, ...subDashboardConfigs } = subDashboard;
   const baseConfigs = {
     useYearSelector,
     subDashboardName: subDashboard.dashboardName,
     PageContainer,
+    PageContent,
     ...subDashboardConfigs,
     ...exportViewProps,
   };
@@ -73,7 +88,7 @@ const getChildren = (subDashboard, isFirstPageProfile, exportViewProps, PageCont
 };
 
 export const ExportView = ({ viewProps, viewType, className }) => {
-  const { getExtraExportViewProps, PageContainer } = EXPORT_VIEWS[viewType];
+  const { getExtraExportViewProps, PageContainer, PageContent } = EXPORT_VIEWS[viewType];
   const exportViewProps = { ...viewProps, ...getExtraExportViewProps() };
 
   const { dropdownOptions } = useDashboardDropdownOptions();
@@ -84,7 +99,13 @@ export const ExportView = ({ viewProps, viewType, className }) => {
     <Container className={className}>
       {exportableDashboards?.map((subDashboard, index) => {
         const isFirstPageProfile = index === 0;
-        return getChildren(subDashboard, isFirstPageProfile, exportViewProps, PageContainer);
+        return getChildren({
+          subDashboard,
+          isFirstPageProfile,
+          exportViewProps,
+          PageContainer,
+          PageContent,
+        });
       })}
     </Container>
   );

@@ -19,6 +19,7 @@ const CONFIG_SCHEMA_BY_SERVICE = {
     categoryOptionCombo: {},
     dataElementCode: {},
     dhisInstanceCode: { default: 'regional', allowNull: true },
+    supersetChartId: {},
   },
   [SERVICE_TYPES.TUPAIA]: {},
   [SERVICE_TYPES.INDICATOR]: {},

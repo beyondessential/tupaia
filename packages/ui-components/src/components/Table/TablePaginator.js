@@ -60,7 +60,16 @@ const TablePagination = styled(MuiTablePagination)`
 `;
 
 export const TablePaginator = React.memo(
-  ({ columns, page, count, rowsPerPage, onChangePage, onChangeRowsPerPage, isFetching }) => {
+  ({
+    columns,
+    page,
+    count,
+    rowsPerPage,
+    rowsPerPageOptions,
+    onChangePage,
+    onChangeRowsPerPage,
+    isFetching,
+  }) => {
     const handleChangePage = useCallback(
       (event, newPage) => {
         if (onChangePage) onChangePage(newPage);
@@ -85,7 +94,7 @@ export const TablePaginator = React.memo(
         <MuiTableRow>
           <TablePagination
             disabled={isFetching}
-            rowsPerPageOptions={ROWS_PER_PAGE_OPTIONS}
+            rowsPerPageOptions={rowsPerPageOptions}
             colSpan={columns.length}
             page={page}
             count={count}
@@ -106,6 +115,7 @@ TablePaginator.propTypes = {
   onChangeRowsPerPage: PropTypes.func,
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
+  rowsPerPageOptions: PropTypes.arrayOf(PropTypes.number),
   isFetching: PropTypes.bool,
 };
 
@@ -115,5 +125,6 @@ TablePaginator.defaultProps = {
   onChangeRowsPerPage: null,
   page: null,
   rowsPerPage: 10,
+  rowsPerPageOptions: ROWS_PER_PAGE_OPTIONS,
   isFetching: false,
 };

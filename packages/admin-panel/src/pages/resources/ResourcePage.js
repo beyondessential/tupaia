@@ -10,6 +10,7 @@ import { DataFetchingTable } from '../../table';
 import { EditModal } from '../../editor';
 import { Header, PageBody } from '../../widgets';
 import { usePortalWithCallback } from '../../utilities';
+import { LogsModal } from '../../logsTable';
 
 const Container = styled(PageBody)`
   overflow: auto;
@@ -17,7 +18,6 @@ const Container = styled(PageBody)`
 
 export const ResourcePage = ({
   columns,
-  editConfig,
   createConfig,
   endpoint,
   reduxId,
@@ -57,11 +57,8 @@ export const ResourcePage = ({
           defaultSorting={defaultSorting}
         />
       </Container>
-      <EditModal
-        {...editConfig}
-        onProcessDataForSave={onProcessDataForSave}
-        displayUsedBy={displayUsedBy}
-      />
+      <EditModal onProcessDataForSave={onProcessDataForSave} displayUsedBy={displayUsedBy} />
+      <LogsModal />
     </>
   );
 };
@@ -69,9 +66,7 @@ export const ResourcePage = ({
 ResourcePage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
   columns: PropTypes.array.isRequired,
-  ConfirmDeleteModalComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
   createConfig: PropTypes.object,
-  editConfig: PropTypes.object,
   onProcessDataForSave: PropTypes.func,
   endpoint: PropTypes.string.isRequired,
   reduxId: PropTypes.string,
@@ -94,9 +89,7 @@ ResourcePage.propTypes = {
 };
 
 ResourcePage.defaultProps = {
-  ConfirmDeleteModalComponent: undefined,
   createConfig: null,
-  editConfig: null,
   expansionTabs: null,
   importConfig: null,
   ExportModalComponent: null,

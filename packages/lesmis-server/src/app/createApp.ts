@@ -33,7 +33,6 @@ import { VerifyEmailRequest } from '../routes/VerifyEmailRoute';
 import { RegisterRequest } from '../routes/RegisterRoute';
 import { UpdateSurveyResponseRequest } from '../routes/UpdateSurveyResponseRoute';
 import { PDFExportRequest } from '../routes/PDFExportRoute';
-import { authHandlerProvider } from '../auth/authHandlerProvider';
 
 const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
 
@@ -47,7 +46,6 @@ export function createApp() {
   const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'lesmis')
     .useSessionModel(LesmisSessionModel)
     .useAttachSession(attachSession)
-    .attachApiClientToContext(authHandlerProvider) // after useAttachSession
     .verifyLogin(hasLesmisAccess)
     .useTranslation(['en', 'lo'], path.join(__dirname, '../../locales'), 'locale')
 

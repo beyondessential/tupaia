@@ -152,6 +152,7 @@ const mergeProps = (
       }
       dispatch(saveEdits(endpoint, fieldValuesToSave, isNew));
     },
+    endpoint,
   };
 };
 

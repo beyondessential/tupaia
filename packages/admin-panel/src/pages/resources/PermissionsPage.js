@@ -49,6 +49,7 @@ const FIELDS = [
     source: 'id',
     type: 'edit',
     actionConfig: {
+      title: "Edit User's Permission",
       editEndpoint: PERMISSIONS_ENDPOINT,
       fields: PERMISSIONS_COLUMNS,
     },
@@ -62,10 +63,6 @@ const FIELDS = [
     },
   },
 ];
-
-const EDIT_CONFIG = {
-  title: "Edit User's Permission",
-};
 
 const CREATE_CONFIG = {
   title: 'Give User Permission',
@@ -142,7 +139,6 @@ export const PermissionsPage = ({ getHeaderEl, ...props }) => (
     title="Permissions"
     endpoint={PERMISSIONS_ENDPOINT}
     columns={FIELDS}
-    editConfig={EDIT_CONFIG}
     createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
     {...props}

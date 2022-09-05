@@ -12,7 +12,7 @@ import {
   EDITOR_DISMISS,
   EDITOR_ERROR,
   EDITOR_FIELD_EDIT,
-  EDITOR_OPEN_CREATOR,
+  EDITOR_OPEN,
 } from './constants';
 
 const defaultState = {
@@ -22,6 +22,7 @@ const defaultState = {
   recordId: null,
   recordData: null,
   fields: null,
+  title: 'Edit',
   editedFields: {},
 };
 
@@ -52,7 +53,7 @@ const stateChanges = {
     }
     return defaultState; // If no error, dismiss the whole modal and clear its state
   },
-  [EDITOR_OPEN_CREATOR]: payload => payload,
+  [EDITOR_OPEN]: payload => payload,
   [EDITOR_FIELD_EDIT]: ({ fieldKey, newValue }, { editedFields }) => ({
     editedFields: {
       ...editedFields,

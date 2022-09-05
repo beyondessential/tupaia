@@ -186,6 +186,12 @@ export const constructForSingle = (models, recordType) => {
         code: [hasContent],
         name: [hasContent],
       };
+    case TYPES.DATA_SERVICE_SYNC_GROUP:
+      return {
+        data_group_code: [constructRecordExistsWithField(models.survey, 'code')],
+        service_type: [constructIsOneOf(Object.values(models.dataServiceSyncGroup.SERVICE_TYPES))],
+        config: [hasContent],
+      };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);
   }

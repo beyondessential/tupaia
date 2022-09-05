@@ -19,7 +19,7 @@ import { SingleDateWrapper } from './SingleDateWrapper';
 import { SingleDownloadLinkWrapper } from './SingleDownloadLinkWrapper';
 import { SingleTickWrapper } from './SingleTickWrapper';
 import { SingleValueWrapper } from './SingleValueWrapper';
-import { ViewTitle } from './Typography';
+import { ViewTitle, PDFExportViewTitle } from './Typography';
 
 const SINGLE_VALUE_COMPONENTS = {
   singleTick: SingleTickWrapper,
@@ -51,12 +51,29 @@ export function getViewWrapper({ type, viewType }) {
       const ViewWrapper = VIEW_TYPES[viewType];
       if (!ViewWrapper) {
         return (
-          <div style={VIEW_STYLES.newChartComing}>
+          <div>
             <ViewTitle>New dashboard element coming soon</ViewTitle>
           </div>
         );
       }
       return ViewWrapper;
+    }
+  }
+}
+
+// Other types are not supported to pdf export at the moment. Will be done by: RN-605
+export function getExportViewWrapper({ type, viewType }) {
+  switch (type) {
+    case 'chart':
+      return ChartWrapper;
+    default: {
+      return () => (
+        <div>
+          <PDFExportViewTitle>{`${
+            viewType || type
+          } visual PDF export is coming soon`}</PDFExportViewTitle>
+        </div>
+      );
     }
   }
 }

@@ -42,6 +42,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
+      title: 'Edit Dashboard',
       editEndpoint: 'dashboards',
       fields: [...FIELDS],
     },
@@ -138,9 +139,6 @@ export const DashboardsPage = ({ getHeaderEl }) => (
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     createConfig={CREATE_CONFIG}
-    editConfig={{
-      title: 'Edit Dashboard',
-    }}
     getHeaderEl={getHeaderEl}
   />
 );
