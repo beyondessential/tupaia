@@ -77,6 +77,7 @@ export const OverlayDiv = ({
   const components = {
     [LANDING]: () => <LandingPage isUserLoggedIn={isUserLoggedIn} transition />,
     [VIEW_PROJECTS]: () => (
+      // Opens the LandingPage, but snaps to the 'View Projects' section
       <LandingPage isUserLoggedIn={isUserLoggedIn} isViewingProjects transition />
     ),
     [PROJECT_LANDING]: () => (
