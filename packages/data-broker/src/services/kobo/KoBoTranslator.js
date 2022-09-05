@@ -31,13 +31,21 @@ export class KoBoTranslator {
       ...restOfFields
     } = result;
 
+    if (!koboEntityCode) {
+      throw new Error(
+        `Cannot find a question in the Kobo survey response matching the entityQuestionCode: ${entityQuestion}`,
+      );
+    }
+
     const { orgUnit, orgUnitName } = await this.fetchEntityInfoFromKoBoAnswer(koboEntityCode);
     // Map kobo questions to tupaia question codes
     const dataValues = {};
-    for (const [tupaia, { koboQuestionCode, answerMap }] of Object.entries(questionMapping)) {
+    for (const [tupaiaQuestionCode, { koboQuestionCode, answerMap }] of Object.entries(
+      questionMapping,
+    )) {
       if (restOfFields[koboQuestionCode] !== undefined) {
         const koboValue = restOfFields[koboQuestionCode];
-        dataValues[tupaia] =
+        dataValues[tupaiaQuestionCode] =
           answerMap?.[koboValue] !== undefined ? answerMap[koboValue] : koboValue;
       }
     }

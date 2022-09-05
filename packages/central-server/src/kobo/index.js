@@ -3,5 +3,4 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-export { startSyncWithKoBo } from './startSyncWithKoBo';
-export { manualKoBoSync } from './manualKoBoSync';
+export { startSyncWithKoBo, syncWithKoBo } from './startSyncWithKoBo';
