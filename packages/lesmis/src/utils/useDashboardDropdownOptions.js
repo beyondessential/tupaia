@@ -17,17 +17,17 @@ export const useDashboardDropdownOptions = () => {
   const selectedDashboard = params.dashboard;
 
   const getFilter = value => {
-    if (value === 'indicators') {
-      return () => false;
+    switch (value) {
+      case 'indicators':
+        return () => false;
+      case 'profile':
+        return ({ dashboardCode }) =>
+          !Object.values(SUB_DASHBOARD_OPTIONS).some(({ code }) =>
+            dashboardCode.startsWith(`LESMIS_${code}`),
+          );
+      default:
+        return ({ dashboardCode }) => dashboardCode.startsWith(`LESMIS_${value}`);
     }
-    const filter =
-      value === 'profile'
-        ? ({ dashboardCode }) =>
-            !Object.values(SUB_DASHBOARD_OPTIONS).some(({ code }) =>
-              dashboardCode.startsWith(`LESMIS_${code}`),
-            )
-        : ({ dashboardCode }) => dashboardCode.startsWith(`LESMIS_${value}`);
-    return filter;
   };
 
   const dropdownOptions = SUB_DASHBOARD_OPTIONS.map(config => {
