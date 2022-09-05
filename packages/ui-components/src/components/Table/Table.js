@@ -39,6 +39,7 @@ export const Table = React.memo(
     order,
     page,
     rowsPerPage,
+    rowsPerPageOptions,
     rowIdKey,
     isFetching,
     className,
@@ -74,6 +75,7 @@ export const Table = React.memo(
             isFetching,
             count,
             rowsPerPage,
+            rowsPerPageOptions,
             onChangePage,
             onChangeRowsPerPage,
           }}
@@ -103,6 +105,7 @@ Table.propTypes = {
   order: PropTypes.string,
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
+  rowsPerPageOptions: PropTypes.arrayOf(PropTypes.number),
   rowIdKey: PropTypes.string,
   className: PropTypes.string,
 };
@@ -125,6 +128,7 @@ Table.defaultProps = {
   order: 'asc',
   page: null,
   rowsPerPage: 10,
+  rowsPerPageOptions: null,
   rowIdKey: 'id',
   className: null,
 };

@@ -11,6 +11,10 @@ const SERVICE_TYPES = [{ label: 'Kobo', value: 'kobo' }];
 
 const FIELDS = [
   {
+    Header: 'Code',
+    source: 'code',
+  },
+  {
     Header: 'Survey Code',
     source: 'data_group_code',
   },
@@ -49,6 +53,30 @@ const COLUMNS = [
     type: 'delete',
     actionConfig: {
       endpoint: 'dataServiceSyncGroups',
+    },
+  },
+  {
+    Header: 'Logs',
+    type: 'logs',
+    source: 'id',
+    actionConfig: {
+      title: '{code} sync group logs',
+      logsCountEndpoint: 'dataServiceSyncGroups/{id}/logs/count',
+      logsEndpoint: 'dataServiceSyncGroups/{id}/logs',
+      logsPerPage: 100,
+    },
+  },
+  {
+    Header: 'Sync',
+    type: 'sync',
+    source: 'sync_status',
+    filterable: false,
+    sortable: false,
+    width: 180,
+    actionConfig: {
+      syncStatusEndpoint: 'dataServiceSyncGroups/{id}',
+      latestSyncLogEndpoint: 'dataServiceSyncGroups/{id}/logs?limit=1',
+      manualSyncEndpoint: 'dataServiceSyncGroups/{id}/sync',
     },
   },
 ];
