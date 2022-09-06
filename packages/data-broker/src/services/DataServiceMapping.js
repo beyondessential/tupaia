@@ -19,9 +19,14 @@
  * @property {DataServiceMappingEntry[]} dataGroupMapping
  */
 export class DataServiceMapping {
-  dataElementMapping = [];
+  dataElementMapping;
 
-  dataGroupMapping = [];
+  dataGroupMapping;
+
+  constructor(dataElementMapping = [], dataGroupMapping = []) {
+    this.dataElementMapping = dataElementMapping;
+    this.dataGroupMapping = dataGroupMapping;
+  }
 
   uniqueServiceTypes() {
     const set = new Set();
@@ -46,5 +51,28 @@ export class DataServiceMapping {
       map[dgMapping.service_type].push(dgMapping.dataSource);
     }
     return map;
+  }
+
+  /**
+   * @return {DataServiceMappingEntry[]}
+   */
+  allMappings() {
+    return [...this.dataElementMapping, ...this.dataGroupMapping];
+  }
+
+  /**
+   * @param {DataSource} dataSource
+   * @return {{ service_type: string, config: Object } | null}
+   */
+  mappingForDataSource(dataSource) {
+    for (const mapping of this.allMappings()) {
+      if (mapping.dataSource === dataSource) {
+        return {
+          service_type: mapping.service_type,
+          config: mapping.config,
+        };
+      }
+    }
+    return null;
   }
 }

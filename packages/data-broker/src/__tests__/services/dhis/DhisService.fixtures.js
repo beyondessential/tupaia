@@ -82,6 +82,7 @@ export const DATA_ELEMENTS_BY_GROUP = {
   DIFF_GROUP: [DATA_SOURCES.POP01, DATA_SOURCES.DIF01],
 };
 
+// A simple mapping with no country-specific overrides
 export const DEFAULT_DATA_SERVICE_MAPPING = new DataServiceMapping(
   [
     Object.values(DATA_SOURCES).map(de => ({

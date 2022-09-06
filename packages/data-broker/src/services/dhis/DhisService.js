@@ -91,12 +91,17 @@ export class DhisService extends Service {
     };
   }
 
-  async validatePushData(dataSources, dataValues) {
-    const { serverName } = await getApiForDataSource(this.models, dataSources[0]);
+  async validatePushData(dataSources, dataValues, dataServiceMapping) {
+    const { serverName } = await getApiForDataSource(
+      this.models,
+      dataSources[0],
+      dataServiceMapping,
+    );
     for (let i = 0; i < dataSources.length; i++) {
       const { serverName: otherServerName } = await getApiForDataSource(
         this.models,
         dataSources[i],
+        dataServiceMapping,
       );
       if (otherServerName !== serverName) {
         throw new Error(`All data being pushed must be for the same DHIS2 instance`);
@@ -104,11 +109,11 @@ export class DhisService extends Service {
     }
   }
 
-  async push(dataSources, data, { type }) {
+  async push(dataSources, data, { type, dataServiceMapping }) {
     const pushData = this.pushers[type]; // all are of the same type
     const dataValues = Array.isArray(data) ? data : [data];
-    await this.validatePushData(dataSources, dataValues);
-    const api = await getApiForDataSource(this.models, dataSources[0]); // all are for the same instance
+    await this.validatePushData(dataSources, dataValues, dataServiceMapping);
+    const api = await getApiForDataSource(this.models, dataSources[0], dataServiceMapping); // all are for the same instance
     const diagnostics = await pushData(api, dataValues, dataSources);
     return { diagnostics, serverName: api.getServerName() };
   }
@@ -129,12 +134,12 @@ export class DhisService extends Service {
     return api.postEvents(translatedEvents);
   }
 
-  async delete(dataSource, data, { serverName, type } = {}) {
+  async delete(dataSource, data, { serverName, type, dataServiceMapping } = {}) {
     let api;
     if (serverName) {
       api = await getApiFromServerName(this.models, serverName);
     } else {
-      api = await getApiForDataSource(this.models, dataSource);
+      api = await getApiForDataSource(this.models, dataSource, dataServiceMapping);
     }
     const deleteData = this.deleters[type];
     return deleteData(api, data, dataSource);
@@ -151,9 +156,15 @@ export class DhisService extends Service {
 
   deleteEvent = async (api, data) => api.deleteEvent(data.dhisReference);
 
-  async getPullApis(dataSources, entityCodes, detectDataServices, dataServices) {
+  async getPullApis(
+    dataSources,
+    entityCodes,
+    detectDataServices,
+    dataServices,
+    dataServiceMapping,
+  ) {
     const apis = detectDataServices
-      ? await getApisForDataSources(this.models, dataSources)
+      ? await getApisForDataSources(this.models, dataSources, dataServiceMapping)
       : await getApisForLegacyDataSourceConfig(this.models, dataServices);
 
     return apis;
@@ -165,6 +176,7 @@ export class DhisService extends Service {
       organisationUnitCodes,
       dataServices = DEFAULT_DATA_SERVICES,
       detectDataServices = false,
+      dataServiceMapping,
     } = options;
 
     const entityCodes = organisationUnitCodes || [organisationUnitCode];
@@ -172,7 +184,13 @@ export class DhisService extends Service {
     // TODO remove the `detectDataServices` flag after
     // https://linear.app/bes/issue/MEL-481/detect-data-services-in-the-data-broker-level
 
-    const apis = await this.getPullApis(dataSources, entityCodes, detectDataServices, dataServices);
+    const apis = await this.getPullApis(
+      dataSources,
+      entityCodes,
+      detectDataServices,
+      dataServices,
+      dataServiceMapping,
+    );
 
     const { useDeprecatedApi = false } = options;
     const pullerKey = `${type}${useDeprecatedApi ? '_deprecated' : ''}`;
@@ -187,11 +205,18 @@ export class DhisService extends Service {
       organisationUnitCodes,
       dataServices = DEFAULT_DATA_SERVICES,
       detectDataServices = false,
+      dataServiceMapping,
     } = options;
 
     const puller = this.metadataPullers[type];
     const entityCodes = organisationUnitCodes || [organisationUnitCode];
-    const apis = await this.getPullApis(dataSources, entityCodes, detectDataServices, dataServices);
+    const apis = await this.getPullApis(
+      dataSources,
+      entityCodes,
+      detectDataServices,
+      dataServices,
+      dataServiceMapping,
+    );
 
     const results = [];
     const pullForApi = async api => {
