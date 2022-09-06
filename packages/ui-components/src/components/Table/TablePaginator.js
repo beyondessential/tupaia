@@ -10,7 +10,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { tableColumnShape } from './tableColumnShape';
 
-const ROWS_PER_PAGE_OPTIONS = [10, 25, 50];
+export const DEFAULT_ROWS_PER_PAGE_OPTIONS = [10, 25, 50];
 
 const TableFooter = styled(MuiTableFooter)`
   .MuiTableCell-footer.MuiTablePagination-root {
@@ -125,6 +125,6 @@ TablePaginator.defaultProps = {
   onChangeRowsPerPage: null,
   page: null,
   rowsPerPage: 10,
-  rowsPerPageOptions: ROWS_PER_PAGE_OPTIONS,
+  rowsPerPageOptions: DEFAULT_ROWS_PER_PAGE_OPTIONS,
   isFetching: false,
 };
