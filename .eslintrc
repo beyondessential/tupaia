@@ -44,6 +44,7 @@
         "packages/psss-server/**",
         "packages/report-server/**",
         "packages/server-boilerplate/**",
+        "packages/supserset-api/**",
         "packages/tsutils/**"
       ],
       "extends": "@beyondessential/ts",

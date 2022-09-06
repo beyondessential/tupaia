@@ -24,8 +24,8 @@ export const TableCell = styled(MuiTableCell)`
   }
 `;
 
-export const TableRowCells = React.memo(({ columns, rowData, ExpandButton }) =>
-  columns.map(
+export const TableRowCells = React.memo(({ columns, rowData, ExpandButton }) => {
+  return columns.map(
     ({ key, accessor, CellComponent, width = null, align = 'center', cellColor }, index) => {
       const value = accessor ? accessor(rowData) : rowData[key];
       const displayValue = value === 0 ? '0' : value;
@@ -46,8 +46,8 @@ export const TableRowCells = React.memo(({ columns, rowData, ExpandButton }) =>
         </TableCell>
       );
     },
-  ),
-);
+  );
+});
 
 TableRowCells.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,

@@ -41,4 +41,7 @@ setup_startup_command=$(pm2 startup ubuntu -u ubuntu --hp /home/ubuntu | tail -1
 eval "$setup_startup_command"
 pm2 save
 
+# Log dump file
+grep status /home/ubuntu/.pm2/dump.pm2
+
 echo "Finished deploying latest"

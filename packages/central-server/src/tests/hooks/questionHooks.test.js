@@ -5,6 +5,8 @@ import { TestableApp } from '../testUtilities';
 import { registerHook } from '../../hooks';
 
 const ENTITY_ID = generateTestId();
+const ENTITY2_ID = generateTestId();
+const ENTITY3_ID = generateTestId();
 
 const GENERIC_SURVEY_ID = generateTestId();
 const ENTITY_CREATION_SURVEY_ID = generateTestId();
@@ -19,6 +21,7 @@ const SURVEYS = [
       { code: 'TEST_backdate-test', type: 'Text', hook: 'backdateTestHook' },
       { code: 'TEST_whole-survey-a', type: 'Text', hook: 'wholeSurvey' },
       { code: 'TEST_whole-survey-b', type: 'Text' },
+      { code: 'TEST_attribute', type: 'Text', hook: 'entityAttributeBananaPopulation' },
     ],
   },
   {
@@ -71,6 +74,22 @@ describe('Question hooks', () => {
       code: ENTITY_ID,
       name: 'test entity',
       type: models.entity.types.FACILITY,
+    });
+
+    await models.entity.create({
+      id: ENTITY2_ID,
+      code: ENTITY2_ID,
+      name: 'test entity',
+      type: models.entity.types.FACILITY,
+      attributes: { test_attribute: 'test_value' },
+    });
+
+    await models.entity.create({
+      id: ENTITY3_ID,
+      code: ENTITY3_ID,
+      name: 'test entity',
+      type: models.entity.types.FACILITY,
+      attributes: { banana_population: '1000' },
     });
 
     await buildAndInsertSurveys(models, SURVEYS);
@@ -256,6 +275,103 @@ describe('Question hooks', () => {
       const { image_url: beforeImageUrl, ...beforeData } = await beforeEntity.getData();
       const { image_url: afterImageUrl, ...afterData } = await entity.getData();
       expect(beforeData).to.deep.equal(afterData);
+    });
+
+    describe('Adding an entity attribute', () => {
+      it("Should add a custom attribute to entity's attributes when no attributes currently exist", async () => {
+        const TEST_BANANA_POPULATION_VALUE = '1000';
+
+        const beforeEntity = await models.entity.findById(ENTITY_ID);
+        expect(beforeEntity.attributes).to.be.an('object');
+
+        // submit a survey response
+        await app.post('surveyResponse', {
+          body: {
+            survey_id: GENERIC_SURVEY_ID,
+            entity_id: ENTITY_ID,
+            timestamp: 123,
+            answers: {
+              TEST_attribute: TEST_BANANA_POPULATION_VALUE,
+            },
+          },
+        });
+
+        const newValue = { banana_population: TEST_BANANA_POPULATION_VALUE };
+        await database.waitForAllChangeHandlers();
+
+        const entity = await models.entity.findById(ENTITY_ID);
+        expect(entity.attributes).to.deep.equal(newValue);
+
+        // should be otherwise unchanged
+        const { attributes: beforeAttributes, ...beforeData } = await beforeEntity.getData();
+        const { attributes: afterAttributes, ...afterData } = await entity.getData();
+        expect(beforeData).to.deep.equal(afterData);
+      });
+
+      it("Should overwrite an existing attribute's value with the new value", async () => {
+        const AFTER_BANANA_POPULATION_VALUE = '5000';
+
+        const beforeEntity = await models.entity.findById(ENTITY3_ID);
+        expect(beforeEntity.attributes).to.deep.equal({ banana_population: '1000' });
+
+        // submit a survey response
+        await app.post('surveyResponse', {
+          body: {
+            survey_id: GENERIC_SURVEY_ID,
+            entity_id: ENTITY3_ID,
+            timestamp: 123,
+            answers: {
+              TEST_attribute: AFTER_BANANA_POPULATION_VALUE,
+            },
+          },
+        });
+
+        const newValue = {
+          banana_population: AFTER_BANANA_POPULATION_VALUE,
+        };
+        await database.waitForAllChangeHandlers();
+
+        const entity = await models.entity.findById(ENTITY3_ID);
+        expect(entity.attributes).to.deep.equal(newValue);
+
+        // should be otherwise unchanged
+        const { attributes: beforeAttributes, ...beforeData } = await beforeEntity.getData();
+        const { attributes: afterAttributes, ...afterData } = await entity.getData();
+        expect(beforeData).to.deep.equal(afterData);
+      });
+
+      it("Should add custom attribute to entity's attributes when there are existing attributes", async () => {
+        const TEST_BANANA_POPULATION_VALUE = '2000';
+
+        const beforeEntity = await models.entity.findById(ENTITY2_ID);
+        expect(beforeEntity.attributes).to.deep.equal({ test_attribute: 'test_value' });
+
+        // submit a survey response
+        await app.post('surveyResponse', {
+          body: {
+            survey_id: GENERIC_SURVEY_ID,
+            entity_id: ENTITY2_ID,
+            timestamp: 123,
+            answers: {
+              TEST_attribute: TEST_BANANA_POPULATION_VALUE,
+            },
+          },
+        });
+
+        const newValue = {
+          test_attribute: 'test_value',
+          banana_population: TEST_BANANA_POPULATION_VALUE,
+        };
+        await database.waitForAllChangeHandlers();
+
+        const entity = await models.entity.findById(ENTITY2_ID);
+        expect(entity.attributes).to.deep.equal(newValue);
+
+        // should be otherwise unchanged
+        const { attributes: beforeAttributes, ...beforeData } = await beforeEntity.getData();
+        const { attributes: afterAttributes, ...afterData } = await entity.getData();
+        expect(beforeData).to.deep.equal(afterData);
+      });
     });
 
     describe('Entity creation', () => {

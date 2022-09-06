@@ -78,6 +78,7 @@ const SURVEY_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
+      title: 'Edit Survey',
       editEndpoint: 'surveys',
       fields: [
         ...SURVEY_FIELDS,
@@ -105,6 +106,9 @@ const SURVEY_COLUMNS = [
           source: 'data_group.config',
           editConfig: {
             type: 'json',
+            visibilityCriteria: {
+              'data_group.service_type': 'dhis',
+            },
             getJsonFieldSchema: (_, { recordData }) =>
               recordData['data_group.service_type'] === 'dhis'
                 ? [
@@ -213,6 +217,7 @@ const QUESTION_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
+      title: 'Edit Question',
       editEndpoint: 'surveyScreenComponents',
       fields: [
         ...QUESTION_FIELDS,
@@ -432,10 +437,6 @@ const IMPORT_CONFIG = {
   ],
 };
 
-const EDIT_CONFIG = {
-  title: 'Edit Survey',
-};
-
 export const SurveysPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Surveys"
@@ -443,7 +444,6 @@ export const SurveysPage = ({ getHeaderEl }) => (
     columns={SURVEY_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
-    editConfig={EDIT_CONFIG}
     getHeaderEl={getHeaderEl}
   />
 );

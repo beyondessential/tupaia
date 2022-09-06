@@ -232,4 +232,14 @@ export const constructQuestionValidators = models => ({
       return true;
     },
   ],
+  config: [
+    (cell, row) => {
+      if (row.type === ANSWER_TYPES.CODE_GENERATOR && isEmpty(cell)) {
+        throw new Error(
+          'CodeGenerator questions must have a configuration defined in the config column',
+        );
+      }
+      return true;
+    },
+  ],
 });
