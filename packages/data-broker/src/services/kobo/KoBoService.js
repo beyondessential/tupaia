@@ -44,12 +44,25 @@ export class KoBoService extends Service {
     const resultsByDataGroupCode = {};
 
     for (const source of dataSources) {
-      const results = await this.api.fetchKoBoSubmissions(source.config?.koboSurveyCode, options);
+      const { koboSurveyCode, questionMapping, entityQuestionCode } = source.config;
+      if (!koboSurveyCode) {
+        throw new Error(`Missing 'koboSurveyCode' in sync group config`);
+      }
+
+      if (!entityQuestionCode) {
+        throw new Error(`Missing 'entityQuestionCode' in sync group config`);
+      }
+
+      if (!questionMapping) {
+        throw new Error(`Missing 'questionMapping' in sync group config`);
+      }
+
+      const results = await this.api.fetchKoBoSubmissions(koboSurveyCode, options);
 
       resultsByDataGroupCode[source.data_group_code] = await this.translator.translateKoBoResults(
         results,
-        source.config?.questionMapping,
-        source.config?.entityQuestionCode,
+        questionMapping,
+        entityQuestionCode,
       );
     }
 

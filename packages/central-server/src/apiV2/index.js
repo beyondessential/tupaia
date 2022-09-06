@@ -100,7 +100,6 @@ import { requestPasswordReset } from './requestPasswordReset';
 import { getCountryAccessList } from './getCountryAccessList';
 import { surveyResponse } from './surveyResponse';
 import { verifyEmail, requestResendEmail } from './verifyEmail';
-import { manualKoBoSync } from '../kobo';
 import { GETReports } from './reports';
 import { GETDataElementDataGroups } from './dataElementDataGroups';
 import {
@@ -108,7 +107,15 @@ import {
   EditMapOverlayVisualisation,
   GETMapOverlayVisualisations,
 } from './mapOverlayVisualisations';
-import { GETSyncGroups, EditSyncGroups, CreateSyncGroups, DeleteSyncGroups } from './syncGroups';
+import {
+  GETSyncGroups,
+  EditSyncGroups,
+  CreateSyncGroups,
+  DeleteSyncGroups,
+  GETSyncGroupLogs,
+  GETSyncGroupLogsCount,
+  ManuallySyncSyncGroup,
+} from './syncGroups';
 
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
@@ -215,6 +222,8 @@ apiV2.get('/geographicalAreas/:recordId?', useRouteHandler(GETGeographicalAreas)
 apiV2.get('/reports/:recordId?', useRouteHandler(GETReports));
 apiV2.get('/dhisInstances/:recordId?', useRouteHandler(BESAdminGETHandler));
 apiV2.get('/dataServiceSyncGroups/:recordId?', useRouteHandler(GETSyncGroups));
+apiV2.get('/dataServiceSyncGroups/:recordId/logs', useRouteHandler(GETSyncGroupLogs));
+apiV2.get('/dataServiceSyncGroups/:recordId/logs/count', useRouteHandler(GETSyncGroupLogsCount));
 
 /**
  * POST routes
@@ -245,8 +254,8 @@ apiV2.post('/dashboardRelations', useRouteHandler(CreateDashboardRelation));
 apiV2.post('/dashboardVisualisations', useRouteHandler(CreateDashboardVisualisation));
 apiV2.post('/mapOverlayVisualisations', useRouteHandler(CreateMapOverlayVisualisation));
 apiV2.post('/mapOverlayGroupRelations', useRouteHandler(CreateMapOverlayGroupRelation));
-apiV2.post('/syncFromService', allowAnyone(manualKoBoSync));
 apiV2.post('/dataServiceSyncGroups', useRouteHandler(CreateSyncGroups));
+apiV2.post('/dataServiceSyncGroups/:recordId/sync', useRouteHandler(ManuallySyncSyncGroup));
 
 /**
  * PUT routes
