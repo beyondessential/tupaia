@@ -83,12 +83,17 @@ export class DhisService extends Service {
     };
   }
 
-  async validatePushData(dataSources, dataValues) {
-    const { serverName } = await getApiForDataSource(this.models, dataSources[0]);
+  async validatePushData(dataSources, dataValues, dataServiceMapping) {
+    const { serverName } = await getApiForDataSource(
+      this.models,
+      dataSources[0],
+      dataServiceMapping,
+    );
     for (let i = 0; i < dataSources.length; i++) {
       const { serverName: otherServerName } = await getApiForDataSource(
         this.models,
         dataSources[i],
+        dataServiceMapping,
       );
       if (otherServerName !== serverName) {
         throw new Error(`All data being pushed must be for the same DHIS2 instance`);
@@ -96,11 +101,11 @@ export class DhisService extends Service {
     }
   }
 
-  async push(dataSources, data, { type }) {
+  async push(dataSources, data, { type, dataServiceMapping }) {
     const pushData = this.pushers[type]; // all are of the same type
     const dataValues = Array.isArray(data) ? data : [data];
-    await this.validatePushData(dataSources, dataValues);
-    const api = await getApiForDataSource(this.models, dataSources[0]); // all are for the same instance
+    await this.validatePushData(dataSources, dataValues, dataServiceMapping);
+    const api = await getApiForDataSource(this.models, dataSources[0], dataServiceMapping); // all are for the same instance
     const diagnostics = await pushData(api, dataValues, dataSources);
     return { diagnostics, serverName: api.getServerName() };
   }
@@ -121,12 +126,12 @@ export class DhisService extends Service {
     return api.postEvents(translatedEvents);
   }
 
-  async delete(dataSource, data, { serverName, type } = {}) {
+  async delete(dataSource, data, { serverName, type, dataServiceMapping } = {}) {
     let api;
     if (serverName) {
       api = await getApiFromServerName(this.models, serverName);
     } else {
-      api = await getApiForDataSource(this.models, dataSource);
+      api = await getApiForDataSource(this.models, dataSource, dataServiceMapping);
     }
     const deleteData = this.deleters[type];
     return deleteData(api, data, dataSource);
@@ -144,8 +149,8 @@ export class DhisService extends Service {
   deleteEvent = async (api, data) => api.deleteEvent(data.dhisReference);
 
   async pull(dataSources, type, options = {}) {
-    const apis = await getApisForDataSources(this.models, dataSources);
-    const { useDeprecatedApi = false } = options;
+    const { dataServiceMapping, useDeprecatedApi = false } = options;
+    const apis = await getApisForDataSources(this.models, dataSources, dataServiceMapping)
     const pullerKey = `${type}${useDeprecatedApi ? '_deprecated' : ''}`;
 
     const pullData = this.pullers[pullerKey];
@@ -153,7 +158,8 @@ export class DhisService extends Service {
   }
 
   async pullMetadata(dataSources, type, options) {
-    const apis = await getApisForDataSources(this.models, dataSources);
+    const { dataServiceMapping } = options;
+    const apis = await getApisForDataSources(this.models, dataSources, dataServiceMapping);
     const puller = this.metadataPullers[type];
 
     const results = [];
