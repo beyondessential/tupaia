@@ -309,7 +309,7 @@ describe('DhisService', () => {
         };
 
         const mockedDhisApi = createMockDhisApi({ serverName: 'myDhisApi1' });
-        getApisForLegacyDataSourceConfigSpy.mockReturnValue(mockedDhisApi);
+        getApisForLegacyDataSourceConfigSpy.mockReturnValue([mockedDhisApi]);
 
         await dhisService.pull(dataSources, 'dataElement', options);
 
@@ -320,7 +320,7 @@ describe('DhisService', () => {
 
         // expect those apis to be passed to pull
         expect(dhisService.analyticsPuller.pull).toHaveBeenCalledOnceWith(
-          mockedDhisApi,
+          [mockedDhisApi],
           expect.anything(),
           expect.anything(),
         );
