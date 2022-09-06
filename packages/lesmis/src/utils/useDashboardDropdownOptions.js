@@ -18,10 +18,12 @@ export const useDashboardDropdownOptions = () => {
 
   const getFilter = value => {
     switch (value) {
+      case 'favourites':
+        return ({ items }) => items.some(item => item.isFavourite);
       case 'profile':
         // those not included anywhere else
         return ({ dashboardCode }) =>
-          !Object.values(SUB_DASHBOARD_OPTIONS).some(({ value: code }) =>
+          !SUB_DASHBOARD_OPTIONS.some(({ value: code }) =>
             dashboardCode.startsWith(`LESMIS_${code}`),
           );
       default:

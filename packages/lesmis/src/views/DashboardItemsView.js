@@ -32,15 +32,15 @@ const DashboardItemsView = ({ subDashboards, searchIsActive, activeDashboard, ye
 
   return (
     <>
-      {subDashboards?.map(dashboard => (
+      {subDashboards?.map(subDashboard => (
         <TabPanel
           className={searchIsActive ? 'active' : ''}
           Panel={PanelComponent}
-          key={dashboard.dashboardId}
-          isSelected={dashboard.dashboardName === activeDashboard}
+          key={subDashboard.dashboardId}
+          isSelected={subDashboard.dashboardName === activeDashboard}
         >
-          {dashboard.items.length > 0 ? (
-            dashboard.items.map(item => (
+          {subDashboard.items.length > 0 ? (
+            subDashboard.items.map(item => (
               <DashboardReport
                 key={item.code}
                 reportCode={item.reportCode}
@@ -50,7 +50,7 @@ const DashboardItemsView = ({ subDashboards, searchIsActive, activeDashboard, ye
               />
             ))
           ) : (
-            <InfoAlert key={dashboard.dashboardName} severity="info" variant="standard">
+            <InfoAlert key={subDashboard.dashboardName} severity="info" variant="standard">
               There are no reports available for this dashboard
             </InfoAlert>
           )}

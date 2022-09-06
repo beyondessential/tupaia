@@ -19,10 +19,11 @@ export const FavouriteButton = ({ isFavourite, handleFavouriteStatusChange }) =>
 };
 
 FavouriteButton.propTypes = {
-  isFavourite: PropTypes.bool.isRequired,
+  isFavourite: PropTypes.bool,
   handleFavouriteStatusChange: PropTypes.func,
 };
 
 FavouriteButton.defaultProps = {
   handleFavouriteStatusChange: () => {},
+  isFavourite: null,
 };

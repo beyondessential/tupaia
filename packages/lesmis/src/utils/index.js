@@ -8,6 +8,7 @@ export * from './makeEntityLink';
 export * from './search';
 export * from './useAutocomplete';
 export * from './useDashboardDropdownOptions';
+export * from './useDefaultDashboardTab';
 export * from './useHomeUrl';
 export * from './usePortal';
 export * from './useStickyBar';

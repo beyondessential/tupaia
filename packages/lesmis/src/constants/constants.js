@@ -33,9 +33,6 @@ export const SUB_DASHBOARD_OPTIONS = [
     tabViewType: FAVOURITE_DASHBOARD_TAB_VIEW,
     labelCode: 'dashboards.favourites',
     exportToPDF: true,
-    componentPropConfig: {
-      body: 'favourites',
-    },
   },
   {
     value: 'ESSDP_Plan',

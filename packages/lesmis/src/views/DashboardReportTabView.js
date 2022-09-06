@@ -6,21 +6,11 @@
 import React, { useState, useRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { useHistory } from 'react-router-dom';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
-import { useDashboardData, useUser } from '../api/queries';
-import {
-  FetchLoader,
-  TabsLoader,
-  FlexColumn,
-  TabBar,
-  Tabs,
-  Tab,
-  TabPanel,
-  useI18n,
-} from '../components';
+import { useDashboardData } from '../api/queries';
+import { FetchLoader, TabsLoader, FlexColumn, TabBar, Tabs, Tab, TabPanel } from '../components';
 import { NAVBAR_HEIGHT_INT } from '../constants';
-import { useHomeUrl, useUrlSearchParam, useStickyBar } from '../utils';
+import { useUrlSearchParam, useStickyBar, useDefaultDashboardTab } from '../utils';
 import { DashboardSearch } from '../components/DashboardSearch';
 import DashboardItemsView from './DashboardItemsView';
 
@@ -64,39 +54,6 @@ const PanelComponent = styled(FlexColumn)`
     overflow: hidden;
   }
 `;
-
-// Gets the best default dashboard possible, and check if the selected dashboard is valid
-const useDefaultDashboardTab = (selectedDashboard = null, options) => {
-  const history = useHistory();
-  const { translate } = useI18n();
-  const { homeUrl } = useHomeUrl();
-  const { isLoggedIn, isFetching: isFetchingUser } = useUser();
-  const defaultDashboardGroup = translate('dashboards.studentEnrolment');
-  const schoolDefaultDashboardGroup = 'Students';
-
-  if (!options || options.length === 0) {
-    return null;
-  }
-
-  const dashboardNames = options.map(d => d.dashboardName);
-
-  if (selectedDashboard) {
-    if (dashboardNames.includes(selectedDashboard)) {
-      return selectedDashboard;
-    }
-    if (!isFetchingUser && !isLoggedIn) {
-      return history.push(`${homeUrl}/login`, { referer: history.location });
-    }
-  }
-
-  if (dashboardNames.includes(defaultDashboardGroup)) {
-    return defaultDashboardGroup;
-  }
-  if (dashboardNames.includes(schoolDefaultDashboardGroup)) {
-    return schoolDefaultDashboardGroup;
-  }
-  return dashboardNames[0];
-};
 
 export const DashboardReportTabView = ({
   entityCode,
