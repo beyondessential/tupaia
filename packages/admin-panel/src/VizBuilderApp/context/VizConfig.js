@@ -97,6 +97,10 @@ const useConfigStore = () => {
   const setProject = value => dispatch({ type: SET_PROJECT, value });
   const setTestData = value => dispatch({ type: SET_TEST_DATA, value });
   const setVisualisation = value => {
+    if (!value.data.transform) {
+      return dispatch({ type: SET_VISUALISATION, value });
+    }
+
     const { transform } = value.data;
     const sanitisedTransform = transform.map(conf =>
       typeof conf === 'string' ? { transform: conf, alias: true } : conf,

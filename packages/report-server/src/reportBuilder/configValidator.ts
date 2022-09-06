@@ -50,18 +50,35 @@ const dateSpecsValidator = polymorphic({
   string: yup.string().min(4),
 });
 
-export const configValidator = yup.object().shape({
-  fetch: yup.object().shape(
-    {
-      dataElements: dataElementValidator,
-      dataGroups: dataGroupValidator,
-      aggregations: yup.array().of(aggregationValidator as any), // https://github.com/jquense/yup/issues/1283#issuecomment-786559444
-      organisationUnits: yup.array().of(yup.string().required()),
-      startDate: dateSpecsValidator,
-      endDate: dateSpecsValidator,
-    },
-    [['dataElements', 'dataGroups']],
-  ),
+const customReportConfigValidator = yup.object().shape({
+  customReport: yup.string().required(),
+});
+
+const standardConfigValidator = yup.object().shape({
+  fetch: yup
+    .object()
+    .shape(
+      {
+        dataElements: dataElementValidator,
+        dataGroups: dataGroupValidator,
+        aggregations: yup.array().of(aggregationValidator as any), // https://github.com/jquense/yup/issues/1283#issuecomment-786559444
+        organisationUnits: yup.array().of(yup.string().required()),
+        startDate: dateSpecsValidator,
+        endDate: dateSpecsValidator,
+      },
+      [['dataElements', 'dataGroups']],
+    )
+    .required(),
   transform: yup.array().required(),
   output: yup.object(),
+});
+
+export const configValidator = yup.lazy<
+  typeof standardConfigValidator | typeof customReportConfigValidator
+>((config: unknown) => {
+  if (typeof config === 'object' && config && 'customReport' in config) {
+    return customReportConfigValidator;
+  }
+
+  return standardConfigValidator;
 });
